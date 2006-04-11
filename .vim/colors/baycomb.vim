@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v1.2c
+" baycomb v1.3
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -232,32 +232,32 @@ endfun
 " }}}
 
 
-call <SID>X("Normal", "BAC5FF", "081524", "")
-call <SID>X("NonText", "382920", "101525", "")
+call <SID>X("Normal", "ADBAE5", "15111C", "")
+call <SID>X("NonText", "382920", "14101A", "")
 
 " set comments to grey on non-Windows OS's to make sure it is readable
 " if &term == "builtin_gui" || &term == "win32"
-"     <SID>X("Comment", "A9A9A9", "00008B", "")
+"     <SID>X("Comment", "A9A9A9", "232850", "")
 " else
-"     <SID>X("Comment", "BEBEBE", "00008B", "")
+"     <SID>X("Comment", "BEBEBE", "232850", "")
 " endif
 call <SID>X("Comment", "008B8B", "", "")
 
 call <SID>X("Title", "F5F5C0", "", "NONE")
 call <SID>X("Underlined", "DAE5DA", "", "")
 
-call <SID>X("Statement", "F06A6F", "", "NONE")
-call <SID>X("Type", "30A5EA", "", "NONE")
-call <SID>X("Constant", "5B5DDA", "", "")
-call <SID>X("PreProc", "9570B5", "", "")
-call <SID>X("Identifier", "A58065", "", "")
-call <SID>X("Special", "A58AEA", "", "")
+call <SID>X("Statement", "E06578", "", "NONE")
+call <SID>X("Type", "4D88EA", "", "NONE")
+call <SID>X("Constant", "505AD5", "", "")
+call <SID>X("PreProc", "8C95F0", "", "")
+call <SID>X("Identifier", "6A75B5", "", "")
+call <SID>X("Special", "80709A", "", "")
 call <SID>X("Ignore", "666666", "", "")
 call <SID>X("Todo", "FF4500", "EEEE00", "")
 call <SID>X("Error", "", "B03452", "")
-call <SID>X("Number", "0060CD", "", "")
-call <SID>X("Function", "F0AD80", "", "NONE")
-call <SID>X("Conditional", "D52A4A", "", "NONE")
+call <SID>X("Number", "2060CD", "", "")
+call <SID>X("Function", "D0AAC0", "", "NONE")
+call <SID>X("Conditional", "D5305A", "", "NONE")
 call <SID>X("Repeat", "E02D5A", "", "NONE")
 call <SID>X("Operator", "DACA65", "", "NONE")
 call <SID>X("Keyword", "BEBEBE", "", "BOLD")
@@ -266,14 +266,14 @@ call <SID>X("Exception", "EA5460", "", "NONE")
 call <SID>X("Directory", "BBD0DF", "", "")
 call <SID>X("ErrorMsg", "", "FF4545", "")
 call <SID>X("Cursor", "05293D", "CAD5C0", "")
-call <SID>X("FoldColumn", "A9A9A9", "131C33", "")
-call <SID>X("LineNr", "8095D5", "131C33", "")
-call <SID>X("StatusLine", "0A150D", "4085BD", "NONE")
-call <SID>X("StatusLineNC", "302D34", "45609A", "NONE")
+call <SID>X("Folded", "BBDDCC", "171A2F", "")
+call <SID>X("FoldColumn", "A9A9A9", "16192D", "")
+call <SID>X("LineNr", "8095D5", "16182B", "")
+call <SID>X("StatusLine", "0A150D", "6585C5", "NONE")
+call <SID>X("StatusLineNC", "302D34", "55609A", "NONE")
 call <SID>X("Search", "3A4520", "9A9D8D", "")
 call <SID>X("IncSearch", "CACEBA", "3A4520", "")
 call <SID>X("VertSplit", "7F7F7F", "525F95", "NONE")
-call <SID>X("Folded", "BBDDCC", "252F5D", "")
 call <SID>X("ModeMsg", "00AACC", "", "")
 call <SID>X("MoreMsg", "2E8B57", "", "")
 call <SID>X("Question", "AABBCC", "", "")
