@@ -531,6 +531,13 @@ set nostartofline
 "    let &makeprg.='-e "/^/p" '
 "endif
 
+" Show the vim7 tab line only when there is more than one tab page.
+" See :he tab-pages for details.
+try
+  set showtabline = 1
+catch
+endtry
+
 " Status Line {{{
 set laststatus=2
 if has("statusline")
