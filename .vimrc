@@ -94,7 +94,7 @@ endfunction
 
 " Display the current tag if available, or nothing
 " Used by the statusline
-function! <SID>StatusLine_Tlist_Info()
+function! StatusLine_Tlist_Info()
   if exists('g:loaded_taglist') &&
         \ g:loaded_taglist == 'available'
     return Tlist_Get_Tagname_By_Line()
@@ -462,7 +462,7 @@ set statusline+=%f\                          " filename
 set statusline+=%h%m%r%w                     " status flags
 
 " let Tlist_Process_File_Always = 1
-set statusline+=%((%{<SID>StatusLine_Tlist_Info()})\ %) " tag name
+set statusline+=%((%{StatusLine_Tlist_Info()})\ %) " tag name
 
 " set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
 set statusline+=%(\[%{&ft}]%)               " file type
