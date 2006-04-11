@@ -278,6 +278,16 @@ else
     set list listchars=tab:>-,trail:.,extends:>
   endif
 endif
+
+function! s:CHANGE_CURR_DIR()
+    let _dir = expand("%:p:h")
+    if _dir !~ '^/tmp'
+      exec "cd " . _dir
+    endif
+    unlet _dir
+endfunction
+
+autocmd BufEnter * call s:CHANGE_CURR_DIR()
 " }}}
 
 " Colors {{{
