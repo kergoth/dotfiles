@@ -290,13 +290,15 @@ set ruler
 set showcmd
 set textwidth=0
 set nobackup
+set isk+=_,$,@,%,#,-
+set shortmess=atAI
 
 set history=500
 set viminfo='1000,f1,:1000,/1000
 
 set backspace=indent,eol,start
-
 set noshowmatch
+set fo=tcrqn
 
 " Case insensitivity
 set ignorecase
@@ -305,6 +307,11 @@ set infercase
 " No incremental searches or search highlighting
 set noincsearch
 set nohlsearch
+
+" Syntax for printing
+set popt+=syntax:y
+
+" Don't automatically write buffers on switch
 set noautowrite
 
 " Usage of the mouse
@@ -328,10 +335,18 @@ if v:version >= 700
   endtry
 endif
 
+" Allow editing of all types of files
 if has("unix")
-   set fileformats=unix,dos,mac  " Allow editing of all types of files
+   set fileformats=unix,dos,mac
 else
    set fileformats=dos,unix,mac
+endif
+
+if has("gui_running")
+  " Hide the mouse cursor while typing
+  set nomh
+
+  set go=Acgtm
 endif
 
 " Filter expected errors from make
@@ -422,6 +437,8 @@ endif
 
 " Colors {{{
 " Make sure the gui is initialized before setting up syntax and colors
+let colorterm = $COLORTERM
+
 if has("gui_running")
   gui
 endif
@@ -430,11 +447,18 @@ if has("syntax")
   syntax on
 endif
 
+if colorterm == "gnome-terminal"
+  set t_Co = 16
+endif
+
 if &t_Co > 2 || has("gui_running")
   "colors darkblack2
-  "colors desert256
+  colors desert256
   "colors inkpot
-  colors darkblue3
+  "colors darkblue3
+  "let xterm16_colormap = 'soft'
+  "let xterm16_brightness = '123'
+  "colo xterm16
 
   "Colors both trailing    
   "whitespace, and spaces  	before tabs
@@ -445,12 +469,10 @@ if &t_Co > 2 || has("gui_running")
   hi def link VimModelineLine comment
   hi def link VimModeline     special
 
-  if has("syntax")
-    if has("autocmd")
-      autocmd Syntax *
-                  \ syn match VimModelineLine /^.\{-1,}vim:[^:]\{-1,}:.*/ contains=VimModeline |
-                  \ syn match VimModeline contained /vim:[^:]\{-1,}:/
-    endif
+  if has("syntax") && has("autocmd")
+    autocmd Syntax *
+                \ syn match VimModelineLine /^.\{-1,}vim:[^:]\{-1,}:.*/ contains=VimModeline |
+                \ syn match VimModeline contained /vim:[^:]\{-1,}:/
   endif
 
   " .signature files generally start with '-- '.  Adjust the
@@ -465,7 +487,6 @@ if &t_Co > 2 || has("gui_running")
   " dark gray on white correctly, but white on dark gray appears
   " as white on black.  This seemingly results in the cursor
   " vanishing when over a dark gray SpecialKey.  Dark blue works.
-  let colorterm = $COLORTERM
   if colorterm == "gnome-terminal"
     hi SpecialKey ctermfg=darkblue guifg=darkblue
   else
@@ -544,14 +565,7 @@ if has("autocmd")
 
   " Change the current directory to the location of the
   " file being edited.
-  function! s:CHANGE_CURR_DIR()
-    let l:_dir = expand("%:p:h")
-    if l:_dir !~ '^/tmp'
-      exec "lcd " . l:_dir
-    endif
-  endfunction
-
-  autocmd BufEnter * call s:CHANGE_CURR_DIR()
+  autocmd BufEnter * :lcd %:p:h
 
   " Special less.sh and man modes {{{
   fun! <SID>check_pager_mode()
