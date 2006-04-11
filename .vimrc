@@ -61,8 +61,13 @@ function! WinDo(command)
 endfunction
 com! -nargs=+ -complete=command Windo call WinDo(<q-args>)
 
-" Just like Windo except that it disables all autocommands for super fast processing.
-com! -nargs=+ -complete=command Windofast noautocmd call WinDo(<q-args>)
+if v:version >= 700
+  " Just like Windo except that it disables all autocommands for super fast processing.
+  com! -nargs=+ -complete=command Windofast noautocmd call WinDo(<q-args>)
+else
+  com! -nargs=+ -complete=command Windofast let l:ei=&eventignore | call WinDo(<q-args>) | let &eventignore=l:ei
+endif
+
 
 " Just like bufdo but restores the current buffer when it's done
 function! BufDo(command)
@@ -74,14 +79,16 @@ com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>)
 
 " Used to set sane default line numbering
 function! <SID>AutoNumberByWidth()
-  Windofast
-        \ if (! exists('w:numberoverride')) |
-        \   if (winwidth(0) >= 80) |
-        \     set number |
-        \   else |
-        \     set nonumber |
-        \   endif |
-        \ endif
+  if (&g:number)
+    Windofast
+          \ if (! exists('w:numberoverride')) |
+          \   if (winwidth(0) >= 80) |
+          \     setlocal number |
+          \   else |
+          \     setlocal nonumber |
+          \   endif |
+          \ endif
+  endif
 endfunction
 
 function! SetNumbering(s)
