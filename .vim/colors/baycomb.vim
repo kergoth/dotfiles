@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v0.8h
+" baycomb v0.9
 " http://www.vim.org/scripts/script.php?script_id=1454
 "
 " Maintainer:    Shawn Axsom <axs221@gmail.com>
@@ -229,21 +229,30 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     endfun
     " }}}
 
-    call <SID>X("Normal", "b8d0f0", "131d33", "")
-    call <SID>X("NonText", "382920", "151822", "")
+    call <SID>X("Normal", "b8d0f0", "0b1428", "")
+    call <SID>X("NonText", "382920", "101525", "")
 
     " syntax highlighting
-    "hi Comment        guifg=#84ad88  "green
-    call <SID>X("Comment", "d8ca4b", "", "")
+
+    " Variety of comment colors, choose one:
+    " hi Comment        guifg=#a4a2f7  guibg=#132239    "light purple on darkcyan
+    " hi Comment        guifg=#441277  guibg=#437789    "magents on cyan
+    " hi Comment        guifg=#a8a0ff                   "light purple
+    " hi Comment        guifg=#d8ca4b                   "yellow
+    " hi Comment        guifg=#349d58                   "green
+    " hi Comment        guifg=blue  guibg=darkblue
+    " hi Comment        guifg=darkcyan  guibg=darkblue
+    " hi Comment     guifg=darkgrey  guibg=darkblue
+
+    call <SID>X("Comment", "349d58", "", "")
     call <SID>X("Title", "f5f5c0", "", "none")
     call <SID>X("Underlined", "dae5da", "", "")
 
-    call <SID>X("Statement", "ff756d", "", "none")
+    call <SID>X("Statement", "ff605a", "", "none")
     call <SID>X("Type", "309ace", "", "")
     call <SID>X("Constant", "4568cd", "", "")
     call <SID>X("PreProc", "9570b5", "", "")
-    call <SID>X("Identifier", "c5604a", "", "") " or blue 4075aa
-                        """e09a4b
+    call <SID>X("Identifier", "9a754a", "", "") " or blue 4075aa
     call <SID>X("Special", "1ab5ba", "", "")
     call <SID>X("Ignore", "666666", "", "")
     call <SID>X("Todo", "ff4500", "eeee00", "")
@@ -252,7 +261,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Number", "0065bd", "", "")
     call <SID>X("Function", "f0ad80", "", "none")
     call <SID>X("Conditional", "d52a4a", "", "none")
-    call <SID>X("Repeat", "e0455a", "", "none")
+    call <SID>X("Repeat", "e02d5a", "", "none")
     call <SID>X("Label", "90ee90", "", "none")
     call <SID>X("Operator", "fdb055", "", "none")
     call <SID>X("Keyword", "bebebe", "", "bold")
@@ -271,8 +280,8 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
 
     call <SID>X("Cursor", "05293d", "cad5c0", "")
 
-    call <SID>X("FoldColumn", "70459f", "83a5cd", "")
-    call <SID>X("LineNr", "90a5d5", "111a2d", "")
+    call <SID>X("FoldColumn", "a9a9a9", "131c33", "")
+    call <SID>X("LineNr", "90a5d5", "131c33", "")
     call <SID>X("StatusLine", "0a150d", "4085bd", "none")
     call <SID>X("StatusLineNC", "302d34", "45609a", "none")
 
@@ -280,7 +289,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("IncSearch", "caceba", "3a4520", "")
 
     call <SID>X("VertSplit", "7f7f7f", "525f95", "none")
-    call <SID>X("Folded", "bbddcc", "352f5d", "")
+    call <SID>X("Folded", "bbddcc", "252f5d", "")
     call <SID>X("ModeMsg", "00aacc", "", "")
     call <SID>X("MoreMsg", "2e8b57", "", "")
     call <SID>X("Question", "aabbcc", "", "")
@@ -310,14 +319,14 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     " }}}
 else
     " color terminal definitions
-    hi Number ctermfg=darkgreen
+    hi Number ctermfg=blue
     highlight Operator ctermfg=yellow
     highlight Conditional ctermfg=red
-    highlight Repeat ctermfg=red
+    highlight Repeat ctermfg=darkyellow
     hi Exception ctermfg=red
     hi function ctermfg=darkyellow
     hi SpecialKey    ctermfg=darkgreen
-    hi NonText    cterm=bold ctermfg=darkblue
+    hi NonText    cterm=bold ctermfg=darkgrey
     hi Directory    ctermfg=darkcyan
     hi ErrorMsg    cterm=bold ctermfg=7 ctermbg=1
     hi IncSearch    cterm=NONE ctermfg=darkgreen ctermbg=lightgrey
@@ -326,28 +335,28 @@ else
     hi ModeMsg    cterm=NONE ctermfg=brown
     hi LineNr    ctermfg=darkcyan ctermbg=NONE
     hi Question    ctermfg=green
-    hi StatusLine    cterm=bold,reverse
-    hi StatusLineNC cterm=reverse
+    hi StatusLine    cterm=bold,reverse ctermbg=grey
+    hi StatusLineNC cterm=reverse ctermbg=darkgrey
     hi VertSplit    cterm=reverse
-    hi Title    ctermfg=darkyellow
+    hi Title    ctermfg=15
     hi Visual    cterm=reverse
     hi VisualNOS    cterm=bold,underline
     hi WarningMsg    ctermfg=1
     hi WildMenu    ctermfg=0 ctermbg=3
     hi Folded    ctermfg=darkgrey ctermbg=NONE
-    hi FoldColumn    ctermfg=darkgrey ctermbg=darkgrey
+    hi FoldColumn    ctermfg=darkgrey ctermbg=black
     hi DiffAdd    ctermbg=4
     hi DiffChange    ctermbg=5
     hi DiffDelete    cterm=bold ctermfg=4 ctermbg=6
     hi DiffText    cterm=bold ctermbg=1
-    hi Comment    ctermfg=yellow
+    hi Comment    ctermfg=darkgrey ctermbg=darkblue
     hi Constant    ctermfg=blue
     hi Special    ctermfg=darkcyan
     hi Identifier    ctermfg=darkyellow
     hi Statement    ctermfg=darkred
     hi PreProc    ctermfg=5
-    hi Type        ctermfg=lightcyan
-    hi Underlined    cterm=underline ctermfg=5
+    hi Type        ctermfg=cyan " ctermbg=darkblue
+    hi Underlined    cterm=underline ctermfg=7
     hi Ignore    cterm=bold ctermfg=7
     hi Ignore    ctermfg=darkgrey
     hi Error    cterm=bold ctermfg=7 ctermbg=1
