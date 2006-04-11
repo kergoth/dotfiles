@@ -777,11 +777,6 @@ if has("autocmd")
 
   " Intelligent enable/disable of the line number display
   au VimEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
-
-  " Enable HiMatchBrkt
-  if (v:version < 700) || ! exists('##CursorMoved')
-    au VimEnter * :HMBstart
-  endif
   " }}}
 endif " has("autocmd")
 " }}}
