@@ -700,7 +700,7 @@ if &t_Co > 2 || has("gui_running")
 
   " Highlight Vim modelines
   hi def link VimModeline     special
-  au Syntax * exe 'match VimModeline /' .  substitute(escape(&commentstring, '*$./\'), '%s', '.*\\zsvim:\\s*set[^:]\\{-1,}:\\ze.*', '') . '/'
+  au Syntax * exe '2match VimModeline /' .  substitute(escape(&commentstring, '*$./\'), '%s', '.*\\zsvim:\\s*set[^:]\\{-1,}:\\ze.*', '') . '/'
 
 
   " When using gnome-terminal, vim's color test script shows
