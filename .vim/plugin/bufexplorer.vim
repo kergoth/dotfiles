@@ -10,7 +10,7 @@
 " Name Of File: bufexplorer.vim
 "  Description: Buffer Explorer Vim Plugin
 "   Maintainer: Jeff Lanzarotta (delux256-vim at yahoo dot com)
-" Last Changed: Wednesday, 18 January 2006
+" Last Changed: Monday, 10 March 2006
 "      Version: See g:loaded_bufexplorer for version number.
 "        Usage: Normally, this file should reside in the plugins
 "               directory and be automatically sourced. If not, you must
@@ -39,7 +39,7 @@ if exists("g:loaded_bufexplorer") || &cp
 endif
 
 " Version number.
-let g:loaded_bufexplorer = "7.0.8"
+let g:loaded_bufexplorer = "7.0.11"
 
 " Setup the global MRUList.
 let g:MRUList = ","
@@ -254,7 +254,8 @@ function! <SID>StartBufExplorer(split)
   endif
 
   if <SID>DoAnyMoreBuffersExist() == 0
-    echohl WarningMsg | echo "Sorry, there are no more buffers to be explored"
+    echohl WarningMsg | echo "Sorry, there are no more buffers to explore"
+    echohl none
     return
   endif
 
@@ -447,7 +448,7 @@ function! <SID>AddHeader()
 
   let header = header."\"=\n"
 
-  silent! put! =header
+  silent! put! = header
 endfunction
 
 " BuildBufferList {{{1
@@ -550,7 +551,8 @@ function! <SID>BuildBufferList()
           let separator = ""
 
           if pathName !~ '[/\\]$'
-            if has("win32") || has("win95") || has("win64") || has("win16")
+            " Check if we are using shellslash or not?
+            if (&ssl == 0) && (has("msdos") || has("os2") || has("win16") || has("win32"))
               let separator = "\\"
             else
               let separator = "/"
@@ -584,7 +586,7 @@ function! <SID>BuildBufferList()
     let _lineNbr = line(".") + 1
   endif
 
-  put = fileNames
+  silent! put = fileNames
 
   call <SID>SortListing()
 endfunction
@@ -694,6 +696,7 @@ function! <SID>BackToPreviousBuffer()
       exe "silent b! ".s:curBufNbr
     catch /^Vim(\a\+):E86:/
       echohl WarningMsg | echo "Current buffer was deleted, please select a buffer to switch to"
+      echohl none
     endtry
   endif
 
