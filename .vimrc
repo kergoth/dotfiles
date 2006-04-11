@@ -57,12 +57,14 @@ let colorterm = $COLORTERM
 
 " Used to set sane default line numbering
 function! <SID>PropogateNumberState()
+  let oldnr=winnr()
   windo
         \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
         \   set number |
         \ else |
         \   set nonumber |
         \ endif
+  exe oldnr . "wincmd w"
 endfunction
 
 function! SetNumberingState(s)
@@ -102,6 +104,13 @@ function! StatusLine_Tlist_Info()
     return ''
   endif
 endfunction
+
+function! <SID>ModelinerC()
+  let oldcol=virtcol('.')
+  let oldline=line('.')
+  Modeliner
+  call cursor(oldline, oldcol)
+endfunction
 " }}}
 
 " Keymaps {{{
@@ -112,7 +121,7 @@ map ,ddr :s/\.\+\s*/. /g<CR>    " Delete Dot Runs
 map ,dsr :s/\s\s\+/ /g<CR>      " Delete Space Runs
 map ,dtw :%s/\s\+$//g<CR>       " Delete Trailing Whitespace
 
-nmap <leader>im :Modeliner<CR>  " Modelines insertion
+nmap <leader>im :call <SID>ModelinerC()<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
 nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
 nmap <leader>n :call SetNumberingState(-1)<CR>  " Toggle Line Numbering
