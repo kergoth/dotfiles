@@ -42,6 +42,30 @@ else
   behave xterm
 endif
 
+" Functions {{{
+"let s:numdisabled = &number==0?1:0
+
+function! s:PropogateNumberState()
+  windo
+        \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
+        \   set number |
+        \ else |
+        \   set nonumber |
+        \ endif
+endfunction
+
+function! SetNumberingState(s)
+  if (a:s == 0) || (a:s == 1)
+    let l:newstate=a:s
+  else
+    let l:newstate=s:numdisabled==0?1:0
+  endif
+
+  let s:numdisabled=l:newstate
+  call s:PropogateNumberState()
+endfunction
+" }}}
+
 " Keymaps {{{
 map ,is :!ispell %<C-M>          " ISpell !
 
@@ -53,7 +77,7 @@ map ,dtw :%s/\s\+$//g<C-M>       " Delete Trailing Whitespace
 
 nmap <leader>sh :runtime vimsh/vimsh.vim<C-M>
 nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
-nmap <leader>n :set number!<CR>  " Toggle Line Numbering
+nmap <leader>n :call SetNumberingState(-1)<CR>  " Toggle Line Numbering
 
 " Reformat paragraph
 noremap <Leader>gp gqap
@@ -329,10 +353,6 @@ endif
 " Line numbering
 if v:version >= 700
   set number
-  try
-    set numberwidth=2
-  catch
-  endtry
 endif
 
 " Allow editing of all types of files
@@ -579,6 +599,10 @@ if has("autocmd")
       endif
   endfun
   autocmd VimEnter * :call <SID>check_pager_mode()
+
+  " Intelligent enable/disable of the line number display
+  au VimEnter * let s:numdisabled = &number==0?1:0
+  au VimEnter,WinEnter,WinLeave * :call s:PropogateNumberState()
   " }}}
 endif " has("autocmd")
 " }}}
