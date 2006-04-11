@@ -211,6 +211,8 @@ HIGHLIGHTING MATCHING BRACKET OPTIONS			*himtchbrkt-option*
 5. HiMtchBrkt History					*himtchbrkt-history*
 
     (began this history rather late I'm afraid)
+    v23  03/01/06: * SaveWinPosn()/RestoreWinPosn() are no longer needed for
+                     vim 7.0aa (uses searchpairpos() only)
     v22  02/13/06: * bugfix: :HMBstop now also removes the CursorMove events
          02/15/06  * bugfix: CursorMovedI event prevented inserting normal
 	             characters from proceeding properly.  Currently its been

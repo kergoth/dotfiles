@@ -24,7 +24,7 @@
 'Tlist_WinWidth'	taglist.txt	/*'Tlist_WinWidth'*
 :Brightness	xterm16.txt	/*:Brightness*
 :CS	cecscope.txt	/*:CS*
-:CSl	cecscope.txt	/*:CSl*
+:CSL	cecscope.txt	/*:CSL*
 :MatchDebug	matchit.txt	/*:MatchDebug*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
 :TlistAddFilesRecursive	taglist.txt	/*:TlistAddFilesRecursive*
@@ -79,8 +79,8 @@
 <Leader>ctunco	ccase.txt	/*<Leader>ctunco*
 <Leader>ctxl	ccase.txt	/*<Leader>ctxl*
 Align-copyright	Align.txt	/*Align-copyright*
-CSh	cecscope.txt	/*CSh*
-CSs	cecscope.txt	/*CSs*
+CSH	cecscope.txt	/*CSH*
+CSS	cecscope.txt	/*CSS*
 GetLatestVimScripts-copyright	GetLatestVimScripts.txt	/*GetLatestVimScripts-copyright*
 HMBstart	HiMtchBrkt.txt	/*HMBstart*
 HMBstop	HiMtchBrkt.txt	/*HMBstop*

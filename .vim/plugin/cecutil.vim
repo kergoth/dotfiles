@@ -3,7 +3,7 @@
 "               save/restore selected user maps
 "  Author:	Charles E. Campbell, Jr.
 "  Version:	15b	ASTRO-ONLY
-"  Date:	Jan 25, 2006
+"  Date:	Mar 01, 2006
 "
 "  Saving Restoring Destroying Marks: {{{1
 "       call SaveMark(markname)       let savemark= SaveMark(markname)

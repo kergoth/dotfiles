@@ -35,11 +35,12 @@ Note:    Required:
 
 ==============================================================================
 3. Cescope Manual					*cecscope-manual*
-							*:CS* *:CSl* *CSs* *CSh*
+							*:CS* *:CSL* *CSS* *CSH*
     :CS     [cdefgist]   : cscope
-    :CSl[!] [cdefgist]   : locallist style (! restores efm)
-    :CSs[!] [cdefgist]   : split window and use cscope
-    :CSh                 : give quick help
+    :CSL[!] [cdefgist]   : locallist style (! restores efm)
+    :CSS[!] [cdefgist]   : split window and use cscope
+    :CSH                 : give quick help
+    :CSR                 : cscope reset
 
     !            split vertically
     c (calls)    find functions calling function under cursor
@@ -113,12 +114,12 @@ Note:    Required:
     USING THE COMMAND LINE
     You could've done the above using the command line!  Again, just
     place your cursor atop some function that you've written, then type: >
-        :CSl c
+        :CSL c
 <   You may use the :ll, :lne, and :lp commands as before.
 
     HELP
     Just type >
-        :CSh
+        :CSH
 <   for a quick help display.  Of course, you can always type : >
         :help CS
 <   too.
