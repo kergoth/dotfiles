@@ -1,40 +1,41 @@
 ScriptID SourceID Filename
 --------------------------
-294 4788 Align.vim
-642 5228 GetLatestVimScripts.vim
-915 5429 :AutoInstall: AsNeeded.vim
-15 3420 ccase.vim
-790 5373 python.vim
-1066 5001 :AutoInstall: cecutil.vim
-1338 4976 tabbar.vim
 5 4884 doxygen.vim
-974 4316 indent/python.vim
-1453 5189 cecscope.vim
-1405 5023 colors/understated.vim
-1404 5283 colors/desertedocean.vim
-748 4319 HelpExtractor.vim
-1425 4916 syntax/iptables.vim
-1443 4966 colors/telstar.vim
-1381 4676 syntax/udev.vim
-1393 4717 colors/motus.vim
-1316 4517 bwHomeEndAdv.vim
-1248 4239 syntax/cccs.vim
-1243 4055 colors/desert256.vim
-1444 4968 colors.vim
-555 4795 HiCurLine.vim
-1311 4504 vimplate.vim
+15 3420 ccase.vim
+39 5330 :AutoInstall: matchit.vim
+42 5409 bufexplorer.vim
 95 754 winmanager.vim
 159 3640 :AutoInstall: minibufexpl.vim
-1385 4693 syntax/interfaces.vim
-1454 5441 colors/baycomb.vim
-1075 5439 netrw.vim
+294 4788 Align.vim
+555 4795 HiCurLine.vim
+642 5228 GetLatestVimScripts.vim
+748 4319 HelpExtractor.vim
+790 5373 python.vim
 795 4342 colors/xterm16.vim
+915 5429 :AutoInstall: AsNeeded.vim
+974 4316 indent/python.vim
+1066 5001 :AutoInstall: cecutil.vim
+1075 5439 netrw.vim
 1218 5167 NERD_comments.vim
+1243 4055 colors/desert256.vim
+1248 4239 syntax/cccs.vim
+1311 4504 vimplate.vim
+1316 4517 bwHomeEndAdv.vim
+1338 4976 tabbar.vim
+1381 4676 syntax/udev.vim
+1385 4693 syntax/interfaces.vim
+1393 4717 colors/motus.vim
+1404 5283 colors/desertedocean.vim
+1405 5023 colors/understated.vim
+1425 4916 syntax/iptables.vim
+1439 4942 compiler/python.vim
+1440 5329 winmanager.vim
+1443 4966 colors/telstar.vim
+1444 4968 colors.vim
+1453 5189 cecscope.vim
+1454 5441 colors/baycomb.vim
 1464 5310 colors/slate.vim
 1471 5319 colors/watermark.vim
 1472 5278 colors/sift.vim
 1477 5305 modeliner.vim
-39 5330 :AutoInstall: matchit.vim
-1440 5329 winmanager.vim
-42 5409 bufexplorer.vim
-1439 4942 compiler/python.vim
+1484 5356 colors/spectro.vim
