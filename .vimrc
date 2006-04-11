@@ -27,6 +27,9 @@
 " GetLatestVimScripts:
 "   :GLVS - Checks to see if any vim scripts have new versions available,
 "           and if so, downloads them (and installs in some cases).
+" hilink:
+"   \hlt - Show information on the highlight group(s) for the text under
+"          the cursor.
 " VIM core:
 "   K - look up current word via 'man' (by default)
 "   ^X ^O - Omni completion
@@ -63,7 +66,7 @@ com! -nargs=+ -complete=command Windo call WinDo(<q-args>)
 
 if v:version >= 700
   " Just like Windo except that it disables all autocommands for super fast processing.
-  com! -nargs=+ -complete=command Windofast noautocmd call WinDo(<q-args>)
+  com! -nargs=+ -complete=command Windofast noau call WinDo(<q-args>)
 else
   com! -nargs=+ -complete=command Windofast let l:ei=&eventignore | call WinDo(<q-args>) | let &eventignore=l:ei
 endif
@@ -81,7 +84,9 @@ com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>)
 function! <SID>AutoNumberByWidth()
   if &g:number
     Windofast
-          \ if ! exists('w:numberoverride') |
+          \ let l:bufname = bufname('%') |
+          \ if (! exists('w:numberoverride')) &&
+          \    (l:bufname != '-MiniBufExplorer-') |
           \   if winwidth(0) >= 80 |
           \     setlocal number |
           \   else |
@@ -100,11 +105,7 @@ function! SetNumbering(s)
     setlocal number
   elseif a:s == -1 " Toggle
     let w:numberoverride = 1
-    if &l:number
-      setlocal nonumber
-    else
-      setlocal number
-    endif
+    setlocal number!
   else " Back to automatic
     unlet w:numberoverride
   endif
@@ -177,13 +178,6 @@ endif
 nmap <Leader>cwc :cclose<CR>
 nmap <Leader>cwo :botright copen 5<CR><C-w>p
 nmap <Leader>ccn :cnext<CR>
-
-" show the highlighting group(s) for the text under the cursor
-nmap <Leader>hi :echo "hi<" .
-      \ synIDattr(synID(line("."),col("."),1),"name") . '> trans<' .
-      \ synIDattr(synID(line("."),col("."),0),"name") ."> lo<" .
-      \ synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .
-      \ ">"<CR>
 
 " Mouse {{{
 " When selecting with the mouse, copy to clipboard on release.
@@ -398,7 +392,11 @@ endif
 " Settings {{{
 filetype plugin indent on
 
+" Default filetype
+set filetype=text
+
 set secure
+" Not vi compatible, we want spiffy vim features, please.
 set nocompatible
 set nodigraph
 
@@ -456,6 +454,9 @@ if has("folding")
   set foldlevel=5
 endif
 
+" Tags search path
+set tags=./tags,tags,$PWD/tags
+
 " Nifty completion menu
 set wildmenu
 set wildignore+=*.o,*~
@@ -492,7 +493,7 @@ endif
 
 set backspace=indent,eol,start
 set noshowmatch
-set formatoptions=crqtn
+set formatoptions=crqn
 
 " Case insensitivity
 set ignorecase
@@ -565,6 +566,11 @@ try
 catch
 endtry
 
+" Default to omni completion using the syntax highlighting files
+if v:version >= 700
+  set ofu=syntaxcomplete#Complete
+endif
+
 " Status Line {{{
 set laststatus=2
 if has("statusline")
@@ -588,30 +594,16 @@ endif
 " NOTE: only vim7+ supports a statusline local to a window
 if has("autocmd") && v:version >= 700
   au FileType qf
-        \ if &buftype == "quickfix" |
-        \     setlocal statusline=%2*%-3.3n%0* |
-        \     setlocal statusline+=\ \[Compiler\ Messages\] |
-        \     setlocal statusline+=%=%2*\ %<%P |
-        \ endif
+        \ setlocal statusline=%2*%-3.3n%0* |
+        \ setlocal statusline+=\ \[Compiler\ Messages\] |
+        \ setlocal statusline+=%=%2*\ %<%P |
+        \ let w:numberoverride = 1 |
+        \ setlocal nonumber
 
-  function! <SID>FixWindowTitles()
-    if "-MiniBufExplorer-" == bufname("%")
-      setlocal statusline=%2*%-3.3n%0*
-      setlocal statusline+=\[Buffers\]
-      setlocal statusline+=%=%2*\ %<%P
-    endif
-
-    if "__Tag_List__" == bufname("%")
-      setlocal statusline=\[Tags\]
-      setlocal statusline+=%=
-      setlocal statusline+=%l
-    endif
-  endfunction
-
-  au BufWinEnter *
-        \ let oldwinnr=winnr() |
-        \ windo call <SID>FixWindowTitles() |
-        \ exec oldwinnr . " wincmd w"
+  au BufWinEnter __Tag_List__
+        \ setlocal statusline=\[Tags\] |
+        \ setlocal statusline+=%= |
+        \ setlocal statusline+=%l
 endif
 " }}}
 
@@ -722,7 +714,7 @@ endif
 " Autocommands {{{
 if has("autocmd")
   " Always do a full syntax refresh
-  " autocmd BufEnter * syntax sync fromstart
+  " au BufEnter * syntax sync fromstart
 
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
@@ -732,43 +724,16 @@ if has("autocmd")
         \   exe "normal g`\"" |
         \ endif
 
-  " m4 matchit support
-  autocmd FileType m4 :let b:match_words="(:),`:',[:],{:}"
-
-  " Default to omni completion using the syntax highlighting files
-  if v:version >= 700
-    au BufReadPost *
-          \ if &ofu == "" |
-          \   setlocal ofu=syntaxcomplete#Complete |
-          \ endif
-  endif
-
-  " Wrap text at textwidth outside of comments by default for
-  " text and mail filetypes, and do not for other known filetypes.
-  " Unknown filetype(s) will be caught by the global formatoptions.
-  au FileType * if &fo =~ 't' | let &l:fo = substitute(&fo, '(.*)t(.*)', '\1\2', '') | endif
-  au FileType text if &fo !~ 't' | let &l:fo = substitute(&fo, '$', 't', '') | endif
-  au FileType mail if &fo !~ 't' | let &l:fo = substitute(&fo, '$', 't', '') | setlocal nocindent noautoindent | endif
-
-  " Sane settings for keywordprg
-  au FileType vim setlocal keywordprg=:help
-  au FileType python setlocal keywordprg=pydoc
-  au FileType perl setlocal keywordprg=perldoc\ -f
-
-  " Disable moving to beginning of line when hitting ':',
-  " as it behaves oddly when calling static methods in c++.
-  au FileType cpp setlocal cinkeys-=:
-
   try
     " if we have a vim which supports QuickFixCmdPost (vim7),
     " give us an error window after running make, grep etc, but
     " only if results are available.
-    autocmd QuickFixCmdPost * botright cwindow 5
+    au QuickFixCmdPost * botright cwindow 5
 
-    autocmd QuickFixCmdPre make
+    au QuickFixCmdPre make
           \ let g:make_start_time=localtime()
 
-    autocmd QuickFixCmdPost make
+    au QuickFixCmdPost make
           \ let g:make_total_time=localtime() - g:make_start_time |
           \ echo printf("Time taken: %dm%2.2ds", g:make_total_time / 60,
           \     g:make_total_time % 60)
@@ -777,8 +742,7 @@ if has("autocmd")
 
   " Close out the quickfix window if it's the only open window
   function! <SID>QuickFixClose()
-    " if the window is quickfix go on
-    if &buftype=="quickfix"
+    if &buftype == 'quickfix'
       " if this window is last on screen quit without warning
       if winbufnr(2) == -1
         quit!
@@ -789,7 +753,7 @@ if has("autocmd")
 
   " Change the current directory to the location of the
   " file being edited.
-  autocmd BufEnter * :lcd %:p:h
+  au BufEnter * :lcd %:p:h
 
   " Special less.sh and man modes {{{
   function! <SID>check_pager_mode()
@@ -802,7 +766,7 @@ if has("autocmd")
       set nolist
     endif
   endfunction
-  autocmd VimEnter * :call <SID>check_pager_mode()
+  au VimEnter * :call <SID>check_pager_mode()
 
   " Intelligent enable/disable of the line number display
   au VimEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
@@ -829,6 +793,7 @@ let g:HL_HiCurLine = "Function"
 let g:HL_HiCurLine = "HL_HiCurLine"
 let g:HiMtchBrktOn = 1
 let g:Modeliner_format = 'fenc= sts= sw= et'
+let b:super_sh_indent_echo = 0
 " }}}
 
 " Explorer/Tags/Windows options {{{
