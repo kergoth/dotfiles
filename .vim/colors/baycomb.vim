@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v1.7
+" baycomb v2.0
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -15,8 +15,9 @@ set background=dark
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
     " complaining
+    hi clear
     if exists('syntax_on')
-        syntax reset
+		syntax reset
     endif
 endif
 
@@ -231,63 +232,46 @@ fun <SID>X(group, fg, bg, attr)
 endfun
 " }}}
 
-
-call <SID>X('Normal', 'ABCAFA', '13111C', '')
-call <SID>X('NonText', '382920', '1D1B25', '')
-
-" set comments to grey on non-Windows OS's to make sure it is readable
-" if &term == 'builtin_gui' || &term == 'win32'
-"     <SID>X('Comment', 'A9A9A9', '232850', '')
-" else
-"     <SID>X('Comment', 'BEBEBE', '232850', '')
-" endif
 call <SID>X('Comment', '008B8B', '', '')
-
-
-call <SID>X('Directory', 'BBD0DF', '', '')
-call <SID>X('ErrorMsg', '', 'FF4545', '')
-call <SID>X('Cursor', '05293D', 'CAD5C0', '')
-call <SID>X('Folded', 'BBDDCC', '222038', '')
-call <SID>X('FoldColumn', 'DBCAA5', '202033', '')
-call <SID>X('LineNr', '8095D5', '22202D', '')
-call <SID>X('StatusLine', '0A150D', '6585C5', 'NONE')
-call <SID>X('StatusLineNC', '302D34', '55609A', 'NONE')
-call <SID>X('VertSplit', '223355', '22253D', 'NONE')
-call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
-call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
-call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
-call <SID>X('Title', 'F5F5C0', '', 'NONE')
-call <SID>X('Underlined', 'EAC5DA', '', 'NONE')
-call <SID>X('Statement', 'D06A75', '', 'NONE')
-call <SID>X('Type', '309CE5', '', 'NONE')
-call <SID>X('Constant', '5060DD', '', '')
-call <SID>X('PreProc', '8C95F0', '', '')
-call <SID>X('Special', '85D0C5', '', '')
-call <SID>X('Todo', 'FF4500', 'EEEE00', '')
-call <SID>X('Function', '90AA9A', '', 'NONE')
-call <SID>X('Identifier', 'B09A80', '', '')
-call <SID>X('Ignore', '666666', '', '')
-call <SID>X('Error', '', 'B03452', '')
-call <SID>X('Number', '0D65CA', '', '')
-call <SID>X('Conditional', 'D5305A', '', 'NONE')
-call <SID>X('Repeat', 'E02D5A', '', 'NONE')
-call <SID>X('Operator', 'DACA65', '', 'NONE')
-call <SID>X('Keyword', 'BEBEBE', '', 'BOLD')
-call <SID>X('Exception', 'EA5460', '', 'NONE')
-call <SID>X('Search', '3A4520', '808373', '')
-call <SID>X('IncSearch', 'BABEAA', '3A4520', '')
-
-call <SID>X('ModeMsg', '00AACC', '', '')
-call <SID>X('MoreMsg', '2E8B57', '', '')
-call <SID>X('Question', 'AABBCC', '', '')
-call <SID>X('SpecialKey', '90DCB0', '', '')
-call <SID>X('Visual', '1A1A30', '43D5FF', '')
-call <SID>X('VisualNOS', '201A30', 'A3A5FF', '')
-call <SID>X('WarningMsg', 'FA8072', '', '')
-
-" new Vim 7.0 items
 call <SID>X('Pmenu', '9AADD5', '3A6595', '')
+call <SID>X('VisualNOS', '201A30', 'A3A5FF', '')
+call <SID>X('Ignore', '666666', '', '')
+call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
+call <SID>X('Function', 'DA95C8', '', 'NONE')
+call <SID>X('Number', '4580BA', '', '')
+call <SID>X('Type', '658DDA', '', 'NONE')
+call <SID>X('MatchParen', '001122', '7B5A55', '')
+call <SID>X('WarningMsg', 'FA8072', '', '')
+call <SID>X('Cursor', '0000AA', 'CAD5C0', '')
+call <SID>X('ErrorMsg', '', 'FF4545', '')
+call <SID>X('StatusLine', '6080F0', '353348', 'NONE')
+call <SID>X('Folded', 'BBDDCC', '1B182F', '')
+call <SID>X('Special', '9A8A9A', '', '')
+call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
+call <SID>X('Directory', 'BBD0DF', '', '')
+call <SID>X('IncSearch', 'BABEAA', '3A4520', '')
+call <SID>X('Identifier', '608AC0', '', '')
+call <SID>X('StatusLineNC', '5C6DAE', '2C2A3A', 'NONE')
+call <SID>X('ModeMsg', '00AACC', '', '')
+call <SID>X('Underlined', 'BAC5BA', '', 'NONE')
 call <SID>X('PmenuSel', 'B0D0F0', '4A85BA', '')
+call <SID>X('MoreMsg', '2E8B57', '', '')
+call <SID>X('Title', 'E5E5CA', '', 'NONE')
+call <SID>X('Error', '', 'B03452', '')
+call <SID>X('Search', '3A4520', '808373', '')
+call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
+call <SID>X('FoldColumn', 'DBCAA5', '00060A', '')
+call <SID>X('Statement', 'D0A0AA', '', 'NONE')
+call <SID>X('Visual', '102030', '80A0F0', '')
+call <SID>X('SpecialKey', '90DCB0', '', '')
+call <SID>X('VertSplit', '223355', '222535', 'NONE')
+call <SID>X('Todo', 'FF4500', 'EEEE00', '')
+call <SID>X('Question', 'AABBCC', '', '')
+call <SID>X('NonText', '382920', '', '')
+call <SID>X('Constant', '3088E0', '', '')
+call <SID>X('LineNr', '506389', '101010', '')
+call <SID>X('PreProc', 'BA75CF', '', '')
+call <SID>X('Normal', 'A5B5E0', '11131A', '')
 
 " delete functions {{{
 delf <SID>X
