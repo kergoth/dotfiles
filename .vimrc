@@ -425,6 +425,8 @@ endif
 " Nifty completion menu
 set wildmenu
 set wildignore+=*.o,*~
+set wildmode=longest:full,full
+
 set suffixes+=.in,.a,.lo,.o,.moc,.la,.closure
 
 set whichwrap=<,>,h,l,[,]
@@ -435,8 +437,24 @@ set nobackup
 set isk+=_,$,@,%,#,-
 set shortmess=atItToO
 
-set history=500
-set viminfo='1000,f1,:1000,/1000
+" Test display
+"  lastline  When included, as much as possible of the last line
+"            in a window will be displayed.  When not included, a
+"            last line that doesn't fit is replaced with "@" lines.
+"  uhex      Show unprintable characters hexadecimal as <xx>
+"            instead of using ^C and ~C.
+set display+=lastline
+set display+=uhex
+
+" Longer commandline history
+if has("cmdline_hist")
+  set history=500
+endif
+
+" Viminfo file behavior
+if has("viminfo")
+  set viminfo='1000,f1,:1000,/1000
+endif
 
 set backspace=indent,eol,start
 set noshowmatch
@@ -485,12 +503,18 @@ if has("gui_running")
   " Hide the mouse cursor while typing
   set mh
 
+  " Automatically activate the window the mouse pointer is on
+  set mousef
+
   "set go=Acgtm
   set go=Acg
 endif
 
 " Wrap at column 78
 set tw=78
+
+" Keep cursor in the same column if possible (see help).
+set nostartofline
 
 " Filter expected errors from make
 "if has("eval") && v:version >= 700
@@ -502,20 +526,22 @@ set tw=78
 
 " Status Line {{{
 set laststatus=2
-set statusline=
-set statusline+=%-3.3n\                      " buffer number
-set statusline+=%f\                          " filename
-set statusline+=%h%m%r%w                     " status flags
+if has("statusline")
+  set statusline=
+  set statusline+=%-3.3n\                      " buffer number
+  set statusline+=%f\                          " filename
+  set statusline+=%h%m%r%w                     " status flags
 
-" let Tlist_Process_File_Always = 1
-set statusline+=%((%{StatusLine_Tlist_Info()})\ %) " tag name
+  " let Tlist_Process_File_Always = 1
+  set statusline+=%((%{StatusLine_Tlist_Info()})\ %) " tag name
 
-" set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
-set statusline+=%(\[%{&ft}]%)               " file type
-set statusline+=%=                          " right align remainder
-" set statusline+=0x%-8B                    " character value
-set statusline+=%-14(%l,%c%V%)              " line, character
-set statusline+=%<%P                        " file position
+  " set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
+  set statusline+=%(\[%{&ft}]%)               " file type
+  set statusline+=%=                          " right align remainder
+  " set statusline+=0x%-8B                    " character value
+  set statusline+=%-14(%l,%c%V%)              " line, character
+  set statusline+=%<%P                        " file position
+endif
 
 " special statusbar for special windows
 " NOTE: only vim7+ supports a statusline local to a window
