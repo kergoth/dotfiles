@@ -135,8 +135,12 @@ scr_settitle () {
 
 setup_interactive () {
 	export SHELL
-	eval `dircolors`
-	alias ls='ls --color=auto -a -p'
+	if [ -n "$COLORTERM" ]; then
+		alias ls='ls --color=always -a -p'
+	else
+		eval `dircolors`
+		alias ls='ls --color=auto -a -p'
+	fi
 	case $TERM in
 	rxvt*|Xterm|xterm|aterm|urxvt*)
 		XTERM_SET='\[\033]0;\u@\h:\w\007\]'
