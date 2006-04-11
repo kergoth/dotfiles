@@ -321,8 +321,10 @@ if &t_Co > 2 || has("gui_running")
   " .signature files generally start with '-- '.  Adjust the
   " RedundantWhitespace match when opening a .signature to not
   " highlight that particular trailing space in red.
-  au BufReadPost .signature match RedundantWhitespace /\(^--\)\@<!\s\+$/
-  au BufReadPost mutt-* match RedundantWhitespace /\(^--\)\@<!\s\+$/
+  if has("autocmd")
+    au BufReadPost .signature match RedundantWhitespace /\(^--\)\@<!\s\+$/
+    au BufReadPost mutt-* match RedundantWhitespace /\(^--\)\@<!\s\+$/
+  endif
 
   " When using gnome-terminal, vim's color test script shows
   " dark gray on white correctly, but white on dark gray appears
