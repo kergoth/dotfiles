@@ -1,8 +1,8 @@
 " ---------------------------------------------------------------------
 " GetLatestVimScripts.vim
 "  Author:		Charles E. Campbell, Jr.
-"  Date:		Nov 28, 2005
-"  Version:		19
+"  Date:		Feb 15, 2006
+"  Version:		20
 "  Installing:	:help glvs-install
 "  Usage:		:help glvs
 "
@@ -22,7 +22,7 @@ set cpo&vim
 if exists("loaded_GetLatestVimScripts")
  finish
 endif
-let g:loaded_GetLatestVimScripts= "v19"
+let g:loaded_GetLatestVimScripts= "v20"
 
 " ---------------------------------------------------------------------
 "  Global Variables: {{{1
@@ -264,7 +264,7 @@ fun! <SID>GetOneScript(...)
 	 endif
 	 if fname =~ '\.zip$'
 "	  call Decho("attempt to unzip ".fname)
-	  exe "silent !unzip ".fname
+	  exe "silent !unzip -o".fname
 	 elseif fname =~ '\.tar$'
 "	  call Decho("attempt to untar ".fname)
 	  exe "silent !tar -oxvf ".fname

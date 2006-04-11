@@ -229,7 +229,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     endfun
     " }}}
 
-    call <SID>X("Normal", "c0caf0", "0a1623", "")
+    call <SID>X("Normal", "bac5ff", "081524", "")
     call <SID>X("NonText", "382920", "101525", "")
 
     " syntax highlighting
@@ -245,9 +245,9 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Title", "f5f5c0", "", "none")
     call <SID>X("Underlined", "dae5da", "", "")
 
-    call <SID>X("Statement", "ff656d", "", "none")
-    call <SID>X("Type", "30baf0", "", "")
-    call <SID>X("Constant", "5d6ae5", "", "")
+    call <SID>X("Statement", "406a6f", "", "none")
+    call <SID>X("Type", "30a5ea", "", "none")
+    call <SID>X("Constant", "5b5dda", "", "")
     call <SID>X("PreProc", "9570b5", "", "")
     call <SID>X("Identifier", "a58065", "", "") " or blue 4075aa
     call <SID>X("Special", "a58aea", "", "")
@@ -255,7 +255,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Todo", "ff4500", "eeee00", "")
     call <SID>X("Error", "", "b03452", "")
     """""this section borrowed from OceanDeep/Midnight"""""
-    call <SID>X("Number", "006bcd", "", "")
+    call <SID>X("Number", "0060cd", "", "")
     call <SID>X("Function", "f0ad80", "", "none")
     call <SID>X("Conditional", "d52a4a", "", "none")
     call <SID>X("Repeat", "e02d5a", "", "none")
@@ -316,42 +316,43 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     " }}}
 else
     " color terminal definitions
+    hi Normal ctermfg=grey
     hi Number ctermfg=blue
     highlight Operator ctermfg=yellow
     highlight Conditional ctermfg=red
-    highlight Repeat ctermfg=darkyellow
+    highlight Repeat ctermfg=red
     hi Exception ctermfg=red
     hi function ctermfg=darkyellow
     hi SpecialKey    ctermfg=darkgreen
     hi NonText    cterm=bold ctermfg=darkgrey
     hi Directory    ctermfg=darkcyan
     hi ErrorMsg    cterm=bold ctermfg=7 ctermbg=1
-    hi IncSearch    cterm=NONE ctermfg=darkgreen ctermbg=lightgrey
-    hi Search    cterm=NONE ctermfg=lightgreen ctermbg=darkgrey
+    hi IncSearch    cterm=NONE ctermfg=darkblue ctermbg=grey
+    hi Search    cterm=NONE ctermfg=black ctermbg=grey
     hi MoreMsg    ctermfg=darkgreen
     hi ModeMsg    cterm=NONE ctermfg=brown
     hi LineNr    ctermfg=darkcyan ctermbg=NONE
     hi Question    ctermfg=green
-    hi StatusLine    cterm=bold,reverse ctermbg=grey
-    hi StatusLineNC cterm=reverse ctermbg=darkgrey
-    hi VertSplit    cterm=reverse
+    hi StatusLine    cterm=NONE ctermbg=grey ctermfg=blue
+    hi StatusLineNC cterm=NONE ctermfg=black ctermbg=grey
+    hi VertSplit    cterm=NONE ctermfg=black ctermbg=grey
     hi Title    ctermfg=15
-    hi Visual    cterm=reverse
-    hi VisualNOS    cterm=bold,underline
+    hi Visual    cterm=NONE ctermbg=darkcyan ctermfg=black
+    hi VisualNOS    cterm=NONE ctermbg=darkcyan ctermfg=black
     hi WarningMsg    ctermfg=1
     hi WildMenu    ctermfg=0 ctermbg=3
-    hi Folded    ctermfg=darkgrey ctermbg=NONE
-    hi FoldColumn    ctermfg=darkgrey ctermbg=black
+    hi Folded    ctermfg=darkgreen ctermbg=NONE cterm=NONE
+    hi FoldColumn    ctermfg=green ctermbg=black
     hi DiffAdd    ctermbg=4
     hi DiffChange    ctermbg=5
     hi DiffDelete    cterm=bold ctermfg=4 ctermbg=6
     hi DiffText    cterm=bold ctermbg=1
     hi Comment    ctermfg=darkcyan
     hi Constant    ctermfg=blue
-    hi Special    ctermfg=magenta
+    hi Special    ctermfg=darkmagenta
     hi Identifier    ctermfg=darkyellow
     hi Statement    ctermfg=red
-    hi PreProc    ctermfg=darkmagenta
+    hi PreProc    ctermfg=magenta
     hi Type        ctermfg=cyan " ctermbg=darkblue
     hi Underlined    cterm=underline ctermfg=7
     hi Ignore    cterm=bold ctermfg=7

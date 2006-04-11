@@ -1,4 +1,4 @@
-*getlatestvimscripts.txt*	Get the Latest VimScripts	Nov 28, 2005
+*getlatestvimscripts.txt*	Get the Latest VimScripts	Dec 23, 2005
 
 Authors:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamilyA.Mbiz>
 	  (remove NOSPAM from the email address)
@@ -262,6 +262,8 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.
 ==============================================================================
 8. GetLatestVimScripts History		*getlatestvimscripts-history* *glvs-hist*
 
+	v20 Dec 23, 2005 : * Eric Haarbauer found&fixed a bug with unzip use;
+	                     unzip needs the -o flag to overwrite.
 	v19 Nov 28, 2005 : * v18's GetLatestVimScript line accessed the wrong
 	                     script! Fixed.
 	v18 Mar 21, 2005 : * bugfix to automatic database construction
