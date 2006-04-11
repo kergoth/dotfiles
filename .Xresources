@@ -3,31 +3,32 @@ Xft.hinting: true
 Xft.rgba: rgb
 Xft.antialias: true
 
-rxvt*reverseVideo: false
-rxvt*background: black
-rxvt*foreground: grey
-rxvt*shading: 10
-rxvt*transparent: true
-rxvt*transpscrollbar: true
-rxvt*scrollBar: false
-rxvt*colorBDMode:        false
-rxvt*colorULMode:        false
-rxvt*loginShell:         true
-rxvt*cursorColor:        yellow
-rxvt*jumpScroll:         true
-rxvt*saveLines:          3000
-rxvt*scrollBar:          false
-rxvt*scrollTtyOutput:    false
-rxvt*scrollKey:          false
-rxvt*geometry:112x50
+Rxvt*reverseVideo: false
+Rxvt*background: black
+Rxvt*foreground: grey
+Rxvt*shading: 10
+Rxvt*transparent: true
+Rxvt*transpscrollbar: true
+Rxvt*scrollBar: false
+Rxvt*colorBDMode: false
+Rxvt*colorULMode: false
+Rxvt*loginShell: true
+Rxvt*cursorColor: yellow
+Rxvt*jumpScroll: true
+Rxvt*saveLines: 3000
+Rxvt*scrollBar: false
+Rxvt*scrollTtyOutput: false
+Rxvt*scrollKey: false
+Rxvt*geometry: 96x50
 
-urxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
+URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
+            Bitstream Vera Sans Mono:pixelsize=13,\
             -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso10646-1,\
             -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
             [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
             xft:Code2000:antialias=false
 
-urxvt*termName: rxvt-unicode
+URxvt*termName: rxvt-unicode
 
 mrxvt*xft: true
 mrxvt*xftRGBA: rgb
@@ -38,7 +39,7 @@ mrxvt*xftNomFont: true
 mrxvt*xftSize: 10
 mrxvt*xftAntialias: true
 
-mrxvt*geometry: 112x50
+mrxvt*geometry: 96x50
 mrxvt*showMenu: false
 mrxvt*scrollBar: false
 mrxvt*foreground: grey
