@@ -105,14 +105,15 @@ endfunction
 " }}}
 
 " Keymaps {{{
-map ,is :!ispell %<C-M>          " ISpell !
-map ,del :g/^\s*$/d<C-M>         " Delete Empty Lines
-map ,ddql :%s/^>\s*>.*//g<C-M>   " Delete Double Quoted Lines
-map ,ddr :s/\.\+\s*/. /g<C-M>    " Delete Dot Runs
-map ,dsr :s/\s\s\+/ /g<C-M>      " Delete Space Runs
-map ,dtw :%s/\s\+$//g<C-M>       " Delete Trailing Whitespace
+map ,is :!ispell %<CR>          " ISpell !
+map ,del :g/^\s*$/d<CR>         " Delete Empty Lines
+map ,ddql :%s/^>\s*>.*//g<CR>   " Delete Double Quoted Lines
+map ,ddr :s/\.\+\s*/. /g<CR>    " Delete Dot Runs
+map ,dsr :s/\s\s\+/ /g<CR>      " Delete Space Runs
+map ,dtw :%s/\s\+$//g<CR>       " Delete Trailing Whitespace
 
-nmap <leader>sh :runtime vimsh/vimsh.vim<C-M>
+nmap <leader>im :Modeliner<CR>  " Modelines insertion
+nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
 nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
 nmap <leader>n :call SetNumberingState(-1)<CR>  " Toggle Line Numbering
 

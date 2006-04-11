@@ -18,7 +18,6 @@ ScriptID SourceID Filename
 1381 4676 syntax/udev.vim
 1393 4717 colors/motus.vim
 1316 4517 bwHomeEndAdv.vim
-1352 5307 :AutoInstall: modelines.vim
 1248 4239 syntax/cccs.vim
 1243 4055 colors/desert256.vim
 1444 4968 colors.vim
@@ -34,3 +33,4 @@ ScriptID SourceID Filename
 1464 5310 colors/slate.vim
 1471 5284 colors/watermark.vim
 1472 5278 colors/sift.vim
+1477 5305 :AutoInstall: modeliner.vim
