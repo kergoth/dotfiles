@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v1.3
+" baycomb v1.7
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -13,14 +13,14 @@
 
 set background=dark
 if version > 580
-    " no guarantees for version 5.8 and below, but this makes it stop
-    " complaining
-    if exists("syntax_on")
+    ' no guarantees for version 5.8 and below, but this makes it stop
+    ' complaining
+    if exists('syntax_on')
         syntax reset
     endif
 endif
 
-let g:colors_name="baycomb"
+let g:colors_name='baycomb'
 
 " functions {{{
 " returns an approximate grey index for the given grey level
@@ -175,18 +175,18 @@ endfun
 
 " returns the palette index to approximate the given R/G/B color levels
 fun <SID>color(r, g, b)
-    " get the closest grey
+    ' get the closest grey
     let l:gx = <SID>grey_number(a:r)
     let l:gy = <SID>grey_number(a:g)
     let l:gz = <SID>grey_number(a:b)
 
-    " get the closest color
+    ' get the closest color
     let l:x = <SID>rgb_number(a:r)
     let l:y = <SID>rgb_number(a:g)
     let l:z = <SID>rgb_number(a:b)
 
     if l:gx == l:gy && l:gy == l:gz
-        " there are two possibilities
+        ' there are two possibilities
         let l:dgr = <SID>grey_level(l:gx) - a:r
         let l:dgg = <SID>grey_level(l:gy) - a:g
         let l:dgb = <SID>grey_level(l:gz) - a:b
@@ -196,94 +196,98 @@ fun <SID>color(r, g, b)
         let l:db = <SID>rgb_level(l:gz) - a:b
         let l:drgb = (l:dr * l:dr) + (l:dg * l:dg) + (l:db * l:db)
         if l:dgrey < l:drgb
-            " use the grey
+            ' use the grey
             return <SID>grey_color(l:gx)
         else
-            " use the color
+            ' use the color
             return <SID>rgb_color(l:x, l:y, l:z)
         endif
     else
-        " only one possibility
+        ' only one possibility
         return <SID>rgb_color(l:x, l:y, l:z)
     endif
 endfun
 
 " returns the palette index to approximate the 'rrggbb' hex string
 fun <SID>rgb(rgb)
-    let l:r = ("0x" . strpart(a:rgb, 0, 2)) + 0
-    let l:g = ("0x" . strpart(a:rgb, 2, 2)) + 0
-    let l:b = ("0x" . strpart(a:rgb, 4, 2)) + 0
+    let l:r = ('0x' . strpart(a:rgb, 0, 2)) + 0
+    let l:g = ('0x' . strpart(a:rgb, 2, 2)) + 0
+    let l:b = ('0x' . strpart(a:rgb, 4, 2)) + 0
 
     return <SID>color(l:r, l:g, l:b)
 endfun
 
 " sets the highlighting for the given group
 fun <SID>X(group, fg, bg, attr)
-    if a:fg != ""
-        exec "hi " . a:group . " guifg=#" . a:fg . " ctermfg=" . <SID>rgb(a:fg)
+    if a:fg != ''
+        exec 'hi ' . a:group . ' guifg=#' . a:fg . ' ctermfg=' . <SID>rgb(a:fg)
     endif
-    if a:bg != ""
-        exec "hi " . a:group . " guibg=#" . a:bg . " ctermbg=" . <SID>rgb(a:bg)
+    if a:bg != ''
+        exec 'hi ' . a:group . ' guibg=#' . a:bg . ' ctermbg=' . <SID>rgb(a:bg)
     endif
-    if a:attr != ""
-        exec "hi " . a:group . " gui=" . a:attr . " cterm=" . a:attr
+    if a:attr != ''
+        exec 'hi ' . a:group . ' gui=' . a:attr . ' cterm=' . a:attr
     endif
 endfun
 " }}}
 
 
-call <SID>X("Normal", "7D90D5", "130E1A", "")
-call <SID>X("NonText", "382920", "14101A", "")
+call <SID>X('Normal', 'ABCAFA', '13111C', '')
+call <SID>X('NonText', '382920', '1D1B25', '')
 
 " set comments to grey on non-Windows OS's to make sure it is readable
-" if &term == "builtin_gui" || &term == "win32"
-"     <SID>X("Comment", "A9A9A9", "232850", "")
+" if &term == 'builtin_gui' || &term == 'win32'
+"     <SID>X('Comment', 'A9A9A9', '232850', '')
 " else
-"     <SID>X("Comment", "BEBEBE", "232850", "")
+"     <SID>X('Comment', 'BEBEBE', '232850', '')
 " endif
-call <SID>X("Comment", "008B8B", "", "")
+call <SID>X('Comment', '008B8B', '', '')
 
-call <SID>X("Title", "F5F5C0", "", "NONE")
-call <SID>X("Underlined", "EAC5DA", "", "")
 
-call <SID>X("Statement", "D06A75", "", "NONE")
-call <SID>X("Type", "4A60E0", "", "NONE")
-call <SID>X("Constant", "4080D0", "", "")
-call <SID>X("PreProc", "8C95F0", "", "")
-call <SID>X("Identifier", "6A5595", "", "")
-call <SID>X("Special", "8570B5", "", "")
-call <SID>X("Ignore", "666666", "", "")
-call <SID>X("Todo", "FF4500", "EEEE00", "")
-call <SID>X("Error", "", "B03452", "")
-call <SID>X("Number", "0D65CA", "", "")
-call <SID>X("Function", "80506A", "", "NONE")
-call <SID>X("Conditional", "D5305A", "", "NONE")
-call <SID>X("Repeat", "E02D5A", "", "NONE")
-call <SID>X("Operator", "DACA65", "", "NONE")
-call <SID>X("Keyword", "BEBEBE", "", "BOLD")
-call <SID>X("Exception", "EA5460", "", "NONE")
+call <SID>X('Directory', 'BBD0DF', '', '')
+call <SID>X('ErrorMsg', '', 'FF4545', '')
+call <SID>X('Cursor', '05293D', 'CAD5C0', '')
+call <SID>X('Folded', 'BBDDCC', '222038', '')
+call <SID>X('FoldColumn', 'DBCAA5', '202033', '')
+call <SID>X('LineNr', '8095D5', '22202D', '')
+call <SID>X('StatusLine', '107AC5', '303045', 'NONE')
+call <SID>X('StatusLineNC', '5B7098', '2D2D3F', 'NONE')
+call <SID>X('VertSplit', '223355', '22253D', 'NONE')
+call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
+call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
+call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
+call <SID>X('Title', 'F5F5C0', '', 'NONE')
+call <SID>X('Underlined', 'EAC5DA', '', 'NONE')
+call <SID>X('Statement', 'FF7D70', '', 'NONE')
+call <SID>X('Type', '309CE5', '', 'NONE')
+call <SID>X('Constant', '5060DD', '', '')
+call <SID>X('PreProc', '9A65FF', '', '')
+call <SID>X('Special', '85D0C5', '', '')
+call <SID>X('Todo', 'FF4500', 'EEEE00', '')
+call <SID>X('Function', '90AA9A', '', 'NONE')
+call <SID>X('Identifier', 'B09A80', '', '')
+call <SID>X('Ignore', '666666', '', '')
+call <SID>X('Error', '', 'B03452', '')
+call <SID>X('Number', '0D65CA', '', '')
+call <SID>X('Conditional', 'D5305A', '', 'NONE')
+call <SID>X('Repeat', 'E02D5A', '', 'NONE')
+call <SID>X('Operator', 'DACA65', '', 'NONE')
+call <SID>X('Keyword', 'BEBEBE', '', 'BOLD')
+call <SID>X('Exception', 'EA5460', '', 'NONE')
+call <SID>X('Search', '3A4520', '808373', '')
+call <SID>X('IncSearch', 'BABEAA', '3A4520', '')
 
-call <SID>X("Directory", "BBD0DF", "", "")
-call <SID>X("ErrorMsg", "", "FF4545", "")
-call <SID>X("Cursor", "05293D", "CAD5C0", "")
-call <SID>X("Folded", "BBDDCC", "171A2F", "")
-call <SID>X("FoldColumn", "A9A9A9", "16192D", "")
-call <SID>X("LineNr", "8095D5", "16182B", "")
-call <SID>X("StatusLine", "0A150D", "6585C5", "NONE")
-call <SID>X("StatusLineNC", "302D34", "55609A", "NONE")
-call <SID>X("Search", "3A4520", "9A9D8D", "")
-call <SID>X("IncSearch", "CACEBA", "3A4520", "")
-call <SID>X("VertSplit", "7F7F7F", "525F95", "NONE")
-call <SID>X("ModeMsg", "00AACC", "", "")
-call <SID>X("MoreMsg", "2E8B57", "", "")
-call <SID>X("Question", "AABBCC", "", "")
-call <SID>X("SpecialKey", "90DCB0", "", "")
-call <SID>X("Visual", "008FBF", "33DFEF", "")
-call <SID>X("WarningMsg", "FA8072", "", "")
+call <SID>X('ModeMsg', '00AACC', '', '')
+call <SID>X('MoreMsg', '2E8B57', '', '')
+call <SID>X('Question', 'AABBCC', '', '')
+call <SID>X('SpecialKey', '90DCB0', '', '')
+call <SID>X('Visual', '1A1A30', '43D5FF', '')
+call <SID>X('VisualNOS', '201A30', 'A3A5FF', '')
+call <SID>X('WarningMsg', 'FA8072', '', '')
 
 " new Vim 7.0 items
-call <SID>X("Pmenu", "9AADD5", "3A6595", "")
-call <SID>X("PmenuSel", "B0D0F0", "4A85BA", "")
+call <SID>X('Pmenu', '9AADD5', '3A6595', '')
+call <SID>X('PmenuSel', 'B0D0F0', '4A85BA', '')
 
 " delete functions {{{
 delf <SID>X

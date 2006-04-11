@@ -1,5 +1,5 @@
 " Vim color file
-" desertedocean v0.5
+" desertedocean v0.4d
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
 "               [axs221.1l.com]
 
@@ -22,25 +22,25 @@ endif
 
 let g:colors_name="desertedocean"
 
-hi Normal	guifg=#939aaa guibg=#0a212d
+hi Normal	guifg=#FFE0FA guibg=#122130
 
 " syntax highlighting
-hi Comment	  guifg=#30425b
-hi Title	guifg=#00BBFF
-hi Underlined guifg=#50a0cF
-hi Statement  guifg=#eaa0aa 
-hi Type		  guifg=#98636d
-hi PreProc    guifg=#FA7aA0 
-hi Constant	  guifg=#6f4f60
-hi Identifier guifg=#bF809d 
-hi Special	  guifg=#8ceaef
+hi Comment	  guifg=#6Aa0e0
+hi Title	guifg=#00aBdF
+hi Underlined guifg=#20b0eF gui=none
+hi Statement  guifg=#eF7a7a
+hi Type		  guifg=#dAa0b0
+hi PreProc    guifg=#FF7A9a 
+hi Constant	  guifg=#EE8aB5 " or #FF707A 
+hi Identifier guifg=#FFe0bd 
+hi Special	  guifg=#8cf0ff
 hi Ignore	guifg=grey40
 hi Todo		guifg=orangered guibg=yellow2
 "hi Error
 "end syntax highlighting
 
 " highlight groups
-hi Cursor	guibg=#005779 guifg=#609090
+hi Cursor	guibg=#007799 guifg=#00D0D0
 "hi CursorIM
 hi Directory guifg=#bbd0df
 "hi DiffAdd
@@ -49,12 +49,12 @@ hi Directory guifg=#bbd0df
 "hi DiffText
 "hi ErrorMsg
 hi VertSplit	guibg=#c2bfa5 guifg=grey50 gui=none
-hi Folded	guibg=#1d2b38 guifg=#BBDDCC
-hi FoldColumn	guibg=#10243d guifg=#80ACEF
-hi LineNr   guifg=#8Ca0aF guibg=#121d2a
+hi Folded	guibg=#337799 guifg=#BBDDCC
+hi FoldColumn	guibg=#337799 guifg=#00CCFF
+hi LineNr   guifg=#CCF0FF guibg=#006688 
 hi ModeMsg	guifg=#00AACC
 hi MoreMsg	guifg=SeaGreen
-hi NonText  guifg=#285960 guibg=#1A3A4A
+hi NonText  guifg=#285960 guibg=#2A374A
 hi Question	guifg=#AABBCC
 hi Search	guibg=slategrey guifg=#FFDABB
 hi IncSearch	guifg=slategrey guibg=#FFDFB0

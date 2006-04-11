@@ -1,36 +1,47 @@
+
+if exists("s:loaded_modlines")
+    finish
+else
+    let s:loaded_modlines=1
+
+    "------------------------------------------------------------------------------
+    "
+    "   Insert Modelines with standart informationss
+    " 
+    function! <SID>Modelines_Insert ()
+	let l:Line = line (".")
+       
+	call append (
+	    \ l:Line + 0, 
+	    \ substitute (
+		\ &commentstring				,
+		\ "\%s"						,
+		\ " vim: textwidth="	. &textwidth		.
+		\ (&wrap ? " " : " no")	. "wrap"		.
+		\ " tabstop="		. &tabstop		.
+		\ " shiftwidth="		. &shiftwidth	.
+		\ " softtabstop="		. &softtabstop	.
+		\ (&expandtab ? " " : " no") . "expandtab"	,
+		\ ""))
+	call append (
+	    \ l:Line + 1,
+	    \ substitute (
+		\ &commentstring			,
+		\ "\%s"					,
+		\ " vim: filetype="	. &filetype	. 
+		\ " encoding="	. &encoding		.
+		\ " fileformat="	. &fileformat	,
+		\ ""))
+    endfunction
+
+    execute "nnoremap <unique>" . escape(g:mapleader . "im" , '\') .      " :call <SID>Modelines_Insert ()<CR>"
+    execute "inoremap <unique>" . escape(g:mapleader . "im" , '\') . " <C-O>:call <SID>Modelines_Insert ()<CR>"
+
+    execute "47menu Plugin.Insert.Modelines<Tab>" . escape(g:mapleader . "im" , '\') . " :call <SID>Modelines_Insert ()<CR>"
+endif
+
+finish
+
 "-------------------------------------------------------------------------------
-
-"------------------------------------------------------------------------------
-"
-" Remove traces
-" 
-:function! <SID>Modelines_Insert ()
-
-    :let l:l = line (".") 
-    :call append (l:l + 0, "vim: textwidth="   . &textwidth            .
-                             \ (&wrap ? " " : " no") . "wrap"          .
-                             \ " tabstop="     . &tabstop              .
-                             \ " shiftwidth="  . &shiftwidth           .
-                             \ " softtabstop=" . &softtabstop          .
-                             \ (&expandtab ? " " : " no") . "expandtab")
-    :call append (l:l + 1, "vim: filetype="    . &filetype   . 
-                             \ " encoding="    . &encoding   .
-                             \ " fileformat="  . &fileformat )
-    normal j\ccj\cc
-:endfunction
-
-
-"vim: textwidth=0 tabstop=8 shiftwidth=4 softtabstop=4 expandtab
-"vim: filetype=vim encoding=latin1 fileformat=unix softtabstop=4
-
-:command! ModelinesInsert           call <SID>Modelines_Insert ()
-
-:nnoremap <silent> <Leader>im :ModelinesInsert<CR>
-
-:47menu <silent> Plugin.Insert.Modelines<Tab>\\im  :ModelinesInsert<CR>
-
-
-"-------------------------------------------------------------------------------
-" vim: textwidth=0 nowrap tabstop=8 shiftwidth=4 softtabstop=4 expandtab
+" vim: textwidth=0 nowrap tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
 " vim: filetype=vim encoding=latin1 fileformat=unix
-

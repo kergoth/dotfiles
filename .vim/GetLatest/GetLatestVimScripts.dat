@@ -11,14 +11,14 @@ ScriptID SourceID Filename
 974 4316 indent/python.vim
 1453 5189 cecscope.vim
 1405 5023 colors/understated.vim
-1404 5022 colors/desertedocean.vim
+1404 5283 colors/desertedocean.vim
 748 4319 HelpExtractor.vim
 1425 4916 syntax/iptables.vim
 1443 4966 colors/telstar.vim
 1381 4676 syntax/udev.vim
 1393 4717 colors/motus.vim
 1316 4517 bwHomeEndAdv.vim
-1352 4574 :AutoInstall: modelines.vim
+1352 5307 :AutoInstall: modelines.vim
 1248 4239 syntax/cccs.vim
 1243 4055 colors/desert256.vim
 1444 4968 colors.vim
@@ -27,8 +27,8 @@ ScriptID SourceID Filename
 95 754 winmanager.vim
 159 3640 :AutoInstall: minibufexpl.vim
 1385 4693 syntax/interfaces.vim
-1454 5259 colors/baycomb.vim
+1454 5304 colors/baycomb.vim
 1075 5004 netrw.vim
 795 4342 colors/xterm16.vim
 1218 5167 NERD_comments.vim
-1464 5244 colors/slate.vim
+1464 5310 colors/slate.vim

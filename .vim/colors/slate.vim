@@ -23,8 +23,8 @@ if s:slate_style == "bw"
     hi NonText ctermfg=8 guibg=bg guifg=#878787 gui=bold
     hi SignColumn guibg=#3d3d3d guifg=fg gui=none
     hi StatusLine guibg=fg guifg=#000000 gui=bold
-    hi StatusLineNC guibg=#878787 guifg=#000000 gui=bold
-    hi VertSplit guibg=#878787 guifg=#000000 gui=bold
+    hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#878787 guifg=#000000 gui=bold
+    hi VertSplit ctermbg=7 ctermfg=0 guibg=#878787 guifg=#000000 gui=bold
     hi Visual ctermbg=7 ctermfg=0 guibg=#ababab guifg=#000000 gui=bold
     hi VisualNOS guibg=bg guifg=#ababab gui=bold,underline
     hi WildMenu guibg=#a0a0a0 guifg=#000000 gui=bold
@@ -38,8 +38,8 @@ else
     hi NonText ctermfg=8 guibg=bg guifg=#878787 gui=bold
     hi SignColumn guibg=#363d45 guifg=fg gui=none
     hi StatusLine guibg=#9fb6cd guifg=#000000 gui=bold
-    hi StatusLineNC guibg=#6c7b8b guifg=#000000 gui=bold
-    hi VertSplit guibg=#6c7b8b guifg=#000000 gui=bold
+    hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#6c7b8b guifg=#000000 gui=bold
+    hi VertSplit ctermbg=7 ctermfg=0 guibg=#6c7b8b guifg=#000000 gui=bold
     hi Visual ctermbg=7 ctermfg=0 guibg=#8598ac guifg=#000000 gui=bold
     hi VisualNOS guibg=bg guifg=#8598ac gui=bold,underline
     hi WildMenu guibg=#e7e7e7 guifg=#000000 gui=bold
