@@ -507,7 +507,7 @@ if (&termencoding == "utf-8") || has("gui_running")
   endif
 
   if (! has("gui_running")) && (&t_Co < 3)
-    set listchars=trail:·
+    set listchars+=trail:·
   endif
 else
   set listchars=tab:>-,extends:>
