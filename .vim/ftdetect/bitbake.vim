@@ -1,4 +1,4 @@
-au BufNewFile,BufRead *.bb       set filetype=bitbake
-au BufNewFile,BufRead *.bbclass  set filetype=bitbake
-au BufNewFile,BufRead *.inc      set filetype=bitbake
-"au BufNewFile,BufRead *.conf     set filetype=bitbake
+au BufNewFile,BufRead *.bb       setfiletype bitbake
+au BufNewFile,BufRead *.bbclass  setfiletype bitbake
+au BufNewFile,BufRead *.inc      setfiletype bitbake
+"au BufNewFile,BufRead *.conf     setfiletype bitbake

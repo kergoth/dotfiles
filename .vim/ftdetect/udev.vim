@@ -1,1 +1,1 @@
-au BufNewFile,BufRead */udev*.rules set filetype=udev
+au BufNewFile,BufRead */udev*.rules setlocal filetype=udev

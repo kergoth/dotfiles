@@ -364,25 +364,25 @@ if has("autocmd")
   if v:version >= 700
     au BufReadPost *
       \ if (&ofu == "") |
-      \   set ofu=syntaxcomplete#Complete |
+      \   setlocal ofu=syntaxcomplete#Complete |
       \ endif
   endif
 
   " Default textwidth is 0 for known filetypes
   " For unknown types, text, and mutt mails, it's 78.
   set tw=78
-  au FileType * set tw=0
-  au FileType text set tw=78
-  au BufReadPost mutt-* set nocindent noautoindent tw=78
+  au FileType * setlocal tw=0
+  au FileType text setlocal tw=78
+  au BufReadPost mutt-* setlocal nocindent noautoindent tw=78
 
-  " Sane settings for keywordprg
-  au FileType vim set keywordprg=:help
-  au FileType python set keywordprg=pydoc
-  au FileType perl set keywordprg=perldoc\ -f
+  " Sane setlocaltings for keywordprg
+  au FileType vim setlocal keywordprg=:help
+  au FileType python setlocal keywordprg=pydoc
+  au FileType perl setlocal keywordprg=perldoc\ -f
 
   " Disable moving to beginning of line when hitting ':',
   " as it behaves oddly when calling static methods in c++.
-  au FileType cpp set cinkeys=0{,0},0),0#,!^F,o,O,e
+  au FileType cpp setlocal cinkeys-=:
 endif " has("autocmd")
 " }}}
 
