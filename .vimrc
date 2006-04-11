@@ -619,6 +619,9 @@ if has("autocmd")
           \ endif
   endif
 
+  " Wrap text at textwidth outside of comments by default for
+  " text and mail filetypes, and do not for other known filetypes.
+  " Unknown filetype(s) will be caught by the global formatoptions.
   au FileType * if &fo =~ 't' | let &l:fo = substitute(&fo, '(.*)t(.*)', '\1\2', '') | endif
   au FileType text if &fo !~ 't' | let &l:fo = substitute(&fo, '$', 't', '') | endif
   au FileType mail if &fo !~ 't' | let &l:fo = substitute(&fo, '$', 't', '') | setlocal nocindent noautoindent | endif
