@@ -2,7 +2,7 @@
 "               save/restore mark position
 "               save/restore selected user maps
 "  Author:	Charles E. Campbell, Jr.
-"  Version:	14
+"  Version:	15b	ASTRO-ONLY
 "  Date:	Jan 25, 2006
 "
 "  Saving Restoring Destroying Marks: {{{1
@@ -28,10 +28,10 @@
 if &cp || exists("g:loaded_cecutil")
  finish
 endif
-let g:loaded_cecutil = "v14"
+let g:loaded_cecutil = "v15b"
 let s:keepcpo        = &cpo
 set cpo&vim
-"DechoMsgOn
+"DechoVarOn
 
 " -----------------------
 "  Public Interface: {{{1
@@ -48,8 +48,8 @@ nmap <silent> <Plug>SaveWinPosn		:call SaveWinPosn()<CR>
 nmap <silent> <Plug>RestoreWinPosn	:call RestoreWinPosn()<CR>
 
 " Command Interface: {{{2
-com -bar -nargs=? SWP	call SaveWinPosn(<q-args>)
-com -bar -nargs=? RWP	call RestoreWinPosn(<q-args>)
+com -bar -nargs=0 SWP	call SaveWinPosn()
+com -bar -nargs=0 RWP	call RestoreWinPosn()
 com -bar -nargs=1 SM	call SaveMark(<q-args>)
 com -bar -nargs=1 RM	call RestoreMark(<q-args>)
 com -bar -nargs=1 DM	call DestroyMark(<q-args>)
@@ -63,10 +63,14 @@ endif
 " ---------------------------------------------------------------------
 " SaveWinPosn: {{{1
 "    let winposn= SaveWinPosn()  will save window position in winposn variable
-"    call SaveWinPosn()          will save window position in b:winposn{b:iwinposn}
+"    call SaveWinPosn()          will save window position in b:cecutil_winposn{b:cecutil_iwinposn}
 "    let winposn= SaveWinPosn(0) will *only* save window position in winposn variable (no stacking done)
 fun! SaveWinPosn(...)
 "  call Dfunc("SaveWinPosn() a:0=".a:0)
+  if line(".") == 1 && getline(1) == ""
+"   call Dfunc("SaveWinPosn : empty buffer")
+   return ""
+  endif
   let so_keep   = &so
   let siso_keep = &siso
   let ss_keep   = &ss
@@ -87,25 +91,26 @@ fun! SaveWinPosn(...)
   let savedposn = savedposn.":".s:modifier."call cursor(".swline.",".swcol.")\<cr>"
 
   " save window position in
-  " b:winposn_{iwinposn} (stack)
-  " only if SaveWinPosn() not used
-  if a:0 == 0 || a:1 == ""
-   if !exists("b:iwinposn")
-   	let b:iwinposn= 1
+  " b:cecutil_winposn_{iwinposn} (stack)
+  " only when SaveWinPosn() is used
+  if a:0 == 0
+   if !exists("b:cecutil_iwinposn")
+   	let b:cecutil_iwinposn= 1
    else
-   	let b:iwinposn= b:iwinposn + 1
+   	let b:cecutil_iwinposn= b:cecutil_iwinposn + 1
    endif
-   let b:winposn{b:iwinposn}= savedposn
+"   call Decho("saving posn to SWP stack")
+   let b:cecutil_winposn{b:cecutil_iwinposn}= savedposn
   endif
 
   let &so   = so_keep
   let &siso = siso_keep
   let &ss   = ss_keep
 
-"  if exists("b:iwinposn")	 " Decho
-"   call Decho("b:winpos{".b:iwinposn."}[".b:winposn{b:iwinposn}."]")
+"  if exists("b:cecutil_iwinposn")	 " Decho
+"   call Decho("b:cecutil_winpos{".b:cecutil_iwinposn."}[".b:cecutil_winposn{b:cecutil_iwinposn}."]")
 "  else                      " Decho
-"   call Decho("b:iwinposn doesn't exist")
+"   call Decho("b:cecutil_iwinposn doesn't exist")
 "  endif                     " Decho
 "  call Dret("SaveWinPosn [".savedposn."]")
   return savedposn
@@ -115,31 +120,35 @@ endfun
 " RestoreWinPosn: {{{1
 fun! RestoreWinPosn(...)
 "  call Dfunc("RestoreWinPosn() a:0=".a:0)
+  if line(".") == 1 && getline(1) == ""
+"   call Dfunc("RestoreWinPosn : empty buffer")
+   return ""
+  endif
   let so_keep   = &so
   let siso_keep = &siso
   let ss_keep   = &ss
   set so=0 siso=0 ss=0
 
   if a:0 == 0 || a:1 == ""
-   " use saved window position in b:winposn{b:iwinposn} if it exists
-   if exists("b:iwinposn") && exists("b:winposn{b:iwinposn}")
-"   	call Decho("using stack b:winposn{".b:iwinposn."}<".b:winposn{b:iwinposn}.">")
+   " use saved window position in b:cecutil_winposn{b:cecutil_iwinposn} if it exists
+   if exists("b:cecutil_iwinposn") && exists("b:cecutil_winposn{b:cecutil_iwinposn}")
+"   	call Decho("using stack b:cecutil_winposn{".b:cecutil_iwinposn."}<".b:cecutil_winposn{b:cecutil_iwinposn}.">")
 	try
-     exe "silent! ".b:winposn{b:iwinposn}
+     exe "silent! ".b:cecutil_winposn{b:cecutil_iwinposn}
 	catch /^Vim\%((\a\+)\)\=:E749/
 	 " ignore empty buffer error messages
 	endtry
     " normally drop top-of-stack by one
     " but while new top-of-stack doesn't exist
     " drop top-of-stack index by one again
-	if b:iwinposn >= 1
-	 unlet b:winposn{b:iwinposn}
-	 let b:iwinposn= b:iwinposn - 1
-	 while b:iwinposn >= 1 && !exists("b:winposn{b:iwinposn}")
-	  let b:iwinposn= b:iwinposn - 1
+	if b:cecutil_iwinposn >= 1
+	 unlet b:cecutil_winposn{b:cecutil_iwinposn}
+	 let b:cecutil_iwinposn= b:cecutil_iwinposn - 1
+	 while b:cecutil_iwinposn >= 1 && !exists("b:cecutil_winposn{b:cecutil_iwinposn}")
+	  let b:cecutil_iwinposn= b:cecutil_iwinposn - 1
 	 endwhile
-	 if b:iwinposn < 1
-	  unlet b:iwinposn
+	 if b:cecutil_iwinposn < 1
+	  unlet b:cecutil_iwinposn
 	 endif
 	endif
    else
@@ -152,15 +161,15 @@ fun! RestoreWinPosn(...)
 "   call Decho("using input a:1<".a:1.">")
    " use window position passed to this function
    exe "silent ".a:1
-   " remove a:1 pattern from b:winposn{b:iwinposn} stack
-   if exists("b:iwinposn")
-    let jwinposn= b:iwinposn
+   " remove a:1 pattern from b:cecutil_winposn{b:cecutil_iwinposn} stack
+   if exists("b:cecutil_iwinposn")
+    let jwinposn= b:cecutil_iwinposn
     while jwinposn >= 1                     " search for a:1 in iwinposn..1
-        if exists("b:winposn{jwinposn}")    " if it exists
-         if a:1 == b:winposn{jwinposn}      " and the pattern matches
-       unlet b:winposn{jwinposn}            " unlet it
-       if jwinposn == b:iwinposn            " if at top-of-stack
-        let b:iwinposn= b:iwinposn - 1      " drop stacktop by one
+        if exists("b:cecutil_winposn{jwinposn}")    " if it exists
+         if a:1 == b:cecutil_winposn{jwinposn}      " and the pattern matches
+       unlet b:cecutil_winposn{jwinposn}            " unlet it
+       if jwinposn == b:cecutil_iwinposn            " if at top-of-stack
+        let b:cecutil_iwinposn= b:cecutil_iwinposn - 1      " drop stacktop by one
        endif
       endif
      endif
@@ -283,6 +292,12 @@ endfun
 "   call DestroyMark("a")  -- destroys mark
 fun! DestroyMark(markname)
 "  call Dfunc("DestroyMark(markname<".a:markname.">)")
+
+  " save options and set to standard values
+  let reportkeep= &report
+  let lzkeep    = &lz
+  set lz report=10000
+
   let markname= strpart(a:markname,0,1)
   if markname !~ '\a'
    " handles 'a -> a styles
@@ -290,8 +305,6 @@ fun! DestroyMark(markname)
   endif
 "  call Decho("markname=".markname)
 
-  let lzkeep  = &lz
-  set lz
   let curmod  = &mod
   let winposn = SaveWinPosn(0)
   1
@@ -301,29 +314,32 @@ fun! DestroyMark(markname)
   put! =lineone
   let &mod    = curmod
   call RestoreWinPosn(winposn)
+
+  " restore options to user settings
+  let &report = reportkeep
   let &lz     = lzkeep
 
 "  call Dret("DestroyMark")
 endfun
 
-"" ---------------------------------------------------------------------
-"" ListWinPosn:
-"fun! ListWinPosn()
-"  if !exists("b:iwinposn")
-"   call Decho("LWP: iwinposn doesn't exist")
-"   return
-"  endif
-"  let jwinposn= b:iwinposn
-"  while jwinposn >= 1
-"   if exists("b:winposn{jwinposn}")
-"    call Decho("winposn{".jwinposn."}<".b:winposn{jwinposn}.">")
-"   else
-"    call Decho("winposn{".jwinposn."} -- doesn't exist")
-"   endif
-"   let jwinposn= jwinposn - 1
-"  endwhile
-"endfun
-"com! -nargs=0 LWP	call ListWinPosn()
+" ---------------------------------------------------------------------
+" ListWinPosn:
+"fun! ListWinPosn()                                                        " Decho 
+"  if !exists("b:cecutil_iwinposn") || b:cecutil_iwinposn == 0             " Decho 
+"   call Decho("nothing on SWP stack")                                     " Decho
+"  else                                                                    " Decho
+"   let jwinposn= b:cecutil_iwinposn                                       " Decho 
+"   while jwinposn >= 1                                                    " Decho 
+"    if exists("b:cecutil_winposn{jwinposn}")                              " Decho 
+"     call Decho("winposn{".jwinposn."}<".b:cecutil_winposn{jwinposn}.">") " Decho 
+"    else                                                                  " Decho 
+"     call Decho("winposn{".jwinposn."} -- doesn't exist")                 " Decho 
+"    endif                                                                 " Decho 
+"    let jwinposn= jwinposn - 1                                            " Decho 
+"   endwhile                                                               " Decho 
+"  endif                                                                   " Decho
+"endfun                                                                    " Decho 
+"com! -nargs=0 LWP	call ListWinPosn()                                    " Decho 
 
 " ---------------------------------------------------------------------
 " SaveUserMaps: this function sets up a script-variable (s:restoremap) {{{1
