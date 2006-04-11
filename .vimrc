@@ -666,7 +666,7 @@ if colorterm == "gnome-terminal"
 elseif (colorterm == "rxvt-xpm") && (&term == "rxvt")
   "try to set colors correctly for mrxvt
   set t_Co=256
-elseif colorterm == "putty"
+elseif (colorterm == "putty") && (&term !~ "^screen")
   set t_Co=256
 endif
 
