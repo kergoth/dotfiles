@@ -494,17 +494,30 @@ if has("multi_byte")
 endif
 " }}}
 
+" Show nonprintable characters like hard tabs
+"   NOTE: No longer showing trailing spaces this way, as those
+"   are being highlighted in red, along with spaces before tabs.
+set list
+
 if (&termencoding == "utf-8") || has("gui_running")
+  set listchars=tab:»·,extends:…
+
   if v:version >= 700
-    set list listchars=tab:»·,trail:·,extends:…,nbsp:‗
-  else
-    set list listchars=tab:»·,trail:·,extends:…
+    set listchars+=nbsp:‗
+  endif
+
+  if (! has("gui_running")) && (&t_Co < 3)
+    set listchars=trail:·
   endif
 else
+  set listchars=tab:>-,extends:>
+
   if v:version >= 700
-    set list listchars=tab:>-,trail:.,extends:>,nbsp:_
-  else
-    set list listchars=tab:>-,trail:.,extends:>
+    set listchars+=nbsp:_
+  endif
+
+  if (! has("gui_running")) && (&t_Co < 3)
+    set listchars+=trail:.
   endif
 endif
 " }}}
