@@ -7,7 +7,7 @@
 "   \afnc - align ansi-style C function input arguments
 "   \Htd  - align html tables
 " NERD commenter:
-"   \cs - apply "sexy" comment to line(s)
+"   \cs - apply 'sexy' comment to line(s)
 "   \c<space> - toggle commenting on line(s)
 "   \cc - comment block as a whole (doesnt obey space_delim)
 "   \ci - comment individually
@@ -41,13 +41,14 @@
 " }}}
 
 if v:version < 600
-  echo "ERROR: vim version too old.  Upgrade to vim 6.0 or later."
+  echo 'ERROR: vim version too old.  Upgrade to vim 6.0 or later.'
   finish
 endif
 
+
 " Ugh, behave mswin makes gvim act like other windows applications, not like
 " vim.  This behavior is not what I expect.
-if has("win32")
+if has('win32')
   source $VIMRUNTIME/mswin.vim
 endif
 behave xterm
@@ -58,7 +59,7 @@ let colorterm = $COLORTERM
 " Courtesy http://vim.sourceforge.net/tips/tip.php?tip_id=1161
 " Just like windo but restores the current window when it's done
 function! WinDo(command)
-  let currwin=winnr()
+  let currwin = winnr()
   execute 'windo ' . a:command
   execute currwin . 'wincmd w'
 endfunction
@@ -68,32 +69,38 @@ if v:version >= 700
   " Just like Windo except that it disables all autocommands for super fast processing.
   com! -nargs=+ -complete=command Windofast noau call WinDo(<q-args>)
 else
-  com! -nargs=+ -complete=command Windofast let l:ei=&eventignore | call WinDo(<q-args>) | let &eventignore=l:ei
+  com! -nargs=+ -complete= command Windofast let l:ei= &eventignore | let &eventignore= 'all' | call WinDo(<q-args>) | let &eventignore = l:ei
 endif
 
 
 " Just like bufdo but restores the current buffer when it's done
 function! BufDo(command)
-  let currBuff=bufnr("%")
+  let currBuff = bufnr('%')
   execute 'bufdo ' . a:command
   execute 'buffer ' . currBuff
 endfunction
-com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>) 
+com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>)
 
 " Used to set sane default line numbering
+" Obey the 'number' or 'nonumber' which the user set in their .vimrc
 function! <SID>AutoNumberByWidth()
-  if &g:number
-    Windofast
-          \ let l:bufname = bufname('%') |
-          \ if (! exists('w:numberoverride')) &&
-          \    (l:bufname != '-MiniBufExplorer-') |
-          \   if winwidth(0) >= 80 |
-          \     setlocal number |
-          \   else |
-          \     setlocal nonumber |
-          \   endif |
-          \ endif
+  if ! exists('s:defaultnumstate')
+    let s:defaultnumstate = &number
   endif
+  Windofast
+        \ let l:bufname = bufname('%') |
+        \ if (! exists('w:numberoverride')) &&
+        \    (l:bufname != '-MiniBufExplorer-') |
+        \   if s:defaultnumstate == 0 |
+        \     set nonumber |
+        \   else |
+        \     if winwidth(0) >= 80 |
+        \       set number |
+        \     else |
+        \       set nonumber |
+        \     endif |
+        \   endif |
+        \ endif
 endfunction
 
 function! SetNumbering(s)
@@ -107,7 +114,9 @@ function! SetNumbering(s)
     let w:numberoverride = 1
     setlocal number!
   else " Back to automatic
-    unlet w:numberoverride
+    if exists('w:numberoverride')
+      unlet w:numberoverride
+    endif
   endif
 endfunction
 
@@ -132,17 +141,17 @@ endfunction
 " }}}
 
 " Keymaps {{{
-map ,is :!ispell %<CR>          " ISpell !
-map ,del :g/^\s*$/d<CR>         " Delete Empty Lines
-map ,ddql :%s/^>\s*>.*//g<CR>   " Delete Double Quoted Lines
-map ,ddr :s/\.\+\s*/. /g<CR>    " Delete Dot Runs
-map ,dsr :s/\s\s\+/ /g<CR>      " Delete Space Runs
-map ,dtw :%s/\s\+$//g<CR>       " Delete Trailing Whitespace
+map ,is :!ispell %<CR>          ' ISpell !
+map ,del :g/^\s*$/d<CR>         ' Delete Empty Lines
+map ,ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
+map ,ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
+map ,dsr :s/\s\s\+/ /g<CR>      ' Delete Space Runs
+map ,dtw :%s/\s\+$//g<CR>       ' Delete Trailing Whitespace
 
 nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
-nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
+nmap <leader>a :A<CR>            ' Switch between .c/cpp and .h (a.vim)
 
 " Toggle line numbering for the current window (overrides automatic by width)
 nmap <leader>n :call SetNumbering(-1)<CR>
@@ -166,7 +175,7 @@ noremap <Leader>gg ggVG
 noremap <space> <C-f>
 
 " Mappings to edit/reload the .vimrc
-if has("win32")
+if has('win32')
   nmap ,s :source $HOME/_vimrc<CR>
   nmap <silent> ,v :e $HOME/_vimrc<CR>
 else
@@ -180,54 +189,86 @@ nmap <Leader>cwo :botright copen 5<CR><C-w>p
 nmap <Leader>ccn :cnext<CR>
 
 " Mouse {{{
-" When selecting with the mouse, copy to clipboard on release.
-vnoremap <LeftRelease> "+y<LeftRelease>gv
-vnoremap <RightRelease> "+y<RightRelease>gv
-
-" scrollwheel = intelligent # of lines to scroll based on window height
-if has("autocmd")
-  au BufWinEnter * exec "map <buffer> <MouseDown> " . <SID>Max(winheight(0)/8, 1) . ""
-  au BufWinEnter * exec "map <buffer> <MouseUp> " . <SID>Max(winheight(0)/8, 1) . ""
+if has('mouse')
+  set mouse=a
+  if has('unix') &&
+        \ ! has('gui_running')
+    if &term == 'xterm'
+      set ttymouse=xterm2
+    else
+      set ttymouse=xterm
+    endif
+  endif
 endif
 
-map <MouseDown> 3
-map <MouseUp> 3
+" Line numbering
+if v:version >= 700
+  set number
+endif
 
-" meta (alt)+scrollwheel = scroll one line at a time
-map <M-MouseDown> 
-map <M-MouseUp> 
+" When selecting with the mouse, copy to clipboard on release.
+vnoremap <LeftRelease> '+y<LeftRelease>gv
+vnoremap <RightRelease> '+y<RightRelease>gv
 
-" ctrl+scrollwheel = scroll half a page
-map <C-MouseDown> 
-map <C-MouseUp> 
+" Mouse scroll wheel mappings only work in X11 and terminals
+if &ttymouse != '' ||
+      \ (has('gui_running') && has('unix'))
+  " scrollwheel = intelligent # of lines to scroll based on window height
+  if has('autocmd')
+    augroup KergothScrollWheel
+      au!
+      au WinEnter,VimEnter * let w:mousejump = <SID>Max(winheight(0)/8, 1)
+      au WinEnter,VimEnter * exe 'map <MouseDown> ' . w:mousejump . ''
+      au WinEnter,VimEnter * exe 'map <MouseUp> ' . w:mousejump . ''
 
-" shift+scrollwheel = unmapped
-"unmap <S-MouseDown>
-"unmap <S-MouseUp>
+      try
+        au VimResized * let w:mousejump = <SID>Max(winheight(0)/8, 1)
+        au VimResized * exe 'map <MouseDown> ' . w:mousejump . ''
+        au VimResized * exe 'map <MouseUp> ' . w:mousejump . ''
+      catch
+      endtry
+    augroup END
+  endif
+
+  map <MouseDown> 3
+  map <MouseUp> 3
+
+  " meta (alt)+scrollwheel = scroll one line at a time
+  map <M-MouseDown> 
+  map <M-MouseUp> 
+
+  " ctrl+scrollwheel = scroll half a page
+  map <C-MouseDown> 
+  map <C-MouseUp> 
+
+  " shift+scrollwheel = unmapped
+  " unmap <S-MouseDown>
+  " unmap <S-MouseUp>
+endif
 " }}}
 
-" Execute an appropriate interpeter for the current file
+" Execute an appropriate interpreter for the current file
 " If there is no #! line at the top of the file, it will
 " fall back to g:interp_<filetype>.
-let g:interp_lua="/usr/bin/env lua"
-let g:interp_python="/usr/bin/env python"
-let g:interp_make="/usr/bin/env make"
-let g:interp_perl="/usr/bin/env perl"
-let g:interp_m4="/usr/bin/env m4"
-let g:interp_sh="/bin/sh"
+let g:interp_lua = '/usr/bin/env lua'
+let g:interp_python = '/usr/bin/env python'
+let g:interp_make = '/usr/bin/env make'
+let g:interp_perl = '/usr/bin/env perl'
+let g:interp_m4 = '/usr/bin/env m4'
+let g:interp_sh = '/bin/sh'
 function! RunInterp()
-  let l:interp = ""
+  let l:interp = ''
   let line = getline(1)
 
-  if line =~ "^#\!"
+  if line =~ '^#\!'
     let l:interp = strpart(line, 2)
   else
-    if exists("g:interp_" . &filetype)
+    if exists('g:interp_' . &filetype)
       let l:interp = g:interp_{&filetype}
     endif
   endif
-  if l:interp != ""
-    exe "!" . l:interp . " %"
+  if l:interp != ''
+    exe '!' . l:interp . ' %'
   endif
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
@@ -235,7 +276,7 @@ com! -complete=command Interp call RunInterp()
 
 " Buffer Switching {{{
 " Map meta+numberkeys to the buffers
-if has("gui_running")
+if has('gui_running')
   noremap <M-1> :b1<CR>:<BS>
   noremap <M-2> :b2<CR>:<BS>
   noremap <M-3> :b3<CR>:<BS>
@@ -257,7 +298,7 @@ if has("gui_running")
   inoremap <M-9> :b9<CR>:<BS>
   inoremap <M-0> :b10<CR>:<BS>
 else
-  if has("win32")
+  if has('win32')
     noremap ± :b1<CR>:<BS>
     noremap ² :b2<CR>:<BS>
     noremap ³ :b3<CR>:<BS>
@@ -301,7 +342,7 @@ endif
 " }}}
 
 " Fonts {{{
-if has("win32")
+if has('win32')
   set guifont=Courier\ New:h10,Courier,Lucida\ Console,Letter\ Gothic,
         \Arial\ Alternative,Bitstream\ Vera\ Sans\ Mono,OCR\ A\ Extended
 else
@@ -331,12 +372,23 @@ set nosmarttab
 "       behavior when not at start-of-line obeys 'sw' when it should be
 "       obeying sts/ts).  Fix it.
 
-"set expandtab      "Disable insertion of tabs as compression / indentation
-set tabstop=4       "How many spaces a tab in the file counts for, and when
-"not using sts, how many spaces the tab key counts for.
-set shiftwidth=4    "Indentation width (affects indent plugins, indent based folding, etc, and when smarttab is on, is used instead of ts/sts for the indentation at beginning of line)
-set softtabstop=0   "Number of spaces that the tab key counts for when editing
-"Only really useful if different from ts, or if using et.
+" Disable insertion of tabs as compression / indentation
+" Set expandtab
+
+" How many spaces a tab in the file counts for, and when not using
+" sts, how many spaces the tab key counts for.
+set tabstop=4
+
+" Indentation width (affects indentation plugins, indent based
+" folding, etc, and when smarttab is on, is used isntead of ts/sts
+" for the indentation at beginning of line.
+set shiftwidth=4
+
+" Number of spaces that the tab key counts for when editing
+" Only really useful if different from ts, or if using et.
+" When 0, is disabled.
+set softtabstop=0
+
 set autoindent
 set smartindent
 
@@ -382,7 +434,7 @@ if (v:version >= 700) && has('balloon_eval')
       endif
     endif
 
-    return join( lines, has( "balloon_multiline" ) ? "\n" : " " )
+    return join( lines, has( 'balloon_multiline' ) ? '\n' : ' ' )
   endfunction
 
   set ballooneval
@@ -416,10 +468,10 @@ set sidescrolloff=2
 " easily lose old changes that way.  I like to write
 " when I'm explicitly ready to do so.
 set hidden
-"set path=.
+" set path=.
 
 " Allow setting window title for screen
-if &term =~ "^screen"
+if &term =~ '^screen'
   set t_ts=k
   set t_fs=\
 endif
@@ -432,7 +484,7 @@ if has('title') && (has('gui_running') || &title)
   set titlestring+=%(\ %h%m%r%w%)        " flags
   set titlestring+=\ -\ %{v:progname}    " program name
 endif
-set titleold=""
+set titleold=''
 
 set ttyfast
 set ttybuiltin
@@ -444,7 +496,7 @@ set noerrorbells
 set vb t_vb=
 
 " Default folding settings
-if has("folding")
+if has('folding')
   set foldenable
   set foldcolumn=0
   set foldminlines=3
@@ -473,7 +525,7 @@ set shortmess=atItToO
 " Test display
 "  lastline  When included, as much as possible of the last line
 "            in a window will be displayed.  When not included, a
-"            last line that doesn't fit is replaced with "@" lines.
+"            last line that doesn't fit is replaced with '@' lines.
 "  uhex      Show unprintable characters hexadecimal as <xx>
 "            instead of using ^C and ~C.
 set display+=lastline
@@ -487,12 +539,12 @@ set switchbuf+=useopen
 set switchbuf+=split
 
 " Longer commandline history
-if has("cmdline_hist")
+if has('cmdline_hist')
   set history=500
 endif
 
 " Viminfo file behavior
-if has("viminfo")
+if has('viminfo')
   set viminfo='1000,f1,:1000,/1000
 endif
 
@@ -514,39 +566,21 @@ set popt+=syntax:y
 " Don't automatically write buffers on switch
 set noautowrite
 
-" Usage of the mouse
-if has("mouse")
-  set mouse=a
-  if has("unix") &&
-        \ ! has("gui_running")
-    if &term == "xterm"
-      set ttymouse=xterm2
-    else
-      set ttymouse=xterm
-    endif
-  endif
-endif
-
-" Line numbering
-if v:version >= 700
-  set number
-endif
-
 " Allow editing of all types of files
-if has("unix")
+if has('unix')
   set fileformats=unix,dos,mac
 else
   set fileformats=dos,unix,mac
 endif
 
-if has("gui_running")
+if has('gui_running')
   " Hide the mouse cursor while typing
   set mh
 
   " Automatically activate the window the mouse pointer is on
   set mousef
 
-  "set go=Acgtm
+  " set go=Acgtm
   set go=Acg
 endif
 
@@ -557,12 +591,12 @@ set tw=78
 set nostartofline
 
 " Filter expected errors from make
-"if has("eval") && v:version >= 700
-"    let &makeprg='nice make $* 2>&1 \| sed -u -n '
-"    let &makeprg.='-e "/should fail/s/:\([0-9]\)/∶\1/g" '
-"    let &makeprg.='-e "s/\([0-9]\{2\}\):\([0-9]\{2\}\):\([0-9]\{2\}\)/\1∶\2∶\3/g" '
-"    let &makeprg.='-e "/^/p" '
-"endif
+" if has('eval') && v:version >= 700
+"    let &makeprg = 'nice make $* 2>&1 \| sed -u -n '
+"    let &makeprg.= '-e '/should fail/s/:\([0-9]\)/∶\1/g' '
+"    let &makeprg.= '-e 's/\([0-9]\{2\}\):\([0-9]\{2\}\):\([0-9]\{2\}\)/\1∶\2∶\3/g' '
+"    let &makeprg.= '-e '/^/p' '
+" endif
 
 " Show the vim7 tab line only when there is more than one tab page.
 " See :he tab-pages for details.
@@ -578,7 +612,7 @@ endif
 
 " Status Line {{{
 set laststatus=2
-if has("statusline")
+if has('statusline')
   set statusline=
   set statusline+=%-3.3n\                      " buffer number
   set statusline+=%f\                          " filename
@@ -597,26 +631,30 @@ endif
 
 " special statusbar for special windows
 " NOTE: only vim7+ supports a statusline local to a window
-if has("autocmd") && v:version >= 700
-  au FileType qf
-        \ setlocal statusline=%2*%-3.3n%0* |
-        \ setlocal statusline+=\ \[Compiler\ Messages\] |
-        \ setlocal statusline+=%=%2*\ %<%P |
-        \ let w:numberoverride = 1 |
-        \ setlocal nonumber
+if has('autocmd') && v:version >= 700
+  augroup KergothStatusLines
+    au!
+    au FileType qf
+          \ setlocal statusline=%2*%-3.3n%0* |
+          \ setlocal statusline+=\ \[Compiler\ Messages\] |
+          \ setlocal statusline+=%=%2*\ %<%P |
+          \ let w:numberoverride = 1 |
+          \ setlocal nonumber
 
-  au BufWinEnter __Tag_List__
-        \ setlocal statusline=\[Tags\] |
-        \ setlocal statusline+=%= |
-        \ setlocal statusline+=%l
+    au BufWinEnter __Tag_List__
+          \ setlocal statusline=\[Tags\] |
+          \ setlocal statusline+=%= |
+          \ setlocal statusline+=%l
+  augroup END
 endif
 " }}}
 
 " Encoding {{{
-" Termencoding will reflect the current system locale, but
-" internally, and for files, we'll be using UTF-8.
+" Termencoding will reflect the current system locale, but internally,
+" we use utf-8, and for files, we use whichever encoding from
+" &fileencodings was detected for the file in question.
 let &termencoding = &encoding
-if has("multi_byte")
+if has('multi_byte')
   set encoding=utf-8
   set fileencodings=utf-8,iso-8859-15
   " set fileencodings=ucs-bom,utf-8,iso-8859-15
@@ -629,14 +667,14 @@ endif
 "   are being highlighted in red, along with spaces before tabs.
 set list
 
-if (&termencoding == "utf-8") || has("gui_running")
+if (&termencoding == 'utf-8') || has('gui_running')
   set listchars=tab:»·,extends:…
 
   if v:version >= 700
     set listchars+=nbsp:‗
   endif
 
-  if (! has("gui_running")) && (&t_Co < 3)
+  if (! has('gui_running')) && (&t_Co < 3)
     set listchars+=trail:·
   endif
 else
@@ -646,7 +684,7 @@ else
     set listchars+=nbsp:_
   endif
 
-  if (! has("gui_running")) && (&t_Co < 3)
+  if (! has('gui_running')) && (&t_Co < 3)
     set listchars+=trail:.
   endif
 endif
@@ -654,151 +692,155 @@ endif
 
 " Colors {{{
 " Make sure the gui is initialized before setting up syntax and colors
-if has("gui_running")
+if has('gui_running')
   gui
 endif
 
-if has("syntax")
+if has('syntax')
   syntax on
 endif
 
-if colorterm == "gnome-terminal"
-  set t_Co=16
-elseif (colorterm == "rxvt-xpm") && (&term == "rxvt")
-  "try to set colors correctly for mrxvt
-  set t_Co=256
-elseif (colorterm == "putty") && (&term !~ "^screen")
-  set t_Co=256
+if &term !~ '^screen'
+  " Inside of screen, we don't care about colorterm
+  if colorterm == 'gnome-terminal'
+    set t_Co=16
+  elseif (colorterm == 'rxvt-xpm') && (&term == 'rxvt')
+    " try to set colors correctly for mrxvt
+    set t_Co=256
+  elseif (colorterm == 'putty')
+    set t_Co=256
+  endif
 endif
 
-if &t_Co > 2 || has("gui_running")
+if &t_Co > 2 || has('gui_running')
   " Sane color scheme selection.  Baycomb looks like crap
   " with less than 88 colors.
-  if &t_Co >= 88 || has("gui_running")
+  if &t_Co >= 88 || has('gui_running')
     colors baycomb
   else
     colors desert256
   endif
 
-  "Colors red both trailing whitespace:
-  "  foo 
+  " Colors red both trailing whitespace:
+  "  foo   
   "  bar	
-  "And spaces before tabs:
+  " And spaces before tabs:
   "  foo 	bar
 
   hi def link RedundantWhitespace Error
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
-  if has("autocmd")
-    " Email signatures generally start with '-- '.  Adjust the
-    " RedundantWhitespace match for the 'mail' filetype to not
-    " highlight that particular trailing space in red.
-    au FileType mail match RedundantWhitespace /\(^--\)\@<!\s\+$/
-    " Diff context begins with a space, so blank lines of context
-    " are being inadvertantly flagged as redundant whitespace.
-    " Adjust the match to exclude the first column.
-    au FileType diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
-  endif
-
-  " When using gnome-terminal, vim's color test script shows
-  " dark gray on white correctly, but white on dark gray appears
-  " as white on black.  This seemingly results in the cursor
-  " vanishing when over a dark gray SpecialKey.  Dark blue works.
-  if colorterm == "gnome-terminal"
-    hi SpecialKey ctermfg=darkblue guifg=darkblue
-  else
-    hi SpecialKey ctermfg=darkgray guifg=darkgray
+  if has('autocmd')
+    augroup KergothWhiteSpace
+      au!
+      " Email signatures generally start with '-- '.  Adjust the
+      " RedundantWhitespace match for the 'mail' filetype to not
+      " highlight that particular trailing space in red.
+      au FileType mail match RedundantWhitespace /\(^--\)\@<!\s\+$/
+      " Diff context begins with a space, so blank lines of context
+      " are being inadvertantly flagged as redundant whitespace.
+      " Adjust the match to exclude the first column.
+      au FileType diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
+    augroup END
   endif
 endif
 " }}}
 
 " Autocommands {{{
-if has("autocmd")
-  " Always do a full syntax refresh
-  " au BufEnter * syntax sync fromstart
+if has('autocmd')
+  augroup Kergoth
+    au!
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  au BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal g`\"" |
-        \ endif
+    " Always do a full syntax refresh
+    au BufEnter * syntax sync fromstart
 
-  " Set a default filetype
-  au BufReadPost,BufNewFile,VimEnter * if &ft == "" | setfiletype text | endif
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it when the position is invalid or when inside an event handler
+    " (happens when dropping a file on gvim).
+    au BufReadPost *
+          \ if line("'\"") > 0 && line ("'\"") <= line('$') |
+          \   exe "normal g'\"" |
+          \ endif
 
-  " Set the compiler to the filetype by default
-  au FileType * try | exe 'compiler ' . &filetype | catch | endtry
+    " Set a default filetype
+    au BufReadPost,BufNewFile,VimEnter * if &ft == '' | setfiletype text | endif
 
-  try
-    " if we have a vim which supports QuickFixCmdPost (vim7),
-    " give us an error window after running make, grep etc, but
-    " only if results are available.
-    au QuickFixCmdPost * botright cwindow 5
+    " Set the compiler to the filetype by default
+    au FileType * try | exe 'compiler ' . &filetype | catch | endtry
 
-    au QuickFixCmdPre make
-          \ let g:make_start_time=localtime()
+    try
+      " if we have a vim which supports QuickFixCmdPost (vim7),
+      " give us an error window after running make, grep etc, but
+      " only if results are available.
+      au QuickFixCmdPost * botright cwindow 5
 
-    au QuickFixCmdPost make
-          \ let g:make_total_time=localtime() - g:make_start_time |
-          \ echo printf("Time taken: %dm%2.2ds", g:make_total_time / 60,
-          \     g:make_total_time % 60)
-  catch
-  endtry
+      au QuickFixCmdPre make
+            \ let g:make_start_time = localtime()
 
-  " Close out the quickfix window if it's the only open window
-  function! <SID>QuickFixClose()
-    if &buftype == 'quickfix'
-      " if this window is last on screen quit without warning
-      if winbufnr(2) == -1
-        quit!
+      au QuickFixCmdPost make
+            \ let g:make_total_time = localtime() - g:make_start_time |
+            \ echo printf('Time taken: %dm%2.2ds', g:make_total_time / 60,
+            \     g:make_total_time % 60)
+    catch
+    endtry
+
+    " Close out the quickfix window if it's the only open window
+    function! <SID>QuickFixClose()
+      if &buftype == 'quickfix'
+        " if this window is last on screen quit without warning
+        if winbufnr(2) == -1
+          quit!
+        endif
       endif
-    endif
-  endfunction
-  au BufEnter * call <SID>QuickFixClose()
+    endfunction
+    au BufEnter * call <SID>QuickFixClose()
 
-  " Change the current directory to the location of the
-  " file being edited.
-  au BufEnter * :lcd %:p:h
+    " Change the current directory to the location of the
+    " file being edited.
+    au BufEnter * :lcd %:p:h
 
-  " Special less.sh and man modes {{{
-  function! <SID>check_pager_mode()
-    if exists("g:loaded_less") && g:loaded_less
-      " we're in vimpager / less.sh / man mode
-      set laststatus=0
-      set ruler
-      set foldmethod=manual
-      set foldlevel=99
-      set nolist
-    endif
-  endfunction
-  au VimEnter * :call <SID>check_pager_mode()
+    " Special less.sh and man modes {{{
+    function! <SID>check_pager_mode()
+      if exists('g:loaded_less') && g:loaded_less
+        " we're in vimpager / less.sh / man mode
+        set laststatus=0
+        set ruler
+        set foldmethod=manual
+        set foldlevel=99
+        set nolist
+      endif
+    endfunction
+    au VimEnter * :call <SID>check_pager_mode()
+    " }}}
 
-  " Intelligent enable/disable of the line number display
-  au VimEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
-  " }}}
-endif " has("autocmd")
+    " Intelligent enable/disable of the line number display
+    au VimEnter,BufWinEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
+
+    try
+      au VimResized * :call <SID>AutoNumberByWidth()
+    catch
+    endtry
+  augroup END " augroup Kergoth
+endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
-"let g:xml_syntax_folding = 1
-let g:NERD_shut_up=1
+" let g:xml_syntax_folding = 1
+let g:NERD_shut_up = 1
 let g:NERD_comment_whole_lines_in_v_mode = 1
-let g:NERD_left_align_regexp = ".*"
-let g:NERD_right_align_regexp = ".*"
-let g:NERD_space_delim_filetype_regexp = ".*"
+let g:NERD_left_align_regexp = '.*'
+let g:NERD_right_align_regexp = '.*'
+let g:NERD_space_delim_filetype_regexp = '.*'
 let g:doxygen_enhanced_color = 0
 let g:html_use_css = 1
 let g:use_xhtml = 1
 let g:perl_extended_vars = 1
-let g:HL_HiCurLine = "Function"
 " let g:perl_fold = 1
-" let g:sh_fold_enabled= 1
+" let g:sh_fold_enabled = 1
 " let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
-let g:HL_HiCurLine = "HL_HiCurLine"
-let g:Modeliner_format = 'fenc= sts= sw= et'
+let g:HL_HiCurLine = 'StatusLine'
+let g:Modeliner_format = 'fenc= sts= sw= ts = et'
 let b:super_sh_indent_echo = 0
 " }}}
 
@@ -810,15 +852,15 @@ let g:Tlist_WinWidth = 28
 let g:Tlist_Compact_Format = 1
 let g:Tlist_File_Fold_Auto_Close = 1
 let g:Tlist_Use_Right_Window = 1
-let g:Tlist_Sort_Type = "name"
+let g:Tlist_Sort_Type = 'name'
 let g:Tlist_Inc_Winwidth = 0
 
 let s:using_winmanager = 0
 if exists('s:using_winmanager') &&
       \ s:using_winmanager == 1
   let g:Tlist_Close_On_Select = 0
-  " let g:winManagerWindowLayout = "FileExplorer,TagsExplorer|BufExplorer,TodoList"
-  let g:winManagerWindowLayout = "FileExplorer,TagList|BufExplorer"
+  " let g:winManagerWindowLayout = 'FileExplorer,TagsExplorer|BufExplorer,TodoList'
+  let g:winManagerWindowLayout = 'FileExplorer,TagList|BufExplorer'
   let g:defaultExplorer = 0
 
   " Disable use of tabbar / minibufexpl
