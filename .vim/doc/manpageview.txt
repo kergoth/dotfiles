@@ -1,0 +1,269 @@
+*manpageview.txt*	Man Page Viewer			Dec 29, 2005
+
+Author:  Charles E. Campbell, Jr.  <NdrchipO@ScampbellPfamily.AbizM>
+	  (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
+           The VIM LICENSE applies to ManPageView.vim and ManPageView.txt
+           (see |copyright|) except use "ManPageView" instead of "Vim"
+	   no warranty, express or implied.  use at-your-own-risk.
+
+==============================================================================
+1. Contents				*manpageview* *manpageview-contents*
+
+	1. Contents.................: |manpageview-contents|
+	2. ManPageView Options......: |manpageview-options|
+	3. ManPageView Usage........: |manpageview-usage|
+	4. ManPageView History......: |manpageview-history|
+
+==============================================================================
+
+2. ManPageView Options					*manpageview-options*
+
+	g:manpageview_options : extra options that will be passed on when
+	                        invoking the man command
+	  examples:
+	            let g:manpageview_options= "-P 'cat -'"
+	            let g:manpageview_options= "-c"
+	            let g:manpageview_options= "-Tascii"
+	
+	g:manpageview_pgm : by default, its "man", but it may be changed
+		     by the user.  This program is what is called to actually
+		     extract the manpage.
+
+	g:manpageview_winopen : may take on one of six values:
+
+	   "only"    man page will become sole window.
+	             Side effect: All windows' contents will be saved first!  (windo w)
+	             Use :q to terminate the manpage and restore the window setup.
+	             Note that mksession is used for this option, hence the
+	             +mksession configure-option is required.
+	   "hsplit"  man page will appear in a horizontally          split window (default)
+	   "vsplit"  man page will appear in a vertically            split window
+	   "hsplit=" man page will appear in a horizontally & evenly split window
+	   "vsplit=" man page will appear in a vertically   & evenly split window
+	   "reuse"   man page will re-use current window.  Use <ctrl-o> to return.
+"                    (for the reuse option, thanks go to Alan Schmitt)
+	
+	g:manpageview_server : for WinNT; uses rsh to read manpage remotely
+	g:manpageview_user   : use given server (host) and username
+	  examples:
+	            let g:manpageview_server= "somehostname"
+	            let g:manpageview_user  = "username"
+
+	g:manpageview_init_{ext}:			*manpageview_extend*
+	g:manpageview_K_{ext}:
+	g:manpageview_options_{ext}:
+	g:manpageview_pfx_{ext}:
+	g:manpageview_pgm_{ext}:
+	g:manpageview_sfx_{ext}:
+	g:manpageview_syntax_{ext}:
+
+		With these options, one may specify an extension on a topic
+		and have a special program and customized options for that
+		program used instead of man itself.  As an example, consider
+		perl: >
+
+			let g:manpageview_pgm_pl = "perldoc"
+			let g:manpageview_options= ";-f;-q"
+<
+		Note that, for perl, the options consist of a sequence of
+		options to be tried, separated by semi-colons.
+
+		The g:manpageview_init_{ext} specifies a function to be called
+		for initialization.  The info handler, for example, uses this
+		function to specify buffer-local maps.
+
+		The g:manpageview_K_{ext} specifies a function to be invoked
+		when the "K" key is tapped.  By default, it calls
+		s:ManPageView().
+
+		The g:manpageview_options_{ext} specifies what options are
+		needed.
+
+		The g:manpageview_pfx_{ext} specifies a prefix to prepend to
+		the nominal manpage name.
+
+		The g:manpageview_pgm_{ext} specifies which program to run for
+		help.
+
+		The g:manpageview_sfx_{ext} specifies a suffix to append to
+		the nominal manpage name.  Without this last option, the
+		provided suffix (ie. Man sprintf.pl 's  ".pl") will be elided.
+		With this option, the g:manpageview_sfx_{ext} will be
+		appended.
+
+		The g:manpageview_syntax_{ext} specifies a highlighting file
+		to be used for this particular extension type.
+
+	You may map some key other than "K" to invoke ManPageView; as an
+	example: >
+		nmap V <Plug>ManPageView
+<	Put this in your <.vimrc>.
+
+==============================================================================
+
+3. ManPageView Usage					*manpageview-usage*
+
+	:Man topic
+	:Man topic booknumber
+	:Man booknumber topic
+	:Man topic(booknumber)
+	:Man      -- will restore position prior to use of :Man
+	             (only for g:manpageview_winopen == "only")
+
+	Put cursor on topic, press "K" while in normal mode.
+	(This works if (a) you've not mapped some other key
+	to <Plug>ManPageView, and (b) if |keywordprg| is "man",
+	which it is by default)
+
+	If your "man" command requires options, you may specify them
+	with the g:manpageview_options variable in your <.vimrc>.
+
+	To support perl, manpageview now can switch to using perldoc
+	instead of man.  In fact, the facility is generalized to
+	allow multiple help viewing systems.
+
+	PERL					*manpageview-perl*
+
+	For perl, the following command, >
+		:Man sprintf.pl
+<	will bring up the perldoc version of sprintf.  The perl
+	support includes a "path" of options to use with perldoc: >
+		g:manpageview_options_pl= ";-f;-q"
+<	Thus just the one suffix (.pl) with manpageview handles
+	embedded perl documentation, perl builtin functions, and
+	perl FAQ keywords.
+
+	INFO					*manpageview-info*
+
+	Info pages are supported by appending a ".i" suffix: >
+		:Man info.i
+<	A number of maps are provided: >
+		MAP	EFFECT
+		> n	go to next node
+		< p	go to previous node
+		d       go to the top-level directory
+		u	go to up node
+		t	go to top node
+		H	give help
+		<bs>    go up one page
+		<del>   go up one page
+		<tab>   go to next hyperlink
+<
+	EXTENDING MANPAGEVIEW
+
+	To extend manpageview to handle other documentation systems,
+	manpageview has some special variables with a common extension: >
+
+		g:manpageview_pgm_{ext}
+		g:manpageview_options_{ext}
+		g:manpageview_sfx_{ext}
+<
+	For perl, the {ext} is ".pl", and the variables are set to: >
+
+     	     let g:manpageview_pgm_pl     = "perldoc"
+     	     let g:manpageview_options_pl = ";-f;-q"
+<
+	For info, that {ext} is ".i", and the extension variables are
+	set to: >
+
+     	     let g:manpageview_pgm_i     = "info"
+     	     let g:manpageview_options_i = "--output=-"
+     	     let g:manpageview_syntax_i  = "info"
+     	     let g:manpageview_K_i       = "<sid>ManPageInfo(0)"
+     	     let g:manpageview_init_i    = "call ManPageInfoInit()"
+<
+	The help on |manpageview_extend| covers these variables in more
+	detail.
+
+
+==============================================================================
+
+3. ManPageView History					*manpageview-history*
+
+	Thanks go to the various people who have contributed changes,
+	pointed out problems, and made suggestions!
+             
+	v14, Nov 23, 2005 : * "only" was occasionally issuing an "Already one
+	                      window" message, which is now prevented
+	     Nov 29, 2005   * Aaron Griffin found that setting gdefault
+			      gave manpageview problems with ctrl-hs.  Fixed.
+	     Dec 16, 2005   * Suresh Govindachar asked about letting
+	                      manpageview also handle perldoc -q manpages.
+			      IMHO this was getting cumbersome, so I extended
+			      opt to allow a semi-colon separated "path" of
+			      up to three options to try.
+	     Dec 20, 2005   * In consultation with Gareth Oakes, manpageview
+	                      needed some quoting and backslash-fixes to work
+			      properly with windows and perldoc.
+	     Dec 29, 2005   * added links-based help for php functions
+
+	v13, Jul 19, 2005 : * included niebie's changes to manpageview -
+	                      <bs>, <del> to scroll one page up,
+			      <tab> to go to the next hyperlink
+			      d     to go to the top-level directory
+			      and some bugfixes ([] to \[ \], and redirecting
+			      stderr to /dev/null by default)
+	     Aug 17, 2005   * report option workaround
+	     Sep 26, 2005   * :Man -k  now uses "man -k" to generate a keyword
+	                      listing
+			    * included syntax/man.vim and syntax/mankey.vim
+	v12, Jul 11, 2005 : unmap K was causing "noise" when it was first
+			    used.  Fixed.
+	11: * K now <buffer>-mapped to call ManPageView() 
+	10: * support for perl/perldoc:
+	      g:manpageview_{ pgm | options | sfx }_{ extension }
+	    * support for info: g:manpageview_{ K | pfx | syntax }
+	    * configuration option drilling -- if you're in a
+	      *.conf file, pressing "K" atop an option will go
+	      to the associated help page and option, if there's
+	      help for that configuration file
+	9 : * for vim versions >= 6.3, keepjumps is used to reduce the
+	      impact on the jumplist
+	    * manpageview now turns off linewrap for the manpage, since
+	      re-formatting doesn't seem to work usually.
+	    * apparently some systems resize the [g]vim display when 
+	      any filter is used, including manpageview's :r!... .
+	      Setting g:manpageview_dispresize=1 will force retention
+	      of display size.
+	    * before mapping K to use manpageview, a check that
+	      keywordprg is "man" is also made. (tnx to Suresh Govindachar)
+	8 : * apparently bh=wipe is "new", so I've put a version
+	      test around that setting to allow older vim's to avoid
+	      an error message
+	    * manpageview now turns numbering off in the manpage buffer (nonu)
+	7 : * when a manpageview window is exit'd, it will be wiped out
+	      so that it doesn't clutter the buffer list
+	    * when g:manpageview_winopen was "reuse", the manpage would
+	      reuse the window, even when it wasn't a manpage window.
+	      Manpageview will now use hsplit if the window was marked
+	      "modified"; otherwise, the associated buffer will be marked
+	      as "hidden" (so that its still available via the buffer list)
+	6 : * Erik Remmelzwal provided a fix to the g:manpageview_server
+	      support for NT
+	    * implemented Erik's suggestion to re-use manpage windows
+	    * Nathan Huizinga pointed out, <cWORD> was picking up too much for
+	      the K map. <cword> is now used
+	    * Denilson F de Sa suggested that the man-page window be set as
+	      readonly and nonmodifiable
+
+	5 : includes g:manpageview_winmethod option (only, hsplit, vsplit)
+
+	4 : Erik Remmelzwaal suggested including, for the benefit of NT users,
+	    a command to use rsh to read the manpage remotely.  Set
+	    g:manpageview_server to hostname  (in your <.vimrc>)
+	    g:manpageview_user   to username
+
+	3 : * ignores (...) if it contains commas or double quotes.  elides
+	      any commas, colons, and semi-colons at end
+
+	    * g:manpageview_options supported
+
+	2 : saves current session prior to invoking man pages :Man    will
+	    restore session.  Requires +mksession for this new command to
+	    work.
+
+	1 : the epoch
+
+==============================================================================
+vim:tw=78:ts=8:ft=help

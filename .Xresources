@@ -28,6 +28,7 @@ URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
             -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
             [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
             xft:Code2000:antialias=false
+Vim*fontList: Leonine Sans Mono 13
 
 URxvt*termName: rxvt-unicode
 

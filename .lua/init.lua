@@ -27,4 +27,4 @@ if maj and min then
 end
 
 pcall(require, "init")
-pcall(require, "std")
+-- pcall(require, "std")

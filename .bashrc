@@ -105,12 +105,8 @@ scr_settitle () {
 
 setup_interactive () {
 	export SHELL
-	if [ -n "$COLORTERM" ]; then
-		alias ls='ls --color=always -a -p'
-	else
-		eval `dircolors`
-		alias ls='ls --color=auto -a -p'
-	fi
+	eval `dircolors`
+	alias ls='ls --color=auto -a -p'
 	case $TERM in
 	rxvt*|Xterm|xterm|aterm|urxvt*)
 		XTERM_SET='\[\033]0;\u@\h:\w\007\]'
@@ -170,11 +166,11 @@ alias diff='diff -urNdp'
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
 alias vi=vim
-alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
 alias symbolsizes="${NM} -S -t d --size-sort"
+alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
-alias lr='ls --sort=time --reverse'
+alias hd='od -t x1'
 
 if test x"$TERM" = "xrxvt-unicode"; then
 	c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
@@ -182,6 +178,7 @@ if test x"$TERM" = "xrxvt-unicode"; then
 	   ! test -e $HOME/.terminfo/$c/$TERM; then
 		TERM=rxvt
 	fi
+        alias ls='ls --color=always -ap'
 fi
 
 export TERM

@@ -1,5 +1,5 @@
 " Vim color file
-" sift v1.0
+" sift v1.2
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -23,36 +23,29 @@ endif
 
 let g:colors_name="sift"
 
-hi Normal       guifg=#cbdcef guibg=#13151c   "1a1823
-hi NonText      guifg=#382920 guibg=#1d1b25
-
-hi Folded       guibg=#201f32 guifg=#BBDDCC
-hi FoldColumn	guibg=#20202f guifg=#dbcaa5
-hi LineNr       guibg=#22202a guifg=#8095d5 
-hi StatusLine	guibg=#2a2a3a guifg=#6a65fd gui=none
-hi StatusLineNC	guibg=#252535 guifg=#151318 gui=none
-hi VertSplit	guibg=#22253a guifg=grey50 gui=none
+hi Normal       guifg=#9bdcef guibg=#13081a
+hi NonText      guifg=#382920 guibg=#140316
 
 " syntax highlighting """"""""""""""""""""""""""""""""""""""""
 
-hi Comment		guifg=#3a4a4a guibg=#0a1118
-hi Title		guifg=#fb4c2f  gui=none
-hi Underlined   guifg=#fb4c5a gui=none
+hi Comment		guifg=#509080
+hi Title		guifg=#5959f9  gui=none
+hi Underlined   guifg=#0959f9 gui=none
 
-hi Statement    guifg=#fa5a75  gui=none
-hi Type			guifg=#d080a0  gui=none
-hi Constant		guifg=#d0aaa0
-hi Number		guifg=#d0aaca
-hi PreProc      guifg=#d045a3
-hi Identifier   guifg=#b08aaa
-hi Special		guifg=#a07ab5
-hi Operator		guifg=#4a4a50
+hi Statement    guifg=#ffff80  gui=none
+hi Type			guifg=#00e5bf  gui=none
+hi Constant		guifg=#3acaf5
+hi Number		guifg=#0afafa
+hi PreProc      guifg=#f055c3
+hi Identifier   guifg=#30a0f0
+hi Special		guifg=#c0caa5
+hi Operator		guifg=#905a60
 "hi Keyword		guifg=green
 "hi Error        guibg=#408452
-hi Function     guifg=#c05a3a guibg=bg "or green 50b3b0 
-hi Conditional	guifg=#f5a05a guibg=bg
-hi Repeat		guifg=#f5705a guibg=bg
-hi Exception	guifg=#ffff30
+hi Function     guifg=#c08a50 guibg=black gui=bold "or green 50b3b0 
+hi Conditional	guifg=#f5305a guibg=bg
+hi Repeat		guifg=#f5505a guibg=bg
+hi Exception	guifg=#cfff00
 "hi Ignore       guifg=grey40
 "hi Todo			guifg=orangered guibg=yellow2
 """""this section borrowed from OceanDeep/Midnight"""""
@@ -74,10 +67,18 @@ hi ErrorMsg     guibg=#ff4545
 
 hi Cursor       guibg=#cad5c0 guifg=#05293d
 
+hi Folded       guibg=#201328 guifg=#BBDDCC
+hi FoldColumn	guibg=#130014 guifg=#dbcaa5
+"hi FoldColumn	guibg=#83a5cd guifg=#70459F
+hi LineNr       guibg=#130518 guifg=#8095d5 
+"hi LineNr       guibg=#081c30 guifg=#80a0dA 
+hi StatusLine	guibg=#6585c5 guifg=#0a150d gui=none
+hi StatusLineNC	guibg=#55609a guifg=#302d34 gui=none
 
 hi Search       guibg=#9a9d8d guifg=#3a4520
 hi IncSearch	guifg=#caceba guibg=#3a4520 
 
+hi VertSplit	guibg=#525f95 guifg=grey50 gui=none
 hi ModeMsg    	guifg=#00AACC
 hi MoreMsg      guifg=SeaGreen
 hi Question    	guifg=#AABBCC

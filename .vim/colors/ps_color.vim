@@ -1,8 +1,8 @@
 " Vim colour file --- PSC
-" Maintainer:	Pan Shizhu <dicpan@hotmail.com>
-" Last Change:	17 November 2004
-" Version:	2.82
+" Maintainer:	Pan, Shi Zhu <Go to the following URL for my email>
 " URL:		http://vim.sourceforge.net/scripts/script.php?script_id=760
+" Last Change:	17 November 2004
+" Version:	2.83
 "
 "	Please prepend [VIM] in the title when writing e-mail to me, or it will
 "	be automatically treated as spam and removed. 
@@ -438,15 +438,14 @@ finish
 " ---------------------------------------------------------------------
 " Put the help after the HelpExtractorDoc label...
 " HelpExtractorDoc:
-*ps_color.txt*  PSC For Vim version 6.3         Last change:  17 November 2004
+*ps_color.txt*  PSC For Vim version 6.4            Last change:  9 March 2006
 
 
 PERSONAL COLOUR SWITCHER                                *ps_colour* *pscolor*
 
 
-Author:  Pan, Shizhu.  <dicpan> at <hotmail o com> >
-	(prepend '[VIM]' in the title or your mail may be silently removed.)
-<
+Author:  Pan, Shi Zhu.  <see vim online for my e-mail>
+
 ==============================================================================
 CONTENTS                                                 *psc* *psc-contents*
 
@@ -751,11 +750,10 @@ PSC WITH CTERM                                                    *psc-cterm*
 	color, so totally the 16 color foreground is available, but color
 	name DarkXXX and LightXXX are the same.
 	
-	The pre-configured Cygwin.lnk is available for download on my web page
-	for Vim, but the site seems down, if my site would be on again, it
-	should be at the following URL: >
-		http://poet.tomud.com/pub/Cygwin.lnk.gz
-<
+        The pre-configured Cygwin.lnk is available for download on my web page
+        for Vim, but the site seems down, and the my site would not be on
+        recently, you may need to change colors in the Properties menu...
+
 	Cygwin is highly recommended for Vim user if you are using Windows NT
 	based systems (e.g. NT 4.0, Win2k, WinXP, Win2003, etc). But Cygwin is
 	not that versatile under Windows 95/98/ME. I'm not sure whether this
@@ -914,6 +912,11 @@ PSC FAQ AND TIPS                                         *psc-faq* *psc-tips*
 
 ==============================================================================
 PSC RELEASE NOTES                                         *psc-release-notes*
+
+	2.83 Release Note: ~
+
+        This is an identical version, but my e-mail address changed. 
+
 
 	2.82 Release Note: ~
 

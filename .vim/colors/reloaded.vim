@@ -1,8 +1,8 @@
 " Vim colour file: The colorscheme reloaded.
-" Maintainer:	Pan Shizhu <dicpan@hotmail.com>
-" Last Change:	16 July 2004
+" Maintainer:	Pan, Shi Zhu <go to the URL below for my email>
 " URL:		http://vim.sourceforge.net/scripts/script.php?script_id=760
-" Version:	0.6
+" Last Change:	17 Feburary 2006
+" Version:	0.8
 "
 "	Please prepend [VIM] in the title when writing e-mail to me, or it will
 "	be silently discarded.
@@ -13,6 +13,10 @@
 "
 " Release Notes:
 "
+" v0.8	It was reported that the s:to_hex function has E15 in Vim7, fixed.
+" v0.7	Fixed a bug in the first sample
+" 	Added the new "channel mixer" grey conversion algorithm, which
+" 	improves brightness balance.
 " v0.6  For default users it may be slow, Added :se lz to disable refresh
 " 	Changed some groups of the sample parameter
 " 	Use bracketed variable instead of the exe statement
@@ -71,7 +75,7 @@ endf
 " sub-function
   " 8-bit integer to 2 digit hexadecimal
   fu! s:to_hex(num)
-    retu '0123456789abcdef' [a:num/16%16] . '0123456789abcdef' [a:num%16]
+    retu '0123456789abcdef'[a:num/16%16] . '0123456789abcdef'[a:num%16]
   endf
 
 " rgb to rgb color string
@@ -124,6 +128,28 @@ fu! s:hsb2colors(hue,sat,bri)
 
 endf
 
+" hsl to v
+fu! s:hsb2v(hue,sat,bri)
+
+  if a:sat == 0
+    retu a:bri
+  en
+
+  if a:bri < 512
+    let l:v2 = a:bri * ( 1023 + a:sat )
+  el           
+    let l:v2 = ( a:bri + a:sat ) * 1023 - ( a:sat * a:bri )
+  en
+
+  let l:v1 = 2 * 1023 * a:bri - l:v2
+
+  retu s:hue2rgb(l:v1, l:v2, a:hue + 120) / 1023 * 30 / 100 + 
+	\ s:hue2rgb(l:v1, l:v2, a:hue) / 1023 * 58 / 100 + 
+	\ s:hue2rgb(l:v1, l:v2, a:hue - 120) / 1023 * 12 / 100
+
+endf
+
+
 " rgb color number to s:rgb
 fu! s:color2rgb(color)
   let s:red = a:color / 0x10000
@@ -131,7 +157,9 @@ fu! s:color2rgb(color)
   let s:blue = a:color % 0x100
 endf
 
-" rgb to s:hsl
+  if !exists("s:loaded") | let s:visual = 0 | en
+
+" rgb to s:hslv
 fu! s:rgb2hsb(red,green,blue)
 
   let l:red = a:red * 1023 / 255
@@ -144,7 +172,7 @@ fu! s:rgb2hsb(red,green,blue)
 
   let s:bri = (l:max + l:min) / 2
 
-  if  l:delta == 0 
+  if l:delta == 0 
     let s:hue = 180	" When sat = 0, hue default to 180
     let s:sat = 0
   el 
@@ -160,9 +188,9 @@ fu! s:rgb2hsb(red,green,blue)
 
     if l:red == l:max 
       let s:hue = l:del_b - l:del_g
-    elsei  l:green == l:max  
+    elsei l:green == l:max  
       let s:hue = 120 + l:del_r - l:del_b
-    elsei  l:blue == l:max  
+    elsei l:blue == l:max  
       let s:hue = 240 + l:del_g - l:del_r
     en
 
@@ -188,12 +216,65 @@ endf
     retu l:bri * s:bri_modify / 100
   endf
 
+  if !exists("s:loaded") | let s:verbose = 0 | en
+
 " input hsl, do modification in HSL color space, output rgb color string
 fu! s:make_hsb(hue,sat,bri)
 
   let l:hue = s:guard(s:cast_hue(a:hue), 360)
   let l:sat = s:guard(s:cast_sat(a:sat), 1023, s:sat_base)
   let l:bri = s:guard(s:cast_bri(a:bri), 1023, s:bri_base)
+
+  if s:visual
+    let l:v1 = s:hsb2v(a:hue, a:sat, l:bri)
+    let l:v2 = s:hsb2v(l:hue, l:sat, l:bri)
+    if s:verbose | ec "\"\tv1=".l:v1."\tv2=".l:v2."\tL=".l:bri | en
+
+    let l:found = 0
+    let l:lastdir = 0
+    while v1 != v2
+      if v1 < v2 
+        if l:found == 0
+          let l:bri = l:bri - 10
+        el
+          let l:bri = l:bri - 1
+        en
+        if l:lastdir == 1 
+          if l:found == 0
+            let l:found = 1
+          el
+            brea
+          en
+        en
+        let l:lastdir = -1
+
+      elsei v1 > v2
+        if l:found == 0
+          let l:bri = l:bri + 10
+        el
+          let l:bri = l:bri + 1
+        en
+        if l:lastdir == -1 
+          if l:found == 0
+            let l:found = 1
+          el
+            brea
+          en
+        en
+        let l:lastdir = 1
+
+      en
+
+      if l:bri >= 1023 | brea | en
+      if l:bri <= 0 | brea | en
+
+      let l:v2 = s:hsb2v(l:hue, l:sat, l:bri)
+      " if (v1 - v2) == 1 | brea | en
+      " if (v2 - v1) == 1 | brea | en
+    endw
+
+    let l:bri = s:guard(s:cast_bri(l:bri), 1023, s:bri_base)
+  en
 
   if s:verbose | ec "\"\tH=".l:hue."\tS=".l:sat."\tL=".l:bri | en
   retu s:hsb2colors(l:hue, l:sat, l:bri)
@@ -222,7 +303,6 @@ fu! s:parse_color(p)
   en
 endf
 
-if !exists("s:loaded") | let s:verbose = 0 | en
 fu! s:psc_hi(group, p1, p2, ...)
   if a:0 == 0
     let l:p3 = "gui=NONE"
@@ -263,7 +343,7 @@ fu! s:psc_reload(...)
   " Only do color for GUI
   if !has("gui_running") | retu | en
 
-  if a:0 > 10
+  if a:0 > 11
     echoe "Too many parameters, ".'a:0 == '.a:0
     retu
   en
@@ -315,13 +395,19 @@ fu! s:psc_reload(...)
   en
 
   if a:0 >= 9
-    let s:verbose = a:9
+    let s:visual = a:9
+  el
+    InitOpt visual 0
+  en
+
+  if a:0 >= 10
+    let s:verbose = a:10
   el
     InitOpt verbose 0
   en
 
-  if a:0 == 10
-    let s:reload_filename = a:10
+  if a:0 == 11
+    let s:reload_filename = a:11
   el
     InitOpt reload_filename 'ps_color.vim'
   en
@@ -337,9 +423,9 @@ fu! s:psc_reload(...)
 
   se lz
 
-  if !s:lightbg | se bg=dark | el | se bg=light | en
-
-  hi clear
+  let s:line = (s:lightbg ? 'se bg=light' : 'se bg=dark' ) . 'hi clear'
+  if s:verbose | ec s:line | en
+  exe s:line
 
   if exists("syntax_on") | sy reset | en
 
@@ -359,7 +445,7 @@ fu! s:psc_reload(...)
   if s:verbose 
     ec '" Reloaded color scheme from '.s:reload_filename 
     ec '" with param ' s:hue_range s:sat_modify s:bri_modify 
-          \s:hue_phase s:sat_base s:bri_base s:lightbg s:plainfont 
+	\ s:hue_phase s:sat_base s:bri_base s:lightbg s:plainfont s:visual
     ec '" '
   en
 
@@ -484,15 +570,14 @@ fini
 " ---------------------------------------------------------------------
 " Put the help after the HelpExtractorDoc label...
 " HelpExtractorDoc:
-*reloaded.txt*  Color Tuner and Reloader           Last change:  16 July 2004
+*reloaded.txt*  Color Tuner and Reloader           Last change:  3 August 2004
 
 
 PERSONAL COLOUR TUNER AND RELOADER                               *psc_reload*
 
 
-Author:  Pan, Shizhu.  <dicpan> at <hotmail o com> >
-	(prepend '[VIM]' in the title or your mail may be silently removed.)
-<
+Author:  Pan, Shizhu.  <see vim online for my e-mail>
+
 ==============================================================================
 CONTENTS                                                 *pcr* *pcr-contents*
 
@@ -513,6 +598,7 @@ PCR FEATURES OVERVIEW                           *pcr-features* *pcr-overview*
 	. PCR is a color scheme tuner and reloader.
 	. PCR is an optional utility for ps_color as well as other schemes
 	. It tunes the whole color scheme in HSL color space.
+	. Can use visible brightness instead of theoretic one.
 	. Thousands of color styles can be achieved by HSL tuning.
 	. Tuned output can be saved to create new color schemes.
 	. Can be configured to tune your own color scheme.
@@ -579,12 +665,12 @@ PSC USAGE                                                         *pcr-usage*
 	as in .vimrc. To see what the :Reload is capable of, try the
 	following, one by one:
 >
-		:Reload 120 100 100 60 341 128
-		:Reload 120 100 100 60 341 0 1
+		:Reload 120 100 100 60 341 128 0
+		:Reload 120 100 100 60 341 0 1 0 1
 		:Reload 480 84 84 195 256 96 0
-		:Reload 720 71 100 360 0 0 0
+		:Reload 720 71 100 360 0 0 0 0 1
 		:Reload 60 100 100 150 341 0 0
-		:Reload 240 120 100 330 341 0 1
+		:Reload 240 100 100 330 341 0 1 0 1
 		:Reload 360 100 100 180 0 0 0 1
 		:Reload 360 100 100 180 0 0 1 0
 <
@@ -617,7 +703,7 @@ PCR OPTIONS                                                     *pcr-options*
 
 	Synopsis ~
 
-	:Reload h_r s_m l_m h_p s_b l_b [ lbg [ pf [ vb [ cdf ] ] ] ]
+	:Reload h_r s_m l_m h_p s_b l_b [ lbg [ pf [ vl [ vb [ cdf ] ] ] ] ]
 
 	Scope ~
 
@@ -736,6 +822,20 @@ PCR OPTIONS                                                     *pcr-options*
 	When not set, will check for g:psc_fontface, if non-exists,
 	default to 0.
 
+	Parameter vl ~
+
+	This refers to visible luminance
+
+	When set to 1, the luminance will be calculated according to visible
+	lumance:
+>
+	lum = red * 30% + green * 58% + blue * 12%
+<
+	The default is to use HSL luminance, i.e.
+>
+	lum = ( max(red, green, blue) + min(red, green, blue) ) / 2
+	command.
+<
 	Parameter vb ~
 
 	This refers to 'verbose'
@@ -772,9 +872,9 @@ PCR OPTIONS                                                     *pcr-options*
 	. Must be in the same directory as reloaded.vim
 
 	. ALL highlight group must be defined, do not accept any default
-          value, this include the Underline and Ignore groups, this also hints
-          that both foreground and background must be defined.  Use :ru
-          syntax/hitest.vim to check if all highlight groups are defined.
+	  value, this include the Underline and Ignore groups, this also hints
+	  that both foreground and background must be defined.  Use :ru
+	  syntax/hitest.vim to check if all highlight groups are defined.
 
 	. Color names like "SlateBlue" should not be used, only hardcoded color
 	  like #rrggbb is acceptable, the fg and bg can be used though, Since
@@ -836,7 +936,7 @@ PCR FAQ AND TIPS                                                    *pcr-faq*
 	   please put reloaded.vim in ~/.vim/colors, do NOT put it in
 	   ~/.vim/plugin !
 >
-        Q: Why it is impossible to browse functions in reloaded.vim with
+	Q: Why it is impossible to browse functions in reloaded.vim with
 	   taglist plugin?
 <
 	A: The old versions of exuberant ctags utility do not cope with <sid>
@@ -852,5 +952,5 @@ PCR TODO LIST                                                      *pcr-todo*
 	o Improve the output feature
 
 ==============================================================================
-vim:et:nosta:sw=2:ts=8:
+vim:noet:nosta:sw=2:ts=8:
 }}}2 vim600:fdm=marker:fdl=1:

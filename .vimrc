@@ -41,13 +41,13 @@
 " }}}
 
 if v:version < 600
-  echo 'ERROR: vim version too old.  Upgrade to vim 6.0 or later.'
+  echo 'ERROR: Vim version too old.  Upgrade to Vim 6.0 or later.'
   finish
 endif
 
 
-" Ugh, behave mswin makes gvim act like other windows applications, not like
-" vim.  This behavior is not what I expect.
+" Ugh, behave mswin makes GVim act like other windows applications, not like
+" Vim.  This behavior is not what I expect.
 if has('win32')
   source $VIMRUNTIME/mswin.vim
 endif
@@ -55,6 +55,18 @@ behave xterm
 
 " Functions {{{
 let colorterm = $COLORTERM
+
+fun! Print(...)
+  let l:colo = g:colors_name
+  let l:printcolo = a:0 == 1 ? a:1 : 'print_bw'
+  let l:bg = &background
+
+  exe 'colo ' . l:printcolo
+  let &background = 'light'
+  ha
+  exe 'colo ' . l:colo
+  let &background = l:bg
+endfun
 
 " Courtesy http://vim.sourceforge.net/tips/tip.php?tip_id=1161
 " Just like windo but restores the current window when it's done
@@ -90,7 +102,7 @@ function! <SID>AutoNumberByWidth()
   Windofast
         \ let l:bufname = bufname('%') |
         \ if (! exists('w:numberoverride')) &&
-        \    (l:bufname != '-MiniBufExplorer-') |
+        \    (&ma == 1) |
         \   if s:defaultnumstate == 0 |
         \     set nonumber |
         \   else |
@@ -273,76 +285,10 @@ function! RunInterp()
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
 com! -complete=command Interp call RunInterp()
-
-" Buffer Switching {{{
-" Map meta+numberkeys to the buffers
-" if has('gui_running')
-"   noremap <M-1> :b1<CR>:<BS>
-"   noremap <M-2> :b2<CR>:<BS>
-"   noremap <M-3> :b3<CR>:<BS>
-"   noremap <M-4> :b4<CR>:<BS>
-"   noremap <M-5> :b5<CR>:<BS>
-"   noremap <M-6> :b6<CR>:<BS>
-"   noremap <M-7> :b7<CR>:<BS>
-"   noremap <M-8> :b8<CR>:<BS>
-"   noremap <M-9> :b9<CR>:<BS>
-"   noremap <M-0> :b10<CR>:<BS>
-"   inoremap <M-1> :b1<CR>:<BS>
-"   inoremap <M-2> :b2<CR>:<BS>
-"   inoremap <M-3> :b3<CR>:<BS>
-"   inoremap <M-4> :b4<CR>:<BS>
-"   inoremap <M-5> :b5<CR>:<BS>
-"   inoremap <M-6> :b6<CR>:<BS>
-"   inoremap <M-7> :b7<CR>:<BS>
-"   inoremap <M-8> :b8<CR>:<BS>
-"   inoremap <M-9> :b9<CR>:<BS>
-"   inoremap <M-0> :b10<CR>:<BS>
-" else
-"   if has('win32')
-"     noremap ± :b1<CR>:<BS>
-"     noremap ² :b2<CR>:<BS>
-"     noremap ³ :b3<CR>:<BS>
-"     noremap Ž :b4<CR>:<BS>
-"     noremap µ :b5<CR>:<BS>
-"     noremap ¶ :b6<CR>:<BS>
-"     noremap · :b7<CR>:<BS>
-"     noremap ž :b8<CR>:<BS>
-"     inoremap ± :b1<CR>:<BS>
-"     inoremap ² :b2<CR>:<BS>
-"     inoremap ³ :b3<CR>:<BS>
-"     inoremap Ž :b4<CR>:<BS>
-"     inoremap µ :b5<CR>:<BS>
-"     inoremap ¶ :b6<CR>:<BS>
-"     inoremap · :b7<CR>:<BS>
-"     inoremap ž :b8<CR>:<BS>
-"   else
-"     noremap 1 :b1<CR>:<BS>
-"     noremap 2 :b2<CR>:<BS>
-"     noremap 3 :b3<CR>:<BS>
-"     noremap 4 :b4<CR>:<BS>
-"     noremap 5 :b5<CR>:<BS>
-"     noremap 6 :b6<CR>:<BS>
-"     noremap 7 :b7<CR>:<BS>
-"     noremap 8 :b8<CR>:<BS>
-"     noremap 9 :b9<CR>:<BS>
-"     noremap 0 :b10<CR>:<BS>
-"     inoremap 1 :b1<CR>:<BS>
-"     inoremap 2 :b2<CR>:<BS>
-"     inoremap 3 :b3<CR>:<BS>
-"     inoremap 4 :b4<CR>:<BS>
-"     inoremap 5 :b5<CR>:<BS>
-"     inoremap 6 :b6<CR>:<BS>
-"     inoremap 7 :b7<CR>:<BS>
-"     inoremap 8 :b8<CR>:<BS>
-"     inoremap 9 :b9<CR>:<BS>
-"     inoremap 0 :b10<CR>:<BS>
-"   endif
-" endif
-" }}}
 " }}}
 
 " Fonts {{{
-  set guifont=Bitstream\ Vera\ Sans\ Mono\ 9,Courier\ New:h10,Courier
+  set guifont=Leonine\ Sans\ Mono\ 10
 " }}}
 
 " Indentation {{{
@@ -362,7 +308,7 @@ com! -complete=command Interp call RunInterp()
 set nosmarttab
 
 " NOTE: The ctab plugin is incredibly useful, but behaves inconsistently
-"       as compared to stock vim behavior (that is, its <tab>/<BS> key
+"       as compared to stock Vim behavior (that is, its <tab>/<BS> key
 "       behavior when not at start-of-line obeys 'sw' when it should be
 "       obeying sts/ts).  Fix it.
 
@@ -440,11 +386,11 @@ endif
 filetype plugin indent on
 
 set secure
-" Not vi compatible, we want spiffy vim features, please.
+" Not vi compatible, we want spiffy Vim features, please.
 set nocompatible
 set nodigraph
 
-" Enable modelines for secure versions of vim
+" Enable modelines for secure versions of Vim
 if v:version >= 604
   set modeline
   set modelines=5
@@ -558,6 +504,9 @@ set nohlsearch
 
 " Syntax for printing
 set popt+=syntax:y
+set popt+=number:y
+set popt+=paper:letter
+set popt+=left:5pc
 
 " Don't automatically write buffers on switch
 set noautowrite
@@ -589,15 +538,15 @@ set nostartofline
 " Filter expected errors from make
 " if has('eval') && v:version >= 700
 "    let &makeprg = 'nice make $* 2>&1 \| sed -u -n '
-"    let &makeprg.= '-e '/should fail/s/:\([0-9]\)/∶\1/g' '
-"    let &makeprg.= '-e 's/\([0-9]\{2\}\):\([0-9]\{2\}\):\([0-9]\{2\}\)/\1∶\2∶\3/g' '
+"    let &makeprg.= '-e '/should fail/s/:\([0-9]\)/???\1/g' '
+"    let &makeprg.= '-e 's/\([0-9]\{2\}\):\([0-9]\{2\}\):\([0-9]\{2\}\)/\1???\2???\3/g' '
 "    let &makeprg.= '-e '/^/p' '
 " endif
 
 " Ignore binary files matched with grep by default
 set grepformat=%f:%l:%m,%f:%l%m,%f\ \ %l%m,%-OBinary\ file%.%#
 
-" Show the vim7 tab line only when there is more than one tab page.
+" Show the Vim7 tab line only when there is more than one tab page.
 " See :he tab-pages for details.
 try
   set showtabline = 1
@@ -635,9 +584,9 @@ if has('statusline')
   set statusline+=%<%P                        " file position
 endif
 
-" special statusbar for special windows
-" NOTE: only vim7+ supports a statusline local to a window
 if has('autocmd') && v:version >= 700
+  " Special statusbar for special windows
+  " NOTE: only Vim7+ supports a statusline local to a window
   augroup KergothStatusLines
     au!
     au FileType qf
@@ -647,10 +596,22 @@ if has('autocmd') && v:version >= 700
           \ let w:numberoverride = 1 |
           \ setlocal nonumber
 
-    au BufWinEnter __Tag_List__
+    au VimEnter,BufWinEnter __Tag_List__
           \ setlocal statusline=\[Tags\] |
           \ setlocal statusline+=%= |
           \ setlocal statusline+=%l
+  augroup END
+
+  augroup KergothSpell
+    au!
+    " Don't enable spellchecking in unmodifiable buffers
+    " NOTE: we hook these particular events because that's how
+    " minibufexpl sets up its autoupdate.
+    au BufEnter,BufWinEnter,BufLeave * if &ma == 0 | setlocal nospell | endif
+    au BufEnter,BufWinEnter,BufLeave * if &fenc != '' && &fenc != &encoding | setlocal nospell | endif 
+
+    " Disable spell checking in the man page viewer
+    au FileType man setlocal nospell
   augroup END
 endif
 " }}}
@@ -666,6 +627,8 @@ if has('multi_byte')
   " set fileencodings=ucs-bom,utf-8,iso-8859-15
   " set bomb
 endif
+" Most printers are Latin1, inform Vim so it can convert.
+set printencoding=latin1
 " }}}
 
 " Show nonprintable characters like hard tabs
@@ -735,21 +698,15 @@ if &t_Co > 2 || has('gui_running')
   "  bar	
   " And spaces before tabs:
   "  foo 	bar
-
   hi def link RedundantWhitespace Error
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
+  " Highlighting of Vim modelines
+  hi def link vimModeline Special
   if has('autocmd')
-    augroup KergothWhiteSpace
+    augroup KergothMatches
       au!
-      " Email signatures generally start with '-- '.  Adjust the
-      " RedundantWhitespace match for the 'mail' filetype to not
-      " highlight that particular trailing space in red.
-      au FileType mail match RedundantWhitespace /\(^--\)\@<!\s\+$/
-      " Diff context begins with a space, so blank lines of context
-      " are being inadvertantly flagged as redundant whitespace.
-      " Adjust the match to exclude the first column.
-      au FileType diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
+      au BufWinEnter * syn match vimModeline contains= contained /vim:\s*set[^:]\{-1,\}:/
     augroup END
   endif
 endif
@@ -760,12 +717,22 @@ if has('autocmd')
   augroup Kergoth
     au!
 
+    " Reload file with the correct encoding if fenc was set in the modeline
+    au BufReadPost * let b:reloadcheck = 1
+    au BufWinEnter *
+          \ if exists('b:reloadcheck') |
+          \   if &mod != 0 && &fenc != '' |
+          \     exe 'e! ++enc=' . &fenc |
+          \   endif |
+          \   unlet b:reloadcheck |
+          \ endif
+
     " Always do a full syntax refresh
     au BufEnter * syntax sync fromstart
 
     " When editing a file, always jump to the last known cursor position.
     " Don't do it when the position is invalid or when inside an event handler
-    " (happens when dropping a file on gvim).
+    " (happens when dropping a file on GVim).
     au BufReadPost *
           \ if line("'\"") > 0 && line ("'\"") <= line('$') |
           \   exe "normal g'\"" |
@@ -778,7 +745,7 @@ if has('autocmd')
     au FileType * try | exe 'compiler ' . &filetype | catch | endtry
 
     try
-      " if we have a vim which supports QuickFixCmdPost (vim7),
+      " if we have a Vim which supports QuickFixCmdPost (Vim7),
       " give us an error window after running make, grep etc, but
       " only if results are available.
       au QuickFixCmdPost * botright cwindow 5
@@ -835,6 +802,7 @@ endif " has('autocmd')
 
 " Plugin options {{{
 " let g:xml_syntax_folding = 1
+let loaded_bettermodified = 1
 let g:NERD_shut_up = 1
 let g:NERD_comment_whole_lines_in_v_mode = 1
 let g:NERD_left_align_regexp = '.*'
@@ -849,11 +817,25 @@ let g:perl_extended_vars = 1
 " let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
 let g:HL_HiCurLine = 'StatusLine'
-let g:Modeliner_format = 'fenc= sts= sw= ts = et'
+let g:Modeliner_format = 'fenc= sts= sw= ts= et'
 let b:super_sh_indent_echo = 0
 if has('gui_running') && has('gui_win32')
   let g:netrw_scp_cmd='"c:\Program Files\PuTTY\pscp.exe" -q'
 endif
+" rcsvers.vim {{{
+let g:rvTempDir = '/tmp'
+" Shared rcs save directory
+" let g:rvSaveDirectoryType = 1
+let g:rvSaveDirectoryName = '.rcs/'
+" let g:rvSaveIfPreviousRCSFileExists = 0
+" let g:rvSaveIfRCSExists = 0
+let g:rvDescMsgPrompt = 0
+" let g:rvExcludeExpression = '\c\.usr\|\c\.tmp|\c.swp'
+let g:rvIncludeExpression = ''
+if has('win32') && ! has('gui_win32')
+  let g:rvUseCygPathFiltering = 1
+endif
+" }}}
 " }}}
 
 " Explorer/Tags/Windows options {{{
