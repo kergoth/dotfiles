@@ -772,7 +772,9 @@ if has("autocmd")
   au VimEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
 
   " Enable HiMatchBrkt
-  au VimEnter * :HMBstart
+  if (v:version < 700) || ! exists('##CursorMoved')
+    au VimEnter * :HMBstart
+  endif
   " }}}
 endif " has("autocmd")
 " }}}

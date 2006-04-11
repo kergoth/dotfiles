@@ -28,7 +28,8 @@ if exists("g:hicurline_ut") && !exists("g:HiMtchBrkt_ut")
  let g:HiMtchBrkt_ut= g:hicurline_ut
 endif
 if v:version >= 700 && exists("##CursorMoved")
- let g:loaded_matchparen= 1
+  finish
+  " let g:loaded_matchparen= 1
 endif
 
 " Default highlight group setup
@@ -90,7 +91,7 @@ fun! <SID>HMBStart(mode)
    " assuming snapshot#195 or later
    augroup HMBEvent
    	au!
-    au CursorMoved,CursorMovedI * silent call s:HiMatchBracket()
+    au CursorMoved * silent call s:HiMatchBracket()
    augroup END
   else
    " Save Maps (if any)
