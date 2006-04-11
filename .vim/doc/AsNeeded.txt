@@ -1,4 +1,4 @@
-*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Aug 17, 2005
+*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Feb 10, 2006
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
@@ -60,8 +60,13 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 ==============================================================================
 4. AsNeeded History					*asneeded-history*
 
+	v11 Jan 03, 2006  * Bugfix -- AsNeeded's success message sometimes
+	                    caused an error because srchstring didn't exist
+	    Jan 25, 2006  * internally used temporary buffers now wiped out
+	                    silently
+	    Feb 10, 2006: * keeps/restores lz option
 	v10 Aug 08, 2005: * Bugfix -- maps with backslashes are escaped
-	    Aug 17, 2005: * report option workaround
+	    Aug 17, 2005  * report option workaround
 	v9 Mar 15, 2005 : * MakeANtags command search pattern improved
 			  * MakeANtags' function search pattern improved
 	   Apr 22, 2005   * maps beginning with a backslash needed one extra

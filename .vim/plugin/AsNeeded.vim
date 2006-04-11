@@ -1,8 +1,8 @@
 " AsNeeded: allows functions/maps to reside in .../.vim/AsNeeded/ directory
 "           and will enable their loaded as needed
 " Author:	Charles E. Campbell, Jr.
-" Date:		Nov 07, 2005
-" Version:	10
+" Date:		Feb 10, 2006
+" Version:	11
 " Copyright:    Copyright (C) 2004-2005 Charles E. Campbell, Jr. {{{1
 "               Permission is hereby granted to use and distribute this code,
 "               with or without modifications, provided that this copyright
@@ -39,7 +39,7 @@
 if exists("g:loaded_AsNeeded") || &cp
  finish
 endif
-let g:loaded_AsNeeded = "v10"
+let g:loaded_AsNeeded = "v11"
 let s:keepcpo         = &cpo
 set cpo&vim
 
@@ -50,6 +50,7 @@ com! -nargs=1 AsNeeded   call AsNeeded(2,<q-args>)
 com! -nargs=1 AN         call AsNeeded(2,<q-args>)
 com! -nargs=1 ANX        call AsNeeded(3,<q-args>)
 com! -nargs=0 MakeANtags call MakeANtags()
+com! -nargs=0 MkAsNeeded call MakeANtags()
 
 " ---------------------------------------------------------------------
 "  AsNeeded: looks for maps in AsNeeded/*.vim using the runtimepath. {{{1
@@ -71,6 +72,7 @@ fun! AsNeeded(type,cmdmap)
   let keeprep = &report
   let keepa   = @a
   let keepei  = &ei
+  let keeplz  = &lz
   set lz ei=all report=10000
 
   " -------------------------------------------
@@ -98,9 +100,6 @@ fun! AsNeeded(type,cmdmap)
 "	call Decho("srchstring<".srchstring.">")
     if exists("g:mapleader") && match(srchstring,'^'.g:mapleader) == 0
 	 let srchstring= substitute(escape(srchstring,'\'),'^.\(.*\)$','&\\|<[lL][eE][aA][dD][eE][rR]>\1','')
-	 if srchstring =~ '^\\'
-	  let srchstring= '\\'
-	 endif
 	endif
 "	call Decho("srchstring<".srchstring.">")
 	let result= search('^[mc]\t\<'.srchstring.'\>')
@@ -150,7 +149,7 @@ fun! AsNeeded(type,cmdmap)
    " --------------------------------
    " search for requested command/map {{{2
    " --------------------------------
-   let vimfiles=substitute(globpath(&rtp."/","AsNeeded/*.vim"),'\n',',',"ge")
+   let vimfiles=substitute(globpath(&rtp,"AsNeeded/*.vim"),'\n',',',"ge")
    while vimfiles != ""
     let vimfile = substitute(vimfiles,',.*$','','e')
     let vimfiles= (vimfiles =~ ",")? substitute(vimfiles,'^[^,]*,\(.*\)$','\1','e') : ""
@@ -159,7 +158,7 @@ fun! AsNeeded(type,cmdmap)
     exe "silent 0r ".vimfile
     if bufnr("$") > asneededbufnr
 "     call Decho("bwipe read-in buf#".bufnr("$")." (> asneededbufnr=".asneededbufnr.")")
-     exe bufnr("$")."bwipe!"
+     exe "silent! ".bufnr("$")."bwipe!"
     endif
     let srchresult= search(srchstring)
 "	call Decho("srchresult=".srchresult)
@@ -173,14 +172,6 @@ fun! AsNeeded(type,cmdmap)
   endif
   q!
 
-  " ------------------------------
-  " restore registers and settings {{{2
-  " ------------------------------
-  set nolz
-  let @a      = keepa
-  let &ei     = keepei
-  let &report = keeprep
-
   " ---------------------------
   " source in the selected file {{{2
   " ---------------------------
@@ -189,7 +180,11 @@ fun! AsNeeded(type,cmdmap)
    exe "so ".vimfile
    if exists("g:AsNeededSuccess")
     let vimf=substitute(vimfile, $HOME, '\~', '')
-    echomsg "***success*** AsNeeded found <".srchstring."> in <".vimf.">; now loaded"
+	if exists("srchstring")
+     echomsg "***success*** AsNeeded found <".srchstring."> in <".vimf.">; now loaded"
+	else
+     echomsg "***success*** AsNeeded found command in <".vimf.">; now loaded"
+	endif
    endif
    " successfully sourced file containing srchstring
    if a:type == 3 && exists("mapstring")
@@ -206,12 +201,29 @@ fun! AsNeeded(type,cmdmap)
 	endif
    endif
    if asneededbufnr > keeplastbufnr
-"   	call Decho("bwipe asneeded buf#".asneededbufnr)
-    exe asneededbufnr."bwipe!"
+"    call Decho("bwipe asneeded buf#".asneededbufnr)
+    exe "silent! ".asneededbufnr."bwipe!"
    endif
+    " ------------------------------
+    " restore registers and settings {{{2
+    " ------------------------------
+    set nolz
+    let @a      = keepa
+    let &ei     = keepei
+    let &lz     = keeplz
+    let &report = keeprep
 "   call Dret("AsNeeded 0")
    return 0
   endif
+
+  " ------------------------------
+  " restore registers and settings {{{2
+  " ------------------------------
+  set nolz
+  let @a      = keepa
+  let &ei     = keepei
+  let &lz     = keeplz
+  let &report = keeprep
 
   " ----------------------------------------------------------------
   " failed to find srchstring in *.vim files in AsNeeded directories {{{2
@@ -222,7 +234,7 @@ fun! AsNeeded(type,cmdmap)
   echohl NONE
   if asneededbufnr > keeplastbufnr
 "   	call Decho("bwipe asneeded buf#".asneededbufnr)
-   exe asneededbufnr."bwipe!"
+   exe "silent! ".asneededbufnr."bwipe!"
   endif
 "  call Dret("AsNeeded -1")
   return -1
@@ -278,8 +290,8 @@ fun! MakeANtags()
    %d
    exe "silent 0r ".vimfile
    if bufnr("$") > asneededbufnr
-"   	call Decho(".bwipe read-in buf#".bufnr("$"))
-    exe bufnr("$")."bwipe!"
+"    call Decho(".bwipe read-in buf#".bufnr("$"))
+    exe "silent! ".bufnr("$")."bwipe!"
    endif
 
    " clean out all non-map, non-command, non-function lines
