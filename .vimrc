@@ -478,18 +478,11 @@ endif
 " }}}
 
 " Encoding {{{
+let &termencoding = &encoding
 if has("multi_byte")
-  if (&encoding == "") || has("gui_running")
-    set encoding=utf-8
-  endif
-  setglobal fileencoding=utf-8
-"  set fileencodings=ucs-bom,utf-8,iso-8859-15
+  set encoding=utf-8
   set fileencodings=utf-8,iso-8859-15
-
-  if !((colorterm == "rxvt-xpm") && (&term == "rxvt"))
-    let &termencoding = &encoding
-  endif
-
+"  set fileencodings=ucs-bom,utf-8,iso-8859-15
 "  set bomb
 endif
 " }}}
