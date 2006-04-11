@@ -313,7 +313,7 @@ set showcmd
 set textwidth=0
 set nobackup
 set isk+=_,$,@,%,#,-
-set shortmess=atAI
+set shortmess=atAItToO
 
 set history=500
 set viminfo='1000,f1,:1000,/1000
@@ -402,7 +402,8 @@ set statusline+=%-14(%l,%c%V%)              " line, character
 set statusline+=%<%P                        " file position
 
 " special statusbar for special windows
-if has("autocmd")
+" NOTE: only vim7+ supports a statusline local to a window
+if has("autocmd") && v:version >= 700
    au FileType qf
                \ if &buftype == "quickfix" |
                \     setlocal statusline=%2*%-3.3n%0* |
