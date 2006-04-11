@@ -122,9 +122,18 @@ nmap <Leader>cwc :cclose<CR>
 nmap <Leader>cwo :botright copen 5<CR><C-w>p
 nmap <Leader>ccn :cnext<CR>
 
+" show the highlighting group(s) for the text under the cursor
+nmap <Leader>i :echo "hi<" .
+ \ synIDattr(synID(line("."),col("."),1),"name") . '> trans<' .
+ \ synIDattr(synID(line("."),col("."),0),"name") ."> lo<" .
+ \ synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .
+ \ ">"<CR>
+
 " scrollwheel = intelligent # of lines to scroll based on window height
-au WinEnter,VimEnter * exec "map <buffer> <MouseDown> " . s:Max(winheight("%")/8, 1) . ""
-au WinEnter,VimEnter * exec "map <buffer> <MouseUp> " . s:Max(winheight("%")/8, 1) . ""
+if has("autocmd")
+  au WinEnter,VimEnter * exec "map <buffer> <MouseDown> " . s:Max(winheight("%")/8, 1) . ""
+  au WinEnter,VimEnter * exec "map <buffer> <MouseUp> " . s:Max(winheight("%")/8, 1) . ""
+endif
 
 " meta (alt)+scrollwheel = scroll one line at a time
 map <M-MouseDown> 
