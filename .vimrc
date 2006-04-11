@@ -161,6 +161,7 @@ nmap <Leader>hi :echo "hi<" .
 " Mouse {{{
 " When selecting with the mouse, copy to clipboard on release.
 vnoremap <LeftRelease> "+y<LeftRelease>gv
+vnoremap <RightRelease> "+y<RightRelease>gv
 
 " scrollwheel = intelligent # of lines to scroll based on window height
 if has("autocmd")
