@@ -114,7 +114,7 @@ printdayinfo () {
 	if test -z "$day"; then return 1; fi
 	( while read dayname desc; do
 		if [ "$day" = "$dayname" ]; then
-			echo $day $desc
+			echo $day $desc | fmt
 		fi
 	done ) <<END
 	Sunday		sucks, because tomorrow is monday.
@@ -145,11 +145,19 @@ setup_interactive () {
 		XTERM_SET=''
 	;;
 	esac
-	PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\]
-\w\$ "
-	export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
-	[ -z "$day" ] && day=`date +%A`
-	printdayinfo $day
+    if [ -n "$CLEARCASE_ROOT" ]; then
+        CCASE="[`echo $CLEARCASE_ROOT|cut -d/ -f3`]";
+        VOBPATH="`cleartool lsvob|grep ^*|awk '{print $2}'|head -1|xargs dirname`";
+        cd $VOBPATH;
+    fi;
+    PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\]
+$CCASE\w\$ ";
+    export PROMPT_COMMAND='echo -n -e "\033k\033\134"';
+    [ -z "$day" ] && day=`date +%A`;
+    printdayinfo $day;
+    XTERM_SET='';
+    CCASE='';
+    VOBPATH=''
 }
 
 e () {
