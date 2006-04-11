@@ -283,3 +283,5 @@ alias vi=vim
 alias diff='diff -urNd'
 alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
 alias symbolsizes="${NM} -S -t d --size-sort"
+alias ct='cleartool'
+alias cpe='clearprojexp'
