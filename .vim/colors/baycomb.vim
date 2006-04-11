@@ -233,7 +233,13 @@ fun <SID>X(group, fg, bg, attr)
 endfun
 " }}}
 
+" The shade of green that the maintainer advises.  A bit too pastel for me,
+" despite the rest of the color scheme.
+" call <SID>X('Comment', '66BBBB', '', '')
+
+" The default baycomb comment coloring
 " call <SID>X('Comment', 'A9A9A9', '24283A', '')
+
 call <SID>X('Comment', '008B8B', '', '')
 call <SID>X('Conditional', 'D0688D', '', 'NONE')
 call <SID>X('Constant', '3088E0', '111A2A', '')
