@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v1.0
+" baycomb v1.0b
 " http://www.vim.org/scripts/script.php?script_id=1454
 "
 " Maintainer:    Shawn Axsom <axs221@gmail.com>
@@ -249,8 +249,8 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Underlined", "dae5da", "", "")
 
     call <SID>X("Statement", "ff656d", "", "none")
-    call <SID>X("Type", "30b0ed", "", "")
-    call <SID>X("Constant", "5a5eda", "", "")
+    call <SID>X("Type", "30baf0", "", "")
+    call <SID>X("Constant", "5d6ae5", "", "")
     call <SID>X("PreProc", "9570b5", "", "")
     call <SID>X("Identifier", "a58065", "", "") " or blue 4075aa
     call <SID>X("Special", "b5a0ea", "", "")
@@ -258,7 +258,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Todo", "ff4500", "eeee00", "")
     call <SID>X("Error", "", "b03452", "")
     """""this section borrowed from OceanDeep/Midnight"""""
-    call <SID>X("Number", "0065bd", "", "")
+    call <SID>X("Number", "006bcd", "", "")
     call <SID>X("Function", "f0ad80", "", "none")
     call <SID>X("Conditional", "d52a4a", "", "none")
     call <SID>X("Repeat", "e02d5a", "", "none")
