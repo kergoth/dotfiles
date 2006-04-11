@@ -55,6 +55,20 @@ nmap <leader>sh :runtime vimsh/vimsh.vim<C-M>
 nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
 nmap <leader>n :set number!<CR>  " Toggle Line Numbering
 
+" Reformat paragraph
+noremap <Leader>gp gqap
+
+" Reformat everything
+noremap <Leader>gq gggqG
+
+" Select everything
+noremap <Leader>gg ggVG
+
+" Make <space> in normal mode go down a page rather than left a
+" character
+noremap <space> <C-f>
+
+" Mappings to edit/reload the .vimrc
 if has("win32")
   nmap ,s :source $HOME/_vimrc<CR>
   nmap <silent> ,v :e $HOME/_vimrc<CR>
@@ -63,6 +77,10 @@ else
   nmap <silent> ,v :e $HOME/.vimrc<CR>
 endif
 
+" quickfix things
+nmap <Leader>cwc :cclose<CR>
+nmap <Leader>cwo :botright copen 5<CR><C-w>p
+nmap <Leader>ccn :cnext<CR>
 
 " Execute an appropriate interpeter for the current file
 " If there is no #! line at the top of the file, it will
@@ -89,7 +107,6 @@ function! RunInterp()
   endif
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
-
 
 " Buffer Switching {{{
 if has("gui_running")
@@ -210,44 +227,83 @@ filetype plugin indent on
 set secure
 set nocompatible
 set nodigraph
-set modeline
-set modelines=5
-"set scroll=1
-set scrolloff=2
-set nohidden
-set nohlsearch
-"set path=.
-set suffixes+=.lo,.o,.moc,.la,.closure
 
+" Enable modelines for secure versions of vim
+if v:version >= 604
+  set modeline
+  set modelines=5
+else
+  set nomodeline
+endif
+
+" Show 2 rows/cols of context when scrolling
+set scrolloff=2
+set sidescrolloff=2
+
+set nohidden
+"set path=.
+
+" Nice window title
 if &term == "screen"
   set notitle
 else
   set title
 endif
+if has('title') && (has('gui_running') || &title)
+    set titlestring=
+    set titlestring+=%f                    " file name
+    set titlestring+=%(\ %h%m%r%w%)        " flags
+    set titlestring+=\ -\ %{v:progname}    " program name
+endif
 set titleold=""
 
 set ttyfast
 set ttybuiltin
+set lazyredraw
+
+" No annoying beeps
 set novisualbell
 set noerrorbells
-set foldcolumn=0
-set foldminlines=3
-set foldmethod=syntax
-set foldlevel=5
 set vb t_vb=
+
+" Default folding settings
+if has("folding")
+  set foldenable
+  set foldcolumn=0
+  set foldminlines=3
+  set foldmethod=indent
+  set foldlevel=5
+endif
+
+" Nifty completion menu
+set wildmenu
+set wildignore+=*.o,*~
+set suffixes+=.in,.a,.lo,.o,.moc,.la,.closure
+
 set whichwrap=<,>,h,l,[,]
 set ruler
 set showcmd
 set textwidth=0
 set nobackup
-set history=50
-set viminfo='20,\"50
+
+set history=500
+set viminfo='1000,f1,:1000,/1000
+
 set backspace=indent,eol,start
+
 set noshowmatch
+
+" Case insensitivity
 set ignorecase
+set infercase
+
+" No incremental searches or search highlighting
 set noincsearch
+set nohlsearch
+
 set noautowrite
 set autoindent
+set smartindent
 set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
 set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
@@ -265,8 +321,11 @@ endif
 
 " Line numbering
 if v:version >= 700
-  set numberwidth=2
   set number
+  try
+    set numberwidth=2
+  catch
+  endtry
 endif
 
 if has("unix")
@@ -274,6 +333,14 @@ if has("unix")
 else
    set fileformats=dos,unix,mac
 endif
+
+" Filter expected errors from make
+"if has("eval") && v:version >= 700
+"    let &makeprg='nice make $* 2>&1 \| sed -u -n '
+"    let &makeprg.='-e "/should fail/s/:\([0-9]\)/∶\1/g" '
+"    let &makeprg.='-e "s/\([0-9]\{2\}\):\([0-9]\{2\}\):\([0-9]\{2\}\)/\1∶\2∶\3/g" '
+"    let &makeprg.='-e "/^/p" '
+"endif
 
 " Status Line {{{
 set laststatus=2
@@ -299,6 +366,29 @@ set statusline+=%=                          " right align remainder
 " set statusline+=0x%-8B                    " character value
 set statusline+=%-14(%l,%c%V%)              " line, character
 set statusline+=%<%P                        " file position
+
+" special statusbar for special windows
+if has("autocmd")
+   au FileType qf
+               \ if &buftype == "quickfix" |
+               \     setlocal statusline=%2*%-3.3n%0* |
+               \     setlocal statusline+=\ \[Compiler\ Messages\] |
+               \     setlocal statusline+=%=%2*\ %<%P |
+               \ endif
+
+   fun! <SID>FixMiniBufExplorerTitle()
+       if "-MiniBufExplorer-" == bufname("%")
+           setlocal statusline=%2*%-3.3n%0*
+           setlocal statusline+=\[Buffers\]
+           setlocal statusline+=%=%2*\ %<%P
+       endif
+   endfun
+
+   au BufWinEnter *
+               \ let oldwinnr=winnr() |
+               \ windo call <SID>FixMiniBufExplorerTitle() |
+               \ exec oldwinnr . " wincmd w"
+endif
 " }}}
 
 " Encoding {{{
@@ -328,16 +418,6 @@ else
     set list listchars=tab:>-,trail:.,extends:>
   endif
 endif
-
-function! s:CHANGE_CURR_DIR()
-    let _dir = expand("%:p:h")
-    if _dir !~ '^/tmp'
-      exec "cd " . _dir
-    endif
-    unlet _dir
-endfunction
-
-autocmd BufEnter * call s:CHANGE_CURR_DIR()
 " }}}
 
 " Colors {{{
@@ -345,16 +425,34 @@ autocmd BufEnter * call s:CHANGE_CURR_DIR()
 if has("gui_running")
   gui
 endif
-syntax enable
+
+if has("syntax")
+  syntax on
+endif
 
 if &t_Co > 2 || has("gui_running")
   "colors darkblack2
+  "colors desert256
+  "colors inkpot
   colors darkblue3
 
   "Colors both trailing    
   "whitespace, and spaces  	before tabs
   hi RedundantWhitespace ctermbg=red guibg=red
   match RedundantWhitespace /\s\+$\| \+\ze\t/
+
+  " Highlight vim modelines.  The autocmd to match
+  " these is in the autocommands section of this file.
+  hi def link VimModelineLine comment
+  hi def link VimModeline     special
+
+  if has("syntax")
+    if has("autocmd")
+      autocmd Syntax *
+                  \ syn match VimModelineLine /^.\{-1,}vim:[^:]\{-1,}:.*/ contains=VimModeline |
+                  \ syn match VimModeline contained /vim:[^:]\{-1,}:/
+    endif
+  endif
 
   " .signature files generally start with '-- '.  Adjust the
   " RedundantWhitespace match when opening a .signature to not
@@ -379,6 +477,9 @@ endif
 
 " Autocommands {{{
 if has("autocmd")
+  " Always do a full syntax refresh
+  autocmd BufEnter * syntax sync fromstart
+
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
@@ -386,6 +487,9 @@ if has("autocmd")
     \ if line("'\"") > 0 && line("'\"") <= line("$") |
     \   exe "normal g`\"" |
     \ endif
+
+  " m4 matchit support
+  autocmd FileType m4 :let b:match_words="(:),`:',[:],{:}"
 
   " Default to omni completion using the syntax highlighting files
   if v:version >= 700
@@ -410,6 +514,45 @@ if has("autocmd")
   " Disable moving to beginning of line when hitting ':',
   " as it behaves oddly when calling static methods in c++.
   au FileType cpp setlocal cinkeys-=:
+
+  try
+     " if we have a vim which supports QuickFixCmdPost (vim7),
+     " give us an error window after running make, grep etc, but
+     " only if results are available.
+     autocmd QuickFixCmdPost * botright cwindow 5
+
+     autocmd QuickFixCmdPre make
+                 \ let g:make_start_time=localtime()
+
+     autocmd QuickFixCmdPost make
+                 \ let g:make_total_time=localtime() - g:make_start_time |
+                 \ echo printf("Time taken: %dm%2.2ds", g:make_total_time / 60,
+                 \     g:make_total_time % 60)
+  catch
+  endtry
+
+  function! s:CHANGE_CURR_DIR()
+    let l:_dir = expand("%:p:h")
+    if l:_dir !~ '^/tmp'
+      exec "lcd " . l:_dir
+    endif
+  endfunction
+
+  autocmd BufEnter * call s:CHANGE_CURR_DIR()
+
+  " Special less.sh and man modes {{{
+  fun! <SID>check_pager_mode()
+      if exists("g:loaded_less") && g:loaded_less
+          " we're in vimpager / less.sh / man mode
+          set laststatus=0
+          set ruler
+          set foldmethod=manual
+          set foldlevel=99
+          set nolist
+      endif
+  endfun
+  autocmd VimEnter * :call <SID>check_pager_mode()
+  " }}}
 endif " has("autocmd")
 " }}}
 
@@ -434,6 +577,9 @@ let g:HL_HiCurLine = "Function"
 " Explorer/Tags/Windows options {{{
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_Menu = 1
+let g:Tlist_Enable_Fold_Column=0
+let g:Tlist_WinWIdth=28
+let g:Tlist_Compact_Format=1
 
 
 let s:using_winmanager = 0
