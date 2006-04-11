@@ -441,8 +441,7 @@ if &t_Co > 2 || has("gui_running")
   hi RedundantWhitespace ctermbg=red guibg=red
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
-  " Highlight vim modelines.  The autocmd to match
-  " these is in the autocommands section of this file.
+  " Highlight vim modelines
   hi def link VimModelineLine comment
   hi def link VimModeline     special
 
@@ -543,6 +542,8 @@ if has("autocmd")
   endfunction
   au BufEnter * call s:QuickFixClose()
 
+  " Change the current directory to the location of the
+  " file being edited.
   function! s:CHANGE_CURR_DIR()
     let l:_dir = expand("%:p:h")
     if l:_dir !~ '^/tmp'
