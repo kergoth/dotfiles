@@ -471,6 +471,8 @@ if colorterm == "gnome-terminal"
 elseif colorterm == "rxvt-xpm"
   " set colors correctly for mrxvt
   set t_Co=256
+elseif colorterm == "putty"
+  set t_Co=256
 endif
 
 if &t_Co > 2 || has("gui_running")
