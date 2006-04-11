@@ -95,10 +95,10 @@ function! SetNumbering(s)
   if a:s == 0
     let w:numberoverride = 1
     setlocal nonumber
-  elsei a:s == 1
+  elseif a:s == 1
     let w:numberoverride = 1
     setlocal number
-  elsei a:s == -1 " Toggle
+  elseif a:s == -1 " Toggle
     let w:numberoverride = 1
     if &l:number
       setlocal nonumber
