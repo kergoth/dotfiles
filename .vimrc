@@ -375,7 +375,7 @@ set viminfo='1000,f1,:1000,/1000
 
 set backspace=indent,eol,start
 set noshowmatch
-set fo=tcrqn
+set formatoptions=crqtn
 
 " Case insensitivity
 set ignorecase
@@ -422,6 +422,9 @@ if has("gui_running")
   "set go=Acgtm
   set go=Acg
 endif
+
+" Wrap at column 78
+set tw=78
 
 " Filter expected errors from make
 "if has("eval") && v:version >= 700
@@ -616,12 +619,9 @@ if has("autocmd")
           \ endif
   endif
 
-  " Default textwidth is 0 for known filetypes
-  " For unknown types, text, and mutt mails, it's 78.
-  set tw=78
-  au FileType * setlocal tw=0
-  au FileType text setlocal tw=78
-  au FileType mail setlocal nocindent noautoindent tw=78
+  au FileType * if &fo =~ 't' | let &l:fo = substitute(&fo, '(.*)t(.*)', '\1\2', '') | endif
+  au FileType text if &fo !~ 't' | let &l:fo = substitute(&fo, '$', 't', '') | endif
+  au FileType mail if &fo !~ 't' | let &l:fo = substitute(&fo, '$', 't', '') | setlocal nocindent noautoindent | endif
 
   " Sane settings for keywordprg
   au FileType vim setlocal keywordprg=:help
