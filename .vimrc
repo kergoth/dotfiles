@@ -373,11 +373,11 @@ set nosmarttab
 "       obeying sts/ts).  Fix it.
 
 " Disable insertion of tabs as compression / indentation
-" Set expandtab
+set expandtab
 
-" How many spaces a tab in the file counts for, and when not using
-" sts, how many spaces the tab key counts for.
-set tabstop=4
+" How many spaces a hard tab in the file is shown as, and how many
+" spaces are replaced with one hard tab when using sts != ts and noet.
+set tabstop=8
 
 " Indentation width (affects indentation plugins, indent based
 " folding, etc, and when smarttab is on, is used isntead of ts/sts
@@ -386,8 +386,8 @@ set shiftwidth=4
 
 " Number of spaces that the tab key counts for when editing
 " Only really useful if different from ts, or if using et.
-" When 0, is disabled.
-set softtabstop=0
+" When 0, it is disabled.
+set softtabstop=4
 
 set autoindent
 set smartindent
@@ -598,6 +598,9 @@ set nostartofline
 "    let &makeprg.= '-e '/^/p' '
 " endif
 
+" Ignore binary files matched with grep by default
+set grepformat=%f:%l:%m,%f:%l%m,%f\ \ %l%m,%-OBinary\ file%.%#
+
 " Show the vim7 tab line only when there is more than one tab page.
 " See :he tab-pages for details.
 try
@@ -713,6 +716,9 @@ if &term !~ '^screen'
 endif
 
 if &t_Co > 2 || has('gui_running')
+  " Attempt to guess the appropriate setting for 'background'
+  set background&
+
   " Sane color scheme selection.  Baycomb looks like crap
   " with less than 88 colors.
   if &t_Co >= 88 || has('gui_running')
