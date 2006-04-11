@@ -1,4 +1,4 @@
-*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Feb 10, 2006
+*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Mar 07, 2006
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
@@ -43,8 +43,9 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 	the requested command or map.
 
 	For those who have large numbers of scripts in their AsNeeded directory,
-	using >
+	using either >
 		:MakeANtags
+		:MkAsNeeded
 <
 	will create a ANtags file in the AsNeeded directory.  This file will then
 	be used to quickly look up the requested map, command, or function; the
@@ -60,6 +61,11 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 ==============================================================================
 4. AsNeeded History					*asneeded-history*
 
+	v12 Mar 07, 2006: * AsNeeded now saves and restores settings in such
+	                    a way that if a command/map/script-sourcing
+			    changes vim settings it will be retained, instead
+			    of whatever settings were in effect when AsNeeded
+			    was first invoked
 	v11 Jan 03, 2006  * Bugfix -- AsNeeded's success message sometimes
 	                    caused an error because srchstring didn't exist
 	    Jan 25, 2006  * internally used temporary buffers now wiped out
