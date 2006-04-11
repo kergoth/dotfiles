@@ -45,11 +45,7 @@ endif
 " Ugh, behave mswin makes gvim act like other windows applications, not like
 " vim.  This behavior is not what I expect.
 if has("win32")
-  "set runtimepath=~/.vim,~/vimfiles,$VIM/vimfiles,$VIMRUNTIME
-  "behave mswin
   source $VIMRUNTIME/mswin.vim
-"else
-"  behave xterm
 endif
 behave xterm
 
@@ -139,8 +135,11 @@ nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
 nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
-nmap <leader>n :call SetNumbering(-1)<CR>  " Toggle Line Numbering
-nmap <leader>N :call SetNumbering(3)<CR>   " Switch Line Numbering back to automatic 
+
+" Toggle line numbering for the current window (overrides automatic by width)
+nmap <leader>n :call SetNumbering(-1)<CR>
+" Remove line number setting override, going back to automatic by win width
+nmap <leader>N :call SetNumbering(3)<CR>:call <SID>AutoNumberByWidth()<CR>
 
 " Reformat paragraph
 noremap <Leader>gp gqap
@@ -821,6 +820,7 @@ let g:HL_HiCurLine = "Function"
 " let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
 let g:HL_HiCurLine = "HL_HiCurLine"
+let g:Modeliner_format = 'fenc= sts= sw= et'
 " }}}
 
 " Explorer/Tags/Windows options {{{
