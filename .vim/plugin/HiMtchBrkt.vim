@@ -289,14 +289,14 @@ endfun
 " HiMatchBracket: this routine actually performs the highlighting of {{{1
 " the matching bracket.
 fun! <SID>HiMatchBracket()
-"  call Dfunc("HiMatchBracket()")
-"  call Decho(((exists("g:HiMtchBrkt_surround") && g:HiMtchBrkt_surround)? "surround" : "normal")." mode")
+  "  call Dfunc("HiMatchBracket()")
+  "  call Decho(((exists("g:HiMtchBrkt_surround") && g:HiMtchBrkt_surround)? "surround" : "normal")." mode")
 
   if mode() =~ '['."\<c-v>".'vV]'
-   " don't try to highlight matching/surrounding brackets while in
-   " visual-block mode
-"   call Dret("HiMatchBracket")
-   return
+    " don't try to highlight matching/surrounding brackets while in
+    " visual-block mode
+    "   call Dret("HiMatchBracket")
+    return
   endif
 
   " save
@@ -322,103 +322,107 @@ fun! <SID>HiMatchBracket()
 
   " if the character grabbed in @0 is in the mps option set, then highlight
   " the matching character
-"  call Decho("HiMatchBracket: stridx(mps<".mps.">,@0<".@0.">)=".stridx(mps,@0))
+  "  call Decho("HiMatchBracket: stridx(mps<".mps.">,@0<".@0.">)=".stridx(mps,@0))
   if stridx(mps,@0) != -1
-   if v:version >= 700 && exists("##CursorMoved")
-   	let curchr     = @0
-	" determine match line, column.
-	" Restrict search to currently visible portion of window.
-	try
-		if &mps =~ curchr.':'
-			let stopline           = line("w$")
-			let chrmatch           = substitute(&mps,'^.*'.curchr.':\(.\).*$','\1','')
-			let [mtchline,mtchcol] = searchpairpos('\V'.curchr,'','\V'.chrmatch,'n','',stopline)
-		else
-			let stopline           = line("w0")
-			let chrmatch           = substitute(&mps,'^.*\(.\):'.curchr.'.*$','\1','')
-			let [mtchline,mtchcol] = searchpairpos('\V'.chrmatch,'','\V'.curchr,'bn','',stopline)
-		endif
-	catch
-		HMBstop
-		return
-	endtry
-	"    call Decho("curchr<".curchr."> chrmatch<".chrmatch.">  searchpairpos[".mtchline.','.mtchcol.'] stopline='.stopline)
-	if mtchline != 0 && mtchcol != 0
-"     call Decho('exe match MatchParen /\%'.mtchline.'l\%'.mtchcol.'c/')
-	 exe 'match MatchParen /\%'.mtchline.'l\%'.mtchcol.'c/'
-    else
-	 match none
+    let l:vimver = 600
+    if v:version >= 700 && exists("##CursorMoved")
+      let curchr     = @0
+      " determine match line, column.
+      " Restrict search to currently visible portion of window.
+      try
+        if &mps =~ curchr.':'
+          let stopline           = line("w$")
+          let chrmatch           = substitute(&mps,'^.*'.curchr.':\(.\).*$','\1','')
+          let [mtchline,mtchcol] = searchpairpos('\V'.curchr,'','\V'.chrmatch,'n','',stopline)
+        else
+          let stopline           = line("w0")
+          let chrmatch           = substitute(&mps,'^.*\(.\):'.curchr.'.*$','\1','')
+          let [mtchline,mtchcol] = searchpairpos('\V'.chrmatch,'','\V'.curchr,'bn','',stopline)
+        endif
+        let l:vimver=700
+      catch
+        " HMBstop
+        " return
+      endtry
+      "    call Decho("curchr<".curchr."> chrmatch<".chrmatch.">  searchpairpos[".mtchline.','.mtchcol.'] stopline='.stopline)
     endif
-   else
-   	" vim 6.4 and earlier support
-    let swp     = SaveWinPosn(0)
-    let curline = line('.')
-    let curcol  = virtcol('.')
-	keepj norm! H
-	let hline    = line('.')
-	if hline != curline
-		call RestoreWinPosn(swp)
-	endif
-	keepj norm! %
-	let mtchline = line('.')
-	let mtchcol  = virtcol('.')
-	call RestoreWinPosn(swp)
-"    call Decho('exe match MatchParen /\%'.mtchline.'l\%'.mtchcol.'v/')
-	exe 'match MatchParen /\%'.mtchline.'l\%'.mtchcol.'v/'
-   endif
-
-  " if g:HiMtchBrkt_surround exists and is true, then highlight the surrounding brackets
-  elseif exists("g:HiMtchBrkt_surround") && g:HiMtchBrkt_surround
-   let swp        = SaveWinPosn(0)
-   let openers    = '['.escape(substitute(&mps,':.,\=',"","g"),']').']'
-   let closers    = '['.escape(substitute(&mps,',\=.:',"","g"),']').']'
-"   call Decho("openers".openers." closers".closers)
-   if v:version >= 700 && exists("##CursorMoved")
-    let [mtchline1,mtchcol1]= searchpairpos(openers,"",closers,'bn','',line("w0"))
-	if mtchline1 != 0 && mtchcol1 != 0
-	 let mtchchr1             = getline(mtchline1)[mtchcol1-1]
-	 let mtchchr2             = substitute(&mps,'^.*'.mtchchr1.':\(.\).*$','\1','')
-	 let [mtchline2,mtchcol2] = searchpairpos('\V'.mtchchr1,"",'\V'.mtchchr2,'n','',line("w$"))
-"	 call Decho("[".mtchline1.','.mtchcol1.']<'.mtchchr1.'>')
-"	 call Decho("[".mtchline2.','.mtchcol2.']<'.mtchchr2.'>')
-	 if mtchline2 != 0 && mtchcol2 != 0
-      exe 'match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v\|\%'.mtchline2.'l\%'.mtchcol2.'v/'
-	 else
-      exe 'match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v/'
-	 endif
-	else
-     let [mtchline2,mtchcol2]= searchpairpos(openers,"",closers,'n','',line("w$"))
-	 if mtchline2 != 0 && mtchcol2 != 0
-      exe 'match MatchParen /\%'.mtchline2.'l\%'.mtchcol2.'v/'
-	 else
-	  match none
-	 endif
-	endif
-"    let [mtchline2,mtchcol2]= searchpairpos(openers,"",closers,'n','',line("w$"))
-"	 let [mtchline,mtchcol] = searchpairpos(escape(chrmatch,'[]'),'',escape(curchr,'[]'),'bn','',stopline)
-   else
-    if searchpair(openers,"",closers) <= 0
-	 match none
-	else
-     silent! norm! yl
-"     call Decho("surround: stridx(mps<".mps.">,@0<".@0.">)=".stridx(mps,@0))
-     if stridx(mps,@0) != -1
-      let mtchline1 = line('.')
-      let mtchcol1  = virtcol('.')
+    if l:vimver == 700
+      if mtchline != 0 && mtchcol != 0
+        "     call Decho('exe match MatchParen /\%'.mtchline.'l\%'.mtchcol.'c/')
+        exe 'match MatchParen /\%'.mtchline.'l\%'.mtchcol.'c/'
+      else
+        match none
+      endif
+    else
+      " vim 6.4 and earlier support
+      let swp     = SaveWinPosn(0)
+      let curline = line('.')
+      let curcol  = virtcol('.')
+      keepj norm! H
+      let hline    = line('.')
+      if hline != curline
+        call RestoreWinPosn(swp)
+      endif
       keepj norm! %
-      let mtchline2 = line('.')
-      let mtchcol2  = virtcol('.')
+      let mtchline = line('.')
+      let mtchcol  = virtcol('.')
       call RestoreWinPosn(swp)
-      exe 'match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v\|\%'.mtchline2.'l\%'.mtchcol2.'v/'
-"      call Decho('match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v\|\%'.mtchline2.'l\%'.mtchcol2.'v/')
-     endif
-	endif
-   endif
+      "    call Decho('exe match MatchParen /\%'.mtchline.'l\%'.mtchcol.'v/')
+      exe 'match MatchParen /\%'.mtchline.'l\%'.mtchcol.'v/'
+    endif
+
+    " if g:HiMtchBrkt_surround exists and is true, then highlight the surrounding brackets
+  elseif exists("g:HiMtchBrkt_surround") && g:HiMtchBrkt_surround
+    let swp        = SaveWinPosn(0)
+    let openers    = '['.escape(substitute(&mps,':.,\=',"","g"),']').']'
+    let closers    = '['.escape(substitute(&mps,',\=.:',"","g"),']').']'
+    "   call Decho("openers".openers." closers".closers)
+    if v:version >= 700 && exists("##CursorMoved")
+      let [mtchline1,mtchcol1]= searchpairpos(openers,"",closers,'bn','',line("w0"))
+      if mtchline1 != 0 && mtchcol1 != 0
+        let mtchchr1             = getline(mtchline1)[mtchcol1-1]
+        let mtchchr2             = substitute(&mps,'^.*'.mtchchr1.':\(.\).*$','\1','')
+        let [mtchline2,mtchcol2] = searchpairpos('\V'.mtchchr1,"",'\V'.mtchchr2,'n','',line("w$"))
+        "	 call Decho("[".mtchline1.','.mtchcol1.']<'.mtchchr1.'>')
+        "	 call Decho("[".mtchline2.','.mtchcol2.']<'.mtchchr2.'>')
+        if mtchline2 != 0 && mtchcol2 != 0
+          exe 'match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v\|\%'.mtchline2.'l\%'.mtchcol2.'v/'
+        else
+          exe 'match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v/'
+        endif
+      else
+        let [mtchline2,mtchcol2]= searchpairpos(openers,"",closers,'n','',line("w$"))
+        if mtchline2 != 0 && mtchcol2 != 0
+          exe 'match MatchParen /\%'.mtchline2.'l\%'.mtchcol2.'v/'
+        else
+          match none
+        endif
+      endif
+      "    let [mtchline2,mtchcol2]= searchpairpos(openers,"",closers,'n','',line("w$"))
+      "	 let [mtchline,mtchcol] = searchpairpos(escape(chrmatch,'[]'),'',escape(curchr,'[]'),'bn','',stopline)
+    else
+      if searchpair(openers,"",closers) <= 0
+        match none
+      else
+        silent! norm! yl
+        "     call Decho("surround: stridx(mps<".mps.">,@0<".@0.">)=".stridx(mps,@0))
+        if stridx(mps,@0) != -1
+          let mtchline1 = line('.')
+          let mtchcol1  = virtcol('.')
+          keepj norm! %
+          let mtchline2 = line('.')
+          let mtchcol2  = virtcol('.')
+          call RestoreWinPosn(swp)
+          exe 'match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v\|\%'.mtchline2.'l\%'.mtchcol2.'v/'
+          "      call Decho('match MatchParen /\%'.mtchline1.'l\%'.mtchcol1.'v\|\%'.mtchline2.'l\%'.mtchcol2.'v/')
+        endif
+      endif
+    endif
 
   else
-   match none
+    match none
   endif
- 
+
   " restore
   let &magic     = magickeep
   let @"         = regdq
@@ -431,7 +435,7 @@ fun! <SID>HiMatchBracket()
   let &vb        = vbkeep
   silent! let @* = regpaste
 
-"  call Dret("HiMatchBracket")
+  "  call Dret("HiMatchBracket")
 endfun
 
 " ---------------------------------------------------------------------
