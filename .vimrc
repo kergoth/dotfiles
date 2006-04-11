@@ -41,13 +41,16 @@ if v:version < 600
   finish
 endif
 
+" Ugh, behave mswin makes gvim act like other windows applications, not like
+" vim.  This behavior is not what I expect.
 if has("win32")
   "set runtimepath=~/.vim,~/vimfiles,$VIM/vimfiles,$VIMRUNTIME
-  behave mswin
+  "behave mswin
   source $VIMRUNTIME/mswin.vim
-else
-  behave xterm
+"else
+"  behave xterm
 endif
+behave xterm
 
 " Functions {{{
 let colorterm = $COLORTERM
@@ -598,7 +601,7 @@ endif
 " Autocommands {{{
 if has("autocmd")
   " Always do a full syntax refresh
-  autocmd BufEnter * syntax sync fromstart
+  " autocmd BufEnter * syntax sync fromstart
 
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
