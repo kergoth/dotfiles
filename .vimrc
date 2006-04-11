@@ -56,34 +56,54 @@ behave xterm
 " Functions {{{
 let colorterm = $COLORTERM
 
+" Courtesy http://vim.sourceforge.net/tips/tip.php?tip_id=1161
+" Just like windo but restores the current window when it's done
+function! WinDo(command)
+  let currwin=winnr()
+  execute 'windo ' . a:command
+  execute currwin . 'wincmd w'
+endfunction
+com! -nargs=+ -complete=command Windo call WinDo(<q-args>)
+
+" Just like Windo except that it disables all autocommands for super fast processing.
+com! -nargs=+ -complete=command Windofast noautocmd call WinDo(<q-args>)
+
+" Just like bufdo but restores the current buffer when it's done
+function! BufDo(command)
+  let currBuff=bufnr("%")
+  execute 'bufdo ' . a:command
+  execute 'buffer ' . currBuff
+endfunction
+com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>) 
+
 " Used to set sane default line numbering
-function! <SID>PropogateNumberState()
-  let oldnr=winnr()
-  windo
-        \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
-        \   set number |
-        \ else |
-        \   set nonumber |
+function! <SID>AutoNumberByWidth()
+  Windofast
+        \ if (! exists('w:numberoverride')) |
+        \   if (winwidth(0) >= 80) |
+        \     set number |
+        \   else |
+        \     set nonumber |
+        \   endif |
         \ endif
-  exe oldnr . "wincmd w"
 endfunction
 
-function! SetNumberingState(s)
-  if (a:s == 0) || (a:s == 1)
-    let l:newstate=a:s
-  else
-    let l:newstate=s:numdisabled==0?1:0
-  endif
-
-  let s:numdisabled=l:newstate
-  call <SID>PropogateNumberState()
-endfunction
-
-function! <SID>Min(a, b)
-  if a:a <= a:b
-    return a:a
-  else
-    return a:b
+function! SetNumbering(s)
+  if (a:s == 0)
+    let w:numberoverride = 1
+    setlocal nonumber
+  elseif (a:s == 1)
+    let w:numberoverride = 1
+    setlocal number
+  elseif (a:s == -1) " Toggle
+    let w:numberoverride = 1
+    if (&l:number)
+      setlocal nonumber
+    else
+      setlocal number
+    endif
+  else " Back to automatic
+    unlet w:numberoverride
   endif
 endfunction
 
@@ -119,7 +139,8 @@ nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
 nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
-nmap <leader>n :call SetNumberingState(-1)<CR>  " Toggle Line Numbering
+nmap <leader>n :call SetNumbering(-1)<CR>  " Toggle Line Numbering
+nmap <leader>N :call SetNumbering(3)<CR>   " Switch Line Numbering back to automatic 
 
 " Reformat paragraph
 noremap <Leader>gp gqap
@@ -778,8 +799,7 @@ if has("autocmd")
   autocmd VimEnter * :call <SID>check_pager_mode()
 
   " Intelligent enable/disable of the line number display
-  au VimEnter * let s:numdisabled = &number==0?1:0
-  au VimEnter,WinEnter,WinLeave * :call <SID>PropogateNumberState()
+  au VimEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
   " }}}
 endif " has("autocmd")
 " }}}
