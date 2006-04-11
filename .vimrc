@@ -36,14 +36,16 @@ else
 endif
 
 " Keymaps {{{
-map <F1> :A<C-M>                 " Delete Space Runs
 map ,is :!ispell %<C-M>          " ISpell !
+
 map ,del :g/^\s*$/d<C-M>         " Delete Empty Lines
 map ,ddql :%s/^>\s*>.*//g<C-M>   " Delete Double Quoted Lines
 map ,ddr :s/\.\+\s*/. /g<C-M>    " Delete Dot Runs
 map ,dsr :s/\s\s\+/ /g<C-M>      " Delete Space Runs
 map ,dtw :%s/\s\+$//g<C-M>       " Delete Trailing Whitespace
+
 nmap <leader>sh :runtime vimsh/vimsh.vim<C-M>
+nmap <leader>a :A<CR>   " Switch between .c/cpp and .h (a.vim)
 
 if has("win32")
   nmap ,s :source $HOME/_vimrc<CR>
@@ -52,6 +54,7 @@ else
   nmap ,s :source $HOME/.vimrc<CR>
   nmap <silent> ,v :e $HOME/.vimrc<CR>
 endif
+
 
 " Buffer Switching {{{
 if has("gui_running")
