@@ -24,6 +24,9 @@
 "   ^N (in the file explorer window) - toggle file explorer / tag list
 " taglist (if not using winmanager):
 "   F8 - toggle
+" GetLatestVimScripts:
+"   :GLVS - Checks to see if any vim scripts have new versions available,
+"           and if so, downloads them (and installs in some cases).
 " VIM core:
 "   K - look up current word via 'man' (by default)
 "   ^X ^O - Omni completion
