@@ -502,8 +502,8 @@ if &t_Co > 2 || has("gui_running")
                 \ syn match VimModeline contained /vim:[^:]\{-1,}:/
   endif
 
-  " .signature files generally start with '-- '.  Adjust the
-  " RedundantWhitespace match when opening a .signature to not
+  " Email signatures generally start with '-- '.  Adjust the
+  " RedundantWhitespace match for the 'mail' filetype to not
   " highlight that particular trailing space in red.
   if has("autocmd")
     au FileType mail match RedundantWhitespace /\(^--\)\@<!\s\+$/
