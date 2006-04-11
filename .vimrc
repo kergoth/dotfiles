@@ -842,6 +842,9 @@ let g:perl_extended_vars = 1
 let g:HL_HiCurLine = 'StatusLine'
 let g:Modeliner_format = 'fenc= sts= sw= ts = et'
 let b:super_sh_indent_echo = 0
+if has('gui_running') && has('gui_win32')
+  let g:netrw_scp_cmd='"c:\Program Files\PuTTY\pscp.exe" -q'
+endif
 " }}}
 
 " Explorer/Tags/Windows options {{{
