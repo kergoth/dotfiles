@@ -54,6 +54,7 @@ if has("menu") && has("gui_running") && &go =~ 'm'
  if !exists("g:DrChipTopLvlMenu")
   let g:DrChipTopLvlMenu= "DrChip."
  endif
+ echoerr g:DrChipTopLvlMenu
  exe 'menu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Start<tab><Leader>[i	<Leader>[i'
  exe 'menu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Surround\ On<tab>:HMBsurround	:HMBsurround'
 endif
@@ -221,7 +222,7 @@ fun! <SID>HMBStart(mode)
  
   " Insert stop  HiMtchBrkt into menu
   " Delete start HiMtchBrkt from menu
-  if has("gui_running") && has("menu")
+  if has("menu") && has("gui_running") && &go =~ 'm'
    exe 'menu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Stop<tab><Leader>[s	<Leader>[s'
    exe 'silent! unmenu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Start'
    exe 'silent! unmenu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Surround\ Off'
@@ -270,7 +271,7 @@ fun! <SID>HMBStop(mode)
  
   " Insert start HiMtchBrkt into menu
   " Delete stop  HiMtchBrkt from menu
-  if has("gui_running") && has("menu")
+  if has("menu") && has("gui_running") && &go =~ 'm'
    exe 'menu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Start<tab><Leader>[s	<Leader>[i'
    exe 'silent! unmenu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Stop'
    exe 'silent! unmenu '.g:DrChipTopLvlMenu.'HiMtchBrkt.Surround\ Off'
