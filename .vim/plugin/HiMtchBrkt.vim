@@ -328,16 +328,21 @@ fun! <SID>HiMatchBracket()
    	let curchr     = @0
 	" determine match line, column.
 	" Restrict search to currently visible portion of window.
-   	if &mps =~ curchr.':'
-	 let stopline           = line("w$")
-	 let chrmatch           = substitute(&mps,'^.*'.curchr.':\(.\).*$','\1','')
-	 let [mtchline,mtchcol] = searchpairpos('\V'.curchr,'','\V'.chrmatch,'n','',stopline)
-	else
-	 let stopline           = line("w0")
-	 let chrmatch           = substitute(&mps,'^.*\(.\):'.curchr.'.*$','\1','')
-	 let [mtchline,mtchcol] = searchpairpos('\V'.chrmatch,'','\V'.curchr,'bn','',stopline)
-	endif
-"    call Decho("curchr<".curchr."> chrmatch<".chrmatch.">  searchpairpos[".mtchline.','.mtchcol.'] stopline='.stopline)
+	try
+		if &mps =~ curchr.':'
+			let stopline           = line("w$")
+			let chrmatch           = substitute(&mps,'^.*'.curchr.':\(.\).*$','\1','')
+			let [mtchline,mtchcol] = searchpairpos('\V'.curchr,'','\V'.chrmatch,'n','',stopline)
+		else
+			let stopline           = line("w0")
+			let chrmatch           = substitute(&mps,'^.*\(.\):'.curchr.'.*$','\1','')
+			let [mtchline,mtchcol] = searchpairpos('\V'.chrmatch,'','\V'.curchr,'bn','',stopline)
+		endif
+	catch
+		HMBstop
+		return
+	endtry
+	"    call Decho("curchr<".curchr."> chrmatch<".chrmatch.">  searchpairpos[".mtchline.','.mtchcol.'] stopline='.stopline)
 	if mtchline != 0 && mtchcol != 0
 "     call Decho('exe match MatchParen /\%'.mtchline.'l\%'.mtchcol.'c/')
 	 exe 'match MatchParen /\%'.mtchline.'l\%'.mtchcol.'c/'
