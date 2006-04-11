@@ -770,6 +770,9 @@ if has("autocmd")
 
   " Intelligent enable/disable of the line number display
   au VimEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
+
+  " Enable HiMatchBrkt
+  au VimEnter * :HMBstart
   " }}}
 endif " has("autocmd")
 " }}}
@@ -791,7 +794,6 @@ let g:HL_HiCurLine = "Function"
 " let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
 let g:HL_HiCurLine = "HL_HiCurLine"
-let g:HiMtchBrktOn = 1
 let g:Modeliner_format = 'fenc= sts= sw= et'
 let b:super_sh_indent_echo = 0
 " }}}
