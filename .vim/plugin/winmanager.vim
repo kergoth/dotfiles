@@ -1,7 +1,7 @@
 "=============================================================================
 "        File: winmanager.vim
 "      Author: Srinath Avadhanula (srinath@eecs.berkeley.edu)
-" Last Change: Wed Apr 03 05:00 PM 2002 PST
+" Last Change: 2006-02-26 20:11:19
 "        Help: winmanager.vim is a plugin which implements a classical windows
 "              type IDE in Vim-6.0.  When you open up a new file, simply type
 "              in :WMToggle. This will start up the file explorer.
@@ -54,6 +54,9 @@ end
 if !exists(':WMClose')
 	command -nargs=0 WMClose :silent call <SID>CloseWindowsManager()
 end
+if !exists(':WMReset')
+	command -nargs=0 WMReset :silent call <SID>WinManagerReset()
+end
 " command to go to either the first explorer window visible
 if !exists(':FirstExplorerWindow')
 	command -nargs=0 FirstExplorerWindow :silent call <SID>GotoExplorerWindow('1')
@@ -93,6 +96,7 @@ let g:numRefs = 0
 " initialization.
 let s:numExplorerGroups = 0
 let s:numExplorers = 0
+let s:commandRunning = 0
 
 " Line continuation used here
 let s:cpo_save = &cpo
@@ -171,7 +175,6 @@ function! <SID>RegisterExplorerGroup()
 			let i = i + 1
 		endwhile
 		if grplist == ','
-			call PrintError('no explorers registered in this run')
 			return
 		end
 
@@ -199,6 +202,7 @@ endfunction
 " possible.
 "
 function! <SID>StartWindowsManager()
+	call WM_ERRORMSG('+StartWindowsManager')
 	" for the first few versions of winmanager, if no registration is done,
 	" assume the following default configuration of the windows:
 	"    (FileExplorer, TagsExplorer)
@@ -212,7 +216,7 @@ function! <SID>StartWindowsManager()
 		call s:RegisterExplorerGroup()
 	end
 	let nothingShown = 1
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 
 	if !exists("s:MRUList")
 		call s:InitializeMRUList()
@@ -259,7 +263,6 @@ function! <SID>StartWindowsManager()
 		" if nothing was displayed this time, there is a possiblity it could
 		" happen later during one of the refresh cycles. remember this for
 		" then.
-		call PrintError('something displayed on '.lastmem.' of 1 :'.somethingDisplayed)
 		if !somethingDisplayed
 			let s:tryGroupAgain_1 = 1
 			q
@@ -331,7 +334,6 @@ function! <SID>StartWindowsManager()
 		" cen: current explorer (group) number which was visited.
 		let cen = i
 	endwhile
-	call PrintError('done with start while loop')
 	
 	" now make the run for resizing. 
 	let i = 1
@@ -358,31 +360,42 @@ function! <SID>StartWindowsManager()
 		end
 		let i = i + 1
 	endwhile
-	call PrintError('done with refresh while loop')
+	call WM_ERRORMSG('~StartWindowsManager: done starting explorers and resizing')
 
 	let &splitbelow = _split
 
 	augroup WinManagerRefresh
 		au!
+		" Thomas Regner <regner.dievision.de> suggested i use the following
+		" autocmds instead, to automatically skip refreshing on [No Files] and
+		" such...
+		" au BufEnter ^[^\[]* call <SID>RefreshWinManager()
+        " au BufDelete ^[^\[]* call <SID>RefreshWinManager("BufDelete")
 		au BufEnter * call <SID>RefreshWinManager()
 		au BufDelete * call <SID>RefreshWinManager("BufDelete")
 	augroup END
+	call WM_ERRORMSG('~StartWindowsManager: done setting up ACs')
 
+	call WinManagerSuspendAUs()
 	call s:GotoWindow(currentWindowNumber)
+	call WinManagerResumeAUs()
+
 	" RepairAltRegister needs to be called here as well, because 
 	" 1. when winmanager is re-started, we need to restore the @# register to
 	"    what it was.
 	" 2. if winmanager is started for the first time, then we need to ensure
 	"    that @# is at least not one of the explorer windows.
+	call WM_ERRORMSG('~StartWindowsManager: calling RepairAltRegister')
 	if buflisted(bufnr('%'))
 		call s:RepairAltRegister()
 	end
-	let s:commandRunning = 0
+	call WinManagerResumeAUs()
 	let &report=oldRep
 	let &sc = save_sc
 	if nothingShown
 		echomsg "[ no valid explorers available. winmanager will start when next possible ]"
 	end
+	call WM_ERRORMSG('-StartWindowsManager')
 endfunction
 
 "---
@@ -390,19 +403,23 @@ endfunction
 " return 0. i.e return 1 if there is no window above or below this window.
 "
 function! <SID>IsOnlyVertical()
+	let _eventignore = &eventignore
+	set eventignore+=WinEnter,WinLeave
 	let curwin = winnr()
 	wincmd k
+	let onlyVertical = 1
 	if curwin != winnr()
 		wincmd j
-		return 0
+		let onlyVertical = 0
 	else
 		wincmd j
 		if winnr() != curwin
 			wincmd k
-			return 0
+			let onlyVertical = 0
 		end
 	end
-	return 1
+	let &eventignore = _eventignore
+	return onlyVertical
 endfunction
 
 "---
@@ -414,7 +431,7 @@ function! WinManagerFileEdit(bufName, split)
 	" this function is usually _not_ triggered from an autocommand, so the
 	" movement commands in this function will trigger RefreshWinManager().
 	" make that do nothing with this flag.
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 	let oldRep=&report
 	let save_sc = &sc
 	set report=10000 nosc
@@ -426,10 +443,16 @@ function! WinManagerFileEdit(bufName, split)
 	" e:/path/to/file/other/name is opened. (this is bufnr()'s behavior).
 	" therefore make an additional check so were protected against false
 	" matches.
-	if bufwinnr(bufnr(a:bufName)) != -1 &&
-		\ a:bufName == expand('#'.bufnr(a:bufName).':p')
+	if ! type(a:bufName) " If number.
+		let bufNr = a:bufName
+		let bufName = expand('#'.bufNr.':p')
+	else
+		let bufNr = bufnr(a:bufName)
+		let bufName = a:bufName
+	endif
+	if bufwinnr(bufNr) != -1 && bufName == expand('#'.bufNr.':p')
 
-		call s:GotoWindow(bufwinnr(a:bufName))
+		call s:GotoWindow(bufwinnr(bufNr))
 		" however, we still have to repair the @# register
 		call s:RepairAltRegister()
 
@@ -438,13 +461,13 @@ function! WinManagerFileEdit(bufName, split)
 
 		" if we had already opened this file, then use the #n notation instead
 		" of opening by file name. this preserves cursor position.
-		if bufnr(a:bufName) != -1 &&
-			\ a:bufName == expand('#'.bufnr(a:bufName).':p')
-			let bufcall = '#'.bufnr(a:bufName)
+		if bufNr != -1 && bufName == expand('#'.bufNr.':p')
+			let bufcall = '#'.bufNr
 		else
-			let bufcall = a:bufName
+			let bufcall = bufName
 		end
 
+		let repairAltReg = 0
 		let lastBufferNumber = s:MRUGet(1)
 		" if the last accessed buffer is visible, then goto it.
 		if bufwinnr(lastBufferNumber) != -1
@@ -453,39 +476,52 @@ function! WinManagerFileEdit(bufName, split)
 			call s:GotoWindow(bufwinnr(bufnr(lastBufferNumber)))
 			" now split it or not depending on stuff.
 			if (&modified && !&hidden) || a:split
-				exe 'silent! split '.bufcall
-			else
-				exe 'silent! e '.bufcall
-			end
+				split
+			endif
 		else
-			" the last accessed buffer is not visible. this most probably
-			" means that the explorer buffers are the only windows visible.
-			" this means that the layout has to be redone by v-splitting a new
-			" window for this file.
-			" first open the alternate file just to retain @# if its still
-			" listed. 
-			if buflisted(lastBufferNumber)
-				exe 'silent! vsplit #'.lastBufferNumber
-				exe 'silent! e '.bufcall
-			" the last accessed buffer has dissapeared. just edit this file.
+			if s:GotoEditingArea()
+				" otherwise goto _some_ file in the editing area.
+				if (&modified && !&hidden) || a:split
+					split
+				end
+				let repairAltReg = 1
 			else
-				exe 'silent! vsplit '.bufcall
-			end
-			" now push this to the very right
-			wincmd L
-			" calculate the width of this window and reset it.
-			exe &columns-g:winManagerWidth.' wincmd |'
+				" we cannot go to _any_ non-explorer window. 
+				" means that the explorer buffers are the only windows visible.
+				" this means that the layout has to be redone by v-splitting a new
+				" window for this file.
+				" first open the alternate file just to retain @# if its still
+				" listed. 
+				if buflisted(lastBufferNumber)
+					exe 'silent! vsplit #'.lastBufferNumber
+				else
+					vsplit
+				end
+				" now push this to the very right
+				wincmd L
+				" calculate the width of this window and reset it.
+				exe &columns-g:winManagerWidth.' wincmd |'
+				let repairAltReg = 1
+			endif
 		end
+		if bufName != ''
+			exe 'silent! e '.escape(bufcall, " ")
+		else
+			exe 'silent! buffer '.bufNr
+		endif
+		if repairAltReg
+			call s:RepairAltRegister()
+		endif
 	end
 
-	let s:commandRunning = 0
+	call WinManagerResumeAUs()
 
 	" call Refresh incase this fileopen made some displays invalid.
+	call WM_ERRORMSG('~WinManagerFileEdit: calling RefreshWinManager')
 	call s:RefreshWinManager()
 	let &report=oldRep
 	let &sc = save_sc
 endfunction
-
 
 "---
 " function to repair the @# register.
@@ -496,6 +532,9 @@ endfunction
 " to be made @%.
 "
 function! <SID>RepairAltRegister()
+	call WM_ERRORMSG('+RepairAltRegister')
+	call WinManagerSuspendAUs()
+
 	" setting hidden while going back and forth is very wise because sometimes
 	" this function is used from within an autocommand. in such cases,
 	" switching back and forth between buffers makes the syntax highlighting
@@ -516,11 +555,16 @@ function! <SID>RepairAltRegister()
 		\ && buflisted(alternateBufferNumber)
  		exec 'silent! b! '.alternateBufferNumber
 	elseif alternateBufferNumber == -1
-	" if the alternate buffer doesnt exist, do some randomness so that the @#
-	" register is at least not some explorer buffer number. ideally, at this
-	" stage, something would have been done to ensure that @# = -1, however,
-	" for now, edit a temporary file.
-		exe "e ".tempname()
+		" if the alternate buffer doesnt exist, then ensure that @# = -1.
+		" ideally vim would have made the @# writable, but since it isn't we
+		" need to resort to the hack of editing a temporary file and wiping it
+		" out.
+		" reuse the temp file so that buffer numbers are not generally eaten
+		" up each time this needs to be done.
+		if !exists('s:tempFileName')
+			let s:tempFileName = tempname()
+		endif
+		exe "silent! e ".s:tempFileName
 		setlocal nobuflisted
 		setlocal nomodifiable
 		setlocal bufhidden=delete
@@ -529,6 +573,7 @@ function! <SID>RepairAltRegister()
 		exe 'silent! b! '.currentBufferNumber
 		exe 'silent! bwipeout '.tmpBufNum
 		let &l:bufhidden = _hidden
+		call WinManagerResumeAUs()
 		return
 	end
 
@@ -546,17 +591,34 @@ function! <SID>RepairAltRegister()
 	" has always been very very problematic.
 	" NOTE: the problem seems to have gone away now... see above comment.
 	if has("syntax") && exists("g:syntax_on") && !has("syntax_items")
-		call PrintError('needing to reset syntax!')
+		call WM_ERRORMSG('needing to reset syntax!')
 		do syntax
-	else
-		call PrintError('fugly hack not needed!')
 	end
 	" end fugly hack.
 
 	let &l:bufhidden = _hidden
 	let &report=oldRep
 	let &sc = save_sc
+
+	call WinManagerResumeAUs()
+	call WM_ERRORMSG('-RepairAltRegister')
 endfunction
+
+" GotoEditingArea: goes to the first visible non-explorer window {{{
+" Description: 
+function! <SID>GotoEditingArea()
+	let i = 1
+	while 1
+		if winbufnr(i) < 0
+			return 0
+		endif
+		if !s:IsExplorerBuffer(winbufnr(i))
+			call s:GotoWindow(i)
+			return 1
+		endif
+		let i = i + 1
+	endwhile
+endfunction " }}}
 
 "---
 " the main function. this is responsible for updating plugins dynamically.
@@ -573,6 +635,12 @@ function! <SID>RefreshWinManager(...)
 	" refreshes the window layout and the displayes of windows which trigger
 	" on autocommands.
 	
+	if a:0 > 0 && a:1 == "Bufdelete"
+		call WM_ERRORMSG('+RefreshWinManager: Bufdelete due to '.bufname(expand('<abuf>')).' ('.expand('<abuf>').')')
+	else
+		call WM_ERRORMSG('+RefreshWinManager: BufEnter due to '.bufname(bufnr('%')).' ('.bufnr('%').')')
+	end
+
 	" make a note of whether this refresh was triggered by the BufDelete event
 	" or not.
 	let _split = &splitbelow
@@ -590,7 +658,7 @@ function! <SID>RefreshWinManager(...)
 	end
 	" if this autocommand was triggered because of internal movements/commands
 	" due to other winmanager commands, then quit.
-	if exists("s:commandRunning") && s:commandRunning
+	if WinManagerAUSuspended()
 		return
 	end
 	" check if only explorer windows are visible and if so quit if we dont
@@ -600,7 +668,7 @@ function! <SID>RefreshWinManager(...)
 	end
 	
 	" this magic statement is curing the syntax losing problem. WHY?
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 	let g:numRefs = g:numRefs + 1
 
 	" remember this window number because we will return to it after
@@ -649,7 +717,6 @@ function! <SID>RefreshWinManager(...)
 		" keep opening a group which the user has closed using a ":quit"
 		" command.
 		if retry
-			call PrintError('retrying group '.i)
 			" find the 'nearest' group which is open.
 			let nearestGroup = 'inf'
 			let nearestWindow = 'inf'
@@ -671,7 +738,6 @@ function! <SID>RefreshWinManager(...)
 				let j = j + 1
 			endwhile
 
-			call PrintError('nearestWindow = '.nearestWindow)
 			" if nearestWindow is 'inf', it means no other explorer plugins
 			" are open. which means that this thing needs to go the very
 			" right.
@@ -705,7 +771,6 @@ function! <SID>RefreshWinManager(...)
 					" set width only if we are creating a new window...
 					exe g:winManagerWidth.'wincmd |'
 				end
-				call PrintError('doing the funky open thing')
 			end
 		end
 		let i = i + 1
@@ -720,13 +785,12 @@ function! <SID>RefreshWinManager(...)
 	" case we are returning to a listed buffer.  also should do this only for
 	" a BufEnter event. For a BufDelete event, the do this only if the current
 	" buffer is not the buffer being deleted.
-	call PrintError('refresh: abuf = '.expand('<abuf>'))
 	if buflisted(bufnr("%")) && !isdirectory(bufname("%")) && 
 	\	( !BufDelete || ( bufnr('%') != expand('<abuf>') ) )
 		call <SID>RepairAltRegister()
 	end
 
-	let s:commandRunning = 0
+	call WinManagerResumeAUs()
 	let &splitbelow = _split
 endfunction
 
@@ -742,7 +806,6 @@ function! <SID>ResizeAllExplorers()
 			" resize function. this allows for dynamic resizing.
 				call s:GotoWindow(explorerWinNum)
 				exe 'call '.explorerName.'_ReSize()'
-				call PrintError('calling resize for '.explorerName)
 			end
 		end
 		let i = i + 1
@@ -836,14 +899,14 @@ function! <SID>WhichMemberVisible(i)
 endfunction
 
 " a handy little function for debugging.
-function! PrintError(eline)
+function! WM_ERRORMSG(eline)
 	if !g:debugWinManager
 		return
 	end
-	if !exists("g:myerror")
-		let g:myerror = ""
+	if !exists("g:WM_ERROR")
+		let g:WM_ERROR = ""
 	end
-	let g:myerror = g:myerror . "\n" . a:eline
+	let g:WM_ERROR = g:WM_ERROR . "\n" . a:eline
 endfunction
 
 "---
@@ -869,7 +932,7 @@ endfunction
 " if called with 2 arguments, goto the previous explorer.
 "
 function! <SID>GotoNextExplorerInGroup(name, ...)
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 	" go forward or back?
 	if a:0 > 1
 		let dir = -1
@@ -885,6 +948,7 @@ function! <SID>GotoNextExplorerInGroup(name, ...)
 	" find the number of members of this group.
 	exe 'let nummems = s:numMembers_'.grpn
 	if nummems == 1
+		call WinManagerResumeAUs()
 		return 0
 	end
 
@@ -911,14 +975,13 @@ function! <SID>GotoNextExplorerInGroup(name, ...)
 		call WinManagerForceReSize(a:name)
 	end
 
-	let s:commandRunning = 0
+	call WinManagerResumeAUs()
 endfunction
 
 " edit the first possible explorer after memn belonging to groun. use editcmd
 " to form the new window.
 function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
 	
-	call PrintError('EditNext: grpn = '.a:grpn.', memn = '.a:memn.', dir = '.a:dir.' editcmd = '.a:editcmd)
 	" then try to find the number of the next member.
 	let startmn = (a:memn ? a:memn : 1)
 	let nextmn = a:memn + a:dir
@@ -949,7 +1012,6 @@ function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
 
 		" if we have come back to the same explorer with every other group
 		" member not able to display anything, then return.
-		call PrintError('nextmn = '.nextmn.' a:memn = '.a:memn)
 
 		exe 'let name = s:explorerName_'.nextEN
 		" if the _IsPossible() function doesn't exist, assume its always
@@ -962,13 +1024,22 @@ function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
 			" now start the next explorer using its title
 			exe 'let title = s:explorerTitle_'.nextEN
 			exe 'let name = s:explorerName_'.nextEN
-			exe 'silent! '.editcmd.' '.title
+			" Temporarily modify isfname to avoid treating the name as a
+			" pattern.
+			let _isf = &isfname
+			set isfname-=\
+			set isfname-=[
+			exe 'silent! '.editcmd.' '.escape(title, '[ ')
+			let &isfname = _isf
 			" use vsplitting etc only the first time things are opened.
 			if editcmd != 'e'
 				let editcmd = 'e'
 			end
 			" these are a few setting which most well-made explorers
 			" already set, but just to be on the safe side.
+			" TODO: rely on the explorers themselves to do this. "Explorers"
+			"       such as project.vim open real files, so that these
+			"       settings don't work.
 			setlocal nobuflisted
 			setlocal bufhidden=delete
 			setlocal buftype=nofile
@@ -976,7 +1047,18 @@ function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
 
 			" call the Start() function for the next explorer ...
 			exe 'call '.name.'_Start()'
+			" TODO: It might not be such a good idea to set nomodifiable. If I
+			"       want to get project.vim as an explorer, the following will
+			"       make it not work.
 			setlocal nomodifiable
+
+			" Some explorers (such as todoexplorer.vim) might have changed the
+			" MRU list by opening new windows etc. This causes the MRUList to
+			" get disturbed. Restore the MRUList each time just to make sure
+			" explorers such as bufexplorer which depend on the MRUList
+			" critically don't display faulty information.
+			let g:MRUList = s:MRUList
+
 			" and remember its buffer number for later.
 			exe 'let s:explorerBufNum_'.nextEN.' = bufnr("%")'
 			" also remember that this was the last explorer of this group which was
@@ -985,7 +1067,7 @@ function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
 
 			" if this explorer has actually not put anything in the buffer
 			" then quit and forget.
-			if line('$') > 0 && getline('$') != ''
+			if search('.') " line('$') > 0 && getline('$') != ''
 				let somethingDisplayed = nextEN
 				break
 			end
@@ -1007,7 +1089,7 @@ endfunction
 " goes to either the first explorer window or the last explorer window
 " visible.
 function! <SID>GotoExplorerWindow(which)
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 	" first go to either the top left or the bottom right window.
 	if a:which == '1'
 		" goto to the top left and move in the bottom/right direction.
@@ -1025,7 +1107,7 @@ function! <SID>GotoExplorerWindow(which)
 	while 1
 		" if we are on an explorer window quit.
 		if s:IsExplorerBuffer(bufnr('%'))
-			let s:commandRunning = 0
+			call WinManagerResumeAUs()
 			return
 		end
 		" if we have cycled through one complete time without hitting pay
@@ -1037,7 +1119,7 @@ function! <SID>GotoExplorerWindow(which)
 		let firstTime = 0
 		exe winmovecmd
 	endwhile
-	let s:commandRunning = 0
+	call WinManagerResumeAUs()
 endfunction
 
 " returns the explorer number if an explorer plugin exists with the specified
@@ -1073,7 +1155,8 @@ function! WinManagerGetLastEditedFile(...)
 	else
 		let ret = s:MRUGet(a:1)
 		if ret == ''
-			return matchstr(s:MRUList, ',\zs[0-9]\+\ze,$')
+			" Return as type() == 0 (for number)
+			return matchstr(s:MRUList, ',\zs[0-9]\+\ze,$') + 0
 		else
 			return ret
 		end
@@ -1096,7 +1179,7 @@ endfunction
 
 " close all the visible explorer windows.
 function! <SID>CloseWindowsManager()
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 
 	let i = 1
 	while i <= bufnr('$')
@@ -1107,7 +1190,7 @@ function! <SID>CloseWindowsManager()
 		let i = i + 1
 	endwhile
 
-	let s:commandRunning = 0
+	call WinManagerResumeAUs()
 endfunction
 
 " provides a way to examine script local variables from outside the script.
@@ -1132,10 +1215,13 @@ endfunction
 " function.
 "
 function! WinManagerSuspendAUs()
-	let s:commandRunning = 1
+	let s:commandRunning = s:commandRunning + 1
 endfunction
 function! WinManagerResumeAUs()
-	let s:commandRunning = 0
+	let s:commandRunning = s:commandRunning - 1
+endfunction
+function! WinManagerAUSuspended()
+	return s:commandRunning > 0
 endfunction
 
 " Another hook provided by winmanager. Normally winmanager will call the
@@ -1146,23 +1232,24 @@ endfunction
 "
 function! WinManagerForceReSize(explName)
 	if !exists('s:'.a:explName.'_numberID') || !exists('*'.a:explName.'_ReSize')
-		call PrintError('resize quitting because resize function not found or explorer not registered')
 		return
 	end
 	exe 'let explNum = s:'.a:explName.'_numberID'
-	let s:commandRunning = 1
+	call WinManagerSuspendAUs()
 	let windowNum = s:IsExplorerVisible(explNum)
 	if windowNum == -1
-		call PrintError('resize quitting because window not visible')
+		call WinManagerResumeAUs()
 		return
 	end
 	call s:GotoWindow(windowNum)
 	if s:IsOnlyVertical()
-		call PrintError('resize quitting because its illegal')
+		call WinManagerResumeAUs()
 		return
 	end
-	exe 'call '.a:explName.'_ReSize()'
-	let s:commandRunning = 0
+	if exists('*'.a:explName.'_ReSize()')
+		exe 'call '.a:explName.'_ReSize()'
+	endif
+	call WinManagerResumeAUs()
 endfunction
 
 " returns 1 if the only visible windows are explorer windows.
@@ -1206,6 +1293,7 @@ function! <SID>MRUGet(slot)
 	if ret == ''
 		return -1
 	end
+	" This automatically returns the value as type() == 0 (for number)
 	exe 'return '.ret
 endfunction
 
@@ -1302,12 +1390,44 @@ function! <SID>EditDir(event)
 	" NOTE: if the user has chosen a layout where the FileExplorer is not at
 	" the top-left, this will be unintuitive.
 	if a:event == "VimEnter"
-		bwipeout
+		silent! bwipeout
 		
 		call s:StartWindowsManager()
 		call s:MRUPush()
 		call s:GotoExplorerWindow('1')
  	end
+endfunction
+
+function! s:WinManagerReset()
+	let groupNum = 1
+	while 1
+		" if no more groups then break.	
+		let curGroup = s:Strntok(g:winManagerWindowLayout, '|', groupNum)
+		if curGroup == ''
+			break
+		end
+		
+		" otherwise extract the explorers belonging to this group and the
+		" explorer ID's etc. also protect against the same explorer being put
+		" in 2 groups.
+		let grplist = ','
+		let numlist = ','
+		let curgn = s:numExplorerGroups + 1
+
+		let i = 1
+		while 1
+			let name = s:Strntok(curGroup, ',', i)
+			if name == ''
+				break
+			end
+			silent! exec 'unlet s:'.name.'_numberID'
+			let i = i + 1
+		endwhile
+		let groupNum = groupNum + 1
+	endwhile
+	let s:numExplorers = 0
+	let s:numExplorerGroups = 0
+	silent! exec "unlet s:gotExplorerTitles"
 endfunction
 
 " restore 'cpo'

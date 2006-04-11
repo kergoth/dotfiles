@@ -1,7 +1,7 @@
 "=============================================================================
 " File: explorer.vim
 " Author: M A Aziz Ahmed (aziz@acorn-networks.com)
-" Last Change: Sun Mar 31 11:00 PM 2002 PST
+" Last Change: 2005-09-29 12:11:48
 " Version: 2.5
 " Additions by Mark Waggoner (waggoner@aracnet.com) et al.
 "-----------------------------------------------------------------------------
@@ -436,6 +436,7 @@ function! s:EditDir(...)
 	nnoremap <buffer> a   :call <SID>ShowAllFiles()<cr>:call <SID>RestoreFileDisplay()<cr>
 	nnoremap <buffer> R   :call <SID>RenameFile()<cr>
 	nnoremap <buffer> c   :exec "cd ".b:completePathEsc<cr>:pwd<cr>
+	nnoremap <buffer> S   :call <SID>ShellExecute()<cr>
 	let &cpo = cpo_save
 
 	" If directory is already loaded, don't open it again!
@@ -648,6 +649,33 @@ function s:DoubleClick()
 		call s:OpenEntryPrevWindow()	" file: open in another window
 	endif
 endfun
+
+
+"---
+" Open file or directory with the corresponding application
+" associated by the shell
+"
+function! s:ShellExecute()
+  " Are we on a line with a file name?
+  let l = getline(".")
+  if l =~ '^"'
+    return
+  endif
+
+  " Copy window settings to script settings
+  let s:sortby=w:sortdirlabel . w:sorttype
+  let s:longhelp = w:longhelp
+  let s:longlist = w:longlist
+
+  " Get the file name
+  let fn=s:GetFullFileName()
+
+  if (has("win32"))
+    exec "silent ! start \"\" \"".substitute(fn, "/", "\\", "g")."\""
+  else
+    exec "silent !start \'".fn."\'"
+  endif
+endfunction
 
 "---
 " Open file or directory in the same window as the explorer is
@@ -910,6 +938,7 @@ function! s:AddHeader()
 	1
 	if w:longhelp==1
 		let @f="\" <enter> : open file or directory\n"
+			\."\" S : open the file/folder with external program\n"
 			\."\" o : open new window for file/directory\n"
 			\."\" O : open file in previously visited window\n"
 			\."\" p : preview the file\n"
