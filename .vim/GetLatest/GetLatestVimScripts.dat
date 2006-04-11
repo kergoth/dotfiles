@@ -13,10 +13,13 @@ ScriptID SourceID Filename
 790 5373 python.vim
 795 4342 colors/xterm16.vim
 915 5429 :AutoInstall: AsNeeded.vim
+935 5478 syntax/svg.vim
 974 4316 indent/python.vim
 1066 5001 :AutoInstall: cecutil.vim
 1075 5439 netrw.vim
 1218 5167 NERD_comments.vim
+1235 5479 syntax/mathml.vim
+1236 5481 syntax/xhtml.vim
 1243 4055 colors/desert256.vim
 1248 4239 syntax/cccs.vim
 1311 4504 vimplate.vim
