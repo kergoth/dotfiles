@@ -328,7 +328,7 @@ set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
 " Vim Tip #1149:
 " Returns either the contents of a fold or spelling suggestions.
-if (v:version >= 700) && has('balloon_expr')
+if (v:version >= 700) && has('balloon_eval')
   function! BalloonExpr()
     let foldStart = foldclosed(v:beval_lnum )
     let foldEnd   = foldclosedend(v:beval_lnum)
@@ -356,6 +356,7 @@ if (v:version >= 700) && has('balloon_expr')
     return join( lines, has( "balloon_multiline" ) ? "\n" : " " )
   endfunction
 
+  set ballooneval
   set balloonexpr=BalloonExpr()
 endif
 " }}}
