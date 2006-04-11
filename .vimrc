@@ -223,7 +223,11 @@ set mouse=a
 if has("unix") &&
    \ has("mouse") &&
    \ ! has("gui_running")
-  set ttymouse=xterm2
+  if &term == "xterm"
+    set ttymouse=xterm2
+  else
+    set ttymouse=xterm
+  endif
 endif
 
 " Line numbering
@@ -408,7 +412,7 @@ if exists('s:using_winmanager') &&
 
   " Disable use of tabbar / minibufexpl
   " let Tb_loaded = 1
-  let loaded_minibufexplorer = 1
+  let g:loaded_minibufexplorer = 1
 
   map <c-w><c-f> :FirstExplorerWindow<CR>
   map <c-w><c-b> :BottomExplorerWindow<CR>
