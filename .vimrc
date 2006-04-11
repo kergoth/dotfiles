@@ -300,6 +300,7 @@ if &t_Co > 2 || has("gui_running")
   " RedundantWhitespace match when opening a .signature to not
   " highlight that particular trailing space in red.
   au BufReadPost .signature match RedundantWhitespace /\(^--\)\@<!\s\+$/
+  au BufReadPost mutt-* match RedundantWhitespace /\(^--\)\@<!\s\+$/
 
   " When using gnome-terminal, vim's color test script shows
   " dark gray on white correctly, but white on dark gray appears
@@ -352,19 +353,19 @@ endif " has("autocmd")
 
 " Plugin options {{{
 "let g:xml_syntax_folding = 1
-let NERD_shut_up=1
-let NERD_comment_whole_lines_in_v_mode = 1
-let NERD_left_align_regexp = ".*"
-let NERD_right_align_regexp = ".*"
-let NERD_space_delim_filetype_regexp = ".*"
+let g:NERD_shut_up=1
+let g:NERD_comment_whole_lines_in_v_mode = 1
+let g:NERD_left_align_regexp = ".*"
+let g:NERD_right_align_regexp = ".*"
+let g:NERD_space_delim_filetype_regexp = ".*"
 let g:doxygen_enhanced_color = 1
-let html_use_css = 1
-let use_xhtml = 1
-let perl_extended_vars = 1
-let HL_HiCurLine = "Function"
-" let perl_fold = 1
+let g:html_use_css = 1
+let g:use_xhtml = 1
+let g:perl_extended_vars = 1
+let g:HL_HiCurLine = "Function"
+" let g:perl_fold = 1
 " let g:sh_fold_enabled= 1
-" let sh_minlines = 500
+" let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
 " }}}
 
