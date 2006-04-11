@@ -362,9 +362,10 @@ endif
 
 if has("gui_running")
   " Hide the mouse cursor while typing
-  set nomh
+  set mh
 
-  set go=Acgtm
+  "set go=Acgtm
+  set go=Acg
 endif
 
 " Filter expected errors from make
@@ -467,6 +468,9 @@ endif
 
 if colorterm == "gnome-terminal"
   set t_Co=16
+elseif colorterm == "rxvt-xpm"
+  " set colors correctly for mrxvt
+  set t_Co=256
 endif
 
 if &t_Co > 2 || has("gui_running")
