@@ -728,6 +728,9 @@ if has("autocmd")
   " Set a default filetype
   au BufReadPost,BufNewFile,VimEnter * if &ft == "" | setfiletype text | endif
 
+  " Set the compiler to the filetype by default
+  au FileType * try | exe 'compiler ' . &filetype | catch | endtry
+
   try
     " if we have a vim which supports QuickFixCmdPost (vim7),
     " give us an error window after running make, grep etc, but
