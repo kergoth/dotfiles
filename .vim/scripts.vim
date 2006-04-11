@@ -9,4 +9,6 @@ if expand("<amatch>") !~ g:ft_ignore_pat
 \  getline(1) =~ '^# Firewall configuration written by')
   setfiletype iptables
   set commentstring=#%s
+elseif getline(1) =~ '^\(.\+\)(\d\{1}).\+\1(\d\{1})$'
+  setfiletype man 
 endif
