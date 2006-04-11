@@ -158,6 +158,10 @@ nmap <Leader>hi :echo "hi<" .
       \ synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .
       \ ">"<CR>
 
+" Mouse {{{
+" When selecting with the mouse, copy to clipboard on release.
+vnoremap <LeftRelease> "+y<LeftRelease>gv
+
 " scrollwheel = intelligent # of lines to scroll based on window height
 if has("autocmd")
   au BufWinEnter * exec "map <buffer> <MouseDown> " . <SID>Max(winheight(0)/8, 1) . ""
@@ -178,6 +182,7 @@ map <C-MouseUp> 
 " shift+scrollwheel = unmapped
 "unmap <S-MouseDown>
 "unmap <S-MouseUp>
+" }}}
 
 " Execute an appropriate interpeter for the current file
 " If there is no #! line at the top of the file, it will
