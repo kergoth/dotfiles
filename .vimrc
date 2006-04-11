@@ -231,6 +231,7 @@ function! RunInterp()
   endif
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
+com! -complete=command Interp call RunInterp()
 
 " Buffer Switching {{{
 " Map meta+numberkeys to the buffers
