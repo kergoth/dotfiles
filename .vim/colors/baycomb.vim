@@ -234,17 +234,14 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
 
     " syntax highlighting
 
-    " Variety of comment colors, choose one:
-    " hi Comment        guifg=#a4a2f7  guibg=#132239    "light purple on darkcyan
-    " hi Comment        guifg=#441277  guibg=#437789    "magents on cyan
-    " hi Comment        guifg=#a8a0ff                   "light purple
-    " hi Comment        guifg=#d8ca4b                   "yellow
-    " hi Comment        guifg=#349d58                   "green
-    " hi Comment        guifg=blue  guibg=darkblue
-    " hi Comment        guifg=darkcyan  guibg=darkblue
-    " hi Comment     guifg=darkgrey  guibg=darkblue
+    " if &term == "builtin_gui" || &term == "win32"
+    "     call <SID>X("Comment", "a9a9a9", "00008b", "")
+    " else
+    "     call <SID>X("Comment", "bebebe", "00008b", "")
+    " endif
+    "call <SID>X("Comment", "349d58", "", "")
+    call <SID>X("Comment", "008b8b", "", "")
 
-    call <SID>X("Comment", "349d58", "", "")
     call <SID>X("Title", "f5f5c0", "", "none")
     call <SID>X("Underlined", "dae5da", "", "")
 
@@ -253,7 +250,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Constant", "5d6ae5", "", "")
     call <SID>X("PreProc", "9570b5", "", "")
     call <SID>X("Identifier", "a58065", "", "") " or blue 4075aa
-    call <SID>X("Special", "b5a0ea", "", "")
+    call <SID>X("Special", "a58aea", "", "")
     call <SID>X("Ignore", "666666", "", "")
     call <SID>X("Todo", "ff4500", "eeee00", "")
     call <SID>X("Error", "", "b03452", "")
@@ -349,12 +346,12 @@ else
     hi DiffChange    ctermbg=5
     hi DiffDelete    cterm=bold ctermfg=4 ctermbg=6
     hi DiffText    cterm=bold ctermbg=1
-    hi Comment    ctermfg=darkgreen
+    hi Comment    ctermfg=darkcyan
     hi Constant    ctermfg=blue
-    hi Special    ctermfg=darkcyan
+    hi Special    ctermfg=magenta
     hi Identifier    ctermfg=darkyellow
-    hi Statement    ctermfg=darkred
-    hi PreProc    ctermfg=5
+    hi Statement    ctermfg=red
+    hi PreProc    ctermfg=darkmagenta
     hi Type        ctermfg=cyan " ctermbg=darkblue
     hi Underlined    cterm=underline ctermfg=7
     hi Ignore    cterm=bold ctermfg=7

@@ -19,10 +19,10 @@ hi IncSearch guibg=#e7e7e7 guifg=#000000 gui=bold
 hi LineNr guibg=#24292e guifg=#a7a7a7 gui=none
 hi ModeMsg guibg=#181b1f guifg=#d0d0d0 gui=bold
 hi MoreMsg guibg=#181b1f guifg=#d0d097 gui=bold
-hi NonText ctermfg=8 guibg=#090a0b guifg=#878787 gui=bold
+hi NonText ctermfg=8 guibg=#181b1f guifg=#878787 gui=bold
 hi Normal ctermbg=0 ctermfg=15 guibg=#181b1f guifg=#d0d0d0 gui=none
 hi Question guibg=#181b1f guifg=#e0c07e gui=bold
-hi Search guibg=#d0d097 guifg=#000000 gui=bold
+hi Search guibg=#bbbb87 guifg=#000000 gui=bold
 hi SignColumn guibg=#363d45 guifg=#d0d0d0 gui=none
 hi SpecialKey guibg=#181b1f guifg=#a28b5b gui=none
 hi StatusLine guibg=#9fb6cd guifg=#000000 gui=bold
@@ -43,7 +43,7 @@ hi lCursor guibg=#d0d0d0 guifg=#181b1f gui=bold
 hi PreProc guibg=#181b1f guifg=#d7a0d7 gui=none
 hi Special guibg=#181b1f guifg=#e0c07e gui=none
 hi Statement guibg=#181b1f guifg=#7ec0ee gui=none
-hi Todo guibg=#181b1f guifg=#d0d097 gui=bold,underline
+hi Todo guibg=#181b1f guifg=#bbbb87 gui=bold,underline
 hi Type guibg=#181b1f guifg=#f09479 gui=none
 hi Underlined guibg=#181b1f guifg=#1e90ff gui=underline
 
