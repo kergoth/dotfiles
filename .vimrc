@@ -43,8 +43,6 @@ else
 endif
 
 " Functions {{{
-"let s:numdisabled = &number==0?1:0
-
 function! s:PropogateNumberState()
   windo
         \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
@@ -468,17 +466,22 @@ if has("syntax")
 endif
 
 if colorterm == "gnome-terminal"
-  set t_Co = 16
+  set t_Co=16
 endif
 
 if &t_Co > 2 || has("gui_running")
   "colors darkblack2
-  colors desert256
   "colors inkpot
   "colors darkblue3
   "let xterm16_colormap = 'soft'
   "let xterm16_brightness = '123'
   "colo xterm16
+
+  if &t_Co >= 88 || has("gui_running")
+    colors baycomb
+  else
+    colors desert256
+  endif
 
   "Colors both trailing    
   "whitespace, and spaces  	before tabs
