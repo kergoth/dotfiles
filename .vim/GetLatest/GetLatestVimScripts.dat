@@ -29,3 +29,4 @@ ScriptID SourceID Filename
 1385 4693 syntax/interfaces.vim
 1454 5135 colors/baycomb.vim
 1075 5004 netrw.vim
+795 4342 colors/xterm16.vim
