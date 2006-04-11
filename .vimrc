@@ -380,7 +380,12 @@ endif
 set scrolloff=2
 set sidescrolloff=2
 
-set nohidden
+" The prompt to save changes when switching buffers
+" is incredibly annoying when doing development.
+" An alternative is to set autowrite, but one could
+" easily lose old changes that way.  I like to write
+" when I'm explicitly ready to do so.
+set hidden
 "set path=.
 
 " Allow setting window title for screen
