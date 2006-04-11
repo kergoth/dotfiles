@@ -506,8 +506,7 @@ if &t_Co > 2 || has("gui_running")
   " RedundantWhitespace match when opening a .signature to not
   " highlight that particular trailing space in red.
   if has("autocmd")
-    au BufReadPost .signature match RedundantWhitespace /\(^--\)\@<!\s\+$/
-    au BufReadPost mutt-* match RedundantWhitespace /\(^--\)\@<!\s\+$/
+    au FileType mail match RedundantWhitespace /\(^--\)\@<!\s\+$/
   endif
 
   " When using gnome-terminal, vim's color test script shows
@@ -551,7 +550,7 @@ if has("autocmd")
   set tw=78
   au FileType * setlocal tw=0
   au FileType text setlocal tw=78
-  au BufReadPost mutt-* setlocal nocindent noautoindent tw=78
+  au FileType mail setlocal nocindent noautoindent tw=78
 
   " Sane setlocaltings for keywordprg
   au FileType vim setlocal keywordprg=:help
