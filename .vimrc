@@ -684,6 +684,7 @@ if &t_Co > 2 || has("gui_running")
   "  bar	
   "And spaces before tabs:
   "  foo 	bar
+
   hi def link RedundantWhitespace Error
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
@@ -697,11 +698,6 @@ if &t_Co > 2 || has("gui_running")
     " Adjust the match to exclude the first column.
     au FileType diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
   endif
-
-  " Highlight Vim modelines
-  hi def link VimModeline     special
-  au Syntax * exe '2match VimModeline /' .  substitute(escape(&commentstring, '*$./\'), '%s', '.*\\zsvim:\\s*set[^:]\\{-1,}:\\ze.*', '') . '/'
-
 
   " When using gnome-terminal, vim's color test script shows
   " dark gray on white correctly, but white on dark gray appears
