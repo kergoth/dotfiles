@@ -211,6 +211,11 @@ set tabstop=4       "How many spaces a tab in the file counts for, and when
 set shiftwidth=4    "Indentation width (affects indent plugins, indent based folding, etc, and when smarttab is on, is used instead of ts/sts for the indentation at beginning of line)
 set softtabstop=0   "Number of spaces that the tab key counts for when editing
                     "Only really useful if different from ts, or if using et.
+set autoindent
+set smartindent
+
+set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
+set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
 " Common indentation setups
 "   No hard tabs, 2 space indent: set sw=2 sts=2 et
@@ -300,12 +305,7 @@ set infercase
 " No incremental searches or search highlighting
 set noincsearch
 set nohlsearch
-
 set noautowrite
-set autoindent
-set smartindent
-set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
-set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
 " Usage of the mouse
 set mouse=a
