@@ -232,7 +232,7 @@ endfun
 " }}}
 
 
-call <SID>X("Normal", "ADBAE5", "15111C", "")
+call <SID>X("Normal", "7D90D5", "130E1A", "")
 call <SID>X("NonText", "382920", "14101A", "")
 
 " set comments to grey on non-Windows OS's to make sure it is readable
@@ -244,19 +244,19 @@ call <SID>X("NonText", "382920", "14101A", "")
 call <SID>X("Comment", "008B8B", "", "")
 
 call <SID>X("Title", "F5F5C0", "", "NONE")
-call <SID>X("Underlined", "DAE5DA", "", "")
+call <SID>X("Underlined", "EAC5DA", "", "")
 
-call <SID>X("Statement", "E06578", "", "NONE")
-call <SID>X("Type", "4D88EA", "", "NONE")
-call <SID>X("Constant", "505AD5", "", "")
+call <SID>X("Statement", "D06A75", "", "NONE")
+call <SID>X("Type", "4A60E0", "", "NONE")
+call <SID>X("Constant", "4080D0", "", "")
 call <SID>X("PreProc", "8C95F0", "", "")
-call <SID>X("Identifier", "6A75B5", "", "")
-call <SID>X("Special", "80709A", "", "")
+call <SID>X("Identifier", "6A5595", "", "")
+call <SID>X("Special", "8570B5", "", "")
 call <SID>X("Ignore", "666666", "", "")
 call <SID>X("Todo", "FF4500", "EEEE00", "")
 call <SID>X("Error", "", "B03452", "")
-call <SID>X("Number", "2060CD", "", "")
-call <SID>X("Function", "D0AAC0", "", "NONE")
+call <SID>X("Number", "0D65CA", "", "")
+call <SID>X("Function", "80506A", "", "NONE")
 call <SID>X("Conditional", "D5305A", "", "NONE")
 call <SID>X("Repeat", "E02D5A", "", "NONE")
 call <SID>X("Operator", "DACA65", "", "NONE")
