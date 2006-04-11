@@ -52,7 +52,7 @@ endif
 " Functions {{{
 let colorterm = $COLORTERM
 
-function! s:PropogateNumberState()
+function! <SID>PropogateNumberState()
   windo
         \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
         \   set number |
@@ -69,10 +69,10 @@ function! SetNumberingState(s)
   endif
 
   let s:numdisabled=l:newstate
-  call s:PropogateNumberState()
+  call <SID>PropogateNumberState()
 endfunction
 
-function! s:Min(a, b)
+function! <SID>Min(a, b)
   if a:a <= a:b
     return a:a
   else
@@ -80,7 +80,7 @@ function! s:Min(a, b)
   endif
 endfunction
 
-function! s:Max(a, b)
+function! <SID>Max(a, b)
   if a:a >= a:b
     return a:a
   else
@@ -138,8 +138,8 @@ nmap <Leader>i :echo "hi<" .
 
 " scrollwheel = intelligent # of lines to scroll based on window height
 if has("autocmd")
-  au BufWinEnter * exec "map <buffer> <MouseDown> " . s:Max(winheight("%")/8, 1) . ""
-  au BufWinEnter * exec "map <buffer> <MouseUp> " . s:Max(winheight("%")/8, 1) . ""
+  au BufWinEnter * exec "map <buffer> <MouseDown> " . <SID>Max(winheight("%")/8, 1) . ""
+  au BufWinEnter * exec "map <buffer> <MouseUp> " . <SID>Max(winheight("%")/8, 1) . ""
 endif
 
 map <MouseDown> 3
@@ -649,7 +649,7 @@ if has("autocmd")
   endtry
 
   " Close out the quickfix window if it's the only open window
-  function! s:QuickFixClose()
+  function! <SID>QuickFixClose()
     " if the window is quickfix go on
     if &buftype=="quickfix"
       " if this window is last on screen quit without warning
@@ -658,7 +658,7 @@ if has("autocmd")
       endif
     endif
   endfunction
-  au BufEnter * call s:QuickFixClose()
+  au BufEnter * call <SID>QuickFixClose()
 
   " Change the current directory to the location of the
   " file being edited.
@@ -679,7 +679,7 @@ if has("autocmd")
 
   " Intelligent enable/disable of the line number display
   au VimEnter * let s:numdisabled = &number==0?1:0
-  au VimEnter,WinEnter,WinLeave * :call s:PropogateNumberState()
+  au VimEnter,WinEnter,WinLeave * :call <SID>PropogateNumberState()
   " }}}
 endif " has("autocmd")
 " }}}
