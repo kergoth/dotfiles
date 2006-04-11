@@ -1,13 +1,9 @@
 " Vim color file
-" carvedwood v0.9
-" Maintainer:	Shawn Axsom <axs221@gmail.com>
-"               [axs221.1l.com]
-
-" carvedwood -
-"     a color scheme modified from my desertocean scheme into a brown
-" and green scheme, easier on the eyes and optimized for more important syntax
-" to stand out the most (eg comments and values are dark and dull while
-" statements are bright).
+" Maintainer:	Hans Fugal <hans@fugal.net>
+" Last Change:	$Date: 2003/05/06 16:37:49 $
+" Last Change:	$Date: 2003/06/02 19:40:21 $
+" URL:		http://hans.fugal.net/vim/colors/desert.vim
+" Version:	$Id: desert.vim,v 1.6 2003/06/02 19:40:21 fugalh Exp $
 
 " cool help screens
 " :he group-name
@@ -20,63 +16,57 @@ if version > 580
     " complaining
     hi clear
     if exists("syntax_on")
-		syntax reset
+	syntax reset
     endif
 endif
+let g:colors_name="anotherdark"
 
-let g:colors_name="carvedwood"
 
-hi Normal     guifg=#86808d guibg=#111715
-hi NonText    guifg=#382920 guibg=#111128
-
-" syntax highlighting
-hi Comment	  guifg=#4a4048
-hi Title	  guifg=#60a0da
-hi Underlined guifg=#60a5cd
-hi Statement  guifg=#fac5ba
-hi Type		  guifg=#a57570
-hi Constant	  guifg=#664448
-hi PreProc    guifg=#c07a6a
-hi Identifier guifg=#b06d69
-hi Special	  guifg=#454D5A
-hi Ignore     guifg=grey40
-hi Todo		  guifg=orangered guibg=yellow2
-hi Error      guibg=#e04462
-"end syntax highlighting
+hi Normal	guifg=White guibg=grey20
 
 " highlight groups
+hi Cursor	guibg=khaki guifg=slategrey
 "hi CursorIM
-hi Directory guifg=#bbd0df
+"hi Directory
 "hi DiffAdd
 "hi DiffChange
 "hi DiffDelete
 "hi DiffText
 "hi ErrorMsg
-
-hi Cursor       guibg=#2d394b guifg=#65899d
-
-hi FoldColumn	guibg=#111122 guifg=#00CCFF
-hi LineNr       guibg=#11111b guifg=#D0C0BA 
-hi StatusLine	guibg=#cda995 guifg=#102015 gui=none
-hi StatusLineNC	guibg=#a0897d guifg=#373334 gui=none
-
-hi Search       guibg=#5a6d7d guifg=#bac5d0
-hi IncSearch	guifg=#50606d guibg=#cddaf0
-
 hi VertSplit	guibg=#c2bfa5 guifg=grey50 gui=none
-hi Folded       guibg=#0a4f4d guifg=#BBDDCC
-hi ModeMsg    	guifg=#00AACC
-hi MoreMsg      guifg=SeaGreen
-hi Question    	guifg=#AABBCC
-hi SpecialKey	guifg=#90703B
-hi Visual       guifg=#008FBF guibg=#33DFEF
+hi Folded	guibg=grey30 guifg=gold
+hi FoldColumn	guibg=grey30 guifg=tan
+hi IncSearch	guifg=slategrey guibg=khaki
+"hi LineNr
+hi ModeMsg	guifg=goldenrod
+hi MoreMsg	guifg=SeaGreen
+hi NonText	guifg=LightBlue guibg=grey30
+hi Question	guifg=springgreen
+hi Search	guibg=peru guifg=wheat
+hi SpecialKey	guifg=yellowgreen
+hi StatusLine	guibg=#c2bfa5 guifg=black gui=none
+hi StatusLineNC	guibg=#c2bfa5 guifg=grey50 gui=none
+hi Title	guifg=indianred
+hi Visual	gui=none guifg=khaki guibg=olivedrab
 "hi VisualNOS
 hi WarningMsg	guifg=salmon
 "hi WildMenu
 "hi Menu
-"hi Scrollbar  guibg=grey30 guifg=tan
+"hi Scrollbar
 "hi Tooltip
 
+" syntax highlighting groups
+hi Comment	guifg=orange
+hi Constant	guifg=#ffa0a0
+hi Identifier	guifg=palegreen
+hi Statement	guifg=khaki
+hi PreProc	guifg=indianred
+hi Type		guifg=darkkhaki
+hi Special	guifg=navajowhite
+"hi Underlined
+hi Ignore	guifg=grey40
+"hi Error
+hi Todo		guifg=orangered guibg=yellow2
 
 " color terminal definitions
 hi SpecialKey	ctermfg=darkgreen
@@ -103,9 +93,9 @@ hi DiffAdd	ctermbg=4
 hi DiffChange	ctermbg=5
 hi DiffDelete	cterm=bold ctermfg=4 ctermbg=6
 hi DiffText	cterm=bold ctermbg=1
-hi Comment	ctermfg=darkcyan
-hi Constant	ctermfg=brown
-hi Special	ctermfg=5
+hi Comment	ctermfg=lightblue
+hi Constant	ctermfg=darkred
+hi Special	ctermfg=red
 hi Identifier	ctermfg=6
 hi Statement	ctermfg=3
 hi PreProc	ctermfg=5
@@ -117,4 +107,3 @@ hi Error	cterm=bold ctermfg=7 ctermbg=1
 
 
 "vim: sw=4
-

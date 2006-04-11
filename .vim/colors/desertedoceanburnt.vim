@@ -1,13 +1,11 @@
-" Vim color file
-" carvedwood v0.9
+
+" desertedoceanburnt v0.1
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
 "               [axs221.1l.com]
 
-" carvedwood -
-"     a color scheme modified from my desertocean scheme into a brown
-" and green scheme, easier on the eyes and optimized for more important syntax
-" to stand out the most (eg comments and values are dark and dull while
-" statements are bright).
+" desertedoceanburnt, a dull, low contrast version of the desertedocean 
+"  colorscheme, which used the desert colorscheme as template, based
+"  loosely off of desert, oceandeep, and zenburn.
 
 " cool help screens
 " :he group-name
@@ -17,59 +15,55 @@
 set background=dark
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
-    " complaining
+    "  complaining
     hi clear
     if exists("syntax_on")
 		syntax reset
     endif
 endif
 
-let g:colors_name="carvedwood"
+let g:colors_name="desertedoceanburnt"
 
-hi Normal     guifg=#86808d guibg=#111715
-hi NonText    guifg=#382920 guibg=#111128
+hi Normal	guifg=#FFFAFD guibg=#13232d
+hi Cursor	guibg=#204769 guifg=#A0BaBa
+"hi CursorIM
 
 " syntax highlighting
-hi Comment	  guifg=#4a4048
-hi Title	  guifg=#60a0da
-hi Underlined guifg=#60a5cd
-hi Statement  guifg=#fac5ba
-hi Type		  guifg=#a57570
-hi Constant	  guifg=#664448
-hi PreProc    guifg=#c07a6a
-hi Identifier guifg=#b06d69
-hi Special	  guifg=#454D5A
-hi Ignore     guifg=grey40
-hi Todo		  guifg=orangered guibg=yellow2
-hi Error      guibg=#e04462
+hi Comment	  guifg=#8AC0DA
+hi Title	guifg=#509BDF
+hi Underlined guifg=#20C0FF
+hi Statement  guifg=#da938a
+hi Type		  guifg=#e0c6b9
+hi PreProc    guifg=#d590aa gui=NONE
+hi Constant	  guifg=#ddaab7 " or #FF707A 
+hi Identifier guifg=#caeDfE
+hi Special	  guifg=navajowhite
+hi Ignore	guifg=grey40
+hi Todo		guifg=orangered guibg=yellow2
+"hi Error
 "end syntax highlighting
 
 " highlight groups
-"hi CursorIM
 hi Directory guifg=#bbd0df
 "hi DiffAdd
 "hi DiffChange
 "hi DiffDelete
 "hi DiffText
 "hi ErrorMsg
-
-hi Cursor       guibg=#2d394b guifg=#65899d
-
-hi FoldColumn	guibg=#111122 guifg=#00CCFF
-hi LineNr       guibg=#11111b guifg=#D0C0BA 
-hi StatusLine	guibg=#cda995 guifg=#102015 gui=none
-hi StatusLineNC	guibg=#a0897d guifg=#373334 gui=none
-
-hi Search       guibg=#5a6d7d guifg=#bac5d0
-hi IncSearch	guifg=#50606d guibg=#cddaf0
-
 hi VertSplit	guibg=#c2bfa5 guifg=grey50 gui=none
-hi Folded       guibg=#0a4f4d guifg=#BBDDCC
-hi ModeMsg    	guifg=#00AACC
-hi MoreMsg      guifg=SeaGreen
-hi Question    	guifg=#AABBCC
-hi SpecialKey	guifg=#90703B
-hi Visual       guifg=#008FBF guibg=#33DFEF
+hi Folded	guibg=#337799 guifg=#BBDDCC
+hi FoldColumn	guibg=#004f70 guifg=#50ACCF
+hi LineNr   guifg=#CCF0FF guibg=#004968 
+hi ModeMsg	guifg=#00AACC
+hi MoreMsg	guifg=SeaGreen
+hi NonText  guifg=#285960 guibg=#152C39
+hi Question	guifg=#AABBCC
+hi Search	guibg=slategrey guifg=#FFDABB
+hi IncSearch	guifg=slategrey guibg=#FFDFB0
+hi SpecialKey	guifg=#00CCBB " blue green
+hi StatusLine	guibg=#0085CA guifg=#050709 gui=none
+hi StatusLineNC	guibg=#1069A0 guifg=#272334 gui=none
+hi Visual   guifg=#008FBF guibg=#33DFEF
 "hi VisualNOS
 hi WarningMsg	guifg=salmon
 "hi WildMenu
@@ -117,4 +111,3 @@ hi Error	cterm=bold ctermfg=7 ctermbg=1
 
 
 "vim: sw=4
-
