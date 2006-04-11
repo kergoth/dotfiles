@@ -52,6 +52,71 @@ else
   nmap ,s :source $HOME/.vimrc<CR>
   nmap <silent> ,v :e $HOME/.vimrc<CR>
 endif
+
+" Buffer Switching {{{
+if has("gui_running")
+  noremap <M-1> :b1<CR>:<BS>
+  noremap <M-2> :b2<CR>:<BS>
+  noremap <M-3> :b3<CR>:<BS>
+  noremap <M-4> :b4<CR>:<BS>
+  noremap <M-5> :b5<CR>:<BS>
+  noremap <M-6> :b6<CR>:<BS>
+  noremap <M-7> :b7<CR>:<BS>
+  noremap <M-8> :b8<CR>:<BS>
+  noremap <M-9> :b9<CR>:<BS>
+  noremap <M-0> :b10<CR>:<BS>
+  inoremap <M-1> :b1<CR>:<BS>
+  inoremap <M-2> :b2<CR>:<BS>
+  inoremap <M-3> :b3<CR>:<BS>
+  inoremap <M-4> :b4<CR>:<BS>
+  inoremap <M-5> :b5<CR>:<BS>
+  inoremap <M-6> :b6<CR>:<BS>
+  inoremap <M-7> :b7<CR>:<BS>
+  inoremap <M-8> :b8<CR>:<BS>
+  inoremap <M-9> :b9<CR>:<BS>
+  inoremap <M-0> :b10<CR>:<BS>
+else
+  if has("win32")
+    noremap ± :b1<CR>:<BS>
+    noremap ² :b2<CR>:<BS>
+    noremap ³ :b3<CR>:<BS>
+    noremap Ž :b4<CR>:<BS>
+    noremap µ :b5<CR>:<BS>
+    noremap ¶ :b6<CR>:<BS>
+    noremap · :b7<CR>:<BS>
+    noremap ž :b8<CR>:<BS>
+    inoremap ± :b1<CR>:<BS>
+    inoremap ² :b2<CR>:<BS>
+    inoremap ³ :b3<CR>:<BS>
+    inoremap Ž :b4<CR>:<BS>
+    inoremap µ :b5<CR>:<BS>
+    inoremap ¶ :b6<CR>:<BS>
+    inoremap · :b7<CR>:<BS>
+    inoremap ž :b8<CR>:<BS>
+  else
+    noremap 1 :b1<CR>:<BS>
+    noremap 2 :b2<CR>:<BS>
+    noremap 3 :b3<CR>:<BS>
+    noremap 4 :b4<CR>:<BS>
+    noremap 5 :b5<CR>:<BS>
+    noremap 6 :b6<CR>:<BS>
+    noremap 7 :b7<CR>:<BS>
+    noremap 8 :b8<CR>:<BS>
+    noremap 9 :b9<CR>:<BS>
+    noremap 0 :b10<CR>:<BS>
+    inoremap 1 :b1<CR>:<BS>
+    inoremap 2 :b2<CR>:<BS>
+    inoremap 3 :b3<CR>:<BS>
+    inoremap 4 :b4<CR>:<BS>
+    inoremap 5 :b5<CR>:<BS>
+    inoremap 6 :b6<CR>:<BS>
+    inoremap 7 :b7<CR>:<BS>
+    inoremap 8 :b8<CR>:<BS>
+    inoremap 9 :b9<CR>:<BS>
+    inoremap 0 :b10<CR>:<BS>
+  endif
+endif
+" }}}
 " }}}
 
 " Fonts {{{
@@ -297,40 +362,6 @@ let HL_HiCurLine = "Function"
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_Menu = 1
 
-if has("gui_running")
-  noremap <M-1> :b1<CR>:<BS>
-  noremap <M-2> :b2<CR>:<BS>
-  noremap <M-3> :b3<CR>:<BS>
-  noremap <M-4> :b4<CR>:<BS>
-  noremap <M-5> :b5<CR>:<BS>
-  noremap <M-6> :b6<CR>:<BS>
-  noremap <M-7> :b7<CR>:<BS>
-  noremap <M-8> :b8<CR>:<BS>
-  noremap <M-9> :b9<CR>:<BS>
-  noremap <M-0> :b10<CR>:<BS>
-else
-  if has("win32")
-    noremap <unique> <script> ± :b1<CR>:<BS>
-    noremap <unique> <script> ² :b2<CR>:<BS>
-    noremap <unique> <script> ³ :b3<CR>:<BS>
-    noremap <unique> <script> Ž :b4<CR>:<BS>
-    noremap <unique> <script> µ :b5<CR>:<BS>
-    noremap <unique> <script> ¶ :b6<CR>:<BS>
-    noremap <unique> <script> · :b7<CR>:<BS>
-    noremap <unique> <script> ž :b8<CR>:<BS>
-  else
-    noremap <unique> 1 :b1<CR>:<BS>
-    noremap 2 :b2<CR>:<BS>
-    noremap 3 :b3<CR>:<BS>
-    noremap 4 :b4<CR>:<BS>
-    noremap 5 :b5<CR>:<BS>
-    noremap 6 :b6<CR>:<BS>
-    noremap 7 :b7<CR>:<BS>
-    noremap 8 :b8<CR>:<BS>
-    noremap 9 :b9<CR>:<BS>
-    noremap 0 :b10<CR>:<BS>
-  endif
-endif
 
 let s:using_winmanager = 0
 if exists('s:using_winmanager') &&
