@@ -37,3 +37,4 @@ ScriptID SourceID Filename
 39 5330 :AutoInstall: matchit.vim
 1440 5329 winmanager.vim
 42 5409 bufexplorer.vim
+1439 4942 compiler/python.vim
