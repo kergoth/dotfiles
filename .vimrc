@@ -121,7 +121,7 @@ function! RunInterp()
     let l:interp = line[2:]
   else
     if exists("g:interp_" . &filetype)
-      let l:interp = eval("g:interp_" . &filetype)
+      let l:interp = g:interp_{&filetype}
     endif
   endif
   if l:interp != ""
@@ -554,7 +554,7 @@ if has("autocmd")
   au FileType text setlocal tw=78
   au FileType mail setlocal nocindent noautoindent tw=78
 
-  " Sane setlocaltings for keywordprg
+  " Sane settings for keywordprg
   au FileType vim setlocal keywordprg=:help
   au FileType python setlocal keywordprg=pydoc
   au FileType perl setlocal keywordprg=perldoc\ -f
