@@ -186,7 +186,7 @@ set nohidden
 set nohlsearch
 "set path=.
 set suffixes+=.lo,.o,.moc,.la,.closure
-"set title
+set title
 "set titleold=""
 set ttyfast
 set ttybuiltin
