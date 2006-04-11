@@ -9,7 +9,7 @@ ScriptID SourceID Filename
 1338 4976 tabbar.vim
 5 4884 doxygen.vim
 974 4316 indent/python.vim
-1453 5012 cecscope.vim
+1453 5189 cecscope.vim
 1405 5023 colors/understated.vim
 1404 5022 colors/desertedocean.vim
 748 4319 HelpExtractor.vim
@@ -27,6 +27,8 @@ ScriptID SourceID Filename
 95 754 winmanager.vim
 159 3640 :AutoInstall: minibufexpl.vim
 1385 4693 syntax/interfaces.vim
-1454 5155 colors/baycomb.vim
+1454 5206 colors/baycomb.vim
 1075 5004 netrw.vim
 795 4342 colors/xterm16.vim
+1218 5167 NERD_comments.vim
+1464 5196 colors/slate.vim

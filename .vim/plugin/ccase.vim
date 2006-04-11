@@ -1221,12 +1221,12 @@ fun! s:InstallDocumentation(full_name, revision)
   let l:vim_doc_path    = fnamemodify(a:full_name, ':h:h') . l:doc_path
   if (!(filewritable(l:vim_doc_path) == 2))
     echomsg "Doc path: " . l:vim_doc_path
-    execute l:mkdir_cmd . l:vim_doc_path
+    execute l:mkdir_cmd . escape(l:vim_doc_path, ' \')
     if (!(filewritable(l:vim_doc_path) == 2))
       " Try a default configuration in user home:
       let l:vim_doc_path = expand("~") . l:doc_home
       if (!(filewritable(l:vim_doc_path) == 2))
-        execute l:mkdir_cmd . l:vim_doc_path
+        execute l:mkdir_cmd . escape(l:vim_doc_path, ' \')
         if (!(filewritable(l:vim_doc_path) == 2))
           " Put a warning:
           echomsg "Unable to open documentation directory"
@@ -1266,7 +1266,7 @@ fun! s:InstallDocumentation(full_name, revision)
   " Create a new buffer & read in the plugin file (me):
   setl nomodeline
   exe 'enew!'
-  exe 'r ' . l:plugin_file
+  exe 'r ' . escape(l:plugin_file, ' \')
 
   setl modeline
   let l:buf = bufnr("%")
@@ -1296,12 +1296,12 @@ fun! s:InstallDocumentation(full_name, revision)
   exe "normal :1s/#version#/ v" . a:revision . "/\<CR>"
 
   " Save the help document:
-  exe 'w! ' . l:doc_file
+  exe 'w! ' . escape(l:doc_file, ' \')
   exe l:go_back
   exe 'bw ' . l:buf
 
   " Build help tags:
-  exe 'helptags ' . l:vim_doc_path
+  exe 'helptags ' . escape(l:vim_doc_path, ' \')
 
   return 0
 endfun " s:InstallDocumentation

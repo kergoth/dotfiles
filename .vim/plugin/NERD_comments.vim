@@ -1,7 +1,7 @@
 " vim global plugin that provides easy code commenting for various file types
-" Last Change:  17 jan 2006
+" Last Change:  13 feb 2006
 " Maintainer:   Martin Grenfell <mrg39 at student.canterbury.ac.nz>
-let s:NERD_comments_version = 1.62
+let s:NERD_comments_version = 1.63
 
 
 " For help documentation type :help NERD_comments. If this fails, Restart vim
@@ -78,7 +78,6 @@ call <SID>InitVariable("g:NERD_use_c_style_kscript_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_mel_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_named_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_pccts_comments", "0")
-call <SID>InitVariable("g:NERD_use_c_style_php_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_pike_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_pilrc_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_plm_comments", "0")
@@ -91,6 +90,8 @@ call <SID>InitVariable("g:NERD_use_c_style_uc_comments", "0")
 call <SID>InitVariable("g:NERD_use_c_style_verilog_comments", "0")
 call <SID>InitVariable("g:NERD_use_dash_dash_simula_comments", "0")
 call <SID>InitVariable("g:NERD_use_dnl_style_automake_comments", "0")
+call <SID>InitVariable("g:NERD_use_hash_samba_comments", "0")
+call <SID>InitVariable("g:NERD_use_html_style_php_comments", "0")
 call <SID>InitVariable("g:NERD_use_long_haskell_comments", "0")
 call <SID>InitVariable("g:NERD_use_long_lisp_comments", "0")
 call <SID>InitVariable("g:NERD_use_long_lua_comments", "0")
@@ -493,7 +494,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "pfmain" 
         call <SID>MapDelimiters('//', '')
     elseif a:filetype == "php" 
-        call <SID>MapDelimitersWithAlternative('<!--', '-->', '/*','*/', g:NERD_use_c_style_php_comments)
+        call <SID>MapDelimitersWithAlternative('/*','*/','<!--', '-->', g:NERD_use_html_style_php_comments)
     elseif a:filetype == "phtml" 
         call <SID>MapDelimiters('/*','*/')
     elseif a:filetype == "pic" 
@@ -561,7 +562,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "sa" 
         call <SID>MapDelimiters('--','') 
     elseif a:filetype == "samba" 
-        call <SID>MapDelimiters(';','') 
+        call <SID>MapDelimitersWithAlternative(';','', '#', '', g:NERD_use_hash_samba_comments) 
     elseif a:filetype == "sas" 
         call <SID>MapDelimiters('/*','*/')
     elseif a:filetype == "sather" 
@@ -1116,7 +1117,7 @@ function s:CommentLines(forceNested, alignLeft, alignRight, firstLine, lastLine)
             "if the user has specified forceNesting then we check to see if we
             "need to switch delimiters for place-holders
             if a:forceNested && &filetype =~ g:NERD_place_holder_regexp
-                let theLine = <SID>SwapOutterMultipPartDelimsForPlaceHolders(theLine)
+                let theLine = <SID>SwapOutterMultiPartDelimsForPlaceHolders(theLine)
             endif
             
             " find out if the line is commented using normal delims and/or
@@ -1189,7 +1190,7 @@ function s:CommentLinesSexy(topline, bottomline) range
         if lineHasTabs
             let theLine = <SID>ConvertLeadingTabsToSpaces(theLine)
         endif
-        let theLine = <SID>SwapOutterMultipPartDelimsForPlaceHolders(theLine)
+        let theLine = <SID>SwapOutterMultiPartDelimsForPlaceHolders(theLine)
 	let theLine = <SID>AddLeftDelimAligned(left . spaceString, theLine, leftAlignIndx)
         if lineHasTabs
             let theLine = <SID>ConvertLeadingSpacesToTabs(theLine)
@@ -1202,7 +1203,7 @@ function s:CommentLinesSexy(topline, bottomline) range
         if lineHasTabs
             let theLine = <SID>ConvertLeadingTabsToSpaces(theLine)
         endif
-        let theLine = <SID>SwapOutterMultipPartDelimsForPlaceHolders(theLine)
+        let theLine = <SID>SwapOutterMultiPartDelimsForPlaceHolders(theLine)
         let theLine = <SID>AddRightDelim(spaceString . right, theLine)
         if lineHasTabs
             let theLine = <SID>ConvertLeadingSpacesToTabs(theLine)
@@ -1234,7 +1235,7 @@ function s:CommentLinesSexy(topline, bottomline) range
             let theLine = <SID>ConvertLeadingTabsToSpaces(theLine)
         endif
 
-	let theLine = <SID>SwapOutterMultipPartDelimsForPlaceHolders(theLine)
+	let theLine = <SID>SwapOutterMultiPartDelimsForPlaceHolders(theLine)
 
         " add the sexyComMarker 
         let theLine = strpart(s:spaces, 0, leftAlignIndx) . strpart(s:spaces, 0, strlen(left)-strlen(sexyComMarker)) . sexyComMarkerSpaced . strpart(theLine, leftAlignIndx)
@@ -1283,16 +1284,17 @@ function s:CommentLinesToggle(forceNested, alignLeft, alignRight, firstLine, las
             "if the user has specified forceNesting then we check to see if we
             "need to switch delimiters for place-holders
             if &filetype =~ g:NERD_place_holder_regexp
-                let theLine = <SID>SwapOutterMultipPartDelimsForPlaceHolders(theLine)
+                let theLine = <SID>SwapOutterMultiPartDelimsForPlaceHolders(theLine)
             endif
 
             if a:alignLeft
-                let theLine = <SID>AddLeftDelimAligned(b:left, theLine, leftAlignIndx)
+                " let theLine = <SID>AddLeftDelimAligned(b:left, theLine, leftAlignIndx)
+                let theLine = <SID>AddLeftDelimAligned(<SID>GetLeft(0,1,0), theLine, leftAlignIndx)
             else
                 let theLine = <SID>AddLeftDelim(<SID>GetLeft(0, 1, 0), theLine)
             endif
             if a:alignRight
-                let theLine = <SID>AddRightDelimAligned(b:right, theLine, rightAlignIndx)
+                let theLine = <SID>AddRightDelimAligned(<SID>GetRight(0, 1, 0), theLine, rightAlignIndx)
             else
                 let theLine = <SID>AddRightDelim(<SID>GetRight(0, 1, 0), theLine)
             endif
@@ -2362,6 +2364,9 @@ function s:GetLeft(alt, space, esc)
             let delim = b:leftAlt
         endif 
     endif
+    if delim == ''
+        return
+    endif
 
     if a:space && &filetype =~ g:NERD_space_delim_filetype_regexp
         let delim = delim . s:spaceStr
@@ -2392,8 +2397,11 @@ function s:GetRight(alt, space, esc)
             let delim = b:rightAlt
         endif 
     endif
+    if delim == ''
+        return
+    endif
 
-    if a:space && &filetype =~ g:NERD_space_delim_filetype_regexp && delim
+    if a:space && &filetype =~ g:NERD_space_delim_filetype_regexp 
         let delim = s:spaceStr . delim 
     endif
 
@@ -2598,113 +2606,109 @@ endfunction
 " which can be found at http://www.vim.org/scripts/script.php?script_id=465
 "
 function s:InstallDocumentation(full_name, revision)
-    " Name of the document path based on the system we use:
-    if has("vms")
-         " No chance that this script will work with
-         " VMS -  to much pathname juggeling here.
-         return 1
-    elseif (has("unix"))
-        " On UNIX like system, using forward slash:
-        let l:slash_char = '/'
-        let l:mkdir_cmd  = ':silent !mkdir -p '
-    else
-        " On M$ system, use backslash. Also mkdir syntax is different.
-        " This should only work on W2K and up.
-        let l:slash_char = '\'
-        let l:mkdir_cmd  = ':silent !mkdir '
-    endif
+  " Name of the document path based on the system we use:
+  if (has("unix"))
+    " On UNIX like system, using forward slash:
+    let l:slash_char = '/'
+    let l:mkdir_cmd  = ':silent !mkdir -p '
+  else
+    " On M$ system, use backslash. Also mkdir syntax is different.
+    " This should only work on W2K and up.
+    let l:slash_char = '\'
+    let l:mkdir_cmd  = ':silent !mkdir '
+  endif
 
-    let l:doc_path = l:slash_char . 'doc'
-    let l:doc_home = l:slash_char . '.vim' . l:slash_char . 'doc'
+  let l:doc_path = l:slash_char . 'doc'
+  let l:doc_home = l:slash_char . '.vim' . l:slash_char . 'doc'
 
-    " Figure out document path based on full name of this script:
-    let l:vim_plugin_path = fnamemodify(a:full_name, ':h')
-    let l:vim_doc_path    = fnamemodify(a:full_name, ':h:h') . l:doc_path
+  " Figure out document path based on full name of this script:
+  let l:vim_plugin_path = fnamemodify(a:full_name, ':h')
+  let l:vim_doc_path    = fnamemodify(a:full_name, ':h:h') . l:doc_path
+  if (!(filewritable(l:vim_doc_path) == 2))
+    echomsg "Doc path: " . l:vim_doc_path
+    execute l:mkdir_cmd . escape(l:vim_doc_path, ' \')
     if (!(filewritable(l:vim_doc_path) == 2))
-         "Doc path: " . l:vim_doc_path
-        call <SID>NerdEcho("Doc path: " . l:vim_doc_path, 0)
-        execute l:mkdir_cmd . '"' . l:vim_doc_path . '"'
+      " Try a default configuration in user home:
+      let l:vim_doc_path = expand("~") . l:doc_home
+      if (!(filewritable(l:vim_doc_path) == 2))
+        execute l:mkdir_cmd . escape(l:vim_doc_path, ' \')
         if (!(filewritable(l:vim_doc_path) == 2))
-            " Try a default configuration in user home:
-            let l:vim_doc_path = expand("~") . l:doc_home
-            if (!(filewritable(l:vim_doc_path) == 2))
-                execute l:mkdir_cmd . '"' . l:vim_doc_path . '"'
-                if (!(filewritable(l:vim_doc_path) == 2))
-                    " Put a warning:
-                    call <SID>NerdEcho("Unable to open documentation directory", 0)
-                    call <SID>NerdEcho(" type :help add-local-help for more informations.", 0)
-                    echo l:vim_doc_path
-                    return 0
-                endif
-            endif
+          " Put a warning:
+          echomsg "Unable to open documentation directory"
+          echomsg " type :help add-local-help for more informations."
+          return 1
         endif
+      endif
     endif
+  endif
 
-    " Exit if we have problem to access the document directory:
-    if (!isdirectory(l:vim_plugin_path) || !isdirectory(l:vim_doc_path) || filewritable(l:vim_doc_path) != 2)
-        return 0
-    endif
-
-    " Full name of script and documentation file:
-    let l:script_name = fnamemodify(a:full_name, ':t')
-    let l:doc_name    = fnamemodify(a:full_name, ':t:r') . '.txt'
-    let l:plugin_file = l:vim_plugin_path . l:slash_char . l:script_name
-    let l:doc_file    = l:vim_doc_path    . l:slash_char . l:doc_name
-
-    " Bail out if document file is still up to date:
-    if (filereadable(l:doc_file) && getftime(l:plugin_file) < getftime(l:doc_file))
-        return 0
-    endif
-
-    " Prepare window position restoring command:
-    if (strlen(@%))
-        let l:go_back = 'b ' . bufnr("%")
-    else
-        let l:go_back = 'enew!'
-    endif
-
-    " Create a new buffer & read in the plugin file (me):
-    setl nomodeline
-    exe 'enew!'
-    exe 'r ' . l:plugin_file
-
-    setl modeline
-    let l:buf = bufnr("%")
-    setl noswapfile modifiable
-
-    norm zR
-    norm gg
-
-    " Delete from first line to a line starts with
-    " === START_DOC
-    1,/^=\{3,}\s\+START_DOC\C/ d
-
-    " Delete from a line starts with
-    " === END_DOC
-    " to the end of the documents:
-    /^=\{3,}\s\+END_DOC\C/,$ d
-
-    " Remove fold marks:
-    % s/{\{3}[1-9]/    /
-
-    " Add modeline for help doc: the modeline string is mangled intentionally
-    " to avoid it be recognized by VIM:
-    call append(line('$'), '')
-    call append(line('$'), ' v' . 'im:tw=78:ts=8:ft=help:norl:')
-
-    " Replace revision:
-    "exe "normal :1s/#version#/ v" . a:revision . "/\<CR>"
-    exe "normal :%s/#version#/ v" . a:revision . "/\<CR>"
-
-    " Save the help document:
-    exe 'w! ' . l:doc_file
-    exe l:go_back
-    exe 'bw ' . l:buf
-
-    " Build help tags:
-    exe 'helptags ' . l:vim_doc_path
-
+  " Exit if we have problem to access the document directory:
+  if (!isdirectory(l:vim_plugin_path)
+        \ || !isdirectory(l:vim_doc_path)
+        \ || filewritable(l:vim_doc_path) != 2)
     return 1
+  endif
+
+  " Full name of script and documentation file:
+  let l:script_name = fnamemodify(a:full_name, ':t')
+  let l:doc_name    = fnamemodify(a:full_name, ':t:r') . '.txt'
+  let l:plugin_file = l:vim_plugin_path . l:slash_char . l:script_name
+  let l:doc_file    = l:vim_doc_path    . l:slash_char . l:doc_name
+
+  " Bail out if document file is still up to date:
+  if (filereadable(l:doc_file)  &&
+        \ getftime(l:plugin_file) < getftime(l:doc_file))
+    return 1
+  endif
+
+  " Prepare window position restoring command:
+  if (strlen(@%))
+    let l:go_back = 'b ' . bufnr("%")
+  else
+    let l:go_back = 'enew!'
+  endif
+
+  " Create a new buffer & read in the plugin file (me):
+  setl nomodeline
+  exe 'enew!'
+  exe 'r ' . escape(l:plugin_file, ' \')
+
+  setl modeline
+  let l:buf = bufnr("%")
+  setl noswapfile modifiable
+
+  norm zR
+  norm gg
+
+  " Delete from first line to a line starts with
+  " === START_DOC
+  1,/^=\{3,}\s\+START_DOC\C/ d
+
+  " Delete from a line starts with
+  " === END_DOC
+  " to the end of the documents:
+  /^=\{3,}\s\+END_DOC\C/,$ d
+
+  " Remove fold marks:
+  % s/{\{3}[1-9]/    /
+
+  " Add modeline for help doc: the modeline string is mangled intentionally
+  " to avoid it be recognized by VIM:
+  call append(line('$'), '')
+  call append(line('$'), ' v' . 'im:tw=78:ts=8:ft=help:norl:')
+
+  " Replace revision:
+  exe "normal :1s/#version#/ v" . a:revision . "/\<CR>"
+
+  " Save the help document:
+  exe 'w! ' . escape(l:doc_file, ' \')
+  exe l:go_back
+  exe 'bw ' . l:buf
+
+  " Build help tags:
+  exe 'helptags ' . escape(l:vim_doc_path, ' \')
+
+  return 0
 endfunction
 
 
@@ -3097,13 +3101,13 @@ function s:SaveCursorPosition()
     normal! ``
 endfunction
 
-" Function: s:SwapOutterMultipPartDelimsForPlaceHolders(line) {{{2
+" Function: s:SwapOutterMultiPartDelimsForPlaceHolders(line) {{{2
 " This function takes a line and swaps the outter most multi-part delims for
 " place holders
 " Args:
 "   -line: the line to swap the delims in
 " 
-function s:SwapOutterMultipPartDelimsForPlaceHolders(line)
+function s:SwapOutterMultiPartDelimsForPlaceHolders(line)
     " find out if the line is commented using normal delims and/or
     " alternate ones 
     let isCommented = <SID>IsCommented(b:left, b:right, a:line)
@@ -4126,7 +4130,6 @@ NERD_use_c_style_kscript_comments: use /**/ instead of // for kscript files.
 NERD_use_c_style_mel_comments: use /**/ instead of // for mel files.
 NERD_use_c_style_named_comments: use /**/ instead of // for named files.
 NERD_use_c_style_pccts_comments: use /**/ instead of // for pccts files.
-NERD_use_c_style_php_comments: use /**/ instead of // for php files.
 NERD_use_c_style_pike_comments: use /**/ instead of // for pike files.
 NERD_use_c_style_pilrc_comments: use /**/ instead of // for pilrc files.
 NERD_use_c_style_plm_comments: use /**/ instead of // for plm files.
@@ -4139,6 +4142,8 @@ NERD_use_c_style_uc_comments: use /**/ instead of // for uc files.
 NERD_use_c_style_verilog_comments: use /**/ instead of // for verilog files.
 NERD_use_dash_dash_simula_comments: use -- instead of % for simula files.
 NERD_use_dnl_style_automake_comments: use dnl instead of # for automake files.
+NERD_use_hash_samba_comments: use # instead of ; for samba files.
+NERD_use_html_style_php_comments: use <!-- --> instead of /* */ for php files.
 NERD_use_long_haskell_comments: use {--} instead of -- for haskell files.
 NERD_use_long_lisp_comments: use #||# instead of ; for lisp files.
 NERD_use_long_lua_comments: use --[[]] instead of -- for lua files.
@@ -4372,6 +4377,10 @@ delimiters. It's nice when people do my work for me :D
 Thanks to Torsten Blix for telling me about a couple of bugs when uncommenting
 sexy comments. Sexy comments dont look so sexy when they are only half removed
 :P
+
+Thanks to Alexander "boesi" Bosecke for pointing out a bug that was stopping
+the NERD_space_delim_filetype_regexp option from working with left aligned
+toggle comments.
 
 Cheers to myself for being the best looking man on Earth!
 

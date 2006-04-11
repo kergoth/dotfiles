@@ -375,7 +375,7 @@ fun! <SID>GetLatestVimScripts()
    let plugins= (plugins =~ '\n')? substitute(plugins,'^.\{-}\n\(.*\)$','\1','e') : ""
    $
 "   call Decho(".dependency checking<".plugin."> line$=".line("$"))
-   exe "silent r ".plugin
+   exe "silent r \"".plugin"\""
    while search('^"\s\+GetLatestVimScripts:\s\+\d\+\s\+\d\+','W') != 0
     let newscript= substitute(getline("."),'^"\s\+GetLatestVimScripts:\s\+\d\+\s\+\d\+\s\+\(.*\)$','\1','e')
     let llp1     = lastline+1

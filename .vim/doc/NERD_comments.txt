@@ -1,4 +1,4 @@
-*NERD_comments.txt*         Plugin for commenting code            v162
+*NERD_comments.txt*         Plugin for commenting code            v163
 
 
                         NERD_COMMENTS REFERENCE MANUAL~
@@ -832,7 +832,6 @@ NERD_use_c_style_kscript_comments: use /**/ instead of // for kscript files.
 NERD_use_c_style_mel_comments: use /**/ instead of // for mel files.
 NERD_use_c_style_named_comments: use /**/ instead of // for named files.
 NERD_use_c_style_pccts_comments: use /**/ instead of // for pccts files.
-NERD_use_c_style_php_comments: use /**/ instead of // for php files.
 NERD_use_c_style_pike_comments: use /**/ instead of // for pike files.
 NERD_use_c_style_pilrc_comments: use /**/ instead of // for pilrc files.
 NERD_use_c_style_plm_comments: use /**/ instead of // for plm files.
@@ -845,6 +844,8 @@ NERD_use_c_style_uc_comments: use /**/ instead of // for uc files.
 NERD_use_c_style_verilog_comments: use /**/ instead of // for verilog files.
 NERD_use_dash_dash_simula_comments: use -- instead of % for simula files.
 NERD_use_dnl_style_automake_comments: use dnl instead of # for automake files.
+NERD_use_hash_samba_comments: use # instead of ; for samba files.
+NERD_use_html_style_php_comments: use <!-- --> instead of /* */ for php files.
 NERD_use_long_haskell_comments: use {--} instead of -- for haskell files.
 NERD_use_long_lisp_comments: use #||# instead of ; for lisp files.
 NERD_use_long_lua_comments: use --[[]] instead of -- for lua files.
@@ -1078,6 +1079,10 @@ delimiters. It's nice when people do my work for me :D
 Thanks to Torsten Blix for telling me about a couple of bugs when uncommenting
 sexy comments. Sexy comments dont look so sexy when they are only half removed
 :P
+
+Thanks to Alexander "boesi" Bosecke for pointing out a bug that was stopping
+the NERD_space_delim_filetype_regexp option from working with left aligned
+toggle comments.
 
 Cheers to myself for being the best looking man on Earth!
 

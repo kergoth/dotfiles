@@ -10,5 +10,5 @@ if expand("<amatch>") !~ g:ft_ignore_pat
   setfiletype iptables
   set commentstring=#%s
 elseif getline(1) =~ '^\(.\+\)(\d\{1}).\+\1(\d\{1})$'
-  setfiletype man 
+  setfiletype man
 endif

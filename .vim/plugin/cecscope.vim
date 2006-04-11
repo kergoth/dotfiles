@@ -1,11 +1,12 @@
 " cecscope.vim:
 "  Author: Charles E. Campbell, Jr.
-"  Date:   Jan 30, 2006
-"  Version: 1
+"  Date:   Feb 07, 2006
+"  Version: 2
 "  Usage:  :CS[!]  [cdefgist]
-"          :CSl[!] [cdefgist]
-"          :CSs[!] [cdefgist]
-"          :CSh     (gives help)
+"          :CSL[!] [cdefgist]
+"          :CSS[!] [cdefgist]
+"          :CSH     (gives help)
+"          :CSR
 " ---------------------------------------------------------------------
 
 " ---------------------------------------------------------------------
@@ -13,14 +14,15 @@
 if !has("cscope") || &cp || exists("g:loaded_cecscope") || v:version < 700
  finish
 endif
-let g:loaded_cecscope= "v1"
+let g:loaded_cecscope= "v2"
 
 " ---------------------------------------------------------------------
 " Public Interface: {{{1
 com!       -nargs=* CS  call s:Cscope(<bang>0,<f-args>) 
-com!       -nargs=? CSh call s:CscopeHelp(<q-args>)
-com! -bang -nargs=* CSl call s:Cscope(4+<bang>0,<f-args>) 
-com! -bang -nargs=* CSs call s:Cscope(2+<bang>0,<f-args>) 
+com!       -nargs=? CSH call s:CscopeHelp(<q-args>)
+com! -bang -nargs=* CSL call s:Cscope(4+<bang>0,<f-args>) 
+com! -bang -nargs=* CSS call s:Cscope(2+<bang>0,<f-args>) 
+com!       -nargs=0 CSR call s:CscopeReset()
 
 " ---------------------------------------------------------------------
 "  Functions: {{{1
@@ -52,25 +54,14 @@ fun! s:Cscope(mode,...)
    " check cscope for symbol definitions before using ctags
    set cscopetag csto=0
 
-   " specify cscope database in current directory
-   " or use whatever the CSCOPE_DB environment variable says to
-   if filereadable("cscope.out")
-   	cs add cscope.out
-   elseif $CSCOPE_DB != "" && filereadable($CSCOPE_DB)
-   	cs add $CSCOPE_DB
-   else
-   	if executable("cscope")
-	 call system("cscope ".expand("%"))
-     if !filereadable("cscope.out")
-      echohl WarningMsg | echoerr "(Cscope) can't find cscope database" | echohl None
-     endif
-	endif
-   endif
    if !executable("cscope")
     echohl Error | echoerr "can't execute cscope!" | echohl None
 "    call Dret("Cscope : can't execute cscope")
     return
    endif
+
+   " add/build cscope database
+   call s:CscopeAdd()
 
    " show message whenver any cscope database added
    set cscopeverbose
@@ -136,10 +127,45 @@ fun! s:Cscope(mode,...)
    silent! lope 5
    if has("menu") && has("gui_running") && &go =~ 'm'
     exe 'silent! unmenu '.g:DrChipTopLvlMenu.'Cscope.Restore\ Error\ Format'
-    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Restore\ Error\ Format	:CSl!'."<cr>"
+    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Restore\ Error\ Format	:CSL!'."<cr>"
    endif
   endif
+  if has("folding")
+   silent! norm! zMzxz.
+  else
+   norm! z.
+  endif
 "  call Dret("Cscope")
+endfun
+
+" ---------------------------------------------------------------------
+" CscopeAdd: {{{2
+fun! s:CscopeAdd()
+"  call Dfunc("CscopeAdd()")
+  let s:cscopedatabase="undefined"
+
+  " specify cscope database in current directory
+  " or use whatever the CSCOPE_DB environment variable says to
+  if filereadable("cscope.out")
+"   call Decho("adding <cscope.out>")
+   let s:cscopedatabase= "cscope.out"
+   cs add cscope.out
+  elseif $CSCOPE_DB != "" && filereadable($CSCOPE_DB)
+"   call Decho("adding $CSCOPE_DB<".expand("$CSCOPE_DB").">")
+   let s:cscopedatabase= expand("$CSCOPE_DB")
+   cs add $CSCOPE_DB
+  elseif executable("cscope")
+"   call Decho("using cscope ".expand("%"))
+   let s:cscopedatabase= expand("%")
+   call system("cscope -b ".s:cscopedatabase)
+   cs add cscope.out
+   if !filereadable("cscope.out")
+    echohl WarningMsg | echoerr "(Cscope) can't find cscope database" | echohl None
+   endif
+  else
+   echohl WarningMsg | echoerr "(Cscope) can't find cscope database" | echohl None
+  endif
+"  call Dret("CscopeAdd : added <".s:cscopedatabase.">")
 endfun
 
 " ---------------------------------------------------------------------
@@ -148,8 +174,9 @@ fun! s:CscopeHelp(...)
 "  call Dfunc("CscopeHelp() a:0=".a:0)
   if a:0 == 0 || a:1 == ""
    echo "CS     [cdefgist]   : cscope"
-   echo "CSl[!] [cdefgist]   : locallist style (! restores efm)"
-   echo "CSs[!] [cdefgist]   : split window and use cscope "
+   echo "CSL[!] [cdefgist]   : locallist style (! restores efm)"
+   echo "CSS[!] [cdefgist]   : split window and use cscope (!=vertical split)"
+   echo "CSR                 : reset/rebuild cscope database"
    let styles="!cdefgist"
    while styles != ""
 "   	call Decho("styles<".styles.">")
@@ -196,17 +223,17 @@ fun! CscopeMenu(type)
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Vert\ Split\ Display	:call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Quickfix\ Display	:call CscopeMenu(2)'."<cr>"
   elseif a:type == 2
-   let cmd= 'CSl'
+   let cmd= 'CSL'
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Messages\ Display	:call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Horiz\ Split\ Display	:call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Vert\ Split\ Display	:call CscopeMenu(2)'."<cr>"
   elseif a:type == 3
-   let cmd= 'CSs'
+   let cmd= 'CSS'
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Messages\ Display	:call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Horiz\ Split\ Display	:call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Quickfix\ Display	:call CscopeMenu(2)'."<cr>"
   elseif a:type == 4
-   let cmd= 'CSs!'
+   let cmd= 'CSS!'
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Messages\ Display	:call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Horiz\ Split\ Display\  :call CscopeMenu(2)'."<cr>"
    exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Use\ Quickfix\ Display	:call CscopeMenu(2)'."<cr>"
@@ -221,23 +248,34 @@ fun! CscopeMenu(type)
    exe 'unmenu '.g:DrChipTopLvlMenu.'Cscope.Find\ files\ that\ include\ word\ under\ cursor'
    exe 'unmenu '.g:DrChipTopLvlMenu.'Cscope.Find\ all\ references\ to\ symbol\ under\ cursor'
    exe 'unmenu '.g:DrChipTopLvlMenu.'Cscope.Find\ all\ instances\ of\ text\ under\ cursor'
+   exe 'unmenu '.g:DrChipTopLvlMenu.'Cscope.Reset'
    exe 'silent! unmenu '.g:DrChipTopLvlMenu.'Cscope.Restore\ Error\ Format'
   endif
 
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ functions\ which\ call\ word\ under\ cursor	:'.cmd.'\ c'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ functions\ called\ by\ word\ under\ cursor	:'.cmd.'\ d'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Egrep\ search\ for\ word\ under\ cursor	:'.cmd.'\ e'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Open\ file\ under\ cursor	:'.cmd.'\ f'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ globally\ word\ under\ cursor	:'.cmd.'\ g'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ files\ that\ include\ word\ under\ cursor	:'.cmd.'\ i'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ all\ references\ to\ symbol\ under\ cursor	:'.cmd.'\ s'."<cr>"
-  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ all\ instances\ of\ text\ under\ cursor	:'.cmd.'\ t'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ functions\ which\ call\ word\ under\ cursor<tab>:CS\ c	:'.cmd.'\ c'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ functions\ called\ by\ word\ under\ cursor<tab>:CS\ d	:'.cmd.'\ d'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Egrep\ search\ for\ word\ under\ cursor<tab>:CS\ e	:'.cmd.'\ e'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Open\ file\ under\ cursor<tab>:CS\ f	:'.cmd.'\ f'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ globally\ word\ under\ cursor<tab>:CS\ g	:'.cmd.'\ g'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ files\ that\ include\ word\ under\ cursor<tab>:CS\ i	:'.cmd.'\ i'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ all\ references\ to\ symbol\ under\ cursor<tab>:CS\ s	:'.cmd.'\ s'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Find\ all\ instances\ of\ text\ under\ cursor<tab>:CS\ t	:'.cmd.'\ t'."<cr>"
+  exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Reset<tab>:CSr	:CSr'."<cr>"
   if exists("b:cscope_efm")
-   exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Restore\ Error\ Format	:CSl!'."<cr>"
+   exe 'menu '.g:DrChipTopLvlMenu.'Cscope.Restore\ Error\ Format	:CSL!'."<cr>"
   endif
 
   let s:installed_menus= 1
 "  call Dret("CscopeMenu")
+endfun
+
+" ---------------------------------------------------------------------
+" CscopeReset: {{{2
+fun! s:CscopeReset()
+"  call Dfunc("CscopeReset()")
+  call system("cscope -b *.[ch]")
+  cscope reset
+"  call Dret("CscopeReset")
 endfun
 
 " ---------------------------------------------------------------------
@@ -351,11 +389,12 @@ Note:    Required:
 
 ==============================================================================
 3. Cescope Manual					*cecscope-manual*
-							*:CS* *:CSl* *CSs* *CSh*
+							*:CS* *:CSL* *CSS* *CSH*
     :CS     [cdefgist]   : cscope
-    :CSl[!] [cdefgist]   : locallist style (! restores efm)
-    :CSs[!] [cdefgist]   : split window and use cscope
-    :CSh                 : give quick help
+    :CSL[!] [cdefgist]   : locallist style (! restores efm)
+    :CSS[!] [cdefgist]   : split window and use cscope
+    :CSH                 : give quick help
+    :CSR                 : cscope reset
 
     !            split vertically
     c (calls)    find functions calling function under cursor
@@ -429,12 +468,12 @@ Note:    Required:
     USING THE COMMAND LINE
     You could've done the above using the command line!  Again, just
     place your cursor atop some function that you've written, then type: >
-        :CSl c
+        :CSL c
 <   You may use the :ll, :lne, and :lp commands as before.
 
     HELP
     Just type >
-        :CSh
+        :CSH
 <   for a quick help display.  Of course, you can always type : >
         :help CS
 <   too.
