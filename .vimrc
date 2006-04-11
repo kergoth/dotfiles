@@ -447,22 +447,23 @@ if has("autocmd") && v:version >= 700
                \     setlocal statusline+=%=%2*\ %<%P |
                \ endif
 
-   fun! <SID>FixMiniBufExplorerTitle()
+   fun! <SID>FixWindowTitles()
        if "-MiniBufExplorer-" == bufname("%")
            setlocal statusline=%2*%-3.3n%0*
            setlocal statusline+=\[Buffers\]
            setlocal statusline+=%=%2*\ %<%P
        endif
+
        if "__Tag_List__" == bufname("%")
-           setlocal statusline=%2*%-3.3n%0*
-           setlocal statusline+=\[Tags\]
-           setlocal statusline+=%=%2*\ %<%P
+           setlocal statusline=\[Tags\]
+           setlocal statusline+=%=
+           setlocal statusline+=%l
        endif
    endfun
 
    au BufWinEnter *
                \ let oldwinnr=winnr() |
-               \ windo call <SID>FixMiniBufExplorerTitle() |
+               \ windo call <SID>FixWindowTitles() |
                \ exec oldwinnr . " wincmd w"
 endif
 " }}}
