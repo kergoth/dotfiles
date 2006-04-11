@@ -6,11 +6,7 @@
 -- Some basic setup
 --
 
--- Set default modifiers. Alt should usually be mapped to Mod1 on
--- XFree86-based systems. The flying window keys are probably Mod3
--- or Mod4; see the output of 'xmodmap'.
-META="Mod4+"
-ALTMETA=""
+dopath("cfg_meta")
 
 ioncore.set{
     -- Maximum delay between clicks in milliseconds to be considered a

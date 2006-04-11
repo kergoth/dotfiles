@@ -10,17 +10,19 @@ if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d ~/bin ] ; then
-    PATH=~/bin:"${PATH}"
-fi
+for p in ~/.root/bin ~/bin; do
+    if [ -d $p ] ; then
+        PATH=$p:"${PATH}"
+    fi
+done
 
-# do the same with MANPATH
-if [ -d ~/man ]; then
-    MANPATH=~/man:"${MANPATH}"
-fi
+for p in ~/.root/man ~/man; do
+    if [ -d $p ]; then
+        MANPATH=$p:"${MANPATH}"
+    fi
+done
 
-PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
+PATH="${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
 PAGER="less -seGiq"
 EDITOR="vim"
 BK_USER="kergoth"

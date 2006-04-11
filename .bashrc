@@ -174,6 +174,7 @@ alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
 alias symbolsizes="${NM} -S -t d --size-sort"
 alias ct='cleartool'
 alias cpe='clearprojexp'
+alias lr='ls --sort=time --reverse'
 
 if test x"$TERM" = "xrxvt-unicode"; then
 	c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
