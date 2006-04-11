@@ -96,4 +96,41 @@ URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
             -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
             [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
             xft:Code2000:antialias=false
-!URxvt*termName: rxvt
+
+urxvt*termName: rxvt-unicode
+
+!colors ripped from rezza: http://metawire.org/~rezza/index.php
+urxvt*foreground:       #cccccc
+urxvt*background:       #191911
+
+! Black + DarkGrey
+urxvt*color0:            #222222
+urxvt*color8:            #222222
+
+! DarkRed + Red
+urxvt*color1:            #803232
+urxvt*color9:            #982b2b
+
+! DarkGreen + Green
+urxvt*color2:            #5b762f
+urxvt*color10:           #89b83f
+
+! DarkYellow + Yellow
+urxvt*color3:            #aa9943
+urxvt*color11:           #efef60
+
+! DarkBlue + Blue
+urxvt*color4:            #324c80
+urxvt*color12:           #2b4f98
+
+! DarkMangenta + Mangenta
+urxvt*color5:            #706c9a
+urxvt*color13:           #826ab1
+
+!DarkCyan + Cyan
+urxvt*color6:            #92b19e
+urxvt*color14:           #a1cdcd
+
+! LightGrey + White
+urxvt*color7:            #ffffff
+urxvt*color15:           #dedede
