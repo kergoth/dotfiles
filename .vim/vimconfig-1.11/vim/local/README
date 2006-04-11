@@ -1,0 +1,24 @@
+
+Directory ~/.vim/local/ is for your own ~/.vimrc files.
+You can put here machine or user specific configuration files.
+
+
+EXAMPLE:
+--------
+
+      At server platon.sk will user 'rajo' set variable 'g:company'
+      to "Platon SDG". He don't will change anything in '~/.vimrc',
+      because he is using the same config file at server orbital.sk.
+      Therefore he creates file '~/.vim/local/vimrc-platon' and put
+      in then:
+
+          let g:company="Platon SDG"
+
+      If user 'ondrej' at server maxim.sk will set 'g:company' to
+      "Condy Software", he put in '~/.vim/local/vimrc-ondrej' (or
+      '~/.vim/local/vimrc-maxim') this line:
+
+          let g:company="Condy Software"
+
+# Version: $Platon: vimconfig/vim/local/README,v 1.2 2003/11/03 08:20:22 rajo Exp $
+

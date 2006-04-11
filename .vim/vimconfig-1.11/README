@@ -1,0 +1,76 @@
+vimconfig
+---------
+
+Project of powerful ViM configuration files. ViM is a quality text
+editor with huge set of features. Vimconfig is project of highly
+tuned ViM configuration files for ViM developed over 5 years.
+
+See vim/doc/FEATURES.txt file for getting help. Read this file with ViM for
+better reading.
+
+This document is fast howto install this vimconfig.
+
+INSTALLATION
+------------
+Copy content of vimconfig/ directory somewhere in your home directory.
+Suppose that it will be ~/prog/vimconfig/. Go to this directory
+(~/prog/vimconfig/) and type 'make install'. Or simply create symlinks
+in root of your home directory:
+
+	cd $HOME
+	ln -s prog/vimconfig/vimrc .vimrc
+	ln -s prog/vimconfig/vim/ .vim    
+
+Installation is done.
+
+
+UPDATE
+------
+If you get vimconfig from our CVS repository, than further updating is
+very simple. Go to directory ~/prog/vimconfig/ and type this command:
+
+	cvs update
+
+And that's all folks.
+
+You can checkout vimconfig from CVS Repository manualy running command:
+
+	cvs -d :pserver:anonymous@cvs.platon.sk:/home/cvs login
+(Simply press <ENTER> at password prompt.)
+	cvs -d :pserver:anonymous@cvs.platon.sk:/home/cvs co vimconfig
+
+Visit also website of vimconfig project at
+
+	http://platon.sk/projects/vimconfig/
+	http://platon.sk/cvs/cvs.php/vimconfig/
+
+
+OTHER SCRIPTS
+-------------
+
+More scripts/plugins for ViM can be found at http://www.vim.org/ .
+Some scripts has been included into vimconfig distribution, because
+they are handy. Some of them may be changed, some not updated over
+long time. You can check new versions at these links:
+
+calendar.vim	http://www.vim.org/scripts/script.php?script_id=52
+imaps.vim		http://www.vim.org/scripts/script.php?script_id=244
+matchit.vim		http://www.vim.org/scripts/script.php?script_id=39
+taglist.vim		http://www.vim.org/scripts/script.php?script_id=273
+
+Thanks to all authors and contributors of these scripts.
+
+--
+Developed by Lubomir Host 'rajo' <rajo AT platon.sk>
+Copyright (c) 2000-2005 Platon SDG, http://platon.sk/
+
+Comments, suggestions, bug reports and patches are always welcome.  Please
+e-mail them to the address <platon AT pobox.sk> or use bugtracking system at
+http://platon.sk/projects/vimconfig/
+
+The latest official release of vimconfig is available from:
+http://platon.sk/projects/vimconfig/
+http://vim.sourceforge.net/script.php?script_id=204
+
+This document was written by Ondrej Jombik in 28th March 2002. Updated 9th Mar 2005.
+

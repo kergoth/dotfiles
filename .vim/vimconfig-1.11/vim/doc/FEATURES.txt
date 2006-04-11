@@ -1,0 +1,369 @@
+*vimconfig*     For Vim version 6.1.  Last change: 2003 Feb 28
+*vimconfig.txt*
+
+
+                VIMCONFIG USER MANUAL -- by Lubomir Host
+                          <rajo AT platon.sk>
+                  http://platon.sk/projects/vimconfig/
+           http://vim.sf.net/scripts/script.php?script_id=204
+		
+
+The notation used in this manual is explained here: |notation|
+(type ':help notation')
+
+Note: Use CTRL-] and CTRL-T when looking for keyword.
+
+==============================================================================
+1. Short description					    *conf-description*
+						       *vimconfig-description*
+
+Vimconfig is a complete set of Vim 6.1 configurations files. It includes
+personal vimrc config file with many features and some usefull plugins e.g.
+for html, TeX, Perl, mail, PHP, ... . 
+
+COMMON features							 *conf-common*
+---------------						    *vimconfig-common*
+
+- multiple keys mapping, see |vimconfig-keys|.
+
+- defined new commands for better work, see |vimconfig-commands|.
+
+- support for user specific and machine specific settings.
+  See |vimconfig-specific-setup|.
+
+- improved status bar, see |vimconfig-statusbar|.
+
+- ability to open multiple files at ViM startup when they are specified at
+  command line |vimconfig-startup|.
+
+- when opening new file a common used strings are inserted according to file
+  type; ie. #include directives in *.c files and so on.
+  See |vimconfig-plugin-template|.
+
+- automatic 'perltidy' detection and usage for Perl source codes indentation.
+
+==============================================================================
+2. Keyboard mapping						   *conf-keys*
+							      *vimconfig-keys*
+
+|vimconfig-keys-global|			Global keyboard mapping
+|vimconfig-keys-insert-mode|		Insert mode keyboard mapping
+|vimconfig-keys-normal-mode|		Normal mode keyboard mapping
+|vimconfig-keys-cmdline-mode|		Cmdline mode keyboard mapping
+|vimconfig-keys-plugin|			Filetype specific keyboard mapping
+|vimconfig-keys-plugin-insert-mode|	Insert mode keyboard mapping in
+                                  	filetype plugins
+|vimconfig-keys-plugin-normal-mode|	Normal mode keyboard mapping in
+                                  	filetype plugins
+|vimconfig-keys-plugin-cmdline-mode|	Cmdline mode keyboard mapping in
+                                  	filetype plugins
+
+
+GLOBAL KEYBOARD MAPPING ~				      *conf-keys-global*
+-----------------------					 *vimconfig-keys-global*
+
+KEYS (INSERT mode)					 *conf-keys-insert-mode*
+------------------				    *vimconfig-keys-insert-mode*
+					*conf-key-CTRL-a* *vimconfig-key-CTRL-a*
+					*conf-key-CTRL-A* *vimconfig-key-CTRL-A*
+CTRL-A - move to beginning of line (<Home> key).
+					*conf-key-CTRL-e* *vimconfig-key-CTRL-e*
+					*conf-key-CTRL-E* *vimconfig-key-CTRL-E*
+CTRL-E - move to end of line (<End> key).
+					*conf-key-CTRL-d* *vimconfig-key-CTRL-d*
+					*conf-key-CTRL-D* *vimconfig-key-CTRL-D*
+CTRL-D - delete current line without saving it to buffer. Undo seems to be
+         possible. This uses function SafeLineDelete().
+         See |vimconfig-func-SafeLineDelete|.
+					*conf-key-CTRL-l* *vimconfig-key-CTRL-l*
+					*conf-key-CTRL-L* *vimconfig-key-CTRL-L*
+CTRL-L - mapped to CTRL-X CTRL-L, see |i_CTRL-X_CTRL-L| for explanation.
+					*conf-key-CTRL-o* *vimconfig-key-CTRL-o*
+					*conf-key-CTRL-0* *vimconfig-key-CTRL-0*
+CTRL-O CTRL-V - This work like CTRL-O CTRL-V in normal mode,
+                see |vimconfig-keys-normal-mode-CTRL-0|.
+CTRL-O CTRL-K - This work like CTRL-O CTRL-K in normal mode,
+                see |vimconfig-keys-normal-mode-CTRL-0|.
+CTRL-O CTRL-O - This work like CTRL-O CTRL-O in normal mode,
+                see |vimconfig-keys-normal-mode-CTRL-0|.
+
+
+KEYS (NORMAL mode)				       *conf-keys-normal-mode*
+------------------				  *vimconfig-keys-normal-mode*
+						*conf-keys-normal-mode-CTRL-0*
+					   *vimconfig-keys-normal-mode-CTRL-0*
+CTRL-O CTRL-V - Quickly split new window with your Vim configuration
+                directory ~/.vim.
+CTRL-O CTRL-K - Quickly split new window with your Vim configuration
+                file ~/.vimrc.
+CTRL-O CTRL-O - Start opening new window. Type name of file and press <Enter>.
+                New window will be opened with requested file.
+							     *conf-key-CTRL-x*
+							*vimconfig-key-CTRL-x*
+							     *conf-key-CTRL-X*
+							*vimconfig-key-CTRL-X*
+CTRL-X        - go to the next window.
+
+New |foldcommands| are defined. Here is a list of defined commands. All
+commands have a global behavior. E.g. ZO is like zO but this opens 
+all folds in whole range of the file, not only in the selected area.
+ZX
+Zx
+ZA 
+Za 
+ZD 
+Zd 
+ZC 
+Zc 
+ZO 
+Zo 
+
+
+KEYS (COMMAND-LINE mode)			     *conf-keys-cmdline-mode*
+------------------------			*vimconfig-keys-cmdline-mode*
+
+
+
+
+==============================================================================
+3. New commands						       *conf-commands*
+					   		  *vimconfig-commands*
+
+
+Here is a list of defined commands: ~
+------------------------------------------------------------------------------
+|vimconfig-com-Printf|			:Printf
+|vimconfig-com-FoldLongLines|		:FoldLongLines
+|vimconfig-com-Indent|			:Indent
+|vimconfig-com-CallProg|		:CallProg
+|vimconfig-com-OpenAllWin|		:OpenAllWin
+|vimconfig-com-UnquoteMailBody|		:UnquoteMailBody
+|vimconfig-com-ReadFileAboveCursor|	:ReadFileAboveCursor
+|vimconfig-com-R|			:R
+|vimconfig-com-Help|			:Help
+|vimconfig-com-Calendar|		:Calendar
+|vimconfig-com-CallProg|		:CallProg
+|vimconfig-com-Explore|			:Explore
+|vimconfig-com-FoldLongLines|		:FoldLongLines
+|vimconfig-com-Help|			:Help
+|vimconfig-com-Inc|			:Inc
+|vimconfig-com-IncN|			:IncN
+|vimconfig-com-IncR|			:IncR
+|vimconfig-com-Indent|			:Indent
+|vimconfig-com-LoadFile|		:LoadFile
+|vimconfig-com-LoadTemplateFile|	:LoadTemplateFile
+|vimconfig-com-MatchDebug|		:MatchDebug
+|vimconfig-com-Next|			:Next
+|vimconfig-com-NetUserPass|		:NetUserPass
+|vimconfig-com-Nread|			:Nread
+|vimconfig-com-Nwrite|			:Nwrite
+|vimconfig-com-OpenAllWin|		:OpenAllWin
+|vimconfig-com-Print|			:Print
+|vimconfig-com-Printf|			:Printf
+|vimconfig-com-R|			:R
+|vimconfig-com-ReadFileAboveCursor|	:ReadFileAboveCursor
+|vimconfig-com-Sexplore|		:Sexplore
+|vimconfig-com-Source|			:Source
+|vimconfig-com-Snip|			:Snip
+|vimconfig-com-UnquoteMailBody|		:UnquoteMailBody
+------------------------------------------------------------------------------
+Note: Use CTRL-] and CTRL-T when looking for keyword.
+
+
+FUNCTIONS						      *conf-functions*
+---------						 *vimconfig-functions*
+
+Here is a list of defined functions: ~
+------------------------------------------------------------------------------
+|vimconfig-func-Help|			Help()
+|vimconfig-func-ChangeFoldMethod|	ChangeFoldMethod()
+|vimconfig-func-FoldLongLines|		FoldLongLines()
+|vimconfig-func-AutoLastMod|		AutoLastMod()
+|vimconfig-func-LastMod|		LastMod()
+|vimconfig-func-OpenAllWin|		OpenAllWin()
+|vimconfig-func-CallProg|		CallProg()
+|vimconfig-func-Compile|		Compile()
+|vimconfig-func-Indent|			Indent()
+|vimconfig-func-UnquoteMailBody|	UnquoteMailBody()
+|vimconfig-func-SafeLineDelete|		SafeLineDelete()
+|vimconfig-func-GetID|			GetID()
+|vimconfig-func-ReadFileAboveCursor|	ReadFileAboveCursor()
+|vimconfig-func-RemoveAutogroup|	RemoveAutogroup()
+------------------------------------------------------------------------------
+Note: Use CTRL-] and CTRL-T when looking for keyword.
+
+==============================================================================
+
+
+
+SPECIFIC USER SETUP ~					 *conf-specific-setup*
+-------------------				    *vimconfig-specific-setup*
+
+If you will use specific setup (e.g you are working on multiple machines), you
+can make it withoutch changing main configuration file ~/.vimrc. Simply put 
+your specific setup to one (or multiple) files. These files are automaticaly
+sourced by vim on vim startup (if exists and are readable):
+
+Supported filenames: ~
+   Sourced at begin of ~/.vimrc: (in this order!)
+        ~/.vim/vimrc-local.pre
+        ~/.vim/vimrc-local-<user>.pre
+        ~/.vim/vimrc-local-<server>.pre
+        ~/.vim/vimrc-local-<server>-<user>.pre
+        ~/.vim/vimrc-local
+        ~/.vim/vimrc-local-<user>
+        ~/.vim/vimrc-local-<server>
+        ~/.vim/vimrc-local-<server>-<user>
+   Sourced at end of ~/.vimrc: (in this order!)
+        ~/.vim/vimrc-local.post
+        ~/.vim/vimrc-local-<user>.post
+        ~/.vim/vimrc-local-<server>.post
+        ~/.vim/vimrc-local-<server>-<user>.post
+
+Note: Please substitute '<server>' and '<user>' with your machine name or your
+user name.
+
+
+							      *conf-statusbar*
+							 *vimconfig-statusbar*
+								*conf-startup*
+							   *vimconfig-startup*
+
+
+							   *conf-com-Calendar*
+						      *vimconfig-com-Calendar*
+:Calendar - 
+							   *conf-com-CallProg*
+						      *vimconfig-com-CallProg*
+:CallProg
+							    *conf-com-Explore*
+						       *vimconfig-com-Explore*
+:Explore
+						      *conf-com-FoldLongLines*
+						 *vimconfig-com-FoldLongLines*
+:FoldLongLines
+
+							       *conf-com-Help*
+							  *vimconfig-com-Help*
+:Help
+
+
+								*conf-com-Inc*
+							   *vimconfig-com-Inc*
+:Inc
+
+
+							       *conf-com-IncN*
+							  *vimconfig-com-IncN*
+:IncN
+
+
+							       *conf-com-IncR*
+							  *vimconfig-com-IncR*
+:IncR
+
+
+							     *conf-com-Indent*
+							*vimconfig-com-Indent*
+:Indent - indents whole document, but if [range] si specified, indents only
+          these lines; especially usable for C source codes
+
+							   *conf-com-LoadFile*
+						      *vimconfig-com-LoadFile*
+:LoadFile
+
+
+						   *conf-com-LoadTemplateFile*
+					      *vimconfig-com-LoadTemplateFile*
+:LoadTemplateFile
+
+							 *conf-com-MatchDebug*
+						    *vimconfig-com-MatchDebug*
+:MatchDebug
+
+							       *conf-com-Next*
+							  *vimconfig-com-Next*
+:Next
+
+							*conf-com-NetUserPass*
+						   *vimconfig-com-NetUserPass*
+:NetUserPass
+
+							      *conf-com-Nread*
+							 *vimconfig-com-Nread*
+:Nread
+
+							     *conf-com-Nwrite*
+							*vimconfig-com-Nwrite*
+:Nwrite
+
+							 *conf-com-OpenAllWin*
+						    *vimconfig-com-OpenAllWin*
+:OpenAllWin - opens all windows for all buffers. This function is called, if
+              g:open_all_win is set to 1. To disable this feature try >
+			let g:open_all_win=0
+<             in your ~/.vimrc-local.post config file.
+              See |vimconfig-specific-setup|.
+
+
+							      *conf-com-Print*
+							 *vimconfig-com-Print*
+:Print
+
+							     *conf-com-Printf*
+							*vimconfig-com-Printf*
+:Printf
+
+						*conf-com-ReadFileAboveCursor*
+					   *vimconfig-com-ReadFileAboveCursor*
+						*conf-com-R* *vimconfig-com-R*
+:R
+:ReadFileAboveCursor
+
+							   *conf-com-Sexplore*
+						      *vimconfig-com-Sexplore*
+:Sexplore
+
+							     *conf-com-Source*
+							*vimconfig-com-Source*
+:Source - this function is used to source ~/.vim/vimrc-local* files.
+          See |vimconfig-specific-setup|.
+
+							       *conf-com-Snip*
+							  *vimconfig-com-Snip*
+:Snip
+
+
+						    *conf-com-UnquoteMailBody*
+					       *vimconfig-com-UnquoteMailBody*
+:UnquoteMailBody	removes starting '>' characters from every line
+
+
+
+
+==============================================================================
+x.x Autocommands					   *conf-autocommands*
+						      *vimconfig-autocommands*
+
+
+
+==============================================================================
+x.x Plugins							*conf-plugins*
+							   *vimconfig-plugins*
+
+
+
+==============================================================================
+X.x Thanks							 *conf-thanks*
+							    *vimconfig-thanks*
+
+Very thanks to many people which contribute on this Vim configuration files.
+
+Here is a list of contributors (alphabetical order): ~
+	Srinath Avadhanula <srinath AT fastmail.fm>
+	Ondrej Jombik 'Nepto'   <nepto   AT pobox.sk>
+	Martin Karas  'Wolcaan' <wolcano AT pobox.sk>
+
+
+==============================================================================
+  vim: tw=78 ts=8 ft=FEATURES norl iskeyword=!-~,^*,^|,^"

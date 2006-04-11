@@ -1,0 +1,85 @@
+cd pub/linux/kernel/v2.4
+get linux-2.4.23.tar.bz2
+cd pub/linux/kernel/v2.6
+ls
+get linux-2.6.13.4.tar.bz2
+cd pub/linux/kernel/people/akpm
+ls
+cd patches/
+ls
+cd 2.6
+ls
+cd 2.6.13
+ls
+cd 2.6.13-mm3
+ls
+get 2.6.13-mm3-broken-out.tar.bz2
+cd pub/linux/kernel/v2.6
+get linux-2.6.14.tar.bz2
+cd ..
+cd pub/linux/kernel/people/akpm/patches
+ls
+cd 2.6
+ls
+cd 2.6.14
+cd 2.6.14-rc5
+ls
+cd 2.6.14-rc5-mm1/
+ls
+get 2.6.14-rc5-mm1-broken-out.tar.bz2
+cd pub/linux/kernel/v2.6/
+ls
+get linux-2.6.14.1.tar.bz2
+cd ..
+ls
+cd people
+ls
+cd akpm
+ls
+cd patches/
+ls
+cd 2.6
+ls
+cd 2.6.14
+ls
+cd 2.6.14-mm2/
+ls
+get 2.6.14-mm2-broken-out.tar.bz2
+cd linux
+cd pub/linux/kernel/v2.6
+ls
+get patch-2.6.14.2.bz2
+cd pub/linux/kernel/v2.6/
+get linux-2.6.14.2.tar.bz2
+cd pub/linux/kernel/v2.6
+ls
+get linux-2.6.12.bz2
+get linux-2.6.12.tar.bz2
+cd pub/linux/kernel/v2.6
+get linux-2.6.14.tar.bz2
+cd pub/linux/kernel/v2.6
+ls
+get linux-2.6.14.3.tar.bz2
+cd testing/
+ls
+get linux-2.6.15-rc5.tar.bz2
+cd pub/linux/kernel/v2.6
+get linux-2.6.12.tar.bz2 linux-2.6.13.tar.bz2
+cd pub/linux/kernel/v2.6
+get linux-2.6.15.tar.bz2
+cd ../people/akpm
+ls
+cd patches/
+ls
+cd 2.6
+ls
+cd 2.6.15
+user mp3
+help
+help open
+(line omitted from history because it contained sensitive information)
+ls
+cd /Upload
+ls
+get T.A.T.U._And_Rammstein-Pruzinki-RU-2004-SiRiON/
+get -r T.A.T.U._And_Rammstein-Pruzinki-RU-2004-SiRiON/

@@ -1,0 +1,14 @@
+SESSION STARTED at:  2005-11-14 23:35:48 CST -0600
+   Program Version:  NcFTP 3.1.9/190 Mar 24 2005, 07:18 PM
+   Library Version:  LibNcFTP 3.1.9 (March 19, 2005)
+        Process ID:  9395
+          Platform:  linux-x86_64
+          Hostname:  localhost.localdomain  (rc=3)
+          Terminal:  linux
+23:35:48  Fw: firewall.localdomain  Type: 0  User: kergoth  Pass: ********  Port: 21
+23:35:48  FwExceptions: .localdomain,localhost,localdomain
+23:35:48  Resolving ftp.us.kernel.org...
+23:35:48  Connecting to 144.92.104.38...
+23:35:48  LibNcFTP 3.1.9 (March 19, 2005) compiled for linux-x86_64
+23:35:48  Uname: Linux|covenant|2.6.12-9-amd64-k8|#1 Mon Oct 10 13:13:36 BST 2005|x86_64
+23:35:48  Glibc: 2.3.5 (stable)

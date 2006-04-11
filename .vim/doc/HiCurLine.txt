@@ -1,0 +1,145 @@
+*hicurline.txt*	The HiCurLine Tool		Nov 22, 2005
+
+Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+	  (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*hicurline-copyright*
+           The VIM LICENSE applies to HiCurLine.vim and HiCurLine.txt
+           (see |copyright|) except use "HiCurLine" instead of "Vim"
+	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
+==============================================================================
+1. Contents						*hicurline-contents*
+
+	1. Contents......................: |hicurline-contents|
+	2. HiCurLine Manual..............: |hicurline|
+	3. HiCurLine Usage...............: |hicurline-usage|
+	     Starting....................: |hicurline-start|
+	     Stopping....................: |hicurline-stopping|
+	     User Map Protection.........: |hicurline-protect|
+	     Highlighting Options........: |hicurline-option|
+	4. HiCurLine History.............: |hicurline-history|
+
+
+==============================================================================
+
+2. HiCurLine Manual					*hicurline*
+							*hicurline-manual*
+	To Enable:
+
+   /===============+=========================================================\
+   || Starting &   |                                                        ||
+   || Stopping     | Explanation                                            ||
+   ++--------------+--------------------------------------------------------++
+   || <Leader>hcli | start  HiCurLine                                       ||
+   || :HCLstart    | start  HiCurLine                                       ||
+   || <Leader>hcls | stop   HiCurLine                                       ||
+   || :HCLstop     | stop   HiCurLine                                       ||
+   || :HCL         | toggle HiCurLine                                       ||
+   ++==============+========================================================++
+
+ You may also choose from the DrChip.HiCurLine menu items if you're running
+ gvim.  Check on vim's help for mapleader |mapleader| to learn how to set
+ <Leader>; by default its the backslash - ie. by default \hcli will start and
+ \hcls will stop HiCurLine.
+
+
+==============================================================================
+
+3. HiCurLine Usage					*hicurline-usage*
+
+    See |hicurline-start| and |hicurline-stop| for how to start and
+    stop HiCurLine.
+
+    The HiCurLine plugin attempts to highlight the current line.
+
+    As of version 4, such overloaded motions include:
+
+		-  h  L      <c-d>   <home>
+		+  H  M      <c-f>   <left>
+		b  j  w      <c-u>   <leftmouse>
+		B  k  <cr>   <down>  <right>
+		e  l  <c-b>  <end>   <up>
+		E
+
+    Because vim is rich with commands that can move the cursor, the
+    script also uses the CursorHold event (see |cursorhold| and
+    |'updatetime'|) to highlight the current line whenever the
+    cursor is left still for awhile.
+
+STARTING						*hicurline-start*
+    <Leader>hcli
+
+    Typically one puts <hicurline.vim> into the .vim/plugin directory
+    (vimfiles\plugin for MS) where it becomes always available.  It uses a
+    minimal interface:
+
+	<Leader>hcli : initialize highlighting of matching brackets
+	            (by default its \hcli)
+
+    A message, "[HiCurLine]", will appear on the message line.
+
+STOPPING						*hicurline-stopping*
+    <Leader>[hcls
+
+    When you are done with HiCurLine, use
+
+	    <Leader>[hcls : stop highlighting of matching brackets
+	            	(by default its \hcls)
+
+    will restore your usual options and remove the maps HiCurLine set up.
+
+    A message, "[HiCurLine off]", will appear on the message line.
+
+USER MAP PROTECTION					*hicurline-protect*
+
+    Starting HiCurLine causes it to set up a number of maps which enables
+    the highlighting of matching brackets in normal mode.  A few keypad
+    entries in insert mode are also supported (up, down, right, left, home,
+    and end).  Upon termination these maps are deleted and any previously
+    defined mappings are restored.
+
+HIGHLIGHTING CURRENT LINE OPTIONS			*hicurline-option*
+
+    g:DrChipTopLvlMenu: by default its "DrChip"; you may set this to whatever
+                        you like in your <.vimrc>.  This variable controls
+			where HiCurLine's menu items are placed.
+    HL_HiCurLine      : syntax highlighting group used for the current
+                        line.  One may specify it or link it to another
+                        highlighting group.  Default: Search >
+			    ex. hi link HL_HiCurLine Statement
+<
+    HL_HiCurLine      : As an alternative to using the syntax group named
+                        above; its a variable holding a highlighting group
+			name (see |highlight-groups| for a standard list). >
+			    ex. let HL_HiCurLine= "Special"
+<
+
+==============================================================================
+4. History						*hicurline-history*
+	
+	v6   07/26/04 * Had fold markers; now also has fdm=marker in modeline
+	              * \hclt will toggle between highlighting the current
+	                line and not
+	              * Cursorhold/FocusGained update time now set to 200ms
+	     02/18/05 * Some cosmetic folding changes
+	              * go =~ 'm' now used in test to see if menus are to be
+	                generated
+	     11/22/05 * commands changed to remove <cr>s
+	v5   07/13/04 * Now uses CursorHold to check if the colorscheme
+	                has been changed and, if so, to make sure HL_HiCurLine
+	                is defined.  Included support for gg and G motions.
+	                More debugging commands included, albeit commented
+	                out for release.
+	v4   06/23/03 * HL_HiCurLine : now holds the highlighting
+	                group (by default, Search); allows the user
+	                to override it
+	v3   02/10/03 * same as v2, but got submitted somehow as v3
+	                to vim.sf.net
+	v2   02/06/03 * removed some unnecessary maps (f( f) $ 0 etc)
+	                that were "leftover" from HiMtchBrkt
+	                includes more motions: (+-HML)
+	                uses CurSorHold to catch what I've missed so far
+	v1   epoch    * modified <HiMtchBrkt.vim>
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:sts=4

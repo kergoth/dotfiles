@@ -1,0 +1,5 @@
+cvs -q
+log -N
+diff -up
+update -Pd
+co -P

@@ -1,0 +1,221 @@
+#!/bin/sh
+
+#
+# update-vim-sources - update Vim sources with patches
+#                      from Bram Moolenaar <Bram AT vim.org>.
+#
+# Thanks to Bram for patches! :-)
+#
+# Usage: source this script into your shell (I'm using zsh)
+#        and yo can use function 'update-vim' for automaticaly
+#        update. Function 'patch_sources 6.1.345' can be used
+#        patch is already downloaded (or simply saved between
+#        patches). With 'make_distribution' you can create your
+#        own tarball with sources
+#
+# Developed by Lubomir Host 'rajo' <rajo AT platon.sk>
+# Copyright (c) 2003-2005 Platon SDG
+# Licensed under terms of GNU General Public License.
+# All rights reserved.
+#
+
+# $Platon: vimconfig/contrib/update-vim-sources,v 1.4 2005/03/09 19:50:09 rajo Exp $
+
+# Define vim version:
+VIM_VER="vim62"
+VIM_VER_LONG="vim-6.2"
+VIM_VER_EGREP="^6\.2\."
+
+# Web site where patches are located
+#URL="ftp://ftp.vim.org/pub/vim/unstable/patches/"
+URL="ftp://ftp.vim.org/pub/vim/patches/"
+
+# Directory where Vim sources are located
+#SRC_DIR="/usr/src/vim"
+SRC_DIR="$HOME/tmp/vim"
+
+# Where save tar-bziped archiv
+DIST_DIR="$HOME/public_html/vim/dist"
+
+#
+# END of user setup
+######################################################
+
+# '6.0.0.099' --> '98'
+# for version 6.0.001 return empty string
+old_version()
+{
+#	if [ "x$1" = "x6.0.001" ]; then
+#		echo;
+#		return;
+#	fi
+#	echo $1 | awk 'BEGIN {FS="."} { print "." $3 - 1 }'
+#	echo $1 | awk 'BEGIN {FS="."} { print ".0" $3 - 1 }'
+#	echo $1 | awk ' BEGIN {FS="."} { if ($3 < 11) { print ".00" $3 - 1 ; next; } if ($3 < 101) { print ".0" $3 - 1 ; next; } print "." $3 - 1 ; }'
+# For instipration thanks to 'Nebojsa'
+	echo $1 | awk 'BEGIN {FS="."} { printf ".%03d\n", $3 - 1 }'
+}
+
+# '6.0.099' --> '99'
+new_version()
+{
+#	echo $1 | awk 'BEGIN {FS="."} { print "." $3 - 1 + 1 }'
+	echo $1 | awk 'BEGIN {FS="."} { print "." $3  }'
+}
+
+# download file from website
+download_patch()
+{
+	local DIR
+	DIR=`pwd`;
+	cd $SRC_DIR/patches && \
+		wget -nH -nd $URL/$1 || \
+			( sleep 100;
+				wget -nH -nd $URL/$1 ) || return 1 ;
+	cd $DIR
+}
+
+#
+# Extract ChangeLog information
+#
+filter_patch()
+{
+	awk 'BEGIN { skip = 1; }
+
+/^------/ {
+	skip = 0;
+	getline;
+	next;
+}
+
+/^\*\*\* / {
+	exit;
+}
+
+skip == 0 {
+	printf "    %s\n", $0;
+}
+
+'
+}
+
+#
+# You can build Debian package - changelog si modified automaticaly
+# with proper entry
+#
+modify_changelog()
+{
+	local DIR
+	local patches
+	#patches=`echo $* | awk -v RS=' ' '{ print;}' |sort -r -u -z`
+	#echo "patches='$patches'"
+
+	#if [ $# -gt 1 ]; then
+	#	echo "Error: modify_changelog() allows only 1 argument!" > /dev/stderr
+	#	exit 1;
+	#fi
+
+	DIR="`pwd`";
+	cd $SRC_DIR \
+		&& here="`pwd`" \
+		&& for i in $*; do \
+			test -f patches/$i \
+			&& cp $VIM_VER/debian/changelog $VIM_VER/debian/changelog.before-$i \
+			&& ( echo "vim ($i) unstable; urgency=low" \
+				&& echo && echo "  * Apply upstream patch:" \
+				&& filter_patch < patches/$i \
+				&& echo " -- Lubomir Host <rajo@platon.sk>  `date -R`" \
+				&& echo ) > $VIM_VER/debian/changelog \
+			&& cat $VIM_VER/debian/changelog.before-$i >> $VIM_VER/debian/changelog
+		done
+	cd "$DIR"
+}
+
+#
+# Aply one patch to vim sources
+#
+patch_sources()
+{
+	local DIR
+	DIR="`pwd`";
+	cd $SRC_DIR \
+		&& here="`pwd`" \
+		&& for i in $*; do \
+			cd "$here/patches" \
+			&& echo "--Using patch $i" \
+			&& patch -p0 < $i \
+				&& modify_changelog $i \
+				&& cd "$here" \
+				&& ln -s $VIM_VER $VIM_VER_LONG`new_version $i` || return 1
+		done
+	cd "$DIR"
+}
+
+make_distribution()
+{
+	local DIR DIST_FILE OLD_DIST_FILE
+	DIR=`pwd`;
+	DIST_FILE="$DIST_DIR/$VIM_VER_LONG`new_version $1`-all.tar.bz2"
+	OLD_DIST_FILE="$DIST_DIR/$VIM_VER_LONG`old_version $1`-all.tar.bz2"
+	cd /opt/scratch/rajo/src/vim/ && \
+		tar cjf $DIST_FILE $VIM_VER`new_version $1` && \
+			chmod a+r $DIST_FILE && \
+				rm -f $OLD_DIST_FILE || return 1
+	cd $DIR
+}
+
+#
+# Update vim sources
+#
+update-vim()
+{
+	local DIR TMP_FILE
+	DIR=`pwd`;
+	TMP_FILE=`tempfile -p update_vim || mktemp /tmp/update_vim-XXXXXX || echo /tmp/update_vim-$$`
+	echo "Looking for new patches..."; 
+	wget -O - $URL 2> /dev/null | awk 'BEGIN { FS=">" } {print $2}' | \
+		egrep "$VIM_VER_EGREP" | sed 's/<.*//g;' > $TMP_FILE
+	
+	cd $SRC_DIR/patches && \
+	(
+		NEW_PATCHES="`ls -1| egrep "$VIM_VER_EGREP" | diff - $TMP_FILE | awk '{ print $2 }'`"
+		if [ -z "$NEW_PATCHES" ]; then
+			echo "No new patches..."
+		else
+			for i in `echo $NEW_PATCHES`
+			do
+				download_patch $i && patch_sources  $i || exit 1
+			done
+			#cd $SRC_DIR/$VIM_VER && make && make install
+			cd $SRC_DIR/$VIM_VER && make && echo && echo "=================================" && su root -c make install
+		fi
+		
+	)
+	rm -f $TMP_FILE
+	cd $DIR
+}
+
+
+#
+# Completition function for zsh
+#
+compctl -K _vimhelptargets vimhelp
+compctl -K _vimhelptargets gvimhelp
+_vimhelptargets() {
+#   local VIM vimversion tagsfile
+#   vimpath=`vim -e -u NONE -U NONE \
+#       --cmd 'set term=dumb'       \
+#       --cmd 'set t_cm='           \
+#       --cmd ':echo $VIM'          \
+#       --cmd ':q!'                 \
+#       | sed 's/^.*\[[0-9]\+;[0-9][Hm]//g;' |xxd`
+#   vimversion=$(vim --version |& head -1 | sed -e 's/VIM - Vi IMproved \([^    ]\+\).*/vim\1/; s/\.//; ')
+#   tagsfile="$vimpath/$vimversion/doc/tags"
+    tagsfile="$HOME/install/share/vim/vim61/doc/tags"
+
+    reply=($( cat $tagsfile | sed -e 's/	.*//' ))
+}
+
+# vim: ft=zsh
+# vim600: fdm=marker fmr={,} fdc=3 fdl=0
+
