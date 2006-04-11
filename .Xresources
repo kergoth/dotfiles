@@ -1,97 +1,27 @@
 Xft.hintstyle: hintfull
 Xft.hinting: true
 Xft.rgba: rgb
-!Rxvt*termName: Rxvt
-Rxvt*reverseVideo: false
-Rxvt*background: black
-Rxvt*foreground: grey
-Rxvt*shading: 10
-Rxvt*transparent: true
-Rxvt*transpscrollbar: true
-!Rxvt*font1: 8x16
-!Rxvt*font2: 9x15
-!Rxvt*font: 10x20
-!Rxvt*font3: 12x24
-!Rxvt*font4: 8x13
-!Rxvt*font4: 5x7
-!Rxvt*font1: 9x15
-!Rxvt*font2: 10x20
-!Rxvt*font: -*-lucidatypewriter-medium-r-normal-*-25-*-*-*-m-*-iso8859-1
-!Rxvt*font3: -*-lucidatypewriter-medium-r-normal-*-34-*-*-*-m-*-iso8859-1
-Rxvt*scrollBar: false
-!Rxvt*scrollBar_right:         boolean
-!Rxvt*color0:                    color
-!Rxvt*color1:                    color
-!Rxvt*color2:                    color
-!Rxvt*color3:                    color
-!Rxvt*color4:                    color
-!Rxvt*color5:                    color
-!Rxvt*color6:                    color
-!Rxvt*color7:                    color
-!Rxvt*color8:                    color
-!Rxvt*color9:                    color
-!Rxvt*color10:                   color
-!Rxvt*color11:                   color
-!Rxvt*color12:                   color
-!Rxvt*color13:                   color
-!Rxvt*color14:                   color
-!Rxvt*color15:                   color
-!Rxvt*colorBD:                   color
-!Rxvt*colorUL:                   color
-!Rxvt*scrollColor:               color
-!Rxvt*troughColor:               color
-!Rxvt*backgroundType: tile|center|scale|scaleh|scalev|notile|notileh|notilev|cut
-!Rxvt*tintingType: true|and|andReverse|andInverted|xor|or|nor|invert|equiv|invert|orReverse|orInverted|nand
-!Rxvt*tinting:                   color
-!Rxvt*textType: and|andReverse|andInverted|xor|or|nor|invert|equiv|invert|orReverse|orInverted|nand
-!Rxvt*boldFont:               fontname
-!Rxvt*title:                    string
-!Rxvt*iconName:                 string
-!Rxvt*cursorColor:               color
-!Rxvt*cursorColor2:              color
-!Rxvt*pointerColor:              color
-!Rxvt*borderWidth:              number
-!Rxvt*borderColor:               color
-!Rxvt*loginShell:              boolean
-!Rxvt*scrollBar_right:         boolean
-!Rxvt*scrollBar_floating:      boolean
-!Rxvt*scrollTtyOutput:         boolean
-!Rxvt*scrollTtyKeypress:       boolean
-!Rxvt*minBufferWidth:           number
-!Rxvt*saveLines:                number
-!Rxvt*utmpInhibit:             boolean
-!Rxvt*visualBell:              boolean
-!Rxvt*mapAlert:                boolean
-!Rxvt*meta8:                   boolean
-!Rxvt*modifier:                 string
-!Rxvt*backspacekey:             string
-!Rxvt*deletekey:                string
-!Rxvt*cutchars:                 string
-!Rxvt*keysym.sym:               keysym
-Rxvt*colorBDMode:        FALSE
-Rxvt*colorULMode:        FALSE
-Rxvt*loginShell:         true
-Rxvt*cursorColor:        yellow
-Rxvt*jumpScroll:         true
-Rxvt*saveLines:          3000
-Rxvt*scrollBar:          false
-Rxvt*scrollTtyOutput:    false
-Rxvt*scrollKey:          false
-Rxvt*geometry:112x50
-!URxvt*font:xft:Bitstream Vera Sans Mono:pixelsize=10
-!URxvt*font: 9x15bold,\
-!            -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso10646-1,\
-!            -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
-!            [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
-!            xft:Code2000:antialias=false
+Xft.antialias: true
 
-!URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12,\
-!            -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso10646-1,\
-!            -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
-!            [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
-!            xft:Code2000:antialias=false
+rxvt*reverseVideo: false
+rxvt*background: black
+rxvt*foreground: grey
+rxvt*shading: 10
+rxvt*transparent: true
+rxvt*transpscrollbar: true
+rxvt*scrollBar: false
+rxvt*colorBDMode:        false
+rxvt*colorULMode:        false
+rxvt*loginShell:         true
+rxvt*cursorColor:        yellow
+rxvt*jumpScroll:         true
+rxvt*saveLines:          3000
+rxvt*scrollBar:          false
+rxvt*scrollTtyOutput:    false
+rxvt*scrollKey:          false
+rxvt*geometry:112x50
 
-URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
+urxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
             -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso10646-1,\
             -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
             [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
@@ -99,38 +29,21 @@ URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
 
 urxvt*termName: rxvt-unicode
 
-!colors ripped from rezza: http://metawire.org/~rezza/index.php
-urxvt*foreground:       #cccccc
-urxvt*background:       #191911
+mrxvt*xft: true
+mrxvt*xftRGBA: rgb
+mrxvt*xftHinting: true
+mrxvt*xftAutoHint: false
+mrxvt*xftFont: Leonine Sans Mono
+mrxvt*xftNomFont: true
+mrxvt*xftSize: 10
+mrxvt*xftAntialias: true
 
-! Black + DarkGrey
-urxvt*color0:            #222222
-urxvt*color8:            #222222
-
-! DarkRed + Red
-urxvt*color1:            #803232
-urxvt*color9:            #982b2b
-
-! DarkGreen + Green
-urxvt*color2:            #5b762f
-urxvt*color10:           #89b83f
-
-! DarkYellow + Yellow
-urxvt*color3:            #aa9943
-urxvt*color11:           #efef60
-
-! DarkBlue + Blue
-urxvt*color4:            #324c80
-urxvt*color12:           #2b4f98
-
-! DarkMangenta + Mangenta
-urxvt*color5:            #706c9a
-urxvt*color13:           #826ab1
-
-!DarkCyan + Cyan
-urxvt*color6:            #92b19e
-urxvt*color14:           #a1cdcd
-
-! LightGrey + White
-urxvt*color7:            #ffffff
-urxvt*color15:           #dedede
+mrxvt*geometry: 112x50
+mrxvt*showMenu: false
+mrxvt*scrollBar: false
+mrxvt*foreground: grey
+mrxvt*background: black
+mrxvt*transparent: false
+mrxvt*hideTabbar: true
+mrxvt*hideButtons: true
+mrxvt*nonBoldFont: true
