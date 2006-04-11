@@ -1,11 +1,12 @@
 " Vim color file
-" baycomb v2.1d
+" baycomb v2.1g
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
 "
 "   * Place :colo baycomb in your VimRC/GVimRC file
-"     * GvimRC if using GUI any
+"   * Also add :set background=dark  or :setbackground=light
+"     depending on your preference.
 "
 "   - Thanks to Desert and OceanDeep for their color scheme 
 "     file layouts
@@ -16,12 +17,12 @@ if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
     " complaining
     hi clear
-    if exists('syntax_on')
+    if exists("syntax_on")
 		syntax reset
     endif
 endif
 
-let g:colors_name='baycomb'
+let g:colors_name="baycomb"
 
 " functions {{{
 " returns an approximate grey index for the given grey level
@@ -232,14 +233,15 @@ fun <SID>X(group, fg, bg, attr)
 endfun
 " }}}
 
+" call <SID>X('Comment', 'A9A9A9', '24283A', '')
 call <SID>X('Comment', '008B8B', '', '')
-call <SID>X('Conditional', 'D0688D', '', '')
-call <SID>X('Constant', '3088E0', '', '')
+call <SID>X('Conditional', 'D0688D', '', 'NONE')
+call <SID>X('Constant', '3088E0', '111A2A', '')
 call <SID>X('Cursor', '0000AA', 'CAD5C0', '')
 call <SID>X('Directory', 'BBD0DF', '', '')
 call <SID>X('Error', '', 'B03452', '')
 call <SID>X('ErrorMsg', '', 'FF4545', '')
-call <SID>X('Exception', 'D0A8AD', '', 'NONE')
+call <SID>X('Exception', 'D0A8AD', '', 'BOLD')
 call <SID>X('FoldColumn', 'DBCAA5', '0A0A18', '')
 call <SID>X('Folded', 'BEBEBE', '232235', '')
 call <SID>X('Function', 'DA95C8', '', 'NONE')
@@ -253,19 +255,22 @@ call <SID>X('ModeMsg', '00AACC', '', '')
 call <SID>X('MoreMsg', '2E8B57', '', '')
 call <SID>X('NonText', '382920', '', '')
 call <SID>X('Normal', 'A0B4E0', '111218', '')
-call <SID>X('Number', '4580BA', '', '')
+call <SID>X('Number', '4580B4', '111A2A', '')
 call <SID>X('Operator', 'E8CDC0', '', 'NONE')
 call <SID>X('Pmenu', '9AADD5', '3A6595', '')
 call <SID>X('PmenuSel', 'B0D0F0', '4A85BA', '')
 call <SID>X('PreProc', 'BA75CF', '', '')
 call <SID>X('Question', 'AABBCC', '', '')
-call <SID>X('Repeat', 'E06070', '', '')
+call <SID>X('Repeat', 'E06070', '', 'NONE')
 call <SID>X('Search', '3A4520', '808373', '')
 call <SID>X('Special', '9A8A9A', '', '')
 call <SID>X('SpecialKey', '90DCB0', '', '')
-call <SID>X('Statement', 'DCA0AA', '', 'NONE')
+call <SID>X('Statement', 'DCA8AD', '', 'NONE')
 call <SID>X('StatusLine', '6880EA', '354060', 'NONE')
 call <SID>X('StatusLineNC', '5C6DBE', '2C3044', 'NONE')
+call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
+call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
+call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
 call <SID>X('Title', 'E5E5CA', '', 'NONE')
 call <SID>X('Todo', 'FF4500', 'EEEE00', '')
 call <SID>X('Type', '648DDA', '', 'NONE')
@@ -274,9 +279,6 @@ call <SID>X('VertSplit', '223355', '222535', 'NONE')
 call <SID>X('Visual', '102030', '80A0F0', '')
 call <SID>X('VisualNOS', '201A30', 'A3A5FF', '')
 call <SID>X('WarningMsg', 'FA8072', '', '')
-call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
-call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
-call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
 
 " delete functions {{{
 delf <SID>X
