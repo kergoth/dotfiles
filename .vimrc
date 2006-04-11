@@ -17,6 +17,13 @@
 " Line highlighter:
 "   \hcli - enable highlighting of the current line
 "   \hcls - disable highlighting of the current line
+" winmanager (if enabled):
+"   ^W^T - toggle
+"   ^W^F - top left window
+"   ^W^B - bottom left window
+"   ^N (in the file explorer window) - toggle file explorer / tag list
+" taglist (if not using winmanager):
+"   F8 - toggle
 " VIM core:
 "   K - look up current word via 'man' (by default)
 "   ^X ^O - Omni completion
@@ -361,7 +368,7 @@ let HL_HiCurLine = "Function"
 " let g:xml_syntax_folding = 1
 " }}}
 
-" Explorer/Tags/Windows options
+" Explorer/Tags/Windows options {{{
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_Menu = 1
 
