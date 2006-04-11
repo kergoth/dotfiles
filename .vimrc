@@ -531,6 +531,18 @@ if has("autocmd")
   catch
   endtry
 
+  " Close out the quickfix window if it's the only open window
+  function! s:QuickFixClose()
+      " if the window is quickfix go on
+      if &buftype=="quickfix"
+          " if this window is last on screen quit without warning
+          if winbufnr(2) == -1
+              quit!
+          endif
+      endif
+  endfunction
+  au BufEnter * call s:QuickFixClose()
+
   function! s:CHANGE_CURR_DIR()
     let l:_dir = expand("%:p:h")
     if l:_dir !~ '^/tmp'
