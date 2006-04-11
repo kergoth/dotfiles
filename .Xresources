@@ -5,9 +5,11 @@ Xft.antialias: true
 
 Rxvt*reverseVideo: false
 Rxvt*background: black
-Rxvt*foreground: grey
-Rxvt*shading: 10
-Rxvt*transparent: true
+Rxvt*foreground: grey90
+! Rxvt*transparent: true
+! Rxvt*inheritPixmap: true
+! Rxvt*tintColor: black
+! Rxvt*shading: 90
 Rxvt*transpscrollbar: true
 Rxvt*scrollBar: false
 Rxvt*colorBDMode: false
@@ -16,13 +18,12 @@ Rxvt*loginShell: true
 Rxvt*cursorColor: yellow
 Rxvt*jumpScroll: true
 Rxvt*saveLines: 3000
-Rxvt*scrollBar: false
 Rxvt*scrollTtyOutput: false
 Rxvt*scrollKey: false
 Rxvt*geometry: 96x50
 
+!URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=13
 URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
-            Bitstream Vera Sans Mono:pixelsize=13,\
             -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso10646-1,\
             -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
             [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
