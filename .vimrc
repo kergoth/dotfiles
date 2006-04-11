@@ -827,6 +827,7 @@ let g:HL_HiCurLine = "Function"
 " let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
 let g:HL_HiCurLine = "HL_HiCurLine"
+let g:HiMtchBrktOn = 1
 let g:Modeliner_format = 'fenc= sts= sw= et'
 " }}}
 
