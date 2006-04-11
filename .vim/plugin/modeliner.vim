@@ -22,10 +22,25 @@ if !exists('g:Modeliner_format')
     " append '=' to the end of the option.
 endif
 
-command! Modeliner  call <SID>Modeliner_exec()
+command! Modeliner  call <SID>Modeliner_Append()
+command! ModelinerBefore  call <SID>Modeliner_Prepend()
 
-function! s:Modeliner_exec()
-    let content = 'vim:set'
+function! s:Modeliner_Append()
+    let _col = virtcol('.')
+    let _line = line('.')
+    call append(_line, s:GetContent())
+    call cursor(_line, _col)
+endfunction
+
+function! s:Modeliner_Prepend()
+    let _col = virtcol('.')
+    let _line = line('.')
+    call append(_line - 1, s:GetContent())
+    call cursor(_line, _col)
+endfunction
+
+function! s:GetContent()
+    let content = ' vim: set'
     let format  = g:Modeliner_format
 
     call s:StartParsing()
@@ -45,8 +60,7 @@ function! s:Modeliner_exec()
     endwhile
 
     let content = substitute(&commentstring, '%s', content . ':', '')
-
-    call append('.', content)
+    return content
 endfunction
 
 function! s:StartParsing()
