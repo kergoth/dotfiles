@@ -395,14 +395,15 @@ set popt+=syntax:y
 set noautowrite
 
 " Usage of the mouse
-set mouse=a
-if has("unix") &&
-      \ has("mouse") &&
-      \ ! has("gui_running")
-  if &term == "xterm"
-    set ttymouse=xterm2
-  else
-    set ttymouse=xterm
+if has("mouse")
+  set mouse=a
+  if has("unix") &&
+        \ ! has("gui_running")
+    if &term == "xterm"
+      set ttymouse=xterm2
+    else
+      set ttymouse=xterm
+    endif
   endif
 endif
 
