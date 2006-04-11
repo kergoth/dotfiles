@@ -657,10 +657,6 @@ if &t_Co > 2 || has("gui_running")
   hi def link RedundantWhitespace Error
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
-  " Highlight vim modelines
-  hi def link VimModeline     special
-  au Syntax * exe 'match VimModeline /' .  substitute(escape(&commentstring, '*$./\'), '%s', '.*\\zsvim:\\s*set[^:]\\{-1,}:\\ze.*', '') . '/'
-
   if has("autocmd")
     " Email signatures generally start with '-- '.  Adjust the
     " RedundantWhitespace match for the 'mail' filetype to not
@@ -671,6 +667,11 @@ if &t_Co > 2 || has("gui_running")
     " Adjust the match to exclude the first column.
     au FileType diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
   endif
+
+  " Highlight Vim modelines
+  hi def link VimModeline     special
+  au Syntax * exe 'match VimModeline /' .  substitute(escape(&commentstring, '*$./\'), '%s', '.*\\zsvim:\\s*set[^:]\\{-1,}:\\ze.*', '') . '/'
+
 
   " When using gnome-terminal, vim's color test script shows
   " dark gray on white correctly, but white on dark gray appears
