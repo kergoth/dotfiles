@@ -20,7 +20,12 @@ if [ -d ~/man ]; then
     MANPATH=~/man:"${MANPATH}"
 fi
 
-PATH="/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
 PAGER="less -seGiq"
+EDITOR="vim"
+BK_USER="kergoth"
+[ -z "${NM}" ] && NM=nm
+LUA_INIT="@${HOME}/.lua/init.lua"
 
-export PATH MANPATH PAGER
+export PATH MANPATH PAGER EDITOR
+export BK_USER NM LUA_INIT

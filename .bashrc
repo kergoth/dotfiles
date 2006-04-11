@@ -161,21 +161,6 @@ e () {
 #	bk editor $*
 #}
 
-SCR_PREFIX="\033k\033\134"
-[ -z "${NM}" ] && NM=nm
-export EDITOR=vim
-alias vi=vim
-
-if [ "$PS1" ]; then
-	setup_interactive
-fi
-
-alias diff='diff -urNd'
-alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
-alias symbolsizes="${NM} -S -t d --size-sort"
-
-export BK_USER="kergoth"
-
 find_agent () {
 	local pid sock
 	pid="`ps aux|grep ssh-agent|grep -v grep|awk '{print $2}'`"
@@ -288,5 +273,13 @@ wow_addon () {
 	return 0
 }
 
+if [ "$PS1" ]; then
+	setup_interactive
+fi
+
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
+alias vi=vim
+alias diff='diff -urNd'
+alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
+alias symbolsizes="${NM} -S -t d --size-sort"
