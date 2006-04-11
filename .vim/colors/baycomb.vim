@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v2.0
+" baycomb v2.0b
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -239,7 +239,7 @@ call <SID>X('Ignore', '666666', '', '')
 call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
 call <SID>X('Function', 'DA95C8', '', 'NONE')
 call <SID>X('Number', '4580BA', '', '')
-call <SID>X('Type', '658DDA', '', 'NONE')
+call <SID>X('Type', '648DDA', '', 'NONE')
 call <SID>X('MatchParen', '001122', '7B5A55', '')
 call <SID>X('WarningMsg', 'FA8072', '', '')
 call <SID>X('Cursor', '0000AA', 'CAD5C0', '')
@@ -250,7 +250,7 @@ call <SID>X('Special', '9A8A9A', '', '')
 call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
 call <SID>X('Directory', 'BBD0DF', '', '')
 call <SID>X('IncSearch', 'BABEAA', '3A4520', '')
-call <SID>X('Identifier', '608AC0', '', '')
+call <SID>X('Identifier', '5094C4', '', '')
 call <SID>X('StatusLineNC', '5C6DAE', '2C2A3A', 'NONE')
 call <SID>X('ModeMsg', '00AACC', '', '')
 call <SID>X('Underlined', 'BAC5BA', '', 'NONE')
@@ -260,8 +260,8 @@ call <SID>X('Title', 'E5E5CA', '', 'NONE')
 call <SID>X('Error', '', 'B03452', '')
 call <SID>X('Search', '3A4520', '808373', '')
 call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
-call <SID>X('FoldColumn', 'DBCAA5', '00060A', '')
-call <SID>X('Statement', 'D0A0AA', '', 'NONE')
+call <SID>X('FoldColumn', 'DBCAA5', '121110', '')
+call <SID>X('Statement', 'DCA0AA', '', 'NONE')
 call <SID>X('Visual', '102030', '80A0F0', '')
 call <SID>X('SpecialKey', '90DCB0', '', '')
 call <SID>X('VertSplit', '223355', '222535', 'NONE')
@@ -269,9 +269,14 @@ call <SID>X('Todo', 'FF4500', 'EEEE00', '')
 call <SID>X('Question', 'AABBCC', '', '')
 call <SID>X('NonText', '382920', '', '')
 call <SID>X('Constant', '3088E0', '', '')
-call <SID>X('LineNr', '506389', '101010', '')
+call <SID>X('LineNr', '506389', '101011', '')
 call <SID>X('PreProc', 'BA75CF', '', '')
-call <SID>X('Normal', 'A5B5E0', '11131A', '')
+call <SID>X('Normal', 'A0B4E0', '111318', '')
+call <SID>X('Conditional', 'D0688D', '', '')
+call <SID>X('Repeat', 'E06070', '', '')
+call <SID>X('Operator', 'E8CDC0', '', 'NONE')
+call <SID>X('Keyword', 'BEBEBE', '', 'BOLD')
+call <SID>X('Exception', 'EA5460', '', 'NONE')
 
 " delete functions {{{
 delf <SID>X
