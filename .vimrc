@@ -685,10 +685,7 @@ let g:Tlist_Compact_Format = 1
 let g:Tlist_File_Fold_Auto_Close = 1
 let g:Tlist_Use_Right_Window = 1
 let g:Tlist_Sort_Type = "name"
-
-if colorterm == "gnome-terminal"
-  let g:Tlist_Inc_Winwidth = 0
-endif
+let g:Tlist_Inc_Winwidth = 0
 
 let s:using_winmanager = 0
 if exists('s:using_winmanager') &&
