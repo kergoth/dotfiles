@@ -276,68 +276,68 @@ com! -complete=command Interp call RunInterp()
 
 " Buffer Switching {{{
 " Map meta+numberkeys to the buffers
-if has('gui_running')
-  noremap <M-1> :b1<CR>:<BS>
-  noremap <M-2> :b2<CR>:<BS>
-  noremap <M-3> :b3<CR>:<BS>
-  noremap <M-4> :b4<CR>:<BS>
-  noremap <M-5> :b5<CR>:<BS>
-  noremap <M-6> :b6<CR>:<BS>
-  noremap <M-7> :b7<CR>:<BS>
-  noremap <M-8> :b8<CR>:<BS>
-  noremap <M-9> :b9<CR>:<BS>
-  noremap <M-0> :b10<CR>:<BS>
-  inoremap <M-1> :b1<CR>:<BS>
-  inoremap <M-2> :b2<CR>:<BS>
-  inoremap <M-3> :b3<CR>:<BS>
-  inoremap <M-4> :b4<CR>:<BS>
-  inoremap <M-5> :b5<CR>:<BS>
-  inoremap <M-6> :b6<CR>:<BS>
-  inoremap <M-7> :b7<CR>:<BS>
-  inoremap <M-8> :b8<CR>:<BS>
-  inoremap <M-9> :b9<CR>:<BS>
-  inoremap <M-0> :b10<CR>:<BS>
-else
-  if has('win32')
-    noremap ± :b1<CR>:<BS>
-    noremap ² :b2<CR>:<BS>
-    noremap ³ :b3<CR>:<BS>
-    noremap Ž :b4<CR>:<BS>
-    noremap µ :b5<CR>:<BS>
-    noremap ¶ :b6<CR>:<BS>
-    noremap · :b7<CR>:<BS>
-    noremap ž :b8<CR>:<BS>
-    inoremap ± :b1<CR>:<BS>
-    inoremap ² :b2<CR>:<BS>
-    inoremap ³ :b3<CR>:<BS>
-    inoremap Ž :b4<CR>:<BS>
-    inoremap µ :b5<CR>:<BS>
-    inoremap ¶ :b6<CR>:<BS>
-    inoremap · :b7<CR>:<BS>
-    inoremap ž :b8<CR>:<BS>
-  else
-    noremap 1 :b1<CR>:<BS>
-    noremap 2 :b2<CR>:<BS>
-    noremap 3 :b3<CR>:<BS>
-    noremap 4 :b4<CR>:<BS>
-    noremap 5 :b5<CR>:<BS>
-    noremap 6 :b6<CR>:<BS>
-    noremap 7 :b7<CR>:<BS>
-    noremap 8 :b8<CR>:<BS>
-    noremap 9 :b9<CR>:<BS>
-    noremap 0 :b10<CR>:<BS>
-    inoremap 1 :b1<CR>:<BS>
-    inoremap 2 :b2<CR>:<BS>
-    inoremap 3 :b3<CR>:<BS>
-    inoremap 4 :b4<CR>:<BS>
-    inoremap 5 :b5<CR>:<BS>
-    inoremap 6 :b6<CR>:<BS>
-    inoremap 7 :b7<CR>:<BS>
-    inoremap 8 :b8<CR>:<BS>
-    inoremap 9 :b9<CR>:<BS>
-    inoremap 0 :b10<CR>:<BS>
-  endif
-endif
+" if has('gui_running')
+"   noremap <M-1> :b1<CR>:<BS>
+"   noremap <M-2> :b2<CR>:<BS>
+"   noremap <M-3> :b3<CR>:<BS>
+"   noremap <M-4> :b4<CR>:<BS>
+"   noremap <M-5> :b5<CR>:<BS>
+"   noremap <M-6> :b6<CR>:<BS>
+"   noremap <M-7> :b7<CR>:<BS>
+"   noremap <M-8> :b8<CR>:<BS>
+"   noremap <M-9> :b9<CR>:<BS>
+"   noremap <M-0> :b10<CR>:<BS>
+"   inoremap <M-1> :b1<CR>:<BS>
+"   inoremap <M-2> :b2<CR>:<BS>
+"   inoremap <M-3> :b3<CR>:<BS>
+"   inoremap <M-4> :b4<CR>:<BS>
+"   inoremap <M-5> :b5<CR>:<BS>
+"   inoremap <M-6> :b6<CR>:<BS>
+"   inoremap <M-7> :b7<CR>:<BS>
+"   inoremap <M-8> :b8<CR>:<BS>
+"   inoremap <M-9> :b9<CR>:<BS>
+"   inoremap <M-0> :b10<CR>:<BS>
+" else
+"   if has('win32')
+"     noremap ± :b1<CR>:<BS>
+"     noremap ² :b2<CR>:<BS>
+"     noremap ³ :b3<CR>:<BS>
+"     noremap Ž :b4<CR>:<BS>
+"     noremap µ :b5<CR>:<BS>
+"     noremap ¶ :b6<CR>:<BS>
+"     noremap · :b7<CR>:<BS>
+"     noremap ž :b8<CR>:<BS>
+"     inoremap ± :b1<CR>:<BS>
+"     inoremap ² :b2<CR>:<BS>
+"     inoremap ³ :b3<CR>:<BS>
+"     inoremap Ž :b4<CR>:<BS>
+"     inoremap µ :b5<CR>:<BS>
+"     inoremap ¶ :b6<CR>:<BS>
+"     inoremap · :b7<CR>:<BS>
+"     inoremap ž :b8<CR>:<BS>
+"   else
+"     noremap 1 :b1<CR>:<BS>
+"     noremap 2 :b2<CR>:<BS>
+"     noremap 3 :b3<CR>:<BS>
+"     noremap 4 :b4<CR>:<BS>
+"     noremap 5 :b5<CR>:<BS>
+"     noremap 6 :b6<CR>:<BS>
+"     noremap 7 :b7<CR>:<BS>
+"     noremap 8 :b8<CR>:<BS>
+"     noremap 9 :b9<CR>:<BS>
+"     noremap 0 :b10<CR>:<BS>
+"     inoremap 1 :b1<CR>:<BS>
+"     inoremap 2 :b2<CR>:<BS>
+"     inoremap 3 :b3<CR>:<BS>
+"     inoremap 4 :b4<CR>:<BS>
+"     inoremap 5 :b5<CR>:<BS>
+"     inoremap 6 :b6<CR>:<BS>
+"     inoremap 7 :b7<CR>:<BS>
+"     inoremap 8 :b8<CR>:<BS>
+"     inoremap 9 :b9<CR>:<BS>
+"     inoremap 0 :b10<CR>:<BS>
+"   endif
+" endif
 " }}}
 " }}}
 
@@ -452,15 +452,17 @@ else
   set nomodeline
 endif
 
+" Fast terminal, bump sidescroll to 1
+set sidescroll=1
+
 " Show 2 rows/cols of context when scrolling
 set scrolloff=2
 set sidescrolloff=2
 
-" The prompt to save changes when switching buffers
-" is incredibly annoying when doing development.
-" An alternative is to set autowrite, but one could
-" easily lose old changes that way.  I like to write
-" when I'm explicitly ready to do so.
+" The prompt to save changes when switching buffers is incredibly annoying
+" when doing development.  An alternative is to set autowrite, but one could
+" easily lose old changes that way.  I like to write when I'm explicitly ready
+" to do so.
 set hidden
 " set path=.
 
@@ -530,7 +532,7 @@ set display+=uhex
 "           contains the specified buffer (if there is one).
 " split     If included, split the current window before loading a buffer
 set switchbuf+=useopen
-set switchbuf+=split
+" set switchbuf+=split
 
 " Longer commandline history
 if has('cmdline_hist')
@@ -602,9 +604,16 @@ try
 catch
 endtry
 
-" Default to omni completion using the syntax highlighting files
 if v:version >= 700
+  " Default to omni completion using the syntax highlighting files
   set ofu=syntaxcomplete#Complete
+
+  " Disable spell checking when in console, and enable it when in gui
+  if has('gui_running')
+    set spell spelllang=en_us
+  else
+    set nospell
+  endif
 endif
 
 " Status Line {{{
@@ -665,7 +674,7 @@ endif
 set list
 
 if (&termencoding == 'utf-8') || has('gui_running')
-  set listchars=tab:»·,extends:…
+  set listchars=tab:»·,extends:…,precedes:…
 
   if v:version >= 700
     set listchars+=nbsp:‗
@@ -857,6 +866,10 @@ let g:Tlist_File_Fold_Auto_Close = 1
 let g:Tlist_Use_Right_Window = 1
 let g:Tlist_Sort_Type = 'name'
 let g:Tlist_Inc_Winwidth = 0
+
+let g:miniBufExplModSelTarget = 1
+let g:miniBufExplMinSize = 1
+let g:miniBufExplMaxSize = 1
 
 let s:using_winmanager = 0
 if exists('s:using_winmanager') &&
