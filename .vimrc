@@ -62,6 +62,22 @@ function! SetNumberingState(s)
   let s:numdisabled=l:newstate
   call s:PropogateNumberState()
 endfunction
+
+fun! s:Min(a, b)
+  if a:a <= a:b
+     return a:a
+  else
+     return a:b
+  endif
+endfun
+
+fun! s:Max(a, b)
+  if a:a >= a:b
+     return a:a
+  else
+     return a:b
+  endif
+endfun
 " }}}
 
 " Keymaps {{{
@@ -103,6 +119,22 @@ endif
 nmap <Leader>cwc :cclose<CR>
 nmap <Leader>cwo :botright copen 5<CR><C-w>p
 nmap <Leader>ccn :cnext<CR>
+
+" scrollwheel = intelligent # of lines to scroll based on window height
+au WinEnter,VimEnter * exec "map <buffer> <MouseDown> " . s:Max(winheight("%")/8, 1) . ""
+au WinEnter,VimEnter * exec "map <buffer> <MouseUp> " . s:Max(winheight("%")/8, 1) . ""
+
+" meta (alt)+scrollwheel = scroll one line at a time
+map <M-MouseDown> 
+map <M-MouseUp> 
+
+" ctrl+scrollwheel = scroll half a page
+map <C-MouseDown> 
+map <C-MouseUp> 
+
+" shift+scrollwheel = unmapped
+"unmap <S-MouseDown>
+"unmap <S-MouseUp>
 
 " Execute an appropriate interpeter for the current file
 " If there is no #! line at the top of the file, it will
@@ -270,17 +302,19 @@ set sidescrolloff=2
 set nohidden
 "set path=.
 
-" Nice window title
+" Allow setting window title for screen
 if &term == "screen"
-  set notitle
-else
-  set title
+  set t_ts=k
+  set t_fs=\
 endif
+
+" Nice window title
+set title
 if has('title') && (has('gui_running') || &title)
-    set titlestring=
-    set titlestring+=%f                    " file name
-    set titlestring+=%(\ %h%m%r%w%)        " flags
-    set titlestring+=\ -\ %{v:progname}    " program name
+   set titlestring=
+   set titlestring+=%f                    " file name
+   set titlestring+=%(\ %h%m%r%w%)        " flags
+   set titlestring+=\ -\ %{v:progname}    " program name
 endif
 set titleold=""
 
@@ -417,6 +451,11 @@ if has("autocmd") && v:version >= 700
            setlocal statusline+=\[Buffers\]
            setlocal statusline+=%=%2*\ %<%P
        endif
+       if "__Tag_List__" == bufname("%")
+           setlocal statusline=%2*%-3.3n%0*
+           setlocal statusline+=\[Tags\]
+           setlocal statusline+=%=%2*\ %<%P
+       endif
    endfun
 
    au BufWinEnter *
@@ -469,7 +508,7 @@ endif
 
 if colorterm == "gnome-terminal"
   set t_Co=16
-elseif colorterm == "rxvt-xpm"
+elseif (colorterm == "rxvt-xpm") && (&term == "rxvt")
   " set colors correctly for mrxvt
   set t_Co=256
 elseif colorterm == "putty"
@@ -637,10 +676,16 @@ let g:HL_HiCurLine = "Function"
 " Explorer/Tags/Windows options {{{
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_Menu = 1
-let g:Tlist_Enable_Fold_Column=0
-let g:Tlist_WinWIdth=28
-let g:Tlist_Compact_Format=1
+let g:Tlist_Enable_Fold_Column = 0
+let g:Tlist_WinWidth = 28
+let g:Tlist_Compact_Format = 1
+let g:Tlist_File_Fold_Auto_Close = 1
+let g:Tlist_Use_Right_Window = 1
+let g:Tlist_Sort_Type = "name"
 
+if colorterm == "gnome-terminal"
+  let g:Tlist_Inc_Winwidth = 0
+endif
 
 let s:using_winmanager = 0
 if exists('s:using_winmanager') &&
