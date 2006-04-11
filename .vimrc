@@ -658,14 +658,8 @@ if &t_Co > 2 || has("gui_running")
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
   " Highlight vim modelines
-  hi def link VimModelineLine comment
   hi def link VimModeline     special
-
-  if has("syntax") && has("autocmd")
-    autocmd Syntax *
-          \ syn match VimModelineLine /^.\{-1,}vim:[^:]\{-1,}:.*/ contains=VimModeline |
-          \ syn match VimModeline contained /vim:[^:]\{-1,}:/
-  endif
+  au Syntax * exe 'match VimModeline /' .  substitute(escape(&commentstring, '*$./\'), '%s', '.*\\zsvim:\\s*set[^:]\\{-1,}:\\ze.*', '') . '/'
 
   if has("autocmd")
     " Email signatures generally start with '-- '.  Adjust the
