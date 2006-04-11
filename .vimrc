@@ -654,7 +654,7 @@ if &t_Co > 2 || has("gui_running")
   "  bar	
   "And spaces before tabs:
   "  foo 	bar
-  hi RedundantWhitespace ctermbg=red guibg=red
+  hi def link RedundantWhitespace Error
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
   " Highlight vim modelines
