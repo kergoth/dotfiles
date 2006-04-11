@@ -33,6 +33,7 @@
 "   * - search for teh current word in the document
 "   % - jump between begin/end of blocks
 "   ggqgG - reformat entire file
+"   gwap - reformat paragraph
 "   gg=G - reindent entire file
 " }}}
 
@@ -642,8 +643,11 @@ if &t_Co > 2 || has("gui_running")
     colors desert256
   endif
 
-  "Colors both trailing    
-  "whitespace, and spaces  	before tabs
+  "Colors red both trailing whitespace:
+  "  foo 
+  "  bar	
+  "And spaces before tabs:
+  "  foo 	bar
   hi RedundantWhitespace ctermbg=red guibg=red
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
@@ -657,11 +661,15 @@ if &t_Co > 2 || has("gui_running")
           \ syn match VimModeline contained /vim:[^:]\{-1,}:/
   endif
 
-  " Email signatures generally start with '-- '.  Adjust the
-  " RedundantWhitespace match for the 'mail' filetype to not
-  " highlight that particular trailing space in red.
   if has("autocmd")
+    " Email signatures generally start with '-- '.  Adjust the
+    " RedundantWhitespace match for the 'mail' filetype to not
+    " highlight that particular trailing space in red.
     au FileType mail match RedundantWhitespace /\(^--\)\@<!\s\+$/
+    " Diff context begins with a space, so blank lines of context
+    " are being inadvertantly flagged as redundant whitespace.
+    " Adjust the match to exclude the first column.
+    au FileType diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
   endif
 
   " When using gnome-terminal, vim's color test script shows
