@@ -13,8 +13,8 @@
 
 set background=dark
 if version > 580
-    ' no guarantees for version 5.8 and below, but this makes it stop
-    ' complaining
+    " no guarantees for version 5.8 and below, but this makes it stop
+    " complaining
     if exists('syntax_on')
         syntax reset
     endif
@@ -175,18 +175,18 @@ endfun
 
 " returns the palette index to approximate the given R/G/B color levels
 fun <SID>color(r, g, b)
-    ' get the closest grey
+    " get the closest grey
     let l:gx = <SID>grey_number(a:r)
     let l:gy = <SID>grey_number(a:g)
     let l:gz = <SID>grey_number(a:b)
 
-    ' get the closest color
+    " get the closest color
     let l:x = <SID>rgb_number(a:r)
     let l:y = <SID>rgb_number(a:g)
     let l:z = <SID>rgb_number(a:b)
 
     if l:gx == l:gy && l:gy == l:gz
-        ' there are two possibilities
+        " there are two possibilities
         let l:dgr = <SID>grey_level(l:gx) - a:r
         let l:dgg = <SID>grey_level(l:gy) - a:g
         let l:dgb = <SID>grey_level(l:gz) - a:b
@@ -196,14 +196,14 @@ fun <SID>color(r, g, b)
         let l:db = <SID>rgb_level(l:gz) - a:b
         let l:drgb = (l:dr * l:dr) + (l:dg * l:dg) + (l:db * l:db)
         if l:dgrey < l:drgb
-            ' use the grey
+            " use the grey
             return <SID>grey_color(l:gx)
         else
-            ' use the color
+            " use the color
             return <SID>rgb_color(l:x, l:y, l:z)
         endif
     else
-        ' only one possibility
+        " only one possibility
         return <SID>rgb_color(l:x, l:y, l:z)
     endif
 endfun
