@@ -478,6 +478,13 @@ set shortmess=atItToO
 set display+=lastline
 set display+=uhex
 
+" Buffer switching behaviors
+" useopen   If included, jump to the first open window that
+"           contains the specified buffer (if there is one).
+" split     If included, split the current window before loading a buffer
+set switchbuf+=useopen
+set switchbuf+=split
+
 " Longer commandline history
 if has("cmdline_hist")
   set history=500
