@@ -166,17 +166,7 @@ if [ "$PS1" ]; then
 	setup_interactive
 fi
 
-diff_setup () {
-	__diffopts="-urN"
-	__quiltdiffopts="-d -p"
-	alias diff="diff $__diffopts $__quiltdiffopts"
-	QUILT_DIFF_OPTS="$__quiltdiffopts"
-	export QUILT_DIFF_OPTS
-	unset __diffopts __quiltdiffopts
-}
-
-diff_setup
-
+alias diff='diff -urNdp'
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
 alias vi=vim
