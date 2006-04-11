@@ -205,3 +205,4 @@ hi link DiffDelete	    DiffRemoved
 hi link DiffText	    DiffLine
 hi link FoldColumn	    Folded
 
+" vim: set fenc=utf-8 ts=8 sts=4 sw=4 noet nolist:
