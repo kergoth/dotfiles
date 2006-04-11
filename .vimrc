@@ -347,7 +347,7 @@ set nohidden
 "set path=.
 
 " Allow setting window title for screen
-if &term == "screen"
+if &term =~ "^screen"
   set t_ts=k
   set t_fs=\
 endif
