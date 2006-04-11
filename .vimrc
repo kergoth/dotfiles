@@ -1,4 +1,4 @@
-" vim: set et sw=2 sts=2 fdm=marker fdl=0 fdc=3:
+" vim: set et sw=2 sts=2 fdm=marker fdl=0:
 
 " Command quick reference {{{
 " Align/AlignMaps:
@@ -52,7 +52,8 @@ map ,dsr :s/\s\s\+/ /g<C-M>      " Delete Space Runs
 map ,dtw :%s/\s\+$//g<C-M>       " Delete Trailing Whitespace
 
 nmap <leader>sh :runtime vimsh/vimsh.vim<C-M>
-nmap <leader>a :A<CR>   " Switch between .c/cpp and .h (a.vim)
+nmap <leader>a :A<CR>            " Switch between .c/cpp and .h (a.vim)
+nmap <leader>n :set number!<CR>  " Toggle Line Numbering
 
 if has("win32")
   nmap ,s :source $HOME/_vimrc<CR>
@@ -145,15 +146,12 @@ endif
 "   line works correctly, obeying sts, however <BS> obeys sw.  The docs
 "   claim that smarttab only affects <tab> and <BS> at beginning of line.
 "
-"   In my opinion this is not just an undocumented behavior, but is in
-"   fact broken, since shiftwidth, by design, contains a value which
-"   affects _indentation_, not _alignment_.  In addition, the behavior of
-"   <tab> should never mismatch the behavior of <BS>, unless using et
-"   without setting sts.
-"
 "   Seen with:
 "     Vim version 6.2 on a RedHat Enterprise Linux release 3 machine.
 "     Vim version 6.3 on an Ubuntu Breezy machine.
+"     Vim version 7.0188 on a Debian Unstable machine.
+"
+" NOTE: This bug was fixed in VIM 7 snapshot as of 02/02/06 or so.
 "
 " For now, keep smarttab disabled to avoid confusion.
 set nosmarttab
@@ -194,7 +192,7 @@ set nohlsearch
 "set path=.
 set suffixes+=.lo,.o,.moc,.la,.closure
 set title
-"set titleold=""
+set titleold=""
 set ttyfast
 set ttybuiltin
 set novisualbell
@@ -219,6 +217,20 @@ set noautowrite
 set autoindent
 set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
 set cinkeys=0{,0},0),:,0#,!^F,o,O,e
+
+" Usage of the mouse
+set mouse=a
+if has("unix") &&
+   \ has("mouse") &&
+   \ ! has("gui_running")
+  set ttymouse=xterm2
+endif
+
+" Line numbering
+if v:version >= 700
+  set numberwidth=2
+  set number
+endif
 
 if has("unix")
    set fileformats=unix,dos,mac  " Allow editing of all types of files
