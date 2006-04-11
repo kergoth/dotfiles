@@ -150,7 +150,7 @@ fun! AsNeeded(type,cmdmap)
    " --------------------------------
    " search for requested command/map {{{2
    " --------------------------------
-   let vimfiles=substitute(globpath(&rtp,"AsNeeded/*.vim"),'\n',',',"ge")
+   let vimfiles=substitute(globpath(&rtp."/","AsNeeded/*.vim"),'\n',',',"ge")
    while vimfiles != ""
     let vimfile = substitute(vimfiles,',.*$','','e')
     let vimfiles= (vimfiles =~ ",")? substitute(vimfiles,'^[^,]*,\(.*\)$','\1','e') : ""

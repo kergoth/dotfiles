@@ -44,7 +44,6 @@ map ,ddr :s/\.\+\s*/. /g<C-M>    " Delete Dot Runs
 map ,dsr :s/\s\s\+/ /g<C-M>      " Delete Space Runs
 map ,dtw :%s/\s\+$//g<C-M>       " Delete Trailing Whitespace
 nmap <leader>sh :runtime vimsh/vimsh.vim<C-M>
-nnoremap <silent> <F8> :Tlist<CR>
 
 if has("win32")
   nmap ,s :source $HOME/_vimrc<CR>
@@ -53,10 +52,6 @@ else
   nmap ,s :source $HOME/.vimrc<CR>
   nmap <silent> ,v :e $HOME/.vimrc<CR>
 endif
-
-map <c-w><c-f> :FirstExplorerWindow<CR>
-map <c-w><c-b> :BottomExplorerWindow<CR>
-map <c-w><c-t> :WMToggle<CR>
 " }}}
 
 " Fonts {{{
@@ -148,6 +143,7 @@ set noincsearch
 set noautowrite
 set autoindent
 set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
+set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
 if has("unix")
    set fileformats=unix,dos,mac  " Allow editing of all types of files
@@ -163,13 +159,14 @@ set statusline+=%f\                          " filename
 set statusline+=%h%m%r%w                     " status flags
 
 function StatusLine_Tlist_Info()
-  if exists('g:loaded_taglist')
+  if exists('g:loaded_taglist') &&
+    \ g:loaded_taglist == 'available'
     return Tlist_Get_Tagname_By_Line()
   else
     return ''
   endif
 endfunction
-let Tlist_Process_File_Always = 1
+" let Tlist_Process_File_Always = 1
 set statusline+=%((%{StatusLine_Tlist_Info()})\ %) " tag name
 
 set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
@@ -271,6 +268,10 @@ if has("autocmd")
   au FileType vim set keywordprg=:help
   au FileType python set keywordprg=pydoc
   au FileType perl set keywordprg=perldoc\ -f
+
+  " Disable moving to beginning of line when hitting ':',
+  " as it behaves oddly when calling static methods in c++.
+  au FileType cpp set cinkeys=0{,0},0),0#,!^F,o,O,e
 endif " has("autocmd")
 " }}}
 
@@ -284,13 +285,73 @@ let NERD_space_delim_filetype_regexp = ".*"
 let g:doxygen_enhanced_color = 1
 let html_use_css = 1
 let use_xhtml = 1
-let Tlist_Exit_OnlyWindow = 1
-let Tlist_Show_Menu = 1
-let Tlist_Close_On_Select = 1
 let perl_extended_vars = 1
 let HL_HiCurLine = "Function"
 " let perl_fold = 1
 " let g:sh_fold_enabled= 1
 " let sh_minlines = 500
 " let g:xml_syntax_folding = 1
+" }}}
+
+" Explorer/Tags/Windows options
+let g:Tlist_Exit_OnlyWindow = 1
+let g:Tlist_Show_Menu = 1
+
+if has("gui_running")
+  noremap <M-1> :b1<CR>:<BS>
+  noremap <M-2> :b2<CR>:<BS>
+  noremap <M-3> :b3<CR>:<BS>
+  noremap <M-4> :b4<CR>:<BS>
+  noremap <M-5> :b5<CR>:<BS>
+  noremap <M-6> :b6<CR>:<BS>
+  noremap <M-7> :b7<CR>:<BS>
+  noremap <M-8> :b8<CR>:<BS>
+  noremap <M-9> :b9<CR>:<BS>
+  noremap <M-0> :b10<CR>:<BS>
+else
+  if has("win32")
+    noremap <unique> <script> ± :b1<CR>:<BS>
+    noremap <unique> <script> ² :b2<CR>:<BS>
+    noremap <unique> <script> ³ :b3<CR>:<BS>
+    noremap <unique> <script> Ž :b4<CR>:<BS>
+    noremap <unique> <script> µ :b5<CR>:<BS>
+    noremap <unique> <script> ¶ :b6<CR>:<BS>
+    noremap <unique> <script> · :b7<CR>:<BS>
+    noremap <unique> <script> ž :b8<CR>:<BS>
+  else
+    noremap <unique> 1 :b1<CR>:<BS>
+    noremap 2 :b2<CR>:<BS>
+    noremap 3 :b3<CR>:<BS>
+    noremap 4 :b4<CR>:<BS>
+    noremap 5 :b5<CR>:<BS>
+    noremap 6 :b6<CR>:<BS>
+    noremap 7 :b7<CR>:<BS>
+    noremap 8 :b8<CR>:<BS>
+    noremap 9 :b9<CR>:<BS>
+    noremap 0 :b10<CR>:<BS>
+  endif
+endif
+
+let s:using_winmanager = 0
+if exists('s:using_winmanager') &&
+      \ s:using_winmanager == 1
+  let g:Tlist_Close_On_Select = 0
+  " let g:winManagerWindowLayout = "FileExplorer,TagsExplorer|BufExplorer,TodoList"
+  let g:winManagerWindowLayout = "FileExplorer,TagList|BufExplorer"
+  let g:defaultExplorer = 0
+
+  " Disable use of tabbar / minibufexpl
+  " let Tb_loaded = 1
+  let loaded_minibufexplorer = 1
+
+  map <c-w><c-f> :FirstExplorerWindow<CR>
+  map <c-w><c-b> :BottomExplorerWindow<CR>
+  map <c-w><c-t> :WMToggle<CR>
+else
+  let g:Tlist_Close_On_Select = 1
+  let g:loaded_winmanager = 1
+  let g:loaded_winfileexplorer = 1
+  let g:loaded_bufexplorer = 1
+  nnoremap <silent> <F8> :Tlist<CR>
+endif
 " }}}

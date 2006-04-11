@@ -1,4 +1,4 @@
-﻿" Document {{{
+" Document {{{
 " Copyright: Copyright (C) 2005 Bruce Who
 "            Permission is hereby granted to use and distribute this code,
 "            with or without modifications, provided that this copyright

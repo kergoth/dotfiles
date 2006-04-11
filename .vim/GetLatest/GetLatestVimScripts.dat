@@ -23,3 +23,6 @@ ScriptID SourceID Filename
 1243 4055 colors/desert256.vim
 1444 4968 colors.vim
 555 4795 HiCurLine.vim
+1311 4504 vimplate.vim
+95 754 winmanager.vim
+159 3640 :AutoInstall: minibufexpl.vim
