@@ -1058,6 +1058,7 @@ function! <SID>BuildBufferList(delBufNum, updateBufList)
 
   let l:NBuffers = bufnr('$')     " Get the number of the last buffer.
   let l:i = 0                     " Set the buffer index to zero.
+  let l:j = 0
 
   let l:fileNames = ''
   let l:maxTabWidth = 0
@@ -1065,7 +1066,7 @@ function! <SID>BuildBufferList(delBufNum, updateBufList)
   " Loop through every buffer less than the total number of buffers.
   while(l:i <= l:NBuffers)
     let l:i = l:i + 1
-   
+
     " If we have a delBufNum and it is the current
     " buffer then ignore the current buffer. 
     " Otherwise, continue.
@@ -1080,11 +1081,12 @@ function! <SID>BuildBufferList(delBufNum, updateBufList)
           " Only show modifiable buffers (The idea is that we don't 
           " want to show Explorers)
           if (getbufvar(l:i, '&modifiable') == 1 && BufName != '-MiniBufExplorer-')
-            
+
             " Get filename & Remove []'s & ()'s
             let l:shortBufName = fnamemodify(l:BufName, ":t")                  
             let l:shortBufName = substitute(l:shortBufName, '[][()]', '', 'g') 
             let l:tab = '['.l:i.':'.l:shortBufName.']'
+            let l:j = l:j + 1
 
             " If the buffer is open in a window mark it
             if bufwinnr(l:i) != -1
@@ -1099,12 +1101,20 @@ function! <SID>BuildBufferList(delBufNum, updateBufList)
             let l:maxTabWidth = <SID>Max(strlen(l:tab), l:maxTabWidth)
             let l:fileNames = l:fileNames.l:tab
 
+            if l:j <= 10
+              if has('gui_running')
+                exe 'noremap <M-' . (l:j % 10) . '> :b' . l:i . '<CR>:<BS>'
+              else
+                exe 'noremap ' . (l:j % 10) . ' :b' . l:i . '<CR>:<BS>'
+              endif
+            endif
+
             " If horizontal and tab wrap is turned on we need to add spaces
             if g:miniBufExplVSplit == 0
               if g:miniBufExplTabWrap != 0
                 let l:fileNames = l:fileNames.' '
               endif
-            " If not horizontal we need a newline
+              " If not horizontal we need a newline
             else
               let l:fileNames = l:fileNames . "\n"
             endif
