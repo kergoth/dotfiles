@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v0.7f
+" baycomb v0.8h
 " http://www.vim.org/scripts/script.php?script_id=1454
 "
 " Maintainer:    Shawn Axsom <axs221@gmail.com>
@@ -7,7 +7,6 @@
 "   - Thanks to Desert and OceanDeep for their color scheme
 "     file layouts
 
-set ff=unix
 set background=dark
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
