@@ -191,8 +191,14 @@ set nohidden
 set nohlsearch
 "set path=.
 set suffixes+=.lo,.o,.moc,.la,.closure
-set title
+
+if &term == "screen"
+  set notitle
+else
+  set title
+endif
 set titleold=""
+
 set ttyfast
 set ttybuiltin
 set novisualbell
