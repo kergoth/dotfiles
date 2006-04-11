@@ -27,13 +27,5 @@ BK_USER="kergoth"
 [ -z "${NM}" ] && NM=nm
 LUA_INIT="@${HOME}/.lua/init.lua"
 
-if test x"$TERM" = "xrxvt-unicode"; then
-	c="`echo $TERM|sed -e's,\(.\).*,\1,'`"
-	if ! test -e /usr/share/terminfo/$c/$TERM &&
-	   ! test -e $HOME/.terminfo/$c/$TERM; then
-		TERM=rxvt
-	fi
-fi
-
 export PATH MANPATH PAGER EDITOR
-export BK_USER NM LUA_INIT TERM
+export BK_USER NM LUA_INIT

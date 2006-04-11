@@ -231,3 +231,13 @@ alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
 alias symbolsizes="${NM} -S -t d --size-sort"
 alias ct='cleartool'
 alias cpe='clearprojexp'
+
+if test x"$TERM" = "xrxvt-unicode"; then
+	c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
+	if ! test -e /usr/share/terminfo/$c/$TERM &&
+	   ! test -e $HOME/.terminfo/$c/$TERM; then
+		TERM=rxvt
+	fi
+fi
+
+export TERM
