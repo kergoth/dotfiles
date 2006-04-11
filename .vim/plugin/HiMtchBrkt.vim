@@ -31,6 +31,9 @@ if v:version >= 700 && exists("##CursorMoved")
  let g:loaded_matchparen= 1
 endif
 
+" Default highlight group setup
+ hi def link MatchParen Search
+
 " ---------------------------------------------------------------------
 " Public Interface: {{{1
 if !hasmapto('<Plug>HMBStart')
@@ -87,7 +90,7 @@ fun! <SID>HMBStart(mode)
    " assuming snapshot#195 or later
    augroup HMBEvent
    	au!
-    au CursorMoved * silent call s:HiMatchBracket()
+    au CursorMoved,CursorMovedI * silent call s:HiMatchBracket()
    augroup END
   else
    " Save Maps (if any)
