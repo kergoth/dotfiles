@@ -492,8 +492,8 @@ let &termencoding = &encoding
 if has("multi_byte")
   set encoding=utf-8
   set fileencodings=utf-8,iso-8859-15
-  "  set fileencodings=ucs-bom,utf-8,iso-8859-15
-  "  set bomb
+  " set fileencodings=ucs-bom,utf-8,iso-8859-15
+  " set bomb
 endif
 " }}}
 
