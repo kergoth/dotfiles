@@ -55,6 +55,7 @@ behave xterm
 " Functions {{{
 let colorterm = $COLORTERM
 
+" Used to set sane default line numbering
 function! <SID>PropogateNumberState()
   windo
         \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
@@ -90,11 +91,21 @@ function! <SID>Max(a, b)
     return a:b
   endif
 endfunction
+
+" Display the current tag if available, or nothing
+" Used by the statusline
+function! <SID>StatusLine_Tlist_Info()
+  if exists('g:loaded_taglist') &&
+        \ g:loaded_taglist == 'available'
+    return Tlist_Get_Tagname_By_Line()
+  else
+    return ''
+  endif
+endfunction
 " }}}
 
 " Keymaps {{{
 map ,is :!ispell %<C-M>          " ISpell !
-
 map ,del :g/^\s*$/d<C-M>         " Delete Empty Lines
 map ,ddql :%s/^>\s*>.*//g<C-M>   " Delete Double Quoted Lines
 map ,ddr :s/\.\+\s*/. /g<C-M>    " Delete Dot Runs
@@ -110,6 +121,9 @@ noremap <Leader>gp gqap
 
 " Reformat everything
 noremap <Leader>gq gggqG
+
+" Reindent everything
+noremap <Leader>= gg=G
 
 " Select everything
 noremap <Leader>gg ggVG
@@ -133,7 +147,7 @@ nmap <Leader>cwo :botright copen 5<CR><C-w>p
 nmap <Leader>ccn :cnext<CR>
 
 " show the highlighting group(s) for the text under the cursor
-nmap <Leader>i :echo "hi<" .
+nmap <Leader>hi :echo "hi<" .
       \ synIDattr(synID(line("."),col("."),1),"name") . '> trans<' .
       \ synIDattr(synID(line("."),col("."),0),"name") ."> lo<" .
       \ synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .
@@ -187,6 +201,7 @@ endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
 
 " Buffer Switching {{{
+" Map meta+numberkeys to the buffers
 if has("gui_running")
   noremap <M-1> :b1<CR>:<BS>
   noremap <M-2> :b2<CR>:<BS>
@@ -263,7 +278,7 @@ endif
 " }}}
 
 " Indentation {{{
-" BUG/Undocumented, Confusing Behavior:
+" BUG:
 "   When using smarttab with sts != 0, <tab> when not at beginning of
 "   line works correctly, obeying sts, however <BS> obeys sw.  The docs
 "   claim that smarttab only affects <tab> and <BS> at beginning of line.
@@ -292,6 +307,7 @@ set softtabstop=0   "Number of spaces that the tab key counts for when editing
 set autoindent
 set smartindent
 
+" Set the C indenting the way I like it
 set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
 set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
@@ -445,16 +461,8 @@ set statusline+=%-3.3n\                      " buffer number
 set statusline+=%f\                          " filename
 set statusline+=%h%m%r%w                     " status flags
 
-function! StatusLine_Tlist_Info()
-  if exists('g:loaded_taglist') &&
-        \ g:loaded_taglist == 'available'
-    return Tlist_Get_Tagname_By_Line()
-  else
-    return ''
-  endif
-endfunction
 " let Tlist_Process_File_Always = 1
-set statusline+=%((%{StatusLine_Tlist_Info()})\ %) " tag name
+set statusline+=%((%{<SID>StatusLine_Tlist_Info()})\ %) " tag name
 
 " set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
 set statusline+=%(\[%{&ft}]%)               " file type
@@ -495,6 +503,8 @@ endif
 " }}}
 
 " Encoding {{{
+" Termencoding will reflect the current system locale, but
+" internally, and for files, we'll be using UTF-8.
 let &termencoding = &encoding
 if has("multi_byte")
   set encoding=utf-8
@@ -545,20 +555,15 @@ endif
 if colorterm == "gnome-terminal"
   set t_Co=16
 elseif (colorterm == "rxvt-xpm") && (&term == "rxvt")
-  "set colors correctly for mrxvt
+  "try to set colors correctly for mrxvt
   set t_Co=256
 elseif colorterm == "putty"
   set t_Co=256
 endif
 
 if &t_Co > 2 || has("gui_running")
-  "colors darkblack2
-  "colors inkpot
-  "colors darkblue3
-  "let xterm16_colormap = 'soft'
-  "let xterm16_brightness = '123'
-  "colo xterm16
-
+  " Sane color scheme selection.  Baycomb looks like crap
+  " with less than 88 colors.
   if &t_Co >= 88 || has("gui_running")
     colors baycomb
   else
