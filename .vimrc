@@ -266,11 +266,12 @@ endfunction
 " let Tlist_Process_File_Always = 1
 set statusline+=%((%{StatusLine_Tlist_Info()})\ %) " tag name
 
-set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
-set statusline+=%=                           " right align remainder
-" set statusline+=0x%-8B                       " character value
-set statusline+=%-14(%l,%c%V%)               " line, character
-set statusline+=%<%P                         " file position
+" set statusline+=\[%{strlen(&ft)?&ft:'none'}] " file type
+set statusline+=%(\[%{&ft}]%)               " file type
+set statusline+=%=                          " right align remainder
+" set statusline+=0x%-8B                    " character value
+set statusline+=%-14(%l,%c%V%)              " line, character
+set statusline+=%<%P                        " file position
 " }}}
 
 " Encoding {{{
