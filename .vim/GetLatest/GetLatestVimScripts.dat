@@ -26,8 +26,8 @@ ScriptID SourceID Filename
 95 754 winmanager.vim
 159 3640 :AutoInstall: minibufexpl.vim
 1385 4693 syntax/interfaces.vim
-1454 5370 colors/baycomb.vim
-1075 5004 netrw.vim
+1454 5380 colors/baycomb.vim
+1075 5395 netrw.vim
 795 4342 colors/xterm16.vim
 1218 5167 NERD_comments.vim
 1464 5310 colors/slate.vim
