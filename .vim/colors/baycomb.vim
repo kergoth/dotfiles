@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v0.7e
+" baycomb v0.7f
 " http://www.vim.org/scripts/script.php?script_id=1454
 "
 " Maintainer:    Shawn Axsom <axs221@gmail.com>
@@ -7,6 +7,7 @@
 "   - Thanks to Desert and OceanDeep for their color scheme
 "     file layouts
 
+set ff=unix
 set background=dark
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
@@ -229,19 +230,19 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     endfun
     " }}}
 
-    call <SID>X("Normal", "b8d0f0", "0e1b2e", "")
-    call <SID>X("NonText", "382920", "111a2a", "")
+    call <SID>X("Normal", "b8d0f0", "131d33", "")
+    call <SID>X("NonText", "382920", "151822", "")
 
     " syntax highlighting
     "hi Comment        guifg=#84ad88  "green
-    call <SID>X("Comment", "dbd03b", "", "")
-    call <SID>X("Title", "f5f5d0", "", "none")
+    call <SID>X("Comment", "d8ca4b", "", "")
+    call <SID>X("Title", "f5f5c0", "", "none")
     call <SID>X("Underlined", "dae5da", "", "")
 
-    call <SID>X("Statement", "ea706a", "", "none")
-    call <SID>X("Type", "40a5d5", "", "none")
-    call <SID>X("Constant", "3a6bc8", "", "")
-    call <SID>X("PreProc", "9a60a0", "", "")
+    call <SID>X("Statement", "ff756d", "", "none")
+    call <SID>X("Type", "309ace", "", "")
+    call <SID>X("Constant", "4568cd", "", "")
+    call <SID>X("PreProc", "9570b5", "", "")
     call <SID>X("Identifier", "c5604a", "", "") " or blue 4075aa
                         """e09a4b
     call <SID>X("Special", "1ab5ba", "", "")
@@ -249,14 +250,14 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Todo", "ff4500", "eeee00", "")
     call <SID>X("Error", "", "b03452", "")
     """""this section borrowed from OceanDeep/Midnight"""""
-    call <SID>X("Number", "1a65b5", "", "")
+    call <SID>X("Number", "0065bd", "", "")
     call <SID>X("Function", "f0ad80", "", "none")
-    call <SID>X("Conditional", "ca2043", "", "none")
-    call <SID>X("Repeat", "df4050", "", "none")
+    call <SID>X("Conditional", "d52a4a", "", "none")
+    call <SID>X("Repeat", "e0455a", "", "none")
     call <SID>X("Label", "90ee90", "", "none")
     call <SID>X("Operator", "fdb055", "", "none")
     call <SID>X("Keyword", "bebebe", "", "bold")
-    call <SID>X("Exception", "ee5534", "", "bold")
+    call <SID>X("Exception", "ea5460", "", "none")
     """""""""""""""""""""""""""""""""""""""""""""""""""""""
     "end syntax highlighting
 
@@ -272,8 +273,8 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("Cursor", "05293d", "cad5c0", "")
 
     call <SID>X("FoldColumn", "70459f", "83a5cd", "")
-    call <SID>X("LineNr", "80a0da", "081c30", "")
-    call <SID>X("StatusLine", "0a150d", "4080bd", "none")
+    call <SID>X("LineNr", "90a5d5", "111a2d", "")
+    call <SID>X("StatusLine", "0a150d", "4085bd", "none")
     call <SID>X("StatusLineNC", "302d34", "45609a", "none")
 
     call <SID>X("Search", "3a4520", "9a9d8d", "")
@@ -284,7 +285,7 @@ if has("gui_running") || &t_Co == 88 || &t_Co == 256
     call <SID>X("ModeMsg", "00aacc", "", "")
     call <SID>X("MoreMsg", "2e8b57", "", "")
     call <SID>X("Question", "aabbcc", "", "")
-    call <SID>X("SpecialKey", "b0dcc0", "", "")
+    call <SID>X("SpecialKey", "90dcb0", "", "")
     call <SID>X("Visual", "008fbf", "33dfef", "")
     "hi VisualNOS
     call <SID>X("WarningMsg", "fa8072", "", "")
