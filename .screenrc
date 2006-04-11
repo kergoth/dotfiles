@@ -1,25 +1,57 @@
-#caption always "%m/%d/%y %0c:%s%{- Wk}  %l  %{kW}%-Lw%{= bW}%50>%n%f* %t%{-}%+Lw%<%{- Wk}"
-#hardstatus off
-#hardstatus string %t
-#shelltitle ''
+# Easier than remembering to always run from non-X
+unsetenv DISPLAY
 
-#caption always "%Y/%m/%d %0c  %l %{kW} %-Lw%{= kG}%50>%n%f* %t%{-}%+Lw%<%{- kW}"
-#caption always "%{= dd}%Y/%m/%d %0c  %l %{+b dk} %-Lw%{= dg}%50>%n%f* %t%{-}%+Lw%<%{= dd}"
-caption always "%{= dd}%Y/%m/%d %0c  %l %{+b dd} %-Lw%{= dg}%50>%n%f* %t%{-}%+Lw%<%{= dd}"
+# Add hardstatus to xterm title bar
+termcapinfo rxvt|xterm*|aterm|Xterm|Eterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+
+# Make screen messages stand out a little more - black on bright green.
+sorendition "+b kG"
+
+# no need for a silly startup message. we know what screen is
 startup_message off
-#bell "bell in %n (%t)"
-#activity "activity in %n (%t)"
+
+# Log new screen windows in utmp.
+deflogin on
+
+# Detach on HUP
+autodetach on
+
+# If a window goes unresponsive, don't block the whole session waiting for it.
+nonblock on
+
+# nethack style error messages
+nethack on
+
 defmonitor on
+
+# nil activity message
 activity ""
-term linux
+
+# no audible bell
 vbell on
+
 sorendition 20 00
+
+# larger scrollback
 defscrollback 1000
-hardstatus off
-hardstatus string %t
-shelltitle '$ |bash'
+
+# default title, and match for the end of the shell prompt
+shelltitle '$|bash'
+
+# root shell keybinding
 bind R screen -t '# |root:' env PROMPT_COMMAND='echo -n -e "\033k\033\134"' sudo su
 
-# Set X terminal title to the hardstatus line
-termcapinfo rxvt|xterm|aterm|Xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
-#termcapinfo xterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+hardstatus off
+caption always "%{= dd}%Y/%m/%d %0c  %l %{+b dd} %-Lw%{= dg}%50>%n%f* %t%{-}%+Lw%<%{= dd}"
+hardstatus string %t
+
+# caption always "%m/%d/%y %0c:%s%{- Wk}  %l  %{kW}%-Lw%{= bW}%50>%n%f* %t%{-}%+Lw%<%{- Wk}"
+# caption always "%?%F%{-b bc}%:%{-b bb}%?%C|%D|%M %d|%H%?%F%{+u wb}%? %L=%-Lw%45>%{+b by}%n%f* %t%{-}%+Lw%-0<"
+# caption always "%{= dd}%Y/%m/%d %0c  %l %{+b dk} %-Lw%{= dg}%50>%n%f* %t%{-}%+Lw%<%{= dd}"
+# caption always "%Y/%m/%d %0c  %l %{kW} %-Lw%{= kG}%50>%n%f* %t%{-}%+Lw%<%{- kW}"
+# caption always "%{=b}%{G} Screen(s): %{b}%w %=%{kG}%C%A  %D, %M/%d/%Y "
+# caption always "%{=b}%{G} Screen(s): %{b}%w %=%{kG}%C%A  %D, %M/%d/%Y "
+# caption always "%{ck}%?%-w%?[%n*%f %t]%?%+Lw%?%=| %D %d.%m.%y - %c "
+# caption always "%{kr} %H %{ky} load[%l] %{kg} %d.%m.%Y %c %{+b}%{yb} %=%?%-w%?[%n%f %t]%?%+w%? "
+# caption always  "%{ck}%?%-w%?[%n*%f %t]%?%+Lw%?"
+# caption always  "%{+b ck} %?%-w%?%{-b}%n%f %t%{+b} %?%+w%? %= %l   %D %d/%m/%Y   %0c "
