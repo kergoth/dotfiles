@@ -2,7 +2,7 @@
 unsetenv DISPLAY
 
 # Add hardstatus to xterm title bar
-termcapinfo rxvt|xterm*|aterm|Xterm|Eterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+terminfo rxvt|xterm*|aterm|Xterm|Eterm 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
 
 # Make screen messages stand out a little more - black on bright green.
 sorendition "+b kG"
@@ -40,6 +40,18 @@ shelltitle '$|bash'
 
 # root shell keybinding
 bind R screen -t '# |root:' env PROMPT_COMMAND='echo -n -e "\033k\033\134"' sudo su
+
+# terminfo and termcap for nice 256 color terminal
+# allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# tell screen how to set colors. AB = background, AF=foreground
+terminfo rxvt-xpm|putty|xterm*|rxvt-unicode 'AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+terminfo rxvt-xpm|putty|xterm* 'Co#256'
+terminfo rxvt-unicode 'Co#88'
+
+# erase background with current bg color
+defbce "on"
 
 hardstatus off
 caption always "%{= dd}%Y/%m/%d %0c  %l %{+b dd} %-Lw%{= dg}%50>%n%f* %t%{-}%+Lw%<%{= dd}"
