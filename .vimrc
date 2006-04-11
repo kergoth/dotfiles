@@ -342,13 +342,7 @@ endif
 " }}}
 
 " Fonts {{{
-if has('win32')
-  set guifont=Courier\ New:h10,Courier,Lucida\ Console,Letter\ Gothic,
-        \Arial\ Alternative,Bitstream\ Vera\ Sans\ Mono,OCR\ A\ Extended
-else
-  set guifont=Bitstream\ Vera\ Sans\ Mono\ 9,
-        \Courier\ New\ 10,Courier\ 10
-endif
+  set guifont=Bitstream\ Vera\ Sans\ Mono\ 9,Courier\ New:h10,Courier
 " }}}
 
 " Indentation {{{
