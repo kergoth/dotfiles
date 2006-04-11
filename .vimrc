@@ -64,6 +64,33 @@ else
 endif
 
 
+" Execute an appropriate interpeter for the current file
+" If there is no #! line at the top of the file, it will
+" fall back to g:interp_<filetype>.
+let g:interp_lua="/usr/bin/env lua"
+let g:interp_python="/usr/bin/env python"
+let g:interp_make="/usr/bin/env make"
+let g:interp_perl="/usr/bin/env perl"
+let g:interp_m4="/usr/bin/env m4"
+let g:interp_sh="/bin/sh"
+function! RunInterp()
+  let l:interp = ""
+  let line = getline(1)
+
+  if line =~ "^#\!"
+    let l:interp = line[2:]
+  else
+    if exists("g:interp_" . &filetype)
+      let l:interp = eval("g:interp_" . &filetype)
+    endif
+  endif
+  if l:interp != ""
+    exe "!" . l:interp . " %"
+  endif
+endfunction
+nnoremap <silent> <F9> :call RunInterp()<CR>
+
+
 " Buffer Switching {{{
 if has("gui_running")
   noremap <M-1> :b1<CR>:<BS>
@@ -255,7 +282,7 @@ set statusline+=%-3.3n\                      " buffer number
 set statusline+=%f\                          " filename
 set statusline+=%h%m%r%w                     " status flags
 
-function StatusLine_Tlist_Info()
+function! StatusLine_Tlist_Info()
   if exists('g:loaded_taglist') &&
     \ g:loaded_taglist == 'available'
     return Tlist_Get_Tagname_By_Line()
