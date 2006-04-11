@@ -138,9 +138,12 @@ nmap <Leader>i :echo "hi<" .
 
 " scrollwheel = intelligent # of lines to scroll based on window height
 if has("autocmd")
-  au WinEnter,VimEnter * exec "map <buffer> <MouseDown> " . s:Max(winheight("%")/8, 1) . ""
-  au WinEnter,VimEnter * exec "map <buffer> <MouseUp> " . s:Max(winheight("%")/8, 1) . ""
+  au BufWinEnter * exec "map <buffer> <MouseDown> " . s:Max(winheight("%")/8, 1) . ""
+  au BufWinEnter * exec "map <buffer> <MouseUp> " . s:Max(winheight("%")/8, 1) . ""
 endif
+
+map <MouseDown> 3
+map <MouseUp> 3
 
 " meta (alt)+scrollwheel = scroll one line at a time
 map <M-MouseDown> 
@@ -168,7 +171,7 @@ function! RunInterp()
   let line = getline(1)
 
   if line =~ "^#\!"
-    let l:interp = line[2:]
+    let l:interp = strpart(line, 2)
   else
     if exists("g:interp_" . &filetype)
       let l:interp = g:interp_{&filetype}
@@ -697,6 +700,7 @@ let g:HL_HiCurLine = "Function"
 " let g:sh_fold_enabled= 1
 " let g:sh_minlines = 500
 " let g:xml_syntax_folding = 1
+let g:HL_HiCurLine = "HL_HiCurLine"
 " }}}
 
 " Explorer/Tags/Windows options {{{
