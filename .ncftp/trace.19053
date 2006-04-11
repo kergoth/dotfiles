@@ -1,0 +1,26 @@
+SESSION STARTED at:  2006-01-05 11:29:39 CST -0600
+   Program Version:  NcFTP 3.1.9/190 Mar 24 2005, 07:18 PM
+   Library Version:  LibNcFTP 3.1.9 (March 19, 2005)
+        Process ID:  19053
+          Platform:  linux-x86_64
+          Hostname:  localhost.localdomain  (rc=3)
+          Terminal:  rxvt
+11:29:39  Fw: firewall.localdomain  Type: 0  User: kergoth  Pass: ********  Port: 21
+11:29:39  FwExceptions: .localdomain,localhost,localdomain
+11:29:39  Resolving floor.dhs.org...
+11:29:39  Connecting to 66.31.196.19...
+11:29:39  LibNcFTP 3.1.9 (March 19, 2005) compiled for linux-x86_64
+11:29:39  Uname: Linux|covenant|2.6.14-ck5-amd64-k8|#1 Tue Nov 15 03:13:40 CST 2005|x86_64
+11:29:39  Glibc: 2.3.5 (stable)
+11:29:39  Logging in...
+11:29:39  220: --------- Welcome to Pure-FTPd [privsep] [TLS] ----------
+11:29:39       You are user number 1 of 5 allowed.
+11:29:39       Local time is now 12:01. Server port: 21.
+11:29:39       This is a private system - No anonymous login
+11:29:39       You will be disconnected after 15 minutes of inactivity.
+11:29:39  Connected to 66.31.196.19.
+11:29:39  Cmd: USER anonymous
+11:29:39  530: This is a private system - No anonymous login
+11:29:39  Cmd: QUIT
+11:29:39  Sleeping 20 seconds.
+11:29:39  Sleeping 20 seconds...

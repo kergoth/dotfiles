@@ -1,0 +1,98 @@
+*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Aug 17, 2005
+
+Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
+	  (remove NOSPAM from Campbell's email to use)
+Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
+           The VIM LICENSE applies to AsNeeded.vim and AsNeeded.txt
+           (see |copyright|) except use "AsNeeded" instead of "Vim"
+	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
+==============================================================================
+1. Contents						*asneeded-contents*
+
+	1. Contents......................: |asneeded-contents|
+	2. AsNeeded Manual...............: |asneeded|
+	3. AsNeeded Global Variables.....: |asneeded-var|
+	4. AsNeeded History..............: |asneeded-history|
+
+==============================================================================
+2. AsNeeded Manual				*asneeded*
+
+	The AsNeeded plugin transforms plugin use to either automatically
+	loading or assisting in loading plugins when they're needed. >
+
+		:AN command     :ANX command
+		:AN map         :ANX map
+<
+	or >
+
+		:AsNeeded command
+		:AsNeeded map
+<
+	Functions are automatically loaded when called using the FuncUndefined
+	event that Vim provides.  :AN or :AsNeeded assists with loading
+	commands or maps by searching through plugin files placed in >
+
+		.vim/AsNeeded/       (Unix)
+		vimfiles\AsNeeded\   (Windows)
+<
+	for one containing the desired map or command; once found, AsNeeded
+	then loads it.
+
+	The ANX command follows successful searches with an attempt to execute
+	the requested command or map.
+
+	For those who have large numbers of scripts in their AsNeeded directory,
+	using >
+		:MakeANtags
+<
+	will create a ANtags file in the AsNeeded directory.  This file will then
+	be used to quickly look up the requested map, command, or function; the
+	usual search of all scripts in the directory will then be bypassed.
+
+==============================================================================
+3. AsNeeded Global Variables				*asneeded-var*
+
+   	g:AsNeededSuccess : if this variable exists, then AsNeeded
+	                    will inform the user of successful loading
+			    of AsNeeded functions/commands/mappings.
+
+==============================================================================
+4. AsNeeded History					*asneeded-history*
+
+	v10 Aug 08, 2005: * Bugfix -- maps with backslashes are escaped
+	    Aug 17, 2005: * report option workaround
+	v9 Mar 15, 2005 : * MakeANtags command search pattern improved
+			  * MakeANtags' function search pattern improved
+	   Apr 22, 2005   * maps beginning with a backslash needed one extra
+	                    leading backslash in their search pattern for ANtags
+	v8 Feb 16, 2005 : * With MakeANtags, AsNeeded's search pattern needed
+			    to use \\| instead of \|
+	v7 Feb 16, 2005 : * MakeANtags now warns the user when no tags were
+			    found in some vim-script file 
+			  * MakeANtags would occasionally miss certain maps
+			    when making ANtags
+			  * MakeANtags was omitting the backslashes in
+			    Windows paths
+	v6 Sep 20, 2004 : * bug left in debugging code fixed
+	   Dec 29, 2004   * wipes out temporarily used buffers
+	   Feb 09, 2005   * MakeANtags and ANtags support included
+	v5 Aug 06, 2004 : * ANX cmd [args] now accepted.
+	                  * improved command vs map detection: uses maparg()
+			  * ANX bugfix, now detects maps vs commands and attempts
+			    to execute them appropriately
+	v4 Jul 12, 2004 : * bugfix: somewhen the AsNeeded loading of commands
+			    got dropped.
+	v3 May 19, 2004 : * bugfix: now works correctly when mapleader
+	                    wasn't set by user explicitly
+			  * ANX command/map (an AsNeeded find coupled with
+			    execution)
+	v2 Apr 05, 2004 : * bugfix: an error message showed up when the
+	                    ../.vim/AsNeeded directory was empty of *.vim
+			    files
+			  * improved warning message when no matching
+			    command/function/map is found
+	v1 Feb 19, 2004 : AsNeeded first released
+
+vim:tw=78:ts=8:ft=help
+

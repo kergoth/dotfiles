@@ -1,0 +1,13 @@
+" 
+" User's local vim configuration
+"  
+" Developed by Ondrej Jombik <nepto@platon.sk>
+" Copyright (c) 2000-2005 Platon SDG, http://platon.sk/
+" All rights reserved.
+"
+" $Platon: vimconfig/vim/local/vimrc-nepto,v 1.2 2005/03/09 19:50:12 rajo Exp $
+
+let g:author  = "Ondrej Jombik"
+let g:email   = "nepto@platon.sk"
+let g:company = "Platon SDG, http://platon.sk/"
+
