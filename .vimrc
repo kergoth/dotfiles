@@ -72,21 +72,21 @@ function! SetNumberingState(s)
   call s:PropogateNumberState()
 endfunction
 
-fun! s:Min(a, b)
+function! s:Min(a, b)
   if a:a <= a:b
     return a:a
   else
     return a:b
   endif
-endfun
+endfunction
 
-fun! s:Max(a, b)
+function! s:Max(a, b)
   if a:a >= a:b
     return a:a
   else
     return a:b
   endif
-endfun
+endfunction
 " }}}
 
 " Keymaps {{{
@@ -463,7 +463,7 @@ if has("autocmd") && v:version >= 700
         \     setlocal statusline+=%=%2*\ %<%P |
         \ endif
 
-  fun! <SID>FixWindowTitles()
+  function! <SID>FixWindowTitles()
     if "-MiniBufExplorer-" == bufname("%")
       setlocal statusline=%2*%-3.3n%0*
       setlocal statusline+=\[Buffers\]
@@ -475,7 +475,7 @@ if has("autocmd") && v:version >= 700
       setlocal statusline+=%=
       setlocal statusline+=%l
     endif
-  endfun
+  endfunction
 
   au BufWinEnter *
         \ let oldwinnr=winnr() |
@@ -662,7 +662,7 @@ if has("autocmd")
   autocmd BufEnter * :lcd %:p:h
 
   " Special less.sh and man modes {{{
-  fun! <SID>check_pager_mode()
+  function! <SID>check_pager_mode()
     if exists("g:loaded_less") && g:loaded_less
       " we're in vimpager / less.sh / man mode
       set laststatus=0
@@ -671,7 +671,7 @@ if has("autocmd")
       set foldlevel=99
       set nolist
     endif
-  endfun
+  endfunction
   autocmd VimEnter * :call <SID>check_pager_mode()
 
   " Intelligent enable/disable of the line number display
