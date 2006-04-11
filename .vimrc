@@ -43,6 +43,8 @@ else
 endif
 
 " Functions {{{
+let colorterm = $COLORTERM
+
 function! s:PropogateNumberState()
   windo
         \ if (winwidth(0) >= 80) && (s:numdisabled == 0) |
@@ -347,7 +349,7 @@ set showcmd
 set textwidth=0
 set nobackup
 set isk+=_,$,@,%,#,-
-set shortmess=atAItToO
+set shortmess=atItToO
 
 set history=500
 set viminfo='1000,f1,:1000,/1000
@@ -471,9 +473,12 @@ if has("multi_byte")
     set encoding=utf-8
   endif
   setglobal fileencoding=utf-8
-  let &termencoding = &encoding
 "  set fileencodings=ucs-bom,utf-8,iso-8859-15
   set fileencodings=utf-8,iso-8859-15
+
+  if !((colorterm == "rxvt-xpm") && (&term == "rxvt"))
+    let &termencoding = &encoding
+  endif
 
 "  set bomb
 endif
@@ -496,8 +501,6 @@ endif
 
 " Colors {{{
 " Make sure the gui is initialized before setting up syntax and colors
-let colorterm = $COLORTERM
-
 if has("gui_running")
   gui
 endif
@@ -509,7 +512,7 @@ endif
 if colorterm == "gnome-terminal"
   set t_Co=16
 elseif (colorterm == "rxvt-xpm") && (&term == "rxvt")
-  " set colors correctly for mrxvt
+  "set colors correctly for mrxvt
   set t_Co=256
 elseif colorterm == "putty"
   set t_Co=256
