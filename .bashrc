@@ -1,33 +1,3 @@
-oedev () {
-	local OEDIR PKGDIR BUILDDIR
-	if test x"$1" = "x--help"; then echo >&2 "syntax: oedev [oedir [pkgdir [builddir]]]"; return 1; fi
-	if test x"$1" = x; then OEDIR=`pwd`; else OEDIR=$1; fi
-	if test x"$2" = x; then PKGDIR=`pwd`; else PKGDIR=$2; fi
-	if test x"$3" = x; then BUILDDIR=`pwd`; else BUILDDIR=$3; fi
-
-	OEDIR=`readlink -f $OEDIR`
-	PKGDIR=`readlink -f $PKGDIR`
-	BUILDDIR=`readlink -f $BUILDDIR`
-	if ! (test -d $OEDIR && test -d $PKGDIR && test -d $BUILDDIR); then
-		echo >&2 "syntax: oedev [oedir [pkgdir [builddir]]]"
-		return 1
-	fi
-
-	PATH=$OEDIR/bin:$PATH
-	OEPATH=$OEDIR
-	if test x"$OEDIR" != x"$PKGDIR"; then
-		OEPATH=$PKGDIR:$OEPATH
-	fi
-	if test x"$PKGDIR" != x"$BUILDDIR"; then
-		OEPATH=$BUILDDIR:$OEPATH
-	fi
-	export OEPATH
-}
-
-oefiles () {
-	export OEFILES=`ls $PKGDIR/*/*.oe|grep -v -E "$OEMASK"`
-}
-
 ipkgfiles () {
 	ar p $1 data.tar.gz | tar -tvz
 	return $?
@@ -135,8 +105,12 @@ scr_settitle () {
 
 setup_interactive () {
 	export SHELL
-	eval `dircolors`
-	alias ls='ls --color=auto -a -p'
+	if [ -n "$COLORTERM" ]; then
+		alias ls='ls --color=always -a -p'
+	else
+		eval `dircolors`
+		alias ls='ls --color=auto -a -p'
+	fi
 	case $TERM in
 	rxvt*|Xterm|xterm|aterm|urxvt*)
 		XTERM_SET='\[\033]0;\u@\h:\w\007\]'
@@ -182,33 +156,6 @@ find_agent () {
 	export SSH_AGENT_PID SSH_AUTH_SOCK
 }
 
-checkthefuckerin() {
-	(
-	addon="$1"
-	version="$2"
-	svk add *
-	svk ci -m "Import $1 version $2."
-	cd ..
-	svk cp current "$2"
-	svk ci -m "Tag $1 version $2."
-	svk cp current ../../trunk/KergothWOWBits/Addons/$1
-	svk ci -m "Add $1 to the addon set." ../../trunk/KergothWOWBits/Addons/$1
-	)
-}
-
-updatethefucker() {
-	(
-	addon="$1"
-	version="$2"
-	dir="$3"
-	svn_load_dirs -t vendor/$addon/$version file:///var/lib/svn/KergothWOWBits vendor/$addon/current $dir
-	svk pull
-	if [ "$4" != "nomerge" ]; then
-		svk smerge -m "Update $addon to version $version." //WOW/vendor/$addon/current //WOW/trunk/KergothWOWBits/Addons/$addon
-	fi
-	)
-}
-
 fixperms () {
 	path="$1"
 	if [ -z "$path" ]; then path='.'; fi
@@ -219,10 +166,20 @@ if [ "$PS1" ]; then
 	setup_interactive
 fi
 
+diff_setup () {
+	__diffopts="-urN"
+	__quiltdiffopts="-d -p"
+	alias diff="diff $__diffopts $__quiltdiffopts"
+	QUILT_DIFF_OPTS="$__quiltdiffopts"
+	export QUILT_DIFF_OPTS
+	unset __diffopts __quiltdiffopts
+}
+
+diff_setup
+
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
 alias vi=vim
-alias diff='diff -urNd'
 alias ssh-add='ssh-add ~/.ssh/{identity,*dsa,*rsa1,*rsa2} ~/.ssh/old/*'
 alias symbolsizes="${NM} -S -t d --size-sort"
 alias ct='cleartool'
