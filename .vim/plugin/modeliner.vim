@@ -40,7 +40,7 @@ function! s:Modeliner_Prepend()
 endfunction
 
 function! s:GetContent()
-    let content = ' vim: set'
+    let content = 'vim: set'
     let format  = g:Modeliner_format
 
     call s:StartParsing()

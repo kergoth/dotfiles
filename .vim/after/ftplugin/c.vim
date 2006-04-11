@@ -2,5 +2,7 @@
 " syn sync fromstart
 " set foldmethod=syntax
 
-set foldmethod=marker
-set foldmarker={,}
+setlocal foldmethod=marker
+setlocal foldmarker={,}
+
+setlocal commentstring=/*\ %s\ */

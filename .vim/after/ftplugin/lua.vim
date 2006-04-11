@@ -1,1 +1,3 @@
-set foldmethod=indent
+setlocal foldmethod=indent
+
+setlocal commentstring=--\ %s
