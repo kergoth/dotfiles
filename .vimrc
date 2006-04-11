@@ -1,5 +1,5 @@
 " vim: set et sw=2 sts=2 fdm=marker fdl=0:
-
+"
 " Command quick reference {{{
 " Align/AlignMaps:
 "   \adec - align C declarations
@@ -30,6 +30,10 @@
 " VIM core:
 "   K - look up current word via 'man' (by default)
 "   ^X ^O - Omni completion
+"   * - search for teh current word in the document
+"   % - jump between begin/end of blocks
+"   ggqgG - reformat entire file
+"   gg=G - reindent entire file
 " }}}
 
 if v:version < 600
@@ -70,17 +74,17 @@ endfunction
 
 fun! s:Min(a, b)
   if a:a <= a:b
-     return a:a
+    return a:a
   else
-     return a:b
+    return a:b
   endif
 endfun
 
 fun! s:Max(a, b)
   if a:a >= a:b
-     return a:a
+    return a:a
   else
-     return a:b
+    return a:b
   endif
 endfun
 " }}}
@@ -127,10 +131,10 @@ nmap <Leader>ccn :cnext<CR>
 
 " show the highlighting group(s) for the text under the cursor
 nmap <Leader>i :echo "hi<" .
- \ synIDattr(synID(line("."),col("."),1),"name") . '> trans<' .
- \ synIDattr(synID(line("."),col("."),0),"name") ."> lo<" .
- \ synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .
- \ ">"<CR>
+      \ synIDattr(synID(line("."),col("."),1),"name") . '> trans<' .
+      \ synIDattr(synID(line("."),col("."),0),"name") ."> lo<" .
+      \ synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .
+      \ ">"<CR>
 
 " scrollwheel = intelligent # of lines to scroll based on window height
 if has("autocmd")
@@ -245,10 +249,10 @@ endif
 " Fonts {{{
 if has("win32")
   set guifont=Courier\ New:h10,Courier,Lucida\ Console,Letter\ Gothic,
-   \Arial\ Alternative,Bitstream\ Vera\ Sans\ Mono,OCR\ A\ Extended
+        \Arial\ Alternative,Bitstream\ Vera\ Sans\ Mono,OCR\ A\ Extended
 else
   set guifont=Bitstream\ Vera\ Sans\ Mono\ 9,
-   \Courier\ New\ 10,Courier\ 10
+        \Courier\ New\ 10,Courier\ 10
 endif
 " }}}
 
@@ -275,10 +279,10 @@ set nosmarttab
 
 "set expandtab      "Disable insertion of tabs as compression / indentation
 set tabstop=4       "How many spaces a tab in the file counts for, and when
-                    "not using sts, how many spaces the tab key counts for.
+"not using sts, how many spaces the tab key counts for.
 set shiftwidth=4    "Indentation width (affects indent plugins, indent based folding, etc, and when smarttab is on, is used instead of ts/sts for the indentation at beginning of line)
 set softtabstop=0   "Number of spaces that the tab key counts for when editing
-                    "Only really useful if different from ts, or if using et.
+"Only really useful if different from ts, or if using et.
 set autoindent
 set smartindent
 
@@ -325,10 +329,10 @@ endif
 " Nice window title
 set title
 if has('title') && (has('gui_running') || &title)
-   set titlestring=
-   set titlestring+=%f                    " file name
-   set titlestring+=%(\ %h%m%r%w%)        " flags
-   set titlestring+=\ -\ %{v:progname}    " program name
+  set titlestring=
+  set titlestring+=%f                    " file name
+  set titlestring+=%(\ %h%m%r%w%)        " flags
+  set titlestring+=\ -\ %{v:progname}    " program name
 endif
 set titleold=""
 
@@ -387,8 +391,8 @@ set noautowrite
 " Usage of the mouse
 set mouse=a
 if has("unix") &&
-   \ has("mouse") &&
-   \ ! has("gui_running")
+      \ has("mouse") &&
+      \ ! has("gui_running")
   if &term == "xterm"
     set ttymouse=xterm2
   else
@@ -403,9 +407,9 @@ endif
 
 " Allow editing of all types of files
 if has("unix")
-   set fileformats=unix,dos,mac
+  set fileformats=unix,dos,mac
 else
-   set fileformats=dos,unix,mac
+  set fileformats=dos,unix,mac
 endif
 
 if has("gui_running")
@@ -433,7 +437,7 @@ set statusline+=%h%m%r%w                     " status flags
 
 function! StatusLine_Tlist_Info()
   if exists('g:loaded_taglist') &&
-    \ g:loaded_taglist == 'available'
+        \ g:loaded_taglist == 'available'
     return Tlist_Get_Tagname_By_Line()
   else
     return ''
@@ -452,31 +456,31 @@ set statusline+=%<%P                        " file position
 " special statusbar for special windows
 " NOTE: only vim7+ supports a statusline local to a window
 if has("autocmd") && v:version >= 700
-   au FileType qf
-               \ if &buftype == "quickfix" |
-               \     setlocal statusline=%2*%-3.3n%0* |
-               \     setlocal statusline+=\ \[Compiler\ Messages\] |
-               \     setlocal statusline+=%=%2*\ %<%P |
-               \ endif
+  au FileType qf
+        \ if &buftype == "quickfix" |
+        \     setlocal statusline=%2*%-3.3n%0* |
+        \     setlocal statusline+=\ \[Compiler\ Messages\] |
+        \     setlocal statusline+=%=%2*\ %<%P |
+        \ endif
 
-   fun! <SID>FixWindowTitles()
-       if "-MiniBufExplorer-" == bufname("%")
-           setlocal statusline=%2*%-3.3n%0*
-           setlocal statusline+=\[Buffers\]
-           setlocal statusline+=%=%2*\ %<%P
-       endif
+  fun! <SID>FixWindowTitles()
+    if "-MiniBufExplorer-" == bufname("%")
+      setlocal statusline=%2*%-3.3n%0*
+      setlocal statusline+=\[Buffers\]
+      setlocal statusline+=%=%2*\ %<%P
+    endif
 
-       if "__Tag_List__" == bufname("%")
-           setlocal statusline=\[Tags\]
-           setlocal statusline+=%=
-           setlocal statusline+=%l
-       endif
-   endfun
+    if "__Tag_List__" == bufname("%")
+      setlocal statusline=\[Tags\]
+      setlocal statusline+=%=
+      setlocal statusline+=%l
+    endif
+  endfun
 
-   au BufWinEnter *
-               \ let oldwinnr=winnr() |
-               \ windo call <SID>FixWindowTitles() |
-               \ exec oldwinnr . " wincmd w"
+  au BufWinEnter *
+        \ let oldwinnr=winnr() |
+        \ windo call <SID>FixWindowTitles() |
+        \ exec oldwinnr . " wincmd w"
 endif
 " }}}
 
@@ -485,8 +489,8 @@ let &termencoding = &encoding
 if has("multi_byte")
   set encoding=utf-8
   set fileencodings=utf-8,iso-8859-15
-"  set fileencodings=ucs-bom,utf-8,iso-8859-15
-"  set bomb
+  "  set fileencodings=ucs-bom,utf-8,iso-8859-15
+  "  set bomb
 endif
 " }}}
 
@@ -562,8 +566,8 @@ if &t_Co > 2 || has("gui_running")
 
   if has("syntax") && has("autocmd")
     autocmd Syntax *
-                \ syn match VimModelineLine /^.\{-1,}vim:[^:]\{-1,}:.*/ contains=VimModeline |
-                \ syn match VimModeline contained /vim:[^:]\{-1,}:/
+          \ syn match VimModelineLine /^.\{-1,}vim:[^:]\{-1,}:.*/ contains=VimModeline |
+          \ syn match VimModeline contained /vim:[^:]\{-1,}:/
   endif
 
   " Email signatures generally start with '-- '.  Adjust the
@@ -594,9 +598,9 @@ if has("autocmd")
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
   au BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal g`\"" |
+        \ endif
 
   " m4 matchit support
   autocmd FileType m4 :let b:match_words="(:),`:',[:],{:}"
@@ -604,9 +608,9 @@ if has("autocmd")
   " Default to omni completion using the syntax highlighting files
   if v:version >= 700
     au BufReadPost *
-      \ if (&ofu == "") |
-      \   setlocal ofu=syntaxcomplete#Complete |
-      \ endif
+          \ if (&ofu == "") |
+          \   setlocal ofu=syntaxcomplete#Complete |
+          \ endif
   endif
 
   " Default textwidth is 0 for known filetypes
@@ -626,30 +630,30 @@ if has("autocmd")
   au FileType cpp setlocal cinkeys-=:
 
   try
-     " if we have a vim which supports QuickFixCmdPost (vim7),
-     " give us an error window after running make, grep etc, but
-     " only if results are available.
-     autocmd QuickFixCmdPost * botright cwindow 5
+    " if we have a vim which supports QuickFixCmdPost (vim7),
+    " give us an error window after running make, grep etc, but
+    " only if results are available.
+    autocmd QuickFixCmdPost * botright cwindow 5
 
-     autocmd QuickFixCmdPre make
-                 \ let g:make_start_time=localtime()
+    autocmd QuickFixCmdPre make
+          \ let g:make_start_time=localtime()
 
-     autocmd QuickFixCmdPost make
-                 \ let g:make_total_time=localtime() - g:make_start_time |
-                 \ echo printf("Time taken: %dm%2.2ds", g:make_total_time / 60,
-                 \     g:make_total_time % 60)
+    autocmd QuickFixCmdPost make
+          \ let g:make_total_time=localtime() - g:make_start_time |
+          \ echo printf("Time taken: %dm%2.2ds", g:make_total_time / 60,
+          \     g:make_total_time % 60)
   catch
   endtry
 
   " Close out the quickfix window if it's the only open window
   function! s:QuickFixClose()
-      " if the window is quickfix go on
-      if &buftype=="quickfix"
-          " if this window is last on screen quit without warning
-          if winbufnr(2) == -1
-              quit!
-          endif
+    " if the window is quickfix go on
+    if &buftype=="quickfix"
+      " if this window is last on screen quit without warning
+      if winbufnr(2) == -1
+        quit!
       endif
+    endif
   endfunction
   au BufEnter * call s:QuickFixClose()
 
@@ -659,14 +663,14 @@ if has("autocmd")
 
   " Special less.sh and man modes {{{
   fun! <SID>check_pager_mode()
-      if exists("g:loaded_less") && g:loaded_less
-          " we're in vimpager / less.sh / man mode
-          set laststatus=0
-          set ruler
-          set foldmethod=manual
-          set foldlevel=99
-          set nolist
-      endif
+    if exists("g:loaded_less") && g:loaded_less
+      " we're in vimpager / less.sh / man mode
+      set laststatus=0
+      set ruler
+      set foldmethod=manual
+      set foldlevel=99
+      set nolist
+    endif
   endfun
   autocmd VimEnter * :call <SID>check_pager_mode()
 
