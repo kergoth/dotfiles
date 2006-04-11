@@ -26,3 +26,4 @@ ScriptID SourceID Filename
 1311 4504 vimplate.vim
 95 754 winmanager.vim
 159 3640 :AutoInstall: minibufexpl.vim
+1385 4693 syntax/interfaces.vim
