@@ -1,0 +1,8 @@
+termcapinfo xterm*|rxvt* 'hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
+hardstatus on
+hardstatus string "%h - hostname"
+
+startup_message off
+defscrollback 1000
+bufferfile            $HOME/.screen_exchange
+encoding              UTF-8
