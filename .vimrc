@@ -155,8 +155,8 @@ nmap <Leader>hi :echo "hi<" .
 
 " scrollwheel = intelligent # of lines to scroll based on window height
 if has("autocmd")
-  au BufWinEnter * exec "map <buffer> <MouseDown> " . <SID>Max(winheight("%")/8, 1) . ""
-  au BufWinEnter * exec "map <buffer> <MouseUp> " . <SID>Max(winheight("%")/8, 1) . ""
+  au BufWinEnter * exec "map <buffer> <MouseDown> " . <SID>Max(winheight(0)/8, 1) . ""
+  au BufWinEnter * exec "map <buffer> <MouseUp> " . <SID>Max(winheight(0)/8, 1) . ""
 endif
 
 map <MouseDown> 3
