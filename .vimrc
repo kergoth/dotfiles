@@ -392,9 +392,6 @@ endif
 " Settings {{{
 filetype plugin indent on
 
-" Default filetype
-set filetype=text
-
 set secure
 " Not vi compatible, we want spiffy vim features, please.
 set nocompatible
@@ -723,6 +720,9 @@ if has("autocmd")
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
         \   exe "normal g`\"" |
         \ endif
+
+  " Set a default filetype
+  au BufReadPost,BufNewFile,VimEnter * if &ft == "" | setfiletype text | endif
 
   try
     " if we have a vim which supports QuickFixCmdPost (vim7),
