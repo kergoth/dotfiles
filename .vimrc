@@ -79,10 +79,10 @@ com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>)
 
 " Used to set sane default line numbering
 function! <SID>AutoNumberByWidth()
-  if (&g:number)
+  if &g:number
     Windofast
-          \ if (! exists('w:numberoverride')) |
-          \   if (winwidth(0) >= 80) |
+          \ if ! exists('w:numberoverride') |
+          \   if winwidth(0) >= 80 |
           \     setlocal number |
           \   else |
           \     setlocal nonumber |
@@ -92,15 +92,15 @@ function! <SID>AutoNumberByWidth()
 endfunction
 
 function! SetNumbering(s)
-  if (a:s == 0)
+  if a:s == 0
     let w:numberoverride = 1
     setlocal nonumber
-  elseif (a:s == 1)
+  elsei a:s == 1
     let w:numberoverride = 1
     setlocal number
-  elseif (a:s == -1) " Toggle
+  elsei a:s == -1 " Toggle
     let w:numberoverride = 1
-    if (&l:number)
+    if &l:number
       setlocal nonumber
     else
       setlocal number
@@ -378,7 +378,7 @@ if (v:version >= 700) && has('balloon_eval')
 
       " Up to 31 lines get shown okay; beyond that, only 30 lines are shown with ellipsis in between to indicate too much.
       " The reason why 31 get shown okay is that 30 lines plus one of ellipsis is 31 anyway...
-      if ( numLines > 31 )
+      if numLines > 31
         let lines = getline( foldStart, foldStart + 14 )
         let lines += [ '-- Snipped ' . ( numLines - 30 ) . ' lines --' ]
         let lines += getline( foldEnd - 14, foldEnd )
@@ -738,7 +738,7 @@ if has("autocmd")
   " Default to omni completion using the syntax highlighting files
   if v:version >= 700
     au BufReadPost *
-          \ if (&ofu == "") |
+          \ if &ofu == "" |
           \   setlocal ofu=syntaxcomplete#Complete |
           \ endif
   endif
