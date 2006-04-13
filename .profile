@@ -4,19 +4,8 @@ if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi
 
-for p in ~/.root/bin ~/bin; do
-	if [ -d $p ]; then
-		PATH="$p:$PATH"
-	fi
-done
-
-for p in ~/.root/share/man ~/man; do
-	if [ -d $p ]; then
-		MANPATH="$p:$MANPATH"
-	fi
-done
-
-PATH="${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+PATH="${HOME}/bin:${HOME}/.root/bin:${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+MANPATH="${HOME}/man:${HOME}/.root/share/man:${MANPATH}"
 PAGER="less -seGiq"
 EDITOR="vim"
 BK_USER="kergoth"
