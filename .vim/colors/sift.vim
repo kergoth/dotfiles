@@ -1,5 +1,5 @@
 " Vim color file
-" sift v1.2
+" sift v1.3
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -23,28 +23,28 @@ endif
 
 let g:colors_name="sift"
 
-hi Normal       guifg=#9bdcef guibg=#13081a
+hi Normal       guifg=#a8dc5f guibg=#0c121c
 hi NonText      guifg=#382920 guibg=#140316
 
 " syntax highlighting """"""""""""""""""""""""""""""""""""""""
 
-hi Comment		guifg=#509080
-hi Title		guifg=#5959f9  gui=none
-hi Underlined   guifg=#0959f9 gui=none
+hi Comment		guifg=#007868
+hi Title		guifg=#09f909  gui=none
+hi Underlined   guifg=#49f95f gui=none
 
-hi Statement    guifg=#ffff80  gui=none
-hi Type			guifg=#00e5bf  gui=none
-hi Constant		guifg=#3acaf5
-hi Number		guifg=#0afafa
+hi Statement    guifg=#efef70  gui=none
+hi Type			guifg=#60e5bf  gui=none
+hi Constant		guifg=#0ad8ff
+hi Number		guifg=#eabaff
 hi PreProc      guifg=#f055c3
-hi Identifier   guifg=#30a0f0
-hi Special		guifg=#c0caa5
-hi Operator		guifg=#905a60
+hi Identifier   guifg=#50f0b4
+hi Special		guifg=#888ad4 
+hi Operator		guifg=#f0da00 
 "hi Keyword		guifg=green
 "hi Error        guibg=#408452
-hi Function     guifg=#c08a50 guibg=black gui=bold "or green 50b3b0 
-hi Conditional	guifg=#f5305a guibg=bg
-hi Repeat		guifg=#f5505a guibg=bg
+hi Function     guifg=#c08a50 guibg=bg gui=bold "or green 50b3b0 
+hi Conditional	guifg=#f8f024 guibg=bg
+hi Repeat		guifg=#ffa400 guibg=bg gui=bold
 hi Exception	guifg=#cfff00
 "hi Ignore       guifg=grey40
 "hi Todo			guifg=orangered guibg=yellow2
@@ -70,20 +70,20 @@ hi Cursor       guibg=#cad5c0 guifg=#05293d
 hi Folded       guibg=#201328 guifg=#BBDDCC
 hi FoldColumn	guibg=#130014 guifg=#dbcaa5
 "hi FoldColumn	guibg=#83a5cd guifg=#70459F
-hi LineNr       guibg=#130518 guifg=#8095d5 
+hi LineNr       guibg=bg guifg=#207585 gui=bold
 "hi LineNr       guibg=#081c30 guifg=#80a0dA 
-hi StatusLine	guibg=#6585c5 guifg=#0a150d gui=none
-hi StatusLineNC	guibg=#55609a guifg=#302d34 gui=none
+hi StatusLine	guibg=#20aaea guifg=#202050 gui=bold
+hi StatusLineNC	guibg=#2a90c0 guifg=#204050 gui=bold
 
 hi Search       guibg=#9a9d8d guifg=#3a4520
 hi IncSearch	guifg=#caceba guibg=#3a4520 
 
-hi VertSplit	guibg=#525f95 guifg=grey50 gui=none
+hi VertSplit	guibg=#325f95 guifg=grey50 gui=none
 hi ModeMsg    	guifg=#00AACC
 hi MoreMsg      guifg=SeaGreen
 hi Question    	guifg=#AABBCC
 hi SpecialKey	guifg=#90dcb0
-hi Visual       guifg=#4a2F3F guibg=#935FdF
+hi Visual       guifg=#4a8FcF guibg=#032F5F
 "hi VisualNOS
 hi WarningMsg	guifg=salmon
 "hi WildMenu

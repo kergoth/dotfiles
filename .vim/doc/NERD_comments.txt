@@ -1,4 +1,4 @@
-*NERD_comments.txt*         Plugin for commenting code            v163
+*NERD_comments.txt*         Plugin for commenting code            v165
 
 
                         NERD_COMMENTS REFERENCE MANUAL~
@@ -8,7 +8,7 @@
 
 
 ==============================================================================
-CONTENTS                                              *NERD_comments-contents* 
+CONTENTS {{{2                                         *NERD_comments-contents* 
 
     1.Intro...................................|NERD_comments|
     2.Functionality provided..................|NERD_com-functionality|
@@ -17,16 +17,17 @@ CONTENTS                                              *NERD_comments-contents*
             2.2.1 Comment map.................|NERD_com-comment|
             2.2.2 Nested comment map..........|NERD_com-nested-comment|
             2.2.3 Toggle comment map..........|NERD_com-toggle-comment| 
-            2.2.4 Invert comment map..........|NERD_com-invert-comment|
-            2.2.5 Sexy comment map............|NERD_com-sexy-comment|
-            2.2.6 Yank comment map............|NERD_com-yank-comment|
-            2.2.7 Comment to EOL map..........|NERD_com-EOL-comment|
-            2.2.8 Append com to line map......|NERD_com-append-comment|
-            2.2.9 Prepend com to line map.....|NERD_com-prepend-comment|
-            2.2.10 Insert comment map.........|NERD_com-insert-comment|
-            2.2.11 Use alternate delims map...|NERD_com-alt-delim|
-            2.2.12 Comment aligned maps.......|NERD_com-aligned-comment|
-            2.2.13 Uncomment line map.........|NERD_com-uncomment-line|
+            2.2.4 Minimal comment map.........|NERD_com-minimal-comment| 
+            2.2.5 Invert comment map..........|NERD_com-invert-comment|
+            2.2.6 Sexy comment map............|NERD_com-sexy-comment|
+            2.2.7 Yank comment map............|NERD_com-yank-comment|
+            2.2.8 Comment to EOL map..........|NERD_com-EOL-comment|
+            2.2.9 Append com to line map......|NERD_com-append-comment|
+            2.2.10 Prepend com to line map.....|NERD_com-prepend-comment|
+            2.2.11 Insert comment map.........|NERD_com-insert-comment|
+            2.2.12 Use alternate delims map...|NERD_com-alt-delim|
+            2.2.13 Comment aligned maps.......|NERD_com-aligned-comment|
+            2.2.14 Uncomment line map.........|NERD_com-uncomment-line|
         2.3 Supported filetypes...............|NERD_com-filetypes|
         2.4 Sexy Comments.....................|NERD_com_sexy_comments|
     3.Customisation...........................|NERD_com-customisation|
@@ -42,7 +43,7 @@ CONTENTS                                              *NERD_comments-contents*
     6.Credits.................................|NERD_com-credits|
 
 ==============================================================================
-1. Intro                                                       *NERD_comments*
+1. Intro {{{2                                                  *NERD_comments*
 
 NERD_comments provides a set of handy key mappings for commenting code. These
 mappings are consistent across all supported filetypes. 
@@ -56,10 +57,10 @@ l33t nerd take advantage of.
 Enjoy :D
 
 ==============================================================================
-2. Functionality provided                             *NERD_com-functionality*
+2. Functionality provided {{{2                        *NERD_com-functionality*
 
 ------------------------------------------------------------------------------
-2.1 Functionality summary                     *NERD_com-functionality-summary*
+2.1 Functionality summary {{{3                *NERD_com-functionality-summary*
 
 The following key mappings are provided by default (there is also a menu
 provided that contains menu items corresponding to all the below mappings):
@@ -81,6 +82,11 @@ Same as |NERD_com-comment-map| but enforces nesting.
 <leader>c<space> |NERD_com-toggle-comment| 
 Toggles the comment state of the selected line(s). If the topmost selected
 line is commented, all selected lines are uncommented and vice versa.
+
+
+<leader>cm |NERD_com-minimal-comment| 
+Comments the given lines using only one set of multipart delimiters if
+possible. 
 
 
 <leader>ci |NERD_com-invert-comment| 
@@ -129,7 +135,7 @@ left side (<leader>cl), the right side (<leader>cr) or both sides
 Uncomments the selected line(s).
 
 ------------------------------------------------------------------------------
-2.2 Functionality details                     *NERD_com-functionality-details*
+2.2 Functionality details {{{3                *NERD_com-functionality-details*
 
 ------------------------------------------------------------------------------
 2.2.1 Comment map                                         *NERD_com-comment*
@@ -152,8 +158,6 @@ Relevant options:
 |NERD_right_align_regexp|
 |NERD_space_delim_filetype_regexp|
 |NERD_use_nested_comments_default|
-|NERD_use_sexy_coms_default_regexp|
-|NERD_use_toggle_coms_default|
 
 ------------------------------------------------------------------------------
 2.2.2 Nested comment map                           *NERD_com-nested-comment*
@@ -204,9 +208,23 @@ Relevant options:
 |NERD_space_delim_filetype_regexp|
 |NERD_use_nested_comments_default|
 
+------------------------------------------------------------------------------
+2.2.4 Minimal comment map                           *NERD_com-minimal-comment* 
+<leader>cm
+Comments the selected lines using one set of multipart delimiters if possible.
+
+For example: if you are programming in c and you select 5 lines and press
+<leader>cm then a '/*' will be placed at the start of the top line and a '*/'
+will be placed at the end of the last line.
+
+Sets of multipart comment delimiters that are between the top and bottom
+selected lines are replaced with place holders (see |NERD_lPlace|) if
+NERD_place_holder_regexp is set for the current filetype. If it is not, then
+the comment will be aborted if place holders are required to prevent illegal
+syntax.
 
 ------------------------------------------------------------------------------
-2.2.4 Invert comment map                           *NERD_com-invert-comment*
+2.2.5 Invert comment map                           *NERD_com-invert-comment*
 <leader>ci 
 Inverts the commented state of each selected line. If the a selected line is
 commented then it is uncommented and vice versa. Each line is examined and
@@ -223,7 +241,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.5 Sexy comment map                               *NERD_com-sexy-comment*
+2.2.6 Sexy comment map                               *NERD_com-sexy-comment*
 <leader>cs  
 Comments the selected line(s) ``sexily''... see |NERD_com_sexy_commenting| for
 a description of what sexy comments are. Can only be done on filetypes for
@@ -238,11 +256,9 @@ Change the mapping with: |NERD_com_line_sexy_map|
 
 Relevant options:
 |NERD_use_compact_sexy_com_regexp|
-|NERD_use_sexy_coms_default_regexp|
-
 
 ------------------------------------------------------------------------------
-2.2.6 Yank comment map                               *NERD_com-yank-comment*
+2.2.7 Yank comment map                               *NERD_com-yank-comment*
 <leader>cy  
 Same as <leader>cc except that it yanks the line(s) that are commented first. 
 
@@ -254,7 +270,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.7 Comment to EOL map                              *NERD_com-EOL-comment*
+2.2.8 Comment to EOL map                              *NERD_com-EOL-comment*
 <leader>c$ 
 Comments the current line from the current cursor position up to the end of
 the line. 
@@ -267,7 +283,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.8 Append com to line map                       *NERD_com-append-comment*
+2.2.9 Append com to line map                       *NERD_com-append-comment*
 <leader>cA      
 Appends comment delimiters to the end of the current line and goes
 to insert mode between the new delimiters.  
@@ -280,7 +296,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.9 Prepend com to line map                     *NERD_com-prepend-comment*
+2.2.10 Prepend com to line map                     *NERD_com-prepend-comment*
 <leader>cI
 Prepends comment delimiters to the start of the current line and goes to
 insert mode between the new delimiters.  
@@ -293,7 +309,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.10 Insert comment map                          *NERD_com-insert-comment*
+2.2.11 Insert comment map                          *NERD_com-insert-comment*
 <C-c>
 Adds comment delimiters at the current cursor position and inserts
 between them. 
@@ -306,7 +322,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.11 Use alternate delims map                         *NERD_com-alt-delim*
+2.2.12 Use alternate delims map                         *NERD_com-alt-delim*
 <leader>ca
 Changes to the alternative commenting style if one is available. For example,
 if the user is editing a c++ file using // comments and they hit <leader>ca
@@ -321,7 +337,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.12 Comment aligned maps                       *NERD_com-aligned-comment*
+2.2.13 Comment aligned maps                       *NERD_com-aligned-comment*
 <leader>cl <leader>cr <leader>cb    
 Same as <leader>cc except that the comment delimiters are aligned on the left
 side, right side or both sides respectively. These comments are always nested
@@ -338,7 +354,7 @@ Relevant options:
 
 
 ------------------------------------------------------------------------------
-2.2.13 Uncomment line map                          *NERD_com-uncomment-line*
+2.2.14 Uncomment line map                          *NERD_com-uncomment-line*
 <leader>cu      
 Uncomments the current line. If multiple lines are selected in
 visual mode then they are all uncommented.
@@ -405,7 +421,7 @@ is capable of adding and removing comments of this type.
 
 
 ==============================================================================
-3. Customisation                                      *NERD_com-customisation*
+3. Customisation {{{2                                 *NERD_com-customisation*
 
 ------------------------------------------------------------------------------
 3.1 Customisation summary                              *NERD_com-cust-summary*
@@ -431,11 +447,11 @@ is capable of adding and removing comments of this type.
                                       delimiter placeholder when nesting
                                       comments.
 |NERD_left_align_regexp|              Specifies which filetypes to align left
-                                      delimters for.
+                                      delimiters for.
 |NERD_place_holder_regexp|            Specifies which filetypes may use
                                       placeholders when nesting comments.
 |NERD_right_align_regexp|             Specifies which filetypes to align right
-                                      delimters for.
+                                      delimiters for.
 |NERD_shut_up|                        Stops all output from the script.
 |NERD_space_delim_filetype_regexp|    Specifies which filetypes to add spaces
                                       around the delimiters for.
@@ -443,11 +459,6 @@ is capable of adding and removing comments of this type.
                                       sexy comments for.
 |NERD_use_nested_comments_default|    Tells the script to use nested comments
                                       by default.
-|NERD_use_sexy_coms_default_regexp|   Specifies which filetypes to use sexy
-                                      comments for by default.
-|NERD_use_toggle_coms_default|        Specifies that toggle comments should be
-                                      used by default.
-
 
 -----------------------------------------------------------------------------
 3.3 Customisation details                             *NERD_com-cust-details*
@@ -464,11 +475,10 @@ option >
 -----------------------------------------------------------------------------
                                         *NERD_allow_any_visual_delims_regexp*
 This option is set to a regular expression that is used to specify which
-filetypes this option should be turned on for. See |NERD_place_holder_regexp|
-and |NERD_use_sexy_coms_default_regexp|.  If this covers the current filetype
-then, when NERD_comments is doing a visual or visual-block comment (but not a
-visual-line comment) it will choose the right delimiters to use for the
-comment. This normally means using the current delimiters if they are
+filetypes this option should be turned on for. If this covers the current
+filetype then, when NERD_comments is doing a visual or visual-block comment
+(but not a visual-line comment) it will choose the right delimiters to use for
+the comment. This normally means using the current delimiters if they are
 multipart or using the alternative delimiters if THEY are multipart and the
 current delims are not.  For example if we are editing the following java
 code: >
@@ -782,24 +792,6 @@ it will be commented again.  >
 <
 
 -----------------------------------------------------------------------------
-                                          *NERD_use_sexy_coms_default_regexp*
-This option is used to specify which filetypes use sexy commenting by default
-when the <leader>cc mapping (or corresponding menu item) is used. The option
-is a regular expression. This option will be turned on for any filetypes
-matching this expression. 
-
-See |NERD_com-reg-exps| for example reg exps.
------------------------------------------------------------------------------
-                                              *NERD_use_toggle_coms_default*
-When this option is enabled the <leader>cc mapping is overriden to perform the
-same function as the <leader>c<space> mapping. i.e toggle style comments are
-performed by default. Stick the following line in your vimrc to use this
-option: >
-    let NERD_use_toggle_coms_default=1
-<
-
-
------------------------------------------------------------------------------
 3.3 Default delimiter customisation                    *NERD_com-cust-delims*
 These options are used to tell NERD_comments which delimiters to use for a
 given filetype when it first loads up. To set one of these options just stick
@@ -832,6 +824,7 @@ NERD_use_c_style_kscript_comments: use /**/ instead of // for kscript files.
 NERD_use_c_style_mel_comments: use /**/ instead of // for mel files.
 NERD_use_c_style_named_comments: use /**/ instead of // for named files.
 NERD_use_c_style_pccts_comments: use /**/ instead of // for pccts files.
+NERD_use_c_style_php_comments: use /* */ instead of // for php files.
 NERD_use_c_style_pike_comments: use /**/ instead of // for pike files.
 NERD_use_c_style_pilrc_comments: use /**/ instead of // for pilrc files.
 NERD_use_c_style_plm_comments: use /**/ instead of // for plm files.
@@ -845,7 +838,6 @@ NERD_use_c_style_verilog_comments: use /**/ instead of // for verilog files.
 NERD_use_dash_dash_simula_comments: use -- instead of % for simula files.
 NERD_use_dnl_style_automake_comments: use dnl instead of # for automake files.
 NERD_use_hash_samba_comments: use # instead of ; for samba files.
-NERD_use_html_style_php_comments: use <!-- --> instead of /* */ for php files.
 NERD_use_long_haskell_comments: use {--} instead of -- for haskell files.
 NERD_use_long_lisp_comments: use #||# instead of ; for lisp files.
 NERD_use_long_lua_comments: use --[[]] instead of -- for lua files.
@@ -911,6 +903,10 @@ To override the <leader>cs mapping, set this option >
 To override the <leader>c<space> mapping, set this option >
     let NERD_com_line_toggle_map="<new mapping>"
 <
+                                    *NERD_com_line_minimal_map*
+To override the <leader>cm mapping, set this option >
+    let NERD_com_line_minimal_map="<new mapping>"
+<
 				 *NERD_com_to_end_of_line_map*
 To override the <leader>c$ mapping, set this option >
     let NERD_com_to_end_of_line_map="<new mapping>"
@@ -961,7 +957,7 @@ Regexp9: '^\(foo$\|bar$\|baz$\)\@!'
 Matches any strings except 'foo', 'bar' and 'baz'.
 
 ==============================================================================
-4. Issues with the script                                    *NERD_com-issues*
+4. Issues with the script{{{2                                *NERD_com-issues*
 
 
 ------------------------------------------------------------------------------
@@ -1005,12 +1001,15 @@ will become: >
 for simplicity)
 
 ==============================================================================
-5. TODO list                                                   *NERD_com-todo*
+5. TODO list {{{2                                              *NERD_com-todo*
+
+Uncommenting of minimal comments needs to be more robust. Currently it is easy
+to get illegal syntax when uncommenting them.
 
 
 
 ==============================================================================
-6. Credits                                                  *NERD_com-credits*
+6. Credits {{{2                                             *NERD_com-credits*
 
 Thanks and respect to the following people:
 
@@ -1020,8 +1019,8 @@ bastard.
 
 Thanks to Matthew Hawkins for his awesome refactoring!
 
-Thanks to the authors of the vimspell whose documentation installation
-function I stole :)
+Thanks to the authors of the vimspell whose documentation 
+installation function I stole :)
 
 Thanks to Greg Searle for the idea of using place-holders for nested comments.
 
@@ -1059,7 +1058,9 @@ Thanks to Igor Prischepoff for suggesting that i implement "toggle comments".
 Also, thanks for his suggested improvements about toggle comments after i
 implemented them.
 
-Thanks to harry for telling me that i broke the <leader>cn mapping in 1.53 :)
+Thanks to harry for telling me that i broke the <leader>cn mapping in 1.53 :),
+and thanks again for telling me about a bug that occurred when editing a file
+in a new tab.
 
 Thanks to Martin (Krischikim?) for his patch that fixed a bug with the doc
 install function and added support for ada comments with spaces as well as
@@ -1083,6 +1084,9 @@ sexy comments. Sexy comments dont look so sexy when they are only half removed
 Thanks to Alexander "boesi" Bosecke for pointing out a bug that was stopping
 the NERD_space_delim_filetype_regexp option from working with left aligned
 toggle comments.
+
+Thanks to Stefano Zacchiroli for suggesting the idea of "Minimal comments".
+And for suggested improvements to minimal comments.
 
 Cheers to myself for being the best looking man on Earth!
 

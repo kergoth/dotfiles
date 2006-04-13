@@ -9,6 +9,7 @@
 'Tlist_Enable_Fold_Column'	taglist.txt	/*'Tlist_Enable_Fold_Column'*
 'Tlist_Exit_OnlyWindow'	taglist.txt	/*'Tlist_Exit_OnlyWindow'*
 'Tlist_File_Fold_Auto_Close'	taglist.txt	/*'Tlist_File_Fold_Auto_Close'*
+'Tlist_GainFocus_On_ToggleOpen'	taglist.txt	/*'Tlist_GainFocus_On_ToggleOpen'*
 'Tlist_Highlight_Tag_On_BufEnter'	taglist.txt	/*'Tlist_Highlight_Tag_On_BufEnter'*
 'Tlist_Inc_Winwidth'	taglist.txt	/*'Tlist_Inc_Winwidth'*
 'Tlist_Max_Submenu_Items'	taglist.txt	/*'Tlist_Max_Submenu_Items'*
@@ -106,6 +107,7 @@ NERD_com-heuristics	NERD_comments.txt	/*NERD_com-heuristics*
 NERD_com-insert-comment	NERD_comments.txt	/*NERD_com-insert-comment*
 NERD_com-invert-comment	NERD_comments.txt	/*NERD_com-invert-comment*
 NERD_com-issues	NERD_comments.txt	/*NERD_com-issues*
+NERD_com-minimal-comment	NERD_comments.txt	/*NERD_com-minimal-comment*
 NERD_com-nested-comment	NERD_comments.txt	/*NERD_com-nested-comment*
 NERD_com-nesting	NERD_comments.txt	/*NERD_com-nesting*
 NERD_com-prepend-comment	NERD_comments.txt	/*NERD_com-prepend-comment*
@@ -121,6 +123,7 @@ NERD_com_align_right_map	NERD_comments.txt	/*NERD_com_align_right_map*
 NERD_com_in_insert_map	NERD_comments.txt	/*NERD_com_in_insert_map*
 NERD_com_line_invert_map	NERD_comments.txt	/*NERD_com_line_invert_map*
 NERD_com_line_map	NERD_comments.txt	/*NERD_com_line_map*
+NERD_com_line_minimal_map	NERD_comments.txt	/*NERD_com_line_minimal_map*
 NERD_com_line_nest_map	NERD_comments.txt	/*NERD_com_line_nest_map*
 NERD_com_line_sexy_map	NERD_comments.txt	/*NERD_com_line_sexy_map*
 NERD_com_line_toggle_map	NERD_comments.txt	/*NERD_com_line_toggle_map*
@@ -145,8 +148,6 @@ NERD_space_delim_filetype_regexp	NERD_comments.txt	/*NERD_space_delim_filetype_r
 NERD_uncom_line_map	NERD_comments.txt	/*NERD_uncom_line_map*
 NERD_use_compact_sexy_com_regexp	NERD_comments.txt	/*NERD_use_compact_sexy_com_regexp*
 NERD_use_nested_comments_default	NERD_comments.txt	/*NERD_use_nested_comments_default*
-NERD_use_sexy_coms_default_regexp	NERD_comments.txt	/*NERD_use_sexy_coms_default_regexp*
-NERD_use_toggle_coms_default	NERD_comments.txt	/*NERD_use_toggle_coms_default*
 Tlist_Get_Tag_Prototype_By_Line()	taglist.txt	/*Tlist_Get_Tag_Prototype_By_Line()*
 Tlist_Get_Tagname_By_Line()	taglist.txt	/*Tlist_Get_Tagname_By_Line()*
 Tlist_Set_App()	taglist.txt	/*Tlist_Set_App()*
@@ -380,7 +381,6 @@ o_[%	matchit.txt	/*o_[%*
 o_]%	matchit.txt	/*o_]%*
 o_g%	matchit.txt	/*o_g%*
 taglist-commands	taglist.txt	/*taglist-commands*
-taglist-configure	taglist.txt	/*taglist-configure*
 taglist-debug	taglist.txt	/*taglist-debug*
 taglist-extend	taglist.txt	/*taglist-extend*
 taglist-faq	taglist.txt	/*taglist-faq*
@@ -390,6 +390,7 @@ taglist-internet	taglist.txt	/*taglist-internet*
 taglist-intro	taglist.txt	/*taglist-intro*
 taglist-keys	taglist.txt	/*taglist-keys*
 taglist-menu	taglist.txt	/*taglist-menu*
+taglist-options	taglist.txt	/*taglist-options*
 taglist-requirements	taglist.txt	/*taglist-requirements*
 taglist-session	taglist.txt	/*taglist-session*
 taglist-todo	taglist.txt	/*taglist-todo*
