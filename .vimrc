@@ -150,6 +150,14 @@ function! StatusLine_Tlist_Info()
     return ''
   endif
 endfunction
+
+fun! StatusLine_FileName()
+  try
+    return pathshorten(expand('%f')) . ' '
+  catch
+    return expand('%f') . ' '
+  endtry
+endfun
 " }}}
 
 " Keymaps {{{
@@ -572,7 +580,7 @@ set laststatus=2
 if has('statusline')
   set statusline=
   set statusline+=%-3.3n\                      " buffer number
-  set statusline+=%f\                          " filename
+  set statusline+=%(%{StatusLine_FileName()}\ %) " filename
   set statusline+=%h%m%r%w                     " status flags
 
   " let Tlist_Process_File_Always = 1
