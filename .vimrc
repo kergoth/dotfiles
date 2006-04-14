@@ -633,10 +633,13 @@ endif
 let &termencoding = &encoding
 if has('multi_byte')
   set encoding=utf-8
-  set fileencodings=utf-8,iso-8859-15
-  " set fileencodings=ucs-bom,utf-8,iso-8859-15
+  " When fileencoding is empty, it uses the value of encoding. fenc is used
+  " for the creation of new files.
+  set fileencoding=
+  set fileencodings=ucs-bom,utf-8,default,latin1
   " set bomb
 endif
+
 " Most printers are Latin1, inform Vim so it can convert.
 set printencoding=latin1
 " }}}
