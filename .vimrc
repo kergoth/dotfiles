@@ -153,10 +153,11 @@ endfunction
 
 fun! StatusLine_FileName()
   try
-    return pathshorten(expand('%f')) . ' '
+    let fn = pathshorten(expand('%f')) . ' '
   catch
-    return expand('%f') . ' '
+    let fn = expand('%f') . ' '
   endtry
+  return fn
 endfun
 " }}}
 
