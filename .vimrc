@@ -187,13 +187,15 @@ noremap <Leader>gg ggVG
 noremap <space> <C-f>
 
 " Mappings to edit/reload the .vimrc
-if has('win32')
-  nmap ,s :source $HOME/_vimrc<CR>
-  nmap <silent> ,v :e $HOME/_vimrc<CR>
-else
-  nmap ,s :source $HOME/.vimrc<CR>
-  nmap <silent> ,v :e $HOME/.vimrc<CR>
+if ! exists('$MYVIMRC')
+  if has('win32')
+    let $MYVIMRC = $HOME.'/_vimrc'
+  else
+    let $MYVIMRC = $HOME.'/.vimrc'
+  endif
 endif
+nmap ,s :source $MYVIMRC<CR>
+nmap <silent> ,v :e $MYVIMRC<CR>
 
 " quickfix things
 nmap <Leader>cwc :cclose<CR>
