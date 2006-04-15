@@ -158,6 +158,22 @@ fixperms () {
 	find $path -type f -exec chmod 644 {} \;; find . -type d -exec chmod 755 {} \;
 }
 
+pager () {
+    $PAGER "$@"
+}
+
+foo () {
+    local temp="`mktemp -q $HOME/foo.XXXXXX`"
+    if [ $? -ne 0 ]; then
+        echo >&2 "Unable to create temporary file.  Aborting."
+        return 1
+    fi
+    e "$temp"
+    if [ "`/bin/ls -l \"$temp\"|awk '{print $5}'`" = "0" ]; then
+        rm -f "$temp"
+    fi
+}
+
 if [ "$PS1" ]; then
 	setup_interactive
 fi
@@ -165,20 +181,22 @@ fi
 alias diff='diff -urNdp'
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
-alias vi=vim
+alias vi='vim'
 alias symbolsizes="${NM} -S -t d --size-sort"
 alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
 
-if test x"$TERM" = "xrxvt-unicode"; then
-	c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
-	if ! test -e /usr/share/terminfo/$c/$TERM &&
-	   ! test -e $HOME/.terminfo/$c/$TERM; then
-		TERM=rxvt
-	fi
-        alias ls='ls --color=always -ap'
+# Deal with missing terminal types on certain machines.
+_c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
+if ! test -e /usr/share/terminfo/$_c/$TERM &&
+   ! test -e $HOME/.terminfo/$_c/$TERM; then
+	TERM=rxvt
+else
+	# ugh, damn old termcap based applications
+	TERMCAP="`infocmp -C|grep -v ^#|sed -e's,\\\\,,'`"
 fi
+unset _c
 
-export TERM
+export TERM TERMCAP
