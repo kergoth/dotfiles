@@ -46,9 +46,12 @@ INSTALLATION                                            *xterm16-installation*
     directory. To install globally put it in $VIMRUNTIME/colors. Finally add
     the following lines to your {.vimrc}: >
 
-	" Select your brightness level / colormap
-	let xterm16_colormap	= 'allblue'	" 'standard'/'soft' are default
-	let xterm16_brightness	= '123'		" '134'/'med' is default.
+	" Select colormap: 'soft', 'softlight', 'standard' or 'allblue'
+	let xterm16_colormap	= 'allblue'
+
+	" Select brightness: 'low', 'med', 'high', 'default' or custom levels.
+	let xterm16_brightness	= 'default'
+
 	colo xterm16
 
 <   You might also want to put |xterm16.txt| in the help directory (~/.vim/doc
@@ -513,5 +516,5 @@ UNREADABLE CONSOLE COLORS               *xterm16_NoRemap* *xterm16_TermRegexp*
 ------------------------------------------------------------------------------
 >
  Maintainer	: Gautam Iyer <gautamATmathDOTuchicagoDOTedu>
- Modified	: Mon 03 Apr 2006 12:59:50 AM CDT
+ Modified	: Fri 14 Apr 2006 01:21:46 AM CDT
  vim: ft=help:tw=78:iskeyword=!-~,^*,^|,^":ai:

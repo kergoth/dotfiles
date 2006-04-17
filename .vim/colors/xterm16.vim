@@ -1,7 +1,7 @@
-" xterm16-v2.4: Vim color scheme file
+" xterm16-v2.41: Vim color scheme file
 " Maintainer:	Gautam Iyer <gautam@math.uchicago.edu>
 " Created:	Thu 16 Oct 2003 06:17:47 PM CDT
-" Modified:	Tue 04 Apr 2006 11:33:57 AM CDT
+" Modified:	Sat 15 Apr 2006 03:40:56 PM CDT
 "
 " Adjustable color scheme for GUI/Terminal vim.
 
@@ -363,28 +363,30 @@ try
 
     if s:colormap == 'standard'
 	" {{{2 Original colormap. 8 standard colors, and 8 brighter ones.
-	call s:setcolor( 'black',       0,   0,    0)
-	call s:setcolor( 'darkred',     s:m, 0,    0)
-	call s:setcolor( 'darkgreen',   0,   s:m,  0)
-	call s:setcolor( 'darkyellow',  s:m, s:m,  0)
-	call s:setcolor( 'darkblue',    0,   0,    s:m)
-	call s:setcolor( 'darkmagenta', s:m, 0,    s:m)
-	call s:setcolor( 'darkcyan',    0,   s:m,  s:m)
-	call s:setcolor( 'grey',        s:m*44/50, s:m*44/50,  s:m*44/50)
+	call s:setcolor( 'black',       0        , 0        , 0        )
+	call s:setcolor( 'darkred',     s:m      , 0        , 0        )
+	call s:setcolor( 'darkgreen',   0        , s:m      , 0        )
+	call s:setcolor( 'darkyellow',  s:m      , s:m      , 0        )
+	call s:setcolor( 'darkblue',    0        , 0        , s:m      )
+	call s:setcolor( 'darkmagenta', s:m      , 0        , s:m      )
+	call s:setcolor( 'darkcyan',    0        , s:m      , s:m      )
+	call s:setcolor( 'grey',        s:m*44/50, s:m*44/50, s:m*44/50)
 
-	call s:setcolor( 'darkgrey',    s:l, s:l,  s:l)
-	call s:setcolor( 'red',         s:h, 0,    0)
-	call s:setcolor( 'green',       0,   s:h,  0)
-	call s:setcolor( 'yellow',      s:h, s:h,  0)
-	call s:setcolor( 'blue',        0,   0,    s:h)
-	call s:setcolor( 'magenta',     s:h, 0,    s:h)
-	call s:setcolor( 'cyan',        0,   s:h,  s:h)
-	call s:setcolor( 'white',       s:h, s:h,  s:h)
+	call s:setcolor( 'darkgrey',    s:l      , s:l      , s:l      )
+	call s:setcolor( 'red',         s:h      , 0        , 0        )
+	call s:setcolor( 'green',       0        , s:h      , 0        )
+	call s:setcolor( 'yellow',      s:h      , s:h      , 0        )
+	call s:setcolor( 'blue',        0        , 0        , s:h      )
+	call s:setcolor( 'magenta',     s:h      , 0        , s:h      )
+	call s:setcolor( 'cyan',        0        , s:h      , s:h      )
+	call s:setcolor( 'white',       s:h      , s:h      , s:h      )
 
 	" {{{2 Highlighting groups for standard colors
-	call s:hi( 'Normal'       , 'none'   , 'grey'        , 'black'      )
+	call s:hi( 'Normal'      , 'none'   , 'grey'       , 'black'     )
 
 	call s:hi( 'Cursor'      , 'none'   , 'black'      , 'green'     )
+	call s:hi( 'CursorColumn', 'none'   , 'none'       , 'darkgrey'  )
+	call s:hi( 'CursorLine'  , 'none'   , 'none'       , 'darkgrey'  )
 	call s:hi( 'DiffAdd'     , 'none'   , 'darkblue'   , 'darkgreen' )
 	call s:hi( 'DiffChange'  , 'none'   , 'black'      , 'darkyellow')
 	call s:hi( 'DiffDelete'  , 'none'   , 'darkblue'   , 'none'      )
@@ -522,6 +524,7 @@ try
 
 	    call s:hi( 'DiffText'    , 'none', 'darkred'  , 'darkyellow')
 	    call s:hi( 'Error'       , 'none', 'white'    , 'darkred'   )
+	    call s:hi( 'ErrorMsg'    , 'none', 'white'    , 'darkred'   )
 	    call s:hi( 'FoldColumn'  , 'none', 'purple'   , 'darkgrey'  )
 	    call s:hi( 'Folded'      , 'none', 'purple'   , 'darkgrey'  )
 	    call s:hi( 'StatusLine'  , 'none', 'darkblue' , 'lightgrey' )
@@ -532,6 +535,7 @@ try
 
 	    call s:hi( 'DiffText'    , 'none', 'red'      , 'darkyellow')
 	    call s:hi( 'Error'       , 'none', 'black'    , 'darkred'   )
+	    call s:hi( 'ErrorMsg'    , 'none', 'white'    , 'red'       )
 	    call s:hi( 'FoldColumn'  , 'none', 'lightgrey', 'darkgrey'  )
 	    call s:hi( 'Folded'      , 'none', 'black'    , 'darkgrey'  )
 	    call s:hi( 'StatusLine'  , 'none', 'skyblue'  , 'lightgrey' )
@@ -540,11 +544,12 @@ try
 
 	" Highlighting groups for light / dark background.
 	call s:hi( 'Cursor'      , 'none', 'black'     , 'green'     )
+	call s:hi( 'CursorColumn', 'none', 'none'      , 'grey'      )
+	call s:hi( 'CursorLine'  , 'none', 'none'      , 'grey'      )
 	call s:hi( 'DiffAdd'     , 'none', 'lightbrown', 'darkblue'  )
 	call s:hi( 'DiffChange'  , 'none', 'black'     , 'darkyellow')
 	call s:hi( 'DiffDelete'  , 'none', 'purple'    , 'darkblue'  )
 	call s:hi( 'Directory'   , 'none', 'cyan'      , 'none'      )
-	call s:hi( 'ErrorMsg'    , 'none', 'white'     , 'darkred'   )
 	call s:hi( 'IncSearch'   , 'none', 'yellow'    , 'darkblue'  )
 	call s:hi( 'LineNr'      , 'none', 'yellow'    , 'none'      )
 	call s:hi( 'MatchParen'  , 'bold', 'none'      , 'none'      )
@@ -645,15 +650,15 @@ try
 	call s:setcolor( 'yellowgreen', s:m       , s:M       , 0          )
 	call s:setcolor( 'skyblue'    , 0         , s:m       , s:M        )
 	call s:setcolor( 'lightblue'  , 0         , s:m       , s:h        )
+	call s:setcolor( 'cyan'       , 0         , s:M       , s:M        )
 	call s:setcolor( 'lightcyan'  , s:m       , s:M       , s:M        )
 	call s:setcolor( 'darkpurple' , s:m       , 0         , s:h        )
 	call s:setcolor( 'purple'     , s:m       , s:m       , s:M        )
-	call s:setcolor( 'lightpurple', s:m       , s:m       , s:h        )
 
 	" Unused colors that are pretty reasonable
 	" call s:setcolor( 'lightred'   , s:M       , s:m       , s:m        )
-	" call s:setcolor( 'bluewhite'  , s:m       , s:M       , s:h        )
-	" call s:setcolor( 'cyan'       , 0         , s:M       , s:M        )
+	" call s:setcolor( 'bluewhite'  , s:M       , s:M       , s:h        )
+	" call s:setcolor( 'lightpurple', s:m       , s:m       , s:h        )
 
 	" Greys can be done with better accurcy on cterms!
 	call s:setcolor( 'white'      , 48*s:M/50 , 48*s:M/50 , 48*s:M/50  )
@@ -704,7 +709,7 @@ try
 	call s:hi( 'Comment'      , 'none'   , 'purple'      , 'none'       )
 	call s:hi( 'Constant'     , 'none'   , 'lightcyan'   , 'none'       )
 	call s:hi( 'Error'        , 'none'   , 'red'         , 'none'       )
-	call s:hi( 'Identifier'   , 'none'   , 'lightpurple' , 'none'       )
+	call s:hi( 'Identifier'   , 'none'   , 'cyan'        , 'none'       )
 	call s:hi( 'Ignore'       , 'none'   , 'grey3'       , 'none'       )
 	call s:hi( 'PreProc'      , 'none'   , 'darkpurple'  , 'none'       )
 	call s:hi( 'Special'      , 'none'   , 'bluegreen'   , 'none'       )
@@ -731,12 +736,10 @@ try
 
 	" {{{2 Highlighting groups for email.
 	"
-	" Email links quoted text alternately to Comment and Identifier.
-	" They're too similar to distinguish, so we have to change groups
-	" here.
-	"
+	" mailURL links to Constant, which is light cyan. This does not stand
+	" out well in quoted emails (which is cyan), or regular text. Better
+	" to use light brown (like the soft colormap).
 	hi link mailURL		Todo
-	hi link mailQuoted1	Constant
 
 	" {{{2 Define html highlighting groups for "allblue" colors
 	if !exists("g:xterm16_NoHtmlColors")
@@ -778,8 +781,8 @@ finally
     unlet! s:cterm_lightbrown s:cterm_bluegreen s:cterm_skyblue s:cterm_purple
 
     " Delete extra colors from "allblue" colormap
-    unlet! s:gui_darkcyan s:gui_darkblue s:gui_grey1 s:gui_grey2 s:gui_grey3 s:gui_grey4 s:gui_grey5 s:gui_white1 s:gui_dirtygreen s:gui_yellowgreen s:gui_lightblue s:gui_lightcyan s:gui_darkpurple s:gui_lightpurple
-    unlet! s:cterm_darkcyan s:cterm_darkblue s:cterm_grey1 s:cterm_grey2 s:cterm_grey3 s:cterm_grey4 s:cterm_grey5 s:cterm_white1 s:cterm_dirtygreen s:cterm_yellowgreen s:cterm_lightblue s:cterm_lightcyan s:cterm_darkpurple s:cterm_lightpurple
+    unlet! s:gui_darkcyan s:gui_darkblue s:gui_grey1 s:gui_grey2 s:gui_grey3 s:gui_grey4 s:gui_grey5 s:gui_white1 s:gui_dirtygreen s:gui_yellowgreen s:gui_lightblue s:gui_lightcyan s:gui_darkpurple
+    unlet! s:cterm_darkcyan s:cterm_darkblue s:cterm_grey1 s:cterm_grey2 s:cterm_grey3 s:cterm_grey4 s:cterm_grey5 s:cterm_white1 s:cterm_dirtygreen s:cterm_yellowgreen s:cterm_lightblue s:cterm_lightcyan s:cterm_darkpurple
 
     delfunction s:tohex
     delfunction s:extractRGB
