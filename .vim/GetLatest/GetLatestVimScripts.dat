@@ -18,7 +18,7 @@ ScriptID SourceID Filename
 974 4316 indent/python.vim
 1066 5001 :AutoInstall: cecutil.vim
 1075 5439 netrw.vim
-1218 5542 :AutoInstall: NERD_comments.vim
+1218 5576 :AutoInstall: NERD_comments.vim
 1243 4055 colors/desert256.vim
 1248 4239 syntax/cccs.vim
 1311 4504 vimplate.vim
@@ -41,4 +41,4 @@ ScriptID SourceID Filename
 1472 5524 colors/sift.vim
 1477 5305 modeliner.vim
 1484 5356 colors/spectro.vim
-1520 5570 cppomnicomplete
+1520 5575 cppomnicomplete

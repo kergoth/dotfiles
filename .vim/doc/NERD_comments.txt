@@ -1,4 +1,4 @@
-*NERD_comments.txt*         Plugin for commenting code            v165
+*NERD_comments.txt*         Plugin for commenting code            v166
 
 
                         NERD_COMMENTS REFERENCE MANUAL~
@@ -1087,6 +1087,9 @@ toggle comments.
 
 Thanks to Stefano Zacchiroli for suggesting the idea of "Minimal comments".
 And for suggested improvements to minimal comments.
+
+Thanks to Norick Chen for emailing in a patch that fixed the asp delimiters.
+In 1.65
 
 Cheers to myself for being the best looking man on Earth!
 

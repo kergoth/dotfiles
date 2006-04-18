@@ -1,12 +1,11 @@
 " Vim completion script
 " Language:  C++
 " Maintainer:  Vissale NEANG
-" Last Change:  2006 Apr 16
+" Last Change:  2006 Apr 17
 " Comments:
-" Version 1.0:
+" Version 0.11:
 "   First, sorry for my bad english.... :)
 "   The script is not finished yet, the todo list is:
-"       -   typedef resolution
 "       -   typename resolution (with the patched ctags)
 "       -   Need to improve child members completion
 "       -   No completion when we have myObject.getOtherObject()->???
@@ -225,7 +224,7 @@ function! s:ResolveTypeInfoOfLastItem(namespaces, type_info, fifo_items)
             if a:fifo_items[0]==''
                 return type_info
             else
-                return s:ResolveTypeInfoOfLastItem(resolved_type_info, a:fifo_items)
+                return s:ResolveTypeInfoOfLastItem(a:namespaces, resolved_type_info, a:fifo_items)
             endif
         endif
     endif
@@ -235,7 +234,7 @@ endfunc
 " Get all members of a class, struct, union.
 " for class and struct, get also the inherited members
 function! s:GetAllMembers(namespaces, type_info, ...)
-    let search_query = {'class':{}, 'struct':{}, 'union':{}}
+    let search_query = s:default_search_query
     let tag_query = '.*'
 
     " Getting optional argument
@@ -247,11 +246,14 @@ function! s:GetAllMembers(namespaces, type_info, ...)
     endif
 
     let result = []
-    let type_info_list = split(a:type_info, '::')
-    let tag_list = taglist('^'.type_info_list[-1].'$')
+    
+    " Get the tag list of the class name without his namespace,
+    " GetTagList() resolve the first typedef
+    let type_info_typedef_resolved = a:type_info
+    let [tag_list, type_info_typedef_resolved] = s:GetTagList(a:type_info)
 
-    " Get the correct tag item that match our type_info (namespace+classname)
-    let [tag_item, resolved_type_info] = s:ResolveTag(a:namespaces, a:type_info, tag_list)
+    " Get the correct tag item that match our type_info_typedef_resolved (namespace+classname)
+    let [tag_item, resolved_type_info] = s:ResolveTag(a:namespaces, type_info_typedef_resolved, tag_list)
 
     " Exit if tag not found
     if tag_item=={}
@@ -327,25 +329,25 @@ function! s:SearchMembers(filename, type_info, search_query, tag_query)
 
     " Note: tag_item keys and search_query keys are always in full name format
     for tag_item in tag_list 
-        for kind in keys(a:search_query)
+        for kind_query in keys(a:search_query)
             " Ignoring ctor and dtor for class and struct
-            if kind=='class' || kind=='struct'
+            if kind_query=='class' || kind_query=='struct'
                 if tag_item['name'] == type_name || tag_item['name'] == '~'.type_name
                     continue
                 endif
             endif
 
             " Note: tag_item keys and kind are always in full name format
-            if has_key(tag_item, kind)
+            if has_key(tag_item, kind_query)
                 " Enum fix
                 " We can have in the tag file 'enum:ns1::ns2::MyClass::2'
                 " we don't want '::2'
-                let value_enum_fix = substitute(tag_item[kind], '::[0-9]\+$', '', 'g')
+                let value_enum_fix = substitute(tag_item[kind_query], '::[0-9]\+$', '', 'g')
 
                 let type_info_whithout_global_namespace = substitute(a:type_info, '^::', '', 'g')
                 if value_enum_fix==type_info_whithout_global_namespace
                     " Case where the search request is to get static members
-                    if has_key(a:search_query[kind], 'static')
+                    if has_key(a:search_query[kind_query], 'static')
                         " We have to get static members only
                         " Is the current member static ?
                         if match(tag_item.cmd, '\<static\>')==-1
@@ -375,7 +377,7 @@ function! s:ConvertTagItemToPopupItem(tag_item)
     " parenthesis
     " Note: tag_item values can be in single letter format so
     " we always test the first letter
-    if a:tag_item['kind'][0]=='f' || a:tag_item['kind'][0]=='p'
+    if index(['f', 'p'], a:tag_item.kind[0])>=0
         let item_word = item_word . '('
     endif
     let item_kind = "\t\t" . a:tag_item['kind']
@@ -422,16 +424,21 @@ function! s:HasChanged(filepath, type_info)
     endif
 endfunc
 
-function! s:ExtractTypeFromTagItemCmd(tag_item)
+" Extract the cmd of a tag item without regexp
+function! s:ExtractCmdFromTagItem(tag_item)
     let line = a:tag_item.cmd
     let re = '\(\/\^\)\|\(\$\/\)'
     if match(line, re)!=-1
         let line = substitute(line, re, '', 'g')
-        return s:ExtractTypeFromDeclaration(line)
+        return line
     else
         " TODO: the cmd is a line number
         return ''
     endif
+endfunc
+
+function! s:ExtractTypeFromTagItemCmd(tag_item)
+    return s:ExtractTypeFromDeclaration(s:ExtractCmdFromTagItem(a:tag_item))
 endfunc
 
 " The returned namespace may not have the global namespace
@@ -462,6 +469,24 @@ function! s:ExtractTypeFromTagItem(tag_item)
     return result
 endfunc
 
+" Sometimes we need to remove specifier that are useless for
+" the process
+function! s:RemoveCppSpecifiers(string, specifier_list)
+    let specifier_regex = ''
+    for specifier in a:specifier_list
+        let specifier_regex = specifier_regex. '\<'. specifier .'\>\|'
+    endfor
+    let specifier_regex = specifier_regex[:-3]
+    return substitute(a:string, specifier_regex,'','g')
+endfunc
+
+" Remove template parameter
+" ex: vector<int> => vector
+" map < vector < int >, map < int, int > > => map
+function! s:RemoveTemplateParams(string)
+    return substitute(a:string, '<.*>', '', 'g')
+endfunc
+
 " Returns the type info ex: 'NameSpace1::NameSpace2::MyClass::MyNestedClass'
 " or 'MyClass'
 " Note: We remove starting '::' and ending '::' if any
@@ -473,12 +498,9 @@ function! s:ExtractTypeFromString(string)
     " ex:'< vector<int>, std::map<int, int> >'
     " Then we remove pointer and reference (*,&)
     " We finally remove space and tab
-    let specifier_regex = ''
-    for specifier in s:all_specifier
-        let specifier_regex = specifier_regex. '\<'. specifier .'\>\|'
-    endfor
-    let specifier_regex = specifier_regex . '<.*>\|[*&]\|[[:blank:]]'
-    let result = substitute(a:string, specifier_regex,'','g')
+    let result = s:RemoveCppSpecifiers(a:string, s:all_specifier)
+    let result = s:RemoveTemplateParams(result)
+    let result = substitute(result, '[*&]\|[[:blank:]]','','g')
 
     " We remove starting '::' and ending '::' if any
     return substitute(result, '\(^::\)\|\(::$\)', '', 'g')
@@ -492,6 +514,18 @@ function! s:ExtractTypeFromDeclaration(decl)
     return s:ExtractTypeFromString(decl)
 endfunc
 
+" Get the tag list and try to resolve typedef if any
+function! s:GetTagList(type_info)
+    let type_info_typedef_resolved = a:type_info
+    let tag_list = taglist('^'.split(a:type_info, '::')[-1].'$')
+
+    if len(tag_list)
+        let [tag_list, type_info_typedef_resolved] = s:ResolveTypedef(tag_list, type_info_typedef_resolved)
+    endif
+
+    return [tag_list, type_info_typedef_resolved]
+endfunc
+
 " Get the best tag entry from the tag list that match our type info
 " ex:
 "   Our type info is  NameSpace1::NameSpace2::MyClass
@@ -501,14 +535,17 @@ endfunc
 "       -   The namespace (we eliminate the NameSpace3::MyClass)
 "       -   The kind (to eliminate the ctor MyClass())
 "   type_info's namespace can be unresolved at entry
-"   if ResolveTag() success the type_info's namespace is resolve
+"   if ResolveTag() success the type_info's namespace is resolve and the
+"   resolved type info is return. A resolved type info always begin with '::'
 "   ex:
 "       If we have 'Class1' (we don't know his namespace, maybe global maybe not..)
 "       The result can be '::Class1' or '::Namespace1::Class1'
+"   @return a list of 2 item:
+"       -   [tag item, resolved type info] if success
+"       -   [{}, a:type_info] if fails
 function! s:ResolveTag(namespaces, type_info, tag_list)
     let garbage = []
     let resolved_type_info = a:type_info
-
 
     " The tag list contains all tag entries of MyClass
     for tag_item in a:tag_list
@@ -528,7 +565,7 @@ function! s:ResolveTag(namespaces, type_info, tag_list)
             if our_namespace == tag_item_namespace
                 " function and prototype or not the priority it can be a problem
                 " if the ctor of our class MyClass is return
-                if index(['function', 'prototype'], tag_item.kind)>=0
+                if index(['f', 'p'], tag_item.kind[0])>=0
                     " You can have the ctor MyClass but maybe the tag item of
                     " class MyClass comes after, we add the item in
                     " the garbage list
@@ -548,7 +585,7 @@ function! s:ResolveTag(namespaces, type_info, tag_list)
                 if test_namespace == tag_item_namespace
                     " function and prototype or not the priority it can be a problem
                     " if the ctor of our class MyClass is return
-                    if index(['function', 'prototype'], tag_item.kind)>=0
+                    if index(['f', 'p'], tag_item.kind[0])>=0
                         " You can have the ctor MyClass but maybe the tag item of
                         " class MyClass comes after, we add the item in
                         " the garbage list
@@ -564,4 +601,45 @@ function! s:ResolveTag(namespaces, type_info, tag_list)
     endfor
 
     return [get(garbage, 0, {}), resolved_type_info]
+endfunc
+
+" Resolve a typedef recursively
+function! s:ResolveTypedef(tag_list, type_info)
+    let result = [a:tag_list, a:type_info]
+    " Try to resolve a typedef only for the first item
+    " TODO: Is it possible to have multiple typedef in the tag list for a
+    " class name ?
+    let tag_item = a:tag_list[0]
+    if tag_item.kind[0]=='t'
+        " line = 'typedef Class1 MY_CLASS; typedef MY_CLASS MyClass;'
+        let line = s:ExtractCmdFromTagItem(tag_item)
+        let lines = s:ExtractDeclarationLines(line)
+
+        " Try to find the declaration of tag_item
+        let declaration = ''
+        for decl in lines
+            if match(decl, '\<'.tag_item.name.'\>')!=-1
+                let declaration = decl
+                break
+            endif
+        endfor
+
+        if declaration!=''
+            " We have our declaration, now we can work properly
+            " the declaration is in the format 'typedef const Class1< blabla >& MY_CLASS'
+            let declaration = substitute(declaration, '\<'.tag_item.name.'\>', '', 'g')
+            let type_info = s:ExtractTypeFromDeclaration(declaration)
+            " TODO: namespace resolution
+            let result = s:GetTagList(type_info)
+        endif
+    endif
+    return result
+endfunc
+
+" Split a line into line declaration
+" ex: if we have this line
+" typedef Class1 MY_CLASS; typedef MY_CLASS MyClass;
+"  =>['typedef Class1 MY_CLASS', 'typedef MY_CLASS MyClass']
+function! s:ExtractDeclarationLines(line)
+    return split(a:line, ';')
 endfunc

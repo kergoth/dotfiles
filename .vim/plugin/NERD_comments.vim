@@ -1,7 +1,7 @@
 " vim global plugin that provides easy code commenting for various file types
 " Last Change:  12 April 2006
 " Maintainer:   Martin Grenfell <mrg39 at student.canterbury.ac.nz>
-let s:NERD_comments_version = 1.65
+let s:NERD_comments_version = 1.66
 
 
 " For help documentation type :help NERD_comments. If this fails, Restart vim
@@ -211,7 +211,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "asn" 
         call s:MapDelimiters('--', '')
     elseif a:filetype == "aspvbs" 
-        call s:MapDelimiters(''', '')
+        call s:MapDelimiters('''', '')
     elseif a:filetype == "atlas" 
         call s:MapDelimiters('C','$') 
     elseif a:filetype == "automake" 
@@ -4523,6 +4523,9 @@ toggle comments.
 
 Thanks to Stefano Zacchiroli for suggesting the idea of "Minimal comments".
 And for suggested improvements to minimal comments.
+
+Thanks to Norick Chen for emailing in a patch that fixed the asp delimiters.
+In 1.65
 
 Cheers to myself for being the best looking man on Earth!
 
