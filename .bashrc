@@ -116,18 +116,16 @@ setup_interactive () {
         ;;
     esac
     if [ -n "$CLEARCASE_ROOT" ]; then
-        CCASE="[`echo $CLEARCASE_ROOT|cut -d/ -f3`]";
-        VOBPATH="`cleartool lsvob|grep ^*|awk '{print $2}'|head -1|xargs dirname`";
-        cd $VOBPATH;
-    fi;
+        CCASE="[`echo $CLEARCASE_ROOT|cut -d/ -f3`]"
+        VOBPATH="`cleartool lsvob|grep ^*|awk '{print $2}'|head -1|xargs dirname`"
+        cd $VOBPATH
+    fi
     PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\]
-    $CCASE\w\$ ";
-    export PROMPT_COMMAND='echo -n -e "\033k\033\134"';
-    [ -z "$day" ] && day=`date +%A`;
-    printdayinfo $day;
-    XTERM_SET='';
-    CCASE='';
-    VOBPATH=''
+$CCASE\w\$ "
+    export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
+    [ -z "$day" ] && day=`date +%A`
+    printdayinfo $day
+    unset XTERM_SET CCACHE VOBPATH
 
     # Deal with missing terminal types on certain machines.
     _c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
@@ -196,4 +194,3 @@ alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
-
