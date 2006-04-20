@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="{044FA143-992A-435f-95A5-39E25470F8F0}"
+                   em:version="2.0"
+                   em:name="Azerty II"
+                   em:description="Pretty and pleasant icons. Each button was designed to symbolize its real function. Sometimes realistic or symbolic but always with merry colors and original forms."
+                   em:creator="Graphys"
+                   em:homepageURL="http://azertyskin.free.fr/"
+                   em:internalName="AzertyII">
+    <em:targetApplication RDF:resource="rdf:#$A3eaJ"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$A3eaJ"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.4.0"
+                   em:maxVersion="1.5.0.*" />
+</RDF:RDF>

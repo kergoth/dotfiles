@@ -1,0 +1,17 @@
+
+overlay	chrome://browser/content/browser.xul	chrome://delicious/content/deliciousOverlay.xul
+overlay	chrome://navigator/content/navigator.xul	chrome://delicious/content/deliciousOverlay.xul
+overlay	chrome://messenger/content/mailWindowOverlay.xul	chrome://delicious/content/deliciousOverlay.xul
+content	delicious	jar:chrome/delicious.jar!/content/delicious/
+
+skin	delicious	classic/1.0	jar:chrome/delicious.jar!/skin/classic/delicious/
+
+locale	delicious	en-US	jar:chrome/delicious.jar!/locale/en-US/delicious/
+
+locale	delicious	ru-RU	jar:chrome/delicious.jar!/locale/ru-RU/delicious/
+
+locale	delicious	ja-JP	jar:chrome/delicious.jar!/locale/ja-JP/delicious/
+
+locale	delicious	fr-FR	jar:chrome/delicious.jar!/locale/fr-FR/delicious/
+
+locale	delicious	zh-CN	jar:chrome/delicious.jar!/locale/zh-CN/delicious/

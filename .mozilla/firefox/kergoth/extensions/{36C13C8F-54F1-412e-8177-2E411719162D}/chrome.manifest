@@ -1,0 +1,5 @@
+skin	browser	Qute	jar:chrome/tmp-12.xpi!/browser/
+skin	global	Qute	jar:chrome/tmp-12.xpi!/global/
+skin	help	Qute	jar:chrome/tmp-12.xpi!/help/
+skin	mozapps	Qute	jar:chrome/tmp-12.xpi!/mozapps/
+skin	reporter	Qute	jar:chrome/tmp-12.xpi!/reporter/

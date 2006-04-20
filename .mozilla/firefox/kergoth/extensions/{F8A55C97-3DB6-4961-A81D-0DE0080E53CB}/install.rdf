@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>{F8A55C97-3DB6-4961-A81D-0DE0080E53CB}</em:id>
+    <em:version>0.7.1</em:version>
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.0+</em:minVersion>
+        <em:maxVersion>1.5.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication> 
+
+    <em:file>
+      <Description about="urn:mozilla:extension:file:downloadmgr.jar">
+        <em:package>content/downloadmgr/</em:package>
+        <em:skin>skin/classic/downloadmgr/</em:skin>
+        <em:locale>locale/ca-AD/downloadmgr/</em:locale>
+        <em:locale>locale/de-DE/downloadmgr/</em:locale>
+        <em:locale>locale/en-US/downloadmgr/</em:locale>
+        <em:locale>locale/es-ES/downloadmgr/</em:locale>
+        <em:locale>locale/fr-FR/downloadmgr/</em:locale>
+        <em:locale>locale/hu-HU/downloadmgr/</em:locale>
+        <em:locale>locale/it-IT/downloadmgr/</em:locale>
+        <em:locale>locale/ja-JP/downloadmgr/</em:locale>
+        <em:locale>locale/nl-NL/downloadmgr/</em:locale>
+        <em:locale>locale/pl-PL/downloadmgr/</em:locale>
+        <em:locale>locale/ru-RU/downloadmgr/</em:locale>
+        <em:locale>locale/sv-SE/downloadmgr/</em:locale>
+        <em:locale>locale/zh-TW/downloadmgr/</em:locale>
+      </Description>
+    </em:file>
+    
+    <em:name>Download Manager Tweak</em:name>
+    <em:creator>andman42</em:creator>
+    <em:description>A modification of the Firefox download manager that changes its appearance and allows it to be opened in a separate window, a new tab, or the sidebar.</em:description>
+    <em:homepageURL>http://dmextension.mozdev.org/</em:homepageURL>
+ 
+    <!-- Front End Integration Hooks (used by Extension Manager)-->
+    <em:optionsURL>chrome://downloadmgr/content/options/options.xul</em:optionsURL>
+    <!-- em:aboutURL>chrome://downloadmgr/content/options/options.xul</em:aboutURL -->
+    <em:iconURL>chrome://downloadmgr/skin/downloadIcon.png</em:iconURL>
+    
+  </Description>      
+</RDF>

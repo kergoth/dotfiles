@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+<Description about="urn:mozilla:install-manifest">
+<em:id>{88060a48-addf-4060-87db-c9aec3e5615a}</em:id>
+<em:version>1.5.906</em:version>
+
+<em:targetApplication>
+<Description>
+<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+<em:minVersion>0.10</em:minVersion>
+<em:maxVersion>2.0</em:maxVersion>
+</Description>
+</em:targetApplication>
+
+<em:name>Phoenity</em:name>
+<em:description>A simple and colourful theme for everyone.</em:description>
+<em:creator>Lim Chee Aun</em:creator>
+<em:contributor>John Ramirez</em:contributor>
+<em:homepageURL>http://phoenity.com/</em:homepageURL>
+<em:internalName>phoenity</em:internalName>
+<em:aboutURL>chrome://global/skin/misplaced/SubSkins.xul</em:aboutURL>
+</Description>
+
+</RDF>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+<Description about="urn:mozilla:install-manifest">
+
+    <em:id>{a44ef047-cd8d-406e-a354-b7101bd24735}</em:id>
+    <em:version>0.4.1</em:version>
+    <!-- Front End MetaData -->
+    <em:name>SurfKeys</em:name>
+    <em:description>Comfortable surfing with keyboard.</em:description>
+    <em:creator>Pekka Sillanpaa</em:creator>
+    <em:homepageURL>http://surfkeys.mozdev.org</em:homepageURL>
+	<em:iconURL>chrome://surfkeys/skin/icon.png</em:iconURL>  
+	    <em:optionsURL>chrome://surfkeys/content/preferences.xul</em:optionsURL>
+    <em:targetApplication>
+        <Description>
+            <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+            <em:minVersion>1.5</em:minVersion>
+            <em:maxVersion>1.6</em:maxVersion>
+        </Description>
+    </em:targetApplication>
+ 
+    <em:file>
+        <Description about="urn:mozilla:extension:file:surfkeys.jar">
+            <em:package>content/surfkeys/</em:package>
+            <em:skin>skin/classic/surfkeys/</em:skin>
+            <em:locale>locale/en-US/surfkeys/</em:locale>
+        </Description>
+    </em:file>
+
+    <em:type>2</em:type>
+
+</Description>
+
+</RDF>

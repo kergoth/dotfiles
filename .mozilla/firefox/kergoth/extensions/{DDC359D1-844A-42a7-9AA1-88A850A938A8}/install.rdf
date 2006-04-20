@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>{DDC359D1-844A-42a7-9AA1-88A850A938A8}</em:id>
+		<em:name>DownThemAll!</em:name>
+		<em:description>The mass downloader for Firefox.</em:description>
+		<em:creator>Federico Parodi - Stefano Verna</em:creator>
+		<em:version>0.9.8.7</em:version>
+		<em:aboutURL>chrome://dta/content/about/about.xul</em:aboutURL>
+		<em:iconURL>chrome://dta/content/immagini/icon.png</em:iconURL>
+		<em:homepageURL>http://downthemall.mozdev.org</em:homepageURL>
+		<em:optionsURL>chrome://dta/content/opzioni/opzioni.xul</em:optionsURL>
+			
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>1.6</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	</Description>
+</RDF>

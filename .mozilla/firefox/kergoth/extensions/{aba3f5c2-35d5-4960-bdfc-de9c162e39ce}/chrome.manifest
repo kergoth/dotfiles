@@ -1,0 +1,5 @@
+
+overlay	chrome://browser/content/bookmarks/addBookmark2.xul	chrome://openbook/content/openbook.xul
+content	openbook	jar:chrome/openbook.jar!/content/openbook/
+
+locale	openbook	en-US	jar:chrome/openbook.jar!/locale/en-US/openbook/

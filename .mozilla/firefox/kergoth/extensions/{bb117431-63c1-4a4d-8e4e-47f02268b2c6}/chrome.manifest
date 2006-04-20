@@ -1,0 +1,8 @@
+
+overlay	chrome://mozapps/content/downloads/downloads.xul	chrome://lget/content/downloadManagerOverLay.xul
+overlay	chrome://browser/content/browser.xul	chrome://lget/content/browserOverLay.xul
+content	lget	jar:chrome/lget.jar!/content/lget/
+
+skin	lget	classic/1.0	jar:chrome/lget.jar!/skin/classic/lget/
+
+locale	lget	en-US	jar:chrome/lget.jar!/locale/en-US/lget/

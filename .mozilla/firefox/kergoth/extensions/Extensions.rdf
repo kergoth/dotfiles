@@ -1,0 +1,528 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$absYP"
+                   em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="urn:mozilla:extension:filtersetg@updater"
+                   em:version="0.2.6"
+                   em:name="Adblock Filterset.G Updater"
+                   em:description="Synchronizes Adblock with Filterset.G"
+                   em:creator="Reid Rankin, Michael McDonald"
+                   em:homepageURL="http://www.pierceive.com/"
+                   em:optionsURL="chrome://fgupdater/content/settings.xul"
+                   em:aboutURL="chrome://fgupdater/content/about.xul"
+                   em:iconURL="chrome://fgupdater/skin/icon.png">
+    <em:contributor>--TRANSLATIONS BY--</em:contributor>
+    <em:contributor>Luana Di Muzio (it-IT)</em:contributor>
+    <em:contributor>Stefan Pukallus (de-DE)</em:contributor>
+    <em:contributor>KAMI (hu-HU)</em:contributor>
+    <em:contributor>Jean-Bernard Marcon (fr-FR)</em:contributor>
+    <em:contributor>Jose Sun (zh-TW)</em:contributor>
+    <em:contributor>Blackdire (zh-CN)</em:contributor>
+    <em:contributor>Victory (ja-JP)</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$kasYP"/>
+    <em:targetApplication RDF:resource="rdf:#$lasYP"/>
+    <em:targetApplication RDF:resource="rdf:#$masYP"/>
+  </RDF:Description>
+  <RDF:Seq RDF:about="urn:mozilla:theme:root">
+    <RDF:li RDF:resource="http://phoenity.com/downloads/phoenity.jar"/>
+    <RDF:li RDF:resource="http://ftp.mozilla.org/pub/mozilla.org/themes/azerty_ii/azerty_ii-1.0.2-fx.jar"/>
+    <RDF:li RDF:resource="http://ftp.mozilla.org/pub/mozilla.org/themes/qute/qute-3-fx.jar"/>
+    <RDF:li RDF:resource="urn:mozilla:theme:{36C13C8F-54F1-412e-8177-2E411719162D}"/>
+    <RDF:li RDF:resource="urn:mozilla:theme:{044FA143-992A-435f-95A5-39E25470F8F0}"/>
+    <RDF:li RDF:resource="urn:mozilla:theme:{88060a48-addf-4060-87db-c9aec3e5615a}"/>
+  </RDF:Seq>
+  <RDF:Description RDF:about="urn:mozilla:extension:{987311C6-B504-4aa2-90BF-60CC49808D42}"
+                   em:version="0.7"
+                   em:name="BugMeNot"
+                   em:description="Bypass compulsory web registration with the context menu via www.bugmenot.com."
+                   em:creator="Eric Hamiter"
+                   em:homepageURL="http://roachfiend.com"
+                   em:updateURL="http://extensions.roachfiend.com/update.rdf"
+                   em:optionsURL="chrome://bugmenot/content/bugmenotOptions.xul"
+                   em:aboutURL="chrome://bugmenot/content/about.xul"
+                   em:iconURL="chrome://bugmenot/skin/bugmenot.png">
+    <em:contributor>Michael Lidman</em:contributor>
+    <em:contributor>Joseph Wain</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$T5sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$o5sYP"
+                   em:id="{3db10fab-e461-4c80-8b97-957ad5f8ea47}"
+                   em:minVersion="0"
+                   em:maxVersion="0" />
+  <RDF:Description RDF:about="rdf:#$J6sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.5" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/bugmenot.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$1asYP"
+                   em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   em:minVersion="0.5"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="rdf:#$Kbvkv"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.10"
+                   em:maxVersion="1" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{a44ef047-cd8d-406e-a354-b7101bd24735}"
+                   em:version="0.2"
+                   em:name="SurfKeys"
+                   em:description="Comfortable surfing with keyboard."
+                   em:creator="Pekka Sillanpaa"
+                   em:homepageURL="http://surfkeys.mozdev.org"
+                   em:optionsURL="chrome://surfkeys/content/settings.xul"
+                   em:iconURL="chrome://surfkeys/skin/icon.png"
+                   em:disabled="true">
+    <em:targetApplication RDF:resource="rdf:#$i4sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/fasterfox-0.7.9-fx.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$T5sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.8"
+                   em:maxVersion="1.9" />
+  <RDF:Description RDF:about="rdf:#$B7sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.7"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{c36177c0-224a-11da-8cd6-0800200c9a66}"
+                   em:version="0.7.9"
+                   em:name="Fasterfox"
+                   em:description="Performance and network tweaks for Firefox."
+                   em:creator="Tony Gentilcore"
+                   em:homepageURL="http://fasterfox.mozdev.org/"
+                   em:aboutURL="chrome://fasterfox/content/about.xul"
+                   em:iconURL="chrome://fasterfox/skin/icon.png">
+    <em:contributor>Artwork - Nicholas Dower</em:contributor>
+    <em:contributor>Castellano - Raul Gonzalez Duque</em:contributor>
+    <em:contributor>Castellano-Argentina - R. Nicol�s L�pez</em:contributor>
+    <em:contributor>Deutsch - Gerald Frankl and Oliver Roth</em:contributor>
+    <em:contributor>Fran�ais - Xavier Robin</em:contributor>
+    <em:contributor>Italiano - Giacomo Margarito</em:contributor>
+    <em:contributor>Japanese - Norah</em:contributor>
+    <em:contributor>Nederlands - Liesbeth</em:contributor>
+    <em:contributor>Polski - Leszek(teo)Zyczkowski</em:contributor>
+    <em:contributor>Portugu�s-Brasil - Marcelo Ghelman</em:contributor>
+    <em:contributor>T�rkisch - Erkan Kaplan</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$k3sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$v9sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.9"
+                   em:maxVersion="1.6" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/gcache-patched.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$lasYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.7"
+                   em:maxVersion="1.6" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{fce36c1e-58d8-498a-b2a5-66ad1cedebbb}"
+                   em:version="0.34"
+                   em:name="CustomizeGoogle"
+                   em:description="Enhance Google search results and remove ads and spam"
+                   em:creator="info@customizegoogle.com"
+                   em:homepageURL="http://www.customizegoogle.com/"
+                   em:updateURL="http://www.customizegoogle.com/update.en-US.rdf"
+                   em:optionsURL="chrome://customizegoogle/content/prefs.xul"
+                   em:iconURL="chrome://customizegoogle/skin/32x32.png">
+    <em:contributor>Toni Kaija (fi-FI)</em:contributor>
+    <em:contributor>Luca Pedrazzi and Roccobot (it-IT)</em:contributor>
+    <em:contributor>Xavi Ivars (ca-AD)</em:contributor>
+    <em:contributor>Kai-Chieh Ku (zh-TW)</em:contributor>
+    <em:contributor>Shaman Miller and Erkan Kaplan (tr-TR)</em:contributor>
+    <em:contributor>Norah Marinkovic (ja-JP)</em:contributor>
+    <em:contributor>Carlos and Rodrigo M. (es-ES)</em:contributor>
+    <em:contributor>Carlos and Rodrigo M. (es-AR)</em:contributor>
+    <em:contributor>Ruben Verborgh (nl-NL)</em:contributor>
+    <em:contributor>Ruben Verborgh (nl-BE)</em:contributor>
+    <em:contributor>Piarres Beobide (eu-ES)</em:contributor>
+    <em:contributor>Denis Devedjian and Mathieu (fr-FR)</em:contributor>
+    <em:contributor>Kerry Wang (zh-CN)</em:contributor>
+    <em:contributor>Tomas Marek (cs-CZ)</em:contributor>
+    <em:contributor>Nir Bruner (he-IL)</em:contributor>
+    <em:contributor>Ljubisa Radovanovic (sr-YU)</em:contributor>
+    <em:contributor>Nighto (pt-BR)</em:contributor>
+    <em:contributor>Jan Wittrodt (de-DE)</em:contributor>
+    <em:contributor>Viktor Kristian (sk-SK)</em:contributor>
+    <em:contributor>Copper (lt-LT)</em:contributor>
+    <em:contributor>Anders Jorsal (da-DK)</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$v9sYP"/>
+    <em:targetApplication RDF:resource="rdf:#$w9sYP"/>
+  </RDF:Description>
+  <RDF:Seq RDF:about="urn:mozilla:extension:root">
+    <RDF:li RDF:resource="urn:mozilla:extension:{34274bf4-1d97-a289-e984-17e546307e4f}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:filtersetg@updater"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{987311C6-B504-4aa2-90BF-60CC49808D42}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{fce36c1e-58d8-498a-b2a5-66ad1cedebbb}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{F8A55C97-3DB6-4961-A81D-0DE0080E53CB}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{c36177c0-224a-11da-8cd6-0800200c9a66}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:fusion"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{5cb675f8-3da2-4cb5-8223-0b47ce2cefcf}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{3f0da09b-c1ab-40c5-8d7f-53f475ac3fe8}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:keyconfig@dorando"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{bb117431-63c1-4a4d-8e4e-47f02268b2c6}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{aba3f5c2-35d5-4960-bdfc-de9c162e39ce}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{5F590AA2-1221-4113-A6F4-A4BB62414FAC}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{a44ef047-cd8d-406e-a354-b7101bd24735}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{dc572301-7619-498c-a57d-39143191b318}"/>
+    <RDF:li RDF:resource="urn:mozilla:extension:{e4a8a97b-f2ed-450b-b12d-ee082ba24781}"/>
+  </RDF:Seq>
+  <RDF:Description RDF:about="rdf:#$bbsYP"
+                   em:id="{136c295a-4a5a-41cf-bf24-5cee526720d5}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="rdf:#$n2sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.8"
+                   em:maxVersion="1.1" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/smoothwheel-v0.44.4.20050521.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$.3sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.6" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{3f0da09b-c1ab-40c5-8d7f-53f475ac3fe8}"
+                   em:version="0.8.2+"
+                   em:name="InfoLister"
+                   em:description="Lists installed extensions and themes"
+                   em:creator="Nickolay Ponomarev"
+                   em:homepageURL="http://mozilla.doslash.org/infolister"
+                   em:updateURL="http://mozilla.doslash.org/infolister/update.rdf"
+                   em:optionsURL="chrome://infolister/content/prefs.xul"
+                   em:iconURL="chrome://infolister/skin/icon32x32.png">
+    <em:contributor>Torisugari (code)</em:contributor>
+    <em:contributor>Ralf Hasse (icons)</em:contributor>
+    <em:contributor>Rowne Mastaile</em:contributor>
+    <em:contributor>Robert Strong</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$9bsYP"/>
+    <em:targetApplication RDF:resource="rdf:#$absYP"/>
+    <em:targetApplication RDF:resource="rdf:#$bbsYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:{34274bf4-1d97-a289-e984-17e546307e4f}"
+                   em:version="0.5.10"
+                   em:name="Adblock Plus"
+                   em:description="Filters ads from web-pages. Now with whitelisting and synchronization."
+                   em:creator="The Adblock Plus Crew"
+                   em:homepageURL="http://bene.sitesled.com/adblock.htm"
+                   em:updateURL="http://adblockplus.webhop.org/adblock.xml"
+                   em:optionsURL="chrome://adblock/content/settings.xul"
+                   em:aboutURL="chrome://adblock/content/about.xul"
+                   em:iconURL="chrome://adblock/skin/adblock-icon.png">
+    <em:contributor>Rowne-Wuff Mastaile</em:contributor>
+    <em:contributor>Altuhov Dmitriy</em:contributor>
+    <em:contributor>Monzi</em:contributor>
+    <em:contributor>mcm</em:contributor>
+    <em:contributor>OneStop</em:contributor>
+    <em:contributor>Zockman</em:contributor>
+    <em:contributor>Bene</em:contributor>
+    <em:contributor>lymanepp</em:contributor>
+    <em:contributor>Ruschi</em:contributor>
+    <em:contributor>--TRANSLATIONS BY--</em:contributor>
+    <em:contributor>Luana Di Muzio (it-IT)</em:contributor>
+    <em:contributor>Artem Haimenov (ru-RU)</em:contributor>
+    <em:contributor>Stefan Pukallus (de-DE)</em:contributor>
+    <em:contributor>Tjaard de Vries (nl-NL)</em:contributor>
+    <em:contributor>JoJaBa (fr-FR)</em:contributor>
+    <em:contributor>Jose Sun (zh-TW)</em:contributor>
+    <em:contributor>Premier (ja-JP)</em:contributor>
+    <em:contributor>Blackdire (zh-CN)</em:contributor>
+    <em:contributor>Josef Kotva (cs-CZ)</em:contributor>
+    <em:contributor>KAMI (hu-HU)</em:contributor>
+    <em:contributor>Proyecto NAVE (es-ES)</em:contributor>
+    <em:contributor>Sergio Abreu and Alessandro Nakamuta (pt-BR)</em:contributor>
+    <em:contributor>Leszek(teo)Życzkowski (pl-PL)</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$d8sYP"/>
+    <em:targetApplication RDF:resource="rdf:#$e8sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:{dc572301-7619-498c-a57d-39143191b318}"
+                   em:version="0.2.5.2"
+                   em:name="Tab Mix Plus"
+                   em:description="Tab browsing with an added boost."
+                   em:creator="Gary Reyes [CPU]"
+                   em:homepageURL="http://tmp.garyr.net"
+                   em:optionsURL="chrome://tabmixplus/content/pref-tabmix.xul"
+                   em:iconURL="chrome://tabmixplus/skin/tmp.png">
+    <em:contributor>onemen</em:contributor>
+    <em:contributor>logixoul</em:contributor>
+    <em:contributor>SUN Chun-Yen</em:contributor>
+    <em:contributor>ReinekeFux [de-DE]</em:contributor>
+    <em:contributor>MatrixIsAllOver by eXtenZilla [it-IT]</em:contributor>
+    <em:contributor>Pierre [fr-FR]</em:contributor>
+    <em:contributor>Ptit Lutin [fr-FR]</em:contributor>
+    <em:contributor>dude [fr-FR]</em:contributor>
+    <em:contributor>Hadakadenkyu [ja]</em:contributor>
+    <em:contributor>Leszek(teo)Zyczkowski [pl-PL]</em:contributor>
+    <em:contributor>Juan G. Gamba [es-ES]</em:contributor>
+    <em:contributor>lordquest [zh-CN]</em:contributor>
+    <em:contributor>Hugo Ribeiro [pt-BR]</em:contributor>
+    <em:contributor>Pardal Freudenthal [pt-BR]</em:contributor>
+    <em:contributor>KAMI [hu-HU]</em:contributor>
+    <em:contributor>yuoo2k [zh-TW]</em:contributor>
+    <em:contributor>Alena Jašprová [cs-CZ]</em:contributor>
+    <em:contributor>erkaN [tr-TR]</em:contributor>
+    <em:contributor>Juliette Reinders Folmer [nl-NL]</em:contributor>
+    <em:contributor>ArtLonger [ru-RU]</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$J6sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/keyconfig.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:theme:{88060a48-addf-4060-87db-c9aec3e5615a}"
+                   em:version="1.5.1"
+                   em:name="Phoenity"
+                   em:description="A simple and colourful theme for everyone."
+                   em:creator="Lim Chee Aun"
+                   em:homepageURL="http://phoenity.com/"
+                   em:updateURL="http://phoenity.com/phoenity.rdf"
+                   em:internalName="phoenity">
+    <em:targetApplication RDF:resource="rdf:#$dcvkv"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$e8sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.7"
+                   em:maxVersion="1.6" />
+  <RDF:Description RDF:about="rdf:#$d8sYP"
+                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   em:minVersion="1.4"
+                   em:maxVersion="1.8" />
+  <RDF:Description RDF:about="rdf:#$w9sYP"
+                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   em:minVersion="1.0+"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$43jmV1"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.9"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{e4a8a97b-f2ed-450b-b12d-ee082ba24781}"
+                   em:version="0.5.3"
+                   em:name="Greasemonkey"
+                   em:description="A User Script Manager for Firefox"
+                   em:creator="Aaron Boodman; http://youngpup.net/"
+                   em:homepageURL="http://greasemonkey.mozdev.org/"
+                   em:optionsURL="chrome://greasemonkey/content/manage.xul">
+    <em:contributor>David Schontzler; http://stilleye.com/</em:contributor>
+    <em:contributor>Matthew Gray; http://mkgray.com:8000/</em:contributor>
+    <em:contributor>Jeremy Dunck; http://dunck.us/anabasis/</em:contributor>
+    <em:contributor>Nikolas Coukouma; http://atrus.org/</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$43jmV1"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$Zbvkv"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.9"
+                   em:maxVersion="1.0.7" />
+  <RDF:Description RDF:about="urn:mozilla:extension:fusion"
+                   em:version="0.6"
+                   em:name="Fusion"
+                   em:description="Amalgamates the location bar and the progress bar."
+                   em:creator="Stephen Clavering"
+                   em:homepageURL="http://clav.mozdev.org/"
+                   em:updateURL="http://clav.mozdev.org/updates.rdf">
+    <em:targetApplication RDF:resource="rdf:#$C4sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:theme:{36C13C8F-54F1-412e-8177-2E411719162D}"
+                   em:version="3"
+                   em:name="Qute"
+                   em:description="Icons designed to be modern, dynamic and fresh, with attention paid to usability and comfort over extended use."
+                   em:creator="Arvid Axelsson"
+                   em:homepageURL="http://quadrone.org/"
+                   em:internalName="Qute">
+    <em:targetApplication RDF:resource="rdf:#$Kbvkv"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:{F8A55C97-3DB6-4961-A81D-0DE0080E53CB}"
+                   em:version="0.6.6"
+                   em:name="Download Manager Tweak"
+                   em:description="A modification of the Firefox download manager that changes its appearance and allows it to be opened in a separate window, a new tab, or the sidebar."
+                   em:creator="andman42"
+                   em:homepageURL="http://dmextension.mozdev.org/"
+                   em:updateURL="http://dmextension.mozdev.org/update.rdf"
+                   em:optionsURL="chrome://downloadmgr/content/options/options.xul"
+                   em:iconURL="chrome://downloadmgr/skin/downloadIcon.png">
+    <em:targetApplication RDF:resource="rdf:#$n2sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:{aba3f5c2-35d5-4960-bdfc-de9c162e39ce}"
+                   em:version="1.3.4"
+                   em:name="OpenBook"
+                   em:description="Allows for customization of the Add Bookmark dialog"
+                   em:creator="chuonthis"
+                   em:homepageURL="http://www.chuonthis.com/extensions/"
+                   em:updateURL="http://www.chuonthis.com/extensions/update.rdf?application=openbook"
+                   em:optionsURL="chrome://openbook/content/openbookPref.xul"
+                   em:iconURL="chrome://openbook/content/openbook.png"
+                   em:disabled="true">
+    <em:targetApplication RDF:resource="rdf:#$.3sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/tab_mix_plus-0.2.5.2-fx.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/openbook.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$3asYP"
+                   em:id="{3db10fab-e461-4c80-8b97-957ad5f8ea47}"
+                   em:minVersion="7"
+                   em:maxVersion="8" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/adblock_filterset.g_updater-0.2.6-fx+fl+mz.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/fusion.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:keyconfig@dorando"
+                   em:version="20050908"
+                   em:name="keyconfig"
+                   em:description="Rebind your keys."
+                   em:creator="Dorando"
+                   em:homepageURL="http://mozilla.dorando.at/"
+                   em:updateURL="http://mozilla.dorando.at/update.rdf"
+                   em:disabled="true">
+    <em:contributor>Hadar Hagai</em:contributor>
+    <em:contributor>MatrixIsAllOver of eXtenZilla.it (it-IT)</em:contributor>
+    <em:contributor>Mori (fr-FR)</em:contributor>
+    <em:contributor>SHIMODA Hiroshi (ja-JP)</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$k5sYP"/>
+    <em:targetApplication RDF:resource="rdf:#$l5sYP"/>
+    <em:targetApplication RDF:resource="rdf:#$m5sYP"/>
+    <em:targetApplication RDF:resource="rdf:#$n5sYP"/>
+    <em:targetApplication RDF:resource="rdf:#$o5sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$C4sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.9"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{5cb675f8-3da2-4cb5-8223-0b47ce2cefcf}"
+                   em:version="0.1"
+                   em:name="Gcache patched"
+                   em:description="Displays a google cached version of the webpage."
+                   em:creator="Anthony Lieuallen"
+                   em:homepageURL="http://www.arantius.com/article/arantius/gcache-patched%3a+firefox+extension/"
+                   em:updateURL="http://www.arantius.com/misc/gcache-patched.rdf"
+                   em:aboutURL="chrome://gcache/content/about.xul"
+                   em:iconURL="chrome://gcache/skin/gcache.png">
+    <em:targetApplication RDF:resource="rdf:#$B7sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/Adblock_Plus_0.5.10.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$9bsYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/surfkeys_0_2.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/lget-0.1.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$i4sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.9"
+                   em:maxVersion="1.0.6+" />
+  <RDF:Description RDF:about="rdf:#$n5sYP"
+                   em:id="{136c295a-4a5a-41cf-bf24-5cee526720d5}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="urn:mozilla:extension:{bb117431-63c1-4a4d-8e4e-47f02268b2c6}"
+                   em:version="0.1"
+                   em:name="lget"
+                   em:description="Allows you to initiate a direct download of a file given a url"
+                   em:creator="J. Carlos Navea"
+                   em:homepageURL="http://www.loconet.ca/"
+                   em:optionsURL="chrome://lget/content/options.xul"
+                   em:iconURL="chrome://lget/skin/logo.png"
+                   em:disabled="true">
+    <em:targetApplication RDF:resource="rdf:#$T1sYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$k5sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.4" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/infolister-0.8.2.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$kasYP"
+                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   em:minVersion="1.4"
+                   em:maxVersion="1.8" />
+  <RDF:Description RDF:about="rdf:#$0asYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.7"
+                   em:maxVersion="1.0" />
+  <RDF:Description RDF:about="rdf:#$k3sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.5" />
+  <RDF:Description RDF:about="rdf:#$l5sYP"
+                   em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.4" />
+  <RDF:Description RDF:about="rdf:#$m5sYP"
+                   em:id="{718e30fb-e89b-41dd-9da7-e25a45638b28}"
+                   em:minVersion="0.2+"
+                   em:maxVersion="0.2+" />
+  <RDF:Description RDF:about="rdf:#$masYP"
+                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   em:minVersion="1.0+"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$T1sYP"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/customizegoogle-0.34.en-US.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:{5F590AA2-1221-4113-A6F4-A4BB62414FAC}"
+                   em:version="0.44.4.20050521"
+                   em:name="SmoothWheel"
+                   em:description="Scrolls the document smoothly when scrolling the mouse wheel"
+                   em:creator="Avi Halachmi"
+                   em:homepageURL="http://smoothwheel.mozdev.org/"
+                   em:updateURL="http://smoothwheel.mozdev.org/update.rdf"
+                   em:optionsURL="chrome://smoothwheel/content/prefoverlay.xul">
+    <em:targetApplication RDF:resource="rdf:#$0asYP"/>
+    <em:targetApplication RDF:resource="rdf:#$1asYP"/>
+    <em:targetApplication RDF:resource="rdf:#$2asYP"/>
+    <em:targetApplication RDF:resource="rdf:#$3asYP"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="file:///media/net/hyperion/web/default/files/extensions/downloadmgr_066.xpi">
+    <em:state NC:parseType="Integer">4</em:state>
+    <em:progress NC:parseType="Integer">0</em:progress>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:theme:{044FA143-992A-435f-95A5-39E25470F8F0}"
+                   em:version="1.0.2"
+                   em:name="Azerty II"
+                   em:description="Pretty and pleasant icons. Each button was designed to symbolize its real function. Sometimes realistic or symbolic but always with merry colors and original forms."
+                   em:creator="Graphys"
+                   em:homepageURL="http://azertyskin.free.fr/"
+                   em:internalName="AzertyII">
+    <em:targetApplication RDF:resource="rdf:#$Zbvkv"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$2asYP"
+                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   em:minVersion="1.4"
+                   em:maxVersion="1.8" />
+  <RDF:Description RDF:about="rdf:#$dcvkv"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.10+"
+                   em:maxVersion="1.0" />
+</RDF:RDF>

@@ -1,0 +1,27 @@
+<UserScriptConfig>
+	<Script filename="wowicleanup.user.js" name="WoWI Cleanup" namespace="tag:tardmrr@gmail.com,11-07-2005:WoWICleanup" description="Removes the nasty Ogaming bar from the top of WoWInterface" enabled="true">
+		<Include>*wowinterface*</Include>
+	</Script>
+	<Script filename="allmusicguidecorrector.user.js" name="All Music Guide Corrector" namespace="http://youngpup.net/userscripts" description="A port of Adrian Holovaty's All Music Guide site-specific extension" enabled="true">
+		<Include>http://www.allmusic.com*</Include>
+	</Script>
+	<Script filename="popupwindowfixer.user.js" name="Popup Window Fixer" namespace="http://youngpup.net/userscripts" description="Fixes poorly written javascript popup windows in the manner specified by http://youngpup.net/2003/popups." enabled="true">
+		<Include>*</Include>
+	</Script>
+	<Script filename="netvibessubscribe.user.js" name="Netvibes Subscribe" namespace="http://www.spikydog.com/userscripts" description="Adds links to subscribe to site feeds via Netvibes" enabled="true">
+		<Include>*</Include>
+	</Script>
+	<Script filename="30boxestextsizefixer.user.js" name="30Boxes text size-fixer" namespace="userscripts.org" description="fixes the text size on your 30boxes.com calendar to be less... huge." enabled="true">
+		<Include>http://*30boxes.com/*</Include>
+	</Script>
+	<Script filename="sourceforgecleanerlayout.user.js" name="SourceForge - Cleaner Layout" namespace="http://simon.arlott.org/gm/" description="Removes the right sidebar and adverts" enabled="true">
+		<Include>http*://sourceforge.net/*</Include>
+	</Script>
+	<Script filename="slashdotcommenttree.user.js" name="Slashdot - comment tree" namespace="http://www.cs.uni-magdeburg.de/~vlaube/Projekte/GreaseMonkey/" description="Allows you to collapse and expand comments" enabled="true">
+		<Include>http://slashdot.org/*</Include>
+		<Include>http://*.slashdot.org/*</Include>
+	</Script>
+	<Script filename="collapsibleamazon.user.js" name="Collapsible Amazon" namespace="http://brh.numbera.com/software/greasemonkeyscripts" description="Collapse any section of the Amazon website by clicking on the orange section header." enabled="true">
+		<Include>http://*.amazon.*</Include>
+	</Script>
+</UserScriptConfig>

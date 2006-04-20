@@ -1,0 +1,30 @@
+overlay	chrome://navigator/content/navigatorOverlay.xul chrome://ietab/content/ietabOverlay.xul
+overlay	chrome://browser/content/browser.xul chrome://ietab/content/ietabOverlay.xul
+overlay	chrome://browser/content/bookmarks/addBookmark2.xul chrome://ietab/content/ietabBookmark.xul
+
+content	ietab	jar:chrome/ietab.jar!/content/ xpcnativewrappers=no
+skin	ietab	classic/1.0	jar:chrome/ietab.jar!/skin/
+style	chrome://global/content/customizeToolbar.xul	chrome://ietab/skin/ietab.css
+
+locale	ietab	en-US	jar:chrome/ietab.jar!/locale/en-US/ietab/
+locale	ietab	ca-AD	jar:chrome/ietab.jar!/locale/ca-AD/ietab/
+locale	ietab	cs-CZ	jar:chrome/ietab.jar!/locale/cs-CZ/ietab/
+locale	ietab	da-DK	jar:chrome/ietab.jar!/locale/da-DK/ietab/
+locale	ietab	de-DE	jar:chrome/ietab.jar!/locale/de-DE/ietab/
+locale	ietab	es-ES	jar:chrome/ietab.jar!/locale/es-ES/ietab/
+locale	ietab	fi-FI	jar:chrome/ietab.jar!/locale/fi-FI/ietab/
+locale	ietab	fr-FR	jar:chrome/ietab.jar!/locale/fr-FR/ietab/
+locale	ietab	he-IL	jar:chrome/ietab.jar!/locale/he-IL/ietab/
+locale	ietab	it-IT	jar:chrome/ietab.jar!/locale/it-IT/ietab/
+locale	ietab	ja-JP	jar:chrome/ietab.jar!/locale/ja-JP/ietab/
+locale	ietab	ko-KR	jar:chrome/ietab.jar!/locale/ko-KR/ietab/
+locale	ietab	nl-NL	jar:chrome/ietab.jar!/locale/nl-NL/ietab/
+locale	ietab	pl-PL	jar:chrome/ietab.jar!/locale/pl-PL/ietab/
+locale	ietab	pt-BR	jar:chrome/ietab.jar!/locale/pt-BR/ietab/
+locale	ietab	ru-RU	jar:chrome/ietab.jar!/locale/ru-RU/ietab/
+locale	ietab	sk-SK	jar:chrome/ietab.jar!/locale/sk-SK/ietab/
+locale	ietab	sl-SI	jar:chrome/ietab.jar!/locale/sl-SI/ietab/
+locale	ietab	sv-SE	jar:chrome/ietab.jar!/locale/sv-SE/ietab/
+locale	ietab	tr-TR	jar:chrome/ietab.jar!/locale/tr-TR/ietab/
+locale	ietab	zh-CN	jar:chrome/ietab.jar!/locale/zh-CN/ietab/
+locale	ietab	zh-TW	jar:chrome/ietab.jar!/locale/zh-TW/ietab/

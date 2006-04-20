@@ -1,0 +1,33 @@
+
+overlay	chrome://mozapps/content/downloads/downloads.xul	chrome://downloadmgr/content/downloadmgrOverlay.xul
+overlay	chrome://browser/content/preferences/preferences.xul	chrome://downloadmgr/content/preferencesOverlay.xul
+overlay	chrome://browser/content/browser.xul	chrome://downloadmgr/content/browserOverlay.xul
+content	downloadmgr	jar:chrome/downloadmgr.jar!/content/downloadmgr/
+
+skin	downloadmgr	classic/1.0	jar:chrome/downloadmgr.jar!/skin/classic/downloadmgr/
+
+locale	downloadmgr	ca-AD	jar:chrome/downloadmgr.jar!/locale/ca-AD/downloadmgr/
+
+locale	downloadmgr	de-DE	jar:chrome/downloadmgr.jar!/locale/de-DE/downloadmgr/
+
+locale	downloadmgr	en-US	jar:chrome/downloadmgr.jar!/locale/en-US/downloadmgr/
+
+locale	downloadmgr	es-ES	jar:chrome/downloadmgr.jar!/locale/es-ES/downloadmgr/
+
+locale	downloadmgr	fr-FR	jar:chrome/downloadmgr.jar!/locale/fr-FR/downloadmgr/
+
+locale	downloadmgr	hu-HU	jar:chrome/downloadmgr.jar!/locale/hu-HU/downloadmgr/
+
+locale	downloadmgr	it-IT	jar:chrome/downloadmgr.jar!/locale/it-IT/downloadmgr/
+
+locale	downloadmgr	ja	jar:chrome/downloadmgr.jar!/locale/ja-JP/downloadmgr/
+
+locale	downloadmgr	nl-NL	jar:chrome/downloadmgr.jar!/locale/nl-NL/downloadmgr/
+
+locale	downloadmgr	pl-PL	jar:chrome/downloadmgr.jar!/locale/pl-PL/downloadmgr/
+
+locale	downloadmgr	ru-RU	jar:chrome/downloadmgr.jar!/locale/ru-RU/downloadmgr/
+
+locale	downloadmgr	sv-SE	jar:chrome/downloadmgr.jar!/locale/sv-SE/downloadmgr/
+
+locale	downloadmgr	zh-TW	jar:chrome/downloadmgr.jar!/locale/zh-TW/downloadmgr/

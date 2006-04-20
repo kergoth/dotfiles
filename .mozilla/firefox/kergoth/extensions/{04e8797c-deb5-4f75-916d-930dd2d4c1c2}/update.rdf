@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.mozilla.org/2004/em-rdf#">
+<r:Description about="urn:mozilla:extension:{04e8797c-deb5-4f75-916d-930dd2d4c1c2}">
+  <updates>
+    <r:Seq>
+      <r:li>
+        <r:Description>
+          <version>1.5.0.1</version>
+          <targetApplication>
+            <r:Description>
+              <id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</id>
+              <minVersion>0.7</minVersion>
+              <maxVersion>1.5</maxVersion>
+              <updateLink>https://www.chipmark.com/chipmark-v.1.5.0.1.xpi</updateLink>
+            </r:Description>
+          </targetApplication>
+        </r:Description>
+      </r:li>
+    </r:Seq>
+  </updates>
+  <version>1.5.0.1</version>
+  <updateLink>https://www.chipmark.com/chipmark-v.1.5.0.1.xpi</updateLink>
+</r:Description>
+</r:RDF>

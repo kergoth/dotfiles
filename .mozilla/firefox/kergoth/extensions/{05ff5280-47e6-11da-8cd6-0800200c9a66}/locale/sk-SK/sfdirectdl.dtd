@@ -1,0 +1,16 @@
+<!ENTITY sfdirectdl.openOriginal "Otvoriť pôvodný odkaz">
+<!ENTITY sfdirectdl.openOriginal.accesskey "O">
+
+<!ENTITY sfdirectdl.options.title "Možnosti Sourceforge Direct Download">
+<!ENTITY sfdirectdl.options.mirror.group "Voľba mirroru">
+<!ENTITY sfdirectdl.options.mirror.label "Na sťahovanie použiť tento mirror (pre náhodný výber ponechajte prázdne):">
+<!ENTITY sfdirectdl.options.mirrorlist "Dostupné mirrory">
+
+<!ENTITY sfdirectdl.update.label "Aktualizovať">
+<!ENTITY sfdirectdl.update.accesskey "A">
+<!ENTITY sfdirectdl.update.tooltip "Aktualizovať zoznam dostupných mirrorov">
+
+<!ENTITY sfdirectdl.updatestatus.init "Kliknutím na 'Aktualizovať' získate zoznam mirrorov.">
+<!ENTITY sfdirectdl.updatestatus.done "Zoznam mirrorov získaný.">
+<!ENTITY sfdirectdl.updatestatus.error "Chyba">
+<!ENTITY sfdirectdl.updatestatus.loading "Načítanie zoznamu mirrorov...">

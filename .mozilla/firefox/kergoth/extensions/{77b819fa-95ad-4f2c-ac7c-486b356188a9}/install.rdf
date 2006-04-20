@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+ <Description about="urn:mozilla:install-manifest">
+
+   <em:id>{77b819fa-95ad-4f2c-ac7c-486b356188a9}</em:id>
+   <em:name>IE Tab</em:name>
+   <em:version>1.0.9</em:version>
+   <em:description>Enables you to use the embedded IE engine within Mozilla/Firefox.</em:description>
+   <em:creator>Hong Jen Yee (PCMan), yuoo2k</em:creator>
+   <em:contributor>Kourge [en-US] (English)</em:contributor>
+   <em:contributor>Opakoman [ca-AD] (Catalan)</em:contributor>
+   <em:contributor>Tablet [cs-CZ] (Czech)</em:contributor>
+   <em:contributor>AlleyKat, Imladris [da-DK] (Danish)</em:contributor>
+   <em:contributor>RavenNevermore [de-DE] (German)</em:contributor>
+   <em:contributor>Pedro Laguna [es-ES] (Spanish)</em:contributor>
+   <em:contributor>DJ Hasis [fi-FI] (Finnish)</em:contributor>
+   <em:contributor>Dagobert_78, SB9232 [fr-FR] (French)</em:contributor>
+   <em:contributor>Reuven Gonen [he-IL] (Hebrew)</em:contributor>
+   <em:contributor>Giacomo Margarito [it-IT] (Italian)</em:contributor>
+   <em:contributor>Norah [ja-JP] (Japanese)</em:contributor>
+   <em:contributor>sushizang [ko-KR] (Korean)</em:contributor>
+   <em:contributor>Alf [nl-NL] (Dutch)</em:contributor>
+   <em:contributor>Leszek(teo)Życzkowski [pl-PL] (Polish)</em:contributor>
+   <em:contributor>Ghelman [pt-BR] (Portuguese Brazilian)</em:contributor>
+   <em:contributor>Igor N. Avtaev [ru-RU] (Russian)</em:contributor>
+   <em:contributor>SlovakSoft [sk-SK] (Slovak)</em:contributor>
+   <em:contributor>Martin McDowell [sl-SI] (Slovenian)</em:contributor>
+   <em:contributor>haggeluring, Fnatte79 [sv-SE] (Swedish)</em:contributor>
+   <em:contributor>Hasan Karaboga [tr-TR] (Turkish)</em:contributor>
+   <em:contributor>Duet G., webdone [zh-CN] (Simplified Chinese)</em:contributor>
+
+   <em:homepageURL>http://ietab.mozdev.org/</em:homepageURL>
+   <em:optionsURL>chrome://ietab/content/ietabSetting.xul</em:optionsURL>
+   <em:iconURL>chrome://ietab/skin/ietab-icon.png</em:iconURL>
+
+   <!-- Firefox -->
+   <em:targetApplication>
+     <Description>
+       <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+       <em:minVersion>1.0</em:minVersion>
+       <em:maxVersion>1.6</em:maxVersion>
+     </Description>
+   </em:targetApplication>
+
+   <!-- Mozilla Suite -->
+   <em:targetApplication>
+     <Description>
+       <em:id>{86c18b42-e466-45a9-ae7a-9b95ba6f5640}</em:id>
+       <em:minVersion>1.7</em:minVersion>
+       <em:maxVersion>1.8</em:maxVersion>
+     </Description>
+   </em:targetApplication>
+
+   <!-- Flock -->
+   <em:targetApplication>
+     <Description>
+       <em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
+       <em:minVersion>0.4</em:minVersion>
+       <em:maxVersion>0.7</em:maxVersion>
+     </Description>
+   </em:targetApplication>
+
+   <em:file>
+     <Description about="urn:mozilla:extension:file:ietab.jar">
+       <em:package>content/</em:package>
+       <em:skin>skin/</em:skin>
+       <em:locale>locale/en-US/ietab/</em:locale>
+       <em:locale>locale/ca-AD/ietab/</em:locale>
+       <em:locale>locale/cs-CZ/ietab/</em:locale>
+       <em:locale>locale/da-DK/ietab/</em:locale>
+       <em:locale>locale/de-DE/ietab/</em:locale>
+       <em:locale>locale/es-ES/ietab/</em:locale>
+       <em:locale>locale/fi-FI/ietab/</em:locale>
+       <em:locale>locale/fr-FR/ietab/</em:locale>
+       <em:locale>locale/he-IL/ietab/</em:locale>
+       <em:locale>locale/it-IT/ietab/</em:locale>
+       <em:locale>locale/ja-JP/ietab/</em:locale>
+       <em:locale>locale/ko-KR/ietab/</em:locale>
+       <em:locale>locale/nl-NL/ietab/</em:locale>
+       <em:locale>locale/pl-PL/ietab/</em:locale>
+       <em:locale>locale/pt-BR/ietab/</em:locale>
+       <em:locale>locale/ru-RU/ietab/</em:locale>
+       <em:locale>locale/sk-SK/ietab/</em:locale>
+       <em:locale>locale/sl-SI/ietab/</em:locale>
+       <em:locale>locale/sv-SE/ietab/</em:locale>
+       <em:locale>locale/tr-TR/ietab/</em:locale>
+       <em:locale>locale/zh-CN/ietab/</em:locale>
+       <em:locale>locale/zh-TW/ietab/</em:locale>
+     </Description>
+   </em:file>
+
+ </Description>
+</RDF>

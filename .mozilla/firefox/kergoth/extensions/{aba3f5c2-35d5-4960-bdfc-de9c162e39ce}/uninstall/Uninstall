@@ -1,0 +1,4 @@
+add	/home/kergoth/.mozilla/firefox/zbjtiant.default/extensions/{aba3f5c2-35d5-4960-bdfc-de9c162e39ce}/install.rdf
+add	/home/kergoth/.mozilla/firefox/zbjtiant.default/extensions/{aba3f5c2-35d5-4960-bdfc-de9c162e39ce}/chrome/openbook.jar
+register	profile	package	openbook
+register	profile	locale	en-US

@@ -1,0 +1,30 @@
+
+overlay	chrome://browser/content/browser.xul	chrome://fgupdater/content/fgupdater.xul
+overlay	chrome://navigator/content/navigator.xul	chrome://fgupdater/content/fgupdater.xul
+
+content	fgupdater	jar:chrome/fgupdater.jar!/content/
+
+skin	fgupdater	classic/1.0	jar:chrome/fgupdater.jar!/skin/classic/
+
+locale	fgupdater	en-US	jar:chrome/fgupdater.jar!/content/en-US/
+locale	fgupdater	ca-AD	jar:chrome/fgupdater.jar!/locale/ca-AD/
+locale	fgupdater	cs-CZ	jar:chrome/fgupdater.jar!/locale/cs-CZ/
+locale	fgupdater	da-DK	jar:chrome/fgupdater.jar!/locale/da-DK/
+locale	fgupdater	de-DE	jar:chrome/fgupdater.jar!/locale/de-DE/
+locale	fgupdater	es-ES	jar:chrome/fgupdater.jar!/locale/es-ES/
+locale	fgupdater	fi-FI	jar:chrome/fgupdater.jar!/locale/fi-FI/
+locale	fgupdater	fr-FR	jar:chrome/fgupdater.jar!/locale/fr-FR/
+locale	fgupdater	hu-HU	jar:chrome/fgupdater.jar!/locale/hu-HU/
+locale	fgupdater	it-IT	jar:chrome/fgupdater.jar!/locale/it-IT/
+locale	fgupdater	ja		jar:chrome/fgupdater.jar!/locale/ja/
+locale	fgupdater	nb-NO	jar:chrome/fgupdater.jar!/locale/nb-NO/
+locale	fgupdater	nl-NL	jar:chrome/fgupdater.jar!/locale/nl-NL/
+locale	fgupdater	pl-PL	jar:chrome/fgupdater.jar!/locale/pl-PL/
+locale	fgupdater	pt-BR	jar:chrome/fgupdater.jar!/locale/pt-BR/
+locale	fgupdater	pt-PT	jar:chrome/fgupdater.jar!/locale/pt-PT/
+locale	fgupdater	ru-RU	jar:chrome/fgupdater.jar!/locale/ru-RU/
+locale	fgupdater	sk-SK	jar:chrome/fgupdater.jar!/locale/sk-SK/
+locale	fgupdater	sv-SE	jar:chrome/fgupdater.jar!/locale/sv-SE/
+locale	fgupdater	tr-TR	jar:chrome/fgupdater.jar!/locale/tr-TR/
+locale	fgupdater	zh-CN	jar:chrome/fgupdater.jar!/locale/zh-CN/
+locale	fgupdater	zh-TW	jar:chrome/fgupdater.jar!/locale/zh-TW/

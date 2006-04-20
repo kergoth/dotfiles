@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+
+    <em:name>Tab Mix Plus</em:name>
+    <em:id>{dc572301-7619-498c-a57d-39143191b318}</em:id>
+    <em:version>0.3.0.5</em:version>
+    <em:extension>true</em:extension>
+    <em:type>2</em:type>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>1.6</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:file>
+      <Description about="urn:mozilla:extension:file:tabmixplus.jar">
+        <em:package>content/tabmixplus/</em:package>
+        <em:locale>locale/ca-AD/tabmixplus/</em:locale>
+        <em:locale>locale/cs-CZ/tabmixplus/</em:locale>
+        <em:locale>locale/da-DK/tabmixplus/</em:locale>
+        <em:locale>locale/de-DE/tabmixplus/</em:locale>
+        <em:locale>locale/en-US/tabmixplus/</em:locale>
+        <em:locale>locale/es-ES/tabmixplus/</em:locale>
+        <em:locale>locale/fr-FR/tabmixplus/</em:locale>
+        <em:locale>locale/fy-NL/tabmixplus/</em:locale>
+        <em:locale>locale/hu-HU/tabmixplus/</em:locale>
+        <em:locale>locale/it-IT/tabmixplus/</em:locale>
+        <em:locale>locale/ja/tabmixplus/</em:locale>
+        <em:locale>locale/ko-KR/tabmixplus/</em:locale>
+        <em:locale>locale/lt-LT/tabmixplus/</em:locale>
+        <em:locale>locale/nl-NL/tabmixplus/</em:locale>
+        <em:locale>locale/pl-PL/tabmixplus/</em:locale>
+        <em:locale>locale/pt-BR/tabmixplus/</em:locale>
+        <em:locale>locale/ro-RO/tabmixplus/</em:locale>
+        <em:locale>locale/ru-RU/tabmixplus/</em:locale>
+        <em:locale>locale/sk-SK/tabmixplus/</em:locale>
+        <em:locale>locale/tr-TR/tabmixplus/</em:locale>
+        <em:locale>locale/zh-CN/tabmixplus/</em:locale>
+        <em:locale>locale/zh-TW/tabmixplus/</em:locale>
+        <em:skin>skin/classic/tabmixplus/</em:skin>
+      </Description>
+    </em:file>
+
+    <em:description>Tab browsing with an added boost.</em:description>
+    <em:homepageURL>http://tmp.garyr.net</em:homepageURL>
+    <em:iconURL>chrome://tabmixplus/skin/tmp.png</em:iconURL>
+    <em:aboutURL>chrome://tabmixplus/content/about.xul</em:aboutURL>
+    <em:optionsURL>chrome://tabmixplus/content/pref/pref-tabmix.xul</em:optionsURL>
+
+  </Description>
+</RDF>

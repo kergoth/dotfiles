@@ -1,0 +1,4 @@
+add	/home/kergoth/.mozilla/firefox/zbjtiant.default/extensions/fusion/install.rdf
+add	/home/kergoth/.mozilla/firefox/zbjtiant.default/extensions/fusion/chrome/fusion.jar
+register	profile	package	fusion
+register	profile	skin	classic/1.0

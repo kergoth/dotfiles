@@ -1,0 +1,7 @@
+
+overlay	chrome://browser/content/browser.xul	chrome://customizegoogle/content/browser.xul
+content	customizegoogle	jar:chrome/customizegoogle.jar!/content/customizegoogle/
+
+skin	customizegoogle	classic/1.0	jar:chrome/customizegoogle.jar!/skin/customizegoogle/
+
+locale	customizegoogle	en-US	jar:chrome/customizegoogle.jar!/locale/customizegoogle/en-US/

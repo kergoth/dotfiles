@@ -1,0 +1,16 @@
+<!ENTITY sfdirectdl.openOriginal "Abrir Enlace Original">
+<!ENTITY sfdirectdl.openOriginal.accesskey "O">
+
+<!ENTITY sfdirectdl.options.title "Sourceforge Direct Opciones de Descargas">
+<!ENTITY sfdirectdl.options.mirror.group "Selección de Servidor">
+<!ENTITY sfdirectdl.options.mirror.label "Utilizar el siguiente servidor para mis descargas: (dejar en blanco para una selección automática)">
+<!ENTITY sfdirectdl.options.mirrorlist "Servidores Disponibles">
+
+<!ENTITY sfdirectdl.update.label "Actualizar">
+<!ENTITY sfdirectdl.update.accesskey "u">
+<!ENTITY sfdirectdl.update.tooltip "Actualizar la lista de servidores">
+
+<!ENTITY sfdirectdl.updatestatus.init "Seleccione 'Actualizar' para descargar la lista de servidores.">
+<!ENTITY sfdirectdl.updatestatus.done "Actualización Satisfactoria.">
+<!ENTITY sfdirectdl.updatestatus.error "Error">
+<!ENTITY sfdirectdl.updatestatus.loading "Actualizando Lista de Servidores...">

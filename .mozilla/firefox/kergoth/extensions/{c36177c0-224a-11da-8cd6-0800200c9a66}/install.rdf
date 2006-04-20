@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>{c36177c0-224a-11da-8cd6-0800200c9a66}</em:id>
+		<em:name>Fasterfox</em:name>
+		<em:version>1.0.3</em:version>
+		<em:description>Performance and network tweaks for Firefox.</em:description>
+		<em:creator>Tony Gentilcore</em:creator>
+		<em:contributor>Artwork - Nicholas Dower</em:contributor>
+		<em:contributor>Castellano - Raul Gonzalez Duque</em:contributor>
+		<em:contributor>Castellano-Argentina - R. Nicolás López</em:contributor>
+		<em:contributor>Ceský - funTomas</em:contributor>
+		<em:contributor>Chinese (Simplified) - Pudgy and rickcart</em:contributor>
+		<em:contributor>Deutsch - Gerald Frankl and Oliver Roth</em:contributor>
+		<em:contributor>Finnish - Lauri Lahnasalo</em:contributor>
+		<em:contributor>Français - Xavier Robin</em:contributor>
+		<em:contributor>Hebrew - Pavel Savchenko</em:contributor>
+		<em:contributor>Italiano - Giacomo Margarito</em:contributor>
+		<em:contributor>Japanese - Norah</em:contributor>
+		<em:contributor>Korean - heygom</em:contributor>
+		<em:contributor>Nederlands - Liesbeth</em:contributor>
+		<em:contributor>Polski - Leszek(teo)Zyczkowski</em:contributor>
+		<em:contributor>Português-Brasil - Marcelo Ghelman</em:contributor>
+		<em:contributor>Slovak - Rony, SlovakSoft</em:contributor>
+		<em:contributor>Slovenian - miles</em:contributor>
+		<em:contributor>Türkisch - Erkan Kaplan</em:contributor>
+		<em:homepageURL>http://fasterfox.mozdev.org/</em:homepageURL>
+		<em:iconURL>chrome://fasterfox/skin/icon.png</em:iconURL>
+		<em:aboutURL>chrome://fasterfox/content/about.xul</em:aboutURL>
+		<em:optionsURL>chrome://fasterfox/content/pref-fasterfox.xul</em:optionsURL>
+		<em:file>
+			<Description about="urn:mozilla:extension:file:fasterfox.jar">
+				<em:package>content/fasterfox/</em:package>
+				<em:skin>skin/classic/fasterfox/</em:skin>
+				<em:locale>locale/en-US/fasterfox/</em:locale>
+				<em:locale>locale/cs-CZ/fasterfox/</em:locale>
+				<em:locale>locale/de-DE/fasterfox/</em:locale>
+				<!-- <em:locale>locale/es-AR/fasterfox/</em:locale> -->
+				<!-- <em:locale>locale/es-ES/fasterfox/</em:locale> -->
+				<em:locale>locale/fi-FI/fasterfox/</em:locale>
+				<em:locale>locale/fr-FR/fasterfox/</em:locale>
+				<em:locale>locale/he-IL/fasterfox/</em:locale>
+				<em:locale>locale/it-IT/fasterfox/</em:locale>
+				<em:locale>locale/ja-JP/fasterfox/</em:locale>
+				<em:locale>locale/ko-KR/fasterfox/</em:locale>
+				<em:locale>locale/nl-NL/fasterfox/</em:locale>
+				<em:locale>locale/pl-PL/fasterfox/</em:locale>
+				<!-- <em:locale>locale/pt-BR/fasterfox/</em:locale> -->
+				<!-- <em:locale>locale/ru-RU/fasterfox/</em:locale> -->
+				<em:locale>locale/sl-SI/fasterfox/</em:locale>
+				<em:locale>locale/sk-SK/fasterfox/</em:locale>
+				<em:locale>locale/tr-TR/fasterfox/</em:locale>
+				<em:locale>locale/zh-CN/fasterfox/</em:locale>
+			</Description>
+		</em:file>
+
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>1.5.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+	</Description>
+
+</RDF>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$WKyXE3"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.4"
+                   em:maxVersion="1.5.0.*" />
+  <RDF:Description RDF:about="rdf:#$+KyXE3"
+                   em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   em:minVersion="1.4"
+                   em:maxVersion="1.5.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="{3f0da09b-c1ab-40c5-8d7f-53f475ac3fe8}"
+                   em:name="InfoLister"
+                   em:version="0.9c"
+                   em:description="Lists installed extensions and themes"
+                   em:creator="Nickolay Ponomarev"
+                   em:optionsURL="chrome://infolister/content/prefs/prefs.xul"
+                   em:iconURL="chrome://infolister/skin/icon32x32.png"
+                   em:homepageURL="http://mozilla.doslash.org/infolister"
+                   em:updateURL="http://mozilla.doslash.org/infolister/update.rdf"
+                   em:type="2">
+    <em:targetApplication RDF:resource="rdf:#$WKyXE3"/>
+    <em:targetApplication RDF:resource="rdf:#$+KyXE3"/>
+    <em:contributor>Torisugari</em:contributor>
+    <em:contributor>Ralf Hasse (icons)</em:contributor>
+    <em:contributor>Rowne Mastaile</em:contributor>
+    <em:contributor>Robert Strong</em:contributor>
+    <em:contributor>zeniko</em:contributor>
+  </RDF:Description>
+</RDF:RDF>

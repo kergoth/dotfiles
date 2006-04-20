@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>{bb117431-63c1-4a4d-8e4e-47f02268b2c6}</em:id>
+		<em:name>lget</em:name>
+		<em:version>0.2</em:version>
+		<em:description>Allows you to initiate a direct download of a file given a url</em:description>
+		<em:creator>J. Carlos Navea</em:creator>
+		<em:homepageURL>http://www.loconet.ca/</em:homepageURL>
+		<em:iconURL>chrome://lget/skin/logo.png</em:iconURL>
+		<em:optionsURL>chrome://lget/content/options.xul</em:optionsURL>
+		<em:file>
+			<Description about="urn:mozilla:extension:file:lget.jar">
+				<em:package>content/lget/</em:package>
+                <em:locale>locale/en-US/lget/</em:locale>
+                <em:skin>skin/classic/lget/</em:skin>
+			</Description>
+		</em:file>
+
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>1.5.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+	</Description>
+
+</RDF>

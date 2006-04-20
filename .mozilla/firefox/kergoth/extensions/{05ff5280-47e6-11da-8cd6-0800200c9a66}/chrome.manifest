@@ -1,0 +1,7 @@
+content	sfdirectdl content/
+overlay	chrome://browser/content/browser.xul chrome://sfdirectdl/content/overlay.xul
+
+locale sfdirectdl en-US locale/en-US/
+locale sfdirectdl es-AR locale/es-AR/
+locale sfdirectdl fr-fR locale/fr-FR/
+locale sfdirectdl sk-SK locale/sk-SK/
