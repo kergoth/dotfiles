@@ -2,10 +2,6 @@
 <RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <RDF:Description RDF:about="rdf:mozilla-compatibility"
-                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
-                   em:minVersion="1.4"
-                   em:maxVersion="1.8" />
   <RDF:Description RDF:about="rdf:netscape-compatiblity"
                    em:id="{3db10fab-e461-4c80-8b97-957ad5f8ea47}"
                    em:minVersion="8.0"
@@ -36,10 +32,18 @@
     <em:locale>locale/zh-CN/</em:locale>
     <em:locale>locale/zh-TW/</em:locale>
   </RDF:Description>
+  <RDF:Description RDF:about="rdf:mozilla-compatibility"
+                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   em:minVersion="1.4"
+                   em:maxVersion="1.8" />
   <RDF:Description RDF:about="rdf:firefox-compatiblity"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="0.7"
                    em:maxVersion="3.0" />
+  <RDF:Description RDF:about="rdf:flock-compatiblity"
+                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   em:minVersion="1.0+"
+                   em:maxVersion="1.0+" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="filtersetg@updater"
                    em:version="0.3.0.3"
@@ -78,8 +82,4 @@
     <em:contributor>jameka (sv-SE)</em:contributor>
     <em:file RDF:resource="urn:mozilla:extension:file:fgupdater.jar"/>
   </RDF:Description>
-  <RDF:Description RDF:about="rdf:flock-compatiblity"
-                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
-                   em:minVersion="1.0+"
-                   em:maxVersion="1.0+" />
 </RDF:RDF>

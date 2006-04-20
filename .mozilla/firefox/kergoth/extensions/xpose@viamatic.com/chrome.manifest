@@ -1,0 +1,5 @@
+content	xpose	chrome/chromeFiles/content/
+skin    xpose   classic/1.0 chrome/chromeFiles/skin/
+locale	xpose	en-US	chrome/chromeFiles/locale/en-US/
+overlay	chrome://browser/content/browser.xul	chrome://xpose/content/xpose.xul
+style	chrome://global/content/customizeToolbar.xul	chrome://xpose/skin/xpose.css

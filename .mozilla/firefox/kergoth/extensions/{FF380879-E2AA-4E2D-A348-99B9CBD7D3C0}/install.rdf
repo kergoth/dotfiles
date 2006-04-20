@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>0.8</em:minVersion>
+        <em:maxVersion>1.5.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    
+    <em:id>{FF380879-E2AA-4E2D-A348-99B9CBD7D3C0}</em:id>
+    <em:version>1.0.1</em:version>    
+    <em:name>Disable Targets For Downloads</em:name>
+    <em:description>Prevents download links opening a blank window.</em:description>
+    <em:creator>Ben Basson (Cusser)</em:creator>
+    <em:homepageURL>http://www.cusser.net</em:homepageURL>
+    <em:contributor>MonkeeSage</em:contributor>
+    <em:contributor>TheOneKEA (kakadu@gmail.com)</em:contributor>
+    
+    <em:iconURL>chrome://disabletarget/content/cusserfox.png</em:iconURL>
+    <em:optionsURL>chrome://disabletarget/content/pref-disabletarget.xul</em:optionsURL>
+    
+    <em:file>
+      <Description about="urn:mozilla:extension:file:disabletarget.jar">
+        <em:package>content/disabletarget/</em:package>
+      </Description>
+    </em:file>
+    
+  </Description>      
+</RDF>

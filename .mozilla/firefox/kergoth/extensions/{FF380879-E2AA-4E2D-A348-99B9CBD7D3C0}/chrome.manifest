@@ -1,0 +1,3 @@
+
+overlay	chrome://browser/content/browser.xul	chrome://disabletarget/content/disabletargetOverlay.xul
+content	disabletarget	jar:chrome/disabletarget.jar!/content/disabletarget/

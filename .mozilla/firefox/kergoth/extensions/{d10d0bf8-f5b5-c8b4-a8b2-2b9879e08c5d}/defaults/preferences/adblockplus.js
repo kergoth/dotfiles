@@ -1,0 +1,34 @@
+// For description of these values see http://adblockplus.mozdev.org/preferences.html
+
+pref("extensions.adblockplus.enabled", true);
+pref("extensions.adblockplus.frameobjects", true);
+pref("extensions.adblockplus.fastcollapse", false);
+pref("extensions.adblockplus.linkcheck", true);
+pref("extensions.adblockplus.warnregexp", true);
+pref("extensions.adblockplus.showintoolbar", true);
+pref("extensions.adblockplus.showinstatusbar", false);
+pref("extensions.adblockplus.blocklocalpages", true);
+pref("extensions.adblockplus.checkedtoolbar", false);
+pref("extensions.adblockplus.checkedadblockprefs", false);
+pref("extensions.adblockplus.checkedadblocksync", false);
+pref("extensions.adblockplus.checkedadblockinstalled", false);
+pref("extensions.adblockplus.detachsidebar", false);
+pref("extensions.adblockplus.synchronizationinterval", 24);
+pref("extensions.adblockplus.defaulttoolbaraction", 1);
+pref("extensions.adblockplus.defaultstatusbaraction", 2);
+pref("extensions.adblockplus.sidebar_key", "Accel Shift B");
+pref("extensions.adblockplus.settings_key", "Accel Shift A");
+pref("extensions.adblockplus.enable_key", "");
+pref("extensions.adblockplus.flash_scrolltoitem", true);
+pref("extensions.adblockplus.previewimages", true);
+pref("extensions.adblockplus.patternsfile", "adblockplus/patterns.ini");
+pref("extensions.adblockplus.patternsbackups", 5);
+pref("extensions.adblockplus.patternsbackupinterval", 24);
+pref("extensions.adblockplus.patterns", "@@|https:// */ads/* */advertisements/* http://*.adserver.example.com/*");
+pref("extensions.adblockplus.grouporder", "~il~ ~wl~ ~fl~ ~eh~");
+pref("extensions.adblockplus.blocktypes", "script image stylesheet object subdocument");
+pref("extensions.adblockplus.linktypes", "image object");
+pref("extensions.adblockplus.noncollapsabletypes", "script stylesheet background");
+pref("extensions.adblockplus.whitelistschemes", "about chrome file irc keyword mailto news resource snews x-jsd addbook cid imap mailbox nntp pop data javascript");
+pref("extensions.adblockplus.localschemes", "file");
+pref("extensions.{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}.description", "chrome://adblockplus/locale/global.properties");

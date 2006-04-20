@@ -1,0 +1,27 @@
+<!ENTITY Viamatic.Xpose.settings.title "Viamatic foXpose Options">
+<!ENTITY Viamatic.Xpose.settings.ok "Ok">
+<!ENTITY Viamatic.Xpose.settings.cancel "Cancel">
+
+<!ENTITY Viamatic.Xpose.settings.theme "Theme">
+<!ENTITY Viamatic.Xpose.settings.selecttheme "Select Theme:">
+<!ENTITY Viamatic.Xpose.settings.white "White (default)">
+<!ENTITY Viamatic.Xpose.settings.black "Black">
+<!ENTITY Viamatic.Xpose.settings.general "General Settings">
+<!ENTITY Viamatic.Xpose.settings.showicon "Show icon in status bar">
+<!ENTITY Viamatic.Xpose.settings.showkeyshortcut "Show keyboard shortcut in title">
+<!ENTITY Viamatic.Xpose.settings.restart "You need to restart firefox for these settings to take effect.">
+<!ENTITY Viamatic.Xpose.settings.ctrl "Ctrl">
+<!ENTITY Viamatic.Xpose.settings.alt "Alt">
+<!ENTITY Viamatic.Xpose.settings.shift "Shift">
+
+<!ENTITY Viamatic.Xpose.settings.thumbsize "Thumnail Size:">
+<!ENTITY Viamatic.Xpose.settings.autosizethumb "Autosize thumnails">
+<!ENTITY Viamatic.Xpose.settings.shortcutkey "Shortcut key:">
+<!ENTITY Viamatic.Xpose.settings.autorefresh "Autorefresh thumnail">
+<!ENTITY Viamatic.Xpose.settings.showtab "Show tab">
+<!ENTITY Viamatic.Xpose.settings.large "large">
+<!ENTITY Viamatic.Xpose.settings.medium "medium">
+<!ENTITY Viamatic.Xpose.settings.small "small">
+
+
+
