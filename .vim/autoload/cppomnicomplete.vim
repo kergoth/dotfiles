@@ -1,8 +1,12 @@
 " Vim completion script
 " Language:  C++
 " Maintainer:  Vissale NEANG
-" Last Change:  2006 Apr 17
+" Last Change:  2006 Apr 19
 " Comments:
+" Version 0.12:
+"   -   Complete check added to the search process, you can now cancel
+"       the search during a complete search.
+"   
 " Version 0.11:
 "   First, sorry for my bad english.... :)
 "   The script is not finished yet, the todo list is:
@@ -43,8 +47,6 @@ let s:function_specifier = ['inline', 'virtual', 'explicit']
 let s:decl_specifier = ['friend', 'typedef']
 let s:cv_qualifier = ['const', 'volatile']
 let s:all_specifier = s:storage_class_specifier+s:function_specifier+s:decl_specifier+s:cv_qualifier
-
-let s:default_search_query = {'class':{}, 'struct':{}, 'union':{}}
 
 " This function is used for the 'omnifunc' option.
 function! cppomnicomplete#Complete(findstart, base)
@@ -125,7 +127,8 @@ function! cppomnicomplete#Complete(findstart, base)
         "TODO: Search 'using namespace' declarations in the file and included files
         let namespaces = ['::']
         let type_info = s:ExtractTypeFromString(base)
-        let tag_list = s:GetAllMembers(namespaces, type_info, {'namespace':{}, 'class':{'static':1}, 'struct':{'static':1}, 'enum':{}})
+        " We want to get namespaces, static members and enum only
+        let tag_list = s:GetAllMembers(namespaces, type_info, '::')
     endif
 
     " Split item in words, keep empty word after "." or "->".
@@ -172,7 +175,7 @@ function! cppomnicomplete#Complete(findstart, base)
 
     "TODO: Search 'using namespace' declarations in the file and included files
     ".....
-    
+
     " Default namespace = global
     let namespaces = ['::']
 
@@ -202,50 +205,55 @@ endfunc
 
 " Returns the type info of the last item in fifo_items
 function! s:ResolveTypeInfoOfLastItem(namespaces, type_info, fifo_items)
+    let result = ''
     if len(a:fifo_items)>0
         " We only want the member a:fifo_items[0], don't need to get all
         " members
-        let tag_query = '^'.a:fifo_items[0].'$'
-        let tag_list = s:GetAllMembers(a:namespaces, a:type_info, s:default_search_query, tag_query)
+        let member_query = a:fifo_items[0].'$'
+        let members = s:GetAllMembers(a:namespaces, a:type_info, '' , member_query)
 
-        " TODO: len(tag_list) > 1 ?
-        if len(tag_list)
-            " Now we know the type info of item
-            " TODO: improve ExtractTypeFromTagItemCmd(). Don't work for lots
-            " of case
-            let type_info = s:ExtractTypeFromTagItemCmd(tag_list[0])
+        if len(members)==0
+            return result
+        endif
 
-            " TODO: namespace resolution of the type_info
-            let resolved_type_info = type_info
+        " Now we know the type info of item
+        " TODO: improve ExtractTypeFromTagItemCmd(). Don't work for lots
+        " of case
+        let type_info = s:ExtractTypeFromTagItemCmd(members[0])
 
-            call remove(a:fifo_items, 0)
+        " TODO: namespace resolution of the type_info
+        let resolved_type_info = type_info
 
-            " If the last item is '' it's the end
-            if a:fifo_items[0]==''
-                return type_info
-            else
-                return s:ResolveTypeInfoOfLastItem(a:namespaces, resolved_type_info, a:fifo_items)
-            endif
+        call remove(a:fifo_items, 0)
+
+        " If the last item is '' it's the end
+        if a:fifo_items[0]==''
+            return type_info
+        else
+            let result = s:ResolveTypeInfoOfLastItem(a:namespaces, resolved_type_info, a:fifo_items)
         endif
     endif
-    return ''
+    return result
 endfunc
 
 " Get all members of a class, struct, union.
 " for class and struct, get also the inherited members
 function! s:GetAllMembers(namespaces, type_info, ...)
-    let search_query = s:default_search_query
-    let tag_query = '.*'
+    let completion_mode ='' 
+    let member_query = '\w\+$'
 
     " Getting optional argument
     if a:0==1
-        let search_query = a:1
+        let completion_mode = a:1
     elseif a:0==2 
-        let search_query = a:1
-        let tag_query = a:2
+        let completion_mode = a:1
+        let member_query = a:2
     endif
 
     let result = []
+    if complete_check()
+        return result
+    endif
     
     " Get the tag list of the class name without his namespace,
     " GetTagList() resolve the first typedef
@@ -274,35 +282,52 @@ function! s:GetAllMembers(namespaces, type_info, ...)
             "TODO: Search 'using namespace' declarations in the file and included files
             let namespaces = ['::']
             let namespaces = [s:ExtractNamespaceFromTypeInfo(resolved_type_info)] + namespaces
-            let result = s:GetAllMembers(namespaces, base_class_type_info, search_query, tag_query) + result
+            let result = s:GetAllMembers(namespaces, base_class_type_info, completion_mode, member_query) + result
         endfor
     endif
 
-    let result = s:SearchMembers(tag_item.filename, resolved_type_info, search_query, tag_query) + result
+    let result = s:SearchMembers(tag_item.filename, resolved_type_info, completion_mode, member_query) + result
 
     return result
 endfunc
 
 " Search class, struct, union members
 " ex: if type_info represents a class 'MyClass' then
-"   -   search_query must contain at least 'class' so we search only tag_item
 "       that match 'class:MyClass'
-"   -  tag_query: This is a regexp for the taglist() function
+"   -  member_query: This is a regexp for the taglist() function
 "       -  To get all MyClass members 
-"         => tag_query='.*'
+"         => member_query='.*'
 "       -  To only get the member MyClass::_iAmAMember
-"         => tag_query='^_iAmAMember$'
+"         => member_query='_iAmAMember'
 "  return a list of tag_item
-function! s:SearchMembers(filename, type_info, search_query, tag_query)
+function! s:SearchMembers(filename, type_info, completion_mode, member_query)
     let result = []
+    if complete_check()
+        return result
+    endif
 
     " Formatting the result key for the result cache. Keys must contain the
     " filename, the type_info and the search request
-    let result_key = a:filename.'::'.a:type_info.'::'.string(a:search_query).'::'.a:tag_query
+    let result_key = a:filename.a:type_info.string(a:completion_mode).a:member_query
 
     " If the file has not changed we return the stored result
     if s:HasChanged(a:filename, a:type_info)==0 && has_key(s:result_cache, result_key)
         return s:result_cache[result_key]
+    endif
+
+    " Search members of a:type_info, because a resolved type info
+    " starts with :: we remove it for the taglist(), removing '::' at the end also
+    let fixed_type_info = substitute(a:type_info, '\(^::\)\|\(::$\)', '', 'g')
+
+    " Build a ctor type info
+    let classname = split(fixed_type_info)[-1]
+    let ctor_name = fixed_type_info . '::' . classname
+    let dtor_name = fixed_type_info . '::~' . classname
+
+    " We add an ending '::' and simplify if there consecutive '::'
+    let tag_query = '^'.fixed_type_info.'::'.a:member_query
+    if a:completion_mode=='::'
+        let tag_query = '^'.fixed_type_info.'::\w\+$'
     endif
 
     " To get the members we have to run ctags on the file header or
@@ -313,52 +338,53 @@ function! s:SearchMembers(filename, type_info, search_query, tag_query)
     let tags_env_orig = &tags
 
     " Building the ctags command, because we want to get members we add the
-    " option -c++-kinds=+p for function prototypes.
-    let tag_cmd = "ctags --language-force=c++ --c++-kinds=+p --fields=+amikKlnsStz-f -f ".tmpfile_tag_file.' "'.a:filename.'"'
-
+    " option -c++-kinds=+p to detect function prototypes in header files.
+    " To get members we need also the option : --extra=+q
+    " so we can have tag item name that start with the class name eg: 'MyClass::_member'
+    " we add --language-force=c++ because the tmp file has no extension
+    " we need access member information : +a
+    " Note: we don't need inheritance information for searching members
+    " In the futur we'll need the signature of a routine (+S) but there is a
+    " bug in the taglist() function in some cases so we don't add it
+    let tag_cmd = 'ctags --language-force=c++ --c++-kinds=+p --fields=+a --extra=+q -f "'.tmpfile_tag_file.'" "'.a:filename.'"'
     call system(tag_cmd)
 
     " Sets the tags vim variable so that the function taglist() can work
     " faster
     exe "set tags=".tmpfile_tag_file
+    let class_members = taglist(tag_query)
 
-    let tag_list = taglist(a:tag_query)
+    " For each member of our class
+    for member in class_members
+        " Check if the user wants to stop the search
+        if complete_check()
+            " Restoring the old tags value
+            exe "set tags=".tags_env_orig
+            " We don't register the result in the cache because the user stopped the search
+            return result
+        endif
 
-    let type_info_list = split(a:type_info, '::')
-    let type_name = type_info_list[-1]
-
-    " Note: tag_item keys and search_query keys are always in full name format
-    for tag_item in tag_list 
-        for kind_query in keys(a:search_query)
-            " Ignoring ctor and dtor for class and struct
-            if kind_query=='class' || kind_query=='struct'
-                if tag_item['name'] == type_name || tag_item['name'] == '~'.type_name
+        if a:completion_mode=='::'
+            " If it's a namespace or class or struct or union or typedef or
+            " enum we add the member to the result list
+            if index(['n', 'c', 's', 'u','t', 'e'], member.kind[0])>=0
+                call add(result, member)
+                continue
+            elseif match(member.cmd, '\<static\>')!=-1
+                " If it's a static member we add it
+                call add(result, member)
+                continue
+            endif
+        else
+            " We add attribute members, function and prototypes
+            if index(['m','f', 'p'], member.kind[0])>=0
+                " Ignoring ctor and dtor for class and struct
+                if member.name == ctor_name || member.name == dtor_name
                     continue
                 endif
+                call add(result, member)
             endif
-
-            " Note: tag_item keys and kind are always in full name format
-            if has_key(tag_item, kind_query)
-                " Enum fix
-                " We can have in the tag file 'enum:ns1::ns2::MyClass::2'
-                " we don't want '::2'
-                let value_enum_fix = substitute(tag_item[kind_query], '::[0-9]\+$', '', 'g')
-
-                let type_info_whithout_global_namespace = substitute(a:type_info, '^::', '', 'g')
-                if value_enum_fix==type_info_whithout_global_namespace
-                    " Case where the search request is to get static members
-                    if has_key(a:search_query[kind_query], 'static')
-                        " We have to get static members only
-                        " Is the current member static ?
-                        if match(tag_item.cmd, '\<static\>')==-1
-                            " This member is not static ... continue
-                            continue
-                        endif
-                    endif
-                    call add(result, tag_item)
-                endif
-            endif
-        endfor
+        endif
     endfor
 
     " Restoring the old tags value
@@ -372,7 +398,8 @@ endfunc
 
 " Convert a tag_item (from taglist()) to a popup item
 function! s:ConvertTagItemToPopupItem(tag_item)
-    let item_word = a:tag_item['name']
+    let item_word = substitute(a:tag_item.name, '.*::', '', 'g')
+    "let item_word = a:tag_item.name
     " If the tagid is a function or a prototype we add a
     " parenthesis
     " Note: tag_item values can be in single letter format so
@@ -407,7 +434,7 @@ endfunc
 
 " Check if a file has changed
 function! s:HasChanged(filepath, type_info)
-    let cache_key = a:filepath.'['.a:type_info.']'
+    let cache_key = a:filepath.a:type_info
     if has_key(s:filedate_cache, cache_key)
         let current_filetime = getftime(a:filepath)
         if current_filetime > s:filedate_cache[cache_key]
