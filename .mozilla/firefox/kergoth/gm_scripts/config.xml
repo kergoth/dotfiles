@@ -24,4 +24,7 @@
 	<Script filename="collapsibleamazon.user.js" name="Collapsible Amazon" namespace="http://brh.numbera.com/software/greasemonkeyscripts" description="Collapse any section of the Amazon website by clicking on the orange section header." enabled="true">
 		<Include>http://*.amazon.*</Include>
 	</Script>
+	<Script filename="mailmandiscardall.user.js" name="Mailman discard all" namespace="http://www.menalto.com/greasemonkey" description="Automatically selects the 'discard' radio button for all messages when doing mail moderation using Mailman on SourceForge.net" enabled="true">
+		<Include>https://lists.sourceforge.net/lists/admindb*</Include>
+	</Script>
 </UserScriptConfig>
