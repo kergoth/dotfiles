@@ -1,5 +1,5 @@
 if exists("g:moria_style")
-let s:moria_style = g:moria_style
+    let s:moria_style = g:moria_style
 else
     let s:moria_style = &background
 endif
@@ -34,9 +34,9 @@ if s:moria_style == "dark"
     hi DiffText guibg=#0000cd guifg=fg gui=bold
     hi Directory guibg=bg guifg=#1e90ff gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
-    hi FoldColumn guibg=bg guifg=#a0b0c0 gui=none
+    hi FoldColumn ctermbg=bg guibg=bg guifg=#a0b0c0 gui=none
     hi Folded guibg=#505050 guifg=#c0d0e0 gui=none
-    hi IncSearch guibg=#e8e8e8 guifg=#000000 gui=bold
+    hi IncSearch guibg=#80cdcd guifg=#000000 gui=none
     hi LineNr guifg=#a0b0c0 gui=none
     hi ModeMsg guibg=bg guifg=fg gui=bold
     hi MoreMsg guibg=bg guifg=#d0d097 gui=bold
@@ -46,8 +46,8 @@ if s:moria_style == "dark"
     hi PmenuSel guibg=#d0d0a0 guifg=#000000 gui=none
     hi PmenuThumb guibg=#c0d0e0 guifg=bg gui=none
     hi Question guibg=bg guifg=#e0c07e gui=bold
-    hi Search guibg=#d0d0a0 guifg=#000000 gui=bold
-    hi SignColumn guibg=bg guifg=#a0a0a0 gui=none
+    hi Search guibg=#d0d0a0 guifg=#000000 gui=none
+    hi SignColumn ctermbg=bg guibg=bg guifg=#a0a0a0 gui=none
     hi SpecialKey guibg=bg guifg=#e0c07e gui=none
     if has("spell")
         hi SpellBad guisp=#ee2c2c gui=undercurl
@@ -60,7 +60,7 @@ if s:moria_style == "dark"
     hi TabLine guibg=#566676 guifg=fg gui=underline
     hi TabLineFill guibg=#c0d0e0 guifg=bg gui=none
     hi TabLineSel guibg=bg guifg=fg gui=bold
-    hi Title ctermbg=0 ctermfg=15 guifg=#e8e8e8 gui=bold
+    hi Title ctermbg=0 ctermfg=15 guifg=fg gui=bold
     hi VertSplit ctermbg=7 ctermfg=0 guibg=#304050 guifg=fg gui=none
     if version >= 700
         hi Visual ctermbg=7 ctermfg=0 guibg=#607080 gui=none
@@ -75,9 +75,9 @@ if s:moria_style == "dark"
     hi Constant guibg=bg guifg=#87df71 gui=none
     hi Error guibg=bg guifg=#ee2c2c gui=none
     hi Identifier guibg=bg guifg=#7ee0ce gui=none
-    hi Ignore guibg=bg guifg=bg gui=none
+    hi Ignore guibg=bg guifg=#303030 gui=none
     hi lCursor guibg=#00e700 guifg=#000000 gui=none
-    hi MatchParen guibg=#2ceeee guifg=bg gui=none
+    hi MatchParen guibg=#008b8b gui=none
     hi PreProc guibg=bg guifg=#d7a0d7 gui=none
     hi Special guibg=bg guifg=#e0c07e gui=none
     hi Statement guibg=bg guifg=#7ec0ee gui=none
@@ -104,9 +104,9 @@ elseif s:moria_style == "light"
     hi DiffText guibg=#0000cd guifg=#ffffff gui=bold
     hi Directory guibg=bg guifg=#0000f0 gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
-    hi FoldColumn guibg=bg guifg=#506070 gui=none
+    hi FoldColumn ctermbg=bg guibg=bg guifg=#506070 gui=none
     hi Folded guibg=#cacaca guifg=fg gui=none
-    hi IncSearch guibg=#181818 guifg=#ffffff gui=bold
+    hi IncSearch guibg=#80cdcd gui=none
     hi LineNr guifg=#506070 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold
     hi MoreMsg guibg=bg guifg=#1f3f81 gui=bold
@@ -116,8 +116,8 @@ elseif s:moria_style == "light"
     hi PmenuSel guibg=#ffff00 guifg=#000000 gui=none
     hi PmenuThumb guibg=#b0c0d0 guifg=fg gui=none
     hi Question guibg=bg guifg=#813f11 gui=bold
-    hi Search guibg=#ffff00 guifg=fg gui=bold
-    hi SignColumn guibg=bg guifg=#707070 gui=none
+    hi Search guibg=#ffff00 gui=none
+    hi SignColumn ctermbg=bg guibg=bg guifg=#707070 gui=none
     hi SpecialKey guibg=bg guifg=#912f11 gui=none
     if has("spell")
         hi SpellBad guisp=#ee2c2c gui=undercurl
@@ -136,7 +136,7 @@ elseif s:moria_style == "light"
         hi Visual ctermbg=7 ctermfg=0 guibg=#c8d8e8 gui=none
     else
         hi Visual ctermbg=7 ctermfg=0 guibg=#c8d8e8 guifg=fg gui=none
-    endif
+    endif    
     hi VisualNOS guibg=bg guifg=#90a0b0 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
     hi WildMenu guibg=#ffff00 guifg=fg gui=bold
@@ -144,10 +144,10 @@ elseif s:moria_style == "light"
     hi Comment guibg=bg guifg=#786000 gui=none
     hi Constant guibg=bg guifg=#077807 gui=none
     hi Error guibg=bg guifg=#ee2c2c gui=none
-    hi Identifier guibg=bg guifg=#1f3f81 gui=none
-    hi Ignore guibg=bg guifg=bg gui=none
+    hi Identifier guibg=bg guifg=#007080 gui=none
+    hi Ignore guibg=bg guifg=#d8d8d8 gui=none
     hi lCursor guibg=#008000 guifg=#ffffff gui=none
-    hi MatchParen guibg=#00ffff guifg=fg gui=none
+    hi MatchParen guibg=#00ffff gui=none
     hi PreProc guibg=bg guifg=#800090 gui=none
     hi Special guibg=bg guifg=#912f11 gui=none
     hi Statement guibg=bg guifg=#1f3f81 gui=bold
