@@ -467,7 +467,16 @@ set whichwrap=<,>,h,l,[,]
 set ruler
 set showcmd
 set textwidth=0
-set nobackup
+
+" Write backup files and do not remove them after exit.
+set backup
+set writebackup
+" Rename the file to the backup when possible.
+set backupcopy=auto
+" Don't store all the backup and swap files in the current working dirctory.
+let &backupdir = './.vimtmp,' . fnamemodify($MYVIMRC, ':p:h') . '/.vim/tmp,/var/tmp,/tmp'
+let &directory = &backupdir
+
 set isk+=_,$,@,%,#,-
 set shortmess=atItToO
 
