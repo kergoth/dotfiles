@@ -534,6 +534,9 @@ else
   set fileformats=dos,unix,mac
 endif
 
+" Allow spaces in filenames
+set isfname+=32
+
 if has('gui_running')
   " Hide the mouse cursor while typing
   set mh
