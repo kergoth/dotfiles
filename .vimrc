@@ -162,12 +162,12 @@ endfun
 " }}}
 
 " Keymaps {{{
-map ,is :!ispell %<CR>          ' ISpell !
-map ,del :g/^\s*$/d<CR>         ' Delete Empty Lines
-map ,ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
-map ,ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
-map ,dsr :s/\s\s\+/ /g<CR>      ' Delete Space Runs
-map ,dtw :%s/\s\+$//g<CR>       ' Delete Trailing Whitespace
+map <leader>is :!ispell %<CR>          ' ISpell !
+map <leader>del :g/^\s*$/d<CR>         ' Delete Empty Lines
+map <leader>ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
+map <leader>ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
+map <leader>dsr :s/\s\s\+/ /g<CR>      ' Delete Space Runs
+map <leader>dtw :%s/\s\+$//g<CR>       ' Delete Trailing Whitespace
 
 nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
@@ -191,10 +191,6 @@ noremap <Leader>= gg=G
 " Select everything
 noremap <Leader>gg ggVG
 
-" Make <space> in normal mode go down a page rather than left a
-" character
-noremap <space> <C-f>
-
 " Mappings to edit/reload the .vimrc
 if ! exists('$MYVIMRC')
   if has('win32')
@@ -203,8 +199,8 @@ if ! exists('$MYVIMRC')
     let $MYVIMRC = $HOME.'/.vimrc'
   endif
 endif
-nmap ,s :source $MYVIMRC<CR>
-nmap <silent> ,v :e $MYVIMRC<CR>
+nmap <leader>s :source $MYVIMRC<CR>
+nmap <silent> <leader>v :e $MYVIMRC<CR>
 
 " quickfix things
 nmap <Leader>cwc :cclose<CR>
@@ -634,9 +630,8 @@ endif
 let &termencoding = &encoding
 if has('multi_byte')
   set encoding=utf-8
-  " When fileencoding is empty, it uses the value of encoding. fenc is used
-  " for the creation of new files.
-  set fileencoding=
+  " fileencoding value is used for new files
+  let &fileencoding = &encoding
   set fileencodings=ucs-bom,utf-8,default,latin1
   " set bomb
 endif
@@ -798,6 +793,9 @@ if has('autocmd')
         set foldmethod=manual
         set foldlevel=99
         set nolist
+        " Make <space> in normal mode go down a page rather than left a
+        " character
+        noremap <space> <C-f>
       endif
     endfunction
     au VimEnter * :call <SID>check_pager_mode()

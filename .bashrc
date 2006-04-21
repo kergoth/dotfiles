@@ -125,7 +125,7 @@ $CCASE\w\$ "
     export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
     [ -z "$day" ] && day=`date +%A`
     printdayinfo $day
-    unset XTERM_SET CCACHE VOBPATH
+    unset XTERM_SET CCASE VOBPATH
 
     # Deal with missing terminal types on certain machines.
     _c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
