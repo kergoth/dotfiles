@@ -1,13 +1,3 @@
-# ==========================================================================
-# Correct crap or broken mails using sed
-# ==========================================================================
-# Correct wrong sig-dashes, ie add a space for lines with only "--" in them:
-# from: ^--$
-# to:   ^-- $
-:0 fBw
-* ^--$
-| sed -e 's/^--$/-- /'
-
 # preconverts all plain-text mail arriving in certain encoded
 # MIME formats into a more compact 8-bit format which can be
 # used and displayed more easily by most programs.
