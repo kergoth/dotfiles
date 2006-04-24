@@ -1,3 +1,5 @@
 setlocal cinkeys-=:
 setlocal commentstring=//\ %s
-set omnifunc=cppomnicomplete#Complete
+if exists('+omnifunc')
+  set omnifunc=cppomnicomplete#Complete
+endif
