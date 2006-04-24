@@ -1,0 +1,4 @@
+# Fix incorrect sigdashes
+:0 Bfwhb
+* ^--$
+| sed 's/^--$/-- /'
