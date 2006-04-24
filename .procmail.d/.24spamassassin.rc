@@ -1,0 +1,9 @@
+#:0fw
+#| spamassassin
+
+:0fw
+| spamc
+
+:0:
+* ^X-Spam-Status: Yes
+$SPAM
