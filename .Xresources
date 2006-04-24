@@ -22,15 +22,11 @@ Rxvt*scrollTtyOutput: false
 Rxvt*scrollKey: false
 Rxvt*geometry: 96x50
 
-!URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=13
-URxvt*font: xft:Leonine Sans Mono:pixelsize=13,\
-            -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso10646-1,\
-            -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso10646-1, \
-            [codeset=JISX0208]xft:Kochi Gothic:antialias=false, \
-            xft:Code2000:antialias=false
-Vim*fontList: Leonine Sans Mono 13
-
+! URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=15
+URxvt.font: xft:Leonine Sans Mono:pixelsize=15
 URxvt*termName: rxvt-unicode
+
+Vim*fontList: Leonine Sans Mono 15
 
 mrxvt*xft: true
 mrxvt*xftRGBA: rgb
