@@ -21,6 +21,7 @@ ScriptID SourceID Filename
 1218 5576 :AutoInstall: NERD_comments.vim
 1243 4055 colors/desert256.vim
 1248 4239 syntax/cccs.vim
+1259 5617 colors/sienna.vim
 1311 4504 vimplate.vim
 1316 4517 bwHomeEndAdv.vim
 1338 4976 tabbar.vim

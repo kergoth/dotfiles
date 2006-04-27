@@ -1,7 +1,7 @@
 " Vim colour scheme
 " Maintainer:	Georg Dahn
-" Last Change:	23 September 2005
-" Version:	1.5
+" Last Change:	26 April 2006
+" Version:	1.6
 "
 " This color scheme has both light and dark styles with harmonic colors
 " easy to distinguish. Terminals are not supported, therefore you should
@@ -48,7 +48,7 @@ if s:sienna_style == 'dark'
     hi LineNr gui=none guifg=Grey65
     hi NonText gui=bold guifg=Grey65 guibg=Grey20
     hi SpecialKey gui=none guifg=SkyBlue2
-    hi Title gui=bold guifg=White
+    hi Title gui=bold guifg=Grey85
     hi Visual gui=bold guifg=Black guibg=LightSalmon1
 
     hi FoldColumn gui=none guifg=Black guibg=Wheat3
@@ -57,6 +57,11 @@ if s:sienna_style == 'dark'
     hi StatusLineNC gui=none guifg=White guibg=DimGray
     hi VertSplit gui=none guifg=White guibg=DimGray
     hi Wildmenu gui=bold guifg=White guibg=Black
+
+    hi Pmenu guibg=Grey55 guifg=Black gui=none
+    hi PmenuSbar guibg=Grey40 guifg=fg gui=none
+    hi PmenuSel guibg=Yellow2 guifg=Black gui=none
+    hi PmenuThumb guibg=Grey80 guifg=bg gui=none    
 
     hi IncSearch gui=none guifg=Grey15 guibg=Grey85
     hi Search gui=none guifg=Black guibg=Yellow2
@@ -77,7 +82,7 @@ if s:sienna_style == 'dark'
     hi Boolean gui=bold guifg=PaleGreen2
     hi Constant gui=none guifg=PaleGreen2
     hi Number gui=bold guifg=PaleGreen2
-    hi String gui=none guifg=PaleGreen2 guibg=Grey10
+    hi String gui=none guifg=PaleGreen2
 
     hi Label gui=bold,underline guifg=LightSalmon2
     hi Statement gui=bold guifg=LightSalmon2
@@ -90,11 +95,11 @@ if s:sienna_style == 'dark'
     hi htmlBoldUnderlineItalic gui=bold,underline,italic
     hi htmlUnderlineItalic gui=underline,italic
 elseif s:sienna_style == 'light'
-    hi Normal gui=none guifg=Black guibg=Grey95
+    hi Normal gui=none guifg=Black guibg=White
 
     hi Cursor guifg=White guibg=Black
     hi LineNr gui=none guifg=DarkGray
-    hi NonText gui=bold guifg=DarkGray guibg=Grey90
+    hi NonText gui=bold guifg=DarkGray guibg=Grey95
     hi SpecialKey gui=none guifg=RoyalBlue4
     hi Title gui=bold guifg=Black
     hi Visual gui=bold guifg=Black guibg=Sienna1
@@ -105,6 +110,11 @@ elseif s:sienna_style == 'light'
     hi StatusLineNC gui=none guifg=White guibg=DimGray
     hi VertSplit gui=none guifg=White guibg=DimGray
     hi Wildmenu gui=bold guifg=Black guibg=White
+
+    hi Pmenu guibg=Grey65 guifg=Black gui=none
+    hi PmenuSbar guibg=Grey50 guifg=fg gui=none
+    hi PmenuSel guibg=Yellow guifg=Black gui=none
+    hi PmenuThumb guibg=Grey75 guifg=fg gui=none
 
     hi IncSearch gui=none guifg=White guibg=Black
     hi Search gui=none guifg=Black guibg=Yellow
@@ -125,7 +135,7 @@ elseif s:sienna_style == 'light'
     hi Boolean gui=bold guifg=ForestGreen
     hi Constant gui=none guifg=ForestGreen
     hi Number gui=bold guifg=ForestGreen
-    hi String gui=none guifg=ForestGreen guibg=White
+    hi String gui=none guifg=ForestGreen
 
     hi Label gui=bold,underline guifg=Sienna4
     hi Statement gui=bold guifg=Sienna4
