@@ -133,7 +133,7 @@ for toc in $tocfiles; do
 	tocpath=`dirname "$toc"`
 	addon="`basename \"$tocpath\"`"
 	title="`cat "$toc"|dos2unix|grep -E "^## *(Name|Title):"|tail -n 1|cut -d: -f2|sed -e's,^ *,,'`"
-	version="`cat "$toc"|dos2unix|grep -E "^## *Version:"|head -n 1|cut -d: -f2|cut -d" " -f2`"
+	version="`cat "$toc"|dos2unix|grep -E "^## *Version:"|head -n 1|sed -e's, \\$Revision: \\(.\\+\\) \\$,.\\1,'|cut -d: -f2-|cut -d" " -f2-`"
 	if [ "x$addon" = "x" ]; then
 		error "Unable to determine addon name for \"$toc\"."
 		ERROR=1
