@@ -759,9 +759,6 @@ if has('autocmd')
           \   exe "normal g'\"" |
           \ endif
 
-    " Set a default filetype
-    au BufReadPost,BufNewFile,VimEnter * if &ft == '' | setfiletype text | endif
-
     " Set the compiler to the filetype by default
     au FileType * try | exe 'compiler ' . &filetype | catch | endtry
 
