@@ -36,17 +36,17 @@ if s:moria_style == "dark"
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#a0b0c0 gui=none
     hi Folded guibg=#505050 guifg=#c0d0e0 gui=none
-    hi IncSearch guibg=#80cdcd guifg=#000000 gui=none
+    hi IncSearch guibg=#e0cd78 guifg=#000000 gui=none
     hi LineNr guifg=#a0b0c0 gui=none
     hi ModeMsg guibg=bg guifg=fg gui=bold
     hi MoreMsg guibg=bg guifg=#d0d097 gui=bold
     hi NonText ctermfg=8 guibg=bg guifg=#a0b0c0 gui=bold
     hi Pmenu guibg=#8090a0 guifg=#000000 gui=none
     hi PmenuSbar guibg=#607080 guifg=fg gui=none
-    hi PmenuSel guibg=#d0d0a0 guifg=#000000 gui=none
+    hi PmenuSel guibg=#e0e000 guifg=#000000 gui=none
     hi PmenuThumb guibg=#c0d0e0 guifg=bg gui=none
     hi Question guibg=bg guifg=#e0c07e gui=bold
-    hi Search guibg=#d0d0a0 guifg=#000000 gui=none
+    hi Search guibg=#90e090 guifg=#000000 gui=none
     hi SignColumn ctermbg=bg guibg=bg guifg=#a0a0a0 gui=none
     hi SpecialKey guibg=bg guifg=#e0c07e gui=none
     if has("spell")
@@ -69,19 +69,19 @@ if s:moria_style == "dark"
     endif
     hi VisualNOS guibg=bg guifg=#90a0b0 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
-    hi WildMenu guibg=#d0d0a0 guifg=#000000 gui=bold
+    hi WildMenu guibg=#e0e000 guifg=#000000 gui=bold
 
     hi Comment guibg=bg guifg=#d0d0a0 gui=none
     hi Constant guibg=bg guifg=#87df71 gui=none
     hi Error guibg=bg guifg=#ee2c2c gui=none
     hi Identifier guibg=bg guifg=#7ee0ce gui=none
-    hi Ignore guibg=bg guifg=#303030 gui=none
+    hi Ignore guibg=bg guifg=bg gui=none
     hi lCursor guibg=#00e700 guifg=#000000 gui=none
     hi MatchParen guibg=#008b8b gui=none
     hi PreProc guibg=bg guifg=#d7a0d7 gui=none
     hi Special guibg=bg guifg=#e0c07e gui=none
     hi Statement guibg=bg guifg=#7ec0ee gui=none
-    hi Todo guibg=#d0d0a0 guifg=#000000 gui=none
+    hi Todo guibg=#e0e000 guifg=#000000 gui=none
     hi Type guibg=bg guifg=#f09479 gui=none
     hi Underlined guibg=bg guifg=#00a0ff gui=underline    
 
@@ -106,7 +106,7 @@ elseif s:moria_style == "light"
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#506070 gui=none
     hi Folded guibg=#cacaca guifg=fg gui=none
-    hi IncSearch guibg=#80cdcd gui=none
+    hi IncSearch guibg=#ffcd78 gui=none
     hi LineNr guifg=#506070 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold
     hi MoreMsg guibg=bg guifg=#1f3f81 gui=bold
@@ -116,7 +116,7 @@ elseif s:moria_style == "light"
     hi PmenuSel guibg=#ffff00 guifg=#000000 gui=none
     hi PmenuThumb guibg=#b0c0d0 guifg=fg gui=none
     hi Question guibg=bg guifg=#813f11 gui=bold
-    hi Search guibg=#ffff00 gui=none
+    hi Search guibg=#a0f0a0 gui=none
     hi SignColumn ctermbg=bg guibg=bg guifg=#707070 gui=none
     hi SpecialKey guibg=bg guifg=#912f11 gui=none
     if has("spell")
@@ -145,7 +145,7 @@ elseif s:moria_style == "light"
     hi Constant guibg=bg guifg=#077807 gui=none
     hi Error guibg=bg guifg=#ee2c2c gui=none
     hi Identifier guibg=bg guifg=#007080 gui=none
-    hi Ignore guibg=bg guifg=#d8d8d8 gui=none
+    hi Ignore guibg=bg guifg=bg gui=none
     hi lCursor guibg=#008000 guifg=#ffffff gui=none
     hi MatchParen guibg=#00ffff gui=none
     hi PreProc guibg=bg guifg=#800090 gui=none

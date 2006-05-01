@@ -1,36 +1,38 @@
 " Vim completion script
 " Language:  C++
 " Maintainer:  Vissale NEANG
-" Last Change:  2006 Apr 19
+" Last Change:  2006 May 1
 " Comments:
+" Version 0.2
+"   -   Improvements in type detection (eg: when a variable is declared in a
+"       parameter list, a catch clause, etc...)
+"   -   Code tokenization => ignoring spaces, tabs, carriage returns and comments
+"       You can complete a code even if the instruction has bad
+"       indentation, spaces or carriage returns between words
+"   -   Completion of class members added
+"   -   Detection of the current scope at the cursor position.
+"       If you run a completion from en empty line, members of the current
+"       scope are displayed. It works on the global namespace and the current
+"       class scope (but there is not the combination of the 2 for the moment)
+"   -   Basic completion on the global namespace (very very slow, I'll fix
+"       that)
+"   -   Completion of returned type added
+"   -   this pointer completion added
+"   -   Completion after a cast added (C and C++ cast)
+"   -   Fixed a bug where the matches of the complete menu are not filtered
+"       according to what the user typed
+"   -   Change the output of the popup menu. the type of the member
+"       (function, member, enum etc...) is now display as a single letter.
+"       The access information is display like this : '+' for a public member
+"       '#' for a protected member and '-' for a private member.
+"       The last information is the class, namespace or enum where the member is define.
+"
 " Version 0.12:
 "   -   Complete check added to the search process, you can now cancel
 "       the search during a complete search.
 "   
-" Version 0.11:
-"   First, sorry for my bad english.... :)
-"   The script is not finished yet, the todo list is:
-"       -   typename resolution (with the patched ctags)
-"       -   Need to improve child members completion
-"       -   No completion when we have myObject.getOtherObject()->???
-"       -   parse 'using namespace" declaration in the current file and also
-"           in included files (depending on the vim include path value)... it
-"           can be slow in big project...
-"       -   Add complete_check() and complete_add()
-"       -   Add member access change when there is a restricted access inheritance
-"           ('protected', 'private')
-"       -   Add the global namespace completion '::' (it could be slow...)
-"       -   Add a 'may complete' behaviour (don't type <CTRL-X><CTRL-O>)
-"       -   Add a basic macro resolution
-"       -   Some changes in file cache behaviour
-"       -   Add a cache for tag file and a function to check if a tag file changed
-"       -   Add global variable to configure the popup menu and completion
-"           behaviour
-"       -   Update comments of the script
-"       -   Write a documentation... :-(
-"       -   Some optimizations...
-"       -   Fix futur bugs...
-"   Some code come from the original ccomplete.vim Bram Moolenaar's script
+" Version 0.1:
+"   -   First realease
 
 if v:version < 700
     echomsg "cppomnicomplete.vim: Please install vim 7.0 or higher for omni-completion"
@@ -38,422 +40,730 @@ if v:version < 700
 endif
 
 " Cache data
-let s:filedate_cache = {}
-let s:result_cache = {}
+let s:filedateCache = {}
+let s:resultCache = {}
 
-" Some c++ specifiers
-let s:storage_class_specifier = ['auto', 'register', 'static', 'extern', 'mutable']
-let s:function_specifier = ['inline', 'virtual', 'explicit']
-let s:decl_specifier = ['friend', 'typedef']
-let s:cv_qualifier = ['const', 'volatile']
-let s:all_specifier = s:storage_class_specifier+s:function_specifier+s:decl_specifier+s:cv_qualifier
+" From the C++ BNF
+let s:cppKeyword = ['asm', 'auto', 'bool', 'break', 'case', 'catch', 'char', 'class', 'const', 'const_cast', 'continue', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'operator', 'private', 'protected', 'public', 'register', 'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_cast', 'struct', 'switch', 'template', 'this', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'wchar_t', 'while', 'and', 'and_eq', 'bitand', 'bitor', 'compl', 'not', 'not_eq', 'or', 'or_eq', 'xor', 'xor_eq']
 
-" This function is used for the 'omnifunc' option.
-function! cppomnicomplete#Complete(findstart, base)
-    if a:findstart
-        " Locate the start of the item, including ".", "->" and "[...]".
-        let line = getline('.')
-        let start = col('.') - 1
+let s:reCppKeyword = '\<'.join(s:cppKeyword, '\>\|\<').'\>'
 
-        let lastword = -1
-        while start > 0
-            if line[start - 1] =~ '\w'
-                let start -= 1
-            elseif line[start - 1] =~ '\.'
-                " Searching for dot '.'
-                if lastword == -1
-                    let lastword = start
-                endif
-                let start -= 1
-            elseif start > 1 && line[start - 2] == '-' && line[start - 1] == '>'
-                " Searching for '->'
-                if lastword == -1
-                    let lastword = start
-                endif
-                let start -= 2
-            elseif start > 1 && line[start - 2] == ':' && line[start - 1] == ':'
-                " Searching for '::' for namespaces and class
-                if lastword == -1
-                    let lastword = start
-                endif
-                let start -= 2
-            elseif line[start - 1] == ']'
-                " Skip over [...].
-                let n = 0
-                let start -= 1
-                while start > 0
-                    let start -= 1
-                    if line[start] == '['
-                        if n == 0
-                            break
-                        endif
-                        let n -= 1
-                    elseif line[start] == ']'  " nested []
-                        let n += 1
-                    endif
-                endwhile
+" The order of items in this list is very important because we use this list to build a regular
+" expression (see below) for tokenization
+let s:cppOperatorPunctuator = ['->*', '->', '--', '-=', '-', '!=', '!', '##', '#', '%:%:', '%=', '%>', '%:', '%', '&&', '&=', '&', '(', ')', '*=', '*', ',', '...', '.*', '.', '/=', '/', '::', ':>', ':', ';', '?', '[', ']', '^=', '^', '{', '||', '|=', '|', '}', '~', '++', '+=', '+', '<<=', '<%', '<:', '<<', '<=', '<', '==', '=', '>>=', '>>', '>=', '>']
+
+" We build the regexp for the tokenizer
+let s:reCppOperatorOrPunctuator = escape(join(s:cppOperatorPunctuator, '\|'), '*./^~[]')
+
+" Get code without comments and with empty strings
+" szSingleLine must not have carriage return
+function! s:GetCodeWithoutCommentsFromSingleLine(szSingleLine)
+    " We set all strings to empty strings, it's safer for 
+    " the next of the process
+    let szResult = substitute(a:szSingleLine, '".*"', '""', 'g')
+
+    " Removing c++ comments, we can use the pattern ".*" because
+    " we are modifying a line
+    let szResult = substitute(szResult, '\/\/.*', '', 'g')
+
+    " Now we have the entire code in one line and we can remove C comments
+    " We have to match the first '/*' and first '*/'
+    let startCmt = match(szResult, '\/\*')
+    let endCmt = match(szResult, '\*\/')
+    while startCmt!=-1 && endCmt!=-1
+        let szResult = szResult[ : startCmt-1 ] . szResult[ endCmt+2 : ]
+        let startCmt = match(szResult, '\/\*')
+        let endCmt = match(szResult, '\*\/')
+    endwhile
+    return szResult
+endfunc
+
+" Get a c++ code from current buffer from [lineStart, colStart] to 
+" [lineEnd, colEnd] without c++ and c comments, without end of line
+" and with empty strings if any
+" @return a string
+function! s:GetCodeWithoutComments(posStart, posEnd)
+    let posStart = a:posStart
+    let posEnd = a:posEnd
+    if a:posStart[0]>a:posEnd[0]
+        let posStart = a:posEnd
+        let posEnd = a:posStart
+    elseif a:posStart[0]==a:posEnd[0] && a:posStart[1]>a:posEnd[1]
+        let posStart = a:posEnd
+        let posEnd = a:posStart
+    endif
+
+    " Getting the lines
+    let lines = getline(posStart[0], posEnd[0])
+    let lenLines = len(lines)
+
+    " Formatting the result
+    let result = ''
+    if lenLines==1
+        let sStart = posStart[1]-1
+        let sEnd = posEnd[1]-1
+        let line = lines[0]
+        let lenLastLine = strlen(line)
+        let sEnd = (sEnd>lenLastLine)?lenLastLine : sEnd
+        if sStart >= 0
+            let result = s:GetCodeWithoutCommentsFromSingleLine(line[ sStart : sEnd ])
+        endif
+    elseif lenLines>1
+        let sStart = posStart[1]-1
+        let sEnd = posEnd[1]-1
+        let lenLastLine = strlen(lines[-1])
+        let sEnd = (sEnd>lenLastLine)?lenLastLine : sEnd
+        if sStart >= 0
+            let lines[0] = lines[0][ sStart : ]
+            let lines[-1] = lines[-1][ : sEnd ]
+            for aLine in lines
+                let result = result . s:GetCodeWithoutCommentsFromSingleLine(aLine)." "
+            endfor
+            let result = result[:-2]
+        endif
+    endif
+
+    " Now we have the entire code in one line and we can remove C comments
+    " We have to match the first '/*' and first '*/'
+    let startCmt = match(result, '\/\*')
+    let endCmt = match(result, '\*\/')
+    while startCmt!=-1 && endCmt!=-1
+        let result = result[ : startCmt-1 ] . result[ endCmt+2 : ]
+        let startCmt = match(result, '\/\*')
+        let endCmt = match(result, '\*\/')
+    endwhile
+
+    return result
+endfunc
+
+" Tokenize a c++ code
+" the code must have no comments
+" a token is dictionary where keys are:
+"   -   kind = cppKeyword|cppWord|cppOperatorPunctuator|unknown
+"   -   value = 'something'
+"   Note: a cppWord is any word that is not a cpp keyword
+function! s:Tokenize(szCodeWithoutComments)
+    let result = []
+
+    " The regexp to find a token, a token is a keyword, word or
+    " c++ operator or punctuator. To work properly we have to put 
+    " spaces and tabs to our regexp.
+    let reTokenSearch = '\(\w\+\)\|\s\+\|'.s:reCppOperatorOrPunctuator
+    " eg: 'using namespace std;'
+    "      ^    ^
+    "  start=0 end=5
+    let startPos = 0
+    let endPos = matchend(a:szCodeWithoutComments, reTokenSearch)
+    let len = endPos-startPos
+    while endPos!=-1
+        " eg: 'using namespace std;'
+        "      ^    ^
+        "  start=0 end=5
+        "  token = 'using'
+        " We also remove space and tabs
+        let token = substitute(strpart(a:szCodeWithoutComments, startPos, len), '\s', '', 'g')
+
+        " eg: 'using namespace std;'
+        "           ^         ^
+        "       start=5     end=15
+        let startPos = endPos
+        let endPos = matchend(a:szCodeWithoutComments, reTokenSearch, startPos)
+        let len = endPos-startPos
+
+        " It the token is empty we continue
+        if token==''
+            continue
+        endif
+
+        " Building the token
+        let resultToken = {'kind' : 'unknown', 'value' : token}
+
+        " Classify the token
+        if token=~'^\w\+$'
+            " It's a word
+            let resultToken.kind = 'cppWord'
+
+            " But maybe it's a c++ keyword
+            if match(token, s:reCppKeyword)!=-1
+                let resultToken.kind = 'cppKeyword'
+            endif
+        else
+            " It's an operator
+            let resultToken.kind = 'cppOperatorPunctuator'
+        endif
+
+        " We have our token, let's add it to the result list
+        call extend(result, [resultToken])
+    endwhile
+
+    return result
+endfunc
+
+" Tokenize the current instruction.
+" @return list of tokens
+function! s:TokenizeCurrentInstruction()
+    let startPos = searchpos('[;{}]\|\%^', 'bWn')
+    let curPos = getpos('.')[1:2]
+    return s:Tokenize(s:GetCodeWithoutComments(startPos, curPos)[1:])
+endfunc
+
+" Build the item list of an instruction
+" An item is an instruction between a -> or . or ->* or .*
+" We can sort an item in 3 kinds:
+"   - an item can be a cast
+"   - a member
+"   - a method
+" eg: ((MyClass1*)(pObject))->_memberOfClass1.get()     ->show()
+"     |        cast        |  |    member   | | method |  | method |
+" @return a list of item
+" an item is a dictionnary where keys are:
+"   tokens = list of token
+"   kind = itemVariable|itemCast|itemCppCast|itemTemplate|itemFunction|itemUnknown|itemThis|itemScope
+function! s:GetItemsToComplete(tokens)
+    let result = []
+    let tokens = reverse(s:BuildParenthesisGroups(a:tokens))
+    let itemsDelimiters = ['->', '.', '->*', '.*']
+
+    " fsm states:
+    "   0 = initial state, search for -> or .
+    "   TODO: add description of fsm states
+    let state=0
+    let item = {'tokens' : [], 'kind' : 'itemUnknown'}
+    let parenGroup=-1
+    for token in tokens
+        if state==0
+            if index(itemsDelimiters, token.value)>=0
+                let item = {'tokens' : [], 'kind' : 'itemUnknown'}
+                let state = 1
+            elseif token.value=='::'
+                let state = 9
+                let item.kind = 'itemScope'
+                " Maybe end of tokens
+            endif
+        elseif state==1
+            call insert(item.tokens, token)
+            if token.kind=='cppWord'
+                " It's an attribute member or a variable
+                let item.kind = 'itemVariable'
+                let state = 2
+                " Maybe end of tokens
+            elseif token.value=='this'
+                let item.kind = 'itemThis'
+                let state = 2
+                " Maybe end of tokens
+            elseif token.value==')'
+                let parenGroup = token.group
+                let state = 3
+            elseif token.value==']'
+                let parenGroup = token.group
+                let state = 4
+            endif
+        elseif state==2
+            if index(itemsDelimiters, token.value)>=0
+                call insert(result, item)
+                let item = {'tokens' : [], 'kind' : 'itemUnknown'}
+                let state = 1
+            elseif token.value == '::'
+                call insert(item.tokens, token)
+                " We have to get namespace or classscope
+                let state = 8
+                " Maybe end of tokens
             else
+                call insert(result, item)
+                let state=-1
                 break
             endif
-        endwhile
-
-        " Return the column of the last word, which is going to be changed.
-        " Remember the text that comes before it in s:prepended.
-        if lastword == -1
-            let s:prepended = ''
-            return start
-        endif
-        let s:prepended = strpart(line, start, lastword - start)
-        return lastword
-    endif
-
-    " Return list of matches.
-    let base = s:prepended . a:base
-
-    " Don't do anything for an empty base, would result in all the tags in the
-    " tags file.
-    if base == ''
-        return []
-    endif
-
-    let tag_list = []
-
-    " Class and namespace access with '::'
-    if match(base, '::$')!=-1
-        if base=='::'
-            return []
-        endif
-
-        "TODO: Search 'using namespace' declarations in the file and included files
-        let namespaces = ['::']
-        let type_info = s:ExtractTypeFromString(base)
-        " We want to get namespaces, static members and enum only
-        let tag_list = s:GetAllMembers(namespaces, type_info, '::')
-    endif
-
-    " Split item in words, keep empty word after "." or "->".
-    " "aa" -> ['aa'], "aa." -> ['aa', ''], "aa.bb" -> ['aa', 'bb'], etc.
-    " We can't use split, because we need to skip nested [...].
-    let items = []
-    let s = 0
-    while 1
-        let e = match(base, '\.\|->\|\[', s)
-        if e < 0
-            if s == 0 || base[s - 1] != ']'
-                call add(items, strpart(base, s))
+        elseif state==3
+            call insert(item.tokens, token)
+            if token.value=='(' && token.group == parenGroup
+                let state = 5
+                " Maybe end of tokens
             endif
+        elseif state==4
+            call insert(item.tokens, token)
+            if token.value=='[' && token.group == parenGroup
+                let state = 1
+            endif
+        elseif state==5
+            if token.kind=='cppWord'
+                " It's a function or method
+                let item.kind = 'itemFunction'
+                call insert(item.tokens, token)
+                let state = 2
+                " Maybe end of tokens
+            elseif token.value == '>'
+                " Maybe a cpp cast or template
+                let item.kind = 'itemTemplate'
+                call insert(item.tokens, token)
+                let parenGroup = token.group
+                let state = 6
+            else
+                " Perhaps it's a C cast eg: ((void*)(pData)) or a variable eg:(*pData)
+                let item.kind = s:GetCastType(item.tokens)
+                let state=-1
+                call insert(result, item)
+                break
+            endif
+        elseif state==6
+            call insert(item.tokens, token)
+            if token.value == '<' && token.group == parenGroup
+                " Maybe a cpp cast or template
+                let state = 7
+            endif
+        elseif state==7
+            call insert(item.tokens, token)
+            if token.kind=='cppKeyword'
+                " It's a cpp cast
+                let item.kind = s:GetCastType(item.tokens)
+                let state=-1
+                call insert(result, item)
+                break
+            else
+                " Template ?
+                let state=-1
+                call insert(result, item)
+                break
+            endif
+        elseif state==8
+            if token.kind=='cppWord'
+                call insert(item.tokens, token)
+                let state = 2
+                " Maybe end of tokens
+            else
+                let state=-1
+                call insert(result, item)
+                break
+            endif
+        elseif state==9
+            if token.kind == 'cppWord'
+                call insert(item.tokens, token)
+                let state = 10
+                " Maybe end of tokens
+            else
+                let state=-1
+                call insert(result, item)
+                break
+            endif
+        elseif state==10
+            if token.value == '::'
+                call insert(item.tokens, token)
+                let state = 9
+                " Maybe end of tokens
+            else
+                let state=-1
+                call insert(result, item)
+                break
+            endif
+        endif
+    endfor
+
+    if index([2, 5, 8, 9, 10], state)>=0
+        if state==5
+            let item.kind = s:GetCastType(item.tokens)
+        endif
+        call insert(result, item)
+    endif
+
+    return result
+endfunc
+
+" Remove useless parenthesis
+function! s:SimplifyParenthesis(tokens)
+    "Note: a:tokens is not modified
+    let tokens = a:tokens
+    " We remove useless parenthesis eg: (((MyClass)))
+    if len(tokens)>2
+        while tokens[0].value=='(' && tokens[-1].value==')' && tokens[0].group==tokens[-1].group
+            let tokens = tokens[1:-2]
+        endwhile
+    endif
+    return tokens
+endfunc
+
+" Simplify scope string, remove consecutive '::' if any
+function! s:SimplifyScope(szScope)
+    let szResult = substitute(a:szScope, '\(::\)\+', '::', 'g')
+    if szResult=='::'
+        return szResult
+    else
+        return substitute(szResult, '::$', '', 'g')
+    endif
+endfunc
+
+" Determine if tokens represent a C cast
+" @return
+"   - itemCast
+"   - itemCppCast
+"   - itemVariable
+"   - itemThis
+function! s:GetCastType(tokens)
+    " Note: a:tokens is not modified
+    let tokens = s:SimplifyParenthesis(s:BuildParenthesisGroups(a:tokens))
+
+    if tokens[0].value == '('
+        return 'itemCast' 
+    elseif index(['static_cast', 'dynamic_cast', 'reinterpret_cast', 'const_cast'], tokens[0].value)>=0
+        return 'itemCppCast'
+    else
+        for token in tokens
+            if token.value=='this'
+                return 'itemThis'
+            endif
+        endfor
+        return 'itemVariable' 
+    endif
+endfunc
+
+" Resolve a cast.
+" Resolve a C cast
+" @param list of token. tokens must be a list that represents
+" a cast expression (C cast) the function does not control
+" if it's a cast or not
+" eg: (MyClass*)something
+" @return type tokens
+function! s:ResolveCast(tokens, startChar, endChar)
+    let tokens = s:BuildParenthesisGroups(a:tokens)
+
+    " We remove useless parenthesis eg: (((MyClass)))
+    let tokens = s:SimplifyParenthesis(tokens)
+
+    let countItem=0
+    let startIndex = -1
+    let endIndex = -1 
+    let i = 0
+    for token in tokens
+        if startIndex==-1
+            if token.value==a:startChar
+                let countItem += 1
+                let startIndex = i
+            endif
+        else
+            if token.value==a:startChar
+                let countItem += 1
+            elseif token.value==a:endChar
+                let countItem -= 1
+            endif
+
+            if countItem==0
+                let endIndex = i
+                break
+            endif
+        endif
+        let i+=1
+    endfor
+
+    return tokens[startIndex+1 : endIndex-1]
+endfunc
+
+" Build parenthesis groups
+" add a new key 'group' in the token
+" where value is the group number of the parenthesis
+" eg: (void*)(MyClass*)
+"      group1  group0
+" if a parenthesis is unresolved the group id is -1      
+" @return a copy of a:tokens with parenthesis group
+function! s:BuildParenthesisGroups(tokens)
+    let tokens = copy(a:tokens)
+    let kinds = {'(': '()', ')' : '()', '[' : '[]', ']' : '[]', '<' : '<>', '>' : '<>'}
+    let unresolved = {'()' : [], '[]': [], '<>' : []}
+    let groupId = 0
+
+    " Note: we build paren group in a backward way
+    " because we can often have parenthesis unbalanced
+    " instruction
+    " eg: doSomething(_member.get()->
+    for token in reverse(tokens)
+        if index([')', ']', '>'], token.value)>=0
+            let token['group'] = groupId
+            call extend(unresolved[kinds[token.value]], [token])
+            let groupId+=1
+        elseif index(['(', '[', '<'], token.value)>=0
+            if len(unresolved[kinds[token.value]])
+                let tokenResolved = remove(unresolved[kinds[token.value]], -1)
+                let token['group'] = tokenResolved.group
+            else
+                let token['group'] = -1
+            endif
+        endif
+    endfor
+
+    return reverse(tokens)
+endfunc
+
+" Resolve a cast.
+" Resolve a C++ cast
+" @param list of token. tokens must be a list that represents
+" a cast expression (C++ cast) the function does not control
+" if it's a cast or not
+" eg: static_cast<MyClass*>(something)
+" @return type info string
+function! s:ResolveCppCast(tokens)
+    return s:ExtractTypeInfoFromTokens(s:ResolveCast(a:tokens, '<', '>'))
+endfunc
+
+" Resolve a cast.
+" Resolve a C cast
+" @param list of token. tokens must be a list that represents
+" a cast expression (C cast) the function does not control
+" if it's a cast or not
+" eg: (MyClass*)something
+" @return type info string
+function! s:ResolveCCast(tokens)
+    return s:ExtractTypeInfoFromTokens(s:ResolveCast(a:tokens, '(', ')'))
+endfunc
+
+" Returns the class scope at the current position of the cursor
+" @return a string that represents the class scope
+" eg: ::NameSpace1::Class1
+" The returned string always starts with '::'
+function! s:GetClassScopeAtCurrentPosition()
+    " We store the cursor position because searchpairpos() moves the cursor
+    let originalPos = getpos('.')
+    let endPos = originalPos[1:2]
+    let listCode = []
+
+    let szBetweenPos = ''
+    while endPos!=[0,0]
+        " Note: We ignore matches under c and c++ comments
+        " to do that we get the syntax id of the text under the cursor
+        " if it contains 'cComment' or 'cCommentL' we ignore the match
+        let reIgnoreComments = 'match(synIDattr(synID(line("."), col("."), 1), "name"), "cComment")!=-1'
+        let endPos = searchpairpos('{', '', '}', 'bW', reIgnoreComments)
+        let szReStartPos = '[;{}]\|\%^'
+        let startPos = searchpairpos(szReStartPos, '', '{', 'bWn', reIgnoreComments)
+
+        " Get lines backward from cursor position to last ; or { or }
+        " or when we are at the beginning of the file.
+        " We store lines in listCode
+        if endPos!=[0,0]
+            " We remove the last character which is a '{'
+            " We also remove starting { or } or ; if exits
+            let szCodeWithoutComments = substitute(s:GetCodeWithoutComments(startPos, endPos)[:-2], '^[;{}]', '', 'g')
+            call insert(listCode, szCodeWithoutComments)
+        endif
+    endwhile
+    " Setting the cursor to the original position
+    call setpos('.', originalPos)
+
+    let listClassScope = []
+    let szClassScope = '::'
+    " Now we can check in the list of code if there is a function
+    for code in listCode
+        " We get the name of the namespace, class, struct or union
+        " and we store it in listClassScope
+        let tokens = s:Tokenize(code)
+        let bContinue=0
+        let state=0
+        for token in tokens
+            if state==0
+                if index(['namespace', 'class', 'struct', 'union'], token.value)>=0
+                    let state= 1
+                    " Maybe end of tokens
+                endif
+            elseif state==1
+                if token.kind == 'cppWord'
+                    " eg: namespace MyNs { class MyCl {}; }
+                    " => listClassScope = [MyNs, MyCl]
+                    call extend( listClassScope , [token.value] )
+                    let bContinue=1
+                    break
+                endif
+            endif
+        endfor
+        if bContinue==1
+            continue
+        endif
+
+        " Simple test to check if we have a chance to find a
+        " class method
+        let aPos = matchend(code, '::\s*\w\+\s*(')
+        if aPos ==-1
+            continue
+        endif
+
+        let listTmp = []
+        " eg: 'void MyNamespace::MyClass::foo('
+        " => tokens = ['MyClass', '::', 'MyNamespace', 'void']
+        let tokens = reverse(s:Tokenize(code[:aPos-1])[:-4])
+        let state = 0
+        " Reading tokens backward
+        for token in tokens
+            if state==0
+                if token.kind=='cppWord'
+                    call insert(listTmp, token.value)
+                    let state=1
+                endif
+            elseif state==1
+                if token.value=='::'
+                    let state=2
+                else
+                    break
+                endif
+            elseif state==2
+                if token.kind=='cppWord'
+                    call insert(listTmp, token.value)
+                    let state=1
+                else
+                    break
+                endif
+            endif
+        endfor
+
+        if len(listTmp)
+            if len(listClassScope)
+                " Merging class scopes
+                " eg: current class scope = 'MyNs::MyCl1'
+                " method class scope = 'MyCl1::MyCl2'
+                " If we add the method class scope to current class scope
+                " we'll have MyNs::MyCl1::MyCl1::MyCl2 => it's wrong
+                " we want MyNs::MyCl1::MyCl2
+                let index = 0
+                for methodClassScope in listTmp
+                    if methodClassScope==listClassScope[-1]
+                        let listTmp = listTmp[index+1:]
+                        break
+                    else
+                        let index+=1
+                    endif
+                endfor
+            endif
+            call extend(listClassScope, listTmp)
             break
         endif
-        if s == 0 || base[s - 1] != ']'
-            call add(items, strpart(base, s, e - s))
-        endif
-        if base[e] == '.'
-            let s = e + 1   " skip over '.'
-        elseif base[e] == '-'
-            let s = e + 2   " skip over '->'
-        else
+    endfor
+
+    if len(listClassScope)
+        let szClassScope = szClassScope . join(listClassScope, '::')
+    endif
+
+    return szClassScope
+endfunc
+
+" For debug purpose
+function! s:TokensToString(tokens)
+    let result = ''
+    for token in a:tokens
+        let result = result . token.value . ' '
+    endfor
+    return result[:-2]
+endfunc
+
+" For debug purpose
+function! s:ItemToString(item)
+    return s:TokensToString(a:item.tokens) . ' ' . a:item.kind
+endfunc
+
+" Find the start position of the completion
+function! s:FindStartPositionOfCompletion()
+    " Locate the start of the item, including ".", "->" and "[...]".
+    let line = getline('.')
+    let start = col('.') - 1
+
+    let lastword = -1
+    while start > 0
+        if line[start - 1] =~ '\w'
+            let start -= 1
+        elseif line[start - 1] =~ '\.'
+            " Searching for dot '.'
+            if lastword == -1
+                let lastword = start
+            endif
+            let start -= 1
+        elseif start > 1 && line[start - 2] == '-' && line[start - 1] == '>'
+            " Searching for '->'
+            if lastword == -1
+                let lastword = start
+            endif
+            let start -= 2
+        elseif start > 1 && line[start - 2] == ':' && line[start - 1] == ':'
+            " Searching for '::' for namespaces and class
+            if lastword == -1
+                let lastword = start
+            endif
+            let start -= 2
+        elseif line[start - 1] == ']'
             " Skip over [...].
             let n = 0
-            let s = e
-            let e += 1
-            while e < len(base)
-                if base[e] == ']'
+            let start -= 1
+            while start > 0
+                let start -= 1
+                if line[start] == '['
                     if n == 0
                         break
                     endif
                     let n -= 1
-                elseif base[e] == '['  " nested [...]
+                elseif line[start] == ']'  " nested []
                     let n += 1
                 endif
-                let e += 1
             endwhile
-            let e += 1
-            call add(items, strpart(base, s, e - s))
-            let s = e
+        else
+            break
         endif
     endwhile
-
-    "TODO: Search 'using namespace' declarations in the file and included files
-    ".....
-
-    " Default namespace = global
-    let namespaces = ['::']
-
-    " Searching the declaration line of the variable
-    if searchdecl(items[0], 0, 1) == 0
-        " Line declaration found, getting the line
-        let line = getline('.')
-
-        " Get the type info from a declaration line
-        " TODO: Case when the declaration is in function parameter list
-        
-        " The type_info can contain the global namespace or not depending on
-        " the line
-        let type_info = s:ExtractTypeFromDeclaration(line)
-
-        if len(items)>2
-            call remove(items, 0)
-            let type_info_of_last_item = s:ResolveTypeInfoOfLastItem(namespaces, type_info, items)
-            let tag_list = s:GetAllMembers(namespaces, type_info_of_last_item)
-        else
-            let tag_list = s:GetAllMembers(namespaces, type_info)
-        endif
+    if lastword==-1
+        " For completion on the current scope
+        let lastword = start
     endif
-
-    return s:ConvertTagItemListToPopupItemList(tag_list)
+    return lastword
 endfunc
 
-" Returns the type info of the last item in fifo_items
-function! s:ResolveTypeInfoOfLastItem(namespaces, type_info, fifo_items)
-    let result = ''
-    if len(a:fifo_items)>0
-        " We only want the member a:fifo_items[0], don't need to get all
-        " members
-        let member_query = a:fifo_items[0].'$'
-        let members = s:GetAllMembers(a:namespaces, a:type_info, '' , member_query)
-
-        if len(members)==0
-            return result
-        endif
-
-        " Now we know the type info of item
-        " TODO: improve ExtractTypeFromTagItemCmd(). Don't work for lots
-        " of case
-        let type_info = s:ExtractTypeFromTagItemCmd(members[0])
-
-        " TODO: namespace resolution of the type_info
-        let resolved_type_info = type_info
-
-        call remove(a:fifo_items, 0)
-
-        " If the last item is '' it's the end
-        if a:fifo_items[0]==''
-            return type_info
-        else
-            let result = s:ResolveTypeInfoOfLastItem(a:namespaces, resolved_type_info, a:fifo_items)
-        endif
-    endif
+" Parse the file and return a list of namespaces
+" TODO:
+function! s:GetNamespacesUsed()
+    let result = ['::']
     return result
 endfunc
 
-" Get all members of a class, struct, union.
-" for class and struct, get also the inherited members
-function! s:GetAllMembers(namespaces, type_info, ...)
-    let completion_mode ='' 
-    let member_query = '\w\+$'
+" Extract type from tokens.
+" eg: examples of tokens format
+"   'const MyClass&'
+"   'const map < int, int >&'
+"   'MyNs::MyClass'
+"   '::MyClass**'
+" @return the type info string eg: ::std::map
+" can be empty
+function! s:ExtractTypeInfoFromTokens(tokens)
+    let szResult = ''
+    let tokens = reverse(s:BuildParenthesisGroups(a:tokens))
 
-    " Getting optional argument
-    if a:0==1
-        let completion_mode = a:1
-    elseif a:0==2 
-        let completion_mode = a:1
-        let member_query = a:2
-    endif
-
-    let result = []
-    if complete_check()
-        return result
-    endif
-    
-    " Get the tag list of the class name without his namespace,
-    " GetTagList() resolve the first typedef
-    let type_info_typedef_resolved = a:type_info
-    let [tag_list, type_info_typedef_resolved] = s:GetTagList(a:type_info)
-
-    " Get the correct tag item that match our type_info_typedef_resolved (namespace+classname)
-    let [tag_item, resolved_type_info] = s:ResolveTag(a:namespaces, type_info_typedef_resolved, tag_list)
-
-    " Exit if tag not found
-    if tag_item=={}
-        return result
-    endif
-
-    if has_key(tag_item, 'inherits')
-        " We don't forget multiple inheritance
-        " Note: in the base_class_type_info_list there is no information
-        " about the inheritance acces ('public', 'protected', 'private') and
-        " also the 'virtual' information
-        let base_class_type_info_list = split(tag_item['inherits'], ',')
-
-        " Getting members of all base classes
-        for base_class_type_info in base_class_type_info_list
-            " We have to resolve the correct namespace of base_class_type_info
-            " we can have '::Class1' 'Class1' 'NameSpace1::NameSpace2::Class8'
-            "TODO: Search 'using namespace' declarations in the file and included files
-            let namespaces = ['::']
-            let namespaces = [s:ExtractNamespaceFromTypeInfo(resolved_type_info)] + namespaces
-            let result = s:GetAllMembers(namespaces, base_class_type_info, completion_mode, member_query) + result
-        endfor
-    endif
-
-    let result = s:SearchMembers(tag_item.filename, resolved_type_info, completion_mode, member_query) + result
-
-    return result
-endfunc
-
-" Search class, struct, union members
-" ex: if type_info represents a class 'MyClass' then
-"       that match 'class:MyClass'
-"   -  member_query: This is a regexp for the taglist() function
-"       -  To get all MyClass members 
-"         => member_query='.*'
-"       -  To only get the member MyClass::_iAmAMember
-"         => member_query='_iAmAMember'
-"  return a list of tag_item
-function! s:SearchMembers(filename, type_info, completion_mode, member_query)
-    let result = []
-    if complete_check()
-        return result
-    endif
-
-    " Formatting the result key for the result cache. Keys must contain the
-    " filename, the type_info and the search request
-    let result_key = a:filename.a:type_info.string(a:completion_mode).a:member_query
-
-    " If the file has not changed we return the stored result
-    if s:HasChanged(a:filename, a:type_info)==0 && has_key(s:result_cache, result_key)
-        return s:result_cache[result_key]
-    endif
-
-    " Search members of a:type_info, because a resolved type info
-    " starts with :: we remove it for the taglist(), removing '::' at the end also
-    let fixed_type_info = substitute(a:type_info, '\(^::\)\|\(::$\)', '', 'g')
-
-    " Build a ctor type info
-    let classname = split(fixed_type_info)[-1]
-    let ctor_name = fixed_type_info . '::' . classname
-    let dtor_name = fixed_type_info . '::~' . classname
-
-    " We add an ending '::' and simplify if there consecutive '::'
-    let tag_query = '^'.fixed_type_info.'::'.a:member_query
-    if a:completion_mode=='::'
-        let tag_query = '^'.fixed_type_info.'::\w\+$'
-    endif
-
-    " To get the members we have to run ctags on the file header or
-    " source then we store all tagid of our class (or struct, union etc...)
-    let tmpfile_tag_file = tempname()
-
-    " Storing the vim env 'tags'
-    let tags_env_orig = &tags
-
-    " Building the ctags command, because we want to get members we add the
-    " option -c++-kinds=+p to detect function prototypes in header files.
-    " To get members we need also the option : --extra=+q
-    " so we can have tag item name that start with the class name eg: 'MyClass::_member'
-    " we add --language-force=c++ because the tmp file has no extension
-    " we need access member information : +a
-    " Note: we don't need inheritance information for searching members
-    " In the futur we'll need the signature of a routine (+S) but there is a
-    " bug in the taglist() function in some cases so we don't add it
-    let tag_cmd = 'ctags --language-force=c++ --c++-kinds=+p --fields=+a --extra=+q -f "'.tmpfile_tag_file.'" "'.a:filename.'"'
-    call system(tag_cmd)
-
-    " Sets the tags vim variable so that the function taglist() can work
-    " faster
-    exe "set tags=".tmpfile_tag_file
-    let class_members = taglist(tag_query)
-
-    " For each member of our class
-    for member in class_members
-        " Check if the user wants to stop the search
-        if complete_check()
-            " Restoring the old tags value
-            exe "set tags=".tags_env_orig
-            " We don't register the result in the cache because the user stopped the search
-            return result
-        endif
-
-        if a:completion_mode=='::'
-            " If it's a namespace or class or struct or union or typedef or
-            " enum we add the member to the result list
-            if index(['n', 'c', 's', 'u','t', 'e'], member.kind[0])>=0
-                call add(result, member)
-                continue
-            elseif match(member.cmd, '\<static\>')!=-1
-                " If it's a static member we add it
-                call add(result, member)
-                continue
+    let state = 0
+    let parenGroup = -1
+    for token in tokens
+        if state==0
+            if token.value=='>'
+                let parenGroup = token.group
+                let state=1
+            elseif token.kind == 'cppWord'
+                let szResult = token.value.szResult
+                let state=2
             endif
-        else
-            " We add attribute members, function and prototypes
-            if index(['m','f', 'p'], member.kind[0])>=0
-                " Ignoring ctor and dtor for class and struct
-                if member.name == ctor_name || member.name == dtor_name
-                    continue
-                endif
-                call add(result, member)
+        elseif state==1
+            if token.value=='<' && token.group==parenGroup
+                let state=0
+            endif
+        elseif state==2
+            if token.value=='::'
+                let szResult = token.value.szResult
+                let state=3
+            else
+                break
+            endif
+        elseif state==3
+            if token.kind == 'cppWord'
+                let szResult = token.value.szResult
+                let state=2
+            else
+                break
             endif
         endif
     endfor
 
-    " Restoring the old tags value
-    exe "set tags=".tags_env_orig
-
-    " We store the result for optimization
-    " We update the result only if the file where type_info is define changed
-    let s:result_cache[result_key] = result
-    return result
-endfunc
-
-" Convert a tag_item (from taglist()) to a popup item
-function! s:ConvertTagItemToPopupItem(tag_item)
-    let item_word = substitute(a:tag_item.name, '.*::', '', 'g')
-    "let item_word = a:tag_item.name
-    " If the tagid is a function or a prototype we add a
-    " parenthesis
-    " Note: tag_item values can be in single letter format so
-    " we always test the first letter
-    if index(['f', 'p'], a:tag_item.kind[0])>=0
-        let item_word = item_word . '('
-    endif
-    let item_kind = "\t\t" . a:tag_item['kind']
-
-    " Formating optional menu string
-    let item_menu = ''
-    let all_tag_key = ['access', 'class', 'struct', 'union', 'enum']
-    for tag_key in all_tag_key
-        if has_key(a:tag_item, tag_key)
-            let item_menu = item_menu."\t".a:tag_item[tag_key]
-        endif
-    endfor
-
-    let popup_item = {'word':item_word, 'kind':item_kind, 'menu':item_menu}
-    return popup_item
-endfunc
-
-" Convert a tag item list to popup item list
-function! s:ConvertTagItemListToPopupItemList(tag_list)
-    let result = []
-    for tag_item in a:tag_list
-        call extend(result, [s:ConvertTagItemToPopupItem(tag_item)])
-    endfor
-    return result
-endfunc
-
-
-" Check if a file has changed
-function! s:HasChanged(filepath, type_info)
-    let cache_key = a:filepath.a:type_info
-    if has_key(s:filedate_cache, cache_key)
-        let current_filetime = getftime(a:filepath)
-        if current_filetime > s:filedate_cache[cache_key]
-            " The file has changed, updating the cache
-            let s:filedate_cache[cache_key] = current_filetime
-            return 1
-        else
-            return 0
-        endif
-    else
-        " We store the time of the file
-        let s:filedate_cache[cache_key] = getftime(a:filepath)
-        return 1
-    endif
+    return szResult
 endfunc
 
 " Extract the cmd of a tag item without regexp
-function! s:ExtractCmdFromTagItem(tag_item)
-    let line = a:tag_item.cmd
+function! s:ExtractCmdFromTagItem(tagItem)
+    let line = a:tagItem.cmd
     let re = '\(\/\^\)\|\(\$\/\)'
     if match(line, re)!=-1
         let line = substitute(line, re, '', 'g')
@@ -464,209 +774,487 @@ function! s:ExtractCmdFromTagItem(tag_item)
     endif
 endfunc
 
-function! s:ExtractTypeFromTagItemCmd(tag_item)
-    return s:ExtractTypeFromDeclaration(s:ExtractCmdFromTagItem(a:tag_item))
+" Search a declaration.
+" @return a string representing the type information
+" eg: std::map
+" can be empty
+" Note: The returned type info can be a typedef
+" The typedef resolution is done later
+function! s:GetTypeInfoOfVariable(namespaces, szCurrentClassScope, szVariable)
+    let szResult = ''
+    " Search declaration like gd
+    let searchResult = searchdecl(a:szVariable, 0, 1)
+    if searchResult!=0
+        " If the result is empty, we have to search the variable in the class
+        " scope, here we need the tags
+        let szClassScopeForTags = substitute(a:szCurrentClassScope, '^::', '', 'g')
+
+        " We want to get the type of the member a:szVariable, the search is
+        " done in the class szClassScopeForTags and in base classes if any
+        let tagList = s:SearchAllMembers(a:namespaces, szClassScopeForTags)
+
+        let szFilter = "v:val.kind[0]=='m' && (match(v:val.name, '\\<'.a:szVariable.'$')!=-1)"
+        call filter(tagList, szFilter)
+
+        if len(tagList)
+            " eg: 'MyClass _member' => 'MyClass'
+            let szCmdWithoutVariable = substitute(s:ExtractCmdFromTagItem(tagList[0]), '\<'.a:szVariable.'\>.*', '', 'g')
+            let tokens = s:Tokenize(s:GetCodeWithoutCommentsFromSingleLine(szCmdWithoutVariable))
+            let szResult = s:ExtractTypeInfoFromTokens(tokens)
+            return szResult
+        endif
+
+        " Search declaration like gD
+        if szResult==''
+            let searchResult = searchdecl(a:szVariable, 1, 1)
+        endif
+    endif
+
+    " Search done ?
+    if searchResult==0
+        " After searchdecl(), the cursor is on the first letter of the
+        " variable, because we only want the type we remove this letter
+        " => [:-2]
+        let tokensType= s:TokenizeCurrentInstruction()[:-2]
+        let szResult = s:ExtractTypeInfoFromTokens(tokensType)
+
+        " If the result still empty, maybe the variable is a global var of an
+        " unnamed class, struct or union.
+        " eg:
+        " struct
+        " {
+        "   int num;
+        " }gVariable;
+        " In this case we need the tags (the patched version)
+        " TODO: Need to improve this code
+        if szResult==''
+            let tagList = taglist('^'.a:szVariable.'$')
+            if len(tagList)
+                " TODO: Why tagList[0] ?
+                " use vimgrep instead
+                let tagItem = tagList[0]
+                if tagItem.kind[0]=='v' && has_key(tagItem, 'typename')
+                    " eg: typename = 'struct:2::3'
+                    let szResult = tagItem.typename
+                endif
+            endif
+        endif
+    endif
+    return szResult
 endfunc
 
-" The returned namespace may not have the global namespace
-" ex: '::NameSpace1::NameSpace2::MyClass' => '::NameSpace1::NameSpace2::'
-" 'NameSpace1::NameSpace2::MyClass' => 'NameSpace1::NameSpace2::'
-function! s:ExtractNamespaceFromTypeInfo(type_info)
-    return substitute(a:type_info, '\w\+$', '', 'g')
+" Get the type info string from the returned type of function
+function! s:GetTypeInfoOfReturnedType(namespaces, szCurrentClassScope, szFunctionName)
+    let szResult = ''
+    " If the result is empty, we have to search the variable in the class
+    " scope, here we need the tags
+    let szClassScopeForTags = substitute(a:szCurrentClassScope, '^::', '', 'g')
+
+    " The search is done in the class szClassScopeForTags and in base classes if any
+    let tagList = s:SearchAllMembers(a:namespaces, szClassScopeForTags)
+
+    let szFilter = "(v:val.kind[0]=='f' || v:val.kind[0]=='p') && (match(v:val.name, '\\<'.a:szFunctionName.'$')!=-1)"
+    call filter(tagList, szFilter)
+
+    if len(tagList)
+        " eg: 'MyClass _member' => 'MyClass'
+        let szCmdWithoutVariable = substitute(s:ExtractCmdFromTagItem(tagList[0]), '\<'.a:szFunctionName.'\>.*', '', 'g')
+        let tokens = s:Tokenize(s:GetCodeWithoutCommentsFromSingleLine(szCmdWithoutVariable))
+        let szResult = s:ExtractTypeInfoFromTokens(tokens)
+        return szResult
+    endif
+    return szResult
 endfunc
 
-" Simplify namespace string, remove consecutive '::' if any
-function! s:SimplifyNamespace(namespace)
-    return substitute(a:namespace, '\(::\)\+', '::', 'g')
+" A resolved type info starts with '::'
+" @return
+"   - 1 if type info starts with '::'
+"   - 0 otherwise
+function! s:IsTypeInfoResolved(szTypeInfo)
+    return match(a:szTypeInfo, '^::')!=-1
 endfunc
 
-" Get the tag info string from a tag item
-" the type info string use the tag_item.name and ta_item.namespace (if
-" exists)
-" The global namespace is always add
-function! s:ExtractTypeFromTagItem(tag_item)
-    " We add the global namespace
-    let result = '::'.a:tag_item.name
+" Resolve type information of items
+" @param namespaces: list of namespaces used in the file
+" @param szCurrentClassScope: the current class scope, only used for the first
+" item to detect if this item is a class member (attribute, method)
+" @param items: list of item, can be an empty list @see GetItemsToComplete
+function! s:ResolveItemsTypeInfo(namespaces, szCurrentClassScope, items)
+    " Note: kind = itemVariable|cCast|cppCast|template|function|itemUnknown|this
+    " For the first item, if it's a variable we try to detect the type of the
+    " variable with the function searchdecl. If it fails, thanks to the
+    " current class scope, we try to detect if the variable is an attribute
+    " member.
+    " If the kind of the item is a function, we have to first check if the
+    " function is a method of the class, if it fails we try to get a match in
+    " the global namespace. After that we get the returned type of the
+    " function.
+    " It the kind is a C cast or C++ cast, there is no problem, it's the
+    " easiest case. We just extract the type of the cast.
 
-    " The key 'namespace' may not exist
-    " Note: in tag file tag_item.namespace never contains an ending '::'
-    if has_key(a:tag_item, 'namespace')
-        let result = '::'.a:tag_item.namespace . result
+    let szTypeInfo = a:szCurrentClassScope
+    for item in a:items
+        let curItem = item
+        if curItem.kind=='itemVariable'
+            " Note: a variable can be : MyNs::MyClass::_var or _var or (*pVar)
+            let tokens = reverse(copy(curItem.tokens))
+            let szVariable = curItem.tokens[-1].value
+            for token in tokens
+                if token.kind=='cppWord'
+                    let szVariable = token.value
+                    break
+                endif
+            endfor
+            let szTypeInfo = s:GetTypeInfoOfVariable(a:namespaces, szTypeInfo, szVariable)
+        elseif curItem.kind == 'itemFunction'
+            let idx = 0
+            for token in curItem.tokens
+                if token.value=='('
+                    let idx-=1
+                    break
+                endif
+                let idx+=1
+            endfor
+            let szFunctionName = curItem.tokens[idx].value
+            let szTypeInfo = s:GetTypeInfoOfReturnedType(a:namespaces, szTypeInfo, szFunctionName)
+        elseif curItem.kind == 'itemThis'
+            let szTypeInfo = substitute(a:szCurrentClassScope, '^::', '', 'g')
+        elseif curItem.kind == 'itemCast'
+            let szTypeInfo = s:ResolveCCast(curItem.tokens)
+        elseif curItem.kind == 'itemCppCast'
+            let szTypeInfo = s:ResolveCppCast(curItem.tokens)
+        elseif curItem.kind == 'itemScope'
+            let szTypeInfo = substitute(s:TokensToString(curItem.tokens), '\s', '', 'g')
+        endif
+    endfor
+
+    return szTypeInfo
+endfunc
+
+" Check if a file has changed
+function! s:HasChanged(filepath, typeInfo)
+    let cacheKey = a:filepath.a:typeInfo
+    if has_key(s:filedateCache, cacheKey)
+        let currentFiletime = getftime(a:filepath)
+        if currentFiletime > s:filedateCache[cacheKey]
+            " The file has changed, updating the cache
+            let s:filedateCache[cacheKey] = currentFiletime
+            return 1
+        else
+            return 0
+        endif
+    else
+        " We store the time of the file
+        let s:filedateCache[cacheKey] = getftime(a:filepath)
+        return 1
+    endif
+endfunc
+
+" Convert a tag_item (from taglist()) to a popup item
+function! s:ConvertTagItemToPopupItem(tagItem)
+    let itemWord = substitute(a:tagItem.name, '.*::', '', 'g')
+    "let itemWord = a:tagItem.name
+    " If the tagid is a function or a prototype we add a
+    " parenthesis
+    " Note: tagItem values can be in single letter format so
+    " we always test the first letter
+    if index(['f', 'p'], a:tagItem.kind[0])>=0
+        let itemWord = itemWord . '('
+    endif
+
+    " If it's a prototype then change the letter to 'f' (for function)
+    let itemKind = "\t\t".substitute(a:tagItem.kind[0], 'p', 'f', 'g')
+
+    " Add the access
+    let itemMenu = ''
+    let accessChar = {'public':'+','protected':'#','private':'-'}
+    if has_key(a:tagItem, 'access')
+        let itemMenu = itemMenu.accessChar[a:tagItem.access]
+    else
+        let itemMenu = itemMenu." "
+    endif
+
+    " Formating optional menu string
+    let allTagKey = ['class', 'struct', 'union', 'enum']
+    for tagKey in allTagKey
+        if has_key(a:tagItem, tagKey)
+            let itemMenu = itemMenu."\t".a:tagItem[tagKey]
+        endif
+    endfor
+
+    let popupItem = {'word':itemWord, 'kind':itemKind, 'menu':itemMenu}
+    return popupItem
+endfunc
+
+" Convert a tag item list to popup item list
+function! s:ConvertTagItemListToPopupItemList(tagList, baseFilter)
+    let result = []
+    for tagItem in a:tagList
+        if match(substitute(tagItem.name, '.*::', '', 'g'), a:baseFilter)!=-1
+            call extend(result, [s:ConvertTagItemToPopupItem(tagItem)])
+        endif
+    endfor
+    return result
+endfunc
+
+" A returned type info's scope may not have the global namespace '::'
+" eg: '::NameSpace1::NameSpace2::MyClass' => '::NameSpace1::NameSpace2'
+" 'NameSpace1::NameSpace2::MyClass' => 'NameSpace1::NameSpace2'
+function! s:ExtractScopeFromTypeInfo(szTypeInfo)
+    let szScope = substitute(a:szTypeInfo, '\w\+$', '', 'g')
+    if szScope =='::'
+        return szScope
+    else
+        return substitute(szScope, '::$', '', 'g')
+    endif
+endfunc
+
+" Extract the scope (context) of a tag item
+" eg: ::MyNamespace
+" @return a string of the scope. a scope from tag always starts with '::'
+function! s:ExtractScopeFromTag(tagItem)
+    let listKindScope = ['class', 'struct', 'union', 'namespace']
+    let szResult = '::'
+    for scope in listKindScope
+        if has_key(a:tagItem, scope)
+            let szResult = szResult . a:tagItem[scope]
+            break
+        endif
+    endfor
+    return szResult
+endfunc
+
+" @return
+"   -   the tag with the same scope
+"   -   {} otherwise
+function! s:GetTagOfSameScope(listTags, szScopeToMatch)
+    for tagItem in a:listTags 
+        let szScopeOfTag = s:ExtractScopeFromTag(tagItem)
+        if szScopeOfTag == a:szScopeToMatch
+            return tagItem
+        endif
+    endfor
+    return {}
+endfunc
+
+" Search class, struct, union members.
+" If the class has inherited informations we get also the inherited members
+function! s:SearchAllMembers(namespaces, szTypeInfo)
+    let result = []
+
+    " Complete check
+    if complete_check()
+        return result
+    endif
+
+    let tagItem = s:GetResolvedTagItem(a:namespaces, a:szTypeInfo)
+
+    if tagItem!={}
+        call extend(result, s:SearchMembers(tagItem))
+        if has_key(tagItem, 'inherits')
+            " We don't forget multiple inheritance
+            " Note: in the baseClassTypeInfoList there is no information
+            " about the inheritance acces ('public', 'protected', 'private')
+            " the only way to find it is to use the cmd info of the tag. But it's
+            " not 100% fiable
+            let baseClassTypeInfoList = split(tagItem.inherits, ',')
+
+            " Getting members of all base classes
+            for baseClassTypeInfo in baseClassTypeInfoList
+                " We have to resolve the correct namespace of baseClassTypeInfo
+                " we can have '::Class1' 'Class1' 'NameSpace1::NameSpace2::Class8'
+                "TODO: Search 'using namespace' declarations in the file and included files
+                let namespaces = ['::']
+                let namespaces = [s:ExtractScopeFromTag(tagItem)] + namespaces
+                call extend(result, s:SearchAllMembers(namespaces, baseClassTypeInfo))
+            endfor
+        endif
     endif
     return result
 endfunc
 
-" Sometimes we need to remove specifier that are useless for
-" the process
-function! s:RemoveCppSpecifiers(string, specifier_list)
-    let specifier_regex = ''
-    for specifier in a:specifier_list
-        let specifier_regex = specifier_regex. '\<'. specifier .'\>\|'
-    endfor
-    let specifier_regex = specifier_regex[:-3]
-    return substitute(a:string, specifier_regex,'','g')
-endfunc
-
-" Remove template parameter
-" ex: vector<int> => vector
-" map < vector < int >, map < int, int > > => map
-function! s:RemoveTemplateParams(string)
-    return substitute(a:string, '<.*>', '', 'g')
-endfunc
-
-" Returns the type info ex: 'NameSpace1::NameSpace2::MyClass::MyNestedClass'
-" or 'MyClass'
-" Note: We remove starting '::' and ending '::' if any
-" ex: 'const std::map<int, int, blablablaAllocator >&' => std::map
-function! s:ExtractTypeFromString(string)
-    " We remove 'const', 'static', 'volatile' etc...
-    " We also remove template parameter list
-    " and ctor parameter list
-    " ex:'< vector<int>, std::map<int, int> >'
-    " Then we remove pointer and reference (*,&)
-    " We finally remove space and tab
-    let result = s:RemoveCppSpecifiers(a:string, s:all_specifier)
-    let result = s:RemoveTemplateParams(result)
-    let result = substitute(result, '[*&]\|[[:blank:]]','','g')
-
-    " We remove starting '::' and ending '::' if any
-    return substitute(result, '\(^::\)\|\(::$\)', '', 'g')
-endfunc
-
-" ex: 'MyClass myObject("Hello World", 2006)'
-function! s:ExtractTypeFromDeclaration(decl)
-    let decl = substitute(a:decl, '(.*)', '', 'g')
-    " Removing the last word
-    let decl = substitute(decl, '\w\+[[:blank:]]*[;\n]', '', 'g')
-    return s:ExtractTypeFromString(decl)
-endfunc
-
-" Get the tag list and try to resolve typedef if any
-function! s:GetTagList(type_info)
-    let type_info_typedef_resolved = a:type_info
-    let tag_list = taglist('^'.split(a:type_info, '::')[-1].'$')
-
-    if len(tag_list)
-        let [tag_list, type_info_typedef_resolved] = s:ResolveTypedef(tag_list, type_info_typedef_resolved)
+" Get a tag item after a scope resolution and typedef resolution
+function! s:GetResolvedTagItem(namespaces, szTypeInfo)
+    let result = {}
+    let listClassName = split(a:szTypeInfo, '::')
+    if len(listClassName)==0
+        return result
     endif
 
-    return [tag_list, type_info_typedef_resolved]
-endfunc
+    let szClassName = listClassName[-1]
+    let tagList = taglist('^'.szClassName.'$')
+    " We can only get members of class, struct, union and namespace
+    let szFilter = "index(['c', 's', 'u', 'n', 't'], v:val.kind[0])>=0"
+    call filter(tagList, szFilter)
 
-" Get the best tag entry from the tag list that match our type info
-" ex:
-"   Our type info is  NameSpace1::NameSpace2::MyClass
-"   In tag file we have multiple tag name 'MyClass' : our class, the ctor, and
-"   another class 'MyClass' from the namespace NameSpace3. To get the correct
-"   tag entry we have to check :
-"       -   The namespace (we eliminate the NameSpace3::MyClass)
-"       -   The kind (to eliminate the ctor MyClass())
-"   type_info's namespace can be unresolved at entry
-"   if ResolveTag() success the type_info's namespace is resolve and the
-"   resolved type info is return. A resolved type info always begin with '::'
-"   ex:
-"       If we have 'Class1' (we don't know his namespace, maybe global maybe not..)
-"       The result can be '::Class1' or '::Namespace1::Class1'
-"   @return a list of 2 item:
-"       -   [tag item, resolved type info] if success
-"       -   [{}, a:type_info] if fails
-function! s:ResolveTag(namespaces, type_info, tag_list)
-    let garbage = []
-    let resolved_type_info = a:type_info
-
-    " The tag list contains all tag entries of MyClass
-    for tag_item in a:tag_list
-        " Resolving namespaces
-        " If this tag entry has a namespace and our type info has one we can
-        " test the namespaces strings
-        let tag_item_type_info = s:ExtractTypeFromTagItem(tag_item)
-
-        " tag_item_namespace can be '::NameSpace1::NameSpace2::' or '::'
-        let tag_item_namespace = s:ExtractNamespaceFromTypeInfo(tag_item_type_info)
-
-        " our_namespace can be 'NameSpace1::NameSpace2' or '' or '::NameSpace1::NameSpace2::' or '::'
-        let our_namespace = s:ExtractNamespaceFromTypeInfo(a:type_info)
-
-        " If a:type_info starts with :: (global namespace) so it's already resolve
-        if match(our_namespace, '^::')!=-1
-            if our_namespace == tag_item_namespace
-                " function and prototype or not the priority it can be a problem
-                " if the ctor of our class MyClass is return
-                if index(['f', 'p'], tag_item.kind[0])>=0
-                    " You can have the ctor MyClass but maybe the tag item of
-                    " class MyClass comes after, we add the item in
-                    " the garbage list
-                    call extend(garbage, [tag_item])
-                else
-                    " Fixing the type_info namespace
-                    let resolved_type_info = s:SimplifyNamespace(tag_item_namespace.'::'.split(a:type_info, '::')[-1])
-                    return [tag_item, resolved_type_info]
-                endif
-            endif
+    if len(tagList)
+        " Resolving scope (namespace, nested class etc...)
+        let szScopeOfTypeInfo = s:ExtractScopeFromTypeInfo(a:szTypeInfo)
+        if s:IsTypeInfoResolved(a:szTypeInfo)
+            let result = s:GetTagOfSameScope(tagList, szScopeOfTypeInfo)
         else
-            " To resolve namespace for each namespace in a:namespaces we
-            " concatenate namespace::our_namespace and test if
-            " tag_item_namespace == namespace::our_namespace
-            for namespace in a:namespaces
-                let test_namespace = s:SimplifyNamespace(namespace.'::'.our_namespace)
-                if test_namespace == tag_item_namespace
-                    " function and prototype or not the priority it can be a problem
-                    " if the ctor of our class MyClass is return
-                    if index(['f', 'p'], tag_item.kind[0])>=0
-                        " You can have the ctor MyClass but maybe the tag item of
-                        " class MyClass comes after, we add the item in
-                        " the garbage list
-                        call extend(garbage, [tag_item])
-                    else
-                        " Fixing the type_info namespace
-                        let resolved_type_info = s:SimplifyNamespace(tag_item_namespace.'::'.split(a:type_info, '::')[-1])
-                        return [tag_item, resolved_type_info]
-                    endif
+            " For each namespace of the namespace list we try to get a tag
+            " that can be in the same scope
+            for scope in a:namespaces
+                let szTmpScope = s:SimplifyScope(scope.'::'.szScopeOfTypeInfo)
+                let result = s:GetTagOfSameScope(tagList, szTmpScope)
+                if result!={}
+                    break
                 endif
             endfor
         endif
-    endfor
 
-    return [get(garbage, 0, {}), resolved_type_info]
-endfunc
-
-" Resolve a typedef recursively
-function! s:ResolveTypedef(tag_list, type_info)
-    let result = [a:tag_list, a:type_info]
-    " Try to resolve a typedef only for the first item
-    " TODO: Is it possible to have multiple typedef in the tag list for a
-    " class name ?
-    let tag_item = a:tag_list[0]
-    if tag_item.kind[0]=='t'
-        " line = 'typedef Class1 MY_CLASS; typedef MY_CLASS MyClass;'
-        let line = s:ExtractCmdFromTagItem(tag_item)
-        let lines = s:ExtractDeclarationLines(line)
-
-        " Try to find the declaration of tag_item
-        let declaration = ''
-        for decl in lines
-            if match(decl, '\<'.tag_item.name.'\>')!=-1
-                let declaration = decl
-                break
+        if result!={}
+            " We have our tagItem but maybe it's a typedef or an unnamed
+            " type
+            if result.kind[0]=='t'
+                let szCmd = s:ExtractCmdFromTagItem(result)
+                let szCode = substitute(s:GetCodeWithoutCommentsFromSingleLine(szCmd), result.name.'.*', '', 'g')
+                let szTypeInfo = s:ExtractTypeInfoFromTokens(s:Tokenize(szCode))
+                let result = s:GetResolvedTagItem(a:namespaces, szTypeInfo)
             endif
-        endfor
-
-        if declaration!=''
-            " We have our declaration, now we can work properly
-            " the declaration is in the format 'typedef const Class1< blabla >& MY_CLASS'
-            let declaration = substitute(declaration, '\<'.tag_item.name.'\>', '', 'g')
-            let type_info = s:ExtractTypeFromDeclaration(declaration)
-            " TODO: namespace resolution
-            let result = s:GetTagList(type_info)
         endif
     endif
     return result
 endfunc
 
-" Split a line into line declaration
-" ex: if we have this line
-" typedef Class1 MY_CLASS; typedef MY_CLASS MyClass;
-"  =>['typedef Class1 MY_CLASS', 'typedef MY_CLASS MyClass']
-function! s:ExtractDeclarationLines(line)
-    return split(a:line, ';')
+" Search class, struct, union members
+" @param filename: the file name or path where the class is defined (in most
+" of cast it's a file header)
+" @param typeInfo: the type info string of the class eg: 'MyNs::MyClass'
+" @return list of tag items
+function! s:SearchMembers(tagItem)
+    let result = []
+    if complete_check()
+        return result
+    endif
+
+    let szFilePath = a:tagItem.filename
+    let fixedTypeInfo = s:ExtractScopeFromTag(a:tagItem)[2:] . '::' . a:tagItem.name
+    let fixedTypeInfo = substitute(fixedTypeInfo, '^::', '', 'g')
+
+    " Formatting the result key for the result cache.
+    let resultKey = szFilePath . fixedTypeInfo
+
+    " If the file has not changed we return the stored result
+    if s:HasChanged(szFilePath, fixedTypeInfo)==0 && has_key(s:resultCache, resultKey)
+        return s:resultCache[resultKey]
+    endif
+
+    let tagQuery = '^'.fixedTypeInfo.'::\w\+$'
+
+    " To get the members we have to run ctags on the file header or
+    " source then we store all tagid of our class (or struct, union etc...)
+    let tmpFile = tempname()
+
+    " Storing the vim env 'tags'
+    let tagsEnvOriginal = &tags
+
+    " Building the ctags command, because we want to get members we add the
+    " option -c++-kinds=+p to detect function prototypes in header files.
+    " To get members we need also the option : --extra=+q
+    " so we can have tag item name that start with the class name eg: 'MyClass::_member'
+    " we add --language-force=c++ because the tmp file has no extension
+    " we need access member information : +a
+    " Note: we don't need inheritance information for searching members
+    " In the futur we'll need the signature of a routine (+S) but there is a
+    " bug in the taglist() function in some cases so we don't add it
+    let tagCmd = 'ctags --language-force=c++ --c++-kinds=+p --fields=+a --extra=+q -f "'.tmpFile.'" "'.szFilePath.'"'
+    call system(tagCmd)
+
+    " Sets the tags vim variable so that the function taglist() can work
+    " faster
+    exe "set tags=".tmpFile
+    let classMembers = taglist(tagQuery)
+
+    let szCtorName = fixedTypeInfo . '::' . a:tagItem.name
+    let szDtorName = fixedTypeInfo . '::~' . a:tagItem.name
+    " We don't want ctors and dtors
+    let szFilter = "(index([szCtorName, szDtorName], v:val.name)<0 && index(['p', 'f'], v:val.kind[0])>=0)"
+    let szFilter = szFilter."|| (index(['m', 'c', 's', 'u', 'e', 'n'], v:val.kind[0])>=0)"
+    call filter(classMembers, szFilter)
+
+    call extend(result, classMembers)
+
+    " Restoring the old tags value
+    exe "set tags=".tagsEnvOriginal
+
+    " We store the result for optimization
+    " We update the result only if the file where typeInfo is define changed
+    let s:resultCache[resultKey] = result
+
+    return result
+endfunc
+
+" Get the filter for a completion on the global namespace
+function! s:GetGlobalScopeFilter()
+    let szFilter = "(index(['c', 's', 'u', 'e', 'n', 'v', 't'], v:val.kind[0])>=0"
+    let szFilter = szFilter."||(index(['f', 'p', 'm'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1))"
+    let szFilter = szFilter . " && !has_key(v:val, 'class') && !has_key(v:val, 'struct') && !has_key(v:val, 'union') && !has_key(v:val, 'namespace') && !has_key(v:val, 'enum')"
+    return szFilter
+endfunc
+
+" An unnamed type info has the format:
+" struct:1::2
+function! s:IsUnnamedTypeInfo(szTypeInfo)
+    return match(a:szTypeInfo, '^\w\+:\w')!=-1
+endfunc
+
+" This function is used for the 'omnifunc' option.
+function! cppomnicomplete#Complete(findstart, base)
+    if a:findstart
+        " We get items here (whend a:findstart==1) because GetItemsToComplete()
+        " depends on the cursor position.
+        " When a:findstart==0 the cursor position is modified
+        let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction())
+
+        " Get the current class scope at the cursor, the result depend on the
+        " current cursor position
+        let s:szClassScope = s:GetClassScopeAtCurrentPosition()
+
+        return s:FindStartPositionOfCompletion()
+    endif
+
+    " Get namespaces used in the file
+    let namespaces = s:GetNamespacesUsed()
+    let szTypeInfo = s:ResolveItemsTypeInfo(namespaces, s:szClassScope, s:itemsToComplete)
+
+    if s:IsUnnamedTypeInfo(szTypeInfo)
+        " TODO: returns tags of an unnamed type
+        let tagList = []
+    else
+        let tagList = s:SearchAllMembers(namespaces, szTypeInfo)
+    endif
+
+    if len(s:itemsToComplete)==0
+        " Current scope completion
+        if szTypeInfo=='::'
+            let tagList = taglist('\w\+')
+            let szFilter = s:GetGlobalScopeFilter()
+            call filter(tagList, szFilter)
+        else
+            let szFilter = "index(['m', 'p', 'f', 't'], v:val.kind[0])>=0 && has_key(v:val, 'access')"
+            call filter(tagList, szFilter)
+        endif
+    elseif s:itemsToComplete[-1].kind == 'itemScope'
+        " Completion after a '::'
+        if szTypeInfo==''
+            let tagList = taglist('\w\+')
+            let szFilter = s:GetGlobalScopeFilter()
+        else
+            let szFilter = "index(['c', 's', 'u', 'e', 'n', 't'], v:val.kind[0])>=0"
+            let szFilter = szFilter."||(index(['f', 'p', 'm'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1)"
+        endif
+        call filter(tagList, szFilter)
+    else
+        " Completion after a '->' or '.'
+        if szTypeInfo==''
+            " this completion failed
+            return []
+        endif
+        let szFilter = "index(['m', 'p', 'f', 't'], v:val.kind[0])>=0 && has_key(v:val, 'access')"
+        call filter(tagList, szFilter)
+    endif
+
+    return s:ConvertTagItemListToPopupItemList(tagList, a:base)
 endfunc
