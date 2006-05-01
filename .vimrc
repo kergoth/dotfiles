@@ -545,8 +545,15 @@ if has('gui_running')
   set mousef
 
   " set go=Acgtm
-  set go=Acg
+  set go=Acga
 endif
+
+" Make operations like yank, which normally use the unnamed register, use the
+" * register instead (yanks go to the system clipboard).
+set clipboard=autoselect,unnamed
+if has('gui_running') && has('unix')
+  set clipboard+=exclude:cons\|linux
+end
 
 " Wrap at column 78
 set tw=78
