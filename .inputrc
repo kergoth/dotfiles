@@ -1,0 +1,22 @@
+# Vim-like movement/editing
+set editing-mode vi
+set keymap vi
+
+# Edit options before rerunning previous command, eg: ls a b c -> ls -al a b c
+"\e-": "\C-p\C-a\M-f "
+
+# Cycle thru completions.
+"\e/":  menu-complete
+
+# glob patterns without executing, eg: 'rm *x'
+"\ee":  glob-expand-word
+
+# Vim style history search
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+"\e[C": forward-char
+"\e[D": backward-char
+
+# Two escapes clear command line.
+"\e\e": "\C-a\C-k"
