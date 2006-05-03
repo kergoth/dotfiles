@@ -287,7 +287,7 @@ function! RunInterp()
     endif
   endif
   if l:interp != ''
-    exe '!' . l:interp . ' %'
+    exe '! time ' . l:interp . ' %'
   endif
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
@@ -503,7 +503,14 @@ endif
 
 " Viminfo file behavior
 if has('viminfo')
-  set viminfo='1000,f1,:1000,/1000
+  " f1  store file marks
+  " '   # of previously edited files to remember marks for
+  " :   # of lines of command history
+  " /   # of lines of search pattern history
+  " <   max # of lines for each register to be saved
+  " s   max # of Kb for each register to be saved
+  " h   don't restore hlsearch behavior
+  set viminfo=f1,'1000,:1000,/1000,<1000,s100,h
 endif
 
 set backspace=indent,eol,start
