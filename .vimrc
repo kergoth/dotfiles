@@ -287,7 +287,7 @@ function! RunInterp()
     endif
   endif
   if l:interp != ''
-    exe '! time ' . l:interp . ' %'
+    exe '! ' . l:interp . ' %'
   endif
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
