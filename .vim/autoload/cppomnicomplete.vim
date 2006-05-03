@@ -1,8 +1,19 @@
 " Vim completion script
 " Language:  C++
 " Maintainer:  Vissale NEANG
-" Last Change:  2006 May 1
+" Last Change:  2006 May 2
 " Comments:
+" Version 0.21
+"   -   Improvements on the global scope completion.
+"       The user can now see the progression of the search and complete
+"       matches are stored in a cache for optimization. The cache is cleared
+"       when the tag env is modified.
+"   -   Within a class scope when the user complete an empty word, the popup
+"       menu displays the members of the class then members of the global
+"       scope.
+"   -   Fixed a bug where a current scope completion failed after a punctuator
+"       or operator (eg: after a '=' or '!=').
+"
 " Version 0.2
 "   -   Improvements in type detection (eg: when a variable is declared in a
 "       parameter list, a catch clause, etc...)
@@ -14,8 +25,7 @@
 "       If you run a completion from en empty line, members of the current
 "       scope are displayed. It works on the global namespace and the current
 "       class scope (but there is not the combination of the 2 for the moment)
-"   -   Basic completion on the global namespace (very very slow, I'll fix
-"       that)
+"   -   Basic completion on the global namespace (very slow)
 "   -   Completion of returned type added
 "   -   this pointer completion added
 "   -   Completion after a cast added (C and C++ cast)
@@ -42,6 +52,8 @@ endif
 " Cache data
 let s:filedateCache = {}
 let s:resultCache = {}
+let s:globalScopeCache = {}
+let s:tagEnvCache = ''
 
 " From the C++ BNF
 let s:cppKeyword = ['asm', 'auto', 'bool', 'break', 'case', 'catch', 'char', 'class', 'const', 'const_cast', 'continue', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'operator', 'private', 'protected', 'public', 'register', 'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_cast', 'struct', 'switch', 'template', 'this', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'wchar_t', 'while', 'and', 'and_eq', 'bitand', 'bitor', 'compl', 'not', 'not_eq', 'or', 'or_eq', 'xor', 'xor_eq']
@@ -239,6 +251,11 @@ function! s:GetItemsToComplete(tokens)
                 let state = 9
                 let item.kind = 'itemScope'
                 " Maybe end of tokens
+            elseif token.kind =='cppOperatorPunctuator'
+                " If it's a cppOperatorPunctuator and the current token is not
+                " a itemsDelimiters or '::' we can exit
+                let state=-1
+                break
             endif
         elseif state==1
             call insert(item.tokens, token)
@@ -963,7 +980,7 @@ function! s:ConvertTagItemToPopupItem(tagItem)
     endif
 
     " If it's a prototype then change the letter to 'f' (for function)
-    let itemKind = "\t\t".substitute(a:tagItem.kind[0], 'p', 'f', 'g')
+    let itemKind = substitute(a:tagItem.kind[0], 'p', 'f', 'g')
 
     " Add the access
     let itemMenu = ''
@@ -988,13 +1005,11 @@ endfunc
 
 " Convert a tag item list to popup item list
 function! s:ConvertTagItemListToPopupItemList(tagList, baseFilter)
-    let result = []
     for tagItem in a:tagList
-        if match(substitute(tagItem.name, '.*::', '', 'g'), a:baseFilter)!=-1
-            call extend(result, [s:ConvertTagItemToPopupItem(tagItem)])
+        if match(substitute(tagItem.name, '.*::', '', 'g'), '^'.a:baseFilter)!=-1
+            call complete_add(s:ConvertTagItemToPopupItem(tagItem))
         endif
     endfor
-    return result
 endfunc
 
 " A returned type info's scope may not have the global namespace '::'
@@ -1189,7 +1204,7 @@ endfunc
 " Get the filter for a completion on the global namespace
 function! s:GetGlobalScopeFilter()
     let szFilter = "(index(['c', 's', 'u', 'e', 'n', 'v', 't'], v:val.kind[0])>=0"
-    let szFilter = szFilter."||(index(['f', 'p', 'm'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1))"
+    let szFilter = szFilter."||(index(['f', 'p'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1))"
     let szFilter = szFilter . " && !has_key(v:val, 'class') && !has_key(v:val, 'struct') && !has_key(v:val, 'union') && !has_key(v:val, 'namespace') && !has_key(v:val, 'enum')"
     return szFilter
 endfunc
@@ -1198,6 +1213,60 @@ endfunc
 " struct:1::2
 function! s:IsUnnamedTypeInfo(szTypeInfo)
     return match(a:szTypeInfo, '^\w\+:\w')!=-1
+endfunc
+
+" Return if the tag env has changed
+function! s:HasTagEnvChanged()
+    if s:tagEnvCache == &tags
+        return 0
+    else
+        let s:tagEnvCache = &tags
+        return 1
+    endif
+endfunc
+
+" Find complete matches for a completion on the global scope
+function! s:SearchGlobalScopeMembers(base)
+    " Because the completion on global scope can take lot of time
+    " to let the user see the progression of the search
+    " we call taglist() for each letter of the alphabet
+    let listChar = map(range(char2nr('a'),char2nr('z')), 'nr2char(v:val)') + ['_']
+    let szFilter = s:GetGlobalScopeFilter()
+
+    " Clear the globalScopeCache if tag env has changed
+    if s:HasTagEnvChanged()
+        let s:globalScopeCache = {}
+    endif
+
+    for char in listChar
+        let szReTag = '^\c['.char.'].*'
+        if has_key(s:globalScopeCache, char)
+            if a:base!='' && match(a:base, szReTag)<0
+                continue
+            endif
+
+            let tagList = s:globalScopeCache[char]
+
+            call s:ConvertTagItemListToPopupItemList(tagList, a:base)
+            if complete_check()
+                break
+            endif
+        else
+            if a:base!='' && match(a:base, szReTag)<0
+                continue
+            endif
+            let tagList = taglist(szReTag)
+            call filter(tagList, szFilter)
+
+            call s:ConvertTagItemListToPopupItemList(tagList, a:base)
+            if complete_check()
+                break
+            else
+                " Store the result in the cache
+                let s:globalScopeCache[char] = tagList
+            endif
+        endif
+    endfor
 endfunc
 
 " This function is used for the 'omnifunc' option.
@@ -1229,32 +1298,35 @@ function! cppomnicomplete#Complete(findstart, base)
     if len(s:itemsToComplete)==0
         " Current scope completion
         if szTypeInfo=='::'
-            let tagList = taglist('\w\+')
-            let szFilter = s:GetGlobalScopeFilter()
-            call filter(tagList, szFilter)
+            " Global scope completion
+            call s:SearchGlobalScopeMembers(a:base)
         else
             let szFilter = "index(['m', 'p', 'f', 't'], v:val.kind[0])>=0 && has_key(v:val, 'access')"
             call filter(tagList, szFilter)
+
+            " First we display class members
+            call s:ConvertTagItemListToPopupItemList(tagList, a:base)
+
+            " Then we display global scope members
+            call s:SearchGlobalScopeMembers(a:base)
         endif
     elseif s:itemsToComplete[-1].kind == 'itemScope'
         " Completion after a '::'
         if szTypeInfo==''
-            let tagList = taglist('\w\+')
-            let szFilter = s:GetGlobalScopeFilter()
+            " Global scope completion
+            call s:SearchGlobalScopeMembers(a:base)
         else
             let szFilter = "index(['c', 's', 'u', 'e', 'n', 't'], v:val.kind[0])>=0"
             let szFilter = szFilter."||(index(['f', 'p', 'm'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1)"
+            call filter(tagList, szFilter)
+            call s:ConvertTagItemListToPopupItemList(tagList, a:base)
         endif
-        call filter(tagList, szFilter)
     else
         " Completion after a '->' or '.'
-        if szTypeInfo==''
-            " this completion failed
-            return []
-        endif
         let szFilter = "index(['m', 'p', 'f', 't'], v:val.kind[0])>=0 && has_key(v:val, 'access')"
         call filter(tagList, szFilter)
+        call s:ConvertTagItemListToPopupItemList(tagList, a:base)
     endif
 
-    return s:ConvertTagItemListToPopupItemList(tagList, a:base)
+    return []
 endfunc
