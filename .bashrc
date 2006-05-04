@@ -134,7 +134,8 @@ $CCASE\w\$ "
         TERM=rxvt
     else
         # ugh, damn old termcap based applications
-        TERMCAP="`infocmp -C|grep -v ^#|sed -e's,\\\\,,'`"
+        infocmp -C > $HOME/.termcap
+        TERMCAP="$HOME/.termcap"
     fi
     unset _c
 
@@ -181,6 +182,12 @@ foo () {
     fi
 }
 
+# Used to vim..
+:make () {
+    make "$@"
+    return $?
+}
+
 if [ "$PS1" ]; then
     setup_interactive
 fi
@@ -194,3 +201,19 @@ alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
+
+if [ -n "$BASH" ]; then
+    # If a hashed item from the path no longer exists, search the PATH again.
+    # This is helpful, say, if you remove the /usr/local/bin/foo, and want it to
+    # immediately fall back to /usr/bin/foo, rather than erroring.
+    shopt -s checkhash
+
+    # Automatically check and adjust the window size after executing a command.
+    # Helpful when resizing your terminal.
+    shopt -s checkwinsize
+
+    # Don't complete using the PATH when hitting the completion character on an
+    # empty line (seeing a list of every binary in the system isn't exactly
+    # useful).
+    shopt -s no_empty_cmd_completion
+fi
