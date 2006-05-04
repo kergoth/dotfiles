@@ -127,17 +127,28 @@ $CCASE\w\$ "
     printdayinfo $day
     unset XTERM_SET CCASE VOBPATH
 
-    # Deal with missing terminal types on certain machines.
-    _c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
-    if ! test -e /usr/share/terminfo/$_c/$TERM &&
-        ! test -e $HOME/.terminfo/$_c/$TERM; then
-        TERM=rxvt
-    else
-        # ugh, damn old termcap based applications
-        infocmp -C > $HOME/.termcap
-        TERMCAP="$HOME/.termcap"
+    if [ -z "$TERMCAP" ]; then
+        # Deal with missing terminal types on certain machines.
+        _c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
+        if ! test -e /usr/share/terminfo/$_c/$TERM &&
+            ! test -e $HOME/.terminfo/$_c/$TERM; then
+            TERM=rxvt
+        else
+            # ugh, damn old termcap based applications
+            infocmp -C > $HOME/.termcap 2>/dev/null
+            TERMCAP="$HOME/.termcap"
+        fi
+        unset _c
+    elif [ "$TERM" = "screen" -o "$TERM" = "screen-bce" ]; then
+        # Terminfo entries for screen are static, and don't seem to adapt when
+        # screen is built with 256 color support... so... generate a new one
+        # based on the TERMCAP variable that screen sets. (NOTE: stock screen
+        # doesn't adjust the Co value in the TERMCAP env var to the number of
+        # colors it was built to support. I have a patch to fix that.)
+        mkdir -p $HOME/.terminfo/s
+        captoinfo > $HOME/.terminfo/s/$TERM 2>/dev/null
+        tic $HOME/.terminfo/$_c/$TERM 2>/dev/null
     fi
-    unset _c
 
     export TERM TERMCAP
 }
@@ -201,6 +212,8 @@ alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
+alias mt='monotone'
+alias bb='bitbake'
 
 if [ -n "$BASH" ]; then
     # If a hashed item from the path no longer exists, search the PATH again.
