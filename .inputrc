@@ -1,86 +1,113 @@
-# Cycle thru completions.
-"\t":  menu-complete
-
-# Vim style history search
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"\e[C": forward-char
-"\e[D": backward-char
-
-# No audible bell
-set bell-style visible
-
-# Expand the tilde char
-set expand-tilde on
-
-# Alt key madness
-set convert-meta off
-set input-meta on
-set output-meta on
-
-# Case insensitive completion
-set completion-ignore-case On
-
 # Vi-like movement/editing
 set editing-mode vi
 $if mode=vi
-    # It seems that we have to manually set up the mappings for the home/end
-    # keys for vi editing mode, otherwise the escape gets caught by the map(s)
-    # to switch vi modes.
     set keymap vi-insert
-    "\e[7~": beginning-of-line
-    "\e[8~": end-of-line
-    "\eOH": beginning-of-line
-    "\e[H": beginning-of-line
-    "\e[1~": beginning-of-line
-    "\e[\C-@": beginning-of-line
-    "\eO\C-@": beginning-of-line
-    "\eOF": end-of-line
-    "\e[F": end-of-line
-    "\e[4~": end-of-line
-    "\eOw": end-of-line
-    "\eO\M-\C-p": end-of-line
-    "\e[\M-\C-p": end-of-line
-    "\e[e": end-of-line
-    "\e[\C-p": end-of-line
-    set keymap vi-move
-    "\e[7~": beginning-of-line
-    "\e[8~": end-of-line
-    "\eOH": beginning-of-line
-    "\e[H": beginning-of-line
-    "\e[1~": beginning-of-line
-    "\e[\C-@": beginning-of-line
-    "\eO\C-@": beginning-of-line
-    "\eOF": end-of-line
-    "\e[F": end-of-line
-    "\e[4~": end-of-line
-    "\eOw": end-of-line
-    "\eO\M-\C-p": end-of-line
-    "\e[\M-\C-p": end-of-line
-    "\e[e": end-of-line
-    "\e[\C-p": end-of-line
-# $else
-#     "\e[7~": beginning-of-line
-#     "\e[8~": end-of-line
-#     "\eOH": beginning-of-line
-#     "\e[H": beginning-of-line
-#     "\e[1~": beginning-of-line
-#     "\e[\C-@": beginning-of-line
-#     "\eO\C-@": beginning-of-line
-#     "\eOF": end-of-line
-#     "\e[F": end-of-line
-#     "\e[4~": end-of-line
-#     "\eOw": end-of-line
-#     "\eO\M-\C-p": end-of-line
-#     "\e[\M-\C-p": end-of-line
-#     "\e[e": end-of-line
-#     "\e[\C-p": end-of-line
-$endif
-set keymap vi
 
-# Example usage of keymap specific keybindings
+    # Vim style history search
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
+    # "\e[A": previous-history
+    # "\e[B": next-history
+    "\e[C": forward-char
+    "\e[D": backward-char
+
+    # home/end bits
+    "\e[7~": beginning-of-line
+    "\e[8~": end-of-line
+    "\eOH": beginning-of-line
+    "\e[H": beginning-of-line
+    "\e[1~": beginning-of-line
+    "\e[\C-@": beginning-of-line
+    "\eO\C-@": beginning-of-line
+    "\eOF": end-of-line
+    "\e[F": end-of-line
+    "\e[4~": end-of-line
+    "\eOw": end-of-line
+    "\eO\M-\C-p": end-of-line
+    "\e[\M-\C-p": end-of-line
+    "\e[e": end-of-line
+    "\e[\C-p": end-of-line
+
+    set keymap vi-move
+
+    # Vim style history search
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
+    # "\e[A": previous-history
+    # "\e[B": next-history
+    "\e[C": forward-char
+    "\e[D": backward-char
+
+    # home/end bits
+    "\e[7~": beginning-of-line
+    "\e[8~": end-of-line
+    "\eOH": beginning-of-line
+    "\e[H": beginning-of-line
+    "\e[1~": beginning-of-line
+    "\e[\C-@": beginning-of-line
+    "\eO\C-@": beginning-of-line
+    "\eOF": end-of-line
+    "\e[F": end-of-line
+    "\e[4~": end-of-line
+    "\eOw": end-of-line
+    "\eO\M-\C-p": end-of-line
+    "\e[\M-\C-p": end-of-line
+    "\e[e": end-of-line
+    "\e[\C-p": end-of-line
+
+    set keymap vi
+$else
+    # Vim style history search
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
+    # "\e[A": previous-history
+    # "\e[B": next-history
+    "\e[C": forward-char
+    "\e[D": backward-char
+
+    # home/end bits
+    "\e[7~": beginning-of-line
+    "\e[8~": end-of-line
+    "\eOH": beginning-of-line
+    "\e[H": beginning-of-line
+    "\e[1~": beginning-of-line
+    "\e[\C-@": beginning-of-line
+    "\eO\C-@": beginning-of-line
+    "\eOF": end-of-line
+    "\e[F": end-of-line
+    "\e[4~": end-of-line
+    "\eOw": end-of-line
+    "\eO\M-\C-p": end-of-line
+    "\e[\M-\C-p": end-of-line
+    "\e[e": end-of-line
+    "\e[\C-p": end-of-line
+$endif
+
+# Example usage of keymap specific keybindings.
 # $if mode=vi
 #     set keymap vi-command
 #     "e": forward-char
 # $endif
 
+# :( This doesn't seem to have any effect at all on vi mode
+set history-preserve-point off
+
+# Just show the completions already, don't beep at me.
+set show-all-if-ambiguous on
+
+# Cycle thru completions rather than showing them.
+"\t":  menu-complete
+
+# No audible bell.
+set bell-style visible
+
+# Expand the tilde char.
+set expand-tilde on
+
+# Alt key madness.
+set convert-meta off
+set input-meta on
+set output-meta on
+
+# Case insensitive completion.
+set completion-ignore-case On
