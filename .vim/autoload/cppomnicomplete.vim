@@ -3,6 +3,16 @@
 " Maintainer:  Vissale NEANG
 " Last Change:  2006 May 2
 " Comments:
+" Version 0.22
+"   -   Completion of unnamed type (eg: You can complete g_Var defined like
+"       this 'struct {int a; int b;}g_Var;'). It also works for a typedef of
+"       an unnamed type (eg: 'typedef struct {int a; int b;}t_mytype; t_mytype
+"       g_Var;').
+"   -   Tag file's time cache added, if a tag file has changed the global
+"       scope result cache is cleared.
+"   -   Fixed a bug where the tokenization process enter in an infinite loop
+"       when a file starts with '/*'.
+"
 " Version 0.21
 "   -   Improvements on the global scope completion.
 "       The user can now see the progression of the search and complete
@@ -53,6 +63,7 @@ endif
 let s:filedateCache = {}
 let s:resultCache = {}
 let s:globalScopeCache = {}
+let s:tagFilesCache = {}
 let s:tagEnvCache = ''
 
 " From the C++ BNF
@@ -79,15 +90,7 @@ function! s:GetCodeWithoutCommentsFromSingleLine(szSingleLine)
     let szResult = substitute(szResult, '\/\/.*', '', 'g')
 
     " Now we have the entire code in one line and we can remove C comments
-    " We have to match the first '/*' and first '*/'
-    let startCmt = match(szResult, '\/\*')
-    let endCmt = match(szResult, '\*\/')
-    while startCmt!=-1 && endCmt!=-1
-        let szResult = szResult[ : startCmt-1 ] . szResult[ endCmt+2 : ]
-        let startCmt = match(szResult, '\/\*')
-        let endCmt = match(szResult, '\*\/')
-    endwhile
-    return szResult
+    return s:RemoveCComments(szResult)
 endfunc
 
 " Get a c++ code from current buffer from [lineStart, colStart] to 
@@ -136,15 +139,26 @@ function! s:GetCodeWithoutComments(posStart, posEnd)
     endif
 
     " Now we have the entire code in one line and we can remove C comments
+    return s:RemoveCComments(result)
+endfunc
+
+" Remove C comments on a line
+function! s:RemoveCComments(szLine)
+    let result = a:szLine
+
     " We have to match the first '/*' and first '*/'
     let startCmt = match(result, '\/\*')
     let endCmt = match(result, '\*\/')
     while startCmt!=-1 && endCmt!=-1
-        let result = result[ : startCmt-1 ] . result[ endCmt+2 : ]
+        if startCmt>0
+            let result = result[ : startCmt-1 ] . result[ endCmt+2 : ]
+        else
+            " Case where '/*' is at the start of the line
+            let result = result[ endCmt+2 : ]
+        endif
         let startCmt = match(result, '\/\*')
         let endCmt = match(result, '\*\/')
     endwhile
-
     return result
 endfunc
 
@@ -791,38 +805,77 @@ function! s:ExtractCmdFromTagItem(tagItem)
     endif
 endfunc
 
+" Function create a type info
+function! s:CreateTypeInfo(param)
+    let type = type(a:param)
+    return {'type': type, 'value':a:param}
+endfunc
+
+" Returns if the type info is valid
+" @return
+"   - 1 if valid
+"   - 0 otherwise
+function! s:IsTypeInfoValid(typeInfo)
+    if a:typeInfo=={}
+        return 0
+    else
+        if a:typeInfo.type == 1 && a:typeInfo.value==''
+            " String case
+            return 0
+        elseif a:typeInfo.type == 4 && a:typeInfo.value=={}
+            " Dictionary case
+            return 0
+        endif
+    endif
+    return 1
+endfunc
+
 " Search a declaration.
-" @return a string representing the type information
 " eg: std::map
 " can be empty
 " Note: The returned type info can be a typedef
 " The typedef resolution is done later
-function! s:GetTypeInfoOfVariable(namespaces, szCurrentClassScope, szVariable)
-    let szResult = ''
+" @return
+"   - a dictionnary where keys are
+"       - type: the type of value same as type()
+"       - value: the value
+function! s:GetTypeInfoOfVariable(namespaces, typeInfoCurrentScope, szVariable)
+    let result = {}
     " Search declaration like gd
     let searchResult = searchdecl(a:szVariable, 0, 1)
     if searchResult!=0
-        " If the result is empty, we have to search the variable in the class
-        " scope, here we need the tags
-        let szClassScopeForTags = substitute(a:szCurrentClassScope, '^::', '', 'g')
+
+        " Unnamed type case
+        if a:typeInfoCurrentScope.type==4
+            let tmpTypeInfo = a:typeInfoCurrentScope
+        else
+            " If the result is empty, we have to search the variable in the class
+            " scope, here we need the tags
+            let szClassScopeForTags = substitute(s:GetTypeInfoString(a:typeInfoCurrentScope), '^::', '', 'g')
+            let tmpTypeInfo = s:CreateTypeInfo(szClassScopeForTags)
+        endif
 
         " We want to get the type of the member a:szVariable, the search is
         " done in the class szClassScopeForTags and in base classes if any
-        let tagList = s:SearchAllMembers(a:namespaces, szClassScopeForTags)
+        let tagList = s:SearchAllMembers(a:namespaces, tmpTypeInfo)
 
         let szFilter = "v:val.kind[0]=='m' && (match(v:val.name, '\\<'.a:szVariable.'$')!=-1)"
         call filter(tagList, szFilter)
 
         if len(tagList)
-            " eg: 'MyClass _member' => 'MyClass'
-            let szCmdWithoutVariable = substitute(s:ExtractCmdFromTagItem(tagList[0]), '\<'.a:szVariable.'\>.*', '', 'g')
-            let tokens = s:Tokenize(s:GetCodeWithoutCommentsFromSingleLine(szCmdWithoutVariable))
-            let szResult = s:ExtractTypeInfoFromTokens(tokens)
-            return szResult
+            if has_key(tagList[0], 'typename')
+                let result = s:CreateTypeInfo(tagList[0])
+            else
+                " eg: 'MyClass _member' => 'MyClass'
+                let szCmdWithoutVariable = substitute(s:ExtractCmdFromTagItem(tagList[0]), '\<'.a:szVariable.'\>.*', '', 'g')
+                let tokens = s:Tokenize(s:GetCodeWithoutCommentsFromSingleLine(szCmdWithoutVariable))
+                let result = s:CreateTypeInfo(s:ExtractTypeInfoFromTokens(tokens))
+            endif
+            return result
         endif
 
         " Search declaration like gD
-        if szResult==''
+        if !s:IsTypeInfoValid(result)
             let searchResult = searchdecl(a:szVariable, 1, 1)
         endif
     endif
@@ -833,7 +886,7 @@ function! s:GetTypeInfoOfVariable(namespaces, szCurrentClassScope, szVariable)
         " variable, because we only want the type we remove this letter
         " => [:-2]
         let tokensType= s:TokenizeCurrentInstruction()[:-2]
-        let szResult = s:ExtractTypeInfoFromTokens(tokensType)
+        let result = s:CreateTypeInfo(s:ExtractTypeInfoFromTokens(tokensType))
 
         " If the result still empty, maybe the variable is a global var of an
         " unnamed class, struct or union.
@@ -843,32 +896,33 @@ function! s:GetTypeInfoOfVariable(namespaces, szCurrentClassScope, szVariable)
         "   int num;
         " }gVariable;
         " In this case we need the tags (the patched version)
-        " TODO: Need to improve this code
-        if szResult==''
+        if !s:IsTypeInfoValid(result)
             let tagList = taglist('^'.a:szVariable.'$')
+            call filter(tagList, 'has_key(v:val, "typename") && index(["v","m"], v:val.kind[0])>=0')
             if len(tagList)
-                " TODO: Why tagList[0] ?
-                " use vimgrep instead
-                let tagItem = tagList[0]
-                if tagItem.kind[0]=='v' && has_key(tagItem, 'typename')
-                    " eg: typename = 'struct:2::3'
-                    let szResult = tagItem.typename
-                endif
+                let result = s:CreateTypeInfo(tagList[0])
             endif
         endif
     endif
-    return szResult
+    return result
 endfunc
 
 " Get the type info string from the returned type of function
-function! s:GetTypeInfoOfReturnedType(namespaces, szCurrentClassScope, szFunctionName)
-    let szResult = ''
-    " If the result is empty, we have to search the variable in the class
-    " scope, here we need the tags
-    let szClassScopeForTags = substitute(a:szCurrentClassScope, '^::', '', 'g')
+function! s:GetTypeInfoOfReturnedType(namespaces, typeInfoCurrentScope, szFunctionName)
+    let result = {}
+
+    " Unnamed type case
+    if a:typeInfoCurrentScope.type==4
+        let tmpTypeInfo = a:typeInfoCurrentScope
+    else
+        " If the result is empty, we have to search the variable in the class
+        " scope, here we need the tags
+        let szClassScopeForTags = substitute(s:GetTypeInfoString(a:typeInfoCurrentScope), '^::', '', 'g')
+        let tmpTypeInfo = s:CreateTypeInfo(szClassScopeForTags)
+    endif
 
     " The search is done in the class szClassScopeForTags and in base classes if any
-    let tagList = s:SearchAllMembers(a:namespaces, szClassScopeForTags)
+    let tagList = s:SearchAllMembers(a:namespaces, tmpTypeInfo)
 
     let szFilter = "(v:val.kind[0]=='f' || v:val.kind[0]=='p') && (match(v:val.name, '\\<'.a:szFunctionName.'$')!=-1)"
     call filter(tagList, szFilter)
@@ -877,10 +931,10 @@ function! s:GetTypeInfoOfReturnedType(namespaces, szCurrentClassScope, szFunctio
         " eg: 'MyClass _member' => 'MyClass'
         let szCmdWithoutVariable = substitute(s:ExtractCmdFromTagItem(tagList[0]), '\<'.a:szFunctionName.'\>.*', '', 'g')
         let tokens = s:Tokenize(s:GetCodeWithoutCommentsFromSingleLine(szCmdWithoutVariable))
-        let szResult = s:ExtractTypeInfoFromTokens(tokens)
-        return szResult
+        let result = s:CreateTypeInfo(s:ExtractTypeInfoFromTokens(tokens))
+        return result
     endif
-    return szResult
+    return result
 endfunc
 
 " A resolved type info starts with '::'
@@ -889,6 +943,15 @@ endfunc
 "   - 0 otherwise
 function! s:IsTypeInfoResolved(szTypeInfo)
     return match(a:szTypeInfo, '^::')!=-1
+endfunc
+
+" Get the string of the type info
+function! s:GetTypeInfoString(typeInfo)
+    if a:typeInfo.type == 1
+        return a:typeInfo.value
+    else
+        return substitute(a:typeInfo.value.typename, '^\w\+:', '', 'g')
+    endif
 endfunc
 
 " Resolve type information of items
@@ -909,7 +972,7 @@ function! s:ResolveItemsTypeInfo(namespaces, szCurrentClassScope, items)
     " It the kind is a C cast or C++ cast, there is no problem, it's the
     " easiest case. We just extract the type of the cast.
 
-    let szTypeInfo = a:szCurrentClassScope
+    let typeInfo = s:CreateTypeInfo(a:szCurrentClassScope)
     for item in a:items
         let curItem = item
         if curItem.kind=='itemVariable'
@@ -922,7 +985,7 @@ function! s:ResolveItemsTypeInfo(namespaces, szCurrentClassScope, items)
                     break
                 endif
             endfor
-            let szTypeInfo = s:GetTypeInfoOfVariable(a:namespaces, szTypeInfo, szVariable)
+            let typeInfo = s:GetTypeInfoOfVariable(a:namespaces, typeInfo, szVariable)
         elseif curItem.kind == 'itemFunction'
             let idx = 0
             for token in curItem.tokens
@@ -933,19 +996,19 @@ function! s:ResolveItemsTypeInfo(namespaces, szCurrentClassScope, items)
                 let idx+=1
             endfor
             let szFunctionName = curItem.tokens[idx].value
-            let szTypeInfo = s:GetTypeInfoOfReturnedType(a:namespaces, szTypeInfo, szFunctionName)
+            let typeInfo = s:GetTypeInfoOfReturnedType(a:namespaces, typeInfo, szFunctionName)
         elseif curItem.kind == 'itemThis'
-            let szTypeInfo = substitute(a:szCurrentClassScope, '^::', '', 'g')
+            let typeInfo = s:CreateTypeInfo(substitute(a:szCurrentClassScope, '^::', '', 'g'))
         elseif curItem.kind == 'itemCast'
-            let szTypeInfo = s:ResolveCCast(curItem.tokens)
+            let typeInfo = s:CreateTypeInfo(s:ResolveCCast(curItem.tokens))
         elseif curItem.kind == 'itemCppCast'
-            let szTypeInfo = s:ResolveCppCast(curItem.tokens)
+            let typeInfo = s:CreateTypeInfo(s:ResolveCppCast(curItem.tokens))
         elseif curItem.kind == 'itemScope'
-            let szTypeInfo = substitute(s:TokensToString(curItem.tokens), '\s', '', 'g')
+            let typeInfo = s:CreateTypeInfo(substitute(s:TokensToString(curItem.tokens), '\s', '', 'g'))
         endif
     endfor
 
-    return szTypeInfo
+    return typeInfo
 endfunc
 
 " Check if a file has changed
@@ -1054,15 +1117,15 @@ endfunc
 
 " Search class, struct, union members.
 " If the class has inherited informations we get also the inherited members
-function! s:SearchAllMembers(namespaces, szTypeInfo)
+function! s:SearchAllMembers(namespaces, typeInfo)
     let result = []
 
     " Complete check
-    if complete_check()
+    if complete_check() || !s:IsTypeInfoValid(a:typeInfo)
         return result
     endif
 
-    let tagItem = s:GetResolvedTagItem(a:namespaces, a:szTypeInfo)
+    let tagItem = s:GetResolvedTagItem(a:namespaces, a:typeInfo)
 
     if tagItem!={}
         call extend(result, s:SearchMembers(tagItem))
@@ -1081,7 +1144,7 @@ function! s:SearchAllMembers(namespaces, szTypeInfo)
                 "TODO: Search 'using namespace' declarations in the file and included files
                 let namespaces = ['::']
                 let namespaces = [s:ExtractScopeFromTag(tagItem)] + namespaces
-                call extend(result, s:SearchAllMembers(namespaces, baseClassTypeInfo))
+                call extend(result, s:SearchAllMembers(namespaces, s:CreateTypeInfo(baseClassTypeInfo)))
             endfor
         endif
     endif
@@ -1089,9 +1152,20 @@ function! s:SearchAllMembers(namespaces, szTypeInfo)
 endfunc
 
 " Get a tag item after a scope resolution and typedef resolution
-function! s:GetResolvedTagItem(namespaces, szTypeInfo)
+function! s:GetResolvedTagItem(namespaces, typeInfo)
     let result = {}
-    let listClassName = split(a:szTypeInfo, '::')
+
+    " Unnamed type case eg: '1::2'
+    if a:typeInfo.type == 4
+        " Here there is no typedef or namespace to resolve, the tagInfo.value is a tag item
+        " representing a variable ('v') a member ('m') or a typedef ('t') and the typename is
+        " always in global scope
+        return a:typeInfo.value
+    endif
+
+    " Named type case eg:  'MyNamespace::MyClass'
+    let szTypeInfo = s:GetTypeInfoString(a:typeInfo)
+    let listClassName = split(szTypeInfo, '::')
     if len(listClassName)==0
         return result
     endif
@@ -1104,8 +1178,8 @@ function! s:GetResolvedTagItem(namespaces, szTypeInfo)
 
     if len(tagList)
         " Resolving scope (namespace, nested class etc...)
-        let szScopeOfTypeInfo = s:ExtractScopeFromTypeInfo(a:szTypeInfo)
-        if s:IsTypeInfoResolved(a:szTypeInfo)
+        let szScopeOfTypeInfo = s:ExtractScopeFromTypeInfo(szTypeInfo)
+        if s:IsTypeInfoResolved(szTypeInfo)
             let result = s:GetTagOfSameScope(tagList, szScopeOfTypeInfo)
         else
             " For each namespace of the namespace list we try to get a tag
@@ -1118,18 +1192,26 @@ function! s:GetResolvedTagItem(namespaces, szTypeInfo)
                 endif
             endfor
         endif
+    endif
 
-        if result!={}
-            " We have our tagItem but maybe it's a typedef or an unnamed
-            " type
-            if result.kind[0]=='t'
+    if result!={}
+        " We have our tagItem but maybe it's a typedef or an unnamed
+        " type
+        if result.kind[0]=='t'
+            " Here we can have a typedef to another typedef, a class, struct, union etc
+            " but we can also have a typedef to an unnamed type, in that
+            " case the result contains a 'typename' key
+            if has_key(result, 'typename')
+                let result = s:GetResolvedTagItem(a:namespaces, s:CreateTypeInfo(result))
+            else
                 let szCmd = s:ExtractCmdFromTagItem(result)
                 let szCode = substitute(s:GetCodeWithoutCommentsFromSingleLine(szCmd), result.name.'.*', '', 'g')
                 let szTypeInfo = s:ExtractTypeInfoFromTokens(s:Tokenize(szCode))
-                let result = s:GetResolvedTagItem(a:namespaces, szTypeInfo)
+                let result = s:GetResolvedTagItem(a:namespaces, s:CreateTypeInfo(szTypeInfo))
             endif
         endif
     endif
+
     return result
 endfunc
 
@@ -1147,6 +1229,14 @@ function! s:SearchMembers(tagItem)
     let szFilePath = a:tagItem.filename
     let fixedTypeInfo = s:ExtractScopeFromTag(a:tagItem)[2:] . '::' . a:tagItem.name
     let fixedTypeInfo = substitute(fixedTypeInfo, '^::', '', 'g')
+
+    " Unnamed type case
+    " A tag item representing an unnamed type is a variable ('v') a member
+    " ('m') or a typedef ('t')
+    if index(['v', 't', 'm'], a:tagItem.kind[0])>=0 && has_key(a:tagItem, 'typename')
+        " We remove the 'struct:' or 'class:' etc...
+        let fixedTypeInfo = substitute(a:tagItem.typename, '^\w\+:', '', 'g')
+    endif
 
     " Formatting the result key for the result cache.
     let resultKey = szFilePath . fixedTypeInfo
@@ -1186,7 +1276,7 @@ function! s:SearchMembers(tagItem)
     let szDtorName = fixedTypeInfo . '::~' . a:tagItem.name
     " We don't want ctors and dtors
     let szFilter = "(index([szCtorName, szDtorName], v:val.name)<0 && index(['p', 'f'], v:val.kind[0])>=0)"
-    let szFilter = szFilter."|| (index(['m', 'c', 's', 'u', 'e', 'n'], v:val.kind[0])>=0)"
+    let szFilter = szFilter."|| (index(['m', 'c', 's', 'u', 'e', 'n','t','v'], v:val.kind[0])>=0)"
     call filter(classMembers, szFilter)
 
     call extend(result, classMembers)
@@ -1203,16 +1293,10 @@ endfunc
 
 " Get the filter for a completion on the global namespace
 function! s:GetGlobalScopeFilter()
-    let szFilter = "(index(['c', 's', 'u', 'e', 'n', 'v', 't'], v:val.kind[0])>=0"
+    let szFilter = "(index(['c', 's', 'u', 'e', 'n', 't', 'v'], v:val.kind[0])>=0"
     let szFilter = szFilter."||(index(['f', 'p'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1))"
     let szFilter = szFilter . " && !has_key(v:val, 'class') && !has_key(v:val, 'struct') && !has_key(v:val, 'union') && !has_key(v:val, 'namespace') && !has_key(v:val, 'enum')"
     return szFilter
-endfunc
-
-" An unnamed type info has the format:
-" struct:1::2
-function! s:IsUnnamedTypeInfo(szTypeInfo)
-    return match(a:szTypeInfo, '^\w\+:\w')!=-1
 endfunc
 
 " Return if the tag env has changed
@@ -1225,6 +1309,32 @@ function! s:HasTagEnvChanged()
     endif
 endfunc
 
+" Return if a tag file has changed in tagfiles()
+function! s:HasTagFileChanged()
+    if s:HasTagEnvChanged()
+        let s:tagFilesCache = {}
+        return 1
+    endif
+
+    let tagFiles = map(tagfiles(), 'escape(v:val, " ")')
+    let result = 0
+    for tagFile in tagFiles
+        if has_key(s:tagFilesCache, tagFile)
+            let currentFiletime = getftime(tagFile)
+            if currentFiletime > s:tagFilesCache[tagFile]
+                " The file has changed, updating the cache
+                let s:tagFilesCache[tagFile] = currentFiletime
+                let result = 1
+            endif
+        else
+            " We store the time of the file
+            let s:tagFilesCache[tagFile] = getftime(tagFile)
+            let result = 1
+        endif
+    endfor
+    return result
+endfunc
+
 " Find complete matches for a completion on the global scope
 function! s:SearchGlobalScopeMembers(base)
     " Because the completion on global scope can take lot of time
@@ -1234,7 +1344,7 @@ function! s:SearchGlobalScopeMembers(base)
     let szFilter = s:GetGlobalScopeFilter()
 
     " Clear the globalScopeCache if tag env has changed
-    if s:HasTagEnvChanged()
+    if s:HasTagFileChanged()
         let s:globalScopeCache = {}
     endif
 
@@ -1286,22 +1396,17 @@ function! cppomnicomplete#Complete(findstart, base)
 
     " Get namespaces used in the file
     let namespaces = s:GetNamespacesUsed()
-    let szTypeInfo = s:ResolveItemsTypeInfo(namespaces, s:szClassScope, s:itemsToComplete)
-
-    if s:IsUnnamedTypeInfo(szTypeInfo)
-        " TODO: returns tags of an unnamed type
-        let tagList = []
-    else
-        let tagList = s:SearchAllMembers(namespaces, szTypeInfo)
-    endif
+    let typeInfo = s:ResolveItemsTypeInfo(namespaces, s:szClassScope, s:itemsToComplete)
+    let tagList = s:SearchAllMembers(namespaces, typeInfo)
 
     if len(s:itemsToComplete)==0
         " Current scope completion
-        if szTypeInfo=='::'
+        if s:GetTypeInfoString(typeInfo)=='::'
             " Global scope completion
             call s:SearchGlobalScopeMembers(a:base)
         else
-            let szFilter = "index(['m', 'p', 'f', 't'], v:val.kind[0])>=0 && has_key(v:val, 'access')"
+            let szFilter = "(index(['m', 'p', 'f'], v:val.kind[0])>=0 && has_key(v:val, 'access'))"
+            let szFilter = szFilter . "|| index(['c', 's', 'u', 'e', 'n', 't', 'v'], v:val.kind[0])>=0"
             call filter(tagList, szFilter)
 
             " First we display class members
@@ -1312,12 +1417,12 @@ function! cppomnicomplete#Complete(findstart, base)
         endif
     elseif s:itemsToComplete[-1].kind == 'itemScope'
         " Completion after a '::'
-        if szTypeInfo==''
+        if s:GetTypeInfoString(typeInfo)==''
             " Global scope completion
             call s:SearchGlobalScopeMembers(a:base)
         else
-            let szFilter = "index(['c', 's', 'u', 'e', 'n', 't'], v:val.kind[0])>=0"
-            let szFilter = szFilter."||(index(['f', 'p', 'm'], v:val.kind[0])>=0 && match(v:val.cmd, 'static')!=-1)"
+            let szFilter = "(index(['m', 'p', 'f'], v:val.kind[0])>=0 && has_key(v:val, 'access') && match(v:val.cmd, 'static')!=-1)"
+            let szFilter = szFilter . "|| index(['c', 's', 'u', 'e', 'n', 't', 'v'], v:val.kind[0])>=0"
             call filter(tagList, szFilter)
             call s:ConvertTagItemListToPopupItemList(tagList, a:base)
         endif
