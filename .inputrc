@@ -33,7 +33,7 @@ $if mode=vi
     "\e[D": backward-char
 
     # Cycle thru completions rather than showing them.
-    "\t":  menu-complete
+    # "\t":  menu-complete
 
     # home/end bits
     "\e[7~": beginning-of-line
@@ -82,7 +82,7 @@ $if mode=vi
     set keymap vi
 $else
     # Cycle thru completions rather than showing them.
-    "\t":  menu-complete
+    # "\t":  menu-complete
 
     # Vim style history search
     "\e[A": history-search-backward
