@@ -147,7 +147,7 @@ $CCASE\w\$ "
         # colors it was built to support. I have a patch to fix that.)
         mkdir -p $HOME/.terminfo/s
         captoinfo > $HOME/.terminfo/s/$TERM 2>/dev/null
-        tic $HOME/.terminfo/$_c/$TERM 2>/dev/null
+        tic $HOME/.terminfo/s/$TERM 2>/dev/null
     fi
 
     export TERM TERMCAP
