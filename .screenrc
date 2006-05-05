@@ -46,9 +46,9 @@ bind R screen -t '# |root:' env PROMPT_COMMAND='echo -n -e "\033k\033\134"' sudo
 attrcolor b ".I"
 
 # tell screen how to set colors. AB = background, AF=foreground
-terminfo rxvt-xpm|putty|xterm*|rxvt-unicode 'AB=\E[48;5;%dm:AF=\E[38;5;%dm'
-terminfo rxvt-xpm|putty|xterm* 'Co#256'
-terminfo rxvt-unicode 'Co#88'
+termcapinfo rxvt-xpm|putty|xterm*|rxvt-unicode 'AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+termcapinfo rxvt-xpm|putty|xterm* 'Co#256'
+termcapinfo rxvt-unicode 'Co#88'
 
 # erase background with current bg color
 defbce "on"
