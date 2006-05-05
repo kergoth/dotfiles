@@ -1,5 +1,26 @@
+# :( This doesn't seem to have any effect at all on vi mode
+set history-preserve-point off
+
+# Just show the completions already, don't beep at me.
+set show-all-if-ambiguous on
+
+# No audible bell.
+set bell-style visible
+
+# Expand the tilde char.
+set expand-tilde on
+
+# Alt key madness.
+set convert-meta off
+set input-meta on
+set output-meta on
+
+# Case insensitive completion.
+set completion-ignore-case On
+
 # Vi-like movement/editing
 set editing-mode vi
+
 $if mode=vi
     set keymap vi-insert
 
@@ -10,6 +31,9 @@ $if mode=vi
     # "\e[B": next-history
     "\e[C": forward-char
     "\e[D": backward-char
+
+    # Cycle thru completions rather than showing them.
+    "\t":  menu-complete
 
     # home/end bits
     "\e[7~": beginning-of-line
@@ -57,6 +81,9 @@ $if mode=vi
 
     set keymap vi
 $else
+    # Cycle thru completions rather than showing them.
+    "\t":  menu-complete
+
     # Vim style history search
     "\e[A": history-search-backward
     "\e[B": history-search-forward
@@ -88,26 +115,3 @@ $endif
 #     set keymap vi-command
 #     "e": forward-char
 # $endif
-
-# :( This doesn't seem to have any effect at all on vi mode
-set history-preserve-point off
-
-# Just show the completions already, don't beep at me.
-set show-all-if-ambiguous on
-
-# Cycle thru completions rather than showing them.
-"\t":  menu-complete
-
-# No audible bell.
-set bell-style visible
-
-# Expand the tilde char.
-set expand-tilde on
-
-# Alt key madness.
-set convert-meta off
-set input-meta on
-set output-meta on
-
-# Case insensitive completion.
-set completion-ignore-case On
