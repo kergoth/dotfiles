@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v2.1g
+" baycomb v2.2b
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -238,7 +238,7 @@ endfun
 " call <SID>X('Comment', '66BBBB', '', '')
 
 " The default baycomb comment coloring
-" call <SID>X('Comment', 'A9A9A9', '24283A', '')
+" call <SID>X('Comment', 'CCFF99', '', '')
 
 call <SID>X('Comment', '008B8B', '', '')
 call <SID>X('Conditional', 'D0688D', '', 'NONE')
@@ -281,7 +281,7 @@ call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
 call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
 call <SID>X('Title', 'E5E5CA', '', 'NONE')
 call <SID>X('Todo', 'FF4500', 'EEEE00', '')
-call <SID>X('Type', '0490E8', '', 'NONE')
+call <SID>X('Type', '0490E8', '', 'BOLD')
 call <SID>X('Underlined', 'BAC5BA', '', 'NONE')
 call <SID>X('VertSplit', '223355', '22253C', 'NONE')
 call <SID>X('Visual', '102030', '80A0F0', '')
