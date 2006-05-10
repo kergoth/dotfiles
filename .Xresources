@@ -23,9 +23,11 @@ Rxvt*scrollKey: false
 Rxvt*geometry: 96x50
 
 ! URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=15
-URxvt.font: xft:Leonine Sans Mono:pixelsize=15
+URxvt.font: xft:Leonine Sans Mono:pixelsize=15,\
+                DejaVu Sans Mono:pixelsize=15
 URxvt*termName: rxvt-unicode
 
+! Vim*fontList: DejaVu Sans Mono 15
 Vim*fontList: Leonine Sans Mono 15
 
 mrxvt*xft: true
