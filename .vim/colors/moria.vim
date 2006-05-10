@@ -23,11 +23,11 @@ endif
 let colors_name = "moria"
 
 if s:moria_style == "dark"
-    hi Normal ctermbg=0 ctermfg=7 guibg=#000000 guifg=#d0d0d0 gui=none
+    hi Normal ctermbg=0 ctermfg=7 guibg=#202020 guifg=#d0d0d0 gui=none
 
     hi Cursor guibg=#ffa500 guifg=bg gui=none
-    hi CursorColumn guibg=#404040 gui=none
-    hi CursorLine guibg=#404040 gui=none
+    hi CursorColumn guibg=#444444 gui=none
+    hi CursorLine guibg=#444444 gui=none
     hi DiffAdd guibg=#008b00 guifg=fg gui=none
     hi DiffChange guibg=#00008b guifg=fg gui=none
     hi DiffDelete guibg=#8b0000 guifg=fg gui=none
@@ -35,7 +35,7 @@ if s:moria_style == "dark"
     hi Directory guibg=bg guifg=#1e90ff gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#a0b0c0 gui=none
-    hi Folded guibg=#505050 guifg=#c0d0e0 gui=none
+    hi Folded guibg=#585858 guifg=#c0d0e0 gui=none
     hi IncSearch guibg=#e0cd78 guifg=#000000 gui=none
     hi LineNr guifg=#a0b0c0 gui=none
     hi ModeMsg guibg=bg guifg=fg gui=bold
@@ -105,7 +105,7 @@ elseif s:moria_style == "light"
     hi Directory guibg=bg guifg=#0000f0 gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#506070 gui=none
-    hi Folded guibg=#cacaca guifg=fg gui=none
+    hi Folded guibg=#c8c8c8 guifg=fg gui=none
     hi IncSearch guibg=#ffcd78 gui=none
     hi LineNr guifg=#506070 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold

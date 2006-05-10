@@ -1,5 +1,5 @@
 " Vim color file
-" sift v1.3
+" sift v1.3c
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -23,8 +23,8 @@ endif
 
 let g:colors_name="sift"
 
-hi Normal       guifg=#a8dc5f guibg=#0c121c
-hi NonText      guifg=#382920 guibg=#140316
+hi Normal       guifg=#b4dcbc guibg=#0c121c
+hi NonText      guifg=#382920 guibg=#041328
 
 " syntax highlighting """"""""""""""""""""""""""""""""""""""""
 
@@ -32,20 +32,20 @@ hi Comment		guifg=#007868
 hi Title		guifg=#09f909  gui=none
 hi Underlined   guifg=#49f95f gui=none
 
-hi Statement    guifg=#efef70  gui=none
+hi Statement    guifg=#efef70  "gui=none
 hi Type			guifg=#60e5bf  gui=none
 hi Constant		guifg=#0ad8ff
 hi Number		guifg=#eabaff
-hi PreProc      guifg=#f055c3
+hi PreProc      guifg=#f085b4
 hi Identifier   guifg=#50f0b4
-hi Special		guifg=#888ad4 
+hi Special		guifg=#88a0d4 
 hi Operator		guifg=#f0da00 
 "hi Keyword		guifg=green
 "hi Error        guibg=#408452
 hi Function     guifg=#c08a50 guibg=bg gui=bold "or green 50b3b0 
 hi Conditional	guifg=#f8f024 guibg=bg
 hi Repeat		guifg=#ffa400 guibg=bg gui=bold
-hi Exception	guifg=#cfff00
+hi Exception	guifg=#dfff80
 "hi Ignore       guifg=grey40
 "hi Todo			guifg=orangered guibg=yellow2
 """""this section borrowed from OceanDeep/Midnight"""""
@@ -95,6 +95,7 @@ hi WarningMsg	guifg=salmon
 " new Vim 7.0 items
 hi Pmenu        guibg=#3a6595 guifg=#9aadd5
 hi PmenuSel     guibg=#4a85ba guifg=#b0d0f0                    
+hi MatchParen   guibg=#200080 guifg=#f0f080
 
 
 
