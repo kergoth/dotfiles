@@ -2,10 +2,10 @@
 " Language:	Python
 " Maintainer:	Dmitry Vasiliev <dima@hlabs.spb.ru>
 " URL:		http://www.hlabs.spb.ru/vim/python.vim
-" Last Change:	$Date: 2006-03-06 13:52:12 +0300 (Пнд, 06 Мар 2006) $
+" Last Change:	$Date: 2006-05-11 13:57:43 +0400 (Чт, 11 май 2006) $
 " Filenames:	*.py
-" Version:	2.5.3
-" $Rev: 344 $
+" Version:	2.5.4
+" $Rev: 393 $
 "
 " Based on python.vim (from Vim 6.1 distribution)
 " by Neil Schemenauer <nas@python.ca>
@@ -81,8 +81,9 @@ syn keyword pythonStatement	exec return
 syn keyword pythonStatement	pass print raise
 syn keyword pythonStatement	global assert
 syn keyword pythonStatement	lambda yield
+syn keyword pythonStatement	with
 syn keyword pythonStatement	def class nextgroup=pythonFunction skipwhite
-syn match   pythonFunction	"\h\w*" display contained
+syn match   pythonFunction	"[a-zA-Z_][a-zA-Z0-9_]*" display contained
 syn keyword pythonRepeat	for while
 syn keyword pythonConditional	if elif else
 syn keyword pythonImport	import from as
@@ -101,6 +102,8 @@ syn keyword pythonTodo		TODO FIXME XXX contained
 " Errors
 syn match pythonError		"\<\d\+\D\+\>" display
 syn match pythonError		"[$?]" display
+syn match pythonError		"[-+&|]\{2,}" display
+syn match pythonError		"[=]\{3,}" display
 
 " TODO: Mixing spaces and tabs also may be used for pretty formatting multiline
 " statements. For now I don't know how to work around this.
@@ -200,16 +203,17 @@ endif
 
 if exists("python_highlight_exceptions") && python_highlight_exceptions != 0
   " Builtin exceptions and warnings
+  syn keyword pythonExClass	BaseException
   syn keyword pythonExClass	Exception StandardError ArithmeticError
   syn keyword pythonExClass	LookupError EnvironmentError
 
   syn keyword pythonExClass	AssertionError AttributeError EOFError
-  syn keyword pythonExClass	FloatingPointError IOError ImportError
-  syn keyword pythonExClass	IndexError KeyError KeyboardInterrupt
-  syn keyword pythonExClass	MemoryError NameError NotImplementedError
-  syn keyword pythonExClass	OSError OverflowError ReferenceError
-  syn keyword pythonExClass	RuntimeError StopIteration SyntaxError
-  syn keyword pythonExClass	IndentationError TabError
+  syn keyword pythonExClass	FloatingPointError GeneratorExit IOError
+  syn keyword pythonExClass	ImportError IndexError KeyError
+  syn keyword pythonExClass	KeyboardInterrupt MemoryError NameError
+  syn keyword pythonExClass	NotImplementedError OSError OverflowError
+  syn keyword pythonExClass	ReferenceError RuntimeError StopIteration
+  syn keyword pythonExClass	SyntaxError IndentationError TabError
   syn keyword pythonExClass	SystemError SystemExit TypeError
   syn keyword pythonExClass	UnboundLocalError UnicodeError
   syn keyword pythonExClass	UnicodeEncodeError UnicodeDecodeError
@@ -218,7 +222,7 @@ if exists("python_highlight_exceptions") && python_highlight_exceptions != 0
 
   syn keyword pythonExClass	Warning UserWarning DeprecationWarning
   syn keyword pythonExClass	PendingDepricationWarning SyntaxWarning
-  syn keyword pythonExClass	RuntimeWarning FutureWarning
+  syn keyword pythonExClass	RuntimeWarning FutureWarning OverflowWarning
 endif
 
 if exists("python_slow_sync") && python_slow_sync != 0

@@ -12,7 +12,7 @@ ScriptID SourceID Filename
 642 5228 GetLatestVimScripts.vim
 748 4319 HelpExtractor.vim
 760 5497 colors/ps_color.vim
-790 5373 python.vim
+790 5677 python.vim
 795 5565 colors/xterm16.vim
 915 5429 :AutoInstall: AsNeeded.vim
 974 4316 indent/python.vim
@@ -35,7 +35,7 @@ ScriptID SourceID Filename
 1443 4966 colors/telstar.vim
 1444 4968 colors.vim
 1453 5189 cecscope.vim
-1454 5675 colors/baycomb.vim
+1454 5680 colors/baycomb.vim
 1464 5669 colors/moria.vim
 1471 5319 colors/watermark.vim
 1472 5673 colors/sift.vim

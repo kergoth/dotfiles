@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v2.2b
+" baycomb v2.3
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -233,12 +233,8 @@ fun <SID>X(group, fg, bg, attr)
 endfun
 " }}}
 
-" The shade of green that the maintainer advises.  A bit too pastel for me,
-" despite the rest of the color scheme.
-" call <SID>X('Comment', '66BBBB', '', '')
-
 " The default baycomb comment coloring
-" call <SID>X('Comment', 'CCFF99', '', '')
+" call <SID>X('Comment', '349D58', '', '')
 
 call <SID>X('Comment', '008B8B', '', '')
 call <SID>X('Conditional', 'D0688D', '', 'NONE')
@@ -268,7 +264,7 @@ call <SID>X('PmenuSel', 'B0D0F0', '4A85BA', '')
 call <SID>X('PreProc', 'BA75CF', '', '')
 call <SID>X('Question', 'AABBCC', '', '')
 call <SID>X('Repeat', 'E06070', '', 'NONE')
-call <SID>X('Search', '3A4520', '808373', '')
+call <SID>X('Search', '000000', 'BBBB00', '')
 call <SID>X('Special', 'AAAACA', '', '')
 " call <SID>X('SpecialKey', '90DCB0', '', '')
 call <SID>X('SpecialKey', '424242', '', '')
