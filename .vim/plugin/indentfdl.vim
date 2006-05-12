@@ -5,6 +5,9 @@
 "               width when using foldmethod=indent.
 
 if exists('g:loaded_indentfdl') || &cp || ! has('autocmd') || v:version < 700
+  if &verbose
+    echo 'Not loading indentfdl.'
+  endif
   finish
 endif
 let g:loaded_indentfdl = 1
