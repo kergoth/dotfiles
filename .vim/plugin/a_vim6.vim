@@ -1,4 +1,4 @@
-" Copyright (c) 1998-2006
+" Copyright (c) 1998-2004
 " Michael Sharpe <feline@irendi.com>
 "
 " We grant permission to use, copy modify, distribute, and sell this
@@ -12,10 +12,14 @@
 " Directory & regex enhancements added by Bindu Wavell who is well known on
 " vim.sf.net
 
-" Do not load a.vim if is has already been loaded or we're running in an old
-" vim version.
-if exists("loaded_alternateFile") || v:version < 700
-    echo 'Not loading a.vim'
+" TODO: a) :AN command "next alternate"
+"       b) Priorities for search paths
+"       c) <leader>A on a #include line should go to that header
+
+" Do not load a_vim6.vim if is has already been loaded or we're running in too
+" new a vim version (a.vim is loaded for vim7).
+if exists("loaded_alternateFile") || v:version >= 700
+    echo 'Not loading a_vim6.vim'
     finish
 endif
 let loaded_alternateFile = 1
@@ -27,10 +31,6 @@ let loaded_alternateFile = 1
 " E.g. let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
 "      let g:alternateExtensions_{'aspx.cs'} = "aspx"
 
-
-" This variable will be increased when an extension with greater number of dots
-" is added by the AddAlternateExtensionMapping call.
-let s:maxDotsInExtension = 0
 
 " Function : AddAlternateExtensionMapping (PRIVATE)
 " Purpose  : simple helper function to add the default alternate extension
@@ -52,11 +52,6 @@ function! <SID>AddAlternateExtensionMapping(extension, alternates)
    silent! echo g:alternateExtensions_{a:extension}
    if (v:errmsg != "")
       let g:alternateExtensions_{a:extension} = a:alternates
-   endif
-
-   let dotsNumber = strlen(substitute(a:extension, "[^.]", "", "g"))
-   if s:maxDotsInExtension < dotsNumber
-     let s:maxDotsInExtension = dotsNumber
    endif
 endfunction
 
@@ -211,7 +206,7 @@ endfunction
 " Returns  : An expanded filename if found, the empty string otherwise
 " Author   : Michael Sharpe (feline@irendi.com)
 " History  : inline code written by Bindu Wavell originally
-function! <SID>FindFileInSearchPath(fileName, pathList, relPathBase)
+function! <SID>FindFileInSearchPath(filename, pathList, relPathBase)
    let filepath = ""
    let m = 1
    let pathListLen = strlen(a:pathList)
@@ -220,7 +215,7 @@ function! <SID>FindFileInSearchPath(fileName, pathList, relPathBase)
          let pathSpec = <SID>GetNthItemFromList(a:pathList, m) 
          if (pathSpec != "")
             let path = <SID>ExpandAlternatePath(pathSpec, a:relPathBase)
-            let fullname = path . "/" . a:fileName
+            let fullname = path . "/" . a:filename
             let foundMatch = <SID>BufferOrFileExists(fullname)
             if (foundMatch)
                let filepath = fullname
@@ -331,20 +326,36 @@ endfunction
 "            variables echo the curly brace variable and look for an error 
 "            message.
 function! DetermineExtension(path) 
-  let mods = ":t"
-  let i = 0
-  while i <= s:maxDotsInExtension
-    let mods = mods . ":e"
-    let extension = fnamemodify(a:path, mods)
-    let v:errmsg = ""
-    silent! echo g:alternateExtensions_{extension}
-    if (v:errmsg == "")
-      return extension
-    endif
-    let i = i + 1
-  endwhile
-  return ""
+  let extension = fnamemodify(a:path,":t:e")
+  let v:errmsg = ""
+  silent! echo g:alternateExtensions_{extension}
+  if (v:errmsg != "")
+     let extension = fnamemodify(a:path,":t:e:e")
+     let v:errmsg = ""
+     silent! echo g:alternateExtensions_{extension}
+     if (v:errmsg != "")
+        let extension = fnamemodify(a:path,":t:e:e:e")
+        let v:errmsg = ""
+        silent! echo g:alternateExtensions_{extension}
+        if (v:errmsg != "")
+           let extension = fnamemodify(a:path,":t:e:e:e:e")
+           let v:errmsg = ""
+           silent! echo g:alternateExtensions_{extension}
+           if (v:errmsg != "")
+              let extension = fnamemodify(a:path,":t:e:e:e:e:e")
+              let v:errmsg = ""
+              silent! echo g:alternateExtensions_{extension}
+              if (v:errmsg != "")
+                 let extension = ""
+              endif
+           endif
+        endif
+     endif
+  endif 
+  return extension
 endfunction
+
+"source $HOME/vimscripts/plugin/Decho.vim
 
 " Function : AlternateFile (PUBLIC)
 " Purpose  : Opens a new buffer by looking at the extension of the current
@@ -364,14 +375,21 @@ function! AlternateFile(splitWindow, ...)
   let baseName    = substitute(expand("%:t"), "\." . extension . '$', "", "")
   let currentPath = expand("%:p:h")
 
+"Decho "extension=".extension
+"Decho "baseName=".baseName
+"Decho "currentPath=".currentPath
+
   if (a:0 != 0)
      let newFullname = currentPath . "/" .  baseName . "." . a:1
-     call <SID>FindOrCreateBuffer(newFullname, a:splitWindow, 0)
+     call <SID>FindOrCreateBuffer(newFullname, a:splitWindow)
   else
      let allfiles = ""
      if (extension != "")
         let allfiles1 = EnumerateFilesByExtension(currentPath, baseName, extension)
         let allfiles2 = EnumerateFilesByExtensionInPath(baseName, extension, g:alternateSearchPath, currentPath)
+
+"Decho "allfiles1=".allfiles1
+"Decho "allfiles2=".allfiles2
 
         if (allfiles1 != "")
            if (allfiles2 != "")
@@ -405,8 +423,7 @@ function! AlternateFile(splitWindow, ...)
         if (bestScore == 0 && g:alternateNoDefaultAlternate == 1)
            echo "No existing alternate available"
         else
-           call <SID>FindOrCreateBuffer(bestFile, a:splitWindow, 1)
-           let b:AlternateAllFiles = allfiles
+           call <SID>FindOrCreateBuffer(bestFile, a:splitWindow)
         endif
      else
         echo "No alternate file/buffer available"
@@ -414,77 +431,9 @@ function! AlternateFile(splitWindow, ...)
    endif
 endfunction
 
-"function! <SID>PrintList(theList) 
-"   let n = 1
-"   let oneFile = <SID>GetNthItemFromList(a:theList, n)
-"   while (oneFile != "")
-"      Decho "list[".n."]=".oneFile
-"      let n = n + 1
-"      let oneFile = <SID>GetNthItemFromList(a:theList, n)
-"   endwhile
-"endfunction
-
-" Function : NextAlternate (PUBLIC)
-" Purpose  : Used to cycle through any other alternate file which existed on
-"            the search path.
-" Args     : bang (IN) - used to implement the AN vs AN! functionality
-" Returns  : nothing
-" Author   : Michael Sharpe <feline@irendi.com>
-function! NextAlternate(bang)
-   if (exists('b:AlternateAllFiles'))
-      let currentFile = expand("%")
-      let n = 1
-      let onefile = <SID>GetNthItemFromList(b:AlternateAllFiles, n)
-      while (onefile != "" && !<SID>EqualFilePaths(fnamemodify(onefile,":p"), fnamemodify(currentFile,":p")))
-         let n = n + 1
-         let onefile = <SID>GetNthItemFromList(b:AlternateAllFiles, n)
-      endwhile
-
-      if (onefile != "")
-         let stop = n
-         let n = n + 1
-         let foundAlternate = 0
-         let nextAlternate = ""
-         while (n != stop)
-            let nextAlternate = <SID>GetNthItemFromList(b:AlternateAllFiles, n)
-            if (nextAlternate == "")
-               let n = 1
-               continue
-            endif
-            let n = n + 1
-            if (<SID>EqualFilePaths(fnamemodify(nextAlternate, ":p"), fnamemodify(currentFile, ":p")))
-                continue
-            endif
-            if (filereadable(nextAlternate))
-                " on cygwin filereadable("foo.H") returns true if "foo.h" exists
-               if (has("unix") && $WINDIR != "" && fnamemodify(nextAlternate, ":p") ==? fnamemodify(currentFile, ":p")) 
-                  continue
-               endif
-               let foundAlternate = 1
-               break
-            endif
-         endwhile
-         if (foundAlternate == 1)
-            let s:AlternateAllFiles = b:AlternateAllFiles
-            "silent! execute ":e".a:bang." " . nextAlternate
-            call <SID>FindOrCreateBuffer(nextAlternate, "n".a:bang, 0)
-            let b:AlternateAllFiles = s:AlternateAllFiles
-         else 
-            echo "Only this alternate file exists"
-         endif
-      else 
-         echo "Could not find current file in alternates list"
-      endif
-   else 
-      echo "No other alternate files exist"
-   endif
-endfunction
-
 comm! -nargs=? -bang A call AlternateFile("n<bang>", <f-args>)
 comm! -nargs=? -bang AS call AlternateFile("h<bang>", <f-args>)
 comm! -nargs=? -bang AV call AlternateFile("v<bang>", <f-args>)
-comm! -nargs=? -bang AT call AlternateFile("t<bang>", <f-args>)
-comm! -nargs=? -bang AN call NextAlternate("<bang>")
 
 " Function : BufferOrFileExists (PRIVATE)
 " Purpose  : determines if a buffer or a readable file exists
@@ -495,34 +444,17 @@ comm! -nargs=? -bang AN call NextAlternate("<bang>")
 "            filename and not the path.
 function! <SID>BufferOrFileExists(fileName)
    let result = 0
-
-   let lastBuffer = bufnr("$")
-   let i = 1
-   while i <= lastBuffer
-     if <SID>EqualFilePaths(expand("#".i.":p"), a:fileName)
-       let result = 2
-       break
-     endif
-     let i = i + 1
-   endwhile
-
-   if (!result) 
-      let bufName = fnamemodify(a:fileName,":t")
-      let memBufName = bufname(bufName)
-      if (memBufName != "")
-         let memBufBasename = fnamemodify(memBufName, ":t")
-         if (bufName == memBufBasename)
-            let result = 2
-         endif
-      endif
-
-      if (!result)
-         let result  = bufexists(bufName) || bufexists(a:fileName) || filereadable(a:fileName)
+   let bufName = fnamemodify(a:fileName,":t")
+   let memBufName = bufname(bufName)
+   if (memBufName != "")
+      let memBufBasename = fnamemodify(memBufName, ":t")
+      if (bufName == memBufBasename)
+         let result = 2
       endif
    endif
 
    if (!result)
-      let result = filereadable(a:fileName)
+      let result  = bufexists(bufName) || bufexists(a:fileName) || filereadable(a:fileName)
    endif
    return result
 endfunction
@@ -535,9 +467,7 @@ endfunction
 "            not exist, it creates it.
 " Args     : filename (IN) -- the name of the file
 "            doSplit (IN) -- indicates whether the window should be split
-"                            ("v", "h", "n", "v!", "h!", "n!", "t", "t!") 
-"            findSimilar (IN) -- indicate weather existing buffers should be
-"                                prefered
+"                            ("v", "h", "n", "v!", "h!", "n!") 
 " Returns  : nothing
 " Author   : Michael Sharpe <feline@irendi.com>
 " History  : + bufname() was not working very well with the possibly strange
@@ -547,100 +477,49 @@ endfunction
 "            Allow ! to be applied to buffer/split/editing commands for more
 "            vim/vi like consistency
 "            + implemented fix from Matt Perry
-function! <SID>FindOrCreateBuffer(fileName, doSplit, findSimilar)
+function! <SID>FindOrCreateBuffer(filename, doSplit)
   " Check to see if the buffer is already open before re-opening it.
-  let FILENAME = a:fileName
-  let bufNr = -1
-  let lastBuffer = bufnr("$")
-  let i = 1
-  if (a:findSimilar) 
-     while i <= lastBuffer
-       if <SID>EqualFilePaths(expand("#".i.":p"), a:fileName)
-         let bufNr = i
-         break
-       endif
-       let i = i + 1
-     endwhile
+  let bufName = bufname(a:filename)
+  let bufFilename = fnamemodify(a:filename,":t")
 
-     if (bufNr == -1)
-        let bufName = bufname(a:fileName)
-        let bufFilename = fnamemodify(a:fileName,":t")
+  if (bufName == "")
+     let bufName = bufname(bufFilename)
+  endif
 
-        if (bufName == "")
-           let bufName = bufname(bufFilename)
-        endif
-
-        if (bufName != "")
-           let tail = fnamemodify(bufName, ":t")
-           if (tail != bufFilename)
-              let bufName = ""
-           endif
-        endif
-        if (bufName != "")
-           let bufNr = bufnr(bufName)
-           let FILENAME = bufName
-        endif
+  if (bufName != "")
+     let tail = fnamemodify(bufName, ":t")
+     if (tail != bufFilename)
+        let bufName = ""
      endif
   endif
 
   let splitType = a:doSplit[0]
   let bang = a:doSplit[1]
-  if (bufNr == -1)
+  if (bufName == "")
      " Buffer did not exist....create it
      let v:errmsg=""
      if (splitType == "h")
-        silent! execute ":split".bang." " . FILENAME
+        silent! execute ":split".bang." " . a:filename
      elseif (splitType == "v")
-        silent! execute ":vsplit".bang." " . FILENAME
-     elseif (splitType == "t")
-        silent! execute ":tab split".bang." " . FILENAME
+        silent! execute ":vsplit".bang." " . a:filename
      else
-        silent! execute ":e".bang." " . FILENAME
+        silent! execute ":e".bang." " . a:filename
      endif
      if (v:errmsg != "")
         echo v:errmsg
      endif
   else
-
-     " Find the correct tab corresponding to the existing buffer
-     let tabNr = -1
-     " iterate tab pages
-     for i in range(tabpagenr('$'))
-        " get the list of buffers in the tab
-        let tabList =  tabpagebuflist(i + 1)
-        let idx = 0
-        " iterate each buffer in the list
-        while idx < len(tabList)
-           " if it matches the buffer we are looking for...
-           if (tabList[idx] == bufNr)
-              " ... save the number
-              let tabNr = i + 1
-              break
-           endif
-           let idx = idx + 1
-        endwhile
-        if (tabNr != -1)
-           break
-        endif
-     endfor
-     " switch the the tab containing the buffer
-     if (tabNr != -1)
-        execute "tabn ".tabNr
-     endif
-
      " Buffer was already open......check to see if it is in a window
-     let bufWindow = bufwinnr(bufNr)
+     let bufWindow = bufwinnr(bufName)
      if (bufWindow == -1) 
         " Buffer was not in a window so open one
         let v:errmsg=""
         if (splitType == "h")
-           silent! execute ":sbuffer".bang." " . FILENAME
+           silent! execute ":sbuffer".bang." " . bufName
         elseif (splitType == "v")
-           silent! execute ":vert sbuffer " . FILENAME
-        elseif (splitType == "t")
-           silent! execute ":tab sbuffer " . FILENAME
+           silent! execute ":vert sbuffer " . bufName
         else
-           silent! execute ":buffer".bang." " . FILENAME
+           silent! execute ":buffer".bang." " . bufName
         endif
         if (v:errmsg != "")
            echo v:errmsg
@@ -652,36 +531,16 @@ function! <SID>FindOrCreateBuffer(fileName, doSplit, findSimilar)
            " something wierd happened...open the buffer
            let v:errmsg=""
            if (splitType == "h")
-              silent! execute ":split".bang." " . FILENAME
+              silent! execute ":split".bang." " . bufName
            elseif (splitType == "v")
-              silent! execute ":vsplit".bang." " . FILENAME
-           elseif (splitType == "t")
-              silent! execute ":tab split".bang." " . FILENAME
+              silent! execute ":vsplit".bang." " . bufName
            else
-              silent! execute ":e".bang." " . FILENAME
+              silent! execute ":e".bang." " . bufName
            endif
            if (v:errmsg != "")
               echo v:errmsg
            endif
         endif
      endif
-  endif
-endfunction
-
-" Function : EqualFilePaths (PRIVATE)
-" Purpose  : Compares two paths. Do simple string comparison anywhere but on
-"            Windows. On Windows take into account that file paths could differ
-"            in usage of separators and the fact that case does not metter.
-"            "c:\WINDOWS" is the same path as "c:/windows". has("win32unix") Vim
-"            version does not count as one having Windows path rules.
-" Args     : path1 (IN) -- first path
-"            path2 (IN) -- second path
-" Returns  : 1 if path1 is equal to path2, 0 otherwise.
-" Author   : Ilya Bobir <ilya@po4ta.com>
-function! <SID>EqualFilePaths(path1, path2)
-  if has("win16") || has("win32") || has("win64") || has("win95")
-    return substitute(a:path1, "\/", "\\", "g") ==? substitute(a:path2, "\/", "\\", "g")
-  else
-    return a:path1 == a:path2
   endif
 endfunction
