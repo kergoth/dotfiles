@@ -15,7 +15,6 @@
 " Do not load a.vim if is has already been loaded or we're running in an old
 " vim version.
 if exists("loaded_alternateFile") || v:version < 700
-    echo 'Not loading a.vim'
     finish
 endif
 let loaded_alternateFile = 1
