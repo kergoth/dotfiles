@@ -34,6 +34,7 @@ ScriptID SourceID Filename
 1440 5329 winmanager.vim
 1443 4966 colors/telstar.vim
 1444 4968 colors.vim
+1451 5700 ftplugin/svn_commit.vim
 1453 5189 cecscope.vim
 1454 5680 colors/baycomb.vim
 1464 5669 colors/moria.vim
