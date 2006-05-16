@@ -368,14 +368,11 @@ set guifont=Leonine\ Sans\ Mono\ 10
 "     Vim version 7.0188 on a Debian Unstable machine.
 "
 " NOTE: This bug was fixed in VIM 7 snapshot as of 02/02/06 or so.
-"
-" For now, keep smarttab disabled to avoid confusion.
-set nosmarttab
-
-" NOTE: The ctab plugin is incredibly useful, but behaves inconsistently
-"       as compared to stock Vim behavior (that is, its <tab>/<BS> key
-"       behavior when not at start-of-line obeys 'sw' when it should be
-"       obeying sts/ts).  Fix it.
+if v:version >= 700
+  set smarttab
+else
+  set nosmarttab
+endif
 
 " Disable insertion of tabs as compression / indentation
 set expandtab
@@ -385,7 +382,7 @@ set expandtab
 set tabstop=8
 
 " Indentation width (affects indentation plugins, indent based
-" folding, etc, and when smarttab is on, is used isntead of ts/sts
+" folding, etc, and when smarttab is on, is used instead of ts/sts
 " for the indentation at beginning of line.
 set shiftwidth=4
 
@@ -398,7 +395,7 @@ set autoindent
 set smartindent
 
 " Set the C indenting the way I like it
-set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,gs,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
+set cinoptions=>s,e0,n0,f0,{0,}0,^0,:s,=s,l0,g0,hs,ps,ts,+s,c3,C0,(0,us,\U0,w0,m0,j0,)20,*30
 set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 
 " Common indentation setups
