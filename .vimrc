@@ -172,6 +172,53 @@ endfun
 " }}}
 
 " Keymaps {{{
+imap <silent> <tab> <c-r>=<SID>InsertSmartTab()<cr>
+inoremap <silent> <BS> <c-r>=<SID>DoSmartDelete()<cr><BS>
+
+fun! <SID>InsertSmartTab()
+  if strpart(getline('.'),0,col('.')-1) =~'^\s*$' | return "\<Tab>" | endif
+
+  let sts=exists("b:insidetabs")?(b:insidetabs):((&sts==0)?&ts:&sts)
+  let sp=(virtcol('.') % sts)
+  if sp==0 | let sp=sts | endif
+  return strpart("                  ",0,1+sts-sp)
+endfun
+
+fun! <SID>DoSmartDelete()
+  if &sts != 0 | return '' | endif
+  let uptohere=strpart(getline('.'),0,col('.')-1)
+  " If at the first part of the line, fall back on defaults... or if the
+  " preceding character is a <TAB>, then similarly fall back on defaults.
+  "
+  let lastchar=matchstr(uptohere,'.$')
+  if lastchar == "\<tab>" || uptohere =~ '^\s*$' | return '' | endif        " Simple cases
+  if lastchar != ' ' | return ((&digraph)?("\<BS>".lastchar): '')  | endif  " Delete non space at end / Maintain digraphs
+
+  let sts=(exists("b:insidetabs")?(b:insidetabs):((&sts==0)?(&ts):(&sts)))
+
+  let ovc=virtcol('.')-1              " Find where we are
+  let sp=(ovc % sts)                " How many virtual characters to delete
+  if sp==0 | let sp=sts | endif     " At least delete a whole tabstop
+  let vc=ovc-sp                     " Work out the new virtual column
+  " Find how many characters we need to delete (using \%v to do virtual column
+  " matching, and making sure we don't pass an invalid value to vc)
+  let uthlen=strlen(uptohere)
+  let bs= uthlen-((vc<1)?0:(  match(uptohere,'\%'.(vc).'v')))
+  let uthlen=uthlen-bs
+  echomsg 'ovc = '.ovc.' sp = '.sp.' vc = '.vc.' bs = '.bs.' uthlen='.uthlen
+  if bs <= 0 | return  '' | endif
+  " Delete the specifed number of whitespace characters up to the first non-whitespace
+  let ret=''
+  let bs=bs-1
+  if uptohere[uthlen+bs] !~ '\s'| return '' | endif
+  while bs>1
+    let bs=bs-1
+    if uptohere[uthlen+bs] !~ '\s' | break | endif
+    let ret=ret."\<BS>"
+  endwhile
+  return ret
+endfun
+
 map <leader>is :!ispell %<CR>          ' ISpell !
 map <leader>del :g/^\s*$/d<CR>         ' Delete Empty Lines
 map <leader>ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
