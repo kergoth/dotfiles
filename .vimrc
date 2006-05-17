@@ -30,6 +30,14 @@
 " hilink:
 "   \hlt - Show information on the highlight group(s) for the text under
 "          the cursor.
+" parenquote:
+"   \( - parenthesize with ()
+"   \{ - parenthesize with {}
+"   \[ - parenthesize with []
+"   \< - parenthesize with <>
+"   \' - quote with ''
+"   \" - quote with ""
+"   \` - quote with ``
 " VIM core:
 "   K - look up current word via 'man' (by default)
 "   ^X ^O - Omni completion
