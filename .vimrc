@@ -208,7 +208,7 @@ fun! <SID>DoSmartDelete()
   let uthlen=strlen(uptohere)
   let bs= uthlen-((vc<1)?0:(  match(uptohere,'\%'.(vc).'v')))
   let uthlen=uthlen-bs
-  echomsg 'ovc = '.ovc.' sp = '.sp.' vc = '.vc.' bs = '.bs.' uthlen='.uthlen
+  " echomsg 'ovc = '.ovc.' sp = '.sp.' vc = '.vc.' bs = '.bs.' uthlen='.uthlen
   if bs <= 0 | return  '' | endif
   " Delete the specifed number of whitespace characters up to the first non-whitespace
   let ret=''
