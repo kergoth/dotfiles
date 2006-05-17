@@ -176,7 +176,24 @@ imap <silent> <tab> <c-r>=<SID>InsertSmartTab()<cr>
 inoremap <silent> <BS> <c-r>=<SID>DoSmartDelete()<cr><BS>
 
 fun! <SID>InsertSmartTab()
-  if strpart(getline('.'),0,col('.')-1) =~'^\s*$' | return "\<Tab>" | endif
+  if &fdm == 'syntax'
+      let l:level = foldlevel(line('.'))
+      let l:ind = 0
+      if &smarttab == 1
+          let l:ind = &sw
+      else
+          let l:ind = &sts != 0 ? &sts : &ts
+      endif
+
+      let l:column = virtcol('.')
+      if l:column >= l:level * l:ind
+      else
+          return "\<Tab>"
+          " echomsg 'not past the necessary level, do tabs.'
+      endif
+  else
+      if strpart(getline('.'),0,col('.')-1) =~'^\s*$' | return "\<Tab>" | endif
+  endif
 
   let sts=exists("b:insidetabs")?(b:insidetabs):((&sts==0)?&ts:&sts)
   let sp=(virtcol('.') % sts)
