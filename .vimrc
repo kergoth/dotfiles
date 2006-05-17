@@ -38,6 +38,7 @@
 "   ggqgG - reformat entire file
 "   gwap - reformat paragraph
 "   gg=G - reindent entire file
+"   \o - Insert changelog entry (for the 'changelog' filetype)
 " }}}
 
 if v:version < 600
@@ -159,16 +160,6 @@ fun! StatusLine_FileName()
   endtry
   return fn
 endfun
-
-fun! InsertChangeLogEntry()
-  let entry = strftime('%Y-%m-%d') . '  ' . 'Chris Larson <kergoth@handhelds.org>'
-  let failed = append(line('.') - 1, entry)
-  let failed = append(line('.') - 1, "")
-  let failed = append(line('.') - 1, "\t* ")
-  " let failed = append(line('.') - 1, "")
-  call cursor(line('.') - 1, virtcol('.') + 1, 1)
-  startinsert!
-endfun
 " }}}
 
 " Keymaps {{{
@@ -247,7 +238,6 @@ nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
 nmap <leader>a :A<CR>            ' Switch between .c/cpp and .h (a.vim)
-nmap <leader>C :call InsertChangeLogEntry()<CR>
 
 " Toggle line numbering for the current window (overrides automatic by width)
 nmap <leader>n :call SetNumbering(-1)<CR>
