@@ -160,11 +160,6 @@ fun! StatusLine_FileName()
   endtry
   return fn
 endfun
-" }}}
-
-" Keymaps {{{
-imap <silent> <tab> <c-r>=<SID>InsertSmartTab()<cr>
-inoremap <silent> <BS> <c-r>=<SID>DoSmartDelete()<cr><BS>
 
 fun! <SID>InsertSmartTab()
   if &fdm == 'syntax'
@@ -226,6 +221,11 @@ fun! <SID>DoSmartDelete()
   endwhile
   return ret
 endfun
+" }}}
+
+" Keymaps {{{
+imap <silent> <tab> <c-r>=<SID>InsertSmartTab()<cr>
+inoremap <silent> <BS> <c-r>=<SID>DoSmartDelete()<cr><BS>
 
 map <leader>is :!ispell %<CR>          ' ISpell !
 map <leader>del :g/^\s*$/d<CR>         ' Delete Empty Lines
