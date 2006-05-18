@@ -382,12 +382,9 @@ set guifont=Leonine\ Sans\ Mono\ 10
 "     Vim version 6.3 on an Ubuntu Breezy machine.
 "     Vim version 7.0188 on a Debian Unstable machine.
 "
-" NOTE: This bug was fixed in VIM 7 snapshot as of 02/02/06 or so.
-if v:version >= 700
-  set smarttab
-else
-  set nosmarttab
-endif
+" NOTE: Bram claims this was fixed in a VIM 7 snapshot as of 02/02/06 or so,
+"       but I'm still seeing the behavior with Vim 7.0 final.
+set nosmarttab
 
 " Disable insertion of tabs as compression / indentation
 set expandtab
