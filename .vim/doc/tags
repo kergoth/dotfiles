@@ -135,11 +135,11 @@ NERD_comments	NERD_comments.txt	/*NERD_comments*
 NERD_comments-contents	NERD_comments.txt	/*NERD_comments-contents*
 NERD_comments.txt	NERD_comments.txt	/*NERD_comments.txt*
 NERD_create_h_filetype	NERD_comments.txt	/*NERD_create_h_filetype*
-NERD_dont_create_menu_shortcut	NERD_comments.txt	/*NERD_dont_create_menu_shortcut*
 NERD_dont_remove_alt_coms	NERD_comments.txt	/*NERD_dont_remove_alt_coms*
 NERD_dont_remove_spaces_regexp	NERD_comments.txt	/*NERD_dont_remove_spaces_regexp*
 NERD_lPlace	NERD_comments.txt	/*NERD_lPlace*
 NERD_left_align_regexp	NERD_comments.txt	/*NERD_left_align_regexp*
+NERD_menu_mode	NERD_comments.txt	/*NERD_menu_mode*
 NERD_place_holder_regexp	NERD_comments.txt	/*NERD_place_holder_regexp*
 NERD_rPlace	NERD_comments.txt	/*NERD_rPlace*
 NERD_right_align_regexp	NERD_comments.txt	/*NERD_right_align_regexp*

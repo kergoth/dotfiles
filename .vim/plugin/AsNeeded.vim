@@ -1,9 +1,9 @@
 " AsNeeded: allows functions/maps to reside in .../.vim/AsNeeded/ directory
 "           and will enable their loaded as needed
 " Author:	Charles E. Campbell, Jr.
-" Date:		Mar 14, 2006
-" Version:	12
-" Copyright:    Copyright (C) 2004-2005 Charles E. Campbell, Jr. {{{1
+" Date:		May 16, 2006
+" Version:	13
+" Copyright:    Copyright (C) 2004-2006 Charles E. Campbell, Jr. {{{1
 "               Permission is hereby granted to use and distribute this code,
 "               with or without modifications, provided that this copyright
 "               notice is copied with it. Like anything else that's free,
@@ -39,7 +39,7 @@
 if exists("g:loaded_AsNeeded") || &cp
  finish
 endif
-let g:loaded_AsNeeded = "v12"
+let g:loaded_AsNeeded = "v13"
 let s:keepcpo         = &cpo
 set cpo&vim
 
@@ -86,6 +86,7 @@ fun! AsNeeded(type,cmdmap)
   " -----------------------
   let ANtags= globpath(&rtp,"AsNeeded/ANtags")
   if ANtags != ""
+"   call Decho("using ANtags")
    %d
    exe "silent 0r ".ANtags
 
@@ -95,7 +96,7 @@ fun! AsNeeded(type,cmdmap)
     let srchstring= substitute(a:cmdmap,' .*$','','e')
 "	call Decho("srchstring<".srchstring.">")
     if exists("g:mapleader") && match(srchstring,'^'.g:mapleader) == 0
-	 let srchstring= substitute(escape(srchstring,'\'),'^.\(.*\)$','&\\|<[lL][eE][aA][dD][eE][rR]>\1','')
+	 let srchstring= escape(srchstring,'\').substitute(srchstring,'^.\(.*\)$','\\|<[lL][eE][aA][dD][eE][rR]>\1','')
 	endif
 "	call Decho("srchstring<".srchstring.">")
 	let result= search('^[mc]\t\<'.srchstring.'\>')
@@ -177,18 +178,20 @@ fun! AsNeeded(type,cmdmap)
    exe "so ".vimfile
    call s:SaveSettings()
    if exists("g:AsNeededSuccess")
-    let vimf=substitute(vimfile, $HOME, '\~', '')
+    let vimf = substitute(vimfile,$HOME,'\~','')
 	if exists("srchstring")
-     echomsg "***success*** AsNeeded found <".srchstring."> in <".vimf.">; now loaded"
+	 let msg= "***success*** AsNeeded found <".srchstring."> in <".vimf.">; now loaded"
 	else
-     echomsg "***success*** AsNeeded found command in <".vimf.">; now loaded"
+     let msg= "***success*** AsNeeded found command in <".vimf.">; now loaded"
 	endif
    endif
+
    " successfully sourced file containing srchstring
    if a:type == 3 && exists("mapstring")
     let maprhs= maparg(a:cmdmap,'n')
 "    call Decho("type==".a:type.": maprhs<".maprhs."> mapstring<".mapstring.">")
     call s:RestoreSettings()
+
    	if maprhs == ""
 	 " attempt to execute a:cmdmap as a command (with no arguments)
 "	 call Decho("exe ".a:cmdmap)
@@ -206,6 +209,12 @@ fun! AsNeeded(type,cmdmap)
     exe "silent! ".asneededbufnr."bwipe!"
 	call s:RestoreSettings()
    endif
+
+   " message is deferred to now so it'll show up
+   if exists("msg")
+   	echo msg
+   endif
+
 "   call Dret("AsNeeded 0")
    return 0
   endif
@@ -261,13 +270,28 @@ fun! MakeANtags()
 "   call Decho("removing old <ANtags>")
    call delete(globpath(&rtp,"AsNeeded/ANtags"))
   endif
+  if filereadable(globpath(&rtp,"ANcmds.vim"))
+"   call Decho("removing old <ANcmds.vim>")
+   call delete(globpath(&rtp,"ANcmds.vim")
+  endif
+
+  " ------------------------------------------
+  "  Determine the home directory for plugins: {{{2
+  " ------------------------------------------
+  for home in split(&rtp,',') + ['']
+   if isdirectory(home) | break | endif
+  endfor
+  if home == ""
+   let home= substitute(&rtp,',.*$','','')
+  endif
+"  call Decho("home<".home.">")
 
   " ---------------------------------------------
   " search for all commands, maps, and functions: {{{2
   " ---------------------------------------------
-  let vimfiles= substitute(globpath(&rtp,"AsNeeded/*.vim"),'\n',',',"ge")
-  let ANtags  = substitute(vimfiles,'AsNeeded.*','AsNeeded/ANtags','e')
-  let first   = 1
+  let vimfiles = substitute(globpath(&rtp,"AsNeeded/*.vim"),'\n',',',"ge")
+  let ANtags   = home."/AsNeeded/ANtags"
+  let first    = 1
 "  call Decho("ANtags<".ANtags.">")
 
   while vimfiles != ""
@@ -324,6 +348,26 @@ fun! MakeANtags()
    let vimfile= ""
   endwhile
   q!
+
+  " -----------------------------------------
+  "  Use Thomas's idea to create a ANcmds.vim {{{2
+  " -----------------------------------------
+  if isdirectory(home."/plugin")
+   let ANcmds = home."/plugin/ANcmds.vim"
+   silent! 1split
+   exe "silent! e ".ANcmds
+   silent! %d
+   exe "silent! r ".ANtags
+   silent! 1d
+   silent! v/^c/d
+   if getline(1) != ""
+    silent! %s/^c\t\(\S\+\)\t.*$/command! -range -nargs=* \1 delcommand \1 | ANX \1 <args>/e
+    silent! so %
+    wq!
+   else
+   	q!
+   endif
+  endif
 
   " ------------------------------
   " restore registers and settings {{{2

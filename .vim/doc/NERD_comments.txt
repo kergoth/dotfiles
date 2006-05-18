@@ -1,4 +1,4 @@
-*NERD_comments.txt*         Plugin for commenting code            v166
+*NERD_comments.txt*         Plugin for commenting code            v167
 
 
                         NERD_COMMENTS REFERENCE MANUAL~
@@ -433,7 +433,9 @@ is capable of adding and removing comments of this type.
 |NERD_block_com_after_right|          Forces right delims to be placed when
                                       doing visual-block comments.
 |NERD_comment_whole_lines_in_v_mode|  Changes behaviour of visual comments.
-|NERD_dont_create_menu_shortcut|      Turns off the <alt>-c menu shortcut.
+|NERD_menu_mode|                      Determines if a NERD comment menu will
+                                      be made and whether the menu will have a
+                                      keyboard shortcut.
 |NERD_dont_remove_alt_coms|           Causes alternative comments not to be
                                       removed when uncommenting.
 |NERD_dont_remove_spaces_regexp|      Causes spaces not to be removed when
@@ -577,10 +579,13 @@ then stick the following line in your .vimrc: >
 Note that this option does not affect the behaviour of visual-block mode ().
 
 -----------------------------------------------------------------------------
-                                             *NERD_dont_create_menu_shortcut*
-By default the NERD commenting menu can be accessed via the <alt>-c shortcut.
-This option turns this shortcut off. This could be handy if you are using the
-<alt>-c shortcut for something else.
+                                             *NERD_menu_mode*
+This option can take 3 values:
+    "0": Turns the NERD commenter menu off completely.
+    "1": Turns the NERD commenter menu on with no menu shortcut.
+    "2": Turns the NERD commenter menu on with <alt>-c as the menu shortcut.
+    
+Default is "2".
                                                    
 -----------------------------------------------------------------------------
                                                    *NERD_dont_remove_alt_coms*
@@ -1030,6 +1035,7 @@ relating to it :P
 Thanks again to Nguyen for complaining about the NERD_comments menu mapping 
 (<Alt>-c) interfering with another mapping of his... and thus the 
 NERD_dont_create_menu_shortcut option was born :P
+(it was then replaced with NERD_menu_mode in version 1.67 :)
 
 Thanks to Sam R for pointing out some filetypes that NERD_comments could support!
 
@@ -1090,6 +1096,14 @@ And for suggested improvements to minimal comments.
 
 Thanks to Norick Chen for emailing in a patch that fixed the asp delimiters.
 In 1.65
+
+Thanks to Jonathan Derque for alerting me to some filetypes that could be
+supported (Namely: context, plaintext and mail).
+
+Thanks to Joseph Barker for the sugesting that the menu be an optional
+feature.
+
+
 
 Cheers to myself for being the best looking man on Earth!
 

@@ -1,7 +1,7 @@
 " vim global plugin that provides easy code commenting for various file types
-" Last Change:  12 April 2006
+" Last Change:  18 May 2006
 " Maintainer:   Martin Grenfell <mrg39 at student.canterbury.ac.nz>
-let s:NERD_comments_version = 1.66
+let s:NERD_comments_version = 1.67
 
 
 " For help documentation type :help NERD_comments. If this fails, Restart vim
@@ -104,7 +104,7 @@ call s:InitVariable("g:NERD_allow_any_visual_delims_regexp", '".*"')
 call s:InitVariable("g:NERD_block_com_after_right", "0")
 call s:InitVariable("g:NERD_comment_whole_lines_in_v_mode", '0')
 call s:InitVariable("g:NERD_create_h_filetype", '0')
-call s:InitVariable("g:NERD_dont_create_menu_shortcut", '0')
+call s:InitVariable("g:NERD_menu_mode", '2')
 call s:InitVariable("g:NERD_dont_remove_alt_coms", '0')
 call s:InitVariable("g:NERD_dont_remove_spaces_regexp", '"^python$"')
 call s:InitVariable("g:NERD_left_align_regexp", '"^$"')
@@ -256,6 +256,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "config" 
         call s:MapDelimiters('dnl ', '')
+    elseif a:filetype == "context"
+        call s:MapDelimiters('%','')
     elseif a:filetype == "cpp" 
         call s:MapDelimitersWithAlternative('//','', '/*','*/', g:NERD_use_c_style_cpp_comments)
     elseif a:filetype == "crontab" 
@@ -424,6 +426,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "m4" 
         call s:MapDelimiters('dnl ', '')
+    elseif a:filetype == "mail"
+        call s:MapDelimiters('> ','')
     elseif a:filetype == "make" 
         call s:MapDelimiters('#','') 
     elseif a:filetype == "maple" 
@@ -504,6 +508,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimitersWithAlternative('//','', '/*','*/', g:NERD_use_c_style_pilrc_comments )
     elseif a:filetype == "pine" 
         call s:MapDelimiters('#', '')
+    elseif a:filetype == "plaintex"
+        call s:MapDelimiters('%','')
     elseif a:filetype == "plm" 
         call s:MapDelimitersWithAlternative('//','', '/*','*/', g:NERD_use_c_style_plm_comments )
     elseif a:filetype == "plsql" 
@@ -649,6 +655,8 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "terminfo" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "tex" 
+        call s:MapDelimiters('%','') 
+    elseif a:filetype == "plaintex" 
         call s:MapDelimiters('%','') 
     elseif a:filetype == "texinfo" 
         call <sid>mapdelimiters("@c ", "")
@@ -3371,59 +3379,66 @@ execute 'inoremap <silent>' . g:NERD_com_in_insert_map . ' ' . '<SPACE><BS><ESC>
 " Section: Menu item setup {{{1
 " ===========================================================================
 
-let s:menuRoot = g:NERD_dont_create_menu_shortcut ? "comment" : "&comment"
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment<TAB>' . escape(g:NERD_com_line_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment<TAB>' . escape(g:NERD_com_line_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
+"check if the user wants the menu to be displayed 
+if g:NERD_menu_mode != 0
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Toggle<TAB>' . escape(g:NERD_com_line_toggle_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "toggle")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Toggle<TAB>' . escape(g:NERD_com_line_toggle_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "toggle")<CR><ESC>'
+    "determine whether the user wants the menu to have a keyboard shortcut and
+    "set the menu root accordingly.
+    let s:menuRoot = g:NERD_menu_mode == 1 ? "comment" : "&comment"
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Minimal<TAB>' . escape(g:NERD_com_line_minimal_map, '\') . ' :call <SID>DoComment(0, 0, 0, 0, "minimal")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Minimal<TAB>' . escape(g:NERD_com_line_minimal_map, '\') . ' :call <SID>DoComment(0, 1, 0, 0, "minimal")<CR><ESC>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment<TAB>' . escape(g:NERD_com_line_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment<TAB>' . escape(g:NERD_com_line_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Nested<TAB>' . escape(g:NERD_com_line_nest_map, '\') . ' :call <SID>DoComment(1, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Nested<TAB>' . escape(g:NERD_com_line_nest_map, '\') . ' :call <SID>DoComment(1, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Toggle<TAB>' . escape(g:NERD_com_line_toggle_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "toggle")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Toggle<TAB>' . escape(g:NERD_com_line_toggle_map, '\') . ' :call <SID>DoComment(g:NERD_use_nested_comments_default, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "toggle")<CR><ESC>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ To\ EOL<TAB>' . escape(g:NERD_com_to_end_of_line_map, '\') . ' :call <SID>SaveCursorPosition()<cr>:call <SID>CommentBlock(line("."), line("."), col("."), col("$")-1, 1)<cr>:call <SID>RestoreCursorPostion()<cr><ESC>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Minimal<TAB>' . escape(g:NERD_com_line_minimal_map, '\') . ' :call <SID>DoComment(0, 0, 0, 0, "minimal")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Minimal<TAB>' . escape(g:NERD_com_line_minimal_map, '\') . ' :call <SID>DoComment(0, 1, 0, 0, "minimal")<CR><ESC>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Invert<TAB>' . escape(g:NERD_com_line_invert_map, '\') . ' :call <SID>DoComment(0,0,0,0,"invert")<CR>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Invert<TAB>' . escape(g:NERD_com_line_invert_map, '\') . ' :call <SID>DoComment(0,1,0,0,"invert")<CR>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Nested<TAB>' . escape(g:NERD_com_line_nest_map, '\') . ' :call <SID>DoComment(1, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Nested<TAB>' . escape(g:NERD_com_line_nest_map, '\') . ' :call <SID>DoComment(1, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Sexily<TAB>' . escape(g:NERD_com_line_sexy_map, '\') . ' :call <SID>DoComment(0,0,0,0,"sexy")<CR>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Sexily<TAB>' . escape(g:NERD_com_line_sexy_map, '\') . ' :call <SID>DoComment(0,1,0,0,"sexy")<CR>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ To\ EOL<TAB>' . escape(g:NERD_com_to_end_of_line_map, '\') . ' :call <SID>SaveCursorPosition()<cr>:call <SID>CommentBlock(line("."), line("."), col("."), col("$")-1, 1)<cr>:call <SID>RestoreCursorPostion()<cr><ESC>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Yank\ line(s)\ then\ comment<TAB>' . escape(g:NERD_com_line_yank_map, '\') . ' "0Y' . g:NERD_com_line_map 
-execute 'vmenu <silent> '. s:menuRoot .'.Yank\ line(s)\ then\ comment<TAB>' . escape(g:NERD_com_line_yank_map, '\') . ' "0ygv' . g:NERD_com_line_map
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Invert<TAB>' . escape(g:NERD_com_line_invert_map, '\') . ' :call <SID>DoComment(0,0,0,0,"invert")<CR>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Invert<TAB>' . escape(g:NERD_com_line_invert_map, '\') . ' :call <SID>DoComment(0,1,0,0,"invert")<CR>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Append\ Comment\ to\ Line<TAB>' . escape(g:NERD_append_com_map, '\') . ' :call <SID>AppendCommentToLine()<cr>'
-execute 'nmenu <silent> '. s:menuRoot .'.Prepend\ Comment\ to\ Line<TAB>' . escape(g:NERD_prepend_com_map, '\') . ' :call <SID>PrependCommentToLine()<cr>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Sexily<TAB>' . escape(g:NERD_com_line_sexy_map, '\') . ' :call <SID>DoComment(0,0,0,0,"sexy")<CR>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Sexily<TAB>' . escape(g:NERD_com_line_sexy_map, '\') . ' :call <SID>DoComment(0,1,0,0,"sexy")<CR>'
 
-execute 'menu <silent> '. s:menuRoot .'.-Sep-	:'
+    execute 'nmenu <silent> '. s:menuRoot .'.Yank\ line(s)\ then\ comment<TAB>' . escape(g:NERD_com_line_yank_map, '\') . ' "0Y' . g:NERD_com_line_map 
+    execute 'vmenu <silent> '. s:menuRoot .'.Yank\ line(s)\ then\ comment<TAB>' . escape(g:NERD_com_line_yank_map, '\') . ' "0ygv' . g:NERD_com_line_map
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Align\ Left\ (nested)<TAB>' . escape(g:NERD_com_align_left_map, '\') . ' :call <SID>DoComment(1, 0, 1, 0, "norm")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Align\ Left\ (nested)<TAB>' . escape(g:NERD_com_align_left_map, '\') . ' :call <SID>DoComment(1, 1, 1, 0, "norm")<CR><ESC>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Append\ Comment\ to\ Line<TAB>' . escape(g:NERD_append_com_map, '\') . ' :call <SID>AppendCommentToLine()<cr>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Prepend\ Comment\ to\ Line<TAB>' . escape(g:NERD_prepend_com_map, '\') . ' :call <SID>PrependCommentToLine()<cr>'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Align\ Right\ (nested)<TAB>' . escape(g:NERD_com_align_right_map, '\') . ' :call <SID>DoComment(1, 0, 0, 1, "norm")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Align\ Right\ (nested)<TAB>' . escape(g:NERD_com_align_right_map, '\') . ' :call <SID>DoComment(1, 1, 0, 1, "norm")<CR><ESC>'
+    execute 'menu <silent> '. s:menuRoot .'.-Sep-	:'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Align\ Both\ (nested)<TAB>' . escape(g:NERD_com_align_both_map, '\') . ' :call <SID>DoComment(1, 0, 1, 1, "norm")<CR><ESC>'
-execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Align\ Both\ (nested)<TAB>' . escape(g:NERD_com_align_both_map, '\') . ' :call <SID>DoComment(1, 1, 1, 1, "norm")<CR><ESC>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Align\ Left\ (nested)<TAB>' . escape(g:NERD_com_align_left_map, '\') . ' :call <SID>DoComment(1, 0, 1, 0, "norm")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Align\ Left\ (nested)<TAB>' . escape(g:NERD_com_align_left_map, '\') . ' :call <SID>DoComment(1, 1, 1, 0, "norm")<CR><ESC>'
 
-execute 'menu <silent> '. s:menuRoot .'.-Sep2-	:'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Align\ Right\ (nested)<TAB>' . escape(g:NERD_com_align_right_map, '\') . ' :call <SID>DoComment(1, 0, 0, 1, "norm")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Align\ Right\ (nested)<TAB>' . escape(g:NERD_com_align_right_map, '\') . ' :call <SID>DoComment(1, 1, 0, 1, "norm")<CR><ESC>'
 
-execute 'menu <silent> '. s:menuRoot .'.Uncomment<TAB>' . escape(g:NERD_uncom_line_map, '\') . ' :call <SID>UncommentLines(0)<CR>gv'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Align\ Both\ (nested)<TAB>' . escape(g:NERD_com_align_both_map, '\') . ' :call <SID>DoComment(1, 0, 1, 1, "norm")<CR><ESC>'
+    execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Align\ Both\ (nested)<TAB>' . escape(g:NERD_com_align_both_map, '\') . ' :call <SID>DoComment(1, 1, 1, 1, "norm")<CR><ESC>'
 
-execute 'menu <silent> '. s:menuRoot .'.-Sep3-	:'
+    execute 'menu <silent> '. s:menuRoot .'.-Sep2-	:'
 
-execute 'nmenu <silent> '. s:menuRoot .'.Use\ Alternative\ Delimiters<TAB>' . escape(g:NERD_alt_com_map, '\') . ' :call <SID>SwitchToAlternativeDelimiters(1)<CR>'
+    execute 'menu <silent> '. s:menuRoot .'.Uncomment<TAB>' . escape(g:NERD_uncom_line_map, '\') . ' :call <SID>UncommentLines(0)<CR>gv'
+
+    execute 'menu <silent> '. s:menuRoot .'.-Sep3-	:'
+
+    execute 'nmenu <silent> '. s:menuRoot .'.Use\ Alternative\ Delimiters<TAB>' . escape(g:NERD_alt_com_map, '\') . ' :call <SID>SwitchToAlternativeDelimiters(1)<CR>'
 
 
-execute 'imenu <silent> '. s:menuRoot .'.Insert\ Delims<TAB>' . escape(g:NERD_com_in_insert_map, '\') . ' <SPACE><BS><ESC>:call <SID>PlaceDelimitersAndInsBetween()<CR>'
+    execute 'imenu <silent> '. s:menuRoot .'.Insert\ Delims<TAB>' . escape(g:NERD_com_in_insert_map, '\') . ' <SPACE><BS><ESC>:call <SID>PlaceDelimitersAndInsBetween()<CR>'
 
-execute 'menu '. s:menuRoot .'.-Sep4-	:'
+    execute 'menu '. s:menuRoot .'.-Sep4-	:'
 
-execute 'menu <silent>'. s:menuRoot .'.Help<TAB>:help\ NERD_comments-contents :help NERD_comments-contents<CR>'
+    execute 'menu <silent>'. s:menuRoot .'.Help<TAB>:help\ NERD_comments-contents :help NERD_comments-contents<CR>'
+endif
 
 " Section: Doc installation call {{{1
 silent call s:InstallDocumentation(expand('<sfile>:p'), s:NERD_comments_version)
@@ -3869,7 +3884,9 @@ is capable of adding and removing comments of this type.
 |NERD_block_com_after_right|          Forces right delims to be placed when
                                       doing visual-block comments.
 |NERD_comment_whole_lines_in_v_mode|  Changes behaviour of visual comments.
-|NERD_dont_create_menu_shortcut|      Turns off the <alt>-c menu shortcut.
+|NERD_menu_mode|                      Determines if a NERD comment menu will
+                                      be made and whether the menu will have a
+                                      keyboard shortcut.
 |NERD_dont_remove_alt_coms|           Causes alternative comments not to be
                                       removed when uncommenting.
 |NERD_dont_remove_spaces_regexp|      Causes spaces not to be removed when
@@ -4013,10 +4030,13 @@ then stick the following line in your .vimrc: >
 Note that this option does not affect the behaviour of visual-block mode ().
 
 -----------------------------------------------------------------------------
-                                             *NERD_dont_create_menu_shortcut*
-By default the NERD commenting menu can be accessed via the <alt>-c shortcut.
-This option turns this shortcut off. This could be handy if you are using the
-<alt>-c shortcut for something else.
+                                             *NERD_menu_mode*
+This option can take 3 values:
+    "0": Turns the NERD commenter menu off completely.
+    "1": Turns the NERD commenter menu on with no menu shortcut.
+    "2": Turns the NERD commenter menu on with <alt>-c as the menu shortcut.
+    
+Default is "2".
                                                    
 -----------------------------------------------------------------------------
                                                    *NERD_dont_remove_alt_coms*
@@ -4466,6 +4486,7 @@ relating to it :P
 Thanks again to Nguyen for complaining about the NERD_comments menu mapping 
 (<Alt>-c) interfering with another mapping of his... and thus the 
 NERD_dont_create_menu_shortcut option was born :P
+(it was then replaced with NERD_menu_mode in version 1.67 :)
 
 Thanks to Sam R for pointing out some filetypes that NERD_comments could support!
 
@@ -4526,6 +4547,14 @@ And for suggested improvements to minimal comments.
 
 Thanks to Norick Chen for emailing in a patch that fixed the asp delimiters.
 In 1.65
+
+Thanks to Jonathan Derque for alerting me to some filetypes that could be
+supported (Namely: context, plaintext and mail).
+
+Thanks to Joseph Barker for the sugesting that the menu be an optional
+feature.
+
+
 
 Cheers to myself for being the best looking man on Earth!
 
