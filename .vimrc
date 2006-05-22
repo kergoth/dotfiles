@@ -807,6 +807,26 @@ if has('autocmd')
     endfunction
     au BufEnter * call <SID>QuickFixClose()
 
+    " Make buffers for read only files 'set nomodifiable', courtesy Vim
+    " Tip #1238
+    function UpdateModifiable()
+      if !exists("b:setmodifiable")
+        let b:setmodifiable = 0
+      endif
+      if &readonly
+        if &modifiable
+          setlocal nomodifiable
+          let b:setmodifiable = 1
+        endif
+      else
+        if b:setmodifiable
+          setlocal modifiable
+        endif
+      endif
+    endfunction
+
+    autocmd BufReadPost * call UpdateModifiable()
+
     " Change the current directory to the location of the
     " file being edited.
     au BufEnter * :lcd %:p:h
