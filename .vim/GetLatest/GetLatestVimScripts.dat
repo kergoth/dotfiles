@@ -48,3 +48,6 @@ ScriptID SourceID Filename
 1532 5625 colors/txt.vim
 1542 5690 autoload/pythoncomplete.vim
 1545 5708 plugins/parenquote.vim
+1547 5712 compiler/gnat.vim
+1548 5742 ftplugin/ada.vim
+1554 5741 autoload/adacomplete.vim
