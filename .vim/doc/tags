@@ -82,6 +82,11 @@
 Align-copyright	Align.txt	/*Align-copyright*
 CSH	cecscope.txt	/*CSH*
 CSS	cecscope.txt	/*CSS*
+CppOmni_ClassScopeCompletionMethod	cppomnicomplete.txt	/*CppOmni_ClassScopeCompletionMethod*
+CppOmni_DefaultNamespaces	cppomnicomplete.txt	/*CppOmni_DefaultNamespaces*
+CppOmni_GlobalScopeSearch	cppomnicomplete.txt	/*CppOmni_GlobalScopeSearch*
+CppOmni_NamespaceSearch	cppomnicomplete.txt	/*CppOmni_NamespaceSearch*
+CppOmni_ShowScopeInAbbr	cppomnicomplete.txt	/*CppOmni_ShowScopeInAbbr*
 GetLatestVimScripts-copyright	GetLatestVimScripts.txt	/*GetLatestVimScripts-copyright*
 MatchError	matchit.txt	/*MatchError*
 NERD_allow_any_visual_delims_regexp	NERD_comments.txt	/*NERD_allow_any_visual_delims_regexp*
@@ -289,6 +294,15 @@ cecutil-savewinposn	cecutil.txt	/*cecutil-savewinposn*
 cecutil-swp	cecutil.txt	/*cecutil-swp*
 cecutil.txt	cecutil.txt	/*cecutil.txt*
 cpalette.pl	xterm16.txt	/*cpalette.pl*
+cppomni-download	cppomnicomplete.txt	/*cppomni-download*
+cppomni-features	cppomnicomplete.txt	/*cppomni-features*
+cppomni-installation	cppomnicomplete.txt	/*cppomni-installation*
+cppomni-limitations	cppomnicomplete.txt	/*cppomni-limitations*
+cppomni-options	cppomnicomplete.txt	/*cppomni-options*
+cppomni-overview	cppomnicomplete.txt	/*cppomni-overview*
+cppomni-popup	cppomnicomplete.txt	/*cppomni-popup*
+cppomnicomplete	cppomnicomplete.txt	/*cppomnicomplete*
+cppomnicomplete.txt	cppomnicomplete.txt	/*cppomnicomplete.txt*
 doxygen-syntax	doxygen.txt	/*doxygen-syntax*
 doxygen.vim	doxygen.txt	/*doxygen.vim*
 g%	matchit.txt	/*g%*
