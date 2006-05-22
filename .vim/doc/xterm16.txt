@@ -330,9 +330,8 @@ ADJUSTING COLORS ON TERMINALS                              *xterm16_trmcolors*
 
 	au VimEnter *
         	\ if &term == 'xterm'		|
-        	\ 	set t_Co=16		|
+        	\ 	set t_Co=256		|
         	\ endif
-
 
 <   Replace 'xterm' above with the value of $TERM.
 
@@ -516,5 +515,5 @@ UNREADABLE CONSOLE COLORS               *xterm16_NoRemap* *xterm16_TermRegexp*
 ------------------------------------------------------------------------------
 >
  Maintainer	: Gautam Iyer <gautamATmathDOTuchicagoDOTedu>
- Modified	: Fri 14 Apr 2006 01:21:46 AM CDT
+ Modified	: Thu 18 May 2006 04:28:25 PM CDT
  vim: ft=help:tw=78:iskeyword=!-~,^*,^|,^":ai:

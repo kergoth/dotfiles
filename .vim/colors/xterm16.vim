@@ -1,7 +1,7 @@
-" xterm16-v2.41: Vim color scheme file
+" xterm16-v2.42: Vim color scheme file
 " Maintainer:	Gautam Iyer <gautam@math.uchicago.edu>
 " Created:	Thu 16 Oct 2003 06:17:47 PM CDT
-" Modified:	Sat 15 Apr 2006 03:40:56 PM CDT
+" Modified:	Sun 23 Apr 2006 04:41:57 PM CDT
 "
 " Adjustable color scheme for GUI/Terminal vim.
 
@@ -341,9 +341,13 @@ try
     let s:m = s:c2
     let s:h = s:c3
 
-    " {{{2 Set a bright green cursor
+    " {{{2 Set a bright green cursor on all colormaps except softlight
     if !exists('g:xterm16bg_Cursor')
-	let g:xterm16bg_Cursor		= '#00ff00'
+	if s:colormap == 'softlight'
+	    let g:xterm16fg_Cursor		= '#ffffff'
+	else
+	    let g:xterm16bg_Cursor		= '#00ff00'
+	endif
     endif
 
     " {{{2 Set the current pallete:
@@ -522,35 +526,37 @@ try
 	    " Highlighting groups for dark background
 	    call s:hi( 'Normal'      , 'none', 'white'    , 'black'     )
 
+	    call s:hi( 'Cursor'      , 'none', 'black'    , 'green'     )
 	    call s:hi( 'DiffText'    , 'none', 'darkred'  , 'darkyellow')
 	    call s:hi( 'Error'       , 'none', 'white'    , 'darkred'   )
 	    call s:hi( 'ErrorMsg'    , 'none', 'white'    , 'darkred'   )
 	    call s:hi( 'FoldColumn'  , 'none', 'purple'   , 'darkgrey'  )
 	    call s:hi( 'Folded'      , 'none', 'purple'   , 'darkgrey'  )
+	    call s:hi( 'IncSearch'   , 'none', 'yellow'   , 'darkblue'  )
 	    call s:hi( 'StatusLine'  , 'none', 'darkblue' , 'lightgrey' )
 	    call s:hi( 'VisualNOS'   , 'none', 'black'    , 'darkgrey'  )
 	else
 	    " Highlighting groups for light background
 	    call s:hi( 'Normal'      , 'none', 'black'    , 'white'     )
 
+	    call s:hi( 'Cursor'      , 'none', 'white'    , 'bluegreen' )
 	    call s:hi( 'DiffText'    , 'none', 'red'      , 'darkyellow')
 	    call s:hi( 'Error'       , 'none', 'black'    , 'darkred'   )
 	    call s:hi( 'ErrorMsg'    , 'none', 'white'    , 'red'       )
 	    call s:hi( 'FoldColumn'  , 'none', 'lightgrey', 'darkgrey'  )
 	    call s:hi( 'Folded'      , 'none', 'black'    , 'darkgrey'  )
+	    call s:hi( 'IncSearch'   , 'none', 'black'    , 'darkblue'  )
 	    call s:hi( 'StatusLine'  , 'none', 'skyblue'  , 'lightgrey' )
 	    call s:hi( 'VisualNOS'   , 'none', 'white'    , 'darkgrey'  )
 	endif
 
 	" Highlighting groups for light / dark background.
-	call s:hi( 'Cursor'      , 'none', 'black'     , 'green'     )
 	call s:hi( 'CursorColumn', 'none', 'none'      , 'grey'      )
 	call s:hi( 'CursorLine'  , 'none', 'none'      , 'grey'      )
 	call s:hi( 'DiffAdd'     , 'none', 'lightbrown', 'darkblue'  )
 	call s:hi( 'DiffChange'  , 'none', 'black'     , 'darkyellow')
 	call s:hi( 'DiffDelete'  , 'none', 'purple'    , 'darkblue'  )
 	call s:hi( 'Directory'   , 'none', 'cyan'      , 'none'      )
-	call s:hi( 'IncSearch'   , 'none', 'yellow'    , 'darkblue'  )
 	call s:hi( 'LineNr'      , 'none', 'yellow'    , 'none'      )
 	call s:hi( 'MatchParen'  , 'bold', 'none'      , 'none'      )
 	call s:hi( 'MoreMsg'     , 'none', 'green'     , 'none'      )
