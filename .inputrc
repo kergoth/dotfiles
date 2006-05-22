@@ -24,6 +24,8 @@ set editing-mode vi
 $if mode=vi
     set keymap vi-insert
 
+    "\C-l": clear-screen
+
     # Vim style history search
     "\e[A": history-search-backward
     "\e[B": history-search-forward
