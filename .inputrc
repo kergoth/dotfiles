@@ -111,9 +111,3 @@ $else
     "\e[e": end-of-line
     "\e[\C-p": end-of-line
 $endif
-
-# Example usage of keymap specific keybindings.
-# $if mode=vi
-#     set keymap vi-command
-#     "e": forward-char
-# $endif
