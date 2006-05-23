@@ -131,7 +131,7 @@ ERROR=0
 for toc in $tocfiles; do
 	toc="`echo \"$toc\"|sed -e's,%20, ,g'`"
 	tocpath=`dirname "$toc"`
-	addon="`basename \"$tocpath\"`"
+	addon="`basename \"$toc\"|sed -e's,\.[^.]\+$,,;'`"
 	title="`cat "$toc"|dos2unix|grep -E "^## *(Name|Title):"|tail -n 1|cut -d: -f2|sed -e's,^ *,,'`"
 	version="`cat "$toc"|dos2unix|grep -E "^## *Version:"|head -n 1|sed -e's, \\$Revision: \\(.\\+\\) \\$,.\\1,'|cut -d: -f2-|cut -d" " -f2-`"
 	if [ "x$addon" = "x" ]; then
