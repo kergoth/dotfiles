@@ -14,6 +14,11 @@
 "   with ScreenShoot.vim; see the file COPYING.  If not, write to the Free Software
 "   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
+if exists('g:loaded_ScreenShot') || &cp || ! has('gui_running')
+    finish
+endif
+let g:loaded_ScreenShot = 1
+
 function! s:Window_New(window,num)
 	call extend(a:window,{'num':a:num,'size': [winwidth(a:num),winheight(a:num)]})
 endf
