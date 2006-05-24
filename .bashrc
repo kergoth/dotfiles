@@ -229,4 +229,18 @@ if [ -n "$BASH" ]; then
     # empty line (seeing a list of every binary in the system isn't exactly
     # useful).
     shopt -s no_empty_cmd_completion
+
+    # Use programmable completion
+    shopt -s progcomp
+
+    maketargets() {
+        local cur
+        cur=${COMP_WORDS[COMP_CWORD]}
+        COMPREPLY=($(compgen -o plusdirs))
+        if [ -e makefile -o -e Makefile ]; then
+            COMPREPLY=($(make -qpi 2>/dev/null | sed -n -e '/^[#.]/b; /=/b; /:$/{s/\(.*\):/\1/; /%/{/%$/{p;}; b;}; p}'))
+            COMPREPLY=($(compgen -W '${COMPREPLY[@]}' -- $cur))
+        fi
+    }
+    complete -F maketargets make gmake
 fi
