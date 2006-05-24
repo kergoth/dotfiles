@@ -5,7 +5,7 @@
 Author: Vissale NEANG (fromtonrouge AT gmail DOT com)
 
 For Vim version 7.0 and above
-Last change: 2006 May 21
+Last change: 2006 May 24
 
 ==============================================================================
 
@@ -31,7 +31,7 @@ language. In a C++ file, while in insert mode, you can use CTRL-X CTRL-O to:
         * Complete typedefs and unnamed types
 
 You can set a "may complete" behaviour to start a completion automatically
-after a '.', '->' or '::'. Please see |cppomni-options| for more details.
+after a '.', '->' or '::'. Please see |cppomni-may-complete| for more details.
 
 The script needs an |Exuberant_ctags| database to work properly.
 
@@ -240,13 +240,22 @@ project.
         let CppOmni_DefaultNamespaces = []
 <
 4.6. May complete behaviour~
-
-You can configure the script to have a "may complete" behaviour to run
-automatically a completion after a '.', '->' or '::'. You have to add 3 lines
-to your |.vimrc| configuration file. >
+                                        *cppomni-may-complete*
+This feature allows you to run automatically a completion after a '.', '->' 
+or '::'. By default, the "may complete" feature is set automatically for '.' 
+and '->' with this mappings : >
 
         inoremap <expr> . cppomnicomplete#MayCompleteDot()
         inoremap <expr> > cppomnicomplete#MayCompleteArrow()
+
+These mappings are set in ~/.vim/after/ftplugin/cpp.vim
+(%HOMEPATH%\vimfiles\after\ftplugin\cpp.vim for windows). 
+
+The reason to not set this feature for the scope operator '::' is sometimes 
+you don't want to complete a namespace that contains many members. To add 
+the may complete feature for '::' you can add this mapping in your |.vimrc| 
+configuration file : >
+
         inoremap <expr> : cppomnicomplete#MayCompleteScope()
 <
 Note: You can obviously continue to use <C-X><C-O>
@@ -731,6 +740,16 @@ templates. That's why the script does not handle templates.
 
 ==============================================================================
 7. History~
+
+Version 0.32
+   -   Optimizations in search members methods.
+   -   'May complete' behaviour is now set to default for dot '.' and arrow
+       '->' (mappings are set in after/ftplugin/cpp.vim)
+   -   Fixed the option CppOmni_ShowScopeInAbbr not detected after the first
+       completion.
+   -   Exceptions catched from taglist() when a tag file is corrupted.
+   -   Fixed a bug where enumerators in global scope didn't appear in the
+       popup menu.
 
 Version 0.31
    WARNING: For this release and future releases you have to build your tags 

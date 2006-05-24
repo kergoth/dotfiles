@@ -1,8 +1,18 @@
 " Vim completion script
 " Language:  C++
 " Maintainer:  Vissale NEANG
-" Last Change:  2006 May 21
+" Last Change:  2006 May 24
 " Comments:
+" Version 0.32
+"   -   Optimizations in search members methods.
+"   -   'May complete' behaviour is now set to default for dot '.' and arrow
+"       '->' (mappings are set in after/ftplugin/cpp.vim)
+"   -   Fixed the option CppOmni_ShowScopeInAbbr not detected after the first
+"       completion.
+"   -   Exceptions catched from taglist() when a tag file is corrupted.
+"   -   Fixed a bug where enumerators in global scope didn't appear in the
+"       popup menu.
+"
 " Version 0.31
 "   -   May complete added, please see installation notes for details.
 "   -   Fixed a bug where the completion works while in a comment or in a string.
@@ -157,33 +167,8 @@ function! s:InitOptionList(szOptionName, default)
     endif
 endfunc
 
-" Global scope search on/off
-"   0 = disabled
-"   1 = enabled
-call s:InitOptionInteger('g:CppOmni_GlobalScopeSearch', range(0,1), 1)
 
-" Sets the namespace search method
-"   0 = disabled
-"   1 = search namespaces in the current file
-"   2 = search namespaces in the current file and included files
-call s:InitOptionInteger('g:CppOmni_NamespaceSearch', range(0,2), 2)
-
-" Set if the popup must be build on the fly
-"   0 = Popup builded internally
-"   1 = Popup builded on the fly
-call s:InitOptionInteger('g:CppOmni_PopupRealTimeBuild', range(0,1), 0)
-
-" Set the class scope completion mode
-"   0 = auto
-"   1 = show all members
-call s:InitOptionInteger('g:CppOmni_ClassScopeCompletionMethod', range(0,1), 0)
-
-" Set if the scope is displayed in the abbr column of the popup
-"   0 = no
-"   1 = yes
-call s:InitOptionInteger('g:CppOmni_ShowScopeInAbbr', range(0,1), 0)
-
-" Debug mode
+" ========================== Debug mode ==========================
 "   0 = disabled
 "   1 = enabled
 call s:InitOptionInteger('g:CppOmni_Debug', range(0,1), 0)
@@ -196,15 +181,52 @@ call s:InitOptionInteger('g:CppOmni_DebugReset', range(0,1), 1)
 " Debug file
 "   default = cppomnicomplete.dbg
 call s:InitOptionString('g:CppOmni_DebugFile', "cppomnicomplete.dbg")
+" ========================== Debug mode ==========================
+
+" ============================= User =============================
+" Global scope search on/off
+"   0 = disabled
+"   1 = enabled
+call s:InitOptionInteger('g:CppOmni_GlobalScopeSearch', range(0,1), 1)
+
+" Sets the namespace search method
+"   0 = disabled
+"   1 = search namespaces in the current file
+"   2 = search namespaces in the current file and included files
+call s:InitOptionInteger('g:CppOmni_NamespaceSearch', range(0,2), 2)
+
+" Set the class scope completion mode
+"   0 = auto
+"   1 = show all members
+call s:InitOptionInteger('g:CppOmni_ClassScopeCompletionMethod', range(0,1), 0)
+
+" Set if the scope is displayed in the abbr column of the popup
+"   0 = no
+"   1 = yes
+call s:InitOptionInteger('g:CppOmni_ShowScopeInAbbr', range(0,1), 0)
+let s:CppOmni_ShowScopeInAbbr = g:CppOmni_ShowScopeInAbbr
 
 " Set the list of default namespaces
 " eg: ['std']
 call s:InitOptionList('g:CppOmni_DefaultNamespaces', [])
+" ============================= User =============================
+
+" ======================== Miscellaneous =========================
+" Set if the tags cache must be used
+"   0 = don't use tags cache
+"   1 = use tags cache
+call s:InitOptionInteger('g:CppOmni_CacheTags', range(0,1), 1)
+
+" Set if the popup must be build on the fly
+"   0 = Popup builded on the fly
+"   1 = Popup builded internally and use a cache
+call s:InitOptionInteger('g:CppOmni_CachePopup', range(0,1), 1)
+" ======================== Miscellaneous =========================
 
 
 " Cache data
 let s:CACHE_DEBUG_TRACE = []
-let s:CACHE_RESULT = {}
+let s:CACHE_TAGS = {}
 let s:CACHE_TAG_FILES = {}
 let s:CACHE_TAG_ENV = ''
 let s:CACHE_INCLUDE_GUARD= {}
@@ -212,7 +234,8 @@ let s:CACHE_RESOLVE_NAMESPACES = {}
 let s:CACHE_FILETIME = {}
 let s:CACHE_FUNCTION_TAGS = {}
 let s:CACHE_GLOBAL_SCOPE_TAGS = {}
-let s:CACHE_DISPLAY_POPUP = {}
+let s:CACHE_STOP_POSITION = [0,0]
+let s:CACHE_POPUP = {}
 
 " From the C++ BNF
 let s:cppKeyword = ['asm', 'auto', 'bool', 'break', 'case', 'catch', 'char', 'class', 'const', 'const_cast', 'continue', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'operator', 'private', 'protected', 'public', 'register', 'reinterpret_cast', 'return', 'short', 'signed', 'sizeof', 'static', 'static_cast', 'struct', 'switch', 'template', 'this', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'wchar_t', 'while', 'and', 'and_eq', 'bitand', 'bitor', 'compl', 'not', 'not_eq', 'or', 'or_eq', 'xor', 'xor_eq']
@@ -249,11 +272,12 @@ let s:hasPreviewWindow = match(&completeopt, 'preview')>=0
 " Popup item list
 let s:popupItemResultList = []
 
-let s:szFilterGlobalScope = "!has_key(v:val, 'class') && !has_key(v:val, 'struct') && !has_key(v:val, 'union') && !has_key(v:val, 'namespace') && !has_key(v:val, 'enum')"
+let s:szFilterGlobalScope = "(!has_key(v:val, 'class') && !has_key(v:val, 'struct') && !has_key(v:val, 'union') && !has_key(v:val, 'namespace')"
+let s:szFilterGlobalScope .= "&& (!has_key(v:val, 'enum') || (has_key(v:val, 'enum') && v:val.enum =~ '^\\w\\+$')))"
+
 
 " May complete indicator
 let s:bMayComplete = 0
-let s:bCursorInCommentOrString = 0
 
 " Start debug, clear the debug file
 function! s:DebugStart()
@@ -395,7 +419,7 @@ endfunc
 
 " Tokenize a c++ code
 " a token is dictionary where keys are:
-"   -   kind = cppKeyword|cppWord|cppOperatorPunctuator|unknown|cComment|cppComment
+"   -   kind = cppKeyword|cppWord|cppOperatorPunctuator|unknown|cComment|cppComment|cppDigit
 "   -   value = 'something'
 "   Note: a cppWord is any word that is not a cpp keyword
 function! s:Tokenize(szCode)
@@ -435,7 +459,10 @@ function! s:Tokenize(szCode)
         let resultToken = {'kind' : 'unknown', 'value' : token}
 
         " Classify the token
-        if token=~'^\w\+$'
+        if token =~ '^\d\+'
+            " It's a digit
+            let resultToken.kind = 'cppDigit'
+        elseif token=~'^\w\+$'
             " It's a word
             let resultToken.kind = 'cppWord'
 
@@ -490,8 +517,9 @@ endfunc
 " @return a list of item
 " an item is a dictionnary where keys are:
 "   tokens = list of token
-"   kind = itemVariable|itemCast|itemCppCast|itemTemplate|itemFunction|itemUnknown|itemThis|itemScope|itemNumber
+"   kind = itemVariable|itemCast|itemCppCast|itemTemplate|itemFunction|itemUnknown|itemThis|itemScope
 function! s:GetItemsToComplete(tokens)
+
     let result = []
     let itemsDelimiters = ['->', '.', '->*', '.*']
 
@@ -522,12 +550,7 @@ function! s:GetItemsToComplete(tokens)
             call insert(item.tokens, token)
             if token.kind=='cppWord'
                 " It's an attribute member or a variable
-                if match(token.value, '^\d')>=0
-                    " eg:  0.
-                    let item.kind = 'itemNumber'
-                else
-                    let item.kind = 'itemVariable'
-                endif
+                let item.kind = 'itemVariable'
                 let state = 2
                 " Maybe end of tokens
             elseif token.value=='this'
@@ -540,6 +563,9 @@ function! s:GetItemsToComplete(tokens)
             elseif token.value==']'
                 let parenGroup = token.group
                 let state = 4
+            elseif token.kind == 'cppDigit'
+                let state = -1
+                break
             endif
         elseif state==2
             if index(itemsDelimiters, token.value)>=0
@@ -1101,6 +1127,7 @@ function! s:GetNamespaceListFromBufffer(szFile, ...)
         return result
     endif
 
+
     " Include guard test
     if has_key(s:CACHE_INCLUDE_GUARD, szResolvedFilePath)
         return result
@@ -1147,6 +1174,28 @@ function! s:GetNamespaceListFromBufffer(szFile, ...)
     return result
 endfunc
 
+" Get the stop position when searching for local variables
+function! s:GetStopPositionForLocalSearch()
+    " Stop position when searching a local variable
+    if s:CACHE_STOP_POSITION != [0,0]
+        return s:CACHE_STOP_POSITION
+    endif
+
+    let originalPos = getpos('.')
+    let origPos = originalPos[1:2]
+    let stopPosition = origPos
+    let curPos = origPos
+    while curPos !=[0,0]
+        let stopPosition = curPos
+        let curPos = searchpairpos('{', '', '}', 'bW', s:expIgnoreCommentForBracket)
+    endwhile
+    call setpos('.', originalPos)
+
+    let s:CACHE_STOP_POSITION = stopPosition
+
+    return stopPosition
+endfunc
+
 " Get namespaces used at the cursor postion in a vim buffer
 " Note: The result depends on the current cursor position
 " @return
@@ -1160,17 +1209,10 @@ function! s:GetUsingNamespaces()
     let result = []
     let originalPos = getpos('.')
     let origPos = originalPos[1:2]
-    let lastPos = origPos
-    let curPos = origPos
-    while curPos !=[0,0]
-        let lastPos = curPos
-        let curPos = searchpairpos('{', '', '}', 'bW', s:expIgnoreCommentForBracket)
-    endwhile
 
-    " 1) We get all local using namespace declaration from cursor to the beginning
-    " of the scope (first '{')
-    call setpos('.', originalPos)
-    let stopLine = lastPos[0]
+    let stopPos = s:GetStopPositionForLocalSearch()
+
+    let stopLine = stopPos[0]
     let curPos = origPos
     let lastLine = 0 
     let nextStopLine = origPos[0]
@@ -1228,6 +1270,7 @@ endfunc
 "           - 1 = resolved
 "       - value = resolved namespace
 function! s:ResolveNamespace(namespace, mapCurrentContexts)
+
     let result = {'kind':0, 'value': ''}
 
     " If the namespace is already resolved we add it in the list of 
@@ -1260,7 +1303,7 @@ function! s:ResolveNamespace(namespace, mapCurrentContexts)
     if has_key(s:CACHE_RESOLVE_NAMESPACES, a:namespace)
         let listTagsOfNamespace = s:CACHE_RESOLVE_NAMESPACES[a:namespace]
     else
-        let listTagsOfNamespace = taglist('^'.a:namespace.'$')
+        let listTagsOfNamespace = s:TagList('^'.a:namespace.'$')
         let s:CACHE_RESOLVE_NAMESPACES[a:namespace] = listTagsOfNamespace
     endif
 
@@ -1381,6 +1424,98 @@ function! s:ExtractTypeInfoFromTokens(tokens)
                 elseif token.kind == 'cppWord'
                     let szResult = token.value.szResult
                     let state=2
+                "elseif index(['*', '&'], token.value)<0
+                 "   break
+                endif
+            elseif state==1
+                if token.value=='<' && token.group==parenGroup
+                    let state=0
+                endif
+            elseif state==2
+                if token.value=='::'
+                    let szResult = token.value.szResult
+                    let state=3
+                else
+                    break
+                endif
+            elseif state==3
+                if token.kind == 'cppWord'
+                    let szResult = token.value.szResult
+                    let state=2
+                else
+                    break
+                endif
+            endif
+        endfor
+        return szResult
+    endif
+
+    for token in tokens
+        if state==0
+            if token.value == '::'
+                let szResult .= token.value
+                let state = 1
+            elseif token.kind == 'cppWord'
+                let szResult .= token.value
+                let state = 2
+                " Maybe end of token
+            endif
+        elseif state==1
+            if token.kind == 'cppWord'
+                let szResult .= token.value
+                let state = 2
+                " Maybe end of token
+            else
+                break
+            endif
+        elseif state==2
+            if token.value == '::'
+                let szResult .= token.value
+                let state = 1
+            else
+                break
+            endif
+        endif
+    endfor
+    return szResult
+endfunc
+
+" Extract the type info string from an instruction
+" if the instruction is not a declaration instruction (eg:if(), while()...)
+" then the returned result is empty
+" @param tokens: token list of the current instruction
+"let s:stateDeclSpecifier= 0
+"let s:storageClassSpecifier = ['auto', 'register', 'static', 'extern', 'mutable']
+"let s:reStorageClassSpecifier = '\C\<'.join(s:storageClassSpecifier, '\>\|\<').'\>'
+function! s:ExtractTypeInfoFromDecl(tokens)
+    let szResult = ''
+    let state = 0
+
+    let tokens = s:BuildParenthesisGroups(a:tokens)
+
+    " If there is an unbalanced parenthesis we are in a parameter list
+    let bParameterList = 0
+    for token in tokens
+        if token.value == '(' && token.group==-1
+            let bParameterList = 1
+            break
+        endif
+    endfor
+
+    if bParameterList
+        let tokens = reverse(tokens)
+        let state = 0
+        let parenGroup = -1
+        for token in tokens
+            if state==0
+                if token.value=='>'
+                    let parenGroup = token.group
+                    let state=1
+                elseif token.kind == 'cppWord'
+                    let szResult = token.value.szResult
+                    let state=2
+                elseif index(['*', '&'], token.value)<0
+                    break
                 endif
             elseif state==1
                 if token.value=='<' && token.group==parenGroup
@@ -1473,26 +1608,106 @@ function! s:IsTypeInfoValid(typeInfo)
     return 1
 endfunc
 
+" Search the declaration of a variable and return the type info
+function! s:SearchTypeInfoOfDecl(szVariable)
+    let szReVariable = '\C\<'.a:szVariable.'\>'
+
+    let originalPos = getpos('.')
+    let origPos = originalPos[1:2]
+    let curPos = origPos
+    let stopPos = origPos
+    
+    while curPos !=[0,0]
+        " We go to the start of the current scope
+        let curPos = searchpairpos('{', '', '}', 'bW', s:expIgnoreCommentForBracket)
+        if curPos != [0,0]
+            let matchPos = curPos
+            " Now want to search our variable but we don't want to go in child
+            " scope
+            while matchPos != [0,0]
+                let matchPos = searchpos('{\|'.szReVariable, 'W', stopPos[0])
+                if matchPos != [0,0]
+                    " We ignore matches under comment
+                    if s:IsCursorInCommentOrString()
+                        continue
+                    endif
+
+                    " Getting the current line
+                    let szLine = getline('.')
+                    if match(szLine, szReVariable)>=0
+                        " We found our variable
+                        " Check if the current instruction is a decl instruction
+                        let tokens = s:TokenizeCurrentInstruction()
+                        let szTypeInfo = s:ExtractTypeInfoFromDecl(tokens)
+                        if szTypeInfo != ''
+                            call setpos('.', originalPos)
+                            return s:CreateTypeInfo(szTypeInfo)
+                        endif
+                    else
+                        " We found a child scope, we don't want to go in, thus
+                        " we search for the end } of this child scope
+                        let bracketEnd = searchpairpos('{', '', '}', 'nW', s:expIgnoreCommentForBracket)
+                        if bracketEnd == [0,0]
+                            break
+                        endif
+
+                        if bracketEnd[0] >= stopPos[0]
+                            " The end of the scope is after our cursor we stop
+                            " the search
+                            break
+                        else
+                            " We move the cursor and continue to search our
+                            " variable
+                            call setpos('.', [0, bracketEnd[0], bracketEnd[1], 0])
+                        endif
+                    endif
+                endif
+            endwhile
+
+            " Backing to the start of the scope
+            call setpos('.', [0,curPos[0], curPos[1], 0])
+            let stopPos = curPos
+        endif
+    endwhile
+
+    let result = {}
+    if searchdecl(a:szVariable, 0, 1)==0 && !s:IsCursorInCommentOrString()
+        let tokens = s:TokenizeCurrentInstruction()
+        let szTypeInfo = s:ExtractTypeInfoFromDecl(tokens)
+        if szTypeInfo != ''
+            let result = s:CreateTypeInfo(szTypeInfo)
+        endif
+    endif
+
+    call setpos('.', originalPos)
+
+    return result
+endfunc
+
 " Search a declaration
 " @return
 "   - tokens of the current instruction if success
 "   - empty list if failure
-function! s:SearchDecl(szVariable, global, thisblock)
-    let result = []
-    let searchResult = searchdecl(a:szVariable, a:global, a:thisblock)
+function! s:SearchDecl(szVariable)
+    let result = {}
+    let searchResult = searchdecl(a:szVariable, 0, 1)
     if searchResult==0
         " searchdecl() may detect a decl if the variable is in a conditional
         " instruction (if, elseif, while etc...)
         " We have to check if the detected decl is really a decl instruction
-        let result = s:TokenizeCurrentInstruction()
-        for token in result
+        let tokens = s:TokenizeCurrentInstruction()
+        for token in tokens
             " Simple test
             if index(['if', 'elseif', 'while', 'for', 'switch'], token.value)>=0
                 " Invalid declaration instruction
-                let result = []
-                break
+                return result
             endif
         endfor
+
+        let szTypeInfo = s:ExtractTypeInfoFromDecl(tokens)
+        if szTypeInfo != ''
+            let result = s:CreateTypeInfo(szTypeInfo)
+        endif
     endif
     return result
 endfunc
@@ -1519,7 +1734,7 @@ function! s:ResolveSymbol(contextStack, szSymbol, szTagFilter)
             let szTagQuery = a:szSymbol
         endif
 
-        let tagList = taglist('^'.szTagQuery.'$')
+        let tagList = s:TagList('^'.szTagQuery.'$')
         call filter(tagList, a:szTagFilter)
         if len(tagList)
             let tagItem = tagList[0]
@@ -1538,13 +1753,16 @@ endfunc
 "   - a dictionnary where keys are
 "       - type: the type of value same as type()
 "       - value: the value
-function! s:GetTypeInfoOfVariable(contextStack, szVariable)
+function! s:GetTypeInfoOfVariable(contextStack, szVariable, bSearchDecl)
     let result = {}
 
-    " Search declaration
-    let tokensDecl = s:SearchDecl(a:szVariable, 0, 1)
+    if a:bSearchDecl
+        " Search type of declaration
+        "let result = s:SearchTypeInfoOfDecl(a:szVariable)
+        let result = s:SearchDecl(a:szVariable)
+    endif
 
-    if len(tokensDecl)==0
+    if result=={}
         let szFilter = "index(['m', 'v'], v:val.kind[0])>=0"
         let tagItem = s:ResolveSymbol(a:contextStack, a:szVariable, szFilter)
         if tagItem=={}
@@ -1577,8 +1795,6 @@ function! s:GetTypeInfoOfVariable(contextStack, szVariable)
             let result = s:CreateTypeInfo(s:ExtractTypeInfoFromTokens(tokens))
             " TODO: Namespace resolution for result
         endif
-    else
-        let result = s:CreateTypeInfo(s:ExtractTypeInfoFromTokens(tokensDecl))
     endif
 
     return result
@@ -1673,6 +1889,8 @@ function! s:ResolveItemsTypeInfo(contextStack, items)
 
     let szCurrentContext = ''
     let typeInfo = {}
+    " Note: We search the decl only for the first item
+    let bSearchDecl = 1
     for item in a:items
         let curItem = item
         if index(['itemVariable', 'itemFunction'], curItem.kind)>=0
@@ -1692,7 +1910,7 @@ function! s:ResolveItemsTypeInfo(contextStack, items)
             endif
 
             if curItem.kind == 'itemVariable'
-                let typeInfo = s:GetTypeInfoOfVariable(tmpContextStack, szSymbol)
+                let typeInfo = s:GetTypeInfoOfVariable(tmpContextStack, szSymbol, bSearchDecl)
             else
                 let typeInfo = s:GetTypeInfoOfReturnedType(tmpContextStack, szSymbol)
             endif
@@ -1712,6 +1930,7 @@ function! s:ResolveItemsTypeInfo(contextStack, items)
         if s:IsTypeInfoValid(typeInfo)
             let szCurrentContext = s:GetTypeInfoString(typeInfo)
         endif
+        let bSearchDecl = 0
     endfor
 
     return typeInfo
@@ -1732,7 +1951,7 @@ function! s:GetPreviewWindowStringFromTagItem(tagItem)
     return szResult
 endfunc
 
-" Convert a tag_item (from taglist()) to a popup item
+" Convert a tag_item (from s:TagList()) to a popup item
 " @return
 "   - popuitem
 "   - {}
@@ -1790,42 +2009,55 @@ function! s:ConvertTagItemToPopupItem(tagItem)
     let szItemMenu = substitute(szItemMenu, '^\s\+$', '', 'g')
 
     " Formating information for the preview window
-    let szItemInfo = s:GetPreviewWindowStringFromTagItem(a:tagItem)
+    let szItemInfo = ''
+    if s:hasPreviewWindow
+        let szItemInfo = s:GetPreviewWindowStringFromTagItem(a:tagItem)
+    endif
 
     let popupItem = {'word':szItemWord, 'abbr':szAbbr,'kind':szItemKind, 'menu':szItemMenu, 'info':szItemInfo, 'dup':bDuplicate}
     return popupItem
 endfunc
 
 " Convert a tag item list to popup item list
-function! s:DisplayPopupItemList(tagList, baseFilter)
-    let result = []
-
-    let szKey = string(map(copy(a:tagList), 'v:val.name . v:val.kind . v:val.filename'))
-
-    if !g:CppOmni_PopupRealTimeBuild
-        if has_key(s:CACHE_DISPLAY_POPUP, szKey)
-            let result = s:CACHE_DISPLAY_POPUP[szKey]
-            call extend(s:popupItemResultList, result)
-            return
-        endif
+function! s:DisplayPopupItemList(tagList, ...)
+    let szKey1 = ''
+    let szKey2 = ''
+    if a:0 == 1
+        let szKey1 = a:1
+    elseif a:0 == 2
+        let szKey1 = a:1
+        let szKey2 = a:2
     endif
 
-    for tagItem in a:tagList
-        let popupItem = s:ConvertTagItemToPopupItem(tagItem)
-        if popupItem != {}
-            if g:CppOmni_PopupRealTimeBuild 
-                if match(popupItem.word, '^\C'.a:baseFilter)!=-1
-                    call complete_add(popupItem)
-                endif
-            else
-                call extend(result, [popupItem])
+    if g:CppOmni_CachePopup 
+        let cacheResult = s:IsCached(s:CACHE_POPUP, szKey1, szKey2)
+        if cacheResult[0] && cacheResult[1] != ''
+            let result = s:CACHE_POPUP[ cacheResult[1] ]
+            if cacheResult[0] == 2
+                let szFilter = '\C^'.szKey2.'.*'
+                let result = filter(copy(result), 'v:val != {} && v:val.word =~ szFilter')
+            endif
+            call extend(s:popupItemResultList, result)
+        else
+            let result = map(copy(a:tagList), 's:ConvertTagItemToPopupItem(v:val)')
+            call extend(s:popupItemResultList, result)
+            if cacheResult[1] != ''
+                let s:CACHE_POPUP[ cacheResult[1] ] = result
             endif
         endif
-    endfor
-
-    if !g:CppOmni_PopupRealTimeBuild
-        let s:CACHE_DISPLAY_POPUP[szKey] = result
-        call extend(s:popupItemResultList, result)
+    else
+        for tagItem in a:tagList
+            let popupItem = s:ConvertTagItemToPopupItem(tagItem)
+            if complete_check()
+                break
+            endif
+            if popupItem != {}
+                if !complete_add(popupItem)
+                    " Out of memory
+                    break
+                endif
+            endif
+        endfor
     endif
 endfunc
 
@@ -1878,7 +2110,7 @@ endfunc
 
 " Search class, struct, union members.
 " If the class has inherited informations we get also the inherited members
-function! s:SearchAllMembers(resolvedTagItem)
+function! s:SearchAllMembers(resolvedTagItem, base, bSearchInherits)
     let result = []
 
     " Complete check
@@ -1886,8 +2118,8 @@ function! s:SearchAllMembers(resolvedTagItem)
         return result
     endif
 
-    call extend(result, s:SearchMembers(a:resolvedTagItem))
-    if has_key(a:resolvedTagItem, 'inherits')
+    call extend(result, s:SearchMembers(a:resolvedTagItem, a:base))
+    if a:bSearchInherits && has_key(a:resolvedTagItem, 'inherits')
         " We don't forget multiple inheritance
         " Note: in the baseClassTypeInfoList there is no information
         " about the inheritance acces ('public', 'protected', 'private')
@@ -1901,7 +2133,7 @@ function! s:SearchAllMembers(resolvedTagItem)
             " we can have '::Class1' 'Class1' 'NameSpace1::NameSpace2::Class8'
             let namespaces = [s:ExtractScopeFromTag(a:resolvedTagItem), '::']
             let resolvedTagItem = s:GetResolvedTagItem(namespaces, s:CreateTypeInfo(baseClassTypeInfo))
-            call extend(result, s:SearchAllMembers(resolvedTagItem))
+            call extend(result, s:SearchAllMembers(resolvedTagItem, a:base, 1))
         endfor
     endif
     return result
@@ -1940,14 +2172,14 @@ function! s:GetResolvedTagItem(namespaces, typeInfo)
             " Here we have to get tags that have no parent scope
             " That's why we change the szTagFilter
             let szTagFilter .= '&& '.s:szFilterGlobalScope
-            let tagList = taglist('^'.szTagQuery.'$')
+            let tagList = s:TagList('^'.szTagQuery.'$')
             call filter(tagList, szTagFilter)
             if len(tagList)
                 let result = tagList[0]
             endif
         else
             " eg: ::MyNamespace::MyClass
-            let tagList = taglist('^'.szTagQuery.'$')
+            let tagList = s:TagList('^'.szTagQuery.'$')
             call filter(tagList, szTagFilter)
 
             if len(tagList)
@@ -1956,7 +2188,7 @@ function! s:GetResolvedTagItem(namespaces, typeInfo)
         endif
     else
         " The type is not resolved
-        let tagList = taglist('^'.szTagQuery.'$')
+        let tagList = s:TagList('^'.szTagQuery.'$')
         call filter(tagList, szTagFilter)
 
         if len(tagList)
@@ -2002,12 +2234,43 @@ function! s:GetResolvedTagItem(namespaces, typeInfo)
     return result
 endfunc
 
+" Returns if szKey1.szKey2 is in the cache
+" @return
+"   - 0 = key not found
+"   - 1 = szKey1.szKey2 found
+"   - 2 = szKey1.[part of szKey2] found
+function! s:IsCached(cache, szKey1, szKey2)
+    " Searching key in the result cache
+    let szResultKey = a:szKey1 . a:szKey2
+    let result = [0, szResultKey]
+    if a:szKey2 != ''
+        let szKey = a:szKey2
+        while len(szKey)>0
+            if has_key(a:cache, a:szKey1 . szKey)
+                let result[1] = a:szKey1 . szKey
+                if szKey != a:szKey2
+                    let result[0] = 2
+                else
+                    let result[0] = 1
+                endif
+                break
+            endif
+            let szKey = szKey[:-2]
+        endwhile
+    else
+        if has_key(a:cache, szResultKey)
+            let result[0] = 1
+        endif
+    endif
+    return result
+endfunc
+
 " Search class, struct, union members
 " @param filename: the file name or path where the class is defined (in most
 " of cast it's a file header)
 " @param typeInfo: the type info string of the class eg: 'MyNs::MyClass'
 " @return list of tag items
-function! s:SearchMembers(tagItem)
+function! s:SearchMembers(tagItem, base)
     let result = []
     if complete_check()
         return result
@@ -2024,16 +2287,22 @@ function! s:SearchMembers(tagItem)
         let szTagName = substitute(a:tagItem.typename, '^\w\+:', '', 'g')
     endif
 
-    " Formatting the result key for the result cache.
-    let resultKey = szTagName
+    " Searching key in the result cache
+    let cacheResult = s:IsCached(s:CACHE_TAGS, szTagName, a:base)
+
+    " Note: We don't use \C in the tag query it slows down the search
+    let tagQuery = '^'.szTagName.'::'. a:base . '\w\+$'
+    let szTagQueryCase = '\C'.tagQuery
 
     " If the file has not changed and if tag env
     " has not changed we return the stored result 
-    if has_key(s:CACHE_RESULT, resultKey)
-        return s:CACHE_RESULT[resultKey]
+    if cacheResult[0]
+        let result = s:CACHE_TAGS[ cacheResult[1] ]
+        if cacheResult[0] == 2
+            let result = filter(copy(result), 'v:val.name =~ szTagQueryCase' )
+        endif
+        return result
     endif
-
-    let tagQuery = '^'.szTagName.'::\w\+$'
 
     " Because we want to get members we add the
     " option -c++-kinds=+p to detect function prototypes in header files.
@@ -2042,19 +2311,22 @@ function! s:SearchMembers(tagItem)
     " we add --language-force=c++ because the tmp file has no extension
     " we need access member information : +a
     " tags database must be build with that cmd 'ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f DST_FILE SRC_DIR'
-    let classMembers = taglist(tagQuery)
+    let classMembers = s:TagList(tagQuery)
 
     let szCtorName = szTagName . '::' . matchstr(szTagName, '\w\+$')
     " We don't want ctors and dtors
     " Note: dtors are not in the classMembers list thanks to our tagQuery
-    let szFilter = "(index([szCtorName], v:val.name)<0 && index(['p', 'f'], v:val.kind[0])>=0)"
-    let szFilter = szFilter."|| (index(['c','e','g','m','n','s','t','u','v'], v:val.kind[0])>=0)"
+    let szFilter = "(v:val.name =~ szTagQueryCase)"
+    let szFilter .= "&& ((index([szCtorName], v:val.name)<0 && index(['p', 'f'], v:val.kind[0])>=0)"
+    let szFilter = szFilter."|| (index(['c','e','g','m','n','s','t','u','v'], v:val.kind[0])>=0))"
     call filter(classMembers, szFilter)
     call extend(result, classMembers)
 
     " We store the result for optimization
     " We update the result only if the file where typeInfo is define changed
-    let s:CACHE_RESULT[resultKey] = result
+    if g:CppOmni_CacheTags
+        let s:CACHE_TAGS[ cacheResult[1] ] = result
+    endif
 
     return result
 endfunc
@@ -2099,24 +2371,23 @@ call s:HasATagFileOrTagEnvChanged()
 " Find complete matches for a completion on the global scope
 function! s:DisplayGlobalScopeMembers(base)
     if a:base!=''
-        let szKey = a:base
-        let bFound = 0
-        while len(szKey)>0
-            if has_key(s:CACHE_GLOBAL_SCOPE_TAGS, szKey) && szKey!=''
-                let bFound = 1
-                break
-            endif
-            let szKey = szKey[:-2]
-        endwhile
+        let cacheResult = s:IsCached(s:CACHE_GLOBAL_SCOPE_TAGS, '', a:base)
 
-        if bFound
-            let tagList = s:CACHE_GLOBAL_SCOPE_TAGS[szKey]
+        " We don't use \C because it slows down a lot the search
+        let tagQuery = '^'.a:base.'\w\+$'
+        let szTagQueryCase = '\C'.tagQuery
+
+        if cacheResult[0]
+            let tagList = s:CACHE_GLOBAL_SCOPE_TAGS[ cacheResult[1] ]
+            if cacheResult[0] == 2
+                let tagList = filter(copy(tagList), 'v:val.name =~ szTagQueryCase')
+            endif
         else
-            let tagList = taglist('^\C'.a:base.'.*')
-            call filter(tagList, s:szFilterGlobalScope)
-            let s:CACHE_GLOBAL_SCOPE_TAGS[a:base] = tagList
+            let tagList = s:TagList(tagQuery)
+            call filter(tagList, '(v:val.name =~ szTagQueryCase) && ' . s:szFilterGlobalScope)
+            let s:CACHE_GLOBAL_SCOPE_TAGS[ cacheResult[1] ] = tagList
         endif
-        call s:DisplayPopupItemList(tagList, a:base)
+        call s:DisplayPopupItemList(tagList)
     endif
 endfunc
 
@@ -2138,34 +2409,34 @@ function! s:GetClassInheritanceList(namespaces, typeInfo, result)
 endfunc
 
 " Display class members in the popup menu after a completion with -> or .
-function! s:DisplayClassMembers(tagList, base)
+function! s:DisplayClassMembers(tagList, szKey1, szKey2)
     let szFilter = "index(['m', 'p', 'f'], v:val.kind[0])>=0 && has_key(v:val, 'access')"
     call filter(a:tagList, szFilter)
-    call s:DisplayPopupItemList(a:tagList, a:base)
+    call s:DisplayPopupItemList(a:tagList, 'DisplayClassMembers'.a:szKey1, a:szKey2)
 endfunc
 
 " Display class scope members in the popup menu after a completion with ::
 " We only display attribute and functions members that
 " have an access information. We also display nested
 " class, struct, union, and enums, typedefs
-function! s:DisplayClassScopeMembers(tagList, base)
+function! s:DisplayClassScopeMembers(tagList, szKey1, szKey2)
     let szFilter = "(index(['m', 'p', 'f'], v:val.kind[0])>=0 && has_key(v:val, 'access'))"
     let szFilter .= "|| index(['c','e','g','s','t','u'], v:val.kind[0])>=0"
     call filter(a:tagList, szFilter)
-    call s:DisplayPopupItemList(a:tagList, a:base)
+    call s:DisplayPopupItemList(a:tagList, 'DisplayClassScopeMembers'.a:szKey1, a:szKey2)
 endfunc
 
 " Display static class members in the popup menu
-function! s:DisplayStaticClassMembers(tagList, base)
+function! s:DisplayStaticClassMembers(tagList, szKey1, szKey2)
     let szFilter = "(index(['m', 'p', 'f'], v:val.kind[0])>=0 && has_key(v:val, 'access') && match(v:val.cmd, '\\Cstatic')!=-1)"
     let szFilter = szFilter . "|| index(['c','e','g','n','s','t','u','v'], v:val.kind[0])>=0"
     call filter(a:tagList, szFilter)
-    call s:DisplayPopupItemList(a:tagList, a:base)
+    call s:DisplayPopupItemList(a:tagList, 'DisplayStaticClassMembers'.a:szKey1, a:szKey2)
 endfunc
 
 " Display scope members in the popup menu
-function! s:DisplayNamespaceScopeMembers(tagList, base)
-    call s:DisplayPopupItemList(a:tagList, a:base)
+function! s:DisplayNamespaceScopeMembers(tagList, szKey1, szKey2)
+    call s:DisplayPopupItemList(a:tagList, 'DisplayNamespaceScopeMembers'.a:szKey1, a:szKey2)
 endfunc
 
 " Build the context stack
@@ -2190,18 +2461,29 @@ function! s:InitDatas()
     " Reset the popup item list
     let s:popupItemResultList = []
     let s:CACHE_FUNCTION_TAGS = {}
+    let s:CACHE_STOP_POSITION = [0,0]
 
     " Has preview window ?
     let s:hasPreviewWindow = match(&completeopt, 'preview')>=0
 
+    if !g:CppOmni_CacheTags
+        let s:CACHE_TAGS = {}
+    endif
+
     " Reset tag env or tag files dependent caches
     if s:HasATagFileOrTagEnvChanged()
         let s:CACHE_RESOLVE_NAMESPACES = {}
-        let s:CACHE_RESULT = {}
+        let s:CACHE_TAGS = {}
         let s:CACHE_GLOBAL_SCOPE_TAGS = {}
-        let s:CACHE_DISPLAY_POPUP = {}
+        let s:CACHE_POPUP = {}
     endif
-    let s:bCursorInCommentOrString = 0
+
+    if s:CppOmni_ShowScopeInAbbr !=  g:CppOmni_ShowScopeInAbbr
+        let s:CppOmni_ShowScopeInAbbr = g:CppOmni_ShowScopeInAbbr
+        let s:CACHE_POPUP = {}
+    endif
+
+    let s:bDoNotComplete = 0
 endfunc
 
 " Check if the cursor is in comment
@@ -2209,16 +2491,19 @@ function! s:IsCursorInCommentOrString()
     return match(synIDattr(synID(line("."), col(".")-1, 1), "name"), '\C\<cComment\|\<cCppString\|\<cIncluded')>=0
 endfunc
 
+" Check if we can use omni completion in the current buffer
+function! s:CanUseOmnicompletion()
+    " For C and C++ files and only if the omnifunc is cppomnicomplete#Complete
+    return (index(['c', 'cpp'], &filetype)>=0 && &omnifunc == 'cppomnicomplete#Complete' && !s:IsCursorInCommentOrString())
+endfunc
+
 " May complete function for dot
 function! cppomnicomplete#MayCompleteDot()
-    " For C and C++ files and only if the omnifunc is cppomnicomplete#Complete
-    if index(['c', 'cpp'], &filetype)>=0 && &omnifunc == 'cppomnicomplete#Complete'
-        if !s:IsCursorInCommentOrString()
-            let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction('.'))
-            if len(s:itemsToComplete) && s:itemsToComplete[-1].kind != 'itemNumber'
-                let s:bMayComplete = 1
-                return ".\<C-X>\<C-O>"
-            endif
+    if s:CanUseOmnicompletion()
+        let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction('.'))
+        if len(s:itemsToComplete)
+            let s:bMayComplete = 1
+            return ".\<C-X>\<C-O>"
         endif
     endif
     return '.'
@@ -2226,37 +2511,44 @@ endfunc
 
 " May complete function for arrow
 function! cppomnicomplete#MayCompleteArrow()
-    " For C and C++ files and only if the omnifunc is cppomnicomplete#Complete
     let index = col('.') - 2
     if index >= 0
         let char = getline('.')[index]
-        if index(['c', 'cpp'], &filetype)>=0 && &omnifunc == 'cppomnicomplete#Complete' && char == '-'
-            if !s:IsCursorInCommentOrString()
-                let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction('>'))
-                if len(s:itemsToComplete) && s:itemsToComplete[-1].kind != 'itemNumber'
-                    let s:bMayComplete = 1
-                    return ">\<C-X>\<C-O>"
-                endif
+        if s:CanUseOmnicompletion() && char == '-'
+            let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction('>'))
+            if len(s:itemsToComplete)
+                let s:bMayComplete = 1
+                return ">\<C-X>\<C-O>"
             endif
         endif
     endif
     return '>'
 endfunc
 
+" TagList function calling the vim taglist() with try catch
+" Here it's not possible to send an error message to the user
+function! s:TagList(szTagQuery)
+    let result = []
+    try
+        let result = taglist(a:szTagQuery)
+    catch
+        " can't echo here
+        "call s:DebugTrace('EXCEPTION: internal error from taglist')
+    endtry
+    return result
+endfunc
+
 " May complete function for double points
 function! cppomnicomplete#MayCompleteScope()
-    " For C and C++ files and only if the omnifunc is cppomnicomplete#Complete
     let index = col('.') - 2
     if index >= 0
         let char = getline('.')[index]
-        if index(['c', 'cpp'], &filetype)>=0 && &omnifunc == 'cppomnicomplete#Complete' && char == ':'
-            if !s:IsCursorInCommentOrString()
-                let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction(':'))
-                if len(s:itemsToComplete)
-                    if len(s:itemsToComplete[-1].tokens) && s:itemsToComplete[-1].tokens[-1].value != '::'
-                        let s:bMayComplete = 1
-                        return ":\<C-X>\<C-O>"
-                    endif
+        if s:CanUseOmnicompletion() && char == ':'
+            let s:itemsToComplete = s:GetItemsToComplete(s:TokenizeCurrentInstruction(':'))
+            if len(s:itemsToComplete)
+                if len(s:itemsToComplete[-1].tokens) && s:itemsToComplete[-1].tokens[-1].value != '::'
+                    let s:bMayComplete = 1
+                    return ":\<C-X>\<C-O>"
                 endif
             endif
         endif
@@ -2280,7 +2572,7 @@ function! cppomnicomplete#Complete(findstart, base)
                 " the second call of cppomnicomplete#Complete knows that the
                 " cursor was in a comment
                 " Why is there a second call when the first call returns -1 ?
-                let s:bCursorInCommentOrString = 1
+                let s:bDoNotComplete = 1
                 return -1
             endif
 
@@ -2307,8 +2599,8 @@ function! cppomnicomplete#Complete(findstart, base)
     endif
 
     " If the cursor was in a comment we return an empty result
-    if s:bCursorInCommentOrString
-        let s:bCursorInCommentOrString = 0
+    if s:bDoNotComplete
+        let s:bDoNotComplete = 0
         return []
     endif
 
@@ -2325,6 +2617,7 @@ function! cppomnicomplete#Complete(findstart, base)
     " Building context stack from namespaces and the current class scope
     let contextStack = s:BuildContextStack(namespaces, s:scopeItem.scope)
 
+
     if len(s:itemsToComplete)==0
         " A) CURRENT_SCOPE_COMPLETION_MODE
 
@@ -2336,13 +2629,16 @@ function! cppomnicomplete#Complete(findstart, base)
 
             let resolvedTagItem = s:GetResolvedTagItem(contextStack, s:CreateTypeInfo(szCurrentContext))
             if resolvedTagItem != {}
-                let tagList = s:SearchAllMembers(resolvedTagItem)
+                " We don't search base classes because bases classes are
+                " already in the context stack
+                " TODO: Optimization here
+                let tagList = s:SearchAllMembers(resolvedTagItem, a:base, 0)
                 if index(['c','s'], resolvedTagItem.kind[0])>=0
                     " It's a class or struct
-                    call s:DisplayClassScopeMembers(tagList, a:base)
+                    call s:DisplayClassScopeMembers(tagList, resolvedTagItem.name, a:base)
                 else
                     " It's a namespace or union, we display all members
-                    call s:DisplayPopupItemList(tagList, a:base)
+                    call s:DisplayPopupItemList(tagList, resolvedTagItem.name, a:base)
                 endif
             endif
         endfor
@@ -2361,37 +2657,41 @@ function! cppomnicomplete#Complete(findstart, base)
                 else
                     let resolvedTagItem = s:GetResolvedTagItem(contextStack, typeInfo)
                     if resolvedTagItem != {}
-                        let tagList = s:SearchAllMembers(resolvedTagItem)
+                        " TODO: Optimization here
+                        let tagList = s:SearchAllMembers(resolvedTagItem, a:base, 1)
                         if index(['c','s'], resolvedTagItem.kind[0])>=0
                             if g:CppOmni_ClassScopeCompletionMethod==0
                                 " We want to complete a class or struct
                                 " If this class is a base class so we display all class members
                                 if index(contextStack, s:ExtractTypeInfoFromTag(resolvedTagItem))>=0
-                                    call s:DisplayClassScopeMembers(tagList, a:base)
+                                    call s:DisplayClassScopeMembers(tagList, resolvedTagItem.name, a:base)
                                 else
-                                    call s:DisplayStaticClassMembers(tagList, a:base)
+                                    call s:DisplayStaticClassMembers(tagList, resolvedTagItem.name, a:base)
                                 endif
                             else
-                                call s:DisplayClassScopeMembers(tagList, a:base)
+                                call s:DisplayClassScopeMembers(tagList, resolvedTagItem.name, a:base)
                             endif
                         else
                             " We want to complete a namespace
-                            call s:DisplayNamespaceScopeMembers(tagList, a:base)
+                            call s:DisplayNamespaceScopeMembers(tagList, resolvedTagItem.name, a:base)
                         endif
                     endif
                 endif
             else
                 " C) CLASS_MEMBERS_COMPLETION_MODE
                 let resolvedTagItem = s:GetResolvedTagItem(contextStack, typeInfo)
-                let tagList = s:SearchAllMembers(resolvedTagItem)
-                call s:DisplayClassMembers(tagList, a:base)
+                if resolvedTagItem != {}
+                    " TODO: Optimization here
+                    let tagList = s:SearchAllMembers(resolvedTagItem, a:base, 1)
+                    call s:DisplayClassMembers(tagList, resolvedTagItem.name, a:base)
+                endif
             endif
         endif
     endif
 
     "call s:DebugEnd()
 
-    " Note: s:popupItemResultList only used when g:CppOmni_PopupRealTimeBuild == 0
-    let result = filter(copy(s:popupItemResultList), 'match(v:val.word, "\\C^".a:base)>=0')
-    return result
+    " Note: s:popupItemResultList only used when g:CppOmni_CachePopup == 1
+    "call filter(s:popupItemResultList, " v:val != {} && v:val.word =~ '\\C^'.a:base.'\\w\\+'")
+    return s:popupItemResultList
 endfunc
