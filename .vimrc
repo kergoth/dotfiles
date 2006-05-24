@@ -809,7 +809,7 @@ if has('autocmd')
 
     " Make buffers for read only files 'set nomodifiable', courtesy Vim
     " Tip #1238
-    function UpdateModifiable()
+    function! <SID>UpdateModifiable()
       if !exists("b:setmodifiable")
         let b:setmodifiable = 0
       endif
@@ -825,7 +825,7 @@ if has('autocmd')
       endif
     endfunction
 
-    autocmd BufReadPost * call UpdateModifiable()
+    autocmd BufReadPost * call <SID>UpdateModifiable()
 
     " Change the current directory to the location of the
     " file being edited.
@@ -855,6 +855,9 @@ if has('autocmd')
       au VimResized * :call <SID>AutoNumberByWidth()
     catch
     endtry
+
+    " Reload the vimrc when it changes
+    autocmd BufWritePost $MYVIMRC source %
   augroup END " augroup Kergoth
 endif " has('autocmd')
 " }}}
