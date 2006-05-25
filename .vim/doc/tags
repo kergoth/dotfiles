@@ -1,3 +1,6 @@
+'SessionMgr_AutoManage'	sessionmgr.txt	/*'SessionMgr_AutoManage'*
+'SessionMgr_DefaultName'	sessionmgr.txt	/*'SessionMgr_DefaultName'*
+'SessionMgr_Dir'	sessionmgr.txt	/*'SessionMgr_Dir'*
 'Tlist_Auto_Highlight_Tag'	taglist.txt	/*'Tlist_Auto_Highlight_Tag'*
 'Tlist_Auto_Open'	taglist.txt	/*'Tlist_Auto_Open'*
 'Tlist_Auto_Update'	taglist.txt	/*'Tlist_Auto_Update'*
@@ -27,6 +30,12 @@
 :CS	cecscope.txt	/*:CS*
 :CSL	cecscope.txt	/*:CSL*
 :MatchDebug	matchit.txt	/*:MatchDebug*
+:SD	sessionmgr.txt	/*:SD*
+:SE	sessionmgr.txt	/*:SE*
+:SL	sessionmgr.txt	/*:SL*
+:SQ	sessionmgr.txt	/*:SQ*
+:SR	sessionmgr.txt	/*:SR*
+:SS	sessionmgr.txt	/*:SS*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
 :TlistAddFilesRecursive	taglist.txt	/*:TlistAddFilesRecursive*
 :TlistClose	taglist.txt	/*:TlistClose*
@@ -153,6 +162,7 @@ NERD_space_delim_filetype_regexp	NERD_comments.txt	/*NERD_space_delim_filetype_r
 NERD_uncom_line_map	NERD_comments.txt	/*NERD_uncom_line_map*
 NERD_use_compact_sexy_com_regexp	NERD_comments.txt	/*NERD_use_compact_sexy_com_regexp*
 NERD_use_nested_comments_default	NERD_comments.txt	/*NERD_use_nested_comments_default*
+SessionMgr.txt	sessionmgr.txt	/*SessionMgr.txt*
 Tlist_Get_Tag_Prototype_By_Line()	taglist.txt	/*Tlist_Get_Tag_Prototype_By_Line()*
 Tlist_Get_Tagname_By_Line()	taglist.txt	/*Tlist_Get_Tagname_By_Line()*
 Tlist_Set_App()	taglist.txt	/*Tlist_Set_App()*
@@ -298,6 +308,7 @@ cppomni-download	cppomnicomplete.txt	/*cppomni-download*
 cppomni-features	cppomnicomplete.txt	/*cppomni-features*
 cppomni-installation	cppomnicomplete.txt	/*cppomni-installation*
 cppomni-limitations	cppomnicomplete.txt	/*cppomni-limitations*
+cppomni-may-complete	cppomnicomplete.txt	/*cppomni-may-complete*
 cppomni-options	cppomnicomplete.txt	/*cppomni-options*
 cppomni-overview	cppomnicomplete.txt	/*cppomni-overview*
 cppomni-popup	cppomnicomplete.txt	/*cppomni-popup*
@@ -394,6 +405,9 @@ matchit.vim	matchit.txt	/*matchit.vim*
 o_[%	matchit.txt	/*o_[%*
 o_]%	matchit.txt	/*o_]%*
 o_g%	matchit.txt	/*o_g%*
+sessionmgr-about	sessionmgr.txt	/*sessionmgr-about*
+sessionmgr-commands	sessionmgr.txt	/*sessionmgr-commands*
+sessionmgr-configure	sessionmgr.txt	/*sessionmgr-configure*
 taglist-commands	taglist.txt	/*taglist-commands*
 taglist-debug	taglist.txt	/*taglist-debug*
 taglist-extend	taglist.txt	/*taglist-extend*

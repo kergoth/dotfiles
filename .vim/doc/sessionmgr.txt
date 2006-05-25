@@ -1,0 +1,105 @@
+*SessionMgr.txt*	Easily manage multiple and automatic sessions
+
+Author: Jason Heddings (jason@heddings.com)
+For Vim version 6.0 and above
+Last change: 20 October, 2005
+
+1. Overview                                     |sessionmgr-about|
+2. Commands                                     |sessionmgr-commands|
+3. Configuration                                |sessionmgr-configure|
+
+==============================================================================
+                                                *sessionmgr-about*
+1. Overview~
+
+SessionMgr allows you to easilly and quickly save and restore sessions within 
+Vim.  See |views-sessions| for more information.
+
+Based loosely on the plugin by Andrew Rodionoff >
+        http://www.vim.org/scripts/script.php?script_id=780
+<
+==============================================================================
+                                                *sessionmgr-commands*
+2. Commands~
+
+|:SD|          delete a named session
+|:SE|          echo the name of the current session
+|:SL|          display a list of all available sessions
+|:SQ|          quit recording the current session
+|:SR|          restore a named session
+|:SS|          save a named session
+
+                                                *:SD*
+:SD [{name}]
+        Deletes the session with the specified name.  If no name is specified,
+        the current session will be deleted.  If the current session is 
+        deleted, it will not be saved when exiting.  Once the current session
+        has been deleted, calls to |:SS| and |:SR| will act on the default
+        session (or a specified one)
+
+                                                *:SE*
+:SE
+        Echo the name of the current session.  This may be either the most 
+        recently saved or restored session, or the default session name.
+
+                                                *:SL*
+:SL
+        Display the list of all available sessions.
+
+                                                *:SQ*
+:SQ
+        Causes SessionMgr to stop updating the current session.  This is 
+        useful when you don't want the automatic save option to overwrite
+        the session on exiting Vim.  Once the current session has been quitted,
+        calls to |:SS| and |:SR| will act on the default session (or a
+        specified one)
+
+                                                *:SR*
+:SR [{name}]
+        Restores the session specified by {name}.  If no name is specified,
+        the current open session (from the last restore or save) will be used.
+        If no open session exists, the name will be taken from the variable
+        |'SessionMgr_DefaultName'|.
+
+                                                *:SS*
+:SS [{name}]
+        Saves the current session to the given name.  If no name is specified,
+        the current open session (from the last restore or save) will be used.
+        If no open session exists, the name will be taken from the variable
+        |'SessionMgr_DefaultName'|.  See |'sessionoptions'| for information on
+        what is saved in the session.
+
+==============================================================================
+                                                *sessionmgr-configure*
+3. Configuration~
+
+These options configure the way that SessionMge behaves.  The default for each 
+option is listed in square brackets on the right.
+
+|'SessionMgr_AutoManage'|       automatically manage default session [true]
+|'SessionMgr_DefaultName'|      the default session name to use [session]
+|'SessionMgr_Dir'|              directory used to store sessions [sessions]
+
+                                                *'SessionMgr_AutoManage'*
+SessionMgr_AutoManage~
+  This will allow SessionMgr to automatically save and restore the current 
+  session when enterint or exiting Vim.  If Vim is launched with a specified
+  file to edit, the default session will not be used. >
+      let g:SessionMgr_AutoManage = 0
+<
+                                                *'SessionMgr_DefaultName'*
+SessionMgr_DefaultName~
+  This is the name given to the default session.  This name is used by the
+  automatic session management, as well as when calling functions that do not
+  require a name. >
+      let g:SessionMgr_DefaultName = "mysession"
+<
+                                                *'SessionMgr_Dir'*
+SessionMgr_Dir~
+  This is the directory used to store the various sessions.  The default for 
+  this is in your $VIMFILES/sessions directory.  Make sure you have write
+  permissions on this directory. >
+      let g:SessionMgr_Dir = "/tmp"
+<
+==============================================================================
+vim:textwidth=78:tabstop=8:filetype=help
