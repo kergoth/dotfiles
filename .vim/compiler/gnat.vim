@@ -1,13 +1,17 @@
+"------------------------------------------------------------------------------
 "  Description: Vim Ada/GNAT compiler file
 "     Language: Ada (GNAT)
+"          $Id: gnat.vim 214 2006-05-25 09:24:57Z krischik $
 "    Copyright: Copyright (C) 2006 Martin Krischik
-" Name Of File: colors/martin_krischik.vim
-"   Maintainer:	Martin Krischik $Author: krischik $
-" Last Changed: $Date: 2006-05-16 19:20:24 +0200 (Di, 16 Mai 2006) $
-"      Version: 1.0 $Revision: 197 $
-"	   URL: $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/compiler/gnat.vim $
-"	 Usage: copy to compilers directory
-"      History: 
+"   Maintainer:	Martin Krischik
+"      $Author: krischik $
+"        $Date: 2006-05-25 11:24:57 +0200 (Do, 25 Mai 2006) $
+"      Version: 2.0 
+"    $Revision: 214 $
+"     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/compiler/gnat.vim $
+"      History: 24.05.2006 MK Unified Headers
+"	 Usage: copy to compiler directory
+"------------------------------------------------------------------------------
 
 if exists("current_compiler")
     finish
@@ -56,7 +60,7 @@ endif
 "   along with this program; if not, write to the Free Software
 "   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 "------------------------------------------------------------------------------
-" $Id: gnat.vim 197 2006-05-16 17:20:24Z krischik $
+" $Id: gnat.vim 214 2006-05-25 09:24:57Z krischik $
 "------------------------------------------------------------------------------
 " vim: textwidth=78 wrap tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
 " vim: filetype=vim encoding=latin1 fileformat=unix

@@ -1,30 +1,32 @@
+"------------------------------------------------------------------------------
 "  Description: Perform Ada specific completion & tagging.
 "     Language: Ada (2005)
+"          $Id: ada.vim 214 2006-05-25 09:24:57Z krischik $
 "   Maintainer:	Martin Krischik
 "               Neil Bird <neil@fnxweb.com>
 "      $Author: krischik $
-"        $Date: 2006-05-17 20:29:48 +0200 (Mi, 17 Mai 2006) $
-"      Version: 1.0 
-"    $Revision: 199 $
+"        $Date: 2006-05-25 11:24:57 +0200 (Do, 25 Mai 2006) $
+"      Version: 2.0 
+"    $Revision: 214 $
 "     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/ftplugin/ada.vim $
-"          $Id: ada.vim 199 2006-05-17 18:29:48Z krischik $
-"	 Usage: copy to ftplugin directory
-"      History: 
-"
+"      History: 24.05.2006 MK Unified Headers
+"        Usage: copy to ftplugin directory
+"------------------------------------------------------------------------------
 " Provides mapping overrides for tag jumping that figure out the current
 " Ada object and tag jump to that, not the 'simple' vim word.
 " Similarly allows <Ctrl-N> matching of full-length ada entities from tags.
 " Exports 'AdaWord()' function to return full name of Ada entity under the
 " cursor( or at given line/column), stripping whitespace/newlines as necessary.
-"
+"------------------------------------------------------------------------------
 " Customize:
 "
 "    let g:ada_exteded_tagging	bool    use exteded tagging. don't use if you
 "                                       create a tag-file with gnat xref -v
 "    let g.ada_gnat_extensions  bool    use GNAT extensions
+"------------------------------------------------------------------------------
 
 " Only do this when not done yet for this buffer
-if exists ("b:did_ftplugin")
+if exists ("b:did_ftplugin") || version < 700
     finish
 else
     " Don't load another plugin for this buffer
@@ -91,7 +93,7 @@ else
 	for Item in ['''Access', '''Address', '''Adjacent', '''Aft', '''Alignment', '''Base', '''Bit_Order', '''Body_Version', '''Callable', '''Caller', '''Ceiling', '''Class', '''Component_Size', '''Compose', '''Constrained', '''Copy_Sign', '''Count', '''Definite', '''Delta', '''Denorm', '''Digits', '''Emax', '''Exponent', '''External_Tag', '''Epsilon', '''First', '''First_Bit', '''Floor', '''Fore', '''Fraction', '''Identity', '''Image', '''Input', '''Large', '''Last', '''Last_Bit', '''Leading_Part', '''Length', '''Machine', '''Machine_Emax', '''Machine_Emin', '''Machine_Mantissa', '''Machine_Overflows', '''Machine_Radix', '''Machine_Rounding', '''Machine_Rounds', '''Mantissa', '''Max', '''Max_Size_In_Storage_Elements', '''Min', '''Mod', '''Model', '''Model_Emin', '''Model_Epsilon', '''Model_Mantissa', '''Model_Small', '''Modulus', '''Output', '''Partition_ID', '''Pos', '''Position', '''Pred', '''Priority', '''Range', '''Read', '''Remainder', '''Round', '''Rounding', '''Safe_Emax', '''Safe_First', '''Safe_Large', '''Safe_Last', '''Safe_Small', '''Scale', '''Scaling', '''Signed_Zeros', '''Size', '''Small', '''Storage_Pool', '''Storage_Size', '''Stream_Size', '''Succ', '''Tag', '''Terminated', '''Truncation', '''Unbiased_Rounding', '''Unchecked_Access', '''Val', '''Valid', '''Value', '''Version', '''Wide_Image', '''Wide_Value', '''Wide_Wide_Image', '''Wide_Wide_Value', '''Wide_Wide_Width', '''Wide_Width', '''Width', '''Write']
 	    let g:Ada_Keywords += [{
 		    \ 'word':  Item,
-		    \ 'menu':  'type',
+		    \ 'menu':  'attribute',
 		    \ 'info':  'Ada attribute.',
 		    \ 'kind':  'a',
 		    \ 'icase': 1}]
@@ -100,7 +102,7 @@ else
             for Item in ['''Abort_Signal', '''Address_Size', '''Asm_Input', '''Asm_Output', '''AST_Entry', '''Bit', '''Bit_Position', '''Code_Address', '''Default_Bit_Order', '''Elaborated', '''Elab_Body', '''Elab_Spec', '''Emax', '''Enum_Rep', '''Epsilon', '''Fixed_Value', '''Has_Access_Values', '''Has_Discriminants', '''Img', '''Integer_Value', '''Machine_Size', '''Max_Interrupt_Priority', '''Max_Priority', '''Maximum_Alignment', '''Mechanism_Code', '''Null_Parameter', '''Object_Size', '''Passed_By_Reference', '''Range_Length', '''Storage_Unit', '''Target_Name', '''Tick', '''To_Address', '''Type_Class', '''UET_Address', '''Unconstrained_Array', '''Universal_Literal_String', '''Unrestricted_Access', '''VADS_Size', '''Value_Size', '''Wchar_T_Size', '''Word_Size']
 	    let g:Ada_Keywords += [{
 		    \ 'word':  Item,
-		    \ 'menu':  'type',
+		    \ 'menu':  'attribute',
 		    \ 'info':  'GNAT attribute.',
 		    \ 'kind':  'a',
 		    \ 'icase': 1}]
@@ -112,7 +114,7 @@ else
 	for Item in ['All_Calls_Remote', 'Assert', 'Assertion_Policy', 'Asynchronous', 'Atomic', 'Atomic_Components', 'Attach_Handler', 'Controlled', 'Convention', 'Detect_Blocking', 'Discard_Names', 'Elaborate', 'Elaborate_All', 'Elaborate_Body', 'Export', 'Import', 'Inline', 'Inspection_Point', 'Interface (Obsolescent)', 'Interrupt_Handler', 'Interrupt_Priority', 'Linker_Options', 'List', 'Locking_Policy', 'Memory_Size (Obsolescent)', 'No_Return', 'Normalize_Scalars', 'Optimize', 'Pack', 'Page', 'Partition_Elaboration_Policy', 'Preelaborable_Initialization', 'Preelaborate', 'Priority', 'Priority_Specific_Dispatching', 'Profile', 'Pure', 'Queueing_Policy', 'Relative_Deadline', 'Remote_Call_Interface', 'Remote_Types', 'Restrictions', 'Reviewable', 'Shared (Obsolescent)', 'Shared_Passive', 'Storage_Size', 'Storage_Unit (Obsolescent)', 'Suppress', 'System_Name (Obsolescent)', 'Task_Dispatching_Policy', 'Unchecked_Union', 'Unsuppress', 'Volatile', 'Volatile_Components']
 	    let g:Ada_Keywords += [{
 		    \ 'word':  Item,
-		    \ 'menu':  'type',
+		    \ 'menu':  'pragma',
 		    \ 'info':  'Ada pragma.',
 		    \ 'kind':  'p',
 		    \ 'icase': 1}]
@@ -121,8 +123,8 @@ else
             for Item in ['Abort_Defer', 'Ada_83', 'Ada_95', 'Ada_05', 'Annotate', 'Ast_Entry', 'C_Pass_By_Copy', 'Comment', 'Common_Object', 'Compile_Time_Warning', 'Complex_Representation', 'Component_Alignment', 'Convention_Identifier', 'CPP_Class', 'CPP_Constructor', 'CPP_Virtual', 'CPP_Vtable', 'Debug', 'Elaboration_Checks', 'Eliminate', 'Export_Exception', 'Export_Function', 'Export_Object', 'Export_Procedure', 'Export_Value', 'Export_Valued_Procedure', 'Extend_System', 'External', 'External_Name_Casing', 'Finalize_Storage_Only', 'Float_Representation', 'Ident', 'Import_Exception', 'Import_Function', 'Import_Object', 'Import_Procedure', 'Import_Valued_Procedure', 'Initialize_Scalars', 'Inline_Always', 'Inline_Generic', 'Interface_Name', 'Interrupt_State', 'Keep_Names', 'License', 'Link_With', 'Linker_Alias', 'Linker_Section', 'Long_Float', 'Machine_Attribute', 'Main_Storage', 'Obsolescent', 'Passive', 'Polling', 'Profile_Warnings', 'Propagate_Exceptions', 'Psect_Object', 'Pure_Function', 'Restriction_Warnings', 'Source_File_Name', 'Source_File_Name_Project', 'Source_Reference', 'Stream_Convert', 'Style_Checks', 'Subtitle', 'Suppress_All', 'Suppress_Exception_Locations', 'Suppress_Initialization', 'Task_Info', 'Task_Name', 'Task_Storage', 'Thread_Body', 'Time_Slice', 'Title', 'Unimplemented_Unit', 'Universal_Data', 'Unreferenced', 'Unreserve_All_Interrupts', 'Use_VADS_Size', 'Validity_Checks', 'Warnings', 'Weak_External']
                 let g:Ada_Keywords += [{
                         \ 'word':  Item,
-                        \ 'menu':  'type',
-                        \ 'info':  'Ada pragma.',
+                        \ 'menu':  'pragma',
+                        \ 'info':  'GNAT pragma.',
                         \ 'kind':  'p',
                         \ 'icase': 1}]
             endfor
@@ -132,6 +134,8 @@ else
     " Temporarily set cpoptions to ensure the script loads OK
     let s:cpoptions = &cpoptions
     set cpoptions-=C
+
+    setlocal iskeyword+=39
 
     " Ada comments
     setlocal comments+=O:--
@@ -333,6 +337,7 @@ else
 
     finish
 endif
+
 "------------------------------------------------------------------------------
 "   Copyright (C) 2006  Martin Krischik
 "
@@ -350,5 +355,5 @@ endif
 "   along with this program; if not, write to the Free Software
 "   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 "------------------------------------------------------------------------------
-"vim: textwidth=78 wrap tabstop=8 shiftwidth=3 softtabstop=3 expandtab
-"vim: filetype=vim encoding=latin1 fileformat=unix
+" vim: textwidth=78 wrap tabstop=8 shiftwidth=3 softtabstop=3 expandtab
+" vim: filetype=vim encoding=latin1 fileformat=unix
