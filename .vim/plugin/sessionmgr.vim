@@ -209,7 +209,7 @@ endfunction
 function! SessionMgr_OnEnter()
   call SessionMgr_Debug("OnEnter [" . argc() . "]")
 
-  if argc() == 0
+  if v:this_session == "" && argc() == 0
     execute "SR " . SessionMgr_GetCurrentSession()
     let g:SessionMgr_CurrentSession = SessionMgr_GetCurrentSession()
   endif
