@@ -236,10 +236,11 @@ if [ -n "$BASH" ]; then
     maketargets() {
         local cur
         cur=${COMP_WORDS[COMP_CWORD]}
-        COMPREPLY=($(compgen -o plusdirs))
         if [ -e makefile -o -e Makefile ]; then
             COMPREPLY=($(make -qpi 2>/dev/null | sed -n -e '/^[#.]/b; /=/b; /:$/{s/\(.*\):/\1/; /%/{/%$/{p;}; b;}; p}'))
             COMPREPLY=($(compgen -W '${COMPREPLY[@]}' -- $cur))
+        else
+            COMPREPLY=($(compgen -A file -- $cur))
         fi
     }
     complete -F maketargets make gmake
