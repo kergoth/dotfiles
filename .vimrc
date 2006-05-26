@@ -507,6 +507,9 @@ endif
 
 " Viminfo file behavior
 if has('viminfo')
+  if ! exists('$VIMINFO')
+    let $VIMINFO = $HOME . '/.viminfo'
+  endif
   " f1  store file marks
   " '   # of previously edited files to remember marks for
   " :   # of lines of command history
@@ -514,7 +517,7 @@ if has('viminfo')
   " <   max # of lines for each register to be saved
   " s   max # of Kb for each register to be saved
   " h   don't restore hlsearch behavior
-  set viminfo=f1,'1000,:1000,/1000,<1000,s100,h
+  set viminfo=f1,'1000,:1000,/1000,<1000,s100,h,n$VIMINFO
 endif
 
 set backspace=indent,eol,start
@@ -637,6 +640,8 @@ if has('autocmd') && v:version >= 700
           \ setlocal statusline=\[Tags\] |
           \ setlocal statusline+=%= |
           \ setlocal statusline+=%l
+
+    au VimEnter,BufWinEnter TreeExplorer let w:numberoverride = 1 | setlocal nonumber
   augroup END
 
   augroup KergothSpell
@@ -753,8 +758,25 @@ endif
 
 " Autocommands {{{
 if has('autocmd')
+  " Make sure we're overriding netrw's browser
+  :runtime plugin/netrw.vim
+  :runtime autoload/netrw.vim
+  augroup FileExplorer
+   au!
+   au BufEnter * silent! call s:SpawnExplorer(expand("<amatch>"))
+  augroup END
+
+  function! s:SpawnExplorer(match)
+    if isdirectory(a:match)
+      VTreeExplore a:match
+    endif
+  endf
+
   augroup Kergoth
     au!
+
+    " Smart cursor positioning for emails, courtesy tip#1240
+    au BufReadPost mutt* :Fip
 
     " Reload file with the correct encoding if fenc was set in the modeline
     au BufReadPost * let b:reloadcheck = 1
@@ -863,6 +885,7 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let d_hl_operator_overload = 1
 " let g:xml_syntax_folding = 1
 let loaded_bettermodified = 1
 let g:NERD_shut_up = 1
@@ -910,31 +933,19 @@ let g:Tlist_File_Fold_Auto_Close = 1
 let g:Tlist_Use_Right_Window = 1
 let g:Tlist_Sort_Type = 'name'
 let g:Tlist_Inc_Winwidth = 0
+let g:Tlist_Close_On_Select = 1
 
 let g:miniBufExplModSelTarget = 1
 let g:miniBufExplMinSize = 1
 let g:miniBufExplMaxSize = 1
 
-let s:using_winmanager = 0
-if exists('s:using_winmanager') &&
-      \ s:using_winmanager == 1
-  let g:Tlist_Close_On_Select = 0
-  " let g:winManagerWindowLayout = 'FileExplorer,TagsExplorer|BufExplorer,TodoList'
-  let g:winManagerWindowLayout = 'FileExplorer,TagList|BufExplorer'
-  let g:defaultExplorer = 0
+let g:treeExplVertical = 1
+let g:treeExplDirSort = 1
+let g:treeExplindent = 3
+let g:treeExplWinSize = 28
 
-  " Disable use of tabbar / minibufexpl
-  " let Tb_loaded = 1
-  let g:loaded_minibufexplorer = 1
-
-  map <c-w><c-f> :FirstExplorerWindow<CR>
-  map <c-w><c-b> :BottomExplorerWindow<CR>
-  map <c-w><c-t> :WMToggle<CR>
-else
-  let g:Tlist_Close_On_Select = 1
-  let g:loaded_winmanager = 1
-  let g:loaded_winfileexplorer = 1
-  let g:loaded_bufexplorer = 1
-  nnoremap <silent> <F8> :Tlist<CR>
-endif
+let g:bufExlporerDefaultHelp = 0
+let g:bufExplorerSortBy = 'mru'
+let g:bufExplorerSplitType = 'v'
+let g:bufExplorerOpenMode = 1
 " }}}
