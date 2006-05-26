@@ -8,7 +8,7 @@ execute "command! -nargs=1 Colo let g:moria_style = \"<args>\" | colo moria"
 
 if s:moria_style == 'dark'
     set background=dark
-elseif s:moria_style == 'light'
+elseif s:moria_style == 'light' || s:moria_style == 'whitesmoke'
     set background=light
 else
     let s:moria_style = &background 
@@ -22,7 +22,7 @@ endif
 
 let colors_name = "moria"
 
-if s:moria_style == "dark"
+if &background == "dark"
     hi Normal ctermbg=0 ctermfg=7 guibg=#202020 guifg=#d0d0d0 gui=none
 
     hi Cursor guibg=#ffa500 guifg=bg gui=none
@@ -92,12 +92,19 @@ if s:moria_style == "dark"
     hi htmlBoldUnderline ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=bold,underline
     hi htmlBoldUnderlineItalic ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=bold,underline,italic
     hi htmlUnderlineItalic ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=underline,italic
-elseif s:moria_style == "light"
-    hi Normal ctermbg=15 ctermfg=0 guibg=#ffffff guifg=#000000 gui=none
+elseif &background == "light"
+    if s:moria_style == 'light'
+        hi Normal ctermbg=15 ctermfg=0 guibg=#ffffff guifg=#000000 gui=none
 
+        hi CursorColumn guibg=#dbdbdb gui=none
+        hi CursorLine guibg=#dbdbdb gui=none
+    elseif s:moria_style == 'whitesmoke'
+        hi Normal ctermbg=15 ctermfg=0 guibg=#f5f5f5 guifg=#000000 gui=none
+
+        hi CursorColumn guibg=#d5d5d5 gui=none
+        hi CursorLine guibg=#d5d5d5 gui=none
+    endif
     hi Cursor guibg=#cd4e00 guifg=bg gui=none
-    hi CursorColumn guibg=#dbdbdb gui=none
-    hi CursorLine guibg=#dbdbdb gui=none
     hi DiffAdd guibg=#008b00 guifg=#ffffff gui=none
     hi DiffChange guibg=#00008b guifg=#ffffff gui=none
     hi DiffDelete guibg=#8b0000 guifg=#ffffff gui=none
