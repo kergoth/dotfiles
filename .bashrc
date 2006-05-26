@@ -233,6 +233,7 @@ if [ -n "$BASH" ]; then
     # Use programmable completion
     shopt -s progcomp
 
+    # Tab completion for GNU make targets
     maketargets() {
         local cur
         cur=${COMP_WORDS[COMP_CWORD]}

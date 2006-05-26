@@ -14,7 +14,8 @@ LUA_INIT="@${HOME}/.lua/init.lua"
 CCACHE_DIR="${HOME}/.ccache"
 HISTFILE="${HOME}/.bash_history"
 TERMINFO="${HOME}/.terminfo"
+VIMINFO="${HOME}/.viminfo"
 
 export PATH MANPATH PAGER EDITOR
-export BK_USER NM LUA_INIT
-export CCACHE_DIR HISTFILE TERMINFO
+export BK_USER NM LUA_INIT CCACHE_DIR
+export HISTFILE TERMINFO VIMINFO
