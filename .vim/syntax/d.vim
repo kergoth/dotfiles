@@ -77,7 +77,7 @@ syn match dAssert "[^.]\s*\<assert\>"ms=s+1
 "
 " TODO
 "syn match dAsmStatement "\<asm\>"
-"syn region dAsmBody start="asm[\n]*\s*{"hs=e+1 end="}"he=e-1 contains=dAsmStatement
+"syn region dAsmBody start="asm[\n]*\s*{"hs=e+1 end="}"he=e-1 contains=dAsmStatement fold
 "
 "hi def link dAsmBody dUnicode
 "hi def link dAsmStatement dStatement
@@ -91,7 +91,10 @@ syn keyword dLabel	case default
 " Comments
 "
 syn keyword dTodo	contained TODO FIXME TEMP XXX
-syn cluster dCommentGroup	contains=dTodo
+
+" Cluster to make it easy to add custom matches in comments
+syn cluster dCommentGroup contains=dTodo
+
 syn match dCommentStar	contained "^\s*\*[^/]"me=e-1
 syn match dCommentStar	contained "^\s*\*$"
 syn match dCommentPlus	contained "^\s*+[^/]"me=e-1
@@ -114,8 +117,6 @@ hi link dBlockCommentString	dString
 hi link dNestedCommentString	dString
 hi link dCommentStar		dBlockComment
 hi link dCommentPlus		dNestedComment
-
-syntax region	dBlock		start="{" end="}" transparent fold
 
 " /+ +/ style comments and strings that span multiple lines can cause
 " problems. To play it safe, set minlines to a large number.
@@ -181,6 +182,8 @@ syn match dHexFloat	display "\<0x[0-9a-f_]\+\.[0-9a-f_]*\(p[-+]\=[0-9_]\+\)\=[fl
 syn match dHexFloat	display "\<0x[0-9a-f_]\+p[-+]\=[0-9_]\+[fl]\=i\=\>"
 
 syn case match
+
+syntax region	dBlock		start="{" end="}" transparent fold
 
 " Pragma (preprocessor) support
 " TODO: Highlight following Integer and optional Filespec.
