@@ -1,2 +1,2 @@
-setlocal commentstring=/*\ %s\ */
 setlocal foldmethod=syntax
+setlocal commentstring=/+\ %s\ +/
