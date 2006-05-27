@@ -45,6 +45,10 @@ if ! exists('g:treeExplWinSize')
   let g:treeExplWinSize = 30
 endif
 
+if ! exists('g:treeExplMinSize')
+  let g:treeExplMinSize = 20
+endif
+
 if exists('g:treeExplVertical')
   let g:treeExplMode = 'vertical'
 else
@@ -56,9 +60,6 @@ augroup TreeExplorer
 
   " support sessions
   autocmd BufNewFile TreeExplorer VTreeExplore
-
-  " ensure that the tree explorer window is always the size we want
-  autocmd WinEnter,WinLeave TreeExplorer exe g:treeExplMode . ' resize '.g:treeExplWinSize
 augroup END
 
 "" create a string of chr cnt long - emulate vim7 repeat function
@@ -98,6 +99,18 @@ function! s:TreeExplorer(split, start) " <<<
 		" TODO - needed?
 		let w:escape_chars = w:escape_chars . '+'
 	endif
+
+  if exists("g:treeExplVertical")
+    let cmd = 'set winminwidth'
+    set winfixwidth
+  else
+    let cmd = 'set winminheight'
+    set winfixheight
+  endif
+  if g:treeExplMinSize != 0
+    let cmd = cmd.'='.g:treeExplMinSize
+  endif
+  silent execute cmd
 
 	" tree visual widget configuration, width limited to range [3,16]
 	let w:tree_wid_ind = (exists("g:treeExplIndent")) ? g:treeExplIndent : 3
@@ -501,10 +514,12 @@ function! s:OpenExplorer() " <<<
 
 	let oldwin = winnr()
 	wincmd p
-	" exec ("edit " . curfile)
 	if oldwin == winnr() || &modified
 	        wincmd p
 		      exec ("vertical rightb new " . curfile)
+          wincmd p
+          exe g:treeExplMode . ' resize ' . g:treeExplWinSize
+          wincmd p
 	else
 	        exec ("edit " . curfile)
 	endif
@@ -545,13 +560,14 @@ function! s:Activate() " <<<
 		return
 	else " file
 		let f = escape (curfile, w:escape_chars)
-		let splitMode = (exists("g:treeExplVertical")) ? "vertical " : ""
-		let splitSize = (exists("g:treeExplWinSize")) ? g:treeExplWinSize : 20
 		let oldwin = winnr()
 		wincmd p
 		if oldwin == winnr() || (&modified && s:BufInWindows(winbufnr(winnr())) < 2)
             wincmd p
-		        exec (g:treeExplMode . " rightb " . string(winwidth(0) - g:treeExplWinSize - 1) . "new " . f)
+            exec ("vertical rightb new " . f)
+            wincmd p
+            exe g:treeExplMode . ' resize ' . g:treeExplWinSize
+            wincmd p
 		else
 		        exec ("edit " . f)
 		endif

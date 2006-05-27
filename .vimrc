@@ -442,6 +442,25 @@ set ttyfast
 set ttybuiltin
 set lazyredraw
 
+" Windowing Options {{{
+" Windows that need winfixheight:
+"   [ ] minibufexpl
+" Windows that need winfixwidth:
+"   [ ] Taglist
+"   [ ] Bufexplorer
+"   [x] VTreeExplorer
+" Also set winminheight and winminwidth possibly, as the fix height and fix
+" width options are not always obeyed (if running out of room), while the
+" minimums are hard minimums. (done for vtreeexplorer)
+
+" Window resize behavior when splitting
+set noequalalways
+set eadirection=both
+
+set splitright
+set nosplitbelow
+" }}}
+
 " No annoying beeps
 set novisualbell
 set noerrorbells
@@ -943,6 +962,7 @@ let g:treeExplVertical = 1
 let g:treeExplDirSort = 1
 let g:treeExplindent = 3
 let g:treeExplWinSize = 28
+let g:treeExplMinSize = 30
 
 let g:bufExlporerDefaultHelp = 0
 let g:bufExplorerSortBy = 'mru'
