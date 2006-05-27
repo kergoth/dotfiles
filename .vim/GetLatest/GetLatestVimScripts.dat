@@ -26,7 +26,7 @@ ScriptID SourceID Filename
 1311 4504 vimplate.vim
 1316 4517 bwHomeEndAdv.vim
 1338 4976 tabbar.vim
-1353 5759 syntax/ada.vim
+1353 5779 syntax/ada.vim
 1381 4676 syntax/udev.vim
 1385 4693 syntax/interfaces.vim
 1393 4717 colors/motus.vim
@@ -49,9 +49,9 @@ ScriptID SourceID Filename
 1527 5611 colors/habiLight.vim
 1532 5625 colors/txt.vim
 1542 5690 autoload/pythoncomplete.vim
-1545 5708 plugins/parenquote.vim
+1545 5777 plugins/parenquote.vim
 1547 5761 compiler/gnat.vim
-1548 5763 ftplugin/ada.vim
+1548 5780 ftplugin/ada.vim
 1552 5737 plugins/ScreenShot.vim
-1554 5764 autoload/adacomplete.vim
+1554 5778 autoload/adacomplete.vim
 1560 5757 colors/neverness.vim

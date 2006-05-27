@@ -9,11 +9,12 @@
 " Contributors: Preben Randhol.
 "      $Author: krischik $
 "        $Date: 2006-05-25 11:24:57 +0200 (Do, 25 Mai 2006) $
-"      Version: 2.0 
+"      Version: 2.1 
 "    $Revision: 214 $
 "     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/syntax/ada.vim $
 "               http://www.dwheeler.com/vim
 "      History: 24.05.2006 MK Unified Headers
+"               26.05.2006 MK ' should not be in iskeyword.
 "	 Usage: copy to syntax directory
 "------------------------------------------------------------------------------
 " The formal spec of Ada 2005 (ARM) is the "Ada 2005 Reference Manual".
@@ -69,7 +70,7 @@ else
             execute "syntax keyword adaException " . b:Item['word']
         endif
         if b:Item['kind'] == "a" 
-            execute "syntax keyword adaAttribute " . b:Item['word']
+            execute 'syntax match adaAttribute "\V' . b:Item['word'] . '"'
         endif
         " We don't normally highlight types in package Standard
         " (Integer, Character, Float, etc.).  I don't think it looks good

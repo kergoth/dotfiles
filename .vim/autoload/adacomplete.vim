@@ -5,22 +5,21 @@
 "   Maintainer:	Martin Krischik 
 "      $Author: krischik $
 "        $Date: 2006-05-25 11:24:57 +0200 (Do, 25 Mai 2006) $
-"      Version: 1.1 
+"      Version: 2.1 
 "    $Revision: 214 $
 "     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/autoload/adacomplete.vim $
 "      History: 24.05.2006 MK Unified Headers
+"               26.05.2006 MK improved search for begin of word.
 "	 Usage: copy to autoload directory
 "------------------------------------------------------------------------------
 
-" Set completion with CTRL-X CTRL-O to autoloaded function.
-" This check is in place in case this script is
-" sourced directly instead of using the autoload feature. 
-if exists ('+omnifunc')
-    " Do not set the option if already set since this
-    " results in an E117 warning.
-    if &omnifunc == ""
-	setlocal omnifunc=adacomplete#Complete
-    endif
+" Set completion with CTRL-X CTRL-O to autoloaded function.  This check is in
+" place in case this script is sourced directly instead of using the autoload
+" feature.  Do not set the option if already set since this results in an E117
+" warning.
+"
+if exists ('+omnifunc') && &omnifunc == ""
+    setlocal omnifunc=adacomplete#Complete
 endif
 
 if exists ('g:loaded_syntax_completion') || version < 700
@@ -38,7 +37,7 @@ else
 	    "
 	    let line = getline ('.')
 	    let start = col ('.') - 1
-	    while start > 0 && line[start - 1] =~ '\a'
+	    while start > 0 && line[start - 1] =~ '\i\|'''
 		let start -= 1
 	    endwhile
 	    return start
@@ -46,8 +45,7 @@ else
 	    "
 	    " look up matches
 	    "
-	    let l:Pattern    = '^' . a:base . '.*$'
-	    let l:Match_List = []
+	    let l:Pattern = '^' . a:base . '.*$'
 	    "
 	    " add keywords
 	    "
@@ -60,11 +58,13 @@ else
 			if complete_check ()
 			    return []
 			endif
-			"let l:Match_List += [l:Tag_Item]
 		    endif
 		endfor
 	    endif
-	    let l:Tag_List   = taglist (l:Pattern)
+	    "
+	    "  search tag file for matches
+	    "
+	    let l:Tag_List = taglist (l:Pattern)
 	    " 
 	    " add symbols
 	    "
@@ -84,15 +84,12 @@ else
 		if complete_check ()
 		    return []
 		endif
-		"let l:Match_List += [l:Match_Item]
 	    endfor
 	    return []
-	    "return l:Match_List
 	endif
     endfunction adacomplete#Complete
     finish
 endif
-
 
 "------------------------------------------------------------------------------
 "   Copyright (C) 2006  Martin Krischik

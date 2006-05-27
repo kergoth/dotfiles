@@ -6,10 +6,11 @@
 "               Neil Bird <neil@fnxweb.com>
 "      $Author: krischik $
 "        $Date: 2006-05-25 11:24:57 +0200 (Do, 25 Mai 2006) $
-"      Version: 2.0 
+"      Version: 2.1 
 "    $Revision: 214 $
 "     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/ftplugin/ada.vim $
 "      History: 24.05.2006 MK Unified Headers
+"               26.05.2006 MK ' should not be in iskeyword.
 "        Usage: copy to ftplugin directory
 "------------------------------------------------------------------------------
 " Provides mapping overrides for tag jumping that figure out the current
@@ -134,8 +135,6 @@ else
     " Temporarily set cpoptions to ensure the script loads OK
     let s:cpoptions = &cpoptions
     set cpoptions-=C
-
-    setlocal iskeyword+=39
 
     " Ada comments
     setlocal comments+=O:--
