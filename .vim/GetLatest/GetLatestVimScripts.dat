@@ -12,6 +12,7 @@ ScriptID SourceID Filename
 555 4795 HiCurLine.vim
 642 5228 GetLatestVimScripts.vim
 748 4319 HelpExtractor.vim
+746 5662 plugin/cmdalias.vim
 760 5497 colors/ps_color.vim
 790 5677 python.vim
 795 5721 colors/xterm16.vim
@@ -40,7 +41,7 @@ ScriptID SourceID Filename
 1451 5700 ftplugin/svn_commit.vim
 1453 5189 cecscope.vim
 1454 5680 colors/baycomb.vim
-1464 5772 colors/moria.vim
+1464 5782 colors/moria.vim
 1471 5319 colors/watermark.vim
 1472 5673 colors/sift.vim
 1477 5305 modeliner.vim

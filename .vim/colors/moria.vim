@@ -6,9 +6,9 @@ endif
 
 execute "command! -nargs=1 Colo let g:moria_style = \"<args>\" | colo moria"
 
-if s:moria_style == 'dark'
+if s:moria_style == "dark" || s:moria_style == "black"
     set background=dark
-elseif s:moria_style == 'light' || s:moria_style == 'whitesmoke'
+elseif s:moria_style == "light" || s:moria_style == "whitesmoke"
     set background=light
 else
     let s:moria_style = &background 
@@ -23,11 +23,18 @@ endif
 let colors_name = "moria"
 
 if &background == "dark"
-    hi Normal ctermbg=0 ctermfg=7 guibg=#202020 guifg=#d0d0d0 gui=none
+    if s:moria_style == "dark"
+        hi Normal ctermbg=0 ctermfg=7 guibg=#202020 guifg=#d0d0d0 gui=none
 
+        hi CursorColumn guibg=#444444 gui=none
+        hi CursorLine guibg=#444444 gui=none
+    elseif s:moria_style == "black"
+        hi Normal ctermbg=0 ctermfg=7 guibg=#000000 guifg=#d0d0d0 gui=none
+
+        hi CursorColumn guibg=#3a3a3a gui=none
+        hi CursorLine guibg=#3a3a3a gui=none
+    endif
     hi Cursor guibg=#ffa500 guifg=bg gui=none
-    hi CursorColumn guibg=#444444 gui=none
-    hi CursorLine guibg=#444444 gui=none
     hi DiffAdd guibg=#008b00 guifg=fg gui=none
     hi DiffChange guibg=#00008b guifg=fg gui=none
     hi DiffDelete guibg=#8b0000 guifg=fg gui=none
@@ -93,12 +100,12 @@ if &background == "dark"
     hi htmlBoldUnderlineItalic ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=bold,underline,italic
     hi htmlUnderlineItalic ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=underline,italic
 elseif &background == "light"
-    if s:moria_style == 'light'
+    if s:moria_style == "light"
         hi Normal ctermbg=15 ctermfg=0 guibg=#ffffff guifg=#000000 gui=none
 
         hi CursorColumn guibg=#dbdbdb gui=none
         hi CursorLine guibg=#dbdbdb gui=none
-    elseif s:moria_style == 'whitesmoke'
+    elseif s:moria_style == "whitesmoke"
         hi Normal ctermbg=15 ctermfg=0 guibg=#f5f5f5 guifg=#000000 gui=none
 
         hi CursorColumn guibg=#d5d5d5 gui=none
@@ -132,17 +139,17 @@ elseif &background == "light"
         hi SpellLocal guisp=#008b8b gui=undercurl
         hi SpellRare guisp=#ee2cee gui=undercurl
     endif
-    hi StatusLine ctermbg=0 ctermfg=15 guibg=#a8b8c8 guifg=fg gui=bold
-    hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#b8c8d8 guifg=fg gui=none
+    hi StatusLine ctermbg=0 ctermfg=15 guibg=#a0b0c0 guifg=fg gui=bold
+    hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#b0c0d0 guifg=fg gui=none
     hi TabLine guibg=#b4c4d4 guifg=fg gui=underline
     hi TabLineFill guibg=fg guifg=bg gui=none
     hi TabLineSel guibg=bg guifg=fg gui=bold
     hi Title guifg=fg gui=bold
-    hi VertSplit ctermbg=7 ctermfg=0 guibg=#b8c8d8 guifg=fg gui=none
+    hi VertSplit ctermbg=7 ctermfg=0 guibg=#b0c0d0 guifg=fg gui=none
     if version >= 700
-        hi Visual ctermbg=7 ctermfg=0 guibg=#c8d8e8 gui=none
+        hi Visual ctermbg=7 ctermfg=0 guibg=#c0d0e0 gui=none
     else
-        hi Visual ctermbg=7 ctermfg=0 guibg=#c8d8e8 guifg=fg gui=none
+        hi Visual ctermbg=7 ctermfg=0 guibg=#c0d0e0 guifg=fg gui=none
     endif    
     hi VisualNOS guibg=bg guifg=#90a0b0 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
