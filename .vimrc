@@ -216,6 +216,12 @@ nmap <Leader>cwc :cclose<CR>
 nmap <Leader>cwo :botright copen 5<CR><C-w>p
 nmap <Leader>ccn :cnext<CR>
 
+" Arrow keys behavior
+nmap <silent> <Up> :wincmd k<CR>
+nmap <silent> <Down> :wincmd j<CR>
+nmap <silent> <Left> :wincmd h<CR>
+nmap <silent> <Right> :wincmd l<CR>
+
 " Mouse {{{
 if has('mouse')
   set mouse=a
