@@ -464,7 +464,7 @@ set noequalalways
 set eadirection=both
 
 set splitright
-set nosplitbelow
+set splitbelow
 " }}}
 
 " No annoying beeps
@@ -910,6 +910,13 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:Tb_MinSize = 1
+let g:Tb_MaxSize = 1
+let g:Tb_SplitBelow = 0
+let g:Tb_VSplit = 0
+let g:Tb_cTabSwitchBufs = 0
+let g:Tb_cTabSwitchWindows = 0
+" D syntax highlighting - highlight operator overload functions
 let d_hl_operator_overload = 1
 " let g:xml_syntax_folding = 1
 let loaded_bettermodified = 1
