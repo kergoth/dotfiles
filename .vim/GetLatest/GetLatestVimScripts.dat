@@ -11,6 +11,7 @@ ScriptID SourceID Filename
 489 4935 manpageview.vim
 555 4795 HiCurLine.vim
 642 5228 GetLatestVimScripts.vim
+670 5467 plugin/visincr.vim
 748 4319 HelpExtractor.vim
 746 5662 plugin/cmdalias.vim
 760 5497 colors/ps_color.vim
