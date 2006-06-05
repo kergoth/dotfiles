@@ -1,5 +1,6 @@
 "   Copyright (c) 2006, Michael Shvarts <shvarts@akmosoft.com>
 "
+"{{{-----------License:
 "   ScreenShoot.vim is free software; you can redistribute it and/or modify it under
 "   the terms of the GNU General Public License as published by the Free
 "   Software Foundation; either version 2, or (at your option) any later
@@ -12,13 +13,32 @@
 "
 "   You should have received a copy of the GNU General Public License along
 "   with ScreenShoot.vim; see the file COPYING.  If not, write to the Free Software
-"   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+"   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+"}}}
+"{{{-----------Info:
+" Version: 0.8
+" Description:
+"  Generates screenshot of your current VIM session as HTML code 
+"
+"  FEEDBACK PLEASE
+"
+" Installation: Drop it into your plugin directory
+"
+" History:
+"    0.7: Initial upload
+"    0.8: Added:
+"       a) Full 'nowrap' option support
+"       b) Non-printable characters support
+"       c) 'showbreak' option support
+"       d) 'display' option support (lastline and uhex both)
+"       e) 'list' option support
+"
+" TODO:
+"   1.Very small windows proper rendering
+"   2.Linebreak option support
+"   }}}
 
-if exists('g:loaded_ScreenShot') || &cp || ! has('gui_running')
-    finish
-endif
-let g:loaded_ScreenShot = 1
-
+"{{{-----------Window's layout recognition functions
 function! s:Window_New(window,num)
 	call extend(a:window,{'num':a:num,'size': [winwidth(a:num),winheight(a:num)]})
 endf
@@ -28,7 +48,7 @@ function! s:Window_TryMerge(self,new)
 			if !has_key(a:self.prev, 'dir')
 				let a:self.prev.dir = a:self.prevdir
 			endif
-			if a:self.prev.dir == a:self.prevdir && has_key(a:self.prev, 'Add')
+			if a:self.prev.dir == a:self.prevdir && !has_key(a:self.prev, 'num')
 				call s:Container_Add(a:self.prev,a:self)
 			else
 				call s:Container_New(a:new,a:self.prev,a:self)
@@ -83,11 +103,64 @@ function! s:Container_Add(self,...)
 		let child.parent = a:self
 	endfor
 endf
-function! GetWindowText(num)
-	exec a:num.'wincmd w'
-	return '<pre>'.join(map(map(getline('w0', 'w$'),"substitute(v:val,'\t',repeat(' ',&tabstop),'g')"), "substitute(v:val,'.\\{,".winwidth(a:num)."\\}','\\=submatch(0).repeat(\"#\", ".winwidth(a:num)." - strlen(submatch(0))).\"<br>\"','g')"), "<br>").'</pre>'------------------------------------------------------------------------------------------------------------------------------
+function! s:EnumWindows()
+	let ei_save = &ei
+	let winnr_save = winnr()
+	set ei=all
+	let windows=[]
+	let i = 1
+	while winwidth(i) > 0
+		let window = {'active': i == winnr_save}
+		call s:Window_New(window, i)
+		call add(windows, window)
+		let i += 1
+	endwhile
+	1wincmd w
+	let i = 1
+	let cur = {}
+
+	while i == winnr() 
+
+
+		let window = windows[i - 1]
+		let window.pos = {'line':line('.'),'col':col('.'),'virtcol':virtcol('.'),'topline':line('w0'),'bottomline':line('w$'),'lastline':line('$')}
+		if i - 1
+			let window.prev = cur
+			wincmd k 
+			if !s:Window_IsTop(windows[winnr() - 1],cur) 
+				exec i.'wincmd w'
+			        wincmd h 
+				if !s:Window_IsTop(windows[winnr() - 1],cur)
+					echoerr 'Can not enum window!'
+					return 0
+				endif
+				let window.prevdir = 0 
+			else
+				let window.prevdir = 1
+			endif
+			exec i.'wincmd w'
+			let new={}
+			while s:Window_TryMerge(window,new) && has_key(window,'prev')
+				if len(new)
+					let window = new
+					let new = {}
+				else
+					let window = window.prev
+				endif
+			endwhile
+		endif
+		let cur = window
+		let i += 1
+		wincmd w
+	endwhile
+	call s:Window_DelParent(cur)
+	let &ei = ei_save
+	exec winnr_save.'wincmd w'
+	return string(cur)
 
 endf
+"}}}
+"{{{-----------Html generation functions
 if has('gui')
         function! s:GetColor(id,type)
                 return synIDattr(a:id,a:type)
@@ -162,7 +235,7 @@ function! s:SynIdWrap(id,text)
 	return s:SynIdStart(id).a:text.s:SynIdEnd(id)
 endf
 
-function! s:GetLinePrefix(y,numWidth,wrapped)
+function! s:GetLinePrefix(y,numWidth,width,wrapped)
 	let prefix = ''
         let closed = foldclosed(a:y) != -1
         if &foldcolumn
@@ -200,13 +273,13 @@ function! s:GetLinePrefix(y,numWidth,wrapped)
                 else 
                         let prefix = repeat(' ',&foldcolumn)
                 endif
-                let prefix = s:SynIdWrap('FoldColumn',prefix)
+                let prefix = s:SynIdWrap('FoldColumn',strpart(prefix,0,a:width))
 	endif
 	if &number && a:y <= line('$')
 		if a:wrapped 
-			let prefix .= s:SynIdWrap(a:wrapped?'LineNr': 'NonText',repeat(' ',a:numWidth))
+			let prefix .= s:SynIdWrap(a:wrapped?'LineNr': 'NonText',strpart(repeat(' ',a:numWidth),0,a:width - &foldcolumn))
 		else
-			let prefix .= s:SynIdWrap(closed?'Folded': 'LineNr',repeat(' ',a:numWidth - 1 - strlen(a:y)).a:y.' ')
+			let prefix .= s:SynIdWrap(closed?'Folded': 'LineNr',strpart(repeat(' ',a:numWidth - 1 - strlen(a:y)).a:y.' ',0,a:width - &foldcolumn))
 		endif
 	endif
 	return prefix
@@ -214,31 +287,57 @@ endf
 function! s:HtmlEscape(text)
 	return substitute(a:text,'[<>&]','\={"<": "&lt;",">": "&gt;","&": "&amp;"}[submatch(0)]','g')
 endf
+function! s:HtmlDecode(text)
+        return substitute(a:text,'&\([^;]*\);','\={"lt":"<","gt":">","amp":"&"}[submatch(1)]','g')
+endf
+function! s:Opt2Dict(opt)
+        return eval('{'.substitute(a:opt,'\(\w\+\):\([^,]*\)\(,\|$\)',"'\\1':'\\2'\\3", 'g').'}')
+endf
 function! s:GetFillChars()
-	return string(extend({"fold": "-",'vert': '|','stl': ' ','stlnc': ' '},eval('{'.substitute(&fillchars,'\(\w\+\):\([^,]*\)\(,\|$\)',"'\\1':'\\2'\\3", 'g').'}')))
+	return extend({"fold": "-",'vert': '|','stl': ' ','stlnc': ' '},s:Opt2Dict(&fillchars))
 endf
 function! s:GetColoredText(lines,start,finish,height,lineEnd)
 	let y = a:start 
-	let ymax = line('$')
 	let yReal = 0
 
 	let realWidth = winwidth(winnr())
 	let foldWidth = &foldcolumn 
 	let numWidth = &number?max([&numberwidth,strlen(line('$'))+1]):0
 	let width = realWidth - numWidth - foldWidth 
-	let fillChars = eval(s:GetFillChars())
-	let realX = 0 
-
-
-	while y <= a:finish 
-		let x = 1 
+	let fillChars = s:GetFillChars()
+        let listChars = s:Opt2Dict(&listchars)
+        let expandTab = !&list || has_key(listChars, 'tab')
+        if !&list
+                let listChars.tab = '  '
+        endif
+        let d_opts = split(&display,',')
+        let [uhex, lastline] = [0, 0]
+        for d_opt in d_opts
+                if d_opt == 'uhex'
+                        let uhex = 1
+                elseif d_opt == 'lastline'
+                        let lastline = 1
+                endif
+        endfor
+        let realX = 0 
+        let view = winsaveview() 
+        let skip = view.leftcol + (view.skipcol?(view.skipcol + strlen(&showbreak)):0)
+        let maxRealX = width + view.leftcol + view.skipcol
+        if width <= 0
+                let [width , maxRealX] = [0, 0]
+        endif
+        let cond = ((!a:height || !lastline))?((a:start == a:finish)?'yReal < a:height && y == a:start || y < a:finish': 'y <= a:finish'): 'yReal < a:height'
+        while eval(cond) && y <= line('$')
+                let x = 1
 		let xx = 0
-		let str = getline(y)
-		let xmax = strlen(str)
-		let prefix = s:GetLinePrefix(y,numWidth,0)
-		let realX = 0 
+                let str = getline(y)
+                let chunk = '' 
+		let xmax = strlen(str) + &list
+		let prefix = s:GetLinePrefix(y,numWidth,realWidth,0)
+                let realX = 0 
+                let [oldId, oldId1] = [0, 0]
 		let folded = foldclosed(y)
-		if !xmax
+		if x > xmax
                         call add(a:lines, prefix.repeat(' ', width).a:lineEnd)
                 elseif folded != -1
 			let text = strpart(foldtextresult(y), 0, width)
@@ -247,37 +346,99 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
                 else
 			let tab = ''
 			let realX = 0 
-
-			while x <= xmax && y <= a:finish
-				let oldId = 0
-				let newLine = ((xx<width)?(prefix):s:GetLinePrefix(y,numWidth,1)).tab 
-				while realX < width
-					let id = synIDtrans(synID(y, x, 0))
-					if id != oldId
-						let newLine .= s:SynIdEnd(oldId).s:SynIdStart(id)
-						let oldId = id
-					endif
-					let char = strpart(str, x - 1, 1)
-					let diff = (char == "\t")?&tabstop - xx%&tabstop:1
-					let xx += diff
-					let newLine .= (char == '&')?'&amp;':(char == '<')?'&lt;':(char == '>')?'&gt;':(char == "\t")?repeat(' ',diff):(char == '')?' ':char
-
-					let x += 1
-					let realX += diff 
-				endwhile
-				if &wrap && realX > width
-					let realX = realX%width
-					let tab =  strpart(newLine,strlen(newLine) - realX)
-					let newLine = strpart(newLine,0,strlen(newLine) - realX)
-				else
-					let realX = 0 
-					let tab = ''
-				endif
+                        let eol = 0
+                        if view.skipcol
+                                let [oldId, oldId1, tab] = [hlID('NonText'), 0, s:SynIdStart(hlID('NonText')).s:HtmlEscape(&showbreak)]
+                        endif
+                        while x <= xmax && eval(cond)
+                                let newLine = ((xx<maxRealX)?(prefix):s:GetLinePrefix(y,numWidth,realWidth,1)).tab
+                                while realX < maxRealX
+                                        let char = strpart(str, x - 1, 1)
+                                        if char == ''
+                                                if eol || !&list
+                                                        let diff = maxRealX - realX 
+                                                        let char = repeat(' ',diff)
+                                                        let id = 0
+                                                else
+                                                        let id = hlID('NonText') 
+                                                        let diff = 1
+                                                        let char = listChars.eol
+                                                        let eol = 1
+                                                endif
+                                        elseif (char < ' ' || char > '~') && char !~ '\p'
+                                                if char == "\t" && expandTab
+                                                        let id = &list?hlID('SpecialKey'):synIDtrans(synID(y, x, 0))
+                                                        let diff = &tabstop - xx%&tabstop
+                                                        let char = strpart(listChars.tab,0,1).repeat(strpart(listChars.tab,1),diff-1)
+                                                else 
+                                                        let id = hlID('SpecialKey')
+                                                        if uhex
+                                                                let diff = 4
+                                                                let char = char == "\n"?'<00>':printf('<%02x>',char2nr(char))
+                                                        else
+                                                                let diff = 2
+                                                                let charnr =  char2nr(char)
+                                                                if charnr == 10
+                                                                        let char = '^@'
+                                                                elseif charnr  < 32
+                                                                        let char = '^'.nr2char(64 + charnr)
+                                                                elseif charnr == 127
+                                                                        let char = '^?'
+                                                                elseif charnr < 160
+                                                                        let char = '~'.nr2char(64 + charnr - 128)
+                                                                elseif charnr == 255
+                                                                        let char = '~?'
+                                                                else
+                                                                        let char = '|'.nr2char(32 + charnr - 160)
+                                                                endif
+                                                        endif
+                                                endif
+                                        else
+                                                let id = synIDtrans(synID(y, x, 0))
+                                                let diff = 1
+                                        endif
+                                        if id != oldId
+                                                if chunk != ''
+                                                        let newLine .= s:SynIdEnd(oldId1).s:SynIdStart(oldId).s:HtmlEscape(chunk)  " s:SynIdEnd(oldId).s:SynIdStart(id)
+                                                endif
+						let [chunk, oldId, oldId1] = ['', id, oldId]
+                                        endif
+                                        if realX >= skip 
+                                                let chunk .= char
+                                        elseif realX + strlen(char) >= skip 
+                                                let chunk .= strpart(char,skip - realX) 
+                                        endif
+                                        let realX += diff 
+                                        let xx += diff
+                                        let x += 1
+                                endwhile
+                                if chunk != ''
+                                        let newLine .= s:SynIdEnd(oldId1).s:SynIdStart(oldId).s:HtmlEscape(chunk)    
+                                endif
+                                if realX > maxRealX 
+                                        let realX   = realX - maxRealX
+                                        let [all, newLine, chunk; rest] = matchlist(newLine,'\(.*\)\(\%([^<>&;]\|&[^;]*;\)\{'.realX.'\}\)$') "[strpart(newLine,strlen(newLine) - realX), '', strpart(newLine,0,strlen(newLine) - realX)]
+                                        let chunk = s:HtmlDecode(chunk)
+                                else
+                                        let [chunk, realX] = ['', 0]
+                                endif
+                                if &showbreak != ''
+                                        let xx += strlen(&showbreak)
+                                        let tab = s:SynIdWrap('NonText',s:HtmlEscape(&showbreak))
+                                        let realX += strlen(&showbreak)
+                                else
+                                        let tab = ''
+                                endif
 				call add(a:lines, newLine.s:SynIdEnd(oldId).a:lineEnd)
 				let yReal += 1
 				if !&wrap
 					break
 				endif
+                                if view.skipcol
+                                        let maxRealX -= view.skipcol 
+                                        let view.skipcol = 0
+                                        let skip = 0
+                                endif
 			endw
 			let yReal -= 1
 		endif
@@ -287,20 +448,20 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
 
 	endw
         while yReal < a:height
-                let prefix = s:GetLinePrefix(y,numWidth,0)
+                let prefix = s:GetLinePrefix(y,numWidth,realWidth,0)
 
 
-                if y > ymax
+                if y > line('$') 
                         call add(a:lines, prefix.s:SynIdStart(hlID('NonText')).'~'.repeat(' ', width + numWidth - 1).s:SynIdEnd(hlID('NonText')).a:lineEnd)
                 else 
-                        call add(a:lines, s:GetLinePrefix(y,0,1).s:SynIdStart(hlID('NonText')).'@'.repeat(' ', width + numWidth - 1).s:SynIdEnd(hlID('NonText')).a:lineEnd)
+                        call add(a:lines, s:GetLinePrefix(y,0,realWidth,1).s:SynIdStart(hlID('NonText')).'@'.repeat(' ', width + numWidth - 1).s:SynIdEnd(hlID('NonText')).a:lineEnd)
                 endif
                 let yReal += 1
         endw
 endf
 function! s:GetColoredWindowText(window,lines)
 	exec a:window.num.'wincmd w'
-	let fillChars = eval(s:GetFillChars())
+	let fillChars = s:GetFillChars()
 	call s:GetColoredText(a:lines, line('w0'),line('w$'),winheight(a:window.num),s:SynIdWrap('VertSplit', fillChars.vert))
 
 	let name = bufname('%')
@@ -386,73 +547,23 @@ function! s:InternalToHtml(self,lines)
 	endif
 
 endf
+function! s:SaveEvents()
+        let saved = [&winwidth,&winheight,&winminheight,&winminwidth,&ei]
+        let [&winwidth,&winheight,&winminheight,&winminwidth,&ei] = [1, 1, 1, 1, 'all']
+        return saved
+endf
+function! s:RestoreEvents(saved)
+	let [&winwidth,&winheight,&winminheight,&winminwidth,&ei] = a:saved 
+endf
+"}}}
+"{{{-----------Top-level functions and commands
 function! ToHtml()
-        let [winheight,winminheight,winminwidth,ei] = [&winheight,&winminheight,&winminwidth,&ei]
-        set ei=all
-	set winminwidth=1
-	set winminheight=1
-        set winwidth=1
+        let saved = s:SaveEvents()
 	let win = eval(s:EnumWindows())
         let lines = []
         call s:InternalToHtml(win, lines)
-	let [&winheight,&winminheight,&winminwidth,&ei] = [winheight,winminheight,winminwidth,ei]
+        call s:RestoreEvents(saved)
 	return '<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'.join(lines,'<br>').'</pre></td></tr></table>'
-endf
-function! s:EnumWindows()
-	let ei_save = &ei
-	let winnr_save = winnr()
-	set ei=all
-	let windows=[]
-	let i = 1
-	while winwidth(i) > 0
-		let window = {'active': i == winnr_save}
-		call s:Window_New(window, i)
-		call add(windows, window)
-		let i += 1
-	endwhile
-	1wincmd w
-	let i = 1
-	let cur = {}
-
-	while i == winnr() 
-
-
-		let window = windows[i - 1]
-		let window.pos = {'line':line('.'),'col':col('.'),'virtcol':virtcol('.'),'topline':line('w0'),'bottomline':line('w$'),'lastline':line('$')}
-		if i - 1
-			let window.prev = cur
-			wincmd k 
-			if !s:Window_IsTop(windows[winnr() - 1],cur) 
-				exec i.'wincmd w'
-			        wincmd h 
-				if !s:Window_IsTop(windows[winnr() - 1],cur)
-					echoerr 'Can not enum window!'
-					return 0
-				endif
-				let window.prevdir = 0 
-			else
-				let window.prevdir = 1
-			endif
-			exec i.'wincmd w'
-			let new={}
-			while s:Window_TryMerge(window,new) && has_key(window,'prev')
-				if len(new)
-					let window = new
-					let new = {}
-				else
-					let window = window.prev
-				endif
-			endwhile
-		endif
-		let cur = window
-		let i += 1
-		wincmd w
-	endwhile
-	call s:Window_DelParent(cur)
-	let &ei = ei_save
-	exec winnr_save.'wincmd w'
-	return string(cur)
-
 endf
 function! Text2Html(line1,line2)
         let lines = []
@@ -467,5 +578,5 @@ function! ScreenShot()
         call append('.',a)
 endf
 command! -range=% Text2Html     :call Text2Html(<line1>,<line2>)
-command! ScreenShoot    :call ScreenShot()
-
+command! ScreenShot    :call ScreenShot()
+"}}} vim:foldmethod=marker foldlevel=0

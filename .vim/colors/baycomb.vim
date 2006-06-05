@@ -1,5 +1,5 @@
 " Vim color file
-" baycomb v2.3
+" baycomb v2.4
 " http://www.vim.org/scripts/script.php?script_id=1454
 " 
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
@@ -241,6 +241,10 @@ call <SID>X('Conditional', 'D0688D', '', 'NONE')
 call <SID>X('Constant', '5C78F0', '', '')
 call <SID>X('Cursor', '0000AA', 'CAD5C0', '')
 call <SID>X('Directory', 'BBD0DF', '', '')
+call <SID>X('DiffText', '', '004335', '')
+call <SID>X('DiffChange', '', '685B5C', '')
+call <SID>X('DiffAdd', '', '0A4B8C', '')
+call <SID>X('DiffDelete', '300845', '200845', '')
 call <SID>X('Error', '', 'B03452', '')
 call <SID>X('ErrorMsg', '', 'FF4545', '')
 call <SID>X('Exception', 'D0A8AD', '', 'BOLD')
