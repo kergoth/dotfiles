@@ -1,8 +1,8 @@
-*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	May 18, 2006
+*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Mar 07, 2006
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
-Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*asneeded-copyright*
+Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
            The VIM LICENSE applies to AsNeeded.vim and AsNeeded.txt
            (see |copyright|) except use "AsNeeded" instead of "Vim"
 	   No warranty, express or implied.  Use At-Your-Own-Risk.
@@ -59,17 +59,8 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*asneeded-copyright*
 			    of AsNeeded functions/commands/mappings.
 
 ==============================================================================
-4. AsNeeded History					*asneeded-history* {{{1
+4. AsNeeded History					*asneeded-history*
 
-	v13 Mar 23, 2006: * The search for a map wasn't looking for
-	                    <Leader>amap when asked for :ANX \amap ; instead,
-			    AsNeeded was incorrectly looking for <Leader>\amap.
-			    Fixed.
-			  * AsNeeded's successful loading message managed to
-			    disappear from view (again).  I've deferred
-			    showing it until the end of the function.
-			  * Used Thomas's idea for ANcmds.vim plugin
-			    generation, which sets up skeleton commands.
 	v12 Mar 07, 2006: * AsNeeded now saves and restores settings in such
 	                    a way that if a command/map/script-sourcing
 			    changes vim settings it will be retained, instead
@@ -114,6 +105,5 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*asneeded-copyright*
 			    command/function/map is found
 	v1 Feb 19, 2004 : AsNeeded first released
 
-==============================================================================
-vim:tw=78:ts=8:ft=help:fdm=marker:
+vim:tw=78:ts=8:ft=help
 
