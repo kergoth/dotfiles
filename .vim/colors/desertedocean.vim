@@ -1,9 +1,11 @@
 " Vim color file
-" desertedocean v0.4d
+" desertedocean v0.5
 " Maintainer:	Shawn Axsom <axs221@gmail.com>
 "               [axs221.1l.com]
 
 " desertedocean, a colorscheme using the desert colorscheme as a template, based loosely off of desert, oceandeep, and zenburn.
+"
+" With thanks to Panos Laganakos
 
 " cool help screens
 " :he group-name
@@ -69,6 +71,8 @@ hi WarningMsg	guifg=salmon
 "hi Scrollbar  guibg=grey30 guifg=tan
 "hi Tooltip
 
+hi Pmenu	guifg=#6Aa0e0 guibg=#222f3d
+hi PmenuSel	guifg=#FFFFFF guibg=#0088bb 
 
 " color terminal definitions
 hi SpecialKey	ctermfg=darkgreen
