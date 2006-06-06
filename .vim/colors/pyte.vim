@@ -25,7 +25,7 @@ hi VertSplit guifg=#a0b0c0 guibg=#a0b0c0 gui=NONE
 
 hi Folded    guifg=#708090 guibg=#c0d0e0
 
-hi NonText                 guibg=#e0e0e0
+hi NonText   guifg=#c0c0c0 guibg=#e0e0e0
 " Kommentare
 hi Comment   guifg=#a0b0c0               gui=italic
 
