@@ -55,7 +55,7 @@ hi PreProc    guifg=#1060a0 gui=NONE
 " Cheetah: def, for and so on, Python: Decorators
 hi Define      guifg=#1060a0 gui=bold
 
-hi Error      guifg=white guibg=red
+hi Error      guifg=white guibg=red gui=bold
 hi Todo       guifg=#a0b0c0 guibg=NONE gui=italic,bold,underline
 
 " Python: %(...)s - constructs, encoding
@@ -65,4 +65,27 @@ hi Operator   guifg=#408010
 
 " color of <TAB>s etc...  
 hi SpecialKey guifg=#d8a080 guibg=#e8e8e8 gui=italic  
+
+" Diff
+hi DiffChange guifg=NONE guibg=#e0e0e0 gui=italic,bold
+hi DiffText guifg=NONE guibg=#f0c8c8 gui=italic,bold
+hi DiffAdd guifg=NONE guibg=#c0e0d0 gui=italic,bold
+hi DiffDelete guifg=NONE guibg=#f0e0b0 gui=italic,bold
+
+if version >= 700
+  hi CursorLine guibg=#f6f6f6
+  hi CursorColumn guibg=#eaeaea
+  hi MatchParen guifg=white guibg=#80a090 gui=bold
+
+  "Tabpages
+  hi TabLine guifg=black guibg=#b0b8c0 gui=italic
+  hi TabLineFill guifg=#9098a0
+  hi TabLineSel guifg=black guibg=#f0f0f0 gui=italic,bold
+
+  "P-Menu (auto-completion)
+  hi Pmenu guifg=white guibg=#808080
+  "PmenuSel
+  "PmenuSbar
+  "PmenuThumb
+endif
 
