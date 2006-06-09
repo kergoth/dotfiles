@@ -57,6 +57,6 @@ ScriptID SourceID Filename
 1545 5777 plugins/parenquote.vim
 1547 5761 compiler/gnat.vim
 1548 5780 ftplugin/ada.vim
-1552 5797 plugins/ScreenShot.vim
+1552 5820 plugins/ScreenShot.vim
 1554 5778 autoload/adacomplete.vim
 1560 5757 colors/neverness.vim

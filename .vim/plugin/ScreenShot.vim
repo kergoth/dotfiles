@@ -32,12 +32,25 @@
 "       c) 'showbreak' option support
 "       d) 'display' option support (lastline and uhex both)
 "       e) 'list' option support
+"    0.81: Bug in HTML code generation fixed (an unmatched closing tag </span> in some cases)
 "
 " TODO:
 "   1.Very small windows proper rendering
 "   2.Linebreak option support
 "   }}}
+"{{{-----------Utils
+function! s:Bufname(nr)
+        let name = bufname(a:nr)
+        if name == ''
+                let name = '[No name]'
+        endif
+        if strlen(getbufvar(a:nr,'&buftype'))
+                let name = fnamemodify(name,':t')
+        endif
+        return name
+endf
 
+"}}}
 "{{{-----------Window's layout recognition functions
 function! s:Window_New(window,num)
 	call extend(a:window,{'num':a:num,'size': [winwidth(a:num),winheight(a:num)]})
@@ -355,7 +368,7 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
                                 while realX < maxRealX
                                         let char = strpart(str, x - 1, 1)
                                         if char == ''
-                                                if eol || !&list
+                                                if eol || !&list || !has_key(listChars,'eol')
                                                         let diff = maxRealX - realX 
                                                         let char = repeat(' ',diff)
                                                         let id = 0
@@ -399,7 +412,7 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
                                         endif
                                         if id != oldId
                                                 if chunk != ''
-                                                        let newLine .= s:SynIdEnd(oldId1).s:SynIdStart(oldId).s:HtmlEscape(chunk)  " s:SynIdEnd(oldId).s:SynIdStart(id)
+                                                        let newLine .= s:SynIdEnd(oldId1).s:SynIdStart(oldId).s:HtmlEscape(chunk) 
                                                 endif
 						let [chunk, oldId, oldId1] = ['', id, oldId]
                                         endif
@@ -414,14 +427,17 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
                                 endwhile
                                 if chunk != ''
                                         let newLine .= s:SynIdEnd(oldId1).s:SynIdStart(oldId).s:HtmlEscape(chunk)    
+                                        let [chunk, oldId, oldId1] = ['', id, oldId]
                                 endif
+                                let save_id = oldId
                                 if realX > maxRealX 
                                         let realX   = realX - maxRealX
-                                        let [all, newLine, chunk; rest] = matchlist(newLine,'\(.*\)\(\%([^<>&;]\|&[^;]*;\)\{'.realX.'\}\)$') "[strpart(newLine,strlen(newLine) - realX), '', strpart(newLine,0,strlen(newLine) - realX)]
+                                        let [all, newLine, chunk; rest] = matchlist(newLine,'\(.*\)\(\%([^<>&;]\|&[^;]*;\)\{'.realX.'\}\)$')
                                         let chunk = s:HtmlDecode(chunk)
                                 else
                                         let [chunk, realX] = ['', 0]
                                 endif
+                                let oldId1 = 0
                                 if &showbreak != ''
                                         let xx += strlen(&showbreak)
                                         let tab = s:SynIdWrap('NonText',s:HtmlEscape(&showbreak))
@@ -429,7 +445,10 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
                                 else
                                         let tab = ''
                                 endif
-				call add(a:lines, newLine.s:SynIdEnd(oldId).a:lineEnd)
+				call add(a:lines, newLine.s:SynIdEnd(save_id).a:lineEnd)
+                                if chunk == ''
+                                        let oldId = 0
+                                endif
 				let yReal += 1
 				if !&wrap
 					break
@@ -460,36 +479,33 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
         endw
 endf
 function! s:GetColoredWindowText(window,lines)
-	exec a:window.num.'wincmd w'
-	let fillChars = s:GetFillChars()
-	call s:GetColoredText(a:lines, line('w0'),line('w$'),winheight(a:window.num),s:SynIdWrap('VertSplit', fillChars.vert))
-
-	let name = bufname('%')
-	if name == ''
-		let name = '[No name]'
-	endif
+        exec a:window.num.'wincmd w'
+        let fillChars = s:GetFillChars()
+        call s:GetColoredText(a:lines, line('w0'),line('w$'),winheight(a:window.num),s:SynIdWrap('VertSplit', fillChars.vert))
+        let [fill_stl, synId] = (a:window.active)?[(fillChars.stl), 'StatusLine'] :[fillChars.stlnc, 'StatusLineNC']
+        let name = s:Bufname('%')
         if &modified
                 let name .= fillChars.stlnc.'[+]'
         endif
         if &readonly
                 let name .= (&modified?'':fillChars.stlnc).'[RO]'
         endif
-	if a:window.pos.topline == 1
-		if a:window.pos.bottomline == a:window.pos.lastline
-			let percents = 'All'
-		else
-			let percents = 'Top'
-		endif
-	elseif a:window.pos.bottomline == a:window.pos.lastline
-		let percents = 'Bot'
-	else
-		let percents = (a:window.pos.topline*100/(a:window.pos.lastline + a:window.pos.topline - a:window.pos.bottomline )).'%'
+        if a:window.pos.topline == 1
+                if a:window.pos.bottomline == a:window.pos.lastline
+                        let percents = 'All'
+                else
+                        let percents = 'Top'
+                endif
+        elseif a:window.pos.bottomline == a:window.pos.lastline
+                let percents = 'Bot'
+        else
+                let percents = (a:window.pos.topline*100/(a:window.pos.lastline + a:window.pos.topline - a:window.pos.bottomline )).'%'
                 if strlen(percents) == 2
                         let percents = ' '.percents
                 endif
-	endif
-	let posInfo = a:window.pos.line.','.a:window.pos.col.((a:window.pos.col != a:window.pos.virtcol)?('-'.a:window.pos.virtcol): '')
-	let width = winwidth('.')
+        endif
+        let posInfo = a:window.pos.line.','.a:window.pos.col.((a:window.pos.col != a:window.pos.virtcol)?('-'.a:window.pos.virtcol): '')
+        let width = winwidth('.')
         let magicLen = 18
         let lack =  strlen(name) + magicLen + 1 - width 
         if lack < 0 
@@ -512,7 +528,8 @@ function! s:GetColoredWindowText(window,lines)
 
 
         endif
-	call add(a:lines,s:SynIdWrap(((a:window.active)?'StatusLine': 'StatusLineNC'),StatusLine.fillChars.stlnc))
+        let StatusLine = s:SynIdWrap(synId,StatusLine.fill_stl)
+        call add(a:lines,StatusLine)
 endf
 
 function! s:InternalToHtml(self,lines)
@@ -563,19 +580,20 @@ function! ToHtml()
         let lines = []
         call s:InternalToHtml(win, lines)
         call s:RestoreEvents(saved)
-	return '<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'.join(lines,'<br>').'</pre></td></tr></table>'
+        let lines[0] = '<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'.lines[0]
+	return lines + ['</pre></td></tr></table>']
 endf
 function! Text2Html(line1,line2)
         let lines = []
         call s:GetColoredText(lines,a:line1,a:line2,0,'')
         exec 'new '.bufname('%').'.html'
-        call append('.','<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'.join(lines,'<br>').'</pre></td></tr></table>')
+        call append(0,['<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'] + lines + ['</pre></td></tr></table>'])
 endf
 function! ScreenShot()
         let a = ToHtml()
         let shots = eval('['.substitute(glob('screenshot-*.html'),'\%(screenshot-\(\d*\).html\|.*\)\%(\n\|$\)','\=((submatch(1)!="")?submatch(1):0).","','g').']')
         exec 'new screenshot-'.(max(shots) + 1).'.html'
-        call append('.',a)
+        call append(0,a)
 endf
 command! -range=% Text2Html     :call Text2Html(<line1>,<line2>)
 command! ScreenShot    :call ScreenShot()
