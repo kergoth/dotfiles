@@ -102,8 +102,12 @@ IA	visincr.txt	/*IA*
 ID	visincr.txt	/*ID*
 IDMY	visincr.txt	/*IDMY*
 II	visincr.txt	/*II*
+IIO	visincr.txt	/*IIO*
+IIX	visincr.txt	/*IIX*
 IM	visincr.txt	/*IM*
 IMDY	visincr.txt	/*IMDY*
+IO	visincr.txt	/*IO*
+IX	visincr.txt	/*IX*
 IYMD	visincr.txt	/*IYMD*
 MatchError	matchit.txt	/*MatchError*
 NERD_allow_any_visual_delims_regexp	NERD_comments.txt	/*NERD_allow_any_visual_delims_regexp*
@@ -452,8 +456,12 @@ visincr-IA	visincr.txt	/*visincr-IA*
 visincr-ID	visincr.txt	/*visincr-ID*
 visincr-IDMY	visincr.txt	/*visincr-IDMY*
 visincr-II	visincr.txt	/*visincr-II*
+visincr-IIO	visincr.txt	/*visincr-IIO*
+visincr-IIX	visincr.txt	/*visincr-IIX*
 visincr-IM	visincr.txt	/*visincr-IM*
 visincr-IMDY	visincr.txt	/*visincr-IMDY*
+visincr-IO	visincr.txt	/*visincr-IO*
+visincr-IX	visincr.txt	/*visincr-IX*
 visincr-IYMD	visincr.txt	/*visincr-IYMD*
 visincr-RI	visincr.txt	/*visincr-RI*
 visincr-RID	visincr.txt	/*visincr-RID*

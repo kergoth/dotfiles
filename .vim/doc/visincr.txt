@@ -1,4 +1,4 @@
-*visincr.txt*	The Visual Incrementing Tool		Mar 16, 2006
+*visincr.txt*	The Visual Incrementing Tool		Jun 12, 2006
 
 Author:  Charles E. Campbell, Jr.  <NdrchipO@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email before using)
@@ -48,13 +48,40 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*visincr-copyright*
 			will justify right (pad left)
 			For more see |visincr-II|
 
-			     ORIG      I        II
-			     +---+   +----+   +----+
-			     | 8 |   | 8  |   |  8 |
-			     | 8 |   | 9  |   |  9 |
-			     | 8 |   | 10 |   | 10 |
-			     | 8 |   | 11 |   | 11 |
-			     +---+   +----+   +----+
+			   ORIG      I        II
+			   +---+   +----+   +----+
+			   | 8 |   | 8  |   |  8 |
+			   | 8 |   | 9  |   |  9 |
+			   | 8 |   | 10 |   | 10 |
+			   | 8 |   | 11 |   | 11 |
+			   +---+   +----+   +----+
+
+	For octal and hexadecimal incrementing, use the variants
+
+		:IO [#]              :IX [#]
+		:IIO [# [zfil]]     :IIX [# [zfill]]
+
+			   ORIG      IO      IIO
+			   +---+   +----+   +----+
+			   | 6 |   | 6  |   |  6 |
+			   | 6 |   | 7  |   |  7 |
+			   | 6 |   | 10 |   | 10 |
+			   | 6 |   | 11 |   | 11 |
+			   +---+   +----+   +----+
+
+			   ORIG      IX      IIX
+			   +---+   +----+   +----+
+			   | 9 |   | 9  |   |  9 |
+			   | 9 |   | a  |   |  a |
+			   | 9 |   | b  |   |  b |
+			   | 9 |   | c  |   |  c |
+			   | 9 |   | d  |   |  d |
+			   | 9 |   | e  |   |  e |
+			   | 9 |   | f  |   |  f |
+			   | 9 |   | 10 |   | 10 |
+			   | 9 |   | 11 |   | 11 |
+			   +---+   +----+   +----+
+
 
 		The following three commands need <calutil.vim> to do
 		their work:
@@ -94,8 +121,7 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*visincr-copyright*
 The visincr plugin facilitates making a column of increasing or decreasing
 numbers, dates, or daynames.
 
-							*I* *viscinr-I*
-	LEFT JUSTIFIED INCREMENTING
+	LEFT JUSTIFIED INCREMENTING			*I*  *viscinr-I*
 	:I [#]  Will use the first line's number as a starting point to build
 	        a column of increasing numbers (or decreasing numbers if the
 		increment is negative).
@@ -103,15 +129,22 @@ numbers, dates, or daynames.
 		    Default increment: 1
 		    Justification    : left (will pad on the right)
 
+		The IX variant supports hexadecimal incrementing.
+
 							*visincr-RI*
 		The restricted version (:RI) applies number incrementing only
 		to those lines in the visual block that begin with a number.
 
 		See |visincr-raggedright| for a discussion on ragged-right
 		handling.
+ 							
+			*IX* *visincr-IX* *IO* *visincr-IO*
+		The following two commands are variants of :I :
+	:IO [#] left justified octal incrementing
+	:IX [#] left justified hexadecimal incrementing
 
 
-	RIGHT JUSTIFIED INCREMENTING			*II* *visincr-II*
+	RIGHT JUSTIFIED INCREMENTING			*II*  *visincr-II*
 	:II [# [zfill]]  Will use the first line's number as a starting point
 		to build a column of increasing numbers (or decreasing numbers
 		if the increment is negative).
@@ -120,6 +153,11 @@ numbers, dates, or daynames.
 		    Justification    : right (will pad on the left)
 		    Zfill            : left padding will be done with the given
 		                       character, typically a zero.
+
+		*IIX* *visincr-IIX* *IIO* *visincr-IIO*
+		The following two commands are variants of :II :
+	:IIO [# [zfill]] right justified octal incrementing
+	:IIX [# [zfill]] right justified hexadecimal incrementing
 
 							*visincr-RII*
 		The restricted version (:RII) applies number incrementing only to
@@ -157,7 +195,7 @@ numbers, dates, or daynames.
 		visincr will pad the single-digits in dates with zeros.
 		However, one may get blank padding by using a backslash
 		and then a space: >
-			:IYMD 1 \ 
+			:IYMD 1 \
 			         ^(space here)
 <		Of course, one may use any charcter for such padding.
 
@@ -169,8 +207,6 @@ numbers, dates, or daynames.
 <		in your <.vimrc> initialization file.  The two variables
 		(dow=day-of-week) should be set to a comma-delimited set of
 		words.
-
-
 
 	SINGLE DIGIT DAYS OR MONTHS			*visincr-leaddate*
 
@@ -221,7 +257,6 @@ numbers, dates, or daynames.
 ==============================================================================
 4. Examples:						*visincr-examples*
 
-
 	LEFT JUSTIFIED INCREMENTING EXAMPLES
 	:I                              :I 2            *ex-visincr-I*
 	            Use ctrl-V to                   Use ctrl-V to
@@ -241,7 +276,6 @@ numbers, dates, or daynames.
 	   8            5                  8            -1
 	   8            4                  8            -4
 
-
 	RIGHT JUSTIFIED INCREMENTING EXAMPLES
 	:II                             :II 2           *ex-visincr-II*
 	            Use ctrl-V to                   Use ctrl-V to
@@ -260,7 +294,6 @@ numbers, dates, or daynames.
 	   8            6                  8             2
 	   8            5                  8            -1
 	   8            4                  8            -4
-
 
 	DATE INCREMENTING EXAMPLES
 	:IMDY                                   *ex-visincr-IMDY*
@@ -302,7 +335,6 @@ numbers, dates, or daynames.
 	   a)          c)                A)           E)
 	   a)          d)                A)           G)
 
-
 	DAYNAME INCREMENTING EXAMPLES
 	:ID                                     *ex-visincr-ID*
 	          Use ctrl-V to                 Use ctrl-V to
@@ -322,7 +354,6 @@ numbers, dates, or daynames.
 	 Sunday     Tuesday            Sunday     Tuesday
 	 Sunday     Wednesday          Sunday     Wednesday
 	 Sunday     Thursday           Sunday     Thursday
-
 
 	MONTHNAME INCREMENTING EXAMPLES
 	:IM                                     *ex-visincr-IM*
@@ -345,16 +376,24 @@ numbers, dates, or daynames.
 
 
 ==============================================================================
-5. History:						*visincr-history*
+5. History:						*visincr-history* {{{1
 
-
+	v14: 03/21/06       : :IX and :IIX implemented to support hexadecimal
+	                      incrementing
+	     03/25/06       * Visincr converted to use Vim 7.0's autoloading
+	     06/12/06       * Visincr will now direct users trying to do a
+	                      calendrical incrementing operation (IMDY, IYMD,
+			      IDMY) but missing calutil.vim to the help on
+			      where to get it (|visincr-calutil|).
+	     06/12/06       * :IO and :IIO implemented to support octal
+	                      incrementing
 	v13: 03/15/06       : a zfill of '' or "" now stands for an empty zfill
 	     03/16/06       * visincr now insures that the first character of
 	                      a month or day incrementing sequence (:IM, :ID)
-			      is capitalized
-			    * (bugfix) names embedded in a line weren't being
-			      incremented correctly; text to the right of the
-			      daynames/monthnames went missing.  Fixed.
+	                      is capitalized
+	                    * (bugfix) names embedded in a line weren't being
+	                      incremented correctly; text to the right of the
+	                      daynames/monthnames went missing.  Fixed.
 	v12: 04/20/05       : load-once variable changed to g:loaded_visincr
 	                      protected from users' cpo options
 	     05/06/05         zfill capability provided to IDMY IMDY IYMD
@@ -378,4 +417,4 @@ numbers, dates, or daynames.
 	     ID             : day-of-week incrementing
 	v4 : gdefault option bypassed (saved/set nogd/restored)
 
-vim: tw=78:ts=8:ft=help
+vim: tw=78:ts=8:ft=help:fdm=marker
