@@ -109,6 +109,8 @@ IMDY	visincr.txt	/*IMDY*
 IO	visincr.txt	/*IO*
 IX	visincr.txt	/*IX*
 IYMD	visincr.txt	/*IYMD*
+LargeFile-copyright	LargeFile.txt	/*LargeFile-copyright*
+LargeFile.txt	LargeFile.txt	/*LargeFile.txt*
 MatchError	matchit.txt	/*MatchError*
 NERD_allow_any_visual_delims_regexp	NERD_comments.txt	/*NERD_allow_any_visual_delims_regexp*
 NERD_alt_com_map	NERD_comments.txt	/*NERD_alt_com_map*
@@ -382,6 +384,7 @@ hicurline-start	HiCurLine.txt	/*hicurline-start*
 hicurline-stopping	HiCurLine.txt	/*hicurline-stopping*
 hicurline-usage	HiCurLine.txt	/*hicurline-usage*
 hicurline.txt	HiCurLine.txt	/*hicurline.txt*
+largefile	LargeFile.txt	/*largefile*
 loaded_nerd_comments	NERD_comments.txt	/*loaded_nerd_comments*
 manpageview	manpageview.txt	/*manpageview*
 manpageview-contents	manpageview.txt	/*manpageview-contents*

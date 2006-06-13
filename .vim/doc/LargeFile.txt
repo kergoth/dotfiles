@@ -1,0 +1,27 @@
+*LargeFile.txt*	Editing Large Files Quickly			Mar 30, 2006
+
+Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+	  (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*LargeFile-copyright*
+           The VIM LICENSE applies to LargeFile.vim
+           (see |copyright|) except use "LargeFile" instead of "Vim"
+	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
+==============================================================================
+1. Large File Plugin						*largefile*
+
+The LargeFile plugin is fairly short -- it simply sets up an |autocmd| that
+checks for large files.  There is one parameter: >
+	g:LargeFile
+which, by default, is 100.  Thus 100MByte files and larger are considered to
+be "large files"; smaller ones aren't.  Of course, you as a user may set
+g:LargeFile to whatever you want in your <.vimrc> (in units of MBytes).
+
+Basically, this autocmd simply turns off a number of features in Vim,
+including event handling, undo, and syntax highlighting, in the interest of
+speed and responsiveness.
+
+LargeFile.vim borrows from vimtip#611.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:fdm=marker:
