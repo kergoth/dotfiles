@@ -67,8 +67,8 @@ syn case match
   endif
 
   HiLink txtNumber	       	Number
-  HiLink txtString	       	Identifier "Statement Identifier
-  HiLink txtOperator		Operator
+  HiLink txtString	        Operator
+  HiLink txtOperator		Identifier
   HiLink txtCite		String
   HiLink txtComments		Comment
   HiLink txtComment		Comment "Constant 
