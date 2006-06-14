@@ -10,9 +10,8 @@
 "
 "   - Thanks to Desert and OceanDeep for their color scheme 
 "     file layouts
-"   - Thanks to Raimon Grau for his feedback
+"   - Thanks to Raimon Grau and Bob Lied for their feedback
 
-set background=dark
 if version > 580
     " no guarantees for version 5.8 and below, but this makes it stop
     " complaining
@@ -26,7 +25,7 @@ let g:colors_name="baycomb"
 
 " functions {{{
 " returns an approximate grey index for the given grey level
-fun <SID>grey_number(x)
+fun s:grey_number(x)
     if &t_Co == 88
         if a:x < 23
             return 0
@@ -65,7 +64,7 @@ fun <SID>grey_number(x)
 endfun
 
 " returns the actual grey level represented by the grey index
-fun <SID>grey_level(n)
+fun s:grey_level(n)
     if &t_Co == 88
         if a:n == 0
             return 0
@@ -98,7 +97,7 @@ fun <SID>grey_level(n)
 endfun
 
 " returns the palette index for the given grey index
-fun <SID>grey_color(n)
+fun s:grey_color(n)
     if &t_Co == 88
         if a:n == 0
             return 16
@@ -119,7 +118,7 @@ fun <SID>grey_color(n)
 endfun
 
 " returns an approximate color index for the given color level
-fun <SID>rgb_number(x)
+fun s:rgb_number(x)
     if &t_Co == 88
         if a:x < 69
             return 0
@@ -146,7 +145,7 @@ fun <SID>rgb_number(x)
 endfun
 
 " returns the actual color level for the given color index
-fun <SID>rgb_level(n)
+fun s:rgb_level(n)
     if &t_Co == 88
         if a:n == 0
             return 0
@@ -167,7 +166,7 @@ fun <SID>rgb_level(n)
 endfun
 
 " returns the palette index for the given R/G/B color indices
-fun <SID>rgb_color(x, y, z)
+fun s:rgb_color(x, y, z)
     if &t_Co == 88
         return 16 + (a:x * 16) + (a:y * 4) + a:z
     else
@@ -176,128 +175,186 @@ fun <SID>rgb_color(x, y, z)
 endfun
 
 " returns the palette index to approximate the given R/G/B color levels
-fun <SID>color(r, g, b)
+fun s:color(r, g, b)
     " get the closest grey
-    let l:gx = <SID>grey_number(a:r)
-    let l:gy = <SID>grey_number(a:g)
-    let l:gz = <SID>grey_number(a:b)
+    let l:gx = s:grey_number(a:r)
+    let l:gy = s:grey_number(a:g)
+    let l:gz = s:grey_number(a:b)
 
     " get the closest color
-    let l:x = <SID>rgb_number(a:r)
-    let l:y = <SID>rgb_number(a:g)
-    let l:z = <SID>rgb_number(a:b)
+    let l:x = s:rgb_number(a:r)
+    let l:y = s:rgb_number(a:g)
+    let l:z = s:rgb_number(a:b)
 
     if l:gx == l:gy && l:gy == l:gz
         " there are two possibilities
-        let l:dgr = <SID>grey_level(l:gx) - a:r
-        let l:dgg = <SID>grey_level(l:gy) - a:g
-        let l:dgb = <SID>grey_level(l:gz) - a:b
+        let l:dgr = s:grey_level(l:gx) - a:r
+        let l:dgg = s:grey_level(l:gy) - a:g
+        let l:dgb = s:grey_level(l:gz) - a:b
         let l:dgrey = (l:dgr * l:dgr) + (l:dgg * l:dgg) + (l:dgb * l:dgb)
-        let l:dr = <SID>rgb_level(l:gx) - a:r
-        let l:dg = <SID>rgb_level(l:gy) - a:g
-        let l:db = <SID>rgb_level(l:gz) - a:b
+        let l:dr = s:rgb_level(l:gx) - a:r
+        let l:dg = s:rgb_level(l:gy) - a:g
+        let l:db = s:rgb_level(l:gz) - a:b
         let l:drgb = (l:dr * l:dr) + (l:dg * l:dg) + (l:db * l:db)
         if l:dgrey < l:drgb
             " use the grey
-            return <SID>grey_color(l:gx)
+            return s:grey_color(l:gx)
         else
             " use the color
-            return <SID>rgb_color(l:x, l:y, l:z)
+            return s:rgb_color(l:x, l:y, l:z)
         endif
     else
         " only one possibility
-        return <SID>rgb_color(l:x, l:y, l:z)
+        return s:rgb_color(l:x, l:y, l:z)
     endif
 endfun
 
 " returns the palette index to approximate the 'rrggbb' hex string
-fun <SID>rgb(rgb)
+fun s:rgb(rgb)
     let l:r = ('0x' . strpart(a:rgb, 0, 2)) + 0
     let l:g = ('0x' . strpart(a:rgb, 2, 2)) + 0
     let l:b = ('0x' . strpart(a:rgb, 4, 2)) + 0
 
-    return <SID>color(l:r, l:g, l:b)
+    return s:color(l:r, l:g, l:b)
 endfun
 
 " sets the highlighting for the given group
-fun <SID>X(group, fg, bg, attr)
-    if a:fg != ''
-        exec 'hi ' . a:group . ' guifg=#' . a:fg . ' ctermfg=' . <SID>rgb(a:fg)
+fun! s:X(group, ...)
+    let fg = ''
+    let bg = ''
+    let attr = ''
+    for s in a:000
+        let sp = split(s, '=')
+        if len(sp) > 1
+            if sp[0] == 'fg'
+                let fg = sp[1]
+            elseif sp[0] == 'bg'
+                let bg = sp[1]
+            elseif sp[0] == 'attr'
+                let attr = sp[1]
+            else
+                exe 'echoerr Unknown option '.sp[0]
+                return
+            endif
+        endif
+    endfor
+
+    if fg != ''
+        if fg[0:1] != '0x'
+            let ctermfg = fg
+            exec printf('hi %s guifg=#%s', a:group, fg)
+        else
+            let fg = printf('%06X', str2nr(fg, 16))
+            let ctermfg = s:rgb(fg)
+            exec printf('hi %s guifg=#%s ctermfg=%s', a:group, fg, ctermfg)
+        endif
     endif
-    if a:bg != ''
-        exec 'hi ' . a:group . ' guibg=#' . a:bg . ' ctermbg=' . <SID>rgb(a:bg)
+
+    if bg != ''
+        if bg[0:1] != '0x'
+            let ctermbg = bg
+            exec printf('hi %s guibg=#%s', a:group, bg)
+        else
+            let bg = printf('%06X', str2nr(bg, 16))
+            let ctermbg = s:rgb(bg)
+            exec printf('hi %s guibg=#%s ctermbg=%s', a:group, bg, ctermbg)
+        endif
     endif
-    if a:attr != ''
-        exec 'hi ' . a:group . ' gui=' . a:attr . ' cterm=' . a:attr
+
+    if attr != ''
+        exec printf('hi %s gui=%s cterm=%s', a:group, attr, attr)
     endif
 endfun
 " }}}
 
-" The default baycomb comment coloring
-" call <SID>X('Comment', '349D58', '', '')
+command! -nargs=+ -buffer BetterHi call s:X(<f-args>)
 
-call <SID>X('Comment', '008B8B', '', '')
-call <SID>X('Conditional', 'D0688D', '', 'NONE')
-call <SID>X('Constant', '5C78F0', '', '')
-call <SID>X('Cursor', '0000AA', 'CAD5C0', '')
-call <SID>X('Directory', 'BBD0DF', '', '')
-call <SID>X('DiffText', '', '004335', '')
-call <SID>X('DiffChange', '', '685B5C', '')
-call <SID>X('DiffAdd', '', '0A4B8C', '')
-call <SID>X('DiffDelete', '300845', '200845', '')
-call <SID>X('Error', '', 'B03452', '')
-call <SID>X('ErrorMsg', '', 'FF4545', '')
-call <SID>X('Exception', 'D0A8AD', '', 'BOLD')
-call <SID>X('FoldColumn', 'DBCAA5', '0A0A18', '')
-call <SID>X('Folded', 'BEBEBE', '232235', '')
-call <SID>X('Function', 'BAB588', '', 'BOLD')
-call <SID>X('Identifier', '5094C4', '', '')
-call <SID>X('Ignore', '666666', '', '')
-call <SID>X('IncSearch', 'BABEAA', '3A4520', '')
-call <SID>X('Keyword', 'BEBEBE', '', 'BOLD')
-call <SID>X('LineNr', '206AA9', '101124', '')
-call <SID>X('MatchParen', '001122', '7B5A55', '')
-call <SID>X('ModeMsg', '00AACC', '', '')
-call <SID>X('MoreMsg', '2E8B57', '', '')
-call <SID>X('NonText', '382920', '', '')
-call <SID>X('Normal', 'A0B4E0', '11121A', '')
-call <SID>X('Number', '4580B4', '111A2A', '')
-call <SID>X('Operator', 'E8CDC0', '', 'NONE')
-call <SID>X('Pmenu', '9AADD5', '3A6595', '')
-call <SID>X('PmenuSel', 'B0D0F0', '4A85BA', '')
-call <SID>X('PreProc', 'BA75CF', '', '')
-call <SID>X('Question', 'AABBCC', '', '')
-call <SID>X('Repeat', 'E06070', '', 'NONE')
-call <SID>X('Search', '000000', 'BBBB00', '')
-call <SID>X('Special', 'AAAACA', '', '')
-" call <SID>X('SpecialKey', '90DCB0', '', '')
-call <SID>X('SpecialKey', '424242', '', '')
-" call <SID>X('Statement', 'FCA8AD', '', 'NONE')
-call <SID>X('Statement', 'DCA8AD', '', 'NONE')
-call <SID>X('StatusLine', '6880EA', '354070', 'NONE')
-call <SID>X('StatusLineNC', '5C6DBE', '2C3054', 'NONE')
-call <SID>X('tabline', '5B7098', '4D4D5F', 'NONE')
-call <SID>X('tablinefill', 'AAAAAA', '2D2D3F', 'NONE')
-call <SID>X('tablinesel', '50AAE5', '515A71', 'NONE')
-call <SID>X('Title', 'E5E5CA', '', 'NONE')
-call <SID>X('Todo', 'FF4500', 'EEEE00', '')
-call <SID>X('Type', '0490E8', '', 'BOLD')
-call <SID>X('Underlined', 'BAC5BA', '', 'NONE')
-call <SID>X('VertSplit', '223355', '22253C', 'NONE')
-call <SID>X('Visual', '102030', '80A0F0', '')
-call <SID>X('VisualNOS', '201A30', 'A3A5FF', '')
-call <SID>X('WarningMsg', 'FA8072', '', '')
-
-" delete functions {{{
-delf <SID>X
-delf <SID>rgb
-delf <SID>color
-delf <SID>rgb_color
-delf <SID>rgb_level
-delf <SID>rgb_number
-delf <SID>grey_color
-delf <SID>grey_level
-delf <SID>grey_number
-" }}}
+if &background == "dark"
+    " BetterHi Comment    fg=0x349D58   bg=bg
+    BetterHi Comment      fg=0x8B8B
+    BetterHi Constant     fg=0x5C78F0
+    BetterHi Cursor       fg=0xAA     bg=0xCAD5C0
+    BetterHi DiffAdd      bg=0xA4B8C
+    BetterHi DiffChange   bg=0x685B5C
+    BetterHi DiffDelete   fg=0x300845 bg=0x200845
+    BetterHi DiffText     bg=0x4335
+    BetterHi Directory    fg=0xBBD0DF
+    BetterHi Error        bg=0xB03452
+    BetterHi ErrorMsg     bg=0xFF4545
+    BetterHi FoldColumn   fg=0xDBCAA5 bg=0xA0A18
+    BetterHi Folded       fg=0xBEBEBE bg=0x232235
+    BetterHi Function     fg=0xBAB588 attr=BOLD
+    BetterHi Identifier   fg=0x5094C4
+    BetterHi Ignore       fg=0x666666
+    BetterHi IncSearch    fg=0xBABEAA bg=0x3A4520
+    BetterHi LineNr       fg=0x206AA9 bg=0x101124
+    BetterHi MatchParen   fg=0x1122   bg=0x7B5A55
+    BetterHi ModeMsg      fg=0xAACC
+    BetterHi MoreMsg      fg=0x2E8B57
+    BetterHi NonText      fg=0x382920
+    BetterHi Normal       fg=0xA0B4E0 bg=0x11121A
+    BetterHi Number       fg=0x4580B4
+    BetterHi Pmenu        fg=0x9AADD5 bg=0x3A6595
+    BetterHi PmenuSel     fg=0xB0D0F0 bg=0x4A85BA
+    BetterHi PreProc      fg=0xBA75CF
+    BetterHi Question     fg=0xAABBCC
+    " BetterHi Search     fg=0x0      bg=darkye
+    BetterHi Special      fg=0xAAAACA
+    " BetterHi SpecialKey fg=0x90DCB0
+    BetterHi SpecialKey   fg=0x424242
+    " BetterHi Statement  fg=0xFCA8AD
+    BetterHi Statement    fg=0xDCA8AD attr=NONE
+    BetterHi StatusLine   fg=0x6880EA bg=0x354070
+    BetterHi StatusLineNC fg=0x5C6DBE bg=0x2C3054
+    BetterHi tabline      fg=0x5B7098 bg=0x4D4D5F
+    BetterHi tablinefill  fg=0xAAAAAA bg=0x2D2D3F
+    BetterHi tablinesel   fg=0x50AAE5 bg=0x515A71
+    BetterHi Title        fg=0xE5E5CA
+    BetterHi Todo         fg=0xFF450  bg=0xEEEE0
+    BetterHi Type         fg=0x490E8  attr=BOLD
+    BetterHi Underlined   fg=0xBAC5BA
+    BetterHi VertSplit    fg=0x223355 bg=0x22253C
+    BetterHi Visual       fg=0x102030 bg=0x80A0F0
+    BetterHi VisualNOS    fg=0x201A30 bg=0xA3A5FF
+    BetterHi WarningMsg   fg=0xFA8072
+elseif &background == "light"
+    " BetterHi Comment    fg=darkye   bg=0x207ADA
+    BetterHi Constant     fg=0x3A40AA
+    BetterHi Cursor       fg=0x5293D  bg=0xCADACA
+    BetterHi Directory    fg=0xBBD0DF
+    BetterHi Error        bg=0xB03452
+    BetterHi ErrorMsg     bg=0xFF4545
+    BetterHi FoldColumn   fg=0xA9A9A9 bg=0x409AE0
+    BetterHi Folded       fg=0xBBDDCC bg=0x252F5D
+    BetterHi Function     fg=0xD06D50 attr=NONE
+    BetterHi Identifier   fg=0x856075
+    BetterHi Ignore       fg=0x666666
+    BetterHi IncSearch    fg=0xDADECA bg=0x3A4520
+    BetterHi LineNr       fg=0x8B     bg=0x409AE0 attr=BOLD
+    BetterHi ModeMsg      fg=0xAACC
+    BetterHi MoreMsg      fg=0x2E8B57
+    BetterHi NonText      fg=0x382920 bg=0x152555
+    BetterHi Normal       fg=0x3255   bg=0xE8EBF0
+    BetterHi Number       fg=0x6BCD
+    BetterHi Pmenu        fg=0x9AADD5 bg=0x3A6595
+    BetterHi PmenuSel     fg=0xB0D0F0 bg=0x4A85BA
+    BetterHi PreProc      fg=0x9570B5
+    BetterHi Question     fg=0xAABBCC
+    BetterHi Search       fg=0x3A4520 bg=0xBABDAD
+    BetterHi Special      fg=0x652A7A
+    BetterHi SpecialKey   fg=0x308C70
+    BetterHi Statement    fg=0xDA302A
+    BetterHi StatusLine   fg=0xA150D  bg=0x20B5FD
+    BetterHi StatusLineNC fg=0x302D34 bg=0x580DA
+    BetterHi Title        fg=0x857540
+    BetterHi Todo         fg=0xFF450  bg=0xEEEE0
+    BetterHi Type         fg=0x307ACA
+    BetterHi Underlined   fg=0x8A758A
+    BetterHi VertSplit    fg=0x7F7F7F bg=0x525F95
+    BetterHi Visual       fg=0x8FBF   bg=0x33DFEF
+    BetterHi WarningMsg   fg=0xFA8072
+else
+    echoerr "Unrecognized value for 'background'"
+endif
 
 " vim: sw=4 sts=4 et fdm=marker fdl=0:
