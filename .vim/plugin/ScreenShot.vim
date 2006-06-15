@@ -26,19 +26,343 @@
 "
 " History:
 "    0.7: Initial upload
-"    0.8: Added:
+"    0.8: 
+"    Added:
 "       a) Full 'nowrap' option support
 "       b) Non-printable characters support
 "       c) 'showbreak' option support
 "       d) 'display' option support (lastline and uhex both)
 "       e) 'list' option support
-"    0.81: Bug in HTML code generation fixed (an unmatched closing tag </span> in some cases)
+"    0.9:
+"    Added:
+"        1)Custom statusline (i.e. 'stl' option support)
+"        2)Tabline bar(only for console or if 'guioptions' does not contain 'e'). Custom tabline also supported
+"        3)Title bar with VIM logo (can be disabled). Custom title(i.e. option 'titlestring') also supported
+"        4)Credits in right bottom corner(can be disabled)
 "
 " TODO:
 "   1.Very small windows proper rendering
 "   2.Linebreak option support
 "   }}}
-"{{{-----------Utils
+"{{{-----------Status Line
+function! Dump(var,...)
+        let indent = a:0?(a:1):0
+        if type(a:var) == type({})
+                return "\n".repeat(' ',indent)."{\n".repeat(' ',indent).join(map(copy(items(a:var)),'string(v:val[0]).": ".Dump(v:val[1],indent + 4)'), ',')."\n".repeat(' ',indent)."}\n"
+        elseif type(a:var) == type([])
+                return "\n".repeat(' ',indent)."[\n".repeat(' ',indent).join(map(copy(a:var),'Dump(v:val,indent + 4)'),', ')."\n".repeat(' ',indent)."]\n"
+        else
+                return string(a:var)
+        endif
+
+endf
+function! s:Sum(array)
+        return len(a:array)?eval(join(map(copy(a:array),'strlen(v:val.value)'),' + ')):0
+endf
+
+let s:PrintfNode = {'type': ''}
+function! s:PrintfNode.Value()
+        if self.name == ''
+                return ''
+        elseif has_key(self,'expr')
+                return eval(self.expr)
+        endif
+        return '[unimplemented]'
+endf
+function! s:PrintfNode.Render(hi,lasttype,fillchar,invischar)
+        let res = self.Value()
+        if self.type == 'flag' && (res =~ '^,' && a:lasttype == 'plain' || res =~ '^ ' && a:lasttype == 'flag' || a:lasttype == 'start')
+                let res = strpart(res, 1)
+        endif
+        if strlen(self.minwid)&& strlen(res) < self.minwid
+                if self.left 
+                        let res .= repeat(a:fillchar, self.minwid - strlen(res))
+                else
+                        let res = repeat(self.type=='num'&&self.zeropad?'0': a:fillchar, self.minwid - strlen(res)).res
+                endif
+        elseif strlen(self.maxwid) && strlen(res) > self.maxwid
+                let res = strpart(a:invischar.strpart(res,strlen(res) - self.maxwid + strlen(a:invischar)),0, self.maxwid)
+        endif
+        return [{'value': res,'hi': a:hi,'lasttype': (strlen(res)?(self.type):(a:lasttype))}]
+endf
+function! CopyArgs(args,...)
+         return filter((a:0)?extend(copy(a:args),map(eval('{'.join(map(items(filter(deepcopy(a:),'has_key(a:args,v:key)&&type(v:val) == type("")')),'string(v:val[1]).":".string(v:val[0])'),',').'}'), 'a:args[v:val[0]]')):copy(a:args),'v:key !~ "\\v^(\\d+|firstline|lastline)$"')
+endf
+function! s:PrintfNode.New(name,left,zeropad,minwid,maxwid,...)
+        return map(extend(has_key(s:Nodes,a:name)?(deepcopy(s:Nodes[a:name])):deepcopy(self),CopyArgs(a:,'value','root')), "v:key == 'minwid'&& a:0 < 2 && v:val > 50?50:(v:val)")
+endf
+let s:StringNode = extend({'type': 'str'},s:PrintfNode,'keep')
+let s:NumericNode = extend({'type': 'num'},s:PrintfNode,'keep')
+let s:FlagNode = extend({'type': 'flag'},s:StringNode,'keep')
+
+unlet s:FlagNode.Value
+function! s:FlagNode.Value()
+        if has_key(self,'expr')
+                let res = eval(self.expr)
+                if type(res) == type(1)
+                        let res = res?(self.on):self.off
+                endif
+                return !strlen(res)?'':self.name =~ '\U'?' ['.res.']': ','.res
+        endif
+        return '[unimplemented]'
+endf
+
+let s:Nodes = {'f': copy(s:StringNode), 
+\'F': copy(s:StringNode), 
+\'t': copy(s:StringNode), 
+\'m': extend({'name': 'm','expr': '&modified','on': '+','off': '-'}            ,s:FlagNode),        
+\'M': extend({'name': 'M','expr': '&modified','on': '+','off': '-'}            ,s:FlagNode),          
+\'r': extend({'name': 'r','expr': '&readonly','on': 'RO','off': ''}            ,s:FlagNode),         
+\'R': extend({'name': 'R','expr': '&readonly','on': 'RO','off': ''}            ,s:FlagNode),         
+\'h': extend({'name': 'h','expr': '&buftype == "help"','on': 'help','off': ''} ,s:FlagNode),         
+\'H': extend({'name': 'H','expr': '&buftype == "help"','on': 'HLP','off': ''}  ,s:FlagNode),        
+\'w': extend({'name': 'w','expr': '&previewwindow','on': 'Preview','off': ''}  ,s:FlagNode),          
+\'W': extend({'name': 'W','expr': '&previewwindow','on': 'PRV','off': ''}      ,s:FlagNode),          
+\'y': extend({'name': 'y','expr': '&filetype'                                } ,s:FlagNode),          
+\'Y': extend({'name': 'Y','expr': 'toupper(&filetype)'}                      ,s:FlagNode),        
+\'k': extend({'expr': '""'}, s:StringNode ),
+\'n': extend({'expr': 'bufnr("%")'}, s:NumericNode), 
+\'b': copy(s:NumericNode), 
+\'B': copy(s:NumericNode), 
+\'o': copy(s:NumericNode), 
+\'O': copy(s:NumericNode), 
+\'N': copy(s:NumericNode), 
+\'l': extend({'expr': "line('.')"        }, s:NumericNode), 
+\'L': extend({'expr': "line('$')"        }, s:NumericNode), 
+\'c': extend({'expr': "col('$') - 1?col('.'):0"         }, s:NumericNode), 
+\'v': extend({'expr': "virtcol('.')"     }, s:NumericNode),  
+\'V': copy(s:StringNode), 
+\'p': copy(s:NumericNode), 
+\'P': copy(s:StringNode), 
+\'a': copy(s:StringNode), 
+\'{': copy(s:StringNode), 
+\'(': copy(s:PrintfNode),     
+\')': copy(s:PrintfNode),      
+\'T': copy(s:PrintfNode), 
+\'X': copy(s:NumericNode), 
+\'<': copy(s:PrintfNode),         
+\'=': copy(s:PrintfNode),         
+\'#': extend(copy(s:PrintfNode),{'type': 'hi'}),         
+\'*': extend(copy(s:PrintfNode),{'type': 'hi'})}
+unlet s:Nodes.T.Render
+function! s:Nodes.T.Render(hi,lasttype,fillchar,invischar)
+	return [{'value': '', 'hi': a:hi,'lasttype': a:lasttype}]
+endf
+unlet s:Nodes.M.Value
+function! s:Nodes.M.Value()
+        if !eval(self.expr) && !strlen(&buftype)
+                return ''
+        endif
+        return call(s:FlagNode.Value, [], self)
+endf
+let s:Nodes.m.Value = s:Nodes.M.Value
+unlet s:Nodes.f.Value
+function! s:Nodes.f.Value() "    Path to the file in the buffer, relative to current directory. 
+        return strlen(bufname('%'))?fnamemodify(bufname('%'),':.'): '[No Name]'
+endf
+unlet s:Nodes.F.Value
+function! s:Nodes.F.Value() "    Full path to the file in the buffer. 
+        return strlen(bufname('%'))?fnamemodify(bufname('%'),':p'): '[No Name]'
+endf
+unlet s:Nodes.t.Value
+function! s:Nodes.t.Value() "    File name (tail) of file in the buffer. 
+        return strlen(bufname('%'))?fnamemodify(bufname('%'),':t'): '[No Name]'
+endf
+unlet s:Nodes.k.Value
+function! s:Nodes.k.Value() "    Value of \"b:keymap_name\" or 'keymap' when |:lmap| mappings are	      being used: \"<keymap>\" 
+	return
+endf
+unlet s:Nodes.n.Value
+function! s:Nodes.n.Value() "    Buffer number. 
+        return bufnr('%')
+endf
+unlet s:Nodes.b.Value
+function! s:Nodes.b.Value() "    Value of byte under cursor. 
+        return char2nr(strpart(getline('.'),col('.')-1,1))
+endf
+unlet s:Nodes.B.Value
+function! s:Nodes.B.Value() "    As above, in hexadecimal. 
+        return printf('%x',s:Nodes.b.Value())
+endf
+unlet s:Nodes.o.Value
+function! s:Nodes.o.Value() "    Byte number in file of byte under cursor, first byte is 1.      Mnemonic: Offset from start of file (with one added)	      {not available when compiled without |+byte_offset| feature} 
+        return line2byte('.') + col('.')
+endf
+unlet s:Nodes.O.Value
+function! s:Nodes.O.Value() "    As above, in hexadecimal. 
+        return printf('%x',s:Nodes.o.Value())
+endf
+unlet s:Nodes.N.Value
+function! s:Nodes.N.Value() "    Printer page number.  (Only works in the 'printheader' option.) 
+	return
+endf
+unlet s:Nodes.V.Value
+function! s:Nodes.V.Value() "    Virtual column number as -{num}.  Not displayed if equal to 'c'. 
+	return call(s:Nodes.c.Value,[],self) == virtcol('.')?'': '-'.virtcol('.')
+endf
+unlet s:Nodes.p.Value
+function! s:Nodes.p.Value() "    Percentage through file in lines as in |CTRL-G|. 
+	return line('.') * 100 / line('$')
+endf
+unlet s:Nodes.P.Value
+function! s:Nodes.P.Value() "    Percentage through file of displayed window.  This is like the	      percentage described for 'ruler'.  Always 3 in length. 
+	return line('w0') == 1?(line('$') == line('w$')?'All': 'Top'):line('w$') == line('$')?'Bot': printf('%02s',line('w0')*100/(line('$') - line('w$') + line('w0'))).'%'
+endf
+unlet s:Nodes.a.Value
+function! s:Nodes.a.Value() "    Argument list status as in default title.  ({current} of {max})	      Empty if the argument file count is zero or one. 
+	return
+endf
+unlet s:Nodes['{'].Value
+function! s:Nodes['{'].Value() " F  Evaluate expression between '%{' and '}' and substitute result.	      Note that there is no '%' before the closing '}'. 
+	let res = eval(self.value)
+        if type(res) == type("")
+                return res
+        else
+                return string(res)
+        endif
+endf
+function! s:TruncateArray(array,maxwid,left,invischar)
+        let array = a:left?(a:array):reverse(a:array)
+        let i = len(array)
+        let w = 0
+        while i > 0
+                let i -= 1
+                let w += strlen(array[i].value)
+                if w + strlen(a:invischar) >= a:maxwid 
+                        let array = array[(i):]
+                        if a:left
+                                let array[0].value = a:invischar.strpart(array[0].value,w - a:maxwid + strlen(a:invischar))
+                                return array
+                        else
+                                let array[0].value = strpart(array[0].value, 0, strlen(array[0].value) - w + a:maxwid - strlen(a:invischar)).a:invischar
+                                return reverse(array)
+                        endif
+                endif
+
+        endwhile
+endf
+unlet s:Nodes['('].Render
+function! s:Nodes['('].Render(hi,lasttype,fillchar,invischar) "    Start of item group.  Can be used for setting the width and	      alignment of a section.  Must be followed by %) somewhere. 
+        let [hi, lasttype] = [a:hi, a:lasttype]
+        let array = []
+        let i = 0
+        let lt = 0 
+        for node in self.value
+                if type(node) == type({})
+                        let res = node.Render(hi,lasttype,a:fillchar,'<')
+                        if node.name == '='
+                               let eq = res[0] 
+                        elseif node.name == '<'
+                               let lt = i
+                       endif
+                else
+                        let res = strlen(node)?[{'value': node, 'hi': hi, 'lasttype': 'plain'}]:[]
+                endif
+                let array += res
+                let hi = array[len(array) - 1].hi
+                let lasttype = array[len(array) - 1].lasttype
+                unlet node
+                let i += 1
+        endfor
+        let width = s:Sum(array)
+        if strlen(self.minwid) && width < self.minwid
+                let space = repeat(a:fillchar, self.minwid - width)
+                if exists('eq')
+                        call extend(eq, {'value': space})
+                elseif self.left 
+                        let array += [{'value': space, 'hi': array[len(array) - 1].hi,'lasttype': lasttype}]
+                else
+                        let array = [{'value': space, 'hi': a:hi,'lasttype': a:lasttype}] + array
+                endif
+        elseif strlen(self.maxwid) && width > self.maxwid
+                if !lt && get(array[0],'lasttype','') != 'plain'
+                        let part1 = [] 
+                else
+                        let part1 = array[:lt]
+                endif
+                let maxwid = self.maxwid - s:Sum(part1)
+                if maxwid >= 0
+                        let array = part1 + s:TruncateArray(array,maxwid,1,a:invischar)
+                else
+                        let array = s:TruncateArray(part1,self.maxwid,0,a:invischar)
+                endif
+        endif
+        return array
+endf
+unlet s:Nodes[')'].Value
+function! s:Nodes[')'].Value() "    End of item group.  No width fields allowed. 
+	return
+endf
+unlet s:Nodes.T.Value
+function! s:Nodes.T.Value() "    For 'tabline': start of tab page N label.  Use %T after the last	      label.  This information is used for mouse clicks. 
+	return ""
+endf
+unlet s:Nodes.X.Value
+function! s:Nodes.X.Value() "    For 'tabline': start of close tab N label.  Use %X after the	      label, e.g.: %3Xclose%X.  Use %999X for a \"close current tab\"	      mark.  This information is used for mouse clicks. 
+	return ""
+endf
+unlet s:Nodes['<'].Value
+function! s:Nodes['<'].Value() "    Where to truncate line if too long.  Default is at the start.	      No width fields allowed. 
+	return ""
+endf
+unlet s:Nodes['='].Value
+function! s:Nodes['='].Value() "    Separation point between left and right aligned items.	      No width fields allowed. 
+	return ""
+endf
+unlet s:Nodes['#'].Render
+function! s:Nodes['#'].Render(hi,lasttype,fillchar,invischar) "    Set highlight group.  The name must follow and then a # again.	      Thus use %#HLname# for highlight group HLname.  The same	      highlighting is used, also for the statusline of non-current	      windows. 
+        "if self.value == 'TabLineTitle666'
+        "        return [{'value': '', 'hi': 'Title','lasttype': a:lasttype,'TabLineTitle666': 1}]
+        "endif
+	return [{'value': '', 'hi': self.value,'lasttype': a:lasttype}]
+endf
+unlet s:Nodes['*'].Render
+function! s:Nodes['*'].Render(hi,lasttype,fillchar,invischar) "    Set highlight group to User{N}, where {N} is taken from the minwid field, e.g. %1*.  Restore normal highlight with %* or %0*.	      The difference between User{N} and StatusLine  will be applied	      to StatusLineNC for the statusline of non-current windows.	      The number N must be between 1 and 9.  See |hl-User1..9|
+        if !strlen(self.minwid) || !self.minwid
+                return [{'value': '', 'hi': '','lasttype': a:lasttype}]
+        endif
+        return [{'value': '', 'hi': 'User'.self.minwid,'lasttype': a:lasttype}]
+endf
+function! s:StlPrintf(expr,width,fillchar,invischar,hi)
+        let expr = a:expr =~ '^%!'?eval(strpart(a:expr,2)):a:expr
+
+        let str = 's:Nodes["("].New("(",1,0,'.a:width.','.a:width.',['.substitute(expr,'\([^%]*\)\%(%\(-\)\?\(0\)\?\([1-9]\d*\)\?\%(\.\(\d*\)\)\?\([a-zA-Z<=*()]\|{\([^}]*\)}\|#\([^#]*\)#\)\|$\)','\=
+                                \(submatch(1) != ""?string(submatch(1)).",": "").
+                                \(
+                                \       submatch(6) == ")"?"]),": " get(s:Nodes,".string(strpart(submatch(6),0,1)).", s:PrintfNode".
+                                \   ").New(".
+                                \               string(strpart(submatch(6),0,1)).", ".strlen(submatch(2)).", ".strlen(submatch(3)).", ".string(submatch(4)).", ".string(submatch(5)).
+                                \                (submatch(6)=="("?", [":
+                                \                        strlen(submatch(7))?", ".string(submatch(7))."),":
+                                \                        strlen(submatch(8))?", ".string(submatch(8))."),": 
+                                \       "),"
+                                \                )
+                                \)','g').'], 1)'
+        "echo str
+        let tree = eval(str)
+        "echo Dump(tree)
+        let array = tree.Render('','start',a:fillchar,a:invischar)
+        let res = s:SynIdStart(hlID(a:hi))
+        let id = a:hi 
+        let type = 'start'
+        "echo Dump(array)
+        for node in array
+                if node.hi == ''
+                        let node.hi = a:hi
+                endif
+                if node.hi != id && node.hi != 'TabLineTitle666'
+                        let res .= s:SynIdEnd(hlID(id=='TabLineTitle666'?'Title':id)).s:SynIdStart(hlID(node.hi=='TabLineTitle666'?'Title':node.hi))
+                        let id = node.hi
+                endif
+                if node.hi=='TabLineTitle666' " Dirty hack to provide non-standard tabline digit highlighting
+                        let res .= '<font color='.s:GetColor(hlID('Title'),'fg#').'>'.s:HtmlEscape(node.value).'</font>'
+                else
+                        let res .= s:HtmlEscape(node.value)
+                endif
+        endfor 
+        let res .= s:SynIdEnd(hlID(id))
+        return res
+endf
 function! s:Bufname(nr)
         let name = bufname(a:nr)
         if name == ''
@@ -49,6 +373,112 @@ function! s:Bufname(nr)
         endif
         return name
 endf
+function! s:TabTitle(nr)
+        return substitute(s:Bufname(tabpagebuflist(a:nr)[tabpagewinnr(a:nr)-1]),'\([^\\]\)[^\\]*\\', '\1\\','g')
+endf
+function! s:DefaultTabLine()
+        let sel = "v:val+1==tabpagenr()?'%#TabLineSel#':'%#TabLine#'"
+        return join(map(range(tabpagenr('$')),"eval(sel).' %#'.(v:val+1==tabpagenr()?'Title':'TabLineTitle666').'#'.len(tabpagebuflist(v:val+1)).'%'.(v:val+1).'T'.eval(sel).repeat('+',eval(join(map(tabpagebuflist(v:val+1),'getbufvar(v:'.'val,\"&modified\")'),'||'))).'%*'.eval(sel).'\ '.s:TabTitle(v:val + 1).' '"),'').'%#TabLineFill#%T%=%#TabLine#%XX'
+endf
+function! GetTabLine()
+        if tabpagenr('$') > 1 && &showtabline == 1 || &showtabline == 2 && (!has('gui_running') || stridx(&guioptions,'e') == -1)
+                return s:StlPrintf(strlen(&tabline)?&tabline: s:DefaultTabLine(), &columns,' ','<','')
+        endif
+        return ''
+endf
+function! s:GetTitle()
+        if !&title
+                let title = 'VIM'
+        else
+                let VIM = get(v:,'servername','')
+                if VIM == ''
+                        let VIM = has('gui_running')?'GVIM': 'VIM'
+                endif
+                let bufName = &buftype == 'help'?'help':strlen(&buftype)?bufname("%"):fnamemodify(fnamemodify(fnamemodify(bufname("%"),":p"),":~"),":h")
+                if strlen(bufName) > 3
+                        let partLen = 3 
+                        let bufName = strpart(bufName, 0, partLen).'%<'.strpart(bufName,partLen)
+                endif
+                if strlen(bufName)
+                        let bufName = '('.bufName.')'
+                endif
+                let args = argc() <= 1?'': ' ('.(argv(argidx()) == bufname('%')?argidx() + 1: '('.(argidx() + 1).')').' of '.argc().')'
+                let titlestring = strlen(&titlestring)?&titlestring: '%t %M '.bufName.args.' - '.VIM
+                let title = substitute(substitute(s:StlPrintf(titlestring,(strlen(&titlestring) && &titlelen?&titlelen:&columns) - 1,' ','..',''),'\s*$','',''), ' ', '\&nbsp;', 'g')
+        endif
+        if g:ScreenShot.Icon
+               return  '<table align=left style="color:white;background:blue"><tr><th>'.s:ParseXpm(s:VimLogoXpm).'</th><th>'.title.'</th></tr></table>'
+       else 
+               return title 
+       endif
+endf
+function! s:SplitWithSpan(hi,str)
+        return eval(join(map(split(a:str,' '),"'s:SynIdWrap(a:hi,\"'.v:val.'\")'"), ".' '."))
+endf
+function! s:GetCredits()
+       return s:SynIdWrap('Question','Code syntax highlighting by ').'<a style='.s:SynIdStyle(hlID('Normal')).' href=http://www.vim.org><u>'.s:SynIdWrap('ModeMsg','VIM').'</u></a>'.s:SynIdWrap('Question',' captured with ').'<a style='.s:SynIdStyle(hlID('Normal')).'  href=http://www.vim.org/scripts/script.php?script_id=1552><u>'.s:SynIdWrap('ModeMsg','ScreenShot').'</u></a>'.s:SynIdWrap('Question','  script ')
+       ".s:SynIdWrap('Question',', colorscheme ').s:SynIdWrap('ModeMsg',g:colors_name)
+endf
+"}}}
+"{{{-----------Menus
+function! s:GetMenu(mode,name)
+        redir => src
+        exec a:mode.'menu '.a:name
+        redir END
+        return src
+endf
+
+"}}}
+"{{{-----------Xpm
+function! s:ParseXpm(src)
+	let [all,comment,name,content;rest] = matchlist(tr(a:src,"\n"," "),'/\*\([^*]*\|\*[^/]\)\*/\s*static\s\+char\s*\*\s*\(\w*\)\[\]\s*=\s*{\(.*\)}')
+	let lines = eval('['.content.']')	
+	let [width, height, colors_count, charwid; rest] = split(lines[0], '\s\+')
+	"echo l:
+	let colors = {}
+	for id in range(colors_count+1)[1:]
+		let [all, chars, key, color; rest] = matchlist(lines[id],'^\(.\{'.charwid.'\}\)\s\+\(.\)\s\+\(.*\)')
+		let colors[chars] = {'color': color, 'key': key}
+	endfor
+	"echo colors
+	let doc = '<table width='.width.' height='.height.' cellspacing=0 cellpadding=0>'
+	for num in range(height + colors_count + 1)[colors_count + 1:]
+		let doc .= '<tr>'
+                for i in range(width)
+                        let col =get(colors,strpart(lines[num],i*charwid, charwid),{})
+			let doc .= '<td'.((has_key(col, 'color') && col.color !~? '^\(None\|\)$')?(' bgcolor='.col.color): '').'></td>'
+		endfor	
+		let doc .= '</tr>'
+	endfor
+        return doc.'</table>'
+endf
+let s:VimLogoXpm = "/* XPM */
+                        \static char * vim16x16[] = {
+                        \'16 16 8 1',
+                        \' 	c None',
+                        \'.	c #000000',
+                        \'+	c #000080',
+                        \'@	c #008000',
+                        \'#	c #00FF00',
+                        \'$	c #808080',
+                        \'%	c #C0C0C0',
+                        \'&	c #FFFFFF',
+                        \'  .....#. ....  ',
+                        \' .&&&&&.@.&&&&. ',
+                        \' .%%%%%$..%%%%$.',
+                        \'  .%%%$.@.&%%$. ',
+                        \'  .%%%$..&%%$.  ',
+                        \'  .%%%$.&%%$..  ',
+                        \' #.%%%$&%%$.@@. ',
+                        \'#@.%%%&%%$.@@@@.',
+                        \'.@.%%%%%..@@@@+ ',
+                        \' ..%%%%.%...@.  ',
+                        \'  .%%%%...%%.%. ',
+                        \'  .%%%.%%.%%%%%.',
+                        \'  .%%$..%.%.%.%.',
+                        \'  .%$.@.%.%.%.%.',
+                        \'   .. .%%.%.%.%.',
+                        \'       .. . . . '};"
 
 "}}}
 "{{{-----------Window's layout recognition functions
@@ -166,10 +596,10 @@ function! s:EnumWindows()
 		let i += 1
 		wincmd w
 	endwhile
-	call s:Window_DelParent(cur)
+"	call s:Window_DelParent(cur)
 	let &ei = ei_save
 	exec winnr_save.'wincmd w'
-	return string(cur)
+	return cur
 
 endf
 "}}}
@@ -478,69 +908,75 @@ function! s:GetColoredText(lines,start,finish,height,lineEnd)
                 let yReal += 1
         endw
 endf
-function! s:GetColoredWindowText(window,lines)
+function! s:GetColoredWindowText(window,lines,last)
         exec a:window.num.'wincmd w'
         let fillChars = s:GetFillChars()
-        call s:GetColoredText(a:lines, line('w0'),line('w$'),winheight(a:window.num),s:SynIdWrap('VertSplit', fillChars.vert))
+        call s:GetColoredText(a:lines, line('w0'),line('w$'),winheight(a:window.num),a:last[0]?'':s:SynIdWrap('VertSplit', fillChars.vert))
         let [fill_stl, synId] = (a:window.active)?[(fillChars.stl), 'StatusLine'] :[fillChars.stlnc, 'StatusLineNC']
-        let name = s:Bufname('%')
-        if &modified
-                let name .= fillChars.stlnc.'[+]'
-        endif
-        if &readonly
-                let name .= (&modified?'':fillChars.stlnc).'[RO]'
-        endif
-        if a:window.pos.topline == 1
-                if a:window.pos.bottomline == a:window.pos.lastline
-                        let percents = 'All'
-                else
-                        let percents = 'Top'
-                endif
-        elseif a:window.pos.bottomline == a:window.pos.lastline
-                let percents = 'Bot'
+        if strlen(&statusline)
+                let StatusLine = s:StlPrintf(&statusline,winwidth('.'),fill_stl,'<',synId)
         else
-                let percents = (a:window.pos.topline*100/(a:window.pos.lastline + a:window.pos.topline - a:window.pos.bottomline )).'%'
-                if strlen(percents) == 2
-                        let percents = ' '.percents
+                let name = s:Bufname('%')
+                  if &modified
+                        let name .= fillChars.stlnc.'[+]'
                 endif
-        endif
-        let posInfo = a:window.pos.line.','.a:window.pos.col.((a:window.pos.col != a:window.pos.virtcol)?('-'.a:window.pos.virtcol): '')
-        let width = winwidth('.')
-        let magicLen = 18
-        let lack =  strlen(name) + magicLen + 1 - width 
-        if lack < 0 
-                let StatusLine = name.repeat(fillChars.stlnc, width - strlen(name) - magicLen).posInfo.repeat(fillChars.stlnc,magicLen - 3 - strlen(posInfo)).percents
-        else
-                let free = strlen(name) + magicLen - 1 - strlen(posInfo)
-                let widthFree = width - 2 - strlen(posInfo)
-                let newNameLen = (strlen(name) - 1)*widthFree/free
-                let newInfoLen = (magicLen - strlen(posInfo))*widthFree/free
-                let newNameLen += widthFree - newNameLen - newInfoLen
-                let StatusLine = s:HtmlEscape('<'.strpart(name, strlen(name) - newNameLen)).' '.posInfo
-                let percents = ' '.percents 
-                if (newInfoLen>4)
-                        let StatusLine .= repeat(fillChars.stlnc,newInfoLen - 4).percents
-                elseif newInfoLen >= 0 
-                        let StatusLine .= repeat(fillChars.stlnc,newInfoLen)
+                if &readonly
+                        let name .= (&modified?'':fillChars.stlnc).'[RO]'
+                endif
+                if a:window.pos.topline == 1
+                        if a:window.pos.bottomline == a:window.pos.lastline
+                                let percents = 'All'
+                        else
+                                let percents = 'Top'
+                        endif
+                elseif a:window.pos.bottomline == a:window.pos.lastline
+                        let percents = 'Bot'
                 else
-                        let StatusLine = strpart(StatusLine, 0, strlen(StatusLine) + newInfoLen) 
+                        let percents = (a:window.pos.topline*100/(a:window.pos.lastline + a:window.pos.topline - a:window.pos.bottomline )).'%'
+                        if strlen(percents) == 2
+                                let percents = ' '.percents
+                        endif
                 endif
+                let posInfo = a:window.pos.line.','.a:window.pos.col.((a:window.pos.col != a:window.pos.virtcol)?('-'.a:window.pos.virtcol): '')
+                let width = winwidth('.')
+                let magicLen = 18
+                let lack =  strlen(name) + magicLen + 1 - width 
+                if lack < 0 
+                        let StatusLine = name.repeat(fillChars.stlnc, width - strlen(name) - magicLen).posInfo.repeat(fillChars.stlnc,magicLen - 3 - strlen(posInfo)).percents
+                else
+                        let free = strlen(name) + magicLen - 1 - strlen(posInfo)
+                        let widthFree = width - 2 - strlen(posInfo)
+                        let newNameLen = (strlen(name) - 1)*widthFree/free
+                        let newInfoLen = (magicLen - strlen(posInfo))*widthFree/free
+                        let newNameLen += widthFree - newNameLen - newInfoLen
+                        let StatusLine = s:HtmlEscape('<'.strpart(name, strlen(name) - newNameLen)).' '.posInfo
+                        let percents = ' '.percents 
+                        if (newInfoLen>4)
+                                let StatusLine .= repeat(fillChars.stlnc,newInfoLen - 4).percents
+                        elseif newInfoLen >= 0 
+                                let StatusLine .= repeat(fillChars.stlnc,newInfoLen)
+                        else
+                                let StatusLine = strpart(StatusLine, 0, strlen(StatusLine) + newInfoLen) 
+                        endif
 
 
+                endif
+                let StatusLine = s:SynIdWrap(synId,StatusLine)
         endif
-        let StatusLine = s:SynIdWrap(synId,StatusLine.fill_stl)
-        call add(a:lines,StatusLine)
+        call add(a:lines,StatusLine.s:SynIdWrap(synId, a:last[0]?'':fill_stl))
 endf
 
-function! s:InternalToHtml(self,lines)
+function! s:InternalToHtml(self,lines,last)
 	if has_key(a:self, 'childs')
 		let lines = []
+                let last = [0,0]
 		let b = 0
-		for C in a:self.childs
-
+		for C in range(len(a:self.childs))
+                        let last[a:self.dir] = a:last[a:self.dir] && C == len(a:self.childs) - 1
+                        let last[1 - a:self.dir] =  a:last[1 - a:self.dir]
 			if b
 				let childLines = []
-				call s:InternalToHtml(C,childLines)
+				call s:InternalToHtml(a:self.childs[C],childLines,last)
 				if !a:self.dir
 
 					let i = 0
@@ -553,14 +989,14 @@ function! s:InternalToHtml(self,lines)
 					let lines += childLines 
 				endif
 			else
-				call s:InternalToHtml(C,lines)
+				call s:InternalToHtml(a:self.childs[C],lines,last)
 				let b = 1
 			endif
 
 		endfor
 		call extend(a:lines, lines)
 	elseif has_key(a:self, 'num')
-		call s:GetColoredWindowText(a:self, a:lines)
+		call s:GetColoredWindowText(a:self, a:lines, a:last)
 	endif
 
 endf
@@ -573,21 +1009,35 @@ function! s:RestoreEvents(saved)
 	let [&winwidth,&winheight,&winminheight,&winminwidth,&ei] = a:saved 
 endf
 "}}}
+"
 "{{{-----------Top-level functions and commands
+if !exists('ScreenShot')
+        let ScreenShot = {}
+endif
+call extend(ScreenShot,{'Title': 1,'Icon': 1,'Credits': 1},'keep')
 function! ToHtml()
+        let tabline = GetTabLine()
+        if g:ScreenShot.Title
+                let title = s:GetTitle() 
+        endif
         let saved = s:SaveEvents()
-	let win = eval(s:EnumWindows())
+	let win = s:EnumWindows()
         let lines = []
-        call s:InternalToHtml(win, lines)
+        call s:InternalToHtml(win, lines, [1,1])
         call s:RestoreEvents(saved)
-        let lines[0] = '<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'.lines[0]
-	return lines + ['</pre></td></tr></table>']
+        if tabline != ''
+                call insert(lines,tabline) 
+        endif
+        let lines[0] = '<table cellspacing=0 cellpadding=0  style='.s:SynIdStyle(hlID('Normal')).' '.(exists('title')?' border=2><tr><th align=left style="color:white;background:blue">'.title.'</th></tr>': '>').'<tr><td><pre>'.lines[0]
+        let lines[len(lines) - 1] .= '</pre></td></tr>'.(g:ScreenShot.Credits?'<tr><td><table align=right><tr><td width=20%></td><td width=80%><small><i>'.s:GetCredits().'</i></small></td></tr></table></td></tr>': '').'</table>'
+        return lines
 endf
 function! Text2Html(line1,line2)
         let lines = []
         call s:GetColoredText(lines,a:line1,a:line2,0,'')
         exec 'new '.bufname('%').'.html'
-        call append(0,['<table><tr><td><pre style='.s:SynIdStyle(hlID('Normal')).'>'] + lines + ['</pre></td></tr></table>'])
+        let lines[0] = '<table cellspacing=0 cellpadding=0 style='.s:SynIdStyle(hlID('Normal')).'><tr><td colspan><pre>'.lines[0]
+        call append(0,lines + ['</pre></td></tr><tr><td><table align=right><tr><td width=20%></td><td width=80%><small><i>'.s:GetCredits().'</i></small></td></tr></table></td></tr></table>'])
 endf
 function! ScreenShot()
         let a = ToHtml()
