@@ -751,8 +751,7 @@ if &term !~ '^screen'
 endif
 
 if &t_Co > 2 || has('gui_running')
-  " Attempt to guess the appropriate setting for 'background'
-  set background&
+  set background=dark
 
   " Sane color scheme selection.  Baycomb looks like crap
   " with less than 88 colors.
