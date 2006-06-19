@@ -120,12 +120,15 @@ setup_interactive () {
         VOBPATH="`cleartool lsvob|grep ^*|awk '{print $2}'|head -1|xargs dirname`"
         cd $VOBPATH
     fi
+    if [ -n "$VIM" ]; then
+        INVIM="[vim]"
+    fi
     PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\]
-$CCASE\w\$ "
+$CCASE$INVIM\w\$ "
     export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
     [ -z "$day" ] && day=`date +%A`
     printdayinfo $day
-    unset XTERM_SET CCASE VOBPATH
+    unset XTERM_SET CCASE VOBPATH INVIM
 
     if [ -z "$TERMCAP" ]; then
         # Deal with missing terminal types on certain machines.
