@@ -5,6 +5,7 @@ if [ -f ~/.bashrc ]; then
 fi
 
 PATH="${HOME}/bin:${HOME}/.root/bin:${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+PYTHONPATH="${HOME}/.root/lib/scons:${HOME}/.root/lib/python2.3"
 MANPATH="${HOME}/man:${HOME}/.root/share/man:${MANPATH}"
 PAGER="less -seGiq"
 EDITOR="vim"
@@ -15,7 +16,8 @@ CCACHE_DIR="${HOME}/.ccache"
 HISTFILE="${HOME}/.bash_history"
 TERMINFO="${HOME}/.terminfo"
 VIMINFO="${HOME}/.viminfo"
+SCONSFLAGS="-u"
 
-export PATH MANPATH PAGER EDITOR
-export BK_USER NM LUA_INIT CCACHE_DIR
-export HISTFILE TERMINFO VIMINFO
+export PATH MANPATH PAGER EDITOR PYTHONPATH
+export BK_USER NM LUA_INIT CCACHE_DIR HISTFILE
+export TERMINFO VIMINFO SCONSFLAGS
