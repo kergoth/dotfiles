@@ -1,8 +1,8 @@
 " Vim syntax file
 "  Language:	Man page
 "  Maintainer:	Charles E. Campbell, Jr.
-"  Last Change:	Nov 21, 2003
-"  Version:    	2
+"  Last Change:	Jun 26, 2006
+"  Version:    	3	ASTRO-ONLY
 "
 "  History:
 "    2: * Now has conceal support
@@ -28,15 +28,15 @@ syn match  manTitle		"^\f\+([0-9]\+[a-z]\=).*"
 syn match  manSectionHeading	"^[a-z][a-z ]*[a-z]$"
 syn match  manOptionDesc	"^\s*[+-][a-z0-9]\S*"
 
-syn match   manSectionHeading	"^\s\+[0-9]\+\.[0-9.]*\s\+[A-Z].*$"	contains=manSectionNumber
-syn match   manSectionNumber	"^\s\+[0-9]\+\.[0-9]*"			contained
-syn region  manDQString		start='[^a-zA-Z"]"[^", )]'lc=1		end='"'		end='^$' contains=manSQString
-syn region  manSQString		start="[ \t]'[^', )]"lc=1		end="'"		end='^$'
-syn region  manSQString		start="^'[^', )]"lc=1			end="'"		end='^$'
-syn region  manBQString		start="[^a-zA-Z`]`[^`, )]"lc=1		end="[`']"	end='^$'
-syn region  manBQString		start="^`[^`, )]"			end="[`']"	end='^$'
-syn region  manBQSQString	start="``[^),']"			end="''"	end='^$'
-syn match   manBulletZone	"^\s\+o\s"				transparent contains=manBullet
+syn match  manSectionHeading	"^\s\+[0-9]\+\.[0-9.]*\s\+[A-Z].*$"	contains=manSectionNumber
+syn match  manSectionNumber	"^\s\+[0-9]\+\.[0-9]*"			contained
+syn region manDQString		start='[^a-zA-Z"]"[^", )]'lc=1		end='"'		end='^$' contains=manSQString
+syn region manSQString		start="[ \t]'[^', )]"lc=1		end="'"		end='^$'
+syn region manSQString		start="^'[^', )]"lc=1			end="'"		end='^$'
+syn region manBQString		start="[^a-zA-Z`]`[^`, )]"lc=1		end="[`']"	end='^$'
+syn region manBQString		start="^`[^`, )]"			end="[`']"	end='^$'
+syn region manBQSQString	start="``[^),']"			end="''"	end='^$'
+syn match  manBulletZone	"^\s\+o\s"				transparent contains=manBullet
 syn case match
 
 syn keyword manBullet		o					contained
@@ -66,9 +66,9 @@ set ts=8
 if version >= 508 || !exists("did_man_syn_inits")
   if version < 508
     let did_man_syn_inits = 1
-    command -nargs=+ HiLink hi link <args>
+    com! -nargs=+ HiLink hi link <args>
   else
-    command -nargs=+ HiLink hi def link <args>
+    com! -nargs=+ HiLink hi def link <args>
   endif
 
   HiLink manTitle		Title
@@ -84,9 +84,21 @@ if version >= 508 || !exists("did_man_syn_inits")
   HiLink manBQString		String
   HiLink manBQSQString		String
   HiLink manBullet		Special
-  hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=navyblue guibg=navyblue
-  hi manSubSection	term=underline cterm=underline gui=underline ctermfg=green guifg=green
-  hi manSubTitle	term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+  if has("win32") || has("win95") || has("win64") || has("win16")
+   if &shell == "bash"
+    hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=navyblue guibg=navyblue
+    hi manSubSection		term=underline cterm=underline gui=underline ctermfg=green guifg=green
+    hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+   else
+    hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=black guibg=black
+    hi manSubSection		term=underline cterm=underline gui=underline ctermfg=green guifg=green
+    hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+   endif
+  else
+   hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=navyblue guibg=navyblue
+   hi manSubSection		term=underline cterm=underline gui=underline ctermfg=green guifg=green
+   hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+  endif
 
   delcommand HiLink
 endif
