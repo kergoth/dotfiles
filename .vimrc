@@ -618,18 +618,6 @@ try
 catch
 endtry
 
-if v:version >= 700
-  " Default to omni completion using the syntax highlighting files
-  set ofu=syntaxcomplete#Complete
-
-  " Disable spell checking when in console, and enable it when in gui
-  if has('gui_running')
-    set spell spelllang=en_us
-  else
-    set nospell
-  endif
-endif
-
 " Status Line {{{
 set laststatus=2
 if has('statusline')
@@ -699,6 +687,24 @@ endif
 " Most printers are Latin1, inform Vim so it can convert.
 set printencoding=latin1
 " }}}
+
+if v:version >= 700
+  " Default to omni completion using the syntax highlighting files
+  set ofu=syntaxcomplete#Complete
+
+  " Disable spell checking when in console, and enable it when in gui
+  if has('gui_running')
+    set spell spelllang=en_us
+  else
+    set nospell
+  endif
+
+  let path = finddir('spell', &rtp)
+  if path != ''
+    let path = fnamemodify(path, ':h')
+    exe 'set spellfile=' . path . '/spell/' . &enc . '.add'
+  endif
+endif
 
 " Show nonprintable characters like hard tabs
 "   NOTE: No longer showing trailing spaces this way, as those
