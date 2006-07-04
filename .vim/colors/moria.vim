@@ -111,7 +111,7 @@ elseif &background == "light"
         hi CursorColumn guibg=#d5d5d5 gui=none
         hi CursorLine guibg=#d5d5d5 gui=none
     endif
-    hi Cursor guibg=#cd4e00 guifg=bg gui=none
+    hi Cursor guibg=#883400 guifg=bg gui=none
     hi DiffAdd guibg=#008b00 guifg=#ffffff gui=none
     hi DiffChange guibg=#00008b guifg=#ffffff gui=none
     hi DiffDelete guibg=#8b0000 guifg=#ffffff gui=none
@@ -119,7 +119,7 @@ elseif &background == "light"
     hi Directory guibg=bg guifg=#0000f0 gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#506070 gui=none
-    hi Folded guibg=#c8c8c8 guifg=fg gui=none
+    hi Folded guibg=#c8c8c8 guifg=#203040 gui=none
     hi IncSearch guibg=#ffcd78 gui=none
     hi LineNr guifg=#506070 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold

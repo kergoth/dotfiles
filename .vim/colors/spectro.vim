@@ -108,13 +108,46 @@ fun! Hsl2rgb(h)
     return FormatRGB(RGB)
 endfun
 
+" Background Saturation/Lightness Group
+" let g:spectro_saturation = 240
+" let g:spectro_lightness = 14
+" let cb_norm = Hsl2rgb(165)
+" let g:spectro_saturation = 4
+let g:spectro_saturation = 80
+let g:spectro_lightness = 14
+let cb_norm = Hsl2rgb(48)
+let cb_linenr = Hsl2rgb(168)
+
+" Comment/Markup Saturation/Lightness Group
+" let g:spectro_saturation = 50
+let g:spectro_lightness = 104
+" let c_comm = Hsl2rgb(128)
+" let g:spectro_saturation = 96
+" let g:spectro_lightness = 70
+let c_comm = Hsl2rgb(128)
+let cb_diffadd = Hsl2rgb(149)
+let cf_linenr = Hsl2rgb(147)
+
+" Foreground Saturation/Lightness Group
+" let g:spectro_saturation = 80
+let g:spectro_lightness = 166
+" let g:spectro_saturation = 43
+" let g:spectro_lightness = 192
+" let g:spectro_saturation = 34
+" let g:spectro_lightness = 194
+let cf_norm = Hsl2rgb(157)
+let cf_constant = Hsl2rgb(162)
+let cf_cursor = Hsl2rgb(65)
+let cb_cursor = Hsl2rgb(170)
+let cf_statement = Hsl2rgb(250)
+let cf_number = Hsl2rgb(147)
+
 " we choose the hue for each color to be used
 " You may want to use inkscape to calibrate this
 let white  = "#ffffff"
 let black  = "#000000"
 let gray   = "#dcdccc"
 let dblue  = "#006060"
-let c_comm = Hsl2rgb(71)
 let c_spec = Hsl2rgb(27)
 let c_numb = Hsl2rgb(128)
 let c_iden = Hsl2rgb(42)
@@ -126,23 +159,22 @@ let c_visu = Hsl2rgb(223)
 let c_tabl = Hsl2rgb(140)
 
 
-
 " let's define colors
 exe "hi Comment		guifg=".c_comm
 exe "hi Special		guifg=".c_spec."			gui=none"
-exe "hi Constant	guifg=".c_spec."			gui=bold"
-exe "hi Number		guifg=".c_numb
+exe "hi Constant	guifg=".cf_constant."			gui=bold"
+exe "hi Number		guifg=".cf_number
 exe "hi Identifier	guifg=".c_iden
-exe "hi Statement	guifg=".c_stat."			gui=bold"
+exe "hi Statement	guifg=".cf_statement."			gui=bold"
 exe "hi PreProc		guifg=".c_prep."			gui=bold"
 exe "hi Type		guifg=".c_iden."			gui=none"
 exe "hi Todo		guifg=".black ."    guibg=".c_iden."	gui=none"
 exe "hi ErrorMsg	guifg=".white ."    guibg=".c_erro."	gui=bold"
 exe "hi MoreMsg		guifg=".white ."    guibg=".c_spec."	gui=bold"
-exe "hi Cursor		guifg=".black ."    guibg=".c_curs."	gui=bold"
+exe "hi Cursor		guifg=".cf_cursor ."    guibg=".cb_cursor."	gui=bold"
 exe "hi WildMenu	guifg=".black ."    guibg=".c_curs."	gui=bold"
-exe "hi LineNr		guifg=".c_curs
-exe "hi Normal		guifg=".gray  ."    guibg=".black
+exe "hi LineNr		guifg=".cf_linenr." guibg=".cb_linenr
+exe "hi Normal		guifg=".cf_norm  ."    guibg=".cb_norm
 exe "hi Visual		guifg=".black ."    guibg=".c_spec
 exe "hi Underlined	guifg=".gray  ."			gui=underline"
 exe "hi VertSplit	guifg=".dblue ."    guibg=".gray
@@ -157,7 +189,7 @@ exe "hi PmenuSel	guifg=".black ."    guibg=".c_tabl."	gui=bold"
 exe "hi PmenuSbar	guifg=".black ."    guibg=".gray  ."	gui=none"
 exe "hi PmenuThumb	guifg=".black ."    guibg=".gray  ."	gui=none"
 exe "hi Directory	guifg=".c_comm
-exe "hi DiffAdded	guifg=".c_comm."			gui=none"
+exe "hi DiffAdd         guifg=".cb_diffadd."			gui=none"
 exe "hi DiffChanged	guifg=".c_iden."			gui=none"
 exe "hi DiffRemoved	guifg=".c_erro."			gui=none"
 exe "hi DiffLine	guifg=".c_numb."			gui=bold"
