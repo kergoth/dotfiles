@@ -7,6 +7,7 @@ defbindings("WMPlex", {
     bdoc("Run a terminal emulator."),
     kpress(ALTMETA.."F2", "ioncore.exec_on(_, 'urxvtc')"),
 })
+dopath("vim_bindings")
 
 dopath("mod_statusbar")
 -- dopath("mod_dock")
@@ -27,7 +28,7 @@ defwinprop{
 }
 
 -- dopath("histcompl")
-dopath("detach.lua")
+dopath("detach")
 detach.setup_hooks()
 
 dopath("cfg_menu")
