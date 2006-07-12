@@ -43,13 +43,20 @@
 "    Added:
 "        a)Diff mode support
 "        b)New command Diff2Html
+"    1.01:
+"    Fixed: 
+"        1. Italic, bold and underline was broken in 1.0 version, now repaired
+"        2. Proper highligting of number of buffers in tabline
+"        3. Proper rendering of too long tabline or too long titleline
+"        4. Proper title for 'nofile' current buffer 
+"
 ""
 " TODO:
 "   1.Very small windows proper rendering
 "   2.Linebreak option support
 "   }}}
 "{{{-----------Status Line
-function! Dump(var,...)
+function! s:Dump(var,...)
         let indent = a:0?(a:1):0
         if type(a:var) == type({})
                 return "\n".repeat(' ',indent)."{\n".repeat(' ',indent).join(map(copy(items(a:var)),'string(v:val[0]).": ".Dump(v:val[1],indent + 4)'), ',')."\n".repeat(' ',indent)."}\n"
@@ -315,9 +322,6 @@ function! s:Nodes['='].Value() "    Separation point between left and right alig
 endf
 unlet s:Nodes['#'].Render
 function! s:Nodes['#'].Render(hi,lasttype,fillchar,invischar) "    Set highlight group.  The name must follow and then a # again.	      Thus use %#HLname# for highlight group HLname.  The same	      highlighting is used, also for the statusline of non-current	      windows. 
-        "if self.value == 'TabLineTitle666'
-        "        return [{'value': '', 'hi': 'Title','lasttype': a:lasttype,'TabLineTitle666': 1}]
-        "endif
 	return [{'value': '', 'hi': self.value,'lasttype': a:lasttype}]
 endf
 unlet s:Nodes['*'].Render
@@ -359,7 +363,7 @@ function! s:StlPrintf(expr,width,fillchar,invischar,hi)
                         let id = node.hi
                 endif
                 if node.hi=='TabLineTitle666' " Dirty hack to provide non-standard tabline digit highlighting
-                        let res .= '<font color='.s:GetColor(hlID('Title'),'fg#').'>'.s:HtmlEscape(node.value).'</font>'
+                        let res .= '<font color='.s:GetColor(hlID('Title'),1).'>'.s:HtmlEscape(node.value).'</font>'
                 else
                         let res .= s:HtmlEscape(node.value)
                 endif
@@ -378,11 +382,18 @@ function! s:Bufname(nr)
         return name
 endf
 function! s:TabTitle(nr)
-        return substitute(s:Bufname(tabpagebuflist(a:nr)[tabpagewinnr(a:nr)-1]),'\([^\\]\)[^\\]*\\', '\1\\','g')
+        let maxLen = (&columns - 1)*9/(9*tabpagenr('$') + 1) - 4 
+        let title = substitute(s:Bufname(tabpagebuflist(a:nr)[tabpagewinnr(a:nr)-1]),'\([^\\]\)[^\\]*\\', '\1\\','g')
+        if strlen(title) > maxLen
+                return strpart(title, strlen(title) - maxLen)
+        endif
+        return title
 endf
 function! s:DefaultTabLine()
         let sel = "v:val+1==tabpagenr()?'%#TabLineSel#':'%#TabLine#'"
-        return join(map(range(tabpagenr('$')),"eval(sel).' %#'.(v:val+1==tabpagenr()?'Title':'TabLineTitle666').'#'.len(tabpagebuflist(v:val+1)).'%'.(v:val+1).'T'.eval(sel).repeat('+',eval(join(map(tabpagebuflist(v:val+1),'getbufvar(v:'.'val,\"&modified\")'),'||'))).'%*'.eval(sel).'\ '.s:TabTitle(v:val + 1).' '"),'').'%#TabLineFill#%T%=%#TabLine#%XX'
+        let bufNum = 'len(tabpagebuflist(v:val+1))'
+        let isModified = "eval(join(map(tabpagebuflist(v:val+1),'getbufvar(v:'.'val,\"&modified\")'),'||'))"
+        return join(map(range(tabpagenr('$')),"eval(sel).(eval(bufNum) > 1 || eval(isModified)?' %#'.(v:val+1==tabpagenr()?'Title':'TabLineTitle666').'#'.(eval(bufNum) > 1?eval(bufNum):'').'%'.(v:val+1).'T'.eval(sel).repeat('+',eval(isModified)).'%*'.eval(sel).'\ ':'').s:TabTitle(v:val + 1).' '"),'').'%#TabLineFill#%T%=%#TabLine#%XX'
 endf
 function! GetTabLine()
         if tabpagenr('$') > 1 && &showtabline == 1 || &showtabline == 2 && (!has('gui_running') || stridx(&guioptions,'e') == -1)
@@ -398,7 +409,7 @@ function! s:GetTitle()
                 if VIM == ''
                         let VIM = has('gui_running')?'GVIM': 'VIM'
                 endif
-                let bufName = &buftype == 'help'?'help':strlen(&buftype)?bufname("%"):fnamemodify(fnamemodify(fnamemodify(bufname("%"),":p"),":~"),":h")
+                let bufName = &buftype == 'help'?'help':fnamemodify(fnamemodify(fnamemodify(bufname("%"),":p"),":~"),":h")
                 if strlen(bufName) > 3
                         let partLen = 3 
                         let bufName = strpart(bufName, 0, partLen).'%<'.strpart(bufName,partLen)
@@ -408,7 +419,11 @@ function! s:GetTitle()
                 endif
                 let args = argc() <= 1?'': ' ('.(argv(argidx()) == bufname('%')?argidx() + 1: '('.(argidx() + 1).')').' of '.argc().')'
                 let titlestring = strlen(&titlestring)?&titlestring: '%t %M '.bufName.args.' - '.VIM
-                let title = substitute(substitute(s:StlPrintf(titlestring,(strlen(&titlestring) && &titlelen?&titlelen:&columns) - 1,' ','..',''),'\s*$','',''), ' ', '\&nbsp;', 'g')
+                let title = substitute(s:StlPrintf(titlestring,(strlen(&titlestring)? &titlelen?&titlelen:&columns: 1000) - 1,' ','..',''),'\s*$','','')
+                if !strlen(&titlestring) && strlen(title) > &columns - 5
+                        let title = title[0:(&columns - 5)/2 - 1 ].'...'.title[strlen(title) - (&columns - 5)/2 + 1:strlen(title)]
+                endif
+                let title = substitute(title, ' ', '\&nbsp;', 'g')
         endif
         if g:ScreenShot.Icon
                return  '<table align=left style="color:white;background:blue"><tr><th>'.s:ParseXpm(s:VimLogoXpm).'</th><th>'.title.'</th></tr></table>'
@@ -421,7 +436,6 @@ function! s:SplitWithSpan(hi,str)
 endf
 function! s:GetCredits()
        return s:SynIdWrap('Question','Code syntax highlighting by ').'<a '.s:SynIdStyle(s:GetHlVect('Normal')).' href=http://www.vim.org><u>'.s:SynIdWrap('ModeMsg','VIM').'</u></a>'.s:SynIdWrap('Question',' captured with ').'<a '.s:SynIdStyle(s:GetHlVect('Normal')).'  href=http://www.vim.org/scripts/script.php?script_id=1552><u>'.s:SynIdWrap('ModeMsg','ScreenShot').'</u></a>'.s:SynIdWrap('Question','  script ')
-       ".s:SynIdWrap('Question',', colorscheme ').s:SynIdWrap('ModeMsg',g:colors_name)
 endf
 "}}}
 "{{{-----------Menus
@@ -632,14 +646,14 @@ function! s:GetHlVect(id)
                         if reverse 
                                 let style = s:GetHlVect('Normal')
                                 if style[0] != '' && style[1] != ''
-                                        return style
+                                        return reverse(style[0:1]) + style[2:]
                                 endif
                                 let [color, background] = ['#000000', '#ffffff']
                         else
                                 let [color, background] = ['',''] 
                         endif
                 endif
-                return [color, background, synIDattr(a:id, 'bold'), synIDattr(a:id, 'italic'), synIDattr(a:id, 'underline')]
+                return [color, background, synIDattr(id, 'bold'), synIDattr(id, 'italic'), synIDattr(id, 'underline')]
         else
                 let vec = s:GetHlVect(a:id[0])
                 let vecDiff = s:GetHlVect(a:id[1])
@@ -1089,7 +1103,7 @@ function! Diff2Html(line1,line2)
         for i in range(len(lines1))
                 let lines1[i] .= lines2[i]
         endfor 
-        exec 'new '.bufname(winbufnr(buffs[0])).'\ -\ '.bufname(winbufnr(buffs[1])).'.diff.html'
+        exec 'new '.fnamemodify(bufname(winbufnr(buffs[0])),':t').'\ -\ '.fnamemodify(bufname(winbufnr(buffs[0])),':t').'.diff.html'
         let lines1[0] = '<table cellspacing=0 cellpadding=0 '.s:SynIdStyle(s:GetHlVect('Normal')).'><tr><td colspan><pre>'.lines1[0]
         call append(0,lines1 + ['</pre></td></tr>'.(g:ScreenShot.Credits?'<tr><td><table align=right><tr><td width=20%></td><td width=80%><small><i>'.s:GetCredits().'</i></small></td></tr></table></td></tr>': '').'</table>'])
 
