@@ -215,7 +215,7 @@ alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
-alias mt='monotone'
+alias mtn='monotone'
 alias bb='bitbake'
 
 if [ -n "$BASH" ]; then
