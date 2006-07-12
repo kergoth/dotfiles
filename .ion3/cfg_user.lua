@@ -27,6 +27,11 @@ defwinprop{
     target = "Floating",
 }
 
+defwinprop{
+    class = "Gimp",
+    target = "Floating",
+}
+
 -- dopath("histcompl")
 dopath("detach")
 detach.setup_hooks()
