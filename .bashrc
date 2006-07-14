@@ -217,6 +217,7 @@ alias cpe='clearprojexp'
 alias hd='od -t x1'
 alias mtn='monotone'
 alias bb='bitbake'
+alias vim='vim -X'
 
 if [ -n "$BASH" ]; then
     # If a hashed item from the path no longer exists, search the PATH again.
