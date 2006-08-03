@@ -8,7 +8,7 @@ execute "command! -nargs=1 Colo let g:moria_style = \"<args>\" | colo moria"
 
 if s:moria_style == "dark" || s:moria_style == "black"
     set background=dark
-elseif s:moria_style == "light" || s:moria_style == "whitesmoke"
+elseif s:moria_style == "light" || s:moria_style == "white"
     set background=light
 else
     let s:moria_style = &background 
@@ -101,15 +101,15 @@ if &background == "dark"
     hi htmlUnderlineItalic ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=underline,italic
 elseif &background == "light"
     if s:moria_style == "light"
+        hi Normal ctermbg=15 ctermfg=0 guibg=#f0f0f0 guifg=#000000 gui=none
+
+        hi CursorColumn guibg=#d4d4d4 gui=none
+        hi CursorLine guibg=#d4d4d4 gui=none
+    elseif s:moria_style == "white"
         hi Normal ctermbg=15 ctermfg=0 guibg=#ffffff guifg=#000000 gui=none
 
         hi CursorColumn guibg=#dbdbdb gui=none
         hi CursorLine guibg=#dbdbdb gui=none
-    elseif s:moria_style == "whitesmoke"
-        hi Normal ctermbg=15 ctermfg=0 guibg=#f5f5f5 guifg=#000000 gui=none
-
-        hi CursorColumn guibg=#d5d5d5 gui=none
-        hi CursorLine guibg=#d5d5d5 gui=none
     endif
     hi Cursor guibg=#883400 guifg=bg gui=none
     hi DiffAdd guibg=#008b00 guifg=#ffffff gui=none
@@ -119,7 +119,7 @@ elseif &background == "light"
     hi Directory guibg=bg guifg=#0000f0 gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#506070 gui=none
-    hi Folded guibg=#c8c8c8 guifg=#203040 gui=none
+    hi Folded guibg=#c5c5c5 guifg=#203040 gui=none
     hi IncSearch guibg=#ffcd78 gui=none
     hi LineNr guifg=#506070 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold

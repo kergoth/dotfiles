@@ -49,6 +49,9 @@
 "        2. Proper highligting of number of buffers in tabline
 "        3. Proper rendering of too long tabline or too long titleline
 "        4. Proper title for 'nofile' current buffer 
+"    1.02:
+"    Fixed: 
+"        Reverse attribute improper handling in some cases
 "
 ""
 " TODO:
@@ -648,7 +651,7 @@ function! s:GetHlVect(id)
                                 if style[0] != '' && style[1] != ''
                                         return reverse(style[0:1]) + style[2:]
                                 endif
-                                let [color, background] = ['#000000', '#ffffff']
+                                let [color, background] = ['#ffffff', '#000000']
                         else
                                 let [color, background] = ['',''] 
                         endif

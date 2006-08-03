@@ -1,8 +1,8 @@
 " Vim colour file --- PSC
 " Maintainer:	Pan, Shi Zhu <Go to the following URL for my email>
 " URL:		http://vim.sourceforge.net/scripts/script.php?script_id=760
-" Last Change:	17 November 2004
-" Version:	2.83
+" Last Change:	18 July 2006
+" Version:	2.9
 "
 "	Please prepend [VIM] in the title when writing e-mail to me, or it will
 "	be automatically treated as spam and removed. 
@@ -14,6 +14,12 @@
 
 " Initializations: {{{1
 "
+
+" without user_commands, all these are not possible
+if !has("user_commands")
+  finish
+end
+
 function! s:init_option(var, value)
   if !exists("g:psc_".a:var)
     execute "let s:".a:var." = ".a:value
@@ -125,12 +131,12 @@ if s:style=='warm'
   highlight Visual		guifg=fg	guibg=#a6caf0
   highlight Cursor		guifg=#f0f0f0	guibg=#008000
   " The idea of CursorIM is pretty good, however, the feature is still buggy
-  " in the current version (Vim 6.3). 
+  " in the current version (Vim 7.0). 
   " The following line will be kept commented until the bug fixed.
   "
   " highlight CursorIM		guifg=#f0f0f0	guibg=#800080
   highlight Special		guifg=#907000	guibg=bg
-  highlight Comment		guifg=#505800	guibg=bg
+  highlight Comment		guifg=#606000	guibg=bg
   highlight Number		guifg=#907000	guibg=bg
   highlight Constant		guifg=#007068	guibg=bg
   highlight StatusLine		guifg=fg	guibg=#a6caf0
@@ -173,6 +179,23 @@ if s:style=='warm'
   highlight VertSplit		guifg=fg	guibg=#c0c0c0
   highlight Underlined		guifg=#6a5acd	guibg=bg	gui=underline
   highlight Ignore		guifg=bg	guibg=bg
+  " NOTE THIS IS IN THE WARM SECTION
+  if v:version >= 700
+    highlight SpellBad		guifg=NONE	guibg=NONE	guisp=#c03000
+    highlight SpellCap		guifg=NONE	guibg=NONE	guisp=#2060a8
+    highlight SpellRare		guifg=NONE	guibg=NONE	guisp=#a030a0
+    highlight SpellLocal	guifg=NONE	guibg=NONE	guisp=#007068
+    highlight Pmenu		guifg=fg	guibg=#e0b0e0
+    highlight PmenuSel		guifg=#f0f0f0	guibg=#806060
+    highlight PmenuSbar		guifg=fg	guibg=#c0c0c0
+    highlight PmenuThumb	guifg=fg	guibg=#c0e080
+    highlight TabLine		guifg=fg	guibg=#c0c0c0	gui=underline
+    highlight TabLineFill	guifg=fg	guibg=#c0c0c0	gui=underline
+    highlight TabLineSel	guifg=fg	guibg=bg
+    highlight CursorColumn	guifg=NONE	guibg=#f0b090
+    highlight CursorLine	guifg=NONE	guibg=NONE	gui=underline
+    highlight MatchParen	guifg=NONE	guibg=#c0e080
+  endif
 
   " LIGHT COLOR DEFINE END
   " }}}2
@@ -229,6 +252,23 @@ elseif s:style=='cool'
   highlight VertSplit		guifg=#000000	guibg=#c0c0c0
   highlight Underlined		guifg=#80a0ff	guibg=bg	gui=underline 
   highlight Ignore		guifg=#000000	guibg=bg
+  " NOTE THIS IS IN THE COOL SECTION
+  if v:version >= 700
+    highlight SpellBad		guifg=NONE	guibg=NONE	guisp=#f08060
+    highlight SpellCap		guifg=NONE	guibg=NONE	guisp=#6080f0
+    highlight SpellRare		guifg=NONE	guibg=NONE	guisp=#f0c0f0
+    highlight SpellLocal	guifg=NONE	guibg=NONE	guisp=#c0d8f8
+    highlight Pmenu		guifg=fg	guibg=#800080
+    highlight PmenuSel		guifg=#000000	guibg=#d0d0d0
+    highlight PmenuSbar		guifg=fg	guibg=#000080
+    highlight PmenuThumb	guifg=fg	guibg=#008000
+    highlight TabLine		guifg=fg	guibg=#008000	gui=underline
+    highlight TabLineFill	guifg=fg	guibg=#008000	gui=underline
+    highlight TabLineSel	guifg=fg	guibg=bg
+    highlight CursorColumn	guifg=NONE	guibg=#800000
+    highlight CursorLine	guifg=NONE	guibg=NONE	gui=underline
+    highlight MatchParen	guifg=NONE	guibg=#800080
+  endif
 
   " DARK COLOR DEFINE END
   " }}}2
@@ -250,6 +290,19 @@ MultiHi gui=NONE ModeMsg Search Cursor Special Comment Constant Number LineNr Qu
 
 MultiHi gui=NONE VisualNOS SpecialKey NonText Directory ErrorMsg MoreMsg Title WarningMsg WildMenu Folded FoldColumn DiffAdd DiffChange DiffDelete DiffText SignColumn
 
+" Vim 7 added stuffs
+if v:version >= 700
+  MultiHi gui=NONE Ignore PmenuSel PmenuSel PmenuSbar PmenuThumb TabLine TabLineFill TabLineSel
+
+  " the gui=undercurl guisp could only support in Vim 7
+  MultiHi gui=undercurl SpellBad SpellCap SpellRare SpellLocal
+  if s:style=="cool" || s:style=="warm"
+    MultiHi gui=underline TabLine TabLineFill Underlined CursorLine
+  else
+    MultiHi gui=underline TabLine Underlined
+  endif
+endif
+
 " For reversed stuffs
 MultiHi gui=NONE IncSearch StatusLine StatusLineNC VertSplit Visual
 
@@ -268,7 +321,7 @@ endif
 
 " Enable the bold style
 if s:fontface=="mixed"
-  MultiHi gui=bold Question DiffText Statement Type MoreMsg ModeMsg NonText Title VisualNOS DiffDelete
+  MultiHi gui=bold Question DiffText Statement Type MoreMsg ModeMsg NonText Title VisualNOS DiffDelete TabLineSel
 endif
 
 
@@ -324,6 +377,22 @@ if !has('gui_running')
     highlight DiffText	 ctermfg=Black	    ctermbg=DarkYellow
     highlight DiffDelete ctermfg=Blue	    ctermbg=Black
 
+    if v:version >= 700
+      highlight SpellBad	ctermfg=NONE	ctermbg=DarkRed
+      highlight SpellCap	ctermfg=NONE	ctermbg=DarkBlue
+      highlight SpellRare	ctermfg=NONE	ctermbg=DarkMagenta
+      highlight SpellLocal	ctermfg=NONE	ctermbg=DarkGreen
+      highlight Pmenu		ctermfg=fg	ctermbg=DarkMagenta
+      highlight PmenuSel	ctermfg=bg	ctermbg=fg
+      highlight PmenuSbar	ctermfg=fg	ctermbg=DarkBlue
+      highlight PmenuThumb	ctermfg=fg	ctermbg=DarkGreen
+      highlight TabLine		ctermfg=fg	ctermbg=DarkGreen	cterm=underline
+      highlight TabLineFill	ctermfg=fg	ctermbg=DarkGreen	cterm=underline
+      highlight TabLineSel	ctermfg=fg	ctermbg=bg
+      highlight CursorColumn	ctermfg=NONE	ctermbg=DarkRed
+      highlight CursorLine	ctermfg=NONE	ctermbg=NONE	cterm=underline
+      highlight MatchParen	ctermfg=NONE	ctermbg=DarkMagenta
+    endif
     if &t_Co==8
       " 8 colour terminal support, this assumes 16 colour is available through
       " setting the 'bold' attribute, will get bright foreground colour.
@@ -331,7 +400,7 @@ if !has('gui_running')
       "
       " You can manually set t_Co=16 in your .vimrc to see if your terminal
       " supports 16 colours, 
-      MultiHi cterm=none DiffText Visual Cursor Comment Todo StatusLine Question DiffChange ModeMsg VisualNOS ErrorMsg WildMenu DiffAdd Folded DiffDelete Normal
+      MultiHi cterm=none DiffText Visual Cursor Comment Todo StatusLine Question DiffChange ModeMsg VisualNOS ErrorMsg WildMenu DiffAdd Folded DiffDelete Normal PmenuThumb
       MultiHi cterm=bold Search Special Constant Number LineNr PreProc Statement Type Error Identifier SpecialKey NonText MoreMsg Title WarningMsg FoldColumn SignColumn Directory DiffDelete
 
     else
@@ -340,14 +409,14 @@ if !has('gui_running')
       " Only use the s:fontface option when there is 16-colour(or more)
       " terminal support
 
-      MultiHi cterm=none WarningMsg Search Visual Cursor Special Comment Constant Number LineNr PreProc Todo Error Identifier Folded SpecialKey Directory ErrorMsg Normal
+      MultiHi cterm=none WarningMsg Search Visual Cursor Special Comment Constant Number LineNr PreProc Todo Error Identifier Folded SpecialKey Directory ErrorMsg Normal PmenuThumb
       MultiHi cterm=none WildMenu FoldColumn SignColumn DiffAdd DiffChange Question StatusLine DiffText
       MultiHi cterm=reverse IncSearch StatusLineNC VertSplit
 
       " Well, well, bold font with color 0-7 is not possible.
       " So, the Question, StatusLine, DiffText cannot act as expected.
 
-      call s:multi_hi("cterm=".((s:fontface=="plain") ? "none" : "bold"), "Statement", "Type", "MoreMsg", "ModeMsg", "NonText", "Title", "VisualNOS", "DiffDelete")
+      call s:multi_hi("cterm=".((s:fontface=="plain") ? "none" : "bold"), "Statement", "Type", "MoreMsg", "ModeMsg", "NonText", "Title", "VisualNOS", "DiffDelete", "TabLineSel")
 
     endif
 
@@ -438,7 +507,7 @@ finish
 " ---------------------------------------------------------------------
 " Put the help after the HelpExtractorDoc label...
 " HelpExtractorDoc:
-*ps_color.txt*  PSC For Vim version 6.4            Last change:  9 March 2006
+*ps_color.txt*  PSC For Vim version 7.0            Last change:  18 July 2006
 
 
 PERSONAL COLOUR SWITCHER                                *ps_colour* *pscolor*
@@ -612,7 +681,7 @@ PSC OPTIONS                                                     *psc-options*
 <
 	This selects between styles of colors, 
 	The 'cool' is the default, dark background. 
-	The 'warm' is the experimental, light background scheme.
+	The 'warm' is the alternative, light background scheme.
 
 	See |psc-about-background| for more knowledge about the background,
 	and the differences of two style.
@@ -687,20 +756,19 @@ PSC OPTIONS                                                     *psc-options*
 						*psc-change-background*
 	Changing the Background color ~
 
-	You may prefer a dark background over pure black one, and it is
-	possible to change the background, this may make life more interesting.
-	To do this is quite straight forward for GUI, just define the Normal
-	highlight in your .gvimrc, [AFTER] the color scheme has been sourced.
+        You may prefer a black background over the dark one, and it is
+        possible to customize it, this may make life more interesting.  To do
+        this is quite straight forward for GUI, just define the Normal
+        highlight in your .gvimrc, [AFTER] the color scheme has been sourced.
 
 	For example: 
 >
-	highlight Normal guibg=#103040
+	highlight Normal guibg=#000000
 <
 	The #103040 will give a taste similar to oceandeep, #152535 for
 	hhazure, #303030 for desert, #404040 for zenburn...  Replace #103040
 	with any color you like. You can do the same to guifg foreground if
-	you are careful enough, remember this is only possible with ps_color
-	version 2.7 or above, and only possible for GUI.
+	you are careful enough, remember this is only possible for GUI.
 
 	You can do this to the NonText group also, for example.
 >
@@ -909,9 +977,24 @@ PSC FAQ AND TIPS                                         *psc-faq* *psc-tips*
 	A: This is for compatibility, since we have to use only 8 colors as
 	   background in a color terminal.  For GUI you can change this, see
 	   |psc-change-background| for details.
+>
+	Q: I updated from 2.81- to 2.82+, why the default background changed?
+<
+	A: This is for Bram's guideline, that dark schemes with black
+	   background has too much contrast.
+
+           However, you can change it back. see |psc-change-background| for
+           details.
 
 ==============================================================================
 PSC RELEASE NOTES                                         *psc-release-notes*
+
+	2.90 Release Note: ~
+
+        Upon the release of Vim 7, many new highlight groups have been added.
+
+        A style has been tuned a little to increase contrast.
+
 
 	2.83 Release Note: ~
 
@@ -1022,6 +1105,7 @@ PSC TODO LIST                                                      *psc-todo*
 
 	. Fix the remain bugs.
 	. Follow the new Vim versions for new added highlighting group
+	. This cannot work in Vim Tiny mode, and will never work!
 
 ==============================================================================
 vim:et:nosta:sw=2:ts=8:

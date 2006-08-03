@@ -98,10 +98,12 @@ ID	visincr.txt	/*ID*
 IDMY	visincr.txt	/*IDMY*
 II	visincr.txt	/*II*
 IIO	visincr.txt	/*IIO*
+IIR	visincr.txt	/*IIR*
 IIX	visincr.txt	/*IIX*
 IM	visincr.txt	/*IM*
 IMDY	visincr.txt	/*IMDY*
 IO	visincr.txt	/*IO*
+IR	visincr.txt	/*IR*
 IX	visincr.txt	/*IX*
 IYMD	visincr.txt	/*IYMD*
 LargeFile-copyright	LargeFile.txt	/*LargeFile-copyright*
@@ -466,10 +468,12 @@ visincr-ID	visincr.txt	/*visincr-ID*
 visincr-IDMY	visincr.txt	/*visincr-IDMY*
 visincr-II	visincr.txt	/*visincr-II*
 visincr-IIO	visincr.txt	/*visincr-IIO*
+visincr-IIR	visincr.txt	/*visincr-IIR*
 visincr-IIX	visincr.txt	/*visincr-IIX*
 visincr-IM	visincr.txt	/*visincr-IM*
 visincr-IMDY	visincr.txt	/*visincr-IMDY*
 visincr-IO	visincr.txt	/*visincr-IO*
+visincr-IR	visincr.txt	/*visincr-IR*
 visincr-IX	visincr.txt	/*visincr-IX*
 visincr-IYMD	visincr.txt	/*visincr-IYMD*
 visincr-RI	visincr.txt	/*visincr-RI*
