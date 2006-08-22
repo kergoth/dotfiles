@@ -1,7 +1,7 @@
 " vim global plugin that provides easy code commenting for various file types
-" Last Change:  18 May 2006
+" Last Change:  13 Aug 2006
 " Maintainer:   Martin Grenfell <mrg39 at student.canterbury.ac.nz>
-let s:NERD_comments_version = 1.67
+let s:NERD_comments_version = 1.68
 
 
 " For help documentation type :help NERD_comments. If this fails, Restart vim
@@ -44,7 +44,7 @@ endwhile
 "   1 if the var is set, 0 otherwise
 function s:InitVariable(var, value)
     if !exists(a:var)
-	execute 'let ' . a:var . ' = ' . a:value
+	exec 'let ' . a:var . ' = ' . "'" . a:value . "'"
 	return 1
     endif
     return 0
@@ -59,82 +59,82 @@ let s:lenSpaceStr = strlen(s:spaceStr)
 
 
 " Section: variable init calls {{{2
-call s:InitVariable("g:NERD_use_ada_with_spaces", "0")
-call s:InitVariable("g:NERD_use_c_style_acedb_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_ch_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_clean_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_clipper_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_cpp_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_cs_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_dot_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_dylan_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_h_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_hercules_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_idl_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_ishd_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_java_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_javascript_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_kscript_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_mel_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_named_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_pccts_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_pike_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_pilrc_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_plm_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_pov_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_prolog_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_rc_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_tads_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_tsalt_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_uc_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_verilog_comments", "0")
-call s:InitVariable("g:NERD_use_dash_dash_simula_comments", "0")
-call s:InitVariable("g:NERD_use_dnl_style_automake_comments", "0")
-call s:InitVariable("g:NERD_use_hash_samba_comments", "0")
-call s:InitVariable("g:NERD_use_c_style_php_comments", "0")
-call s:InitVariable("g:NERD_use_long_haskell_comments", "0")
-call s:InitVariable("g:NERD_use_long_lisp_comments", "0")
-call s:InitVariable("g:NERD_use_long_lua_comments", "0")
-call s:InitVariable("g:NERD_use_nested_comments_default", "0")
-call s:InitVariable("g:NERD_use_paren_star_pascal_comments", "0")
-call s:InitVariable("g:NERD_use_REM_basic_comments", "0")
-call s:InitVariable("g:NERD_use_single_part_c_comments", "0")
+call s:InitVariable("g:NERD_use_ada_with_spaces", 0)
+call s:InitVariable("g:NERD_use_c_style_acedb_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_ch_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_clean_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_clipper_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_cpp_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_cs_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_dot_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_dylan_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_h_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_hercules_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_idl_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_ishd_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_java_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_javascript_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_kscript_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_mel_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_named_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_pccts_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_pike_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_pilrc_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_plm_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_pov_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_prolog_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_rc_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_tads_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_tsalt_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_uc_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_verilog_comments", 0)
+call s:InitVariable("g:NERD_use_dash_dash_simula_comments", 0)
+call s:InitVariable("g:NERD_use_dnl_style_automake_comments", 0)
+call s:InitVariable("g:NERD_use_hash_samba_comments", 0)
+call s:InitVariable("g:NERD_use_c_style_php_comments", 0)
+call s:InitVariable("g:NERD_use_long_haskell_comments", 0)
+call s:InitVariable("g:NERD_use_long_lisp_comments", 0)
+call s:InitVariable("g:NERD_use_long_lua_comments", 0)
+call s:InitVariable("g:NERD_use_nested_comments_default", 0)
+call s:InitVariable("g:NERD_use_paren_star_pascal_comments", 0)
+call s:InitVariable("g:NERD_use_REM_basic_comments", 0)
+call s:InitVariable("g:NERD_use_single_part_c_comments", 0)
 
-call s:InitVariable("g:NERD_allow_any_visual_delims_regexp", '".*"')
-call s:InitVariable("g:NERD_block_com_after_right", "0")
-call s:InitVariable("g:NERD_comment_whole_lines_in_v_mode", '0')
-call s:InitVariable("g:NERD_create_h_filetype", '0')
-call s:InitVariable("g:NERD_menu_mode", '2')
-call s:InitVariable("g:NERD_dont_remove_alt_coms", '0')
-call s:InitVariable("g:NERD_dont_remove_spaces_regexp", '"^python$"')
-call s:InitVariable("g:NERD_left_align_regexp", '"^$"')
-call s:InitVariable("g:NERD_lPlace", '"[>"')
-call s:InitVariable("g:NERD_place_holder_regexp", '".*"')
-call s:InitVariable("g:NERD_right_align_regexp", '"^$"')
-call s:InitVariable("g:NERD_rPlace", '"<]"')
+call s:InitVariable("g:NERD_allow_any_visual_delims_regexp", ".*")
+call s:InitVariable("g:NERD_block_com_after_right", 0)
+call s:InitVariable("g:NERD_comment_whole_lines_in_v_mode", 0)
+call s:InitVariable("g:NERD_create_h_filetype", 0)
+call s:InitVariable("g:NERD_menu_mode", 2)
+call s:InitVariable("g:NERD_dont_remove_alt_coms", 0)
+call s:InitVariable("g:NERD_dont_remove_spaces_regexp", "^python$")
+call s:InitVariable("g:NERD_left_align_regexp", "^$")
+call s:InitVariable("g:NERD_lPlace", "[>")
+call s:InitVariable("g:NERD_place_holder_regexp", ".*")
+call s:InitVariable("g:NERD_right_align_regexp", "^$")
+call s:InitVariable("g:NERD_rPlace", "<]")
 call s:InitVariable("g:NERD_shut_up", '0')
-call s:InitVariable("g:NERD_space_delim_filetype_regexp", '"^$"')
-call s:InitVariable("g:NERD_use_compact_sexy_com_regexp", '"^$"')
- 
-call s:InitVariable("g:mapleader", '"\\"')
-let s:mapleaderESC = escape(g:mapleader, '\')
+call s:InitVariable("g:NERD_space_delim_filetype_regexp", "^$")
+call s:InitVariable("g:NERD_use_compact_sexy_com_regexp", "^$")
 
-call s:InitVariable("g:NERD_alt_com_map", '"' . s:mapleaderESC . 'ca"')
-call s:InitVariable("g:NERD_append_com_map", '"' . s:mapleaderESC . 'cA"')
-call s:InitVariable("g:NERD_com_align_both_map", '"' . s:mapleaderESC . 'cb"')
-call s:InitVariable("g:NERD_com_align_left_map", '"' . s:mapleaderESC . 'cl"')
-call s:InitVariable("g:NERD_com_align_right_map", '"' . s:mapleaderESC . 'cr"')
-call s:InitVariable("g:NERD_com_in_insert_map", '"' . '<C-c>"')
-call s:InitVariable("g:NERD_com_line_invert_map", '"' . s:mapleaderESC . 'ci"')
-call s:InitVariable("g:NERD_com_line_map", '"' . s:mapleaderESC . 'cc"')
-call s:InitVariable("g:NERD_com_line_nest_map", '"' . s:mapleaderESC . 'cn"')
-call s:InitVariable("g:NERD_com_line_sexy_map", '"' . s:mapleaderESC . 'cs"')
-call s:InitVariable("g:NERD_com_line_toggle_map", '"' . s:mapleaderESC . 'c<space>"')
-call s:InitVariable("g:NERD_com_line_minimal_map", '"' . s:mapleaderESC . 'cm"')
-call s:InitVariable("g:NERD_com_line_yank_map", '"' . s:mapleaderESC . 'cy"')
-call s:InitVariable("g:NERD_com_to_end_of_line_map", '"' . s:mapleaderESC . 'c$"')
-call s:InitVariable("g:NERD_prepend_com_map", '"' . s:mapleaderESC . 'cI"')
-call s:InitVariable("g:NERD_uncom_line_map", '"' . s:mapleaderESC . 'cu"')
+call s:InitVariable("g:mapleader", '\')
+call s:InitVariable("g:NERD_mapleader", g:mapleader . 'c')
+
+call s:InitVariable("g:NERD_alt_com_map", g:NERD_mapleader . 'a')
+call s:InitVariable("g:NERD_append_com_map", g:NERD_mapleader . 'A')
+call s:InitVariable("g:NERD_com_align_both_map", g:NERD_mapleader . 'b')
+call s:InitVariable("g:NERD_com_align_left_map", g:NERD_mapleader . 'l')
+call s:InitVariable("g:NERD_com_align_right_map", g:NERD_mapleader . 'r')
+call s:InitVariable("g:NERD_com_in_insert_map", '<C-c>')
+call s:InitVariable("g:NERD_com_line_invert_map", g:NERD_mapleader . 'i')
+call s:InitVariable("g:NERD_com_line_map", g:NERD_mapleader . 'c')
+call s:InitVariable("g:NERD_com_line_nest_map", g:NERD_mapleader . 'n')
+call s:InitVariable("g:NERD_com_line_sexy_map", g:NERD_mapleader . 's')
+call s:InitVariable("g:NERD_com_line_toggle_map", g:NERD_mapleader . '<space>')
+call s:InitVariable("g:NERD_com_line_minimal_map", g:NERD_mapleader . 'm')
+call s:InitVariable("g:NERD_com_line_yank_map", g:NERD_mapleader . 'y')
+call s:InitVariable("g:NERD_com_to_end_of_line_map", g:NERD_mapleader . '$')
+call s:InitVariable("g:NERD_prepend_com_map", g:NERD_mapleader . 'I')
+call s:InitVariable("g:NERD_uncom_line_map", g:NERD_mapleader . 'u')
 
 " Section: Comment mapping functions and autocommands {{{1
 " ============================================================================
@@ -353,7 +353,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "hog" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "html" 
-        call s:MapDelimiters('<!--','-->') 
+        call s:MapDelimitersWithAlternative('<!--','-->', '//', '', 0) 
     elseif a:filetype == "htmlos"
         call s:MapDelimiters('#','/#') 
     elseif a:filetype == "ia64" 
@@ -3896,15 +3896,17 @@ is capable of adding and removing comments of this type.
 |NERD_lPlace|                         Specifies what to use as the left
                                       delimiter placeholder when nesting
                                       comments.
-|NERD_rPlace|                         Specifies what to use as the right
-                                      delimiter placeholder when nesting
-                                      comments.
 |NERD_left_align_regexp|              Specifies which filetypes to align left
                                       delimiters for.
+|NERD_mapleader|                      Specifies what all the commenting key
+                                      mappings will begin with.
 |NERD_place_holder_regexp|            Specifies which filetypes may use
                                       placeholders when nesting comments.
 |NERD_right_align_regexp|             Specifies which filetypes to align right
                                       delimiters for.
+|NERD_rPlace|                         Specifies what to use as the right
+                                      delimiter placeholder when nesting
+                                      comments.
 |NERD_shut_up|                        Stops all output from the script.
 |NERD_space_delim_filetype_regexp|    Specifies which filetypes to add spaces
                                       around the delimiters for.
@@ -4030,15 +4032,6 @@ then stick the following line in your .vimrc: >
 Note that this option does not affect the behaviour of visual-block mode ().
 
 -----------------------------------------------------------------------------
-                                             *NERD_menu_mode*
-This option can take 3 values:
-    "0": Turns the NERD commenter menu off completely.
-    "1": Turns the NERD commenter menu on with no menu shortcut.
-    "2": Turns the NERD commenter menu on with <alt>-c as the menu shortcut.
-    
-Default is "2".
-                                                   
------------------------------------------------------------------------------
                                                    *NERD_dont_remove_alt_coms*
 When uncommenting a line when there is an alternative commenting style for the
 current filetype, this option tells the script not to look for, and remove,
@@ -4153,6 +4146,44 @@ delims aligned.
 
 See |NERD_com-reg-exps| for example reg exps.
 
+-----------------------------------------------------------------------------
+                                                         *NERD_mapleader*
+NERD_mapleader is used to specify what all the NERD commenter key mappings
+begin with. 
+
+Assuming that <leader> == '\', the default key mappings will look like this: >
+    \cc
+    \cu
+    \ca
+    \ci
+    \cs
+    ...
+<
+However, if this line: >
+    let NERD_mapleader = ',x'
+<
+were present in your vimrc then the default mappings would look like this: >
+    ,xc
+    ,xu
+    ,xa
+    ,xi
+    ,xs
+    ...
+<
+This option only affects the mappings that have not been explicitly set
+manually (see |NERD_com-cust-keys|).
+
+Default is <leader>c.
+                                                   
+-----------------------------------------------------------------------------
+                                                     *NERD_menu_mode*
+This option can take 3 values:
+    "0": Turns the NERD commenter menu off completely.
+    "1": Turns the NERD commenter menu on with no menu shortcut.
+    "2": Turns the NERD commenter menu on with <alt>-c as the menu shortcut.
+    
+Default is "2".
+                                                   
 -----------------------------------------------------------------------------
                                                     *NERD_place_holder_regexp*
 This option is a regular expression which is used to specify which filetypes
@@ -4554,6 +4585,8 @@ supported (Namely: context, plaintext and mail).
 Thanks to Joseph Barker for the sugesting that the menu be an optional
 feature.
 
+Thanks to Gary Church and Tim Carey-Smith for complaining about the
+keymappings and causing me to introduce the NERD_mapleader option :)
 
 
 Cheers to myself for being the best looking man on Earth!

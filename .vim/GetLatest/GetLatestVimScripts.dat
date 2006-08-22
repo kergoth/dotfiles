@@ -22,7 +22,7 @@ ScriptID SourceID Filename
 974 4316 indent/python.vim
 1066 5001 cecutil.vim
 1143 5747 colors/inkpot.vim
-1218 5716 NERD_comments.vim
+1218 6067 NERD_comments.vim
 1243 4055 colors/desert256.vim
 1248 4239 syntax/cccs.vim
 1259 5617 colors/sienna.vim
@@ -43,7 +43,7 @@ ScriptID SourceID Filename
 1451 5700 ftplugin/svn_commit.vim
 1453 5189 plugin/cecscope.vim
 1454 5795 colors/baycomb.vim
-1464 6008 colors/moria.vim
+1464 6057 colors/moria.vim
 1471 5319 colors/watermark.vim
 1472 5673 colors/sift.vim
 1477 5305 plugin/modeliner.vim
@@ -54,7 +54,7 @@ ScriptID SourceID Filename
 1527 5611 colors/habiLight.vim
 1532 5904 colors/txt.vim
 1542 5690 autoload/pythoncomplete.vim
-1545 5777 plugins/parenquote.vim
+1545 6087 plugins/parenquote.vim
 1547 5761 compiler/gnat.vim
 1548 5780 ftplugin/ada.vim
 1552 5946 plugins/ScreenShot.vim
