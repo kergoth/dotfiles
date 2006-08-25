@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SVKDEPOT="//mirror/wow"
+SVKDEPOT="/wow/mirror"
 SVKCO="/home/World of Warcraft/Interface"
 
 usage () {
@@ -30,7 +30,7 @@ fatal () {
 # 2) Use the addon's .toc file to locate the addon sources in the extracted zip tree
 # 3) Import those sources into /WOW/vendor/$addon/current
 # 4) Tag /WOW/vendor/$addon/current as /WOW/vendor/$addon/$version
-# 5) Merge changes from /WOW/vendor/$addon/current to /WOW/trunk/KergothWOWBits/Addons/$addon
+# 5) Merge changes from /WOW/vendor/$addon/current to /WOW/trunk/KergWOW/AddOns/$addon
 
 GETOPTINFO="`getopt -l addons:,version:,forcever:,delete a:v:V:d \"$@\"`"
 if [ "x$?" != "x0" ]; then
@@ -96,7 +96,7 @@ _extract () {
 #    the name/version for scm operations
 # 4) Import the addon's sources into vendor/$addon/current
 # 5) Tag vendor/$addon/current as vendor/$addon/$version
-# 6) Star merge changes from vendor/$addon/current to trunk/KergothWOWBits/Addons/$addon
+# 6) Star merge changes from vendor/$addon/current to trunk/KergWOW/AddOns/$addon
 
 
 TMPDIR="`mktemp -d \"/tmp/$addon.XXXXXX\"`" || (error "Unable to create temporary directory."; exit 1)
@@ -177,11 +177,11 @@ for toc in $tocfiles; do
 	fi
 
 
-	svk ls "$SVKDEPOT/trunk/KergothWOWBits/Addons/$addon" >/dev/null 2>&1
+	svk ls "$SVKDEPOT/trunk/KergWOW/AddOns/$addon" >/dev/null 2>&1
 	if [ "$?" != "0" ]; then
 		continue
 	fi
-	svk smerge -m "Update $addon to version $version." "$SVKDEPOT/vendor/$addon/current" "$SVKDEPOT/trunk/KergothWOWBits/Addons/$addon"
+	svk smerge -m "Update $addon to version $version." "$SVKDEPOT/vendor/$addon/current" "$SVKDEPOT/trunk/KergWOW/AddOns/$addon"
 	if [ "x$?" != "x0" ]; then
 		error "Unable to merge the changes in version $version of $title to the trunk."
 		ERROR=1
