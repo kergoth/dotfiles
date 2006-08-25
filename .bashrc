@@ -196,6 +196,15 @@ foo () {
     fi
 }
 
+# Kill off the dead checkouts
+svk_purgeco () {
+    svk co -l|grep ^?|awk '{print $3}'|for i in `cat`; do svk co --detach $i; done
+}
+
+svk_updateco () {
+    svk co -l|grep -v ^?|awk '{print $3}'|for i in `cat`; do svk up $i; done
+}
+
 # Used to vim..
 :make () {
     make "$@"
