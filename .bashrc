@@ -224,7 +224,9 @@ alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
-alias mtn='monotone'
+if [ -z "`which mtn`" -a -n "`which monotone`" ]; then
+    alias mtn='monotone'
+fi
 alias bb='bitbake'
 alias vim='vim -X'
 
