@@ -744,9 +744,10 @@ if has('syntax')
   syntax on
 endif
 
+" Inside of screen, we don't care about colorterm
 if &term !~ '^screen'
-  " Inside of screen, we don't care about colorterm
-  if colorterm == 'gnome-terminal'
+  " Set colors to 16 for gnome-terminal and xfce4-terminal
+  if (colorterm == 'gnome-terminal') || (colorterm == 'Terminal')
     set t_Co=16
   elseif (colorterm == 'rxvt-xpm') && (&term == 'rxvt')
     " try to set colors correctly for mrxvt
