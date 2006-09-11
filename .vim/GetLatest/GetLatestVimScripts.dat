@@ -8,6 +8,7 @@ ScriptID SourceID Filename
 159 3640 minibufexpl.vim
 273 6158 taglist.vim
 294 5608 Align.vim
+368 6146 colors/oceandeep.vim
 489 5882 manpageview.vim
 555 4795 HiCurLine.vim
 642 5228 GetLatestVimScripts.vim
