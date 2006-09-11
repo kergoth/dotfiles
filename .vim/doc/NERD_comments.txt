@@ -1,4 +1,4 @@
-*NERD_comments.txt*         Plugin for commenting code            v167
+*NERD_comments.txt*         Plugin for commenting code            v169
 
 
                         NERD_COMMENTS REFERENCE MANUAL~
@@ -23,7 +23,7 @@ CONTENTS {{{2                                         *NERD_comments-contents*
             2.2.7 Yank comment map............|NERD_com-yank-comment|
             2.2.8 Comment to EOL map..........|NERD_com-EOL-comment|
             2.2.9 Append com to line map......|NERD_com-append-comment|
-            2.2.10 Prepend com to line map.....|NERD_com-prepend-comment|
+            2.2.10 Prepend com to line map....|NERD_com-prepend-comment|
             2.2.11 Insert comment map.........|NERD_com-insert-comment|
             2.2.12 Use alternate delims map...|NERD_com-alt-delim|
             2.2.13 Comment aligned maps.......|NERD_com-aligned-comment|
@@ -39,6 +39,8 @@ CONTENTS {{{2                                         *NERD_comments-contents*
     4.Issues with the script..................|NERD_com-issues|
         4.1 Delimiter detection heuristics....|NERD_com-heuristics|
         4.2 Nesting issues....................|NERD_com-nesting|
+        4.3 Nesting issues....................|NERD_com-nesting|
+        4.3 Mark clobbering...................|NERD_com-mark-clobbering|
     5.TODO list...............................|NERD_com-todo|
     6.Credits.................................|NERD_com-credits|
 
@@ -382,22 +384,23 @@ abaqus abc acedb ada ahdl amiga aml ampl ant apache apachestyle asm68k asm asm
 asn aspvbs atlas automake ave awk basic b bc bdf bib bindzone btm caos catalog
 c cfg cg ch cl clean clipper conf config cpp crontab cs csc csp css cterm cupl
 cvs dcl def diff dns dosbatch dosini dot dracula dsl dtd dtml dylan ecd eiffel
-elf elmfilt erlang eterm expect exports fgl focexec form fortran foxpro fvwm
-fx gdb gdmo gnuplot gtkrc haskell hb h help hercules hog html htmlos ia64 icon
-idlang idl indent inform inittab ishd iss ist jam java javascript jess jgraph
-jproperties jproperties jsp kix kscript lace lex lftp lifelines lilo lisp lite
-lotos lout lprolog lscript lss lua lynx m4 make maple masm master matlab mel
-mf mib mma model moduala.  modula2 modula3 monk mush muttrc named nasm nastran
-natural ncf nqc nsis ocaml omnimark openroad opl ora ox pascal pcap pccts perl
-pfmain php phtml pic pike pilrc pine plm plsql po postscr pov povini ppd ppwiz
-procmail progress prolog psf ptcap python python radiance ratpoison r rc
-readline rebol registry remind rexx robots rpl ruby sa samba sas sather scheme
-scilab screen scsh sdl sed sgml sgmldecl sgmllnx sicad simula sinda skill
-slang sl slrnrc sm smil smith sml snnsnet snnspat snnsres snobol4 spec specman
-spice sql sqlforms sqlj sqr squid st stp strace tads tags tak tasm tcl
-terminfo tex texinfo texmf tf tidy tli trasys tsalt tsscl tssgm uc uil vb
-verilog vgrindefs vhdl vim virata vrml vsejcl webmacro wget winbatch wml sh
-wvdial xdefaults xf86conf xkb xmath xml xmodmap xpm2 xpm xslt yacc z8a
+elf elmfilt erlang eruby eterm expect exports fgl focexec form fortran foxpro
+fvwm fx gdb gdmo gnuplot gtkrc haskell hb h help hercules hog html htmlos ia64
+icon idlang idl indent inform inittab ishd iss ist jam java javascript jess
+jgraph jproperties jproperties jsp kix kscript lace lex lftp lifelines lilo
+lisp lite lotos lout lprolog lscript lss lua lynx m4 make maple masm master
+matlab mel mf mib mma model moduala.  modula2 modula3 monk mush muttrc named
+nasm nastran natural ncf netrw nqc nsis ocaml omnimark openroad opl ora ox
+pascal pcap pccts perl pfmain php phtml pic pike pilrc pine plm plsql po
+postscr pov povini ppd ppwiz procmail progress prolog psf ptcap python python
+radiance ratpoison r rc readline rebol registry remind rexx robots rpl ruby sa
+samba sas sather scheme scilab screen scsh sdl sed sgml sgmldecl sgmllnx sicad
+simula sinda skill slang sl slrnrc sm smil smith sml snnsnet snnspat snnsres
+snobol4 spec specman spice sql sqlforms sqlj sqr squid st stp strace svn tads
+taglist tags tak tasm tcl terminfo tex texinfo texmf tf tidy tli trasys tsalt
+tsscl tssgm uc uil vb verilog vgrindefs vhdl vim virata vrml vsejcl webmacro
+wget winbatch wml sh wvdial xdefaults xf86conf xhtml xkb xmath xml xmodmap
+xpm2 xpm xslt yacc yaml z8a
 
 If a language is not in the list of hardcoded supported filetypes then the
 &commentstring vim option is used.
@@ -445,15 +448,17 @@ is capable of adding and removing comments of this type.
 |NERD_lPlace|                         Specifies what to use as the left
                                       delimiter placeholder when nesting
                                       comments.
-|NERD_rPlace|                         Specifies what to use as the right
-                                      delimiter placeholder when nesting
-                                      comments.
 |NERD_left_align_regexp|              Specifies which filetypes to align left
                                       delimiters for.
+|NERD_mapleader|                      Specifies what all the commenting key
+                                      mappings will begin with.
 |NERD_place_holder_regexp|            Specifies which filetypes may use
                                       placeholders when nesting comments.
 |NERD_right_align_regexp|             Specifies which filetypes to align right
                                       delimiters for.
+|NERD_rPlace|                         Specifies what to use as the right
+                                      delimiter placeholder when nesting
+                                      comments.
 |NERD_shut_up|                        Stops all output from the script.
 |NERD_space_delim_filetype_regexp|    Specifies which filetypes to add spaces
                                       around the delimiters for.
@@ -579,15 +584,6 @@ then stick the following line in your .vimrc: >
 Note that this option does not affect the behaviour of visual-block mode ().
 
 -----------------------------------------------------------------------------
-                                             *NERD_menu_mode*
-This option can take 3 values:
-    "0": Turns the NERD commenter menu off completely.
-    "1": Turns the NERD commenter menu on with no menu shortcut.
-    "2": Turns the NERD commenter menu on with <alt>-c as the menu shortcut.
-    
-Default is "2".
-                                                   
------------------------------------------------------------------------------
                                                    *NERD_dont_remove_alt_coms*
 When uncommenting a line when there is an alternative commenting style for the
 current filetype, this option tells the script not to look for, and remove,
@@ -702,6 +698,44 @@ delims aligned.
 
 See |NERD_com-reg-exps| for example reg exps.
 
+-----------------------------------------------------------------------------
+                                                         *NERD_mapleader*
+NERD_mapleader is used to specify what all the NERD commenter key mappings
+begin with. 
+
+Assuming that <leader> == '\', the default key mappings will look like this: >
+    \cc
+    \cu
+    \ca
+    \ci
+    \cs
+    ...
+<
+However, if this line: >
+    let NERD_mapleader = ',x'
+<
+were present in your vimrc then the default mappings would look like this: >
+    ,xc
+    ,xu
+    ,xa
+    ,xi
+    ,xs
+    ...
+<
+This option only affects the mappings that have not been explicitly set
+manually (see |NERD_com-cust-keys|).
+
+Default is <leader>c.
+                                                   
+-----------------------------------------------------------------------------
+                                                     *NERD_menu_mode*
+This option can take 3 values:
+    "0": Turns the NERD commenter menu off completely.
+    "1": Turns the NERD commenter menu on with no menu shortcut.
+    "2": Turns the NERD commenter menu on with <alt>-c as the menu shortcut.
+    
+Default is "2".
+                                                   
 -----------------------------------------------------------------------------
                                                     *NERD_place_holder_regexp*
 This option is a regular expression which is used to specify which filetypes
@@ -1005,6 +1039,14 @@ will become: >
 (Note that in the above examples I have deliberately not used place holders
 for simplicity)
 
+------------------------------------------------------------------------------
+4.3 Mark clobbering                                 *NERD_com-mark-clobbering*
+
+The script clobbers the s and t marks when doing most comments. Im not sure
+how to save and restore the marks yet.
+
+
+
 ==============================================================================
 5. TODO list {{{2                                              *NERD_com-todo*
 
@@ -1089,7 +1131,7 @@ sexy comments. Sexy comments dont look so sexy when they are only half removed
 
 Thanks to Alexander "boesi" Bosecke for pointing out a bug that was stopping
 the NERD_space_delim_filetype_regexp option from working with left aligned
-toggle comments.
+toggle comments. And for pointing out a bug when initialising VB comments. 
 
 Thanks to Stefano Zacchiroli for suggesting the idea of "Minimal comments".
 And for suggested improvements to minimal comments.
@@ -1103,6 +1145,8 @@ supported (Namely: context, plaintext and mail).
 Thanks to Joseph Barker for the sugesting that the menu be an optional
 feature.
 
+Thanks to Gary Church and Tim Carey-Smith for complaining about the
+keymappings and causing me to introduce the NERD_mapleader option :)
 
 
 Cheers to myself for being the best looking man on Earth!

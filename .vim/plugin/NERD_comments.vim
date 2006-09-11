@@ -1,7 +1,7 @@
 " vim global plugin that provides easy code commenting for various file types
-" Last Change:  13 Aug 2006
-" Maintainer:   Martin Grenfell <mrg39 at student.canterbury.ac.nz>
-let s:NERD_comments_version = 1.68
+" Last Change:  9 september 2006
+" Maintainer:   Martin Grenfell <martin_grenfell at msn.com>
+let s:NERD_comments_version = 1.69
 
 
 " For help documentation type :help NERD_comments. If this fails, Restart vim
@@ -180,7 +180,9 @@ function s:SetUpForNewFiletype(filetype)
 
     "check the filetype against all known filetypes to see if we have
     "hardcoded the comment delimiters to use 
-    if a:filetype == "abaqus" 
+    if a:filetype == "" 
+        call s:MapDelimiters('', '')
+    elseif a:filetype == "abaqus" 
         call s:MapDelimiters('**', '')
     elseif a:filetype == "abc" 
         call s:MapDelimiters('%', '')
@@ -278,6 +280,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('CVS:','')
     elseif a:filetype == "dcl" 
         call s:MapDelimiters('$!', '')
+    elseif a:filetype == "debsources" 
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "def" 
         call s:MapDelimiters(';', '')
     elseif a:filetype == "diff" 
@@ -310,6 +314,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "erlang" 
         call s:MapDelimiters('%', '')
+    elseif a:filetype == "eruby" 
+        call s:MapDelimitersWithAlternative('#', '', '<!--', '-->', 0)
     elseif a:filetype == "eterm" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "expect" 
@@ -470,6 +476,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('/*', '')
     elseif a:filetype == "ncf" 
         call s:MapDelimiters(';', '')
+    elseif a:filetype == "netrw" 
+        call s:MapDelimiters('', '')
     elseif a:filetype == "nqc" 
         call s:MapDelimiters('/*','*/')
     elseif a:filetype == "nsis" 
@@ -642,8 +650,12 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('--', '')
     elseif a:filetype == "strace" 
         call s:MapDelimiters('/*','*/')
+    elseif a:filetype == "svn" 
+        call s:MapDelimiters('','')
     elseif a:filetype == "tads" 
         call s:MapDelimitersWithAlternative('//','', '/*','*/', g:NERD_use_c_style_tads_comments )
+    elseif a:filetype == "taglist" 
+        call s:MapDelimiters('', '')
     elseif a:filetype == "tags" 
         call s:MapDelimiters(';', '')
     elseif a:filetype == "tak" 
@@ -681,7 +693,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "uil" 
         call s:MapDelimiters('!', '')
     elseif a:filetype == "vb" 
-        call s:MapDelimiters(''','') 
+        call s:MapDelimiters("'","") 
     elseif a:filetype == "verilog" 
         call s:MapDelimitersWithAlternative('//','', '/*','*/', g:NERD_use_c_style_verilog_comments)
     elseif a:filetype == "vgrindefs" 
@@ -712,6 +724,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('!', '')
     elseif a:filetype == "xf86conf" 
         call s:MapDelimiters('#', '')
+    elseif a:filetype == "xhtml" 
+        call s:MapDelimiters('<!--', '-->')
     elseif a:filetype == "xkb" 
         call s:MapDelimiters('//', '')
     elseif a:filetype == "xmath" 
@@ -728,6 +742,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('<!--','-->') 
     elseif a:filetype == "yacc" 
         call s:MapDelimiters('/*','*/')
+    elseif a:filetype == "yaml" 
+        call s:MapDelimiters('#','')
     elseif a:filetype == "z8a" 
         call s:MapDelimiters(';', '')
 
@@ -738,7 +754,7 @@ function s:SetUpForNewFiletype(filetype)
     "get them from &commentstring.
     else
 	"print a disclaimer to the user :) 
-        call s:NerdEcho("NERD_comments:Unknown filetype, setting delimiters by &commentstring", 0)
+        call s:NerdEcho("NERD_comments:Unknown filetype '".a:filetype."', setting delimiters by &commentstring.\nPleeeeease email the author of the NERD_commenter with this filetype\nand its delimiters!", 0)
         
         "extract the delims from &commentstring 
 	let left= substitute(&commentstring, '\(.*\)%s.*', '\1', '')
@@ -1524,7 +1540,6 @@ function s:DoComment(forceNested, isVisual, alignLeft, alignRight, type) range
 
     " move the cursor back to where it was 
     call s:RestoreCursorPostion() 
-
 endfunction
 
 " Function: s:InvertComment(firstLine, lastLine) function {{{2
@@ -3227,6 +3242,21 @@ function s:ReplaceRightMostDelim(toReplace, replacor, str)
     return line
 endfunction
 
+" Function: s:RestoreCursorPosition() {{{2
+" Restores where the cursor is using the s and t registers. See also
+" RestoreCursorPostion(). Sets the s and t registers back to their original
+" values before SaveCursorPosition was called
+function s:RestoreCursorPostion()
+    " see :h restore-position for details of how this works
+    let @s=b:old_s_reg
+    let @t=b:old_t_reg
+    normal! `t
+    normal! zt
+    normal! `s
+
+    "not sure how to save/restore the marks, so just del them 
+    delmarks s t
+endfunction
 " Function: s:SaveCursorPosition() {{{2
 " Saves where the cursor is using the s and t registers. See also
 " RestoreCursorPostion()
@@ -3288,19 +3318,6 @@ function s:SwapOutterPlaceHoldersForMultiPartDelims(line)
 
     let line = s:ReplaceDelims(g:NERD_lPlace, g:NERD_rPlace, left, right, a:line)
     return line
-endfunction
-
-" Function: s:RestoreCursorPosition() {{{2
-" Restores where the cursor is using the s and t registers. See also
-" RestoreCursorPostion(). Sets the s and t registers back to their original
-" values before SaveCursorPosition was called
-function s:RestoreCursorPostion()
-    " see :h restore-position for details of how this works
-    let @s=b:old_s_reg
-    let @t=b:old_t_reg
-    normal! `t
-    normal! zt
-    normal! `s
 endfunction
 " Function: s:UnEsc(str, escChar) {{{2
 " This function removes all the escape chars from a string
@@ -3474,7 +3491,7 @@ CONTENTS {{{2                                         *NERD_comments-contents*
             2.2.7 Yank comment map............|NERD_com-yank-comment|
             2.2.8 Comment to EOL map..........|NERD_com-EOL-comment|
             2.2.9 Append com to line map......|NERD_com-append-comment|
-            2.2.10 Prepend com to line map.....|NERD_com-prepend-comment|
+            2.2.10 Prepend com to line map....|NERD_com-prepend-comment|
             2.2.11 Insert comment map.........|NERD_com-insert-comment|
             2.2.12 Use alternate delims map...|NERD_com-alt-delim|
             2.2.13 Comment aligned maps.......|NERD_com-aligned-comment|
@@ -3490,6 +3507,8 @@ CONTENTS {{{2                                         *NERD_comments-contents*
     4.Issues with the script..................|NERD_com-issues|
         4.1 Delimiter detection heuristics....|NERD_com-heuristics|
         4.2 Nesting issues....................|NERD_com-nesting|
+        4.3 Nesting issues....................|NERD_com-nesting|
+        4.3 Mark clobbering...................|NERD_com-mark-clobbering|
     5.TODO list...............................|NERD_com-todo|
     6.Credits.................................|NERD_com-credits|
 
@@ -3833,22 +3852,23 @@ abaqus abc acedb ada ahdl amiga aml ampl ant apache apachestyle asm68k asm asm
 asn aspvbs atlas automake ave awk basic b bc bdf bib bindzone btm caos catalog
 c cfg cg ch cl clean clipper conf config cpp crontab cs csc csp css cterm cupl
 cvs dcl def diff dns dosbatch dosini dot dracula dsl dtd dtml dylan ecd eiffel
-elf elmfilt erlang eterm expect exports fgl focexec form fortran foxpro fvwm
-fx gdb gdmo gnuplot gtkrc haskell hb h help hercules hog html htmlos ia64 icon
-idlang idl indent inform inittab ishd iss ist jam java javascript jess jgraph
-jproperties jproperties jsp kix kscript lace lex lftp lifelines lilo lisp lite
-lotos lout lprolog lscript lss lua lynx m4 make maple masm master matlab mel
-mf mib mma model moduala.  modula2 modula3 monk mush muttrc named nasm nastran
-natural ncf nqc nsis ocaml omnimark openroad opl ora ox pascal pcap pccts perl
-pfmain php phtml pic pike pilrc pine plm plsql po postscr pov povini ppd ppwiz
-procmail progress prolog psf ptcap python python radiance ratpoison r rc
-readline rebol registry remind rexx robots rpl ruby sa samba sas sather scheme
-scilab screen scsh sdl sed sgml sgmldecl sgmllnx sicad simula sinda skill
-slang sl slrnrc sm smil smith sml snnsnet snnspat snnsres snobol4 spec specman
-spice sql sqlforms sqlj sqr squid st stp strace tads tags tak tasm tcl
-terminfo tex texinfo texmf tf tidy tli trasys tsalt tsscl tssgm uc uil vb
-verilog vgrindefs vhdl vim virata vrml vsejcl webmacro wget winbatch wml sh
-wvdial xdefaults xf86conf xkb xmath xml xmodmap xpm2 xpm xslt yacc z8a
+elf elmfilt erlang eruby eterm expect exports fgl focexec form fortran foxpro
+fvwm fx gdb gdmo gnuplot gtkrc haskell hb h help hercules hog html htmlos ia64
+icon idlang idl indent inform inittab ishd iss ist jam java javascript jess
+jgraph jproperties jproperties jsp kix kscript lace lex lftp lifelines lilo
+lisp lite lotos lout lprolog lscript lss lua lynx m4 make maple masm master
+matlab mel mf mib mma model moduala.  modula2 modula3 monk mush muttrc named
+nasm nastran natural ncf netrw nqc nsis ocaml omnimark openroad opl ora ox
+pascal pcap pccts perl pfmain php phtml pic pike pilrc pine plm plsql po
+postscr pov povini ppd ppwiz procmail progress prolog psf ptcap python python
+radiance ratpoison r rc readline rebol registry remind rexx robots rpl ruby sa
+samba sas sather scheme scilab screen scsh sdl sed sgml sgmldecl sgmllnx sicad
+simula sinda skill slang sl slrnrc sm smil smith sml snnsnet snnspat snnsres
+snobol4 spec specman spice sql sqlforms sqlj sqr squid st stp strace svn tads
+taglist tags tak tasm tcl terminfo tex texinfo texmf tf tidy tli trasys tsalt
+tsscl tssgm uc uil vb verilog vgrindefs vhdl vim virata vrml vsejcl webmacro
+wget winbatch wml sh wvdial xdefaults xf86conf xhtml xkb xmath xml xmodmap
+xpm2 xpm xslt yacc yaml z8a
 
 If a language is not in the list of hardcoded supported filetypes then the
 &commentstring vim option is used.
@@ -4487,6 +4507,14 @@ will become: >
 (Note that in the above examples I have deliberately not used place holders
 for simplicity)
 
+------------------------------------------------------------------------------
+4.3 Mark clobbering                                 *NERD_com-mark-clobbering*
+
+The script clobbers the s and t marks when doing most comments. Im not sure
+how to save and restore the marks yet.
+
+
+
 ==============================================================================
 5. TODO list {{{2                                              *NERD_com-todo*
 
@@ -4571,7 +4599,7 @@ sexy comments. Sexy comments dont look so sexy when they are only half removed
 
 Thanks to Alexander "boesi" Bosecke for pointing out a bug that was stopping
 the NERD_space_delim_filetype_regexp option from working with left aligned
-toggle comments.
+toggle comments. And for pointing out a bug when initialising VB comments. 
 
 Thanks to Stefano Zacchiroli for suggesting the idea of "Minimal comments".
 And for suggested improvements to minimal comments.

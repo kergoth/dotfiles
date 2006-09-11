@@ -132,6 +132,7 @@ NERD_com-heuristics	NERD_comments.txt	/*NERD_com-heuristics*
 NERD_com-insert-comment	NERD_comments.txt	/*NERD_com-insert-comment*
 NERD_com-invert-comment	NERD_comments.txt	/*NERD_com-invert-comment*
 NERD_com-issues	NERD_comments.txt	/*NERD_com-issues*
+NERD_com-mark-clobbering	NERD_comments.txt	/*NERD_com-mark-clobbering*
 NERD_com-minimal-comment	NERD_comments.txt	/*NERD_com-minimal-comment*
 NERD_com-nested-comment	NERD_comments.txt	/*NERD_com-nested-comment*
 NERD_com-nesting	NERD_comments.txt	/*NERD_com-nesting*
@@ -164,6 +165,7 @@ NERD_dont_remove_alt_coms	NERD_comments.txt	/*NERD_dont_remove_alt_coms*
 NERD_dont_remove_spaces_regexp	NERD_comments.txt	/*NERD_dont_remove_spaces_regexp*
 NERD_lPlace	NERD_comments.txt	/*NERD_lPlace*
 NERD_left_align_regexp	NERD_comments.txt	/*NERD_left_align_regexp*
+NERD_mapleader	NERD_comments.txt	/*NERD_mapleader*
 NERD_menu_mode	NERD_comments.txt	/*NERD_menu_mode*
 NERD_place_holder_regexp	NERD_comments.txt	/*NERD_place_holder_regexp*
 NERD_rPlace	NERD_comments.txt	/*NERD_rPlace*
