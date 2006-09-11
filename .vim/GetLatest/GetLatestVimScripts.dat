@@ -62,3 +62,4 @@ ScriptID SourceID Filename
 1554 5778 autoload/adacomplete.vim
 1560 5757 colors/neverness.vim
 1569 5806 colors/montz.vim
+1641 6095 plugins/AfterColors.vim
