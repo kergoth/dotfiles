@@ -17,7 +17,7 @@ ScriptID SourceID Filename
 746 5662 plugin/cmdalias.vim
 760 5986 colors/ps_color.vim
 790 5677 python.vim
-795 5721 colors/xterm16.vim
+795 6172 colors/xterm16.vim
 915 5719 AsNeeded.vim
 948 2878 compiler/scons.vim
 974 4316 indent/python.vim

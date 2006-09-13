@@ -1,7 +1,7 @@
-" xterm16-v2.42: Vim color scheme file
+" xterm16-v2.43: Vim color scheme file
 " Maintainer:	Gautam Iyer <gautam@math.uchicago.edu>
 " Created:	Thu 16 Oct 2003 06:17:47 PM CDT
-" Modified:	Sun 23 Apr 2006 04:41:57 PM CDT
+" Modified:	Tue 12 Sep 2006 11:19:35 AM PDT
 "
 " Adjustable color scheme for GUI/Terminal vim.
 
@@ -414,6 +414,9 @@ try
 	call s:hi( 'SpecialKey'  , 'none'   , 'blue'       , 'none'      )
 	call s:hi( 'StatusLine'  , 'none'   , 'darkblue'   , 'grey'      )
 	call s:hi( 'StatusLineNC', 'reverse', 'none'       , 'none'      )
+	call s:hi( 'TabLineFill' , 'none'   , 'black'	   , 'darkgrey'	 )
+	call s:hi( 'TabLine'	 , 'none'   , 'black'	   , 'darkgrey'	 )
+	call s:hi( 'TabLineSel'  , 'bold'   , 'none'	   , 'none'	 )
 	call s:hi( 'Title'       , 'none'   , 'magenta'    , 'none'      )
 	call s:hi( 'Visual'      , 'none'   , 'none'       , 'darkblue'  )
 	call s:hi( 'VisualNOS'   , 'none'   , 'none'       , 'darkgrey'  )
@@ -562,14 +565,17 @@ try
 	call s:hi( 'MoreMsg'     , 'none', 'green'     , 'none'      )
 	call s:hi( 'NonText'     , 'none', 'yellow'    , 'none'      )
 	call s:hi( 'Pmenu'       , 'none', 'none'      , 'grey'      )
-	call s:hi( 'PmenuSel'    , 'none', 'none'      , 'darkblue'  )
 	call s:hi( 'PmenuSbar'   , 'none', 'none'      , 'darkgrey'  )
+	call s:hi( 'PmenuSel'    , 'none', 'none'      , 'darkblue'  )
 	call s:hi( 'PmenuThumb'  , 'none', 'none'      , 'lightgrey' )
 	call s:hi( 'Question'    , 'none', 'green'     , 'none'      )
 	call s:hi( 'Search'      , 'none', 'black'     , 'darkcyan'  )
 	call s:hi( 'SignColumn'  , 'none', 'yellow'    , 'darkgrey'  )
 	call s:hi( 'SpecialKey'  , 'none', 'yellow'    , 'none'      )
 	call s:hi( 'StatusLineNC', 'none', 'black'     , 'grey'      )
+	call s:hi( 'TabLineFill' , 'none', 'none'      , 'grey'	     )
+	call s:hi( 'TabLine'     , 'none', 'none'      , 'grey'	     )
+	call s:hi( 'TabLineSel'  , 'bold', 'none'      , 'none'	     )
 	call s:hi( 'Title'       , 'none', 'yellow'    , 'none'      )
 	call s:hi( 'VertSplit'   , 'none', 'darkgrey'  , 'darkgrey'  )
 	call s:hi( 'Visual'      , 'none', 'none'      , 'darkblue'  )
@@ -702,9 +708,9 @@ try
 	call s:hi( 'SpecialKey'   , 'none'   , 'yellow'      , 'none'       )
 	call s:hi( 'StatusLineNC' , 'none'   , 'grey'        , 'grey3'      )
 	call s:hi( 'StatusLine'   , 'none'   , 'white'       , 'grey5'      )
-	call s:hi( 'TabLine'      , 'none'   , 'grey'        , 'grey3'      )
-	call s:hi( 'TabLineFill'  , 'none'   , 'grey'        , 'grey3'      )
-	call s:hi( 'TabLineSel'   , 'none'   , 'none'        , 'none'       )
+	call s:hi( 'TabLine'      , 'none'   , 'none'        , 'grey3'      )
+	call s:hi( 'TabLineFill'  , 'none'   , 'none'        , 'grey3'      )
+	call s:hi( 'TabLineSel'   , 'bold'   , 'none'        , 'none'       )
 	call s:hi( 'Title'        , 'none'   , 'yellow'      , 'none'       )
 	call s:hi( 'VertSplit'    , 'none'   , 'grey3'       , 'grey3'      )
 	call s:hi( 'Visual'       , 'none'   , 'none'        , 'darkblue'   )
