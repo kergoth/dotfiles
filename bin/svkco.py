@@ -6,13 +6,12 @@ class Config(object):
     svk = 'svk'
     mode = 'detached'
     # mode = 'attached'
-    depot = '//'
 
 import commands
 class SVKError(Exception):
-    def __init__(self, command, depot, exitcode, msg):
+    def __init__(self, command, exitcode, msg):
         (exitstatus, output) = commands.getstatusoutput('echo %s' % command)
-        self.str = 'SVK command %s on depot %s failed with exit code %s:\n%s' % (output, depot, exitcode, msg)
+        self.str = 'SVK command %s failed with exit code %s:\n%s' % (output, exitcode, msg)
 
     def __str__(self):
         return self.str
@@ -24,27 +23,24 @@ def runcmd(args):
 
     (exitstatus, output) = commands.getstatusoutput(cmd)
     if exitstatus != 0:
-        raise SVKError(cmd, Config.depot, exitstatus >> 8, output)
+        raise SVKError(cmd, exitstatus >> 8, output)
 
     return output
 
 class Mirrors(list):
-    def __init__(self, depot = None):
+    def __init__(self):
         self.bypath = dict()
         self.bysource = dict()
-        self.depot = depot
 
-        if not depot:
-            depot = '//'
-        args = [ Config.svk, 'mi', '-l', depot ]
+        args = [ Config.svk, 'mi', '-l' ]
 
         output = runcmd(args)
 
         import re
         for line in re.split('[\n\r]*', output):
-            if not line.startswith(depot):
+            linelist = line.split()
+            if len(linelist) != 2:
                 continue
-
             (path, source) = line.split()
             self.bypath[path] = source
             self.bysource[source] = path
@@ -66,7 +62,7 @@ def checkout(path, localpath):
             (dest, src) = line.split()
             arg[os.path.join(dirname, dest)] = src
 
-    mi = Mirrors(Config.depot)
+    mi = Mirrors()
 
     # svk co --export PATH LOCALPATH
     print(runcmd([ Config.svk, 'co', path, localpath ]))
@@ -83,14 +79,17 @@ def checkout(path, localpath):
 
         mipath = None
         for url in mi.bysource.keys():
-            if upstream.startswith(url):
+            i = upstream.replace('svn.wowace.com', 'dev.wowace.com')
+            if i.startswith(url):
                 mipath = mi.bysource[url]
                 break
 
         if not mipath:
-            raise Exception("Unable to checkout, as %s is not yet mirrored for depot %s." % (upstream, Config.depot))
+            raise Exception("Unable to checkout, as %s is not yet mirrored." % upstream)
 
         rest = upstream[len(url)+1:]
+        if rest.endswith('/'):
+            rest = rest[:-1]
         extsvkpath = os.path.join(mipath, rest)
         extcopath = os.path.join(Config.checkoutspath, rest.replace('/','_'))
 
@@ -98,6 +97,9 @@ def checkout(path, localpath):
             print(runcmd([Config.svk, 'up', extcopath]))
         else:
             print(runcmd([Config.svk, 'co', extsvkpath, extcopath]))
+
+        if not os.path.exists(os.path.dirname(ext)):
+            os.makedirs(os.path.dirname(ext))
 
         if Config.mode == 'detached':
             runcmd(['cp', '-av', extcopath, ext])
@@ -112,3 +114,4 @@ try:
 except SVKError:
     import sys
     sys.__stderr__.write(str(sys.exc_value))
+    sys.exit(1)
