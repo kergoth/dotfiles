@@ -4,6 +4,7 @@ import os
 class Config(object):
     checkoutspath = os.path.join(os.getenv('HOME'), 'svkco')
     svk = 'svk'
+    svn = 'svn'
     mode = 'detached'
     # mode = 'attached'
 
@@ -16,23 +17,26 @@ class SVKError(Exception):
     def __str__(self):
         return self.str
 
+import time
 def runcmd(args):
     args = [ commands.mkarg(arg) for arg in args ]
 
     cmd = " ".join(args)
 
+    # t = time.time()
     (exitstatus, output) = commands.getstatusoutput(cmd)
     if exitstatus != 0:
         raise SVKError(cmd, exitstatus >> 8, output)
+    # print("'%s' executed in %s" % (cmd, time.time() - t))
 
     return output
 
-class Mirrors(list):
-    def __init__(self):
-        self.bypath = dict()
-        self.bysource = dict()
+class SVKList(list):
+    def __init__(self, cmd):
+        self.bykey = dict()
+        self.byvalue = dict()
 
-        args = [ Config.svk, 'mi', '-l' ]
+        args = [ Config.svk, cmd, '-l' ]
 
         output = runcmd(args)
 
@@ -41,15 +45,24 @@ class Mirrors(list):
             linelist = line.split()
             if len(linelist) != 2:
                 continue
-            (path, source) = line.split()
-            self.bypath[path] = source
-            self.bysource[source] = path
-            self.append((path, source))
-
+            (key, value) = line.split()
+            self.bykey[key] = value
+            self.byvalue[value] = key
+            self.append((key, value))
 
 def checkout(path, localpath):
+    for key in dm.bykey.keys():
+        if path.startswith(key):
+            depot = key
+            depotpath = dm.bykey[depot]
+            svnpath = "file://%s" % os.path.join(depotpath, path[len(key):])
+
+    if not depot:
+        raise Exception("Unable to locate depot of %s" % path)
+
     def cocb(arg, dirname, fnames):
-        args = [ Config.svk, 'propget', 'svn:externals', dirname ]
+        import re
+        args = [ Config.svn, 'propget', 'svn:externals', re.sub("^%s" % localpath, svnpath, dirname) ]
         dirext = runcmd(args)
 
         if dirext == '':
@@ -61,8 +74,6 @@ def checkout(path, localpath):
                 continue
             (dest, src) = line.split()
             arg[os.path.join(dirname, dest)] = src
-
-    mi = Mirrors()
 
     # svk co --export PATH LOCALPATH
     print(runcmd([ Config.svk, 'co', path, localpath ]))
@@ -78,25 +89,29 @@ def checkout(path, localpath):
         upstream = externals[ext]
 
         mipath = None
-        for url in mi.bysource.keys():
+        for url in mi.byvalue.keys():
             i = upstream.replace('svn.wowace.com', 'dev.wowace.com')
             if i.startswith(url):
-                mipath = mi.bysource[url]
+                mipath = mi.byvalue[url]
                 break
 
         if not mipath:
-            raise Exception("Unable to checkout, as %s is not yet mirrored." % upstream)
+            raise Exception("Unable to checkout %s, as %s is not yet mirrored." % (path, upstream))
 
         rest = upstream[len(url)+1:]
         if rest.endswith('/'):
             rest = rest[:-1]
-        extsvkpath = os.path.join(mipath, rest)
-        extcopath = os.path.join(Config.checkoutspath, rest.replace('/','_'))
 
-        if os.path.exists(extcopath):
-            print(runcmd([Config.svk, 'up', extcopath]))
-        else:
-            print(runcmd([Config.svk, 'co', extsvkpath, extcopath]))
+        extcopath = os.path.join(Config.checkoutspath, rest.replace('/','_'))
+        if not updated_cache.get(rest):
+            extsvkpath = os.path.join(mipath, rest)
+
+            if os.path.exists(extcopath):
+                print(runcmd([Config.svk, 'up', extcopath]))
+            else:
+                print(runcmd([Config.svk, 'co', extsvkpath, extcopath]))
+
+            updated_cache[rest] = True
 
         if not os.path.exists(os.path.dirname(ext)):
             os.makedirs(os.path.dirname(ext))
@@ -106,11 +121,22 @@ def checkout(path, localpath):
         else:
             runcmd(['ln', '-sf', extcopath, ext])
 
+updated_cache = {}
+
+print("Querying svk for mirror list")
+mi = SVKList('mi')
+
+print("Querying svk for depotmap")
+dm = SVKList('depotmap')
+
 import sys
 try:
-    copath = os.path.join(os.path.abspath(os.curdir), os.path.basename(sys.argv[1]))
-    runcmd(['rm', '-rf', copath])
-    checkout(sys.argv[1], copath)
+    for n in range(1,len(sys.argv)):
+        i = sys.argv[n]
+        copath = os.path.join(os.path.abspath(os.curdir), os.path.basename(i))
+        runcmd(['rm', '-rf', copath])
+        print("Checking out %s" % i)
+        checkout(i, copath)
 except SVKError:
     import sys
     sys.__stderr__.write(str(sys.exc_value))
