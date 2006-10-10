@@ -51,6 +51,7 @@ class SVKList(list):
             self.append((key, value))
 
 def checkout(path, localpath):
+    depot = None
     for key in dm.bykey.keys():
         if path.startswith(key):
             depot = key
