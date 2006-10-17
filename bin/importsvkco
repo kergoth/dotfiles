@@ -9,7 +9,6 @@ eval set -- "$TEMP"
 
 shift
 for arg; do
-    echo arg is $arg
     base="`basename \"$arg\"`"
     if [ -z "$base" ]; then
         echo >&2 "ERROR: base is empty."
@@ -17,7 +16,7 @@ for arg; do
     fi
     rm -rf "$base"
 done
-svkco.py "$@"
+svkco "$@"
 
 for arg; do
     addon="`svk ls \"$arg/\"|grep '\.toc$'|head -n 1|sed -e's,.toc$,,'`"
