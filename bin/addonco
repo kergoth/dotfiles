@@ -1,7 +1,24 @@
 #!/usr/bin/env python
 
-# import kergsvk
 from kergsvk import *
+import os
+
+standalones = {
+    "trunk/PaintChipsLib/PaintChips-2.0": "trunk/PaintChipsLib",
+    "trunk/Deformat/Deformat-2.0": "trunk/Deformat",
+    "trunk/Ace2/AceEvent-2.0": "trunk/Ace2",
+    "trunk/CandyBar/CandyBar-2.0": "trunk/CandyBar",
+    "trunk/Ace2/AceOO-2.0": "trunk/Ace2",
+    "trunk/Ace2/AceDB-2.0": "trunk/Ace2",
+    "trunk/Ace2/AceHook-2.0": "trunk/Ace2",
+    "trunk/Ace2/AceConsole-2.0": "trunk/Ace2",
+    "trunk/Ace2/AceAddon-2.0": "trunk/Ace2",
+    "trunk/CompostLib/Compost-2.0": "trunk/CompostLib",
+    "trunk/GratuityLib/Gratuity-2.0": "trunk/GratuityLib",
+    "trunk/Ace2/AceLibrary": "trunk/Ace2",
+    "trunk/Ace2/AceDebug-2.0": "trunk/Ace2",
+}
+
 
 def checkout(path, localpath):
     depot = None
@@ -32,6 +49,21 @@ def checkout(path, localpath):
     # svk co --export PATH LOCALPATH
     print(runcmd([ Config.svk, 'co', path, localpath ]))
 
+    def findtoc(arg, dirname, fnames):
+        if len(arg) == 0:
+            for file in fnames:
+                if file.endswith('.toc'):
+                    arg.append(file)
+
+    toclist = []
+    os.path.walk(localpath, findtoc, toclist)
+
+    if len(toclist) == 0:
+        raise Exception("Unable to locate addon .toc.")
+
+    toc = toclist[0]
+    extdestdir = os.path.dirname(os.path.dirname(toc))
+
     # traverse the new checkout with os.path.walk, checking for externals
     externals = dict()
     os.path.walk(localpath, cocb, externals)
@@ -56,7 +88,23 @@ def checkout(path, localpath):
         if rest.endswith('/'):
             rest = rest[:-1]
 
-        extcopath = os.path.join(Config.checkoutspath, rest.replace('/','_'))
+        if Config.standalones:
+            extstandalone = standalones.get(rest)
+            if not extstandalone:
+                print("Warning: standalones were requested, yet the translation table")
+                print("does not contain '%s'.  Checking it out as a normal external.")
+                print("Please add it to the addonco translation table at your")
+                print("earliest convenience.")
+        else:
+            extstandalone = None
+
+        if extstandalone:
+            rest = extstandalone
+            extdest = os.path.join(extdestdir, os.path.basename(extstandalone))
+        else:
+            extdest = ext
+
+        extcopath = os.path.join(Config.checkoutspath, rest.replace('/', '_'))
         if not updated_cache.get(rest):
             extsvkpath = os.path.join(mipath, rest)
 
@@ -66,14 +114,21 @@ def checkout(path, localpath):
                 print(runcmd([Config.svk, 'co', extsvkpath, extcopath]))
 
             updated_cache[rest] = True
+        elif extstandalone:
+            # if we've already handled this external, and we're standlone,
+            # we're done
+            continue
 
         if not os.path.exists(os.path.dirname(ext)):
             os.makedirs(os.path.dirname(ext))
 
         if Config.mode == 'detached':
-            runcmd(['cp', '-av', extcopath, ext])
+            if os.path.exists(extdest):
+                if extdest != '/' and extdest != os.environ.get("HOME"):
+                    runcmd(['rm', '-rf', extdest])
+            runcmd(['cp', '-av', extcopath, extdest])
         else:
-            runcmd(['ln', '-sf', extcopath, ext])
+            runcmd(['ln', '-sf', extcopath, extdest])
 
 updated_cache = {}
 
