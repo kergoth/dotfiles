@@ -916,6 +916,8 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:debianfullname = 'Chris Larson'
+let g:debianemail = 'clarson@kergoth.com'
 let g:Tb_MinSize = 1
 let g:Tb_MaxSize = 1
 let g:Tb_SplitBelow = 0
