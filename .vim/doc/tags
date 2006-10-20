@@ -30,6 +30,7 @@
 :CS	cecscope.txt	/*:CS*
 :CSL	cecscope.txt	/*:CSL*
 :MatchDebug	matchit.txt	/*:MatchDebug*
+:MkVimball	pi_vimball.txt	/*:MkVimball*
 :SD	sessionmgr.txt	/*:SD*
 :SE	sessionmgr.txt	/*:SE*
 :SL	sessionmgr.txt	/*:SL*
@@ -194,6 +195,7 @@ Tlist_Get_Tag_Prototype_By_Line()	taglist.txt	/*Tlist_Get_Tag_Prototype_By_Line(
 Tlist_Get_Tagname_By_Line()	taglist.txt	/*Tlist_Get_Tagname_By_Line()*
 Tlist_Set_App()	taglist.txt	/*Tlist_Set_App()*
 Tlist_Update_File_Tags()	taglist.txt	/*Tlist_Update_File_Tags()*
+Vimball-copyright	pi_vimball.txt	/*Vimball-copyright*
 [%	matchit.txt	/*[%*
 ]%	matchit.txt	/*]%*
 align	Align.txt	/*align*
@@ -444,6 +446,7 @@ omnicpp-popup	omnicppcomplete.txt	/*omnicpp-popup*
 omnicppcomplete	omnicppcomplete.txt	/*omnicppcomplete*
 omnicppcomplete.txt	omnicppcomplete.txt	/*omnicppcomplete.txt*
 pi_getscript.txt	pi_getscript.txt	/*pi_getscript.txt*
+pi_vimball.txt	pi_vimball.txt	/*pi_vimball.txt*
 sessionmgr-about	sessionmgr.txt	/*sessionmgr-about*
 sessionmgr-commands	sessionmgr.txt	/*sessionmgr-commands*
 sessionmgr-configure	sessionmgr.txt	/*sessionmgr-configure*
@@ -472,6 +475,14 @@ v_[%	matchit.txt	/*v_[%*
 v_]%	matchit.txt	/*v_]%*
 v_a%	matchit.txt	/*v_a%*
 v_g%	matchit.txt	/*v_g%*
+vimball	pi_vimball.txt	/*vimball*
+vimball-contents	pi_vimball.txt	/*vimball-contents*
+vimball-extract	pi_vimball.txt	/*vimball-extract*
+vimball-history	pi_vimball.txt	/*vimball-history*
+vimball-manual	pi_vimball.txt	/*vimball-manual*
+vimball-rmvimball	pi_vimball.txt	/*vimball-rmvimball*
+vimball-usevimball	pi_vimball.txt	/*vimball-usevimball*
+vimball-vimballlist	pi_vimball.txt	/*vimball-vimballlist*
 viscinr-I	visincr.txt	/*viscinr-I*
 viscinr-contents	visincr.txt	/*viscinr-contents*
 visincr	visincr.txt	/*visincr*

@@ -63,3 +63,5 @@ ScriptID SourceID Filename
 1560 5757 colors/neverness.vim
 1569 5806 colors/montz.vim
 1641 6095 plugins/AfterColors.vim
+1075 6180 :AutoInstall: netrw.vim
+1502 6120 :AutoInstall: vimball.vim
