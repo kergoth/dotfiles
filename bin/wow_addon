@@ -1,6 +1,7 @@
 #!/bin/sh
 
-SVKDEPOT="/wow/mirror"
+#SVKDEPOT="/wow/mirror"
+SVKDEPOT="/wow/local"
 SVKCO="/home/World of Warcraft/Interface"
 
 usage () {
@@ -188,9 +189,10 @@ for toc in $tocfiles; do
 		continue
 	fi
 	msg "Merge of version $version of $title to trunk is complete."
+
+	svk up "$SVKCO/AddOns/$addon" >/dev/null 2>&1 # I'm lazy, what can i say?
 done
 
-svk up "$SVKCO" >/dev/null 2>&1 # I'm lazy, what can i say?
 rm -rf "$TMPDIR"
 
 if [ x"$ERROR" = "x1" ]; then
