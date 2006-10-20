@@ -83,7 +83,7 @@ mi = SVKList('mi')
 print("Querying svk for depotmap")
 dm = SVKList('depotmap')
 
-import sys
+import sys,os
 try:
     for n in range(1,len(sys.argv)):
         i = sys.argv[n]
