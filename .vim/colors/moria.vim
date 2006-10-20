@@ -39,7 +39,7 @@ if &background == "dark"
         hi StatusLine ctermbg=7 ctermfg=0 guibg=#507070 guifg=fg gui=bold
         hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#406060 guifg=fg gui=none
         hi TabLine guibg=#567676 guifg=fg gui=underline
-        hi TabLineFill guibg=#90b0b0 guifg=bg gui=none
+        hi TabLineFill guibg=#567676 guifg=fg gui=underline
         hi VertSplit ctermbg=7 ctermfg=0 guibg=#406060 guifg=fg gui=none
         if version >= 700
             hi Visual ctermbg=7 ctermfg=0 guibg=#608080 gui=none
@@ -70,7 +70,7 @@ if &background == "dark"
         hi StatusLine ctermbg=7 ctermfg=0 guibg=#485868 guifg=fg gui=bold
         hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#304050 guifg=fg gui=none
         hi TabLine guibg=#566676 guifg=fg gui=underline
-        hi TabLineFill guibg=#90a0b0 guifg=bg gui=none
+        hi TabLineFill guibg=#566676 guifg=fg gui=underline
         hi VertSplit ctermbg=7 ctermfg=0 guibg=#304050 guifg=fg gui=none
         if version >= 700
             hi Visual ctermbg=7 ctermfg=0 guibg=#607080 gui=none
@@ -168,7 +168,7 @@ elseif &background == "light"
     hi StatusLine ctermbg=0 ctermfg=15 guibg=#a0b0c0 guifg=fg gui=bold
     hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#b0c0d0 guifg=fg gui=none
     hi TabLine guibg=#b4c4d4 guifg=fg gui=underline
-    hi TabLineFill guibg=fg guifg=bg gui=none
+    hi TabLineFill guibg=#b4c4d4 guifg=fg gui=underline
     hi TabLineSel guibg=bg guifg=fg gui=bold
     hi Title guifg=fg gui=bold
     hi VertSplit ctermbg=7 ctermfg=0 guibg=#b0c0d0 guifg=fg gui=none

@@ -2,10 +2,10 @@
 " Language:	Python
 " Maintainer:	Dmitry Vasiliev <dima@hlabs.spb.ru>
 " URL:		http://www.hlabs.spb.ru/vim/python.vim
-" Last Change:	$Date: 2006-05-11 13:57:43 +0400 (Чт, 11 май 2006) $
+" Last Change:	$Date: 2006-09-26 15:46:55 +0400 (Втр, 26 Сен 2006) $
 " Filenames:	*.py
-" Version:	2.5.4
-" $Rev: 393 $
+" Version:	2.5.5
+" $Rev: 477 $
 "
 " Based on python.vim (from Vim 6.1 distribution)
 " by Neil Schemenauer <nas@python.ca>
@@ -223,6 +223,7 @@ if exists("python_highlight_exceptions") && python_highlight_exceptions != 0
   syn keyword pythonExClass	Warning UserWarning DeprecationWarning
   syn keyword pythonExClass	PendingDepricationWarning SyntaxWarning
   syn keyword pythonExClass	RuntimeWarning FutureWarning OverflowWarning
+  syn keyword pythonExClass	ImportWarning UnicodeWarning
 endif
 
 if exists("python_slow_sync") && python_slow_sync != 0

@@ -1,7 +1,7 @@
 " visincr.vim: Visual-block incremented lists
 "  Author:      Charles E. Campbell, Jr.  Ph.D.
-"  Date:        Jul 25, 2006
-"  Version:     16
+"  Date:        Sep 19, 2006
+"  Version:     17
 "
 "				Visincr assumes that a block of numbers selected by a
 "				ctrl-v (visual block) has been selected for incrementing.
@@ -17,8 +17,8 @@
 "				* If the strlen of the count exceeds the visual-block
 "				  allotment of spaces, then additional spaces will be inserted
 "				* Handles leading tabs by using virtual column calculations
-"
 " GetLatestVimScripts: 670 1 :AutoInstall: visincr.vim
+"  1Cor 16:14 : Let all that you do be done in love. {{{1
 
 " ---------------------------------------------------------------------
 " Load Once: {{{1
@@ -26,7 +26,7 @@ if &cp || exists("g:loaded_visincr")
   finish
 endif
 let s:keepcpo        = &cpo
-let g:loaded_visincr = "v16"
+let g:loaded_visincr = "v17"
 set cpo&vim
 
 " ---------------------------------------------------------------------
@@ -59,6 +59,9 @@ if !exists("g:visincr_leaddate")
  " choose between dates such as 11/ 5/04 and 11/05/04
  let g:visincr_leaddate = '0'
 endif
+if !exists("g:visincr_datedivset")
+ let g:visincr_datedivset= '[-./]'
+endif
 
 " ==============================================================================
 "  Functions: {{{1
@@ -69,18 +72,13 @@ fun! visincr#VisBlockIncr(method,...)
 "  call Dfunc("VisBlockIncr(method<".a:method.">) a:0=".a:0)
 
   " avoid problems with user options {{{3
-  let fokeep    = &fo
-  let magickeep = &magic
-  let reportkeep= &report
-  set fo=tcq magic report=9999
+  call s:SaveUserOptions()
 
   " visblockincr only uses visual-block! {{{3
 "  call Decho("visualmode<".visualmode().">")
   if visualmode() != "\<c-v>"
    echoerr "Please use visual-block mode (ctrl-v)!"
-   let &fo    = fokeep
-   let &magic = magickeep
-   let &report= reportkeep
+   call s:RestoreUserOptions()
 "   call Dret("VisBlockIncr")
    return
   endif
@@ -123,15 +121,15 @@ fun! visincr#VisBlockIncr(method,...)
 "   call Decho(":II restricted<".restrict.">")
 
   elseif a:method == s:RIMDY
-   let restrict= '\%'.col(".").'c\d\{1,2}/\d\{1,2}/\d\{2,4}'
-"   call Decho(":IMDY restricted<".restrict.">")
-
-  elseif a:method == s:RIYMD
-   let restrict= '\%'.col(".").'c\d\{2,4}/\d\{1,2}/\d\{1,2}'
-"   call Decho(":IYMD restricted<".restrict.">")
-
-  elseif a:method == s:RIDMY
-   let restrict= '\%'.col(".").'c\d\{1,2}/\d\{1,2}/\d\{2,4}'
+   let restrict= '\%'.col(".").'c\d\{1,2}'.g:visincr_datedivset.'\d\{1,2}'.g:visincr_datedivset.'\d\{2,4}'
+"   call Decho(":IMDY restricted<".restrict.">")       
+                                                       
+  elseif a:method == s:RIYMD                           
+   let restrict= '\%'.col(".").'c\d\{2,4}'.g:visincr_datedivset.'\d\{1,2}'.g:visincr_datedivset.'\d\{1,2}'
+"   call Decho(":IYMD restricted<".restrict.">")       
+                                                       
+  elseif a:method == s:RIDMY                           
+   let restrict= '\%'.col(".").'c\d\{1,2}'.g:visincr_datedivset.'\d\{1,2}'.g:visincr_datedivset.'\d\{2,4}'
 "   call Decho(":IDMY restricted<".restrict.">")
 
   elseif a:method == s:RID
@@ -229,9 +227,7 @@ fun! visincr#VisBlockIncr(method,...)
 	endwhile
 	if idow >= 7
 	 echoerr "***error*** misspelled day-of-week <".dow.">"
-     let &fo    = fokeep
-     let &magic = magickeep
-     let &report= reportkeep
+     call s:RestoreUserOptions()
 "	 call Dret("VisBlockIncr : unable to identify day-of-week")
 	 return
 	endif
@@ -253,9 +249,7 @@ fun! visincr#VisBlockIncr(method,...)
 	 let l= l + 1
 	endw
 	" return from ID
-    let &fo    = fokeep
-    let &magic = magickeep
-    let &report= reportkeep
+    call s:RestoreUserOptions()
 "    call Dret("VisBlockIncr : ID")
    	return
    endif
@@ -303,9 +297,7 @@ fun! visincr#VisBlockIncr(method,...)
 	endwhile
 	if imon >= 12
 	 echoerr "***error*** misspelled month <".mon.">"
-     let &fo    = fokeep
-     let &magic = magickeep
-     let &report= reportkeep
+     call s:RestoreUserOptions()
 "     call Dret("VisBlockIncr")
      return
 	endif
@@ -337,9 +329,7 @@ fun! visincr#VisBlockIncr(method,...)
 	 let l= l + 1
 	endw
 	" return from IM
-    let &fo    = fokeep
-    let &magic = magickeep
-    let &report= reportkeep
+    call s:RestoreUserOptions()
 "    call Dret("VisBlockIncr : IM")
    	return
    endif
@@ -371,14 +361,14 @@ fun! visincr#VisBlockIncr(method,...)
 	 let l= l + 1
 	endw
 	" return from IA
-	let &fo    = fokeep
-	let &magic = magickeep
-    let &report= reportkeep
+	call s:RestoreUserOptions()
 "    call Dret("VisBlockIncr : IA")
 	return
    endif
 
-   let pat= '^.*\%'.leftcol.'v\( \=[0-9]\{1,4}\)/\( \=[0-9]\{1,2}\)/\( \=[0-9]\{1,4}\)\%'.rghtcol.'v.*$'
+   let pat    = '^.*\%'.leftcol.'v\( \=[0-9]\{1,4}\)'.g:visincr_datedivset.'\( \=[0-9]\{1,2}\)'.g:visincr_datedivset.'\( \=[0-9]\{1,4}\)\%'.rghtcol.'v.*$'
+   let datediv= substitute(curline,'^.*\%'.leftcol.'v\%( \=[0-9]\{1,4}\)\('.g:visincr_datedivset.'\).*$','\1','')
+"   call Decho("datediv<".datediv.">")
 
    " IMDY: {{{3
    if method == s:IMDY
@@ -440,10 +430,18 @@ fun! visincr#VisBlockIncr(method,...)
      let doy   = substitute(doy,'/\(\d\)$','/'.leaddate.'\1','e')
 	endif
 
-	let doy   = escape(doy,'/')
+	" use user's date divider
+	if datediv != '/'
+	 let doy= substitute(doy,'/',datediv,'g')
+	else
+	 let doy= escape(doy,'/')
+	endif
+"	call Decho("doy<".doy.">")
+
 	if leaddate != ' '
 	 let doy= substitute(doy,' ',leaddate,'ge')
 	endif
+"	call Decho('exe s/\%'.leftcol.'v.*\%'.rghtcol.'v/'.doy.'/e')
 	exe 's/\%'.leftcol.'v.*\%'.rghtcol.'v/'.doy.'/e'
     let l     = l + 1
 	let julday= julday + incr
@@ -451,9 +449,7 @@ fun! visincr#VisBlockIncr(method,...)
    	 norm! j
 	endif
    endw
-   let &fo    = fokeep
-   let &magic = magickeep
-   let &report= reportkeep
+   call s:RestoreUserOptions()
 "   call Dret("VisBlockIncr : IMDY  IYMD  IDMY  ID  IM")
    return
   endif " IMDY  IYMD  IDMY  ID  IM
@@ -628,10 +624,7 @@ fun! visincr#VisBlockIncr(method,...)
 	 exe "norm! " . cntlenm1 . "h"
 	endif
 	if zfill != " "
-	 let gdkeep= &gd
-	 set nogd
 	 silent! exe 's/\%'.leftcol.'v\( \+\)/\=substitute(submatch(1)," ","'.zfill.'","ge")/e'
-	 let &gd= gdkeep
 	endif
 
 	" set up for next line {{{3
@@ -651,9 +644,7 @@ fun! visincr#VisBlockIncr(method,...)
   endw
 
   " restore options: {{{3
-  let &fo    = fokeep
-  let &magic = magickeep
-  let &report= reportkeep
+  call s:RestoreUserOptions()
 "  call Dret("VisBlockIncr")
 endfun
 
@@ -837,6 +828,31 @@ fun! s:Dec2Rom(dec)
   endif
 "  call Dret("Dec2Rom ".roman)
   return roman
+endfun
+
+" ---------------------------------------------------------------------
+" SaveUserOptions: {{{2
+fun! s:SaveUserOptions()
+"  call Dfunc("SaveUserOptions()")
+  let s:fokeep    = &fo
+  let s:gdkeep    = &gd
+  let s:ickeep    = &ic
+  let s:magickeep = &magic
+  let s:reportkeep= &report
+  set fo=tcq magic report=9999 noic nogd
+"  call Dret("SaveUserOptions")
+endfun
+
+" ---------------------------------------------------------------------
+" RestoreUserOptions: {{{2
+fun! s:RestoreUserOptions()
+"  call Dfunc("RestoreUserOptions()")
+  let &fo    = s:fokeep
+  let &gd    = s:gdkeep
+  let &ic    = s:ickeep
+  let &magic = s:magickeep
+  let &report= s:reportkeep
+"  call Dret("RestoreUserOptions")
 endfun
 
 " ---------------------------------------------------------------------

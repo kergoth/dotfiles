@@ -1,7 +1,21 @@
 "pythoncomplete.vim - Omni Completion for python
 " Maintainer: Aaron Griffin <aaronmgriffin@gmail.com>
-" Version: 0.6
-" Last Updated: 14 May 2006
+" Version: 0.7
+" Last Updated: 19 Oct 2006
+"
+" Changes
+" TODO:
+" User defined docstrings aren't handled right...
+" 'info' item output can use some formatting work
+" Add an "unsafe eval" mode, to allow for return type evaluation
+" Complete basic syntax along with import statements
+"   i.e. "import url<c-x,c-o>"
+" Continue parsing on invalid line??
+"
+" v 0.7
+"   * Fixed function list sorting (_ and __ at the bottom)
+"   * Removed newline removal from docs.  It appears vim handles these better in
+"   recent patches
 "
 " v 0.6:
 "   * Fixed argument completion
@@ -15,11 +29,6 @@
 "  It was a bugfix version on top of 0.3.  This is a complete
 "  rewrite.
 "
-" Changes
-" TODO:
-" User defined docstrings aren't handled right...
-" 'info' item output can use some formatting work
-" Add an "unsafe eval" mode, to allow for return type evaluation
 
 if !has('python')
     echo "Error: Required vim compiled with +python"
@@ -82,7 +91,24 @@ def vimcomplete(context,match):
     try:
         import vim
         def complsort(x,y):
-            return x['abbr'] > y['abbr']
+            try:
+                xa = x['abbr']
+                ya = y['abbr']
+                if xa[0] == '_':
+                    if xa[1] == '_' and ya[0:2] == '__':
+                        return xa > ya
+                    elif ya[0:2] == '__':
+                        return -1
+                    elif y[0] == '_':
+                        return xa > ya
+                    else:
+                        return 1
+                elif ya[0] == '_':
+                    return -1
+                else:
+                   return xa > ya
+            except:
+                return 0
         cmpl = Completer()
         cmpl.evalsource('\n'.join(vim.current.buffer),vim.eval("line('.')"))
         all = cmpl.get_completions(context,match)
@@ -117,11 +143,7 @@ class Completer(object):
             except: dbg("locals: %s, %s [%s]" % (sys.exc_info()[0],sys.exc_info()[1],l))
 
     def _cleanstr(self,doc):
-        return doc.replace('"',' ')\
-                  .replace("'",' ')\
-                  .replace('\n',' ')\
-                  .replace('\r',' ')\
-                  .replace('',' ')
+        return doc.replace('"',' ').replace("'",' ')
 
     def get_arguments(self,func_obj):
         def _ctor(obj):

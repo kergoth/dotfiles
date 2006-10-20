@@ -1,12 +1,12 @@
 " ---------------------------------------------------------------------
-" GetLatestVimScripts.vim
-"  Author:		Charles E. Campbell, Jr.
-"  Date:		Feb 15, 2006
-"  Version:		20
+" getscript.vim
+"  Author:	Charles E. Campbell, Jr.
+"  Date:	Oct 13, 2006
+"  Version:	22
 "  Installing:	:help glvs-install
-"  Usage:		:help glvs
+"  Usage:	:help glvs
 "
-" GetLatestVimScripts: 642 1 :AutoInstall: GetLatestVimScripts.vim
+" GetLatestVimScripts: 642 1 :AutoInstall: getscript.vim
 " ---------------------------------------------------------------------
 " Initialization:	{{{1
 " if you're sourcing this file, surely you can't be
@@ -19,19 +19,30 @@ let s:keepfo  = &fo
 let s:keepcpo = &cpo
 set cpo&vim
 
-if exists("loaded_GetLatestVimScripts")
+if exists("g:loaded_getscript")
  finish
 endif
-let g:loaded_GetLatestVimScripts= "v20"
+let g:loaded_getscript= "v22"
 
 " ---------------------------------------------------------------------
 "  Global Variables: {{{1
 " allow user to change the command for obtaining scripts (does fetch work?)
 if !exists("g:GetLatestVimScripts_wget")
- let g:GetLatestVimScripts_wget= "wget"
+ if executable("wget")
+  let g:GetLatestVimScripts_wget= "wget"
+ elseif executable("curl")
+  let g:GetLatestVimScripts_wget= "curl"
+ else
+  let g:GetLatestVimScripts_wget    = 'echo "GetLatestVimScripts needs wget or curl"'
+  let g:GetLatestVimScripts_options = ""
+ endif
 endif
 if !exists("g:GetLatestVimScripts_options")
- let g:GetLatestVimScripts_options= "-q -O"
+ if g:GetLatestVimScripts_wget == "wget"
+  let g:GetLatestVimScripts_options= "-q -O"
+ elseif g:GetLatestVimScripts_wget == "curl"
+  let g:GetLatestVimScripts_options= "-s -O"
+ endif
 endif
 if !exists("g:GetLatestVimScripts_allowautoinstall")
  let g:GetLatestVimScripts_allowautoinstall= 1
@@ -41,7 +52,8 @@ endif
 "let g:GetLatestVimScripts_wget    = "echo"
 "let g:GetLatestVimScripts_options = "options"
 
-" check if s:autoinstall is possible
+" ---------------------------------------------------------------------
+" Check If AutoInstall Capable: {{{1
 let s:autoinstall= ""
 if g:GetLatestVimScripts_allowautoinstall
 
@@ -64,21 +76,22 @@ if g:GetLatestVimScripts_allowautoinstall
   let s:autoinstall= $HOME."/".s:dotvim
  endif
 " call Decho("s:autoinstall<".s:autoinstall.">")
-else
+"else "Decho
 " call Decho("g:GetLatestVimScripts_allowautoinstall=".g:GetLatestVimScripts_allowautoinstall.": :AutoInstall: disabled")
 endif
 
 " ---------------------------------------------------------------------
 "  Public Interface: {{{1
-com!        -nargs=0 GetLatestVimScripts call <SID>GetLatestVimScripts()
-silent! com -nargs=0 GLVS                call <SID>GetLatestVimScripts()
+com!        -nargs=0 GetLatestVimScripts call getscript#GetLatestVimScripts()
+com!        -nargs=0 GetScript           call getscript#GetLatestVimScripts()
+silent! com -nargs=0 GLVS                call getscript#GetLatestVimScripts()
 
 " ---------------------------------------------------------------------
 "  GetOneScript: (Get Latest Vim Script) this function operates {{{1
 "    on the current line, interpreting two numbers and text as
 "    ScriptID, SourceID, and Filename.
 "    It downloads any scripts that have newer versions from vim.sf.net.
-fun! <SID>GetOneScript(...)
+fun! s:GetOneScript(...)
 "   call Dfunc("GetOneScript()")
 
  " set options to allow progress to be shown on screen
@@ -267,13 +280,15 @@ fun! <SID>GetOneScript(...)
 	  exe "silent !unzip -o".fname
 	 elseif fname =~ '\.tar$'
 "	  call Decho("attempt to untar ".fname)
-	  exe "silent !tar -oxvf ".fname
+	  exe "silent !tar -xvf ".fname
 	 endif
 	 if fname =~ '.vim$'
 "	  call Decho("attempt to simply move ".fname." to plugin")
 	  exe "silent !".g:GetLatestVimScripts_mv." ".fname." plugin"
 	 endif
-	 exe "helptags ../".s:dotvim."/doc"
+	 let docdir= substitute(&rtp,',.*','','e')."/doc"
+"	 call Decho("helptags docdir<".docdir.">")
+	 exe "helptags ".docdir
 	 exe "cd ".curdir
 	endif
    endif
@@ -294,10 +309,9 @@ endfun
 
 " ---------------------------------------------------------------------
 " GetLatestVimScripts: this function gets the latest versions of {{{1
-" scripts based on the list in
-"
+"                      scripts based on the list in
 "   (first dir in runtimepath)/GetLatest/GetLatestVimScripts.dat
-fun! <SID>GetLatestVimScripts()
+fun! getscript#GetLatestVimScripts()
 "  call Dfunc("GetLatestVimScripts() autoinstall<".s:autoinstall.">")
 
 " insure that wget is executable
@@ -307,30 +321,27 @@ fun! <SID>GetLatestVimScripts()
    return
   endif
 
-  " Find the .../GetLatest sudirectory under the runtimepath
-  let rtplist= &rtp
-  while rtplist != ""
-   let datadir= substitute(rtplist,',.*$','','e')."/GetLatest"
-   if isdirectory(datadir)
-"   	call Decho("found directory<".datadir.">")
+  " Find the .../GetLatest subdirectory under the runtimepath
+  for datadir in split(&rtp,',') + ['']
+   if isdirectory(datadir."/GetLatest")
+"    call Decho("found directory<".datadir.">")
+    let datadir= datadir . "/GetLatest"
     break
    endif
-   unlet datadir
-   if rtplist =~ ','
-    let rtplist= substitute(rtplist,'^.\{-},','','e')
-   else
-   	let rtplist= ""
+   if filereadable(datadir."GetLatestVimScripts.dat")
+"   	call Decho("found ".datadir."/GetLatestVimScripts.dat")
+   	break
    endif
-  endwhile
-
+  endfor
   " Sanity checks: readability and writability
-  if !exists("datadir")
-   echoerr "Unable to find a GetLatest subdirectory on your runtimepath"
+  if datadir == ""
+   echoerr 'Missing "GetLatest/" on your runtimepath - see :help glvs-dist-install'
 "   call Dret("GetLatestVimScripts : unable to find a GetLatest subdirectory")
    return
   endif
+
   if filewritable(datadir) != 2
-   echoerr "Your ".datadir." isn't writable"
+   echoerr "(getLatestVimScripts) Your ".datadir." isn't writable"
 "   call Dret("GetLatestVimScripts : non-writable directory<".datadir.">")
    return
   endif
@@ -375,7 +386,7 @@ fun! <SID>GetLatestVimScripts()
    let plugins= (plugins =~ '\n')? substitute(plugins,'^.\{-}\n\(.*\)$','\1','e') : ""
    $
 "   call Decho(".dependency checking<".plugin."> line$=".line("$"))
-   exe "silent r \"".plugin"\""
+   exe "silent r ".plugin
    while search('^"\s\+GetLatestVimScripts:\s\+\d\+\s\+\d\+','W') != 0
     let newscript= substitute(getline("."),'^"\s\+GetLatestVimScripts:\s\+\d\+\s\+\d\+\s\+\(.*\)$','\1','e')
     let llp1     = lastline+1
@@ -465,4 +476,4 @@ endfun
 let &fo = s:keepfo
 let &cpo= s:keepcpo
 
-" vim: ts=4 fdm=marker nowrap
+" vim: ts=8 sts=2 fdm=marker nowrap

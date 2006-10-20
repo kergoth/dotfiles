@@ -1,11 +1,12 @@
-*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Mar 07, 2006
+*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Sep 19, 2006
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
-Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
+Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*asneeded-copyright*
            The VIM LICENSE applies to AsNeeded.vim and AsNeeded.txt
            (see |copyright|) except use "AsNeeded" instead of "Vim"
 	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
 
 ==============================================================================
 1. Contents						*asneeded-contents*
@@ -14,6 +15,7 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 	2. AsNeeded Manual...............: |asneeded|
 	3. AsNeeded Global Variables.....: |asneeded-var|
 	4. AsNeeded History..............: |asneeded-history|
+
 
 ==============================================================================
 2. AsNeeded Manual				*asneeded*
@@ -42,8 +44,10 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 	The ANX command follows successful searches with an attempt to execute
 	the requested command or map.
 
+	MAKING ANTAGS				*MakeANtags* *MkAsNeeded*
 	For those who have large numbers of scripts in their AsNeeded directory,
 	using either >
+
 		:MakeANtags
 		:MkAsNeeded
 <
@@ -51,16 +55,46 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 	be used to quickly look up the requested map, command, or function; the
 	usual search of all scripts in the directory will then be bypassed.
 
+
 ==============================================================================
 3. AsNeeded Global Variables				*asneeded-var*
 
-   	g:AsNeededSuccess : if this variable exists, then AsNeeded
-	                    will inform the user of successful loading
-			    of AsNeeded functions/commands/mappings.
+   	*g:AsNeededSuccess* : if this variable exists, then AsNeeded
+	                      will inform the user of successful loading
+			      of AsNeeded functions/commands/mappings.
+
+	*g:AsNeededAutoMake*  : Set this variable to something like "ls -1t"
+			      (Linux/Unix) and AsNeeded will automatically invoke
+			      |MkAsNeeded| when necessary.  The variable
+			      needs to hold a shell command which will generate
+			      a time-sorted list of files, most recent first.
+			      If a *.vim file is present in that list before
+			      the ANtags file, then AsNeeded will
+			      automatically call MakeANtags().
+
 
 ==============================================================================
-4. AsNeeded History					*asneeded-history*
+4. AsNeeded History					*asneeded-history* {{{1
 
+	v14 Jul 31, 2006: * Taglist does a quick-loading trick that involved
+	                    using FuncUndefined autocmds.  AsNeeded now defers
+			    to taglist instead of issuing a warning.
+			  * ei=all was inadvertently being left on; thus no
+			    autocmds were operational after AsNeeded 
+			    successfully loaded a function.  Fixed!
+			  * included |'patchmode'| in the SaveSettings() and
+			    RestoreSettings() bypass functions
+			  * |g:AsNeededAutoMake| support implemented
+			    (Z Sekera's suggestion)
+	v13 Mar 23, 2006: * The search for a map wasn't looking for
+	                    <Leader>amap when asked for :ANX \amap ; instead,
+			    AsNeeded was incorrectly looking for <Leader>\amap.
+			    Fixed.
+			  * AsNeeded's successful loading message managed to
+			    disappear from view (again).  I've deferred
+			    showing it until the end of the function.
+			  * Used Thomas's idea for ANcmds.vim plugin
+			    generation, which sets up skeleton commands.
 	v12 Mar 07, 2006: * AsNeeded now saves and restores settings in such
 	                    a way that if a command/map/script-sourcing
 			    changes vim settings it will be retained, instead
@@ -105,5 +139,6 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*asneeded-copyright*
 			    command/function/map is found
 	v1 Feb 19, 2004 : AsNeeded first released
 
-vim:tw=78:ts=8:ft=help
+==============================================================================
+vim:tw=78:ts=8:ft=help:fdm=marker:
 
