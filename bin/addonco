@@ -3,23 +3,6 @@
 from kergsvk import *
 import os
 
-standalones = {
-    "trunk/PaintChipsLib/PaintChips-2.0": "trunk/PaintChipsLib",
-    "trunk/Deformat/Deformat-2.0": "trunk/Deformat",
-    "trunk/Ace2/AceEvent-2.0": "trunk/Ace2",
-    "trunk/CandyBar/CandyBar-2.0": "trunk/CandyBar",
-    "trunk/Ace2/AceOO-2.0": "trunk/Ace2",
-    "trunk/Ace2/AceDB-2.0": "trunk/Ace2",
-    "trunk/Ace2/AceHook-2.0": "trunk/Ace2",
-    "trunk/Ace2/AceConsole-2.0": "trunk/Ace2",
-    "trunk/Ace2/AceAddon-2.0": "trunk/Ace2",
-    "trunk/CompostLib/Compost-2.0": "trunk/CompostLib",
-    "trunk/GratuityLib/Gratuity-2.0": "trunk/GratuityLib",
-    "trunk/Ace2/AceLibrary": "trunk/Ace2",
-    "trunk/Ace2/AceDebug-2.0": "trunk/Ace2",
-}
-
-
 def checkout(path, localpath):
     depot = None
     for key in dm.bykey.keys():
@@ -44,7 +27,7 @@ def checkout(path, localpath):
             if line == '':
                 continue
             (dest, src) = line.split()
-            arg[os.path.join(dirname, dest)] = src
+            arg.append((os.path.join(dirname, dest), src))
 
     # svk co --export PATH LOCALPATH
     print(runcmd([ Config.svk, 'co', path, localpath ]))
@@ -65,15 +48,13 @@ def checkout(path, localpath):
     extdestdir = os.path.dirname(os.path.dirname(toc))
 
     # traverse the new checkout with os.path.walk, checking for externals
-    externals = dict()
+    externals = []
     os.path.walk(localpath, cocb, externals)
 
     if Config.mode == 'detached':
         runcmd([ Config.svk, 'co', '--detach', localpath ])
 
-    for ext in externals.keys():
-        upstream = externals[ext]
-
+    for ext,upstream in externals:
         mipath = None
         for url in mi.byvalue.keys():
             i = upstream.replace('svn.wowace.com', 'dev.wowace.com')
@@ -88,15 +69,14 @@ def checkout(path, localpath):
         if rest.endswith('/'):
             rest = rest[:-1]
 
+        extstandalone = None
         if Config.standalones:
             extstandalone = standalones.get(rest)
             if not extstandalone:
                 print("Warning: standalones were requested, yet the translation table")
-                print("does not contain '%s'.  Checking it out as a normal external.")
+                print("does not contain '%s'.  Checking it out as a normal external." % rest)
                 print("Please add it to the addonco translation table at your")
                 print("earliest convenience.")
-        else:
-            extstandalone = None
 
         if extstandalone:
             rest = extstandalone

@@ -1,7 +1,8 @@
 #!/bin/sh
 
 #SVKDEPOT="/wow/mirror"
-SVKDEPOT="/wow/local"
+#SVKDEPOT="/wow/local"
+SVKDEPOT="//mirror/addons"
 SVKCO="/home/World of Warcraft/Interface"
 
 usage () {
@@ -160,13 +161,13 @@ for toc in $tocfiles; do
 		fi
 	fi
 
-	svk ls "$SVKDEPOT/vendor/$addon/$version" >/dev/null 2>&1
+	svk ls "$SVKDEPOT/tags/$addon/$version" >/dev/null 2>&1
 	if [ "$?" = "0" ]; then
 		msg "Version $version of $title is already imported and tagged."
 		continue
 	else
-		svk import -m "Import version $version of $title." "$tocpath" "$SVKDEPOT/vendor/$addon/current"
-		svk cp -m "Tag version $version of $title." "$SVKDEPOT/vendor/$addon/current" "$SVKDEPOT/vendor/$addon/$version"
+		svk import -m "Import version $version of $title." "$tocpath" "$SVKDEPOT/trunk/$addon"
+		svk cp -p -m "Tag version $version of $title." "$SVKDEPOT/trunk/$addon" "$SVKDEPOT/tags/$addon/$version"
 		# svn_load_dirs -no_user_input -t "${SVKREPOPRE}vendor/$addon/$version" "$SVKREPO" "${SVKREPOPRE}vendor/$addon/current" "$tocpath"
 		if [ "x$?" != "x0" ]; then
 			error "Unable to import/tag the sources for version $version of $title."
@@ -178,19 +179,19 @@ for toc in $tocfiles; do
 	fi
 
 
-	svk ls "$SVKDEPOT/trunk/KergWOW/AddOns/$addon" >/dev/null 2>&1
-	if [ "$?" != "0" ]; then
-		continue
-	fi
-	svk smerge -m "Update $addon to version $version." "$SVKDEPOT/vendor/$addon/current" "$SVKDEPOT/trunk/KergWOW/AddOns/$addon"
-	if [ "x$?" != "x0" ]; then
-		error "Unable to merge the changes in version $version of $title to the trunk."
-		ERROR=1
-		continue
-	fi
-	msg "Merge of version $version of $title to trunk is complete."
+	# svk ls "$SVKDEPOT/trunk/KergWOW/AddOns/$addon" >/dev/null 2>&1
+	# if [ "$?" != "0" ]; then
+	#         continue
+	# fi
+	# svk smerge -m "Update $addon to version $version." "$SVKDEPOT/vendor/$addon/current" "$SVKDEPOT/trunk/KergWOW/AddOns/$addon"
+	# if [ "x$?" != "x0" ]; then
+	#         error "Unable to merge the changes in version $version of $title to the trunk."
+	#         ERROR=1
+	#         continue
+	# fi
+	# msg "Merge of version $version of $title to trunk is complete."
 
-	svk up "$SVKCO/AddOns/$addon" >/dev/null 2>&1 # I'm lazy, what can i say?
+	# svk up "$SVKCO/AddOns/$addon" >/dev/null 2>&1 # I'm lazy, what can i say?
 done
 
 rm -rf "$TMPDIR"

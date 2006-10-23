@@ -27,21 +27,19 @@ def checkout(path, localpath):
             if line == '':
                 continue
             (dest, src) = line.split()
-            arg[os.path.join(dirname, dest)] = src
+            arg.append((os.path.join(dirname, dest), src))
 
     # svk co --export PATH LOCALPATH
     print(runcmd([ Config.svk, 'co', path, localpath ]))
 
     # traverse the new checkout with os.path.walk, checking for externals
-    externals = dict()
+    externals = []
     os.path.walk(localpath, cocb, externals)
 
     if Config.mode == 'detached':
         runcmd([ Config.svk, 'co', '--detach', localpath ])
 
-    for ext in externals.keys():
-        upstream = externals[ext]
-
+    for ext,upstream in externals:
         mipath = None
         for url in mi.byvalue.keys():
             i = upstream.replace('svn.wowace.com', 'dev.wowace.com')

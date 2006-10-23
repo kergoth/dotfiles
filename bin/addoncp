@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+from kergsvk import runcmd, Config, finddepotpath, handleexternals, SVKError, populatestandalones
+import os
+
+pathcache = []
+def pathhandler(src, dest):
+    if dest in pathcache:
+        return
+
+    print("Copying/updating %s to %s" % (src, dest))
+
+    try:
+        if not os.path.exists(dest):
+            print(runcmd([Config.svk, 'cp', src, dest]))
+        else:
+            print(runcmd([Config.svk, 'pull', finddepotpath(dest)]))
+            print(runcmd([Config.svk, 'update', dest]))
+        handleexternals(dest, pathhandler)
+        pathcache.append(dest)
+    except Exception:
+        sys.__stderr__.write("Error: unable to copy/update %s.\n" % dest)
+        return
+
+import sys
+try:
+    for n in range(1,len(sys.argv)):
+        i = sys.argv[n]
+        copath = os.path.join(os.path.abspath(os.curdir), os.path.basename(i))
+        if os.path.basename(sys.argv[0]) == "externalscp":
+            handleexternals(copath, pathhandler)
+        else:
+            pathhandler(i, copath)
+except SVKError:
+    import sys
+    sys.__stderr__.write(str(sys.exc_value))
+    sys.exit(1)
