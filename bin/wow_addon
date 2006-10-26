@@ -3,6 +3,7 @@
 #SVKDEPOT="/wow/mirror"
 #SVKDEPOT="/wow/local"
 SVKDEPOT="//mirror/addons"
+SETDEPOT="//local/kergwow/trunk"
 SVKCO="/home/World of Warcraft/Interface"
 
 usage () {
@@ -179,7 +180,7 @@ for toc in $tocfiles; do
 	fi
 
 
-	# svk ls "$SVKDEPOT/trunk/KergWOW/AddOns/$addon" >/dev/null 2>&1
+	# svk ls "$SVKDEPOT/AddOns/$addon" >/dev/null 2>&1
 	# if [ "$?" != "0" ]; then
 	#         continue
 	# fi
