@@ -260,4 +260,7 @@ if [ -n "$BASH" ]; then
         fi
     }
     complete -F maketargets make gmake
+
+    # Tab completion for svk
+    complete -C $HOME/bin/svk-completion.pl -o default svk
 fi
