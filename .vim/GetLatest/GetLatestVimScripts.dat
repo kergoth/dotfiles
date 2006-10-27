@@ -3,7 +3,7 @@ ScriptID SourceID Filename
 5 4884 doxygen.vim
 15 3420 ccase.vim
 31 5698 a.vim
-39 5705 matchit.vim
+39 6332 matchit.vim
 42 5409 bufexplorer.vim
 159 3640 minibufexpl.vim
 273 6158 taglist.vim
@@ -15,7 +15,7 @@ ScriptID SourceID Filename
 670 6208 plugin/visincr.vim
 748 4319 HelpExtractor.vim
 746 5662 plugin/cmdalias.vim
-760 5986 colors/ps_color.vim
+760 6328 colors/ps_color.vim
 790 6230 python.vim
 795 6172 colors/xterm16.vim
 915 6204 AsNeeded.vim
