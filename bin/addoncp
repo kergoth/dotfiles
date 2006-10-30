@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from kergsvk import runcmd, Config, finddepotpath, handleexternals, SVKError, populatestandalones
+from kergsvk import runcmd, Config, finddepotpath, handleexternals, SVKError, populatestandalones, System, Commands, findcopypath
 import os
 
 pathcache = []
@@ -14,12 +14,17 @@ def pathhandler(src, dest):
         if not os.path.exists(dest):
             print(runcmd([Config.svk, 'cp', src, dest]))
         else:
-            print(runcmd([Config.svk, 'pull', finddepotpath(dest)]))
-            print(runcmd([Config.svk, 'update', dest]))
-        handleexternals(dest, pathhandler)
+            runcmd([Config.svk, 'smerge', '--verbatim', '-m', '', '--log', '--to', finddepotpath(dest)], System)
+            runcmd([Config.svk, 'update', dest], System)
+    except Exception:
+        sys.__stderr__.write("%s: unable to copy/update %s: %s.\n" % (sys.exc_type, dest, sys.exc_value))
+        return
+
+    try:
+        handleexternals(dest, pathhandler, src)
         pathcache.append(dest)
     except Exception:
-        sys.__stderr__.write("Error: unable to copy/update %s.\n" % dest)
+        sys.__stderr__.write("%s: unable to handle externals of %s: %s.\n" % (sys.exc_type, dest, sys.exc_value))
         return
 
 import sys
@@ -28,10 +33,9 @@ try:
         i = sys.argv[n]
         copath = os.path.join(os.path.abspath(os.curdir), os.path.basename(i))
         if os.path.basename(sys.argv[0]) == "externalscp":
-            handleexternals(copath, pathhandler)
+            handleexternals(copath, pathhandler, i)
         else:
             pathhandler(i, copath)
 except SVKError:
-    import sys
     sys.__stderr__.write(str(sys.exc_value))
     sys.exit(1)

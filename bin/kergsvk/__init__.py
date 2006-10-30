@@ -9,9 +9,12 @@ __all__ = [
     "handleexternals",
     "finddepotpath",
     "findsvnpath",
+    "findcopypath",
     "mi",
     "dm",
     "populatestandalones",
+    "System",
+    "Commands",
 ]
 
 from kergsvk.standalones import all as standalones
@@ -45,17 +48,25 @@ class SVKError(Exception):
     def __str__(self):
         return self.str
 
-import time
-def runcmd(args):
-    args = [ commands.mkarg(arg) for arg in args ]
+System = 1
+Commands = 2
 
+import time
+def runcmd(args, mode = Commands):
+    args = [ commands.mkarg(arg) for arg in args ]
+    output = None
     cmd = " ".join(args)
 
     # t = time.time()
     # print("Executing '%s'." % cmd)
-    (exitstatus, output) = commands.getstatusoutput(cmd)
+    if mode == Commands:
+        (exitstatus, output) = commands.getstatusoutput(cmd)
+        exitstatus >>= 8
+    elif mode == System:
+        exitstatus = os.system(cmd)
+
     if exitstatus != 0:
-        raise SVKError(cmd, exitstatus >> 8, output)
+        raise SVKError(cmd, exitstatus, output)
     # print("'%s' executed in %s" % (cmd, time.time() - t))
 
     return output
@@ -97,8 +108,22 @@ def finddepotpath(path):
         infodict[key] = value
     return infodict['Depot Path']
 
-def getexternals(path):
-    svnpath = findsvnpath(finddepotpath(path))
+def findcopypath(path):
+    info = runcmd([Config.svk, 'info', path])
+    infodict = {}
+    for line in info.splitlines():
+        (key, value) = line.split(": ")
+        infodict[key] = value
+    return '/'+infodict['Copied From'].split(', ')[0]
+
+def getexternals(path, depotpath):
+    if not depotpath:
+        depotpath = finddepotpath(path)
+    svnpath = findsvnpath(depotpath)
+
+    if not svnpath:
+        return
+
     def findexternals(arg, dirname, fnames):
         import re
         args = [ Config.svn, 'propget', 'svn:externals', re.sub("^%s" % path, svnpath, dirname) ]
@@ -131,14 +156,16 @@ def gettocfiles(path):
     os.path.walk(path, findtoc, toclist)
     return toclist
 
-def handleexternals(path, handler):
+def handleexternals(path, handler, depotpath):
     extcache = []
     toclist = gettocfiles(path)
     for toc in toclist:
         tocdir = os.path.dirname(toc)
         extdestdir = os.path.dirname(tocdir)
+        externals = getexternals(tocdir, tocdir.replace(path, depotpath))
+        if not externals:
+            continue
 
-        externals = getexternals(path)
         for ext,upstream in externals:
             if upstream in extcache:
                 continue
