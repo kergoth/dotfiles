@@ -14,7 +14,7 @@ def pathhandler(src, dest):
         if not os.path.exists(dest):
             print(runcmd([Config.svk, 'cp', src, dest]))
         else:
-            runcmd([Config.svk, 'smerge', '--verbatim', '-m', '', '--log', '--to', finddepotpath(dest)], System)
+            runcmd([Config.svk, 'smerge', '-m', '', '--log', '--to', finddepotpath(dest)], System)
             runcmd([Config.svk, 'update', dest], System)
     except Exception:
         sys.__stderr__.write("%s: unable to copy/update %s: %s.\n" % (sys.exc_type, dest, sys.exc_value))
