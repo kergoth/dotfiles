@@ -86,5 +86,12 @@ class Addon(dict):
 
         f.close()
 
+    def isvalid(self):
+        try:
+            self.__getattribute__('name')
+            return True
+        except AttributeError:
+            return False
+
     def __str__(self):
         return cjkwrap("%s: %s" % (self.name, self.desc))
