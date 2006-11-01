@@ -89,6 +89,10 @@
 <Leader>ctsta	ccase.txt	/*<Leader>ctsta*
 <Leader>ctunco	ccase.txt	/*<Leader>ctunco*
 <Leader>ctxl	ccase.txt	/*<Leader>ctxl*
+AN	alternate.txt	/*AN*
+AS	alternate.txt	/*AS*
+AT	alternate.txt	/*AT*
+AV	alternate.txt	/*AV*
 Align-copyright	Align.txt	/*Align-copyright*
 CSH	cecscope.txt	/*CSH*
 CSS	cecscope.txt	/*CSS*
@@ -98,6 +102,11 @@ I	visincr.txt	/*I*
 IA	visincr.txt	/*IA*
 ID	visincr.txt	/*ID*
 IDMY	visincr.txt	/*IDMY*
+IH	alternate.txt	/*IH*
+IHN	alternate.txt	/*IHN*
+IHS	alternate.txt	/*IHS*
+IHT	alternate.txt	/*IHT*
+IHV	alternate.txt	/*IHV*
 II	visincr.txt	/*II*
 IIO	visincr.txt	/*IIO*
 IIR	visincr.txt	/*IIR*
@@ -265,6 +274,14 @@ alignmap-tt	Align.txt	/*alignmap-tt*
 alignmap-t~	Align.txt	/*alignmap-t~*
 alignmaps	Align.txt	/*alignmaps*
 alignusage	Align.txt	/*alignusage*
+alternate	alternate.txt	/*alternate*
+alternate-acknowledgments	alternate.txt	/*alternate-acknowledgments*
+alternate-commands	alternate.txt	/*alternate-commands*
+alternate-config	alternate.txt	/*alternate-config*
+alternate-installation	alternate.txt	/*alternate-installation*
+alternate-purpose	alternate.txt	/*alternate-purpose*
+alternate-support	alternate.txt	/*alternate-support*
+alternate.txt	alternate.txt	/*alternate.txt*
 asneeded	AsNeeded.txt	/*asneeded*
 asneeded-contents	AsNeeded.txt	/*asneeded-contents*
 asneeded-copyright	AsNeeded.txt	/*asneeded-copyright*
