@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+import os, re
+import addons
+
+# Create objects for all the addons
+wowpath = "/home/World of Warcraft/Interface/AddOns"
+wowaddons = {}
+for relpath in os.listdir(wowpath):
+    fullpath = os.path.join(wowpath, relpath)
+    if os.path.isdir(fullpath):
+        addonpath = os.path.join(fullpath, '%s.toc' % relpath)
+        a = addons.Addon(addonpath)
+        if a.isvalid():
+            wowaddons[a.name] = a
+
+# Create dependency maps
+deps = {}
+revdeps = {}
+optdeps = {}
+revoptdeps = {}
+for a in wowaddons.values():
+    dep = a.get('Dependencies') or a.get('RequiredDeps') or ''
+    dep = re.split(', *', dep)
+    deps[a.name] = dep
+    for d in dep:
+        if not revdeps.get(d):
+            revdeps[d] = []
+        revdeps[d].append(a.name)
+
+    dep = a.get('OptionalDependencies') or a.get('OptionalDeps') or ''
+    dep = re.split(', *', dep)
+    optdeps[a.name] = dep
+    for d in dep:
+        if not revoptdeps.get(d):
+            revoptdeps[d] = []
+        revoptdeps[d].append(a.name)
+
+# Locate LoadOnDemand addons which do not appear to be automatically
+# loaded.  Note that we obviously won't catch LoD addons which another
+# addon will load explicitly.
+print("The following addons are load on demand, and might not get loaded:")
+print("NOTE: these may be explicitly loaded by another addon, we only check")
+print("for SupplyAndDemand, LoadWith, FuBar, and being loaded due to deps.")
+for a in wowaddons.values():
+    if a.get('LoadOnDemand') == '1':
+        dep = deps[a.name]
+        if not a.get('LoadWith') and \
+           not a.get('X-S&D-Placeholder') and \
+           not a.get('X-S&D-Class') and \
+           not a.get('X-S&D-Always') and \
+           not a.get('X-S&D-AtMail') and \
+           not a.get('X-S&D-AtMerchant') and \
+           not a.get('X-S&D-PvPFlagged') and \
+           not a.get('X-S&D-InParty') and \
+           not a.get('X-S&D-InRaid') and \
+           not 'FuBar' in dep and \
+           not revdeps.get(a.name) and \
+           not revoptdeps.get(a.name):
+            print("    "+a.name)
+
+
+print("Something depends upon the following addons, and they are not LoD:")
+for a in wowaddons.values():
+    if a.get('LoadOnDemand') != '1':
+        if revdeps.get(a.name) or revoptdeps.get(a.name):
+            print("    "+a.name)
