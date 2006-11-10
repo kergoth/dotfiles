@@ -33,7 +33,7 @@ try:
         i = sys.argv[n]
         copath = os.path.join(os.path.abspath(os.curdir), os.path.basename(i))
         if os.path.basename(sys.argv[0]) == "externalscp":
-            handleexternals(copath, pathhandler, i)
+            handleexternals(copath, pathhandler, finddepotpath(copath))
         else:
             pathhandler(i, copath)
 except SVKError:
