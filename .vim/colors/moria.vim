@@ -4,6 +4,12 @@ else
     let s:moria_style = &background
 endif
 
+if exists("g:moria_fontface")
+    let s:moria_fontface = g:moria_fontface
+else
+    let s:moria_fontface = "plain"
+endif
+
 execute "command! -nargs=1 Colo let g:moria_style = \"<args>\" | colo moria"
 
 if s:moria_style == "black" || s:moria_style == "dark" || s:moria_style == "darkslategray"
@@ -29,7 +35,6 @@ if &background == "dark"
         hi CursorColumn guibg=#404040 gui=none
         hi CursorLine guibg=#404040 gui=none
         hi FoldColumn ctermbg=bg guibg=bg guifg=#a0c0c0 gui=none
-        hi Folded guibg=#585858 guifg=#c0e0e0 gui=none
         hi LineNr guifg=#a0c0c0 gui=none
         hi NonText ctermfg=8 guibg=bg guifg=#a0c0c0 gui=bold
         hi Pmenu guibg=#80a0a0 guifg=#000000 gui=none
@@ -47,9 +52,15 @@ if &background == "dark"
             hi Visual ctermbg=7 ctermfg=0 guibg=#608080 guifg=fg gui=none
         endif
         hi VisualNOS guibg=bg guifg=#90b0b0 gui=bold,underline
+
+        if s:moria_fontface == "mixed"
+            hi Folded guibg=#585858 guifg=#c0e0e0 gui=bold
+        else
+            hi Folded guibg=#585858 guifg=#c0e0e0 gui=none
+        endif
     else
         if s:moria_style == "dark"
-            hi Normal ctermbg=0 ctermfg=7 guibg=#202020 guifg=#d0d0d0 gui=none
+            hi Normal ctermbg=0 ctermfg=7 guibg=#303030 guifg=#d0d0d0 gui=none
 
             hi CursorColumn guibg=#444444 gui=none
             hi CursorLine guibg=#444444 gui=none
@@ -60,7 +71,6 @@ if &background == "dark"
             hi CursorLine guibg=#3a3a3a gui=none
         endif
         hi FoldColumn ctermbg=bg guibg=bg guifg=#a0b0c0 gui=none
-        hi Folded guibg=#585858 guifg=#c0d0e0 gui=none
         hi LineNr guifg=#a0b0c0 gui=none
         hi NonText ctermfg=8 guibg=bg guifg=#a0b0c0 gui=bold
         hi Pmenu guibg=#8090a0 guifg=#000000 gui=none
@@ -78,6 +88,12 @@ if &background == "dark"
             hi Visual ctermbg=7 ctermfg=0 guibg=#607080 guifg=fg gui=none
         endif
         hi VisualNOS guibg=bg guifg=#90a0b0 gui=bold,underline
+
+        if s:moria_fontface == "mixed"
+            hi Folded guibg=#585858 guifg=#c0d0e0 gui=bold
+        else
+            hi Folded guibg=#585858 guifg=#c0d0e0 gui=none
+        endif
     endif
     hi Cursor guibg=#ffa500 guifg=bg gui=none
     hi DiffAdd guibg=#008b00 guifg=fg gui=none
@@ -113,10 +129,16 @@ if &background == "dark"
     hi MatchParen guibg=#008b8b gui=none
     hi PreProc guibg=bg guifg=#d7a0d7 gui=none
     hi Special guibg=bg guifg=#e8b87e gui=none
-    hi Statement guibg=bg guifg=#7ec0ee gui=none
     hi Todo guibg=#e0e000 guifg=#000000 gui=none
-    hi Type guibg=bg guifg=#f09479 gui=none
     hi Underlined guibg=bg guifg=#00a0ff gui=underline    
+
+    if s:moria_fontface == "mixed"
+        hi Statement guibg=bg guifg=#7ec0ee gui=bold
+        hi Type guibg=bg guifg=#f09479 gui=bold
+    else
+        hi Statement guibg=bg guifg=#7ec0ee gui=none
+        hi Type guibg=bg guifg=#f09479 gui=none
+    endif
 
     hi htmlBold ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=bold
     hi htmlItalic ctermbg=0 ctermfg=15 guibg=bg guifg=fg gui=italic
@@ -145,7 +167,7 @@ elseif &background == "light"
     hi Directory guibg=bg guifg=#0000f0 gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi FoldColumn ctermbg=bg guibg=bg guifg=#506070 gui=none
-    hi Folded guibg=#c5c5c5 guifg=#203040 gui=none
+    hi Folded guibg=#c5c5c5 guifg=#304050 gui=bold
     hi IncSearch guibg=#ffcd78 gui=none
     hi LineNr guifg=#506070 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold

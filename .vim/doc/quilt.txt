@@ -2,7 +2,7 @@
 
 		  VIM REFERENCE MANUAL (Quilt Plugin)	 by Florian Delizy
 
-This file extensively describes the quilt plug-in usage (version 0.8.1)
+This file extensively describes the quilt plug-in usage (version 0.9.4)
 
 Using quilt						           *quilt-usage*
 
@@ -211,6 +211,9 @@ none of [patch] nor [number] is supplied, only push one patch (the next patch).
 If the patch fail to apply, use '!' to force it, then refresh the patch using
 the quilt command output.
 
+When forcing a patch having FAILED hunks, the quickfix will contain a list
+of rejected files. This list can be obtained with |:QuiltFiles|
+
  [patch] is auto-completed, use [tab] to navigate through unapplied patches
 
 
@@ -233,6 +236,9 @@ If none of [patch] nor [number] is supplied, only pop one patch off the stack.
 
 If the patch fail to unapply, use '!' to force it. It's usually a better idea to 
 refresh (|:QuiltRefresh| a patch failing to unapply before trying again).
+
+When forcing a patch having FAILED hunks, the quickfix will contain a list
+of rejected files. This list can be obtained with |:QuiltFiles|
 
  [patch] is auto-completed, use [tab] to navigate through applied patches
 
@@ -296,6 +302,8 @@ not ([!in])
 Create a file list (in a quick-fix) for the given patch (default current), 
 allowing to quickly review all files contained in a patch.
 
+Files having a .rej file are marked as "error"
+
  [patch] is auto-completed, use [tab] to navigate through existing patches
 
 -------------------------------------------------------------------------------
@@ -336,6 +344,10 @@ naviguate in the email list.
 [patch1]/|patch2] are searched into the patch list, use <TAB> to navigate in
 the existing patch list.
 
+The command used to start thunderbird is taken from |g:QuiltThunderbirdCmd| by
+default it is set to "thunderbird" but you can change it (for instance on
+debian, it should be set to "icedove")
+
 -------------------------------------------------------------------------------
 							  *g:QuiltMailAddresses*
 
@@ -362,6 +374,22 @@ compose window using thunderbird. Default is 1
 	let g:QuiltMailSleep = 2
 <
 sets it to two seconds ...
+
+-------------------------------------------------------------------------------
+						         *g:QuiltThunderbirdCmd*
+|g:QuiltThunderbirdCmd|
+
+This variable contains the command line used to start thunderbird, it is
+"thunderbird" by default. On some system, (debian etch and sid) thunderbird is
+renamed to "icedove" so you should set it in your .vimrc :
+
+>
+	let g:QuiltThunderbirdCmd = "icedove"
+<
+
+The command used to start thunderbird is taken from |g:QuiltThunderbirdCmd| by
+default it is set to "thunderbird" but you can change it (for instance on
+debian, it should be set to "icedove")
 
 -------------------------------------------------------------------------------
 								   *g:QuiltLang*
@@ -415,6 +443,51 @@ To write the header, you must then call |:QuiltWriteHeader|
 This command writes the header to the patch (formerly set by |:QuiltHeader|)
 This command can only be used in a tab opened by|:QuiltHeader|
 
+-------------------------------------------------------------------------------
+							       *:QuiltPatchEdit*
+|:QuiltPatchEdit| [patch]
+
+Open a tab editing the given [patch] if [patch] is ommited, the current patch
+is opened.
+
+-------------------------------------------------------------------------------
+							        *:QuiltAnnotate*
+|:QuiltAnnotate[!]| [file]
+
+Opens an interface showing which patch modifies which line of [file] or the 
+current file if [file] is ommited. If [file] is specified, it is opened in the
+current buffer (force with '!' if you want to open it even if modified).
+The interface looks like the following :
+
++--+--------------------------------+
+|n |                                |
+|  |                                |
+|  |                                |
+|  |                                |
++--+--------------------------------+
++ n patchName                       +
++ m patchName                       +
++-----------------------------------+
+
+The left split shows a number, which references the number on the bottom split.
+In the bottom split, the number is translated into corresponding patch name.
+
+(This information is only relevant if the patch is refreshed with all changes
+and thus, is not anymore when the file gets modified).
+
+The current line is highlighted for better readability, and the current patch
+(corresponding to the current line) is highlighted too. The drawback is that
+the refresh is a little slow ... 
+
+The interface is closed when either the number or patch buffer is closed.
+
+						     *g:QuiltAnnotateFollowLine*
+
+You can disable the follow cursor by setting the |g:QuiltAnnotateFollowLine|
+variable to 0 :
+>
+	:let g:QuiltAnnotateFollowLine = 0
+>
 ===============================================================================
 A. Find more about the plug-in				           *quilt-about*
 
@@ -525,6 +598,38 @@ B. Changelog						       *quilt-changelog*
 0.8.1 [2006/10/27]
 >
 	* Fixed the nocompatible option that caused problem in 'compatible'    
+<
+0.9 [2006/11/06]
+>
+	* Added auto .rej opening when opening a file                          
+	* Added QuiltPatchEdit command                                         
+	* Added .rej auto recognition in QuiltFiles                            
+	* Added automatic .rej recognition for FAILED hunk to QuiltPop         
+	* Added automatic .rej recognition for FAILED hunk to QuiltPush        
+	* Added color on QuiltPop/Push success/failure ...                     
+	* Added QuiltAnnotate command                                          
+	* Fixed autocmd usage, so that commands are deleted on :source         
+	* Added the license (GPL of course)                                    
+<
+0.9.1 [2006/11/06]
+>
+	* Added a function to keep the current line in QuiltAnnotate           
+	* Added auto close interface when one is closed                        
+<
+0.9.2 [2006/11/07]
+>
+	* Fixed QuiltAnnotate Interface when anotating a file not from the 0   
+	  line (the Followcursor was not working)                              
+>
+0.9.3 [2006/11/13]
+>
+	* Fixed QuiltAnnotate interface for files not completely from a patch  
+<
+0.9.4 [20006/11/14]
+>
+	* Fixed g:Quilt* variables that were reseted every :source quilt.vim   
+	* Added ta customization command for calling thunderbird (debian...    
+	  QuiltThunderbirdCmd should be set to "icedove" not "thunderbird"     
 <
 -------------------------------------------------------------------------------
  vim:ft=help:norl:

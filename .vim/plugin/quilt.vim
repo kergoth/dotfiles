@@ -14,23 +14,21 @@
 " ChangeLog:                                                                   
 " :help quilt-changelog                                                        
 "                                                                              
+" License:                                                                     
+" This code is GPL v2.0, please go to www.gnu.org to get a full copy of the GPL
+"                                                                              
 "------------------------------------------------------------------------------
 "                                                                              
 " TODO:                                                                        
 "                                                                              
-" * a real interface like DirDiff                                              
-" * a merge interface                                                          
 " * an interface showing the current patch on the bottom                       
 "   - allow fold/unfold to see what files are included                         
-"   - add a background color to highlight what                                 
-"     belong to what patch (might be possible for only one patch ?             
-" * handle quilt error using quickfix (only needed for QuiltPush/Pop)  ...     
 " * auto add the currently modified file                                       
 " * auto refresh on change                                                     
 " * add an indication to know if the patch needs refresh or not                
-" * add a Quilt command that takes the cmd as a parameter                      
 " * prevent the writing if the file is in no patch (without the ! option)      
 " * add an info to show to which patch belong a chunk                          
+" * quilt merge, import ... and stuffs (is somebody using it ??)               
 
 
 "------------------------------------------------------------------------------
@@ -38,7 +36,17 @@
 "------------------------------------------------------------------------------
 let cpocopy=&cpo | set cpo-=C
 
+command! QuiltCheckRej call <SID>QuiltCheckRej()
 command! QuiltStatus call <SID>QuiltStatus()
+
+autocmd! BufNewFile,BufReadPost,FileReadPost * QuiltStatus
+autocmd! BufReadPost,FileReadPost * QuiltCheckRej
+
+autocmd BufNewFile,BufReadPost * QuiltStatus
+autocmd BufReadPost * QuiltCheckRej
+
+command! -nargs=? -complete=custom,QuiltCompleteInPatch
+       \ QuiltPatchEdit call <SID>QuiltPatchEdit( <f-args> )
 
 command! -nargs=? -bang -complete=custom,QuiltCompleteInAppliedPatch   
        \ QuiltPop  call <SID>QuiltPop("<bang>", <f-args>)
@@ -86,11 +94,207 @@ command! -nargs=+ -complete=custom,QuiltCompleteInPatch
 command! -nargs=? -complete=custom,QuiltCompleteInPatch
        \ QuiltHeader call <SID>QuiltHeader( <f-args> )
 
+command! -nargs=? -complete=file -bang
+       \ QuiltAnnotate call <SID>QuiltAnnotate( "<bang>", <f-args> )
 
-let g:QuiltSubject = '[patch @num@/@total@] @name@'
-let g:QuiltMailSleep = 1
-let g:QuiltLang = 'en_us'
-let g:QuiltMailAddresses = [ 'test@localhost.com' ]
+" Provide defaults for variables
+
+if !exists( "g:QuiltSubject" )
+    let g:QuiltSubject = '[patch @num@/@total@] @name@'
+endif
+
+if !exists( "g:QuiltMailSleep" )
+    let g:QuiltMailSleep = 1
+endif
+
+if !exists( "g:QuiltLang" )
+    let g:QuiltLang = 'en_us'
+endif
+
+if !exists( "g:QuiltMailAddresses" )
+    let g:QuiltMailAddresses = [ 'test@localhost.com' ]
+endif
+
+if !exists( "g:QuiltAnnotateFollowLine" )
+    let g:QuiltAnnotateFollowLine = 1
+endif
+
+if !exists( "g:QuiltThunderbirdCmd" )
+    let g:QuiltThunderbirdCmd = "thunderbird"
+endif
+" Opens an interface with the quilt annotate informations :
+
+function! <SID>QuiltAnnotate( bang, ... )
+    let currentLine = line( "." )
+
+    let DoCursor = 0
+    if exists( "g:QuiltAnnotateFollowLine" ) && g:QuiltAnnotateFollowLine 
+	let DoCursor = 1
+    endif
+
+    let cmd = "quilt annotate "
+
+    if 0 == a:0
+	if ""== expand( "%" )
+	    echohl ErrorMsg
+	    echo "No file specified, and no file opened ... sorry "
+	    echohl none
+	    return 
+	endif
+	let cmd = cmd . expand( "%" )
+    else
+	if a:bang != "!" && &modified
+	    echohl ErrorMsg
+	    echo "Current file not saved, use ! to force"
+	    echohl none
+	    return
+	endif
+	let cmd = cmd . a:1
+	edit a:1
+    endif
+
+
+    let out = system( cmd )
+
+    if 0 != v:shell_error
+	echohl ErrorMsg
+	echo out
+	echohl None
+	return
+    endif
+
+    0
+
+    " Create the patch number window
+    vnew
+    setlocal wiw=3
+    wincmd H
+    wincmd l
+    wincmd |
+    wincmd h
+    autocmd BufUnload <buffer> call <SID>QuitAnnotateJ()
+
+    " Create the patch name window
+    new
+    wincmd J
+    wincmd k
+    wincmd _
+    wincmd j
+    autocmd BufUnload <buffer> call <SID>QuitAnnotateH()
+
+    " Parse the result
+
+    let lines = split( out, '\n' )
+    let numbers = []
+    let patches = []
+
+    " retreive line numbers
+    for i in range(0, len(lines) - 1)
+	if empty(lines[i])
+	    break
+	endif
+	call add( numbers, substitute(substitute( lines[i], '^\([0-9]\+\|\t\).*$', '\1', 'g' ), '\t', ' ', 'g' ) )
+    endfor
+    
+    " now retreive patch names
+    let i = i + 1
+    for i in range( i, len(lines) - 1)
+	call add( patches, lines[i] )
+    endfor
+
+    " Append the result ... 
+
+    wincmd j
+
+    call append( 0, patches )
+    setlocal nomodified
+    setlocal nomodifiable
+    set noscrollbind
+    if DoCursor
+        setlocal cursorline
+    endif
+    0
+    resize 5
+
+    wincmd k
+    wincmd h
+
+    call append( 0, numbers )
+    setlocal nomodified
+    setlocal nomodifiable
+    0
+    set scrollbind
+
+    if DoCursor
+        setlocal cursorline
+    endif
+
+    wincmd l
+    set scrollbind
+
+    exec currentLine
+    
+    redraw!
+    if DoCursor
+	setlocal cursorline
+        autocmd CursorMoved <buffer>  call <SID>FollowCursorLine()
+    endif
+
+endfunction
+
+
+" Autocmd used to follow the cursor
+
+function! <SID>FollowCursorLine()
+    let ln = line( "." )
+    wincmd h
+    exec ln
+    let ln = getline( "." )
+    wincmd j
+    exec ln
+    redraw
+    wincmd k
+    wincmd l
+    redraw!
+endfunction
+
+" used to quit the buffer annotate mode
+
+function! <SID>QuitAnnotateJ()
+    wincmd j
+    quit
+    wincmd k
+    wincmd l
+    autocmd! CursorMoved <buffer> 
+    setlocal nocursorline
+
+function! <SID>QuitAnnotateH()
+    wincmd k
+    quit
+    wincmd l
+    autocmd! CursorMoved <buffer> 
+    setlocal nocursorline
+
+endfunction
+endfunction
+
+" Open the patch in a new tab regarding it's name
+
+function! <SID>QuiltPatchEdit( ... )
+
+    if !<SID>IsQuiltDirectory() 
+	return
+    endif
+
+    if 1 == a:0
+	let patch = "patches/" . a:1
+    else
+	let patch = "patches/" . g:QuiltCurrentPatch 
+    endif
+
+    exec "tabedit ". patch
+endfunction
+
 
 " Create the header view window ... (tabedit)
 function! <SID>QuiltHeader( ... )
@@ -340,7 +544,7 @@ function! <SID>ThunderBirdMail( dest, subject, body, ... )
     endif
 
 
-    let cmd = 'thunderbird -compose '
+    let cmd = g:QuiltThunderbirdCmd . ' -compose '
 
     let cmd = cmd . "'"
 
@@ -398,7 +602,11 @@ function! <SID>QuiltFiles( ... )
     let i = 0
     while i < len( fileList )
 
-        call add( cexprList, fileList[i] . ':0: is included in the patch ' )
+	if "" != glob( fileList[i] . ".rej" )
+	    call add( cexprList, fileList[i] . ':0: error: is included in the patch but has a .rej' )
+	else
+	    call add( cexprList, fileList[i] . ':0: is included in the patch ' )
+	endif
 
         let i = i + 1
     endwhile
@@ -424,7 +632,7 @@ function! <SID>QuiltPatches( ... )
     endif
 
     if thefile == ''
-        echohl WarningMsg
+        echohl ErrorMsg
         echo "No file specified, and no file opened ..."
         echohl none
         return 0
@@ -619,7 +827,7 @@ function! <SID>QuiltPop( bang, ... )
     endif
 
 
-    let cmd= "!quilt pop "
+    let cmd= "quilt pop "
 
     if a:0 == 1
         let cmd = cmd . a:1
@@ -628,8 +836,37 @@ function! <SID>QuiltPop( bang, ... )
     if a:bang == "!"
         let cmd = cmd . " -f "
     endif
+    
+    if a:bang != '!'
+	let ret = system( cmd )
+	let lines =  split( ret, "\n" )
+	let lastLine = lines[ len(lines) - 1 ]
+	call remove( lines, len(lines) - 1 )
+	echo join( lines, "\n" )
+	
+	if v:shell_error != 0
+	    echohl ErrorMsg
+	    let lastLine = lastLine . " (:QuiltPop! to force)" 
+	else
+	    echohl MoreMsg
+	endif
+	echo lastLine 
+	
+	echohl none
+    else
+	let ret = system( cmd )
+	if ret =~ "FAILED"
+	    call <SID>CreatePushPopWarning( ret )
+	    echohl WarningMsg
+	else
+	    echohl MoreMsg
+	endif
 
-    exec cmd
+	let lines =  split( ret, "\n" )
+	echo lines[ len(lines) - 1 ]
+	echohl none
+    endif
+
 
     call <SID>QuiltStatus()
 
@@ -681,7 +918,6 @@ endfunction
 
 "                                                                              
 " Push to the next patch                                                       
-" TODO: Handle the .rej in a separate buffer ... (and add it into a quickfix)  
 
 function! <SID>QuiltPush( bang, ... )
 
@@ -689,7 +925,7 @@ function! <SID>QuiltPush( bang, ... )
         return 0
     endif
 
-    let cmd= "!quilt push "
+    let cmd= "quilt push "
 
     if a:0 == 1
         let cmd = cmd . a:1
@@ -699,7 +935,35 @@ function! <SID>QuiltPush( bang, ... )
         let cmd = cmd . " -f "
     endif
 
-    exec cmd
+    if a:bang != '!'
+	let ret = system( cmd )
+	let lines =  split( ret, "\n" )
+	let lastLine = lines[ len(lines) - 1 ]
+	call remove( lines, len(lines) - 1 )
+	echo join( lines, "\n" )
+	
+	if v:shell_error != 0
+	    echohl ErrorMsg
+	    let lastLine = lastLine . " (:QuiltPush! to force)" 
+	else
+	    echohl MoreMsg
+	endif
+	echo lastLine
+	
+	echohl none
+    else
+	let ret = system( cmd )
+	if ret =~ "FAILED"
+	    call <SID>CreatePushPopWarning( ret )
+	    echohl WarningMsg
+	else
+	    echohl MoreMsg
+	endif
+
+	let lines =  split( ret, "\n" )
+	echo lines[ len(lines) - 1 ]
+	echohl none
+    endif
 
     call <SID>QuiltStatus()
 
@@ -722,7 +986,7 @@ function! <SID>QuiltAdd( ... )
         let cmd = cmd . expand( "%" )
 
         if expand( '%' ) == '' 
-            echohl WarningMsg
+            echohl ErrorMsg
             echo "No file specified, and no file opened ..."
             return 0
             echohl none
@@ -756,7 +1020,7 @@ function! <SID>QuiltRemove( ... )
         let cmd = cmd . expand( "%" )
 
         if expand( '%' ) == '' 
-            echohl WarningMsg
+            echohl ErrorMsg
             echo "No file specified, and no file opened ..."
             return 0
             echohl none
@@ -793,7 +1057,7 @@ function! <SID>QuiltRemoveFrom( ... )
         let cmd = cmd . expand( "%" )
 
         if expand( '%' ) == '' 
-            echohl WarningMsg
+            echohl ErrorMsg
             echo "No file specified, and no file opened ..."
             return 0
             echohl none
@@ -883,6 +1147,38 @@ function! <SID>CreateRefreshWarningList( output )
 endfunction
 
 "                                                                              
+" Builds the cclist (warning list) for push/pop commands                       
+"                                                                              
+
+function! <SID>CreatePushPopWarning( output )
+
+    if a:output =~ "Hunk.*FAILED" 
+	let lines = split( a:output, '\n' )
+	let file= ""
+
+	let msgs = []
+
+	for i in range( 0, len( lines ) - 1 )
+
+	    if lines[i] =~ "^patching file"
+		let file = substitute( lines[i], '^patching file \(.*\)$', '\1', "g")
+	    endif
+
+	    if lines[i] =~ "^Hunk.*FAILED"
+		let lineNb = substitute( lines[i], '^Hunk #\([0-9]\+\) FAILED at \([0-9]\+\)\.$', '\2', "g" )
+		call add( msgs, file . ":" . lineNb . ": " . lines[i] )
+	    else
+		call add( msgs, lines[i] )
+	    endif
+
+	endfor
+
+	cexpr msgs
+
+    endif
+endfunction
+
+"                                                                              
 " Print the current patch level and set the global variable for the statusline 
 "                                                                              
 function! <SID>QuiltCurrent()
@@ -920,7 +1216,27 @@ function! <SID>QuiltStatus()
 
 endfunction
 
-autocmd BufNewFile,BufReadPost,FileReadPost * QuiltStatus
+
+function! <SID>QuiltCheckRej()
+    if <SID>IsQuiltOK()
+
+
+	if "" != glob( expand ("%") . ".rej" )
+
+	    let b:QuiltRejOpened = 1
+	    echohl WarningMsg
+	    echo expand( "%" ) . " has a .rej file, you need to manually fix it" 
+	    echohl none
+	    vsplit %.rej
+	    set syntax=diff
+	    wincmd L
+	    copen
+	    wincmd J
+	endif
+
+    endif
+
+endfunction
 
 
 "                                                                               
@@ -1357,7 +1673,7 @@ function! QuiltCompleteForMail( ArgLead, CmdLine, CursorPos )
 	    return join( g:QuiltMailAddresses, "\n" )
 	endif
 
-	if 1 == argn
+	if 1 == argn || 2 == argn
 	    return QuiltCompleteInPatch( a:ArgLead, a:CmdLine, a:CursorPos )
 	endif
 

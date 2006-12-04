@@ -1,8 +1,8 @@
 " Vim Plugin: AfterColors.vim: 
 " Provides: Automatic sourcing of after/colors/ scripts.
 " Author: Peter Hodge <toomuchphp-vim@yahoo.com>
-" Version: 1.1
-" Last Update: August 25, 2006
+" Version: 1.2
+" Last Update: November 27, 2006
 "
 " Minor Bug: if you just add your 'after/colors' scripts to
 " 'vimfiles/after/colors/myColorsName.vim', when you go to
@@ -27,13 +27,20 @@
 " 	5 - vimfiles/plugins/[more plugins]
 " 	6 - vimfiles/after_colors/myColorsName.vim
 
+
 " provide ability for an 'after/colors' file using autocommands
 augroup AfterColorsPlugin
-autocmd!
+	autocmd!
 
-" autocommand must be on VimEnter also, otherwise we miss out
-" on a colorscheme which was sourced by ~/.vimrc
-autocmd VimEnter,Colorscheme * call s:AfterColorsScript()
+	" source the 'after' colors scripts only after vim has finished everything
+	" else, because there are many things which will reset the colors
+	autocmd VimEnter * call s:AfterColorsScript()
+
+	" if this vim has the 'Colorscheme' event, we can hook onto it to ensure
+	" that the 'after' colors are reloaded when the colorscheme is changed
+	if exists('##ColorScheme')
+		autocmd ColorScheme * call s:AfterColorsScript()
+	endif
 
 augroup end
 
