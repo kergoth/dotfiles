@@ -157,10 +157,10 @@ def getlastpath(path, field):
     return '/'+d[revs.pop()]
 
 def findcopypath(path):
-    return getlastpath('Copied From')
+    return getlastpath(path, 'Copied From')
 
 def getlastmergepath(path):
-    return getlastpath('Merged From')
+    return getlastpath(path, 'Merged From')
 
 def getexternals(path, depotpath):
     if not depotpath:
