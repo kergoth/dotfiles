@@ -102,6 +102,7 @@ def getsvkinfo(path):
         for line in info.splitlines():
             fields = line.split(": ")
             if len(fields) != 2:
+                sys.__stderr__.write("Unexpected number of fields in line `%s', skipping." % line)
                 continue
 
             key = fields[1]
