@@ -1,4 +1,7 @@
 all = {
+    # NOTE: tbc branch of ace2 is no longer necessary
+    "branches/Ace2/TBC/Ace2": "trunk/Ace2",
+
     "trunk/AbacusLib": "trunk/AbacusLib",
     "trunk/Ace2": "trunk/Ace2",
     "trunk/Ace2/AceAddon-2.0": "trunk/Ace2",
@@ -56,4 +59,5 @@ all = {
     "trunk/TipLib/TipLib-1.0": "trunk/TipLibLib",
     "trunk/TabletLib": "trunk/TabletLib",
     "trunk/TouristLib/Tourist-2.0": "trunk/TouristLib",
+    "trunk/AnchorsAway": "trunk/AnchorsAway",
 }
