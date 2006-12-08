@@ -101,6 +101,8 @@ def getsvkinfo(path):
         infodict = {}
         for line in info.splitlines():
             m = re.match('([^:]+): (.*)$', line)
+            if not m:
+                continue
             key = m.group(1)
             value = m.group(2)
 
