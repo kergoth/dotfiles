@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from kergsvk import runcmd, Config, finddepotpath, handleexternals, SVKError, populatestandalones, System, Commands, findcopypath
+from kergsvk import runcmd, Config, finddepotpath, handleexternals, SVKError, populatestandalones, System, Commands, findcopypath, getlastmergepath
 import os
 
 pathcache = []
@@ -14,8 +14,15 @@ def pathhandler(src, dest):
         if not os.path.exists(dest):
             print(runcmd([Config.svk, 'cp', src, dest]))
         else:
-            runcmd([Config.svk, 'smerge', '-m', '', '--log', '--to', finddepotpath(dest)], System)
+            # runcmd([Config.svk, 'smerge', '-m', '', '--log', Config.addonsrcpath % src, finddepotpath(dest)], System)
+            # runcmd([Config.svk, 'smerge', '-m', '', '--log', src, finddepotpath(dest)], System)
+            # runcmd([Config.svk, 'smerge', '-m', '', '--log', '--to', finddepotpath(dest)], System)
+            runcmd([Config.svk, 'smerge', '-m', '', '--log', getlastmergepath(dest) or findcopypath(dest), finddepotpath(dest)], System)
+            # runcmd([Config.svk, 'smerge', '-m', '', '--log', findcopypath(dest), finddepotpath(dest)], System)
             runcmd([Config.svk, 'update', dest], System)
+    except KeyboardInterrupt:
+        sys.__stderr__.write("%s: aborting operation.\n" % sys.exc_type)
+        sys.exit(1)
     except Exception:
         sys.__stderr__.write("%s: unable to copy/update %s: %s.\n" % (sys.exc_type, dest, sys.exc_value))
         return

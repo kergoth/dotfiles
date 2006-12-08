@@ -10,6 +10,7 @@ __all__ = [
     "finddepotpath",
     "findsvnpath",
     "findcopypath",
+    "getlastmergepath",
     "mi",
     "dm",
     "populatestandalones",
@@ -22,16 +23,17 @@ import os
 
 class Config(object):
     checkoutspath = os.path.join(os.getenv('HOME'), 'svkco')
+    addonsrcpath = '//mirror/addons/trunk/%s'
     svk = 'svk'
     svn = 'svn'
     mode = 'detached'
     # mode = 'attached'
     standalones = True
+    # standalones = False
 
 def populatestandalones(path):
     import addons
     tocfiles = gettocfiles(path)
-    print(tocfiles)
     for toc in tocfiles:
         a = addons.Addon(os.path.dirname(toc))
         for field in a.keys():
@@ -90,6 +92,33 @@ class SVKList(list):
             self.byvalue[value] = key
             self.append((key, value))
 
+infos = {}
+
+def getsvkinfo(path):
+    if not infos.get(path):
+        import types
+        info = runcmd([Config.svk, 'info', path])
+        infodict = {}
+        for line in info.splitlines():
+            fields = line.split(": ")
+            if len(fields) != 2:
+                continue
+
+            key = fields[1]
+            value = fields[2]
+
+            val = infodict.get(key)
+            if val:
+                if type(val) == types.ListType:
+                    val.append(value)
+                else:
+                    infodict[key] = [val, value]
+            else:
+                infodict[key] = value
+        infos[path] = infodict
+
+    return infos[path]
+
 def findsvnpath(path):
     svnpath = None
     for key in dm.bykey.keys():
@@ -101,20 +130,39 @@ def findsvnpath(path):
     return svnpath
 
 def finddepotpath(path):
-    info = runcmd([Config.svk, 'info', path])
-    infodict = {}
-    for line in info.splitlines():
-        (key, value) = line.split(": ")
-        infodict[key] = value
-    return infodict['Depot Path']
+    return getsvkinfo(path).get('Depot Path')
 
 def findcopypath(path):
-    info = runcmd([Config.svk, 'info', path])
-    infodict = {}
-    for line in info.splitlines():
-        (key, value) = line.split(": ")
-        infodict[key] = value
-    return '/'+infodict['Copied From'].split(', ')[0]
+    import re
+    line = getsvkinfo(path).get('Copied From')
+    if line:
+        m = re.match('(.*), Rev. *(\d*)', line)
+        return '/'+m.group(1)
+
+def getlastmergepath(path):
+    import re, types
+
+    mergelist = getsvkinfo(path).get('Merged From')
+
+    if type(mergelist) == types.StringType:
+        m = re.match('(.*), Rev. *(\d*)', mergelist)
+        return '/'+m.group(1)
+
+    if not mergelist or len(mergelist) == 0:
+        return None
+
+    revs = []
+    mergedict = {}
+    for val in mergelist:
+        m = re.match('(.*), Rev\. *(\d*)', val)
+        rev = m.group(2)
+        path = m.group(1)
+
+        mergedict[rev] = path
+        revs.append(rev)
+
+    revs.sort()
+    return '/'+mergedict[revs.pop()]
 
 def getexternals(path, depotpath):
     if not depotpath:
