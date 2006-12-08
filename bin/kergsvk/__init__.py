@@ -131,37 +131,36 @@ def findsvnpath(path):
 def finddepotpath(path):
     return getsvkinfo(path).get('Depot Path')
 
-def findcopypath(path):
-    import re
-    line = getsvkinfo(path).get('Copied From')
-    if line:
-        m = re.match('(.*), Rev. *(\d*)', line)
-        return '/'+m.group(1)
-
-def getlastmergepath(path):
+def getlastpath(path, field):
     import re, types
 
-    mergelist = getsvkinfo(path).get('Merged From')
+    l = getsvkinfo(path).get(field)
 
-    if type(mergelist) == types.StringType:
-        m = re.match('(.*), Rev. *(\d*)', mergelist)
+    if type(l) == types.StringType:
+        m = re.match('(.*), Rev. *(\d*)', l)
         return '/'+m.group(1)
 
-    if not mergelist or len(mergelist) == 0:
+    if not l or len(l) == 0:
         return None
 
     revs = []
-    mergedict = {}
-    for val in mergelist:
+    d = {}
+    for val in l:
         m = re.match('(.*), Rev\. *(\d*)', val)
         rev = m.group(2)
         path = m.group(1)
 
-        mergedict[rev] = path
+        d[rev] = path
         revs.append(rev)
 
     revs.sort()
-    return '/'+mergedict[revs.pop()]
+    return '/'+d[revs.pop()]
+
+def findcopypath(path):
+    return getlastpath('Copied From')
+
+def getlastmergepath(path):
+    return getlastpath('Merged From')
 
 def getexternals(path, depotpath):
     if not depotpath:
