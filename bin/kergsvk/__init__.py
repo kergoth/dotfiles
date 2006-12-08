@@ -213,6 +213,7 @@ def handleexternals(path, handler, depotpath):
         if not externals:
             continue
 
+        print("Processing externals for %s..." % os.path.basename(tocdir))
         for ext,upstream in externals:
             if upstream in extcache:
                 continue
