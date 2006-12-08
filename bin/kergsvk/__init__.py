@@ -147,7 +147,7 @@ def getlastpath(path, field):
     d = {}
     for val in l:
         m = re.match('(.*), Rev\. *(\d*)', val)
-        rev = m.group(2)
+        rev = int(m.group(2))
         path = m.group(1)
 
         d[rev] = path
