@@ -2,6 +2,7 @@ all = {
     # NOTE: tbc branch of ace2 is no longer necessary
     "branches/Ace2/TBC/Ace2": "trunk/Ace2",
 
+    "trunk/Toolbox-1.0": "trunk/Toolbox-1.0",
     "trunk/AbacusLib": "trunk/AbacusLib",
     "trunk/Ace2": "trunk/Ace2",
     "trunk/Ace2/AceAddon-2.0": "trunk/Ace2",
@@ -56,7 +57,7 @@ all = {
     "trunk/SpellCacheLib/SpellCache-1.0": "trunk/SpellCacheLib",
     "trunk/SpellStatusLib/SpellStatus-1.0": "trunk/SpellStatusLib",
     "trunk/SurfaceLib/Surface-1.0": "trunk/SurfaceLib",
-    "trunk/TipLib/TipLib-1.0": "trunk/TipLibLib",
+    "trunk/TipLib": "trunk/TipLib",
     "trunk/TabletLib": "trunk/TabletLib",
     "trunk/TouristLib/Tourist-2.0": "trunk/TouristLib",
     "trunk/AnchorsAway": "trunk/AnchorsAway",
