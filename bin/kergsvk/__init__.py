@@ -96,17 +96,13 @@ infos = {}
 
 def getsvkinfo(path):
     if not infos.get(path):
-        import types
+        import types, re
         info = runcmd([Config.svk, 'info', path])
         infodict = {}
         for line in info.splitlines():
-            fields = line.split(": ")
-            if len(fields) != 2:
-                sys.__stderr__.write("Unexpected number of fields in line `%s', skipping." % line)
-                continue
-
-            key = fields[1]
-            value = fields[2]
+            m = re.match('([^:]+): (.*)$', line)
+            key = m.group(1)
+            value = m.group(2)
 
             val = infodict.get(key)
             if val:
