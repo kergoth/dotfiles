@@ -1,0 +1,12 @@
+alias diff='diff -urNdp'
+alias glxgears='glxgears -printfps'
+#alias fgl_glxgears='fgl_glxgears -fbo'
+alias vi='vim'
+alias symbolsizes="${NM} -S -t d --size-sort"
+alias lr='ls --sort=time --reverse'
+alias ct='cleartool'
+alias cpe='clearprojexp'
+alias hd='od -t x1'
+alias mt='monotone'
+alias bb='bitbake'
+

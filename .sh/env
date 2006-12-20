@@ -1,0 +1,13 @@
+PATH="${HOME}/bin:${HOME}/.root/bin:/usr/local/svn/bin:${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+PYTHONPATH="${HOME}/.root/lib/scons:${HOME}/.root/lib/python"
+MANPATH="${HOME}/man:${HOME}/.root/share/man:${MANPATH}"
+PAGER="less -seGiq"
+EDITOR="vim"
+BK_USER="kergoth"
+[ -z "${NM}" ] && NM="nm"
+LUA_INIT="@${HOME}/.lua/init.lua"
+TERMINFO="${HOME}/.terminfo"
+SCONSFLAGS="-u -j 4"
+
+export PATH MANPATH PAGER EDITOR PYTHONPATH
+export BK_USER NM LUA_INIT TERMINFO SCONSFLAGS

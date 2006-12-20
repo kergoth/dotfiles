@@ -1,0 +1,5 @@
+if test -d ~/.root/etc/bash_completion.d; then
+    for i in ~/.root/etc/bash_completion.d/*; do
+        . $i
+    done
+fi
