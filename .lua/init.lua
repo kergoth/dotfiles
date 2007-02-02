@@ -1,26 +1,46 @@
 local home = os.getenv('HOME')
-local function path(min,maj)
-    local verstr = tostring(maj)..tostring(min)
-    return './?.lua;./?/init.lua;'..home..'/.lua'..verstr..'/?.lua;'..home..'/.lua'..verstr..'/?/init.lua;/usr/local/share/lua'..verstr..'/?.lua;/usr/local/share/lua'..verstr..'/?/init.lua;/usr/local/lib/lua'..verstr..'/?.lua;/usr/local/lib/lua'..verstr..'/?/init.lua;/usr/share/lua'..verstr..'/?.lua;/usr/share/lua'..verstr..'/?/init.lua;/usr/lib/lua'..verstr..'/?.lua;/usr/lib/lua'..verstr..'/?/init.lua'
-end
-local function cpath(min,maj)
-    local verstr = tostring(maj)..tostring(min)
-    return './?.so;./l?.so;./lib?.so;'..home..'/.lua'..verstr..'/?.so;'..home..'/.lua'..verstr..'/l?.so;'..home..'/.lua'..verstr..'/lib?.so;/usr/local/lib/lua'..verstr..'/?.so;/usr/local/lib/lua'..verstr..'/l?.so;/usr/local/lib/lua'..verstr..'/lib?.so;/usr/lib/lua'..verstr..'/?.so;/usr/lib/lua'..verstr..'/l?.so;/usr/lib/lua'..verstr..'/lib?.so'
+local function path(type, paths)
+    local new = {}
+    for k,v in ipairs(paths) do
+        local base = string.format(v, type)
+        if type == 'lib' then
+            table.insert(new, base..'/?.so')
+            table.insert(new, base..'/l?.so')
+            table.insert(new, base..'/lib?.so')
+        elseif type == 'share' then
+            table.insert(new, base..'/?.lua')
+            table.insert(new, base..'/?/init..lua')
+        end
+    end
+    return table.concat(new, ';')
 end
 
 local _,_,maj,min = string.find(_VERSION, '%s(%d)%p(%d)')
 if maj and min then
     if tonumber(maj) >= 5 then
         min = tonumber(min)
+        local verstr = tostring(maj)..tostring(min)
+        local dotverstr = tostring(maj)..'.'..tostring(min)
+        local paths = {
+            '.',
+            home..'/.lua'..verstr,
+            home..'/.lua/'..dotverstr,
+            home..'/.root/%s/lua'..verstr,
+            home..'/.root/%s/lua/'..dotverstr,
+            '/usr/local/%s/lua'..verstr,
+            '/usr/local/%s/lua/'..dotverstr,
+            '/usr/%s/lua'..verstr,
+            '/usr/%s/lua/'..dotverstr,
+        }
 
         local home = os.getenv('HOME')
         if min < 1 then
             --require('compat-5.1')
-            LUA_PATH = path(min, maj)
-            LUA_CPATH = cpath(min, maj)
+            LUA_PATH = path('share', paths)
+            LUA_CPATH = path('lib', paths)
         else
-            package.path = path(min, maj)
-            package.cpath = cpath(min, maj)
+            package.path = path('share', paths)
+            package.cpath = path('lib', paths)
         end
     end
 end
