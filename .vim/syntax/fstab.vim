@@ -2,12 +2,13 @@
 " Language: fstab file
 " Maintaner: Radu Dineiu <radu.dineiu@gmail.com>
 " URL: http://ld.yi.org/vim/fstab.vim
-" Last Change: 2006 Jul 19
-" Version: 0.8
+" Last Change: 2007 Jan 21
+" Version: 0.9
 "
 " Credits:
 "   David Necas (Yeti) <yeti@physics.muni.cz>
 "   Stefano Zacchiroli <zack@debian.org>
+"   Georgi Georgiev <chutz@gg3.net>
 "
 " Options:
 "   let fstab_unknown_fs_errors = 1
@@ -22,18 +23,19 @@ endif
 " General
 syn cluster fsGeneralCluster contains=fsComment
 syn match fsComment /\s*#.*/
-syn match fsOperator /[,=]/
+syn match fsOperator /[,=:]/
 
 " Device
 syn cluster fsDeviceCluster contains=fsOperator,fsDeviceKeyword,fsDeviceError
-syn match fsDeviceError /\%([^a-zA-Z0-9_\/#@:\.]\|^\w\{-}\ze\W\)/ contained
+syn match fsDeviceError /\%([^a-zA-Z0-9_\/#@:\.-]\|^\w\{-}\ze\W\)/ contained
 syn keyword fsDeviceKeyword contained none proc linproc tmpfs devpts sysfs usbfs
 syn keyword fsDeviceKeyword contained LABEL nextgroup=fsDeviceLabel
+syn match fsDeviceKeyword contained /^[a-zA-Z0-9.\-]\+\ze:/
 syn match fsDeviceLabel contained /=[^ \t]\+/hs=s+1 contains=fsOperator
 
 " Mount Point
 syn cluster fsMountPointCluster contains=fsMountPointKeyword,fsMountPointError
-syn match fsMountPointError /\%([^ \ta-zA-Z0-9_\/#@\.]\|\s\+\zs\w\{-}\ze\s\)/ contained
+syn match fsMountPointError /\%([^ \ta-zA-Z0-9_\/#@\.-]\|\s\+\zs\w\{-}\ze\s\)/ contained
 syn keyword fsMountPointKeyword contained none swap
 
 " Type

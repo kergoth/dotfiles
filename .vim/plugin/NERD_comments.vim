@@ -1,8 +1,10 @@
 " vim global plugin that provides easy code commenting for various file types
-" Last Change:  9 september 2006
+" Last Change:  26 jan 2007
 " Maintainer:   Martin Grenfell <martin_grenfell at msn.com>
-let s:NERD_comments_version = 1.69
+let s:NERD_comments_version = 1.69.2
 
+"changes since 1.69.1:
+"   added support for the qf (quickfix filetype) - thanks to Ilia N Ternovich
 
 " For help documentation type :help NERD_comments. If this fails, Restart vim
 " and try again. If it sill doesnt work... the help page is at the bottom 
@@ -231,9 +233,11 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "bdf" 
         call s:MapDelimiters('COMMENT ', '')
     elseif a:filetype == "bib" 
-        call s:MapDelimiters('','') 
+        call s:MapDelimiters('%','') 
     elseif a:filetype == "bindzone" 
         call s:MapDelimiters(';', '')
+    elseif a:filetype == "bst" 
+        call s:MapDelimiters('%', '')
     elseif a:filetype == "btm" 
         call s:MapDelimiters('::', '')
     elseif a:filetype == "caos" 
@@ -322,6 +326,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "exports" 
         call s:MapDelimiters('#', '')
+    elseif a:filetype == "fetchmail" 
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "fgl" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "focexec" 
@@ -398,6 +404,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#','')
     elseif a:filetype == "jsp" 
         call s:MapDelimiters('<%--', '--%>')
+    elseif a:filetype == "kconfig" 
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "kix" 
         call s:MapDelimiters(';', '')
     elseif a:filetype == "kscript" 
@@ -476,6 +484,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('/*', '')
     elseif a:filetype == "ncf" 
         call s:MapDelimiters(';', '')
+    elseif a:filetype == "netdict" 
+        call s:MapDelimiters('', '')
     elseif a:filetype == "netrw" 
         call s:MapDelimiters('', '')
     elseif a:filetype == "nqc" 
@@ -484,18 +494,22 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "ocaml" 
         call s:MapDelimiters('(*','*)') 
+    elseif a:filetype == "omlet" 
+        call s:MapDelimiters('(*','*)') 
     elseif a:filetype == "omnimark" 
         call s:MapDelimiters(';', '')
     elseif a:filetype == "openroad" 
         call s:MapDelimiters('//', '')
     elseif a:filetype == "opl" 
-        call <sid>mapdelimiters("REM", "")
+        call s:MapDelimiters("REM", "")
     elseif a:filetype == "ora" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "ox" 
         call s:MapDelimiters('//', '')
     elseif a:filetype == "pascal" 
         call s:MapDelimitersWithAlternative('{','}', '(*', '*)', g:NERD_use_paren_star_pascal_comments)
+    elseif a:filetype == "passwd" 
+        call s:MapDelimitersWith('','')
     elseif a:filetype == "pcap" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "pccts" 
@@ -548,6 +562,8 @@ function s:SetUpForNewFiletype(filetype)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "python" 
         call s:MapDelimiters('#','') 
+    elseif a:filetype == "qf" 
+        call s:MapDelimiters('','') 
     elseif a:filetype == "radiance" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "ratpoison" 
@@ -671,7 +687,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "plaintex" 
         call s:MapDelimiters('%','') 
     elseif a:filetype == "texinfo" 
-        call <sid>mapdelimiters("@c ", "")
+        call s:MapDelimiters("@c ", "")
     elseif a:filetype == "texmf" 
         call s:MapDelimiters('%', '')
     elseif a:filetype == "tf" 
@@ -681,7 +697,7 @@ function s:SetUpForNewFiletype(filetype)
     elseif a:filetype == "tli" 
         call s:MapDelimiters('#', '')
     elseif a:filetype == "trasys" 
-        call <sid>mapdelimiters("$", "")
+        call s:MapDelimiters("$", "")
     elseif a:filetype == "tsalt" 
         call s:MapDelimitersWithAlternative('//','', '/*','*/', g:NERD_use_c_style_tsalt_comments )
     elseif a:filetype == "tsscl" 
@@ -1482,13 +1498,15 @@ endfunction
 function s:DoComment(forceNested, isVisual, alignLeft, alignRight, type) range
     " we want case sensitivity when commenting 
     let prevIgnoreCase = &ignorecase
-    set noignorecase
+    "set noignorecase
 
     " remember where the cursor was initially so we can move it back
     if a:isVisual
+        let old_vb = &vb
         normal! gv
+        let &vb = old_vb
     endif
-    call s:SaveCursorPosition()
+    call s:SaveScreenState()
 
     if a:type == 'norm'
         if a:isVisual && visualmode() == ""
@@ -1539,7 +1557,7 @@ function s:DoComment(forceNested, isVisual, alignLeft, alignRight, type) range
     let &ignorecase = prevIgnoreCase
 
     " move the cursor back to where it was 
-    call s:RestoreCursorPostion() 
+    call s:RestoreScreenState() 
 endfunction
 
 " Function: s:InvertComment(firstLine, lastLine) function {{{2
@@ -1624,7 +1642,7 @@ function s:PlaceDelimitersAndInsBetween()
         endif
     endif
     normal l
-        
+
     "if needed convert spaces back to tabs and adjust the cursors col
     "accordingly 
     if lineHasLeadTabs
@@ -2843,7 +2861,7 @@ function s:InstallDocumentation(full_name, revision)
     /^=\{3,}\s\+END_DOC\C/,$ d
 
     " Remove fold marks:
-    norm :%s/{\{3}[1-9]/    /
+    :%s/{\{3}[1-9]/    /
 
     " Add modeline for help doc: the modeline string is mangled intentionally
     " to avoid it be recognized by VIM:
@@ -3242,32 +3260,28 @@ function s:ReplaceRightMostDelim(toReplace, replacor, str)
     return line
 endfunction
 
-" Function: s:RestoreCursorPosition() {{{2
-" Restores where the cursor is using the s and t registers. See also
-" RestoreCursorPostion(). Sets the s and t registers back to their original
-" values before SaveCursorPosition was called
-function s:RestoreCursorPostion()
-    " see :h restore-position for details of how this works
-    let @s=b:old_s_reg
-    let @t=b:old_t_reg
-    normal! `t
-    normal! zt
-    normal! `s
+"FUNCTION: s:RestoreScreenState() {{{2 
+"
+"Sets the screen state back to what it was when s:SaveScreenState was last
+"called.
+"
+function s:RestoreScreenState()
+    if !exists("t:NERDComOldTopLine") || !exists("t:NERDComOldPos")
+        echoerr 'cannot restore screen'
+        return
+    endif
 
-    "not sure how to save/restore the marks, so just del them 
-    delmarks s t
+    call cursor(t:NERDComOldTopLine, 0)
+    normal zt
+    call setpos(".", t:NERDComOldPos)
 endfunction
-" Function: s:SaveCursorPosition() {{{2
-" Saves where the cursor is using the s and t registers. See also
-" RestoreCursorPostion()
-function s:SaveCursorPosition()
-    " see :h restore-position for details of how this works
-    let b:old_s_reg=@s
-    let b:old_t_reg=@t
-    normal! ms
-    normal! H
-    normal! mt
-    normal! ``
+
+"FUNCTION: s:SaveScreenState() {{{2 
+"Saves the current cursor position in the current buffer and the window
+"scroll position 
+function s:SaveScreenState()
+    let t:NERDComOldPos = getpos(".")
+    let t:NERDComOldTopLine = line("w0")
 endfunction
 
 " Function: s:SwapOutterMultiPartDelimsForPlaceHolders(line) {{{2
@@ -3381,7 +3395,7 @@ execute 'nnoremap <silent>' . g:NERD_uncom_line_map . ' :call <SID>UncommentLine
 execute 'vnoremap <silent>' . g:NERD_uncom_line_map . ' :call <SID>UncommentLines(0)<cr> gv'
 
 " set up the mapping to comment out to the end of the line
-execute 'nnoremap <silent>' . g:NERD_com_to_end_of_line_map . ' :call <SID>SaveCursorPosition()<cr>:call <SID>CommentBlock(line("."), line("."), col("."), col("$")-1, 1)<cr>:call <SID>RestoreCursorPostion()<cr><ESC>'
+execute 'nnoremap <silent>' . g:NERD_com_to_end_of_line_map . ' :call <SID>SaveScreenState()<cr>:call <SID>CommentBlock(line("."), line("."), col("."), col("$")-1, 1)<cr>:call <SID>RestoreScreenState()<cr><ESC>'
 
 " set up the mappings to append comments to the line
 execute 'nmap <silent>' . g:NERD_append_com_map . ' :call <SID>AppendCommentToLine()<cr>'
@@ -3416,7 +3430,7 @@ if g:NERD_menu_mode != 0
     execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Nested<TAB>' . escape(g:NERD_com_line_nest_map, '\') . ' :call <SID>DoComment(1, 0, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
     execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Nested<TAB>' . escape(g:NERD_com_line_nest_map, '\') . ' :call <SID>DoComment(1, 1, &filetype =~ g:NERD_left_align_regexp, &filetype =~ g:NERD_right_align_regexp, "norm")<CR><ESC>'
 
-    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ To\ EOL<TAB>' . escape(g:NERD_com_to_end_of_line_map, '\') . ' :call <SID>SaveCursorPosition()<cr>:call <SID>CommentBlock(line("."), line("."), col("."), col("$")-1, 1)<cr>:call <SID>RestoreCursorPostion()<cr><ESC>'
+    execute 'nmenu <silent> '. s:menuRoot .'.Comment\ To\ EOL<TAB>' . escape(g:NERD_com_to_end_of_line_map, '\') . ' :call <SID>SaveScreenState()<cr>:call <SID>CommentBlock(line("."), line("."), col("."), col("$")-1, 1)<cr>:call <SID>RestoreScreenState()<cr><ESC>'
 
     execute 'nmenu <silent> '. s:menuRoot .'.Comment\ Invert<TAB>' . escape(g:NERD_com_line_invert_map, '\') . ' :call <SID>DoComment(0,0,0,0,"invert")<CR>'
     execute 'vmenu <silent> '. s:menuRoot .'.Comment\ Invert<TAB>' . escape(g:NERD_com_line_invert_map, '\') . ' :call <SID>DoComment(0,1,0,0,"invert")<CR>'
@@ -3508,7 +3522,6 @@ CONTENTS {{{2                                         *NERD_comments-contents*
         4.1 Delimiter detection heuristics....|NERD_com-heuristics|
         4.2 Nesting issues....................|NERD_com-nesting|
         4.3 Nesting issues....................|NERD_com-nesting|
-        4.3 Mark clobbering...................|NERD_com-mark-clobbering|
     5.TODO list...............................|NERD_com-todo|
     6.Credits.................................|NERD_com-credits|
 
@@ -4507,14 +4520,6 @@ will become: >
 (Note that in the above examples I have deliberately not used place holders
 for simplicity)
 
-------------------------------------------------------------------------------
-4.3 Mark clobbering                                 *NERD_com-mark-clobbering*
-
-The script clobbers the s and t marks when doing most comments. Im not sure
-how to save and restore the marks yet.
-
-
-
 ==============================================================================
 5. TODO list {{{2                                              *NERD_com-todo*
 
@@ -4616,9 +4621,18 @@ feature.
 Thanks to Gary Church and Tim Carey-Smith for complaining about the
 keymappings and causing me to introduce the NERD_mapleader option :)
 
+Thanks to Vigil for pointing out that the "fetchmail" filetype was not
+supported and emailing me the delimiters        
+
+Thanks to Michael Brunner for telling me about the kconfig filetype.
+
+Thanks to Antono Vasiljev for telling me about the netdict filetype.
+
+Thanks to Melissa Reid for telling me about the omlet filetype.
+
+Thanks to Ilia N Ternovich for alerting me to the 'qf' (quickfix) filetype.
 
 Cheers to myself for being the best looking man on Earth!
-
 === END_DOC
 
 " vim: set foldmethod=marker :

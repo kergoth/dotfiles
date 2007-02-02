@@ -1,4 +1,4 @@
-*NERD_comments.txt*         Plugin for commenting code            v169
+*NERD_comments.txt*         Plugin for commenting code            v1692
 
 
                         NERD_COMMENTS REFERENCE MANUAL~
@@ -8,7 +8,7 @@
 
 
 ==============================================================================
-CONTENTS {{{2                                         *NERD_comments-contents* 
+CONTENTS                                              *NERD_comments-contents* 
 
     1.Intro...................................|NERD_comments|
     2.Functionality provided..................|NERD_com-functionality|
@@ -40,12 +40,11 @@ CONTENTS {{{2                                         *NERD_comments-contents*
         4.1 Delimiter detection heuristics....|NERD_com-heuristics|
         4.2 Nesting issues....................|NERD_com-nesting|
         4.3 Nesting issues....................|NERD_com-nesting|
-        4.3 Mark clobbering...................|NERD_com-mark-clobbering|
     5.TODO list...............................|NERD_com-todo|
     6.Credits.................................|NERD_com-credits|
 
 ==============================================================================
-1. Intro {{{2                                                  *NERD_comments*
+1. Intro                                                       *NERD_comments*
 
 NERD_comments provides a set of handy key mappings for commenting code. These
 mappings are consistent across all supported filetypes. 
@@ -59,10 +58,10 @@ l33t nerd take advantage of.
 Enjoy :D
 
 ==============================================================================
-2. Functionality provided {{{2                        *NERD_com-functionality*
+2. Functionality provided                             *NERD_com-functionality*
 
 ------------------------------------------------------------------------------
-2.1 Functionality summary {{{3                *NERD_com-functionality-summary*
+2.1 Functionality summary                     *NERD_com-functionality-summary*
 
 The following key mappings are provided by default (there is also a menu
 provided that contains menu items corresponding to all the below mappings):
@@ -137,7 +136,7 @@ left side (<leader>cl), the right side (<leader>cr) or both sides
 Uncomments the selected line(s).
 
 ------------------------------------------------------------------------------
-2.2 Functionality details {{{3                *NERD_com-functionality-details*
+2.2 Functionality details                     *NERD_com-functionality-details*
 
 ------------------------------------------------------------------------------
 2.2.1 Comment map                                         *NERD_com-comment*
@@ -424,7 +423,7 @@ is capable of adding and removing comments of this type.
 
 
 ==============================================================================
-3. Customisation {{{2                                 *NERD_com-customisation*
+3. Customisation                                      *NERD_com-customisation*
 
 ------------------------------------------------------------------------------
 3.1 Customisation summary                              *NERD_com-cust-summary*
@@ -996,7 +995,7 @@ Regexp9: '^\(foo$\|bar$\|baz$\)\@!'
 Matches any strings except 'foo', 'bar' and 'baz'.
 
 ==============================================================================
-4. Issues with the script{{{2                                *NERD_com-issues*
+4. Issues with the script                                    *NERD_com-issues*
 
 
 ------------------------------------------------------------------------------
@@ -1039,16 +1038,8 @@ will become: >
 (Note that in the above examples I have deliberately not used place holders
 for simplicity)
 
-------------------------------------------------------------------------------
-4.3 Mark clobbering                                 *NERD_com-mark-clobbering*
-
-The script clobbers the s and t marks when doing most comments. Im not sure
-how to save and restore the marks yet.
-
-
-
 ==============================================================================
-5. TODO list {{{2                                              *NERD_com-todo*
+5. TODO list                                                   *NERD_com-todo*
 
 Uncommenting of minimal comments needs to be more robust. Currently it is easy
 to get illegal syntax when uncommenting them.
@@ -1056,7 +1047,7 @@ to get illegal syntax when uncommenting them.
 
 
 ==============================================================================
-6. Credits {{{2                                             *NERD_com-credits*
+6. Credits                                                  *NERD_com-credits*
 
 Thanks and respect to the following people:
 
@@ -1148,8 +1139,17 @@ feature.
 Thanks to Gary Church and Tim Carey-Smith for complaining about the
 keymappings and causing me to introduce the NERD_mapleader option :)
 
+Thanks to Vigil for pointing out that the "fetchmail" filetype was not
+supported and emailing me the delimiters        
+
+Thanks to Michael Brunner for telling me about the kconfig filetype.
+
+Thanks to Antono Vasiljev for telling me about the netdict filetype.
+
+Thanks to Melissa Reid for telling me about the omlet filetype.
+
+Thanks to Ilia N Ternovich for alerting me to the 'qf' (quickfix) filetype.
 
 Cheers to myself for being the best looking man on Earth!
-
 
  vim:tw=78:ts=8:ft=help:norl:

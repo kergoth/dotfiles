@@ -8,7 +8,7 @@ ScriptID SourceID Filename
 159 3640 minibufexpl.vim
 273 6416 taglist.vim
 294 6210 Align.vim
-343 6530 syntax/fstab.vim
+343 6633 syntax/fstab.vim
 368 6146 colors/oceandeep.vim
 489 5882 manpageview.vim
 555 4795 HiCurLine.vim
@@ -26,7 +26,7 @@ ScriptID SourceID Filename
 1066 6205 cecutil.vim
 1075 6577 :AutoInstall: netrw.vim
 1143 5747 colors/inkpot.vim
-1218 6152 NERD_comments.vim
+1218 6659 NERD_comments.vim
 1243 4055 colors/desert256.vim
 1248 4239 syntax/cccs.vim
 1259 5617 colors/sienna.vim
@@ -47,7 +47,7 @@ ScriptID SourceID Filename
 1451 5700 ftplugin/svn_commit.vim
 1453 5189 plugin/cecscope.vim
 1454 5795 colors/baycomb.vim
-1464 6480 colors/moria.vim
+1464 6667 colors/moria.vim
 1471 5319 colors/watermark.vim
 1472 5673 colors/sift.vim
 1477 5305 plugin/modeliner.vim

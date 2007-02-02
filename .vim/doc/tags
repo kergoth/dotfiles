@@ -178,7 +178,6 @@ NERD_com-heuristics	NERD_comments.txt	/*NERD_com-heuristics*
 NERD_com-insert-comment	NERD_comments.txt	/*NERD_com-insert-comment*
 NERD_com-invert-comment	NERD_comments.txt	/*NERD_com-invert-comment*
 NERD_com-issues	NERD_comments.txt	/*NERD_com-issues*
-NERD_com-mark-clobbering	NERD_comments.txt	/*NERD_com-mark-clobbering*
 NERD_com-minimal-comment	NERD_comments.txt	/*NERD_com-minimal-comment*
 NERD_com-nested-comment	NERD_comments.txt	/*NERD_com-nested-comment*
 NERD_com-nesting	NERD_comments.txt	/*NERD_com-nesting*

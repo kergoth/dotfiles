@@ -8,7 +8,7 @@
 
 function s:ReadPrevCommitLog()
     " Get the newest file (ignoring this one)
-    let commitfile = system("ls -t svn-commit*.tmp | grep -v " . bufname("%") . " | head -1")
+    let commitfile = system("ls -t svn-commit*.tmp svk-commit*.tmp | grep -v " . bufname("%") . " | head -1")
     " Strip off trailing newline
     let commitfile = substitute(commitfile, "\\s*\\n$", "", "")
     " If we're left with a file that actually exists, then we can read it in
