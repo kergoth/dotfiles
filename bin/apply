@@ -1,0 +1,25 @@
+#!/bin/sh
+
+while true; do
+    svn_apply_autoprops.py 2>log
+    if [ $? -eq 0 ]; then
+        break
+    fi
+
+    grep -qE '(has inconsistent newlines|has binary mime type property)' log
+    if [ $? -ne 0 ]; then
+        echo >&2 "Unexpected error, please handle."
+        exit 1
+    fi
+
+    grep 'has inconsistent newlines' log|sed -e"s,^svn: File ',,; s,' has inconsistent newlines$,,"|perl -ne'chomp; system("fixup \"$_\"")'
+    grep 'has binary mime type property' log|sed -e"s,^svn: File ',,; s,' has binary mime type property$,,"|perl -ne'chomp; system("svn propdel svn:mime-type \"$_\""); print("$_ processed.")'
+done
+
+root="`svn info .|grep ^URL:|awk '{print $2}'`"
+for i in `find . -type f|grep -v '.svn'`; do
+    eol="`svn propget svn:eol-style $root/$i`"
+    if [ -n "$eol" -a "$eol" != "native" ]; then
+        svn propset svn:eol-style $eol $i
+    fi
+done

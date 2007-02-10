@@ -2,9 +2,12 @@
 
 #SVKDEPOT="/wow/mirror"
 #SVKDEPOT="/wow/local"
-SVKDEPOT="//mirror/addons"
-SETDEPOT="//local/kergwow/trunk"
-SVKCO="/home/World of Warcraft/Interface"
+# SVKDEPOT="//mirror/addons"
+# SETDEPOT="//local/kergwow/trunk"
+# SVKCO="/home/World of Warcraft/Interface"
+SVKDEPOT="/wow/addons/mirror"
+SETDEPOT="/wow/kergwow/local/trunk"
+SVKCO="/media/crydee/Games/wow/Interface"
 
 usage () {
 	echo "Usage: `basename $0` [-d|--delete] [-a|--addons ADDONS] [-v|--version VERSION] [--] FILENAME.ZIP"
@@ -83,6 +86,8 @@ _extract () {
 		unzip "$1" >/dev/null 2>&1
 	elif echo $_file | grep -q "RAR archive data"; then
 		unrar x "$1" >/dev/null 2>&1
+	elif echo $_file | grep -q "7-zip archive data"; then
+		p7zip -d "$1" >/dev/null 2>&1
 	else
 		unset _file
 		return 1
@@ -180,19 +185,19 @@ for toc in $tocfiles; do
 	fi
 
 
-	# svk ls "$SVKDEPOT/AddOns/$addon" >/dev/null 2>&1
-	# if [ "$?" != "0" ]; then
-	#         continue
-	# fi
-	# svk smerge -m "Update $addon to version $version." "$SVKDEPOT/vendor/$addon/current" "$SVKDEPOT/trunk/KergWOW/AddOns/$addon"
-	# if [ "x$?" != "x0" ]; then
-	#         error "Unable to merge the changes in version $version of $title to the trunk."
-	#         ERROR=1
-	#         continue
-	# fi
-	# msg "Merge of version $version of $title to trunk is complete."
+	svk ls "$SETDEPOT/AddOns/$addon" >/dev/null 2>&1
+	if [ "$?" != "0" ]; then
+	        continue
+	fi
+	svk smerge -m "Update $addon to version $version." "$SVKDEPOT/trunk/$addon" "$SETDEPOT/AddOns/$addon"
+	if [ "x$?" != "x0" ]; then
+	        error "Unable to merge the changes in version $version of $title to the trunk."
+	        ERROR=1
+	        continue
+	fi
+	msg "Merge of version $version of $title to trunk is complete."
 
-	# svk up "$SVKCO/AddOns/$addon" >/dev/null 2>&1 # I'm lazy, what can i say?
+	svk up "$SVKCO/AddOns/$addon" >/dev/null 2>&1 # I'm lazy, what can i say?
 done
 
 rm -rf "$TMPDIR"

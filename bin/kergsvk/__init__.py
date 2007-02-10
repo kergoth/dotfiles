@@ -23,13 +23,14 @@ import os
 
 class Config(object):
     checkoutspath = os.path.join(os.getenv('HOME'), 'svkco')
-    addonsrcpath = '//mirror/addons/trunk/%s'
+    addonsrcpath = '/wow/addons/mirror/trunk/%s'
     svk = 'svk'
     svn = 'svn'
     mode = 'detached'
     # mode = 'attached'
-    standalones = True
-    # standalones = False
+    # standalones = True
+    standalones = False
+    depot = '/wow'
 
 def populatestandalones(path):
     import addons
@@ -131,14 +132,22 @@ def findsvnpath(path):
 def finddepotpath(path):
     return getsvkinfo(path).get('Depot Path')
 
-def getlastpath(path, field):
+def getlastpath(path, fields):
     import re, types
 
-    l = getsvkinfo(path).get(field)
+    l = list()
+    for field in fields:
+        e = getsvkinfo(path).get(field)
+        if type(e) == types.StringType:
+            l.append(e)
+        else:
+            if not l or len(l) == 0:
+                continue
+            l.extend(e)
 
-    if type(l) == types.StringType:
-        m = re.match('(.*), Rev. *(\d*)', l)
-        return '/'+m.group(1)
+    if len(l) == 1:
+        m = re.match('(.*), Rev. *(\d*)', l[0])
+        return Config.depot+m.group(1)
 
     if not l or len(l) == 0:
         return None
@@ -154,7 +163,7 @@ def getlastpath(path, field):
         revs.append(rev)
 
     revs.sort()
-    return '/'+d[revs.pop()]
+    return Config.depot+d[revs.pop()]
 
 def findcopypath(path):
     return getlastpath(path, 'Copied From')
@@ -186,6 +195,7 @@ def getexternals(path, depotpath):
             if line == '':
                 continue
             (dest, src) = line.split()
+            dest = dest.replace('\\', '/')
             arg.append((os.path.join(dirname, dest), src))
 
     externals = []
@@ -202,52 +212,73 @@ def gettocfiles(path):
     os.path.walk(path, findtoc, toclist)
     return toclist
 
+def getextpaths(standalone, mipath, rest, standalonebasedir, embeddir):
+    extstandalone = None
+    if standalone:
+        for st in standalones.keys():
+            if rest.startswith(st):
+                extstandalone = standalones[st]
+
+        if not extstandalone:
+            print("Error: the standalone lib translation table does not have an")
+            print("entry for '%s'.  Not operating standalone." % rest)
+
+    if extstandalone:
+        src = os.path.join(mipath, extstandalone)
+        extdest = os.path.join(standalonebasedir, os.path.basename(extstandalone))
+    else:
+        src = os.path.join(mipath, rest)
+        extdest = embeddir
+
+    return src, extdest
+
+def splitupstream(path):
+    rest = None
+    mipath = None
+    for url in mi.byvalue.keys():
+        i = path.replace('www.wowace.com/svn/ace', 'dev.wowace.com/wowace')
+        i = i.replace('www.wowace.com/svn/wowace', 'dev.wowace.com/wowace')
+        l = [i, i.replace('svn.wowace.com', 'dev.wowace.com'), path.replace('https://', 'http://'), path.replace('http://', 'https://')]
+        for j in l:
+            if j.startswith(url):
+                mipath = mi.byvalue[url]
+                rest = j[len(url)+1:]
+                if rest.endswith('/'):
+                    rest = rest[:-1]
+                break
+    return mipath, rest
+
 def handleexternals(path, handler, depotpath):
     extcache = []
     toclist = gettocfiles(path)
     for toc in toclist:
         tocdir = os.path.dirname(toc)
-        extdestdir = os.path.dirname(tocdir)
+        standalonebasedir = os.path.dirname(tocdir)
         externals = getexternals(tocdir, tocdir.replace(path, depotpath))
         if not externals:
             continue
 
         print("Processing externals for %s..." % os.path.basename(tocdir))
-        for ext,upstream in externals:
-            if upstream in extcache:
+        for embeddir,upstream in externals:
+            if Config.standalones and upstream in extcache:
                 continue
 
-            mipath = None
-            for url in mi.byvalue.keys():
-                i = upstream.replace('svn.wowace.com', 'dev.wowace.com')
-                i = i.replace('www.wowace.com/svn/ace', 'dev.wowace.com/wowace')
-                i = i.replace('www.wowace.com/svn/wowace', 'dev.wowace.com/wowace')
-                # print('i is "%s", url is "%s"' % (i, url))
-                if i.startswith(url):
-                    mipath = mi.byvalue[url]
-                    rest = i[len(url)+1:]
-                    if rest.endswith('/'):
-                        rest = rest[:-1]
-                    break
+            mipath, rest = splitupstream(upstream)
 
             if not mipath:
                 raise Exception("Unable to checkout %s, as %s is not yet mirrored." % (path, upstream))
 
-            extstandalone = None
-            for st in standalones.keys():
-                if rest.startswith(st):
-                    extstandalone = standalones[st]
+            src, extdest = getextpaths(Config.standalones, mipath, rest, standalonebasedir, embeddir)
+            src2, extdest2 = getextpaths(not Config.standalones, mipath, rest, standalonebasedir, embeddir)
 
-            if not extstandalone:
-                print("Error: the standalone lib translation table does not have an")
-                print("entry for '%s'." % rest)
-                return
+            # print('src: %s' % src)
+            # print('extdest: %s' % extdest)
+            # print('src2: %s' % src2)
+            # print('extdest2: %s' % extdest2)
 
-            if not extstandalone in extcache:
-                rest = extstandalone
-                extdest = os.path.join(extdestdir, os.path.basename(extstandalone))
-                handler(os.path.join(mipath, rest), extdest)
-                extcache.append(extstandalone)
+            if not src in extcache or not Config.standalones:
+                handler(src, extdest, src2, extdest2)
+                extcache.append(src)
 
 print("Querying svk for mirror list")
 mi = SVKList('mi')

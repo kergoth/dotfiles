@@ -4,7 +4,7 @@ import os, re
 import addons
 
 # Create objects for all the addons
-wowpath = "/home/World of Warcraft/Interface/AddOns"
+wowpath = "/media/crydee/Games/tbc/Interface/AddOns"
 wowaddons = {}
 for relpath in os.listdir(wowpath):
     fullpath = os.path.join(wowpath, relpath)
@@ -55,6 +55,7 @@ for a in wowaddons.values():
            not a.get('X-S&D-InParty') and \
            not a.get('X-S&D-InRaid') and \
            not 'FuBar' in dep and \
+           not 'BigWigs' in dep and \
            not revdeps.get(a.name) and \
            not revoptdeps.get(a.name):
             print("    "+a.name)
