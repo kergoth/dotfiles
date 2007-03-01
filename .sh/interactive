@@ -1,11 +1,18 @@
+inpath() {
+    which $1 >/dev/null 2>&1
+}
+
 printdayinfo () {
     day=$1
     if test -z "$day"; then return 1; fi
-    ( while read dayname desc; do
+    (
+        if ! inpath fmt; then cmd="cat"; else cmd="fmt"; fi
+        while read dayname desc; do
             if [ "$day" = "$dayname" ]; then
-                echo $day $desc | fmt
+                echo $day $desc | $cmd
             fi
-        done ) <<END
+        done
+    ) <<END
 Sunday		sucks, because tomorrow is monday.
 Monday		is when everything breaks for no apparent reason, creating so many problems it takes you until friday to get back to normal.
 Tuesday		sucks, because it follows monday.
