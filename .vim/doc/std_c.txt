@@ -1,0 +1,515 @@
+*std_c.txt*	Standard C Syntax Highlighting, V12.5
+
+							*std_c*
+The Standard C syntax file aims to help you develop Standard C programs by
+highlighting as many non-Standard constructs as possible.  At the same time it
+also helps in developing portable Standard C by highlighting many non-portable
+features.  Also this syntax file highlights more language features and syntax
+errors than the one supplied with VIM helping you to recognise syntax errors
+that otherwise would not be caught until compile time.
+
+==============================================================================
+CONTENTS						*std_c-contents*
+
+|std_c-installation|	Installing the Standard C syntax file.
+|std_c-history|		A brief history of Standard C.
+|std_c-options|		Configuring the syntax file.
+|std_c-extending|	Adding extensions to the syntax file.
+|std_c-limitations|	Limitations to using this syntax file.
+|std_c-references|	List of Standard C reference material.
+|std_c-acknowledgements| Acknowledgements of those that helped.
+|std_c-support|		Getting support for the syntax file.
+
+==============================================================================
+INSTALLATION						*std_c-installation*
+
+The Standard C syntax needs to replace the C syntax file supplied with the VIM
+distribution.  The file should be placed in a sub-directory called syntax that
+exists in a directory early in your 'runtimepath', for example ~/.vim/syntax.
+It should not be placed in the after/syntax directory as it will not work
+properly.  See |mysyntaxfile-replace| for more details on replacing existing
+syntax files.
+
+This help file should be placed in a directory named doc that exists at the
+same level as your syntax directory, for example ~/.vim/doc.  Next run
+'helptags' on this doc directory so that you can access this file with the
+'help' command.
+
+The simplest approach is to expand the ZIP file containing these two files
+into your runtimepath directory preserving the pathnames, and then run
+'helptags'.
+
+==============================================================================
+HISTORY							*std_c-history*
+
+The programming language C was first standardised by ANSI in 1989 and was
+thereafter commonly known as ANSI C.  ISO adopted and republished it in 1990.
+ANSI C is also referred to as C89, to reflect the year that their standard was
+published, although you may occasionally see it referred to as C90 - being the
+year ISO published their version.  The C language defined by both ANSI and ISO
+is better known as Standard C.
+
+In 1994 the C standards group standardised a small set of extra features to
+the C language which became known as Normative Addendum 1.  ISO published the
+addendum in 1995.  The C language that includes the additions from the
+addendum is referred to as C94.
+
+Most recently, in 1999, the ISO published a new definition of the C language.
+This new definition includes updates both to the language and the run-time
+library.  The C language defined in this new published standard is referred to
+as C99.
+
+In addition to these published standards many C compiler vendors have
+implemented their own extensions.  These extensions are rarely portable to
+other platforms (either OS or processor) or other compilers (even on the same
+platform!)  If portability is important to you then this syntax file should
+help you in your work.
+
+==============================================================================
+OPTIONS							*std_c-options*
+
+The Standard C syntax file can be configured by defining various variables and
+assigning any value to them.  For example to enable C++ line style comments
+you would add the following line to your startup file: >
+
+    let c_cpp_comments = 0
+
+To disable an option you need to ensure that the variable is not defined by
+using the |:unlet| command.  For example, to highlight C++ line style comments
+as errors, you would add the following line to your startup file: >
+
+    unlet c_cpp_comments
+
+All but one of the configuration variables used in the C syntax file supplied
+with VIM are supported, as well as large number of new ones.
+
+By default none of the variables are defined, and the default highlighting
+done can be taken as the inverse of what is described  (e.g. as c_math is not
+defined, none of the math.h constants will be highlighted).  Where applicable
+the effect of not defining a variable is documented.
+
+The following variables control highlighting of Standard C language features:
+
+VIM Compatability~
+c_c_vim_compatible	Do highlighting similarly to the C syntax file
+			supplied with VIM, which includes support for
+			non-portable extensions to C.  This option is only
+			recommended if you are writing non-portable C.
+			Extensions include:
+			    Keywords - asm, and fortran.
+			    Pre-processor directives - #warn and #warning.
+			This syntax file will highlight more language features
+			and errors than the C syntax file that comes with VIM.
+			When c_c_vim_compatible is defined the following
+			variables will also be defined automatically:
+			    c_C94, c_C99, c_posix, c_math, and c_no_names.
+			And the following variables are cleared using
+			|:unlet|:
+			    c_vms, c_char_is_integer, c_no_octal,
+			    c_impl_defined, c_comment_numbers,
+			    c_comment_types, c_comment_date_time,
+			    c_warn_nested_comments, c_warn_8bitchars,
+			    c_warn_multichar, c_warn_trigraph, c_warn_digraph,
+			    and c_cpp_warn.
+			All other documented variables can be defined as
+			normal and will be acted upon.
+			The following options only have an effect when
+			c_c_vim_compatible is defined -
+c_gnu			Highlight GCC C language extensions.  These include:
+			    Keywords - __asm__, __label__, __complex__,
+				__volatile__, __attribute__, typeof,
+				__real__, __image__, and inline.
+			    Constants - __GNUC__, __FUNCTION__, and
+				__PRETTY_FUNCTION__
+			    Escape characters - \e for the escape character in
+				strings and character constants.
+			    Macros - use of {} inside ().
+			Note: If c_c_vim_compatible is not defined then GCC C
+			      language extensions are always highlighted as
+			      errors.
+c_no_c99		Don't highlight C99 language features.  If this
+			variable is defined then in the above lists c_C99 is
+			cleared and c_cpp_comments is defined.
+
+Whitespace ~
+c_space_errors		Highlight any spaces before tabs, and any whitespace
+			at the end of a line as an error.  Spaces before tabs
+			in strings are not highlighted.
+			Each form of error highlighting can be turned off with
+			the following two variables.
+c_no_trail_space_error	Do not highlight whitespace at the end of a line as an
+			error.  Only takes effect if c_space_errors is
+			defined.
+c_no_tab_space_error	Do not highlight spaces before tabs as an error.  Only
+			takes effect if c_space_errors is defined.
+			This setting is useful in highlighting potential
+			indenting problems in shared code where one person has
+			'tabstop' set to 8 and someone else has it set to 4.
+
+Comments~
+c_cpp_comments		Enable C++ style line comments.  There is no need to
+			define this variable if c_C99 is defined (see below).
+			By default C++ style line comments will be highlighted
+			as errors.
+c_comment_strings	Highlight strings and character constants (including
+			escaped characters) in comments.
+c_comment_numbers	Highlight numbers (integer, real, etc.) in comments.
+c_comment_types		Highlight C types and typedefs (int, size_t, etc.) in
+			comments.  This can be useful for comments containing
+			snippets of example C code.
+c_comment_date_time	Highlight various date and time formats in comments.
+			Dates and times are highlighted using the String and
+			Number highlight groups respectively.  (This may be
+			useful for version control log entries - see
+			|std_c-extending|.)
+			Times are recognised both with and without seconds
+			using ':' as the separator.  Date formats supported
+			include (the year can be just the last two digits,
+			months are recognised as three character
+			abbreviations, not necessarily in English): >
+			    12 Jan 2002
+			    12/Jan/2002
+			    12-Jan-2002
+			    Jan 12 2002
+			    2002/01/12
+c_no_comment_fold	Do not fold comments when 'foldmethod' is set to
+			"syntax".
+c_warn_nested_comments	Highlight the start of a C comment within a C comment.
+			That is sequences of /* within /* */ - some compilers
+			don't like this.
+
+Characters~
+c_warn_8bitchars	Highlight as an error characters in strings or integer
+			character constants defined with a hex or octal value
+			where the top bit is set.  As the char type can be
+			signed or unsigned according to the compiler, the
+			interpretation of the 8-bit value is not portable.
+			The following example uses a non-portable 8-bit
+			character: >
+			    char ch = '\xa5';
+c_warn_multichar	Highlight multiple character integer constants as
+			errors as the order that the characters are stored in
+			memory is implementation defined.  In the following
+			example the value of var will depend on the endianess
+			of the host CPU: >
+			    int var = '1234';
+c_warn_digraph		Highlight digraph character sequences (%:, <:, <%, :>,
+			and %>) as errors.  This variable only has an effect if
+			c_C94, c_C94_warn, c_C99 or c_C99 is defined.
+c_warn_trigraph		Highlight trigraph character sequences as errors.
+			This is useful to prevent unexpected character
+			translations taking place, especially inside string
+			constants.
+			By default trigraphs are not highlighted at all.
+c_no_utf		Do not highlight 4 and 8 digit universal characters
+			(characters of the form \u80a1 and \U0056a009).
+			By default universal characters are highlighted using
+			the SpecialChar if c_C99 or c_c_vim_compatible is
+			defined, otherwise the leading \u or \U is highlighted
+			as an invalid escaped character.
+			Note: Universal characters are only highlighted in
+			      strings and character constants, not in
+			      identifiers.
+
+Integers ~
+c_char_is_integer	Highlight integer character constants using the
+			Integer syntax group.  
+			By default character constants are highlighted using
+			the Character syntax group.
+c_no_octal		Highlight all octal constants as errors except for
+			zero (yes, zero is an octal constant, not decimal!)
+			This is useful to prevent confusion over the actual
+			value of constants such as 0123.
+			Note: Zeros are always highlighted as octal integers
+			      and never as a warning since there is no
+			      confusion over over the constant 0.
+
+Typedefs, Constants, and Macros~
+Note: ansi is used in these configuration variables to provide compatibility
+      with VIM's C syntax file.  To all intents and purposes ANSI and Standard
+      mean the same thing.
+c_no_ansi		No highlighting of Standard C constants, typedefs, or
+			implementation reserved macro names.  Each of these
+			can be enabled individually with the following
+			variables.
+c_ansi_typedefs		Highlight all Standard C defined typedefs.
+			The set of typedefs highlighted depend on c_C94 and
+			c_C99 being defined (see below).
+c_ansi_constants	Highlight all Standard C reserved constants.
+			The set of constants highlighted depend on c_C94 and
+			c_C99 being defined (see below).
+c_impl_defined		Highlight entire implementation reserved macro
+			name space as C constants.  This can help identify
+			macro constants in existing code that are
+			implementation specific.  (Macros starting with '__'
+			or '_' and an upper case letter are reserved for the
+			compiler implementation and should not be defined in
+			application code.)
+c_posix			Highlight Posix defined signal and error constants
+			(e.g. SIGALRM, SIGHUP, and EACCES).
+c_math			Highlight some constants from math.h (e.g. M_E and
+			M_1_PI).  
+
+Language Versions ~
+c_C94			Highlight C language features defined in Normative
+			Addendum 1.  This covers wide character support in
+			format strings, new types, constants and macros, and
+			digraphs.
+c_C94_warn		Highlight C94 language features extra to C89 as
+			errors.  c_C94 does not need to be defined for
+			c_C94_warn to take effect.
+c_C99			Highlight C language features defined in the ISO C99
+			language specification.  Since C99 includes C89 and 
+			C94 defining c_C99 also defines c_C94 for you.
+c_C99_warn		Highlight C99 language features extra to C89 and C94
+			as errors.  c_C99 does not need to be defined for
+			c_C99_warn to take effect.
+			(This is a useful setting to use now to be aware of
+			possible problems when compiling with C99 compilers in
+			the future.)
+c_cpp_warn		Highlight C++ reserved words as errors.  This prevents
+			problems compiling with a C++ compiler where you have
+			used C++ reserved words as C identifiers.
+			By default C++ reserved words are highlighted as
+			normal C identifiers.
+c_vms			The '$' character can be used in C variable, function,
+			and macro names.  Use this when developing C code on
+			VAX VMS machines that use VMS system routines and
+			macros like sys$qiow() and SS$_NORMAL.
+
+Miscellaneous~
+c_no_names		Turn off highlighting of identifiers, function names,
+			and macros not in the implementation reserved
+			name space.
+c_conditional_is_operator 
+			Highlight the conditional operator (?:) using the
+			Operator syntax group.  Otherwise they are highlighted
+			using the Conditional syntax group.
+c_no_cformat		No highlighting of printf() and scanf() format
+			specifiers in strings.  
+			The downside of having highlighting of format
+			specifiers is that all C strings are highlighted, even
+			if the string is not being used for formatting.  The
+			upside is that invalid format specifiers are
+			highlighted as errors.
+c_no_bracket_error	Do not highlight errors within square brackets ([]).
+			Only define this variable if you have valid C code
+			within brackets that is being highlighted as an error
+			that you know is not.
+c_no_curly_error	Do not highlight braces within parentheses as an
+			error.  Only applies when the language version is C89
+			or C94.
+c_syntax_for_h		Use this syntax file to highlight .h files.
+			This variable should be defined otherwise .h files are
+			highlighted as if they were C++.
+c_minlines		Sets the number of lines to try and resynchronise
+			highlighting when scrolling backwards through a file.
+			By default this is 15 - if you have a lot of
+			statements or macro definitions that use more lines
+			than this they try defining this variable to a larger
+			number.  Larger values may slow down redrawing of the
+			screen.
+
+Unsupported ~
+c_no_if0		Highlighting of blocks of code surrounded by #if 0 as
+			comments is not supported.
+c_no_if0_fold		Folding of blocks of code surrounded by #if 0 is not
+			supported.
+Recommended Settings~
+For portable development of Standard C the following variables are recommended
+to be defined in your startup file.  This will set your working version of
+Standard C to be C94, warn when you use a C99 or C++ language feature, warn
+you when using some implementation defined behaviour, and highlight the use of
+octal numbers that could read as decimal. >
+
+    let c_syntax_for_h = 1
+    let c_C94 = 1
+    let c_C99_warn = 1
+    let c_cpp_warn = 1
+    let c_warn_8bitchars = 1
+    let c_warn_multichar = 1
+    let c_warn_digraph = 1
+    let c_warn_trigraph = 1
+    let c_no_octal = 1
+
+If you want colourful comments then add the following variables to your
+startup file: >
+
+    let c_comment_strings = 1
+    let c_comment_numbers = 1
+    let c_comment_types = 1
+    let c_comment_date_time = 1
+
+==============================================================================
+EXTENDING						*std_c-extending*
+
+To add your own extensions to this syntax file you should create the file
+after/syntax/c.vim in your 'runtimepath'.  Details on the procedure can be
+found here |mysyntaxfile-add|.  How to write new syntax rules can
+be found here |:syn-define|.
+
+Highlight syntax clusters are used extensively to achieve the fine control
+required to provide useful and accurate highlighting.  In addition, using the
+syntax cluster makes adding new types, constants, and other such features very
+easy.  Adding your new highlight features to the appropriate group will ensure
+that they will be highlighted within macros, parentheses, strings, and
+comments.
+
+There are two basic clusters that you may want to add to.  They are:
+
+cConstant	    Constants defined using the pre-processor, enumeration
+		    constants, or possibly constant variable declarations.
+cTypedef	    Typedef names like size_t, time_t, etc.
+
+Adding your extensions to one or more of the following clusters allows you to
+specify in what contexts your extensions will be highlighted.
+
+cConditionalContents
+		    Syntax items will be highlighted within the conditional
+		    (?:) operator.
+cParenContents	    Syntax items will be highlighted within parentheses.  This
+		    includes function argument lists, if, while, and for
+		    control expressions, and parenthesised expressions.
+cDefineContents	    Syntax items will be highlighted in #define pre-processor
+		    statements.
+cCommentGroup	    Syntax items will be highlighted in C comments.
+cStringContents	    Syntax items will be highlighted in C strings.
+
+EXAMPLES
+1. Adding a boolean typedef and values.~
+If you are not yet using a C99 compiler but want to add highlighting of a
+boolean typedef and constants (suitably defined in C) then you can use the
+following lines: >
+
+    syn keyword	    cBooltype	    BOOL
+    syn cluster	    cTypedef	    add=cBooltype
+    syn keyword	    cBoolvalues	    TRUE FALSE
+    syn cluster	    cBoolean	    add=cBoolvalues
+
+Since cTypedef and cBoolean are already defined they are already in the right
+Contents clusters to be highlighted based on the context.  Plus they are
+already linked to the appropriate highlight colours.
+
+2. Highlighting Tag Symbols.~
+Here you want to highlight any identifier symbols that are present in your
+tags file.  You first need to define all your identifiers to be highlighted.
+(How this is done is left as an exercise for the reader - see |tag-highlight|
+for one approach; you will need to change the <F11> map to use cTag instead of
+Tag.) >
+
+    syn keyword	    cTag	    ...
+
+Then you need to add the new C syntax group to the 3 clusters that define
+different C code contexts - parenthese, macros, and conditional operator.  >
+
+    syn cluster	    cParenContents  add=cTag
+    syn cluster	    cDefineContents add=cTag
+    syn cluster	    cConditionalContents add=cTag
+
+Finally, you need to link the new C syntax group to a standard group, or
+define the colours the use explicitly (see |:highlight|). >
+
+    hi link         cTag	    Tag
+
+3. Highlighting source control fields in comments.~
+In this example you want to highlight source control keywords in comments.
+The example assumes a RCS based source control systems where keywords start
+and end with a $ character (e.g. $Date: 2005/02/24 13:50:30 $).  The following
+lines will highlight RCS fields using the PreProc syntax group. >
+
+    syn match	    cRCSField	    contained "\$\u.*\$"
+    syn cluster	    cCommentGroup   add=cRCSField
+    hi link	    cRCSField  	    PreProc
+
+If you want to highlight any date and time fields in the version control
+keyword strings, then add the date and time highlighting rules.  Replace the
+first line above with: >
+
+    syn match	    cRCSField	    contained "\$\u.*\$" contains=cDate,cTime
+
+If the keywords appear in C strings for reporting revision information at
+run-time and you want to highlight them then all you need to do is add your
+RCS field syntax rule to the C string cluster: >
+
+    syn cluster	    cStringContents add=cRCSField
+
+==============================================================================
+LIMITATIONS 						*std_c-limitations*
+
+Some of the syntax files supplied with VIM include the C syntax file as part
+of their highlighting.  For example, the C++ syntax file includes the C syntax
+file since a large amount of the C++ syntax is the same as C.  These syntax
+files make assumptions about the structure and content of the C syntax file
+and do not work as expected with the Standard C syntax file, even with
+c_c_vim_compatible defined.
+
+To solve this, the Standard C syntax file detects when it is being included to
+highlight a syntax other than C and will use the C syntax file supplied with
+VIM instead.  The following languages and syntax files are known to include a
+C syntax file so will use the default c.vim instead: >
+
+    Language	    Syntax file
+~
+    Ch		    ch.vim
+    C++		    cpp.vim
+    Cynlib	    cynlib.vim
+    ESQL-C	    esqlc.vim
+    Kimwitu[++]	    kwt.vim
+    Lex		    lex.vim
+    Man page	    man.vim
+    Objective C	    objc.vim
+    Objective C++   objcpp.vim
+    PCCTS	    pccts.vim
+    Perl XS	    xs.vim
+    Rpcgen	    rpcgen.vim
+    Splint	    splint.vim
+    XS  	    xs.vim
+    Yacc	    yacc.vim
+
+==============================================================================
+REFERENCES						*std_c-references*
+
+All of the following were used as references in the construction of the
+Standard C syntax file:
+
+The Annotated ANSI C Standard, Herbert Schildt, Osborne, ISBN 0-07-881952
+
+Corrections for the Annotated ANSI C Standard, which can be found at: >
+    http://www.lysator.liu.se/c/schildt.html
+
+ISO/IEC 9899 Amendment 1, Programming Languages - C Integrity, 1995, which is
+documented at: >
+    http://www.lysator.liu.se/c/na1.html
+
+ISO/IEC 9899:1999, Programming Languages - C, 1999
+
+Discussion on the finer points of Standard C on comp.std.c.
+
+==============================================================================
+ACKNOWLEDGEMENTS				    *std_c-acknowledgements*
+
+This syntax file is based on Bram's c.vim syntax file in the VIM distribution.
+Ideas and additions came from the following, in no particular order;
+
+    Dr. Charles E. Campbell
+    Michael Geddes
+    Pablo Ariel Khan
+    Richard Robinson
+    John Orr
+    ANY Others who I may have missed
+
+==============================================================================
+SUPPORT							*std_c-support*
+
+You can find updates to the Standard C syntax file at either VIMonline at: >
+    http://www.vim.org/ 
+
+or on my web site at: >
+    http://www.eandem.co.uk/~mrw/vim/
+
+Please send any bug-reports or suggestions for improvement to: >
+    mrw@eandem.co.uk
+
+Happy Standard C programming!
+
+vim:ft=help:tw=78:sts=4:sw=4:noet:

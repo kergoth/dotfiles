@@ -749,6 +749,17 @@ sessionmgr-about	sessionmgr.txt	/*sessionmgr-about*
 sessionmgr-commands	sessionmgr.txt	/*sessionmgr-commands*
 sessionmgr-configure	sessionmgr.txt	/*sessionmgr-configure*
 sftp	pi_netrw.txt	/*sftp*
+std_c	std_c.txt	/*std_c*
+std_c-acknowledgements	std_c.txt	/*std_c-acknowledgements*
+std_c-contents	std_c.txt	/*std_c-contents*
+std_c-extending	std_c.txt	/*std_c-extending*
+std_c-history	std_c.txt	/*std_c-history*
+std_c-installation	std_c.txt	/*std_c-installation*
+std_c-limitations	std_c.txt	/*std_c-limitations*
+std_c-options	std_c.txt	/*std_c-options*
+std_c-references	std_c.txt	/*std_c-references*
+std_c-support	std_c.txt	/*std_c-support*
+std_c.txt	std_c.txt	/*std_c.txt*
 taglist-commands	taglist.txt	/*taglist-commands*
 taglist-debug	taglist.txt	/*taglist-debug*
 taglist-extend	taglist.txt	/*taglist-extend*
