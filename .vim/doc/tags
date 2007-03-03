@@ -1,6 +1,3 @@
-'SessionMgr_AutoManage'	sessionmgr.txt	/*'SessionMgr_AutoManage'*
-'SessionMgr_DefaultName'	sessionmgr.txt	/*'SessionMgr_DefaultName'*
-'SessionMgr_Dir'	sessionmgr.txt	/*'SessionMgr_Dir'*
 'Tlist_Auto_Highlight_Tag'	taglist.txt	/*'Tlist_Auto_Highlight_Tag'*
 'Tlist_Auto_Open'	taglist.txt	/*'Tlist_Auto_Open'*
 'Tlist_Auto_Update'	taglist.txt	/*'Tlist_Auto_Update'*
@@ -63,12 +60,6 @@
 :QuiltStatus	quilt.txt	/*:QuiltStatus*
 :QuiltWriteHeader	quilt.txt	/*:QuiltWriteHeader*
 :RmVimball	pi_vimball.txt	/*:RmVimball*
-:SD	sessionmgr.txt	/*:SD*
-:SE	sessionmgr.txt	/*:SE*
-:SL	sessionmgr.txt	/*:SL*
-:SQ	sessionmgr.txt	/*:SQ*
-:SR	sessionmgr.txt	/*:SR*
-:SS	sessionmgr.txt	/*:SS*
 :Sexplore	pi_netrw.txt	/*:Sexplore*
 :Texplore	pi_netrw.txt	/*:Texplore*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
@@ -259,7 +250,6 @@ OmniCpp_SelectFirstItem	omnicppcomplete.txt	/*OmniCpp_SelectFirstItem*
 OmniCpp_ShowAccess	omnicppcomplete.txt	/*OmniCpp_ShowAccess*
 OmniCpp_ShowPrototypeInAbbr	omnicppcomplete.txt	/*OmniCpp_ShowPrototypeInAbbr*
 OmniCpp_ShowScopeInAbbr	omnicppcomplete.txt	/*OmniCpp_ShowScopeInAbbr*
-SessionMgr.txt	sessionmgr.txt	/*SessionMgr.txt*
 Tlist_Get_Tag_Prototype_By_Line()	taglist.txt	/*Tlist_Get_Tag_Prototype_By_Line()*
 Tlist_Get_Tagname_By_Line()	taglist.txt	/*Tlist_Get_Tagname_By_Line()*
 Tlist_Set_App()	taglist.txt	/*Tlist_Set_App()*
@@ -745,9 +735,6 @@ rsync	pi_netrw.txt	/*rsync*
 s:netrw_col	pi_netrw.txt	/*s:netrw_col*
 s:netrw_line	pi_netrw.txt	/*s:netrw_line*
 scp	pi_netrw.txt	/*scp*
-sessionmgr-about	sessionmgr.txt	/*sessionmgr-about*
-sessionmgr-commands	sessionmgr.txt	/*sessionmgr-commands*
-sessionmgr-configure	sessionmgr.txt	/*sessionmgr-configure*
 sftp	pi_netrw.txt	/*sftp*
 std_c	std_c.txt	/*std_c*
 std_c-acknowledgements	std_c.txt	/*std_c-acknowledgements*
