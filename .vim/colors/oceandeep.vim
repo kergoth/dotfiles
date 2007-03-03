@@ -1,13 +1,18 @@
 " Vim color file
 " Maintainer: Tom Regner <vim@tomsdiner.org>
-" Last Change: 2006-09-06
+" Last Change: 
+" 2007-02-05
+" - included changes from Keffin Barnaby
+"   (vim>=7.0 PMenu and Spellchecking)
+"
+" 2006-09-06
 " - changed String to DarkCyan, Macro to DarkRed
 "
 " 2006-09-05
 " - more console-colors
 " - added console-colors, clean-up
 "
-" Version: 1.2.2
+" Version: 1.2.3
 " URL: http://vim.sourceforge.net/script.php?script_id=368
 
 
@@ -86,8 +91,29 @@ highlight Underlined    gui=underline guifg=honeydew4 guibg=bg
 highlight Ignore        guifg=#204050
 highlight Error         guifg=LightYellow  guibg=FireBrick
 highlight Todo          guifg=Cyan guibg=#507080
+if v:version >= 700
+    highlight PMenu      gui=bold guibg=LightSkyBlue4 guifg=honeydew2
+    highlight PMenuSel   gui=bold guibg=DarkGreen guifg=honeydew2
+    highlight PMenuSbar  gui=bold guibg=LightSkyBlue4
+    highlight PMenuThumb gui=bold guibg=DarkGreen
+    highlight SpellBad   gui=undercurl guisp=Red
+    highlight SpellRare  gui=undercurl guisp=Orange
+    highlight SpellLocal gui=undercurl guisp=Orange
+    highlight SpellCap   gui=undercurl guisp=Yellow
+endif
 
 """ Console
+if v:version >= 700
+    highlight PMenu      cterm=bold ctermbg=DarkGreen ctermfg=Gray
+    highlight PMenuSel   cterm=bold ctermbg=Yellow ctermfg=Gray
+    highlight PMenuSbar  cterm=bold ctermbg=DarkGreen
+    highlight PMenuThumb cterm=bold ctermbg=Yellow
+    highlight SpellBad   ctermbg=Red
+    highlight SpellRare  ctermbg=Red
+    highlight SpellLocal ctermbg=Red
+    highlight SpellCap   ctermbg=Yellow
+endif
+
 highlight Normal        ctermfg=Gray ctermbg=None
 highlight Search        ctermfg=Black ctermbg=Red cterm=NONE
 highlight Visual        cterm=reverse

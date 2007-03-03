@@ -1,8 +1,8 @@
 " Vim syntax file
-"  Language:	Man page
+"  Language:	Manpageview
 "  Maintainer:	Charles E. Campbell, Jr.
-"  Last Change:	Jun 26, 2006
-"  Version:    	3	ASTRO-ONLY
+"  Last Change:	Jun 28, 2006
+"  Version:    	4
 "
 "  History:
 "    2: * Now has conceal support
@@ -88,16 +88,16 @@ if version >= 508 || !exists("did_man_syn_inits")
    if &shell == "bash"
     hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=navyblue guibg=navyblue
     hi manSubSection		term=underline cterm=underline gui=underline ctermfg=green guifg=green
-    hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+    hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan  ctermbg=blue  guifg=cyan     guibg=blue
    else
-    hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=black guibg=black
+    hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=black    guibg=black
     hi manSubSection		term=underline cterm=underline gui=underline ctermfg=green guifg=green
-    hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+    hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan  ctermbg=blue  guifg=cyan     guibg=blue
    endif
   else
    hi manSubSectionStart	term=NONE      cterm=NONE      gui=NONE      ctermfg=black ctermbg=black guifg=navyblue guibg=navyblue
    hi manSubSection		term=underline cterm=underline gui=underline ctermfg=green guifg=green
-   hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan ctermbg=blue guifg=cyan guibg=blue
+   hi manSubTitle		term=NONE      cterm=NONE      gui=NONE      ctermfg=cyan  ctermbg=blue  guifg=cyan     guibg=blue
   endif
 
   delcommand HiLink

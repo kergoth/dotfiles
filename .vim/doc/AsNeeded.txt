@@ -1,4 +1,4 @@
-*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Sep 19, 2006
+*asneeded.txt*	Loading Functions, Maps, and Commands AsNeeded	Feb 23, 2007
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
@@ -64,18 +64,44 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*asneeded-copyright*
 			      of AsNeeded functions/commands/mappings.
 
 	*g:AsNeededAutoMake*  : Set this variable to something like "ls -1t"
-			      (Linux/Unix) and AsNeeded will automatically invoke
-			      |MkAsNeeded| when necessary.  The variable
-			      needs to hold a shell command which will generate
-			      a time-sorted list of files, most recent first.
-			      If a *.vim file is present in that list before
-			      the ANtags file, then AsNeeded will
-			      automatically call MakeANtags().
+			      (Linux/Unix) and AsNeeded will automatically
+			      invoke |MkAsNeeded| when necessary.  The
+			      variable needs to hold a shell command which
+			      will generate a time-sorted list of files, most
+			      recent first.  If a *.vim file is present in
+			      that list before the ANtags file, then AsNeeded
+			      will automatically call MakeANtags().  If a
+			      file has been removed w/o regenerating ANtags,
+			      AsNeeded will (when that function/map/cmd is
+			      invoked) detect the problem and re-generate
+			      ANtags.
+
+			      Typical settings:
+			      	Linux/Unix: /bin/ls -1t
+				Windows   : dir /b/a-d/o-d
 
 
 ==============================================================================
 4. AsNeeded History					*asneeded-history* {{{1
 
+	v15 Sep 21, 2006: * if AsNeeded/ANtags exists, but a file therein was
+	                    removed w/o re-generating ANtags, AsNeeded will,
+			    if |g:AsNeededAutoMake| exists, re-make the
+			    ANtags file.  A message will be issued
+			    irregardless and settings restored.
+			  * As Bill McCarthy pointed out, I intended for
+			    g:AsNeedeAutoMake to also source the resulting
+			    ANtags file; unfortunately, it was still sourcing
+			    the previous one.  Fixed!
+	    Sep 25, 2006  * fnamemodify() used instead of a substitute to
+			    get the directory name holding ANtags.
+			    (Bill McCarthy)
+			  * AsNeeded now handles silent[!] before commands
+			    during :MkAsNeeded
+	    Feb 22, 2007  * v15h addressed having no mapleader with a map defined as
+			    \abc (ie.the map itself has that leading backslash).
+	    Feb 23, 2007  * v15i handles having no mapleader but the maps are
+			    <Leader>abc style. (done at prodding of B McCarthy!)
 	v14 Jul 31, 2006: * Taglist does a quick-loading trick that involved
 	                    using FuncUndefined autocmds.  AsNeeded now defers
 			    to taglist instead of issuing a warning.
