@@ -5,6 +5,7 @@ ScriptID SourceID Filename
 31 6347 a.vim
 39 6332 matchit.vim
 42 6773 bufexplorer.vim
+69 6273 :AutoInstall: project
 159 3640 minibufexpl.vim
 273 6769 taglist.vim
 294 6210 Align.vim
