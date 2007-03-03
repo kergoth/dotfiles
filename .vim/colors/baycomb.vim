@@ -270,6 +270,12 @@ endfun
 command! -nargs=+ -buffer BetterHi call s:X(<f-args>)
 
 if &background == "dark"
+    if has('gui_running')
+        BetterHi Normal       fg=0xA0B4E0 bg=0x11121A
+    else
+        BetterHi Normal       fg=0xA0B4E0
+    endif
+
     " BetterHi Comment    fg=0x349D58   bg=bg
     BetterHi Comment      fg=0x8B8B
     BetterHi Constant     fg=0x5C78F0
@@ -292,7 +298,6 @@ if &background == "dark"
     BetterHi ModeMsg      fg=0xAACC
     BetterHi MoreMsg      fg=0x2E8B57
     BetterHi NonText      fg=0x382920
-    BetterHi Normal       fg=0xA0B4E0 bg=0x11121A
     BetterHi Number       fg=0x4580B4
     BetterHi Pmenu        fg=0x9AADD5 bg=0x3A6595
     BetterHi PmenuSel     fg=0xB0D0F0 bg=0x4A85BA
@@ -318,6 +323,11 @@ if &background == "dark"
     BetterHi VisualNOS    fg=0x201A30 bg=0xA3A5FF
     BetterHi WarningMsg   fg=0xFA8072
 elseif &background == "light"
+    if has('gui_running')
+        BetterHi Normal       fg=0x3255   bg=0xE8EBF0
+    else
+        BetterHi Normal       fg=0x3255
+    endif
     " BetterHi Comment    fg=darkye   bg=0x207ADA
     BetterHi Constant     fg=0x3A40AA
     BetterHi Cursor       fg=0x5293D  bg=0xCADACA
@@ -334,7 +344,6 @@ elseif &background == "light"
     BetterHi ModeMsg      fg=0xAACC
     BetterHi MoreMsg      fg=0x2E8B57
     BetterHi NonText      fg=0x382920 bg=0x152555
-    BetterHi Normal       fg=0x3255   bg=0xE8EBF0
     BetterHi Number       fg=0x6BCD
     BetterHi Pmenu        fg=0x9AADD5 bg=0x3A6595
     BetterHi PmenuSel     fg=0xB0D0F0 bg=0x4A85BA
