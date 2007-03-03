@@ -66,6 +66,7 @@ ScriptID SourceID Filename
 1552 5946 plugins/ScreenShot.vim
 1554 5778 autoload/adacomplete.vim
 1560 5757 colors/neverness.vim
+1563 5769 patchreview.vim
 1569 5806 colors/montz.vim
 1572 5821 autoload/sqlcomplete.vim
 1641 6473 plugins/AfterColors.vim
