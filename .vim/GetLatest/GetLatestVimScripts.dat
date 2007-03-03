@@ -26,7 +26,6 @@ ScriptID SourceID Filename
 974 4316 indent/python.vim
 1066 6205 cecutil.vim
 1075 6577 :AutoInstall: netrw.vim
-1143 5747 colors/inkpot.vim
 1218 6659 NERD_comments.vim
 1243 4055 colors/desert256.vim
 1248 4239 syntax/cccs.vim
@@ -47,12 +46,10 @@ ScriptID SourceID Filename
 1443 4966 colors/telstar.vim
 1451 5700 ftplugin/svn_commit.vim
 1453 5189 plugin/cecscope.vim
-1454 5795 colors/baycomb.vim
 1464 6667 colors/moria.vim
 1471 5319 colors/watermark.vim
 1472 5673 colors/sift.vim
 1477 5305 plugin/modeliner.vim
-1484 5356 colors/spectro.vim
 1492 5826 colors/pyte.vim
 1502 6578 :AutoInstall: vimball.vim
 1506 5500 plugin/LargeFile.vim
@@ -74,3 +71,12 @@ ScriptID SourceID Filename
 1690 6370 plugins/IndentConsistencyCop.vim
 1691 6330 plugins/IndentConsistencyCopAutoCmds.vim
 1656 6418 plugins/quilt.vim
+
+" Good colors
+1778 6657 colors/wombat.vim
+1454 5795 colors/baycomb.vim
+1143 5747 colors/inkpot.vim
+1484 5356 colors/spectro.vim
+
+" Soso colors
+1660 6188 colors/mint.vim
