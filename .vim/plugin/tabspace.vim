@@ -8,32 +8,32 @@ endif
 let g:loaded_tabspace = 1
 
 if !exists('g:tabspace_nomap')
-    let g:tabspace_nomap = 0
+  let g:tabspace_nomap = 0
 endif
 if !exists('g:tabspace_nofdlmagic')
-    let g:tabspace_nofdlmagic = 0
+  let g:tabspace_nofdlmagic = 0
 endif
 
 fun! <SID>InsertSmartTab()
   if (&fdm == 'syntax') &&
-     \ g:tabspace_nofdlmagic == 0
-      let l:level = foldlevel(line('.'))
-      let l:ind = 0
-      if &smarttab == 1
-          let l:ind = &sw
-      else
-          let l:ind = &sts != 0 ? &sts : &ts
-      endif
+    \ g:tabspace_nofdlmagic == 0
+    let l:level = foldlevel(line('.'))
+    let l:ind = 0
+    if &smarttab == 1
+      let l:ind = &sw
+    else
+      let l:ind = &sts != 0 ? &sts : &ts
+    endif
 
-      let l:column = virtcol('.')
-      if l:column >= l:level * l:ind
-          " If we're past the expected indentation level, fall through to the
-          " code that uses spaces only.
-      else
-          return "\<Tab>"
-      endif
+    let l:column = virtcol('.')
+    if l:column >= l:level * l:ind
+      " If we're past the expected indentation level, fall through to the
+      " code that uses spaces only.
+    else
+      return "\<Tab>"
+    endif
   else
-      if strpart(getline('.'),0,col('.')-1) =~'^\s*$' | return "\<Tab>" | endif
+    if strpart(getline('.'),0,col('.')-1) =~'^\s*$' | return "\<Tab>" | endif
   endif
 
   let sts=exists("b:insidetabs")?(b:insidetabs):((&sts==0)?&ts:&sts)
@@ -78,6 +78,6 @@ fun! <SID>DoSmartDelete()
 endfun
 
 if g:tabspace_nomap == 0
-    imap <silent> <tab> <c-r>=<SID>InsertSmartTab()<cr>
-    inoremap <silent> <BS> <c-r>=<SID>DoSmartDelete()<cr><BS>
+  imap <silent> <tab> <c-r>=<SID>InsertSmartTab()<cr>
+  inoremap <silent> <BS> <c-r>=<SID>DoSmartDelete()<cr><BS>
 endif
