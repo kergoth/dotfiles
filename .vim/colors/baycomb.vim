@@ -280,6 +280,8 @@ if &background == "dark"
     BetterHi Comment      fg=0x8B8B
     BetterHi Constant     fg=0x5C78F0
     BetterHi Cursor       fg=0xAA     bg=0xCAD5C0
+    BetterHi CursorColumn bg=0x354070
+    BetterHi CursorLine   bg=0x354070
     BetterHi DiffAdd      bg=0xA4B8C
     BetterHi DiffChange   bg=0x685B5C
     BetterHi DiffDelete   fg=0x300845 bg=0x200845
@@ -331,6 +333,8 @@ elseif &background == "light"
     " BetterHi Comment    fg=darkye   bg=0x207ADA
     BetterHi Constant     fg=0x3A40AA
     BetterHi Cursor       fg=0x5293D  bg=0xCADACA
+    BetterHi CursorColumn bg=0x20B5FD
+    BetterHi CursorLine   bg=0x20B5FD
     BetterHi Directory    fg=0xBBD0DF
     BetterHi Error        bg=0xB03452
     BetterHi ErrorMsg     bg=0xFF4545
