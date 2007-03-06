@@ -57,7 +57,7 @@ ScriptID SourceID Filename
 1542 6300 autoload/pythoncomplete.vim
 1545 6087 plugins/parenquote.vim
 1547 5761 compiler/gnat.vim
-1552 5946 plugins/ScreenShot.vim
+1552 6836 plugins/ScreenShot.vim
 1560 5757 colors/neverness.vim
 1569 5806 colors/montz.vim
 1572 5821 autoload/sqlcomplete.vim

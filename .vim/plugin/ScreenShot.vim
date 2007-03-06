@@ -52,6 +52,19 @@
 "    1.02:
 "    Fixed: 
 "        Reverse attribute improper handling in some cases
+"    1.03: A few bugfixes by Cyril Slobin <slobin@ice.ru>
+"    Fixed:
+"        1. Unqualified variables in statusline are treated as global now
+"        3. When encoding is set to utf-8, non-ASCII letters are displayed now
+"        4. Flag options like [+] long ago haven't space before them, fixea
+"    Fixed: (by MS)
+"    	 5. Incorrect highlighting in the case when foreground set and
+"    	 background unset and reverse attribute set
+"    	 6. Incorrect HTML when vim compiled with gui but running in terminal
+"    Added:
+"    	 7. Support for 256-color xterm added
+"
+"    	 
 "
 ""
 " TODO:
@@ -228,11 +241,14 @@ function! s:Nodes.a.Value() "    Argument list status as in default title.  ({cu
 endf
 unlet s:Nodes['{'].Value
 function! s:Nodes['{'].Value() " F  Evaluate expression between '%{' and '}' and substitute result.	      Note that there is no '%' before the closing '}'. 
-	let res = eval(self.value)
-        if type(res) == type("")
-                return res
+        for s:var in keys(g:)
+          execute "let " . s:var . " = g:" . s:var
+        endfor
+        let s:res = eval(self.value)
+        if type(s:res) == type("")
+                return s:res
         else
-                return string(res)
+                return string(s:res)
         endif
 endf
 function! s:TruncateArray(array,maxwid,left,invischar)
@@ -625,18 +641,30 @@ function! s:EnumWindows()
 endf
 "}}}
 "{{{-----------Html generation functions
-if has('gui')
+if has('gui_running')
         function! s:GetColor(id,type)
-                return synIDattr(a:id,a:type?'fg#': 'bg#')
+		return synIDattr(a:id,a:type?'fg#': 'bg#')
         endf
 else
-	let s:Colors = ['#000000', '#c00000', '#008000', '#808000', '#0000c0', '#c000c0', '#008080', '#c0c0c0', '#808080', '#ff6060', '#00ff00', '#ffff00', '#8080ff', '#ff40ff', '#00ffff', '#ffffff']
+	if &t_Co == 16
+        	let s:Colors = ['#000000', '#c00000', '#008000', '#808000', '#0000c0', '#c000c0', '#008080', '#c0c0c0', '#808080', '#ff6060', '#00ff00', '#ffff00', '#8080ff', '#ff40ff', '#00ffff', '#ffffff']
+	elseif &t_Co == 8
+		let s:Colors = ['#000000', '#ff0000', '#00FF00', '#FFFF00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
+	endif	
+	let s:valuerange = [0x00, 0x5F, 0x87, 0xAF, 0xD7, 0xFF] 
+"        let s:Colors = ['#000000', '#0000c0', '#008000', '#008080', '#c00000', '#c000c0', '#808000', '#c0c0c0', '#808080', '#6060ff', '#00ff00', '#00ffff', '#ff8080', '#ff40ff', '#ffff00', '#ffffff']
 	function! s:GetColor(id,type)
-                let c = synIDattr(a:id,a:type?'fg#': 'bg#')
-                if c == '-1' || c == ''
-                        return ''
-                endif
-                return s:Colors[eval(c)]
+		let c = synIDattr(a:id,a:type?'fg#': 'bg#')
+		if c == '-1' || c == ''
+			return ''
+		endif
+		let cc = eval(c)
+		if &t_Co != 256 || cc < 0x10
+			return s:Colors[cc]
+		else
+			let cc = cc - 16
+			return '#'.(cc <= 216?(printf('%.2x',s:valuerange[(cc/36)%6]).printf('%.2x',s:valuerange[(cc/6)%6]).printf('%.2x',s:valuerange[cc%6])):repeat(printf('%.2x',8 + (cc - 216)*0x0a),3))
+		endif
         endf
 endif
 function! s:GetHlVect(id)
@@ -645,15 +673,10 @@ function! s:GetHlVect(id)
                 let reverse = synIDattr(id,'reverse') == '1' && id != hlID('Normal')
                 let color = s:GetColor(id,!reverse) 
                 let background = s:GetColor(id,reverse) 
-                if color == '' && background == ''
+                if (color == '' || background == '') && reverse
                         if reverse 
                                 let style = s:GetHlVect('Normal')
-                                if style[0] != '' && style[1] != ''
-                                        return reverse(style[0:1]) + style[2:]
-                                endif
-                                let [color, background] = ['#ffffff', '#000000']
-                        else
-                                let [color, background] = ['',''] 
+				let [color, background] = [color != ''?color : style[1] != ''?style[1] : '#ffffff', background != ''?background : style[0] != ''? style[0] : '#000000']
                         endif
                 endif
                 return [color, background, synIDattr(id, 'bold'), synIDattr(id, 'italic'), synIDattr(id, 'underline')]
@@ -810,7 +833,7 @@ function! s:GetColoredText(lines,start,finish,height,topfill,lineEnd)
                         while x <= xmax && eval(cond)
                                 let newLine = ((xx<maxRealX)?(prefix):s:GetLinePrefix(y,numWidth,realWidth,1)).tab
                                 while realX < maxRealX
-                                        let char = strpart(str, x - 1, 1)
+                                        let [whole, char, str; dummy]  = matchlist(str, '^\(.\=\)\(.*\)$')
                                         if char == ''
                                                 if eol || !&list || !has_key(listChars,'eol')
                                                         let diff = maxRealX - realX 
