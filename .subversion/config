@@ -22,6 +22,7 @@
 ###   This will override the compile-time default, which is to use
 ###   Subversion's internal diff implementation.
 # diff-cmd = diff_program (diff, gdiff, etc.)
+#diff-cmd = vimdiff
 ### Set diff3-cmd to the absolute path of your 'diff3' program.
 ###   This will override the compile-time default, which is to use
 ###   Subversion's internal diff3 implementation.
@@ -179,3 +180,4 @@ abs-menulinks = svn:eol-style=native
 *.xul = svn:eol-style=native
 *.xweb = svn:eol-style=native
 *.xwelcome = svn:eol-style=native
+*.toc = svn:eol-style=native;svn:mime-type=text/plain
