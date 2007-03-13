@@ -317,7 +317,7 @@ if &background == "dark"
     BetterHi tablinefill  fg=0xAAAAAA bg=0x2D2D3F
     BetterHi tablinesel   fg=0x50AAE5 bg=0x515A71
     BetterHi Title        fg=0xE5E5CA
-    BetterHi Todo         fg=0xFF450  bg=0xEEEE0
+    BetterHi Todo         fg=0x8B8B  bg=0xEEEE0
     BetterHi Type         fg=0x490E8  attr=BOLD
     BetterHi Underlined   fg=0xBAC5BA
     BetterHi VertSplit    fg=0x223355 bg=0x22253C
@@ -330,7 +330,7 @@ elseif &background == "light"
     else
         BetterHi Normal       fg=0x3255
     endif
-    " BetterHi Comment    fg=darkye   bg=0x207ADA
+    " BetterHi Comment    fg=darkyellow   bg=0x207ADA
     BetterHi Constant     fg=0x3A40AA
     BetterHi Cursor       fg=0x5293D  bg=0xCADACA
     BetterHi CursorColumn bg=0x20B5FD

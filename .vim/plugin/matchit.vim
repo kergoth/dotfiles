@@ -122,7 +122,7 @@ function! s:Match_wrapper(word, forward, mode) range
   endif
 " Thanks to Preben "Peppe" Guldberg and Bram Moolenaar for this suggestion!
   if (match_words != s:last_words) || (&mps != s:last_mps) ||
-    \ exists("b:match_debug")
+     \ exists("b:match_debug")
     let s:last_words = match_words
     let s:last_mps = &mps
     if match_words !~ s:notslash . '\\\d'
