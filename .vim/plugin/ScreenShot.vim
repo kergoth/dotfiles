@@ -1,18 +1,18 @@
 "   Copyright (c) 2006, Michael Shvarts <shvarts@akmosoft.com>
 "
 "{{{-----------License:
-"   ScreenShoot.vim is free software; you can redistribute it and/or modify it under
+"   ScreenShot.vim is free software; you can redistribute it and/or modify it under
 "   the terms of the GNU General Public License as published by the Free
 "   Software Foundation; either version 2, or (at your option) any later
 "   version.
 "
-"   ScreenShoot.vim is distributed in the hope that it will be useful, but WITHOUT ANY
+"   ScreenShot.vim is distributed in the hope that it will be useful, but WITHOUT ANY
 "   WARRANTY; without even the implied warranty of MERCHANTABILITY or
 "   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 "   for more details.
 "
 "   You should have received a copy of the GNU General Public License along
-"   with ScreenShoot.vim; see the file COPYING.  If not, write to the Free Software
+"   with ScreenShot.vim; see the file COPYING.  If not, write to the Free Software
 "   Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 "}}}
 "{{{-----------Info:
@@ -63,9 +63,22 @@
 "    	 6. Incorrect HTML when vim compiled with gui but running in terminal
 "    Added:
 "    	 7. Support for 256-color xterm added
-"
-"    	 
-"
+"    1.04: 
+"    Fixed:
+"        1. Proper colors for DOS and win32 console versions(suggestion by Cyril Slobin <slobin@ice.ru>)
+"        2. Black color is now default for background in console, even if no
+"        "reverse" attribute set, because it is typical behaviour of terminals.
+"    Added:
+"        3. 'force_background' option added to g:ScreenShot dictionary to enable
+"        user to adjust HTML-generation to terminal behaviour distinct from typical.
+"        (color should be specified as a string in HTML format #RRGGBB)
+"    1.05: 
+"    Added:
+"    	 Good multibyte support(thanks Cyril Slobin <slobin@ice.ru> for suggestion)
+"    1.06:
+"    Fixed:
+"    	 1. Folds are displayed correctly now(was broken in 1.05)
+"    	 2. Unprintable unicode chracters are displayed correctly now
 ""
 " TODO:
 "   1.Very small windows proper rendering
@@ -454,7 +467,7 @@ function! s:SplitWithSpan(hi,str)
         return eval(join(map(split(a:str,' '),"'s:SynIdWrap(a:hi,\"'.v:val.'\")'"), ".' '."))
 endf
 function! s:GetCredits()
-       return s:SynIdWrap('Question','Code syntax highlighting by ').'<a '.s:SynIdStyle(s:GetHlVect('Normal')).' href=http://www.vim.org><u>'.s:SynIdWrap('ModeMsg','VIM').'</u></a>'.s:SynIdWrap('Question',' captured with ').'<a '.s:SynIdStyle(s:GetHlVect('Normal')).'  href=http://www.vim.org/scripts/script.php?script_id=1552><u>'.s:SynIdWrap('ModeMsg','ScreenShot').'</u></a>'.s:SynIdWrap('Question','  script ')
+       return s:SynIdWrap('Question','Code syntax highlighting by ').'<a '.s:SynIdStyle(s:GetDefaultHlVect()).' href=http://www.vim.org><u>'.s:SynIdWrap('ModeMsg','VIM').'</u></a>'.s:SynIdWrap('Question',' captured with ').'<a '.s:SynIdStyle(s:GetDefaultHlVect()).'  href=http://www.vim.org/scripts/script.php?script_id=1552><u>'.s:SynIdWrap('ModeMsg','ScreenShot').'</u></a>'.s:SynIdWrap('Question','  script ')
 endf
 "}}}
 "{{{-----------Menus
@@ -646,13 +659,20 @@ if has('gui_running')
 		return synIDattr(a:id,a:type?'fg#': 'bg#')
         endf
 else
-	if &t_Co == 16
-        	let s:Colors = ['#000000', '#c00000', '#008000', '#808000', '#0000c0', '#c000c0', '#008080', '#c0c0c0', '#808080', '#ff6060', '#00ff00', '#ffff00', '#8080ff', '#ff40ff', '#00ffff', '#ffffff']
-	elseif &t_Co == 8
-		let s:Colors = ['#000000', '#ff0000', '#00FF00', '#FFFF00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
+	if &t_Co == 8
+		if has('win32') || has('dos32') || has('dos16')
+			let s:Colors = ['#000000', '#0000ff', '#00ff00', '#00ffff', '#ff0000', '#ff00ff', '#ffff00', '#ffffff']
+		else
+			let s:Colors = ['#000000', '#ff0000', '#00ff00', '#ffff00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
+		endif
+	else
+		if has('win32') || has('dos32') || has('dos16')
+			let s:Colors = ['#000000', '#0000c0', '#008000', '#008080', '#c00000', '#c000c0', '#808000', '#c0c0c0', '#808080', '#6060ff', '#00ff00', '#00ffff', '#ff8080', '#ff40ff', '#ffff00', '#ffffff']
+		else
+			let s:Colors = ['#000000', '#c00000', '#008000', '#808000', '#0000c0', '#c000c0', '#008080', '#c0c0c0', '#808080', '#ff6060', '#00ff00', '#ffff00', '#8080ff', '#ff40ff', '#00ffff', '#ffffff']
+		endif
 	endif	
 	let s:valuerange = [0x00, 0x5F, 0x87, 0xAF, 0xD7, 0xFF] 
-"        let s:Colors = ['#000000', '#0000c0', '#008000', '#008080', '#c00000', '#c000c0', '#808000', '#c0c0c0', '#808080', '#6060ff', '#00ff00', '#00ffff', '#ff8080', '#ff40ff', '#ffff00', '#ffffff']
 	function! s:GetColor(id,type)
 		let c = synIDattr(a:id,a:type?'fg#': 'bg#')
 		if c == '-1' || c == ''
@@ -670,13 +690,16 @@ endif
 function! s:GetHlVect(id)
         if type(a:id) != type([])
                 let id = synIDtrans((type(a:id) == type(1))?(a:id):hlID(a:id))
-                let reverse = synIDattr(id,'reverse') == '1' && id != hlID('Normal')
+                let reverse = synIDattr(id,'reverse') == '1' "&& id != hlID('Normal')
+                if id == hlID('Normal') && !reverse
+                        return s:GetDefaultHlVect()
+                endif
                 let color = s:GetColor(id,!reverse) 
                 let background = s:GetColor(id,reverse) 
                 if (color == '' || background == '') && reverse
                         if reverse 
-                                let style = s:GetHlVect('Normal')
-				let [color, background] = [color != ''?color : style[1] != ''?style[1] : '#ffffff', background != ''?background : style[0] != ''? style[0] : '#000000']
+                                let style = s:GetDefaultHlVect()
+                                let [color, background] = [color != ''?color : style[1] != ''?style[1] : '#ffffff', background != ''?background : style[0] != ''? style[0] : '#000000']
                         endif
                 endif
                 return [color, background, synIDattr(id, 'bold'), synIDattr(id, 'italic'), synIDattr(id, 'underline')]
@@ -685,6 +708,14 @@ function! s:GetHlVect(id)
                 let vecDiff = s:GetHlVect(a:id[1])
                 return [vec[0], vecDiff[1], vecDiff[2]||vec[2], vecDiff[3]||vec[3], vecDiff[4]||vec[4]]
         endif
+endf
+function! s:GetDefaultHlVect()
+	let id = hlID('Normal')
+	let color = s:GetColor(id,1) 
+	let background = s:GetColor(id,0) 
+	let background = has_key(g:ScreenShot, 'force_background')?g:ScreenShot.force_background : background != ''? background : has('gui_running') ?'#ffffff' : '#000000'
+	let color = color != ''?color : has('gui_running') || has_key(g:ScreenShot, 'force_background')?'#000000' : '#ffffff'
+	return [color, background, synIDattr(id, 'bold'), synIDattr(id, 'italic'), synIDattr(id, 'underline')]
 endf
 function! s:DiffSynId(y,x,fl)
         return [synID(a:y,a:x,a:fl), diff_hlID(a:y,a:x)]
@@ -812,7 +843,7 @@ function! s:GetColoredText(lines,start,finish,height,topfill,lineEnd)
 		let xx = 0
                 let str = getline(y)
                 let chunk = '' 
-		let xmax = strlen(str) + &list
+		let xmax = len(str) + &list		
 		let prefix = s:GetLinePrefix(y,numWidth,realWidth,0)
                 let realX = 0 
                 let [oldId, oldId1] = &diff?[[0,0],[0, 0]] :[0, 0]
@@ -820,8 +851,8 @@ function! s:GetColoredText(lines,start,finish,height,topfill,lineEnd)
 		if x > xmax
                         call add(a:lines, s:SynIdWrap(diff_hlID(y,x),prefix.repeat(' ', width)).a:lineEnd)
                 elseif folded != -1
-			let text = strpart(foldtextresult(y), 0, width)
-			call add(a:lines,prefix.s:SynIdWrap('Folded',s:HtmlEscape(text).repeat(fillChars.fold,width - strlen(text))).a:lineEnd)
+			let text = matchstr(foldtextresult(y), '.'.'\{,'.width.'\}', 0)
+			call add(a:lines,prefix.s:SynIdWrap('Folded',s:HtmlEscape(text).repeat(fillChars.fold,width - strlen(substitute(text, ".", "x", "g"))).a:lineEnd))
                         let y = foldclosedend(y) 
                 else
 			let tab = ''
@@ -834,6 +865,7 @@ function! s:GetColoredText(lines,start,finish,height,topfill,lineEnd)
                                 let newLine = ((xx<maxRealX)?(prefix):s:GetLinePrefix(y,numWidth,realWidth,1)).tab
                                 while realX < maxRealX
                                         let [whole, char, str; dummy]  = matchlist(str, '^\(.\=\)\(.*\)$')
+					let diffX = len(char)?len(char):1
                                         if char == ''
                                                 if eol || !&list || !has_key(listChars,'eol')
                                                         let diff = maxRealX - realX 
@@ -852,30 +884,35 @@ function! s:GetColoredText(lines,start,finish,height,topfill,lineEnd)
                                                         let char = strpart(listChars.tab,0,1).repeat(strpart(listChars.tab,1),diff-1)
                                                 else 
                                                         let id = s:synIDSpec(y,x,hlID('SpecialKey'))
-                                                        if uhex
-                                                                let diff = 4
-                                                                let char = char == "\n"?'<00>':printf('<%02x>',char2nr(char))
-                                                        else
-                                                                let diff = 2
-                                                                let charnr =  char2nr(char)
-                                                                if charnr == 10
-                                                                        let char = '^@'
-                                                                elseif charnr  < 32
-                                                                        let char = '^'.nr2char(64 + charnr)
-                                                                elseif charnr == 127
-                                                                        let char = '^?'
-                                                                elseif charnr < 160
-                                                                        let char = '~'.nr2char(64 + charnr - 128)
-                                                                elseif charnr == 255
-                                                                        let char = '~?'
-                                                                else
-                                                                        let char = '|'.nr2char(32 + charnr - 160)
-                                                                endif
-                                                        endif
+							if char2nr(char) < 0x100
+								if uhex
+									let diff = 4
+									let char = char == "\n"?'<00>':printf('<%02x>',char2nr(char))
+								else
+									let diff = 2
+									let charnr =  char2nr(char)
+									if charnr == 10
+										let char = '^@'
+									elseif charnr  < 32
+										let char = '^'.nr2char(64 + charnr)
+									elseif charnr == 127
+										let char = '^?'
+									elseif charnr < 160
+										let char = '~'.nr2char(64 + charnr - 128)
+									elseif charnr == 255
+										let char = '~?'
+									else
+										let char = '|'.nr2char(32 + charnr - 160)
+									endif
+								endif
+							else
+									let diff = 6
+									let char = printf('<%04x>',char2nr(char))
+							endif
                                                 endif
                                         else
                                                 let diff = 1
-                                                let id = s:synIDfn(y,x,0) " id?id : synIDtrans(synID(y, x, 0))
+                                                let id = s:synIDfn(y,x,0) 
                                         endif
                                         if id != oldId
                                                 if chunk != ''
@@ -885,12 +922,12 @@ function! s:GetColoredText(lines,start,finish,height,topfill,lineEnd)
                                         endif
                                         if realX >= skip 
                                                 let chunk .= char
-                                        elseif realX + strlen(char) >= skip 
-                                                let chunk .= strpart(char,skip - realX) 
+                                        elseif realX + strlen(substitute(char, ".", "x", "g")) >= skip 
+                                                let chunk .= matchstr(char,'.*',skip - realX) 
                                         endif
                                         let realX += diff 
                                         let xx += diff
-                                        let x += 1
+                                        let x += diffX 
                                 endwhile
                                 if chunk != ''
                                         let newLine .= s:SynIdEnd(oldId1).s:SynIdStart(oldId).s:HtmlEscape(chunk)    
@@ -1069,7 +1106,7 @@ function! ToHtml()
         if tabline != ''
                 call insert(lines,tabline) 
         endif
-        let lines[0] = '<table cellspacing=0 cellpadding=0  '.s:SynIdStyle(s:GetHlVect('Normal')).' '.(exists('title')?' border=2><tr><th align=left style="color:white;background:blue">'.title.'</th></tr>': '>').'<tr><td><pre>'.lines[0]
+        let lines[0] = '<table cellspacing=0 cellpadding=0  '.s:SynIdStyle(s:GetDefaultHlVect()).' '.(exists('title')?' border=2><tr><th align=left style="color:white;background:blue">'.title.'</th></tr>': '>').'<tr><td><pre>'.lines[0]
         let lines[len(lines) - 1] .= '</pre></td></tr>'.(g:ScreenShot.Credits?'<tr><td><table align=right><tr><td width=20%></td><td width=80%><small><i>'.s:GetCredits().'</i></small></td></tr></table></td></tr>': '').'</table>'
         return lines
 endf
@@ -1077,7 +1114,7 @@ function! Text2Html(line1,line2)
         let lines = []
         call s:GetColoredText(lines,a:line1,a:line2,0,0,'')
         exec 'new '.bufname('%').'.html'
-        let lines[0] = '<table cellspacing=0 cellpadding=0 '.s:SynIdStyle(s:GetHlVect('Normal')).'><tr><td colspan><pre>'.lines[0]
+        let lines[0] = '<table cellspacing=0 cellpadding=0 '.s:SynIdStyle(s:GetDefaultHlVect()).'><tr><td colspan><pre>'.lines[0]
         call append(0,lines + ['</pre></td></tr>'.(g:ScreenShot.Credits?'<tr><td><table align=right><tr><td width=20%></td><td width=80%><small><i>'.s:GetCredits().'</i></small></td></tr></table></td></tr>': '').'</table>'])
 endf
 
@@ -1130,7 +1167,7 @@ function! Diff2Html(line1,line2)
                 let lines1[i] .= lines2[i]
         endfor 
         exec 'new '.fnamemodify(bufname(winbufnr(buffs[0])),':t').'\ -\ '.fnamemodify(bufname(winbufnr(buffs[0])),':t').'.diff.html'
-        let lines1[0] = '<table cellspacing=0 cellpadding=0 '.s:SynIdStyle(s:GetHlVect('Normal')).'><tr><td colspan><pre>'.lines1[0]
+        let lines1[0] = '<table cellspacing=0 cellpadding=0 '.s:SynIdStyle(s:GetDefaultHlVect()).'><tr><td colspan><pre>'.lines1[0]
         call append(0,lines1 + ['</pre></td></tr>'.(g:ScreenShot.Credits?'<tr><td><table align=right><tr><td width=20%></td><td width=80%><small><i>'.s:GetCredits().'</i></small></td></tr></table></td></tr>': '').'</table>'])
 
 endf

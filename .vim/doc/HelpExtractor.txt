@@ -1,0 +1,39 @@
+*HelpExtractor.txt*		The Help Extractor		May 25, 2005
+
+Author: Charles E. Campbell, Jr.
+
+==============================================================================
+1. Contents			*HelpExtractor* *helpextractor-contents*
+    1. Contents ............................. : |helpextractor-contents|
+    2. HelpExtractor ........................ : |helpextractor|
+
+==============================================================================
+2. HelpExtractor						*helpextractor*
+
+	The help extractor is intended to help plugin writers.  Distribution
+	will consist of a single file with both the plugin and its help
+	embedded in it.  When the user brings up your plugin, the help
+	for it will be automatically and transparently placed in the ../doc
+	directory and :helptags run to make the help available.
+
+	So:
+
+	  1. Put the text of HelpExtractor.vim file at the end of your plugin.
+	  2. Put your help file after the "Help ExtractorDoc:" label (end-of-file)
+
+	The resulting plugin will then have the following format:
+	
+		Your Plugin
+		" HelpExtractor:
+		...
+		" HelpExtractorDoc:
+		Your Plugin Help File
+	
+	When the user puts your plugin in the .vim/plugin directory, the
+	plugin will delete the HelpExtractor from it and create the help file
+	(using the plugin's name, less the suffix, plus ".txt") in the ../doc
+	directory.
+
+	The Help Extractor also will remove itself from your plugin.
+
+vim:tw=78:ts=8:ft=help
