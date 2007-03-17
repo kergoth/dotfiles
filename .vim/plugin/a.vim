@@ -21,6 +21,8 @@ if (v:progname == "ex")
 endif
 let loaded_alternateFile = 1
 
+let alternateExtensionsDict = {}
+
 " setup the default set of alternate extensions. The user can override in thier
 " .vimrc if the defaults are not suitable. To override in a .vimrc simply set a
 " g:alternateExtensions_<EXT> variable to a comma separated list of alternates,
@@ -31,7 +33,7 @@ let loaded_alternateFile = 1
 
 " This variable will be increased when an extension with greater number of dots
 " is added by the AddAlternateExtensionMapping call.
-let s:maxDotsInExtension = 0
+let s:maxDotsInExtension = 1
 
 " Function : AddAlternateExtensionMapping (PRIVATE)
 " Purpose  : simple helper function to add the default alternate extension
@@ -49,13 +51,14 @@ function! <SID>AddAlternateExtensionMapping(extension, alternates)
 
    " This code handles extensions which contains a dot. exists() fails with
    " such names.
-   let v:errmsg = ""
+   "let v:errmsg = ""
    " FIXME this line causes ex to return 1 instead of 0 for some reason??
-   silent! echo g:alternateExtensions_{a:extension}
-   if (v:errmsg != "")
-      let g:alternateExtensions_{a:extension} = a:alternates
-   endif
+   "silent! echo g:alternateExtensions_{a:extension}
+   "if (v:errmsg != "")
+      "let g:alternateExtensions_{a:extension} = a:alternates
+   "endif
 
+   let g:alternateExtensionsDict[a:extension] = a:alternates
    let dotsNumber = strlen(substitute(a:extension, "[^.]", "", "g"))
    if s:maxDotsInExtension < dotsNumber
      let s:maxDotsInExtension = dotsNumber
@@ -93,9 +96,10 @@ call <SID>AddAlternateExtensionMapping('ypp',"lpp,l,lex")
 " Mappings for OCaml
 call <SID>AddAlternateExtensionMapping('ml',"mli")
 call <SID>AddAlternateExtensionMapping('mli',"ml")
-
-"let g:alternateExtensions_{'aspx.cs'} = "aspx"
-"let g:alternateExtensions_{'aspx'} = "aspx.cs"
+" ASP stuff
+call <SID>AddAlternateExtensionMapping('aspx.cs', 'aspx')
+call <SID>AddAlternateExtensionMapping('aspx.vb', 'aspx')
+call <SID>AddAlternateExtensionMapping('aspx', 'aspx.cs,aspx.vb')
 
 " Setup default search path, unless the user has specified
 " a path in their [._]vimrc. 
@@ -289,7 +293,16 @@ endfunction
 function! EnumerateFilesByExtension(path, baseName, extension)
    let enumeration = ""
    let extSpec = ""
-   silent! let extSpec = g:alternateExtensions_{a:extension}
+   if (has_key(g:alternateExtensionsDict, a:extension))
+      let extSpec = g:alternateExtensionsDict[a:extension]
+   endif
+   if (extSpec == "")
+      let v:errmsg = ""
+      silent! echo g:alternateExtensions_{a:extension}
+      if (v:errmsg == "")
+         let extSpec = g:alternateExtensions_{a:extension}
+      endif
+   endif
    if (extSpec != "") 
       let n = 1
       let done = 0
@@ -380,6 +393,9 @@ function! DetermineExtension(path)
   while i <= s:maxDotsInExtension
     let mods = mods . ":e"
     let extension = fnamemodify(a:path, mods)
+    if (has_key(g:alternateExtensionsDict, extension))
+       return extension
+    endif
     let v:errmsg = ""
     silent! echo g:alternateExtensions_{extension}
     if (v:errmsg == "")
