@@ -230,6 +230,7 @@ NERD_uncom_line_map	NERD_comments.txt	/*NERD_uncom_line_map*
 NERD_use_compact_sexy_com_regexp	NERD_comments.txt	/*NERD_use_compact_sexy_com_regexp*
 NERD_use_nested_comments_default	NERD_comments.txt	/*NERD_use_nested_comments_default*
 Nread	pi_netrw.txt	/*Nread*
+Nsource	pi_netrw.txt	/*Nsource*
 Nwrite	pi_netrw.txt	/*Nwrite*
 OmniCpp_DefaultNamespaces	omnicppcomplete.txt	/*OmniCpp_DefaultNamespaces*
 OmniCpp_DisplayMode	omnicppcomplete.txt	/*OmniCpp_DisplayMode*
@@ -468,6 +469,8 @@ g:netrw_ftp	pi_netrw.txt	/*g:netrw_ftp*
 g:netrw_ftp_browse_reject	pi_netrw.txt	/*g:netrw_ftp_browse_reject*
 g:netrw_ftp_cmd	pi_netrw.txt	/*g:netrw_ftp_cmd*
 g:netrw_ftp_list_cmd	pi_netrw.txt	/*g:netrw_ftp_list_cmd*
+g:netrw_ftp_sizelist_cmd	pi_netrw.txt	/*g:netrw_ftp_sizelist_cmd*
+g:netrw_ftp_timelist_cmd	pi_netrw.txt	/*g:netrw_ftp_timelist_cmd*
 g:netrw_ftpmode	pi_netrw.txt	/*g:netrw_ftpmode*
 g:netrw_hide	pi_netrw.txt	/*g:netrw_hide*
 g:netrw_http_cmd	pi_netrw.txt	/*g:netrw_http_cmd*
@@ -498,6 +501,7 @@ g:netrw_ssh_browse_reject	pi_netrw.txt	/*g:netrw_ssh_browse_reject*
 g:netrw_ssh_cmd	pi_netrw.txt	/*g:netrw_ssh_cmd*
 g:netrw_timefmt	pi_netrw.txt	/*g:netrw_timefmt*
 g:netrw_uid	pi_netrw.txt	/*g:netrw_uid*
+g:netrw_use_noswf	pi_netrw.txt	/*g:netrw_use_noswf*
 g:netrw_use_nt_rcp	pi_netrw.txt	/*g:netrw_use_nt_rcp*
 g:netrw_win95ftp	pi_netrw.txt	/*g:netrw_win95ftp*
 g:netrw_winsize	pi_netrw.txt	/*g:netrw_winsize*
@@ -523,7 +527,6 @@ glvs-install	pi_getscript.txt	/*glvs-install*
 glvs-options	pi_getscript.txt	/*glvs-options*
 glvs-plugins	pi_getscript.txt	/*glvs-plugins*
 glvs-usage	pi_getscript.txt	/*glvs-usage*
-gx	pi_netrw.txt	/*gx*
 helpextractor	HelpExtractor.txt	/*helpextractor*
 helpextractor-contents	HelpExtractor.txt	/*helpextractor-contents*
 http	pi_netrw.txt	/*http*
@@ -632,6 +635,7 @@ netrw-listhack	pi_netrw.txt	/*netrw-listhack*
 netrw-login	pi_netrw.txt	/*netrw-login*
 netrw-maps	pi_netrw.txt	/*netrw-maps*
 netrw-mb	pi_netrw.txt	/*netrw-mb*
+netrw-ml_get	pi_netrw.txt	/*netrw-ml_get*
 netrw-move	pi_netrw.txt	/*netrw-move*
 netrw-netrc	pi_netrw.txt	/*netrw-netrc*
 netrw-nexplore	pi_netrw.txt	/*netrw-nexplore*
@@ -648,6 +652,7 @@ netrw-p5	pi_netrw.txt	/*netrw-p5*
 netrw-p6	pi_netrw.txt	/*netrw-p6*
 netrw-p7	pi_netrw.txt	/*netrw-p7*
 netrw-p8	pi_netrw.txt	/*netrw-p8*
+netrw-p9	pi_netrw.txt	/*netrw-p9*
 netrw-passwd	pi_netrw.txt	/*netrw-passwd*
 netrw-password	pi_netrw.txt	/*netrw-password*
 netrw-path	pi_netrw.txt	/*netrw-path*
@@ -670,6 +675,7 @@ netrw-settings	pi_netrw.txt	/*netrw-settings*
 netrw-sexplore	pi_netrw.txt	/*netrw-sexplore*
 netrw-sort	pi_netrw.txt	/*netrw-sort*
 netrw-sortsequence	pi_netrw.txt	/*netrw-sortsequence*
+netrw-source	pi_netrw.txt	/*netrw-source*
 netrw-starpat	pi_netrw.txt	/*netrw-starpat*
 netrw-starstar	pi_netrw.txt	/*netrw-starstar*
 netrw-starstarpat	pi_netrw.txt	/*netrw-starstarpat*
@@ -730,8 +736,6 @@ quilt-usage	quilt.txt	/*quilt-usage*
 quilt.txt	quilt.txt	/*quilt.txt*
 rcp	pi_netrw.txt	/*rcp*
 rsync	pi_netrw.txt	/*rsync*
-s:netrw_col	pi_netrw.txt	/*s:netrw_col*
-s:netrw_line	pi_netrw.txt	/*s:netrw_line*
 scp	pi_netrw.txt	/*scp*
 sftp	pi_netrw.txt	/*sftp*
 snip-advanced-tag-commands	snippets_emu.txt	/*snip-advanced-tag-commands*
