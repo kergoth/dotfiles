@@ -227,11 +227,11 @@ if !exists("g:TagsParserTagsProgram")
   elseif executable("tags")
     let g:TagsParserTagsProgram = "tags"
   else
-    echoerr "TagsParser - tags program not found, go to " .
-          \"http://ctags.sourceforge.net/ to download it.  OR" .
-          \"specify the path to a the Exuberant Ctags program " .
-          \"using the g:TagsParserTagsProgram variable in your .vimrc"
-    echoerr " -- TagsParser Disabled -- "
+    " echoerr "TagsParser - tags program not found, go to " .
+    "       \"http://ctags.sourceforge.net/ to download it.  OR" .
+    "       \"specify the path to a the Exuberant Ctags program " .
+    "       \"using the g:TagsParserTagsProgram variable in your .vimrc"
+    " echoerr " -- TagsParser Disabled -- "
     finish
   endif
 endif
@@ -241,11 +241,11 @@ let s:ctagsVersion = system(g:TagsParserTagsProgram . " --version")
 
 "Make sure that this is an Exuberant Ctags program
 if s:ctagsVersion !~? "Exuberant Ctags"
-  echoerr "TagsParser - ctags = " . g:TagsParserTagsProgram .
-        \" go to http://ctags.sourceforge.net/ to download it.  OR" .
-        \"specify the path to a the Exuberant Ctags program " .
-        \"using the g:TagsParserTagsProgram variable in your .vimrc"
-  echoerr " -- TagsParser Disabled -- "
+  " echoerr "TagsParser - ctags = " . g:TagsParserTagsProgram .
+  "       \" go to http://ctags.sourceforge.net/ to download it.  OR" .
+  "       \"specify the path to a the Exuberant Ctags program " .
+  "       \"using the g:TagsParserTagsProgram variable in your .vimrc"
+  " echoerr " -- TagsParser Disabled -- "
   finish
 endif
 
