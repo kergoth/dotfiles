@@ -792,16 +792,6 @@ if has('autocmd')
   " Make sure we're overriding netrw's browser
   :runtime plugin/netrw.vim
   :runtime autoload/netrw.vim
-  augroup FileExplorer
-   au!
-   au BufEnter * silent! call s:SpawnExplorer(expand("<amatch>"))
-  augroup END
-
-  function! s:SpawnExplorer(match)
-    if isdirectory(a:match)
-      VTreeExplore a:match
-    endif
-  endf
 
   augroup Kergoth
     au!
