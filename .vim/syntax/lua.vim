@@ -31,13 +31,13 @@ syn sync minlines=100
 
 " Comments
 syn keyword luaTodo             contained TODO FIXME XXX
-syn match   luaComment          "--.*$" contains=luaTodo,vimModeline
+syn match   luaComment          "--.*$" contains=luaTodo,vimModeline,@Spell
 if lua_version == 5 && lua_subversion == 0
-  syn region  luaComment        matchgroup=luaComment start="--\[\[" end="\]\]" contains=luaTodo,luaInnerComment,vimModeline fold
+  syn region  luaComment        matchgroup=luaComment start="--\[\[" end="\]\]" contains=luaTodo,luaInnerComment,vimModeline,@Spell fold
   syn region  luaInnerComment   contained transparent start="\[\[" end="\]\]"
 elseif lua_version > 5 || (lua_version == 5 && lua_subversion >= 1)
   " Comments in Lua 5.1: --[[ ... ]], [=[ ... ]=], [===[ ... ]===], etc.
-  syn region  luaComment        matchgroup=luaComment start="--\[\z(=*\)\[" end="\]\z1\]" contains=vimModeline fold
+  syn region  luaComment        matchgroup=luaComment start="--\[\z(=*\)\[" end="\]\z1\]" contains=vimModeline,@Spell fold
 endif
 
 " First line may start with #!
