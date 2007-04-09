@@ -18,6 +18,9 @@ set output-meta on
 # Case insensitive completion.
 set completion-ignore-case On
 
+# Don't complete hidden files unless specified as such
+set match-hidden-files Off
+
 # Vi-like movement/editing
 set editing-mode vi
 
