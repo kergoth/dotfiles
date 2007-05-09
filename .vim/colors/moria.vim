@@ -70,29 +70,29 @@ if &background == "dark"
             hi CursorColumn guibg=#3a3a3a gui=none
             hi CursorLine guibg=#3a3a3a gui=none
         endif
-        hi FoldColumn ctermbg=bg guibg=bg guifg=#98a9c9 gui=none
-        hi LineNr guifg=#98a9c9 gui=none
-        hi NonText ctermfg=8 guibg=bg guifg=#98a9c9 gui=bold
-        hi Pmenu guibg=#6f86b3 guifg=#000000 gui=none
-        hi PmenuSbar guibg=#4e6592 guifg=fg gui=none
-        hi PmenuThumb guibg=#c1ccdf guifg=bg gui=none
-        hi SignColumn ctermbg=bg guibg=bg guifg=#98a9c9 gui=none
-        hi StatusLine ctermbg=7 ctermfg=0 guibg=#3d5074 guifg=fg gui=bold
-        hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#2c3954 guifg=fg gui=none
-        hi TabLine guibg=#465c86 guifg=fg gui=underline
-        hi TabLineFill guibg=#465c86 guifg=fg gui=underline
-        hi VertSplit ctermbg=7 ctermfg=0 guibg=#2c3954 guifg=fg gui=none
+        hi FoldColumn ctermbg=bg guibg=bg guifg=#959dcc gui=none
+        hi LineNr guifg=#959dcc gui=none
+        hi NonText ctermfg=8 guibg=bg guifg=#959dcc gui=bold
+        hi Pmenu guibg=#6a76b7 guifg=#000000 gui=none
+        hi PmenuSbar guibg=#485497 guifg=fg gui=none
+        hi PmenuThumb guibg=#c0c6e0 guifg=bg gui=none
+        hi SignColumn ctermbg=bg guibg=bg guifg=#959dcc gui=none
+        hi StatusLine ctermbg=7 ctermfg=0 guibg=#394377 guifg=fg gui=bold
+        hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#293056 guifg=fg gui=none
+        hi TabLine guibg=#424d8a guifg=fg gui=underline
+        hi TabLineFill guibg=#424d8a guifg=fg gui=underline
+        hi VertSplit ctermbg=7 ctermfg=0 guibg=#293056 guifg=fg gui=none
         if version >= 700
-            hi Visual ctermbg=7 ctermfg=0 guibg=#4e6592 gui=none
+            hi Visual ctermbg=7 ctermfg=0 guibg=#6a6c75 gui=none
         else
-            hi Visual ctermbg=7 ctermfg=0 guibg=#4e6592 guifg=fg gui=none
+            hi Visual ctermbg=7 ctermfg=0 guibg=#6a6c75 guifg=fg gui=none
         endif
-        hi VisualNOS guibg=bg guifg=#8498bd gui=bold,underline
+        hi VisualNOS guibg=bg guifg=#9c9da5 gui=bold,underline
 
         if s:moria_fontface == "mixed"
-            hi Folded guibg=#585858 guifg=#c1ccdf gui=bold
+            hi Folded guibg=#585858 guifg=#c0c6e0 gui=bold
         else
-            hi Folded guibg=#585858 guifg=#c1ccdf gui=none
+            hi Folded guibg=#585858 guifg=#c0c6e0 gui=none
         endif
     endif
     hi Cursor guibg=#ffa500 guifg=bg gui=none
@@ -104,7 +104,7 @@ if &background == "dark"
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
     hi IncSearch guibg=#e0cd78 guifg=#000000 gui=none
     hi ModeMsg guibg=bg guifg=fg gui=bold
-    hi MoreMsg guibg=bg guifg=#7ec0ee gui=bold
+    hi MoreMsg guibg=bg guifg=#9ca4cf gui=bold
     hi PmenuSel guibg=#e0e000 guifg=#000000 gui=none
     hi Question guibg=bg guifg=#e8b87e gui=bold
     hi Search guibg=#90e090 guifg=#000000 gui=none
@@ -166,20 +166,20 @@ elseif &background == "light"
     hi DiffText guibg=#0000cd guifg=#ffffff gui=bold
     hi Directory guibg=bg guifg=#0000f0 gui=none
     hi ErrorMsg guibg=#ee2c2c guifg=#ffffff gui=bold
-    hi FoldColumn ctermbg=bg guibg=bg guifg=#42577d gui=none
-    hi Folded guibg=#c5c5c5 guifg=#2c3954 gui=bold
+    hi FoldColumn ctermbg=bg guibg=bg guifg=#3e4882 gui=none
+    hi Folded guibg=#c5c5c5 guifg=#293056 gui=bold
     hi IncSearch guibg=#ffcd78 gui=none
-    hi LineNr guifg=#42577d gui=none
+    hi LineNr guifg=#3e4882 gui=none
     hi ModeMsg ctermbg=15 ctermfg=0 guibg=bg guifg=fg gui=bold
-    hi MoreMsg guibg=bg guifg=#1f3f81 gui=bold
-    hi NonText ctermfg=8 guibg=bg guifg=#42577d gui=bold
-    hi Pmenu guibg=#7b91b9 guifg=#000000 gui=none
-    hi PmenuSbar guibg=#5874a7 guifg=fg gui=none
+    hi MoreMsg guibg=bg guifg=#343d6b gui=bold
+    hi NonText ctermfg=8 guibg=bg guifg=#3e4882 gui=bold
+    hi Pmenu guibg=#7782bd guifg=#000000 gui=none
+    hi PmenuSbar guibg=#5361ac guifg=fg gui=none
     hi PmenuSel guibg=#ffff00 guifg=#000000 gui=none
-    hi PmenuThumb guibg=#adbbd3 guifg=fg gui=none
+    hi PmenuThumb guibg=#aab0d7 guifg=fg gui=none
     hi Question guibg=bg guifg=#813f11 gui=bold
     hi Search guibg=#a0f0a0 gui=none
-    hi SignColumn ctermbg=bg guibg=bg guifg=#42577d gui=none
+    hi SignColumn ctermbg=bg guibg=bg guifg=#3e4882 gui=none
     hi SpecialKey guibg=bg guifg=#912f11 gui=none
     if has("spell")
         hi SpellBad guisp=#ee2c2c gui=undercurl
@@ -187,19 +187,19 @@ elseif &background == "light"
         hi SpellLocal guisp=#008b8b gui=undercurl
         hi SpellRare guisp=#ee2cee gui=undercurl
     endif
-    hi StatusLine ctermbg=0 ctermfg=15 guibg=#98a9c9 guifg=fg gui=bold
-    hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#adbbd3 guifg=fg gui=none
-    hi TabLine guibg=#b1bed6 guifg=fg gui=underline
-    hi TabLineFill guibg=#b1bed6 guifg=fg gui=underline
+    hi StatusLine ctermbg=0 ctermfg=15 guibg=#959dcc guifg=fg gui=bold
+    hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#aab0d7 guifg=fg gui=none
+    hi TabLine guibg=#aeb5d9 guifg=fg gui=underline
+    hi TabLineFill guibg=#aeb5d9 guifg=fg gui=underline
     hi TabLineSel guibg=bg guifg=fg gui=bold
     hi Title guifg=fg gui=bold
-    hi VertSplit ctermbg=7 ctermfg=0 guibg=#adbbd3 guifg=fg gui=none
+    hi VertSplit ctermbg=7 ctermfg=0 guibg=#aab0d7 guifg=fg gui=none
     if version >= 700
-        hi Visual ctermbg=7 ctermfg=0 guibg=#c1ccdf gui=none
+        hi Visual ctermbg=7 ctermfg=0 guibg=#bdbec4 gui=none
     else
-        hi Visual ctermbg=7 ctermfg=0 guibg=#c1ccdf guifg=fg gui=none
+        hi Visual ctermbg=7 ctermfg=0 guibg=#bdbec4 guifg=fg gui=none
     endif    
-    hi VisualNOS guibg=bg guifg=#8498bd gui=bold,underline
+    hi VisualNOS guibg=bg guifg=#9c9da5 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
     hi WildMenu guibg=#ffff00 guifg=fg gui=bold
 

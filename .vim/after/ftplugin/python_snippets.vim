@@ -2,9 +2,10 @@ if !exists('loaded_snippet') || &cp
     finish
 endif
 
+" Updates to PyInit and PyInitVars provided by grayrest.
 function! PyInit(text)
     if a:text != "args"
-        return ', '.a:text
+        return ', '.join(split(a:text,'\s*,\s*'),', ')
     else
         return ''
     endif
@@ -16,19 +17,20 @@ endfunction
 
 function! PyInitVars(text)
     if a:text != "args"
-        let text = substitute(a:text,'=.\{-},','','g')
+        let text = substitute(a:text,'\*\*\?\k\+','','g')
+        let text = substitute(text,'=.\{-},','','g')
         let text = substitute(text,'=.\{-}$','','g')
-        let text = substitute(text,',','','g')
-        let ret = ''
-        let tabs = indent(".")/&tabstop
-        let tab_text = ''
-        for i in range(tabs)
-            let tab_text = tab_text.'\t'
-        endfor
-        for Arg in split(text, ' ')
-            let ret = ret.'self.'.Arg.' = '.Arg.'\n'.tab_text
-        endfor
-        return ret
+        let text = substitute(text,',',' ','g')
+
+        if &expandtab
+            let tabs = indent(".")/&shiftwidth
+            let tabstr = repeat(' ',&shiftwidth)
+        else
+            let tabs = indent(".")/&tabstop
+            let tabstr = '\t'
+        endif
+        let tab_text = repeat(tabstr,tabs)
+        return join(map(split(text),'"self.".v:val." = ".v:val'),'\n'.tab_text)
     else
         return "pass"
     endif
@@ -71,9 +73,9 @@ let cd = g:snip_elem_delim
 
 exec "Snippet pf print \"".st."s".et."\" % ".st."s:PyArgList(Count(@z, '%[^%]'))".et."<CR>".st.et
 exec "Snippet get def get".st."name".et."(self): return self._".st."name".et."<CR>".st.et
-exec "Snippet classi class ".st."ClassName".et." (".st."object".et."):<CR><CR><Tab>def __init__(self".st."args:PyInit(@z)".et."):<CR>".st."args:PyInitVars(@z)".et."<CR><CR>".st.et
-exec "Snippet set def set".st."name".et."(self, ".st."newValue".et."):<CR>self._".st."name".et." = ".st."newValue:PyRemDefVal(@z)".et."<CR>".st.et
-exec "Snippet . self.".st.et
+exec "Snippet classi class ".st."ClassName".et." (".st."object".et."):<CR><CR><Tab>def __init__(self".st."args:PyInit(@z)".et."):<CR><Tab><Tab>".st."args:PyInitVars(@z)".et."<CR><CR><Tab><Tab>".st.et
+exec "Snippet set def set".st."name".et."(self, ".st."newValue".et."):<CR><Tab>self._".st."name".et." = ".st."newValue:PyRemDefVal(@z)".et."<CR>".st.et
+"exec "Snippet . self.".st.et
 exec "Snippet def def ".st."fname".et."(".st."self".et."):<CR><Tab>".st."pass".et."<CR>".st.et
 " Contributed by Panos
 exec "Snippet ifn if __name__ == '__main__':<CR><Tab>".st.et

@@ -1,4 +1,4 @@
-*cecutil.txt*	DrChip's Utilities				Sep 19, 2006
+*cecutil.txt*	DrChip's Utilities				Feb 12, 2007
 
 Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
@@ -153,6 +153,11 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*cecutil-copyright*
 ==============================================================================
 5. History						*cecutil-history* {{{1
 
+	v16 Oct 30, 2006 : * com -> com! so AsNeeded is happier
+	    Feb 12, 2007   * fixed a bug where :somemap (a map of "somemap")
+			     did not use the optional mapleader (so it'd be
+			     a map of "\somemap", if "\" is the mapleader).
+			     (problem pointed out by Michael Zhang)
 	v15 Jan 25, 2006 : * bypass for report option for DestroyMark() included
 	                   * SaveWinPosn() and RestoreWinPosn() now handle an
 			     empty buffer

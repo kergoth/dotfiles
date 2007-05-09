@@ -141,7 +141,7 @@ function! <SID>QuiltAnnotate( bang, ... )
 	    echohl none
 	    return 
 	endif
-	let cmd = cmd . expand( "%" )
+	let cmd = cmd . <SID>GetStrippedPath( expand( "%" ) )
     else
 	if a:bang != "!" && &modified
 	    echohl ErrorMsg
@@ -628,7 +628,7 @@ function! <SID>QuiltPatches( ... )
     if a:0 == 1
         let thefile = a:1    
     else 
-        let thefile = expand( "%" )
+        let thefile = <SID>GetStrippedPath( expand( "%" ) )
     endif
 
     if thefile == ''
@@ -983,7 +983,7 @@ function! <SID>QuiltAdd( ... )
     if a:0 >= 1
         let cmd = cmd . a:1
     else 
-        let cmd = cmd . expand( "%" )
+        let cmd = cmd . <SID>GetStrippedPath( expand( "%" ) )
 
         if expand( '%' ) == '' 
             echohl ErrorMsg
@@ -1017,7 +1017,7 @@ function! <SID>QuiltRemove( ... )
     if a:0 == 1
         let cmd = cmd . a:1
     else 
-        let cmd = cmd . expand( "%" )
+        let cmd = cmd . <SID>GetStrippedPath( expand( "%" ) )
 
         if expand( '%' ) == '' 
             echohl ErrorMsg
@@ -1054,7 +1054,7 @@ function! <SID>QuiltRemoveFrom( ... )
     if a:0 == 1
         let cmd = cmd . a:1
     else 
-        let cmd = cmd . expand( "%" )
+        let cmd = cmd . <SID>GetStrippedPath( expand( "%" ) )
 
         if expand( '%' ) == '' 
             echohl ErrorMsg
@@ -1078,7 +1078,7 @@ function! <SID>QuiltRefresh( bang, ... )
         return 0
     endif
 
-    let cmd= "quilt refresh "
+    let cmd= "quilt refresh --diffstat"
 
     if a:0 == 1
         let cmd = cmd . a:1
@@ -1205,10 +1205,12 @@ function! <SID>QuiltStatus()
 
     " Set the status line :
 
-    if <SID>ListAllFiles() =~ expand( "%" )
+    if <SID>ListAllFiles() =~ <SID>GetStrippedPath( expand( "%" ) )
         setlocal statusline=%0.28(%f\ %m%h%r%)\ [%{g:QuiltCurrentPatch}][+in]\ %=%0.10(%l,%c\ %P%)
+        setlocal noreadonly
     else
         setlocal statusline=%0.28(%f\ %m%h%r%)\ [%{g:QuiltCurrentPatch}][!in]\ %=%0.10(%l,%c\ %P%)
+        setlocal readonly
     endif
     setlocal laststatus=2
 
@@ -1253,6 +1255,35 @@ function! <SID>QuiltInterface()
 
 endfunction
 
+" Returns an absolute name (unix shape)
+function! <SID>GetAbsolutePath( file )
+
+    let fname=simplify( a:file  )
+    if "" == fname 
+        return ""
+    endif
+
+    if '/' != fname[0]
+        let fname = getcwd() . '/' . fname
+        let fname=simplify( fname )
+    endif
+
+    return fname
+
+endfunction
+
+" Only works with files in the directory
+function! <SID>GetStrippedPath( file )
+
+    let fname = <SID>GetAbsolutePath( a:file )
+    let curr = "^" . getcwd() . "/"
+
+    if 0 != stridx( fname, getcwd() )
+        return fname
+    endif
+    return substitute( fname, curr, "", "g" )
+
+endfunction
 
 "
 " returns 1 if the current directory is quilt enabled 
@@ -1261,6 +1292,16 @@ endfunction
 function! <SID>IsQuiltOK()
 
     if <SID>FileExists( "patches" ) 
+        " Check if the file we are viewing is in the current tree
+        let fname = <SID>GetAbsolutePath( expand("%" ) )
+
+        if "" == fname 
+            return 0
+        endif
+
+        if -1 == stridx( fname, getcwd() )
+            return 0
+        endif
 
         " Must find a series file somewhere
         if    <SID>FileExists( "series" ) || <SID>FileExists( "patches/series" ) || <SID>FileExists( ".pc/series" ) 
@@ -1284,7 +1325,7 @@ function! <SID>IsQuiltDirectory()
     
     if r == 0 
         echohl ErrorMsg
-        echo "This is not a quilt directory ... sorry"
+        echo "This is not a quilt directory, or current file is not in it ... sorry"
         echohl none
     endif
 
@@ -1347,7 +1388,7 @@ function! <SID>QuiltMoveTo( bang,  patch ) range
 
     call mkdir( tmpdir1 )
 
-    let basesrc = expand( "%:h" )
+    let basesrc = <SID>GetStrippedPath( expand( "%:h" ) )
 
     if basesrc != ""
         call mkdir( tmpdir1 . "/a/" . basesrc, "p")
@@ -1374,7 +1415,7 @@ function! <SID>QuiltMoveTo( bang,  patch ) range
 
     call <SID>QuiltCurrent()
     let g:QuiltFormerPatch = g:QuiltCurrentPatch
-    let g:QuiltMoveFileName = expand( "%" )
+    let g:QuiltMoveFileName = <SID>GetStrippedPath( expand( "%" ) )
         
     write
     call <SID>QuiltRefresh( a:bang )

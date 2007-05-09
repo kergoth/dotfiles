@@ -1,8 +1,8 @@
 " ---------------------------------------------------------------------
 " getscript.vim
 "  Author:	Charles E. Campbell, Jr.
-"  Date:	Oct 13, 2006
-"  Version:	22
+"  Date:	May 05, 2007
+"  Version:	25
 "  Installing:	:help glvs-install
 "  Usage:	:help glvs
 "
@@ -15,14 +15,14 @@ if &cp
  echoerr "GetLatestVimScripts is not vi-compatible; not loaded (you need to set nocp)"
  finish
 endif
-let s:keepfo  = &fo
 let s:keepcpo = &cpo
 set cpo&vim
+"DechoTabOn
 
 if exists("g:loaded_getscript")
  finish
 endif
-let g:loaded_getscript= "v22"
+let g:loaded_getscript= "v25"
 
 " ---------------------------------------------------------------------
 "  Global Variables: {{{1
@@ -37,13 +37,19 @@ if !exists("g:GetLatestVimScripts_wget")
   let g:GetLatestVimScripts_options = ""
  endif
 endif
+
+" options that wget and curl require:
 if !exists("g:GetLatestVimScripts_options")
  if g:GetLatestVimScripts_wget == "wget"
   let g:GetLatestVimScripts_options= "-q -O"
  elseif g:GetLatestVimScripts_wget == "curl"
   let g:GetLatestVimScripts_options= "-s -O"
+ else
+  let g:GetLatestVimScripts_options= ""
  endif
 endif
+
+" by default, allow autoinstall lines to work
 if !exists("g:GetLatestVimScripts_allowautoinstall")
  let g:GetLatestVimScripts_allowautoinstall= 1
 endif
@@ -107,33 +113,43 @@ fun! s:GetOneScript(...)
   if a:0 >= 3
    let scriptid = a:1
    let srcid    = a:2
-   let cmmnt    = a:3
+   let fname    = a:3
+   let cmmnt    = ""
 "   call Decho("scriptid<".scriptid.">")
 "   call Decho("srcid   <".srcid.">")
-"   call Decho("cmmnt   <".cmmnt.">")
+"   call Decho("fname   <".fname.">")
   else
    let curline  = getline(".")
-   let parsepat = '^\s*\(\d\+\)\s\+\(\d\+\)\s\+\(.\{-}\)$'
+   if curline =~ '^\s*#'
+"    call Dret("GetOneScript : skipping a pure comment line")
+    return
+   endif
+   let parsepat = '^\s*\(\d\+\)\s\+\(\d\+\)\s\+\(.\{-}\)\(\s*#.*\)\=$'
    try
     let scriptid = substitute(curline,parsepat,'\1','e')
    catch /^Vim\%((\a\+)\)\=:E486/
-   	let scriptid= 0
+    let scriptid= 0
    endtry
    try
     let srcid    = substitute(curline,parsepat,'\2','e')
    catch /^Vim\%((\a\+)\)\=:E486/
-   	let srcid= 0
+    let srcid= 0
    endtry
    try
-    let cmmnt    = substitute(curline,parsepat,'\3','e')
+    let fname= substitute(curline,parsepat,'\3','e')
    catch /^Vim\%((\a\+)\)\=:E486/
-   	let cmmnt= ""
+    let fname= ""
+   endtry
+   try
+    let cmmnt= substitute(curline,parsepat,'\4','e')
+   catch /^Vim\%((\a\+)\)\=:E486/
+    let cmmnt= ""
    endtry
 "   call Decho("curline <".curline.">")
 "   call Decho("parsepat<".parsepat.">")
 "   call Decho("scriptid<".scriptid.">")
 "   call Decho("srcid   <".srcid.">")
-"   call Decho("cmmnt   <".cmmnt.">")
+"   call Decho("fname   <".fname.">")
   endif
 
   if scriptid == 0 || srcid == 0
@@ -144,15 +160,15 @@ fun! s:GetOneScript(...)
   endif
 
   let doautoinstall= 0
-  if cmmnt =~ ":AutoInstall:"
-"   call Decho("cmmnt<".cmmnt."> has :AutoInstall:...")
-   let aicmmnt= substitute(cmmnt,'\s\+:AutoInstall:\s\+',' ','')
+  if fname =~ ":AutoInstall:"
+"   call Decho("fname<".fname."> has :AutoInstall:...")
+   let aicmmnt= substitute(fname,'\s\+:AutoInstall:\s\+',' ','')
 "   call Decho("aicmmnt<".aicmmnt."> s:autoinstall=".s:autoinstall)
    if s:autoinstall != ""
     let doautoinstall = g:GetLatestVimScripts_allowautoinstall
    endif
   else
-   let aicmmnt= cmmnt
+   let aicmmnt= fname
   endif
 "  call Decho("aicmmnt<".aicmmnt.">: doautoinstall=".doautoinstall)
 
@@ -262,30 +278,45 @@ fun! s:GetOneScript(...)
 "   	call Decho("attempting to do autoinstall: getcwd<".getcwd()."> filereadable(".fname.")=".filereadable(fname))
 	if filereadable(fname)
 "	 call Decho("move <".fname."> to ".s:autoinstall)
-"	 call Decho("DISABLED for testing")
-   	 exe "silent !"g:GetLatestVimScripts_mv." ".fname." ".s:autoinstall
+   	 exe "silent !".g:GetLatestVimScripts_mv." ".fname." ".s:autoinstall
 	 let curdir= escape(substitute(getcwd(),'\','/','ge'),"|[]*'\" #")
+"	 call Decho("exe cd ".s:autoinstall)
 	 exe "cd ".s:autoinstall
+
+	 " decompress
 	 if fname =~ '\.bz2$'
 "	  call Decho("attempt to bunzip2 ".fname)
 	  exe "silent !bunzip2 ".fname
 	  let fname= substitute(fname,'\.bz2$','','')
+"	  call Decho("new fname<".fname."> after bunzip2")
 	 elseif fname =~ '\.gz$'
 "	  call Decho("attempt to gunzip ".fname)
 	  exe "silent !gunzip ".fname
 	  let fname= substitute(fname,'\.gz$','','')
+"	  call Decho("new fname<".fname."> after gunzip")
 	 endif
+
+	 " distribute archive(.zip, .tar, .vba) contents
 	 if fname =~ '\.zip$'
 "	  call Decho("attempt to unzip ".fname)
-	  exe "silent !unzip -o".fname
+	  exe "silent !unzip -o ".fname
 	 elseif fname =~ '\.tar$'
 "	  call Decho("attempt to untar ".fname)
 	  exe "silent !tar -xvf ".fname
+	 elseif fname =~ '\.vba$'
+"	  call Decho("attempt to handle a vimball: ".fname)
+          1split
+	  exe "e ".fname
+	  so %
+	  q
 	 endif
+
 	 if fname =~ '.vim$'
 "	  call Decho("attempt to simply move ".fname." to plugin")
 	  exe "silent !".g:GetLatestVimScripts_mv." ".fname." plugin"
 	 endif
+
+	 " helptags step
 	 let docdir= substitute(&rtp,',.*','','e')."/doc"
 "	 call Decho("helptags docdir<".docdir.">")
 	 exe "helptags ".docdir
@@ -294,9 +325,9 @@ fun! s:GetOneScript(...)
    endif
 
    " update the data in the <GetLatestVimScripts.dat> file
-   let modline=scriptid." ".latestsrcid." ".cmmnt
+   let modline=scriptid." ".latestsrcid." ".fname.cmmnt
    call setline(line("."),modline)
-"   call Decho("modline<".modline."> (updated GetLatestVimScripts.dat file)")
+"   call Decho("update data in ".expand("%")."#".line(".").": modline<".modline.">")
   endif
 
  " restore options
@@ -329,10 +360,11 @@ fun! getscript#GetLatestVimScripts()
     break
    endif
    if filereadable(datadir."GetLatestVimScripts.dat")
-"   	call Decho("found ".datadir."/GetLatestVimScripts.dat")
-   	break
+"    call Decho("found ".datadir."/GetLatestVimScripts.dat")
+    break
    endif
   endfor
+
   " Sanity checks: readability and writability
   if datadir == ""
    echoerr 'Missing "GetLatest/" on your runtimepath - see :help glvs-dist-install'
@@ -377,63 +409,84 @@ fun! getscript#GetLatestVimScripts()
 "  call Decho(" ")
 "  call Decho("searching plugins for GetLatestVimScripts dependencies")
   let lastline    = line("$")
-  let plugins     = globpath(&rtp,"plugin/*.vim")
+"  call Decho("lastline#".lastline)
+  let plugins     = split(globpath(&rtp,"plugin/*.vim"))
   let foundscript = 0
+  let firstdir= ""
 
-"  call Decho("plugins<".plugins."> lastline#".lastline)
-  while plugins != ""
-   let plugin = substitute(plugins,'\n.*$','','e')
-   let plugins= (plugins =~ '\n')? substitute(plugins,'^.\{-}\n\(.*\)$','\1','e') : ""
+  for plugin in plugins
+
+   " don't process plugins in system directories
+   if firstdir == ""
+    let firstdir= substitute(plugin,'[/\\][^/\\]\+$','','')
+"    call Decho("firstdir<".firstdir.">")
+   else
+    let curdir= substitute(plugin,'[/\\][^/\\]\+$','','')
+"    call Decho("curdir<".curdir.">")
+    if curdir != firstdir
+     break
+    endif
+   endif
+
+   " read plugin in
    $
+"   call Decho(" ")
 "   call Decho(".dependency checking<".plugin."> line$=".line("$"))
    exe "silent r ".plugin
+
    while search('^"\s\+GetLatestVimScripts:\s\+\d\+\s\+\d\+','W') != 0
     let newscript= substitute(getline("."),'^"\s\+GetLatestVimScripts:\s\+\d\+\s\+\d\+\s\+\(.*\)$','\1','e')
     let llp1     = lastline+1
+"    call Decho("..newscript<".newscript.">")
 
-	if newscript !~ '^"'
-	 " found a "GetLatestVimScripts: # #" line in the script; check if its already in the datafile
-	 let curline     = line(".")
-	 let noai_script = substitute(newscript,'\s*:AutoInstall:\s*','','e')
-	 exe llp1
-	 let srchline    = search('\<'.noai_script.'\>','bW')
-"	 call Decho("..newscript<".newscript."> noai_script<".noai_script."> srch=".srchline." lastline=".lastline)
+    " don't process ""GetLatestVimScripts lines
+    if newscript !~ '^"'
+     " found a "GetLatestVimScripts: # #" line in the script; check if its already in the datafile
+     let curline     = line(".")
+     let noai_script = substitute(newscript,'\s*:AutoInstall:\s*','','e')
+     exe llp1
+     let srchline    = search('\<'.noai_script.'\>','bW')
+"     call Decho("..noai_script<".noai_script."> srch=".srchline."curline#".line(".")." lastline#".lastline)
 
-	 if srchline == 0
-	  " found a new script to permanently include in the datafile
-	  let keep_rega   = @a
-	  let @a          = substitute(getline(curline),'^"\s\+GetLatestVimScripts:\s\+','','')
-	  exe lastline."put a"
-	  echomsg "Appending <".@a."> to ".datafile." for ".newscript
-"	  call Decho("..APPEND (".noai_script.")<".@a."> to GetLatestVimScripts.dat")
-	  let @a          = keep_rega
-	  let lastline    = llp1
-	  let curline     = curline     + 1
-	  let foundscript = foundscript + 1
-"	 else	" Decho
-"	  call Decho("..found <".noai_script."> (already in datafile at line#".srchline.")")
-	 endif
+     if srchline == 0
+      " found a new script to permanently include in the datafile
+      let keep_rega   = @a
+      let @a          = substitute(getline(curline),'^"\s\+GetLatestVimScripts:\s\+','','')
+      exe lastline."put a"
+      echomsg "Appending <".@a."> to ".datafile." for ".newscript
+"      call Decho("..APPEND (".noai_script.")<".@a."> to GetLatestVimScripts.dat")
+      let @a          = keep_rega
+      let lastline    = llp1
+      let curline     = curline     + 1
+      let foundscript = foundscript + 1
+"     else	" Decho
+"      call Decho("..found <".noai_script."> (already in datafile at line#".srchline.")")
+     endif
 
-	 let curline = curline + 1
-	 exe curline
-	endif
-
+     let curline = curline + 1
+     exe curline
+    endif
    endwhile
+
    let llp1= lastline + 1
 "   call Decho(".deleting lines: ".llp1.",$d")
    exe "silent! ".llp1.",$d"
-  endwhile
+  endfor
+"  call Decho("--- end dependency checking loop ---  foundscript=".foundscript)
+"  call Decho(" ")
 
   if foundscript == 0
    set nomod
   endif
 
   " Check on out-of-date scripts using GetLatest/GetLatestVimScripts.dat
+"  call Decho("begin: checking out-of-date scripts using datafile<".datafile.">")
   set lz
-"  call Decho(" --- end of dependency checking loop --- ")
-"  call Decho("call GetOneScript on lines at end of datafile<".datafile.">")
   1
-  /^-----/,$g/^\s*\d/call <SID>GetOneScript()
+"  /^-----/,$g/^\s*\d/call Decho(getline("."))
+  1
+  /^-----/,$g/^\s*\d/call s:GetOneScript()
+"  call Decho("--- end out-of-date checking --- ")
 
   " Final report (an echomsg)
   try
@@ -443,6 +496,7 @@ fun! getscript#GetLatestVimScripts()
    return
   endtry
   exe "norm! kz\<CR>"
+  redraw!
   let s:msg = ""
   if s:downloads == 1
   let s:msg = "Downloaded one updated script to <".datadir.">"
@@ -459,10 +513,9 @@ fun! getscript#GetLatestVimScripts()
   echomsg s:msg
   " save the file
   if &mod
-   wq
-  else
-   q
+   silent! w!
   endif
+  q
 
   " restore events and current directory
   exe "cd ".escape(substitute(origdir,'\','/','ge'),"|[]*'\" #")
@@ -473,7 +526,6 @@ endfun
 " ---------------------------------------------------------------------
 
 " Restore Options: {{{1
-let &fo = s:keepfo
 let &cpo= s:keepcpo
 
 " vim: ts=8 sts=2 fdm=marker nowrap

@@ -1,6 +1,6 @@
 " NEVERNESS colour scheme
 " Author:      Yann GOLANSKI
-" Version:     1.0
+" Version:     1.1
 " Last Change: 22 May 2006
 " url http://web.njit.edu/~kevin/rgb.txt.html
 
@@ -69,6 +69,24 @@ hi Error          ctermfg=LightGray ctermbg=black  guifg=#ff0000 guibg=#232323 g
 " To do: SlateGray3
 hi Todo           ctermfg=LightMagenta ctermbg=black  guifg=#9fb6cd guibg=#232323 gui=none
 
+" Spelling...
+hi SpellBad    ctermfg=DarkRed    ctermbg=black
+hi SpellCap    ctermfg=DarkBlue   ctermbg=black
+hi SpellRare   ctermfg=DarkYellow ctermbg=black
+hi SpellLocal  ctermfg=DarkGreen  ctermbg=black
+
+" "set cursorline"  and "set cursorcolumn" options.
+hi lCursor        guifg=#43705a guibg=#e6fff3 gui=none
+hi CursorColumn   guibg=#222222 gui=none
+hi CursorLine     guibg=#222222 gui=none
+
+" Line number.
+"hi LineNr         ctermfg=DarkMagenta ctermbg=black  guifg=#4682b4 guibg=#000000 gui=bold
+hi LineNr         ctermfg=DarkMagenta ctermbg=black  guifg=#213d54 guibg=#000000 gui=none
+
+" Normal colour: just white thank you.
+hi Normal         guifg=#ffffff guibg=#000000 gui=none
+
 " Others:  These are "highlight-groups" and "highlight-default" in help section.
 hi Cursor         guifg=#43705a guibg=#e6fff3 gui=none
 hi DiffAdd        guifg=#e6fff3 guibg=#43705a gui=bold
@@ -80,26 +98,19 @@ hi ErrorMsg       guifg=#e6fff3 guibg=#61a181 gui=bold
 hi FoldColumn     guifg=#9bcfb5 guibg=#43705a gui=bold
 hi Folded         guifg=#9bcfb5 guibg=#43705a gui=bold
 hi IncSearch      guifg=#1d3026 guibg=#61a181 gui=bold
-hi lCursor        guifg=#43705a guibg=#e6fff3 gui=none
-hi LineNr         ctermfg=DarkMagenta ctermbg=black  guifg=#9bcfb5 guibg=#000000 gui=bold
-hi ModeMsg        guifg=#9bcfb5 guibg=#000000 gui=bold
-hi MoreMsg        guifg=#9bcfb5 guibg=#000000 gui=bold
+hi ModeMsg        guifg=#4EEE94 guibg=#000000 gui=bold
+hi MoreMsg        guifg=#4EEE94 guibg=#000000 gui=bold
 hi NonText        guifg=#c0c0c0 guibg=#000000 gui=bold
-hi Normal         guifg=#ffffff guibg=#000000 gui=none
 hi Question       guifg=#9bcfb5 guibg=#000000 gui=bold
 hi Search         guifg=#1d3026 guibg=#61a181 gui=bold
 hi SpecialKey     guifg=#9bcfb5 guibg=#000000 gui=none
-hi StatusLine     guifg=#e6fff3 guibg=#61a181 gui=bold
-hi StatusLineNC   guifg=#1d3026 guibg=#61a181 gui=bold
+"hi StatusLine     guifg=#e6fff3 guibg=#61a181 gui=bold
+"hi StatusLineNC   guifg=#1d3026 guibg=#61a181 gui=bold
+hi StatusLine     guifg=#4EEE94 guibg=#333333 gui=none
+hi StatusLineNC   guifg=#4EEE94 guibg=#222222 gui=none
 hi Title          guifg=#e6fff3 guibg=#1d3026 gui=bold
 hi VertSplit      guifg=#61a181 guibg=#61a181 gui=none
 hi Visual         guifg=#e6fff3 guibg=#61a181 gui=none
 hi VisualNOS      guifg=#9bcfb5 guibg=#000000 gui=none
-hi WarningMsg     guifg=#1d3026 guibg=#61a181 gui=bold
+hi WarningMsg     guifg=#BF3EFF guibg=#000000 gui=bold
 hi WildMenu       guifg=#43705a guibg=#e6fff3 gui=none
-
-" Spelling...
-hi SpellBad    ctermfg=DarkRed    ctermbg=black
-hi SpellCap    ctermfg=DarkBlue   ctermbg=black
-hi SpellRare   ctermfg=DarkYellow ctermbg=black
-hi SpellLocal  ctermfg=DarkGreen  ctermbg=black

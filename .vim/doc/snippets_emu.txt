@@ -14,12 +14,13 @@
 2. SnippetsEmu Options                          |snippets_emu-options|
         Start and End Tags                          |snip-start-end-tags|
         Element Delimiter                           |snip-start-end-tags|
+        Remapping the default jump key              |snip-remap-key|
 3. Detailed Explanations                        |snip-detailed-explanations|
         Valid Tag Names                             |snip-tag-name-syntax|
         Advanced Tag Command Examples               |snip-advanced-tag-commands|
 4. SnippetsEmu Contact Details                  |snip-contact-details|
 5. SnippetsEmu Known Bugs                       |snippets_emu-bugs|
-6. Troubleshooting                              |snippet_emu-troubleshooting|
+6. Troubleshooting                              |snippets_emu-troubleshooting|
 
 {Vi does not have any of these features}
 
@@ -36,6 +37,7 @@ Simple usage is built up around the following functionality:
         Buffer Specific Snippets                        |snip-buffer-specific|
 
                                                                *basic-snippet*
+                                                               *:Snippet*
 Basic Snippet ~
 
 A basic snippet can save you a lot of typing. Define a word trigger and on
@@ -47,9 +49,9 @@ The command used to define a snippet is 'Snippet'.
 
 Basic Syntax: >
 
-	Snippet trigger_name The cursor will be placed here: «» Trailing text
+	:Snippet trigger_name The cursor will be placed here: <{}> Trailing text
 
-In insert mode typing 'trigger_name<tab>' will remove 'trigger_name' and
+In insert mode typing 'trigger_name<Tab>' will remove 'trigger_name' and
 replace it with the text: 'The cursor will be placed here:  Trailing text'.
 The cursor will be placed between the two spaces before the word 'Trailing'
 
@@ -60,22 +62,22 @@ entered on a single line.
                                                                   *named-tags*
 Named tags ~
 
-Instead of the simple '«»' tags used for cursor placement a user can define
+Instead of the simple '<{}>' tags used for cursor placement a user can define
 named tags. When the value of a named tag is changed then all other tags with
 that name will be changed to the same value.
 
 E.g. >
 
-    Snippet trigger My name is «forename» «surname». Call me «forename».
+    :Snippet trigger My name is <{forename}> <{surname}>. Call me <{forename}>.
 
-In insert mode typing 'trigger<space>' will place the cursor inside the
-'«forename»' tag. Whatever is entered inside the tag will replace the other
+In insert mode typing 'trigger<Tab>' will place the cursor inside the
+'<{forename}>' tag. Whatever is entered inside the tag will replace the other
 similarly named tag at the end of the line after the user presses 'Tab'.
 
 If no value is entered for a named tag then the tag's name will be used
 instead. This is one way of defining default values.
 
-Using the above example, entering 'trigger<space>' and pressing 'Tab' twice
+Using the above example, entering 'trigger<Tab>' and pressing 'Tab' twice
 will result in the following text: >
 
     My name is forename surname. Please call me forename.
@@ -92,13 +94,13 @@ A common example is performing substitutions.
 
 E.g. >
 
-    Snippet trigger My name is «name».  I SAID: MY NAME IS
-    «name:substitute(@z,'.','\u&','g')»!
+    :Snippet trigger My name is <{name}>.  I SAID: MY NAME IS
+    <{name:substitute(@z,'.','\u&','g')}>!
 
-The value entered in the «name» tag will be passed to the command in the
-second «name» tag in the @z register (any value already in @z will be
+The value entered in the <{name}> tag will be passed to the command in the
+second <{name}> tag in the @z register (any value already in @z will be
 preserved and restored). The substitute command will change the entered value
-to be in upper case. I.e. Entering 'trigger<space>' and typing 'Tycho<Tab>'
+to be in upper case. I.e. Entering 'trigger<Tab>' and typing 'Tycho<Tab>'
 will result in the following text: >
     
     My name is Tycho. I SAID: MY NAME IS TYCHO!
@@ -118,7 +120,7 @@ within double backticks.
 
 E.g.
 >
-    Snippet date The current date is ``strftime("%c")``
+    :Snippet date The current date is ``strftime("%c")``
 
 Commands are standard Vim commands and will be 'exec'uted and the command
 output substituted into the text.
@@ -132,7 +134,7 @@ option when using filetype specific snippets. It is possible to define
 using the legacy 'Iabbr' command (note the capital 'I'). 
 
 E.g. >
-    Iabbr for for «var» in «list»:<CR>«»
+    Iabbr for for <{var}> in <{list}>:<CR><{}>
 ~
                                                                *snip-ftplugin*
 The preferred practice for defining filetype specific snippets is to include 
@@ -149,6 +151,10 @@ also recommended that the following is included at the top of the file: >
 This will stop errors being generated if the plugin has not loaded for any
 reason.
 
+Users wishing to add their own filetype snippets should add them to a separate
+file to ensure they are not lost when upgrading the plugin. Naming the files
+<filetype>_mysnippets.vim or similar is the preferred practice.
+
                                                                    *snip-menu*
 When loading the plugin will search for all files named '*_snippets.vim'.
 These will be added to the 'Snippets' menu which is available in Normal mode.
@@ -160,7 +166,7 @@ SNIPPETSEMU OPTIONS                                     *snippets_emu-options*
                                                          *snip-start-end-tags*
 Start and End Tags ~
 
-By default the start and end tags are set to be '«' and '»'. These can be
+By default the start and end tags are set to be '<{' and '}>'. These can be
 changed by setting the following variables in vimrc: >
 
     g:snip_start_tag
@@ -180,7 +186,18 @@ specific buffer using the following variables: >
     
     g:snip_elem_delim
     b:snip_elem_delim
+~
+                                                              *snip-remap-key*
+Remapping the default jump key ~
 
+The trigger key is mapped to Tab by default. Some people may wish to remap
+this if it causes conflicts with other plugins. Doing so will require
+remapping in both insert and select modes and can be done with the following
+commands: >
+
+    imap <unique> <Your key here> <Plug>Jumper
+    smap <unique> <Your key here> i<BS><Your key here>
+~
 ==============================================================================
 DETAILED EXPLANATIONS                             *snip-detailed-explanations*
                                                         *snip-tag-name-syntax*
@@ -189,15 +206,15 @@ Valid Tag Names ~
 Tag names cannot contain whitespace unless they are enclosed in quotes.
 
 Valid Examples: >
-    «validName»
-    «"valid name"»
-    «tagName:command»
-    «"Tag Name":command»
+    <{validName}>
+    <{"valid name"}>
+    <{tagName:command}>
+    <{"Tag Name":command}>
 
 Invalid Examples: >
-    «invalid name»
-    «Tag Name:command»
-    «:command»
+    <{invalid name}>
+    <{Tag Name:command}>
+    <{:command}>
 
 ~
                                                   *snip-advanced-tag-commands*
@@ -226,13 +243,13 @@ Example:
         if a:count == 0
             return "(,)"
         else
-            return '('.repeat('«», ', a:count).')'
+            return '('.repeat('<{}>, ', a:count).')'
         endif
     endfunction
 
-    Snippet pf print "«s»" % «s:PyArgList(Count(@z, '%[^%]'))»<CR>«»
+    Snippet pf print "<{s}>" % <{s:PyArgList(Count(@z, '%[^%]'))}><CR><{}>
 
-The above snippet will expand 'pf' to 'print "«s»" ...'. The user then
+The above snippet will expand 'pf' to 'print "<{s}>" ...'. The user then
 enters a format string. Once the string is entered the Count and PyArgList
 functions are used to generate a number of empty tags.
 

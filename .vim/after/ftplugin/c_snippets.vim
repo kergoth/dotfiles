@@ -23,13 +23,13 @@ function! CArgList(count)
         return repeat(', '.st.et, a:count)
     endif
 endfunction
-	
+
 let st = g:snip_start_tag
 let et = g:snip_end_tag
 let cd = g:snip_elem_delim
 
-exec "Snippet do do<CR>{<CR>".st.et."<CR>} while (".st.et.");"
-exec "Snippet readfile std::vector<uint8_t> v;<CR>if(FILE* fp = fopen(\"".st."filename".et."\", \"r\"))<CR>{<CR>uint8_t buf[1024];<CR>while(size_t len = fread(buf, 1, sizeof(buf), fp))<CR>v.insert(v.end(), buf, buf + len);<CR>fclose(fp);<CR>}<CR>".st.et
+exec "Snippet do do<CR>{<CR><Tab>".st.et."<CR>} while (".st.et.");"
+exec "Snippet readfile std::vector<uint8_t> v;<CR>if(FILE* fp = fopen(\"".st."filename".et."\", \"r\"))<CR>{<CR><Tab>uint8_t buf[1024];<CR><Tab>while(size_t len = fread(buf, 1, sizeof(buf), fp))<CR><Tab>v.insert(v.end(), buf, buf + len);<CR><Tab>fclose(fp);<CR>}<CR>".st.et
 exec "Snippet beginend ".st."v".et.".begin(), ".st."v".et.".end()".st.et
 exec "Snippet once #ifndef _".st."file:substitute(expand('%'),'\\(.\\)','\\u\\1','g')".et."_<CR><CR>#define _".st."file".et."_<CR><CR>".st.et."<CR><CR>#endif /* _".st."file".et."_ */<CR>".st.et
 exec "Snippet class class ".st."name".et."<CR>{<CR>public:<CR>".st."name".et." (".st."arguments".et.");<CR>virtual ~".st."name".et."();<CR><CR>private:<CR>".st.":D('/* data */')".et."<CR>};<CR>".st.et
@@ -44,7 +44,7 @@ exec "Snippet namespace namespace ".st.":substitute(expand('%'),'.','\\l&', 'g')
 exec "Snippet map std::map<".st."key".et.", ".st."value".et."> map".st.et.";<CR>".st.et
 exec "Snippet mark #if 0<CR><CR>".st.":D('#pragma mark -<CR><CR>'}#pragma mark ".st.et."<CR><CR>#endif<CR><CR>".st.et
 exec "Snippet if if(".st.et.")<CR>{<CR>".st.et."<CR>}<CR>".st.et
-exec "Snippet main int main (int argc, char const* argv[])<CR>{<CR>".st.et."<CR>return 0;<CR}<CR>".st.et
+exec "Snippet main int main (int argc, char const* argv[])<CR>{<CR>".st.et."<CR>return 0;<CR>}<CR>".st.et
 exec "Snippet Inc #include <".st.":D('.h')".et."><CR>".st.et
 exec "Snippet inc #include \"".st.et.".h\""
 exec "Snippet for for( ".st.":D('unsigned int')".et." ".st."i".et." = ".st.":D('0')".et."; ".st."i".et." < ".st."count".et."; ".st."i".et." += ".st.":D('1')".et.")<CR>{<CR>".st.et."<CR>}<CR>".st.et

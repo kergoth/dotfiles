@@ -54,7 +54,7 @@
 "   The triggering can be done automatically for configurable filetypes with the
 "   autocmds defined in IndentConsistencyCopAutoCmds.vim (vimscript #1691). 
 "
-"   If you chose to highlight incorrect indents, either re-start the
+"   If you chose to highlight incorrect indents, either re-execute the
 "   IndentConsistencyCop to update the highlighting, or execute
 "	:IndentConsistencyCopOff
 "   to remove the highlightings. 
@@ -68,6 +68,9 @@
 " INSTALLATION: {{{1
 "   Put the script into your user or system VIM plugin directory (e.g.
 "   ~/.vim/plugin). 
+"
+" DEPENDENCIES:
+"   - Requires VIM 7.0. 
 "
 " CONFIGURATION:
 "   You can select method(s) of highlighting incorrect lines via
@@ -104,20 +107,26 @@
 "   (e.g. remove search pattern when buffer is changed, remove error
 "   highlighting and folding if another file is loaded into the buffer via :e). 
 " - Allow user to override wrongly found consistent setting (e.g. 'sts1' instead
-"   of 'tab'), both by specifying the correct setting in the
-"   :IndentConsistencyCop call and by choosing 'wrong setting' in the
-"   IndentBufferConsistencyCop. 
+"   of 'tab'), by specifying the correct setting in the :IndentConsistencyCop
+"   call. 
+" - Add configuration what to do when the maximum indent is not sufficient for a
+"   solid assessment: a) still bring up pop-up dialog, b) just :echomsg a
+"   warning, c) completely ignore. 
 "
-" Copyright: (C) 2006 by Ingo Karkat
+" Copyright: (C) 2006-2007 by Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'. 
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS {{{1
-"	0.07	02-Nov-2006	BF: Suppressing 'Not buffer setting' option if
+"   1.00.008	02-Apr-2007	Allowing user to override wrongly found
+"				consistent setting (e.g. 'sts1' instead of
+"				'tab') by choosing 'Wrong, choose correct
+"				setting...' in the IndentBufferConsistencyCop. 
+"   1.00.007	02-Nov-2006	BF: Suppressing 'Not buffer setting' option if
 "				the buffer setting is inconsistent ('badset'),
 "				which threw an exception when selected. 
-"	0.06	01-Nov-2006	Corrected unreasonable assumption of a
+"   1.00.006	01-Nov-2006	Corrected unreasonable assumption of a
 "				consistent small indent setting (of 1 or 2
 "				spaces) when actually only some wrong spaces
 "				spoil the consistency. Now, a perfect consistent
@@ -126,9 +135,9 @@
 "				BF: Avoiding runtime error in
 "				IndentBufferInconsistencyCop() if s:ratings is
 "				empty. 
-"	0.05	30-Oct-2006	Improved g:indentconsistencycop_non_indent_pattern 
+"   1.00.005	30-Oct-2006	Improved g:indentconsistencycop_non_indent_pattern 
 "				to also allow ' *\t' and ' *****' comments. 
-"	0.04	20-Oct-2006	Improved undo of highlighting;
+"   1.00.004	20-Oct-2006	Improved undo of highlighting;
 "				added :IndentConsistencyCopOff. 
 "				Added check IsEnoughIndentForSolidAssessment();
 "				user messages now include 'potentially' if the
@@ -447,7 +456,7 @@ function! s:ApplyPrecedences() " {{{1
     " The occurrence 'sts8' has only been collected because of the parallelism
     " with 'spc8'. Effectively, 'sts8' is the same as 'tab', and is removed. 
     if s:GetKeyedValue( s:occurrences, 'sts8' ) != s:GetKeyedValue( s:occurrences, 'tab' )
-	throw "assert sts8 == tab"
+	throw 'assert sts8 == tab'
     endif
     call s:RemoveKey( s:occurrences, 'sts8' )
 endfunction
@@ -679,7 +688,7 @@ function! s:NormalizeNonPerfectRating()
 	let l:valueSum += l:value
     endfor
     if l:valueSum <= 0 
-	throw "assert valueSum > 0"
+	throw 'assert valueSum > 0'
     endif
 
     for l:rating in keys( s:ratings )
@@ -784,7 +793,7 @@ function! s:CheckBufferConsistency( startLineNum, endLineNum ) " {{{1
 "    1: checked range is consistent
 "*******************************************************************************
     if a:startLineNum > a:endLineNum
-	throw assert startLineNum <= a:endLineNum
+	throw 'assert startLineNum <= a:endLineNum'
     endif
 
     " This variable stores the maximum indent encountered. 
@@ -970,7 +979,7 @@ function! s:GetCorrectTabstopSetting( indentSetting )
 	    return s:GetMultiplierFromIndentSetting( a:indentSetting )
 	endif
     else
-	throw "assert false"
+	throw 'assert false'
     endif
 endfunction
 
@@ -1201,7 +1210,7 @@ function! s:GetInsufficientIndentUserMessage()
     endif
 endfunction
 
-function! s:IndentBufferConsistencyCop( scopeUserString, consistentIndentSetting, isBufferSettingsCheck ) " {{{1
+function! s:IndentBufferConsistencyCop( startLineNum, endLineNum, scopeUserString, consistentIndentSetting, isBufferSettingsCheck ) " {{{1
 "*******************************************************************************
 "* PURPOSE:
 "   Reports buffer consistency and (if desired) triggers the consistency check
@@ -1211,6 +1220,8 @@ function! s:IndentBufferConsistencyCop( scopeUserString, consistentIndentSetting
 "* EFFECTS / POSTCONDITIONS:
 "	? List of the procedure's effect on each external variable, control, or other element.
 "* INPUTS:
+"   a:startLineNum, a:endLineNum: range in the current buffer that was to be
+"	checked. 
 "   a:scopeUserString: either 'range' or 'buffer'
 "   a:consistentIndentSetting: determined consistent indent setting of the
 "      buffer
@@ -1226,12 +1237,19 @@ function! s:IndentBufferConsistencyCop( scopeUserString, consistentIndentSetting
 	    let l:userMessage .= "\nHow do you want to deal with the "
 	    let l:userMessage .= ( s:IsEnoughIndentForSolidAssessment() ? '' : 'potential ')
 	    let l:userMessage .= 'inconsistency?'
-	    let l:actionNum = confirm( l:userMessage, "&Ignore\n&Change" )
+	    let l:actionNum = confirm( l:userMessage, "&Ignore\n&Change\n&Wrong, choose correct setting..." )
 	    if l:actionNum <= 1
 		call s:PrintBufferSettings( 'The buffer settings remain inconsistent: ' )
 	    elseif l:actionNum == 2
 		call s:MakeBufferSettingsConsistentWith( a:consistentIndentSetting )
 		call s:PrintBufferSettings( 'The buffer settings have been changed: ' )
+	    elseif l:actionNum == 3
+		let l:chosenIndentSetting = s:QueryIndentSetting()
+		if ! empty( l:chosenIndentSetting )
+		    call s:HighlightInconsistentIndents( a:startLineNum, a:endLineNum, l:chosenIndentSetting )
+		endif
+	    else
+		throw 'assert false'
 	    endif
 	endif
     endif
@@ -1594,9 +1612,9 @@ function! s:IndentConsistencyCop( startLineNum, endLineNum, isBufferSettingsChec
 	call s:ClearHighlighting()
 
 	let l:consistentIndentSetting = keys( s:ratings )[0]
-	call s:IndentBufferConsistencyCop( l:scopeUserString, l:consistentIndentSetting, a:isBufferSettingsCheck )
+	call s:IndentBufferConsistencyCop( a:startLineNum, a:endLineNum, l:scopeUserString, l:consistentIndentSetting, a:isBufferSettingsCheck )
     else
-	throw "assert false"
+	throw 'assert false'
     endif
 "****D echo 'Consistent   ? ' . l:isConsistent
 "****D echo 'Occurrences:   ' . string( s:occurrences )
@@ -1620,7 +1638,7 @@ command! -nargs=0 IndentConsistencyCopOff call <SID>ClearHighlighting()
 
 " Only check indent consistency within range / buffer. Don't check the
 " consistency with buffer indent settings. Prefer this command to
-" IndentRangeConsistencyCop if you don't want your buffer indent settings
+" IndentConsistencyCop if you don't want your buffer indent settings
 " changed, or if you only want to check a limited range of the buffer that you
 " know does not conform to the buffer indent settings. 
 command! -range=% -nargs=0 IndentRangeConsistencyCop call <SID>IndentConsistencyCop( <line1>, <line2>, 0 )

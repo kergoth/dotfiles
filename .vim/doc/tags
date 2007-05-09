@@ -2,6 +2,8 @@
 :CS	cecscope.txt	/*:CS*
 :CSL	cecscope.txt	/*:CSL*
 :Explore	pi_netrw.txt	/*:Explore*
+:GLVS	pi_getscript.txt	/*:GLVS*
+:GetLatestVimScripts_dat	pi_getscript.txt	/*:GetLatestVimScripts_dat*
 :Hexplore	pi_netrw.txt	/*:Hexplore*
 :MatchDebug	matchit.txt	/*:MatchDebug*
 :MkVimball	pi_vimball.txt	/*:MkVimball*
@@ -34,6 +36,7 @@
 :QuiltWriteHeader	quilt.txt	/*:QuiltWriteHeader*
 :RmVimball	pi_vimball.txt	/*:RmVimball*
 :Sexplore	pi_netrw.txt	/*:Sexplore*
+:Snippet	snippets_emu.txt	/*:Snippet*
 :Texplore	pi_netrw.txt	/*:Texplore*
 :UseVimball	pi_vimball.txt	/*:UseVimball*
 :Vexplore	pi_netrw.txt	/*:Vexplore*
@@ -116,6 +119,7 @@ DechoVarOn	Decho.txt	/*DechoVarOn*
 Dredir	Decho.txt	/*Dredir*
 GetLatestVimScripts	pi_getscript.txt	/*GetLatestVimScripts*
 GetLatestVimScripts-copyright	pi_getscript.txt	/*GetLatestVimScripts-copyright*
+GetLatestVimScripts_dat	pi_getscript.txt	/*GetLatestVimScripts_dat*
 HelpExtractor	HelpExtractor.txt	/*HelpExtractor*
 HelpExtractor.txt	HelpExtractor.txt	/*HelpExtractor.txt*
 I	visincr.txt	/*I*
@@ -492,6 +496,7 @@ g:netrw_rmdir_cmd	pi_netrw.txt	/*g:netrw_rmdir_cmd*
 g:netrw_rmf_cmd	pi_netrw.txt	/*g:netrw_rmf_cmd*
 g:netrw_rsync_cmd	pi_netrw.txt	/*g:netrw_rsync_cmd*
 g:netrw_scp_cmd	pi_netrw.txt	/*g:netrw_scp_cmd*
+g:netrw_scpport	pi_netrw.txt	/*g:netrw_scpport*
 g:netrw_sftp_cmd	pi_netrw.txt	/*g:netrw_sftp_cmd*
 g:netrw_shq	pi_netrw.txt	/*g:netrw_shq*
 g:netrw_sort_by	pi_netrw.txt	/*g:netrw_sort_by*
@@ -499,8 +504,10 @@ g:netrw_sort_direction	pi_netrw.txt	/*g:netrw_sort_direction*
 g:netrw_sort_sequence	pi_netrw.txt	/*g:netrw_sort_sequence*
 g:netrw_ssh_browse_reject	pi_netrw.txt	/*g:netrw_ssh_browse_reject*
 g:netrw_ssh_cmd	pi_netrw.txt	/*g:netrw_ssh_cmd*
+g:netrw_sshport	pi_netrw.txt	/*g:netrw_sshport*
 g:netrw_timefmt	pi_netrw.txt	/*g:netrw_timefmt*
 g:netrw_uid	pi_netrw.txt	/*g:netrw_uid*
+g:netrw_use_errorwindow	pi_netrw.txt	/*g:netrw_use_errorwindow*
 g:netrw_use_noswf	pi_netrw.txt	/*g:netrw_use_noswf*
 g:netrw_use_nt_rcp	pi_netrw.txt	/*g:netrw_use_nt_rcp*
 g:netrw_win95ftp	pi_netrw.txt	/*g:netrw_win95ftp*
@@ -747,6 +754,7 @@ snip-elem-delimiter	snippets_emu.txt	/*snip-elem-delimiter*
 snip-ftplugin	snippets_emu.txt	/*snip-ftplugin*
 snip-limitations	snippets_emu.txt	/*snip-limitations*
 snip-menu	snippets_emu.txt	/*snip-menu*
+snip-remap-key	snippets_emu.txt	/*snip-remap-key*
 snip-snippet-commands	snippets_emu.txt	/*snip-snippet-commands*
 snip-special-vars	snippets_emu.txt	/*snip-special-vars*
 snip-start-end-tags	snippets_emu.txt	/*snip-start-end-tags*

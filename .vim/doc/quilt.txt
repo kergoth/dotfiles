@@ -2,7 +2,7 @@
 
 		  VIM REFERENCE MANUAL (Quilt Plugin)	 by Florian Delizy
 
-This file extensively describes the quilt plug-in usage (version 0.9.4)
+This file extensively describes the quilt plug-in usage (version 0.9.5)
 
 Using quilt						           *quilt-usage*
 
@@ -625,11 +625,18 @@ B. Changelog						       *quilt-changelog*
 >
 	* Fixed QuiltAnnotate interface for files not completely from a patch  
 <
-0.9.4 [20006/11/14]
+0.9.4 [2006/11/14]
 >
 	* Fixed g:Quilt* variables that were reseted every :source quilt.vim   
 	* Added ta customization command for calling thunderbird (debian...    
 	  QuiltThunderbirdCmd should be set to "icedove" not "thunderbird"     
+<
+0.9.5 [2007/05/05]
+>
+	* Fixed status line so that files outside the dir tree don't get       
+          included.                                                            
+        * Set readonly for files not in current patch                          
+        * strip file names so that absolute names get correctly handled        
 <
 -------------------------------------------------------------------------------
  vim:ft=help:norl:
