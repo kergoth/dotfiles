@@ -177,9 +177,8 @@ set nohlsearch
 " Try to match case when using insert mode completion
 set infercase
 
-" Modelines are handy
-set modeline
-set modelines=5
+" We're using the securemodelines plugin, not built in modelines
+set nomodeline
 
 " Fast terminal, bump sidescroll to 1
 set sidescroll=1
@@ -580,6 +579,25 @@ nmap <leader>G :GundoToggle<CR>
 
 let g:Modeliner_format = 'fenc= sts= sw= ts= et'
 nmap <leader>m :Modeliner<CR>
+
+" Add foldlevel to allowed items in modelines
+let g:secure_modelines_allowed_items = [
+            \ "textwidth",   "tw",
+            \ "softtabstop", "sts",
+            \ "tabstop",     "ts",
+            \ "shiftwidth",  "sw",
+            \ "expandtab",   "et",   "noexpandtab", "noet",
+            \ "filetype",    "ft",
+            \ "foldmethod",  "fdm",
+            \ "foldlevel",   "fdl",
+            \ "readonly",    "ro",   "noreadonly", "noro",
+            \ "rightleft",   "rl",   "norightleft", "norl",
+            \ "cindent",     "cin",  "nocindent", "nocin",
+            \ "smartindent", "si",   "nosmartindent", "nosi",
+            \ "autoindent",  "ai",   "noautoindent", "noai",
+            \ "spell",
+            \ "spelllang"
+            \ ]
 
 " Vim's strlen works fine while netrw's Strlen is broken
 if has("multi_byte") | let g:netrw_xstrlen = 0 | endif
