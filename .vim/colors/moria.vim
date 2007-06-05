@@ -62,8 +62,8 @@ if &background == "dark"
         if s:moria_style == "dark"
             hi Normal ctermbg=0 ctermfg=7 guibg=#2a2a2a guifg=#d0d0d0 gui=none
 
-            hi CursorColumn guibg=#444444 gui=none
-            hi CursorLine guibg=#444444 gui=none
+            hi CursorColumn guibg=#484848 gui=none
+            hi CursorLine guibg=#484848 gui=none
         elseif s:moria_style == "black"
             hi Normal ctermbg=0 ctermfg=7 guibg=#000000 guifg=#d0d0d0 gui=none
 
@@ -79,15 +79,15 @@ if &background == "dark"
         hi SignColumn ctermbg=bg guibg=bg guifg=#959dcc gui=none
         hi StatusLine ctermbg=7 ctermfg=0 guibg=#394377 guifg=fg gui=bold
         hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#293056 guifg=fg gui=none
-        hi TabLine guibg=#424d8a guifg=fg gui=underline
-        hi TabLineFill guibg=#424d8a guifg=fg gui=underline
+        hi TabLine guibg=#707070 guifg=fg gui=underline
+        hi TabLineFill guibg=#707070 guifg=fg gui=underline
         hi VertSplit ctermbg=7 ctermfg=0 guibg=#293056 guifg=fg gui=none
         if version >= 700
-            hi Visual ctermbg=7 ctermfg=0 guibg=#6a6c75 gui=none
+            hi Visual ctermbg=7 ctermfg=0 guibg=#606060 gui=none
         else
-            hi Visual ctermbg=7 ctermfg=0 guibg=#6a6c75 guifg=fg gui=none
+            hi Visual ctermbg=7 ctermfg=0 guibg=#606060 guifg=fg gui=none
         endif
-        hi VisualNOS guibg=bg guifg=#9c9da5 gui=bold,underline
+        hi VisualNOS guibg=bg guifg=#a0a0a0 gui=bold,underline
 
         if s:moria_fontface == "mixed"
             hi Folded guibg=#585858 guifg=#c0c6e0 gui=bold
@@ -189,17 +189,17 @@ elseif &background == "light"
     endif
     hi StatusLine ctermbg=0 ctermfg=15 guibg=#959dcc guifg=fg gui=bold
     hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#aab0d7 guifg=fg gui=none
-    hi TabLine guibg=#aeb5d9 guifg=fg gui=underline
-    hi TabLineFill guibg=#aeb5d9 guifg=fg gui=underline
+    hi TabLine guibg=#cdcdcd guifg=fg gui=underline
+    hi TabLineFill guibg=#cdcdcd guifg=fg gui=underline
     hi TabLineSel guibg=bg guifg=fg gui=bold
     hi Title guifg=fg gui=bold
     hi VertSplit ctermbg=7 ctermfg=0 guibg=#aab0d7 guifg=fg gui=none
     if version >= 700
-        hi Visual ctermbg=7 ctermfg=0 guibg=#bdbec4 gui=none
+        hi Visual ctermbg=7 ctermfg=0 guibg=#c0c0c0 gui=none
     else
-        hi Visual ctermbg=7 ctermfg=0 guibg=#bdbec4 guifg=fg gui=none
+        hi Visual ctermbg=7 ctermfg=0 guibg=#c0c0c0 guifg=fg gui=none
     endif    
-    hi VisualNOS guibg=bg guifg=#9c9da5 gui=bold,underline
+    hi VisualNOS guibg=bg guifg=#a0a0a0 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
     hi WildMenu guibg=#ffff00 guifg=fg gui=bold
 

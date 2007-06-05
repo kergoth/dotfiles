@@ -8,8 +8,6 @@ ScriptID SourceID Filename
 69 6273 project
 294 6210 Align.vim
 489 6763 manpageview.vim
-642 7080 GetLatestVimScripts.vim
-642 7080 Decho.vim
 670 6208 plugin/visincr.vim
 746 5662 plugin/cmdalias.vim
 748 4319 HelpExtractor.vim
@@ -35,6 +33,9 @@ ScriptID SourceID Filename
 1656 7072 plugins/quilt.vim
 1690 6933 plugins/IndentConsistencyCop.vim
 1691 6330 plugins/IndentConsistencyCopAutoCmds.vim
+
+" General Plugins
+1876 7142 plugins/securemodelines.vim
 
 " Indent
 1830 6885 html.vim

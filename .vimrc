@@ -46,7 +46,6 @@
 "   ggqgG - reformat entire file
 "   gwap - reformat paragraph
 "   gg=G - reindent entire file
-"   \o - Insert changelog entry (for the 'changelog' filetype)
 " }}}
 
 if v:version < 600
@@ -406,13 +405,9 @@ set secure
 set nocompatible
 set nodigraph
 
-" Enable modelines for secure versions of Vim
-if v:version >= 604
-  set modeline
-  set modelines=5
-else
-  set nomodeline
-endif
+" Reliant upon securemodelines.vim
+set modelines=5
+set nomodeline
 
 " Fast terminal, bump sidescroll to 1
 set sidescroll=1
@@ -516,7 +511,7 @@ set shortmess=atItToO
 "  uhex      Show unprintable characters hexadecimal as <xx>
 "            instead of using ^C and ~C.
 set display+=lastline
-set display+=uhex
+" set display+=uhex
 
 " Buffer switching behaviors
 " useopen   If included, jump to the first open window that
@@ -758,7 +753,14 @@ if &term !~ '^screen'
 endif
 
 if &t_Co > 2 || has('gui_running')
-  set background=dark
+  if exists('g:colors_name')
+    set g:colors_name=
+  endif
+  if has('gui_running')
+    set background?
+  else
+    set background=dark
+  endif
 
   " Sane color scheme selection.  Baycomb looks like crap
   " with less than 88 colors.
@@ -906,6 +908,7 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 let g:debianfullname = 'Chris Larson'
 let g:debianemail = 'clarson@kergoth.com'
 let g:Tb_MinSize = 1

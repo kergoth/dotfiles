@@ -1,4 +1,4 @@
-*NERD_commenter.txt*         Plugin for commenting code            v203
+*NERD_commenter.txt*         Plugin for commenting code            v204
 
 
                         NERD COMMENTER REFERENCE MANUAL~
@@ -829,6 +829,14 @@ to get illegal syntax when uncommenting them.
 ==============================================================================
 6. Changelog                                              *NERD_com-changelog*
 
+2.0.4
+    - Added support for verilog_systemverilog and systemverilog filetypes
+      (Thanks to Alexey for the email)
+    - Added support for fstab, thanks to Lizendir for the email.
+    - Added support for the smarty filetype.
+    - Improved the delimiters for eruby.
+    - Added dummy support for changelog filetype.
+
 2.0.3
     - Added dummy support for the csv filetype (thx to Mark Woodward for the
       email)
@@ -1003,7 +1011,12 @@ issues and finally getting me off my ass about them :P
 Thanks to Mark Woodward for emailing me about the csv filetype.
 
 Thanks to fREW for emailing me with the /gentoo-package-(mask|keywords|use)/
-filetypes and the vo_base filetype.
+filetypes the vo_base filetype.
+
+Thanks to Alexey for emailing me about the verilog_systemverilog/systemverilog
+filetypes.
+
+Cheers to Lizendir for the email about the fstab filetype
 
 Cheers to myself for being the best looking man on Earth!
 
