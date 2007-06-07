@@ -1,1 +1,1 @@
-au BufNewFile,BufRead *.toc setf wowtoc
+au BufNewFile,BufRead *.toc setlocal filetype=wowtoc
