@@ -746,7 +746,7 @@ function s:SetUpForNewFiletype(filetype)
         "get them from &commentstring.
     else
         "print a disclaimer to the user :) 
-        call s:NerdEcho("Unknown filetype '".a:filetype."', setting delimiters by &commentstring.\nPleeeeease email the author of the NERD commenter with this filetype\nand its delimiters!", 0)
+        "call s:NerdEcho("Unknown filetype '".a:filetype."', setting delimiters by &commentstring.\nPleeeeease email the author of the NERD commenter with this filetype\nand its delimiters!", 0)
 
         "extract the delims from &commentstring 
         let left= substitute(&commentstring, '\(.*\)%s.*', '\1', '')
