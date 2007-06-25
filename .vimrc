@@ -170,7 +170,6 @@ endfun
 " }}}
 
 " Keymaps {{{
-map <leader>is :!ispell %<CR>          ' ISpell !
 map <leader>del :g/^\s*$/d<CR>         ' Delete Empty Lines
 map <leader>ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
 map <leader>ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
@@ -309,7 +308,7 @@ com! -complete=command Interp call RunInterp()
 " }}}
 
 " Fonts {{{
-set guifont=Leonine\ Sans\ Mono\ 10
+set guifont=Bitstream\ Vera\ Sans\ Mono\ 11
 " }}}
 
 " Indentation {{{
@@ -660,8 +659,8 @@ if has('autocmd') && v:version >= 700
     au BufEnter,BufWinEnter,BufLeave * if &ma == 0 | setlocal nospell | endif
     au BufEnter,BufWinEnter,BufLeave * if &fenc != '' && &fenc != &encoding | setlocal nospell | endif 
 
-    " Disable spell checking in the man page viewer
-    au FileType man setlocal nospell
+    " Disable spell checking in all filetypes but text by default
+    au FileType * setlocal nospell
   augroup END
 endif
 " }}}
@@ -756,11 +755,12 @@ if &t_Co > 2 || has('gui_running')
   if exists('g:colors_name')
     set g:colors_name=
   endif
-  if has('gui_running')
-    set background?
-  else
-    set background=dark
-  endif
+  "if has('gui_running')
+    "set background?
+  "else
+    "set background=dark
+  "endif
+  set background=dark
 
   " Sane color scheme selection.  Baycomb looks like crap
   " with less than 88 colors.
