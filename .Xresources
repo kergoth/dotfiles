@@ -22,10 +22,12 @@ Rxvt*scrollTtyOutput: false
 Rxvt*scrollKey: false
 Rxvt*geometry: 96x50
 
+Urxvt*depth: 32
+Urxvt*background: rgba:0000/0000/0000/dddd
+
 URxvt*termName: rxvt-unicode
-! URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=15
-URxvt.font: xft:Leonine Sans Mono:pixelsize=15,\
-                DejaVu Sans Mono:pixelsize=15
+URxvt*font: xft:DejaVu Sans Mono:pixelsize=15
+!URxvt.font: xft:Envy Code R:pixelsize=15
 URxvt.perl-ext: default,matcher
 URxvt.urlLauncher: firefox
 
