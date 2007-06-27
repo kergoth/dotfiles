@@ -308,7 +308,8 @@ com! -complete=command Interp call RunInterp()
 " }}}
 
 " Fonts {{{
-set guifont=Bitstream\ Vera\ Sans\ Mono\ 11
+"set guifont=Envy\ Code\ R\ 11
+set guifont=DejaVu\ Sans\ Mono\ 11
 " }}}
 
 " Indentation {{{
