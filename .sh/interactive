@@ -28,6 +28,10 @@ setup_interactive () {
     export SHELL
     eval `dircolors`
     alias ls='ls --color=auto -a -p'
+    # Coloring matching text in grep rocks
+    GREP_OPTIONS='--color=auto'
+    GREP_COLOR='1;31'
+    export GREP_OPTIONS GREP_COLOR
     case $TERM in
     rxvt*|Xterm|xterm|aterm|urxvt*)
         XTERM_SET='\[\033]0;\u@\h:\w\007\]'
@@ -44,8 +48,11 @@ setup_interactive () {
     if [ -n "$VIM" ]; then
         INVIM="[vim]"
     fi
+    if [ -n "$debian_chroot" ]; then
+        DEBIAN_CHROOT="[$debian_chroot]"
+    fi
     PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\]
-$CCASE$INVIM\w\$ "
+${DEBIAN_CHROOT}$CCASE$INVIM\w\$ "
     export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
     [ -z "$day" ] && day=`date +%A`
     printdayinfo $day
