@@ -9,4 +9,5 @@ alias cpe='clearprojexp'
 alias hd='od -t x1'
 alias mt='monotone'
 alias bb='bitbake'
-
+alias rem='remind'
+alias more='less'
