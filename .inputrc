@@ -22,7 +22,7 @@ set completion-ignore-case On
 set match-hidden-files Off
 
 # Vi-like movement/editing
-set editing-mode vi
+# set editing-mode vi
 
 $if mode=vi
     set keymap vi-insert
