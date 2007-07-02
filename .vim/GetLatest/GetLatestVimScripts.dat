@@ -1,5 +1,7 @@
 ScriptID SourceID Filename
 --------------------------
+642 7080 :AutoInstall: getscript.vba
+
 5 4884 doxygen.vim
 15 3420 ccase.vim
 31 6886 a.vim
@@ -64,6 +66,7 @@ ScriptID SourceID Filename
 1454 5795 colors/baycomb.vim
 1484 5356 colors/spectro.vim
 1778 6657 colors/wombat.vim
+1922 1 colors/ChocolatePapaya.vim
 
 " Soso colors
 368 6718 colors/oceandeep.vim
