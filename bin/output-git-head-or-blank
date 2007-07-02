@@ -1,0 +1,2 @@
+#!/bin/bash
+PS_GIT=$(git-symbolic-ref HEAD 2>/dev/null) && echo " #$(basename $PS_GIT)" && exit
