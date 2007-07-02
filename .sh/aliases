@@ -11,3 +11,5 @@ alias mt='monotone'
 alias bb='bitbake'
 alias rem='remind'
 alias more='less'
+
+alias gg='GREP_OPTIONS=--color=always git-grep'
