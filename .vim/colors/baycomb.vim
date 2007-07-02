@@ -332,7 +332,8 @@ elseif &background == "light"
     endif
     " BetterHi Comment    fg=darkyellow   bg=0x207ADA
     BetterHi Constant     fg=0x3A40AA
-    BetterHi Cursor       fg=0x5293D  bg=0xCADACA
+    BetterHi Cursor       fg=0xE8EBF0   bg=0x8FBF
+    " BetterHi Cursor       fg=0x5293D  bg=0xCADACA
     BetterHi CursorColumn bg=0x20B5FD
     BetterHi CursorLine   bg=0x20B5FD
     BetterHi Directory    fg=0xBBD0DF
