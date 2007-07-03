@@ -50,10 +50,11 @@ setup_interactive () {
     fi
     if [ -n "$debian_chroot" ]; then
         DEBIAN_CHROOT="[$debian_chroot]"
+    elif [ -r "/etc/debian_chroot" ]; then
+        DEBIAN_CHROOT="[$(cat /etc/debian_chroot)]"
     fi
-    PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\]
-${DEBIAN_CHROOT}$CCASE$INVIM\w\$(output-git-head-or-blank)\$ "
-    export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
+    PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
+    # export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
     [ -z "$day" ] && day=`date +%A`
     printdayinfo $day
     unset XTERM_SET CCASE VOBPATH INVIM
