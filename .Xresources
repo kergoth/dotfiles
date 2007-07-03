@@ -23,7 +23,7 @@ Rxvt*scrollKey: false
 Rxvt*geometry: 96x50
 
 Urxvt*depth: 32
-Urxvt*background: rgba:0000/0000/0000/dddd
+Urxvt*background: rgba:0000/0000/0000/eddd
 
 URxvt*termName: rxvt-unicode
 URxvt*font: xft:DejaVu Sans Mono:pixelsize=15
