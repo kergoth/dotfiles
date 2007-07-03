@@ -1,2 +1,37 @@
 #!/bin/bash
-PS_GIT=$(git-symbolic-ref HEAD 2>/dev/null) && echo " #$(basename $PS_GIT)" && exit
+
+branch=$(git-symbolic-ref HEAD 2>/dev/null)
+if [ $? -ne 0 ]; then
+    if [ -x .svn ]; then
+        rev=$(svn info 2>/dev/null|grep ^Revision|cut -d" " -f2)
+    else
+        branch=$(cat CVS/Tag 2>/dev/null | sed -e's,^.,,')
+    fi
+else
+    branch=$(basename $branch)
+    rev=$(git log --pretty=format:%h -1 2>/dev/null)
+fi
+
+if [ -n "$branch" ]; then
+    branch="#$branch"
+    sep1=" "
+fi
+
+if [ -n "$rev" ]; then
+    rev="$(echo \!$rev|sed -e's,^\\,,')"
+    sep1=" "
+fi
+
+echo "$sep1$branch$rev"
+
+# PS_GIT=$(git-symbolic-ref HEAD 2>/dev/null)
+# if [ -n "$PS_GIT" ]; then
+#     PS_GIT="#$(basename $PS_GIT)"
+#     PS_GITBASE=" "
+# fi
+# PS_GIT2=$(git log --pretty=format:%h -1 2>/dev/null)
+# if [ -n "$PS_GIT2" ]; then
+#     PS_GIT2="$(echo \!$PS_GIT2|sed -e's,^\\,,')"
+#     PS_GITBASE=" "
+# fi
+# echo "$PS_GITBASE$PS_GIT$PS_GIT2"
