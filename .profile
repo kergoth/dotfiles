@@ -1,8 +1,11 @@
 umask 022
 
-if [ -f ~/.bashrc ]; then
+if [ -r ~/.bashrc ]; then
     source ~/.bashrc
 fi
 
 . ~/.sh/env
-. ~/.sh/volatile
+
+if [ -r ~/.sh/volatile.$HOSTNAME ]; then
+    . ~/.sh/volatile.$HOSTNAME
+fi
