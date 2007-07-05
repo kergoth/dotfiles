@@ -1,0 +1,448 @@
+The people I've met who do great work... generally feel that they're stupid 
+and lazy, that their brain only works properly one day out of ten, and that 
+it's only a matter of time until they're found out.
+
+	Paul Graham
+	"Great Hackers" (later edited out) - http://xrl.us/ho9c
+%
+What they really mean is, don't get demoralized. Don't think that you can't
+do what other people can. And I agree you shouldn't underestimate your
+potential. People who've done great things tend to seem as if they were a
+race apart. And most biographies only exaggerate this illusion, partly due
+to the worshipful attitude biographers inevitably sink into, and partly
+because, knowing how the story ends, they can't help streamlining the plot
+till it seems like the subject's life was a matter of destiny, the mere
+unfolding of some innate genius. In fact I suspect if you had the sixteen
+year old Shakespeare or Einstein in school with you, they'd seem impressive,
+but not totally unlike your other friends.
+
+	Paul Graham
+	"What You'll Wish You'd Known" - http://www.paulgraham.com/hs.html
+%
+It could be that in Java's case I'm mistaken. It could be that a language
+promoted by one big company to undermine another, designed by a committee
+for a "mainstream" audience, hyped to the skies, and beloved of the
+DoD [= "Department of Defense"], happens nonetheless to be a clean,
+beautiful, powerful language that I would love programming in. It could be,
+but it seems very unlikely.
+
+	Paul Graham
+	"Java's Cover" - http://www.paulgraham.com/javacover.html
+%
+But for what it's worth, as a sort of time capsule, here's why I don't like the
+look of Java:
+
+1. It has been so energetically hyped. Real standards don't have to be
+promoted. No one had to promote C, or Unix, or HTML. A real standard tends to
+be already established by the time most people hear about it. On the hacker
+radar screen, Perl is as big as Java, or bigger, just on the strength of its
+own merits.
+
+	Paul Graham
+	"Java's Cover" - http://www.paulgraham.com/javacover.html
+%
+Bundling all these different types of work together in one department may be
+convenient administratively, but it's confusing intellectually. That's the
+other reason I don't like the name "computer science." Arguably the people
+in the middle are doing something like an experimental science. But the
+people at either end, the hackers and the mathematicians, are not actually
+doing science.
+
+The mathematicians don't seem bothered by this. They happily set to work
+proving theorems like the other mathematicians over in the math department,
+and probably soon stop noticing that the building they work in says
+"computer science" on the outside. But for the hackers this label is a
+problem. If what they're doing is called science, it makes them feel they
+ought to be acting scientific. So instead of doing what they really want to
+do, which is to design beautiful software, hackers in universities and
+research labs feel they ought to be writing research papers.
+
+	Paul Graham
+	"Hackers and Painters" - http://www.paulgraham.com/hp.html
+%
+For example, I was taught in college that one ought to figure out a program
+completely on paper before even going near a computer. I found that I did
+not program this way. I found that I liked to program sitting in front of a
+computer, not a piece of paper. Worse still, instead of patiently writing
+out a complete program and assuring myself it was correct, I tended to just
+spew out code that was hopelessly broken, and gradually beat it into shape.
+Debugging, I was taught, was a kind of final pass where you caught typos and
+oversights. The way I worked, it seemed like programming consisted of
+debugging.
+
+For a long time I felt bad about this, just as I once felt bad that I didn't
+hold my pencil the way they taught me to in elementary school. If I had only
+looked over at the other makers, the painters or the architects, I would
+have realized that there was a name for what I was doing: sketching. As far
+as I can tell, the way they taught me to program in college was all wrong.
+You should figure out programs as you're writing them, just as writers and
+painters and architects do.
+
+	Paul Graham
+	"Hackers and Painters" - http://www.paulgraham.com/hp.html
+%
+I only discovered this myself quite recently. When Yahoo bought Viaweb, they
+asked me what I wanted to do. I had never liked the business side very much,
+and said that I just wanted to hack. When I got to Yahoo, I found that what
+hacking meant to them was implementing software, not designing it.
+Programmers were seen as technicians who translated the visions (if that is
+the word) of product managers into code.
+
+This seems to be the default plan in big companies. They do it because it
+decreases the standard deviation of the outcome. Only a small percentage of
+hackers can actually design software, and it's hard for the people running a
+company to pick these out. So instead of entrusting the future of the
+software to one brilliant hacker, most companies set things up so that it is
+designed by committee, and the hackers merely implement the design.
+
+If you want to make money at some point, remember this, because this is one
+of the reasons startups win. Big companies want to decrease the standard
+deviation of design outcomes because they want to avoid disasters. But when
+you damp oscillations, you lose the high points as well as the low. This is
+not a problem for big companies, because they don't win by making great
+products. Big companies win by sucking less than other big companies.
+
+	Paul Graham
+%
+It's not true that those who can't do, teach (some of the best hackers I
+know are professors), but it is true that there are a lot of things that
+those who teach can't do. Research imposes constraining caste restrictions.
+In any academic field there are topics that are ok to work on and others
+that aren't. Unfortunately the distinction between acceptable and forbidden
+topics is usually based on how intellectual the work sounds when described
+in research papers, rather than how important it is for getting good
+results. The extreme case is probably literature; people studying literature
+rarely say anything that would be of the slightest use to those producing
+it.
+
+Though the situation is better in the sciences, the overlap between the kind
+of work you're allowed to do and the kind of work that yields good languages
+is distressingly small. (Olin Shivers has grumbled eloquently about this.)
+For example, types seem to be an inexhaustible source of research papers,
+despite the fact that static typing seems to preclude true macros-- without
+which, in my opinion, no language is worth using.
+
+	Paul Graham
+	"The Hundred-Year Language" - http://www.paulgraham.com/hundred.html
+%
+To the popular press, "hacker" means someone who breaks into computers.
+Among programmers it means a good programmer. But the two meanings are
+connected. To programmers, "hacker" connotes mastery in the most literal
+sense: someone who can make a computer do what he wants-- whether the
+computer wants to or not.
+
+To add to the confusion, the noun "hack" also has two senses. It can be
+either a compliment or an insult. It's called a hack when you do something
+in an ugly way. But when you do something so clever that you somehow beat
+the system, that's also called a hack. The word is used more often in the
+former than the latter sense, probably because ugly solutions are more
+common than brilliant ones.
+
+Believe it or not, the two senses of "hack" are also connected. Ugly and
+imaginative solutions have something in common: they both break the rules.
+And there is a gradual continuum between rule breaking that's merely ugly
+(using duct tape to attach something to your bike) and rule breaking that is
+brilliantly imaginative (discarding Euclidean space).
+
+	Paul Graham
+	The Word "Hacker" - http://www.paulgraham.com/gba.html
+%
+Hacking predates computers. When he was working on the Manhattan Project,
+Richard Feynman used to amuse himself by breaking into safes containing
+secret documents. This tradition continues today. When we were in grad
+school, a hacker friend of mine who spent too much time around MIT had his
+own lock picking kit. (He now runs a hedge fund, a not unrelated
+enterprise.)
+
+It is sometimes hard to explain to authorities why one would want to do such
+things. Another friend of mine once got in trouble with the government for
+breaking into computers. This had only recently been declared a crime, and
+the FBI found that their usual investigative technique didn't work. Police
+investigation apparently begins with a motive. The usual motives are few:
+drugs, money, sex, revenge. Intellectual curiosity was not one of the
+motives on the FBI's list. Indeed, the whole concept seemed foreign to them.
+
+	Paul Graham
+	The Word "Hacker" - http://www.paulgraham.com/gba.html
+%
+When you read what the founding fathers had to say for themselves, they
+sound more like hackers. "The spirit of resistance to government," Jefferson
+wrote, "is so valuable on certain occasions, that I wish it always to be
+kept alive."
+
+Imagine an American president saying that today. Like the remarks of an
+outspoken old grandmother, the sayings of the founding fathers have
+embarrassed generations of their less confident successors. They remind us
+where we come from. They remind us that it is the people who break rules
+that are the source of America's wealth and power.
+
+Those in a position to impose rules naturally want them to be obeyed. But be
+careful what you ask for. You might get it.
+
+	Paul Graham
+	The Word "Hacker" - http://www.paulgraham.com/gba.html
+%
+If you work your way down the Forbes 400 making an x next to the name of
+each person with an MBA, you'll learn something important about business
+school. You don't even hit an MBA till number 22, Phil Knight, the CEO of
+Nike. There are only four MBAs in the top 50. What you notice in the Forbes
+400 are a lot of people with technical backgrounds. Bill Gates, Steve Jobs,
+Larry Ellison, Michael Dell, Jeff Bezos, Gordon Moore. The rulers of the
+technology business tend to come from technology, not business. So if you
+want to invest two years in something that will help you succeed in
+business, the evidence suggests you'd do better to learn how to hack than
+get an MBA.
+
+	Paul Graham
+	How to Start a Startup - http://www.paulgraham.com/start.html
+%
+The aphorism "you can't tell a book by its cover" originated in the times
+when books were sold in plain cardboard covers, to be bound by each
+purchaser according to his own taste. In those days, you couldn't tell a
+book by its cover. But publishing has advanced since then: present-day
+publishers work hard to make the cover something you can tell a book by.
+
+I spend a lot of time in bookshops and I feel as if I have by now learned to
+understand everything publishers mean to tell me about a book, and perhaps a
+bit more. The time I haven't spent in bookshops I've spent mostly in front
+of computers, and I feel as if I've learned, to some degree, to judge
+technology by its cover as well. It may be just luck, but I've saved myself
+from a few technologies that turned out to be real stinkers.
+
+	Paul Graham
+	Java's Cover - http://www.paulgraham.com/javacover.html
+%
+2. It's aimed low. In the original Java white paper, Gosling explicitly says
+Java was designed not to be too difficult for programmers used to C. It was
+designed to be another C++: C plus a few ideas taken from more advanced
+languages. Like the creators of sitcoms or junk food or package tours,
+Java's designers were consciously designing a product for people not as
+smart as them. Historically, languages designed for other people to use have
+been bad: Cobol, PL/I, Pascal, Ada, C++. The good languages have been those
+that were designed for their own creators: C, Perl, Smalltalk, Lisp.
+
+	Paul Graham
+	Java's Cover - http://www.paulgraham.com/javacover.html
+%
+The wrong people like it. The programmers I admire most are not, on the
+whole, captivated by Java. Who does like Java? Suits, who don't know one
+language from another, but know that they keep hearing about Java in the
+press; programmers at big companies, who are amazed to find that there is
+something even better than C++; and plug-and-chug undergrads, who are ready
+to like anything that might get them a job (will this be on the test?).
+These people's opinions change with every wind.
+
+	Paul Graham
+	Java's Cover - http://www.paulgraham.com/javacover.html
+%
+Let's start by acknowledging one external factor that does affect the
+popularity of a programming language. To become popular, a programming
+language has to be the scripting language of a popular system. Fortran and
+Cobol were the scripting languages of early IBM mainframes. C was the
+scripting language of Unix, and so, later, was Perl. Tcl is the scripting
+language of Tk. Java and Javascript are intended to be the scripting
+languages of web browsers.
+
+Lisp is not a massively popular language because it is not the scripting
+language of a massively popular system. What popularity it retains dates
+back to the 1960s and 1970s, when it was the scripting language of MIT. A
+lot of the great programmers of the day were associated with MIT at some
+point. And in the early 1970s, before C, MIT's dialect of Lisp, called
+MacLisp, was one of the only programming languages a serious hacker would
+want to use.
+
+	Paul Graham
+	"Being Popular" - http://www.paulgraham.com/popular.html
+%
+One thing hackers like is brevity. Hackers are lazy, in the same way that
+mathematicians and modernist architects are lazy: they hate anything
+extraneous. It would not be far from the truth to say that a hacker about to
+write a program decides what language to use, at least subconsciously, based
+on the total number of characters he'll have to type. If this isn't
+precisely how hackers think, a language designer would do well to act as if
+it were.
+
+It is a mistake to try to baby the user with long-winded expressions that
+are meant to resemble English. Cobol is notorious for this flaw. A hacker
+would consider being asked to write
+
+	add x to y giving z
+
+instead of
+
+	z = x+y
+
+as something between an insult to his intelligence and a sin against God.
+
+	Paul Graham / "Being Popular" - http://www.paulgraham.com/popular.html
+%
+I think that, like species, languages will form evolutionary trees, with
+dead-ends branching off all over. We can see this happening already. Cobol,
+for all its sometime popularity, does not seem to have any intellectual
+descendants. It is an evolutionary dead-end-- a Neanderthal language.
+
+I predict a similar fate for Java. People sometimes send me mail saying,
+"How can you say that Java won't turn out to be a successful language? It's
+already a successful language." And I admit that it is, if you measure
+success by shelf space taken up by books on it (particularly individual
+books on it), or by the number of undergrads who believe they have to learn
+it to get a job. When I say Java won't turn out to be a successful language,
+I mean something more specific: that Java will turn out to be an
+evolutionary dead-end, like Cobol.
+
+This is just a guess. I may be wrong. My point here is not to dis Java, but
+to raise the issue of evolutionary trees and get people asking, where on the
+tree is language X? The reason to ask this question isn't just so that our
+ghosts can say, in a hundred years, I told you so. It's because staying
+close to the main branches is a useful heuristic for finding languages that
+will be good to program in now.
+
+	Paul Graham - http://www.paulgraham.com/hundred.html
+%
+This isn't just something that happens with programming languages. It's a
+general historical trend. As technologies improve, each generation can do
+things that the previous generation would have considered wasteful. People
+thirty years ago would be astonished at how casually we make long distance
+phone calls. People a hundred years ago would be even more astonished that a
+package would one day travel from Boston to New York via Memphis.
+
+	Paul Graham - "The Hundred-Year Language"
+	http://www.paulgraham.com/hundred.html
+%
+In the discussion about issues raised by Revenge of the Nerds on the LL1
+mailing list, Paul Prescod wrote something that stuck in my mind.
+
+   Python's goal is regularity and readability, not succinctness.  
+  
+On the face of it, this seems a rather damning thing to claim about a
+programming language. As far as I can tell, succinctness = power. If so, then
+substituting, we get 
+
+   Python's goal is regularity and readability, not power.  
+   
+and this doesn't seem a tradeoff (if it is a tradeoff) that you'd want to make.
+It's not far from saying that Python's goal is not to be effective as a
+programming language.
+
+    Paul Graham - "Succinctness is Power"
+    http://www.paulgraham.com/power.html
+%
+Bureaucrats by their nature are the exact opposite sort of people from startup
+investors. The idea of them making startup investments is comic. It would be
+like mathematicians running Vogue-- or perhaps more accurately, Vogue editors
+running a math journal.
+
+    Paul Graham - "How to Be Silicon Valley"
+    http://www.paulgraham.com/siliconvalley.html
+%
+If you go to see Silicon Valley, what you'll see are buildings. But it's the
+people that make it Silicon Valley, not the buildings. I read occasionally
+about attempts to set up "technology parks" in other places, as if the active
+ingredient of Silicon Valley were the office space. An article about Sophia
+Antipolis bragged that companies there included Cisco, Compaq, IBM, NCR, and
+Nortel. Don't the French realize these aren't startups?
+
+Building office buildings for technology companies won't get you a silicon
+valley, because the key stage in the life of a startup happens before they want
+that kind of space. The key stage is when they're three guys operating out of
+an apartment. Wherever the startup is when it gets funded, it will stay. The
+defining quality of Silicon Valley is not that Intel or Apple or Google have
+offices there, but that they were started there.
+
+So if you want to reproduce Silicon Valley, what you need to reproduce is those
+two or three founders sitting around a kitchen table deciding to start a
+company. And to reproduce that you need those people.
+
+    Paul Graham - "How to Be Silicon Valley"
+    http://www.paulgraham.com/siliconvalley.html
+%
+One of the most dangerous illusions you get from school is the idea that doing
+great things requires a lot of discipline. Most subjects are taught in such a
+boring way that it's only by discipline that you can flog yourself through
+them. So I was surprised when, early in college, I read a quote by Wittgenstein
+saying that he had no self-discipline and had never been able to deny himself
+anything, not even a cup of coffee.
+    Now I know a number of people who do great work, and it's the same with 
+all of them. They have little discipline. They're all terrible procrastinators
+and find it almost impossible to make themselves do anything they're not
+interested in. One still hasn't sent out his half of the thank-you notes from
+his wedding, four years ago. Another has 26,000 emails in her inbox.
+    I'm not saying you can get away with zero self-discipline. You probably need
+about the amount you need to go running. I'm often reluctant to go running, but
+once I do, I enjoy it. And if I don't run for several days, I feel ill. It's
+the same with people who do great things. They know they'll feel bad if they
+don't work, and they have enough discipline to get themselves to their desks to
+start working. But once they get started, interest takes over, and discipline
+is no longer necessary.
+
+    Paul Graham - http://www.paulgraham.com/hs.html
+%
+Your teachers are always telling you to behave like adults. I wonder if they'd
+like it if you did. You may be loud and disorganized, but you're very docile
+compared to adults. If you actually started acting like adults, it would be
+just as if a bunch of adults had been transposed into your bodies. Imagine the
+reaction of an FBI agent or taxi driver or reporter to being told they had to
+ask permission to go the bathroom, and only one person could go at a time. To
+say nothing of the things you're taught. If a bunch of actual adults suddenly
+found themselves trapped in high school, the first thing they'd do is form a
+union and renegotiate all the rules with the administration.
+
+    Paul Graham
+    "What You'll Wish You'd Known" (Advice for High School Kids)
+    http://www.paulgraham.com/hs.html#fb10
+%
+I disagree with your generalization that physicists are smarter than professors
+of French Literature.
+-------------------------------------------------------------------------------
+
+Try this thought experiment. A dictator takes over the US and sends all the
+professors to re-education camps. The physicists are told they have to learn
+how to write academic articles about French literature, and  the French
+literature professors are told they have to learn how to write original physics
+papers. If they fail, they'll be shot. Which group is more worried?
+
+We have some evidence here: the famous parody that physicist Alan Sokal got
+published in Social Text. How long did it take him to master the art of writing
+deep-sounding nonsense well enough to fool the editors? A couple weeks?
+
+What do you suppose would be the odds of a literary theorist getting a parody
+of a physics paper published in a physics journal?
+
+    Paul Graham
+    Re: What You Can't Say
+    http://www.paulgraham.com/resay.html
+%
+Imagine, for example, what would happen if the government decided to commission
+someone to write an official Great American Novel. First there'd be a huge
+ideological squabble over who to choose. Most of the best writers would be
+excluded for having offended one side or the other. Of the remainder, the smart
+ones would refuse such a job, leaving only a few with the wrong sort of
+ambition. The committee would choose one at the height of his career—that is,
+someone whose best work was behind him—and hand over the project with copious
+free advice about how the book should show in positive terms the strength and
+diversity of the American people, etc, etc.
+
+The unfortunate writer would then sit down to work with a huge weight of
+expectation on his shoulders. Not wanting to blow such a public commission,
+he'd play it safe. This book had better command respect, and the way to ensure
+that would be to make it a tragedy. Audiences have to be enticed to laugh, but
+if you kill people they feel obliged to take you seriously. As everyone knows,
+America plus tragedy equals the Civil War, so that's what it would have to be
+about. Better stick to the standard cartoon version that the Civil War was
+about slavery; people would be confused otherwise; plus you can show a lot of
+strength and diversity. When finally completed twelve years later, the book
+would be a 900-page pastiche of existing popular novels—roughly Gone with the
+Wind plus Roots. But its bulk and celebrity would make it a bestseller for a
+few months, until blown out of the water by a talk-show host's autobiography.
+The book would be made into a movie and thereupon forgotten, except by the more
+waspish sort of reviewers, among whom it would be a byword for bogusness like
+Milli Vanilli or Battlefield Earth.
+
+Maybe I got a little carried away with this example. And yet is this not at
+each point the way such a project would play out? The government knows better
+than to get into the novel business, but in other fields where they have a
+natural monopoly, like nuclear waste dumps, aircraft carriers, and regime
+change, you'd find plenty of projects isomorphic to this one—and indeed, plenty
+that were less successful.
+
+    -- Paul Graham, http://www.paulgraham.com/marginal.html
