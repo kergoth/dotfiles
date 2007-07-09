@@ -8,6 +8,9 @@
 [diff]
 	color = auto
 
+[status]
+	color = auto
+
 [alias]
 	ci = commit
 	co = checkout
