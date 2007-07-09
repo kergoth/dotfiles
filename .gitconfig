@@ -1,0 +1,13 @@
+[user]
+	name = Chris Larson
+	email = clarson@kergoth.com
+
+[show]
+	color = auto
+
+[diff]
+	color = auto
+
+[alias]
+	ci = commit
+	co = checkout
