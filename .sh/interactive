@@ -2,29 +2,6 @@ inpath() {
     which $1 >/dev/null 2>&1
 }
 
-printdayinfo () {
-    day=$1
-    if test -z "$day"; then return 1; fi
-    (
-        if ! inpath fmt; then cmd="cat"; else cmd="fmt"; fi
-        while read dayname desc; do
-            if [ "$day" = "$dayname" ]; then
-                echo $day $desc | $cmd
-                echo
-            fi
-        done
-    ) <<END
-Sunday		sucks, because tomorrow is monday.
-Monday		is when everything breaks for no apparent reason, creating so many problems it takes you until friday to get back to normal.
-Tuesday		sucks, because it follows monday.
-Wednesday	sucks, because it is only half way through the week.
-Thursday	sucks, because it isnt friday.
-Friday		sucks, because it should be the weekend, but you're stuck working anyway.
-Saturday	is the only day of the week that doesn't suck.
-END
-    return 0
-}
-
 setup_interactive () {
     export SHELL
     eval `dircolors`
@@ -62,8 +39,11 @@ setup_interactive () {
     fi
     PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
     # export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
-    [ -z "$day" ] && day=`date +%A`
-    printdayinfo $day
+    if [ -z "$day" ]; then
+        day="`date +%A|tr A-Z a-z`"
+    fi
+    fortune ~/.fortunes/days.$day 2>/dev/null
+    echo
     unset XTERM_SET CCASE VOBPATH INVIM
 
     if [ -z "$TERMCAP" ]; then
