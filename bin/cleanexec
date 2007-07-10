@@ -1,0 +1,6 @@
+#!/bin/bash
+if file "$1" | grep -q executable; then
+	setexec + "$1"
+else
+	setexec - "$1"
+fi
