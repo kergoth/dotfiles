@@ -13,4 +13,7 @@ alias rem='remind'
 alias more='less'
 alias pgrep='pgrep -l'
 
+alias mtn-add='mtn list unknown | xargs mtn add'
+alias mtn-drop='mtn drop --missing'
+
 alias gg='GREP_OPTIONS=--color=always git-grep'
