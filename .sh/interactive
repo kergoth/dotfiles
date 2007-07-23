@@ -4,8 +4,6 @@ inpath() {
 
 setup_interactive () {
     export SHELL
-    eval `dircolors`
-    alias ls='ls --color=auto -a -p'
 
     # Coloring matching text in grep rocks
     GREP_OPTIONS='--color=auto'
@@ -37,7 +35,15 @@ setup_interactive () {
     elif [ -r "/etc/debian_chroot" ]; then
         DEBIAN_CHROOT="[$(cat /etc/debian_chroot)]"
     fi
-    PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
+    # Check for color support in this terminal
+    if tput setaf 1 >&/dev/null; then
+        eval `dircolors`
+        alias ls='ls --color=auto -a -p'
+        PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
+    else
+        alias ls='ls -a -p'
+        PS1="$XTERM_SET\u@\h ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
+    fi
     # export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
     if [ -z "$day" ]; then
         day="`date +%A|tr A-Z a-z`"
