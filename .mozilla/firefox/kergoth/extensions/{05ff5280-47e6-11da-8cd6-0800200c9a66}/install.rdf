@@ -6,12 +6,14 @@
   
     <em:id>{05ff5280-47e6-11da-8cd6-0800200c9a66}</em:id>
     <em:name>Sourceforge Direct Download</em:name>
-    <em:version>0.4</em:version>
+    <em:version>0.5</em:version>
     <em:description>Use your favorite SF download mirror automatically</em:description>
     <em:creator>Alex Badea</em:creator>
     <em:contributor>Pablo Custo (es-AR locale)</em:contributor>
     <em:contributor>Compte Free (fr-FR locale)</em:contributor>
     <em:contributor>SlovakSoft (sk-SK locale)</em:contributor>
+    <em:contributor>Xavier Robin (fr-FR locale)</em:contributor>
+    <em:contributor>Tobias M. (de-DE locale)</em:contributor>
 
     <em:optionsURL>chrome://sfdirectdl/content/settings.xul</em:optionsURL>
 
@@ -21,8 +23,8 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>1.6</em:maxVersion>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>2.0.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 

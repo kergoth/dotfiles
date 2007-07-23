@@ -1,3 +1,3 @@
-skin	global	phoenity	jar:chrome/phoenity_firefox-1.5.906-fx.jar!/global/
-skin	browser	phoenity	jar:chrome/phoenity_firefox-1.5.906-fx.jar!/browser/
-skin	mozapps	phoenity	jar:chrome/phoenity_firefox-1.5.906-fx.jar!/mozapps/
+skin	global	phoenity	jar:chrome/tmp-12.xpi!/global/
+skin	browser	phoenity	jar:chrome/tmp-12.xpi!/browser/
+skin	mozapps	phoenity	jar:chrome/tmp-12.xpi!/mozapps/

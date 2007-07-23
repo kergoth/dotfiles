@@ -16,3 +16,8 @@ pref("extensions.infolister.template.uri", "chrome://infolister/locale/templates
 pref("extensions.infolister.template.custom", "");//XXX
 pref("extensions.infolister.hide_menu_item", false);
 pref("extensions.infolister.autosave", false);
+
+pref("extensions.infolister.logging.enabled", false);
+pref("extensions.infolister.logging.xpi_links", false);
+
+pref("extensions.{3f0da09b-c1ab-40c5-8d7f-53f475ac3fe8}.description", "chrome://infolister/locale/infolister.properties");

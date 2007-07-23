@@ -1,16 +1,16 @@
 <!ENTITY sfdirectdl.openOriginal "Ouvrir lien original">
 <!ENTITY sfdirectdl.openOriginal.accesskey "o">
 
-<!ENTITY sfdirectdl.options.title "Options Sourceforge Direct Download">
-<!ENTITY sfdirectdl.options.mirror.group "Selection du mirroir">
-<!ENTITY sfdirectdl.options.mirror.label "Utilisez le miroir suivant pour les t�l�chargements (choix de mirroirs al�atoire si la case reste vide):">
-<!ENTITY sfdirectdl.options.mirrorlist "Mirroirs disponibles">
+<!ENTITY sfdirectdl.options.title "Options de Sourceforge Direct Download">
+<!ENTITY sfdirectdl.options.mirror.group "Sélection du miroir">
+<!ENTITY sfdirectdl.options.mirror.label "Utiliser le miroir suivant pour les téléchargements (choix aléatoire d'un miroir à chaque téléchargement si la case reste vide)&#160;:">
+<!ENTITY sfdirectdl.options.mirrorlist "Miroirs disponibles">
 
-<!ENTITY sfdirectdl.update.label "Mise � jour">
+<!ENTITY sfdirectdl.update.label "Mise à jour">
 <!ENTITY sfdirectdl.update.accesskey "u">
-<!ENTITY sfdirectdl.update.tooltip "Mettez � jour la liste de miroirs disponibles">
+<!ENTITY sfdirectdl.update.tooltip "Mettre à jour la liste de miroirs disponibles">
 
-<!ENTITY sfdirectdl.updatestatus.init "Cliquez sur 'mise � jour' afin d'obtenir la liste des mirroirs.">
-<!ENTITY sfdirectdl.updatestatus.done "Liste de miroirs charg�e.">
+<!ENTITY sfdirectdl.updatestatus.init "Cliquez sur «mise à jour» afin d'obtenir la liste des miroirs.">
+<!ENTITY sfdirectdl.updatestatus.done "Liste de miroirs chargée.">
 <!ENTITY sfdirectdl.updatestatus.error "Erreur">
-<!ENTITY sfdirectdl.updatestatus.loading "Chargement de la liste des mirroirs...">
+<!ENTITY sfdirectdl.updatestatus.loading "Chargement de la liste des miroirs…">

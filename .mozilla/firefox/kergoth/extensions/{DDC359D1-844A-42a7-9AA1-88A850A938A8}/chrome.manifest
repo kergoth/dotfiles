@@ -1,12 +1,60 @@
+# package
+content	dta	jar:chrome/dta.jar!/content/
+skin	dta	classic/1.0 jar:chrome/dta.jar!/skin/classic/
+locale	dta	en-US	jar:chrome/dta.jar!/locale/en-US/
 
+locale	dta	ar-SA	jar:chrome/dta.jar!/locale/ar-SA/
+locale	dta	bg-BG	jar:chrome/dta.jar!/locale/bg-BG/
+locale	dta	cs-CZ	jar:chrome/dta.jar!/locale/cs-CZ/
+locale	dta	cy-GB	jar:chrome/dta.jar!/locale/cy-GB/
+locale	dta	da-DK	jar:chrome/dta.jar!/locale/da-DK/
+locale	dta	de-DE	jar:chrome/dta.jar!/locale/de-DE/
+locale	dta	el-GR	jar:chrome/dta.jar!/locale/el-GR/
+locale	dta	es-ES	jar:chrome/dta.jar!/locale/es-ES/
+locale	dta	fi-FI	jar:chrome/dta.jar!/locale/fi-FI/
+locale	dta	fr-FR	jar:chrome/dta.jar!/locale/fr-FR/
+locale	dta	gl-ES	jar:chrome/dta.jar!/locale/gl-ES/
+locale	dta	he-IL	jar:chrome/dta.jar!/locale/he-IL/
+locale	dta	hr-HR	jar:chrome/dta.jar!/locale/hr-HR/
+locale	dta	hu-HU	jar:chrome/dta.jar!/locale/hu-HU/
+locale	dta	it-IT	jar:chrome/dta.jar!/locale/it-IT/
+locale	dta	ja-JP	jar:chrome/dta.jar!/locale/ja-JP/
+locale	dta	ko-KR	jar:chrome/dta.jar!/locale/ko-KR/
+locale	dta	mk-MK	jar:chrome/dta.jar!/locale/mk-MK/
+locale	dta	ms-MY	jar:chrome/dta.jar!/locale/ms-MY/
+locale	dta	nl-NL	jar:chrome/dta.jar!/locale/nl-NL/
+locale	dta	pl-PL	jar:chrome/dta.jar!/locale/pl-PL/
+locale	dta	pt-BR	jar:chrome/dta.jar!/locale/pt-BR/
+locale	dta	ro-RO	jar:chrome/dta.jar!/locale/ro-RO/
+locale	dta	ru-RU	jar:chrome/dta.jar!/locale/ru-RU/
+locale 	dta	sl-SI	jar:chrome/dta.jar!/locale/sl-SI/
+locale	dta	sk-SK	jar:chrome/dta.jar!/locale/sk-SK/
+locale	dta	sq-AL	jar:chrome/dta.jar!/locale/sq-AL/
+locale	dta	sv-SE	jar:chrome/dta.jar!/locale/sv-SE/
+locale	dta	th-TH	jar:chrome/dta.jar!/locale/th-TH/
+locale	dta	tr-TR	jar:chrome/dta.jar!/locale/tr-TR/
+locale	dta	uk-UA	jar:chrome/dta.jar!/locale/uk-UA/
+locale	dta	zh-CN	jar:chrome/dta.jar!/locale/zh-CN/
+locale	dta	zh-TW	jar:chrome/dta.jar!/locale/zh-TW/
+
+content	dta-pref-style	jar:chrome/dta.jar!/content/opzioni/style/	platform
+content	dta-down-style	jar:chrome/dta.jar!/content/dta/style/	platform
+
+# overlay
 overlay	chrome://browser/content/browser.xul	chrome://dta/content/menu.xul
 overlay	chrome://browser/content/browser.xul	chrome://dta/content/barra.xul
 overlay	chrome://navigator/content/navigator.xul	chrome://dta/content/menu.xul
 overlay	chrome://mozapps/content/downloads/unknownContentType.xul	chrome://dta/content/saveas.xul
-content	dta	jar:chrome/dta.jar!/content/dta/
+overlay	chrome://browser/content/browser.xul	chrome://dta/content/privacy/overlayBrowser.xul
+overlay chrome://browser/content/preferences/sanitize.xul	chrome://dta/content/privacy/overlaySanitizeUI.xul
+overlay chrome://browser/content/sanitize.xul	chrome://dta/content/privacy/overlaySanitizeUI.xul
+overlay chrome://browser/content/sanitize.xul	chrome://dta/content/privacy/overlaySanitizeCode.xul
+overlay chrome://messenger/content/mailWindowOverlay.xul	chrome://dta/content/mailmenu.xul
+overlay	chrome://messenger/content/mailWindowOverlay.xul	chrome://dta/content/mailbarra.xul
 
-skin	dta	classic/1.0	jar:chrome/dta.jar!/skin/classic/dta/
+# styles
 style	chrome://browser/content/browser.xul	chrome://dta/skin/stile.css
 style	chrome://global/content/customizeToolbar.xul	chrome://dta/skin/stile.css
 
-locale	dta	en-US	jar:chrome/dta.jar!/locale/en-US/dta/
+
+

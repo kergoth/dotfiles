@@ -1,85 +1,115 @@
 <?xml version="1.0"?>
+
 <RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
-         xmlns:NC="http://home.netscape.com/NC-rdf#"
-         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <RDF:Description RDF:about="rdf:netscape-compatiblity"
-                   em:id="{3db10fab-e461-4c80-8b97-957ad5f8ea47}"
-                   em:minVersion="8.0"
-                   em:maxVersion="8.1" />
-  <RDF:Description RDF:about="urn:mozilla:extension:file:fgupdater.jar"
-                   em:package="content/"
-                   em:skin="skin/classic/">
-    <em:locale>content/en-US/</em:locale>
-    <em:locale>locale/ca-AD/</em:locale>
-    <em:locale>locale/cs-CZ/</em:locale>
-    <em:locale>locale/da-DK/</em:locale>
-    <em:locale>locale/de-DE/</em:locale>
-    <em:locale>locale/es-ES/</em:locale>
-    <em:locale>locale/fi-FI/</em:locale>
-    <em:locale>locale/fr-FR/</em:locale>
-    <em:locale>locale/hu-HU/</em:locale>
-    <em:locale>locale/it-IT/</em:locale>
-    <em:locale>locale/ja/</em:locale>
-    <em:locale>locale/nb-NO/</em:locale>
-    <em:locale>locale/nl-NL/</em:locale>
-    <em:locale>locale/pl-PL/</em:locale>
-    <em:locale>locale/pt-BR/</em:locale>
-    <em:locale>locale/pt-PT/</em:locale>
-    <em:locale>locale/ru-RU/</em:locale>
-    <em:locale>locale/sk-SK/</em:locale>
-    <em:locale>locale/sv-SE/</em:locale>
-    <em:locale>locale/tr-TR/</em:locale>
-    <em:locale>locale/zh-CN/</em:locale>
-    <em:locale>locale/zh-TW/</em:locale>
-  </RDF:Description>
-  <RDF:Description RDF:about="rdf:mozilla-compatibility"
-                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
-                   em:minVersion="1.4"
-                   em:maxVersion="1.8" />
-  <RDF:Description RDF:about="rdf:firefox-compatiblity"
-                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                   em:minVersion="0.7"
-                   em:maxVersion="3.0" />
-  <RDF:Description RDF:about="rdf:flock-compatiblity"
-                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
-                   em:minVersion="1.0+"
-                   em:maxVersion="1.0+" />
-  <RDF:Description RDF:about="urn:mozilla:install-manifest"
-                   em:id="filtersetg@updater"
-                   em:version="0.3.0.3"
-                   em:type="2"
-                   em:name="Adblock Filterset.G Updater"
-                   em:description="Synchronizes Adblock with Filterset.G"
-                   em:creator="Reid Rankin, Michael McDonald"
-                   em:homepageURL="http://www.pierceive.com/"
-                   em:aboutURL="chrome://fgupdater/content/about.xul"
-                   em:iconURL="chrome://fgupdater/skin/icon.png"
-                   em:optionsURL="chrome://fgupdater/content/settings.xul">
-    <em:targetApplication RDF:resource="rdf:firefox-compatiblity"/>
-    <em:targetApplication RDF:resource="rdf:mozilla-compatibility"/>
-    <em:targetApplication RDF:resource="rdf:netscape-compatiblity"/>
-    <em:targetApplication RDF:resource="rdf:flock-compatiblity"/>
-    <em:contributor>--TRANSLATIONS BY--</em:contributor>
-    <em:contributor>Luana Di Muzio (it-IT)</em:contributor>
-    <em:contributor>Stefan Pukallus (de-DE)</em:contributor>
-    <em:contributor>KAMI (hu-HU)</em:contributor>
-    <em:contributor>jojaba (fr-FR)</em:contributor>
-    <em:contributor>Jose Sun (zh-TW)</em:contributor>
-    <em:contributor>Blackdire and rickcart(zh-CN)</em:contributor>
-    <em:contributor>Victory and Premier (ja)</em:contributor>
-    <em:contributor>zefranc (pt-PT)</em:contributor>
-    <em:contributor>urko (es-ES)</em:contributor>
-    <em:contributor>Akilles (fi-FI)</em:contributor>
-    <em:contributor>Ge0rge (cs-CZ)</em:contributor>
-    <em:contributor>Marius (nb-NO)</em:contributor>
-    <em:contributor>fernph (pt-BR)</em:contributor>
-    <em:contributor>Zaffo (nl-NL)</em:contributor>
-    <em:contributor>fernph (pl-PL)</em:contributor>
-    <em:contributor>jorsal (da-DK)</em:contributor>
-    <em:contributor>Viper (ru-RU)</em:contributor>
-    <em:contributor>Jacen (sk-SK)</em:contributor>
-    <em:contributor>RaCMaX (ca-AD)</em:contributor>
-    <em:contributor>jameka (sv-SE)</em:contributor>
-    <em:file RDF:resource="urn:mozilla:extension:file:fgupdater.jar"/>
-  </RDF:Description>
+		 xmlns:NC="http://home.netscape.com/NC-rdf#"
+		 xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	
+	<RDF:Description RDF:about="rdf:firefox-compatiblity"
+				   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+				   em:minVersion="1.0"
+				   em:maxVersion="3.0a2" />	
+
+	<RDF:Description RDF:about="rdf:mozilla-compatibility"
+				   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+				   em:minVersion="1.4"
+				   em:maxVersion="1.8" />
+
+	<RDF:Description RDF:about="rdf:netscape-compatiblity"
+				   em:id="{3db10fab-e461-4c80-8b97-957ad5f8ea47}"
+				   em:minVersion="8.0"
+				   em:maxVersion="8.1.2" />
+	
+	<RDF:Description RDF:about="rdf:flock-compatiblity"
+				   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+				   em:minVersion="1.0+"
+				   em:maxVersion="1.0+" />
+	
+	<RDF:Description RDF:about="urn:mozilla:install-manifest"
+				   em:id="filtersetg@updater"
+				   em:version="0.3.1.0"
+				   em:type="2"
+				   em:name="Adblock Filterset.G Updater"
+				   em:description="Synchronizes Adblock with Filterset.G"
+				   em:creator="Reid Rankin, Michael McDonald"
+				   em:homepageURL="http://www.pierceive.com/"
+				   em:aboutURL="chrome://fgupdater/content/settings.xul"
+				   em:iconURL="chrome://fgupdater/skin/icon.png"
+				   em:optionsURL="chrome://fgupdater/content/settings.xul">
+		
+		<em:targetApplication RDF:resource="rdf:firefox-compatiblity"/>
+		<em:targetApplication RDF:resource="rdf:mozilla-compatibility"/>
+		<em:targetApplication RDF:resource="rdf:netscape-compatiblity"/>
+		<em:targetApplication RDF:resource="rdf:flock-compatiblity"/>
+		
+		<em:contributor>--TRANSLATIONS BY--</em:contributor>
+		<em:contributor>Luana Di Muzio (it-IT)</em:contributor>
+		<em:contributor>Stefan Pukallus (de-DE)</em:contributor>
+		<em:contributor>KAMI (hu-HU)</em:contributor>
+		<em:contributor>jojaba (fr-FR)</em:contributor>
+		<em:contributor>Jose Sun (zh-TW)</em:contributor>
+		<em:contributor>Blackdire and rickcart(zh-CN)</em:contributor>
+		<em:contributor>Victory and Premier (ja)</em:contributor>
+		<em:contributor>zefranc (pt-PT)</em:contributor>
+		<em:contributor>urko (es-ES)</em:contributor>
+		<em:contributor>Akilles (fi-FI)</em:contributor>
+		<em:contributor>Ge0rge (cs-CZ)</em:contributor>
+		<em:contributor>Marius (nb-NO)</em:contributor>
+		<em:contributor>fernph (pt-BR)</em:contributor>
+		<em:contributor>Zaffo (nl-NL)</em:contributor>
+		<em:contributor>Leszek(teo) (pl-PL)</em:contributor>
+		<em:contributor>jorsal (da-DK)</em:contributor>
+		<em:contributor>Viper (ru-RU)</em:contributor>
+		<em:contributor>Jacen (sk-SK)</em:contributor>
+		<em:contributor>RaCMaX (ca-AD)</em:contributor>
+		<em:contributor>jameka (sv-SE)</em:contributor>
+        <em:contributor>Q8Bond007 (ar)</em:contributor>
+        <em:contributor>Andrew O. Shadoura (be-BY)</em:contributor>
+        <em:contributor>emz (bg-BG)</em:contributor>
+        <em:contributor>Nameless (es-AR, es-CL)</em:contributor>
+        <em:contributor>navid, bahramm (fa-IR)</em:contributor>
+        <em:contributor>Krcko (hr-HR)</em:contributor>
+        <em:contributor>Andrei (ro-RO)</em:contributor>
+
+		<em:file RDF:resource="urn:mozilla:extension:file:fgupdater.jar"/>
+	</RDF:Description>
+	
+	
+	<RDF:Description RDF:about="urn:mozilla:extension:file:fgupdater.jar"
+				   em:package="content/"
+				   em:skin="skin/classic/">
+			<em:locale>content/en-US/</em:locale>
+            <em:locale>locale/ar/</em:locale>
+            <em:locale>locale/be-BY/</em:locale>
+            <em:locale>locale/bg-BG/</em:locale>
+			<em:locale>locale/ca-AD/</em:locale>
+			<em:locale>locale/cs-CZ/</em:locale>
+			<em:locale>locale/da-DK/</em:locale>
+			<em:locale>locale/de-DE/</em:locale>
+            <em:locale>locale/es-AR/</em:locale>
+            <em:locale>locale/es-CL/</em:locale>
+			<em:locale>locale/es-ES/</em:locale>
+			<em:locale>locale/et-EE/</em:locale>
+            <em:locale>locale/fa-IR/</em:locale>
+			<em:locale>locale/fi-FI/</em:locale>
+			<em:locale>locale/fr-FR/</em:locale>
+            <em:locale>locale/hr-HR/</em:locale>
+			<em:locale>locale/hu-HU/</em:locale>
+			<em:locale>locale/it-IT/</em:locale>
+			<em:locale>locale/ja-JP/</em:locale>
+			<em:locale>locale/ko-KR/</em:locale>
+			<em:locale>locale/nb-NO/</em:locale>
+			<em:locale>locale/nl-NL/</em:locale>
+			<em:locale>locale/pl-PL/</em:locale>
+			<em:locale>locale/pt-BR/</em:locale>
+			<em:locale>locale/pt-PT/</em:locale>
+            <em:locale>locale/ro-RO/</em:locale>
+			<em:locale>locale/ru-RU/</em:locale>
+			<em:locale>locale/sk-SK/</em:locale>
+			<em:locale>locale/sl-SI/</em:locale>
+			<em:locale>locale/sv-SE/</em:locale>
+			<em:locale>locale/tr-TR/</em:locale>
+			<em:locale>locale/zh-CN/</em:locale>
+			<em:locale>locale/zh-TW/</em:locale>
+	</RDF:Description>
+	
 </RDF:RDF>

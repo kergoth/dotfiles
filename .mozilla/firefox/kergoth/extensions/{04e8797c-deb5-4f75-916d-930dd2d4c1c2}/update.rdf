@@ -5,20 +5,20 @@
     <r:Seq>
       <r:li>
         <r:Description>
-          <version>1.5.0.1</version>
+          <version>3.1</version>
           <targetApplication>
             <r:Description>
               <id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</id>
-              <minVersion>0.7</minVersion>
-              <maxVersion>1.5</maxVersion>
-              <updateLink>https://www.chipmark.com/chipmark-v.1.5.0.1.xpi</updateLink>
+              <minVersion>1.0</minVersion>
+              <maxVersion>2.0.0.*</maxVersion>
+              <updateLink>https://www.chipmark.com/chipmark-v.3.1.xpi</updateLink>
             </r:Description>
           </targetApplication>
         </r:Description>
       </r:li>
     </r:Seq>
   </updates>
-  <version>1.5.0.1</version>
-  <updateLink>https://www.chipmark.com/chipmark-v.1.5.0.1.xpi</updateLink>
+  <version>3.1</version>
+  <updateLink>https://www.chipmark.com/chipmark-v.3.1.xpi</updateLink>
 </r:Description>
 </r:RDF>

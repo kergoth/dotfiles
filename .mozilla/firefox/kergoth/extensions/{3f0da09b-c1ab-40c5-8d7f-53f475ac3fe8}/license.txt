@@ -23,7 +23,7 @@ Contributor(s):
     Torisugari (original code for listing add-ons and for FTP upload)
     Ralf Hasse (icons)
     Rowne Mastaile
-    wig_out_on_me (testing and other help)
+    Robert Strong (testing and other help)
     
   Based on a template created with newext.py script, which in 
   turn is based on work by Nathan R. Yergler <yergler.net>

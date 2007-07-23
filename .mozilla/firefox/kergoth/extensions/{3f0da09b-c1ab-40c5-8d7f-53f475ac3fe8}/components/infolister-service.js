@@ -249,9 +249,10 @@ InfoListerServiceImpl.prototype = {
     }
   },
 
-  getXPILinks: function(aCallback) {
-    // don't run this twice per session
-    if("components/xpiLinks.js" in loadedScripts) {
+  getXPILinks: function(aCallback, aForce) {
+    // don't run this twice per session, unless forced (by a caller in the Options dialog)
+    // XXX also if last collection was cancelled
+    if("components/xpiLinks.js" in loadedScripts && !aForce) {
       if(aCallback instanceof Function)
         aCallback();
       return;
@@ -264,14 +265,18 @@ InfoListerServiceImpl.prototype = {
     if(!this._data)
       this.getDataAsXML();
     var exts = infoElt.getElementsByTagName("ext");
+    var themes = infoElt.getElementsByTagName("theme");
+    var addons = [];
+    for(var i=0; i<exts.length; i++) addons.push(exts.item(i));
+    for(var i=0; i<themes.length; i++) addons.push(themes.item(i));
 
     try {
       // xxx anyWindow
       var progressDialog = InfoListerWindows.anyWindow.openDialog(
         "chrome://infolister/content/progress.xul", "", 
         "chrome, centerscreen", 
-        function(aProgressMeter) { 
-          collectXPILinks(exts, aProgressMeter, 
+        function(aProgressCallback) { 
+          gLinksCollector.collect(addons, aProgressCallback,
             function() {
               if(progressDialog && !progressDialog.closed)
                 progressDialog.close();
@@ -280,7 +285,7 @@ InfoListerServiceImpl.prototype = {
             }
           );
         },
-        function() { xpiLinksProgress.cancel(); }
+        function() { gLinksCollector.cancel(); }
       );
     } catch(e) {
       ILHelpers.dumpException(e);
@@ -478,6 +483,17 @@ var prefObserver = {
           this._timer = ILHelpers.createInstance("timer;1", "nsITimer");
         this._timer.init(this, 400, CI.nsITimer.TYPE_ONE_SHOT);
       }
+      
+      
+      if(branch == "logging") {
+        var f;
+        if(aData == "logging.enabled")
+          f = LOG;
+        else if(aData == "logging.xpi_links" && "LOG_xpiLinks" in globalObject)
+          f = LOG_xpiLinks;
+        if(f)
+          f.enabled = ILPrefs.getBoolPref(aData);
+      }
     } else if(aTopic == "timer-callback") {
         delete this._timer;
         var os = ILHelpers.getService("observer-service;1", "nsIObserverService");
@@ -669,7 +685,11 @@ InfoListerChannel.prototype = {
 
 
 function LOG(aMsg) {
-  //ILHelpers.dump(aMsg);
+  var self = arguments.callee;
+  if(!("enabled" in self))
+    self.enabled = ILPrefs.getBoolPref("logging.enabled");
+  if(self.enabled)
+    ILHelpers.dump(aMsg);
 }
 
 // constructors for objects we want to XPCOMify

@@ -47,7 +47,7 @@ var linkWatch =
 		if (!(linkHref = targ.getAttribute("sfOrigHref")))
 			linkHref = targ.getAttribute("href");
 		
-		var re = /^http:\/\/prdownloads\.s(ource)f(orge)\.net\/(.*?)\/(.*?)\?download$/i;
+		var re = /^http:\/\/prdownloads\.s(ource)?f(orge)?\.net\/(.*?)\/(.*?)(\?download)?$/i;
 		if (linkHref.match(re)) {
 			targ.setAttribute("sfOrigHref", linkHref);
 			targ.href = "http://" + mirror + "dl.s" +

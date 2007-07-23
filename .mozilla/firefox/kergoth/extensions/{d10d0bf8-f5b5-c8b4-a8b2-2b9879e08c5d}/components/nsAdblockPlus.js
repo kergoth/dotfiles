@@ -15,7 +15,7 @@
  *
  * The Initial Developer of the Original Code is
  * Wladimir Palant.
- * Portions created by the Initial Developer are Copyright (C) 2006
+ * Portions created by the Initial Developer are Copyright (C) 2006-2007
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -26,17 +26,31 @@ const ABP_PACKAGE = "/adblockplus.mozdev.org";
 const ABP_EXTENSION_ID = "{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}";
 const ABP_CONTRACTID = "@mozilla.org/adblockplus;1";
 const ABP_CID = Components.ID("{79c889f6-f5a2-abba-8b27-852e6fec4d56}");
+const ABP_PROT_CONTRACTID = "@mozilla.org/network/protocol;1?name=abp";
+const ABP_PROT_CID = Components.ID("{6a5987fd-93d8-049c-19ac-b9bfe88718fe}");
 const locales = [
 	"en-US",
+	"ar",
+	"ca-AD",
+	"cs-CZ",
 	"da-DK",
 	"de-DE",
+	"el-GR",
 	"en-GB",
 	"es-ES",
+	"et-EE",
+	"fa-IR",
 	"fi-FI",
 	"fr-FR",
+	"fy-NL",
+	"hr-HR",
+	"hu-HU",
 	"it-IT",
-	"ja",
+	"ja-JP",
+	"ko-KR",
 	"lt-LT",
+	"mn-MN",
+	"nb-NO",
 	"nl-NL",
 	"pl-PL",
 	"pt-BR",
@@ -44,8 +58,12 @@ const locales = [
 	"ro-RO",
 	"ru-RU",
 	"sk-SK",
+	"sl-SI",
 	"sv-SE",
+	"th-TH",
 	"tr-TR",
+	"uk-UA",
+	"vi-VN",
 	"zh-CN",
 	"zh-TW",
 	null
@@ -58,35 +76,39 @@ const loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
  * Module object
  */
 
-const module =
-{
-	registerSelf: function(compMgr, fileSpec, location, type)
-	{
+const module = {
+	registerSelf: function(compMgr, fileSpec, location, type) {
 		compMgr = compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
 		compMgr.registerFactoryLocation(ABP_CID, 
 										"Adblock content policy",
 										ABP_CONTRACTID,
 										fileSpec, location, type);
+		compMgr.registerFactoryLocation(ABP_PROT_CID,
+										"ABP protocol handler",
+										ABP_PROT_CONTRACTID,
+										fileSpec, location, type);
 
+		// Need to delete category before removing, nsIContentPolicies in Gecko 1.9 listens to
+		// category changes
 		var catman = Components.classes["@mozilla.org/categorymanager;1"]
 													 .getService(Components.interfaces.nsICategoryManager);
+		catman.deleteCategoryEntry("content-policy", ABP_CONTRACTID, true);
 		catman.addCategoryEntry("content-policy", ABP_CONTRACTID,
 							ABP_CONTRACTID, true, true);
 	},
 
-	unregisterSelf: function(compMgr, fileSpec, location)
-	{
+	unregisterSelf: function(compMgr, fileSpec, location) {
 		compMgr = compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
 
 		compMgr.unregisterFactoryLocation(ABP_CID, fileSpec);
+		compMgr.unregisterFactoryLocation(ABP_PROT_CID, fileSpec);
 		var catman = Components.classes["@mozilla.org/categorymanager;1"]
 													 .getService(Components.interfaces.nsICategoryManager);
 		catman.deleteCategoryEntry("content-policy", ABP_CONTRACTID, true);
 	},
 
-	getClassObject: function(compMgr, cid, iid)
-	{
-		if (!cid.equals(ABP_CID))
+	getClassObject: function(compMgr, cid, iid) {
+		if (!cid.equals(ABP_CID) && !cid.equals(ABP_PROT_CID))
 			throw Components.results.NS_ERROR_NO_INTERFACE;
 
 		if (!iid.equals(Components.interfaces.nsIFactory))
@@ -95,14 +117,12 @@ const module =
 		return factory;
 	},
 
-	canUnload: function(compMgr)
-	{
+	canUnload: function(compMgr) {
 		return true;
 	}
 };
 
-function NSGetModule(comMgr, fileSpec)
-{
+function NSGetModule(comMgr, fileSpec) {
 	return module;
 }
 
@@ -141,11 +161,21 @@ const factory = {
  */
 
 const Node = Components.interfaces.nsIDOMNode;
+const Element = Components.interfaces.nsIDOMElement;
 const Window = Components.interfaces.nsIDOMWindow;
+const ImageLoadingContent = Components.interfaces.nsIImageLoadingContent;
 
-const windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-var lastBrowser = null;
-var lastWindow  = null;
+var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+															 .getService(Components.interfaces.nsIWindowMediator);
+var windowWatcher= Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+														 .getService(Components.interfaces.nsIWindowWatcher);
+try {
+	var headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"]
+															 .getService(Components.interfaces.nsIMsgHeaderParser);
+}
+catch(e) {
+	headerParser = null;
+}
 
 /*
  * Content policy class definition
@@ -160,12 +190,16 @@ const abp = {
 		if (iid.equals(Components.interfaces.nsIContentPolicy))
 			return policy;
 
+		if (iid.equals(Components.interfaces.nsIProtocolHandler))
+			return protocol;
+
 		if (iid.equals(Components.interfaces.nsISupports) ||
 				iid.equals(Components.interfaces.nsIAdblockPlus))
 			return this;
 
 		if (!iid.equals(Components.interfaces.nsIClassInfo) &&
-				!iid.equals(Components.interfaces.nsISecurityCheckedComponent))
+				!iid.equals(Components.interfaces.nsISecurityCheckedComponent) &&
+				!iid.equals(Components.interfaces.nsIDOMWindow))
 			dump("Adblock Plus: abp.QI to an unknown interface: " + iid + "\n");
 
 		throw Components.results.NS_ERROR_NO_INTERFACE;
@@ -182,10 +216,10 @@ const abp = {
 
 	// Retrieves a subscription
 	getSubscription: function(id) {
-		if (!prefs.knownSubscriptions.has(id))
+		if (!(id in prefs.knownSubscriptions))
 			return null;
 
-		return prefs.knownSubscriptions.get(id);
+		return prefs.knownSubscriptions[id];
 	},
 
 	// Retrieves a subscription by list index
@@ -199,15 +233,15 @@ const abp = {
 	// Updates an external subscription and creates it if necessary
 	updateExternalSubscription: function(id, title, patterns, length) {
 		var subscription;
-		if (prefs.knownSubscriptions.has(id))
-			subscription = prefs.knownSubscriptions.get(id);
+		if (id in prefs.knownSubscriptions)
+			subscription = prefs.knownSubscriptions[id];
 		else
 			subscription = prefs.createExternalSubscription(id, title);
 
 		if (!subscription.external)
 			return false;
 
-		subscription.lastDownload = subscription.lastSuccess = (new Date().getTime() / 1000).toFixed(0);
+		subscription.lastDownload = subscription.lastSuccess = parseInt(new Date().getTime() / 1000);
 		subscription.downloadStatus = "synchronize_ok";
 		subscription.patterns = [];
 		for (var i = 0; i < patterns.length; i++) {
@@ -241,6 +275,7 @@ const abp = {
 			return false;
 		
 		synchronizer.notifyListeners(prefs.subscriptions[index], "remove");
+
 		prefs.subscriptions.splice(index, 1);
 		prefs.initMatching();
 		prefs.savePatterns();
@@ -248,28 +283,84 @@ const abp = {
 		return true;
 	},
 
+	addPatterns: function(patterns, length) {
+		for (var i = 0; i < patterns.length; i++) {
+			var text = patterns[i];
+			var found = false;
+			for (var j = 0; j < prefs.userPatterns.length; j++)
+				if (prefs.userPatterns[j].text == text)
+					found = true;
+
+			if (!found) {
+				var pattern = prefs.patternFromText(text);
+				if (pattern)
+					prefs.userPatterns.push(pattern);
+			}
+		}
+	
+		synchronizer.notifyListeners(patterns, "add");
+
+		prefs.initMatching();
+		prefs.savePatterns();
+	},
+
+	removePatterns: function(patterns, length) {
+		for (var i = 0; i < patterns.length; i++) {
+			var text = patterns[i];
+			for (var j = 0; j < prefs.userPatterns.length; j++)
+				if (prefs.userPatterns[j].text == text)
+					prefs.userPatterns.splice(j--, 1);
+		}
+	
+		synchronizer.notifyListeners(patterns, "remove");
+
+		prefs.initMatching();
+		prefs.savePatterns();
+	},
+
+	// Allows an address to be loaded once regardless the filters
+	allowOnce: function(address) {
+		policy.allowOnce = address;
+	},
+
 	// Returns installed Adblock Plus version
 	getInstalledVersion: function() {
-		// Try Firefox Extension Manager
-		try {
-			var item = this.getUpdateItem();
-			if (item)
-				return item.version;
-		} catch (e) {}
-
-		// Try InstallTrigger
-		try {
-			var browser = windowMediator.getMostRecentWindow("navigator:browser");
-			if (browser)
-				return browser.InstallTrigger.getVersion(ABP_PACKAGE);
-		} catch (e) {}
-	
-		return null;
+		return "0.7.5.1";
 	},
 
 	//
 	// Custom methods
 	//
+
+	// Adds a new subscription to the list
+	addSubscription: function(url, title, autoDownload, disabled) {
+		if (typeof autoDownload == "undefined")
+			autoDownload = true;
+		if (typeof disabled == "undefined")
+			disabled = false;
+
+		var subscription = (url in prefs.knownSubscriptions ? prefs.knownSubscriptions[url] : prefs.subscriptionFromURL(url));
+		if (!subscription)
+			return;
+
+		var found = false;
+		for (var j = 0; j < prefs.subscriptions.length; j++)
+			if (prefs.subscriptions[j] == subscription)
+				found = true;
+
+		if (found)
+			return;
+
+		subscription.title = title;
+		subscription.disabled = disabled;
+		subscription.autoDownload = autoDownload;
+		prefs.subscriptions.push(subscription);
+
+		synchronizer.notifyListeners(subscription, "add");
+		synchronizer.execute(subscription);
+
+		prefs.savePatterns();
+	},
 
 	// Returns update item for Adblock Plus (only when extension manager is available)
 	getUpdateItem: function() {
@@ -324,16 +415,14 @@ const abp = {
 			}
 		}
 		else {
-			var browser = windowMediator.getMostRecentWindow("navigator:browser");
-			dlg = browser.openDialog("chrome://adblockplus/content/settings.xul", "_blank", "chrome,centerscreen,resizable,dialog=no");
+			dlg = windowWatcher.openWindow(null, "chrome://adblockplus/content/settings.xul", "_blank", "chrome,centerscreen,resizable,dialog=no", null);
 			dlg.addEventListener("post-load", func, false);
 		}
 	},
 
 	// Loads a URL in the browser window
 	loadInBrowser: function(url) {
-		var windowService = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-		var currentWindow = windowService.getMostRecentWindow("navigator:browser");
+		var currentWindow = windowMediator.getMostRecentWindow("navigator:browser");
 		if (currentWindow) {
 			try {
 				currentWindow.delayedOpenTab(url);
@@ -341,6 +430,11 @@ const abp = {
 			catch(e) {
 				currentWindow.loadURI(url);
 			}
+		}
+		else {
+			var protocolService = Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+																			.getService(Components.interfaces.nsIExternalProtocolService);
+			protocolService.loadUrl(url);
 		}
 	},
 
@@ -356,7 +450,9 @@ const abp = {
 		var ret = this.params;
 		this.params = null;
 		return ret;
-	}
+	},
+
+	headerParser: headerParser
 };
 abp.wrappedJSObject = abp;
 
@@ -368,8 +464,34 @@ abp.wrappedJSObject = abp;
 function init() {
 	initialized = true;
 
-	loader.loadSubScript('chrome://adblockplus/content/security.js');
+	if ("nsIChromeRegistrySea" in Components.interfaces) {
+		// Autoregister chrome in SeaMonkey
+		var registry = Components.classes["@mozilla.org/chrome/chrome-registry;1"]
+														 .getService(Components.interfaces.nsIChromeRegistrySea);
+
+		try {
+			registry.installPackage("jar:resource:/chrome/adblockplus.jar!/content/", false);
+		} catch(e) {}
+
+		try {
+			registry.installSkin("jar:resource:/chrome/adblockplus.jar!/skin/classic/", false, true);
+		} catch(e) {}
+
+		for (var i = 0; i < locales.length; i++) {
+			if (!locales[i])
+				continue;
+
+			try {
+				registry.installLocale("jar:resource:/chrome/adblockplus.jar!/locale/" + locales[i] + "/", false);
+			} catch(e) {}
+		}
+	}
+
+	abp.versionComparator = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
+																		.createInstance(Components.interfaces.nsIVersionComparator);
+
 	loader.loadSubScript('chrome://adblockplus/content/utils.js');
+	loader.loadSubScript('chrome://adblockplus/content/protocol.js');
 	loader.loadSubScript('chrome://adblockplus/content/policy.js');
 	loader.loadSubScript('chrome://adblockplus/content/data.js');
 	loader.loadSubScript('chrome://adblockplus/content/prefs.js');
@@ -391,12 +513,9 @@ function init() {
 			}
 		} catch(e) {}
 	}
-
-	// Install sidebar in Mozilla Suite if necessary
-	installSidebar();
 }
 
-// Try to fix selected language (Mozilla and SeaMonkey don't do it correctly)
+// Try to fix selected locale (SeaMonkey doesn't do it correctly)
 function fixPackageLocale() {
 	try {
 		var locale = "en-US";
@@ -428,24 +547,8 @@ function fixPackageLocale() {
 		if (!select)
 			select = locales[0];
 
-		var iface = ("nsIChromeRegistrySea" in Components.interfaces ? Components.interfaces.nsIChromeRegistrySea : Components.interfaces.nsIXULChromeRegistry);
 		var registry = Components.classes["@mozilla.org/chrome/chrome-registry;1"]
-														 .getService(iface);
-		try {
-			registry.selectLocaleForPackage(select, "adblockplus", true);
-		} catch (e) {}
-	} catch(e) {}
-}
-
-// Adds the sidebar to the Customize tabs dialog in Mozilla Suite/Seamonkey
-function installSidebar() {
-	try {
-		var branch = prefService.QueryInterface(Components.interfaces.nsIPrefBranch);
-		var customizeURL = branch.getCharPref("sidebar.customize.all_panels.url");
-		if (/adblockplus/.test(customizeURL))
-			return; // Adblock Plus sidebar is already installed
-
-		customizeURL += " chrome://adblockplus/content/local-panels.rdf";
-		branch.setCharPref("sidebar.customize.all_panels.url", customizeURL);
+														 .getService(Components.interfaces.nsIChromeRegistrySea);
+		registry.selectLocaleForPackage(select, "adblockplus", true);
 	} catch(e) {}
 }

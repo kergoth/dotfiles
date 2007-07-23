@@ -1,4 +1,5 @@
-<!--   *** LICENSE - LICENZA ***
+<!-- ***** BEGIN LICENSE BLOCK *****
+ * Version: GPL 2.0
  *
  * DTA - DownThemAll!
  * Copyright (C) 2004-2006 Federico Parodi and Stefano Verna
@@ -23,6 +24,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
+ *
  * DTA - DownThemAll!
  * Copyright (C) 2004-2006 Federico Parodi e Stefano Verna
  *
@@ -44,4 +46,4 @@
  * della Licenza Pubblica Generica GNU;  in caso contrario, se ne puÚ
  * ottenere  una scrivendo  alla Free  Software Foundation,  Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
--->
+ * ***** END LICENSE BLOCK ***** -->

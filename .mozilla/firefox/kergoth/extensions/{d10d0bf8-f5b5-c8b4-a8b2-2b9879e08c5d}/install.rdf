@@ -1,90 +1,41 @@
 <?xml version="1.0"?>
-
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-		xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-
-	<Description about="urn:mozilla:install-manifest">
-	
-	<em:id>{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}</em:id>
-	<em:version>0.7</em:version>
-	
-	<!-- Target Application this extension can install into, 
-		with minimum and maximum supported versions. --> 
-	
-	<!-- FireFox -->
-	<em:targetApplication>
-		<Description>
-		<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-		<em:minVersion>0.9</em:minVersion>
-		<em:maxVersion>3.0</em:maxVersion>
-		</Description>
-	</em:targetApplication>
-	
-	<!-- Mozilla -->
-	<em:targetApplication>
-		<Description>
-		<em:id>{86c18b42-e466-45a9-ae7a-9b95ba6f5640}</em:id>
-		<em:minVersion>1.7</em:minVersion>
-		<em:maxVersion>1.8</em:maxVersion>
-		</Description>
-	</em:targetApplication>
-	
-	<!-- Netscape -->
-	<em:targetApplication>
-		<Description>
-		<em:id>{3db10fab-e461-4c80-8b97-957ad5f8ea47}</em:id>
-		<em:minVersion>8.0</em:minVersion>
-		<em:maxVersion>8.1</em:maxVersion>
-		</Description>
-	</em:targetApplication>
-	
-	<!-- Flock -->
-	<em:targetApplication>
-		<Description>
-		<em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
-		<em:minVersion>0.4</em:minVersion>
-		<em:maxVersion>1.0+</em:maxVersion>
-		</Description>
-	</em:targetApplication>
-	
-	<!-- Front End MetaData -->
-	<em:name>Adblock Plus</em:name>
-	<em:description>Ads were yesterday!</em:description>
-	<em:creator>Wladimir Palant</em:creator>
-	<em:homepageURL>http://adblockplus.mozdev.org</em:homepageURL>
-	
-	<!-- Front End Integration Hooks (used by Extension Manager)-->
-	<em:iconURL>chrome://adblockplus/skin/adblockplus.png</em:iconURL>
-	<em:aboutURL>chrome://adblockplus/content/about.xul</em:aboutURL>
-	<em:optionsURL>chrome://adblockplus/content/settings.xul</em:optionsURL>
-	
-	<!-- Packages, Skins and Locales that this extension registers -->
-	<em:file>
-		<Description about="urn:mozilla:extension:file:adblockplus.jar">
-			<em:package>content/</em:package>
-			<em:skin>skin/classic/</em:skin>
-			<em:locale>locale/en-US/</em:locale>
-			<em:locale>locale/da-DK/</em:locale>
-			<em:locale>locale/de-DE/</em:locale>
-			<em:locale>locale/en-GB/</em:locale>
-			<em:locale>locale/es-ES/</em:locale>
-			<em:locale>locale/fi-FI/</em:locale>
-			<em:locale>locale/fr-FR/</em:locale>
-			<em:locale>locale/it-IT/</em:locale>
-			<em:locale>locale/ja/</em:locale>
-			<em:locale>locale/lt-LT/</em:locale>
-			<em:locale>locale/nl-NL/</em:locale>
-			<em:locale>locale/pl-PL/</em:locale>
-			<em:locale>locale/pt-BR/</em:locale>
-			<em:locale>locale/pt-PT/</em:locale>
-			<em:locale>locale/ro-RO/</em:locale>
-			<em:locale>locale/ru-RU/</em:locale>
-			<em:locale>locale/sk-SK/</em:locale>
-			<em:locale>locale/sv-SE/</em:locale>
-			<em:locale>locale/tr-TR/</em:locale>
-			<em:locale>locale/zh-CN/</em:locale>
-			<em:locale>locale/zh-TW/</em:locale>
-		</Description>
-	</em:file>
-	</Description>  
-</RDF>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$.HRAI2"
+                   em:id="{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}"
+                   em:minVersion="1.0"
+                   em:maxVersion="1.5a" />
+  <RDF:Description RDF:about="rdf:#$dIRAI2"
+                   em:id="songbird@songbirdnest.com"
+                   em:minVersion="0.2"
+                   em:maxVersion="0.3" />
+  <RDF:Description RDF:about="rdf:#$8IRAI2"
+                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   em:minVersion="0.5"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}"
+                   em:version="0.7.5.1"
+                   em:name="Adblock Plus"
+                   em:description="Ads were yesterday!"
+                   em:creator="Wladimir Palant"
+                   em:homepageURL="http://adblockplus.org/"
+                   em:iconURL="chrome://adblockplus/skin/adblockplus.png"
+                   em:aboutURL="chrome://adblockplus/content/about.xul"
+                   em:optionsURL="chrome://adblockplus/content/settings.xul">
+    <em:targetApplication RDF:resource="rdf:#$VHRAI2"/>
+    <em:targetApplication RDF:resource="rdf:#$.HRAI2"/>
+    <em:targetApplication RDF:resource="rdf:#$3IRAI2"/>
+    <em:targetApplication RDF:resource="rdf:#$8IRAI2"/>
+    <em:targetApplication RDF:resource="rdf:#$dIRAI2"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$3IRAI2"
+                   em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   em:minVersion="1.5"
+                   em:maxVersion="3.0a1" />
+  <RDF:Description RDF:about="rdf:#$VHRAI2"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.5"
+                   em:maxVersion="3.0a7" />
+</RDF:RDF>

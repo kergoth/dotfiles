@@ -20,23 +20,31 @@ Portions created by the Initial Developer are Copyright (C) 2005
 the Initial Developer. All Rights Reserved.
 
 Contributor(s):
- * cs-CZ locale: funTomas
- * de-DE locale: Gerald Frankl and Oliver Roth
- * es-AR locale: R. Nicolás López (aka MorZilla)
- * es-ES locale: Raul Gonzalez Duque
- * fi-FI locale: Lauri Lahnasalo (lauri.lahnasalo@gmail.com)
- * fr-FR locale: Xavier Robin
- * he-IL locale: Pavel Savchenko (asfaltboy@hotmail.co.il)
- * it-IT locale: Giacomo Margarito (giacomomargarito@libero.it)
- * ja-JP locale: Norah (norahmarinkovic@gmail.com)
- * ko-KR locale: heygom
- * nl-NL locale: Liesbeth
- * pl-PL locale: Leszek(teo)Zyczkowski (leszek@norris.pl)
- * pt-BR locale: Marcelo Ghelman
- * sk-SK locale: Rony, SlovakSoft
- * sl-SI locale: miles
- * tr-TR locale: Erkan Kaplan (erkaN@linux-sevenler.org)
- * zh-CN locale: Pudgy and rickcart
+ * Czech (cs-CZ) - funTomas
+ * German (de-DE) - ReinekeFux, geframuc, Team erweiterungen.de
+ * Spanish (Argentina) (es-AR) - MorZilla
+ * Spanish (Spain) (es-ES) - urko
+ * Finnish (fi-FI) - herrahuu
+ * French (fr-FR) - Calimo
+ * Frisian (fy-NL) - moZes
+ * Hebrew (he-IL) - asfaltboy
+ * Hungarian (hu-HU) - kami, LocaLiceR
+ * Italian (it-IT) - eagleman
+ * Japanese (ja-JP) - Norah
+ * Korean (ko-KR) - heygom
+ * Lithuanian (lt-LT) - garas
+ * Dutch (nl-NL) - Fopper, Liesbeth
+ * Polish (pl-PL) - teo
+ * Portuguese (Brazilian) (pt-BR) - Ghelman
+ * Portuguese (Portugal) (pt-PT) - zefranc
+ * Russian (ru-RU) - Modex
+ * Slovak (sk-SK) - Rony, SlovakSoft
+ * Slovenian (sl-SI) - miles
+ * Swedish (sv-SE) - lagerstedt, jameka, StiffeL
+ * Turkish (tr-TR) - ErkanKaplan, batuhancetin, Fatih
+ * Ukrainian (uk-UA) - Sergey Khoruzhin
+ * Chinese (Simplified) (zh-CN) - Pudgy, rickcart
+ * Chinese (Traditional) (zh-TW) - micwang
 
 Special thanks to:
  * Nicholas Dower for support, ideas, testing, bug fixing, and of course 
@@ -61,7 +69,28 @@ All rights reserved.
 
          -< Fasterfox Release Notes >-
 
-~~~ 1.0.3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 1/14/05 ~~~
+~~~ 2.0.0 ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 10/30/06 ~~~
+
+* Added support for Firefox 2.0.
+* Added the following 11 locales:
+  - Spanish (Argentina) (es-AR)
+  - Spanish (Spain) (es-ES)
+  - Frisian (fy-NL)
+  - Hungarian (hu-HU)
+  - Lithuanian (lt-LT)
+  - Portuguese (Brazilian) (pt-BR)
+  - Portuguese (Portugal) (pt-PT)
+  - Russian (ru-RU)
+  - Swedish (sv-SE)
+  - Ukrainian (uk-UA)
+  - Chinese (Traditional) (zh-TW)
+* Fixed bug which caused OK and Cancel buttons to
+  not display properly in some locales and themes.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+~~~ 1.0.3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 1/14/06 ~~~
 
 * Max version is now 1.5.0.* so that minor 
 security versions will automatically be 

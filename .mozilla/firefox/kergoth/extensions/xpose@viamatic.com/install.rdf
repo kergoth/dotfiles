@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>xpose@viamatic.com</em:id>
-    <em:version>0.3</em:version>
+    <em:version>0.6</em:version>
     <em:type>2</em:type>
 	<em:optionsURL>chrome://xpose/content/xpose-settings.xul</em:optionsURL>
 	<em:iconURL>chrome://xpose/skin/icon.png</em:iconURL>
@@ -14,19 +14,20 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>1.4.1</em:minVersion>
-        <em:maxVersion>1.6</em:maxVersion>
+        <em:minVersion>1.5</em:minVersion>
+        <em:maxVersion>2.0.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
-    <!-- Flock -->
-    <em:targetApplication>
-      <Description>
-        <em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
-        <em:maxVersion>1.0+</em:maxVersion>
-        <em:minVersion>1.0+</em:minVersion>
-      </Description>
-    </em:targetApplication>   
+<!-- Flock -->
+<em:targetApplication>
+  <Description>
+    <em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
+    <em:minVersion>0.4</em:minVersion>
+    <em:maxVersion>0.8</em:maxVersion>
+  </Description>
+</em:targetApplication>
+
     <em:name>Viamatic foXpose</em:name>
     <em:description>Click on the icon in the status bar to view all the browser windows with a single click.</em:description>
     <em:creator>Vivek Jishtu</em:creator>

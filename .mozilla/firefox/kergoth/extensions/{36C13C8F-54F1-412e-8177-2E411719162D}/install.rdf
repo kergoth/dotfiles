@@ -5,26 +5,20 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>{36C13C8F-54F1-412e-8177-2E411719162D}</em:id>
-    <em:version>3.1</em:version>
-
-    <!-- Target Application this extension can install into,
-         with minimum and maximum supported versions. -->
-    <em:targetApplication>
-      <Description>
-        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>1.5.0.*</em:maxVersion>
-      </Description>
-    </em:targetApplication>
-
-    <!-- Front End MetaData -->
+    <em:version>3.2.2</em:version>
+    <em:type>4</em:type>
     <em:name>Qute</em:name>
-    <em:description>Icons designed to be modern, dynamic and fresh, with attention paid to usability and comfort over extended use.</em:description>
+    <em:internalName>Qute</em:internalName>
+    <em:description>Simple and unobtrusive theme with clear, colorful icons.</em:description>
     <em:creator>Arvid Axelsson</em:creator>
     <em:homepageURL>http://quadrone.org/</em:homepageURL>
 
-    <!-- Front End Integration Hooks (used by Theme Manager)-->
-    <em:internalName>Qute</em:internalName>
+    <em:targetApplication>
+      <Description>
+	<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+	<em:minVersion>2.0</em:minVersion>
+	<em:maxVersion>2.0.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
   </Description>
-
 </RDF>

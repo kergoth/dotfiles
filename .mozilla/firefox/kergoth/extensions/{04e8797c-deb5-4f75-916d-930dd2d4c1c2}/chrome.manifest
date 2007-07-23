@@ -4,3 +4,4 @@ overlay	chrome://navigator/content/navigator.xul	chrome://chipmark/content/overl
 content	chipmark	jar:chrome/chipmark.jar!/content/chipmark/
 
 skin	chipmark	classic/1.0	jar:chrome/chipmark.jar!/skin/classic/chipmark/
+style	chrome://global/content/customizeToolbar.xul	chrome://chipmark/skin/toolbar-button.css

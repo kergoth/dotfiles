@@ -6,15 +6,16 @@ var XpiInstaller = {
 	// --- Editable items begin ---
 	extFullName: 'Filterset.G Updater', // The name displayed to the user (don't include the version)
 	extShortName: 'fgupdater', // The leafname of the JAR file (without the .jar part)
-	extVersion: '0.3.0.3',
+	extVersion: '0.3.1.0',
 	extAuthor: 'Michael McDonald and Reid Rankin',
-	extLocaleNames: ['en-US', 'ca-AD', 'cs-CZ', 'da-DK', 'de-DE', 'es-ES', 'fi-FI', 'fr-FR', 'hu-HU', 'it-IT', 'ja', 'nb-NO', 'nl-NL', 'pl-PL', 'pt-BR', 'pt-PT', 'ru-RU', 'sk-SK', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'], // e.g. ['en-US', 'en-GB']
+	extLocaleNames: ['en-US', 'ar', 'be-BY', 'bg-BG', 'ca-AD', 'cs-CZ', 'da-DK', 'de-DE', 'es-AR', 'es-CL', 'es-ES', 'et-EE', 'fa-IR', 'fi-FI', 'fr-FR', 'hr-HR', 'hu-HU', 'it-IT', 'ja-JP', 'ko-KR', 'nb-NO', 'nl-NL', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO', 'ru-RU', 'sk-SK', 'sl-SI', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'], // e.g. ['en-US', 'en-GB']
 	extSkinNames: ['classic'], // e.g. ['classic', 'modern']
 	extPostInstallMessage: null, // Set to null for no post-install message
 	// --- Editable items end ---
 	
 	profileInstall: true,
 	silentInstall: false,
+	updating: false,
 	
 	install: function()
 	{
@@ -27,6 +28,8 @@ var XpiInstaller = {
 		// Check if extension is already installed in profile
 		if (File.exists(Install.getFolder(profileDir, jarName)))
 		{
+			this.updating = true;
+			
 			if (!this.silentInstall)
 			{
 				Install.alert('Updating existing Profile install of' + ' ' + this.extFullName + ' ' + 'to version' + ' ' + this.extVersion + '.');
@@ -69,7 +72,7 @@ var XpiInstaller = {
 		// Register locales
 		for (var locale in this.extLocaleNames)
 		{
-			var regPath = (locale == "en-US") ? 'content/' : 'locale/' + this.extLocaleNames[locale] + '/';
+			var regPath = ((this.extLocaleNames[locale] == 'en-US') ? 'content/' : 'locale/') + this.extLocaleNames[locale] + '/';
 			Install.registerChrome(Install.LOCALE | installType, jarPath, regPath);
 		}
 		
@@ -116,7 +119,9 @@ var XpiInstaller = {
 	{
 		if (!this.silentInstall)
 		{
-			Install.alert('Error: Could not install' + ' ' + this.extFullName + ' ' + this.extVersion + ' (' + 'Error code:' + ' ' + err + ')');
+			var message = 'Error: Could not install' + ' ' + this.extFullName + ' ' + this.extVersion + ' (' + 'Error code:' + ' ' + err + ').';
+			if (this.updating) message += '\nTry uninstalling first.';
+			Install.alert(message);
 		}
 		Install.cancelInstall(err);
 	}

@@ -1,30 +1,195 @@
 <UserScriptConfig>
-	<Script filename="wowicleanup.user.js" name="WoWI Cleanup" namespace="tag:tardmrr@gmail.com,11-07-2005:WoWICleanup" description="Removes the nasty Ogaming bar from the top of WoWInterface" enabled="true">
-		<Include>*wowinterface*</Include>
+	<Script filename="5randomscripts.user.js" name="5 random scripts" namespace="znerp" description="Adds 5 random scripts to the us.o front page" enabled="true">
+		<Include>http://userscripts.org/</Include>
+	</Script>
+	<Script filename="30boxestextsizefixer.user.js" name="30Boxes text size-fixer" namespace="" description="fixes the text size on your 30boxes.com calendar to be less... huge." enabled="true">
+		<Include>http://*30boxes.com/*</Include>
+	</Script>
+	<Script filename="allakhazamwowsearch.user.js" name="Allakhazam WoW Search" namespace="http://www.sunsean.com/" description="Instantly shows result if only one is found" enabled="true">
+		<Include>http://wow.allakhazam.com/search.html*</Include>
 	</Script>
 	<Script filename="allmusicguidecorrector.user.js" name="All Music Guide Corrector" namespace="http://youngpup.net/userscripts" description="A port of Adrian Holovaty's All Music Guide site-specific extension" enabled="true">
 		<Include>http://www.allmusic.com*</Include>
 	</Script>
+	<Script filename="collapsibleamazon.user.js" name="Collapsible Amazon" namespace="http://brh.numbera.com/software/greasemonkeyscripts" description="Collapse any section of the Amazon website by clicking on the orange section header." enabled="true">
+		<Include>http://*.amazon.*</Include>
+	</Script>
+	<Script filename="googledocsdownload.user.js" name="Google Docs Download" namespace="gdd" description="Create a download list of your google documents." enabled="true">
+		<Include>http://docs.google.com/*</Include>
+		<Include>https://docs.google.com/*</Include>
+		<Exclude>http://docs.google.com/Doc?id=*</Exclude>
+		<Exclude>https://docs.google.com/Doc?id=*</Exclude>
+	</Script>
+	<Script filename="mailmandiscardall.user.js" name="Mailman discard all" namespace="http://www.menalto.com/greasemonkey" description="Automatically selects the 'discard' radio button for all messages when doing mail moderation using Mailman on SourceForge.net" enabled="true">
+		<Include>https://lists.sourceforge.net/lists/admindb*</Include>
+	</Script>
 	<Script filename="popupwindowfixer.user.js" name="Popup Window Fixer" namespace="http://youngpup.net/userscripts" description="Fixes poorly written javascript popup windows in the manner specified by http://youngpup.net/2003/popups." enabled="true">
 		<Include>*</Include>
-	</Script>
-	<Script filename="netvibessubscribe.user.js" name="Netvibes Subscribe" namespace="http://www.spikydog.com/userscripts" description="Adds links to subscribe to site feeds via Netvibes" enabled="true">
-		<Include>*</Include>
-	</Script>
-	<Script filename="30boxestextsizefixer.user.js" name="30Boxes text size-fixer" namespace="userscripts.org" description="fixes the text size on your 30boxes.com calendar to be less... huge." enabled="true">
-		<Include>http://*30boxes.com/*</Include>
-	</Script>
-	<Script filename="sourceforgecleanerlayout.user.js" name="SourceForge - Cleaner Layout" namespace="http://simon.arlott.org/gm/" description="Removes the right sidebar and adverts" enabled="true">
-		<Include>http*://sourceforge.net/*</Include>
 	</Script>
 	<Script filename="slashdotcommenttree.user.js" name="Slashdot - comment tree" namespace="http://www.cs.uni-magdeburg.de/~vlaube/Projekte/GreaseMonkey/" description="Allows you to collapse and expand comments" enabled="true">
 		<Include>http://slashdot.org/*</Include>
 		<Include>http://*.slashdot.org/*</Include>
 	</Script>
-	<Script filename="collapsibleamazon.user.js" name="Collapsible Amazon" namespace="http://brh.numbera.com/software/greasemonkeyscripts" description="Collapse any section of the Amazon website by clicking on the orange section header." enabled="true">
-		<Include>http://*.amazon.*</Include>
+	<Script filename="sourceforgecleanerlayout.user.js" name="SourceForge - Cleaner Layout" namespace="http://simon.arlott.org/gm/" description="Removes the right sidebar and adverts" enabled="true">
+		<Include>http*://sourceforge.net/*</Include>
 	</Script>
-	<Script filename="mailmandiscardall.user.js" name="Mailman discard all" namespace="http://www.menalto.com/greasemonkey" description="Automatically selects the 'discard' radio button for all messages when doing mail moderation using Mailman on SourceForge.net" enabled="true">
-		<Include>https://lists.sourceforge.net/lists/admindb*</Include>
+	<Script filename="userscriptsfavourites.user.js" name="userscripts favourites" namespace="znerp" description="Allows users to store their favourite scripts on userscripts.org. Displayed in a sexy table." enabled="true">
+		<Include>http://userscripts.org/*</Include>
+	</Script>
+	<Script filename="userscriptssearchsorting.user.js" name="User Scripts Search Sorting - With Install Rate" namespace="http://bradmont.net" description="Sorts search results on userscripts.org" enabled="true">
+		<Include>http://userscripts.org/scripts/search*</Include>
+		<Include>http://*.userscripts.org/scripts/search*</Include>
+		<Include>http://userscripts.org/tag/*</Include>
+		<Include>http://*.userscripts.org/tag/*</Include>
+		<Include>http://userscripts.org/users/*scripts*</Include>
+		<Include>http://*.userscripts.org/users/*scripts*</Include>
+	</Script>
+	<Script filename="wowdeintercept.user.js" name="WoWDeintercept" namespace="" description="Script to disable WoW's Forum Link Interception" enabled="true">
+		<Include>http://forums.worldofwarcraft.com/*</Include>
+	</Script>
+	<Script filename="gmailattachmentreminder.user.js" name="Gmail attachment reminder" namespace="http://www.jonathanbrodsky.com/GMscripts" description="Reminds you to attach a file to your email if it appears that you have not." enabled="true">
+		<Include>http*://mail.google.com/mail/*</Include>
+	</Script>
+	<Script filename="gmailconversationpreview.user.js" name="Gmail Conversation Preview" namespace="http://persistent.info/greasemonkey" description="Right-click on any conversation to get a preview bubble." enabled="true">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailbottompostinginrepl.user.js" name="Gmail bottom posting in replies" namespace="http://henrik.nyh.se" description="Inserts the caret _after_ the quoted text when replying to mails using Gmail. Does not work with HTML (rich text) mails." enabled="true">
+		<Include>https://mail.google.tld/mail/*</Include>
+		<Include>http://mail.google.tld/mail/*</Include>
+		<Include>https://mail.google.tld/a/*</Include>
+		<Include>http://mail.google.tld/a/*</Include>
+	</Script>
+	<Script filename="gmailfixedfonttoggle.user.js" name="Gmail Fixed Font Toggle" namespace="http://persistent.info/greasemonkey" description="Adds a fixed font size toggle button." enabled="false">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailgtdtickler.user.js" name="GMail - GTD Tickler" namespace="Martin Ruiz" description="Very Simple Ticker file functionality to GMail/GTDGMail using GCal" enabled="true">
+		<Include>*</Include>
+	</Script>
+	<Script filename="gmaillabelcolors.user.js" name="Gmail Label Colors" namespace="http://persistent.info/greasemonkey" description="Optionally colors label names (when they have a #color suffix)" enabled="true">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailmacros.user.js" name="Gmail Macros" namespace="http://persistent.info/greasemonkey" description="Extra (customizable) keyboard shortcuts and macros." enabled="true">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailunlabelled.user.js" name="Gmail Unlabelled" namespace="http://jaidev.info/home/projects/gmailUnlabelled" description="This script adds 'Unlabelled' at the end of the labels list to search for unlabelled conversations" enabled="true">
+		<Include>http*://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailsavedsearches.user.js" name="Gmail Saved Searches" namespace="http://www.google.com/~mihaip" description="Adds saved and recent seaches." enabled="true">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailplaintextformatting.user.js" name="Gmail plain text formatting" namespace="http://henrik.nyh.se" description="For plain text mails in Gmail, displays text like &quot;*bold*&quot;, &quot;/italic/&quot; and &quot;_underline_&quot; with that formatting." enabled="true">
+		<Include>https://mail.google.tld/mail/*</Include>
+		<Include>http://mail.google.tld/mail/*</Include>
+		<Include>https://mail.google.tld/a/*</Include>
+		<Include>http://mail.google.tld/a/*</Include>
+	</Script>
+	<Script filename="gmailnewinlabel.user.js" name="Gmail: New in Label" namespace="http://sandy.mcarthur.org/gmail/newinlabel" description="Show count of new conversations since a label was last viewed." enabled="true">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailzipattachmentsanddo.user.js" name="Gmail - Zip Attachments and Download" namespace="http://www.vitoriodamas.net" description="Direct Download Attachments" enabled="true">
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="googleinboxcountdisplay.user.js" name="Google Inbox Count Display" namespace="htt://babylon.idlevice.co.uk/javascript/greasemonkey/" description="Modify Gmail inbox title to display count of unread messages at the beginning, so unread count displays in a small tab" enabled="true">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="folders4gmail.user.js" name="Folders4Gmail" namespace="http://www.arend-von-reinersdorff.com/folders4gmail/" description="Organize your labels in a folder-like hierarchy." enabled="false">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="owaselectall.user.js" name="OWA select all" namespace="http://royale.zerezo.com/" description="This script adds a toggle all function on Microsoft Outlook Web Access version 5.5 SP4-2" enabled="true">
+		<Include>*/exchange/inbox/messages.asp*</Include>
+	</Script>
+	<Script filename="googlecodedirectdownload.user.js" name="Google Code direct download" namespace="http://pile0nades.wordpress.com/" description="Rewrites all Google Code file links to point directly to the file" enabled="true">
+		<Include>*</Include>
+	</Script>
+	<Script filename="ciphersgmailbeautifier14.user.js" name="Cipher's Gmail Beautifier 1.4" namespace="userscripts.org" description="Hides/Shows ads in Gmail, widens email body, removes beta from Gmail logo (disabled by default), &amp; gives buttons a better look." enabled="false">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="deviantartremoverequesta.user.js" name="DeviantArt: Remove &quot;Request as Print&quot;" namespace="http://freecog.net/2007/" description="Removes the &quot;Request as Print&quot; link from DeviantArt pages, so that it can't be accidentally clicked (boy, that's embarassing!)." enabled="true">
+		<Include>http://www.deviantart.com/deviation/*</Include>
+	</Script>
+	<Script filename="multicolumnviewofgoogles.user.js" name="Multi-Column View of Google Search Results " namespace="http://hi.baidu.com/ziruzhu" description="" enabled="true">
+		<Include>http://www.google.com/search*</Include>
+	</Script>
+	<Script filename="gmailcolorizer.user.js" name="Gmail Colorizer" namespace="http://www.metamonkey.net/gmailcolorizer" description="Adds colors to Gmail according to label" enabled="false">
+		<Include>http://gmail.google.com/*</Include>
+		<Include>https://gmail.google.com/*</Include>
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="cleangmailprint.user.js" name="Clean Gmail Print" namespace="http://dev.hxm.dk/gm/" description="This script removes the Gmail logo, when you are printing an email using the built-in print function." enabled="true">
+		<Include>https://mail.google.com/mail/?&amp;ik=*&amp;view=pt&amp;*</Include>
+		<Include>http://mail.google.com/mail/?&amp;ik=*&amp;view=pt&amp;*</Include>
+	</Script>
+	<Script filename="gmaillabelfontsizefixer.user.js" name="Gmail Label Font Size Fixer" namespace="http://www.shiv-prasad.com/" description="Changes the label font size to original size before Gmail Chat" enabled="false">
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="powergmailtweaks.user.js" name="Power Gmail Tweaks" namespace="http://lukebaker.org/greasemonkey" description="Adds cross-computer persistent seaches (stored in a contact) and a fixed font size button." enabled="false">
+		<Include>http://mail.google.com/mail/*</Include>
+		<Include>https://mail.google.com/mail/*</Include>
+		<Exclude>http://mail.google.com/mail/help/*</Exclude>
+		<Exclude>https://mail.google.com/mail/help/*</Exclude>
+	</Script>
+	<Script filename="gmailoneclickconversatio.user.js" name="Gmail - One Click Conversations" namespace="http://www.jeffreykeen.com/projects/oneclickconversations" description="Allows you to view recent conversations with someone in just one click.  Also adds rollover popup menu (ala built in quick contacts) to messages." enabled="true">
+		<Include>http://mail.gmail.com/*</Include>
+		<Include>https://mail.gmail.com/*</Include>
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailfilterassistant.user.js" name="Gmail Filter Assistant" namespace="http://www.amoszhang.com/GmailFilterAssistant" description="Help to manage the Gmail filters more efficiently" enabled="true">
+		<Include>https://mail.google.com/*</Include>
+		<Include>http://mail.google.com/*</Include>
+	</Script>
+	<Script filename="stage6directdownload.user.js" name="Stage6 Direct Download" namespace="http://defrex.com" description="A script to add a direct download link to dtage6.fivx.com" enabled="true">
+		<Include>http://stage6.divx.com/*</Include>
+	</Script>
+	<Script filename="tracautologin.user.js" name="Trac autologin" namespace="http://henrik.nyh.se" description="Logs you in automatically to Trac: sends you to the log-in page and submits the log-in form if Firefox has prepopulated it. Rationale: Tracs easily forget your session, which gets annoying. Assumes an AccountManager-like authorization system as seen on e.g. DevjaVu.com and dev.rubyonrails.com. If you're sent to the log-in page and the form is not populated by Firefox, you'll be sent back. In that case, and if you log out manually, autologin is disabled for the site in question until the browser is restarted or the login page loaded." enabled="true">
+		<Include>http://*.devjavu.com/*</Include>
+		<Include>http://dev.*</Include>
+		<Include>http://trac.*</Include>
+	</Script>
+	<Script filename="googlegmailfixedleftmenu.user.js" name="Google GMAIL Fixed Left Menu + Search" namespace="http://www.blueghost.co.uk/gmail_flm.html" description="Fixes the Left Menu + Top Navigation Bar in Place" enabled="false">
+		<Include>http*://*mail.google.com/*mail/*</Include>
+	</Script>
+	<Script filename="mailtocomposeingmail.user.js" name="Mailto Compose In GMail" namespace="http://blog.monstuff.com/archives/000238.html" description="Rewrites &quot;mailto:&quot; links to GMail compose links" enabled="true">
+		<Include>*</Include>
+		<Exclude>http://gmail.google.com</Exclude>
+	</Script>
+	<Script filename="reversegmailordering.user.js" name="Reverse GMail ordering" namespace="http://simon.incutio.com/code/greasemonkey/" description="Reverses the order of messages in GMail, so most recent are at the bottom." enabled="true">
+		<Include>http://gmail.google.com/*</Include>
+		<Include>https://gmail.google.com/*</Include>
+	</Script>
+	<Script filename="gmailsinglewindow.user.js" name="gmail-single-window" namespace="www.arantius.com" description="" enabled="true">
+		<Include>*</Include>
+	</Script>
+	<Script filename="gmailtweaksmultiplesigna.user.js" name="Gmail Tweaks: Multiple Signatures" namespace="http://blog.yanime.org/gmailtweaks_multiple_signature.user.js" description="Applies different signatures (look for 'Use identity:') for writing gmail messages when different From: address is chosen. Right now, data has to be configured directly into this script. Click EDIT to configure your email and signatures: email_array, sig_array, col_array" enabled="true">
+		<Include>http://gmail.google.com/*</Include>
+		<Include>https://gmail.google.com/*</Include>
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+	<Script filename="warnbeforediscardinggmai.user.js" name="Warn before discarding gmail" namespace="http://www.cs.toronto.edu/~james/google" description="Warn before discarding gmail" enabled="true">
+		<Include>http://gmail.google.com/gmail?view=page&amp;name=js*</Include>
+		<Include>https://gmail.google.com/gmail?view=page&amp;name=js*</Include>
+		<Include>http://mail.google.com/mail?view=page&amp;name=js*</Include>
+		<Include>https://mail.google.com/mail?view=page&amp;name=js*</Include>
+	</Script>
+	<Script filename="googlegroupskillfile.user.js" name="Google Groups Killfile" namespace="www.penney.org" description="Kill User on Google Groups" enabled="true">
+		<Include>http://groups*.google.*/*</Include>
+	</Script>
+	<Script filename="restorenewgooglesearchli.user.js" name="Restore New Google Search Links" namespace="http://www.splintor.com/userscripts" description="Brings back Google search links out of the &quot;more&quot; link popup" enabled="true">
+		<Include>http://*.google.com/*</Include>
+	</Script>
+	<Script filename="googlegroups.user.js" name="Google Groups" namespace="http://groups.google.com" description="add border to google groups" enabled="false">
+		<Include>http://groups.google.*</Include>
 	</Script>
 </UserScriptConfig>

@@ -3,6 +3,12 @@
  * with themes other than Classic.
  */
 
+dialog {
+	max-width: 700ox;
+	max-height: 500px;
+	padding: 4px;
+}
+
 .throbber {
 	list-style-image: url("chrome://sfdirectdl/content/icons/Throbber-small.png");
 	width: 16px;
@@ -32,6 +38,9 @@
 	-moz-image-region: rect(21px, 21px, 42px, 0px) !important;
 }
 
+#mirrorList {
+	height: 200px;
+}
 
 richlistitem hbox.image {
 	min-width: 130px;

@@ -8,7 +8,8 @@
         id="sfdirectdl-prefs"
         title="&sfdirectdl.options.title;"
         buttons="accept, cancel"
-        style="padding:4px; margin:0px;"
+	width="400"
+	height="420"
         persist="width height"
         onload="sfdirectdl_load_prefs()"
         ondialogaccept="sfdirectdl_save_prefs()">
@@ -35,10 +36,12 @@
 		<richlistbox id="mirrorList" flex="1" onselect="sfdirectdl_list_select(this)">
 		</richlistbox>
 		<hbox align="center">
-			<vbox>
+			<vbox flex="1">
 				<hbox align="center">
 					<image id="throbber" class="throbber" />
-					<label id="updateLabel" value="&sfdirectdl.updatestatus.init;" flex="1" />
+					<description id="updateLabel" flex="1">
+						&sfdirectdl.updatestatus.init;
+					</description>
 				</hbox>
 			</vbox>
 			<spacer flex="1" />
