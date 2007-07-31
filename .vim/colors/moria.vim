@@ -95,22 +95,22 @@ if &background == "dark"
                 hi Folded guibg=#585858 guifg=#c0c0c0 gui=none
             endif            
         else
-            hi FoldColumn ctermbg=bg guibg=bg guifg=#959dcc gui=none
-            hi LineNr guifg=#959dcc gui=none
-            hi NonText ctermfg=8 guibg=bg guifg=#959dcc gui=bold
-            hi Pmenu guibg=#6a76b7 guifg=#000000 gui=none
-            hi PmenuSbar guibg=#485497 guifg=fg gui=none
-            hi PmenuThumb guibg=#c0c6e0 guifg=bg gui=none
-            hi SignColumn ctermbg=bg guibg=bg guifg=#959dcc gui=none
-            hi StatusLine ctermbg=7 ctermfg=0 guibg=#394377 guifg=fg gui=bold
-            hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#293056 guifg=fg gui=none
-            hi TabLine guibg=#707070 guifg=fg gui=underline
-            hi TabLineFill guibg=#707070 guifg=fg gui=underline
-            hi VertSplit ctermbg=7 ctermfg=0 guibg=#293056 guifg=fg gui=none
+            hi FoldColumn ctermbg=bg guibg=bg guifg=#a3a6be gui=none
+            hi LineNr guifg=#a3a6be gui=none
+            hi NonText ctermfg=8 guibg=bg guifg=#a3a6be gui=bold
+            hi Pmenu guibg=#7d82a4 guifg=#000000 gui=none
+            hi PmenuSbar guibg=#5c6183 guifg=fg gui=none
+            hi PmenuThumb guibg=#c8cad9 guifg=bg gui=none
+            hi SignColumn ctermbg=bg guibg=bg guifg=#a3a6be gui=none
+            hi StatusLine ctermbg=7 ctermfg=0 guibg=#484b68 guifg=fg gui=bold
+            hi StatusLineNC ctermbg=8 ctermfg=0 guibg=#34364b guifg=fg gui=none
+            hi TabLine guibg=#5c6183 guifg=fg gui=underline
+            hi TabLineFill guibg=#5c6183 guifg=fg gui=underline
+            hi VertSplit ctermbg=7 ctermfg=0 guibg=#34364b guifg=fg gui=none
             if s:moria_fontface == "mixed"
-                hi Folded guibg=#585858 guifg=#c0c6e0 gui=bold
+                hi Folded guibg=#585858 guifg=#c8cad9 gui=bold
             else
-                hi Folded guibg=#585858 guifg=#c0c6e0 gui=none
+                hi Folded guibg=#585858 guifg=#c8cad9 gui=none
             endif            
         endif
         if version >= 700
@@ -133,7 +133,7 @@ if &background == "dark"
     if s:moria_monochrome == 1    
         hi MoreMsg guibg=bg guifg=#b6b6b6 gui=bold
     else
-        hi MoreMsg guibg=bg guifg=#9ca4cf gui=bold
+        hi MoreMsg guibg=bg guifg=#a9abc2 gui=bold
     endif
     hi PmenuSel guibg=#e0e000 guifg=#000000 gui=none
     hi Question guibg=bg guifg=#e8b87e gui=bold
@@ -201,20 +201,24 @@ elseif &background == "light"
         hi SignColumn ctermbg=bg guibg=bg guifg=#7a7a7a gui=none
         hi StatusLine ctermbg=0 ctermfg=15 guibg=#a0a0a0 guifg=fg gui=bold
         hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#b0b0b0 guifg=fg gui=none
+        hi TabLine guibg=#cdcdcd guifg=fg gui=underline
+        hi TabLineFill guibg=#cdcdcd guifg=fg gui=underline
         hi VertSplit ctermbg=7 ctermfg=0 guibg=#b0b0b0 guifg=fg gui=none
     else
-        hi FoldColumn ctermbg=bg guibg=bg guifg=#3e4882 gui=none
-        hi Folded guibg=#c5c5c5 guifg=#293056 gui=bold
-        hi LineNr guifg=#3e4882 gui=none
-        hi MoreMsg guibg=bg guifg=#343d6b gui=bold
-        hi NonText ctermfg=8 guibg=bg guifg=#3e4882 gui=bold
-        hi Pmenu guibg=#7782bd guifg=#000000 gui=none
-        hi PmenuSbar guibg=#5361ac guifg=fg gui=none
-        hi PmenuThumb guibg=#aab0d7 guifg=fg gui=none
-        hi SignColumn ctermbg=bg guibg=bg guifg=#3e4882 gui=none
-        hi StatusLine ctermbg=0 ctermfg=15 guibg=#959dcc guifg=fg gui=bold
-        hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#aab0d7 guifg=fg gui=none
-        hi VertSplit ctermbg=7 ctermfg=0 guibg=#aab0d7 guifg=fg gui=none
+        hi FoldColumn ctermbg=bg guibg=bg guifg=#4f5271 gui=none
+        hi Folded guibg=#c5c5c5 guifg=#34364b gui=bold
+        hi LineNr guifg=#4f5271 gui=none
+        hi MoreMsg guibg=bg guifg=#42455e gui=bold
+        hi NonText ctermfg=8 guibg=bg guifg=#4f5271 gui=bold
+        hi Pmenu guibg=#888bac guifg=#000000 gui=none
+        hi PmenuSbar guibg=#696d96 guifg=fg gui=none
+        hi PmenuThumb guibg=#b6b8cb guifg=fg gui=none
+        hi SignColumn ctermbg=bg guibg=bg guifg=#4f5271 gui=none
+        hi StatusLine ctermbg=0 ctermfg=15 guibg=#a3a6be guifg=fg gui=bold
+        hi StatusLineNC ctermbg=7 ctermfg=0 guibg=#b6b8cb guifg=fg gui=none
+        hi TabLine guibg=#c5c7d6 guifg=fg gui=underline
+        hi TabLineFill guibg=#c5c7d6 guifg=fg gui=underline
+        hi VertSplit ctermbg=7 ctermfg=0 guibg=#b6b8cb guifg=fg gui=none
     endif
     hi Cursor guibg=#883400 guifg=bg gui=none
     hi DiffAdd guibg=#008b00 guifg=#ffffff gui=none
@@ -235,8 +239,6 @@ elseif &background == "light"
         hi SpellLocal guisp=#008b8b gui=undercurl
         hi SpellRare guisp=#ee2cee gui=undercurl
     endif
-    hi TabLine guibg=#cdcdcd guifg=fg gui=underline
-    hi TabLineFill guibg=#cdcdcd guifg=fg gui=underline
     hi TabLineSel guibg=bg guifg=fg gui=bold
     hi Title guifg=fg gui=bold
     if version >= 700

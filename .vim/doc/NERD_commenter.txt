@@ -1,4 +1,4 @@
-*NERD_commenter.txt*         Plugin for commenting code            v206
+*NERD_commenter.txt*         Plugin for commenting code            v207
 
 
                         NERD COMMENTER REFERENCE MANUAL~
@@ -825,7 +825,11 @@ to get illegal syntax when uncommenting them.
 ==============================================================================
 6. Changelog                                                *NERDComChangelog*
 
-2.x.x
+2.0.7
+    - Added support for eclass and ebuild filetypes. Thanks to Alex Tarkovsky
+      for the email.
+
+2.0.6
     - Changed the default setting of NERDMapleader to ",c", meaning all the
       maps now start with ,c instead of \c. This is to stop a major mapping
       clash with the vcscommand plugin. Anyone wanting to keep the \c map
@@ -1048,6 +1052,9 @@ help doc installation.
 
 Thanks to Stefano Zacchiroli for emailing me with the debcontrol and
 debchangelog filetypes.
+
+Thanks to Alex Tarkovsky for emailing me about the ebuild and eclass
+filetypes.
 
 Cheers to myself for being the best looking man on Earth!
 
