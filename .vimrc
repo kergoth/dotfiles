@@ -476,6 +476,21 @@ if has('folding')
   set foldlevel=5
 endif
 
+" Cscope
+if has("cscope")
+  set csto=0
+  set cst
+  set nocsverb
+  " add any database in current directory
+  if filereadable("cscope.out")
+    cs add cscope.out
+    " else add database pointed to by environment
+  elseif $CSCOPE_DB != ""
+    cs add $CSCOPE_DB
+  endif
+  set csverb
+endif
+
 " Tags search path
 set tags=./tags,tags,$PWD/tags
 
@@ -727,6 +742,13 @@ else
     set listchars+=trail:.
   endif
 endif
+
+let g:c_gnu = 1
+let g:c_posix = 1
+let g:c_math = 1
+let g:c_C99 = 1
+let g:c_C94 = 1
+let g:c_impl_defined = 1
 " }}}
 
 " Colors {{{
@@ -909,6 +931,8 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
 let g:secure_modelines_verbose = 1
 let g:secure_modelines_allowed_items = [
             \ "textwidth",   "tw",
