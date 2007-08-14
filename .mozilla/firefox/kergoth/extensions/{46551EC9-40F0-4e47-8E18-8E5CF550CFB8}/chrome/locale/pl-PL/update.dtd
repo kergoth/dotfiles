@@ -1,0 +1,10 @@
+<!ENTITY customized "Dostosowano">
+<!ENTITY info "Dostępne są aktualizacje następujących arkuszy stylów:">
+<!ENTITY neverupdateselected "Nigdy nie aktualizuj zaznaczonych">
+<!ENTITY neverupdateselected.ak "N">
+<!ENTITY title "Aktualizacja arkuszy stylów">
+<!ENTITY updateall "Aktualizuj wszystkie">
+<!ENTITY updateall.ak "A">
+<!ENTITY updateselected "Aktualizuj zaznaczone">
+<!ENTITY updateselected.ak "Z">
+<!ENTITY uri "URI">

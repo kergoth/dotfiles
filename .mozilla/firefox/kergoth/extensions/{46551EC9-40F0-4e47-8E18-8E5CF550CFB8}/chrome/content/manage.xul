@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://stylish/skin/manage.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+	<!ENTITY % common SYSTEM "chrome://stylish/locale/common.dtd">
+	<!ENTITY % branding SYSTEM "chrome://stylish/content/branding.dtd">
+	<!ENTITY % manage SYSTEM "chrome://stylish/locale/manage.dtd">
+	%common;
+	%branding;
+	%manage;
+]>
+
+<dialog
+	id="stylish"
+	title="&title;"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	onload="init()"
+	windowtype="stylish"
+	persist="screenX screenY width height sizemode"
+	buttons="none">
+	
+	<script type="application/javascript" src="rdfds.js"/>
+	<script type="application/javascript" src="common.js"/>
+	<script type="application/javascript" src="StylishStyle.js"/>
+	<script type="application/javascript" src="manage.js"/>
+
+	<script src="chrome://global/content/nsDragAndDrop.js"/>
+	<script src="chrome://global/content/nsTransferable.js"/>
+
+	<stringbundle id="strings" src="chrome://stylish/locale/stylish.properties"/>
+
+	<hbox id="toolbar">
+		<toolbarbutton id="add" label="&write;" accesskey="&write.ak;" oncommand="openAdd()"/>
+		<toolbarbutton id="edit" label="&edit;" accesskey="&edit.ak;" oncommand="handleEditButtonClick()" disabled="true"/>
+		<toolbarbutton id="delete" label="&stylish.delete;" accesskey="&stylish.delete.ak;" oncommand="handleDeleteButtonClick()" disabled="true"/>
+		<toolbarbutton id="update" label="&findupdates;" accesskey="&findupdates.ak;" oncommand="findUpdateButtonClick()"/>
+		<toolbarbutton id="help" label="&help;" accesskey="&help.ak;" oncommand="document.getElementById('help-link').click()"/>
+	</hbox>
+
+	<keyset>
+		<key modifiers="control" key="N" oncommand="openAdd()"/>
+		<key modifiers="control" key="F" oncommand="document.getElementById('filter').focus()"/>
+		<key keycode="VK_F1" oncommand="document.getElementById('help-link').click()"/>
+	</keyset>
+
+	<label id="help-link" class="text-link" href="http://userstyles.org/stylish/help"/>
+
+	<deck id="hide-tree" flex="1">
+
+		<vbox flex="1">
+
+			<hbox align="center" id="search-box">
+				<label accesskey="&filter.ak;" control="filter">&filter;</label>
+				<textbox id="filter" oninput="inputFilter(event)" flex="1"/>
+				<button id="clearFilter" oncommand="clearFilter()" label="&clearfilter;" accesskey="&clearfilter.ak;" disabled="true"/>
+			</hbox>
+
+			<description id="manage-info">
+				&info;
+			</description>
+
+			<tree id="styles" flex="1" editable="true" onselect="changeSelection()" persist="sortDirection sortResource" sortDirection="ascending" sortResource="description" onkeypress="styleListKeyPress(event)" enableColumnDrag="true">
+				<treecols>
+					<treecol id="enabledString" src="chrome://global/skin/checkbox/cbox-check.gif" label="&stylish.enabled;" flex="0" persist="width ordinal hidden" type="checkbox" editable="true" onclick="sort(this)" class="treecol-image sortDirectionIndicator"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="description" label="&stylish.description;" flex="1" persist="width ordinal hidden" onclick="sort(this)" class="sortDirectionIndicator" sortDirection="ascending"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="appliesToDisplay" label="&appliesTo;" flex="1" persist="width ordinal hidden" onclick="sort(this)" class="sortDirectionIndicator"/>
+					<splitter class="tree-splitter"/>
+					<treecol id="treeDisplayCode" label="&stylish.code;" flex="2" hidden="true" persist="width ordinal hidden" onclick="sort(this)" class="sortDirectionIndicator"/>
+				</treecols>
+				<treechildren id="styles-children" ondblclick="handleStyleListDoubleClick(event)" ondraggesture="nsDragAndDrop.startDrag(event, listObserver)"/>
+			</tree>
+
+		</vbox>
+
+		<description id="no-styles">
+			&nostyles;
+		</description>
+
+	</deck>
+
+</dialog>

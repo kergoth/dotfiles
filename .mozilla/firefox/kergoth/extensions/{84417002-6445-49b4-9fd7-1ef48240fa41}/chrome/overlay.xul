@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<overlay id="tab_history_overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	// This imports our javascript.
+	<script type="application/x-javascript" src="chrome://tab_history/content/tab_history.js"></script>
+
+</overlay>

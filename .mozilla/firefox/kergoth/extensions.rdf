@@ -1,0 +1,1043 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:NS1="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$YQmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="2.0.*" />
+  <RDF:Description RDF:about="rdf:#$S0nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0" />
+  <RDF:Description RDF:about="urn:mozilla:item:{9669CC8F-B388-42FE-86F4-CB5E7F5A8BDC}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="5.3.2.3"
+                   NS1:name="MR Tech Local Install"
+                   NS1:description="Local Install power tools for all users."
+                   NS1:creator="Mel Reyes (mrtech@gmail.com)"
+                   NS1:homepageURL="http://www.mrtech.com/extensions/local_install/"
+                   NS1:optionsURL="chrome://local_install/content/settings/settings.xul"
+                   NS1:iconURL="chrome://local_install/content/icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Code and Ideas from tons of extensions</NS1:contributor>
+    <NS1:contributor>Leszek (teo) Zyczkowski - Translation Manager and Layout Fixes</NS1:contributor>
+    <NS1:contributor>Frank (Desertfox) - CSS and Layout Fixes</NS1:contributor>
+    <NS1:contributor>Everaldo: Crystal SVG Toolbar and Menu icons</NS1:contributor>
+    <NS1:contributor>Tom Kuter (Evolic): Install Button Graphic</NS1:contributor>
+    <NS1:contributor>-</NS1:contributor>
+    <NS1:contributor>be-BY Locale -</NS1:contributor>
+    <NS1:contributor>bg-BG Locale - Hawksthorne</NS1:contributor>
+    <NS1:contributor>cs-CZ Locale - Josef Kotva</NS1:contributor>
+    <NS1:contributor>de-DE Locale - Armin C. Schneider</NS1:contributor>
+    <NS1:contributor>da-DK Locale -</NS1:contributor>
+    <NS1:contributor>es-AR Locale - MorZilla</NS1:contributor>
+    <NS1:contributor>es-ES Locale - Proyecto Nave</NS1:contributor>
+    <NS1:contributor>fa-IR Locale -</NS1:contributor>
+    <NS1:contributor>fi-FI Locale - Akilles</NS1:contributor>
+    <NS1:contributor>fr-FR Locale - menet, Frackounet</NS1:contributor>
+    <NS1:contributor>hu-HU Locale - Henriett Peller</NS1:contributor>
+    <NS1:contributor>hr-HR Locale - Krcko</NS1:contributor>
+    <NS1:contributor>he-IL Locale - siiie</NS1:contributor>
+    <NS1:contributor>it-IT Locale - Andrea</NS1:contributor>
+    <NS1:contributor>ja Locale - YoBito/Masaaki Matsuyama</NS1:contributor>
+    <NS1:contributor>ko-KR Locale - Flactal</NS1:contributor>
+    <NS1:contributor>lt-LT Locale -</NS1:contributor>
+    <NS1:contributor>mk-MK Locale - Zoran Ivanovski</NS1:contributor>
+    <NS1:contributor>nl-NL Locale - Alf</NS1:contributor>
+    <NS1:contributor>pl-PL Locale - Leszek (teo) Życzkowski and Tomasz Kuter (Evolic)</NS1:contributor>
+    <NS1:contributor>pt-BR Locale - Fernando Pereira Silveira</NS1:contributor>
+    <NS1:contributor>pt-PT Locale - Carlos Simão aka lloco</NS1:contributor>
+    <NS1:contributor>ro-RO Locale - Mihai Capotă</NS1:contributor>
+    <NS1:contributor>ru-RU Locale - Quicksilver tears</NS1:contributor>
+    <NS1:contributor>sk Locale - SlovakSoft</NS1:contributor>
+    <NS1:contributor>sr-YU Locale - Љубиша Радовановић</NS1:contributor>
+    <NS1:contributor>tr-TR Locale - Gokhan</NS1:contributor>
+    <NS1:contributor>uk-UA Locale - Sergey Khoruzhin</NS1:contributor>
+    <NS1:contributor>zh-CN Locale - Duriel</NS1:contributor>
+    <NS1:contributor>zh-TW Locale - petertc, Patrick Yau Pak Wa</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$zWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$AWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$BWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$CWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$DWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$EWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$FWmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$GWmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{CAFEEFAC-0016-0000-0002-ABCDEFFEDCBA}"
+                   NS1:installLocation="app-global"
+                   NS1:version="6.0.02"
+                   NS1:name="Java Console"
+                   NS1:hidden="true">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$Tm2DM"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$3UmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{e968fc70-8f95-4ab9-9e79-304de2a71ee1}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.6.10"
+                   NS1:name="User Agent Switcher"
+                   NS1:description="Adds a menu and a toolbar button to switch the user agent of the browser."
+                   NS1:creator="Chris Pederick"
+                   NS1:homepageURL="http://chrispederick.com/work/user-agent-switcher/"
+                   NS1:updateURL="http://downloads.mozdev.org/useragentswitcher/update.rdf"
+                   NS1:optionsURL="chrome://useragentswitcher/content/options/options.xul"
+                   NS1:aboutURL="chrome://useragentswitcher/content/about/about.xul"
+                   NS1:iconURL="chrome://useragentswitcher/content/logo.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$xRmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$yRmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$zRmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$ARmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{1280606b-2510-4fe0-97ef-9b5a22eafe30}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.5.3.4"
+                   NS1:name="Session Manager"
+                   NS1:description="Saves and restores the state of all windows."
+                   NS1:creator="zeniko"
+                   NS1:homepageURL="http://sessionmanager.mozdev.org/"
+                   NS1:optionsURL="chrome://sessionmanager/content/options.xul"
+                   NS1:iconURL="chrome://sessionmanager/skin/icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Morac (Converted to use FF 2.0 SessionStore)</NS1:contributor>
+    <NS1:contributor>Danil Ivanov (Cache Fixer)</NS1:contributor>
+    <NS1:contributor>dougeeebear (Session Manager icon)</NS1:contributor>
+    <NS1:contributor>&amp;</NS1:contributor>
+    <NS1:contributor>BabelZilla translators:</NS1:contributor>
+    <NS1:contributor>Andrea (Italian)</NS1:contributor>
+    <NS1:contributor>Rick Cart (Chinese [zh-CN])</NS1:contributor>
+    <NS1:contributor>Teboga (Portuguese - Brazillian)</NS1:contributor>
+    <NS1:contributor>jojaba (French)</NS1:contributor>
+    <NS1:contributor>Edgaras Janušauskas, garas (Lithuanian)</NS1:contributor>
+    <NS1:contributor>Proyecto Nave, chuzo (Spanish)</NS1:contributor>
+    <NS1:contributor>Leszek (teo) Życzkowski (Polish)</NS1:contributor>
+    <NS1:contributor>Haebaru (Japanese)</NS1:contributor>
+    <NS1:contributor>stoneflash (Russian)</NS1:contributor>
+    <NS1:contributor>JW_00000 (Dutch)</NS1:contributor>
+    <NS1:contributor>Ossipoff (Danish)</NS1:contributor>
+    <NS1:contributor>SerdarSahin (Turkish)</NS1:contributor>
+    <NS1:contributor>Wladow (Slovak)</NS1:contributor>
+    <NS1:contributor>Team erweiterungen.de, ReinekeFux (German)</NS1:contributor>
+    <NS1:contributor>Cashman (Hungarian)</NS1:contributor>
+    <NS1:contributor>Kape123 (Serbian)</NS1:contributor>
+    <NS1:contributor>lloco (Portuguese)</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$q+mKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$+WmKV"
+                   NS1:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$ZQmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.4"
+                   NS1:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$V+mKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$zWmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="3.0a2" />
+  <RDF:Description RDF:about="urn:mozilla:item:{46551EC9-40F0-4e47-8E18-8E5CF550CFB8}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.5.2"
+                   NS1:name="Stylish"
+                   NS1:creator="Jason Barnabe (np)"
+                   NS1:homepageURL="http://userstyles.org/stylish/"
+                   NS1:optionsURL="chrome://stylish/content/manage.xul"
+                   NS1:iconURL="chrome://stylish/skin/bigicon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:translator>ANBO Motohiko - ja</NS1:translator>
+    <NS1:translator>Goofy - fr</NS1:translator>
+    <NS1:translator>MatrixIsAllOver - it</NS1:translator>
+    <NS1:translator>l0stintranslation - it</NS1:translator>
+    <NS1:translator>Proyecto Nave - es-ES</NS1:translator>
+    <NS1:translator>RAF - nl</NS1:translator>
+    <NS1:translator>ReinekeFux - de</NS1:translator>
+    <NS1:translator>Peter (SlovakSoft) - sk</NS1:translator>
+    <NS1:translator>Alan CHENG - zh-TW, zh-CN</NS1:translator>
+    <NS1:translator>winiah - zh-TW, zh-CN</NS1:translator>
+    <NS1:translator>Paweł Kubisz - pl</NS1:translator>
+    <NS1:translator>Timur Timirkhanov - ru</NS1:translator>
+    <NS1:translator>rickcart - zh-CN</NS1:translator>
+    <NS1:translator>miz - ja</NS1:translator>
+    <NS1:translator>pedsann - pt-BR</NS1:translator>
+    <NS1:translator>MozUA - uk-UA</NS1:translator>
+    <NS1:translator>norix - ja</NS1:translator>
+    <NS1:translator>Ian Moody - en-GB</NS1:translator>
+    <NS1:translator>Akilles - fi-FI</NS1:translator>
+    <NS1:translator>pirlouy - fr</NS1:translator>
+    <NS1:translator>myahoo - fr</NS1:translator>
+    <NS1:translator>jeognsw - ko-KR</NS1:translator>
+    <NS1:translator>teo - pl-PL</NS1:translator>
+    <NS1:translator>SiiiE - he-IL</NS1:translator>
+    <NS1:translator>drry - ja</NS1:translator>
+    <NS1:contributor>ANBO Motohiko</NS1:contributor>
+    <NS1:contributor>Kevin Keller</NS1:contributor>
+    <NS1:contributor>Torisugari</NS1:contributor>
+    <NS1:contributor>asquella</NS1:contributor>
+    <NS1:contributor>Relativity_17 (Ming Zhang)</NS1:contributor>
+    <NS1:contributor>Philip Chee</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$yZmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$zZmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$AZmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$BZmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$CZmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{c45c406e-ab73-11d8-be73-000a95be3b12}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.1.4"
+                   NS1:name="Web Developer"
+                   NS1:description="Adds a menu and a toolbar with various web developer tools."
+                   NS1:creator="Chris Pederick"
+                   NS1:homepageURL="http://chrispederick.com/work/web-developer/"
+                   NS1:updateURL="http://downloads.mozdev.org/webdeveloper/update.rdf"
+                   NS1:optionsURL="chrome://webdeveloper/content/options/options.xul"
+                   NS1:aboutURL="chrome://webdeveloper/content/about/about.xul"
+                   NS1:iconURL="chrome://webdeveloper/content/images/logo/large.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$pTmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$qTmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$g2nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="2.0" />
+  <RDF:Description RDF:about="rdf:#$Yhzxu"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0.0.4"
+                   NS1:maxVersion="2.0.0.4" />
+  <RDF:Description RDF:about="rdf:#$52nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0" />
+  <RDF:Description RDF:about="rdf:#$60nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$O1nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$xRmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Seq RDF:about="urn:mozilla:item:root">
+    <RDF:li RDF:resource="urn:mozilla:item:{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:autofillForms@blueimp.net"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{044FA143-992A-435f-95A5-39E25470F8F0}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{987311C6-B504-4aa2-90BF-60CC49808D42}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{0545b830-f0aa-4d7e-8820-50a4629a56fe}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:CLEO@guid.customsoftwareconsult.com"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{1280606b-2510-4fe0-97ef-9b5a22eafe80}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{fce36c1e-58d8-498a-b2a5-66ad1cedebbb}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{71C54606-83ED-4ea6-9315-1AAB29466D33}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{2fa4ed95-0317-4c6a-a74c-5f3e3912c1f9}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{D4DD63FA-01E4-46a7-B6B1-EDAB7D6AD389}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{c36177c0-224a-11da-8cd6-0800200c9a66}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{972ce4c6-7e08-4474-a285-3208198ce6fd}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{4BBDD651-70CF-4821-84F8-2B918CF89CA3}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:foxyproxy@eric.h.jung"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{000a9d1c-beef-4f90-9363-039d445309b8}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{e4a8a97b-f2ed-450b-b12d-ee082ba24781}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{CAFEEFAC-0016-0000-0001-ABCDEFFEDCBA}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:kempelton@quadrone.org"/>
+    <RDF:li RDF:resource="urn:mozilla:item:locationbar2@design-noir.de"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{0cdfdd5e-eea6-45ff-b035-81243cf02efb}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{9669CC8F-B388-42FE-86F4-CB5E7F5A8BDC}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{36C13C8F-54F1-412e-8177-2E411719162D}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{0c8fbd76-bdeb-4c52-9b24-d587ce7b9dc3}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{655397ca-4766-496b-b7a8-3a5b176ee4c2}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:secureLogin@blueimp.net"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{1280606b-2510-4fe0-97ef-9b5a22eafe30}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{46551EC9-40F0-4e47-8E18-8E5CF550CFB8}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{84417002-6445-49b4-9fd7-1ef48240fa41}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{dc572301-7619-498c-a57d-39143191b318}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:talkback@mozilla.org"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{95f24680-9e31-11da-a746-0800200c9a66}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{e968fc70-8f95-4ab9-9e79-304de2a71ee1}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:xpose@viamatic.com"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{c45c406e-ab73-11d8-be73-000a95be3b12}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{a92aadf8-193f-4a62-8740-5cce81775afc}"/>
+    <RDF:li RDF:resource="urn:mozilla:item:{CAFEEFAC-0016-0000-0002-ABCDEFFEDCBA}"/>
+  </RDF:Seq>
+  <RDF:Description RDF:about="rdf:#$+SmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.5"
+                   NS1:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$4SmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:talkback@mozilla.org"
+                   NS1:description="Sends information about program crashes to Mozilla."
+                   NS1:creator="mozilla.org"
+                   NS1:homepageURL="http://talkback.mozilla.org/"
+                   NS1:appManaged="true"
+                   NS1:userDisabled="true"
+                   NS1:name="Talkback"
+                   NS1:version="2.0.0.4"
+                   NS1:installLocation="app-global">
+    <NS1:targetApplication RDF:resource="rdf:#$Yhzxu"/>
+    <NS1:targetApplication RDF:resource="rdf:#$Zhzxu"/>
+    <NS1:targetApplication RDF:resource="rdf:#$.hzxu"/>
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{0cdfdd5e-eea6-45ff-b035-81243cf02efb}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="2.0.0.23"
+                   NS1:name="Mostly Crystal"
+                   NS1:description="A Crystal theme"
+                   NS1:creator="CatThief"
+                   NS1:homepageURL="http://www.tom-cat.com/mozilla"
+                   NS1:updateURL="http://www.tom-cat.com/mozilla/update-themes.rdf"
+                   NS1:internalName="mcrystal/1.0"
+                   NS1:contributor="Everaldo - everaldo.com (Crystal SVG icons)">
+    <NS1:type NC:parseType="Integer">4</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$F+mKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{655397ca-4766-496b-b7a8-3a5b176ee4c2}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.3.7"
+                   NS1:name="Searchbar Autosizer"
+                   NS1:description="Auto resizes the searchbox as you type"
+                   NS1:creator="xeen"
+                   NS1:homepageURL="http://searchbarautosizer.mozdev.org"
+                   NS1:optionsURL="chrome://autosizer/content/helper2.xul"
+                   NS1:iconURL="chrome://autosizer/content/logo.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:translator>cs-CZ: kukulich</NS1:translator>
+    <NS1:translator>el-GR: Sonickydon</NS1:translator>
+    <NS1:translator>es-ES: Antonio a.k.a. urko</NS1:translator>
+    <NS1:translator>fr-FR: menet</NS1:translator>
+    <NS1:translator>it-IT: MatrixIsAllOver</NS1:translator>
+    <NS1:translator>ja-JP: Norah</NS1:translator>
+    <NS1:translator>ko-KR: wtspout</NS1:translator>
+    <NS1:translator>nl-NL: markh</NS1:translator>
+    <NS1:translator>pl-PL: KosciaK</NS1:translator>
+    <NS1:translator>pt-BR (partly): pedsann</NS1:translator>
+    <NS1:translator>ru-RU: Sergeys</NS1:translator>
+    <NS1:translator>sk-SK: wladow</NS1:translator>
+    <NS1:translator>zh-CN: WangKing</NS1:translator>
+    <NS1:translator>zh-TW: hit1205</NS1:translator>
+    <NS1:translator>www.BabelZilla.org</NS1:translator>
+    <NS1:contributor>Aronnax (Mac testing)</NS1:contributor>
+    <NS1:contributor>Awan Afuqya (Manual Sizing Code)</NS1:contributor>
+    <NS1:contributor>Change (Mac testing)</NS1:contributor>
+    <NS1:contributor>Fatal (logo)</NS1:contributor>
+    <NS1:contributor>menet (1.3 testing)</NS1:contributor>
+    <NS1:contributor>Pike (XBL help)</NS1:contributor>
+    <NS1:contributor>zeniko (always on top code)</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$+XmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$41nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0a4" />
+  <RDF:Description RDF:about="rdf:#$Q.mKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.5"
+                   NS1:maxVersion="0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:kempelton@quadrone.org"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.1"
+                   NS1:name="Kempelton"
+                   NS1:description="Theme using the Kempelton icon set also seen in Thunderbird 2. Designed to be pleasant and functional."
+                   NS1:creator="Arvid Axelsson"
+                   NS1:homepageURL="http://quadrone.org/"
+                   NS1:internalName="Kempelton">
+    <NS1:type NC:parseType="Integer">4</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$i1nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$GUmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="0.8"
+                   NS1:maxVersion="9.9" />
+  <RDF:Description RDF:about="rdf:#$r0nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$pXmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="0.9"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$ARmKV"
+                   NS1:id="{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="1.1.*" />
+  <RDF:Description RDF:about="rdf:#$N.mKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0.*" />
+  <RDF:Description RDF:about="rdf:#$O.mKV"
+                   NS1:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0.*" />
+  <RDF:Description RDF:about="rdf:#$U+mKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:secureLogin@blueimp.net"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.8.1.2"
+                   NS1:name="Secure Login"
+                   NS1:description="A login extension similar to Opera's Wand login"
+                   NS1:creator="Sebastian Tschan"
+                   NS1:homepageURL="https://blueimp.net/mozilla/"
+                   NS1:updateURL="https://blueimp.net/mozilla/update.rdf?itemid=%ITEM_ID%&amp;itemversion=%ITEM_VERSION%&amp;appid=%APP_ID%&amp;appversion=%APP_VERSION%&amp;appos=%APP_OS%"
+                   NS1:optionsURL="chrome://securelogin/content/secureLoginOptions.xul"
+                   NS1:iconURL="chrome://securelogin/skin/icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:translator>Oliver Roth (German)</NS1:translator>
+    <NS1:translator>npa111 (Finnish)</NS1:translator>
+    <NS1:translator>menet (French)</NS1:translator>
+    <NS1:translator>Mikes Kaszman Istvan (Hungarian)</NS1:translator>
+    <NS1:translator>Norah (Japanese)</NS1:translator>
+    <NS1:translator>Hirto (Japanese)</NS1:translator>
+    <NS1:translator>markh (Dutch)</NS1:translator>
+    <NS1:translator>teo (Polish)</NS1:translator>
+    <NS1:translator>Modex (Russian)</NS1:translator>
+    <NS1:translator>Sergeys (Russian)</NS1:translator>
+    <NS1:translator>fang5566 (Chinese - Simplified)</NS1:translator>
+    <NS1:targetApplication RDF:resource="rdf:#$S0nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{fce36c1e-58d8-498a-b2a5-66ad1cedebbb}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.60"
+                   NS1:name="CustomizeGoogle"
+                   NS1:description="Enhance Google search results and remove ads and spam"
+                   NS1:creator="info@customizegoogle.com"
+                   NS1:homepageURL="http://www.customizegoogle.com/"
+                   NS1:updateURL="http://www.customizegoogle.com/update.en-US.rdf"
+                   NS1:optionsURL="chrome://customizegoogle/content/options.xul"
+                   NS1:iconURL="chrome://customizegoogle/skin/32x32.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Toni Kaija, Masterchief91 (fi-FI)</NS1:contributor>
+    <NS1:contributor>Luca Pedrazzi, Roccobot (it-IT)</NS1:contributor>
+    <NS1:contributor>Xavi Ivars (ca-AD)</NS1:contributor>
+    <NS1:contributor>Kai-Chieh Ku (zh-TW)</NS1:contributor>
+    <NS1:contributor>Shaman Miller (tr-TR)</NS1:contributor>
+    <NS1:contributor>Norah Marinkovic (ja-JP)</NS1:contributor>
+    <NS1:contributor>Carlos, Rodrigo M. (es-ES)</NS1:contributor>
+    <NS1:contributor>Carlos, Rodrigo M. (es-AR)</NS1:contributor>
+    <NS1:contributor>Ruben Verborgh (nl-NL)</NS1:contributor>
+    <NS1:contributor>Ruben Verborgh (nl-BE)</NS1:contributor>
+    <NS1:contributor>Piarres Beobide (eu-ES)</NS1:contributor>
+    <NS1:contributor>Denis Devedjian, Mathieu, Julien Prangère (fr-FR)</NS1:contributor>
+    <NS1:contributor>Kerry Wang (zh-CN)</NS1:contributor>
+    <NS1:contributor>Tomas Marek (cs-CZ)</NS1:contributor>
+    <NS1:contributor>Eimell (sv-SE)</NS1:contributor>
+    <NS1:contributor>Nir Bruner (he-IL)</NS1:contributor>
+    <NS1:contributor>Ljubisa Radovanovic (sr-YU)</NS1:contributor>
+    <NS1:contributor>Nighto (pt-BR)</NS1:contributor>
+    <NS1:contributor>Oliver www.erweiterungen.de (de-DE)</NS1:contributor>
+    <NS1:contributor>Viktor Kristian, Wladow (sk-SK)</NS1:contributor>
+    <NS1:contributor>Copper, Jonas (lt-LT)</NS1:contributor>
+    <NS1:contributor>Anders Jorsal, AlleyKat (da-DK)</NS1:contributor>
+    <NS1:contributor>﻿Белый Владимир (ru-RU)</NS1:contributor>
+    <NS1:contributor>Fredrik Rodland (nb-NO)</NS1:contributor>
+    <NS1:contributor>Agung Harjanto (id-ID)</NS1:contributor>
+    <NS1:contributor>Codemonkey (hu-HU)</NS1:contributor>
+    <NS1:contributor>Carlos Simão (pt-PT)</NS1:contributor>
+    <NS1:contributor>Arris, Hawksthorne (bg-BG)</NS1:contributor>
+    <NS1:contributor>Besmir Godole (sq-AL)</NS1:contributor>
+    <NS1:contributor>Qen (th-TH)</NS1:contributor>
+    <NS1:contributor>Krcko (hr-HR)</NS1:contributor>
+    <NS1:contributor>Sonickydon (el-GR)</NS1:contributor>
+    <NS1:contributor>Pedram Veisi (fa-IR)</NS1:contributor>
+    <NS1:contributor>Miga (ar-SA)</NS1:contributor>
+    <NS1:contributor>Sergey Khoruzhin (uk-UA)</NS1:contributor>
+    <NS1:contributor>DRKA (be-BY)</NS1:contributor>
+    <NS1:contributor>Kita (ko-KR)</NS1:contributor>
+    <NS1:contributor>Francisco (es-CL)</NS1:contributor>
+    <NS1:contributor>moZes (fy-NL)</NS1:contributor>
+    <NS1:contributor>ultravioletu (ro-RO)</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$YQmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$ZQmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$.QmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$fUmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{CAFEEFAC-0016-0000-0001-ABCDEFFEDCBA}"
+                   NS1:installLocation="app-global"
+                   NS1:version="6.0.01"
+                   NS1:name="Java Console"
+                   NS1:hidden="true"
+                   NS1:appDisabled="true">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$g2nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$Zhzxu"
+                   NS1:id="{718e30fb-e89b-41dd-9da7-e25a45638b28}"
+                   NS1:minVersion="0.5pre"
+                   NS1:maxVersion="0.5pre" />
+  <RDF:Description RDF:about="rdf:#$GWmKV"
+                   NS1:id="{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="1.5a" />
+  <RDF:Description RDF:about="urn:mozilla:item:{95f24680-9e31-11da-a746-0800200c9a66}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.1.5.3"
+                   NS1:name="Update Notifier"
+                   NS1:description="Notifies you when updates are available for your extensions and themes."
+                   NS1:creator="Todd Long &lt;longfocus@gmail.com&gt;"
+                   NS1:homepageURL="http://www.longfocus.com/firefox/updatenotifier"
+                   NS1:optionsURL="chrome://updatenotifier/content/options.xul"
+                   NS1:iconURL="chrome://updatenotifier/skin/un-icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$.WmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$+WmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$XSmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{0c8fbd76-bdeb-4c52-9b24-d587ce7b9dc3}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.0.8"
+                   NS1:name="Resurrect Pages"
+                   NS1:description="Resurrect dead pages, by finding their ghosts."
+                   NS1:creator="Anthony Lieuallen"
+                   NS1:homepageURL="http://trac.arantius.com/wiki/Extensions/Resurrect"
+                   NS1:updateURL="http://arantius.com/misc/firefox-extensions/mine/updates.rdf"
+                   NS1:iconURL="chrome://resurrect/skin/em-icon.png"
+                   NS1:contributor="Translators from BabelZilla.org">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$U+mKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{0545b830-f0aa-4d7e-8820-50a4629a56fe}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="2.0.4"
+                   NS1:name="ColorfulTabs"
+                   NS1:description="Colorful Tabs colors every tab in a different color and makes them easy to distinguish while beautifying the overall appeal of the interface."
+                   NS1:creator="Shivanand Sharma AKA Varun"
+                   NS1:homepageURL="http://varun21.googlepages.com/"
+                   NS1:updateURL="http://varun21.googlepages.com/Clrtabs.rdf"
+                   NS1:optionsURL="chrome://clrtabs/content/clrtabsopt.xul"
+                   NS1:aboutURL="chrome://clrtabs/content/about.xul"
+                   NS1:iconURL="chrome://clrtabs/content/star.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$V+mKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$i1nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:xpose@viamatic.com"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.6"
+                   NS1:name="Viamatic foXpose"
+                   NS1:description="Click on the icon in the status bar to view all the browser windows with a single click."
+                   NS1:creator="Vivek Jishtu"
+                   NS1:homepageURL="http://viamatic.com/firefox"
+                   NS1:optionsURL="chrome://xpose/content/xpose-settings.xul"
+                   NS1:iconURL="chrome://xpose/skin/icon.png"
+                   NS1:contributor="Aman Brar">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$r0nKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$s0nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$ZSmKV"
+                   NS1:id="{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="1.5a" />
+  <RDF:Description RDF:about="rdf:#$bXmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$S.mKV"
+                   NS1:id="dlm@emusic.com"
+                   NS1:minVersion="4.0a1"
+                   NS1:maxVersion="4.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$FWmKV"
+                   NS1:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   NS1:minVersion="1.7"
+                   NS1:maxVersion="1.8" />
+  <RDF:Description RDF:about="rdf:#$CWmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.7.0"
+                   NS1:maxVersion="1.5" />
+  <RDF:Description RDF:about="urn:mozilla:item:{e4a8a97b-f2ed-450b-b12d-ee082ba24781}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.7.20070607.0"
+                   NS1:name="Greasemonkey"
+                   NS1:description="A User Script Manager for Firefox"
+                   NS1:creator="Aaron Boodman; http://youngpup.net/"
+                   NS1:homepageURL="http://greasemonkey.mozdev.org/"
+                   NS1:optionsURL="chrome://greasemonkey/content/manage.xul"
+                   NS1:iconURL="chrome://greasemonkey/content/status_on.gif">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Anthony Lieuallen; http://arantius.com</NS1:contributor>
+    <NS1:contributor>Chris Feldmann; http://axlotl.net</NS1:contributor>
+    <NS1:contributor>David Schontzler; http://stilleye.com/</NS1:contributor>
+    <NS1:contributor>Gareth Andrew; http://freegarethandrew.org</NS1:contributor>
+    <NS1:contributor>Hisateru Tanaka</NS1:contributor>
+    <NS1:contributor>Jeremy Dunck; http://dunck.us/anabasis/</NS1:contributor>
+    <NS1:contributor>JP Sugarbroad</NS1:contributor>
+    <NS1:contributor>Juan Pablo Guereca Alonso</NS1:contributor>
+    <NS1:contributor>Manpreet Singh</NS1:contributor>
+    <NS1:contributor>Mark Pilgrim; http://diveintomark.org</NS1:contributor>
+    <NS1:contributor>Matthias Bauer; http://moeffju.net/</NS1:contributor>
+    <NS1:contributor>Matthew Gray; http://mkgray.com:8000/</NS1:contributor>
+    <NS1:contributor>Nikolas Coukouma; http://atrus.org/</NS1:contributor>
+    <NS1:contributor>Ori Avtallon</NS1:contributor>
+    <NS1:contributor>Sergio Abreu; http://sitedosergio.sitesbr.net</NS1:contributor>
+    <NS1:contributor>Tommi Rautava</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$4SmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{c36177c0-224a-11da-8cd6-0800200c9a66}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="2.0.0"
+                   NS1:name="Fasterfox"
+                   NS1:description="Performance and network tweaks for Firefox."
+                   NS1:creator="Tony Gentilcore"
+                   NS1:homepageURL="http://fasterfox.mozdev.org/"
+                   NS1:optionsURL="chrome://fasterfox/content/pref-fasterfox.xul"
+                   NS1:aboutURL="chrome://fasterfox/content/about.xul"
+                   NS1:iconURL="chrome://fasterfox/skin/icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Artwork - Nicholas Dower</NS1:contributor>
+    <NS1:contributor>Czech (cs-CZ) - funTomas</NS1:contributor>
+    <NS1:contributor>German (de-DE) - ReinekeFux, geframuc, Team erweiterungen.de</NS1:contributor>
+    <NS1:contributor>Spanish (Argentina) (es-AR) - MorZilla</NS1:contributor>
+    <NS1:contributor>Spanish (Spain) (es-ES) - urko</NS1:contributor>
+    <NS1:contributor>Finnish (fi-FI) - herrahuu</NS1:contributor>
+    <NS1:contributor>French (fr-FR) - Calimo</NS1:contributor>
+    <NS1:contributor>Frisian (fy-NL) - moZes</NS1:contributor>
+    <NS1:contributor>Hebrew (he-IL) - asfaltboy</NS1:contributor>
+    <NS1:contributor>Hungarian (hu-HU) - kami, LocaLiceR</NS1:contributor>
+    <NS1:contributor>Italian (it-IT) - eagleman</NS1:contributor>
+    <NS1:contributor>Japanese (ja-JP) - Norah</NS1:contributor>
+    <NS1:contributor>Korean (ko-KR) - heygom</NS1:contributor>
+    <NS1:contributor>Lithuanian (lt-LT) - garas</NS1:contributor>
+    <NS1:contributor>Dutch (nl-NL) - Fopper, Liesbeth</NS1:contributor>
+    <NS1:contributor>Polish (pl-PL) - teo</NS1:contributor>
+    <NS1:contributor>Portuguese (Brazilian) (pt-BR) - Ghelman</NS1:contributor>
+    <NS1:contributor>Portuguese (Portugal) (pt-PT) - zefranc</NS1:contributor>
+    <NS1:contributor>Russian (ru-RU) - Modex</NS1:contributor>
+    <NS1:contributor>Slovak (sk-SK) - Rony, SlovakSoft</NS1:contributor>
+    <NS1:contributor>Slovenian (sl-SI) - miles</NS1:contributor>
+    <NS1:contributor>Swedish (sv-SE) - lagerstedt, jameka, StiffeL</NS1:contributor>
+    <NS1:contributor>Turkish (tr-TR) - ErkanKaplan, batuhancetin, Fatih</NS1:contributor>
+    <NS1:contributor>Ukrainian (uk-UA) - Sergey Khoruzhin</NS1:contributor>
+    <NS1:contributor>Chinese (Simplified) (zh-CN) - Pudgy, rickcart</NS1:contributor>
+    <NS1:contributor>Chinese (Traditional) (zh-TW) - micwang</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$3UmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$yRmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.4"
+                   NS1:maxVersion="1.0" />
+  <RDF:Description RDF:about="rdf:#$Tm2DM"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="5.0+" />
+  <RDF:Description RDF:about="rdf:#$QZmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{a92aadf8-193f-4a62-8740-5cce81775afc}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.5"
+                   NS1:name="Woot Watcher"
+                   NS1:optionsURL="chrome://wootwatcher/content/options.xul">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$fUmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$.hzxu"
+                   NS1:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   NS1:minVersion="2.0.0.4pre"
+                   NS1:maxVersion="2.0.0.4pre" />
+  <RDF:Description RDF:about="rdf:#$RZmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$AWmKV"
+                   NS1:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="3.0a1" />
+  <RDF:Description RDF:about="rdf:#$0TmKV"
+                   NS1:id="songbird@songbirdnest.com"
+                   NS1:minVersion="0.2"
+                   NS1:maxVersion="0.3" />
+  <RDF:Description RDF:about="rdf:#$s0nKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.4"
+                   NS1:maxVersion="0.8" />
+  <RDF:Description RDF:about="rdf:#$.SmKV"
+                   NS1:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0a1" />
+  <RDF:Description RDF:about="rdf:#$EWmKV"
+                   NS1:id="{718e30fb-e89b-41dd-9da7-e25a45638b28}"
+                   NS1:minVersion="0.2"
+                   NS1:maxVersion="0.4a1" />
+  <RDF:Description RDF:about="rdf:#$DWmKV"
+                   NS1:id="{3db10fab-e461-4c80-8b97-957ad5f8ea47}"
+                   NS1:minVersion="8.0"
+                   NS1:maxVersion="8.1.2" />
+  <RDF:Description RDF:about="rdf:#$tYoiz1"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="1.0+"
+                   NS1:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$qXmKV"
+                   NS1:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   NS1:minVersion="1.7"
+                   NS1:maxVersion="1.8" />
+  <RDF:Description RDF:about="urn:mozilla:item:foxyproxy@eric.h.jung"
+                   NS1:installLocation="app-profile"
+                   NS1:version="2.5.3"
+                   NS1:name="FoxyProxy"
+                   NS1:description=""
+                   NS1:creator="LeahScape, Inc."
+                   NS1:homepageURL="http://foxyproxy.mozdev.org"
+                   NS1:optionsURL="chrome://foxyproxy/content/options.xul"
+                   NS1:aboutURL="chrome://foxyproxy/content/about.xul"
+                   NS1:iconURL="chrome://foxyproxy/content/images/foxyproxy-nocopy.gif">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$sYoiz1"/>
+    <NS1:targetApplication RDF:resource="rdf:#$tYoiz1"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$BWmKV"
+                   NS1:id="{136c295a-4a5a-41cf-bf24-5cee526720d5}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="1.0" />
+  <RDF:Description RDF:about="rdf:#$YSmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0a6" />
+  <RDF:Description RDF:about="rdf:#$pTmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{1280606b-2510-4fe0-97ef-9b5a22eafe80}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.3.7"
+                   NS1:name="Console²"
+                   NS1:description="The next generation error console."
+                   NS1:creator="zeniko"
+                   NS1:homepageURL="http://console2.mozdev.org/index.html"
+                   NS1:updateURL="http://console2.mozdev.org/update.xml"
+                   NS1:iconURL="chrome://console2/skin/import/Error.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Philip Chee</NS1:contributor>
+    <NS1:contributor>All contributors to the Toolkit 1.8 JavaScript Console</NS1:contributor>
+    <NS1:contributor>&amp;</NS1:contributor>
+    <NS1:contributor>BabelZilla translators:</NS1:contributor>
+    <NS1:contributor>MatrixIsAllOver (Italian)</NS1:contributor>
+    <NS1:contributor>Proyecto Nave (Spanish)</NS1:contributor>
+    <NS1:contributor>Edgaras Janušauskas (Lithuanian)</NS1:contributor>
+    <NS1:contributor>Teboga (Portuguese)</NS1:contributor>
+    <NS1:contributor>Menet (French)</NS1:contributor>
+    <NS1:contributor>Infoman (Russian)</NS1:contributor>
+    <NS1:contributor>Leszek (teo) Życzkowski (Polish)</NS1:contributor>
+    <NS1:contributor>Rastislav Hubočan (Slovak)</NS1:contributor>
+    <NS1:contributor>Michal Gebauer (Czech)</NS1:contributor>
+    <NS1:contributor>pitdicker (Dutch)</NS1:contributor>
+    <NS1:contributor>Lachezar (Bulgarian)</NS1:contributor>
+    <NS1:contributor>Ian Moody (British English)</NS1:contributor>
+    <NS1:contributor>tom.1 (German)</NS1:contributor>
+    <NS1:contributor>zeniko (German Switzerland)</NS1:contributor>
+    <NS1:contributor>mar (Japanese)</NS1:contributor>
+    <NS1:contributor>garas (Lithuanian)</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$N.mKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$O.mKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$P.mKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$Q.mKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$R.mKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$S.mKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$P.mKV"
+                   NS1:id="{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="1.5.*" />
+  <RDF:Description RDF:about="rdf:#$zRmKV"
+                   NS1:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="1.7.*" />
+  <RDF:Description RDF:about="rdf:#$q+mKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="3.0a5" />
+  <RDF:Description RDF:about="urn:mozilla:item:{972ce4c6-7e08-4474-a285-3208198ce6fd}"
+                   NS1:installLocation="app-global"
+                   NS1:version="2.0"
+                   NS1:name="Firefox (default)"
+                   NS1:description="The default theme"
+                   NS1:creator="Gerich and Horlander"
+                   NS1:internalName="classic/1.0"
+                   NS1:locked="true"
+                   NS1:appManaged="true"
+                   NS1:contributor="Mozilla Contributors">
+    <NS1:type NC:parseType="Integer">4</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$v2nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:locationbar2@design-noir.de"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.9.1"
+                   NS1:name="Locationbar²"
+                   NS1:description="Emphasizes the domain name and decodes URLs for better readability."
+                   NS1:creator="Dão Gottwald"
+                   NS1:homepageURL="http://en.design-noir.de/mozilla/locationbar2/"
+                   NS1:optionsURL="chrome://locationbar2/content/options.xul"
+                   NS1:iconURL="chrome://locationbar2/skin/icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$41nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$+XmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="3.0a4" />
+  <RDF:Description RDF:about="rdf:#$qTmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.4"
+                   NS1:maxVersion="1.0.*" />
+  <RDF:Description RDF:about="rdf:#$jQmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.*" />
+  <RDF:Description RDF:about="rdf:#$ISmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="3.0a6" />
+  <RDF:Description RDF:about="urn:mozilla:item:CLEO@guid.customsoftwareconsult.com"
+                   NS1:installLocation="app-profile"
+                   NS1:version="2.0"
+                   NS1:name="Compact Library Extension Organizer (CLEO)"
+                   NS1:description="Create multi-extension install package"
+                   NS1:creator="Chuck Baker"
+                   NS1:homepageURL="http://customsoftwareconsult.com/extensions"
+                   NS1:optionsURL="chrome://cleo/content/cleoOptions.xul"
+                   NS1:aboutURL="chrome://cleo/content/cleoAbout.xul"
+                   NS1:iconURL="chrome://cleo/skin/cleo32x32.png"
+                   NS1:contributor="Translations: www.babelzilla.org">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$O1nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$.QmKV"
+                   NS1:id="songbird@songbirdnest.com"
+                   NS1:minVersion="0.2"
+                   NS1:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$sYoiz1"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$HUmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="1.0+"
+                   NS1:maxVersion="9999.0+" />
+  <RDF:Description RDF:about="rdf:#$.WmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{987311C6-B504-4aa2-90BF-60CC49808D42}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.3"
+                   NS1:name="BugMeNot"
+                   NS1:description="Bypass compulsory web registration with the context menu via www.bugmenot.com."
+                   NS1:creator="Eric Hamiter"
+                   NS1:homepageURL="http://roachfiend.com"
+                   NS1:updateURL="http://extensions.roachfiend.com/update.rdf"
+                   NS1:optionsURL="chrome://bugmenot/content/bugmenotOptions.xul"
+                   NS1:aboutURL="chrome://bugmenot/content/about.xul"
+                   NS1:iconURL="chrome://bugmenot/skin/bugmenot.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Dmytri Kleiner</NS1:contributor>
+    <NS1:contributor>Michael Lidman</NS1:contributor>
+    <NS1:contributor>Joseph Wain</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$GUmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$HUmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{D4DD63FA-01E4-46a7-B6B1-EDAB7D6AD389}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.9.5"
+                   NS1:name="Download Statusbar"
+                   NS1:description="View and manage downloads from a tidy statusbar"
+                   NS1:creator="Devon Jensen"
+                   NS1:homepageURL="http://downloadstatusbar.mozdev.org/"
+                   NS1:optionsURL="chrome://downbar/content/downbarprefs.xul"
+                   NS1:aboutURL="chrome://downbar/content/aboutdownbar.xul"
+                   NS1:iconURL="chrome://downbar/skin/downbarIcon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$XSmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:autofillForms@blueimp.net"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.6.1.1"
+                   NS1:name="Autofill Forms"
+                   NS1:description="Fill out web forms automatically"
+                   NS1:creator="Sebastian Tschan"
+                   NS1:homepageURL="https://blueimp.net/mozilla/"
+                   NS1:updateURL="https://blueimp.net/mozilla/update.rdf?itemid=%ITEM_ID%&amp;itemversion=%ITEM_VERSION%&amp;appid=%APP_ID%&amp;appversion=%APP_VERSION%&amp;appos=%APP_OS%"
+                   NS1:optionsURL="chrome://autofillForms/content/autofillFormsOptions.xul"
+                   NS1:iconURL="chrome://autofillForms/skin/icon.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:translator>PetrTwo (Czech)</NS1:translator>
+    <NS1:translator>Oliver Roth (German)</NS1:translator>
+    <NS1:translator>myahoo (French)</NS1:translator>
+    <NS1:translator>markh (Dutch)</NS1:translator>
+    <NS1:targetApplication RDF:resource="rdf:#$52nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{2fa4ed95-0317-4c6a-a74c-5f3e3912c1f9}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.5.29"
+                   NS1:name="del.icio.us Bookmarks"
+                   NS1:description="Access your bookmarks wherever you go and keep them organized no matter how many you have."
+                   NS1:creator="Yahoo!"
+                   NS1:homepageURL="http://del.icio.us"
+                   NS1:iconURL="chrome://ybookmarks/skin/mydelicious32x32.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$RZmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{dc572301-7619-498c-a57d-39143191b318}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.3.6"
+                   NS1:name="Tab Mix Plus"
+                   NS1:description="Tab browsing with an added boost."
+                   NS1:homepageURL="http://tmp.garyr.net"
+                   NS1:optionsURL="chrome://tabmixplus/content/pref/pref-tabmix.xul"
+                   NS1:aboutURL="chrome://tabmixplus/content/about.xul"
+                   NS1:iconURL="chrome://tabmixplus/skin/tmp.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$ISmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$R.mKV"
+                   NS1:id="{718e30fb-e89b-41dd-9da7-e25a45638b28}"
+                   NS1:minVersion="0.3.1"
+                   NS1:maxVersion="0.6.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="0.7.5.1"
+                   NS1:name="Adblock Plus"
+                   NS1:description="Ads were yesterday!"
+                   NS1:creator="Wladimir Palant"
+                   NS1:homepageURL="http://adblockplus.org/"
+                   NS1:optionsURL="chrome://adblockplus/content/settings.xul"
+                   NS1:aboutURL="chrome://adblockplus/content/about.xul"
+                   NS1:iconURL="chrome://adblockplus/skin/adblockplus.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$YSmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$ZSmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$.SmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$+SmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$0TmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{36C13C8F-54F1-412e-8177-2E411719162D}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="3.2.2"
+                   NS1:name="Qute"
+                   NS1:description="Simple and unobtrusive theme with clear, colorful icons."
+                   NS1:creator="Arvid Axelsson"
+                   NS1:homepageURL="http://quadrone.org/"
+                   NS1:internalName="Qute">
+    <NS1:type NC:parseType="Integer">4</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$QZmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{000a9d1c-beef-4f90-9363-039d445309b8}"
+                   NS1:installLocation="winreg-app-global"
+                   NS1:version="0.1.50.0"
+                   NS1:name="Google Gears"
+                   NS1:description="These are the gears that power the tubes!"
+                   NS1:creator="Google Inc."
+                   NS1:homepageURL="http://code.google.com/">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$jQmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$zZmKV"
+                   NS1:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   NS1:minVersion="0.4"
+                   NS1:maxVersion="0.8" />
+  <RDF:Description RDF:about="rdf:#$xYmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$v2nKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0.0.4"
+                   NS1:maxVersion="2.0.0.4" />
+  <RDF:Description RDF:about="rdf:#$yZmKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0a5" />
+  <RDF:Description RDF:about="rdf:#$CZmKV"
+                   NS1:id="songbird@songbirdnest.com"
+                   NS1:minVersion="0.2"
+                   NS1:maxVersion="0.2.*" />
+  <RDF:Description RDF:about="urn:mozilla:item:{71C54606-83ED-4ea6-9315-1AAB29466D33}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="2.0"
+                   NS1:name="CuteMenus2"
+                   NS1:description="Iconifies your menus and popups with XP skin."
+                   NS1:creator="Varun Sharma (varun21@gmail.com)"
+                   NS1:homepageURL="http://varun21.googlepages.com"
+                   NS1:updateURL="http://varun21.googlepages.com/CuteMenus2.rdf"
+                   NS1:optionsURL="chrome://cutemenus/content/pref-cutemenus.xul"
+                   NS1:aboutURL="chrome://cutemenus/content/about.xul"
+                   NS1:iconURL="chrome://cutemenus/content/default/star.png">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:contributor>Aaron Spuler (aaronspuler@myrealbox.com)</NS1:contributor>
+    <NS1:contributor>rue</NS1:contributor>
+    <NS1:contributor>Georgi Avramov</NS1:contributor>
+    <NS1:contributor>Bradley Chapman (jabiru_croc@yahoo.com)</NS1:contributor>
+    <NS1:contributor>Shelumi'El Jordan</NS1:contributor>
+    <NS1:contributor>S.D.G. (MonkeeSage)</NS1:contributor>
+    <NS1:targetApplication RDF:resource="rdf:#$pXmKV"/>
+    <NS1:targetApplication RDF:resource="rdf:#$qXmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{044FA143-992A-435f-95A5-39E25470F8F0}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="3.0.1"
+                   NS1:name="Azerty II"
+                   NS1:description="Pretty and pleasant icons. Each button was designed to symbolize its real function. Sometimes realistic or symbolic but always with merry colors and original forms."
+                   NS1:creator="Graphys"
+                   NS1:homepageURL="http://azertyskin.free.fr/"
+                   NS1:internalName="AzertyII">
+    <NS1:type NC:parseType="Integer">4</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$60nKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:item:{4BBDD651-70CF-4821-84F8-2B918CF89CA3}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="4.0.5.0.0.0"
+                   NS1:name="Firefox Extension Backup Extension (FEBE)"
+                   NS1:description="Create backup of installed extensions, themes and more"
+                   NS1:creator="Chuck Baker"
+                   NS1:homepageURL="http://customsoftwareconsult.com/extensions"
+                   NS1:optionsURL="chrome://febe/content/febeOptions.xul"
+                   NS1:aboutURL="chrome://febe/content/febeAbout.xul"
+                   NS1:iconURL="chrome://febe/skin/febe32x32.png"
+                   NS1:contributor="Translations: www.babelzilla.org">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$xYmKV"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$F+mKV"
+                   NS1:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   NS1:minVersion="2.0"
+                   NS1:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$BZmKV"
+                   NS1:id="{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}"
+                   NS1:minVersion="1.0"
+                   NS1:maxVersion="2.0a1" />
+  <RDF:Description RDF:about="rdf:#$AZmKV"
+                   NS1:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
+                   NS1:minVersion="1.5"
+                   NS1:maxVersion="3.0a1" />
+  <RDF:Description RDF:about="urn:mozilla:item:{84417002-6445-49b4-9fd7-1ef48240fa41}"
+                   NS1:installLocation="app-profile"
+                   NS1:version="1.0.4"
+                   NS1:name="Tab History"
+                   NS1:description="Links opened in a new tab retain their history."
+                   NS1:creator="Matt Kenison"
+                   NS1:homepageURL="http://www.penguinus.com/dev/tab_history">
+    <NS1:type NC:parseType="Integer">2</NS1:type>
+    <NS1:targetApplication RDF:resource="rdf:#$bXmKV"/>
+  </RDF:Description>
+</RDF:RDF>

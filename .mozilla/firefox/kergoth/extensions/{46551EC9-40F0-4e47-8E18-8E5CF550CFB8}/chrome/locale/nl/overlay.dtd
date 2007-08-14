@@ -1,0 +1,10 @@
+<!ENTITY stylish.addfile "Voeg bestand toe aan &stylish;...">
+<!ENTITY stylish.addfile.ak "V">
+<!ENTITY stylish.findStyleBrowser "Vind stijlen voor deze pagina">
+<!ENTITY stylish.findStyleBrowser.ak "V">
+<!ENTITY stylish.globalStyles "Globale stijlen">
+<!ENTITY stylish.globalStyles.ak "G">
+<!ENTITY stylish.manageSites "Beheer stijlen...">
+<!ENTITY stylish.manageSites.ak "B">
+<!ENTITY stylish.writeStyle "Schrijf stijl">
+<!ENTITY stylish.writeStyle.ak "S">

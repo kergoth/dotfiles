@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+
+    <em:id>{9669CC8F-B388-42FE-86F4-CB5E7F5A8BDC}</em:id>
+    <em:name>MR Tech Local Install</em:name>
+    <em:version>5.3.2.3</em:version>
+    <em:description>Local Install power tools for all users.</em:description>
+    <em:creator>Mel Reyes (mrtech@gmail.com)</em:creator>
+    <em:extension>true</em:extension>
+<!--    <em:updateURL>http://www.mrtech.com/extensions/updates-dev.rdf</em:updateURL> -->
+
+    <em:homepageURL>http://www.mrtech.com/extensions/local_install/</em:homepageURL>
+    <em:iconURL>chrome://local_install/content/icon.png</em:iconURL>
+  	<em:optionsURL>chrome://local_install/content/settings/settings.xul</em:optionsURL>
+
+    <em:contributor>Code and Ideas from tons of extensions</em:contributor>
+    <em:contributor>Leszek (teo) Zyczkowski - Translation Manager and Layout Fixes</em:contributor>
+    <em:contributor>Frank (Desertfox) - CSS and Layout Fixes</em:contributor>
+    <em:contributor>Everaldo: Crystal SVG Toolbar and Menu icons</em:contributor>
+    <em:contributor>Tom Kuter (Evolic): Install Button Graphic</em:contributor>
+
+    <em:contributor>-</em:contributor>
+
+    <em:contributor>be-BY Locale - </em:contributor>
+    <em:contributor>bg-BG Locale - Hawksthorne</em:contributor>
+    <em:contributor>cs-CZ Locale - Josef Kotva</em:contributor>
+    <em:contributor>de-DE Locale - Armin C. Schneider</em:contributor>
+    <em:contributor>da-DK Locale - </em:contributor>
+    <em:contributor>es-AR Locale - MorZilla</em:contributor>
+    <em:contributor>es-ES Locale - Proyecto Nave</em:contributor>
+    <em:contributor>fa-IR Locale - </em:contributor>
+    <em:contributor>fi-FI Locale - Akilles</em:contributor>
+    <em:contributor>fr-FR Locale - menet, Frackounet</em:contributor>
+    <em:contributor>hu-HU Locale - Henriett Peller</em:contributor>
+    <em:contributor>hr-HR Locale - Krcko</em:contributor>
+    <em:contributor>he-IL Locale - siiie</em:contributor>
+    <em:contributor>it-IT Locale - Andrea</em:contributor>
+    <em:contributor>ja Locale - YoBito/Masaaki Matsuyama</em:contributor>
+    <em:contributor>ko-KR Locale - Flactal</em:contributor>
+    <em:contributor>lt-LT Locale - </em:contributor>
+    <em:contributor>mk-MK Locale - Zoran Ivanovski</em:contributor>
+    <em:contributor>nl-NL Locale - Alf</em:contributor>
+    <em:contributor>pl-PL Locale - Leszek (teo) Życzkowski and Tomasz Kuter (Evolic)</em:contributor>
+    <em:contributor>pt-BR Locale - Fernando Pereira Silveira</em:contributor>
+    <em:contributor>pt-PT Locale - Carlos Simão aka lloco</em:contributor>
+    <em:contributor>ro-RO Locale - Mihai Capotă</em:contributor>
+    <em:contributor>ru-RU Locale - Quicksilver tears</em:contributor>
+    <em:contributor>sk Locale - SlovakSoft</em:contributor>
+    <em:contributor>sr-YU Locale - Љубиша Радовановић</em:contributor>
+    <em:contributor>tr-TR Locale - Gokhan</em:contributor>
+    <em:contributor>uk-UA Locale - Sergey Khoruzhin</em:contributor>
+    <em:contributor>zh-CN Locale - Duriel</em:contributor>
+    <em:contributor>zh-TW Locale - petertc, Patrick Yau Pak Wa</em:contributor>
+
+  	<em:file>
+			<Description about="urn:mozilla:extension:file:local_install.jar">
+        <em:package>content/local_install/</em:package>
+        <em:skin>skin/classic/local_install/</em:skin>
+				<em:locale>locale/en-US/local_install/</em:locale>
+				<em:locale>locale/it-IT/local_install/</em:locale>
+				<em:locale>locale/es-ES/local_install/</em:locale>
+				<em:locale>locale/fr-FR/local_install/</em:locale>
+				<em:locale>locale/zh-CN/local_install/</em:locale>
+				<em:locale>locale/pl-PL/local_install/</em:locale>				
+				<em:locale>locale/pt-BR/local_install/</em:locale>				
+				<em:locale>locale/de-DE/local_install/</em:locale>				
+				<em:locale>locale/zh-TW/local_install/</em:locale>
+				<em:locale>locale/nl-NL/local_install/</em:locale>
+				<em:locale>locale/hu-HU/local_install/</em:locale>
+				<em:locale>locale/sr-YU/local_install/</em:locale>
+				<em:locale>locale/ro-RO/local_install/</em:locale>
+				<em:locale>locale/cs-CZ/local_install/</em:locale>
+				<em:locale>locale/ja/local_install/</em:locale>
+				<em:locale>locale/fi-FI/local_install/</em:locale>
+				<em:locale>locale/ru-RU/local_install/</em:locale>
+				<em:locale>locale/ko-KR/local_install/</em:locale>
+				<em:locale>locale/es-AR/local_install/</em:locale>
+				<em:locale>locale/sk/local_install/</em:locale>
+				<em:locale>locale/mk-MK/local_install/</em:locale>
+				<em:locale>locale/hr-HR/local_install/</em:locale>
+				<em:locale>locale/da-DK/local_install/</em:locale>
+				<em:locale>locale/lt-LT/local_install/</em:locale>
+				<em:locale>locale/he-IL/local_install/</em:locale>
+				<em:locale>locale/bg-BG/local_install/</em:locale>
+				<em:locale>locale/uk-UA/local_install/</em:locale>
+				<em:locale>locale/fa-IR/local_install/</em:locale>
+				<em:locale>locale/pt-PT/local_install/</em:locale>
+				<em:locale>locale/tr-TR/local_install/</em:locale>
+				<em:locale>locale/be-BY/local_install/</em:locale>
+			</Description>
+		</em:file>
+
+		<em:targetApplication> <!-- Firefox -->
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>3.0a2</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+    <em:targetApplication> <!-- Thunderbird -->
+      <Description>
+        <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>3.0a1</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:targetApplication> <!-- Nvu -->
+      <Description>
+         <em:id>{136c295a-4a5a-41cf-bf24-5cee526720d5}</em:id>
+         <em:minVersion>1.0</em:minVersion>
+         <em:maxVersion>1.0</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+		<em:targetApplication> <!-- Flock -->
+			<Description>
+				<em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
+				<em:minVersion>0.7.0</em:minVersion>
+				<em:maxVersion>1.5</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+    <em:targetApplication> <!-- Netscape -->
+      <Description>
+        <em:id>{3db10fab-e461-4c80-8b97-957ad5f8ea47}</em:id>
+        <em:minVersion>8.0</em:minVersion>
+        <em:maxVersion>8.1.2</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:targetApplication> <!-- Sunbird -->
+      <Description>
+        <em:id>{718e30fb-e89b-41dd-9da7-e25a45638b28}</em:id>
+        <em:minVersion>0.2</em:minVersion>
+        <em:maxVersion>0.4a1</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+		
+ 		<em:targetApplication> <!-- Mozilla Suite -->
+			<Description>
+				<em:id>{86c18b42-e466-45a9-ae7a-9b95ba6f5640}</em:id>
+				<em:minVersion>1.7</em:minVersion>
+				<em:maxVersion>1.8</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+		<em:targetApplication> <!-- SeaMonkey -->
+			<Description>
+				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>1.5a</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
+	</Description>
+</RDF>

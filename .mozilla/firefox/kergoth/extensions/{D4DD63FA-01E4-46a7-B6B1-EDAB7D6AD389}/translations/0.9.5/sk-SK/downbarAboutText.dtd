@@ -1,0 +1,110 @@
+<!ENTITY aboutTitle.label "Čo je Download Statusbar">
+<!ENTITY introTab.label "Úvod">
+<!ENTITY by.label "Autor: Devon Jensen">
+<!ENTITY version.label "Verzia">
+<!ENTITY tagLine.label "Toto rozšírenie pre Mozilla Firefox umožňuje zobrazovať a spravovať sťahované súbory zo stavového riadka prehliadača.">
+<!ENTITY ifNew.label "Ak ste doteraz rozšírenie Download Statusbar nepoužívali, prečítajte si tieto informácie o jeho používaní.">
+<!ENTITY toView.label "Ak budete chcieť tohto pomocníka zobraziť aj neskôr,">
+<!ENTITY pressAbout.label "budete musieť ísť do Nastavení rozšírenia Download Statusbar a kliknúť na tlačidlo Pomocník.">
+<!ENTITY donateText.label "Aby som bol úprimný, strávil som nad vývojom tohto rozšírenia množstvo času. Ak vám toto rozšírenie uľahčilo prácu s Firefoxom, prosím, prispejte nejakým darom. (Paypal nie je potrebný, prijímam aj kreditné karty).">
+<!ENTITY donate.label "Príspevok autorovi.">
+<!ENTITY majorRelease.label "Veľká aktualizácia!">
+<!ENTITY changelog.label "Čo je nové">
+<!ENTITY whatNewTab.label "Čo je nové v tejto verzii">
+<!ENTITY new1.label "-">
+<!ENTITY new2.label "-">
+<!ENTITY new3.label "-">
+<!ENTITY new4.label "-">
+<!ENTITY new5.label "-">
+<!ENTITY new6.label "-">
+<!ENTITY new7.label "-">
+<!ENTITY new8.label "-">
+<!ENTITY new9.label "-">
+<!ENTITY new10.label "-">
+<!ENTITY new11.label "-">
+<!ENTITY hintsTab.label "Tipy a triky">
+<!ENTITY tip1Title.label "Dočasné úložisko pre súbory">
+<!ENTITY tip1.label "Download Statusbar je vyvíjaný ako &apos;dočasné úložisko&apos; pre vaše prebiehajúce a už ukončené sťahovania. Je udržiavané automaticky alebo manuálnym prečisťovaním záznamov o stiahnutých súboroch, ktoré už nepotrebujete. Je to viac-menej užitočné, keď ich už máte toľko, že neviete, čo je čo. Celú históriu sťahovania si môžete pozrieť v štandardnom Správcovi sťahovania Firefoxu (Nástroje | Správca sťahovania). Pokračujte v čítaní, ak sa chcete dozvedieť viac o odstraňovaní záznamov o sťahovaných súboroch.">
+<!ENTITY tip2Title.label "Klávesové skratky pre bežné akcie">
+<!ENTITY tip2.label "Všetky akcie sú dostupne priamo z ponuky rozšírenia, ale je tu aj rýchlejší spôsob prístupu ku konkrétnym akciám:">
+<!ENTITY tip2a.label "- Na odstránenie ukončeného sťahovania naň kliknite prostredným tlačidlom myši (na väčšine myší je to rolovacie koliesko)">
+<!ENTITY tip2b.label "- Na odstránenie VŠETKÝCH ukončených sťahovaní kliknite 2x na prázdnu časť panela">
+<!ENTITY tip2c.label "- Na otvorenie stiahnutého súboru kliknite 2x na danú položku">
+<!ENTITY tip2d.label "- Na odstránenie dokončeného sťahovania stlačte kláves ctrl a kliknite na položku prostredným tlačidlom myši">
+<!ENTITY tip2e.label "- Na pozastavenie alebo obnovenie práve prebiehajúceho sťahovania kliknite na danú položku sťahovania">
+<!ENTITY tip2f.label "- Na premenovanie ukončeného sťahovania stlačte kláves shift a kliknite na požadovanú položku ľavým tlačidlom myši">
+<!ENTITY tip3Title.label "Pomocné texty">
+<!ENTITY tip3.label "Z času na čas jednoducho chcete vedieť viac o sťahovanom súbore. Ak chcete zobraziť štatistiky sťahovania, umiestnite kurzor myši nad požadovanú položku a počkajte, kým sa objaví malé okienko s informáciami. Pre práve prebiehajúce sťahovania budú zobrazované dynamicky aktualizované informácie, napr. rýchlosť sťahovania, veľkosť súboru a zostávajúci čas. Pre ukončené sťahovania sa zobrazuje jeho umiestnenie na disku, veľkosť, ako dlho sa sťahovalo a priemerná rýchlosť.">
+<!ENTITY tip4Title.label "Animácie">
+<!ENTITY tip4.label "Vypnite animácie na urýchlenie akcií správy sťahovaných položiek. Animácie môžu pre vás znamenať zjednodušenie práce, lebo signalizujú, čo sa práve so sťahovanou položkou deje (napríklad: červený znak X indikuje požiadavku na odstránenie sťahovanej položky), ale môžu vás aj spomaľovať. Ak chcete animácie vypnúť, zrušte začiarknutie voľby &apos;Použiť animáciu&apos; na karte Vzhľad v nastaveniach rozšírenia Download Statusbar. Dočasne môžete animácie vypnúť aj podržaním klávesu SHIFT pri odstraňovaní sťahovanej položky.">
+<!ENTITY tip5Title.label "Zastavenie sťahovania">
+<!ENTITY tip5.label "Zastavením sťahovania si ho uložíte, aby ste mohli dokončiť sťahovanie neskôr. Firefox v súčasnosti nevie nadviazať na predchádzajúce sťahovanie, ak bol počas neho ukončený (je to plánovaná funkcia do budúcnosti), ale môžete ju pozastaviť a po opätovnom spustení Firefoxu začať odznova. Sťahovanie zastavíte kliknutím pravým tlačidlom myši na sťahovanú položku a označením voľby Zastaviť. Sťahovanie spustíte vybratím voľby Spustiť - alebo dvojitým kliknutím na danú položku sťahovania.">
+<!ENTITY tip6Title.label "Správa viacerých sťahovaní naraz">
+<!ENTITY tip6.label "Kliknutie pravým tlačidlom myši na prázdne miesto v stavovom riadku (alebo na tlačidlo v režime mini) vykoná vybranú akciu pre všetky sťahované položky naraz. Odstráni všetky dokončené sťahovania, pozastaví, zastaví alebo zruší všetky práve prebiehajúce sťahovania. Môžete tiež prepínať medzi režimami Úplný a Mini.">
+<!ENTITY tip7Title.label "Režim Mini">
+<!ENTITY tip7.label "Ak chcete zobraziť zoznam stiahnutých súborov v tomto režime, kliknite na ikonu sťahovania v stavovom riadku. Keď sa jednotlivé položky zobrazia, môžete ich spravovať ako v úplnom režime - kliknutie pravým tlačidlom myši dostanete možnosti pre danú položku, prostredným tlačidlom položku odstránite atď. Kliknutím pravým tlačidlom na ikonu v stavovom riadku môžete spravovať viac položiek naraz. Tlačidlo sťahovania je skryté, ak nie sú sťahované žiadne položky.">
+<!ENTITY prefsTab.label "Pomocník pre nastavenia">
+<!ENTITY general.label "Karta Všeobecné">
+<!ENTITY pref1Title.label "Notifikácia stavu">
+<!ENTITY pref1.label "- O práve prebiehajúcich sťahovaniach môžu byť zobrazované detailné informácie v malom okienku, ktoré sa zobrazí po podržaní myši nad sťahovaným súborom. Tu si môžete vybrať, aké informácie chcete mať v tomto okne. Veľkosť textu môžete zmeniť na karte Vzhľad.">
+<!ENTITY pref2Title.label "Režim">
+<!ENTITY pref2.label "- Môžete si vybrať režim Úplný (oddelený stavový riadok) alebo režim Mini (integrovaný do stavového riadka Firefoxu).  Vyskúšajte, ktorý sa vám hodí viac.">
+<!ENTITY pref3Title.label "Ponechať históriu sťahovania">
+<!ENTITY pref3.label "- Firefox predvolene uchováva záznamy o vami sťahovaných súboroch v Správcovi sťahovania. Ak nie je táto možnosť začiarknutá, táto funkcia odstráni položku sťahovanie zo Správcu hneď po odstránení zo stavového riadku. Poznámka: aby mohlo toto pracovať správne, toto rozšírenia musí zmeniť hodnotu &apos;browser.download.manager.retention&apos; v nastaveniach prehliadača.">
+<!ENTITY pref4Title.label "Premazať históriu sťahovania">
+<!ENTITY pref4.label "- Firefox predvolene uchováva záznamy o vami sťahovaných súboroch v Správcovi sťahovania. Po čase môže byť zoznam dlhý a môže spomaliť Firefox. Použite túto možnosť na premazanie zoznamu vždy pri ukončení Firefoxu a uchovávanie zoznamu v rozumných medziach. Ak ste si nastavili Firefox na odstraňovanie &apos;Po ukončení Firefoxu&apos; alebo &apos;Po úspešnom stiahnutí&apos;, táto funkcia nebude robiť nič. Poznámka: toto je funkcia rozšírenia Download Statusbar a priamo neovplyvňuje stavový riadok.">
+<!ENTITY pref5Title.label "Automaticky pokračovať zo sťahovaním...">
+<!ENTITY pref5.label "- Ak práve sťahujete nejaké súbory a pokúsite sa ukončiť Firefox, zobrazí sa varovné hlásenie. Použitím tejto funkcie zobrazíte namiesto neho Správcu sťahovania Firefoxu a môžete pokračovať v sťahovaní aj keď Firefox bude ukončený.">
+<!ENTITY pref6Title.label "Pri zavretí prehliadača odstrániť z panela dokončené sťahovania">
+<!ENTITY pref6.label "- Odstráni zo stavového riadku všetky sťahovania, ale neodstráni ich zo zoznamu v Správcovi sťahovaní. Toto nemá vplyv na samotné stiahnuté súbory.">
+<!ENTITY pref7Title.label "Opýtať sa pred odstránením položky z disku...">
+<!ENTITY pref7.label "- Toto zabezpečí zobrazenie okna so žiadosťou o potvrdenie odstránenia súboru. Akonáhle odstránite súbor, neexistuje spôsob ako ho vrátiť späť (okrem opätovného stiahnutia).">
+<!ENTITY pref8Title.label "Odstrániť položku z panela po jej otvorení">
+<!ENTITY pref8.label "- Neodstráni záznam so Správcu sťahovania.">
+<!ENTITY pref9Title.label "Odstrániť položku z panela po otvorení nadradeného priečinka">
+<!ENTITY pref9.label "- Neodstráni záznam zo Správcu sťahovania">
+<!ENTITY pref10Title.label "Zobrazovať notifikáciu &apos;Sťahovanie dokončené&apos;">
+<!ENTITY pref10.label "- Toto je vlastne funkcia zabudovaná do Firefoxu, ale nevidíme možnosť jej využitia. Odporúčame vypnúť, lebo naozaj nie je s rozšírením Download Statusbar potrebná">
+<!ENTITY pref11Title.label "Ignorovať tieto typy súborov">
+<!ENTITY pref11.label "- Pri sťahovaní týchto typov súborov nebudú zobrazené v rozšírení Download Statusbar, ale záznam o stiahnutí sa objaví v Správcovi sťahovania Firefoxu. Každý typ súboru musí byť oddelený čiarkou, medzery nevadia. Napríklad: &apos;jpg, jpeg, png, gif&apos;  (bez úvodzoviek)">
+<!ENTITY pref12Title.label "Automaticky odstraňovať tieto typy súborov...">
+<!ENTITY pref12.label "- Keď je sťahovanie ukončené, táto funkcia začne odpočítavať určený čas do vymazania záznamu o stiahnutí. Toto je užitočné, pretože vidíte, že sťahovanie bolo ukončené úspešne, ale ďalej už nemusíte nič robiť, ak nechcete. Každý typ súboru musí byť oddelený čiarkou, medzery nevadia. Napríklad: &apos;jpg, jpeg, png, gif&apos; (bez úvodzoviek). Ak chcete túto funkciu aplikovať na všetky súbory, zadajte znak *">
+<!ENTITY pref13Title.label "Po ukončení sťahovania prehrať zvuk">
+<!ENTITY pref13.label "- Vyberte preddefinovaný zvuk alebo vyberte vlastný zvykový súbor .WAV, ktorý sa prehrá po ukončení sťahovania. Ak nechcete, aby bol zvuk prehratý pri niektorých typoch súborov, zadajte ich do poľa. Príklad: &apos;jpg, jpeg, png, gif&apos; (bez úvodzoviek)">
+<!ENTITY appearance.label "Karta Vzhľad">
+<!ENTITY pref14Title.label "Predvolený alebo vlastný štýl">
+<!ENTITY pref14.label "- Vybratie voľby &apos;Vlastný štýl&apos; povolí všetky prvky v tomto okne. Označením možnosti &apos;Predvolený štýl&apos; program rýchlo prepnete rozšírenie na predvolené hodnoty, ale nastavenia vlastného štýlu zostávajú uložené.">
+<!ENTITY pref15Title.label "Farby">
+<!ENTITY pref15.label "- Kliknutím na farebné tlačidlo otvoríte okno s farebnou paletou. Kliknutím a ťahaním v palete farieb si vyberiete vlastnú farbu alebo si vyberte niektorú z predvolených. Farbu môžete zdať aj pomocou Hex kódu. Môžete tiež kliknúť na tlačidlo &apos;Použiť predvolenú tému&apos; na odstránenie vašej farby a nastavenie predvolenej. Toto je vlastne užitočné len pre farbu textu a farbu pozadia stavového riadka.">
+<!ENTITY pref16Title.label "Použiť prechody farby">
+<!ENTITY pref16.label "- Ak je táto voľba začiarknutá, na farbu pozadia je aplikovaný prechod z bielej do priehľadnej farby, čo dáva sťahovaných položkám 3D efekt. Funguje v predvolenom aj vlastnom štýle.">
+<!ENTITY pref17Title.label "Použiť animáciu">
+<!ENTITY pref17.label "- Niektorým akciám súvisiacim so sťahovaním sú priradené animácie. Tieto sú krátke a dúfam nie otravné, ale aj tak môžu byť vypnuté.">
+<!ENTITY pref18Title.label "Zobraziť tieto tlačidlá:">
+<!ENTITY pref18.label "Vyberte, či majú byť zobrazené tlačidlá Stiahnuté, Vymazať (Vymazať všetky dokončené) a Mini (Prepnúť na režim Mini)">
+<!ENTITY pref19Title.label "Farby rýchlostí">
+<!ENTITY pref19.label "- Začiarknutím tejto možnosti zapnete dynamickú zmenu farby práve prebiehajúceho sťahovania založenú na rýchlosti sťahovania. Toto vám umožní vizuálne kontrolovať rýchlosť sťahovania pomocou zmeny farby. Najskôr povoľte zmenu farieb, potom nastavte intervaly rýchlostí (predvolené rýchlosti sú založené na rýchlostiach káblového modemu). Nakoniec pre každý interval nastavte požadovanú farbu kliknutím na farebné tlačidlo. Je niekoľko možností ako využiť túto funkciu. Jeden nápad je nastaviť pre väčšie rýchlosti svetlejšie farby, pre pomalšie tmavšie. Iný nápad je nastaviť tri najvyššie rýchlosti na rovnakú farbu a najnižšiu napr. na červenú, aby vám bolo jasné, ktorý súbor sťahujete pre vás príliš pomaly, napr. pod 10 KB/sek.">
+<!ENTITY virusScan.label "Karta Antivírusová kontrola">
+<!ENTITY pref20Title.label "Manuálna kontrola stiahnutých položiek">
+<!ENTITY pref20.label "- Na povolenie tejto možnosti kliknite na začiarkovacie tlačidlo. Objaví sa dialógové okno, kde musíte akceptovať Pravidlá na používanie antivírusovej kontroly, inak to nebude fungovať.">
+<!ENTITY pref21Title.label "Nekontrolovať súbory s príponami">
+<!ENTITY pref21.label "- Každý typ súboru musí byť oddelený čiarkou, medzery nevadia. Napríklad: &apos;jpg, jpeg, png, gif&apos; (bez úvodzoviek)">
+<!ENTITY pref22Title.label "Umiestnenie antivírusového programu">
+<!ENTITY pref22.label "- Na manuálne skenovanie musíte mať nainštalovaný antivírusový program, ktorý dokáže akceptovať príkazy z príkazového riadka. Kliknite na tlačidlo &apos;...&apos; a nájdite váš program v systéme.">
+<!ENTITY pref23Title.label "Parametre">
+<!ENTITY pref23.label "- Zadajte akékoľvek nutné alebo voliteľné parametre špecifické pre váš antivírový program. &#37;1 určuje súbor, ktorý bude skontrolovaný (predtým [Path]) a mal by sa nachádza niekde medzi parametrami. Mnoho programov bude pracovať, len ak je &#37;1 je jedným zadaným parametrom. Pozrite si dokumentáciu k vášmu antivírusovému programu, tam zistíte aké parametre podporuje.">
+<!ENTITY listMarker.label "·">
+<!ENTITY OK.label "Zavrieť">
+<!ENTITY openPref.label "Nastavenia pre Download Statusbar">
+<!ENTITY support.label "Podporte toto rozšírenie -">
+<!ENTITY donate2.label "Podporiť!">
+<!ENTITY credits.label "Poďakovanie">
+<!ENTITY transFor.label "Autorom prekladu textu pre">
+<!ENTITY currLocale.label "slovenskú">
+<!ENTITY locale.label "lokalizáciu je:">
+<!ENTITY translatorName.label "wladow">
+<!ENTITY projectHost.label "Webový hosting pre projekt:">
+<!ENTITY mozdev.label "Mozdev.org">
+<!ENTITY progAndArtwork.label "Programovanie a vzhľad:">
+<!ENTITY soundsBy.label "Autor zvuku:">
+<!ENTITY soundPeople.label "Dallin Jensen a Devon Jensen">

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:extension:file:cutemenus.jar"
+                   em:package="content/">
+    <em:locale>locale/en-US/</em:locale>
+    <em:locale>locale/it-IT/</em:locale>
+    <em:locale>locale/de-DE/</em:locale>
+    <em:locale>locale/fr-FR/</em:locale>
+    <em:locale>locale/ru-RU/</em:locale>
+    <em:locale>locale/ro-RO/</em:locale>
+    <em:locale>locale/pl-PL/</em:locale>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$Z0OjV3"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="0.9"
+                   em:maxVersion="2.0.0.*" />
+  <RDF:Description RDF:about="rdf:#$.0OjV3"
+                   em:id="{86c18b42-e466-45a9-ae7a-9b95ba6f5640}"
+                   em:minVersion="1.7"
+                   em:maxVersion="1.8" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="{71C54606-83ED-4ea6-9315-1AAB29466D33}"
+                   em:name="CuteMenus2"
+                   em:version="2.0"
+                   em:creator="Varun Sharma (varun21@gmail.com)"
+                   em:description="Iconifies your menus and popups with XP skin."
+                   em:homepageURL="http://varun21.googlepages.com"
+                   em:updateURL="http://varun21.googlepages.com/CuteMenus2.rdf"
+                   em:iconURL="chrome://cutemenus/content/default/star.png"
+                   em:optionsURL="chrome://cutemenus/content/pref-cutemenus.xul"
+                   em:aboutURL="chrome://cutemenus/content/about.xul">
+    <em:contributor>Aaron Spuler (aaronspuler@myrealbox.com)</em:contributor>
+    <em:contributor>rue</em:contributor>
+    <em:contributor>Georgi Avramov</em:contributor>
+    <em:contributor>Bradley Chapman (jabiru_croc@yahoo.com)</em:contributor>
+    <em:contributor>Shelumi'El Jordan</em:contributor>
+    <em:contributor>S.D.G. (MonkeeSage)</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$Z0OjV3"/>
+    <em:targetApplication RDF:resource="rdf:#$.0OjV3"/>
+    <em:file RDF:resource="urn:mozilla:extension:file:cutemenus.jar"/>
+  </RDF:Description>
+</RDF:RDF>

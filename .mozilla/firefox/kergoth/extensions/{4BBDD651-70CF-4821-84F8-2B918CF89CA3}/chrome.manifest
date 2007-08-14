@@ -1,0 +1,38 @@
+
+overlay	chrome://browser/content/browser.xul	chrome://febe/content/febeOverlay.xul
+overlay	chrome://navigator/content/navigator.xul	chrome://febe/content/febeOverlay.xul
+content	febe	jar:chrome/febe.jar!/content/
+
+skin	febe	classic/1.0	jar:chrome/febe.jar!/skin/
+style	chrome://browser/content/browser.xul	chrome://febe/skin/febe.css
+style	chrome://global/content/customizeToolbar.xul	chrome://febe/skin/febe.css
+
+locale	febe	en-US	jar:chrome/febe.jar!/locale/en-US/
+
+locale	febe	el-GR	jar:chrome/febe.jar!/locale/el-GR/
+
+locale	febe	es-ES	jar:chrome/febe.jar!/locale/es-ES/
+
+locale	febe	fa-IR	jar:chrome/febe.jar!/locale/fa-IR/
+
+locale	febe	fr-FR	jar:chrome/febe.jar!/locale/fr-FR/
+
+locale	febe	hr-HR	jar:chrome/febe.jar!/locale/hr-HR/
+
+locale	febe	it-IT	jar:chrome/febe.jar!/locale/it-IT/
+
+locale	febe	ja-JP	jar:chrome/febe.jar!/locale/ja-JP/
+
+locale	febe	nl-NL	jar:chrome/febe.jar!/locale/nl-NL/
+
+locale	febe	pl-PL	jar:chrome/febe.jar!/locale/pl-PL/
+
+locale	febe	pt-BR	jar:chrome/febe.jar!/locale/pt-BR/
+
+locale	febe	ru-RU	jar:chrome/febe.jar!/locale/ru-RU/
+
+locale	febe	sk-SK	jar:chrome/febe.jar!/locale/sk-SK/
+
+locale	febe	sv-SE	jar:chrome/febe.jar!/locale/sv-SE/
+
+locale	febe	zh-TW	jar:chrome/febe.jar!/locale/zh-TW/

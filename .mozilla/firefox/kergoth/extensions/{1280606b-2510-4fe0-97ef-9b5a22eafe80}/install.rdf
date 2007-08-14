@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.mozilla.org/2004/em-rdf#">
+	<RDF:Description about="urn:mozilla:install-manifest">
+		<id>{1280606b-2510-4fe0-97ef-9b5a22eafe80}</id>
+		
+		<name>Console²</name>
+		<version>0.3.7</version>
+		
+		<type>2</type><!-- extension -->
+		
+		<description>The next generation error console.</description>
+		<iconURL>chrome://console2/skin/import/Error.png</iconURL>
+		<homepageURL>http://console2.mozdev.org/index.html</homepageURL>
+		<updateURL>http://console2.mozdev.org/update.xml</updateURL>
+		
+		<creator>zeniko</creator>
+		<contributor>Philip Chee</contributor>
+		<contributor>All contributors to the Toolkit 1.8 JavaScript Console</contributor>
+		<contributor>&amp;</contributor>
+		<contributor>BabelZilla translators:</contributor>
+		<contributor>MatrixIsAllOver (Italian)</contributor>
+		<contributor>Proyecto Nave (Spanish)</contributor>
+		<contributor>Edgaras Janušauskas (Lithuanian)</contributor>
+		<contributor>Teboga (Portuguese)</contributor>
+		<contributor>Menet (French)</contributor>
+		<contributor>Infoman (Russian)</contributor>
+		<contributor>Leszek (teo) Życzkowski (Polish)</contributor>
+		<contributor>Rastislav Hubočan (Slovak)</contributor>
+		<contributor>Michal Gebauer (Czech)</contributor>
+		<contributor>pitdicker (Dutch)</contributor>
+		<contributor>Lachezar (Bulgarian)</contributor>
+		<contributor>Ian Moody (British English)</contributor>
+		<contributor>tom.1 (German)</contributor>
+		<contributor>zeniko (German Switzerland)</contributor>
+		<contributor>mar (Japanese)</contributor>
+		<contributor>garas (Lithuanian)</contributor>
+		
+		<targetApplication><!-- Firefox -->
+			<RDF:Description>
+				<id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</id>
+				<minVersion>1.5</minVersion>
+				<maxVersion>3.0.*</maxVersion> <!-- don't take my word for it! -->
+			</RDF:Description>
+		</targetApplication>
+		
+		<targetApplication><!-- Thunderbird -->
+			<RDF:Description>
+				<id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</id>
+				<minVersion>1.5</minVersion>
+				<maxVersion>3.0.*</maxVersion> <!-- don't take my word for it! -->
+			</RDF:Description>
+		</targetApplication>
+		
+		<targetApplication><!-- SeaMonkey -->
+			<RDF:Description>
+				<id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</id>
+				<minVersion>1.0</minVersion>
+				<maxVersion>1.5.*</maxVersion>  <!-- don't take my word for it! -->
+			</RDF:Description>
+		</targetApplication>
+		
+		<targetApplication><!-- Flock -->
+			<RDF:Description>
+				<id>{a463f10c-3994-11da-9945-000d60ca027b}</id>
+				<minVersion>0.5</minVersion>
+				<maxVersion>0.*</maxVersion> <!-- don't take my word for it! -->
+			</RDF:Description>
+		</targetApplication>
+
+		<targetApplication><!-- Sunbird -->
+			<RDF:Description>
+				<id>{718e30fb-e89b-41dd-9da7-e25a45638b28}</id>
+				<minVersion>0.3.1</minVersion>
+				<maxVersion>0.6.*</maxVersion> <!-- don't take my word for it! -->
+			</RDF:Description>
+		</targetApplication>
+
+		<targetApplication><!-- eMusic DLM -->
+			<RDF:Description>
+				<id>dlm@emusic.com</id>
+				<minVersion>4.0a1</minVersion>
+				<maxVersion>4.0.0.*</maxVersion> <!-- don't take my word for it! -->
+			</RDF:Description>
+		</targetApplication>
+	</RDF:Description>
+</RDF:RDF>

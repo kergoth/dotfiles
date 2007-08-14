@@ -1,0 +1,44 @@
+<!ENTITY addhint "See userstyles.org for pre-made styles">
+<!ENTITY advancedview "Advanced">
+<!ENTITY advancedview.ak "A">
+<!ENTITY allowupdates "Allow update checks">
+<!ENTITY allowupdates.ak "A">
+<!ENTITY basicoutro "Press &preview; to temporarily see the changes this style would make. Press &save; to apply this style and close this dialog. While most styles take effect immediately, some styles require you to restart the application.">
+<!ENTITY basicview "Basic">
+<!ENTITY basicview.ak "B">
+<!ENTITY chromefolder "Chrome Folder Path">
+<!ENTITY chromefolder.ak "C">
+<!ENTITY chromefolder.tt "Inserts the path to the current profile&apos;s chrome folder at the cursor position">
+<!ENTITY dataURI "Data URI...">
+<!ENTITY dataURI.ak "D">
+<!ENTITY dataURI.tt "Inserts a data URI for the specified file at the cursor position">
+<!ENTITY description.ak "D">
+<!ENTITY enabled.ak "E">
+<!ENTITY htmlnamespace "HTML Namespace">
+<!ENTITY htmlnamespace.ak "H">
+<!ENTITY htmlnamespace.tt "Makes HTML the default namespace for this style">
+<!ENTITY important "!important">
+<!ENTITY important.ak "m">
+<!ENTITY important.tt "Makes all declarations !important">
+<!ENTITY itsalltext "It&apos;s All Text!">
+<!ENTITY itsalltext.ak "T">
+<!ENTITY insert "Insert">
+<!ENTITY insert.ak "I">
+<!ENTITY pickcolor "Colour">
+<!ENTITY pickcolor.ak "o">
+<!ENTITY pickcolorrainbowpicker "Colour...">
+<!ENTITY pickcolorrainbowpicker.ak "o">
+<!ENTITY poststyle "Post this style to userstyles.org">
+<!ENTITY preview "Preview">
+<!ENTITY preview.ak "w">
+<!ENTITY save "Save">
+<!ENTITY save.ak "S">
+<!ENTITY siterules "Site Rules...">
+<!ENTITY siterules.ak "S">
+<!ENTITY siterules.tt "Inserts -moz-document rules around the selection">
+<!ENTITY visitstyle "Visit this style&apos;s website">
+<!ENTITY wraplines "Wrap lines">
+<!ENTITY wraplines.ak "W">
+<!ENTITY xulnamespace "XUL Namespace">
+<!ENTITY xulnamespace.ak "X">
+<!ENTITY xulnamespace.tt "Makes XUL the default namespace for this style">

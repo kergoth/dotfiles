@@ -1,0 +1,10 @@
+<!ENTITY stylish.addfile "新增檔案到 &stylish;…">
+<!ENTITY stylish.addfile.ak "A">
+<!ENTITY stylish.findStyleBrowser "尋找給這個網頁使用的樣式">
+<!ENTITY stylish.findStyleBrowser.ak "F">
+<!ENTITY stylish.globalStyles "全域樣式">
+<!ENTITY stylish.globalStyles.ak "G">
+<!ENTITY stylish.manageSites "管理樣式…">
+<!ENTITY stylish.manageSites.ak "M">
+<!ENTITY stylish.writeStyle "撰寫樣式">
+<!ENTITY stylish.writeStyle.ak "W">

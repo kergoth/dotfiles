@@ -1,0 +1,10 @@
+<!ENTITY stylish.addfile "Lisää tämä tiedosto &stylish;iin...">
+<!ENTITY stylish.addfile.ak "L">
+<!ENTITY stylish.findStyleBrowser "Etsi tyylejä tälle sivulle">
+<!ENTITY stylish.findStyleBrowser.ak "E">
+<!ENTITY stylish.globalStyles "Globaalit tyylit">
+<!ENTITY stylish.globalStyles.ak "G">
+<!ENTITY stylish.manageSites "Hallitse tyylejä...">
+<!ENTITY stylish.manageSites.ak "H">
+<!ENTITY stylish.writeStyle "Luo tyyli">
+<!ENTITY stylish.writeStyle.ak "u">

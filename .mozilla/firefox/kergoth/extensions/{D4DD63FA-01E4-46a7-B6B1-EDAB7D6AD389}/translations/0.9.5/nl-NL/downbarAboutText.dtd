@@ -1,0 +1,111 @@
+<!ENTITY aboutTitle.label "Over Download Statusbar">
+<!ENTITY introTab.label "Inleiding">
+<!ENTITY by.label "Door Devon Jensen">
+<!ENTITY version.label "Versie">
+<!ENTITY tagLine.label "Deze extensie voor Mozilla Firefox maakt het mogelijk om downloads te bekijken en beheren vanuit een compacte statusbalk.">
+<!ENTITY ifNew.label "Als u Download Statusbar net hebt geïnstalleerd, lees dan eerst het volgende door voor informatie over het gebruik van deze extensie.">
+<!ENTITY toView.label "Om dit Helpvenster in de toekomst weer op te roepen,">
+<!ENTITY pressAbout.label "dient u naar de Download Statusbar opties te gaan en op de knop &apos;Over&apos; te klikken.">
+<!ENTITY donateText.label "Om eerlijk te zijn, is er behoorlijk wat tijd in het maken van deze extensie gestoken. Als het uw Firefox-ervaring aangenamer maakt, overweeg dan een kleine donatie te doen (een Paypal account is niet nodig, en creditcards worden geaccepteerd).">
+<!ENTITY donate.label "Doneren">
+<!ENTITY majorRelease.label "Belangrijke release!">
+<!ENTITY changelog.label "Wat is er nieuw?">
+<!ENTITY whatNewTab.label "Nieuw in deze versie">
+<!ENTITY new1.label "-">
+<!ENTITY new2.label "-">
+<!ENTITY new3.label "-">
+<!ENTITY new4.label "-">
+<!ENTITY new5.label "-">
+<!ENTITY new6.label "-">
+<!ENTITY new7.label "-">
+<!ENTITY new8.label "-">
+<!ENTITY new9.label "-">
+<!ENTITY new10.label "-">
+<!ENTITY new11.label "-">
+<!ENTITY hintsTab.label "Hints en tips">
+<!ENTITY tip1Title.label "Tijdelijke weergavelocatie">
+<!ENTITY tip1.label "Download Statusbar is bedoeld als tijdelijke weergavelocatie voor uw lopende en recentelijk afgeronde downloads. Hou het netjes door de Automatisch opschonen optie in te schakelen, of door handmatig afgeronde downloads te verwijderen als u ze niet meer hoeft te zien. Het is veel minder nuttig als de downloads dusdanig worden samengeperst dat u niet meer kunt zien wat wat is. U kunt altijd de volledige downloadgeschiedenis oproepen door de standaard Firefox downloadbeheerder (Extra | Downloads) op te roepen. Ga verder met lezen voor meer tips voor gemakkelijke manieren om afgeronde downloads op te schonen.">
+<!ENTITY tip2Title.label "Snel algemene acties uitvoeren">
+<!ENTITY tip2.label "U kunt een lijst met acties voor het beheren van een download oproepen door er met de rechtermuisknop op te klikken, maar er zijn diverse snellere manieren om algemene acties uit te voeren:">
+<!ENTITY tip2a.label "- Om een enkele afgeronde download te wissen kunt u er op midden-klikken (op de meeste muizen is de midden-klik een klik op het draaiwieltje)">
+<!ENTITY tip2b.label "- Om ALLE afgeronde downloads te wissen kunt u op een leeg gedeelte van de statusbalk dubbelklikken.">
+<!ENTITY tip2c.label "- Dubbelklik op een afgeronde download om deze te openen.">
+<!ENTITY tip2d.label "- Houd de CTRL-toets ingedrukt en midden-klik op een afgeronde download om deze te verwijderen.">
+<!ENTITY tip2e.label "- Klik op een lopende download om deze te pauzeren of hervatten.">
+<!ENTITY tip2f.label "- Houd de SHIFT-toets ingedrukt en klik op een afgeronde download om deze te hernoemen.">
+<!ENTITY tip3Title.label "Tooltips">
+<!ENTITY tip3.label "Soms wilt u gewoon meer gedetailleerde informatie over een download. Om de statistieken van een download weer te geven kunt u uw cursor erboven positioneren en even wachten op de tooltip die dan verschijnt. Lopende downloads zullen een continu bijgewerkte tooltip tonen met informatie als de huidige downloadsnelheid, de grootte tot dusverre en de resterende tijd. Afgeronde downloads zullen informatie tonen, zoals waar de download is opgeslagen, de grootte, hoe lang de download heeft geduurd en de gemiddelde downloadsnelheid.">
+<!ENTITY tip4Title.label "Animaties">
+<!ENTITY tip4.label "Schakel animaties uit om beheeracties sneller uit te voeren. Animaties kunnen waardevolle informatie verschaffen over wat er met uw download gebeurt (bijvoorbeeld: een rode X geeft aan dat u hebt gevraagd om een afgeronde download te verwijderen), maar ze kunnen processen ook vertragen. Vink de &apos;Animatie gebruiken&apos; optie in het tabblad &apos;Uiterlijk&apos; van de Download Statusbar opties uit om de zaken op snelheid te houden. U kunt ook de SHIFT-toets ingedrukt houden bij het handmatig verwijderen van een download om animaties tijdelijk te stoppen.">
+<!ENTITY tip5Title.label "Stoppen van downloads">
+<!ENTITY tip5.label "Stop een download en bewaar deze voor later. Firefox kan momenteel een download niet hervatten nadat het programma is afgesloten (dit is gepland voor een toekomstige release), maar u kunt een download stoppen en opnieuw starten wanneer u Firefox een volgende keer opent. Stop een download door er met de rechtermuisknop op te klikken en Stoppen te selecteren. U kunt een gestopte download opnieuw starten door er met de rechtermuisknop op te klikken en Starten te selecteren - of er gewoon op te dubbelklikken.">
+<!ENTITY tip6Title.label "Verschillende downloads tegelijkertijd beheren">
+<!ENTITY tip6.label "Met de rechter muisknop klikken op een leeg gedeelte van de statusbalk (of op de Mini mode knop) stelt opties beschikbaar voor het beheren van meerdere downloads in één keer: Verwijderen van alle voltooide downloads, pauzeren, stoppen of annuleren van alle lopende downloads. Het is ook mogelijk te wisselen tussen Volledige en Mini mode.">
+<!ENTITY tip7Title.label "Mini mode">
+<!ENTITY tip7.label "Om de lijst met downloads weer te geven, klik met de linker muisknop op de Mini mode download knop in de Firefox statusbalk. Zodra de downloads weergegeven worden, kunnen deze beheerd worden op de gebruikelijke manier: met de rechter muisknop klikken voor de beheer acties, met de middelste muisknop klikken om te wissen, etc. Klik met de rechter muisknop op de Mini mode knop om te opties te krijgen voor het beheer van meerdere downloads in één keer. De download knop is verborgen als de download lijst leeg is.">
+<!ENTITY prefsTab.label "Opties Help">
+<!ENTITY general.label "Tab Algemeen">
+<!ENTITY pref1Title.label "Voortgang waarschuwingen">
+<!ENTITY pref1.label "- Voor lopende downloads kan er meer gedetailleerde informatie vernieuwd worden met kleine letters op de download zelf. Kies welke informatie weergegeven moet worden of kies voor in het geheel geen informatie. Er passen twee informatie items binnen de standaard download afmetingen, maar het is mogelijk de tekstgrootte aan te passen op de tab &apos;Uiterlijk&apos;.">
+<!ENTITY pref2Title.label "Mode">
+<!ENTITY pref2.label "- Kies voor Volledige mode (aparte statusbalk) of Mini mode (geïntegreerd in de Firefox statusbalk). Probeer ze allebei om de gewenste te bepalen.">
+<!ENTITY pref3Title.label "Een download geschiedenis bewaren">
+<!ENTITY pref3.label "- Standaard bewaart Firefox een geschiedenis van alle downloads in de download beheerder. Indien deze optie is uitgeschakeld, zal een download direct na het wissen van de statusbalk uit de geschiedenis verwijderd worden. Opmerking: om deze functie correct te laten werken, dient deze extensie controle te hebben over de Firefox instelling: &apos;browser.download.manager.retention&apos;">
+<!ENTITY pref4Title.label "De download geschiedenis beperken...">
+<!ENTITY pref4.label "- Standaard bewaard Firefox alle downloads in de download beheerder. Na enige tijd kan deze lijst echter erg lang worden en Firefox daardoor vertragen. Gebruik deze optie om de lijst beperkt te houden elke keer als Firefox gesloten wordt en de lijst zo beheerbaar te houden. Indien in Firefox is ingesteld dat de downloads uit de lijst verwijderd moeten worden als Firefox afgesloten wordt, heeft deze optie geen effect. Opmerking: hoewel dit een Download Statusbar optie is, heeft deze geen effect op de statusbar zelf.">
+<!ENTITY pref5Title.label "Downloads automatisch voortzetten...">
+<!ENTITY pref5.label "- Indien er lopende downloads zijn en opdracht wordt gegeven Firefox af te sluiten, zal er een waarschuwingsvenster verschijnen over het afbreken van de downloads. Door deze optie te gebruiken, zal de Firefox Download beheerder verschijnen in plaats van dit waarschuwingsvenster en zal het downloaden gewoon doorgaan ook als het browser venster gesloten is.">
+<!ENTITY pref6Title.label "Voltooide downloads wissen als de browser wordt afgesloten">
+<!ENTITY pref6.label "- Wist de voltooide downloads van de statusbar, maar verwijdert de downlaods niet uit de download geschiedenis. Dit heeft geen effect op de gedownloadde bestanden zelf.">
+<!ENTITY pref7Title.label "Om een bevestiging vragen voordat een bestand...">
+<!ENTITY pref7.label "- Deze optie zal een bevestigingsbericht tonen voordat een bestand daadwerkelijk wordt verwijderd. Is een bestand eenmaal verwijderd, dan is het onmogelijk dit bestand terug te halen, anders dan het opnieuw te downloaden.">
+<!ENTITY pref8Title.label "Een voltooide download wissen nadat deze is geopend">
+<!ENTITY pref8.label "- Verwijdert de download niet uit de download geschiedenis.">
+<!ENTITY pref9Title.label "Een voltooide download wissen nadat de betreffende map is geopend">
+<!ENTITY pref9.label "- Verwijdert de download niet uit de download geschiedenis.">
+<!ENTITY pref10Title.label "&apos;Downloads voltooid&apos; waarschuwing weergeven">
+<!ENTITY pref10.label "- Dit is eigenlijk een in Firefox ingebouwde voorkeur, maar deze is niet op een eenvoudige manier in te stellen. Aanbevolen wordt deze uit te schakelen, omdat deze waarschuwing geen toegevoegde waarde heeft als Download Statusbar wordt gebruikt.">
+<!ENTITY pref11Title.label "De volgende bestandstypes negeren">
+<!ENTITY pref11.label "- Indien bestanden van deze types gedownload worden, zullen deze niet in de Download Statusbar verschijnen, maar wel in de Firefox download geschiedenis. De ingevoerde bestandstypes dienen gescheiden te worden door een komma; spaties zijn niet van belang. Voorbeeld: &quot;jpg,jpeg, png, gif&quot; (zonder aanhalingstekens)">
+<!ENTITY pref12Title.label "Automatisch de volgende bestandstypes wissen...">
+<!ENTITY pref12.label "- Zodra een download voltooid is, zal een teller geactiveerd worden om deze na het aantal ingestelde seconden van de statusbalk te wissen. Dit is zinvol, omdat inmiddels getoond is dat de download voltooid is, tenzij de voltooide download nog verder beheerd moet worden. De ingevoerde bestandstypes dienen gescheiden te worden door een komma; spaties zijn niet van belang. Voorbeeld: &quot;jpg,jpeg, png, gif&quot; (zonder aanhalingstekens). Indien alle bestanden automatisch gewist moeten worden, type uitsluitend een *.">
+<!ENTITY pref13Title.label "Geluid afspelen als download voltooid is">
+<!ENTITY pref13.label "- Selecteer een voor-gedefinieerd geluid of selecteer een eigen .WAV bestand om af te spelen wanneer een download voltooid is. Indien het geluid bij bepaalde bestandstypes niet afgespeeld dient te worden, voer deze dan in het venster in. Voorbeeld: &apos;jpg, jpeg, png, gif&apos; (zonder de aanhalingstekens)">
+<!ENTITY appearance.label "Tab Uiterlijk">
+<!ENTITY pref14Title.label "Standaard of aangepaste stijl">
+<!ENTITY pref14.label "- Door &apos;Aangepaste stijl&apos; te selecteren, zullen alle kleurenselecties en tekstgrootte velden beschikbaar komen. Door &apos;Standaard stijl&apos; te selecteren kan snel naar de oorspronkelijke stijl teruggeschakeld worden, waarbij de aangepaste stijl instellingen bewaard blijven.">
+<!ENTITY pref15Title.label "Kleuren">
+<!ENTITY pref15.label "- Klik op een kleurknop om een kleurselectievenster te openen. Klik en sleep een gewenste kleur uit het palet of selecteer één van de voorgedefinieerde kleuren. Om een kleur te kopiëren, kopieer de Hex waarde en voer deze handmatig in bij de volgende kleurselectie. Het is ook mogelijk op de knop &apos;Standaard thema gebruiken&apos; te klikken om een eerdere kleurselectie uit te schakelen en de standaard themakleur weer te geven. Dit is in het algemeen alleen zinvol voor de tekstkleur en de statusbalk achtergrondkleur.">
+<!ENTITY pref16Title.label "Verloopkleuren gebruiken">
+<!ENTITY pref16.label "- Indien geselecteerd, zal deze optie een wit-naar-transparant afbeelding over achtergondkleur weergeven en zo een mooi 3D-uiterlijk geven. Dit werkt zowel in de standaard als de aangepaste stijl.">
+<!ENTITY pref17Title.label "Animatie gebruiken">
+<!ENTITY pref17.label "- Verschillende downloadbeheer acties hebben overeenkomstige animaties. Deze animaties zijn over het algemeen kort en hopelijk niet onaangenaam, maar ze kunnen worden uitgeschakeld.">
+<!ENTITY pref18Title.label "De volgende knoppen weergeven:">
+<!ENTITY pref18.label "Selecteer of de algemene download knoppen, de wis knop (Alle voltooide wissen) en de mini knop (Omschakelen naar mini mode) weergegeven moeten worden.">
+<!ENTITY pref19Title.label "Snelheids kleuren">
+<!ENTITY pref19.label "- Door deze optie in te schakelen, zal de kleur van een lopende download veranderen naar mate de snelheid van deze download. Hierdoor is het mogelijk &apos;te zien&apos; hoe snel een download voortgaat aan de hand van diens kleur. Schakel ten eerste de optie in. Stel daarna redelijke snelheidsintervallen in door de waardes te wijzigen op basis van de internetverbinding (De standaardinstelingen zijn gebaseerd op snelheden van kabelmodems). Klik tenslotte op de kleurknoppen om een kleur voor elke snelheidsinterval te selecteren.
+Er zijn verschillende manieren waarop deze optie gebruikt kan worden. Een daarvan is snelle downloads helderder te maken dan langzame. Ook kunnen de 3 snelste downloads dezelfde kleur gegeven worden (geen wijzigingen), terwijl de langzaamste snelheidsinterval een andere, waarschuwende kleur gegeven wordt om bijvoorbeeld op deze manier gewaarschuwd te worden indien de download onder de 10 KB/sec daalt, doordat de voortgangsbalk rood wordt.">
+<!ENTITY virusScan.label "Tab Virusscan">
+<!ENTITY pref20Title.label "Voltooide downloads handmatig scannen">
+<!ENTITY pref20.label "- Klik op het keuzevakje om deze functie in te schakelen. De Anti-Virus Optie Overeenkomst dient geaccepteerd te worden, voordat deze functie actief wordt.">
+<!ENTITY pref21Title.label "De volgende bestandstypes niet scannen...">
+<!ENTITY pref21.label "- De ingevoerde bestandstypes dienen gescheiden te worden door een komma; spaties zijn niet van belang. Voorbeeld: &quot;jpg,jpeg, png, gif&quot; (zonder aanhalingstekens).">
+<!ENTITY pref22Title.label "Anti-Virusprogramma locatie">
+<!ENTITY pref22.label "- Er dient al een Antivirusprogramma geïnstalleerd te zijn, dat in staat moet zijn commando gestuurde verzoeken voor een handmatige scan uit te voeren. Klik op de &apos;...&apos;-knop om het programma te zoeken in het bestandssysteem.">
+<!ENTITY pref23Title.label "Argumenten">
+<!ENTITY pref23.label "- Voer hier alle noodzakelijk of optionele argumenten in die specifiek zijn voor het gebruikte anti-virusprogramma. &#37;1 vertegenwoordigd het bestand dat gescand moet worden (dit was voorheen [pad]) en dient ergens in de argumenten voor te komen. De meeste programma&apos;s zullen werken als &#37;1 het enige argument is. Controleer de documentatie van het gebruikte anti-virusprogramma om uit te zoeken welke argumenten met dat programma werken.">
+<!ENTITY listMarker.label "·">
+<!ENTITY OK.label "Sluiten">
+<!ENTITY openPref.label "Extensie opties openen">
+<!ENTITY support.label "Ondersteun deze extensie -">
+<!ENTITY donate2.label "Doneer!">
+<!ENTITY credits.label "Dank aan:">
+<!ENTITY transFor.label "Tekstvertaling voor">
+<!ENTITY currLocale.label "Nederlands">
+<!ENTITY locale.label "aangeleverd door:">
+<!ENTITY translatorName.label "Alf en markh">
+<!ENTITY projectHost.label "Project webhosting door:">
+<!ENTITY mozdev.label "mozdev.org">
+<!ENTITY progAndArtwork.label "Programmering en ontwerp door:">
+<!ENTITY soundsBy.label "Geluiden gemaakt door:">
+<!ENTITY soundPeople.label "Dallin and Devon Jensen">

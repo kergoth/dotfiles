@@ -1,0 +1,10 @@
+<!ENTITY customized "מותאם אישית">
+<!ENTITY info "עידכונים זמינים לעיצובים הבאים:">
+<!ENTITY neverupdateselected "אל תעדכן נבחר לעולם">
+<!ENTITY neverupdateselected.ak "N">
+<!ENTITY title "עדכן עיצובים">
+<!ENTITY updateall "עדכן הכל">
+<!ENTITY updateall.ak "A">
+<!ENTITY updateselected "עדכון נבחר">
+<!ENTITY updateselected.ak "S">
+<!ENTITY uri "מחרוזת זיהוי משאב">

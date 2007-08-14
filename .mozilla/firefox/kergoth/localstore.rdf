@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="chrome://browser/content/history/history-panel.xul">
+    <NC:persist RDF:resource="chrome://browser/content/history/history-panel.xul#Name"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="find:datasource=history&amp;match=AgeInDays&amp;method=is&amp;text=1"
+                   NC:open="true" />
+  <RDF:Description RDF:about="chrome://browser/content/history/history-panel.xul#Name"
+                   sort="rdf:http://home.netscape.com/NC-rdf#Name?sort=true"
+                   sortActive="true"
+                   sortDirection="ascending" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#PersonalToolbar"
+                   collapsed="true"
+                   currentset="personal-bookmarks" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#foxyproxy-tools-menu-1"
+                   mode="patterns" />
+  <RDF:Description RDF:about="chrome://browser/content/bookmarks/addBookmark2.xul#folder-tree"
+                   colinfo=" col:Name?width=&amp;hidden=&amp;ordinal=1" />
+  <RDF:Description RDF:about="chrome://sessionmanager/content/session_prompt.xul">
+    <NC:persist RDF:resource="chrome://sessionmanager/content/session_prompt.xul#session_list"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://securelogin/content/secureLoginOptions.xul#secureLoginPrefs"
+                   screenX="1122"
+                   screenY="496"
+                   lastSelected="secureLoginPrefPaneMain" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#toolbar-menubar"
+                   currentset="menubar-items,back-button,forward-button,stop-button,reload-button,home-button,urlbar-container,search-container,spring" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#webdeveloper-toolbar"
+                   collapsed="true"
+                   currentset="webdeveloper-disable-toolbar,webdeveloper-cookies-toolbar,webdeveloper-css-toolbar,webdeveloper-forms-toolbar,webdeveloper-images-toolbar,webdeveloper-information-toolbar,webdeveloper-miscellaneous-toolbar,webdeveloper-outline-toolbar,webdeveloper-resize-toolbar,webdeveloper-tools-toolbar,webdeveloper-view-source-toolbar,webdeveloper-options-toolbar,spring,webdeveloper-render-mode-statusbar,webdeveloper-css-statusbar,webdeveloper-javascript-statusbar" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul">
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#main-window"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#foxyproxy-context-menu-1"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#foxyproxy-status-icon"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#foxyproxy-status-text"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#foxyproxy-tools-menu-1"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#PersonalToolbar"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#ybToolbar"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#webdeveloper-toolbar"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#toolbar-menubar"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#nav-bar"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#sidebar-box"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#sidebar-title"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://sessionmanager/content/session_prompt.xul#session_list"
+                   height="52" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#sidebar-title"
+                   value="" />
+  <RDF:Description RDF:about="chrome://mozapps/content/extensions/extensions.xul">
+    <NC:persist RDF:resource="chrome://mozapps/content/extensions/extensions.xul#viewGroup"/>
+    <NC:persist RDF:resource="chrome://mozapps/content/extensions/extensions.xul#extensions-view"/>
+    <NC:persist RDF:resource="chrome://mozapps/content/extensions/extensions.xul#extensionsManager"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://mozapps/content/extensions/extensions.xul#extensions-view"
+                   selected="true"
+                   last-selected="urn:mozilla:item:{c36177c0-224a-11da-8cd6-0800200c9a66}" />
+  <RDF:Description RDF:about="chrome://passwordmgr/content/passwordManager.xul">
+    <NC:persist RDF:resource="chrome://passwordmgr/content/passwordManager.xul#SignonViewerDialog"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://mozapps/content/extensions/extensions.xul#viewGroup"
+                   last-selected="extensions" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#foxyproxy-status-icon"
+                   hidden="" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#ybToolbar"
+                   collapsed="true"
+                   currentset="ybToolbar-toolbar" />
+  <RDF:Description RDF:about="chrome://securelogin/content/secureLoginOptions.xul">
+    <NC:persist RDF:resource="chrome://securelogin/content/secureLoginOptions.xul#secureLoginPrefs"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#nav-bar"
+                   currentset="__empty"
+                   collapsed="true" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#foxyproxy-context-menu-1"
+                   hidden="" />
+  <RDF:Description RDF:about="chrome://mozapps/content/extensions/extensions.xul#extensionsManager"
+                   screenX="10"
+                   screenY="10"
+                   width="520"
+                   height="380"
+                   sizemode="normal" />
+  <RDF:Description RDF:about="chrome://browser/content/bookmarks/addBookmark2.xul">
+    <NC:persist RDF:resource="chrome://browser/content/bookmarks/addBookmark2.xul#folder-tree"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#main-window"
+                   sizemode="normal"
+                   height="990"
+                   width="1065"
+                   screenX="405"
+                   screenY="0" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#foxyproxy-status-text"
+                   hidden="true" />
+  <RDF:Description RDF:about="chrome://passwordmgr/content/passwordManager.xul#SignonViewerDialog"
+                   lastSelected="SignonViewerDialogPane" />
+</RDF:RDF>

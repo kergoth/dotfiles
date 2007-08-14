@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>secureLogin@blueimp.net</em:id>
+		<em:name>Secure Login</em:name>
+		<em:creator>Sebastian Tschan</em:creator>
+		<em:description>A login extension similar to Opera's Wand login</em:description>
+		<em:iconURL>chrome://securelogin/skin/icon.png</em:iconURL>
+		<em:optionsURL>chrome://securelogin/content/secureLoginOptions.xul</em:optionsURL>
+		<em:homepageURL>https://blueimp.net/mozilla/</em:homepageURL>
+		<em:updateURL>https://blueimp.net/mozilla/update.rdf?itemid=%ITEM_ID%&amp;itemversion=%ITEM_VERSION%&amp;appid=%APP_ID%&amp;appversion=%APP_VERSION%&amp;appos=%APP_OS%</em:updateURL>
+		<em:version>0.8.1.2</em:version>
+		<em:targetApplication>
+			<Description>
+				<!-- Firefox -->
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>3.0</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	    <em:translator>Oliver Roth (German)</em:translator>
+	    <em:translator>npa111 (Finnish)</em:translator>
+	    <em:translator>menet (French)</em:translator>
+	    <em:translator>Mikes Kaszman Istvan (Hungarian)</em:translator>
+	    <em:translator>Norah (Japanese)</em:translator>
+	    <em:translator>Hirto (Japanese)</em:translator>
+	    <em:translator>markh (Dutch)</em:translator>
+	    <em:translator>teo (Polish)</em:translator>
+	    <em:translator>Modex (Russian)</em:translator>
+	    <em:translator>Sergeys (Russian)</em:translator>
+	    <em:translator>fang5566 (Chinese - Simplified)</em:translator>
+	</Description>
+</RDF>

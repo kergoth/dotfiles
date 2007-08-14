@@ -1,0 +1,138 @@
+<!ENTITY stopAll.label "Para&apos;ls tots">
+<!ENTITY resumeAll.label "Reprèn-los tots">
+<!ENTITY pauseAll.label "Pausa&apos;ls tots">
+<!ENTITY cancelAll.label "Cancel·la tots els que estan en curs">
+<!ENTITY removeAll.label "Neteja tots els finalitzats">
+<!ENTITY copySource.label "Copia l&apos;URL d&apos;origen">
+<!ENTITY stopOne.label "Atura">
+<!ENTITY pauseOne.label "Pausa">
+<!ENTITY cancelOne.label "Cancel·la">
+<!ENTITY resumeOne.label "Reprèn">
+<!ENTITY properties.label "Propietats">
+<!ENTITY delete.label "Elimina del sistema">
+<!ENTITY remove.label "Neteja de la barra">
+<!ENTITY show.label "Obre la carpeta">
+<!ENTITY open.label "Obre">
+<!ENTITY start.label "Inicia">
+<!ENTITY rename.label "Canvia el nom">
+<!ENTITY fromTip.label "De:">
+<!ENTITY toTip.label "A:">
+<!ENTITY statusTip.label "Estat:">
+<!ENTITY timeTip.label "Temps restant:">
+<!ENTITY percentTip.label "Percentatge realitzat:">
+<!ENTITY sizeTip.label "Mida del fitxer:">
+<!ENTITY timeCompleteTip.label "Temps restant:">
+<!ENTITY avgSpeedTip.label "Velocitat mitjana:">
+<!ENTITY numFinishedTip.label "Descàrregues finalitzades:">
+<!ENTITY sizeFinishedTip.label "Mida de les descàrregues finalitzades:">
+<!ENTITY numCurrentTip.label "Descàrregues en curs:">
+<!ENTITY totalSpeedTip.label "Velocitat total:">
+<!ENTITY totalTimeTip.label "Temps restant total:">
+<!ENTITY toMiniTip.label "Activa el mode mini">
+<!ENTITY downloadsCap.label "Descàrregues">
+<!ENTITY clear.label "Neteja">
+<!ENTITY mini.label "Mini">
+<!ENTITY pTitle.label "Preferències del Download Statusbar">
+<!ENTITY pGeneral.label "General">
+<!ENTITY pStatusMode.label "Mode del Download Statusbar">
+<!ENTITY pFullMode.label "Mode complet">
+<!ENTITY pMiniMode.label "Mode mini">
+<!ENTITY pFeatures.label "Característiques">
+<!ENTITY pLaunchClose.label "Continua les descàrregues automàticament quan tanqui el navegador">
+<!ENTITY pClearFin.label "Neteja les descàrregues finalitzades quan tanqui el navegador">
+<!ENTITY pConfirm.label "Demana confirmació abans d&apos;eliminar un fitxer">
+<!ENTITY pRmvOpen.label "Neteja les descàrregues finalitzades després d&apos;obrir-les">
+<!ENTITY pRmvShow.label "Neteja les descàrregues finalitzades després d&apos;obrir-ne la carpeta">
+<!ENTITY pSupAlert.label "Mostra la notificació de &apos;Descàrrega completada&apos; (Es recomana desactivar-la)">
+<!ENTITY pAutoClear.label "Neteja automàticament els fitxers">
+<!ENTITY pAfter.label "després de">
+<!ENTITY pSeconds.label "segons">
+<!ENTITY pIgnore.label "Ignora aquests tipus de fitxer">
+<!ENTITY pFiletypesHelp.label "(Introduiu * per a tots els tipus, deixeu-ho en blanc per cap)">
+<!ENTITY pHistory.label "Historial de descàrregues">
+<!ENTITY pCloseHist.label "(Quan es tanqui el navegador)">
+<!ENTITY pKeepHist.label "Mantingues un historial de descàrregues">
+<!ENTITY pTrimHist.label "Mantingues a l&apos;historial">
+<!ENTITY pDlItems.label "descàrregues">
+<!ENTITY pPlaySound.label "Reprodueix un so quan es completi la descàrrega">
+<!ENTITY pCheckmarkSound.label "Checkmark!">
+<!ENTITY pCustomSound.label "Fitxer .WAV personalitzat">
+<!ENTITY pSoundExceptFiletypes.label "Excepte per als fitxers:">
+<!ENTITY pQueue.label "Mode d&apos;encuament">
+<!ENTITY pQueEna.label "Habilita el mode d&apos;encuament">
+<!ENTITY pQueDownload.label "Descarrega només">
+<!ENTITY pQueFiles.label "fitxers alhora">
+<!ENTITY pAppearance.label "Aparença">
+<!ENTITY pDefaultStyle.label "Estil predeterminat">
+<!ENTITY pCustomStyle.label "Estil personalitzat">
+<!ENTITY pResetCustom.label "Reinicia l&apos;estil">
+<!ENTITY pProgNotify.label "Notificacions de progrés">
+<!ENTITY pDispPer.label "Percentatge de progrés">
+<!ENTITY pDispSpeed.label "Velocitat de descàrrega">
+<!ENTITY pDispSize.label "Mida total descarregada">
+<!ENTITY pDispTime.label "Temps restant">
+<!ENTITY pTextSize.label "Mida dels textos">
+<!ENTITY pFileText.label "Mida del nom de fitxer:">
+<!ENTITY pProgNotiText.label "Mida de les notificacions de progrés:">
+<!ENTITY pDLItemSize.label "Mida dels elements descarregats">
+<!ENTITY pWidth.label "Amplada:">
+<!ENTITY pHeight.label "Alçada:">
+<!ENTITY pColors.label "Colors">
+<!ENTITY pLeaveBlank.label "(En blanc per valors predeterminats)">
+<!ENTITY pProgBar.label "Barra de progres">
+<!ENTITY pProgRemain.label "Temps restant">
+<!ENTITY pFinishedBox.label "Descàrrega finalitzada">
+<!ENTITY pStoppedBox.label "Descarrega aturada">
+<!ENTITY pPausedOutline.label "Descàrrega pausada">
+<!ENTITY pTextColor.label "Text">
+<!ENTITY pStatusBack.label "Fons de la barra d&apos;estat">
+<!ENTITY pUseGradients.label "Utilitza gradients">
+<!ENTITY pUseAnimation.label "Utilitza animacions">
+<!ENTITY pShowButtons.label "Mostra aquests botons:">
+<!ENTITY pDownloadsButton.label "Botó de descàrregues">
+<!ENTITY pClearButton.label "Botó de neteja les descàrregues finalitzades">
+<!ENTITY pToMiniButton.label "Botó del mode mini">
+<!ENTITY pSpeedColors.label "Colors de velocitat">
+<!ENTITY pEnableSC.label "Habilita els colors de velocitat">
+<!ENTITY pBetween.label "Entre">
+<!ENTITY pAnd.label "i">
+<!ENTITY pkbSec.label "KB/seg">
+<!ENTITY pMoreThan.label "Més de">
+<!ENTITY pVScan.label "Antivirus">
+<!ENTITY pShouldScan.label "Escaneja manualment les descàrregues completades">
+<!ENTITY pExclude.label "No escanegis aquests tipus de fitxer">
+<!ENTITY pAVLoc.label "Ubicació del programa antivirus">
+<!ENTITY pArgs.label "Arguments">
+<!ENTITY pAVdesc.label "(Utilitza &#37;1 en els arguments com a nom de fitxer a escanejar)">
+<!ENTITY pAbout.label "Quant a">
+<!ENTITY pOK.label "D&apos;acord">
+<!ENTITY pApply.label "Aplica">
+<!ENTITY pCancel.label "Cancel·la">
+<!ENTITY previewColour.label "Previsualització:">
+<!ENTITY cpWinTitle.title "Paleta de colors">
+<!ENTITY predef.label "Colors predefinits:">
+<!ENTITY rgb.label "RGB">
+<!ENTITY hsb.label "HSB">
+<!ENTITY red.label "Vermell:">
+<!ENTITY green.label "Verd:">
+<!ENTITY blue.label "Blau:">
+<!ENTITY hue.label "Matís:">
+<!ENTITY saturation.label "Saturació:">
+<!ENTITY brightness.label "Lluminositat:">
+<!ENTITY hexColor.label "Hex:">
+<!ENTITY nameColor.label "Nom:">
+<!ENTITY cpUseThemeDef.label "Predeterminat">
+<!ENTITY openOpt.label "Opcions...">
+<!ENTITY hideDownbar.label "Amaga la barra de descàrregues">
+<!ENTITY allDownloads.label "Accions de descàrrega">
+<!ENTITY openDLHist.label "Historial de descàrregues">
+<!ENTITY stoppedDL.label "Descàrregues aturades:">
+<!ENTITY transparency.label "Transparències">
+<!ENTITY background.label "Segon pla:">
+<!ENTITY background.accessKey "B">
+<!ENTITY table.label "Taula">
+<!ENTITY table.accessKey "T">
+<!ENTITY cell.label "Cel·la(es)">
+<!ENTITY cell.accessKey "C">
+<!ENTITY lastPickedColor.label "Últim color">
+<!ENTITY lastPickedColor.accessKey "L">

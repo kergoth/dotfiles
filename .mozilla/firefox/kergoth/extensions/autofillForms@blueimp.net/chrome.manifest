@@ -1,0 +1,20 @@
+# chrome registry paths (extracted):
+#	content		autofillforms									chrome/content/
+#	locale		autofillforms 				cs-CZ				chrome/locale/cs-CZ/
+#	locale		autofillforms 				de-DE				chrome/locale/de-DE/
+#	locale		autofillforms 				en-US				chrome/locale/en-US/
+#	locale		autofillforms 				fr-FR				chrome/locale/fr-FR/
+#	locale		autofillforms 				nl-NL				chrome/locale/nl-NL/
+#	skin 		autofillforms 				classic/1.0 		chrome/skin/
+
+# chrome registry paths (jar archive):
+content		autofillforms									jar:chrome/autofillforms.jar!/content/
+locale		autofillforms 				cs-CZ				jar:chrome/autofillforms.jar!/locale/cs-CZ/
+locale		autofillforms 				de-DE				jar:chrome/autofillforms.jar!/locale/de-DE/
+locale		autofillforms 				en-US				jar:chrome/autofillforms.jar!/locale/en-US/
+locale		autofillforms 				fr-FR				jar:chrome/autofillforms.jar!/locale/fr-FR/
+locale		autofillforms 				nl-NL				jar:chrome/autofillforms.jar!/locale/nl-NL/
+skin		autofillforms 				classic/1.0 		jar:chrome/autofillforms.jar!/skin/
+
+overlay		chrome://browser/content/browser.xul			chrome://autofillforms/content/autofillFormsOverlay.xul
+style		chrome://global/content/customizeToolbar.xul	chrome://autofillforms/skin/autofillForms.css

@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://locationbar2/locale/options.dtd">
+
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+		title="&options_window_title;">
+<prefpane id="locationbar2">
+	<preferences>
+		<preference id="pref_hideProtocols"
+			name="browser.urlbar.hideProtocols"
+			type="string"/>
+		<preference id="pref_clickSelectsAll"
+			name="browser.urlbar.clickSelectsAll"
+			type="bool"/>
+		<preference id="pref_animateBlend"
+			name="browser.urlbar.animateBlend"
+			type="bool"/>
+		<preference id="pref_mouseOnTopLinkifies"
+			name="browser.urlbar.mouseOnTopLinkifies"
+			type="bool"/>
+		<preference id="pref_mouseOnBottomLinkifies"
+			name="browser.urlbar.mouseOnBottomLinkifies"
+			type="bool"/>
+		<preference id="pref_alternate_domain-color"
+			name="extensions.locationbar2.alternate.domain-color"
+			type="string"/>
+		<preference id="pref_alternate_domain-strong"
+			name="extensions.locationbar2.alternate.domain-strong"
+			type="bool"/>
+		<preference id="pref_alternate_subdomain-gray"
+			name="extensions.locationbar2.alternate.subdomain-inherit"
+			type="bool"
+			inverted="true"/>
+		<preference id="pref_alternate_favicon-show"
+			name="extensions.locationbar2.alternate.favicon-remove"
+			type="bool"
+			inverted="true"/>
+		<preference id="pref_alternate_segments-margin"
+			name="extensions.locationbar2.alternate.segments-margin"
+			type="bool"/>
+		<preference id="pref_alternate_breadcrumb-domain"
+			name="extensions.locationbar2.alternate.breadcrumb-domain"
+			type="bool"
+			onchange="if(this.value) document.getElementById('pref_alternate_breadcrumb-all').value = false"/>
+		<preference id="pref_alternate_breadcrumb-all"
+			name="extensions.locationbar2.alternate.breadcrumb-all"
+			type="bool"
+			onchange="if(this.value) document.getElementById('pref_alternate_breadcrumb-domain').value = false"/>
+		<preference id="pref_alternate_fission"
+			name="extensions.locationbar2.alternate.fission"
+			type="bool"/>
+	</preferences>
+	<hbox align="center">
+		<label control="hideProtocols" accesskey="&hideProtocols.accesskey;">
+				&hideProtocols.label;
+		</label>
+		<textbox preference="pref_hideProtocols" id="hideProtocols" flex="1"/>
+	</hbox>
+	<checkbox preference="pref_clickSelectsAll"
+		label="&clickSelectsAll.label;"
+		accesskey="&clickSelectsAll.accesskey;"/>
+	<checkbox preference="pref_animateBlend"
+		label="&animateBlend.label;"
+		accesskey="&animateBlend.accesskey;"/>
+	<checkbox preference="pref_alternate_favicon-show"
+		label="&alternate.favicon-show.label;"
+		accesskey="&alternate.favicon-show.accesskey;"/>
+	<checkbox preference="pref_alternate_subdomain-gray"
+		label="&alternate.subdomain-gray.label;"
+		accesskey="&alternate.subdomain-gray.accesskey;"/>
+	<checkbox preference="pref_alternate_segments-margin"
+		label="&alternate.segments-margin.label;"
+		accesskey="&alternate.segments-margin.accesskey;"/>
+	<checkbox preference="pref_alternate_fission"
+		label="&alternate.fission.label;"
+		accesskey="&alternate.fission.accesskey;"/>
+	<groupbox orient="horizontal">
+		<caption label="&domain_prefs;"/>
+		<colorpicker preference="pref_alternate_domain-color" type="button"/>
+		<textbox preference="pref_alternate_domain-color"/>
+		<spacer flex="1"/>
+		<checkbox preference="pref_alternate_domain-strong"
+			label="&alternate.domain-strong.label;"
+			accesskey="&alternate.domain-strong.accesskey;"/>
+	</groupbox>
+	<groupbox>
+		<caption label="&linkification_prefs;"/>
+		<description style="max-width:29em">&linkification.description;</description>
+		<description style="max-width:29em">&linkifyOnMouse.description;</description>
+		<hbox>
+			<checkbox preference="pref_mouseOnTopLinkifies"
+				label="&linkifyOnMouse.top;"
+				accesskey="&linkifyOnMouse.top.accesskey;"/>
+			<checkbox preference="pref_mouseOnBottomLinkifies"
+				label="&linkifyOnMouse.bottom;"
+				accesskey="&linkifyOnMouse.bottom.accesskey;"/>
+		</hbox>
+	</groupbox>
+	<groupbox orient="horizontal">
+		<caption label="&breadcrumb_prefs;"/>
+		<checkbox preference="pref_alternate_breadcrumb-domain"
+			label="&alternate.breadcrumb-domain.label;"
+			accesskey="&alternate.breadcrumb-domain.accesskey;"/>
+		<checkbox preference="pref_alternate_breadcrumb-all"
+			label="&alternate.breadcrumb-all.label;"
+			accesskey="&alternate.breadcrumb-all.accesskey;"/>
+	</groupbox>
+	<separator/>
+	<separator/>
+	<separator/>
+</prefpane>
+
+</prefwindow>

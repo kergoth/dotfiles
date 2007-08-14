@@ -1,0 +1,33 @@
+<!--
+Not currently used!
+Works in conjunction with downloadInfoBroadcast.js component
+
+-->
+
+<?xml version="1.0"?>
+
+<overlay id="downloadmgrOverlay"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<script><![CDATA[
+    function db_giveBackListener() {
+    	var dlBC = Components.classes['@devonjensen.com/downbar/downloadBroadcast;1'].getService().wrappedJSObject;
+    	dlBC.takeListener();
+    }
+
+    ]]></script>
+    
+	<window id="downloadManager" onload="Startup(); db_giveBackListener();" onunload="Shutdown(); db_giveBackListener();">
+	</window>
+	
+</overlay>
+
+
+
+
+
+<!--
+onfocus="try{gDownloadManager.listener = gDownloadListener;} catch(e){}"
+
+onunload="db_setDownbarListener(); Shutdown();"
+-->

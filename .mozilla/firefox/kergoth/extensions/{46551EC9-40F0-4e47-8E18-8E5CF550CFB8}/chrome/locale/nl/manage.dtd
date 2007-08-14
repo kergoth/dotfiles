@@ -1,0 +1,16 @@
+<!ENTITY appliesTo "Geldt voor">
+<!ENTITY clearfilter "Leeg">
+<!ENTITY clearfilter.ak "L">
+<!ENTITY edit "Wijzig...">
+<!ENTITY edit.ak "W">
+<!ENTITY filter "Zoek:">
+<!ENTITY filter.ak "Z">
+<!ENTITY findupdates "Vind updates...">
+<!ENTITY findupdates.ak "V">
+<!ENTITY help "Help">
+<!ENTITY help.ak "H">
+<!ENTITY info "Veranderingen aan of het verwijderen van stijlen heeft mogelijk pas effect de volgende keer dat de pagina geladen wordt.">
+<!ENTITY nostyles "Je hebt momenteel geen stijlen geinstalleerd. Bezoek userstyles.org om kant-en-klare stijlen te vinden.">
+<!ENTITY title "Beheer Stijlen">
+<!ENTITY write "Schrijf...">
+<!ENTITY write.ak "S">

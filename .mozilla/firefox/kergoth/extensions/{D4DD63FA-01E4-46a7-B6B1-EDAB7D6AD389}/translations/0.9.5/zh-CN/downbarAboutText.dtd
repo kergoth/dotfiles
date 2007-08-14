@@ -1,0 +1,110 @@
+<!ENTITY aboutTitle.label "关于 Download Statusbar">
+<!ENTITY introTab.label "介绍">
+<!ENTITY by.label "作者 Devon Jensen">
+<!ENTITY version.label "版本">
+<!ENTITY tagLine.label "这个 Mozilla Firefox 的扩展可以让给你在一个整齐的状态栏中查看和管理你的下载内容。">
+<!ENTITY ifNew.label "如果你是 Download Statusbar 的新用户，请先查看这些信息以了解如何使用此扩展。">
+<!ENTITY toView.label "以后如果需要再次察看这些信息，">
+<!ENTITY pressAbout.label "打开 Download Statusbar 选项，点击[关于]按钮即可。">
+<!ENTITY donateText.label "坦率的说，我花了不少时间在这个扩展上，如果它给你在使用 Firefox 过程中带来了更好的体验，请考虑一点小小的捐助（不一定非要 Paypal 帐号，信用卡也可以）。">
+<!ENTITY donate.label "捐助">
+<!ENTITY majorRelease.label "重大更新版本！">
+<!ENTITY changelog.label "查看更新内容">
+<!ENTITY whatNewTab.label "此版本更新内容">
+<!ENTITY new1.label "-">
+<!ENTITY new2.label "-">
+<!ENTITY new3.label "-">
+<!ENTITY new4.label "-">
+<!ENTITY new5.label "-">
+<!ENTITY new6.label "-">
+<!ENTITY new7.label "-">
+<!ENTITY new8.label "-">
+<!ENTITY new9.label "-">
+<!ENTITY new10.label "-">
+<!ENTITY new11.label "-">
+<!ENTITY hintsTab.label "使用技巧">
+<!ENTITY tip1Title.label "临时察看">
+<!ENTITY tip1.label "Download Statusbar 主要用来临时查看正在进行的下载和最近完成的下载，因此建议启用自动清除或是手动清除那些你不需要再看到的下载项来保持下载栏的干净，以免堆得太多分不出各是什么。你可以在 Firefox 的下载管理器中看到完整的下载历史（工具 - 下载）。">
+<!ENTITY tip2Title.label "常用快捷操作">
+<!ENTITY tip2.label "你可以在下载项上点击右键来进行操作，不过这里有更快捷的方法来进行这些操作：">
+<!ENTITY tip2a.label "- 在已完成的下载项上单击中键，将其从下载栏清除（对于大多数鼠标，中键就是滚轮）。">
+<!ENTITY tip2b.label "- 在下载栏的空白处双击左键，将清除所有已完成的下载。">
+<!ENTITY tip2c.label "- 在已完成的下载项上双击左键，将打开文件。">
+<!ENTITY tip2d.label "- 按着 crtl 键在已完成的下载项上单击中键，将其从系统删除。">
+<!ENTITY tip2e.label "- 左键单击正在进行的下载，将暂停或继续。">
+<!ENTITY tip2f.label "- 按着 shift 键在已完成的下载项上单击左键，可以重命名文件。">
+<!ENTITY tip3Title.label "提示">
+<!ENTITY tip3.label "鼠标在下载项上悬停可以显示更多关于下载的信息，正在进行的下载将显示当前速度、已完成大小、剩余时间等，已完成的下载将显示下载源、文件大小、下载时间、平均速度等。">
+<!ENTITY tip4Title.label "动画效果">
+<!ENTITY tip4.label "动画效果用来显示你所进行的操作（如一个红色的 X 表示你清除了一个已完成的下载），关闭动画效果可以让管理操作更快一点。你可以在手动清除的时候按着 shift 键来临时关闭动画效果，也可以在 about:config 中设置“downbar.function.useAnimation”彻底关闭。">
+<!ENTITY tip5Title.label "保存停止下载">
+<!ENTITY tip5.label "Firefox 不支持关闭程序后继续下载，不过你可以停止下载，在下一次打开 Firefox 时重新开始下载。在下载项上单击右键选择停止，再次单击右键选择开始或左键双击则开始下载。">
+<!ENTITY tip6Title.label "批量管理">
+<!ENTITY tip6.label "在下载栏空白处（或迷你模式图标）单击右键可以选择清除所有已完成的下载，全部暂停、停止或取消，还可以在完全模式和迷你默认间转换。">
+<!ENTITY tip7Title.label "迷你模式">
+<!ENTITY tip7.label "迷你模式下，左键单击 Firefox 状态栏中的图标将显示下载项列表，在下载项上可以使用右键或中键进行管理，在状态栏图标上右键单击可以进行批量管理。下载项列表为空时，状态栏图标将自动隐藏。">
+<!ENTITY prefsTab.label "关于选项">
+<!ENTITY general.label "常规标签">
+<!ENTITY pref1Title.label "进度信息">
+<!ENTITY pref1.label "- 显示于正在进行的下载项右侧的文字信息。你可以选择显示哪些信息，对于默认外观显示2项比较合适，你可以在外观标签中设置文字大小。">
+<!ENTITY pref2Title.label "下载栏模式">
+<!ENTITY pref2.label "- 完全模式使用独立的一条下载状态栏，迷你模式以图标显示在 Firefox 的状态栏中。">
+<!ENTITY pref3Title.label "保存下载历史">
+<!ENTITY pref3.label "- 默认情况下，Firefox 会在下载管理器中保留所有下载历史。不选择此项，则当你从下载栏删除项目时也会将其从下载历史中删除。">
+<!ENTITY pref4Title.label "限制下载历史">
+<!ENTITY pref4.label "- 越来越多的历史项目会拖慢 Firefox，使用此选项让 Firefox 在退出时自动清除旧的历史项目，只保留你所需要的数目。">
+<!ENTITY pref5Title.label "自动继续下载...">
+<!ENTITY pref5.label "- 如果你在有下载还未完成时关闭 Firefox，会弹出警告取消下载。使用此功能可以在浏览窗口关闭的情况下打开 Firefox 的下载管理器继续下载。">
+<!ENTITY pref6Title.label "关闭浏览器时清除已完成的下载">
+<!ENTITY pref6.label "- 从下载栏中清除已完成的下载，这不删除下载管理器中的下载历史。">
+<!ENTITY pref7Title.label "删除前确认...">
+<!ENTITY pref7.label "- 从系统中删除文件前进行确认。一旦删除文件将不能恢复（不过可以重新下载）。">
+<!ENTITY pref8Title.label "打开文件时从下载栏清除">
+<!ENTITY pref8.label "- 这不删除下载管理器中的下载历史。">
+<!ENTITY pref9Title.label "打开文件所在文件夹时从下载栏清除">
+<!ENTITY pref9.label "- 这不删除下载管理器中的下载历史。">
+<!ENTITY pref10Title.label "显示[下载完成]提示">
+<!ENTITY pref10.label "- 这是 Firefox 提供的功能。使用 Download Statusbar 时这个功能用处不大，建议关闭。">
+<!ENTITY pref11Title.label "忽略这些文件类型">
+<!ENTITY pref11.label "- 当下载这些文件类型的文件时，它们不会出现在下载栏中，不过仍保留在Firefox的下载历史中。每种文件类型用英文逗号分隔，空格不影响，如：“jpg, jpeg, png, gif”（输入时不包括引号）。">
+<!ENTITY pref12Title.label "自动清除这些文件类型...">
+<!ENTITY pref12.label "- 下载完成一定时间后从下载栏自动清除，这用来查看那些知道完成就行而不需要进一步操作的下载。每种文件类型用英文逗号分隔，空格不影响，如：“jpg, jpeg, png, gif”（输入时不包括引号）。输入“*”将清除所有文件类型。">
+<!ENTITY pref13Title.label "下载完成后声音提示">
+<!ENTITY pref13.label "- 当下载完成时播放预设的声音或自定义的 .WAV 文件进行提示。如果你希望对某些文件类型不播放声音提示，输入在后面，如：“jpg, jpeg, png, gif”（输入时不包括引号）。">
+<!ENTITY appearance.label "外观标签">
+<!ENTITY pref14Title.label "默认/自定义样式">
+<!ENTITY pref14.label "选择[自定义样式]可以设置颜色和文字大小，选择[默认样式]会回到最初的样式，同时自定义样式的设置仍被保留。">
+<!ENTITY pref15Title.label "颜色">
+<!ENTITY pref15.label "- 你可以使用取色器或者手动输入颜色值来确定需要的颜色。还可以点击[使用主题默认值]按钮来使用主题的的颜色，这通常用于文字和下载栏背景的颜色。">
+<!ENTITY pref16Title.label "渐变效果">
+<!ENTITY pref16.label "- 给下载项的背景一个漂亮的 3D 效果，默认和自定义样式下都有效。">
+<!ENTITY pref17Title.label "动画效果">
+<!ENTITY pref17.label "- 对下载项进行操作（如打开、删除）时显示动画效果。">
+<!ENTITY pref18Title.label "显示功能按钮：">
+<!ENTITY pref18.label "选择是否显示下载管理、清除（清除已完成的下载）或迷你（转到迷你模式）这些按钮。">
+<!ENTITY pref19Title.label "下载速度颜色">
+<!ENTITY pref19.label "- 启用此项可以根据下载速度的变化改变状态条的颜色，让速度快慢一目了然。启用此项，设置合理的速度区间，为每个速度区间选择颜色即可。你可以设置为速度越快，颜色越亮；或者给最慢的速度区间设置一个警告颜色（如红色），这样当下载变得很慢时你可以立即注意到。">
+<!ENTITY virusScan.label "病毒检查标签">
+<!ENTITY pref20Title.label "下载完成后手动扫描">
+<!ENTITY pref20.label "- 勾选此项启用此功能，你必须接受[病毒检查功能使用协议]。">
+<!ENTITY pref21Title.label "不扫描这些文件类型">
+<!ENTITY pref21.label "- 每种文件类型用英文逗号分隔，空格不影响，如：“jpg, jpeg, png, gif”（输入时不需要引号）。">
+<!ENTITY pref22Title.label "杀毒程序位置">
+<!ENTITY pref22.label "- 你所安装的杀毒软件必须支持命令行来进行和手动扫描，点击“...”按钮来选择你要使用的杀毒程序。">
+<!ENTITY pref23Title.label "参数">
+<!ENTITY pref23.label "- 根据你的杀毒软件输入需要的参数，1&#37; 是必须的参数用来代表需要扫描的文件。很多杀毒软件只允许使用 1&#37; 这个参数，请查阅杀毒软件的文档以确定可以使用哪些参数。">
+<!ENTITY listMarker.label "·">
+<!ENTITY OK.label "关闭">
+<!ENTITY openPref.label "打开设置对话框">
+<!ENTITY support.label "支持此扩展 -">
+<!ENTITY donate2.label "捐助！">
+<!ENTITY credits.label "感谢">
+<!ENTITY transFor.label "语言">
+<!ENTITY currLocale.label "zh-CN">
+<!ENTITY locale.label "提供：">
+<!ENTITY translatorName.label "WangKing">
+<!ENTITY projectHost.label "项目网站支持：">
+<!ENTITY mozdev.label "Mozdev.org">
+<!ENTITY progAndArtwork.label "程序和设计：">
+<!ENTITY soundsBy.label "声音提供：">
+<!ENTITY soundPeople.label "Dallin Jensen and Devon Jensen">

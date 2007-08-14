@@ -1,0 +1,44 @@
+<!ENTITY addhint "Przejdź na stronę userstyles.org, aby poznać gotowe arkusze stylów">
+<!ENTITY advancedview "Zaawansowany">
+<!ENTITY advancedview.ak "Z">
+<!ENTITY allowupdates "Sprawdzaj aktualizacje">
+<!ENTITY allowupdates.ak "S">
+<!ENTITY basicoutro "Naciśnij &preview;, aby zobaczyć jakich zmian dokona ten arkusz stylu. Naciśnij &save;, aby zastosować arkusz i zamknąć to okno. Większość arkuszy stylów wykona zmiany natychmiast, ale niektóre wymagają ponownego uruchomienia aplikacji.">
+<!ENTITY basicview "Podstawowy">
+<!ENTITY basicview.ak "P">
+<!ENTITY chromefolder "Ścieżka do folderu &quot;chrome&quot;">
+<!ENTITY chromefolder.ak "C">
+<!ENTITY chromefolder.tt "Wprowadza w pozycji kursora ścieżkę do folderu &quot;chrome&quot; aktualnego profilu">
+<!ENTITY dataURI "Dane URI">
+<!ENTITY dataURI.ak "D">
+<!ENTITY dataURI.tt "Wprowadza w pozycji kursora dane URI dla określonego pliku">
+<!ENTITY description.ak "O">
+<!ENTITY enabled.ak "C">
+<!ENTITY htmlnamespace "Przestrzeń nazw HTML">
+<!ENTITY htmlnamespace.ak "H">
+<!ENTITY htmlnamespace.tt "Nadaje HTML status domyślnej przestrzeni nazw dla tego arkusza stylu">
+<!ENTITY important "!important">
+<!ENTITY important.ak "m">
+<!ENTITY important.tt "Nadaj wszystkim deklaracjom dyrektywę !important">
+<!ENTITY itsalltext "To jest cały tekst!">
+<!ENTITY itsalltext.ak "T">
+<!ENTITY insert "Wprowadź">
+<!ENTITY insert.ak "A">
+<!ENTITY pickcolor "Kolor">
+<!ENTITY pickcolor.ak "R">
+<!ENTITY pickcolorrainbowpicker "Kolor">
+<!ENTITY pickcolorrainbowpicker.ak "o">
+<!ENTITY poststyle "Napisz o tym stylu na userstyles.org">
+<!ENTITY preview "Podgląd">
+<!ENTITY preview.ak "P">
+<!ENTITY save "Zapisz">
+<!ENTITY save.ak "Z">
+<!ENTITY siterules "Reguła witryny">
+<!ENTITY siterules.ak "R">
+<!ENTITY siterules.tt "Wstawia reguły -moz-document wokół zaznaczenia">
+<!ENTITY visitstyle "Przejdź na stronę tego stylu">
+<!ENTITY wraplines "Zawijaj wiersze">
+<!ENTITY wraplines.ak "W">
+<!ENTITY xulnamespace "Przestrzeń nazw XUL">
+<!ENTITY xulnamespace.ak "X">
+<!ENTITY xulnamespace.tt "Nadaje XUL status domyślnej przestrzeni nazw dla tego stylu">

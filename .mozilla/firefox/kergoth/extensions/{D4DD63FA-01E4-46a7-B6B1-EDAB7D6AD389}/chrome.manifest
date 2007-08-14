@@ -1,0 +1,28 @@
+content	  downbar	            chrome/content/
+skin      downbar  classic/1.0  chrome/skin/classic/
+
+overlay	 chrome://browser/content/browser.xul                   chrome://downbar/content/downbaroverlay.xul
+overlay  chrome://mozapps/content/extensions/extensions.xul     chrome://downbar/content/addonDonate.xul
+overlay  chrome://browser/content/preferences/preferences.xul   chrome://downbar/content/privacyPrefsOverlay.xul
+
+locale downbar en-US chrome/locale/en-US/
+locale downbar ca-AD translations/0.9.5/ca-AD/
+locale downbar cs-CZ translations/0.9.5/cs-CZ/
+locale downbar de-DE translations/0.9.5/de-DE/
+locale downbar el-GR translations/0.9.5/el-GR/
+locale downbar en-GB translations/0.9.5/en-GB/
+locale downbar es-AR translations/0.9.5/es-AR/
+locale downbar fi-FI translations/0.9.5/fi-FI/
+locale downbar fr-FR translations/0.9.5/fr-FR/
+locale downbar it-IT translations/0.9.5/it-IT/
+locale downbar ja-JP translations/0.9.5/ja-JP/
+locale downbar ko-KR translations/0.9.5/ko-KR/
+locale downbar mn-MN translations/0.9.5/mn-MN/
+locale downbar nl-NL translations/0.9.5/nl-NL/
+locale downbar pl-PL translations/0.9.5/pl-PL/
+locale downbar pt-PT translations/0.9.5/pt-PT/
+locale downbar ro-RO translations/0.9.5/ro-RO/
+locale downbar ru-RU translations/0.9.5/ru-RU/
+locale downbar sk-SK translations/0.9.5/sk-SK/
+locale downbar zh-CN translations/0.9.5/zh-CN/
+locale downbar zh-TW translations/0.9.5/zh-TW/

@@ -1,0 +1,14 @@
+pref('extensions.autofillForms@blueimp.net.description', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.shortcut', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.shortcutProfile', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.shortcutSettings', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.shortcut', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.fieldRules', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.profileLabels', 'chrome://autofillForms/locale/autofillForms.properties');
+pref('extensions.autofillForms@blueimp.net.profileIndex', 0);
+pref('extensions.autofillForms@blueimp.net.storeEncrypted', false);
+pref('extensions.autofillForms@blueimp.net.formDetailsStyle', 'color:#000; background-color:#FFFF00; border:1px solid #000;');
+pref('extensions.autofillForms@blueimp.net.rememberAlternativesIndex', true);
+pref('extensions.autofillForms@blueimp.net.placeholderLineBreak', '<br>');
+pref('extensions.autofillForms@blueimp.net.highlightStyleMatch', '');
+pref('extensions.autofillForms@blueimp.net.highlightStyleNoMatch', '');

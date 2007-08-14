@@ -1,0 +1,110 @@
+<!ENTITY aboutTitle.label "Sobre Download Statusbar">
+<!ENTITY introTab.label "Introdução">
+<!ENTITY by.label "Por Devon Jenses">
+<!ENTITY version.label "Versão">
+<!ENTITY tagLine.label "Esta extensão para o Mozilla Firefox permite-lhe ver e gerir os seus downloads numa pequena barra de estado.">
+<!ENTITY ifNew.label "Se é um novo utilizador do Download Statusbar, continue a ler para obter mais informação sobre como usar esta extensão.">
+<!ENTITY toView.label "Para ver este ecrã de ajuda novamente no futuro,">
+<!ENTITY pressAbout.label "precisará de ir às Opções do Download Statusbar, e pressionar o botão &apos;Sobre&apos;.">
+<!ENTITY donateText.label "Para ser honesto, passei imenso tempo para criar esta extensão. Se ela melhorar a sua experiência com o Firefox, por favor considere fazer uma pequena doação. (Não é necessária uma conta de Paypal. Aceitam-se cartões de crédito.)">
+<!ENTITY donate.label "Doar">
+<!ENTITY majorRelease.label "Nova Versão!">
+<!ENTITY changelog.label "Veja o que há de novo">
+<!ENTITY whatNewTab.label "Novo nesta Versão">
+<!ENTITY new1.label "-">
+<!ENTITY new2.label "-">
+<!ENTITY new3.label "-">
+<!ENTITY new4.label "-">
+<!ENTITY new5.label "-">
+<!ENTITY new6.label "-">
+<!ENTITY new7.label "-">
+<!ENTITY new8.label "-">
+<!ENTITY new9.label "-">
+<!ENTITY new10.label "-">
+<!ENTITY new11.label "-">
+<!ENTITY hintsTab.label "Dicas e Sugestões">
+<!ENTITY tip1Title.label "Local de Visualização Temporária">
+<!ENTITY tip1.label "Download Statusbar foi criado para ser um local de visualização temporária dos seus downloads, completos ou em transferência. Mantenha-a limpa definindo opções de auto-remoção, ou removendo manualmente downloads terminados que já não deseja ver. É muito menos útil quando os downloads se concentram de tal maneira que não é possível distinguir qual é qual. Pode sempre ver o historial completo de transferências abrindo o gestor de downloads standard do Firefox (Ferramentas | Downloads). Continue a ler para mais dicas sobre maneiras fáceis de limpar downloads terminados.">
+<!ENTITY tip2Title.label "Atalhos para Acções Habituais">
+<!ENTITY tip2.label "Pode aceder a uma lista de acções para gerir um download clicando com o botão direito sobre ele, mas há várias maneiras mais rápidas para realizar tarefas habituais:">
+<!ENTITY tip2a.label "- Para limpar um download terminado, clique com o botão do meio sobre ele. (Na maioria dos ratos, o botão do meio é acedido pressionando a roda)">
+<!ENTITY tip2b.label "- Para limpar TODOS os downloads terminados, faça duplo-clique numa parte vazia da barra de estado.">
+<!ENTITY tip2c.label "- Para abrir um download terminado, faça duplo-clique sobre ele.">
+<!ENTITY tip2d.label "- Para apagar um download terminado, pressione a tecla CTRL e clique com o botão do meio do rato.">
+<!ENTITY tip2e.label "- Para pausar ou continuar um download já iniciado, clique (uma vez) com o botão esquerdo.">
+<!ENTITY tip2f.label "- Para renomear um download terminado, pressione a tecla SHIFT e clique com o botão esquerdo.">
+<!ENTITY tip3Title.label "Dicas de Ferramentas">
+<!ENTITY tip3.label "Por vezes pode desejar informação mais detalhada de apenas um download. Para mostrar as estatísticas de uma transferência, posicione o cursor do seu rato sobre o download e aguarde por um curto período de tempo até ao aparecimento da &apos;Dica&apos;. Downloads em progresso mostrarão uma &apos;Dica&apos; em constante actualização com informação como velocidade actual, tamanho transferido e tempo restante. Downloads terminados mostrarão informação como a localização onde o ficheiro foi guardado, o seu tamanho, quanto tempo demorou a transferência e a velocidade média.">
+<!ENTITY tip4Title.label "Animações">
+<!ENTITY tip4.label "Desactive as animações para acelerar as suas acções de gestão. As animações podem fornecer informação importante sobre o que está a acontecer ao seu download (por exemplo, um X vermelho indicará que pediu para apagar um download terminado), mas também o podem incomodar. Desactive a opção &quot;Usar animação&quot; no Separador de Aparência das opções do Download Statusbar para manter o funcionamento leve e rápido. Pode sempre pressionar a tecla SHIFT para parar temporariamente as animações, quando remover manualmente um download. Também as pode desactivar completamente com a opção &apos;downbar.function.useAnimation&apos; em about:config">
+<!ENTITY tip5Title.label "Parar Downloads">
+<!ENTITY tip5.label "Pare um download para recomeçar depois. O Firefox não consegue, actualmente, continuar um download depois de ter terminado a aplicação (função planeada para o futuro), mas pode parar a transferência e começá-la novamente da próxima vez que abrir o Firefox. Pare um download clicando com o botão direito sobre ela e seleccionando Parar. Inicie um download parado clicando com o botão direito sobre ele e seleccionando Iniciar - ou simplesmente faça duplo-clique sobre ele.">
+<!ENTITY tip6Title.label "Gerir Vários Downloads de Uma Vez">
+<!ENTITY tip6.label "Clicar com o botão direito do rato sobre uma parte vazia da barra de estado (ou sobre o botão em modo Mini) dar-lhe-à acesso a opções para gerir vários downloads ao mesmo tempo. Remover todos os downloads terminados, e pausar, parar ou cancelar todos os downloads em curso. Também pode alternar entre modo Completo (Full) e Mini.">
+<!ENTITY tip7Title.label "Modo Mini">
+<!ENTITY tip7.label "Para ver a lista de downloads, clique com o botão esquerdo sobre o botão de download de modo mini na barra de estado do Firefox. Uma vez que tenham surgido os downloads, pode geri-los da maneira habitual - clique com o botão direito para opções de gestão, botão do meio para limpar, etc. Clique com o botão direito sobre o botão de modo mini para aceder às opções de gestão de vários downloads simultaneamente. O botão de download estará escondido se não houver nada na lista de downloads.">
+<!ENTITY prefsTab.label "Ajuda das Opções">
+<!ENTITY general.label "Separador Geral">
+<!ENTITY pref1Title.label "Notificações de Progresso">
+<!ENTITY pref1.label "- Downloads em curso podem ter mais informação actualizada disponibilizada num texto pequeno, no download em si. Escolha que notificações deseja ver ou até nenhuma. Duas devem caber no tamanho de download por defeito, mas pode mudar o tamanho do texto no Separador de Aparência.">
+<!ENTITY pref2Title.label "Modo">
+<!ENTITY pref2.label "- Escolha modo Completo (barra de estado separada) ou modo Mini (integrado na barra de estado do Firefox). Experimento-os para ver qual prefere.">
+<!ENTITY pref3Title.label "Manter um histórico de transferências">
+<!ENTITY pref3.label "- Por defeito, o Firefox mantém um histórico de todos os seus downloads no gestor de downloads. Desseleccionada, esta opção irá remover um download do histórico assim que este seja removido da barra de estado. Nota: para que esta opção funcione correctamente, esta extensão tem que assumir controlo sobre o parâmetro &apos;browser.download.manager.retention&apos; do Firefox.">
+<!ENTITY pref4Title.label "Limitar o histórico de download...">
+<!ENTITY pref4.label "- Com o passar do tempo, a lista do histórico de downloads pode tornar-se muito longa e prejudicar a performance do Firefox. Use esta opção para limitar o tamanho da lista de cada vez que o Firefox encerre e mantenha a lista com um tamanho mais adequado.">
+<!ENTITY pref5Title.label "Continuar downloads automaticamente...">
+<!ENTITY pref5.label "- Se tem downloads em curso e tentar encerrar o Firefox, mostrará um aviso sobre cancelar os downloads. Usando esta função, o gestor de downloads do Firefox irá aparecer e continuar o download mesmo depois de ter fechado a janela do browser.">
+<!ENTITY pref6Title.label "Limpar downloads terminados quando o Firefox for fechado">
+<!ENTITY pref6.label "- Limpa os downloads terminados da barra de estado, mas não os remove do histórico do gestor de downloads. Esta opção não afecta o ficheiro transferido.">
+<!ENTITY pref7Title.label "Confirmar antes de apagar...">
+<!ENTITY pref7.label "- Esta opção irá provocar uma mensagem de confirmação antes de um ficheiro ser realmente apagado. Uma vez apagado um ficheiro não existe maneira de o recuperar (além de fazer o download novamente).">
+<!ENTITY pref8Title.label "Limpar um download terminado após a sua abertura/execução">
+<!ENTITY pref8.label "- Não remove o download do histório do gestor de downloads.">
+<!ENTITY pref9Title.label "Limpar um download terminado depois de abrir a pasta de origem">
+<!ENTITY pref9.label "- Não remove o download do histório do gestor de downloads.">
+<!ENTITY pref10Title.label "Mostrar a notificação de &apos;Downloads Terminados&apos;">
+<!ENTITY pref10.label "- Esta é, na verdade, uma preferência do próprio Firefox mas não existe uma maneira fácil de lhe aceder. É recomendado a sua desactivação porque não é necessária quando se usa o Download Statusbar">
+<!ENTITY pref11Title.label "Ignorar estes tipos de ficheiro">
+<!ENTITY pref11.label "- Quando transferir estes tipos de ficheiros, não aparecerão no Download Statusbar, mas ainda estarão no histórico de downloads do Firefox. Cada tipo de ficheiro deve ser separado por uma vírgula e os espaços não são importantes. Exemplo: &apos;jpg, jpeg, png, gif&apos; (sem aspas)">
+<!ENTITY pref12Title.label "Limpar automaticamente estes tipos de ficheiro">
+<!ENTITY pref12.label "- Assim que um download termine, esta opção definirá um temporizador para o limpar da barra de estado após um número definido de segundos. Esta opção é útil porque pode ver que o download foi completado com sucesso, mas não tem que fazer mais nada a não ser que queira. Cada tipo de ficheiro deve ser separado por uma vírgula e os espaços não são importantes. Exemplo: &apos;jpg, jpeg, png, gif&apos; (sem aspas). Se desejar incluir todos os ficheiros, simplesmente digite *">
+<!ENTITY pref13Title.label "Tocar som quando download terminar">
+<!ENTITY pref13.label "- Seleccione um som pré-definido ou escolha o seu próprio ficheiro .WAV que tocará quando o download completar. Se desejar que o som não seja activado para alguns tipos de ficheiros, coloque-os na caixa. Exemplo: &apos;jpg, jpeg, png, gif&apos; (sem aspas)">
+<!ENTITY appearance.label "Separador da Aparência">
+<!ENTITY pref14Title.label "Estilo Pré-definido ou Personalizado">
+<!ENTITY pref14.label "- Seleccionando &apos;Estilo Personalizado&apos; irá activar todas opções de cores e tamanhos. Seleccionando &apos;Estilo Pré-definido&apos; permitir-lhe-á mudar rapidamente para o estilo original, mas as definições do Estilo Personalizado serão guardadas.">
+<!ENTITY pref15Title.label "Cores">
+<!ENTITY pref15.label "- Clique na caixa de cor para abrir janela de escolha de cor para esse item. Clique e arraste pela paleta para encontrar uma cor que goste, ou simplesmente escolha uma das cores pré-definidas. Também pode pressionar o botão &apos;Usar cor pré-definida&apos; para limpar uma escolha anterior e mostrar a cor do tema por defeito. Geralmente, é apenas útil para a cor do Texto e a cor de fundo da barra de estado.">
+<!ENTITY pref16Title.label "Usar Gradientes de Cor">
+<!ENTITY pref16.label "- Se seleccionado, irá sobrepor uma imagem branca-para-transparente sobre a cor de fundo, dando aos seus downloads uma agradável sensação de 3D. Funciona tanto no modo pré-definido como no modo personalizado.">
+<!ENTITY pref17Title.label "Usar Animação">
+<!ENTITY pref17.label "- Várias acções de gestão de downloads têm animações correspondentes. Estas animações são geralmente curtas e espera-se que não sejam incomodativas, mas podem ser desligadas.">
+<!ENTITY pref18Title.label "Mostrar estes botões:">
+<!ENTITY pref18.label "Escolha se pretende mostrar o botão principal de downloads, o botão de limpar (Limpar todos os download completos), e o botão mini (Mudar para Modo Mini)">
+<!ENTITY pref19Title.label "Cores de Velocidade">
+<!ENTITY pref19.label "- Activar esta opção irá mudar dinamicamente a cor de um download em progresso baseado na velocidade a que está a ser realizada a transferência. Isto permite-lhe visualizar rapidamente a velocidade de um download apenas com um olhar rápido sobre a sua cor. Primeiro, active a opção Cores de Velocidade. Depois, defina intervalos de tempo razoáveis alterando os valores baseando-se no seu tipo de ligação à internet. (Por defeito, as definições são baseadas nas velocidades de modem por cabo) Finalmente, clique nas caixas de cores para definir uma cor para cada intervalo de tempo. Existem várias maneiras de usar esta função. Uma possibilidade é tornar mais claros os downloads mais rápidos. Outra ideia é fazer com que os primeiros 3 intervalos de velocidade mostrem a mesma cor (sem alterações), mas atribuir uma cor de aviso ao intervalo correspondente à velocidade mais lenta  para que, por exemplo, note imediatamente quando um download baixar para os 10KB/s ou menos.">
+<!ENTITY virusScan.label "Separador do Anti-Vírus">
+<!ENTITY pref20Title.label "Verificar manualmente downloads completos">
+<!ENTITY pref20.label "- Seleccione a caixa para activar esta função. Tem que concordar com o Acordo de Funcionalidade do Anti-Vírus antes que funcione.">
+<!ENTITY pref21Title.label "Não verificar estes tipos de ficheiros">
+<!ENTITY pref21.label "- Cada tipo de ficheiro deve ser separado por uma vírgula, e espaços não contam. Exemplo: &apos;jpg, jpeg, png, gif&apos; (sem aspas)">
+<!ENTITY pref22Title.label "Localização do programa Anti-Vírus">
+<!ENTITY pref22.label "-É necessário que já tenha um programa Anti-Vírus instalado e que seja capaz de aceitar pedidos de linha de comandos para uma verificação manual. Pressione o botão &apos;...&apos; e localize o programa no seu sistema.">
+<!ENTITY pref23Title.label "Argumentos">
+<!ENTITY pref23.label "- Introduza quaisquer argumentos, necessários ou opcionais, específicos para o seu programa Anti-Vírus. &#37;1 representa o ficheiro que será verificado (isto era anteriormente [Path]) e deve aparecer algures nos argumentos. Muitos programas funcionarão se &#37;1 for o único argumento. Verifique a documentação do seu software Anti-Vírus para descobrir que argumentos funcionam com o seu programa.">
+<!ENTITY listMarker.label "·">
+<!ENTITY OK.label "Fechar">
+<!ENTITY openPref.label "Abrir Opções da Extensão">
+<!ENTITY support.label "Apoie esta extensão -">
+<!ENTITY donate2.label "Faça uma doação!">
+<!ENTITY credits.label "Créditos">
+<!ENTITY transFor.label "Tradução do texto para">
+<!ENTITY currLocale.label "pt-PT">
+<!ENTITY locale.label "localização facultada por:">
+<!ENTITY translatorName.label "Luís Martins">
+<!ENTITY projectHost.label "Alojamento web do projecto fornecido por:">
+<!ENTITY mozdev.label "Mozdev.org">
+<!ENTITY progAndArtwork.label "Programação e Design por:">
+<!ENTITY soundsBy.label "Sons criados por:">
+<!ENTITY soundPeople.label "Dallin Jensen and Devon Jensen">

@@ -1,0 +1,11 @@
+@import url("chrome://global/skin/");
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.textbox-presentation-subdomain {
+  color: inherit;
+}
+
+#urlbar[level="high"] .textbox-presentation-subdomain {
+  color: inherit;
+}

@@ -1,0 +1,30 @@
+﻿<!ENTITY options_window_title "Nastavní Locationbar²">
+<!ENTITY hideProtocols.label "Skryté protokoly:">
+<!ENTITY hideProtocols.accesskey "S">
+<!ENTITY clickSelectsAll.label "Klepnutím vyberete vše">
+<!ENTITY clickSelectsAll.accesskey "K">
+<!ENTITY animateBlend.label "Smíšené URL">
+<!ENTITY animateBlend.accesskey "m">
+<!ENTITY linkification_prefs "Přidání odkazů">
+<!ENTITY linkification.description "Stiskem Ctrl/Meta/Shift či najetím myší na ikonu serveru zaktivuje části adresy.">
+<!ENTITY linkifyOnMouse.description "Povolit též aktivování při najetí myší na hranu adresního řádku:">
+<!ENTITY linkifyOnMouse.top "horní">
+<!ENTITY linkifyOnMouse.top.accesskey "h">
+<!ENTITY linkifyOnMouse.bottom "spodní">
+<!ENTITY linkifyOnMouse.bottom.accesskey "p">
+<!ENTITY alternate.subdomain-gray.label "Poddomény šedivě">
+<!ENTITY alternate.subdomain-gray.accesskey "d">
+<!ENTITY domain_prefs "Domény">
+<!ENTITY alternate.domain-strong.label "tučně">
+<!ENTITY alternate.domain-strong.accesskey "t">
+<!ENTITY alternate.favicon-show.label "Zobrazit ikonu">
+<!ENTITY alternate.favicon-show.accesskey "i">
+<!ENTITY alternate.segments-margin.label "Mezery mezi jednotlivými částmi">
+<!ENTITY alternate.segments-margin.accesskey "j">
+<!ENTITY breadcrumb_prefs "Drobečky pro...">
+<!ENTITY alternate.breadcrumb-domain.label "server">
+<!ENTITY alternate.breadcrumb-domain.accesskey "e">
+<!ENTITY alternate.breadcrumb-all.label "každou část">
+<!ENTITY alternate.breadcrumb-all.accesskey "ž">
+<!ENTITY alternate.fission.label "Kompatibilita s rozš. Fission">
+<!ENTITY alternate.fission.accesskey "F">

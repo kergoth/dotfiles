@@ -1,0 +1,30 @@
+# chrome registry paths (extracted):
+#	content		securelogin						chrome/content/
+#	locale		securelogin 	de-DE			chrome/locale/de-DE/
+#	locale		securelogin 	en-US			chrome/locale/en-US/
+#	locale		securelogin 	fi-FI			chrome/locale/fi-FI/
+#	locale		securelogin 	fr-FR			chrome/locale/fr-FR/
+#	locale		securelogin 	hu-HU			chrome/locale/hu-HU/
+#	locale		securelogin 	ja-JP			chrome/locale/ja-JP/
+#	locale		securelogin 	nl-NL			chrome/locale/nl-NL/
+#	locale		securelogin 	pl-PL			chrome/locale/pl-PL/
+#	locale		securelogin 	ru-RU			chrome/locale/ru-RU/
+#	locale		securelogin 	zh-CN			chrome/locale/zh-CN/
+#	skin 		securelogin 	classic/1.0 	chrome/skin/
+
+# chrome registry paths (jar archive):
+content		securelogin						jar:chrome/securelogin.jar!/content/
+locale		securelogin 	de-DE			jar:chrome/securelogin.jar!/locale/de-DE/
+locale		securelogin 	en-US			jar:chrome/securelogin.jar!/locale/en-US/
+locale		securelogin 	fi-FI			jar:chrome/securelogin.jar!/locale/fi-FI/
+locale		securelogin 	fr-FR			jar:chrome/securelogin.jar!/locale/fr-FR/
+locale		securelogin 	hu-HU			jar:chrome/securelogin.jar!/locale/hu-HU/
+locale		securelogin 	ja-JP			jar:chrome/securelogin.jar!/locale/ja-JP/
+locale		securelogin 	nl-NL			jar:chrome/securelogin.jar!/locale/nl-NL/
+locale		securelogin 	pl-PL			jar:chrome/securelogin.jar!/locale/pl-PL/
+locale		securelogin 	ru-RU			jar:chrome/securelogin.jar!/locale/ru-RU/
+locale		securelogin 	zh-CN			jar:chrome/securelogin.jar!/locale/zh-CN/
+skin		securelogin 	classic/1.0 	jar:chrome/securelogin.jar!/skin/
+
+overlay		chrome://browser/content/browser.xul			chrome://securelogin/content/secureLoginOverlay.xul
+style		chrome://global/content/customizeToolbar.xul	chrome://securelogin/skin/secureLogin.css

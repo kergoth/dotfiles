@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://stylish/skin/specifySites.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+	<!ENTITY % common SYSTEM "chrome://stylish/locale/common.dtd">
+	<!ENTITY % branding SYSTEM "chrome://stylish/content/branding.dtd">
+	<!ENTITY % specifySites SYSTEM "chrome://stylish/locale/specifySites.dtd">
+	%common;
+	%branding;
+	%specifySites;
+]>
+
+<dialog
+	id="stylish"
+	title="&title;"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	persist="screenX screenY width height sizemode"
+	onload="init()"
+	ondialogaccept="return closeSpecifySite()">
+	
+	<script type="application/javascript" src="common.js"/>
+	<script type="application/javascript" src="specifySites.js"/>
+
+	<stringbundle id="strings" src="chrome://stylish/locale/stylish.properties"/>
+
+	<radiogroup id="type" orient="horizontal">
+		<radio id="url-type" selected="true" label="&urltype;" accesskey="&urltype.ak;" value="url"/>
+		<radio id="url-prefix-type" label="&urlprefixtype;" accesskey="&urlprefixtype.ak;" value="url-prefix"/>
+		<radio id="domain-type" label="&domaintype;" accesskey="&domaintype.ak;" value="domain"/>
+	</radiogroup>
+
+	<hbox>
+		<textbox id="url" flex="1" onkeypress="urlKeyPress(event)" oninput="urlInput()"/>
+		<button id="add" label="&addsiterule;" accesskey="&addsiterule.ak;" oncommand="addSpecifySiteEntry()" disabled="true"/>
+	</hbox>
+
+	<tree flex="1" id="site-list-tree" seltype="multiple" onselect="changeSelection()" onkeypress="siteListKeyPress(event)" hidecolumnpicker="true">
+		<treecols>
+			<treecol flex="1" id="type-column" label="&type;" persist="width ordinal hidden"/>
+			<splitter class="tree-splitter"/>
+			<treecol flex="2" id="site-column" label="&site;" persist="width ordinal hidden"/>
+		</treecols>
+		<treechildren id="site-list"/>
+	</tree>
+
+	<hbox>
+		<button id="delete" label="&stylish.delete;" accesskey="&stylish.delete.ak;" oncommand="deleteSiteList()" disabled="true"/>
+		<spacer flex="1"/>
+	</hbox>
+</dialog>

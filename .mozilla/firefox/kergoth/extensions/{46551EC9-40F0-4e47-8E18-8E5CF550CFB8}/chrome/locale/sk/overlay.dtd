@@ -1,0 +1,10 @@
+<!ENTITY stylish.addfile "Pridať súbor do &stylish;...">
+<!ENTITY stylish.addfile.ak "P">
+<!ENTITY stylish.findStyleBrowser "Hľadať štýly pre túto stránku">
+<!ENTITY stylish.findStyleBrowser.ak "H">
+<!ENTITY stylish.globalStyles "Všeobecné štýly">
+<!ENTITY stylish.globalStyles.ak "V">
+<!ENTITY stylish.manageSites "Spravovať štýly...">
+<!ENTITY stylish.manageSites.ak "S">
+<!ENTITY stylish.writeStyle "Zapísať štýl">
+<!ENTITY stylish.writeStyle.ak "Z">

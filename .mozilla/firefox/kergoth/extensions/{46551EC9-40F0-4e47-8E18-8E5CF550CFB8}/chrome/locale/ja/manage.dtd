@@ -1,0 +1,16 @@
+<!ENTITY appliesTo "適用対象">
+<!ENTITY clearfilter "クリア">
+<!ENTITY clearfilter.ak "C">
+<!ENTITY edit "編集…">
+<!ENTITY edit.ak "E">
+<!ENTITY filter "検索:">
+<!ENTITY filter.ak "S">
+<!ENTITY findupdates "更新を探す…">
+<!ENTITY findupdates.ak "F">
+<!ENTITY help "ヘルプ">
+<!ENTITY help.ak "H">
+<!ENTITY info "スタイルの変更や除去は次回のページ読み込みで反映されます。">
+<!ENTITY nostyles "現在インストールされたスタイルはありません。userstyles.org を訪れて既成のスタイルを探しましょう。">
+<!ENTITY title "スタイルの管理">
+<!ENTITY write "書く…">
+<!ENTITY write.ak "W">

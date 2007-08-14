@@ -1,0 +1,37 @@
+content	foxyproxy jar:chrome/foxyproxy.jar!/content/
+overlay	chrome://browser/content/browser.xul chrome://foxyproxy/content/firefoxOverlay.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+overlay	chrome://browser/content/preferences/preferences.xul chrome://foxyproxy/content/firefoxOptionsOverlay.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+overlay chrome://global/content/alerts/alert.xul chrome://foxyproxy/content/alertOverlay.xul application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+
+locale	foxyproxy	cs-CZ	jar:chrome/foxyproxy.jar!/locale/cs-CZ/
+locale	foxyproxy	da-DK	jar:chrome/foxyproxy.jar!/locale/da-DK/
+locale	foxyproxy	de-DE	jar:chrome/foxyproxy.jar!/locale/de-DE/
+locale	foxyproxy	el-GR	jar:chrome/foxyproxy.jar!/locale/el-GR/
+locale	foxyproxy	en-US	jar:chrome/foxyproxy.jar!/locale/en-US/
+locale	foxyproxy	es-AR jar:chrome/foxyproxy.jar!/locale/es-AR/
+locale	foxyproxy	es-ES	jar:chrome/foxyproxy.jar!/locale/es-ES/
+locale	foxyproxy	fa-IR	jar:chrome/foxyproxy.jar!/locale/fa-IR/
+locale	foxyproxy	fr-FR	jar:chrome/foxyproxy.jar!/locale/fr-FR/
+locale	foxyproxy	hr-HR	jar:chrome/foxyproxy.jar!/locale/hr-HR/
+locale	foxyproxy	hr-HU	jar:chrome/foxyproxy.jar!/locale/hr-HU/
+locale	foxyproxy	it-IT	jar:chrome/foxyproxy.jar!/locale/it-IT/
+locale	foxyproxy	nl-NL	jar:chrome/foxyproxy.jar!/locale/nl-NL/
+locale	foxyproxy	pl-PL	jar:chrome/foxyproxy.jar!/locale/pl-PL/
+locale	foxyproxy	pt-BR	jar:chrome/foxyproxy.jar!/locale/pt-BR/
+locale	foxyproxy	pt-PT	jar:chrome/foxyproxy.jar!/locale/pt-PT/
+locale	foxyproxy	ru-RU	jar:chrome/foxyproxy.jar!/locale/ru-RU/
+locale	foxyproxy	sk	jar:chrome/foxyproxy.jar!/locale/sk/
+locale	foxyproxy	sv-SE	jar:chrome/foxyproxy.jar!/locale/sv-SE/
+locale	foxyproxy	th-TH	jar:chrome/foxyproxy.jar!/locale/th-TH/
+locale	foxyproxy	tr-TR	jar:chrome/foxyproxy.jar!/locale/tr-TR/
+locale	foxyproxy	uk-UA	jar:chrome/foxyproxy.jar!/locale/uk-UA/
+locale	foxyproxy	zh-CN	jar:chrome/foxyproxy.jar!/locale/zh-CN/
+locale	foxyproxy	zh-TW	jar:chrome/foxyproxy.jar!/locale/zh-TW/
+
+skin			foxyproxy	classic/1.0	jar:chrome/foxyproxy.jar!/skin/ 	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+style			chrome://global/content/customizeToolbar.xul	chrome://foxyproxy/content/foxyproxy.css 	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+
+<!-- tbird-->
+overlay	chrome://messenger/content/messenger.xul	chrome://foxyproxy/content/tbirdOverlay.xul	application={3550f703-e582-4d05-9a08-453d09bdfdc6}
+style	chrome://messenger/content/messenger.xul	chrome://foxyproxy/content/foxyproxy.css	application={3550f703-e582-4d05-9a08-453d09bdfdc6}
+style	chrome://global/content/customizeToolbar.xul	chrome://foxyproxy/content/foxyproxy.css	application={3550f703-e582-4d05-9a08-453d09bdfdc6}

@@ -1,0 +1,46 @@
+<!ENTITY stylish "Stylish">
+<!ENTITY stylish.id "ID">
+<!ENTITY stylish.uri "URI">
+<!ENTITY stylish.description "Description">
+<!ENTITY stylish.enabled "Enabled">
+<!ENTITY stylish.code "Code">
+<!ENTITY stylish.appliesTo "Applies to">
+<!ENTITY stylish.write "Write...">
+<!ENTITY stylish.edit "Edit...">
+<!ENTITY stylish.delete "Delete">
+<!ENTITY stylish.toggle "Toggle">
+<!ENTITY stylish.help "Help">
+<!ENTITY stylish.findupdates "Find Updates...">
+<!ENTITY stylish.save "Save">
+<!ENTITY stylish.preview "Preview">
+<!ENTITY stylish.insert "Insert">
+<!ENTITY stylish.addsiterule "Add">
+<!ENTITY stylish.siterules "Site Rules...">
+<!ENTITY stylish.xulnamespace "XUL Namespace">
+<!ENTITY stylish.htmlnamespace "HTML Namespace">
+<!ENTITY stylish.chromefolder "Chrome Folder Path">
+<!ENTITY stylish.visitstyle "Visit this style&apos;s website">
+<!ENTITY stylish.addhint "See userstyles.org for pre-made styles">
+<!ENTITY stylish.wraplines "Wrap lines">
+<!ENTITY stylish.pickcolor "Colour">
+<!ENTITY stylish.customized "Customised">
+<!ENTITY stylish.managewindow.title "Manage Styles">
+<!ENTITY stylish.managewindow.info "Changes to or removal of styles may only take effect the next time the page is loaded.">
+<!ENTITY stylish.specifysites.title "Specify Sites">
+<!ENTITY stylish.specifysites.typecolumn "Type">
+<!ENTITY stylish.specifysites.sitecolumn "Site">
+<!ENTITY stylish.specifysites.urltype "Exactly">
+<!ENTITY stylish.specifysites.urlprefixtype "Starts with">
+<!ENTITY stylish.specifysites.domaintype "In domain">
+<!ENTITY stylish.addselection "Add Selection to &stylish;...">
+<!ENTITY stylish.addfile "Add File to &stylish;...">
+<!ENTITY stylish.errorwindow.title "Errors">
+<!ENTITY stylish.errorwindow.prefix "The code you entered contains errors:">
+<!ENTITY stylish.errorwindow.suffix2 "Do you want to use this code anyway?">
+<!ENTITY stylish.repair.info "Reloading style meta-data...">
+<!ENTITY stylish.update.info "The following styles have updates available:">
+<!ENTITY stylish.update.title "Update Styles">
+<!ENTITY stylish.update.updateselected "Update Selected">
+<!ENTITY stylish.update.updateall "Update All">
+<!ENTITY stylish.update.neverupdateselected "Never Update Selected">
+<!ENTITY stylish.allowupdates "Allow update checks on this style">

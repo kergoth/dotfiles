@@ -2,19 +2,33 @@
 const APP_DISPLAY_NAME = "Adblock Plus";
 const APP_NAME = "adblockplus";
 const APP_PACKAGE = "/adblockplus.mozdev.org";
-const APP_VERSION = "0.7";
-const WARNING = "WARNING: You need administrator priviledges to install Adblock Plus. It will be installed in the application directory for all users. Installing Adblock Plus in your profile is currently not supported in Mozilla Suite and SeaMonkey. Proceed with the installation?";
+const APP_VERSION = "0.7.5.1";
+const WARNING = "WARNING: You need administrator privileges to install Adblock Plus. It will be installed in the application directory for all users. Installing Adblock Plus in your profile is currently not supported in SeaMonkey. Proceed with the installation?";
+const VERSION_ERROR = "This extension can only be installed in a browser based on Gecko 1.8 or higher, please upgrade your browser. Compatible browsers include Firefox 1.5, SeaMonkey 1.0 and Flock 0.5.";
+const NOT_WRITABLE_ERROR = "This extension requires write access to the application directory to install properly. Currently write access to some of the relevant subdirectories is forbidden, you probably have to log in as root before installing. After installation no elevated privileges will be necessary, read access is sufficient to use Adblock Plus."
 const locales = [
 	"en-US",
+	"ar",
+	"ca-AD",
+	"cs-CZ",
 	"da-DK",
 	"de-DE",
+	"el-GR",
 	"en-GB",
 	"es-ES",
+	"et-EE",
+	"fa-IR",
 	"fi-FI",
 	"fr-FR",
+	"fy-NL",
+	"hr-HR",
+	"hu-HU",
 	"it-IT",
-	"ja",
+	"ja-JP",
+	"ko-KR",
 	"lt-LT",
+	"mn-MN",
+	"nb-NO",
 	"nl-NL",
 	"pl-PL",
 	"pt-BR",
@@ -22,18 +36,43 @@ const locales = [
 	"ro-RO",
 	"ru-RU",
 	"sk-SK",
+	"sl-SI",
 	"sv-SE",
+	"th-TH",
 	"tr-TR",
+	"uk-UA",
+	"vi-VN",
 	"zh-CN",
 	"zh-TW",
 	null
 ];
 
-if (confirm(WARNING)) {
+// Gecko 1.7 doesn't support custom button labels
+var incompatible = (typeof Install.BUTTON_POS_0 == "undefined");
+if (incompatible)
+	alert(VERSION_ERROR);
+
+if (!incompatible) {
+	// Check whether all directories can be accessed
+	var jarFolder = getFolder("Chrome");
+	var dirList = [
+		jarFolder,
+		getFolder("Components"),
+		getFolder(getFolder("Program", "defaults"), "pref")
+	];
+	for (var i = 0; i < dirList.length; i++)
+		if (!File.isWritable(dirList[i]))
+			incompatible = true;
+
+	if (incompatible)
+		alert(NOT_WRITABLE_ERROR);
+}
+
+if (!incompatible && confirm(WARNING, APP_DISPLAY_NAME)) {
 	/* Pre-Install Cleanup (for prior versions) */
 	
-	// file-check array
-	var dirArray = [
+	// List of files to be checked
+	var checkFiles = [
 		[getFolder("Profile", "chrome"), "adblockplus.jar"],      // Profile jar
 		[getFolder("Chrome"), "adblockplus.jar"],                 // Root jar
 		[getFolder("Components"), "nsAdblockPlus.js"],            // Root component
@@ -44,12 +83,12 @@ if (confirm(WARNING)) {
 		[getFolder("Profile"), "XUL.mfasl"],                      // XUL cache Linux
 		[getFolder("Profile"), "XUL.mfl"]                         // XUL cache Windows
 	];
-	
+
 	// Remove any existing files
 	initInstall("pre-install", "/rename", "0.0");  // open dummy-install
-	for (var i = 0 ; i < dirArray.length ; i++) {
-		var currentDir = dirArray[i][0];
-		var name = dirArray[i][1];
+	for (var i = 0 ; i < checkFiles.length ; i++) {
+		var currentDir = checkFiles[i][0];
+		var name = checkFiles[i][1];
 		var oldFile = getFolder(currentDir, name);
 
 		// Find a name to rename the file into
@@ -64,9 +103,7 @@ if (confirm(WARNING)) {
 
 	/* Main part of the installation */
 
-	var profileInstall = new String(Install.url).match(/profile[^\/]*$/);
-	var jarFolder = (profileInstall ? getFolder("Profile", "chrome") : getFolder("Chrome"));
-	var chromeType = (profileInstall ? PROFILE_CHROME : DELAYED_CHROME);
+	var chromeType = DELAYED_CHROME;
 
 	var files = [
 		["chrome/adblockplus.jar", jarFolder],

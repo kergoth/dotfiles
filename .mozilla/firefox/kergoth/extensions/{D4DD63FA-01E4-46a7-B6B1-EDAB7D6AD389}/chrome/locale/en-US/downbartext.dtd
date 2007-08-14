@@ -1,0 +1,174 @@
+<!-- Main Interface text-->
+
+<!ENTITY  stopAll.label  "Stop All">
+<!ENTITY  resumeAll.label  "Resume All">
+<!ENTITY  pauseAll.label  "Pause All">
+<!ENTITY  cancelAll.label  "Cancel All in Progress">
+<!ENTITY  removeAll.label  "Clear All Finished">
+
+<!ENTITY  copySource.label  "Copy source URL">
+<!ENTITY  stopOne.label  "Stop">
+<!ENTITY  pauseOne.label  "Pause">
+<!ENTITY  cancelOne.label  "Cancel">
+<!ENTITY  resumeOne.label  "Resume">
+
+<!ENTITY  properties.label  "Properties">
+<!ENTITY  delete.label  "Delete from system">
+<!ENTITY  remove.label  "Clear from bar">
+<!ENTITY  show.label  "Open Containing Folder">
+<!ENTITY  open.label  "Open">
+<!ENTITY  start.label  "Start">
+<!ENTITY  rename.label  "Rename">
+
+<!ENTITY  fromTip.label  "From:">
+<!ENTITY  toTip.label  "To:">
+<!ENTITY  statusTip.label  "Status:">
+<!ENTITY  timeTip.label  "Time Left:">
+<!ENTITY  percentTip.label  "Percent Done:">
+<!ENTITY  sizeTip.label  "File Size:">
+<!ENTITY  timeCompleteTip.label  "Time to Complete:">
+<!ENTITY  avgSpeedTip.label  "Average Speed:">
+
+<!ENTITY  numFinishedTip.label  "Finished Downloads:">
+<!ENTITY  sizeFinishedTip.label  "Size of Finished Downloads:">
+<!ENTITY  numCurrentTip.label  "Files Currently Downloading:">
+<!ENTITY  totalSpeedTip.label  "Total Speed:">
+<!ENTITY  totalTimeTip.label  "Total Remaining Time:">
+<!ENTITY  toMiniTip.label  "Switch to Mini Mode">
+<!ENTITY  downloadsCap.label  "Downloads">
+<!ENTITY  clear.label  "Clear">
+<!ENTITY  mini.label  "Mini">
+
+<!-- Preferences text -->
+<!ENTITY  pTitle.label  "Options for Download Statusbar">
+
+<!ENTITY  pGeneral.label  "General">
+<!ENTITY  pStatusMode.label  "Statusbar Mode">
+<!ENTITY  pFullMode.label  "Full mode">
+<!ENTITY  pMiniMode.label  "Mini Mode">
+
+<!ENTITY  pFeatures.label  "Features">
+<!ENTITY  pLaunchClose.label  "Automatically continue downloads in the download manager when the browser closes">
+<!ENTITY  pClearFin.label  "Clear finished downloads when the browser closes">
+<!ENTITY  pConfirm.label  "Confirm before deleting a file from the system">
+<!ENTITY  pRmvOpen.label  "Clear a finished download after opening it">
+<!ENTITY  pRmvShow.label  "Clear a finished download after opening containing folder">
+<!ENTITY  pSupAlert.label  "Show the 'Downloads Completed' notification (Recommended off)">
+<!ENTITY  pAutoClear.label  "Automatically clear these filetypes ">
+<!ENTITY  pAfter.label  "after ">
+<!ENTITY  pSeconds.label  "seconds">
+<!ENTITY  pIgnore.label  "Ignore these filetypes ">
+<!ENTITY  pFiletypesHelp.label  "(Enter * for all filetypes, leave blank for none)    ">
+
+<!ENTITY  pHistory.label  "Download History">
+<!ENTITY  pCloseHist.label  "(When the browser closes)">
+<!ENTITY  pKeepHist.label  "Keep a download history">
+<!ENTITY  pTrimHist.label  "Trim the download history to">
+<!ENTITY  pDlItems.label  "downloads">
+
+<!ENTITY  pPlaySound.label  "Play sound when download completes">
+<!ENTITY  pCheckmarkSound.label  "Checkmark!">
+<!ENTITY  pCustomSound.label  "[Custom .WAV file...]">
+<!ENTITY  pSoundExceptFiletypes.label  "Except for filetypes:">
+
+
+<!--
+<!ENTITY  pQueue.label  "Queue Mode">
+<!ENTITY  pQueEna.label  "Enable Queue mode">
+<!ENTITY  pQueDownload.label  "        Only download ">
+<!ENTITY  pQueFiles.label  "files at a time">
+-->
+
+<!ENTITY  pAppearance.label  "Appearance">
+<!ENTITY  pDefaultStyle.label  "Default Style">
+<!ENTITY  pCustomStyle.label  "Custom Style">
+<!ENTITY  pResetCustom.label  "Reset Custom">
+
+<!ENTITY  pProgNotify.label  "Progress Notifications">
+<!ENTITY  pDispPer.label  "Progress percent">
+<!ENTITY  pDispSpeed.label  "Download speed">
+<!ENTITY  pDispSize.label  "Size downloaded so far">
+<!ENTITY  pDispTime.label  "Time Remaining">
+
+<!ENTITY  pTextSize.label  "Text Sizes">
+<!ENTITY  pFileText.label  "File Name Size:">
+<!ENTITY  pProgNotiText.label  "Progress Notification Size:">
+
+<!ENTITY  pDLItemSize.label  "Download Item Sizes">
+<!ENTITY  pWidth.label  "Width:">
+<!ENTITY  pHeight.label  "Height:">
+
+<!ENTITY  pColors.label  "Colors">
+<!ENTITY  pLeaveBlank.label  "(Leave blank for theme default)">
+<!ENTITY  pProgBar.label  "Progress Bar">
+<!ENTITY  pProgRemain.label  "Progress Remainder">
+<!ENTITY  pFinishedBox.label  "Finished Download">
+<!ENTITY  pStoppedBox.label  "Stopped Download">
+<!ENTITY  pPausedOutline.label  "Paused Outline">
+<!ENTITY  pTextColor.label  "Text">
+<!ENTITY  pStatusBack.label  "Statusbar Background">
+<!ENTITY  pUseGradients.label  "Use Color Gradients">
+<!ENTITY  pUseAnimation.label  "Use Animation">
+<!ENTITY  pShowButtons.label  "Show these buttons:">
+<!ENTITY  pDownloadsButton.label  "Main Downloads Button">
+<!ENTITY  pClearButton.label  "Clear Finished Button">
+<!ENTITY  pToMiniButton.label  "Mini Mode Button">
+
+<!ENTITY  pSpeedColors.label  "Speed Colors">
+<!ENTITY  pEnableSC.label  "Enable Speed Colors">
+<!ENTITY  pBetween.label  "Between ">
+<!ENTITY  pAnd.label  "and">
+<!ENTITY  pkbSec.label  "KB/sec">
+<!ENTITY  pMoreThan.label  "More than ">
+
+<!ENTITY  pVScan.label  "Virus Scan">
+<!ENTITY  pShouldScan.label  "Manually scan completed downloads">
+<!ENTITY  pExclude.label  "Don't scan these filetypes">
+<!ENTITY  pAVLoc.label  "Anti-Virus program location">
+<!ENTITY  pArgs.label  "Arguments">
+<!ENTITY  pAVdesc.label  "(Use &#37;1 in the arguments for the file to scan)">
+
+<!ENTITY  pAbout.label  "About">
+<!ENTITY  pOK.label  "OK">
+<!ENTITY  pApply.label  "Apply">
+<!ENTITY  pCancel.label  "Cancel">
+
+<!-- Color Picker -->
+<!ENTITY previewColour.label     "Preview:">
+<!ENTITY cpWinTitle.title        "Color Picker">
+
+<!ENTITY predef.label            "Predefined colors:">
+<!ENTITY rgb.label               "RGB">
+<!ENTITY hsb.label               "HSB">
+<!ENTITY red.label               "Red:">
+<!ENTITY green.label             "Green:">
+<!ENTITY blue.label              "Blue:">
+<!ENTITY hue.label               "Hue:">
+<!ENTITY saturation.label        "Saturation:">
+<!ENTITY brightness.label        "Brightness:">
+
+<!ENTITY hexColor.label          "Hex:">
+<!ENTITY nameColor.label         "Name:">
+<!ENTITY cpUseThemeDef.label     "Use Theme Default">
+
+<!ENTITY openOpt.label           "Options...">
+<!ENTITY hideDownbar.label       "Hide Downbar">
+<!ENTITY allDownloads.label      "Download Actions">
+<!ENTITY openDLHist.label        "Download History">
+<!ENTITY stoppedDL.label         "Stopped Download:">
+
+
+
+<!--<!ENTITY transparency.label      "Transparent">
+<!ENTITY background.label "Background for:">
+<!ENTITY background.accessKey "B">
+<!ENTITY table.label "Table">
+<!ENTITY table.accessKey "T">
+<!ENTITY cell.label "Cell(s)">
+<!ENTITY cell.accessKey "C">
+<!ENTITY lastPickedColor.label "Last-picked color">
+<!ENTITY lastPickedColor.accessKey "L"> -->
+
+
+
+

@@ -1,0 +1,138 @@
+<!ENTITY stopAll.label "Zastaviť všetko">
+<!ENTITY resumeAll.label "Spustiť všetko">
+<!ENTITY pauseAll.label "Pozastaviť všetko">
+<!ENTITY cancelAll.label "Zrušiť všetky nedokončené">
+<!ENTITY removeAll.label "Odstrániť všetky dokončené">
+<!ENTITY copySource.label "Kopírovať zdrojovú URL adresu">
+<!ENTITY stopOne.label "Zastaviť">
+<!ENTITY pauseOne.label "Pozastaviť">
+<!ENTITY cancelOne.label "Zrušiť">
+<!ENTITY resumeOne.label "Spustiť">
+<!ENTITY properties.label "Vlastnosti">
+<!ENTITY delete.label "Odstrániť z disku">
+<!ENTITY remove.label "Odstrániť z panela">
+<!ENTITY show.label "Otvoriť priečinok">
+<!ENTITY open.label "Otvoriť">
+<!ENTITY start.label "Štart">
+<!ENTITY rename.label "Premenovať">
+<!ENTITY fromTip.label "Zo:">
+<!ENTITY toTip.label "Kam:">
+<!ENTITY statusTip.label "Stav:">
+<!ENTITY timeTip.label "Zostávajúci čas:">
+<!ENTITY percentTip.label "Hotovo percent:">
+<!ENTITY sizeTip.label "Veľkosť súboru:">
+<!ENTITY timeCompleteTip.label "Zostávajúci čas:">
+<!ENTITY avgSpeedTip.label "Priemerná rýchlosť:">
+<!ENTITY numFinishedTip.label "Dokončené sťahovania:">
+<!ENTITY sizeFinishedTip.label "Celková veľkosť dokončených sťahovaní:">
+<!ENTITY numCurrentTip.label "práve sťahované položky:">
+<!ENTITY totalSpeedTip.label "Celková rýchlosť:">
+<!ENTITY totalTimeTip.label "Celkový zostávajúci čas:">
+<!ENTITY toMiniTip.label "Prepnúť do režimu Mini">
+<!ENTITY downloadsCap.label "Stiahnuté">
+<!ENTITY clear.label "Vymazať">
+<!ENTITY mini.label "Mini">
+<!ENTITY pTitle.label "Nastavenia pre Download Statusbar">
+<!ENTITY pGeneral.label "Všeobecné">
+<!ENTITY pStatusMode.label "Režim v stavovom riadku">
+<!ENTITY pFullMode.label "Úplný">
+<!ENTITY pMiniMode.label "Mini">
+<!ENTITY pFeatures.label "Funkcie">
+<!ENTITY pLaunchClose.label "Automaticky pokračovať so sťahovaním v Správcovi sťahovania aj po zavretí okna prehliadača">
+<!ENTITY pClearFin.label "Pri zavretí prehliadača odstrániť z panela dokončené sťahovania">
+<!ENTITY pConfirm.label "Opýtať sa pred odstránením položky z disku">
+<!ENTITY pRmvOpen.label "Odstrániť položku z panela po jej otvorení">
+<!ENTITY pRmvShow.label "Odstrániť položku z panela po otvorení nadradeného priečinka">
+<!ENTITY pSupAlert.label "Zobrazovať notifikáciu &apos;Sťahovanie dokončené&apos; (odporúčame vypnúť)">
+<!ENTITY pAutoClear.label "Automaticky odstraňovať tieto typy súborov">
+<!ENTITY pAfter.label "po">
+<!ENTITY pSeconds.label "sekundách">
+<!ENTITY pIgnore.label "Ignorovať tieto typy súborov">
+<!ENTITY pFiletypesHelp.label "(Zadajte * pre všetky typy súborov, nechajte prázdne, ak nechcete odstraňovať žiadne súbory)">
+<!ENTITY pHistory.label "História sťahovania">
+<!ENTITY pCloseHist.label "(Pri ukončení prehliadača)">
+<!ENTITY pKeepHist.label "Ponechať históriu sťahovania">
+<!ENTITY pTrimHist.label "Premazať históriu na">
+<!ENTITY pDlItems.label "stiahnutí">
+<!ENTITY pPlaySound.label "Po ukončení sťahovania prehrať zvuk">
+<!ENTITY pCheckmarkSound.label "Predvolený">
+<!ENTITY pCustomSound.label "[Vlastný zvukový súbor .WAV...]">
+<!ENTITY pSoundExceptFiletypes.label "Okrem typov súborov:">
+<!ENTITY pQueue.label "Režim Fronta">
+<!ENTITY pQueEna.label "Povoliť režim Fronta">
+<!ENTITY pQueDownload.label "Naraz sťahovať max.">
+<!ENTITY pQueFiles.label "súborov">
+<!ENTITY pAppearance.label "Vzhľad">
+<!ENTITY pDefaultStyle.label "Predvolený štýl">
+<!ENTITY pCustomStyle.label "Vlastný štýl">
+<!ENTITY pResetCustom.label "Vymazať vlastný štýl">
+<!ENTITY pProgNotify.label "Notifikácia stavu">
+<!ENTITY pDispPer.label "Zobrazenie v percentách">
+<!ENTITY pDispSpeed.label "Rýchlosť sťahovania">
+<!ENTITY pDispSize.label "Celkom stiahnutých">
+<!ENTITY pDispTime.label "Zostávajúci čas">
+<!ENTITY pTextSize.label "Veľkosť textov">
+<!ENTITY pFileText.label "Veľkosť názvu súboru:">
+<!ENTITY pProgNotiText.label "Veľkosť notifikácie stavu:">
+<!ENTITY pDLItemSize.label "Veľkosti sťahovanej položky">
+<!ENTITY pWidth.label "Šírka:">
+<!ENTITY pHeight.label "Výška:">
+<!ENTITY pColors.label "Farby">
+<!ENTITY pLeaveBlank.label "(nechajte prázdne pre predvolenú tému)">
+<!ENTITY pProgBar.label "Panel Stav">
+<!ENTITY pProgRemain.label "Zostáva">
+<!ENTITY pFinishedBox.label "Ukončené sťahovanie">
+<!ENTITY pStoppedBox.label "Zastavené sťahovanie">
+<!ENTITY pPausedOutline.label "Orámovanie pozastaveného">
+<!ENTITY pTextColor.label "Text">
+<!ENTITY pStatusBack.label "Pozadie stavového riadku">
+<!ENTITY pUseGradients.label "Použiť prechody farby">
+<!ENTITY pUseAnimation.label "Použiť animáciu">
+<!ENTITY pShowButtons.label "Zobraziť tieto tlačidlá:">
+<!ENTITY pDownloadsButton.label "Tlačidlo Hlavné sťahovanie">
+<!ENTITY pClearButton.label "Tlačidlo Vymazať stiahnuté">
+<!ENTITY pToMiniButton.label "Tlačidlo Režim Mini">
+<!ENTITY pSpeedColors.label "Farby rýchlostí">
+<!ENTITY pEnableSC.label "Povoliť farby rýchlostí">
+<!ENTITY pBetween.label "medzi">
+<!ENTITY pAnd.label "a">
+<!ENTITY pkbSec.label "KB/sek">
+<!ENTITY pMoreThan.label "Viac ako">
+<!ENTITY pVScan.label "Antivírusová kontrola">
+<!ENTITY pShouldScan.label "Manuálna kontrola stiahnutých položiek">
+<!ENTITY pExclude.label "Nekontrolovať súbory s príponami:">
+<!ENTITY pAVLoc.label "Umiestnenie antivírusového programu:">
+<!ENTITY pArgs.label "Parametre">
+<!ENTITY pAVdesc.label "(Použite &#37;1 v parametroch pre súbory, ktoré sa budú kontrolovať)">
+<!ENTITY pAbout.label "Pomocník">
+<!ENTITY pOK.label "OK">
+<!ENTITY pApply.label "Použiť">
+<!ENTITY pCancel.label "Zrušiť">
+<!ENTITY previewColour.label "Ukážka:">
+<!ENTITY cpWinTitle.title "Výber farby">
+<!ENTITY predef.label "Preddefinované farby:">
+<!ENTITY rgb.label "RGB">
+<!ENTITY hsb.label "HSB">
+<!ENTITY red.label "Červená:">
+<!ENTITY green.label "Zelená:">
+<!ENTITY blue.label "Modrá:">
+<!ENTITY hue.label "Odtieň:">
+<!ENTITY saturation.label "Sýtosť:">
+<!ENTITY brightness.label "Jas:">
+<!ENTITY hexColor.label "Hex:">
+<!ENTITY nameColor.label "Názov:">
+<!ENTITY cpUseThemeDef.label "Použiť predvolenú tému">
+<!ENTITY openOpt.label "Možnosti...">
+<!ENTITY hideDownbar.label "Skryť panel sťahovania">
+<!ENTITY allDownloads.label "Akcie sťahovania">
+<!ENTITY openDLHist.label "História sťahovania">
+<!ENTITY stoppedDL.label "Zastavené sťahovania:">
+<!ENTITY transparency.label "Priesvitné">
+<!ENTITY background.label "Pozadie pre:">
+<!ENTITY background.accessKey "B">
+<!ENTITY table.label "Tabuľka">
+<!ENTITY table.accessKey "T">
+<!ENTITY cell.label "Bunky">
+<!ENTITY cell.accessKey "B">
+<!ENTITY lastPickedColor.label "Naposledy vybratá farba">
+<!ENTITY lastPickedColor.accessKey "l">

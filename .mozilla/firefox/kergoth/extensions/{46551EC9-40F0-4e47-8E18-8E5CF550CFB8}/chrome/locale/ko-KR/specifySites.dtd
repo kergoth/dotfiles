@@ -1,0 +1,11 @@
+<!ENTITY addsiterule "추가">
+<!ENTITY addsiterule.ak "추가">
+<!ENTITY domaintype "도메인에서">
+<!ENTITY domaintype.ak "I">
+<!ENTITY site "사이트">
+<!ENTITY title "사이트를 지정">
+<!ENTITY type "종류">
+<!ENTITY urltype "정확하게">
+<!ENTITY urltype.ak "E">
+<!ENTITY urlprefixtype "다음으로 시작">
+<!ENTITY urlprefixtype.ak "S">

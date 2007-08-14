@@ -1,0 +1,41 @@
+<!ENTITY stylish "Stylish">
+<!ENTITY stylish.id "ID">
+<!ENTITY stylish.uri "URI">
+<!ENTITY stylish.description "Descrição">
+<!ENTITY stylish.enabled "Ativado">
+<!ENTITY stylish.code "Código">
+<!ENTITY stylish.appliesTo "Aplicar em">
+<!ENTITY stylish.write "Write...">
+<!ENTITY stylish.edit "Editar...">
+<!ENTITY stylish.delete "Exlcuir">
+<!ENTITY stylish.toggle "Toggle">
+<!ENTITY stylish.help "Help">
+<!ENTITY stylish.findupdates "Find Updates...">
+<!ENTITY stylish.save "Salvar">
+<!ENTITY stylish.preview "Preview">
+<!ENTITY stylish.insert "Insert">
+<!ENTITY stylish.addsiterule "Add">
+<!ENTITY stylish.siterules "Site Rules...">
+<!ENTITY stylish.xulnamespace "XUL Namespace">
+<!ENTITY stylish.htmlnamespace "HTML Namespace">
+<!ENTITY stylish.chromefolder "Pasta do Chrome">
+<!ENTITY stylish.visitstyle "Visite esta página de estilos">
+<!ENTITY stylish.addhint "See userstyles.org for pre-made styles">
+<!ENTITY stylish.wraplines "Wrap lines">
+<!ENTITY stylish.pickcolor "Color">
+<!ENTITY stylish.customized "Customized">
+<!ENTITY stylish.managewindow.title "Gerenciar Estilos">
+<!ENTITY stylish.managewindow.info "Alterações e exclusões de Estilos talvez só tenham efeitos na próxima vez que a página for carregada.">
+<!ENTITY stylish.specifysites.title "Definir Páginas">
+<!ENTITY stylish.specifysites.typecolumn "Tipo">
+<!ENTITY stylish.specifysites.sitecolumn "Página">
+<!ENTITY stylish.specifysites.urltype "Exatamente">
+<!ENTITY stylish.specifysites.urlprefixtype "Comece com">
+<!ENTITY stylish.specifysites.domaintype "No domínio">
+<!ENTITY stylish.addselection "Adicionar Seleção em &stylish;...">
+<!ENTITY stylish.addfile "Adcionar Arquivo em &stylish;...">
+<!ENTITY stylish.errorwindow.title "Erros">
+<!ENTITY stylish.errorwindow.prefix "O código digitado contêm erros:">
+<!ENTITY stylish.errorwindow.suffix2 "Do you want to use this code anyway?">
+<!ENTITY stylish.repair.info "Recarregando meta-data...">
+<!ENTITY stylish.update.info "The following styles have updates available:">

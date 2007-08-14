@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://stylish/skin/update.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+	<!ENTITY % common SYSTEM "chrome://stylish/locale/common.dtd">
+	<!ENTITY % branding SYSTEM "chrome://stylish/content/branding.dtd">
+	<!ENTITY % update SYSTEM "chrome://stylish/locale/update.dtd">
+	%common;
+	%branding;
+	%update;
+]>
+
+<dialog
+	id="stylish"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	onload="init()"
+	persist="screenX screenY width height sizemode"
+	title="&title;"
+	buttons="none">
+	
+	<script type="application/javascript" src="rdfds.js"/>
+	<script type="application/javascript" src="common.js"/>
+	<script type="application/javascript" src="StylishStyle.js"/>
+	<script type="application/javascript" src="update.js"/>
+
+	<stringbundle id="strings" src="chrome://stylish/locale/stylish.properties"/>
+
+		<description id="update-info">
+			&info;
+		</description>
+
+	<tree flex="1" id="style-list-tree" seltype="multiple" disabled="true" onselect="changeSelection()">
+		<treecols>
+			<treecol flex="1" id="uri-column" label="&uri;" hidden="true" persist="width ordinal hidden"/>
+			<splitter class="tree-splitter"/>
+			<treecol flex="1" id="description-column" label="&stylish.description;" persist="width ordinal hidden"/>
+			<splitter class="tree-splitter"/>
+			<treecol id="customized-column" label="&customized;" persist="width ordinal hidden"/>
+		</treecols>
+		<treechildren id="style-list"/>
+	</tree>
+
+	<hbox>
+		<button id="update-selected" label="&updateselected;" accesskey="&updateselected.ak;" oncommand="updateSelected(false)" disabled="true"/>
+		<button id="update-all" label="&updateall;" accesskey="&updateall.ak;" oncommand="updateAll()" disabled="true"/>
+		<button id="never-update-selected" label="&neverupdateselected;" accesskey="&neverupdateselected.ak;" oncommand="updateSelected(true)" disabled="true"/>
+		<progressmeter id="progress" mode="determined" value="0%" flex="1"/>
+	</hbox>
+
+</dialog>

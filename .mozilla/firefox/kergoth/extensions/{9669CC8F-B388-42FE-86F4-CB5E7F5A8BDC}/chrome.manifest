@@ -1,0 +1,92 @@
+content	local_install	jar:chrome/local_install.jar!/content/local_install/
+
+overlay	chrome://browser/content/browser.xul	chrome://local_install/content/local_browserOverlay.xul
+
+overlay	chrome://mozapps/content/extensions/extensions.xul	chrome://local_install/content/local_addons.xul
+overlay	chrome://mozapps/content/extensions/extensions.xul?view=installs	chrome://local_install/content/local_addons.xul
+overlay	chrome://mozapps/content/extensions/extensions.xul?type=extensions	chrome://local_install/content/local_extensions.xul
+overlay	chrome://mozapps/content/extensions/extensions.xul?type=themes	chrome://local_install/content/local_theme.xul
+overlay	chrome://mozapps/content/extensions/about.xul	chrome://local_install/content/extensions_about.xul
+
+overlay	chrome://mozapps/content/xpinstall/xpinstallConfirm.xul	chrome://local_install/content/local_XPInstall.xul
+overlay	chrome://mozapps/content/update/update.xul	chrome://local_install/content/local_updates.xul
+overlay	chrome://navigator/content/navigator.xul	chrome://local_install/content/local_browserOverlay-moz_tb.xul
+overlay	chrome://communicator/content/xpinstall/institems.xul	chrome://local_install/content/local_XPInstall-moz.xul
+overlay	chrome://calendar/content/calendar.xul	chrome://local_install/content/local_browserOverlay-sunbird.xul
+
+overlay	chrome://messenger/content/mailWindowOverlay.xul	chrome://local_install/content/local_browserOverlay-moz_tb.xul
+overlay	chrome://messenger/content/messageWindow.xul	chrome://local_install/content/local_browserOverlay-moz_tb.xul
+overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://local_install/content/local_browserOverlay-moz_tb.xul
+
+overlay	chrome://editor/content/editor.xul	chrome://local_install/content/local_browserOverlay-moz_tb.xul
+overlay	chrome://global/content/viewSource.xul	chrome://local_install/content/local_viewsource.xul
+overlay	chrome://global/content/console.xul	chrome://local_install/content/local_jsconsole.xul
+overlay	chrome://inspector/content/inspector.xul	chrome://local_install/content/local_inspector.xul
+
+overlay	chrome://browser/content/browser.xul	chrome://local_install/content/restartfirefoxOverlay.xul
+overlay	chrome://messenger/content/mailWindowOverlay.xul	chrome://local_install/content/restartfirefoxOverlay.xul
+overlay	chrome://messenger/content/messageWindow.xul	chrome://local_install/content/restartfirefoxOverlay.xul
+overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://local_install/content/restartfirefoxOverlay.xul
+overlay	chrome://calendar/content/calendar.xul	chrome://local_install/content/restartfirefoxOverlay.xul
+
+overlay	chrome://messenger/content/mailWindowOverlay.xul	chrome://local_install/content/thunderbirdOnlyOverlay.xul
+overlay	chrome://messenger/content/messageWindow.xul	chrome://local_install/content/thunderbirdOnlyOverlay.xul
+overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://local_install/content/thunderbirdOnlyOverlay.xul
+
+overlay	chrome://browser/content/browser.xul	chrome://local_install/content/firefoxOnlyOverlay.xul
+
+skin	local_install	classic/1.0	jar:chrome/local_install.jar!/skin/classic/local_install/
+style	chrome://browser/content/browser.xul	chrome://local_install/skin/local_install.css
+style	chrome://global/content/customizeToolbar.xul	chrome://local_install/skin/local_install.css
+style	chrome://global/content/customizeToolbar.xul	chrome://local_install/skin/togmespane.css
+style	chrome://messenger/content/mailWindowOverlay.xul	chrome://local_install/skin/local_install.css
+style	chrome://messenger/content/mailWindowOverlay.xul	chrome://local_install/skin/togmespane.css
+style	chrome://messenger/content/messageWindow.xul	chrome://local_install/skin/local_install.css
+style	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://local_install/skin/local_install.css
+style	chrome://editor/content/editor.xul	chrome://local_install/skin/local_install.css
+
+style	chrome://mozapps/content/extensions/extensions.xul	chrome://local_install/skin/local_install.css
+style	chrome://mozapps/content/extensions/extensions.xul?view=installs	chrome://local_install/skin/local_install.css
+style	chrome://mozapps/content/extensions/extensions.xul?type=extensions	chrome://local_install/skin/local_install.css
+style	chrome://mozapps/content/extensions/extensions.xul?type=themes	chrome://local_install/skin/local_install.css
+
+style	chrome://calendar/content/calendar.xul	chrome://local_install/skin/local_install.css
+
+style	chrome://browser/content/browser.xul	chrome://local_install/skin/restartfirefox.css
+style	chrome://messenger/content/mailWindowOverlay.xul	chrome://local_install/skin/restartfirefox.css
+style	chrome://messenger/content/messageWindow.xul	chrome://local_install/skin/restartfirefox.css
+style	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://local_install/skin/restartfirefox.css
+style	chrome://global/content/customizeToolbar.xul	chrome://local_install/skin/restartfirefox.css
+style	chrome://console2/content/console2.xul	chrome://local_install/content/js_console.css
+style	chrome://calendar/content/calendar.xul	chrome://local_install/skin/restartfirefox.css
+
+locale	local_install	en-US	jar:chrome/local_install.jar!/locale/en-US/local_install/
+locale	local_install	it-IT	jar:chrome/local_install.jar!/locale/it-IT/local_install/
+locale	local_install	es-ES	jar:chrome/local_install.jar!/locale/es-ES/local_install/
+locale	local_install	fr-FR	jar:chrome/local_install.jar!/locale/fr-FR/local_install/
+locale	local_install	zh-CN	jar:chrome/local_install.jar!/locale/zh-CN/local_install/
+locale	local_install	pl-PL	jar:chrome/local_install.jar!/locale/pl-PL/local_install/
+locale	local_install	pt-BR	jar:chrome/local_install.jar!/locale/pt-BR/local_install/
+locale	local_install	de-DE	jar:chrome/local_install.jar!/locale/de-DE/local_install/
+locale	local_install	zh-TW	jar:chrome/local_install.jar!/locale/zh-TW/local_install/
+locale	local_install	nl-NL	jar:chrome/local_install.jar!/locale/nl-NL/local_install/
+locale	local_install	hu-HU	jar:chrome/local_install.jar!/locale/hu-HU/local_install/
+locale	local_install	sr-YU	jar:chrome/local_install.jar!/locale/sr-YU/local_install/
+locale	local_install	ro-RO	jar:chrome/local_install.jar!/locale/ro-RO/local_install/
+locale	local_install	cs-CZ	jar:chrome/local_install.jar!/locale/cs-CZ/local_install/
+locale	local_install	ja	jar:chrome/local_install.jar!/locale/ja/local_install/
+locale	local_install	fi-FI	jar:chrome/local_install.jar!/locale/fi-FI/local_install/
+locale	local_install	ru-RU	jar:chrome/local_install.jar!/locale/ru-RU/local_install/
+locale	local_install	ko-KR	jar:chrome/local_install.jar!/locale/ko-KR/local_install/
+locale	local_install	es-AR	jar:chrome/local_install.jar!/locale/es-AR/local_install/
+locale	local_install	sk	jar:chrome/local_install.jar!/locale/sk/local_install/
+locale	local_install	mk-MK	jar:chrome/local_install.jar!/locale/mk-MK/local_install/
+locale	local_install	hr-HR	jar:chrome/local_install.jar!/locale/hr-HR/local_install/
+locale	local_install	da-DK	jar:chrome/local_install.jar!/locale/da-DK/local_install/
+locale	local_install	lt-LT	jar:chrome/local_install.jar!/locale/lt-LT/local_install/
+locale	local_install	he-IL	jar:chrome/local_install.jar!/locale/he-IL/local_install/
+locale	local_install	bg-BG	jar:chrome/local_install.jar!/locale/bg-BG/local_install/
+locale	local_install	uk-UA	jar:chrome/local_install.jar!/locale/uk-UA/local_install/
+locale	local_install	fa-IR	jar:chrome/local_install.jar!/locale/fa-IR/local_install/
+locale	local_install	tr-TR	jar:chrome/local_install.jar!/locale/tr-TR/local_install/
+locale	local_install	be-BY	jar:chrome/local_install.jar!/locale/be-BY/local_install/

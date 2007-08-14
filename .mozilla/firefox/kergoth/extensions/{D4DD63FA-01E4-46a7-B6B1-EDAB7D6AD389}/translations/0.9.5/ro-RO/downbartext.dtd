@@ -1,0 +1,138 @@
+<!ENTITY stopAll.label "Oprește toate">
+<!ENTITY resumeAll.label "Reia toate">
+<!ENTITY pauseAll.label "Suspendă toate">
+<!ENTITY cancelAll.label "Anulează cele în curs de desfășurare">
+<!ENTITY removeAll.label "Curăță cele încheiate">
+<!ENTITY copySource.label "Copiază adresa sursă">
+<!ENTITY stopOne.label "Oprește">
+<!ENTITY pauseOne.label "Suspendă">
+<!ENTITY cancelOne.label "Anulează">
+<!ENTITY resumeOne.label "Reia">
+<!ENTITY properties.label "Proprietăți">
+<!ENTITY delete.label "Șterge de pe disc">
+<!ENTITY remove.label "Curăță bara">
+<!ENTITY show.label "Deschide dosarul în care este">
+<!ENTITY open.label "Deschide">
+<!ENTITY start.label "Pornește">
+<!ENTITY rename.label "Redenumește">
+<!ENTITY fromTip.label "De la:">
+<!ENTITY toTip.label "În:">
+<!ENTITY statusTip.label "Stare:">
+<!ENTITY timeTip.label "Timp rămas:">
+<!ENTITY percentTip.label "Terminat în procente:">
+<!ENTITY sizeTip.label "Mărime fișier:">
+<!ENTITY timeCompleteTip.label "Timp de descărcare:">
+<!ENTITY avgSpeedTip.label "Viteză medie:">
+<!ENTITY numFinishedTip.label "Descărcări încheiate:">
+<!ENTITY sizeFinishedTip.label "Mărimea descărcărilor încheiate:">
+<!ENTITY numCurrentTip.label "Fișiere în curs de descărcare:">
+<!ENTITY totalSpeedTip.label "Viteză totală:">
+<!ENTITY totalTimeTip.label "Timp total rămas:">
+<!ENTITY toMiniTip.label "Schimbă la modul mini">
+<!ENTITY downloadsCap.label "Descărcări">
+<!ENTITY clear.label "Curăță">
+<!ENTITY mini.label "Mini">
+<!ENTITY pTitle.label "Opțiuni pentru Download Statusbar">
+<!ENTITY pGeneral.label "General">
+<!ENTITY pStatusMode.label "Mod bară de stare">
+<!ENTITY pFullMode.label "Mod complet">
+<!ENTITY pMiniMode.label "Mod mini">
+<!ENTITY pFeatures.label "Funcționalități">
+<!ENTITY pLaunchClose.label "Continuă automat descărcările în managerul de descărcări când navigatorul se închide">
+<!ENTITY pClearFin.label "Curăță bara când navigatorul se închide">
+<!ENTITY pConfirm.label "Cere confirmare înainte de a șterge un fișier de pe disc">
+<!ENTITY pRmvOpen.label "Elimină de pe bară descărcarea după ce este deschisă">
+<!ENTITY pRmvShow.label "Elimină de pe bară descărcarea după ce deschid dosarul care o conține">
+<!ENTITY pSupAlert.label "Arată notificarea „Descărcări încheiate” (Recomandat nebifat)">
+<!ENTITY pAutoClear.label "Curăță automat aceste tipuri de fișiere">
+<!ENTITY pAfter.label "după">
+<!ENTITY pSeconds.label "secunde">
+<!ENTITY pIgnore.label "Ignoră aceste tipuri de fișiere">
+<!ENTITY pFiletypesHelp.label "(Introduceți * pentru toate tipurile de fișiere, lăsați gol pentru niciunul)">
+<!ENTITY pHistory.label "Istoric de descărcări">
+<!ENTITY pCloseHist.label "(Când navigatorul este închis)">
+<!ENTITY pKeepHist.label "Păstrează un istoric al descărcărilor">
+<!ENTITY pTrimHist.label "Limitează istoricul la">
+<!ENTITY pDlItems.label "descărcări">
+<!ENTITY pPlaySound.label "Redă un sunet când se încheie o descărcare">
+<!ENTITY pCheckmarkSound.label "Marcat!">
+<!ENTITY pCustomSound.label "[Fișier .wav personalizat...]">
+<!ENTITY pSoundExceptFiletypes.label "Cu excepția tipurilor de fișiere:">
+<!ENTITY pQueue.label "Mod punere la coadă">
+<!ENTITY pQueEna.label "Activează modul de punere la coadă">
+<!ENTITY pQueDownload.label "Descarcă numai">
+<!ENTITY pQueFiles.label "fișiere în același timp">
+<!ENTITY pAppearance.label "Aspect">
+<!ENTITY pDefaultStyle.label "Stilul implicit">
+<!ENTITY pCustomStyle.label "Stil personalizat">
+<!ENTITY pResetCustom.label "Resetează personalizările">
+<!ENTITY pProgNotify.label "Notificări despre progres">
+<!ENTITY pDispPer.label "Procent progres">
+<!ENTITY pDispSpeed.label "Viteză de descărcare">
+<!ENTITY pDispSize.label "Mărimea descărcării în acel moment">
+<!ENTITY pDispTime.label "Timp rămas">
+<!ENTITY pTextSize.label "Mărimea textelor">
+<!ENTITY pFileText.label "Mărimea numelui fișierului:">
+<!ENTITY pProgNotiText.label "Mărimea notificării despre progres:">
+<!ENTITY pDLItemSize.label "Mărimea afișajului unei descărcări">
+<!ENTITY pWidth.label "Lățime:">
+<!ENTITY pHeight.label "Înălțime">
+<!ENTITY pColors.label "Culori">
+<!ENTITY pLeaveBlank.label "(Lăsați gol pentru cele implicite din temă)">
+<!ENTITY pProgBar.label "Bară progres">
+<!ENTITY pProgRemain.label "Progresul cu restul de descărcat">
+<!ENTITY pFinishedBox.label "Descărcare încheiată">
+<!ENTITY pStoppedBox.label "Descărcare oprită">
+<!ENTITY pPausedOutline.label "Contur pentru cele suspendate">
+<!ENTITY pTextColor.label "Text">
+<!ENTITY pStatusBack.label "Fundal bară de stare">
+<!ENTITY pUseGradients.label "Folosește gradient de culoare">
+<!ENTITY pUseAnimation.label "Folosește animație">
+<!ENTITY pShowButtons.label "Arată aceste butoane:">
+<!ENTITY pDownloadsButton.label "Butonul Descărcări">
+<!ENTITY pClearButton.label "Butonul Curăță cele încheiate">
+<!ENTITY pToMiniButton.label "Butonul Mod mini">
+<!ENTITY pSpeedColors.label "Culori pentru viteză">
+<!ENTITY pEnableSC.label "Activează culorile pentru viteză">
+<!ENTITY pBetween.label "Între">
+<!ENTITY pAnd.label "și">
+<!ENTITY pkbSec.label "KO/sec">
+<!ENTITY pMoreThan.label "Mai mult decât">
+<!ENTITY pVScan.label "Scanare pentru viruși">
+<!ENTITY pShouldScan.label "Scanează manual descărcările complete">
+<!ENTITY pExclude.label "Nu scana aceste tipuri de fișiere">
+<!ENTITY pAVLoc.label "Calea către programul anti-virus">
+<!ENTITY pArgs.label "Argumente">
+<!ENTITY pAVdesc.label "(Folosește &#37;1 în argumente pentru fișierul de scanat)">
+<!ENTITY pAbout.label "Despre">
+<!ENTITY pOK.label "OK">
+<!ENTITY pApply.label "Aplică">
+<!ENTITY pCancel.label "Renunță">
+<!ENTITY previewColour.label "Previzualizare:">
+<!ENTITY cpWinTitle.title "Selector de culoare">
+<!ENTITY predef.label "Culori predefinite:">
+<!ENTITY rgb.label "RGB">
+<!ENTITY hsb.label "HSB">
+<!ENTITY red.label "Roșu:">
+<!ENTITY green.label "Verde:">
+<!ENTITY blue.label "Albastru:">
+<!ENTITY hue.label "Nuanță:">
+<!ENTITY saturation.label "Saturație:">
+<!ENTITY brightness.label "Luminozitate:">
+<!ENTITY hexColor.label "Hex:">
+<!ENTITY nameColor.label "Nume:">
+<!ENTITY cpUseThemeDef.label "Folosește cele implicite din temă">
+<!ENTITY openOpt.label "Opțiuni...">
+<!ENTITY hideDownbar.label "Ascunde bara de descărcări">
+<!ENTITY allDownloads.label "Acțiuni pentru decărcari">
+<!ENTITY openDLHist.label "Istoric de descărcări">
+<!ENTITY stoppedDL.label "Decărcare oprită:">
+<!ENTITY transparency.label "Transparent">
+<!ENTITY background.label "Fundal pentru:">
+<!ENTITY background.accessKey "F">
+<!ENTITY table.label "Tabel">
+<!ENTITY table.accessKey "T">
+<!ENTITY cell.label "Celulă">
+<!ENTITY cell.accessKey "C">
+<!ENTITY lastPickedColor.label "Ultima culoare selectată">
+<!ENTITY lastPickedColor.accessKey "U">

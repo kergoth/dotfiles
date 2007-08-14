@@ -1,0 +1,10 @@
+<!ENTITY stylish.addfile "&stylish; にファイルを追加…">
+<!ENTITY stylish.addfile.ak "A">
+<!ENTITY stylish.findStyleBrowser "このページのスタイルを検索">
+<!ENTITY stylish.findStyleBrowser.ak "F">
+<!ENTITY stylish.globalStyles "グローバル・スタイル">
+<!ENTITY stylish.globalStyles.ak "G">
+<!ENTITY stylish.manageSites "スタイルの管理…">
+<!ENTITY stylish.manageSites.ak "M">
+<!ENTITY stylish.writeStyle "スタイルを書く">
+<!ENTITY stylish.writeStyle.ak "W">

@@ -1,0 +1,111 @@
+<!ENTITY aboutTitle.label "Quant al Download Statusbar">
+<!ENTITY introTab.label "Introducció">
+<!ENTITY by.label "Per Devon Jensen">
+<!ENTITY version.label "Versió">
+<!ENTITY tagLine.label "Aquesta extensió per al Mozilla Firefox us permet visualitzar i administrar les descàrregues des de la barra de tasques.">
+<!ENTITY ifNew.label "Si utilitzeu el Download Statusbar per primer cop, continueu llegint per informar-vos sobre com emprar aquesta extensió.">
+<!ENTITY toView.label "Per veure de nou aquesta finestra d&apos;ajuda,">
+<!ENTITY pressAbout.label "haureu d&apos;anar a les opcions del Download Statusbar i prémer el botó &apos;Quant a&apos;.">
+<!ENTITY donateText.label "Per ser honest, he estat molt de temps fent aquesta extensió. Si aconsegueix fer més agradable la vostra experiència amb el Firefox, feu una petita donació.  (No cal tenir compte de Paypal.  S&apos;accepten targetes de crèdit.)">
+<!ENTITY donate.label "Donar">
+<!ENTITY majorRelease.label "Versió major!">
+<!ENTITY changelog.label "Novetats">
+<!ENTITY whatNewTab.label "Novetats de la versió">
+<!ENTITY new1.label "-">
+<!ENTITY new2.label "-">
+<!ENTITY new3.label "-">
+<!ENTITY new4.label "-">
+<!ENTITY new5.label "-">
+<!ENTITY new6.label "-">
+<!ENTITY new7.label "-">
+<!ENTITY new8.label "-">
+<!ENTITY new9.label "-">
+<!ENTITY new10.label "-">
+<!ENTITY new11.label "-">
+<!ENTITY hintsTab.label "Consells i suggeriments">
+<!ENTITY tip1Title.label "Ubicació temporal per la visualització">
+<!ENTITY tip1.label "El Download Statusbar està dissenyat per a ser una ubicació temporal per la visualització de les vostres descàrregues en curs i finalitzades recentment.  Mantingueu-lo net activant l&apos;opció d&apos;autoneteja o eliminant manualment les descàrregues finalitzades que ja no vulgueu veure.  No és massa útil quan les descàrregues estan molt apinyades.  Sempre podeu veure l&apos;historial complet de descàrregues obrint l&apos;administrador de descàrregues estàndard (Eines | Baixades).">
+<!ENTITY tip2Title.label "Dreceres per a les accions més habituals">
+<!ENTITY tip2.label "Podeu obtenir una llista d&apos;accions d&apos;administració de la descàrrega fent-hi clic amb el botó dret, però hi ha maneres més ràpides per fer les accions habituals:">
+<!ENTITY tip2a.label "- Per netejar una descàrrega, feu-hi clic amb el botó central.">
+<!ENTITY tip2b.label "- Per netejar totes les descàrregues finalitzades, feu doble clic en alguna part buida de la barra d&apos;estat.">
+<!ENTITY tip2c.label "- Per obrir un fitxer descarregat, feu-hi doble clic.">
+<!ENTITY tip2d.label "- Per eliminar un fitxer descarregat, mantingueu premuda la tecla de control i feu-hi clic amb el botó central.">
+<!ENTITY tip2e.label "- Per pausar o reprendre una descàrrega en curs, feu-hi clic amb el botó esquerre.">
+<!ENTITY tip2f.label "- Per canviar el nom a un fitxer descarregat, mantingueu premuda la tecla de majúscules i feu-hi clic amb el botó esquerre.">
+<!ENTITY tip3Title.label "Estadístiques">
+<!ENTITY tip3.label "De vegades voldreu informació més detallada sobre una descàrrega.  Per mostrar les estadístiques d&apos;una descàrrega, posicioneu el cursor del ratolí sobre la descàrrega i espereu uns instants perquè aparegui el quadre d&apos;estadístiques.  Les descàrregues en curs mostraran un quadre que s&apos;actualitza automàticament amb informació com la velocitat actual, la mida del fitxer tranferida fins el moment i el temps restant.  Les descàrregues finalitzades mostraran informació com on s&apos;ha desat el fitxer, la seva mida, quant temps va durar la descàrrega i la velocitat mitjana.">
+<!ENTITY tip4Title.label "Animacions">
+<!ENTITY tip4.label "Desactiveu les animacions per fer més ràpides les accions d&apos;administració.  Les animacions poden donar informacií valuosa sobre la descàrrega (Per exemple, una X vermella indica que heu demanat l&apos;eliminació d&apos;un fitxer descarregat), però també poden alentir el programa.  Desactiveu l&apos;opció &apos;Utilitza animacions&apos; a la pestanya Aparença de les opcions del Download Statusbar options per evitar-ho.  També podeu mantenir premuda la tecla de majúscules mentre elimineu una descàrrega per aturar momentàniament les animacions.">
+<!ENTITY tip5Title.label "Aturar les descàrregues">
+<!ENTITY tip5.label "Atureu una descàrrega per reiniciar-la més endavant.  El Firefox no pot reprendre una descàrrega un cop s&apos;ha tancat el programa (tot i que es podrà fer més endavant), però podeu aturar una descàrrega per reiniciar-la des del principi el proper cop que arrenqueu el Firefox.  Atureu una descàrrega fent-hi clic amb el botó dret i seleccionant Atura.  Inicieu una descàrrega aturada fent-hi clic amb el botó dret i seleccionant Inicia - o simplement fent-hi doble clic.">
+<!ENTITY tip6Title.label "Administrar diverses descàrregues alhora">
+<!ENTITY tip6.label "Fent clic amb el botó dret en una part buida de la barra d&apos;estat (o en el botó de mode mini) us permetrà administrar diverses descàrregues alhora.  Podreu eliminar totes les les descàrregues finalitzades i pausar, aturar o cancel·lar totes les que estiguin en curs.  També podeu canviar entre el mode complet i el mode mini.">
+<!ENTITY tip7Title.label "Mode mini">
+<!ENTITY tip7.label "Per veure la llista de descàrregues, feu clic amb el botó dret en el botó de descàrregues del mode miini a la barra d&apos;estat del Firefox.  Quan es mostri la finestra emergent, podeu administrar les descàrregues de la manera habitual - feu clic amb el botó dret per obtenir les veure les opcions, feu clic amb el botó central per netejar, etc.  Feu clic amb el botó dret en el botó del mode mini per veure les opcions per administrar diverses descàrregues alhora.  El botó de descàrregues no és visible si no hi ha res a la llista de descàrregues.">
+<!ENTITY prefsTab.label "Ajuda de les opcions">
+<!ENTITY general.label "Pestanya general">
+<!ENTITY pref1Title.label "Notificacions de progrés">
+<!ENTITY pref1.label "- Podeu obtenir informació detallada de les descàrregues en curs.  Escolliu quines notificacions voleu veure o si no en voleu veure cap.  Dues haurien de caber amb la mida predeterminada, però podeu canviar la mida del text a la pestanya Aparença.">
+<!ENTITY pref2Title.label "Mode">
+<!ENTITY pref2.label "- Escolliu mode complet (barra d&apos;estat separada) o mode mini (integrat en la barra d&apos;estat del Firefox). Proveu-les totes per veure quina us agrada més.">
+<!ENTITY pref3Title.label "Mantingues l&apos;historial">
+<!ENTITY pref3.label "- Per defecte, el Firefox manté totes les vostres descàrregues a l&apos;administrador de descàrregues.  Amb el temps, aquesta llista pot resultar molt llarga i fer que el Firefox vagi més lent.  Utilitzeu aquesta opció per netejar la llista cada cop que el Firefox es tanqui i la llista es mantingui amb una mida apropiada.  Si feu que el Firefox elimini les descàrregues quan es tanca o quan s&apos;acaba una descàrrega, aquesta opció no tindrà efecte.  Nota: Aqueta característica és per al Download Statusbar, però no té efecte sobre la barra d&apos;estat.">
+<!ENTITY pref4Title.label "Neteja les descàrregues automàticament...">
+<!ENTITY pref4.label "- Amb el temps, la llista de descàrregues es pot fer molt gran i alentir el Firefox. Aquesta opció neteja la llista cada cop que tanqueu el Firefox i manté la llista amb una mida òptima. Nota: aquesta característica és del Download Satatusbar, però no afecta directament a la barra d&apos;estat en sí.">
+<!ENTITY pref5Title.label "Continua les descàrregues automàticament...">
+<!ENTITY pref5.label "- Si teniu descàrregues en curs i tanqueu el Firefox, apareixerà una finestra emergent avisant-vos que les descàrregues es cancel·laran.  Emprant aquesta característica, l&apos;administrador de descàrregues romandrà obert i continuarà a descàrrega encara que s&apos;hagi tancat el navegador.">
+<!ENTITY pref6Title.label "Neteja les descàrregues finalitzades quan tanqui el navegador">
+<!ENTITY pref6.label "- Neteja les descàrregues finalitzades des de la barra d&apos;estat, però no les elimina de l&apos;historial de l&apos;administradors de descàrregues.  Això no afecta al fitxer descarregat en sí.">
+<!ENTITY pref7Title.label "Demana confirmació abans d&apos;eliminar...">
+<!ENTITY pref7.label "- Abans de borrar un fitxer apareixerà un missatge de confirmació.  Un cop borrat, no hi ha manera de fer marxa enrere (apart de tornar-lo a descarregar).">
+<!ENTITY pref8Title.label "Neteja les descàrregues finalitzades després d&apos;obrir-les">
+<!ENTITY pref8.label "- No treu la descàrrega de l&apos;historial de l&apos;administrador de descàrregues.">
+<!ENTITY pref9Title.label "Neteja les descàrregues finalitzades després d&apos;obrir-ne la carpeta">
+<!ENTITY pref9.label "- No treu la descàrrega de l&apos;historial de l&apos;administrador de descàrregues.">
+<!ENTITY pref10Title.label "Mostra la notificació de &apos;Descàrrega completada&apos;">
+<!ENTITY pref10.label "- Realment, aquesta és una opció del Firefox, però resulta complicat accedir-hi.  Es recomana desactivar-la perquè realment no és necessaria quan s&apos;utilitza el Download Statusbar">
+<!ENTITY pref11Title.label "Ignora aquests tipus de fitxer">
+<!ENTITY pref11.label "- Quan descarregueu fitxers d&apos;aquests tipus, no es mostraran en el Download Statusbar , però sí a l&apos;historial de descàrregues del Firefox.  Cada tipus de fitxer s&apos;ha de separar per una coma.  Els espais s&apos;ignoren.  Per exemple: &apos;jpg, jpeg, png, gif&apos;  (sense les cometes)">
+<!ENTITY pref12Title.label "Neteja automàticament els fitxers...">
+<!ENTITY pref12.label "- Quan finalitza una descàrrega, aquesta característica els elimina del Download Statusbar al cap dels segons que se li hagi indicat.  Això és útil si voleu veure que la descàrrega ha estat correcta, sense haver d&apos;eliminar-ho manualment.  Cada tipus de fitxer s&apos;ha de separar per una coma.  Els espais s&apos;ignoren.  Per exemple: &apos;jpg, jpeg, png, gif&apos;  (sense les cometes).  Si voleu que es netegin automàticament tots els fitxers, escriviu només *">
+<!ENTITY pref13Title.label "Reprodueix un so quan es completi una descàrrega">
+<!ENTITY pref13.label "- Seleccioneu un so predeterminat o un fitxer .WAV per reproduir quan s&apos;acabi una descàrrega. Si voleu que no es reprodueixi per certs tipus de fitxer, entreu-ho en el quadre de text. Exemple: &apos;jpg, jpeg, png, gif&apos; (sense cometes)">
+<!ENTITY appearance.label "Pestanya Aparença">
+<!ENTITY pref14Title.label "Estil predeterminat o personalitzat
+Mida dels textos">
+<!ENTITY pref14.label "- Si escolliu l&apos;estil personalitzat, s&apos;activaran tots els quadres de mides i colors personalitzats.  Si escolliu l&apos;estil predeterminat podreu tornar ràpidament a l&apos;estil original, però les opcions de l&apos;estil personalitzats no es veuran afectades.">
+<!ENTITY pref15Title.label "Colors">
+<!ENTITY pref15.label "- Feu clic en un quadre de color per obrir una finestra per escollir el color personalitzat per a aquell element.  Feu clic i arrossegueu per la paleta per trobar el color que us agradi o seleccioneu un dels colors predefinits.  Si voleu duplicar un color, copieu el seu valor Hex i entreu-lo manualment en el següent quadre de color.  També podeu prémer el botó &apos;Predterminat&apos; per veure el color predeterminat del tema.  Això només és útil per al color del text i per al de fons.">
+<!ENTITY pref16Title.label "Utilitza gradients">
+<!ENTITY pref16.label "- Si el seleccioneu, s&apos;establirà un gradient sobre el color de fons que donarà una sensació de 3D als elements de descàrrega.  Funciona tant en l&apos;estil predeterminat com en el personalitzat.">
+<!ENTITY pref17Title.label "Utilitza animacions">
+<!ENTITY pref17.label "- Diverses accions de l&apos;administració de descàrregues tenen la seva animació corresponent.  Aquestes són generalment curtes i lleugeres, però es poden desactivar.">
+<!ENTITY pref18Title.label "Mostra aquests botons:">
+<!ENTITY pref18.label "Escolliu si voleu mostrar els botons de descàrregues, de neteja i el de canviar a mode mini">
+<!ENTITY pref19Title.label "Colors de velocitat">
+<!ENTITY pref19.label "- Aquesta opció canvia dinàmicament el color de les descàrregues en curs segons la seva velocitat de descàrrega.  D&apos;aquesta manera podeu veure la seva velocitat pel seu color.  Primer, heu d&apos;habilitar els colors de velocitat.  Després, establiu intervals de velocitat raonables canviant els nombres segons la vostra connexió d&apos;internet.  Les velocitats predeterminades estan basades en una connexió cable modem)  Per últim, feu clic en els quadres de color per establir-ne un per a cada interval.  Hi ha diverses maneres d&apos;emprar-lo.  Una idea és fer que les majors velocitats apareguin més lluminoses que les menors.  Una altra és tenir el mateix color per a les tres velocitats majors, però fer que la menor velocitat tingui un color d&apos;avís tal que, per exemple, pugueu veure ràpidament que una descàrrega baixa per sota dels 10 KB/seg quan la barra de progrés canvia a vermell.">
+<!ENTITY virusScan.label "Pestanya Antivirus">
+<!ENTITY pref20Title.label "Escaneja manualment les descàrregues completades">
+<!ENTITY pref20.label "- Feu clic al quadre per habilitar aquesta característica. Heu d&apos;acceptar l&apos;acceptació de la funció antivirus perquè funcioni.">
+<!ENTITY pref21Title.label "No escanegis aquests fitxers">
+<!ENTITY pref21.label "- Heu de serparar cada tipus de fitxer amb una coma, sense importar els espais. Exemple: &apos;jpg, jpeg, png, gif&apos; (sense cometes)">
+<!ENTITY pref22Title.label "Ubicació de l&apos;antivirus">
+<!ENTITY pref22.label "- Heu de tenir prèviament un programa antivirus instal·lat que accepti comandes de text per escanejar manualment.  Premeu el botó &apos;...&apos; i localitzeu el programa en el vostre ordinador.">
+<!ENTITY pref23Title.label "Arguments">
+<!ENTITY pref23.label "- Entreu els arguments obligatoris o opcionals del vostre antivirus. &#37;1 representa el fitxer que s&apos;escanejarà i hauria d&apos;aparèixer en alguna part dels arguments. Molts antivirus funcionaran si poseu &#37;1 com a únic argument. Reviseu la documentació del vostre antivirus per esbrinar quins arguments necessita.">
+<!ENTITY listMarker.label "&#183;">
+<!ENTITY OK.label "Tanca">
+<!ENTITY openPref.label "Obre les opcions de l&apos;extensió">
+<!ENTITY support.label "Doneu suport a aquesta extensió -">
+<!ENTITY donate2.label "Doneu!">
+<!ENTITY credits.label "Crèdits">
+<!ENTITY transFor.label "Traduccó del text per">
+<!ENTITY currLocale.label "ca-AD">
+<!ENTITY locale.label "locale proporcionat per:">
+<!ENTITY translatorName.label "Oriol González">
+<!ENTITY projectHost.label "Hosting de la web del projecte:">
+<!ENTITY mozdev.label "Mozdev.org">
+<!ENTITY progAndArtwork.label "Programació i disseny:">
+<!ENTITY soundsBy.label "So:">
+<!ENTITY soundPeople.label "Dallin Jensen i Devon Jensen">

@@ -1,0 +1,30 @@
+content locationbar2 chrome/content/
+skin	locationbar2	classic/1.0	chrome/skin/
+
+locale locationbar2 en-US chrome/locale/en-US/
+locale locationbar2 de-DE chrome/locale/de-DE/
+locale locationbar2 fr-FR chrome/locale/fr-FR/
+locale locationbar2 it-IT chrome/locale/it-IT/
+locale locationbar2 ru-RU chrome/locale/ru-RU/
+locale locationbar2 cs-CZ chrome/locale/cs-CZ/
+locale locationbar2 sk-SK chrome/locale/sk-SK/
+locale locationbar2 ja-JP chrome/locale/ja-JP/
+locale locationbar2 nl-NL chrome/locale/nl-NL/
+locale locationbar2 zh-TW chrome/locale/zh-TW/
+locale locationbar2 fi-FI chrome/locale/fi-FI/
+locale locationbar2 ko-KR chrome/locale/ko-KR/
+locale locationbar2 es-ES chrome/locale/es-ES/
+
+overlay	chrome://browser/content/browser.xul	chrome://locationbar2/content/urlTooltip.xul
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/urlbar.css
+
+overlay	chrome://browser/content/browser.xul	chrome://locationbar2/content/alternate-styles.xul
+
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/domain-color.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/domain-strong.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/subdomain-inherit.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/favicon-remove.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/segments-margin.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/breadcrumb-domain.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/breadcrumb-all.css
+style	chrome://browser/content/browser.xul	chrome://locationbar2/skin/alternate/fission.css

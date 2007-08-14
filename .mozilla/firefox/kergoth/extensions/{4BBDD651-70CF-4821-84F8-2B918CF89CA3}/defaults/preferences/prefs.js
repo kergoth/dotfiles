@@ -1,0 +1,1 @@
+pref("extensions.{4BBDD651-70CF-4821-84F8-2B918CF89CA3}.description", "chrome://febe/locale/febe.properties");

@@ -1,0 +1,9 @@
+#include "nsISupports.idl"
+
+interface nsIArray;
+
+[scriptable, uuid(3f4c27dd-5c6a-4010-9e11-29fab4fa1339)]
+interface nsISocialStoreCallback : nsISupports {
+    void onload(in nsIArray /* nsIWritablePropertyBag */ event);
+    void onerror(in nsISupports event);
+};

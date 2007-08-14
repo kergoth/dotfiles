@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>{4BBDD651-70CF-4821-84F8-2B918CF89CA3}</em:id>
+		<em:name>Firefox Extension Backup Extension (FEBE)</em:name>
+		<em:version>4.0.5.0.0.0</em:version>
+		<em:description>Create backup of installed extensions, themes and more</em:description>
+		<em:creator>Chuck Baker</em:creator>
+		<em:contributor>Translations: www.babelzilla.org</em:contributor>
+		<em:optionsURL>chrome://febe/content/febeOptions.xul</em:optionsURL>
+		<em:iconURL>chrome://febe/skin/febe32x32.png</em:iconURL>
+		<em:aboutURL>chrome://febe/content/febeAbout.xul</em:aboutURL>
+		<em:homepageURL>http://customsoftwareconsult.com/extensions</em:homepageURL>
+		<em:file>
+			<Description about="urn:mozilla:extension:file:febe.jar">
+				<em:package>content/</em:package>
+				<em:skin>skin/</em:skin>
+				<em:locale>locale/en-US/</em:locale>
+				<em:locale>locale/el-GR/</em:locale>
+				<em:locale>locale/es-ES/</em:locale>
+				<em:locale>locale/fa-IR/</em:locale>
+				<em:locale>locale/fr-FR/</em:locale>
+				<em:locale>locale/hr-HR/</em:locale>
+				<em:locale>locale/it-IT/</em:locale>
+				<em:locale>locale/ja-JP/</em:locale>
+				<em:locale>locale/nl-NL/</em:locale>
+				<em:locale>locale/pl-PL/</em:locale>
+				<em:locale>locale/pt-BR/</em:locale>
+				<em:locale>locale/ru-RU/</em:locale>
+				<em:locale>locale/sk-SK/</em:locale>
+				<em:locale>locale/sv-SE/</em:locale>
+				<em:locale>locale/zh-TW/</em:locale>
+			</Description>
+		</em:file>
+
+		<!-- Firefox -->
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>2.0.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	</Description>
+</RDF>

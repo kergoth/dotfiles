@@ -1,0 +1,10 @@
+<!ENTITY customized "사용자 지정">
+<!ENTITY info "다음의 스타일들이 업데이트 가능합니다:">
+<!ENTITY neverupdateselected "선택된 항목을 업데이트 하지 않음">
+<!ENTITY neverupdateselected.ak "N">
+<!ENTITY title "스타일 업데이트">
+<!ENTITY updateall "모두 업데이트">
+<!ENTITY updateall.ak "A">
+<!ENTITY updateselected "선택된 항목을 업데이트">
+<!ENTITY updateselected.ak "S">
+<!ENTITY uri "URI">

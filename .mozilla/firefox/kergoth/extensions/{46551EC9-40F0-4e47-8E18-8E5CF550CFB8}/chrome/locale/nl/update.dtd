@@ -1,0 +1,10 @@
+<!ENTITY customized "Speciaal">
+<!ENTITY info "De volgende stijlen hebben een update beschikbaar">
+<!ENTITY neverupdateselected "Geselecteerde nooit updaten">
+<!ENTITY neverupdateselected.ak "N">
+<!ENTITY title "Update stijlen">
+<!ENTITY updateall "Update alle stijlen">
+<!ENTITY updateall.ak "U">
+<!ENTITY updateselected "Update geselecteerde stijlen">
+<!ENTITY updateselected.ak "G">
+<!ENTITY uri "URI">
