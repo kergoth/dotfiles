@@ -1,0 +1,23 @@
+overlay	chrome://browser/content/browser.xul	chrome://autosizer/content/autosizeroverlay.xul
+overlay	chrome://mozapps/content/extensions/extensions.xul	chrome://autosizer/content/helper.xul
+content	autosizer	jar:chrome/autosizer.jar!/content/autosizer/
+
+skin	autosizer	classic/1.0	jar:chrome/autosizer.jar!/skin/classic/autosizer/
+style	chrome://browser/content/browser.xul	chrome://autosizer/skin/autosizer.css
+
+locale	autosizer	cs-CZ	jar:chrome/autosizer.jar!/locale/cs-CZ/
+locale	autosizer	de-DE	jar:chrome/autosizer.jar!/locale/de-DE/
+locale	autosizer	el-GR	jar:chrome/autosizer.jar!/locale/el-GR/
+locale	autosizer	en-US	jar:chrome/autosizer.jar!/locale/en-US/
+locale	autosizer	es-ES	jar:chrome/autosizer.jar!/locale/es-ES/
+locale	autosizer	fr-FR	jar:chrome/autosizer.jar!/locale/fr-FR/
+locale	autosizer	it-IT	jar:chrome/autosizer.jar!/locale/it-IT/
+locale	autosizer	ja-JP	jar:chrome/autosizer.jar!/locale/ja-JP/
+locale	autosizer	ko-KR	jar:chrome/autosizer.jar!/locale/ko-KR/
+locale	autosizer	nl-NL	jar:chrome/autosizer.jar!/locale/nl-NL/
+locale	autosizer	pl-PL	jar:chrome/autosizer.jar!/locale/pl-PL/
+locale	autosizer	pt-BR	jar:chrome/autosizer.jar!/locale/pt-BR/
+locale	autosizer	ru-RU	jar:chrome/autosizer.jar!/locale/ru-RU/
+locale	autosizer	sk-SK	jar:chrome/autosizer.jar!/locale/sk-SK/
+locale	autosizer	zh-CN	jar:chrome/autosizer.jar!/locale/zh-CN/
+locale	autosizer	zh-TW	jar:chrome/autosizer.jar!/locale/zh-TW/

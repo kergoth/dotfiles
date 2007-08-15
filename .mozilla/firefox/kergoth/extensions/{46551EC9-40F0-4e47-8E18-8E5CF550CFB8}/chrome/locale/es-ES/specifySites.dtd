@@ -1,0 +1,11 @@
+<!ENTITY addsiterule "Añadir">
+<!ENTITY addsiterule.ak "Añadir">
+<!ENTITY domaintype "en el dominio">
+<!ENTITY domaintype.ak "e">
+<!ENTITY site "Sitio">
+<!ENTITY title "Sitios específicos">
+<!ENTITY type "Tipo">
+<!ENTITY urltype "Exactamente">
+<!ENTITY urltype.ak "E">
+<!ENTITY urlprefixtype "Comienza con">
+<!ENTITY urlprefixtype.ak "C">

@@ -1,0 +1,30 @@
+<!ENTITY options_window_title				"Locationbar² オプション">
+<!ENTITY hideProtocols.label				"非表示プロトコル:">
+<!ENTITY hideProtocols.accesskey			"H">
+<!ENTITY clickSelectsAll.label				"クリックですべて選択する">
+<!ENTITY clickSelectsAll.accesskey			"k">
+<!ENTITY animateBlend.label				"URL 表示のブレンド効果">
+<!ENTITY animateBlend.accesskey				"B">
+<!ENTITY alternate.favicon-show.label			"Favicon を表示する">
+<!ENTITY alternate.favicon-show.accesskey		"a">
+<!ENTITY alternate.segments-margin.label		"階層ごとに余白をつける">
+<!ENTITY alternate.segments-margin.accesskey		"n">
+<!ENTITY linkification_prefs				"リンク化">
+<!ENTITY linkification.description			"Ctrl/Meta/Shift キーを押したままにするか、Favicon の上からポインタを移動させると、階層がリンクになります。">
+<!ENTITY linkifyOnMouse.description			"次の方向からポインタをロケーションバー上へ移動させたときにリンク化:">
+<!ENTITY linkifyOnMouse.top				"上端">
+<!ENTITY linkifyOnMouse.top.accesskey			"t">
+<!ENTITY linkifyOnMouse.bottom				"下端">
+<!ENTITY linkifyOnMouse.bottom.accesskey		"m">
+<!ENTITY alternate.subdomain-gray.label			"可能ならサブドメインをグレーにする">
+<!ENTITY alternate.subdomain-gray.accesskey		"y">
+<!ENTITY domain_prefs					"ドメイン">
+<!ENTITY alternate.domain-strong.label			"強調">
+<!ENTITY alternate.domain-strong.accesskey		"s">
+<!ENTITY breadcrumb_prefs				"矢印アイコン">
+<!ENTITY alternate.breadcrumb-domain.label		"ホスト">
+<!ENTITY alternate.breadcrumb-domain.accesskey		"h">
+<!ENTITY alternate.breadcrumb-all.label			"階層">
+<!ENTITY alternate.breadcrumb-all.accesskey		"e">
+<!ENTITY alternate.fission.label			"Fission との互換性を解決する">
+<!ENTITY alternate.fission.accesskey			"F">

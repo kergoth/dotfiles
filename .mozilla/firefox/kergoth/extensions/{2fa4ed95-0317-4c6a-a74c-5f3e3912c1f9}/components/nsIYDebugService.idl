@@ -1,0 +1,30 @@
+/*
+ * Use this interface as a service.
+ */
+#include "nsISupports.idl"
+
+[scriptable, uuid(195e24d0-6097-11db-b0de-0800200c9a66)]
+
+interface nsIYDebugService: nsISupports
+{
+    /** 
+     * Returns true if the debug mode is set to true
+     */
+    boolean on();
+    
+    /**
+     * Used to print a "debug" level message. This will get printed to file
+     * only if the debug mode preference ("extensions.ybookmarks@yahoo.debug")
+     * is set to true. It's also printed to console if the log preference
+     * ("extensions.ybookmarks@yahoo.log" is set to true.
+     */
+    void printDebug( in wstring message );
+    
+    /**
+     * Used to print more important "log" level informaion. These messages
+     * are always logged to file and console output is determined by the log
+     * preference.
+     */
+    void printLog( in wstring message );
+
+};

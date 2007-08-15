@@ -1,0 +1,15 @@
+content	ybookmarks	jar:chrome/deliciousBookmarks.jar!/content/
+content	ybookmarkstests	jar:chrome/deliciousBookmarks.jar!/tests/
+locale	ybookmarks	en-US	jar:chrome/deliciousBookmarks.jar!/locale/en-US/
+skin	ybookmarks	classic/1.0	jar:chrome/deliciousBookmarks.jar!/skin/
+
+overlay	chrome://browser/content/browser.xul	chrome://ybookmarks/content/ybookmarksOverlay.xul
+overlay	chrome://browser/content/preferences/preferences.xul chrome://ybookmarks/content/optionsOverlay.xul
+overlay	chrome://browser/content/browser.xul	chrome://ybookmarks/content/ybSidebarOverlay.xul
+overlay	chrome://browser/content/bookmarks/addBookmark2.xul	chrome://ybookmarks/content/ybAddBookmark2.xul
+overlay	chrome://browser/content/bookmarks/bookmarksManager.xul	chrome://ybookmarks/content/ybBookmarksManager.xul
+
+style	chrome://global/content/customizeToolbar.xul	chrome://ybookmarks/skin/overlay.css
+
+#below needed for Mac
+overlay chrome://browser/content/macBrowserOverlay.xul chrome://ybookmarks/content/ybookmarksOverlay.xul

@@ -1,0 +1,35 @@
+﻿<!ENTITY options_window_title				"Locationbar² Preferences">
+<!ENTITY hideProtocols.label				"Hide protocols:">
+<!ENTITY hideProtocols.accesskey			"H">
+<!ENTITY clickSelectsAll.label				"Click selects all">
+<!ENTITY clickSelectsAll.accesskey			"k">
+<!ENTITY animateBlend.label				"Blend URLs">
+<!ENTITY animateBlend.accesskey				"B">
+<!ENTITY alternate.favicon-show.label			"Show the Favicon">
+<!ENTITY alternate.favicon-show.accesskey		"a">
+<!ENTITY alternate.segments-margin.label		"Margin between segments">
+<!ENTITY alternate.segments-margin.accesskey		"n">
+
+<!ENTITY linkification_prefs				"Linkification">
+<!ENTITY linkification.description			"Pressing Ctrl/Meta/Shift or moving the mouse over the favicon allows to click the linkified segments.">
+<!ENTITY linkifyOnMouse.description			"Also enable linkification when moving the mouse over the Location bar's edge:">
+<!ENTITY linkifyOnMouse.top				"on top">
+<!ENTITY linkifyOnMouse.top.accesskey			"t">
+<!ENTITY linkifyOnMouse.bottom				"on bottom">
+<!ENTITY linkifyOnMouse.bottom.accesskey		"m">
+
+<!ENTITY alternate.subdomain-gray.label			"Gray Subdomains">
+<!ENTITY alternate.subdomain-gray.accesskey		"y">
+
+<!ENTITY domain_prefs					"Domain">
+<!ENTITY alternate.domain-strong.label			"strong">
+<!ENTITY alternate.domain-strong.accesskey		"s">
+
+<!ENTITY breadcrumb_prefs				"Breadcrumb for…">
+<!ENTITY alternate.breadcrumb-domain.label		"the host">
+<!ENTITY alternate.breadcrumb-domain.accesskey		"h">
+<!ENTITY alternate.breadcrumb-all.label			"each segment">
+<!ENTITY alternate.breadcrumb-all.accesskey		"e">
+
+<!ENTITY alternate.fission.label			"Fission compatibility">
+<!ENTITY alternate.fission.accesskey			"F">

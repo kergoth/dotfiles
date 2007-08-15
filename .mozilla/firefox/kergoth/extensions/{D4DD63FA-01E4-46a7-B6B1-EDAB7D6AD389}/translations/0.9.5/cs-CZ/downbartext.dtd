@@ -1,0 +1,138 @@
+<!ENTITY stopAll.label "Zastavit vše">
+<!ENTITY resumeAll.label "Spustit vše">
+<!ENTITY pauseAll.label "Pozastavit vše">
+<!ENTITY cancelAll.label "Zrušit všechny nedokončené">
+<!ENTITY removeAll.label "Odstranit všechny dokončené">
+<!ENTITY copySource.label "Kopírovat URL zdroje">
+<!ENTITY stopOne.label "Zastavit">
+<!ENTITY pauseOne.label "Pozastavit">
+<!ENTITY cancelOne.label "Zrušit">
+<!ENTITY resumeOne.label "Spusit">
+<!ENTITY properties.label "Vlastnosti">
+<!ENTITY delete.label "Odstranit z disku">
+<!ENTITY remove.label "Odstranit z lišty">
+<!ENTITY show.label "Zobrazit">
+<!ENTITY open.label "Otevřít">
+<!ENTITY start.label "Start">
+<!ENTITY rename.label "Přejmenovat">
+<!ENTITY fromTip.label "Odkud:">
+<!ENTITY toTip.label "Kam:">
+<!ENTITY statusTip.label "Stav:">
+<!ENTITY timeTip.label "Zbývající čas:">
+<!ENTITY percentTip.label "Hotovo procent:">
+<!ENTITY sizeTip.label "Velikost souboru:">
+<!ENTITY timeCompleteTip.label "Celkový čas:">
+<!ENTITY avgSpeedTip.label "Průměrná rychlost:">
+<!ENTITY numFinishedTip.label "Dokončená stahování:">
+<!ENTITY sizeFinishedTip.label "Celková velikost dokončených stahování:">
+<!ENTITY numCurrentTip.label "Aktuálně stahované soubory:">
+<!ENTITY totalSpeedTip.label "Celková rychlost:">
+<!ENTITY totalTimeTip.label "Celkový zbývající čas:">
+<!ENTITY toMiniTip.label "Switch to Mini Mode">
+<!ENTITY downloadsCap.label "Downloads">
+<!ENTITY clear.label "Clear">
+<!ENTITY mini.label "Mini">
+<!ENTITY pTitle.label "Nastavení pro Download Statusbar">
+<!ENTITY pGeneral.label "Základní">
+<!ENTITY pStatusMode.label "Způsob zobrazení">
+<!ENTITY pFullMode.label "Rozšířený mód">
+<!ENTITY pMiniMode.label "Jednoduchý mód">
+<!ENTITY pFeatures.label "Doplňky">
+<!ENTITY pLaunchClose.label "Automaticky pokračovat se stahováním ve Správci stahování i po zavření okna prohlížeče.">
+<!ENTITY pClearFin.label "Odstranit z lišty dokončená stahování při zavření prohlížeče">
+<!ENTITY pConfirm.label "Dotázat se před odstraněním souboru z disku">
+<!ENTITY pRmvOpen.label "Odstranit z lišty soubor po jeho otevření">
+<!ENTITY pRmvShow.label "Odstranit z lišty soubor po jeho zobrazení">
+<!ENTITY pSupAlert.label "Zobrazovat dialog &apos;Stažení dokončeno&apos; (doporučujeme vypnout)">
+<!ENTITY pAutoClear.label "Automaticky odstraňovat z lišty tyto typy souborů">
+<!ENTITY pAfter.label "po">
+<!ENTITY pSeconds.label "sekundách">
+<!ENTITY pIgnore.label "Ignorovat tyto typy souborů">
+<!ENTITY pFiletypesHelp.label "(Vložením * všechny typy souborů, prázdné pole žádný)">
+<!ENTITY pHistory.label "Historie stahování">
+<!ENTITY pCloseHist.label "(po uzavření prohlížeče)">
+<!ENTITY pKeepHist.label "Uchovávat historii">
+<!ENTITY pTrimHist.label "pouze posledních">
+<!ENTITY pDlItems.label "stažených souborů">
+<!ENTITY pPlaySound.label "Play sound when download completes">
+<!ENTITY pCheckmarkSound.label "Checkmark!">
+<!ENTITY pCustomSound.label "[Custom .WAV file...]">
+<!ENTITY pSoundExceptFiletypes.label "Except for filetypes:">
+<!ENTITY pQueue.label "Stahovat ve frontě">
+<!ENTITY pQueEna.label "Aktivovat stahování ve frontě">
+<!ENTITY pQueDownload.label "Stahovat pouze">
+<!ENTITY pQueFiles.label "souborů v jednom okamžiku">
+<!ENTITY pAppearance.label "Zobrazení">
+<!ENTITY pDefaultStyle.label "Výchozí styl">
+<!ENTITY pCustomStyle.label "Vlastní styl">
+<!ENTITY pResetCustom.label "Obnovit výchozí">
+<!ENTITY pProgNotify.label "Texty v položkách">
+<!ENTITY pDispPer.label "Zobrazení v procentech">
+<!ENTITY pDispSpeed.label "Rychlost stahování">
+<!ENTITY pDispSize.label "Celkem staženo (KB)">
+<!ENTITY pDispTime.label "Zbývající čas">
+<!ENTITY pTextSize.label "Velikosti textu">
+<!ENTITY pFileText.label "Název souboru:">
+<!ENTITY pProgNotiText.label "Text v položce:">
+<!ENTITY pDLItemSize.label "Velikost položky">
+<!ENTITY pWidth.label "Šířka:">
+<!ENTITY pHeight.label "Výška:">
+<!ENTITY pColors.label "Barvy">
+<!ENTITY pLeaveBlank.label "(ponechat prázdné pro výchozí)">
+<!ENTITY pProgBar.label "Položka">
+<!ENTITY pProgRemain.label "Info okno">
+<!ENTITY pFinishedBox.label "Ukončená stahování">
+<!ENTITY pStoppedBox.label "Zrušená stahování">
+<!ENTITY pPausedOutline.label "Pozastavená stahování (okraj)">
+<!ENTITY pTextColor.label "Text">
+<!ENTITY pStatusBack.label "Pozadí Download Statusbaru">
+<!ENTITY pUseGradients.label "Použít gradování barev">
+<!ENTITY pUseAnimation.label "Použít animaci">
+<!ENTITY pShowButtons.label "Show these buttons:">
+<!ENTITY pDownloadsButton.label "Main Downloads Button">
+<!ENTITY pClearButton.label "Clear Finished Button">
+<!ENTITY pToMiniButton.label "Mini Mode Button">
+<!ENTITY pSpeedColors.label "Barvy dle rychlosti">
+<!ENTITY pEnableSC.label "Používat barvy dle rychlosti">
+<!ENTITY pBetween.label "Mezi">
+<!ENTITY pAnd.label "a">
+<!ENTITY pkbSec.label "KB/s">
+<!ENTITY pMoreThan.label "Více než">
+<!ENTITY pVScan.label "Antivirová kontrola">
+<!ENTITY pShouldScan.label "Předat stažené soubory k antivirové kontrole">
+<!ENTITY pExclude.label "Nekontrolovat tyto přípony">
+<!ENTITY pAVLoc.label "Cesta k antiviru">
+<!ENTITY pArgs.label "Parametry">
+<!ENTITY pAVdesc.label "(Použij &#37;1 pro soubor)">
+<!ENTITY pAbout.label "O ...">
+<!ENTITY pOK.label "OK">
+<!ENTITY pApply.label "Použit">
+<!ENTITY pCancel.label "Zrušit">
+<!ENTITY previewColour.label "Náhled:">
+<!ENTITY cpWinTitle.title "Kapátko">
+<!ENTITY predef.label "Předdefinované barvy:">
+<!ENTITY rgb.label "RGB">
+<!ENTITY hsb.label "HSB">
+<!ENTITY red.label "Červená:">
+<!ENTITY green.label "Zelená:">
+<!ENTITY blue.label "Modrá:">
+<!ENTITY hue.label "Odstín:">
+<!ENTITY saturation.label "Nasycení:">
+<!ENTITY brightness.label "Světlost:">
+<!ENTITY hexColor.label "Hex:">
+<!ENTITY nameColor.label "Název:">
+<!ENTITY cpUseThemeDef.label "Použít výchozí barvu aktuálního tématu">
+<!ENTITY openOpt.label "Options...">
+<!ENTITY hideDownbar.label "Hide Downbar">
+<!ENTITY allDownloads.label "Download Actions">
+<!ENTITY openDLHist.label "Download History">
+<!ENTITY stoppedDL.label "Stopped Download:">
+<!ENTITY transparency.label "Transparentní">
+<!ENTITY background.label "Pozadí pro:">
+<!ENTITY background.accessKey "P">
+<!ENTITY table.label "Tabulku">
+<!ENTITY table.accessKey "T">
+<!ENTITY cell.label "Buňku(ky)">
+<!ENTITY cell.accessKey "B">
+<!ENTITY lastPickedColor.label "Naposledy vybraná barva">
+<!ENTITY lastPickedColor.accessKey "N">

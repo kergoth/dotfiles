@@ -1,0 +1,10 @@
+<!ENTITY customized "Customised">
+<!ENTITY info "The following styles have updates available:">
+<!ENTITY neverupdateselected "Never Update Selected">
+<!ENTITY neverupdateselected.ak "N">
+<!ENTITY title "Update Styles">
+<!ENTITY updateall "Update All">
+<!ENTITY updateall.ak "A">
+<!ENTITY updateselected "Update Selected">
+<!ENTITY updateselected.ak "S">
+<!ENTITY uri "URI">

@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://stylish/skin/edit.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+	<!ENTITY % common SYSTEM "chrome://stylish/locale/common.dtd">
+	<!ENTITY % branding SYSTEM "chrome://stylish/content/branding.dtd">
+	<!ENTITY % edit SYSTEM "chrome://stylish/locale/edit.dtd">
+	%common;
+	%branding;
+	%edit;
+]>
+
+<dialog
+	id="stylish"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	buttons="accept,cancel,extra1"
+	persist="screenX screenY width height sizemode"
+	onload="init()"
+	onunload="dialogClosing()"
+	ondialogaccept="return ok()"
+	ondialogcancel="return cancelDialog()"
+	ondialogextra1="doPreview();"
+	ondialogextra2="document.getElementById('deck').selectedIndex = 0"
+	buttonlabelaccept="&save;"
+	buttonaccesskeyaccept="&save.ak;"
+	buttonlabelextra1="&preview;"
+	buttonaccesskeyextra1="&preview.ak;">
+	
+	<script type="application/javascript" src="rdfds.js"/>
+	<script type="application/javascript" src="StylishStyle.js"/>
+	<script type="application/javascript" src="common.js"/>
+	<script type="application/javascript" src="editor.js"/>
+	<script type="application/javascript" src="edit.js"/>
+<!--	<script type="application/javascript" src="chrome://itsalltext/content/API.js"/>-->
+
+	<stringbundle id="strings" src="chrome://stylish/locale/stylish.properties"/>
+	<stringbundle id="urls" src="chrome://stylish/content/urls.properties"/>
+
+	<keyset>
+		<key id="save-key" modifiers="control" key="S" oncommand="apply()"/>
+	</keyset>
+
+	<deck id="deck" flex="1">
+
+		<vbox flex="1">
+			<hbox align="center">
+				<label control="description" accesskey="&description.ak;">&stylish.description;</label>
+				<textbox id="description" flex="1"/>
+				<button onclick="refreshBasicDisplay();document.getElementById('deck').selectedIndex = 1; saveViewPreference();" id="basic-view" label="&basicview;" accesskey="&basicview.ak;"/>
+			</hbox>
+			<hbox>
+				<checkbox id="enabled" checked="true" label="&stylish.enabled;" accesskey="&enabled.ak;"/>
+				<checkbox id="allow-updates" checked="true" label="&allowupdates;" accesskey="&allowupdates.ak;"/>
+				<spacer flex="1"/>
+				<label id="userstyles-link" class="text-link" href="http://userstyles.org">&addhint;</label>
+				<label id="style-url-link" class="text-link">&visitstyle;</label>
+				<label id="post-to-userstyles" onclick="return postStyle()" class="text-link">&poststyle;</label>
+			</hbox>
+			<hbox id="code-buttons">
+				<button label="&insert;" accesskey="&insert.ak;" type="menu">
+					<menupopup>
+						<menuitem label="&siterules;" accesskey="&siterules.ak;" tooltiptext="&siterules.tt;" oncommand="openSitesDialog()"/>
+						<menuitem label="&xulnamespace;" accesskey="&xulnamespace.ak;" tooltiptext="&xulnamespace.tt;" oncommand="insertCodeAtStart(CSSXULNS);"/>
+						<menuitem label="&htmlnamespace;" accesskey="&htmlnamespace.ak;" tooltiptext="&htmlnamespace.tt;" oncommand="insertCodeAtStart(CSSHTMLNS);"/>
+						<menuitem label="&chromefolder;" accesskey="&chromefolder.ak;" tooltiptext="&chromefolder.tt;" oncommand="insertChromePath()"/>
+						<menuitem label="&dataURI;" accesskey="&dataURI.ak;" tooltiptext="&dataURI.tt;" oncommand="insertDataURI()"/>
+						<menu id="pick-color" label="&pickcolor;" accesskey="&pickcolor.ak;">
+							<menupopup>
+								<colorpicker id="normal-colorpicker" onclick="chooseColor(event)"/>
+							</menupopup>
+						</menu>
+						<menuitem id="pick-color-rainbowpicker" label="&pickcolorrainbowpicker;" accesskey="&pickcolorrainbowpicker.ak;" oncommand="document.getElementById('rainbowpicker-detect').showPopup()"/>
+					</menupopup>
+				</button>
+				<button label="&important;" accesskey="&important.ak;" tooltiptext="&important.tt;" oncommand="makeImportant()"/>
+				<button label="&itsalltext;" accesskey="&itsalltext.ak;" itsalltext-control="code" itsalltext-extension=".css" style="display: none;"/>
+				<checkbox id="wrap-lines" label="&wraplines;" accesskey="&wraplines.ak;" oncommand="changeWordWrap(this.checked)"/>
+				<colorpicker id="rainbowpicker-detect" type="button" onchange="insertRainbowPickerColor(event)"/>
+			</hbox>
+			<vbox flex="1">
+				<textbox id="code" multiline="true" flex="1" style="display: none"/>
+			</vbox>
+		</vbox>
+
+		<vbox flex="1">
+			<hbox>
+				<label id="simple-description" flex="1"/>
+				<button onclick="document.getElementById('deck').selectedIndex = 0; saveViewPreference()" id="advanced-view" label="&advancedview;" accesskey="&advancedview.ak;" flex="0"/>
+			</hbox>
+			<html:ul id="applies-to"/>
+			<description>
+				&basicoutro;
+			</description>
+		</vbox>
+
+	</deck>
+</dialog>

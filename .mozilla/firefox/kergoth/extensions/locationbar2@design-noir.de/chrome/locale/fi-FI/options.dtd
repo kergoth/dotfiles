@@ -1,0 +1,30 @@
+<!ENTITY options_window_title "Osoitepalkki² Asetukset">
+<!ENTITY hideProtocols.label "Piilota yhteiskäytännöt:">
+<!ENTITY hideProtocols.accesskey "P">
+<!ENTITY clickSelectsAll.label "Napsautus valitsee kaikki">
+<!ENTITY clickSelectsAll.accesskey "N">
+<!ENTITY animateBlend.label "Muotoile osoitteet">
+<!ENTITY animateBlend.accesskey "M">
+<!ENTITY alternate.favicon-show.label "Näytä sivun tunnuskuvake">
+<!ENTITY alternate.favicon-show.accesskey "t">
+<!ENTITY alternate.segments-margin.label "Väli osioitten välissä">
+<!ENTITY alternate.segments-margin.accesskey "V">
+<!ENTITY linkification_prefs "Linkitys">
+<!ENTITY linkification.description "Ctrl/Meta/Vaihto näppäimen painaminen tai hiiren siirtäminen tunnuskuvakkeen päälle sallii linkittyneiden osioiden napsauttamisen.">
+<!ENTITY linkifyOnMouse.description "Salli linkitys myös silloin kun hiiri siirretään osoitepalkin reunan yli:">
+<!ENTITY linkifyOnMouse.top "ylhäältä">
+<!ENTITY linkifyOnMouse.top.accesskey "y">
+<!ENTITY linkifyOnMouse.bottom "alhaalta">
+<!ENTITY linkifyOnMouse.bottom.accesskey "a">
+<!ENTITY alternate.subdomain-gray.label "Harmaat aliverkkoalueet">
+<!ENTITY alternate.subdomain-gray.accesskey "H">
+<!ENTITY domain_prefs "Verkkoalue">
+<!ENTITY alternate.domain-strong.label "vahva">
+<!ENTITY alternate.domain-strong.accesskey "v">
+<!ENTITY breadcrumb_prefs "Leivänmuru...">
+<!ENTITY alternate.breadcrumb-domain.label "isännälle">
+<!ENTITY alternate.breadcrumb-domain.accesskey "i">
+<!ENTITY alternate.breadcrumb-all.label "kullekin osiolle">
+<!ENTITY alternate.breadcrumb-all.accesskey "k">
+<!ENTITY alternate.fission.label "Yhteensopivuus Fission laajennuksen kanssa">
+<!ENTITY alternate.fission.accesskey "F">

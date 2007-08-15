@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "chrome://downbar/locale/downbarAboutText.dtd">
+
+<overlay id="addonDonateOverlay"
+		 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+		 
+	<script type="application/x-javascript" src="chrome://downbar/content/addonDonate.js"/>
+	
+	<window id="extensionsManager">
+		
+		<stringbundleset id="extensionsSet">
+			<stringbundle id="downbarbundle" src="chrome://downbar/locale/downbar.properties"/>
+		</stringbundleset>
+		
+		<keyset id="extensionsKeys">
+			<key id="enzy_removeDonate" key="r" oncommand="enzy_removeDonate();" modifiers="accel"/>
+		</keyset>
+		
+		<spacer id="donateSpacer" flex="1" hidden="true"/>
+		<vbox id="donateClearImg" hidden="true" style="cursor:pointer;" onclick="db_donateClearInterval();">
+			<spacer flex="1"/>
+			<image src="chrome://downbar/skin/closeX.png" style="cursor:pointer; background-color:#EAE6D1; border: 1px solid black;"/>
+			<spacer flex="1"/>
+		</vbox>
+		<hbox id="donateContainer" hidden="true">
+			<label id="donateTextNode1" value="&support.label;" style="margin-left:3px;"/>
+			<label id="donateTextNode2" value="&donate2.label;" onclick="db_openDonate();" style="text-decoration:underline; cursor:pointer; margin-left:0px;"/>
+		</hbox>
+	</window>
+	
+</overlay>
+
+<!-- 
+
+-->

@@ -1,0 +1,16 @@
+<!ENTITY appliesTo "Vaikutusalue">
+<!ENTITY clearfilter "Tyhjennä">
+<!ENTITY clearfilter.ak "T">
+<!ENTITY edit "Muokkaa...">
+<!ENTITY edit.ak "M">
+<!ENTITY filter "Etsi:">
+<!ENTITY filter.ak "E">
+<!ENTITY findupdates "Etsi päivityksiä...">
+<!ENTITY findupdates.ak "t">
+<!ENTITY help "Ohje">
+<!ENTITY help.ak "O">
+<!ENTITY info "Tyylien muutokset tai poistamiset saattavat tulla voimaan vasta seuraavalla sivunpäivtyksellä.">
+<!ENTITY nostyles "Sinulla ei ole tyylejä asennettuna tällä hetkellä. Käy osoitteessa userstyles.org löytääksesi valmiita tyylejä.">
+<!ENTITY title "Hallitse tyylejä">
+<!ENTITY write "Luo...">
+<!ENTITY write.ak "L">

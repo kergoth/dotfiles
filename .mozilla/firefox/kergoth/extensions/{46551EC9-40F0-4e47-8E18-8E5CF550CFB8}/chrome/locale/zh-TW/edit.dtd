@@ -1,0 +1,44 @@
+<!ENTITY addhint "到 userstyles.org 看看別人已經寫好的樣式">
+<!ENTITY advancedview "進階">
+<!ENTITY advancedview.ak "A">
+<!ENTITY allowupdates "允許檢查更新">
+<!ENTITY allowupdates.ak "A">
+<!ENTITY basicoutro "按「&preview;」可以預覽此樣式的效果。按「&save;」會套用此樣式並關閉對話方塊。大部分樣式會立即生效，但仍有些樣式需要重新啟動 Firefox 才會生效。">
+<!ENTITY basicview "基本">
+<!ENTITY basicview.ak "B">
+<!ENTITY chromefolder "Chrome 資料夾路徑">
+<!ENTITY chromefolder.ak "C">
+<!ENTITY chromefolder.tt "在游標位置插入目前個人設定檔內 chrome 資料夾的路徑">
+<!ENTITY dataURI "Data URI…">
+<!ENTITY dataURI.ak "D">
+<!ENTITY dataURI.tt "在目前游標位置插入指定檔案的 URI">
+<!ENTITY description.ak "D">
+<!ENTITY enabled.ak "E">
+<!ENTITY htmlnamespace "HTML Namespace">
+<!ENTITY htmlnamespace.ak "H">
+<!ENTITY htmlnamespace.tt "以 HTML 作為此樣式預設的 namespace">
+<!ENTITY important "!important">
+<!ENTITY important.ak "m">
+<!ENTITY important.tt "所有宣告都加上 !important">
+<!ENTITY itsalltext "It&apos;s All Text!">
+<!ENTITY itsalltext.ak "T">
+<!ENTITY insert "插入">
+<!ENTITY insert.ak "I">
+<!ENTITY pickcolor "色彩">
+<!ENTITY pickcolor.ak "o">
+<!ENTITY pickcolorrainbowpicker "色彩…">
+<!ENTITY pickcolorrainbowpicker.ak "o">
+<!ENTITY poststyle "張貼此樣式到 userstyles.org">
+<!ENTITY preview "預覽">
+<!ENTITY preview.ak "w">
+<!ENTITY save "儲存">
+<!ENTITY save.ak "S">
+<!ENTITY siterules "網站規則…">
+<!ENTITY siterules.ak "S">
+<!ENTITY siterules.tt "在選取區外圍加上 -moz-document 規則">
+<!ENTITY visitstyle "拜訪此樣式的網站">
+<!ENTITY wraplines "折行">
+<!ENTITY wraplines.ak "W">
+<!ENTITY xulnamespace "XUL Namespace">
+<!ENTITY xulnamespace.ak "X">
+<!ENTITY xulnamespace.tt "以 XUL 作為此樣式預設的 namespace">

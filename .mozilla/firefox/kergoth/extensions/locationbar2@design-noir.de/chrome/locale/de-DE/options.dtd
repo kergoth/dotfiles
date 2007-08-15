@@ -1,0 +1,35 @@
+﻿<!ENTITY options_window_title				"Locationbar²-Optionen">
+<!ENTITY hideProtocols.label				"Protokolle verstecken:">
+<!ENTITY hideProtocols.accesskey			"P">
+<!ENTITY clickSelectsAll.label				"Beim Anklicken alles markieren">
+<!ENTITY clickSelectsAll.accesskey			"m">
+<!ENTITY animateBlend.label				"Weicher Übergangseffekt">
+<!ENTITY animateBlend.accesskey				"Ü">
+<!ENTITY alternate.favicon-show.label			"Favicon anzeigen">
+<!ENTITY alternate.favicon-show.accesskey		"c">
+<!ENTITY alternate.segments-margin.label		"Abstand zwischen Segmenten">
+<!ENTITY alternate.segments-margin.accesskey		"w">
+
+<!ENTITY linkification_prefs				"Verlinkung">
+<!ENTITY linkification.description			"Mit Strg/Meta/Umschalttaste und nach dem Bewegen der Maus über das Favicon können verlinkte Segmente angeklickt werden.">
+<!ENTITY linkifyOnMouse.description			"Verlinkung ebenfalls aktivieren, wenn die Maus den Rand der Adressleiste passiert:">
+<!ENTITY linkifyOnMouse.top				"oben">
+<!ENTITY linkifyOnMouse.top.accesskey			"o">
+<!ENTITY linkifyOnMouse.bottom				"unten">
+<!ENTITY linkifyOnMouse.bottom.accesskey		"u">
+
+<!ENTITY alternate.subdomain-gray.label			"Graue Subdomains">
+<!ENTITY alternate.subdomain-gray.accesskey		"a">
+
+<!ENTITY domain_prefs					"Domain">
+<!ENTITY alternate.domain-strong.label			"fett">
+<!ENTITY alternate.domain-strong.accesskey		"f">
+
+<!ENTITY breadcrumb_prefs				"Pfeil für …">
+<!ENTITY alternate.breadcrumb-domain.label		"den Host">
+<!ENTITY alternate.breadcrumb-domain.accesskey		"s">
+<!ENTITY alternate.breadcrumb-all.label			"jedes Segment">
+<!ENTITY alternate.breadcrumb-all.accesskey		"j">
+
+<!ENTITY alternate.fission.label			"Kompatibilität mit Fission">
+<!ENTITY alternate.fission.accesskey			"ä">

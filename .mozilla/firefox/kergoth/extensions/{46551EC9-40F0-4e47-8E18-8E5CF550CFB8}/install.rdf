@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>{46551EC9-40F0-4e47-8E18-8E5CF550CFB8}</em:id>
+		<em:name>Stylish</em:name>
+		<em:version>0.5.2</em:version>
+		<em:creator>Jason Barnabe (np)</em:creator>
+		<em:homepageURL>http://userstyles.org/stylish/</em:homepageURL>
+		<em:optionsURL>chrome://stylish/content/manage.xul</em:optionsURL>
+		<em:iconURL>chrome://stylish/skin/bigicon.png</em:iconURL>
+		<em:type>2</em:type>
+		<em:contributor>ANBO Motohiko</em:contributor>
+		<em:contributor>Kevin Keller</em:contributor>
+		<em:contributor>Torisugari</em:contributor>
+		<em:contributor>asquella</em:contributor>
+		<em:contributor>Relativity_17 (Ming Zhang)</em:contributor>
+		<em:contributor>Philip Chee</em:contributor>
+		<em:translator>ANBO Motohiko - ja</em:translator>
+		<em:translator>Goofy - fr</em:translator>
+		<em:translator>MatrixIsAllOver - it</em:translator>
+		<em:translator>l0stintranslation - it</em:translator>
+		<em:translator>Proyecto Nave - es-ES</em:translator>
+		<em:translator>RAF - nl</em:translator>
+		<em:translator>ReinekeFux - de</em:translator>
+		<em:translator>Peter (SlovakSoft) - sk</em:translator>
+		<em:translator>Alan CHENG - zh-TW, zh-CN</em:translator>
+		<em:translator>winiah - zh-TW, zh-CN</em:translator>
+		<em:translator>Paweł Kubisz - pl</em:translator>
+		<em:translator>Timur Timirkhanov - ru</em:translator>
+		<em:translator>rickcart - zh-CN</em:translator>
+		<em:translator>miz - ja</em:translator>
+		<em:translator>pedsann - pt-BR</em:translator>
+		<em:translator>MozUA - uk-UA</em:translator>
+		<em:translator>norix - ja</em:translator>
+		<em:translator>Ian Moody - en-GB</em:translator>
+		<em:translator>Akilles - fi-FI</em:translator>
+		<em:translator>pirlouy - fr</em:translator>
+		<em:translator>myahoo - fr</em:translator>
+		<em:translator>jeognsw - ko-KR</em:translator>
+		<em:translator>teo - pl-PL</em:translator>
+		<em:translator>SiiiE - he-IL</em:translator>
+		<em:translator>drry - ja</em:translator>
+		<!-- Firefox -->
+    <em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>3.0a5</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		<!-- Flock -->
+    <em:targetApplication>
+			<Description>
+				<em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
+				<em:minVersion>0.4</em:minVersion>
+				<em:maxVersion>0.8</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		<!-- Thunderbird -->
+    <em:targetApplication>
+			<Description>
+				<em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>3.0a1</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+    <!-- SeaMonkey -->
+		<em:targetApplication>
+			<Description>
+				<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>2.0a1</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		<!-- Songbird -->
+		<em:targetApplication>
+			<Description>
+				<em:id>songbird@songbirdnest.com</em:id>
+				<em:minVersion>0.2</em:minVersion>
+				<em:maxVersion>0.2.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	</Description>
+</RDF>

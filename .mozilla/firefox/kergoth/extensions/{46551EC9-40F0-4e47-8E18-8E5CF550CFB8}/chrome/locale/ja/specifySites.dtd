@@ -1,0 +1,11 @@
+<!ENTITY addsiterule "追加">
+<!ENTITY addsiterule.ak "A">
+<!ENTITY domaintype "ドメイン">
+<!ENTITY domaintype.ak "I">
+<!ENTITY site "サイト">
+<!ENTITY title "サイト指定">
+<!ENTITY type "種類">
+<!ENTITY urltype "一致する">
+<!ENTITY urltype.ak "E">
+<!ENTITY urlprefixtype "前に付く">
+<!ENTITY urlprefixtype.ak "S">

@@ -1,0 +1,29 @@
+content resurrect               jar:chrome/resurrect.jar!/content/
+skin    resurrect   classic/1.0 jar:chrome/resurrect.jar!/skin/
+
+overlay chrome://browser/content/browser.xul    chrome://resurrect/content/resurrect-overlay.xul
+
+override chrome://global/content/netError.xhtml chrome://resurrect/content/netError.xhtml
+
+style   chrome://global/content/customizeToolbar.xul chrome://resurrect/skin/resurrect-overlay.css
+style   chrome://global/content/netError.xhtml       chrome://resurrect/skin/netError.css
+
+locale resurrect ca-AD jar:chrome/resurrect.jar!/locale/ca-AD/
+locale resurrect da-DK jar:chrome/resurrect.jar!/locale/da-DK/
+locale resurrect de-DE jar:chrome/resurrect.jar!/locale/de-DE/
+locale resurrect el-GR jar:chrome/resurrect.jar!/locale/el-GR/
+locale resurrect en-US jar:chrome/resurrect.jar!/locale/en-US/
+locale resurrect es-AR jar:chrome/resurrect.jar!/locale/es-AR/
+locale resurrect es-CL jar:chrome/resurrect.jar!/locale/es-CL/
+locale resurrect es-ES jar:chrome/resurrect.jar!/locale/es-ES/
+locale resurrect fi-FI jar:chrome/resurrect.jar!/locale/fi-FI/
+locale resurrect fr-FR jar:chrome/resurrect.jar!/locale/fr-FR/
+locale resurrect hr-HR jar:chrome/resurrect.jar!/locale/hr-HR/
+locale resurrect it-IT jar:chrome/resurrect.jar!/locale/it-IT/
+locale resurrect ko-KR jar:chrome/resurrect.jar!/locale/ko-KR/
+locale resurrect nl-NL jar:chrome/resurrect.jar!/locale/nl-NL/
+locale resurrect pt-BR jar:chrome/resurrect.jar!/locale/pt-BR/
+locale resurrect ru-RU jar:chrome/resurrect.jar!/locale/ru-RU/
+locale resurrect sl-SI jar:chrome/resurrect.jar!/locale/sl-SI/
+locale resurrect uk-UA jar:chrome/resurrect.jar!/locale/uk-UA/
+locale resurrect zh-TW jar:chrome/resurrect.jar!/locale/zh-TW/

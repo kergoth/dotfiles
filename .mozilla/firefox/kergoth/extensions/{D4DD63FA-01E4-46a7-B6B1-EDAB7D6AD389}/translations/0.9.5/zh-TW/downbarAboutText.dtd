@@ -1,0 +1,110 @@
+<!ENTITY aboutTitle.label "關於 Download Statusbar">
+<!ENTITY introTab.label "套件簡介">
+<!ENTITY by.label "由 Devon Jensen 製作">
+<!ENTITY version.label "版本">
+<!ENTITY tagLine.label "這個套件可以讓您的 Mozilla Firefox 下方出現一條下載列，檢視並管理您的下載檔案。">
+<!ENTITY ifNew.label "如果您是初次使用 Download Statusbar，請您先閱讀這些說明，快速掌握此套件的所有功能。">
+<!ENTITY toView.label "以後如果您要再次閱讀此說明視窗，">
+<!ENTITY pressAbout.label "請打開 Download Statusbar 選項視窗後按一下「關於」按鈕。">
+<!ENTITY donateText.label "事實上，我花了許多時間在這個套件上面。如果您覺得此套件對您使用 Firefox 大有幫助，或許可以給我一些小小的贊助。（您不一定要有 Paypal 帳號，也接受信用卡。）">
+<!ENTITY donate.label "贊助">
+<!ENTITY majorRelease.label "Major Release!">
+<!ENTITY changelog.label "See what&apos;s new">
+<!ENTITY whatNewTab.label "此版本新鮮事">
+<!ENTITY new1.label "- 修正「自動續傳...」功能無法使用的錯誤">
+<!ENTITY new2.label "- 修正反安裝步驟時的錯誤">
+<!ENTITY new3.label "- ">
+<!ENTITY new4.label "- ">
+<!ENTITY new5.label "- ">
+<!ENTITY new6.label "- ">
+<!ENTITY new7.label "- ">
+<!ENTITY new8.label "- ">
+<!ENTITY new9.label "- ">
+<!ENTITY new10.label "- ">
+<!ENTITY new11.label "- ">
+<!ENTITY hintsTab.label "提示與密技">
+<!ENTITY tip1Title.label "暫存空間">
+<!ENTITY tip1.label "Download Statusbar 新增了一條下載列為下載中或已下載的檔案提供了暫時存放的空間。你可以設定成自動移除這些項目，或是手動移除你不想看到的項目。當你抓了一堆檔案讓下載列擁擠不堪時，自動清除功能還算滿有用的。你還可以打開「下載管理員」查看所有的下載記錄（「工具」-&gt;「下載管理員」。）繼續閱讀下面的密技你還會知道快速清除已完成下載的方法。">
+<!ENTITY tip2Title.label "常用功能快捷鍵">
+<!ENTITY tip2.label "在下載項目按右鍵可以選擇想要執行的動作，但是有些常用的幾個功能有更快的操作方法：">
+<!ENTITY tip2a.label "- 按一下「滑鼠中鍵」可以移除下載項目。（大部分的滑鼠，中鍵就是壓下滑鼠滾輪）">
+<!ENTITY tip2b.label "- 在下載列的空白處「按兩下」滑鼠可以一次移除所有的下載項目。">
+<!ENTITY tip2c.label "- 「按兩下」已完成的下載項目可以直接開啟。">
+<!ENTITY tip2d.label "- 「Ctrl + 中鍵」會從系統中刪除已完成的下載檔案。">
+<!ENTITY tip2e.label "- 「按一下」下載中的項目可以暫停或繼續檔案的下載。">
+<!ENTITY tip2f.label "- 「Shift + 左鍵」可以重新命名已完成的下載項目。">
+<!ENTITY tip3Title.label "工具提示">
+<!ENTITY tip3.label "有時候你可能會想知道該下載的詳細資訊，只要將游標移到該下載項目後稍等片刻就會出現詳細資訊了。下載中的項目會顯示目前下載的速度、已下載大小、剩餘時間等資訊。而已完成的下載則顯示儲存路徑、檔案大小、耗時多久及平均速度等。">
+<!ENTITY tip4Title.label "動畫">
+<!ENTITY tip4.label "關掉動畫可以加快操作速度。動畫會告訴你下載時發生了什麼事。（例如當你刪除已完成的下載檔案時會出現紅色的Ｘ），但也會拖慢速度。只要在「外觀設定」中不勾「使用動畫」，就可以加快操作速度。你也可以按住「Shift」鍵暫時關閉動畫。">
+<!ENTITY tip5Title.label "停止下載">
+<!ENTITY tip5.label "停止下載檔案以供稍後下載。Firefox 現階段在您關閉瀏覽器後無法續傳上次下載的檔案（以後可能加入此功能），但是你可以先停止下載檔案，等下次開啟 Firefox 時重新開始下載。只需在下載項目上按「右鍵」後選擇「停止」即可，若要再開始下載只要再按一次滑鼠「右鍵」後選擇「開始」即可（或是直接按兩下該項目）。">
+<!ENTITY tip6Title.label "一次處理多個下載項目">
+<!ENTITY tip6.label "在下載列的空白處（或是迷你模式按鈕）上按「右鍵」，這裡出現的功能會套用到所有的下載項目。例如：移除全部已完成下載、暫停、停止或取消全部下載等功能。這裡也可以切換完整模式和迷你模式。">
+<!ENTITY tip7Title.label "迷你模式">
+<!ENTITY tip7.label "在迷你模式下要檢視下載清單，只要按一下狀態列上的迷你模式按鈕就行了。管理這些下載項目的方法和完整模式下完全一樣 - 滑鼠右鍵會彈出功能選項、按中鍵會清除項目等等。在迷你模式按鈕上按右鍵所出現的功能會套用到所有的下載項目。如果目前沒有下載中的檔案，則按鈕會暫時隱藏。">
+<!ENTITY prefsTab.label "偏好設定說明">
+<!ENTITY general.label "一般設定分頁">
+<!ENTITY pref1Title.label "進度提示">
+<!ENTITY pref1.label "- 下載中的項目會顯示此下載的一些資訊。你可以在這裡選擇你想要看到的資訊。以預設樣式來說，顯示兩項是最佳的設定，但你也可以於「外觀設定」將文字大小縮小以容納更多的訊息。">
+<!ENTITY pref2Title.label "狀態列模式">
+<!ENTITY pref2.label "- 選擇要使用「完整模式」（獨立的下載列）或是「迷你模式」（整合到狀態列的小按鈕）。您可以兩種都試試，之後再選擇您喜歡的模式。">
+<!ENTITY pref3Title.label "自動清除下載記錄...">
+<!ENTITY pref3.label "- Firefox 預設會在下載管理員中保留所有您下載過的檔案記錄。但當您用了一段時間後，這個清單可能會變得很長，甚至拖慢 Firefox 的速度。這個功能會在每次 Firefox 關閉時自動清除一部分列表，不讓它變的太長。如果您在「選項」-&gt;「個人隱私」-&gt;「下載記錄」中設定成「關閉 Firefox 時」或「成功下載後」自動清除記錄，則此功能會自動停用。 注意：雖然這是 Download Statusbar 提供的功能，但實際上是作用在下載管理員之中。">
+<!ENTITY pref4Title.label "自動續傳...">
+<!ENTITY pref4.label "- 如果您仍有下載中的檔案，卻想關閉 Firefox，此時會跳出警告視窗告訴您此次下載將被取消。這個功能會關閉警告視窗，改成只跳出下載管理員來繼續下載檔案直到下載完成。">
+<!ENTITY pref5Title.label "當瀏覽器關閉時清除已完成的下載">
+<!ENTITY pref5.label "- 清除下載列中已完成的下載項目，但是不會移除下載記錄中的項目，也不會刪除實際的下載檔案。">
+<!ENTITY pref6Title.label "刪除前提示...">
+<!ENTITY pref6.label "- 當您要永久刪除檔案時會跳出確認視窗，詢問您是否確實要刪除檔案。當您選擇確定時，檔案就再也找不回來了（除非您再下載一次。）">
+<!ENTITY pref7Title.label "開啟檔案後清除已完成的下載">
+<!ENTITY pref7.label "- 這不會移除下載記錄中的項目。">
+<!ENTITY pref8Title.label "開啟所在的資料夾後清除已完成的下載">
+<!ENTITY pref8.label "- 這不會移除下載記錄中的項目。">
+<!ENTITY pref9Title.label "顯示「下載已完成」通知視窗">
+<!ENTITY pref9.label "- 這是內建在 Firefox 中的功能，但是建議您關閉它。因為有了 Download Statusbar 之後，這個通知視窗就變的有點多餘了。">
+<!ENTITY pref10Title.label "忽略某些檔案類型">
+<!ENTITY pref10.label "- 當您下載所設定的這些檔案類型時，不會由 Download Statusbar 管理，而是由原本 Firefox 的下載管理員下載。每種檔案類型必須用「逗號」分隔（有空格無妨）。例如：「jpg, jpeg, png, gif」">
+<!ENTITY pref11Title.label "自動清除某些檔案類型...">
+<!ENTITY pref11.label "- 當檔案下載完成後，您可設定幾秒後於下載列中清除此下載項目。當您不想對已完成的檔案做後續處理時，這個功能很有用。每種檔案類型必須用「逗號」分隔（有空格無妨）。例如：「jpg, jpeg, png, gif」。如果你想自動清除所有的檔案類型，輸入「*」即可。">
+<!ENTITY pref12Title.label "預設或自訂樣式">
+<!ENTITY pref12.label "- 選擇「自訂樣式」可以打開下方的樣式設定功能。選擇「預設樣式」就可以改回原始的樣式，但是自訂的樣式會保留。">
+<!ENTITY pref13Title.label "色彩">
+<!ENTITY pref13.label "- 按一下色彩鈕可以打開該項目的色彩選取視窗。您可以按住並拖曳色盤找出想要的色彩，或是從定義好的色彩中任選一種。如果你想重複使用該色彩，只要複製該色彩的「十六進位碼」後在另一個色彩視窗中貼上即可。你也可以按「使用樣式預設值」鈕 清除先前選的色彩改用樣式預設的色彩。一般只在設定文字及下載列背景色彩時較有用。">
+<!ENTITY appearance.label "外觀設定分頁">
+<!ENTITY pref14Title.label "文字大小">
+<!ENTITY pref14.label "- 設定檔名或下載進度文字的大小。（單位為點 (pt)）">
+<!ENTITY pref15Title.label "下載項目大小">
+<!ENTITY pref15.label "- 設定每個下載項目的寬度及高度。（單位為像素）">
+<!ENTITY pref16Title.label "使用漸層色彩">
+<!ENTITY pref16.label "- 勾選此功能，下載項目的背景顏色會有透明漸層的 3D 效果。預設或自訂樣式時都會作用。">
+<!ENTITY pref17Title.label "使用動畫">
+<!ENTITY pref17.label "- 某些下載動作會有相對應的動畫。動畫出現的時間很短，但若您覺得不便也可以關閉動畫效果。">
+<!ENTITY pref18Title.label "速度色彩">
+<!ENTITY pref18.label "- 勾選此功能，下載中的項目背景色彩會下載速度的不同而即時改變。也就是說直接看背景色彩就能掌握下載速度。首先請先啟用「速度色彩」，然後依照您的網路速度設定適合的速度範圍（預設值較適合 Cable Modem 使用者。）最後再設定每個範圍所代表的色彩即可。這個功能有很多不同的應用，比如您可以將速度快的下載設為較亮的色彩，速度慢則設定較暗的色彩。或是將前三種範圍都設一樣的色彩，而最慢的範圍則設特別的色彩作為提示，這樣就可以馬上知道哪個檔案下載的很慢了。">
+<!ENTITY pref19Title.label "手動掃描已完成的下載">
+<!ENTITY pref19.label "- 勾選這個選項會啟用病毒掃描功能。在啟用此功能之前，您必須先同意有關防毒功能的免責聲明。">
+<!ENTITY virusScan.label "病毒掃描分頁">
+<!ENTITY pref20Title.label "不掃描某些檔案類型">
+<!ENTITY pref20.label "- 每種檔案類型必須用「逗號」分隔（有空格無妨）。例如：「jpg, jpeg, png, gif」">
+<!ENTITY pref21Title.label "指定防毒軟體位置">
+<!ENTITY pref21.label "- 您必須先安裝一套能透過命令列手動掃描的防毒軟體。按下「...」鈕尋找防毒軟體所在的位置。">
+<!ENTITY pref22Title.label "參數">
+<!ENTITY pref22.label "- 在這裡輸入防毒軟體的必須或其他參數。參數 &#37;1 表示欲掃描的檔案（會接在 [Path] 後面）。大部分的程式只要 &#37;1 這個參數即可運作。無法正確掃描時，請查閱您使用的防毒軟體說明文件，以確定您必須使用哪些參數。">
+<!ENTITY pref23Title.label "Arguments">
+<!ENTITY pref23.label "- Enter any necessary or optional arguments specific to your anti-virus program.  &#37;1 represents the file that will be scanned (this was previously [Path]) and should appear somewhere in the arguments.  Many programs will work if &#37;1 is the only argument.  Check the documentation of your Anti-Virus software to figure out which arguments work with your program.">
+<!ENTITY listMarker.label "&#183; ">
+<!ENTITY OK.label "關閉">
+<!ENTITY openPref.label "開啟選項視窗">
+<!ENTITY support.label "支持這個套件 -">
+<!ENTITY donate2.label "贊助！">
+<!ENTITY credits.label "Credits">
+<!ENTITY transFor.label "Text translation for">
+<!ENTITY currLocale.label "en-US">
+<!ENTITY locale.label "locale provided by:">
+<!ENTITY translatorName.label "Devon Jensen">
+<!ENTITY projectHost.label "Project web hosting provided by: ">
+<!ENTITY mozdev.label "Mozdev.org">
+<!ENTITY progAndArtwork.label "Programming and Design by: ">
+<!ENTITY soundsBy.label "Sounds created by: ">
+<!ENTITY soundPeople.label "Dallin Jensen and Devon Jensen">

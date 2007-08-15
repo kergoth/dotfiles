@@ -1,0 +1,30 @@
+<!ENTITY options_window_title "Locationbar² voorkeuren">
+<!ENTITY hideProtocols.label "Protocollen verbergen:">
+<!ENTITY hideProtocols.accesskey "V">
+<!ENTITY clickSelectsAll.label "Aanklikken selecteert alle">
+<!ENTITY clickSelectsAll.accesskey "k">
+<!ENTITY animateBlend.label "URL&apos;s mengen">
+<!ENTITY animateBlend.accesskey "M">
+<!ENTITY alternate.favicon-show.label "Favicon weergeven">
+<!ENTITY alternate.favicon-show.accesskey "a">
+<!ENTITY alternate.segments-margin.label "Marge tussen alle segmenten">
+<!ENTITY alternate.segments-margin.accesskey "t">
+<!ENTITY linkification_prefs "Koppelingen maken">
+<!ENTITY linkification.description "Door op Ctrl/Meta/Shift te drukken of de muis over het favicon te bewegen kunt u klikken op delen die als koppeling worden behandeld.">
+<!ENTITY linkifyOnMouse.description "Maken van koppelingen bij bewegen van de muis over de rand van de locatiebalk ook inschakelen:">
+<!ENTITY linkifyOnMouse.top "op bovenzijde">
+<!ENTITY linkifyOnMouse.top.accesskey "b">
+<!ENTITY linkifyOnMouse.bottom "op onderzijde">
+<!ENTITY linkifyOnMouse.bottom.accesskey "n">
+<!ENTITY alternate.subdomain-gray.label "Grijze subdomeinen">
+<!ENTITY alternate.subdomain-gray.accesskey "z">
+<!ENTITY domain_prefs "Domeinen">
+<!ENTITY alternate.domain-strong.label "vet">
+<!ENTITY alternate.domain-strong.accesskey "t">
+<!ENTITY breadcrumb_prefs "Broodkruimel voor…">
+<!ENTITY alternate.breadcrumb-domain.label "de host">
+<!ENTITY alternate.breadcrumb-domain.accesskey "h">
+<!ENTITY alternate.breadcrumb-all.label "elk segment">
+<!ENTITY alternate.breadcrumb-all.accesskey "e">
+<!ENTITY alternate.fission.label "Fission compatibiliteit">
+<!ENTITY alternate.fission.accesskey "F">

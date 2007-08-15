@@ -14,15 +14,35 @@
 	<Script filename="collapsibleamazon.user.js" name="Collapsible Amazon" namespace="http://brh.numbera.com/software/greasemonkeyscripts" description="Collapse any section of the Amazon website by clicking on the orange section header." enabled="true">
 		<Include>http://*.amazon.*</Include>
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="googledocsdownload.user.js" name="Google Docs Download" namespace="gdd" description="Create a download list of your google documents." enabled="true">
 		<Include>http://docs.google.com/*</Include>
 		<Include>https://docs.google.com/*</Include>
 		<Exclude>http://docs.google.com/Doc?id=*</Exclude>
 		<Exclude>https://docs.google.com/Doc?id=*</Exclude>
+=======
+	<Script filename="gmailfilterassistant.user.js" name="Gmail Filter Assistant" namespace="http://www.amoszhang.com/GmailFilterAssistant" description="Help to manage the Gmail filters more efficiently" enabled="true">
+		<Include>https://mail.google.com/*</Include>
+		<Include>http://mail.google.com/*</Include>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
+	<Script filename="mailmandiscardall.user.js" name="Mailman discard all" namespace="http://www.menalto.com/greasemonkey" description="Automatically selects the 'discard' radio button for all messages when doing mail moderation using Mailman on SourceForge.net" enabled="true">
+		<Include>https://lists.sourceforge.net/lists/admindb*</Include>
+=======
+	<Script filename="googledocsdownload.user.js" name="Google Docs Download" namespace="gdd" description="Create a download list of your google documents." enabled="true">
+		<Include>http://docs.google.com/*</Include>
+		<Include>https://docs.google.com/*</Include>
+		<Exclude>http://docs.google.com/Doc?id=*</Exclude>
+		<Exclude>https://docs.google.com/Doc?id=*</Exclude>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
+	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
+=======
 	<Script filename="mailmandiscardall.user.js" name="Mailman discard all" namespace="http://www.menalto.com/greasemonkey" description="Automatically selects the 'discard' radio button for all messages when doing mail moderation using Mailman on SourceForge.net" enabled="true">
 		<Include>https://lists.sourceforge.net/lists/admindb*</Include>
 	</Script>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="popupwindowfixer.user.js" name="Popup Window Fixer" namespace="http://youngpup.net/userscripts" description="Fixes poorly written javascript popup windows in the manner specified by http://youngpup.net/2003/popups." enabled="true">
 		<Include>*</Include>
 	</Script>
@@ -33,6 +53,12 @@
 	<Script filename="sourceforgecleanerlayout.user.js" name="SourceForge - Cleaner Layout" namespace="http://simon.arlott.org/gm/" description="Removes the right sidebar and adverts" enabled="true">
 		<Include>http*://sourceforge.net/*</Include>
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
+=======
+	<Script filename="stage6directdownload.user.js" name="Stage6 Direct Download" namespace="http://defrex.com" description="A script to add a direct download link to dtage6.fivx.com" enabled="true">
+		<Include>http://stage6.divx.com/*</Include>
+	</Script>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="userscriptsfavourites.user.js" name="userscripts favourites" namespace="znerp" description="Allows users to store their favourite scripts on userscripts.org. Displayed in a sexy table." enabled="true">
 		<Include>http://userscripts.org/*</Include>
 	</Script>
@@ -119,12 +145,28 @@
 	<Script filename="multicolumnviewofgoogles.user.js" name="Multi-Column View of Google Search Results " namespace="http://hi.baidu.com/ziruzhu" description="" enabled="true">
 		<Include>http://www.google.com/search*</Include>
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
+=======
+	<Script filename="mailtocomposeingmail.user.js" name="Mailto Compose In GMail" namespace="http://blog.monstuff.com/archives/000238.html" description="Rewrites &quot;mailto:&quot; links to GMail compose links" enabled="true">
+		<Include>*</Include>
+		<Exclude>http://mail.google.com/*</Exclude>
+	</Script>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="gmailcolorizer.user.js" name="Gmail Colorizer" namespace="http://www.metamonkey.net/gmailcolorizer" description="Adds colors to Gmail according to label" enabled="false">
 		<Include>http://gmail.google.com/*</Include>
 		<Include>https://gmail.google.com/*</Include>
 		<Include>http://mail.google.com/*</Include>
 		<Include>https://mail.google.com/*</Include>
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
+=======
+	<Script filename="gmailtweaksmultiplesigna.user.js" name="Gmail Tweaks: Multiple Signatures" namespace="http://blog.yanime.org/gmailtweaks_multiple_signature.user.js" description="Applies different signatures (look for 'Use identity:') for writing gmail messages when different From: address is chosen. Right now, data has to be configured directly into this script. Click EDIT to configure your email and signatures: email_array, sig_array, col_array" enabled="false">
+		<Include>http://gmail.google.com/*</Include>
+		<Include>https://gmail.google.com/*</Include>
+		<Include>http://mail.google.com/*</Include>
+		<Include>https://mail.google.com/*</Include>
+	</Script>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="cleangmailprint.user.js" name="Clean Gmail Print" namespace="http://dev.hxm.dk/gm/" description="This script removes the Gmail logo, when you are printing an email using the built-in print function." enabled="true">
 		<Include>https://mail.google.com/mail/?&amp;ik=*&amp;view=pt&amp;*</Include>
 		<Include>http://mail.google.com/mail/?&amp;ik=*&amp;view=pt&amp;*</Include>
@@ -145,6 +187,7 @@
 		<Include>http://mail.google.com/*</Include>
 		<Include>https://mail.google.com/*</Include>
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="gmailfilterassistant.user.js" name="Gmail Filter Assistant" namespace="http://www.amoszhang.com/GmailFilterAssistant" description="Help to manage the Gmail filters more efficiently" enabled="true">
 		<Include>https://mail.google.com/*</Include>
 		<Include>http://mail.google.com/*</Include>
@@ -169,8 +212,39 @@
 		<Include>https://gmail.google.com/*</Include>
 	</Script>
 	<Script filename="gmailsinglewindow.user.js" name="gmail-single-window" namespace="www.arantius.com" description="" enabled="true">
+=======
+	<Script filename="autoaddfeedtogooglereade.user.js" name="Auto Add Feed to Google Reader" namespace="userscripts.org" description="Bypasses the choice to add a feed to Google homepage or Google Reader, directly adding it to Google Reader." enabled="true">
+		<Include>http://www.google.com/ig/add?feedurl=*</Include>
+	</Script>
+	<Script filename="gpe.user.js" name="GPE" namespace="http://userscripts.org/scripts/show/9455" description="Adds a &quot;Preview button&quot; that allows you to view actual article in a frame. Clicking again on that button goes back to RSS view. Does work both in List view and expanded view." enabled="true">
+		<Include>http://reader.google.com/reader/*</Include>
+		<Include>http://www.google.com/reader/*</Include>
+	</Script>
+	<Script filename="newyorktimeslinktoprint.user.js" name="New York Times Link to Print" namespace="http://www.nytimes.com" description="Automatically links to the printer-friendly version of articles on nytimes.com, opens them in a new window (if you're navigating from the home page or a category page), and adds a link to the print version which leads back to the regular version.  Also re-directs articles linked from RSS to their print version." enabled="true">
+		<Include>http://*nytimes.com*</Include>
+	</Script>
+	<Script filename="multicolumnarticles.user.js" name="Multi-column articles" namespace="http://diveintomark.org/projects/greasemonkey/" description="Multi-column articles for several publications" enabled="true">
+		<Include>*nytimes.com*/*pagewanted=print*</Include>
+		<Include>http://*.nybooks.com/articles/*</Include>
+		<Include>http://*.newyorker.com/*printable=true*</Include>
+		<Include>http://*.washingtonpost.com/*pf.html</Include>
+		<Include>http://*.latimes.com/*,print.*</Include>
+		<Include>http://*.boston.com/*mode=PF*</Include>
+		<Include>http://*bostonreview.net/BR*</Include>
+		<Include>http://*theatlantic.com/doc/print*</Include>
+		<Include>http://*.printthis.clickability.com/pt/*nymag.com*</Include>
+		<Include>http://*.mercurynews.com/portlet/article/html/fragments/print_article.jsp?*</Include>
+		<Include>http://*.slate.com/*action=print*</Include>
+		<Include>http://seattletimes.nwsource.com/*PrintStory.pl*</Include>
+		<Include>http://*.wired.com/*print*</Include>
+		<Include>http://*.wsj.com/article_print*</Include>
+		<Include>http://*.foreignaffairs.org/*mode=print*</Include>
+	</Script>
+	<Script filename="wowheadlinkchanger.user.js" name="WoWHead Link Changer" namespace="WHLC" description="WoWHead Link Changer" enabled="true">
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 		<Include>*</Include>
 	</Script>
+<<<<<<< HEAD:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	<Script filename="gmailtweaksmultiplesigna.user.js" name="Gmail Tweaks: Multiple Signatures" namespace="http://blog.yanime.org/gmailtweaks_multiple_signature.user.js" description="Applies different signatures (look for 'Use identity:') for writing gmail messages when different From: address is chosen. Right now, data has to be configured directly into this script. Click EDIT to configure your email and signatures: email_array, sig_array, col_array" enabled="true">
 		<Include>http://gmail.google.com/*</Include>
 		<Include>https://gmail.google.com/*</Include>
@@ -191,5 +265,9 @@
 	</Script>
 	<Script filename="googlegroups.user.js" name="Google Groups" namespace="http://groups.google.com" description="add border to google groups" enabled="false">
 		<Include>http://groups.google.*</Include>
+=======
+	<Script filename="wowheadwishlist.user.js" name="WoWHead Wish List" namespace="WHWL" description="Creates A Wishlist for WoWHead.com" enabled="true">
+		<Include>http://*.wowhead.com/?item=*</Include>
+>>>>>>> hawkins/master:.mozilla/firefox/kergoth/gm_scripts/config.xml
 	</Script>
 </UserScriptConfig>

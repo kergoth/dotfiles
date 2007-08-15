@@ -1,0 +1,30 @@
+﻿<!ENTITY options_window_title "Настройки Locationbar²">
+<!ENTITY hideProtocols.label "Скрывать протоколы:">
+<!ENTITY hideProtocols.accesskey "С">
+<!ENTITY clickSelectsAll.label "При клике выделить всё">
+<!ENTITY clickSelectsAll.accesskey "ё">
+<!ENTITY animateBlend.label "Изменять вид ссылок при наведении">
+<!ENTITY animateBlend.accesskey "И">
+<!ENTITY linkification_prefs "Режим ссылок">
+<!ENTITY linkification.description "Нажмите на Ctrl/Meta/Shift или наведите курсор на иконку сайта для того, чтобы части адреса стали ссылками.">
+<!ENTITY linkifyOnMouse.description "Включать режим ссылок при наведении курсора мыши на панель адреса:">
+<!ENTITY linkifyOnMouse.top "cверху">
+<!ENTITY linkifyOnMouse.top.accesskey "у">
+<!ENTITY linkifyOnMouse.bottom "снизу">
+<!ENTITY linkifyOnMouse.bottom.accesskey "з">
+<!ENTITY alternate.subdomain-gray.label "Выделять поддомен серым">
+<!ENTITY alternate.subdomain-gray.accesskey "ы">
+<!ENTITY domain_prefs "Выделение домена">
+<!ENTITY alternate.domain-strong.label "полужирный">
+<!ENTITY alternate.domain-strong.accesskey "й">
+<!ENTITY alternate.favicon-show.label "Показывать иконку сайта">
+<!ENTITY alternate.favicon-show.accesskey "а">
+<!ENTITY alternate.segments-margin.label "между всеми частями адреса">
+<!ENTITY alternate.segments-margin.accesskey "д">
+<!ENTITY breadcrumb_prefs "Кнопка после…">
+<!ENTITY alternate.breadcrumb-domain.label "хоста">
+<!ENTITY alternate.breadcrumb-domain.accesskey "х">
+<!ENTITY alternate.breadcrumb-all.label "каждой части адреса">
+<!ENTITY alternate.breadcrumb-all.accesskey "ж">
+<!ENTITY alternate.fission.label "Использовать вместе с расширением Fission">
+<!ENTITY alternate.fission.accesskey "ь">

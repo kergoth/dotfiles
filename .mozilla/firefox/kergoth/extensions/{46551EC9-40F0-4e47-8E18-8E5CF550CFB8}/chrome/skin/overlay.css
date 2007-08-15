@@ -1,0 +1,12 @@
+#stylish-toolbar-button {
+	list-style-image: url("chrome://stylish/skin/mediumicon.png");
+}
+toolbar[iconsize="small"] #stylish-toolbar-button {
+	list-style-image: url("chrome://stylish/skin/smallicon.png");
+}
+#stylish-tools-menu {
+	display: none;
+}
+#stylish-add-file {
+	display: none;
+}

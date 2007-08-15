@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:extension:file:customizegoogle.jar"
+                   em:package="content/customizegoogle/"
+                   em:skin="skin/customizegoogle/"
+                   em:locale="locale/customizegoogle/en-US/" />
+  <RDF:Description RDF:about="rdf:#$0SRAI2"
+                   em:id="songbird@songbirdnest.com"
+                   em:minVersion="0.2"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:name="CustomizeGoogle"
+                   em:id="{fce36c1e-58d8-498a-b2a5-66ad1cedebbb}"
+                   em:version="0.60"
+                   em:description="Enhance Google search results and remove ads and spam"
+                   em:creator="info@customizegoogle.com"
+                   em:homepageURL="http://www.customizegoogle.com/"
+                   em:updateURL="http://www.customizegoogle.com/update.en-US.rdf"
+                   em:optionsURL="chrome://customizegoogle/content/options.xul"
+                   em:iconURL="chrome://customizegoogle/skin/32x32.png">
+    <em:contributor>Toni Kaija, Masterchief91 (fi-FI)</em:contributor>
+    <em:contributor>Luca Pedrazzi, Roccobot (it-IT)</em:contributor>
+    <em:contributor>Xavi Ivars (ca-AD)</em:contributor>
+    <em:contributor>Kai-Chieh Ku (zh-TW)</em:contributor>
+    <em:contributor>Shaman Miller (tr-TR)</em:contributor>
+    <em:contributor>Norah Marinkovic (ja-JP)</em:contributor>
+    <em:contributor>Carlos, Rodrigo M. (es-ES)</em:contributor>
+    <em:contributor>Carlos, Rodrigo M. (es-AR)</em:contributor>
+    <em:contributor>Ruben Verborgh (nl-NL)</em:contributor>
+    <em:contributor>Ruben Verborgh (nl-BE)</em:contributor>
+    <em:contributor>Piarres Beobide (eu-ES)</em:contributor>
+    <em:contributor>Denis Devedjian, Mathieu, Julien Prangère (fr-FR)</em:contributor>
+    <em:contributor>Kerry Wang (zh-CN)</em:contributor>
+    <em:contributor>Tomas Marek (cs-CZ)</em:contributor>
+    <em:contributor>Eimell (sv-SE)</em:contributor>
+    <em:contributor>Nir Bruner (he-IL)</em:contributor>
+    <em:contributor>Ljubisa Radovanovic (sr-YU)</em:contributor>
+    <em:contributor>Nighto (pt-BR)</em:contributor>
+    <em:contributor>Oliver www.erweiterungen.de (de-DE)</em:contributor>
+    <em:contributor>Viktor Kristian, Wladow (sk-SK)</em:contributor>
+    <em:contributor>Copper, Jonas (lt-LT)</em:contributor>
+    <em:contributor>Anders Jorsal, AlleyKat (da-DK)</em:contributor>
+    <em:contributor>﻿Белый Владимир (ru-RU)</em:contributor>
+    <em:contributor>Fredrik Rodland (nb-NO)</em:contributor>
+    <em:contributor>Agung Harjanto (id-ID)</em:contributor>
+    <em:contributor>Codemonkey (hu-HU)</em:contributor>
+    <em:contributor>Carlos Simão (pt-PT)</em:contributor>
+    <em:contributor>Arris, Hawksthorne (bg-BG)</em:contributor>
+    <em:contributor>Besmir Godole (sq-AL)</em:contributor>
+    <em:contributor>Qen (th-TH)</em:contributor>
+    <em:contributor>Krcko (hr-HR)</em:contributor>
+    <em:contributor>Sonickydon (el-GR)</em:contributor>
+    <em:contributor>Pedram Veisi (fa-IR)</em:contributor>
+    <em:contributor>Miga (ar-SA)</em:contributor>
+    <em:contributor>Sergey Khoruzhin (uk-UA)</em:contributor>
+    <em:contributor>DRKA (be-BY)</em:contributor>
+    <em:contributor>Kita (ko-KR)</em:contributor>
+    <em:contributor>Francisco (es-CL)</em:contributor>
+    <em:contributor>moZes (fy-NL)</em:contributor>
+    <em:contributor>ultravioletu (ro-RO)</em:contributor>
+    <em:targetApplication RDF:resource="rdf:#$SRRAI2"/>
+    <em:targetApplication RDF:resource="rdf:#$XRRAI2"/>
+    <em:targetApplication RDF:resource="rdf:#$0SRAI2"/>
+    <em:file RDF:resource="urn:mozilla:extension:file:customizegoogle.jar"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$XRRAI2"
+                   em:id="{a463f10c-3994-11da-9945-000d60ca027b}"
+                   em:minVersion="0.4"
+                   em:maxVersion="1.0+" />
+  <RDF:Description RDF:about="rdf:#$SRRAI2"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.0"
+                   em:maxVersion="2.0.*" />
+</RDF:RDF>

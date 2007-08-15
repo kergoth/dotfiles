@@ -1,0 +1,30 @@
+﻿<!ENTITY options_window_title "Opzioni di Locationbar²">
+<!ENTITY hideProtocols.label "Nascondi protocolli:">
+<!ENTITY hideProtocols.accesskey "N">
+<!ENTITY clickSelectsAll.label "Fare clic per selezionare tutti">
+<!ENTITY clickSelectsAll.accesskey "C">
+<!ENTITY animateBlend.label "URL sfumati">
+<!ENTITY animateBlend.accesskey "F">
+<!ENTITY linkification_prefs "Trasformazione in link attivabili">
+<!ENTITY linkification.description "La pressione dei tasti Ctrl/Meta/Maiusc o lo spostamento del mouse sull&apos;icona del sito consentiranno il clic sui segmenti trasformati in link attivabili.">
+<!ENTITY linkifyOnMouse.description "Consenti la trasformazione in link attivabili anche al passaggio del mouse sul bordo della barra degli indirizzi:">
+<!ENTITY linkifyOnMouse.top "in alto">
+<!ENTITY linkifyOnMouse.top.accesskey "a">
+<!ENTITY linkifyOnMouse.bottom "in basso">
+<!ENTITY linkifyOnMouse.bottom.accesskey "o">
+<!ENTITY alternate.subdomain-gray.label "Colora sottodomini in grigio">
+<!ENTITY alternate.subdomain-gray.accesskey "g">
+<!ENTITY domain_prefs "Domini">
+<!ENTITY alternate.domain-strong.label "grassetto">
+<!ENTITY alternate.domain-strong.accesskey "s">
+<!ENTITY alternate.favicon-show.label "Mostra l&apos;icona del sito">
+<!ENTITY alternate.favicon-show.accesskey "i">
+<!ENTITY alternate.segments-margin.label "Margine per tutti i segmenti">
+<!ENTITY alternate.segments-margin.accesskey "t">
+<!ENTITY breadcrumb_prefs "Breadcrumb per...">
+<!ENTITY alternate.breadcrumb-domain.label "il nome dell&apos;host">
+<!ENTITY alternate.breadcrumb-domain.accesskey "h">
+<!ENTITY alternate.breadcrumb-all.label "ciascun segmento">
+<!ENTITY alternate.breadcrumb-all.accesskey "g">
+<!ENTITY alternate.fission.label "Compatibilità con l&apos;estensione &apos;Fission&apos;">
+<!ENTITY alternate.fission.accesskey "F">

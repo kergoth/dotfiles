@@ -1,0 +1,110 @@
+<!ENTITY aboutTitle.label "Informazioni su Download Statusbar">
+<!ENTITY introTab.label "Introduzione">
+<!ENTITY by.label "a cura di Devon Jensen">
+<!ENTITY version.label "versione">
+<!ENTITY tagLine.label "Quest&apos;estensione per Mozilla Firefox permette di visualizzare e gestire i download da una barra che va a posizionarsi su quella di stato">
+<!ENTITY ifNew.label "Se non si è mai utilizzata quest&apos;estensione, leggere &apos;Consigli e trucchi&apos; e &apos;Contenuti guida&apos;.">
+<!ENTITY toView.label "Per visualizzare questa guida in futuro,">
+<!ENTITY pressAbout.label "aprire la finestra delle impostazioni di Download Statusbar e fare clic sul pulsante &apos;Informazioni su...&apos;">
+<!ENTITY donateText.label "L&apos;autore dell&apos;estensione ha impiegato molto tempo per la sua realizzazione. Se Download Statusbar migliora l&apos;utilizzo di Firefox, una piccola donazione è apprezzata (non è necessario un account Paypal, sono accettate le carte di credito)">
+<!ENTITY donate.label " - Effettua una donazione!">
+<!ENTITY majorRelease.label "Major Release!">
+<!ENTITY changelog.label "See what&apos;s new">
+<!ENTITY whatNewTab.label "Note di versione">
+<!ENTITY new1.label "- Corretto un bug che previene la funzione &apos;Continua automaticamente i download...&apos; dall&apos;attivarsi">
+<!ENTITY new2.label "- Corretto un bug nella procedura di disinstallazione">
+<!ENTITY new3.label "-">
+<!ENTITY new4.label "-">
+<!ENTITY new5.label "-">
+<!ENTITY new6.label "-">
+<!ENTITY new7.label "-">
+<!ENTITY new8.label "-">
+<!ENTITY new9.label "-">
+<!ENTITY new10.label "-">
+<!ENTITY new11.label "-">
+<!ENTITY hintsTab.label "Consigli e trucchi">
+<!ENTITY tip1Title.label "Area di anteprima download">
+<!ENTITY tip1.label "La barra di Download Statusbar corrisponde ad un&apos;area di anteprima per i download in corso o recentemente completati. Mantenere tale area pulita selezionando l&apos;opzione &apos;Elimina automaticamente i file con estensione...&apos;, oppure eliminando manualmente i download completati, poiché è assolutamente inutile avere nella barra dell&apos;estensione molti download talmente compressi da essere irriconoscibili. Per vedere la cronologia completa dei download  è sempre possibile aprire la finestra &apos;Gestione download&apos; di Firefox nel menu principale &quot;Strumenti -&gt; Download&quot;">
+<!ENTITY tip2Title.label "Clic del mouse per azioni frequenti">
+<!ENTITY tip2.label "È possibile ottenere una lista di azioni per gestire un download facendo clic con tasto destro del mouse sul download stesso. È inoltre possibile effettuare azioni frequenti nei seguenti modi:">
+<!ENTITY tip2a.label "- Per eliminare un singolo download completato, fare clic su di esso con il tasto centrale del mouse (per la maggior parte dei mouse il tasto centrale è rappresentato dalla rotella di scorrimento)">
+<!ENTITY tip2b.label "- Per eliminare TUTTI i download completati, fare doppio clic su una zona libera della barra di stato">
+<!ENTITY tip2c.label "- Per aprire un file il cui download è stato completato, fare doppio clic su di esso">
+<!ENTITY tip2d.label "- Per eliminare un download completato, fare clic su di esso con il tasto centrale del mouse tenendo premuto il tasto Ctrl">
+<!ENTITY tip2e.label "- Per mettere in pausa o riprendere un download in corso, fare clic su di esso con il tasto sinistro del mouse">
+<!ENTITY tip2f.label "- Per rinominare un download completato, fare clic su di esso tenendo premuto il tasto Maiusc">
+<!ENTITY tip3Title.label "Informazioni supplementari">
+<!ENTITY tip3.label "Informazioni più dettagliate su un download: per mostrare le statistiche di un download, posizionare il cursore del mouse su di esso ed attendere che l&apos;informazione venga visualizzata. I download in corso presenteranno informazioni continuamente aggiornate come velocità attuale, dimensione del file già scaricato e tempo rimanente. I download completati mostreranno informazioni sul file quali cartella di salvataggio, dimensione, durata del download e velocità media">
+<!ENTITY tip4Title.label "Animazioni">
+<!ENTITY tip4.label "Disattivare le animazioni per velocizzare la gestione delle azioni. Le animazioni possono fornire informazioni preziose sul download (ad esempio, una X rossa indicherà il caso in cui sia stato richiesto di eliminare un download completato), ma possono anche rallentare. Deselezionare quindi l&apos;opzione &apos;Usa l&apos;animazione&apos; nella finestra delle impostazioni -&gt; &apos;Aspetto&apos; per velocizzarne la gestione. È anche possibile disattivare temporaneamente le animazioni durante l&apos;eliminazione manuale di un download tenendo premuto il tasto Maiusc">
+<!ENTITY tip5Title.label "Interruzione di un download">
+<!ENTITY tip5.label "Interrompere un download per riprenderlo successivamente: al momento non è possibile riprendere un download dopo aver chiuso il browser (questa funzione verrà implementata in futuro), ma è possibile interrompere un download e riprenderlo dall&apos;inizio al riavvio di Firefox. Interrompere un download facendo clic su di esso con tasto destro del mouse e selezionando &apos;Interrompi&apos;, riprendere un download interrotto facendo clic su di esso con tasto destro del mouse e selezionando &apos;Avvia&apos; o semplicemente facendo doppio clic su di esso">
+<!ENTITY tip6Title.label "Gestione di più download contemporanei">
+<!ENTITY tip6.label "Facendo clic con tasto destro del mouse in una zona vuota della barra di stato (o selezionando l&apos;opzione &apos;Modalità mini&apos; nelle impostazioni) si otterranno le opzioni per gestire download multipli contemporanei: eliminare tutti i download completati, mettere in pausa, interrompere o annullare tutti i download in corso. Sarà anche possibile passare dalla modalità completa a quella mini">
+<!ENTITY tip7Title.label "Modalità mini">
+<!ENTITY tip7.label "Per vedere la lista dei download, fare clic con tasto sinistro del mouse sul pulsante &apos;Modalità mini&apos; nella barra di Download Statusbar. Dopo la comparsa della lista dei download, è possibile gestirli tramite clic con tasto destro del mouse ed eliminarli tramite clic con tasto centrale. Fare clic con tasto destro del mouse sul pulsante &apos;Modalità mini&apos; per accedere alle opzioni per la gestione di download multipli contemporanei. Il pulsante per il download in tale modalità rimane nascosto se la lista dei download è vuota">
+<!ENTITY prefsTab.label "Contenuti guida">
+<!ENTITY general.label "Generali">
+<!ENTITY pref1Title.label "Notifiche di avanzamento">
+<!ENTITY pref1.label "- I download in corso possono mostrare in piccolo informazioni dettagliate ed aggiornate direttamente sul download stesso. Scegliere quali notifiche visualizzare oppure non selezionarne alcuna. Di quelle selezionate due verranno visualizzate con la grandezza dei caratteri nella loro dimensione predefinita, modificabile nella finestra delle impostazioni -&gt; &apos;Aspetto&apos;">
+<!ENTITY pref2Title.label "Modalità">
+<!ENTITY pref2.label "- Selezionare la modalità intera (barra di stato separata) oppure la modalità mini (integrata nella barra di stato di Firefox), in base ai propri gusti">
+<!ENTITY pref3Title.label "Riduci la cronologia dei download...">
+<!ENTITY pref3.label "- Come opzione predefinita Firefox conserva la cronologia di tutti i download. Dopo un po&apos;, questa lista può diventare molto lunga e rallentare Firefox. Utilizzare questa opzione per ridurre la lista ogni volta che si chiude Firefox, mantenendone quindi gestibile la lunghezza. Questa opzione è ininfluente se Firefox è impostato per eliminare i download al loro completamento oppure alla chiusura del browser. Nota: questa opzione fa parte di quelle di Download Statusbar, ma non influisce direttamente sulla barra dell&apos;estensione stessa">
+<!ENTITY pref4Title.label "Continua i download automaticamente...">
+<!ENTITY pref4.label "- Se si hanno download in corso e si proverà a chiudere Firefox, comparirà un avviso di annullamento dei download. Selezionando questa opzione, si aprirà invece la finestra &apos;Gestione download&apos; di Firefox ed il download proseguirà anche se verrà chiusa la finestra del browser">
+<!ENTITY pref5Title.label "Elimina i download completati alla chiusura del browser">
+<!ENTITY pref5.label "- Selezionando questa opzione verranno eliminati i download completati dalla barra dell&apos;estensione, ma non eliminati dalla cronologia dei download. Non ha effetto sui download effettuati">
+<!ENTITY pref6Title.label "Conferma prima di eliminare...">
+<!ENTITY pref6.label "- Selezionando questa opzione verrà mostrato un messaggio di conferma prima della effettiva eliminazione di un file. Quando si elimina un file non è possibile recuperarlo (a meno di scaricarlo nuovamente)">
+<!ENTITY pref7Title.label "Elimina un download completato dopo l&apos;apertura">
+<!ENTITY pref7.label "- Selezionando questa opzione non verrà eliminato il download dalla cronologia">
+<!ENTITY pref8Title.label "Elimina un download completato dopo l&apos;apertura della cartella di destinazione">
+<!ENTITY pref8.label "- Selezionando questa opzione non verrà eliminato il download dalla cronologia">
+<!ENTITY pref9Title.label "Mostra l&apos;avviso di &apos;Download completato&apos;">
+<!ENTITY pref9.label "- Questa opzione è già presente fra quelle di Firefox, ma non è facilmente accessibile. È consigliabile disattivare questa opzione in Firefox in quanto non è necessaria nel momento in cui si utilizza Download Statusbar">
+<!ENTITY pref10Title.label "Ignora i seguenti tipi di file...">
+<!ENTITY pref10.label "- Quando si scaricheranno determinati tipi di file, questi non saranno visibili nella barra dell&apos;estensione, pur rimanendo nella cronologia dei download di Firefox. Ogni estensione di file deve essere separata da una virgola, gli spazi non influiscono. Esempio: &apos;jpg, jpeg, png, gif&apos; (senza virgolette)">
+<!ENTITY pref11Title.label "Elimina automaticamente i seguenti tipi di file...">
+<!ENTITY pref11.label "- Dopo il completamento di un download, questa opzione imposterà un timer per eliminare tale download dalla lista nella barra dell&apos;estensione dopo un certo numero di secondi. L&apos;opzione è utile perché è possibile accertarsi che il download sia stato completato con successo, ma non sarà più necessario eliminarlo manualmente. Ogni estensione di file deve essere separata da una virgola, gli spazi non influiscono. Esempio: &apos;jpg, jpeg, png, gif&apos; (senza virgolette). Per eliminare automaticamente dalla lista tutti i tipi di file, inserire solo *">
+<!ENTITY pref12Title.label "Stile predefinito o personalizzato">
+<!ENTITY pref12.label "- Selezionando &apos;Stile personalizzato&apos; sarà possibile impostare colori e dimensioni degli elementi. Selezionando &apos;Stile predefinito&apos; si tornerà allo stile predefinito, ma le impostazioni dello stile personalizzato resteranno memorizzate">
+<!ENTITY pref13Title.label "Colori">
+<!ENTITY pref13.label "- Fare clic su un colore per aprire la finestra di selezione colore per quell&apos;oggetto. Fare clic e trascinare sulla tavolozza per trovare un colore di proprio gusto oppure selezionare uno dei colori predefiniti. Per duplicare un colore, copiare il suo valore Hex ed inserirlo manualmente nella successiva finestra di selezione del colore. È anche possibile fare clic sul pulsante &apos;Usa il tema predefinito&apos; per annullare una precedente selezione del colore e tornare al colore predefinito. Questa opzione generalmente è utile solo per il colore del testo e quello di sfondo della barra dell&apos;estensione">
+<!ENTITY appearance.label "Aspetto">
+<!ENTITY pref14Title.label "Dimensioni del testo">
+<!ENTITY pref14.label "- Impostare le dimensioni del testo del nome del file o delle informazioni sull&apos;avanzamento in &apos;punti&apos; (pt)">
+<!ENTITY pref15Title.label "Dimensioni degli oggetti di download">
+<!ENTITY pref15.label "- Impostare base ed altezza di ogni oggetto di download in pixel">
+<!ENTITY pref16Title.label "Usa i gradienti di colore">
+<!ENTITY pref16.label "- Selezionando questa opzione verrà sovrapposta un&apos;immagine (da bianco a trasparente) al colore di sfondo dando così agli oggetti di download un effetto tridimensionale. Funziona sia per lo stile predefinito che per quello personalizzato">
+<!ENTITY pref17Title.label "Usa l&apos;animazione">
+<!ENTITY pref17.label "- Selezionando questa opzione a diverse azioni di gestione del download corrisponderanno animazioni, generalmente brevi e si spera non fastidiose. È comunque possibile disattivarle">
+<!ENTITY pref18Title.label "Colori di velocità">
+<!ENTITY pref18.label "- Selezionando questa opzione il colore di un download in corso cambierà dinamicamente in base alla velocità di download, e sarà quindi possibile &apos;vedere&apos; quanto è veloce un download in base al suo colore. Innanzitutto attivare l&apos;opzione &apos;Colori di velocità&apos; poi impostare intervalli di velocità ragionevoli cambiando i numeri in base alla velocità della propria connessione (gli intervalli predefiniti si basano sulla velocità di un modem via cavo). Infine, fare clic sui colori per impostarne uno per ogni intervallo di velocità. È possibile utilizzare questo strumento in molti modi: un&apos;idea è il differenziare i download più veloci con colori più brillanti, un&apos;altra è l&apos;avere i tre migliori intervalli di velocità rappresentati dallo stesso colore (senza alcun cambiamento) ma differenziando gli intervalli più lenti con un colore di avvertimento. Esempio: si può notare se un download scende ad una velocità inferiore ai 10 kB/sec quando la barra diventa di color rosso">
+<!ENTITY pref19Title.label "Effettuare una scansione manuale dei download effettuati">
+<!ENTITY pref19.label "- Selezionando questa opzione verrà effettuata una scansione antivirus dei download effettuati. È necessario accettare l&apos;accordo di licenza del proprio antivirus per attivare l&apos;opzione">
+<!ENTITY virusScan.label "Scansione antivirus">
+<!ENTITY pref20Title.label "Non effettuare la scansione per questi tipi di file">
+<!ENTITY pref20.label "- Ogni estensione di file deve essere separata da una virgola, gli spazi non influiscono. Esempio: &apos;jpg, jpeg, png, gif&apos; (senza virgolette)">
+<!ENTITY pref21Title.label "Percorso per il programma antivirus">
+<!ENTITY pref21.label "- Per effettuare la scansione manuale dei download è necessario avere installato un programma antivirus che accetti le richieste da riga di comando. Fare clic sul pulsante &apos;...&apos; per cercare il programma sul proprio computer">
+<!ENTITY pref22Title.label "Argomenti">
+<!ENTITY pref22.label "- Inserire gli argomenti necessari o opzionali per il proprio antivirus. &#37;1 rappresenta il file che verrà controllato (precedentemente era [Path]) e dovrebbe apparire da qualche parte tra gli argomenti. Molti programmi funzioneranno se &#37;1 sarà l&apos;unico argomento. Verificare la documentazione del proprio antivirus per trovare gli argomenti con esso compatibili">
+<!ENTITY pref23Title.label "Arguments">
+<!ENTITY pref23.label "- Enter any necessary or optional arguments specific to your anti-virus program.  &#37;1 represents the file that will be scanned (this was previously [Path]) and should appear somewhere in the arguments.  Many programs will work if &#37;1 is the only argument.  Check the documentation of your Anti-Virus software to figure out which arguments work with your program.">
+<!ENTITY listMarker.label "·">
+<!ENTITY OK.label "Chiudi">
+<!ENTITY openPref.label "Impostazioni...">
+<!ENTITY support.label "Supporta questa estensione-">
+<!ENTITY donate2.label "Effettua una donazione!">
+<!ENTITY credits.label "Credits">
+<!ENTITY transFor.label "Testo della traduzione">
+<!ENTITY currLocale.label "it-IT">
+<!ENTITY locale.label "traduzione realizzata da:">
+<!ENTITY translatorName.label "Giacomo Margarito e Federico Prato">
+<!ENTITY projectHost.label "Project web hosting provided by: ">
+<!ENTITY mozdev.label "Mozdev.org">
+<!ENTITY progAndArtwork.label "Programming and Design by: ">
+<!ENTITY soundsBy.label "Sounds created by: ">
+<!ENTITY soundPeople.label "Dallin Jensen and Devon Jensen">

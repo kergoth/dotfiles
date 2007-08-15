@@ -1,0 +1,580 @@
+<?xml version="1.0"?>  
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Download Statusbar.
+   -
+   - The Initial Developer of the Original Code is
+   - Devon Jensen.
+   - Portions created by the Initial Developer are Copyright (C) 2003
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s): Devon Jensen <velcrospud@hotmail.com>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<!DOCTYPE window SYSTEM "chrome://downbar/locale/downbartext.dtd">
+<?xml-stylesheet href="chrome://downbar/skin/downbaroverlay.css" type="text/css"?>
+
+<!--   
+
+  -->
+<overlay id="downbarOverlay"
+		 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		 xmlns:nc="http://home.netscape.com/NC-rdf#"
+		 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script type="application/x-javascript" src="chrome://downbar/content/downbaroverlay.js"/>
+	<!--  -->
+	<script src="chrome://global/content/nsDragAndDrop.js"/>
+	<script src="chrome://global/content/nsTransferable.js"/>
+	<window id="main-window">
+		
+		<stringbundleset id="stringbundleset">
+			<stringbundle id="downbarbundle" src="chrome://downbar/locale/downbar.properties"/>
+		</stringbundleset>
+		
+		<popupset>
+			
+			<popup id="db_mainButtonMenu">
+				<menuitem id="db_openOptions" label="&openOpt.label;" oncommand="window.open('chrome://downbar/content/downbarprefs.xul', 'downbar_prefs', 'chrome');"/>
+				<menuseparator/>
+				<menuitem id="db_openDLHistory" label="&openDLHist.label;" oncommand="window.open('chrome://mozapps/content/downloads/downloads.xul', '', 'chrome');"/>
+				<menu id="db_allDownloadActions" label="&allDownloads.label;">
+					<menupopup>
+						<menuitem label="&pauseAll.label;" oncommand="db_pauseAll();"/>
+						<menuitem label="&resumeAll.label;" oncommand="db_resumeAll();"/>
+						<menuitem label="&stopAll.label;" oncommand="db_stopAll();"/>
+						<menuseparator/>
+						<menuitem label="&cancelAll.label;" oncommand="db_cancelAll();"/>
+					</menupopup>
+				</menu>
+				<!-- <menuitem id="db_hideDownbar" label="&hideDownbar.label;" oncommand="db_toggleDownbar();"/> -->
+				<menuitem id="changeModeContext" label="Toggle placeholder" oncommand="db_modeToggle();"/>
+				<menuseparator/>
+				<menuitem label="&removeAll.label;" oncommand="db_clearAll();"/>
+			</popup>
+			
+			<popup id="barcontext">
+				<menuitem id="changeModeContext2" label="Toggle placeholder" oncommand="db_modeToggle();"/>
+				<menuseparator/>
+				<menuitem label="&stopAll.label;" oncommand="db_stopAll();"/>
+				<menuitem label="&resumeAll.label;" oncommand="db_resumeAll();"/>
+				<menuitem label="&pauseAll.label;" oncommand="db_pauseAll();"/>
+				<menuseparator/>
+				<menuitem label="&cancelAll.label;" oncommand="db_cancelAll();"/>
+				<menuseparator/>
+				<menuitem label="&removeAll.label;" default="true" oncommand="db_clearAll();"/>
+			</popup>
+		<!---->
+			<popup id="progresscontext" onpopupshowing="db_hideRedirPopup(null)" onpopuphidden="db_hideDownbarPopup();">
+				<menuitem label="&copySource.label;" oncommand="db_copyURL(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem id="stopLabel" label="&stopOne.label;" oncommand="db_stopit(db_findDLNode(document.popupNode));"/>
+				<menuitem id="PauseLabel" label="&pauseOne.label;" oncommand="db_pause(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem label="&cancelOne.label;" oncommand="db_cancelprogress(db_findDLNode(document.popupNode));"/>
+			</popup>
+		
+			<popup id="pausecontext" onpopupshowing="db_hideRedirPopup(null)" onpopuphidden="db_hideDownbarPopup();">
+				<menuitem label="&copySource.label;" oncommand="db_copyURL(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem id="stopLabel" label="&stopOne.label;" oncommand="db_stopit(db_findDLNode(document.popupNode));"/>
+				<menuitem id="ResumeLabel" label="&resumeOne.label;" oncommand="db_resume(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem label="&cancelOne.label;" oncommand="db_cancelprogress(db_findDLNode(document.popupNode));"/>
+			</popup>
+		
+			<popup id="donecontext" onpopupshowing="db_hideRedirPopup(null)" onpopuphidden="db_hideDownbarPopup();">
+				<menuitem label="&rename.label;" oncommand="db_renameFinished(db_findDLNode(document.popupNode));"/>
+				<menuitem label="&copySource.label;" oncommand="db_copyURL(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem label="&delete.label;" oncommand="db_startDelete(db_findDLNode(document.popupNode), event);"/>
+				<menuitem label="&remove.label;" oncommand="db_animateDecide(db_findDLNode(document.popupNode), 'clear', event);"/>
+				<menuseparator/>
+				<menuitem label="&show.label;" oncommand="db_startShowFile(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem label="&open.label;" default="true" oncommand="db_startOpenFinished(db_findDLNode(document.popupNode));"/>
+			</popup>
+		
+			<popup id="notdonecontext" onpopupshowing="db_hideRedirPopup(null)" onpopuphidden="db_hideDownbarPopup();">
+				<menuitem label="&copySource.label;" oncommand="db_copyURL(db_findDLNode(document.popupNode));"/>
+				<menuseparator/>
+				<menuitem label="&remove.label;" oncommand="db_animateDecide(db_findDLNode(document.popupNode), 'clear', event);"/>	
+				<menuseparator/>
+				<menuitem label="&start.label;" default="true" oncommand="db_startit(db_findDLNode(document.popupNode));"/>
+			</popup>
+		
+		</popupset>
+
+		<tooltip id="progresstip_transparent" class="progresstip_transparent" orient="vertical" noautohide="true" 
+				 onpopupshowing="db_setupProgTooltip(db_findDLNode(document.tooltipNode));" 
+				 onpopuphiding="db_stopTooltip(db_currTooltipAnchor.id);"
+				 onpopuphidden="db_currTooltipAnchor.setAttribute('onmouseout', '');">
+			<hbox/>
+		</tooltip>
+		
+		
+		<tooltip id="progresstip_opaque" class="progresstip_opaque" orient="vertical" noautohide="true" 
+				 onpopupshowing="db_setupProgTooltip(db_findDLNode(document.tooltipNode));" 
+				 onpopuphiding="db_stopTooltip(db_currTooltipAnchor.id);"
+				 onpopuphidden="db_currTooltipAnchor.setAttribute('onmouseout', '');">
+			<hbox/>
+		</tooltip>	 
+				 
+		<tooltip id="db_tempProgTip">		 
+			<hbox id="db_progTooltipContent">
+				<image id="progTipLeftImg" src="" style="height:162px;width:15px;"/>
+					
+                <vbox id="progTipMiddle">
+
+					<hbox align="center">
+						<image id="db_progTipIcon" src="" style="height:32px;width:32px;margin-top:8px;margin-left:5px;"/>
+						<label id="db_progTipFileName" value="" class="db_tootipTitle"/>
+					</hbox>
+			
+					<grid flex="1">
+						<columns>
+							<column/>
+							<column flex="1"/>
+						</columns>
+					
+						<rows>
+							<row>
+								<hbox align="center" pack="end">
+									<label id="sourceLabel" value="&fromTip.label;" class="db_tootipText"/>
+								</hbox>
+								<textbox id="progTipSource" readonly="true" flex="1" class="db_tooltipTextBox"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row id="targetRow">
+								<hbox align="center" pack="end">
+									<label id="targetLabel" value="&toTip.label;" class="db_tootipText"/>
+								</hbox>
+								<label id="progTipTarget" value="" flex="1" class="db_tootipText"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row>
+								<hbox align="center" pack="end">
+									<label value="&statusTip.label;" class="db_tootipText"/>
+								</hbox>
+								<label id="progTipStatus" value="" flex="1" class="db_tootipText"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row>
+								<hbox align="center" pack="end">
+									<label value="&timeTip.label;" class="db_tootipText"/>
+								</hbox>
+								<label id="progTipTimeLeft" value="" class="db_tootipText"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row>             
+								<hbox align="center" pack="end">
+									<label value="&percentTip.label;" class="db_tootipText"/>
+								</hbox>             
+								<label id="progTipPercentText" value="" class="db_tootipText"/>
+							</row>
+						</rows>
+					</grid>
+				</vbox>	
+				<image id="progTipRightImg" src="" style="height:162px;width:15px;"/>
+			</hbox>
+		</tooltip>
+
+		<tooltip id="unfintip" noautohide="true" 
+				 onpopupshowing="document.getElementById('unfintiplabel').value = db_findDLNode(document.tooltipNode);">
+			<label id="db_stoppedTipTitle" value="&stoppedDL.label;"/>
+			<label id="unfintiplabel" value=""/>
+		</tooltip>
+        
+        <tooltip id="db_redirectorTooltip" onpopupshowing="return db_redirectTooltip(document.tooltipNode);">
+            <label id="db_redirectorTooltipLabel" value="Should not show"/>
+        </tooltip>
+
+		<tooltip id="fintip_transparent" class="fintip_transparent" orient="vertical" noautohide="true" 
+				 onpopupshowing="db_makeFinTip(db_findDLNode(document.tooltipNode));" 
+				 onpopuphiding="db_closeFinTip();" 
+				 onpopuphidden="db_currTooltipAnchor.setAttribute('onmouseout', '');">
+			 <hbox/>
+		</tooltip>
+		
+		<tooltip id="fintip_opaque" class="fintip_opaque" orient="vertical" noautohide="true" 
+			 	onpopupshowing="db_makeFinTip(db_findDLNode(document.tooltipNode));" 
+			 	onpopuphiding="db_closeFinTip();" 
+			 	onpopuphidden="db_currTooltipAnchor.setAttribute('onmouseout', '');">
+			 <hbox/>
+		</tooltip>
+	
+		<tooltip id="db_tempFinTip">
+			<hbox id="db_finTooltipContent">
+				<image id="finTipLeftImg" src="" style="height:162px;width:15px;"/>
+					
+	            <vbox id="finTipMiddle">
+	
+					<hbox align="center">
+						<image id="db_fintipIcon" src="" style="height:32px;width:32px;margin-top:8px;margin-left:15px;"/>
+						<label id="db_fintipFileName" value="" class="db_tootipTitle"/>
+					</hbox>
+					
+					<grid flex="1">
+						<columns>
+							<column/>
+							<column flex="1"/>
+						</columns>
+					
+						<rows>
+							<row>
+								<hbox align="center" pack="end">
+									<label id="sourceLabel" value="&fromTip.label;" class="db_tootipText"/>
+								</hbox>
+								<textbox id="finSource" readonly="true" flex="1" class="db_tooltipTextBox"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row id="targetRow">
+								<hbox align="center" pack="end">
+									<label id="targetLabel" value="&toTip.label;" class="db_tootipText"/>
+								</hbox>
+							<label id="finTarget" value="" flex="1" class="db_tootipText"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row>
+								<hbox align="center" pack="end">
+									<label value="&sizeTip.label;" class="db_tootipText"/>
+								</hbox>
+								<label id="finSize" value="" flex="1" class="db_tootipText"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row>
+								<hbox align="center" pack="end">
+									<label value="&timeCompleteTip.label;" class="db_tootipText"/>
+								</hbox>
+								<label id="finTime" value="" class="db_tootipText"/>
+							</row>
+							<separator class="db_seperatorThin"/>
+							<row>             
+								<hbox align="center" pack="end">
+									<label value="&avgSpeedTip.label;" class="db_tootipText"/>
+								</hbox>             
+								<label id="finSpeed" value="" class="db_tootipText"/>
+							</row>
+						</rows>
+					</grid>
+	
+	            </vbox>
+	            <vbox id="db_tipImgPreviewBox" hidden="true" style="min-width:110px;">
+	            	<spacer flex="1"/>
+	            	<hbox>
+	            		<spacer flex="1"/>
+	            		<image id="db_tipImgPreview" src="" height="100" width="100" style="margin-left:10px;"/>
+	            		<spacer flex="1"/>
+	            	</hbox>
+	            	<spacer flex="1"/>
+	            </vbox>
+	            <image id="finTipRightImg" src="" style="height:162px;width:15px;"/>
+			</hbox>
+			
+		</tooltip>
+		
+		<tooltip id="db_clearAllTip">
+			<label value="&removeAll.label;"/>
+		</tooltip>
+		
+		<tooltip id="db_toMiniTip">
+			<label value="&toMiniTip.label;"/>
+		</tooltip>
+		
+		<keyset id="mainKeyset">
+			<key id="key_togDownbar" key="z" oncommand="db_toggleDownbar();" modifiers="accel,shift"/>
+		</keyset>
+
+		<!--  -->
+		<hbox id="downbarHolder" insertbefore="status-bar" align="center">
+			
+			<hbox id="downbarMainMenuButton" onclick="db_showMainPopup(this, event);" context="db_mainButtonMenu">
+				<image id="downbarMainMenuImage" width='18' height='16'/>
+				<label id="downbarMainMenuText" value="&downloadsCap.label;" class="db_buttonText"/>
+			</hbox>
+			
+			<hbox id="downbar" datasources="rdf:null" ref="NC:DownloadsRoot" flex="1"
+				  class="db_downbar" context="barcontext" ondblclick="db_clearAll();" pack="end" dir="rtl">
+	
+				<template>
+					<!-- In progress -->
+					<rule nc:DownbarShow="1" nc:DownloadState="0" parsetype="Integer">
+						<stack uri="rdf:*" class="db_progressStack"  crop="right" context="progresscontext" 
+							   flex="1" align="center" tooltip="db_redirectorTooltip" 
+							   pURL="rdf:http://home.netscape.com/NC-rdf#URL"
+							   onclick="db_pause(this.id, event); event.stopPropagation();" 
+							   state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+							<hbox class="db_progressMeter">
+								<hbox class="db_progress-bar"/>
+								<hbox class="db_progress-remainder" flex="1"/>
+							</hbox>
+							<hbox align="center">
+								<label class="db_filenameLabel" value="rdf:http://home.netscape.com/NC-rdf#Name" 
+									   crop="end" flex="1"/>
+								<vbox class="db_progressVbox" pack="center">
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="1" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+								</vbox>
+							</hbox>
+						</stack>
+					</rule>
+					
+					<!-- Finished -->
+					<rule nc:DownbarShow="1" nc:DownloadState="1" parsetype="Integer">
+						<hbox uri="rdf:*" class="db_finishedHbox" flex="100" crop="end" context="donecontext" 
+							  align="center" tooltip="db_redirectorTooltip"
+							  ondblclick="db_hideRedirPopup(null); db_startOpenFinished(this.id); event.stopPropagation();" 
+							  onclick="db_finishedClickHandle(this, event); event.stopPropagation();"
+							  state="rdf:http://home.netscape.com/NC-rdf#DownloadState"
+							  ondraggesture="nsDragAndDrop.startDrag(event,db_dragDropObserver);">
+							<stack>
+								<image src="moz-icon:rdf:http://home.netscape.com/NC-rdf#File" class="db_finishedIcon" 
+									   flex="1"/>
+								<vbox style="min-width:16px;min-height:16px;">
+									<hbox flex="1"/>
+									<hbox>
+										<hbox flex="1"/>
+										<image src="" style="height:16px;width:16px"/>
+										<hbox flex="1"/>
+									</hbox>
+									<hbox flex="1"/>
+								</vbox>
+							</stack>
+							<label value="rdf:http://home.netscape.com/NC-rdf#Name" crop="end" 
+								   class="db_filenameLabel" flex="200"/>
+						</hbox> 
+					</rule>
+					
+					<!-- Canceled -->
+					<rule nc:DownbarShow="1" nc:DownloadState="3" parsetype="Integer">
+					
+						<hbox uri="rdf:*" class="db_notdoneHbox" flex="100" crop="end" context="notdonecontext"
+							  align="center" tooltip="unfintip"
+							  ondblclick="db_startit(this.id); event.stopPropagation();" 
+							  sourcepath="rdf:http://home.netscape.com/NC-rdf#URL"
+							  onclick="db_finishedClickHandle(this, event); event.stopPropagation();"
+							  state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+							<label value="rdf:http://home.netscape.com/NC-rdf#Name" crop="end" 
+								   class="db_filenameLabel" flex="1"/>
+						</hbox>
+					
+					</rule>
+					
+					<!-- Paused -->
+					<rule nc:DownbarShow="1" nc:DownloadState="4" parsetype="Integer">
+					
+						<stack uri="rdf:*" class="db_pausedHbox"  crop="right" context="pausecontext"
+							   flex="1" align="center" tooltip="db_redirectorTooltip"
+							   pURL="rdf:http://home.netscape.com/NC-rdf#URL" 
+							   onclick="db_resume(this.id, event); event.stopPropagation();" 
+							   state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+						
+							<hbox class="db_progressMeter">
+								<hbox class="db_progress-bar"/>
+								<hbox class="db_progress-remainder" flex="1"/>
+							</hbox>
+							<hbox align="center">
+								<label class="db_filenameLabel" value="rdf:http://home.netscape.com/NC-rdf#Name" 
+									   crop="end" flex="1"/>
+								<vbox class="db_progressVbox" pack="center">
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="1" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+								</vbox>
+							</hbox>
+						</stack>
+					</rule>
+					
+					<!-- Failed -->
+					<rule nc:DownbarShow="1" nc:DownloadState="2" parsetype="Integer">
+					
+						<hbox uri="rdf:*" class="db_notdoneHbox" flex="1" crop="end" context="notdonecontext"
+							  align="center" tooltip="unfintip"
+							  ondblclick="db_startit(this.id); event.stopPropagation();" 
+							  sourcepath="rdf:http://home.netscape.com/NC-rdf#URL"
+							  onclick="db_finishedClickHandle(this, event); event.stopPropagation();"
+							  state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+							<label value="rdf:http://home.netscape.com/NC-rdf#Name" crop="end" 
+								   class="db_filenameLabel" flex="1"/>
+						</hbox>
+					
+					</rule>
+									
+				</template>
+			</hbox>
+			
+			<hbox id="downbarClearButton" onclick="db_clearAll();" tooltip="db_clearAllTip">
+				<!-- <image id="downbarClearButtonImage" width='16' height='16'/> -->
+				<label id="downbarClearButtonText" value="&clear.label;" class="db_buttonText"/>
+			</hbox>
+			
+			<hbox id="downbarToMiniButton" onclick="db_modeToggle();" tooltip="db_toMiniTip">
+				<!-- <image id="downbarToMiniButtonImage" width='16' height='16'/> -->
+				<label id="downbarToMiniButtonText" value="&mini.label;" class="db_buttonText"/>
+			</hbox>
+		</hbox>
+		<!-- downbarMini:  Collapsed if it isn't being used,
+						   hidden if it is being used but there is nothing in it -->
+		<statusbar id="status-bar">
+			<statusbarpanel id="downbarMini" context="barcontext" hidden="true" collapsed="true"
+							ondblclick="db_clearAll();" 
+							onclick="db_showMiniPopup(this, event);">
+				<hbox align="center">
+					<image id="downbarMiniImage"/>
+					<label id="downbarMiniText" value="0:0"/>
+				</hbox>			
+				
+			</statusbarpanel>
+		</statusbar>
+
+		<popup id="downbarPopup">
+			<vbox id="downbarPopupTemp" pack="end" datasources="rdf:null" ref="NC:DownloadsRoot" 
+				  class="db_downbarPopup">
+				<template>
+					
+					<!-- In progress -->
+					<rule nc:DownbarShow="1" nc:DownloadState="0" parsetype="Integer">
+						<stack uri="rdf:*" class="db_progressStack"  crop="right" context="progresscontext"
+							   flex="1" align="center" tooltip="db_redirectorTooltip"
+							   pURL="rdf:http://home.netscape.com/NC-rdf#URL" 
+							   onclick="db_pause(this.id, event); event.stopPropagation();"
+							   state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+							<hbox class="db_progressMeter">
+								<hbox class="db_progress-bar"/>
+								<hbox class="db_progress-remainder" flex="1"/>
+							</hbox>
+							<hbox align="center">
+								<label class="db_filenameLabel" value="rdf:http://home.netscape.com/NC-rdf#Name" 
+									   crop="end" flex="1"/>
+								<vbox class="db_progressVbox" pack="center">
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+								</vbox>
+							</hbox>
+						</stack>
+					</rule>
+					
+					<!-- Finished -->
+					<rule nc:DownbarShow="1" nc:DownloadState="1" parsetype="Integer">
+						<hbox uri="rdf:*" class="db_finishedHbox" flex="100" crop="end" context="donecontext" 
+							  align="center" tooltip="db_redirectorTooltip"
+							  ondblclick="db_hideRedirPopup(null); db_startOpenFinished(this.id); event.stopPropagation();" 
+							  onclick="db_finishedClickHandle(this, event); event.stopPropagation();"
+							  state="rdf:http://home.netscape.com/NC-rdf#DownloadState"
+							  ondraggesture="nsDragAndDrop.startDrag(event,db_dragDropObserver);">
+							<stack>
+								<image src="moz-icon:rdf:http://home.netscape.com/NC-rdf#File" class="db_finishedIcon" 
+									   flex="1"/>
+								<vbox>
+									<hbox flex="1"/>
+									<hbox>
+										<hbox flex="1"/>
+										<image src="" style="height:16px;width:16px"/>
+										<hbox flex="1"/>
+									</hbox>
+									<hbox flex="1"/>
+								</vbox>
+							</stack>
+							<label value="rdf:http://home.netscape.com/NC-rdf#Name" crop="end" 
+								   class="db_filenameLabel" flex="200"/>
+						</hbox> 
+		
+					</rule>
+					
+					<!-- Canceled -->
+					<rule nc:DownbarShow="1" nc:DownloadState="3" parsetype="Integer">
+		
+						<hbox uri="rdf:*" class="db_notdoneHbox" flex="100" crop="end" context="notdonecontext"
+							  align="center" tooltip="unfintip"
+							  ondblclick="db_startit(this.id); event.stopPropagation();" 
+							  sourcepath="rdf:http://home.netscape.com/NC-rdf#URL"
+							  onclick="db_finishedClickHandle(this, event); event.stopPropagation();"
+							  state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+							<label value="rdf:http://home.netscape.com/NC-rdf#Name" crop="end" 
+								   class="db_filenameLabel" flex="1"/>
+						</hbox>
+		
+					</rule>
+					
+					<!-- Paused -->
+					<rule nc:DownbarShow="1" nc:DownloadState="4" parsetype="Integer">
+						<stack uri="rdf:*" class="db_pausedHbox"  crop="right" context="pausecontext"
+							   flex="1" align="center" tooltip="db_redirectorTooltip"
+							   pURL="rdf:http://home.netscape.com/NC-rdf#URL" 
+							   onclick="db_resume(this.id, event); event.stopPropagation();" 
+							   state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+						
+							<hbox class="db_progressMeter">
+								<hbox class="db_progress-bar"/>
+								<hbox class="db_progress-remainder" flex="1"/>
+							</hbox>
+							<hbox align="center">
+								<label class="db_filenameLabel" value="rdf:http://home.netscape.com/NC-rdf#Name" 
+									   crop="end" flex="1"/>
+								<vbox class="db_progressVbox" pack="center">
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+									<description class="db_progressIndicator" value="0" hidden="true"/>
+								</vbox>
+							</hbox>
+						</stack>
+					</rule>
+					
+					<!-- Failed -->
+					<rule nc:DownbarShow="1" nc:DownloadState="2" parsetype="Integer">
+					
+						<hbox uri="rdf:*" class="db_notdoneHbox" flex="100" crop="end" context="notdonecontext"
+							  align="center" tooltip="unfintip"
+							  ondblclick="db_startit(this.id); event.stopPropagation();" 
+							  sourcepath="rdf:http://home.netscape.com/NC-rdf#URL"
+							  onclick="db_finishedClickHandle(this, event); event.stopPropagation();"
+							  state="rdf:http://home.netscape.com/NC-rdf#DownloadState">
+							<label value="rdf:http://home.netscape.com/NC-rdf#Name" crop="end" 
+								   class="db_filenameLabel" flex="1"/>
+						</hbox>
+					
+					</rule>
+				
+				</template>
+			</vbox>
+			<hbox id="db_widthSpacer" style="min-width:125px;"/>
+		</popup>
+
+	</window>
+</overlay>
+
+<!-- 
+
+
+  -->

@@ -1,0 +1,11 @@
+<!ENTITY addsiterule "Voeg toe">
+<!ENTITY addsiterule.ak "V">
+<!ENTITY domaintype "In domein">
+<!ENTITY domaintype.ak "I">
+<!ENTITY site "Site">
+<!ENTITY title "Specificeer sites">
+<!ENTITY type "Type">
+<!ENTITY urltype "Precies">
+<!ENTITY urltype.ak "P">
+<!ENTITY urlprefixtype "Begint met">
+<!ENTITY urlprefixtype.ak "B">

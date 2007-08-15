@@ -1,0 +1,10 @@
+<!ENTITY stylish.addfile "Añadir archivo a &stylish;...">
+<!ENTITY stylish.addfile.ak "A">
+<!ENTITY stylish.findStyleBrowser "Buscar estilos para esta página">
+<!ENTITY stylish.findStyleBrowser.ak "B">
+<!ENTITY stylish.globalStyles "Estilos globales">
+<!ENTITY stylish.globalStyles.ak "g">
+<!ENTITY stylish.manageSites "Administrar estilos...">
+<!ENTITY stylish.manageSites.ak "A">
+<!ENTITY stylish.writeStyle "Escribir estilo">
+<!ENTITY stylish.writeStyle.ak "E">

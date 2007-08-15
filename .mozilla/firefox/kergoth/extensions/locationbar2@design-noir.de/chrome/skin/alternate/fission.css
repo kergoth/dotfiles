@@ -1,0 +1,7 @@
+@import url("chrome://global/skin/");
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#urlbar {
+  -moz-binding: url(chrome://locationbar2/skin/alternate/fission.xml#urlbar) !important;
+}

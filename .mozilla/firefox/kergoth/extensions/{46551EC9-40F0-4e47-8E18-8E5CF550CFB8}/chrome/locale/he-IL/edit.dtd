@@ -1,0 +1,44 @@
+<!ENTITY addhint "ראה\י userstyles.org לעיצובים שנעשו מראש">
+<!ENTITY advancedview "מתקדם">
+<!ENTITY advancedview.ak "A">
+<!ENTITY allowupdates "אפשר בדיקת עידכונים">
+<!ENTITY allowupdates.ak "A">
+<!ENTITY basicoutro "לחץ\י &amp;תצוגה מקדימה; כדי לראות זמנית את השינויים שהסגנון יעשה. לחץ\י  &שמור; כדי להחיל את הסגנון ולסגור את הדו שיח.למרות שרוב הסגנונות משפיעים מיידית, חלקם דורשים לאתחל את היישום.">
+<!ENTITY basicview "בסיסי">
+<!ENTITY basicview.ak "B">
+<!ENTITY chromefolder "נתיב תיקיית הChrome">
+<!ENTITY chromefolder.ak "C">
+<!ENTITY chromefolder.tt "הכנס\י את נתיב תיקיית ה-chrome של הפרופיל הנוכחי במיקום הסמן">
+<!ENTITY dataURI "נתוני מחרוזת זיהוי משאב...">
+<!ENTITY dataURI.ak "D">
+<!ENTITY dataURI.tt "הכנס\י נתוני מחרוזת זיהוי משאב (URI) לקובץ המצויין במיקום הסמן">
+<!ENTITY description.ak "D">
+<!ENTITY enabled.ak "E">
+<!ENTITY htmlnamespace "HTML מרחב שם זיהוי ייחודי">
+<!ENTITY htmlnamespace.ak "H">
+<!ENTITY htmlnamespace.tt "אפיין את HTML כמרחב שם זיהוי ייחודי ברירת מחדל לעיצוב זה">
+<!ENTITY important "חשוב!">
+<!ENTITY important.ak "m">
+<!ENTITY important.tt "גורם לכל ההצהרות להיות חשובות!">
+<!ENTITY itsalltext "זה הכל טקסט!">
+<!ENTITY itsalltext.ak "T">
+<!ENTITY insert "הכנס">
+<!ENTITY insert.ak "I">
+<!ENTITY pickcolor "צבע">
+<!ENTITY pickcolor.ak "o">
+<!ENTITY pickcolorrainbowpicker "צבע...">
+<!ENTITY pickcolorrainbowpicker.ak "o">
+<!ENTITY poststyle "פרסם\י עיצוב זה בuserstyles.org">
+<!ENTITY preview "תצוגה מקדימה">
+<!ENTITY preview.ak "w">
+<!ENTITY save "שמור">
+<!ENTITY save.ak "S">
+<!ENTITY siterules "חוקי האתר ...">
+<!ENTITY siterules.ak "S">
+<!ENTITY siterules.tt "הכנס חוק -moz-document מסביב לנבחר">
+<!ENTITY visitstyle "בקר\י באתר עיצוב זה">
+<!ENTITY wraplines "עטוף שורות">
+<!ENTITY wraplines.ak "W">
+<!ENTITY xulnamespace "XUL מרחב שם זיהוי ייחודי">
+<!ENTITY xulnamespace.ak "X">
+<!ENTITY xulnamespace.tt "אפיין את XUL כמרחב שם זיהוי ייחודי ברירת מחדל לעיצוב זה">

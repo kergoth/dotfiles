@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>{D4DD63FA-01E4-46a7-B6B1-EDAB7D6AD389}</em:id>
+    <em:version>0.9.5</em:version>
+    
+    <!-- Target Application this extension can install into, 
+        with minimum and maximum supported versions. --> 
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>2.0</em:minVersion>
+        <em:maxVersion>2.0.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    
+    <!-- Front End MetaData -->
+    <em:name>Download Statusbar</em:name>
+    <em:description>View and manage downloads from a tidy statusbar</em:description>
+    <em:creator>Devon Jensen</em:creator>
+    <em:homepageURL>http://downloadstatusbar.mozdev.org/</em:homepageURL>
+    <!-- <em:updateURL>http://downloadstatusbar.mozdev.org/downbarupdate.rdf</em:updateURL> -->
+
+    <!-- Front End Integration Hooks (used by Extension Manager)-->
+    <em:optionsURL>chrome://downbar/content/downbarprefs.xul</em:optionsURL>
+    <em:aboutURL>chrome://downbar/content/aboutdownbar.xul</em:aboutURL>
+    <em:iconURL>chrome://downbar/skin/downbarIcon.png</em:iconURL>
+    
+  </Description>      
+</RDF>

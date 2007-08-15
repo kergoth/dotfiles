@@ -1,0 +1,30 @@
+﻿<!ENTITY options_window_title "Préférences de Locationbar²">
+<!ENTITY hideProtocols.label "Masquer protocoles:">
+<!ENTITY hideProtocols.accesskey "M">
+<!ENTITY clickSelectsAll.label "Un clic dans la barre d&apos;URL sélectionne tout">
+<!ENTITY clickSelectsAll.accesskey "U">
+<!ENTITY animateBlend.label "Effets lorsque la souris entre/sort de la barre d&apos;URL">
+<!ENTITY animateBlend.accesskey "E">
+<!ENTITY linkification_prefs "Transformation en lien">
+<!ENTITY linkification.description "Presser Ctrl/Meta/Shift ou amener la souris sur la favicône permet de rendre les segments cliquables.">
+<!ENTITY linkifyOnMouse.description "Activer également la transformation en lien lorque la souris arrive vers la barre d&apos;URL :">
+<!ENTITY linkifyOnMouse.top "par le haut">
+<!ENTITY linkifyOnMouse.top.accesskey "h">
+<!ENTITY linkifyOnMouse.bottom "par le bas">
+<!ENTITY linkifyOnMouse.bottom.accesskey "a">
+<!ENTITY alternate.subdomain-gray.label "Sous-domaines gris">
+<!ENTITY alternate.subdomain-gray.accesskey "d">
+<!ENTITY domain_prefs "Domaine">
+<!ENTITY alternate.domain-strong.label "en gras">
+<!ENTITY alternate.domain-strong.accesskey "g">
+<!ENTITY alternate.favicon-show.label "Montrer la favicône">
+<!ENTITY alternate.favicon-show.accesskey "o">
+<!ENTITY alternate.segments-margin.label "Espace entre les segments">
+<!ENTITY alternate.segments-margin.accesskey "p">
+<!ENTITY breadcrumb_prefs "Remplacer le &quot;/&quot; par une icône pour…">
+<!ENTITY alternate.breadcrumb-domain.label "le serveur">
+<!ENTITY alternate.breadcrumb-domain.accesskey "l">
+<!ENTITY alternate.breadcrumb-all.label "chaque segment">
+<!ENTITY alternate.breadcrumb-all.accesskey "q">
+<!ENTITY alternate.fission.label "Compatibilité avec Fission">
+<!ENTITY alternate.fission.accesskey "F">
