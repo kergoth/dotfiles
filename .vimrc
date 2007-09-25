@@ -595,6 +595,9 @@ if has('gui_running')
 
   " set go=Acgtm
   set go=Acga
+
+  set columns=112
+  set lines=50
 endif
 
 " Make operations like yank, which normally use the unnamed register, use the
