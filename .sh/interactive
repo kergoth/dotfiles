@@ -36,8 +36,19 @@ setup_interactive () {
         DEBIAN_CHROOT="[$(cat /etc/debian_chroot)]"
     fi
     # Check for color support in this terminal
-    if tput setaf 1 >&/dev/null; then
-        eval `dircolors`
+    if which tput >&/dev/null; then
+        if tput setaf 1 >&/dev/null; then
+            color=1
+        else
+            color=0
+        fi
+    else
+        color=1
+    fi
+    if [ $color -eq 1 ]; then
+        if which dircolors >&/dev/null; then
+            eval `dircolors`
+        fi
         alias ls='ls --color=auto -a -p'
         PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
     else
