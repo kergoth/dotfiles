@@ -587,6 +587,9 @@ endif
 set isfname+=32
 
 if has('gui_running')
+  set lines=50
+  set columns=112
+
   " Hide the mouse cursor while typing
   set mh
 
