@@ -10,8 +10,8 @@ LUA_INIT="@${HOME}/.lua/init.lua"
 TERMINFO="${HOME}/.terminfo"
 SCONSFLAGS="-u -j 4"
 
-if [ -x /usr/local/bin/git ]; then
-    GIT_EXEC_PATH=/usr/local/bin
+if g="$(which git-init)"; then
+    GIT_EXEC_PATH="$(dirname $g)"
     export GIT_EXEC_PATH
 fi
 
