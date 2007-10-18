@@ -42,6 +42,10 @@ setup_interactive () {
         else
             color=0
         fi
+        local kbs="$(tput kbs)"
+        if [ -n "$kbs" ]; then
+            stty erase "$kbs"
+        fi
     else
         color=1
     fi
