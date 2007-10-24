@@ -937,6 +937,7 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:xml_syntax_folding = 1
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 let g:secure_modelines_verbose = 1
