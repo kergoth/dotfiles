@@ -3,9 +3,9 @@
 "              ( f.ingram.lists <AT> gmail.com )
 " Description: An attempt to implement TextMate style Snippets. Features include
 "              automatic cursor placement and command execution.
-" $LastChangedDate: 2007-04-05 15:23:48 +0100 (Thu, 05 Apr 2007) $
+" $LastChangedDate$
 " Version:     1.1
-" $Revision: 109 $
+" $Revision$
 "
 " This file contains some simple functions that attempt to emulate some of the 
 " behaviour of 'Snippets' from the OS X editor TextMate, in particular the
@@ -94,10 +94,11 @@ if globpath(&rtp, 'plugin/snippetEmu.vim') != ""
 endif
 
 let s:debug = 0
+let s:Disable = 0
 
-function! <SID>Debug(text)
+function! s:Debug(func, text)
   if exists('s:debug') && s:debug == 1
-    echom a:text
+    echom "Snippy: ".a:func.": ".a:text
   endif
 endfunction
 
@@ -105,7 +106,7 @@ if (exists('loaded_snippet') || &cp) && !s:debug
   finish
 endif
 
-call <SID>Debug("Snippy: Started the plugin")
+call s:Debug("","Started the plugin")
 
 let loaded_snippet=1
 " {{{ Set up variables
@@ -121,20 +122,22 @@ if !exists("g:snip_elem_delim")
     let g:snip_elem_delim = ":"
 endif
 
-call <SID>Debug("Snippy: Set variables")
+if !exists("g:snippetsEmu_key")
+  let g:snippetsEmu_key = "<Tab>"
+endif
 
-let s:just_expanded = 0
+call s:Debug("", "Set variables")
 
 " }}}
 " {{{ Set up menu
 for def_file in split(globpath(&rtp, "after/ftplugin/*_snippets.vim"), '\n')
-  call <SID>Debug("Snippy: Adding ".def_file." definitions to menu")
+  call s:Debug("","Adding ".def_file." definitions to menu")
   let snip = substitute(def_file, '.*[\\/]\(.*\)_snippets.vim', '\1', '')
   exec "nmenu <silent> S&nippets.".snip." :source ".def_file."<CR>"
 endfor
 " }}}
-" {{{ Map Jumper to the default key if not set already
-function! <SID>GetSuperTabSNR()
+" {{{ Sort out supertab
+function! s:GetSuperTabSNR()
   let a_sav = @a
   redir @a
   exec "silent function"
@@ -145,29 +148,43 @@ function! <SID>GetSuperTabSNR()
   return matchlist(func, '\(.*\)S')[1]
 endfunction
 
-if ( !hasmapto( '<Plug>Jumper', 'i' ) )
-  if globpath(&rtp, 'plugin/supertab.vim') != ""
-    call <SID>Debug("Snippy: SuperTab installed")
+function! s:SetupSupertab()
+  if !exists('s:supInstalled')
+    let s:supInstalled = 0
+  endif
+  if s:supInstalled == 1 || globpath(&rtp, 'plugin/supertab.vim') != ""
+    call s:Debug("SetupSupertab", "Supertab installed")
+    let s:SupSNR = s:GetSuperTabSNR()
     let s:supInstalled = 1
     let s:done_remap = 0
-    imap <Tab> <Plug>Jumper
-  else
-    let s:supInstalled = 0
-    imap <unique> <Tab> <Plug>Jumper
   endif
-else
-  let s:supInstalled = 0
-endif
-if ( !hasmapto( 'i<BS><Tab>', 's' ) )
-  smap <unique> <Tab> i<BS><Tab>
-endif
-imap <silent> <script> <Plug>Jumper <C-R>=<SID>Jumper()<CR>
+endfunction
 
-call <SID>Debug("Snippy: Mapped keys")
+call s:SetupSupertab()
+" }}}
+" {{{ Map Jumper to the default key if not set already
+function! s:SnipMapKeys()
+  if (!hasmapto('<Plug>Jumper','i'))
+    if s:supInstalled == 1
+      exec 'imap '.g:snippetsEmu_key.' <Plug>Jumper'
+    else
+      exec 'imap <unique> '.g:snippetsEmu_key.' <Plug>Jumper'
+    endif
+  endif
+
+  if (!hasmapto( 'i<BS>'.g:snippetsEmu_key, 's'))
+    exec 'smap <unique> '.g:snippetsEmu_key.' i<BS>'.g:snippetsEmu_key
+  endif
+  imap <silent> <script> <Plug>Jumper <C-R>=<SID>Jumper()<CR>
+endfunction
+
+call s:SnipMapKeys()
+
+call s:Debug("", "Mapped keys")
 
 " }}}
 " {{{ SetLocalTagVars()
-function! <SID>SetLocalTagVars()
+function! s:SetLocalTagVars()
   if exists("b:snip_end_tag") && exists("b:snip_start_tag") && exists("b:snip_elem_delim")
     return [b:snip_start_tag, b:snip_elem_delim, b:snip_end_tag]
   else
@@ -175,19 +192,9 @@ function! <SID>SetLocalTagVars()
   endif
 endfunction
 " }}}
-" {{{ CheckForBufferTags() - Checks to see whether buffer specific tags have
-" been defined
-function! <SID>CheckForBufferTags()
-  if exists("b:snip_end_tag") && exists("b:snip_start_tag") && exists("b:snip_elem_delim")
-    return 1
-  else
-    return 0
-  endif
-endfunction
-" }}}
 " {{{ SetSearchStrings() - Set the search string. Checks for buffer dependence
-function! <SID>SetSearchStrings()
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
+function! s:SetSearchStrings()
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
   let b:search_str = snip_start_tag.'\([^'.
         \snip_start_tag.snip_end_tag.
         \'[:punct:] \t]\{-}\|".\{-}"\)\('.
@@ -197,77 +204,50 @@ function! <SID>SetSearchStrings()
   let b:search_endVal = "[^".snip_end_tag."]*"
 endfunction
 " }}}
-" {{{ SetKeywords(text) - Add characters to the current buffer's iskeywords
-" Refactored out here as it's used twice in SetCom
-function! <SID>SetKeywords(text)
-  if <SID>CheckForBufferTags()
-    let snip_start_tag = b:snip_start_tag
-  else
-    let snip_start_tag = g:snip_start_tag
-  endif
-  let tokens = split(a:text, ' ')
-  let lhs = tokens[0]
-  let rhs = join(tokens[1:])
-  call <SID>SetSearchStrings()
-  for char in split(lhs, '\zs')
-    if char == '@'
-      exec 'setlocal iskeyword+=@-@'
-    elseif char != '^'
-      try
-        exec 'setlocal iskeyword+='.char
-      catch /474/
-      endtry
-    endif
-    if stridx(snip_start_tag, char) != -1
-      echom "One of the snippet definitions contains a character in your snip_start_tag; this could cause problems"
-    endif
-  endfor
-  return [<SID>Hash(lhs), rhs]
-endfunction
-" }}}
-" {{{ SetCom(text) - Set command function
-function! <SID>SetCom(text)
-  let text = substitute(a:text, '\c<CR>\|<Esc>\|<Tab>\|<BS>\|<Space>\|<C-r>\|<Pipe>\|\"\|\\','\\&',"g")
+" {{{ SetCom(text, scope) - Set command function
+function! <SID>SetCom(text, scope)
+  let text = substitute(a:text, '\c<CR>\|<Esc>\|<Tab>\|<BS>\|<Space>\|<C-r>\|<Bar>\|\"\|\\','\\&',"g")
 
-  if s:supInstalled == 1 && s:done_remap == 0
-    let s:SupSNR = <SID>GetSuperTabSNR()
-    imap <Tab> <Plug>Jumper
-    let s:done_remap = 1
+  if s:supInstalled == 1
+    call s:SetupSupertab()
+    call s:SnipMapKeys()
   endif
 
-  let text = substitute(text, "$", "","")
-  if match(text,"<buffer>") == 0
-    let text = substitute(text, '\s*<buffer>\s*', "","")
-    let [lhs, rhs] = <SID>SetKeywords(text)
-    return "let b:snip_".lhs.' = "'.rhs.'"'
+  let text = substitute(text, "\r$", "","")
+
+  let tokens = split(text, ' ')
+  call filter(tokens, 'v:val != ""')
+  if len(tokens) == 0
+    let output = join(s:ListSnippets("","","",eval(a:scope)) ,"\n")
+    if output == ""
+      echohl Title | echo "No snippets defined" | echohl None
+    else
+      echohl Title | echo "Defined snippets:" | echohl None
+      echo output
+    endif
+  " NOTE - cases such as ":Snippet if  " will intentionally(?) be parsed as a
+  " snippet named "if" with contents of " "
+  elseif len(tokens) == 1
+    let snip = s:Hash(tokens[0])
+    if exists(a:scope."trigger_".snip)
+      " FIXME - is there a better approach?
+      " echo doesn't handle ^M correctly
+      let pretty = substitute(eval(a:scope."trigger_".snip), "\r", "\n","g")
+      echo pretty
+    else
+      echohl Error | echo "Undefined snippet: ".snip | echohl None
+    endif
   else
-    let text = substitute(text, '^\s*', "", "")
-    let [lhs, rhs] = <SID>SetKeywords(text)
-    return "let g:snip_".lhs.' = "'.rhs.'"'
-  endif
-endfunction
-" }}}
-" {{{ Check for end - Check whether the cursor is at the end of the current line
-function! <SID>CheckForEnd()
-  " Check to see whether we're at the end of a line so we can decide on
-  " how to start inserting
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
-  if col(".") == <SID>StrLen(getline("."))
-    return 1
-  elseif getline(".") =~ '^$'
-    return 1
-  elseif (getline(".")[col(".")] == snip_elem_delim) &&
-      \(getline(".")[col(".") + 1] == snip_end_tag) &&
-      \(col(".") + 2 == <SID>StrLen(getline(".")))
-      return 1
-  else
-    return 0 
+    let [lhs, rhs] = [s:Hash(tokens[0]), join(tokens[1:])] 
+    call s:SetSearchStrings()
+    let g:search_str = b:search_str
+    exe "let ".a:scope."trigger_".lhs.' = "'.rhs.'"'
   endif
 endfunction
 " }}}
 " {{{ RestoreSearch()
 " Checks whether more tags exist and restores hlsearch and @/ if not
-function! <SID>RestoreSearch()
+function! s:RestoreSearch()
   if !search(b:search_str, "n")
     if exists("b:hl_on") && b:hl_on == 1
       setlocal hlsearch
@@ -279,169 +259,150 @@ function! <SID>RestoreSearch()
 endfunction
 "}}}
 " {{{ DeleteEmptyTag 
-function! <SID>DeleteEmptyTag()
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
-  for i in range(<SID>StrLen(snip_start_tag) + <SID>StrLen(snip_end_tag))
+function! s:DeleteEmptyTag()
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
+  for i in range(s:StrLen(snip_start_tag) + s:StrLen(snip_end_tag))
     normal x
   endfor
 endfunction
 " }}}
 " {{{ SetUpTags()
-function! <SID>SetUpTags()
-  call <SID>Debug("Snippy: ---- Start of SetUpTags() ----")
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
+function! s:SetUpTags()
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
   if (strpart(getline("."), col(".")+strlen(snip_start_tag)-1, strlen(snip_end_tag)) == snip_end_tag)
-    call <SID>Debug("Snippy: Found an empty tag")
+    call s:Debug("SetUpTags","Found an empty tag")
     let b:tag_name = ""
-    if col(".") + <SID>StrLen(snip_start_tag.snip_end_tag) == <SID>StrLen(getline("."))
-      call <SID>DeleteEmptyTag()
-      call <SID>RestoreSearch()
-      if col(".") == <SID>StrLen(getline("."))
+    if col(".") + s:StrLen(snip_start_tag.snip_end_tag) == s:StrLen(getline("."))
+      " We delete the empty tag here as otherwise we can't determine whether we
+      " need to send 'a' or 'A' as deleting the empty tag will sit us on the
+      " final character either way
+      call s:DeleteEmptyTag()
+      call s:RestoreSearch()
+      if col(".") == s:StrLen(getline("."))
         return "\<Esc>a"
-      else
-        return ''
       endif
     else
-      call <SID>DeleteEmptyTag()
-      call <SID>RestoreSearch()
-      if col(".") == <SID>StrLen(getline("."))
+      call s:DeleteEmptyTag()
+      call s:RestoreSearch()
+      if col(".") == s:StrLen(getline("."))
         return "\<Esc>A"
-      else
-        return ''
       endif
     endif
     return ''
   else
     " Not on an empty tag so it must be a normal tag
-    let b:tag_name = <SID>ChopTags(matchstr(getline("."),b:search_str,col(".")-1))
-    call <SID>Debug("Snippy: On a tag called: ".b:tag_name)
-    let start_skip = ""
+    let b:tag_name = s:ChopTags(matchstr(getline("."),b:search_str,col(".")-1))
+    call s:Debug("SetUpTags","On a tag called: ".b:tag_name)
+
 "    Check for exclusive selection mode. If exclusive is not set then we need to
 "    move back a character.
     if &selection == "exclusive"
       let end_skip = ""
     else
-      let end_skip = "h"
+      let end_skip = "\<Left>"
     endif
-"    let start_skip = string(<SID>StrLen(snip_start_tag))."l"
-    for i in range(<SID>StrLen(snip_start_tag)+1)
-      let start_skip = start_skip."l"
-    endfor
-    call <SID>Debug("Snippy: Start skip is: ".start_skip)
-    call <SID>Debug("Snippy: Col() is: ".col("."))
-    if col(".") <= <SID>StrLen(snip_start_tag)
-      call <SID>Debug("Snippy: We're at the start of the line so don't need to skip the first char of start tag")
-"      let start_skip = strpart(start_skip, <SID>StrLen(start_skip)-1)
-      let start_skip = strpart(start_skip, 0, strlen(start_skip)-1)
-      call <SID>Debug("Snippy: Start skip is now: ".start_skip)
+
+    let start_skip = repeat("\<Right>",s:StrLen(snip_start_tag)+1)
+    call s:Debug("SetUpTags","Start skip is: ".start_skip)
+    call s:Debug("SetUpTags","Col() is: ".col("."))
+    if col(".") == 1
+      call s:Debug("SetUpTags","We're at the start of the line so don't need to skip the first char of start tag")
+      let start_skip = strpart(start_skip, 0, strlen(start_skip)-strlen("\<Right>"))
+      call s:Debug("SetUpTags","Start skip is now: ".start_skip)
     endif
-"    for i in range(strlen(snip_end_tag)-1)
-"      let end_skip = end_skip."h"
-"    endfor
-    call <SID>Debug("Snippy: ---- End of SetUpTags() ----")
+    call s:Debug("SetUpTags","Returning: \<Esc>".start_skip."v/".snip_end_tag."\<CR>".end_skip."\<C-g>")
     return "\<Esc>".start_skip."v/".snip_end_tag."\<CR>".end_skip."\<C-g>"
   endif
 endfunction
 " }}}
 " {{{ NextHop() - Jump to the next tag if one is available
 function! <SID>NextHop()
-  call <SID>Debug("Snippy: ---------------- Start of NextHop ----------------")
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
-  if s:just_expanded == 1
-    call cursor(s:curLine, 1)
-    let s:just_expanded = 0
-  else
-    call cursor(s:curLine, s:curCurs-1)
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
+  call s:Debug("NextHop", "Col() is: ".col("."))
+  call s:Debug("NextHop", "Position of next match = ".match(getline("."), b:search_str))
+  " First check to see if we have any tags on lines above the current one
+  if search(b:search_str, "bnW") != 0
+    " We have previous tags, so we'll jump to the start
+    normal gg
   endif
-  " Check to see whether we're sitting on a tag and if not then perform a
-  " search
-  call <SID>Debug("Snippy: Col() is: ".col("."))
-  call <SID>Debug("Snippy: Position of next match = ".match(getline("."), b:search_str))
   " If the first match is after the current cursor position or not on this
   " line...
   if match(getline("."), b:search_str) >= col(".") || match(getline("."), b:search_str) == -1
     " Perform a search to jump to the next tag
-    call <SID>Debug("Snippy: Seaching for a tag")
+    call s:Debug("NextHop", "Seaching for a tag")
     if search(b:search_str) != 0
-      return <SID>SetUpTags()
+      return s:SetUpTags()
     else
       " there are no more matches
-      call <SID>Debug("Snippy: No more tags in the buffer")
+      call s:Debug("NextHop", "No more tags in the buffer")
       " Restore hlsarch and @/
-      call <SID>RestoreSearch()
+      call s:RestoreSearch()
       return ''
     endif
   else
     " The match on the current line is on or before the cursor, so we need to
     " move the cursor back
-    call <SID>Debug("Snippy: Moving the cursor back")
-    call <SID>Debug("Snippy: Col is: ".col("."))
-    call <SID>Debug("Snippy: Match is: ".match(getline("."), b:search_str))
+    call s:Debug("NextHop", "Moving the cursor back")
+    call s:Debug("NextHop", "Col is: ".col("."))
+    call s:Debug("NextHop", "Moving back to column: ".match(getline("."), b:search_str))
     while col(".") > match(getline("."), b:search_str) + 1
       normal h
     endwhile
-    call <SID>Debug("Snippy: Col is: ".col("."))
+    call s:Debug("NextHop", "Col is now: ".col("."))
     " Now we just set up the tag as usual
-    return <SID>SetUpTags()
+    return s:SetUpTags()
   endif
-"  return ''
 endfunction
 " }}}
 " {{{ RunCommand() - Execute commands stored in tags
-function! <SID>RunCommand(command, z)
-  " Escape backslashes for the matching.  Not sure what other escaping is
-  " needed here
-  call <SID>Debug("Snippy: ---- Start of RunCommand ----")
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
-  call <SID>Debug("Snippy: RunCommand was passed this command: ".a:command." and this value: ".a:z)
-  let command = a:command
-  if command == ''
+function! s:RunCommand(command, z)
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
+  call s:Debug("RunCommand", "RunCommand was passed this command: ".a:command." and this value: ".a:z)
+  if a:command == ''
     return a:z
   endif
-  let s:snip_temp = substitute(command, "\\", "\\\\\\\\","g")
   " Save current value of 'z'
-  let s:snip_save = @z
+  let snip_save = @z
   let @z=a:z
   " Call the command
-  execute 'let @z = '. a:command
+  execute 'let ret = '. a:command
   " Replace the value
-  let ret = @z
-  let @z = s:snip_save
-  call <SID>Debug("Snippy: ---- End of RunCommand ----")
+  let @z = snip_save
   return ret
 endfunction
 " }}}
 " {{{ MakeChanges() - Search the document making all the changes required
 " This function has been factored out to allow the addition of commands in tags
-function! <SID>MakeChanges()
+function! s:MakeChanges()
   " Make all the changes
   " Change all the tags with the same name and no commands defined
-  call <SID>Debug("Snippy: ---------------- Start of MakeChanges() ----------------")
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
 
   if b:tag_name == ""
-    call <SID>Debug("Snippy: Nothing to do: tag_name is empty")
-    call <SID>Debug("Snippy: ---------------- End of MakeChanges() ----------------")
+    call s:Debug("MakeChanges", "Nothing to do: tag_name is empty")
     return
   endif
-  let matchVal = snip_start_tag.b:tag_name.snip_end_tag
-  let tagmatch = '\V'.matchVal
-  call <SID>Debug("Snippy: Matching on this value: ".matchVal)
-  call <SID>Debug("Snippy: Replacing with this value: ".s:replaceVal)
+
+  let tagmatch = '\V'.snip_start_tag.b:tag_name.snip_end_tag
+
+  call s:Debug("MakeChanges", "Matching on this value: ".tagmatch)
+  call s:Debug("MakeChanges", "Replacing with this value: ".s:replaceVal)
+
   try
-    call <SID>Debug("Snippy: Running these commands: ".join(b:command_dict[b:tag_name], "', '"))
+    call s:Debug("MakeChanges", "Running these commands: ".join(b:command_dict[b:tag_name], "', '"))
   catch /E175/
-    call <SID>Debug("Snippy: Could not find this key in the dict: ".b:tag_name)
+    call s:Debug("MakeChanges", "Could not find this key in the dict: ".b:tag_name)
   endtry
+
   let ind = 0
-  while search(matchVal,"w") > 0
+  while search(tagmatch,"w") > 0
     try
-      let commandResult = <SID>RunCommand(b:command_dict[b:tag_name][0], s:replaceVal)
+      let commandResult = s:RunCommand(b:command_dict[b:tag_name][0], s:replaceVal)
     catch /E175/
-      call <SID>Debug("Snippy: Could not find this key in the dict: ".b:tag_name)
+      call s:Debug("MakeChanges", "Could not find this key in the dict: ".b:tag_name)
     endtry
-    call <SID>Debug("Snippy: Got this result: ".commandResult)
-    let lines = split(substitute(getline("."), tagmatch, commandResult, "g"),'\n')
+    call s:Debug("MakeChanges", "Got this result: ".commandResult)
+    let lines = split(substitute(getline("."), tagmatch, commandResult, ''),'\n')
     if len(lines) > 1
       call setline(".", lines[0])
       call append(".", lines[1:])
@@ -451,59 +412,60 @@ function! <SID>MakeChanges()
     try
       unlet b:command_dict[b:tag_name][0]
     catch /E175/
-      call <SID>Debug("Snippy: Could not find this key in the dict: ".b:tag_name)
+      call s:Debug("MakeChanges", "Could not find this key in the dict: ".b:tag_name)
     endtry
   endwhile
-  call <SID>Debug("Snippy: ---------------- End of MakeChanges() ----------------")
 endfunction
-
 " }}}
 " {{{ ChangeVals() - Set up values for MakeChanges()
-function! <SID>ChangeVals(changed)
-  call <SID>Debug("Snippy: ---------------- Start of ChangeVals() ----------------")
+function! s:ChangeVals(changed)
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
+
   if a:changed == 1
     let s:CHANGED_VAL = 1
   else
     let s:CHANGED_VAL = 0
   endif
-  call <SID>Debug("Snippy: CHANGED_VAL: ".s:CHANGED_VAL)
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
-  call <SID>Debug("Snippy: b:tag_name: ".b:tag_name)
+
+  call s:Debug("ChangeVals", "CHANGED_VAL: ".s:CHANGED_VAL)
+  call s:Debug("ChangeVals", "b:tag_name: ".b:tag_name)
   let elem_match = match(s:line, snip_elem_delim, s:curCurs)
   let tagstart = strridx(getline("."), snip_start_tag,s:curCurs)+strlen(snip_start_tag)
-  call <SID>Debug("Snippy: About to access b:command_dict")
+
+  call s:Debug("ChangeVals", "About to access b:command_dict")
   try
     let commandToRun = b:command_dict[b:tag_name][0]
-    call <SID>Debug("Snippy: Accessed command_dicT")
-    call <SID>Debug("Snippy: Running this command: ".commandToRun)
+    call s:Debug("ChangeVals", "Accessed command_dict")
+    call s:Debug("ChangeVals", "Running this command: ".commandToRun)
     unlet b:command_dict[b:tag_name][0]
-    call <SID>Debug("Snippy: Command list is now: ".join(b:command_dict[b:tag_name], "', '"))
+    call s:Debug("ChangeVals", "Command list is now: ".join(b:command_dict[b:tag_name], "', '"))
   catch /E175/
-    call <SID>Debug("Snippy: Could not find this key in the dict: ".b:tag_name)
+    call s:Debug("ChangeVals", "Could not find this key in the dict: ".b:tag_name)
   endtry
-  let commandMatch = substitute(commandToRun, '\', '\\\\', "g")
+
+  let commandMatch = substitute(commandToRun, '\', '\\\\', 'g')
   if s:CHANGED_VAL
     " The value has changed so we need to grab our current position back
     " to the start of the tag
     let replaceVal = strpart(getline("."), tagstart,s:curCurs-tagstart)
-    call <SID>Debug("Snippy: User entered this value: ".replaceVal)
+    call s:Debug("ChangeVals", "User entered this value: ".replaceVal)
     let tagmatch = replaceVal
-    call <SID>Debug("Snippy: Col is: ".col("."))
-    exec "normal ".<SID>StrLen(tagmatch)."h"
-    call <SID>Debug("Snippy: Col is: ".col("."))
+    call s:Debug("ChangeVals", "Col is: ".col("."))
+    exec "normal ".s:StrLen(tagmatch)."\<Left>"
+    call s:Debug("ChangeVals", "Col is: ".col("."))
   else
     " The value hasn't changed so it's just the tag name
     " without any quotes that are around it
-    call <SID>Debug("Snippy: Tag name is: ".b:tag_name)
+    call s:Debug("ChangeVals", "Tag name is: ".b:tag_name)
     let replaceVal = substitute(b:tag_name, '^"\(.*\)"$', '\1', '')
-"    let replaceVal = substitute(b:tag_name, '^\"\(.*\)\"$', "\1", "")
-    call <SID>Debug("Snippy: User did not enter a value. Replacing with this value: ".replaceVal)
+    call s:Debug("ChangeVals", "User did not enter a value. Replacing with this value: ".replaceVal)
     let tagmatch = ''
-    call <SID>Debug("Snippy: Col is: ".col("."))
+    call s:Debug("ChangeVals", "Col is: ".col("."))
   endif
+
   let tagmatch = '\V'.snip_start_tag.tagmatch.snip_end_tag
-  call <SID>Debug("Snippy: Matching on this string: ".tagmatch)
-  let tagsubstitution = <SID>RunCommand(commandToRun, replaceVal)
+  call s:Debug("ChangeVals", "Matching on this string: ".tagmatch)
+  let tagsubstitution = s:RunCommand(commandToRun, replaceVal)
   let lines = split(substitute(getline("."), tagmatch, tagsubstitution, ""),'\n')
   if len(lines) > 1
     call setline(".", lines[0])
@@ -514,9 +476,8 @@ function! <SID>ChangeVals(changed)
   " We use replaceVal instead of tagsubsitution as otherwise the command
   " result will be passed to subsequent tags
   let s:replaceVal = replaceVal
-  call <SID>MakeChanges()
+  call s:MakeChanges()
   unlet s:CHANGED_VAL
-  call <SID>Debug("Snippy: ---------------- End of ChangeVals() ----------------")
 endfunction
 " }}}
 "{{{ SID() - Get the SID for the current script
@@ -525,14 +486,13 @@ function! s:SID()
 endfun
 "}}}
 "{{{ CheckForInTag() - Check whether we're in a tag
-function! <SID>CheckForInTag()
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
+function! s:CheckForInTag()
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
   if snip_start_tag != snip_end_tag
     " The tags are different so we can check to see whether the
     " end tag comes before a start tag
-    let s:endMatch = match(s:line, snip_end_tag, s:curCurs)
-    let s:startMatch = match(s:line, snip_start_tag, s:curCurs)
-    let s:whiteSpace = match(s:line, '\s', s:curCurs)
+    let s:startMatch = match(s:line, '\V'.snip_start_tag, s:curCurs)
+    let s:endMatch = match(s:line, '\V'.snip_end_tag, s:curCurs)
 
     if s:endMatch != -1 && ((s:endMatch < s:startMatch) || s:startMatch == -1)
       " End has come before start so we're in a tag.
@@ -563,59 +523,59 @@ function! <SID>CheckForInTag()
   endif
 endfunction
 "}}}
-" {{{ <SID>SubSpecialVars(text)
-function! <SID>SubSpecialVars(text)
+" {{{ SubSpecialVars(text)
+function! s:SubSpecialVars(text)
   let text = a:text
   let text = substitute(text, 'SNIP_FILE_NAME', expand('%'), 'g')
   let text = substitute(text, 'SNIP_ISO_DATE', strftime("%Y-%m-%d"), 'g')
   return text
 endfunction
 " }}}
-" {{{ <SID>SubCommandOutput(text)
-function! <SID>SubCommandOutput(text)
-  call <SID>Debug("Snippy: ----- Start of SubCommandOutput -----")
+" {{{ SubCommandOutput(text)
+function! s:SubCommandOutput(text)
   let search = '``.\{-}``'
   let text = a:text
   while match(text, search) != -1
     let command_match = matchstr(text, search)
-    call <SID>Debug("Snippy: Command found: ".command_match)
+    call s:Debug("SubCommandOutput", "Command found: ".command_match)
     let command = substitute(command_match, '^..\(.*\)..$', '\1', '')
-    call <SID>Debug("Snippy: Command being run: ".command)
+    call s:Debug("SubCommandOutput", "Command being run: ".command)
     exec 'let output = '.command
     let output = escape(output, '\')
     let text = substitute(text, '\V'.escape(command_match, '\'), output, '')
   endwhile
   let text = substitute(text, '\\`\\`\(.\{-}\)\\`\\`','``\1``','g')
-  call <SID>Debug("Snippy: ----- End of SubCommandOutput -----")
   return text
 endfunction
 " }}}
-" {{{ <SID>RemoveAndStoreCommands(text)
-function! <SID>RemoveAndStoreCommands(text)
-  call <SID>Debug("Snippy: ---------------- Start of RemoveAndStoreCommands ----------------")
+" {{{ RemoveAndStoreCommands(text)
+function! s:RemoveAndStoreCommands(text)
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
 
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
   let text = a:text
   if !exists("b:command_dict")
     let b:command_dict = {}
   endif
+
   let tmp_command_dict = {}
-"  if s:debug == 1
-"    let b:command_dict = {}
-"  endif
-  let ind = 0
-  let ind = match(text, b:search_str)
+  try
+    let ind = match(text, b:search_str)
+  catch /E55: Unmatched \\)/
+    call confirm("SnippetsEmu has caught an error while performing a search. This is most likely caused by setting the start and end tags to special characters. Try setting the 'fileencoding' of the file in which you defined them to 'utf-8'.\n\nThe plugin will be disabled for the remainder of this Vim session.")
+    let s:Disable = 1
+    return ''
+  endtry
   while ind > -1
-    call <SID>Debug("Snippy: Text is: ".text)
-    call <SID>Debug("Snippy: index is: ".ind)
+    call s:Debug("RemoveAndStoreCommands", "Text is: ".text)
+    call s:Debug("RemoveAndStoreCommands", "index is: ".ind)
     let tag = matchstr(text, b:search_str, ind)
-    call <SID>Debug("Snippy: Tag is: ".tag)
+    call s:Debug("RemoveAndStoreCommands", "Tag is: ".tag)
     let commandToRun = matchstr(tag, snip_elem_delim.".*".snip_end_tag)
 
     if commandToRun != ''
       let tag_name = strpart(tag,strlen(snip_start_tag),match(tag,snip_elem_delim)-strlen(snip_start_tag))
-      call <SID>Debug("Snippy: Got this tag: ".tag_name)
-      call <SID>Debug("Snippy: Adding this command: ".commandToRun)
+      call s:Debug("RemoveAndStoreCommands", "Got this tag: ".tag_name)
+      call s:Debug("RemoveAndStoreCommands", "Adding this command: ".commandToRun)
       if tag_name != ''
         if has_key(tmp_command_dict, tag_name)
           call add(tmp_command_dict[tag_name], strpart(commandToRun, 1, strlen(commandToRun)-strlen(snip_end_tag)-1))
@@ -625,7 +585,7 @@ function! <SID>RemoveAndStoreCommands(text)
       endif
       let text = substitute(text, '\V'.escape(commandToRun,'\'), snip_end_tag,'')
     else
-      let tag_name = <SID>ChopTags(tag)
+      let tag_name = s:ChopTags(tag)
       if tag_name != ''
         if has_key(tmp_command_dict, tag_name)
           call add(tmp_command_dict[tag_name], '')
@@ -634,9 +594,10 @@ function! <SID>RemoveAndStoreCommands(text)
         endif
       endif
     endif
-    call <SID>Debug("Snippy: ".tag." found at ".ind)
+    call s:Debug("RemoveAndStoreCommands", "".tag." found at ".ind)
     let ind = match(text, b:search_str, ind+strlen(snip_end_tag))
   endwhile
+
   for key in keys(tmp_command_dict)
     if has_key(b:command_dict, key)
       for item in reverse(tmp_command_dict[key])
@@ -646,8 +607,20 @@ function! <SID>RemoveAndStoreCommands(text)
       let b:command_dict[key] = tmp_command_dict[key]
     endif
   endfor
-  call <SID>Debug("Snippy: ---------------- End of RemoveAndStoreCommands ----------------")
   return text
+endfunction
+" }}}
+" {{{ ReturnKey() - Return our mapped key or Supertab key
+function! s:ReturnKey()
+  if s:supInstalled
+    call s:Debug('ReturnKey', 'Snippy: SuperTab installed. Returning <C-n> instead of <Tab>')
+    return "\<C-R>=".s:SupSNR."SuperTab('n')\<CR>"
+  else
+    " We need this hacky line as the one below doesn't seem to work.
+    " Patches welcome
+    exe "return \"".substitute(g:snippetsEmu_key, '^<', "\\\\<","")."\""
+    "return substitute(g:snippetsEmu_key, '^<', "\\<","")
+  endif
 endfunction
 " }}}
 " {{{ Jumper()
@@ -668,160 +641,278 @@ endfunction
 " modified values.
 " 
 function! <SID>Jumper()
-  call <SID>Debug("Snippy: ---------------- Start of Jumper ----------------")
-  " Set up some useful variables
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
+  if s:Disable == 1
+    return substitute(g:snippetsEmu_key, '^<', "\\<",'')
+  endif
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
 
-  if s:supInstalled == 1 && s:done_remap == 0
-    let s:SupSNR = <SID>GetSuperTabSNR()
-    imap <Tab> <Plug>Jumper
-    let s:done_remap = 1
+  " Set up some mapping in case we got called before Supertab
+  if s:supInstalled == 1
+    call s:SetupSupertab()
+    call s:SnipMapKeys()
   endif
 
+  if !exists('b:search_str') && exists('g:search_str')
+      let b:search_str = g:search_str
+  endif
+   
   if !exists('b:search_str')
-    call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
-    if s:supInstalled
-      return "\<C-R>=".s:SupSNR."SuperTab('n')\<CR>"
-    else
-      return "\<Tab>"
-    endif
+    return s:ReturnKey()
   endif
+
   let s:curCurs = col(".") - 1
   let s:curLine = line(".")
   let s:line = getline(".")
   let s:replaceVal = ""
-  " Check to see whether we're at the start of a tag.  
-  " start then we should be assuming that we've got a 'default' value or a
-  " command to run.  Otherwise the user will have pressed the jump key
-  " without changing the value.
-  " First we need to check that we're inside a tag i.e. the previous
-  " jump didn't land us in a 1. style tag.
    
   " First we'll check that the user hasn't just typed a snippet to expand
-  "
-  let origword = matchstr(strpart(getline("."), 0, s:curCurs), '\k\{-}$')
-  call <SID>Debug("Snippy: Original word was: ".origword)
-  let word = <SID>Hash(origword)
-"    " The following code is lifted wholesale from the imaps.vim script - Many
-"    " thanks for the inspiration to add the TextMate compatibility
-"    " Unless we are at the very end of the word, we need to go back in order
-"    " to find the last word typed.
+  let origword = matchstr(strpart(getline("."), 0, s:curCurs), '\(^\|\s\)\S\{-}$')
+  let origword = substitute(origword, '\s', "", "")
+  call s:Debug("Jumper", "Original word was: ".origword)
+  let word = s:Hash(origword)
+  " The following code is lifted from the imaps.vim script - Many
+  " thanks for the inspiration to add the TextMate compatibility
   let rhs = ''
+  let found = 0
   " Check for buffer specific expansions
-  if exists('b:snip_'.word)
-    exe 'let rhs = b:snip_'.word
-  elseif exists('g:snip_'.word)
+  if exists('b:trigger_'.word)
+    exe 'let rhs = b:trigger_'.word
+    let found = 1
+  elseif exists('g:trigger_'.word)
   " also check for global definitions
-    exe 'let rhs = g:snip_'.word
+    exe 'let rhs = g:trigger_'.word
+    let found = 1
+  endif
+
+  if found == 0
+    " Check using keyword boundary
+    let origword = matchstr(strpart(getline("."), 0, s:curCurs), '\k\{-}$')
+    call s:Debug("Jumper", "Original word was: ".origword)
+    let word = s:Hash(origword)
+    if exists('b:trigger_'.word)
+      exe 'let rhs = b:trigger_'.word
+    elseif exists('g:trigger_'.word)
+    " also check for global definitions
+      exe 'let rhs = g:trigger_'.word
+    endif
   endif
 
   if rhs != ''
     " Save the value of hlsearch
     if &hls
-      call <SID>Debug("Hlseach set")
+      call s:Debug("Jumper", "Hlsearch set")
       setlocal nohlsearch
       let b:hl_on = 1
     else
-      call <SID>Debug("Hlseach not set")
+      call s:Debug("Jumper", "Hlsearch not set")
       let b:hl_on = 0
     endif
     " Save the last search value
     let b:search_sav = @/
-    " if this is a mapping, then erase the previous part of the map
-    " by also returning a number of backspaces.
-    let bkspc = substitute(origword, '.', "\<bs>", "g")
-    call <SID>Debug("Snippy: Backspacing ".<SID>StrLen(origword)." characters")
+    " If this is a mapping, then erase the previous part of the map
+    " by returning a number of backspaces.
+    let bkspc = substitute(origword, '.', "\<BS>", "g")
+    call s:Debug("Jumper", "Backspacing ".s:StrLen(origword)." characters")
     let delEndTag = ""
-    if <SID>CheckForInTag()
-      call <SID>Debug("Snippy: We're doing a nested tag")
-      call <SID>Debug("Snippy: B:tag_name: ".b:tag_name)
+    if s:CheckForInTag()
+      call s:Debug("Jumper", "We're doing a nested tag")
+      call s:Debug("Jumper", "B:tag_name: ".b:tag_name)
       if b:tag_name != ''
         try
-          call <SID>Debug("Snippy: Commands for this tag are currently: ".join(b:command_dict[b:tag_name],"', '"))
-          call <SID>Debug("Snippy: Removing command for '".b:tag_name."'")
+          call s:Debug("Jumper", "Commands for this tag are currently: ".join(b:command_dict[b:tag_name],"', '"))
+          call s:Debug("Jumper", "Removing command for '".b:tag_name."'")
           unlet b:command_dict[b:tag_name][0]
-          call <SID>Debug("Snippy: Commands for this tag are now: ".join(b:command_dict[b:tag_name],"', '"))
+          call s:Debug("Jumper", "Commands for this tag are now: ".join(b:command_dict[b:tag_name],"', '"))
         catch /E175/
-          call <SID>Debug("Snippy: Could not find this key in the dict: ".b:tag_name)
+          call s:Debug("Jumper", "Could not find this key in the dict: ".b:tag_name)
         endtry
       endif
-      call <SID>Debug("Snippy: Deleting start tag")
-      let bkspc = bkspc.substitute(snip_start_tag, '.', "\<bs>", "g")
-      call <SID>Debug("Snippy: Deleting end tag")
+      call s:Debug("Jumper", "Deleting start tag")
+      let bkspc = bkspc.substitute(snip_start_tag, '.', "\<BS>", "g")
+      call s:Debug("Jumper", "Deleting end tag")
       let delEndTag = substitute(snip_end_tag, '.', "\<Del>", "g")
-      call <SID>Debug("Snippy: Deleting ".<SID>StrLen(delEndTag)." characters")
+      call s:Debug("Jumper", "Deleting ".s:StrLen(delEndTag)." characters")
     endif
     
     " We've found a mapping so we'll substitute special variables
-    let rhs = <SID>SubSpecialVars(rhs)
-    let rhs = <SID>SubCommandOutput(rhs)
+    let rhs = s:SubSpecialVars(rhs)
+    let rhs = s:SubCommandOutput(rhs)
     " Now we'll chop out the commands from tags
-    let rhs = <SID>RemoveAndStoreCommands(rhs)
-
-    " This movement method is from imaps again. It's kinda neat so we'll use it
-    " here.
-    let initial = "SnipStartSnipStart"
-
-    if &expandtab
-        let tabs = indent(".")/&shiftwidth
-        let tabstr = repeat(' ',&shiftwidth)
-    else
-        let tabs = indent(".")/&tabstop
-        let tabstr = '\t'
+    let rhs = s:RemoveAndStoreCommands(rhs)
+    if s:Disable == 1
+      return substitute(g:snippetsEmu_key, '^<', "\\<",'')
     endif
-    let tab_text = repeat(tabstr,tabs)
-    let rhs = substitute(rhs, "\<CR>", "&".tab_text,'g')
 
-    call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
-    return "\<Esc>:set paste\<CR>a".bkspc.delEndTag.initial.rhs."\<Esc>:set nopaste\<CR>?".initial."\<CR>".strlen(initial)."xi\<C-r>=<SNR>".s:SID()."_NextHop()\<CR>"
+    " Save the value of 'backspace'
+    let bs_save = &backspace
+    set backspace=indent,eol,start
+    return bkspc.delEndTag.rhs."\<Esc>:set backspace=".bs_save."\<CR>a\<C-r>=<SNR>".s:SID()."_NextHop()\<CR>"
   else
     " No definition so let's check to see whether we're in a tag
-    if <SID>CheckForInTag()
-      call <SID>Debug("Snippy: No mapping and we're in a tag")
+    if s:CheckForInTag()
+      call s:Debug("Jumper", "No mapping and we're in a tag")
       " We're in a tag so we need to do processing
       if strpart(s:line, s:curCurs - strlen(snip_start_tag), strlen(snip_start_tag)) == snip_start_tag
-        call <SID>Debug("Snippy: Value not changed")
-        call <SID>ChangeVals(0)
-        call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
-        return "\<C-r>=<SNR>".s:SID()."_NextHop()\<CR>"
+        call s:Debug("Jumper", "Value not changed")
+        call s:ChangeVals(0)
       else
-        call <SID>Debug("Snippy: Value changed")
-        call <SID>ChangeVals(1)
-        call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
-        return "\<C-r>=<SNR>".s:SID()."_NextHop()\<CR>"
+        call s:Debug("Jumper", "Value changed")
+        call s:ChangeVals(1)
       endif
+      return "\<C-r>=<SNR>".s:SID()."_NextHop()\<CR>"
     else
       " We're not in a tag so we'll see whether there are more tags
       if search(b:search_str, "n")
         " More tags so let's perform nexthop
         let s:replaceVal = ""
-        call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
         return "\<C-r>=<SNR>".s:SID()."_NextHop()\<CR>"
       else
         " No more tags so let's return a Tab after restoring hlsearch and @/
-        call <SID>RestoreSearch()
-
+        call s:RestoreSearch()
         if exists("b:command_dict")
           unlet b:command_dict
         endif
-        if s:supInstalled
-          call <SID>Debug('Snippy: SuperTab installed. Returning <C-n> instead of <Tab>')
-          call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
-          return "\<C-R>=".s:SupSNR."SuperTab('n')\<CR>"
-        else
-          call <SID>Debug("Snippy: ---------------- End of Jumper ----------------")
-          return "\<Tab>"
-        endif
+        return s:ReturnKey()
       endif
     endif
   endif
 endfunction
 " }}}
+"{{{ ListSnippets() - Return a list of snippets - used for command completion
+function! s:ListSnippets(ArgLead, CmdLine, CursorPos, scope)
+  " Only allow completion for the second argument
+  " TODO
+    return sort(map(map(filter(keys(a:scope), 'v:val =~ "^trigger_'.a:ArgLead.'"'), 'v:val[8:]'), 's:UnHash(v:val)'))
+endfunction
+
+function! s:ListBufferSnippets(ArgLead, CmdLine, CursorPos)
+  return s:ListSnippets(a:ArgLead, a:CmdLine, a:CursorPos, b:)
+endfunction
+
+function! s:ListGlobalSnippets(ArgLead, CmdLine, CursorPos)
+  return s:ListSnippets(a:ArgLead, a:CmdLine, a:CursorPos, g:)
+endfunction
+" }}}
+" {{{ DelSnippet() - Delete a snippet
+function! s:DelSnippet(snippet, scope)
+  if a:snippet != ""
+    try
+      exec "unlet ".a:scope."trigger_".s:Hash(a:snippet)
+    catch /E108: No such variable:/
+      echom "Snippet '".a:snippet."' does not exist."
+    endtry
+  endif
+endfunction
+" }}}
 " {{{ Set up the 'Iabbr' and 'Snippet' commands
-command! -nargs=+ Iabbr execute <SID>SetCom(<q-args>)
-command! -nargs=+ Snippet execute <SID>SetCom("<buffer> ".<q-args>)
+"command! -nargs=+ Iabbr execute s:SetCom(<q-args>)
+"command! -nargs=+ Snippet execute s:SetCom("<buffer> ".<q-args>)
+command! -complete=customlist,s:ListGlobalSnippets -nargs=*
+         \ Iabbr call <SID>SetCom(<q-args>, "g:")
+command! -complete=customlist,s:ListBufferSnippets -nargs=*
+         \ Snippet call <SID>SetCom(<q-args>, "b:")
+command! -range CreateSnippet <line1>,<line2>call s:CreateSnippet()
+command! -range CreateBundleSnippet <line1>,<line2>call s:CreateBundleSnippet()
+command! -complete=customlist,s:ListBufferSnippets -nargs=*
+      \ DelSnippet call <SID>DelSnippet(<q-args>, "b:")
+command! -complete=customlist,s:ListGlobalSnippets -nargs=*
+      \ DelIabbr call <SID>DelSnippet(<q-args>, "g:")
 "}}}
 " {{{ Utility functions
+
+" This function will convert the selected range into a snippet
+function! s:CreateSnippet() range
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
+  let snip = ""
+  if &expandtab
+      let tabs = indent(a:firstline)/&shiftwidth
+      let tabstr = repeat(' ',&shiftwidth)
+  else
+      let tabs = indent(a:firstline)/&tabstop
+      let tabstr = '\t'
+  endif
+  let tab_text = repeat(tabstr,tabs)
+
+  for i in range(a:firstline, a:lastline)
+    "First chop off the indent
+    let text = substitute(getline(i),tab_text,'','')
+    "Now replace 'tabs' with <Tab>s
+    let text = substitute(text, tabstr, '<Tab>','g')
+    "And trim the newlines
+    let text = substitute(text, "\r", '','g')
+    let snip = snip.text.'<CR>'
+  endfor
+  let tag = snip_start_tag.snip_end_tag
+  let split_sav = &swb
+  set swb=useopen
+  if bufexists("Snippets")
+    belowright sb Snippets
+  else
+    belowright sp Snippets
+  endif
+  resize 8
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+  let @"=tag
+  exe 'set swb='.split_sav
+  let trig = inputdialog("Please enter the trigger word for your snippet: ", "My_snippet")
+  if trig == ""
+    let trig = "YOUR_SNIPPET_NAME_HERE"
+  endif
+  call append("$", "Snippet ".trig." ".snip)
+  if getline(1) == ""
+    normal ggdd
+  endif
+  normal G
+endfunction
+
+" This function will convert the selected range into a snippet suitable for
+" including in a bundle.
+function! s:CreateBundleSnippet() range
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
+  let snip = ""
+  if &expandtab
+      let tabs = indent(a:firstline)/&shiftwidth
+      let tabstr = repeat(' ',&shiftwidth)
+  else
+      let tabs = indent(a:firstline)/&tabstop
+      let tabstr = '\t'
+  endif
+  let tab_text = repeat(tabstr,tabs)
+
+  for i in range(a:firstline, a:lastline)
+    let text = substitute(getline(i),tab_text,'','')
+    let text = substitute(text, tabstr, '<Tab>','g')
+    let text = substitute(text, "\r$", '','g')
+    let text = substitute(text, '"', '\\"','g')
+    let text = substitute(text, '|', '<Bar>','g')
+    let snip = snip.text.'<CR>'
+  endfor
+  let tag = '".st.et."'
+  let split_sav = &swb
+  set swb=useopen
+  if bufexists("Snippets")
+    belowright sb Snippets
+  else
+    belowright sp Snippets
+  endif
+  resize 8
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+  let @"=tag
+  exe 'set swb='.split_sav
+  let trig = inputdialog("Please enter the trigger word for your snippet: ", "My_snippet")
+  if trig == ""
+    let trig = "YOUR_SNIPPET_NAME_HERE"
+  endif
+  call append("$", 'exe "Snippet '.trig." ".snip.'"')
+  if getline(1) == ""
+    normal ggdd
+  endif
+  normal G
+endfunction
 
 " This function will just return what's passed to it unless a change has been
 " made
@@ -833,31 +924,38 @@ fun! D(text)
   endif
 endfun
 
-" <SID>Hash allows the use of special characters in snippets
+" s:Hash allows the use of special characters in snippets
 " This function is lifted straight from the imaps.vim plugin. Please let me know
 " if this is against licensing.
-function! <SID>Hash(text)
+function! s:Hash(text)
 	return substitute(a:text, '\([^[:alnum:]]\)',
 				\ '\="_".char2nr(submatch(1))."_"', 'g')
 endfunction
 
+" s:UnHash allows the use of special characters in snippets
+" This function is lifted straight from the imaps.vim plugin. Please let me know
+" if this is against licensing.
+function! s:UnHash(text)
+	return substitute(a:text, '_\(\d\+\)_',
+				\ '\=nr2char(submatch(1))', 'g')
+endfunction
+
 " This function chops tags from any text passed to it
-function! <SID>ChopTags(text)
-  call <SID>Debug("Snippy: ---------------- Start of ChopTags ----------------")
+function! s:ChopTags(text)
   let text = a:text
-  call <SID>Debug("Snippy: ChopTags was passed this text: ".text)
-  let [snip_start_tag, snip_elem_delim, snip_end_tag] = <SID>SetLocalTagVars()
+  call s:Debug("ChopTags", "ChopTags was passed this text: ".text)
+  let [snip_start_tag, snip_elem_delim, snip_end_tag] = s:SetLocalTagVars()
   let text = strpart(text, strlen(snip_start_tag))
   let text = strpart(text, 0, strlen(text)-strlen(snip_end_tag))
-  call <SID>Debug("Snippy: ChopTags is returning this text: ".text)
-  call <SID>Debug("Snippy: ---------------- End of ChopTags ----------------")
+  call s:Debug("ChopTags", "ChopTags is returning this text: ".text)
   return text
 endfunction
 
 " This function ensures we measure string lengths correctly
-function! <SID>StrLen(str)
-  call <SID>Debug("Snippy: StrLen returned: ".strlen(substitute(a:str, '.', 'x', 'g'))." based on this text: ".a:str)
+function! s:StrLen(str)
+  call s:Debug("StrLen", "StrLen returned: ".strlen(substitute(a:str, '.', 'x', 'g'))." based on this text: ".a:str)
   return strlen(substitute(a:str, '.', 'x', 'g'))
 endfunction
+
 " }}}
 " vim: set tw=80 sw=2 sts=2 et foldmethod=marker :

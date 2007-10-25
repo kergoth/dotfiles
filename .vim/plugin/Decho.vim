@@ -1,7 +1,7 @@
 " Decho.vim:   Debugging support for VimL
 " Maintainer:  Charles E. Campbell, Jr. PhD <cec@NgrOyphSon.gPsfAc.nMasa.gov>
-" Date:        Sep 05, 2006
-" Version:     18
+" Date:        Jun 07, 2007
+" Version:     20a	ASTRO-ONLY
 "
 " Usage: {{{1
 "   Decho "a string"
@@ -21,7 +21,7 @@
 "   DechoTabOn  : turn debugging on (uses a separate tab)
 "   DechoTabOff : turn debugging off
 "
-" GetLatestVimScripts: 642 1 :AutoInstall: Decho.vim
+" GetLatestVimScripts: 120 1 :AutoInstall: Decho.vim
 " GetLatestVimScripts: 1066 1 :AutoInstall: cecutil.vim
 
 " ---------------------------------------------------------------------
@@ -29,7 +29,7 @@
 if exists("g:loaded_Decho") || &cp
  finish
 endif
-let g:loaded_Decho = "v18"
+let g:loaded_Decho = "v20a"
 let s:keepcpo      = &cpo
 set cpo&vim
 
@@ -61,8 +61,8 @@ endif
 
 " ---------------------------------------------------------------------
 "  User Interface: {{{1
-com! -nargs=+ -complete=expression Decho	call Decho(<q-args>)
-com! -nargs=+ -complete=expression Dredir	call Dredir(<q-args>)
+com! -nargs=+ -complete=expression Decho	call Decho(<args>)
+com! -nargs=+ -complete=expression Dredir	call Dredir(<args>)
 com! -nargs=0 -range=% DechoOn				call DechoOn(<line1>,<line2>)
 com! -nargs=0 -range=% DechoOff				call DechoOff(<line1>,<line2>)
 com! -nargs=0 Dhide    						call s:Dhide(1)
@@ -73,6 +73,8 @@ if has("clientserver") && executable("gvim")
  com! -nargs=0 DechoRemOn					call s:DechoRemote(1)
  com! -nargs=0 DechoRemOff					call s:DechoRemote(0)
 endif
+com! -nargs=0 DechoSep						call s:DechoSep()
+com! -nargs=0 Dsep						    call s:DechoSep()
 com! -nargs=? DechoVarOn					call s:DechoVarOn(<args>)
 com! -nargs=0 DechoVarOff					call s:DechoVarOff()
 if v:version >= 700
@@ -162,6 +164,7 @@ fun! Decho(...)
   endwhile
 
   " Handle special characters (\t \r \n)
+  " and append msg to smsg
   let i    = 1
   while msg != ""
    let chr  = strpart(msg,0,1)
@@ -190,18 +193,37 @@ fun! Decho(...)
   elseif g:dechomode == s:DECHOREM
    " display message by appending it to remote DECHOREMOTE vim server
    let smsg= substitute(smsg,"\<esc>","\<c-v>\<esc>","ge")
-   call remote_send("DECHOREMOTE",':set ma'."\<cr>".'Go'.smsg."\<esc>".':set noma nomod'."\<cr>")
+   try
+    call remote_send("DECHOREMOTE",':set ma fo-=at'."\<cr>".'Go'.smsg."\<esc>".':set noma nomod'."\<cr>")
+   catch /^Vim\%((\a\+)\)\=:E241/
+   	let g:dechomode= s:DECHOWIN
+   endtry
 
   elseif g:dechomode == s:DECHOTAB
    " display message by appending it to the debugging tab window
    let eikeep= &ei
    set ei=all
-   let dechotabcur = tabpagenr()
+   let g:dechotabcur = tabpagenr()
    exe "tabn ".g:dechotabnr
+   if expand("%") != "Decho Tab"
+   	" looks like a new tab has interposed itself -- look for the "Decho Tab" tab
+	let g:dechotabnr= 1
+	while expand("%") != "Decho Tab"
+	 let g:dechotabnr= g:dechotabnr + 1
+	 if g:dechotabnr > tabpagenr("$")
+	  " re-enable the "Decho Tab" tab -- looks like it was closed!
+	  call s:DechoTab(1)
+	  break
+	 endif
+     exe "tabn".g:dechotabnr
+    endwhile
+   endif
+   " append message to "Decho Tab" tab
    setlocal ma
    call setline(line("$")+1,smsg)
    setlocal noma nomod
-   exe "tabn ".dechotabcur
+   " restore tab# to original user tab
+   exe "tabn ".g:dechotabcur
    let &ei= eikeep
 
   else
@@ -283,8 +305,13 @@ endfun
 fun! DechoOn(line1,line2)
   let ickeep= &ic
   set noic
-  let swp=SaveWinPosn(0)
-  exe "keepjumps ".a:line1.",".a:line2.'g/\<D\%(echo\|func\|redir\|ret\|echo\%(Msg\|Rem\|Tab\|Var\)O\%(n\|ff\)\)\>/s/^"\+//'
+  let swp    = SaveWinPosn(0)
+  let dbgpat = '\<D\%(echo\|func\|redir\|ret\|echo\%(Msg\|Rem\|Tab\|Var\)O\%(n\|ff\)\)\>'
+  if search(dbgpat,'cnw') == 0
+   echoerr "this file<".expand("%")."> does not contain any Decho/Dfunc/Dret commands or function calls!"
+  else
+   exe "keepjumps ".a:line1.",".a:line2.'g/'.dbgpat.'/s/^"\+//'
+  endif
   call RestoreWinPosn(swp)
   let &ic= ickeep
 endfun
@@ -353,16 +380,17 @@ endfun
 " Dredir: this function performs a debugging redir by temporarily using {{{1
 "         register a in a redir @a of the given command.  Register a's
 "         original contents are restored.
+"   Usage:  Dredir(["string","string",...,]"cmd")
 fun! Dredir(...)
   if a:0 <= 0
    return
   endif
-  let cmd  = a:1
-  let icmd = 2
-  while icmd <= a:0
+  let icmd = 1
+  while icmd < a:0
    call Decho(a:{icmd})
    let icmd= icmd + 1
   endwhile
+  let cmd= a:{icmd}
 
   " save register a, initialize
   let keep_rega = @a
@@ -397,6 +425,19 @@ fun! Dredir(...)
   endwhile
 endfun
 
+" ---------------------------------------------------------------------
+" s:DechoSep: puts a separator with counter into debugging output {{{2
+fun! s:DechoSep()
+"  call Dfunc("s:DechoSep()")
+  if !exists("s:dechosepcnt")
+   let s:dechosepcnt= 1
+  else
+   let s:dechosepcnt= s:dechosepcnt + 1
+  endif
+  call Decho("--sep".s:dechosepcnt."--")
+"  call Dret("s:DechoSep")
+endfun
+
  " ---------------------------------------------------------------------
  " DechoRemote: supports sending debugging to a remote vim {{{1
 if has("clientserver") && executable("gvim")
@@ -418,18 +459,19 @@ if has("clientserver") && executable("gvim")
      call system("gvim --servername DECHOREMOTE")
      while 1
       try
+ 	   call remote_send("DECHOREMOTE",':silent set ft=Decho fo-=at'."\<cr>")
        call remote_send("DECHOREMOTE",':file [Decho\ Remote\ Server]'."\<cr>")
- 	  call remote_send("DECHOREMOTE",":put ='-----------------------------'\<cr>")
- 	  call remote_send("DECHOREMOTE",":put ='Remote Decho Debugging Window'\<cr>")
- 	  call remote_send("DECHOREMOTE",":put ='-----------------------------'\<cr>")
- 	  call remote_send("DECHOREMOTE","1GddG")
- 	  call remote_send("DECHOREMOTE",':silent set noswf noma nomod nobl nonu ch=1'."\<cr>")
- 	  call remote_send("DECHOREMOTE",':'."\<cr>")
- 	  call remote_send("DECHOREMOTE",':set ft=Decho'."\<cr>")
- 	  call remote_send("DECHOREMOTE",':syn on'."\<cr>")
- 	  break
+ 	   call remote_send("DECHOREMOTE",":put ='-----------------------------'\<cr>")
+ 	   call remote_send("DECHOREMOTE",":put ='Remote Decho Debugging Window'\<cr>")
+ 	   call remote_send("DECHOREMOTE",":put ='-----------------------------'\<cr>")
+ 	   call remote_send("DECHOREMOTE","1GddG")
+ 	   call remote_send("DECHOREMOTE",':silent set noswf noma nomod nobl nonu ch=1'."\<cr>")
+ 	   call remote_send("DECHOREMOTE",':'."\<cr>")
+ 	   call remote_send("DECHOREMOTE",':silent set ft=Decho'."\<cr>")
+ 	   call remote_send("DECHOREMOTE",':silent syn on'."\<cr>")
+ 	   break
       catch /^Vim\%((\a\+)\)\=:E241/
- 	  sleep 200m
+ 	   sleep 200m
       endtry
      endwhile
     endif

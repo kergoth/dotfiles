@@ -753,8 +753,6 @@ function! colorschemedegrade#RGB()
   let rv["darkred"]                = "#8B0000"
   let rv["light_green"]            = "#90EE90"
   let rv["lightgreen"]             = "#90EE90"
-  let rv["darkyellow"]             = "#D0D090"
-  let rv["dark_yellow"]             = "#D0D090"
 
   return rv
 endfunction

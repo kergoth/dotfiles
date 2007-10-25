@@ -1,7 +1,7 @@
 " Language   : Netrw Remote-Directory Listing Syntax
 " Maintainer : Charles E. Campbell, Jr.
-" Last change: Nov 27, 2006
-" Version    : 9
+" Last change: Aug 08, 2007
+" Version    : 10
 " ---------------------------------------------------------------------
 
 " Syntax Clearing: {{{1
@@ -13,7 +13,7 @@ endif
 
 " ---------------------------------------------------------------------
 " Directory List Syntax Highlighting: {{{1
-syn cluster NetrwGroup contains=netrwHide,netrwSortBy,netrwSortSeq,netrwQuickHelp,netrwVersion
+syn cluster NetrwGroup contains=netrwHide,netrwSortBy,netrwSortSeq,netrwQuickHelp,netrwVersion,netrwCopyTgt
 
 syn match  netrwSpecial		"\%(\S\+ \)*\S\+[*|=]\ze\%(\s\{2,}\|$\)" contains=netrwClassify
 syn match  netrwDir		"\.\{1,2}/"			contains=netrwClassify
@@ -36,6 +36,7 @@ syn match  netrwHidePat		"[^,]\+"			contained skipwhite nextgroup=netrwHideSep
 syn match  netrwHideSep		","				contained transparent skipwhite nextgroup=netrwHidePat
 syn match  netrwSortBy		"Sorted by"			contained transparent skipwhite nextgroup=netrwList
 syn match  netrwSortSeq		"Sort sequence:"		contained transparent skipwhite nextgroup=netrwList
+syn match  netrwCopyTgt		"Copy/Move Tgt:"		contained transparent skipwhite nextgroup=netrwList
 syn match  netrwList		".*$"				contained contains=netrwComma
 syn match  netrwComma		","				contained
 syn region netrwQuickHelp	matchgroup=Comment start="Quick Help:\s\+" end="$" contains=netrwHelpCmd keepend contained
@@ -46,7 +47,7 @@ syn match  netrwVersion		"(netrw.*)"			contained
 
 " ---------------------------------------------------------------------
 " Highlighting Links: {{{1
-if !exists("did_drchip_dbg_syntax")
+if !exists("did_drchip_netrwlist_syntax")
  let did_drchip_netrwlist_syntax= 1
  hi link netrwClassify	Function
  hi link netrwCmdSep	Delimiter
@@ -63,6 +64,7 @@ if !exists("did_drchip_dbg_syntax")
  hi link netrwTimeSep	netrwDateSep
  hi link netrwComma	netrwComment
  hi link netrwHide	netrwComment
+ hi link netrwMarkFile	Identifier
 endif
 
 " Current Syntax: {{{1

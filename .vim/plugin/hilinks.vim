@@ -1,34 +1,38 @@
 " hilinks.vim: the source herein generates a trace of what
 "             highlighting groups link to what highlighting groups
 "
-"  Author:  	Charles E. Campbell, Jr. <charles.e.campbell.1@gsfc.nasa.gov>
-"  Last Change: Feb 16, 2005	ASTRO-ONLY
-"  Version:		3
+"  Author:		Charles E. Campbell, Jr. <charles.e.campbell.1@gsfc.nasa.gov>
+"  Date:		Apr 17, 2006
+"  Version:		4a	ASTRO-ONLY
 "
 "  NOTE:        This script requires Vim 6.0 (or later)
 "
-"  Usage:
+"  Usage: {{{1
 "
 "  \hlt   : will reveal a linked list of highlighting from the top-level down
 "           to the bottom level.
 "           You may redefine the leading character using "let mapleader= ..."
 "           in your <.vimrc>.
 "
-"  History:
+"  History: {{{1
+"   3 04/07/05 :	* cpo&vim supported
 "   2 07/14/04 :	* register a is used as before but now its original contents are restored
 "   				* bugfix: redraw taken before echo to fix message display
 "   				* debugging code installed
 "  	1 08/01/01 :	* the first release
 " ---------------------------------------------------------------------
 "  Load Once: {{{1
-if exists("g:loaded_hilink") || &cp
+if exists("g:loaded_hilinks") || &cp
   finish
 endif
-let g:loaded_hilink= 1
+let s:keepcpo= &cpo
+set cpo&vim
+let g:loaded_hilinks= "v4a"
 
 " ---------------------------------------------------------------------
 " Public Interface: {{{1
 if !hasmapto('<Plug>HiLinkTrace')
+  map <s-F10>  <Leader>hlt
   map <unique> <Leader>hlt <Plug>HiLinkTrace
 endif
 map <script> <Plug>HiLinkTrace :call <SID>HiLinkTrace()<CR>
@@ -88,5 +92,6 @@ fun! <SID>HiLinkTrace()
 "  call Dret("HiLinkTrace : hilink<".hilink.">")
 endfun
 
+let &cpo= s:keepcpo
 " ---------------------------------------------------------------------
 " vim: fdm=marker

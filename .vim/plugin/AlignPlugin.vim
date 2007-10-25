@@ -69,7 +69,7 @@
 "              If no arguments are supplied, AlignCtrl() will list
 "              current settings.
 "
-"   [range]Align(..list..)
+"   [range]Align(hasctrl,..list..)
 "              Takes a range and performs the specified alignment on the
 "              text.  The range may be :line1,line2 etc, or visually selected.
 "              The list is a list of patterns; the current s:AlignCtrl
@@ -80,11 +80,13 @@
 "   AlignCtrl style ..list.. : set alignment separators
 "   AlignCtrl {gv} pattern   : apply alignment only to lines which match (g)
 "                              or don't match (v) the given pattern
-"   [range]Align ..list..    : applies Align() over the specified range
+"   [range]Align[!] ..list..    : applies Align() over the specified range
 "                              The range may be specified via
 "                              visual-selection as well as the usual
 "                              [range] specification.  The ..list..
 "                              is a list of alignment separators.
+"                              If present, the ! means that the first
+"                              argument is an AlignCtrl string.
 "
 " Romans 1:16,17a : For I am not ashamed of the gospel of Christ, for it is {{{1
 " the power of God for salvation for everyone who believes; for the Jew first,
@@ -101,11 +103,11 @@ set cpo&vim
 
 " ---------------------------------------------------------------------
 " Public Interface: {{{1
-com! -range -nargs=* Align <line1>,<line2>call Align#Align(<f-args>)
-com! -range -nargs=0 AlignReplaceQuotedSpaces <line1>,<line2>call Align#AlignReplaceQuotedSpaces()
-com!        -nargs=* AlignCtrl call Align#AlignCtrl(<f-args>)
-com!        -nargs=0 AlignPush call Align#AlignPush()
-com!        -nargs=0 AlignPop  call Align#AlignPop()
+com! -bang -range -nargs=* Align <line1>,<line2>call Align#Align(<bang>0,<q-args>)
+com!       -range -nargs=0 AlignReplaceQuotedSpaces <line1>,<line2>call Align#AlignReplaceQuotedSpaces()
+com!              -nargs=* AlignCtrl call Align#AlignCtrl(<q-args>)
+com!              -nargs=0 AlignPush call Align#AlignPush()
+com!              -nargs=0 AlignPop  call Align#AlignPop()
 
 " ---------------------------------------------------------------------
 "  Restore: {{{1

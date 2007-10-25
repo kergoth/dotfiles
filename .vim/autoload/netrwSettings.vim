@@ -103,6 +103,9 @@ fun! netrwSettings#NetrwSettings()
   endif
   let cdescline= line("$")
   put ='let g:netrw_cd_escape...'
+  put = 'let g:netrw_compress          = '.g:netrw_compress
+  let decompressline= line("$")
+  put ='let g:netrw_decompress...'
   put = 'let g:netrw_dirhistmax        = '.g:netrw_dirhistmax
   put = 'let g:netrw_fastbrowse        = '.g:netrw_fastbrowse
   put = 'let g:netrw_ftp_browse_reject = '.g:netrw_ftp_browse_reject
@@ -113,13 +116,14 @@ fun! netrwSettings#NetrwSettings()
   put = 'let g:netrw_keepdir           = '.g:netrw_keepdir
   put = 'let g:netrw_list_cmd          = '.g:netrw_list_cmd
   put = 'let g:netrw_list_hide         = '.g:netrw_list_hide
-  put = 'let g:netrw_local_mkdir       = '.g:netrw_local_mkdir
-  put = 'let g:netrw_local_rmdir       = '.g:netrw_local_rmdir
   put = 'let g:netrw_liststyle         = '.g:netrw_liststyle
+  put = 'let g:netrw_localcopycmd      = '.g:netrw_localcopycmd
+  put = 'let g:netrw_local_mkdir       = '.g:netrw_local_mkdir
+  put = 'let g:netrw_localmovecmd      = '.g:netrw_localmovecmd
+  put = 'let g:netrw_local_rmdir       = '.g:netrw_local_rmdir
   put = 'let g:netrw_maxfilenamelen    = '.g:netrw_maxfilenamelen
   put = 'let g:netrw_menu              = '.g:netrw_menu
   put = 'let g:netrw_mkdir_cmd         = '.g:netrw_mkdir_cmd
-  put = 'let g:netrw_mousemaps         = '.g:netrw_mousemaps
   put = 'let g:netrw_preview           = '.g:netrw_preview
   put = 'let g:netrw_rename_cmd        = '.g:netrw_rename_cmd
   put = 'let g:netrw_rm_cmd            = '.g:netrw_rm_cmd
@@ -154,6 +158,7 @@ fun! netrwSettings#NetrwSettings()
    call setline(shqline,"let g:netrw_shq               = '".g:netrw_shq."'")
   endif
   call setline(cdescline,"let g:netrw_cd_escape         = ".'"'.escape(g:netrw_cd_escape,'\"').'"')
+  call setline(decompressline,"let g:netrw_decompress        = ".substitute(string(g:netrw_decompress),"^'\\(.*\\)'$",'\1',''))
 
   set nomod
 

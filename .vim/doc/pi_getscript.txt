@@ -309,7 +309,7 @@ so-called script-id.  Within the webpage of
 
 is a line specifying the latest source-id (src_id).  The source identifier
 numbers are always increasing, hence if the src_id is greater than the one
-recorded for the script in GetLatestVimScripts then its time to download a
+recorded for the script in GetLatestVimScripts then it's time to download a
 newer copy of that script.
 
 GetLatestVimScripts will then download the script and update its internal

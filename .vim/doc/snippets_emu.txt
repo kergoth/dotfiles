@@ -10,7 +10,7 @@
         Tag Commands                                |snippet-commands|
         Buffer Specific Snippets                    |snip-buffer-specific|
         Filetype Specific Snippets                  |snip-ftplugin|
-        Snippets menu                               |snip-ftplugin|
+        Snippets menu                               |snip-menu|
 2. SnippetsEmu Options                          |snippets_emu-options|
         Start and End Tags                          |snip-start-end-tags|
         Element Delimiter                           |snip-start-end-tags|
@@ -19,8 +19,9 @@
         Valid Tag Names                             |snip-tag-name-syntax|
         Advanced Tag Command Examples               |snip-advanced-tag-commands|
 4. SnippetsEmu Contact Details                  |snip-contact-details|
-5. SnippetsEmu Known Bugs                       |snippets_emu-bugs|
-6. Troubleshooting                              |snippets_emu-troubleshooting|
+5. Contributors                                 |snip-contributors|
+6. SnippetsEmu Known Bugs                       |snippets_emu-bugs|
+7. Troubleshooting                              |snippets_emu-troubleshooting|
 
 {Vi does not have any of these features}
 
@@ -161,6 +162,47 @@ These will be added to the 'Snippets' menu which is available in Normal mode.
 Selecting options from the menu will source the file and hence load any
 snippets defined within it.
 
+                                                  *snippets-commands-overview*
+                                                 *defining-snippets* *Snippet*
+Snippet [<trigger> [<definition>]]
+               Without arguments the Snippet command will list all of the
+               currently defined triggers for the current buffer.
+
+               With just a (valid) trigger as the first argument the command
+               will show the definition for that trigger. NB. The command
+               supports auto-complete so one can use <Tab> to cycle through
+               the currently defined triggers.
+
+               With both a trigger and a definition provided the command will
+               create a new snippet as detailed above.
+
+                                              *removing-snippets* *DelSnippet*
+DelSnippet <trigger>
+               The DelSnippet command will remove the appropriate snippet from
+               the current set defined in the buffer. Auto-complete can be
+               used to cycle through the currently defined triggers.
+
+                                           *creating-snippets* *CreateSnippet*
+[range]CreateSnippet
+               The CreateSnippet command allows the simple creation of
+               snippets for use within your own file. Without a range the
+               current line will be used. When passed a range then all the
+               lines in the range will be converted for use in a command.
+
+               Snippets created by the command will be added to a scratch
+               buffer called 'Snippets'. The current value of an empty tag
+               (snip_start_tag.snip_end_tag, '<{}>' by default) will be added
+               to the unnamed register and so can be inserted with appropriate
+               paste commands.
+
+                                                         *CreateBundleSnippet*
+[range]CreateBundleSnippet
+               CreateBundleSnippet works exactly like CreateSnippet but the
+               resulting text will be suitable for including in one of the
+               included bundles. The unnamed register will include the text
+               '"st.et."' so start and end tag agnostic empty tags can be
+               included.
+
 ===============================================================================
 SNIPPETSEMU OPTIONS                                     *snippets_emu-options*
                                                          *snip-start-end-tags*
@@ -191,12 +233,16 @@ specific buffer using the following variables: >
 Remapping the default jump key ~
 
 The trigger key is mapped to Tab by default. Some people may wish to remap
-this if it causes conflicts with other plugins. Doing so will require
-remapping in both insert and select modes and can be done with the following
-commands: >
+this if it causes conflicts with other plugins. The key can be set in your
+<.vimrc> by setting the 'g:snippetsEmu_key' variable.
+An example
+>
+    let g:snippetsEmu_key = "<S-Tab>"
 
-    imap <unique> <Your key here> <Plug>Jumper
-    smap <unique> <Your key here> i<BS><Your key here>
+Snippets will now be triggered by Shift-Tab rather than just Tab. NB, this
+example may not work in all terminals as some trap Shift-Tab before it gets
+to Vim.
+
 ~
 ==============================================================================
 DETAILED EXPLANATIONS                             *snip-detailed-explanations*
@@ -286,6 +332,28 @@ The plugin is also currently hosted at Google Code:
 
 Bug reports can also be posted on the hosting site:
     http://code.google.com/p/snippetsemu/issues/list
+
+                                                           *snip-contributors*
+Contributors to SnippetsEmu ~
+
+Patches:
+Ori Avtalion - Improvements to Snippet command
+Freddy Vulto - Improved behaviour
+Andy Block - Bug with commands on same line. This is why I should do better
+test suites.
+Priit Tamboom - Bug when 'h' and 'l' are remapped.
+Rick Denatale - Added DelSnippet command to remove snippets.
+
+Documentation:
+Panos Laganakos - Greek translation (coming soon)
+
+Bundles:
+Panos Laganakos - Python snippets
+Alex Pounds - Django snippets
+Packetwhore - C snippets updates
+Golubev Nikolay - C snippets updates
+Thiago Salves - C snippets update
+KnipKnap - Python snippets
 
 ==============================================================================
 SNIPPETSEMU KNOWN BUGS                  		   *snippets_emu-bugs*

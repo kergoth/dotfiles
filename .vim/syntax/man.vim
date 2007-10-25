@@ -1,8 +1,8 @@
 " Vim syntax file
 "  Language:	Manpageview
 "  Maintainer:	Charles E. Campbell, Jr.
-"  Last Change:	Jun 28, 2006
-"  Version:    	4
+"  Last Change:	Aug 14, 2007
+"  Version:    	5	NOT RELEASED
 "
 "  History:
 "    2: * Now has conceal support
@@ -23,13 +23,13 @@ endif
 
 syn case ignore
 " following four lines taken from Vim's <man.vim>:
-syn match  manReference		"\f\+([1-9][a-z]\=)"
-syn match  manTitle		"^\f\+([0-9]\+[a-z]\=).*"
-syn match  manSectionHeading	"^[a-z][a-z ]*[a-z]$"
-syn match  manOptionDesc	"^\s*[+-][a-z0-9]\S*"
+syn match  manReference		"\f\+([1-9]\l\=)"
+syn match  manTitle		"^\f\+([0-9]\+\l\=).*"
+syn match  manSectionHeading	"^\l[a-z ]*\l$"
+syn match  manOptionDesc	"^\s*\zs[+-]\{1,2}\w\S*"
 
-syn match  manSectionHeading	"^\s\+[0-9]\+\.[0-9.]*\s\+[A-Z].*$"	contains=manSectionNumber
-syn match  manSectionNumber	"^\s\+[0-9]\+\.[0-9]*"			contained
+syn match  manSectionHeading	"^\s\+\d\+\.[0-9.]*\s\+\u.*$"		contains=manSectionNumber
+syn match  manSectionNumber	"^\s\+\d\+\.\d*"			contained
 syn region manDQString		start='[^a-zA-Z"]"[^", )]'lc=1		end='"'		end='^$' contains=manSQString
 syn region manSQString		start="[ \t]'[^', )]"lc=1		end="'"		end='^$'
 syn region manSQString		start="^'[^', )]"lc=1			end="'"		end='^$'

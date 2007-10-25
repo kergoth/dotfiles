@@ -1,14 +1,14 @@
-*manpageview.txt*	Man Page Viewer			Sep 26, 2006
+*manpageview.txt*	Man Page Viewer			Sep 07, 2007
 
 Author:  Charles E. Campbell, Jr.  <NdrchipO@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
-Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
+Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
            The VIM LICENSE applies to ManPageView.vim and ManPageView.txt
            (see |copyright|) except use "ManPageView" instead of "Vim"
 	   no warranty, express or implied.  use at-your-own-risk.
 
 ==============================================================================
-1. Contents				*manpageview* *manpageview-contents*
+1. Contents				*manpageview* *manpageview-contents* {{{1
 
 	1. Contents.................................: |manpageview-contents|
 	2. ManPageView Usage........................: |manpageview-usage|
@@ -24,14 +24,14 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	4. ManPageView History......................: |manpageview-history|
 
 ==============================================================================
-2. ManPageView Usage					*manpageview-usage*
+2. ManPageView Usage					*manpageview-usage* {{{1
 
-        GENERAL FORMAT					*manpageview-format*
+        GENERAL FORMAT					*manpageview-format* {{{2
 
 		(command) :[count][HORV]Man [topic] [booknumber]
 		(map)     [count]K
 
-	MAN						*manpageview-man*
+	MAN						*manpageview-man* {{{2
 >
 	:[count]Man topic
 	:Man topic booknumber
@@ -52,7 +52,7 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	with the g:manpageview_options variable in your <.vimrc>.
 
 
-	OPENING STYLE				*manpageview-open*
+	OPENING STYLE				*manpageview-open* {{{2
 
 	In addition, one may specify open help and specify an 
 	opening style (see g:manpageview_winopen below): >
@@ -66,15 +66,38 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	instead of man.  In fact, the facility is generalized to
 	allow multiple help viewing systems.
 
-	K MAP					*manpageview-K*
+	INFO					*manpageview-info* {{{2
+
+	Info pages are supported by appending a ".i" suffix: >
+		:Man info.i
+<	A number of maps are provided: >
+		MAP	EFFECT
+		> n	go to next node
+		< p	go to previous node
+		d       go to the top-level directory
+		u	go to up node
+		t	go to top node
+		H	give help
+		i	ask for "index" help
+		<bs>    go up one page
+		<del>   go up one page
+		<tab>   go to next hyperlink
+<
+	The "index" help isn't currently using index information; instead,
+	its doing some searching in the various info files.  The "," and ";"
+	operators are provided to go to the next and previous matches,
+	respectively.
+
+	K MAP					*manpageview-K* {{{2
 >
 		[count]K
 <
 	ManPageView also supports the use of "K", as a map, to
 	invoke ManPageView.  The topic is taken from the word
-	currently under the cursor.
+	currently under the cursor.  If a [count] is present, it
+	will be used as the booknumber.
 
-	PERL					*manpageview-perl*
+	PERL					*manpageview-perl* {{{2
 
 	For perl, the following command, >
 		:Man sprintf.pl
@@ -89,34 +112,21 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	for syntax highlighting, the ".pl" suffix may be dropped.
 	For example, when editing a "abc.pl" file, >
 		:Man sprintf
-<	will return the perl  help for sprintf.
+<	will return the perl help for sprintf.
 
-	INFO					*manpageview-info*
-
-	Info pages are supported by appending a ".i" suffix: >
-		:Man info.i
-<	A number of maps are provided: >
-		MAP	EFFECT
-		> n	go to next node
-		< p	go to previous node
-		d       go to the top-level directory
-		u	go to up node
-		t	go to top node
-		H	give help
-		<bs>    go up one page
-		<del>   go up one page
-		<tab>   go to next hyperlink
-<
-	PHP					*manpageview-php*
+	PHP					*manpageview-php* {{{2
 
 	For php help, Manpageview uses links to get help from
 	http://www.php.net (by default).  The filetype as determined
 	for syntax highlighting is used to signal manpageview to use
 	php help.  As an example, >
-		:Man bzopen
-<	will get help for bzopen for php.
+		:Man bzopen.php
+<	will get help for php's bzopen command.  When one is editing
+	a php file, then man will default to getting help for php
+	(ie. when the filetype is php, :Man bzopen will get the help
+	for php's bzopen).
 
-	EXTENDING MANPAGEVIEW			*manpageview-extend*
+	EXTENDING MANPAGEVIEW			*manpageview-extend* {{{2
 
 	To extend manpageview to handle other documentation systems,
 	manpageview has some special variables with a common extension: >
@@ -144,7 +154,18 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
 
 
 ==============================================================================
-3. ManPageView Options					*manpageview-options*
+3. ManPageView Options					*manpageview-options* {{{1
+
+	g:manpageview_iconv   : some systems seem to include unwanted
+		    characters. The iconv program can be used to filter out
+		    such characters; by default, manpageview will use >
+			iconv -c
+<		    You may avoid manpageview's use of iconv by putting: >
+			let g:manpageview_iconv= ""
+<		    in your <.vimrc> file; you may also specify any other
+		    filter you wish with this variable.  Also, if iconv
+		    happens to not be |executable()|, then no filtering
+		    will be done.  (Thanks to Matthew Wozniski).
 
 	g:manpageview_options : extra options that will be passed on when
 	                        invoking the man command
@@ -234,6 +255,17 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	Thanks go to the various people who have contributed changes,
 	pointed out problems, and made suggestions!
              
+	v17: Apr 18, 2007  * changed the topic cleanup to use 'g' instead
+	                     of '' in the substitute().
+			   * Fixed bug with info pages - wasn't able to
+			     use the > and < maps to go to pages named
+			     with spaces.
+			   * Included the g:manpageview_iconv option
+	     Sep 07, 2007  * viewing window now is read-only and swapfile
+	                     is turned off
+	     Sep 07, 2007  * The "::" in some help pages (ex. File::stat)
+			     was being parsed out, leaving only the left
+			     hand side word.  Manpageview now accepts them.
 	v16: Jun 28, 2006  * bypasses sxq with '"' for windows internally
 	     Sep 26, 2006  * implemented <count>K to look up a topic
 	                     under the cursor but in the <count>-th book

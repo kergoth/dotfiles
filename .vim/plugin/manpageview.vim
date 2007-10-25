@@ -1,7 +1,7 @@
 " manpageview.vim : extra commands for manual-handling
 " Author:	Charles E. Campbell, Jr.
-" Date:		Feb 21, 2007
-" Version:	16
+" Date:		Oct 10, 2007
+" Version:	17
 "
 " Please read :help manpageview for usage, options, etc
 "
@@ -12,7 +12,7 @@
 if &cp || exists("g:loaded_manpageview")
  finish
 endif
-let g:loaded_manpageview = "v16"
+let g:loaded_manpageview = "v17"
 let s:keepcpo            = &cpo
 set cpo&vim
 "DechoTabOn
@@ -31,7 +31,7 @@ endif
 if !hasmapto('<Plug>ManPageView') && &kp =~ '^man\>'
   nmap <unique> K <Plug>ManPageView
 endif
-nmap <silent> <script> <Plug>ManPageView  :call <SID>ManPageView(1,0,expand("<cWORD>"))<CR>
+nmap <silent> <script> <Plug>ManPageView  :<c-u>call <SID>ManPageView(1,v:count,expand("<cWORD>"))<CR>
 
 com! -nargs=* -count=0	Man call s:ManPageView(0,<count>,<f-args>)
 com! -nargs=* -count=0	HMan let g:manpageview_winopen="hsplit"|call s:ManPageView(0,<count>,<f-args>)
@@ -41,6 +41,18 @@ com! -nargs=* -count=0	VMan let g:manpageview_winopen="vsplit"|call s:ManPageVie
 
 " ---------------------------------------------------------------------
 " Default Variable Values: {{{1
+if !exists("g:manpageview_iconv")
+ if executable("iconv")
+  let s:iconv= "iconv -c"
+ else
+  let s:iconv= ""
+ endif
+else
+ let s:iconv= g:manpageview_iconv
+endif
+if s:iconv != ""
+ let s:iconv= "| ".s:iconv
+endif
 if !exists("g:manpageview_pgm")
  let g:manpageview_pgm= "man"
 endif
@@ -81,6 +93,7 @@ endif
 " =====================================================================
 "  Functions: {{{1
 
+" ---------------------------------------------------------------------
 " ManPageView: view a manual-page, accepts three formats: {{{2
 "    :call s:ManPageView(viamap,"topic")
 "    :call s:ManPageView(viamap,booknumber,"topic")
@@ -98,12 +111,18 @@ fun! s:ManPageView(viamap,bknum,...) range
 
   if a:0 > 0
    " fix topic
-   let topic= substitute(a:1,'[^-a-zA-Z().0-9_].*$','','')
-"   call Decho("a:1<".a:1."> topic<".topic."> (after fix)")
+   if &ft != "info"
+    let topic= substitute(a:1,'[^-a-zA-Z.0-9_:].*$','','')
+"    call Decho("a:1<".a:1."> topic<".topic."> (after fix)")
+   else
+   	let topic= a:1
+"	call Decho("topic<".topic.">")
+   endif
   endif
 
   " interpret the input arguments - set up manpagetopic and manpagebook
   if a:0 > 0 && strpart(topic,0,1) == '"'
+"   call Decho("interpret input arguments: topic<".topic.">")
    let topic= topic
    " merge quoted arguments:  Man "some topic here"
 "   call Decho('case a:0='.a:0." strpart(".topic.",0,1)<".strpart(topic,0,1))
@@ -123,7 +142,7 @@ fun! s:ManPageView(viamap,bknum,...) range
 	endif
    	let i= i + 1
    endwhile
-   let manpagetopic= strpart(manpagetopic,0,strlen(manpagetopic)-1)
+   let manpagetopic   = strpart(manpagetopic,0,strlen(manpagetopic)-1)
 "   call Decho("merged quoted arguments<".manpagetopic.">")
 
   elseif a:0 == 0
@@ -186,6 +205,10 @@ fun! s:ManPageView(viamap,bknum,...) range
   endif
 "  call Decho("manpagetopic<".manpagetopic.">")
 "  call Decho("manpagebook <".manpagebook.">")
+
+  " for the benefit of associated routines (such as InfoIndexLink())
+  let s:manpagetopic = manpagetopic
+  let s:manpagebook  = manpagebook
 
   " default program g:manpageview_pgm=="man" may be overridden
   " if an extension is matched
@@ -435,17 +458,18 @@ fun! s:ManPageView(viamap,bknum,...) range
 	"--------------------------
     else
      if nospace
-"	  call Decho("(nospace) exe silent! ".cmdmod."r!".pgm.iopt.manpagebook.manpagetopic)
-	  exe "silent! ".cmdmod."r!".pgm.iopt.manpagebook.manpagetopic
+"	   call Decho("(nospace) exe silent! ".cmdmod."r!".pgm.iopt.manpagebook.manpagetopic)
+      exe "silent! ".cmdmod."r!".pgm.iopt.manpagebook.manpagetopic.s:iconv
      elseif has("win32")
-"      call Decho("(win32) exe silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." \"".manpagetopic."\"")
-      exe "silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." \"".manpagetopic."\""
+"       call Decho("(win32) exe silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." \"".manpagetopic."\"")
+       exe "silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." \"".manpagetopic."\"".s:iconv
 	 else
 "      call Decho("(nrml) exe silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." '".manpagetopic."'")
-      exe "silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." '".manpagetopic."'"
+      exe "silent! ".cmdmod."r!".pgm." ".iopt." ".manpagebook." '".manpagetopic."'".s:iconv
 	endif
      exe cmdmod.'silent!  %s/.\b//ge'
     endif
+	setlocal ro nomod noswf
    endif
 
    " check if manpage actually found
@@ -529,10 +553,10 @@ fun! s:MPVSaveSettings()
    let s:gdkeep            = &gd
    let s:cwhkeep           = &cwh
    let s:magickeep         = &magic
-   set srr=> report=10000 nogd magic
+   setlocal srr=> report=10000 nogd magic
    if &cwh < 2
     " avoid hit-enter prompts
-    set cwh=2
+    setlocal cwh=2
    endif
   if has("win32") || has("win95") || has("win64") || has("win16")
    let &sxq= '"'
@@ -608,6 +632,7 @@ fun! s:ManPageInfo(type)
 
   if &ft != "info"
    " restore K and do a manpage lookup for word under cursor
+"   call Decho("ft!=info: restore K and do a manpage lookup of word under cursor")
    setlocal kp=<sid>ManPageView
    if exists("s:manpageview_pfx_i")
     unlet s:manpageview_pfx_i
@@ -627,10 +652,11 @@ fun! s:ManPageInfo(type)
   if a:type == 0
    " extract link
    let curline  = getline(".")
-"  call Decho("curline<".curline.">")
+"   call Decho("type==0: curline<".curline.">")
    let ipat     = 1
    while ipat <= 4
     let link= matchstr(curline,s:linkpat{ipat})
+"	call Decho("..attempting s:linkpat".ipat.":<".s:linkpat{ipat}.">")
     if link != ""
      if ipat == 2
       let s:manpageview_pfx_i = substitute(link,s:linkpat{ipat},'\1','')
@@ -648,6 +674,7 @@ fun! s:ManPageInfo(type)
   " Go to next node
   " ---------------
   elseif a:type == 1
+"   call Decho("type==1: goto next node")
    let node= matchstr(getline(2),'Next: \zs[^,]\+\ze,')
    let fail= "no next node"
 
@@ -655,6 +682,7 @@ fun! s:ManPageInfo(type)
   " Go to previous node
   " -------------------
   elseif a:type == 2
+"   call Decho("type==2: goto previous node")
    let node= matchstr(getline(2),'Prev: \zs[^,]\+\ze,')
    let fail= "no previous node"
 
@@ -662,6 +690,7 @@ fun! s:ManPageInfo(type)
   " Go up node
   " ----------
   elseif a:type == 3
+"   call Decho("type==3: go up one node")
    let node= matchstr(getline(2),'Up: \zs.\+$')
    let fail= "no up node"
 
@@ -669,17 +698,23 @@ fun! s:ManPageInfo(type)
   " Go to top node
   " --------------
   elseif a:type == 4
+"   call Decho("type==4: go to top node")
    let node= "Top"
   endif
+"  call Decho("node<".(exists("node")? node : '--n/a--').">")
 
   " use ManPageView() to view selected node
-  if node == ""
+  if !exists("node")
+   echohl ErrorMsg
+   echo "***sorry*** unable to view selection"
+   echohl None
+   sleep 2
+  elseif node == ""
    echohl ErrorMsg
    echo "***sorry*** ".fail
    echohl None
    sleep 2
   else
-"   call Decho("node<".node.">")
    call s:ManPageView(1,0,node.".i")
   endif
 
@@ -693,22 +728,26 @@ fun! ManPageInfoInit()
 
   " some mappings to imitate the default info reader
   nmap    <buffer>          <cr> K
-  noremap <silent> <buffer> >    :call <SID>ManPageInfo(1)<cr>
-  noremap <silent> <buffer> n    :call <SID>ManPageInfo(1)<cr>
-  noremap <silent> <buffer> <    :call <SID>ManPageInfo(2)<cr>
-  noremap <silent> <buffer> p    :call <SID>ManPageInfo(2)<cr>
-  noremap <silent> <buffer> u    :call <SID>ManPageInfo(3)<cr>
-  noremap <silent> <buffer> t    :call <SID>ManPageInfo(4)<cr>
-  noremap <silent> <buffer> ?    :he manpageview-info<cr>
-  noremap <silent> <buffer> d	 :call <SID>ManPageView(0,0,"dir.i")<cr>
-  noremap <silent> <buffer> <BS> <C-B>
-  noremap <silent> <buffer> <Del> <C-B>
-  noremap <silent> <buffer> <Tab> :call <SID>NextInfoLink()<CR>
+  noremap <silent> <buffer> >		:call <SID>ManPageInfo(1)<cr>
+  noremap <silent> <buffer> n		:call <SID>ManPageInfo(1)<cr>
+  noremap <silent> <buffer> <		:call <SID>ManPageInfo(2)<cr>
+  noremap <silent> <buffer> p		:call <SID>ManPageInfo(2)<cr>
+  noremap <silent> <buffer> u		:call <SID>ManPageInfo(3)<cr>
+  noremap <silent> <buffer> t		:call <SID>ManPageInfo(4)<cr>
+  noremap <silent> <buffer> ?		:he manpageview-info<cr>
+  noremap <silent> <buffer> d		:call <SID>ManPageView(0,0,"dir.i")<cr>
+  noremap <silent> <buffer> <BS>	<C-B>
+  noremap <silent> <buffer> <Del>	<C-B>
+  noremap <silent> <buffer> <Tab>	:call <SID>NextInfoLink()<CR>
+  noremap <silent> <buffer> i		:call <SID>InfoIndexLink('i')<CR>
+  noremap <silent> <buffer> ,		:call <SID>InfoIndexLink(',')<CR>
+  noremap <silent> <buffer> ;		:call <SID>InfoIndexLink(';')<CR>
 
 "  call Dret("ManPageInfoInit")
 endfun
 
-" NextInfoLink: {{{2
+" ---------------------------------------------------------------------
+" s:NextInfoLink: {{{2
 fun! s:NextInfoLink()
     let ln = search('\('.s:linkpat1.'\|'.s:linkpat2.'\|'.s:linkpat3.'\|'.s:linkpat4.'\)', 'w')
     if ln == 0
@@ -720,7 +759,179 @@ fun! s:NextInfoLink()
 endfun
 
 " ---------------------------------------------------------------------
-" ManPageTex: {{{2
+" s:InfoIndexLink: supports info's "i" for index-search-for-topic {{{2
+fun! s:InfoIndexLink(cmd)
+"  call Dfunc("s:InfoIndexLink(cmd<".a:cmd.">)")
+"  call Decho("indx vars: line #".(exists("s:indxline")? s:indxline : '---'))
+"  call Decho("indx vars: cnt  =".(exists("s:indxcnt")? s:indxcnt : '---'))
+"  call Decho("indx vars: find =".(exists("s:indxfind")? s:indxfind : '---'))
+"  call Decho("indx vars: link <".(exists("s:indxlink")? s:indxlink : '---').">")
+"  call Decho("indx vars: where<".(exists("s:wheretopic")? s:wheretopic : '---').">")
+"  call Decho("indx vars: srch <".(exists("s:indxsrchdir")? s:indxsrchdir : '---').">")
+
+  " sanity checks
+  if !exists("s:manpagetopic")
+   echohl Error
+   echo "(InfoIndexLink) no manpage topic available!"
+   echohl NONE
+"   call Dret("s:InfoIndexLink : no manpagetopic")
+   return
+
+  elseif !executable("info")
+   echohl Error
+   echo '(InfoIndexLink) the info command is not executable!'
+   echohl NONE
+"   call Dret("s:InfoIndexLink : info not exe")
+   return
+  endif
+
+  if a:cmd == 'i'
+   call inputsave()
+   let s:infolink= input("Index entry: ","","shellcmd")
+   call inputrestore()
+   let s:indxfind= -1
+  endif
+"  call Decho("infolink<".s:infolink.">")
+
+  if s:infolink != ""
+
+   if a:cmd == 'i'
+	let mpt= substitute(s:manpagetopic,'\.i','','')
+"	call Decho('system("info '.mpt.' --where")')
+	let s:wheretopic    = substitute(system("info ".mpt." --where"),'\n','','g')
+    let s:indxline      = 1
+    let s:indxcnt       = 0
+	let s:indxsrchdir   = 'cW'
+"	call Decho("new indx vars: cmd<i> where<".s:wheretopic.">")
+"	call Decho("new indx vars: cmd<i> line#".s:indxline)
+"	call Decho("new indx vars: cmd<i> cnt =".s:indxcnt)
+"	call Decho("new indx vars: cmd<i> srch<".s:indxsrchdir.">")
+   elseif a:cmd == ','
+	let s:indxsrchdir= 'W'
+"	call Decho("new indx vars: cmd<,> srch<".s:indxsrchdir.">")
+   elseif a:cmd == ';'
+	let s:indxsrchdir= 'bW'
+"	call Decho("new indx vars: cmd<;> srch<".s:indxsrchdir.">")
+   endif
+
+   let cmdmod= ""
+   if v:version >= 603
+    let cmdmod= "silent keepjumps "
+   endif
+
+   let wheretopic= s:wheretopic
+   if s:indxcnt != 0
+	let wheretopic= substitute(wheretopic,'\.info\%(-\d\+\)\=\.','.info-'.s:indxcnt.".",'')
+   else
+	let wheretopic= substitute(wheretopic,'\.info\%(-\d\+\)\=\.','.info.','')
+   endif
+"   call Decho("initial wheretopic<".wheretopic."> indxcnt=".s:indxcnt)
+
+   " search for topic in various files loop
+   while filereadable(wheretopic)
+"	call Decho("--- while loop: where<".wheretopic."> indxcnt=".s:indxcnt." indxline#".s:indxline)
+
+	" read file <topic.info-#.gz>
+    setlocal ma
+    silent! %d
+	if s:indxcnt != 0
+	 let wheretopic= substitute(wheretopic,'\.info\%(-\d\+\)\=\.','.info-'.s:indxcnt.".",'')
+	else
+	 let wheretopic= substitute(wheretopic,'\.info\%(-\d\+\)\=\.','.info.','')
+	endif
+"    call Decho("    exe ".cmdmod."r ".escape(wheretopic,' '))
+    try
+     exe cmdmod."r ".escape(wheretopic,' ')
+	catch /^Vim\%((\a\+)\)\=:E484/
+	 break
+	finally
+	 if search('^File:','W') != 0
+	  silent 1,/^File:/-1d
+	  1put! =''
+	 else
+	  1d
+	 endif
+	endtry
+	setlocal noma nomod
+
+	if s:indxline < 0
+	 if a:cmd == ','
+	  " searching forwards
+	  let s:indxline= 1
+"	  call Decho("    searching forwards from indxline#".s:indxline)
+	 elseif a:cmd == ';'
+	  " searching backwards
+	  let s:indxline= line("$")
+"	  call Decho("    searching backwards from indxline#".s:indxline)
+	 endif
+	endif
+
+	if s:indxline != 0
+"     call Decho("    indxline=".s:indxline." infolink<".s:infolink."> srchflags<".s:indxsrchdir.">")
+     exe s:indxline
+     let s:indxline= search('^\n\zs'.s:infolink.'\>\|^[0-9.]\+.*\zs\<'.s:infolink.'\>',s:indxsrchdir)
+"     call Decho("    search(".s:infolink.",".s:indxsrchdir.") yields: s:indxline#".s:indxline)
+     if s:indxline != 0
+	  let s:indxfind= s:indxcnt
+	  echo ",=Next Match  ;=Previous Match"
+"      call Dret("s:InfoIndexLink : success!  (indxfind=".s:indxfind.")")
+      return
+     endif
+	endif
+
+	if a:cmd == 'i' || a:cmd == ','
+	 let s:indxcnt  = s:indxcnt + 1
+	 let s:indxline = 1
+	elseif a:cmd == ';'
+	 let s:indxcnt  = s:indxcnt - 1
+	 if s:indxcnt < 0
+	  let s:indxcnt= 0
+"	  call Decho("    new indx vars: cmd<".a:cmd."> indxcnt=".s:indxcnt)
+	  break
+	 endif
+	 let s:indxline = -1
+	endif
+"	call Decho("    new indx vars: cmd<".a:cmd."> indxcnt =".s:indxcnt)
+"	call Decho("    new indx vars: cmd<".a:cmd."> indxline#".s:indxline)
+   endwhile
+  endif
+"  call Decho("end-while indx vars: find=".s:indxfind." cnt=".s:indxcnt)
+
+  " clear screen
+  setlocal ma
+  silent! %d
+  setlocal noma nomod
+
+  if s:indxfind < 0
+   " unsuccessful :(
+   echohl WarningMsg
+   echo "(InfoIndexLink) unable to find info for topic<".s:manpagetopic."> indx<".s:infolink.">"
+   echohl NONE
+"   call Dret("s:InfoIndexLink : unable to find info for ".s:manpagetopic.":".s:infolink)
+   return
+  elseif a:cmd == ','
+   " no more matches
+   let s:indxcnt = s:indxcnt - 1
+   let s:indxline= 1
+   echohl WarningMsg
+   echo "(InfoIndexLink) no more matches"
+   echohl NONE
+"   call Dret("s:InfoIndexLink : no more matches")
+   return
+  elseif a:cmd == ';'
+   " no more matches
+   let s:indxcnt = s:indxfind
+   let s:indxline= -1
+   echohl WarningMsg
+   echo "(InfoIndexLink) no previous matches"
+   echohl NONE
+"   call Dret("s:InfoIndexLink : no previous matches")
+   return
+  endif
+endfun
+
+" ---------------------------------------------------------------------
+" s:ManPageTex: {{{2
 fun! s:ManPageTex()
   let topic= '\'.expand("<cWORD>")
 "  call Dfunc("ManPageTex() topic<".topic.">")
@@ -729,10 +940,10 @@ fun! s:ManPageTex()
 endfun
 
 " ---------------------------------------------------------------------
-" ManPageTexLookup: {{{2
-fun! ManPageTexLookup(book,topic)
-"  call Dfunc("ManPageTexLookup(book<".a:book."> topic<".a:topic.">)")
-"  call Dret("ManPageTexLookup ".lookup)
+" s:ManPageTexLookup: {{{2
+fun! s:ManPageTexLookup(book,topic)
+"  call Dfunc("s:ManPageTexLookup(book<".a:book."> topic<".a:topic.">)")
+"  call Dret("s:ManPageTexLookup ".lookup)
 endfun
 
 " ---------------------------------------------------------------------
