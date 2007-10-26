@@ -68,7 +68,9 @@ bkeditall () {
 }
 
 termtitle () {
-    xprop -id $WINDOWID -set WM_NAME "$*"
+    set_ps1 notermtitle
+    echo -ne "\033]0;" "$*" "\007"
+    # xprop -id $WINDOWID -set WM_NAME "$*"
 }
 
 dusum () {

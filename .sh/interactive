@@ -2,28 +2,19 @@ inpath() {
     which $1 >/dev/null 2>&1
 }
 
-setup_interactive () {
-    export SHELL
-
-    # Coloring matching text in grep rocks
-    if grep -V --color >&/dev/null; then
-        GREP_OPTIONS='--color=auto'
-        GREP_COLOR='1;31'
-        export GREP_OPTIONS GREP_COLOR
-    fi
-
-    if which colordiff 2>/dev/null >&2; then
-        export GIT_DIFF_PAGER="colordiff | less -RS"
-    fi
-
-    case $TERM in
-    rxvt*|Xterm|xterm|aterm|urxvt*)
-        XTERM_SET='\[\033]0;\u@\h:\w\007\]'
-        ;;
-    *)
+set_ps1() {
+    if [ "$1" = "notermtitle" ]; then
         XTERM_SET=''
-        ;;
-    esac
+    else
+        case $TERM in
+        rxvt*|Xterm|xterm|aterm|urxvt*)
+            XTERM_SET='\[\033]0;\u@\h:\w\007\]'
+            ;;
+        *)
+            XTERM_SET=''
+            ;;
+        esac
+    fi
     if [ -n "$CLEARCASE_ROOT" ]; then
         CCASE="[`echo $CLEARCASE_ROOT|cut -d/ -f3`]"
         VOBPATH="`cleartool lsvob|grep ^*|awk '{print $2}'|head -1|xargs dirname`"
@@ -62,12 +53,31 @@ setup_interactive () {
         PS1="$XTERM_SET\u@\h ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
     fi
     # export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
+    unset XTERM_SET CCASE VOBPATH INVIM
+
+}
+
+setup_interactive () {
+    export SHELL
+
+    # Coloring matching text in grep rocks
+    if grep -V --color >&/dev/null; then
+        GREP_OPTIONS='--color=auto'
+        GREP_COLOR='1;31'
+        export GREP_OPTIONS GREP_COLOR
+    fi
+
+    if which colordiff 2>/dev/null >&2; then
+        export GIT_DIFF_PAGER="colordiff | less -RS"
+    fi
+
+    set_ps1
+
     if [ -z "$day" ]; then
         day="`date +%A|tr A-Z a-z`"
     fi
     fortune ~/.fortunes/days.$day 2>/dev/null
     echo
-    unset XTERM_SET CCASE VOBPATH INVIM
 
     if [ -z "$TERMCAP" ]; then
         # Deal with missing terminal types on certain machines.
