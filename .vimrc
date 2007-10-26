@@ -61,9 +61,8 @@ if has('win32')
 endif
 behave xterm
 
-" Functions {{{
-let colorterm = $COLORTERM
 
+" Functions {{{
 fun! Print(...)
   let l:colo = g:colors_name
   let l:printcolo = a:0 == 1 ? a:1 : 'print_bw'
@@ -770,34 +769,23 @@ endif
 " Inside of screen, we don't care about colorterm
 if &term !~ '^screen'
   " Set colors to 16 for gnome-terminal and xfce4-terminal
-  if (colorterm == 'gnome-terminal') || (colorterm == 'Terminal')
+  if ($COLORTERM == 'gnome-terminal') || ($COLORTERM == 'Terminal')
     set t_Co=16
-  elseif (colorterm == 'rxvt-xpm') && (&term == 'rxvt')
+  elseif ($COLORTERM == 'rxvt-xpm') && (&term == 'rxvt')
     " try to set colors correctly for mrxvt
     set t_Co=256
-  elseif (colorterm == 'putty')
+  elseif ($COLORTERM == 'putty')
     set t_Co=256
   endif
 endif
 
 if &t_Co > 2 || has('gui_running')
   if exists('g:colors_name')
-    set g:colors_name=
+    unlet g:colors_name
   endif
-  "if has('gui_running')
-    "set background?
-  "else
-    "set background=dark
-  "endif
   set background=dark
 
-  " Sane color scheme selection.  Baycomb looks like crap
-  " with less than 88 colors.
-  if &t_Co >= 88 || has('gui_running')
-    colors baycomb
-  else
-    colors desert256
-  endif
+  colo baycomb
 
   " Colors red both trailing whitespace:
   "  foo   
@@ -881,29 +869,9 @@ if has('autocmd')
     endfunction
     au BufEnter * call <SID>QuickFixClose()
 
-    " Make buffers for read only files 'set nomodifiable', courtesy Vim
-    " Tip #1238
-    function! <SID>UpdateModifiable()
-      if !exists("b:setmodifiable")
-        let b:setmodifiable = 0
-      endif
-      if &readonly
-        if &modifiable
-          setlocal nomodifiable
-          let b:setmodifiable = 1
-        endif
-      else
-        if b:setmodifiable
-          setlocal modifiable
-        endif
-      endif
-    endfunction
-
-    autocmd BufReadPost * call <SID>UpdateModifiable()
-
     " Change the current directory to the location of the
     " file being edited.
-    au BufEnter * :lcd %:p:h
+    com! -nargs=0 -complete=command Bcd lcd %:p:h
 
     " Special less.sh and man modes {{{
     function! <SID>check_pager_mode()
@@ -937,6 +905,7 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:showmarks_enable = 0
 let g:xml_syntax_folding = 1
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
