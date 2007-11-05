@@ -1,19 +1,20 @@
 [user]
 	name = Chris Larson
 	email = clarson@kergoth.com
-
-[show]
-	color = auto
-
-[diff]
-	color = auto
-
-[status]
-	color = auto
+[gui]
+	fontdiff = -family fixed -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 
 [alias]
 	ci = commit
 	co = checkout
         blameview = !git-blameview
-[gui]
-	fontdiff = -family fixed -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+
+[show]
+	color = auto
+[diff]
+	color = auto
+[status]
+	color = auto
+
+[merge]
+        summary = true
