@@ -67,9 +67,14 @@ bkeditall () {
     bk sfiles -U | bk edit -
 }
 
-termtitle () {
-    set_ps1 notermtitle
-    echo -ne "\033]0;" "$*" "\007"
+title () {
+    if [ "$TERM" = "screen" -o "$TERM" = "screen-bce" ]; then
+        unset PROMPT_COMMAND
+        echo -e "\033k\033\134\$ $1"
+    else
+        set_ps1 notermtitle
+        echo -ne "\033]0;" "$*" "\007"
+    fi
     # xprop -id $WINDOWID -set WM_NAME "$*"
 }
 
@@ -90,11 +95,6 @@ ac_run_autoupdates () {
             autoupdate -f
         )
     done
-}
-
-scr_settitle () {
-    unset PROMPT_COMMAND
-    echo -e "\033k\033\134\$ $1"
 }
 
 e () {
@@ -142,3 +142,5 @@ foo () {
     make "$@"
     return $?
 }
+
+# vim: set fenc=utf-8 sts=4 sw=4 et ft=sh:
