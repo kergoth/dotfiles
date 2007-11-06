@@ -1,5 +1,6 @@
 QUILT_DIFF_OPTS="-d -p"
 #QUILT_PATCH_OPTS="--ignore-whitespace"
+QUILT_PATCH_OPTS="-U"
 
 QUILT_PUSH_ARGS="--color=auto"
 QUILT_DIFF_ARGS="--no-timestamps --color=auto"
