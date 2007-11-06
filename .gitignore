@@ -1,2 +1,9 @@
-*~
-.bash_history
+# Ignore all
+*
+# Unignore scripts
+!/bin/*
+
+# Unignore all dotfiles but history
+!/.*
+!/.*/*
+/.*_history
