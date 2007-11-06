@@ -1,29 +1,28 @@
 #!/bin/bash
 
-h=$(git-rev-parse HEAD 2>/dev/null)
-if [ $? -eq 0 ]; then
-    GIT_DIR="$(git-rev-parse --git-dir)"
-    path="$(git-rev-parse --show-cdup)$(git-rev-parse --show-prefix)"
-    path="${path%/}"
-    # Let's try to hide the git repo information if we're within an ignored path
-    if git-ls-files --error-unmatch -c --exclude-from=$GIT_DIR/info/exclude --exclude-per-directory=.gitignore --directory --full-name $path &>/dev/null || git-ls-files --error-unmatch -o --exclude-from=$GIT_DIR/info/exclude --exclude-per-directory=.gitignore --directory --full-name $path &>/dev/null; then
-        #rev=$(git-show-ref -s --abbrev HEAD)
-        rev=$(git-diff-tree -m --quiet --pretty=format:%h $h)
-        branch=$(git-symbolic-ref HEAD 2>/dev/null)
-        if [ $? -ne 0 ]; then
-            branch=""
-        fi
-        reponame=$(git config core.reponame 2>/dev/null)
-    fi
-elif [ -d .svn ]; then
+if [ -d .svn ]; then
     rev=$(svn info 2>/dev/null|grep ^Revision|cut -d" " -f2)
     if [ $? -ne 0 ]; then
         rev=""
     fi
 elif [ -d CVS ]; then
     branch=$(cat CVS/Tag 2>/dev/null | sed -e's,^.,,')
-    if [ $? -ne 0 ]; then
-        branch=""
+else
+    h=$(git-rev-parse HEAD 2>/dev/null)
+    if [ $? -eq 0 ]; then
+        GIT_DIR="$(git-rev-parse --git-dir)"
+        path="$(git-rev-parse --show-cdup)$(git-rev-parse --show-prefix)"
+        path="${path%/}"
+        # Let's try to hide the git repo information if we're within an ignored path
+        if git-ls-files --error-unmatch -c --exclude-from=$GIT_DIR/info/exclude --exclude-per-directory=.gitignore --directory --full-name $path &>/dev/null || git-ls-files --error-unmatch -o --exclude-from=$GIT_DIR/info/exclude --exclude-per-directory=.gitignore --directory --full-name $path &>/dev/null; then
+            #rev=$(git-show-ref -s --abbrev HEAD)
+            rev=$(git-diff-tree -m --quiet --pretty=format:%h $h)
+            branch=$(git-symbolic-ref HEAD 2>/dev/null)
+            if [ $? -ne 0 ]; then
+                branch=""
+            fi
+            reponame=$(git config core.reponame 2>/dev/null)
+        fi
     fi
 fi
 
