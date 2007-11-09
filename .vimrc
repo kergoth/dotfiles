@@ -795,12 +795,14 @@ if &t_Co > 2 || has('gui_running')
   hi def link RedundantWhitespace Error
   match RedundantWhitespace /\s\+$\| \+\ze\t/
 
-  " Highlighting of Vim modelines
+  " Highlighting of Vim modelines, and hiding of fold markers
   hi def link vimModeline Special
+  hi def link foldMarker Ignore
   if has('autocmd')
     augroup KergothMatches
       au!
-      au BufWinEnter * syn match vimModeline contains= contained /vim:\s*set[^:]\{-1,\}:/
+      au BufRead,BufNewFile * syn match foldMarker contains= contained /{{{\|}}}/
+      au BufRead,BufNewFile * syn match vimModeline contains= contained /vim:\s*set[^:]\{-1,\}:/
     augroup END
   endif
 endif

@@ -32,7 +32,8 @@ if &background == "dark"
     hi Folded guifg=#BEBEBE guibg=#232235
     hi Function guifg=#BAB588 gui=BOLD
     hi Identifier guifg=#5094C4
-    hi Ignore guifg=#666666
+    "hi Ignore guifg=#666666
+    hi Ignore guifg=bg guibg=bg
     hi IncSearch guifg=#BABEAA guibg=#3A4520
     hi LineNr guifg=#206AA9 guibg=#101124
     hi MatchParen guifg=#001122 guibg=#7B5A55
@@ -112,8 +113,8 @@ if &background == "dark"
     hi Statement ctermfg=yellow
     hi PreProc ctermfg=red
     hi Underlined ctermfg=cyan cterm=NONE
-    hi Ignore cterm=bold ctermfg=7
-    hi Ignore ctermfg=darkgrey
+"    hi Ignore cterm=bold ctermfg=7
+    hi Ignore ctermfg=bg ctermbg=bg
     hi Error cterm=bold ctermfg=7 ctermbg=1
     hi Pmenu ctermbg=darkblue ctermfg=lightgrey
     hi PmenuSel ctermbg=lightblue ctermfg=white
