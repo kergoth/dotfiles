@@ -1,3 +1,10 @@
+revpatch () {
+    patch="$1"
+    shift
+    interdiff "$@" "$patch" /dev/null 
+    return $?
+}
+
 svkrm () {
     for i in "$@"; do
         svk revert -R "$i"
