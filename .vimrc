@@ -801,7 +801,7 @@ if &t_Co > 2 || has('gui_running')
   if has('autocmd')
     augroup KergothMatches
       au!
-      au BufRead,BufNewFile * syn match foldMarker contains= contained /{{{\|}}}/
+      au BufRead,BufNewFile * syn match foldMarker contains= contained /{{{[1-9]\?\|}}}/
       au BufRead,BufNewFile * syn match vimModeline contains= contained /vim:\s*set[^:]\{-1,\}:/
     augroup END
   endif
