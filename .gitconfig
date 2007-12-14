@@ -8,7 +8,10 @@
 	ci = commit
 	co = checkout
         blameview = !git-blameview
+        code-follow = !git-code-follow
 
+[code-follow]
+        color = auto
 [show]
 	color = auto
 [diff]
@@ -18,3 +21,9 @@
 
 [merge]
         summary = true
+
+[pack]
+        threads = 3
+
+[gc]
+        packrefs = false
