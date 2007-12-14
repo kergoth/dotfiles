@@ -907,6 +907,7 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:git_diff_spawn_mode = 1
 let g:showmarks_enable = 0
 let g:xml_syntax_folding = 1
 let g:loaded_netrw = 1
