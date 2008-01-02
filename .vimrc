@@ -244,23 +244,6 @@ vnoremap <RightRelease> '+y<RightRelease>gv
 " Mouse scroll wheel mappings only work in X11 and terminals
 if &ttymouse != '' ||
       \ (has('gui_running') && has('unix'))
-  " scrollwheel = intelligent # of lines to scroll based on window height
-  if has('autocmd')
-    augroup KergothScrollWheel
-      au!
-      au WinEnter,VimEnter * let w:mousejump = <SID>Max(winheight(0)/8, 1)
-      au WinEnter,VimEnter * exe 'map <MouseDown> ' . w:mousejump . ''
-      au WinEnter,VimEnter * exe 'map <MouseUp> ' . w:mousejump . ''
-
-      try
-        au VimResized * let w:mousejump = <SID>Max(winheight(0)/8, 1)
-        au VimResized * exe 'map <MouseDown> ' . w:mousejump . ''
-        au VimResized * exe 'map <MouseUp> ' . w:mousejump . ''
-      catch
-      endtry
-    augroup END
-  endif
-
   map <MouseDown> 3
   map <MouseUp> 3
 
