@@ -7,7 +7,7 @@ set_ps1() {
         XTERM_SET=''
     else
         case $TERM in
-        rxvt*|Xterm|xterm|aterm|urxvt*)
+        rxvt*|Xterm|xterm|aterm|urxvt*|cygwin)
             XTERM_SET='\[\033]0;\u@\h:\w\007\]'
             ;;
         *)
