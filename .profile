@@ -1,5 +1,3 @@
-umask 022
-
 if [ -r ~/.bashrc ]; then
     source ~/.bashrc
 fi

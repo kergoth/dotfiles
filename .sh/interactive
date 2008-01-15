@@ -107,7 +107,10 @@ setup_interactive () {
     fortune ~/.fortunes 2>/dev/null
 }
 
+# Let group write to files we scp to the machine, for convenience.
 if [ "$PS1" ]; then
     setup_interactive
+    umask 0022
+elseif [ "$TERM" = "dumb"; then
+    umask 0002
 fi
-
