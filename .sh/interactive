@@ -111,6 +111,6 @@ setup_interactive () {
 if [ "$PS1" ]; then
     setup_interactive
     umask 0022
-elseif [ "$TERM" = "dumb"; then
+elif [ "$TERM" = "dumb"; then
     umask 0002
 fi
