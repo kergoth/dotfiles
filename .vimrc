@@ -495,7 +495,11 @@ set writebackup
 " Rename the file to the backup when possible.
 set backupcopy=auto
 " Don't store all the backup and swap files in the current working dirctory.
-let &backupdir = './.vimtmp,' . fnamemodify($MYVIMRC, ':p:h') . '/.vim/tmp,/var/tmp,/tmp'
+if has("win32")
+  let &backupdir = './_vimtmp,' . $TEMP . ',c:/tmp,c:/temp'
+else
+  let &backupdir = './.vimtmp,' . $HOME . '/.vim/tmp,/var/tmp,/tmp'
+endif
 let &directory = &backupdir
 
 set isk+=_,$,@,%,#,-
@@ -525,7 +529,11 @@ endif
 " Viminfo file behavior
 if has('viminfo')
   if ! exists('$VIMINFO')
-    let $VIMINFO = $HOME . '/.viminfo'
+    if has("win32")
+      let $VIMINFO = $HOME . '/_viminfo'
+    else
+      let $VIMINFO = $HOME . '/.viminfo'
+    endif
   endif
   " f1  store file marks
   " '   # of previously edited files to remember marks for
