@@ -1,5 +1,5 @@
 if [ -r ~/.bashrc ]; then
-    source ~/.bashrc
+    . ~/.bashrc
 fi
 
 . ~/.sh/env

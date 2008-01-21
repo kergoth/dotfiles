@@ -29,8 +29,8 @@ set_ps1() {
         DEBIAN_CHROOT="[$(cat /etc/debian_chroot)]"
     fi
     # Check for color support in this terminal
-    if which tput >&/dev/null; then
-        if tput setaf 1 >&/dev/null; then
+    if which tput >/dev/null 2>&1; then
+        if tput setaf 1 >/dev/null 2>&1; then
             color=1
         else
             color=0
@@ -42,8 +42,11 @@ set_ps1() {
     else
         color=1
     fi
-    if [ $color -eq 1 ]; then
-        if which dircolors >&/dev/null; then
+    if [ "$SHELL" = "/bin/sh" ]; then
+        alias ls='ls -a -p'
+        PS1="${DEBIAN_CHROOT}$CCASE$INVIM\$(scm-prompt-output)\$ "
+    elif [ $color -eq 1 ]; then
+        if which dircolors >/dev/null 2>&1; then
             eval `dircolors`
         fi
         alias ls='ls --color=auto -a -p'
@@ -61,7 +64,7 @@ setup_interactive () {
     export SHELL
 
     # Coloring matching text in grep rocks
-    if grep -V --color >&/dev/null; then
+    if grep -V --color >/dev/null 2>&1; then
         GREP_OPTIONS='--color=auto'
         GREP_COLOR='1;31'
         export GREP_OPTIONS GREP_COLOR
@@ -109,7 +112,9 @@ setup_interactive () {
 
 # Let group write to files we scp to the machine, for convenience.
 if [ "$PS1" ]; then
-    setup_interactive
+    if [ -n "$TERM" ]; then
+        setup_interactive
+    fi
     umask 0022
 elif [ "$TERM" = "dumb" ]; then
     umask 0002
