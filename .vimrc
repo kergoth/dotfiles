@@ -175,6 +175,10 @@ map <leader>ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
 map <leader>dsr :s/\s\s\+/ /g<CR>      ' Delete Space Runs
 map <leader>dtw :%s/\s\+$//g<CR>       ' Delete Trailing Whitespace
 
+" Toggle syntax highlighting
+nmap <silent> ,S <Esc>:syn clear<CR>
+nmap <silent> ,s <Esc>:syn enable<CR>
+
 nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
@@ -820,9 +824,6 @@ if has('autocmd')
           \   endif |
           \   unlet b:reloadcheck |
           \ endif
-
-    " Always do a full syntax refresh
-    au BufEnter * syntax sync fromstart
 
     " When editing a file, always jump to the last known cursor position.
     " Don't do it when the position is invalid or when inside an event handler
