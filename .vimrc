@@ -291,7 +291,12 @@ com! -complete=command Interp call RunInterp()
 
 " Fonts {{{
 "set guifont=Envy\ Code\ R\ 11
-set guifont=DejaVu\ Sans\ Mono\ 11
+"set guifont=DejaVu\ Sans\ Mono\ 11
+if has('win32')
+  set guifont=Consolas:h11:cANSI
+elseif
+  set guifont=Consolas\ 11
+endif
 " }}}
 
 " Indentation {{{
@@ -890,6 +895,7 @@ endif " has('autocmd')
 " }}}
 
 " Plugin options {{{
+let g:LustyExplorerSuppressRubyWarning = 1
 let g:git_diff_spawn_mode = 1
 let g:showmarks_enable = 0
 let g:xml_syntax_folding = 1
@@ -965,9 +971,13 @@ let g:Tlist_WinWidth = 28
 let g:Tlist_Compact_Format = 1
 let g:Tlist_File_Fold_Auto_Close = 1
 let g:Tlist_Use_Right_Window = 1
-let g:Tlist_Sort_Type = 'name'
-let g:Tlist_Inc_Winwidth = 0
-let g:Tlist_Close_On_Select = 1
+let g:Tlist_Sort_Type = 'order'
+let g:Tlist_Close_On_Select = 0
+if has('gui_running')
+  let g:Tlist_Inc_Winwidth = 1
+else
+  let g:Tlist_Inc_Winwidth = 0
+endif
 
 let g:miniBufExplModSelTarget = 1
 let g:miniBufExplMinSize = 1
