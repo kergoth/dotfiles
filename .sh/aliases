@@ -1,7 +1,7 @@
 alias diff='diff -urNdp'
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
-if which vim >&/dev/null; then
+if which vim >/dev/null 2>&1; then
     alias vi='vim'
 fi
 alias symbolsizes="${NM} -S -t d --size-sort"
@@ -12,7 +12,7 @@ alias hd='od -t x1'
 alias mt='monotone'
 alias bb='bitbake'
 alias rem='remind'
-if which less >&/dev/null; then
+if which less >/dev/null 2>&1; then
     alias more='less'
 fi
 alias pgrep='pgrep -l'
@@ -21,6 +21,6 @@ alias mtn-add='mtn list unknown | xargs mtn add'
 alias mtn-drop='mtn drop --missing'
 
 alias gg='GREP_OPTIONS=--color=always git-grep'
-if which colordiff >&/dev/null; then
+if which colordiff >/dev/null 2>&1; then
     alias diff=colordiff
 fi

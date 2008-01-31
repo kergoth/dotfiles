@@ -175,6 +175,10 @@ map <leader>ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
 map <leader>dsr :s/\s\s\+/ /g<CR>      ' Delete Space Runs
 map <leader>dtw :%s/\s\+$//g<CR>       ' Delete Trailing Whitespace
 
+" Toggle syntax highlighting
+nmap <silent> ,S <Esc>:syn clear<CR>
+nmap <silent> ,s <Esc>:syn enable<CR>
+
 nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
@@ -500,7 +504,11 @@ set writebackup
 " Rename the file to the backup when possible.
 set backupcopy=auto
 " Don't store all the backup and swap files in the current working dirctory.
-let &backupdir = './.vimtmp,' . fnamemodify($MYVIMRC, ':p:h') . '/.vim/tmp,/var/tmp,/tmp'
+if has("win32")
+  let &backupdir = './_vimtmp,' . $TEMP . ',c:/tmp,c:/temp'
+else
+  let &backupdir = './.vimtmp,' . $HOME . '/.vim/tmp,/var/tmp,/tmp'
+endif
 let &directory = &backupdir
 
 set isk+=_,$,@,%,#,-
@@ -530,7 +538,11 @@ endif
 " Viminfo file behavior
 if has('viminfo')
   if ! exists('$VIMINFO')
-    let $VIMINFO = $HOME . '/.viminfo'
+    if has("win32")
+      let $VIMINFO = $HOME . '/_viminfo'
+    else
+      let $VIMINFO = $HOME . '/.viminfo'
+    endif
   endif
   " f1  store file marks
   " '   # of previously edited files to remember marks for
@@ -818,9 +830,6 @@ if has('autocmd')
           \   unlet b:reloadcheck |
           \ endif
 
-    " Always do a full syntax refresh
-    au BufEnter * syntax sync fromstart
-
     " When editing a file, always jump to the last known cursor position.
     " Don't do it when the position is invalid or when inside an event handler
     " (happens when dropping a file on GVim).
@@ -896,6 +905,7 @@ endif " has('autocmd')
 
 " Plugin options {{{
 let g:LustyExplorerSuppressRubyWarning = 1
+let g:LargeFile = 10
 let g:git_diff_spawn_mode = 1
 let g:showmarks_enable = 0
 let g:xml_syntax_folding = 1
