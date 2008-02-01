@@ -294,12 +294,18 @@ com! -complete=command Interp call RunInterp()
 " }}}
 
 " Fonts {{{
-"set guifont=Envy\ Code\ R\ 11
-"set guifont=DejaVu\ Sans\ Mono\ 11
-if has('win32')
-  set guifont=Consolas:h11:cANSI
-elseif
-  set guifont=Consolas\ 11
+let g:fontsize = "11"
+" let g:fontface = "Envy Code R"
+" let g:fontface = "Andale Mono"
+" let g:fontface = "Bitstream Vera Sans Mono"
+if has("gui_running")
+  if has("gui_gtk2")
+    let g:fontface = "DejaVu Sans Mono"
+    let &guifont = s:fontface." ".s:fontsize
+  elseif has('gui_win32')
+    let g:fontface = "Consolas"
+    let &guifont = s:fontface.":h".s:fontsize."cANSI"
+  endif
 endif
 " }}}
 
