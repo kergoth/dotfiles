@@ -17,6 +17,7 @@ if &background == "dark"
     hi Normal guifg=#A0B4E0 guibg=#11121A
 
     hi Comment guifg=#008B8B
+    hi Conditional gui=NONE guifg=#d0688d guibg=bg
     hi Constant guifg=#5C78F0
     hi Cursor guifg=#0000AA guibg=#CAD5C0
     hi CursorColumn guibg=#354070
@@ -28,6 +29,7 @@ if &background == "dark"
     hi Directory guifg=#BBD0DF
     hi Error guibg=#B03452
     hi ErrorMsg guibg=#FF4545
+    hi Exception gui=BOLD guifg=#d0a8ad guibg=bg
     hi FoldColumn guifg=#DBCAA5 guibg=#0A0A18
     hi Folded guifg=#BEBEBE guibg=#232235
     hi Function guifg=#BAB588 gui=BOLD
@@ -35,16 +37,19 @@ if &background == "dark"
     "hi Ignore guifg=#666666
     hi Ignore guifg=bg guibg=bg
     hi IncSearch guifg=#BABEAA guibg=#3A4520
+    hi Keyword gui=BOLD guifg=grey guibg=bg
     hi LineNr guifg=#206AA9 guibg=#101124
     hi MatchParen guifg=#001122 guibg=#7B5A55
     hi ModeMsg guifg=#00AACC
     hi MoreMsg guifg=#2E8B57
     hi NonText guifg=#382920
     hi Number guifg=#4580B4
+    hi Operator gui=NONE guifg=#e8cdc0 guibg=bg
     hi Pmenu guifg=#9AADD5 guibg=#3A6595
     hi PmenuSel guifg=#B0D0F0 guibg=#4A85BA
     hi PreProc guifg=#BA75CF
     hi Question guifg=#AABBCC
+    hi Repeat gui=NONE guifg=#e06070 guibg=bg
     hi Special guifg=#AAAACA
     hi SpecialKey guifg=#424242
     hi Statement guifg=#DCA8AD gui=NONE
