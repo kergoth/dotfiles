@@ -15,5 +15,9 @@ if g="$(which git-init)"; then
     export GIT_EXEC_PATH
 fi
 
+if [ -e /tmp/.esd -a ! -e /tmp/.esd-${UID} ]; then
+    ln -s /tmp/.esd /tmp/.esd-${UID}
+fi
+
 export PATH MANPATH PAGER LESS EDITOR PYTHONPATH
 export BK_USER NM LUA_INIT TERMINFO SCONSFLAGS
