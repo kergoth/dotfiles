@@ -75,70 +75,6 @@ fun! Print(...)
   let &background = l:bg
 endfun
 
-" Courtesy http://vim.sourceforge.net/tips/tip.php?tip_id=1161
-" Just like windo but restores the current window when it's done
-function! WinDo(command)
-  let currwin = winnr()
-  execute 'windo ' . a:command
-  execute currwin . 'wincmd w'
-endfunction
-com! -nargs=+ -complete=command Windo call WinDo(<q-args>)
-
-if v:version >= 700
-  " Just like Windo except that it disables all autocommands for super fast processing.
-  com! -nargs=+ -complete=command Windofast noau call WinDo(<q-args>)
-else
-  com! -nargs=+ -complete=command Windofast let l:ei = &eventignore | let &eventignore = 'all' | call WinDo(<q-args>) | let &eventignore = l:ei
-endif
-
-
-" Just like bufdo but restores the current buffer when it's done
-function! BufDo(command)
-  let currBuff = bufnr('%')
-  execute 'bufdo ' . a:command
-  execute 'buffer ' . currBuff
-endfunction
-com! -nargs=+ -complete=command Bufdo call BufDo(<q-args>)
-
-" Used to set sane default line numbering
-" Obey the 'number' or 'nonumber' which the user set in their .vimrc
-function! <SID>AutoNumberByWidth()
-  if ! exists('s:defaultnumstate')
-    let s:defaultnumstate = &number
-  endif
-  Windofast
-        \ let l:bufname = bufname('%') |
-        \ if (! exists('w:numberoverride')) &&
-        \    (&ma == 1) |
-        \   if s:defaultnumstate == 0 |
-        \     set nonumber |
-        \   else |
-        \     if winwidth(0) >= 80 |
-        \       set number |
-        \     else |
-        \       set nonumber |
-        \     endif |
-        \   endif |
-        \ endif
-endfunction
-
-function! SetNumbering(s)
-  if a:s == 0
-    let w:numberoverride = 1
-    setlocal nonumber
-  elseif a:s == 1
-    let w:numberoverride = 1
-    setlocal number
-  elseif a:s == -1 " Toggle
-    let w:numberoverride = 1
-    setlocal number!
-  else " Back to automatic
-    if exists('w:numberoverride')
-      unlet w:numberoverride
-    endif
-  endif
-endfunction
-
 function! <SID>Max(a, b)
   if a:a >= a:b
     return a:a
@@ -183,11 +119,6 @@ nmap <leader>im :Modeliner<CR>
 nmap <leader>Im :ModelinerBefore<CR>
 nmap <leader>sh :runtime vimsh/vimsh.vim<CR>
 nmap <leader>a :A<CR>            ' Switch between .c/cpp and .h (a.vim)
-
-" Toggle line numbering for the current window (overrides automatic by width)
-nmap <leader>n :call SetNumbering(-1)<CR>
-" Remove line number setting override, going back to automatic by win width
-nmap <leader>N :call SetNumbering(3)<CR>:call <SID>AutoNumberByWidth()<CR>
 
 " Reformat paragraph
 noremap <Leader>gp gqap
@@ -894,14 +825,6 @@ if has('autocmd')
     endfunction
     au VimEnter * :call <SID>check_pager_mode()
     " }}}
-
-    " Intelligent enable/disable of the line number display
-    au VimEnter,BufWinEnter,WinEnter,WinLeave * :call <SID>AutoNumberByWidth()
-
-    try
-      au VimResized * :call <SID>AutoNumberByWidth()
-    catch
-    endtry
 
     " Reload the vimrc when it changes
     autocmd BufWritePost $MYVIMRC source %
