@@ -46,9 +46,6 @@ set_ps1() {
         alias ls='ls -a -p'
         PS1="${DEBIAN_CHROOT}$CCASE$INVIM\$(scm-prompt-output)\$ "
     elif [ $color -eq 1 ]; then
-        if which dircolors >/dev/null 2>&1; then
-            eval `dircolors`
-        fi
         alias ls='ls --color=auto -a -p'
         PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
     else

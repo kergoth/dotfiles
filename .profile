@@ -3,6 +3,9 @@ if [ -r ~/.bashrc ]; then
 fi
 
 . ~/.sh/env
+if [ -r ~/.sh/firstinteractive ]; then
+    . ~/.sh/firstinteractive
+fi
 
 if [ -r ~/.sh/volatile.$HOSTNAME ]; then
     . ~/.sh/volatile.$HOSTNAME

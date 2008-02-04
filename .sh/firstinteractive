@@ -1,0 +1,9 @@
+if [ "$PS1" -a -n "$TERM" ]; then
+    if [ -r "$HOME/.vim/vimtodircolors.vim" -a -r "$HOME/.vimtodircolors" ]; then
+        vim --noplugin -c "so $HOME/.vim/vimtodircolors.vim | quit" >/dev/null 2>&1
+    fi
+    if [ -e "$HOME/.dir_colors" ]; then
+        export DIR_COLORS="$HOME/.dir_colors"
+        eval `dircolors -b $DIR_COLORS`
+    fi
+fi

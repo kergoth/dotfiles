@@ -194,7 +194,7 @@ function! s:ignoring(attr)
   return index(ignore, a:attr) != -1
 endfunction
 
-" Sets some settings, calls s:ColorschemeDegradeImpl to handle actually
+" Sets some settings, calls ColorschemeDegradeImpl to handle actually
 " degrading the colorscheme, then restores the settings.  This wrapper
 " should make sure that we don't accidentally recurse, and that settings are
 " restored properly even if something throws.
@@ -213,7 +213,7 @@ function! s:ColorschemeDegrade()
   let rv = -1
 
   try
-    let rv = s:ColorschemeDegradeImpl()
+    let rv = ColorschemeDegradeImpl()
   catch
     let ex = v:exception
   endtry
@@ -233,20 +233,77 @@ function! s:ColorschemeDegrade()
   return rv
 endfunction
 
-" For every highlight group, sets the cterm values to the best approximation
-" of the gui values possible given the value of &t_Co.
-function! s:ColorschemeDegradeImpl()
-  if has('gui_running') || (&t_Co != 256 && &t_Co != 88)
-    return
-  endif
+function HighlightlineDegrade(items)
+  let l:vars = []
+  let l:higrp = a:items[0]
+  for j in range((len(a:items)-1)/2)
+    " TODO Handle 16 color terminals?
+    let var = a:items[2*j+1]
+    let val = a:items[2*j+2]
+    if var == 'ctermsp'
+      if exists('g:colorschemedegrade_sp_is_bg') && g:colorschemedegrade_sp_is_bg
+        let var = 'ctermbg'
+      else
+        let var = 'ctermfg'
+      endif
+    endif
+    if var == 'cterm'
+      if s:ignoring('bold')
+        let val = substitute(val, 'bold', '', '')
+      endif
+      if s:ignoring('underline')
+        let val = substitute(val, 'underline', '', '')
+      endif
+      if s:ignoring('undercurl')
+        let val = substitute(val, 'undercurl', '', '')
+      endif
+      if s:ignoring('reverse') || s:ignoring('inverse')
+        let val = substitute(val, '\%(re\|in\)verse', '', '')
+      endif
+      if s:ignoring('italic')
+        let val = substitute(val, 'italic', '', '')
+      endif
+      if s:ignoring('standout')
+        let val = substitute(val, 'standout', '', '')
+      endif
+      let val = substitute(val, '\(^,*\|,*$\)', '', '')
+      let val = substitute(val, ',\+', ',', 'g')
+      let val = substitute(val, '^,*$', 'NONE', '')
 
-  let g:highlights = ""
-  redir => g:highlights
-  " Normal must be set 1st for ctermfg=bg, etc, and resetting it doesn't hurt
-  silent highlight Normal
-  silent highlight
-  redir END
+      call add(l:vars, var . "=" . val)
+    elseif var =~ 'cterm[fb]g'
+      if val =~ '[FBfb]g'
+        let val = tolower(val)
+        if var =~ val
+          let val = "NONE"
+        endif
+        "echomsg 'higrp=' . higrp . ' var=' . var . ' val=' . val
+        call add(l:vars, var . "=" . val)
+        continue
+      elseif val !~ '^#'
+        try
+          " We do need our cooked rgb.txt
+          if s:rgb == {}
+            let s:rgb = colorschemedegrade#RGB()
+          endif
+          let val = s:rgb[tolower(substitute(val, ' ', '_', 'g'))]
+        catch
+          echomsg "Cannot translate color \"" . val . "\""
+          continue
+        endtry
+      endif
 
+      let r = val[1] . val[2]
+      let g = val[3] . val[4]
+      let b = val[5] . val[6]
+      " echomsg 'hi ' . higrp . ' ' . var . '=' . s:FindClosestCode(r, g, b)
+      call add(l:vars, var . "=" . s:FindClosestCode(r, g, b))
+    endif
+  endfor
+  return l:vars
+endfunction
+
+function! HighlightgroupDegrade(higrp)
   let hilines = split(g:highlights, '\n')
   call filter(hilines, 'v:val !~ "links to" && v:val !~ "cleared"')
 
@@ -268,78 +325,78 @@ function! s:ColorschemeDegradeImpl()
 
     let items = split(line, '\%(\s\zecterm\|font\)\|=')
 
+    let curhigrp = items[0]
+    if len(items) % 2 != 1
+      echoerr "I cannot understand the highlight group "
+             \ . string(items) . ' at line ' . hilines[i]
+    endif
+
+    if curhigrp == higrp
+      return HighlightlineDegrade(items)
+    endif
+  endwhile
+endfunction
+
+" For every highlight group, sets the cterm values to the best approximation
+" of the gui values possible given the value of &t_Co.
+function! ColorschemeDegradeImpl(...)
+  if has('gui_running') || (&t_Co != 256 && &t_Co != 88)
+    return
+  endif
+
+  let g:highlights = ""
+  redir => g:highlights
+  " Normal must be set 1st for ctermfg=bg, etc, and resetting it doesn't hurt
+  silent highlight Normal
+  silent highlight
+  redir END
+
+  let hilines = split(g:highlights, '\n')
+  call filter(hilines, 'v:val !~ "links to" && v:val !~ "cleared"')
+
+  let i = 0
+  let end = len(hilines)
+
+  let ret = ""
+  while i < end
+    let line = hilines[i]
+    let i += 1
+    while i < end && hilines[i] !~ '\<xxx\>'
+      let line .= hilines[i]
+      let i += 1
+    endwhile
+    let line = substitute(line, '\<st\(art\|op\)=.\{-}\S\@!', '', 'g')
+    let line = substitute(line, '\<c\=term.\{-}=.\{-}\S\@!', '', 'g')
+    let line = substitute(line, '\<xxx\>', '', '')
+    let line = substitute(line, '\<gui', 'cterm', 'g')
+    let line = substitute(line, '\s\+', ' ', 'g')
+
+    let items = split(line, '\%(\s\zecterm\|font\)\|=')
+
     let higrp = items[0]
     if len(items) % 2 != 1
       echoerr "I cannot understand the highlight group "
              \ . string(items) . ' at line ' . hilines[i]
     endif
 
-    " Start clean
-    exe 'hi ' . higrp . ' term=NONE cterm=NONE ctermbg=NONE ctermfg=NONE'
+    if a:0 == 0
+      " Start clean
+      exe 'hi ' . higrp . ' term=NONE cterm=NONE ctermbg=NONE ctermfg=NONE'
+    endif
 
-    for j in range((len(items)-1)/2)
-      " TODO Handle 16 color terminals?
-      let var = items[2*j+1]
-      let val = items[2*j+2]
-      if var == 'ctermsp'
-        if exists('g:colorschemedegrade_sp_is_bg') && g:colorschemedegrade_sp_is_bg
-          let var = 'ctermbg'
-        else
-          let var = 'ctermfg'
-        endif
-      endif
-      if var == 'cterm'
-        if s:ignoring('bold')
-          let val = substitute(val, 'bold', '', '')
-        endif
-        if s:ignoring('underline')
-          let val = substitute(val, 'underline', '', '')
-        endif
-        if s:ignoring('undercurl')
-          let val = substitute(val, 'undercurl', '', '')
-        endif
-        if s:ignoring('reverse') || s:ignoring('inverse')
-          let val = substitute(val, '\%(re\|in\)verse', '', '')
-        endif
-        if s:ignoring('italic')
-          let val = substitute(val, 'italic', '', '')
-        endif
-        if s:ignoring('standout')
-          let val = substitute(val, 'standout', '', '')
-        endif
-        let val = substitute(val, '\(^,*\|,*$\)', '', '')
-        let val = substitute(val, ',\+', ',', 'g')
-        let val = substitute(val, '^,*$', 'NONE', '')
-
-        exe 'hi ' . higrp . ' ' . var . '=' . val
-      elseif var =~ 'cterm[fb]g'
-        if val =~ '[FBfb]g'
-          let val = tolower(val)
-          if var =~ val
-            let val = "NONE"
-          endif
-          "echomsg 'higrp=' . higrp . ' var=' . var . ' val=' . val
-          exe 'hi ' . higrp . ' ' . var . '=' . val
-          continue
-        elseif val !~ '^#'
-          try
-            " We do need our cooked rgb.txt
-            if s:rgb == {}
-              let s:rgb = colorschemedegrade#RGB()
-            endif
-            let val = s:rgb[tolower(substitute(val, ' ', '_', 'g'))]
-          catch
-            echomsg "Cannot translate color \"" . val . "\""
-            continue
-          endtry
-        endif
-
-        let r = val[1] . val[2]
-        let g = val[3] . val[4]
-        let b = val[5] . val[6]
-        exe 'hi ' . higrp . ' ' . var . '=' . s:FindClosestCode(r, g, b)
-      endif
-    endfor
+    let vars = HighlightlineDegrade(items)
+    let j = 0
+    let varend = len(vars)
+    let ret = ret . "\nhi " . higrp . " "
+    while j < varend
+      let ret = ret . " " . vars[j]
+      let j += 1
+    endwhile
+    if a:0 != 0
+      return ret
+    else
+      exe ret
+    end
   endwhile
 endfunction
 
