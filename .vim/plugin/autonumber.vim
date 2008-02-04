@@ -26,7 +26,8 @@ endif
 " Obey the 'number' or 'nonumber' which the user set in their .vimrc
 function! AutoNumberByWidth()
   Windofast
-        \ let l:bufname = bufname('%') | \ if (! exists('w:numberoverride')) &&
+        \ let l:bufname = bufname('%') |
+        \ if (! exists('w:numberoverride')) &&
         \    (&ma == 1) |
         \   if g:autonumber_numstate == 0 |
         \     set nonumber |
