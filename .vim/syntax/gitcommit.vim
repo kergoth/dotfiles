@@ -1,3 +1,5 @@
+syn match gitComment contains=@Spell /^.*$/
+
 syn region gitLine start=/^#/ end=/$/
 syn region gitCommit start=/^# Changes to be committed:$/ end=/^#$/ contains=gitHead,gitCommitFile
 syn region gitHead contained start=/^#   (.*)/ end=/^#$/
