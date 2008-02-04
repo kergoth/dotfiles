@@ -10,11 +10,11 @@ color.branch.current Function
 # default is uncolored
 color.status.header Normal
 # default is green
-color.status.updated DiffChange
+color.status.updated Identifier
 # default is red
-color.status.changed DiffChange
+color.status.changed Identifier
 # default is red
-color.status.untracked DiffText
+color.status.untracked Statement
 
 # default is uncolored
 color.diff.plain Normal

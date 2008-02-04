@@ -1,4 +1,3 @@
-normalcode=`cat $HOME/.vimcolors|grep "^normalfg "|sed -e"s,^normalfg ,,"`
 normalfg=""
 codetogitcolor () {
     code="$1"
@@ -54,14 +53,14 @@ codetogitcolor () {
     fi
     echo "$val"
 }
-normalfg=`codetogitcolor "$normalcode"|sed -e's, .*$,,'`
-if [ -z "$normalfg" ]; then
-    normalfg="white"
-fi
-
 if [ "$PS1" -a -n "$TERM" ]; then
-    if [ -r "$HOME/.vim/vimcolorcodes.vim" ]; then
-        vim --noplugin -c "so $HOME/.vim/vimcolorcodes.vim | quit" >/dev/null 2>&1
+    if [ -r "$HOME/.vim/colorcodes.vim" ]; then
+        vim --noplugin -c "so $HOME/.vim/colorcodes.vim | quit" >/dev/null 2>&1
+    fi
+    normalcode=`cat $HOME/.vimcolors|grep "^normalfg "|sed -e"s,^normalfg ,,"`
+    normalfg=`codetogitcolor "$normalcode"|sed -e's, .*$,,'`
+    if [ -z "$normalfg" ]; then
+        normalfg="white"
     fi
     if [ -e $HOME/.vimcolors ]; then
         if [ -e $HOME/.vimtodircolors ]; then
