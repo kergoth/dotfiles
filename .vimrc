@@ -244,10 +244,10 @@ let g:fontsize = "11"
 if has("gui_running")
   if has("gui_gtk2")
     let g:fontface = "DejaVu Sans Mono"
-    let &guifont = s:fontface." ".s:fontsize
+    let &guifont = g:fontface." ".g:fontsize
   elseif has('gui_win32')
     let g:fontface = "Consolas"
-    let &guifont = s:fontface.":h".s:fontsize."cANSI"
+    let &guifont = g:fontface.":h".g:fontsize."cANSI"
   endif
 endif
 " }}}
