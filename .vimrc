@@ -1,6 +1,18 @@
 " vim: set et sw=2 sts=2 fdm=marker fdl=0:
 "
 " Command quick reference {{{
+" vis.vim:
+"   B <ex command> - execute the ex command over the visual block.  Nice for
+"                    doing search/replace.
+" surround:
+"   normal mode:
+"     ds - delete surrounding chars
+"     cs - change/insert surrounding chars
+"   visual mode:
+"     s - change/insert surrounding chars
+"     S - change/insert surrounding chars, always on seperate lines
+"   insert mode:
+"     <C-G> s - change/insert surrounding chars
 " Align/AlignMaps:
 "   \adec - align C declarations
 "   \acom - align comments
