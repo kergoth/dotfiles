@@ -1,9 +1,53 @@
 if [ "$PS1" -a -n "$TERM" ]; then
-    if [ -r "$HOME/.vim/vimtodircolors.vim" -a -r "$HOME/.vimtodircolors" ]; then
-        vim --noplugin -c "so $HOME/.vim/vimtodircolors.vim | quit" >/dev/null 2>&1
+    if [ -r "$HOME/.vim/vimcolorcodes.vim" ]; then
+        vim --noplugin -c "so $HOME/.vim/vimcolorcodes.vim | quit" >/dev/null 2>&1
     fi
+    if [ -e $HOME/.vimcolors ]; then
+        if [ -e $HOME/.vimtodircolors ]; then
+            cat .vimtodircolors | grep -v "^#" | while read dircolor higrp; do
+                code=`cat $HOME/.vimcolors|grep "^$higrp "|sed -e"s,^$higrp ,,"`
+                echo $dircolor $code
+            done > $HOME/.dir_colors
+        fi
+    fi
+
+    GREP_OPTIONS='--color=auto'
+    if grep -V --color >/dev/null 2>&1; then
+        if [ -e $HOME/.vimcolors -a -e $HOME/.vimtogrepcolors ]; then
+            GREP_COLORS=""
+            while read cap higrp; do
+                if echo "$cap" | grep -q "^#"; then
+                    continue
+                fi
+                code=`cat $HOME/.vimcolors|grep "^$higrp "|sed -e"s,^$higrp ,,"`
+                if [ -n "$GREP_COLORS" ]; then
+                    GREP_COLORS="$GREP_COLORS:$cap=$code"
+                else
+                    GREP_COLORS="$cap=$code"
+                fi
+            done < $HOME/.vimtogrepcolors
+#            cat .vimtogrepcolors | grep -v "^#" | while read cap higrp; do
+#                echo $cap=$higrp
+#                code=`cat $HOME/.vimcolors|grep "^$higrp "|sed -e"s,^$higrp ,,"`
+#                if [ -n "$GREP_COLORS" ]; then
+#                    GREP_COLORS="$GREP_COLORS:$cap=$code"
+#                else
+#                    GREP_COLORS="$cap=$code"
+#                fi
+#                echo $GREP_COLORS
+#            done
+            echo $GREP_COLORS
+        fi
+    fi
+    echo whee $GREP_COLORS
+    export GREP_OPTIONS GREP_COLORS
+
     if [ -e "$HOME/.dir_colors" ]; then
         export DIR_COLORS="$HOME/.dir_colors"
         eval `dircolors -b $DIR_COLORS`
+    else
+        eval `dircolors`
     fi
 fi
+
+# vim: set fenc=utf-8 sts=4 sw=4 et ft=sh:

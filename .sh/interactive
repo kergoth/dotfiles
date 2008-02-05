@@ -60,13 +60,6 @@ set_ps1() {
 setup_interactive () {
     export SHELL
 
-    # Coloring matching text in grep rocks
-    if grep -V --color >/dev/null 2>&1; then
-        GREP_OPTIONS='--color=auto'
-        GREP_COLOR='1;31'
-        export GREP_OPTIONS GREP_COLOR
-    fi
-
     if which colordiff 2>/dev/null >&2; then
         export GIT_DIFF_PAGER="colordiff | less -RS"
     fi
@@ -116,3 +109,5 @@ if [ "$PS1" ]; then
 elif [ "$TERM" = "dumb" ]; then
     umask 0002
 fi
+
+# vim: set fenc=utf-8 sts=4 sw=4 et ft=sh:
