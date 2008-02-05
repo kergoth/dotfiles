@@ -1,0 +1,32 @@
+# plain default is uncolored
+color.branch.plain Normal
+# remote default is red
+color.branch.remote Constant
+# local default is uncolored
+color.branch.local Statement
+# current default is green
+color.branch.current Function
+
+# default is uncolored
+color.status.header Normal
+# default is green
+color.status.updated DiffChange
+# default is red
+color.status.changed DiffChange
+# default is red
+color.status.untracked DiffText
+
+# default is uncolored
+color.diff.plain Normal
+# default is bold
+color.diff.meta Keyword
+# default is cyan
+color.diff.frag Identifier
+# default is red
+color.diff.old DiffDelete
+# default is green
+color.diff.new DiffAdd
+# default is yellow
+color.diff.commit Function
+# default is red background
+color.diff.whitespace Error
