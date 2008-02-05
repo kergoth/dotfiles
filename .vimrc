@@ -696,13 +696,6 @@ else
     set listchars+=trail:.
   endif
 endif
-
-let g:c_gnu = 1
-let g:c_posix = 1
-let g:c_math = 1
-let g:c_C99 = 1
-let g:c_C94 = 1
-let g:c_impl_defined = 1
 " }}}
 
 " Colors {{{
@@ -844,12 +837,29 @@ if has('autocmd')
 endif " has('autocmd')
 " }}}
 
+" Syntax options {{{
+let g:xml_syntax_folding = 1
+let d_hl_operator_overload = 1
+let g:doxygen_enhanced_color = 0
+let g:html_use_css = 1
+let g:use_xhtml = 1
+let g:perl_extended_vars = 1
+let g:sh_fold_enabled = 1
+let g:c_gnu = 1
+let g:c_posix = 1
+let g:c_math = 1
+let g:c_C99 = 1
+let g:c_C94 = 1
+let g:c_impl_defined = 1
+" let g:perl_fold = 1
+" let g:sh_minlines = 500
+" }}}
+
 " Plugin options {{{
 let g:LustyExplorerSuppressRubyWarning = 1
 let g:LargeFile = 10
 let g:git_diff_spawn_mode = 1
 let g:showmarks_enable = 0
-let g:xml_syntax_folding = 1
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 let g:secure_modelines_verbose = 1
@@ -875,23 +885,12 @@ let g:Tb_SplitBelow = 0
 let g:Tb_VSplit = 0
 let g:Tb_cTabSwitchBufs = 0
 let g:Tb_cTabSwitchWindows = 0
-" D syntax highlighting - highlight operator overload functions
-let d_hl_operator_overload = 1
-" let g:xml_syntax_folding = 1
 let loaded_bettermodified = 1
 let g:NERD_shut_up = 1
 let g:NERD_comment_whole_lines_in_v_mode = 1
 let g:NERD_left_align_regexp = '.*'
 let g:NERD_right_align_regexp = '.*'
 let g:NERD_space_delim_filetype_regexp = '.*'
-let g:doxygen_enhanced_color = 0
-let g:html_use_css = 1
-let g:use_xhtml = 1
-let g:perl_extended_vars = 1
-" let g:perl_fold = 1
-" let g:sh_fold_enabled = 1
-" let g:sh_minlines = 500
-" let g:xml_syntax_folding = 1
 let g:HL_HiCurLine = 'StatusLine'
 let g:Modeliner_format = 'fenc= sts= sw= ts= et'
 let b:super_sh_indent_echo = 0
@@ -911,7 +910,6 @@ let g:rvIncludeExpression = ''
 if has('win32') && ! has('gui_win32')
   let g:rvUseCygPathFiltering = 1
 endif
-" }}}
 " }}}
 
 " Explorer/Tags/Windows options {{{
@@ -944,4 +942,5 @@ let g:bufExlporerDefaultHelp = 0
 let g:bufExplorerSortBy = 'mru'
 let g:bufExplorerSplitType = 'v'
 let g:bufExplorerOpenMode = 1
+" }}}
 " }}}
