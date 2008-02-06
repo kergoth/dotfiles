@@ -33,7 +33,7 @@ LINK Number
 .jar Special
 .7z Special
 
-.txt SpecialKey
-.doc SpecialKey
+.txt Constant
+.doc Constant
 
 #ARCHIVES Special
