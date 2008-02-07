@@ -14,7 +14,7 @@ Rxvt*transpscrollbar: true
 Rxvt*scrollBar: false
 Rxvt*colorBDMode: false
 Rxvt*colorULMode: false
-Rxvt*loginShell: true
+Rxvt*loginShell: false
 Rxvt*cursorColor: yellow
 Rxvt*jumpScroll: true
 Rxvt*saveLines: 3000
@@ -22,8 +22,8 @@ Rxvt*scrollTtyOutput: false
 Rxvt*scrollKey: false
 Rxvt*geometry: 96x50
 
-Urxvt*depth: 32
-Urxvt*background: rgba:0000/0000/0000/eddd
+URxvt*depth: 32
+URxvt*background: rgba:0000/0000/0000/eddd
 
 URxvt*termName: rxvt-unicode
 URxvt*font: xft:DejaVu Sans Mono:pixelsize=15
