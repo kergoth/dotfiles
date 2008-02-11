@@ -116,7 +116,7 @@ fun! StatusLine_FileName()
 endfun
 " }}}
 
-" Keymaps {{{
+" Keymaps and Commands {{{
 map <leader>del :g/^\s*$/d<CR>         ' Delete Empty Lines
 map <leader>ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
 map <leader>ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
@@ -234,6 +234,9 @@ function! RunInterp()
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
 com! -complete=command Interp call RunInterp()
+
+command DiffOrig bel new | set bt=nofile | r # | 0d_ | diffthis
+      \ | wincmd p | diffthis
 " }}}
 
 " Fonts {{{
