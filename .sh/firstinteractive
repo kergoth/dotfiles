@@ -113,4 +113,6 @@ if [ "$PS1" -a -n "$TERM" ]; then
     fi
 fi
 
+git config --global --replace-all core.excludesfile $HOME/.gitexcludes
+
 # vim: set fenc=utf-8 sts=4 sw=4 et ft=sh:
