@@ -21,6 +21,7 @@
 
 [merge]
         summary = true
+	tool = meld
 
 [pack]
         threads = 3

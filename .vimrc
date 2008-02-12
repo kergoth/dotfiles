@@ -116,7 +116,7 @@ fun! StatusLine_FileName()
 endfun
 " }}}
 
-" Keymaps {{{
+" Keymaps and Commands {{{
 map <leader>del :g/^\s*$/d<CR>         ' Delete Empty Lines
 map <leader>ddql :%s/^>\s*>.*//g<CR>   ' Delete Double Quoted Lines
 map <leader>ddr :s/\.\+\s*/. /g<CR>    ' Delete Dot Runs
@@ -234,6 +234,9 @@ function! RunInterp()
 endfunction
 nnoremap <silent> <F9> :call RunInterp()<CR>
 com! -complete=command Interp call RunInterp()
+
+command DiffOrig bel new | set bt=nofile | r # | 0d_ | diffthis
+      \ | wincmd p | diffthis
 " }}}
 
 " Fonts {{{
@@ -743,7 +746,7 @@ if &t_Co > 2 || has('gui_running')
   if has('autocmd')
     augroup KergothMatches
       au!
-      au BufRead,BufNewFile * syn match foldMarker contains= contained /{{{[1-9]\?\|}}}/
+      au BufRead,BufNewFile * syn match foldMarker contains= contained /{{{[1-9]\?\|}}}[1-9]\?/
       au BufRead,BufNewFile * syn match vimModeline contains= contained /vim:\s*set[^:]\{-1,\}:/
     augroup END
   endif

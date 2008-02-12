@@ -3,10 +3,6 @@
 . ~/.sh/shopt
 . ~/.sh/interactive
 
-if [ -n "$BASH" ]; then
-    for c in ~/.sh/complete.d/*; do
-        if [ -e $c ]; then
-            . $c
-        fi
-    done
+if [ -n "$BASH" -a -r /etc/bash_completion ]; then
+    . /etc/bash_completion
 fi

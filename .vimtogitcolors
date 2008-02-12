@@ -21,11 +21,11 @@ color.diff.plain Normal
 # default is bold
 color.diff.meta Keyword
 # default is cyan
-color.diff.frag Identifier
+color.diff.frag Comment
 # default is red
-color.diff.old DiffDelete
+color.diff.old Conditional
 # default is green
-color.diff.new DiffAdd
+color.diff.new Identifier
 # default is yellow
 color.diff.commit Function
 # default is red background

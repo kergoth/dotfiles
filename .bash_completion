@@ -1,0 +1,5 @@
+for c in ~/.sh/complete.d/*; do
+    if [ -r $c ]; then
+        . $c
+    fi
+done
