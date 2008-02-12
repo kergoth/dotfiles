@@ -13,8 +13,8 @@
 " Contributors: Raimon Grau, Sergey Popov, Yuichi Tateno, Bernhard Walle,
 "               Rajendra Badapanda
 "
-" Release Date: Monday, October 13, 2007
-"      Version: 1.2.6
+" Release Date: Thursday, November 4, 2007
+"      Version: 1.4.1
 "               Inspired by Viewglob, Emacs, and by Jeff Lanzarotta's Buffer
 "               Explorer plugin.
 "
@@ -47,28 +47,37 @@
 "               Matching is case-insensitive unless a capital letter appears
 "               in the input (similar to "smartcase" mode in Vim).
 "
-"               In the buffer explorer:
-"                 - Matching is done ANYWHERE in name.
-"                 - Entries are listed in MRU (most recently used) order.
-"                 - The currently active buffer is highlighted.
+" Buffer Explorer:
+"  - Matching is done anywhere in name.
+"  - Entries are listed in MRU (most recently used) order.
+"  - The currently active buffer is highlighted.
 "
-"               In the filesystem explorer:
-"                 - Matching is done at BEGINNING of name.
-"                 - Entries are listed in ALPHABETICAL order.
-"                 - All opened files are highlighted.
+" Filesystem Explorer:
+"  - Matching is done at beginning of name.
+"  - Entries are listed in alphabetical order.
+"  - All opened files are highlighted.
 "
-"               Extra features in the filesystem explorer:
-"                 - You can recurse into and out of directories by typing the
-"                   directory name and a slash, e.g. "stuff/" or "../"
-"                 - Hidden files are shown by typing the first letter of their
-"                   names (which is ".").
-"                 - Tilde (~) expansion, e.g. "~/" -> "/home/steve/"
-"                 - <Shift-Enter> will load all files appearing in the current
-"                   list (in gvim only).
+"  - You can recurse into and out of directories by typing the directory name
+"    and a slash, e.g. "stuff/" or "../".
+"  - Variable expansion, e.g. "$D" -> "/long/dir/path/".
+"  - Tilde (~) expansion, e.g. "~/" -> "/home/steve/".
+"  - <Shift-Enter> will load all files appearing in the current list
+"    (in gvim only).
+"  - Hidden files are shown by typing the first letter of their names
+"    (which is ".").
 "
-"               That's pretty much the gist of it!
+"  You can prevent certain files from appearing in the directory listings with
+"  the following variable:
+"
+"    let g:LustyExplorerFileMasks = "*.o,*.fasl,CVS"
+"
+"  The above example will mask all object files, compiled lisp files, and
+"  files/directories named CVS from appearing in the filesystem explorer.
+"  Note that they can still be opened by being named explicitly.
+"
 "
 " Install Details:
+"
 " Copy this file into your $HOME/.vim/plugin directory so that it will be
 " sourced on startup automatically.
 "
@@ -90,7 +99,6 @@
 "
 "
 " TODO:
-" - add option to hide files with certain extensions.
 " - when an edited file is in nowrap mode and the explorer is called while the
 "   current window is scrolled to the right, name truncation occurs.
 " - bug: NO ENTRIES is not red when input is a space
@@ -110,6 +118,8 @@ endif
 if !has("ruby")
   if !exists("g:LustyExplorerSuppressRubyWarning") ||
      \ g:LustyExplorerSuppressRubyWarning == "0"
+  if !exists("g:LustyJugglerSuppressRubyWarning") ||
+      \ g:LustyJugglerSuppressRubyWarning == "0" 
     echohl ErrorMsg
     echon "Sorry, LustyExplorer requires ruby.  "
     echon "Here are some tips for adding it:\n"
@@ -140,6 +150,7 @@ if !has("ruby")
     echo "         # ./configure --enable-rubyinterp"
     echo "         # make && make install"
     echohl none
+  endif
   endif
   finish
 endif
@@ -206,6 +217,11 @@ class String
     tail = self[-s.length, s.length]
     tail == s
   end
+
+  def starts_with?(s)
+    head = self[0, s.length]
+    head == s
+  end
 end
 
 class Vim::Buffer
@@ -232,7 +248,7 @@ class LustyExplorer
     def run
       return if @running
 
-      @prompt.clear
+      @prompt.clear!
       @settings.save
       @running = true
       @calling_window = $curwin
@@ -247,9 +263,9 @@ class LustyExplorer
       case i
         when 32..126          # Printable characters
           c = i.chr
-          @prompt.add c
+          @prompt.add! c
         when 8                # Backspace/Del/C-h
-          @prompt.backspace
+          @prompt.backspace!
         when 9                # Tab
           tab_complete()
           return if choose_if_1_remaining()
@@ -262,7 +278,10 @@ class LustyExplorer
     end
 
     def cancel
-      cleanup() if @running
+      if @running
+        cleanup()
+        fix_b_hash()
+      end
     end
 
   private
@@ -372,6 +391,16 @@ class LustyExplorer
       @running = false
       msg ""
     end
+
+    # Set the "#" (previous) buffer to something valid.  After killing the
+    # display it's referencing a dead buffer.
+    def fix_b_hash
+      buffers = Window.buffer_stack.get
+      active = buffers[-1]
+      previous = buffers[-2]
+      exe "silent b #{previous}"
+      exe "silent b #{active}"
+    end
 end
 
 
@@ -398,9 +427,14 @@ class BufferExplorer < LustyExplorer
 
     def buffer_match_string
       pwd = Pathname.getwd
-      relative_path = @curbuf_path.relative_path_from(pwd).to_s
 
-      Displayer.vim_match_string(relative_path, @prompt.insensitive?)
+      name = if @curbuf_path.to_s.starts_with?("scp://")
+               @curbuf_path.to_s
+             else
+               @curbuf_path.relative_path_from(pwd).to_s
+             end
+
+      Displayer.vim_match_string(name, @prompt.insensitive?)
     end
 
     def on_refresh
@@ -420,12 +454,17 @@ class BufferExplorer < LustyExplorer
 
       # Generate a hash of the buffers.
       (0..VIM::Buffer.count-1).each do |i|
-        next if VIM::Buffer[i].name.nil?
+        name = VIM::Buffer[i].name
+        next if name.nil?
 
-        path = Pathname.new VIM::Buffer[i].name_p
-        relative = path.relative_path_from(pwd).to_s
+        name = if name.starts_with?("scp://")
+                 name
+               else
+                 path = Pathname.new VIM::Buffer[i].name_p
+                 path.relative_path_from(pwd).to_s
+               end
 
-        @buffers[relative] = VIM::Buffer[i].number
+        @buffers[name] = VIM::Buffer[i].number
       end
 
       return @buffers.keys
@@ -491,7 +530,7 @@ class BufferExplorer < LustyExplorer
         end
       end
 
-      @prompt.set(string)
+      @prompt.set!(string)
     end
 
     def find_complete_match(entries)
@@ -623,6 +662,9 @@ class FilesystemExplorer < LustyExplorer
         name = file.basename.to_s
         next if name == "."   # Skip pwd
 
+        # Hide masked files.
+        next if FileMask.masked?(name)
+
         # Don't show hidden files unless the user has typed a leading "." in
         # the current view_path.
         if name[0].chr == "."
@@ -673,7 +715,7 @@ class FilesystemExplorer < LustyExplorer
         end
       end
 
-      @prompt.add(completion) unless completion.length == 0
+      @prompt.add!(completion) unless completion.length == 0
     end
 
     def completion_start
@@ -713,7 +755,8 @@ class FilesystemExplorer < LustyExplorer
       if File.directory?(path)
         # Recurse into the directory instead of opening it.
         tab_complete()
-        @prompt.add(File::SEPARATOR) unless @prompt.ends_with?(File::SEPARATOR)
+        @prompt.add!(File::SEPARATOR) \
+          unless @prompt.ends_with?(File::SEPARATOR)
         refresh()
       elsif name.include?(File::SEPARATOR)
         # Don't open a fake file/buffer with "/" in its name.
@@ -739,10 +782,10 @@ class Prompt
 
   public
     def initialize
-      clear()
+      clear!
     end
 
-    def clear
+    def clear!
       @input = ""
     end
 
@@ -750,7 +793,7 @@ class Prompt
       pretty_msg("Comment", @@PROMPT, "None", @input, "Underlined", " ")
     end
 
-    def set(s)
+    def set!(s)
       @input = s
     end
 
@@ -766,11 +809,11 @@ class Prompt
       @input.ends_with? c
     end
 
-    def add(s)
+    def add!(s)
       @input += s
     end
 
-    def backspace
+    def backspace!
       @input.chop!
     end
 
@@ -789,23 +832,44 @@ end
 
 class FilesystemPrompt < Prompt
 
+  def initialize
+    @memoized = nil
+    @dirty = true
+  end
+
+  def clear!
+    @dirty = true
+    super
+  end
+
+  def set!
+    @dirty = true
+    super
+  end
+
+  def backspace!
+    @dirty = true
+    super
+  end
+
   def at_dir?
     # We have not typed anything yet or have just typed the final '/' on a
     # directory name in pwd.  This check is interspersed throughout
     # FilesystemExplorer because of the conventions of basename and dirname.
-    @input.empty? or \
-    (File.directory?(input()) and @input.ends_with?(File::SEPARATOR))
+    input().empty? or \
+    (File.directory?(input()) and input().ends_with?(File::SEPARATOR))
   end
 
   def insensitive?
     at_dir? or (basename() == basename().downcase)
   end
 
-  def add(s)
-    # Assumption: add() will only receive enough chars at a time to complete
+  def add!(s)
+    # Assumption: add!() will only receive enough chars at a time to complete
     # a single directory level, e.g. foo/, not foo/bar/
 
     @input += s
+    @dirty = true
 
     if @input.ends_with?(File::SEPARATOR)
       # Convert the named directory to a case-sensitive version.
@@ -828,20 +892,26 @@ class FilesystemPrompt < Prompt
       if (!case_correct.empty?)
         @input.sub!(/#{Regexp.escape(base)}#{File::SEPARATOR}$/, \
                     case_correct + File::SEPARATOR)
+        @dirty = true
       end
     end
   end
 
   def input
-    home_expansion()
+    if @dirty
+      @memoized = variable_expansion(tilde_expansion(@input))
+      @dirty = false
+    end
+
+    @memoized
   end
 
   def basename
-    File.basename home_expansion()
+    File.basename input()
   end
 
   def dirname
-    File.dirname home_expansion()
+    File.dirname input()
   end
 
   def vim_match_string
@@ -862,22 +932,40 @@ class FilesystemPrompt < Prompt
   end
 
   private
-    def home_expansion
+    def tilde_expansion (input_str)
       # File.expand_path() gives loud errors if the path is not valid, so we
-      # do this manually.
-      if @input[0,1] == "~"
-        if @input.length == 1
+      # do this expansion manually.
+
+      if input_str[0,1] == "~"
+        if input_str.length == 1
           return ENV['HOME']
-        elsif @input[1,1] == File::SEPARATOR
-          return @input.sub('~', ENV['HOME'])
+        elsif input_str[1,1] == File::SEPARATOR
+          return input_str.sub('~', ENV['HOME'])
         end
       end
 
-      return @input
+      return input_str
+    end
+
+    def variable_expansion (input_str)
+      strings = input_str.split('$', -1)
+      return "" if strings.nil? or strings.length == 0
+
+      first = strings.shift
+
+      # Try to expand each instance of $<word>.
+      strings.inject(first) { |str, s|
+        if s =~ /^(\w+)/ and ENV[$1]
+          str + s.sub($1, ENV[$1])
+        else
+          str + "$" + s
+        end
+      }
     end
 end
 
 # Maintain MRU ordering.
+# Also used in LustyJuggler (with modification).
 class BufferStack
   public
     def initialize
@@ -904,8 +992,16 @@ class BufferStack
     end
 
     def get
+      cull!
       @stack
     end
+
+  private
+    def cull!
+      # Remove empty buffers.
+      @stack.delete_if { |x| eva("bufexists(#{x})") == "0" }
+    end
+
 end
 
 
@@ -1048,6 +1144,7 @@ class Displayer
   private
     @@COLUMN_SEPARATOR = "    "
     @@NO_ENTRIES_STRING = "-- NO ENTRIES --" 
+    @@TRUNCATED_STRING = "-- TRUNCATED --" 
 
   public
     def Displayer.vim_match_string(s, case_insensitive)
@@ -1088,6 +1185,7 @@ class Displayer
       exe "setlocal nospell"
       exe "setlocal nobuflisted"
 
+      # (Update SavedSettings if adding to below.)
       set "timeoutlen=0"
       set "noinsertmode"
       set "noshowcmd"
@@ -1096,7 +1194,7 @@ class Displayer
       set "sidescroll=0"
       set "sidescrolloff=0"
 
-      #TODO -- cpoptions?
+      # TODO -- cpoptions?
 
       if has_syntax?
         exe 'syn match LustyExpSlash "/" contained'
@@ -1115,6 +1213,10 @@ class Displayer
                                          "#{@@NO_ENTRIES_STRING}" \
                                          '\s*\%$"'
 
+        exe 'syn match LustyExpTruncated "^\s*' \
+                                         "#{@@TRUNCATED_STRING}" \
+                                         '\s*$"'
+
         exe 'highlight link LustyExpDir Directory'
         exe 'highlight link LustyExpSlash Function'
         exe 'highlight link LustyExpOneEntry Type'
@@ -1123,6 +1225,7 @@ class Displayer
         exe 'highlight link LustyExpCurrentBuffer Constant'
         exe 'highlight link LustyExpOpenedFile PreProc'
         exe 'highlight link LustyExpNoEntries ErrorMsg'
+        exe 'highlight link LustyExpTruncated Visual'
       end
     end
 
@@ -1134,6 +1237,15 @@ class Displayer
         return
       end
 
+      # Perhaps truncate the results to just over the upper bound of
+      # displayable entries.  This isn't exact, but it's close enough.
+      max = lines() * (columns() / (1 + @@COLUMN_SEPARATOR.length))
+      if entries.length > max
+        entries.slice!(max, entries.length - max)
+      end
+
+      # Get a high upper bound on the number of columns to display to optimize
+      # the following algorithm a little.
       col_count = column_count_upper_bound(entries)
 
       # Figure out the actual number of columns to use (yuck)
@@ -1169,7 +1281,7 @@ class Displayer
       # Only wipe the buffer if we're *sure* it's the explorer.
       if Window.select @window and \
          $curbuf == @buffer and \
-         (!$curbuf.name.nil?) and \
+         $curbuf.name and \
          $curbuf.name_p =~ /#{Regexp.escape(@title)}$/
           exe "bwipeout!"
           @window = nil
@@ -1181,7 +1293,7 @@ class Displayer
     def print_columns(cols, widths)
       unlock_and_clear()
 
-      # Set the height to the length of the longest column.
+      # Set the height to the height of the longest column.
       $curwin.height = cols.max { |a, b| a.length <=> b.length }.length
 
       (0..$curwin.height-1).each do |i|
@@ -1200,6 +1312,15 @@ class Displayer
 
         $curwin.cursor = [i+1, 1]
         $curbuf.append(i, string)
+      end
+
+      # Check for result truncation.
+      if cols[0][$curwin.height]
+        # Show a truncation indicator.
+        $curbuf.delete($curbuf.count - 1)
+        $curwin.cursor = [$curbuf.count, 1]
+        $curbuf.append($curbuf.count - 1, \
+                       @@TRUNCATED_STRING.center($curwin.width, " "))
       end
 
       # There's a blank line at the end of the buffer because of how
@@ -1265,6 +1386,35 @@ class Displayer
     end
 end
 
+
+class FileMask
+  private
+    @@glob_masks = nil
+
+  public
+    def FileMask.init
+      create_glob_masks()
+    end
+
+    def FileMask.masked?(str)
+      @@glob_masks and @@glob_masks.each do |mask|
+        return true if File.fnmatch(mask, str)
+      end
+
+      return false
+    end
+
+  private
+    # Maybe this should be called more often for the case where the variable
+    # is set during a Vim session?
+    def FileMask.create_glob_masks
+      if eva('exists("g:LustyExplorerFileMasks")') != "0"
+        @@glob_masks = eva("g:LustyExplorerFileMasks").split(',')
+      end
+    end
+end
+
+
 def vim_single_quote_escape(s)
   # Everything in a Vim single quoted string is literal, except single quotes.
   # Single quotes are escaped by doubling them.
@@ -1297,6 +1447,14 @@ def msg(s)
   VIM.message s
 end
 
+def columns
+  eva("&columns").to_i
+end
+
+def lines
+  eva("&lines").to_i
+end
+
 def pretty_msg(*rest)
   return if rest.length == 0
   return if rest.length % 2 != 0
@@ -1317,6 +1475,7 @@ end
 
 
 Window.init
+FileMask.init
 $buffer_explorer = BufferExplorer.new
 $filesystem_explorer = FilesystemExplorer.new
 

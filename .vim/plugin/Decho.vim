@@ -1,7 +1,7 @@
 " Decho.vim:   Debugging support for VimL
 " Maintainer:  Charles E. Campbell, Jr. PhD <cec@NgrOyphSon.gPsfAc.nMasa.gov>
-" Date:        Jun 07, 2007
-" Version:     20a	ASTRO-ONLY
+" Date:        May 10, 2007
+" Version:     19
 "
 " Usage: {{{1
 "   Decho "a string"
@@ -29,7 +29,7 @@
 if exists("g:loaded_Decho") || &cp
  finish
 endif
-let g:loaded_Decho = "v20a"
+let g:loaded_Decho = "v19"
 let s:keepcpo      = &cpo
 set cpo&vim
 
@@ -74,7 +74,6 @@ if has("clientserver") && executable("gvim")
  com! -nargs=0 DechoRemOff					call s:DechoRemote(0)
 endif
 com! -nargs=0 DechoSep						call s:DechoSep()
-com! -nargs=0 Dsep						    call s:DechoSep()
 com! -nargs=? DechoVarOn					call s:DechoVarOn(<args>)
 com! -nargs=0 DechoVarOff					call s:DechoVarOff()
 if v:version >= 700

@@ -1,8 +1,8 @@
 " ---------------------------------------------------------------------
 " getscript.vim
 "  Author:	Charles E. Campbell, Jr.
-"  Date:	Oct 20, 2007
-"  Version:	28b ASTRO-ONLY
+"  Date:	Jan 08, 2008
+"  Version:	29
 "  Installing:	:help glvs-install
 "  Usage:	:help glvs
 "
@@ -11,7 +11,7 @@
 " ---------------------------------------------------------------------
 " Initialization:	{{{1
 " if you're sourcing this file, surely you can't be
-" expecting vim to be in its vi-compatible mode
+" expecting vim to be in its vi-compatible mode!
 if &cp
  echoerr "GetLatestVimScripts is not vi-compatible; not loaded (you need to set nocp)"
  finish
@@ -23,7 +23,7 @@ set cpo&vim
 if exists("g:loaded_getscript")
  finish
 endif
-let g:loaded_getscript= "v28b"
+let g:loaded_getscript= "v29"
 
 " ---------------------------
 " Global Variables: {{{1
@@ -135,6 +135,7 @@ fun! s:GetOneScript(...)
 "   call Dfunc("GetOneScript()")
 
  " set options to allow progress to be shown on screen
+  let rega= @a
   let t_ti= &t_ti
   let t_te= &t_te
   let rs  = &rs
@@ -155,6 +156,7 @@ fun! s:GetOneScript(...)
   else
    let curline  = getline(".")
    if curline =~ '^\s*#'
+    let @a= rega
 "    call Dret("GetOneScript : skipping a pure comment line")
     return
    endif
@@ -187,15 +189,15 @@ fun! s:GetOneScript(...)
   endif
 
   if scriptid == 0 || srcid == 0
-   " When looking for :AutoInstall: lines, skip scripts that
-   " have  0 0 scriptname
+   " When looking for :AutoInstall: lines, skip scripts that have   0 0 scriptname
+   let @a= rega
 "   call Dret("GetOneScript : skipping a scriptid==srcid==0 line")
    return
   endif
 
   let doautoinstall= 0
   if fname =~ ":AutoInstall:"
-"   call Decho("fname<".fname."> has :AutoInstall:...")
+"   call Decho("case AutoInstall: fname<".fname.">")
    let aicmmnt= substitute(fname,'\s\+:AutoInstall:\s\+',' ','')
 "   call Decho("aicmmnt<".aicmmnt."> s:autoinstall=".s:autoinstall)
    if s:autoinstall != ""
@@ -221,8 +223,8 @@ fun! s:GetOneScript(...)
   while itry <= 3
 "   	call Decho("try#".itry." to download description of <".aicmmnt."> with addr=".scriptaddr)
   	if has("win32") || has("win16") || has("win95")
-"         call Decho("exe silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.tmpfile.g:getscript_shq.' '.g:getscript_shq.scriptaddr.g:getscript_shq)
-	 exe "silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.tmpfile.g:getscript_shq.' '.g:getscript_shq.scriptaddr.g:getscript_shq
+"	 call Decho("new|exe silent r!".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.tmpfile.g:getscript_shq.' '.g:getscript_shq.scriptaddr.g:getscript_shq."|q!")
+	 new|exe "silent r!".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.tmpfile.g:getscript_shq.' '.g:getscript_shq.scriptaddr.g:getscript_shq|q!
 	else
 "         call Decho("exe silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.tmpfile.g:getscript_shq." ".g:getscript_shq.scriptaddr.g:getscript_shq)
 	 exe "silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.tmpfile.g:getscript_shq." ".g:getscript_shq.scriptaddr.g:getscript_shq
@@ -255,6 +257,7 @@ fun! s:GetOneScript(...)
 "    call Decho("***warning*** couldn'".'t find "Click on the package..." in description page for <'.aicmmnt.">")
     echomsg "***warning*** couldn'".'t find "Click on the package..." in description page for <'.aicmmnt.">"
 "    call Dret("GetOneScript : srch for /Click on the package/ failed")
+    let @a= rega
     return
   endif
 "  call Decho('found "Click on the package to download"')
@@ -270,6 +273,7 @@ fun! s:GetOneScript(...)
 	let s:downerrors = s:downerrors + 1
 "  	call Decho("***warning*** couldn'".'t find "src_id=" in description page for <'.aicmmnt.">")
   	echomsg "***warning*** couldn'".'t find "src_id=" in description page for <'.aicmmnt.">"
+        let @a= rega
 "	call Dret("GetOneScript : srch for /src_id/ failed")
   	return
   endif
@@ -301,57 +305,69 @@ fun! s:GetOneScript(...)
    " the plugin has been updated since we last obtained it, so download a new copy
 "   call Decho("...downloading new <".sname.">")
    echomsg "...downloading new <".sname.">"
-"   call Decho("silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.'http://vim.sf.net/scripts/download_script.php?src_id='.latestsrcid.g:getscript_shq)
-   exe "silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.'http://vim.sf.net/scripts/download_script.php?src_id='.latestsrcid.g:getscript_shq
+   if has("win32") || has("win16") || has("win95")
+"    call Decho("new|exe silent r!".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.'http://vim.sf.net/scripts/download_script.php?src_id='.latestsrcid.g:getscript_shq."|q")
+    new|exe "silent r!".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.'http://vim.sf.net/scripts/download_script.php?src_id='.latestsrcid.g:getscript_shq|q
+   else
+"    call Decho("silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.'http://vim.sf.net/scripts/download_script.php?src_id='.latestsrcid.g:getscript_shq)
+    exe "silent !".g:GetLatestVimScripts_wget." ".g:GetLatestVimScripts_options." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.'http://vim.sf.net/scripts/download_script.php?src_id='.latestsrcid.g:getscript_shq
+   endif
 
-   " AutoInstall: only if doautoinstall is so indicating
+   " AutoInstall: only if doautoinstall has been requested by the plugin itself
    if doautoinstall
 "     call Decho("attempting to do autoinstall: getcwd<".getcwd()."> filereadable(".sname.")=".filereadable(sname))
      if filereadable(sname)
 "      call Decho("silent !".g:GetLatestVimScripts_mv." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.s:autoinstall.g:getscript_shq)
       exe "silent !".g:GetLatestVimScripts_mv." ".g:getscript_shq.sname.g:getscript_shq." ".g:getscript_shq.s:autoinstall.g:getscript_shq
-      let curdir= escape(substitute(getcwd(),'\','/','ge'),"|[]*'\" #")
-"       call Decho("exe cd ".s:autoinstall)
-       exe "cd ".escape(s:autoinstall,' ')
+      let curdir    = escape(substitute(getcwd(),'\','/','ge'),"|[]*'\" #")
+      let installdir= curdir."/Installed"
+      if !isdirectory(installdir)
+       call mkdir(installdir)
+      endif
+"      call Decho("exe cd ".s:autoinstall)
+      exe "cd ".escape(s:autoinstall,' ')
       
-       " decompress
-       if sname =~ '\.bz2$'
-"         call Decho("decompress: attempt to bunzip2 ".sname)
-	exe "silent !bunzip2 ".g:getscript_shq.sname.g:getscript_shq
-         let sname= substitute(sname,'\.bz2$','','')
-"         call Decho("decompress: new sname<".sname."> after bunzip2")
-       elseif sname =~ '\.gz$'
-"         call Decho("decompress: attempt to gunzip ".sname)
-	exe "silent !gunzip ".g:getscript_shq.sname.g:getscript_shq
-         let sname= substitute(sname,'\.gz$','','')
-"         call Decho("decompress: new sname<".sname."> after gunzip")
-       endif
+      " decompress
+      if sname =~ '\.bz2$'
+"       call Decho("decompress: attempt to bunzip2 ".sname)
+       exe "silent !bunzip2 ".g:getscript_shq.sname.g:getscript_shq
+       let sname= substitute(sname,'\.bz2$','','')
+"       call Decho("decompress: new sname<".sname."> after bunzip2")
+      elseif sname =~ '\.gz$'
+"       call Decho("decompress: attempt to gunzip ".sname)
+       exe "silent !gunzip ".g:getscript_shq.sname.g:getscript_shq
+       let sname= substitute(sname,'\.gz$','','')
+"       call Decho("decompress: new sname<".sname."> after gunzip")
+      endif
       
-       " distribute archive(.zip, .tar, .vba) contents
-       if sname =~ '\.zip$'
-"         call Decho("dearchive: attempt to unzip ".sname)
-	exe "silent !unzip -o ".g:getscript_shq.sname.g:getscript_shq
-       elseif sname =~ '\.tar$'
-"        call Decho("dearchive: attempt to untar ".sname)
-	exe "silent !tar -xvf ".g:getscript_shq.sname.g:getscript_shq
-       elseif sname =~ '\.vba$'
-"         call Decho("dearchive: attempt to handle a vimball: ".sname)
-         silent 1split
-         exe "silent e ".escape(sname,' ')
-         silent so %
-         silent q
-       endif
+      " distribute archive(.zip, .tar, .vba) contents
+      if sname =~ '\.zip$'
+"       call Decho("dearchive: attempt to unzip ".sname)
+       exe "silent !unzip -o ".g:getscript_shq.sname.g:getscript_shq
+      elseif sname =~ '\.tar$'
+"       call Decho("dearchive: attempt to untar ".sname)
+       exe "silent !tar -xvf ".g:getscript_shq.sname.g:getscript_shq
+      elseif sname =~ '\.vba$'
+"       call Decho("dearchive: attempt to handle a vimball: ".sname)
+       silent 1split
+       exe "silent e ".escape(sname,' ')
+       silent so %
+       silent q
+      endif
       
-       if sname =~ '.vim$'
-"         call Decho("dearchive: attempt to simply move ".sname." to plugin")
-        exe "silent !".g:GetLatestVimScripts_mv." ".g:getscript_shq.sname.g:getscript_shq." plugin"
-       endif
+      if sname =~ '.vim$'
+"       call Decho("dearchive: attempt to simply move ".sname." to plugin")
+       exe "silent !".g:GetLatestVimScripts_mv." ".g:getscript_shq.sname.g:getscript_shq." plugin"
+      else
+"       call Decho("dearchive: move <".sname."> to installdir<".installdir.">")
+       exe "silent !".g:GetLatestVimScripts_mv." ".g:getscript_shq.sname.g:getscript_shq." ".installdir
+      endif
       
-       " helptags step
-       let docdir= substitute(&rtp,',.*','','e')."/doc"
-"       call Decho("helptags: docdir<".docdir.">")
-       exe "helptags ".docdir
-       exe "cd ".curdir
+      " helptags step
+      let docdir= substitute(&rtp,',.*','','e')."/doc"
+"      call Decho("helptags: docdir<".docdir.">")
+      exe "helptags ".docdir
+      exe "cd ".curdir
      endif
      if fname !~ ':AutoInstall:'
       let modline=scriptid." ".latestsrcid." :AutoInstall: ".fname.cmmnt
@@ -370,9 +386,10 @@ fun! s:GetOneScript(...)
   endif
 
  " restore options
-  let &t_ti= t_ti
-  let &t_te= t_te
-  let &rs  = rs
+  let &t_ti = t_ti
+  let &t_te = t_te
+  let &rs   = rs
+  let @a    = rega
 
 "  call Dret("GetOneScript")
 endfun
@@ -458,11 +475,12 @@ fun! getscript#GetLatestVimScripts()
    " don't process plugins in system directories
    if firstdir == ""
     let firstdir= substitute(plugin,'[/\\][^/\\]\+$','','')
-"    call Decho("firstdir<".firstdir.">")
+"    call Decho("setting firstdir<".firstdir.">")
    else
     let curdir= substitute(plugin,'[/\\][^/\\]\+$','','')
 "    call Decho("curdir<".curdir.">")
     if curdir != firstdir
+"     call Decho("skipping subsequent plugins: curdir<".curdir."> != firstdir<".firstdir.">")
      break
     endif
    endif
@@ -478,7 +496,7 @@ fun! getscript#GetLatestVimScripts()
     let llp1     = lastline+1
 "    call Decho("..newscript<".newscript.">")
 
-    " don't process ""GetLatestVimScripts lines
+    " don't process ""GetLatestVimScripts lines -- those that have been doubly-commented out
     if newscript !~ '^"'
      " found a "GetLatestVimScripts: # #" line in the script; check if its already in the datafile
      let curline     = line(".")
@@ -515,12 +533,12 @@ fun! getscript#GetLatestVimScripts()
 "  call Decho(" ")
 
   if foundscript == 0
-   set nomod
+   setlocal nomod
   endif
 
   " Check on out-of-date scripts using GetLatest/GetLatestVimScripts.dat
 "  call Decho("begin: checking out-of-date scripts using datafile<".datafile.">")
-  set lz
+  setlocal lz
   1
 "  /^-----/,$g/^\s*\d/call Decho(getline("."))
   1
@@ -559,13 +577,14 @@ fun! getscript#GetLatestVimScripts()
   " restore events and current directory
   exe "cd ".escape(substitute(origdir,'\','/','ge'),"|[]*'\" #")
   let &ei= eikeep
-  set nolz
+  setlocal nolz
 "  call Dret("GetLatestVimScripts : did ".s:downloads." downloads")
 endfun
 
 " ---------------------------------------------------------------------
 " Restore Options: {{{1
 let &cpo= s:keepcpo
+unlet s:keepcpo
 
 " ---------------------------------------------------------------------
 "  Modelines: {{{1

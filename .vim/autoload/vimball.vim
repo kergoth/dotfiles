@@ -1,9 +1,9 @@
 " vimball.vim : construct a file containing both paths and files
 " Author:	Charles E. Campbell, Jr.
-" Date:		Oct 11, 2007
-" Version:	24a	ASTRO-ONLY
+" Date:		May 07, 2007
+" Version:	22
 " GetLatestVimScripts: 1502 1 :AutoInstall: vimball.vim
-" Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.
+" Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.
 "            The VIM LICENSE applies to Vimball.vim, and Vimball.txt
 "            (see |copyright|) except use "Vimball" instead of "Vim".
 "            No warranty, express or implied.
@@ -15,7 +15,7 @@ if &cp || exists("g:loaded_vimball") || v:version < 700
  finish
 endif
 let s:keepcpo        = &cpo
-let g:loaded_vimball = "v24a"
+let g:loaded_vimball = "v22"
 set cpo&vim
 
 " =====================================================================
@@ -24,34 +24,6 @@ if !exists("s:USAGE")
  let s:USAGE   = 0
  let s:WARNING = 1
  let s:ERROR   = 2
- if exists("g:vimball_shq")
-  let g:netrw_shq= g:vimball_shq
- endif
- if !exists("g:netrw_cygwin")
-  if has("win32") || has("win95") || has("win64") || has("win16")
-   if &shell =~ '\%(\<bash\>\|\<zsh\>\)\%(\.exe\)\=$'
-    let g:netrw_cygwin= 1
-   else
-    let g:netrw_cygwin= 0
-   endif
-  else
-   let g:netrw_cygwin= 0
-  endif
- endif
- if !exists("g:netrw_shq")
-  if exists("&shq") && &shq != ""
-   let g:netrw_shq= &shq
-  elseif has("win32") || has("win95") || has("win64") || has("win16")
-   if g:netrw_cygwin
-    let g:netrw_shq= "'"
-   else
-    let g:netrw_shq= '"'
-   endif
-  else
-   let g:netrw_shq= "'"
-  endif
- " call Decho("g:netrw_shq<".g:netrw_shq.">")
- endif
 endif
 
 " =====================================================================
@@ -59,12 +31,7 @@ endif
 
 " ---------------------------------------------------------------------
 " vimball#MkVimball: creates a vimball given a list of paths to files {{{2
-" Input:
-"     line1,line2: a range of lines containing paths to files to be included in the vimball
-"     writelevel : if true, force a write to filename.vba, even if it exists
-"                  (usually accomplished with :MkVimball! ...
-"     filename   : base name of file to be created (ie. filename.vba)
-" Output: a filename.vba using vimball format:
+" Vimball Format:
 "     path
 "     filesize
 "     [file]
@@ -160,7 +127,6 @@ fun! vimball#MkVimball(line1,line2,writelevel,...) range
   " write the vimball
   exe "tabn ".vbtabnr
   call s:ChgDir(curdir)
-  setlocal ff=unix
   if a:writelevel
    let vbnamepath= s:Path(vbname,'')
 "   call Decho("exe w! ".vbnamepath)
@@ -291,7 +257,6 @@ fun! vimball#Vimball(really,...)
    " copy "a" buffer into tab
 "   call Decho('copy "a buffer into tab#'.vbtabnr)
    exe "tabn ".vbtabnr
-   setlocal ma
    silent! %d
    silent put a
    1
@@ -428,26 +393,17 @@ fun! vimball#Decompress(fname)
 
   " decompression:
   if     expand("%") =~ '.*\.gz'  && executable("gunzip")
-   silent exe "!gunzip ".s:Escape(a:fname)
-   if v:shell_error != 0
-	call vimball#ShowMesg(s:WARNING,"(vimball#Decompress) gunzip may have failed with <".a:fname.">")
-   endif
+   exe "!gunzip ".a:fname
    let fname= substitute(a:fname,'\.gz$','','')
    exe "e ".escape(fname,' \')
    call vimball#ShowMesg(s:USAGE,"Source this file to extract it! (:so %)")
   elseif expand("%") =~ '.*\.bz2' && executable("bunzip2")
-   silent exe "!bunzip2 ".s:Escape(a:fname)
-   if v:shell_error != 0
-	call vimball#ShowMesg(s:WARNING,"(vimball#Decompress) bunzip2 may have failed with <".a:fname.">")
-   endif
+   exe "!bunzip2 ".a:fname
    let fname= substitute(a:fname,'\.bz2$','','')
    exe "e ".escape(fname,' \')
    call vimball#ShowMesg(s:USAGE,"Source this file to extract it! (:so %)")
   elseif expand("%") =~ '.*\.zip' && executable("unzip")
-   silent exe "!unzip ".s:Escape(a:fname)
-   if v:shell_error != 0
-	call vimball#ShowMesg(s:WARNING,"(vimball#Decompress) unzip may have failed with <".a:fname.">")
-   endif
+   exe "!unzip ".a:fname
    let fname= substitute(a:fname,'\.zip$','','')
    exe "e ".escape(fname,' \')
    call vimball#ShowMesg(s:USAGE,"Source this file to extract it! (:so %)")
@@ -500,7 +456,7 @@ fun! s:ChgDir(newdir)
   else
    exe 'silent cd '.escape(a:newdir,' ')
   endif
-"  call Dret("ChgDir : curdir<".getcwd().">")
+"  call Dret("ChgDir")
 endfun
 
 " ---------------------------------------------------------------------
@@ -529,20 +485,23 @@ fun! s:RecordInVar(home,cmd)
 "   else
 "    let s:recorddir= s:recorddir."|".substitute(a:cmd,'^rmdir',"call s:Rmdir",'')
 "   endif
+"   call Decho("recorddir=".s:recorddir)
   elseif !exists("s:recordfile")
    let s:recordfile= a:cmd
+"   call Decho("recordfile=".s:recordfile)
   else
    let s:recordfile= s:recordfile."|".a:cmd
+"   call Decho("recordfile=".s:recordfile)
   endif
-"  call Dret("RecordInVar : s:recordfile<".(exists("s:recordfile")? s:recordfile : "")."> s:recorddir<".(exists("s:recorddir")? s:recorddir : "").">")
+"  call Dret("RecordInVar")
 endfun
 
 " ---------------------------------------------------------------------
 " s:RecordInFile: {{{2
 fun! s:RecordInFile(home)
-"  call Dfunc("s:RecordInFile()")
+"  call Dfunc("RecordInFile()")
   if exists("g:vimball_norecord")
-"   call Dret("s:RecordInFile : g:vimball_norecord")
+"   call Dret("RecordInFile : (g:vimball_norecord)")
    return
   endif
 
@@ -550,12 +509,8 @@ fun! s:RecordInFile(home)
    let curdir= getcwd()
    call s:ChgDir(a:home)
    keepalt keepjumps 1split 
-
    let cmd= expand("%:tr").": "
-"   call Decho("cmd<".cmd.">")
-
    silent! keepalt keepjumps e .VimballRecord
-   setlocal ma
    $
    if exists("s:recordfile") && exists("s:recorddir")
    	let cmd= cmd.s:recordfile."|".s:recorddir
@@ -564,42 +519,32 @@ fun! s:RecordInFile(home)
    elseif exists("s:recordfile")
    	let cmd= cmd.s:recordfile
    else
-"    call Dret("s:RecordInFile : neither recordfile nor recorddir exist")
+"    call Dret("RecordInFile")
 	return
    endif
-"   call Decho("cmd<".cmd.">")
-
-   " put command into buffer, write .VimballRecord `file
    keepalt keepjumps put=cmd
    silent! keepalt keepjumps g/^\s*$/d
    silent! keepalt keepjumps wq!
    call s:ChgDir(curdir)
-
-   if exists("s:recorddir")
-"	call Decho("unlet s:recorddir<".s:recorddir.">")
-   	unlet s:recorddir
-   endif
-   if exists("s:recordfile")
-"	call Decho("unlet s:recordfile<".s:recordfile.">")
-   	unlet s:recordfile
-   endif
+   if exists("s:recorddir") |unlet s:recorddir |endif
+   if exists("s:recordfile")|unlet s:recordfile|endif
   else
 "   call Decho("s:record[file|dir] doesn't exist")
   endif
 
-"  call Dret("s:RecordInFile")
+"  call Dret("RecordInFile")
 endfun
 
 " ---------------------------------------------------------------------
 " s:Rmdir: {{{2
 "fun! s:Rmdir(dirname)
-"  call Dfunc("s:Rmdir(dirname<".a:dirname.">)")
+""  call Dfunc("s:Rmdir(dirname<".a:dirname.">)")
 "  if (has("win32") || has("win95") || has("win64") || has("win16")) && &shell !~? 'sh$'
 "    call system("del ".a:dirname)
 "  else
 "   call system("rmdir ".a:dirname)
 "  endif
-"  call Dret("s:Rmdir")
+""  call Dret("s:Rmdir")
 "endfun
 
 " ---------------------------------------------------------------------
@@ -642,11 +587,10 @@ fun! s:SaveSettings()
   let s:pmkeep  = &pm
   let s:repkeep = &report
   let s:vekeep  = &ve
-  let s:ffkeep  = &ff
   if exists("&acd")
-   setlocal ei=all ve=all noacd nofen noic report=999 nohid bt= ma lz pm= ff=unix
+   set ei=all ve=all noacd nofen noic report=999 nohid bt= ma lz pm=
   else
-   setlocal ei=all ve=all       nofen noic report=999 nohid bt= ma lz pm= ff=unix
+   set ei=all ve=all nofen noic report=999 nohid bt= ma lz pm=
   endif
 "  call Dret("SaveSettings")
 endfun
@@ -667,27 +611,18 @@ fun! s:RestoreSettings()
   let &report = s:repkeep
   let &ve     = s:vekeep
   let &ei     = s:eikeep
-  let &ff     = s:ffkeep
   if s:makeep[0] != 0
    " restore mark a
 "   call Decho("restore mark-a: makeep=".string(makeep))
    call setpos("'a",s:makeep)
   endif
   if exists("&acd")
-   unlet s:acdkeep
+   unlet s:regakeep s:acdkeep s:eikeep s:fenkeep s:hidkeep s:ickeep s:repkeep s:vekeep s:makeep s:lzkeep s:pmkeep
+  else
+   unlet s:regakeep s:eikeep s:fenkeep s:hidkeep s:ickeep s:repkeep s:vekeep s:makeep s:lzkeep s:pmkeep
   endif
-  unlet s:regakeep s:eikeep s:fenkeep s:hidkeep s:ickeep s:repkeep s:vekeep s:makeep s:lzkeep s:pmkeep s:ffkeep
+  set bt=nofile noma
 "  call Dret("RestoreSettings")
-endfun
-
-" ---------------------------------------------------------------------
-" s:Escape: {{{2
-fun s:Escape(name)
-  " shellescape() was added by patch 7.0.111
-  if exists("*shellescape")
-    return shellescape(a:name)
-  endif
-  return g:netrw_shq . a:name . g:netrw_shq
 endfun
 
 " ---------------------------------------------------------------------

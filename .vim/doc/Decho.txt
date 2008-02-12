@@ -1,8 +1,8 @@
-*decho.txt* Vim Code Debugger				Sep 11, 2007
+*decho.txt* Vim Code Debugger				Sep 08, 2006
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
-Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*decho-copyright*
+Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
            The VIM LICENSE applies to Decho.vim and Decho.txt
            (see |copyright|) except use "Decho" instead of "Vim"
 	   No warranty, express or implied.  Use At-Your-Own-Risk.
@@ -81,21 +81,11 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*decho-copyright*
 <
 	It should also call, just prior to any return point, >
 
-		Dret("funcname : any return values")
-<	or just >
-		Dret("funcname")
+		Dret("funcname"."any arguments")
 <
 	In between, calls to Decho will have their strings preceded by "|"s,
 	one for every open Dfunc().  The Dret() will check to insure that it
 	is apparently returning from the last function passed to Dfunc().
-
-	Example: >
-		function! MyFunction(x)
-		  call Dfunc("MyFunction(x=".x.")")
-		  ...
-		  call Dret("MyFunction")
-		endfunction
-<
 
        							*DechoOn* *DechoOff*
 	DechoOn and DechoOff are convenient commands for enabling and disabling
@@ -109,30 +99,17 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*decho-copyright*
 <	into a comment line and DechoOn reactivates such commands by removing
 	the leading comment '"' character.
 
-	Example: >
-		call Decho("this will show up in the DBG buffer")
-<
 						*decho-dhide* *decho-dshow*
 	The Dhide and Dshow commands allow one to toggle the visibility of
 	the DBG-buffer.  They use the g:decho_hide variable, plus make any
 	current DBG-buffer hidden or visible as indicated.
 
-	Usage: >
-		:Dhide
-		:Dshow
-<
 							*decho-redir* *Dredir*
 	The Dredir() function allows one to redirect (see |redir|) a command's
 	output to the debugging buffer.  One must have the command to be
 	executed as the first argument; optionally, one may include additional
 	arguments which will be passed on to Decho() for output.
 
-	Usage: >
-		call Dredir(["string","string",...,]"cmd")
-<
-	Example: >
-		call Dredir("buffers","ls!")
-<
 							*g:decho_bufenter*
 	Some plugins use events such as BufEnter, WinEnter, and WinLeave.  If
 	you set this variable to 1, then such events will be ignored when and
@@ -140,9 +117,6 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*decho-copyright*
 	such plugins from being triggered when recording debugging messages.
 	(examples: winmanager, taglist, multiselect, etc)
 
-	Example: >
-		let g:decho_bufenter= 1
-<
 						*DechoVarOn* *DechoVarOff*
 	Although debugging to a window is often convenient for the programmer,
 	unfortunately some vim applications are incompatible with such a
@@ -213,8 +187,9 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*decho-copyright*
 3. Decho Global Variables		*decho-variables* *decho_settings*
 					*decho_options* *decho-var*
 
-   *g:dechomode*      :	=1 use separate small window at bottom (default)
-			=2 debugging messages will use echomsg and can be seen
+								*g:dechomode*
+   g:dechomode        : =1 use separate small window at bottom (default)
+                        =2 debugging messages will use echomsg and can be seen
 			   by using :messages.  See |message-history| for more
 			   about this; currently, the maximum number of mess-
 			   ages remembered is 20.
@@ -223,33 +198,33 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*decho-copyright*
 			=4 debugging messages get appended to the gvim remote
 			   server named DECHOREMOTE.
 
-   *g:decho_bufname*  :	by default "DBG" .  Sets the name of the debugging
+							*g:decho_bufname*
+   g:decho_bufname    :	by default "DBG" .  Sets the name of the debugging
    			buffer and window.
-   *g:decho_hide*     :	if set the DBG window will be hidden and will
+							*decho_hide*
+   g:decho_hide       :	if set the DBG window will be hidden and will
    			automatically "q" each time it is used.  To see it,
 			:e DBG .  Useful for those applications that
 			modify windows.
-   *g:dechovar*       : default value of g:dechovarname (see |g:dechovarname|)
+							*g:dechovar*
+   g:dechovar         : default value of g:dechovarname (see |g:dechovarname|)
 
-   *g:dechovarname*   : when g:dechomode is 3, debugging output is appended to
-			the variable named by this variable
+							*g:dechovarname*
+   g:dechovarname     : when g:dechomode is 3, debugging output is appended to
+                        the variable named by this variable
 			(default: "g:dechovar"  - see |g:dechovar|)
 
 							*decho_winheight*
-   *g:decho_winheight* : by default equal to 5 lines.  Specifies the height
-			 of the debugging window.  Every Dfunc/Decho/Dret
-			 call will resize that window to this height.
+   g:decho_winheight  :	by default equal to 5 lines.  Specifies the height
+			of the debugging window.  Every Dfunc/Decho/Dret
+			call will resize that window to this height.
 
 
 ==============================================================================
 4. Decho History					*decho-history*
 
-  v20 Jun 07, 2007 : * changed some syntax/Decho.vim highlighting definitions
-		       to avoid the use of highlighting groups defined by
-		       colors/astronaut.vim that aren't standard (Cyan,
-		       Magenta) (pointed out by Andreas Politz)
   v19 Oct 16, 2006 : * Dredir now takes optional strings first instead of
-		       last
+                       last
 		     * The :Decho and :Dredir commands now take <args> instead
 		       of <q-args>, which allows them to act more like the
 		       function calls do.

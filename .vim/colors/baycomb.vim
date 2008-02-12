@@ -22,10 +22,14 @@ if &background == "dark"
     hi Cursor guifg=#0000AA guibg=#CAD5C0
     hi CursorColumn guibg=#354070
     hi CursorLine guibg=#354070
-    hi DiffAdd guibg=#0A4B8C
-    hi DiffChange guibg=#685B5C
-    hi DiffDelete guifg=#300845 guibg=#200845
-    hi DiffText guibg=#004335
+    hi DiffAdd guibg=#003000
+    hi DiffChange guibg=#000040
+    hi DiffDelete guibg=#300000
+    hi DiffText guibg=#0E0E0E
+"     hi DiffAdd guibg=#0A4B8C
+"     hi DiffChange guibg=#685B5C
+"     hi DiffDelete guifg=#300845 guibg=#200845
+"     hi DiffText guibg=#004335
     hi Directory guifg=#BBD0DF
     hi Error guibg=#B03452
     hi ErrorMsg guibg=#FF4545
