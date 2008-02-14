@@ -10,8 +10,8 @@ BLK Type
 CHR Type
 # ORPHAN Exception
 ORPHAN WarningMsg
-SETUID Statement
-SETGID Statement
+SETUID Error
+SETGID Error
 STICKY_OTHER_WRITABLE Repeat
 OTHER_WRITABLE Special
 STICKY Conditional
@@ -35,5 +35,16 @@ LINK Number
 
 .txt Constant
 .doc Constant
+
+.lua Operator
+.pl Operator
+.py Operator
+.sh Operator
+.rb Operator
+
+.c Statement
+.cpp Statement
+.h Statement
+.d Statement
 
 #ARCHIVES Special
