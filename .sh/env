@@ -19,5 +19,10 @@ if [ -e /tmp/.esd -a ! -e /tmp/.esd-${UID} ]; then
     ln -s /tmp/.esd /tmp/.esd-${UID}
 fi
 
+if [ "$TERM" = "cygwin" ]; then
+    COLORTERM=putty
+    export COLORTERM
+fi
+
 export PATH MANPATH PAGER LESS EDITOR PYTHONPATH
 export BK_USER NM LUA_INIT TERMINFO SCONSFLAGS

@@ -1,3 +1,4 @@
+unalias supports_color 2>/dev/null
 if type tput >/dev/null 2>&1; then
     if tput setaf 1 >/dev/null 2>&1; then
         alias supports_color=true
@@ -5,7 +6,14 @@ if type tput >/dev/null 2>&1; then
         alias supports_color=false
     fi
 else
-    alias supports_color=false
+    case $TERM in
+        cygwin)
+            alias supports_color=true
+            ;;
+        *)
+            alias supports_color=false
+            ;;
+    esac
 fi
 
 revpatch () {
