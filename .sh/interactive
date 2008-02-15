@@ -1,62 +1,3 @@
-inpath() {
-    which $1 >/dev/null 2>&1
-}
-
-set_ps1() {
-    if [ "$1" = "notermtitle" ]; then
-        XTERM_SET=''
-    else
-        case $TERM in
-        rxvt*|Xterm|xterm|aterm|urxvt*|cygwin)
-            XTERM_SET='\[\033]0;\u@\h:\w\007\]'
-            ;;
-        *)
-            XTERM_SET=''
-            ;;
-        esac
-    fi
-    if [ -n "$CLEARCASE_ROOT" ]; then
-        CCASE="[`echo $CLEARCASE_ROOT|cut -d/ -f3`]"
-        VOBPATH="`cleartool lsvob|grep ^*|awk '{print $2}'|head -1|xargs dirname`"
-        cd $VOBPATH
-    fi
-    if [ -n "$VIM" ]; then
-        INVIM="[vim]"
-    fi
-    if [ -n "$debian_chroot" ]; then
-        DEBIAN_CHROOT="[$debian_chroot]"
-    elif [ -r "/etc/debian_chroot" ]; then
-        DEBIAN_CHROOT="[$(cat /etc/debian_chroot)]"
-    fi
-    # Check for color support in this terminal
-    if which tput >/dev/null 2>&1; then
-        if tput setaf 1 >/dev/null 2>&1; then
-            color=1
-        else
-            color=0
-        fi
-        local kbs="$(tput kbs)"
-        if [ -n "$kbs" ]; then
-            stty erase "$kbs"
-        fi
-    else
-        color=1
-    fi
-    if [ "$SHELL" = "/bin/sh" ]; then
-        alias ls='ls -a -p'
-        PS1="${DEBIAN_CHROOT}$CCASE$INVIM\$(scm-prompt-output)\$ "
-    elif [ $color -eq 1 ]; then
-        alias ls='ls --color=auto -a -p'
-        PS1="$XTERM_SET\[\033[0;36m\]\u@\h\[\033[1;00m\] ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
-    else
-        alias ls='ls -a -p'
-        PS1="$XTERM_SET\u@\h ${DEBIAN_CHROOT}$CCASE$INVIM\W\$(scm-prompt-output)\$ "
-    fi
-    # export PROMPT_COMMAND='echo -n -e "\033k\033\134"'
-    unset XTERM_SET CCASE VOBPATH INVIM
-
-}
-
 setup_interactive () {
     export SHELL
 
@@ -64,7 +5,7 @@ setup_interactive () {
         export GIT_DIFF_PAGER="colordiff | less -RS"
     fi
 
-    set_ps1
+#    set_ps1
 
     if [ -z "$day" ]; then
         day="`date +%A|tr A-Z a-z`"
@@ -98,6 +39,19 @@ setup_interactive () {
     export TERM TERMCAP
 
     fortune ~/.fortunes 2>/dev/null
+
+    if type tput >/dev/null 2>&1; then
+        local kbs="$(tput kbs)"
+        if [ -n "$kbs" ]; then
+            stty erase "$kbs"
+        fi
+    fi
+
+    if ! supports_color || [ "$SHELL" = "/bin/sh" ]; then
+        alias ls='ls -a -p'
+    else
+        alias ls='ls --color=auto -a -p'
+    fi
 }
 
 # Let group write to files we scp to the machine, for convenience.

@@ -1,3 +1,13 @@
+if type tput >/dev/null 2>&1; then
+    if tput setaf 1 >/dev/null 2>&1; then
+        alias supports_color=true
+    else
+        alias supports_color=false
+    fi
+else
+    alias supports_color=false
+fi
+
 revpatch () {
     patch="$1"
     shift
