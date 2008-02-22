@@ -1,5 +1,6 @@
 [core]
 	excludesfile = /home/clarson/.gitexcludes
+	whitespace = cr-at-eol
 
 [user]
 	name = Chris Larson
