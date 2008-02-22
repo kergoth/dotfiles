@@ -1,20 +1,27 @@
-unalias supports_color 2>/dev/null
 if type tput >/dev/null 2>&1; then
     if tput setaf 1 >/dev/null 2>&1; then
-        alias supports_color=true
+        color=true
     else
-        alias supports_color=false
+        color=false
     fi
 else
     case $TERM in
         cygwin)
-            alias supports_color=true
+            color=true
             ;;
         *)
-            alias supports_color=false
+            color=false
             ;;
     esac
 fi
+
+supports_color () {
+    if [ "$color" = "true" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 revpatch () {
     patch="$1"
