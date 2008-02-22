@@ -4,3 +4,6 @@
 *.o
 *.ko
 *.cmd
+
+.git
+.svn

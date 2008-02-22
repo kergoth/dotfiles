@@ -104,7 +104,7 @@ title () {
 }
 
 dusum () {
-    ls | sed -e 's, ,\\ ,g; s,-,\\-,g;' | xargs du -s | sort -n | cut -d'	' -f2 | sed -e's, ,\\ ,g; s,-,\\-,g;' | xargs du -sh
+    /bin/ls | sed -e 's, ,\\ ,g; s,-,\\-,g;' | xargs du -s -X $HOME/.gitexcludes "$@" | sort -n | cut -d'	' -f2 | sed -e's, ,\\ ,g; s,-,\\-,g;' | xargs du -sh -X $HOME/.gitexcludes "$@"
 }
 
 ac_fix_unquoted_ac_defun () {

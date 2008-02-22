@@ -19,6 +19,7 @@ alias pgrep='pgrep -l'
 
 alias mtn-add='mtn list unknown | xargs mtn add'
 alias mtn-drop='mtn drop --missing'
+alias du="du -X $HOME/.gitexclude"
 
 alias gg='GREP_OPTIONS=--color=always git-grep'
 if which colordiff >/dev/null 2>&1; then
