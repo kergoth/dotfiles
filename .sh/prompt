@@ -32,7 +32,7 @@ prompt_promptstrs () {
     fi
 
     case $TERM in
-    rxvt*|Xterm|xterm|aterm|urxvt*|cygwin)
+    rxvt*|Xterm|xterm*|aterm|urxvt*|cygwin)
         promptstr_xterm_set='\[\033]0;\u@\h:\w\007\]'
         ;;
     *)
