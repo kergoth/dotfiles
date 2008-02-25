@@ -345,7 +345,9 @@ filetype plugin indent on
 
 set secure
 " Not vi compatible, we want spiffy Vim features, please.
-set nocompatible
+if &compatible
+    set nocompatible
+endif
 set nodigraph
 
 " Reliant upon securemodelines.vim
