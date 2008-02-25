@@ -830,12 +830,12 @@ if has('autocmd')
         " character
         noremap <space> <C-f>
       endif
-    endfunction
+    endfun
     au VimEnter * :call <SID>check_pager_mode()
     " }}}
 
     " Reload the vimrc when it changes
-    autocmd BufWritePost $MYVIMRC source %
+    autocmd BufWritePost $MYVIMRC nested source %
   augroup END " augroup Kergoth
 endif " has('autocmd')
 " }}}
