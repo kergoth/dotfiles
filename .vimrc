@@ -87,24 +87,24 @@ fun! Print(...)
   let &background = l:bg
 endfun
 
-function! <SID>Max(a, b)
+fun! <SID>Max(a, b)
   if a:a >= a:b
     return a:a
   else
     return a:b
   endif
-endfunction
+endfun
 
 " Display the current tag if available, or nothing
 " Used by the statusline
-function! StatusLine_Tlist_Info()
+fun! StatusLine_Tlist_Info()
   if exists('g:loaded_taglist') &&
         \ g:loaded_taglist == 'available'
     return Tlist_Get_Tagname_By_Line()
   else
     return ''
   endif
-endfunction
+endfun
 
 fun! StatusLine_FileName()
   try
@@ -217,7 +217,7 @@ let g:interp_make = '/usr/bin/env make'
 let g:interp_perl = '/usr/bin/env perl'
 let g:interp_m4 = '/usr/bin/env m4'
 let g:interp_sh = '/bin/sh'
-function! RunInterp()
+fun! RunInterp()
   let l:interp = ''
   let line = getline(1)
 
@@ -231,11 +231,11 @@ function! RunInterp()
   if l:interp != ''
     exe '! ' . l:interp . ' %'
   endif
-endfunction
+endfun
 nnoremap <silent> <F9> :call RunInterp()<CR>
 com! -complete=command Interp call RunInterp()
 
-command DiffOrig bel new | set bt=nofile | r # | 0d_ | diffthis
+com! DiffOrig bel new | set bt=nofile | r # | 0d_ | diffthis
       \ | wincmd p | diffthis
 " }}}
 
@@ -308,7 +308,7 @@ set cinkeys=0{,0},0),:,0#,!^F,o,O,e
 " Vim Tip #1149:
 " Returns either the contents of a fold or spelling suggestions.
 if (v:version >= 700) && has('balloon_eval')
-  function! BalloonExpr()
+  fun! BalloonExpr()
     let foldStart = foldclosed(v:beval_lnum )
     let foldEnd   = foldclosedend(v:beval_lnum)
 
@@ -333,7 +333,7 @@ if (v:version >= 700) && has('balloon_eval')
     endif
 
     return join( lines, has( 'balloon_multiline' ) ? '\n' : ' ' )
-  endfunction
+  endfun
 
   set ballooneval
   set balloonexpr=BalloonExpr()
@@ -708,7 +708,7 @@ if has('gui_running')
 endif
 
 if has('syntax')
-  syntax on
+  syntax enable
 endif
 
 " Inside of screen, we don't care about colorterm
@@ -726,7 +726,7 @@ endif
 
 if &t_Co > 2 || has('gui_running')
   if exists('g:colors_name')
-    unlet g:colors_name
+      unlet g:colors_name
   endif
   set background=dark
 
@@ -803,14 +803,14 @@ if has('autocmd')
     endtry
 
     " Close out the quickfix window if it's the only open window
-    function! <SID>QuickFixClose()
+    fun! <SID>QuickFixClose()
       if &buftype == 'quickfix'
         " if this window is last on screen quit without warning
         if winbufnr(2) == -1
           quit!
         endif
       endif
-    endfunction
+    endfun
     au BufEnter * call <SID>QuickFixClose()
 
     " Change the current directory to the location of the
@@ -818,7 +818,7 @@ if has('autocmd')
     com! -nargs=0 -complete=command Bcd lcd %:p:h
 
     " Special less.sh and man modes {{{
-    function! <SID>check_pager_mode()
+    fun! <SID>check_pager_mode()
       if exists('g:loaded_less') && g:loaded_less
         " we're in vimpager / less.sh / man mode
         set laststatus=0
