@@ -1,4 +1,4 @@
-if [ -r ~/.bashrc ]; then
+if [ -n "$BASH" -a -r ~/.bashrc ]; then
     . ~/.bashrc
 fi
 
