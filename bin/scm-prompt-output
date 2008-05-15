@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "$(stat -f -c "%T" $PWD)" = "nfs" ]; then
+    exit 0
+fi
+
 if [ -d .svn ]; then
     rev=$(svn info 2>/dev/null|grep ^Revision|cut -d" " -f2)
     if [ $? -ne 0 ]; then
