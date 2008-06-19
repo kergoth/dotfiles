@@ -25,3 +25,13 @@ alias gg='GREP_OPTIONS=--color=always git-grep'
 if which colordiff >/dev/null 2>&1; then
     alias diff=colordiff
 fi
+
+alias ps='ps -o user,group,pid,stat,wchan:8,cmd --forest'
+psgrep () {
+    pids="$(/usr/bin/pgrep -d, "$@")"
+    ps -p $pids
+}
+ppsgrep () {
+    pids="$(/usr/bin/pgrep -d, "$@")"
+    ps --pid $pids --ppid $pids
+}
