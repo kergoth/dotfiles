@@ -23,6 +23,21 @@ supports_color () {
     fi
 }
 
+# Run a process, killing it after the supplied number
+# of seconds, if it does not exit sooner itself.
+# Handy if your reproducer of a problem takes roughly
+# X seconds to crash, but continues running if it succeeds.
+maxtime() {
+  amount="$1"
+  shift
+  time "$@" &
+  sleep $amount
+  if [ -e /proc/$! ]; then
+    echo "$amount seconds elapsed."
+    kill $!
+  fi
+}
+
 revpatch () {
     patch="$1"
     shift
