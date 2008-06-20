@@ -1,5 +1,5 @@
-. ~/.sh/aliases
 . ~/.sh/util
+. ~/.sh/aliases
 . ~/.sh/shopt
 . ~/.sh/interactive
 . ~/.sh/prompt

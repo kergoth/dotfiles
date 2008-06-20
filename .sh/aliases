@@ -1,42 +1,35 @@
 alias diff="diff -urNdp -X $HOME/.sh/dontdiff"
 alias glxgears='glxgears -printfps'
 #alias fgl_glxgears='fgl_glxgears -fbo'
-if which vim >/dev/null 2>&1; then
+if type vim >/dev/null 2>&1; then
     alias vi='vim'
 fi
-alias lr='ls --sort=time --reverse'
 alias ct='cleartool'
 alias cpe='clearprojexp'
 alias hd='od -t x1'
 alias mt='monotone'
 alias bb='bitbake'
 alias rem='remind'
-if which less >/dev/null 2>&1; then
+if type less >/dev/null 2>&1; then
     alias more='less'
 fi
-alias pgrep='pgrep -l'
 
 alias mtn-add='mtn list unknown | xargs mtn add'
 alias mtn-drop='mtn drop --missing'
-alias du="du -X $HOME/.gitexclude"
+alias du="du -X $HOME/.sh/dontdiff"
 
 alias gg='GREP_OPTIONS=--color=always git-grep'
 if which colordiff >/dev/null 2>&1; then
     alias diff=colordiff
 fi
 
-symbolsizes () {
-    size "$1"
-    echo "   symbol sizes:"
-    ${NM} -S -t d --size-sort "$@"
-}
-
 alias ps='ps -o user,group,pid,stat,wchan:8,cmd --forest'
-psgrep () {
-    pids="$(/usr/bin/pgrep -d, "$@")"
-    ps -p $pids
-}
-ppsgrep () {
-    pids="$(/usr/bin/pgrep -d, "$@")"
-    ps --pid $pids --ppid $pids
-}
+
+if [ -n "$PS1" ]; then
+    if ! supports_color || [ "$SHELL" = "/bin/sh" ]; then
+        alias ls='ls -F -ApBhq'
+    else
+        alias ls='ls --color=auto -ApBhq'
+    fi
+fi
+alias lr='ls -tr' # list, sort by time, reverse order

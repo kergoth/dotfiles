@@ -46,12 +46,6 @@ setup_interactive () {
             stty erase "$kbs"
         fi
     fi
-
-    if ! supports_color || [ "$SHELL" = "/bin/sh" ]; then
-        alias ls='ls -a -p'
-    else
-        alias ls='ls --color=auto -a -p'
-    fi
 }
 
 # Let group write to files we scp to the machine, for convenience.

@@ -38,6 +38,26 @@ maxtime() {
   fi
 }
 
+symbolsizes () {
+    size "$1"
+    echo "   symbol sizes:"
+    ${NM} -S -t d --size-sort "$@"
+}
+
+psgrep () {
+    pids="$(/usr/bin/pgrep -d, "$@")"
+    if [ "x$pids" != "x" ]; then
+        ps -p $pids
+    fi
+}
+
+ppsgrep () {
+    pids="$(/usr/bin/pgrep -d, "$@")"
+    if [ "x$pids" != "x" ]; then
+        ps --pid $pids --ppid $pids
+    fi
+}
+
 revpatch () {
     patch="$1"
     shift
