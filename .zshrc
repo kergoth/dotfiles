@@ -187,6 +187,18 @@ zstyle :compinstall filename ~/.zshrc
 autoload -Uz compinit
 compinit
 
+typeset -a users
+cat /etc/passwd|cut -d: -f1-3|sed -e's,:, ,g'|while read username password uid; do
+    if [[ $uid -gt 999 ]]; then
+        users+=$username
+    fi
+done
+
+zstyle ':completion:*' users $users
+
+# color!
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
 # case insensitivity for the win
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
