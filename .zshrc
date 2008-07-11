@@ -1,3 +1,8 @@
+# TODO:
+# - Copy zshrc bits from folks.
+# - Add completion for 'daemon', minimally, complete non-options as commands
+#   from the path.
+
 # Prompt theming
 # autoload -U promptinit
 # promptinit
