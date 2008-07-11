@@ -205,6 +205,6 @@ local _etc_hosts _known_hosts _ssh_hosts
 _etc_hosts=( ${${${(f)"$(</etc/hosts)"}/\#*}#*[\t ]} )
 #_known_hosts=( ${${(f)"$(<~/.ssh/known_hosts)"}//[ ,#]*/} )
 _ssh_hosts=( ${${${(f)"$(egrep -i '^host ' ~/.ssh/config)"}//* /}%%*\**} )
-zstyle ':completion:*' hosts $_etc_hosts $_known_hosts $_ssh_hosts ${(k)_my_hosts}
-zstyle ':completion:*:(ssh|scp|sftp):*' hosts $_etc_hosts $_known_hosts $_ssh_hosts ${(k)_my_hosts}
+zstyle ':completion:*' hosts $_etc_hosts $_known_hosts $_ssh_hosts ${(v)_my_hosts}
+zstyle ':completion:*:(ssh|scp|sftp):*' hosts $_etc_hosts $_known_hosts $_ssh_hosts ${(v)_my_hosts}
 unset _etc_hosts _known_hosts _ssh_hosts _my_hosts
