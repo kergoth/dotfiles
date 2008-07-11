@@ -2,6 +2,9 @@
 # autoload -U promptinit
 # promptinit
 
+# Enable parameter substition in prompts
+setopt prompt_subst
+
 # PROMPT='[%D{%L:%M}] %15<…<%~ %% '
 # PROMPT='[%D{%L:%M}] %10<...<%~ %%'
 # PROMPT='[%D{%L:%M}]%1~%% '
@@ -24,6 +27,7 @@ if [[ ${#_PROMPTCONTEXT} -gt 0 ]]; then
 else
     PROMPTCONTEXT=""
 fi
+unset _PROMPTCONTEXT
 
 # Freeze the terminal's settings, so nothing can corrupt it
 ttyctl -f
@@ -34,9 +38,6 @@ SAVEHIST=1000
 HISTSIZE=1000
 setopt hist_reduce_blanks
 setopt inc_append_history
-
-# Enable parameter substition in prompts
-setopt prompt_subst
 
 # Disable the annoying beeps
 setopt no_beep
