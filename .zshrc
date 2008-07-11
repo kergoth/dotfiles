@@ -88,7 +88,7 @@ alias rgrep='grep -nrI'
 alias grep='grep -n'
 
 function diff() {
-    typeset diffcmd="$(where colordiff)"
+    typeset diffcmd="$(have colordiff)"
     command ${diffcmd:-diff} -uNd "$@" | $PAGER -p '^diff '
 }
 
@@ -109,7 +109,7 @@ alias svnd=svndiff
 
 if [[ -t 1 ]]; then
     typeset +r -i numcolors
-    if type -p tput &>/dev/null; then
+    if have tput; then
         numcolors=$(tput colors)
     else
         case $TERM in
