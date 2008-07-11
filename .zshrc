@@ -5,11 +5,24 @@
 # PROMPT='[%D{%L:%M}] %15<…<%~ %% '
 # PROMPT='[%D{%L:%M}] %10<...<%~ %%'
 # PROMPT='[%D{%L:%M}]%1~%% '
-PROMPT='%n@%m %1~%# '
-if [[ -n $DISPLAY ]]; then
-    PROMPT="%(4L.+.)$PROMPT"
+PROMPT='%(2L.+.)$PROMPTCONTEXT%n@%m %1~%# '
+
+typeset -a _PROMPTCONTEXT
+if [[ -n $VIM ]]; then
+    _PROMPTCONTEXT+="vim"
+fi
+if [[ -n $CLEARCASE_ROOT ]]; then
+    _PROMPTCONTEXT+=${${(s,/,)CLEARCASE_ROOT}[3]}
+fi
+if [[ -n $debian_chroot ]]; then
+    _PROMPTCONTEXT+=$debian_chroot
+elif [[ -r /etc/debian_chroot ]]; then
+    _PROMPTCONTEXT+=$(</etc/debian_chroot)
+fi
+if [[ ${#_PROMPTCONTEXT} -gt 0 ]]; then
+    PROMPTCONTEXT="[${(j,][,)_PROMPTCONTEXT}] "
 else
-    PROMPT="%(2L.+.)$PROMPT"
+    PROMPTCONTEXT=""
 fi
 
 # Freeze the terminal's settings, so nothing can corrupt it
