@@ -1,0 +1,14 @@
+#!/usr/bin/zsh
+typeset -a pids sids
+pids=($(/usr/bin/pgrep -f "$@"))
+
+typeset procpid ppid pgid sess name state
+for pid in $pids; do
+    read procpid name state ppid pgid sess rest < /proc/$pid/stat
+    sids+=$sess
+done
+
+if [[ $#pids -gt 0 ]]; then
+    typeset pidstr=${(j:,:)pids}
+    ps --pid $pidstr --ppid $pidstr --sid ${(j:,:)sids}
+fi

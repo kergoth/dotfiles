@@ -1,0 +1,9 @@
+#!/usr/bin/zsh
+amount="$1"
+shift
+time ${=*} &
+sleep $amount
+if [ -e /proc/$! ]; then
+    echo "$amount seconds elapsed."
+    kill $!
+fi

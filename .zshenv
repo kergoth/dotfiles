@@ -1,0 +1,5 @@
+PAGER=less
+LESS=-sgiqReFXM
+EDITOR=vim
+TERMINFO=~/.terminfo
+export PAGER LESS EDITOR TERMINFO
