@@ -197,9 +197,9 @@ _my_hosts[faldain]=192.168.1.100
 _my_hosts[hawkins]=192.168.1.124
 _my_hosts[anarch]=192.168.1.1
 
-for host in ${(k)_my_hosts}; do
-    alias -g $host=${_my_hosts[$host]}
-done
+# for host in ${(k)_my_hosts}; do
+#     alias -g $host=${_my_hosts[$host]}
+# done
 
 local _etc_hosts _known_hosts _ssh_hosts
 _etc_hosts=( ${${${(f)"$(</etc/hosts)"}/\#*}#*[\t ]} )
