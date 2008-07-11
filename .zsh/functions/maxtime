@@ -12,6 +12,11 @@
 setopt localoptions
 setopt nomonitor
 
+if [[ $# -lt 2 ]]; then
+    print >&2 "Usage: ${0:t} TIME COMMAND [ARGS...]"
+    exit 1
+fi
+
 amount="$1"
 shift
 
