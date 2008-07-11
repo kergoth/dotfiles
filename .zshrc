@@ -107,13 +107,22 @@ function svndiff() {
 }
 alias svnd=svndiff
 
-
 if [[ -t 1 ]]; then
     typeset +r -i numcolors
     if type -p tput &>/dev/null; then
         numcolors=$(tput colors)
     else
-        numcolors=2
+        case $TERM in
+            (cygwin)
+                numcolors=8
+                ;;
+            (putty-256color)
+                numcolors=256
+                ;;
+            (*)
+                numcolors=2
+                ;;
+        esac
     fi
     typeset -r numcolors
 fi
