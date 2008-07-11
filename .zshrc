@@ -88,8 +88,11 @@ alias rgrep='grep -nrI'
 alias grep='grep -n'
 
 function diff() {
-    typeset diffcmd="$(have colordiff)"
-    command ${diffcmd:-diff} -uNd "$@" | $PAGER -p '^diff '
+    typeset diffcmd="diff"
+    if have colordiff; then
+        diffcmd=colordiff
+    fi
+    command $diffcmd -uNd "$@" | $PAGER -p '^diff '
 }
 
 function difftree() {
