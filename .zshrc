@@ -17,6 +17,27 @@
 # autoload -U promptinit
 # promptinit
 
+namedir code ~/code
+namedir other ~/code/other
+namedir snippets ~/code/snippets
+
+case $HOST in
+    (foul)
+        namedir linus ~/code/kernel-upstream/linux
+        namedir upstream ~/code/other-upstream
+        namedir cge40 /media/nfshome/cge_40
+        namedir cge50 /media/nfshome/cge_50
+        namedir pro40 /media/nfshome/pro_40
+        namedir pro50 /media/nfshome/pro_50
+        ;;
+    (scratch-1)
+        namedir cge40 ~/cge_40
+        namedir cge50 ~/cge_50
+        namedir pro40 ~/pro_40
+        namedir pro50 ~/pro_50
+        ;;
+esac
+
 # Enable parameter substition in prompts
 setopt prompt_subst
 
@@ -268,27 +289,6 @@ chpwd() {
     fi
 }
 chpwd
-
-namedir code ~/code
-namedir other ~/code/other
-namedir snippets ~/code/snippets
-
-case $HOST in
-    (foul)
-        namedir linus ~/code/kernel-upstream/linux
-        namedir upstream ~/code/other-upstream
-        namedir cge40 /media/nfshome/cge_40
-        namedir cge50 /media/nfshome/cge_50
-        namedir pro40 /media/nfshome/pro_40
-        namedir pro50 /media/nfshome/pro_50
-        ;;
-    (scratch-1)
-        namedir cge40 ~/cge_40
-        namedir cge50 ~/cge_50
-        namedir pro40 ~/pro_40
-        namedir pro50 ~/pro_50
-        ;;
-esac
 
 zstyle :compinstall filename ~/.zshrc
 autoload -Uz compinit
