@@ -25,24 +25,24 @@ setopt prompt_subst
 # PROMPT='[%D{%L:%M}]%1~%% '
 PROMPT='%(2L.+.)$PROMPTCONTEXT%n@%m %1~%# '
 
-typeset -a _PROMPTCONTEXT
+typeset -a context
 if [[ -n $VIM ]]; then
-    _PROMPTCONTEXT+="vim"
+    context+="vim"
 fi
 if [[ -n $CLEARCASE_ROOT ]]; then
-    _PROMPTCONTEXT+=${${(s,/,)CLEARCASE_ROOT}[3]}
+    context+=${${(s,/,)CLEARCASE_ROOT}[3]}
 fi
 if [[ -n $debian_chroot ]]; then
-    _PROMPTCONTEXT+=$debian_chroot
+    context+=$debian_chroot
 elif [[ -r /etc/debian_chroot ]]; then
-    _PROMPTCONTEXT+=$(</etc/debian_chroot)
+    context+=$(</etc/debian_chroot)
 fi
-if [[ ${#_PROMPTCONTEXT} -gt 0 ]]; then
-    PROMPTCONTEXT="[${(j,][,)_PROMPTCONTEXT}] "
+if [[ ${#context} -gt 0 ]]; then
+    PROMPTCONTEXT="[${(j,][,)context}] "
 else
     PROMPTCONTEXT=""
 fi
-unset _PROMPTCONTEXT
+unset context
 
 # Freeze the terminal's settings, so nothing can corrupt it
 ttyctl -f
