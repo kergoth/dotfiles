@@ -1,7 +1,4 @@
 # TODO:
-# - Write shell function wrappers for all applications which alter the
-#   terminal title: screen, ssh, vim/gvim, vi (if aliased to vim)
-#   This function should call them, and again call our chpwd function on exit.
 # - Copy zshrc bits from folks.
 # - Add completion for 'daemon', minimally, complete non-options as commands
 #   from the path.
@@ -99,6 +96,8 @@ alias se=sudoedit
 alias more=less
 alias rgrep='grep -nrI'
 alias grep='grep -n'
+alias gvim=vim -g
+alias vi=vim
 
 function diff() {
     typeset diffcmd="diff"
@@ -189,6 +188,16 @@ ps() {
 e () {
     $EDITOR "$@"
 }
+
+function titlewrap () {
+    for app in $argv; do
+        eval "function $app () {
+            command $app "\$@"
+            chpwd
+        }"
+    done
+}
+titlewrap vim ssh screen
 
 alias termtitle=title
 title () {
