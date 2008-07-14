@@ -1,4 +1,7 @@
 # TODO:
+# - Write shell function wrappers for all applications which alter the
+#   terminal title: screen, ssh, vim/gvim, vi (if aliased to vim)
+#   This function should call them, and again call our chpwd function on exit.
 # - Copy zshrc bits from folks.
 # - Add completion for 'daemon', minimally, complete non-options as commands
 #   from the path.
