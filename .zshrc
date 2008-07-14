@@ -96,7 +96,7 @@ alias se=sudoedit
 alias more=less
 alias rgrep='grep -nrI'
 alias grep='grep -n'
-alias gvim=vim -g
+alias gvim='vim -g'
 alias vi=vim
 
 function diff() {
