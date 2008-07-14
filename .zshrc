@@ -17,27 +17,6 @@
 # autoload -U promptinit
 # promptinit
 
-namedir code ~/code
-namedir other ~/code/other
-namedir snippets ~/code/snippets
-
-case $HOST in
-    (foul)
-        namedir linus ~/code/kernel-upstream/linux
-        namedir upstream ~/code/other-upstream
-        namedir cge40 /media/nfshome/cge_40
-        namedir cge50 /media/nfshome/cge_50
-        namedir pro40 /media/nfshome/pro_40
-        namedir pro50 /media/nfshome/pro_50
-        ;;
-    (scratch-1)
-        namedir cge40 ~/cge_40
-        namedir cge50 ~/cge_50
-        namedir pro40 ~/pro_40
-        namedir pro50 ~/pro_50
-        ;;
-esac
-
 # Enable parameter substition in prompts
 setopt prompt_subst
 
@@ -98,6 +77,28 @@ ldlibpath=(~/.root/lib $ldlibpath)
 # necessary, but gives you an easy way to stop the autoloading of a
 # particular shell function). $fpath should not be empty for this to work.
 for func in $^fpath/*(N-.x:t); autoload $func
+
+# Named directory bits
+namedir code ~/code
+namedir other ~/code/other
+namedir snippets ~/code/snippets
+
+case $HOST in
+    (foul)
+        namedir linus ~/code/kernel-upstream/linux
+        namedir upstream ~/code/other-upstream
+        namedir cge40 /media/nfshome/cge_40
+        namedir cge50 /media/nfshome/cge_50
+        namedir pro40 /media/nfshome/pro_40
+        namedir pro50 /media/nfshome/pro_50
+        ;;
+    (scratch-1)
+        namedir cge40 ~/cge_40
+        namedir cge50 ~/cge_50
+        namedir pro40 ~/pro_40
+        namedir pro50 ~/pro_50
+        ;;
+esac
 
 # Disable clobbering
 setopt no_clobber
