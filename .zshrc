@@ -180,16 +180,47 @@ e () {
     $EDITOR "$@"
 }
 
-# Set xterm window title to user@host:pwd
-chpwd() {
-    typeset title="%n@%m:%~"
+alias termtitle=title
+title () {
+    overridetitle="$*"
     [[ -t 1 ]] || return
     case $TERM in
-    (sun-cmd) print -Pn "\e]l$title\e\\"
+    (sun-cmd)
+        print -Pn "\e]l$*\e\\"
         ;;
-    (*xterm*|rxvt*|(dt|k|E)term) print -Pn "\e]2;$title\a"
+    (xterm*|rxvt*|(dt|k|E)term|putty*)
+        print -Pn "\e]2;$*\a"
+        ;;
+    (screen*)
+        print -Pn "\ek$*\e\\"
+        ;;
+    (*)
+        overridetitle=
         ;;
     esac
+}
+
+resettermtitle () {
+    overridetitle=
+}
+
+# Set xterm window title to user@host:pwd
+chpwd() {
+    if [[ -n $overridetitle ]]; then
+        termtitle $overridetitle
+    else
+        typeset title
+        case $TERM in
+        (screen*)
+            title="%m:%~"
+            ;;
+        (*)
+            title="%n@%m:%~"
+            ;;
+        esac
+        termtitle $title
+        overridetitle=
+    fi
 }
 chpwd
 
