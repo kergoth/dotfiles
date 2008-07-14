@@ -5,6 +5,16 @@
 # - Copy zshrc bits from folks.
 # - Add completion for 'daemon', minimally, complete non-options as commands
 #   from the path.
+# - I'm currently calling out less on every ls call, to be more like git,
+#   automatically using a pager if needed.  Unfortunately, there are a couple
+#   terminal behavior consequences when the amount of data is less than one
+#   page.  It exits when there's less than one page, which is good, however it
+#   prints at the bottom of the terminal even if there was room at the top,
+#   and it prints a blank line after the output, which bugs me.  See what can
+#   be done about this.  Worst case, we could redirect the ls output, check
+#   the length, and send the temporary file through to the pager.
+# - Get in the habit of using lowercase variable names for arrays and
+#   uppercase for scalars, just for consistency.
 
 # Prompt theming
 # autoload -U promptinit
