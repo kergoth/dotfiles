@@ -192,7 +192,7 @@ e () {
 function titlewrap () {
     for app in $argv; do
         eval "function $app () {
-            command $app "\$@"
+            command $app \"\$@\"
             chpwd
         }"
     done
