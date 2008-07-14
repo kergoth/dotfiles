@@ -189,15 +189,41 @@ e () {
     $EDITOR "$@"
 }
 
-function titlewrap () {
+function wrap_restoretitle () {
     for app in $argv; do
         eval "function $app () {
+            setopt localtraps
+            trap chpwd EXIT
+            trap chpwd INT
             command $app \"\$@\"
-            chpwd
         }"
     done
 }
-titlewrap vim ssh screen
+wrap_restoretitle vim ssh screen
+
+function wrap_settitle () {
+    for app in $argv; do
+        eval "function $app () {
+            setopt localtraps
+
+            typeset oldtitle=\$overridetitle
+            case \$TERM in
+            (screen*)
+                title $app
+                ;;
+            (*)
+                title $app "\$@"
+                ;;
+            esac
+
+            trap chpwd EXIT
+            trap chpwd INT
+            command $app \"\$@\"
+            overridetitle=\$oldtitle
+        }"
+    done
+}
+wrap_settitle make
 
 alias termtitle=title
 title () {
