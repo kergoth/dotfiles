@@ -223,7 +223,7 @@ function wrap_settitle () {
         }"
     done
 }
-wrap_settitle make
+wrap_settitle make ./configure tmake qmake scons cmake
 
 alias termtitle=title
 title () {
