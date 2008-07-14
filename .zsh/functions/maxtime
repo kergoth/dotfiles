@@ -20,7 +20,7 @@ fi
 amount="$1"
 shift
 
-eval time ${=*} &
+eval time $argv &
 typeset timeproc=$!
 
 sleep $amount &
