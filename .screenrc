@@ -36,7 +36,7 @@ sorendition 20 00
 defscrollback 1000
 
 # default title, and match for the end of the shell prompt
-shelltitle '$|bash'
+#shelltitle '$|bash'
 
 # root shell keybinding
 bind R screen -t '# |root:' env PROMPT_COMMAND='echo -n -e "\033k\033\134"' sudo su
