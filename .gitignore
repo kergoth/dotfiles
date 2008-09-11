@@ -7,3 +7,5 @@
 !/.*
 !/.*/*
 /.*_history
+/.zsh/history
+/.zsh/cache/*
