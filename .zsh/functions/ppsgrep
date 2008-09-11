@@ -2,13 +2,15 @@
 typeset -a pids sids
 pids=($(/usr/bin/pgrep -f "$@"))
 
+if [[ $#pids -eq 0 ]]; then
+    return 0
+fi
+
 typeset procpid ppid pgid sess name state
 for pid in $pids; do
     read procpid name state ppid pgid sess rest < /proc/$pid/stat
     sids+=$sess
 done
 
-if [[ $#pids -gt 0 ]]; then
-    typeset pidstr=${(j:,:)pids}
-    ps --pid $pidstr --ppid $pidstr --sid ${(j:,:)sids}
-fi
+typeset pidstr=${(j:,:)pids}
+ps --pid $pidstr --ppid $pidstr --sid ${(j:,:)sids}
