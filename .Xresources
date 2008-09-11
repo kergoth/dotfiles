@@ -47,7 +47,8 @@ Rxvt.jumpScroll: true
 XTerm.vt100.faceName: DejaVu Sans Mono
 XTerm.vt100.faceSize: 10
 XTerm.vt100.renderFont: true
-URxvt.font: xft:DejaVu Sans Mono:pixelsize=10
+URxvt.font: xft:Bitstream Vera Sans Mono-9
+!URxvt.font: xft:DejaVu Sans Mono:pixelsize=10
 !URxvt.font: xft:Envy Code R:pixelsize=15
 
 URxvt.perl-ext: default,matcher
