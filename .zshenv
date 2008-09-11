@@ -1,6 +1,0 @@
-PAGER=less
-LESS=-sgiqReFXM
-EDITOR=vim
-TERMINFO=~/.terminfo
-CVS_RSH=ssh
-export PAGER LESS EDITOR TERMINFO CVS_RSH
