@@ -369,10 +369,10 @@ set hidden
 " set path=.
 
 " Allow setting window title for screen
-" if &term =~ '^screen'
-"   set t_ts=k
-"   set t_fs=\
-" endif
+if &term =~ '^screen'
+  set t_ts=k
+  set t_fs=\
+endif
 
 " Nice window title
 set title
