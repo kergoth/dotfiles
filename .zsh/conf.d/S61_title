@@ -1,0 +1,92 @@
+function wrap_restoretitle () {
+    for app in $argv; do
+        eval "function $app () {
+            setopt localtraps
+            trap chpwd EXIT
+            trap chpwd INT
+            command $app \"\$@\"
+        }"
+    done
+}
+wrap_restoretitle vim ssh screen
+
+function wrap_settitle () {
+    for app in $argv; do
+        eval "function $app () {
+            setopt localtraps
+
+            typeset \"oldtitle=\$overridetitle\"
+            case \$TERM in
+            (screen*)
+                title $app
+                ;;
+            (*)
+                title $app "\$@"
+                ;;
+            esac
+            overridetitle=\"\$oldtitle\"
+
+            trap chpwd EXIT
+            trap chpwd INT
+            command $app \"\$@\"
+        }"
+    done
+}
+wrap_settitle make ./configure tmake qmake scons cmake
+
+alias termtitle=title
+title () {
+    overridetitle="$*"
+    [[ -t 1 ]] || return
+    case $TERM in
+    (sun-cmd)
+        print -Pn "\e]l$*\e\\"
+        ;;
+    (xterm*|rxvt*|(dt|k|E)term|putty*)
+        print -Pn "\e]2;$*\a"
+        ;;
+    (screen*)
+        print -Pn "\ek$*\e\\"
+        ;;
+    (*)
+        overridetitle=
+        ;;
+    esac
+}
+
+resettermtitle () {
+    overridetitle=
+}
+
+# Set xterm window title to user@host:pwd
+chpwd() {
+    if [[ -n $overridetitle ]]; then
+        termtitle $overridetitle
+    else
+        typeset title
+        case $TERM in
+        (screen*)
+            if [[ -n $SSH_CLIENT ]]; then
+                title="%m:%~"
+            else
+                title="%~"
+            fi
+            ;;
+        (*)
+            if [[ -n $SSH_CLIENT ]]; then
+                title="%n@%m:%~"
+            else
+                title="%~"
+            fi
+            ;;
+        esac
+        termtitle $title
+        overridetitle=
+    fi
+}
+chpwd
+
+preexec() {
+    PROMPTSCM="$(scm-prompt-output)"
+}
+preexec

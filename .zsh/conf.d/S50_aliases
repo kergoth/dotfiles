@@ -1,0 +1,85 @@
+#!/bin/zsh
+
+autoload zmv
+alias mmv='noglob zmv -W'
+
+alias j=jobs
+alias d=dirs
+alias pu=pushd
+alias po=popd
+alias ct=cleartool
+alias cpe=clearprojexp
+alias hd="od -t x1"
+alias mt=monotone
+alias bb=bitbake
+alias rem=remind
+alias se=sudoedit
+alias more=less
+alias rgrep="grep -nrI"
+alias grep="grep -n"
+alias gvim="vim -g"
+alias vi=vim
+
+function diff() {
+    typeset diffcmd="diff"
+    if have colordiff && [[ -t 1 ]]; then
+        diffcmd=colordiff
+    fi
+    command $diffcmd -uNd "$@" | $PAGER -p '^diff '
+}
+
+function difftree() {
+        if [ $# -ne 2 ]; then
+                echo "usage: dt <dirname1> <dirname2>"
+                echo "diff two directories recursively"
+        else
+            command diff -urNd -X ~/.zsh/dontdiff "$@" | $PAGER -p '^diff '
+        fi
+}
+alias dt=difftree
+
+function svndiff() {
+        svn diff "$@" | colordiff | $PAGER -p '^Index.*'
+}
+alias svnd=svndiff
+
+if [[ $terminfo[colors] -ge 8 ]]; then
+    lscolorarg='--color=always'
+else
+    lscolorarg='-F'
+fi
+_ls () {
+    command ls -CABhq $lscolorarg $@
+#     command ls -CApBhq $colorarg "$@" | $PAGER
+}
+
+# List only directories and symbolic
+# links that point to directories
+alias lsd='_ls -ld *(-/DN)'
+# List only file beginning with "."
+alias lsa='_ls -ld .*'
+# List with recent files first
+alias lsr='_ls -tp'
+alias lr='_ls -ltp'
+alias ls='_ls -p'
+
+# Color git grep
+alias gg='GREP_OPTIONS=--color=always git grep'
+
+# alias ps='ps -o user,group,pid,sess,stat,wchan:8,cmd --forest'
+alias ps='ps -o user,group,pid,stat,cmd --forest'
+
+# Break old habits
+ps() {
+    if [[ $4 = "-ef" || $4 = "aux" ]]; then
+        echo >&2 "ps: error: given our aliases, you don't want to use those arguments."
+        echo >&2 "ps: perhaps you meant 'ps -e' or 'psgrep' or 'ppsgrep'?"
+        return 1
+    fi
+    command ps "$@"
+}
+
+function bgexec () {
+    "$@" &>/dev/null &
+    disown 2>/dev/null
+}
