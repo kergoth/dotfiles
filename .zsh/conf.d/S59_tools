@@ -79,6 +79,17 @@ if [ "$PS1" ]; then
         
         alias grep='grep --color=auto'
 
+        if have dc; then
+            typeset -A _bases
+            _bases=(bin 2 oct 8 dec 10 hex 16)
+            for from in ${(k)_bases}; do
+                for to in ${(k)_bases}; do
+                    eval "function ${from}2${to} () { dc -e \"$_bases[$from] i $_bases[$to] o \$1 p\" }"
+                done
+            done
+            unset _bases
+        fi
+
         # alias ack='ack --color'
         export ACK_OPTIONS="--color"
 fi
