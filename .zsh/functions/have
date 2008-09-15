@@ -6,9 +6,4 @@
 setopt localoptions
 setopt no_nomatch
 
-typeset _filepath==$1
-if [[ -n $_filepath ]]; then
-    return 0
-else
-    return 1
-fi
+[[ =$1 != "=$1" ]]
