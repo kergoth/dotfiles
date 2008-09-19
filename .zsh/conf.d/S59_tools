@@ -40,12 +40,12 @@ if [ "$PS1" ]; then
         function maxtail() { tail -n $(echo $LINES - 2|bc) ; }
 
         # ---- other ------------------------------------------------------------
-        
-        # <dave0> if you use this bash function, you can do 'dpan DBD::ODBC' 
+
+        # <dave0> if you use this bash function, you can do 'dpan DBD::ODBC'
         #         and it will get the debian package if it exists
         function dpan () {
             PKG=$(perl -e '$_=lc($ARGV[0]); s/::/-/g; print "lib$_-perl\n"' $1)
-            echo apt-get install $PKG
+            echo aptitude install $PKG
         }
 
         # <lpaseen> gives last time the cmdline was changed in seconds since epoc
