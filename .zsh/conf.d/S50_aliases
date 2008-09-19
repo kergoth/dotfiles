@@ -48,9 +48,9 @@ if [[ $terminfo[colors] -ge 8 ]]; then
 else
     lscolorarg='-F'
 fi
+
 _ls () {
-    command ls -CABhq $lscolorarg $@
-#     command ls -CApBhq $colorarg "$@" | $PAGER
+    command ls -CABhq $lscolorarg "$@" | least
 }
 
 # List only directories and symbolic
@@ -68,6 +68,9 @@ alias gg='GREP_OPTIONS=--color=always git grep'
 
 # alias ps='ps -o user,group,pid,sess,stat,wchan:8,cmd --forest'
 alias ps='ps -o user,group,pid,stat,cmd --forest'
+
+alias pcal-portrait="pcal -F 1 -m -J -p"
+alias pcal-landscape="pcal -F 1 -m -J -l"
 
 # Break old habits
 ps() {

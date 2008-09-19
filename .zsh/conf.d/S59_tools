@@ -1,45 +1,38 @@
 #!/bin/zsh
 if [ "$PS1" ]; then
-        export PAGER=less
-        #export PAGER=~/bin/vimpager
-        #alias less=$PAGER
-
-        export VPAGER="vim -R -"
-        
         # ---- paging ------------------------------------------------------------
-
         function least() {
                 declare -a lines
-        
-                if ! [ -z "$@" ] ; then
+
+                if ! [ -z $@ ] ; then
                         cat $@ | least
                         return 0
                 fi
-        
+
                 if [ -z "$LINES" ] || ! ( echo $LINES | grep -q '^[0-9]\+$' ) ; then
                         LINES=20
                 fi
-        
+
                 function dump_array () {
-                        for n in `seq 1 "${#lines[@]}"` ; do
-                                echo "${lines[$n]}"
+                        for n in $(seq 1 ${#lines[@]}) ; do
+                                echo ${lines[$n]}
                         done
                 }
-        
+
                 #pre_IFS=$IFS
                 #IFS=
                 while read x ; do
                         #IFS=$pre_IFS
-                        
-                        lines[((${#lines[@]}+1))]="$x"
-        
-                        if [ "${#lines[@]}" -ge $LINES ] ; then
-                                ( dump_array ; cat ) | $VPAGER
-                                exit 0
+
+                        lines[((${#lines[@]}+1))]=$x
+
+                        if [ ${#lines[@]} -ge $LINES ] ; then
+                                ( dump_array ; cat ) | $PAGER
+                                return 0
                         fi
                 done
                 #IFS=$pre_IFS
-        
+
                 dump_array
         }
         
@@ -70,14 +63,6 @@ if [ "$PS1" ]; then
             let etime=$(date +%s)-$(stat -c %Y /proc/$pid/cmdline)
             echo $etime
         }
-
-        alias lindent='sh /usr/src/linux/scripts/Lindent'
-        
-        # print pretty calendars
-        alias pcal-portrait="pcal -F 1 -m -J -p"
-        alias pcal-landscape="pcal -F 1 -m -J -l"
-        
-        alias grep='grep --color=auto'
 
         if have dc; then
             typeset -A _bases
