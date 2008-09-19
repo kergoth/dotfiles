@@ -60,7 +60,11 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # less options
-LESS=FRSX
+export LESS=FRSX
+export PAGER=less
+
+# grep options
+export GREP_OPTIONS=--color=auto
 
 # this makes man pages look nicer...
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -72,15 +76,15 @@ export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
 # these are the default arguments to exuberant-ctags
-CTAGS="--c++-kinds=+p --fields=+iaS --extra=+q"
+export CTAGS="--c++-kinds=+p --fields=+iaS --extra=+q"
 
 # Autoload my functions
 # autoload -U ${fpath[1]}/*(:t)
 
 # Autoload all shell functions from all directories in $fpath (following
 # symlinks) that have the executable bit on (the executable bit is not
-# necessary, but gives you an easy way to stop the autoloading of a
-# particular shell function). $fpath should not be empty for this to work.
+# necessary, but gives you an easy way to stop the autoloading of a particular
+# shell function). $fpath should not be empty for this to work.
 for func in $^fpath/*(N-.x:t); autoload $func
 
 case $TERM in

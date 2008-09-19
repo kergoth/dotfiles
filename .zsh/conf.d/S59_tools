@@ -35,13 +35,9 @@ if [ "$PS1" ]; then
 
                 dump_array
         }
-        
-        #function v() { $@ | vim -R - ; }
-        function v() { $@ | least ; }
-        function vv() { $@ | vim -R - ; }
 
-        function maxhead() { head -n `echo $LINES - 2|bc` ; }
-        function maxtail() { tail -n `echo $LINES - 2|bc` ; }
+        function maxhead() { head -n $(echo $LINES - 2|bc) ; }
+        function maxtail() { tail -n $(echo $LINES - 2|bc) ; }
 
         # ---- other ------------------------------------------------------------
         
@@ -52,7 +48,7 @@ if [ "$PS1" ]; then
             echo apt-get install $PKG
         }
 
-        # <lpaseen> gives last time the cmdline was changed in seconds since epoc 
+        # <lpaseen> gives last time the cmdline was changed in seconds since epoc
         # and since the process is a daemond it doesn't change once it started
         getetime() {
             pid=$(pgrep -o $1)
