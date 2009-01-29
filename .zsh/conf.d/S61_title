@@ -34,19 +34,49 @@ function wrap_settitle () {
 }
 wrap_settitle make ./configure tmake qmake scons cmake
 
+overridetitle=
 alias termtitle=title
 title () {
-    overridetitle="$*"
+    local newtitle="$*"
+    if [[ -z $newtitle ]]; then
+        newtitle="%~"
+    fi
+#     local hostinfo="%n@%m"
+#     local hostsep=" - "
+    local hostinfo="[%m - %n]"
+    local hostsep=" "
+
     [[ -t 1 ]] || return
+
+    overridetitle="$newtitle"
     case $TERM in
     (sun-cmd)
-        print -Pn "\e]l$*\e\\"
+        if [[ -n $SSH_CLIENT ]]; then
+            newtitle="$newtitle$hostsep$hostinfo"
+        fi
+        print -Pn "\e]l$newtitle\e\\"
         ;;
     (xterm*|rxvt*|(dt|k|E)term|putty*)
-        print -Pn "\e]2;$*\a"
+        if [[ -n $SSH_CLIENT ]]; then
+            newtitle="$newtitle$hostsep$hostinfo"
+        fi
+        print -Pn "\e]2;$newtitle\a"
         ;;
     (screen*)
-        print -Pn "\ek$*\e\\"
+        local hardstatus
+        if [[ -n $SSH_CLIENT ]]; then
+            hardstatus="$hostinfo"
+            if [[ -n $STY ]]; then
+                hardstatus="${STY##*.}$hostsep$hardstatus"
+            fi
+        elif [[ -n "$STY" ]]; then
+            hardstatus="${STY##*.}"
+        fi
+
+        if [[ -n $hardstatus ]]; then
+            print -Pn "\e]0;$hardstatus\a"
+        fi
+        print -Pn "\ek$newtitle\e\\"
         ;;
     (*)
         overridetitle=
@@ -58,29 +88,11 @@ resettermtitle () {
     overridetitle=
 }
 
-# Set xterm window title to user@host:pwd
 chpwd() {
     if [[ -n $overridetitle ]]; then
         termtitle $overridetitle
     else
-        typeset title
-        case $TERM in
-        (screen*)
-            if [[ -n $SSH_CLIENT ]]; then
-                title="%m:%~"
-            else
-                title="%~"
-            fi
-            ;;
-        (*)
-            if [[ -n $SSH_CLIENT ]]; then
-                title="%n@%m:%~"
-            else
-                title="%~"
-            fi
-            ;;
-        esac
-        termtitle $title
+        termtitle %~
         overridetitle=
     fi
 }

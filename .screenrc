@@ -55,7 +55,9 @@ defbce "on"
 
 hardstatus off
 caption always "%{= dd}%Y/%m/%d %0c  %l %{+b dd} %-Lw%{= dg}%50>%n%f* %t%{-}%+Lw%<%{= dd}"
-hardstatus string %t
+# hardstatus string "%h - %?%t"
+hardstatus string "%t%? - %h%?"
+# hardstatus string "%h"
 
 # caption always "%m/%d/%y %0c:%s%{- Wk}  %l  %{kW}%-Lw%{= bW}%50>%n%f* %t%{-}%+Lw%<%{- Wk}"
 # caption always "%?%F%{-b bc}%:%{-b bb}%?%C|%D|%M %d|%H%?%F%{+u wb}%? %L=%-Lw%45>%{+b by}%n%f* %t%{-}%+Lw%-0<"
