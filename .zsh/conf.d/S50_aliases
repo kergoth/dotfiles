@@ -86,3 +86,7 @@ function bgexec () {
     "$@" &>/dev/null &
     disown 2>/dev/null
 }
+
+function wg () {
+    wiggle --replace $1 $1.rej
+}
