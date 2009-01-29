@@ -25,7 +25,7 @@ function diff() {
     if have colordiff && [[ -t 1 ]]; then
         diffcmd=colordiff
     fi
-    command $diffcmd -uNd "$@" | $PAGER -p '^diff '
+    command $diffcmd -uNd "$@" | least
 }
 
 function difftree() {
@@ -33,13 +33,13 @@ function difftree() {
                 echo "usage: dt <dirname1> <dirname2>"
                 echo "diff two directories recursively"
         else
-            command diff -urNd -X ~/.zsh/dontdiff "$@" | $PAGER -p '^diff '
+            command diff -urNd -X ~/.zsh/dontdiff "$@" | least
         fi
 }
 alias dt=difftree
 
 function svndiff() {
-        svn diff "$@" | colordiff | $PAGER -p '^Index.*'
+        svn diff "$@" | colordiff | least
 }
 alias svnd=svndiff
 
@@ -49,19 +49,19 @@ else
     lscolorarg='-F'
 fi
 
-_ls () {
+lsfe () {
     command ls -CABhq $lscolorarg "$@" | least
 }
 
 # List only directories and symbolic
 # links that point to directories
-alias lsd='_ls -ld *(-/DN)'
+alias lsd='lsfe -ld *(-/DN)'
 # List only file beginning with "."
-alias lsa='_ls -ld .*'
+alias lsa='lsfe -ld .*'
 # List with recent files first
-alias lsr='_ls -tp'
-alias lr='_ls -ltp'
-alias ls='_ls -p'
+alias lsr='lsfe -tp'
+alias lr='lsfe -ltp'
+alias ls='lsfe -p'
 
 # Color git grep
 alias gg='GREP_OPTIONS=--color=always git grep'
