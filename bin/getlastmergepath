@@ -1,5 +1,0 @@
-#!/usr/bin/env python
-
-import kergsvk
-print(kergsvk.getlastmergepath('/media/crydee/f/Games/wow/Interface/AddOns/Automaton'))
-print(kergsvk.getlastmergepath('/media/crydee/f/Games/tbc/Interface/AddOns/Ace2'))
