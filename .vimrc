@@ -786,7 +786,7 @@ if has('autocmd')
           \ endif
 
     " Set the compiler to the filetype by default
-    au FileType * try | exe 'compiler ' . &filetype | catch | endtry
+    au FileType * try | if ! exists("b:current_compiler") | exe 'compiler ' . &filetype | endif | catch | endtry
 
     try
       " if we have a Vim which supports QuickFixCmdPost (Vim7),
