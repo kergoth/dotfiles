@@ -388,6 +388,10 @@ set ttyfast
 set ttybuiltin
 set lazyredraw
 
+" Don't trust the sanity of the current user shell
+let &shell = "/bin/sh"
+set noshelltemp
+
 " Windowing Options {{{
 " Windows that need winfixheight:
 "   [ ] minibufexpl
