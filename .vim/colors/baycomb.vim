@@ -139,7 +139,8 @@ elseif &background == "light"
     hi CursorColumn guibg=#20B5FD
     hi CursorLine guibg=#20B5FD
     hi Directory guifg=#BBD0DF
-    hi Error guibg=#B03452
+    "hi Error guibg=#B03452
+    hi Error guibg=#D07082
     hi ErrorMsg guibg=#FF4545
     hi FoldColumn guifg=#A9A9A9 guibg=#409AE0
     hi Folded guifg=#BBDDCC guibg=#252F5D

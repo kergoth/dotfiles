@@ -2,7 +2,7 @@
 "  Language:	info
 "  Maintainer:	Charles E. Campbell, Jr.
 "  Last Change:	Aug 09, 2007
-"  Version:		2b	NOT RELEASED
+"  Version:		2b	ASTRO-ONLY
 " syntax highlighting based on Slavik Gorbanyov's work
 let g:loaded_syntax_info= "v1"
 

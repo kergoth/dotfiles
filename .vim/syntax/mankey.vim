@@ -1,11 +1,12 @@
 " Vim syntax file
 "  Language:	Man keywords page
 "  Maintainer:	Charles E. Campbell, Jr.
-"  Last Change:	Sep 26, 2005
-"  Version:    	1
+"  Last Change:	Aug 12, 2008
+"  Version:    	2
 "    (used by plugin/manpageview.vim)
 "
 "  History:
+"    2: hi default link -> hi default link
 "    1:	The Beginning
 " ---------------------------------------------------------------------
 "  Initialization:
@@ -26,20 +27,13 @@ syn match mankeySep		'\s\+-\s\+'
 
 " ---------------------------------------------------------------------
 "  Highlighting Colorizing Links:
-if version >= 508 || !exists("did_mankey_syn_inits")
- if version < 508
-  let did_mankey_syn_inits = 1
-  command! -nargs=+ HiLink hi link <args>
- else
-  command! -nargs=+ HiLink hi def link <args>
- endif
+command! -nargs=+ HiLink hi default link <args>
 
- HiLink mankeyTopic		Statement
- HiLink mankeyType		Type
- HiLink mankeyBook		Special
- HiLink mankeyTypeDelim	Delimiter
- HiLink mankeySep		Delimiter
+HiLink mankeyTopic		Statement
+HiLink mankeyType		Type
+HiLink mankeyBook		Special
+HiLink mankeyTypeDelim	Delimiter
+HiLink mankeySep		Delimiter
 
- delc HiLink
-endif
+delc HiLink
 let b:current_syntax = "mankey"

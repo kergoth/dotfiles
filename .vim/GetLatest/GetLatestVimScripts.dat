@@ -2,23 +2,23 @@
 # colors
 1454 5795 baycomb.vim
 1471 5319 watermark.vim
-760 6328 ps_color.vim
+760 12309 ps_color.vim
 1468 5317 bayQua.vim
-1464 8236 moria.vim
+1464 8765 moria.vim
 1802 6890 eclipse.vim
-1491 7129 pyte.vim
+1491 10728 pyte.vim
 1484 5356 spectro.vim
 
-2016 7669 no_quarter.vim
+2016 12828 no_quarter.vim
 1671 7852 doorhinge.vim
 
 1732 7293 rdark.vim
-2073 7958 rcg_gui.vim
+2073 11131 rcg_gui.vim
 122 5298 astronaut.vim
 1651 6959 freya.vim
 1672 6293 darktango.vim
 1670 6252 lazarus.vim
-1673 6268 blueprint.vim
+1673 12749 blueprint.vim
 1405 5023 understated.vim
 1404 5802 desertedocean.vim
 1427 4896 darkerdesert.vim
@@ -28,6 +28,8 @@
 1709 6421 scons.vim
 1385 4693 interfaces.vim
 1381 4676 udev.vim
+2900 12822 gitolite.vim
+790 12805 python.vim
 
 # ftplugin
 2099 8057 xml_autons.vim
@@ -44,21 +46,28 @@
 # plugins
 15 3420 ccase.vim
 1066 7618 cecutil.vim
-1075 8262 netrw.vim
-1697 8229 surround.vim
-294 8076 Align.vim
-120 7092 decho.vim
+1075 11979 netrw.vim
+1697 12566 surround.vim
+294 10110 Align.vim
+120 9388 decho.vim
 642 8136 getscript.vim
-489 7776 Manpageview.vim
+489 9573 Manpageview.vim
 670 8073 visincr.vim
-1506 7163 LargeFile.vim
-1890 7877 lusty-explorer.vim
+1506 9277 LargeFile.vim
+1890 12728 lusty-explorer.vim
 1846 7059 gitdiff.vim
-1876 7142 securemodelines.vim
+1876 8598 securemodelines.vim
 1960 7916 IndentConsistencyCop.vim
 39 8196 matchit.vim
 1656 7705 quilt.vim
-1641 6473 AfterColors.vim
+1641 8679 AfterColors.vim
 1552 6931 ScreenShot.vim
-1477 7743 modeliner.vim
-1502 7078 vimball.vim
+1477 8861 modeliner.vim
+1502 11981 vimball.vim
+273 7701 taglist.vim
+42 12363 bufexplorer
+915 9224 AsNeeded
+31 7218 a.vim
+
+# testing
+3052 12826 changesPlugin

@@ -1,11 +1,11 @@
-*align.txt*	The Alignment Tool			Dec 20, 2007
+*align.txt*	The Alignment Tool			Mar 04, 2009
 
-Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
-	  (remove NOSPAM from Campbell's email first)
-Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Align-copyright*
+Author:    Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+           (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.	*Align-copyright*
            The VIM LICENSE applies to Align.vim, AlignMaps.vim, and Align.txt
            (see |copyright|) except use "Align and AlignMaps" instead of "Vim"
-	   No warranty, express or implied.  Use At-Your-Own-Risk.
+           NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK.
 
 ==============================================================================
 1. Contents					*align* *align-contents* {{{1
@@ -13,6 +13,8 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Align-copyright*
 	1. Contents.................: |align-contents|
 	2. Alignment Manual.........: |align-manual|
 	3. Alignment Usage..........: |align-usage|
+	   Alignment Concepts.......: |align-concepts|
+	   Alignment Commands.......: |align-commands|
 	   Alignment Control........: |align-control|
 	     Separators.............: |alignctrl-separators|
 	     Initial Whitespace.....: |alignctrl-w| |alignctrl-W| |alignctrl-I|
@@ -25,7 +27,7 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Align-copyright*
 	     Padding................: |alignctrl-p| |alignctrl-P|
 	     Current Options........: |alignctrl-settings| |alignctrl-|
 	   Alignment................: |align-align|
-	   Maps.....................: |align-maps|
+	4. Alignment Maps...........: |align-maps|
 	     \a,....................: |alignmap-a,|
 	     \a?....................: |alignmap-a?|
 	     \a<....................: |alignmap-a<|
@@ -44,13 +46,22 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Align-copyright*
 	     \t=....................: |alignmap-t=|
 	     \T=....................: |alignmap-T=|
 	     \Htd...................: |alignmap-Htd|
-	4. Alignment Tool History...: |align-history|
+	5. Alignment Tool History...: |align-history|
 
 ==============================================================================
 2. Align Manual			*alignman* *alignmanual* *align-manual* {{{1
 
-	To Enable: put <Align.vim> and <AlignMaps.vim> into your .vim/plugin
-	To see a user's guide, see |align-usage|
+	Align comes as a vimball; simply typing >
+		vim Align.vba.gz
+		:so %
+<	should put its components where they belong.  The components are: >
+		.vim/plugin/AlignPlugin.vim
+		.vim/plugin/AlignMapsPlugin.vim
+		.vim/plugin/cecutil.vim
+		.vim/autoload/Align.vim
+		.vim/autoload/AlignMaps.vim
+		.vim/doc/Align.txt
+<	To see a user's guide, see |align-userguide|
 	To see examples, see |alignctrl| and |alignmaps|
 >
 /=============+=========+=====================================================\
@@ -128,9 +139,75 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Align-copyright*
 \=============================================================================/
 
 ==============================================================================
-3. Alignment Usage				*alignusage* *align-usage* {{{1
+3. Alignment Usage	*alignusage* *align-usage* *align-userguide* {{{1
 
-COMMANDS						{{{2
+
+ALIGNMENT CONCEPTS			*align-concept* *align-concepts* {{{2
+
+	The typical text to be aligned is considered to be:
+
+		* composed of two or more fields
+		* separated by one or more separator pattern(s):
+		* two or more lines
+>
+		ws field ws separator ws field ws separator ...
+		ws field ws separator ws field ws separator ...
+<
+	where "ws" stands for "white space" such as blanks and/or tabs,
+	and "fields" are arbitrary text.  For example, consider >
+
+		x= y= z= 3;
+		xx= yy= zz= 4;
+		zzz= yyy= zzz= 5;
+		a= b= c= 3;
+<
+	Assume that it is desired to line up all the "=" signs; these,
+	then, are the separators.  The fields are composed of all the
+	alphameric text.  Assuming they lie on lines 1-4, one may align
+	those "=" signs with: >
+		:AlignCtrl l
+		:1,4Align =
+<	The result is: >
+		x   = y   = z   = 3;
+		xx  = yy  = zz  = 4;
+		zzz = yyy = zzz = 5;
+		a   = b   = c   = 3;
+
+<	Note how each "=" sign is surrounded by a single space; the
+	default padding is p1P1 (p1 means one space before the separator,
+	and P1 means one space after it).  If you wish to change the
+	padding, say to no padding, use  (see |alignctrl-p|) >
+		:AlignCtrl lp0P0
+
+<	Next, note how each field is left justified; that's what the "l"
+	(a small letter "ell") does.  If right-justification of the fields
+	had been desired, an "r" could've been used: >
+		:AlignCtrl r
+<	yielding >
+		  x =   y =   z = 3;
+		 xx =  yy =  zz = 4;
+		zzz = yyy = zzz = 5;
+		  a =   b =   c = 3;
+<	There are many more options available for field justification: see
+	|alignctrl-c| and |alignctrl--|.
+
+	Separators, although commonly only one character long, are actually
+	specified by regular expressions (see |regexp|), and one may left
+	justify, right justify, or center them, too (see |alignctrl-<|).
+
+	Assume that for some reason a left-right-left-right-... justification
+	sequence was wished.  This wish is simply achieved with >
+		:AlignCtrl lr
+		:1,4Align =
+<	because the justification commands are considered to be "cylic"; ie.
+	lr is the same as lrlrlrlrlrlrlr...
+
+	There's a lot more discussed under |alignctrl|; hopefully the examples
+	there will help, too.
+
+
+ALIGNMENT COMMANDS			*align-command* *align-commands* {{{2
+
         The <Align.vim> script includes two primary commands and two
 	minor commands:
 
@@ -153,15 +230,18 @@ COMMANDS						{{{2
 			ex. :%Align ,
 			    Interpretation: align all commas over the entire
 			    file.
-<		      The :Align! format permits alignment control commands 
+<		      The :Align! format permits alignment control commands
 		      to precede the alignment patterns. >
 			ex. :%Align! p2P2 =
 <		      This will align all "=" in the file with two padding
 		      spaces on both sides of each "=" sign.
-		      NOTE ON PATTERNS:~
-		      Align and AlignCtrl use |<f-args>| to obtain their
-		      input patterns; hence, to get a \ you'll need to enter
-		      two backslashes: \\.
+
+		      NOTE ON USING PATTERNS WITH ALIGN:~
+		      Align and AlignCtrl use |<q-args>| to obtain their
+		      input patterns and they use an internal function to
+		      split arguments at whitespace unless inside "..."s.
+		      One may escape characters inside a double-quote string
+		      by preceding such characters with a backslash.
 
 	  AlignPush : this command/function pushes the current AlignCtrl
 	              state onto an internal stack. >
@@ -178,79 +258,93 @@ COMMANDS						{{{2
 			    used (at least once) previously; this command
 			    restores the AlignCtrl settings when AlignPush
 			    was last used.
-<
-ALIGNMENT OPTIONS			*align-options*	{{{2
+<	              Also see |alignctrl-m| for a way to automatically do
+	              an AlignPop after an Align (primarily this is for maps).
 
-		    *align-utf8* *align-utf* *align-codepoint* *align-strlen*
-	For those of you who are using 2-byte (or more) characters such as is
+ALIGNMENT OPTIONS			*align-option* *align-options* {{{2
+    *align-utf8* *align-utf* *align-codepoint* *align-strlen* *align-multibyte*
+
+	For those of you who are using 2-byte (or more) characters such as are
 	available with utf-8, Align now provides a special option which you
 	may choose based upon your needs:
 
+	Use Built-in strlen() ~
+>
+			let g:Align_xstrlen= 0
+
+<       This is the fastest method, but it doesn't handle multibyte characters
+	well.  It is the default for:
+
+	  enc=latin1
+	  vim compiled without multi-byte support
+	  $LANG is en_US.UTF-8 (assuming USA english)
+
 	Number of codepoints (Latin a + combining circumflex is two codepoints)~
 >
-			let g:Align_xstrlen= 1:
+			let g:Align_xstrlen= 1              (default)
 <
-	Number of spacing codepoints (Latin a + combining circumflex is one spacing~
-	codepoint; a hard tab is one; wide and narrow CJK are one each; etc.)~
+	Number of spacing codepoints (Latin a + combining circumflex is one~
+	spacing codepoint; a hard tab is one; wide and narrow CJK are one~
+	each; etc.)~
 >
 			let g:Align_xstrlen= 2
 <
 	Virtual length (counting, for instance, tabs as anything between 1 and~
-	'tabstop', wide CJK as 2 rather than 1, Arabic alif as zero when immediately~
-	preceded by lam, one otherwise, etc.)~
+	'tabstop', wide CJK as 2 rather than 1, Arabic alif as zero when~
+	immediately preceded by lam, one otherwise, etc.)~
 >
-			let g:Align_xstrlen= 2
+			let g:Align_xstrlen= 3
 <
 	By putting one of these settings into your <.vimrc>, Align will use an
 	internal (interpreted) function to determine a string's length instead
-	of the Vim's built-in |strlen()| function.  As the function is
+	of the Vim's built-in |strlen()| function.  Since the function is
 	interpreted, Align will run a bit slower but will handle such strings
-	correctly.  The last setting (g:Align_xstrlen= 2) probably will run
-	the slowest but be the most accurate.
+	correctly.  The last setting (g:Align_xstrlen= 3) probably will run
+	the slowest but be the most accurate.  (thanks to Tony Mechelynck for
+	these)
 
 
-ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
->
-	AlignCtrl   [=Clrc-+:pPIWw] [..list-of-separator-patterns..]
-<
-	The AlignCtrl command doesn't do the alignment operation itself; instead,
-	it permits the user to specify various alignment options before the
-	alignment is done.
+ALIGNMENT CONTROL				*alignctrl* *align-control* {{{2
+
+	This command doesn't do the alignment operation itself; instead, it
+	controls subsequent alignment operation(s).
 
 	The first argument to AlignCtrl is a string which may contain one or
-	more alignment control commands.  Most of the commands are single
-	letter commands; the exceptions are the p# and P# commands which
-	interpret digits following the p or P as specifying padding about the
+	more alignment control settings.  Most of the settings are specified
+	by single letters; the exceptions are the p# and P# commands which
+	interpret a digit following the p or P as specifying padding about the
 	separator.
 
-	
-	Separators				*alignctrl-separators* {{{3
-
 	The typical text line is considered to be composed of two or more
-	fields separated by one or more separator pattern(s):
->
-		ws field ws separator ws field ws separator ...  < where "ws"
+	fields separated by one or more separator pattern(s): >
+
+		ws field ws separator ws field ws separator ...
 <
-	stands for "white space" such as blanks and/or tabs.
+	where "ws" stands for "white space" such as blanks and/or tabs.
 
-	As a result, separators may  not have white space (tabs or blanks) on
+	
+	SEPARATORS				*alignctrl-separators* {{{3
+
+	As a result, separators may not have white space (tabs or blanks) on
 	their outsides (ie.  ":  :" is fine as a separator, but " :: " is
-	not).  Usually such separators are not needed.
+	not).  Usually such separators are not needed, although a map has been
+	provided which works around this limitation and aligns on whitespace
+	(see |alignmap-tsp|).
 
-	However, if you really need to have such separators with leading or
+	However, if you really need to have separators with leading or
 	trailing whitespace, consider handling them by performing a substitute
 	first (ie. s/  ::  /@/g), do the alignment on the temporary pattern
 	(ie. @), and then perform a substitute to revert the separators back
 	to their desired condition (ie. s/@/  ::  /g).
 
-	The Align() function will first convert tabs over the region into
+	The Align#Align() function will first convert tabs over the region into
 	spaces and then apply alignment control.  Except for initial white
 	space, white space surrounding the fields is ignored.  One has three
 	options just for handling initial white space:
 
 
-	--- 						*alignctrl-w* {{{3
-	wWI 	INITIAL WHITE SPACE			*alignctrl-W*
+	--- 						*alignctrl-w*
+	wWI 	INITIAL WHITE SPACE			*alignctrl-W* {{{3
 	--- 						*alignctrl-I*
 		w : ignore all selected lines' initial white space
 		W : retain all selected lines' initial white space
@@ -258,25 +352,25 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 		    re-use it for subsequent lines
 
 	Example: Leading white space options: >
-                         +---------------+-------------------+----------------+
-	                 |AlignCtrl w= :=|  AlignCtrl W= :=  |AlignCtrl I= := |
-      +------------------+---------------+-------------------+----------------+
-      |     Original     |   w option    |     W option      |    I option    |
-      +------------------+---------------+-------------------+----------------+
-      |   a := baaa      |a     := baaa  |   a      : = baaa |  a     := baaa |
-      | caaaa := deeee   |caaaa := deeee | caaaa    : = deeee|  caaaa := deeee|
-      |       ee := f    |ee    := f     |       ee : = f    |  ee    := f    |
-      +------------------+---------------+-------------------+----------------+
+                         +---------------+-------------------+-----------------+
+	                 |AlignCtrl w= :=|  AlignCtrl W= :=  | AlignCtrl I= := |
+      +------------------+---------------+-------------------+-----------------+
+      |     Original     |   w option    |     W option      |     I option    |
+      +------------------+---------------+-------------------+-----------------+
+      |   a := baaa      |a     := baaa  |   a      : = baaa |   a     := baaa |
+      | caaaa := deeee   |caaaa := deeee | caaaa    : = deeee|   caaaa := deeee|
+      |       ee := f    |ee    := f     |       ee : = f    |   ee    := f    |
+      +------------------+---------------+-------------------+-----------------+
 <
 	The original has at least one leading white space on every line.
 	Using Align with w eliminated each line's leading white space.
 	Using Align with W preserved  each line's leading white space.
-	Using Align with I applied the first line's leading two spaces
-	to each line.
+	Using Align with I applied the first line's leading white space
+	                   (three spaces) to each line.
 
 
-	------						*alignctrl-l* {{{3
-	lrc-+:	FIELD JUSTIFICATION			*alignctrl-r*
+	------						*alignctrl-l*
+	lrc-+:	FIELD JUSTIFICATION			*alignctrl-r* {{{3
 	------						*alignctrl-c*
 
 	With "lrc", the fields will be left-justified, right-justified, or
@@ -311,9 +405,9 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 
 	Even more separator control is available.  With "-+:":
 
-	    - : skip treating the separator as a separator.	*alignctrl--* {{{3
-	    + : repeat use of the last "lrc" justification	*alignctrl-+*
-	    : : treat the rest of the line as a single field	*alignctrl-:*
+	    - : skip treating the separator as a separator.   *alignctrl--*
+	    + : repeat use of the last "lrc" justification    *alignctrl-+*
+	    : : treat the rest of the line as a single field  *alignctrl-:*
 
      Example: More justification options:  Align = >
      +------------+---------------+--------------------+---------------+
@@ -330,11 +424,11 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 
 	  The first "=" separator is skipped by the "-" specification,
 	  and so "a=bb", "ccc=a", and "dd=eee" are considered as single fields.
-         
+
 	  The next "=" separator has its (left side) field left-justified.
 	  Due to the cyclic nature of separator patterns, the "-l"
 	  specification is equivalent to "-l-l-l ...".
-         
+
 	  Hence the next specification is a "skip", so "ccc=1", etc are fields.
 
 	In the second example in "More justification options":
@@ -359,8 +453,8 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 	    etc.
 
 
-	---							*alignctrl-=* {{{3
-	=C	CYCLIC VS ALL-ACTIVE SEPARATORS			*alignctrl-C*
+	---						     *alignctrl-=*
+	=C	CYCLIC VS ALL-ACTIVE SEPARATORS		     *alignctrl-C* {{{3
 	---
 
 	The separators themselves may be considered as equivalent and
@@ -456,13 +550,13 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 	field | field | field & field - field | field | field & field - ...
 <
 
-	---						*alignctrl-<* {{{3
-	<>|	SEPARATOR JUSTIFICATION			*alignctrl->*
+	---						*alignctrl-<*
+	<>|	SEPARATOR JUSTIFICATION			*alignctrl->* {{{3
 	---						*alignctrl-|*
 
 	Separators may be of differing lengths as shown in the example below.
 	Hence they too may be justified left, right, or centered.
-	Furthermore, separator justification specification is cyclic:
+	Furthermore, separator justification specifications are cyclic:
 
 		<  means <<<<<...    justify separator(s) to the left
 		>  means >>>>>...    justify separator(s) to the right
@@ -484,15 +578,15 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 	+---------------------+---------------------+---------------------+
 <
 
-	---						*alignctrl-g* {{{3
-	gv	SELECTIVE APPLICATION			*alignctrl-v*
+	---						*alignctrl-g*
+	gv	SELECTIVE APPLICATION			*alignctrl-v* {{{3
 	---
 
 
 	These two options provide a way to select (g) or to deselect (v) lines
 	based on a pattern.  Ideally :g/pat/Align  would work; unfortunately
-	it results in Align() being called on each line satisfying the pattern
-	separately. >
+	it results in Align#Align() being called on each line satisfying the
+	pattern separately. >
 
 		AlignCtrl g pattern
 <
@@ -524,7 +618,7 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 		AlignCtrl v
 <
 	To see what g/v patterns are currently active, just use the reporting
-	capability of a plain AlignCtrl call: >
+	capability of an unadorned call to AlignCtrl: >
 
 		AlignCtrl
 <
@@ -533,17 +627,17 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 	 m	MAP SUPPORT				*alignctrl-m* {{{3
 	---
 
-	This option primarily supports the development of maps.  The AlignCtrl
-	call will first do an AlignPush() (ie. retain current alignment
-	control settings).  The next Align() will, in addition to its
-	alignment job, finish up with an AlignPop().  Thus the AlignCtrl
-	settings that follow the "m" are only temporarily in effect for just
-	the next Align().
+	This option primarily supports the development of maps.  The
+	Align#AlignCtrl() call will first do an Align#AlignPush() (ie. retain
+	current alignment control settings).  The next Align#Align() will, in
+	addition to its alignment job, finish up with an Align#AlignPop().
+	Thus the Align#AlignCtrl settings that follow the "m" are only
+	temporarily in effect for just the next Align#Align().
 
 
 	---
-	p###						*alignctrl-p* {{{3
-	P###	PADDING					*alignctrl-P*
+	p###						*alignctrl-p*
+	P###	PADDING					*alignctrl-P* {{{3
 	---
 
 	These two options control pre-padding and post-padding with blanks
@@ -570,8 +664,8 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 		pre-pad the sixth  "=" with two blanks,
 	        etc.
 
-	---------------				*alignctrl-settings* {{{3
-	No option given		DISPLAY STATUS	*alignctrl-*
+	---------------				*alignctrl-settings*
+	No option given		DISPLAY STATUS	*alignctrl-*		{{{3
 	---------------				*alignctrl-no-option*
 
 	AlignCtrl, when called with no arguments, will display the current
@@ -585,50 +679,56 @@ ALIGNMENT CONTROL			*alignctrl* *align-control*	{{{2
 	padded on the right with spaces (left justification), and separators
 	will be padded on each side with a single space.
 
+	To change one of these items, see:
+
+	  AlignCtrl......|alignctrl|
+	  qty............|align-concept|
+	  AlignStyle.....|alignctrl--| |alignctrl-+| |alignctrl-:||alignctrl-c|
+	  Padding........|alignctrl-p| |alignctrl-P|
+
 	One may get a string which can be fed back into AlignCtrl: >
 
-		:let alignctrl= AlignCtrl()
+		:let alignctrl= Align#AlignCtrl()
 <
 	This form will put a string describing the current AlignCtrl options,
-	except for the "g" and "v" patterns, into a variable.  The AlignCtrl()
-	function will still echo its settings, however.  One can feed any
-	non-supported "option" to AlignCtrl() to prevent this, however: >
+	except for the "g" and "v" patterns, into a variable.  The
+	Align#AlignCtrl() function will still echo its settings, however.  One
+	can feed any non-supported "option" to AlignCtrl() to prevent this,
+	however: >
 
-		:let alignctrl= AlignCtrl("d")
+		:let alignctrl= Align#AlignCtrl("d")
 <
 
 ALIGNMENT						*align-align* {{{2
->
-	[range]Align  [..list-of-separators..]
-	[range]Align! [AlignCtrl settings] [..list-of-separators..]
+
+	Once the alignment control has been determined, the user specifies a
+	range of lines for the Align command/function to do its thing.
+	Alignment is often done on a line-range basis, but one may also
+	restrict alignment to a visual block using ctrl-v.  For any visual
+	mode, one types the colon (:) and then "Align".  One may, of course,
+	specify a range of lines: >
+
+		:[range]Align [list-of-separators]
 <
-	Once the alignment control options (see |alignctrl|) have been
-	entered, the user specifies a range of lines for the Align
-	command/function to do its thing.  Alignment is often done on a
-	line-range basis, but one may also restrict alignment to a visual
-	block using ctrl-v.  For any visual mode, one types the colon (:) and
-	then "Align".
+	where the |:range| is the usual Vim-powered set of possibilities; the
+	list of separators is the same as the AlignCtrl capability.  There is
+	only one list of separators, but either AlignCtrl or Align can be used
+	to specify that list.
 
-	One may, of course, specify a range of lines where the |range| is the
-	usual Vim-powered set of possibilities; the list of separators is the
-	same as that provided via AlignCtrl.  There is only one list of
-	separators, but either :AlignCtrl or :Align can be used to specify that
-	list.
-
-	The alternative form of the Align command can handle both alignment
+	An alternative form of the Align command can handle both alignment
 	control and the separator list: >
 
 		:[range]Align! [alignment-control-string] [list-of-separators]
 <
-	The alignment control string provided this way will be applied only
-	for this particular application of Align (it uses |alignctrl-m|).  The
-	"g pattern" and "v pattern" alignment controls (see |alignctrl-g| and
-	|alignctrl-v|) are also available via this form of the Align command.
+	The alignment control string will be applied only for this particular
+	application of Align (it uses |alignctrl-m|).  The "g pattern" and
+	"v pattern" alignment controls (see |alignctrl-g| and |alignctrl-v|)
+	are also available via this form of the Align command.
 
 	Align makes two passes over the text to be aligned.  The first pass
 	determines how many fields there are and determines the maximum sizes
 	of each field; these sizes are then stored in a vector.  The second
-	pass pads the fields (left/right/centered as specified) to bring its
+	pass pads the field (left/right/centered as specified) to bring its
 	length up to the maximum size of the field.  Then the separator and
 	its AlignCtrl-specified padding is appended.
 
@@ -648,25 +748,37 @@ ALIGNMENT						*align-align* {{{2
 		 || Append separator with AlignCtrl-specified separator padding
 		 || Delete current line, install newly aligned line
 
-	The g and v AlignCtrl patterns cause the passes skip over lines for
-	alignment, either by requiring that the g-pattern be present or that
-	the v-pattern not be present.
+	The g and v AlignCtrl patterns cause the passes not to consider lines
+	for alignment, either by requiring that the g-pattern be present or
+	that the v-pattern not be present.
 
 	The whitespace on either side of a separator is ignored.
 
 
-ALIGNMENT MAPS				*alignmaps* *align-maps* {{{2
+==============================================================================
+4. Alignment Maps				*alignmaps* *align-maps* {{{1
 
-	There are a number of maps using AlignCtrl() and Align() in the
-	<AlignMaps.vim> file.  This file may also be put into the plugins
-	subdirectory.  Since AlignCtrl and Align supercede textab and its
-	<ttalign.vim> file, the maps either have a leading "t" (for "textab")
-	or the more complicated ones an "a" (for "alignment") for backwards
-	compatibility.
+	There are a number of maps using Align#AlignCtrl() and Align#Align()
+	in the <AlignMapsPlugin.vim> file.  This file may also be put into the
+	plugins subdirectory.  Since AlignCtrl and Align supercede textab and
+	its <ttalign.vim> file, the maps either have a leading "t" (for
+	"textab") or the more complicated ones an "a" (for "alignment") for
+	backwards compatibility.
 
-	ALIGNMENT MAP LISTING	{{{3 ~
+	The maps are shown below with a leading backslash (\).  Actually, the
+	<Leader> construct is used (see |mapleader|), so the maps' leading
+	kick-off character is easily customized.
+
+	Furthermore, all AlignMapsPlugin.vim maps use the <Plug> construct (see
+	|<Plug>|and |usr_41.txt|).  Hence, if one wishes to override the
+	mapping entirely, one may do that, too.  As an example: >
+		map <Leader>ACOM	<Plug>AM_acom
+<	would have \ACOM do what \acom previously did (assuming that the
+	mapleader has been left at its default value of a backslash).
+
 	  \a,   : useful for breaking up comma-separated
 	          declarations prior to \adec			|alignmap-a,|
+	  \a(   : aligns ( and , (useful for prototypes)        *alignmap-a(*
 	  \a?   : aligns (...)? ...:... expressions on ? and :	|alignmap-a?|
 	  \a<   : aligns << and >> for c++			|alignmap-a<|
 	  \a=   : aligns := assignments   			|alignmap-a=|
@@ -675,13 +787,13 @@ ALIGNMENT MAPS				*alignmaps* *align-maps* {{{2
 	  \adcom: useful for aligning comments in declarations  |alignmap-adcom|
 	  \anum : useful for aligning numbers 			|alignmap-anum|
 	          NOTE: For the visual-mode use of \anum, <vis.vim> is needed!
-		  See http://mysite.verizon.net/astronaut/vim/index.html#VIS
+		    See http://mysite.verizon.net/astronaut/vim/index.html#VIS
 	  \aenum: align a European-style number			|alignmap-anum|
 	  \aunum: align a USA-style number			|alignmap-anum|
 	  \adec : useful for aligning declarations		|alignmap-adec|
 	  \adef : useful for aligning definitions		|alignmap-adef|
-	  \afnc : useful for aligning ansi-c style functions'	|alignmap-afnc|
-	          argument lists
+	  \afnc : useful for aligning ansi-c style functions'
+	          argument lists				|alignmap-afnc|
 	  \adcom: a variant of \acom, restricted to comment     |alignmap-adcom|
 	          containing lines only, but also only for
 		  those which don't begin with a comment.
@@ -696,6 +808,12 @@ ALIGNMENT MAPS				*alignmaps* *align-maps* {{{2
 	          (left justified)
 	  \ts,  : like \t, but swaps whitespace on the right of *alignmap-ts,*
 	          the commas to their left
+	  \ts:  : like \t: but swaps whitespace on the right of *alignmap-ts:*
+	          the colons to their left
+	  \ts<  : like \t< but swaps whitespace on the right of *alignmap-ts<*
+	          the less-than signs to their left
+	  \ts=  : like \t= but swaps whitespace on the right of *alignmap-ts=*
+	          the equals signs to their left
 	  \Tsp  : use Align to make a table separated by blanks	|alignmap-Tsp|
 	          (right justified)
 	  \tsq  : use Align to make a table separated by blanks	|alignmap-tsq|
@@ -713,132 +831,50 @@ ALIGNMENT MAPS				*alignmaps* *align-maps* {{{2
 	          character "x" where "x" is: ,:<=@#		|alignmap-T=|
 	  \m=   : like \t= but aligns with %... style comments
 
-	The leading backslash is actually <leader> (see |mapleader| on how to
-	customize the leader to be whatever you prefer).  These maps all use
-	the <Align.vim> package and are defined in the <AlignMaps.vim> file.
+	The leading backslash is actually <leader> (see |mapleader| for how to
+	customize the leader to be whatever you like).  These maps use the
+	<Align.vim> package and are defined in the <AlignMaps.vim> file.
 	Although the maps use AlignCtrl options, they typically use the "m"
-	option which pushes and pops the current options (AlignPush).  The
-	associated Align call which follows will then AlignPop the user's
-	original options back.
+	option which pushes the options (AlignPush).  The associated Align
+	call which follows will then AlignPop the user's original options
+	back.
 
-	ALIGNMENT MAP USE WITH MARK AND MOVE {{{3 ~
+	ALIGNMENT MAP USE WITH MARK AND MOVE~
 	In the examples below, one may select the text with a "ma" at the
 	first line, move to the last line, then execute the map.
 
-	ALIGNMENT MAP USE WITH VISUAL MODE {{{3 ~
+	ALIGNMENT MAP USE WITH VISUAL MODE~
 	Alternatively, one may select the text with the "V" visual mode
-	selector.
+	command.
 
-	ALIGNMENT MAP USE WITH MENUS {{{3 ~
+	ALIGNMENT MAP USE WITH MENUS~
 	One may use the mark-and-move style (ma, move, use the menu) or
 	the visual mode style (use the V visual mode, move, then select
 	the alignment map with menu selection).  The alignment map menu
-	items are under the heading "DrChip.AlignMaps".
+	items are under DrChip.AlignMaps .
 
-	One may change the top level menu name to whatever is wished; by
+	One may even change the top level menu name to whatever is wished; by
 	default, its >
 		let g:DrChipTopLvlMenu= "DrChip."
 <	If you set the variable to the empty string (""), then no menu items
 	will be produced.  Of course, one must have a vim with +menu, the gui
-	must be running, and *'go'* must have the menu bar suboption (ie. m
+	must be running, and |'go'| must have the menu bar suboption (ie. m
 	must be included).
 
-	COMPLEX ALIGNMENT MAP METHOD {{{3 ~
+	COMPLEX ALIGNMENT MAP METHOD~
+
 	For those complex alignment maps which do alignment on constructs
 	(e.g. \acom, \adec, etc), a series of substitutes is used to insert
-	"@" symbols in appropriate locations.  Align() is then used to do
-	alignment directly on "@"s; then it is followed by further substitutes
-	to do clean-up.  However, the maps \WS and \WE protect any original
-	embedded "@" symbols by first converting them to <DEL> characters,
-	doing the requested job, and then converting them back.
+	"@" symbols in appropriate locations.  Align#Align() is then used to
+	do alignment directly on "@"s; then it is followed by further
+	substitutes to do clean-up.  However, the maps \WS and \WE, used by
+	every map supported by AlignMaps, protect any original embedded "@"
+	symbols by first converting them to <DEL> characters, doing the
+	requested job, and then converting them back. >
 
-	As an example, consider \adec (as of v39b of AlignMaps.vim):
-
-	  map <silent> <Leader>adec	The map is set up to be silent (ie.
-	  				not report on qty of substitutes made,
-					etc).  The <Leader> (see |mapleader|)
-					allows the user to specify his/her
-					preferred map-leader character.
-
-	  <SID>WS			The wrapper-start map calls the
-	  				AlignWrapperStart() function, which
-					saves certain problematic user
-					options, sets up fencepost blank lines
-					around the area to be processed, and
-					sets some friendly-to-align options.
-					It also pushes the user's Alignment
-					options on a stack.
-
-	  :'a,'zs/\([^ \t/(]\)\([*&]\)/\1 \2/e<CR>
-	  				This substitute retains any initial
-					whitespace and insures that there is
-					separation between any leading *&
-					characters and the beginning of the
-					line.
-
-	  :'y,'zv/^\//s/\([^ \t]\)\s\+/\1 /ge<CR>
-	  				For any line not a comment, leading
-					non-white space characters are forced
-					to be followed by a single space (as
-					opposed to multiple whitespace
-					characters).
-
-	  :'y,'zv/^\s*[*/]/s/\([^/][*&]\)\s\+/\1/ge<CR>
-	  				For any lines not a comment (or part
-					of a multi-line C comment), whitespace
-					following a [not-a-/][*&] is removed.
-
-	  :'y,'zv/^\s*[*/]/s/^\(\s*\%(\K\k*\s\+\%([a-zA-Z_*(&]\)\@=\)\+\)
-	  \([*(&]*\)\s*\([a-zA-Z0-9_()]\+\)\s*\(\(\[.\{-}]\)*\)\s*\(=\)\=
-	  \s*\(.\{-}\)\=\s*;/\1@\2#@\3\4@\6@\7;@/e<CR>
-	  				This substitute (all one line, but
-					split so it can fit on a help page),
-					is the declaration-construct recognition
-					workhorse.  Basically it splits a
-					declaration into components separated
-					by @ and # signs.
-
-	  :'y,'zv/^\s*[*/]/s/\*\/\s*$/@*\//e<CR>
-	  				Places an @ sign before the ending ...*/
-					in C comments (except for those lines
-					that are just beginning of line
-					followed by spaces to */).
-
-	  :'y,'zv/^\s*[*/]/s/^\s\+\*/@@@@@* /e<CR>
-	  				For those lines without comments, @s
-					are placed at the end-of-line.
-
-	  :'y,'zv/^\s*[*/]/s/^@@@@@\*\(.*[^*/]\)$/&@*/e<CR>
-	  				Cleans up some situations where the
-					previous @@@@@ appending ended up
-					at the beginning of lines and there's
-					continuing comment involved.
-	  				
-	  'yjma'zk			Preparation for alignment by marking
-	  				the region.
-
-	  :AlignCtrl v ^\s*[*/#]<CR>	Don't align comment-only lines.
-
-	  <Leader>t@			Align all the @s inserted above.
-
-	  :'y,'zv/^\s*[*/]/s/@ //ge<CR>
-	  :'y,'zv/^\s*[*/]/s/\(\s*\);/;\1/e<CR>
-	  :'y,'zv/^#/s/# //e<CR>
-	  :'y,'zv/^\s\+[*/#]/s/\([^/*]\)\(\*\+\)\( \+\)/\1\3\2/e<CR>
-	  :'y,'zv/^\s\+[*/#]/s/\((\+\)\( \+\)\*/\2\1*/e<CR>
-	  :'y,'zv/^\s\+[*/#]/s/^\(\s\+\) \*/\1*/e<CR>
-	  :'y,'zv/^\s\+[*/#]/s/[ \t@]*$//e<CR>
-	  :'y,'zs/^[*]/ */e<CR>
-	  				These are all clean-up substitutes,
-					removing @s and #s, some unnecessary
-					spaces, etc.
-
-	  <SID>WE			Reverse the AlignWrapperStart() with
-	  				AlignWrapperEnd(): AlignPop the
-					alignment settings, restore window
-					position, remove fencepost lines, and
-					restore user options.
-
+	    \WS  calls AlignMaps#WrapperStart()
+	    \WE  calls AlignMaps#WrapperEnd()
+<
 
 	---------------------------
 	Alignment Map Examples: \a,			*alignmap-a,* {{{3
@@ -1142,7 +1178,7 @@ ALIGNMENT MAPS				*alignmaps* *align-maps* {{{2
 	Also see |alignmap-acom|
 
 
-	---------------------------
+	---------------------------			*alignmap-Tsp*
 	Alignment Map Examples: \tsp			*alignmap-tsp* {{{3
 	---------------------------
 
@@ -1272,12 +1308,21 @@ ALIGNMENT MAPS				*alignmaps* *align-maps* {{{2
 	  <TR><TD> ...field three... </TD><TD> ...field four... </TD></TR>
 <
 ==============================================================================
-4. Alignment Tool History				*align-history* {{{1
+4. Alignment Tools' History				*align-history* {{{1
 
 ALIGN HISTORY								{{{2
+	35 : Nov 02, 2008 * g:loaded_AlignPlugin testing to prevent re-loading
+			    installed
+	     Nov 19, 2008 * new sanity check for an AlignStyle of just ":"
+	     Jan 08, 2009 * save&restore of |'mod'| now done with local
+			    variant
+	34 : Jul 08, 2008 * using :AlignCtrl before entering any alignment
+			    control commands was causing an error.
 	33 : Sep 20, 2007 * s:Strlen() introduced to support various ways
 			    used to represent characters and their effects
 			    on string lengths.  See |align-strlen|.
+			  * Align now accepts "..." -- so it can accept
+			    whitespace as separators.
 	32 : Aug 18, 2007 * uses |<q-args>| instead of |<f-args>| plus a
 	                    custom argument splitter to allow patterns with
 			    backslashes to slide in unaltered.
@@ -1332,11 +1377,30 @@ ALIGN HISTORY								{{{2
 	11 : Jul 08, 2002 : prevent separator patterns which match zero length
 	                    -+: included as additional alignment/justification
 	                    styles
-	10 : Jun 26, 2002 : =~# used instead of =~ (for matching case) 
+	10 : Jun 26, 2002 : =~# used instead of =~ (for matching case)
 	                    ignorecase option handled
 	 9 : Jun 25, 2002 : implemented cyclic padding
 
 ALIGNMENT MAP HISTORY					*alignmap-history* {{{2
+       v41    Nov 02, 2008   * g:loaded_AlignMapsPlugin testing to prevent
+			       re-loading installed
+			     * AlignMaps now use 0x0f (ctrl-p) for special
+			       character substitutions (instead of 0xff).
+			       Seems to avoid some problems with having to
+			       use Strlen().
+			     * bug fixed with \ts,
+			     * new maps: \ts; \ts, \ts: \ts< \ts= \a(
+       v40    Oct 21, 2008   * Modified AlignMaps so that its maps use <Plug>s
+			       and <script>s.  \t@ and related maps have been
+			       changed to call StdAlign() instead.  The
+			       WrapperStart function now takes an argument and
+			       handles being called via visual mode.  The
+			       former nmaps and vmaps have thus been replaced
+			       with a simple map.
+	      Oct 24, 2008   * broke AlignMaps into a plugin and autoload
+			       pair of scripts.
+	v39   Mar 06, 2008 : * \t= only does /* ... */ aligning when in *.c
+	                       *.cpp files.
 	v38   Aug 18, 2007 : * \tt altered so that it works with the new
 	                       use of |<q-args>| plus a custom argument
 			       splitter
@@ -1345,7 +1409,7 @@ ALIGNMENT MAP HISTORY					*alignmap-history* {{{2
 	      May 15, 2007   * \anum and variants improved
 	v35   Sep 01, 2006 : * \t= and cousins used "`"s.  They now use \xff
 	                       characters.
-	                     * \acom can now work with doxygen style /// comments
+	                     * \acom now works with doxygen style /// comments
 	                     * <char-0xff> used in \t= \T= \w= and \m= instead
 	                       of backquotes.
 	v34   Feb 23, 2006 : * AlignMaps now converted to vim 7.0 style using

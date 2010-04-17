@@ -1,8 +1,9 @@
 " Vim syntax file
 "  Language:	Man page syntax for php
 "  Maintainer:	Charles E. Campbell, Jr.
-"  Last Change:	Dec 29, 2005
-"  Version:    	1
+"  Last Change:	Aug 12, 2008
+"  Version:    	3
+" ---------------------------------------------------------------------
 syn clear
 
 let b:current_syntax = "manphp"
@@ -22,22 +23,22 @@ syn match   manphpEditor			"\[Editor's Note:.\{-}]"
 syn match   manphpUser				"\a\+ at \a\+ dot .*$"
 syn match   manphpFuncList			"PHP Function List"
 
-hi link manphpKey		Title
-hi link manphpFunction		Function
-hi link manphpDelimiter		Delimiter
-hi link manphpDesc		manphpFunction
-hi link manphpSeeAlso		Title
-hi link manphpSeeAlsoList	PreProc
-hi link manphpUserNote		Title
-hi link manphpEditor		Special
-hi link manphpUser		Search
-hi link manphpSeeAlsoSkip	Ignore
-hi link manphpSkip		Ignore
-hi link manphpFuncList		Title
+hi default link manphpKey		Title
+hi default link manphpFunction		Function
+hi default link manphpDelimiter		Delimiter
+hi default link manphpDesc		manphpFunction
+hi default link manphpSeeAlso		Title
+hi default link manphpSeeAlsoList	PreProc
+hi default link manphpUserNote		Title
+hi default link manphpEditor		Special
+hi default link manphpUser		Search
+hi default link manphpSeeAlsoSkip	Ignore
+hi default link manphpSkip		Ignore
+hi default link manphpFuncList		Title
 
 " cleanup
 if !exists("g:manphp_nocleanup")
- set mod ma noro
+ setlocal mod ma noro
  %s/\[\d\+]//ge
  %s/_\{2,}/__/ge
  %s/\<\%(add a note\)\+\>//ge
@@ -67,7 +68,8 @@ if !exists("g:manphp_nocleanup")
    1,.-1d
   endif
  endif
- set nomod noma ro
+ setlocal nomod noma ro
 endif
 
+" ---------------------------------------------------------------------
 " vim:ts=8

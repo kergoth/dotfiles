@@ -1,7 +1,7 @@
 " Decho.vim:   Debugging support for VimL
 " Maintainer:  Charles E. Campbell, Jr. PhD <cec@NgrOyphSon.gPsfAc.nMasa.gov>
-" Date:        May 10, 2007
-" Version:     19
+" Date:        Oct 23, 2008
+" Version:     20
 "
 " Usage: {{{1
 "   Decho "a string"
@@ -29,7 +29,7 @@
 if exists("g:loaded_Decho") || &cp
  finish
 endif
-let g:loaded_Decho = "v19"
+let g:loaded_Decho = "v20"
 let s:keepcpo      = &cpo
 set cpo&vim
 
@@ -47,7 +47,7 @@ endif
 if !exists("g:decho_bufenter")
  let g:decho_bufenter= 0
 endif
-if !exists("g:dechomode")
+if !exists("g:dechomode") || !exists("s:DECHOWIN")
  let s:DECHOWIN = 1
  let s:DECHOMSG = 2
  let s:DECHOVAR = 3
@@ -67,19 +67,22 @@ com! -nargs=0 -range=% DechoOn				call DechoOn(<line1>,<line2>)
 com! -nargs=0 -range=% DechoOff				call DechoOff(<line1>,<line2>)
 com! -nargs=0 Dhide    						call s:Dhide(1)
 com! -nargs=0 Dshow    						call s:Dhide(0)
-com! -nargs=0 DechoMsgOn					let  g:dechomode= s:DECHOMSG
-com! -nargs=0 DechoMsgOff					let  g:dechomode= s:DECHOWIN
+com! -nargs=0 DechoMsgOn					call s:DechoMsg(1,expand("<sfile>"))
+com! -nargs=0 DechoMsgOff					call s:DechoMsg(0)
 if has("clientserver") && executable("gvim")
- com! -nargs=0 DechoRemOn					call s:DechoRemote(1)
+ com! -nargs=0 DechoRemOn					call s:DechoRemote(1,expand("<sfile>"))
  com! -nargs=0 DechoRemOff					call s:DechoRemote(0)
 endif
-com! -nargs=0 DechoSep						call s:DechoSep()
-com! -nargs=? DechoVarOn					call s:DechoVarOn(<args>)
+com! -nargs=? DechoSep						call DechoSep(<args>)
+com! -nargs=? Dsep						    call DechoSep(<args>)
+com! -nargs=? DechoVarOn					call s:DechoVarOn(expand("<sfile>"),<args>)
 com! -nargs=0 DechoVarOff					call s:DechoVarOff()
 if v:version >= 700
- com! -nargs=? DechoTabOn                   set lz|call s:DechoTab(1)|set nolz
+ com! -nargs=? DechoTabOn                   set lz|call s:DechoTab(1,expand("<sfile>"))|set nolz
  com! -nargs=? DechoTabOff                  set lz|call s:DechoTab(0)|set nolz
 endif
+com! -nargs=0 DechoPause					call DechoPause()
+au Filetype Decho nmap <silent> <buffer> <F1> :setlocal noro ma<cr>
 
 " ---------------------------------------------------------------------
 " Decho: the primary debugging function: splits the screen as necessary and {{{1
@@ -90,8 +93,8 @@ fun! Decho(...)
   " make sure that SaveWinPosn() and RestoreWinPosn() are available
   if !exists("g:loaded_cecutil")
    runtime plugin/cecutil.vim
-   if !exists("g:loaded_cecutil") && exists("g:loaded_asneeded")
-   	AN SaveWinPosn
+   if !exists("g:loaded_cecutil") && exists("g:loaded_AsNeeded")
+   	AN SWP
    endif
    if !exists("g:loaded_cecutil")
    	echoerr "***Decho*** need to load <cecutil.vim>"
@@ -106,14 +109,14 @@ fun! Decho(...)
    if g:decho_bufenter
     let eikeep= &ei
 	let eakeep= &ea
-    set ei=BufEnter,WinEnter,WinLeave noea
+	set ei=BufEnter,WinEnter,WinLeave,ShellCmdPost,FocusGained noea
    endif
  
    " As needed, create/switch-to the DBG buffer
    if !bufexists(g:decho_bufname) && bufnr("*/".g:decho_bufname."$") == -1
     " if requested DBG-buffer doesn't exist, create a new one
     " at the bottom of the screen.
-    exe "keepjumps silent bot ".g:decho_winheight."new ".g:decho_bufname
+	exe "keepjumps silent! bot ".g:decho_winheight."new ".fnameescape(g:decho_bufname)
     setlocal noswf
 	keepjumps silent! %d
  
@@ -132,7 +135,7 @@ fun! Decho(...)
    endif
  
    set ft=Decho
-   setlocal noswapfile noro nobl
+   setlocal noswapfile noro nobl fo=n2croql
  
    "  make sure DBG window is on the bottom
    wincmd J
@@ -195,7 +198,7 @@ fun! Decho(...)
    try
     call remote_send("DECHOREMOTE",':set ma fo-=at'."\<cr>".'Go'.smsg."\<esc>".':set noma nomod'."\<cr>")
    catch /^Vim\%((\a\+)\)\=:E241/
-   	let g:dechomode= s:DECHOWIN
+       let g:dechomode= s:DECHOWIN
    endtry
 
   elseif g:dechomode == s:DECHOTAB
@@ -203,10 +206,11 @@ fun! Decho(...)
    let eikeep= &ei
    set ei=all
    let g:dechotabcur = tabpagenr()
-   exe "tabn ".g:dechotabnr
+   exe "silent! tabn ".g:dechotabnr
    if expand("%") != "Decho Tab"
-   	" looks like a new tab has interposed itself -- look for the "Decho Tab" tab
+	" looks like a new tab has been inserted -- look for the "Decho Tab" tab
 	let g:dechotabnr= 1
+	silent! tabn 1
 	while expand("%") != "Decho Tab"
 	 let g:dechotabnr= g:dechotabnr + 1
 	 if g:dechotabnr > tabpagenr("$")
@@ -218,7 +222,7 @@ fun! Decho(...)
     endwhile
    endif
    " append message to "Decho Tab" tab
-   setlocal ma
+   setlocal ma noro
    call setline(line("$")+1,smsg)
    setlocal noma nomod
    " restore tab# to original user tab
@@ -328,10 +332,22 @@ fun! DechoOff(line1,line2)
 endfun
 
 " ---------------------------------------------------------------------
-
 " DechoDepth: allow user to force depth value {{{1
 fun! DechoDepth(depth)
   let s:decho_depth= a:depth
+endfun
+
+" ---------------------------------------------------------------------
+" s:DechoMsg: {{{2
+fun! s:DechoMsg(onoff,...)
+"  call Dfunc("s:DechoMsg(onoff=".a:onoff.") a:0=".a:0)
+  if a:onoff
+   let g:dechomode = s:DECHOMSG
+   let g:dechofile = (a:0 > 0)? a:1 : ""
+  else
+   let g:dechomode= s:DECHOWIN
+  endif
+"  call Dret("s:DechoMsg")
 endfun
 
 " ---------------------------------------------------------------------
@@ -425,22 +441,38 @@ fun! Dredir(...)
 endfun
 
 " ---------------------------------------------------------------------
-" s:DechoSep: puts a separator with counter into debugging output {{{2
-fun! s:DechoSep()
-"  call Dfunc("s:DechoSep()")
+" DechoSep: puts a separator with counter into debugging output {{{2
+fun! DechoSep(...)
+"  call Dfunc("DechoSep() a:0=".a:0)
   if !exists("s:dechosepcnt")
    let s:dechosepcnt= 1
   else
    let s:dechosepcnt= s:dechosepcnt + 1
   endif
-  call Decho("--sep".s:dechosepcnt."--")
-"  call Dret("s:DechoSep")
+  let eikeep= &ei
+  set ei=all
+  call Decho("--sep".s:dechosepcnt."--".((a:0 > 0)? " ".a:1 : ""))
+  let &ei= eikeep
+"  call Dret("DechoSep")
+endfun
+
+" ---------------------------------------------------------------------
+" DechoPause: puts a pause-until-<cr> into operation; will place a {{{2
+"             separator into the debug output for reporting
+fun! DechoPause()
+"  call Dfunc("DechoPause()")
+  redraw!
+  call DechoSep("(pause)")
+  call inputsave()
+  call input("Press <cr> to continue")
+  call inputrestore()
+"  call Dret("DechoPause")
 endfun
 
  " ---------------------------------------------------------------------
  " DechoRemote: supports sending debugging to a remote vim {{{1
 if has("clientserver") && executable("gvim")
- fun! s:DechoRemote(mode)
+ fun! s:DechoRemote(mode,...)
    if a:mode == 0
     " turn remote debugging off
     if g:dechomode == s:DECHOREM
@@ -450,12 +482,17 @@ if has("clientserver") && executable("gvim")
    elseif a:mode == 1
     " turn remote debugging on
     if g:dechomode != s:DECHOREM
- 	let g:dechomode= s:DECHOREM
+ 	 let g:dechomode= s:DECHOREM
     endif
+	let g:dechofile= (a:0 > 0)? a:1 : ""
     if serverlist() !~ '\<DECHOREMOTE\>'
  "   " start up remote Decho server
  "   call Decho("start up DECHOREMOTE server")
-     call system("gvim --servername DECHOREMOTE")
+     if has("win32") && executable("start")
+      call system("start gvim --servername DECHOREMOTE")
+	 else
+      call system("gvim --servername DECHOREMOTE")
+	 endif
      while 1
       try
  	   call remote_send("DECHOREMOTE",':silent set ft=Decho fo-=at'."\<cr>")
@@ -464,7 +501,7 @@ if has("clientserver") && executable("gvim")
  	   call remote_send("DECHOREMOTE",":put ='Remote Decho Debugging Window'\<cr>")
  	   call remote_send("DECHOREMOTE",":put ='-----------------------------'\<cr>")
  	   call remote_send("DECHOREMOTE","1GddG")
- 	   call remote_send("DECHOREMOTE",':silent set noswf noma nomod nobl nonu ch=1'."\<cr>")
+	   call remote_send("DECHOREMOTE",':silent set noswf noma nomod nobl nonu ch=1 fo=n2croql nosi noai'."\<cr>")
  	   call remote_send("DECHOREMOTE",':'."\<cr>")
  	   call remote_send("DECHOREMOTE",':silent set ft=Decho'."\<cr>")
  	   call remote_send("DECHOREMOTE",':silent syn on'."\<cr>")
@@ -489,10 +526,11 @@ fun! s:DechoVarOn(...)
   let g:dechomode= s:DECHOVAR
   
   if a:0 > 0
-   if a:1 =~ '^g:'
-    exe "let ".a:1.'= ""'
+   let g:dechofile= a:1
+   if a:2 =~ '^g:'
+    exe "let ".a:2.'= ""'
    else
-    exe "let g:".a:1.'= ""'
+    exe "let g:".a:2.'= ""'
    endif
   else
    let g:dechovarname= "g:dechovar"
@@ -513,11 +551,12 @@ endfun
  " --------------------------------------------------------------------
  " DechoTab: {{{1
 if v:version >= 700
- fun! s:DechoTab(mode)
- "  call Dfunc("DechoTab(mode=".a:mode.")")
+ fun! s:DechoTab(mode,...)
+ "  call Dfunc("DechoTab(mode=".a:mode.") a:0=".a:0)
  
    if a:mode
     let g:dechomode = s:DECHOTAB
+	let g:dechofile = (a:0 > 0)? a:1 : ""
     let dechotabcur = tabpagenr()
     if !exists("g:dechotabnr")
 	 let eikeep= &ei
@@ -526,14 +565,14 @@ if v:version >= 700
 	 file Decho\ Tab
 	 setlocal ma
 	 put ='---------'
-	 put ='Decho Tab'
+	 put ='Decho Tab '.g:dechofile
 	 put ='---------'
 	 norm! 1GddG
 	 let g:dechotabnr = tabpagenr()
 	 let &ei          = ""
 	 set ft=Decho
 	 set ei=all
-	 setlocal noma nomod nobl noswf ch=1
+	 setlocal noma nomod nobl noswf ch=1 fo=n2croql
 	 exe "tabn ".dechotabcur
 	 let &ei= eikeep
 	endif

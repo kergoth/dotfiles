@@ -1,9 +1,9 @@
 " Vim color file
-" Maintainer:	Rui Carlos A. Goncalves <rui.c.mcc@gmail.com>
+" Maintainer:	Rui Carlos A. Goncalves <rcgoncalves.pt@gmail.com>
 " Last Change:	November 17, 2007
 "
 " Version:      1.0
-" Url:          http://www.rcg-pt.net/prog/rcg_gui.vim
+" Url:          http://www.rcg-pt.net/programacao/rcg_gui.vim.gz
 
 set background=dark
 highlight clear
