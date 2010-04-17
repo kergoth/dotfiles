@@ -881,7 +881,8 @@ let g:secure_modelines_allowed_items = [
             \ "foldmethod",   "fdm",
             \ "foldlevel",    "fdl",
             \ "readonly",     "ro",   "noreadonly", "noro",
-            \ "rightleft",    "rl",   "norightleft", "norl"
+            \ "rightleft",    "rl",   "norightleft", "norl",
+            \ "wrap",
             \ ]
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 let g:debianfullname = 'Chris Larson'
