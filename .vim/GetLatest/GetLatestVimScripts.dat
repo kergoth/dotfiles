@@ -68,6 +68,10 @@
 42 12363 bufexplorer
 915 9224 AsNeeded
 31 7218 a.vim
+555 4795 :AutoInstall: HiCurLine.vim
+
+# completion
+1542 10872 pythoncomplete.vim
 
 # testing
 3052 12826 changesPlugin
