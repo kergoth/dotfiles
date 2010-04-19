@@ -1,7 +1,7 @@
 " Align: tool to align multiple fields based on one or more separators
 "   Author:		Charles E. Campbell, Jr.
-"   Date:		Dec 20, 2007
-"   Version:	33
+"   Date:		Mar 03, 2009
+"   Version:	35
 " GetLatestVimScripts: 294 1 :AutoInstall: Align.vim
 " GetLatestVimScripts: 1066 1 :AutoInstall: cecutil.vim
 " Copyright:    Copyright (C) 1999-2007 Charles E. Campbell, Jr. {{{1
@@ -21,22 +21,36 @@
 
 " ---------------------------------------------------------------------
 " Load Once: {{{1
-if exists("g:loaded_align") || &cp
+if exists("g:loaded_Align") || &cp
  finish
 endif
-let g:loaded_align = "v33"
-let s:keepcpo      = &cpo
+let g:loaded_Align = "v35"
+if v:version < 700
+ echohl WarningMsg
+ echo "***warning*** this version of Align needs vim 7.0"
+ echohl Normal
+ finish
+endif
+let s:keepcpo= &cpo
 set cpo&vim
 "DechoTabOn
 
 " ---------------------------------------------------------------------
-" Debugging Support:
-"if !exists("g:loaded_Decho") "Decho
-" runtime plugin/Decho.vim
-"endif	" Decho
+" Debugging Support: {{{1
+"if !exists("g:loaded_Decho") | runtime plugin/Decho.vim | endif
 
 " ---------------------------------------------------------------------
-" AlignCtrl: enter alignment patterns here {{{1
+" Options: {{{1
+if !exists("g:Align_xstrlen")
+ if &enc == "latin1" || $LANG == "en_US.UTF-8" || !has("multi_byte")
+  let g:Align_xstrlen= 0
+ else
+  let g:Align_xstrlen= 1
+ endif
+endif
+
+" ---------------------------------------------------------------------
+" Align#AlignCtrl: enter alignment patterns here {{{1
 "
 "   Styles   =  all alignment-break patterns are equivalent
 "            C  cycle through alignment-break pattern(s)
@@ -135,6 +149,9 @@ fun! Align#AlignCtrl(...)
    " ----------------------
    " List current selection
    " ----------------------
+   if !exists("s:AlignPatQty")
+	let s:AlignPatQty= 0
+   endif
    echo "AlignCtrl<".s:AlignCtrl."> qty=".s:AlignPatQty." AlignStyle<".s:AlignStyle."> Padding<".s:AlignPrePad."|".s:AlignPostPad."> LeadingWS=".s:AlignLeadKeep." AlignSep=".s:AlignSep
 "   call Decho("AlignCtrl<".s:AlignCtrl."> qty=".s:AlignPatQty." AlignStyle<".s:AlignStyle."> Padding<".s:AlignPrePad."|".s:AlignPostPad."> LeadingWS=".s:AlignLeadKeep." AlignSep=".s:AlignSep)
    if      exists("s:AlignGPat") && !exists("s:AlignVPat")
@@ -308,7 +325,7 @@ fun! Align#AlignCtrl(...)
 endfun
 
 " ---------------------------------------------------------------------
-" MakeSpace: returns a string with spacecnt blanks {{{1
+" s:MakeSpace: returns a string with spacecnt blanks {{{1
 fun! s:MakeSpace(spacecnt)
 "  call Dfunc("MakeSpace(spacecnt=".a:spacecnt.")")
   let str      = ""
@@ -326,9 +343,14 @@ endfun
 fun! Align#Align(hasctrl,...) range
 "  call Dfunc("Align#Align(hasctrl=".a:hasctrl.",...) a:0=".a:0)
 
-  " sanity check
+  " sanity checks
   if string(a:hasctrl) != "0" && string(a:hasctrl) != "1"
    echohl Error|echo 'usage: Align#Align(hasctrl<'.a:hasctrl.'> (should be 0 or 1),"separator(s)"  (you have '.a:0.') )'|echohl None
+"   call Dret("Align#Align")
+   return
+  endif
+  if exists("s:AlignStyle") && s:AlignStyle == ":"
+   echohl Error |echo '(Align#Align) your AlignStyle is ":", which implies "do-no-alignment"!'|echohl None
 "   call Dret("Align#Align")
    return
   endif
@@ -448,8 +470,8 @@ fun! Align#Align(hasctrl,...) range
 "  call Decho("lines[".begline.",".endline."] col[".begcol.",".endcol."] ragged=".ragged." AlignCtrl<".s:AlignCtrl.">")
 
   " Keep user options
-  let etkeep   = &et
-  let pastekeep= &paste
+  let etkeep   = &l:et
+  let pastekeep= &l:paste
   setlocal et paste
 
   " convert selected range of lines to use spaces instead of tabs
@@ -735,8 +757,8 @@ fun! Align#Align(hasctrl,...) range
 "  call Decho("end of two pass loop")
 
   " Restore user options
-  let &et    = etkeep
-  let &paste = pastekeep
+  let &l:et    = etkeep
+  let &l:paste = pastekeep
 
   if exists("s:DoAlignPop")
    " AlignCtrl Map support
@@ -754,7 +776,7 @@ fun! Align#Align(hasctrl,...) range
 endfun
 
 " ---------------------------------------------------------------------
-" AlignPush: this command/function pushes an alignment control string onto a stack {{{1
+" Align#AlignPush: this command/function pushes an alignment control string onto a stack {{{1
 fun! Align#AlignPush()
 "  call Dfunc("AlignPush()")
 
@@ -766,6 +788,9 @@ fun! Align#AlignPush()
   endif
 
   " construct an AlignCtrlStack entry
+  if !exists("s:AlignSep")
+   let s:AlignSep= ''
+  endif
   let s:AlignCtrlStack_{s:AlignCtrlStackQty}= s:AlignCtrl.'p'.s:AlignPrePad.'P'.s:AlignPostPad.s:AlignLeadKeep.s:AlignStyle.s:AlignSep
 "  call Decho("AlignPush: AlignCtrlStack_".s:AlignCtrlStackQty."<".s:AlignCtrlStack_{s:AlignCtrlStackQty}.">")
 
@@ -785,7 +810,7 @@ fun! Align#AlignPush()
 endfun
 
 " ---------------------------------------------------------------------
-" AlignPop: this command/function pops an alignment pattern from a stack {{1
+" Align#AlignPop: this command/function pops an alignment pattern from a stack {{{1
 "           and into the AlignCtrl variables.
 fun! Align#AlignPop()
 "  call Dfunc("Align#AlignPop()")
@@ -831,7 +856,7 @@ fun! Align#AlignPop()
 endfun
 
 " ---------------------------------------------------------------------
-" AlignReplaceQuotedSpaces: {{{1
+" Align#AlignReplaceQuotedSpaces: {{{1
 fun! Align#AlignReplaceQuotedSpaces() 
 "  call Dfunc("AlignReplaceQuotedSpaces()")
 
@@ -876,13 +901,76 @@ endfun
 
 " ---------------------------------------------------------------------
 " s:QArgSplitter: to avoid \ processing by <f-args>, <q-args> is needed. {{{1
-" However, <q-args> doesn't split at all, so this one returns a list
-" with splits at all whitespace (only!), plus a leading length-of-list.
+" However, <q-args> doesn't split at all, so this function returns a list
+" of arguments which has been:
+"   * split at whitespace
+"   * unless inside "..."s.  One may escape characters with a backslash inside double quotes.
+" along with a leading length-of-list.
+"
+"   Examples:   %Align "\""   will align on "s
+"               %Align " "    will align on spaces
+"
 " The resulting list:  qarglist[0] corresponds to a:0
 "                      qarglist[i] corresponds to a:{i}
 fun! s:QArgSplitter(qarg)
 "  call Dfunc("s:QArgSplitter(qarg<".a:qarg.">)")
-  let qarglist   = split(a:qarg)
+
+  if a:qarg =~ '".*"'
+   " handle "..." args, which may include whitespace
+   let qarglist = []
+   let args     = a:qarg
+"   call Decho("handle quoted arguments: args<".args.">")
+   while args != ""
+	let iarg   = 0
+	let arglen = strlen(args)
+"	call Decho("args[".iarg."]<".args[iarg]."> arglen=".arglen)
+	" find index to first not-escaped '"'
+	while args[iarg] != '"' && iarg < arglen
+	 if args[iarg] == '\'
+	  let args= strpart(args,1)
+	 endif
+	 let iarg= iarg + 1
+	endwhile
+"	call Decho("args<".args."> iarg=".iarg." arglen=".arglen)
+
+	if iarg > 0
+	 " handle left of quote or remaining section
+"	 call Decho("handle left of quote or remaining section")
+	 if args[iarg] == '"'
+	  let qarglist= qarglist + split(strpart(args,0,iarg-1))
+	 else
+	  let qarglist= qarglist + split(strpart(args,0,iarg))
+	 endif
+	 let args    = strpart(args,iarg)
+	 let arglen  = strlen(args)
+
+	elseif iarg < arglen && args[0] == '"'
+	 " handle "quoted" section
+"	 call Decho("handle quoted section")
+	 let iarg= 1
+	 while args[iarg] != '"' && iarg < arglen
+	  if args[iarg] == '\'
+	   let args= strpart(args,1)
+	  endif
+	  let iarg= iarg + 1
+	 endwhile
+"	 call Decho("args<".args."> iarg=".iarg." arglen=".arglen)
+	 if args[iarg] == '"'
+	  call add(qarglist,strpart(args,1,iarg-1))
+	  let args= strpart(args,iarg+1)
+	 else
+	  let qarglist = qarglist + split(args)
+	  let args     = ""
+	 endif
+	endif
+"	call Decho("qarglist".string(qarglist)." iarg=".iarg." args<".args.">")
+   endwhile
+
+  else
+   " split at all whitespace
+   let qarglist= split(a:qarg)
+  endif
+
   let qarglistlen= len(qarglist)
   let qarglist   = insert(qarglist,qarglistlen)
 "  call Dret("s:QArgSplitter ".string(qarglist))
@@ -891,7 +979,7 @@ endfun
 
 " ---------------------------------------------------------------------
 " s:Strlen: this function returns the length of a string, even if its {{{1
-"           using two-byte etc characters.  Depends on virtcol().
+"           using two-byte etc characters.
 "           Currently, its only used if g:Align_xstrlen is set to a
 "           nonzero value.  Solution from Nicolai Weibull, vim docs
 "           (:help strlen()), Tony Mechelynck, and my own invention.
@@ -913,12 +1001,12 @@ fun! s:Strlen(x)
    " 'tabstop', wide CJK as 2 rather than 1, Arabic alif as zero when immediately 
    " preceded by lam, one otherwise, etc.)
    " (comment from TM, solution from me)
-   let modkeep= &mod
+   let modkeep= &l:mod
    exe "norm! o\<esc>"
    call setline(line("."),a:x)
    let ret= virtcol("$") - 1
    d
-   let &mod= modkeep
+   let &l:mod= modkeep
 
   else
    " at least give a decent default

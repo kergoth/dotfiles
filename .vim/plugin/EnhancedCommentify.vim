@@ -1,34 +1,33 @@
 " EnhancedCommentify.vim
 " Maintainer:	Meikel Brandmeyer <Brandels_Mikesh@web.de>
-" Version:	2.2
-" Last Change:	Monday, 27th September 2004
+" Version:	2.3
+" Last Change:	Wednesday, February 20th, 2008
 
 " License:
-" Copyright (c) 2002,2003,2004 Meikel Brandmeyer, Kaiserslautern.
+" Copyright (c) 2008 Meikel Brandmeyer, Frankfurt am Main
 " All rights reserved.
-"
-" Redistribution and use in source and binary forms, with or without
-" modification, are permitted provided that the following conditions are met:
-"
-"   * Redistributions of source code must retain the above copyright notice,
-"     this list of conditions and the following disclaimer.
-"   * Redistributions in binary form must reproduce the above copyright notice,
-"     this list of conditions and the following disclaimer in the documentation
-"     and/or other materials provided with the distribution.
-"   * Neither the name of the author nor the names of its contributors may be
-"     used to endorse or promote products derived from this software without
-"     specific prior written permission.
-"
-" THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-" DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+" 
+" Redistribution and use in source and binary form are permitted provided
+" that the following conditions are met:
+" 
+" 1. Redistribition of source code must retain the above copyright
+"    notice, this list of conditions and the following disclaimer.
+" 
+" 2. Redistributions in binary form must reproduce the above copyright
+"    notice, this list of conditions and the following disclaimer in the
+"    documentation and/or other materials provided with the distribution.
+" 
+" THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS "AS IS" AND
+" ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
 " FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-" CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-" OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-" OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+" SUCH DAMAGE.
 
 " Description: 
 " This is a (well... more or less) simple script to comment lines in a program.
@@ -36,6 +35,11 @@
 " language, python, HTML, Perl, LISP, Tex, Shell, CAOS and others.
 
 " Bugfixes:
+"   2.3
+"   Fixed type 'apacha' -> 'apache' (thanks to Brian Neu)
+"   Fixed nested comment escapes strings. (thanks to Samuel Ferencik)
+"   Fixed broken keyboard mappings when wcm was set to <Tab>.
+"					(thanks to xpatriotx)
 "   2.2
 "   Fixed problem with UseSyntax (thanks to Pieter Naaijkens) 
 "   Fixed typo in ParseCommentsOp (commstr -> commStr). 
@@ -63,6 +67,11 @@
 "   made function silent	     (thanks to Mare Ellen Foster)
 
 " Changelog:
+"   2.3
+"   Added support for viki/deplate (thanks to Thomas Link)
+"   Added support for xslt/xsd/mail (thanks to Stefano Zacchiroli)
+"   Added callback-functionality to enable extensions without the
+"   need of modification directly in the script.
 "   2.2
 "   Added possibility to override the modes, in which keybindings are
 "   defined.
@@ -153,7 +162,7 @@ function s:InitBooleanVariable(confVar, scriptVar, defaultVal)
 	let {a:scriptVar} = a:defaultVal
     endif
 endfunction
-    
+
 "
 " InitStringVariable(confVar, scriptVar, defaultVal)
 "	confVar		-- name of the configuration variable
@@ -407,7 +416,7 @@ let s:maxLen = 0
 function EnhancedCommentifyInitBuffer()
     if !exists("b:ECdidBufferInit")
 	call s:InitScriptVariables("b")
-	
+
 	if !exists("b:EnhCommentifyFallbackTest")
 	    let b:EnhCommentifyFallbackTest = 0
 	endif
@@ -589,7 +598,7 @@ function s:DoBlockComputations(start, end)
     let i = a:start
     let len = 0
     let amount = 100000	    " this should be enough ...
-    
+
     while i <= a:end
 	if b:ECuseBlockIndent && getline(i) !~ '^\s*$'
 	    let cur = indent(i)
@@ -611,7 +620,7 @@ function s:DoBlockComputations(start, end)
 		let len = cur
 	    endif
 	endif
-	
+
 	let i = i + 1
     endwhile
 
@@ -660,7 +669,7 @@ function s:CheckSyntax(line, column)
 	    let ft = &ft
 	endif
     endif
-    
+
     " Nothing changed!
     if ft == b:ECsyntax
 	return
@@ -680,6 +689,20 @@ endfunction
 function s:GetFileTypeSettings(ft)
     let fileType = a:ft
 
+    " If we find nothing appropriate this is the default.
+    let b:ECcommentOpen = ''
+    let b:ECcommentClose = ''
+
+    if exists("g:EnhCommentifyCallbackExists")
+	call EnhCommentifyCallback(fileType)
+
+	" Check whether the callback did yield a result.
+	" If so we use it. The user nows, what he's doing.
+	if b:ECcommentOpen != ''
+	    return
+	endif
+    endif
+
     " I learned about the commentstring option. Let's use it.
     " For now we ignore it, if it is "/*%s*/". This is the
     " default. We cannot check wether this is default or C or
@@ -696,7 +719,7 @@ function s:GetFileTypeSettings(ft)
 		\ 'strace\|xpm\|yacc\)$'
 	let b:ECcommentOpen = '/*'
 	let b:ECcommentClose = '*/'
-    elseif fileType =~ '^\(html\|xml\|dtd\|sgmllnx\)$'
+    elseif fileType =~ '^\(html\|xhtml\|xml\|xslt\|xsd\|dtd\|sgmllnx\)$'
 	let b:ECcommentOpen = '<!--'
 	let b:ECcommentClose = '-->'
     elseif fileType =~ '^\(sgml\|smil\)$'
@@ -749,7 +772,7 @@ function s:GetFileTypeSettings(ft)
 	let b:ECcommentOpen = ';'
 	let b:ECcommentClose = ''
     elseif fileType =~ '^\(python\|perl\|[^w]*sh$\|tcl\|jproperties\|make\|'.
-		\ 'robots\|apacha\|apachestyle\|awk\|bc\|cfg\|cl\|conf\|'.
+		\ 'robots\|apache\|apachestyle\|awk\|bc\|cfg\|cl\|conf\|'.
 		\ 'crontab\|diff\|ecd\|elmfilt\|eterm\|expect\|exports\|'.
 		\ 'fgl\|fvwm\|gdb\|gnuplot\|gtkrc\|hb\|hog\|ia64\|icon\|'.
 		\ 'inittab\|lftp\|lilo\|lout\|lss\|lynx\|maple\|mush\|'.
@@ -771,7 +794,7 @@ function s:GetFileTypeSettings(ft)
 	let b:ECcommentClose = ''
     elseif fileType =~ '^\(tex\|abc\|erlang\|ist\|lprolog\|matlab\|mf\|'.
 		\ 'postscr\|ppd\|prolog\|simula\|slang\|slrnrc\|slrnsc\|'.
-		\ 'texmf\|virata\)$'
+		\ 'texmf\|viki\|virata\)$'
 	let b:ECcommentOpen = '%'
 	let b:ECcommentClose = ''
     elseif fileType =~ '^\(caos\|cterm\|form\|foxpro\|sicad\|snobol4\)$'
@@ -834,8 +857,8 @@ function s:GetFileTypeSettings(ft)
     elseif fileType == 'texinfo'
 	let b:ECcommentOpen = '@c '
 	let b:ECcommentClose = ''
-    else 
-	let b:ECcommentOpen = ''
+    elseif fileType == 'mail'
+	let b:ECcommentOpen = '>'
 	let b:ECcommentClose = ''
     endif
 
@@ -1116,13 +1139,18 @@ endfunction
 function s:UnEscape(lineString, commentStart, commentEnd)
     let line = a:lineString
 
+    " We translate only the first and the last occurrence
+    " of this resp. escape string. Commenting a line several
+    " times and decommenting it again breaks things.
     if b:ECaltOpen != ''
 	let line = substitute(line, s:EscapeString(b:ECaltOpen),
-		    \ a:commentStart, "g")
+		    \ a:commentStart, "")
     endif
     if b:ECaltClose != ''
-	let line = substitute(line, s:EscapeString(b:ECaltClose),
-		    \ a:commentEnd, "g")
+	let esAltClose = s:EscapeString(b:ECaltClose)
+	let line = substitute(line, esAltClose
+		    \ . "\\(.*" . esAltClose . "\\)\\@!",
+		    \ a:commentEnd, "")
     endif
 
     return line
@@ -1154,7 +1182,7 @@ function s:Commentify(lineString, commentSymbol, ...)
 	    let line = substitute(line, s:LookFor('commentmiddle'),
 			\ s:SubstituteWith('commentmiddle', a:2), "")
 	endif
-	    
+
 	if !b:ECuseMPBlock || (b:ECuseMPBlock && s:i == s:endBlock)
 	    " Align the closing part to the right.
 	    if b:ECalignRight && s:inBlock
@@ -1170,13 +1198,13 @@ function s:Commentify(lineString, commentSymbol, ...)
 			\ s:SubstituteWith('commentend', a:1), "")
 	endif
     endif
-    
+
     " insert the comment symbol
     if !b:ECuseMPBlock || a:0 == 0 || (b:ECuseMPBlock && s:i == s:startBlock) 
 	let line = substitute(line, s:LookFor('commentstart'),
 		    \ s:SubstituteWith('commentstart', a:commentSymbol), "")
     endif
-    
+
     return line
 endfunction
 
@@ -1238,7 +1266,7 @@ endfunction
 function s:GetLineLen(line, offset)
     let len = a:offset
     let i = 0
-    
+
     while a:line[i] != ""
 	if a:line[i] == "\t"
 	    let len = (((len / &tabstop) + 1) * &tabstop)
@@ -1250,7 +1278,7 @@ function s:GetLineLen(line, offset)
 
     return len
 endfunction
-     
+
 "
 " EscapeString(string)
 "	string	    -- string to process
@@ -1284,7 +1312,7 @@ function s:LookFor(what, ...)
     else
 	let handleWhitespace = b:ECsaveWhite
     endif
-	
+
     if a:what == 'checkstart'
 	let regex = '^'. b:ECsaveWhite . s:EscapeString(a:1)
 		    \ . s:EscapeString(b:ECidentFront)
@@ -1337,7 +1365,7 @@ function s:SubstituteWith(what, ...)
 	let handleWhitespace = b:ECrespectWhite . commentSymbol
 		    \ . b:ECignoreWhite
     endif
-	
+
     if a:what == 'commentstart'
 	let regex = handleWhitespace . b:ECidentFront
 		    \ . b:ECprettyComments
@@ -1467,16 +1495,16 @@ noremap <Plug>FirstLine
 
 noremap <Plug>VisualComment
 	    \ <Esc>:call EnhancedCommentify('', 'comment',
-	    \				    line("'<"), line("'>"))<CR>
+	    \   line("'<"), line("'>"))<CR>
 noremap <Plug>VisualDeComment
 	    \ <Esc>:call EnhancedCommentify('', 'decomment',
-	    \				    line("'<"), line("'>"))<CR>
+	    \   line("'<"), line("'>"))<CR>
 noremap <Plug>VisualTraditional
 	    \ <Esc>:call EnhancedCommentify('', 'guess',
-	    \				    line("'<"), line("'>"))<CR>
+	    \   line("'<"), line("'>"))<CR>
 noremap <Plug>VisualFirstLine
 	    \ <Esc>:call EnhancedCommentify('', 'first',
-	    \				    line("'<"), line("'>"))<CR>
+	    \   line("'<"), line("'>"))<CR>
 "
 " Finally set keybindings.
 "

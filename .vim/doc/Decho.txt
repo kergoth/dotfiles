@@ -1,8 +1,9 @@
-*decho.txt* Vim Code Debugger				Sep 08, 2006
+*decho.txt* Vim Code Debugger				Oct 23, 2008
+*Decho.vim*
 
 Author:  Charles E. Campbell, Jr.  <drNchipO@ScampbellPfamilyA.bizM>
 	  (remove NOSPAM from Campbell's email to use)
-Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
+Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.	*decho-copyright*
            The VIM LICENSE applies to Decho.vim and Decho.txt
            (see |copyright|) except use "Decho" instead of "Vim"
 	   No warranty, express or implied.  Use At-Your-Own-Risk.
@@ -30,8 +31,8 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 
 	Decho, Dfunc, Dret, and Dredir have several ways to save their
 	debugging output: >
-		
-	 g:dechomode   Turn-On     Turn-Off     Debugging Output
+
+	 g:dechomode   To Enable   To Disable   Debugging Output
 	 -----------   ----------  -----------  ---------------------------
 	       1       (default)                appended to separate window
 	       2       DechoMsgOn  DechoMsgOff  uses :echomsg
@@ -53,6 +54,7 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 >
 	    call Decho("another string")
 	    call Decho("yet","another","string")
+	    call DechoSep(["extra message"])
 	    call Dfunc("funcname(".whatever.")")
 	    call Dredir(["string","string",...,]"cmd")
 	    call Dret("funcname".whatever)
@@ -62,12 +64,13 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 	    DechoOn    DechoOff
 	    DechoRemOff
 	    DechoRemOn
+	    DechoTabOff
+	    DechoTabOn
 	    DechoVarOff
 	    DechoVarOn [varname]
-	    DechoTabOn
-	    DechoTabOff
 	    Dhide
 	    Dshow
+	    Dsep [extra-message]
 <
 	The Decho call will put the string(s) passed to it into the debugging
 	window (by default, it will be called "DBG".  See |decho-var| for
@@ -77,32 +80,56 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 	The Dfunc() and Dret() calls act as a pair.  A function to be debugged
 	should call, at entry, >
 
-		Dfunc("funcname("."any arguments".")")
+		call Dfunc("funcname("."any arguments".")")
 <
 	It should also call, just prior to any return point, >
 
-		Dret("funcname"."any arguments")
+		call Dret("funcname : any return values")
+<	or just >
+		call Dret("funcname")
 <
 	In between, calls to Decho will have their strings preceded by "|"s,
 	one for every open Dfunc().  The Dret() will check to insure that it
 	is apparently returning from the last function passed to Dfunc().
 
+	Example: >
+		function! MyFunction(x)
+		  call Dfunc("MyFunction(x=".x.")")
+		  ...
+		  call Dret("MyFunction")
+		endfunction
+<
        							*DechoOn* *DechoOff*
 	DechoOn and DechoOff are convenient commands for enabling and disabling
 	Decho, Dfunc, and Dret calls in a sourcefile.  DechoOff makes any line
 	containing one of the following strings: >
 
-    	    Decho        DechoRemOff  DechoTabOn   Dfunc                                 
-    	    DechoMsgOff  DechoRemOn   DechoVarOff  Dret                                  
+    	    Decho        DechoRemOff  DechoTabOn   Dfunc
+    	    DechoMsgOff  DechoRemOn   DechoVarOff  Dret
     	    DechoMsgOn   DechoTabOff  DechoVarOn
 
 <	into a comment line and DechoOn reactivates such commands by removing
 	the leading comment '"' character.
 
+	Example: >
+		call Decho("this will show up in the DBG buffer")
+<
 						*decho-dhide* *decho-dshow*
 	The Dhide and Dshow commands allow one to toggle the visibility of
 	the DBG-buffer.  They use the g:decho_hide variable, plus make any
 	current DBG-buffer hidden or visible as indicated.
+
+	Usage: >
+		:Dhide
+		:Dshow
+<
+							*Dsep* *DechoSep*
+	This command (Dsep) and function (call DechoSep([optional msg])
+	places a line of the form >
+		--sep#-- [optional message here]
+<	in the debugging output.  The number will be incremented for each
+	time this function is invoked.  It helps one correlate an action
+	with the resulting debugging output.
 
 							*decho-redir* *Dredir*
 	The Dredir() function allows one to redirect (see |redir|) a command's
@@ -110,6 +137,12 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 	executed as the first argument; optionally, one may include additional
 	arguments which will be passed on to Decho() for output.
 
+	Usage: >
+		call Dredir(["string","string",...,]"cmd")
+<
+	Example: >
+		call Dredir("buffers","ls!")
+<
 							*g:decho_bufenter*
 	Some plugins use events such as BufEnter, WinEnter, and WinLeave.  If
 	you set this variable to 1, then such events will be ignored when and
@@ -117,6 +150,9 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 	such plugins from being triggered when recording debugging messages.
 	(examples: winmanager, taglist, multiselect, etc)
 
+	Example: >
+		let g:decho_bufenter= 1
+<
 						*DechoVarOn* *DechoVarOff*
 	Although debugging to a window is often convenient for the programmer,
 	unfortunately some vim applications are incompatible with such a
@@ -126,7 +162,8 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 	|g:dechovarname| variable (by default, its "g:dechovar").  To turn
 	this mode off (ie. revert to normal debugging-window use) use >
 		:DechoVarOff
-<
+<	DechoVarOn also sets g:dechofile with the name of the script that
+	invoked it.
 						*DechoMsgOn* *DechoMsgOff*
 	This debugging method uses echomsg to display messages; they may be
 	seen with the |:messages|.  Vim usually will retain up to 20 such
@@ -136,6 +173,8 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 		:DechoMsgOff
 <	to revert to normal debugging-window use.  This method helps avoid
 	interference with some plugins.
+	DechoMsgOn also sets g:dechofile with the name of the script that
+	invoked it.
 
 						*DechoRemOn* *DechoRemOff*
 	This method will open (if necessary) and use a remote gvim with a
@@ -147,6 +186,9 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 		:DechoRemOff
 <	to revert to normal debugging-window use.  This method helps avoid
 	interference with some plugins.
+
+	DechoRemOn also sets g:dechofile with the name of the script that
+	invoked it.
 
 						*DechoTabOn* *DechoTabOff*
 	This method will open (if necessary) and use a debugging tab with
@@ -182,14 +224,16 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 	    |decho test #3
 	    |testing }
 <
+	DechoRemOn also sets g:dechofile with the name of the script that
+	invoked it.
+
 
 ==============================================================================
 3. Decho Global Variables		*decho-variables* *decho_settings*
 					*decho_options* *decho-var*
 
-								*g:dechomode*
-   g:dechomode        : =1 use separate small window at bottom (default)
-                        =2 debugging messages will use echomsg and can be seen
+   *g:dechomode*      :	=1 use separate small window at bottom (default)
+			=2 debugging messages will use echomsg and can be seen
 			   by using :messages.  See |message-history| for more
 			   about this; currently, the maximum number of mess-
 			   ages remembered is 20.
@@ -198,33 +242,53 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*decho-copyright*
 			=4 debugging messages get appended to the gvim remote
 			   server named DECHOREMOTE.
 
-							*g:decho_bufname*
-   g:decho_bufname    :	by default "DBG" .  Sets the name of the debugging
+   *g:decho_bufname*  :	by default "DBG" .  Sets the name of the debugging
    			buffer and window.
-							*decho_hide*
-   g:decho_hide       :	if set the DBG window will be hidden and will
+   *g:decho_hide*     :	if set the DBG window will be hidden and will
    			automatically "q" each time it is used.  To see it,
 			:e DBG .  Useful for those applications that
 			modify windows.
-							*g:dechovar*
-   g:dechovar         : default value of g:dechovarname (see |g:dechovarname|)
+   *g:dechovar*       : default value of g:dechovarname (see |g:dechovarname|)
 
-							*g:dechovarname*
-   g:dechovarname     : when g:dechomode is 3, debugging output is appended to
-                        the variable named by this variable
+   *g:dechovarname*   : when g:dechomode is 3, debugging output is appended to
+			the variable named by this variable
 			(default: "g:dechovar"  - see |g:dechovar|)
 
 							*decho_winheight*
-   g:decho_winheight  :	by default equal to 5 lines.  Specifies the height
-			of the debugging window.  Every Dfunc/Decho/Dret
-			call will resize that window to this height.
+   *g:decho_winheight* : by default equal to 5 lines.  Specifies the height
+			 of the debugging window.  Every Dfunc/Decho/Dret
+			 call will resize that window to this height.
 
 
 ==============================================================================
 4. Decho History					*decho-history*
 
+  v20 Jun 07, 2007 : * changed some syntax/Decho.vim highlighting definitions
+		       to avoid the use of highlighting groups defined by
+		       colors/astronaut.vim that aren't standard (Cyan,
+		       Magenta) (pointed out by Andreas Politz)
+		     * (Erik Falor) under windows, uses "start gvim..."so
+		       that DechoRemOn doesn't keep the original gvim
+		       blocking until the remote gvim closes.
+		     * (Erik Falor) The remote gvim now has |'nosi'| sent to it.
+      Feb 13, 2008   * changed s:DechoSep() to DechoSep() so that it can be
+		       called externally.  In particular, I'm using (all one
+		       line): >
+		         redraw!|call DechoSep()|...
+		         call inputsave()|call input("Press <cr> to continue")|...
+		         call inputrestore()
+<		       to put a temporary halt into code I'm debugging while
+		       retaining an idea of where in the Debug file it took
+		       effect.
+      May 29, 2008   * Removed an annoying beep that could crop up if
+                       g:dechotabnr indexed a non-existent tab page.
+      Aug 12, 2008   * DechoRemOn left autoindent enabled in the remote
+		       window which can cause staircasing
+      Oct 13, 2008   * in DechoTab mode, the search for the first tab called
+		       "Decho Tab" didn't start at tab#1 as the search loop
+		       assumed.
   v19 Oct 16, 2006 : * Dredir now takes optional strings first instead of
-                       last
+		       last
 		     * The :Decho and :Dredir commands now take <args> instead
 		       of <q-args>, which allows them to act more like the
 		       function calls do.

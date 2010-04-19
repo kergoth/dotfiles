@@ -1,8 +1,8 @@
 " DrChip's debugger syntax file
 " Language   : DrChip's Dfunc/Decho/Dret output
 " Maintainer : Charles E. Campbell, Jr.
-" Last change: Sep 09, 2005
-" Version    : 3
+" Last change: Aug 12, 2008
+" Version    : 5
 
 " Remove any old syntax stuff hanging around
 syn clear
@@ -68,10 +68,34 @@ if !exists("did_drchip_decho_syntax")
   hi link dechoTabTitle		PreProc
   hi link dechoTabTitleSep	Delimiter
 
-  " override
-  hi link Function		Cyan
+  " HLTest: tests if a highlighting group has been set up {{{2
+  fun! s:HLTest(hlname)
+    let id_hlname= hlID(a:hlname)
+    if id_hlname == 0
+     return 0
+    endif
+    let id_trans = synIDtrans(id_hlname)
+    if id_trans == 0
+     return 0
+    endif
+    let fg_hlname= synIDattr(id_trans,"fg")
+    let bg_hlname= synIDattr(id_trans,"bg")
+    if fg_hlname == -1 && bg_hlname == -1
+     return 0
+    endif
+    if fg_hlname == "" && bg_hlname == ""
+     return 0
+    endif
+    return 1
+  endfun
 
-  " New Stuff
-  hi link dechoBar     		Magenta
+  " define DechoBarHL as needed
+  if s:HLTest("Magenta")
+   hi link DechoBarHL	Magenta
+  else
+   hi DechoBarHL	start=[m[35m stop=[m[32m	ctermfg=magenta	guifg=magenta term=none	cterm=none	gui=none
+  endif
+  delf s:HLTest
+  hi link dechoBar     		DechoBarHL
 endif
 " vim: ts=6

@@ -21,7 +21,9 @@ if (! exists("g:secure_modelines_allowed_items"))
                 \ "filetype",    "ft",
                 \ "foldmethod",  "fdm",
                 \ "readonly",    "ro",   "noreadonly", "noro",
-                \ "rightleft",   "rl",   "norightleft", "norl"
+                \ "rightleft",   "rl",   "norightleft", "norl",
+                \ "spell",
+                \ "spelllang"
                 \ ]
 endif
 
@@ -38,7 +40,7 @@ if (! exists("g:secure_modelines_leave_modeline"))
         set nomodeline
         if g:secure_modelines_verbose
             echohl WarningMsg
-            echo "Forcibly disabling internal modelines for securemodelines.vim"
+            echomsg "Forcibly disabling internal modelines for securemodelines.vim"
             echohl None
         endif
     endif
@@ -60,7 +62,7 @@ fun! <SID>DoOne(item) abort
             exec "setlocal " . a:item
         elseif g:secure_modelines_verbose
             echohl WarningMsg
-            echo "Ignoring '" . a:item . "' in modeline"
+            echomsg "Ignoring '" . a:item . "' in modeline"
             echohl None
         endif
     endif
@@ -91,7 +93,7 @@ fun! <SID>CheckVersion(op, ver) abort
 endfun
 
 fun! <SID>DoModeline(line) abort
-    let l:matches = matchlist(a:line, '\%(\S\@<!\%(vi\|vim\([<>=]\?\)\([0-9]\+\)\?\)\|\sex\):\s\+set\?\s\+\([^:]\+\):\S\@!')
+    let l:matches = matchlist(a:line, '\%(\S\@<!\%(vi\|vim\([<>=]\?\)\([0-9]\+\)\?\)\|\sex\):\s*set\?\s\+\([^:]\+\):\S\@!')
     if len(l:matches) > 0
         let l:operator = ">"
         if len(l:matches[1]) > 0

@@ -158,12 +158,12 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*vissort-copyright*
       The tagpat and tagsub are used by a |substitute()|; the tag is extracted
       by applying the tagpat to the line containing the tag and substitution
       is made with the tagsub pattern.
-     
+
       If the tagpat is "", then it will default to '^.*$'.
-     
+
       If the tagsub is "", then if the tagpat was "", then tagsub will
       take on the default value of "&".
-     
+
       If the tagsub is "" but the tagpat wasn't "", then the tagsub will
       take on the default value of '\1'.
 
@@ -184,7 +184,7 @@ Copyright: (c) 2004-2005 by Charles E. Campbell, Jr.	*vissort-copyright*
              	A
              	appears here.
              	---
-<  
+<
      After BlockSort('^[a-z]','---$','\u','^.*\(\u\).*$','\1') >
      	two
              	some more

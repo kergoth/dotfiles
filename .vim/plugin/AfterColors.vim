@@ -1,8 +1,11 @@
 " Vim Plugin: AfterColors.vim: 
 " Provides: Automatic sourcing of after/colors/ scripts.
 " Author: Peter Hodge <toomuchphp-vim@yahoo.com>
-" Version: 1.2
-" Last Update: November 27, 2006
+" URL: http://www.vim.org/scripts/script.php?script_id=1641
+" Version: 1.3
+" Last Update: May 13, 2008
+" Requires: Vim 6 or later (preferably 7) with autocommand support
+" 
 "
 " Minor Bug: if you just add your 'after/colors' scripts to
 " 'vimfiles/after/colors/myColorsName.vim', when you go to
@@ -27,6 +30,12 @@
 " 	5 - vimfiles/plugins/[more plugins]
 " 	6 - vimfiles/after_colors/myColorsName.vim
 
+" requires vim 6 at least
+if version <= 600 || exists('loaded_AfterColors') || ! has("autocmd")
+	finish
+endif
+
+let g:loaded_AfterColors = 1
 
 " provide ability for an 'after/colors' file using autocommands
 augroup AfterColorsPlugin
@@ -34,17 +43,19 @@ augroup AfterColorsPlugin
 
 	" source the 'after' colors scripts only after vim has finished everything
 	" else, because there are many things which will reset the colors
-	autocmd VimEnter * call s:AfterColorsScript()
+	if exists('##VimEnter')
+		autocmd VimEnter * call <SID>AfterColorsScript()
+	endif
 
 	" if this vim has the 'Colorscheme' event, we can hook onto it to ensure
 	" that the 'after' colors are reloaded when the colorscheme is changed
 	if exists('##ColorScheme')
-		autocmd ColorScheme * call s:AfterColorsScript()
+		autocmd ColorScheme * call <SID>AfterColorsScript()
 	endif
 
 augroup end
 
-function! s:AfterColorsScript()
+function! <SID>AfterColorsScript()
 	if exists('g:colors_name') && strlen(g:colors_name)
 		" allow two places to store after/colors scripts
 		execute 'runtime! after/colors/' . g:colors_name . '.vim'

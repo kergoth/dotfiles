@@ -1,14 +1,14 @@
-*manpageview.txt*	Man Page Viewer			Sep 07, 2007
+*manpageview.txt*	Man Page Viewer			Nov 26, 2008
 
 Author:  Charles E. Campbell, Jr.  <NdrchipO@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
-Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
+Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.	*manpageview-copyright*
            The VIM LICENSE applies to ManPageView.vim and ManPageView.txt
            (see |copyright|) except use "ManPageView" instead of "Vim"
 	   no warranty, express or implied.  use at-your-own-risk.
 
 ==============================================================================
-1. Contents				*manpageview* *manpageview-contents* {{{1
+1. Contents			*manpageview* *manpageview-contents* {{{1
 
 	1. Contents.................................: |manpageview-contents|
 	2. ManPageView Usage........................: |manpageview-usage|
@@ -24,9 +24,9 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	4. ManPageView History......................: |manpageview-history|
 
 ==============================================================================
-2. ManPageView Usage					*manpageview-usage* {{{1
+2. ManPageView Usage				*manpageview-usage* {{{1
 
-        GENERAL FORMAT					*manpageview-format* {{{2
+        GENERAL FORMAT				*manpageview-format* {{{2
 
 		(command) :[count][HORV]Man [topic] [booknumber]
 		(map)     [count]K
@@ -42,7 +42,7 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 <
 	Put cursor on topic, press "K" while in normal mode.
 	(This works if (a) you've not mapped some other key
-	to <Plug>ManPageView, and (b) if |keywordprg| is "man",
+	to <Plug>ManPageView, and (b) if |'keywordprg'| is "man",
 	which it is by default)
 
 	If a count is present (ie. 7K), the count will be used
@@ -54,11 +54,13 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 
 	OPENING STYLE				*manpageview-open* {{{2
 
-	In addition, one may specify open help and specify an 
+	In addition, one may specify open help and specify an
 	opening style (see g:manpageview_winopen below): >
 
 		:[count]HMan topic     -- g:manpageview_winopen= "hsplit"
+		:[count]HEMan topic    -- g:manpageview_winopen= "hsplit="
 		:[count]VMan topic     -- g:manpageview_winopen= "vsplit"
+		:[count]VEMan topic    -- g:manpageview_winopen= "vsplit="
 		:[count]OMan topic     -- g:manpageview_winopen= "osplit"
 		:[count]RMan topic     -- g:manpageview_winopen= "reuse"
 <
@@ -126,6 +128,12 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	(ie. when the filetype is php, :Man bzopen will get the help
 	for php's bzopen).
 
+	Manpageview uses "links -dump http://www.php.net/TOPIC" by
+	default; hence, to obtain help for php you need to have a
+	copy of the links WWW browser.  The homepage for Elinks is
+	http://elinks.cz/.
+
+
 	EXTENDING MANPAGEVIEW			*manpageview-extend* {{{2
 
 	To extend manpageview to handle other documentation systems,
@@ -152,10 +160,21 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	The help on |manpageview_extend| covers these variables in more
 	detail.
 
+	MULTIPLE MAN PAGES		*manpage-pageup* *manpage-pagedown*
+
+        With >
+		man -a topic
+<	one may get multiple man pages in a single buffer.  Manpageview
+	provides two maps to facilitate moving amongst these pages: >
+
+		PageUp  : move to preceding  manpage
+		PageDown: move to succeeding manpage
+<
 
 ==============================================================================
-3. ManPageView Options					*manpageview-options* {{{1
+3. ManPageView Options				*manpageview-options* {{{1
 
+						*g:manpageview_iconv*
 	g:manpageview_iconv   : some systems seem to include unwanted
 		    characters. The iconv program can be used to filter out
 		    such characters; by default, manpageview will use >
@@ -167,6 +186,15 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 		    happens to not be |executable()|, then no filtering
 		    will be done.  (Thanks to Matthew Wozniski).
 
+						*g:manpageview_multimanpage*
+	g:manpageview_multimanpage (=1 by default)
+		    This option means that the PageUp and PageDown keys
+		    will be mapped to move to the next and previous manpage
+		    in a multi-man-page buffer.  Such buffers result with
+		    the "man -a" option.  As an example: >
+		    	:Man -a printf
+<
+						*g:manpageview_options*
 	g:manpageview_options : extra options that will be passed on when
 	                        invoking the man command
 	  examples:
@@ -174,30 +202,37 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	            let g:manpageview_options= "-c"
 	            let g:manpageview_options= "-Tascii"
 	
+						*g:manpageview_pgm*
 	g:manpageview_pgm : by default, its "man", but it may be changed
 		     by the user.  This program is what is called to actually
 		     extract the manpage.
 
+						*g:manpageview_winopen*
 	g:manpageview_winopen : may take on one of six values:
 
 	   "only"    man page will become sole window.
-	             Side effect: All windows' contents will be saved first!  (windo w)
-	             Use :q to terminate the manpage and restore the window setup.
-	             Note that mksession is used for this option, hence the
-	             +mksession configure-option is required.
+	             Side effect: All windows' contents will be saved first!
+		     (windo w) Use :q to terminate the manpage and restore the
+		     window setup.  Note that mksession is used for this
+		     option, hence the +mksession configure-option is required.
 	   "hsplit"  man page will appear in a horizontally          split window (default)
 	   "vsplit"  man page will appear in a vertically            split window
 	   "hsplit=" man page will appear in a horizontally & evenly split window
 	   "vsplit=" man page will appear in a vertically   & evenly split window
 	   "reuse"   man page will re-use current window.  Use <ctrl-o> to return.
-"                    (for the reuse option, thanks go to Alan Schmitt)
+	             (for the reuse option, thanks go to Alan Schmitt)
 	
+				*g:manpageview_server* *g:manpgeview_user*
+						
 	g:manpageview_server : for WinNT; uses rsh to read manpage remotely
 	g:manpageview_user   : use given server (host) and username
 	  examples:
 	            let g:manpageview_server= "somehostname"
 	            let g:manpageview_user  = "username"
 
+	*g:manpageview_init_EXT* *g:manpageview_K_EXT*   *g:manpageview_options_EXT*
+	*g:manpageview_pfx_EXT*  *g:manpageview_pgm_EXT* *g:manpageview_sfx_EXT*
+	*g:manpageview_syntax_EXT*
 	g:manpageview_init_{ext}:			*manpageview_extend*
 	g:manpageview_K_{ext}:
 	g:manpageview_options_{ext}:
@@ -254,7 +289,35 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 
 	Thanks go to the various people who have contributed changes,
 	pointed out problems, and made suggestions!
-             
+
+	v22: Nov 10, 2008  * if g:manpageview_K_{ext} (ext is some
+			     extension) exists, previously that would
+			     be enough to institute a K map.  Now, if
+			     that string is "", then the K map will not
+			     be generated.
+	     Nov 17, 2008  * handles non-existing manpage requests better
+	v21: Sep 11, 2008  * when at a top node with info help, the up
+			     directory shows as "(dir)".  A "u" issued a
+			     warning and closes the window.  It now issues
+			     a warning but leaves the window unchanged.
+			   * improved shellescape() use
+			   * new option: g:manpageview_multimanpage
+	     Sep 27, 2008  * The K map now uses <cword> expansion except when
+			     used inside a manpage (where it uses <cWORD>).
+	v19: Jun 06, 2008  * uses the shellescape() function for better
+			     security.  Thus vim 7.1 is required.
+			   * when shellescape() isn't available, manpageview
+			     will only issue a warning message when invoked
+			     instead of every time vim is invoked.
+			   * syntax/manphp.vim was using "set" instead of
+			     "setlocal" and so new buffers were inadvertently
+			     being prevented from being modifiable.
+	     Aug 05, 2008  * fixed a problem with using K multiple times with
+			     php files
+	v18: Jun 06, 2008  * <PageUp> and <PageDown> support added to jump
+			     between multiple man pages loaded into one buffer
+			     such as may occur with :Man -a printf
+			   * links -dump used instead of links for php
 	v17: Apr 18, 2007  * changed the topic cleanup to use 'g' instead
 	                     of '' in the substitute().
 			   * Fixed bug with info pages - wasn't able to
@@ -266,6 +329,13 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	     Sep 07, 2007  * The "::" in some help pages (ex. File::stat)
 			     was being parsed out, leaving only the left
 			     hand side word.  Manpageview now accepts them.
+	     Nov 12, 2007  * At the request of F. Mehner, with
+			     g:manpageview_winopen is "reuse", manpageview
+			     will re-use any man-page windows that are still
+			     open.
+			   * (F.Mehner) in "reuse" mode, a K on a blank
+			     character terminated vim.  Fixed!
+	     May 09, 2008  * Added <PageUp> and <PageDown> maps
 	v16: Jun 28, 2006  * bypasses sxq with '"' for windows internally
 	     Sep 26, 2006  * implemented <count>K to look up a topic
 	                     under the cursor but in the <count>-th book
@@ -295,7 +365,7 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	                     needed some quoting and backslash-fixes to work
 	        	     properly with windows and perldoc.
 	     Dec 29, 2005  * added links-based help for php functions
-            
+
 	v13: Jul 19, 2005  * included niebie's changes to manpageview -
 	                     <bs>, <del> to scroll one page up,
 	        	     <tab> to go to the next hyperlink
@@ -308,7 +378,7 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	        	   * included syntax/man.vim and syntax/mankey.vim
 	v12: Jul 11, 2005  unmap K was causing "noise" when it was first
 			   used.  Fixed.
-	v11: * K now <buffer>-mapped to call ManPageView() 
+	v11: * K now <buffer>-mapped to call ManPageView()
 	v10: * support for perl/perldoc:
 	      g:manpageview_{ pgm | options | sfx }_{ extension }
 	    * support for info: g:manpageview_{ K | pfx | syntax }
@@ -320,7 +390,7 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*manpageview-copyright*
 	      impact on the jumplist
 	    * manpageview now turns off linewrap for the manpage, since
 	      re-formatting doesn't seem to work usually.
-	    * apparently some systems resize the [g]vim display when 
+	    * apparently some systems resize the [g]vim display when
 	      any filter is used, including manpageview's :r!... .
 	      Setting g:manpageview_dispresize=1 will force retention
 	      of display size.

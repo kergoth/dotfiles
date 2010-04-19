@@ -1,8 +1,3 @@
-" Vimball Archiver by Charles E. Campbell, Jr., Ph.D.
-UseVimball
-finish
-plugin/gitdiff.vim	[[[1
-141
 " gitdiff.vim : git helper functions
 " http://www.vim.org/scripts/script.php?script_id=1846
 "

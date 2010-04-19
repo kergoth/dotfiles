@@ -304,27 +304,38 @@ forget the quotation marks! Examples: >
 
 3. Adding new languages			    *EnhComm-NewLanguages*
 
-Adding new languages is really easy. Just follow this step-by-step
-process. Assume we want to add the language Foobar. It uses multipart
-comments like C ("/*" <=> "bar", "*/" <=> "baz") and has the filetype
-"foo".
+Since 2.3 there is the possibility to use some callback function to
+handle unrecognised filetypes. This is a substitute to steps a)-d)
+below. Just add a function called "EnhCommentifyCallback" and set
+"g:EnhCommentifyCallbackExists" to some value. >
+    function EnhCommentifyCallback(ft)
+	if a:ft == 'foo'
+		let b:ECcommentOpen = 'bar'
+		let b:ECcommentClose = 'baz'
+	endif
+    endfunction
+    let g:EnhCommentifyCallbackExists = 'Yes'
+<
+Optionally the steps e) and f) still apply.
+
+Of course the old way still works:
 
  a) Open the script.
  b) Go to the GetFileTypeSettings() function.
  c) Now you should see the large "if"-tree. >
     if fileType =~ '^\(c\|css\|...'
-	let b:EnhCommentifyCommentOpen = '/*'
-	let b:EnhCommentifyCommentClose = '*/'
+	let b:ECcommentOpen = '/*'
+	let b:ECcommentClose = '*/'
     elseif ...
 <
  d) There are two buffer-local variables, which hold the different comment
-    strings. With this in mind we add Foobar: >
+    strings. >
     if fileType =~ '^\(c\|css\|...'
-	let b:EnhCommentifyCommentOpen = '/*'
-	let b:EnhCommentifyCommentClose = '*/'
+	let b:ECcommentOpen = '/*'
+	let b:ECcommentClose = '*/'
     elseif fileType == 'foo'
-	let b:EnhCommentifyCommentOpen = 'bar'
-	let b:EnhCommentifyCommentClose = 'baz'
+	let b:ECcommentOpen = 'bar'
+	let b:ECcommentClose = 'baz'
     elseif ...
 <
      If the new language has only one comment string (like '#' in Perl), we
@@ -447,6 +458,13 @@ bugs: (in temporal order)
  - John Orr
  - Luc Hermite
  - Brett Calcott
+ - Ben Kibbey
+ - Brian Neu
+ - Steve Hall
+ - Zhang Le
+ - Pieter Naaijkens
+ - Thomas Link
+ - Stefano Zacchiroli
 
 Thanks to John Orr and Xiangjiang Ma for their rich feedback and to Luc
 Hermite for some good improvement suggestions.

@@ -38,13 +38,13 @@ if &background == "dark"
     if s:moria_style == "dark"
         hi Normal ctermbg=Black ctermfg=LightGray guibg=#202020 guifg=#d0d0d0 gui=none
 
-        hi CursorColumn guibg=#404040 gui=none
-        hi CursorLine guibg=#404040 gui=none
+        hi CursorColumn ctermbg=DarkGray ctermfg=White guibg=#404040 gui=none
+        hi CursorLine ctermbg=DarkGray ctermfg=White guibg=#404040 gui=none
     elseif s:moria_style == "black"
         hi Normal ctermbg=Black ctermfg=LightGray guibg=#000000 guifg=#d0d0d0 gui=none
 
-        hi CursorColumn guibg=#3a3a3a gui=none
-        hi CursorLine guibg=#3a3a3a gui=none
+        hi CursorColumn ctermbg=DarkGray ctermfg=White guibg=#3a3a3a gui=none
+        hi CursorLine ctermbg=DarkGray ctermfg=White guibg=#3a3a3a gui=none
     endif
     if s:moria_monochrome == 1
         hi FoldColumn ctermbg=bg guibg=bg guifg=#a0a0a0 gui=none
@@ -66,23 +66,23 @@ if &background == "dark"
             hi Folded guibg=#4e4e4e guifg=#c0c0c0 gui=none
         endif            
     else
-        hi FoldColumn ctermbg=bg guibg=bg guifg=#9fa6c1 gui=none
-        hi LineNr guifg=#9fa6c1 gui=none
-        hi MoreMsg guibg=bg guifg=#a6abc6 gui=bold
-        hi NonText ctermfg=DarkGray guibg=bg guifg=#9fa6c1 gui=bold
-        hi Pmenu guibg=#7881a9 guifg=#000000 gui=none
-        hi PmenuSbar guibg=#576088 guifg=fg gui=none
-        hi PmenuThumb guibg=#c6cadb guifg=bg gui=none
-        hi SignColumn ctermbg=bg guibg=bg guifg=#9fa6c1 gui=none
-        hi StatusLine ctermbg=LightGray ctermfg=Black guibg=#454b6b guifg=fg gui=bold
-        hi StatusLineNC ctermbg=DarkGray ctermfg=Black guibg=#32374e guifg=fg gui=none
-        hi TabLine guibg=#576088 guifg=fg gui=underline
-        hi TabLineFill guibg=#576088 guifg=fg gui=underline
-        hi VertSplit ctermbg=LightGray ctermfg=Black guibg=#32374e guifg=fg gui=none
+        hi FoldColumn ctermbg=bg guibg=bg guifg=#8fa5d1 gui=none
+        hi LineNr guifg=#8fa5d1 gui=none
+        hi MoreMsg guibg=bg guifg=#97abd5 gui=bold
+        hi NonText ctermfg=DarkGray guibg=bg guifg=#8fa5d1 gui=bold
+        hi Pmenu guibg=#6381be guifg=#000000 gui=none
+        hi PmenuSbar guibg=#41609e guifg=fg gui=none
+        hi PmenuThumb guibg=#bdcae3 guifg=bg gui=none
+        hi SignColumn ctermbg=bg guibg=bg guifg=#8fa5d1 gui=none
+        hi StatusLine ctermbg=LightGray ctermfg=Black guibg=#334b7d guifg=fg gui=bold
+        hi StatusLineNC ctermbg=DarkGray ctermfg=Black guibg=#25365a guifg=fg gui=none
+        hi TabLine guibg=#41609e guifg=fg gui=underline
+        hi TabLineFill guibg=#41609e guifg=fg gui=underline
+        hi VertSplit ctermbg=LightGray ctermfg=Black guibg=#25365a guifg=fg gui=none
         if s:moria_fontface == "mixed"
-            hi Folded guibg=#4e4e4e guifg=#c6cadb gui=bold
+            hi Folded guibg=#4e4e4e guifg=#bdcae3 gui=bold
         else
-            hi Folded guibg=#4e4e4e guifg=#c6cadb gui=none
+            hi Folded guibg=#4e4e4e guifg=#bdcae3 gui=none
         endif            
     endif
     hi Cursor guibg=#ffa500 guifg=bg gui=none
@@ -111,7 +111,7 @@ if &background == "dark"
     else
         hi Visual ctermbg=LightGray ctermfg=Black guibg=#606060 guifg=fg gui=none
     endif
-    hi VisualNOS guibg=bg guifg=#a0a0a0 gui=bold,underline
+    hi VisualNOS ctermbg=DarkGray ctermfg=Black guibg=bg guifg=#a0a0a0 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
     hi WildMenu guibg=#e0e000 guifg=#000000 gui=bold
 
@@ -125,7 +125,7 @@ if &background == "dark"
     hi PreProc guibg=bg guifg=#d7a0d7 gui=none
     hi Special guibg=bg guifg=#e8b87e gui=none
     hi Todo guibg=#e0e000 guifg=#000000 gui=none
-    hi Underlined guibg=bg guifg=#00a0ff gui=underline    
+    hi Underlined ctermbg=Black ctermfg=White guibg=bg guifg=#00a0ff gui=underline    
 
     if s:moria_fontface == "mixed"
         hi Statement guibg=bg guifg=#7ec0ee gui=bold
@@ -146,13 +146,13 @@ elseif &background == "light"
     if s:moria_style == "light"
         hi Normal ctermbg=White ctermfg=Black guibg=#f0f0f0 guifg=#000000 gui=none
 
-        hi CursorColumn guibg=#d8d8d8 gui=none
-        hi CursorLine guibg=#d8d8d8 gui=none
+        hi CursorColumn ctermbg=LightGray ctermfg=Black guibg=#d8d8d8 gui=none
+        hi CursorLine ctermbg=LightGray ctermfg=Black guibg=#d8d8d8 gui=none
     elseif s:moria_style == "white"
         hi Normal ctermbg=White ctermfg=Black guibg=#ffffff guifg=#000000 gui=none
 
-        hi CursorColumn guibg=#dfdfdf gui=none
-        hi CursorLine guibg=#dfdfdf gui=none
+        hi CursorColumn ctermbg=LightGray ctermfg=Black guibg=#dfdfdf gui=none
+        hi CursorLine ctermbg=LightGray ctermfg=Black guibg=#dfdfdf gui=none
     endif
     if s:moria_monochrome == 1
         hi FoldColumn ctermbg=bg guibg=bg guifg=#7a7a7a gui=none
@@ -170,20 +170,20 @@ elseif &background == "light"
         hi TabLineFill guibg=#cdcdcd guifg=fg gui=underline
         hi VertSplit ctermbg=LightGray ctermfg=Black guibg=#b0b0b0 guifg=fg gui=none
     else
-        hi FoldColumn ctermbg=bg guibg=bg guifg=#4a5275 gui=none
-        hi Folded guibg=#cfcfcf guifg=#32374e gui=bold
-        hi LineNr guifg=#4a5275 gui=none
-        hi MoreMsg guibg=bg guifg=#3f4561 gui=bold
-        hi NonText ctermfg=DarkGray guibg=bg guifg=#4a5275 gui=bold
-        hi Pmenu guibg=#848bb0 guifg=#000000 gui=none
-        hi PmenuSbar guibg=#646d9b guifg=fg gui=none
-        hi PmenuThumb guibg=#b3b8ce guifg=fg gui=none
-        hi SignColumn ctermbg=bg guibg=bg guifg=#4a5275 gui=none
-        hi StatusLine ctermbg=Black ctermfg=White guibg=#9fa6c1 guifg=fg gui=bold
-        hi StatusLineNC ctermbg=LightGray ctermfg=Black guibg=#b3b8ce guifg=fg gui=none
-        hi TabLine guibg=#c2c7d8 guifg=fg gui=underline
-        hi TabLineFill guibg=#c2c7d8 guifg=fg gui=underline
-        hi VertSplit ctermbg=LightGray ctermfg=Black guibg=#b3b8ce guifg=fg gui=none
+        hi FoldColumn ctermbg=bg guibg=bg guifg=#375288 gui=none
+        hi Folded guibg=#cfcfcf guifg=#25365a gui=bold
+        hi LineNr guifg=#375288 gui=none
+        hi MoreMsg guibg=bg guifg=#2f4471 gui=bold
+        hi NonText ctermfg=DarkGray guibg=bg guifg=#375288 gui=bold
+        hi Pmenu guibg=#708bc5 guifg=#000000 gui=none
+        hi PmenuSbar guibg=#4a6db5 guifg=fg gui=none
+        hi PmenuThumb guibg=#a6b7db guifg=fg gui=none
+        hi SignColumn ctermbg=bg guibg=bg guifg=#375288 gui=none
+        hi StatusLine ctermbg=Black ctermfg=White guibg=#8fa5d1 guifg=fg gui=bold
+        hi StatusLineNC ctermbg=LightGray ctermfg=Black guibg=#a6b7db guifg=fg gui=none
+        hi TabLine guibg=#b8c6e2 guifg=fg gui=underline
+        hi TabLineFill guibg=#b8c6e2 guifg=fg gui=underline
+        hi VertSplit ctermbg=LightGray ctermfg=Black guibg=#a6b7db guifg=fg gui=none
     endif
     hi Cursor guibg=#883400 guifg=bg gui=none
     hi DiffAdd guibg=#008b00 guifg=#ffffff gui=none
@@ -211,7 +211,7 @@ elseif &background == "light"
     else
         hi Visual ctermbg=LightGray ctermfg=Black guibg=#c4c4c4 guifg=fg gui=none
     endif    
-    hi VisualNOS guibg=bg guifg=#a0a0a0 gui=bold,underline
+    hi VisualNOS ctermbg=DarkGray ctermfg=Black guibg=bg guifg=#a0a0a0 gui=bold,underline
     hi WarningMsg guibg=bg guifg=#ee2c2c gui=bold
     hi WildMenu guibg=#ffff00 guifg=fg gui=bold
 
@@ -227,7 +227,7 @@ elseif &background == "light"
     hi Statement guibg=bg guifg=#1f3f81 gui=bold
     hi Todo guibg=#ffff00 guifg=fg gui=none
     hi Type guibg=bg guifg=#912f11 gui=bold
-    hi Underlined guibg=bg guifg=#0000cd gui=underline
+    hi Underlined ctermbg=White ctermfg=Black guibg=bg guifg=#0000cd gui=underline
 
     hi htmlBold ctermbg=White ctermfg=Black guibg=bg guifg=fg gui=bold
     hi htmlBoldItalic ctermbg=White ctermfg=Black guibg=bg guifg=fg gui=bold,italic

@@ -21,4 +21,3 @@ au BufNewFile,BufRead *.conf
     \ if (match(expand("%:p:h"), "conf") > 0) |
     \     set filetype=bitbake |
     \ endif
-

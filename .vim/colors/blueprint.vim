@@ -1,10 +1,8 @@
 " Vim color file
-" Maintainer:	Bohdan Vlasyuk <bohdan@vstu.edu.ua>
+" Maintainer:	Xiance Si <adam.si@gmail.com>
 " Last Change:	2002 Mar 09
 
-" darkblue -- for those who prefer dark background
-" [note: looks bit uglier with come terminal palettes,
-" but is fine on default linux console palette.]
+" blueprint, a color scheme after real engineering blueprint.
 
 set bg=dark
 hi clear

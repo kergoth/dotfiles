@@ -443,6 +443,7 @@ endif
 " Tags search path
 set tags=./tags,tags,$PWD/tags
 
+
 " Nifty completion menu
 set wildmenu
 set wildignore+=*.o,*~
@@ -865,9 +866,7 @@ let g:c_impl_defined = 1
 " }}}
 
 " Plugin options {{{
-let g:GetLatestVimScripts_wget = "curl"
-let g:GetLatestVimScripts_options = "-s -o"
-let g:GetLatestVimScripts_allowautoinstall = 0
+let g:GetLatestVimScripts_allowautoinstall = 1
 let g:LustyExplorerSuppressRubyWarning = 1
 let g:LargeFile = 10
 let g:git_diff_spawn_mode = 1
@@ -886,7 +885,8 @@ let g:secure_modelines_allowed_items = [
             \ "foldmethod",   "fdm",
             \ "foldlevel",    "fdl",
             \ "readonly",     "ro",   "noreadonly", "noro",
-            \ "rightleft",    "rl",   "norightleft", "norl"
+            \ "rightleft",    "rl",   "norightleft", "norl",
+            \ "wrap",
             \ ]
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 let g:debianfullname = 'Chris Larson'
