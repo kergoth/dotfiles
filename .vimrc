@@ -73,7 +73,6 @@ if has('win32')
 endif
 behave xterm
 
-
 " Functions {{{
 fun! Print(...)
   let l:colo = g:colors_name
@@ -165,6 +164,8 @@ nmap <silent> <Up> :wincmd k<CR>
 nmap <silent> <Down> :wincmd j<CR>
 nmap <silent> <Left> :wincmd h<CR>
 nmap <silent> <Right> :wincmd l<CR>
+
+nmap <F8> :TlistToggle<CR>
 
 " Mouse {{{
 if has('mouse')
@@ -822,7 +823,7 @@ if has('autocmd')
 
     " Change the current directory to the location of the
     " file being edited.
-    com! -nargs=0 -complete=command Bcd lcd %:p:h
+    "com! -nargs=0 -complete=command Bcd lcd %:p:h
 
     " Special less.sh and man modes {{{
     fun! <SID>check_pager_mode()
@@ -866,6 +867,7 @@ let g:c_impl_defined = 1
 " }}}
 
 " Plugin options {{{
+let g:ropevim_vim_completion=1
 let g:GetLatestVimScripts_allowautoinstall = 1
 let g:LustyExplorerSuppressRubyWarning = 1
 let g:LargeFile = 10

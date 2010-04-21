@@ -1,18 +1,17 @@
 [core]
-	excludesfile = /home/clarson/.gitexcludes
+	excludesfile = /home/kergoth/.gitexcludes
 	whitespace = cr-at-eol
 
 [user]
 	name = Chris Larson
-	email = clarson@kergoth.com
+	email = chris_larson@mentor.com
 [gui]
 	fontdiff = -family fixed -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 
 [alias]
-	ci = commit
-	co = checkout
-        blameview = !git-blameview
-        code-follow = !git-code-follow
+    ci = commit
+    co = checkout
+    st = status
 
 [code-follow]
         color = auto
@@ -29,3 +28,18 @@
 
 [pack]
         threads = 3
+
+[sendemail]
+        identity = gmail
+
+[sendemail.gmail]
+        smtpserver = smtp.gmail.com
+        smtpserverport = 587
+        smtpencryption = tls
+        smtpuser = kergoth@gmail.com
+
+[sendemail.mentor]
+        smtpserver = na2-mail.mgc.mentorg.com
+        smtpuser = clarson
+[color]
+	ui = auto
