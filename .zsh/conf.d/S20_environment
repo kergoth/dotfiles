@@ -54,7 +54,7 @@ path=($path /usr/lib/kde*/bin(N/) /var/lib/gems/*/bin(N/))
 # Blah, /opt.
 path=($path /opt/*/bin(N/))
 
-GIT_EXEC_PATH=${$(whence -p git):h} && export GIT_EXEC_PATH
+export GIT_EXEC_PATH=${${$(whence -p git):h}:h}/libexec/git-core
 if [[ $? -ne 0 ]]; then
     unset GIT_EXEC_PATH
 fi

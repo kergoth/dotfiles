@@ -10,8 +10,8 @@ LUA_INIT="@${HOME}/.lua/init.lua"
 TERMINFO="${HOME}/.terminfo"
 SCONSFLAGS="-u -j 4"
 
-if g="$(which git-init)"; then
-    GIT_EXEC_PATH="$(dirname $g)"
+if g="$(which git)"; then
+    GIT_EXEC_PATH="$(dirname $(dirname $g))/libexec/git-core"
     export GIT_EXEC_PATH
 fi
 
