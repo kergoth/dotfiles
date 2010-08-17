@@ -1,32 +1,14 @@
 # Named directory bits
-namedir code ~/code
-for i in ~/code/*/; do
+if [[ -e ~/code ]]; then
+    namedir code ~/code
+elif [[ -e ~/Code ]]; then
+    namedir code ~/Code
+fi
+for i in ~code/*(N/); do
     namedir ${${i:t}//[-_]/} $i
 done
 
 case $HOST in
-    (covenant)
-        namedir svn /srv/svn
-        namedir git /srv/git/kergoth/repositories
-        namedir www /srv/www/kergoth.com
-        ;;
-    (foul)
-        namedir linus ~/code/kernels/linux
-        namedir upstream ~/code/upstream-build
-        namedir f2 /media/nfshome/f2
-        namedir rpm /media/nfshome/montavista/rpm
-        namedir cge40 /media/nfshome/cge_40
-        namedir cge50 /media/nfshome/cge_50
-        namedir pro40 /media/nfshome/pro_40
-        namedir pro50 /media/nfshome/pro_50
-        ;;
-    (scratch-1)
-        namedir f2 ~/f2
-        namedir rpm ~/montavista/rpm
-        namedir cge40 ~/cge_40
-        namedir cge50 ~/cge_50
-        namedir pro40 ~/pro_40
-        namedir pro50 ~/pro_50
+    (*)
         ;;
 esac
-
