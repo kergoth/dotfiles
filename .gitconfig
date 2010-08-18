@@ -43,3 +43,5 @@
         smtpuser = clarson
 [color]
 	ui = auto
+[log]
+	decorate = short
