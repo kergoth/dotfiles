@@ -31,6 +31,7 @@
 	staged = diff --cached
 	tags = tag -n1 -l
 	iclean = clean -fdX
+
 	# rerun svn show-ignore -> exclude
 	svnignore = !git svn show-ignore > .git/info/exclude
 
@@ -68,6 +69,9 @@
 
 	# rebase against the branch we're tracking
 	rebase-recent = !git rebase -i $(git remote-ref)
+
+	# show what I would push to the tracked branch
+	topush = !git log $(git remote-ref)..
 
 	# example: git subdo pull
 	subdo = submodule foreach git
