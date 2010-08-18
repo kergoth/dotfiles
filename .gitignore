@@ -1,0 +1,5 @@
+/.*_history
+/.zsh/history
+/.zsh/cache/*
+.DS_Store
+*~
