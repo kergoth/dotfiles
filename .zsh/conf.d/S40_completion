@@ -36,13 +36,8 @@ zstyle ':completion:*:processes-names' command 'ps -au$USER -o command'
 zstyle ':completion:*:*:kill:*:processes' command 'ps -au$USER --forest -o pid,user,cmd'
 
 typeset -a hosts
-hosts=(hyperion.kergoth.com covenant.kergoth.com neutrino.file-radio.com)
-hosts+=(scratch-1.sh.mvista.com rodan.sh.mvista.com tempelab1.az.sh.mvista.com)
 
 typeset -A aliasedhosts
-aliasedhosts[faldain]=192.168.1.100
-aliasedhosts[hawkins]=192.168.1.124
-aliasedhosts[anarch]=192.168.1.1
 for host in ${(k)aliasedhosts}; do
     alias -g $host=${aliasedhosts[$host]}
 done
