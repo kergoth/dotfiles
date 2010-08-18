@@ -17,19 +17,27 @@
 [alias]
 	ci = commit
 	co = checkout
+	au = add -u
 	st = status -sb
 	br = branch
 	df = diff
-	ls = ls-files --exclude-standard
-	ds = !git --no-pager diff --stat -M -w
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	w = whatchanged --reverse
-	summary = log --oneline
-	tree = log --graph --oneline
-	amend = commit --amend -C HEAD
-	au = add -u
+	ls = ls-files --exclude-standard
 	staged = diff --cached
+
+	# Diffstat, ignoring whitespace
+	ds = !git --no-pager diff --stat -M -w
+
+	# Pretty one line log
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+	# Amend the current commit, but don't prompt to edit the commit message
+	amend = commit --amend -C HEAD
+
+	# Show tags and annotated tag descriptions
 	tags = tag -n1 -l
+
+	# Clean out the ignored files (i.e. to rebuild)
 	iclean = clean -fdX
 
 	# rerun svn show-ignore -> exclude
