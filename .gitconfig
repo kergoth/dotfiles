@@ -11,7 +11,7 @@
 [alias]
     ci = commit
     co = checkout
-    st = status
+    st = status -sb
 
 [code-follow]
         color = auto
