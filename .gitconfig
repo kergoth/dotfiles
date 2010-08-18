@@ -197,3 +197,6 @@
 
 [url "git://repo.or.cz/"]
 	insteadOf = repo:
+
+[url "git://android.git.kernel.org/"]
+	insteadOf = android:
