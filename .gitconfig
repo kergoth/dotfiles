@@ -1,47 +1,187 @@
 [core]
-	excludesfile = /home/kergoth/.gitexcludes
+	excludesfile = ~/.gitexcludes
 	whitespace = cr-at-eol
+
+[color]
+	branch = auto
+	diff = auto
+	status = auto
+	interactive = auto
+	ui = true
+	pager = true
 
 [user]
 	name = Chris Larson
 	email = chris_larson@mentor.com
-[gui]
-	fontdiff = -family fixed -size 10 -weight normal -slant roman -underline 0 -overstrike 0
 
 [alias]
-    ci = commit
-    co = checkout
-    st = status -sb
+	ci = commit
+	co = checkout
+	st = status -sb
+	br = branch
+	df = diff
+	ls = ls-files --exclude-standard
+	ds = !git --no-pager diff --stat -M -w
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	w = whatchanged --reverse
+	summary = log --oneline
+	tree = log --graph --oneline
+	amend = commit --amend -C HEAD
+	au = add -u
+	staged = diff --cached
+	tags = tag -n1 -l
+	iclean = clean -fdX
+	# rerun svn show-ignore -> exclude
+	svnignore = !git svn show-ignore > .git/info/exclude
 
-[code-follow]
-        color = auto
-[show]
-	color = auto
+	# show list of contributors in descending order by number of commits
+	rank = shortlog -sn --no-merges
+
+	# given a string for an author, try to figure out full name and email:
+	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+
+	# given any git object, try to show it briefly
+	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+
+	# show conflicting merge in gitk:
+	gitkconflict = !gitk --left-right HEAD...MERGE_HEAD
+
+	# prune all tracking local branches that have been removed from remote:
+	prune-all = !git remote | xargs -n 1 git remote prune
+
+	# show full history in gitk (including "deleted" branches and stashes)
+	history-all = !gitk --all $( git fsck | awk '/dangling commit/ {print $3}' )
+
+	# thanks to cody cutrer
+	cherry-pick-merge = "!bash -c 'git cherry-pick -n -m 1 $0 && \
+		git log -1 --pretty=%P $0 | cut -b 42- > .git/MERGE_HEAD && \
+		git commit -v'"
+
+	# get the remote branch we're tracking
+	remote-ref = "!bash -c ' \
+		local_ref=$(git symbolic-ref HEAD); \
+		local_name=${local_ref##refs/heads/}; \
+		remote=$(git config branch.\"#local_name\".remote || echo origin); \
+		remote_ref=$(git config branch.\"$local_name\".merge); \
+		remote_name=${remote_ref##refs/heads/}; \
+		echo remotes/$remote/$remote_name'"
+
+	# rebase against the branch we're tracking
+	rebase-recent = !git rebase -i $(git remote-ref)
+
+	# example: git subdo pull
+	subdo = submodule foreach git
+
+	file-blame = !git ls-files | xargs -n1 -i{} git log -1 --pretty=format:\"%ci {}\" -- {}
+	pushall = !git remote | xargs -n1 git push
+	pushalltags = !git remote | xargs -n1 git push --tags
+	svnup = !git config --get-regexp 'svn-remote.*url' | cut -d . -f 2 | xargs -n1 git svn fetch
+	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
+	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+	lc = log ORIG_HEAD.. --stat --no-merges
+	serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
+
+[interactive]
+	singlekey = true
+
+[push]
+	default = tracking
+
+[branch]
+	autosetuprebase = always
+
+[apply]
+	whitespace = fix
+
 [diff]
-	color = auto
-[status]
-	color = auto
+	tool = vimdiff
+	renames = copy
+	mnemonicprefix = true
 
 [merge]
-        summary = true
+	summary = true
 	tool = meld
 
 [pack]
-        threads = 3
+	threads = 3
 
-[sendemail]
-        identity = gmail
-
-[sendemail.gmail]
-        smtpserver = smtp.gmail.com
-        smtpserverport = 587
-        smtpencryption = tls
-        smtpuser = kergoth@gmail.com
-
-[sendemail.mentor]
-        smtpserver = na2-mail.mgc.mentorg.com
-        smtpuser = clarson
-[color]
-	ui = auto
 [log]
 	decorate = short
+
+[color "diff"]
+	whitespace = red reverse
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[color "branch"]
+	current = green bold
+	local = green
+	remote = red bold
+
+[color "status"]
+	added = green bold
+	changed = yellow bold
+	untracked = red
+
+[sendemail]
+	identity = gmail
+	suppressfrom = true
+
+[sendemail.gmail]
+	smtpserver = smtp.gmail.com
+	smtpserverport = 587
+	smtpencryption = tls
+	smtpuser = kergoth@gmail.com
+
+[url "git@github.com:kergoth/"]
+	insteadOf = github:
+
+[url "git://gitorious.org/kergoth/"]
+	insteadOf = gitorious:
+
+[url "git@git.openembedded.org:"]
+	insteadOf = oe:
+
+[url "git://git.fedorahosted.org/git/"]
+	insteadOf = fedora:
+
+[url "ssh://git.fedorahosted.org/git/"]
+	insteadOf = fedora-ssh:
+
+[url "git://git.gnome.org/"]
+	insteadOf = gnome:
+
+[url "ssh://git.gnome.org/git/"]
+	insteadOf = gnome-ssh:
+
+[url "git://anongit.freedesktop.org/git/"]
+	insteadOf = fdo:
+
+[url "ssh://git.freedesktop.org/git/"]
+	insteadOf = fdo-ssh:
+
+[url "git://git.debian.org/"]
+	insteadOf = debian:
+
+[url "ssh://git.debian.org/git/"]
+	insteadOf = debian-ssh:
+
+[url "git://git.kernel.org/pub/scm/"]
+	insteadOf = kernel:
+
+[url "git://git.sv.gnu.org/"]
+	insteadOf = savannah:
+
+[url "ssh://git.sv.gnu.org/srv/git/"]
+	insteadOf = savannah-ssh:
+
+[url "git://repo.or.cz/"]
+	insteadOf = repo:
