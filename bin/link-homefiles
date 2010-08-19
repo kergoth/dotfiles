@@ -1,0 +1,6 @@
+#!/bin/sh
+homedir=`dirname $0`
+ln -sf $homedir/* ~/
+ln -sf $homedir/.* ~/
+rm -f ~/.gitignore
+rm -f ~/.git
