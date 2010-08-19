@@ -2,6 +2,10 @@
 
 # Debian aptitude(1) completion
 #
+if echo "$BASH_VERSION" | grep -qE '^3'; then
+	return
+fi
+
 have aptitude && {
 have grep-status && {
 _comp_dpkg_hold_packages()
