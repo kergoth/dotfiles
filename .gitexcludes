@@ -1,7 +1,11 @@
 *~
 *.bak
+*.orig
+*.rej
 
 *.o
+*.pyc
+*.pyo
 *.ko
 *.cmd
 
