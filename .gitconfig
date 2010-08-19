@@ -134,7 +134,7 @@
 	untracked = cyan
 
 [color "branch"]
-	current = green bold
+	current = yellow bold
 	local = green
 	remote = red bold
 
