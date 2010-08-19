@@ -1,5 +1,14 @@
+*~
+.DS_Store
 /.*_history
 /.zsh/history
 /.zsh/cache/*
-.DS_Store
-*~
+/.subversion/auth/
+/.subversion/README.txt
+/.ncftp/log
+/.ncftp/history
+/.ncftp/trace
+/.gnupg/*
+!/.gnupg/gpg.conf
+/.ssh/*
+!/.ssh/config
