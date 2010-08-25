@@ -20,6 +20,8 @@
 	au = add -u
 	st = status -sb
 	br = branch
+	br-m = branch --merged
+	br-um = branch --no-merged
 	df = diff
 	w = whatchanged --reverse
 	ls = ls-files --exclude-standard
