@@ -1,6 +1,7 @@
 [core]
 	excludesfile = ~/.gitexcludes
 	whitespace = cr-at-eol
+	autocrlf = input
 
 [color]
 	branch = auto
@@ -202,3 +203,7 @@
 
 [url "git://android.git.kernel.org/"]
 	insteadOf = android:
+
+[notes]
+	rewriteRef = refs/notes/*
+	rewriteMode = concatenate
