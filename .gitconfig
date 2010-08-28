@@ -87,7 +87,7 @@
 	# example: git subdo pull
 	subdo = submodule foreach git
 
-	file-blame = !git ls-files | xargs -n1 -i{} git log -1 --pretty=format:\"%ci {}\" -- {}
+	file-blame = "!f() { git ls-files | while read fn; do git log -1 --pretty=format:\"%ci $fn\" -- \"$fn\"; done }; f"
 	pushall = !git remote | xargs -n1 git push
 	pushalltags = !git remote | xargs -n1 git push --tags
 	svnup = !git config --get-regexp 'svn-remote.*url' | cut -d . -f 2 | xargs -n1 git svn fetch
