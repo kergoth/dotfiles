@@ -1,0 +1,55 @@
+#!/bin/bash
+
+GIT_DIR=.git
+dotest="$GIT_DIR/rebase-apply"
+
+function add_message_note
+{
+	prec=4 &&
+	this=$(cat 2>/dev/null "$dotest/next") &&
+	msgnum=$(printf "%0${prec}d" $this) &&
+	test -f "$dotest/$msgnum" &&
+	message_id=$(sed -ne '
+		/^[ 	]/{
+			# Append continuation line
+			H
+			x
+			s/\n//
+			x
+			n
+		}
+		# Hold this new line, and look at what is in the hold space
+		x
+		# Is it the Message-ID line?  If so, spit out and finish.
+		/^[Mm][Ee][Ss][Ss][Aa][Gg][Ee]-[Ii][Dd]:[ 	]*/{
+			s///p
+			q
+		}
+		# Otherwise, check if this new line is empty
+		x
+		# Is it?  Then we are done with the header
+		/^$/b end
+		# Otherwise we need to hold onto this header line
+		x
+		# And start the next cycle
+		b
+	: end
+		q
+	' "$dotest/$msgnum") &&
+
+	test -n "$message_id" &&
+	head=$(git rev-parse --verify HEAD 2>/dev/null) &&
+
+	echo "$head $message_id" >>"$GIT_DIR"/am.log &&
+	GIT_NOTES_REF=refs/notes/amlog \
+		git notes add -f -m "Message-Id: $message_id" "$head"
+}
+
+case "${1}" in
+    --about )
+        echo "Add Message-ID from mailed patches to notes/amlog with git-notes"
+        ;;
+    * )
+        add_message_note "$@"
+        ;;
+esac

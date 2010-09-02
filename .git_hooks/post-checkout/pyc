@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case "$1" in
+    --about)
+        echo "Remove .pyc and .pyo files"
+        ;;
+    *)
+        find . \( -name '*.pyc' -o -name '*.pyo' \) -print -delete | \
+            sed 's|^|[post-checkout] Deleting |'
+        ;;
+esac
