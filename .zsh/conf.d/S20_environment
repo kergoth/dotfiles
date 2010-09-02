@@ -101,3 +101,9 @@ if [[ $terminfo[colors] -ge 8 ]]; then
     fi
     ZLS_COLORS=$LS_COLORS
 fi
+
+if [[ -e ~/.zsh/conf.d/goenv ]]; then
+    . ~/.zsh/conf.d/goenv
+elif [[ -e ~/.sh/goenv ]]; then
+    . ~/.sh/goenv
+fi
