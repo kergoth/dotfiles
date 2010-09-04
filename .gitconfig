@@ -161,6 +161,10 @@
 	smtpencryption = tls
 	smtpuser = kergoth@gmail.com
 
+[notes]
+	rewriteRef = refs/notes/*
+	rewriteMode = concatenate
+
 [url "git@github.com:kergoth/"]
 	insteadOf = github:
 
@@ -209,6 +213,5 @@
 [url "git://android.git.kernel.org/"]
 	insteadOf = android:
 
-[notes]
-	rewriteRef = refs/notes/*
-	rewriteMode = concatenate
+[url "git://git.linuxtogo.org/"]
+	insteadOf = ltg:
