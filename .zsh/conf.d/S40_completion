@@ -11,7 +11,7 @@ zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 1 )) )'
 
 typeset -a users
-cat /etc/passwd|cut -d: -f1-3|sed -e's,:, ,g'|while read username password uid; do
+cat /etc/passwd|grep -v '^#'|cut -d: -f1-3|sed -e's,:, ,g'|while read username password uid; do
     if [[ $uid -gt 999 ]]; then
         users+=$username
     fi

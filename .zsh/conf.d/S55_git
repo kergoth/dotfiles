@@ -48,7 +48,11 @@ new_parse_git_branch() {
             branch="$(cut -c1-7 "$git_dir/HEAD")..."
     fi
 
-    __ZSH_GIT_FULL_DIR=$(readlink -f ${git_dir:h})
+    if which readlink >/dev/null 2>&1; then
+        __ZSH_GIT_FULL_DIR=$(readlink -f ${git_dir:h})
+    else
+        __ZSH_GIT_FULL_DIR=${git_dir:h}
+    fi
     __ZSH_GIT_DIR="${__ZSH_GIT_FULL_DIR/$HOME/~}"
     __ZSH_GIT_BRANCH="${branch#refs/heads/}"
 
