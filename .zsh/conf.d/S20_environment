@@ -42,6 +42,9 @@ pkgconfigpath=(~/.root/lib/pkgconfig /usr/local/lib/pkgconfig $pkgconfigpath)
 pythonpath=(~/.root/lib/python2.5 /usr/local/lib/python2.5 $pythonpath)
 perl5path=(~/.root/lib/perl{,5}/5.*(N/) /usr/local/lib/perl{,5}/5.*(N/) $perl5path)
 
+# Ruby gems
+path=($path ~/.gem/ruby/*/bin(N/))
+
 # Crazy non-standard paths. Bad developers, bad, no cookie for you.
 path=($path /usr/lib/kde*/bin(N/) /var/lib/gems/*/bin(N/))
 

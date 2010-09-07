@@ -1,4 +1,4 @@
-PATH="${HOME}/bin:${HOME}/.root/bin:${HOME}/Code/go/bin:${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
+PATH="${HOME}/bin:${HOME}/.root/bin:${HOME}/.gem/ruby/1.8/bin:${HOME}/Code/go/bin:${PATH}:/usr/local/sbin:/usr/sbin:/sbin"
 PYTHONPATH="${HOME}/.root/lib/scons:${HOME}/.root/lib/python"
 MANPATH="${HOME}/man:${HOME}/.root/share/man:${MANPATH}"
 PAGER="less"
