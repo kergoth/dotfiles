@@ -13,11 +13,6 @@ export FULLNAME="Chris Larson"
 export DEBEMAIL=$EMAIL
 export DEBFULLNAME=$FULLNAME
 
-#export GIT_COMMITTER_NAME=$FULLNAME
-#export GIT_COMMITTER_EMAIL=$EMAIL
-#export GIT_AUTHOR_NAME=$FULLNAME
-#export GIT_AUTHOR_EMAIL=$EMAIL
-
 export CVS_RSH=ssh
 export CVSREAD=yes
 export MANWIDTH=80
@@ -31,7 +26,7 @@ export LC_MESSAGES=C
 export LC_ALL=
 
 # Only allow items in these variables which aren't already there
-typeset -U PATH path FPATH fpath MANPATH manpath CDPATH cdpath
+typeset -U PATH path MANPATH manpath CDPATH cdpath
 
 # Pair up some scalars with arrays
 export -TU LD_LIBRARY_PATH ldlibpath
@@ -40,13 +35,15 @@ export -TU PYTHONPATH pythonpath
 export -TU PERL5LIB perl5path
 
 # Local paths
-fpath=(~/.zsh/functions $fpath)
-path=(~/bin ~/.root/bin $path ~/.root/sbin /usr/local/sbin /usr/sbin /sbin)
+path=(~/bin ~/.root/bin ~code/go/bin $path ~/.root/sbin /usr/local/sbin /usr/sbin /sbin)
 manpath=(~/.root/man ~/.root/share/man $manpath /usr/local/share/man /usr/local/man /usr/share/man /usr/man)
 ldlibpath=(~/.root/lib /usr/local/lib $ldlibpath)
 pkgconfigpath=(~/.root/lib/pkgconfig /usr/local/lib/pkgconfig $pkgconfigpath)
 pythonpath=(~/.root/lib/python2.5 /usr/local/lib/python2.5 $pythonpath)
 perl5path=(~/.root/lib/perl{,5}/5.*(N/) /usr/local/lib/perl{,5}/5.*(N/) $perl5path)
+
+# Ruby gems
+path=($path ~/.gem/ruby/*/bin(N/))
 
 # Crazy non-standard paths. Bad developers, bad, no cookie for you.
 path=($path /usr/lib/kde*/bin(N/) /var/lib/gems/*/bin(N/))
@@ -78,15 +75,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 # these are the default arguments to exuberant-ctags
 export CTAGS="--c++-kinds=+p --fields=+iaS --extra=+q"
 
-# Autoload my functions
-# autoload -U ${fpath[1]}/*(:t)
-
-# Autoload all shell functions from all directories in $fpath (following
-# symlinks) that have the executable bit on (the executable bit is not
-# necessary, but gives you an easy way to stop the autoloading of a particular
-# shell function). $fpath should not be empty for this to work.
-for func in $^fpath/*(N-.x:t); autoload $func
-
 case $TERM in
     putty-256color)
         TERM=xterm-256color
@@ -100,10 +88,4 @@ if [[ $terminfo[colors] -ge 8 ]]; then
         eval `dircolors -b`
     fi
     ZLS_COLORS=$LS_COLORS
-fi
-
-if [[ -e ~/.zsh/conf.d/goenv ]]; then
-    . ~/.zsh/conf.d/goenv
-elif [[ -e ~/.sh/goenv ]]; then
-    . ~/.sh/goenv
 fi
