@@ -215,3 +215,9 @@
 
 [url "git://git.linuxtogo.org/"]
 	insteadOf = ltg:
+
+[url "git://gist.github.com/"]
+	insteadOf = gist:
+
+[url "git@gist.github.com:"]
+	insteadOf = gist-ssh:
