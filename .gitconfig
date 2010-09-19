@@ -221,3 +221,6 @@
 
 [url "git@gist.github.com:"]
 	insteadOf = gist-ssh:
+
+[url "git://anongit.gentoo.org/"]
+	insteadOf = gentoo:
