@@ -5,7 +5,9 @@ case "$1" in
         echo "Remove .pyc and .pyo files"
         ;;
     *)
-        find . \( -name '*.pyc' -o -name '*.pyo' \) -print -delete | \
-            sed 's|^|[post-checkout] Deleting |'
+        if [ "$3" -eq 1 -a "$1" != "$2" ]; then
+            find . \( -name '*.pyc' -o -name '*.pyo' \) -print -delete | \
+                sed 's|^|[post-checkout] Deleting |'
+        fi
         ;;
 esac
