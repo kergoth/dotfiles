@@ -1,0 +1,5 @@
+#!/bin/sh
+dir=`mktemp -d bgrm.XXXXXX` || return 1
+mkdir -p $dir
+mv "$@" $dir
+rm -rf $dir &
