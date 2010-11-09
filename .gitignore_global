@@ -1,15 +1,42 @@
+# Backups and temporary files
 *~
 *.bak
 *.orig
 *.rej
 
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
 *.o
-*.pyc
-*.pyo
 *.ko
-*.cmd
+*.so
+*.py[oc]
 
-.git
-.svn
-CVS
-SCCS
+# SCM
+.git/
+.svn/
+CVS/
+SCCS/
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
