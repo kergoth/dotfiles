@@ -1,5 +1,5 @@
 [core]
-	excludesfile = ~/.gitexcludes
+	excludesfile = ~/.gitignore_global
 	whitespace = cr-at-eol
 	autocrlf = input
 
