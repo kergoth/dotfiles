@@ -27,6 +27,7 @@
 	w = whatchanged --reverse
 	ls = ls-files --exclude-standard
 	staged = diff --cached
+	last = "!f(){ git lg --since=\"last $*\"; }; f"
 
 	# Diffstat, ignoring whitespace
 	ds = !git --no-pager diff --stat -M -w
