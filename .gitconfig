@@ -178,11 +178,11 @@
 [url "git@git.openembedded.org:"]
 	insteadOf = oe:
 
-[url "git://git.fedorahosted.org/git/"]
-	insteadOf = fedora:
+[url "git://pkgs.fedoraproject.org/"]
+        insteadOf = fedora:
 
-[url "ssh://git.fedorahosted.org/git/"]
-	insteadOf = fedora-ssh:
+[url "git://git.fedorahosted.org/git/"]
+	insteadOf = fedorahosted:
 
 [url "git://git.gnome.org/"]
 	insteadOf = gnome:
@@ -226,8 +226,17 @@
 [url "git@gist.github.com:"]
 	insteadOf = gist-ssh:
 
+[url "git://git.overlays.gentoo.org/"]
+	insteadOf = gentoo-overlays:
+
 [url "git://anongit.gentoo.org/"]
 	insteadOf = gentoo:
 
 [url "git://git.pokylinux.org/"]
 	insteadOf = poky:
+
+[url "git://sourceware.org/git/"]
+	insteadOf = sourceware:
+
+[url "git://git.samba.org/"]
+	insteadOf = samba:
