@@ -227,3 +227,6 @@
 
 [url "git://anongit.gentoo.org/"]
 	insteadOf = gentoo:
+
+[url "git://git.pokylinux.org/"]
+	insteadOf = poky:
