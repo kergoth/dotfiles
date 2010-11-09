@@ -165,6 +165,9 @@
 	rewriteRef = refs/notes/*
 	rewriteMode = concatenate
 
+[rerere]
+	enabled = 1
+
 [url "git@github.com:kergoth/"]
 	insteadOf = github:
 
