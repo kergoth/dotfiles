@@ -225,6 +225,14 @@
 	pushInsteadOf = savannah:
 	pushInsteadOf = git://git.sv.gnu.org/
 
+[url "ssh://gitscm.sf.net/gitroot/"]
+	insteadOf = sf-ssh:
+	pushInsteadOf = sf:
+	pushInsteadOf = git://gitscm.sf.net/gitroot/
+
+[url "git://gitscm.sf.net/gitroot/"]
+	insteadOf = sf:
+
 [url "git://gitorious.org/kergoth/"]
 	insteadOf = gitorious:
 
