@@ -1,6 +1,0 @@
-skin	browser		Kempelton	jar:chrome/chrome.jar!/browser/
-skin	communicator	Kempelton	jar:chrome/chrome.jar!/communicator/
-skin	global		Kempelton	jar:chrome/chrome.jar!/global/
-skin	help		Kempelton	jar:chrome/chrome.jar!/help/
-skin	mozapps		Kempelton	jar:chrome/chrome.jar!/mozapps/
-skin	reporter	Kempelton	jar:chrome/chrome.jar!/reporter/

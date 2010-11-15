@@ -1,6 +1,0 @@
-skin	browser		Qute	jar:chrome/Qute.jar!/browser/
-skin	communicator	Qute	jar:chrome/Qute.jar!/communicator/
-skin	global		Qute	jar:chrome/Qute.jar!/global/
-skin	help		Qute	jar:chrome/Qute.jar!/help/
-skin	mozapps		Qute	jar:chrome/Qute.jar!/mozapps/
-skin	reporter	Qute	jar:chrome/Qute.jar!/reporter/

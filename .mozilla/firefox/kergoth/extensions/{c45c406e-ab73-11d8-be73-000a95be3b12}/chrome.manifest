@@ -1,6 +1,0 @@
-content webdeveloper             jar:chrome/webdeveloper.jar!/content/webdeveloper/
-locale  webdeveloper en-US       jar:chrome/webdeveloper.jar!/locale/en-US/webdeveloper/
-skin    webdeveloper classic/1.0 jar:chrome/webdeveloper.jar!/skin/classic/webdeveloper/
-overlay	chrome://browser/content/browser.xul chrome://webdeveloper/content/webdeveloper.xul
-style	chrome://browser/content/browser.xul chrome://webdeveloper/skin/webdeveloper.css
-style	chrome://global/content/customizeToolbar.xul               chrome://webdeveloper/content/webdeveloper.css

@@ -1,6 +1,0 @@
-#stylish-toolbar-button {
-  -moz-binding: url("chrome://global/content/bindings/toolbarbutton.xml#menu-vertical");
-}
-#stylish-toolbar-button dropmarker {
-	width: auto;
-}

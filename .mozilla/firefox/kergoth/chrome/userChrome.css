@@ -1,5 +1,0 @@
-/* Make the Search box flex wider
-   (in this case 360 pixels wide) */
- #search-container, #searchbar {
-   -moz-box-flex: 360 !important;
- }

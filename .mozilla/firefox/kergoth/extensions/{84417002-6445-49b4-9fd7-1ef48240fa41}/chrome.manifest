@@ -1,2 +1,0 @@
-content        tab_history        chrome/
-overlay        chrome://browser/content/browser.xul           chrome://tab_history/content/overlay.xul
