@@ -169,14 +169,64 @@
 [rerere]
 	enabled = 1
 
-[url "git@github.com:kergoth/"]
+[url "git://github.com/"]
 	insteadOf = github:
+
+[url "git@github.com:"]
+	insteadOf = github-ssh:
+	pushInsteadOf = github:
+	pushInsteadOf = git://github.com/
+
+[url "git://git.openembedded.org/"]
+	insteadOf = oe:
+
+[url "git@git.openembedded.org:"]
+	insteadOf = oe-ssh:
+	pushInsteadOf = oe:
+	pushInsteadOf = git://git.openembedded.org/
+
+[url "git://git.gnome.org/"]
+	insteadOf = gnome:
+
+[url "ssh://git.gnome.org/git/"]
+	insteadOf = gnome-ssh:
+	pushInsteadOf = gnome:
+	pushInsteadOf = git://git.gnome.org/
+
+[url "git://anongit.freedesktop.org/git/"]
+	insteadOf = fdo:
+
+[url "ssh://git.freedesktop.org/git/"]
+	insteadOf = fdo-ssh:
+	pushInsteadOf = fdo:
+	pushInsteadOf = git://anongit.freedesktop.org/git/
+
+[url "git://git.debian.org/"]
+	insteadOf = debian:
+
+[url "ssh://git.debian.org/git/"]
+	insteadOf = debian-ssh:
+	pushInsteadOf = debian:
+	pushInsteadOf = git://git.debian.org/
+
+[url "git://gist.github.com/"]
+	insteadOf = gist:
+
+[url "git@gist.github.com:"]
+	insteadOf = gist-ssh:
+	pushInsteadOf = gist:
+	pushInsteadOf = git://gist.github.com/
+
+[url "git://git.sv.gnu.org/"]
+	insteadOf = savannah:
+
+[url "ssh://git.sv.gnu.org/srv/git/"]
+	insteadOf = savannah-ssh:
+	pushInsteadOf = savannah:
+	pushInsteadOf = git://git.sv.gnu.org/
 
 [url "git://gitorious.org/kergoth/"]
 	insteadOf = gitorious:
-
-[url "git@git.openembedded.org:"]
-	insteadOf = oe:
 
 [url "git://pkgs.fedoraproject.org/"]
         insteadOf = fedora:
@@ -184,32 +234,8 @@
 [url "git://git.fedorahosted.org/git/"]
 	insteadOf = fedorahosted:
 
-[url "git://git.gnome.org/"]
-	insteadOf = gnome:
-
-[url "ssh://git.gnome.org/git/"]
-	insteadOf = gnome-ssh:
-
-[url "git://anongit.freedesktop.org/git/"]
-	insteadOf = fdo:
-
-[url "ssh://git.freedesktop.org/git/"]
-	insteadOf = fdo-ssh:
-
-[url "git://git.debian.org/"]
-	insteadOf = debian:
-
-[url "ssh://git.debian.org/git/"]
-	insteadOf = debian-ssh:
-
 [url "git://git.kernel.org/pub/scm/"]
 	insteadOf = kernel:
-
-[url "git://git.sv.gnu.org/"]
-	insteadOf = savannah:
-
-[url "ssh://git.sv.gnu.org/srv/git/"]
-	insteadOf = savannah-ssh:
 
 [url "git://repo.or.cz/"]
 	insteadOf = repo:
@@ -219,12 +245,6 @@
 
 [url "git://git.linuxtogo.org/"]
 	insteadOf = ltg:
-
-[url "git://gist.github.com/"]
-	insteadOf = gist:
-
-[url "git@gist.github.com:"]
-	insteadOf = gist-ssh:
 
 [url "git://git.overlays.gentoo.org/"]
 	insteadOf = gentoo-overlays:
