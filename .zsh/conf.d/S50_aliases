@@ -50,7 +50,7 @@ else
 fi
 
 lsfe () {
-    command ls -CABhq $lscolorarg "$@" | least
+    command ls -CABhq $lscolorarg "$@"
 }
 
 # List only directories and symbolic
