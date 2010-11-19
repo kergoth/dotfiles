@@ -15,8 +15,7 @@ alias bb=bitbake
 alias rem=remind
 alias se=sudoedit
 alias more=less
-alias rgrep="grep -nrI"
-alias grep="grep -n"
+alias rgrep="grep -rI"
 alias gvim="vim -g"
 alias vi=vim
 
