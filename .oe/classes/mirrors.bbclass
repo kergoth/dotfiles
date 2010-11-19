@@ -1,6 +1,6 @@
 DEBIAN_MIRROR = "http://http.us.debian.org/debian/pool"
 GNU_MIRROR = "http://mirrors.kernel.org/gnu"
-KERNELORG_MIRROR = "http://ftp.us.kernel.org/pub"
+KERNELORG_MIRROR = "http://ftp.us.kernel.org"
 
 MIRRORS () {
 ${DEBIAN_MIRROR}/main	http://snapshot.debian.net/archive/pool
