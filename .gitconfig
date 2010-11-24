@@ -114,9 +114,23 @@
 	renames = copy
 	mnemonicprefix = true
 
+[diff "exif"]
+	textconv = exiftool
+
+[diff "word"]
+	textconv = strings
+
 [merge]
 	summary = true
 	tool = meld
+
+[filter "indent"]
+	clean = indent
+	smudge = cat
+
+[filter "gofmt"]
+	clean = gofmt
+	smudge = cat
 
 [pack]
 	threads = 3
