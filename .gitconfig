@@ -1,15 +1,9 @@
+;  vim: set noet fenc=utf-8 sts=0 sw=8 ts=8 :
 [core]
 	excludesfile = ~/.gitignore_global
 	whitespace = cr-at-eol
 	autocrlf = input
-
-[color]
-	branch = auto
-	diff = auto
-	status = auto
-	interactive = auto
-	ui = true
-	pager = true
+	safecrlf = true
 
 [user]
 	name = Chris Larson
@@ -129,6 +123,9 @@
 
 [log]
 	decorate = short
+
+[color]
+	ui = true
 
 [color "diff"]
 	whitespace = red reverse
