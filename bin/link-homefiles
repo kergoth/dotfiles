@@ -2,6 +2,6 @@
 bindir=`dirname $0`
 homedir=`dirname $bindir`
 ln -sf $homedir/* ~/
-ln -sf $homedir/.* ~/
+ln -sf $homedir/[a-zA-Z0-9]* ~/
 rm -f ~/.gitignore
 rm -f ~/.git
