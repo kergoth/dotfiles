@@ -51,11 +51,6 @@ path=($path /usr/lib/kde*/bin(N/) /var/lib/gems/*/bin(N/))
 # Blah, /opt.
 path=($path /opt/*/bin(N/))
 
-export GIT_EXEC_PATH=${${$(whence -p git):h}:h}/libexec/git-core
-if [[ $? -ne 0 ]]; then
-    unset GIT_EXEC_PATH
-fi
-
 # less options
 export LESS=FRSX
 export PAGER=less

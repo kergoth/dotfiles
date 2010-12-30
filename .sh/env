@@ -10,11 +10,6 @@ LUA_INIT="@${HOME}/.lua/init.lua"
 TERMINFO="${HOME}/.terminfo"
 SCONSFLAGS="-u -j 4"
 
-if g="$(which git)"; then
-    GIT_EXEC_PATH="$(dirname $(dirname $g))/libexec/git-core"
-    export GIT_EXEC_PATH
-fi
-
 if [ -e /tmp/.esd -a ! -e /tmp/.esd-${UID} ]; then
     ln -s /tmp/.esd /tmp/.esd-${UID}
 fi
