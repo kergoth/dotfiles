@@ -79,6 +79,8 @@
 	# show what I would push to the tracked branch
 	topush = !git log $(git remote-ref)..
 
+	test-topush = !git test-sequence $(git remote-ref).. "$@"
+
 	# example: git subdo pull
 	subdo = submodule foreach git
 
