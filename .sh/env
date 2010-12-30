@@ -24,5 +24,8 @@ if [ "$TERM" = "cygwin" ]; then
     export COLORTERM
 fi
 
+PYTHONSTARTUP=~/.pythonrc.py
+export PYTHONSTARTUP
+
 export PATH MANPATH PAGER LESS EDITOR PYTHONPATH
 export BK_USER NM LUA_INIT TERMINFO SCONSFLAGS

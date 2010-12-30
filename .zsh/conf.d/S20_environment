@@ -91,3 +91,5 @@ if which dircolors >/dev/null 2>&1; then
         ZLS_COLORS=$LS_COLORS
     fi
 fi
+
+export PYTHONSTARTUP=~/.pythonrc.py
