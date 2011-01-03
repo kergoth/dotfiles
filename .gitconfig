@@ -147,6 +147,9 @@
 [log]
 	decorate = short
 
+[color]
+	ui = auto
+
 [color "diff"]
 	whitespace = red reverse
 	meta = yellow bold
