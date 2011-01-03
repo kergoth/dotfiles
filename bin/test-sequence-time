@@ -1,0 +1,25 @@
+#!/usr/bin/env zsh
+
+threshold=$1
+shift
+tmpfile=$1
+shift
+
+oldvalue=$(cat $tmpfile 2>/dev/null)
+command time -f %e -o $tmpfile "$@"
+if grep -q '^Command exited with non-zero status' $tmpfile; then
+    cat >&2 $tmpfile
+    exit 1
+fi
+
+if [[ -n $oldvalue ]]; then
+    newvalue=$(cat $tmpfile)
+    timediff=$(($newvalue - $oldvalue))
+    perc=$(($timediff / $oldvalue * 100))
+    if [[ $perc -gt $threshold ]]; then
+        printf >&2 'Elapsed time difference %0.2f (%0.2f%%) exceeds threshold percentage %0.2f%%\n' $timediff $perc $threshold
+        exit 1
+    else
+        printf 'Elapsed time difference %0.2f (%0.2f%%)\n' $timediff $perc
+    fi
+fi
