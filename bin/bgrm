@@ -1,7 +1,11 @@
 #!/bin/sh
-dir=`mktemp -d bgrm.XXXXXX` || return 1
-mkdir -p $dir
+
+toremove=""
 for item in "$@"; do
-    mv "$item" "`mktemp -d $dir/XXX`"
+    dir=$(dirname $item)
+    tmpdir=$(mktemp -d $dir/bgrm.XXXXXX) || exit 1
+    mkdir -p $tmpdir
+    toremove="$toremove $tmpdir"
+    mv "$item" "$tmpdir/"
 done
-rm -rf $dir &
+rm -rf $toremove &
