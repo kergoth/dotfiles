@@ -1,0 +1,4 @@
+if [[ -e /etc/bash_completion.d/virtualenvwrapper ]]; then
+    export WORKON_HOME=$HOME/.virtualenv
+    . /etc/bash_completion.d/virtualenvwrapper
+fi
