@@ -28,7 +28,7 @@ function diff() {
     if have colordiff && [[ -t 1 ]]; then
         diffcmd=colordiff
     fi
-    command $diffcmd -uNd "$@" | least
+    command $diffcmd -uNd "$@"
 }
 
 function difftree() {
