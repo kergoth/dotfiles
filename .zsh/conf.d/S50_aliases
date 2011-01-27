@@ -19,6 +19,10 @@ alias rgrep="grep -rI"
 alias gvim="vim -g"
 alias vi=vim
 
+if have ack-grep; then
+    alias ack=ack-grep
+fi
+
 function diff() {
     typeset diffcmd="diff"
     if have colordiff && [[ -t 1 ]]; then
@@ -61,9 +65,6 @@ alias lsa='lsfe -ld .*'
 alias lsr='lsfe -tp'
 alias lr='lsfe -ltp'
 alias ls='lsfe -p'
-
-# Color git grep
-alias gg='GREP_OPTIONS=--color=always git grep'
 
 # alias ps='ps -o user,group,pid,sess,stat,wchan:8,cmd --forest'
 alias ps='ps -o user,group,pid,stat,cmd --forest'
