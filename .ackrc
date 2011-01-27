@@ -1,0 +1,4 @@
+--sort-files
+--pager=less
+--color-filename=bold green
+--color-match=bold red
