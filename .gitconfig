@@ -256,7 +256,7 @@
 [url "git://gitscm.sf.net/gitroot/"]
 	insteadOf = sf:
 
-[url "git://gitorious.org/kergoth/"]
+[url "git://gitorious.org/"]
 	insteadOf = gitorious:
 
 [url "git://pkgs.fedoraproject.org/"]
