@@ -1,0 +1,3 @@
+#!/bin/sh
+files="$(ack -g "$@")" || exit $?
+exec vim $files
