@@ -32,17 +32,12 @@ function diff() {
 }
 
 function difftree() {
-        if [ $# -ne 2 ]; then
-                echo "usage: dt <dirname1> <dirname2>"
-                echo "diff two directories recursively"
-        else
-            command diff -urNd -X ~/.zsh/dontdiff "$@" | least
-        fi
+    diff -r -X ~/.zsh/dontdiff "$@"
 }
 alias dt=difftree
 
 function svndiff() {
-        svn diff "$@" | colordiff | least
+    svn diff "$@" | colordiff | least
 }
 alias svnd=svndiff
 
