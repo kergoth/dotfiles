@@ -88,3 +88,4 @@ if which dircolors >/dev/null 2>&1; then
 fi
 
 export PYTHONSTARTUP=~/.pythonrc.py
+export ACKRC=.ackrc
