@@ -1,5 +1,8 @@
 def in_vmware():
-    return 'vmware' in open('/proc/timer_list', 'r').read()
+    try:
+        return 'vmware' in open('/proc/timer_list', 'r').read()
+    except (OSError, IOError):
+        return False
 
 def get_proc_cpucount():
     try:
