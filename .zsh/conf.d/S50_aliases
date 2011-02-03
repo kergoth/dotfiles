@@ -51,6 +51,8 @@ lsfe () {
     command ls -CABhq $lscolorarg "$@"
 }
 
+alias mr='mr -p'
+
 # List only directories and symbolic
 # links that point to directories
 alias lsd='lsfe -ld *(-/DN)'
