@@ -3,3 +3,4 @@
 --color-filename=bold green
 --color-match=bold red
 --type-set=bitbake=.bb,.bbclass,.inc,.conf
+--type-set=diff=.diff,.patch,.dpatch
