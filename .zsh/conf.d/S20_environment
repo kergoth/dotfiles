@@ -35,12 +35,12 @@ export -TU PYTHONPATH pythonpath
 export -TU PERL5LIB perl5path
 
 # Local paths
-path=(~/bin ~/.root/bin ~code/go/bin $path ~/.root/sbin /usr/local/sbin /usr/sbin /sbin)
-manpath=(~/.root/man ~/.root/share/man $manpath /usr/local/share/man /usr/local/man /usr/share/man /usr/man)
-ldlibpath=(~/.root/lib /usr/local/lib $ldlibpath)
-pkgconfigpath=(~/.root/lib/pkgconfig /usr/local/lib/pkgconfig $pkgconfigpath)
-pythonpath=(~/.root/lib/python2.5 /usr/local/lib/python2.5 $pythonpath)
-perl5path=(~/.root/lib/perl{,5}/5.*(N/) /usr/local/lib/perl{,5}/5.*(N/) $perl5path)
+path=(~/bin ~/.local/bin ~code/go/bin $path ~/.local/sbin /usr/local/sbin /usr/sbin /sbin)
+manpath=(~/.local/man ~/.local/share/man $manpath /usr/local/share/man /usr/local/man /usr/share/man /usr/man)
+ldlibpath=(~/.local/lib /usr/local/lib $ldlibpath)
+pkgconfigpath=(~/.local/lib/pkgconfig /usr/local/lib/pkgconfig $pkgconfigpath)
+pythonpath=(~/.local/lib/python2.* /usr/local/lib/python2.* $pythonpath)
+perl5path=(~/.local/lib/perl{,5}/5.*(N/) /usr/local/lib/perl{,5}/5.*(N/) $perl5path)
 
 # Ruby gems
 path=($path ~/.gem/ruby/*/bin(N/))
