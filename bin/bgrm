@@ -2,6 +2,10 @@
 
 toremove=""
 for item in "$@"; do
+    if basename "$item" | grep -q "^bgrm."; then
+        continue
+    fi
+
     dir=$(dirname $item)
     tmpdir=$(mktemp -d $dir/bgrm.XXXXXX) || exit 1
     mkdir -p $tmpdir
