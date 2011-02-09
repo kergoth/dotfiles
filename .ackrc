@@ -2,5 +2,5 @@
 --pager=less
 --color-filename=bold green
 --color-match=bold red
---type-set=bitbake=.bb,.bbclass,.inc,.conf
+--type-set=bitbake=.bb,.bbappend,.bbclass,.inc,.conf
 --type-set=diff=.diff,.patch,.dpatch
