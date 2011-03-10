@@ -87,3 +87,5 @@ function bgexec () {
 function wg () {
     wiggle --replace $1 $1.rej
 }
+
+alias t='t.py --task-dir ~/Documents --list tasks.txt'
