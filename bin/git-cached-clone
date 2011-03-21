@@ -1,0 +1,77 @@
+#!/bin/sh
+
+set -e
+
+cachedir=$HOME/.braid/cache
+
+main () {
+    url="$1"
+    shift || {
+        echo >&2 "Usage: git cached-clone URL [DEST]"
+        exit 2
+    }
+    if ! echo "$url" | grep -q "\.git/\?$"; then
+        url="$url.git"
+    fi
+
+    dest="$1"
+    if [ -z "$dest" ]; then
+        dest="$(default_destination "$url")"
+    fi
+
+    cache_url="$(real_url "$url")"
+    cached="$(setup_cache "$cache_url")" || ret=$?
+    if [ $ret -ne 0 ] && [ ! -e "$cached" ]; then
+        exit $ret
+    fi
+
+    local_clone "$url" "$cached" "$dest"
+}
+
+real_url () {
+    url="$1"
+    git config --global --get-regexp "url\..*\.insteadof" | {
+        while read real other; do
+            realurl="$(echo "$real"|sed 's,^url\.,,; s,\.insteadof$,,')"
+            if echo "$url" | grep -q "^$other"; then
+                echo $url | sed -e "s,^$other,$realurl,"
+                return
+            fi
+        done
+        echo "$url"
+    }
+}
+
+default_destination () {
+    url="$1"
+    desturl="$(echo "$url"|tr ':' '/'|sed 's,\.git/*$,,')"
+    sanitize "$(basename "$desturl")"
+}
+
+setup_cache () {
+    url="$1"
+    sanitized="$(sanitize "$url")"
+    cached="$cachedir/$sanitized"
+
+    echo "$cached"
+
+    if [ ! -d "$cached" ]; then
+        git clone --mirror "$url" "$cached" >&2 || return 1
+        git "--git-dir=$cached" repack -A -d >&2
+    else
+        git "--git-dir=$cached" fetch >&2 || return 1
+    fi
+}
+
+local_clone () {
+    url="$1"; cached="$2"; dest="$3"
+    git clone --reference "$cached" "$cached" "$dest"
+    cd "$dest" && git remote set-url origin "$url"
+}
+
+sanitize () {
+    echo "$@" | tr "[:upper:]" "[:lower:]" | \
+              tr "[]()&~@#%^&*()_+=;:,\$/" " " | tr " " "_"
+}
+
+main "$@"
