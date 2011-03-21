@@ -87,7 +87,12 @@ sanitize_cache () {
 
 usage () {
     echo >&2 "Usage: git cached-clone URL [DEST]"
+    echo >&2
     echo >&2 "       git cached-clone -l"
+    echo >&2 "         List cloned repositories"
+    echo >&2
+    echo >&2 "       git cached-clone -s"
+    echo >&2 "         Sanitize cloned repositories"
     exit 0
 }
 
