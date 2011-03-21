@@ -1,8 +1,18 @@
 #!/bin/sh
 #
-# Note: this correctly handles a lack of network connection.  That is, an
-# attempt to clone a URL which has been cached in the past while offline will
-# still give you a fully functioning cloned repository.
+# git-cached-clone
+#
+# Clone a url to a destination, as git clone does, but cache as well, such
+# that all clones of a given url share the same core git objects, which saves
+# disk space and reduces the load on the git server.  This is transparent to
+# the user of the cloned repository, as it still points at upstream, and
+# future updates from that clone will use the original URL, not the cache.
+#
+# If you attempt to clone a URL while offline, and the url has been cached, it
+# will still give you an entirely functional cloned repository, but its
+# contents will be based upon the most recent cache update.
+#
+# This updates the cache for a given URL whenever you clone from that URL.
 
 set -e
 
@@ -71,7 +81,7 @@ setup_cache () {
 local_clone () {
     url="$1"; cached="$2"; dest="$3"
     git clone --reference "$cached" "$cached" "$dest"
-    cd "$dest" && git remote set-url origin "$url"
+    git "--git-dir=$dest/.git" remote set-url origin "$url"
 }
 
 sanitize () {
