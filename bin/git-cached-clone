@@ -1,4 +1,4 @@
-#!/bin/sh#
+#!/bin/sh
 #
 # Note: this correctly handles a lack of network connection.  That is, an
 # attempt to clone a URL which has been cached in the past while offline will
