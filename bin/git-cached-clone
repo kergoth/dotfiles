@@ -19,11 +19,11 @@ set -e
 cachedir=$HOME/.braid/cache
 
 main () {
+    process_options "$@" || usage
+    shift $(($OPTIND - 1))
+
     url="$1"
-    shift || {
-        echo >&2 "Usage: git cached-clone URL [DEST]"
-        exit 2
-    }
+    shift || usage
     if ! echo "$url" | grep -q "\.git/\?$"; then
         url="$url.git"
     fi
@@ -33,7 +33,7 @@ main () {
         dest="$(default_destination "$url")"
     fi
 
-    cache_url="$(real_url "$url")"
+    cache_url="$(get_cache_url "$url")"
     ret=0
     cached="$(setup_cache "$cache_url")" || ret=$?
     if [ $ret -ne 0 ] && [ ! -e "$cached" ]; then
@@ -43,8 +43,56 @@ main () {
     local_clone "$url" "$cached" "$dest"
 }
 
-real_url () {
-    url="$1"
+process_options () {
+    while getopts lsh opt; do
+        case "$opt" in
+            l)
+                list_cache
+                exit 0
+                ;;
+            s)
+                sanitize_cache
+                exit 0
+                ;;
+            \?|h)
+                echo foo
+                return 1
+                ;;
+       esac
+    done
+}
+
+list_cache () {
+    echo "Cached repositories:"
+    for repo in $cachedir/*/; do
+        echo "  $(git "--git-dir=$repo" config remote.origin.url)"
+    done
+}
+
+sanitize_cache () {
+    for repo in $cachedir/*/; do
+        url="$(git "--git-dir=$repo" config remote.origin.url)"
+        adjusted_url="$(proper_url "$url")"
+        if [ "$url" != "$adjusted_url" ]; then
+            git "--git-dir=$repo" remote set-url origin "$adjusted_url"
+            echo "Changed url for $repo to $adjusted_url"
+        fi
+
+        adjusted_name="$(sanitize "$adjusted_url")"
+        if [ "$(basename "$repo")" != "$adjusted_name" ]; then
+            mv "$repo" "$(dirname "$repo")/$adjusted_name"
+        fi
+    done
+}
+
+usage () {
+    echo >&2 "Usage: git cached-clone URL [DEST]"
+    echo >&2 "       git cached-clone -l"
+    exit 0
+}
+
+get_cache_url () {
+    url="$(proper_url "$1")"
     git config --global --get-regexp "url\..*\.insteadof" | {
         while read real other; do
             realurl="$(echo "$real"|sed 's,^url\.,,; s,\.insteadof$,,')"
@@ -55,6 +103,13 @@ real_url () {
         done
         echo "$url"
     }
+}
+
+proper_url () {
+    url="$1"
+    echo "$url" | \
+        sed -e 's,^git://github,https://github,' \
+            -e 's,^git://gist.github,https://gist.github,'
 }
 
 default_destination () {
