@@ -24,6 +24,7 @@ main () {
     fi
 
     cache_url="$(real_url "$url")"
+    ret=0
     cached="$(setup_cache "$cache_url")" || ret=$?
     if [ $ret -ne 0 ] && [ ! -e "$cached" ]; then
         exit $ret
