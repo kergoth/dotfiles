@@ -55,7 +55,6 @@ process_options () {
                 exit 0
                 ;;
             \?|h)
-                echo foo
                 return 1
                 ;;
        esac
