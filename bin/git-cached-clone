@@ -44,7 +44,7 @@ main () {
 }
 
 process_options () {
-    while getopts lsh opt; do
+    while getopts lsuh opt; do
         case "$opt" in
             l)
                 list_cache
@@ -52,6 +52,10 @@ process_options () {
                 ;;
             s)
                 sanitize_cache
+                exit 0
+                ;;
+            u)
+                update_cache
                 exit 0
                 ;;
             \?|h)
@@ -84,6 +88,12 @@ sanitize_cache () {
     done
 }
 
+update_cache () {
+    for repo in $cachedir/*/; do
+        git "--git-dir=$repo" fetch
+    done
+}
+
 usage () {
     echo >&2 "Usage: git cached-clone URL [DEST]"
     echo >&2
@@ -92,6 +102,9 @@ usage () {
     echo >&2
     echo >&2 "       git cached-clone -s"
     echo >&2 "         Sanitize cloned repositories"
+    echo >&2
+    echo >&2 "       git cached-clone -u"
+    echo >&2 "         Update cloned repositories"
     exit 0
 }
 
