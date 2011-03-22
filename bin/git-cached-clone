@@ -16,7 +16,7 @@
 
 set -e
 
-cachedir=$HOME/.braid/cache
+cachedir=$HOME/.git-cache
 
 main () {
     process_options "$@" || usage
@@ -30,7 +30,7 @@ main () {
 
     dest="$1"
     if [ -z "$dest" ]; then
-        dest="$(default_destination "$url")"
+        dest="$(basename_url "$url")"
     fi
 
     cache_url="$(get_cache_url "$url")"
@@ -40,7 +40,7 @@ main () {
         exit $ret
     fi
 
-    local_clone "$url" "$cached" "$dest"
+    local_clone "$url" "$cache_url" "$cached" "$dest"
 }
 
 process_options () {
@@ -90,7 +90,7 @@ sanitize_cache () {
 
 update_cache () {
     for repo in $cachedir/*/; do
-        git "--git-dir=$repo" fetch
+        git "--git-dir=$repo" fetch --all
     done
 }
 
@@ -132,36 +132,64 @@ proper_url () {
             -e 's,^git://openembedded.org,git://git.openembedded.org,'
 }
 
-default_destination () {
+basename_url () {
     url="$1"
     desturl="$(echo "$url"|tr ':' '/'|sed 's,\.git/*$,,')"
     sanitize "$(basename "$desturl")"
 }
 
-setup_cache () {
-    url="$1"
-    sanitized="$(sanitize "$url")"
-    cached="$cachedir/$sanitized"
-
-    echo "$cached"
-
-    if [ ! -d "$cached" ]; then
-        git clone --mirror "$url" "$cached" >&2 || return 1
-        git "--git-dir=$cached" repack -A -d >&2
-    else
-        git "--git-dir=$cached" fetch >&2 || return 1
+bare_clone () {
+    url="$1"; dest="$2"
+    remote="$(hash "$url")"
+    if [ ! -d "$dest" ]; then
+        mkdir -p "$dest"
+        git "--git-dir=$dest" init --quiet --bare
     fi
+    git "--git-dir=$dest" config remote.$remote.url "$(proper_url "$url")"
+    git "--git-dir=$dest" config remote.$remote.fetch "+refs/*:refs/remotes/$remote/*"
+    git "--git-dir=$dest" config remote.$remote.tagopt "--no-tags"
+    git "--git-dir=$dest" fetch $remote
 }
 
 local_clone () {
-    url="$1"; cached="$2"; dest="$3"
-    git clone --reference "$cached" "$cached" "$dest"
-    git "--git-dir=$dest/.git" remote set-url origin "$url"
+    url="$1"; cache_url="$2"; cached="$3"; dest="$4"
+    cache_remote="$(hash "$cache_url")"
+    if [ -d "$dest" ]; then
+        echo >&2 "Error: $dest already exists"
+        exit 1
+    fi
+    mkdir "$dest"
+    cd $dest
+    git init --quiet
+    mkdir -p .git/objects/info
+    echo "$cached/objects" > .git/objects/info/alternates
+    git config remote.origin.url "$cached"
+    git config remote.origin.fetch "+refs/remotes/$cache_remote/tags/*:refs/tags/*"
+    git config --add remote.origin.fetch "+refs/remotes/$cache_remote/heads/*:refs/remotes/origin/*"
+    git fetch origin
+
+    git config remote.origin.url "$url"
+    git config --replace-all remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git co -q -b master origin/master
+    cd -
+}
+
+setup_cache () {
+    url="$1"
+    cached="$cachedir/$(basename_url "$url").git"
+
+    echo "$cached"
+
+    bare_clone "$url" "$cached" >&2 || return 1
+}
+
+hash () {
+    echo "$@" | sha1sum | cut -c1-7
 }
 
 sanitize () {
     echo "$@" | tr "[:upper:]" "[:lower:]" | \
-              tr "[]()&~@#%^&*()_+=;:,\$/" " " | tr " " "_"
+                tr "[]()&~@#%^&*()_+=;:,\$/" " " | tr " " "_"
 }
 
 main "$@"
