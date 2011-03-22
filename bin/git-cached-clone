@@ -126,8 +126,6 @@ proper_url () {
     url="$1"
     echo "$url" | \
         sed -e 's,^git://github,https://github,' \
-            -e 's,^git://gist.github,https://gist.github,' \
-            -e 's,^http://gist.github,https://gist.github,' \
             -e 's,^http://github,https://github,' \
             -e 's,^git://openembedded.org,git://git.openembedded.org,'
 }
