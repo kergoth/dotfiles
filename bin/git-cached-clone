@@ -68,23 +68,23 @@ process_options () {
 list_cache () {
     echo "Cached repositories:"
     for repo in $cachedir/*/; do
-        echo "  $(git "--git-dir=$repo" config remote.origin.url)"
+        git "--git-dir=$repo" config --get-regexp "remote\..*\.url" | \
+            while read entry url; do
+                echo "  $url"
+            done
     done
 }
 
 sanitize_cache () {
     for repo in $cachedir/*/; do
-        url="$(git "--git-dir=$repo" config remote.origin.url)"
-        adjusted_url="$(proper_url "$url")"
-        if [ "$url" != "$adjusted_url" ]; then
-            git "--git-dir=$repo" remote set-url origin "$adjusted_url"
-            echo "Changed url for $repo to $adjusted_url"
-        fi
-
-        adjusted_name="$(sanitize "$adjusted_url")"
-        if [ "$(basename "$repo")" != "$adjusted_name" ]; then
-            mv "$repo" "$(dirname "$repo")/$adjusted_name"
-        fi
+        git "--git-dir=$repo" config --get-regexp "remote\..*\.url" | \
+            while read entry url; do
+                adjusted_url="$(proper_url "$url")"
+                if [ "$url" != "$adjusted_url" ]; then
+                    git "--git-dir=$repo" remote set-url origin "$adjusted_url"
+                    echo "Changed url for $repo to $adjusted_url"
+                fi
+            done
     done
 }
 
