@@ -171,7 +171,7 @@ local_clone () {
     git config remote.origin.url "$url"
     git config --replace-all remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git co -q -b master origin/master
-    cd -
+    cd - >/dev/null
 }
 
 setup_cache () {
