@@ -181,8 +181,20 @@ setup_cache () {
     bare_clone "$url" "$cached" >&2 || return 1
 }
 
+has () {
+    which "$1" >/dev/null
+}
+
 hash () {
-    echo "$@" | sha1sum | cut -c1-7
+    echo "$@" | {
+        if has sha1sum; then
+            sha1sum | cut -c1-7
+        elif has shasum; then
+            shasum | cut -c1-7
+        else
+            md5sum | cut -c1-7
+        fi
+    }
 }
 
 sanitize () {
