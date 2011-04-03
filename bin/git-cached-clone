@@ -156,7 +156,7 @@ local_clone () {
         echo >&2 "Error: $dest already exists"
         exit 1
     fi
-    mkdir "$dest"
+    mkdir -p "$dest"
     cd $dest
     git init --quiet
     mkdir -p .git/objects/info
