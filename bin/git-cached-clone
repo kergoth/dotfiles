@@ -20,10 +20,17 @@ cachedir=$HOME/.git-cache
 
 main () {
     process_options "$@" || usage
+    if [ $OPTIND -eq 1 -a $# -eq 0 ]; then
+        usage
+    fi
     shift $(($OPTIND - 1))
 
+    if [ $# -lt 1 -o $# -gt 2 ]; then
+        usage
+    fi
+
     url="$1"
-    shift || usage
+    shift
     if ! echo "$url" | grep -q "\.git/\?$"; then
         url="$url.git"
     fi
@@ -46,16 +53,21 @@ main () {
 process_options () {
     while getopts lsuh opt; do
         case "$opt" in
-            l)
-                list_cache
-                exit 0
-                ;;
-            s)
-                sanitize_cache
-                exit 0
-                ;;
-            u)
-                update_cache
+            l|s|u)
+                if [ $# -ge $OPTIND ]; then
+                    usage
+                fi
+                case "$opt" in
+                    l)
+                        list_cache
+                        ;;
+                    s)
+                        sanitize_cache
+                        ;;
+                    u)
+                        update_cache
+                        ;;
+                esac
                 exit 0
                 ;;
             \?|h)
