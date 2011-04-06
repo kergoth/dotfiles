@@ -51,9 +51,9 @@ main () {
 }
 
 process_options () {
-    while getopts lsuh opt; do
+    while getopts lsurh opt; do
         case "$opt" in
-            l|s|u)
+            l|s|u|r)
                 if [ $# -ge $OPTIND ]; then
                     usage
                 fi
@@ -66,6 +66,9 @@ process_options () {
                         ;;
                     u)
                         update_cache
+                        ;;
+                    r)
+                        repack_cache
                         ;;
                 esac
                 exit 0
@@ -106,17 +109,29 @@ update_cache () {
     done
 }
 
+repack_cache () {
+    for repo in $cachedir/*/; do
+        git "--git-dir=$repo" repack -A -d
+        git "--git-dir=$repo" gc
+    done
+}
+
 usage () {
-    echo >&2 "Usage: git cached-clone URL [DEST]"
-    echo >&2
-    echo >&2 "       git cached-clone -l"
-    echo >&2 "         List cloned repositories"
-    echo >&2
-    echo >&2 "       git cached-clone -s"
-    echo >&2 "         Sanitize cloned repositories"
-    echo >&2
-    echo >&2 "       git cached-clone -u"
-    echo >&2 "         Update cloned repositories"
+    cat >&2 <<END
+Usage: git cached-clone URL [DEST]
+
+       git cached-clone -l
+         List cloned repositories
+
+       git cached-clone -s
+         Sanitize cloned repositories
+
+       git cached-clone -u
+         Update cloned repositories
+
+       git cached-clone -r
+         Repack cloned repositories
+END
     exit 0
 }
 
