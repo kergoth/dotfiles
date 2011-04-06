@@ -51,9 +51,9 @@ main () {
 }
 
 process_options () {
-    while getopts lsurh opt; do
+    while getopts lsurha: opt; do
         case "$opt" in
-            l|s|u|r)
+            l|s|u|r|a)
                 if [ $# -ge $OPTIND ]; then
                     usage
                 fi
@@ -69,6 +69,14 @@ process_options () {
                         ;;
                     r)
                         repack_cache
+                        ;;
+                    a)
+                        ret=0
+                        cached="$(setup_cache "$OPTARG")" || ret=$?
+                        if [ $ret -ne 0 ] && [ ! -e "$cached" ]; then
+                            exit $ret
+                        fi
+                        echo >&2 "$OPTARG added to cache at $cached."
                         ;;
                 esac
                 exit 0
@@ -119,6 +127,9 @@ repack_cache () {
 usage () {
     cat >&2 <<END
 Usage: git cached-clone URL [DEST]
+
+       git cached-clone -a URL
+         Add repository to the cache
 
        git cached-clone -l
          List cloned repositories
