@@ -26,7 +26,7 @@ main () {
     fi
     shift $(($OPTIND - 1))
 
-    if [ $# -lt 1 -o $# -gt 2 ]; then
+    if [ $# -lt 1 -o $# -gt 3 ]; then
         usage
     fi
 
@@ -40,6 +40,7 @@ main () {
     if [ -z "$dest" ]; then
         dest="$(basename_url "$url")"
     fi
+    branch="$2"
 
     cache_url="$(get_cache_url "$url")"
     cached="$(get_cache_dir "$cache_url")"
@@ -49,7 +50,7 @@ main () {
     else
         update_cache_entry "$cache_url" "$cached"
     fi
-    cache_clone "$url" "$cache_url" "$cached" "$dest"
+    cache_clone "$url" "$cache_url" "$cached" "$dest" "$branch"
 }
 
 process_options () {
@@ -135,7 +136,7 @@ repack_cache () {
 
 usage () {
     cat >&2 <<END
-Usage: git cached-clone [OPTIONS] URL [DEST]
+Usage: git cached-clone [OPTIONS] URL [DEST [BRANCH]]
 
        Options:
 
@@ -210,11 +211,14 @@ update_cache_entry () {
 }
 
 cache_clone () {
-    url="$1"; cache_url="$2"; cached="$3"; dest="$4"
+    url="$1"; cache_url="$2"; cached="$3"; dest="$4"; branch="$5"
     cache_remote="$(hash "$cache_url")"
     if [ -d "$dest" ]; then
         echo >&2 "Error: $dest already exists"
         exit 1
+    fi
+    if [ -z "$branch" ]; then
+        branch=master
     fi
     mkdir -p "$dest"
     cd $dest
@@ -228,7 +232,11 @@ cache_clone () {
 
     git config remote.origin.url "$url"
     git config --replace-all remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    git co -q -b master origin/master
+    if git rev-parse -q --verify origin/$branch >/dev/null; then
+        git co -q -b $branch origin/$branch
+    else
+        git co -q -b $branch origin/master
+    fi
 
     if [ $recursive -eq 1 ]; then
         clone_submodules
