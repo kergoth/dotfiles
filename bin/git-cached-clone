@@ -44,7 +44,11 @@ main () {
     cache_url="$(get_cache_url "$url")"
     cached="$(get_cache_dir "$cache_url")"
 
-    add_to_cache "$cache_url" "$cached"
+    if [ ! -e "$cached" ]; then
+        add_to_cache "$cache_url" "$cached"
+    else
+        update_cache_entry "$cache_url" "$cached"
+    fi
     cache_clone "$url" "$cache_url" "$cached" "$dest"
 }
 
