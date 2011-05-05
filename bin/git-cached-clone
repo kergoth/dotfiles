@@ -17,6 +17,7 @@
 set -e
 
 cachedir=$HOME/.git-cache
+recursive=0
 
 main () {
     process_options "$@" || usage
@@ -41,18 +42,18 @@ main () {
     fi
 
     cache_url="$(get_cache_url "$url")"
-    ret=0
-    cached="$(setup_cache "$cache_url")" || ret=$?
-    if [ $ret -ne 0 ] && [ ! -e "$cached" ]; then
-        exit $ret
-    fi
+    cached="$(get_cache_dir "$cache_url")"
 
-    local_clone "$url" "$cache_url" "$cached" "$dest"
+    add_to_cache "$cache_url" "$cached"
+    cache_clone "$url" "$cache_url" "$cached" "$dest"
 }
 
 process_options () {
-    while getopts lsurha: opt; do
+    while getopts lsurRha: opt; do
         case "$opt" in
+            R)
+                recursive=1
+                ;;
             l|s|u|r|a)
                 if [ $# -ge $OPTIND ]; then
                     usage
@@ -71,12 +72,16 @@ process_options () {
                         repack_cache
                         ;;
                     a)
-                        ret=0
-                        cached="$(setup_cache "$OPTARG")" || ret=$?
-                        if [ $ret -ne 0 ] && [ ! -e "$cached" ]; then
-                            exit $ret
+                        url="$OPTARG"
+                        cache_url="$(get_cache_url "$url")"
+                        cached="$(get_cache_dir "$cache_url")"
+
+                        if [ ! -e "$cached" ]; then
+                            add_to_cache "$cache_url" "$cached"
+                            echo "$url added to cache at $cached."
+                        else
+                            echo "$url already in cache at $cached, skipping."
                         fi
-                        echo >&2 "$OPTARG added to cache at $cached."
                         ;;
                 esac
                 exit 0
@@ -102,7 +107,7 @@ sanitize_cache () {
     for repo in $cachedir/*/; do
         git "--git-dir=$repo" config --get-regexp "remote\..*\.url" | \
             while read entry url; do
-                adjusted_url="$(proper_url "$url")"
+                adjusted_url="$(get_cache_url "$url")"
                 if [ "$url" != "$adjusted_url" ]; then
                     git "--git-dir=$repo" remote set-url origin "$adjusted_url"
                     echo "Changed url for $repo to $adjusted_url"
@@ -126,7 +131,11 @@ repack_cache () {
 
 usage () {
     cat >&2 <<END
-Usage: git cached-clone URL [DEST]
+Usage: git cached-clone [OPTIONS] URL [DEST]
+
+       Options:
+
+           -R      Recursive -- also clone submodules
 
        git cached-clone -a URL
          Add repository to the cache
@@ -174,20 +183,29 @@ basename_url () {
     sanitize "$(basename "$desturl")"
 }
 
-bare_clone () {
-    url="$1"; dest="$2"
+add_to_cache () {
+    url="$1"; cached="$2"
     remote="$(hash "$url")"
-    if [ ! -d "$dest" ]; then
-        mkdir -p "$dest"
-        git "--git-dir=$dest" init --quiet --bare
+    if [ -d "$cached" ]; then
+        return 0
     fi
-    git "--git-dir=$dest" config remote.$remote.url "$(proper_url "$url")"
-    git "--git-dir=$dest" config remote.$remote.fetch "+refs/*:refs/remotes/$remote/*"
-    git "--git-dir=$dest" config remote.$remote.tagopt "--no-tags"
-    git "--git-dir=$dest" fetch $remote
+
+    mkdir -p "$cached"
+    git "--git-dir=$cached" init --quiet --bare
+    update_cache_entry "$url" "$cached" || true
 }
 
-local_clone () {
+update_cache_entry () {
+    url="$1"; cached="$2"
+    remote="$(hash "$url")"
+
+    git "--git-dir=$cached" config remote.$remote.url "$(proper_url "$url")"
+    git "--git-dir=$cached" config remote.$remote.fetch "+refs/*:refs/remotes/$remote/*"
+    git "--git-dir=$cached" config remote.$remote.tagopt "--no-tags"
+    git "--git-dir=$cached" fetch $remote
+}
+
+cache_clone () {
     url="$1"; cache_url="$2"; cached="$3"; dest="$4"
     cache_remote="$(hash "$cache_url")"
     if [ -d "$dest" ]; then
@@ -207,16 +225,31 @@ local_clone () {
     git config remote.origin.url "$url"
     git config --replace-all remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git co -q -b master origin/master
+
+    if [ $recursive -eq 1 ]; then
+        clone_submodules
+    fi
     cd - >/dev/null
 }
 
-setup_cache () {
+clone_submodules () {
+    if [ ! -e .gitmodules ]; then
+        return
+    fi
+
+    git submodule init
+    GIT_CONFIG=.gitmodules git config --get-regexp submodule\\..\*\\.path | while read key path; do
+        name=$(echo $key|sed -e's,^submodule\.,,; s,\.path$,,')
+        url=$(GIT_CONFIG=.gitmodules git config --get submodule.$name.url)
+        rm -rf $name
+        main -R $url $name
+    done
+    git submodule update
+}
+
+get_cache_dir () {
     url="$1"
-    cached="$cachedir/$(basename_url "$url").git"
-
-    echo "$cached"
-
-    bare_clone "$url" "$cached" >&2 || return 1
+    echo "$cachedir/$(basename_url "$url").git"
 }
 
 has () {
