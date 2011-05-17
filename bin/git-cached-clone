@@ -45,7 +45,7 @@ main () {
     cache_url="$(get_cache_url "$url")"
     cached="$(get_cache_dir "$cache_url")"
 
-    if [ ! -e "$cached" ]; then
+    if ! in_cache "$cache_url" "$cached"; then
         add_to_cache "$cache_url" "$cached"
     else
         update_cache_entry "$cache_url" "$cached"
@@ -81,11 +81,11 @@ process_options () {
                         cache_url="$(get_cache_url "$url")"
                         cached="$(get_cache_dir "$cache_url")"
 
-                        if [ ! -e "$cached" ]; then
-                            add_to_cache "$cache_url" "$cached"
+                        if ! in_cache "$cache_url" "$cached"; then
+                            add_to_cache "$cache_url" "$cache"
                             echo "$url added to cache at $cached."
                         else
-                            echo "$url already in cache at $cached, skipping."
+                            echo "$url already in cache at $cached, skipping"
                         fi
                         ;;
                 esac
@@ -188,15 +188,31 @@ basename_url () {
     sanitize "$(basename "$desturl")"
 }
 
+in_cache () {
+    url="$1"; cached="$2"
+    remote="$(hash "$url")"
+
+    if [ ! -e $cached ]; then
+        return 1
+    fi
+
+    url_in_cache=$(git "--git-dir=$cached" config remote.$remote.url) || return 1
+    if [ "$url_in_cache" != "$(proper_url "$url")" ]; then
+        return 1
+    fi
+
+    return 0
+}
+
 add_to_cache () {
     url="$1"; cached="$2"
     remote="$(hash "$url")"
-    if [ -d "$cached" ]; then
-        return 0
-    fi
 
     mkdir -p "$cached"
     git "--git-dir=$cached" init --quiet --bare
+    git "--git-dir=$cached" config remote.$remote.url "$(proper_url "$url")"
+    git "--git-dir=$cached" config remote.$remote.fetch "+refs/*:refs/remotes/$remote/*"
+    git "--git-dir=$cached" config remote.$remote.tagopt "--no-tags"
     update_cache_entry "$url" "$cached" || true
 }
 
@@ -204,9 +220,6 @@ update_cache_entry () {
     url="$1"; cached="$2"
     remote="$(hash "$url")"
 
-    git "--git-dir=$cached" config remote.$remote.url "$(proper_url "$url")"
-    git "--git-dir=$cached" config remote.$remote.fetch "+refs/*:refs/remotes/$remote/*"
-    git "--git-dir=$cached" config remote.$remote.tagopt "--no-tags"
     git "--git-dir=$cached" fetch $remote
 }
 
