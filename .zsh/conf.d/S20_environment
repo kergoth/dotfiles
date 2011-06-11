@@ -87,5 +87,10 @@ if which dircolors >/dev/null 2>&1; then
     fi
 fi
 
+if [[ -e /etc/debian_chroot ]]; then
+    export debian_chroot=$(cat /etc/debian_chroot)
+    HOSTNAME=$HOSTNAME.$debian_chroot
+fi
+
 export PYTHONSTARTUP=~/.pythonrc.py
 export ACKRC=.ackrc
