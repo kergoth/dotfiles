@@ -225,6 +225,9 @@
 	pushInsteadOf = oe:
 	pushInsteadOf = git://git.openembedded.org/
 
+[url "git://git.openmoko.org/git/"]
+	insteadOf = openmoko:
+
 [url "git://git.gnome.org/"]
 	insteadOf = gnome:
 
