@@ -2,7 +2,6 @@
 [core]
 	excludesfile = ~/.gitignore_global
 	whitespace = cr-at-eol
-	autocrlf = input
 	safecrlf = true
 
 [user]
