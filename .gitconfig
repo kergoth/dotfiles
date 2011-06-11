@@ -210,12 +210,12 @@
 
 [url "https://kergoth@github.com/"]
 	insteadOf = github-https:
-	pushInsteadOf = github:
-	pushInsteadOf = git://github.com/
-	pushInsteadOf = https://github.com/
 
 [url "git@github.com:"]
 	insteadOf = github-ssh:
+	pushInsteadOf = github:
+	pushInsteadOf = git://github.com/
+	pushInsteadOf = https://github.com/
 
 [url "git://git.openembedded.org/"]
 	insteadOf = oe:
