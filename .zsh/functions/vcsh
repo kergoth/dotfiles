@@ -11,4 +11,4 @@ if [[ ! -e $repodir ]]; then
     return 1
 fi
 
-alias git="git --work-dir=$HOME --git-dir=$repodir"
+alias git="git --work-tree=$HOME --git-dir=$repodir"
