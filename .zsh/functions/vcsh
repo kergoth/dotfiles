@@ -5,10 +5,15 @@ if [[ -z $repo ]]; then
     repo=homefiles
 fi
 
-repodir=$HOME/.fgits/$repo.git
-if [[ ! -e $repodir ]]; then
-    echo >&2 "Error: no such repo $repodir"
+GIT_DIR=$HOME/.fgits/$repo.git
+if [[ ! -e $GIT_DIR ]]; then
+    echo >&2 "Error: no such repo $GIT_DIR"
+    unset GIT_DIR
     return 1
 fi
+export GIT_DIR
 
-alias git="git --work-tree=$HOME --git-dir=$repodir"
+GIT_WORK_TREE=$GIT_DIR/$(git config core.worktree 2>/dev/null || "../..")
+GIT_WORK_TREE=$(cd $GIT_WORK_TREE && pwd)
+export GIT_WORK_TREE
+cd $GIT_WORK_TREE

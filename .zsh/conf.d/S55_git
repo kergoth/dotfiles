@@ -23,10 +23,11 @@ new_parse_git_branch() {
 
     psvar=()
     git_dir=$(git rev-parse --git-dir 2> /dev/null) || return
-    if test -d "$git_dir/../.dotest"; then
-        if test -f "$git_dir/../.dotest/rebasing"; then
+    git_work_tree=$git_dir/$(GIT_DIR=$git_dir git config core.worktree 2>/dev/null || echo "..")
+    if test -d "$git_work_tree/.dotest"; then
+        if test -f "$git_work_tree/.dotest/rebasing"; then
             __ZSH_GIT_STATE="rebase"
-        elif test -f "$git_dir/../.dotest/applying"; then
+        elif test -f "$git_work_tree/.dotest/applying"; then
             __ZSH_GIT_STATE="am"
         else
             __ZSH_GIT_STATE="am/rebase"
@@ -49,9 +50,9 @@ new_parse_git_branch() {
     fi
 
     if which readlink >/dev/null 2>&1; then
-        __ZSH_GIT_FULL_DIR=$(readlink -f ${git_dir:h})
+        __ZSH_GIT_FULL_DIR=$(readlink -f ${git_work_tree})
     else
-        __ZSH_GIT_FULL_DIR=${git_dir:h}
+        __ZSH_GIT_FULL_DIR=${git_work_tree}
     fi
     __ZSH_GIT_DIR="${__ZSH_GIT_FULL_DIR/$HOME/~}"
     __ZSH_GIT_BRANCH="${branch#refs/heads/}"
