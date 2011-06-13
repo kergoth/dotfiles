@@ -44,7 +44,9 @@ done
 
 local _etc_hosts _known_hosts _ssh_hosts
 _etc_hosts=( ${${${(f)"$(</etc/hosts)"}/\#*}#*[\t ]} )
-_known_hosts=( ${${(f)"$(<~/.ssh/known_hosts)"}//[ ,#]*/} )
+if [[ -e ~/.ssh/known_hosts ]]; then
+    _known_hosts=( ${${(f)"$(<~/.ssh/known_hosts)"}//[ ,#]*/} )
+fi
 _ssh_hosts=( ${${${(f)"$(egrep -i '^host ' ~/.ssh/config)"}//* /}%%*\**} )
 zstyle ':completion:*' hosts $_etc_hosts $_known_hosts $_ssh_hosts ${(v)aliasedhosts} $hosts
 zstyle ':completion:*:(ssh|scp|sftp):*' hosts $_etc_hosts $_known_hosts $_ssh_hosts ${(v)aliasedhosts} $hosts
