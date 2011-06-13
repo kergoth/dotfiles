@@ -1,0 +1,14 @@
+#!/usr/bin/zsh
+
+repo=$1
+if [[ -z $repo ]]; then
+    repo=homefiles
+fi
+
+repodir=$HOME/.fgits/$repo.git
+if [[ ! -e $repodir ]]; then
+    echo >&2 "Error: no such repo $repodir"
+    return 1
+fi
+
+alias git="git --work-dir=$HOME --git-dir=$repodir"
