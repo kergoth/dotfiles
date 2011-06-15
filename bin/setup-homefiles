@@ -21,7 +21,7 @@ detached_clone() {
 }
 
 detached_clone git://github.com/kergoth/homefiles ~/.fgits/homefiles.git ../..
-detached_clone git://github.com/kergoth/dotvim-test ~/.fgits/dotvim-test.git ../../.vim
+detached_clone git://github.com/kergoth/dotvim-test ~/.fgits/dotvim.git ../../.vim
 
 {
     echo
