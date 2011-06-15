@@ -1,0 +1,15 @@
+#!/bin/sh
+
+GIT_DIR=$HOME/.fgits/$repo.git
+if [[ ! -e $GIT_DIR ]]; then
+    echo >&2 "Error: no such repo $GIT_DIR"
+    unset GIT_DIR
+    return 1
+fi
+export GIT_DIR
+
+GIT_WORK_TREE=$GIT_DIR/$(git config core.worktree 2>/dev/null || "../..")
+GIT_WORK_TREE=$(cd $GIT_WORK_TREE && pwd)
+export GIT_WORK_TREE
+
+exec $SHELL -i
