@@ -1,10 +1,15 @@
 #!/bin/sh
 
+repo=$1
+if [[ -z $repo ]]; then
+    repo=homefiles
+fi
+
 GIT_DIR=$HOME/.fgits/$repo.git
 if [[ ! -e $GIT_DIR ]]; then
     echo >&2 "Error: no such repo $GIT_DIR"
     unset GIT_DIR
-    return 1
+    exit 1
 fi
 export GIT_DIR
 
