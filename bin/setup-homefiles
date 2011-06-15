@@ -17,6 +17,7 @@ detached_clone() {
     GIT_DIR="$PWD" git read-tree HEAD
     GIT_DIR="$PWD" git checkout-index -a -f --prefix="$worktree" || true
     GIT_DIR="$PWD" git config core.worktree "$worktree"
+    GIT_DIR="$PWD" git config status.showUntrackedFiles no
 }
 
 detached_clone git://github.com/kergoth/homefiles ~/.fgits/homefiles.git ../..
