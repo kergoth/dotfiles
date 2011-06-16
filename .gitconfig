@@ -306,8 +306,15 @@
 [url "git://git.pokylinux.org/"]
 	insteadOf = poky:
 
+[url "http://git.shr-project.org/repo/"]
+	insteadOf = shr:
+
 [url "git://sourceware.org/git/"]
 	insteadOf = sourceware:
+
+[url "git://git.bec-systems.com/"]
+	insteadOf = bec-systems:
+	insteadOf = bec:
 
 [url "git://git.samba.org/"]
 	insteadOf = samba:
