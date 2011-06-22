@@ -286,6 +286,9 @@
 [url "git://git.fedorahosted.org/git/"]
 	insteadOf = fedorahosted:
 
+[url "git://sources.redhat.com/git/"]
+	insteadOf = redhat:
+
 [url "git://git.kernel.org/pub/scm/"]
 	insteadOf = kernel:
 
@@ -325,3 +328,13 @@
 
 [url "git://git.angstrom-distribution.org/"]
 	insteadOf = angstrom:
+
+[url "git://uclibc.org/"]
+	insteadOf = uclibc:
+
+[url "git://git.infradead.org/"]
+	insteadOf = infradead:
+
+[url "git://git.o-hand.com/"]
+	insteadOf = o-hand:
+	insteadOf = ohand:
