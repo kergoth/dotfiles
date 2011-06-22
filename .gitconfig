@@ -118,6 +118,20 @@
 	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
 	unstage = reset HEAD --
 	empty-branch = !sh -e -c 'git symbolic-ref HEAD "refs/heads/$0"; rm -f $(git revparse --git-dir)/index; git clean -fdx'
+	subtree-fetch = "!sh -e -c ' \
+		if [ -n \"$1\" ]; then \
+			branch=\"$1\"; \
+		else \
+			branch=\"origin\"; \
+		fi; \
+		git fetch $branch; \
+		\
+		subtree=\"$(git config remote.$branch.subtree)\" || exit 0; \
+		ref_pattern=\"$(git config remote.$branch.fetch|cut -d: -f2|sed -e\"s,*$,,\")\"; \
+		refs=\"$(git for-each-ref \"--format=%(refname)\" \"$ref_pattern\")\"; \
+		git filter-branch -f -d /tmp/subtree-fetch --subdirectory-filter $subtree $refs; \
+		rm -rf $(git rev-parse --git-dir)/refs/original/*; \
+	'"
 
 [interactive]
 	singlekey = true
