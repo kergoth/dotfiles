@@ -144,6 +144,7 @@
 [merge]
 	summary = true
 	tool = meld
+	conflictstyle = diff3
 
 [filter "indent"]
 	clean = indent
