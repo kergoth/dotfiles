@@ -129,8 +129,8 @@
 		subtree=\"$(git config remote.$branch.subtree)\" || exit 0; \
 		ref_pattern=\"$(git config remote.$branch.fetch|cut -d: -f2|sed -e\"s,*$,,\")\"; \
 		refs=\"$(git for-each-ref \"--format=%(refname)\" \"$ref_pattern\")\"; \
-		git filter-branch -f -d /tmp/subtree-fetch --subdirectory-filter $subtree $refs; \
-		rm -rf $(git rev-parse --git-dir)/refs/original/*; \
+		git filter-branch -f --original refs/original-subtree --subdirectory-filter $subtree $refs; \
+		rm -rf $(git rev-parse --git-dir)/refs/original-subtree/; \
 	'"
 
 [interactive]
