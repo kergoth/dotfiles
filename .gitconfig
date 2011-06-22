@@ -161,6 +161,10 @@
 	tool = meld
 	conflictstyle = diff3
 
+[merge "ours"]
+	name = \"always keep ours\" merge driver
+	driver = true
+
 [filter "indent"]
 	clean = indent
 	smudge = cat
