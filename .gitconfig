@@ -117,7 +117,7 @@
 	serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
 	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
 	unstage = reset HEAD --
-	empty-branch = !sh -e -c 'git symbolic-ref HEAD "refs/heads/$0"; rm -f $(git revparse --git-dir)/index; git clean -fdx'
+	empty-branch = "!sh -e -c 'git symbolic-ref HEAD \"refs/heads/$1\"; rm -f $(git rev-parse --git-dir)/index; git clean -fdx' \"$@\""
 	subtree-fetch = "!sh -e -c ' \
 		if [ -n \"$1\" ]; then \
 			branch=\"$1\"; \
@@ -131,7 +131,7 @@
 		refs=\"$(git for-each-ref \"--format=%(refname)\" \"$ref_pattern\")\"; \
 		git filter-branch -f --original refs/original-subtree --subdirectory-filter $subtree $refs; \
 		rm -rf $(git rev-parse --git-dir)/refs/original-subtree/; \
-	'"
+	' \"$@\""
 
 [interactive]
 	singlekey = true
