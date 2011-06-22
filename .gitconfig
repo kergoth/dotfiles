@@ -236,15 +236,16 @@
 	pushInsteadOf = gnome:
 	pushInsteadOf = git://git.gnome.org/
 
-[url "git://anongit.freedesktop.org/git/"]
+[url "git://anongit.freedesktop.org/"]
 	insteadOf = fdo:
 
-[url "ssh://git.freedesktop.org/git/"]
+[url "ssh://git.freedesktop.org/"]
 	insteadOf = fdo-ssh:
 	pushInsteadOf = fdo:
-	pushInsteadOf = git://anongit.freedesktop.org/git/
+	pushInsteadOf = git://anongit.freedesktop.org/
 
-[url "git://git.debian.org/"]
+[url "git://anonscm.debian.org/"]
+	insteadOf = git://git.debian.org/
 	insteadOf = debian:
 
 [url "ssh://git.debian.org/git/"]
@@ -260,7 +261,7 @@
 	pushInsteadOf = gist:
 	pushInsteadOf = git://gist.github.com/
 
-[url "git://git.sv.gnu.org/"]
+[url "http://git.sv.gnu.org/r/"]
 	insteadOf = savannah:
 
 [url "ssh://git.sv.gnu.org/srv/git/"]
