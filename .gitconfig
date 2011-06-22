@@ -294,3 +294,6 @@
 
 [url "git://git.altlinux.org/"]
 	insteadOf = altlinux:
+
+[url "git://git.angstrom-distribution.org/"]
+	insteadOf = angstrom:
