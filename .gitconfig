@@ -132,6 +132,17 @@
 		git filter-branch -f --original refs/original-subtree --subdirectory-filter $subtree $refs; \
 		rm -rf $(git rev-parse --git-dir)/refs/original-subtree/; \
 	' \"$@\""
+	subtree-pull = "!sh -e -x -c '\
+		remote=$1; \
+		if [ -z \"$remote\" ]; then \
+			remote=origin; \
+		fi; \
+		branch=$2; \
+		if [ -z \"$branch\" ]; then \
+			branch=master; \
+		fi; \
+		git subtree-fetch $remote; \
+		git merge -s subtree $remote/$branch' \"$@\""
 
 [interactive]
 	singlekey = true
