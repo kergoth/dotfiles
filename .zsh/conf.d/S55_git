@@ -49,7 +49,7 @@ new_parse_git_branch() {
             branch="$(cut -c1-7 "$git_dir/HEAD")..."
     fi
 
-    if which readlink >/dev/null 2>&1; then
+    if [[ $(uname -s) != Darwin ]] && which readlink >/dev/null 2>&1; then
         __ZSH_GIT_FULL_DIR=$(readlink -f ${git_work_tree})
     else
         __ZSH_GIT_FULL_DIR=${git_work_tree}

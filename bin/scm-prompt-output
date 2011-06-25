@@ -2,7 +2,7 @@
 
 export PATH=/usr/local/bin:/usr/bin:/bin
 
-if [[ $(stat -f -c "%T" $PWD) = "nfs" ]]; then
+if [[ $(uname -s) != Darwin && $(stat -f -c "%T" $PWD) = "nfs" ]]; then
     exit 0
 fi
 

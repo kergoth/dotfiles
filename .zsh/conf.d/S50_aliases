@@ -42,7 +42,11 @@ function svndiff() {
 alias svnd=svndiff
 
 if [[ $terminfo[colors] -ge 8 ]]; then
-    lscolorarg='--color=always'
+    if [[ $(uname -s) = Darwin ]]; then
+        lscolorarg='-G'
+    else
+        lscolorarg='--color=always'
+    fi
 else
     lscolorarg='-F'
 fi
@@ -63,8 +67,9 @@ alias lsr='lsfe -tp'
 alias lr='lsfe -ltp'
 alias ls='lsfe -p'
 
-# alias ps='ps -o user,group,pid,sess,stat,wchan:8,cmd --forest'
-alias ps='ps -o user,group,pid,stat,cmd --forest'
+if [[ $(uname -s) != Darwin ]]; then
+    alias ps='ps -o user,group,pid,stat,cmd --forest'
+fi
 
 alias pcal-portrait="pcal -F 1 -m -J -p"
 alias pcal-landscape="pcal -F 1 -m -J -l"
