@@ -32,9 +32,6 @@ main () {
 
     url="$1"
     shift
-    if ! echo "$url" | grep -q "\.git/\?$"; then
-        url="$url.git"
-    fi
 
     dest="$1"
     if [ -z "$dest" ]; then
