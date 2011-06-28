@@ -109,9 +109,22 @@ sanitize_cache () {
     for repo in $cachedir/*/; do
         git "--git-dir=$repo" config --get-regexp "remote\..*\.url" | \
             while read entry url; do
+                name="$(echo "$entry"|sed -e's,^remote\.,,; s,\.url$,,')"
                 adjusted_url="$(get_cache_url "$url")"
+                new_hash="$(hash "$adjusted_url")"
+                if [ "$name" != "$new_hash" ]; then
+                    if git "--git-dir=$repo" config remote.$new_hash.url >/dev/null; then
+                        # correct remote already exists, just drop this one
+                        echo "Remote $new_hash already exists, dropping $name"
+                        git "--git-dir=$repo" remote rm $name
+                    else
+                        echo "Renaming $name to $new_hash to account for url change"
+                        git "--git-dir=$repo" remote rename $name $new_hash
+                    fi
+                    name="$new_hash"
+                fi
                 if [ "$url" != "$adjusted_url" ]; then
-                    git "--git-dir=$repo" remote set-url origin "$adjusted_url"
+                    git "--git-dir=$repo" remote set-url $name "$adjusted_url"
                     echo "Changed url for $repo to $adjusted_url"
                 fi
             done
