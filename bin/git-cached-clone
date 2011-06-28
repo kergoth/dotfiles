@@ -327,4 +327,5 @@ sanitize () {
                 tr "[]()&~@#%^&*()_+=;:,\$/" " " | tr " " "_"
 }
 
+unset GIT_DIR GIT_WORK_TREE
 main "$@"
