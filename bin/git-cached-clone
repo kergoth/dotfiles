@@ -51,10 +51,13 @@ main () {
 }
 
 process_options () {
-    while getopts lsurRha: opt; do
+    while getopts lsurRhC:a: opt; do
         case "$opt" in
             R)
                 recursive=1
+                ;;
+            C)
+                cachedir="$(abspath "$OPTARG")"
                 ;;
             l|s|u|r|a)
                 if [ $# -ge $OPTIND ]; then
@@ -93,6 +96,14 @@ process_options () {
                 ;;
        esac
     done
+}
+
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="$PWD/$_path"
+    fi
+    echo "$_path"
 }
 
 list_cache () {
@@ -150,7 +161,8 @@ Usage: git cached-clone [OPTIONS] URL [DEST [BRANCH]]
 
        Options:
 
-           -R      Recursive -- also clone submodules
+           -R               Recursive -- also clone submodules
+           -C CACHE_DIR     Specify the cache directory to use (default is ~/.git-cache/)
 
        git cached-clone -a URL
          Add repository to the cache
