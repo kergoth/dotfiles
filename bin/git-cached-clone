@@ -187,9 +187,16 @@ get_cache_url () {
 proper_url () {
     url="$1"
     echo "$url" | \
-        sed -e 's,^git://github,https://github,' \
-            -e 's,^http://github,https://github,' \
-            -e 's,^git://openembedded.org,git://git.openembedded.org,'
+        sed -e '
+s,^git://github,https://github,;
+s,^http://github,https://github,;
+s,^git://openembedded.org,git://git.openembedded.org,;
+s,^http://git.sv.gnu.org/,http://git.savannah.gnu.org/,;
+s,^git://git.sv.gnu.org/,http://git.savannah.gnu.org/r/,;
+s,^git://git.savannah.gnu.org/,http://git.savannah.gnu.org/r/,;
+/^git:\/\/anonscm.debian.org\//q;
+s,\.git/*$,,;
+        '
 }
 
 basename_url () {
