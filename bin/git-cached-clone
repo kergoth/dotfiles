@@ -292,7 +292,7 @@ has () {
 }
 
 hash () {
-    echo "$@" | {
+    echo -n "$@" | {
         if has sha1sum; then
             sha1sum | cut -c1-7
         elif has shasum; then
