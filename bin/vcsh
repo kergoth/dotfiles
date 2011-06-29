@@ -16,5 +16,6 @@ export GIT_DIR
 GIT_WORK_TREE=$GIT_DIR/$(git config core.worktree 2>/dev/null || "../..")
 GIT_WORK_TREE=$(cd $GIT_WORK_TREE && pwd)
 export GIT_WORK_TREE
+cd $GIT_WORK_TREE
 
 exec $SHELL -i
