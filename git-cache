@@ -25,7 +25,32 @@ END
     exit 0
 }
 
-process_options () {
+usage_add () {
+    cat >&2 <<END
+Usage: git cache add [OPTIONS] URL
+
+    Options:
+
+        -h    Show this usage information
+        -n    Do not fetch the remote in the cache repository
+END
+    exit 1
+}
+
+usage_clone () {
+    cat >&2 <<END
+Usage: git cache clone [OPTIONS] URL [DESTINATION]
+
+    Options:
+
+        -h    Show this usage information
+        -n    Do not fetch the remote in the cache repository
+        -r    As with git clone --recursive, also set up and clone submodules
+END
+    exit 1
+}
+
+process_global_options () {
     while getopts vhd: opt; do
         case "$opt" in
             v)
@@ -46,7 +71,7 @@ cache_dir="$HOME/.git-cache"
 verbose=0
 
 main () {
-    process_arguments "$@"
+    process_global_arguments "$@"
     shift $(($OPTIND - 1))
     shift
     unset OPTIND OPTARG
@@ -56,22 +81,10 @@ main () {
     eval cmd_$command "$@"
 }
 
-usage_add () {
-    cat >&2 <<END
-Usage: git cache add [OPTIONS] URL
-
-    Options:
-
-        -h    Show this usage information
-        -n    Do not fetch the remote in the cache repository
-END
-    exit 1
-}
-
 cmd_add () {
     no_fetch=0
 
-    while getopts nh opt; do
+    while getopts hn opt; do
         case "$opt" in
             n)
                 no_fetch=1
@@ -101,6 +114,29 @@ cmd_add () {
 }
 
 cmd_clone () {
+    no_fetch=0
+
+    while getopts hnr opt; do
+        case "$opt" in
+            n)
+                no_fetch=1
+                ;;
+            r)
+                recursive=1
+                ;;
+            \?|h)
+                usage_clone
+                ;;
+        esac
+    done
+    shift $(($OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage_clone
+    fi
+
+    url="$1"
+
     if [ $# -lt 1 -o $# -gt 2 ]; then
         die "Usage: git cache clone URL [DESTINATION]"
     fi
@@ -123,12 +159,17 @@ cmd_clone () {
     verbose "Ensuring $url is in the cache at $cache_repo"
     add_to_cache "$cache_url" "$cache_repo" "$remote"
 
-    verbose "Updating remote $remote in $cache_repo"
-    git "--git-dir=$cache_repo" fetch "$remote" || true
+    if [ $no_fetch -eq 0 ]; then
+        verbose "Updating remote $remote in $cache_repo"
+        git "--git-dir=$cache_repo" fetch "$remote" || true
+    fi
 
     verbose "Cloning from $cache_repo to $destination"
     $scripts_dir/git-clone-via -s -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
     msg "Cloned from $cache_repo to $destination"
+
+    cd $destination
+    clone_submodules
 }
 
 create_repo () {
@@ -160,6 +201,29 @@ add_to_cache () {
     if [ $fresh -ne 0 ]; then
         msg "Added $full_url to the cache at $cache_repo"
     fi
+}
+
+clone_submodules () {
+    if [ ! -e .gitmodules ]; then
+        return
+    fi
+
+    verbose "Cloning submodules in $PWD"
+
+    git submodule init
+    GIT_CONFIG=.gitmodules git config --get-regexp submodule\\..\*\\.path | while read key path; do
+        name=$(echo $key|sed -e's,^submodule\.,,; s,\.path$,,')
+        url=$(GIT_CONFIG=.gitmodules git config --get submodule.$name.url)
+        rm -rf $name
+        (
+            set --
+            if [ $no_fetch -ne 0 ]; then
+                set -- -n
+            fi
+            cmd_clone "$@" -r $url $name
+        )
+    done
+    git submodule update
 }
 
 canonical_url () {
@@ -194,8 +258,8 @@ full_url () {
     }
 }
 
-process_arguments () {
-    process_options "$@" || usage
+process_global_arguments () {
+    process_global_options "$@" || usage
     if [ $OPTIND -eq 1 -a $# -eq 0 ]; then
         usage
     fi
