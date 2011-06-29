@@ -99,8 +99,8 @@ fi
 git init $to
 
 from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
-from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url)
-from_refs=$(GIT_DIR=$from_git_dir git config remote.$source_remote.fetch)
+from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url) || true
+from_refs=$(GIT_DIR=$from_git_dir git config remote.$source_remote.fetch) || true
 
 export GIT_DIR=$to/.git
 export GIT_WORK_TREE=$to
