@@ -52,7 +52,7 @@ path=($path /usr/lib/kde*/bin(N/) /var/lib/gems/*/bin(N/))
 path=($path /opt/*/bin(N/))
 
 # less options
-export LESS=FRSX
+export LESS=FRX
 export PAGER=less
 
 # grep options
