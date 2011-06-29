@@ -90,19 +90,6 @@
 		git push -u \"$@\" \"$remote\" \
 		                   \"$(git symbolic-ref HEAD):$ref\"'"
 
-	detached-clone = "!sh -e -c ' \
-		url=\"$0\"; \
-		repo=\"$1\"; \
-		worktree=\"$2/\"; \
-		git clone --no-checkout \"$url\" \"$repo\"; \
-		cd \"$repo\"; \
-		mkdir -p \"$worktree\"; \
-		mv .git/* .; \
-		rmdir .git; \
-		GIT_DIR=\"$PWD\" git read-tree HEAD; \
-		GIT_DIR=\"$PWD\" git checkout-index -a --prefix=\"$worktree\" || true; \
-		GIT_DIR=\"$PWD\" git config core.worktree \"$worktree\"'"
-
 	# push all unmerged local branches to the supplied remote, setting up
 	# tracking for the local branches to that remote.
 	publish-all = !git branch --no-merged | xargs -n1 git push -u "$@"
