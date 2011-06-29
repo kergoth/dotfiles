@@ -8,6 +8,24 @@
 # you get a functional repository even if upstream is down, or your network is
 # unavailable.
 
+usage () {
+    cat >&2 <<END
+Usage: git clone-via [OPTIONS] SOURCE [DEST]
+
+       Options:
+
+           -l               Hard link objects the way clone -l does
+           -s               Reference the source repository the way clone -s does
+           -r SOURCE_REMOTE Specify the remote used in the source repository
+                            Default value: origin
+           -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
+                               Default value: refs/tags/*
+           -t SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
+                                Default value: refs/remotes/<remote>/*
+END
+    exit 0
+}
+
 abspath () {
     _path="$1"
     if [ -n "${_path##/*}" ]; then
@@ -60,24 +78,6 @@ process_options () {
                 ;;
        esac
     done
-}
-
-usage () {
-    cat >&2 <<END
-Usage: git clone-via [OPTIONS] SOURCE [DEST]
-
-       Options:
-
-           -l               Hard link objects the way clone -l does
-           -s               Reference the source repository the way clone -s does
-           -r SOURCE_REMOTE Specify the remote used in the source repository
-                            Default value: origin
-           -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
-                               Default value: refs/tags/*
-           -t SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
-                                Default value: refs/remotes/<remote>/*
-END
-    exit 0
 }
 
 set -e
