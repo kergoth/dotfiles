@@ -235,6 +235,17 @@
 [help]
 	autocorrect = 1
 
+[url "git://github.com/openembedded/"]
+	insteadOf = oe:
+	insteadOf = oe-ssh:
+	insteadOf = git://git.openembedded.org/
+	insteadOf = git@git.openembedded.org:
+
+[url "git@git.openembedded.org:"]
+	pushInsteadOf = oe:
+	pushInsteadOf = git://git.openembedded.org/
+	pushInsteadOf = git://github.com/openembedded/
+
 [url "git://github.com/"]
 	insteadOf = github:
 	insteadOf = https://github.com/
@@ -247,14 +258,6 @@
 	pushInsteadOf = github:
 	pushInsteadOf = git://github.com/
 	pushInsteadOf = https://github.com/
-
-[url "git://git.openembedded.org/"]
-	insteadOf = oe:
-
-[url "git@git.openembedded.org:"]
-	insteadOf = oe-ssh:
-	pushInsteadOf = oe:
-	pushInsteadOf = git://git.openembedded.org/
 
 [url "git://git.openmoko.org/git/"]
 	insteadOf = openmoko:
