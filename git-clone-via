@@ -82,6 +82,8 @@ process_options () {
 
 set -e
 
+unset GIT_DIR GIT_WORK_TREE
+
 source_remote=origin
 source_tags_refs="refs/tags/*"
 link=

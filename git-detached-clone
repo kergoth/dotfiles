@@ -17,6 +17,8 @@ END
     exit 1
 }
 
+unset GIT_DIR GIT_WORK_TREE
+
 url="$1"
 shift || usage
 repo="$1"
