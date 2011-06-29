@@ -1,0 +1,79 @@
+#!/bin/sh
+#
+# Clone from one local repository to another, but without making the source the
+# remote of the destination. Instead, the destination gets all the bits from
+# the source's origin, and gets its remote redirected back to the upstream
+# which the source points at. In this way, you essentially get a new clone from
+# upstream, but with hard linking from the existing repository's objects, and
+# you get a functional repository even if upstream is down, or your network is
+# unavailable.
+
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="$PWD/$1"
+    fi
+    echo "$_path"
+}
+
+set -e
+
+from=$1
+if [ -z "$from" ]; then
+    echo >&2 "Usage: $0 FROM_REPO [DEST]"
+    exit 1
+fi
+from="$(abspath "$from")"
+
+to=$2
+if [ -z "$to" ]; then
+    to="$(basename "$from")"
+fi
+to="$(abspath "$to")"
+
+if [ -e "$to" ]; then
+    echo >&2 "Error: $dest already exists, aborting"
+    exit 3
+fi
+
+
+from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
+from_url=$(GIT_DIR=$from_git_dir git config remote.origin.url) || {
+    echo >&2 "Error: no origin for $from"
+    exit 4
+}
+from_refs=$(GIT_DIR=$from_git_dir git config remote.origin.fetch) || {
+    echo >&2 "Error: no origin refs for $from"
+    exit 5
+}
+
+
+git init $to
+export GIT_DIR=$to/.git
+export GIT_WORK_TREE=$to
+
+cd $from_git_dir
+
+# Link all the objects over. git fetch doesn't support hard linking the way
+# clone does, so we do so manually here, and rely on git gc to prune the bits
+# we don't end up needing.
+for d in objects/?? objects/{pack,info}; do
+    [ "$d" != "objects/??" ] || continue
+    [ "$(echo "$d"/*)" != "$d/*" ] || continue
+    mkdir -p "$GIT_DIR/$d"
+    ln -f "$d"/* "$GIT_DIR/$d"
+done
+
+git remote add origin $from
+if [ -n "$from_url" ]; then
+    git config remote.origin.fetch "refs/remotes/origin/*:refs/remotes/origin/*"
+fi
+git fetch origin
+
+if [ -n "$from_url" ]; then
+    # Redirect back to upstream
+    git remote set-url origin $from_url
+    git config remote.origin.fetch "$from_refs"
+fi
+
+git checkout master
