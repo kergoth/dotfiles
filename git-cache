@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# TODO: add remove command
 # TODO: add gc command
 # TODO: add sanitize command
 
@@ -19,6 +18,7 @@ Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
        Commands:
 
            add
+           remove
            clone
            list
 END
@@ -33,6 +33,19 @@ Usage: git cache add [OPTIONS] URL
 
         -h    Show this usage information
         -n    Do not fetch the remote in the cache repository
+END
+    exit 1
+}
+
+usage_remove () {
+    cat >&2 <<END
+Usage: git cache remove [OPTIONS] URL
+
+    Options:
+
+        -h    Show this usage information
+        -r    The specified argument is the name of the repository in the
+              cache, not a URL
 END
     exit 1
 }
@@ -110,6 +123,45 @@ cmd_add () {
     if [ $no_fetch -eq 0 ]; then
         verbose "Updating remote $remote in $cache_repo"
         git "--git-dir=$cache_repo" fetch "$remote" || true
+    fi
+}
+
+cmd_remove () {
+    is_repository=0
+
+    while getopts hr opt; do
+        case "$opt" in
+            r)
+                is_repository=1
+                ;;
+            \?|h)
+                usage_remove
+                ;;
+        esac
+    done
+    shift $(($OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage_remove
+    fi
+    path="$1"
+    if [ $is_repository -ne 0 ]; then
+        if [ -e "$cache_dir/$path.git" ]; then
+            rm -rf "$cache_dir/$path.git"
+            msg "Removed repository $path"
+        else
+            msg "$path does not exist"
+        fi
+    else
+        cache_url="$(full_url "$path")"
+        cache_repo="$cache_dir/$(basename $(echo $cache_url|sed -e's,\.git/*$,,')).git"
+        remote="$(hash "$cache_url")"
+        if [ ! -e "$cache_repo" ]; then
+            die "$cache_repo does  not exist"
+        fi
+        verbose "Removing $cache_url from $cache_repo"
+        GIT_DIR=$cache_repo git remote rm $remote
+        msg "Removed url $path"
     fi
 }
 
