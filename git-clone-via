@@ -14,13 +14,15 @@ Usage: git clone-via [OPTIONS] SOURCE [DEST]
 
        Options:
 
+           -m               Mirror to a bare repository the way clone --mirror does
+                            Note: incompatible with the -t and -h arguments
            -l               Hard link objects the way clone -l does
            -s               Reference the source repository the way clone -s does
            -r SOURCE_REMOTE Specify the remote used in the source repository
                             Default value: origin
            -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
                                Default value: refs/tags/*
-           -t SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
+           -h SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
                                 Default value: refs/remotes/<remote>/*
 END
     exit 0
@@ -45,6 +47,13 @@ process_arguments () {
         usage
     fi
 
+    if [ -z "$source_heads_refs" ]; then
+        source_heads_refs="refs/remotes/$source_remote/*"
+    elif [ $mirror -eq 1 ]; then
+        echo >&2 "Error: -h is incompatible with -m"
+        exit 4
+    fi
+
     from="$(abspath "$1")"
     shift
 
@@ -53,13 +62,21 @@ process_arguments () {
         to="$(basename "$from")"
     fi
     to="$(abspath "$to")"
+    if [ $mirror -eq 1 ]; then
+        if ! echo "$to"|grep -q '\.git/*$'; then
+            to="$to.git"
+        fi
+    fi
 }
 
 process_options () {
-    while getopts r:t:h:ls opt; do
+    while getopts r:t:h:mls opt; do
         case "$opt" in
             r)
                 source_remote=$OPTARG
+                ;;
+            m)
+                mirror=1
                 ;;
             t)
                 source_tags_refs=$OPTARG
@@ -88,24 +105,30 @@ source_remote=origin
 source_tags_refs="refs/tags/*"
 link=
 shared=
+mirror=0
 process_arguments "$@"
-if [ -z "$source_heads_refs" ]; then
-    source_heads_refs="refs/remotes/$source_remote/*"
-fi
 
 if [ -e "$to" ]; then
     echo >&2 "Error: $dest already exists, aborting"
     exit 3
 fi
 
-git init $to
+if [ $mirror -eq 1 ]; then
+    git init --bare --shared $to
+else
+    git init $to
+fi
 
 from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
 from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url) || true
 from_refs=$(GIT_DIR=$from_git_dir git config remote.$source_remote.fetch) || true
 
-export GIT_DIR=$to/.git
-export GIT_WORK_TREE=$to
+if [ $mirror -eq 1 ]; then
+    export GIT_DIR=$to
+else
+    export GIT_DIR=$to/.git
+    export GIT_WORK_TREE=$to
+fi
 
 cd $from_git_dir
 
@@ -125,9 +148,16 @@ elif [ -n "$shared" ]; then
 fi
 
 git remote add origin $from
+if [ $mirror -eq 1 ]; then
+    git config remote.origin.mirror true
+fi
 if [ -n "$from_url" ]; then
-    git config remote.origin.tagopt --no-tags
-    git config remote.origin.fetch "$source_heads_refs:refs/remotes/origin/*"
+    if [ $mirror -eq 1 ]; then
+        git config remote.origin.fetch "refs/remotes/$source_remote/*:refs/*"
+    else
+        git config remote.origin.fetch "$source_heads_refs:refs/remotes/origin/*"
+        git config remote.origin.tagopt --no-tags
+    fi
     git config --add remote.origin.fetch "$source_tags_refs:refs/tags/*"
 fi
 git fetch origin
@@ -136,8 +166,14 @@ if [ -n "$from_url" ]; then
     # Redirect back to upstream
     git remote set-url origin $from_url
 
-    git config --unset remote.origin.tagopt
-    git config --replace-all remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
+    if [ $mirror -eq 1 ]; then
+        git config --replace-all remote.origin.fetch "refs/*:refs/*"
+    else
+        git config --unset remote.origin.tagopt
+        git config --replace-all remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
+    fi
 fi
 
-git checkout master
+if [ $mirror -ne 1 ]; then
+    git checkout master
+fi

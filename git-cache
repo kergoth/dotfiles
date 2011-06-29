@@ -40,6 +40,7 @@ Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
            clone
            list
            sanitize
+           mirror
 END
     exit 0
 }
@@ -78,6 +79,8 @@ Usage: git cache clone [OPTIONS] URL [DESTINATION]
         -h    Show this usage information
         -n    Do not fetch the remote in the cache repository
         -r    As with git clone --recursive, also set up and clone submodules
+        -m    As with git clone --mirror, clone to a bare repository and set up the branches directly,
+              not in refs/remotes/
 END
     exit 1
 }
@@ -106,7 +109,7 @@ main () {
     process_global_arguments "$@"
     shift $(($OPTIND - 1))
     shift
-    unset OPTIND OPTARG
+    OPTIND=0
 
     verbose "Running command: $command $@"
 
@@ -186,11 +189,15 @@ cmd_remove () {
 
 cmd_clone () {
     no_fetch=0
+    mirror=0
 
-    while getopts hnr opt; do
+    while getopts hmnr opt; do
         case "$opt" in
             n)
                 no_fetch=1
+                ;;
+            m)
+                mirror=1
                 ;;
             r)
                 recursive=1
@@ -220,10 +227,17 @@ cmd_clone () {
     if [ -z "$destination" ]; then
         destination=$PWD/$basename
     fi
+    destination="$(abspath "$destination")"
+    if [ $mirror -eq 1 ]; then
+        if ! echo "$destination"|grep -q '\.git/*$'; then
+            destination="$destination.git"
+        fi
+    fi
     if [ -d "$destination" ]; then
         die "Error: $destination already exists"
         exit 3
     fi
+
     cache_repo="$cache_dir/$basename.git"
     remote="$(hash "$cache_url")"
 
@@ -235,9 +249,15 @@ cmd_clone () {
         git "--git-dir=$cache_repo" fetch "$remote" || true
     fi
 
-    verbose "Cloning from $cache_repo to $destination"
-    $scripts_dir/git-clone-via -s -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
-    msg "Cloned from $cache_repo to $destination"
+    if [ $mirror -eq 1 ]; then
+        verbose "Mirroring from $cache_repo to $destination"
+        $scripts_dir/git-clone-via -s -m -r $remote $cache_repo $destination
+        msg "Mirrored from $cache_repo to $destination"
+    else
+        verbose "Cloning from $cache_repo to $destination"
+        $scripts_dir/git-clone-via -s -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        msg "Cloned from $cache_repo to $destination"
+    fi
 
     cd $destination
     clone_submodules
