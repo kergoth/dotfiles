@@ -317,8 +317,8 @@ canonical_url () {
     url="$1"
     echo "$url" | \
         sed -e '
-s,^git://github,https://github,;
-s,^http://github,https://github,;
+s,^https://github,git://github,;
+s,^http://github,git://github,;
 s,^git://openembedded.org,git://git.openembedded.org,;
 s,^http://git.sv.gnu.org/,http://git.savannah.gnu.org/,;
 s,^git://git.sv.gnu.org/,http://git.savannah.gnu.org/r/,;
