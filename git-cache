@@ -1,7 +1,6 @@
 #!/bin/sh
 #
 # TODO: add remove command
-# TODO: add list command
 # TODO: add gc command
 # TODO: add sanitize command
 
@@ -21,6 +20,7 @@ Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
 
            add
            clone
+           list
 END
     exit 0
 }
@@ -170,6 +170,40 @@ cmd_clone () {
 
     cd $destination
     clone_submodules
+}
+
+cmd_list () {
+    if [ $# -gt 1 ]; then
+        echo >&2 "Usage: git cache list [REPONAME]"
+        exit 1
+    fi
+
+    reponame="$1"
+    if [ -n "$reponame" ]; then
+        repo="$cache_dir/$reponame.git"
+        if [ ! -e "$repo" ]; then
+            echo >&2 "Error: $repo does not exist"
+            exit 1
+        fi
+
+        list_repo_urls $repo
+    else
+        for repo in $cache_dir/*.git/; do
+            reponame="$(echo $repo|sed -e"s,^$cache_dir/,,; s,\.git/$,,")"
+            echo "$reponame:"
+            list_repo_urls $repo "    "
+        done
+    fi
+}
+
+list_repo_urls () {
+    repo="$1"
+    prefix="$2"
+    GIT_DIR=$repo git config --get-regexp "remote\..*\.url" | {
+        while read _ url; do
+            echo "$prefix$url"
+        done
+    }
 }
 
 create_repo () {
