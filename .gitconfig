@@ -222,6 +222,18 @@
 [help]
 	autocorrect = 1
 
+[url "git://github.com/openembedded/oe-core"]
+	insteadOf = oe:openembedded-core
+	insteadOf = oe-ssh:openembedded-core
+	insteadOf = git://git.openembedded.org/openembedded-core
+	insteadOf = git@git.openembedded.org:openembedded-core
+
+[url "git://github.com/openembedded/meta-oe"]
+	insteadOf = oe:meta-openembedded
+	insteadOf = oe-ssh:meta-openembedded
+	insteadOf = git://git.openembedded.org/meta-openembedded
+	insteadOf = git@git.openembedded.org:meta-openembedded
+
 [url "git://github.com/openembedded/"]
 	insteadOf = oe:
 	insteadOf = oe-ssh:
