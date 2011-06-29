@@ -96,7 +96,7 @@ cmd_add () {
 
     if [ $no_fetch -eq 0 ]; then
         verbose "Updating remote $remote in $cache_repo"
-        git "--git-dir=$cache_repo" fetch "$remote"
+        git "--git-dir=$cache_repo" fetch "$remote" || true
     fi
 }
 
@@ -120,7 +120,7 @@ cmd_clone () {
     add_to_cache "$cache_url" "$cache_repo" "$remote"
 
     verbose "Updating remote $remote in $cache_repo"
-    git "--git-dir=$cache_repo" fetch "$remote"
+    git "--git-dir=$cache_repo" fetch "$remote" || true
 
     verbose "Cloning from $cache_repo to $destination"
     $scripts_dir/git-clone-via -s -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
