@@ -101,7 +101,7 @@ cmd_add () {
 }
 
 cmd_clone () {
-    if [ $# -ne 1 ]; then
+    if [ $# -lt 1 -o $# -gt 2 ]; then
         die "Usage: git cache clone URL [DESTINATION]"
     fi
     url=$1
