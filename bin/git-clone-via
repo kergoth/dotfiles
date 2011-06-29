@@ -16,64 +16,127 @@ abspath () {
     echo "$_path"
 }
 
+process_arguments () {
+    process_options "$@" || usage
+    if [ $OPTIND -eq 1 -a $# -eq 0 ]; then
+        usage
+    fi
+    shift $(($OPTIND - 1))
+
+    if [ $# -lt 1 -o $# -gt 2 ]; then
+        usage
+    fi
+
+    from="$(abspath "$1")"
+    shift
+
+    to=$1
+    if [ -z "$to" ]; then
+        to="$(basename "$from")"
+    fi
+    to="$(abspath "$to")"
+}
+
+process_options () {
+    while getopts r:t:h:ls opt; do
+        case "$opt" in
+            r)
+                source_remote=$OPTARG
+                ;;
+            t)
+                source_tags_refs=$OPTARG
+                ;;
+            h)
+                source_heads_refs=$OPTARG
+                ;;
+            l)
+                link=1
+                ;;
+            s)
+                shared=1
+                ;;
+            \?|h)
+                return 1
+                ;;
+       esac
+    done
+}
+
+usage () {
+    cat >&2 <<END
+Usage: git clone-via [OPTIONS] SOURCE [DEST]
+
+       Options:
+
+           -l               Hard link objects the way clone -l does
+           -s               Reference the source repository the way clone -s does
+           -r SOURCE_REMOTE Specify the remote used in the source repository
+                            Default value: origin
+           -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
+                               Default value: refs/tags/*
+           -t SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
+                                Default value: refs/remotes/<remote>/*
+END
+    exit 0
+}
+
 set -e
 
-from=$1
-if [ -z "$from" ]; then
-    echo >&2 "Usage: $0 FROM_REPO [DEST]"
-    exit 1
+source_remote=origin
+source_tags_refs="refs/tags/*"
+link=
+shared=
+process_arguments "$@"
+if [ -z "$source_heads_refs" ]; then
+    source_heads_refs="refs/remotes/$source_remote/*"
 fi
-from="$(abspath "$from")"
-
-to=$2
-if [ -z "$to" ]; then
-    to="$(basename "$from")"
-fi
-to="$(abspath "$to")"
 
 if [ -e "$to" ]; then
     echo >&2 "Error: $dest already exists, aborting"
     exit 3
 fi
 
+git init $to
 
 from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
-from_url=$(GIT_DIR=$from_git_dir git config remote.origin.url) || {
-    echo >&2 "Error: no origin for $from"
-    exit 4
-}
-from_refs=$(GIT_DIR=$from_git_dir git config remote.origin.fetch) || {
-    echo >&2 "Error: no origin refs for $from"
-    exit 5
-}
+from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url)
+from_refs=$(GIT_DIR=$from_git_dir git config remote.$source_remote.fetch)
 
-
-git init $to
 export GIT_DIR=$to/.git
 export GIT_WORK_TREE=$to
 
 cd $from_git_dir
 
-# Link all the objects over. git fetch doesn't support hard linking the way
-# clone does, so we do so manually here, and rely on git gc to prune the bits
-# we don't end up needing.
-for d in objects/?? objects/{pack,info}; do
-    [ "$d" != "objects/??" ] || continue
-    [ "$(echo "$d"/*)" != "$d/*" ] || continue
-    mkdir -p "$GIT_DIR/$d"
-    ln -f "$d"/* "$GIT_DIR/$d"
-done
+if [ -n "$link" ]; then
+    # Link all the objects over. git fetch doesn't support hard linking the way
+    # clone does, so we do so manually here, and rely on git gc to prune the bits
+    # we don't end up needing.
+    for d in objects/?? objects/{pack,info}; do
+        [ "$d" != "objects/??" ] || continue
+        [ "$(echo "$d"/*)" != "$d/*" ] || continue
+        mkdir -p "$GIT_DIR/$d"
+        ln -f "$d"/* "$GIT_DIR/$d" 2>/dev/null || cp -f "$d"/* "$GIT_DIR/$d"
+    done
+elif [ -n "$shared" ]; then
+    mkdir -p $GIT_DIR/objects/info
+    echo "$from_git_dir/objects" > $GIT_DIR/objects/info/alternates
+fi
 
 git remote add origin $from
 if [ -n "$from_url" ]; then
-    git config remote.origin.fetch "refs/remotes/origin/*:refs/remotes/origin/*"
+    git config remote.origin.tagopt --no-tags
+    git config remote.origin.fetch "$source_heads_refs:refs/remotes/origin/*"
+    git config --add remote.origin.fetch "$source_tags_refs:refs/tags/*"
 fi
 git fetch origin
 
 if [ -n "$from_url" ]; then
     # Redirect back to upstream
+    refs="$(echo "$from_refs"|sed -e"s,refs/remotes/$source_remote,refs/remotes/origin,g")"
     git remote set-url origin $from_url
-    git config remote.origin.fetch "$from_refs"
+
+    git config --unset remote.origin.tagopt
+    git config --replace-all remote.origin.fetch "$refs"
 fi
 
 git checkout master
