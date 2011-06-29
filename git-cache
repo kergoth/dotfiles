@@ -113,6 +113,10 @@ cmd_clone () {
     if [ -z "$destination" ]; then
         destination=$PWD/$basename
     fi
+    if [ -d "$destination" ]; then
+        die "Error: $destination already exists"
+        exit 3
+    fi
     cache_repo="$cache_dir/$basename.git"
     remote="$(hash "$cache_url")"
 
