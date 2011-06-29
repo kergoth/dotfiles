@@ -1,7 +1,6 @@
 #!/bin/sh
 #
 # TODO: add gc command
-# TODO: add sanitize command
 
 set -e
 
@@ -21,6 +20,7 @@ Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
            remove
            clone
            list
+           sanitize
 END
     exit 0
 }
@@ -246,6 +246,40 @@ cmd_list () {
             list_repo_urls $repo "    "
         done
     fi
+}
+
+cmd_sanitize () {
+    if [ $# -ne 0 ]; then
+        echo >&2 "Usage: git cache sanitize"
+        exit 1
+    fi
+
+    for repo in $cache_dir/*/; do
+        verbose "Sanitizing $repo"
+
+        git "--git-dir=$repo" config --get-regexp "remote\..*\.url" | \
+            while read entry url; do
+                remote="$(echo "$entry"|sed -e's,^remote\.,,; s,\.url$,,')"
+                cache_url="$(full_url "$url")"
+                url_hash="$(hash "$cache_url")"
+
+                if [ "$url" != "$cache_url" ]; then
+                    git "--git-dir=$repo" remote set-url $remote "$adjusted_url"
+                    msg "Changed url $url for $repo to $adjusted_url"
+                fi
+
+                if [ "$remote" != "$url_hash" ]; then
+                    if git "--git-dir=$repo" config remote.$url_hash.url >/dev/null; then
+                        # correct remote already exists, just drop this one
+                        git "--git-dir=$repo" remote rm $remote
+                        msg "Remote $url_hash already exists, dropped $remote"
+                    else
+                        git "--git-dir=$repo" remote rename $remote $url_hash
+                        msg "Renamed $remote to $url_hash to account for url change"
+                    fi
+                fi
+            done
+    done
 }
 
 list_repo_urls () {
