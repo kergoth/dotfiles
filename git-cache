@@ -1,6 +1,25 @@
 #!/bin/sh
 #
 # TODO: add gc command
+#
+#       This is nontrivial, unfortunately. Because I use alternates, you can
+#       get into a situation where the main repository thinks an object is
+#       unreferenced, and prune it, while the child repositories may well still
+#       be referencing it, resulting in corrupt repositories. This is why we
+#       set gc.auto 0, to avoid the automatic exec of gc.
+#
+#       There's one good solution to this, which is the one used by
+#       repo.or.cz's fork handling code. See
+#       http://repo.or.cz/w/girocco.git/blob/HEAD:jobd/gc.sh. The real issue
+#       with this is that we have to start tracking what clones exist which
+#       reference the cache. Doing that trivially is easy, but this means you
+#       can no longer just mv a clone to a different location without it no
+#       longer being tracked by this.
+#
+#       My current plan is to make the clone command start recording the
+#       destinations in a file in the cache_dir, then add clone_rename and
+#       clone_register commands, to rename a cloneand to register a renamed
+#       clone back with the cache.
 
 set -e
 
