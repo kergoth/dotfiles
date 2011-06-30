@@ -41,6 +41,7 @@ Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
            list
            sanitize
            mirror
+           update
 END
     exit 0
 }
@@ -285,6 +286,29 @@ cmd_list () {
             list_repo_urls $repo "    "
         done
     fi
+}
+
+cmd_update () {
+    if [ $# -ne 0 ]; then
+        echo >&2 "Usage: git cache update"
+        exit 1
+    fi
+
+    for repo in $cache_dir/*/; do
+        reponame="$(basename $repo|sed -e's,\.git$,,')"
+        verbose "Updating $reponame"
+        git "--git-dir=$repo" remote | while read remote; do
+            verbose "Fetching $remote"
+            ret=0
+            git "--git-dir=$repo" fetch $remote || ret=$?
+            if [ $ret -eq 0 ]; then
+                msg "$reponame: Fetched $remote"
+            else
+                msg >&2 "$reponame: Unable to fetch $remote"
+            fi
+        done
+        msg "Updated $reponame"
+    done
 }
 
 cmd_sanitize () {
