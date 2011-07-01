@@ -327,8 +327,8 @@ cmd_sanitize () {
                 url_hash="$(hash "$cache_url")"
 
                 if [ "$url" != "$cache_url" ]; then
-                    git "--git-dir=$repo" remote set-url $remote "$adjusted_url"
-                    msg "Changed url $url for $repo to $adjusted_url"
+                    git "--git-dir=$repo" remote set-url $remote "$cache_url"
+                    msg "Changed url $url for $repo to $cache_url"
                 fi
 
                 if [ "$remote" != "$url_hash" ]; then
