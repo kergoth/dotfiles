@@ -29,10 +29,8 @@ curl -s https://raw.github.com/kergoth/vim-kergoth/master/scripts/setup.sh | sh
     echo "Homefiles configuration completed"
     echo
     echo "To enter the git context of one of the homefile repositories,"
-    echo "simply run 'fgit REPO'. To leave this context, run 'unfgit'."
-    echo
-    echo "Alternatively, particularly if not using zsh, you can use 'vcsh'"
-    echo "to spawn a new shell in this context."
+    echo "if under zsh: run 'fgit REPO' to enter the context, 'unfgit' to leave it"
+    echo "if under bash: run 'vcsh REPO' to enter the context, 'exit' to leave it"
     echo
     echo "Available repositories:"
     /bin/ls ~/.fgits 2>/dev/null | sed -e's,\.git$,,'
