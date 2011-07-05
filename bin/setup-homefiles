@@ -21,7 +21,8 @@ detached_clone() {
 }
 
 detached_clone git://github.com/kergoth/homefiles ~/.fgits/homefiles.git ../..
-detached_clone git://github.com/kergoth/dotvim-test ~/.fgits/dotvim.git ../../.vim
+detached_clone git://github.com/kergoth/git-scripts ~/.fgits/git-scripts.git ../../bin
+curl -s https://raw.github.com/kergoth/vim-kergoth/master/scripts/setup.sh | sh
 
 {
     echo
