@@ -1,6 +1,7 @@
 autoload -U compinit zrecompile
 
-zsh_cache=${HOME}/.zsh/cache
+. ~/.zsh/volatile
+
 mkdir -p $zsh_cache
 
 zstyle :compinstall filename ~/.zshrc

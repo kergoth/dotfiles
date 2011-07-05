@@ -18,7 +18,6 @@ export CVSREAD=yes
 export MANWIDTH=80
 export EDITOR=vim
 export VISUAL=vim
-export CCACHE_DIR=~/.ccache
 export INPUTRC=~/.inputrc
 export GTK_IM_MODULE=xim
 
