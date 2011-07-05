@@ -1,3 +1,4 @@
+. ~/.sh/volatile
 . ~/.sh/util
 . ~/.sh/aliases
 . ~/.sh/shopt
