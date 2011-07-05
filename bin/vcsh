@@ -1,9 +1,7 @@
 #!/bin/sh
 
 repo=$1
-if [ -z "$repo" ]; then
-    repo=homefiles
-fi
+shift || exit 1
 
 GIT_DIR=$HOME/.fgits/$repo.git
 if [ ! -e $GIT_DIR ]; then
@@ -18,4 +16,8 @@ GIT_WORK_TREE=$(cd $GIT_WORK_TREE && pwd)
 export GIT_WORK_TREE
 cd $GIT_WORK_TREE
 
-exec $SHELL -i
+if [ $# -eq 0 ]; then
+    set -- -i
+fi
+
+exec $SHELL "$@"
