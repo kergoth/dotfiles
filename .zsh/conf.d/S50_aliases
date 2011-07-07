@@ -18,6 +18,7 @@ alias more=less
 alias rgrep="grep -rI"
 alias gvim="vim -g"
 alias vi=vim
+alias bc='bc -ql'
 
 if have ack-grep; then
     alias ack=ack-grep

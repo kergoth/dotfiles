@@ -33,3 +33,4 @@ if [ -n "$PS1" ]; then
     fi
 fi
 alias lr='ls -tr' # list, sort by time, reverse order
+alias bc='bc -ql'
