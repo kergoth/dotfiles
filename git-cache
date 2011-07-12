@@ -368,6 +368,8 @@ add_to_cache () {
     cache_repo="$2"
     remote="$3"
 
+    git peek-remote "$full_url" >/dev/null
+
     if [ ! -e "$cache_repo" ]; then
         verbose "Creating cache repository $cache_repo"
         create_repo "$cache_repo"
