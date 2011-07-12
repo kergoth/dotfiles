@@ -402,13 +402,13 @@ clone_submodules () {
     GIT_CONFIG=.gitmodules git config --get-regexp submodule\\..\*\\.path | while read key path; do
         name=$(echo $key|sed -e's,^submodule\.,,; s,\.path$,,')
         url=$(GIT_CONFIG=.gitmodules git config --get submodule.$name.url)
-        rm -rf $name
+        rm -rf $path
         (
             set --
             if [ $no_fetch -ne 0 ]; then
                 set -- -n
             fi
-            cmd_clone "$@" -r $url $name
+            cmd_clone "$@" $url $path
         )
     done
     git submodule update
