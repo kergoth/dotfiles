@@ -79,7 +79,7 @@ Usage: git cache clone [OPTIONS] URL [DESTINATION]
 
         -h    Show this usage information
         -n    Do not fetch the remote in the cache repository
-        -r    As with git clone --recursive, also set up and clone submodules
+        -R    Disable set up and clone of submodules
         -m    As with git clone --mirror, clone to a bare repository and set up the branches directly,
               not in refs/remotes/
 END
@@ -191,8 +191,9 @@ cmd_remove () {
 cmd_clone () {
     no_fetch=0
     mirror=0
+    recursive=1
 
-    while getopts hmnr opt; do
+    while getopts hmnR opt; do
         case "$opt" in
             n)
                 no_fetch=1
@@ -200,8 +201,8 @@ cmd_clone () {
             m)
                 mirror=1
                 ;;
-            r)
-                recursive=1
+            R)
+                recursive=0
                 ;;
             \?|h)
                 usage_clone
@@ -260,8 +261,10 @@ cmd_clone () {
         msg "Cloned from $cache_repo to $destination"
     fi
 
-    cd $destination
-    clone_submodules
+    if [ $recursive -eq 1 ]; then
+        cd $destination
+        clone_submodules
+    fi
 }
 
 cmd_list () {
