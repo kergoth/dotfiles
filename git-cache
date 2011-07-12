@@ -435,8 +435,8 @@ full_url () {
         while read real other; do
             realurl="$(echo "$real"|sed 's,^url\.,,; s,\.insteadof$,,')"
             if echo "$url" | grep -q "^$other"; then
-                echo $url | sed -e "s,^$other,$realurl,"
-                return
+                url="$(echo "$url"|sed -e"s,^$other,$realurl,")"
+                break
             fi
         done
         echo "$(canonical_url "$url")"
