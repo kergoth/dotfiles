@@ -5,7 +5,13 @@
 
 base="$1"
 session=$(date +%Y%m%d%H%M%S|sha1sum|cut -c1-4)
-tmux new -s $session -t "$base"
+
+tmux new -d -s $session -t "$base"
+if [ "$2" = "newwindow" ]; then
+    cur="$(tmux lsw -t default|cut -d: -f1|tail -n 1)"
+    tmux neww -a -t $session:$cur
+fi
+tmux att -t $session
 ret=$?
 tmux kill-session -t $session
 exit $ret
