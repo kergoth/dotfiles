@@ -1,11 +1,3 @@
-if [[ -z $TMUX ]]; then
-        if which tmux >/dev/null 2>&1; then
-                # Our tmux configuration spawns a default session, so we can
-                # create a unique session linked to it here.
-                ~/bin/tmux_link default newwindow && exit 0
-        fi
-fi
-
 autoload -U compinit zrecompile
 
 . ~/.zsh/volatile
