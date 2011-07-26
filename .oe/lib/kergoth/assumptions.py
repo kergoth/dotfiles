@@ -43,10 +43,10 @@ simple_assumptions(have,
 )
 
 simple_assumptions(check=os.path.exists, **{
-    '/usr/lib/libz.a': 'zlib-native',
+    # '/usr/lib/libz.a': 'zlib-native',
     '/usr/lib/libcurl.a': 'curl-native',
     '/usr/lib/libreadline.a': 'readline-native',
-    #    '/usr/lib/libsqlite3.a': 'sqlite3-native',
+    # '/usr/lib/libsqlite3.a': 'sqlite3-native',
     '/usr/lib/libuuid.a': 'util-linux-native',
 })
 
