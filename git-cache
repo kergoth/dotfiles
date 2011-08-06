@@ -40,7 +40,6 @@ Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
            clone
            list
            sanitize
-           mirror
            update
 END
     exit 0
