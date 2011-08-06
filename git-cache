@@ -142,10 +142,10 @@ cmd_add () {
     remote="$(hash "$cache_url")"
 
     add_to_cache "$cache_url" "$cache_repo" "$remote"
+    update_remote "$cache_repo" "$remote"
 
     if [ $no_fetch -eq 0 ]; then
-        verbose "Updating remote $remote in $cache_repo"
-        git "--git-dir=$cache_repo" fetch "$remote" || true
+        update_remote "$cache_repo" "$remote" || true
     fi
 }
 
@@ -247,8 +247,7 @@ cmd_clone () {
     add_to_cache "$cache_url" "$cache_repo" "$remote"
 
     if [ $no_fetch -eq 0 ]; then
-        verbose "Updating remote $remote in $cache_repo"
-        git "--git-dir=$cache_repo" fetch "$remote" || true
+        update_remote "$cache_repo" "$remote" || true
     fi
 
     if [ $mirror -eq 1 ]; then
@@ -301,9 +300,8 @@ cmd_update () {
         reponame="$(basename $repo|sed -e's,\.git$,,')"
         verbose "Updating $reponame"
         git "--git-dir=$repo" remote | while read remote; do
-            verbose "Fetching $remote"
             ret=0
-            git "--git-dir=$repo" fetch $remote || ret=$?
+            update_remote "$repo" "$remote" || ret=$?
             if [ $ret -eq 0 ]; then
                 msg "$reponame: Fetched $remote"
             else
@@ -356,6 +354,11 @@ list_repo_urls () {
             echo "$prefix$url"
         done
     }
+}
+
+update_remote () {
+    verbose "Updating remote $2 in $1"
+    git "--git-dir=$1" remote update -p "$2"
 }
 
 create_repo () {
