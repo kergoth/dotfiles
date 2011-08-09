@@ -1,0 +1,5 @@
+#!/bin/sh
+tmux showenv | grep -v '^-' | \
+    while IFS== read var val; do
+        eval "$var=\"$val\""
+    done
