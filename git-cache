@@ -327,7 +327,7 @@ cmd_sanitize () {
                 url_hash="$(hash "$cache_url")"
 
                 if [ "$url" != "$cache_url" ]; then
-                    git "--git-dir=$repo" remote set-url $remote "$cache_url"
+                    git "--git-dir=$repo" config remote.$remote.url "$cache_url"
                     msg "Changed url $url for $repo to $cache_url"
                 fi
 
@@ -363,7 +363,7 @@ update_remote () {
 create_repo () {
     # Create a cache repository
     repo="$1"
-    git init --bare --shared "$repo"
+    git "--git-dir=$repo" init --bare --shared
     GIT_DIR=$repo git config gc.auto 0
 }
 
