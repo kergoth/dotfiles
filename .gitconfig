@@ -5,8 +5,8 @@
 	safecrlf = true
 
 [user]
-	name = Chris Larson
-	email = chris_larson@mentor.com
+	name = Christopher Larson
+	email = kergoth@gmail.com
 
 [alias]
 	ci = commit
