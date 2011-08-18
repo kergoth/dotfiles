@@ -22,6 +22,10 @@
 	staged = diff --cached
 	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
+	# git-flow
+	fs = flow feature start
+	ff = flow feature finish
+
 	# Diffstat, ignoring whitespace
 	ds = !git --no-pager diff --stat -M -w
 
