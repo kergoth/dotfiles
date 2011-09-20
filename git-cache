@@ -251,7 +251,7 @@ cmd_clone () {
 
     if [ $mirror -eq 1 ]; then
         verbose "Mirroring from $cache_repo to $destination"
-        $scripts_dir/git-clone-via -s -m -r $remote $cache_repo $destination
+        $scripts_dir/git-clone-via -s -m -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
         msg "Mirrored from $cache_repo to $destination"
     else
         verbose "Cloning from $cache_repo to $destination"

@@ -49,9 +49,6 @@ process_arguments () {
 
     if [ -z "$source_heads_refs" ]; then
         source_heads_refs="refs/remotes/$source_remote/*"
-    elif [ $mirror -eq 1 ]; then
-        echo >&2 "Error: -h is incompatible with -m"
-        exit 4
     fi
 
     from="$(abspath "$1")"
@@ -119,6 +116,10 @@ fi
 
 from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
 from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url) || true
+if [ -z "$from_url" ]; then
+    echo >&2 "Error: unable to obtain remote url from $from_git_dir"
+    exit 1
+fi
 from_refs=$(GIT_DIR=$from_git_dir git config remote.$source_remote.fetch) || true
 
 if [ $mirror -eq 1 ]; then
@@ -152,33 +153,20 @@ elif [ -n "$shared" ]; then
     echo "$from_git_dir/objects" > $GIT_DIR/objects/info/alternates
 fi
 
-git remote add origin $from
+if [ $mirror -eq 1 ]; then
+    heads="$source_heads_refs:refs/heads/*"
+else
+    heads="$source_heads_refs:refs/remotes/origin/*"
+fi
+git fetch -n $from $heads
+git fetch -n $from "$source_tags_refs:refs/tags/*"
+
+git config remote.origin.url "$from_url"
 if [ $mirror -eq 1 ]; then
     git config remote.origin.mirror true
+    git config remote.origin.fetch "refs/*:refs/*"
+else
+    git config remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
+    git checkout -b master origin/master || true
 fi
-if [ -n "$from_url" ]; then
-    if [ $mirror -eq 1 ]; then
-        git config remote.origin.fetch "refs/remotes/$source_remote/*:refs/*"
-    else
-        git config remote.origin.fetch "$source_heads_refs:refs/remotes/origin/*"
-        git config remote.origin.tagopt --no-tags
-    fi
-    git config --add remote.origin.fetch "$source_tags_refs:refs/tags/*"
-fi
-git fetch origin
-
-if [ -n "$from_url" ]; then
-    # Redirect back to upstream
-    git config remote.origin.url "$from_url"
-
-    if [ $mirror -eq 1 ]; then
-        git config --replace-all remote.origin.fetch "refs/*:refs/*"
-    else
-        git config --unset remote.origin.tagopt
-        git config --replace-all remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
-    fi
-fi
-
-if [ $mirror -ne 1 ]; then
-    git checkout -b master origin/master
-fi
+git gc
