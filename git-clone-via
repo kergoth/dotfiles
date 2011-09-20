@@ -113,7 +113,7 @@ mirror=0
 process_arguments "$@"
 
 if [ -e "$to" ]; then
-    echo >&2 "Error: $dest already exists, aborting"
+    echo >&2 "Error: $to already exists, aborting"
     exit 3
 fi
 
