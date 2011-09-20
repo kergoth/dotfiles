@@ -66,6 +66,10 @@ process_arguments () {
         if ! echo "$to"|grep -q '\.git/*$'; then
             to="$to.git"
         fi
+    else
+        if echo "$to"|grep -q '\.git/*$'; then
+            to="$(echo $to|sed -e's,\.git/*$,,')"
+        fi
     fi
 }
 
