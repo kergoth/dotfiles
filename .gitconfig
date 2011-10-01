@@ -135,6 +135,8 @@
 		git subtree-fetch $remote; \
 		git merge -s subtree $remote/$branch' \"$@\""
 
+	ls-large-files = !git ls-tree -rl HEAD | sort -rnk 4 | head
+
 [interactive]
 	singlekey = true
 
