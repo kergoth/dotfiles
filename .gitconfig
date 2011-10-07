@@ -380,3 +380,10 @@
 [url "git://git.o-hand.com/"]
 	insteadOf = o-hand:
 	insteadOf = ohand:
+
+[url "git://git.yoctoproject.org/"]
+	insteadOf = yocto:
+
+[url "git://git.freescale.com/"]
+	insteadOf = freescale:
+	insteadOf = fsl:
