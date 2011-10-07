@@ -149,6 +149,9 @@
 [apply]
 	whitespace = fix
 
+[status]
+	submodulesummary = true
+
 [diff]
 	tool = vimdiff
 	renames = copy
