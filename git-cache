@@ -81,6 +81,7 @@ Usage: git cache clone [OPTIONS] URL [DESTINATION]
         -R    Disable set up and clone of submodules
         -m    As with git clone --mirror, clone to a bare repository and set up the branches directly,
               not in refs/remotes/
+        -b BRANCH   Branch to check out
 END
     exit 1
 }
@@ -191,9 +192,13 @@ cmd_clone () {
     no_fetch=0
     mirror=0
     recursive=1
+    branch=master
 
-    while getopts hmnR opt; do
+    while getopts hmnRb: opt; do
         case "$opt" in
+            b)
+                branch=$OPTARG
+                ;;
             n)
                 no_fetch=1
                 ;;
@@ -251,11 +256,11 @@ cmd_clone () {
 
     if [ $mirror -eq 1 ]; then
         verbose "Mirroring from $cache_repo to $destination"
-        $scripts_dir/git-clone-via -s -m -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        $scripts_dir/git-clone-via -s -m -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
         msg "Mirrored from $cache_repo to $destination"
     else
         verbose "Cloning from $cache_repo to $destination"
-        $scripts_dir/git-clone-via -s -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        $scripts_dir/git-clone-via -s -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
         msg "Cloned from $cache_repo to $destination"
     fi
 

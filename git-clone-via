@@ -18,6 +18,7 @@ Usage: git clone-via [OPTIONS] SOURCE [DEST]
                             Note: incompatible with the -t and -h arguments
            -l               Hard link objects the way clone -l does
            -s               Reference the source repository the way clone -s does
+           -b BRANCH        Branch to check out
            -r SOURCE_REMOTE Specify the remote used in the source repository
                             Default value: origin
            -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
@@ -71,7 +72,7 @@ process_arguments () {
 }
 
 process_options () {
-    while getopts r:t:h:mls opt; do
+    while getopts r:t:h:b:mls opt; do
         case "$opt" in
             r)
                 source_remote=$OPTARG
@@ -90,6 +91,9 @@ process_options () {
                 ;;
             s)
                 shared=1
+                ;;
+            b)
+                checkout_branch=$OPTARG
                 ;;
             \?|h)
                 return 1
@@ -167,6 +171,6 @@ if [ $mirror -eq 1 ]; then
     git config remote.origin.fetch "refs/*:refs/*"
 else
     git config remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
-    git checkout -b master origin/master || true
+    git checkout -b $checkout_branch origin/$checkout_branch || true
 fi
 git gc
