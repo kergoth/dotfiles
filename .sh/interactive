@@ -1,0 +1,61 @@
+setup_interactive () {
+    export SHELL
+
+    if which colordiff 2>/dev/null >&2; then
+        export GIT_DIFF_PAGER="colordiff | less -RS"
+    fi
+
+#    set_ps1
+
+    if [ -z "$day" ]; then
+        day="`date +%A|tr A-Z a-z`"
+    fi
+    fortune ~/.fortunes/days.$day 2>/dev/null
+    echo
+
+    if [ -z "$TERMCAP" ]; then
+        # Deal with missing terminal types on certain machines.
+        _c="`echo $TERM|sed -e's,^\(.\).*$,\1,'`"
+        if ! test -e /usr/share/terminfo/$_c/$TERM &&
+            ! test -e $TERMINFO/$_c/$TERM; then
+            TERM=rxvt
+        else
+            # ugh, damn old termcap based applications
+            infocmp -C > $HOME/.termcap 2>/dev/null
+            TERMCAP="$HOME/.termcap"
+        fi
+        unset _c
+    elif [ "$TERM" = "screen" -o "$TERM" = "screen-bce" ]; then
+        # Terminfo entries for screen are static, and don't seem to adapt when
+        # screen is built with 256 color support... so... generate a new one
+        # based on the TERMCAP variable that screen sets. (NOTE: stock screen
+        # doesn't adjust the Co value in the TERMCAP env var to the number of
+        # colors it was built to support. I have a patch to fix that.)
+        mkdir -p $HOME/.terminfo/s
+        captoinfo > $HOME/.terminfo/s/$TERM 2>/dev/null
+        tic $HOME/.terminfo/s/$TERM 2>/dev/null
+    fi
+
+    export TERM TERMCAP
+
+    fortune ~/.fortunes 2>/dev/null
+
+    if type tput >/dev/null 2>&1; then
+        local kbs="$(tput kbs)"
+        if [ -n "$kbs" ]; then
+            stty erase "$kbs"
+        fi
+    fi
+}
+
+# Let group write to files we scp to the machine, for convenience.
+if [ "$PS1" ]; then
+    if [ -n "$TERM" ]; then
+        setup_interactive
+    fi
+    umask 0022
+elif [ "$TERM" = "dumb" ]; then
+    umask 0002
+fi
+
+# vim: set fenc=utf-8 sts=4 sw=4 et ft=sh:
