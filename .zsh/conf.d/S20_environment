@@ -8,8 +8,8 @@ if [ x"$HOSTNAME" = x ] ; then
         export HOSTNAME=$(hostname)
 fi
 
-export EMAIL="clarson@kergoth.com"
-export FULLNAME="Chris Larson"
+export EMAIL="kergoth@gmail.com"
+export FULLNAME="Christopher Larson"
 export DEBEMAIL=$EMAIL
 export DEBFULLNAME=$FULLNAME
 
