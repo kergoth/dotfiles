@@ -243,11 +243,21 @@
 	insteadOf = git://git.openembedded.org/meta-openembedded
 	insteadOf = git@git.openembedded.org:meta-openembedded
 
-[url "git://github.com/openembedded/"]
+[url "git://github.com/openembedded/bitbake"]
+	insteadOf = oe:bitbake
+	insteadOf = oe-ssh:bitbake
+	insteadOf = git://git.openembedded.org/bitbake
+	insteadOf = git@git.openembedded.org:bitbake
+
+[url "git://github.com/openembedded/openembedded"]
+	insteadOf = oe:openembedded
+	insteadOf = oe-ssh:openembedded
+	insteadOf = git://git.openembedded.org/openembedded
+	insteadOf = git@git.openembedded.org:openembedded
+
+[url "git://git.openembedded.org/"]
 	insteadOf = oe:
 	insteadOf = oe-ssh:
-	insteadOf = git://git.openembedded.org/
-	insteadOf = git@git.openembedded.org:
 
 [url "git@git.openembedded.org:"]
 	pushInsteadOf = oe:
