@@ -19,6 +19,8 @@ alias rgrep="grep -rI"
 alias gvim="vim -g"
 alias vi=vim
 alias bc='bc -ql'
+alias t='t.py --task-dir ~/Documents --list tasks.txt'
+alias e='eval $EDITOR'
 
 if have ack-grep; then
     alias ack=ack-grep
@@ -93,5 +95,3 @@ function bgexec () {
 function wg () {
     wiggle --replace $1 $1.rej
 }
-
-alias t='t.py --task-dir ~/Documents --list tasks.txt'
