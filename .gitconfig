@@ -30,7 +30,7 @@
 	ds = !git --no-pager diff --stat -M -w
 
 	# Pretty one line log
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
 
 	# Amend the current commit, but don't prompt to edit the commit message
 	amend = commit --amend -C HEAD
