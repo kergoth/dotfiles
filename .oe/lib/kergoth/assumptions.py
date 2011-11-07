@@ -14,7 +14,7 @@ except ImportError:
 
 simple_assumptions(have,
     'fakeroot',
-    'pseudo',
+    # 'pseudo',
     'sed',
     'grep',
     'unzip',
