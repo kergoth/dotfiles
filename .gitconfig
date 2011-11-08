@@ -261,8 +261,11 @@
 
 [url "git@git.openembedded.org:"]
 	pushInsteadOf = oe:
+	pushInsteadOf = oe-ssh:
 	pushInsteadOf = git://git.openembedded.org/
 	pushInsteadOf = git://github.com/openembedded/
+	pushInsteadOf = https://github.com/openembedded/
+	pushInsteadOf = git@github.com:openembedded/
 
 [url "git://github.com/"]
 	insteadOf = github:
