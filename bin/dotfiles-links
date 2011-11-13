@@ -7,7 +7,7 @@ dotfiles=$(dirname $bindir)
 cd $dotfiles
 
 echo .dotfiles/bin $HOME/bin
-ls | grep -Ev '^(bin|config)$' | while read path; do
+ls | grep -Ev '^(bin|bootstrap|config)$' | while read path; do
     echo .dotfiles/$path $HOME/.$path
 done
 
