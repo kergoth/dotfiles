@@ -1,0 +1,11 @@
+#!/bin/sh
+
+`dirname $0`/dotfiles-links | while read linkable dest; do
+    if [ -h "$dest" ]; then
+        echo >&2 "Removing $dest"
+        rm -f "$dest"
+    elif [ -e "$dest" ]; then
+        echo >&2 "Warning: $dest exists and is not a link, skipping"
+        continue
+    fi
+done

@@ -1,6 +1,6 @@
-/.subversion/auth/
-/.subversion/README.txt
-/.gnupg/*
-!/.gnupg/gpg.conf
-/.ssh/*
-!/.ssh/config
+/subversion/auth/
+/subversion/README.txt
+/gnupg/*
+!/gnupg/gpg.conf
+/ssh/*
+!/ssh/config

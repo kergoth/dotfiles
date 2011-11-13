@@ -1,6 +1,6 @@
 ;  vim: set noet fenc=utf-8 sts=0 sw=8 ts=8 :
 [core]
-	excludesfile = ~/.gitignore_global
+	excludesfile = ~/.gitignore
 	whitespace = cr-at-eol
 	safecrlf = true
 

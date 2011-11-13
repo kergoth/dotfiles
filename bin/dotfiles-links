@@ -1,0 +1,19 @@
+#!/bin/sh
+
+bindir=$(readlink -f $(dirname $0))
+dotfiles=$(dirname $bindir)
+
+
+cd $dotfiles
+
+echo .dotfiles/bin $HOME/bin
+ls | grep -Ev '^(bin|config)$' | while read path; do
+    echo .dotfiles/$path $HOME/.$path
+done
+
+if test -e config; then
+    mkdir -p $HOME/.config
+    ls config | cut -d/ -f2- | while read path; do
+        echo ../.dotfiles/config/$path $HOME/.config/$path
+    done
+fi

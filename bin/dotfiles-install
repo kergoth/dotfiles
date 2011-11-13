@@ -1,0 +1,13 @@
+#!/bin/sh
+
+`dirname $0`/dotfiles-links | while read linkable dest; do
+    if [ -h "$dest" ]; then
+        rm -f "$dest"
+    elif [ -e "$dest" ]; then
+        echo >&2 "Warning: $dest exists, skipping"
+        continue
+    fi
+    echo >&2 "Linking $dest"
+    mkdir -p `dirname $dest`
+    ln -s "$linkable" "$dest"
+done
