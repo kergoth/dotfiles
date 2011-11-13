@@ -4,7 +4,7 @@
     if [ -h "$dest" ]; then
         rm -f "$dest"
     elif [ -e "$dest" ]; then
-        if [ $1 = "-f" ]; then
+        if [ "$1" = "-f" ]; then
             echo >&2 "Warning: forced, removing $dest"
             rm -rf "$dest"
         else
