@@ -1,7 +1,0 @@
-#!/bin/sh
-ack="$(which ack 2>/dev/null || which ack-grep 2>/dev/null)" || {
-    echo >&2 "Ack not found"
-    exit 1
-}
-files="$($ack -g "$@")" || exit $?
-exec vim $files

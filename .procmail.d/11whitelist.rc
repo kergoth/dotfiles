@@ -1,4 +1,0 @@
-:0:
-* ? formail -x"From:" -x"From" -x"To:" -x"Reply-To:" -x"Cc:" \
-     | egrep -is -f $HOME/.whitelist
-$DEFAULT

@@ -1,12 +1,5 @@
-*~
-/.*_history
-/.zsh/history
-/.zsh/cache/*
 /.subversion/auth/
 /.subversion/README.txt
-/.ncftp/log
-/.ncftp/history
-/.ncftp/trace
 /.gnupg/*
 !/.gnupg/gpg.conf
 /.ssh/*

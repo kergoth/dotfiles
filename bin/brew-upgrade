@@ -1,6 +1,0 @@
-#!/bin/sh
-brew update
-toupdate="`brew outdated`"
-if [ -n "$toupdate" ]; then
-    brew install $toupdate
-fi

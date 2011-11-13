@@ -1,4 +1,0 @@
-VHOME=${HOME}
-zsh_cache=${VHOME}/.zsh/cache
-export CCACHE_DIR=${VHOME}/.ccache
-export VIMINFO=${VHOME}/.viminfo

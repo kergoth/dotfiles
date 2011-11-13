@@ -1,9 +1,0 @@
-# ======================================
-# Preventing duplicates using 16Kb cache
-# They get shoved in duplicates folder
-:0 Whc: .msgid.lock
-| formail -D 16384 .msgid.cache
-:0 a
-/dev/null
-
-# vi: set filetype=procmail:

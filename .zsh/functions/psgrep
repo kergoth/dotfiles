@@ -1,5 +1,0 @@
-#!/usr/bin/zsh
-pids="$(/usr/bin/pgrep -f -d, "$@")"
-if [[ -n $pids ]]; then
-    ps -p $pids
-fi

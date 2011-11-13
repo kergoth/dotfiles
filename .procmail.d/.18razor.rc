@@ -1,6 +1,0 @@
-RAZORCHECK=/usr/bin/razor-check
-
-:0 Wc
-| $RAZORCHECK
-:0 Wa
-$SPAM_RAZOR

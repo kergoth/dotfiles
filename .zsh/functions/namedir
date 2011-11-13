@@ -1,3 +1,0 @@
-#!/usr/bin/zsh
-eval $1=${2:-$PWD}
-: ~$1

@@ -1,5 +1,0 @@
-#!/bin/sh
-for repo in ~/.fgits/*.git/; do
-    reponame=$(basename $repo|sed -e's,\.git/*$,,')
-    vcsh $reponame -c "git pull"
-done

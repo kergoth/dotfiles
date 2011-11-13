@@ -1,7 +1,0 @@
-#!/bin/sh
-bindir=$(dirname $0)
-homefilesdir=$(cd $(dirname $bindir) && pwd)
-ln -sf $homefilesdir/* ~/
-ln -sf $homefilesdir/.[a-zA-Z0-9]* ~/
-rm -f ~/.gitignore
-rm -f ~/.git

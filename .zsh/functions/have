@@ -1,9 +1,0 @@
-#!/usr/bin/zsh
-#
-# have COMMAND
-# Return 0 if COMMAND exists in the path, otherwise 1
-
-setopt localoptions
-setopt no_nomatch
-
-[[ =$1 != "=$1" ]]

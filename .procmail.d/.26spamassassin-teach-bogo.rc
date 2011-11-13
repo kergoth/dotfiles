@@ -1,8 +1,0 @@
-:0 HBc
-* ? spamassassin -e
-#spam yields non-zero
-#non-spam yields zero
-| $BOGOFILTER -n
-#else (E)
-:0Ec
-| $BOGOFILTER -s

@@ -1,3 +1,0 @@
-#!/usr/bin/zsh
-
-unset GIT_DIR GIT_WORK_TREE

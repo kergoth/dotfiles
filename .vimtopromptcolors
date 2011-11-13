@@ -1,7 +1,0 @@
-default Normal
-# userathost Function
-userathost Comment
-debian_chroot Special
-vim Special
-ccase Special
-scm Statement
