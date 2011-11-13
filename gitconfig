@@ -17,6 +17,12 @@
 	# Pretty one line log
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
 
+	# Pretty one line log showing all commits, including dangling ones
+	lg-all = !git lg --all $(git dangling)
+
+	# Show dangling commits
+	dangling = !git fsck | sed -n 's/^dangling commit //p'
+
 	# Amend the current commit, but don't prompt to edit the commit message
 	amend = commit --amend -C HEAD
 
@@ -28,9 +34,6 @@
 
 	# Show tags and annotated tag descriptions
 	tags = tag -n1 -l
-
-	# rerun svn show-ignore -> exclude
-	svnignore = !git svn show-ignore > .git/info/exclude
 
 	# show list of contributors in descending order by number of commits
 	rank = shortlog -sn --no-merges
