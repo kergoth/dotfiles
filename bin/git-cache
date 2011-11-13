@@ -1,0 +1,513 @@
+#!/bin/sh
+#
+# TODO: add gc command
+#
+#       This is nontrivial, unfortunately. Because I use alternates, you can
+#       get into a situation where the main repository thinks an object is
+#       unreferenced, and prune it, while the child repositories may well still
+#       be referencing it, resulting in corrupt repositories. This is why we
+#       set gc.auto 0, to avoid the automatic exec of gc.
+#
+#       There's one good solution to this, which is the one used by
+#       repo.or.cz's fork handling code. See
+#       http://repo.or.cz/w/girocco.git/blob/HEAD:jobd/gc.sh. The real issue
+#       with this is that we have to start tracking what clones exist which
+#       reference the cache. Doing that trivially is easy, but this means you
+#       can no longer just mv a clone to a different location without it no
+#       longer being tracked by this.
+#
+#       My current plan is to make the clone command start recording the
+#       destinations in a file in the cache_dir, then add clone_rename and
+#       clone_register commands, to rename a cloneand to register a renamed
+#       clone back with the cache.
+
+set -e
+
+usage () {
+    cat >&2 <<END
+Usage: git cache [OPTIONS] COMMAND [CMD_ARGUMENTS]
+
+       Options:
+
+           -h               Show this usage information
+           -v               Verbose
+           -d DIRECTORY     Specify cache directory (default: ~/.git-cache)
+
+       Commands:
+
+           add
+           remove
+           clone
+           list
+           sanitize
+           update
+END
+    exit 0
+}
+
+usage_add () {
+    cat >&2 <<END
+Usage: git cache add [OPTIONS] URL
+
+    Options:
+
+        -h    Show this usage information
+        -n    Do not fetch the remote in the cache repository
+END
+    exit 1
+}
+
+usage_remove () {
+    cat >&2 <<END
+Usage: git cache remove [OPTIONS] URL
+
+    Options:
+
+        -h    Show this usage information
+        -r    The specified argument is the name of the repository in the
+              cache, not a URL
+END
+    exit 1
+}
+
+usage_clone () {
+    cat >&2 <<END
+Usage: git cache clone [OPTIONS] URL [DESTINATION]
+
+    Options:
+
+        -h    Show this usage information
+        -n    Do not fetch the remote in the cache repository
+        -R    Disable set up and clone of submodules
+        -m    As with git clone --mirror, clone to a bare repository and set up the branches directly,
+              not in refs/remotes/
+        -b BRANCH   Branch to check out
+END
+    exit 1
+}
+
+process_global_options () {
+    while getopts vhd: opt; do
+        case "$opt" in
+            v)
+                verbose=1
+                ;;
+            d)
+                cache_dir="$(abspath "$OPTARG")"
+                ;;
+            \?|h)
+                return 1
+                ;;
+       esac
+    done
+}
+
+scripts_dir="$(cd $(dirname "$0") && pwd)"
+cache_dir="$HOME/.git-cache"
+verbose=0
+
+main () {
+    process_global_arguments "$@"
+    shift $(($OPTIND - 1))
+    shift
+    OPTIND=0
+
+    verbose "Running command: $command $@"
+
+    eval cmd_$command "$@"
+}
+
+cmd_add () {
+    no_fetch=0
+
+    while getopts hn opt; do
+        case "$opt" in
+            n)
+                no_fetch=1
+                ;;
+            \?|h)
+                usage_add
+                ;;
+        esac
+    done
+    shift $(($OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage_add
+    fi
+
+    url="$1"
+    cache_url="$(full_url "$url")"
+    cache_repo="$cache_dir/$(basename $(echo $cache_url|sed -e's,\.git/*$,,')).git"
+    remote="$(hash "$cache_url")"
+
+    add_to_cache "$cache_url" "$cache_repo" "$remote"
+
+    if [ $no_fetch -eq 0 ]; then
+        update_remote "$cache_repo" "$remote" || true
+    fi
+}
+
+cmd_remove () {
+    is_repository=0
+
+    while getopts hr opt; do
+        case "$opt" in
+            r)
+                is_repository=1
+                ;;
+            \?|h)
+                usage_remove
+                ;;
+        esac
+    done
+    shift $(($OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage_remove
+    fi
+    path="$1"
+    if [ $is_repository -ne 0 ]; then
+        if [ -e "$cache_dir/$path.git" ]; then
+            rm -rf "$cache_dir/$path.git"
+            msg "Removed repository $path"
+        else
+            msg "$path does not exist"
+        fi
+    else
+        cache_url="$(full_url "$path")"
+        cache_repo="$cache_dir/$(basename $(echo $cache_url|sed -e's,\.git/*$,,')).git"
+        remote="$(hash "$cache_url")"
+        if [ ! -e "$cache_repo" ]; then
+            die "$cache_repo does  not exist"
+        fi
+        verbose "Removing $cache_url from $cache_repo"
+        GIT_DIR=$cache_repo git remote rm $remote
+        msg "Removed url $path"
+    fi
+}
+
+cmd_clone () {
+    no_fetch=0
+    mirror=0
+    recursive=1
+    branch=master
+
+    while getopts hmnRb: opt; do
+        case "$opt" in
+            b)
+                branch=$OPTARG
+                ;;
+            n)
+                no_fetch=1
+                ;;
+            m)
+                mirror=1
+                ;;
+            R)
+                recursive=0
+                ;;
+            \?|h)
+                usage_clone
+                ;;
+        esac
+    done
+    shift $(($OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage_clone
+    fi
+
+    url="$1"
+
+    if [ $# -lt 1 -o $# -gt 2 ]; then
+        die "Usage: git cache clone URL [DESTINATION]"
+    fi
+    url=$1
+    shift
+    cache_url="$(full_url "$url")"
+    basename="$(basename $(echo $cache_url|sed -e's,\.git/*$,,'))"
+
+    destination=$1
+    if [ -z "$destination" ]; then
+        destination=$PWD/$basename
+    fi
+    destination="$(abspath "$destination")"
+    if [ $mirror -eq 1 ]; then
+        if ! echo "$destination"|grep -q '\.git/*$'; then
+            destination="$destination.git"
+        fi
+    fi
+    if [ -d "$destination" ]; then
+        die "Error: $destination already exists"
+        exit 3
+    fi
+
+    cache_repo="$cache_dir/$basename.git"
+    remote="$(hash "$cache_url")"
+
+    verbose "Ensuring $url is in the cache at $cache_repo"
+    add_to_cache "$cache_url" "$cache_repo" "$remote"
+
+    if [ $no_fetch -eq 0 ]; then
+        update_remote "$cache_repo" "$remote" || true
+    fi
+
+    if [ $mirror -eq 1 ]; then
+        verbose "Mirroring from $cache_repo to $destination"
+        $scripts_dir/git-clone-via -s -m -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        msg "Mirrored from $cache_repo to $destination"
+    else
+        verbose "Cloning from $cache_repo to $destination"
+        $scripts_dir/git-clone-via -s -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        msg "Cloned from $cache_repo to $destination"
+    fi
+
+    if [ $recursive -eq 1 ]; then
+        cd $destination
+        clone_submodules
+    fi
+}
+
+cmd_list () {
+    if [ $# -gt 1 ]; then
+        echo >&2 "Usage: git cache list [REPONAME]"
+        exit 1
+    fi
+
+    reponame="$1"
+    if [ -n "$reponame" ]; then
+        repo="$cache_dir/$reponame.git"
+        if [ ! -e "$repo" ]; then
+            echo >&2 "Error: $repo does not exist"
+            exit 1
+        fi
+
+        list_repo_urls $repo
+    else
+        for repo in $cache_dir/*.git/; do
+            reponame="$(echo $repo|sed -e"s,^$cache_dir/,,; s,\.git/$,,")"
+            echo "$reponame:"
+            list_repo_urls $repo "    "
+        done
+    fi
+}
+
+cmd_update () {
+    if [ $# -ne 0 ]; then
+        echo >&2 "Usage: git cache update"
+        exit 1
+    fi
+
+    for repo in $cache_dir/*/; do
+        reponame="$(basename $repo|sed -e's,\.git$,,')"
+        verbose "Updating $reponame"
+        git "--git-dir=$repo" remote | while read remote; do
+            ret=0
+            update_remote "$repo" "$remote" || ret=$?
+            if [ $ret -eq 0 ]; then
+                msg "$reponame: Fetched $remote"
+            else
+                msg >&2 "$reponame: Unable to fetch $remote"
+            fi
+        done
+        msg "Updated $reponame"
+    done
+}
+
+cmd_sanitize () {
+    if [ $# -ne 0 ]; then
+        echo >&2 "Usage: git cache sanitize"
+        exit 1
+    fi
+
+    for repo in $cache_dir/*/; do
+        verbose "Sanitizing $repo"
+
+        git "--git-dir=$repo" config --get-regexp "remote\..*\.url" | \
+            while read entry url; do
+                remote="$(echo "$entry"|sed -e's,^remote\.,,; s,\.url$,,')"
+                cache_url="$(full_url "$url")"
+                url_hash="$(hash "$cache_url")"
+
+                if [ "$url" != "$cache_url" ]; then
+                    git "--git-dir=$repo" config remote.$remote.url "$cache_url"
+                    msg "Changed url $url for $repo to $cache_url"
+                fi
+
+                if [ "$remote" != "$url_hash" ]; then
+                    if git "--git-dir=$repo" config remote.$url_hash.url >/dev/null; then
+                        # correct remote already exists, just drop this one
+                        git "--git-dir=$repo" remote rm $remote
+                        msg "Remote $url_hash already exists, dropped $remote"
+                    else
+                        git "--git-dir=$repo" remote rename $remote $url_hash
+                        msg "Renamed $remote to $url_hash to account for url change"
+                    fi
+                fi
+            done
+    done
+}
+
+list_repo_urls () {
+    repo="$1"
+    prefix="$2"
+    GIT_DIR=$repo git config --get-regexp "remote\..*\.url" | {
+        while read _ url; do
+            echo "$prefix$url"
+        done
+    }
+}
+
+update_remote () {
+    verbose "Updating remote $2 in $1"
+    git "--git-dir=$1" remote update -p "$2"
+}
+
+create_repo () {
+    # Create a cache repository
+    repo="$1"
+    git "--git-dir=$repo" init --bare --shared
+    GIT_DIR=$repo git config gc.auto 0
+}
+
+add_to_cache () {
+    # Add the given url to the given cache repository, as the given remote
+    full_url="$1"
+    cache_repo="$2"
+    remote="$3"
+
+    git peek-remote "$full_url" >/dev/null
+
+    if [ ! -e "$cache_repo" ]; then
+        verbose "Creating cache repository $cache_repo"
+        create_repo "$cache_repo"
+    fi
+
+    fresh=0
+    if ! git "--git-dir=$cache_repo" config remote.$remote.url >/dev/null; then
+        fresh=1
+        verbose "Adding $full_url to the cache at $cache_repo"
+    fi
+    git "--git-dir=$cache_repo" config remote.$remote.url "$full_url"
+    git "--git-dir=$cache_repo" config remote.$remote.fetch "+refs/*:refs/remotes/$remote/*"
+    git "--git-dir=$cache_repo" config remote.$remote.tagopt "--no-tags"
+    if [ $fresh -ne 0 ]; then
+        msg "Added $full_url to the cache at $cache_repo"
+    fi
+}
+
+clone_submodules () {
+    if [ ! -e .gitmodules ]; then
+        return
+    fi
+
+    verbose "Cloning submodules in $PWD"
+
+    git submodule init
+    GIT_CONFIG=.gitmodules git config --get-regexp submodule\\..\*\\.path | while read key path; do
+        name=$(echo $key|sed -e's,^submodule\.,,; s,\.path$,,')
+        url=$(GIT_CONFIG=.gitmodules git config --get submodule.$name.url)
+        rm -rf $path
+        (
+            set --
+            if [ $no_fetch -ne 0 ]; then
+                set -- -n
+            fi
+            cmd_clone "$@" $url $path
+        )
+    done
+    git submodule update
+}
+
+canonical_url () {
+    # Give us the url in its canonical form
+    url="$1"
+    echo "$url" | \
+        sed -e '
+s,^https://github,git://github,;
+s,^http://github,git://github,;
+s,^git://openembedded\.org,git://git.openembedded.org,;
+s,^http://git\.sv\.gnu\.org/,http://git.savannah.gnu.org/,;
+s,^git://git\.sv\.gnu\.org/,http://git.savannah.gnu.org/r/,;
+s,^git://git\.savannah\.gnu\.org/,http://git.savannah.gnu.org/r/,;
+s,\.sf\.net/,.sourceforge.net/,;
+s,^git://[^.]\+\.git\.sourceforge\.net/,git://gitscm.sourceforge.net/,;
+/^git:\/\/anonscm\.debian.org\//q;
+s,\.git/*$,,;
+s,$,.git,;
+        '
+}
+
+full_url () {
+    # Give us the full upstream url, first translating for any use of git's
+    # "insteadOf", then ensuring the url is in its canonical form.
+    url="$1"
+    git config --global --get-regexp "url\..*\.insteadof" | {
+        while read real other; do
+            realurl="$(echo "$real"|sed 's,^url\.,,; s,\.insteadof$,,')"
+            if echo "$url" | grep -q "^$other"; then
+                url="$(echo "$url"|sed -e"s,^$other,$realurl,")"
+                break
+            fi
+        done
+        echo "$(canonical_url "$url")"
+    }
+}
+
+process_global_arguments () {
+    process_global_options "$@" || usage
+    if [ $OPTIND -eq 1 -a $# -eq 0 ]; then
+        usage
+    fi
+    shift $(($OPTIND - 1))
+
+    if [ $# -lt 1 ]; then
+        usage
+    fi
+
+    command="$1"
+}
+
+hash () {
+    echo -n "$@" | {
+        if has sha1sum; then
+            sha1sum | cut -c1-7
+        elif has shasum; then
+            shasum | cut -c1-7
+        else
+            md5sum | cut -c1-7
+        fi
+    }
+}
+
+has () {
+    which "$1" >/dev/null
+}
+
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="$PWD/$1"
+    fi
+    echo "$_path"
+}
+
+msg () {
+    echo "git-cache: $@"
+}
+
+verbose () {
+    if [ $verbose -ne 0 ]; then
+        msg "$@" >&2
+    fi
+}
+
+die () {
+    msg "$@"
+    exit 1
+}
+
+
+unset GIT_DIR GIT_WORK_TREE
+main "$@"

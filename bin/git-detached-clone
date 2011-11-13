@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# Do a detached clone, aka create a "fake bare" repository
+#
+# This places the repository in one location, and the working tree in another
+# location.
+
+set -e
+
+usage () {
+    cat >&2 <<END
+Usage: git detached-clone URL DEST_REPO DEST_WORKTREE
+
+Note that the path to the working tree is relative to the destination
+repository, if you use relative paths.
+END
+    exit 1
+}
+
+unset GIT_DIR GIT_WORK_TREE
+
+url="$1"
+shift || usage
+repo="$1"
+shift || usage
+worktree="$1/"
+shift || usage
+
+git clone --no-checkout "$url" "$repo"
+cd "$repo"
+mkdir -p "$worktree"
+mv .git/* .
+rmdir .git
+export GIT_DIR="$PWD"
+git read-tree HEAD
+git checkout-index -a --prefix="$worktree" || true
+git config core.worktree "$worktree"

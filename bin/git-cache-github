@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+"""Mirror github repositories using git cached-clone"""
+
+import commands
+import os
+import sys
+
+from github2.client import Github
+try:
+    from gistapi import Gists
+except ImportError:
+    pass
+
+github_url = 'https://github.com/'
+gist_url = 'git://gist.github.com/'
+
+
+def add_to_cache(url):
+    os.system('git cache add %s' % url)
+
+def mirror_github_repositories(user, token):
+    github = Github(username=user, api_token=token)
+    for repo in github.repos.watching(user):
+        add_to_cache(github_url + '%s/%s.git' % (repo.owner, repo.name))
+
+    try:
+        Gists
+    except NameError:
+        print("Skipping gists due to no gistapi python module")
+        pass
+    else:
+        for gist in Gists.fetch_by_user(user):
+            add_to_cache(gist_url + '%s.git' % gist.repo)
+
+if __name__ == '__main__':
+    user = commands.getoutput('git config github.user')
+    token = commands.getoutput('git config github.token')
+    print(user, token)
+    try:
+        mirror_github_repositories(user, token)
+    except KeyboardInterrupt:
+        sys.exit(2)
