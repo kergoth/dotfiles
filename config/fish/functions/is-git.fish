@@ -1,3 +1,7 @@
 function is-git
-    have git; and env git rev-parse --git-dir ^/dev/null >/dev/null
+    if not have git
+        return 1
+    end
+
+    env git rev-parse --git-dir ^/dev/null >/dev/null
 end
