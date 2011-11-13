@@ -12,13 +12,15 @@
 	br = branch
 	ls = ls-files --exclude-standard
 	staged = diff --cached
-	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
 	# Pretty one line log
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
 
 	# Pretty one line log showing all commits, including dangling ones
 	lg-all = !git lg --all $(git dangling)
+
+	# Pretty one line log showing commits in the last hour/day/week/month/etc
+	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
 	# Show dangling commits
 	dangling = !git fsck | sed -n 's/^dangling commit //p'
