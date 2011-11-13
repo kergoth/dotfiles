@@ -17,4 +17,4 @@ URxvt.background: rgba:0000/0000/0000/eddd
 URxvt.perl-ext: default,matcher
 URxvt.urlLauncher: firefox
 URxvt.font: xft:Liberation Mono-10
-URxvt*termName: xterm-256color
+URxvt*termName: rxvt-unicode
