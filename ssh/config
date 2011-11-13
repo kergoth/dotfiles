@@ -15,3 +15,6 @@ IdentityFile %d/.ssh/id_dsa
 
 Host *.local localhost 192.168.*
     ForwardAgent yes
+
+Host *
+    User kergoth

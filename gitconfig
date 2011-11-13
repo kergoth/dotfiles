@@ -4,6 +4,10 @@
 	whitespace = cr-at-eol
 	safecrlf = true
 
+[user]
+	name = Christopher Larson
+	email = kergoth@gmail.com
+
 [alias]
 	ci = commit
 	co = checkout
@@ -108,6 +112,16 @@
 	added = green bold
 	changed = yellow bold
 	untracked = red
+
+[sendemail]
+	identity = gmail
+	suppressfrom = true
+
+[sendemail.gmail]
+	smtpserver = smtp.gmail.com
+	smtpserverport = 587
+	smtpencryption = tls
+	smtpuser = kergoth@gmail.com
 
 [notes]
 	rewriteRef = refs/notes/*
