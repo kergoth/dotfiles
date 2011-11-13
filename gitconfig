@@ -59,6 +59,18 @@
 	# list the largest files in the repository
 	ls-large-files = !git ls-tree -rl HEAD | sort -rnk 4 | head
 
+	# Diffstat of uncached changes, ignoring whitespace
+	ds = !git --no-pager diff --stat -M -w
+
+	# Create a new, entirely empty branch with no commits
+	empty-branch = "!sh -e -c 'git symbolic-ref HEAD \"refs/heads/$1\"; rm -f $(git rev-parse --git-dir)/index; git clean -fdx' \"$@\""
+
+	# Edit the unmerged files
+	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; $EDITOR `f`"
+
+	# Compare two commits with interdiff (used to compare two commits which implement the same feature, for example)
+	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
+
 [interactive]
 	singlekey = true
 
