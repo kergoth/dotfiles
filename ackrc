@@ -4,3 +4,4 @@
 --color-match=bold red
 --type-set=bitbake=.bb,.bbappend,.bbclass,.inc,.conf
 --type-set=diff=.diff,.patch,.dpatch
+--type-set=fish=.fish
