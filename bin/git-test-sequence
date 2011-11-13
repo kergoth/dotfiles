@@ -1,7 +1,10 @@
 #!/bin/sh
+#
 # Run a command over a sequence of commits.
 # Example:
 #  git test-sequence origin/master.. 'make clean && make test'
+#
+# http://dustin.github.com/2010/03/28/git-test-sequence.html
 
 start_branch=`git rev-parse --symbolic-full-name HEAD | sed s,refs/heads/,,`
 tmpbranch=test_seq_$$
