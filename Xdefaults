@@ -1,32 +1,3 @@
-Xft.hintstyle: hintfull
-Xft.hinting: true
-Xft.rgba: rgb
-Xft.antialias: true
-
-Xcursor.core: false
-Xcursor.theme: DMZ-White
-
-XTerm.backarrowKeyIsErase: false
-XTerm.backarrowKey: false
-XTerm.termName: xterm-256color
-XTerm.toolBar: false
-
-XTerm.vt100.loginShell: false
-XTerm.vt100.saveLines: 3000
-XTerm.vt100.geometry: 96x50
-XTerm.vt100.reverseVideo: false
-XTerm.vt100.background: black
-XTerm.vt100.foreground: grey90
-XTerm.vt100.colorBDMode: false
-XTerm.vt100.colorULMode: false
-XTerm.vt100.scrollBar: false
-XTerm.vt100.scrollTtyOutput: false
-XTerm.vt100.scrollKey: false
-XTerm.vt100.jumpScroll: true
-XTerm.vt100.faceName: DejaVu Sans Mono
-XTerm.vt100.faceSize: 10
-XTerm.vt100.renderFont: true
-
 Rxvt.scrollBar: false
 Rxvt.scrollTtyOutput: false
 Rxvt.scrollKey: false

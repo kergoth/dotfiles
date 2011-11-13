@@ -4,30 +4,15 @@
 	whitespace = cr-at-eol
 	safecrlf = true
 
-[user]
-	name = Christopher Larson
-	email = kergoth@gmail.com
-
 [alias]
 	ci = commit
 	co = checkout
 	au = add -u
 	st = status -sb
 	br = branch
-	br-m = branch --merged
-	br-um = branch --no-merged
-	df = diff
-	w = whatchanged --reverse
 	ls = ls-files --exclude-standard
 	staged = diff --cached
 	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
-
-	# git-flow
-	fs = flow feature start
-	ff = flow feature finish
-
-	# Diffstat, ignoring whitespace
-	ds = !git --no-pager diff --stat -M -w
 
 	# Pretty one line log
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
@@ -35,11 +20,14 @@
 	# Amend the current commit, but don't prompt to edit the commit message
 	amend = commit --amend -C HEAD
 
-	# Show tags and annotated tag descriptions
-	tags = tag -n1 -l
+	# example: git subdo pull
+	subdo = submodule foreach git
 
 	# Clean out the ignored files (i.e. to rebuild)
 	iclean = clean -fdX
+
+	# Show tags and annotated tag descriptions
+	tags = tag -n1 -l
 
 	# rerun svn show-ignore -> exclude
 	svnignore = !git svn show-ignore > .git/info/exclude
@@ -53,88 +41,13 @@
 	# given any git object, try to show it briefly
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 
-	# show conflicting merge in gitk:
-	gitkconflict = !gitk --left-right HEAD...MERGE_HEAD
-
-	# prune all tracking local branches that have been removed from remote:
-	prune-all = !git remote | xargs -n 1 git remote prune
-
-	# show full history in gitk (including "deleted" branches and stashes)
-	history-all = !gitk --all $( git fsck | awk '/dangling commit/ {print $3}' )
-
-	# thanks to cody cutrer
-	cherry-pick-merge = "!bash -c 'git cherry-pick -n -m 1 $0 && \
-		git log -1 --pretty=%P $0 | cut -b 42- > .git/MERGE_HEAD && \
-		git commit -v'"
-
-	# get the remote branch we're tracking
-	remote-ref = "!bash -c ' \
-		local_ref=$(git symbolic-ref HEAD); \
-		local_name=${local_ref##refs/heads/}; \
-		remote=$(git config branch.\"$local_name\".remote || echo origin); \
-		remote_ref=$(git config branch.\"$local_name\".merge); \
-		remote_name=${remote_ref##refs/heads/}; \
-		echo remotes/$remote/$remote_name'"
-
-	# rebase against the branch we're tracking
-	rebase-recent = !git rebase -i $(git remote-ref)
-
-	# show what I would push to the tracked branch
-	topush = !git log $(git remote-ref)..
-
-	test-topush = !git test-sequence $(git remote-ref).. "$@"
-
-	# example: git subdo pull
-	subdo = submodule foreach git
-
-	publish = "!sh -c ' \
-		remote=$0; \
-		ref=$1; \
-		shift; \
-		git push -u \"$@\" \"$remote\" \
-		                   \"$(git symbolic-ref HEAD):$ref\"'"
-
-	# push all unmerged local branches to the supplied remote, setting up
-	# tracking for the local branches to that remote.
-	publish-all = !git branch --no-merged | xargs -n1 git push -u "$@"
-
-	file-blame = "!f() { git ls-files | while read fn; do git log -1 --pretty=format:\"%ci $fn\" -- \"$fn\"; done }; f"
-	pushall = !git remote | xargs -n1 git push
-	pushalltags = !git remote | xargs -n1 git push --tags
-	svnup = !git config --get-regexp 'svn-remote.*url' | cut -d . -f 2 | xargs -n1 git svn fetch
-	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
-	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+	# changed between ORIG_HEAD and current
 	lc = log ORIG_HEAD.. --stat --no-merges
-	serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
-	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
-	unstage = reset HEAD --
-	empty-branch = "!sh -e -c 'git symbolic-ref HEAD \"refs/heads/$1\"; rm -f $(git rev-parse --git-dir)/index; git clean -fdx' \"$@\""
-	subtree-fetch = "!sh -e -c ' \
-		if [ -n \"$1\" ]; then \
-			branch=\"$1\"; \
-		else \
-			branch=\"origin\"; \
-		fi; \
-		git fetch $branch; \
-		\
-		subtree=\"$(git config remote.$branch.subtree)\" || exit 0; \
-		ref_pattern=\"$(git config remote.$branch.fetch|cut -d: -f2|sed -e\"s,*$,,\")\"; \
-		refs=\"$(git for-each-ref \"--format=%(refname)\" \"$ref_pattern\")\"; \
-		git filter-branch -f --original refs/original-subtree --subdirectory-filter $subtree $refs; \
-		rm -rf $(git rev-parse --git-dir)/refs/original-subtree/; \
-	' \"$@\""
-	subtree-pull = "!sh -e -x -c '\
-		remote=$1; \
-		if [ -z \"$remote\" ]; then \
-			remote=origin; \
-		fi; \
-		branch=$2; \
-		if [ -z \"$branch\" ]; then \
-			branch=master; \
-		fi; \
-		git subtree-fetch $remote; \
-		git merge -s subtree $remote/$branch' \"$@\""
 
+	# remove changes to a file from the index
+	unstage = reset HEAD --
+
+	# list the largest files in the repository
 	ls-large-files = !git ls-tree -rl HEAD | sort -rnk 4 | head
 
 [interactive]
@@ -153,32 +66,12 @@
 	submodulesummary = true
 
 [diff]
-	tool = vimdiff
 	renames = copy
 	mnemonicprefix = true
 
-[diff "exif"]
-	textconv = exiftool
-
-[diff "word"]
-	textconv = strings
-
 [merge]
 	summary = true
-	tool = meld
 	conflictstyle = diff3
-
-[merge "ours"]
-	name = \"always keep ours\" merge driver
-	driver = true
-
-[filter "indent"]
-	clean = indent
-	smudge = cat
-
-[filter "gofmt"]
-	clean = gofmt
-	smudge = cat
 
 [pack]
 	threads = 3
@@ -210,16 +103,6 @@
 	added = green bold
 	changed = yellow bold
 	untracked = red
-
-[sendemail]
-	identity = gmail
-	suppressfrom = true
-
-[sendemail.gmail]
-	smtpserver = smtp.gmail.com
-	smtpserverport = 587
-	smtpencryption = tls
-	smtpuser = kergoth@gmail.com
 
 [notes]
 	rewriteRef = refs/notes/*

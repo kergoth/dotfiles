@@ -9,16 +9,9 @@ ForwardX11Trusted no
 ExitOnForwardFailure yes
 NoHostAuthenticationForLocalhost yes
 
-IdentityFile /media/usbstick/SSH/id_rsa
 IdentityFile %d/.ssh/%l
 IdentityFile %d/.ssh/id_rsa
 IdentityFile %d/.ssh/id_dsa
 
-Host neutrino.file-radio.com
-    User clarson
-
-Host *.kergoth.com *.local localhost 192.168.*
+Host *.local localhost 192.168.*
     ForwardAgent yes
-
-Host *
-    User kergoth
