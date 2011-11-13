@@ -4,8 +4,13 @@
     if [ -h "$dest" ]; then
         rm -f "$dest"
     elif [ -e "$dest" ]; then
-        echo >&2 "Warning: $dest exists, skipping"
-        continue
+        if [ $1 = "-f" ]; then
+            echo >&2 "Warning: forced, removing $dest"
+            rm -rf "$dest"
+        else
+            echo >&2 "Warning: $dest exists, skipping"
+            continue
+        fi
     fi
     echo >&2 "Linking $dest"
     mkdir -p `dirname $dest`
