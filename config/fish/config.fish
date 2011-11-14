@@ -1,6 +1,8 @@
 set -e fish_greeting
 
-. ~/.config/fish/environment.fish
+if status --is-login
+    . ~/.config/fish/environment.fish
+end
 
 set OS (uname -s | tr A-Z a-z)
 if test -e ~/.config/fish/$OS.fish
