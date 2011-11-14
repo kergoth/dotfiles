@@ -1,0 +1,2 @@
+#!/bin/sh
+locate --regex -b '^\.git$'|while read repo; do GIT_DIR=$repo git config --get-regexp '^remote\.[^.]+\.url'; done|grep -v remote.braid|while read name url; do git cache add $url; done
