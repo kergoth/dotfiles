@@ -425,15 +425,14 @@ canonical_url () {
     url="$1"
     echo "$url" | \
         sed -e '
-s,^https://github,git://github,;
-s,^http://github,git://github,;
+s,^git://github.com,https://github.com,;
+s,^http://github.com,https://github.com,;
 s,^git://openembedded\.org,git://git.openembedded.org,;
 s,^http://git\.sv\.gnu\.org/,http://git.savannah.gnu.org/,;
 s,^git://git\.sv\.gnu\.org/,http://git.savannah.gnu.org/r/,;
 s,^git://git\.savannah\.gnu\.org/,http://git.savannah.gnu.org/r/,;
 s,\.sf\.net/,.sourceforge.net/,;
 s,^git://[^.]\+\.git\.sourceforge\.net/,git://gitscm.sourceforge.net/,;
-/^git:\/\/anonscm\.debian.org\//q;
 s,\.git/*$,,;
 s,$,.git,;
         '
