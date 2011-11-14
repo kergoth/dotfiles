@@ -1,5 +1,11 @@
-if test -d ~/bin
-    set PATH ~/bin $PATH
+begin
+    set -l path
+    for dir in ~/bin ~/.local/bin $PATH
+        if test -d $dir
+            set path $path $dir
+        end
+    end
+    set PATH $path
 end
 
 if not set -q HOME
@@ -10,8 +16,8 @@ if not set -q HOSTNAME
     set -x HOSTNAME (hostname)
 end
 
-set -x EMAIL "kergoth@gmail.com"
-set -x FULLNAME "Christopher Larson"
+set -x EMAIL 'kergoth@gmail.com'
+set -x FULLNAME 'Christopher Larson'
 set -x DEBEMAIL $EMAIL
 set -x DEBFULLNAME $FULLNAME
 
