@@ -9,7 +9,6 @@ Rxvt.background: black
 Rxvt.foreground: grey90
 Rxvt.colorBDMode: false
 Rxvt.colorULMode: false
-Rxvt.loginShell: false
 Rxvt.saveLines: 3000
 
 URxvt.depth: 32
