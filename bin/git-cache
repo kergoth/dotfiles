@@ -260,13 +260,16 @@ cmd_clone () {
     else
         verbose "Cloning from $cache_repo to $destination"
         $scripts_dir/git-clone-via -s -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        cd $destination
+        if [ $recursive -eq 1 ]; then
+            clone_submodules
+        fi
+        if git hooks >/dev/null 2>&1; then
+            git hooks --install
+        fi
         msg "Cloned from $cache_repo to $destination"
     fi
 
-    if [ $recursive -eq 1 ]; then
-        cd $destination
-        clone_submodules
-    fi
 }
 
 cmd_list () {
