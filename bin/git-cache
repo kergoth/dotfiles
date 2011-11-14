@@ -451,7 +451,12 @@ full_url () {
                 break
             fi
         done
-        echo "$(canonical_url "$url")"
+        new_url="$(canonical_url "$url")"
+        if [ -z "$new_url" ]; then
+            echo >&2 "Error: $url was translated to an empty string"
+            exit 1
+        fi
+        echo "$new_url"
     }
 }
 
