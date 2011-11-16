@@ -37,17 +37,18 @@ simple_assumptions(have,
 
     **{
         'svn': 'subversion-native',
+        'hg': 'mercurial-native',
         'makeinfo': 'texinfo-native',
         'eu-strip': 'elfutils-native',
     }
 )
 
 simple_assumptions(check=os.path.exists, **{
-    # '/usr/lib/libz.a': 'zlib-native',
     '/usr/lib/libcurl.a': 'curl-native',
     '/usr/lib/libreadline.a': 'readline-native',
+    # '/usr/lib/libz.a': 'zlib-native',
     # '/usr/lib/libsqlite3.a': 'sqlite3-native',
-    '/usr/lib/libuuid.a': 'util-linux-native',
+    # '/usr/lib/libuuid.a': 'util-linux-native',
 })
 
 def gnu_version(name, minversion):
