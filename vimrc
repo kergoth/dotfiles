@@ -487,3 +487,8 @@ hi! def link Conceal SpecialKey
 
 " Set a default filetype
 au BufReadPost,BufNewFile,VimEnter * if &ft == '' | setfiletype text | endif
+
+if !exists('$HOSTNAME') && executable('hostname')
+  let $HOSTNAME = substitute(system('hostname'), "\n", "", "")
+endif
+runtime vimrc.$HOSTNAME
