@@ -171,6 +171,9 @@ if [ $mirror -eq 1 ]; then
     git config remote.origin.fetch "refs/*:refs/*"
 else
     git config remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
-    git checkout -b $checkout_branch origin/$checkout_branch || true
+    git branch --track $checkout_branch origin/$checkout_branch
+    git update-ref HEAD refs/heads/$checkout_branch
+    git read-tree $checkout_branch
+    git checkout-index -a
 fi
 git gc
