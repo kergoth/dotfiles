@@ -145,7 +145,7 @@ else
   endif
 endif
 
-if &term == 'xterm-256color'
+if &term == 'xterm-256color' || &term == 'rxvt-unicode'
   set t_Co=256
 endif
 
