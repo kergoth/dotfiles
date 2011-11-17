@@ -125,6 +125,13 @@
 	changed = yellow bold
 	untracked = red
 
+[imap]
+        folder = "[Gmail]/Drafts"
+        host = imaps://imap.gmail.com
+        user = kergoth@gmail.com
+        port = 993
+        sslverify = false
+
 [sendemail]
 	identity = gmail
 	suppressfrom = true
