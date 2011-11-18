@@ -7,3 +7,5 @@
 /config/fish/fishd.*
 /config/fish/fish_history
 /config/fish/fish_read_history
+/config/sublime-text-2/Settings/
+/config/sublime-text-2/Pristine Packages/

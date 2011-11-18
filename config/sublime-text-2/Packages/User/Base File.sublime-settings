@@ -1,0 +1,7 @@
+{
+	"trim_trailing_white_space_on_save": true,
+
+	"color_scheme": "Packages/User/Monokai Soda.tmTheme",
+	"font_size": 11.0,
+	"font_options": ["subpixel_antialias"]
+}
