@@ -1,0 +1,9 @@
+{
+	"cmd": "gb",
+	"file_regex": "^(.+):([0-9]+):.*",
+	"selector": "source.go",
+	"windows":
+    {
+        "cmd": ["sh", "-c", "gb", "-t"]
+    }
+}
