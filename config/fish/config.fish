@@ -1,5 +1,7 @@
 . ~/.config/fish/environment.fish
 
+alias t 't.py --task-dir ~/Dropbox/Documents --list tasks.txt'
+
 set OS (uname -s | tr A-Z a-z)
 if test -e ~/.config/fish/$OS.fish
     . ~/.config/fish/$OS.fish
