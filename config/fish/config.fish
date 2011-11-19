@@ -1,5 +1,3 @@
-set -e fish_greeting
-
 . ~/.config/fish/environment.fish
 
 set OS (uname -s | tr A-Z a-z)
