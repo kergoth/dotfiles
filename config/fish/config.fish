@@ -1,7 +1,4 @@
-alias t 't.py --task-dir ~/Dropbox/Documents --list tasks.txt'
-alias tmux 'tmux -u2'
-
-
+# Variables {{{1
 set tacklebox_path ~/.config/fish/tacklebox
 set tacklebox_plugins misc python volatile z
 
@@ -56,8 +53,24 @@ if test -e ~/.config/fish/$HOSTNAME.fish
     . ~/.config/fish/$HOSTNAME.fish
 end
 
+
+# Aliases {{{1
+alias bback  'ack --type=bitbake'
+alias chrome 'google-chrome'
+alias t      't.py --task-dir ~/Dropbox/Documents --list tasks.txt'
+alias tmux   'tmux -u2'
+if test $OS = darwin
+    alias ps 'ps ux'
+else
+    alias ps 'ps fux'
+end
+
+
+# Other {{{1
 . $tacklebox_path/tacklebox.fish
 
 
 # To ensure that I don't see a failure status in the prompt at login
 true
+
+# vi:sts=4 sw=4 et fdm=marker
