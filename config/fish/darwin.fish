@@ -1,1 +1,2 @@
 set -x CLICOLOR 1
+set -x COMMAND_MODE unix2003
