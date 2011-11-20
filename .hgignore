@@ -1,0 +1,14 @@
+syntax: glob
+
+syntax: regexp
+^config/fish/fishd\.
+^config/fish/fish_history
+^ssh/authorized_keys2
+^ssh/id_dsa
+^ssh/id_dsa.pub
+^ssh/known_hosts
+^vim/viminfo
+^config/sublime-text-2/Settings/
+^config/sublime-text-2/Pristine Packages/
+^config/sublime-text-2/Installed Packages/
+^config/sublime-text-2/Packages/

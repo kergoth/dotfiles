@@ -2,5 +2,5 @@
 
 set -e
 
-git clone git://github.com/kergoth/homefiles ~/.dotfiles
+hg clone https://bitbucket.org/kergoth/dotfiles ~/.dotfiles
 ~/.dotfiles/bin/dotfiles-install
