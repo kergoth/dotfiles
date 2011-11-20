@@ -1,4 +1,5 @@
 alias t 't.py --task-dir ~/Dropbox/Documents --list tasks.txt'
+alias tmux 'tmux -u2'
 
 
 set tacklebox_path ~/.config/fish/tacklebox
