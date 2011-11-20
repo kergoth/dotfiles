@@ -53,6 +53,10 @@ if test -e ~/.config/fish/$HOSTNAME.fish
     . ~/.config/fish/$HOSTNAME.fish
 end
 
+if test $OS = darwin
+    set tacklebox_plugins $tacklebox_plugins osx
+end
+
 
 # Aliases {{{1
 alias bback  'ack --type=bitbake'
