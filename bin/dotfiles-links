@@ -20,3 +20,7 @@ if test -e config; then
         echo ../.dotfiles/config/$path $HOME/.config/$path
     done
 fi
+
+if test "$(uname -s)" = "Darwin"; then
+	echo ../../.dotfiles/config/sublime-text-2 $HOME/Library/Application\ Support/Sublime\ Text\ 2
+fi
