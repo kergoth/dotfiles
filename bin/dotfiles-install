@@ -1,6 +1,9 @@
 #!/bin/sh
 
-`dirname $0`/dotfiles-links | while read linkable dest; do
+bindir=$(cd $(dirname $0) && pwd)
+dotfiles=$(dirname $bindir)
+
+$bindir/dotfiles-links | while read linkable dest; do
     if [ -h "$dest" ]; then
         rm -f "$dest"
     elif [ -e "$dest" ]; then
@@ -16,3 +19,8 @@
     mkdir -p `dirname $dest`
     ln -s "$linkable" "$dest"
 done
+
+if [ "`uname -s`" = "Darwin" ]; then
+    ln -s $dotfiles/config/sublime-text-2 \
+        $HOME/Library/Application\ Support/Sublime\ Text\ 2
+fi
