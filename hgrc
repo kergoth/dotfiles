@@ -6,11 +6,12 @@ commitsubrepos = False
 [extensions]
 bookmarks =
 color =
-color =
+crecord = ~/.hgext/crecord/crecord
 extdiff =
 fetch =
 gpg =
 graphlog =
+histedit = ~/.hgext/histedit/hg_histedit.py
 mq =
 pager =
 parentrevspec =
@@ -20,6 +21,7 @@ purge =
 rebase =
 record =
 schemes =
+shelve = ~/.hgext/shelve/hgshelve.py
 transplant =
 
 [progress]
@@ -60,7 +62,7 @@ nudge = push --branch .
 # Some useful little aliases.
 st = status -SC
 
-# Pretty logs
+# Graph log
 lg = glog --template='\033[0;33m{rev}\033[0m {desc|firstline|strip} \033[0;35m{branches}\033[0m \033[0;33m{tags}\033[0m\n\033[1;30m({date|age} by {author|person})\033[0m\n\n' --pager=on
 
 # Edit the current repo's hgrc file.
