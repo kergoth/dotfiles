@@ -3,5 +3,5 @@ function prompt-hg -d 'Show status information about the current mercurial tree 
         return
     end
 
-    printf '%s%s' (prompt-hg-dirty) (hg branch)
+    printf (hg branch)
 end

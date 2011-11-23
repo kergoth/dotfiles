@@ -10,5 +10,5 @@ function prompt-git -d 'Show status information about the current git tree forma
             set git (git rev-parse --short HEAD 2>/dev/null)
         end
     end
-    printf '%s%s' (prompt-git-dirty) $git
+    printf $git
 end

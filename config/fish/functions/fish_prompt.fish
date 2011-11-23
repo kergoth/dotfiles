@@ -1,21 +1,32 @@
+if not set -q fish_color_identity
+    set -g fish_color_identity cyan
+end
+
 # Based on https://github.com/abique/conf
-function fish_prompt -d 'Write the prompt'
+function fish_prompt -d 'Write out the prompt'
     set -l old_status $status
+
+    if not set -q __fish_prompt_normal
+        set -g __fish_prompt_normal (set_color normal)
+    end
+
     if test $old_status != 0
-        printf '%s%s ' (set_color red) $old_status
+        printf '%s%s %s' (set_color $fish_color_error) $old_status $__fish_prompt_normal
     end
 
-    printf '%s%s@%s:%s%s' (set_color cyan) (whoami) $HOSTNAME (set_color normal) (prompt_pwd)
-
-    set -l git (prompt-git)
-    if test $git
-        printf '%s %s' (set_color green) $git
+    if not set -q __fish_prompt_identity
+        set -g __fish_prompt_identity (set_color $fish_color_identity)
     end
-    set -l hg (prompt-hg)
-    if test $hg
-        printf '%s %s' (set_color purple) $hg
+    if not set -q __fish_prompt_cwd
+        set -g __fish_prompt_cwd (set_color $fish_color_cwd)
     end
 
-    printf '%s> ' (set_color yellow)
-    printf (set_color normal)
+    printf '%s%s@%s:%s%s' $__fish_prompt_identity $USER $HOSTNAME $__fish_prompt_cwd (prompt_pwd)
+
+    fish_prompt_scm
+
+    if not set -q __fish_prompt_operator
+        set -g __fish_prompt_operator (set_color $fish_color_operator)
+    end
+    printf '%s> %s' $__fish_prompt_operator $__fish_prompt_normal
 end
