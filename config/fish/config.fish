@@ -61,7 +61,8 @@ end
 # Aliases {{{1
 alias bback  'ack --type=bitbake'
 alias chrome 'google-chrome'
-alias t      't.py --task-dir ~/Dropbox/Documents --list tasks.txt'
+alias t.py   'command t.py --task-dir ~/Dropbox/Documents'
+alias t      't.py --list tasks.txt'
 alias tmux   'tmux -u2'
 if test $OS = darwin
     alias ps 'ps ux'
