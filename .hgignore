@@ -8,6 +8,7 @@ syntax: regexp
 ^ssh/id_dsa.pub
 ^ssh/known_hosts
 ^vim/viminfo
+^vim/tmp/
 ^config/sublime-text-2/Settings/
 ^config/sublime-text-2/Pristine Packages/
 ^config/sublime-text-2/Installed Packages/
