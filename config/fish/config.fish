@@ -17,7 +17,7 @@ if not set -q HOME
 end
 
 if not set -q HOSTNAME
-    set -x HOSTNAME (hostname)
+    set -x HOSTNAME (hostname -s)
 end
 
 set -x EMAIL 'kergoth@gmail.com'

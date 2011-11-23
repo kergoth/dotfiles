@@ -5,7 +5,7 @@ function fish_prompt -d 'Write the prompt'
         printf '%s%s ' (set_color red) $old_status
     end
 
-    printf '%s%s@%s:%s%s' (set_color cyan) (whoami) (hostname) (set_color normal) (prompt_pwd)
+    printf '%s%s@%s:%s%s' (set_color cyan) (whoami) $HOSTNAME (set_color normal) (prompt_pwd)
 
     set -l git (prompt-git)
     if test $git
