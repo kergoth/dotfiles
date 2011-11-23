@@ -112,6 +112,8 @@ main () {
     shift
     OPTIND=0
 
+    mkdir -p $cache_dir
+
     verbose "Running command: $command $@"
 
     eval cmd_$command "$@"
