@@ -1,4 +1,5 @@
 syntax: glob
+.*.done
 
 syntax: regexp
 ^config/fish/fishd\.
