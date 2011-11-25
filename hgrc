@@ -32,9 +32,7 @@ bbs = ssh://hg@bitbucket.org/
 bbsk = ssh://hg@bitbucket.org/kergoth/
 bbk = https://bitbucket.org/kergoth/
 gh = git://github.com/
-ghk = git://github.com/kergoth/
 ghs = git+ssh://git@github.com/
-ghsk = git+ssh://git@github.com/kergoth/
 
 [diff]
 git = True
