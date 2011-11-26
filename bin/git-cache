@@ -419,7 +419,11 @@ clone_submodules () {
             if [ $no_fetch -ne 0 ]; then
                 set -- -n
             fi
-            cmd_clone "$@" $url $path
+            if echo "$url" | grep -q "^\."; then
+                url="$(git config --get remote.origin.url)/$url"
+                url="$(echo "$url"|sed 's,[a-z\.\-]\+/\.\./,,g; s,/\./,,')"
+            fi
+            cmd_clone "$@" "$url" "$path"
         )
     done
     git submodule update
