@@ -1,0 +1,94 @@
+#!/bin/sh
+#
+# TODO:
+# - Ignore subversion subrepos when manually populating, let hg handle it
+# - Enhance handling for hggit repositories
+#   - Populate the git objects for hggit (.hg/git) from the git-cache
+#   - Run an hg pull from the git repository (possibly the one in git-cache) to
+#     ensure the git refs are accessible as bookmarks, as the tags as hg tags.
+# - Potentially merge portions of the git and mercurial cache code
+# - Implement the cache as a mercurial extension
+# - Potentially attempt to support chaining between repositories which are
+#   forks of one another
+
+set -e
+
+main () {
+	cache_dir=~/.hg-cache
+	url="$1"
+	dest="$2"
+	if [ -z "$dest" ]; then
+		dest="$(basename $1)"
+	fi
+
+	cached_clone "$url" "$dest"
+}
+
+prepare_cache () {
+	url="$1"
+	cache_dest="$2"
+
+	if [ ! -e "$cache_dir/$cache_dest" ]; then
+		hg clone -U "$url" "$cache_dir/$cache_dest"
+	else
+		pushd "$cache_dir/$cache_dest" >/dev/null
+		hg pull
+		popd >/dev/null
+	fi
+}
+
+get_cache_dest () {
+    echo "$1" | sed  -e 's,^\(https\?\|\(git\(\|+ssh\)\)\)://,,' \
+                     -e 's,^bitbucket.org/,bb://,' \
+                     -e 's,^.*\.\([a-z]\+\.[a-z]\+\),\1,' \
+                     -e 's,\.git$,,' \
+                     -e 's,[:/@.],_,g; s,__*,_,g; s,_*$,,'
+}
+
+cached_clone () {
+	url="$1"
+	dest="$2"
+	cache_dest="$(get_cache_dest "$url")"
+
+	prepare_cache "$url" "$cache_dest"
+
+	mkdir -p "$dest"
+	pushd "$dest" >/dev/null
+	hg init
+	hg pull "$cache_dir/$cache_dest"
+	cat <<END >.hg/hgrc
+[paths]
+default = $url
+END
+
+	if [ -e "$cache_dir/$cache_dest/.hg/git" ]; then
+		cp -PR "$cache_dir/$cache_dest/.hg/git" .hg/
+		hg gexport
+	fi
+	#hg pull
+
+	update_subrepos
+	hg update
+	popd >/dev/null
+}
+
+update_subrepos () {
+	if hg manifest tip | grep -q '.hgsub'; then
+		hg cat -r tip .hgsub 2>/dev/null | while IFS== read dir url; do
+			if [ -z "$dir" ]; then
+				continue
+			fi
+			dir=$(echo $dir | sed 's, *$,,')
+
+			if echo "$url" | grep -q '^ *\[git\]'; then
+				url=$(echo $url | sed 's,^ *,,; s,^\[git\],,')
+				git cache clone "$url" "$dir"
+			else
+				url=$(echo $url | sed 's,^\[hg\],,; s,^ *,,')
+				cached_clone "$url" "$dir"
+			fi
+		done
+	fi
+}
+
+main "$@"
