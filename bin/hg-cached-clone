@@ -18,7 +18,7 @@ main () {
 	url="$1"
 	dest="$2"
 	if [ -z "$dest" ]; then
-		dest="$(basename $1)"
+		dest="$(basename $1 | sed 's,\.git/*$,,')"
 	fi
 
 	cached_clone "$url" "$dest"
