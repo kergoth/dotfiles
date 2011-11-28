@@ -38,11 +38,11 @@ prepare_cache () {
 }
 
 get_cache_dest () {
-    echo "$1" | sed  -e 's,^\(https\?\|\(git\(\|+ssh\)\)\)://,,' \
-                     -e 's,^bitbucket.org/,bb://,' \
-                     -e 's,^.*\.\([a-z]\+\.[a-z]\+\),\1,' \
-                     -e 's,\.git$,,' \
-                     -e 's,[:/@.],_,g; s,__*,_,g; s,_*$,,'
+	echo "$1" | sed  -e 's,^\(https\?\|\(git\(\|+ssh\)\)\)://,,' \
+	                 -e 's,^bitbucket.org/,bb://,' \
+	                 -e 's,^.*\.\([a-z]\+\.[a-z]\+\),\1,' \
+	                 -e 's,\.git$,,' \
+	                 -e 's,[:/@.],_,g; s,__*,_,g; s,_*$,,'
 }
 
 cached_clone () {
@@ -60,14 +60,13 @@ cached_clone () {
 [paths]
 default = $url
 END
-
 	if [ -e "$cache_dir/$cache_dest/.hg/git" ]; then
 		cp -PR "$cache_dir/$cache_dest/.hg/git" .hg/
 		hg gexport
 	fi
-	#hg pull
 
 	update_subrepos
+	update_git_submodules
 	hg update
 	popd >/dev/null
 }
@@ -89,6 +88,19 @@ update_subrepos () {
 			fi
 		done
 	fi
+}
+
+update_git_submodules () {
+    if hg manifest tip | grep -q '.gitmodules'; then
+        tmpfile=$(mktemp -t hg-cached-clone.XXXXXX)
+        hg cat -r tip .gitmodules >>$tmpfile
+        for module in $(git config -f $tmpfile --get-regexp 'submodule\.[a-z]+\.path' | cut -d. -f2); do
+            submodule_path=$(git config -f $tmpfile --get submodule.$module.path)
+            submodule_url=$(git config -f $tmpfile --get submodule.$module.url)
+            git cache clone "$submodule_url" "$submodule_path"
+        done
+        rm -f "$tmpfile"
+    fi
 }
 
 main "$@"
