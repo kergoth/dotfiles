@@ -89,12 +89,12 @@ ack = !$HG locate "set:not ignored()" | xargs ack $@
 grep-wdir = !$HG locate "set:not ignored()" | xargs grep $@
 
 # Run hg commands on all subrepos at once.
-subs  = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | xargs    -n1  -I SUB $HG -R "`$HG root`/SUB" $@
-psubs = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | parallel -j10 -I SUB $HG -R "`$HG root`/SUB" $@
+subs = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | xargs          -I SUB $HG -R "`$HG root`/SUB" $@
+psubs = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | parallel -j10 -I SUB $HG -R "`$HG root`/SUB" $@
 
 # Run shell commands on all subrepos at once.
-subscmd  = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | xargs    -n1  -I SUB sh -c "cd `$HG root`/SUB && $@"
-psubscmd = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | parallel -j10 -I SUB sh -c "cd `$HG root`/SUB && $@"
+subscmd = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | xargs          -I SUB sh -c "cd \"`$HG root`/SUB\" && $@"
+psubscmd = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | parallel -j10 -I SUB sh -c "cd \"`$HG root`/SUB\" && $@"
 
 # Run a command on a subrepo:
 #
