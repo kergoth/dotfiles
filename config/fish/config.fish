@@ -75,20 +75,7 @@ alias h      't.py --list tasks-personal.txt'
 # Tacklebox {{{1
 . $tacklebox_path/tacklebox.fish
 
-# Messages {{{1
-if status --is-interactive
-    if test (t | wc -l) -ne 0
-        echo Tasks:
-        t | sed 's/^/  /'
-    end
-
-    if test (h | wc -l) -ne 0
-        echo Personal tasks:
-        h | sed 's/^/  /'
-    end
-
-    # To ensure that I don't see a failure status in the prompt at login
-    true
-end
+# To ensure that I don't see a failure status in the prompt at login
+true
 
 # vi:sts=4 sw=4 et fdm=marker
