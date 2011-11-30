@@ -57,6 +57,12 @@ if test $OS = darwin
     set tacklebox_plugins $tacklebox_plugins osx
 end
 
+# Functions {{{1
+if begin set -q STY; or set -q TMUX; end
+    function screen_title --on-variable fish_title_string # damn hack
+        printf '\033k%s\033\\' $fish_title_string
+    end
+end
 
 # Aliases {{{1
 if test $OS = darwin
