@@ -34,6 +34,10 @@ bbk = https://bitbucket.org/kergoth/
 gh = git://github.com/
 ghs = git+ssh://git@github.com/
 
+[auth]
+bb.prefix = https://bitbucket.org/
+bb.username = kergoth
+
 [diff]
 git = True
 unified = 5
