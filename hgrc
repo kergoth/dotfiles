@@ -16,6 +16,7 @@ mq =
 pager =
 parentrevspec =
 patchbomb =
+pbranch = ~/.hgext/pbranch/hgext/pbranch.py
 progress =
 purge =
 rebase =
