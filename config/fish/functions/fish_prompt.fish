@@ -21,7 +21,11 @@ function fish_prompt -d 'Write out the prompt'
         set -g __fish_prompt_cwd (set_color $fish_color_cwd)
     end
 
-    printf '%s%s@%s:%s%s' $__fish_prompt_identity $USER $HOSTNAME $__fish_prompt_cwd (prompt_pwd)
+    printf '%s%s@%s' $__fish_prompt_identity $USER $HOSTNAME
+    if set -q SCHROOT_CHROOT_NAME
+        printf '[%s]' $SCHROOT_CHROOT_NAME
+    end
+    printf ':%s%s' $__fish_prompt_cwd (prompt_pwd)
 
     fish_prompt_scm
 
