@@ -32,6 +32,7 @@ set -x EDITOR vim
 set -x VISUAL $EDITOR
 
 set -x INPUTRC ~/.inputrc
+set -x TERMINFO ~/.terminfo
 set -x ACKRC .ackrc
 
 set -x LC_MESSAGES C
