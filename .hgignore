@@ -4,9 +4,9 @@ syntax: glob
 syntax: regexp
 ^config/fish/fishd\.
 ^config/fish/fish_history
-^ssh/authorized_keys2
-^ssh/id_dsa
-^ssh/id_dsa.pub
+^ssh/authorized_keys(2|)
+^ssh/authorized_keys
+^ssh/id_[dr]sa*
 ^ssh/known_hosts
 ^vim/viminfo
 ^vim/tmp/
