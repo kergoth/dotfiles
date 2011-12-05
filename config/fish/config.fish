@@ -42,7 +42,8 @@ set -x LESS FRX
 set -x PAGER less
 set -x MANWIDTH 80
 
-set -x PIP_DOWNLOAD_CACHE "$HOME/.pip/cache"
+set -x PIP_DOWNLOAD_CACHE '$HOME/.pip/cache'
+set -x VIRTUALENVWRAPPER_VIRTUALENV_ARGS '--no-site-packages'
 
 
 set OS (uname -s | tr A-Z a-z)
