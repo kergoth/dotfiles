@@ -12,5 +12,6 @@ http://www.apache.org/dist http://archive.apache.org/dist \n\
 (ftp|https?)://.*/.* http://sources.openembedded.org/ \n\
 (ftp|https?)://.*/.* http://www.angstrom-distribution.org/unstable/sources/ \n\
 ${KERNELORG_MIRROR} http://mirror.nexcess.net/kernel.org \n\
+${KERNELORG_MIRROR} http://mirror.gbxs.net/pub \n\
 git://git.kernel.org/pub/ http://mirror.nexcess.net/kernel.org/ \n\
 "
