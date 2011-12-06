@@ -1,4 +1,5 @@
 APACHE_MIRROR = "http://www.apache.org/dist"
+DEBIAN_MIRROR = "http://http.us.debian.org/debian/pool"
 
 PREMIRRORS = "\
 (cvs|svn|git|hg|bzr|osc|p4|svk)://.*/.* http://autobuilder.yoctoproject.org/sources/ \n\
