@@ -1,3 +1,5 @@
+APACHE_MIRROR = "http://www.apache.org/dist"
+
 PREMIRRORS = "\
 (cvs|svn|git|hg|bzr|osc|p4|svk)://.*/.* http://autobuilder.yoctoproject.org/sources/ \n\
 (cvs|svn|git|hg|bzr|osc|p4|svk)://.*/.* http://sources.openembedded.org/ \n\
@@ -5,6 +7,7 @@ PREMIRRORS = "\
 "
 
 MIRRORS += "\
+${APACHE_MIRROR} http://archive.apache.org/dist \n\
 ${DEBIAN_MIRROR}/main http://snapshot.debian.net/archive/pool \n\
 ${DEBIAN_MIRROR} ftp://archive.debian.org/debian/pool \n\
 http://www.apache.org/dist http://archive.apache.org/dist \n\
