@@ -1,6 +1,6 @@
 # Variables {{{1
 set tacklebox_path ~/.config/fish/tacklebox
-set tacklebox_plugins misc python volatile z
+set tacklebox_plugins misc python volatile z virtualenv
 
 begin
     set -l path
