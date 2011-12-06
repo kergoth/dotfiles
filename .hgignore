@@ -3,7 +3,7 @@ syntax: glob
 
 syntax: regexp
 ^config/fish/fishd\.
-^config/fish/fish_history
+^config/fish/fish.*history
 ^ssh/authorized_keys(2|)
 ^ssh/authorized_keys
 ^ssh/id_[dr]sa*
