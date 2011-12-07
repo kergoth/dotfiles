@@ -118,5 +118,9 @@ psubscmd = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | parallel -j10 -I S
 #     M lol.py
 sub = !grep = "`$HG root`/.hgsub" | cut -d' ' -f1 | grep "$1" | tr -d '\n ' | xargs -0 -I SUB $HG -R SUB $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15 $16 $17 $18 $19 $20
 
+update-git-subs = subscmd 'test -e .git && git fetch && git checkout remotes/origin/master'
+update-hg-subs = subscmd 'test -e .hg && hg pull && hg update tip'
+update-subs = !"$HG" update-hg-subs; "$HG" update-git-subs
+
 # Local settings
 %include ~/.hgrc_local
