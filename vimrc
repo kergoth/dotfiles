@@ -116,8 +116,6 @@ nmap <silent> <Left> :wincmd h<CR>
 nmap <silent> <Right> :wincmd l<CR>
 
 " Plugins
-nmap <leader>im :Modeliner<CR>
-
 nnoremap <Leader>s :TlistToggle<Enter>
 nnoremap <Leader>S :TlistShowPrototype<Enter>
 
@@ -272,9 +270,8 @@ if has('unix')
   set swapsync=
 endif
 
-" Reliant upon securemodelines.vim
 set modelines=5
-set nomodeline
+set modeline
 
 " Fast terminal, bump sidescroll to 1
 set sidescroll=1
@@ -787,7 +784,6 @@ let g:is_posix = 1
 let g:python_fold_imports_level = '2'
 let g:python_fold_comments_level = '2'
 let g:git_diff_spawn_mode = 1
-let g:Modeliner_format = 'fenc= sts= sw= ts= et'
 " }}}
 
 if !exists('$HOSTNAME') && executable('hostname')
