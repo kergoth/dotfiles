@@ -1,4 +1,4 @@
-;  vim: set noet fenc=utf-8 sts=0 sw=8 ts=8 :
+; vi:noet:sts=0:sw=8:ts=8:
 [core]
 	excludesfile = ~/.gitignore
 	whitespace = cr-at-eol
@@ -70,6 +70,24 @@
 
 	# Compare two commits with interdiff (used to compare two commits which implement the same feature, for example)
 	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
+
+	# Show the remote branch which this branch is tracking
+	remote-ref = "!sh -c ' \
+	    local_ref=$(git symbolic-ref HEAD); \
+	    local_name=${local_ref##refs/heads/}; \
+	    remote=$(git config branch.\"$local_name\".remote || echo origin); \
+	    remote_ref=$(git config branch.\"$local_name\".merge); \
+	    remote_name=${remote_ref##refs/heads/}; \
+	    echo remotes/$remote/$remote_name'"
+
+	# Show commits that would be pushed from the current branch
+	outgoing = !git log $(git remote-ref)..
+
+	# Show commits that would be merged into the current branch
+	incoming = !git log ..$(git remote-ref)
+
+	# Run git test-sequence against the commits we'll be pushing
+	test-outgoing = !git test-sequence $(git remote-ref).. "$@"
 
 [interactive]
 	singlekey = true
