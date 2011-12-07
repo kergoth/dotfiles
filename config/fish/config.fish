@@ -2,15 +2,7 @@
 set tacklebox_path ~/.config/fish/tacklebox
 set tacklebox_plugins misc python volatile z virtualenv
 
-begin
-    set -l path
-    for dir in ~/bin ~/.local/bin $PATH
-        if test -d $dir
-            set path $path $dir
-        end
-    end
-    set PATH $path
-end
+set_path ~/bin ~/.local/bin $PATH
 
 if not set -q HOME
     set -x HOME (cd ~; and pwd)
