@@ -1,5 +1,3 @@
-tacklebox: use VIRTUALENVWRAPPER_VIRTUALENV_ARGS in virtualenv plugin | id:2c43a02896bfb6f26fb5e68e4ca1f9bedfa2904c
 vim: trim vimrc | id:4b2977959116ae2cf59e5cf8111c2940efa81a87
-investigate per-window/pane fish history for tmux | id:bcae08ea5dba0ac05baf093e028fd9baef2ac3e8
 implement hg cached clone as a mercurial extension | id:c6e546183f1f8db036ed85d69898075e8aa39f0d
 evaluate tmux configuration | id:ff22a0d8954b715212498acba06ecc353bde052f
