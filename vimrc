@@ -92,8 +92,10 @@ set scrolloff=2
 set sidescrolloff=2
 
 " Persistent undo
-set undofile
-let &undodir = &backupdir
+if has('persistent_undo')
+  set undofile
+  let &undodir = &backupdir
+endif
 
 " Prompt me rather than aborting an action
 set confirm
@@ -170,7 +172,10 @@ hi def link vimModeline Special
 3match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " Highlight the textwidth column
-set colorcolumn=+1
+try
+  set colorcolumn=+1
+catch
+endtry
 
 " Highlight the cursor line
 set cursorline
