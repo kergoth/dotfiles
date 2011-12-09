@@ -48,11 +48,13 @@ set history=1000
 " Kill annoying Press ENTER or type command to continue prompts
 set shortmess=atI
 
-" Start with all folds closed
-set foldlevelstart=0
+if has('folding')
+  " Start with all folds closed
+  set foldlevelstart=0
 
-" Default to indent based folding rather than manual
-set foldmethod=indent
+  " Default to indent based folding rather than manual
+  set foldmethod=indent
+endif
 
 " Show completion list
 set wildmenu
@@ -172,10 +174,9 @@ hi def link vimModeline Special
 3match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " Highlight the textwidth column
-try
+if exists('&colorcolumn')
   set colorcolumn=+1
-catch
-endtry
+endif
 
 " Highlight the cursor line
 set cursorline
@@ -291,13 +292,15 @@ set statusline+=\ (line\ %l\/%L,\ col\ %03c)
 " $TERM values for the default enable.
 set ttyfast
 
-" Enable mouse support in terminals
-set mouse=a
+if has('mouse_xterm')
+  " Enable mouse support in terminals
+  set mouse=a
 
-" Assume we're using a terminal that can handle this, as vim's automatic
-" enable only recognizes a limited set of $TERM values
-if !&ttymouse
-  set ttymouse=xterm2
+  " Assume we're using a terminal that can handle this, as vim's automatic
+  " enable only recognizes a limited set of $TERM values
+  if !&ttymouse
+    set ttymouse=xterm2
+  endif
 endif
 " }}}
 " GUI settings {{{
@@ -376,10 +379,9 @@ let g:vimsyn_folding = 1
 " }}}
 " Potentially useful, but never used {{{
 " Don't use old weak encryption for Vim 7.3
-try
+if has('cryptv') && exists('&cryptmethod')
   set cryptmethod=blowfish
-catch
-endtry
+endif
 
 " More useful % matching
 runtime macros/matchit.vim
