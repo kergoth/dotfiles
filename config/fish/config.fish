@@ -20,9 +20,6 @@ set -x DEBFULLNAME $FULLNAME
 set -x CVS_RSH ssh
 set -x CVSREAD yes
 
-set -x EDITOR vim
-set -x VISUAL $EDITOR
-
 set -x INPUTRC ~/.inputrc
 set -x TERMINFO ~/.terminfo
 set -x ACKRC .ackrc
@@ -51,6 +48,14 @@ if test $OS = darwin
     set tacklebox_plugins $tacklebox_plugins osx
 end
 
+# Editor {{{1
+if have vim
+    alias vi=vim
+
+    set -gx EDITOR vim
+    set -gx VISUAL $EDITOR
+end
+
 # Functions {{{1
 if begin test $TERM = screen; or test $TERM = screen-256color; end
     function screen_title --on-variable fish_title_string # damn hack
@@ -64,13 +69,13 @@ if test $OS = darwin
 else
     alias ps 'ps fux'
 end
+
 alias tmux   'tmux -u2'
 alias bback  'ack --type=bitbake'
 alias chrome 'google-chrome'
 alias t.py   'command t.py --task-dir ~/Dropbox/Documents'
 alias t      't.py --list tasks.txt'
 alias h      't.py --list tasks-personal.txt'
-
 
 # Tacklebox {{{1
 . $tacklebox_path/tacklebox.fish
