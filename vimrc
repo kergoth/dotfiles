@@ -354,8 +354,9 @@ augroup VimrcFiletypes
   " Make the man page key, K, useful in vimL files
   au FileType vim nnoremap K :exe 'help ' . expand('<cword>')<cr>
 
-  " Kill the highlighted text width column in vim help files
-  au FileType help setl tw=0
+  " Kill the highlighted text width column in certain files
+  au FileType help set tw=0
+  au FileType man set tw=0
 
   " Default indentation for vim files
   au FileType vim set sts=2 sw=2
@@ -368,6 +369,7 @@ augroup VimrcFiletypes
   au FileType lua set fdm=syntax
   au FileType vim set fdm=syntax
   au FileType sh set fdm=syntax
+  au FileType man set fdl=99 fdm=manual
 augroup END
 
 " Highlight GNU gcc specific items
