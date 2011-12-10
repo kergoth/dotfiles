@@ -182,6 +182,14 @@ endif
 " Highlight the cursor line
 set cursorline
 " }}}
+" Commands {{{
+" Make the 'Man' command available
+runtime! ftplugin/man.vim
+
+" Change the current directory to the location of the
+" file being edited.
+command! -nargs=0 -complete=command Bcd lcd %:p:h
+" }}}
 " Key Mapping {{{
 " , is much more convenient than \, as it's closer to the home row
 let mapleader = ','
@@ -213,10 +221,6 @@ nmap <leader>ccn :cnext<cr>
 
 " Delete trailing whitespace
 map <leader>dtw  :%s/\s\+$//<cr>:let @/=''<cr>
-
-" Change the current directory to the location of the
-" file being edited.
-com! -nargs=0 -complete=command Bcd lcd %:p:h
 
 " Make zO recursively open whatever top level fold we're in, no matter where
 " the cursor happens to be.
