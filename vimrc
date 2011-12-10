@@ -351,8 +351,11 @@ augroup VimrcFiletypes
   " Map S to cycle through the interactive rebase choices
   au FileType gitrebase nnoremap <buffer> <silent> S :Cycle<cr>
 
-  " Make the man page key, K, useful in vimL files
-  au FileType vim nnoremap K :exe 'help ' . expand('<cword>')<cr>
+  " Use man.vim for K in types we know don't override keywordprg
+  au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
+
+  " Use :help for K in vim files
+  au FileType vim nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
 
   " Kill the highlighted text width column in certain files
   au FileType help set tw=0
