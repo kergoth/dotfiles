@@ -50,7 +50,7 @@ end
 
 # Editor {{{1
 if have vim
-    alias vi=vim
+    alias vi vim
 
     set -gx EDITOR vim
     set -gx VISUAL $EDITOR
