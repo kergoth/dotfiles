@@ -85,6 +85,7 @@ set infercase
 
 " Modelines are handy
 set modeline
+set modelines=5
 
 " Fast terminal, bump sidescroll to 1
 set sidescroll=1
