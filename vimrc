@@ -386,6 +386,9 @@ let g:sh_fold_enabled = 1
 
 " Enable syntax folding for vimL
 let g:vimsyn_folding = 1
+
+" Disable new bitbake file template
+let g:bb_create_on_empty = 0
 " }}}
 " Potentially useful, but never used {{{
 " Don't use old weak encryption for Vim 7.3
