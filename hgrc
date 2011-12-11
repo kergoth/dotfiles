@@ -3,6 +3,9 @@ username = Christopher Larson <kergoth@gmail.com>
 ignore = ~/.hgignore
 commitsubrepos = False
 
+[web]
+cacerts = /etc/ssl/certs/ca-certificates.crt
+
 [extensions]
 bookmarks =
 color =
