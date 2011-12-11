@@ -100,6 +100,12 @@ if has('persistent_undo')
   let &undodir = &backupdir
 endif
 
+" Use ack if available
+if executable('ack')
+  set grepprg=ack\ -H\ --nocolor\ --nogroup\ --column\ $*
+  set grepformat=%f:%l:%c:%m
+endif
+
 " Prompt me rather than aborting an action
 set confirm
 
