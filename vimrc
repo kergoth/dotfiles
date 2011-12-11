@@ -18,12 +18,20 @@ if has('macunix')
   set backupskip+=/private/tmp/*
 endif
 
-" Jump to the last position when reopening a file
 augroup vimrc
   au!
+
+  " Jump to the last position when reopening a file
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") |
                    \ exe "normal! g'\"" |
                    \ endif
+
+  " Resize splits when the window is resized
+  au VimResized * exe "normal! \<c-w>="
+
+  " Give us an error window after running make, grep etc, but only if results
+  " are available.
+  au QuickFixCmdPost * botright cwindow 5
 augroup END
 
 " Intuitive backspacing in insert mode
@@ -123,9 +131,6 @@ set showbreak=↪
 
 " Vim makes assumptions about shell behavior, so don't rely on $SHELL
 set shell=sh
-
-" Resize splits when the window is resized
-au VimResized * exe "normal! \<c-w>="
 
 " Prefer opening splits down and right rather than up and left
 set splitbelow
@@ -340,7 +345,7 @@ if has('gui_running')
 end
 " }}}
 " File type settings {{{
-augroup VimrcFiletypes
+augroup vimrc_filetypes
   au!
   " Add headings with <localleader> + numbers
   au Filetype rst nnoremap <buffer> <localleader>1 yypVr=
