@@ -436,7 +436,7 @@ vnoremap <RightRelease> '+y<RightRelease>gv
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
 if !exists('$HOSTNAME') && executable('hostname')
-  let $HOSTNAME = substitute(system('hostname'), "\n", "", "")
+  let $HOSTNAME = substitute(system('hostname -s'), "\n", "", "")
 endif
 runtime vimrc.$HOSTNAME
 
