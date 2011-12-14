@@ -379,6 +379,11 @@ augroup vimrc_filetypes
   " Set up folding methods
   au FileType c,cpp,lua,vim,sh,python set fdm=syntax
   au FileType man set fdl=99 fdm=manual
+
+  " Diff context begins with a space, so blank lines of context
+  " are being inadvertantly flagged as redundant whitespace.
+  " Adjust the match to exclude the first column.
+  au Syntax diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
 augroup END
 
 " Highlight GNU gcc specific items
