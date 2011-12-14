@@ -57,8 +57,8 @@ set history=1000
 set shortmess=atI
 
 if has('folding')
-  " Start with all folds closed
-  set foldlevelstart=0
+  " Start with most folds closed
+  set foldlevelstart=1
 
   " Default to indent based folding rather than manual
   set foldmethod=indent
@@ -440,4 +440,4 @@ if !exists('$HOSTNAME') && executable('hostname')
 endif
 runtime vimrc.$HOSTNAME
 
-" vim:set sts=2 sw=2 et fdm=marker:
+" vim:set sts=2 sw=2 et fdm=marker fdl=0:
