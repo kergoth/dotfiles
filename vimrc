@@ -377,10 +377,7 @@ augroup vimrc_filetypes
   au FileType go set ts=4 sts=0 noet
 
   " Set up folding methods
-  au FileType c set fdm=syntax
-  au FileType lua set fdm=syntax
-  au FileType vim set fdm=syntax
-  au FileType sh set fdm=syntax
+  au FileType c,cpp,lua,vim,sh,python set fdm=syntax
   au FileType man set fdl=99 fdm=manual
 augroup END
 
