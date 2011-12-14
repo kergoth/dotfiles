@@ -112,6 +112,9 @@ if executable('ack')
   set grepformat=%f:%l:%c:%m
 endif
 
+" Ignore binary files matched with grep by default
+set grepformat+=%-OBinary\ file%.%#
+
 " Prompt me rather than aborting an action
 set confirm
 
