@@ -1,3 +1,2 @@
-vim: trim vimrc | id:4b2977959116ae2cf59e5cf8111c2940efa81a87
 implement hg cached clone as a mercurial extension | id:c6e546183f1f8db036ed85d69898075e8aa39f0d
 evaluate tmux configuration | id:ff22a0d8954b715212498acba06ecc353bde052f
