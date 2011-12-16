@@ -119,7 +119,7 @@ set grepformat+=%-OBinary\ file%.%#
 set confirm
 
 " Display of hidden characters
-set listchars=tab:»·,extends:…,precedes:…,eol:¬
+set listchars=tab:»·,eol:¬,extends:❯,precedes:❮
 
 " Show trailing whitespace this way if we aren't highlighting it
 if &t_Co < 3 && (! has('gui_running'))
