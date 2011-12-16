@@ -119,7 +119,6 @@ set grepformat+=%-OBinary\ file%.%#
 set confirm
 
 " Display of hidden characters
-nmap <leader>l :set list!<cr>
 set listchars=tab:»·,extends:…,precedes:…,eol:¬
 
 " Show trailing whitespace this way if we aren't highlighting it
@@ -206,6 +205,12 @@ command! -nargs=0 -complete=command Bcd lcd %:p:h
 " , is much more convenient than \, as it's closer to the home row
 let mapleader = ','
 let maplocalleader = mapleader
+
+" Toggle display of hidden characters
+nnoremap <leader>l :set list!<cr>
+
+" Toggle display of line numbers
+nnoremap <leader>n :set number!<cr>
 
 " Toggle paste mode with ,P
 set pastetoggle=<leader>P
