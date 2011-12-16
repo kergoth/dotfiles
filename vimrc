@@ -151,7 +151,7 @@ endif
 set backupcopy=auto
 " }}}
 " Indentation and formatting {{{
-set formatoptions=qrn1
+set formatoptions+=rn1
 
 " 4 space indentation by default
 set shiftwidth=4
