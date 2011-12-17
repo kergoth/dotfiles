@@ -261,6 +261,27 @@ map <leader>dtw  :%s/\s\+$//<cr>:let @/=''<cr>
 
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
+
+" Core functionality from https://github.com/tpope/vim-unimpaired
+" Written by Tim Pope <http://tpo.pe/>
+function! s:MapNextFamily(map,cmd)
+  let map = '<Plug>unimpaired'.toupper(a:map)
+  let end = ' ".(v:count ? v:count : "")<CR>'
+  execute 'nmap <silent> '.map.'Previous :<C-U>exe "'.a:cmd.'previous'.end
+  execute 'nmap <silent> '.map.'Next     :<C-U>exe "'.a:cmd.'next'.end
+  execute 'nmap <silent> '.map.'First    :<C-U>exe "'.a:cmd.'first'.end
+  execute 'nmap <silent> '.map.'Last     :<C-U>exe "'.a:cmd.'last'.end
+  execute 'nmap <silent> ['.        a:map .' '.map.'Previous'
+  execute 'nmap <silent> ]'.        a:map .' '.map.'Next'
+  execute 'nmap <silent> ['.toupper(a:map).' '.map.'First'
+  execute 'nmap <silent> ]'.toupper(a:map).' '.map.'Last'
+endfunction
+
+call s:MapNextFamily('a','')
+call s:MapNextFamily('b','b')
+call s:MapNextFamily('l','l')
+call s:MapNextFamily('q','c')
+call s:MapNextFamily('t','t')
 " }}}
 " Terminal and display {{{
 " Default to hiding concealed text
