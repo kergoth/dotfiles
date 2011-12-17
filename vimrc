@@ -277,10 +277,15 @@ function! s:MapNextFamily(map,cmd)
   execute 'nmap <silent> ]'.toupper(a:map).' '.map.'Last'
 endfunction
 
+" files
 call s:MapNextFamily('a','')
+" buffers
 call s:MapNextFamily('b','b')
+" location list
 call s:MapNextFamily('l','l')
+" quickfix
 call s:MapNextFamily('q','c')
+" tabs
 call s:MapNextFamily('t','t')
 " }}}
 " Terminal and display {{{
