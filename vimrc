@@ -57,8 +57,8 @@ set history=1000
 set shortmess=atI
 
 if has('folding')
-  " Start with all folds closed
-  set foldlevelstart=0
+  " Start with most folds closed
+  set foldlevelstart=1
 
   " Default to indent based folding rather than manual
   set foldmethod=indent
@@ -112,17 +112,22 @@ if executable('ack')
   set grepformat=%f:%l:%c:%m
 endif
 
+" Ignore binary files matched with grep by default
+set grepformat+=%-OBinary\ file%.%#
+
 " Prompt me rather than aborting an action
 set confirm
 
 " Display of hidden characters
-nmap <leader>l :set list!<cr>
-set listchars=tab:»·,extends:…,precedes:…,eol:¬
+set listchars=tab:»·,eol:¬,extends:❯,precedes:❮
 
-" Show trailing whitespace this way if we aren't highlighting it
+" Show trailing whitespace this way if we aren't highlighting it in color
 if &t_Co < 3 && (! has('gui_running'))
   set listchars+=trail:·
 endif
+
+" Simple display, no unnecessary fills
+set fillchars=
 
 " Make soft word wrapping obvious
 set showbreak=↪
@@ -133,6 +138,9 @@ set shell=sh
 " Prefer opening splits down and right rather than up and left
 set splitbelow
 set splitright
+
+" More useful % matching
+runtime macros/matchit.vim
 
 " Use the vim version of monokai
 colorscheme molokai
@@ -149,7 +157,7 @@ endif
 set backupcopy=auto
 " }}}
 " Indentation and formatting {{{
-set formatoptions=qrn1
+set formatoptions+=rn1
 
 " 4 space indentation by default
 set shiftwidth=4
@@ -200,19 +208,39 @@ runtime! ftplugin/man.vim
 command! -nargs=0 -complete=command Bcd lcd %:p:h
 " }}}
 " Key Mapping {{{
+" Navigate over visual lines
+noremap j gj
+noremap k gk
+
+" Fix command typos
+nmap ; :
+
+" Make zO recursively open whatever top level fold we're in, no matter where
+" the cursor happens to be.
+nnoremap zO zCzO
+
+" Easy buffer navigation
+noremap <C-h>  <C-w>h
+noremap <C-j>  <C-w>j
+noremap <C-k>  <C-w>k
+noremap <C-l>  <C-w>l
+noremap <leader>v <C-w>v
+
 " , is much more convenient than \, as it's closer to the home row
 let mapleader = ','
 let maplocalleader = mapleader
+
+" Toggle display of hidden characters
+nnoremap <leader>l :set list!<cr>
+
+" Toggle display of line numbers
+nnoremap <leader>n :set number!<cr>
 
 " Toggle paste mode with ,P
 set pastetoggle=<leader>P
 
 " Select the just-pasted text
 nnoremap <expr> <leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
-
-" Navigate over visual lines
-noremap j gj
-noremap k gk
 
 " Pressing ,ss will toggle spell checking
 map <leader>ss :set spell!<cr>
@@ -231,9 +259,8 @@ nmap <leader>ccn :cnext<cr>
 " Delete trailing whitespace
 map <leader>dtw  :%s/\s\+$//<cr>:let @/=''<cr>
 
-" Make zO recursively open whatever top level fold we're in, no matter where
-" the cursor happens to be.
-nnoremap zO zCzO
+" Open a Quickfix window for the last search.
+nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 " }}}
 " Terminal and display {{{
 " Default to hiding concealed text
@@ -342,6 +369,11 @@ if has('gui_running')
   augroup END
 end
 " }}}
+" File type detection {{{
+augroup vimrc_filetype_detect
+  au BufNewFile,BufRead *.md setf markdown
+augroup END
+" }}}
 " File type settings {{{
 augroup vimrc_filetypes
   au!
@@ -357,24 +389,19 @@ augroup vimrc_filetypes
   " Show diff when editing git commit messages
   au FileType gitcommit DiffGitCached | wincmd p
 
-  " Map S to cycle through the interactive rebase choices
-  au FileType gitrebase nnoremap <buffer> <silent> S :Cycle<cr>
-
   " Use man.vim for K in types we know don't override keywordprg
   au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
 
   " Use :help for K in vim files
   au FileType vim nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
 
-  " Kill the highlighted text width column in certain files
-  au FileType help set tw=0
-  au FileType man set tw=0
+  " Clean up display for nofile buffers
+  au FileType help,man set nofen colorcolumn=
 
-  " Default indentation for vim files
+  " File type specific indentation settings
   au FileType vim set sts=2 sw=2
-
-  " Proper golang indentation
   au FileType go set ts=4 sts=0 noet
+  au FileType c,cpp set ts=4 sw=4 sts=0 noet
 
   " Set up folding methods
   au FileType c,cpp,lua,vim,sh,python set fdm=syntax
@@ -401,43 +428,11 @@ let g:vimsyn_folding = 1
 " Disable new bitbake file template
 let g:bb_create_on_empty = 0
 " }}}
-" Potentially useful, but never used {{{
-" Don't use old weak encryption for Vim 7.3
-if has('cryptv') && exists('&cryptmethod')
-  set cryptmethod=blowfish
-endif
-
-" More useful % matching
-runtime macros/matchit.vim
-
-" Char to fill deleted lines with in vim diff mode
-set fillchars=diff:⣿
-
-" Diff context begins with a space, so blank lines of context
-" are being inadvertantly flagged as redundant whitespace.
-" Adjust the match to exclude the first column.
-au Syntax diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
-
-" Match a line containing just '--' as an error, as beginning a signature
-" with the dashes, but without the trailing space, is a common mistake.
-au Syntax mail \
-   syn match mailInvalidSignature contains=@mailLinks,@mailQuoteExps "^--$"
-hi def link mailInvalidSignature Error
-
-" Email signatures generally start with '-- '.  Adjust the
-" RedundantWhitespace match for the 'mail' filetype to not
-" highlight that particular trailing space in red.
-match RedundantWhitespace /\(^--\)\@<!\s\+$/
-
-" When selecting with the mouse, copy to clipboard on release.
-vnoremap <LeftRelease> '+y<LeftRelease>gv
-vnoremap <RightRelease> '+y<RightRelease>gv
-" }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
 if !exists('$HOSTNAME') && executable('hostname')
-  let $HOSTNAME = substitute(system('hostname'), "\n", "", "")
+  let $HOSTNAME = substitute(system('hostname -s'), "\n", "", "")
 endif
 runtime vimrc.$HOSTNAME
 
-" vim:set sts=2 sw=2 et fdm=marker:
+" vim:set sts=2 sw=2 et fdm=marker fdl=0:
