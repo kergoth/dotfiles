@@ -86,6 +86,9 @@ set magic
 set ignorecase
 set smartcase
 
+" Don't highlight my searches
+set nohlsearch
+
 " Try to match case when using insert mode completion
 set infercase
 
