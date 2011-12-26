@@ -1,10 +1,27 @@
 " Load any installed bundles
 call pathogen#infect()
 
+" Core {{{
 " Sadly, we can't rely on the distro to be sane for the basics
 syntax on
 filetype plugin indent on
 
+" These are of limited usefulness, as I write files often
+set noswapfile
+
+" Allow hiding buffers with modifications
+set hidden
+
+" Prompt me rather than aborting an action
+set confirm
+
+" Automatically reload files changed outside of vim
+set autoread
+
+" Navigate over visual lines
+noremap j gj
+noremap k gk
+" }}}
 " General settings {{{
 " Enable backup files
 set backup
@@ -17,6 +34,9 @@ let &directory = &backupdir
 if has('macunix')
   set backupskip+=/private/tmp/*
 endif
+
+" Rename the file to the backup when possible.
+set backupcopy=auto
 
 augroup vimrc
   au!
@@ -39,12 +59,6 @@ set backspace=indent,eol,start
 
 " Don't insert 2 spaces after the end of a sentence
 set nojoinspaces
-
-" Allow hiding buffers with modifications
-set hidden
-
-" Automatically reload files changed outside of vim
-set autoread
 
 " Automatically write buffers on switch/make/exit
 set autowrite
@@ -74,7 +88,6 @@ set wildmode=list:longest
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
 set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
-set wildignore+=*.sw?                            " Vim swap files
 set wildignore+=*.DS_Store                       " OSX metadata
 set wildignore+=*.luac                           " Lua byte code
 set wildignore+=*.pyc,*.pyo                      " Python byte code
@@ -118,22 +131,21 @@ endif
 " Ignore binary files matched with grep by default
 set grepformat+=%-OBinary\ file%.%#
 
-" Prompt me rather than aborting an action
-set confirm
+if &encoding == 'utf-8'
+  " Display of hidden characters
+  set listchars=tab:»·,eol:¬,extends:❯,precedes:❮
 
-" Display of hidden characters
-set listchars=tab:»·,eol:¬,extends:❯,precedes:❮
+  " Show trailing whitespace this way if we aren't highlighting it in color
+  if &t_Co < 3 && (! has('gui_running'))
+    set listchars+=trail:·
+  endif
 
-" Show trailing whitespace this way if we aren't highlighting it in color
-if &t_Co < 3 && (! has('gui_running'))
-  set listchars+=trail:·
+  " Simple display, no unnecessary fills
+  set fillchars=
+
+  " Make soft word wrapping obvious
+  set showbreak=↪
 endif
-
-" Simple display, no unnecessary fills
-set fillchars=
-
-" Make soft word wrapping obvious
-set showbreak=↪
 
 " Vim makes assumptions about shell behavior, so don't rely on $SHELL
 set shell=sh
@@ -147,17 +159,6 @@ runtime macros/matchit.vim
 
 " Use the vim version of monokai
 colorscheme molokai
-" }}}
-" Performance {{{
-" Don't manually sync the swap to disk on unix, since that's periodically done
-" for us, so the risk of losing data is relatively small, and this should
-" improve performance slightly.
-if has('unix')
-  set swapsync=
-endif
-
-" Rename the file to the backup when possible.
-set backupcopy=auto
 " }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
@@ -211,10 +212,6 @@ runtime! ftplugin/man.vim
 command! -nargs=0 -complete=command Bcd lcd %:p:h
 " }}}
 " Key Mapping {{{
-" Navigate over visual lines
-noremap j gj
-noremap k gk
-
 " Fix command typos
 nmap ; :
 
