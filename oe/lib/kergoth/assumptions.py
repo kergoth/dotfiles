@@ -70,4 +70,4 @@ def m4():
 
 @assumed
 def tar():
-    return gnu_version('tar', [1, 20])
+    return gnu_version('tar', [1, 20]).replace('tar', 'tar-replacement')
