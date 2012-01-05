@@ -157,6 +157,10 @@ set splitright
 " More useful % matching
 runtime macros/matchit.vim
 
+if &term == 'rxvt-unicode'
+  set t_Co=256
+endif
+
 " Use the vim version of monokai
 colorscheme molokai
 " }}}
