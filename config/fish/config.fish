@@ -80,6 +80,13 @@ alias h      't.py --list tasks-personal.txt'
 # Tacklebox {{{1
 . $tacklebox_path/tacklebox.fish
 
+# Keychain {{{1
+if have keychain
+    keychain --eval $HOSTNAME | sed 's/-x/-gx/' | while read line
+        eval $line
+    end
+end
+
 # To ensure that I don't see a failure status in the prompt at login
 true
 
