@@ -1,3 +1,10 @@
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+
 Rxvt.scrollBar: false
 Rxvt.scrollTtyOutput: false
 Rxvt.scrollKey: false
@@ -16,5 +23,5 @@ URxvt.background: rgba:0000/0000/0000/eddd
 URxvt.perl-ext: default,matcher
 URxvt.urlLauncher: firefox
 URxvt.termName: rxvt-unicode
-URxvt*font: xft:Inconsolata:size=12
-URxvt*boldFont: xft:Inconsolata:size=12:bold
+URxvt*font: -xos4-terminus-medium-r-normal--22-220-72-72-c-110-iso8859-1
+URxvt*boldFont: -xos4-terminus-bold-r-normal--22-220-72-72-c-110-iso8859-1
