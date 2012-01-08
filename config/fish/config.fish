@@ -82,7 +82,7 @@ alias h      't.py --list tasks-personal.txt'
 
 # Keychain {{{1
 if have keychain
-    keychain --eval $HOSTNAME | sed 's/-x/-gx/' | while read line
+    keychain --eval $HOSTNAME | sed 's/.*set -x -U/set -gx/' | while read line
         eval $line
     end
 end
