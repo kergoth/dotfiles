@@ -402,7 +402,7 @@ end
 " }}}
 " File type detection {{{
 augroup vimrc_filetype_detect
-  au BufNewFile,BufRead *.md setf markdown
+  au BufNewFile,BufRead *.md set ft=markdown
 augroup END
 " }}}
 " File type settings {{{
