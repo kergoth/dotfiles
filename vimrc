@@ -166,6 +166,7 @@ colorscheme molokai
 " }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
+set formatoptions-=t
 
 " 4 space indentation by default
 set shiftwidth=4
