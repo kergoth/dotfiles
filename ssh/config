@@ -12,29 +12,6 @@ IdentityFile %d/.ssh/%l
 IdentityFile %d/.ssh/id_rsa
 IdentityFile %d/.ssh/id_dsa
 
-Host u1004-lm
-    Hostname 134.86.97.95
-
-Host *.mentor
-     ProxyCommand ssh wvsvrssh01.mentorg.com -W (basename %h .mentor).alm.mentorg.com:%p
-
-Host *.alm.mentorg.com 134.86.96.* 134.86.97.*
-     ProxyCommand ssh wvsvrssh01.mentorg.com -W %h:%p
-
-Host *.mentorg.com *.mentor
-    User clarson
-    ForwardAgent yes
-    Compression yes
-
-Host *-lm 134.86.96.* 134.86.97.*
-    User clarson
-    ForwardAgent yes
-    CheckHostIP no
-    UserKnownHostsFile /dev/null
-    StrictHostKeyChecking no
-    Compression yes
-    ProxyCommand ssh wvsvrssh01.mentorg.com -W %h:%p
-
 Host *.local localhost 192.168.*
     ForwardAgent yes
 
