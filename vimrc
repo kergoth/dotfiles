@@ -289,7 +289,7 @@ call s:MapNextFamily('b','b')
 call s:MapNextFamily('l','l')
 " quickfix
 call s:MapNextFamily('q','c')
-" tabs
+" tags
 call s:MapNextFamily('t','t')
 " }}}
 " Terminal and display {{{
