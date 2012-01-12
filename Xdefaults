@@ -1,0 +1,27 @@
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+
+Rxvt.scrollBar: false
+Rxvt.scrollTtyOutput: false
+Rxvt.scrollKey: false
+Rxvt.backarrowKey: false
+Rxvt.jumpScroll: true
+Rxvt.geometry: 96x50
+Rxvt.reverseVideo: false
+Rxvt.background: black
+Rxvt.foreground: grey90
+Rxvt.colorBDMode: false
+Rxvt.colorULMode: false
+Rxvt.saveLines: 3000
+
+URxvt.depth: 32
+URxvt.background: rgba:0000/0000/0000/eddd
+URxvt.perl-ext: default,matcher
+URxvt.urlLauncher: firefox
+URxvt.termName: rxvt-unicode
+URxvt*font: -xos4-terminus-medium-r-normal--22-220-72-72-c-110-iso8859-1
+URxvt*boldFont: -xos4-terminus-bold-r-normal--22-220-72-72-c-110-iso8859-1

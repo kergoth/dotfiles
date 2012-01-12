@@ -157,11 +157,16 @@ set splitright
 " More useful % matching
 runtime macros/matchit.vim
 
+if &term == 'rxvt-unicode'
+  set t_Co=256
+endif
+
 " Use the vim version of monokai
 colorscheme molokai
 " }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
+set formatoptions-=t
 
 " 4 space indentation by default
 set shiftwidth=4
@@ -285,7 +290,7 @@ call s:MapNextFamily('b','b')
 call s:MapNextFamily('l','l')
 " quickfix
 call s:MapNextFamily('q','c')
-" tabs
+" tags
 call s:MapNextFamily('t','t')
 " }}}
 " Terminal and display {{{
@@ -397,7 +402,7 @@ end
 " }}}
 " File type detection {{{
 augroup vimrc_filetype_detect
-  au BufNewFile,BufRead *.md setf markdown
+  au BufNewFile,BufRead *.md set ft=markdown
 augroup END
 " }}}
 " File type settings {{{

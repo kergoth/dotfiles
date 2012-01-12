@@ -114,6 +114,7 @@
 [merge]
 	summary = true
 	conflictstyle = diff3
+	ff = false
 
 [pack]
 	threads = 3
