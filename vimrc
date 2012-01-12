@@ -435,13 +435,16 @@ augroup vimrc_filetypes
   au FileType c,cpp set ts=4 sw=4 sts=0 noet
 
   " Set up folding methods
-  au FileType c,cpp,lua,vim,sh,python set fdm=syntax
+  au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
   au FileType man set fdl=99 fdm=manual
 
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
   " Adjust the match to exclude the first column.
   au Syntax diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
+
+  " Run gofmt against go files on write
+  au BufWritePost *.go :silent Fmt
 augroup END
 
 " Highlight GNU gcc specific items
