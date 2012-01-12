@@ -8,14 +8,13 @@ PREMIRRORS = "\
 "
 
 MIRRORS += "\
-${APACHE_MIRROR} http://archive.apache.org/dist \n\
-${DEBIAN_MIRROR}/main http://snapshot.debian.net/archive/pool \n\
-${DEBIAN_MIRROR} ftp://archive.debian.org/debian/pool \n\
-http://www.apache.org/dist http://archive.apache.org/dist \n\
+${APACHE_MIRROR}/ http://archive.apache.org/dist/ \n\
+${DEBIAN_MIRROR}/main http://snapshot.debian.net/archive/pool/ \n\
+${DEBIAN_MIRROR}/ ftp://archive.debian.org/debian/pool/ \n\
 (ftp|https?)://.*/.* http://autobuilder.yoctoproject.org/sources/ \n\
 (ftp|https?)://.*/.* http://sources.openembedded.org/ \n\
 (ftp|https?)://.*/.* http://www.angstrom-distribution.org/unstable/sources/ \n\
-${KERNELORG_MIRROR} http://mirror.nexcess.net/kernel.org \n\
-${KERNELORG_MIRROR} http://mirror.gbxs.net/pub \n\
+${KERNELORG_MIRROR}/ http://mirror.nexcess.net/kernel.org/ \n\
+${KERNELORG_MIRROR}/ http://mirror.gbxs.net/pub/ \n\
 git://git.kernel.org/pub/ http://mirror.nexcess.net/kernel.org/ \n\
 "
