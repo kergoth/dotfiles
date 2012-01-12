@@ -1,6 +1,6 @@
 # Variables {{{1
 set tacklebox_path ~/.config/fish/tacklebox
-set tacklebox_plugins misc python volatile z virtualenv
+set tacklebox_plugins misc python volatile z virtualenv lastdir
 
 set_path ~/bin ~/.local/bin $PATH /usr/local/sbin /usr/sbin /sbin
 
