@@ -437,6 +437,9 @@ augroup vimrc_filetypes
   au FileType go set ts=4 sts=0 noet
   au FileType c,cpp set ts=4 sw=4 sts=0 noet
 
+  " Comment string
+  au FileType fish set cms=#%s
+
   " Set up folding methods
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
   au FileType man set fdl=99 fdm=manual
