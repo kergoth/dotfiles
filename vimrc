@@ -147,6 +147,9 @@ if &encoding == 'utf-8'
   set showbreak=↪
 endif
 
+" Do soft word wrapping at chars in breakat
+set linebreak
+
 " Vim makes assumptions about shell behavior, so don't rely on $SHELL
 set shell=sh
 
@@ -262,7 +265,7 @@ nmap <leader>cwo :botright copen 5<cr><c-w>p
 nmap <leader>ccn :cnext<cr>
 
 " Delete trailing whitespace
-map <leader>dtw  :%s/\s\+$//<cr>:let @/=''<cr>
+nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
