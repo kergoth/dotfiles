@@ -79,7 +79,9 @@ alias t      't.py --list tasks.txt'
 alias h      't.py --list tasks-personal.txt'
 
 # Tacklebox {{{1
-. $tacklebox_path/tacklebox.fish
+if status --is-interactive
+    . $tacklebox_path/tacklebox.fish
+end
 
 # Keychain {{{1
 if have keychain
