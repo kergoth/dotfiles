@@ -205,7 +205,11 @@ hi def link vimModeline Special
 
 " Highlight the textwidth column
 if exists('&colorcolumn')
-  set colorcolumn=+1
+  augroup KergothColorColumn
+    au!
+    au InsertEnter * set colorcolumn=+1
+    au InsertLeave * set colorcolumn=""
+  augroup END
 endif
 
 " Highlight the cursor line
