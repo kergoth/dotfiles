@@ -116,7 +116,7 @@ main () {
 
     verbose "Running command: $command $@"
 
-    eval cmd_$command "$@"
+    cmd_$command "$@"
 }
 
 cmd_add () {
@@ -257,12 +257,12 @@ cmd_clone () {
 
     if [ $mirror -eq 1 ]; then
         verbose "Mirroring from $cache_repo to $destination"
-        $scripts_dir/git-clone-via -s -m -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
+        $scripts_dir/git-clone-via -s -m -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo "$destination"
         msg "Mirrored from $cache_repo to $destination"
     else
         verbose "Cloning from $cache_repo to $destination"
-        $scripts_dir/git-clone-via -s -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo $destination
-        cd $destination
+        $scripts_dir/git-clone-via -s -b $branch -t refs/remotes/$remote/tags/\* -h refs/remotes/$remote/heads/\* -r $remote $cache_repo "$destination"
+        cd "$destination"
         if [ $recursive -eq 1 ]; then
             clone_submodules
         fi
