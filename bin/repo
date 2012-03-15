@@ -311,11 +311,12 @@ def _InitHttp():
     n = netrc.netrc()
     for host in n.hosts:
       p = n.hosts[host]
-      mgr.add_password(None, 'http://%s/'  % host, p[0], p[2])
-      mgr.add_password(None, 'https://%s/' % host, p[0], p[2])
+      mgr.add_password(p[1], 'http://%s/'  % host, p[0], p[2])
+      mgr.add_password(p[1], 'https://%s/' % host, p[0], p[2])
   except:
     pass
   handlers.append(urllib2.HTTPBasicAuthHandler(mgr))
+  handlers.append(urllib2.HTTPDigestAuthHandler(mgr))
 
   if 'http_proxy' in os.environ:
     url = os.environ['http_proxy']
