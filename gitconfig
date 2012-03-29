@@ -1,8 +1,8 @@
 ; vi:noet:sts=0:sw=8:ts=8:
 [core]
 	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
 	whitespace = cr-at-eol
-	safecrlf = true
 
 [user]
 	name = Christopher Larson
@@ -99,7 +99,7 @@
 	default = tracking
 
 [branch]
-	autosetuprebase = local
+	autosetuprebase = always
 
 [apply]
 	whitespace = fix
