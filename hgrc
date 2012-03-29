@@ -6,6 +6,10 @@ commitsubrepos = False
 [web]
 cacerts = /etc/ssl/certs/ca-certificates.crt
 
+[merge-tools]
+vimdiff.executable = vim
+vimdiff.args = -f -d -c "wincmd J" "$output" "$local" "$base" "$other"
+
 [extensions]
 bookmarks =
 color =
