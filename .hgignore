@@ -11,6 +11,7 @@ syntax: regexp
 ^vim/viminfo
 ^vim/tmp/
 ^config/sublime-text-2/Settings/
+^config/sublime-text-2/Backup/
 ^config/sublime-text-2/Pristine Packages/
 ^config/sublime-text-2/Installed Packages/
 ^config/sublime-text-2/Packages/ASP/
