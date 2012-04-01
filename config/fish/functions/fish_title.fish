@@ -1,6 +1,6 @@
 # https://github.com/zong-sharo
 function fish_title
-    if set -q fish_title_disabled
+    if begin set -q TMUX; or set -q fish_title_disabled; end
         return
     end
 
