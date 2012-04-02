@@ -14,6 +14,7 @@
 	au = add -u
 	st = status -sb
 	br = branch
+	id = rev-parse
 	ls = ls-files --exclude-standard
 	staged = diff --cached
 
@@ -41,6 +42,7 @@
 	# Show tags and annotated tag descriptions
 	tags = tag -n1 -l
 
+	# Repo local task lists
 	bug = !t.py --task-dir="$(git rev-parse --show-toplevel)" --list=BUGS $@
 	todo = !t.py --task-dir="$(git rev-parse --show-toplevel)" --list=TODO $@
 
@@ -53,7 +55,7 @@
 	# given any git object, try to show it briefly
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 
-	# changed between ORIG_HEAD and current
+	# what changed between ORIG_HEAD and current
 	lc = log ORIG_HEAD.. --stat --no-merges
 
 	# remove changes to a file from the index
