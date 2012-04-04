@@ -14,6 +14,11 @@
 # passing arguments
 trim() { echo $1; }
 
+# Ensure we get unicode/256color
+tmux() {
+    command tmux -u2 "$@"
+}
+
 if [[ -z "$1" ]]; then
     echo "Specify session name as the first argument"
     exit
