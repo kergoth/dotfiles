@@ -251,6 +251,17 @@ nnoremap <leader>n :set number!<cr>
 " Toggle paste mode with ,P
 set pastetoggle=<leader>P
 
+" Ensure arrows always work correctly with command-T
+map <Esc>[B <Down>
+
+" Tmux will send xterm-style keys when its xterm-keys option is on
+if &term =~ '^screen'
+  execute "set <xUp>=\e[1;*A"
+  execute "set <xDown>=\e[1;*B"
+  execute "set <xRight>=\e[1;*C"
+  execute "set <xLeft>=\e[1;*D"
+endif
+
 " Select the just-pasted text
 nnoremap <expr> <leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
 
