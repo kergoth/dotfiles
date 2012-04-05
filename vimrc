@@ -326,10 +326,14 @@ set showcmd
 " Enable line number column
 set number
 
+" I hate 'Thanks for flying VIM'
+set titleold=
+
 " Allow setting window title for screen
 if &term =~ '^screen'
   set t_ts=k
   set t_fs=\
+  set title
 endif
 
 " Nice window title
