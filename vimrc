@@ -238,22 +238,6 @@ noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
 noremap <leader>v <C-w>v
 
-" , is much more convenient than \, as it's closer to the home row
-let mapleader = ','
-let maplocalleader = mapleader
-
-" Toggle display of hidden characters
-nnoremap <leader>l :set list!<cr>
-
-" Toggle display of line numbers
-nnoremap <leader>n :set number!<cr>
-
-" Toggle paste mode with ,P
-set pastetoggle=<leader>P
-
-" Ensure arrows always work correctly with command-T
-map <Esc>[B <Down>
-
 " Tmux will send xterm-style keys when its xterm-keys option is on
 if &term =~ '^screen'
   execute "set <xUp>=\e[1;*A"
@@ -261,6 +245,25 @@ if &term =~ '^screen'
   execute "set <xRight>=\e[1;*C"
   execute "set <xLeft>=\e[1;*D"
 endif
+
+" , is much more convenient than \, as it's closer to the home row
+let mapleader = ','
+let maplocalleader = mapleader
+
+" Toggle display of invisible characters
+nnoremap <leader>i :set list!<cr>
+
+" Toggle display of line numbers
+nnoremap <leader>n :set number!<cr>
+
+" Toggle paste mode with ,P
+set pastetoggle=<leader>P
+
+" Courtesy Steve Losh
+nnoremap <leader>U :syntax sync fromstart<cr>:redraw!<cr>
+
+" Ensure arrows always work correctly with command-T
+map <Esc>[B <Down>
 
 " Select the just-pasted text
 nnoremap <expr> <leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
