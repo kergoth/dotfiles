@@ -336,6 +336,7 @@ set titleold=
 if &term =~ '^screen'
   set t_ts=k
   set t_fs=\
+  set notitle
 endif
 
 " Nice window title
