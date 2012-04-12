@@ -433,6 +433,9 @@ augroup END
 " File type settings {{{
 augroup vimrc_filetypes
   au!
+  " Set a default filetype
+  au BufReadPost,BufNewFile,VimEnter * if &ft == '' | setf text | endif
+
   " Add headings with <localleader> + numbers
   au Filetype rst nnoremap <buffer> <localleader>1 yypVr=
   au Filetype rst nnoremap <buffer> <localleader>2 yypVr-
