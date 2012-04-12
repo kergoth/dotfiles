@@ -476,6 +476,8 @@ augroup vimrc_filetypes
 
   " Run gofmt against go files on write
   au BufWritePost *.go :silent Fmt
+
+  au FileType text,markdown,rst set spell spelllang=en_us
 augroup END
 
 " Highlight GNU gcc specific items
