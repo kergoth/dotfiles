@@ -427,14 +427,12 @@ end
 " File type detection {{{
 augroup vimrc_filetype_detect
   au BufNewFile,BufRead *.md set ft=markdown
+  au BufNewFile,BufRead TODO,BUGS,README set ft=text
 augroup END
 " }}}
 " File type settings {{{
 augroup vimrc_filetypes
   au!
-  " Set a default filetype
-  au BufReadPost,BufNewFile,VimEnter * if &ft == '' | setf text | endif
-
   " Add headings with <localleader> + numbers
   au Filetype rst nnoremap <buffer> <localleader>1 yypVr=
   au Filetype rst nnoremap <buffer> <localleader>2 yypVr-
@@ -475,8 +473,6 @@ augroup vimrc_filetypes
 
   " Run gofmt against go files on write
   au BufWritePost *.go :silent Fmt
-
-  au FileType text,markdown,rst set spell spelllang=en_us
 augroup END
 
 " Highlight GNU gcc specific items
