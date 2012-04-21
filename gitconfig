@@ -42,9 +42,12 @@
 	# Show tags and annotated tag descriptions
 	tags = tag -n1 -l
 
+	# Show repo root
+	root = rev-parse --show-toplevel
+
 	# Repo local task lists
-	bug = !t.py --task-dir="$(git rev-parse --show-toplevel)" --list=BUGS $@
-	todo = !t.py --task-dir="$(git rev-parse --show-toplevel)" --list=TODO $@
+	bug = !t.py -t $(git root) -l BUGS
+	todo = !t.py -t $(git root) -l TODO
 
 	# show list of contributors in descending order by number of commits
 	rank = shortlog -sn --no-merges
