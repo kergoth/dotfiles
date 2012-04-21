@@ -236,7 +236,6 @@ noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
-noremap <leader>v <C-w>v
 
 " Tmux will send xterm-style keys when its xterm-keys option is on
 if &term =~ '^screen'
