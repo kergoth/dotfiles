@@ -32,6 +32,9 @@ schemes =
 shelve = ~/.hgext/shelve/hgshelve.py
 transplant =
 
+[mq]
+secret = True
+
 [progress]
 delay = 1.0
 
@@ -79,6 +82,9 @@ lg = glog --template='\033[0;33m{rev}\033[0m {desc|firstline|strip} \033[0;35m{b
 
 # Show a single changeset
 show = log --color=always --pager=on -pr
+
+# Show mq status
+qstatus = status --rev -2:.
 
 # Short log
 slog = log --template '{rev}:{node|short} {desc|firstline}\n' --pager=on
