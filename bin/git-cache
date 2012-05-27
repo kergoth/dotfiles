@@ -442,6 +442,7 @@ s,^git://git\.sv\.gnu\.org/,http://git.savannah.gnu.org/r/,;
 s,^git://git\.savannah\.gnu\.org/,http://git.savannah.gnu.org/r/,;
 s,\.sf\.net/,.sourceforge.net/,;
 s,^git://[^.]\+\.git\.sourceforge\.net/,git://gitscm.sourceforge.net/,;
+/git:\/\/gitscm.sourceforge.net\//q;
 s,\.git/*$,,;
 s,$,.git,;
         '
