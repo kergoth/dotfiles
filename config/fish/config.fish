@@ -3,6 +3,7 @@ set tacklebox_path ~/.config/fish/tacklebox
 set tacklebox_plugins misc python volatile z virtualenv
 
 set_path ~/bin ~/.local/bin ~/.gem/ruby/*/bin $PATH /usr/local/sbin /usr/sbin /sbin
+set -gx PATH ~/bin /usr/local/bin /usr/local/sbin $PATH /usr/sbin /sbin
 
 if not set -q HOME
     set -x HOME (cd ~; and pwd)
