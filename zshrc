@@ -1,0 +1,91 @@
+# Environment {{{1
+export DOTFILES=$HOME/.dotfiles
+export INPUTRC=$HOME/.inputrc
+export TERMINFO=$HOME/.terminfo
+export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
+export ACKRC=.ackrc
+
+ZSH=$DOTFILES/oh-my-zsh
+ZSH_CUSTOM=$DOTFILES/zsh
+
+PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
+
+if [[ -z $HOSTNAME ]]; then
+    if [[ -n $HOST ]]; then
+        export HOSTNAME=$HOST
+    else
+        export HOSTNAME=$(hostname -s)
+    fi
+fi
+
+export CVS_RSH=ssh
+export CVSREAD=yes
+
+
+export LC_MESSAGES=C
+export LC_ALL
+
+export LESS=FRX
+export PAGER=less
+export MANWIDTH=80
+
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS=--no-site-packages=--distribute
+
+# Oh-my-zsh {{{1
+ZSH_THEME=prose
+
+# Set to this to use case-sensitive completion
+# CASE_SENSITIVE="true"
+
+# Comment this out to disable weekly auto-update checks
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment following line if you want to disable colors in ls
+# DISABLE_LS_COLORS="true"
+
+# Uncomment following line if you want to disable autosetting terminal title.
+if [[ -n $TMUX ]]; then
+    DISABLE_AUTO_TITLE="true"
+fi
+
+# Uncomment following line if you want red dots to be displayed while waiting for completion
+COMPLETION_WAITING_DOTS="true"
+
+plugins=(git github mercurial fasd python pip history-substring-search zsh-syntax-highlighting osx brew)
+
+source $ZSH/oh-my-zsh.sh
+
+# Aliases {{{1
+alias lr="ls -thl"
+alias ll="ls -hl"
+alias la="ls -Ah"
+
+if [[ $OSTYPE =~ darwin ]]; then
+    alias ps='ps ux'
+else
+    alias ps='ps fux'
+fi
+
+alias tmux='tmux -u2'
+alias bback='ack --type=bitbake'
+alias chrome='google-chrome'
+alias t.py='command t.py --task-dir ~/Dropbox/Documents'
+alias t='t.py --list tasks.txt'
+alias h='t.py --list tasks-personal.txt'
+
+# Editor {{{1
+if [[ -n $commands[vim] ]]; then
+    alias vi=vim
+
+    export EDITOR=vim
+else
+    export EDITOR=vi
+fi
+export VISUAL=$EDITOR
+
+# Keychain {{{1
+if [[ -n $commands[keychain] ]]; then
+    eval "$(keychain --eval $HOSTNAME)"
+fi
+
+# vi:sts=4 sw=4 et fdm=marker
