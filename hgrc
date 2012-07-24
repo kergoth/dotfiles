@@ -25,6 +25,7 @@ parentrevspec =
 patchbomb =
 pbranch = ~/.hgext/pbranch/hgext/pbranch.py
 progress =
+prompt = ~/.hgext/prompt/prompt.py
 purge =
 rebase =
 record =
