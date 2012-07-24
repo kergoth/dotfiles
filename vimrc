@@ -350,40 +350,6 @@ endif
 " Always show the status line
 set laststatus=2
 
-" Shortened filename/path for statuslines
-"
-" Example: /home/kergoth/.dotfiles/vimrc -> /h/k/.d/vimrc
-fun! StatusLine_FileName()
-  try
-    let fn = pathshorten(expand('%f')) . ' '
-  catch
-    let fn = expand('%f') . ' '
-  endtry
-  return fn
-endfun
-
-" Status line format
-set statusline=%-3.3n\         " buffer number
-set statusline+=%(%{StatusLine_FileName()}\ %) " Shortened path
-set statusline+=%m            " Modified flag.
-set statusline+=%r            " Readonly flag.
-set statusline+=%w            " Preview window flag.
-set statusline+=\ %(\[%{&ft}]%) " file type
-
-set statusline+=%=   " Right align.
-
-" File format, encoding and type.  Ex: "(unix/utf-8/python)"
-set statusline+=(
-set statusline+=%{&ff}                        " Format (unix/DOS).
-set statusline+=/
-set statusline+=%{strlen(&fenc)?&fenc:&enc}   " Encoding (utf-8).
-set statusline+=/
-set statusline+=%{&ft}                        " Type (python).
-set statusline+=)
-
-" Line and column position and counts.
-set statusline+=\ (line\ %l\/%L,\ col\ %03c)
-
 " Assume we have a decent terminal, as vim only recognizes a very small set of
 " $TERM values for the default enable.
 set ttyfast
@@ -451,9 +417,6 @@ augroup vimrc_filetypes
   " Use :help for K in vim files
   au FileType vim nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
 
-  " Clean up display for nofile buffers
-  au FileType help,man set nofen colorcolumn=
-
   " File type specific indentation settings
   au FileType vim set sts=2 sw=2
   au FileType go set ts=4 sts=0 noet
@@ -489,6 +452,10 @@ let g:vimsyn_folding = 1
 
 " Disable new bitbake file template
 let g:bb_create_on_empty = 0
+" }}}
+" Plugin settings {{{
+let g:Powerline_symbols = "unicode"
+let g:Powerline_stl_path_style = "short"
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
