@@ -1,5 +1,5 @@
 " Load any installed bundles
-call pathogen#infect()
+call pathogen#infect(expand('~/.vim/bundle'))
 
 " Core {{{
 " Sadly, we can't rely on the distro to be sane for the basics
