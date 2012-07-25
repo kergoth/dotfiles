@@ -87,7 +87,7 @@ export VISUAL=$EDITOR
 
 # Keychain {{{1
 if [[ -n $commands[keychain] ]]; then
-    eval "$(keychain --eval $HOSTNAME)"
+    eval "$(keychain -q --eval $HOSTNAME)"
 fi
 
 # vi:sts=4 sw=4 et fdm=marker
