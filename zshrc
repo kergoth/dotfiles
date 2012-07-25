@@ -10,6 +10,8 @@ ZSH_CUSTOM=$DOTFILES/zsh
 
 PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+fpath=($ZSH_CUSTOM/functions $fpath)
+
 if [[ -z $HOSTNAME ]]; then
     if [[ -n $HOST ]]; then
         export HOSTNAME=$HOST
@@ -89,5 +91,10 @@ export VISUAL=$EDITOR
 if [[ -n $commands[keychain] ]]; then
     eval "$(keychain -q --eval $HOSTNAME)"
 fi
+
+# Autoload functions {{{1
+for func in $ZSH_CUSTOM/functions/*; do
+    autoload $(basename $func)
+done
 
 # vi:sts=4 sw=4 et fdm=marker
