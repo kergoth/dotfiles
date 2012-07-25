@@ -55,6 +55,8 @@ plugins=(git github mercurial fasd python pip history-substring-search zsh-synta
 
 source $ZSH/oh-my-zsh.sh
 
+unsetopt share_history
+
 # Aliases {{{1
 alias lr="ls -thl"
 alias ll="ls -hl"
