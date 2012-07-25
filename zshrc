@@ -8,7 +8,7 @@ export ACKRC=.ackrc
 ZSH=$DOTFILES/oh-my-zsh
 ZSH_CUSTOM=$DOTFILES/zsh
 
-PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
+PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 fpath=($ZSH_CUSTOM/functions $fpath)
 
