@@ -92,6 +92,11 @@ if [[ -n $commands[keychain] ]]; then
     eval "$(keychain -q --eval $HOSTNAME)"
 fi
 
+# Hub {{{1
+if [[ -n $commands[hub] ]]; then
+    eval "$(hub alias -s)"
+fi
+
 # Autoload functions {{{1
 for func in $ZSH_CUSTOM/functions/*; do
     autoload $(basename $func)
