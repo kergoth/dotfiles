@@ -89,7 +89,7 @@ export VISUAL=$EDITOR
 
 # Keychain {{{1
 if [[ -n $commands[keychain] ]]; then
-    eval "$(keychain -q --eval $HOSTNAME)"
+    eval "$(keychain -q --eval $HOSTNAME 2>/dev/null)"
 fi
 
 # Hub {{{1
