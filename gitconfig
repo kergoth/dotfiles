@@ -345,6 +345,10 @@
 [url "git://git.yoctoproject.org/"]
 	insteadOf = yocto:
 
+[url "git@git.yoctoproject.org:"]
+	pushInsteadOf = yocto:
+	pushInsteadOf = git://git.yoctoproject.org/
+
 [url "git://git.freescale.com/"]
 	insteadOf = freescale:
 	insteadOf = fsl:
