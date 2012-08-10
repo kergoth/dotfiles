@@ -73,6 +73,10 @@ else
     alias ps='ps fux'
 fi
 
+if [[ -n $commands[dfc] ]]; then
+    alias df=dfc
+fi
+
 alias tmux='tmux -u2'
 alias bback='ack --type=bitbake'
 alias chrome='google-chrome'
