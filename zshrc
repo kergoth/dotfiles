@@ -74,7 +74,7 @@ else
 fi
 
 if [[ -n $commands[dfc] ]]; then
-    alias df=dfc
+    alias df="dfc -p -rootfs"
 fi
 
 alias tmux='tmux -u2'
