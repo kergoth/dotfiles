@@ -69,12 +69,14 @@ alias la="ls -Ah"
 
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
+    if [[ -n $commands[dfc] ]]; then
+        alias df="dfc"
+    fi
 else
     alias ps='ps fux'
-fi
-
-if [[ -n $commands[dfc] ]]; then
-    alias df="dfc -p -rootfs"
+    if [[ -n $commands[dfc] ]]; then
+        alias df="dfc -p -rootfs"
+    fi
 fi
 
 alias tmux='tmux -u2'
