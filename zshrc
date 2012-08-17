@@ -64,16 +64,13 @@ plugins=(git github mercurial fasd python pip history-substring-search zsh-synta
 
 source $ZSH/oh-my-zsh.sh
 
-unsetopt share_history
-
 # Zsh options {{{1
 
 # Don't share my shell history among zsh instances
 unsetopt share_history
 
-# Only correct typos for the command, not its arguments
+# Disable typo correction, the prompt just gets in the way
 unsetopt correctall
-setopt correct
 
 # Aliases {{{1
 alias lr="ls -thl"
