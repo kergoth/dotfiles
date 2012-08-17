@@ -9,8 +9,12 @@ ZSH=$DOTFILES/oh-my-zsh
 ZSH_CUSTOM=$DOTFILES/zsh
 
 PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH
-if [[ -e ~/.gem/ruby/1.8/bin ]]; then
-    PATH=~/.gem/ruby/1.8/bin:$PATH
+
+if [[ -n $commands[ruby] ]]; then
+    rubydir=$(ruby -rubygems -e "puts Gem.user_dir" 2>/dev/null)
+    if [ $? -eq 0 ]; then
+        PATH=$rubydir/bin:$PATH
+    fi
 fi
 
 fpath=($ZSH_CUSTOM/functions $fpath)
