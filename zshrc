@@ -66,6 +66,15 @@ source $ZSH/oh-my-zsh.sh
 
 unsetopt share_history
 
+# Zsh options {{{1
+
+# Don't share my shell history among zsh instances
+unsetopt share_history
+
+# Only correct typos for the command, not its arguments
+unsetopt correctall
+setopt correct
+
 # Aliases {{{1
 alias lr="ls -thl"
 alias ll="ls -hl"
