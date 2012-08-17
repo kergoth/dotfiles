@@ -74,12 +74,12 @@ alias la="ls -Ah"
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if [[ -n $commands[dfc] ]]; then
-        alias df="dfc"
+        alias df="dfc -T"
     fi
 else
     alias ps='ps fux'
     if [[ -n $commands[dfc] ]]; then
-        alias df="dfc -p -rootfs"
+        alias df="dfc -T -p -rootfs"
     fi
 fi
 
