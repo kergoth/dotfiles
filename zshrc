@@ -43,16 +43,10 @@ export VIRTUALENVWRAPPER_VIRTUALENV_ARGS=--no-site-packages=--distribute
 # Oh-my-zsh {{{1
 ZSH_THEME=prose
 
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
 # Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
+# Let tmux handle its own terminal titles
 if [[ -n $TMUX ]]; then
     DISABLE_AUTO_TITLE="true"
 fi
