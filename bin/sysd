@@ -1,0 +1,58 @@
+#!/bin/bash
+# wrapper for managing systemd services
+
+arg1=$1
+
+usage () {
+    cat <<EOF
+    Systemctl options:
+
+    start      |  start a service
+    restart    |  reload unit configuration
+    stop       |  in the name of love
+    enable     |  start at boot
+    is-enabled |  check status
+    status     |  current state
+    disable    |  do not load at boot
+
+    list       |  list all running services
+    list-all   |  list all services, including inactive
+    read       |  read the relevant service file
+    fail       |  list failed services
+
+    reboot     |  restart
+    shut       |  poweroff
+
+    help       |  show the unit manual page
+
+EOF
+}
+
+actions=("start" "restart" "stop" "enable" "disable")
+
+for i in "${actions[@]}"; do
+    [[ "$i" = "$arg1" ]] && super="yes"
+done
+
+
+if [[ $# -eq 2 ]] && [[ "$super" == "yes" ]]; then
+    sudo systemctl "$1" "$2".service
+
+elif [[ $# -eq 2 ]] && [[ "$1" == "read" ]]; then
+    less -FX /usr/lib/systemd/system/"$2".service
+
+elif [[ $# -eq 2 ]]; then
+    systemctl "$1" "$2".service
+fi
+
+if [[ $# -eq 1 ]]; then
+
+    case "$1" in
+        list) systemctl list-units ;;
+        list-all) systemctl list-units --all;;
+       fail*) systemctl --failed   ;;
+      reboot) systemctl reboot     ;;
+       shut*) systemctl poweroff   ;;
+           *) usage && exit        ;;
+   esac
+fi
