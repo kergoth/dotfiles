@@ -85,7 +85,7 @@ if [[ $OSTYPE =~ darwin ]]; then
 else
     alias ps='ps fux'
     if [[ -n $commands[dfc] ]]; then
-        alias df="dfc -T -p -rootfs"
+        alias df="dfc -T -q mount -p -rootfs"
     fi
 fi
 
