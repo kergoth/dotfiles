@@ -115,4 +115,4 @@ for func in $ZSH_CUSTOM/functions/*; do
     autoload $(basename $func)
 done
 
-# vi:sts=4 sw=4 et fdm=marker
+# vi:sts=4 sw=4 et fdm=marker fdl=0
