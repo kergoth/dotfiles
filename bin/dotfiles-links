@@ -1,5 +1,22 @@
 #!/bin/sh
 
+relative () {
+    # both $1 and $2 are absolute paths
+    # returns $2 relative to $1
+
+    source=$1
+    target=$2
+
+    common_part=$source
+    back=
+    while [ -n "$common_part" -a "${target#$common_part}" = "${target}" ]; do
+      common_part="${common_part%/*}"
+      back="../${back}"
+    done
+
+    echo ${back}${target#$common_part/}
+}
+
 bindir=$(readlink -f $(dirname $0) 2>/dev/null)
 if [ $? -ne 0 ]; then
     bindir=$(cd $(dirname $0) && pwd)
@@ -7,20 +24,23 @@ fi
 dotfiles=$(dirname $bindir)
 
 
+relative_from_home=$(relative $HOME $dotfiles)
 cd $dotfiles
 
-echo .dotfiles/bin $HOME/bin
+echo $relative_from_home/bin $HOME/bin
 ls | grep -Ev '^(bin|bootstrap|oh-my-zsh|config|TODO|BUGS)$' | while read path; do
-    echo .dotfiles/$path $HOME/.$path
+    echo $relative_from_home/$path $HOME/.$path
 done
 
 if test -e config; then
     mkdir -p $HOME/.config
+    relative_path=$(relative $HOME/.config $dotfiles/config)
     ls config | cut -d/ -f2- | while read path; do
-        echo ../.dotfiles/config/$path $HOME/.config/$path
+        echo $relative_path $HOME/.config/$path
     done
 fi
 
 if test "$(uname -s)" = "Darwin"; then
-	echo ../../.dotfiles/config/sublime-text-2 $HOME/Library/Application\ Support/Sublime\ Text\ 2
+    relative_path=$(relative $HOME/Library/Application\ Support $dotfiles/config/sublime-text-2)
+    echo $relative_path $HOME/Library/Application\ Support/Sublime\ Text\ 2
 fi
