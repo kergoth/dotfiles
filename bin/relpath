@@ -1,0 +1,17 @@
+#!/bin/sh
+# http://stackoverflow.com/questions/2564634/bash-convert-absolute-path-into-relative-path-given-a-current-directory
+#
+# both $1 and $2 are absolute paths
+# returns $2 relative to $1
+
+source="$1"
+target="$2"
+
+common_part="$source"
+back=
+while [ -n "$common_part" -a "${target#$common_part}" = "${target}" ]; do
+  common_part="${common_part%/*}"
+  back="../${back}"
+done
+
+echo ${back}${target#$common_part/}
