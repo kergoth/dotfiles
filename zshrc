@@ -40,6 +40,11 @@ export MANWIDTH=80
 
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS=--no-site-packages=--distribute
 
+# If we have a proxy config file, use it
+if [[ -e ~/.proxy.pac ]]; then
+    export auto_proxy=file://$HOME/.proxy.pac
+fi
+
 if [[ $OSTYPE =~ darwin && -n $commands[brew] ]]; then
     if [[ ! -e ~/.brewenv ]]; then
         brew --env >~/.brewenv
