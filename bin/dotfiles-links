@@ -6,6 +6,7 @@ if [ $? -ne 0 ]; then
 fi
 dotfiles=$(dirname $bindir)
 
+alias relpath=$bindir/relpath
 
 relative_from_home=$(relpath $HOME $dotfiles)
 cd $dotfiles
