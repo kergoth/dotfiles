@@ -19,5 +19,7 @@ if [ -e ~/.Xresources ]; then
     xrdb ~/.Xresources
 fi
 
-export auto_proxy=file://$HOME/.mentor-proxy
+if [[ -e ~/.proxy.pac ]]; then
+    export auto_proxy=file://$HOME/.proxy.pac
+fi
 exec ssh-agent sscrotwm
