@@ -14,4 +14,9 @@ while [ -n "$common_part" -a "${target#$common_part}" = "${target}" ]; do
   back="../${back}"
 done
 
+if [ -z "$common_part" ]; then
+    # nothing in common, keep absolute
+    back="/"
+fi
+
 echo ${back}${target#$common_part/}
