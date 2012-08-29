@@ -40,6 +40,13 @@ export MANWIDTH=80
 
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS=--no-site-packages=--distribute
 
+if [[ $OSTYPE =~ darwin && -n $commands[brew] ]]; then
+    if [[ ! -e ~/.brewenv ]]; then
+        brew --env >~/.brewenv
+    fi
+    . ~/.brewenv
+fi
+
 # Oh-my-zsh {{{1
 ZSH_THEME=prose
 
