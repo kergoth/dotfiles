@@ -1,0 +1,32 @@
+#!/bin/sh
+
+time=+6 # older than 7 days ago
+
+cache_paths () {
+    locate -ebr '^cached-binaries\|sstate-cache$'
+    echo /cache/sstate
+}
+
+readlinks () {
+    while read link; do
+        readlink -f $link
+    done
+}
+
+caches=`mktemp -t clean-sstate.XXXXXX`
+cache_paths | readlinks | sort -u >>$caches
+
+cat $caches | while read path; do
+    find $path -atime $time -type f -print0
+done | xargs -0 rm -fv
+
+cat $caches | while read path; do
+    find $path -type l | while read link; do
+        if [ ! -e "$link" ]; then
+            rm -fv "$link"
+        fi
+    done
+done
+
+rm -f $caches
+exit 0
