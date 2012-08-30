@@ -1,5 +1,11 @@
 #!/bin/sh
 
+excluded="bin|bootstrap|oh-my-zsh|config|TODO|BUGS"
+if echo $OSTYPE | grep "^darwin"; then
+    # We don't want XQuartz trying to spawn sscrotwm
+    excluded="$excluded|xinitrc"
+fi
+
 bindir=$(readlink -f $(dirname $0) 2>/dev/null)
 if [ $? -ne 0 ]; then
     bindir=$(cd $(dirname $0) && pwd)
@@ -12,7 +18,7 @@ relative_from_home=$(relpath $HOME $dotfiles)
 cd $dotfiles
 
 echo $relative_from_home/bin $HOME/bin
-ls | grep -Ev '^(bin|bootstrap|oh-my-zsh|config|TODO|BUGS)$' | while read path; do
+ls | grep -Ev "^($excluded)$" | while read path; do
     echo $relative_from_home/$path $HOME/.$path
 done
 
