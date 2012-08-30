@@ -53,6 +53,7 @@ disable-msg-cat=I
 # C0301: Line too long
 # C0111: Missing docstring
 disable-msg=R0903,W0704,W0142,W0105,W0122,C0103,C0301,C0111
+disable=R0903,W0704,W0142,W0105,W0122,C0103,C0301,C0111
 
 
 [REPORTS]
