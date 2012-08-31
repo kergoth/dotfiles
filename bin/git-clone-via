@@ -185,4 +185,5 @@ else
     git read-tree $checkout_branch
     git checkout-index -a
 fi
+trap - EXIT
 git gc
