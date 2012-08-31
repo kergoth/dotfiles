@@ -1,31 +1,30 @@
 #!/bin/sh
-#
-# Clone from one local repository to another, but without making the source the
-# remote of the destination. Instead, the destination gets all the bits from
-# the source's origin, and gets its remote redirected back to the upstream
-# which the source points at. In this way, you essentially get a new clone from
-# upstream, but with hard linking from the existing repository's objects, and
-# you get a functional repository even if upstream is down, or your network is
-# unavailable.
 
 usage () {
     cat >&2 <<END
 Usage: git clone-via [OPTIONS] SOURCE [DEST]
 
-       Options:
+   Clone 'through' another local repository, to its upstream.
 
-           -m               Mirror to a bare repository the way clone --mirror does
-                            Note: incompatible with the -t and -h arguments
-           -l               Hard link objects the way clone -l does
-           -s               Reference the source repository the way clone -s does
-           -b BRANCH        Branch to check out
-           -r SOURCE_REMOTE Specify the remote used in the source repository
-                            Default value: origin
-           -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
-                               Default value: refs/tags/*
-           -h SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
-                                Default value if source is a mirror: refs/heads/*
-                                Default value otherwise: refs/remotes/<remote>/*
+   This clones from one local repository to another, but without making
+   the source the remote of the destination. Instead, the destination uses
+   the source repo for its git objects, but gets reconfigured to point
+   directly at the source repository's upstream. The main use case is
+   setting up local git mirrors / caches.
+
+   -f                   Force the clone, overwriting any existing repo
+   -m                   Mirror to a bare repository the way clone --mirror does
+                        Note: incompatible with the -t and -h arguments
+   -s                   Reference the source repository the way clone -s does
+   -b BRANCH            Branch to check out
+                        Default value: master
+   -r SOURCE_REMOTE     Specify the remote used in the source repository
+                        Default value: origin
+   -t SOURCE_TAGS_REFS  Specify the refspec for the remote's tags in the source repository
+                        Default value: refs/tags/*
+   -h SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
+                        Default value if source is a mirror: refs/heads/*
+                        Default value otherwise: refs/remotes/<remote>/*
 END
     exit 0
 }
@@ -69,7 +68,14 @@ process_arguments () {
 }
 
 process_options () {
-    while getopts r:t:h:b:mls opt; do
+    checkout_branch=master
+    source_remote=origin
+    source_tags_refs="refs/tags/*"
+    shared=0
+    mirror=0
+    force=0
+
+    while getopts r:t:h:b:msf opt; do
         case "$opt" in
             r)
                 source_remote=$OPTARG
@@ -83,14 +89,14 @@ process_options () {
             h)
                 source_heads_refs=$OPTARG
                 ;;
-            l)
-                link=1
-                ;;
             s)
                 shared=1
                 ;;
             b)
                 checkout_branch=$OPTARG
+                ;;
+            f)
+                force=1
                 ;;
             \?|h)
                 return 1
@@ -99,91 +105,99 @@ process_options () {
     done
 }
 
+extract_source_repo_info () {
+    source_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
+    if [ -z "$source_heads_refs" ]; then
+        source_mirror=$(GIT_DIR=$source_git_dir git config remote.$source_remote.mirror) || true
+        if [ -n "$source_mirror" ]; then
+            source_heads_refs="refs/heads/*"
+        else
+            source_heads_refs="refs/remotes/$source_remote/*"
+        fi
+    fi
+
+    source_url=$(GIT_DIR=$source_git_dir git config remote.$source_remote.url) || true
+    if [ -z "$source_url" ]; then
+        echo >&2 "Error: unable to obtain remote url from $source_git_dir"
+        exit 1
+    fi
+    source_refs=$(GIT_DIR=$source_git_dir git config remote.$source_remote.fetch) || true
+}
+
+clone () {
+    if [ $mirror -eq 1 ]; then
+        export GIT_DIR=$to
+
+        heads="$source_heads_refs:refs/heads/*"
+    else
+        export GIT_DIR=$to/.git
+        export GIT_WORK_TREE=$to
+
+        heads="$source_heads_refs:refs/remotes/origin/*"
+    fi
+
+    # Initialize the repo
+    mkdir -p "$GIT_DIR"
+    if [ $mirror -eq 1 ]; then
+        git init --bare --shared
+    else
+        git init
+    fi
+
+    # Use the source repo for objects
+    if [ $shared -eq 1 ]; then
+        mkdir -p $GIT_DIR/objects/info
+        echo "$source_git_dir/objects" > $GIT_DIR/objects/info/alternates
+    else
+        # Link all the objects over. git fetch doesn't support hard linking the way
+        # clone does, so we do so manually here, and rely on git gc to prune the bits
+        # we don't end up needing.
+        for d in objects/?? objects/{pack,info}; do
+            [ "$d" != "objects/??" ] || continue
+            [ "$(echo "$source_git_dir/$d"/*)" != "$source_git_dir/$d/*" ] || continue
+
+            mkdir -p "$GIT_DIR/$d"
+            ln "$source_git_dir/$d/"* "$GIT_DIR/$d" 2>/dev/null || cp "$source_git_dir/$d"/* "$GIT_DIR/$d"
+        done
+    fi
+
+    # Fetch the refs from the source repo
+    git fetch -n $from $heads
+    git fetch -n $from "$source_tags_refs:refs/tags/*"
+
+    # Point back at upstream, and do checkout if appropriate
+    git config remote.origin.url "$source_url"
+    if [ $mirror -eq 1 ]; then
+        git config remote.origin.mirror true
+        git config remote.origin.fetch "+refs/*:refs/*"
+    else
+        git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+        git branch --track $checkout_branch origin/$checkout_branch
+        git update-ref HEAD refs/heads/$checkout_branch
+        git read-tree $checkout_branch
+        git checkout-index -a
+    fi
+
+    # Clean up the repo
+    git gc
+}
+
+
 set -e
 
 unset GIT_DIR GIT_WORK_TREE
 
-checkout_branch=master
-source_remote=origin
-source_tags_refs="refs/tags/*"
-link=
-shared=
-mirror=0
 process_arguments "$@"
 
-if [ -e "$to" ]; then
+if [ $force -eq 1 ]; then
+    rm -rf "$to"
+elif [ -e "$to" ]; then
     echo >&2 "Error: $to already exists, aborting"
     exit 3
 fi
 
+extract_source_repo_info
+
 trap "rm -rf $to" EXIT
-
-from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
-if [ -z "$source_heads_refs" ]; then
-    from_mirror=$(GIT_DIR=$from_git_dir git config remote.$source_remote.mirror) || true
-    if [ -n "$from_mirror" ]; then
-        source_heads_refs="refs/heads/*"
-    else
-        source_heads_refs="refs/remotes/$source_remote/*"
-    fi
-fi
-
-from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url) || true
-if [ -z "$from_url" ]; then
-    echo >&2 "Error: unable to obtain remote url from $from_git_dir"
-    exit 1
-fi
-from_refs=$(GIT_DIR=$from_git_dir git config remote.$source_remote.fetch) || true
-
-if [ $mirror -eq 1 ]; then
-    export GIT_DIR=$to
-else
-    export GIT_DIR=$to/.git
-    export GIT_WORK_TREE=$to
-fi
-
-mkdir -p "$GIT_DIR"
-if [ $mirror -eq 1 ]; then
-    git init --bare --shared
-else
-    git init
-fi
-
-cd $from_git_dir
-
-if [ -n "$link" ]; then
-    # Link all the objects over. git fetch doesn't support hard linking the way
-    # clone does, so we do so manually here, and rely on git gc to prune the bits
-    # we don't end up needing.
-    for d in objects/?? objects/{pack,info}; do
-        [ "$d" != "objects/??" ] || continue
-        [ "$(echo "$d"/*)" != "$d/*" ] || continue
-        mkdir -p "$GIT_DIR/$d"
-        ln -f "$d"/* "$GIT_DIR/$d" 2>/dev/null || cp -f "$d"/* "$GIT_DIR/$d"
-    done
-elif [ -n "$shared" ]; then
-    mkdir -p $GIT_DIR/objects/info
-    echo "$from_git_dir/objects" > $GIT_DIR/objects/info/alternates
-fi
-
-if [ $mirror -eq 1 ]; then
-    heads="$source_heads_refs:refs/heads/*"
-else
-    heads="$source_heads_refs:refs/remotes/origin/*"
-fi
-git fetch -n $from $heads
-git fetch -n $from "$source_tags_refs:refs/tags/*"
-
-git config remote.origin.url "$from_url"
-if [ $mirror -eq 1 ]; then
-    git config remote.origin.mirror true
-    git config remote.origin.fetch "+refs/*:refs/*"
-else
-    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    git branch --track $checkout_branch origin/$checkout_branch
-    git update-ref HEAD refs/heads/$checkout_branch
-    git read-tree $checkout_branch
-    git checkout-index -a
-fi
+clone
 trap - EXIT
-git gc
