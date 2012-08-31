@@ -24,7 +24,8 @@ Usage: git clone-via [OPTIONS] SOURCE [DEST]
            -t SOURCE_TAGS_REFS Specify the refspec for the remote's tags in the source repository
                                Default value: refs/tags/*
            -h SOURCE_HEADS_REFS Specify the refspec for the remote's heads in the source repository
-                                Default value: refs/remotes/<remote>/*
+                                Default value if source is a mirror: refs/heads/*
+                                Default value otherwise: refs/remotes/<remote>/*
 END
     exit 0
 }
@@ -46,10 +47,6 @@ process_arguments () {
 
     if [ $# -lt 1 -o $# -gt 2 ]; then
         usage
-    fi
-
-    if [ -z "$source_heads_refs" ]; then
-        source_heads_refs="refs/remotes/$source_remote/*"
     fi
 
     from="$(abspath "$1")"
@@ -106,6 +103,7 @@ set -e
 
 unset GIT_DIR GIT_WORK_TREE
 
+checkout_branch=master
 source_remote=origin
 source_tags_refs="refs/tags/*"
 link=
@@ -118,7 +116,18 @@ if [ -e "$to" ]; then
     exit 3
 fi
 
+trap "rm -rf $to" EXIT
+
 from_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
+if [ -z "$source_heads_refs" ]; then
+    from_mirror=$(GIT_DIR=$from_git_dir git config remote.$source_remote.mirror) || true
+    if [ -n "$from_mirror" ]; then
+        source_heads_refs="refs/heads/*"
+    else
+        source_heads_refs="refs/remotes/$source_remote/*"
+    fi
+fi
+
 from_url=$(GIT_DIR=$from_git_dir git config remote.$source_remote.url) || true
 if [ -z "$from_url" ]; then
     echo >&2 "Error: unable to obtain remote url from $from_git_dir"
@@ -168,9 +177,9 @@ git fetch -n $from "$source_tags_refs:refs/tags/*"
 git config remote.origin.url "$from_url"
 if [ $mirror -eq 1 ]; then
     git config remote.origin.mirror true
-    git config remote.origin.fetch "refs/*:refs/*"
+    git config remote.origin.fetch "+refs/*:refs/*"
 else
-    git config remote.origin.fetch "refs/heads/*:refs/remotes/origin/*"
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     git branch --track $checkout_branch origin/$checkout_branch
     git update-ref HEAD refs/heads/$checkout_branch
     git read-tree $checkout_branch
