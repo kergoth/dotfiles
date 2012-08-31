@@ -72,6 +72,9 @@ source $ZSH/oh-my-zsh.sh
 
 # Zsh options {{{1
 
+# Show running time for commands which take longer than 10 seconds
+export REPORTTIME=10
+
 # Don't share my shell history among zsh instances
 unsetopt share_history
 
