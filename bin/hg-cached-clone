@@ -14,80 +14,87 @@
 set -e
 
 main () {
-	cache_dir=~/.hg-cache
-	url="$1"
-	dest="$2"
-	if [ -z "$dest" ]; then
-		dest="$(basename $1 | sed 's,\.git/*$,,')"
-	fi
+    cache_dir=~/.scm-cache
+    url="$1"
+    cache_url="$(canonical_url "$url")"
+    dest="$2"
+    if [ -z "$dest" ]; then
+        dest="$(basename "$cache_url")"
+    fi
 
-	cached_clone "$url" "$dest"
+    cached_clone "$cache_url" "$dest"
 }
 
 prepare_cache () {
-	url="$1"
-	cache_dest="$2"
+    url="$1"
+    cache_dest="$2"
 
-	if [ ! -e "$cache_dir/$cache_dest" ]; then
-		hg clone -U "$url" "$cache_dir/$cache_dest"
-	else
-		pushd "$cache_dir/$cache_dest" >/dev/null
-		hg pull
-		popd >/dev/null
-	fi
+    if [ ! -e "$cache_dir/$cache_dest" ]; then
+        hg clone -U "$url" "$cache_dir/$cache_dest"
+    else
+        pushd "$cache_dir/$cache_dest" >/dev/null
+        hg pull
+        popd >/dev/null
+    fi
+}
+
+canonical_url () {
+    sedscript=$(mktemp)
+    echo 's,^bb://,https://bitbucket.org/,;' >>$sedscript
+    if [ -e ~/.hgrc ]; then
+        sed -n '/^\[schemes\]/{: start; n; /^\[/b done; /^ *$/b start; p; b start}; : done' ~/.hgrc|while read scheme eq url; do echo "s,^$scheme://,$url,;"; done >>$sedscript
+    fi
+    echo "$1" | sed -f $sedscript
+    rm -f $sedscript
 }
 
 get_cache_dest () {
-	echo "$1" | sed  -e 's,^\(https\?\|\(git\(\|+ssh\)\)\)://,,' \
-	                 -e 's,^bitbucket.org/,bb://,' \
-	                 -e 's,^.*\.\([a-z]\+\.[a-z]\+\),\1,' \
-	                 -e 's,\.git$,,' \
-	                 -e 's,[:/@.],_,g; s,__*,_,g; s,_*$,,'
+    echo $1 | sed 's,^.*://,,; s,[:/@#&?],_,g; s,__*,_,g; s,\.git/*$,,'
 }
 
 cached_clone () {
-	url="$1"
-	dest="$2"
-	cache_dest="$(get_cache_dest "$url")"
+    url="$1"
+    dest="$2"
+    cache_dest="$(get_cache_dest "$url")"
 
-	prepare_cache "$url" "$cache_dest"
+    prepare_cache "$url" "$cache_dest"
 
-	mkdir -p "$dest"
-	pushd "$dest" >/dev/null
-	hg init
-	hg pull "$cache_dir/$cache_dest"
-	cat <<END >.hg/hgrc
+    mkdir -p "$dest"
+    pushd "$dest" >/dev/null
+    hg init
+    hg pull "$cache_dir/$cache_dest"
+    cat <<END >.hg/hgrc
 [paths]
 default = $url
 END
-	if [ -e "$cache_dir/$cache_dest/.hg/git" ]; then
-		cp -PR "$cache_dir/$cache_dest/.hg/git" .hg/
-		hg gexport
-	fi
+    if [ -e "$cache_dir/$cache_dest/.hg/git" ]; then
+        cp -PR "$cache_dir/$cache_dest/.hg/git" .hg/
+        hg gexport
+    fi
 
-	update_subrepos
-	update_git_submodules
-	hg update
-	popd >/dev/null
+    update_subrepos
+    update_git_submodules
+    hg update
+    popd >/dev/null
 }
 
 update_subrepos () {
-	if hg manifest tip | grep -q '.hgsub'; then
-		hg cat -r tip .hgsub 2>/dev/null | while IFS== read dir url; do
-			if [ -z "$dir" ]; then
-				continue
-			fi
-			dir=$(echo $dir | sed 's, *$,,')
+    if hg manifest tip | grep -q '.hgsub'; then
+        hg cat -r tip .hgsub 2>/dev/null | while IFS== read dir url; do
+            if [ -z "$dir" ]; then
+                continue
+            fi
+            dir=$(echo $dir | sed 's, *$,,')
 
-			if echo "$url" | grep -q '^ *\[git\]'; then
-				url=$(echo $url | sed 's,^ *,,; s,^\[git\],,')
-				git cache clone "$url" "$dir"
-			else
-				url=$(echo $url | sed 's,^\[hg\],,; s,^ *,,')
-				cached_clone "$url" "$dir"
-			fi
-		done
-	fi
+            if echo "$url" | grep -q '^ *\[git\]'; then
+                url=$(echo $url | sed 's,^ *,,; s,^\[git\],,')
+                git cached-clone "$url" "$dir"
+            else
+                url=$(echo $url | sed 's,^\[hg\],,; s,^ *,,')
+                cached_clone "$url" "$dir"
+            fi
+        done
+    fi
 }
 
 update_git_submodules () {
@@ -97,7 +104,7 @@ update_git_submodules () {
         for module in $(git config -f $tmpfile --get-regexp 'submodule\.[a-z]+\.path' | cut -d. -f2); do
             submodule_path=$(git config -f $tmpfile --get submodule.$module.path)
             submodule_url=$(git config -f $tmpfile --get submodule.$module.url)
-            git cache clone "$submodule_url" "$submodule_path"
+            git cached-clone "$submodule_url" "$submodule_path"
         done
         rm -f "$tmpfile"
     fi
