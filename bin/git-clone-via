@@ -157,7 +157,7 @@ clone () {
             [ "$(echo "$source_git_dir/$d"/*)" != "$source_git_dir/$d/*" ] || continue
 
             mkdir -p "$GIT_DIR/$d"
-            ln "$source_git_dir/$d/"* "$GIT_DIR/$d" 2>/dev/null || cp "$source_git_dir/$d"/* "$GIT_DIR/$d"
+            ln "$source_git_dir/$d/"* "$GIT_DIR/$d/" || cp "$source_git_dir/$d/"* "$GIT_DIR/$d/"
         done
     fi
 
@@ -177,9 +177,6 @@ clone () {
         git read-tree $checkout_branch
         git checkout-index -a
     fi
-
-    # Clean up the repo
-    git gc
 }
 
 
