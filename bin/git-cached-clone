@@ -59,6 +59,12 @@ cache_name () {
     echo $1 | sed 's,^.*://,,; s,[:/@#&?],_,g; s,__*,_,g; s,\.git/*$,,'
 }
 
+if echo $OSTYPE | grep -q "^darwin"; then
+    alias stat_format="stat -f"
+else
+    alias stat_format="stat --format"
+fi
+
 abspath () {
     _path="$1"
     if [ -n "${_path##/*}" ]; then
@@ -150,7 +156,7 @@ fi
 if [ $shared -eq 1 ]; then
     set -- "$@" -s
 else
-    if [ "$(stat --format %d "$url_cache_entry")" != "$(stat --format %d "$PWD")" ]; then
+    if [ "$(stat_format %d "$url_cache_entry")" != "$(stat_format %d "$PWD")" ]; then
         # Different device/filesystem, default to shared
         set -- "$@" -s
     fi
