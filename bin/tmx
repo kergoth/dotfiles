@@ -52,9 +52,12 @@ else
     # Make sure we are not already in a tmux session
     if [[ -z "$TMUX" ]]; then
         # Kill defunct sessions first
+        current_client_sessions=$(tmux lsc 2>/dev/null | cut -d' ' -f2)
         old_sessions=$(tmux ls 2>/dev/null | egrep "^$base_session-[0-9a-z]{4}:" | cut -f 1 -d:)
         for old_session_id in $old_sessions; do
-            tmux kill-session -t $old_session_id
+            if ! echo $current_client_sessions | grep -qw $old_session_id; then
+                tmux kill-session -t $old_session_id
+            fi
         done
 
         echo "Launching copy of base session $base_session ..."
