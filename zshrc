@@ -59,7 +59,7 @@ fi
 
 if [[ $OSTYPE =~ darwin && -n $commands[brew] ]]; then
     if [[ ! -e ~/.brewenv ]]; then
-        brew --env >~/.brewenv
+        brew --env | grep -v "^export PATH=" >~/.brewenv
     fi
     . ~/.brewenv
 fi
