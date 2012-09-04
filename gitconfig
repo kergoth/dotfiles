@@ -168,6 +168,7 @@
 	smtpserverport = 587
 	smtpencryption = tls
 	smtpuser = kergoth@gmail.com
+	from = Christopher Larson <kergoth@gmail.com>
 
 [notes]
 	rewriteRef = refs/notes/*
