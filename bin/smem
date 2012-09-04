@@ -17,6 +17,7 @@ class procdata(object):
         self._ucache = {}
         self._gcache = {}
         self.source = source and source or ""
+        self._memdata = None
     def _list(self):
         return os.listdir(self.source + "/proc")
     def _read(self, f):
@@ -33,7 +34,9 @@ class procdata(object):
     def mapdata(self, pid):
         return self._readlines('%s/smaps' % pid)
     def memdata(self):
-        return self._readlines('meminfo')
+        if self._memdata is None:
+            self._memdata = self._readlines('meminfo')
+        return self._memdata
     def version(self):
         return self._readlines('version')[0]
     def pidname(self, pid):
@@ -213,11 +216,11 @@ def fromunits(x):
 def pidusername(pid):
     return src.username(src.piduser(pid))
 
-def showamount(a):
+def showamount(a, total):
     if options.abbreviate:
         return units(a * 1024)
     elif options.percent:
-        return "%.2f%%" % (100.0 * a / totalmem())
+        return "%.2f%%" % (100.0 * a / total)
     return a
 
 def filter(opt, arg, *sources):
@@ -266,7 +269,7 @@ def showpids():
         return pidusername(p)
 
     fields = dict(
-        pid=('PID', lambda n: n, '% 5s', lambda x: len(p),
+        pid=('PID', lambda n: n, '% 5s', lambda x: len(pt),
              'process ID'),
         user=('User', showuser, '%-8s', lambda x: len(dict.fromkeys(x)),
               'owner of process'),
@@ -316,8 +319,8 @@ def maptotals(pids):
                     t['pids'] += 1
                     seen[name] = 1
                 totals[name] = t
-        except:
-            raise
+        except EnvironmentError:
+            continue
     return totals
 
 def showmaps():
@@ -366,8 +369,8 @@ def usertotals(pids):
             maps = pidmaps(pid)
             if len(maps) == 0:
                 continue
-        except:
-            raise
+        except EnvironmentError:
+            continue
         user = src.piduser(pid)
         if user not in totals:
             t = dict(size=0, rss=0, pss=0, shared_clean=0,
@@ -476,6 +479,9 @@ def showtable(rows, fields, columns, sort):
     if options.bar:
         columns.append(options.bar)
 
+    mt = totalmem()
+    st = memory()['swaptotal']
+
     for n in columns:
         if n not in fields:
             showfields(fields, n)
@@ -483,7 +489,10 @@ def showtable(rows, fields, columns, sort):
 
         f = fields[n][2]
         if 'a' in f:
-            formatter.append(showamount)
+            if n == 'swap':
+                formatter.append(lambda x: showamount(x, st))
+            else:
+                formatter.append(lambda x: showamount(x, mt))
             f = f.replace('a', 's')
         else:
             formatter.append(lambda x: x)
