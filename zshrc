@@ -110,6 +110,7 @@ else
     fi
 fi
 
+alias smem='smem -k'
 alias tmux='tmux -u2'
 alias bback='ack --type=bitbake'
 alias chrome='google-chrome'
