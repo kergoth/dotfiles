@@ -180,54 +180,22 @@
 [help]
 	autocorrect = 1
 
-[url "git://github.com/openembedded/oe-core"]
-	insteadOf = oe:openembedded-core
-	insteadOf = oe-ssh:openembedded-core
-	insteadOf = git://git.openembedded.org/openembedded-core
-	insteadOf = git@git.openembedded.org:openembedded-core
-
-[url "git://github.com/openembedded/meta-oe"]
-	insteadOf = oe:meta-openembedded
-	insteadOf = oe-ssh:meta-openembedded
-	insteadOf = git://git.openembedded.org/meta-openembedded
-	insteadOf = git@git.openembedded.org:meta-openembedded
-
-[url "git://github.com/openembedded/bitbake"]
-	insteadOf = oe:bitbake
-	insteadOf = oe-ssh:bitbake
-	insteadOf = git://git.openembedded.org/bitbake
-	insteadOf = git@git.openembedded.org:bitbake
-
-[url "git://github.com/openembedded/openembedded"]
-	insteadOf = oe:openembedded
-	insteadOf = oe-ssh:openembedded
-	insteadOf = git://git.openembedded.org/openembedded
-	insteadOf = git@git.openembedded.org:openembedded
+[url "git@git.openembedded.org:"]
+        pushInsteadOf = oe:
+        pushInsteadOf = https://github.com/openembedded/
+        pushInsteadOf = git://git.openembedded.org/
 
 [url "git://git.openembedded.org/"]
-	insteadOf = oe:
-	insteadOf = oe-ssh:
-
-[url "git@git.openembedded.org:"]
-	pushInsteadOf = oe:
-	pushInsteadOf = oe-ssh:
-	pushInsteadOf = git://git.openembedded.org/
-	pushInsteadOf = git://github.com/openembedded/
-	pushInsteadOf = https://github.com/openembedded/
-	pushInsteadOf = git@github.com:openembedded/
-
-[url "git://github.com/"]
-	insteadOf = github:
-	insteadOf = https://github.com/
-
-[url "https://kergoth@github.com/"]
-	insteadOf = github-https:
+        insteadOf = oe:
 
 [url "git@github.com:"]
-	insteadOf = github-ssh:
 	pushInsteadOf = github:
-	pushInsteadOf = git://github.com/
 	pushInsteadOf = https://github.com/
+	pushInsteadOf = http://github.com/
+	pushInsteadOf = git://github.com/
+
+[url "https://github.com/"]
+        insteadOf = github:
 
 [url "git://git.openmoko.org/git/"]
 	insteadOf = openmoko:
@@ -343,17 +311,17 @@
 	insteadOf = o-hand:
 	insteadOf = ohand:
 
-[url "git://git.yoctoproject.org/"]
-	insteadOf = yocto:
-
 [url "git@git.yoctoproject.org:"]
 	pushInsteadOf = yocto:
 	pushInsteadOf = git://git.yoctoproject.org/
+
+[url "git://git.yoctoproject.org/"]
+	insteadOf = yocto:
 
 [url "git://git.freescale.com/"]
 	insteadOf = freescale:
 	insteadOf = fsl:
 
 [url "git://projects.archlinux.org/"]
-	insteadOf = arch:
-	insteadOf = archlinux:
+       insteadOf = arch:
+       insteadOf = archlinux:
