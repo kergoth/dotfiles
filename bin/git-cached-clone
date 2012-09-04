@@ -155,11 +155,6 @@ if [ $force -eq 1 ]; then
 fi
 if [ $shared -eq 1 ]; then
     set -- "$@" -s
-else
-    if [ "$(stat_format %d "$url_cache_entry")" != "$(stat_format %d "$PWD")" ]; then
-        # Different device/filesystem, default to shared
-        set -- "$@" -s
-    fi
 fi
 if [ $mirror -eq 1 ]; then
     set -- "$@" -m
