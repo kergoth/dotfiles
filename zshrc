@@ -32,11 +32,7 @@ fi
 fpath=($ZSH_CUSTOM/functions $fpath)
 
 if [[ -z $HOSTNAME ]]; then
-    if [[ -n $HOST ]]; then
-        export HOSTNAME=$HOST
-    else
-        export HOSTNAME=$(hostname -s)
-    fi
+    export HOSTNAME=$(hostname -s)
 fi
 
 export CVS_RSH=ssh
