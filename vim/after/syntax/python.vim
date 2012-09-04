@@ -17,7 +17,10 @@ if !exists("python_no_comment_fold")
 endif
 
 if !exists("python_no_import_fold")
-  syn clear pythonInclude
+  try
+    syn clear pythonInclude
+  catch
+  endtry
   syn match pythonInclude "\(import\|from\)"
 
   syn match pythonImport "import .*" contains=pythonInclude,pythonStatement
