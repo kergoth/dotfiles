@@ -352,3 +352,7 @@
 [url "git://git.freescale.com/"]
 	insteadOf = freescale:
 	insteadOf = fsl:
+
+[url "git://projects.archlinux.org/"]
+	insteadOf = arch:
+	insteadOf = archlinux:
