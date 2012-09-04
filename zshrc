@@ -10,6 +10,18 @@ ZSH_CUSTOM=$DOTFILES/zsh
 
 PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+if [[ -e ~/.local/bin ]]; then
+    PATH=$HOME/.local/bin:$PATH
+fi
+
+if [[ -e ~/Library/Python ]]; then
+    for i in ~/Library/Python/*; do
+        if [[ -e "$i" ]]; then
+            PATH=$i/bin:$PATH
+        fi
+    done
+fi
+
 if [[ -n $commands[ruby] ]]; then
     rubydir=$(ruby -rubygems -e "puts Gem.user_dir" 2>/dev/null)
     if [ $? -eq 0 ]; then
