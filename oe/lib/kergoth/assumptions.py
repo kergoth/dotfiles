@@ -1,16 +1,33 @@
-from assume import have, assumed, simple_assumptions
+from assume import have, assumed, simple_assumptions, assumptions
 import os.path
+import subprocess
 try:
-    from bb.process import CmdError
-    import bb.process as process
-    import subprocess
-    def run(*args, **kwargs):
-        kwargs['stderr'] = subprocess.STDOUT
-        return process.run(*args, **kwargs)[0]
-except ImportError:
-    from bb.process import CmdError
-    import oe.process as process
-    run = process.run
+    run = subprocess.check_output
+    CmdError = subprocess.CalledProcessError
+except AttributeError:
+    try:
+        import bb.process
+        from bb.process import CmdError
+        def run(*args, **kwargs):
+            return bb.process.run(*args, **kwargs)[0]
+    except ImportError:
+        from bb.process import CmdError
+        from oe.process import run
+
+
+def gnu_version(name, minversion):
+    try:
+        veroutput = run([name, '--version'])
+    except (OSError, CmdError):
+        return
+
+    firstline = veroutput.splitlines()[0]
+    strversion = firstline.split()[-1]
+
+    version = [int(c) for c in strversion.split('.')]
+    if version >= minversion:
+        return '%s-native' % name
+
 
 simple_assumptions(have,
     'fakeroot',
@@ -33,8 +50,6 @@ simple_assumptions(have,
     'gperf',
     'gzip',
     'gperf',
-    # 'gettext', - not safe atm, some recipes grab config.rpath directly from
-    # the oe sysroot
 
     **{
         'svn': 'subversion-native',
@@ -48,30 +63,8 @@ simple_assumptions(check=os.path.exists, **{
     '/usr/lib/libcurl.a': 'curl-native',
     '/usr/lib/libreadline.a': 'readline-native',
     '/usr/lib/libiberty.a': 'binutils-native',
-    # '/usr/lib/libz.a': 'zlib-native',
-    # '/usr/lib/libsqlite3.a': 'sqlite3-native',
-    # '/usr/lib/libuuid.a': 'util-linux-native',
 })
 
-def gnu_version(name, minversion):
-    try:
-        veroutput = run([name, '--version'])
-    except CmdError:
-        return None
-
-    firstline = veroutput.splitlines()[0]
-    strversion = firstline.split()[-1]
-
-    version = [int(c) for c in strversion.split('.')]
-    if version >= minversion:
-        return '%s-native' % name
-
-@assumed
-def m4():
-    return gnu_version('m4', [1, 4, 6])
-
-@assumed
-def tar():
-    to_assume =  gnu_version('tar', [1, 24])
-    if to_assume:
-        return to_assume.replace('tar', 'tar-replacement')
+assumptions['m4'] = lambda c: gnu_version(c, [1, 4, 6])
+assumptions['git'] = lambda c: gnu_version(c, [1, 7, 5])
+assumptions['tar'] = lambda c: gnu_version(c, [1, 24])
