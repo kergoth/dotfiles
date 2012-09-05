@@ -1,5 +1,5 @@
 # Environment {{{1
-export DOTFILES=$(dirname $(readlink $HOME/.zshrc))
+export DOTFILES=$HOME/$(dirname $(readlink $HOME/.zshrc))
 export INPUTRC=$HOME/.inputrc
 export TERMINFO=$HOME/.terminfo
 export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
