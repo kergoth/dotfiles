@@ -1,5 +1,20 @@
+# Functions {{{1
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="$PWD/$1"
+    fi
+    echo "$_path"
+}
+
 # Environment {{{1
-export DOTFILES=$HOME/$(dirname $(readlink $HOME/.zshrc))
+zshrc_path=$(dirname $(readlink $HOME/.zshrc))
+export DOTFILES=$(abspath $zshrc_path)
+if [ ! -d $DOTFILES ]; then
+        DOTFILES=$HOME/$zshrc_path
+fi
+unset zshrc_path
+
 export INPUTRC=$HOME/.inputrc
 export TERMINFO=$HOME/.terminfo
 export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
