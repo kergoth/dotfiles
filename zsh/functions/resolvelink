@@ -1,0 +1,28 @@
+# Replace a symlink with a copy of its destination
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: $0 FILENAME [FILENAME...]"
+    return 2
+fi
+
+backup=$(mktemp)
+ret=1
+for link; do
+    dest=$(readlink $link)
+    if [ -z "$dest" ]; then
+        echo >&2 "No destination found for $link, skipping"
+        ret=1
+        continue
+    fi
+
+    mv "$link" "$backup"
+    cd $(dirname $link)
+    cp -v $dest $link || {
+        ret=$?
+        echo >&2 "Restoring original link for $link"
+        mv "$backup" "$link"
+    }
+    rm -f "$backup"
+    cd - >/dev/null
+done
+return $ret
