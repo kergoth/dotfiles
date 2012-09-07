@@ -1,0 +1,15 @@
+interval=2
+
+COLUMNS=$(stty size | cut -d" " -f2)
+prefix="$(printf "Every %0.1fs: %s" $interval "$*")"
+width=$(echo $prefix | wc -c)
+
+while true; do
+    clear
+    date="$(date +'%a %b %d %H:%m:%S %Y')"
+    date_width=$(echo $date | wc -c)
+    pad=$(expr $COLUMNS - $width + 1)
+    printf "%s%${pad}s\n" "$prefix" "$date"
+    eval "$@"
+    sleep $interval
+done
