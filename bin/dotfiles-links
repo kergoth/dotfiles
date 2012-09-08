@@ -1,7 +1,7 @@
 #!/bin/sh
 
 excluded="bin|bootstrap|oh-my-zsh|config|TODO|BUGS"
-if echo $OSTYPE | grep "^darwin"; then
+if echo $OSTYPE | grep -q "^darwin"; then
     # We don't want XQuartz trying to spawn sscrotwm
     excluded="$excluded|xinitrc"
 fi
