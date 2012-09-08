@@ -1,6 +1,6 @@
 #!/bin/sh
 
-excluded="bin|bootstrap|oh-my-zsh|config|TODO|BUGS"
+excluded="bin|bootstrap|oh-my-zsh|config|TODO|BUGS|MacOSX"
 if echo $OSTYPE | grep -q "^darwin"; then
     # We don't want XQuartz trying to spawn sscrotwm
     excluded="$excluded|xinitrc"
@@ -33,4 +33,5 @@ fi
 if test "$(uname -s)" = "Darwin"; then
     relative_path=$(relpath $HOME/Library/Application\ Support $dotfiles/config/sublime-text-2)
     echo $relative_path $HOME/Library/Application\ Support/Sublime\ Text\ 2
+    echo $relative_from_home/MacOSX $HOME/.MacOSX
 fi
