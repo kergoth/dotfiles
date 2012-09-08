@@ -23,16 +23,16 @@ export ACKRC=.ackrc
 ZSH=$DOTFILES/oh-my-zsh
 ZSH_CUSTOM=$DOTFILES/zsh
 
-PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:$PATH
+path=($HOME/bin /usr/local/bin /usr/local/sbin $path)
 
 if [[ -e ~/.local/bin ]]; then
-    PATH=$HOME/.local/bin:$PATH
+    path=($HOME/.local/bin $path)
 fi
 
 if [[ -e ~/Library/Python ]]; then
     for i in ~/Library/Python/*; do
         if [[ -e "$i" ]]; then
-            PATH=$i/bin:$PATH
+            path=($i/bin $path)
         fi
     done
 fi
@@ -40,7 +40,7 @@ fi
 if [[ -n $commands[ruby] ]]; then
     rubydir=$(ruby -rubygems -e "puts Gem.user_dir" 2>/dev/null)
     if [ $? -eq 0 ]; then
-        PATH=$rubydir/bin:$PATH
+        path=($rubydir/bin $path)
     fi
 fi
 
