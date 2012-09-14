@@ -45,8 +45,6 @@ simple_assumptions(have,
     'git',
     'pigz',
 
-    'bison',
-    'flex',
     'gperf',
     'gzip',
     'gperf',
