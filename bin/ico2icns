@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+icon=$1
+outfile=$(echo $icon|sed 's,\.ico$,,').icns
+
+tiff_file=$(mktemp $(basename $0).XXXX)
+rm -f $tiff_file
+tiff_file=$tiff_file.tiff
+trap "rm -f $tiff_file" EXIT
+
+sips -s format tiff $icon --out $tiff_file
+tiff2icns $tiff_file $outfile
+echo "Converted $icon to $outfile"
