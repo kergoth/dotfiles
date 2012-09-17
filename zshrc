@@ -146,7 +146,7 @@ fi
 
 # Hub {{{1
 if [[ -n $commands[hub] ]]; then
-    eval "$(hub alias -s)"
+    eval "$(hub alias -s $SHELL)"
 fi
 
 # Autoload functions {{{1
