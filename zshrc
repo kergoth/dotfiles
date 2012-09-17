@@ -124,6 +124,7 @@ fi
 alias smem='smem -k'
 alias tmux='tmux -u2'
 alias bback='ack --type=bitbake'
+alias bbag="ag -G '\.(bb|inc|conf)$'"
 alias chrome='google-chrome'
 alias t.py='command t.py --task-dir ~/Dropbox/Documents'
 alias t='t.py --list tasks.txt'
