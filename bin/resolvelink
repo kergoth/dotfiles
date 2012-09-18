@@ -1,8 +1,10 @@
+#!/bin/sh
+#
 # Replace a symlink with a copy of its destination
 
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: $0 FILENAME [FILENAME...]"
-    return 2
+    exit 2
 fi
 
 backup=$(mktemp)
@@ -17,7 +19,7 @@ for link; do
 
     mv "$link" "$backup"
     cd $(dirname $link)
-    cp -v $dest $link || {
+    cp -av $dest $link || {
         ret=$?
         echo >&2 "Restoring original link for $link"
         mv "$backup" "$link"
@@ -25,4 +27,4 @@ for link; do
     rm -f "$backup"
     cd - >/dev/null
 done
-return $ret
+exit $ret
