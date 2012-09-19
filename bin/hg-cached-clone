@@ -39,11 +39,15 @@ prepare_cache () {
 }
 
 canonical_url () {
-    sedscript=$(mktemp)
+    sedscript=$(mktemp -t hg-cached-clone.XXXXXX)
     echo 's,^bb://,https://bitbucket.org/,;' >>$sedscript
     if [ -e ~/.hgrc ]; then
-        sed -n '/^\[schemes\]/{: start; n; /^\[/b done; /^ *$/b start; p; b start}; : done' ~/.hgrc|while read scheme eq url; do echo "s,^$scheme://,$url,;"; done >>$sedscript
+        sed -n '/^\[schemes\]/,/^\[/{ /=/p; }' ~/.hgrc | \
+            while read scheme eq url; do
+                echo "s,^$scheme://,$url,;"
+            done >>$sedscript
     fi
+    echo 's,^ssh://hg@bitbucket.org/,https://bitbucket.org/,;' >>$sedscript
     echo "$1" | sed -f $sedscript
     rm -f $sedscript
 }
