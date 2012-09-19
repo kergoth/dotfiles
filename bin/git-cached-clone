@@ -164,6 +164,6 @@ fi
 git clone-via "$@" "$url_cache_entry" "$dest"
 
 if [ $mirror -eq 0 ]; then
-    cd $dest
+    cd "$dest"
     clone_submodules "$@"
 fi
