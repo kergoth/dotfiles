@@ -24,4 +24,7 @@ if [ -e ~/.Xresources ]; then
     xrdb ~/.Xresources
 fi
 
+# Disable bell
+xset -b
+
 exec ssh-agent sscrotwm
