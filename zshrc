@@ -121,6 +121,9 @@ else
     fi
 fi
 
+if [[ -n $commands[pacman-color] ]]; then
+    alias pacman='pacman-color'
+fi
 alias smem='smem -k'
 alias tmux='tmux -u2'
 alias bback='ack --type=bitbake'
