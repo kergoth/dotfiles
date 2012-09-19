@@ -44,7 +44,7 @@ hi Identifier      guifg=#FD971F
 hi DiffAdd                       guibg=#1e4313
 hi DiffChange      guifg=#89807D guibg=#322F2D
 hi DiffDelete      guifg=#ff0088 guibg=#1B1E1F
-hi DiffText                      guibg=#4A4340 gui=italic,bold
+hi DiffText                      guibg=#4A4340 gui=bold
 " }}}
 " Cursor {{{
 hi Cursor          guifg=#000000 guibg=#F35FBC
@@ -71,8 +71,8 @@ hi Ignore          guifg=#808080 guibg=bg
 
 hi Keyword         guifg=#F92672               gui=bold
 hi Label           guifg=#E6DB74               gui=none
-hi Macro           guifg=#C4BE89               gui=italic
-hi SpecialKey      guifg=#66D9EF               gui=italic
+hi Macro           guifg=#C4BE89
+hi SpecialKey      guifg=#66D9EF
 
 hi InterestingWord1 guifg=#000000 guibg=#FFA700
 hi InterestingWord2 guifg=#000000 guibg=#53FF00
@@ -100,14 +100,14 @@ hi IndentGuides                  guibg=#373737
 hi SignColumn      guifg=#A6E22E guibg=#151617
 hi SpecialChar     guifg=#F92672               gui=bold
 hi SpecialComment  guifg=#465457               gui=bold
-hi Special         guifg=#66D9EF guibg=bg      gui=italic
-hi SpecialKey      guifg=#888A85               gui=italic
+hi Special         guifg=#66D9EF guibg=bg
+hi SpecialKey      guifg=#888A85
 hi Statement       guifg=#F92672               gui=bold
 hi StatusLine      guifg=#262626 guibg=fg
 hi StatusLineNC    guifg=#262626 guibg=#080808
-hi StorageClass    guifg=#FD971F               gui=italic
+hi StorageClass    guifg=#FD971F
 hi Structure       guifg=#66D9EF
-hi Tag             guifg=#F92672               gui=italic
+hi Tag             guifg=#F92672
 hi Title           guifg=#ef5939
 hi Todo            guifg=#FFFFFF guibg=bg      gui=bold
 
