@@ -5,4 +5,13 @@
 pids="$(pgrep -f "$@"|grep -vx "$$")"
 pids="$(echo $pids|sed -e's/ /,/g')"
 
-exec ps fu -p"$pids"
+if [ -z "$pids" ]; then
+    echo >&2 "No processes found for" "$@"
+    exit 1
+fi
+
+if echo $OSTYPE | grep -q "^darwin"; then
+    exec ps u -p"$pids"
+else
+    exec ps fu -p"$pids"
+fi
