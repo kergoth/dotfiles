@@ -287,6 +287,9 @@ nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
+" Insert a modeline
+nmap <leader>m :Modeliner<CR>
+
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
 function! s:MapNextFamily(map,cmd)
