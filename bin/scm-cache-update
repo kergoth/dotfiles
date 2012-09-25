@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd ~/.scm-cache
+for i in */; do
+    echo Updating $i
+    if echo $i | grep -q "\.git/$"; then
+        GIT_DIR=$i git fetch
+    else
+        cd $i; hg pull; cd - >/dev/null
+    fi
+done
