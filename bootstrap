@@ -2,5 +2,18 @@
 
 set -e
 
-hg clone https://bitbucket.org/kergoth/dotfiles ~/.dotfiles
+dotfiles=~/dotfiles
+rm -rf $dotfiles
+
+git clone --recursive https://github.com/kergoth/homefiles $dotfiles
+while read dest url; do
+    hg clone $url $dotfiles/$dest
+done<<END
+hgext/crecord https://bitbucket.org/edgimar/crecord
+hgext/histedit https://bitbucket.org/durin42/histedit
+hgext/pbranch https://bitbucket.org/parren/hg-pbranch
+hgext/prompt https://bitbucket.org/sjl/hg-prompt
+hgext/shelve https://bitbucket.org/tksoh/hgshelve
+END
+
 ~/.dotfiles/bin/dotfiles-install
