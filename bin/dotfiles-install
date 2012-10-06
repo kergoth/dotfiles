@@ -1,7 +1,6 @@
 #!/bin/sh
 
 bindir=$(cd $(dirname $0) && pwd)
-dotfiles=$(dirname $bindir)
 
 $bindir/dotfiles-links | while IFS='	' read linkable dest; do
     if [ -h "$dest" ]; then
