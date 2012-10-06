@@ -1,15 +1,23 @@
 #!/bin/sh
 
-toremove=""
-for item in "$@"; do
+items="$(mktemp bgrm.XXXXXX)" || exit 1
+trap "rm -f $items" EXIT
+
+while [ $# -gt 0 ]; do
+    echo "$1" >>$items
+    shift
+done
+
+while read item; do
     if basename "$item" | grep -q "^bgrm."; then
         continue
     fi
 
-    dir=$(dirname $item)
-    tmpdir=$(mktemp -d $dir/bgrm.XXXXXX) || exit 1
-    mkdir -p $tmpdir
-    toremove="$toremove $tmpdir"
+    dir="$(dirname "$item")"
+    tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
+    set -- "$@" "$tmpdir"
+
     mv "$item" "$tmpdir/"
-done
-rm -rf $toremove &
+done <$items
+
+rm -rf "$@" &
