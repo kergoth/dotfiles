@@ -124,6 +124,10 @@ fi
 if [[ -n $commands[pacman-color] ]]; then
     alias pacman='pacman-color'
 fi
+if [[ -z $commands[ag] ]]; then
+    # No silver searcher, alias to ack
+    alias ag=ack
+fi
 alias smem='smem -k'
 alias tmux='tmux -u2'
 alias bback='ack --type=bitbake'
