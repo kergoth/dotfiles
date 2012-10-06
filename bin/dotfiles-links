@@ -35,10 +35,15 @@ if test -e config; then
 fi
 
 if test "$(uname -s)" = "Darwin"; then
-    relative_path=$(relpath $HOME/Library/Application\ Support $dotfiles/config/sublime-text-2)
-    printf "$relative_path\t$HOME/Library/Application\ Support/Sublime\ Text\ 2\n"
     printf "$relative_from_home/MacOSX\t$HOME/.MacOSX\n"
+
+    stpath="$HOME/Library/Application Support/Sublime Text 2"
 else
-    relative_path=$(relpath $HOME/.config $dotfiles/config)
-    printf "$relative_path\t$HOME/.config/sublime-text-2\n"
+    stpath="$HOME/.config/sublime-text-2"
 fi
+packages=$stpath/Packages
+relative_path="$(relpath "$packages" "$dotfiles/config/sublime-text-2/Packages")"
+
+ls config/sublime-text-2/Packages | cut -d/ -f2- | while read path; do
+    printf "$relative_path/$path\t$packages/$path\n"
+done
