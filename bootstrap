@@ -2,8 +2,10 @@
 
 set -e
 
-dotfiles=~/dotfiles
-rm -rf $dotfiles
+dotfiles=$1
+if [ -z "$dotfiles" ]; then
+    dotfiles=~/.dotfiles
+fi
 
 git clone --recursive https://github.com/kergoth/homefiles $dotfiles
 while read dest url; do
