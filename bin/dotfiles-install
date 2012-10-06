@@ -3,7 +3,7 @@
 bindir=$(cd $(dirname $0) && pwd)
 dotfiles=$(dirname $bindir)
 
-$bindir/dotfiles-links | while read linkable dest; do
+$bindir/dotfiles-links | while IFS='	' read linkable dest; do
     if [ -h "$dest" ]; then
         rm -f "$dest"
     elif [ -e "$dest" ]; then

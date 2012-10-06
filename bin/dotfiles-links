@@ -11,27 +11,34 @@ if [ $? -ne 0 ]; then
     bindir=$(cd $(dirname $0) && pwd)
 fi
 dotfiles=$(dirname $bindir)
+if [ ! -e $dotfiles/.git ] && [ ! -e $dotfiles/.hg ]; then
+    echo >&2 "Unable to locate dotfiles, falling back to ~/.dotfiles"
+    dotfiles=$HOME/.dotfiles
+fi
 
-alias relpath=$bindir/relpath
+alias relpath=$dotfiles/bin/relpath
 
 relative_from_home=$(relpath $HOME $dotfiles)
 cd $dotfiles
 
-echo $relative_from_home/bin $HOME/bin
+printf "$relative_from_home/bin\t$HOME/bin\n"
 ls | grep -Ev "^($excluded)$" | while read path; do
-    echo $relative_from_home/$path $HOME/.$path
+    printf "$relative_from_home/$path\t$HOME/.$path\n"
 done
 
 if test -e config; then
     mkdir -p $HOME/.config
     relative_path=$(relpath $HOME/.config $dotfiles/config)
-    ls config | cut -d/ -f2- | while read path; do
-        echo $relative_path $HOME/.config/$path
+    ls config | cut -d/ -f2- | grep -v sublime | while read path; do
+        printf "$relative_path\t$HOME/.config/$path\n"
     done
 fi
 
 if test "$(uname -s)" = "Darwin"; then
     relative_path=$(relpath $HOME/Library/Application\ Support $dotfiles/config/sublime-text-2)
-    echo $relative_path $HOME/Library/Application\ Support/Sublime\ Text\ 2
-    echo $relative_from_home/MacOSX $HOME/.MacOSX
+    printf "$relative_path\t$HOME/Library/Application\ Support/Sublime\ Text\ 2\n"
+    printf "$relative_from_home/MacOSX\t$HOME/.MacOSX\n"
+else
+    relative_path=$(relpath $HOME/.config $dotfiles/config)
+    printf "$relative_path\t$HOME/.config/sublime-text-2\n"
 fi

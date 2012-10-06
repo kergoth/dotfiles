@@ -1,6 +1,6 @@
 #!/bin/sh
 
-`dirname $0`/dotfiles-links | while read linkable dest; do
+`dirname $0`/dotfiles-links | while IFS='	' read linkable dest; do
     if [ -h "$dest" ]; then
         echo >&2 "Removing $dest"
         rm -f "$dest"
