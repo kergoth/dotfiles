@@ -162,9 +162,4 @@ for func in $ZSH_CUSTOM/functions/*; do
     autoload $(basename $func)
 done
 
-# Darwin environment.plist {{{1
-if [[ $OSTYPE =~ darwin ]] && [[ -e ~/.MacOSX ]]; then
-    sed -i -e "/<key>PATH<\/key>/{ n; s#^.*\$#	<string>$PATH</string>#; }" ~/.MacOSX/environment.plist
-fi
-
 # vi:sts=4 sw=4 et fdm=marker fdl=0
