@@ -53,8 +53,7 @@ function! GetShIndent()
 
   let ind = indent(lnum)
   let line = getline(lnum)
-  let block_start = '\%(if\|then\|do\|else\|elif\|case\|while\|until\|for\|select\)\>'
-  if line =~ '^\s*' . block_start || line =~ '|\s*' . block_start
+  if line =~ '\(^\||\)\s*\%(if\|then\|do\|else\|elif\|case\|while\|until\|for\|select\)\>'
     if line !~ '\<\%(fi\|esac\|done\)\>\s*\%(#.*\)\=$'
       let ind += s:indent_value('default')
     endif
