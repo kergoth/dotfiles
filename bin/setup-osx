@@ -13,11 +13,35 @@ defaults write -g ApplePressAndHoldEnabled -bool false
 # Use AirDrop over every interface. srsly this should be a default.
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
 
+# Stop full names from copying with email addresses in Mail.app
+defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+
 # Always open everything in Finder's list view. This is important.
-defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+defaults write com.apple.finder FXPreferredViewStyle Nlsv
+
+# Enable text selection in quick look windows
+defaults write com.apple.finder QLEnableTextSelection -bool true
+
+# Hide desktop icons completely
+defaults write com.apple.finder CreateDesktop -bool false
+
+# Remove autohide dock delay
+defaults write com.apple.dock autohide-delay -float 0
+
+# Speed up mission control animations
+defaults write com.apple.dock expose-animation-duration -float 0.12
+
+# Make hidden dock icons translucent
+defaults write com.apple.dock showhidden -bool true
 
 # Show the ~/Library folder
 chflags nohidden ~/Library
 
 # Ensure that pbcopy/pbpaste work from tmux
 brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
+
+# Show system info at the login screen
+sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+
+killall Finder
+killall Dock
