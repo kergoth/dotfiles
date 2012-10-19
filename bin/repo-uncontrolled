@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+repos=$(repo list | cut -d" " -f1)
+reposfile=$(mktemp -t $(basename $0).XXXX)
+trap "rm -f $reposfile" EXIT
+
+repo list | cut -d" " -f1 >>$reposfile
+
+for i in */; do
+    if ! grep -q "^${i%/}$" $reposfile; then
+        echo $i
+    fi
+done
