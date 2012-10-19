@@ -39,9 +39,6 @@
 	# Clean out the ignored files (i.e. to rebuild)
 	iclean = clean -fdX
 
-	# Show tags and annotated tag descriptions
-	tags = tag -n1 -l
-
 	# Show repo root
 	root = rev-parse --show-toplevel
 
