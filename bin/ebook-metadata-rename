@@ -58,6 +58,8 @@ def get_sane_metadata(filename):
 fixchars = string.maketrans("/:", "--")
 filename_replacements = (
     (": ", " - "),
+    (":", " -"),
+    ("/", "-"),
     (r"^\. *", "Dot "), # We don't want a hidden file
     (u"\u201C", '"'),
     (u"\u201D", '"'),
@@ -66,7 +68,6 @@ filename_replacements = (
     (u"\u00E9", "e"),
 )
 def sanitize_filename(name):
-    name = name.replace(":", " -")
 
     for (fromval, toval) in filename_replacements:
         name = re.sub(fromval, toval, name)
@@ -77,6 +78,7 @@ def sanitize_filename(name):
 title_replacements = (
     ('"', ""),
     ('Iwork', 'iWork'),
+    ('- [tT]he', '- The'),
 )
 terms = (
     "XHTML",
@@ -95,6 +97,8 @@ terms = (
     "OS",
     "DSL",
     "SEO",
+    "CEO",
+    "CEOs",
     "GUI",
     "LINQ",
     "SQL",
