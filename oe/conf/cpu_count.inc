@@ -22,21 +22,25 @@ def cpu_count():
     else:
         return multiprocessing.cpu_count()
 
-def adjusted_cpu_count(d):
-    count = cpu_count()
+def mem_factor(d):
+    import re
+    mem_info = open('/proc/meminfo', 'r').read()
+    mem_total = int(re.match('^MemTotal: *([0-9]+)', mem_info).group(1))
+    mem_gigs = round(float(mem_total) / (1024 * 1024))
+    return mem_gigs * 2
+
+def bb_number_threads(d):
+    import math
+    scaled_count = math.ceil(cpu_count() * 1.5)
+    mem = mem_factor(d)
     if in_vmware():
-        factor = float(d.getVar('VMWARE_FACTOR', True) or 1)
+        vmware_factor = 0.75
     else:
-        factor = 1
+        vmware_factor = 1
+    return int(min(scaled_count, mem) * vmware_factor)
 
-    return count * factor
+def make_jobs(d):
+    return int(int(d.getVar('BB_NUMBER_THREADS', True)) * 1.5)
 
-def round(num):
-    return max(1, int(num + .5))
-
-CPU_VMWARE_FACTOR ?= ".5"
-CPU_THREAD_FACTOR ?= "1.5"
-CPU_MAKE_FACTOR ?= "2"
-
-BB_NUMBER_THREADS := "${@round(adjusted_cpu_count(d) * float('${CPU_THREAD_FACTOR}'))}"
-PARALLEL_MAKE := "-j${@round(adjusted_cpu_count(d) * float('${CPU_MAKE_FACTOR}'))}"
+BB_NUMBER_THREADS := "${@bb_number_threads(d)}"
+PARALLEL_MAKE := "-j${@make_jobs(d)}"
