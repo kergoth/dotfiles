@@ -1,6 +1,6 @@
 def in_vmware():
     try:
-        return 'vmware' in open('/proc/timer_list', 'r').read()
+        return 'vmci' in open('/proc/misc', 'r').read()
     except (OSError, IOError):
         return False
 
