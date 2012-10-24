@@ -160,7 +160,7 @@ def book_rename(filename, new_filename):
     base, ext = os.path.splitext(filename)
     destdir = os.path.dirname(filename)
     structure = os.path.dirname(new_filename)
-    new_basename = sanitize_filename(os.path.basename(new_filename))
+    new_basename = os.path.basename(new_filename)
     if structure and destdir.endswith('/%s' % structure):
         # File already in the needed directory structure
         new_filename = os.path.join(destdir, new_basename) + ext
@@ -181,6 +181,11 @@ if __name__ == '__main__':
         if not data.get('Title'):
             sys.exit("Error: title is not set")
 
+        author, title = data['Author(s)'], data['Title']
+
+        for field in data:
+            data[field] = sanitize_filename(data[field])
+
         if data.get('Series'):
             new_filename = series_format.format(**data)
         else:
@@ -188,7 +193,6 @@ if __name__ == '__main__':
 
         # Re-set author and title metadata, resulting in ebook-meta also
         # setting the author sort and title sort.
-        subprocess.call(['ebook-meta', '-a', data['Author(s)'],
-                         '-t', data['Title'], filename])
+        subprocess.call(['ebook-meta', '-a', author, '-t', title, filename])
 
         book_rename(filename, new_filename)
