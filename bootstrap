@@ -7,9 +7,17 @@ if [ -z "$dotfiles" ]; then
     dotfiles=~/.dotfiles
 fi
 
-git clone --recursive https://github.com/kergoth/homefiles $dotfiles
+if [ ! -e $dotfiles ]; then
+    git clone git://github.com/kergoth/homefiles $dotfiles
+fi
+cd $dotfiles
+git submodule init
+git submodule update
+
 while read dest url; do
-    hg clone $url $dotfiles/$dest
+    if [ ! -e $dotfiles/$dest ]; then
+        hg clone $url $dotfiles/$dest
+    fi
 done<<END
 hgext/crecord https://bitbucket.org/edgimar/crecord
 hgext/histedit https://bitbucket.org/durin42/histedit
