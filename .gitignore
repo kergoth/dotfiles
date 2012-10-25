@@ -5,3 +5,4 @@
 /ssh/known_hosts
 /ssh/socket*
 /MacOSX/environment.plist-e
+/hgext/
