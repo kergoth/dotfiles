@@ -6,3 +6,4 @@
 /ssh/socket*
 /MacOSX/environment.plist-e
 /hgext/
+/vim/bundle/

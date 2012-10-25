@@ -26,4 +26,8 @@ hgext/prompt https://bitbucket.org/sjl/hg-prompt
 hgext/shelve https://bitbucket.org/tksoh/hgshelve
 END
 
+if [ ! -e $dotfiles/vim/bundle/vundle ]; then
+    git clone git://github.com/gmarik/vundle.git $dotfiles/vim/bundle/vundle
+fi
+
 ~/.dotfiles/bin/dotfiles-install

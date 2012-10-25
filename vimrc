@@ -1,32 +1,33 @@
-" Load any installed bundles
-call pathogen#infect(expand('~/.vim/bundle'))
+" Bundles {{{1
+set nocompatible
+filetype off
 
-" Core {{{
-" Sadly, we can't rely on the distro to be sane for the basics
-syntax on
+set runtimepath+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+
+Bundle 'kergoth/vim-bitbake'
+Bundle 'wincent/Command-T'
+Bundle 'tpope/vim-commentary'
+Bundle 'jnwhiteh/vim-golang'
+Bundle 'Modeliner'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'kana/vim-smartinput'
+Bundle 'benmills/vimux'
+
 filetype plugin indent on
+" }}}1
+" General settings {{{
+syntax on
+
+" Enable backup files
+set backup
 
 " These are of limited usefulness, as I write files often
 set noswapfile
 
-" Allow hiding buffers with modifications
-set hidden
-
-" Prompt me rather than aborting an action
-set confirm
-
-" Automatically reload files changed outside of vim
-set autoread
-
-" Navigate over visual lines
-noremap j gj
-noremap k gk
-" }}}
-" General settings {{{
-" Enable backup files
-set backup
-
-" Don't store all the backup and swap files in cwd
+" Don't store all the backup files in cwd
 let &backupdir = './.vimtmp,' . $HOME . '/.vim/tmp,/var/tmp,' . $TEMP
 let &directory = &backupdir
 
@@ -53,6 +54,19 @@ augroup vimrc
   " are available.
   au QuickFixCmdPost * botright cwindow 5
 augroup END
+
+" Allow hiding buffers with modifications
+set hidden
+
+" Prompt me rather than aborting an action
+set confirm
+
+" Automatically reload files changed outside of vim
+set autoread
+
+" Navigate over visual lines
+noremap j gj
+noremap k gk
 
 " Intuitive backspacing in insert mode
 set backspace=indent,eol,start
