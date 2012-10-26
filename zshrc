@@ -153,7 +153,7 @@ if [[ -n $commands[keychain] ]]; then
 fi
 
 # Hub {{{1
-if [[ -n $commands[hub] ]]; then
+if [[ -n $commands[ruby] && -n $commands[hub] ]]; then
     eval "$(hub alias -s $SHELL)"
 fi
 
