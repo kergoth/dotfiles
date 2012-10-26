@@ -23,5 +23,5 @@ URxvt.background: rgba:0000/0000/0000/eddd
 URxvt.perl-ext: default,matcher
 URxvt.urlLauncher: firefox
 URxvt.termName: rxvt-unicode
-URxvt*font: -xos4-terminus-medium-r-normal--22-220-*-*-c-*-iso8859-1
-URxvt*boldFont: -xos4-terminus-bold-r-normal--22-220-*-*-c-*-iso8859-1
+URxvt*font: -xos4-terminus-medium-r-normal--18-180-*-*-c-*-iso8859-1
+URxvt*boldFont: -xos4-terminus-bold-r-normal--18-180-*-*-c-*-iso8859-1
