@@ -43,5 +43,10 @@ brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
 # Show system info at the login screen
 sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
 
+# launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+sudo ln -s /System/Library/CoreServices/Screen\ Sharing.app /Applications/
+sudo sysctl -w kern.sysv.shmall=65536
+sudo sysctl -w kern.sysv.shmmax=16777216
+
 killall Finder
 killall Dock
