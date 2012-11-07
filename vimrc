@@ -476,6 +476,7 @@ let g:bb_create_on_empty = 0
 " Plugin settings {{{
 let g:Powerline_symbols = "unicode"
 let g:Powerline_stl_path_style = "short"
+let g:syntastic_auto_loc_list = 1
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
