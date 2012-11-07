@@ -422,27 +422,9 @@ augroup END
 " File type settings {{{
 augroup vimrc_filetypes
   au!
-  " Add headings with <localleader> + numbers
-  au Filetype rst nnoremap <buffer> <localleader>1 yypVr=
-  au Filetype rst nnoremap <buffer> <localleader>2 yypVr-
-  au Filetype rst nnoremap <buffer> <localleader>3 yypVr~
-  au Filetype rst nnoremap <buffer> <localleader>4 yypVr`
-  au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=
-  au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-
-  au Filetype markdown nnoremap <buffer> <localleader>3 I### <esc>
-
-  " Show diff when editing git commit messages
-  au FileType gitcommit DiffGitCached | wincmd p
-
-  " Use man.vim for K in types we know don't override keywordprg
-  au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
-
-  " Use :help for K in vim files
-  au FileType vim nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
-
   " File type specific indentation settings
   au FileType vim set sts=2 sw=2
-  au FileType go set ts=4 sts=0 noet
+  au FileType go set ts=4 sw=4 sts=0 noet
   au FileType c,cpp set ts=4 sw=4 sts=0 noet
 
   " Comment string
@@ -456,6 +438,26 @@ augroup vimrc_filetypes
   " are being inadvertantly flagged as redundant whitespace.
   " Adjust the match to exclude the first column.
   au Syntax diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
+
+
+  " Add headings with <localleader> + numbers
+  au Filetype rst nnoremap <buffer> <localleader>1 yypVr=
+  au Filetype rst nnoremap <buffer> <localleader>2 yypVr-
+  au Filetype rst nnoremap <buffer> <localleader>3 yypVr~
+  au Filetype rst nnoremap <buffer> <localleader>4 yypVr`
+  au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=
+  au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-
+  au Filetype markdown nnoremap <buffer> <localleader>3 I### <esc>
+
+  " Use man.vim for K in types we know don't override keywordprg
+  au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
+
+  " Use :help for K in vim files
+  au FileType vim nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
+
+
+  " Show diff when editing git commit messages
+  au FileType gitcommit DiffGitCached | wincmd p
 
   " Run gofmt against go files on write
   au BufWritePost *.go :silent Fmt
