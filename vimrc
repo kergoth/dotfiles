@@ -298,6 +298,9 @@ nmap <leader>ccn :cnext<cr>
 " Delete trailing whitespace
 nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 
+" Search for the word under the cursor
+nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
+
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
