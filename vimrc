@@ -82,7 +82,10 @@ set autowriteall
 set history=1000
 
 " Kill annoying Press ENTER or type command to continue prompts
-set shortmess=atI
+set shortmess=atIWo
+
+" Further reduce the Press ENTER prompts
+set cmdheight=2
 
 if has('folding')
   " Start with most folds closed
