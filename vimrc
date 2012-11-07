@@ -32,7 +32,7 @@ let &backupdir = './.vimtmp,' . $HOME . '/.vim/tmp,/var/tmp,' . $TEMP
 let &directory = &backupdir
 
 " Ensure we cover all temp files for backup file creation
-if has('macunix')
+if $OSTYPE =~ 'darwin'
   set backupskip+=/private/tmp/*
 endif
 
