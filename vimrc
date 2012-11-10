@@ -266,6 +266,9 @@ endif
 let mapleader = ','
 let maplocalleader = mapleader
 
+" Make Y behave sanely (consistent with C, D, ..)
+map Y y$
+
 " Toggle display of invisible characters
 nnoremap <leader>i :set list!<cr>
 
