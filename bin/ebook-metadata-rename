@@ -171,8 +171,11 @@ def book_rename(filename, new_filename):
         new_filename = os.path.join(destdir, structure, new_basename) + ext
 
     if filename != new_filename:
-        print("%s -> %s" % (filename, new_filename))
-        shutil.move(filename, new_filename)
+        if os.path.exists(new_filename):
+            print("Skipping %s: %s already exists" % (filename, new_filename))
+        else:
+            print("%s -> %s" % (filename, new_filename))
+            shutil.move(filename, new_filename)
 
 
 if __name__ == '__main__':
