@@ -95,6 +95,12 @@
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence $(git remote-ref).. "$@"
 
+	# For each submodule
+	subs = submodule foreach --recursive
+
+	# Update submodules
+	update-subs = submodule foreach --recursive "git fetch && git checkout `git remote-ref`"
+
 [interactive]
 	singlekey = true
 
