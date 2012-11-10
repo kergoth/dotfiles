@@ -78,10 +78,11 @@
 
 	# Show the remote branch which this branch is tracking
 	remote-ref = "!sh -c ' \
-	    local_ref=$(git symbolic-ref HEAD); \
-	    local_name=${local_ref##refs/heads/}; \
+	    local_ref=$(git symbolic-ref HEAD 2>/dev/null); \
+	    local_ref=${local_ref##refs/heads/}; \
+	    local_name=${local_ref:-master} \
 	    remote=$(git config branch.\"$local_name\".remote || echo origin); \
-	    remote_ref=$(git config branch.\"$local_name\".merge); \
+	    remote_ref=$(git config branch.\"$local_name\".merge || echo $local_name); \
 	    remote_name=${remote_ref##refs/heads/}; \
 	    echo remotes/$remote/$remote_name'"
 
