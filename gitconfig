@@ -231,11 +231,13 @@
 
 [url "git://gist.github.com/"]
 	insteadOf = gist:
+	insteadOf = https://gist.github.com/
 
 [url "git@gist.github.com:"]
 	insteadOf = gist-ssh:
 	pushInsteadOf = gist:
 	pushInsteadOf = git://gist.github.com/
+	pushInsteadOf = https://gist.github.com/
 
 [url "http://git.sv.gnu.org/r/"]
 	insteadOf = savannah:
