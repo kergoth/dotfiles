@@ -331,3 +331,6 @@
 [url "git://projects.archlinux.org/"]
        insteadOf = arch:
        insteadOf = archlinux:
+
+[url "git://git.baserock.org/"]
+	insteadOf = baserock:
