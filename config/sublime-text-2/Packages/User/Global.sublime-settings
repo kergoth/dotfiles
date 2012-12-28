@@ -1,4 +1,0 @@
-{
-    "theme": "Soda Dark.sublime-theme",
-    "folder_exclude_patterns": [".svn", ".git", ".hg", "CVS", ".idea"]
-}

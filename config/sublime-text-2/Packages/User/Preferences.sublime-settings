@@ -2,17 +2,14 @@
 	"color_scheme": "Packages/User/Monokai Soda.tmTheme",
 	"folder_exclude_patterns":
 	[
-		".svn",
 		".git",
 		".hg",
-		"CVS",
-		".idea"
+		".idea",
+		".svn",
+		"CVS"
 	],
-	"font_options":
-	[
-		"subpixel_antialias"
-	],
-	"font_size": 13.0,
+	"font_size": 16.0,
+	"font_face": "Terminus (TTF)",
 	"theme": "Soda Dark.sublime-theme",
 	"trim_trailing_white_space_on_save": true,
 
@@ -20,18 +17,18 @@
 	[
 		{
 			"token":				":",
-			"gravity":			  "left",
+			"gravity":			    "left",
 			"preserve_indentation": true
 		},
 		{
 			"token":				"=",
-			"gravity":			  "right",
+			"gravity":			    "right",
 			"preserve_indentation": true
 		},
 		{
 			"token":				":=",
-			"gravity":			  "right",
-			"preserve_indentation": true
+			"gravity":			    "right",
+            "preserve_indentation": true
 		}
 	]
 }
