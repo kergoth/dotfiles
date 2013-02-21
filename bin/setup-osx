@@ -37,9 +37,6 @@ defaults write com.apple.dock showhidden -bool true
 # Show the ~/Library folder
 chflags nohidden ~/Library
 
-# Ensure that pbcopy/pbpaste work from tmux
-brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
-
 # Show system info at the login screen
 sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
 
@@ -50,3 +47,13 @@ sudo sysctl -w kern.sysv.shmmax=16777216
 
 killall Finder
 killall Dock
+
+# Ensure that pbcopy/pbpaste work from tmux
+brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
+
+# Ensure we have Apple's gcc 4.2, not just llvm's gcc frontend
+brew tap homebrew/dupes
+brew install apple-gcc4.2
+
+# Kill Skype's splash screen
+defaults write com.skype.skype SKShowSplash NO
