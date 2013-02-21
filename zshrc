@@ -104,6 +104,11 @@ unsetopt share_history
 # Disable typo correction, the prompt just gets in the way
 unsetopt correctall
 
+# Key bindings {{{1
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
 # Aliases {{{1
 alias lr="ls -thl"
 alias ll="ls -hl"
