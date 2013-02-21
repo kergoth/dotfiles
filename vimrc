@@ -27,6 +27,9 @@ set backup
 " These are of limited usefulness, as I write files often
 set noswapfile
 
+" I always run on journaled filesystems
+set nofsync
+
 " Don't store all the backup files in cwd
 let &backupdir = './.vimtmp,' . $HOME . '/.vim/tmp,/var/tmp,' . $TEMP
 let &directory = &backupdir
