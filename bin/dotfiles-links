@@ -6,7 +6,7 @@ if echo $OSTYPE | grep -q "^darwin"; then
     excluded="$excluded|xinitrc"
 fi
 
-bindir=$(readlink -f $(dirname $0) 2>/dev/null)
+bindir=$(readlink $(dirname $0) 2>/dev/null)
 if [ $? -ne 0 ]; then
     bindir=$(cd $(dirname $0) && pwd)
 fi
@@ -16,7 +16,7 @@ if [ ! -e $dotfiles/.git ] && [ ! -e $dotfiles/.hg ]; then
     dotfiles=$HOME/.dotfiles
 fi
 
-alias relpath=$dotfiles/bin/relpath
+alias relpath=$(cd $dotfiles/bin && pwd)/relpath
 
 relative_from_home=$(relpath $HOME $dotfiles)
 cd $dotfiles
@@ -28,14 +28,16 @@ done
 
 if test -e config; then
     mkdir -p $HOME/.config
-    relative_path=$(relpath $HOME/.config $dotfiles/config)
     ls config | cut -d/ -f2- | grep -v sublime | while read path; do
+        relative_path=$(relpath $HOME/.config $dotfiles/config/$path)
         printf "$relative_path\t$HOME/.config/$path\n"
     done
 fi
 
 if test "$(uname -s)" = "Darwin"; then
-    printf "$relative_from_home/MacOSX\t$HOME/.MacOSX\n"
+    if [ -e $relative_from_home/MacOSX ]; then
+        printf "$relative_from_home/MacOSX\t$HOME/.MacOSX\n"
+    fi
 
     stpath="$HOME/Library/Application Support/Sublime Text 2"
 else
