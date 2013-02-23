@@ -1,0 +1,3 @@
+tmux_update_env() {
+    eval $(tmux-env)
+}
