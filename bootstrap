@@ -23,11 +23,7 @@ hgext/crecord https://bitbucket.org/edgimar/crecord
 hgext/histedit https://bitbucket.org/durin42/histedit
 hgext/pbranch https://bitbucket.org/parren/hg-pbranch
 hgext/prompt https://bitbucket.org/sjl/hg-prompt
-hgext/shelve https://bitbucket.org/tksoh/hgshelve
+hgext/shelve https://bitbucket.org/astiob/hgshelve
 END
 
 $dotfiles/bin/dotfiles-install
-
-if which vim >/dev/null 2>&1; then
-    vim +BundleInstall +quit
-fi
