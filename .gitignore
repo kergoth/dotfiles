@@ -1,9 +1,11 @@
 .DS_Store
 
-/vim/tmp/
 /ssh/authorized_keys
 /ssh/known_hosts
 /ssh/socket*
 /MacOSX/environment.plist-e
 /hgext/
-/vim/bundle/
+/config/vim/bundle/
+/config/vim/tmp/
+/config/vim/viminfo
+/config/vim/.netrwhist

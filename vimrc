@@ -1,9 +1,21 @@
-" Bundles {{{1
 set nocompatible
 filetype off
 
-set runtimepath+=~/.vim/bundle/vundle/
-call vundle#rc()
+" Path to user vim runtimepath
+if !exists('$XDG_CONFIG_HOME')
+  let $XDG_CONFIG_HOME = expand('~/.config')
+endif
+let $VIMDOTDIR = $XDG_CONFIG_HOME . '/vim'
+let &runtimepath .= "," . $VIMDOTDIR
+
+" System temporary files
+if !exists('$TEMP')
+  let $TEMP = '/tmp'
+endif
+
+" Bundles {{{1
+let &runtimepath .= ',' . $VIMDOTDIR . '/bundle/vundle'
+call vundle#rc($VIMDOTDIR . '/bundle')
 
 Bundle 'gmarik/vundle'
 
@@ -31,7 +43,7 @@ set noswapfile
 set nofsync
 
 " Don't store all the backup files in cwd
-let &backupdir = './.vimtmp,' . $HOME . '/.vim/tmp,/var/tmp,' . $TEMP
+let &backupdir = $VIMDOTDIR . '/tmp,/var/tmp,' . $TEMP
 let &directory = &backupdir
 
 " Ensure we cover all temp files for backup file creation
@@ -41,6 +53,21 @@ endif
 
 " Rename the file to the backup when possible.
 set backupcopy=auto
+
+" Viminfo file behavior
+if has('viminfo')
+  " f1  store file marks
+  " '   # of previously edited files to remember marks for
+  " :   # of lines of command history
+  " /   # of lines of search pattern history
+  " <   max # of lines for each register to be saved
+  " s   max # of Kb for each register to be saved
+  " h   don't restore hlsearch behavior
+  if !exists('$VIMINFO')
+    let $VIMINFO = $VIMDOTDIR . "/viminfo"
+  endif
+  let &viminfo = "f1,'1000,:1000,/1000,<1000,s100,h,r" . $TEMP . ",n" . $VIMINFO
+endif
 
 augroup vimrc
   au!
