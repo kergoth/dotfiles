@@ -332,9 +332,6 @@ nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
-" Insert a modeline
-nmap <leader>m :Modeliner<CR>
-
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
 function! s:MapNextFamily(map,cmd)
@@ -455,9 +452,10 @@ augroup vimrc_filetypes
   " Comment string
   au FileType fish set cms=#%s
 
-  " Set up folding methods
+  " Set up folding
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
   au FileType man set fdl=99 fdm=manual
+  au FileType markdown set fdl=1
 
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
@@ -503,10 +501,13 @@ let g:vimsyn_folding = 1
 " Disable new bitbake file template
 let g:bb_create_on_empty = 0
 " }}}
-" Plugin settings {{{
+" Plugin configuration {{{
 let g:Powerline_symbols = "unicode"
 let g:Powerline_stl_path_style = "short"
 let g:syntastic_auto_loc_list = 1
+
+let g:Modeliner_format = 'fenc= sts= sw= ts= et'
+nmap <leader>m :Modeliner<CR>
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
