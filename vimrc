@@ -232,6 +232,10 @@ set textwidth=78
 hi def link RedundantWhitespace Error
 match RedundantWhitespace /\s\+$\| \+\ze\t/
 
+" We care quite a lot about the length of the git commit summary line
+hi def link gitcommitOverflow Error
+
+" HIghlight our vim modeline
 hi def link vimModeline Special
 2match vimModeline /vim:\s*set[^:]\{-1,\}:/
 
