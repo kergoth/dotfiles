@@ -1,4 +1,0 @@
-QUILT_DIFF_OPTS="-d -p"
-QUILT_PUSH_ARGS="--color=auto"
-QUILT_DIFF_ARGS="--no-timestamps --color=auto"
-QUILT_REFRESH_ARGS="--no-timestamps --no-index --backup --diffstat"
