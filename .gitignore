@@ -5,7 +5,6 @@
 /ssh/socket*
 /MacOSX/environment.plist-e
 /hgext/
-/config/vim/bundle/
 /config/vim/tmp/
 /config/vim/viminfo
 /config/vim/.netrwhist

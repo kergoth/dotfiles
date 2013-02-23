@@ -34,3 +34,6 @@
 [submodule "vim/bundle/modeliner"]
 	path = vim/bundle/modeliner
 	url = https://github.com/vim-scripts/Modeliner.git
+[submodule "config/vim/bundle/pathogen"]
+	path = config/vim/bundle/pathogen
+	url = git://github.com/tpope/vim-pathogen.git

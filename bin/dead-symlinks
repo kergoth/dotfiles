@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Seeks and prints dead symlinks recursively
+#
+# From https://github.com/infertux/bin-scripts/blob/master/dead-symlinks
+
+if [ $# -ne 1 ]; then
+    set -- .
+fi
+
+echo "Searching dead symlinks into '$1'..."
+
+find "$1" -type l -not \
+    \( -path '/proc/*' -o -path '/dev/*' -o -path '/data/*' -prune \) | \
+    (while read FN ; do test -e "$FN" || ls -d "$FN"; done) 2>/dev/null
+
+exit 0

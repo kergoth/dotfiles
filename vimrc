@@ -13,23 +13,11 @@ if !exists('$TEMP')
   let $TEMP = '/tmp'
 endif
 
-" Bundles {{{1
-let &runtimepath .= ',' . $VIMDOTDIR . '/bundle/vundle'
-call vundle#rc($VIMDOTDIR . '/bundle')
-
-Bundle 'gmarik/vundle'
-
-Bundle 'kergoth/vim-bitbake'
-Bundle 'wincent/Command-T'
-Bundle 'tpope/vim-commentary'
-Bundle 'jnwhiteh/vim-golang'
-Bundle 'Modeliner'
-Bundle 'Lokaltog/vim-powerline'
-Bundle 'kana/vim-smartinput'
-Bundle 'benmills/vimux'
-
+" Bundle setup {{{
+runtime bundle/pathogen/autoload/pathogen.vim
+execute pathogen#infect()
 filetype plugin indent on
-" }}}1
+" }}}
 " General settings {{{
 syntax on
 
