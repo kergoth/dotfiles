@@ -8,11 +8,9 @@ if [ -z "$dotfiles" ]; then
 fi
 
 if [ ! -e $dotfiles ]; then
-    git clone git://github.com/kergoth/homefiles $dotfiles
+    git clone --recursive git://github.com/kergoth/homefiles $dotfiles
 fi
 cd $dotfiles
-git submodule init
-git submodule update
 
 while read dest url; do
     if [ ! -e $dotfiles/$dest ]; then
@@ -27,3 +25,5 @@ hgext/shelve https://bitbucket.org/astiob/hgshelve
 END
 
 $dotfiles/bin/dotfiles-install
+
+mkdir -p $HOME/.local/share/fasd
