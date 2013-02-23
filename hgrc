@@ -1,6 +1,6 @@
 [ui]
 username = Christopher Larson <kergoth@gmail.com>
-ignore = ~/.hgignore
+ignore = ~/.config/hg/exclude
 commitsubrepos = False
 
 [web]
