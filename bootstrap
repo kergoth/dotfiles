@@ -26,4 +26,4 @@ END
 
 $dotfiles/bin/dotfiles-install
 
-mkdir -p $HOME/.local/share/fasd
+mkdir -p $HOME/.local/share/{less,fasd}

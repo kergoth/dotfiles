@@ -60,6 +60,8 @@ export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
 export INPUTRC=${XDG_CONFIG_HOME}/readline/inputrc
 export TERMINFO=${XDG_CONFIG_HOME}/ncurses/terminfo
 export CURL_HOME=${XDG_CONFIG_HOME}/curl
+export LESSHISTFILE=${XDG_DATA_HOME}/less/lesshist
+export _FASD_DATA=${XDG_DATA_HOME}/fasd/data
 export PIP_DOWNLOAD_CACHE=${XDG_CACHE_HOME}/pip
 export ACKRC=.ackrc
 
@@ -76,8 +78,6 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 if (( $+commands[lesspipe.sh] )); then
   export LESSOPEN='| /usr/bin/env lesspipe.sh %s 2>&-'
 fi
-
-export LESSHISTFILE=$XDG_CONFIG_HOME/less/lesshist
 
 #
 # Temporary Files
