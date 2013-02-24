@@ -33,6 +33,10 @@ else
     alias tmux="tmux -u2"
 fi
 
+if (( $+commands[hub] )); then
+    eval "$(hub alias -s)"
+fi
+
 if (( $+commands[fasd] )); then
     fasd_cache="$XDG_DATA_HOME/fasd/env.zsh"
     if [[ ! -e $fasd_cache ]]; then
