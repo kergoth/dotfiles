@@ -2,8 +2,11 @@
 
 [core]
 	excludesfile = ~/.config/git/exclude
-	attributesfile = ~/.gitattributes
+	attributesfile = ~/.config/git/attributes
 	whitespace = cr-at-eol
+
+[init]
+	templatedir = ~/.config/git/template
 
 [user]
 	name = Christopher Larson
