@@ -36,7 +36,6 @@ zstyle ':prezto:load' pmodule \
   'python' \
   'ruby' \
   'history-substring-search' \
-  'fasd' \
   'prompt'
 
 #
