@@ -61,6 +61,7 @@ export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
 export INPUTRC=${XDG_CONFIG_HOME}/readline/inputrc
 export TERMINFO=${XDG_CONFIG_HOME}/ncurses/terminfo
 export CURL_HOME=${XDG_CONFIG_HOME}/curl
+export _FASD_VIMINFO=${XDG_CONFIG_HOME}/vim/viminfo
 export LESSHISTFILE=${XDG_DATA_HOME}/less/lesshist
 export _FASD_DATA=${XDG_DATA_HOME}/fasd/data
 export PIP_DOWNLOAD_CACHE=${XDG_CACHE_HOME}/pip
