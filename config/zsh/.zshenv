@@ -17,13 +17,14 @@ fi
 # Editors
 #
 
+export PAGER='less'
 if [[ -n $commands[vim] ]]; then
     export EDITOR=vim
 else
     export EDITOR=vi
 fi
 export VISUAL=$EDITOR
-export PAGER='less'
+export VIMINIT='let $MYVIMRC = "$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
 #
 # Language
