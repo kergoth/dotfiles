@@ -1,5 +1,5 @@
 [ui]
-ignore = ~/.config/hg/exclude
+ignore = $XDG_CONFIG_HOME/hg/exclude
 username = Christopher Larson <kergoth@gmail.com>
 commitsubrepos = False
 
@@ -13,24 +13,24 @@ vimdiff.args = -f -d -c "wincmd J" "$output" "$local" "$base" "$other"
 [extensions]
 bookmarks =
 color =
-crecord = ~/.hgext/crecord/crecord
+crecord = $XDG_DATA_HOME/hg/crecord/crecord
 extdiff =
 fetch =
 gpg =
 graphlog =
-histedit = ~/.hgext/histedit/hg_histedit.py
+histedit = $XDG_DATA_HOME/hg/histedit/hg_histedit.py
 mq =
 pager =
 parentrevspec =
 patchbomb =
-pbranch = ~/.hgext/pbranch/hgext/pbranch.py
+pbranch = $XDG_DATA_HOME/hg/pbranch/hgext/pbranch.py
 progress =
-prompt = ~/.hgext/prompt/prompt.py
+prompt = $XDG_DATA_HOME/hg/prompt/prompt.py
 purge =
 rebase =
 record =
 schemes =
-shelve = ~/.hgext/shelve/hgshelve.py
+shelve = $XDG_DATA_HOME/hg/shelve/hgshelve.py
 transplant =
 
 [mq]
