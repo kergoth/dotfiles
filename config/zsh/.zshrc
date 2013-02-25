@@ -27,6 +27,7 @@ zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 
 # Aliases {{{1
+alias la="ls -GA"
 if [[ -e $XDG_CONFIG_HOME/tmux/config ]]; then
     alias tmux="tmux -u2 -f $XDG_CONFIG_HOME/tmux/config"
 else
