@@ -141,3 +141,7 @@ set -g display-panes-colour colour166 #orange
 
 # clock
 setw -g clock-mode-colour colour64 #green
+
+# zoom a pane
+unbind C-k
+bind C-k run "tmux-zoom"
