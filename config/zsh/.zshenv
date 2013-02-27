@@ -45,6 +45,15 @@ typeset -gU cdpath fpath mailpath manpath path
 #   $cdpath
 # )
 
+fpath=(
+  $ZDOTDIR/functions
+  $ZDOTDIR/completions
+  $fpath
+)
+for func in $ZDOTDIR/functions/*; do
+  autoload ${func##*/}
+done
+
 # Set the list of directories that Zsh searches for programs.
 path=(
   $HOME/bin
