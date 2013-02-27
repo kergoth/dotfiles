@@ -7,6 +7,7 @@ if !exists('$XDG_CONFIG_HOME')
 endif
 let $VIMDOTDIR = $XDG_CONFIG_HOME . '/vim'
 let &runtimepath .= "," . $VIMDOTDIR
+let $MYVIMRC = split(globpath(&rtp, 'vimrc'), '\n')[0]
 
 " System temporary files
 if !exists('$TEMP')
