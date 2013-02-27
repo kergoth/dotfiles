@@ -1,0 +1,45 @@
+#!/bin/sh
+
+usage () {
+    echo >&2 "Usage: $(basename "$0") [-n] FILENAME [FILENAMES...]"
+    exit 2
+}
+
+dry_run=0
+while getopts n opt; do
+    case "$opt" in
+        n)
+            dry_run=1
+            ;;
+    esac
+done
+
+if [ $OPTIND -eq 1 -a $# -eq 0 ]; then
+    usage
+fi
+shift $(($OPTIND - 1))
+
+if [ $# -lt 1 ]; then
+    usage
+fi
+
+for filename; do
+    if git rev-parse -q --verify "HEAD:$filename" >/dev/null; then
+        echo >&2 "$filename already exists in HEAD, skipping"
+        continue
+    fi
+
+    last_revision="$(git rev-list -1 HEAD -- "$filename")"
+    last_existing_revision="$(git rev-parse "$last_revision~1")"
+    if ! git rev-parse -q --verify "$last_existing_revision:$filename" >/dev/null; then
+        echo >&2 "Error: Unable to determine revision with last existing version of $filename"
+        continue
+    fi
+
+    if [ $dry_run -eq 1 ]; then
+        printf "git checkout \"$last_existing_revision\" -- \"$filename\"\n"
+    else
+        git checkout "$last_existing_revision" -- "$filename" || \
+            echo >&2 "Unable to checkout $filename from $last_existing_revision"
+    fi
+done

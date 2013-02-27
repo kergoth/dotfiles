@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Resurrect all paths which have ever existed in a git tree in history
+
+for path; do
+    git-ls-tree-ever HEAD $path | awk '{print $3}' | while read p; do git-resurrect-files -n $path/$p; done
+done
