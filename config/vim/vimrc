@@ -453,6 +453,7 @@ augroup vimrc_filetypes
   au FileType vim set sts=2 sw=2
   au FileType go set ts=4 sw=4 sts=0 noet
   au FileType c,cpp set ts=4 sw=4 sts=0 noet
+  au FileType gitconfig set sts=0 sw=8 ts=8 noet
 
   " Comment string
   au FileType fish set cms=#%s
