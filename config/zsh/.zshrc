@@ -34,12 +34,33 @@ else
     alias tmux="tmux -u2"
 fi
 
-if (( $+commands[hub] )); then
-    eval "$(hub alias -s)"
+if [[ $OSTYPE =~ darwin ]]; then
+    if (( $+commands[dfc] )); then
+        alias df=dfc
+        alias dfc="dfc -T"
+    fi
+else
+    if (( $+commands[dfc] )); then
+        alias df=dfc
+        alias dfc="dfc -T -q mount -p -rootfs"
+    fi
 fi
 
-if (( $+commands[dfc] )); then
-    alias df=dfc
+if (( $+commands[pacman-color] )); then
+    alias pacman='pacman-color'
+fi
+
+if (( $+commands[ag] )); then
+    alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
+elif (( $+commands[ack] )); then
+    alias ag=ack
+    alias bback='ack --type=bitbake'
+    alias bbag=bback
+fi
+alias smem='smem -k'
+
+if (( $+commands[hub] )); then
+    eval "$(hub alias -s)"
 fi
 
 if (( $+commands[fasd] )); then
