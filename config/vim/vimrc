@@ -333,6 +333,10 @@ nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
+" Edit and reload vimrc
+nmap <leader>ve :e $MYVIMRC<CR>
+nmap <leader>vr :so $MYVIMRC<CR>
+
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
 function! s:MapNextFamily(map,cmd)
