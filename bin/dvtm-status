@@ -1,0 +1,28 @@
+#!/bin/bash
+# Courtesy http://waxandwane.org/dvtm.html, with modification
+
+if [[ $# -ne 1 || -z $1 ]]; then
+    echo -e "Usage:  ${0##*/}  \n" 1>&2
+    exit 1
+fi
+
+ID=$(echo $1 | tr [A-Z] [a-z])
+FIFO="$HOME/.dvtm-$ID-status"
+
+[ -e "$FIFO" ] || mkfifo "$FIFO"
+chmod 600 $FIFO
+
+while true; do
+    UPTIME=$(uptime | sed 's/.*ages*: //')
+    DATE=$(date +"%a %d-%b-%g %l:%M %p")
+    printf "[$ID] [$UPTIME] [$DATE]"
+    sleep 60
+done > $FIFO &
+
+STATUS_PID=$!
+disown $STATUS_PID
+dvtm -s $FIFO 2>/dev/null
+kill $STATUS_PID
+rm $FIFO
+
+exit 0

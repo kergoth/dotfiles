@@ -1,0 +1,13 @@
+# Light wrapper around 'attach' which spawns a dvtm session using the
+# dvtm-status script for a statusbar including the session name.
+#
+# When no session name is specified, shows a list of the currently running
+# attach sessions.
+
+if [ $# -lt 1 ]; then
+    attach
+else
+    session_name=$1
+    shift
+    attach -r winch "$@" -s $session_name dvtm-status $session_name
+fi
