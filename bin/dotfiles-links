@@ -26,6 +26,7 @@ link_dotfile () {
 cd ${0%/*}/..
 PATH=$PWD/bin:$PATH
 
+printf "$(relpath $HOME $PWD/bin)\t$HOME/bin\n"
 link_dotfile zshenv
 link_dotfile boom
 link_dotfile Xresources
