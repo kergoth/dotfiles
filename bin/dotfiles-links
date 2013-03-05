@@ -17,6 +17,7 @@ link_dotfile () {
     dotfile_resolved="${dotfile_dest%/*}/$dotfile_relpath"
     if [ ! -e "$dotfile_resolved" ]; then
         echo >&2 "Error: $dotfile_resolved does not exist"
+        return 1
     fi
 
     printf "$dotfile_relpath\t$dotfile_dest\n"
