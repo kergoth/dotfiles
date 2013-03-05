@@ -1,36 +1,30 @@
 #!/bin/sh
 
+set -u
+
+
 link_dotfile () {
-    dotfile=$1
-    dotfile_dest=$2
-    dotfile_dirname="${dotfile%/*}"
-    if [ -z "$dotfile_dest" ]; then
-        if [ "$dotfile_dirname" != "$dotfile" ]; then
-            dotfile_dest="$HOME/.$dotfile_dirname/${dotfile##*/}"
-        else
-            dotfile_dest="$HOME/.$dotfile"
-        fi
+    dotfile=${1#$PWD/}
+    if [ $# -gt 1 ]; then
+        dotfile_dest=$2
+    else
+        dotfile_dest="$HOME/.$dotfile"
     fi
     destdir="${dotfile_dest%/*}"
     dotfile_relpath="$(relpath "$destdir" "$PWD/$dotfile")"
+
+    # Sanity check
     dotfile_resolved="${dotfile_dest%/*}/$dotfile_relpath"
     if [ ! -e "$dotfile_resolved" ]; then
         echo >&2 "Error: $dotfile_resolved does not exist"
     fi
+
     printf "$dotfile_relpath\t$dotfile_dest\n"
 }
 
-link_dotfiles () {
-    for dotfile; do
-        if [ ! -e "$dotfile" ]; then
-            continue
-        fi
-
-        link_dotfile "$dotfile"
-    done
-}
 
 cd ${0%/*}/..
+PATH=$PWD/bin:$PATH
 
 link_dotfile zshenv
 link_dotfile boom
@@ -39,8 +33,10 @@ link_dotfile gemrc
 link_dotfile hgrc
 link_dotfile netrc
 link_dotfile lmwsaction.ini
-link_dotfiles ssh/*
-link_dotfiles config/*
+
+for dotfile in ssh/* config/*; do
+    link_dotfile "$dotfile"
+done
 
 if test "$(uname -s)" = "Darwin"; then
     stpath="$HOME/Library/Application Support/Sublime Text 2"
