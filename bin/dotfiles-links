@@ -1,51 +1,54 @@
 #!/bin/sh
 
-excluded="bin|bootstrap|oh-my-zsh|config|TODO|BUGS|MacOSX"
-if echo $OSTYPE | grep -q "^darwin"; then
-    # We don't want XQuartz trying to spawn sscrotwm
-    excluded="$excluded|xinitrc"
-fi
+link_dotfile () {
+    dotfile=$1
+    dotfile_dest=$2
+    dotfile_dirname="${dotfile%/*}"
+    if [ -z "$dotfile_dest" ]; then
+        if [ "$dotfile_dirname" != "$dotfile" ]; then
+            dotfile_dest="$HOME/.$dotfile_dirname/${dotfile##*/}"
+        else
+            dotfile_dest="$HOME/.$dotfile"
+        fi
+    fi
+    destdir="${dotfile_dest%/*}"
+    dotfile_relpath="$(relpath "$destdir" "$PWD/$dotfile")"
+    dotfile_resolved="${dotfile_dest%/*}/$dotfile_relpath"
+    if [ ! -e "$dotfile_resolved" ]; then
+        echo >&2 "Error: $dotfile_resolved does not exist"
+    fi
+    printf "$dotfile_relpath\t$dotfile_dest\n"
+}
 
-bindir=$(readlink $(dirname $0) 2>/dev/null)
-if [ $? -ne 0 ]; then
-    bindir=$(cd $(dirname $0) && pwd)
-fi
-dotfiles=$(dirname $bindir)
-if [ ! -e $dotfiles/.git ] && [ ! -e $dotfiles/.hg ]; then
-    echo >&2 "Unable to locate dotfiles, falling back to ~/.dotfiles"
-    dotfiles=$HOME/.dotfiles
-fi
+link_dotfiles () {
+    for dotfile; do
+        if [ ! -e "$dotfile" ]; then
+            continue
+        fi
 
-alias relpath=$(cd $dotfiles/bin && pwd)/relpath
-
-relative_from_home=$(relpath $HOME $dotfiles)
-cd $dotfiles
-
-printf "$relative_from_home/bin\t$HOME/bin\n"
-ls | grep -Ev "^($excluded)$" | while read path; do
-    printf "$relative_from_home/$path\t$HOME/.$path\n"
-done
-
-if test -e config; then
-    mkdir -p $HOME/.config
-    ls config | cut -d/ -f2- | grep -v sublime | while read path; do
-        relative_path=$(relpath $HOME/.config $dotfiles/config/$path)
-        printf "$relative_path\t$HOME/.config/$path\n"
+        link_dotfile "$dotfile"
     done
-fi
+}
+
+cd ${0%/*}/..
+
+link_dotfile zshenv
+link_dotfile boom
+link_dotfile Xresources
+link_dotfile gemrc
+link_dotfile hgrc
+link_dotfile netrc
+link_dotfile lmwsaction.ini
+link_dotfiles ssh/*
+link_dotfiles config/*
 
 if test "$(uname -s)" = "Darwin"; then
-    if [ -e $relative_from_home/MacOSX ]; then
-        printf "$relative_from_home/MacOSX\t$HOME/.MacOSX\n"
-    fi
-
     stpath="$HOME/Library/Application Support/Sublime Text 2"
 else
     stpath="$HOME/.config/sublime-text-2"
 fi
-packages=$stpath/Packages
-relative_path="$(relpath "$packages" "$dotfiles/config/sublime-text-2/Packages")"
-
-ls config/sublime-text-2/Packages | cut -d/ -f2- | while read path; do
-    printf "$relative_path/$path\t$packages/$path\n"
+for path in config/sublime-text-2/Packages/*; do
+    link_dotfile "$path" "$stpath/${path##*/}"
 done
+
+exit 0
