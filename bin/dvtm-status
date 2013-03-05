@@ -20,9 +20,7 @@ while true; do
 done > $FIFO &
 
 STATUS_PID=$!
+trap "kill $STATUS_PID; rm $FIFO" EXIT INT TERM
 disown $STATUS_PID
+export DVTM_ID=$ID
 dvtm -s $FIFO 2>/dev/null
-kill $STATUS_PID
-rm $FIFO
-
-exit 0
