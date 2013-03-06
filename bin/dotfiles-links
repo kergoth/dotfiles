@@ -1,7 +1,20 @@
-#!/bin/sh
+#!/bin/bash
 
 set -u
 
+
+function normalize_path()
+{
+    # Remove all /./ sequences.
+    local   path=${1//\/.\//\/}
+
+    # Remove dir/.. sequences.
+    while [[ $path =~ ([^/][^/]*/\.\./) ]]
+    do
+        path=${path/${BASH_REMATCH[0]}/}
+    done
+    echo $path
+}
 
 link_dotfile () {
     dotfile=${1#$PWD/}
@@ -14,7 +27,7 @@ link_dotfile () {
     dotfile_relpath="$(relpath "$destdir" "$PWD/$dotfile")"
 
     # Sanity check
-    dotfile_resolved="${dotfile_dest%/*}/$dotfile_relpath"
+    dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
     if [ ! -e "$dotfile_resolved" ]; then
         echo >&2 "Error: $dotfile_resolved does not exist"
         return 1
