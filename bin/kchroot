@@ -1,0 +1,40 @@
+#!/bin/sh
+
+if [ $(id -u) != "0" ]; then
+    exec sudo "$0" "$@"
+fi
+
+set -u
+
+cleanup () {
+    umount $1/{proc,sys,dev/pts,dev}
+}
+
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo >&2 "chroot.sh newroot [command]"
+    exit 2
+fi
+
+newroot=$1
+if [ ! -e $newroot ]; then
+    echo >&2 "Error: $newroot does not exist"
+    exit 1
+fi
+
+if [ $# -gt 1 ]; then
+    command=$2
+else
+    command=${SHELL:-/bin/sh}
+fi
+
+if [ ! -e $newroot/$command ]; then
+    echo >&2 "Error: $newroot/$command does not exist"
+    exit 3
+fi
+
+trap "cleanup $newroot" EXIT INT TERM
+mount -o bind /proc $newroot/proc
+mount -o bind /sys $newroot/sys
+mount -o bind /dev $newroot/dev
+mount -o bind /dev/pts $newroot/dev/pts
+chroot $newroot $command
