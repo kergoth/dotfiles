@@ -59,7 +59,7 @@ else
     stpath="$HOME/.config/sublime-text-2"
 fi
 for path in config/sublime-text-2/Packages/*; do
-    link_dotfile "$path" "$stpath/${path##*/}"
+    link_dotfile "$path" "$stpath/Packages/${path##*/}"
 done
 
 exit 0
