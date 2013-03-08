@@ -6,6 +6,22 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+# This is set here rather than in .zshenv as /etc/zsh/profile gets
+# sourced after .zshenv, resulting in the PATH being overridden on
+# some systems.
+
+path=(
+  $HOME/bin
+  /opt/homebrew/bin
+  /opt/homebrew/share/python
+  /usr/local/{bin,sbin}
+  $path
+)
+
+if [[ -n $GOPATH ]]; then
+    path=($GOPATH/bin $path)
+fi
+
 # Zsh options {{{1
 
 # Show running time for commands which take longer than 10 seconds
