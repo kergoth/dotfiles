@@ -25,6 +25,8 @@ else
 fi
 export VISUAL=$EDITOR
 export VIMINIT='let $MYVIMRC = "$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+# Reduce the ncurses escape wait time (ms)
+export ESCDELAY=25
 
 #
 # Language
