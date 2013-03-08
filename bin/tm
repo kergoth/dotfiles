@@ -1,0 +1,33 @@
+#!/bin/sh
+# Courtesy http://waxandwane.org/dvtm.html
+
+if [ $# -ne 1 ] || [ -z $1 ]; then
+    SCRIPT=${0##*/}
+    BASIC="  $SCRIPT  \n"
+    SESSIONS=$(ls -1 $HOME/.dvtm-*-session 2>/dev/null)
+
+    if [ -z $SESSIONS ]; then
+        printf "Usage:$BASIC" 1>&2
+        exit 1
+    fi
+
+    printf "Usage:\n    reconnect to a running session:\n" 1>&2
+    for s in $SESSIONS; do
+        s=${s#$HOME/.dvtm-}
+        echo "        $SCRIPT  ${s%-session}" 1>&2
+    done
+    printf "\n    or begin a new session:\n      $BASIC" 1>&2
+    exit 1
+fi
+
+if [ -n "$DVTM_ID" ]; then
+    echo >&2 "Already in a dvtm session, exiting"
+    exit 3
+fi
+
+DVTM_ID=$(echo $1 | tr [A-Z] [a-z])
+SOCKET="$HOME/.dvtm-$DVTM_ID-session"
+
+dtach -A $SOCKET -r winch dvtm-status "$@"
+
+exit 0
