@@ -37,6 +37,9 @@ unsetopt autocd
 # I don't want relative path typos on a cd line to go to dirs in ~
 unsetopt cdablevars
 
+# Don't auto-add variable stored paths to ~ list
+unsetopt autonamedirs
+
 # Key bindings {{{1
 autoload edit-command-line
 zle -N edit-command-line
