@@ -7,7 +7,10 @@ if [[ $# -ne 1 || -z $1 ]]; then
 fi
 
 ID=$(echo $1 | tr [A-Z] [a-z])
-FIFO="$HOME/.dvtm-$ID-status"
+LOGNAME="${LOGNAME:-$(logname)}"
+DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
+mkdir -p $DVTM_TMPDIR
+FIFO="$DVTM_TMPDIR/$ID-status"
 
 [ -e "$FIFO" ] || mkfifo "$FIFO"
 chmod 600 $FIFO

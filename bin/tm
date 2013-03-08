@@ -26,7 +26,10 @@ if [ -n "$DVTM_ID" ]; then
 fi
 
 DVTM_ID=$(echo $1 | tr [A-Z] [a-z])
-SOCKET="$HOME/.dvtm-$DVTM_ID-session"
+LOGNAME="${LOGNAME:-$(logname)}"
+DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
+mkdir -p $DVTM_TMPDIR
+SOCKET="$DVTM_TMPDIR/$DVTM_ID-session"
 
 dtach -A $SOCKET -r winch dvtm-status "$@"
 
