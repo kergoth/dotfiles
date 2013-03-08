@@ -12,10 +12,11 @@ FIFO="$HOME/.dvtm-$ID-status"
 [ -e "$FIFO" ] || mkfifo "$FIFO"
 chmod 600 $FIFO
 
+HOSTNAME=${HOSTNAME:-$(hostname)}
 while true; do
     UPTIME=$(uptime | sed 's/.*ages*: //')
     DATE=$(date +"%a %d-%b-%g %l:%M %p")
-    printf "[$ID] [$UPTIME] [$DATE]"
+    printf "$ID | $LOGNAME@$HOSTNAME | $UPTIME | $DATE"
     sleep 60
 done > $FIFO &
 
