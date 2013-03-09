@@ -18,6 +18,12 @@ path=(
   $path
 )
 
+setopt nullglob
+for perlpath in $HOME/Library/Perl/*/bin; do
+    path=($perlpath $path)
+done
+unsetopt nullglob
+
 if [[ -n $GOPATH ]]; then
     path=($GOPATH/bin $path)
 fi
@@ -58,6 +64,7 @@ if [[ $OSTYPE =~ darwin ]]; then
         alias df=dfc
         alias dfc="dfc -T"
     fi
+    alias cpanm="cpanm --local-lib ~/Library/Perl/5.12"
 else
     if (( $+commands[dfc] )); then
         alias df=dfc
