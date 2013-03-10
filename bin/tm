@@ -27,6 +27,7 @@ fi
 
 DVTM_ID=$(echo $1 | tr [A-Z] [a-z])
 LOGNAME="${LOGNAME:-$(logname)}"
+DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
 if [ ! -e "$DVTM_TMPDIR" ]; then
     mkdir -p $DVTM_TMPDIR
     chmod 0700 $DVTM_TMPDIR
