@@ -2,6 +2,7 @@ Protocol 2
 SendEnv LANG LC_*
 HashKnownHosts no
 ServerAliveInterval 15
+Compression yes
 #ControlMaster auto
 ControlPath ~/.ssh/socket-%r@%h:%p
 ForwardX11 yes
