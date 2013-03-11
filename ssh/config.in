@@ -1,0 +1,22 @@
+Protocol 2
+SendEnv LANG LC_*
+HashKnownHosts no
+ServerAliveInterval 15
+Compression yes
+#ControlMaster auto
+ControlPath ~/.ssh/socket-%r@%h:%p
+ForwardX11 no
+#ExitOnForwardFailure yes
+NoHostAuthenticationForLocalhost yes
+
+IdentityFile %d/.ssh/%l
+IdentityFile %d/.ssh/id_rsa
+IdentityFile %d/.ssh/id_dsa
+
+%include config.d/*
+
+Host *.local localhost 192.168.* 172.*
+    ForwardAgent yes
+
+Host *
+    User kergoth

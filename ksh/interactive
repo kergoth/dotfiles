@@ -1,0 +1,8 @@
+. ~/.config/shell/interactive
+
+PS1="[$LOGNAME@$HOSTNAME \${ pwd | sed \"s,$HOME,~,\"; }]"
+if [ ${USER_ID:-$(id -u)} = 0 ]; then
+    PS1="${PS1}# "
+else
+    PS1="${PS1}$ "
+fi

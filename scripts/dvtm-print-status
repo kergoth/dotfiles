@@ -1,0 +1,113 @@
+#!/bin/sh
+
+# Ghetto map courtesy http://stackoverflow.com/a/1495559 + hlist/hclear
+hset () {
+    eval hash"$1"values='"${hash'"$1"'values} $2"'
+    eval hash"$1_$2"='$3'
+}
+
+hget () {
+    eval echo '${hash'"$1_$2"'#has'}
+}
+
+hlist () {
+    eval echo '${hash'"$1"'values'}
+}
+
+hclear () {
+    eval hash"$1"values=''
+    for value in $(hlist "$1"); do
+        eval unset hash"$1_$2"
+    done
+}
+
+update_static_patterns () {
+    hset dvtm_patterns user ${LOGNAME:-$(logname)}
+    hset dvtm_patterns host ${HOSTNAME:-$(hostname -s)}
+    hset dvtm_patterns id ${ID}
+}
+
+update_dynamic_patterns () {
+    hset dvtm_patterns loadavg "$(uptime | sed 's/.*ages*: //')"
+    hset dvtm_patterns date "$(date +"%a %d-%b-%g %l:%M %p")"
+}
+
+print_status () {
+    update_dynamic_patterns
+
+    status_value="${DVTM_STATUS}"
+    for key in $(hlist dvtm_patterns); do
+        value="$(hget dvtm_patterns "$key")"
+        eval status_value='"${status_value/\{'"$key"'\}/'"$value"'}"'
+    done
+    printf "$status_value"
+}
+
+usage () {
+    printf "Usage:  ${0##*/} [-c DELAY] DVTM_ID [DVTM_STATUS_FMT]\n" >&2
+    printf "\n"
+    printf 'DVTM_STATUS_FMT defaults to $DVTM_STATUS or "%s" if $DVTM_STATUS is unset\n' "$DVTM_STATUS_DEFAULT"
+    printf "\n"
+    printf "Available keys for the format string: user, host, id, loadavg, date\n"
+    printf "\n"
+    printf "Options:\n"
+    printf "  -c DELAY   Continuous display mode, with DELAY in seconds\n"
+    printf "  -s         Seperate line mode (only useful with -c)\n"
+    printf "             Rather than printing on the same line, print each"
+    printf "             update on a new line"
+    exit 1
+}
+
+
+continuous=
+separate_lines=0
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -c)
+            shift
+            continuous="$1"
+            ;;
+        -s)
+            separate_lines=1
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            usage >&2
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+
+DVTM_STATUS_DEFAULT="$(printf "{id} | {user}@{host}")"
+
+if [ $# -lt 1 ] || [ -z "$1" ]; then
+    usage >&2
+fi
+
+ID=$(echo "$1" | tr [A-Z] [a-z])
+if [ $# -gt 1 ]; then
+    DVTM_STATUS="$2"
+else
+    DVTM_STATUS="${DVTM_STATUS:-$DVTM_STATUS_DEFAULT}"
+fi
+update_static_patterns
+if [ -n "$continuous" ]; then
+    while true; do
+        if [ $separate_lines -eq 0 ]; then
+            printf "\r"
+        fi
+        print_status
+        if [ $separate_lines -eq 1 ]; then
+            printf "\n"
+        fi
+        sleep "$continuous"
+    done
+else
+    print_status
+fi

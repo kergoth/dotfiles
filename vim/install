@@ -1,0 +1,4 @@
+link . ~/.config/vim
+if [ -e vimrc ]; then
+    vim -u ~/.config/vim/vimrc +BundleInstall +quit
+fi

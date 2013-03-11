@@ -1,0 +1,5 @@
+ssource () {
+    if [ -r "$1" ]; then
+        . "$1"
+    fi
+}

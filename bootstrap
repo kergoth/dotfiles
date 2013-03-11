@@ -1,29 +1,11 @@
 #!/bin/sh
 
-set -e
-
-dotfiles=$1
+dotfiles="$1"
 if [ -z "$dotfiles" ]; then
     dotfiles=~/.dotfiles
 fi
 
-if [ ! -e $dotfiles ]; then
-    git clone --recursive git://github.com/kergoth/homefiles $dotfiles
+if [ ! -e "$dotfiles" ]; then
+    git clone --recursive git://github.com/kergoth/dotfiles "$dotfiles"
 fi
-cd $dotfiles
-
-while read dest url; do
-    if [ ! -e $dotfiles/$dest ]; then
-        hg clone $url $dest
-    fi
-done<<END
-~/.local/share/hg/crecord https://bitbucket.org/edgimar/crecord
-~/.local/share/hg/histedit https://bitbucket.org/durin42/histedit
-~/.local/share/hg/pbranch https://bitbucket.org/parren/hg-pbranch
-~/.local/share/hg/prompt https://bitbucket.org/sjl/hg-prompt
-~/.local/share/hg/shelve https://bitbucket.org/astiob/hgshelve
-END
-
-$dotfiles/bin/dotfiles-install
-
-mkdir -p $HOME/.local/share/{less,fasd}
+$dotfiles/install "$2"

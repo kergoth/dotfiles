@@ -1,7 +1,0 @@
-# Phase 1 of ebook processing:
-# - Show the ebook's current metadata, so we know if we need to change it
-# - Open the book, so we can examine the correct author/title from the content
-ebook1 () {
-    ebook-meta "$1"
-    open "$1"
-}

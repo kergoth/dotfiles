@@ -1,0 +1,221 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+# The MIT License
+#
+# Copyright (c) 2010-2012 Sorin Ionescu.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+
+# Extends String.
+class String
+  # Strips indentation in heredocs.
+  def unindent
+    indent = scan(/^[ \t]*(?=\S)/).min.length || 0
+    gsub(/^[ \t]{#{indent}}/, '')
+  end
+end
+
+# Wraps dtach for easier session management.
+#
+# @author Sorin Ionescu (mailto:sorin.ionescu@gmail.com)
+# @version 1.0.7
+module Attach
+  require 'optparse'
+  require 'tmpdir'
+
+  # The version of the script.
+  VERSION = '1.0.7'
+
+  # The name of the script.
+  NAME = File.basename(__FILE__)
+
+  # The directory where sockets are saved.
+  SOCKET_DIR = "#{Dir.tmpdir}/dtach-#{ENV['USER']}"
+
+  # Lists created sessions.
+  #
+  # @param [true, false] full_path if true, list the full path to sockets;
+  #   otherwise, list names of sessions.
+  #
+  # @note Ghost sessions may be listed if dtach did not cleanly exit
+  #   and must be deleted manually.
+  def self.list_sessions(full_path=false)
+    return unless File.exists? SOCKET_DIR
+    Dir["#{SOCKET_DIR}/*.dtach"].each do |session|
+      if session =~ /^.*\/(.+)\.dtach$/
+        $stdout.puts session if full_path
+        $stdout.puts $1 unless full_path
+      end
+    end
+  end
+
+  # Sets the terminal and tab title.
+  #
+  # @param [String] title the terminal and tab title.
+  def self.set_terminal_title(title)
+    # Set window title.
+    $stdout.print "]2;attach: #{title}"
+
+    # Set tab title.
+    $stdout.print "]1;attach: #{title}"
+  end
+
+  # Attaches to an existing session.
+  #
+  # @param [Hash] options the script options.
+  # @param [String] dtach_options the dtach options.
+  def self.attach_session(options, dtach_options)
+    session_socket = socket_path(options[:name])
+    if File.socket? session_socket
+      set_terminal_title options[:name]
+      exec 'dtach', '-a', session_socket, *dtach_options
+    else
+      $stderr.puts "#{NAME}: session '#{options[:name]}' does not exit"
+      exit 1
+    end
+  end
+
+  # Creates or attaches to an existing session.
+  #
+  # @param [Hash] options the script options.
+  # @param [String] dtach_options the dtach options.
+  # @param [String] command the command dtach will execute.
+  def self.create_session(options, dtach_options, command)
+    set_terminal_title options[:name]
+    exec(
+      'dtach',
+      options[:detached] ? '-n' : '-A',
+      socket_path(options[:name]),
+      *(dtach_options + command)
+    )
+  end
+
+  # Returns the full path to a socket.
+  #
+  # @param [String] name the session name for which to return a socket.
+  # @return [String] the full path to the socket.
+  def self.socket_path(name)
+    "#{SOCKET_DIR}/#{name}.dtach"
+  end
+
+  # A `main` in Ruby? Ha, ha!
+  #
+  # @note Switches purposely differ from dtach for clarity and memorability.
+  def self.main
+    unless system 'which dtach &>/dev/null'
+      $stderr.puts "#{NAME}: dtach not found"
+      exit 1
+    end
+
+    Dir.mkdir SOCKET_DIR unless File.exists? SOCKET_DIR
+
+    options = {:name => nil, :detached => false}
+    dtach_options = []
+
+    option_parser = OptionParser.new do |opts|
+      opts.banner = \
+        "usage: #{NAME} [-option ...] [session | [command [arguments ...]]"
+      opts.summary_width = 22
+
+      opts.separator ""
+      opts.separator "options:"
+      opts.on('-l', '--list', 'list sessions') do
+        list_sessions
+        exit
+      end
+      opts.on('-L', '--sockets', 'list sockets') do
+        list_sessions true
+        exit
+      end
+      opts.on(
+        '-s',
+        '--session=NAME',
+        /^[^-].*$/,
+        'set the session name'
+      ) do |arg|
+        options[:name] = arg
+      end
+      opts.on(
+        '-c',
+        '--char=C',
+        /^[^-].*$/,
+        'set the detach character (default: ^\\)'
+      ) do |arg|
+        dtach_options << '-e' << arg
+      end
+      opts.on(
+        '-r',
+        '--redraw=METHOD',
+        ['none', 'ctrl_l', 'winch'],
+        'set the redraw method (none, ctrl_l, or winch)'
+      ) do |arg|
+        dtach_options << '-r' << arg
+      end
+      opts.on('-d', '--detached', 'start the session detached') do
+        options[:detached] = true
+      end
+      opts.on('-D', '--no-detach', 'disable detaching') do
+        dtach_options << '-E'
+      end
+      opts.on('-Z', '--no-suspend', 'disable suspending') do
+        dtach_options << '-z'
+      end
+      opts.on('-v', '--version', 'display version and copyright') do
+        $stderr.puts <<-end.unindent
+          #{NAME} #{VERSION}
+
+          Copyright (c) 2010-2012 Sorin Ionescu
+
+          This program is free software. You may modify or distribute it
+          under the terms of the MIT License.
+        end
+        exit
+      end
+      opts.on('-h', '--help', 'display help') do
+        $stderr.puts opts
+        exit
+      end
+      opts.separator ""
+      opts.separator "Report bugs to <sorin.ionescu@gmail.com>."
+    end
+
+    begin
+      option_parser.order!
+    rescue OptionParser::ParseError => e
+      $stderr.puts "#{NAME}: #{e}."
+      $stderr.puts option_parser
+      exit 1
+    end
+
+    if options[:name] and ARGV.length == 0
+      attach_session options, dtach_options
+    elsif ARGV.length > 0
+      options[:name] = File.basename(ARGV[0]) unless options[:name]
+      create_session options, dtach_options, ARGV
+    else
+      list_sessions
+    end
+  end
+end
+
+# This file is not meant to be sourced.
+Attach::main if __FILE__ == $PROGRAM_NAME
+

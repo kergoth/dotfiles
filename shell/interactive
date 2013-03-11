@@ -1,0 +1,94 @@
+alias l='ls -1A'
+alias la='ls -A'
+alias ll='ls -l'
+alias smem='smem -k'
+alias z-recent='cd "$(z -t -l -R|head -n 1)"'
+
+if [ -e $XDG_CONFIG_HOME/tmux/config ]; then
+    alias tmux="tmux -u2 -f $XDG_CONFIG_HOME/tmux/config"
+else
+    alias tmux="tmux -u2"
+fi
+
+if which dfc &>/dev/null; then
+    alias df=dfc
+fi
+
+if [ $OSTYPE = Darwin ]; then
+    alias dfc="dfc -T"
+    alias cpanm="cpanm --local-lib ~/Library/Perl/5.12"
+    alias locate="mdfind -name"
+else
+    alias dfc="dfc -T -q mount -p -rootfs"
+fi
+
+if which pacman-color &>/dev/null; then
+    alias pacman='pacman-color'
+fi
+
+alias bback='ack --type=bitbake'
+if !which ag &>/dev/null; then
+    alias ag=ack
+    alias bbag=bback
+else
+    alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
+fi
+
+if which hub &>/dev/null; then
+    if [ -n "$KSH_VERSION" ]; then
+        eval "$(hub alias -s ksh)"
+    else
+        eval "$(hub alias -s)"
+    fi
+fi
+
+if which fasd &>/dev/null; then
+    if [ -n "$KSH_VERSION" ]; then
+        fasd_cache=$XDG_DATA_HOME/fasd/env.ksh
+    else
+        fasd_cache=$XDG_DATA_HOME/fasd/env.$SHELL
+    fi
+
+    if [ ! -e $fasd_cache ]; then
+        mkdir -p $XDG_DATA_HOME/fasd
+        fasd --init auto >$fasd_cache
+    fi
+    source $fasd_cache
+    unset fasd_cache
+
+    if [ $OSTYPE = Darwin ]; then
+        alias o="a -e open"
+    else
+        alias o="a -e xdg-open"
+    fi
+    alias v='f -t -e vim -b viminfo'
+fi
+
+alias hd='od -t x1'
+alias bb='bitbake'
+alias lr='ls -tr' # list, sort by time, reverse order
+alias bc='bc -ql'
+
+if [ -t 0 ]; then
+    # other users shouldn't be able to message by default
+    mesg n
+
+    # enable colours
+    if [ `tput colors` -ge 8 ]; then
+        if [ $OSTYPE = Darwin ]; then
+            alias ls='ls -G -Bhq'
+        else
+            alias ls='ls --color=auto -Bhq'
+        fi
+    else
+        alias ls='ls -F -ApBhq'
+    fi
+    if which colordiff &>/dev/null; then
+        alias diff=colordiff
+    fi
+    alias gg='GREP_OPTIONS=--color=always git-grep'
+else
+    alias gg='git-grep'
+fi
+
+# vim: set ft=sh :

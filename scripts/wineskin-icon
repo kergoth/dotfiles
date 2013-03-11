@@ -1,0 +1,25 @@
+#!/bin/sh
+
+app=$1
+if [ -e "$app.app" ]; then
+    app=$app.app
+elif [ ! -e "$app" ]; then
+    echo >&2 "Error: $app not found"
+    exit 1
+fi
+
+_find () {
+    find 2>/dev/null "$app/drive_c/GOG Games" "$app/drive_c/Program Files" "$@"
+}
+
+icofile="$(_find -name gfw_high.ico|head -n 1)"
+if [ ! -e "$icofile" ]; then
+    icofile="$(_find -name '*.ico'|head -n 1)"
+fi
+
+if [ ! -e "$icofile" ]; then
+    echo >&2 "Error finding icon for $app"
+    exit 2
+fi
+dest="$(echo "$app" | sed 's/[ _-]//g; s/\.app//' | tr 'A-Z' 'a-z')"
+ico2icns "$icofile" ~/Downloads/$dest.icns && open "$app/Wineskin.app"

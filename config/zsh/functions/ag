@@ -1,7 +1,0 @@
-ag () {
-    if [[ -t 1 ]]; then
-        command ag --color --group "$@" | less
-    else
-        command ag "$@"
-    fi
-}

@@ -1,0 +1,51 @@
+OSTYPE=${OSTYPE:-$(uname -s)}
+LOGNAME=${LOGNAME:-$(logname)}
+HOSTNAME=${HOSTNAME:-$(hostname -s)}
+
+# Language
+if [ -z "$LANG" ]; then
+  eval "$(locale)"
+fi
+
+# Programs
+if [ "$OSTYPE" = Darwin ]; then
+  export BROWSER=open
+fi
+
+# Editor
+export PAGER=less
+export EDITOR=vim
+export VISUAL=$EDITOR
+export VIMINIT='let $MYVIMRC = "$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+
+# Reduce the ncurses escape wait time (ms)
+export ESCDELAY=25
+
+# Less
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
+export LESS='-F -g -i -M -R -S -w -X -z-4'
+
+# Set the Less input preprocessor.
+if which lesspipe.sh &>/dev/null; then
+  export LESSOPEN='| /usr/bin/env lesspipe.sh %s 2>&-'
+fi
+
+# Paths
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
+export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
+
+PATH=~/bin:~/.local/bin:$XDG_CONFIG_HOME/shell/../scripts:/opt/homebrew/bin:$PATH
+
+export INPUTRC=${XDG_CONFIG_HOME}/readline/inputrc
+export TERMINFO=${XDG_CONFIG_HOME}/ncurses/terminfo
+export CURL_HOME=${XDG_CONFIG_HOME}/curl
+export _FASD_VIMINFO=${XDG_CONFIG_HOME}/vim/viminfo
+export LESSHISTFILE=${XDG_DATA_HOME}/less/lesshist
+export _FASD_DATA=${XDG_DATA_HOME}/fasd/data
+export PIP_DOWNLOAD_CACHE=${XDG_CACHE_HOME}/pip
+export ACKRC=.ackrc
+
+# vim: set ft=sh :

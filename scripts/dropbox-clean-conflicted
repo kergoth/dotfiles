@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find . -name \*\'s\ conflicted\ copy\ \* -print0 | xargs -0 -n 1 trash -v

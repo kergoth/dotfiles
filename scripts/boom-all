@@ -1,0 +1,3 @@
+#!/bin/sh
+
+boom all | grep --color=none "^ *$1:"

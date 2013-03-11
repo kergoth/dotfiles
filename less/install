@@ -1,0 +1,1 @@
+mkdir -p ${XDG_DATA_DIR:-~/.local/share}/less

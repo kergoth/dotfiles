@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ $# -ge 1 ]; then
+    commit=$1
+else
+    commit=HEAD
+fi
+if [ $# -gt 1 ]; then
+    tree=$2
+else
+    tree=
+fi
+
+git rev-list "$commit" -- "$tree" | while read rev; do
+    if [ -z "$tree" ]; then
+        git ls-tree "${rev}"
+    else
+        git ls-tree "${rev}:$tree"
+    fi
+done | awk '{print $1 " " $2 " " $4}' | sort -u
+
+# git rev-list "$commit" | xargs -n 1 git ls-tree | sort -u

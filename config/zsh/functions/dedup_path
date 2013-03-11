@@ -1,3 +1,0 @@
-dedup_path () {
-    PATH=$(echo -n $PATH | awk -v RS=: -v ORS=: '!arr[$0]++' | sed 's/::/:/g; s/:$//; s/^://')
-}

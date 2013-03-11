@@ -1,0 +1,175 @@
+#!/bin/bash
+
+set -u
+
+
+link () {
+    # Link a file to a destination using a relative path, with particular
+    # convenience handling for dotfiles. ex.:
+    #
+    # link zsh/.zshenv.redir ~/.zshenv.redir
+    # link zshrc       # links to ~/.zshrc (relatively)
+    # link config/curl # links to ~/.config/curl (relatively)
+    dotfile="${1#$PWD/}"
+    if [ $# -gt 1 ]; then
+        dotfile_dest="$(abspath "$2")"
+    else
+        case "$dotfile" in
+            .*)
+                dotfile_dest="$HOME/$dotfile"
+                ;;
+            *)
+                dotfile_dest="$HOME/.$dotfile"
+                ;;
+        esac
+    fi
+    destdir="${dotfile_dest%/*}"
+    if [ "$destdir" != "$dotfile_dest" ]; then
+        mkdir -p "$destdir"
+    fi
+    dotfile_relpath="$(relpath "$destdir" "$PWD/$dotfile")"
+
+    # Sanity check
+    dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
+    if [ ! -e "$dotfile_resolved" ]; then
+        echo >&2 "Error: $dotfile_resolved does not exist"
+        return 1
+    fi
+
+    if [ -e "$dotfile_dest" ]; then
+        if [ $force -eq 0 ] && [ "$(readlink "$dotfile_dest")" != "$dotfile_relpath" ]; then
+            echo >&2 "Warning: $dotfile_dest already exists and does not link to $dotfile_relpath"
+            read -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
+            printf "\n"
+            case "$will_continue" in
+                [yY]|"")
+                    rm -rf "$dotfile_dest.old"
+                    mv "$dotfile_dest" "$dotfile_dest.old"
+                    echo >&2 "Removed $dotfile_dest (backed up as $dotfile_dest.old)"
+                    ;;
+                [nN])
+                    rm -rf "$dotfile_dest.new"
+                    ln -s "$dotfile_relpath" "$dotfile_dest.new"
+                    echo >&2 "Linked $dotfile_dest.new"
+                    return 1
+                    ;;
+                *)
+                    echo >&2 "Invalid input '$will_continue', not replacing"
+                    rm -rf "$dotfile_dest.new"
+                    ln -s "$dotfile_relpath" "$dotfile_dest.new"
+                    echo >&2 "Linked $dotfile_dest.new"
+                    return 1
+                    ;;
+            esac
+        else
+            rm -f "$dotfile_dest"
+        fi
+    fi
+    ln -s "$dotfile_relpath" "$dotfile_dest"
+    echo >&2 "Linked $dotfile_dest"
+}
+
+abspath () {
+    # Return an absolute path for the specified argument
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="$PWD/$1"
+    fi
+    echo "$_path"
+}
+
+normalize_path()
+{
+    # Attempt to normalize the specified path, removing . and ..
+
+    # Remove all /./ sequences.
+    local path="${1//\/.\//\/}"
+
+    # Remove dir/.. sequences.
+    while [[ $path =~ ([^/][^/]*/\.\./) ]]
+    do
+        path="${path/${BASH_REMATCH[0]}/}"
+    done
+    echo "$path"
+}
+
+install_templated () {
+    # Extremely basic template flie generation, currently only implements
+    # %include, which does what you would expect
+    dotfile_dest="$2"
+    destdir="${dotfile_dest%/*}"
+    if [ "$destdir" != "$dotfile_dest" ]; then
+        mkdir -p "$destdir"
+    fi
+    while IFS="\n" read line; do
+        case "$line" in
+            "%include "*)
+                line="${line#%include }"
+                for file in $line; do
+                    if [ -e "$file" ]; then
+                        cat "$file"
+                    fi
+                done
+                ;;
+            *)
+                printf "%s\n" "$line"
+        esac
+    done <"$1" >"$dotfile_dest"
+    echo >&2 "Wrote $(abspath "$dotfile_dest")"
+}
+
+merge_to () {
+    # Convenience wrapper for merging multiple files into one dotfile
+    dotfile_dest="$1"
+    destdir="${dotfile_dest%/*}"
+    if [ "$destdir" != "$dotfile_dest" ]; then
+        mkdir -p "$destdir"
+    fi
+    shift
+    cat "$@" >$dotfile_dest
+    echo >&2 "Wrote $(abspath "$dotfile_dest")"
+}
+
+usage () {
+    printf "Usage: $0 [-f] [DOTFILE_HOME]\n"
+    printf "\n"
+    printf "DOTFILE_HOME defaults to \$HOME\n"
+    printf "Options:\n"
+    printf "  -f    Force install, overwriting any existing files\n"
+    exit 1
+}
+
+force=0
+while (( $# )); do
+    case "$1" in
+        -f)
+            force=1
+            ;;
+        -*)
+            usage >&2
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+
+
+if [ $# -gt 0 ]; then
+    DOTFILE_HOME="$(abspath "$1")"
+else
+    DOTFILE_HOME="${DOTFILE_HOME:-${HOME}}"
+fi
+
+dotfilesdir="$(abspath "${0%/*}")"
+PATH="$dotfilesdir/scripts:$PATH"
+
+HOME="$DOTFILE_HOME"
+for installscript in $dotfilesdir/*/install; do
+    cd ${installscript%/*}
+    . ./${installscript##*/}
+    cd - >/dev/null
+done
+
+exit 0
