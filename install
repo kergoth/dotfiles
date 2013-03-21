@@ -39,7 +39,7 @@ link () {
         return 1
     fi
 
-    if [ -e "$dotfile_dest" ]; then
+    if [ -L "$dotfile_dest" ] || [ -e "$dotfile_dest" ]; then
         if [ $force -eq 0 ] && [ "$(readlink "$dotfile_dest")" != "$dotfile_relpath" ]; then
             echo >&2 "Warning: $dotfile_dest already exists and does not link to $dotfile_relpath"
             read -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
