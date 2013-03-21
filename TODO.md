@@ -1,9 +1,7 @@
-- Consider replacing zsh with mksh, a back-to-basics approach
 - Trim down the scripts directory
 
 - vim:
 
-    - Consider use of vundle vs subtree
     - Consider resurrection of the vim-kergoth repo
 
 - XDG Locations:
