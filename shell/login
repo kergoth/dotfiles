@@ -1,6 +1,6 @@
-OSTYPE=${OSTYPE:-$(uname -s)}
-LOGNAME=${LOGNAME:-$(logname)}
-HOSTNAME=${HOSTNAME:-$(hostname -s)}
+export OSTYPE=${OSTYPE:-$(uname -s)}
+export LOGNAME=${LOGNAME:-$(logname)}
+export HOSTNAME=${HOSTNAME:-$(hostname -s)}
 
 # Language
 if [ -z "$LANG" ]; then
