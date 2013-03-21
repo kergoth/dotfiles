@@ -12,8 +12,11 @@ if !exists('$TEMP')
 endif
 
 " Bundle setup {{{
-runtime bundle/pathogen/autoload/pathogen.vim
-execute pathogen#infect()
+let &runtimepath .= "," . $VIMDOTDIR . "/bundle/vundle"
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+
 filetype plugin indent on
 " }}}
 " General settings {{{

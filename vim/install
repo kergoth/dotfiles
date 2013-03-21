@@ -1,4 +1,5 @@
 link . ~/.config/vim
-if [ -e vimrc ]; then
-    vim -u ~/.config/vim/vimrc +BundleInstall +quit
+git clone https://github.com/gmarik/vundle ~/.config/vim/bundle/vundle
+if [ -e vimrc -a -e ~/.config/vim/bundle/vundle ]; then
+    vim -u ~/.config/vim/vimrc +BundleInstall +qall
 fi
