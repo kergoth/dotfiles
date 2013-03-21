@@ -1,3 +1,11 @@
+# Move old configs out of the way so they don't interfere
+if [ -L ~/.vimrc ] || [ -e ~/.vimrc ]; then
+    mv ~/.vimrc ~/.vimrc.old
+fi
+if [ -L ~/.vim ] || [ -e ~/.vim ]; then
+    mv ~/.vim ~/.vim.old
+fi
+
 link . ~/.config/vim
 
 if [ -e ~/.viminfo ] && [ ! -e ~/.config/vim/viminfo ]; then
@@ -5,6 +13,7 @@ if [ -e ~/.viminfo ] && [ ! -e ~/.config/vim/viminfo ]; then
     cp ~/.viminfo ~/.config/vim/viminfo
 fi
 
+# Bundle setup
 if [ ! -e ~/.config/vim/bundle/vundle ]; then
     git clone git://github.com/gmarik/vundle ~/.config/vim/bundle/vundle
 fi
