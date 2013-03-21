@@ -15,11 +15,53 @@ endif
 let &runtimepath .= "," . $VIMDOTDIR . "/bundle/vundle"
 call vundle#rc()
 
+" the plug-in manager for Vim
 Bundle 'gmarik/vundle'
 
-filetype plugin indent on
+" secure alternative to vim modelines
+Bundle 'ciaranm/securemodelines'
+
+" text filtering and alignment
+Bundle 'godlygeek/tabular'
+
+" go language support
+Bundle 'jnwhiteh/vim-golang'
+
+" vim files for the BitBake tool
+Bundle 'kergoth/vim-bitbake'
+
+" personal vim plugins
+Bundle 'kergoth/vim-kergoth-misc'
+
+" convenient interactive motions
+Bundle 'Lokaltog/vim-easymotion'
+
+" the ultimate vim statusline utility
+Bundle 'Lokaltog/vim-powerline'
+
+" generates modeline according to the current settings
+Bundle 'Modeliner'
+
+" port of the monokai TextMate scheme
+Bundle 'molokai'
+
+" comment stuff out
+Bundle 'tpope/vim-commentary'
+
+" helpers for UNIX
+Bundle 'tpope/vim-eunuch'
+
+" markdown runtime files
+Bundle 'tpope/vim-markdown'
+
+" quoting/parenthesizing made simple
+Bundle 'tpope/vim-surround'
+
+" mechanism for opening files with a minimal number of keystrokes.
+Bundle 'wincent/Command-T'
 " }}}
 " General settings {{{
+filetype plugin indent on
 syntax on
 
 " Enable backup files
