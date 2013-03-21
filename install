@@ -131,19 +131,25 @@ merge_to () {
 }
 
 usage () {
-    printf "Usage: $0 [-f] [DOTFILE_HOME]\n"
+    printf "Usage: $0 [-f] [-x EXCLUDE_DIRS] [DOTFILE_HOME]\n"
     printf "\n"
     printf "DOTFILE_HOME defaults to \$HOME\n"
     printf "Options:\n"
-    printf "  -f    Force install, overwriting any existing files\n"
+    printf "  -f                Force install, overwriting any existing files\n"
+    printf "  -x EXCLUDE_DIRS   Dotfile directories to exclude from the install\n"
     exit 1
 }
 
 force=0
+exclude=
 while (( $# )); do
     case "$1" in
         -f)
             force=1
+            ;;
+        -x)
+            shift || usage >&2
+            exclude="$1"
             ;;
         -*)
             usage >&2
@@ -167,6 +173,12 @@ PATH="$dotfilesdir/scripts:$PATH"
 
 HOME="$DOTFILE_HOME"
 for installscript in $dotfilesdir/*/install; do
+    installdir=${installscript%/*}
+    if echo "$exclude" | grep -w "${installdir##*/}"; then
+        echo >&2 "Excluded $installdir"
+        continue
+    fi
+
     cd ${installscript%/*}
     . ./${installscript##*/}
     cd - >/dev/null
