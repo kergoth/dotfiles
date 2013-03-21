@@ -6,7 +6,7 @@ if [ -e ~/.viminfo ] && [ ! -e ~/.config/vim/viminfo ]; then
 fi
 
 if [ ! -e ~/.config/vim/bundle/vundle ]; then
-    git clone https://github.com/gmarik/vundle ~/.config/vim/bundle/vundle
+    git clone git://github.com/gmarik/vundle ~/.config/vim/bundle/vundle
 fi
 
 if [ -e vimrc -a -e ~/.config/vim/bundle/vundle ]; then

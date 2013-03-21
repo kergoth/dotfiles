@@ -557,6 +557,7 @@ let g:bb_create_on_empty = 0
 let g:Powerline_symbols = "unicode"
 let g:Powerline_stl_path_style = "short"
 let g:syntastic_auto_loc_list = 1
+let g:vundle_default_git_proto = "git"
 " let g:EasyMotion_leader_key = '<Leader>'
 
 nmap <leader>G :GundoToggle<CR>
