@@ -1,5 +1,14 @@
 link . ~/.config/vim
-git clone https://github.com/gmarik/vundle ~/.config/vim/bundle/vundle
+
+if [ -e ~/.viminfo ] && [ ! -e ~/.config/vim/viminfo ]; then
+    # Copy existing data to new location
+    cp ~/.viminfo ~/.config/vim/viminfo
+fi
+
+if [ ! -e ~/.config/vim/bundle/vundle ]; then
+    git clone https://github.com/gmarik/vundle ~/.config/vim/bundle/vundle
+fi
+
 if [ -e vimrc -a -e ~/.config/vim/bundle/vundle ]; then
     vim -u ~/.config/vim/vimrc +BundleInstall +qall
 fi
