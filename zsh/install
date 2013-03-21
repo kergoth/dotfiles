@@ -1,0 +1,2 @@
+link .zshenv.redir ~/.zshenv
+link . ~/.config/zsh

@@ -2,6 +2,8 @@
 
 set -u
 
+force=0
+exclude="mercurial zsh sublime-text-2"
 
 link () {
     # Link a file to a destination using a relative path, with particular
@@ -140,8 +142,6 @@ usage () {
     exit 1
 }
 
-force=0
-exclude=
 while (( $# )); do
     case "$1" in
         -f)

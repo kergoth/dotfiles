@@ -1,0 +1,7 @@
+if [ "$(uname -s)" = "Darwin" ]; then
+    SUBLIME_TEXT_2="$HOME/Library/Application Support/Sublime Text 2"
+else
+    SUBLIME_TEXT_2="$HOME/.config/sublime-text-2"
+fi
+
+link . "$SUBLIME_TEXT_2/Packages/User"
