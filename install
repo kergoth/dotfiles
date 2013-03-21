@@ -4,6 +4,7 @@ set -u
 
 force=0
 exclude="mercurial zsh sublime-text-2"
+include=
 
 link () {
     # Link a file to a destination using a relative path, with particular
@@ -139,6 +140,7 @@ usage () {
     printf "Options:\n"
     printf "  -f                Force install, overwriting any existing files\n"
     printf "  -x EXCLUDE_DIRS   Dotfile directories to exclude from the install\n"
+    printf "  -i INCLUDE_DIRS   Additional dotfile directories to install\n"
     exit 1
 }
 
@@ -150,6 +152,10 @@ while (( $# )); do
         -x)
             shift || usage >&2
             exclude="$1"
+            ;;
+        -i)
+            shift || usage >&2
+            include="$1"
             ;;
         -*)
             usage >&2
@@ -171,17 +177,34 @@ fi
 dotfilesdir="$(abspath "${0%/*}")"
 PATH="$dotfilesdir/scripts:$PATH"
 
-HOME="$DOTFILE_HOME"
-for installscript in $dotfilesdir/*/install; do
-    installdir=${installscript%/*}
-    if echo "$exclude" | grep -w "${installdir##*/}"; then
-        echo >&2 "Excluded $installdir"
-        continue
-    fi
-
+do_install () {
+    installscript="$1"
     cd ${installscript%/*}
     . ./${installscript##*/}
     cd - >/dev/null
+}
+
+
+if [ -n "$exclude" ]; then
+    echo >&2 "Excluded directories: $exclude"
+fi
+
+if [ -n "$include" ]; then
+    echo >&2 "Additional directories to install: $include"
+fi
+
+HOME="$DOTFILE_HOME"
+for installscript in $dotfilesdir/*/install; do
+    installdir=${installscript%/*}
+    if echo "$exclude" | grep -qw "${installdir##*/}"; then
+        continue
+    fi
+
+    do_install $installscript
+done
+
+for includepath in $include; do
+    do_install $include/install
 done
 
 exit 0
