@@ -13,7 +13,7 @@ endif
 
 " Bundle setup {{{
 let &runtimepath .= "," . $VIMDOTDIR . "/bundle/vundle"
-call vundle#rc()
+call vundle#rc("$VIMDOTDIR/bundle")
 
 " the plug-in manager for Vim
 Bundle 'gmarik/vundle'
