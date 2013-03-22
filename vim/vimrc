@@ -30,20 +30,11 @@ Bundle 'jnwhiteh/vim-golang'
 " vim files for the BitBake tool
 Bundle 'kergoth/vim-bitbake'
 
-" personal vim plugins
-Bundle 'kergoth/vim-kergoth-misc'
-
-" convenient interactive motions
-Bundle 'Lokaltog/vim-easymotion'
-
 " the ultimate vim statusline utility
 Bundle 'Lokaltog/vim-powerline'
 
 " generates modeline according to the current settings
 Bundle 'Modeliner'
-
-" port of the monokai TextMate scheme
-Bundle 'molokai'
 
 " comment stuff out
 Bundle 'tpope/vim-commentary'
@@ -54,11 +45,15 @@ Bundle 'tpope/vim-eunuch'
 " markdown runtime files
 Bundle 'tpope/vim-markdown'
 
+" graph your Vim undo tree in style
+Bundle 'sjl/gundo.vim'
+
 " quoting/parenthesizing made simple
 Bundle 'tpope/vim-surround'
 
-" mechanism for opening files with a minimal number of keystrokes.
-Bundle 'wincent/Command-T'
+" monokai-like colorscheme from Steve Losh
+let g:badwolf_darkgutter = 1
+Bundle 'sjl/badwolf'
 " }}}
 " General settings {{{
 filetype plugin indent on
@@ -243,12 +238,7 @@ if &term == 'rxvt-unicode'
   set t_Co=256
 endif
 
-"syntax enable
-"set background=dark
-" let g:solarized_termcolors=256
-"colorscheme solarized
-" Use the vim version of monokai
-colorscheme molokai
+colorscheme badwolf
 " }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
@@ -283,7 +273,7 @@ match RedundantWhitespace /\s\+$\| \+\ze\t/
 " We care quite a lot about the length of the git commit summary line
 hi def link gitcommitOverflow Error
 
-" HIghlight our vim modeline
+" Highlight our vim modeline
 hi def link vimModeline Special
 2match vimModeline /vim:\s*set[^:]\{-1,\}:/
 
