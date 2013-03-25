@@ -1,0 +1,39 @@
+{
+	"com.khiltd.abacus.separators":
+	[
+		{
+			"gravity": "left",
+			"preserve_indentation": true,
+			"token": ":"
+		},
+		{
+			"gravity": "right",
+			"preserve_indentation": true,
+			"token": "="
+		},
+		{
+			"gravity": "right",
+			"preserve_indentation": true,
+			"token": ":="
+		}
+	],
+	"folder_exclude_patterns":
+	[
+		".git",
+		".hg",
+		".idea",
+		".svn",
+		"CVS"
+	],
+	"font_face": "Terminus (TTF)",
+	"font_options":
+	[
+		"no_antialias"
+	],
+	"font_size": 16.0,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"trim_trailing_white_space_on_save": true
+}
