@@ -238,7 +238,12 @@ if &term == 'rxvt-unicode'
   set t_Co=256
 endif
 
-colorscheme badwolf
+try
+  colorscheme badwolf
+catch
+  " No badwolf color scheme available, fall back to desert
+  colorscheme desert
+endtry
 " }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
