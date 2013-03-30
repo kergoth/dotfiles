@@ -507,6 +507,9 @@ augroup vimrc_filetypes
   au FileType man set fdl=99 fdm=manual
   au FileType markdown set fdl=1
 
+  au BufRead,BufNewFile *.taskpaper setf taskpaper
+  au Filetype taskpaper call taskpaper#fold_projects()
+
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
   " Adjust the match to exclude the first column.
