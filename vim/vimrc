@@ -30,6 +30,12 @@ Bundle 'jnwhiteh/vim-golang'
 " vim files for the BitBake tool
 Bundle 'kergoth/vim-bitbake'
 
+" markdown runtime files
+Bundle 'tpope/vim-markdown'
+
+" taskpaper todo file support
+Bundle 'davidoc/taskpaper.vim'
+
 " the ultimate vim statusline utility
 Bundle 'Lokaltog/vim-powerline'
 
@@ -41,9 +47,6 @@ Bundle 'tpope/vim-commentary'
 
 " helpers for UNIX
 Bundle 'tpope/vim-eunuch'
-
-" markdown runtime files
-Bundle 'tpope/vim-markdown'
 
 " graph your Vim undo tree in style
 Bundle 'sjl/gundo.vim'
