@@ -89,6 +89,10 @@ elif (( $+commands[ack] )); then
     alias bbag=bback
 fi
 
+if (( $+commands[colorgo] )); then
+    alias go=colorgo
+fi
+
 if (( $+commands[hub] )); then
     eval "$(hub alias -s)"
 fi
