@@ -1,0 +1,8 @@
+#!/bin/sh
+
+filename="$1"
+linkdest="$(readlink "$filename")" || exit 1
+if [ -n "${linkdest##/*}" ]; then
+    filename="${filename%/*}/$linkdest"
+fi
+${0%/*}/normpath "$filename"
