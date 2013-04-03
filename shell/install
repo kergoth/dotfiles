@@ -1,2 +1,4 @@
 link profile
 link . ~/.config/shell
+SHELL_DATA_DIR=${XDG_DATA_DIR:-~/.local/share}/shell
+mkdir -p $SHELL_DATA_DIR
