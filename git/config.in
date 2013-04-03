@@ -170,7 +170,4 @@
 [help]
 	autocorrect = 1
 
-[credential]
-	helper = osxkeychain
-
 %include config.d/*
