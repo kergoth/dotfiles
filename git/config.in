@@ -20,6 +20,7 @@
 	id = rev-parse
 	ls = ls-files --exclude-standard
 	staged = diff --cached
+	ignored = ls-files --exclude-standard --directory -oi
 
 	# Pretty one line log
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
