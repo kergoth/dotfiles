@@ -1,2 +1,30 @@
+: ${XDG_DATA_HOME:=~/.local/share}
+
+mkdir -p $XDG_DATA_HOME/hg
+echo $XDG_DATA_HOME
+while read name url; do
+    if ! [ -e "$XDG_DATA_HOME/hg/$name" ]; then
+        hg clone "$url" "$XDG_DATA_HOME/hg/$name"
+    fi
+done <<END
+crecord https://bitbucket.org/edgimar/crecord
+pbranch https://bitbucket.org/parren/hg-pbranch
+prompt https://bitbucket.org/sjl/hg-prompt
+shelve https://bitbucket.org/astiob/hgshelve
+END
+
+newest_version () {
+    for ver; do
+        printf "$ver\n"
+    done | sort -t. -n | tail -n 1
+}
+
+hg_version=$(hg --version 2>/dev/null | sed -n 's/.*(version \([0-9.]*\))$/\1/p')
+if [ "$(newest_version 2.3 $hg_version)" != 2.3 ]; then
+    sed '/histedit/d' hgrc > hgrc.new && mv hgrc.new hgrc
+else
+    hg clone https://bitbucket.org/durin42/histedit $XDG_DATA_HOME/hg/histedit
+fi
+
 link hgrc.redir ~/.hgrc
 link . ~/.config/hg

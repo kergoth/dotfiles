@@ -13,7 +13,7 @@ vimdiff.args = -f -d -c "wincmd J" "$output" "$local" "$base" "$other"
 [extensions]
 bookmarks =
 color =
-crecord = ~/.config/hg/extensions/crecord/crecord
+crecord = ~/.local/share/hg/crecord/crecord
 extdiff =
 fetch =
 gpg =
@@ -23,14 +23,14 @@ mq =
 pager =
 parentrevspec =
 patchbomb =
-pbranch = ~/.config/hg/extensions/pbranch/hgext/pbranch.py
+pbranch = ~/.local/share/hg/pbranch/hgext/pbranch.py
 progress =
-prompt = ~/.config/hg/extensions/prompt/prompt.py
+prompt = ~/.local/share/hg/prompt/prompt.py
 purge =
 rebase =
 record =
 schemes =
-shelve = ~/.config/hg/extensions/shelve/hgshelve.py
+shelve = ~/.local/share/hg/shelve/hgshelve.py
 transplant =
 
 [mq]
