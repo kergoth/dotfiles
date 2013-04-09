@@ -23,7 +23,6 @@ mq =
 pager =
 parentrevspec =
 patchbomb =
-pbranch = ~/.local/share/hg/pbranch/hgext/pbranch.py
 progress =
 prompt = ~/.local/share/hg/prompt/prompt.py
 purge =

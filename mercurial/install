@@ -8,7 +8,6 @@ while read name url; do
     fi
 done <<END
 crecord https://bitbucket.org/edgimar/crecord
-pbranch https://bitbucket.org/parren/hg-pbranch
 prompt https://bitbucket.org/sjl/hg-prompt
 shelve https://bitbucket.org/astiob/hgshelve
 END
