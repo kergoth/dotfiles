@@ -15,7 +15,6 @@ bookmarks =
 color =
 crecord = ~/.local/share/hg/crecord/crecord
 extdiff =
-fetch =
 gpg =
 graphlog =
 histedit = ~/.config/hg/extensions/histedit/hg_histedit.py
