@@ -39,7 +39,7 @@ export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
 
 PATH=~/bin:~/.local/bin:$XDG_CONFIG_HOME/shell/../scripts:/opt/homebrew/bin:$PATH
 
-export DOTFILESDIR=$(abs_readlink ${XDG_CONFIG_HOME}/shell)
+export DOTFILESDIR=$(abs_readlink ${XDG_CONFIG_HOME}/shell)/..
 
 export INPUTRC=${XDG_CONFIG_HOME}/readline/inputrc
 export TERMINFO=${XDG_CONFIG_HOME}/ncurses/terminfo
