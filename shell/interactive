@@ -96,4 +96,6 @@ else
     alias gg='git-grep'
 fi
 
+alias myip='curl ifconfig.me'
+
 # vim: set ft=sh :
