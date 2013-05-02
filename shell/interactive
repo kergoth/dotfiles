@@ -48,6 +48,8 @@ fi
 if which fasd &>/dev/null; then
     if [ -n "$KSH_VERSION" ]; then
         fasd_cache=$XDG_DATA_HOME/fasd/env.ksh
+    elif [ -n "$ZSH_VERSION" ]; then
+        fasd_cache=$XDG_DATA_HOME/fasd/env.zsh
     else
         fasd_cache=$XDG_DATA_HOME/fasd/env.$SHELL
     fi
