@@ -43,6 +43,9 @@
 	# Clean out the ignored files (i.e. to rebuild)
 	iclean = clean -fdX
 
+	# Merge the contents of the previous HEAD ref (via reflog)
+	merge-old-head = merge --ff HEAD@{1}
+
 	# Show repo root
 	root = rev-parse --show-toplevel
 
