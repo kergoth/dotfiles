@@ -1,5 +1,4 @@
 {
-	"color_scheme": "Packages/User/Monokai Soda.tmTheme",
 	"folder_exclude_patterns":
 	[
 		".git",
@@ -10,7 +9,6 @@
 	],
 	"font_size": 16.0,
 	"font_face": "Terminus (TTF)",
-	"theme": "Soda Dark.sublime-theme",
 	"trim_trailing_white_space_on_save": true,
 
 	"com.khiltd.abacus.separators":
@@ -28,7 +26,12 @@
 		{
 			"token":				":=",
 			"gravity":			    "right",
-            "preserve_indentation": true
+			"preserve_indentation": true
 		}
+	],
+
+	"ignored_packages":
+	[
+		"Vintage"
 	]
 }

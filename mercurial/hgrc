@@ -17,7 +17,6 @@ crecord = ~/.local/share/hg/crecord/crecord
 extdiff =
 gpg =
 graphlog =
-histedit = ~/.config/hg/extensions/histedit/hg_histedit.py
 mq =
 pager =
 parentrevspec =
@@ -42,7 +41,9 @@ bbs = ssh://hg@bitbucket.org/
 bbsk = ssh://hg@bitbucket.org/kergoth/
 bbk = https://bitbucket.org/kergoth/
 gh = git://github.com/
+ghk = git://github.com/kergoth/
 ghs = git+ssh://git@github.com/
+ghsk = git+ssh://git@github.com/kergoth/
 
 [auth]
 bb.prefix = https://bitbucket.org/

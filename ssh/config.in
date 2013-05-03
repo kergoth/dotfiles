@@ -3,8 +3,9 @@ SendEnv LANG LC_*
 HashKnownHosts no
 ServerAliveInterval 15
 Compression yes
-#ControlMaster auto
-ControlPath ~/.ssh/socket-%r@%h:%p
+ControlMaster auto
+#ControlPath ~/.ssh/socket-%r@%h:%p
+ControlPath /tmp/ssh-%u@%L-%r@%h:%p
 ForwardX11 no
 #ExitOnForwardFailure yes
 NoHostAuthenticationForLocalhost yes
