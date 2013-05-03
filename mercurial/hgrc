@@ -99,14 +99,6 @@ erc = !$EDITOR `$HG root`/.hg/hgrc
 bug = !t.py --task-dir="`$HG root`" --list=BUGS $@
 todo = !t.py --task-dir="`$HG root`" --list=TODO $@
 
-# Easily add ignore patterns to .hgignore and commit.
-ignore = ![ -n "$@" ] && echo '$@' >> `$HG root`/.hgignore && \
-          $HG commit `$HG root`/.hgignore -Am 'Add "$@" to .hgignore.'
-
-# Ack for non-ignored files
-ack = !$HG locate "set:not ignored()" | xargs ack $@
-grep-wdir = !$HG locate "set:not ignored()" | xargs grep $@
-
 # Run hg commands on all subrepos at once.
 subs = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | xargs          -I SUB $HG -R "`$HG root`/SUB" $@
 psubs = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | parallel -j10 -I SUB $HG -R "`$HG root`/SUB" $@
@@ -114,23 +106,6 @@ psubs = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | parallel -j10 -I SUB 
 # Run shell commands on all subrepos at once.
 subscmd = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | xargs          -I SUB sh -c "cd \"`$HG root`/SUB\" && $@"
 psubscmd = !"$HG" debugsub | sed -n 's/^path //p; s/ /\ /g' | parallel -j10 -I SUB sh -c "cd \"`$HG root`/SUB\" && $@"
-
-# Run a command on a subrepo:
-#
-#     hg sub SUBREPO_REGEX ...command and arguments...
-#
-# The SUBREPO_REGEX should be a regex that will let grep match one and only one of
-# the subrepos in .hgsub.  For example:
-#
-#     $ cat .hgsub
-#     bundled/foo = ...
-#     bundled/bar = ...
-#
-#     $ hg sub fo root
-#     .../bundled/foo
-#     $ hg sub ar status -m
-#     M lol.py
-sub = !grep = "`$HG root`/.hgsub" | cut -d' ' -f1 | grep "$1" | tr -d '\n ' | xargs -0 -I SUB $HG -R SUB $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15 $16 $17 $18 $19 $20
 
 update-git-subs = subscmd 'test -e .git && git fetch && git checkout remotes/origin/master'
 update-hg-subs = subscmd 'test -e .hg && hg pull && hg update tip'
