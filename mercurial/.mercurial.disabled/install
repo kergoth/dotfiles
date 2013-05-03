@@ -1,2 +1,0 @@
-link hgrc.redir ~/.hgrc
-link . ~/.config/hg
