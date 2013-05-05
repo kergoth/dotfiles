@@ -63,6 +63,8 @@ else
     alias tmux="tmux -u2"
 fi
 
+alias mosh="perl -E 'print \"\e[?1005h\e[?1002h\"'; mosh"
+
 if [[ $OSTYPE =~ darwin ]]; then
     if (( $+commands[dfc] )); then
         alias df=dfc
