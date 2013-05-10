@@ -104,20 +104,22 @@ install_templated () {
     if [ "$destdir" != "$dotfile_dest" ]; then
         mkdir -p "$destdir"
     fi
-    while IFS="\n" read line; do
-        case "$line" in
-            "%include "*)
-                line="${line#%include }"
-                for file in $line; do
-                    if [ -e "$file" ]; then
-                        cat "$file"
-                    fi
-                done
-                ;;
-            *)
-                printf "%s\n" "$line"
-        esac
-    done <"$1" >"$dotfile_dest"
+    {
+        sed -n '/%include/q; p' "$1"
+        for file in $(sed -n "s/%include //p" "$1"); do
+            cat $file
+        done
+        sed -n "
+/%include/b print
+n
+b out
+:print
+n
+p
+b print
+:out
+" "$1"
+    } >"$dotfile_dest"
     echo >&2 "Wrote $(abspath "$dotfile_dest")"
 }
 
