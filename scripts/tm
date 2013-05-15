@@ -9,7 +9,7 @@ if [ $# -ne 1 ] || [ -z $1 ]; then
     BASIC="  $SCRIPT  \n"
     SESSIONS=$(ls -1 $DVTM_TMPDIR/*-session 2>/dev/null)
 
-    if [ -z $SESSIONS ]; then
+    if [ -z "$SESSIONS" ]; then
         printf "Usage:$BASIC" 1>&2
         exit 1
     fi
