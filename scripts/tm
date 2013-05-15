@@ -7,7 +7,7 @@ DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
 if [ $# -ne 1 ] || [ -z $1 ]; then
     SCRIPT=${0##*/}
     BASIC="  $SCRIPT  \n"
-    SESSIONS=$(ls -1 $DVTM_TMPDIR/*-session 2>/dev/null)
+    SESSIONS="$(ls -1 $DVTM_TMPDIR/*-session $DVTM_TMPDIR/*/*-session 2>/dev/null)"
 
     if [ -z "$SESSIONS" ]; then
         printf "Usage:$BASIC" 1>&2
@@ -28,11 +28,12 @@ if [ -n "$DVTM_ID" ]; then
     exit 3
 fi
 
-DVTM_ID=$(echo $1 | tr [A-Z] [a-z])
+DVTM_ID="$(printf "%s\n" "$1" | tr [A-Z] [a-z])"
 if [ ! -e "$DVTM_TMPDIR" ]; then
     mkdir -p $DVTM_TMPDIR
     chmod 0700 $DVTM_TMPDIR
 fi
+mkdir -p "$DVTM_TMPDIR/${DVTM_ID%/*}"
 SOCKET="$DVTM_TMPDIR/$DVTM_ID-session"
 
 dtach -A $SOCKET -r winch -z dvtm-status "$@"
