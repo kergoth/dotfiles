@@ -13,6 +13,8 @@ fi
 path=(
   $HOME/bin
   $ZDOTDIR/../scripts
+  $ZDOTDIR/../external/*/bin
+  $ZDOTDIR/../external/git-cherry-tree
   /opt/homebrew/bin
   /opt/homebrew/share/python
   /usr/local/{bin,sbin}
@@ -64,6 +66,7 @@ else
 fi
 
 alias mosh="perl -E 'print \"\e[?1005h\e[?1002h\"'; mosh"
+alias go="goproj-go"
 
 if [[ $OSTYPE =~ darwin ]]; then
     if (( $+commands[dfc] )); then
@@ -89,10 +92,6 @@ elif (( $+commands[ack] )); then
     alias ag=ack
     alias bback='ack --type=bitbake'
     alias bbag=bback
-fi
-
-if (( $+commands[colorgo] )); then
-    alias go=colorgo
 fi
 
 if (( $+commands[hub] )); then

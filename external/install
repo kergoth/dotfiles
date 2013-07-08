@@ -1,0 +1,6 @@
+if [ ! -e goproj ]; then
+    git clone git://github.com/divoxx/goproj
+fi
+if [ ! -e git-cherry-tree ]; then
+    git clone git://github.com/pv/git-cherry-tree
+fi

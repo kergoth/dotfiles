@@ -25,9 +25,6 @@ fi
 if which pacman-color &>/dev/null; then
     alias pacman='pacman-color'
 fi
-if which colorgo &>/dev/null; then
-    alias go=colorgo
-fi
 
 alias bback='ack --type=bitbake'
 if !which ag &>/dev/null; then
@@ -98,5 +95,6 @@ fi
 
 alias myip='curl ifconfig.me'
 alias mosh="perl -E 'print \"\e[?1005h\e[?1002h\"'; mosh"
+alias go=goproj-go
 
 # vim: set ft=sh :
