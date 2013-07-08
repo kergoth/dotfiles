@@ -96,5 +96,6 @@ fi
 alias myip='curl ifconfig.me'
 alias mosh="perl -E 'print \"\e[?1005h\e[?1002h\"'; mosh"
 alias go=goproj-go
+alias dtrx='dtrx -r --one=here'
 
 # vim: set ft=sh :

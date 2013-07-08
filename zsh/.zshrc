@@ -114,3 +114,4 @@ if (( $+commands[fasd] )); then
     fi
     alias v='f -t -e vim -b viminfo'
 fi
+alias dtrx='dtrx -r --one=here'
