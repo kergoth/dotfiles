@@ -1,5 +1,5 @@
 link .zshenv.redir ~/.zshenv
 link . ~/.config/zsh
-if [ ! -e zsh/.zprezto ]; then
-    git clone --recursive https://github.com/sorin-ionescu/prezto.git zsh/.zprezto
+if [ ! -e .zprezto ]; then
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git .zprezto
 fi
