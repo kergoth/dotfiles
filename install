@@ -3,7 +3,7 @@
 set -u
 
 force=0
-exclude="mercurial zsh sublime-text-2"
+exclude="sublime-text-2"
 include=
 
 link () {
