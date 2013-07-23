@@ -36,8 +36,8 @@ Bundle 'tpope/vim-markdown'
 " taskpaper todo file support
 Bundle 'davidoc/taskpaper.vim'
 
-" the ultimate vim statusline utility
-Bundle 'Lokaltog/vim-powerline'
+" lean & mean statusline for vim that's light as air
+Bundle 'bling/vim-airline'
 
 " generates modeline according to the current settings
 Bundle 'Modeliner'
@@ -53,6 +53,15 @@ Bundle 'sjl/gundo.vim'
 
 " quoting/parenthesizing made simple
 Bundle 'tpope/vim-surround'
+
+" readline style insertion
+Bundle 'tpope/vim-rsi'
+
+" asynchronous build and test dispatcher
+Bundle 'tpope/vim-dispatch'
+
+" continuously updated session files
+Bundle 'tpope/vim-obsession'
 
 " monokai-like colorscheme from Steve Losh
 let g:badwolf_darkgutter = 1
@@ -555,8 +564,6 @@ let g:vimsyn_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
-let g:Powerline_symbols = "unicode"
-let g:Powerline_stl_path_style = "short"
 let g:syntastic_auto_loc_list = 1
 let g:vundle_default_git_proto = "git"
 " let g:EasyMotion_leader_key = '<Leader>'
