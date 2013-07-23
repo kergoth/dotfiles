@@ -105,7 +105,7 @@ if (( $+commands[fasd] )); then
         fasd --init auto | sed 's,$,;,' >$fasd_cache
     fi
     source $fasd_cache
-    unset $fasd_cache
+    unset fasd_cache
 
     if [[ $OSTYPE =~ darwin* ]]; then
         alias o="a -e open"
