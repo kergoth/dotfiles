@@ -95,7 +95,7 @@ elif (( $+commands[ack] )); then
 fi
 
 if (( $+commands[hub] )); then
-    eval "$(hub alias -s)"
+    eval "$(hub alias -s $SHELL)"
 fi
 
 if (( $+commands[fasd] )); then

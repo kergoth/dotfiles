@@ -38,7 +38,7 @@ if which hub &>/dev/null; then
     if [ -n "$KSH_VERSION" ]; then
         eval "$(hub alias -s ksh)"
     else
-        eval "$(hub alias -s)"
+        eval "$(hub alias -s $SHELL)"
     fi
 fi
 
