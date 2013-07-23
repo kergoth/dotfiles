@@ -2,7 +2,7 @@ alias l='ls -1A'
 alias la='ls -A'
 alias ll='ls -l'
 alias smem='smem -k'
-alias z-recent='cd "$(z -t -l -R|head -n 1)"'
+alias cd-last='cd "$(z -t -l -R|head -n 1)"'
 
 if [ -e $XDG_CONFIG_HOME/tmux/config ]; then
     alias tmux="tmux -u2 -f $XDG_CONFIG_HOME/tmux/config"

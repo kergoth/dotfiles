@@ -57,7 +57,7 @@ bindkey '^X^E' edit-command-line
 # Aliases {{{1
 alias la="ls -GA"
 alias smem='smem -k'
-alias z-recent='cd "$(z -t -l -R|head -n 1)"'
+alias cd-last='cd "$(z -t -l -R|head -n 1)"'
 
 if [[ -e $XDG_CONFIG_HOME/tmux/config ]]; then
     alias tmux="tmux -u2 -f $XDG_CONFIG_HOME/tmux/config"
