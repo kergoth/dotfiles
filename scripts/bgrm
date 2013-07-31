@@ -9,15 +9,18 @@ while [ $# -gt 0 ]; do
 done
 
 while read item; do
+    if [ "${item%bgrm.}" != "$item" ]; then
+        # Existing bgrm directories can presumably be skipped
+        :
+    fi
     if basename "$item" | grep -q "^bgrm."; then
         continue
     fi
 
     dir="$(dirname "$item")"
     tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
-    set -- "$@" "$tmpdir"
 
-    mv "$item" "$tmpdir/"
+    mv "$item" "$tmpdir/" && set -- "$@" "$tmpdir"
 done <$items
 
 rm -rf "$@" &

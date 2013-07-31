@@ -118,3 +118,5 @@ if (( $+commands[fasd] )); then
     alias v='f -t -e vim -b viminfo'
 fi
 alias dtrx='dtrx -r --one=here'
+
+prompt steeef
