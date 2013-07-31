@@ -33,6 +33,9 @@ fi
 
 # Zsh options {{{1
 
+# Kill correction, which seems to try to correct things which exist in my PATH
+unsetopt correct
+
 # Show running time for commands which take longer than 10 seconds
 export REPORTTIME=5
 
