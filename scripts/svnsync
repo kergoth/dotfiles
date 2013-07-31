@@ -1,0 +1,12 @@
+#!/bin/sh
+localdir=$1
+url=$2
+
+if [ ! -e $localdir ]; then
+    svnadmin create $localdir
+    ln -s /bin/true $localdir/hooks/pre-revprop-change
+    svnsync init file://$PWD/$localdir $url
+fi
+uuid="$(svn info $url|sed -n -e's/^Repository UUID: \(.*\)$/\1/p')"
+svnadmin setuuid $localdir $uuid
+svnsync sync file://$PWD/$localdir
