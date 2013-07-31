@@ -1,0 +1,3 @@
+#!/bin/sh
+
+repo forall -p -c git outgoing HEAD "$@" | ${PAGER:-less}
