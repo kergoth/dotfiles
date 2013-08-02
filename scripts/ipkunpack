@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ $# -lt 1 ]; then
+    echo >&2 "Usage: `basename $0` IPKFILE"
+    exit 2
+fi
+
+basepath="${1%.ipk}"
+outdir="${basepath##*/}"
+mkdir -p "$outdir"
+ar p $1 data.tar.gz | tar -zxvf - -C "$outdir"
+echo >&2 "Extracted to '$outdir'."
