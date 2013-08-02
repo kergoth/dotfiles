@@ -1,40 +1,44 @@
 #!/bin/sh
 
-if [ $(id -u) != "0" ]; then
-    exec sudo "$0" "$@"
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+chroot=$1
+
+uid=$(id -u)
+if [ $uid -ne 0 ]; then
+    exec sudo env OLDUSER=$USER PASSLINE="$USER::$(id -u):$(id -g)::$HOME:/bin/sh" $0 "$@"
+elif [ -z "$OLDUSER" ]; then
+    OLDUSER=$USER
+    PASSLINE="$USER::$(id -u):$(id -g)::$HOME:/bin/sh"
 fi
 
-set -u
+copyfiles="/etc/passwd /etc/shadow /etc/group /etc/sudoers /etc/hostname /etc/resolv.conf /etc/hosts"
+mountpaths="/dev /dev/pts /sys /proc /home /scratch"
 
-cleanup () {
-    umount $1/{proc,sys,dev/pts,dev}
-}
+for file in $copyfiles; do
+    if [ -e "$file" ]; then
+        mkdir -p $(dirname $chroot/$file)
+        cp -f $file $chroot/$file
+    fi
+done
 
-if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-    echo >&2 "chroot.sh newroot [command]"
-    exit 2
+for path in $mountpaths; do
+    mkdir -p $chroot/$path
+    mount -o bind $path $chroot/$path
+done
+
+set -x
+
+if ! grep -q "^$OLDUSER:" $chroot/etc/passwd; then
+    echo "$PASSLINE" >> $chroot/etc/passwd
 fi
 
-newroot=$1
-if [ ! -e $newroot ]; then
-    echo >&2 "Error: $newroot does not exist"
-    exit 1
+if ! grep -q "^$OLDUSER" $chroot/etc/sudoers; then
+    echo "$OLDUSER ALL=(ALL) ALL" >> $chroot/etc/sudoers
 fi
 
-if [ $# -gt 1 ]; then
-    command=$2
-else
-    command=${SHELL:-/bin/sh}
-fi
+chroot $chroot sudo -u $OLDUSER /bin/sh
 
-if [ ! -e $newroot/$command ]; then
-    echo >&2 "Error: $newroot/$command does not exist"
-    exit 3
-fi
-
-trap "cleanup $newroot" EXIT INT TERM
-mount -o bind /proc $newroot/proc
-mount -o bind /sys $newroot/sys
-mount -o bind /dev $newroot/dev
-mount -o bind /dev/pts $newroot/dev/pts
-chroot $newroot $command
+for path in $mountpaths; do
+    umount $chroot/$path
+done
