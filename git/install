@@ -1,3 +1,4 @@
 link exclude ~/.config/git/exclude
 link template ~/.config/git/template
 install_templated config.in ~/.config/git/config
+chmod 0600 ~/.config/git/config
