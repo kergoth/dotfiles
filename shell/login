@@ -37,7 +37,7 @@ export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
 export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
 
-PATH=~/bin:~/.local/bin:$XDG_CONFIG_HOME/shell/../scripts:$DOTFILESDIR/external/goproj/bin:$DOTFILESDIR/external/git-cherry-tree:/opt/homebrew/bin:$PATH
+PATH=~/bin:~/.local/bin:$XDG_CONFIG_HOME/shell/../scripts:$DOTFILESDIR/external/bin:/opt/homebrew/bin:$PATH
 
 export DOTFILESDIR=$(abs_readlink ${XDG_CONFIG_HOME}/shell)/..
 

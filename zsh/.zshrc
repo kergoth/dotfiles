@@ -13,8 +13,7 @@ fi
 path=(
   $HOME/bin
   $ZDOTDIR/../scripts
-  $ZDOTDIR/../external/*/bin
-  $ZDOTDIR/../external/git-cherry-tree
+  $ZDOTDIR/../external/bin
   /opt/homebrew/bin
   /opt/homebrew/share/python
   /usr/local/{bin,sbin}
