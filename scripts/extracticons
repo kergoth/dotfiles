@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#tempdir="$(mktemp -d "${0##*/}".XXXX)"
+tempdir="$(mktemp -d -t ExtractIcons.XXXX)"
+trap "rm -rf \"$tempdir\"" EXIT INT
+wrestool -x -t14 -o $tempdir "$@"
+for ico in $tempdir/*.ico; do
+    noext="${ico%.ico}"
+    base="${noext##*/}"
+    convert "$ico" "$base.icns"
+done
