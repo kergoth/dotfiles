@@ -1,14 +1,38 @@
 set nocompatible
 filetype off
 
-" Path to user vim runtimepath
+" Filesystem paths
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
 let &runtimepath .= "," . $VIMDOTDIR
 
+if !exists('$XDG_CACHE_HOME')
+  let $XDG_CACHE_HOME = $HOME . "/.cache"
+endif
+
+if !isdirectory(expand('$XDG_CACHE_HOME/vim'))
+  call mkdir(expand('$XDG_CACHE_HOME/vim'))
+endif
+
 " System temporary files
 if !exists('$TEMP')
   let $TEMP = '/tmp'
+endif
+
+" Backups and swap files
+set directory=$XDG_CACHE_HOME/vim,/tmp,/var/tmp,$TEMP
+set backupdir=$XDG_CACHE_HOME/vim,/tmp,/var/tmp,$TEMP
+
+" Ensure we cover all temp files for backup file creation
+if $OSTYPE =~ 'darwin'
+  set backupskip+=/private/tmp/*
+endif
+
+" Appropriate path for viminfo
+if has('viminfo')
+  if !exists('$VIMINFO')
+    let $VIMINFO = $XDG_CACHE_HOME . "/vim/viminfo"
+  endif
 endif
 
 " Bundle setup {{{
@@ -81,15 +105,6 @@ set noswapfile
 set nofsync
 set swapsync=
 
-" Don't store all the backup files in cwd
-let &backupdir = $VIMDOTDIR . '/tmp,/var/tmp,' . $TEMP
-let &directory = &backupdir
-
-" Ensure we cover all temp files for backup file creation
-if $OSTYPE =~ 'darwin'
-  set backupskip+=/private/tmp/*
-endif
-
 " Rename the file to the backup when possible.
 set backupcopy=auto
 
@@ -102,9 +117,6 @@ if has('viminfo')
   " <   max # of lines for each register to be saved
   " s   max # of Kb for each register to be saved
   " h   don't restore hlsearch behavior
-  if !exists('$VIMINFO')
-    let $VIMINFO = $VIMDOTDIR . "/viminfo"
-  endif
   let &viminfo = "f1,'1000,:1000,/1000,<1000,s100,h,r" . $TEMP . ",n" . $VIMINFO
 endif
 
