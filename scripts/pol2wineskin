@@ -1,0 +1,32 @@
+#!/bin/sh
+# Convert a play on linux engine format file to a wineskin engine format file
+
+set -e
+
+origdir="$(pwd)"
+tempdir="$(abspath "$(mktemp -d pol2t7z.XXXXXX)")"
+trap "rm -rf \"$tempdir\"" EXIT
+
+for pol; do
+    pol="$(abspath "$pol")"
+    base="${pol%.pol}"
+    base="${base##*/}"
+
+    rm -rf "$tempdir"/*
+    cd "$tempdir"
+
+    ln -s "$pol" "${base}.tar.bz2"
+    dtrx -r --one=here -n "${base}.tar.bz2"
+
+    versiondir="$(echo "$base"/wineversion/*)"
+    versiondir="${versiondir%/}"
+    version="PlayOnLinux-${versiondir#$base/wineversion/}"
+
+    echo "$version" >$versiondir/version
+    mv "$versiondir" wswine.bundle
+    tar -cf "${version}.tar" wswine.bundle
+    7z a "$origdir/${version}.tar.7z" "${version}.tar"
+    mv -i "$origdir/${version}.tar.7z" ~/Library/Application\ Support/Wineskin/Engines/ || true
+
+    cd - >/dev/null
+done
