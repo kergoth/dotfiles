@@ -4,8 +4,12 @@ fi
 if [ ! -e git-cherry-tree ]; then
     git clone git://github.com/pv/git-cherry-tree
 fi
+if [ ! -e iln ]; then
+    git clone git://github.com/kergoth/iln
+fi
 
 mkdir -p bin
 cd bin
 ln -sf ../goproj/bin/*
 ln -sf ../git-cherry-tree/git-cherry-tree
+ln -sf ../iln/iln
