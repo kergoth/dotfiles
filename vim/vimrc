@@ -262,12 +262,15 @@ if &term == 'rxvt-unicode'
   set t_Co=256
 endif
 
-try
-  colorscheme badwolf
-catch
-  " No badwolf color scheme available, fall back to desert
+if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
-endtry
+else
+  try
+    colorscheme baycomb
+  catch
+    colorscheme desert
+  endtry
+endif
 " }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
