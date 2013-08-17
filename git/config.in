@@ -174,3 +174,6 @@
 	autocorrect = 1
 
 %include config.d/*
+%include%Darwin config.darwin
+%include%Linux config.linux
+%include%Windows config.windows
