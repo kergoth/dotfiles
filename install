@@ -2,6 +2,9 @@
 
 set -u
 
+osname="$(uname -s)"
+includeprefix="%include"
+osincludeprefix="${includeprefix}%${osname}"
 force=0
 exclude="sublime-text-2"
 include=
@@ -104,22 +107,27 @@ install_templated () {
     if [ "$destdir" != "$dotfile_dest" ]; then
         mkdir -p "$destdir"
     fi
-    {
-        sed -n '/%include/q; p' "$1"
-        for file in $(sed -n "s/%include //p" "$1"); do
-            cat $file
+
+    cat "$1" | while read line; do
+        case "$line" in
+            $osincludeprefix\ *)
+                files="${line#$osincludeprefix }"
+                ;;
+            $includeprefix\ *)
+                files="${line#$includeprefix }"
+                ;;
+            $includeprefix%*)
+                continue
+                ;;
+            *)
+                files=
+                printf "%s\n" "$line"
+                ;;
+        esac
+        for file in $(echo $files); do
+            cat "$file"
         done
-        sed -n "
-/%include/b print
-n
-b out
-:print
-n
-p
-b print
-:out
-" "$1"
-    } >"$dotfile_dest"
+    done >"$dotfile_dest"
     echo >&2 "Wrote $(abspath "$dotfile_dest")"
 }
 
@@ -210,3 +218,5 @@ for includepath in $include; do
 done
 
 exit 0
+
+# vim: set sw=4 sts=4 ts=8 et:
