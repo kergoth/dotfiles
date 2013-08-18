@@ -3,8 +3,8 @@
 set -u
 
 osname="$(uname -s)"
-includeprefix="%include"
-osincludeprefix="${includeprefix}%${osname}"
+HOSTNAME="${HOSTNAME:-$(hostname)}"
+prefixes="%include %include%${osname} %include%${HOSTNAME}"
 force=0
 exclude="sublime-text-2"
 include=
@@ -109,21 +109,26 @@ install_templated () {
     fi
 
     cat "$1" | while read line; do
-        case "$line" in
-            $osincludeprefix\ *)
-                files="${line#$osincludeprefix }"
-                ;;
-            $includeprefix\ *)
-                files="${line#$includeprefix }"
-                ;;
-            $includeprefix%*)
-                continue
-                ;;
-            *)
-                files=
-                printf "%s\n" "$line"
-                ;;
-        esac
+        files=
+        for prefix in $prefixes; do
+            case "$line" in
+                $prefix\ *)
+                    files="${line#$prefix }"
+                    ;;
+            esac
+        done
+
+        if [ -z "$files" ]; then
+            case "$line" in
+                %include%*)
+                    ;;
+                *)
+                    printf "%s\n" "$line"
+                    ;;
+            esac
+            continue
+        fi
+
         for file in $(echo $files); do
             cat "$file"
         done
