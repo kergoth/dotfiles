@@ -3,3 +3,5 @@ link . ~/.config/zsh
 if [ ! -e .zprezto ]; then
     git clone --recursive https://github.com/sorin-ionescu/prezto.git .zprezto
 fi
+# For history file
+mkdir -p ${XDG_DATA_HOME:-$HOME/.local/share}/zsh

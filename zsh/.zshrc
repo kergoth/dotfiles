@@ -6,6 +6,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+export HISTFILE=${XDG_DATA_HOME}/zsh/history
+
 # This is set here rather than in .zshenv as /etc/zsh/profile gets
 # sourced after .zshenv, resulting in the PATH being overridden on
 # some systems.
