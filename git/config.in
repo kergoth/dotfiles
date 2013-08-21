@@ -3,9 +3,6 @@
 	attributesfile = ~/.config/git/attributes
 	whitespace = cr-at-eol
 
-[init]
-	templatedir = ~/.config/git/template
-
 [user]
 	name = Christopher Larson
 	email = kergoth@gmail.com
