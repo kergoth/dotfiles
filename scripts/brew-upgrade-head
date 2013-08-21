@@ -1,6 +1,3 @@
 #!/bin/sh
 
-# foo
-brew ls --versions | grep ' HEAD$' | awk '{print $1}' | while read recipe; do
-    brew rm $recipe && brew install --HEAD $recipe
-done
+brew reinstall --HEAD $(brew ls --versions | grep ' HEAD$' | awk '{print $1}')
