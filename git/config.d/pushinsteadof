@@ -1,0 +1,5 @@
+[url "git@git.yoctoproject.org:"]
+	pushInsteadOf = git://git.yoctoproject.org/
+
+[url "https://github.com/"]
+	pushInsteadOf = git://github.com/
