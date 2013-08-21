@@ -115,6 +115,8 @@ terms = (
     "MEAP", # Manning Early Access Program
     "MapReduce",
 
+    "XKCD",
+
     "GTK+",
     ".NET",
 
