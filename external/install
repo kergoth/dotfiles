@@ -7,9 +7,15 @@ fi
 if [ ! -e iln ]; then
     git clone git://github.com/kergoth/iln
 fi
+if [ ! -e cheat ]; then
+    git clone https://github.com/kergoth/cheat
+fi
+
+link cheat/cheatsheets ~/.cheat
 
 mkdir -p bin
 cd bin
 ln -sf ../goproj/bin/*
 ln -sf ../git-cherry-tree/git-cherry-tree
 ln -sf ../iln/iln
+ln -sf ../cheat/cheat
