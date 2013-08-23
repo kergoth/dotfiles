@@ -482,7 +482,7 @@ def _search(query, dir, depth, ignorers):
             _search(query, d, depth + 1, ignorers)
 
 def search(query, dir='.', depth=0, ignorers=None):
-    _search(query, '.', 0, get_initial_ignorers())
+    _search(query, dir, 0, get_initial_ignorers())
 
 
 # Option Parsing and Main -----------------------------------------------------
@@ -763,13 +763,6 @@ def main():
 
     query = args[0] if args else ''
 
-    # --dir
-    if options.dir:
-        try:
-            os.chdir(options.dir)
-        except OSError:
-            die('could not change to directory "%s"' % options.dir)
-
     # --depth
     try:
         options.depth = int(options.depth)
@@ -831,7 +824,7 @@ def main():
         query = lambda s: r.search(s)
 
     # Go!
-    search(query)
+    search(query, options.dir)
 
 
 if __name__ == '__main__':
