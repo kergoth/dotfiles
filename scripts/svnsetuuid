@@ -1,5 +1,0 @@
-#!/bin/sh
-localdir=$1
-url=$(svn propget --revprop -r 0 svn:sync-from-url file://$PWD/$1)
-uuid="$(svn info $url|sed -n -e's/^Repository UUID: \(.*\)$/\1/p')"
-svnadmin setuuid $localdir $uuid

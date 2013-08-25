@@ -1,0 +1,2 @@
+#!/bin/sh
+svn propget --revprop -r 0 svn:sync-from-url file://"$(abspath "$1")"
