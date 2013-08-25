@@ -4,9 +4,14 @@ url=$2
 
 if [ ! -e $localdir ]; then
     svnadmin create $localdir
-    ln -s /bin/true $localdir/hooks/pre-revprop-change
+    if [ -x /bin/true ]; then
+        ln -s /bin/true $localdir/hooks/pre-revprop-change
+    else
+        echo '#!/bin/sh' >$localdir/hooks/pre-revprop-change
+        chmod +x $localdir/hooks/pre-revprop-change
+    fi
     svnsync init file://$PWD/$localdir $url
+    uuid="$(svn info $url|sed -n -e's/^Repository UUID: \(.*\)$/\1/p')"
+    svnadmin setuuid $localdir $uuid
 fi
-uuid="$(svn info $url|sed -n -e's/^Repository UUID: \(.*\)$/\1/p')"
-svnadmin setuuid $localdir $uuid
 svnsync sync file://$PWD/$localdir
