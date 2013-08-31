@@ -1,7 +1,0 @@
-export ENV=~/.config/ksh/interactive
-
-. ~/.config/shell/env_functions
-
-umask 0022
-
-ssource ~/.config/shell/env_local

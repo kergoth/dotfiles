@@ -1,3 +1,0 @@
-link . ~/.config/ksh
-KSH_DATA_DIR=${XDG_DATA_DIR:-~/.local/share}/ksh
-mkdir -p $KSH_DATA_DIR
