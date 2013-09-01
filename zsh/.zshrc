@@ -34,6 +34,9 @@ fi
 
 # Zsh options {{{1
 
+autoload -U url-quote-magic
+zle -N self-insert url-quote-magic
+
 # Kill correction, which seems to try to correct things which exist in my PATH
 unsetopt correct
 
