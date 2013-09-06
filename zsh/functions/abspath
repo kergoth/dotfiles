@@ -1,7 +1,0 @@
-abspath () {
-    _path="$1"
-    if [ -n "${_path##/*}" ]; then
-        _path="$PWD/$1"
-    fi
-    echo "$_path"
-}

@@ -1,7 +1,12 @@
-link .zshenv.redir ~/.zshenv
-link . ~/.config/zsh
-if [ ! -e .zprezto ]; then
-    git clone --recursive https://github.com/sorin-ionescu/prezto.git .zprezto
+if [ ! -d antigen ]; then
+    git clone https://github.com/zsh-users/antigen.git
 fi
-# For history file
-mkdir -p ${XDG_DATA_HOME:-$HOME/.local/share}/zsh
+
+: ${XDG_CONFIG_HOME:=~/.config}
+
+link zshenv.redir ~/.zshenv
+
+mkdir -p ${XDG_CONFIG_HOME}/zsh
+link antigen ${XDG_CONFIG_HOME}/zsh/antigen
+link zshenv ${XDG_CONFIG_HOME}/zsh/.zshenv
+link zshrc ${XDG_CONFIG_HOME}/zsh/.zshrc

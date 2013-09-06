@@ -1,26 +1,25 @@
-# Executes commands at the start of an interactive session.
-#
-# vi:sts=4 sw=4 et fdm=marker fdl=0
+ADOTDIR=${ADOTDIR:-~/.antigen}
 
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+# Let ^W only erase individual path components, as bash does
+autoload -U select-word-style
+select-word-style bash
 
-export HISTFILE=${XDG_DATA_HOME}/zsh/history
-
-# This is set here rather than in .zshenv as /etc/zsh/profile gets
-# sourced after .zshenv, resulting in the PATH being overridden on
-# some systems.
+HISTFILE=${XDG_DATA_HOME}/zsh/history
 
 path=(
   $HOME/bin
-  $ZDOTDIR/../scripts
-  $ZDOTDIR/../external/bin
+  $DOTFILESDIR/scripts
+  $DOTFILESDIR/scripts/connections
+  $DOTFILESDIR/external/bin
   /opt/homebrew/bin
   /opt/homebrew/share/python
   /usr/local/{bin,sbin}
   $path
 )
+
+if [[ -n $GOPATH ]]; then
+    path=($GOPATH/bin $path)
+fi
 
 setopt nullglob
 for perlpath in $HOME/Library/Perl/*/bin; do
@@ -28,20 +27,38 @@ for perlpath in $HOME/Library/Perl/*/bin; do
 done
 unsetopt nullglob
 
-if [[ -n $GOPATH ]]; then
-    path=($GOPATH/bin $path)
-fi
+
+fpath=(
+  $ZDOTDIR/functions
+  $ZDOTDIR/completions
+  $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions.git/src
+  $fpath
+)
+
+setopt nullglob
+for func in $ZDOTDIR/functions/*; do
+  autoload ${func##*/}
+done
+unsetopt nullglob
 
 # Zsh options {{{1
-
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 
 # Kill correction, which seems to try to correct things which exist in my PATH
 unsetopt correct
+unsetopt correctall
 
 # Show running time for commands which take longer than 10 seconds
-export REPORTTIME=5
+REPORTTIME=5
+
+# Let tmux handle its own terminal titles
+if [[ -n $TMUX ]]; then
+    DISABLE_AUTO_TITLE="true"
+fi
+
+# Uncomment following line if you want red dots to be displayed while waiting for completion
+COMPLETION_WAITING_DOTS="true"
 
 # Don't share my shell history among zsh instances
 unsetopt sharehistory
@@ -62,7 +79,11 @@ zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 
 # Aliases {{{1
-alias la="ls -GA"
+alias lr="ls -thl"
+alias ll="ls -hl"
+alias la="ls -Ah"
+alias l="ls -1h"
+
 alias smem='smem -k'
 alias cd-last='cd "$(z -t -l -R|head -n 1)"'
 
@@ -76,6 +97,7 @@ alias mosh="perl -E 'print \"\e[?1005h\e[?1002h\"'; mosh"
 alias go="goproj-go"
 
 if [[ $OSTYPE =~ darwin ]]; then
+    alias ps="ps ux"
     if (( $+commands[dfc] )); then
         alias df=dfc
         alias dfc="dfc -T"
@@ -83,6 +105,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias cpanm="cpanm --local-lib ~/Library/Perl/5.12"
     alias locate="mdfind -name"
 else
+    alias ps="ps fux"
     if (( $+commands[dfc] )); then
         alias df=dfc
         alias dfc="dfc -T -q mount -p -rootfs"
@@ -101,9 +124,7 @@ elif (( $+commands[ack] )); then
     alias bbag=bback
 fi
 
-if (( $+commands[hub] )); then
-    eval "$(hub alias -s $SHELL)"
-fi
+eval "$(hub alias -s)"
 
 if (( $+commands[fasd] )); then
     fasd_cache="$XDG_DATA_HOME/fasd/env.zsh"
@@ -123,4 +144,28 @@ if (( $+commands[fasd] )); then
 fi
 alias dtrx='dtrx -r --one=here'
 
-prompt steeef
+source $ZDOTDIR/antigen/antigen.zsh
+
+antigen use oh-my-zsh
+
+antigen-bundles <<EOBUNDLES
+    brew
+    git
+    pip
+    zsh-users/zsh-syntax-highlighting
+    zsh-users/zsh-history-substring-search
+    zsh-users/zsh-completions
+    zsh-users/zaw
+
+    knu/zsh-git-escape-magic
+    rupa/z
+EOBUNDLES
+
+#antigen theme robbyrussell
+antigen-theme dpoggi
+
+antigen apply
+
+# Enable git escape line input magic
+autoload -Uz git-escape-magic
+git-escape-magic
