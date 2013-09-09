@@ -108,7 +108,7 @@ install_templated () {
         mkdir -p "$destdir"
     fi
 
-    cat "$1" | while read line; do
+    cat "$1" | while IFS='|' read line; do
         files=
         for prefix in $prefixes; do
             case "$line" in
