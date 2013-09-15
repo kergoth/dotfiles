@@ -8,4 +8,12 @@ for ico in $tempdir/*.ico; do
     noext="${ico%.ico}"
     base="${noext##*/}"
     convert "$ico" "$base.icns"
+    convert "$ico" \
+            \( -clone 0 -resize 16x16 \) \
+            \( -clone 0 -resize 32x32 \) \
+            \( -clone 0 -resize 48x48 \) \
+            \( -clone 0 -resize 128x128 \) \
+            \( -clone 0 -resize 256x256 \) \
+            \( -clone 0 -resize 512x512 \) \
+            -delete 0 "$base-full.icns"
 done
