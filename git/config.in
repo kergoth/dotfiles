@@ -91,9 +91,11 @@
 	    echo remotes/$remote/$remote_name'"
 
 	# Show commits that would be pushed from the current branch
+	out = !git log $(git remote-ref)..
 	outgoing = !git log $(git remote-ref)..
 
 	# Show commits that would be merged into the current branch
+	in = !git log ..$(git remote-ref)
 	incoming = !git log ..$(git remote-ref)
 
 	# Run git test-sequence against the commits we'll be pushing
