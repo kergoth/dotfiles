@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Wait for the user specified process/command to exit. First waits for it to
+# start, if it was not running when we started. The commandline arguments are
+# passed directly to pgrep as a regular expression matched against the entire
+# commandline of the running processes.
+
+interval=0.75
+
+# Wait for process(es) to start
+while true; do
+    pids="$(pgrep -d, -f "$@" | sed -e "s/$/,/; s/$$,//; s/,$//;")"
+    if [ -n "$pids" ] && ps -p"$pids" >/dev/null 2>&1; then
+        break
+    fi
+    sleep $interval
+done
+
+# Wait for process(es) to exit
+while true; do
+    ps -p"$pids" >/dev/null 2>&1 || break
+    sleep $interval
+done
