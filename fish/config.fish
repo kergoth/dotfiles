@@ -63,16 +63,17 @@ end
 
 set OS (uname -s | tr A-Z a-z)
 if test -e $FISHDIR/$OS.fish
-    source $FISHDIR/$OS.fish
+    . $FISHDIR/$OS.fish
 end
 
 if test -e $FISHDIR/$HOSTNAME.fish
-    source $FISHDIR/$HOSTNAME.fish
+    . $FISHDIR/$HOSTNAME.fish
 end
 
 if test $OS = darwin
     set tacklebox_plugins $tacklebox_plugins osx
 end
+
 
 # Editor {{{1
 if have vim
@@ -93,6 +94,7 @@ if begin test -z $TMUX; and begin test $TERM = screen; or test $TERM = screen-25
         printf "\033k%s\033\\" $fish_title_string
     end
 end
+
 
 # Aliases {{{1
 alias tmux   'tmux -u2 -f ~/.config/tmux/config'
