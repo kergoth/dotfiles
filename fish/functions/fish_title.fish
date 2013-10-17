@@ -1,4 +1,4 @@
-if test $TERM_PROGRAM = Apple_Terminal
+if begin set -q TERM_PROGRAM; and test $TERM_PROGRAM = Apple_Terminal; end
     function fish_title
         printf $HOSTNAME
         if set -q fish_title_override
