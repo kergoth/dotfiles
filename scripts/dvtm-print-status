@@ -30,6 +30,14 @@ update_static_patterns () {
 update_dynamic_patterns () {
     hset dvtm_patterns loadavg "$(uptime | sed 's/.*ages*: //')"
     hset dvtm_patterns date "$(date +"%a %d-%b-%g %l:%M %p")"
+    if [ -n "$debian_chroot" ]; then
+        hset dvtm_patterns debian_chroot "$debian_chroot"
+    elif [ -r "/etc/debian_chroot" ]; then
+        hset dvtm_patterns debian_chroot "$(cat /etc/debian_chroot)"
+    fi
+    if [ -n "$CLEARCASE_ROOT" ]; then
+        hset dvtm_patterns ccache "$(echo $CLEARCASE_ROOT | cut -d/ -f3)"
+    fi
 }
 
 print_status () {
