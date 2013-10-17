@@ -1,7 +1,23 @@
 #!/bin/sh
 
-_path="$1"
-if [ -n "${_path##/*}" ]; then
-    _path="$PWD/$1"
+while getopts r:h opt; do
+    case "$opt" in
+        r)
+            relativeto="$OPTARG"
+            ;;
+        \?|h)
+            usage
+            echo >&2 "${0##*/}: [-r RELATIVETO] PATH [PATH..]"
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+if [ -z "$relativeto" ]; then
+    relativeto="$PWD"
 fi
-echo "$_path"
+
+for arg; do
+    testabs=${arg##[^/]*}
+    echo ${testabs:-$relativeto/$arg}
+done
