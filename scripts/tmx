@@ -23,8 +23,13 @@ tmux() {
 }
 
 if [[ -z "$1" ]]; then
-    echo "Specify session name as the first argument"
-    exit
+    echo "Usage: tmx SESSION_NAME"
+    echo
+    echo "Connects to an existing tmux session, or creates a new one"
+    echo
+    echo "Existing sessions:"
+    tmux ls -F "#{session_name}" 2>/dev/null | sed 's/^/  /'
+    exit 1
 fi
 
 # Only because I often issue `ls` to this script by accident
