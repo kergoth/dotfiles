@@ -1,0 +1,8 @@
+if [ ! -e tacklebox ]; then
+    git clone https://github.com/kergoth/fish-tacklebox tacklebox
+fi
+if [ ! -e tacklebox/plugins/z ]; then
+    git clone -b datafile https://github.com/kergoth/z-fish tacklebox/plugins/z
+fi
+
+link . ${XDG_CONFIG_HOME:-~/.config}/fish
