@@ -21,3 +21,6 @@ SCCS/
 ehthumbs.db
 Icon?
 Thumbs.db
+
+# NFS
+.nfs*
