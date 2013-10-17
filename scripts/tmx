@@ -16,6 +16,9 @@ trim() { echo $1; }
 
 # Ensure we get unicode/256color
 tmux() {
+    if [ -e ~/.config/tmux/config ]; then
+        set -- -f ~/.config/tmux/config "$@"
+    fi
     command tmux -u2 "$@"
 }
 
