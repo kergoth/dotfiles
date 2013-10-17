@@ -1,5 +1,16 @@
 - Trim down the scripts directory
 
+- Simplify the install scripts
+
+    - Leverage iln to pare down the link script bits, perhaps
+
+- zsh:
+
+    - determine why tab completion seems to fail miserably for the bits in
+      executables in scripts/
+
+- resurrect tmux and go back to using it instead of dtach+dvtm
+
 - vim:
 
     - Consider resurrection of the vim-kergoth repo
