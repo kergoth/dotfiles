@@ -7,6 +7,11 @@
 
 interval=0.75
 
+if [ $# -lt 1 ]; then
+    echo >&2 "wait-for-process pattern ..."
+    exit 1
+fi
+
 # Wait for process(es) to start
 while true; do
     pids="$(pgrep -d, -f "$@" | sed -e "s/$/,/; s/$$,//; s/,$//;")"
