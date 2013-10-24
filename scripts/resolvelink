@@ -8,6 +8,8 @@ if [ $# -eq 0 ]; then
 fi
 
 backup=$(mktemp resolvelink.XXXX)
+trap "rm -f \"$backup\"" EXIT INT TERM
+
 ret=1
 for link; do
     dest="$(readlink "$link")"
@@ -18,14 +20,12 @@ for link; do
     fi
 
     mv "$link" "$backup"
-    set -x
     cd "${link%/*}"
     cp -av "$dest" "${link##*/}" || {
         ret=$?
         echo >&2 "Restoring original link for $link"
         mv "$backup" "$link"
     }
-    rm -f "$backup"
     cd - >/dev/null
 done
 exit $ret
