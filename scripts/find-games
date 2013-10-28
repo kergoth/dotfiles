@@ -1,0 +1,37 @@
+#!/bin/sh
+
+PATH="$(dirname "$0"):$PATH"
+
+show_game_wrapper_type=0
+while getopts th opt; do
+    case "$opt" in
+        t)
+            show_game_wrapper_type=1
+            ;;
+        \?|h)
+            echo >&2 "${0##*/} [OPTIONS]"
+            echo >&2
+            echo >&2 "Options:"
+            echo >&2
+            echo >&2 "  -0      Use a \0 separator rather than newline"
+            echo >&2 "  -t      Show game wrapper type in column 2"
+            exit 2
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+
+if [ $show_game_wrapper_type -eq 1 ]; then
+    tag_arg=-0
+else
+    tag_arg=
+fi
+
+tag-find $tag_arg -q "( kMDItemContentType == 'com.apple.application-bundle' || kMDItemContentType == 'net.washboardabs.boxer-game-package' )" Game "$@" | {
+    if [ $show_game_wrapper_type -eq 1 ]; then
+        xargs -0 identify-game-wrapper
+    else
+        cat
+    fi
+}

@@ -1,0 +1,54 @@
+#!/bin/sh
+
+identify_game_wrapper () {
+    if [ -e "$1/Wineskin.app" ]; then
+        echo "windows (wineskin)"
+    elif [ -e "$1/Contents/MacOS/WineskinLauncher" ]; then
+        echo "windows (wineskin)"
+    elif [ -e "$1/Contents/MacOS/cider" ]; then
+        echo "windows (cider)"
+    elif [ -e "$1/Contents/MacOS/run.sh" ] && grep -q "steam://" "$1/Contents/MacOS/run.sh"; then
+        # MacOS steam "shortcut" - runs `open steam://gameid`
+        echo steam
+    elif [ -e "$1/Contents/MacOS/Boxer Standalone" ]; then
+        echo "dos (boxer standalone)"
+    elif [ -e "$1/Contents/MacOS/ecwolf" ]; then
+        echo ecwolf
+    elif [ -e "$1/Contents/MacOS/Flash Player" ]; then
+        echo flash
+    elif [ -e "$1/Contents/MacOS/OSXDosboxWrapper" ]; then
+        echo "dos (osxdosboxwrapper)"
+    elif [ -e "$1/Contents/MacOS/MameWrapper" ]; then
+        echo mame
+    elif [ -e "$1/Contents/MacOS/SDLMameWrapper" ]; then
+        echo mame
+    elif [ -e "$1/Contents/MacOS/scummvm" ]; then
+        svwenginetype=$(sed -n -e '/SVWEngineType/{n; s#.*<integer>\([0-9]*\)</integer>.*#\1#p; }' "$1/Contents/Info.plist")
+        if [ "$svwenginetype" = "1" ]; then
+	    echo residualvm
+        else
+	    echo "scummvm (scummvmwrapper)"
+        fi
+    elif [ -e "$1/Contents/MacOS/JavaApplicationStub" ]; then
+        echo java
+    elif [ -e "$1/Contents/MacOS/GemRB Wrapper" ]; then
+        echo "gemrb"
+    elif [ -e "$1/Contents/MacOS/Doomsday" ]; then
+        echo "doomsday"
+    elif [ -e "$1/Contents/Resources/scummvm" ]; then
+        # GoG scummvm wrapper
+        echo "scummvm (gog)"
+    else
+        echo unknown
+    # else
+    #     echo "unknown [Contents: $(echo $(ls -1 2>/dev/null "$1/Contents/MacOS/" | sed "s#^$1/Contents/MacOS/##; s/$/, /") | sed "s/,$//")]"
+    fi
+}
+
+if [ $# -eq 1 ]; then
+    identify_game_wrapper "$1"
+else
+    for game; do
+        printf "%s\t%s\n" "$game" "$(identify_game_wrapper "$game")"
+    done
+fi
