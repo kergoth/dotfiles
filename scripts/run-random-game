@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PATH="$(dirname "$0"):$PATH"
+
+game="$(find-games "$@" | select-random)"
+printf >&2 "Running '%s'..\n" "$game"
+open "$game"

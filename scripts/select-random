@@ -1,0 +1,13 @@
+#!/bin/sh
+
+content="$(mktemp -t "${0##*/}.XXXX")"
+cat "$@" >"$content"
+count="$(wc -l <$content)"
+
+if [ $count -eq 0 ]; then
+    echo >&2 "Error: nothing to select"
+    exit 1
+fi
+
+sed -n $(echo $RANDOM % $count | bc)p "$content"
+rm -f "$content"
