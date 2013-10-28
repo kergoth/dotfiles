@@ -19,19 +19,23 @@ query_string () {
 }
 
 
-if [ $# -eq 0 ]; then
-    usage
-fi
-
 user_query=
 mdfind_args=
-while getopts 0q:h opt; do
+show_untagged=0
+show_all_tagged=0
+while getopts q:0uah opt; do
     case "$opt" in
+        q)
+            user_query="$OPTARG && "
+            ;;
         0)
             mdfind_args="-0"
             ;;
-        q)
-            user_query="$OPTARG && "
+        u)
+            show_untagged=1
+            ;;
+        a)
+            show_all_tagged=1
             ;;
         \?|h)
             usage
@@ -40,4 +44,21 @@ while getopts 0q:h opt; do
 done
 shift $(($OPTIND - 1))
 
-mdfind $mdfind_args "$user_query$(query_string "$@")"
+
+if [ $show_untagged -eq 1 ]; then
+    if [ $# -ne 0 ] || [ $show_all_tagged -eq 1 ]; then
+        echo >&2 "Error: -a, -u, and tag list are mutually exclusive"
+        exit 3
+    fi
+    mdfind $mdfind_args tag:
+elif [ $show_all_tagged -eq 1 ]; then
+    if [ $# -ne 0 ]; then
+        echo >&2 "Error: -a, -u, and tag list are mutually exclusive"
+        exit 3
+    fi
+    mdfind $mdfind_args 'tag:""'
+elif [ $# -eq 0 ]; then
+    usage
+else
+    mdfind $mdfind_args "$user_query$(query_string "$@")"
+fi
