@@ -18,35 +18,17 @@ query_string () {
     done | sed 's,^ && ,,'
 }
 
-quote(){
-    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
-$1
-EOF
-}
-
-save () {
-    case "$1" in
-    # when a string contains a "'" we have to escape it
-    *\'*)
-        saved="$saved $(quote "$1")"
-        ;;
-    # otherwise just quote the variable
-    *)
-        saved="$saved '$1'"
-        ;;
-    esac
-}
-
 
 if [ $# -eq 0 ]; then
     usage
 fi
 
 user_query=
+mdfind_args=
 while getopts 0q:h opt; do
     case "$opt" in
         0)
-            save "-$opt"
+            mdfind_args="-0"
             ;;
         q)
             user_query="$OPTARG && "
@@ -58,6 +40,4 @@ while getopts 0q:h opt; do
 done
 shift $(($OPTIND - 1))
 
-query="$user_query$(query_string "$@")"
-eval set -- "$saved"
-mdfind "$@" "$query"
+mdfind $mdfind_args "$user_query$(query_string "$@")"
