@@ -1,6 +1,13 @@
 #!/bin/sh
 
 identify_game_wrapper () {
+    case "$1" in
+        *.boxer)
+            echo "dos (boxer)"
+            return
+            ;;
+    esac
+
     if [ -e "$1/Wineskin.app" ]; then
         echo "windows (wineskin)"
     elif [ -e "$1/Contents/MacOS/WineskinLauncher" ]; then
