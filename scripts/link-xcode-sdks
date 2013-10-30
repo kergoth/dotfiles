@@ -37,8 +37,9 @@ for platform in "$sdk_path"/*.platform; do
     platform="${platform#$sdk_path/}"
     for sdk in "$sdk_path/$platform/"*.sdk; do
         dest="$xcode_path/Platforms/$platform/Developer/SDKs/${sdk##*/}"
-        if [ ! -d "$dest" ]; then
-            sudo ln -sf "$sdk" "$dest"
+        if [ ! -d "$dest" ] || [ -h "$dest" ]; then
+            sudo rm -f "$dest"
+            sudo ln -s "$sdk" "$dest"
         fi
     done
 done
