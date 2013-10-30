@@ -7,6 +7,8 @@
 # The original idea (and a couple settings) were grabbed from:
 #   https://github.com/mathiasbynens/dotfiles/blob/master/.osx
 
+PATH="$(dirname "$0"):$PATH"
+
 # Disable press-and-hold for keys in favor of key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false
 
@@ -57,3 +59,6 @@ brew install apple-gcc4.2
 
 # Kill Skype's splash screen
 defaults write com.skype.skype SKShowSplash NO
+
+# Link in old XCode SDks if we can
+link-xcode-sdks
