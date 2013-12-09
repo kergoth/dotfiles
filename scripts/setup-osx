@@ -42,8 +42,10 @@ chflags nohidden ~/Library
 # Show system info at the login screen
 sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
 
+# Kill Skype's splash screen
+defaults write com.skype.skype SKShowSplash NO
+
 # launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
-sudo ln -s /System/Library/CoreServices/Screen\ Sharing.app /Applications/
 sudo sysctl -w kern.sysv.shmall=65536
 sudo sysctl -w kern.sysv.shmmax=16777216
 
@@ -52,6 +54,3 @@ killall Dock
 
 # Ensure that pbcopy/pbpaste work from tmux
 brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
-
-# Kill Skype's splash screen
-defaults write com.skype.skype SKShowSplash NO
