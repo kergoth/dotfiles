@@ -53,12 +53,5 @@ killall Dock
 # Ensure that pbcopy/pbpaste work from tmux
 brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
 
-# Ensure we have Apple's gcc 4.2, not just llvm's gcc frontend
-brew tap homebrew/dupes
-brew install apple-gcc4.2
-
 # Kill Skype's splash screen
 defaults write com.skype.skype SKShowSplash NO
-
-# Link in old XCode SDks if we can
-link-xcode-sdks
