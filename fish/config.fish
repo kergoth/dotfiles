@@ -42,7 +42,6 @@ set -x LC_ALL
 set -x LESS FRX
 set -x PAGER less
 set -x MANWIDTH 80
-set -x SHELL (which fish)
 set -x VIRTUALENVWRAPPER_VIRTUALENV_ARGS --no-site-packages --distribute
 
 set -x ACKRC .ackrc
@@ -90,6 +89,8 @@ set -gx VIMINIT 'let $MYVIMRC = "$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
 # Reduce the ncurses escape wait time (ms)
 set -gx ESCDELAY 25
+
+set -x SHELL (which fish)
 
 # Functions {{{1
 if begin test -z $TMUX; and begin test $TERM = screen; or test $TERM = screen-256color; end; end
