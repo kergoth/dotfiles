@@ -172,6 +172,9 @@ clone () {
         git config remote.origin.fetch "+refs/*:refs/*"
     else
         git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+        # Update from upstream, in case the branch to be checked out wasn't
+        # available in the local source repo
+        git fetch origin
         git branch --track $checkout_branch origin/$checkout_branch
         git update-ref HEAD refs/heads/$checkout_branch
         git read-tree $checkout_branch
