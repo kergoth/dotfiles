@@ -4,7 +4,7 @@ set DOTFILESDIR $FISHDIR/..
 set tacklebox_path $FISHDIR/tacklebox
 set tacklebox_plugins misc python volatile z virtualenv
 
-set PATH $DOTFILESDIR/scripts $DOTFILESDIR/scripts/connections $PATH
+set PATH $DOTFILESDIR/scripts $DOTFILESDIR/scripts/connections $DOTFILESDIR/external/bin $PATH
 
 if test -e ~/.local/bin
     set PATH ~/.local/bin $PATH
