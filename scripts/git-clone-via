@@ -50,6 +50,7 @@ process_arguments () {
 
     from="$(abspath "$1")"
     shift
+    from="$(cd "$from" && git rev-parse --show-toplevel)"
 
     to=$1
     if [ -z "$to" ]; then
@@ -162,8 +163,8 @@ clone () {
     fi
 
     # Fetch the refs from the source repo
-    git fetch -n $from $heads
-    git fetch -n $from "$source_tags_refs:refs/tags/*"
+    git fetch -n $source_git_dir $heads
+    git fetch -n $source_git_dir "$source_tags_refs:refs/tags/*"
 
     # Point back at upstream, and do checkout if appropriate
     git config remote.origin.url "$source_url"
