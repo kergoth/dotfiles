@@ -1,12 +1,17 @@
 #!/bin/sh
 
 set -u
-
 if [ $# -lt 1 ]
 then
     attach
 else
     session_name=$1
     shift
+    ENV_VARS="^(DISPLAY|SSH_AGENT_PID|SSH_ASKPASS|SSH_CONNECTION|SSH_AUTH_SOCK|WINDOWID|XAUTHORITY)="
+    socket_dir="${TMPDIR:-/tmp}/dtach-$USER"
+
+    mkdir -p "$socket_dir"
+    export DTACH_SESSION="$session_name"
+    env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
     attach -r winch "$@" -s $session_name dvtm-status $session_name
 fi
