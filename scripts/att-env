@@ -1,0 +1,5 @@
+#!/bin/sh
+
+session_name="${1:-$DTACH_SESSION}"
+socket_dir="${TMPDIR:-/tmp}/dtach-$USER"
+cat "$socket_dir/$session_name.env"
