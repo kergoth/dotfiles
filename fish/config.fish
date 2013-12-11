@@ -6,6 +6,10 @@ set tacklebox_plugins misc python volatile z virtualenv
 
 set PATH $DOTFILESDIR/scripts $DOTFILESDIR/scripts/connections $PATH
 
+if test -e ~/.local/bin
+    set PATH ~/.local/bin $PATH
+end
+
 if not set -q HOME
     set -x HOME (cd ~; and pwd)
 end
