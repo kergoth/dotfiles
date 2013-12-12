@@ -28,7 +28,7 @@ if [ -n "$DVTM_ID" ]; then
     exit 3
 fi
 
-DVTM_ID="$(printf "%s\n" "$1" | tr [A-Z] [a-z])"
+export DVTM_ID="$(printf "%s\n" "$1" | tr [A-Z] [a-z])"
 if [ ! -e "$DVTM_TMPDIR" ]; then
     mkdir -p $DVTM_TMPDIR
     chmod 0700 $DVTM_TMPDIR
