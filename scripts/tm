@@ -36,6 +36,6 @@ fi
 mkdir -p "$DVTM_TMPDIR/${DVTM_ID%/*}"
 SOCKET="$DVTM_TMPDIR/$DVTM_ID-session"
 
-dtach -A $SOCKET -r winch -z dvtm-status "$@"
+dtach -A $SOCKET -r winch -z dvtm-kergoth-status "$@"
 
 exit 0
