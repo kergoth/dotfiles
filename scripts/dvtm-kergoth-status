@@ -1,13 +1,14 @@
 #!/bin/sh
 # Courtesy http://waxandwane.org/dvtm.html, with modification
 
-if [ $# -ne 1 ] || [ -z "$1" ]; then
-    echo -e "Usage:  ${0##*/}  \n" 1>&2
+if [ $# -lt 1 ] || [ -z "$1" ]; then
+    printf "Usage:  ${0##*/} ID [CMD..]\n" >&2
     exit 1
 fi
 
 
 ID=$(echo $1 | tr [A-Z] [a-z])
+shift
 LOGNAME="${LOGNAME:-$(logname)}"
 DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
 if [ ! -e "$DVTM_TMPDIR" ]; then
@@ -29,4 +30,4 @@ STATUS_PID=$!
 trap "kill $STATUS_PID; rm $FIFO" EXIT INT TERM
 disown $STATUS_PID
 export DVTM_ID=$ID
-dvtm -s $FIFO 2>/dev/null
+dvtm -s $FIFO -h 4096 "$@" 2>/dev/null
