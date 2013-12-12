@@ -13,5 +13,6 @@ else
     mkdir -p "$socket_dir"
     export DTACH_SESSION="$session_name"
     env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
+    trap "rm -f \"\$socket_dir/$session_name.env\"" INT TERM EXIT
     attach -r winch "$@" -s $session_name dvtm-status $session_name
 fi
