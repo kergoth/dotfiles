@@ -14,5 +14,5 @@ else
     export DTACH_SESSION="$session_name"
     env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
     trap "rm -f \"\$socket_dir/$session_name.env\"" INT TERM EXIT
-    attach -r winch "$@" -s $session_name dvtm-kergoth-status $session_name
+    attach -r winch -s $session_name dvtm-kergoth-status $session_name "$@"
 fi
