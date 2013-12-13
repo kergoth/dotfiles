@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -u
 if [ $# -lt 1 ]
 then
     attach
@@ -14,5 +13,10 @@ else
     export DTACH_SESSION="$session_name"
     env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
     trap "rm -f \"\$socket_dir/$session_name.env\"" INT TERM EXIT
-    attach -r winch -s $session_name dvtm-kergoth-status $session_name "$@"
+    if [ -n "$STY" -o -n "$TMUX" ]; then
+        printf "\033k%s\033\\" "$session_name"
+    else
+        printf "\033]0;%s\007" "$session_name"
+    fi
+    attach -r winch "$@" -s $session_name dvtm-kergoth-status $session_name
 fi
