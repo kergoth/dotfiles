@@ -12,7 +12,6 @@ else
     mkdir -p "$socket_dir"
     export DTACH_SESSION="$session_name"
     env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
-    trap "rm -f \"\$socket_dir/$session_name.env\"" INT TERM EXIT
     if [ -n "$STY" -o -n "$TMUX" ]; then
         printf "\033k%s\033\\" "$session_name"
     else
