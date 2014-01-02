@@ -4,12 +4,17 @@
 
     - Leverage iln to pare down the link script bits, perhaps
 
-- zsh:
+- fish:
 
-    - determine why tab completion seems to fail miserably for the bits in
-      executables in scripts/
+    - Set up directory bookmarking
 
-- resurrect tmux and go back to using it instead of dtach+dvtm
+        - A very simple mechanism could be done the way markjump is:
+
+            https://raw.github.com/gitaarik/markjump/master/markjump
+
+    - Switch to fasd rather than z
+
+        https://github.com/clvv/fasd
 
 - vim:
 
@@ -31,8 +36,3 @@
         - lesshst
 
     - Move these from .config to .local/share
-
-        - zprezto
-
-          This would require patching/forking zprezto, as it hardcodes its own
-          location relative to ZDOTDIR
