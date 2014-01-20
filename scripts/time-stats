@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+    echo >&2 "Usage: ${0%%*/} REPEAT_COUNT ARGS.."
+    exit 1
+fi
+
+count=$1
+shift
+
+times=$(mktemp ${0##*/}.XXXX)
+trap "rm -f $times" EXIT INT TERM
+
+for i in $(seq 1 ${count:-1}); do
+    command time -a -o "$times" "$@"
+done
+stats --trim-outliers <$times
