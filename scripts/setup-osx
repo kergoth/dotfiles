@@ -36,6 +36,9 @@ defaults write com.apple.dock expose-animation-duration -float 0.12
 # Make hidden dock icons translucent
 defaults write com.apple.dock showhidden -bool true
 
+defaults write com.apple.iTunes allow-half-stars -bool TRUE
+
+
 # Show the ~/Library folder
 chflags nohidden ~/Library
 
