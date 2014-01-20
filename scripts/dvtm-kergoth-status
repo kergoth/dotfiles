@@ -21,10 +21,6 @@ FIFO="$DVTM_TMPDIR/$ID-status"
 chmod 600 $FIFO
 
 dvtm-print-status -c 60 -s "$ID" >$FIFO &
-# while true; do
-#     dvtm-print-status "$ID"
-#     sleep 60
-# done > $FIFO &
 
 STATUS_PID=$!
 trap "kill $STATUS_PID; rm $FIFO" EXIT INT TERM
