@@ -1,5 +1,16 @@
 #!/bin/sh
 
 session_name="${1:-$DTACH_SESSION}"
+if [ -z "$session_name" ]; then
+    echo >&2 "Error: not within a session, and no session specified."
+    echo >&2 "Usage: att-env [SESSIONNAME]"
+    exit 1
+fi
+
 socket_dir="${TMPDIR:-/tmp}/dtach-$USER"
+if [ ! -d "$socket_dir" ]; then
+    echo >&2 "Error: socket directory not found for this user, aborting"
+    exit 2
+fi
+
 cat "$socket_dir/$session_name.env"
