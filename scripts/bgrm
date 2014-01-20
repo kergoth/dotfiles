@@ -23,5 +23,5 @@ while read item; do
     mv "$item" "$tmpdir/" && set -- "$@" "$tmpdir"
 done <$items
 
-rm -rf "$@" &
+rm -rf "$@" &>/dev/null </dev/null &
 disown
