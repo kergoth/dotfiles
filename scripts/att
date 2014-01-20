@@ -17,5 +17,5 @@ else
     else
         printf "\033]0;%s\007" "$session_name"
     fi
-    attach -r winch "$@" -s $session_name dvtm-kergoth-status $session_name
+    attach -r winch -Z "$@" -s $session_name dvtm-kergoth-status $session_name
 fi
