@@ -24,3 +24,4 @@ while read item; do
 done <$items
 
 rm -rf "$@" &
+disown
