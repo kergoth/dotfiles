@@ -2,7 +2,7 @@
 
 if [ $# -lt 1 ]
 then
-    attach
+    atach
 else
     session_name=$1
     shift
@@ -17,5 +17,5 @@ else
     else
         printf "\033]0;%s\007" "$session_name"
     fi
-    attach -r winch -Z "$@" -s $session_name dvtm-kergoth-status $session_name
+    atach -r winch -Z "$@" -s $session_name dvtm-kergoth-status $session_name
 fi
