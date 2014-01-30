@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" "$@"
