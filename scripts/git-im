@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+    echo >&2 "git-im BRANCH [MERGE-NAME]"
+    exit 1
+fi
+
+branch="$1"
+shift
+if [ $# -gt 0 ]; then
+    name="$1"
+    shift
+else
+    full_branch="$(git rev-parse --symbolic-full-name "$branch")"
+    full_branch="$(echo "$full_branch" | sed 's,^refs/remotes/[^/]*/,,; s,^refs/[^/]*/,,')"
+    name="merge-$(echo "$full_branch" | tr / -)"
+fi
+
+git-imerge start --name="$name" --first-parent "$@" "$branch"

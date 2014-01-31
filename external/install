@@ -10,6 +10,9 @@ fi
 if [ ! -e cheat ]; then
     git clone https://github.com/kergoth/cheat
 fi
+if [ ! -e git-imerge ]; then
+    git clone https://github.com/mhagger/git-imerge
+fi
 
 link cheat/cheatsheets ~/.cheat
 
@@ -19,3 +22,4 @@ ln -sf ../goproj/bin/*
 ln -sf ../git-cherry-tree/git-cherry-tree
 ln -sf ../iln/iln
 ln -sf ../cheat/cheat
+ln -sf ../git-imerge/git-imerge
