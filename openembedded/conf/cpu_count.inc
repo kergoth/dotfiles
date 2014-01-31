@@ -18,6 +18,7 @@ def cpu_count():
     try:
         import multiprocessing
     except ImportError:
+        # FIXME: run sysctl -n hw.ncpu on Darwin
         return get_proc_cpucount()
     else:
         return multiprocessing.cpu_count()
