@@ -1,1 +1,1 @@
-complete -c att -f -a '(attach)'
+complete -c att -f -a '(atach)'
