@@ -117,6 +117,7 @@ alias h      't.py --list tasks-personal.txt'
 alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
 alias git hub
 alias dtrx   'dtrx --one=here'
+alias mosh   'mosh --forward-agent'
 
 # Tacklebox {{{1
 if status --is-interactive
