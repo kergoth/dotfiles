@@ -21,6 +21,9 @@ defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 # Always open everything in Finder's list view. This is important.
 defaults write com.apple.finder FXPreferredViewStyle Nlsv
 
+# Enable quit menu item for Finder
+defaults write com.apple.finder QuitMenuItem -bool true
+
 # Enable text selection in quick look windows
 defaults write com.apple.finder QLEnableTextSelection -bool true
 
