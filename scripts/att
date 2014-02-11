@@ -2,7 +2,7 @@
 
 if [ $# -lt 1 ]
 then
-    atach
+    atach -l | sort
 else
     session_name=$1
     shift
