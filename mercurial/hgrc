@@ -3,8 +3,8 @@ ignore = ~/.config/hg/exclude
 username = Christopher Larson <kergoth@gmail.com>
 commitsubrepos = False
 
-#[web]
-#cacerts = /etc/ssl/certs/ca-certificates.crt
+[web]
+cacerts = /etc/ssl/certs/ca-certificates.crt
 
 [merge-tools]
 vimdiff.executable = vim
