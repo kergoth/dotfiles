@@ -190,9 +190,6 @@ set wildignore+=*.DS_Store                       " OSX metadata
 set wildignore+=*.luac                           " Lua byte code
 set wildignore+=*.pyc,*.pyo                      " Python byte code
 
-" Less annoying escaping for regexes
-set magic
-
 " Smart case handling for searches
 set ignorecase
 set smartcase
@@ -339,6 +336,10 @@ nmap ; :
 " Make zO recursively open whatever top level fold we're in, no matter where
 " the cursor happens to be.
 nnoremap zO zCzO
+
+" Default to "very magic" regex searches
+nnoremap / /\v
+nnoremap ? ?\v
 
 " Easy buffer navigation
 noremap <C-h>  <C-w>h
