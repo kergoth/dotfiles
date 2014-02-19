@@ -329,6 +329,10 @@ runtime! ftplugin/man.vim
 " file being edited.
 command! -nargs=0 -complete=command Bcd lcd %:p:h
 " }}}
+" Abbreviations {{{
+iabbrev adn and
+iabbrev teh the
+" }}}
 " Key Mapping {{{
 " Fix command typos
 nmap ; :
