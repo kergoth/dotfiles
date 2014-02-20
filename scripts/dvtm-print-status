@@ -1,54 +1,61 @@
 #!/bin/sh
 
-# Ghetto map courtesy http://stackoverflow.com/a/1495559 + hlist/hclear
-hset () {
-    eval hash"$1"values='"${hash'"$1"'values} $2"'
-    eval hash"$1_$2"='$3'
+# Ghetto map courtesy http://stackoverflow.com/a/1495559 + dlist/dclear
+dset () {
+    eval dict"$1"values='"${dict'"$1"'values} $2"'
+    eval dict"$1_$2"='$3'
 }
 
-hget () {
-    eval echo '${hash'"$1_$2"'#has'}
+dget () {
+    eval echo '${dict'"$1_$2"'#has'}
 }
 
-hlist () {
-    eval echo '${hash'"$1"'values'}
+dlist () {
+    eval echo '${dict'"$1"'values'}
 }
 
-hclear () {
-    eval hash"$1"values=''
-    for value in $(hlist "$1"); do
-        eval unset hash"$1_$2"
+dclear () {
+    eval dict"$1"values=''
+    for value in $(dlist "$1"); do
+        eval unset dict"$1_$2"
     done
 }
 
-update_static_patterns () {
-    hset dvtm_patterns user ${LOGNAME:-$(logname)}
-    hset dvtm_patterns host ${HOSTNAME:-$(hostname -s)}
-    hset dvtm_patterns id ${ID}
+dexpand () {
+    expanded="$2"
+    for key in $(dlist "$1"); do
+        value="$(dget "$1" "$key")"
+        eval expanded='"${expanded/\{'"$key"'\}/'"$value"'}"'
+    done
+    printf "$expanded"
+}
+
+update_static_data () {
+    dset static_data user ${LOGNAME:-$(logname)}
+    dset static_data host ${HOSTNAME:-$(hostname -s)}
+    dset static_data id ${ID}
     if [ -n "$debian_chroot" ]; then
-        hset dvtm_patterns debian_chroot "$debian_chroot"
+        dset static_data debian_chroot "$debian_chroot"
     elif [ -r "/etc/debian_chroot" ]; then
-        hset dvtm_patterns debian_chroot "$(cat /etc/debian_chroot)"
+        dset static_data debian_chroot "$(cat /etc/debian_chroot)"
     fi
     if [ -n "$CLEARCASE_ROOT" ]; then
-        hset dvtm_patterns ccache "$(echo $CLEARCASE_ROOT | cut -d/ -f3)"
+        dset static_data ccache "$(echo $CLEARCASE_ROOT | cut -d/ -f3)"
     fi
 }
 
-update_dynamic_patterns () {
-    hset dvtm_patterns loadavg "$(uptime | sed 's/.*ages*: //')"
-    hset dvtm_patterns date "$(date +"%a %d-%b-%g %l:%M %p")"
+update_dynamic_data () {
+    dset dynamic_data loadavg "$(uptime | sed 's/.*ages*: //')"
+    dset dynamic_data date "$(date +"%a %d-%b-%g %l:%M %p")"
 }
 
 print_status () {
-    update_dynamic_patterns
-
-    status_value="${DVTM_STATUS}"
-    for key in $(hlist dvtm_patterns); do
-        value="$(hget dvtm_patterns "$key")"
-        eval status_value='"${status_value/\{'"$key"'\}/'"$value"'}"'
-    done
-    printf "$status_value"
+    if [ $fully_static -eq 1 ]; then
+        printf "$DVTM_STATUS"
+    else
+        update_dynamic_data
+        printf "$(dexpand dynamic_data "$DVTM_STATUS")"
+    fi
 }
 
 usage () {
@@ -104,7 +111,13 @@ if [ $# -gt 1 ]; then
 else
     DVTM_STATUS="${DVTM_STATUS:-$DVTM_STATUS_DEFAULT}"
 fi
-update_static_patterns
+update_static_data
+DVTM_STATUS="$(dexpand static_data "$DVTM_STATUS")"
+
+# If any unexpanded keys remain, update them on every refresh
+echo "$DVTM_STATUS" | grep -q "{[^}]*}"
+fully_static=$?
+
 if [ -n "$continuous" ]; then
     while true; do
         if [ $separate_lines -eq 0 ]; then
