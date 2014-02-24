@@ -89,6 +89,8 @@ set -gx VIMINIT 'let $MYVIMRC = "$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 # Reduce the ncurses escape wait time (ms)
 set -gx ESCDELAY 25
 
+set -gx NCURSES_NO_UTF8_ACS 1
+
 set -x SHELL (which fish)
 
 # Functions {{{1
