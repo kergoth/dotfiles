@@ -1,5 +1,9 @@
 if begin set -q TERM_PROGRAM; and test $TERM_PROGRAM = Apple_Terminal; end
     function fish_title
+        if set -q DTACH_SESSION
+            return
+        end
+
         printf $HOSTNAME
         if set -q fish_title_override
             printf " — %s" $fish_title_override
@@ -10,6 +14,10 @@ if begin set -q TERM_PROGRAM; and test $TERM_PROGRAM = Apple_Terminal; end
     end
 else
     function fish_title
+        if set -q DTACH_SESSION
+            return
+        end
+
         if set -q fish_title_override
             set -g fish_title_string (printf "%s — %s" $fish_title_override $HOSTNAME)
         else
