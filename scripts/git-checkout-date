@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+    echo >&2 "Usage: git checkout-date DATE [CHECKOUT_ARGS]"
+    exit 1
+fi
+date="$1"
+shift
+head="$(git rev-parse HEAD)"
+commit="$(git rev-list -n 1 --before="$date" HEAD)"
+
+if [ -n "$commit" -a "$commit" != "$head" ]; then
+    echo >&2 "Checking out $commit"
+    git checkout "$commit" "$@"
+else
+    echo >&2 "Nothing to check out, or same as current, ignoring"
+fi
