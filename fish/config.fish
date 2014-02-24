@@ -71,13 +71,6 @@ end
 
 
 set OS (uname -s | tr A-Z a-z)
-if test -e $FISHDIR/$OS.fish
-    . $FISHDIR/$OS.fish
-end
-
-if test -e $FISHDIR/$HOSTNAME.fish
-    . $FISHDIR/$HOSTNAME.fish
-end
 
 if test $OS = darwin
     set tacklebox_plugins $tacklebox_plugins osx
@@ -118,6 +111,15 @@ alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
 alias git hub
 alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
+
+# Context specific config files {{{1
+if test -e $FISHDIR/$OS.fish
+    . $FISHDIR/$OS.fish
+end
+
+if test -e $FISHDIR/$HOSTNAME.fish
+    . $FISHDIR/$HOSTNAME.fish
+end
 
 # Tacklebox {{{1
 if status --is-interactive
