@@ -1,0 +1,209 @@
+#!/bin/sh
+
+set -e
+
+titlecase () {
+    if [ $# -gt 0 ]; then
+        python -c 'import titlecase; import sys; print(titlecase.titlecase(" ".join(sys.argv[1:])))' "$@"
+    else
+        python -c 'import titlecase; import sys; print(titlecase.titlecase(sys.stdin.read().rstrip()))'
+    fi
+}
+
+file_name_adjust () {
+    case "$1" in
+        *.*)
+            base="${1%.*}"
+            ext=".${1##*.}"
+            ;;
+        *)
+            base="$1"
+            ext=""
+    esac
+    echo "$(echo "$base" | tr A-Z a-z | sed "s#${gogdir##*/}_##; s,_, ,g; s,.* wallpaper,wallpaper,; s,.* arts,artwork,; s,.* artworks?,artwork,; s,.* avatars,avatars,; s,refcard,reference card,; s,artworks,artwork,; s,arts,artwork,; s,wallpapers,wallpaper," | titlecase)$ext"
+}
+
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="$PWD/$1"
+    fi
+    echo "$_path"
+}
+
+handle_dos () {
+    if ls "$1"/Contents/Resources/*.boxer >/dev/null 2>&1; then
+        cp -a "$1" "${1%.app}.orig.app"
+        dos4gw-to-dos32a "$1/Contents/Resources"/*.boxer
+    fi
+}
+
+mount_dmg () {
+    dmg="$1"
+    hdiutil attach "$dmg" >/dev/null 2>&1
+    hdiutil info|grep -E 'image-path|/Volumes/'|grep -A1 "$dmg"|tail -n 1|cut -d"	" -f3-
+}
+
+trash () {
+    if ! which trash &>/dev/null; then
+        rm -rf "$@"
+    else
+        for arg; do
+            if [ -e "$arg" ]; then
+                command trash "$arg"
+            fi
+        done
+    fi
+}
+
+link_docs () {
+    pushd "$1/Extras" >/dev/null
+    for dir in ../Contents/Resources/*.boxer/Doc*/ \
+               ../Contents/Resources/drive_c/GOG\ Games/*/ \
+               ../Contents/Resources/*.boxer/C\ *.harddisk/ \
+               ../Contents/Resources/drive_c/Program\ Files/GOG.com/*/; do
+        if [ -e "$dir" ]; then
+            for path in "$dir"/*.{pdf,txt,doc,rtf,htm}; do
+                if [ -e "$path" ]; then
+                    ln -sf "$path" .
+                fi
+            done
+        fi
+    done
+    if [ -e "../Contents/Resources/documents" ]; then
+        if [ -e Documents ]; then
+            ln -sf "../../Contents/Resources/documents"/* Documents/
+        else
+            ln -sf ../Contents/Resources/documents Documents
+        fi
+    fi
+    popd >/dev/null
+}
+
+process_gogdir () {
+    gogdir="$1"
+    outdir="$2"
+
+    if [ -e "$outdir" ]; then
+        echo >&2 "Error: $outdir already exists, aborting"
+        exit 1
+    fi
+    mkdir -p "$outdir"
+
+    gogfiles_temp="$PWD/$(mktemp -d "${0##*/}.XXXX")"
+    trap "trash \"$gogfiles_temp\"" EXIT INT TERM
+
+    if ls "$gogdir/"*.dmg >/dev/null 2>&1; then
+        for dmg in "$gogdir"/*.dmg; do
+            mountpath="$(mount_dmg "$dmg")"
+            found=0
+            for file in "$mountpath"/*; do
+                fn="${file##*/}"
+                case "$fn" in
+                    *.app)
+                        found=1
+                        cp -a "$file" "$outdir"/
+                        ;;
+                    *)
+                        if [ -h "$file" ]; then
+                            continue
+                        elif [ -d "$file" ]; then
+                            found=1
+                            cp -a "$file" "$outdir"/
+                        fi
+                        ;;
+                esac
+            done
+            if [ $found -eq 0 ]; then
+                echo >&2 "Error: did not find an app on the disk image, aborting"
+                exit 3
+            fi
+
+            hdiutil detach "$mountpath"
+        done
+    else
+        cp -a "$gogdir"/*.exe "$outdir"/
+        cp -a "$gogdir"/*.bin "$outdir"/ 2>/dev/null || true
+    fi
+
+    mkdir -p "$outdir"/Extras
+    cd "$outdir"/Extras
+    for zip in "$gogdir"/*.zip; do
+        if [ ! -e "$zip" ]; then
+            continue
+        fi
+
+        case "${zip##*/}" in
+            *soundtrack*|*ost*|*music*)
+                cp -av "$zip" ~/Downloads/
+                ;;
+            *)
+                dtrx --one=here "$zip"
+                ;;
+        esac
+    done
+    rmdir "$outdir"/Extras 2>/dev/null || true
+
+    for i in */*.pdf; do
+        if [ -e "$i" ]; then
+            mv "$i" .
+        fi
+    done
+    ls -1 */*.{mp{3,4},mov,avi,mpg,mpeg,flac,epub,mobi} 2>/dev/null | sed 's,\(.*\)/.*,\1,' | sort -u | while read mediadir; do
+        mv "$mediadir" ~/Downloads/
+    done
+    rmdir */ 2>/dev/null || true
+
+    for i in *; do
+        name="$(file_name_adjust "$i")"
+        if [ "$name" != "$i" ]; then
+            echo >&2 "$i -> $name"
+            mv "$i" "$name"
+        fi
+    done
+    trash *Soundtrack* *Ost*
+
+    cd - >/dev/null
+
+    if [ $(ls -1d "$outdir"/*.app 2>/dev/null | wc -l) -eq 1 ]; then
+        app="$(echo "$outdir"/*.app)"
+        cp -a "$outdir/Extras/." "$app/Extras/"
+        rm -rf "$outdir/Extras"
+    fi
+
+    for i in "$outdir"/*; do
+        case "${i##*/}" in
+            Extras)
+                continue
+                ;;
+            *.app)
+                link_docs "$i"
+                handle_dos "$i"
+                ;;
+            *)
+                if [ -d "$i" ]; then
+                    for app in "$i"/*.app; do
+                        if [ -d "$app" ]; then
+                            handle_dos "$app"
+                            link_docs "$app"
+                        fi
+                    done
+                fi
+                ;;
+        esac
+    done
+}
+
+if [ $# -lt 1 ]; then
+    echo >&2 "gog-extract-mac GOGDIR [OUTDIR]"
+    exit 2
+fi
+
+gogdir="$(abspath "${1%/}")"
+if [ $# -lt 2 ]; then
+    outdir="$PWD/${gogdir##*/}"
+else
+    outdir="$(abspath "$2")"
+fi
+
+process_gogdir "$gogdir" "$outdir"
