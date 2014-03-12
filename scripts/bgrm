@@ -11,9 +11,9 @@ done
 while read item; do
     if [ "${item%bgrm.}" != "$item" ]; then
         # Existing bgrm directories can presumably be skipped
-        :
+        continue
     fi
-    if basename "$item" | grep -q "^bgrm."; then
+    if [ ! -e "$item" ]; then
         continue
     fi
 
