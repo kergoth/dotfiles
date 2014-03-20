@@ -6,8 +6,11 @@ usage () {
     echo >&2 "Use spotlight to find files with (optionally specifed) tags."
     echo >&2 "Uses mavericks tags, not OpenMeta tags, at this time."
     echo >&2
+    echo >&2 "If a specified tag starts with -, it searches for files without"
+    echo >&2 "that tag. For example, -Game shows files without the Game tag."
+    echo >&2
     echo >&2 "When multiple tags are specified, files are shown which have"
-    echo >72 "all the specified tags."
+    echo >&2 "all the specified tags."
     echo >&2
     echo >&2 "Options:"
     echo >&2 "  -q USER_QUERY   Append a query directly to the mdfind cmd"
