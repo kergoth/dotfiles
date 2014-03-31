@@ -1,13 +1,15 @@
 #!/bin/sh
-#
-# Compare the files within two directories, but not the contents of said
-# files. Dumps the file lists for each with 'find', sorts, then uses 'comm' to
-# compare, with a bit of sed to retain the full paths.
 
 if [ $# -lt 2 ]; then
-    echo >&2 "Usage: comm-files DIR1 DIR2 [find arguments..]"
-    echo >&2
-    echo >72 "find arguments default to: -type f -a -type l"
+    cat >&2 <<END
+Usage: comm-files DIR1 DIR2 [find arguments..]
+
+Compare the files within two directories, but not the contents of said files.
+Dump the file lists for each with 'find', sort, then use 'comm' to compare,
+with a bit of sed to retain the full paths.
+
+find arguments default to: -type f -o -type l
+END
     exit 1
 fi
 
