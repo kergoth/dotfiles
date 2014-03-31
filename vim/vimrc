@@ -341,10 +341,6 @@ nmap ; :
 " the cursor happens to be.
 nnoremap zO zCzO
 
-" Default to "very magic" regex searches
-nnoremap / /\v
-nnoremap ? ?\v
-
 " Easy buffer navigation
 noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
