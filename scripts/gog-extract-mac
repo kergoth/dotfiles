@@ -167,6 +167,7 @@ process_gogdir () {
 
     if [ $(ls -1d "$outdir"/*.app 2>/dev/null | wc -l) -eq 1 ]; then
         app="$(echo "$outdir"/*.app)"
+        mkdir -p "$app/Extras"
         cp -a "$outdir/Extras/." "$app/Extras/"
         rm -rf "$outdir/Extras"
     fi
