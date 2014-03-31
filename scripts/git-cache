@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # TODO: add gc command
 #
@@ -102,7 +102,7 @@ process_global_options () {
     done
 }
 
-scripts_dir="$(cd $(dirname "$0") && pwd)"
+scripts_dir="$(cd "$(dirname "$0")" && pwd)"
 cache_dir="$HOME/.git-cache"
 verbose=0
 
