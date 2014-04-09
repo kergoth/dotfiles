@@ -3,7 +3,7 @@ if not set -q watch_interval
 end
 
 function watch
-    if test (count $argv) -ne 1
+    if test (count $argv) -lt 1
         echo >&2 "Usage: watch command ARGS"
         return 1
     end
