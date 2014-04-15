@@ -110,7 +110,6 @@ alias t.py   'command t.py --task-dir ~/Dropbox/Documents'
 alias t      't.py --list tasks.txt'
 alias h      't.py --list tasks-personal.txt'
 alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
-alias git hub
 alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
 
