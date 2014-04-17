@@ -120,7 +120,7 @@ module Atach
   #
   # @note Switches purposely differ from dtach for clarity and memorability.
   def self.main
-    unless system 'which dtach &>/dev/null'
+    unless system 'which dtach >/dev/null 2>&1'
       $stderr.puts "#{NAME}: dtach not found"
       exit 1
     end
