@@ -1,3 +1,3 @@
 function source_sh
-	sh -c '. "$@" && exec fish --login' source $argv
+	bash -c '. "$@" && exec fish --login' source $argv
 end
