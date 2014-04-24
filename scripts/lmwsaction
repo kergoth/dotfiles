@@ -78,7 +78,7 @@ def doParse():
 	parser.set_defaults(**defaults)
 	return parser.parse_args()
 
-wsdlURL="https://lm.alm.mentorg.com/LabManager/SOAP/LabManager.asmx?WSDL"
+wsdlURL="https://labmanager.alm.mentorg.com/LabManager/SOAP/LabManager.asmx?WSDL"
 vmwareNS="http://vmware.com/labmanager"
 
 class Auth(structType):
