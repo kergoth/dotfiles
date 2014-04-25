@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+import pickle
+import sys
+try:
+    import pprintpp as pprint
+except ImportError:
+    import pprint
+
+if len(sys.argv) < 2:
+    sys.exit('Usage: dump-pickle FILENAME')
+
+filename = sys.argv[1]
+with open(filename, 'rb') as f:
+    p = pickle.load(f)
+    pprint.pprint(p)
