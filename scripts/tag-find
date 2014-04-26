@@ -22,6 +22,10 @@ usage () {
     exit 2
 }
 
+mdfind () {
+    command mdfind 2>/dev/null "$@"
+}
+
 query_string () {
     for tag; do
         case "$tag" in
@@ -77,9 +81,9 @@ if [ $tag_opt_total -gt 0 ]; then
 fi
 
 if [ $show_untagged -eq 1 ]; then
-    eval mdfind "$mdfind_args" tag:
+    eval mdfind "$mdfind_args" "kMDItemUserTags != \*"
 elif [ $show_all_tagged -eq 1 ]; then
-    eval mdfind "$mdfind_args" "'tag:\"\"'"
+    eval mdfind "$mdfind_args" "kMDItemUserTags == \*"
 elif [ $list_all_tags -eq 1 ]; then
     sedscript="$(mktemp tag-find.XXXX)"
     trap "rm -f \"$sedscript\"" EXIT INT TERM
