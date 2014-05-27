@@ -6,7 +6,9 @@ Experimentation with a new way of handling my dotfiles
 Installation
 ------------
 
-    curl https://raw.github.com/kergoth/dotfiles/master/bootstrap | sh
+    curl -O https://raw.github.com/kergoth/dotfiles/master/bootstrap
+    less bootstrap
+    sh bootstrap
 
 Alternatively:
 
