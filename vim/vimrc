@@ -514,6 +514,7 @@ end
 augroup vimrc_filetype_detect
   au BufNewFile,BufRead *.md set ft=markdown
   au BufNewFile,BufRead TODO,BUGS,README set ft=text
+  au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
 augroup END
 " }}}
 " File type settings {{{
@@ -526,6 +527,7 @@ augroup vimrc_filetypes
 
   " Comment string
   au FileType fish set cms=#%s
+  au FileType gitconfig set cms=#%s
 
   " Set up folding
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
