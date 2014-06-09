@@ -57,6 +57,7 @@ trash () {
 }
 
 link_docs () {
+    mkdir -p "$1/Extras"
     pushd "$1/Extras" >/dev/null
     for dir in ../Contents/Resources/*.boxer/Doc*/ \
                ../Contents/Resources/drive_c/GOG\ Games/*/ \
