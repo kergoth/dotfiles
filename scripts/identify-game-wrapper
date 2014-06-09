@@ -38,7 +38,7 @@ identify_game_wrapper () {
         fi
     elif [ -e "$1/Contents/MacOS/JavaApplicationStub" ]; then
         echo java
-    elif [ -e "$1/Contents/MacOS/GemRB Wrapper" ]; then
+    elif [ -e "$1/Contents/MacOS/GemRB Wrapper" ] || [ -e "$1/Contents/MacOS/GemRBWrapper" ]; then
         echo "gemrb"
     elif [ -e "$1/Contents/MacOS/Doomsday" ]; then
         echo "doomsday"
