@@ -69,8 +69,8 @@ process_arguments () {
 }
 
 process_options () {
-    checkout_branch=master
-    source_remote=origin
+    checkout_branch=
+    source_remote=
     source_tags_refs="refs/tags/*"
     shared=0
     mirror=0
@@ -107,7 +107,6 @@ process_options () {
 }
 
 extract_source_repo_info () {
-    source_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
     if [ -z "$source_heads_refs" ]; then
         source_mirror=$(GIT_DIR=$source_git_dir git config remote.$source_remote.mirror) || true
         if [ -n "$source_mirror" ]; then
@@ -195,6 +194,31 @@ if [ $force -eq 1 ]; then
 elif [ -e "$to" ]; then
     echo >&2 "Error: $to already exists, aborting"
     exit 3
+fi
+
+
+source_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
+
+if [ -z "$source_remote" ]; then
+    if [ $(GIT_DIR="$source_git_dir" git remote | wc -l) = 1 ]; then
+        source_remote="$(GIT_DIR="$source_git_dir" git remote)"
+    else
+        source_remote=origin
+    fi
+fi
+
+if [ -z "$checkout_branch" ]; then
+    from_branch="$(GIT_DIR="$source_git_dir" git symbolic-ref HEAD 2>/dev/null)"
+    if [ "$(GIT_DIR="$source_git_dir" git config "branch.$from_branch.remote")" = "$source_remote" ]; then
+        checkout_branch="$(GIT_DIR="$source_git_dir" git config "branch.$from_branch.merge")"
+        if [ -z "$checkout_branch" ] && [ -n "$from_branch" ]; then
+            checkout_branch="${from_branch#refs/heads/}"
+        fi
+    fi
+
+    if [ -z "$checkout_branch" ]; then
+        checkout_branch=master
+    fi
 fi
 
 extract_source_repo_info
