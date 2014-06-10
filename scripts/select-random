@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 content="$(mktemp -t "${0##*/}.XXXX")"
 cat "$@" >"$content"
