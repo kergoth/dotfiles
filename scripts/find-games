@@ -2,37 +2,46 @@
 
 PATH="$(dirname "$0"):$PATH"
 
-tag_args=
+tag_opts=
 show_game_wrapper_type=0
-while getopts t0p:h opt; do
-    case "$opt" in
-        t)
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -t)
             show_game_wrapper_type=1
             ;;
-        0)
-            tag_args="$tag_args -0"
+        -0)
+            tag_opts="$tag_opts -0"
             ;;
-        p)
-            tag_args="$tag_args -p \"$OPTARG\""
+        -p)
+            shift || usage
+            tag_opts="$tag_opts -p \"$1\""
             ;;
-        \?|h)
-            echo >&2 "${0##*/} [OPTIONS]"
+        -h|--help)
+            echo >&2 "${0##*/} [OPTIONS] [TAG..]"
             echo >&2
             echo >&2 "Options:"
             echo >&2
-            echo >&2 "  -0      Use a \0 separator rather than newline"
-            echo >&2 "  -t      Show game wrapper type in column 2"
+            echo >&2 "  -0        Use a \0 separator rather than newline"
+            echo >&2 "  -t        Show game wrapper type in column 2"
+            echo >&2 "  -p PATH   Limit to games under the specified path"
             exit 2
             ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            break
+            ;;
     esac
+    shift
 done
-shift $(($OPTIND - 1))
 
 if [ $show_game_wrapper_type -eq 1 ]; then
-    tag_args="$tag_args -0"
+    tag_opts="$tag_opts -0"
 fi
 
-eval tag-find $tag_args "-q \"( kMDItemContentType == 'com.apple.application-bundle' || kMDItemContentType == 'net.washboardabs.boxer-game-package' )\" Game \"\$@\"" | {
+eval tag-find $tag_opts "-q \"( kMDItemContentType == 'com.apple.application-bundle' || kMDItemContentType == 'net.washboardabs.boxer-game-package' )\" Game \"\$@\"" | {
     if [ $show_game_wrapper_type -eq 1 ]; then
         xargs -0 identify-game-wrapper
     else
