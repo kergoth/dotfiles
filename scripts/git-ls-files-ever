@@ -1,3 +1,3 @@
 #!/bin/sh
 
-git rev-list HEAD | git diff-tree --stdin --no-commit-id --name-only -r | sort -u
+git rev-list --reverse HEAD | git diff-tree --stdin --no-commit-id --name-only -r | sort -u
