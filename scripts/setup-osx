@@ -51,7 +51,6 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo Hos
 # Kill Skype's splash screen
 defaults write com.skype.skype SKShowSplash NO
 
-# launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
 sudo sh -c "echo kern.sysv.shmall=65536 >>/etc/sysctl.conf"
 sudo sh -c "echo kern.sysv.shmmax=16777216 >>/etc/sysctl.conf"
 sudo sh -c "echo kern.maxfiles=10485760 >>/etc/sysctl.conf"
@@ -62,5 +61,27 @@ sudo sysctl -w $(cat /etc/sysctl.conf)
 killall Finder
 killall Dock
 
+HOMEBREW_PATH="${HOMEBREW_PATH:-/opt/homebrew}"
+if [ ! -e "$HOMEBREW_PATH" ]; then
+    sudo mkdir -p "$HOMEBREW_PATH" && \
+        sudo chown $USER "$HOMEBREW_PATH" && \
+            curl -L https://github.com/Homebrew/homebrew/tarball/master | \
+                tar xz --strip 1 -C "$HOMEBREW_PATH"
+    $HOMEBREW_PATH/bin/brew update
+fi
+if [ ! -e /etc/paths.d/homebrew ]; then
+    sudo sh -c "echo \"$HOMEBREW_PATH/bin\" >/etc/paths.d/homebrew"
+fi
+if [ ! -e /etc/manpaths.d/homebrew ]; then
+    sudo sh -c "echo \"$HOMEBREW_PATH/share/man\" >/etc/manpaths.d/homebrew"
+fi
+
+sudo mkdir -p /usr/local /opt
+sudo chgrp -R staff /usr/local /opt
+sudo find /usr/local /opt -type d -exec chmod g+wXs "{}" \;
+sudo find /usr/local /opt -not -type d -exec chmod g+wX "{}" \;
+
 # Ensure that pbcopy/pbpaste work from tmux
 brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
+
+# launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
