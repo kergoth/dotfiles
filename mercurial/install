@@ -2,14 +2,15 @@
 
 mkdir -p $XDG_DATA_HOME/hg
 echo $XDG_DATA_HOME
-while read name url; do
+while read name url opts; do
     if ! [ -e "$XDG_DATA_HOME/hg/$name" ]; then
-        hg clone "$url" "$XDG_DATA_HOME/hg/$name"
+        hg clone $opts "$url" "$XDG_DATA_HOME/hg/$name"
     fi
 done <<END
 crecord https://bitbucket.org/edgimar/crecord
 prompt https://bitbucket.org/sjl/hg-prompt
 shelve https://bitbucket.org/astiob/hgshelve
+evolve https://bitbucket.org/marmoute/mutable-history -u stable
 END
 
 newest_version () {
