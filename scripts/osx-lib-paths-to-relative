@@ -1,0 +1,26 @@
+#!/bin/sh
+
+current_path="$1"
+expected_install_path="$2"
+
+tempfiles=$(mktemp foo.XXXX)
+trap "rm -f \$tempfiles" EXIT INT TERM
+
+set --
+sed_current_path="${current_path/&/\&}"
+find "$current_path" -type f -perm +001 | while read f; do
+    otool -L "$f" 2>/dev/null | grep -v ':$' | sed -e "s#^[^/]*/#/#; s, (.*,," | grep "^$expected_install_path/" >$tempfiles || continue
+    if [ $(wc -l <$tempfiles) = 0 ]; then
+        continue
+    fi
+    echo >&2 "Processing $f.."
+    while read lib; do
+        if ! echo "$lib" | grep -q "^/"; then
+            continue
+        fi
+        new_lib="$(echo "$lib" | sed "s#^$expected_install_path/#$sed_current_path/#")"
+        rel_lib="$(relpath "${f%/*}" "$new_lib")"
+        set -- -change $lib $rel_lib
+        install_name_tool -change "$lib" "@loader_path/$rel_lib" "$f"
+    done <$tempfiles
+done
