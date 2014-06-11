@@ -2,6 +2,13 @@
 
 PATH="$(dirname "$0"):$PATH"
 
+if [ $# -eq 0 ]; then
+    set -- -Completed
+fi
+
 game="$(find-games "$@" | select-random)"
+if [ -z "$game" ]; then
+    exit 1
+fi
 printf >&2 "Running '%s'..\n" "$game"
 open "$game"
