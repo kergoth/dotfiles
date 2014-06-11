@@ -57,6 +57,7 @@ sudo sh -c "echo kern.sysv.shmmax=16777216 >>/etc/sysctl.conf"
 sudo sh -c "echo kern.maxfiles=10485760 >>/etc/sysctl.conf"
 sudo sh -c "echo kern.maxfilesperproc=1048576 >>/etc/sysctl.conf"
 sudo sh -c "sort -u /etc/sysctl.conf >/tmp/foo && mv /tmp/foo /etc/sysctl.conf"
+sudo sysctl -w $(cat /etc/sysctl.conf)
 
 killall Finder
 killall Dock
