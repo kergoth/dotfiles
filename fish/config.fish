@@ -16,6 +16,10 @@ if test -e ~/.local/bin
     set PATH ~/.local/bin $PATH
 end
 
+if test -e ~/.cabal/bin
+    set PATH ~/.cabal/bin $PATH
+end
+
 if not set -q HOME
     set -x HOME (cd ~; and pwd)
 end
