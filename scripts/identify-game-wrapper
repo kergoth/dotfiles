@@ -1,54 +1,72 @@
 #!/bin/sh
 
 identify_game_wrapper () {
-    case "$1" in
+    game="$1"
+
+    if [ -h "$game" ]; then
+        game="$(readlink "$game")"
+        if [ -n "${game#/*}" ]; then
+            # Relative link
+            game="$(dirname "$1")/$game"
+        fi
+        if [ -n "$game" ] && [ -d "$game" ]; then
+            printf "symbolic link to: "
+        else
+            echo "symbolic link"
+            return
+        fi
+    fi
+
+    case "$game" in
         *.boxer)
             echo "dos (boxer)"
             return
             ;;
     esac
 
-    if [ -e "$1/Wineskin.app" ]; then
+    if [ -e "$game/Wineskin.app" ]; then
         echo "windows (wineskin)"
-    elif [ -e "$1/Contents/MacOS/WineskinLauncher" ]; then
+    elif [ -e "$game/Contents/MacOS/WineskinLauncher" ]; then
         echo "windows (wineskin)"
-    elif [ -e "$1/Contents/MacOS/cider" ]; then
+    elif [ -e "$game/Contents/MacOS/CustomEXE" ]; then
+        echo "windows (wineskin custom exe launcher)"
+    elif [ -e "$game/Contents/MacOS/cider" ]; then
         echo "windows (cider)"
-    elif [ -e "$1/Contents/MacOS/run.sh" ] && grep -q "steam://" "$1/Contents/MacOS/run.sh"; then
+    elif [ -e "$game/Contents/MacOS/run.sh" ] && grep -q "steam://" "$game/Contents/MacOS/run.sh"; then
         # MacOS steam "shortcut" - runs `open steam://gameid`
         echo steam
-    elif [ -e "$1/Contents/MacOS/Boxer Standalone" ]; then
+    elif [ -e "$game/Contents/MacOS/Boxer Standalone" ]; then
         echo "dos (boxer standalone)"
-    elif [ -e "$1/Contents/MacOS/ecwolf" ]; then
+    elif [ -e "$game/Contents/MacOS/ecwolf" ]; then
         echo ecwolf
-    elif [ -e "$1/Contents/MacOS/Flash Player" ]; then
+    elif [ -e "$game/Contents/MacOS/Flash Player" ]; then
         echo flash
-    elif [ -e "$1/Contents/MacOS/OSXDosboxWrapper" ]; then
+    elif [ -e "$game/Contents/MacOS/OSXDosboxWrapper" ]; then
         echo "dos (osxdosboxwrapper)"
-    elif [ -e "$1/Contents/MacOS/MameWrapper" ]; then
+    elif [ -e "$game/Contents/MacOS/MameWrapper" ]; then
         echo mame
-    elif [ -e "$1/Contents/MacOS/SDLMameWrapper" ]; then
+    elif [ -e "$game/Contents/MacOS/SDLMameWrapper" ]; then
         echo mame
-    elif [ -e "$1/Contents/MacOS/scummvm" ]; then
-        svwenginetype=$(sed -n -e '/SVWEngineType/{n; s#.*<integer>\([0-9]*\)</integer>.*#\1#p; }' "$1/Contents/Info.plist")
+    elif [ -e "$game/Contents/MacOS/scummvm" ]; then
+        svwenginetype=$(sed -n -e '/SVWEngineType/{n; s#.*<integer>\([0-9]*\)</integer>.*#\1#p; }' "$game/Contents/Info.plist")
         if [ "$svwenginetype" = "1" ]; then
 	    echo residualvm
         else
 	    echo "scummvm (scummvmwrapper)"
         fi
-    elif [ -e "$1/Contents/MacOS/JavaApplicationStub" ]; then
+    elif [ -e "$game/Contents/MacOS/JavaApplicationStub" ]; then
         echo java
-    elif [ -e "$1/Contents/MacOS/GemRB Wrapper" ] || [ -e "$1/Contents/MacOS/GemRBWrapper" ]; then
+    elif [ -e "$game/Contents/MacOS/GemRB Wrapper" ] || [ -e "$game/Contents/MacOS/GemRBWrapper" ]; then
         echo "gemrb"
-    elif [ -e "$1/Contents/MacOS/Doomsday" ]; then
+    elif [ -e "$game/Contents/MacOS/Doomsday" ]; then
         echo "doomsday"
-    elif [ -e "$1/Contents/Resources/scummvm" ]; then
+    elif [ -e "$game/Contents/Resources/scummvm" ]; then
         # GoG scummvm wrapper
         echo "scummvm (gog)"
     else
         echo unknown
     # else
-    #     echo "unknown [Contents: $(echo $(ls -1 2>/dev/null "$1/Contents/MacOS/" | sed "s#^$1/Contents/MacOS/##; s/$/, /") | sed "s/,$//")]"
+    #     echo "unknown [Contents: $(echo $(ls -1 2>/dev/null "$game/Contents/MacOS/" | sed "s#^$game/Contents/MacOS/##; s/$/, /") | sed "s/,$//")]"
     fi
 }
 
