@@ -43,6 +43,8 @@ identify_game_wrapper () {
         echo "dos (boxer standalone)"
     elif [ -e "$game/Contents/MacOS/ecwolf" ]; then
         echo ecwolf
+    elif [ -e "$game/Contents/Resources/snes9x" ]; then
+        echo snes9x
     elif [ -e "$game/Contents/MacOS/Flash Player" ]; then
         echo flash
     elif [ -e "$game/Contents/MacOS/OSXDosboxWrapper" ]; then
