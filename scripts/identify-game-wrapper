@@ -22,6 +22,10 @@ identify_game_wrapper () {
             echo "dos (boxer)"
             return
             ;;
+        *.nes|*.smc)
+            echo "openemu"
+            return
+            ;;
     esac
 
     if [ -e "$game/Wineskin.app" ]; then
