@@ -22,7 +22,7 @@ identify_game_wrapper () {
             echo "dos (boxer)"
             return
             ;;
-        *.nes|*.smc)
+        *.nes|*.smc|*.gba)
             echo "openemu"
             return
             ;;

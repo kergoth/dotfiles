@@ -49,6 +49,7 @@ game_match () {
     done | sed "s,^ || ,,"
     printf " || kMDItemFSName == '*.nes'c"
     printf " || kMDItemFSName == '*.smc'c"
+    printf " || kMDItemFSName == '*.gba'c"
     printf " || kMDItemFSName == '*.bin'c"
     printf " )"
 }
