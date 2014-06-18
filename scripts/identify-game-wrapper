@@ -69,6 +69,8 @@ identify_game_wrapper () {
     elif [ -e "$game/Contents/Resources/scummvm" ]; then
         # GoG scummvm wrapper
         echo "scummvm (gog)"
+    elif [ -e "$game/__Installer/installerdata.xml" ]; then
+        echo "origin"
     else
         echo unknown
     # else
