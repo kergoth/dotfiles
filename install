@@ -17,7 +17,7 @@ set_launchd () {
 
     value="${value//\"/\\\"}"
     value="${value//\$/\\\$}"
-    if ! grep -q "setenv $var " /etc/launchd.conf; then
+    if [ ! -e /etc/launchd.conf ] || ! grep -q "setenv $var " /etc/launchd.conf; then
         printf 'echo "setenv %s '"'%s'"'" >>/etc/launchd.conf\n' "$var" "$value" | sudo sh -
     fi
 }
