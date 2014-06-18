@@ -81,7 +81,7 @@ sudo chgrp -R staff /usr/local /opt
 sudo find /usr/local /opt -type d -exec chmod g+wXs "{}" \;
 sudo find /usr/local /opt -not -type d -exec chmod g+wX "{}" \;
 
-# Ensure that pbcopy/pbpaste work from tmux
-brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
+# Ensure that pbcopy/pbpaste work from tmux, etc
+$HOMEBREW_PATH/bin/brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
 
 # launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
