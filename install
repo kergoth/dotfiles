@@ -9,6 +9,19 @@ force=0
 exclude="sublime-text-2"
 include=
 
+set_launchd () {
+    var="$1"
+    value="$2"
+
+    launchctl setenv "$var" "$value"
+
+    value="${value//\"/\\\"}"
+    value="${value//\$/\\\$}"
+    if ! grep -q "setenv $var " /etc/launchd.conf; then
+        printf 'echo "setenv %s '"'%s'"'" >>/etc/launchd.conf\n' "$var" "$value" | sudo sh -
+    fi
+}
+
 link () {
     # Link a file to a destination using a relative path, with particular
     # convenience handling for dotfiles. ex.:
