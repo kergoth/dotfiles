@@ -1,0 +1,13 @@
+#!/bin/sh
+
+brew tap homebrew/dupes
+brew tap homebrew/versions
+brew tap homebrew/binary
+brew tap homebrew/games
+brew tap homebrew/headonly
+brew tap homebrew/python
+brew tap caskroom/cask
+brew tap caskroom/fonts
+brew tap caskroom/unofficial
+brew tap caskroom/versions
+brew tap monochromegane/pt

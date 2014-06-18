@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Install pip
+curl https://bootstrap.pypa.io/get-pip.py | python - --user
+pythonver="$(python -V 2>&1|cut -d" " -f2|cut -d. -f1-2)"
+pythondir="$HOME/Library/Python/$pythonversion"
+PATH="$pythondir/bin:$PATH"
+
+echo '/opt/homebrew/lib/python2.7/site-packages' >$pythondir/lib/python/site-packages/homebrew.pth
+
+#ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" pip install --user mercurial hg-git
+
+pip install --user hg-git
+
+# Convenient pretty-printing
+pip install --user pprintpp pp-ez
+# For ebook processing
+pip install --user titlecase
+# For a number of little scripts I use
+pip install --user sh
+# For lmwsaction
+pip install --user SOAPpy
+
+# Other useful bits I don't need installed right now
+#pip install --user pip-tools
+#pip install --user tox
+#pip install --user stormssh
+#pip install --user dash.py doc2dash
+#pip install --user pep8 pyflakes pylint flake8 autopep8
