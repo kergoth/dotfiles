@@ -23,3 +23,5 @@ fi
 if [ -e vimrc -a -e ~/.config/vim/bundle/vundle ]; then
     vim -u ~/.config/vim/vimrc +BundleInstall +qall
 fi
+
+set_launchd VIMINIT 'let $MYVIMRC = "~/.config/vim/vimrc" | source $MYVIMRC'
