@@ -1,30 +1,32 @@
 : ${XDG_DATA_HOME:=~/.local/share}
 
-mkdir -p $XDG_DATA_HOME/hg
-echo $XDG_DATA_HOME
-while read name url opts; do
-    if ! [ -e "$XDG_DATA_HOME/hg/$name" ]; then
-        hg clone $opts "$url" "$XDG_DATA_HOME/hg/$name"
-    fi
-done <<END
-crecord https://bitbucket.org/edgimar/crecord
-prompt https://bitbucket.org/sjl/hg-prompt
-shelve https://bitbucket.org/astiob/hgshelve
-evolve https://bitbucket.org/marmoute/mutable-history -u stable
+if which hg >/dev/null 2>&1; then
+    mkdir -p $XDG_DATA_HOME/hg
+    echo $XDG_DATA_HOME
+    while read name url opts; do
+        if ! [ -e "$XDG_DATA_HOME/hg/$name" ]; then
+            hg clone $opts "$url" "$XDG_DATA_HOME/hg/$name"
+        fi
+    done <<END
+    crecord https://bitbucket.org/edgimar/crecord
+    prompt https://bitbucket.org/sjl/hg-prompt
+    shelve https://bitbucket.org/astiob/hgshelve
+    evolve https://bitbucket.org/marmoute/mutable-history -u stable
 END
 
-newest_version () {
-    for ver; do
-        printf "$ver\n"
-    done | sort -t. -n | tail -n 1
-}
+    newest_version () {
+        for ver; do
+            printf "$ver\n"
+        done | sort -t. -n | tail -n 1
+    }
 
-hg_version=$(hg --version 2>/dev/null | sed -n 's/.*(version \([0-9.]*\))$/\1/p')
-if [ "$(newest_version 2.3 $hg_version)" != 2.3 ]; then
-    sed '/histedit/d' hgrc > hgrc.new && mv hgrc.new hgrc
-else
-    hg clone https://bitbucket.org/durin42/histedit $XDG_DATA_HOME/hg/histedit
+    hg_version=$(hg --version 2>/dev/null | sed -n 's/.*(version \([0-9.]*\))$/\1/p')
+    if [ "$(newest_version 2.3 $hg_version)" != 2.3 ]; then
+        sed '/histedit/d' hgrc > hgrc.new && mv hgrc.new hgrc
+    else
+        hg clone https://bitbucket.org/durin42/histedit $XDG_DATA_HOME/hg/histedit
+    fi
+
+    link hgrc.redir ~/.hgrc
+    link . ~/.config/hg
 fi
-
-link hgrc.redir ~/.hgrc
-link . ~/.config/hg
