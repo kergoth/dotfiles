@@ -1,5 +1,7 @@
 #!/bin/sh
 
+PATH=/opt/homebrew/bin:$PATH
+
 brew tap homebrew/dupes
 brew tap homebrew/versions
 brew tap homebrew/binary
