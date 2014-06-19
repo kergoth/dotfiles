@@ -11,3 +11,22 @@ brew tap caskroom/fonts
 brew tap caskroom/unofficial
 brew tap caskroom/versions
 brew tap monochromegane/pt
+
+brew install fish
+if ! grep -q /opt/homebrew/bin/fish /etc/shells; then
+    sudo sh -c "echo /opt/homebrew/bin/fish >>/etc/shells"
+fi
+chsh -s /opt/homebrew/bin/fish
+
+brew install apple-gcc42
+brew install dvtm dtach
+brew install the_silver_searcher
+brew install mercurial git
+brew install dylibbundler
+brew install lftp
+brew install p7zip
+brew install wget
+brew install tag
+brew install csup
+
+brew install ranger

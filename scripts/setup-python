@@ -1,16 +1,21 @@
 #!/bin/sh
 
-# Install pip
-curl https://bootstrap.pypa.io/get-pip.py | python - --user
 pythonver="$(python -V 2>&1|cut -d" " -f2|cut -d. -f1-2)"
-pythondir="$HOME/Library/Python/$pythonversion"
+if [ -z "$pythonver" ]; then
+    echo >&2 "Error getting python version from 'python -V'"
+    exit 1
+fi
+pythondir="$HOME/Library/Python/$pythonver"
 PATH="$pythondir/bin:$PATH"
 
+# Install pip
+curl https://bootstrap.pypa.io/get-pip.py | python - --user
+if ! which pip >/dev/null 2>&1; then
+    echo >&2 "Error: after installing pip, we are not able to execute it"
+    exit 2
+fi
+
 echo '/opt/homebrew/lib/python2.7/site-packages' >$pythondir/lib/python/site-packages/homebrew.pth
-
-#ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" pip install --user mercurial hg-git
-
-pip install --user hg-git
 
 # Convenient pretty-printing
 pip install --user pprintpp pp-ez
@@ -20,6 +25,8 @@ pip install --user titlecase
 pip install --user sh
 # For lmwsaction
 pip install --user SOAPpy
+# So we can clone git repositories with mercurial
+ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" pip install --user hg-git
 
 # Other useful bits I don't need installed right now
 #pip install --user pip-tools
