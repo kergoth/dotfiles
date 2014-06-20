@@ -25,10 +25,12 @@ brew install dvtm dtach
 brew install the_silver_searcher
 brew install mercurial git
 brew install dylibbundler
+brew install tag
+
+brew install brew-cask
+
 brew install lftp
 brew install p7zip
 brew install wget
-brew install tag
 brew install csup
-
 brew install ranger
