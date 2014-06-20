@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ ! -e /Volumes/My\ Passport ]; then
+    echo >&2 "My Passport drive is not mounted, aborting"
+    exit 1
+fi
+
+{
+    find-games
+    find /Volumes/My\ Passport/Games*/ -iname \*.app -prune -type l -print -maxdepth 2 | sed 's,//,/,g'
+} | grep '/Volumes/My Passport/' | grep -Ev '\.Trashes|Archived|Pending|Backup' | \
+    tr '\n' '\0' | xargs -0 identify-game-wrapper | sort -u | sed 's,.unknown$,,' | \
+    sed 's,/Volumes/[^/]*/,,; s,OpenEmu Library/roms/,OpenEmu/,'
