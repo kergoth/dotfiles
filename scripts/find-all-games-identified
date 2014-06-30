@@ -6,8 +6,9 @@ if [ ! -e /Volumes/My\ Passport ]; then
 fi
 
 {
-    find-games
+    find-games | grep '/Volumes/My Passport/'
     find /Volumes/My\ Passport/Games*/ -iname \*.app -prune -type l -print -maxdepth 2 | sed 's,//,/,g'
-} | grep '/Volumes/My Passport/' | grep -Ev '\.Trashes|Archived|Pending|Backup' | \
-    tr '\n' '\0' | xargs -0 identify-game-wrapper | sort -u | sed 's,.unknown$,,' | \
-    sed 's,/Volumes/[^/]*/,,; s,OpenEmu Library/roms/,OpenEmu/,'
+    find /Volumes/Games/Games*/ -iname \*.app -prune -print -maxdepth 2|grep -Ev 'Setup|Launcher|-64' | sed 's,//,/,g'
+} | grep -Ev '\.Trashes|Archived|Pending|Backup' | \
+    tr '\n' '\0' | xargs -0 identify-game-wrapper | sed 's,.unknown$,,' | \
+    sed 's,/Volumes/[^/]*/,,; s,OpenEmu Library/roms/,OpenEmu/,' | sort -u
