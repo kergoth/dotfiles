@@ -1,0 +1,28 @@
+#!/bin/sh
+if [ $# -eq 0 ]; then
+    echo ""
+    echo "Usage: apath alias"
+    echo "  where alias is an alias file."
+    echo "  Returns the file path to the original file referenced by a"
+    echo "  Mac OS X GUI alias.  Use it to execute commands on the"
+    echo "  referenced file.  For example, if aliasd is an alias of"
+    echo "  a directory, entering"
+    echo '   % cd `apath aliasd`'
+    echo "  at the command line prompt would change the working directory"
+    echo "  to the original directory."
+    echo ""
+fi
+if [ -f "$1" -a ! -L "$1" ]; then
+    item_name=`basename "$1"`
+    item_parent=`dirname "$1"`
+    item_parent="`cd \"${item_parent}\" 2>/dev/null && pwd || echo \"${item_parent}\"`"
+    item_path="${item_parent}/${item_name}"
+    line_1='tell application "Finder"'
+    line_2='set theItem to (POSIX file "'${item_path}'") as alias'
+    line_3='if the kind of theItem is "alias" then'
+    line_4='get the posix path of (original item of theItem as text)'
+    line_5='end if'
+    line_6='end tell'
+    orig=`osascript -e "$line_1" -e "$line_2" -e "$line_3" -e "$line_4" -e "$line_5" -e "$line_6"`
+    echo "$orig"
+fi
