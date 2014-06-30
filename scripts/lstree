@@ -11,7 +11,12 @@ else
     path=.
 fi
 
-find "$path" \( -name .git -o -name .hg -o -name .svn \) -printf '%p %y\n' -prune -o "$@" -printf '%p %y\n' | \
+if which gfind >/dev/null 2>&1; then
+    alias find=gfind
+fi
+
+find "$path" \( -name .git -o -name .hg -o -name .svn \) -printf '%p %y\n' -prune -o \( -not -name .DS_Store \) "$@" -printf '%p %y\n' | \
+    sort | \
     sed -e 's,/\( .\)$,\1,; s, [^d]$,,; s;[^/]*/;|___;g;s;___|*;    ;g;' \
         -e 's,^|,,; s, d$,/,' | \
     ${PAGER:-less}
