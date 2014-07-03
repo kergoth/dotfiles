@@ -4,6 +4,11 @@ if [ $# -lt 1 ]
 then
     atach -l | sort
 else
+    if [ -n "$DTACH_SESSION" ]; then
+        echo >&2 "att: already inside an att session"
+        exit 1
+    fi
+
     session_name=$1
     shift
     ENV_VARS="^(DISPLAY|SSH_AGENT_PID|SSH_ASKPASS|SSH_CONNECTION|SSH_AUTH_SOCK|WINDOWID|XAUTHORITY)="
