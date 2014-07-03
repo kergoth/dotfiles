@@ -6,7 +6,7 @@ then
         if [ -n "$DTACH_SESSION" ]; then
             sed "s#^$DTACH_SESSION\$#$DTACH_SESSION*#"
         else
-            :
+            cat
         fi
     }
 else
