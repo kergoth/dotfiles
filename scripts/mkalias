@@ -1,0 +1,24 @@
+#!/bin/sh
+
+alias_snippet () {
+    aliaspath="$(cd "$2" && pwd)"
+    realpath="$(cd "$(dirname "$1")" && pwd)/${1##*/}"
+    if [ ! -d "$aliaspath" ]; then
+        echo >&2 "Error: alias path must be a directory"
+        return 1
+    fi
+    printf 'tell application "Finder" to make new alias to POSIX file "%s" at POSIX file "%s"\n' "$realpath" "$aliaspath"
+}
+
+
+if [ $# -eq 1 ]; then
+    realpath="$1"
+    aliaspath="."
+    alias_snippet "$realpath" "$aliaspath"
+else
+    aliaspath="$(eval echo "\${$#}")"
+    while [ $# -gt 1 ]; do
+        alias_snippet "$1" "$aliaspath"
+        shift
+    done
+fi | osascript
