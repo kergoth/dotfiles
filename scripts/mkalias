@@ -15,11 +15,11 @@ alias_snippet () {
 if [ $# -eq 1 ]; then
     realpath="$1"
     aliaspath="."
-    alias_snippet "$realpath" "$aliaspath"
+    alias_snippet "$realpath" "$aliaspath" || exit $?
 else
     aliaspath="$(eval echo "\${$#}")"
     while [ $# -gt 1 ]; do
-        alias_snippet "$1" "$aliaspath"
+        alias_snippet "$1" "$aliaspath" || exit $?
         shift
     done
 fi | osascript
