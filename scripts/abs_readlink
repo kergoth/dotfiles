@@ -1,8 +1,13 @@
 #!/bin/sh
 
-filename="$1"
-linkdest="$(readlink "$filename")" || exit 1
-if [ -n "${linkdest##/*}" ]; then
-    filename="${filename%/*}/$linkdest"
-fi
-${0%/*}/normpath "$filename"
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="${2:-$PWD}/$1"
+    fi
+    echo "$_path"
+}
+
+for arg; do
+    echo "$(abspath "$(readlink "$arg")" "$(dirname "$arg")")"
+done
