@@ -3,7 +3,8 @@
 alias_snippet () {
     aliaspath="$(cd "$2" && pwd)"
     realpath="$(cd "$(dirname "$1")" && pwd)/${1##*/}"
-    if [ ! -d "$aliaspath" ]; then
+    if [ ! -d "$aliaspath" ] || \
+        [ "$(mdls -name kMDItemKind "$aliaspath"|sed 's,^[^=]*= ",,; s,"$,,')" != "Folder" ]; then
         echo >&2 "Error: alias path must be a directory"
         return 1
     fi
