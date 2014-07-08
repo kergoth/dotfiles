@@ -1,0 +1,169 @@
+#!/bin/sh
+
+usage () {
+    cat >&2 <<END
+Usage: new-app [OPTIONS] APPNAME
+
+   Create APPNAME.app, obeying OPTIONS to control its creation.
+
+   -V                   Version number. Default: \`1.0\`
+   -I                   Identifier. Default: \`org.new-app.APPNAME\`.
+   -e                   Executable to place in APPNAME.app/Contents/MacOS/
+   -r                   Resource. All specified resource paths will be copied to APPNAME.app/Contents/Resources/
+   -i                   Icon (ICNS) file
+   -f                   Force. Remove any existing APPNAME.app
+END
+    exit 2
+}
+
+main () {
+    trap 'if [ -n "$cleanfiles" ]; then rm -f $cleanfiles; fi' INT TERM EXIT
+
+    process_options "$@" || usage
+    if [ $OPTIND -eq 1 -a $# -eq 0 ]; then
+        # No arguments passed
+        usage
+    fi
+    shift $(($OPTIND - 1))
+
+    if [ $# -lt 1 -o $# -gt 2 ]; then
+        usage
+    fi
+
+    appname=$1
+    if [ -z "$appname" ]; then
+        usage
+    fi
+
+    if [ -z "$version" ]; then
+        version=1.0
+    fi
+    if [ -z "$identifier" ]; then
+        identifier="org.new-app.$appname"
+    fi
+
+    if [ -e "$appname.app" ]; then
+        if [ $force -eq 0 ]; then
+            echo >&2 "$appname.app already exists, aborting"
+            exit 3
+        else
+            rm -rf "$appname.app"
+        fi
+    fi
+
+    bundlename="$appname"
+    displayname="$appname"
+
+    mkdir -p "$appname.app"/Contents/{MacOS,Resources}
+
+    if [ -n "$executable" ]; then
+        cp -a "$executable" "$appname.app"/Contents/MacOS/
+        executable="${executable##*/}"
+    else
+        executable="app"
+    fi
+    touch "$appname.app/Contents/MacOS/$executable"
+    chmod +x "$appname.app/Contents/MacOS/$executable"
+
+    if [ $(wc -l <"$resourcesfile") -gt 0 ]; then
+        while read resource; do
+            cp -a "$resource" "$appname.app"/Contents/Resources/
+        done <"$resourcesfile"
+    fi
+    write_info "$appname.app/Contents/Info.plist"
+}
+
+process_options () {
+    version=1.0
+    executable=
+    force=0
+    iconfile=
+    identifier=
+    resourcesfile="$(mktemp -t NEWAPP.XXXXXX)"
+
+    cleanfiles="$cleanfiles $resourcesfile"
+
+    while getopts V:I:e:r:i:f opt; do
+        case "$opt" in
+            V)
+                version="$OPTARG"
+                if [ -z "$version" ]; then
+                    printf 'Invalid version: `%s`\n' "$version"
+                    return 3
+                fi
+                ;;
+            I)
+                identifier="$OPTARG"
+                if [ -z "$identifier" ]; then
+                    printf 'Invalid identifier: `%s`\n' "$identifier"
+                    return 4
+                fi
+                ;;
+            e)
+                executable="$OPTARG"
+                if [ -z "$executable" ] || [ ! -e "$executable" ]; then
+                    printf 'Invalid executable: `%s`\n' "$executable"
+                    return 5
+                fi
+                ;;
+            r)
+                echo "$OPTARG" >>"$resourcesfile"
+                ;;
+            i)
+                iconfile="$OPTARG"
+                if [ -z "$iconfile" ] || [ ! -e "$iconfile" ]; then
+                    printf 'Invalid icon file: `%s`\n' "$iconfile"
+                    return 6
+                fi
+                ;;
+            f)
+                force=1
+                ;;
+        esac
+    done
+}
+
+write_info () {
+    plist="$1"
+    mkdir -p "${plist%/*}"
+    cat >"$plist" <<END
+<?xml version="$version" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST $version//EN" "http://www.apple.com/DTDs/PropertyList-$version.dtd">
+<plist version="$version">
+<dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundleDisplayName</key>
+        <string>$displayname</string>
+        <key>CFBundleExecutable</key>
+        <string>${executable:-app}</string>
+        <key>CFBundleIconFile</key>
+        <string>${icon:-app}.icns</string>
+        <key>CFBundleIdentifier</key>
+        <string>$identifier</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleName</key>
+        <string>$bundlename</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleShortVersionString</key>
+        <string>$version</string>
+        <key>CFBundleVersion</key>
+        <string>$version</string>
+        <key>LSMinimumSystemVersion</key>
+        <string>10.5.0</string>
+        <key>LSUIElement</key>
+        <false/>
+        <key>NSHumanReadableCopyright</key>
+        <string>© $(date +%Y) ${copyrightstring:-Script Owner}</string>
+        <key>NSMainNibFile</key>
+        <string>MainMenu</string>
+        <key>NSPrincipalClass</key>
+        <string>NSApplication</string>
+</dict>
+</plist>
+END
+}
+
+main "$@"
