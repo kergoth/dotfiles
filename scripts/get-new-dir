@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -e "$1" ] || [ -h "$1" ]; then
+    last_num="$(ls 2>/dev/null -d "$1" "$1 "[0-9]* | sed "s,^$1 *,," | sort -n | tail -n 1)"
+    if [ -z "$last_num" ]; then
+        last_num=1
+    fi
+    pattern="%s $(expr "$last_num" + 1)"
+else
+    pattern="%s"
+fi
+printf "$pattern" "$1"
