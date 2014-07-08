@@ -8,4 +8,4 @@ rev_list () {
     fi
 }
 
-rev_list "$@" | xargs -n 1 git ls-tree 2>/dev/null | awk '{print $1 " " $2 " " $4}' | sort -u
+rev_list "$@" | xargs -n 1 git ls-tree -r 2>/dev/null | awk '{print $1 " " $2 " " $4}' | sort -u
