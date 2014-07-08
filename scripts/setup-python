@@ -8,6 +8,9 @@ fi
 pythondir="$HOME/Library/Python/$pythonver"
 PATH="$pythondir/bin:$PATH"
 
+# Install new setuptools (formerly distribute)
+curl https://bootstrap.pypa.io/ez_setup.py | python - --user
+
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | python - --user
 if ! which pip >/dev/null 2>&1; then
