@@ -6,9 +6,15 @@ if [ ! -e /Volumes/My\ Passport ]; then
 fi
 
 {
+    # mdfind -onlyin '/Volumes/My Passport' -attr kMDItemDisplayName "kMDItemUserTags == \"Game\""|sed 's,^/Volumes/My Passport/,,; s,/.*kMDItemDisplayName = ,/,'
     find-games | grep '/Volumes/My Passport/'
     find /Volumes/My\ Passport/Games*/ -iname \*.app -prune -type l -print -maxdepth 2 | sed 's,//,/,g'
-    find /Volumes/Games/Games*/ -iname \*.app -prune -print -maxdepth 2|grep -Ev 'Setup|Launcher|-64' | sed 's,//,/,g'
+    for dir in /Volumes/Games/Games*/; do
+        dir="${dir%/}"
+        if ! [ -d "/Volumes/My Passport/${dir##*/}" ]; then
+            find "$dir" -iname \*.app -prune -print -maxdepth 2
+        fi
+    done | grep -Ev 'Setup|Launcher|-64' | sed 's,//,/,g'
 } | grep -Ev '\.Trashes|Archived|Pending|Backup' | \
     tr '\n' '\0' | xargs -0 identify-game-wrapper | sed 's,.unknown$,,' | \
-    sed 's,/Volumes/[^/]*/,,; s,OpenEmu Library/roms/,OpenEmu/,' | sort -u
+    sed 's,/Volumes/[^/]*/,,; s,OpenEmu Library/roms/,OpenEmu/,; s,^games,Games,; s,- broken,- Broken,;' | sort -u
