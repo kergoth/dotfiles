@@ -23,7 +23,7 @@ END
     hg_version=$(hg --version 2>/dev/null | sed -n 's/.*(version \([0-9.]*\))$/\1/p')
     if [ "$(newest_version 2.3 $hg_version)" != 2.3 ]; then
         sed '/histedit/d' hgrc > hgrc.new && mv hgrc.new hgrc
-    else
+    elif [ ! -e "$XDG_DATA_HOME/hg/histedit" ]; then
         hg clone https://bitbucket.org/durin42/histedit $XDG_DATA_HOME/hg/histedit
     fi
 
