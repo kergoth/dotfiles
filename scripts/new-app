@@ -9,11 +9,11 @@ Usage: new-app [OPTIONS] APPNAME
    -V                   Version number. Default: \`1.0\`
    -I                   Identifier. Default: \`org.new-app.APPNAME\`.
    -c                   Copyright identifier (e.g. John Doe <john.doe@gmail.com>).
-                        Defaults to using \$EMAIL/$FULLNAME, GIT_AUTHOR_{NAME,EMAIL},
+                        Defaults to using \$EMAIL/\$FULLNAME, GIT_AUTHOR_{NAME,EMAIL},
                         or git config user.name/user.email if available.
    -e                   Executable to place in APPNAME.app/Contents/MacOS/
    -r                   Resource. All specified resource paths will be copied to APPNAME.app/Contents/Resources/
-   -i                   Icon (ICNS) file
+   -i                   Icon file. If makeicns is available, it will be used on the input.
    -f                   Force. Remove any existing APPNAME.app
 END
     exit 2
