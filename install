@@ -13,7 +13,9 @@ set_launchd () {
     var="$1"
     value="$2"
 
-    launchctl setenv "$var" "$value"
+    if which launchctl &>/dev/null; then
+        launchctl setenv "$var" "$value"
+    fi
 
     value="${value//\"/\\\"}"
     value="${value//\$/\\\$}"
