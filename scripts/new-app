@@ -8,6 +8,9 @@ Usage: new-app [OPTIONS] APPNAME
 
    -V                   Version number. Default: \`1.0\`
    -I                   Identifier. Default: \`org.new-app.APPNAME\`.
+   -c                   Copyright identifier (e.g. John Doe <john.doe@gmail.com>).
+                        Defaults to using \$EMAIL/$FULLNAME, GIT_AUTHOR_{NAME,EMAIL},
+                        or git config user.name/user.email if available.
    -e                   Executable to place in APPNAME.app/Contents/MacOS/
    -r                   Resource. All specified resource paths will be copied to APPNAME.app/Contents/Resources/
    -i                   Icon (ICNS) file
@@ -41,6 +44,17 @@ main () {
     if [ -z "$identifier" ]; then
         identifier="org.new-app.$appname"
     fi
+    if [ -z "$copyrightstring" ]; then
+        fullname="${FULLNAME:-${GIT_AUTHOR_NAME:-$(git config user.name)}}"
+        if [ -z "fullname" ]; then
+            fullname="Script User"
+        fi
+        email="${EMAIL:-${GIT_AUTHOR_EMAIL:-$(git config user.email)}}"
+        if [ -z "email" ]; then
+            email="script.user@invalid"
+        fi
+        copyrightstring="$fullname <$email>"
+    fi
 
     if [ -e "$appname.app" ]; then
         if [ $force -eq 0 ]; then
@@ -65,6 +79,15 @@ main () {
     touch "$appname.app/Contents/MacOS/$executable"
     chmod +x "$appname.app/Contents/MacOS/$executable"
 
+    if [ -n "$iconfile" ]; then
+        if which makeicns >/dev/null 2>&1; then
+            makeicns -in "$iconfile" -out "$appname.app/Contents/Resources/app.icns"
+        else
+            cp "$iconfile" "$appname.app/Contents/Resources/app.icns"
+        fi
+        sips -i "$appname.app/Contents/Resources/app.icns" >/dev/null
+    fi
+
     if [ $(wc -l <"$resourcesfile") -gt 0 ]; then
         while read resource; do
             cp -a "$resource" "$appname.app"/Contents/Resources/
@@ -80,10 +103,11 @@ process_options () {
     iconfile=
     identifier=
     resourcesfile="$(mktemp -t NEWAPP.XXXXXX)"
+    copyrightstring=
 
     cleanfiles="$cleanfiles $resourcesfile"
 
-    while getopts V:I:e:r:i:f opt; do
+    while getopts V:I:c:e:r:i:f opt; do
         case "$opt" in
             V)
                 version="$OPTARG"
@@ -99,11 +123,18 @@ process_options () {
                     return 4
                 fi
                 ;;
+            c)
+                copyrightstring="$OPTARG"
+                if [ -z "$copyrightstring" ]; then
+                    printf 'Invalid copyrightstring: `%s`\n' "$copyrightstring"
+                    return 5
+                fi
+                ;;
             e)
                 executable="$OPTARG"
                 if [ -z "$executable" ] || [ ! -e "$executable" ]; then
                     printf 'Invalid executable: `%s`\n' "$executable"
-                    return 5
+                    return 6
                 fi
                 ;;
             r)
@@ -113,7 +144,7 @@ process_options () {
                 iconfile="$OPTARG"
                 if [ -z "$iconfile" ] || [ ! -e "$iconfile" ]; then
                     printf 'Invalid icon file: `%s`\n' "$iconfile"
-                    return 6
+                    return 7
                 fi
                 ;;
             f)
@@ -127,9 +158,9 @@ write_info () {
     plist="$1"
     mkdir -p "${plist%/*}"
     cat >"$plist" <<END
-<?xml version="$version" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST $version//EN" "http://www.apple.com/DTDs/PropertyList-$version.dtd">
-<plist version="$version">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
 <dict>
         <key>CFBundleDevelopmentRegion</key>
         <string>English</string>
@@ -138,7 +169,7 @@ write_info () {
         <key>CFBundleExecutable</key>
         <string>${executable:-app}</string>
         <key>CFBundleIconFile</key>
-        <string>${icon:-app}.icns</string>
+        <string>app</string>
         <key>CFBundleIdentifier</key>
         <string>$identifier</string>
         <key>CFBundleInfoDictionaryVersion</key>
@@ -156,7 +187,7 @@ write_info () {
         <key>LSUIElement</key>
         <false/>
         <key>NSHumanReadableCopyright</key>
-        <string>© $(date +%Y) ${copyrightstring:-Script Owner}</string>
+        <string>$(printf "© %s %s" "$(date +%Y)" "${copyrightstring:-Script Owner}" | sed -e 's~&~\&amp;~g' -e 's~<~\&lt;~g'  -e  's~>~\&gt;~g')</string>
         <key>NSMainNibFile</key>
         <string>MainMenu</string>
         <key>NSPrincipalClass</key>
