@@ -5,8 +5,6 @@ if [ $# -lt 2 ]; then
 Usage: comm-files DIR1 DIR2 [find arguments..]
 
 Compare the files within two directories, but not the contents of said files.
-Dump the file lists for each with 'find', sort, then use 'comm' to compare,
-with a bit of sed to retain the full paths.
 
 find arguments default to: -type f -o -type l
 END
@@ -29,6 +27,6 @@ echo >&2 "Comparing the list of files from $from to $to"
 
 find "$from" "$@" | sed "s#^$from/#PATHPREFIX/#" | sort >"$fromfiles"
 find "$to" "$@" | sed "s#^$to/#PATHPREFIX/#" | sort >"$tofiles"
-comm -3 "$fromfiles" "$tofiles" | \
-    sed "s#	PATHPREFIX/#	$to/#; s#^PATHPREFIX/#$from/#" | \
+comm "$fromfiles" "$tofiles" | \
+    sed "s#^	PATHPREFIX/#+#; s#^PATHPREFIX/#-#; s#^		PATHPREFIX/# #" | sort | \
     ${PAGER:-more}
