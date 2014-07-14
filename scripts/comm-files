@@ -4,7 +4,7 @@ if [ $# -lt 2 ]; then
     cat >&2 <<END
 Usage: comm-files DIR1 DIR2 [find arguments..]
 
-Compare the files within two directories, but not the contents of said files.
+Compare the files within two directories, but not the contents of those files.
 
 find arguments default to: -type f -o -type l
 END
