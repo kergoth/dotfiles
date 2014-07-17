@@ -14,7 +14,7 @@ fi
 
 # Wait for process(es) to start
 while true; do
-    pids="$(pgrep -d, -f "$@" | sed -e "s/$/,/; s/$$,//; s/,$//;")"
+    pids="$(pgrep -d, -f "$*" | sed -e "s/$/,/; s/$$,//; s/,$//;")"
     if [ -n "$pids" ] && ps -p"$pids" >/dev/null 2>&1; then
         break
     fi
