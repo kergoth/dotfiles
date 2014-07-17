@@ -2,7 +2,7 @@
 # Get a list of process ids which match the provided pattern, excluding the
 # current process, and pass that process list to ps.
 
-pids="$(pgrep -f "$@" | grep -vx "$$")"
+pids="$(pgrep -f "$*" | grep -vx "$$")"
 pids="$(echo $pids | tr " " ",")"
 
 if [ -z "$pids" ]; then
