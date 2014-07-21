@@ -19,16 +19,17 @@
 	staged = diff --cached
 	ignored = ls-files --exclude-standard --directory -oi
 
-	# Pretty one line log
+	# Pretty one line logs
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
+	lga = !git lg --all
 
-	# Pretty one line log showing all commits, including dangling ones
-	lg-all = !git lg --all $(git dangling)
+	# Log of all dangling commits
+	lgd = !git lg $(git dangling) $(git for-each-ref | awk '{print $1}' | sed 's,^,^,') $(git reflog show refs/stash | awk '{print $1}' | sed 's,^,^,')
 
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
-	# Show dangling commits
+	# List dangling commit hashes
 	dangling = !git fsck | sed -n 's/^dangling commit //p'
 
 	# Amend the current commit, but don't prompt to edit the commit message
