@@ -1,0 +1,5 @@
+#!/bin/sh
+
+brew cask list | while read cask; do
+    brew cask uninstall $cask && brew cask install $cask
+done
