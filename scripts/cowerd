@@ -1,7 +1,8 @@
 #!/bin/sh
 # install AUR packages with cower
 
-cd $HOME/Build && cower -d "$1" || exit 1
+mkdir -p "$HOME/Build"
+cd "$HOME/Build" && cower -d "$1" || exit 1
 builddir="$_"
 cd "$builddir" || exit 2
 
