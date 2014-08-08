@@ -4,7 +4,7 @@ set DOTFILESDIR $FISHDIR/..
 set tacklebox_path $FISHDIR/tacklebox
 set tacklebox_plugins misc python volatile z virtualenv
 
-set PATH $DOTFILESDIR/scripts $DOTFILESDIR/scripts/connections $DOTFILESDIR/external/bin $PATH
+set PATH $DOTFILESDIR/scripts $DOTFILESDIR/scripts/connections $DOTFILESDIR/external/bin /usr/local/bin $PATH
 
 for dir in ~/.gem/ruby/*/bin
     if test -e $dir
