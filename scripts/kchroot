@@ -2,7 +2,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-chroot=$1
+chroot="$1"
 
 uid=$(id -u)
 if [ $uid -ne 0 ]; then
@@ -13,7 +13,7 @@ elif [ -z "$OLDUSER" ]; then
 fi
 
 copyfiles="/etc/passwd /etc/shadow /etc/group /etc/sudoers /etc/hostname /etc/resolv.conf /etc/hosts"
-mountpaths="/dev /dev/pts /sys /proc /home /scratch"
+mountpaths="/dev /dev/pts /sys /proc /home $HOME /scratch"
 
 for file in $copyfiles; do
     if [ -e "$file" ]; then
@@ -26,6 +26,7 @@ for path in $mountpaths; do
     mkdir -p $chroot/$path
     mount -o bind $path $chroot/$path
 done
+mount -t tmpfs tmpfs $chroot/tmp
 
 set -x
 
@@ -34,11 +35,12 @@ if ! grep -q "^$OLDUSER:" $chroot/etc/passwd; then
 fi
 
 if ! grep -q "^$OLDUSER" $chroot/etc/sudoers; then
-    echo "$OLDUSER ALL=(ALL) ALL" >> $chroot/etc/sudoers
+    echo "$OLDUSER ALL = NOPASSWD: ALL" >> $chroot/etc/sudoers
 fi
 
 chroot $chroot sudo -u $OLDUSER /bin/sh
 
 for path in $mountpaths; do
-    umount $chroot/$path
-done
+    echo $path
+done | tac | tr '\n' '\0' | xargs -0 umount -l $chroot/$path
+umount -l $chroot/tmp
