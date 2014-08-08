@@ -6,6 +6,10 @@ set tacklebox_plugins misc python volatile z virtualenv
 
 set PATH $DOTFILESDIR/scripts $DOTFILESDIR/scripts/connections $DOTFILESDIR/external/bin /usr/local/bin $PATH
 
+if test -d /usr/bin/core_perl
+    set PATH $PATH /usr/bin/core_perl
+end
+
 for dir in ~/.gem/ruby/*/bin
     if test -e $dir
         set PATH $dir $PATH
