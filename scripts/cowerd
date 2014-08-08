@@ -8,7 +8,7 @@ cd "$builddir" || exit 2
 
 ${EDITOR:-vim} PKGBUILD
 
-makepkg -si && cd - &>/dev/null
+makepkg -sci && cd - &>/dev/null
 
 read -p "Remove Build directory? [Y/n]? " yn
 if [ "$yn" = "y" ]; then
