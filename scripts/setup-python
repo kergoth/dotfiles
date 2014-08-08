@@ -15,6 +15,9 @@ fi
 # Ensure that we can use the python modules homebrew installs
 echo '/opt/homebrew/lib/python2.7/site-packages' >$pythonuserdir/lib/python/site-packages/homebrew.pth
 
+# Install basic python development tools
+pip install --user wheel twine virtualenv flake8 autopep8
+
 # Convenient pretty-printing
 pip install --user pprintpp pp-ez
 
@@ -30,9 +33,12 @@ pip install --user SOAPpy
 # So we can clone git repositories with mercurial
 ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" pip install --user hg-git
 
+# So we can clone hg repositories with git
+pip install --user gitifyhg
+
 # Other useful bits I don't need installed right now
 #pip install --user pip-tools
 #pip install --user tox
 #pip install --user stormssh
 #pip install --user dash.py doc2dash
-#pip install --user pep8 pyflakes pylint flake8 autopep8
+#pip install --user pep8 pyflakes pylint
