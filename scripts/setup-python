@@ -1,33 +1,32 @@
 #!/bin/sh
 
-pythonver="$(python -V 2>&1|cut -d" " -f2|cut -d. -f1-2)"
-if [ -z "$pythonver" ]; then
-    echo >&2 "Error getting python version from 'python -V'"
-    exit 1
-fi
-pythondir="$HOME/Library/Python/$pythonver"
-PATH="$pythondir/bin:$PATH"
+pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
+PATH="$pythonuserdir/bin:$PATH"
 
-# Install new setuptools (formerly distribute)
-curl https://bootstrap.pypa.io/ez_setup.py | python - --user
-
-# Install pip
-curl https://bootstrap.pypa.io/get-pip.py | python - --user
 if ! which pip >/dev/null 2>&1; then
-    echo >&2 "Error: after installing pip, we are not able to execute it"
-    exit 2
+    # Install pip (and setuptools if needed)
+    curl https://bootstrap.pypa.io/get-pip.py | python - --user
+    if ! which pip >/dev/null 2>&1; then
+        echo >&2 "Error: after installing pip, we are not able to execute it"
+        exit 2
+    fi
 fi
 
-echo '/opt/homebrew/lib/python2.7/site-packages' >$pythondir/lib/python/site-packages/homebrew.pth
+# Ensure that we can use the python modules homebrew installs
+echo '/opt/homebrew/lib/python2.7/site-packages' >$pythonuserdir/lib/python/site-packages/homebrew.pth
 
 # Convenient pretty-printing
 pip install --user pprintpp pp-ez
+
 # For ebook processing
 pip install --user titlecase
+
 # For a number of little scripts I use
 pip install --user sh
+
 # For lmwsaction
 pip install --user SOAPpy
+
 # So we can clone git repositories with mercurial
 ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" pip install --user hg-git
 
