@@ -1,32 +1,60 @@
 #!/bin/sh
 
-if [ $# -lt 1 ]
-then
-    atach -l | sort | {
-        if [ -n "$DTACH_SESSION" ]; then
-            sed "s#^$DTACH_SESSION\$#$DTACH_SESSION*#"
-        else
-            cat
-        fi
+if which abduco >/dev/null 2>&1; then
+    socket_dir="${TMPDIR:-/tmp}/.abduco"
+    if [ -d ~/.abduco ]; then
+        # Prefer the $TMPDIR path
+        chmod 000 ~/.abduco
+    fi
+
+    list_sessions () {
+        abduco | sed '/^Active/d; /^\*/{ s/^\*//; s/$/*/; }' | awk '{print $4}'
+    }
+
+    create_session () {
+        name="$1"
+        shift
+        abduco -A "$name" dvtm-kergoth-status "$name"
     }
 else
-    if [ -n "$DTACH_SESSION" ]; then
+    socket_dir="${TMPDIR:-/tmp}/dtach-$LOGNAME"
+
+    list_sessions () {
+        atach -l | sort | {
+            if [ -n "$ATT_SESSION" ]; then
+                sed "s#^$ATT_SESSION\$#$ATT_SESSION*#"
+            else
+                cat
+            fi
+        }
+    }
+
+    create_session () {
+        name="$1"
+        shift
+        atach -r winch -Z "$@" -s "$name" dvtm-kergoth-status "$name"
+    }
+fi
+
+if [ $# -lt 1 ]; then
+    list_sessions
+else
+    if [ -n "$ATT_SESSION" ]; then
         echo >&2 "att: already inside an att session"
         exit 1
     fi
 
-    session_name=$1
+    session_name="$1"
     shift
     ENV_VARS="^(DISPLAY|SSH_AGENT_PID|SSH_ASKPASS|SSH_CONNECTION|SSH_AUTH_SOCK|WINDOWID|XAUTHORITY)="
-    socket_dir="${TMPDIR:-/tmp}/dtach-$USER"
 
     mkdir -p "$socket_dir"
-    export DTACH_SESSION="$session_name"
+    export ATT_SESSION="$session_name"
     env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
     if [ -n "$STY" -o -n "$TMUX" ]; then
         printf "\033k%s\033\\" "$session_name"
     else
         printf "\033]0;%s\007" "$session_name"
     fi
-    atach -r winch -Z "$@" -s $session_name dvtm-kergoth-status $session_name
+    create_session "$session_name" "$@"
 fi
