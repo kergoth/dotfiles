@@ -2,10 +2,10 @@
 
 if which abduco >/dev/null 2>&1; then
     socket_dir="${TMPDIR:-/tmp}/.abduco"
-    if [ -d ~/.abduco ]; then
-        # Prefer the $TMPDIR path
-        chmod 000 ~/.abduco
-    fi
+
+    # Prefer the $TMPDIR path
+    mkdir -p ~/.abduco
+    chmod 000 ~/.abduco
 
     list_sessions () {
         abduco | sed '/^Active/d; /^\*/{ s/^\*//; s/$/*/; }' | awk '{print $4}'
