@@ -1,1 +1,1 @@
-complete -c att -f -a '(atach)'
+complete -c att -f -a '(att | sed "s,\*\$,,")'
