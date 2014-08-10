@@ -129,6 +129,10 @@ alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
 alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
 
+if have gh
+    eval (gh alias -s)
+end
+
 # Context specific config files {{{1
 if test -e $FISHDIR/$OS.fish
     . $FISHDIR/$OS.fish
