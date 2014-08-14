@@ -9,7 +9,7 @@ if which hg >/dev/null 2>&1; then
         fi
     done <<END
     crecord https://bitbucket.org/edgimar/crecord
-    prompt https://bitbucket.org/sjl/hg-prompt
+    prompt https://bitbucket.org/obensonne/hg-prompt
     shelve https://bitbucket.org/astiob/hgshelve
     evolve https://bitbucket.org/marmoute/mutable-history -u stable
 END

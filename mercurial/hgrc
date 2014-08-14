@@ -42,7 +42,7 @@ schemes =
 
 #crecord = ~/.local/share/hg/crecord/crecord
 evolve = ~/.local/share/hg/evolve/hgext/evolve.py
-#prompt = ~/.local/share/hg/prompt/prompt.py
+prompt = ~/.local/share/hg/prompt/prompt.py
 shelve = ~/.local/share/hg/shelve/hgshelve.py
 
 [mq]
