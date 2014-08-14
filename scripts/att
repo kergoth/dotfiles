@@ -8,7 +8,7 @@ if which abduco >/dev/null 2>&1; then
     chmod 000 ~/.abduco
 
     list_sessions () {
-        abduco | sed '/^Active/d; /^\*/{ s/^\*//; s/$/*/; }' | awk '{print $4}'
+        abduco | sed '/^Active/d; /^\*/s/$/*/; s/^..//;' | awk '{print $4}'
     }
 
     create_session () {
