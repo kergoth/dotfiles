@@ -17,6 +17,11 @@ for pid in $pids; do
     fi
 done
 sids="$(echo $sids | sed "s,^ ,," | tr " " ",")"
+if [ -n "$sids" ]; then
+    set -- --sid "$sids"
+else
+    set --
+fi
 
 pids="$(echo $pids | tr " " ",")"
-exec ps fu --pid "$pids" --ppid "$pids" --sid "$sids"
+exec ps fu --pid "$pids" --ppid "$pids" "$@"
