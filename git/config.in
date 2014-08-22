@@ -132,6 +132,9 @@
 	summary = true
 	conflictstyle = diff3
 
+[tar "tar.xz"]
+	command = xz -c
+
 [pack]
 	threads = 3
 
