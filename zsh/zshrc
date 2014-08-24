@@ -116,6 +116,7 @@ if (( $+commands[pacman-color] )); then
     alias pacman='pacman-color'
 fi
 
+alias ag="ag -S --pager=${PAGER:-less}"
 if (( $+commands[ag] )); then
     alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
 elif (( $+commands[ack] )); then

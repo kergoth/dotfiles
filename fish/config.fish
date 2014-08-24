@@ -125,6 +125,7 @@ alias chrome 'google-chrome'
 alias t.py   'command t.py --task-dir ~/Dropbox/Documents'
 alias t      't.py --list tasks.txt'
 alias h      't.py --list tasks-personal.txt'
+alias ag     "ag -S --pager=$PAGER"
 alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
 alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
