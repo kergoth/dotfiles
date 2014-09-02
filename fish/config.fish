@@ -129,6 +129,7 @@ alias ag     "ag -S --pager=$PAGER"
 alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
 alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
+alias smem   'smem -k'
 
 if have gh
     eval (gh alias -s)
