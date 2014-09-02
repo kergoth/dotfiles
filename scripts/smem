@@ -8,7 +8,7 @@
 # the GNU General Public License version 2 or later, incorporated
 # herein by reference.
 
-import re, os, sys, pwd, grp, optparse, errno, tarfile
+import re, os, sys, pwd, optparse, errno, tarfile
 
 warned = False
 
@@ -21,7 +21,7 @@ class procdata(object):
     def _list(self):
         return os.listdir(self.source + "/proc")
     def _read(self, f):
-        return file(self.source + '/proc/' + f).read()
+        return open(self.source + '/proc/' + f).read()
     def _readlines(self, f):
         return self._read(f).splitlines(True)
     def _stat(self, f):
@@ -94,12 +94,12 @@ class tardata(procdata):
     def _readlines(self, f):
         return self.tar.extractfile(f).readlines()
     def piduser(self, p):
-        t = self.tar.getmember("%d/" % p)
+        t = self.tar.getmember("%d" % p)
         if t.uname:
             self._ucache[t.uid] = t.uname
         return t.uid
     def pidgroup(self, p):
-        t = self.tar.getmember("%d/" % p)
+        t = self.tar.getmember("%d" % p)
         if t.gname:
             self._gcache[t.gid] = t.gname
         return t.gid
@@ -143,13 +143,15 @@ def pidmaps(pid):
     maps = {}
     start = None
     seen = False
+    empty = True
     for l in src.mapdata(pid):
+        empty = False
         f = l.split()
         if f[-1] == 'kB':
             if f[0].startswith('Pss'):
                 seen = True
             maps[start][f[0][:-1].lower()] = int(f[1])
-        else:
+        elif '-' in f[0] and ':' not in f[0]: # looks like a mapping range
             start, end = f[0].split('-')
             start = int(start, 16)
             name = "<anonymous>"
@@ -159,7 +161,7 @@ def pidmaps(pid):
                                offset=int(f[2], 16),
                                device=f[3], inode=f[4], name=name)
 
-    if not seen and not warned:
+    if not empty and not seen and not warned:
         sys.stderr.write('warning: kernel does not appear to support PSS measurement\n')
         warned = True
         if not options.sort:
@@ -168,7 +170,7 @@ def pidmaps(pid):
     if options.mapfilter:
         f = {}
         for m in maps:
-            if not filter(options.mapfilter, m, lambda x: maps[x]['name']):
+            if not filters(options.mapfilter, m, lambda x: maps[x]['name']):
                 f[m] = maps[m]
         return f
 
@@ -220,10 +222,12 @@ def showamount(a, total):
     if options.abbreviate:
         return units(a * 1024)
     elif options.percent:
+        if total == 0:
+            return 'N/A'
         return "%.2f%%" % (100.0 * a / total)
     return a
 
-def filter(opt, arg, *sources):
+def filters(opt, arg, *sources):
     if not opt:
         return False
 
@@ -248,8 +252,8 @@ def pidtotals(pid):
 def processtotals(pids):
     totals = {}
     for pid in pids:
-        if (filter(options.processfilter, pid, src.pidname, src.pidcmd) or
-                filter(options.userfilter, pid, pidusername)):
+        if (filters(options.processfilter, pid, src.pidname, src.pidcmd) or
+                filters(options.userfilter, pid, pidusername)):
             continue
         try:
             p = pidtotals(pid)
@@ -297,8 +301,8 @@ def showpids():
 def maptotals(pids):
     totals = {}
     for pid in pids:
-        if (filter(options.processfilter, pid, src.pidname, src.pidcmd) or
-                filter(options.userfilter, pid, pidusername)):
+        if (filters(options.processfilter, pid, src.pidname, src.pidcmd) or
+                filters(options.userfilter, pid, pidusername)):
             continue
         try:
             maps = pidmaps(pid)
@@ -362,8 +366,8 @@ def showmaps():
 def usertotals(pids):
     totals = {}
     for pid in pids:
-        if (filter(options.processfilter, pid, src.pidname, src.pidcmd) or
-                filter(options.userfilter, pid, pidusername)):
+        if (filters(options.processfilter, pid, src.pidname, src.pidcmd) or
+                filters(options.userfilter, pid, pidusername)):
             continue
         try:
             maps = pidmaps(pid)
