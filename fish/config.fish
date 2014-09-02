@@ -130,6 +130,7 @@ alias bbag   "ag -G '\.(bb|bbappend|inc|conf)\$'"
 alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
 alias smem   'smem -k'
+alias ytdl   youtube-dl
 
 if have gh
     eval (gh alias -s)
