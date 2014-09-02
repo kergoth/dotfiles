@@ -266,6 +266,14 @@ def processtotals(pids):
 def showpids():
     p = src.pids()
     pt = processtotals(p)
+    ttyrows, ttycolumns = os.popen('stty size', 'r').read().split()
+    comwid=int(ttycolumns)-53;
+    if (comwid<10):
+        comfmt='%%-%d.%ds' % (10,10);
+        namefmt='%%-%d.%ds' % (7,7);
+    else:
+        comfmt='%%-%d.%ds' % (comwid,comwid);
+        namefmt='%%-%d.%ds' % (comwid-3,comwid-3);
 
     def showuser(p):
         if options.numeric:
@@ -277,9 +285,9 @@ def showpids():
              'process ID'),
         user=('User', showuser, '%-8s', lambda x: len(dict.fromkeys(x)),
               'owner of process'),
-        name=('Name', src.pidname, '%-24.24s', None,
+        name=('Name', src.pidname, namefmt, None,
               'name of process'),
-        command=('Command', src.pidcmd, '%-27.27s', None,
+        command=('Command', src.pidcmd, comfmt, None,
                  'process command line'),
         maps=('Maps',lambda n: pt[n]['maps'], '% 5s', sum,
               'total number of mappings'),
