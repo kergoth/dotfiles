@@ -11,22 +11,32 @@ END
     exit 1
 fi
 
-from="$1"
-to="$2"
+abspath () {
+    for arg; do
+        testabs=${arg##[^/]*}
+        echo ${testabs:-$relativeto/$arg}
+    done
+}
+
+
+from="$(abspath "$1")"
+to="$(abspath "$2")"
 shift 2
 
 if [ $# -eq 0 ]; then
     set -- -type f -o -type l
 fi
 
-fromfiles="$(mktemp ${0##*/}.XXXXXX)"
-tofiles="$(mktemp ${0##*/}.XXXXXX)"
+fromfiles="$(abspath "$(mktemp -t ${0##*/}.XXXXXX)")"
+tofiles="$(abspath "$(mktemp -t ${0##*/}.XXXXXX)")"
 trap "rm -f $fromfiles $tofiles" EXIT INT TERM
 
 echo >&2 "Comparing the list of files from $from to $to"
 
-find "$from" "$@" | sed "s#^$from/#PATHPREFIX/#" | sort >"$fromfiles"
-find "$to" "$@" | sed "s#^$to/#PATHPREFIX/#" | sort >"$tofiles"
+cd "$from"
+find . "$@" | sort >"$fromfiles"
+cd "$to"
+find . "$@" | sort >"$tofiles"
 comm "$fromfiles" "$tofiles" | \
-    sed "s#^	PATHPREFIX/#+#; s#^PATHPREFIX/#-#; s#^		PATHPREFIX/# #" | sort | \
+    sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" | sort | \
     ${PAGER:-more}
