@@ -14,7 +14,7 @@ fi
 abspath () {
     for arg; do
         testabs=${arg##[^/]*}
-        echo ${testabs:-$relativeto/$arg}
+        echo ${testabs:-$PWD/$arg}
     done
 }
 
