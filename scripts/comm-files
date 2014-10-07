@@ -1,4 +1,5 @@
 #!/bin/sh
+# TODO: support -123 arguments the way comm itself does
 
 if [ $# -lt 2 ]; then
     cat >&2 <<END
