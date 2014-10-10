@@ -19,6 +19,15 @@
 	staged = diff --cached
 	ignored = ls-files --exclude-standard --directory -oi
 
+	# remove changes to a file from the index
+	unstage = reset HEAD --
+
+	# Amend the current commit, but don't prompt to edit the commit message
+	amend = commit --amend -C HEAD
+
+	# Clean out the ignored files (i.e. to rebuild)
+	iclean = clean -fdX
+
 	# Pretty one line logs
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
 	lga = !git lg --all
@@ -32,14 +41,8 @@
 	# List dangling commit hashes
 	dangling = !git fsck | sed -n 's/^dangling commit //p'
 
-	# Amend the current commit, but don't prompt to edit the commit message
-	amend = commit --amend -C HEAD
-
 	# example: git subdo pull
 	subdo = submodule foreach git
-
-	# Clean out the ignored files (i.e. to rebuild)
-	iclean = clean -fdX
 
 	# Merge the contents of the previous HEAD ref (via reflog)
 	merge-old-head = merge --ff HEAD@{1}
@@ -62,9 +65,6 @@
 
 	# what changed between ORIG_HEAD and current
 	lc = log ORIG_HEAD.. --stat --no-merges
-
-	# remove changes to a file from the index
-	unstage = reset HEAD --
 
 	# list the largest files in the repository
 	ls-large-files = !git ls-tree -rl HEAD | sort -rnk 4 | head
@@ -98,6 +98,9 @@
 	# Show commits that would be merged into the current branch
 	in = !git log ..$(git remote-ref)
 	incoming = !git log ..$(git remote-ref)
+
+	# Pull with rebase and autostash
+	purr = "!f() { set -- \"$(git remote-ref)\" \"$@\"; git fetch \"$(echo \"$1\" | cut -d/ -f2)\"; git rebase --autostash \"$@\"; }; f"
 
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence $(git remote-ref).. "$@"
