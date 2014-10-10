@@ -2,3 +2,14 @@ link exclude ~/.config/git/exclude
 link template ~/.config/git/template
 install_templated config.in ~/.config/git/config
 chmod 0600 ~/.config/git/config
+
+newest_version () {
+    for ver; do
+        printf "$ver\n"
+    done | sort -t. -n | tail -n 1
+}
+
+git_version="$(git --version | cut -d" " -f3)"
+if [ "$(newest_version 1.8.4 $git_version)" = 1.8.4 ]; then
+    sed -i -e 's/purr = ".*/purr = pull --rebase/' ~/.config/git/config
+fi
