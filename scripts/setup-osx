@@ -9,6 +9,12 @@
 
 PATH="$(dirname "$0"):$PATH"
 
+# Disable Dashboard
+defaults write com.apple.dashboard mcx-disabled -bool true
+
+# Expand the save dialog by default in all applications
+defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
+
 # Disable press-and-hold for keys in favor of key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false
 
@@ -39,7 +45,7 @@ defaults write com.apple.dock expose-animation-duration -float 0.12
 # Make hidden dock icons translucent
 defaults write com.apple.dock showhidden -bool true
 
-defaults write com.apple.iTunes allow-half-stars -bool TRUE
+defaults write com.apple.iTunes allow-half-stars -bool true
 
 
 # Show the ~/Library folder
