@@ -33,7 +33,9 @@ brew tap monochromegane/pt
 
 brew install fish
 brew install apple-gcc42
-brew install dvtm dtach
+
+# For 'att'
+brew install abduco dvtm
 brew install the_silver_searcher
 brew install mercurial git
 brew install dylibbundler
