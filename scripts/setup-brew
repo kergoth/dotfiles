@@ -1,6 +1,23 @@
 #!/bin/sh
 
-PATH=/opt/homebrew/bin:$PATH
+if [ $# -ne 0 ]; then
+    HOMEBREW_PATH="$(cd "$1" && pwd)"
+else
+    HOMEBREW_PATH="${HOMEBREW_PATH:-/opt/homebrew}"
+fi
+PATH="$HOMEBREW_PATH/bin:$PATH"
+
+if [ ! -e "$HOMEBREW_PATH" ]; then
+    sudo mkdir -p "$HOMEBREW_PATH" && \
+        sudo chown $USER "$HOMEBREW_PATH" && \
+            curl -L https://github.com/Homebrew/homebrew/tarball/master | \
+                tar xz --strip 1 -C "$HOMEBREW_PATH"
+    brew update
+    brew doctor
+fi
+
+# Ensure that pbcopy/pbpaste work from tmux, etc
+$HOMEBREW_PATH/bin/brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
 
 brew tap homebrew/dupes
 brew tap homebrew/versions
@@ -15,11 +32,6 @@ brew tap caskroom/versions
 brew tap monochromegane/pt
 
 brew install fish
-if ! grep -q /opt/homebrew/bin/fish /etc/shells; then
-    sudo sh -c "echo /opt/homebrew/bin/fish >>/etc/shells"
-fi
-chsh -s /opt/homebrew/bin/fish
-
 brew install apple-gcc42
 brew install dvtm dtach
 brew install the_silver_searcher

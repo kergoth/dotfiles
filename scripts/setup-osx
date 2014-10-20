@@ -67,29 +67,13 @@ sudo sysctl -w $(cat /etc/sysctl.conf)
 killall Finder
 killall Dock
 
-HOMEBREW_PATH="${HOMEBREW_PATH:-/opt/homebrew}"
-PATH="$HOMEBREW_PATH/bin:$PATH"
-if [ ! -e "$HOMEBREW_PATH" ]; then
-    sudo mkdir -p "$HOMEBREW_PATH" && \
-        sudo chown $USER "$HOMEBREW_PATH" && \
-            curl -L https://github.com/Homebrew/homebrew/tarball/master | \
-                tar xz --strip 1 -C "$HOMEBREW_PATH"
-    brew update
-    brew doctor
-fi
-if [ ! -e /etc/paths.d/homebrew ]; then
-    sudo sh -c "echo \"$HOMEBREW_PATH/bin\" >/etc/paths.d/homebrew"
-fi
-if [ ! -e /etc/manpaths.d/homebrew ]; then
-    sudo sh -c "echo \"$HOMEBREW_PATH/share/man\" >/etc/manpaths.d/homebrew"
-fi
+$(dirname "$0")/setup-brew-system
+
+chsh -s /opt/homebrew/bin/fish
 
 sudo mkdir -p /usr/local /opt
 sudo chgrp -R staff /usr/local /opt
 sudo find /usr/local /opt -type d -exec chmod g+wXs "{}" \;
 sudo find /usr/local /opt -not -type d -exec chmod g+wX "{}" \;
-
-# Ensure that pbcopy/pbpaste work from tmux, etc
-$HOMEBREW_PATH/bin/brew install reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
 
 # launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist

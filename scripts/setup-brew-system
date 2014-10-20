@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ $# -ne 0 ]; then
+    HOMEBREW_PATH="$(cd "$1" && pwd)"
+else
+    HOMEBREW_PATH="${HOMEBREW_PATH:-/opt/homebrew}"
+fi
+PATH="$HOMEBREW_PATH/bin:$PATH"
+
+"$(dirname "$0")"/setup-brew "$HOMEBREW_PATH"
+
+if [ ! -e /etc/paths.d/homebrew ]; then
+    sudo sh -c "echo \"$HOMEBREW_PATH/bin\" >/etc/paths.d/homebrew"
+fi
+if [ ! -e /etc/manpaths.d/homebrew ]; then
+    sudo sh -c "echo \"$HOMEBREW_PATH/share/man\" >/etc/manpaths.d/homebrew"
+fi
+
+if ! grep -q /opt/homebrew/bin/fish /etc/shells; then
+    sudo sh -c "echo /opt/homebrew/bin/fish >>/etc/shells"
+fi
