@@ -12,9 +12,6 @@ if ! which pip >/dev/null 2>&1; then
     fi
 fi
 
-# Ensure that we can use the python modules homebrew installs
-echo '/opt/homebrew/lib/python2.7/site-packages' >$pythonuserdir/lib/python/site-packages/homebrew.pth
-
 # Install basic python development tools
 pip install --user wheel twine virtualenv flake8 autopep8
 

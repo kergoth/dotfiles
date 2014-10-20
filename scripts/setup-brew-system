@@ -19,3 +19,8 @@ fi
 if ! grep -q /opt/homebrew/bin/fish /etc/shells; then
     sudo sh -c "echo /opt/homebrew/bin/fish >>/etc/shells"
 fi
+
+# Ensure that we can use the python modules homebrew installs
+pythonuserdir="$(python -c 'import site; print(site.getusersitepackages())')" || exit 1
+pythonversion="$(python -c "'.'.join(str(v) for v in sys.version_info[0:2])" || exit 1)"
+echo "$HOMEBREW_PATH/lib/python$pythonversion/site-packages" >$pythonuserdir/homebrew.pth
