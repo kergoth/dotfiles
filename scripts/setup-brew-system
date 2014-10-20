@@ -16,8 +16,8 @@ if [ ! -e /etc/manpaths.d/homebrew ]; then
     sudo sh -c "echo \"$HOMEBREW_PATH/share/man\" >/etc/manpaths.d/homebrew"
 fi
 
-if ! grep -q /opt/homebrew/bin/fish /etc/shells; then
-    sudo sh -c "echo /opt/homebrew/bin/fish >>/etc/shells"
+if ! grep -q $HOMEBREW_PATH/bin/fish /etc/shells; then
+    sudo sh -c "echo $HOMEBREW_PATH/bin/fish >>/etc/shells"
 fi
 
 # Ensure that we can use the python modules homebrew installs
