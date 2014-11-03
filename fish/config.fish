@@ -85,6 +85,8 @@ if not test -e $XDG_CACHE_HOME/fasd
     mkdir $XDG_CACHE_HOME/fasd
 end
 
+set -x WORKON_HOME $XDG_DATA_HOME/virtualenvs
+
 
 set OS (uname -s | tr A-Z a-z)
 
@@ -131,6 +133,7 @@ alias dtrx   'dtrx --one=here'
 alias mosh   'mosh --forward-agent'
 alias smem   'smem -k'
 alias ytdl   youtube-dl
+alias pipsi  'pipsi --home "$WORKON_HOME"'
 
 if have gh
     eval (gh alias -s)
