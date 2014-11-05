@@ -16,7 +16,7 @@ def iter_except(func, exception, start=None):
     try:
         if start is not None:
             yield start()
-        while 1:
+        while True:
             yield func()
     except exception:
         pass
