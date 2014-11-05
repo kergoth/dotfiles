@@ -31,11 +31,12 @@ def iter_except(func, exception, start=None):
         pass
 
 
-if len(sys.argv) < 2:
-    sys.exit('Usage: {0} FILENAME'.format(os.path.basename(sys.argv[0])))
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        sys.exit('Usage: {0} FILENAME'.format(os.path.basename(sys.argv[0])))
 
-filename = sys.argv[1]
-with open(filename, 'rb') as f:
-    p = pickle.Unpickler(f)
-    for loaded in iter_except(p.load, EOFError):
-        pprint.pprint(loaded)
+    filename = sys.argv[1]
+    with open(filename, 'rb') as f:
+        p = pickle.Unpickler(f)
+        for loaded in iter_except(p.load, EOFError):
+            pprint.pprint(loaded)
