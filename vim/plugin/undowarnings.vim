@@ -4,7 +4,7 @@
 " License:	This file is placed in the public domain.
 
 " If already loaded, we're done...
-if exists("loaded_undowarnings")
+if exists("loaded_undowarnings") || !exists("*undotree")
     finish
 endif
 let loaded_undowarnings = 1

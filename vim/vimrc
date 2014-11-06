@@ -73,7 +73,9 @@ Bundle 'tpope/vim-commentary'
 Bundle 'tpope/vim-eunuch'
 
 " graph your Vim undo tree in style
-Bundle 'sjl/gundo.vim'
+if exists('*undotree')
+  Bundle 'sjl/gundo.vim'
+endif
 
 " quoting/parenthesizing made simple
 Bundle 'tpope/vim-surround'
