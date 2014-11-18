@@ -92,6 +92,9 @@ Bundle 'tpope/vim-obsession'
 " monokai-like colorscheme from Steve Losh
 let g:badwolf_darkgutter = 1
 Bundle 'sjl/badwolf'
+
+" netrw improvements
+Bundle 'tpope/vim-vinegar'
 " }}}
 " General settings {{{
 filetype plugin indent on
@@ -604,6 +607,9 @@ nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
 
 " Close vimux panes
 map <LocalLeader>vc :VimuxClosePanes<CR>
+
+" Vim's strlen works fine while netrw's Strlen is broken
+if has("multi_byte") | let g:netrw_xstrlen = 0 | endif
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
