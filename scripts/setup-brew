@@ -51,3 +51,6 @@ brew install ranger
 
 # Site mirroring, etc
 brew install lftp csup
+
+# Video downloading
+brew install youtube-dl ffmpeg
