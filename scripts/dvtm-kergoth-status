@@ -20,10 +20,9 @@ FIFO="$DVTM_TMPDIR/$ID-status"
 [ -e "$FIFO" ] || mkfifo "$FIFO"
 chmod 600 $FIFO
 
-dvtm-print-status -s -c 30 "$ID" >$FIFO &
+dvtm-print-status -s -c 30 "$ID" >$FIFO 2>&1 </dev/null &
 
 STATUS_PID=$!
 trap "kill $STATUS_PID; rm $FIFO" EXIT INT TERM
-disown $STATUS_PID
 export DVTM_ID=$ID
 dvtm -s $FIFO -h 4096 "$@" 2>/dev/null
