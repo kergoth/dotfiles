@@ -34,17 +34,20 @@ brew tap monochromegane/pt
 brew install fish
 brew install apple-gcc42
 
-# For 'att'
-brew install abduco dvtm
 brew install the_silver_searcher
 brew install mercurial git
+brew install p7zip
+brew install wget
 brew install dylibbundler
 brew install tag
 
 brew install brew-cask
 
-brew install lftp
-brew install p7zip
-brew install wget
-brew install csup
+# For 'att'
+brew install abduco dvtm
+
+# File manager
 brew install ranger
+
+# Site mirroring, etc
+brew install lftp csup
