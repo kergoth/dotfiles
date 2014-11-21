@@ -135,6 +135,10 @@ alias smem   'smem -k'
 alias ytdl   youtube-dl
 alias pipsi  'pipsi --home "$WORKON_HOME"'
 
+if test $OS != darwin
+    alias rm    'rm --one-file-system'
+end
+
 if have gh
     eval (gh alias -s)
 end
