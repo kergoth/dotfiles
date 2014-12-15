@@ -139,8 +139,8 @@ if test $OS != darwin
     alias rm    'rm --one-file-system'
 end
 
-if have gh
-    eval (gh alias -s)
+if have hub
+    eval (hub alias -s)
 end
 
 # Context specific config files {{{1
