@@ -9,7 +9,7 @@ if [ $count -eq 0 ]; then
     exit 1
 fi
 
-selection="$(sed -n $(echo $RANDOM % $count | bc)p "$content")"
+selection="$(sed -n $(echo $RANDOM % $count + 1 | bc)p "$content")"
 if [ -z "$selection" ]; then
     sed -n 1p "$content"
 else
