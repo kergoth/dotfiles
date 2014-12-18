@@ -24,7 +24,7 @@ alias ytdl=youtube-dl
 alias pipsi='pipsi --home="$WORKON_HOME"'
 
 if (( $+commands[hub] )); then
-    eval $(hub alias -s)
+    eval $(hub alias -s zsh)
 fi
 
 if (( $+commands[pacman-color] )); then
