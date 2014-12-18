@@ -5,7 +5,3 @@
 - vim:
 
     - Consider resurrection of the vim-kergoth repo
-
-- XDG Locations:
-
-    - Move viminfo & vim backups from cache to data
