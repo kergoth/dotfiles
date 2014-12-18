@@ -2,7 +2,7 @@
 
 _att() {
   local -a sessions
-  att_sessions=$(att | sed "s,\*\$,,")
+  att_sessions=($(att | sed "s,\*\$,,"))
   _arguments '*:sessions:($att_sessions)'
 
   return 0
