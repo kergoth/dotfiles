@@ -1,4 +1,4 @@
-FASD_DATA_DIR=${XDG_DATA_DIR:-~/.local/share}/fasd
+FASD_DATA_DIR=$XDG_DATA_HOME/fasd
 mkdir -p $FASD_DATA_DIR
 
 if [ -e ~/.fasd ] && [ ! -e $FASD_DATA_DIR ]; then

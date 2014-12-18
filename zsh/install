@@ -1,5 +1,3 @@
-: ${XDG_CONFIG_HOME:=~/.config}
-
 link zshenv.redir ~/.zshenv
 
 mkdir -p $XDG_CONFIG_HOME/zsh $XDG_DATA_HOME/zsh $XDG_CACHE_HOME/zsh
