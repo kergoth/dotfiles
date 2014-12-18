@@ -1,12 +1,4 @@
-mkdir -p ${XDG_CACHE_HOME:-~/.cache}/vim
-
-# Move old configs out of the way so they don't interfere
-if [ -L ~/.vimrc ] || [ -e ~/.vimrc ]; then
-    mv ~/.vimrc ~/.vimrc.old
-fi
-if [ -L ~/.vim ] || [ -e ~/.vim ]; then
-    mv ~/.vim ~/.vim.old
-fi
+mkdir -p ${XDG_DATA_HOME:-~/.local/share}/vim
 
 link . ~/.config/vim
 
