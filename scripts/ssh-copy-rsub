@@ -1,12 +1,10 @@
-#!/bin/sh -e
-#
-# Usage: ssh-copy-rsub [--bash] [user@]machine
-#
+#!/bin/sh
+
 # Shell script to install rsub on the remove server so we can open shell scripts locally.
 # Author: Leon Radley (http://github.com/leon)
 
+URL="https://raw.github.com/textmate/rmate/master/rmate"
 
-URL="https://raw.github.com/textmate/rmate/master/bin/rmate"
 if [ "$#" -gt 1 ] || [ "$1" = "-b" ] || [ "$1" = "--bash" ]; then
 	shift
 	URL="https://raw.github.com/aurora/rmate/master/rmate"
@@ -18,7 +16,7 @@ cat <<EOF
 Usage: $0 [--bash] [user@]machine
 
 # Install Sublime Text plugin
-https://github.com/Drarok/rsub
+https://github.com/henrikpersson/rsub
 
 # Setup ssh for easy access
 edit ~/.ssh/config
@@ -38,7 +36,7 @@ EOF
 exit 1
 fi
 
-curl -s "${URL}" | ssh ${1%:} 'test -d /usr/local/bin || mkdir -p /usr/local/bin; cat > /usr/local/bin/rsub; chmod 0755 /usr/local/bin/rsub' || exit 1
+wget --quiet -O - "${URL}" | ssh ${1%:} 'umask 077; test -d /usr/local/bin || mkdir -p /usr/local/bin; cat > /usr/local/bin/rsub; chmod a+rx /usr/local/bin/rsub' || exit 1
 
 cat <<EOF
 

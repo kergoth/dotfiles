@@ -1,0 +1,4 @@
+syntax:re
+^tests/.*\.err$
+(~|\.pyc|\.egg-info)$
+^dist$

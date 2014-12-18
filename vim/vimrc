@@ -35,66 +35,27 @@ if has('viminfo')
   endif
 endif
 
-" Bundle setup {{{
-let &runtimepath .= "," . $VIMDOTDIR . "/bundle/vundle"
-call vundle#rc("$VIMDOTDIR/bundle")
-
-" the plug-in manager for Vim
-Bundle 'gmarik/vundle'
-
-" secure alternative to vim modelines
-Bundle 'ciaranm/securemodelines'
-
-" text filtering and alignment
-Bundle 'godlygeek/tabular'
-
-" go language support
-Bundle 'jnwhiteh/vim-golang'
-
-" vim files for the BitBake tool
-Bundle 'kergoth/vim-bitbake'
-
-" markdown runtime files
-Bundle 'tpope/vim-markdown'
-
-" taskpaper todo file support
-Bundle 'davidoc/taskpaper.vim'
-
-" lean & mean statusline for vim that's light as air
-Bundle 'bling/vim-airline'
-
-" generates modeline according to the current settings
-Bundle 'Modeliner'
-
-" comment stuff out
-Bundle 'tpope/vim-commentary'
-
-" helpers for UNIX
-Bundle 'tpope/vim-eunuch'
-
-" graph your Vim undo tree in style
-if exists('*undotree')
-  Bundle 'sjl/gundo.vim'
+" Encoding {{{
+" Termencoding will reflect the current system locale, but internally,
+" we use utf-8, and for files, we use whichever encoding from
+" &fileencodings was detected for the file in question.
+let &termencoding = &encoding
+if has('multi_byte')
+  set encoding=utf-8
+  " fileencoding value is used for new files
+  let &fileencoding = &encoding
+  set fileencodings=ucs-bom,utf-8,default,latin1
+  " set bomb
 endif
 
-" quoting/parenthesizing made simple
-Bundle 'tpope/vim-surround'
-
-" readline style insertion
-Bundle 'tpope/vim-rsi'
-
-" asynchronous build and test dispatcher
-Bundle 'tpope/vim-dispatch'
-
-" continuously updated session files
-Bundle 'tpope/vim-obsession'
+" Most printers are Latin1, inform Vim so it can convert.
+set printencoding=latin1
+" }}}
+" Bundle setup {{{
+call pathogen#infect()
 
 " monokai-like colorscheme from Steve Losh
 let g:badwolf_darkgutter = 1
-Bundle 'sjl/badwolf'
-
-" netrw improvements
-Bundle 'tpope/vim-vinegar'
 " }}}
 " General settings {{{
 filetype plugin indent on

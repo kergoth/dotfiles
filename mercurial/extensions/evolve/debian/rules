@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+#export DH_VERBOSE=1
+
+%:
+	dh $@ --with python2 --buildsystem=python_distutils
+
+override_dh_auto_build:
+	dh_auto_build
+	$(MAKE) -C docs
+
+ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
+override_dh_auto_test:
+	cd tests &&  python run-tests.py --with-hg=`which hg` --blacklist=$(CURDIR)/debian/test-blacklist
+endif
+
+override_dh_python2:
+	# avoid conflict with mercurial's own hgext/__init__.py
+	find debian -name __init__.py -delete
+	dh_python2
+
+override_dh_auto_clean: clean-docs
+	dh_auto_clean
+	rm -f tests/*.err
+
+clean-docs:
+	rm -rf html
+	rm -f docs/static/logo-evolve.ico
+	rm -f docs/tutorials/tutorial.rst

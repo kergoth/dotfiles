@@ -1,0 +1,294 @@
+=============================
+Mutable History For Mercurial
+=============================
+
+This package supplies the ``evolve`` extension for Mercurial, which
+provides several commands to mutate history and deal with the
+resulting issues.
+
+It also:
+
+    - enables the "changeset obsolescence" feature of Mercurial
+    - issues several warning messages when trouble appears in your repository
+
+**This extension is experimental and not yet meant for production.**
+
+You can enable it by adding the line below to the ``extensions``
+section of your hgrc::
+
+    evolve = PATH/TO/mutable-history/hgext/evolve.py
+
+We recommend reading the documentation first. An online version is
+available here:
+
+    http://evolution.experimentalworks.net/doc/
+
+Or see the ``doc/`` directory for a local copy.
+
+Contribute
+==========
+
+Bugs are to be reported on the mercurial's bug tracker: http://bz.selenic.com/
+Use the the "evolution" component.
+
+Please use the patchbomb extension to send email to mercurial devel. Please
+make sure to use the evolve-ext flag when doing so. You can use a command like
+this:
+
+    hg email --to mercurial-devel@selenic.com --flag evolve-ext --rev '<your patches>'
+
+See also
+http://mercurial.selenic.com/wiki/ContributingChanges#Patch_descriptions
+for guidelines on the patch description.
+
+Please don't forget to update and run the tests when you fix a bug or
+add a feature. To run the tests:
+
+    cd tests
+    python run-tests.py --with-hg=/path/to/hg
+
+
+Changelog
+=========
+
+5.0.2 -- 2014-12-14
+
+- evolve: remove dependency to the rebase extension
+
+5.0.1 -- 2014-11-25
+
+- amend: fix --logfile argument
+- evolve: preserve branch change when evolving
+- evolve: fix potential crash while solving `bumped` changesets.
+- uncommit: abort when rev specifies the current changeset
+- evolve: various message improvement
+- evolve: fix selection of changeset to evolve from the middle of a stack (issue4434)
+- evolve: make next/prev only move bookmarks optionally
+- evolve: tell user which "base of divergent changeset" is not found
+
+
+
+5.0.0 -- 2014-10-22
+
+- drop compat with Mercurial pre 3.2
+- uncommit: add a --rev argument
+- evolve: add a `working directory now at xxxxxxxxxx` message
+- evolve: automatically translate obsolete hashes when evolving
+- properly skip marker creating if patch apply cleanly
+- prune: work around a massive slowdown from lazy revset
+- grab: "fix" the grab alias on window
+
+- fix an issue where prune performance were quadratic with the number of
+  changesets pruned.
+- pull: use discovery to pull less obsmarkers through bundle2
+
+
+4.1.0 -- 2014-08-08
+
+- amend: add -D/--current-date option
+- amend: add -U/--current-user option
+- evolve: add a --tool option
+- evolve: add a --confirm option
+- mark "commit -o", "graft -o" and "graft -O" as deprecated since they are
+  unlikely to eventually make it into core.
+- push obsmarkers and phases in the same transaction than changesets
+  (when using hg >= 3.1 and bundle2-exp is enabled)
+- hide message about the obsolescence marker exchange behind a
+  `experimental.verbose-obsolescence-exchange` variable (default to False).
+
+4.0.1 -- 2014-08-08
+
+- createmarkers() accept an iterable (for compat with other extension)
+
+4.0.0 -- 2014-06-03
+
+- require Mercurial version 3.0.1 or above
+- some compatibility fixes with future 3.1.0
+- deprecated `gup` and `gdown` in favor of prev and next
+- record parent of pruned parent at prune time
+- added a `debugobsstorestat` command to gather data on obsmarker content.
+- added a `debugrecordpruneparents` command to upgrade existing prune marker
+  with parent information. Please run it once per repo after upgrading.
+- improvement to obsolescence marker exchange:
+  - added progress when pushing obsmarkers
+  - added multiple output during obsolescence markers exchange
+  - only push markers relevant to pushed subset
+  - add a new experimental way to exchange marker (when server support):
+    - added progress when pulling obsmarkers
+    - only pull markers relevant to pulled subset
+    - avoid exchanging common markers in some case
+    - use bundle2 as transport when available.
+ - add a hook related to the new commands
+
+3.3.2 -- 2014-05-14
+
+- fix a bug where evolve were creating changeset with 2 parents on windows
+  (fix issues #16, #35 and #42)
+- adds a --obsolete flag to import (requieres Mercurial 3.0)
+- prune: update to successor rather than parent when pruning '.' with -s
+- fold: add missing --message and --logfile option
+- fold: add squash as an alias
+
+3.3.1 -- 2014-04-23
+
+- various language fix
+- active bookmark now move when using prev/next (#37)
+- fix some preservation of rename information on evolve (#33)
+- abort when evolve tries to move a node on top of itself (will helps on the #35 front)
+- fold: enable --date and --user options
+
+3.3.0 -- 2014-03-04
+
+- raise Mercurial's minimal requirement to 2.7
+- drop `latercomer` and `conflicting` compatibility. Those old alias are
+  deprecated for a long time now.
+- add verbose hint about how to handle corner case by hand.
+  This should help people until evolve is able to to it itself.
+- removed the qsync extension. The only user I knew about (logilab) is not
+  using it anymore. It not compatible with coming Mercurial version 2.9.
+- add progress indicator for long evolve command
+- report troubles creation from `hg import`
+
+3.2.0 -- 2013-11-15
+
+- conform to the Mercurial custom of lowercase messages
+- added a small extension to experiment with obsolescence marker push
+- amend: drop the deprecated note option
+- amend: use core mechanism for amend (fix multiple bugs)
+- parents command: add "working directory parent is obsolete" message
+- evolve command: allow updating to the successor if the parent is
+  obsolete
+- gdown and gup commands: add next and previous alias, respectively
+- make grab aliases compatible with Mercurial 2.8
+- Tested with 2.6, 2.7 and 2.8
+
+3.1.0 -- 2013-02-11
+
+- amend: drop deprecated --change option for amend
+- alias: add a grab aliast to be used instead of graft -O
+- touch: add a --duplicate option to *not* obsolete the old version
+- touch: fix touching multiple revision at the same time
+- evolve: add a --all option
+- prune: various minor improvements
+- prune: add option to prune a specific bookmark
+- prune: add -u and -d option to control metadata
+
+3.0.0 -- 2013-02-02
+
+- compatibility with 2.5
+
+2.2.0 --
+
+- make evolve smarter at picking next troubled to solved without --any
+
+2.1.0 -- 2012-12-03
+
+- qsync fixes
+- have qfold ask for commit message
+
+2.0.0 -- 2012-10-26
+
+- compat with mercurial 2.4
+
+1.1.0 -- 2012-10-26
+
+- fix troubles creation reporting from rebase
+- rename latecomer to bumped
+- renamed conflicting to divergent
+- smarter divergent handling
+
+1.0.2 -- 2012-09-19
+
+- fix hg fold bug
+- fix hg pull --rebase
+- fix detection of conflict with external tools
+- adapt to core movement (caches and --amend)
+
+1.0.1 -- 2012-08-31
+
+- documentation improvement
+- fix a performance bug with hgweb
+
+1.0 -- 2012-08-29
+
+- Align with Mercurial version 2.3 (drop 2.2 support).
+- stabilize handle killed parent
+- stabilize handle late comer
+- stabilize handle conflicting
+- stabilize get a --continue switch
+- merge and update ignore extinct changeset in most case.
+- new "troubled()" revset
+- summary now reports troubles changesets
+- new touch command
+- new fold command
+- new basic olog alias
+
+- rebase refuse to work on public changeset again
+- rebase explicitly state that there is nothing to rebase because everything is
+  extinct() when that happen.
+- amend now cleanly abort when --change switch is misused
+
+
+0.7 -- 2012-08-06
+
+- hook: work around insanely huge value in obsolete pushkey call
+- pushkey: properly handle abort during obsolete markers push
+- amend: wrap the whole process in a single transaction.
+- evolve: tweak and add EOL to kill warning
+- obsolete: fix doc, rebase no longer aborts with --keep
+- obsolete/evolve: fix grammar in prerequisite messages
+- evolve: avoid duplication in graft wrapper
+- evolve: graft --continue is optional, test
+
+0.6 -- 2012-07-31
+
+- obsolete: change warning output to match mercurial core on
+- qsync: ignore unexistent nodes
+- make compat server both compatible with "dump" and "dump%i" version
+
+0.5 -- 2012-07-16
+
+- obsolete: Detect conflicting changeset!
+- obsolete: adapt to core: marker are written in transaction now
+- evolve: add the solve alias to obsolete
+- doc: big update of terms and summary of the concept
+- evolve: switch the official name for "kill" to prune
+
+
+0.4.1 -- 2012-07-10
+
+- [convert] properly exclude null successors from convertion
+- Ignore buggy marker in newerversion
+
+
+0.4.0 -- 2012-07-06
+
+- obsolete: public changeset are no longer latecomer.
+- obsolete: move to official binary format
+- adapt for new mercurial
+- obsolete: we are not compatible with 2.1 any more
+
+0.3.0 -- 2012-06-27
+
+- 
+- obsolete:  Add "latecomer" error detection (stabilize does not handle resolution yet)
+- evolve:    Introduce a new `uncommit` command to remove change from a changeset
+- rebase:    allow the use of --keep again
+- commit:    --amend option create obsolete marker (but still strip)
+- obsolete:  fewer marker are created when collapsing revision.
+- revset:    add, successors(), allsuccessors(), precursors(), allprecursors(),
+             latecomer() and hidden()
+- evolve:    add `prune` alias to `kill`.
+- stabilize: clearly state that stabilize does nto handle conflict
+- template:  add an {obsolete} keyword
+
+0.2.0 -- 2012-06-20
+
+- stabilize: improve choice of the next changeset to stabilize
+- stabilize: improve resolution of several corner case
+- rebase:    handle removing empty changesets
+- rebase:    handle --collapse
+- evolve:   add `obsolete` alias to `kill`
+- evolve:   add `evolve` alias to `stabilize`
+
+

@@ -179,8 +179,8 @@ EOS
     [ -z "\$_fasd_cur" ] && local _fasd_cur="\${words[CURRENT]}"
     local fnd="\${_fasd_cur//,/ }"
     local typ=\${1:-e}
-    fasd --query \$typ "\$fnd" | sort -nr | sed 's/^[^ ]*[ ]*//' | \\
-      while read -r line; do
+    fasd --query \$typ "\$fnd" 2>> "$_FASD_SINK" | \\
+      sort -nr | sed 's/^[^ ]*[ ]*//' | while read -r line; do
         compadd -U -V fasd "\$line"
       done
     compstate[insert]=menu # no expand
@@ -508,7 +508,7 @@ $(fasd --backend $each)"
     while [ "$1" ]; do case $1 in
       --complete) [ "$2" = "--" ] && shift; set -- $2; local lst=1 r=r comp=1;;
       --query|--add|--delete|-A|-D) fasd "$@"; return $?;;
-      --version) [ -z "$comp" ] && echo "1.0.0" && return;;
+      --version) [ -z "$comp" ] && echo "1.0.1" && return;;
       --) while [ "$2" ]; do shift; fnd="$fnd $1"; last="$1"; done;;
       -*) local o="${1#-}"; while [ "$o" ]; do case $o in
           s*) local show=1;;
@@ -540,10 +540,10 @@ $(fasd --backend $each)"
           R*) local r=r;;
       [0-9]*) local _fasd_i="$o"; break;;
           h*) [ -z "$comp" ] && echo "fasd [options] [query ...]
-[f|a|s|d|z] [opions] [query ...]
+[f|a|s|d|z] [options] [query ...]
   options:
-    -s         show list of files with their ranks
-    -l         list paths only
+    -s         list paths with scores
+    -l         list paths without scores
     -i         interactive mode
     -e <cmd>   set command to execute on the result file
     -b <name>  only use <name> backend

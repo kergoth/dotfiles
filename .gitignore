@@ -1,3 +1,5 @@
 .DS_Store
-._*
-/labmanager/
+__pycache__
+*.pyo
+*.pyc
+.peru

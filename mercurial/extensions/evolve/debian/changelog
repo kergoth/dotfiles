@@ -1,0 +1,70 @@
+mercurial-evolve (5.0.2-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Sun, 14 Dec 2014 12:43:28 -0800
+
+mercurial-evolve (5.0.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Faheem Mitha <faheem@faheem.info>  Wed, 12 Nov 2014 11:24:28 +0530
+
+mercurial-evolve (4.1.0-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Pierre-Yves David <pyd@marginatus.alto.octopoid.net>  Fri, 08 Aug 2014 23:15:11 -0700
+
+mercurial-evolve (4.0.1-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Pierre-Yves David <pyd@marginatus.alto.octopoid.net>  Fri, 08 Aug 2014 15:50:09 -0700
+
+mercurial-evolve (4.0.0-1) unstable; urgency=low
+
+  [ Julien Cristau ]
+  * New upstream release.
+
+  [ Pierre-Yves David ]
+  * new upstream release
+
+ -- Pierre-Yves David <pyd@marginatus.alto.octopoid.net>  Fri, 08 Aug 2014 15:48:16 -0700
+
+mercurial-evolve (3.1.0-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Pierre-Yves David <pierre-yves.david@logilab.fr>  Mon, 04 Mar 2013 18:02:15 +0100
+
+mercurial-evolve (2.1.0-1) UNRELEASED; urgency=low
+
+  * New upstream release
+
+ -- Pierre-Yves David <pierre-yves.david@logilab.fr>  Mon, 03 Dec 2012 15:19:19 +0100
+
+mercurial-evolve (1.1.0-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Pierre-Yves David <pierre-yves.david@logilab.fr>  Tue, 20 Nov 2012 16:28:12 +0100
+
+mercurial-evolve (1.0.2-1) UNRELEASED; urgency=low
+
+  * New upstream Release
+
+ -- Pierre-Yves David <pierre-yves.david@logilab.fr>  Wed, 19 Sep 2012 17:38:47 +0200
+
+mercurial-evolve (1.0.1-1) UNRELEASED; urgency=low
+
+  * New bug fix release
+  * remove conflicting __init__.py
+
+ -- Pierre-Yves David <pierre-yves.david@logilab.fr>  Fri, 31 Aug 2012 11:31:03 +0200
+
+mercurial-evolve (1.0.0-1) UNRELEASED; urgency=low
+
+  * Initial release.
+
+ -- Julien Cristau <jcristau@debian.org>  Fri, 24 Aug 2012 16:46:30 +0200

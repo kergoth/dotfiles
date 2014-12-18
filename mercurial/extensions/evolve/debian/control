@@ -1,0 +1,40 @@
+Source: mercurial-evolve
+Section: vcs
+Priority: optional
+Maintainer: Logilab <contact@logilab.fr>
+Uploaders:
+ Julien Cristau <julien.cristau@logilab.fr>,
+ Pierre-Yves David <pierre-yves.david@logilab.fr>,
+Standards-Version: 3.9.3
+Build-Depends:
+ mercurial (>= 3.2~),
+ python,
+ debhelper (>= 8),
+ python-sphinx (>= 1.0.8),
+ imagemagick,
+ librsvg2-bin,
+ curl,
+Python-Version: >= 2.6
+Homepage: https://bitbucket.org/marmoute/mutable-history
+
+Package: mercurial-evolve
+Architecture: all
+Depends:
+ ${python:Depends},
+ ${misc:Depends},
+ mercurial (>= 3.2~),
+Description: evolve extension for Mercurial
+ This package provides the experimental "evolve" extension for the Mercurial
+ DVCS.
+ .
+ This extension provides several commands to mutate history and deal with issues
+ it may raise.
+ .
+ It also:
+  - enables the "Changeset Obsolescence" feature of mercurial,
+  - alters core command and extension that rewrite history to use this feature,
+  - improves some aspects of the early implementation in Mercurial 2.3.
+ .
+ **These extensions are experimental and are not meant for production.**
+
+

@@ -1,12 +1,7 @@
-if [ ! -d antigen ]; then
-    git clone https://github.com/zsh-users/antigen.git
-fi
-
 : ${XDG_CONFIG_HOME:=~/.config}
 
 link zshenv.redir ~/.zshenv
 
-mkdir -p ${XDG_CONFIG_HOME}/zsh
-link antigen ${XDG_CONFIG_HOME}/zsh/antigen
-link zshenv ${XDG_CONFIG_HOME}/zsh/.zshenv
-link zshrc ${XDG_CONFIG_HOME}/zsh/.zshrc
+mkdir -p $XDG_CONFIG_HOME/zsh $XDG_DATA_HOME/zsh $XDG_CACHE_HOME/zsh
+link zshenv $XDG_CONFIG_HOME/zsh/.zshenv
+link zshrc $XDG_CONFIG_HOME/zsh/.zshrc

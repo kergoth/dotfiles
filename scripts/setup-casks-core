@@ -1,0 +1,14 @@
+#!/bin/sh
+
+brew cask install \
+     the-unarchiver \
+     flycut \
+     xtrafinder \
+     popclip \
+     daisydisk \
+     appcleaner \
+     unpkg \
+     niceplayer \
+     flash-player \
+     google-chrome-dev \
+

@@ -2,7 +2,7 @@
 
 """t is for people that want do things, not organize their tasks."""
 
-from __future__ import with_statement, print_function
+from __future__ import with_statement
 
 import os, re, sys, hashlib
 from operator import itemgetter
@@ -32,7 +32,7 @@ def _hash(text):
     Currently SHA1 hashing is used.  It should be plenty for our purposes.
 
     """
-    return hashlib.sha1(text.encode('utf-8')).hexdigest()
+    return hashlib.sha1(text).hexdigest()
 
 def _task_from_taskline(taskline):
     """Parse a taskline (from a task file) and return a task.
@@ -134,15 +134,12 @@ class TaskDict(object):
             if os.path.isdir(path):
                 raise InvalidTaskfile
             if os.path.exists(path):
-                try:
-                        with open(path, 'r') as tfile:
-                            tls = [tl.strip() for tl in tfile if tl]
-                            tasks = map(_task_from_taskline, tls)
-                            for task in tasks:
-                                if task is not None:
-                                    getattr(self, kind)[task['id']] = task
-                except IOError as e:
-                        sys.exit(e.strerror + ' - ' + path)
+                with open(path, 'r') as tfile:
+                    tls = [tl.strip() for tl in tfile if tl]
+                    tasks = map(_task_from_taskline, tls)
+                    for task in tasks:
+                        if task is not None:
+                            getattr(self, kind)[task['id']] = task
 
     def __getitem__(self, prefix):
         """Return the unfinished task with the given prefix.
@@ -153,13 +150,13 @@ class TaskDict(object):
         If no tasks match the prefix an UnknownPrefix exception will be raised.
 
         """
-        matched = list(filter(lambda tid: tid.startswith(prefix), self.tasks.keys()))
+        matched = filter(lambda tid: tid.startswith(prefix), self.tasks.keys())
         if len(matched) == 1:
             return self.tasks[matched[0]]
         elif len(matched) == 0:
             raise UnknownPrefix(prefix)
         else:
-            matched = list(filter(lambda tid: tid == prefix, self.tasks.keys()))
+            matched = filter(lambda tid: tid == prefix, self.tasks.keys())
             if len(matched) == 1:
                 return self.tasks[matched[0]]
             else:
@@ -186,7 +183,6 @@ class TaskDict(object):
             text = re.sub(find, repl, task['text'])
 
         task['text'] = text
-        task['id'] = _hash(text)
 
     def finish_task(self, prefix):
         """Mark the task with the given prefix as finished.
@@ -223,7 +219,7 @@ class TaskDict(object):
         for _, task in sorted(tasks.items()):
             if grep.lower() in task['text'].lower():
                 p = '%s - ' % task[label].ljust(plen) if not quiet else ''
-                print(p + task['text'])
+                print p + task['text']
 
     def write(self, delete_if_empty=False):
         """Flush the finished and unfinished tasks to the files on disk."""
@@ -234,13 +230,9 @@ class TaskDict(object):
                 raise InvalidTaskfile
             tasks = sorted(getattr(self, kind).values(), key=itemgetter('id'))
             if tasks or not delete_if_empty:
-                try:
-                    with open(path, 'w') as tfile:
-                        for taskline in _tasklines_from_tasks(tasks):
-                            tfile.write(taskline)
-                except IOError as e:
-                    sys.exit(e.strerror + ' - ' + path)
-
+                with open(path, 'w') as tfile:
+                    for taskline in _tasklines_from_tasks(tasks):
+                        tfile.write(taskline)
             elif not tasks and os.path.isfile(path):
                 os.remove(path)
 
@@ -310,9 +302,9 @@ def _main():
             kind = 'tasks' if not options.done else 'done'
             td.print_list(kind=kind, verbose=options.verbose, quiet=options.quiet,
                           grep=options.grep)
-    except AmbiguousPrefix as e:
+    except AmbiguousPrefix, e:
         sys.stderr.write('The ID "%s" matches more than one task.\n' % e.prefix)
-    except UnknownPrefix as e:
+    except UnknownPrefix, e:
         sys.stderr.write('The ID "%s" does not match any task.\n' % e.prefix)
 
 

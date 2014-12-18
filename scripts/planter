@@ -1,16 +1,25 @@
 #!/usr/bin/ruby
-# ruby script to create a directory structure from indented data.
-# Three ways to use it:
-# - Pipe indented (tabs or 2 spaces) text to the script
-#   - e.g. `cat "mytemplate" | planter.rb
-# - Create template.tpl files in ~/.planter and call them by their base name
-#   - e.g. Create a text file in ~/.planter/site.tpl
-#   - `planter.rb site`
-# - Call planter.rb without input and it will open your $EDITOR to create the tree on the fly
-# You can put %%X%% variables into templates, where X is a number that corresponds to the index
-# of the argument passed when planter is called.
-# e.g. `planter.rb client "Mr. Butterfinger"` would replace %%1%% in client.tpl with "Mr. Butterfinger"
+=begin
+Planter v1.3
+Brett Terpstra 2013
+ruby script to create a directory structure from indented data.
 
+Three ways to use it:
+- Pipe indented (tabs or 2 spaces) text to the script
+  - e.g. `cat "mytemplate" | planter.rb
+- Create template.tpl files in ~/.planter and call them by their base name
+  - e.g. Create a text file in ~/.planter/site.tpl
+  - `planter.rb site`
+- Call planter.rb without input and it will open your $EDITOR to create the tree on the fly
+
+You can put %%X%% variables into templates, where X is a number that corresponds to the index
+of the argument passed when planter is called. e.g. `planter.rb client "Mr. Butterfinger"`
+would replace %%1%% in client.tpl with "Mr. Butterfinger". Use %%X|default%% to make a variable
+optional with default replacement.
+
+If a line in the template matches a file or folder that exists in ~/.planter, that file/folder
+will be copied to the destination folder.
+=end
 require 'yaml'
 require 'tmpdir'
 require 'fileutils'
@@ -32,19 +41,26 @@ def get_hierarchy(input,parent=".",dirs_to_create=[])
 end
 
 def text_to_yaml(input, replacements = [])
-  lines = input.split("\n")
+  variables_count = input.scan(/%%\d+%%/).length
+  if variables_count > replacements.length
+    $stderr.puts('Mismatch variable/replacement counts!')
+    $stderr.puts("Template has #{variables_count} required replacements, #{replacements.length} provided.")
+    Process.exit 1
+  end
+  input.gsub!(/%%(\d+)(?:\|(.*?))?%%/) do |match|
+    if replacements[$1.to_i - 1]
+      replacements[$1.to_i - 1]
+    elsif !$2.nil?
+      $2
+    else
+      print "Invalid variable"
+      Process.exit 1
+    end
+  end
+  lines = input.split(/[\n\r]/)
   output = []
   prev_indent = 0
   lines.each_with_index do |line, i|
-    if line =~ /%%(\d+)%%/
-      if $1.to_i <= replacements.length
-        line.gsub!(/%%#{$1}%%/,replacements[$1.to_i - 1])
-      else
-        $stderr.puts('Mismatch in number of template variables found and replacements provided')
-        lines[i] = ''
-        next
-      end
-    end
     indent = line.gsub(/  /,"\t").match(/(\t*).*$/)[1]
     if indent.length > prev_indent
       lines[i-1] = lines[i-1].chomp + ":"
@@ -89,6 +105,15 @@ yaml = YAML.load(text_to_yaml(data,ARGV))
 dirs_to_create = get_hierarchy(yaml)
 
 dirs_to_create.each do |dir|
-  $stderr.puts "Creating #{dir}"
-  Dir.mkdir(dir) unless File.exists? dir
+  curr_dir = ENV['PWD']
+  unless File.exists? dir
+    $stderr.puts "Creating #{dir.sub(/^#{curr_dir}\//,'')}"
+    if File.exists?(File.join(File.expand_path("~/.planter"),File.basename(dir)))
+      FileUtils.cp_r(File.join(File.expand_path("~/.planter"),File.basename(dir)), dir)
+    else
+      Dir.mkdir(dir)
+    end
+  else
+    $stderr.puts "Skipping #{dir.sub(/^#{curr_dir}\//,'')} (file exists)"
+  end
 end

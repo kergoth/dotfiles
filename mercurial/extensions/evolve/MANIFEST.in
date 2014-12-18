@@ -1,0 +1,21 @@
+recursive-include docs/figures *.svg
+include docs/figures/hgview-example.png
+include docs/*.rst
+include docs/*.py
+include docs/tutorials/*.t
+include docs/makefile
+include docs/static/*.svg
+include hgext/__init__.py
+include hgext/evolve.py
+include hgext/pushexperiment.py
+include hgext/simple4server.py
+include setup.py
+include README
+include COPYING
+include tests/*.t
+include tests/*.py
+include tests/_exc-util.sh
+include tests/dummyssh
+exclude tests/test-oldconvert.t
+exclude tests/test-qsync.t
+exclude tests/test-drop.t

@@ -1,0 +1,16 @@
+syntax: re
+/figures/[^/]+\.png$
+^docs/build/
+^docs/html/
+^html/
+\.pyc$
+~$
+\.swp$
+\.orig$
+\.rej$
+\.err$
+^tests/easy_run.sh$
+^build/
+^MANIFEST$
+^docs/tutorials/.*\.rst$
+\.ico$

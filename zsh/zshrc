@@ -1,174 +1,41 @@
-ADOTDIR=${ADOTDIR:-~/.antigen}
+ZSH=$DOTFILESDIR/zsh
 
-# Let ^W only erase individual path components, as bash does
-autoload -U select-word-style
-select-word-style bash
-
-HISTFILE=${XDG_DATA_HOME}/zsh/history
-
-path=(
-  $HOME/bin
-  $DOTFILESDIR/scripts
-  $DOTFILESDIR/scripts/connections
-  $DOTFILESDIR/external/bin
-  /opt/homebrew/bin
-  /opt/homebrew/share/python
-  /usr/local/{bin,sbin}
-  $path
-)
-
-if [[ -n $GOPATH ]]; then
-    path=($GOPATH/bin $path)
+# use .localrc for SUPER SECRET CRAP that you don't
+# want in your public, versioned repo.
+if [[ -a ~/.localrc ]]
+then
+  source ~/.localrc
 fi
 
-setopt nullglob
-for perlpath in $HOME/Library/Perl/*/bin; do
-    path=($perlpath $path)
+# all of our zsh files
+typeset -U config_files
+config_files=($DOTFILESDIR/*/*.zsh)
+
+# load the path files
+for file in ${(M)config_files:#*/path.zsh}
+do
+  source $file
 done
-unsetopt nullglob
 
-
-fpath=(
-  $ZDOTDIR/functions
-  $ZDOTDIR/completions
-  $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions.git/src
-  $fpath
-)
-
-setopt nullglob
-for func in $ZDOTDIR/functions/*; do
-  autoload ${func##*/}
+# load "plugins"
+for file in $ZSH/plugins/*/*.plugin.zsh $ZSH/plugins/*/activate.sh; do
+  source $file
 done
-unsetopt nullglob
 
-# Zsh options {{{1
-autoload -U url-quote-magic
-zle -N self-insert url-quote-magic
+# load everything but the path and completion files
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
+do
+  source $file
+done
 
-# Kill correction, which seems to try to correct things which exist in my PATH
-unsetopt correct
-unsetopt correctall
+# initialize autocomplete here, otherwise functions won't be loaded
+autoload -U compinit
+compinit -d $XDG_CACHE_HOME/zsh/zcompdump
 
-# Show running time for commands which take longer than 10 seconds
-REPORTTIME=5
+# load every completion after autocomplete loads
+for file in ${(M)config_files:#*/completion.zsh}
+do
+  source $file
+done
 
-# Let tmux handle its own terminal titles
-if [[ -n $TMUX ]]; then
-    DISABLE_AUTO_TITLE="true"
-fi
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-COMPLETION_WAITING_DOTS="true"
-
-# Don't share my shell history among zsh instances
-unsetopt sharehistory
-unsetopt incappendhistory
-
-# I don't use the ability to execute a directory to cd into it
-unsetopt autocd
-
-# I don't want relative path typos on a cd line to go to dirs in ~
-unsetopt cdablevars
-
-# Don't auto-add variable stored paths to ~ list
-unsetopt autonamedirs
-
-# Key bindings {{{1
-autoload edit-command-line
-zle -N edit-command-line
-bindkey '^X^E' edit-command-line
-
-# Aliases {{{1
-alias lr="ls -thl"
-alias ll="ls -hl"
-alias la="ls -Ah"
-alias l="ls -1h"
-
-alias smem='smem -k'
-alias cd-last='cd "$(z -t -l -R|head -n 1)"'
-
-if [[ -e $XDG_CONFIG_HOME/tmux/config ]]; then
-    alias tmux="tmux -u2 -f $XDG_CONFIG_HOME/tmux/config"
-else
-    alias tmux="tmux -u2"
-fi
-
-alias mosh="perl -E 'print \"\e[?1005h\e[?1002h\"'; mosh"
-alias go="goproj-go"
-
-if [[ $OSTYPE =~ darwin ]]; then
-    alias ps="ps ux"
-    if (( $+commands[dfc] )); then
-        alias df=dfc
-        alias dfc="dfc -T"
-    fi
-    alias cpanm="cpanm --local-lib ~/Library/Perl/5.12"
-    alias locate="mdfind -name"
-else
-    alias ps="ps fux"
-    if (( $+commands[dfc] )); then
-        alias df=dfc
-        alias dfc="dfc -T -q mount -p -rootfs"
-    fi
-fi
-
-if (( $+commands[pacman-color] )); then
-    alias pacman='pacman-color'
-fi
-
-alias ag="ag -S --pager=${PAGER:-less}"
-if (( $+commands[ag] )); then
-    alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
-elif (( $+commands[ack] )); then
-    alias ag=ack
-    alias bback='ack --type=bitbake'
-    alias bbag=bback
-fi
-
-if (( $+commands[hub] )); then
-    eval $(hub alias -s)
-fi
-
-if (( $+commands[fasd] )); then
-    fasd_cache="$XDG_DATA_HOME/fasd/env.zsh"
-    if [[ ! -e $fasd_cache ]]; then
-        mkdir -p $XDG_DATA_HOME/fasd
-        fasd --init auto | sed 's,$,;,' >$fasd_cache
-    fi
-    source $fasd_cache
-    unset fasd_cache
-
-    if [[ $OSTYPE =~ darwin* ]]; then
-        alias o="a -e open"
-    else
-        alias o="a -e xdg-open"
-    fi
-    alias v='f -t -e vim -b viminfo'
-fi
-alias dtrx='dtrx -r --one=here'
-
-source $ZDOTDIR/antigen/antigen.zsh
-
-antigen use oh-my-zsh
-
-antigen-bundles <<EOBUNDLES
-    brew
-    git
-    pip
-    zsh-users/zsh-syntax-highlighting
-    zsh-users/zsh-history-substring-search
-    zsh-users/zsh-completions
-    zsh-users/zaw
-
-    knu/zsh-git-escape-magic
-    rupa/z
-EOBUNDLES
-
-#antigen theme robbyrussell
-antigen-theme dpoggi
-
-antigen apply
-
-# Enable git escape line input magic
-autoload -Uz git-escape-magic
-git-escape-magic
+unset config_files

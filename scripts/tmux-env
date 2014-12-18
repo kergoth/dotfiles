@@ -1,9 +1,0 @@
-#!/bin/sh
-
-tmux showenv | while IFS== read var value; do
-    if [[ $var = -* ]]; then
-        printf 'unset %s;\n' ${var/-}
-    else
-        printf 'export %s="%s";\n' "$var" "$value"
-    fi
-done

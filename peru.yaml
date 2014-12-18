@@ -1,0 +1,450 @@
+imports:
+    # Zsh
+    autoenv: zsh/plugins/autoenv
+    zaw: zsh/plugins/zaw
+    zsh-command-not-found: zsh/plugins/zsh-command-not-found
+    zsh-completions: zsh/plugins/zsh-completions
+    zsh-git-escape-magic: zsh/plugins/zsh-git-escape-magic
+    zsh-history-substring-search: zsh/plugins/zsh-history-substring-search
+    zsh-syntax-highlighting: zsh/plugins/zsh-syntax-highlighting
+    zsh-globalias: zsh/plugins/globalias
+
+    # Scripts
+    ack: scripts
+    appify|exec-file: scripts
+    atach: scripts
+    cheat: scripts
+    cpanm|exec-file: scripts
+    cwdiff: scripts
+    dtrx: scripts
+    dustin-bindir: scripts
+    fasd: scripts
+    ffind: scripts
+    gibo: scripts
+    gist: scripts
+    git-cherry-tree: scripts
+    git-pull-requests: scripts
+    git-imerge: scripts
+    git-wtf: scripts
+    git|git-jump: scripts
+    git|git-subtree: scripts
+    icdiff: scripts
+    iln: scripts
+    moreutils: scripts
+    peru: scripts/external/peru
+    planter: scripts
+    pom: scripts
+    refactory: scripts
+    repo|exec-file: scripts
+    rpm2cpio: scripts
+    smem: scripts
+    ssh-copy-rsub: scripts
+    t: scripts
+
+    chneukirchen: scripts
+    git-attic|exec-file: scripts
+    git-ltr|exec-file: scripts
+    git-neck|exec-file: scripts
+    git-trail|exec-file: scripts
+    zombies|exec-file: scripts
+    pacsrc|exec-file: scripts
+
+
+    # Vim
+    pathogen: vim/autoload
+    Modeliner: vim/bundle/Modeliner
+    badwolf: vim/bundle/badwolf
+    gundo: vim/bundle/gundo
+    securemodelines: vim/bundle/securemodelines
+    tabular: vim/bundle/tabular
+    taskpaper: vim/bundle/taskpaper
+    vim-airline: vim/bundle/vim-airline
+    vim-bitbake: vim/bundle/vim-bitbake
+    vim-commentary: vim/bundle/vim-commentary
+    vim-dispatch: vim/bundle/vim-dispatch
+    vim-eunuch: vim/bundle/vim-eunuch
+    vim-golang: vim/bundle/vim-golang
+    vim-markdown: vim/bundle/vim-markdown
+    vim-obsession: vim/bundle/vim-obsession
+    vim-rsi: vim/bundle/vim-rsi
+    vim-surround: vim/bundle/vim-surround
+    vim-vinegar: vim/bundle/vim-vinegar
+
+    # Mercurial
+    hg-extension-crecord: mercurial/extensions/crecord
+    hg-extension-prompt: mercurial/extensions/prompt
+    hg-extension-shelve: mercurial/extensions/shelve
+    hg-extension-evolve: mercurial/extensions/evolve
+    hg-extension-histedit: mercurial/extensions/histedit
+
+
+git module zsh-syntax-highlighting:
+    url: https://github.com/zsh-users/zsh-syntax-highlighting
+    rev: 3dc574190071ef59054f6d693132410b37aa3ae4
+
+git module zsh-history-substring-search:
+    url: https://github.com/zsh-users/zsh-history-substring-search
+    rev: 9f9fc7d550cc547737f4c686591cbbf07e7470b0
+
+git module zsh-completions:
+    url: https://github.com/zsh-users/zsh-completions
+    rev: 9f0a0e907aef1079229f5248024f0e70170ba427
+
+git module zaw:
+    url: https://github.com/zsh-users/zaw
+    rev: c3308b675de18a14c933544077a429ba94ea7101
+
+git module zsh-git-escape-magic:
+    url: https://github.com/knu/zsh-git-escape-magic
+    rev: 62af4f6a66601a517e168039614e5b528741a844
+
+git module autoenv:
+    url: https://github.com/kennethreitz/autoenv
+    rev: f8346c1f76c02323189c9f46d85965a2d4a1a3cc
+
+git module zsh-command-not-found:
+    url: https://github.com/Tarrasch/zsh-command-not-found
+    rev: c8c330b894a723ab7ba4dd2a8969cd71ea2df730
+
+git module git-imerge:
+    url: https://github.com/mhagger/git-imerge
+    rev: bd071accbaf0c0effd3138c0640c7ef6f790fe08
+    files: git-imerge
+
+git module cheat:
+    url: https://github.com/kergoth/cheat
+    rev: f57ef96b7edf1a416d72e4f498be5d2580909564
+    files: cheat
+
+git module git-cherry-tree:
+    url: https://github.com/pv/git-cherry-tree
+    rev: 8d4fe3cd91037dff65c7f145fa8862c323607f3f
+    files: git-cherry-tree
+
+git module iln:
+    url: https://github.com/kergoth/iln
+    files: iln
+    rev: 154070411ec9a059e58d0dec8b00a36769cecae7
+
+git module peru:
+    url: https://github.com/buildinspace/peru
+    rev: a265b26e4109a4b3f9f6a633f57495f7544f4ff1
+
+git module pathogen:
+    url: https://github.com/tpope/vim-pathogen.git
+    export: autoload/
+    rev: b9fb0dfd811004010f5f6903edef42d6004ebea2
+
+# secure alternative to vim modelines
+git module securemodelines:
+    url: https://github.com/ciaranm/securemodelines.git
+    rev: bfbecf050446814635f3e0809c4f5b60c04b192a
+
+# text filtering and alignment
+git module tabular:
+    url: https://github.com/godlygeek/tabular.git
+    rev: 60f25648814f0695eeb6c1040d97adca93c4e0bb
+
+# go language support
+git module vim-golang:
+    url: https://github.com/jnwhiteh/vim-golang.git
+    rev: e6d0c6a72a66af2674b96233c4747661e0f47a8c
+
+# vim files for the BitBake tool
+git module vim-bitbake:
+    url: https://github.com/kergoth/vim-bitbake.git
+    rev: d601f516177d528712feac4284e9ee46547383a1
+
+# markdown runtime files
+git module vim-markdown:
+    url: https://github.com/tpope/vim-markdown.git
+    rev: 409c37b205afa2f9d590e23de8171482d66770e2
+
+# taskpaper todo file support
+git module taskpaper:
+    url: https://github.com/davidoc/taskpaper.vim.git
+    rev: 2df291f7f40ef049d0a60151c66f11fa21b01e1c
+
+# lean & mean statusline for vim that's light as air
+git module vim-airline:
+    url: https://github.com/bling/vim-airline.git
+    rev: 401ce611c6f9b9e8be0857cf6094604033e1b717
+
+# generates modeline according to the current settings
+git module Modeliner:
+    url: https://github.com/vim-scripts/Modeliner.git
+    rev: 0c3b58ce05c4df17c67316b6a0f956eb226e77e8
+
+# comment stuff out
+git module vim-commentary:
+    url: https://github.com/tpope/vim-commentary.git
+    rev: 9c685131a5facfa0d643feca3a61b41c007d8170
+
+# helpers for UNIX
+git module vim-eunuch:
+    url: https://github.com/tpope/vim-eunuch.git
+    rev: 8c996336ceecbfb7290c7c9b409195f190866548
+
+# graph your Vim undo tree in style
+git module gundo:
+    url: https://github.com/sjl/gundo.vim.git
+    rev: 3975ac871565115e3769dc69c06bc88ddc1369af
+
+# quoting/parenthesizing made simple
+git module vim-surround:
+    url: https://github.com/tpope/vim-surround.git
+    rev: fa433e0b7330753688f715f3be5d10dc480f20e5
+
+# readline style insertion
+git module vim-rsi:
+    url: https://github.com/tpope/vim-rsi.git
+    rev: dfc5288097b83d1eb3173d8be348a11f3d467d8e
+
+# asynchronous build and test dispatcher
+git module vim-dispatch:
+    url: https://github.com/tpope/vim-dispatch.git
+    rev: 78ed0c065ee65c8368f1f10566b96cd890c14358
+
+# continuously updated session files
+git module vim-obsession:
+    url: https://github.com/tpope/vim-obsession.git
+    rev: 4ab72e07ec3e25f33066217ddaf9863c7b597cf5
+
+# monokai-like colorscheme from Steve Losh
+git module badwolf:
+    url: https://github.com/sjl/badwolf.git
+    rev: e6fdf1844ac7fe9f479f93846081f9294eb992c0
+
+# netrw improvements
+git module vim-vinegar:
+    url: https://github.com/tpope/vim-vinegar.git
+    rev: ac893960c324d879b6923a4c1abaea352d8caeb5
+
+curl module repo:
+    url: https://storage.googleapis.com/git-repo-downloads/repo
+    filename: repo
+    sha1: b8bd1804f432ecf1bab730949c82b93b0fc5fede
+
+hg module smem:
+    url: http://selenic.com/repo/smem
+    files: smem
+    rev: c2cab19139d08f73cff1ac505abf21d004f19284
+
+hg module dtrx:
+    url: http://brettcsmith.org/2007/dtrx/dtrx
+    export: scripts
+    files: dtrx
+    reup: trunk
+    rev: 065005f5cee27b21ebc15a519c553f9d91192f8a
+
+hg module t:
+    url: https://bitbucket.org/sjl/t
+    files: t.py
+    rev: 1c496e933168ffb33622c8549bc1372d7a368f4f
+
+curl module rpm2cpio:
+    url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
+    sha1: 9e91dd0cdd8178aafdb165a7c9ae3a60ce8f6007
+    build: tar jxf rpm-4.12.0.tar.bz2; mv rpm-4.12.0/scripts/rpm2cpio.sh rpm-4.12.0/scripts/rpm2cpio
+    export: rpm-4.12.0/scripts
+    files: rpm2cpio
+
+git module refactory:
+    url: https://github.com/chipx86/refactory
+    files:
+        - git-j
+        - git-rebase-chain
+        - git-integrate
+    export: bin
+    rev: 3ffd58c4173d233f3b09b7d6b1568ee72f105894
+
+git module appify:
+    url: https://gist.github.com/674099.git
+    rev: 9e64331e348b20049975519b866148050db06da5
+
+git module atach:
+    url: https://github.com/sorin-ionescu/atach
+    files: atach
+    rev: 754af1492654460e5abccb238b038d42f02ec1e1
+
+curl module cpanm:
+    url: http://xrl.us/cpanm
+    sha1: d89ab9e442dd274d98dbba48d5c9105683ec926f
+
+hg module cwdiff:
+    url: https://code.google.com/p/cj-overlay.evergreens
+    files: cwdiff
+    rev: 0634908c05afa6f3dd9e0879fb56c0882f320eef
+
+git module ack:
+    url: https://github.com/petdance/ack2
+    #build: cpanm --local-lib $PWD/perl5 local::lib && eval $(perl -I $PWD/perl5/lib/perl5 -Mlocal::lib) && cpanm File::Next && perl Makefile.PL; make ack-standalone; mkdir -p out; mv ack-standalone out/ack
+    build: perl Makefile.PL && make ack-standalone; mkdir -p out; mv ack-standalone out/ack
+    export: out
+    rev: 081286f68021ad0a1b7d0e641af3d743b86431ad
+
+git module planter:
+    url: https://gist.github.com/3767188.git
+    build: mv planter.rb planter; chmod +x planter
+    rev: 9b39c1bff8a4e2b49bb62889d7d51f1cb45f0b9d
+
+git module fasd:
+    url: https://github.com/clvv/fasd
+    files: fasd
+    rev: 287af2b80e0829b08dc6329b4fe8d8e5594d64b0
+
+git module ffind:
+    url: https://github.com/samuell/ffind
+    files: ffind
+    rev: 04c221a8d3d961c3796a9b0f095c47fe92bfa05f
+
+git module gibo:
+    url: https://github.com/simonwhitaker/gibo
+    files: gibo
+    rev: d7726f18561fd8f93f78a55eef093f1383b3127f
+
+git module gist:
+    url: https://github.com/defunkt/gist
+    build: rake standalone
+    export: build
+    files: gist
+    rev: 8b0b40141a3cd2eaac455c8e77092147903fed34
+
+git module ssh-copy-rsub:
+    url: https://github.com/henrikpersson/rsub
+    files: ssh-copy-rsub
+    rev: 7cdd8e487a145709531b6aaf7f21efb7161718ba
+
+git module pom:
+    url: https://github.com/tobym/pom
+    files: pom
+    rev: dd6de61f77d0cdd5633f99796e4340a68b9ab989
+
+git module icdiff:
+    url: https://github.com/jeffkaufman/icdiff
+    files:
+        - icdiff
+        - git-icdiff
+    rev: 6f28695d645b3ceb14bcaa902f68bf96ea2279fc
+
+git module dustin-bindir:
+    url: https://github.com/dustin/bindir
+    files:
+        - git-alternate
+        - git-test-sequence
+        - git-test-once
+        - git-test-bisect
+    build: chmod +x git-test-bisect
+    rev: 1bfdd32321ce9e773e4e3839a0faaa951a7945d3
+
+git module git-wtf:
+    url: https://github.com/michaelklishin/git-wtf
+    files: git-wtf
+    rev: 31ea599e36c3231ce9e264bd8f1f9936c32f4632
+
+curl module git:
+    url: https://www.kernel.org/pub/software/scm/git/git-2.2.0.tar.xz
+    build: tar Jxf git-2.2.0.tar.xz
+    export: git-2.2.0
+    sha1: 6221b8303dc6887cbce986563f9ece78a3b2ad6a
+
+rule git-jump:
+    export: build
+    build: mkdir -p build; cp contrib/git-jump/git-jump build/git-jump
+    files: git-jump
+
+rule git-subtree:
+    export: build
+    build: mkdir -p build; cp contrib/subtree/git-subtree.sh build/git-subtree
+    files: git-subtree
+
+# moreutils is also available in homebrew, and some of its utilities are
+# compiled, so those are only available via that method.
+git module moreutils:
+    url: https://github.com/madx/moreutils
+    files:
+        - chronic
+        - vipe
+    rev: 5ca552dd82dc3ef5ee0d388716148c5a653b72bb
+
+git module chneukirchen:
+    url: https://github.com/chneukirchen/tools
+    files:
+        - base
+        - pacverify
+        - spongegrep
+        - swaptop
+    rev: f27547b02f21cf1b054d1614e4b01faae9af038b
+
+curl module git-neck:
+    url: http://chneukirchen.org/dotfiles/bin/git-neck
+    sha1: 5d97318ad19c83ea4432cc630673eecc6f5d390d
+
+curl module git-trail:
+    url: http://chneukirchen.org/dotfiles/bin/git-trail
+    sha1: a1a5ebab40c29db41de976df6eacc9674636eb91
+
+curl module git-ltr:
+    url: http://chneukirchen.org/dotfiles/bin/git-ltr
+    sha1: 6101fc9d163edf9d8ca240b5e07a3eae717371bc
+
+curl module git-attic:
+    url: http://chneukirchen.org/dotfiles/bin/git-attic
+    sha1: 61c92f88d24f94d2feda931455c5cdf697ec8e56
+
+curl module zombies:
+    url: http://chneukirchen.org/dotfiles/bin/zombies
+    sha1: 374aab587f3722eadcdc84a2874faa74ff967cdd
+
+curl module pacsrc:
+    url: http://chneukirchen.org/dotfiles/bin/pacsrc
+    sha1: c1582894e1690f3bc13379840aa8afac2260629e
+
+rule exec-file:
+    build: chmod +x *
+
+git module git-pull-requests:
+    url: https://github.com/splitbrain/git-pull-request
+    build: mkdir -p build; cp git-pull-request build/git-pull-requests
+    export: build
+    rev: 5bb2ebccd4622c689992d0335cc24baa58f2df9b
+
+hg module hg-extension-crecord:
+    url: https://bitbucket.org/edgimar/crecord
+    rev: e1567c94274f075b578cf26cd80a5e148762485c
+
+hg module hg-extension-prompt:
+    url: https://bitbucket.org/obensonne/hg-prompt
+    rev: 2e292ca8d7688a965488da61e0f7b8f55af1fbb9
+
+hg module hg-extension-shelve:
+    url: https://bitbucket.org/astiob/hgshelve
+    rev: b81580adae4ecd2adb1c5ecdbb15154a8862dcae
+
+hg module hg-extension-evolve:
+    url: https://bitbucket.org/marmoute/mutable-history
+    reup: stable
+    rev: 1df0bf41016cc640eec03bfbd5938f5639b2f387
+
+hg module hg-extension-histedit:
+    url: https://bitbucket.org/durin42/histedit
+    rev: 2b080f1704f836d83b04b4728e244e6bbd50f848
+
+curl module zsh-globalias:
+    url: http://patshead.com/misc-files/globalias.plugin.zsh
+    sha1: 45958e9baa5275f32e11a8d41f8f869178265d28
+
+# Not used
+git module dropdiff:
+    url: https://github.com/russelldavis/DropDiff
+    rev: f5e14721e8cf0b5cb6ab98108f7b1228a23ce34d
+
+git module tmx:
+    url: https://github.com/brandur/tmux-extra
+    files: tmx
+    rev: 77dda64f3de581d0545213fd7994af0578428e89
+
+curl module tmux-zoom:
+    url: https://raw.github.com/jipumarino/tmux-zoom/master/tmux-zoom.sh
+    filename: tmux-zoom
+    sha1: 814ed69f4395d70c1746121b50ba5a3e59848175

@@ -266,14 +266,6 @@ def processtotals(pids):
 def showpids():
     p = src.pids()
     pt = processtotals(p)
-    ttyrows, ttycolumns = os.popen('stty size', 'r').read().split()
-    comwid=int(ttycolumns)-53;
-    if (comwid<10):
-        comfmt='%%-%d.%ds' % (10,10);
-        namefmt='%%-%d.%ds' % (7,7);
-    else:
-        comfmt='%%-%d.%ds' % (comwid,comwid);
-        namefmt='%%-%d.%ds' % (comwid-3,comwid-3);
 
     def showuser(p):
         if options.numeric:
@@ -285,9 +277,9 @@ def showpids():
              'process ID'),
         user=('User', showuser, '%-8s', lambda x: len(dict.fromkeys(x)),
               'owner of process'),
-        name=('Name', src.pidname, namefmt, None,
+        name=('Name', src.pidname, '%-24.24s', None,
               'name of process'),
-        command=('Command', src.pidcmd, comfmt, None,
+        command=('Command', src.pidcmd, '%-27.27s', None,
                  'process command line'),
         maps=('Maps',lambda n: pt[n]['maps'], '% 5s', sum,
               'total number of mappings'),
@@ -471,11 +463,44 @@ def showsystem():
     showtable(range(len(l)), fields, columns.split(), options.sort or 'order')
 
 def showfields(fields, f):
-    if f != list:
+    if type(f) in (list, set):
+        print "unknown fields:", " ".join(f)
+    else:
         print "unknown field", f
     print "known fields:"
     for l in sorted(fields.keys()):
         print "%-8s %s" % (l, fields[l][-1])
+
+def autosize(columns, fields, rows):
+    colsizes = {}
+    for c in columns:
+        sizes = [1]
+
+        if not options.no_header:
+            sizes.append(len(fields[c][0]))
+
+        if (options.abbreviate or options.percent) and 'a' in fields[c][2]:
+            sizes.append(7)
+        else:
+            for r in rows:
+                sizes.append(len(str(fields[c][1](r))))
+
+        colsizes[c] = max(sizes)
+
+    overflowcols = set(["command", "map"]) & set(columns)
+    if len(overflowcols) > 0:
+        overflowcol = overflowcols.pop()
+        totnoflow = sum(colsizes.values()) - colsizes[overflowcol]
+        try:
+            ttyrows, ttycolumns = os.popen('stty size', 'r').read().split()
+            ttyrows, ttycolumns = int(ttyrows), int(ttycolumns)
+        except:
+            ttyrows, ttycolumns = (24, 80)
+        maxflowcol = ttycolumns - totnoflow - len(columns)
+        maxflowcol = max(maxflowcol, 10)
+        colsizes[overflowcol] = min(colsizes[overflowcol], maxflowcol)
+
+    return colsizes
 
 def showtable(rows, fields, columns, sort):
     header = ""
@@ -494,11 +519,17 @@ def showtable(rows, fields, columns, sort):
     mt = totalmem()
     st = memory()['swaptotal']
 
-    for n in columns:
-        if n not in fields:
-            showfields(fields, n)
-            sys.exit(-1)
+    missing = set(columns) - set(fields)
+    if len(missing) > 0:
+        showfields(fields, missing)
+        sys.exit(-1)
 
+    if options.autosize:
+        colsizes = autosize(columns, fields, rows)
+    else:
+        colsizes = {}
+
+    for n in columns:
         f = fields[n][2]
         if 'a' in f:
             if n == 'swap':
@@ -508,6 +539,8 @@ def showtable(rows, fields, columns, sort):
             f = f.replace('a', 's')
         else:
             formatter.append(lambda x: x)
+        if n in colsizes:
+            f = re.sub(r"[0-9]+", str(colsizes[n]), f)
         format += f + " "
         header += f % fields[n][0] + " "
 
@@ -631,6 +664,8 @@ parser.add_option("-c", "--columns", type="str",
                   help="columns to show")
 parser.add_option("-t", "--totals", action="store_true",
                   help="show totals")
+parser.add_option("-a", "--autosize", action="store_true",
+                  help="size columns to fit terminal size")
 
 parser.add_option("-R", "--realmem", type="str",
                   help="amount of physical RAM")

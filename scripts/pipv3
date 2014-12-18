@@ -1,0 +1,17 @@
+#!/bin/sh
+# Install packages into a virtualenv with pip, then symlink any scripts into
+# $XDG_DATA_HOME/../bin.
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} VENV_NAME [PIP_ARGS..]"
+    exit 2
+fi
+
+venv="$1"
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+venv_dir="$WORKON_HOME/$venv"
+if [ ! -e "$venv_dir" ]; then
+    pyvenv "$venv_dir"
+fi
+"$(dirname "$0")"/pipv "$@"

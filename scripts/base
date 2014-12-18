@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# base - convert between bases
+
+abort "usage: base NUMBERS..."  if ARGV.empty?
+
+ARGV.each { |s|
+  begin
+    n = Integer(s)
+    puts "%s = %08b %d 0%o 0x%x" % [s, n, n, n, n]
+  rescue ArgumentError
+    warn "base: invalid number '#{s}'"
+  end
+}

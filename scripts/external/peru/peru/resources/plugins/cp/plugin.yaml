@@ -1,0 +1,3 @@
+fetch exe: cp_plugin.py
+required fields:
+    - path

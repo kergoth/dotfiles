@@ -1,0 +1,28 @@
+#!/bin/sh
+# Install packages into a virtualenv with pip, then symlink any scripts into
+# $XDG_DATA_HOME/../bin.
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} VENV_NAME [PIP_ARGS..]"
+    exit 2
+fi
+
+venv="$1"
+shift
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+venv_dir="$WORKON_HOME/$venv"
+if [ ! -e "$venv_dir" ]; then
+    virtualenv "$venv_dir"
+fi
+. "$venv_dir/bin/activate"
+
+if [ $# -eq 0 ]; then
+    set -- $venv
+fi
+pip install "$@"
+
+mkdir -p "$XDG_DATA_HOME/../bin"
+ls -1 "$venv_dir/bin" | grep -Ev '^(python|pydoc|virtualenv|pip|easy_install|activate)' | while read script; do
+    ln -sfv "$venv_dir/bin/$script" "$XDG_DATA_HOME/../bin/${script##*/}"
+done

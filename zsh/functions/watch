@@ -7,7 +7,7 @@ fi
 
 COLUMNS=$(stty size | cut -d" " -f2)
 prefix="$(printf "Every %0.1fs: %s" $interval "$*")"
-width=$(echo $prefix | wc -c)
+width=$(echo $prefix | wc -c | awk '{print $1}')
 
 while true; do
     clear

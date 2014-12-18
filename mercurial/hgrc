@@ -29,21 +29,21 @@ pager =
 progress =
 bookmarks =
 rebase =
-histedit =
 
 extdiff =
 gpg =
 # Note: log supports -G without graphlog extension in mercurial 2.3+
 graphlog =
+histedit =
 patchbomb =
 purge =
 record =
 schemes =
 
-#crecord = ~/.local/share/hg/crecord/crecord
-evolve = ~/.local/share/hg/evolve/hgext/evolve.py
-prompt = ~/.local/share/hg/prompt/prompt.py
-shelve = ~/.local/share/hg/shelve/hgshelve.py
+crecord = ~/.config/hg/extensions/crecord/crecord
+evolve = ~/.config/hg/extensions/evolve/hgext/evolve.py
+prompt = ~/.config/hg/extensions/prompt/prompt.py
+shelve = ~/.config/hg/extensions/shelve/hgshelve.py
 
 [mq]
 secret = True
