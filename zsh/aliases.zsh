@@ -1,5 +1,10 @@
 alias reload!='. ${ZDOTDIR:-$HOME}/.zshrc'
 
+if [[ $OSTYPE =~ darwin ]]; then
+    alias ls="ls -G"
+else
+    alias ls="ls --color=auto"
+fi
 alias lr="ls -thl"
 alias ll="ls -hl"
 alias la="ls -Ah"
