@@ -1,0 +1,33 @@
+#!/bin/sh
+# Install packages into a fresh homebrew install, then symlink its
+# binaries/scripts into $XDG_DATA_HOME/../bin
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} BREWENV_NAME [BREW_ARGS..]"
+    exit 2
+fi
+
+brewenv="$1"
+shift
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
+brewenv_dir="$HOMEBREWS_HOME/$brewenv"
+if [ ! -e "$brewenv_dir" ]; then
+    if which brew >/dev/null 2>&1; then
+        git clone-via $(brew --prefix) "$brewenv_dir"
+    else
+        git clone https://github.com/Homebrew/homebrew.git "$brewenv_dir"
+    fi
+fi
+
+PATH="$brewenv_dir/bin:$PATH"
+
+if [ $# -eq 0 ]; then
+    set -- $brewenv
+fi
+brew install "$@"
+
+mkdir -p "$XDG_DATA_HOME/../bin"
+ls -1 "$brewenv_dir/bin" | grep -xv 'brew' | while read script; do
+    ln -sfv "$brewenv_dir/bin/$script" "$XDG_DATA_HOME/../bin/${script##*/}"
+done
