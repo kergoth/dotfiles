@@ -2,7 +2,7 @@ fpath=($ZSH/functions $fpath)
 
 path=(
   $HOME/bin
-  $ZDG_DATA_HOME/../bin(:A)
+  $XDG_DATA_HOME/../bin(:A)
   $HOME/.gem/ruby/*/bin(N)
   $HOME/.cabal/bin
   $DOTFILESDIR/scripts(:A)
