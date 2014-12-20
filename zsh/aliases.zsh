@@ -48,6 +48,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     fi
     alias locate="mdfind -name"
     alias vim="mvim -v"
+    alias plaincopy="pbpaste -Prefer txt | pbcopy; pbpaste; echo"
 else
     alias ps="ps fux"
     if (( $+commands[dfc] )); then
