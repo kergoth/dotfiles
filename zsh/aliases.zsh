@@ -46,7 +46,6 @@ if [[ $OSTYPE =~ darwin ]]; then
         alias df=dfc
         alias dfc="dfc -T"
     fi
-    alias cpanm="cpanm --local-lib ~/Library/Perl/*"
     alias locate="mdfind -name"
     alias vim="mvim -v"
 else
