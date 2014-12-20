@@ -128,7 +128,7 @@ git module iln:
 
 git module peru:
     url: https://github.com/buildinspace/peru
-    rev: a265b26e4109a4b3f9f6a633f57495f7544f4ff1
+    rev: f4385928006bc3194d15dab8619832e46f278176
 
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
