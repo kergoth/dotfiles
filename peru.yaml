@@ -279,7 +279,7 @@ hg module cwdiff:
 git module ack:
     url: https://github.com/petdance/ack2
     #build: cpanm --local-lib $PWD/perl5 local::lib && eval $(perl -I $PWD/perl5/lib/perl5 -Mlocal::lib) && cpanm File::Next && perl Makefile.PL; make ack-standalone; mkdir -p out; mv ack-standalone out/ack
-    build: perl Makefile.PL && make ack-standalone; mkdir -p out; mv ack-standalone out/ack
+    build: perl Makefile.PL && make ack-standalone && mkdir -p out && mv ack-standalone out/ack
     export: out
     rev: 081286f68021ad0a1b7d0e641af3d743b86431ad
 
