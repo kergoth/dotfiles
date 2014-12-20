@@ -5,3 +5,7 @@
 - vim:
 
     - Consider resurrection of the vim-kergoth repo
+
+- zsh:
+
+    - Fix terminal title setting
