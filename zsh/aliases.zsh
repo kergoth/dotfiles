@@ -1,4 +1,5 @@
 alias reload!='. ${ZDOTDIR:-$HOME}/.zshrc'
+alias import-global-history='fc -RI'
 
 if [[ $OSTYPE =~ darwin ]]; then
     alias ls="ls -G"
