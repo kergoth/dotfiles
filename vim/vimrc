@@ -478,6 +478,8 @@ end
 " }}}
 " File type detection {{{
 augroup vimrc_filetype_detect
+  au!
+  au BufNewFile,BufRead *.taskpaper setf taskpaper
   au BufNewFile,BufRead *.md set ft=markdown
   au BufNewFile,BufRead TODO,BUGS,README set ft=text
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
@@ -486,6 +488,9 @@ augroup END
 " File type settings {{{
 augroup vimrc_filetypes
   au!
+
+  " Set filetypes
+
   " File type specific indentation settings
   au FileType vim set sts=2 sw=2
   au FileType c,cpp,go,taskpaper set ts=4 sw=4 sts=0 noet
@@ -499,8 +504,6 @@ augroup vimrc_filetypes
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
   au FileType man set fdl=99 fdm=manual
   au FileType markdown set fdl=1
-
-  au BufRead,BufNewFile *.taskpaper setf taskpaper
   au Filetype taskpaper call taskpaper#fold_projects()
 
   " Diff context begins with a space, so blank lines of context
