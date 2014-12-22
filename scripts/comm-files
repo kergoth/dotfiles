@@ -28,9 +28,9 @@ if [ $# -eq 0 ]; then
     set -- -type f -o -type l
 fi
 
-fromfiles="$(abspath "$(mktemp -t ${0##*/}.XXXXXX)")"
-tofiles="$(abspath "$(mktemp -t ${0##*/}.XXXXXX)")"
-trap "rm -f $fromfiles $tofiles" EXIT INT TERM
+fromfiles="$(abspath "$(mktemp -t "${0##*/}.XXXXXX")")"
+tofiles="$(abspath "$(mktemp -t "${0##*/}.XXXXXX")")"
+trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
 echo >&2 "Comparing the list of files from $from to $to"
 

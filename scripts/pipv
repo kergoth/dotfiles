@@ -18,11 +18,17 @@ fi
 . "$venv_dir/bin/activate"
 
 if [ $# -eq 0 ]; then
-    set -- $venv
+    set -- "$venv"
 fi
 pip install "$@"
 
 mkdir -p "$XDG_DATA_HOME/../bin"
-ls -1 "$venv_dir/bin" | grep -Ev '^(python|pydoc|virtualenv|pip|easy_install|activate)' | while read script; do
-    ln -sfv "$venv_dir/bin/$script" "$XDG_DATA_HOME/../bin/${script##*/}"
+for script in "$venv_dir/bin/"*; do
+    filename="${script##*/}"
+    case "$filename" in
+        python*|pydoc*|virtualenv*|pip*|easy_install*|activate*):
+            continue
+            ;;
+    esac
+    ln -sfv "$script" "$XDG_DATA_HOME/../bin/$filename"
 done
