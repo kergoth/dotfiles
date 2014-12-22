@@ -1,7 +1,0 @@
-fetch exe: svn_plugin.py
-reup exe: svn_plugin.py
-required fields:
-    - url
-optional fields:
-    - rev
-    - reup

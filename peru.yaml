@@ -31,7 +31,6 @@ imports:
     icdiff: scripts
     iln: scripts
     moreutils: scripts
-    peru: scripts/external/peru
     planter: scripts
     pom: scripts
     refactory: scripts
@@ -126,10 +125,6 @@ git module iln:
     files: iln
     rev: 154070411ec9a059e58d0dec8b00a36769cecae7
 
-git module peru:
-    url: https://github.com/buildinspace/peru
-    rev: f4385928006bc3194d15dab8619832e46f278176
-
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
     export: autoload/
@@ -203,7 +198,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 78ed0c065ee65c8368f1f10566b96cd890c14358
+    rev: c4390c5724f9d262aeba62ab69c5bc5246626c6f
 
 # continuously updated session files
 git module vim-obsession:

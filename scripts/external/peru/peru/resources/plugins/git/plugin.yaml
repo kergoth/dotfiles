@@ -1,9 +1,0 @@
-fetch exe: git_plugin.py
-reup exe: git_plugin.py
-required fields:
-    - url
-optional fields:
-    - rev
-    - reup
-cache fields:
-    - url

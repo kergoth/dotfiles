@@ -1,3 +1,0 @@
-fetch exe: print_plugin.py
-required fields:
-    - nonce

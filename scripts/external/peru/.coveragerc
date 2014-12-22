@@ -1,5 +1,0 @@
-[run]
-source = peru
-
-[report]
-omit = third-party
