@@ -27,8 +27,11 @@ setopt COMPLETE_IN_WORD
 setopt IGNORE_EOF
 setopt EXTENDED_GLOB
 
-setopt APPEND_HISTORY # adds history
-setopt INC_APPEND_HISTORY SHARE_HISTORY  # adds history incrementally and share it across sessions
+# Append to history incrementally, but don't auto-import from the shared
+# history, as I don't want to lose context
+setopt INC_APPEND_HISTORY
+setopt NO_SHARE_HISTORY
+
 setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
