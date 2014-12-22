@@ -49,8 +49,9 @@ autoload -Uz git-escape-magic
 git-escape-magic
 
 # Keybinds
-bindkey '^[^N' newtab
-bindkey '^?' backward-delete-char
+
+# Emacs mode
+bindkey -e
 
 autoload edit-command-line
 zle -N edit-command-line
