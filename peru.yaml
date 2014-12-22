@@ -320,7 +320,7 @@ git module icdiff:
     files:
         - icdiff
         - git-icdiff
-    rev: 6f28695d645b3ceb14bcaa902f68bf96ea2279fc
+    rev: f47ec284de7aa575d2d196375066342a17951c38
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
