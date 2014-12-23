@@ -52,7 +52,6 @@ imports:
     # Vim
     pathogen: vim/autoload
     Modeliner: vim/bundle/Modeliner
-    badwolf: vim/bundle/badwolf
     gundo: vim/bundle/gundo
     securemodelines: vim/bundle/securemodelines
     tabular: vim/bundle/tabular
@@ -204,11 +203,6 @@ git module vim-dispatch:
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession.git
     rev: 4ab72e07ec3e25f33066217ddaf9863c7b597cf5
-
-# monokai-like colorscheme from Steve Losh
-git module badwolf:
-    url: https://github.com/sjl/badwolf.git
-    rev: e6fdf1844ac7fe9f479f93846081f9294eb992c0
 
 # netrw improvements
 git module vim-vinegar:
