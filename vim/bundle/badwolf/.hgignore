@@ -1,0 +1,11 @@
+syntax: glob
+
+.DS_Store
+*.pyc
+*.swp
+*.swo
+*.un~
+*~
+.ropeproject
+tags
+tags.bak

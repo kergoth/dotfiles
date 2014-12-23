@@ -1,0 +1,27 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1477
+
+[How to use it?]
+
+execute ':Modeliner'.
+
+
+[And, what will happen?]
+
+If your current settings are like below:
+  - setl fenc=utf-8
+  - setl et
+  - setl sts=4
+
+then you will get a modeline like:
+  - for 'c' filetype:
+      /* vim: set fenc=utf-8 et sts=4 : */
+  - for 'xml' filetype:
+      <!-- vim: set fenc=utf-8 et sts=4 : -->
+
+
+[How to include my favorite options?]
+
+Modify  g:Modeliner_format.  It is a simple format.
+
+An example:
+    let g:Modeliner_format = 'fenc=  tw=  et  ts=  sts=  sw=  backup wrap'

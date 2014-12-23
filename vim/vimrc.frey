@@ -1,0 +1,76 @@
+set guifont=Terminus\ Medium:h16
+set noantialias
+
+"let g:EasyMotion_leader_key = '<Leader>'
+hi link EasyMotionTarget ErrorMsg
+hi link EasyMotionShade  Comment
+
+"let g:vundle_default_git_proto = "git"
+
+" full path fuzzy file, buffer, mru, tag, ... finder
+" Bundle 'kien/ctrlp.vim'
+
+" Bundle 'kergoth/vim-hilinks'
+" Bundle 'scrooloose/syntastic'
+" Bundle 'SirVer/ultisnips'
+" Bundle 'tpope/vim-endwise'
+
+" convenient interactive motions
+" Bundle 'Lokaltog/vim-easymotion'
+
+" Bundle 'tpope/vim-fugitive'
+" "Bundle 'scrooloose/nerdtree'
+" Bundle 'tpope/vim-repeat'
+" Bundle 'majutsushi/tagbar'
+
+if has('macunix')
+  " Dash.app integration
+  let g:dash_map = {
+        \ 'python'     : 'python2',
+        \ 'lua'        : 'lua',
+        \ 'sh'         : 'man',
+        \ }
+
+  " Map K to look up the current word in dash for supported filetypes
+  augroup DashMap
+    au!
+    for key in keys(g:dash_map)
+      exe 'au FileType ' . key . ' nnoremap <buffer> K :Dash<cr>'
+    endfor
+  augroup END
+
+  " Disable python-mode's pydoc integration, since we're using Dash
+  let g:pymode_doc = 0
+endif
+
+" Bundle 'klen/python-mode'
+" Bundle 'rizzatti/funcoo.vim'
+" Bundle 'rizzatti/dash.vim'
+
+"Bundle 'scrooloose/vim-space'
+"Bundle 'msanders/snipmate.vim'
+"Bundle 'scrooloose/snipmate-snippets'
+"Bundle 'xolox/vim-shell'
+"Bundle 'xolox/vim-session'
+"Bundle 'xolox/vim-lua-inspect'
+"Bundle 'xolox/vim-lua-ftplugin'
+" Bundle 'sjl/clam.vim'
+" Bundle 'michaeljsmith/vim-indent-object'
+"Bundle 'Shougo/neocomplcache'
+"Bundle 'Shougo/neosnippet'
+"Bundle 'davidhalter/jedi-vim'
+"Bundle 'xolox/vim-python-ftplugin'
+"Bundle 'xolox/vim-easytags'
+" Bundle 'szw/vim-ctrlspace'
+" Bundle 'terryma/vim-multiple-cursors'
+
+" Pseudo-clipboard register for -clipboard vim
+" Bundle 'kana/vim-fakeclip'
+
+" open a url with shell.vim
+nmap <leader>o :Open<cr>
+
+" Focus lost/gained events for iTerm2
+" if $OSTYPE =~ 'darwin'
+"   Bundle 'sjl/vitality.vim'
+" endif
