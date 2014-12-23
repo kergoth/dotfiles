@@ -35,6 +35,9 @@
 	# Log of all dangling commits
 	lgd = !git lg $(git dangling) $(git for-each-ref | awk '{print $1}' | sed 's,^,^,') $(git reflog show refs/stash | awk '{print $1}' | sed 's,^,^,')
 
+	# Remove existing files from the index
+	forget = update-index --force-remove
+
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
