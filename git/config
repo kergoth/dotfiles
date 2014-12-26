@@ -182,7 +182,12 @@
 [help]
 	autocorrect = 1
 
-%include config.d/*
-%include%Darwin config.darwin
-%include%Linux config.linux
-%include%Windows config.windows
+# Pushing over https is a pain due to password prompts, unless you set up a
+# .netrc, which is a security issue.
+[url "git@github.com:"]
+	pushInsteadOf = https://github.com/
+	pushInsteadOf = http://github.com/
+	pushInsteadOf = git://github.com/
+
+[include]
+	path = config.local

@@ -1,6 +1,15 @@
-link exclude ~/.config/git/exclude
-link template ~/.config/git/template
-install_templated config.in ~/.config/git/config
+link . ~/.config/git
+
+touch config.local
+case "$OSTYPE" in
+    darwin*)
+        _OSTYPE=darwin
+        ;;
+    *)
+        _OSTYPE="$OSTYPE"
+        ;;
+esac
+git config -f config.local --replace-all include.path "config.os.$_OSTYPE" "config\.os\."
 chmod 0600 ~/.config/git/config
 
 newest_version () {
@@ -13,3 +22,5 @@ git_version="$(git --version | cut -d" " -f3)"
 if [ "$(newest_version 1.8.4 $git_version)" = 1.8.4 ]; then
     sed -i -e 's/purr = ".*/purr = pull --rebase/' ~/.config/git/config
 fi
+
+# vim: set ft=sh sts=4 sw=4 et :
