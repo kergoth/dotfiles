@@ -162,7 +162,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: 401ce611c6f9b9e8be0857cf6094604033e1b717
+    rev: 6387268f13c513d8afeb98d0621bd3da8219dfc6
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -290,7 +290,7 @@ git module ffind:
 git module gibo:
     url: https://github.com/simonwhitaker/gibo
     files: gibo
-    rev: d7726f18561fd8f93f78a55eef093f1383b3127f
+    rev: bad8be3d5a093beb2faf6d96b252699b1ecf61e8
 
 git module gist:
     url: https://github.com/defunkt/gist
@@ -314,7 +314,7 @@ git module icdiff:
     files:
         - icdiff
         - git-icdiff
-    rev: f47ec284de7aa575d2d196375066342a17951c38
+    rev: 824927d43bdab866da78244cf3661e842ba927cc
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
