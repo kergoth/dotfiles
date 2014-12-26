@@ -1,3 +1,4 @@
 if [ -e netrc ]; then
     link netrc
+    chmod 0600 netrc
 fi

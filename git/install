@@ -10,7 +10,6 @@ case "$OSTYPE" in
         ;;
 esac
 git config -f config.local --replace-all include.path "config.os.$_OSTYPE" "config\.os\."
-chmod 0600 ~/.config/git/config
 
 newest_version () {
     for ver; do
