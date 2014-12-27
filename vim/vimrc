@@ -205,7 +205,7 @@ if &encoding == 'utf-8'
   set fillchars=
 
   " Make soft word wrapping obvious
-  set showbreak=↪
+  set showbreak=⇇
 endif
 
 " Do soft word wrapping at chars in breakat
