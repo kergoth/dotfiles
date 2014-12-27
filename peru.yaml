@@ -67,6 +67,7 @@ imports:
     vim-rsi: vim/bundle/vim-rsi
     vim-surround: vim/bundle/vim-surround
     vim-vinegar: vim/bundle/vim-vinegar
+    damian-conway-vim: vim/bundle/damian-conway/plugin
 
     # Mercurial
     hg-extension-crecord: mercurial/extensions/crecord
@@ -422,6 +423,13 @@ hg module hg-extension-histedit:
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
     sha1: 45958e9baa5275f32e11a8d41f8f869178265d28
+
+# From Damian Conway's vim setup. Note: review more of the plugins there
+git module damian-conway-vim:
+    url: https://github.com/thoughtstream/Damian-Conway-s-Vim-Setup
+    export: plugin
+    files: undowarnings.vim
+    rev: 94a406e82df449f65ae654e17d250d5b2fe74825
 
 # Not used
 git module dropdiff:

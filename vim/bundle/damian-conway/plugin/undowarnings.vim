@@ -4,7 +4,7 @@
 " License:	This file is placed in the public domain.
 
 " If already loaded, we're done...
-if exists("loaded_undowarnings") || !exists("*undotree")
+if exists("loaded_undowarnings")
     finish
 endif
 let loaded_undowarnings = 1
@@ -31,16 +31,22 @@ function! Rememberundo_start ()
 endfunction
 
 function! VerifyUndo ()
-    " Are we back at the start of this session (but still with undos possible)???
-    let undo_now = undotree().seq_cur
-    if undo_now > 0 && undo_now == b:undo_start
-
-        " If so, check whether to undo into pre-history...
-        return confirm('',"Undo into previous session? (&Yes\n&No)",1) == 1 ? "\<C-L>u" : "\<C-L>"
+    " Nothing to verify if can't undo into previous sesssion...
+    if !exists('*undotree')
+        return 'u'
     endif
 
-    " Otherwise, just undo...
-    return 'u'
+    " Are we back at the start of this session (but still with undos possible)???
+    let undo_now = undotree().seq_cur
+
+    " If so, check whether to undo into pre-history...
+    if undo_now > 0 && undo_now == b:undo_start
+        return confirm('',"Undo into previous session? (&Yes\n&No)",1) == 1 ? "\<C-L>u" : "\<C-L>"
+
+    " Otherwise, always undo...
+    else
+        return 'u'
+    endif
 endfunction
 
 " Restore previous external compatibility options
