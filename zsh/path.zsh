@@ -12,9 +12,6 @@ path=(
   $HOME/.cabal/bin
   $DOTFILESDIR/scripts(:A)
   /opt/homebrew/bin
-  /opt/homebrew/share/python
-  /opt/homebrew/share/pypy
-  /opt/homebrew/share/pypy3
   /usr/local/{bin,sbin}
   $path
   /usr/bin/core_perl
