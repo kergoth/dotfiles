@@ -6,6 +6,7 @@
 
     - Figure out why after/syntax/python.vim isn't being applied, and possibly
       update or simplify it, or swipe the syntax file from python-mode.
+    - Look into why the sh indent change isn't being applied
     - Consider resurrection of the vim-kergoth repo
 
 - zsh:
