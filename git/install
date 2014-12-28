@@ -10,15 +10,20 @@ case "$OSTYPE" in
         ;;
 esac
 git config -f config.local --replace-all include.path "config.os.$_OSTYPE" "config\.os\."
+if [ -e /opt/homebrew/etc/openssl/cert.pem ]; then
+    git config -f config.local --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
+elif [ -e /usr/local/etc/openssl/cert.pem ]; then
+    git config -f config.local --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
+fi
 
 newest_version () {
     for ver; do
-        printf "$ver\n"
+        printf "%s\n" "$ver"
     done | sort -t. -n | tail -n 1
 }
 
 git_version="$(git --version | cut -d" " -f3)"
-if [ "$(newest_version 1.8.4 $git_version)" = 1.8.4 ]; then
+if [ "$(newest_version 1.8.4 "$git_version")" = 1.8.4 ]; then
     sed -i -e 's/purr = ".*/purr = pull --rebase/' ~/.config/git/config
 fi
 

@@ -1,5 +1,2 @@
 [credential]
 	helper = osxkeychain
-
-[http]
-	sslCAInfo = /opt/homebrew/etc/openssl/cert.pem
