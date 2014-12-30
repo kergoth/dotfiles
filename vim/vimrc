@@ -104,9 +104,9 @@ augroup vimrc
   " Close out the quickfix window if it's the only open window
   fun! <SID>QuickFixClose()
     if &buftype == 'quickfix'
-      " if this window is last on screen quit without warning
-      if winbufnr(2) == -1
-        quit!
+      " if this window is last on screen, quit
+      if winnr('$') < 2
+        quit
       endif
     endif
   endfun
