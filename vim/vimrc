@@ -100,6 +100,17 @@ augroup vimrc
   " Give us an error window after running make, grep etc, but only if results
   " are available.
   au QuickFixCmdPost * botright cwindow 5
+
+  " Close out the quickfix window if it's the only open window
+  fun! <SID>QuickFixClose()
+    if &buftype == 'quickfix'
+      " if this window is last on screen quit without warning
+      if winbufnr(2) == -1
+        quit!
+      endif
+    endif
+  endfun
+  au BufEnter * call <SID>QuickFixClose()
 augroup END
 
 " Allow hiding buffers with modifications
