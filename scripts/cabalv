@@ -1,0 +1,36 @@
+#!/bin/sh
+# Install packages into a fresh cabal sandbox, then symlink its
+# binaries/scripts into $XDG_DATA_HOME/../bin
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} SANDBOX_NAME [INSTALL_ARGS..]"
+    exit 2
+fi
+
+cabal_sandbox_name="$1"
+shift
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+CABALS_HOME="${CABALS_HOME:-$XDG_DATA_HOME/cabal-sandboxes}"
+
+cabal_sandbox_dir="$CABALS_HOME/$cabal_sandbox_name"
+if [ ! -e "$cabal_sandbox_dir" ]; then
+    mkdir -p "$cabal_sandbox_dir"
+fi
+cd "$cabal_sandbox_dir" || exit 1
+
+if [ ! -e cabal.sandbox.config ]; then
+    cabal sandbox --sandbox=. init
+fi
+
+PATH="$cabal_sandbox_dir/bin:$PATH"
+
+if [ $# -eq 0 ]; then
+    set -- "$cabal_sandbox_name"
+fi
+cabal install "$@"
+
+mkdir -p "$XDG_DATA_HOME/../bin"
+for script in "$cabal_sandbox_dir/bin/"*; do
+    filename="${script##*/}"
+    ln -sfv "$script" "$XDG_DATA_HOME/../bin/$filename"
+done
