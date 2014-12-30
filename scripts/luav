@@ -27,7 +27,9 @@ install_vert () {
         echo >&2 "Unable to find rockspec for vert, falling back to non-git"
         "$sandbox/bin/luarocks" install vert
     else
-        "$sandbox/bin/luarocks" install "$vert_dir/rockspecs/$rockspec"
+        cp "$vert_dir/rockspecs/$rockspec" "$vert_dir/rockspecs/vert-0.0.3k-1.rockspec"
+        sed -i -e 's/0\.0\.3-2/0.0.3k-1/g; /tag =/d' "$vert_dir/rockspecs/vert-0.0.3k-1.rockspec"
+        "$sandbox/bin/luarocks" install "$vert_dir/rockspecs/vert-0.0.3k-1.rockspec"
     fi
 }
 
