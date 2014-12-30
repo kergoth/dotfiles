@@ -5,15 +5,12 @@
 set -e
 
 install_sandbox () {
-    sandbox_dir="$1/sandbox"
+    sandbox_dir="$1"
     if [ ! -e "$sandbox_dir/gist" ]; then
-        git clone https://gist.github.com/1125791 "$sandbox_dir/gist"
+        git clone https://gist.github.com/048450249e3ea288a85d.git "$sandbox_dir/gist"
         chmod +x "$sandbox_dir/gist/install.sh"
     fi
-    (
-        cd "$1"
-        "$sandbox_dir/gist/install.sh"
-    )
+    "$sandbox_dir/gist/install.sh" "$sandbox_dir"
     if [ ! -e "$sandbox_dir/bin/lua" ]; then
         echo >&2 "Error: $sandbox_dir/bin/lua does not exist"
         return 1
@@ -38,15 +35,15 @@ bootstrap_vert () {
     # Bootstrap vert into a vert env
     vert_env="$1"
     bootstrap_dir="$vert_env/bootstrap"
-    if [ ! -e "$bootstrap_dir/sandbox/bin/lua" ]; then
+    if [ ! -e "$bootstrap_dir/bin/lua" ]; then
         install_sandbox "$bootstrap_dir"
     fi
-    if [ ! -e "$bootstrap_dir/sandbox/bin/vert" ]; then
-        install_vert "$bootstrap_dir/sandbox"
-        ln -s vert.lua "$bootstrap_dir/sandbox/bin/vert"
+    if [ ! -e "$bootstrap_dir/bin/vert" ]; then
+        install_vert "$bootstrap_dir"
+        ln -s vert.lua "$bootstrap_dir/bin/vert"
     fi
     if [ ! -e "$vert_env/bin/lua" ]; then
-        PATH="$bootstrap_dir/sandbox/bin:$PATH" vert_init "$vert_env"
+        PATH="$bootstrap_dir/bin:$PATH" vert_init "$vert_env"
     fi
     rm -rf "$bootstrap_dir"
 
