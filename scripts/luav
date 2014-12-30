@@ -1,0 +1,81 @@
+#!/bin/sh
+# Install packages into a fresh lua sandbox, then link its binaries/scripts
+# into $XDG_DATA_HOME/../bin
+
+set -e
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} LUAENV_NAME [LUAROCKS_ARGS..]"
+    exit 2
+fi
+
+bootstrap_vert () {
+    verts_env="$1"
+    if [ ! -e "$verts_env/bin/lua" ]; then
+        git clone https://gist.github.com/rjpcomputing/1125791 "$verts_env/src/gist-sandbox"
+        chmod +x install.sh
+        ./install.sh "$verts_env"
+    fi
+
+    (
+        # PATH="$verts_env/bin:$PATH"
+        if [ ! -e "$verts_env/src/vert" ]; then
+            git clone https://github.com/aconbere/vert "$verts_env/src/vert"
+        fi
+        if [ ! -e "$verts_env/src/vert/rockspecs/vert-0.0.3-2.rockspec" ]; then
+            echo >&2 "Unable to find rockspec for vert, falling back to non-git"
+            "$verts_env/bin/luarocks" install vert
+        else
+            "$verts_env/bin/luarocks" install "$verts_env/src/vert/rockspecs/vert-0.0.3-2.rockspec"
+        fi
+        ln -s vert.lua "$verts_env/bin/vert"
+    )
+}
+
+luaenv="$1"
+shift
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
+
+luaenv_dir="$VERTS_HOME/$luaenv"
+if [ ! -e "$luaenv_dir/bin/lua" ]; then
+    verts_env="$VERTS_HOME/vert"
+    if [ ! -e "$verts_env/bin/vert" ]; then
+        bootstrap_vert "$verts_env"
+    fi
+
+    case "$(uname -s)" in
+    Linux)
+        platform=linux
+        ;;
+    Darwin)
+        platform=macosx
+        ;;
+    esac
+    "$verts_env/bin/vert" init "--platform=$platform" "$luaenv_dir"
+fi
+
+. "$luaenv_dir/bin/activate"
+
+if [ $# -eq 0 ]; then
+    set -- "$luaenv"
+fi
+luarocks install "$@"
+
+mkdir -p "$XDG_DATA_HOME/../bin"
+for script in "$luaenv_dir/bin/"*; do
+    filename="${script##*/}"
+    case "$filename" in
+        activate|lua*):
+            continue
+            ;;
+    esac
+
+    # We could symlink, but want to ensure that LUA_PATH & friends are set
+    # properly in case the script/binary expects it and isn't self contained.
+    cat >"$XDG_DATA_HOME/../bin/$filename" <<END
+. "$luaenv_dir/bin/activate"
+exec "\$(basename "\$0")" "\$@"
+END
+    chmod +x "$XDG_DATA_HOME/../bin/$filename"
+done
