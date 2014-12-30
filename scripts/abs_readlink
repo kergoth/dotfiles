@@ -9,5 +9,5 @@ abspath () {
 }
 
 for arg; do
-    echo "$(abspath "$(readlink "$arg")" "$(dirname "$arg")")"
+    abspath "$(readlink "$arg")" "$(dirname "$arg")"
 done

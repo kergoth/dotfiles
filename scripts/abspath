@@ -11,7 +11,7 @@ while getopts r:h opt; do
             ;;
     esac
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 
 if [ -z "$relativeto" ]; then
     relativeto="$PWD"
