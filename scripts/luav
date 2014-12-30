@@ -4,10 +4,9 @@
 
 set -e
 
-if [ $# -eq 0 ]; then
-    echo >&2 "Usage: ${0##*/} LUAENV_NAME [LUAROCKS_ARGS..]"
-    exit 2
-fi
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
+rockspec=vert-0.0.3-2.rockspec
 
 bootstrap_vert () {
     verts_env="$1"
@@ -22,20 +21,23 @@ bootstrap_vert () {
         if [ ! -e "$verts_env/src/vert" ]; then
             git clone https://github.com/aconbere/vert "$verts_env/src/vert"
         fi
-        if [ ! -e "$verts_env/src/vert/rockspecs/vert-0.0.3-2.rockspec" ]; then
+        if [ ! -e "$verts_env/src/vert/rockspecs/$rockspec" ]; then
             echo >&2 "Unable to find rockspec for vert, falling back to non-git"
             "$verts_env/bin/luarocks" install vert
         else
-            "$verts_env/bin/luarocks" install "$verts_env/src/vert/rockspecs/vert-0.0.3-2.rockspec"
+            "$verts_env/bin/luarocks" install "$verts_env/src/vert/rockspecs/$rockspec"
         fi
         ln -s vert.lua "$verts_env/bin/vert"
     )
 }
 
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} LUAENV_NAME [LUAROCKS_ARGS..]"
+    exit 2
+fi
+
 luaenv="$1"
 shift
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
-VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
 
 luaenv_dir="$VERTS_HOME/$luaenv"
 if [ ! -e "$luaenv_dir/bin/lua" ]; then
