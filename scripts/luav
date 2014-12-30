@@ -1,82 +1,127 @@
-#!/bin/sh
+#!/bin/bash
 # Install packages into a fresh lua sandbox, then link its binaries/scripts
 # into $XDG_DATA_HOME/../bin
 
 set -e
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
-VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
-rockspec=vert-0.0.3-2.rockspec
+install_sandbox () {
+    sandbox_dir="$1/sandbox"
+    if [ ! -e "$sandbox_dir/gist" ]; then
+        git clone https://gist.github.com/1125791 "$sandbox_dir/gist"
+        chmod +x "$sandbox_dir/gist/install.sh"
+    fi
+    (
+        cd "$1"
+        "$sandbox_dir/gist/install.sh"
+    )
+    if [ ! -e "$sandbox_dir/bin/lua" ]; then
+        echo >&2 "Error: $sandbox_dir/bin/lua does not exist"
+        return 1
+    fi
+}
+
+install_vert () {
+    sandbox="$1"
+    vert_dir="$sandbox/src/vert"
+    if [ ! -e "$vert_dir" ]; then
+        git clone https://github.com/aconbere/vert "$vert_dir"
+    fi
+    if [ ! -e "$vert_dir/rockspecs/$rockspec" ]; then
+        echo >&2 "Unable to find rockspec for vert, falling back to non-git"
+        "$sandbox/bin/luarocks" install vert
+    else
+        "$sandbox/bin/luarocks" install "$vert_dir/rockspecs/$rockspec"
+    fi
+}
 
 bootstrap_vert () {
-    verts_env="$1"
-    if [ ! -e "$verts_env/bin/lua" ]; then
-        git clone https://gist.github.com/rjpcomputing/1125791 "$verts_env/src/gist-sandbox"
-        chmod +x install.sh
-        ./install.sh "$verts_env"
+    # Bootstrap vert into a vert env
+    vert_env="$1"
+    bootstrap_dir="$vert_env/bootstrap"
+    if [ ! -e "$bootstrap_dir/sandbox/bin/lua" ]; then
+        install_sandbox "$bootstrap_dir"
     fi
+    if [ ! -e "$bootstrap_dir/sandbox/bin/vert" ]; then
+        install_vert "$bootstrap_dir/sandbox"
+        ln -s vert.lua "$bootstrap_dir/sandbox/bin/vert"
+    fi
+    if [ ! -e "$vert_env/bin/lua" ]; then
+        PATH="$bootstrap_dir/sandbox/bin:$PATH" vert_init "$vert_env"
+    fi
+    rm -rf "$bootstrap_dir"
 
     (
-        if [ ! -e "$verts_env/src/vert" ]; then
-            git clone https://github.com/aconbere/vert "$verts_env/src/vert"
-        fi
-        if [ ! -e "$verts_env/src/vert/rockspecs/$rockspec" ]; then
-            echo >&2 "Unable to find rockspec for vert, falling back to non-git"
-            "$verts_env/bin/luarocks" install vert
-        else
-            "$verts_env/bin/luarocks" install "$verts_env/src/vert/rockspecs/$rockspec"
-        fi
-        ln -s vert.lua "$verts_env/bin/vert"
+        . "$vert_env/bin/activate"
+        install_vert "$vert_env"
     )
 }
+
+vert_init () {
+    vert init --platform="$platform" --lua-version=$lua_version --luarocks-version=$luarocks_version "$@"
+}
+
+link_env_scripts () {
+    mkdir -p "$XDG_DATA_HOME/../bin"
+    for script in "$1/bin/"*; do
+        filename="${script##*/}"
+        case "$filename" in
+            activate|lua*):
+                continue
+                ;;
+        esac
+
+        # We could symlink, but want to ensure that LUA_PATH & friends are set
+        # properly in case the script/binary expects it and isn't self contained.
+        link_name="$XDG_DATA_HOME/../bin/$filename"
+        printf >&2 '’%s’ -> ’%s’\n' "$link_name" "$script"
+        cat >"$link_name" <<END
+#!/bin/bash
+. "$1/bin/activate"
+exec "\$(basename "\$0")" "\$@"
+END
+        chmod +x "$link_name"
+    done
+}
+
 
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} LUAENV_NAME [LUAROCKS_ARGS..]"
     exit 2
 fi
 
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
+lua_version=5.2.3
+luarocks_version=2.2.0
+rockspec=vert-0.0.3-2.rockspec
+case "$(uname -s)" in
+Linux)
+    platform=linux
+    ;;
+Darwin)
+    platform=macosx
+    ;;
+esac
+
 luaenv="$1"
 shift
 
-luaenv_dir="$VERTS_HOME/$luaenv"
-if [ ! -e "$luaenv_dir/bin/lua" ]; then
-    verts_env="$VERTS_HOME/vert"
-    if [ ! -e "$verts_env/bin/vert" ]; then
-        bootstrap_vert "$verts_env"
-    fi
-
-    case "$(uname -s)" in
-    Linux)
-        platform=linux
-        ;;
-    Darwin)
-        platform=macosx
-        ;;
-    esac
-    "$verts_env/bin/vert" init "--platform=$platform" "$luaenv_dir"
-fi
-
-. "$luaenv_dir/bin/activate"
-
+# Default to installing a rock of the same name as the env
 if [ $# -eq 0 ]; then
     set -- "$luaenv"
 fi
-luarocks install "$@"
 
-mkdir -p "$XDG_DATA_HOME/../bin"
-for script in "$luaenv_dir/bin/"*; do
-    filename="${script##*/}"
-    case "$filename" in
-        activate|lua*):
-            continue
-            ;;
-    esac
+luaenv_dir="$VERTS_HOME/$luaenv"
+if  [ ! -e "$VERTS_HOME/vert/bin/vert" ]; then
+    bootstrap_vert "$VERTS_HOME/vert"
+    link_env_scripts "$VERTS_HOME/vert"
+fi
 
-    # We could symlink, but want to ensure that LUA_PATH & friends are set
-    # properly in case the script/binary expects it and isn't self contained.
-    cat >"$XDG_DATA_HOME/../bin/$filename" <<END
-. "$luaenv_dir/bin/activate"
-exec "\$(basename "\$0")" "\$@"
-END
-    chmod +x "$XDG_DATA_HOME/../bin/$filename"
-done
+(
+    . "$VERTS_HOME/vert/bin/activate"
+    vert_init "$luaenv_dir"
+
+    . "$luaenv_dir/bin/activate"
+    luarocks install "$@"
+    link_env_scripts "$luaenv_dir"
+)
