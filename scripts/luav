@@ -17,7 +17,6 @@ bootstrap_vert () {
     fi
 
     (
-        # PATH="$verts_env/bin:$PATH"
         if [ ! -e "$verts_env/src/vert" ]; then
             git clone https://github.com/aconbere/vert "$verts_env/src/vert"
         fi
