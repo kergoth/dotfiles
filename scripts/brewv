@@ -28,7 +28,7 @@ fi
 brew install "$@"
 
 mkdir -p "$XDG_DATA_HOME/../bin"
-for script in "$venv_dir/bin/"*; do
+for script in "$brewenv_dir/bin/"*; do
     filename="${script##*/}"
     case "$filename" in
         brew):
