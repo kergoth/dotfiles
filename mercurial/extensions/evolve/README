@@ -51,6 +51,10 @@ add a feature. To run the tests:
 Changelog
 =========
 
+5.0.3 --
+
+- evolve: don't abort Mercurial on version mismatch
+
 5.0.2 -- 2014-12-14
 
 - evolve: remove dependency to the rebase extension

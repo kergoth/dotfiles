@@ -85,8 +85,7 @@ elif gboptslist is not None:
     def memfilectx(repo, *args, **kwargs):
         return oldmemfilectx(*args, **kwargs)
 else:
-    raise util.Abort('Your Mercurial is too old for this version of Evolve\n'
-                     'requires version %s or above' % min(testedwith.split()))
+    raise ImportError('evolve needs version %s or above' % min(testedwith.split()))
 
 
 # This extension contains the following code
