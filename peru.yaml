@@ -163,7 +163,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: 6387268f13c513d8afeb98d0621bd3da8219dfc6
+    rev: 1fd98862198c0898146eba0798cb0af67bf7c522
 
 # generates modeline according to the current settings
 git module Modeliner:
