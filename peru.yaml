@@ -19,7 +19,7 @@ imports:
     dtrx: scripts
     dustin-bindir: scripts
     fasd: scripts
-    ffind: scripts
+    friendly-find: scripts
     gibo: scripts
     gist: scripts
     git-cherry-tree: scripts
@@ -283,10 +283,10 @@ git module fasd:
     files: fasd
     rev: 287af2b80e0829b08dc6329b4fe8d8e5594d64b0
 
-git module ffind:
-    url: https://github.com/samuell/ffind
+hg module friendly-find:
+    url: https://bitbucket.org/sjl/friendly-find
     files: ffind
-    rev: 04c221a8d3d961c3796a9b0f095c47fe92bfa05f
+    rev: a9e32bdb260bdad375ce93fe70b957fb9783e0bb
 
 git module gibo:
     url: https://github.com/simonwhitaker/gibo
