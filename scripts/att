@@ -17,10 +17,16 @@ if which abduco >/dev/null 2>&1; then
         abduco -A "$name" dvtm-kergoth-status "$name"
     }
 else
-    socket_dir="${TMPDIR:-/tmp}/dtach-$LOGNAME"
+    : ${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}/runtime-$LOGNAME}
+    : ${XDG_DATA_HOME:=$HOME/.local/share}
+    socket_dir="${XDG_RUNTIME_DIR:-${XDG_DATA_HOME}}/att-${HOST:-$(hostname -s)}"
 
     list_sessions () {
-        atach -l | sort | {
+        for i in $socket_dir/*.socket; do
+            if [ -e "$i" ]; then
+                echo "${i#$socket_dir/}" | sed 's,\.socket$,,'
+            fi
+        done | sort | {
             if [ -n "$ATT_SESSION" ]; then
                 sed "s#^$ATT_SESSION\$#$ATT_SESSION*#"
             else
@@ -32,7 +38,7 @@ else
     create_session () {
         name="$1"
         shift
-        atach -r winch -Z "$@" -s "$name" dvtm-kergoth-status "$name"
+        dtach -A "$socket_dir/$name.socket" -r winch dvtm-kergoth-status "$name"
     }
 fi
 
