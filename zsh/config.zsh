@@ -42,7 +42,8 @@ setopt complete_aliases
 
 # Let ^W only erase individual path components, as bash does
 autoload -U select-word-style
-select-word-style bash
+select-word-style normal
+WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
 # "Magic" escaping
 autoload -U url-quote-magic
