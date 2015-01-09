@@ -1,0 +1,4 @@
+# Just for convenience
+att-env () {
+    cat $ATT_ENV
+}
