@@ -17,8 +17,8 @@ if which abduco >/dev/null 2>&1; then
         abduco -A "$name" dvtm-kergoth-status "$name"
     }
 else
-    : ${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}/runtime-$LOGNAME}
-    : ${XDG_DATA_HOME:=$HOME/.local/share}
+    : "${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}/runtime-$LOGNAME}"
+    : "${XDG_DATA_HOME:=$HOME/.local/share}"
     socket_dir="${XDG_RUNTIME_DIR:-${XDG_DATA_HOME}}/att-${HOST:-$(hostname -s)}"
 
     list_sessions () {
