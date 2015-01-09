@@ -30,7 +30,13 @@ done
 
 # initialize autocomplete here, otherwise functions won't be loaded
 autoload -U compinit
-compinit -d $XDG_CACHE_HOME/zsh/zcompdump
+if [[ $PSEUDO_DISABLED = 0 ]]; then
+    # When running under pseudo, we're actually still ourselves, so silently
+    # ignore the compaudit.
+    compinit -u -d $XDG_CACHE_HOME/zsh/zcompdump
+else
+    compinit -d $XDG_CACHE_HOME/zsh/zcompdump
+fi
 
 # load every completion after autocomplete loads
 for file in ${(M)config_files:#*/completion.zsh}
