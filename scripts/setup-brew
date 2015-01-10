@@ -44,7 +44,7 @@ brew install tag
 brew install brew-cask
 
 # For 'att'
-brew install abduco dvtm
+brew install dtach dvtm
 
 # File manager
 brew install ranger
