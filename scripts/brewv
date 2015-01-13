@@ -2,15 +2,21 @@
 # Install packages into a fresh homebrew install, then symlink its
 # binaries/scripts into $XDG_DATA_HOME/../bin
 
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
+
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} BREWENV_NAME [BREW_ARGS..]"
+    echo >&2
+    echo >&2 "Existing isolated homebrew installations:"
+    for dir in "$HOMEBREWS_HOME"/*/; do
+        printf >&2 '  %s\n' "$(basename "${dir%/}")"
+    done
     exit 2
 fi
 
 brewenv="$1"
 shift
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
-HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
 brewenv_dir="$HOMEBREWS_HOME/$brewenv"
 if [ ! -e "$brewenv_dir" ]; then
     if which brew >/dev/null 2>&1; then

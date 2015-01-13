@@ -2,14 +2,21 @@
 # Install packages into a virtualenv with pip, then symlink any scripts into
 # $XDG_DATA_HOME/../bin.
 
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} VENV_NAME [PIP_ARGS..]"
+    echo >&2
+    echo >&2 "Existing virtualenvs (both python 2 and 3):"
+    for dir in "$WORKON_HOME"/*/; do
+        printf >&2 '  %s\n' "$(basename "${dir%/}")"
+    done
     exit 2
 fi
 
 venv="$1"
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
-WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+shift
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
     pyvenv "$venv_dir"

@@ -83,13 +83,19 @@ END
 }
 
 
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
+
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} LUAENV_NAME [LUAROCKS_ARGS..]"
+    echo >&2
+    echo >&2 "Existing lua environments:"
+    for dir in "$VERTS_HOME"/*/; do
+        printf >&2 '  %s\n' "$(basename "${dir%/}")"
+    done
     exit 2
 fi
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
-VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
 lua_version=5.2.3
 luarocks_version=2.2.0
 rockspec=vert-0.0.3-2.rockspec
