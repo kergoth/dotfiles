@@ -7,7 +7,7 @@ if [[ -x /usr/libexec/path_helper ]]; then
 fi
 path=(
   $HOME/bin
-  $XDG_DATA_HOME/../bin(:A)
+  $XDG_DATA_HOME/../bin(N:A)
   $HOME/.gem/ruby/*/bin(N)
   $HOME/.cabal/bin
   $DOTFILESDIR/scripts(:A)
