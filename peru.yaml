@@ -259,12 +259,12 @@ git module atach:
 
 curl module cpanm:
     url: http://xrl.us/cpanm
-    sha1: d89ab9e442dd274d98dbba48d5c9105683ec926f
+    sha1: 6ed812f42f58cf7a78766b49c170c9702b7f8787
 
 hg module cwdiff:
     url: https://code.google.com/p/cj-overlay.evergreens
     files: cwdiff
-    rev: 0634908c05afa6f3dd9e0879fb56c0882f320eef
+    rev: 4cb04cf00b37d1e30629c860d72b485b83e5ee37
 
 git module ack:
     url: https://github.com/petdance/ack2
