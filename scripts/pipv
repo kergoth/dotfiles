@@ -10,7 +10,9 @@ if [ $# -eq 0 ]; then
     echo >&2
     echo >&2 "Existing environments (both python 2 and 3):"
     for dir in "$WORKON_HOME"/*/; do
-        printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        if [ -e "$dir" ]; then
+            printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        fi
     done
     exit 2
 fi

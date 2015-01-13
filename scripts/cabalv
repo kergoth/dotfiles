@@ -10,7 +10,9 @@ if [ $# -eq 0 ]; then
     echo >&2
     echo >&2 "Existing cabal sandboxes:"
     for dir in "$CABALS_HOME"/*/; do
-        printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        if [ -e "$dir" ]; then
+            printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        fi
     done
     exit 2
 fi
