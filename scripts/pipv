@@ -8,7 +8,7 @@ WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} VENV_NAME [PIP_ARGS..]"
     echo >&2
-    echo >&2 "Existing virtualenvs (both python 2 and 3):"
+    echo >&2 "Existing environments (both python 2 and 3):"
     for dir in "$WORKON_HOME"/*/; do
         printf >&2 '  %s\n' "$(basename "${dir%/}")"
     done
