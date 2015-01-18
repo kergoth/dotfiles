@@ -39,6 +39,7 @@ imports:
     smem: scripts
     ssh-copy-rsub: scripts
     t: scripts
+    vitag: scripts
 
     chneukirchen: scripts
     git-attic|exec-file: scripts
@@ -445,3 +446,8 @@ curl module tmux-zoom:
     url: https://raw.github.com/jipumarino/tmux-zoom/master/tmux-zoom.sh
     filename: tmux-zoom
     sha1: 814ed69f4395d70c1746121b50ba5a3e59848175
+
+git module vitag:
+    url: https://github.com/ttscoff/vitag
+    files: vitag
+    rev: 56366c0709978da4d12ae8e11ff3bcf032265406
