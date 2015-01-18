@@ -325,7 +325,7 @@ git module dustin-bindir:
         - git-test-once
         - git-test-bisect
     build: chmod +x git-test-bisect
-    rev: 1bfdd32321ce9e773e4e3839a0faaa951a7945d3
+    rev: 77922b89ca291f86e5f72be6b3d10ff46df36691
 
 git module git-wtf:
     url: https://github.com/michaelklishin/git-wtf
