@@ -56,7 +56,7 @@ bootstrap_vert () {
 }
 
 vert_init () {
-    vert init --platform="$platform" --lua-version=$lua_version --luarocks-version=$luarocks_version "$@"
+    vert init --platform="$platform" "--lua-version=$lua_version" "--luarocks-version=$luarocks_version" "$@"
 }
 
 link_env_scripts () {
