@@ -2,6 +2,8 @@
 # Install packages into a fresh cabal sandbox, then symlink its
 # binaries/scripts into $XDG_DATA_HOME/../bin
 
+set -e
+
 XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
 CABALS_HOME="${CABALS_HOME:-$XDG_DATA_HOME/cabal-sandboxes}"
 
