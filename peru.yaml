@@ -149,7 +149,7 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: d601f516177d528712feac4284e9ee46547383a1
+    rev: 685ec712af268fd58c0ca8401c2a3bb69b482128
 
 # markdown runtime files
 git module vim-markdown:
@@ -199,7 +199,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: c4390c5724f9d262aeba62ab69c5bc5246626c6f
+    rev: 77455b92048bb00fef752be1218a174a05d0c2b6
 
 # continuously updated session files
 git module vim-obsession:
