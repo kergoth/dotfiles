@@ -38,6 +38,14 @@
 	# Remove existing files from the index
 	forget = update-index --force-remove
 
+	# Stash
+	ss = stash save
+	sl = stash list --pretty=format:'%C(yellow)%gd%Creset: %Cgreen%cr%Creset - %s'
+	sa = stash apply
+	sd = stash drop
+	sp = stash pop
+	sb = stash branch
+
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
