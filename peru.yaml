@@ -67,6 +67,7 @@ imports:
     vim-obsession: vim/bundle/vim-obsession
     vim-rsi: vim/bundle/vim-rsi
     vim-surround: vim/bundle/vim-surround
+    vim-syntastic: vim/bundle/syntastic
     vim-vinegar: vim/bundle/vim-vinegar
     damian-conway-vim: vim/bundle/damian-conway/plugin
 
@@ -451,3 +452,7 @@ git module vitag:
     url: https://github.com/ttscoff/vitag
     files: vitag
     rev: 56366c0709978da4d12ae8e11ff3bcf032265406
+
+git module vim-syntastic:
+    url: https://github.com/scrooloose/syntastic.git
+    rev: 2d27fd93d047b1cf4db8f7a032a762eb101d489b
