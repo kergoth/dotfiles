@@ -336,7 +336,7 @@ git module git-wtf:
 
 curl module git:
     url: https://www.kernel.org/pub/software/scm/git/git-2.2.0.tar.xz
-    build: tar Jxf git-2.2.0.tar.xz
+    unpack: tar
     export: git-2.2.0
     sha1: 6221b8303dc6887cbce986563f9ece78a3b2ad6a
 
