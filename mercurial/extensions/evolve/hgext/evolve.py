@@ -805,6 +805,10 @@ def relocate(repo, orig, dest, keepbranch=False):
         try:
             if repo['.'].rev() != dest.rev():
                 merge.update(repo, dest, False, True, False)
+            if repo._bookmarkcurrent:
+                repo.ui.status(_("(leaving bookmark %s)\n") %
+                               repo._bookmarkcurrent)
+            bookmarks.unsetcurrent(repo)
             if keepbranch:
                 repo.dirstate.setbranch(orig.branch())
             r = merge.graft(repo, orig, orig.p1(), ['local', 'graft'])

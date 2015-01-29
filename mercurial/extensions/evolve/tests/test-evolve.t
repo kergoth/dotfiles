@@ -859,3 +859,20 @@ Evolve from the middle of a stack pick the right changesets.
   nothing to evolve here
   (2 troubled changesets, do you want --any ?)
   [2]
+
+
+Evolve disables active bookmarks.
+
+  $ hg up 10
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg bookmark testbookmark
+  $ ls .hg/bookmarks*
+  .hg/bookmarks
+  .hg/bookmarks.current
+  $ hg evolve
+  move:[8] a2
+  atop:[10] a1__
+  (leaving bookmark testbookmark)
+  working directory is now at f37ed7a60f43
+  $ ls .hg/bookmarks*
+  .hg/bookmarks
