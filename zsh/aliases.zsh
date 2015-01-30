@@ -11,6 +11,17 @@ alias ll="ls -hl"
 alias la="ls -Ah"
 alias l="ls -1h"
 
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias .......='cd ../../../../../..'
+alias ........='cd ../../../../../../..'
+alias .........='cd ../../../../../../../..'
+alias ..........='cd ../../../../../../../../..'
+alias ...........='cd ../../../../../../../../../..'
+
 alias tmux='tmux -u2 -f ~/.config/tmux/config'
 alias bback='ack --type=bitbake'
 alias chrome='google-chrome'
