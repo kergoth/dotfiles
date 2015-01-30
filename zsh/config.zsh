@@ -45,9 +45,11 @@ autoload -U select-word-style
 select-word-style normal
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-# "Magic" escaping
-autoload -U url-quote-magic
-zle -N self-insert url-quote-magic
+# Automatic URL escaping
+if autoload -U url-quote-magic ; then
+    zle -N self-insert url-quote-magic
+    zstyle ':url-quote-magic:*' url-metas '*?[]^()~#{}='
+fi
 
 autoload -Uz git-escape-magic
 git-escape-magic
