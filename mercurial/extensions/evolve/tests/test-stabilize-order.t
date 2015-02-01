@@ -69,7 +69,10 @@ Test stabilizing a predecessor child
   hg rebase -r 22619daeed78 -d 005fe5914f78
   resolving manifests
   getting b
+  committing files:
   b
+  committing manifest
+  committing changelog
   working directory is now at bede829dd2d3
   $ glog
   @  8:bede829dd2d3@default(draft) addb
@@ -98,7 +101,10 @@ Test stabilizing a descendant predecessor's child
   getting b
   resolving manifests
   getting c
+  committing files:
   c
+  committing manifest
+  committing changelog
   working directory is now at 65095d7d0dd5
   $ hg debugobsolete > successors.new
   $ diff -u successors.old successors.new
@@ -159,7 +165,10 @@ Test behaviour with --any
   getting b
   resolving manifests
   getting c
+  committing files:
   c
+  committing manifest
+  committing changelog
   working directory is now at e99ecf51c867
   $ glog
   @  12:e99ecf51c867@default(draft) addc

@@ -446,7 +446,7 @@ enable general delta
   abort: empty revision set
   [255]
   $ hg --config extensions.hgext.mq= strip --hidden 'extinct()'
-  saved backup bundle to $TESTTMP/alpha/.hg/strip-backup/e87767087a57-backup.hg (glob)
+  saved backup bundle to $TESTTMP/alpha/.hg/strip-backup/e87767087a57-d7bd82e9-backup.hg (glob)
   $ hg verify
   checking changesets
   checking manifests
@@ -496,9 +496,9 @@ Test graft --obsolete/--old-obsolete
   o  0:8685c6d34325@default(draft) add 0
   
   $ hg graft -r3 -O
-  grafting revision 3
+  grafting 3:0e84df4912da "add 3"
   $ hg graft -r1 -o 2
-  grafting revision 1
+  grafting 1:73d38bb17fd7 "add 1"
   $ glog --hidden
   @  6:acb28cd497b7@default(draft) add 1
   |
@@ -526,7 +526,7 @@ Test graft --continue
   created new head
   $ hg up -qC 6
   $ hg graft -O 7
-  grafting revision 7
+  grafting 7:a5bfd90a2f29 "conflict" (tip)
   merging 1
   warning: conflicts during merge.
   merging 1 incomplete! (edit conflicts, then use 'hg resolve --mark')
@@ -539,7 +539,7 @@ Test graft --continue
   $ hg resolve -m 1
   (no more unresolved files)
   $ hg graft --continue -O
-  grafting revision 7
+  grafting 7:a5bfd90a2f29 "conflict" (tip)
   $ glog --hidden
   @  8:920e58bb443b@default(draft) conflict
   |

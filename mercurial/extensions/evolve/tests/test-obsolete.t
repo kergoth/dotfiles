@@ -513,6 +513,8 @@ should not rebase extinct changesets
 
 #excluded 'whole rebase set is extinct and ignored.' message not in core
   $ hg rebase -b '3' -d 4 --traceback
+  rebasing 3:0d3f46688ccc "add obsol_c"
+  rebasing 8:159dfc9fa5d3 "add obsol_d''" (tip)
   2 new divergent changesets
   $ hg --hidden log -q -r 'successors(3)'
   4:725c380fe99b

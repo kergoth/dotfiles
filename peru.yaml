@@ -416,7 +416,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://bitbucket.org/marmoute/mutable-history
     reup: stable
-    rev: aa7cdd9d73107c51764d5925b756b9d8ed9d163c
+    rev: 47f3bdbe0d9c77f7580ca62bfd453e870e3ba325
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit

@@ -243,7 +243,9 @@ instead of merging my head with the new one. I'm going to rebase my work
 
   $ hg diff
   $ hg rebase --dest 9ca060c80d74 --source 4d5dc8187023
+  rebasing 1:4d5dc8187023 "adding condiment"
   merging shopping
+  rebasing 4:9d0363b81950 "adding fruit"
   merging shopping
 
 
@@ -348,6 +350,7 @@ You can use the 'grab' alias for that.
   $ hg up 'p1(10b8aeaa8cc8)' # going on "bathroom stuff" parent
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg grab fac207dec9f5 # moving "SPAM SPAM" to the working directory parent
+  rebasing 10:fac207dec9f5 "SPAM SPAM" (tip)
   merging shopping
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
   $ hg log -G
@@ -409,6 +412,7 @@ we can now push our change:
 for simplicity sake we get the bathroom change in line again
 
   $ hg grab 10b8aeaa8cc8
+  rebasing 9:10b8aeaa8cc8 "bathroom stuff"
   merging shopping
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
   $ hg phase --draft .

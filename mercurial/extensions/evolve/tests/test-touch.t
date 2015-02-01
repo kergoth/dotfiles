@@ -104,6 +104,7 @@ check move data kept after rebase on touch:
   1 new unstable changesets
 
   $ hg rebase -s 11 -d 12
+  rebasing 11:* "move" (glob)
   $ hg st -C --change=tip
   A gna2
     gna1

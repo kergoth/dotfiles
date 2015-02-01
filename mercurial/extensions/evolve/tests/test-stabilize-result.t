@@ -92,13 +92,13 @@ Test evolve with conflict
   +a
   +newer a
   $ hg evolve --continue
-  grafting revision 5
-  abort: unresolved merge conflicts (see hg help resolve)
+  grafting 5:3655f0f50885 "newer a"
+  abort: unresolved merge conflicts (see "hg help resolve")
   [255]
   $ hg resolve -m a
   (no more unresolved files)
   $ hg evolve --continue
-  grafting revision 5
+  grafting 5:3655f0f50885 "newer a"
 
 Stabilize latecomer with different parent
 =========================================
@@ -126,6 +126,7 @@ Add another commit
 Get a successors of 8 on it
 
   $ hg grab 8
+  rebasing 8:1cf0aacfd363 "newer a"
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
 
 Add real change to the successors
@@ -255,9 +256,15 @@ Stabilize it
   merging a
   0 files updated, 1 files merged, 0 files removed, 0 files unresolved
   amending changeset eacc9c8240fe
+  committing files:
   a
+  committing manifest
+  committing changelog
   copying changeset 283ccd10e2b8 to 7bc2f5967f5e
+  committing files:
   a
+  committing manifest
+  committing changelog
   committed changeset 21:f344982e63c4
   working directory is now at f344982e63c4
   $ hg st

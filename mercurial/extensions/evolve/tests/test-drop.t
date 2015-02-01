@@ -62,7 +62,7 @@ drop a single changeset without any rewrite
   0 obsmarkers found
   search nodes: wall * comb * user * sys * (glob)
   1 nodes found
-  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/d4e7845543ff-drophack.hg (glob)
+  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/d4e7845543ff-8ad8efe0-drophack.hg (glob)
   strip nodes: wall * comb * user * sys * (glob)
   $ summary
   ============ graph ==============

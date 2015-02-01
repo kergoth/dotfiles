@@ -19,8 +19,8 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.0.2'
-testedwith = '3.2'
+__version__ = '5.1.0'
+testedwith = '3.3'
 buglink = 'http://bz.selenic.com/'
 
 import sys, os
@@ -2394,7 +2394,10 @@ def findcommonobsmarkers(ui, local, remote, probeset,
     while undecided:
 
         ui.note(_("sampling from both directions\n"))
-        sample = _takefullsample(dag, undecided, size=fullsamplesize)
+        if len(undecided) < fullsamplesize:
+            sample = set(undecided)
+        else:
+            sample = _takefullsample(dag, undecided, size=fullsamplesize)
 
         roundtrips += 1
         ui.debug("query %i; still undecided: %i, sample size is: %i\n"
@@ -2576,7 +2579,7 @@ def _buildpullobsmarkersboundaries(pullop):
     cl = pullop.repo.changelog
     remote = pullop.remote
     unfi = repo.unfiltered()
-    revs = unfi.revs('::%ln', pullop.common)
+    revs = unfi.revs('::(%ln - null)', pullop.common)
     common = [nullid]
     if remote.capable('_evoext_obshash_0'):
         obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
@@ -2763,6 +2766,31 @@ def debugobsrelsethashtree(ui, repo):
     relevant to the changeset itself."""
     for chg, obs in _obsrelsethashtree(repo):
         ui.status('%s %s\n' % (node.hex(chg), node.hex(obs)))
+
+_bestformat = max(obsolete.formats.keys())
+
+@command(
+    'debugobsconvert',
+    [('', 'new-format', _bestformat, _('Destination format for markers.'))],
+    '')
+def debugobsconvert(ui, repo, new_format):
+    if new_format == repo.obsstore._version:
+        msg = _('New format is the same as the old format, not upgrading!')
+        raise util.Abort(msg)
+    f = repo.sopener('obsstore', 'wb', atomictemp=True)
+    origmarkers = repo.obsstore._all
+    known = set()
+    markers = []
+    for m in origmarkers:
+        if m in known:
+            continue
+        known.add(m)
+        markers.append(m)
+    ui.write(_('Old store is version %d, will rewrite in version %d\n') % (
+        repo.obsstore._version, new_format))
+    map(f.write, obsolete.encodemarkers(markers, True, new_format))
+    f.close()
+    ui.write(_('Done!\n'))
 
 
 @eh.wrapfunction(wireproto, 'capabilities')
