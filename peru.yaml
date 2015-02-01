@@ -455,4 +455,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 2d27fd93d047b1cf4db8f7a032a762eb101d489b
+    rev: 6b76c26cbaa2565387b62c7a7af9a56402dcf297
