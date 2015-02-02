@@ -84,7 +84,7 @@ END
 
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
-VERTS_HOME="${VERTS_HOME:-$HOME/.verts}"
+VERTS_HOME="${VERTS_HOME:-$XDG_DATA_HOME/luaenvs}"
 
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} LUAENV_NAME [LUAROCKS_ARGS..]"
