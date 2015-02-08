@@ -38,7 +38,7 @@ else
     create_session () {
         name="$1"
         shift
-        dtach -A "$socket_dir/$name.socket" -r winch dvtm-kergoth-status "$name"
+        dtach -z -A "$socket_dir/$name.socket" -r winch dvtm-kergoth-status "$name"
     }
 fi
 
