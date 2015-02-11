@@ -75,6 +75,9 @@ expand-or-complete-with-dots() {
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
 
+# Case-insensitive completion (after trying normal first)
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+
 # Zaw interface configuration
 zstyle ':filter-select:highlight' matched fg=green
 zstyle ':filter-select' max-lines 10 # don't fill the screen
