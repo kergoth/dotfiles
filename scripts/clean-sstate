@@ -17,11 +17,11 @@ caches=`mktemp -t clean-sstate.XXXXXX`
 cache_paths | readlinks | sort -u >>$caches
 
 cat $caches | while read path; do
-    find $path -atime $time -type f -print0
+    find "$path" -atime $time -type f -print0
 done | xargs -0 rm -fv
 
 cat $caches | while read path; do
-    find $path -type l | while read link; do
+    find "$path" -type l | while read link; do
         if [ ! -e "$link" ]; then
             rm -fv "$link"
         fi
