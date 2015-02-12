@@ -33,7 +33,7 @@ imports:
     moreutils: scripts
     planter: scripts
     pom: scripts
-    refactory: scripts
+    dev-goodies: scripts
     repo|exec-file: scripts
     rpm2cpio: scripts
     smem: scripts
@@ -241,14 +241,14 @@ curl module rpm2cpio:
     export: rpm-4.12.0/scripts
     files: rpm2cpio
 
-git module refactory:
-    url: https://github.com/chipx86/refactory
+git module dev-goodies:
+    url:  https://github.com/beanbaginc/dev-goodies
     files:
         - git-j
         - git-rebase-chain
         - git-integrate
     export: bin
-    rev: 3ffd58c4173d233f3b09b7d6b1568ee72f105894
+    rev: 61fec42ad35352f3c1ada707cb4419879f68bd97
 
 git module appify:
     url: https://gist.github.com/674099.git
