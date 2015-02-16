@@ -428,6 +428,14 @@ curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
     sha1: 45958e9baa5275f32e11a8d41f8f869178265d28
 
+git module zsh-bd:
+    url: https://github.com/Tarrasch/zsh-bd
+    rev: 80e5d9f653df2496048e80247e8340bb4d906a2c
+
+git module zsh-manydots-magic:
+    url: https://github.com/knu/zsh-manydots-magic
+    rev: f13ca5dcab9255157175b673ded82b6613455ce0
+
 # From Damian Conway's vim setup. Note: review more of the plugins there
 git module damian-conway-vim:
     url: https://github.com/thoughtstream/Damian-Conway-s-Vim-Setup

@@ -26,6 +26,9 @@ setopt CORRECT
 setopt COMPLETE_IN_WORD
 setopt EXTENDED_GLOB
 
+# More useful with manydots-magic
+setopt auto_cd
+
 # Append to history incrementally, but don't auto-import from the shared
 # history, as I don't want to lose context
 setopt INC_APPEND_HISTORY
@@ -45,13 +48,20 @@ select-word-style normal
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
 # Automatic URL escaping
-if autoload -U url-quote-magic ; then
+if autoload -U url-quote-magic; then
     zle -N self-insert url-quote-magic
     zstyle ':url-quote-magic:*' url-metas '*?[]^()~#{}='
 fi
 
-autoload -Uz git-escape-magic
-git-escape-magic
+if autoload -Uz manydots-magic; then
+    manydots-magic
+fi
+
+if autoload -Uz git-escape-magic; then
+    git-escape-magic
+fi
+
+. $ZSH/plugins/zsh-bd/bd.zsh
 
 # Keybinds
 
