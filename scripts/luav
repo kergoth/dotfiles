@@ -64,7 +64,7 @@ link_env_scripts () {
     for script in "$1/bin/"*; do
         filename="${script##*/}"
         case "$filename" in
-            activate|lua*):
+            activate|lua|luac|luarocks*):
                 continue
                 ;;
         esac
