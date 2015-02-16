@@ -2,12 +2,14 @@ imports:
     # Zsh
     autoenv: zsh/plugins/autoenv
     zaw: zsh/plugins/zaw
-    zsh-command-not-found: zsh/plugins/zsh-command-not-found
-    zsh-completions: zsh/plugins/zsh-completions
-    zsh-git-escape-magic: zsh/plugins/zsh-git-escape-magic
-    zsh-history-substring-search: zsh/plugins/zsh-history-substring-search
-    zsh-syntax-highlighting: zsh/plugins/zsh-syntax-highlighting
+    zsh-bd: zsh/plugins/bd
+    zsh-command-not-found: zsh/plugins/command-not-found
+    zsh-completions: zsh/plugins/completions
+    zsh-git-escape-magic: zsh/plugins/git-escape-magic
     zsh-globalias: zsh/plugins/globalias
+    zsh-history-substring-search: zsh/plugins/history-substring-search
+    zsh-manydots-magic: zsh/plugins/manydots-magic
+    zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
 
     # Scripts
     ack: scripts
