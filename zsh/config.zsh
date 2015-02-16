@@ -61,7 +61,7 @@ if autoload -Uz git-escape-magic; then
     git-escape-magic
 fi
 
-. $ZSH/plugins/zsh-bd/bd.zsh
+. $ZSH/plugins/bd/bd.zsh
 
 # Keybinds
 
