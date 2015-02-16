@@ -57,18 +57,18 @@ imports:
     securemodelines: vim/bundle/securemodelines
     tabular: vim/bundle/tabular
     taskpaper: vim/bundle/taskpaper
-    vim-airline: vim/bundle/vim-airline
-    vim-bitbake: vim/bundle/vim-bitbake
-    vim-commentary: vim/bundle/vim-commentary
-    vim-dispatch: vim/bundle/vim-dispatch
-    vim-eunuch: vim/bundle/vim-eunuch
-    vim-golang: vim/bundle/vim-golang
-    vim-markdown: vim/bundle/vim-markdown
-    vim-obsession: vim/bundle/vim-obsession
-    vim-rsi: vim/bundle/vim-rsi
-    vim-surround: vim/bundle/vim-surround
+    vim-airline: vim/bundle/airline
+    vim-bitbake: vim/bundle/bitbake
+    vim-commentary: vim/bundle/commentary
+    vim-dispatch: vim/bundle/dispatch
+    vim-eunuch: vim/bundle/eunuch
+    vim-golang: vim/bundle/golang
+    vim-markdown: vim/bundle/markdown
+    vim-obsession: vim/bundle/obsession
+    vim-rsi: vim/bundle/rsi
+    vim-surround: vim/bundle/surround
     vim-syntastic: vim/bundle/syntastic
-    vim-vinegar: vim/bundle/vim-vinegar
+    vim-vinegar: vim/bundle/vinegar
     damian-conway-vim: vim/bundle/damian-conway/plugin
 
     # Mercurial
