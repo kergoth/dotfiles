@@ -167,7 +167,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: ca925efdbfe88b03597efc7caee4ee8762a2cfe0
+    rev: 618851188a4d763d351b69443c52f0b8d54489bd
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -182,7 +182,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch.git
-    rev: 8c996336ceecbfb7290c7c9b409195f190866548
+    rev: e36b9a701dd3d8054e6b8a77b14710276a1d93c8
 
 # graph your Vim undo tree in style
 git module gundo:
@@ -465,4 +465,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 372daff1a8bd68ef27ec2f40df6a74a2462a3b24
+    rev: d73546dd4ac73be1dc806e5a1b6ff11ab6446361
