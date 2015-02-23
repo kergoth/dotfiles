@@ -152,7 +152,7 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: 685ec712af268fd58c0ca8401c2a3bb69b482128
+    rev: f6675f298cf7ae8838f7c517e52e2088dcf40f7c
 
 # markdown runtime files
 git module vim-markdown:
@@ -167,7 +167,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: 618851188a4d763d351b69443c52f0b8d54489bd
+    rev: e2a120869ba36da5d26df74fb23ef4052d55b6f0
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -192,7 +192,7 @@ git module gundo:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround.git
-    rev: fd75eb2cb2ffe85a457445cb152d5a6c7acda140
+    rev: ec579a50478758ee6cebe265cf536f9a2f6c4e34
 
 # readline style insertion
 git module vim-rsi:
@@ -465,4 +465,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: d73546dd4ac73be1dc806e5a1b6ff11ab6446361
+    rev: c4529353840b3a4f6bcb0e67e7b38043ca4d7b3e
