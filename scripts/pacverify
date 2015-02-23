@@ -11,7 +11,7 @@ for pkgname in ${(f)"$(comm -23 <(pacman -Q) <(pacman -Qm))"}; do
     bsdtar -cf - --format mtree --options mtree:sha256 @- <$pkgfile |
       while read -r -A line; do
         if [[ $line[-1] == sha256digest=* &&
-              $line[1] != .(PKGINFO|INSTALL|CHANGELOG) ]]; then
+              $line[1] != ./.(PKGINFO|INSTALL|CHANGELOG|MTREE) ]]; then
           print "${line[-1]#sha256digest=}  /${(g:o:)line[1]}"
         fi
       done |
