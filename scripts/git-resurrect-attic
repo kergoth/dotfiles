@@ -7,5 +7,5 @@ git attic |
     cut -d" " -f2- |
     grep -E "^[^:]*:$*" |
     while IFS=: read commit file; do
-        git checkout $commit -- $file
+        git checkout "$commit" -- "$file"
     done
