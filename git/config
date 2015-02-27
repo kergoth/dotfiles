@@ -12,7 +12,7 @@
 	co = checkout
 	au = add -u
 	st = status -sb
-	st-ignored = status -sb --ignored
+	sti = status -sb --ignored
 	br = branch
 	id = rev-parse
 	ls = ls-files --exclude-standard
