@@ -10,10 +10,13 @@ case "$OSTYPE" in
         ;;
 esac
 git config -f config.local --replace-all include.path "config.os.$_OSTYPE" "config\.os\."
+git config -f config.local --replace-all include.path "config.local.$_OSTYPE" "config\.os\."
 if [ -e /opt/homebrew/etc/openssl/cert.pem ]; then
-    git config -f config.local --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
+    git config -f config.local.$_OSTYPE --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
 elif [ -e /usr/local/etc/openssl/cert.pem ]; then
-    git config -f config.local --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
+    git config -f config.local.$_OSTYPE --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
+else
+    git config -f config.local.$_OSTYPE --unset-all http.sslCAInfo
 fi
 
 newest_version () {
