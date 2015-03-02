@@ -9,6 +9,7 @@
 
 [alias]
 	ci = commit
+	ic = commit
 	co = checkout
 	au = add -u
 	st = status -sb
