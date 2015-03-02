@@ -5,9 +5,9 @@ set -u
 : ${XDG_CONFIG_HOME:=~/.config}
 : ${XDG_DATA_HOME:=~/.local/share}
 : ${XDG_CACHE_HOME:=~/.cache}
+: ${HOSTNAME:=$(hostname -s)}
 
 osname="$(uname -s)"
-HOSTNAME="${HOSTNAME:-$(hostname)}"
 prefixes="%include %include%${osname} %include%${HOSTNAME}"
 force=0
 exclude="sublime-text-2"

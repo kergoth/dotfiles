@@ -1,22 +1,13 @@
 link . ~/.config/git
 
-touch config.local
-case "$OSTYPE" in
-    darwin*)
-        _OSTYPE=darwin
-        ;;
-    *)
-        _OSTYPE="$OSTYPE"
-        ;;
-esac
-git config -f config.local --replace-all include.path "config.os.$_OSTYPE" "config\.os\."
-git config -f config.local --replace-all include.path "config.local.$_OSTYPE" "config\.os\."
+touch config.local config.$HOSTNAME
+git config -f config.local --replace-all include.path "config.$HOSTNAME" "config\.os\."
 if [ -e /opt/homebrew/etc/openssl/cert.pem ]; then
-    git config -f config.local.$_OSTYPE --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
+    git config -f config.$HOSTNAME --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
 elif [ -e /usr/local/etc/openssl/cert.pem ]; then
-    git config -f config.local.$_OSTYPE --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
+    git config -f config.$HOSTNAME --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
 else
-    git config -f config.local.$_OSTYPE --unset-all http.sslCAInfo
+    git config -f config.$HOSTNAME --unset-all http.sslCAInfo
 fi
 
 newest_version () {
@@ -27,9 +18,9 @@ newest_version () {
 
 git_version="$(git --version | cut -d" " -f3)"
 if [ "$(newest_version 1.8.4 "$git_version")" = 1.8.4 ]; then
-    git config -f config.local --replace-all alias.purr "pull --rebase"
+    git config -f config.$HOSTNAME --replace-all alias.purr "pull --rebase"
 else
-    git config -f config.local --unset-all alias.purr
+    git config -f config.$HOSTNAME --unset-all alias.purr
 fi
 
 # vim: set ft=sh sts=4 sw=4 et :
