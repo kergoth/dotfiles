@@ -502,7 +502,7 @@ def revsetprecursors(repo, subset, x):
     """``precursors(set)``
     Immediate precursors of changesets in set.
     """
-    s = revset.getset(repo, range(len(repo)), x)
+    s = revset.getset(repo, revset.fullreposet(repo), x)
     cs = _precursors(repo, s)
     return [r for r in subset if r in cs]
 
@@ -512,7 +512,7 @@ def revsetallprecursors(repo, subset, x):
     """``allprecursors(set)``
     Transitive precursors of changesets in set.
     """
-    s = revset.getset(repo, range(len(repo)), x)
+    s = revset.getset(repo, revset.fullreposet(repo), x)
     cs = _allprecursors(repo, s)
     return [r for r in subset if r in cs]
 
@@ -522,7 +522,7 @@ def revsetsuccessors(repo, subset, x):
     """``successors(set)``
     Immediate successors of changesets in set.
     """
-    s = revset.getset(repo, range(len(repo)), x)
+    s = revset.getset(repo, revset.fullreposet(repo), x)
     cs = _successors(repo, s)
     return [r for r in subset if r in cs]
 
@@ -531,7 +531,7 @@ def revsetallsuccessors(repo, subset, x):
     """``allsuccessors(set)``
     Transitive successors of changesets in set.
     """
-    s = revset.getset(repo, range(len(repo)), x)
+    s = revset.getset(repo, revset.fullreposet(repo), x)
     cs = _allsuccessors(repo, s)
     return [r for r in subset if r in cs]
 
@@ -2729,6 +2729,7 @@ def srv_pullobsmarkers(repo, proto, others):
 def _obsrelsethashtree(repo):
     cache = []
     unfi = repo.unfiltered()
+    markercache = {}
     for i in unfi:
         ctx = unfi[i]
         entry = 0
@@ -2745,7 +2746,11 @@ def _obsrelsethashtree(repo):
                 sha.update(p)
         tmarkers = repo.obsstore.relevantmarkers([ctx.node()])
         if tmarkers:
-            bmarkers = [obsolete._fm0encodeonemarker(m) for m in tmarkers]
+            bmarkers = []
+            for m in tmarkers:
+                if not m in markercache:
+                    markercache[m] = obsolete._fm0encodeonemarker(m)
+                bmarkers.append(markercache[m])
             bmarkers.sort()
             for m in bmarkers:
                 entry += 1
@@ -2769,6 +2774,23 @@ def debugobsrelsethashtree(ui, repo):
 
 _bestformat = max(obsolete.formats.keys())
 
+
+if getattr(obsolete, '_checkinvalidmarkers', None) is not None:
+    @eh.wrapfunction(obsolete, '_checkinvalidmarkers')
+    def _checkinvalidmarkers(orig, markers):
+        """search for marker with invalid data and raise error if needed
+
+        Exist as a separated function to allow the evolve extension for a more
+        subtle handling.
+        """
+        if 'debugobsconvert' in sys.argv:
+            return
+        for mark in markers:
+            if node.nullid in mark[1]:
+                raise util.Abort(_('bad obsolescence marker detected: '
+                                   'invalid successors nullid'),
+                                 hint=_('You should run `hg debugobsconvert`'))
+
 @command(
     'debugobsconvert',
     [('', 'new-format', _bestformat, _('Destination format for markers.'))],
@@ -2782,6 +2804,11 @@ def debugobsconvert(ui, repo, new_format):
     known = set()
     markers = []
     for m in origmarkers:
+        # filter out invalid markers
+        if nullid in m[1]:
+            m = list(m)
+            m[1] = tuple(s for s in m[1] if s != nullid)
+            m = tuple(m)
         if m in known:
             continue
         known.add(m)

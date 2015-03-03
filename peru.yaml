@@ -405,7 +405,7 @@ git module git-pull-requests:
 
 hg module hg-extension-crecord:
     url: https://bitbucket.org/edgimar/crecord
-    rev: e1567c94274f075b578cf26cd80a5e148762485c
+    rev: 71f7fa103401a75988f25a5086736cb355686a11
 
 hg module hg-extension-prompt:
     url: https://bitbucket.org/obensonne/hg-prompt
@@ -418,7 +418,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://bitbucket.org/marmoute/mutable-history
     reup: stable
-    rev: 47f3bdbe0d9c77f7580ca62bfd453e870e3ba325
+    rev: 161b8f6e740292ffd79b0ecb3d2e5ae26257aa9d
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit

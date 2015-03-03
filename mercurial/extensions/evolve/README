@@ -51,7 +51,7 @@ add a feature. To run the tests:
 Changelog
 =========
 
-5.1 -- 2014-01-30
+5.1 -- 2015-01-30
 
 - evolve: explicitly disable bookmark on evolve (issue4432)
 - evolve: don't abort Mercurial on version mismatch
