@@ -571,18 +571,6 @@ nmap <leader>G :GundoToggle<CR>
 let g:Modeliner_format = 'fenc= sts= sw= ts= et'
 nmap <leader>m :Modeliner<CR>
 
-" Prompt for a command to run
-map <LocalLeader>vp :VimuxPromptCommand<CR>
-
-" If text is selected, save it in the v buffer and send that buffer it to tmux
-vmap <LocalLeader>vs "vy :call VimuxRunCommand(@v . "\n", 0)<CR>
-
-" Select current paragraph and send it to tmux
-nmap <LocalLeader>vs vip<LocalLeader>vs<CR>
-
-" Close vimux panes
-map <LocalLeader>vc :VimuxClosePanes<CR>
-
 " Vim's strlen works fine while netrw's Strlen is broken
 if has("multi_byte") | let g:netrw_xstrlen = 0 | endif
 " }}}
