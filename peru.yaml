@@ -302,7 +302,7 @@ git module gist:
     build: rake standalone
     export: build
     files: gist
-    rev: 8b0b40141a3cd2eaac455c8e77092147903fed34
+    rev: 8776be3f218458a048c7ff4aef8d71cfc0d36a5e
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
