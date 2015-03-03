@@ -10,17 +10,4 @@ else
     git config -f config.$HOSTNAME --unset-all http.sslCAInfo
 fi
 
-newest_version () {
-    for ver; do
-        printf "%s\n" "$ver"
-    done | sort -t. -n | tail -n 1
-}
-
-git_version="$(git --version | cut -d" " -f3)"
-if [ "$(newest_version 1.8.4 "$git_version")" = 1.8.4 ]; then
-    git config -f config.$HOSTNAME --replace-all alias.purr "pull --rebase"
-else
-    git config -f config.$HOSTNAME --unset-all alias.purr
-fi
-
 # vim: set ft=sh sts=4 sw=4 et :

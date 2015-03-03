@@ -117,7 +117,7 @@
 	incoming = !git log ..$(git remote-ref)
 
 	# Pull with rebase and autostash
-	purr = "!f() { set -- \"$(git remote-ref)\" \"$@\"; git fetch \"$(echo \"$1\" | cut -d/ -f2)\"; git rebase --autostash \"$@\"; }; f"
+	purr = "!f() { git mstash purring; ret=$?; git pull --rebase; if [ $ret -eq 0 ]; then git stash pop; fi }; f"
 
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence $(git remote-ref).. "$@"
