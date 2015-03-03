@@ -47,6 +47,10 @@
 	sp = stash pop
 	sb = stash branch
 
+	# Drop the current modifications. Stashes, then drops the stash,
+	# leaving a dangling commit with the changes.
+	drop = !git stash save dropped && git stash drop
+
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ since="$1"; shift; git lg --since=\"last $since\" "$@"; }; f"
 
