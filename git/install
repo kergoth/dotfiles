@@ -1,13 +1,13 @@
 link . ~/.config/git
 
-touch config.local config.$HOSTNAME
-git config -f config.local --replace-all include.path "config.$HOSTNAME" "config\.os\."
+touch config.local config.local.$HOSTNAME
+git config -f config.local --replace-all include.path "config.local.$HOSTNAME" "config\.local\."
 if [ -e /opt/homebrew/etc/openssl/cert.pem ]; then
-    git config -f config.$HOSTNAME --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
+    git config -f config.local.$HOSTNAME --replace-all http.sslCAInfo /opt/homebrew/etc/openssl/cert.pem
 elif [ -e /usr/local/etc/openssl/cert.pem ]; then
-    git config -f config.$HOSTNAME --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
+    git config -f config.local.$HOSTNAME --replace-all http.sslCAInfo /usr/local/etc/openssl/cert.pem
 else
-    git config -f config.$HOSTNAME --unset-all http.sslCAInfo
+    git config -f config.local.$HOSTNAME --unset-all http.sslCAInfo
 fi
 
 # vim: set ft=sh sts=4 sw=4 et :

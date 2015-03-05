@@ -41,7 +41,6 @@ record =
 schemes =
 
 crecord = ~/.config/hg/extensions/crecord/crecord
-evolve = ~/.config/hg/extensions/evolve/hgext/evolve.py
 prompt = ~/.config/hg/extensions/prompt/prompt.py
 shelve = ~/.config/hg/extensions/shelve/hgshelve.py
 
