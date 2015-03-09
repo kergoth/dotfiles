@@ -19,7 +19,7 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.1.0'
+__version__ = '5.1.1'
 testedwith = '3.3'
 buglink = 'http://bz.selenic.com/'
 

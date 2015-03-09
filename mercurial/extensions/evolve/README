@@ -51,6 +51,12 @@ add a feature. To run the tests:
 Changelog
 =========
 
+5.1.1 -- 2015-03-05
+
+- debugobsconvert: fix invalid markers during conversion
+- discovery: cache some of the obs hash computation to improve performance (issue4518)
+- revset: fix some crash with (issue4515)
+
 5.1 -- 2015-01-30
 
 - evolve: explicitly disable bookmark on evolve (issue4432)
