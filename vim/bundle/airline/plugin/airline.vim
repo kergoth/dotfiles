@@ -111,3 +111,4 @@ call airline#init#bootstrap()
 call s:airline_toggle()
 
 autocmd VimEnter * call airline#deprecation#check()
+
