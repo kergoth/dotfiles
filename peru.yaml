@@ -40,8 +40,7 @@ imports:
     dev-goodies: scripts
     repo|exec-file: scripts
     rpm2cpio: scripts
-    # Smem currently commented out due to a peru hg output parsing bug
-    #smem: scripts
+    smem: scripts
     ssh-copy-rsub: scripts
     t: scripts
     vitag: scripts
@@ -222,11 +221,10 @@ curl module repo:
     filename: repo
     sha1: b8bd1804f432ecf1bab730949c82b93b0fc5fede
 
-# Smem currently commented out due to a peru hg output parsing bug
-# hg module smem:
-#     url: http://selenic.com/repo/smem
-#     pick: smem
-#     rev: c2cab19139d0
+hg module smem:
+    url: http://selenic.com/repo/smem
+    pick: smem
+    rev: c2cab19139d08f73cff1ac505abf21d004f19284
 
 hg module dtrx:
     url: http://brettcsmith.org/2007/dtrx/dtrx
