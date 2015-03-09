@@ -1,0 +1,31 @@
+#!/bin/sh
+
+dotfilesdir="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$dotfilesdir"
+
+tmpdir="$(cd "$(mktemp -dt "${0##*/}.XXXXXX")" && pwd)"
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+if ! which peru >/dev/null 2>&1; then
+    "$dotfilesdir/scripts/pipv3" peru peru || exit 1
+fi
+PATH="$PATH:${XDG_DATA_HOME:-~/.local/share}/../bin"
+
+peru reup
+peru sync -f
+
+cd "$tmpdir"
+git clone https://github.com/petdance/ack2 && \
+    cd ack2 && \
+    cpanm --local-lib "$PWD/perl5" local::lib && \
+    eval "$(perl -I "$PWD/perl5/lib/perl5" -Mlocal::lib)" && \
+    cpanm File::Next && \
+    perl Makefile.PL && \
+    make ack-standalone && \
+    cp -f ack-standalone "$dotfilesdir/scripts/ack"
+
+cd "$tmpdir"
+git clone https://github.com/defunkt/gist && \
+    cd gist && \
+    rake standalone && \
+    cp -f build/gist "$dotfilesdir/scripts/gist"
