@@ -12,8 +12,6 @@ imports:
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
 
     # Scripts
-    # Ack disabled out due to removal of 'build' option in peru
-    # ack: scripts
     appify|exec-file: scripts
     atach: scripts
     cheat: scripts
@@ -24,8 +22,6 @@ imports:
     fasd: scripts
     friendly-find: scripts
     gibo: scripts
-    # Gist disabled due to removal of 'build' option in peru
-    #gist: scripts
     git-cherry-tree: scripts
     git-pull-requests: scripts
     git-imerge: scripts
@@ -44,6 +40,12 @@ imports:
     ssh-copy-rsub: scripts
     t: scripts
     vitag: scripts
+
+    # These require actual compilation or equivalent, so are disabled due to
+    # the removal of the 'build' option in peru. They'll be updated via
+    # a supplementary script for now.
+    #gist: scripts
+    #ack: scripts
 
     chneukirchen: scripts
     git-attic|exec-file: scripts
