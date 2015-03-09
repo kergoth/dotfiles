@@ -230,10 +230,8 @@ curl module repo:
 
 hg module dtrx:
     url: http://brettcsmith.org/2007/dtrx/dtrx
-    # export: scripts
-    move:
-        scripts/dtrx: dtrx
-    pick: dtrx
+    export: scripts
+    pick: scripts/dtrx
     reup: trunk
     rev: 065005f5cee27b21ebc15a519c553f9d91192f8a
 
@@ -253,14 +251,10 @@ curl module rpm2cpio:
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
     pick:
-        - git-j
-        - git-rebase-chain
-        - git-integrate
-    # export: bin
-    move:
-        bin/git-j: git-j
-        bin/git-rebase-chain: git-rebase-chain
-        bin/git-integrate: git-integrate
+        - bin/git-j
+        - bin/git-rebase-chain
+        - bin/git-integrate
+    export: bin
     rev: 61fec42ad35352f3c1ada707cb4419879f68bd97
 
 git module appify:
