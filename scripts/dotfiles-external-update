@@ -1,5 +1,16 @@
 #!/bin/sh
 
+die () {
+    ret=$?
+    echo >&2 "$@"
+    exit $ret
+}
+
+# This ensures that hg doesn't explode if the hgrc referencing external
+# modules is still symlinked, but the modules themselves are missing due to
+# e.g. a `peru clean`.
+export HGRCPATH=
+
 dotfilesdir="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$dotfilesdir"
 
@@ -7,12 +18,12 @@ tmpdir="$(cd "$(mktemp -dt "${0##*/}.XXXXXX")" && pwd)"
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 if ! which peru >/dev/null 2>&1; then
-    "$dotfilesdir/scripts/pipv3" peru peru || exit 1
+    "$dotfilesdir/scripts/pipv3" peru peru || die "peru build failed"
 fi
 PATH="$PATH:${XDG_DATA_HOME:-~/.local/share}/../bin"
 
-peru reup
-peru sync -f
+peru reup || die "peru reup failed"
+peru sync -f || die "peru sync failed"
 
 cd "$tmpdir"
 git clone https://github.com/petdance/ack2 && \
