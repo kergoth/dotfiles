@@ -12,10 +12,10 @@ imports:
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
 
     # Scripts
-    appify|exec-file: scripts
+    appify: scripts
     atach: scripts
     cheat: scripts
-    cpanm|exec-file: scripts
+    cpanm: scripts
     cwdiff: scripts
     dtrx: scripts
     dustin-bindir: scripts
@@ -34,7 +34,7 @@ imports:
     planter: scripts
     pom: scripts
     dev-goodies: scripts
-    repo|exec-file: scripts
+    repo: scripts
     rpm2cpio: scripts
     smem: scripts
     ssh-copy-rsub: scripts
@@ -48,12 +48,12 @@ imports:
     #ack: scripts
 
     chneukirchen: scripts
-    git-attic|exec-file: scripts
-    git-ltr|exec-file: scripts
-    git-neck|exec-file: scripts
-    git-trail|exec-file: scripts
-    zombies|exec-file: scripts
-    pacsrc|exec-file: scripts
+    git-attic: scripts
+    git-ltr: scripts
+    git-neck: scripts
+    git-trail: scripts
+    zombies: scripts
+    pacsrc: scripts
 
 
     # Vim
@@ -221,6 +221,7 @@ git module vim-vinegar:
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
+    executable: repo
     sha1: b8bd1804f432ecf1bab730949c82b93b0fc5fede
 
 hg module smem:
@@ -259,6 +260,7 @@ git module dev-goodies:
 
 git module appify:
     url: https://gist.github.com/674099.git
+    executable: appify
     rev: 9e64331e348b20049975519b866148050db06da5
 
 git module atach:
@@ -268,6 +270,7 @@ git module atach:
 
 curl module cpanm:
     url: http://xrl.us/cpanm
+    executable: cpanm
     sha1: 276023c72ff1fcc5b12bad1c0d5ddd60bed69e99
 
 hg module cwdiff:
@@ -380,30 +383,33 @@ git module chneukirchen:
 
 curl module git-neck:
     url: http://chneukirchen.org/dotfiles/bin/git-neck
+    executable: git-neck
     sha1: 5d97318ad19c83ea4432cc630673eecc6f5d390d
 
 curl module git-trail:
     url: http://chneukirchen.org/dotfiles/bin/git-trail
+    executable: git-trail
     sha1: a1a5ebab40c29db41de976df6eacc9674636eb91
 
 curl module git-ltr:
     url: http://chneukirchen.org/dotfiles/bin/git-ltr
+    executable: git-ltr
     sha1: 6101fc9d163edf9d8ca240b5e07a3eae717371bc
 
 curl module git-attic:
     url: http://chneukirchen.org/dotfiles/bin/git-attic
+    executable: git-attic
     sha1: 61c92f88d24f94d2feda931455c5cdf697ec8e56
 
 curl module zombies:
     url: http://chneukirchen.org/dotfiles/bin/zombies
+    executable: zombies
     sha1: 374aab587f3722eadcdc84a2874faa74ff967cdd
 
 curl module pacsrc:
     url: http://chneukirchen.org/dotfiles/bin/pacsrc
+    executable: pacsrc
     sha1: c1582894e1690f3bc13379840aa8afac2260629e
-
-rule exec-file:
-    executable: "*"
 
 git module git-pull-requests:
     url: https://github.com/splitbrain/git-pull-request
