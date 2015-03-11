@@ -270,7 +270,7 @@ curl module cpanm:
 hg module cwdiff:
     url: https://code.google.com/p/cj-overlay.evergreens
     pick: cwdiff
-    rev: 4cb04cf00b37d1e30629c860d72b485b83e5ee37
+    rev: f686249254de30778aad9b27540051d3d94695a4
 
 git module planter:
     url: https://gist.github.com/3767188.git
