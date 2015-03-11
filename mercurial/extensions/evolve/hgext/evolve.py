@@ -2519,11 +2519,20 @@ def httpclient_pushobsmarkers(self, obsfile):
     (Cannot simply use _callpush as http is doing some special handling)"""
     self.requirecap('_evoext_pushobsmarkers_0',
                     _('push obsolete markers faster'))
-    ret, output = self._call('evoext_pushobsmarkers_0', data=obsfile)
-    for l in output.splitlines(True):
-        if l.strip():
-            self.ui.status(_('remote: '), l)
-    return ret
+    try:
+        r = self._call('evoext_pushobsmarkers_0', data=obsfile)
+        vals = r.split('\n', 1)
+        if len(vals) < 2:
+            raise error.ResponseError(_("unexpected response:"), r)
+
+        for l in vals[1].splitlines(True):
+            if l.strip():
+                self.ui.status(_('remote: '), l)
+        return vals[0]
+    except socket.error, err:
+        if err.args[0] in (errno.ECONNRESET, errno.EPIPE):
+            raise util.Abort(_('push failed: %s') % err.args[1])
+        raise util.Abort(err.args[1])
 
 @eh.wrapfunction(localrepo.localrepository, '_restrictcapabilities')
 def local_pushobsmarker_capabilities(orig, repo, caps):
