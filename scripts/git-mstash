@@ -6,7 +6,7 @@
 current="$(git rev-parse --verify refs/stash 2>/dev/null)"
 git stash save "$@" || exit $?
 new="$(git rev-parse --verify refs/stash 2>/dev/null)"
-if [ -z "$new" ] || [ "$new" == "$current" ]; then
+if [ -z "$new" ] || [ "$new" = "$current" ]; then
     # Nothing was stashed
     exit 100
 fi
