@@ -6,6 +6,5 @@ for brewenv in "$HOMEBREWS_HOME/"*/; do
     echo "Updating $brewenv"
     brew="${brewenv%/}/bin/brew"
     "$brew" update && \
-        "$brew" upgrade && \
-        "$brew" cleanup
+        "$brew" upgrade
 done
