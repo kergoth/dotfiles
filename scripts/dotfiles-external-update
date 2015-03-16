@@ -22,7 +22,7 @@ if ! which peru >/dev/null 2>&1; then
 fi
 PATH="$PATH:${XDG_DATA_HOME:-~/.local/share}/../bin"
 
-peru reup || die "peru reup failed"
+peru reup || echo >&2 "peru reup failed"
 peru sync -f || die "peru sync failed"
 
 cd "$tmpdir"
