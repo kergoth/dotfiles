@@ -16,7 +16,6 @@ if [ $# -eq 0 ]; then
 fi
 
 venv="$1"
-shift
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
     pyvenv "$venv_dir"
