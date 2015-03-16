@@ -28,9 +28,8 @@ peru sync -f || die "peru sync failed"
 cd "$tmpdir"
 git clone https://github.com/petdance/ack2 && \
     cd ack2 && \
-    cpanm --local-lib "$PWD/perl5" local::lib && \
-    eval "$(perl -I "$PWD/perl5/lib/perl5" -Mlocal::lib)" && \
-    cpanm File::Next && \
+    "$dotfilesdir/scripts/cpanmv" ack2 File::Next && \
+    eval "$("$dotfilesdir/scripts/cpanmv-use" ack2)" && \
     perl Makefile.PL && \
     make ack-standalone && \
     cp -f ack-standalone "$dotfilesdir/scripts/ack"
