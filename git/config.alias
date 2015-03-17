@@ -1,9 +1,11 @@
 # vim: set noet sts=0 sw=0 ft=gitconfig :
 
 [alias]
-	ci = commit
-	ic = commit
+	ci = commit -s
+	ic = commit -s
+	cm = commit -s -m
 	co = checkout
+	cp = cherry-pick -x
 	au = add -u
 	st = status -sb
 	sti = status -sb --ignored
@@ -119,3 +121,4 @@
 
 	# Update submodules
 	update-subs = submodule foreach --recursive "git fetch && git checkout `git remote-ref`"
+
