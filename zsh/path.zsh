@@ -8,8 +8,6 @@ fi
 path=(
   $HOME/bin
   $XDG_DATA_HOME/../bin(N:A)
-  $HOME/.gem/ruby/*/bin(N)
-  $HOME/.cabal/bin
   $DOTFILESDIR/scripts(:A)
   /opt/homebrew/bin
   /usr/local/{bin,sbin}
