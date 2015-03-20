@@ -562,7 +562,7 @@ let g:vimsyn_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 0
 let g:vundle_default_git_proto = "git"
 " let g:EasyMotion_leader_key = '<Leader>'
 
