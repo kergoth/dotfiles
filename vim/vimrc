@@ -4,7 +4,7 @@ filetype off
 " Filesystem paths
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
-let &runtimepath .= "," . $VIMDOTDIR
+let &runtimepath = $VIMDOTDIR . "," . &runtimepath . "," . $VIMDOTDIR . "/after"
 
 if !exists('$XDG_DATA_HOME')
   let $XDG_DATA_HOME = $HOME . "/.local/share"
