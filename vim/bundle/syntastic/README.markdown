@@ -58,9 +58,9 @@ C, C++, C#, Cabal, Chef, CoffeeScript, Coco, Coq, CSS, Cucumber, CUDA, D,
 Dart, DocBook, Dust, Elixir, Erlang, eRuby, Fortran, Gentoo metadata, GLSL,
 Go, Haml, Haskell, Haxe, Handlebars, HSS, HTML, Java, JavaScript, JSON, JSX,
 LESS, Lex, Limbo, LISP, LLVM intermediate language, Lua, Markdown, MATLAB,
-NASM, Objective-C, Objective-C++, OCaml, Perl, Perl POD, PHP, gettext Portable
-Object, OS X and iOS property lists, Puppet, Python, R, Racket, Relax NG,
-reStructuredText, RPM spec, Ruby, SASS/SCSS, Scala, Slim, SML, Tcl, TeX,
+Mercury, NASM, Objective-C, Objective-C++, OCaml, Perl, Perl POD, PHP, gettext
+Portable Object, OS X and iOS property lists, Puppet, Python, R, Racket, Relax
+NG, reStructuredText, RPM spec, Ruby, SASS/SCSS, Scala, Slim, SML, Tcl, TeX,
 Texinfo, Twig, TypeScript, Vala, Verilog, VHDL, VimL, xHtml, XML, XSLT, YACC,
 YAML, z80, Zope page templates, and zsh.  See the [wiki][3] for details about
 the corresponding supported checkers.
@@ -196,10 +196,24 @@ which checkers are enabled. You can tell syntastic which checkers (among the
 available ones) you want to run by setting `g:syntastic_<filetype>_checkers` in
 your `vimrc` (see [below](#faqcheckers)).
 
-Another reason it could fail is that either the command line options or the
-error output for a syntax checker may have changed. In this case, make sure you
-have the latest version of the syntax checker installed. If it still fails then
-post an [issue][4] - or better yet, create a pull request.
+A third possible reason is that the `$PATH` seen by syntastic might not be same
+as the `$PATH` in your login shell. Syntastic runs checkers using the shell
+pointed to by Vim's `shell` (or by `g:syntastic_shell`, if set), and that's the
+shell you need to configure to set the proper `$PATH` and environment variables
+for your checkers. You can see syntastic's idea of `$PATH` by running
+```vim
+:echo syntastic#util#system('echo "$PATH"')
+```
+on UNIX and Mac OS-X systems, or
+```vim
+:echo syntastic#util#system('echo %PATH%')
+```
+on Windows.
+
+Finally, another reason it could fail is that either the command line options
+or the error output for a syntax checker may have changed. In this case, make
+sure you have the latest version of the syntax checker installed. If it still
+fails then post an [issue][4] - or better yet, create a pull request.
 
 <a name="faqpython3"></a>
 

@@ -103,7 +103,7 @@ function! SyntaxCheckers_java_javac_GetLocList() dict " {{{1
     let javac_classpath = ''
 
     for path in split(g:syntastic_java_javac_classpath, s:ClassSep())
-        if path != ''
+        if path !=# ''
             try
                 let ps = glob(path, 1, 1)
             catch
@@ -128,8 +128,8 @@ function! SyntaxCheckers_java_javac_GetLocList() dict " {{{1
     " }}}2
 
     " load custom classpath {{{2
-    if g:syntastic_java_javac_custom_classpath_command != ''
-        let lines = system(g:syntastic_java_javac_custom_classpath_command)
+    if g:syntastic_java_javac_custom_classpath_command !=# ''
+        let lines = syntastic#util#system(g:syntastic_java_javac_custom_classpath_command)
         if syntastic#util#isRunningWindows() || has('win32unix')
             let lines = substitute(lines, "\r\n", "\n", 'g')
         endif
@@ -138,7 +138,7 @@ function! SyntaxCheckers_java_javac_GetLocList() dict " {{{1
         endfor
     endif
 
-    if javac_classpath != ''
+    if javac_classpath !=# ''
         let javac_opts .= ' -cp ' . syntastic#util#shexpand(javac_classpath)
     endif
     " }}}2
@@ -162,7 +162,7 @@ function! SyntaxCheckers_java_javac_GetLocList() dict " {{{1
         \ '%+C%.%#,'.
         \ '%-G%.%#'
 
-    if output_dir != ''
+    if output_dir !=# ''
         silent! call mkdir(output_dir, 'p')
     endif
     let errors = SyntasticMake({
@@ -170,7 +170,7 @@ function! SyntaxCheckers_java_javac_GetLocList() dict " {{{1
         \ 'errorformat': errorformat,
         \ 'postprocess': ['cygwinRemoveCR'] })
 
-    if output_dir != ''
+    if output_dir !=# ''
         call syntastic#util#rmrf(output_dir)
     endif
     return errors
@@ -188,10 +188,10 @@ function! s:ClassSep() " {{{2
 endfunction " }}}2
 
 function! s:AddToClasspath(classpath, path) " {{{2
-    if a:path == ''
+    if a:path ==# ''
         return a:classpath
     endif
-    return (a:classpath != '') ? a:classpath . s:ClassSep() . a:path : a:path
+    return (a:classpath !=# '') ? a:classpath . s:ClassSep() . a:path : a:path
 endfunction " }}}2
 
 function! s:SplitClasspath(classpath) " {{{2
@@ -306,7 +306,7 @@ function! s:GetMavenProperties() " {{{2
                 \ ' -f ' . syntastic#util#shescape(pom) .
                 \ ' ' . g:syntastic_java_maven_options
             let mvn_is_managed_tag = 1
-            let mvn_settings_output = split(system(mvn_cmd . ' help:effective-pom'), "\n")
+            let mvn_settings_output = split(syntastic#util#system(mvn_cmd . ' help:effective-pom'), "\n")
             let current_path = 'project'
             for line in mvn_settings_output
                 let matches = matchlist(line, '\m^\s*<\([a-zA-Z0-9\-\.]\+\)>\s*$')
@@ -340,7 +340,7 @@ function! s:GetMavenClasspath() " {{{2
             let mvn_cmd = syntastic#util#shexpand(g:syntastic_java_maven_executable) .
                 \ ' -f ' . syntastic#util#shescape(pom) .
                 \ ' ' . g:syntastic_java_maven_options
-            let mvn_classpath_output = split(system(mvn_cmd . ' dependency:build-classpath'), "\n")
+            let mvn_classpath_output = split(syntastic#util#system(mvn_cmd . ' dependency:build-classpath'), "\n")
             let mvn_classpath = ''
             let class_path_next = 0
 

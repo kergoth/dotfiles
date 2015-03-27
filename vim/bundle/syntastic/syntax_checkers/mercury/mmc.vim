@@ -1,7 +1,7 @@
 "============================================================================
-"File:        yaml.vim
+"File:        mercury.vim
 "Description: Syntax checking plugin for syntastic.vim
-"Maintainer:  Martin Grenfell <martin.grenfell at gmail dot com>
+"Maintainer:  Joshua Rahm (joshuarahm@gmail.com)
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
@@ -10,36 +10,38 @@
 "
 "============================================================================
 
-if exists('g:loaded_syntastic_yaml_jsyaml_checker')
+if exists('g:loaded_syntastic_mercury_mmc_checker')
     finish
 endif
-let g:loaded_syntastic_yaml_jsyaml_checker = 1
+let g:loaded_syntastic_mercury_mmc_checker = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! SyntaxCheckers_yaml_jsyaml_GetLocList() dict
-    if !exists('s:js_yaml_new')
-        let s:js_yaml_new = syntastic#util#versionIsAtLeast(self.getVersion(), [2])
-    endif
-
-    let makeprg = self.makeprgBuild({ 'args_after': (s:js_yaml_new ? '' : '--compact') })
+function! SyntaxCheckers_mercury_mmc_GetLocList() dict
+    let makeprg = self.makeprgBuild({ 'args_before': '-e' })
 
     let errorformat =
-        \ 'Error on line %l\, col %c:%m,' .
-        \ 'JS-YAML: %m at line %l\, column %c:,' .
+        \ '%C%f:%l:  %m,' .
+        \ '%E%f:%l: %m,' .
         \ '%-G%.%#'
 
-    return SyntasticMake({
+    let loclist = SyntasticMake({
         \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat,
-        \ 'defaults': {'bufnr': bufnr('')} })
+        \ 'errorformat': errorformat })
+
+    for e in loclist
+        if stridx(e['text'], ' warning:') >= 0
+            let e['type'] = 'W'
+        endif
+    endfor
+
+    return loclist
 endfunction
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'yaml',
-    \ 'name': 'jsyaml',
-    \ 'exec': 'js-yaml'})
+    \ 'filetype': 'mercury',
+    \ 'name': 'mmc'})
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
