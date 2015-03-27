@@ -89,7 +89,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 6cc78eb382a62ad99cb0c900d4ed623af9cee10a
+    rev: 68c949470eaa87c5d67080d32fb2b69c8b837eb4
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
