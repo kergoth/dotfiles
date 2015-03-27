@@ -85,7 +85,7 @@ git module zsh-syntax-highlighting:
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 3c7b079275bff75941f531ac8fa09a6a8057405c
+    rev: d0381d859c0eb8d52a6211281e622e89153ef812
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
