@@ -400,7 +400,7 @@ git module git-pull-requests:
 
 hg module hg-extension-crecord:
     url: https://bitbucket.org/edgimar/crecord
-    rev: 71f7fa103401a75988f25a5086736cb355686a11
+    rev: 5cfaabfe9cb9f0a0d6837956d73127f290a213be
 
 hg module hg-extension-prompt:
     url: https://bitbucket.org/obensonne/hg-prompt
