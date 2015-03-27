@@ -1422,8 +1422,11 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
         files = set()
         copied = copies.pathcopies(prec, bumped)
         precmanifest = prec.manifest()
-        for key, val in bumped.manifest().items():
-            if precmanifest.pop(key, None) != val:
+        for key, val in bumped.manifest().iteritems():
+            precvalue = precmanifest.get(key, None)
+            if precvalue is not None:
+                del precmanifest[key]
+            if precvalue != val:
                 files.add(key)
         files.update(precmanifest)  # add missing files
         # commit it
