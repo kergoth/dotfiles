@@ -190,7 +190,7 @@ git module gundo:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround.git
-    rev: ec579a50478758ee6cebe265cf536f9a2f6c4e34
+    rev: 772ab9587b7d1e2c3bae75395c9123803059ba8a
 
 # readline style insertion
 git module vim-rsi:
