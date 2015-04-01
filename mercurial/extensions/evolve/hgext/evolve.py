@@ -19,8 +19,8 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.1.1'
-testedwith = '3.3'
+__version__ = '5.1.2'
+testedwith = '3.3.3'
 buglink = 'http://bz.selenic.com/'
 
 import sys, os
@@ -1422,7 +1422,7 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
         files = set()
         copied = copies.pathcopies(prec, bumped)
         precmanifest = prec.manifest()
-        for key, val in bumped.manifest().iteritems():
+        for key, val in list(bumped.manifest().iteritems()):
             precvalue = precmanifest.get(key, None)
             if precvalue is not None:
                 del precmanifest[key]

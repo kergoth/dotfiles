@@ -51,6 +51,10 @@ add a feature. To run the tests:
 Changelog
 =========
 
+5.1.2 -- 2015-04-01
+
+- evolve: prevent a crash in httpclient_pushobsmarkers() when pushing
+
 5.1.1 -- 2015-03-05
 
 - debugobsconvert: fix invalid markers during conversion
