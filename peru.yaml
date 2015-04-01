@@ -425,7 +425,7 @@ curl module zsh-globalias:
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
-    rev: 80e5d9f653df2496048e80247e8340bb4d906a2c
+    rev: e56411daa979996297295515422b618e7419f8fb
 
 git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
