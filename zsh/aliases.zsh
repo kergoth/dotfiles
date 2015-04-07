@@ -51,6 +51,9 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias vim='mvim -v'
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
     alias drop=trash
+    if (( $+commands[grm] )); then
+        alias rm='grm --one-file-system'
+    fi
 else
     alias ps='ps fux'
     if (( $+commands[dfc] )); then
