@@ -52,7 +52,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
     alias drop=trash
     if (( $+commands[grm] )); then
-        alias rm='grm --one-file-system'
+        alias rm='grm --one-file-system -I'
     fi
 else
     alias ps='ps fux'
@@ -60,7 +60,7 @@ else
         alias df=dfc
         alias dfc='dfc -T -q mount -p -rootfs'
     fi
-    alias rm='rm --one-file-system'
+    alias rm='rm --one-file-system -I'
     alias drop=bgrm
 fi
 
