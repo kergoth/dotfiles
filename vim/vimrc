@@ -573,6 +573,9 @@ nmap <leader>m :Modeliner<CR>
 
 " Vim's strlen works fine while netrw's Strlen is broken
 if has("multi_byte") | let g:netrw_xstrlen = 0 | endif
+
+" Place .netrwhist and .netrwbook in XDG_DATA_HOME, not $VIMDOTDIR
+let g:netrw_home = $XDG_DATA_HOME . "/vim"
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
