@@ -94,7 +94,7 @@ let s:_DEFAULT_CHECKERS = {
         \ 'yaml':          ['jsyaml'],
         \ 'z80':           ['z80syntaxchecker'],
         \ 'zpt':           ['zptlint'],
-        \ 'zsh':           ['zsh', 'shellcheck'],
+        \ 'zsh':           ['zsh'],
     \ }
 lockvar! s:_DEFAULT_CHECKERS
 
@@ -105,6 +105,7 @@ let s:_DEFAULT_FILETYPE_MAP = {
         \ 'litcoffee': 'coffee',
         \ 'mail': 'text',
         \ 'mkd': 'markdown',
+        \ 'pe-puppet': 'puppet',
         \ 'sgml': 'docbk',
         \ 'sgmllnx': 'docbk',
     \ }
