@@ -468,6 +468,19 @@ function _history-substring-search-up-search() {
     # We are at the beginning of history and there are no further matches.
     #
     _history-substring-search-not-found
+    return
+  fi
+
+  #
+  # When HIST_FIND_NO_DUPS is set, meaning that only unique command lines from
+  # history should be matched, make sure the new and old results are different.
+  # But when HIST_IGNORE_ALL_DUPS is set, ZSH already ensures a unique history.
+  #
+  if [[ ! -o HIST_IGNORE_ALL_DUPS && -o HIST_FIND_NO_DUPS && $BUFFER == $_history_substring_search_result ]]; then
+    #
+    # Repeat the current search so that a different (unique) match is found.
+    #
+    _history-substring-search-up-search
   fi
 }
 
@@ -552,6 +565,19 @@ function _history-substring-search-down-search() {
     # We are at the end of history and there are no further matches.
     #
     _history-substring-search-not-found
+    return
+  fi
+
+  #
+  # When HIST_FIND_NO_DUPS is set, meaning that only unique command lines from
+  # history should be matched, make sure the new and old results are different.
+  # But when HIST_IGNORE_ALL_DUPS is set, ZSH already ensures a unique history.
+  #
+  if [[ ! -o HIST_IGNORE_ALL_DUPS && -o HIST_FIND_NO_DUPS && $BUFFER == $_history_substring_search_result ]]; then
+    #
+    # Repeat the current search so that a different (unique) match is found.
+    #
+    _history-substring-search-down-search
   fi
 }
 
