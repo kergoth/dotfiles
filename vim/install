@@ -1,4 +1,4 @@
-mkdir -p $XDG_DATA_HOME/vim
+mkdir -p $XDG_DATA_HOME/vim{,/backup,/swap}
 
 link . ~/.config/vim
 

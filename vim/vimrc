@@ -20,8 +20,8 @@ if !exists('$TEMP')
 endif
 
 " Backups and swap files
-set directory=$XDG_DATA_HOME/vim,/tmp,/var/tmp,$TEMP
-set backupdir=$XDG_DATA_HOME/vim,/tmp,/var/tmp,$TEMP
+set directory=$XDG_DATA_HOME/vim/swap,/tmp,/var/tmp,$TEMP
+set backupdir=$XDG_DATA_HOME/vim/backup,/tmp,/var/tmp,$TEMP
 
 " Ensure we cover all temp files for backup file creation
 if $OSTYPE =~ 'darwin'
