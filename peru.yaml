@@ -297,7 +297,7 @@ git module gibo:
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
     pick: ssh-copy-rsub
-    rev: 7cdd8e487a145709531b6aaf7f21efb7161718ba
+    rev: 52b88f4f042a5e894afe57aebc4387fa34a84e90
 
 git module pom:
     url: https://github.com/tobym/pom
@@ -411,7 +411,7 @@ hg module hg-extension-shelve:
     rev: b81580adae4ecd2adb1c5ecdbb15154a8862dcae
 
 hg module hg-extension-evolve:
-    url: https://bitbucket.org/marmoute/mutable-history
+    url: http://42.netv6.net/evolve-main
     reup: stable
     rev: 5b6c42a3e12fc98e7b278eaee8923ecef5049dca
 
