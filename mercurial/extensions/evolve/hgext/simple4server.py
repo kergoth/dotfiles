@@ -25,6 +25,7 @@ from mercurial.hgweb import hgweb_mod
 from mercurial import bundle2
 from mercurial import localrepo
 from mercurial import exchange
+from mercurial import node
 _pack = struct.pack
 
 gboptslist = gboptsmap = None
@@ -177,13 +178,19 @@ def srv_pullobsmarkers(repo, proto, others):
     return wireproto.streamres(proto.groupchunks(finaldata))
 
 
-# from evolve extension: 1a23c7c52a43
-def _obsrelsethashtree(repo):
-    """Build an obshash for every node in a repo
+# from evolve extension: 3249814dabd1
+def _obsrelsethashtreefm0(repo):
+    return _obsrelsethashtree(repo, obsolete._fm0encodeonemarker)
 
-    return a [(node), (obshash)] list. in revision order."""
+# from evolve extension: 3249814dabd1
+def _obsrelsethashtreefm1(repo):
+    return _obsrelsethashtree(repo, obsolete._fm1encodeonemarker)
+
+# from evolve extension: 3249814dabd1
+def _obsrelsethashtree(repo, encodeonemarker):
     cache = []
     unfi = repo.unfiltered()
+    markercache = {}
     for i in unfi:
         ctx = unfi[i]
         entry = 0
@@ -200,7 +207,11 @@ def _obsrelsethashtree(repo):
                 sha.update(p)
         tmarkers = repo.obsstore.relevantmarkers([ctx.node()])
         if tmarkers:
-            bmarkers = [obsolete._fm0encodeonemarker(m) for m in tmarkers]
+            bmarkers = []
+            for m in tmarkers:
+                if not m in markercache:
+                    markercache[m] = encodeonemarker(m)
+                bmarkers.append(markercache[m])
             bmarkers.sort()
             for m in bmarkers:
                 entry += 1
@@ -211,24 +222,27 @@ def _obsrelsethashtree(repo):
             cache.append((ctx.node(), node.nullid))
     return cache
 
-# from evolve extension: 1a23c7c52a43
-def _obshash(repo, nodes):
-    """hash of binary version of relevant markers + obsparent
-
-    (special case so that all empty are hashed as nullid)"""
-    hashs = _obsrelsethashtree(repo)
+# from evolve extension: 3249814dabd1
+def _obshash(repo, nodes, version=0):
+    if version == 0:
+        hashs = _obsrelsethashtreefm0(repo)
+    elif version ==1:
+        hashs = _obsrelsethashtreefm1(repo)
+    else:
+        assert False
     nm = repo.changelog.nodemap
     revs = [nm.get(n) for n in nodes]
     return [r is None and node.nullid or hashs[r][1] for r in revs]
 
-# from evolve extension: 1a23c7c52a43
+# from evolve extension: 3249814dabd1
 def srv_obshash(repo, proto, nodes):
-    """give the obshash of a a set of node
-
-    Used for markes discovery"""
     return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes)))
 
-# from evolve extension: 1a23c7c52a43
+# from evolve extension: 3249814dabd1
+def srv_obshash1(repo, proto, nodes):
+    return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes), version=1))
+
+# from evolve extension: 3249814dabd1
 def capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
     caps = orig(repo, proto)
@@ -237,6 +251,7 @@ def capabilities(orig, repo, proto):
         caps += ' _evoext_pushobsmarkers_0'
         caps += ' _evoext_pullobsmarkers_0'
         caps += ' _evoext_obshash_0'
+        caps += ' _evoext_obshash_1'
         caps += ' _evoext_getbundle_obscommon'
     return caps
 
@@ -276,6 +291,7 @@ def extsetup(ui):
         return capabilities(oldcap, repo, proto)
     wireproto.commands['capabilities'] = (newcap, args)
     wireproto.commands['evoext_obshash'] = (srv_obshash, 'nodes')
+    wireproto.commands['evoext_obshash1'] = (srv_obshash1, 'nodes')
     # specific simple4server content
     extensions.wrapfunction(pushkey, '_nslist', _nslist)
     pushkey._namespaces['namespaces'] = (lambda *x: False, pushkey._nslist)

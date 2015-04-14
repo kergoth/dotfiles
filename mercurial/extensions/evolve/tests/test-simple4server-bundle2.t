@@ -71,12 +71,12 @@ Smoke testing
 Capacity testing
 ===================
 
-  $ curl --silent http://localhost:$HGPORT/?cmd=hello
-  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_getbundle_obscommon
-  $ curl --silent http://localhost:$HGPORT/?cmd=capabilities
-  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_getbundle_obscommon (no-eol)
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (no-eol)
 
-  $ curl --silent "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   obsolete	
@@ -128,15 +128,15 @@ Test disabling obsolete advertisement
 ===========================================
 (used by bitbucket to select which repo use evolve)
 
-  $ curl --silent "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   obsolete	
   phases	
-  $ curl --silent http://localhost:$HGPORT/?cmd=hello
-  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_getbundle_obscommon
-  $ curl --silent http://localhost:$HGPORT/?cmd=capabilities
-  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_getbundle_obscommon (no-eol)
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (no-eol)
 
   $ echo '[__temporary__]' >> server/.hg/hgrc
   $ echo 'advertiseobsolete=False' >> server/.hg/hgrc
@@ -144,26 +144,26 @@ Test disabling obsolete advertisement
   $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log
   $ cat hg.pid >> $DAEMON_PIDS
 
-  $ curl --silent "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   phases	
-  $ curl --silent http://localhost:$HGPORT/?cmd=hello
-  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024
-  $ curl --silent http://localhost:$HGPORT/?cmd=capabilities
-  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 (no-eol)
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 (no-eol)
 
   $ echo 'advertiseobsolete=True' >> server/.hg/hgrc
   $ $TESTDIR/killdaemons.py
   $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log
   $ cat hg.pid >> $DAEMON_PIDS
 
-  $ curl --silent "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   obsolete	
   phases	
-  $ curl --silent http://localhost:$HGPORT/?cmd=hello
-  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_getbundle_obscommon
-  $ curl --silent http://localhost:$HGPORT/?cmd=capabilities
-  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2-exp=HG2Y%0Ab2x%253Achangegroup%3D01%2C02%0Ab2x%253Alistkeys%0Ab2x%253Aobsmarkers%3DV0%2CV1%0Ab2x%253Apushkey%0Ab2x%253Aremote-changegroup%3Dhttp%2Chttps%0Adigests%3Dmd5%2Csha1%2Csha512 unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_getbundle_obscommon (no-eol)
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon
+  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch stream bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN httpheader=1024 _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (no-eol)

@@ -2340,12 +2340,14 @@ def discocapabilities(orig, repo, proto):
 @eh.extsetup
 def _installobsmarkersdiscovery(ui):
     hgweb_mod.perms['evoext_obshash'] = 'pull'
+    hgweb_mod.perms['evoext_obshash1'] = 'pull'
     # wrap command content
     oldcap, args = wireproto.commands['capabilities']
     def newcap(repo, proto):
         return discocapabilities(oldcap, repo, proto)
     wireproto.commands['capabilities'] = (newcap, args)
     wireproto.commands['evoext_obshash'] = (srv_obshash, 'nodes')
+    wireproto.commands['evoext_obshash1'] = (srv_obshash1, 'nodes')
     if getattr(exchange, '_pushdiscoveryobsmarkers', None) is None:
         ui.warn('evolve: your mercurial version is too old\n'
                 'evolve: (running in degraded mode, push will includes all markers)\n')
@@ -2360,8 +2362,13 @@ def _installobsmarkersdiscovery(ui):
 from mercurial import dagutil
 from mercurial import setdiscovery
 
-def _obshash(repo, nodes):
-    hashs = _obsrelsethashtree(repo)
+def _obshash(repo, nodes, version=0):
+    if version == 0:
+        hashs = _obsrelsethashtreefm0(repo)
+    elif version ==1:
+        hashs = _obsrelsethashtreefm1(repo)
+    else:
+        assert False
     nm = repo.changelog.nodemap
     revs = [nm.get(n) for n in nodes]
     return [r is None and nullid or hashs[r][1] for r in revs]
@@ -2369,13 +2376,28 @@ def _obshash(repo, nodes):
 def srv_obshash(repo, proto, nodes):
     return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes)))
 
+def srv_obshash1(repo, proto, nodes):
+    return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes), version=1))
+
 @eh.addattr(localrepo.localpeer, 'evoext_obshash')
 def local_obshash(peer, nodes):
     return _obshash(peer._repo, nodes)
 
+@eh.addattr(localrepo.localpeer, 'evoext_obshash1')
+def local_obshash1(peer, nodes):
+    return _obshash(peer._repo, nodes, version=1)
+
 @eh.addattr(wireproto.wirepeer, 'evoext_obshash')
 def peer_obshash(self, nodes):
     d = self._call("evoext_obshash", nodes=wireproto.encodelist(nodes))
+    try:
+        return wireproto.decodelist(d)
+    except ValueError:
+        self._abort(error.ResponseError(_("unexpected response:"), d))
+
+@eh.addattr(wireproto.wirepeer, 'evoext_obshash1')
+def peer_obshash1(self, nodes):
+    d = self._call("evoext_obshash1", nodes=wireproto.encodelist(nodes))
     try:
         return wireproto.decodelist(d)
     except ValueError:
@@ -2388,11 +2410,16 @@ def findcommonobsmarkers(ui, local, remote, probeset,
     roundtrips = 0
     cl = local.changelog
     dag = dagutil.revlogdag(cl)
-    localhash = _obsrelsethashtree(local)
     missing = set()
     common = set()
     undecided = set(probeset)
     _takefullsample = setdiscovery._takefullsample
+    if remote.capable('_evoext_obshash_1'):
+        getremotehash = remote.evoext_obshash1
+        localhash = _obsrelsethashtreefm1(local)
+    else:
+        getremotehash = remote.evoext_obshash
+        localhash = _obsrelsethashtreefm0(local)
 
     while undecided:
 
@@ -2407,7 +2434,7 @@ def findcommonobsmarkers(ui, local, remote, probeset,
                  % (roundtrips, len(undecided), len(sample)))
         # indices between sample and externalized version must match
         sample = list(sample)
-        remotehash = remote.evoext_obshash(dag.externalizeall(sample))
+        remotehash = getremotehash(dag.externalizeall(sample))
 
         yesno = [localhash[ix][1] == remotehash[si]
                  for si, ix in enumerate(sample)]
@@ -2738,7 +2765,13 @@ def srv_pullobsmarkers(repo, proto, others):
     finaldata.seek(0)
     return wireproto.streamres(proto.groupchunks(finaldata))
 
-def _obsrelsethashtree(repo):
+def _obsrelsethashtreefm0(repo):
+    return _obsrelsethashtree(repo, obsolete._fm0encodeonemarker)
+
+def _obsrelsethashtreefm1(repo):
+    return _obsrelsethashtree(repo, obsolete._fm1encodeonemarker)
+
+def _obsrelsethashtree(repo, encodeonemarker):
     cache = []
     unfi = repo.unfiltered()
     markercache = {}
@@ -2761,7 +2794,7 @@ def _obsrelsethashtree(repo):
             bmarkers = []
             for m in tmarkers:
                 if not m in markercache:
-                    markercache[m] = obsolete._fm0encodeonemarker(m)
+                    markercache[m] = encodeonemarker(m)
                 bmarkers.append(markercache[m])
             bmarkers.sort()
             for m in bmarkers:
@@ -2774,14 +2807,24 @@ def _obsrelsethashtree(repo):
     return cache
 
 @command('debugobsrelsethashtree',
-        [] , _(''))
-def debugobsrelsethashtree(ui, repo):
+        [('', 'v0', None, 'hash on marker format "0"'),
+         ('', 'v1', None, 'hash on marker format "1" (default)')
+         ,] , _(''))
+def debugobsrelsethashtree(ui, repo, v0=False, v1=False):
     """display Obsolete markers, Relevant Set, Hash Tree
     changeset-node obsrelsethashtree-node
 
     It computed form the "orsht" of its parent and markers
     relevant to the changeset itself."""
-    for chg, obs in _obsrelsethashtree(repo):
+    if v0 and v1:
+        raise util.Abort('cannot only specify one format')
+    elif v0:
+        treefunc = _obsrelsethashtreefm0
+    else:
+        treefunc = _obsrelsethashtreefm1
+
+    treefunc = _obsrelsethashtree
+    for chg, obs in treefunc(repo):
         ui.status('%s %s\n' % (node.hex(chg), node.hex(obs)))
 
 _bestformat = max(obsolete.formats.keys())
@@ -2840,6 +2883,7 @@ def capabilities(orig, repo, proto):
         caps += ' _evoext_pushobsmarkers_0'
         caps += ' _evoext_pullobsmarkers_0'
         caps += ' _evoext_obshash_0'
+        caps += ' _evoext_obshash_1'
         caps += ' _evoext_getbundle_obscommon'
     return caps
 
