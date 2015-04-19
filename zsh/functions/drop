@@ -1,0 +1,9 @@
+if [[ $OSTYPE =~ darwin ]]; then
+    drop () {
+        trash "$@"
+    }
+else
+    drop () {
+        bgrm "$@"
+    }
+fi

@@ -1,10 +1,8 @@
 #compdef n
 
 _n() {
-  _files -W "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}"
-  return 0
+    _files -W "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}"
+    return 0
 }
 
 _n
-
-# vim: ft=zsh sw=2 ts=2 et

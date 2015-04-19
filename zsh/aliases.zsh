@@ -50,7 +50,6 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias locate='mdfind -name'
     alias vim='mvim -v'
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
-    alias drop=trash
     if (( $+commands[grm] )); then
         alias rm='grm --one-file-system -I'
     fi
@@ -61,7 +60,6 @@ else
         alias dfc='dfc -T -q mount -p -rootfs'
     fi
     alias rm='rm --one-file-system -I'
-    alias drop=bgrm
 fi
 
 # Global
