@@ -1,0 +1,7 @@
+n () {
+    if [ $# -eq 0 ]; then
+        ls -c "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}/" | grep -i "$*"
+    else
+        "${VISUAL:-${EDITOR:-vim}}" "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}/${*%.txt}.txt"
+    fi
+}
