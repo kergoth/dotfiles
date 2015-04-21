@@ -246,9 +246,10 @@ curl module rpm2cpio:
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
     pick:
+        - bin/git-integrate
         - bin/git-j
         - bin/git-rebase-chain
-        - bin/git-integrate
+        - bin/git-stage-branch
     export: bin
     rev: 61fec42ad35352f3c1ada707cb4419879f68bd97
 
