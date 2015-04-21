@@ -8,7 +8,7 @@ CONCEPT BEFORE USING IT.
 For client side usages it is recommended to use the evolve extension for
 improved user interface.'''
 
-testedwith = '3.0.1'
+testedwith = '3.3.3 3.4-rc'
 buglink = 'https://bitbucket.org/marmoute/mutable-history/issues'
 
 import mercurial.obsolete
@@ -255,10 +255,13 @@ def capabilities(orig, repo, proto):
         caps += ' _evoext_getbundle_obscommon'
     return caps
 
-def _getbundleobsmarkerpart(orig, bundler, repo, source, heads=None, common=None,
-                            bundlecaps=None, **kwargs):
+def _getbundleobsmarkerpart(orig, bundler, repo, source, **kwargs):
     if 'evo_obscommon' not in kwargs:
-        return orig(bundler, repo, source, heads, common, bundlecaps, **kwargs)
+        return orig(bundler, repo, source, **kwargs)
+
+    heads = kwargs.get('heads')
+    if 'evo_obscommon' not in kwargs:
+        return orig(bundler, repo, source, **kwargs)
 
     if kwargs.get('obsmarkers', False):
         if heads is None:
@@ -284,6 +287,10 @@ def extsetup(ui):
     wireproto.commands['evoext_pullobsmarkers_0'] = (srv_pullobsmarkers, '*')
     # wrap module content
     extensions.wrapfunction(exchange, '_pullbundle2extraprepare', _getbundleobsmarkerpart)
+    origfunc = exchange.getbundle2partsmapping['obsmarkers']
+    def newfunc(*args, **kwargs):
+        return _getbundleobsmarkerpart(origfunc, *args, **kwargs)
+    exchange.getbundle2partsmapping['obsmarkers'] = newfunc
     extensions.wrapfunction(wireproto, 'capabilities', capabilities)
     # wrap command content
     oldcap, args = wireproto.commands['capabilities']

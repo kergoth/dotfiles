@@ -81,17 +81,51 @@ Some of the things you can do with ``evolve`` are:
 ``evolve`` is experimental!
 ---------------------------
 
-TODO
+The long-term plan for ``evolve`` is to add it to core Mercurial.
+However, it is not yet stable enough for that. In particular:
 
-  * unstable UI
-  * some corner cases not covered yet
+  * The UI is unstable: ``evolve``'s command names and command options
+    are not completely nailed down yet. They are subject to occasional
+    backwards-incompatible changes. If you write scripts that use
+    evolve commands, a future release could break your scripts.
+
+  * There are still some corner cases that aren't handled yet. If you
+    think you have found such a case, please check if it's already
+    described in the Mercurial bug tracker (http://bz.selenic.com).
+    Bugs in ``evolve`` are files under component "evolution": use
+    `this query`_ to view open bugs in ``evolve``.
+
+.. _`this query`: http://bz.selenic.com/buglist.cgi?component=evolution&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEED_EXAMPLE
 
 Installation and setup
 ----------------------
 
-TODO
+To use ``evolve``, you must:
+
+  #. Clone the ``evolve`` repository::
+
+       cd ~/src
+       hg clone https://bitbucket.org/marmoute/mutable-history
+
+  #. Configure the extension, either locally ::
+
+       hg config --local
+
+     or for all your repositories ::
+
+       hg config --edit
+
+     Then add ::
+
+       evolve=~/src/mutable-history/hgext/evolve.py
+
+     in the ``[extensions]`` section (adding the section if necessary). Use
+     the directory that you actually cloned to, of course.
+
 
 Next steps:
+-----------
+
   * For a practical guide to using ``evolve`` in a single repository,
     see the `user guide`_.
   * For more advanced tricks, see `sharing mutable history`_.

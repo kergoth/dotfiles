@@ -205,7 +205,7 @@ all with a single *successor*.
 Changeset obsolescence under the hood
 -------------------------------------
 
-So far, everything has gone just fine. We haven't run into merge
+So far, everything has gone just fine: we haven't run into merge
 conflicts or other trouble. Before we start exploring advanced usage
 that can run into trouble, let's step back and see what happens when
 Mercurial marks changesets obsolete. That will make it much easier to
@@ -217,8 +217,8 @@ changesets are marked *obsolete* and replaced by zero or more
 *successors*. The obsolete changesets are the *precursors* of their
 successors. This applies equally to built-in commands (``commit
 --amend``), commands added by ``evolve`` (``amend``, ``prune``,
-``uncommit``, ``fold``), and even commands provided by other
-extensions (``rebase``, ``histedit``).
+``uncommit``, ``fold``), and commands provided by other extensions
+(``rebase``, ``histedit``).
 
 Another way of looking at it is that obsolescence is second-order
 version control, i.e. the history of your history. We'll cover this in
@@ -248,10 +248,38 @@ obsolete changesets that are still visible, which indicates your
 history modification work is not yet done. We'll see examples of that
 later, when we cover advanced usage.
 
-Seeing hidden changesets
-========================
 
-TODO
+Understanding revision numbers and hidden changesets
+====================================================
+
+As the name implies, hidden changesets are normally not visible. If
+you run ``hg log`` on the repository from Figure 2, Mercurial will
+show revisions 0 and 3, but not 1 and 2. That's something you don't
+see with plain vanilla Mercurial—normally, revision *N* is always
+followed by revision *N* + 1.
+
+This is just the visible manifestation of hidden changesets. If
+revision 0 is followed by revision 3, that means there are two hidden
+changesets, 1 and 2, in between.
+
+To see those hidden changesets, use the ``--hidden`` option::
+
+  $ hg --hidden log --graph --template '{rev}:{node|short}  {desc|firstline}\n'
+  @  3:934359450037  implement feature Y
+  |
+  | x  2:6c5f78d5d467  temporary amend commit for fe0ecd3bd2a4
+  | |
+  | x  1:fe0ecd3bd2a4  implement feature Y
+  |/
+  o  0:08c4b6f4efc8  init
+
+Note that changeset IDs are still the permanent, immutable identifier
+for changesets. Revision numbers are, as ever, a handy shorthand that
+work in your local repository, but cannot be used across repositories.
+They also have the useful property of showing when there are hidden
+changesets lurking under the covers, which is why this document uses
+revision numbers.
+
 
 Under the hood: Prune an unwanted changeset
 ===========================================
@@ -306,28 +334,14 @@ successor.
 Obsolete is not hidden
 ======================
 
-TODO
+So far, every obsolete changeset we have seen is also hidden. However,
+these are *not* the same thing—that's why they have different names.
+It's entirely possible to have obsolete changesets that are not
+hidden. We'll see examples of that soon, when we create *unstable*
+changesets.
 
-
-Understanding revision numbers
-==============================
-
-If you're trying these examples on your own, especially using ``hg
-log`` without ``--hidden``, you have probably noticed some funny
-business going on with revision numbers: there are now gaps in the
-sequence. That's something you don't see with plain vanilla Mercurial;
-normally, revision N is always followed by revision N+1.
-
-This is just the visible manifestation of hidden changesets. If
-revision 95 is followed by revision 98, that means there are two
-hidden changesets, 96 and 97, in between.
-
-Note that changeset IDs are still the permanent, immutable identifier
-for changesets. Revision numbers are, as ever, a handy shorthand that
-work in your local repository, but cannot be used across repositories.
-They also have the useful property of showing when there are hidden
-changesets lurking under the covers, which is why this document uses
-revision numbers.
+Note that all hidden changesets are obsolete: hidden is a subset of
+obsolete.
 
 
 Life with ``evolve`` (advanced usage)
@@ -353,7 +367,7 @@ Example 7: Amend an older changeset
 ===================================
 
 Sometimes you don't notice your mistakes until after you have
-committed some new changesets on top of them. ::
+committed new changesets on top of them. ::
 
   $ hg commit -m 'fix bug 17'         # rev 11 (mistake here)
   $ hg commit -m 'cleanup'            # rev 12
@@ -363,12 +377,12 @@ Traditionally, your only option is to commit an "oops" changeset that
 fixes your mistake. That works, of course, but it makes you look bad:
 you made a mistake, and the record of that mistake is recorded in
 history for all eternity. (If the mistake was in the commit message,
-too bad.)
+too bad: you cannot fix it.)
 
 More subtly, there now exist changesets that are *worse* than what
 came before—the code no longer builds, the tests don't pass, or
-similar. Anyone reviewing these patches will waste time noticing the
-error in the earlier patch, and then the correction later on.
+similar. Anyone reviewing these patches will waste time on the error
+in the earlier patch, and then the correction later on.
 
 You can avoid all this by amending the bad changeset and *evolving*
 subsequent history. Here's how it works, assuming you have just
@@ -558,4 +572,30 @@ or rebase. It's up to you.
 Example 11: Recover an obsolete changeset
 =========================================
 
-TODO
+Sometimes you might obsolete a changeset, and then change your mind. You'll
+probably start looking for an “unobsolete” command to restore a changeset
+to normal state. For complicated implementation reasons, that command
+doesn't exist. (If you have already pushed an obsolescence marker to
+another repo, then Mercurial would need a way to revoke that remote
+obsolesence marker. That's a hard problem.)
+
+Instead, ``evolve`` provides a ``touch`` command to resurrect an
+obsolete changeset. An unexpected quirk: you almost certainly need to
+use ``--hidden``, since obsolete changesets tend to be hidden, and you
+can't reference a hidden changeset otherwise. Typical usage thus looks
+like ::
+
+  $ hg --hidden touch REV
+
+This creates a new, normal changeset which is the same as ``REV``—except
+with a different changeset ID. The new changeset will have the same parent
+as ``REV``, and will be a successor of ``REV``.
+
+The current implementation of ``hg touch`` is not ideal, and is likely to
+change in the future. Consider the history in Figure 12, where revision 27
+is obsolete and the child of 26, also obsolete. If we ``hg touch 27``, that
+creates a new revision which is a non-obsolete child of 26—i.e., it is
+unstable. It's also *divergent*, another type of trouble that we'll learn
+about in the `next section`_.
+
+.. _`next section`: sharing.html

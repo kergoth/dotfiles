@@ -11,8 +11,12 @@ Setting things up
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
   $ hg init public
-  $ hg clone -q public test-repo
-  $ hg clone -q test-repo dev-repo
+  $ hg clone public test-repo
+  updating to branch default
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg clone test-repo dev-repo
+  updating to branch default
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cat >> test-repo/.hg/hgrc <<EOF
   > [phases]
   > publish = false
@@ -24,12 +28,26 @@ To start things off, let's make one public, immutable changeset::
   $ echo 'my new project' > file1
   $ hg add file1
   $ hg commit -m'create new project'
-  $ hg push -q
+  $ hg push
+  pushing to $TESTTMP/public
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
 
 and pull that into the development repository::
 
   $ cd ../dev-repo
-  $ hg pull -q -u
+  $ hg pull -u
+  pulling from $TESTTMP/test-repo
+  requesting all changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  pull obsolescence markers
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
 Let's commit a preliminary change and push it to ``test-repo`` for
 testing. ::
@@ -63,7 +81,16 @@ Figure SG02
 Pull into dev-repo: obsolescence markers are transferred, but not
 the new obsolete changeset.
   $ cd ../dev-repo
-  $ hg pull -q -u
+  $ hg pull -u
+  pulling from $TESTTMP/test-repo
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pull obsolescence markers
+  2 obsolescence markers added
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
 Figure SG03
   $ hg shortlog --hidden -G
@@ -92,7 +119,8 @@ Figure SG04 (dev-repo)
   
 Figure SG04 (test-repo)
   $ cd ../test-repo
-  $ hg update -q
+  $ hg update
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg shortlog --hidden -G
   @  4:de6151c48e1c  draft  fix bug 37
   |
@@ -115,199 +143,402 @@ This bug fix is finished. We can push it to the public repository.
   pushing 4 obsolescence markers (* bytes) (glob)
   4 obsolescence markers added
 
+Now that the fix is public, we cannot amend it any more.
+  $ hg amend -m 'fix bug 37'
+  abort: cannot amend public changesets
+  [255]
+
 Figure SG05
   $ hg -R ../public shortlog -G
   o  1:de6151c48e1c  public  fix bug 37
   |
   o  0:0dc9c9f6ab91  public  create new project
   
-Oops, still have draft changesets in dev-repo.
-  $ cd ../dev-repo
-  $ hg shortlog -r 'draft()'
+Oops, still have draft changesets in dev-repo: push the phase change there.
+  $ hg -R ../dev-repo shortlog -r 'draft()'
   4:de6151c48e1c  draft  fix bug 37
-  $ hg pull -q -u
-  $ hg shortlog -r 'draft()'
+  $ hg push ../dev-repo
+  pushing to ../dev-repo
+  searching for changes
+  no changes found
+  pushing 4 obsolescence markers (* bytes) (glob)
+  0 obsolescence markers added
+  [1]
+  $ hg -R ../dev-repo shortlog -r 'draft()'
 
-Sharing by Alice and Bob to demonstrate bumped and divergent changesets.
-First, setup repos for them.
+Sharing with multiple developers: code review
 
   $ cd ..
-  $ hg clone -q public alice
-  $ hg clone -q public bob
+  $ hg clone public review
+  updating to branch default
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg clone review alice
+  updating to branch default
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg clone review bob
+  updating to branch default
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ cat >> review/.hg/hgrc <<EOF
+  > [phases]
+  > publish = false
+  > EOF
+
+Alice commits a draft bug fix, pushes to review repo.
+  $ cd alice
+  $ hg bookmark bug15
+  $ echo 'fix' > file2
+  $ hg commit -A -u alice -m 'fix bug 15 (v1)'
+  adding file2
+  $ hg push -B bug15
+  pushing to $TESTTMP/review
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  pushing 4 obsolescence markers (* bytes) (glob)
+  0 obsolescence markers added
+  exporting bookmark bug15
+  $ hg -R ../review bookmarks
+     bug15                     2:f91e97234c2b
+
+Alice receives code review, amends her fix, and goes out to lunch to
+await second review.
+  $ echo 'Fix.' > file2
+  $ hg amend -m 'fix bug 15 (v2)'
+  $ hg push
+  pushing to $TESTTMP/review
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pushing 6 obsolescence markers (* bytes) (glob)
+  2 obsolescence markers added
+  updating bookmark bug15
+  $ hg -R ../review bookmarks
+     bug15                     3:cbdfbd5a5db2
+
+Figure SG06: review repository after Alice pushes her amended changeset.
+  $ hg --hidden -R ../review shortlog -G -r 1::
+  o  3:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  |
+  | x  2:f91e97234c2b  draft  fix bug 15 (v1)
+  |/
+  @  1:de6151c48e1c  public  fix bug 37
+  |
+
+Bob commits a draft changeset, pushes to review repo.
+  $ cd ../bob
+  $ echo 'stuff' > file1
+  $ hg bookmark featureX
+  $ hg commit -u bob -m 'implement feature X (v1)'
+  $ hg push -B featureX
+  pushing to $TESTTMP/review
+  searching for changes
+  remote has heads on branch 'default' that are not known locally: cbdfbd5a5db2
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pushing 4 obsolescence markers (* bytes) (glob)
+  0 obsolescence markers added
+  exporting bookmark featureX
+  $ hg -R ../review bookmarks
+     bug15                     3:cbdfbd5a5db2
+     featureX                  4:193657d1e852
+
+Bob receives first review, amends and pushes.
+  $ echo 'do stuff' > file1
+  $ hg amend -m 'implement feature X (v2)'
+  $ hg push
+  pushing to $TESTTMP/review
+  searching for changes
+  remote has heads on branch 'default' that are not known locally: cbdfbd5a5db2
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pushing 6 obsolescence markers (* bytes) (glob)
+  2 obsolescence markers added
+  updating bookmark featureX
+
+Bob receives second review, amends, and pushes to public:
+this time, he's sure he got it right!
+  $ echo 'Do stuff.' > file1
+  $ hg amend -m 'implement feature X (v3)'
+  $ hg push ../public
+  pushing to ../public
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  pushing 8 obsolescence markers (* bytes) (glob)
+  4 obsolescence markers added
+  $ hg -R ../public bookmarks
+  no bookmarks set
+  $ hg push ../review
+  pushing to ../review
+  searching for changes
+  remote has heads on branch 'default' that are not known locally: cbdfbd5a5db2
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pushing 8 obsolescence markers (* bytes) (glob)
+  2 obsolescence markers added
+  updating bookmark featureX
+  $ hg -R ../review bookmarks
+     bug15                     3:cbdfbd5a5db2
+     featureX                  6:540ba8f317e6
+
+Figure SG07: review and public repos after Bob implements feature X.
+  $ hg --hidden -R ../review shortlog -G -r 1::
+  o  6:540ba8f317e6  public  implement feature X (v3)
+  |
+  | x  5:0eb74a7b6698  draft  implement feature X (v2)
+  |/
+  | x  4:193657d1e852  draft  implement feature X (v1)
+  |/
+  | o  3:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  |/
+  | x  2:f91e97234c2b  draft  fix bug 15 (v1)
+  |/
+  @  1:de6151c48e1c  public  fix bug 37
+  |
+  $ hg --hidden -R ../public shortlog -G -r 1::
+  o  2:540ba8f317e6  public  implement feature X (v3)
+  |
+  o  1:de6151c48e1c  public  fix bug 37
+  |
+
+How do things look in the review repo?
+  $ cd ../review
+  $ hg --hidden shortlog -G -r 1::
+  o  6:540ba8f317e6  public  implement feature X (v3)
+  |
+  | x  5:0eb74a7b6698  draft  implement feature X (v2)
+  |/
+  | x  4:193657d1e852  draft  implement feature X (v1)
+  |/
+  | o  3:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  |/
+  | x  2:f91e97234c2b  draft  fix bug 15 (v1)
+  |/
+  @  1:de6151c48e1c  public  fix bug 37
+  |
+
+Meantime, Alice is back from lunch. While she was away, Bob approved
+her change, so now she can publish it.
+  $ cd ../alice
+  $ hg --hidden shortlog -G -r 1::
+  @  4:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  |
+  | x  3:55dd95168a35  draft  temporary amend commit for f91e97234c2b
+  | |
+  | x  2:f91e97234c2b  draft  fix bug 15 (v1)
+  |/
+  o  1:de6151c48e1c  public  fix bug 37
+  |
+  $ hg outgoing -q ../public
+  4:cbdfbd5a5db2
+  $ hg push ../public
+  pushing to ../public
+  searching for changes
+  remote has heads on branch 'default' that are not known locally: 540ba8f317e6
+  abort: push creates new remote head cbdfbd5a5db2 with bookmark 'bug15'!
+  (pull and merge or see "hg help push" for details about pushing new heads)
+  [255]
+  $ hg pull ../public
+  pulling from ../public
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pull obsolescence markers
+  4 obsolescence markers added
+  (run 'hg heads' to see heads, 'hg merge' to merge)
+  $ hg log -G -q -r 'head()'
+  o  5:540ba8f317e6
+  |
+  | @  4:cbdfbd5a5db2
+  |/
+  $ hg --hidden shortlog -G -r 1::
+  o  5:540ba8f317e6  public  implement feature X (v3)
+  |
+  | @  4:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  |/
+  | x  3:55dd95168a35  draft  temporary amend commit for f91e97234c2b
+  | |
+  | x  2:f91e97234c2b  draft  fix bug 15 (v1)
+  |/
+  o  1:de6151c48e1c  public  fix bug 37
+  |
+
+Alice rebases her draft changeset on top of Bob's public changeset and
+publishes the result.
+  $ hg rebase -d 5
+  rebasing 4:cbdfbd5a5db2 "fix bug 15 (v2)" (bug15)
+  $ hg push ../public
+  pushing to ../public
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  pushing 11 obsolescence markers (* bytes) (glob)
+  3 obsolescence markers added
+  $ hg push ../review
+  pushing to ../review
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 0 changes to 1 files
+  pushing 11 obsolescence markers (* bytes) (glob)
+  1 obsolescence markers added
+  updating bookmark bug15
+
+Figure SG08: review and public changesets after Alice pushes.
+  $ hg --hidden -R ../review shortlog -G -r 1::
+  o  7:a06ec1bf97bd  public  fix bug 15 (v2)
+  |
+  o  6:540ba8f317e6  public  implement feature X (v3)
+  |
+  | x  5:0eb74a7b6698  draft  implement feature X (v2)
+  |/
+  | x  4:193657d1e852  draft  implement feature X (v1)
+  |/
+  | x  3:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  |/
+  | x  2:f91e97234c2b  draft  fix bug 15 (v1)
+  |/
+  @  1:de6151c48e1c  public  fix bug 37
+  |
+  $ hg --hidden -R ../public shortlog -G -r 1::
+  o  3:a06ec1bf97bd  public  fix bug 15 (v2)
+  |
+  o  2:540ba8f317e6  public  implement feature X (v3)
+  |
+  o  1:de6151c48e1c  public  fix bug 37
+  |
+  $ cd ..
+
+Setup for "cowboy mode" shared mutable history (to illustrate divergent
+and bumped changesets).
+  $ rm -rf review alice bob
+  $ hg clone public alice
+  updating to branch default
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg clone public bob
+  updating to branch default
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cat >> alice/.hg/hgrc <<EOF
   > [phases]
   > publish = false
   > EOF
   $ cp alice/.hg/hgrc bob/.hg/hgrc
 
-Alice commits a bug fix.
-  $ cd alice
-  $ echo 'fix' > file2
-  $ hg commit -q -A -u alice -m 'fix bug 15'
+Now we'll have Bob commit a bug fix that could still be improved::
 
-Bob pulls and amends Alice's fix.
-  $ cd ../bob
-  $ hg pull -q -u ../alice
-  $ echo 'Fix.' > file2
-  $ hg amend -q -A -u bob -m 'fix bug 15 (amended)'
-
-Figure SG06: Bob's repository after amending Alice's fix.
-(Nothing new here; we could have seen this in the user guide.
-  $ hg --hidden shortlog -G
-  @  4:fe884dfac355  draft  fix bug 15 (amended)
-  |
-  | x  3:0376cac226f8  draft  temporary amend commit for e011baf925da
-  | |
-  | x  2:e011baf925da  draft  fix bug 15
-  |/
-  o  1:de6151c48e1c  public  fix bug 37
-  |
-  o  0:0dc9c9f6ab91  public  create new project
-  
-
-But in the meantime, Alice decides the fix is just fine and publishes it.
-  $ cd ../alice
-  $ hg push -q
-
-Which means that Bob now has an formerly obsolete changeset that is
-also public (2:6e83). As soon as he pulls its phase change, he's got
-trouble: the successors of that formerly obsolete changeset are
-bumped.
-
-  $ cd ../bob
-  $ hg --hidden shortlog -r 'obsolete()'
-  2:e011baf925da  draft  fix bug 15
-  3:0376cac226f8  draft  temporary amend commit for e011baf925da
-  $ hg pull -q -u
-  1 new bumped changesets
-  $ hg --hidden shortlog -r 'obsolete()'
-  3:0376cac226f8  draft  temporary amend commit for e011baf925da
-  $ hg shortlog -r 'bumped()'
-  4:fe884dfac355  draft  fix bug 15 (amended)
-
-Figure SG07: Bob's repo with one bumped changeset (rev 4:c02d)
-  $ hg --hidden shortlog -G
-  @  4:fe884dfac355  draft  fix bug 15 (amended)
-  |
-  | x  3:0376cac226f8  draft  temporary amend commit for e011baf925da
-  | |
-  | o  2:e011baf925da  public  fix bug 15
-  |/
-  o  1:de6151c48e1c  public  fix bug 37
-  |
-  o  0:0dc9c9f6ab91  public  create new project
-  
-
-Bob gets out of trouble by evolving the repository.
-  $ hg evolve --all
-  recreate:[4] fix bug 15 (amended)
-  atop:[2] fix bug 15
-  computing new diff
-  committed as 227d860d9ad0
-  working directory is now at 227d860d9ad0
-
-Figure SG08
-  $ hg --hidden shortlog -G
-  @  5:227d860d9ad0  draft  bumped update to e011baf925da:
-  |
-  | x  4:fe884dfac355  draft  fix bug 15 (amended)
-  | |
-  +---x  3:0376cac226f8  draft  temporary amend commit for e011baf925da
-  | |
-  o |  2:e011baf925da  public  fix bug 15
-  |/
-  o  1:de6151c48e1c  public  fix bug 37
-  |
-  o  0:0dc9c9f6ab91  public  create new project
-  
-
-Throw away Bob's messy repo and start over.
-  $ cd ..
-  $ rm -rf bob
-  $ cp -rp alice bob
-
-Bob commits a pretty good fix that both he and Alice will amend,
-leading to divergence.
   $ cd bob
   $ echo 'pretty good fix' >> file1
   $ hg commit -u bob -m 'fix bug 24 (v1)'
+  $ hg shortlog -r .
+  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
 
-Alice pulls Bob's fix and improves it.
+Since Alice and Bob are now in cowboy mode, Alice pulls Bob's draft
+changeset and amends it herself. ::
+
   $ cd ../alice
-  $ hg pull -q -u ../bob
-  $ echo 'better (alice)' >> file1
+  $ hg pull -u ../bob
+  pulling from ../bob
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  pull obsolescence markers
+  0 obsolescence markers added
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ echo 'better fix (alice)' >> file1
   $ hg amend -u alice -m 'fix bug 24 (v2 by alice)'
 
-Likewise, Bob amends his own fix. Now we have an obsolete changeset
-with two successors, although the successors are in different repos.
+Bob implements a better fix of his own::
+
   $ cd ../bob
-  $ echo 'better (bob)' >> file1
+  $ echo 'better fix (bob)' >> file1
   $ hg amend -u bob -m 'fix bug 24 (v2 by bob)'
+  $ hg --hidden shortlog -G -r 3::
+  @  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  |
+  | x  5:3466c7f5a149  draft  temporary amend commit for 2fe6c4bd32d0
+  | |
+  | x  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
+  |/
+  o  3:a06ec1bf97bd  public  fix bug 15 (v2)
+  |
 
-Bob pulls from Alice's repo and discovers the trouble: divergent changesets!
-  $ hg pull -q -u ../alice
-  not updating: not a linear update
-  (merge or update --check to force update)
+Bob discovers the divergence.
+  $ hg pull ../alice
+  pulling from ../alice
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files (+1 heads)
+  pull obsolescence markers
+  2 obsolescence markers added
+  (run 'hg heads' to see heads, 'hg merge' to merge)
   2 new divergent changesets
-  $ hg shortlog -r 'divergent()'
-  5:fc16901f4d7a  draft  fix bug 24 (v2 by bob)
-  6:694fd0f6b503  draft  fix bug 24 (v2 by alice)
 
-Figure SG09
-  $ hg --hidden shortlog -G
-  o  6:694fd0f6b503  draft  fix bug 24 (v2 by alice)
+Figure SG09: multiple heads! divergence! oh my!
+  $ hg --hidden shortlog -G -r 3::
+  o  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
   |
-  | @  5:fc16901f4d7a  draft  fix bug 24 (v2 by bob)
+  | @  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
   |/
-  | x  4:162612d3335b  draft  temporary amend commit for fe81d904ed08
+  | x  5:3466c7f5a149  draft  temporary amend commit for 2fe6c4bd32d0
   | |
-  | x  3:fe81d904ed08  draft  fix bug 24 (v1)
+  | x  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
   |/
-  o  2:e011baf925da  public  fix bug 15
+  o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
-  o  1:de6151c48e1c  public  fix bug 37
-  |
-  o  0:0dc9c9f6ab91  public  create new project
-  
-Merge the trouble away.
-  $ hg merge --tool internal:local
+  $ hg --hidden shortlog -r 'successors(2fe6)'
+  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+
+Use evolve to fix the divergence.
+  $ HGMERGE=internal:other hg evolve
+  merge:[6] fix bug 24 (v2 by bob)
+  with: [7] fix bug 24 (v2 by alice)
+  base: [4] fix bug 24 (v1)
   0 files updated, 1 files merged, 0 files removed, 0 files unresolved
-  (branch merge, don't forget to commit)
-  $ hg commit -m merge
-  $ hg shortlog -G
-  @    7:b1d30ba26e44  draft  merge
-  |\
-  | o  6:694fd0f6b503  draft  fix bug 24 (v2 by alice)
-  | |
-  o |  5:fc16901f4d7a  draft  fix bug 24 (v2 by bob)
-  |/
-  o  2:e011baf925da  public  fix bug 15
-  |
-  o  1:de6151c48e1c  public  fix bug 37
-  |
-  o  0:0dc9c9f6ab91  public  create new project
-  
+  working directory is now at 5ad6037c046c
   $ hg log -q -r 'divergent()'
-  5:fc16901f4d7a
-  6:694fd0f6b503
 
-# XXX hg evolve does not solve this trouble! bug in evolve?
-#Evolve the trouble away.
-#  $ hg evolve --all --tool=internal:local
-#  merge:[5] fix bug 24 (v2 by bob)
-#  with: [6] fix bug 24 (v2 by alice)
-#  base: [3] fix bug 24 (v1)
-#  0 files updated, 1 files merged, 0 files removed, 0 files unresolved
-#  $ hg status
-#  $ hg shortlog -G
-#  o  6:694fd0f6b503  draft  fix bug 24 (v2 by alice)
-#  |
-#  | @  5:fc16901f4d7a  draft  fix bug 24 (v2 by bob)
-#  |/
-#  o  2:e011baf925da  public  fix bug 15
-#  |
-#  o  1:de6151c48e1c  public  fix bug 37
-#  |
-#  o  0:0dc9c9f6ab91  public  create new project
-#  
-#  $ hg --hidden shortlog -G
+Figure SG10: Bob's repository after fixing divergence.
+  $ hg --hidden shortlog -G -r 3::
+  @  9:5ad6037c046c  draft  fix bug 24 (v2 by bob)
+  |
+  | x  8:bcfc9a755ac3  draft  temporary amend commit for a360947f6faf
+  | |
+  +---x  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+  | |
+  | x  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  |/
+  | x  5:3466c7f5a149  draft  temporary amend commit for 2fe6c4bd32d0
+  | |
+  | x  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
+  |/
+  o  3:a06ec1bf97bd  public  fix bug 15 (v2)
+  |
+  $ hg --hidden shortlog -r 'precursors(9)'
+  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+  $ cat file1
+  Do stuff.
+  pretty good fix
+  better fix (alice)

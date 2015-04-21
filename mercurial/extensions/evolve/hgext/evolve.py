@@ -19,8 +19,8 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.1.2'
-testedwith = '3.3.3'
+__version__ = '5.1.3'
+testedwith = '3.3.3 3.4-rc'
 buglink = 'http://bz.selenic.com/'
 
 import sys, os
@@ -2039,8 +2039,9 @@ def uncommit(ui, repo, *pats, **opts):
 @eh.wrapcommand('commit')
 def commitwrapper(orig, ui, repo, *arg, **kwargs):
     if kwargs.get('amend', False):
-        lock = None
+        wlock = lock = None
     else:
+        wlock = repo.wlock()
         lock = repo.lock()
     try:
         obsoleted = kwargs.get('obsolete', [])
@@ -2064,6 +2065,8 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
     finally:
         if lock is not None:
             lock.release()
+        if wlock is not None:
+            wlock.release()
 
 @command('^touch',
     [('r', 'rev', [], 'revision to update'),
@@ -2237,8 +2240,10 @@ def graftwrapper(orig, ui, repo, *revs, **kwargs):
     kwargs['rev'] = []
     obsoleted = kwargs.setdefault('obsolete', [])
 
-    lock = repo.lock()
+    wlock = lock = None
     try:
+        wlock = repo.wlock()
+        lock = repo.lock()
         if kwargs.get('old_obsolete'):
             if kwargs.get('continue'):
                 obsoleted.extend(repo.opener.read('graftstate').splitlines())
@@ -2253,7 +2258,7 @@ def graftwrapper(orig, ui, repo, *revs, **kwargs):
 
         return commitwrapper(orig, ui, repo,*revs, **kwargs)
     finally:
-        lock.release()
+        lockmod.release(lock, wlock)
 
 @eh.extsetup
 def oldevolveextsetup(ui):
@@ -2642,19 +2647,27 @@ def _addobscommontob2pull(orig, pullop, kwargs):
 
 if getattr(exchange, '_getbundleobsmarkerpart', None) is not None:
     @eh.wrapfunction(exchange, '_getbundleobsmarkerpart')
-    def _getbundleobsmarkerpart(orig, bundler, repo, source, heads=None, common=None,
-                                bundlecaps=None, **kwargs):
+    def _getbundleobsmarkerpart(orig, bundler, repo, source, **kwargs):
         if 'evo_obscommon' not in kwargs:
-            return orig(bundler, repo, source, heads, common, bundlecaps, **kwargs)
+            return orig(bundler, repo, source, **kwargs)
 
+        heads = kwargs.get('heads')
         if kwargs.get('obsmarkers', False):
             if heads is None:
                 heads = repo.heads()
             obscommon = kwargs.get('evo_obscommon', ())
+            assert obscommon
             obsset = repo.set('::%ln - ::%ln', heads, obscommon)
             subset = [c.node() for c in obsset]
             markers = repo.obsstore.relevantmarkers(subset)
             exchange.buildobsmarkerspart(bundler, markers)
+
+    @eh.uisetup
+    def installgetbundlepartgen(ui):
+        origfunc = exchange.getbundle2partsmapping['obsmarkers']
+        def newfunc(*args, **kwargs):
+            return _getbundleobsmarkerpart(origfunc, *args, **kwargs)
+        exchange.getbundle2partsmapping['obsmarkers'] = newfunc
 
 
 @eh.wrapfunction(exchange, '_pullobsolete')
