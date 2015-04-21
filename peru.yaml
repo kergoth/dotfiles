@@ -265,7 +265,7 @@ git module atach:
 curl module cpanm:
     url: http://xrl.us/cpanm
     executable: cpanm
-    sha1: 276023c72ff1fcc5b12bad1c0d5ddd60bed69e99
+    sha1: 42eb9e2e88c6cb8e6fc12e78a7246757f1edf088
 
 hg module cwdiff:
     url: https://code.google.com/p/cj-overlay.evergreens
