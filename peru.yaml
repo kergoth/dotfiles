@@ -150,7 +150,7 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: f6675f298cf7ae8838f7c517e52e2088dcf40f7c
+    rev: ec7b9514616efcceb405271082c268bd09b7f5f6
 
 # markdown runtime files
 git module vim-markdown:
