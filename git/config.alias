@@ -103,12 +103,12 @@
 	    echo remotes/$remote/$remote_name'"
 
 	# Show commits that would be pushed from the current branch
-	out = !git log $(git remote-ref)..
-	outgoing = !git log $(git remote-ref)..
+	out = !git lg $(git remote-ref)..
+	outgoing = !git lg $(git remote-ref)..
 
 	# Show commits that would be merged into the current branch
-	in = !git log ..$(git remote-ref)
-	incoming = !git log ..$(git remote-ref)
+	in = !git lg ..$(git remote-ref)
+	incoming = !git lg ..$(git remote-ref)
 
 	# Pull with rebase and autostash
 	purr = "!f() { git mstash purring; ret=$?; git pull --rebase; if [ $ret -eq 0 ]; then git stash pop; fi }; f"
