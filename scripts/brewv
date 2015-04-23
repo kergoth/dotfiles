@@ -35,13 +35,20 @@ if [ $# -eq 0 ]; then
 fi
 brew install "$@"
 
-mkdir -p "$XDG_DATA_HOME/../bin"
-for script in "$brewenv_dir/bin/"*; do
-    filename="${script##*/}"
-    case "$filename" in
-        brew):
-            continue
-            ;;
-    esac
-    ln -sfv "$script" "$XDG_DATA_HOME/../bin/$filename"
+dest="$XDG_DATA_HOME/../bin"
+mkdir -p "$dest"
+
+for brew; do
+    for bin in "$brewenv_dir/opt/$brew/bin/"*; do
+        if [ -e "$bin" ]; then
+            filename="${bin##*/}"
+            rm -f "$dest/$filename"
+            cat >"$dest/$filename" <<END
+PATH="$brewenv_dir/bin:\$PATH"
+exec "$brewenv_dir/bin/$filename" "\$@"
+END
+            chmod u+x "$dest/$filename"
+            echo >&2 "Created wrapper script at $dest/$filename"
+        fi
+    done
 done
