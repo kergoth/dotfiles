@@ -22,11 +22,7 @@ else
     socket_dir="${XDG_RUNTIME_DIR:-${XDG_DATA_HOME}}/att-${HOST:-$(hostname -s)}"
 
     list_sessions () {
-        for i in $socket_dir/*.socket; do
-            if [ -e "$i" ]; then
-                echo "${i#$socket_dir/}" | sed 's,\.socket$,,'
-            fi
-        done | sort | {
+        ls -tu "$socket_dir/" | sed -n -e "s,\.socket$,,p" | {
             if [ -n "$ATT_SESSION" ]; then
                 sed "s#^$ATT_SESSION\$#$ATT_SESSION*#"
             else
