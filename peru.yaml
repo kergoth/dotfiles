@@ -40,6 +40,7 @@ imports:
     ssh-copy-rsub: scripts
     t: scripts
     vitag: scripts
+    wget-finder: scripts
 
     chneukirchen: scripts
     git-attic: scripts
@@ -257,6 +258,12 @@ git module appify:
     url: https://gist.github.com/674099.git
     executable: appify
     rev: 9e64331e348b20049975519b866148050db06da5
+
+git module wget-finder:
+    url: https://github.com/chilicuil/learn
+    export: sh/tools
+    pick: sh/tools/wget-finder
+    rev: ec21b30e506ddc0ddb5b30c9cd52bc791deb4dd8
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
