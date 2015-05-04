@@ -102,7 +102,7 @@ git module zsh-git-escape-magic:
 
 git module autoenv:
     url: https://github.com/kennethreitz/autoenv
-    rev: f8346c1f76c02323189c9f46d85965a2d4a1a3cc
+    rev: c4bc3f5093f73e5c23563aa5cd66307e2804f35d
 
 git module zsh-command-not-found:
     url: https://github.com/Tarrasch/zsh-command-not-found
