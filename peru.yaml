@@ -305,7 +305,7 @@ git module gibo:
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
     pick: ssh-copy-rsub
-    rev: a19d33b41d656e802bc0e6c7587fb80cdaa7cc86
+    rev: fb9a4cda4b46875e12131f9c30ec847ec7201711
 
 git module pom:
     url: https://github.com/tobym/pom
