@@ -17,15 +17,27 @@ do
   source $file
 done
 
-# load "plugins"
+# Per zsh-history-substring-search's documentation, it needs to be loaded after
+# zsh-syntax-highlighting.
+source $ZSH/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
+
+# Load "plugins"
 for file in $ZSH/plugins/*/*.plugin.zsh $ZSH/plugins/*/activate.sh; do
-  source $file
+    case "$file" in
+        */syntax-highlighting/*)
+            continue
+            ;;
+        */history-substring-search/*)
+            continue
+            ;;
+    esac
+    source $file
 done
 
 # load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
-do
-  source $file
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
+    source $file
 done
 
 # initialize autocomplete here, otherwise functions won't be loaded
