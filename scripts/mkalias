@@ -3,11 +3,16 @@
 alias_snippet () {
     aliaspath="$(cd "$2" && pwd)"
     realpath="$(cd "$(dirname "$1")" && pwd)/${1##*/}"
-    if [ ! -d "$aliaspath" ] || \
-        [ "$(mdls -name kMDItemKind "$aliaspath"|sed 's,^[^=]*= ",,; s,"$,,')" != "Folder" ]; then
-        echo >&2 "Error: alias path must be a directory"
-        return 1
-    fi
+    eval "$(mdls -name kMDItemKind "$aliaspath" | sed 's, = ,=,; s,(null),"(null)",')"
+    case "$kMDItemKind" in
+        \(null\)|Folder)
+            # If null, spotlight likely hasn't updated its metadata, so skip it.
+            ;;
+        *)
+            echo >&2 "Error: alias path must be a directory"
+            return 1
+            ;;
+    esac
     printf 'tell application "Finder" to make new alias to POSIX file "%s" at POSIX file "%s"\n' "$realpath" "$aliaspath"
 }
 
