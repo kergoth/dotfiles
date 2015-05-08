@@ -206,7 +206,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 3a9b13c65421b9a365be12183b4d4b96cf6c7dd3
+    rev: 5d9d94f6997e38a0c04313cb0d748b1fb149f4cc
 
 # continuously updated session files
 git module vim-obsession:
