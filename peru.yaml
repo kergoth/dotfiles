@@ -54,6 +54,7 @@ imports:
     # Vim
     pathogen: vim/autoload
     Modeliner: vim/bundle/Modeliner
+    fugitive: vim/bundle/fugitive
     gundo: vim/bundle/gundo
     securemodelines: vim/bundle/securemodelines
     tabular: vim/bundle/tabular
@@ -142,6 +143,10 @@ git module securemodelines:
 git module tabular:
     url: https://github.com/godlygeek/tabular.git
     rev: 60f25648814f0695eeb6c1040d97adca93c4e0bb
+
+git module fugitive:
+    url: https://github.com/tpope/vim-fugitive.git
+    rev: 4cc201cbe3a0c3faa4cde1b82ba941d410e5e81c
 
 # go language support
 git module vim-golang:
