@@ -26,8 +26,12 @@
 	ignoreSubmodules = dirty
 
 [merge]
+	tool = fugitive
 	summary = true
 	conflictstyle = diff3
+
+[mergetool "fugitive"]
+	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
 
 [tar "tar.xz"]
 	command = xz -c
