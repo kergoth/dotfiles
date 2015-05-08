@@ -115,3 +115,46 @@ Check that --logfile works
   branch: foo
   commit: 1 unknown (clean)
   update: (current)
+
+Check the help
+  $ hg amend -h
+  hg amend [OPTION]... [FILE]...
+  
+  aliases: refresh
+  
+  combine a changeset with updates and replace it with a new one
+  
+      Commits a new changeset incorporating both the changes to the given files
+      and all the changes from the current parent changeset into the repository.
+  
+      See "hg commit" for details about committing changes.
+  
+      If you don't specify -m, the parent's message will be reused.
+  
+      Behind the scenes, Mercurial first commits the update as a regular child
+      of the current parent. Then it creates a new commit on the parent's
+      parents with the updated contents. Then it changes the working copy parent
+      to this new combined changeset. Finally, the old changeset and its update
+      are hidden from "hg log" (unless you use --hidden with log).
+  
+      Returns 0 on success, 1 if nothing changed.
+  
+  options ([+] can be repeated):
+  
+   -A --addremove           mark new/missing files as added/removed before
+                            committing
+   -e --edit                invoke editor on commit messages
+      --close-branch        mark a branch as closed, hiding it from the branch
+                            list
+   -s --secret              use the secret phase for committing
+   -I --include PATTERN [+] include names matching the given patterns
+   -X --exclude PATTERN [+] exclude names matching the given patterns
+   -m --message TEXT        use text as commit message
+   -l --logfile FILE        read commit message from file
+   -d --date DATE           record the specified date as commit date
+   -u --user USER           record the specified user as committer
+   -D --current-date        record the current date as commit date
+   -U --current-user        record the current user as committer
+   -i --interactive         use interactive mode
+  
+  (some details hidden, use --verbose to show complete help)

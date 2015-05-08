@@ -7,13 +7,13 @@ Uploaders:
  Pierre-Yves David <pierre-yves.david@logilab.fr>,
 Standards-Version: 3.9.3
 Build-Depends:
- mercurial (>= 3.2~),
+ mercurial (>= 3.4~),
  python,
  debhelper (>= 8),
  python-sphinx (>= 1.0.8),
  imagemagick,
  librsvg2-bin,
- curl,
+ wget,
 Python-Version: >= 2.6
 Homepage: https://bitbucket.org/marmoute/mutable-history
 
@@ -22,7 +22,7 @@ Architecture: all
 Depends:
  ${python:Depends},
  ${misc:Depends},
- mercurial (>= 3.2~),
+ mercurial (>= 3.3~),
 Description: evolve extension for Mercurial
  This package provides the experimental "evolve" extension for the Mercurial
  DVCS.

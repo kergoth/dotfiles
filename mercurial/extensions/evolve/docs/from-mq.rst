@@ -1,12 +1,12 @@
 .. Copyright 2011 Pierre-Yves David <pierre-yves.david@ens-lyon.org>
 ..                Logilab SA        <contact@logilab.fr>
 
--------------------------------------------
+-----------------------------------
 From MQ To Evolve, The Refugee Book
--------------------------------------------
+-----------------------------------
 
 Cheat sheet
--------------
+-----------
 
 ==============================  ============================================
 mq command                       new equivalent
@@ -28,10 +28,10 @@ qimport                         --
 
 
 Replacement details
----------------------
+-------------------
 
 hg qseries
-```````````
+``````````
 
 All your work in progress is now in real changesets all the time.
 
@@ -45,7 +45,7 @@ This will result in something like::
   wip = log -r 'not public()' --template='{rev}:{node|short} {desc|firstline}\n'
 
 hg qnew
-````````
+```````
 
 With evolve you handle standard changesets without an additional overlay.
 
@@ -66,7 +66,7 @@ consider updating your configuration:
   new-commit=secret
 
 hg qref
-````````
+```````
 
 A new command from evolution will allow you to rewrite the changeset you are
 currently on. Just call:
@@ -90,7 +90,7 @@ to edit the commit message in an editor.
 .. note: refresh is an alias for amend
 
 hg qref --exclude
-`````````````````````
+`````````````````
 
 To remove changes from your current commit use::
 
@@ -98,7 +98,7 @@ To remove changes from your current commit use::
 
 
 hg qpop
-`````````
+```````
 
 The following command emulates the behavior of hg qpop:
 
@@ -136,14 +136,14 @@ option of qpush do.
 
 
 hg qrm
-```````
+``````
 
 evolution introduce a new command to mark a changeset as "not wanted anymore".::
 
   $ hg prune <revset>
 
 hg qfold
-`````````
+````````
 
 
 ::
@@ -151,14 +151,14 @@ hg qfold
   $ hg fold first::last
 
 hg qdiff
-`````````
+````````
 
 ``pdiff`` is an alias for `hg diff -r .^` It works like qdiff, but outside MQ.
 
 
 
 hg qfinish and hg qimport
-````````````````````````````
+`````````````````````````
 
 These are not necessary anymore. If you want to control the
 mutability of changesets, see the phase feature.
@@ -166,7 +166,7 @@ mutability of changesets, see the phase feature.
 
 
 hg qcommit
-```````````````
+``````````
 
 If you really need to send patches through versioned mq patches, you should
 look at the qsync extension.

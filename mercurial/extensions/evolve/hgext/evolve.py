@@ -19,7 +19,7 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.1.3'
+__version__ = '5.1.4'
 testedwith = '3.3.3 3.4-rc'
 buglink = 'http://bz.selenic.com/'
 
@@ -27,8 +27,9 @@ import sys, os
 import random
 from StringIO import StringIO
 import struct
-import urllib
 import re
+import socket
+import errno
 sha1re = re.compile(r'\b[0-9a-f]{6,40}\b')
 
 import mercurial
@@ -45,7 +46,6 @@ except (ImportError, AttributeError):
     gboptslist = gboptsmap = None
 
 
-from mercurial import base85
 from mercurial import bookmarks
 from mercurial import cmdutil
 from mercurial import commands
@@ -61,7 +61,6 @@ from mercurial import merge
 from mercurial import node
 from mercurial import phases
 from mercurial import patch
-from mercurial import pushkey
 from mercurial import revset
 from mercurial import scmutil
 from mercurial import templatekw
@@ -71,7 +70,6 @@ from mercurial.node import nullid
 from mercurial import wireproto
 from mercurial import localrepo
 from mercurial.hgweb import hgweb_mod
-from mercurial import bundle2
 
 cmdtable = {}
 command = cmdutil.command(cmdtable)
@@ -87,7 +85,12 @@ elif gboptslist is not None:
 else:
     raise ImportError('evolve needs version %s or above' % min(testedwith.split()))
 
-
+aliases, entry = cmdutil.findcmd('commit', commands.table)
+hasinteractivemode = util.any(['interactive' in e for e in entry[1]])
+if hasinteractivemode:
+    interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
+else:
+    interactiveopt = []
 # This extension contains the following code
 #
 # - Extension Helper code
@@ -492,7 +495,7 @@ def revsetsuspended(repo, subset, x):
     """``suspended()``
     Obsolete changesets with non-obsolete descendants.
     """
-    args = revset.getargs(x, 0, 0, 'suspended takes no arguments')
+    revset.getargs(x, 0, 0, 'suspended takes no arguments')
     suspended = getrevs(repo, 'suspended')
     return [r for r in subset if r in suspended]
 
@@ -543,7 +546,6 @@ def obsoletekw(repo, ctx, templ, **args):
     """:obsolete: String. The obsolescence level of the node, could be
     ``stable``, ``unstable``, ``suspended`` or ``extinct``.
     """
-    rev = ctx.rev()
     if ctx.obsolete():
         if ctx.extinct():
             return 'extinct'
@@ -625,7 +627,6 @@ def push(orig, repo, *args, **opts):
             and ex.hint is None):
             ex.hint = hint
         raise
-    return result
 
 def summaryhook(ui, repo):
     def write(fmt, count):
@@ -980,11 +981,10 @@ def cmddebugrecordpruneparents(ui, repo):
                 rev = nm.get(mark[0])
                 if rev is not None:
                     ctx = unfi[rev]
-                    meta = obsolete.decodemeta(mark[3])
-                    for i, p in enumerate(ctx.parents(), 1):
-                        meta['p%i' % i] = p.hex()
+                    parents = tuple(p.node() for p in ctx.parents())
                     before = len(store._all)
-                    store.create(tr, mark[0], mark[1], mark[2], metadata=meta)
+                    store.create(tr, mark[0], mark[1], mark[2], marks[3],
+                                 parents=parents)
                     if len(store._all) - before:
                         ui.write('created new markers for %i\n' % rev)
             ui.progress(pgop, idx, total=pgtotal)
@@ -1259,8 +1259,6 @@ def _evolveany(ui, repo, tro, dryrunopt, confirmopt, progresscb):
     elif 'bumped' in troubles:
         return _solvebumped(ui, repo, tro, dryrunopt, confirmopt, progresscb)
     elif 'divergent' in troubles:
-        repo = repo.unfiltered()
-        tro = repo[tro.rev()]
         return _solvedivergent(ui, repo, tro, dryrunopt, confirmopt,
                                progresscb)
     else:
@@ -1831,7 +1829,7 @@ def cmdprune(ui, repo, *revs, **opts):
     ('', 'close-branch', None,
      _('mark a branch as closed, hiding it from the branch list')),
     ('s', 'secret', None, _('use the secret phase for committing')),
-    ] + walkopts + commitopts + commitopts2 + commitopts3,
+    ] + walkopts + commitopts + commitopts2 + commitopts3 + interactiveopt,
     _('[OPTION]... [FILE]...'))
 def amend(ui, repo, *pats, **opts):
     """combine a changeset with updates and replace it with a new one
@@ -2063,10 +2061,7 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
                 repo._bookmarks.write()
         return result
     finally:
-        if lock is not None:
-            lock.release()
-        if wlock is not None:
-            wlock.release()
+        lockmod.release(lock, wlock)
 
 @command('^touch',
     [('r', 'rev', [], 'revision to update'),
@@ -2090,40 +2085,37 @@ def touch(ui, repo, *revs, **opts):
         return 1
     if not duplicate and repo.revs('public() and %ld', revs):
         raise util.Abort("can't touch public revision")
-    wlock = lock = None
+    wlock = lock = tr = None
     try:
         wlock = repo.wlock()
         lock = repo.lock()
         tr = repo.transaction('touch')
         revs.sort() # ensure parent are run first
         newmapping = {}
-        try:
-            for r in revs:
-                ctx = repo[r]
-                extra = ctx.extra().copy()
-                extra['__touch-noise__'] = random.randint(0, 0xffffffff)
-                # search for touched parent
-                p1 = ctx.p1().node()
-                p2 = ctx.p2().node()
-                p1 = newmapping.get(p1, p1)
-                p2 = newmapping.get(p2, p2)
-                new, unusedvariable = rewrite(repo, ctx, [], ctx,
-                                              [p1, p2],
-                                              commitopts={'extra': extra})
-                # store touched version to help potential children
-                newmapping[ctx.node()] = new
-                if not duplicate:
-                    obsolete.createmarkers(repo, [(ctx, (repo[new],))])
-                phases.retractboundary(repo, tr, ctx.phase(), [new])
-                if ctx in repo[None].parents():
-                    repo.dirstate.beginparentchange()
-                    repo.dirstate.setparents(new, node.nullid)
-                    repo.dirstate.endparentchange()
-            tr.close()
-        finally:
-            tr.release()
+        for r in revs:
+            ctx = repo[r]
+            extra = ctx.extra().copy()
+            extra['__touch-noise__'] = random.randint(0, 0xffffffff)
+            # search for touched parent
+            p1 = ctx.p1().node()
+            p2 = ctx.p2().node()
+            p1 = newmapping.get(p1, p1)
+            p2 = newmapping.get(p2, p2)
+            new, unusedvariable = rewrite(repo, ctx, [], ctx,
+                                          [p1, p2],
+                                          commitopts={'extra': extra})
+            # store touched version to help potential children
+            newmapping[ctx.node()] = new
+            if not duplicate:
+                obsolete.createmarkers(repo, [(ctx, (repo[new],))])
+            phases.retractboundary(repo, tr, ctx.phase(), [new])
+            if ctx in repo[None].parents():
+                repo.dirstate.beginparentchange()
+                repo.dirstate.setparents(new, node.nullid)
+                repo.dirstate.endparentchange()
+        tr.close()
     finally:
-        lockmod.release(lock, wlock)
+        lockmod.release(tr, lock, wlock)
 
 @command('^fold|squash',
     [('r', 'rev', [], _("revision to fold")),
@@ -2498,9 +2490,7 @@ def _pushobsolete(orig, pushop):
     pushop.ui.debug('try to push obsolete markers to remote\n')
     repo = pushop.repo
     remote = pushop.remote
-    unfi = repo.unfiltered()
-    cl = unfi.changelog
-    if (obsolete._enabled and repo.obsstore and
+    if (obsolete._enabled  and repo.obsstore and
         'obsolete' in remote.listkeys('namespaces')):
         markers = pushop.outobsmarkers
         if not markers:
@@ -2578,18 +2568,16 @@ def local_pushobsmarker_capabilities(orig, repo, caps):
 @eh.addattr(localrepo.localpeer, 'evoext_pushobsmarkers_0')
 def local_pushobsmarkers(peer, obsfile):
     data = obsfile.read()
-    lock = peer._repo.lock()
+    tr = lock = None
     try:
+        lock = peer._repo.lock()
         tr = peer._repo.transaction('pushkey: obsolete markers')
-        try:
-            new = peer._repo.obsstore.mergemarkers(tr, data)
-            if new is not None:
-                obsexcmsg(peer._repo.ui, "%i obsolescence markers added\n" % new, True)
-            tr.close()
-        finally:
-            tr.release()
+        new = peer._repo.obsstore.mergemarkers(tr, data)
+        if new is not None:
+            obsexcmsg(peer._repo.ui, "%i obsolescence markers added\n" % new, True)
+        tr.close()
     finally:
-        lock.release()
+        lockmod.release(tr, lock)
     peer._repo.hook('evolve_pushobsmarkers')
 
 def srv_pushobsmarkers(repo, proto):
@@ -2599,18 +2587,16 @@ def srv_pushobsmarkers(repo, proto):
     proto.getfile(fp)
     data = fp.getvalue()
     fp.close()
-    lock = repo.lock()
+    tr = lock = None
     try:
+        lock = repo.lock()
         tr = repo.transaction('pushkey: obsolete markers')
-        try:
-            new = repo.obsstore.mergemarkers(tr, data)
-            if new is not None:
-                obsexcmsg(repo.ui, "%i obsolescence markers added\n" % new, True)
-            tr.close()
-        finally:
-            tr.release()
+        new = repo.obsstore.mergemarkers(tr, data)
+        if new is not None:
+            obsexcmsg(repo.ui, "%i obsolescence markers added\n" % new, True)
+        tr.close()
     finally:
-        lock.release()
+        lockmod.release(tr, lock)
     repo.hook('evolve_pushobsmarkers')
     return wireproto.pushres(0)
 
@@ -2620,7 +2606,6 @@ def _buildpullobsmarkersboundaries(pullop):
 
     Its a separed functio to play around with strategy for that."""
     repo = pullop.repo
-    cl = pullop.repo.changelog
     remote = pullop.remote
     unfi = repo.unfiltered()
     revs = unfi.revs('::(%ln - null)', pullop.common)
@@ -2657,7 +2642,7 @@ if getattr(exchange, '_getbundleobsmarkerpart', None) is not None:
                 heads = repo.heads()
             obscommon = kwargs.get('evo_obscommon', ())
             assert obscommon
-            obsset = repo.set('::%ln - ::%ln', heads, obscommon)
+            obsset = repo.unfiltered().set('::%ln - ::%ln', heads, obscommon)
             subset = [c.node() for c in obsset]
             markers = repo.obsstore.relevantmarkers(subset)
             exchange.buildobsmarkerspart(bundler, markers)
@@ -2836,7 +2821,6 @@ def debugobsrelsethashtree(ui, repo, v0=False, v1=False):
     else:
         treefunc = _obsrelsethashtreefm1
 
-    treefunc = _obsrelsethashtree
     for chg, obs in treefunc(repo):
         ui.status('%s %s\n' % (node.hex(chg), node.hex(obs)))
 

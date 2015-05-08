@@ -9,7 +9,7 @@ For client side usages it is recommended to use the evolve extension for
 improved user interface.'''
 
 testedwith = '3.3.3 3.4-rc'
-buglink = 'https://bitbucket.org/marmoute/mutable-history/issues'
+buglink = 'http://bz.selenic.com/'
 
 import mercurial.obsolete
 mercurial.obsolete._enabled = True
@@ -286,7 +286,6 @@ def extsetup(ui):
     wireproto.commands['evoext_pushobsmarkers_0'] = (srv_pushobsmarkers, '')
     wireproto.commands['evoext_pullobsmarkers_0'] = (srv_pullobsmarkers, '*')
     # wrap module content
-    extensions.wrapfunction(exchange, '_pullbundle2extraprepare', _getbundleobsmarkerpart)
     origfunc = exchange.getbundle2partsmapping['obsmarkers']
     def newfunc(*args, **kwargs):
         return _getbundleobsmarkerpart(origfunc, *args, **kwargs)

@@ -6,7 +6,7 @@ Good practice for (early) users of evolve
 -----------------------------------------
 
 Avoid unstability
---------------------------------
+-----------------
 
 The less unstability you have the less you need to resolve.
 
@@ -14,7 +14,7 @@ Evolve is not yet able to detect and solve every situation. And your mind is
 not ready neither.
 
 Branch as much as possible
---------------------------------
+--------------------------
 
 This is not MQ; you are not constrained to linear history.
 
@@ -22,7 +22,7 @@ Making a branch per independent branch will help you avoid unstability
 and conflict.
 
 Rewrite your changes only
-------------------------------------------------
+-------------------------
 
 There is no descent conflict detection and handling right now.
 Rewriting other people's changesets guarantees that you will get
@@ -40,7 +40,7 @@ about, prefer not altering them to risking a conflict by stabilizing them.
 
 
 Do not get too confident
----------------------------
+------------------------
 
 This is an experimental extension and a complex concept. This is beautiful,
 powerful and robust on paper, but the tool and your mind may not be prepared for

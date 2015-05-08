@@ -426,7 +426,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 792998917ece57f303faefec01ad5b1fafb9036f
+    rev: 344774ef5a05406c8c79cb36bf13100acb18e5d8
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit

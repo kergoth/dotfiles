@@ -24,7 +24,7 @@ those concepts will make you an informed and empowered user of
           isn't quite right yet, and the diagrams are missing for
           malformatted.)
 
-This document follows standard set theory notation:
+This document follows standard set theory notation::
 
   x ∈ A: x is a member of A
 
@@ -133,7 +133,7 @@ successors are both called *divergent* (unless one of them is in
 public phase; only mutable changesets are divergent).
 
 The collective term for unstable, bumped, and divergent changeset is
-*troubled*:
+*troubled*::
 
   troubled = unstable ∪ bumped ∪ divergent
 
@@ -155,7 +155,7 @@ Mercurial and usually not visible through the UI. (As of Mercurial
 changesets; these are bugs and will be fixed in due course.)
 
 All hidden changesets are obsolete, and all obsolete changesets are
-part of your repository. Mathematically speaking:
+part of your repository. Mathematically speaking::
 
   repo ⊇ obsolete ⊇ hidden
 
@@ -177,7 +177,7 @@ Visually:
 Why is this changeset visible?
 ------------------------------
 
-Any changeset which is not hidden is *visible*. That is,
+Any changeset which is not hidden is *visible*. That is, ::
 
   visible = repo ∖ hidden
 
@@ -185,7 +185,7 @@ Any changeset which is not hidden is *visible*. That is,
 changesets that are in *repo* but not in *hidden*.)
 
 After amending or pruning a changeset, you might expect it to be
-hidden. It doesn't always work out that way. The precise rules are:
+hidden. It doesn't always work out that way. The precise rules are::
 
   hideable = obsolete
   blockers = bookmarks ∪ parents(workingcopy) ∪ localtags
@@ -193,7 +193,7 @@ hidden. It doesn't always work out that way. The precise rules are:
 
 This will probably be clearer with a worked example. First, here's a
 repository with some obsolete changesets, some troubled changesets,
-one bookmark, a working copy, and some hidden changesets:
+one bookmark, a working copy, and some hidden changesets::
 
         x-x
        /
@@ -202,7 +202,7 @@ one bookmark, a working copy, and some hidden changesets:
       x-x-o
 
 Here's the computation required to determine which changesets are
-hidden:
+hidden::
 
   repo = { 0, 1, 2, 3, 4, 5, 6, 7, 8 }
 

@@ -1,19 +1,19 @@
 .. Copyright 2011 Pierre-Yves David <pierre-yves.david@ens-lyon.org>
 ..                Logilab SA        <contact@logilab.fr>
 
----------------------------------------------------------------------
+-------------
 Evolve How To
----------------------------------------------------------------------
+-------------
 
 
 
 Add a changeset: ``commit``
-------------------------------------------------------------
+---------------------------
 
 Just use commit as usual. New changesets will be in the `draft` phase.
 
 Rewrite a changeset: ``commit --amend``
-------------------------------------------------------------
+---------------------------------------
 
 It writes a new changeset combining working-directory parent changes and parent.
 It will work on any `draft` or `secret` changeset. It will not work on `public`
@@ -36,7 +36,7 @@ none are public.
 
 
 Move a changeset: ``grab``
-------------------------------------------------------------
+--------------------------
 
 You can use ``hg grab <rev>`` to move a rev at your current location, making the
 old version obsolete.
@@ -45,7 +45,7 @@ old version obsolete.
 
 
 Delete a changeset: ``prune``
-------------------------------------------------------------
+-----------------------------
 
 A new ``prune`` command allows removing a changeset.
 
@@ -53,7 +53,7 @@ Just use ``hg prune <some-rev>``.
 
 
 Moving within the history: ``gdown`` and ``gup``
-------------------------------------------------------------
+------------------------------------------------
 
 While working on mutable part of the history you often need to move between
 mutable commits.
@@ -67,7 +67,7 @@ Those command have ``previous`` and ``next`` alias.
           feeling back.
 
 Collapse changesets: ``fold``
-------------------------------------------------------------
+-----------------------------
 
 You can use ``hg fold`` to collapse multiple changesets in a single one.
 
@@ -78,7 +78,7 @@ It takes two forms:
 ``hg fold -r <revset>`` fold everything changeset matching the revset together.
 
 Getting changes out of a commit
-------------------------------------------------------------
+-------------------------------
 
 The ``hg uncommit`` command lets you rewrite the parent commit without
 selected changed files. Target files content is not altered and
@@ -94,7 +94,7 @@ appears again as "modified"::
   M celestine
 
 Split a changeset
------------------------
+-----------------
 
 To split on file boundaries, just use ``uncommit`` command.
 
@@ -120,7 +120,7 @@ For more complexe scenario we recommend the use of the histedit_ extension.
 
 
 Update my current work in progress after a pull
-----------------------------------------------
+-----------------------------------------------
 
 Whenever you are working on some changesets, it is more likely that a pull
 will, eventually, import new changesets in your tree.
@@ -133,7 +133,7 @@ Doing so is only a matter of rebasing.
 
 
 Move multiple changesets: ``rebase``
-------------------------------------------------------------
+------------------------------------
 
 You can still use rebase to move a whole segment of the changeset graph together.
 
@@ -141,7 +141,7 @@ You can still use rebase to move a whole segment of the changeset graph together
              divergent versions of the changesets.
 
 Resolve history troubles: ``evolve``
-------------------------------------------------------------
+------------------------------------
 
 When you rewrite (amend) a changeset with children without rewriting
 those children you create *unstable* changesets and *suspended
@@ -155,7 +155,7 @@ You can also use evolve to solve `bumped` and `divergent` changeset/
 
 
 Fix my history afterward: ``prune -n``
-------------------------------------------------------------
+--------------------------------------
 
 Sometimes you need to create an obsolete marker by hand. This may happen when
 upstream has applied some of your patches for example.
@@ -164,7 +164,7 @@ you can use ``hg prune <old-changeset> --succ <new-changeset>`` to add obsolete
 marker.
 
 View diff from the last amend
-------------------------------------------------------------
+-----------------------------
 
 An ``odiff`` alias have been added by ``enable.sh``
 
@@ -173,7 +173,7 @@ An ``odiff`` alias have been added by ``enable.sh``
     odiff = diff --rev 'limit(precursors(.),1)' --rev .
 
 View obsolete markers
-------------------------------------------------------------
+---------------------
 
 hgview_ is the only viewer that currently supports this feature. You
 need version 1.6.2
@@ -193,10 +193,10 @@ You can also use a debug command
 
 
 Important Note
-=====================================================================
+==============
 
 View change to your file
-------------------------------------------------------------
+------------------------
 
 Extinct changesets are hidden using the *hidden* feature of mercurial.
 

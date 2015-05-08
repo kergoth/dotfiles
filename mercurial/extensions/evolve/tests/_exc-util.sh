@@ -14,6 +14,7 @@ publish=False
 [experimental]
 verbose-obsolescence-exchange=false
 bundle2-exp=true
+bundle2-output-capture=True
 
 [alias]
 debugobsolete=debugobsolete -d '0 0'

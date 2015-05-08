@@ -2,9 +2,6 @@
   $ cat >> $HGRCPATH <<EOF
   > [defaults]
   > amend=-d "0 0"
-  > [experimental]
-  > obsmarkers-exchange-debug=true
-  > bundle2-exp=true
   > [ui]
   > ssh=python "$TESTDIR/dummyssh"
   > [phases]
@@ -53,6 +50,7 @@ Smoke testing
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 2 files
+  pull obsolescence markers
   (run 'hg update' to get a working copy)
   $ hg push -R ../other
   pushing to ssh://user@dummy/server
@@ -72,8 +70,8 @@ Push
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 139 bytes received
-  remote: 2 new obsolescence markers
+  pushing 2 obsolescence markers (* bytes) (glob)
+  remote: 2 obsolescence markers added
   $ hg push
   pushing to ssh://user@dummy/server
   searching for changes
@@ -90,63 +88,13 @@ Pull
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
-  obsmarker-exchange: 139 bytes received
-  2 new obsolescence markers
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  pull obsolescence markers
+  2 obsolescence markers added
+  (run 'hg heads' to see heads)
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
   searching for changes
   no changes found
 
-Test some markers discovery
-===========================
-
-  $ echo c > C
-  $ hg add C
-  $ hg commit -m C
-  $ echo c >> C
-  $ hg amend
-  $ hg push
-  pushing to ssh://user@dummy/server
-  searching for changes
-  remote: adding changesets
-  remote: adding manifests
-  remote: adding file changes
-  remote: added 1 changesets with 1 changes to 1 files
-  remote: obsmarker-exchange: 139 bytes received
-  remote: 2 new obsolescence markers
-  $ hg -R ../other pull
-  pulling from ssh://user@dummy/server
-  searching for changes
-  adding changesets
-  adding manifests
-  adding file changes
-  added 1 changesets with 1 changes to 1 files
-  obsmarker-exchange: 139 bytes received
-  2 new obsolescence markers
-  (run 'hg update' to get a working copy)
-
-some common hidden
-
-  $ hg touch .
-  $ hg push
-  pushing to ssh://user@dummy/server
-  searching for changes
-  remote: adding changesets
-  remote: adding manifests
-  remote: adding file changes
-  remote: added 1 changesets with 0 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 208 bytes received
-  remote: 1 new obsolescence markers
-  $ hg -R ../other pull
-  pulling from ssh://user@dummy/server
-  searching for changes
-  adding changesets
-  adding manifests
-  adding file changes
-  added 1 changesets with 0 changes to 3 files (+1 heads)
-  obsmarker-exchange: 208 bytes received
-  1 new obsolescence markers
-  (run 'hg heads' to see heads, 'hg merge' to merge)
-
   $ cd ..
+

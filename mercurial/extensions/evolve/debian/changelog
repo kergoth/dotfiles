@@ -1,3 +1,9 @@
+mercurial-evolve (5.1.3-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Julien Cristau <julien.cristau@logilab.fr>  Mon, 20 Apr 2015 14:44:45 +0200
+
 mercurial-evolve (5.0.2-1) unstable; urgency=medium
 
   * new upstream release
@@ -9,6 +15,12 @@ mercurial-evolve (5.0.1-1) unstable; urgency=medium
   * New upstream release.
 
  -- Faheem Mitha <faheem@faheem.info>  Wed, 12 Nov 2014 11:24:28 +0530
+
+mercurial-evolve (5.0.0+-1) UNRELEASED; urgency=low
+
+  * new upstream snapshot
+
+ -- Julien Cristau <julien.cristau@logilab.fr>  Mon, 17 Nov 2014 15:44:32 +0100
 
 mercurial-evolve (4.1.0-1) unstable; urgency=medium
 

@@ -102,6 +102,17 @@ test kill with dirty changes
   working directory now at 7c3bad9141dc
   $ hg st
   A g
+
+Smoketest debugobsrelsethashtree:
+
+  $ hg debugobsrelsethashtree
+  1f0dee641bb7258c56bd60e93edfa2405381c41e 0000000000000000000000000000000000000000
+  7c3bad9141dcb46ff89abf5f61856facd56e476c * (glob)
+  4538525df7e2b9f09423636c61ef63a4cb872a2d * (glob)
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 * (glob)
+  fbb94e3a0ecf6d20c2cc31152ef162ce45af982f * (glob)
+  e44648563c73f75950076031c6fdf06629de95f1 * (glob)
+
   $ cd ..
 
 ##########################

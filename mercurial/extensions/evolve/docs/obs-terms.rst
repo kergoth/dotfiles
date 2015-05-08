@@ -1,12 +1,12 @@
 .. Copyright 2011 Pierre-Yves David <pierre-yves.david@ens-lyon.org>
 ..                Logilab SA        <contact@logilab.fr>
 
------------------------------------------------------------
+-----------------------------------
 Terminology of the obsolete concept
------------------------------------------------------------
+-----------------------------------
 
 Obsolete markers
----------------------------------
+----------------
 
 The mutable concept is based on **obsolete markers**. Creating an obsolete
 marker registers a relation between an old obsoleted changeset and its newer
@@ -54,7 +54,7 @@ Changeset in *any successors* which are not **obsolete** are called
           better distinction between *direct successors* and **any successors**.
 
 Possible changesets "type"
----------------------------------
+--------------------------
 
 The following table describes names and behaviors of changesets affected by
 obsolete markers. The left column describes generic categories and the right
@@ -182,7 +182,7 @@ columns are about sub-categories.
 
 
 Command and operation name
----------------------------------
+--------------------------
 
 
 Existing terms
@@ -196,7 +196,7 @@ Mercurial core already uses the following terms:
 
 
 Uncommit
-`````````````
+````````
 
 Remove files from a commit (and leave them as dirty in the working directory)
 
@@ -204,14 +204,14 @@ The *evolve* extension have an `uncommit` command that aims to replace most
 `rollback` usage.
 
 Fold
-``````````
+````
 
 Collapse multiple changesets into a unique one.
 
 The *evolve* extension will have a `fold` command.
 
 Prune
-``````````
+`````
 
 Make a changeset obsolete without successors.
 
@@ -223,7 +223,7 @@ Alternative names:
 - obsolete: too vague, too long and too generic.
 
 evolve
-```````````````
+``````
 
 Automatically resolve *troublesome* changesets
 (*unstable*, *bumped* and *divergent*)

@@ -4,6 +4,14 @@
 Changeset Evolution with Mercurial
 ==================================
 
+.. toctree::
+   :maxdepth: 2
+
+   user-guide
+   sharing
+   concepts
+   from-mq
+
 `evolve`_ is an experimental Mercurial extension for safe mutable history.
 
 .. _`evolve`: http://mercurial.selenic.com/wiki/EvolveExtension
@@ -134,6 +142,6 @@ Next steps:
   * If you're coming from MQ, see the `MQ migration guide`_ (incomplete).
 
 .. _`user guide`: user-guide.html
-.. _`concepts`: concepts.html
 .. _`sharing mutable history`: sharing.html
+.. _`concepts`: concepts.html
 .. _`MQ migration guide`: from-mq.html
