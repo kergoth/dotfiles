@@ -283,9 +283,6 @@ hi def link gitcommitOverflow Error
 hi def link vimModeline Special
 2match vimModeline /vim:\s*set[^:]\{-1,\}:/
 
-" Highlight VCS conflict markers
-3match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-
 " Highlight the textwidth column
 if exists('&colorcolumn')
   augroup KergothColorColumn
