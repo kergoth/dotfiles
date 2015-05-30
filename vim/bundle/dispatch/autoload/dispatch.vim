@@ -152,12 +152,15 @@ function! dispatch#prepare_start(request, ...) abort
     let exec .= 'sleep 1; '
   endif
   let exec .= a:0 ? a:1 : a:request.expanded
+  let pause = "(printf '\e[1m--- Press ENTER to continue ---\e[0m\\n' $?; exec head -1)"
+  if a:0 < 2 || a:2 =~# 'always\|error\|[1-9]'
+    let exec .= "; test $? = 0 -o $? = 130 || " . pause
+  endif
   let callback = dispatch#callback(a:request)
-  let after = 'rm -f ' . a:request.file . '.pid; ' .
-        \ 'touch ' . a:request.file . '.complete' .
+  let after = 'rm -f ' . a:request.file . '.pid' .
         \ (empty(callback) ? '' : '; ' . callback)
   if &shellpipe =~# '2>&1'
-    return 'trap ' . shellescape(after) . ' EXIT INT TERM; ' . exec
+    return 'trap : INT; trap ' . shellescape(after) . ' EXIT; ' . exec
   else
     " csh
     return exec . '; ' . after
@@ -165,8 +168,9 @@ function! dispatch#prepare_start(request, ...) abort
 endfunction
 
 function! dispatch#prepare_make(request, ...) abort
-  let exec = a:0 ? a:1 : (a:request.expanded . dispatch#shellpipe(a:request.file))
-  return dispatch#prepare_start(a:request, exec, 1)
+  let exec = a:0 ? a:1 : ('(' . a:request.expanded . '; echo $? > ' .
+        \ a:request.file . '.complete)' . dispatch#shellpipe(a:request.file))
+  return dispatch#prepare_start(a:request, exec, 'never')
 endfunction
 
 function! dispatch#set_title(request) abort
@@ -599,7 +603,13 @@ function! dispatch#compile_command(bang, args, count) abort
     if !s:dispatch(request)
       let after = 'call dispatch#complete('.request.id.')'
       redraw!
-      execute 'silent !'.request.command dispatch#shellpipe(request.file)
+      let sp = dispatch#shellpipe(request.file)
+      let dest = request.file . '.complete'
+      if &shellxquote ==# '"'
+        silent execute '!' . request.command sp '& echo \%ERRORLEVEL\% >' dest
+      else
+        silent execute '!(' . request.command . '; echo $? > ' . dest . ')' sp
+      endif
       redraw!
     endif
   finally
@@ -773,7 +783,18 @@ function! dispatch#complete(file) abort
   if !dispatch#completed(a:file)
     let request = s:request(a:file)
     let request.completed = 1
-    echo 'Finished:' request.command
+    try
+      let status = readfile(request.file . '.complete', 1)[0]
+    catch
+      let status = -1
+    endtry
+    if status > 0
+      echo 'Failed:' request.command
+    elseif status == 0
+      echo 'Succeeded:' request.command
+    else
+      echo 'Finished:' request.command
+    endif
     if !request.background
       call s:cgetfile(request, 0, 0)
       redraw
