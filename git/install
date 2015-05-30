@@ -10,4 +10,10 @@ else
     git config -f config.local.$HOSTNAME --unset-all http.sslCAInfo
 fi
 
+case "$OSTYPE" in
+    darwin*)
+        git config -f config.local.$HOSTNAME --replace-all credential.helper osxkeychain
+        ;;
+esac
+
 # vim: set ft=sh sts=4 sw=4 et :
