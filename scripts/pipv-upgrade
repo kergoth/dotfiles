@@ -1,0 +1,17 @@
+#!/bin/sh
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+
+for env in "${WORKON_HOME}/"*/; do
+    env="${env%/}"
+    package="${env##*/}"
+    (
+        set -e
+        . "$env/bin/activate"
+        if pip freeze -l | grep -q "^$package=="; then
+            pip install -U pip "${env##*/}"
+        fi
+        #pip list -l -o --isolated --disable-pip-version-check | awk '{print $1}' | tr '\n' '\0' | xargs -0 pip install -U
+    ) || echo >&2 "Error upgrading for $env"
+done
