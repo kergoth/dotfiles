@@ -7,3 +7,5 @@ __pycache__
 /.sync
 # Synology NAS clutter
 @eaDir
+# peru
+/_override
