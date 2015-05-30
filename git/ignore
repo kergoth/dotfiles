@@ -28,3 +28,6 @@ Temporary Items
 *.bak
 *.orig
 *.rej
+
+# NFS
+.nfs*
