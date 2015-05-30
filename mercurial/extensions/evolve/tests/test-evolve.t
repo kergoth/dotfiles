@@ -879,7 +879,7 @@ Evolve disables active bookmarks.
   $ hg bookmark testbookmark
   $ ls .hg/bookmarks*
   .hg/bookmarks
-  .hg/bookmarks.current
+  .hg/bookmarks.* (glob)
   $ hg evolve
   move:[8] a2
   atop:[10] a1__

@@ -40,8 +40,9 @@ prune current and tip changeset
   $ hg prune --user blah --date '1979-12-15' .
   1 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  (leaving bookmark BABAR)
   working directory now at 47d2a3944de8
+  $ hg bookmark
+   * BABAR                     3:47d2a3944de8
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
 
@@ -50,6 +51,7 @@ prune leaving instability behind
   $ hg prune 1
   1 changesets pruned
   2 new unstable changesets
+  $ hg book -i BABAR
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
   7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'user': 'test'} (glob)
@@ -288,3 +290,45 @@ yoinked from test-mq-strip.t
           longer length:              1
           median length:              1
           mean length:                1
+
+  $ mkcommit rg
+  created new head
+  $ hg bookmark rg
+  $ hg up 10
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  (leaving bookmark rg)
+  $ hg bookmark r10
+  $ hg log -G
+  o  11:cd0038e05e1b[rg] (stable/draft) add rg
+  |
+  | @  10:ff43616e5d0f[B r10] (stable/draft) r10
+  |/
+  o  8:d62d843c9a01[] (stable/draft) r8
+  |
+  o  7:e7d9710d9fc6[] (stable/draft) r7
+  |
+  o    3:2b6d669947cd[] (stable/draft) r3
+  |\
+  | o  2:fa942426a6fd[] (stable/draft) r2
+  | |
+  o |  1:66f7d451a68b[] (stable/draft) r1
+  |/
+  o  0:1ea73414a91b[] (stable/draft) r0
+  
+  $ hg prune 11
+  1 changesets pruned
+  $ hg log -G
+  @  10:ff43616e5d0f[B r10] (stable/draft) r10
+  |
+  o  8:d62d843c9a01[rg] (stable/draft) r8
+  |
+  o  7:e7d9710d9fc6[] (stable/draft) r7
+  |
+  o    3:2b6d669947cd[] (stable/draft) r3
+  |\
+  | o  2:fa942426a6fd[] (stable/draft) r2
+  | |
+  o |  1:66f7d451a68b[] (stable/draft) r1
+  |/
+  o  0:1ea73414a91b[] (stable/draft) r0
+  

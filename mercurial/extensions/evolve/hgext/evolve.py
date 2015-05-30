@@ -86,7 +86,7 @@ else:
     raise ImportError('evolve needs version %s or above' % min(testedwith.split()))
 
 aliases, entry = cmdutil.findcmd('commit', commands.table)
-hasinteractivemode = util.any(['interactive' in e for e in entry[1]])
+hasinteractivemode = any(['interactive' in e for e in entry[1]])
 if hasinteractivemode:
     interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
 else:
@@ -806,10 +806,9 @@ def relocate(repo, orig, dest, keepbranch=False):
         try:
             if repo['.'].rev() != dest.rev():
                 merge.update(repo, dest, False, True, False)
-            if repo._bookmarkcurrent:
-                repo.ui.status(_("(leaving bookmark %s)\n") %
-                               repo._bookmarkcurrent)
-            bookmarks.unsetcurrent(repo)
+            if bmactive(repo):
+                repo.ui.status(_("(leaving bookmark %s)\n") % bmactive(repo))
+            bmdeactivate(repo)
             if keepbranch:
                 repo.dirstate.setbranch(orig.branch())
             r = merge.graft(repo, orig, orig.p1(), ['local', 'graft'])
@@ -864,12 +863,8 @@ def _bookmarksupdater(repo, oldid):
     """Return a callable update(newid) updating the current bookmark
     and bookmarks bound to oldid to newid.
     """
-    bm = bookmarks.readcurrent(repo)
     def updatebookmarks(newid):
         dirty = False
-        if bm:
-            repo._bookmarks[bm] = newid
-            dirty = True
         oldbookmarks = repo.nodebookmarks(oldid)
         if oldbookmarks:
             for b in oldbookmarks:
@@ -878,6 +873,19 @@ def _bookmarksupdater(repo, oldid):
         if dirty:
             repo._bookmarks.write()
     return updatebookmarks
+
+### bookmarks api compatibility layer ###
+def bmdeactivate(repo):
+    try:
+        return bookmarks.deactivate(repo)
+    except AttributeError:
+        return bookmarks.unsetcurrent(repo)
+
+def bmactive(repo):
+    try:
+        return repo._activebookmark
+    except AttributeError:
+        return repo._bookmarkcurrent
 
 ### new command
 #############################
@@ -1593,7 +1601,7 @@ shorttemplate = '[{rev}] {desc|firstline}\n'
 
 @command('^previous',
          [('B', 'move-bookmark', False,
-             _('Move current active bookmark after update'))],
+             _('Move active bookmark after update'))],
          '[-B]')
 def cmdprevious(ui, repo, **opts):
     """update to parent and display summary lines"""
@@ -1606,7 +1614,7 @@ def cmdprevious(ui, repo, **opts):
     displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
     if len(parents) == 1:
         p = parents[0]
-        bm = bookmarks.readcurrent(repo)
+        bm = bmactive(repo)
         shouldmove = opts.get('move_bookmark') and bm is not None
         ret = hg.update(repo, p.rev())
         if not ret:
@@ -1614,7 +1622,7 @@ def cmdprevious(ui, repo, **opts):
                 repo._bookmarks[bm] = p.node()
                 repo._bookmarks.write()
             else:
-                bookmarks.unsetcurrent(repo)
+                bmdeactivate(repo)
         displayer.show(p)
         return 0
     else:
@@ -1625,7 +1633,7 @@ def cmdprevious(ui, repo, **opts):
 
 @command('^next',
          [('B', 'move-bookmark', False,
-             _('Move current active bookmark after update'))],
+             _('Move active bookmark after update'))],
          '[-B]')
 def cmdnext(ui, repo, **opts):
     """update to child and display summary lines"""
@@ -1641,7 +1649,7 @@ def cmdnext(ui, repo, **opts):
         return 1
     if len(children) == 1:
         c = children[0]
-        bm = bookmarks.readcurrent(repo)
+        bm = bmactive(repo)
         shouldmove = opts.get('move_bookmark') and bm is not None
         ret = hg.update(repo, c.rev())
         if not ret:
@@ -1649,7 +1657,7 @@ def cmdnext(ui, repo, **opts):
                 repo._bookmarks[bm] = c.node()
                 repo._bookmarks.write()
             else:
-                bookmarks.unsetcurrent(repo)
+                bmdeactivate(repo)
         displayer.show(c)
         return 0
     else:
@@ -1800,8 +1808,20 @@ def cmdprune(ui, repo, *revs, **opts):
                 newnode = newnode.parents()[0]
 
         if newnode.node() != wdp.node():
+            bookactive = bmactive(repo)
+            # Active bookmark that we don't want to delete (with -B option)
+            # we deactivate and move it before the update and reactivate it
+            # after
+            movebookmark = bookactive and not bookmark
+            if movebookmark:
+                bookmarks.deactivate(repo)
+                repo._bookmarks[bookactive] = newnode.node()
+                repo._bookmarks.write()
             commands.update(ui, repo, newnode.rev())
             ui.status(_('working directory now at %s\n') % newnode)
+            if movebookmark:
+                bookmarks.activate(repo, bookactive)
+
         # update bookmarks
         if bookmark:
             _deletebookmark(ui, marks, bookmark)

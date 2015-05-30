@@ -58,6 +58,8 @@ Changelog
 - fix the `debugrecordpruneparents` utility
 - fix some possible crash during command abort (release non-existant transaction)
 - fix simple4server bug tracker URL
+- compatibility with bookmark API change in future Mercurial 3.5
+- prune no longer move the active bookmark for no reason (issue4559)
 
 5.1.4 -- 2015-04-23
 
