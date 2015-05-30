@@ -146,7 +146,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 4cc201cbe3a0c3faa4cde1b82ba941d410e5e81c
+    rev: 21b6dd7aeec3e4bc96d7b32cd594b7818c0c4082
 
 # go language support
 git module vim-golang:
