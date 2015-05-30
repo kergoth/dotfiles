@@ -211,7 +211,7 @@ git module vim-dispatch:
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession.git
-    rev: 4ab72e07ec3e25f33066217ddaf9863c7b597cf5
+    rev: e671dbb05b111167616b026b5366ff26a7ef1303
 
 # netrw improvements
 git module vim-vinegar:
