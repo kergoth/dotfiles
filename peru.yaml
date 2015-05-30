@@ -227,7 +227,7 @@ curl module repo:
 hg module smem:
     url: http://selenic.com/repo/smem
     pick: smem
-    rev: c2cab19139d08f73cff1ac505abf21d004f19284
+    rev: 2ab5040d56330b277adf5a0370c7432dbd9d743d
 
 hg module dtrx:
     url: http://brettcsmith.org/2007/dtrx/dtrx

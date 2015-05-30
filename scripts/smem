@@ -240,7 +240,7 @@ def pidtotals(pid):
     maps = pidmaps(pid)
     t = dict(size=0, rss=0, pss=0, shared_clean=0, shared_dirty=0,
              private_clean=0, private_dirty=0, referenced=0, swap=0)
-    for m in maps.iterkeys():
+    for m in maps:
         for k in t:
             t[k] += maps[m].get(k, 0)
 
@@ -307,7 +307,7 @@ def maptotals(pids):
         try:
             maps = pidmaps(pid)
             seen = {}
-            for m in maps.iterkeys():
+            for m in maps:
                 name = maps[m]['name']
                 if name not in totals:
                     t = dict(size=0, rss=0, pss=0, shared_clean=0,
@@ -383,7 +383,7 @@ def usertotals(pids):
         else:
             t = totals[user]
 
-        for m in maps.iterkeys():
+        for m in maps:
             for k in t:
                 t[k] += maps[m].get(k, 0)
 
@@ -464,12 +464,12 @@ def showsystem():
 
 def showfields(fields, f):
     if type(f) in (list, set):
-        print "unknown fields:", " ".join(f)
+        print("unknown fields: " + " ".join(f))
     else:
-        print "unknown field", f
-    print "known fields:"
-    for l in sorted(fields.keys()):
-        print "%-8s %s" % (l, fields[l][-1])
+        print("unknown field %s" % f)
+    print("known fields:")
+    for l in sorted(fields):
+        print("%-8s %s" % (l, fields[l][-1]))
 
 def autosize(columns, fields, rows):
     colsizes = {}
@@ -559,10 +559,10 @@ def showtable(rows, fields, columns, sort):
         return
 
     if not options.no_header:
-        print header
+        print(header)
 
     for k,r in l:
-        print format % tuple([f(v) for f,v in zip(formatter, r)])
+        print(format % tuple([f(v) for f,v in zip(formatter, r)]))
 
     if options.totals:
         # totals
@@ -574,8 +574,8 @@ def showtable(rows, fields, columns, sort):
             else:
                 t.append("")
 
-        print "-" * len(header)
-        print format % tuple([f(v) for f,v in zip(formatter, t)])
+        print("-" * len(header))
+        print(format % tuple([f(v) for f,v in zip(formatter, t)]))
 
 def showpie(l, sort):
     try:
@@ -725,7 +725,8 @@ try:
         showsystem()
     else:
         showpids()
-except IOError, e:
+except IOError:
+    _, e, _ = sys.exc_info()
     if e.errno == errno.EPIPE:
         pass
 except KeyboardInterrupt:
