@@ -338,7 +338,7 @@ git module dustin-bindir:
 git module git-wtf:
     url: https://github.com/michaelklishin/git-wtf
     pick: git-wtf
-    rev: 31ea599e36c3231ce9e264bd8f1f9936c32f4632
+    rev: 05c4296f6288792ba0f46128644eb3607fec9c59
 
 curl module git:
     url: https://www.kernel.org/pub/software/scm/git/git-2.2.0.tar.xz
