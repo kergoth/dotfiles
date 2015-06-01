@@ -26,12 +26,9 @@
 		".svn",
 		"CVS"
 	],
-	"font_face": "Terminus (TTF)",
-	"font_options":
-	[
-		"no_antialias"
-	],
-	"font_size": 16.0,
+	"font_face": "Input Mono Narrow",
+	"font_options": "lighter",
+	"font_size": 14.0,
 	"ignored_packages":
 	[
 		"Vintage"
