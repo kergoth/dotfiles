@@ -311,9 +311,21 @@ iabbrev teh the
 " Fix command typos
 nmap ; :
 
+" :help is the best interface, not F1
+nnoremap <F1> <nop>
+
+" ex mode is irritating
+nnoremap Q <nop>
+
 " Make zO recursively open whatever top level fold we're in, no matter where
 " the cursor happens to be.
 nnoremap zO zCzO
+
+" Maintain cursor position when joining lines
+nnoremap J mzJ`z
+
+" Allow selection past the end of the file for block selection
+set virtualedit=block
 
 " Easy buffer navigation
 noremap <C-h>  <C-w>h
