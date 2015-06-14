@@ -25,10 +25,6 @@ brew tap homebrew/binary
 brew tap homebrew/games
 brew tap homebrew/headonly
 brew tap homebrew/python
-brew tap caskroom/cask
-brew tap caskroom/fonts
-brew tap caskroom/unofficial
-brew tap caskroom/versions
 brew tap monochromegane/pt
 
 brew install fish
@@ -41,7 +37,11 @@ brew install wget
 brew install dylibbundler
 brew install tag
 
-brew install brew-cask
+# For brew-cask
+brew install caskroom/cask/brew-cask
+brew tap caskroom/fonts
+brew tap caskroom/unofficial
+brew tap caskroom/versions
 
 # For 'att'
 brew install dtach dvtm
