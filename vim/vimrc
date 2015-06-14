@@ -524,7 +524,8 @@ augroup vimrc_filetypes
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
   au FileType man set fdl=99 fdm=manual
   au FileType markdown set fdl=1
-  au Filetype taskpaper call taskpaper#fold_projects()
+  au FileType taskpaper call taskpaper#fold_projects()
+  au FileType gitcommit set fdm=syntax
 
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
