@@ -549,7 +549,7 @@ augroup vimrc_filetypes
 
 
   " Show diff when editing git commit messages
-  au FileType gitcommit DiffGitCached | wincmd p
+  au FileType gitcommit DiffGitCached
 
   " Run gofmt against go files on write
   au BufWritePost *.go :silent Fmt
