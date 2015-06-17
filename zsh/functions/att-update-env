@@ -1,13 +1,9 @@
 att-update-env () {
-    if [[ -z "$ATT_ENV" ]]; then
-        echo >&2 "Error: ATT_ENV not set, aborting"
-        return 1
-    fi
-    while IFS== read var value; do
+    att-env | while IFS== read var value; do
         if [[ $var = -* ]]; then
             unset ${var/-}
         else
             eval "export $var=\"$value\""
         fi
-    done <$ATT_ENV
+    done
 }

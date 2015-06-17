@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -z "$ATT_ENV" ]; then
+    echo >&2 "Error: ATT_ENV not set, aborting"
+    exit 1
+fi
+cat $ATT_ENV
