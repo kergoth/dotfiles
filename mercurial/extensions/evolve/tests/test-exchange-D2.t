@@ -37,9 +37,9 @@ Expected exchange:
   created new head
   $ hg debugobsolete `getid 'desc(A0)'` `getid 'desc(A1)'`
   $ hg prune --date '0 0' .
-  1 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at a9bdc8b26820
+  1 changesets pruned
   $ hg strip --hidden -q 'desc(A1)'
   $ hg log -G --hidden
   x  28b51eb45704 (draft): A0

@@ -32,6 +32,12 @@ Test evolve removing the changeset being evolved
   $ hg evolve -v --confirm
   move:[2] changea
   atop:[4] changea
+  perform evolve? [Ny] n
+  abort: evolve aborted by user
+  [255]
+  $ echo y | hg evolve -v --confirm --config ui.interactive=True
+  move:[2] changea
+  atop:[4] changea
   perform evolve? [Ny] y
   hg rebase -r cce2c55b8965 -d fb9d051ec0a4
   resolving manifests
@@ -79,7 +85,7 @@ Test evolve with conflict
   warning: conflicts during merge.
   merging a incomplete! (edit conflicts, then use 'hg resolve --mark')
   evolve failed!
-  fix conflict and run "hg evolve --continue"
+  fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
   abort: unresolved merge conflicts (see hg help resolve)
   [255]
   $ hg revert -r 'unstable()' a
@@ -152,14 +158,20 @@ Make precursors public
 
 Stabilize!
 
-  $ hg evolve --any --dry-run
+  $ hg evolve --any --dry-run --bumped
   recreate:[12] newer a
   atop:[8] newer a
   hg rebase --rev (73b15c7566e9|d5c7ef82d003) --dest 66719795a494; (re)
   hg update 1cf0aacfd363;
   hg revert --all --rev (73b15c7566e9|d5c7ef82d003); (re)
   hg commit --msg "bumped update to %s" (no-eol)
-  $ hg evolve --any --confirm
+  $ hg evolve --any --confirm --bumped
+  recreate:[12] newer a
+  atop:[8] newer a
+  perform evolve? [Ny] n
+  abort: evolve aborted by user
+  [255]
+  $ echo y | hg evolve --any --confirm --config ui.interactive=True --bumped
   recreate:[12] newer a
   atop:[8] newer a
   perform evolve? [Ny] y
@@ -212,6 +224,7 @@ Stabilize divergent changesets with same parent
   $ hg up --hidden 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ mv a a.old
   $ echo 'jungle' > a
   $ cat a.old >> a
@@ -236,7 +249,14 @@ Stabilize divergent changesets with same parent
 
 Stabilize it
 
-  $ hg evolve -qn --traceback --confirm
+  $ hg evolve -qn --confirm --divergent
+  merge:[19] More addition
+  with: [17] More addition
+  base: [15] More addition
+  perform evolve? [Ny] n
+  abort: evolve aborted by user
+  [255]
+  $ echo y | hg evolve -qn --confirm --config ui.interactive=True --divergent
   merge:[19] More addition
   with: [17] More addition
   base: [15] More addition
@@ -247,7 +267,7 @@ Stabilize it
   hg up -C 3932c176bbaa &&
   hg revert --all --rev tip &&
   hg commit -m "`hg log -r eacc9c8240fe --template={desc}`";
-  $ hg evolve -v
+  $ hg evolve -v --divergent
   merge:[19] More addition
   with: [17] More addition
   base: [15] More addition
@@ -316,21 +336,24 @@ Check conflict during divergence resolution
   $ hg up --hidden 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ echo 'gotta break' >> a
   $ hg amend
   2 new divergent changesets
+# reamend so that the case is not the first precursor.
+  $ hg amend -m "More addition (2)"
   $ hg phase 'divergent()'
   21: draft
-  23: draft
-  $ hg evolve -qn
-  hg update -c 36e188246d67 &&
+  24: draft
+  $ hg evolve -qn --divergent
+  hg update -c 0b336205a5d0 &&
   hg merge f344982e63c4 &&
-  hg commit -m "auto merge resolving conflict between 36e188246d67 and f344982e63c4"&&
+  hg commit -m "auto merge resolving conflict between 0b336205a5d0 and f344982e63c4"&&
   hg up -C 3932c176bbaa &&
   hg revert --all --rev tip &&
-  hg commit -m "`hg log -r 36e188246d67 --template={desc}`";
-  $ hg evolve
-  merge:[23] More addition
+  hg commit -m "`hg log -r 0b336205a5d0 --template={desc}`";
+  $ hg evolve --divergent
+  merge:[24] More addition (2)
   with: [21] More addition
   base: [15] More addition
   merging a

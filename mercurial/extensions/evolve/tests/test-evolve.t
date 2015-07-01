@@ -22,9 +22,64 @@
   >    hg ci -m "add $1"
   > }
 
+  $ mkstack() {
+  >    # Creates a stack of commit based on $1 with messages from $2, $3 ..
+  >    hg update $1 -C
+  >    shift
+  >    mkcommits $*
+  > }
+
   $ glog() {
   >   hg glog --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
   > }
+
+  $ shaof() {
+  >   hg log -T {node} -r "first(desc($1))"
+  > }
+
+  $ mkcommits() {
+  >   for i in $@; do mkcommit $i ; done
+  > }
+
+Test the evolution test topic is installed
+
+  $ hg help evolution
+  Safely Rewriting History
+  """"""""""""""""""""""""
+  
+      Obsolescence markers make it possible to mark changesets that have been
+      deleted or superset in a new version of the changeset.
+  
+      Unlike the previous way of handling such changes, by stripping the old
+      changesets from the repository, obsolescence markers can be propagated
+      between repositories. This allows for a safe and simple way of exchanging
+      mutable history and altering it after the fact. Changeset phases are
+      respected, such that only draft and secret changesets can be altered (see
+      "hg hg phases" for details).
+  
+      Obsolescence is tracked using "obsolete markers", a piece of metadata
+      tracking which changesets have been made obsolete, potential successors
+      for a given changeset, the moment the changeset was marked as obsolete,
+      and the user who performed the rewriting operation. The markers are stored
+      separately from standard changeset data can be exchanged without any of
+      the precursor changesets, preventing unnecessary exchange of obsolescence
+      data.
+  
+      The complete set of obsolescence markers describes a history of changeset
+      modifications that is orthogonal to the repository history of file
+      modifications. This changeset history allows for detection and automatic
+      resolution of edge cases arising from multiple users rewriting the same
+      part of history concurrently.
+  
+      Current feature status
+      ======================
+  
+      This feature is still in development.  If you see this help, you have
+      enable an extension that turned this feature on.
+  
+      Obsolescence markers will be exchanged between repositories that
+      explicitly assert support for the obsolescence feature (this can currently
+      only be done via an extension).
 
 various init
 
@@ -69,9 +124,9 @@ test simple kill
   $ hg id -n
   5
   $ hg kill .
-  1 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at fbb94e3a0ecf
+  1 changesets pruned
   $ hg qlog
   4 - fbb94e3a0ecf add e (draft)
   3 - 47d2a3944de8 add d (draft)
@@ -82,9 +137,9 @@ test simple kill
 test multiple kill
 
   $ hg kill 4 -r 3
-  2 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 7c3bad9141dc
+  2 changesets pruned
   $ hg qlog
   2 - 4538525df7e2 add c (draft)
   1 - 7c3bad9141dc add b (public)
@@ -97,9 +152,9 @@ test kill with dirty changes
   $ echo 4 > g
   $ hg add g
   $ hg kill .
-  1 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 7c3bad9141dc
+  1 changesets pruned
   $ hg st
   A g
 
@@ -317,7 +372,7 @@ all solving bumped troubled
   |
   o  0	: base - test
   
-  $ hg evolve --any --traceback
+  $ hg evolve --any --traceback --bumped
   recreate:[8] another feature that rox
   atop:[7] another feature (child of ba0ec09b1bab)
   computing new diff
@@ -866,9 +921,20 @@ Evolve from the middle of a stack pick the right changesets.
 
   $ hg up 8
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg log -G --template '{rev} [{branch}] {desc|firstline}\n'
+  o  10 [default] a1__
+  |
+  | o  9 [mybranch] a3
+  | |
+  | @  8 [mybranch] a2
+  | |
+  | x  7 [default] a1_
+  |/
+  o  0 [default] a0
+  
   $ hg evolve
-  nothing to evolve here
-  (2 troubled changesets, do you want --any ?)
+  nothing to evolve on current working copy parent
+  (2 other unstable in the repository, do you want --any or --rev)
   [2]
 
 
@@ -887,3 +953,448 @@ Evolve disables active bookmarks.
   working directory is now at f37ed7a60f43
   $ ls .hg/bookmarks*
   .hg/bookmarks
+
+Possibility to select what trouble to solve first, asking for bumped before
+divergent
+  $ hg up 10
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg revert -r 11 --all
+  reverting a
+  $ hg log -G --template '{rev} [{branch}] {desc|firstline}\n'
+  o  11 [mybranch] a2
+  |
+  @  10 [default] a1__
+  |
+  | o  9 [mybranch] a3
+  | |
+  | x  8 [mybranch] a2
+  | |
+  | x  7 [default] a1_
+  |/
+  o  0 [default] a0
+  
+  $ echo "hello world" > newfile
+  $ hg add newfile
+  $ hg commit -m "add new file bumped" -o 11
+  $ hg phase --public --hidden 11
+  1 new bumped changesets
+  $ hg glog
+  @  12	: add new file bumped - test
+  |
+  | o  11	: a2 - test
+  |/
+  o  10	testbookmark: a1__ - test
+  |
+  | o  9	: a3 - test
+  | |
+  | x  8	: a2 - test
+  | |
+  | x  7	: a1_ - test
+  |/
+  o  0	: a0 - test
+  
+
+Now we have a bumped and an unstable changeset, we solve the bumped first
+normally the unstable changeset would be solve first
+
+  $ hg glog
+  @  12	: add new file bumped - test
+  |
+  | o  11	: a2 - test
+  |/
+  o  10	testbookmark: a1__ - test
+  |
+  | o  9	: a3 - test
+  | |
+  | x  8	: a2 - test
+  | |
+  | x  7	: a1_ - test
+  |/
+  o  0	: a0 - test
+  
+  $ hg evolve -r 12 --bumped
+  recreate:[12] add new file bumped
+  atop:[11] a2
+  computing new diff
+  committed as d66b1e328488
+  working directory is now at d66b1e328488
+  $ hg evolve --any
+  move:[9] a3
+  atop:[13] bumped update to f37ed7a60f43:
+  working directory is now at 7d2ce5f38f9b
+Check that we can resolve troubles in a revset with more than one commit
+  $ hg up 14 -C
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ mkcommit gg
+  $ hg up 14 
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit gh
+  created new head
+  $ hg up 14 
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ printf "newline\nnewline\n" >> a
+  $ hg glog
+  o  16	: add gh - test
+  |
+  | o  15	: add gg - test
+  |/
+  @  14	: a3 - test
+  |
+  o  13	: bumped update to f37ed7a60f43: - test
+  |
+  o  11	: a2 - test
+  |
+  o  10	testbookmark: a1__ - test
+  |
+  o  0	: a0 - test
+  
+  $ hg amend
+  2 new unstable changesets
+  $ hg glog
+  @  18	: a3 - test
+  |
+  | o  16	: add gh - test
+  | |
+  | | o  15	: add gg - test
+  | |/
+  | x  14	: a3 - test
+  |/
+  o  13	: bumped update to f37ed7a60f43: - test
+  |
+  o  11	: a2 - test
+  |
+  o  10	testbookmark: a1__ - test
+  |
+  o  0	: a0 - test
+  
+
+Evolving an empty revset should do nothing
+  $ hg evolve --rev "16 and 15"
+  set of specified revisions is empty
+  [1]
+
+  $ hg evolve --rev "14::" --bumped
+  no bumped changesets in specified revisions
+  (do you want to use --unstable)
+  [2]
+  $ hg evolve --rev "14::" --unstable
+  move:[15] add gg
+  atop:[18] a3
+  move:[16] add gh
+  atop:[18] a3
+  working directory is now at db3d894869b0
+  $ hg glog
+  @  20	: add gh - test
+  |
+  | o  19	: add gg - test
+  |/
+  o  18	: a3 - test
+  |
+  o  13	: bumped update to f37ed7a60f43: - test
+  |
+  o  11	: a2 - test
+  |
+  o  10	testbookmark: a1__ - test
+  |
+  o  0	: a0 - test
+  
+Enabling commands selectively, no command enabled, next and fold and unknown
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > evolution=createmarkers
+  > EOF
+  $ hg next
+  hg: unknown command 'next'
+  Mercurial Distributed SCM
+  
+  basic commands:
+  
+   add           add the specified files on the next commit
+   annotate      show changeset information by line for each file
+   clone         make a copy of an existing repository
+   commit        commit the specified files or all outstanding changes
+   diff          diff repository (or selected files)
+   export        dump the header and diffs for one or more changesets
+   forget        forget the specified files on the next commit
+   init          create a new repository in the given directory
+   log           show revision history of entire repository or files
+   merge         merge another revision into working directory
+   pull          pull changes from the specified source
+   push          push changes to the specified destination
+   remove        remove the specified files on the next commit
+   serve         start stand-alone webserver
+   status        show changed files in the working directory
+   summary       summarize working directory state
+   update        update working directory (or switch revisions)
+  
+  (use "hg help" for the full list of commands or "hg -v" for details)
+  [255]
+  $ hg fold
+  hg: unknown command 'fold'
+  Mercurial Distributed SCM
+  
+  basic commands:
+  
+   add           add the specified files on the next commit
+   annotate      show changeset information by line for each file
+   clone         make a copy of an existing repository
+   commit        commit the specified files or all outstanding changes
+   diff          diff repository (or selected files)
+   export        dump the header and diffs for one or more changesets
+   forget        forget the specified files on the next commit
+   init          create a new repository in the given directory
+   log           show revision history of entire repository or files
+   merge         merge another revision into working directory
+   pull          pull changes from the specified source
+   push          push changes to the specified destination
+   remove        remove the specified files on the next commit
+   serve         start stand-alone webserver
+   status        show changed files in the working directory
+   summary       summarize working directory state
+   update        update working directory (or switch revisions)
+  
+  (use "hg help" for the full list of commands or "hg -v" for details)
+  [255]
+Enabling commands selectively, only fold enabled, next is still unknown
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > evolution=createmarkers
+  > evolutioncommands=fold
+  > EOF
+  $ hg fold
+  abort: no revisions specified
+  [255]
+  $ hg next
+  hg: unknown command 'next'
+  Mercurial Distributed SCM
+  
+  basic commands:
+  
+   add           add the specified files on the next commit
+   annotate      show changeset information by line for each file
+   clone         make a copy of an existing repository
+   commit        commit the specified files or all outstanding changes
+   diff          diff repository (or selected files)
+   export        dump the header and diffs for one or more changesets
+   fold          fold multiple revisions into a single one
+   forget        forget the specified files on the next commit
+   init          create a new repository in the given directory
+   log           show revision history of entire repository or files
+   merge         merge another revision into working directory
+   pull          pull changes from the specified source
+   push          push changes to the specified destination
+   remove        remove the specified files on the next commit
+   serve         start stand-alone webserver
+   status        show changed files in the working directory
+   summary       summarize working directory state
+   update        update working directory (or switch revisions)
+  
+  (use "hg help" for the full list of commands or "hg -v" for details)
+  [255]
+
+Restore all of the evolution features
+
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > evolution=all
+  > EOF
+
+Check hg evolve --rev on singled out commit
+  $ hg up 19 -C
+  1 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit j1
+  $ mkcommit j2
+  $ mkcommit j3
+  $ hg up .^^
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ echo "hello" > j4
+  $ hg add j4
+  $ hg amend
+  2 new unstable changesets
+  $ glog -r "18::"
+  @  25:4c0bc042ef3b@default(draft) add j1
+  |
+  | o  23:c70048fd3350@default(draft) add j3
+  | |
+  | o  22:714e60ca57b7@default(draft) add j2
+  | |
+  | x  21:b430835af718@default(draft) add j1
+  |/
+  | o  20:db3d894869b0@default(draft) add gh
+  | |
+  o |  19:10ffdd7e3cc9@default(draft) add gg
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+
+  $ hg evolve --rev 23 --any
+  abort: cannot specify both "--rev" and "--any"
+  [255]
+  $ hg evolve --rev 23
+  cannot solve instability of c70048fd3350, skipping
+
+Check that uncommit respects the allowunstable option
+With only createmarkers we can only uncommit on a head
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > evolution=createmarkers, allnewcommands
+  > EOF
+  $ hg up 4c0bc042ef3b^
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ hg uncommit --all
+  abort: cannot uncommit in the middle of a stack
+  [255]
+  $ hg up 4c0bc042ef3b
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg uncommit --all
+  new changeset is empty
+  (use "hg prune ." to remove it)
+  $ glog -r "18::"
+  @  26:04b32348803e@default(draft) add j1
+  |
+  | o  23:c70048fd3350@default(draft) add j3
+  | |
+  | o  22:714e60ca57b7@default(draft) add j2
+  | |
+  | x  21:b430835af718@default(draft) add j1
+  |/
+  | o  20:db3d894869b0@default(draft) add gh
+  | |
+  o |  19:10ffdd7e3cc9@default(draft) add gg
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+
+Check that prune respects the allowunstable option
+  $ hg up -C .
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg up 20
+  1 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ hg evolve --all
+  nothing to evolve on current working copy parent
+  (2 other unstable in the repository, do you want --any or --rev)
+  [2]
+  $ hg evolve --all --any
+  move:[22] add j2
+  atop:[26] add j1
+  move:[23] add j3
+  atop:[27] add j2
+  working directory is now at 920a35e8dbd0
+  $ glog -r "18::"
+  @  28:920a35e8dbd0@default(draft) add j3
+  |
+  o  27:31e050d895dd@default(draft) add j2
+  |
+  o  26:04b32348803e@default(draft) add j1
+  |
+  | o  20:db3d894869b0@default(draft) add gh
+  | |
+  o |  19:10ffdd7e3cc9@default(draft) add gg
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+  $ hg up 19
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ mkcommit c5_
+  created new head
+  $ hg prune '26 + 27'
+  abort: cannot prune in the middle of a stack
+  [255]
+  $ hg prune '19::28'
+  abort: cannot prune in the middle of a stack
+  [255]
+  $ hg prune '26::'
+  3 changesets pruned
+  $ glog -r "18::"
+  @  29:5a6c53544778@default(draft) add c5_
+  |
+  | o  20:db3d894869b0@default(draft) add gh
+  | |
+  o |  19:10ffdd7e3cc9@default(draft) add gg
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+
+Check that fold respects the allowunstable option
+  $ hg up 0bb66d4c1968
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ mkcommit unstableifparentisfolded
+  created new head
+  $ glog -r "18::"
+  @  30:30ecefd67c0a@default(draft) add unstableifparentisfolded
+  |
+  | o  29:5a6c53544778@default(draft) add c5_
+  | |
+  +---o  20:db3d894869b0@default(draft) add gh
+  | |
+  | o  19:10ffdd7e3cc9@default(draft) add gg
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+
+  $ hg fold --exact "19 + 18"
+  abort: cannot fold chain not ending with a head or with branching
+  [255]
+  $ hg fold --exact "18::29"
+  abort: cannot fold chain not ending with a head or with branching
+  [255]
+  $ hg fold --exact "19::"
+  2 changesets folded
+
+Check that evolve shows error while handling split commits
+--------------------------------------
+
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > evolution=all
+  > EOF
+
+  $ glog -r "18::"
+  o  31:5cc6eda0f00d@default(draft) add gg
+  |
+  | @  30:30ecefd67c0a@default(draft) add unstableifparentisfolded
+  |/
+  | o  20:db3d894869b0@default(draft) add gh
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+
+Create a split commit
+  $ printf "oo" > oo;
+  $ printf "pp" > pp;
+  $ hg add oo pp
+  $ hg commit -m "oo+pp"
+  $ mkcommit uu
+  $ hg up 30
+  0 files updated, 0 files merged, 3 files removed, 0 files unresolved
+  $ printf "oo" > oo;
+  $ hg add oo
+  $ hg commit -m "_oo"
+  created new head
+  $ printf "pp" > pp;
+  $ hg add pp
+  $ hg commit -m "_pp"
+  $ hg prune --succ "desc(_oo) + desc(_pp)" -r "desc('oo+pp')"
+  1 changesets pruned
+  1 new unstable changesets
+  $ glog -r "18::"
+  @  35:072908d77206@default(draft) _pp
+  |
+  o  34:68e429987343@default(draft) _oo
+  |
+  | o  33:030868870864@default(draft) add uu
+  | |
+  | x  32:7e9688cf0a1b@default(draft) oo+pp
+  |/
+  | o  31:5cc6eda0f00d@default(draft) add gg
+  | |
+  o |  30:30ecefd67c0a@default(draft) add unstableifparentisfolded
+  |/
+  | o  20:db3d894869b0@default(draft) add gh
+  |/
+  o  18:0bb66d4c1968@default(draft) a3
+  |
+  $ hg evolve --rev "18::"
+  does not handle split parents yet
+
+

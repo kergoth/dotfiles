@@ -140,7 +140,7 @@ This bug fix is finished. We can push it to the public repository.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pushing 4 obsolescence markers (* bytes) (glob)
+  pushing 4 obsolescence markers (*) (glob)
   4 obsolescence markers added
 
 Now that the fix is public, we cannot amend it any more.
@@ -161,7 +161,7 @@ Oops, still have draft changesets in dev-repo: push the phase change there.
   pushing to ../dev-repo
   searching for changes
   no changes found
-  pushing 4 obsolescence markers (* bytes) (glob)
+  pushing 4 obsolescence markers (*) (glob)
   0 obsolescence markers added
   [1]
   $ hg -R ../dev-repo shortlog -r 'draft()'
@@ -196,7 +196,7 @@ Alice commits a draft bug fix, pushes to review repo.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pushing 4 obsolescence markers (* bytes) (glob)
+  pushing 4 obsolescence markers (*) (glob)
   0 obsolescence markers added
   exporting bookmark bug15
   $ hg -R ../review bookmarks
@@ -213,7 +213,7 @@ await second review.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 6 obsolescence markers (* bytes) (glob)
+  pushing 6 obsolescence markers (*) (glob)
   2 obsolescence markers added
   updating bookmark bug15
   $ hg -R ../review bookmarks
@@ -241,7 +241,7 @@ Bob commits a draft changeset, pushes to review repo.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 4 obsolescence markers (* bytes) (glob)
+  pushing 4 obsolescence markers (*) (glob)
   0 obsolescence markers added
   exporting bookmark featureX
   $ hg -R ../review bookmarks
@@ -259,7 +259,7 @@ Bob receives first review, amends and pushes.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 6 obsolescence markers (* bytes) (glob)
+  pushing 6 obsolescence markers (*) (glob)
   2 obsolescence markers added
   updating bookmark featureX
 
@@ -274,7 +274,7 @@ this time, he's sure he got it right!
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pushing 8 obsolescence markers (* bytes) (glob)
+  pushing 8 obsolescence markers (*) (glob)
   4 obsolescence markers added
   $ hg -R ../public bookmarks
   no bookmarks set
@@ -286,7 +286,7 @@ this time, he's sure he got it right!
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 8 obsolescence markers (* bytes) (glob)
+  pushing 8 obsolescence markers (*) (glob)
   2 obsolescence markers added
   updating bookmark featureX
   $ hg -R ../review bookmarks
@@ -388,7 +388,7 @@ publishes the result.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pushing 11 obsolescence markers (* bytes) (glob)
+  pushing 11 obsolescence markers (*) (glob)
   3 obsolescence markers added
   $ hg push ../review
   pushing to ../review
@@ -397,7 +397,7 @@ publishes the result.
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 1 files
-  pushing 11 obsolescence markers (* bytes) (glob)
+  pushing 11 obsolescence markers (*) (glob)
   1 obsolescence markers added
   updating bookmark bug15
 
@@ -511,7 +511,7 @@ Figure SG09: multiple heads! divergence! oh my!
   7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
 
 Use evolve to fix the divergence.
-  $ HGMERGE=internal:other hg evolve
+  $ HGMERGE=internal:other hg evolve --divergent
   merge:[6] fix bug 24 (v2 by bob)
   with: [7] fix bug 24 (v2 by alice)
   base: [4] fix bug 24 (v1)

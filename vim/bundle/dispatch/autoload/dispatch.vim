@@ -48,7 +48,6 @@ endfunction
 function! s:expand(string) abort
   let slashes = len(matchstr(a:string, '^\%(\\\\\)*'))
   sandbox let v = repeat('\', slashes/2) . expand(a:string[slashes : -1])
-  echomsg v
   return v
 endfunction
 
@@ -159,12 +158,7 @@ function! dispatch#prepare_start(request, ...) abort
   let callback = dispatch#callback(a:request)
   let after = 'rm -f ' . a:request.file . '.pid' .
         \ (empty(callback) ? '' : '; ' . callback)
-  if &shellpipe =~# '2>&1'
-    return 'trap : INT; trap ' . shellescape(after) . ' EXIT; ' . exec
-  else
-    " csh
-    return exec . '; ' . after
-  endif
+  return exec . '; ' . after
 endfunction
 
 function! dispatch#prepare_make(request, ...) abort
@@ -789,12 +783,13 @@ function! dispatch#complete(file) abort
       let status = -1
     endtry
     if status > 0
-      echo 'Failed:' request.command
+      let label = 'Failure:'
     elseif status == 0
-      echo 'Succeeded:' request.command
+      let label = 'Success:'
     else
-      echo 'Finished:' request.command
+      let label = 'Complete:'
     endif
+    echo label request.command
     if !request.background
       call s:cgetfile(request, 0, 0)
       redraw

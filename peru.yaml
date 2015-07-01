@@ -91,11 +91,11 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 68c949470eaa87c5d67080d32fb2b69c8b837eb4
+    rev: d723fe922ab43c6fc89467d5545c336a30afd2b3
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: c3308b675de18a14c933544077a429ba94ea7101
+    rev: 396180f4ba6a62906770604a0ed3c3a4af4dea01
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -111,7 +111,7 @@ git module zsh-command-not-found:
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: bd071accbaf0c0effd3138c0640c7ef6f790fe08
+    rev: fa6d1ad4b4c751706a06f7fda2ec313b9287c89e
     pick: git-imerge
 
 git module cheat:
@@ -146,7 +146,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 21b6dd7aeec3e4bc96d7b32cd594b7818c0c4082
+    rev: 7c4a90614792cf4b74e0f3386cc6b14046419312
 
 # go language support
 git module vim-golang:
@@ -171,7 +171,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: 67de5f2257f8d5def7a31e3009d4298ce977cb80
+    rev: 78566c37aeb3b7609eee84a7b10114a0f512830e
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -186,7 +186,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch.git
-    rev: e36b9a701dd3d8054e6b8a77b14710276a1d93c8
+    rev: eb8b2d54fb537ee93f762f6331265057a3f69727
 
 # graph your Vim undo tree in style
 git module gundo:
@@ -206,17 +206,17 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 2f5d15fea4c9427ba3f7d8d82c838890b8522125
+    rev: c514fe76c74a21292f0584a4b7cd59bf068004fc
 
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession.git
-    rev: e671dbb05b111167616b026b5366ff26a7ef1303
+    rev: ad1ef9a0db9a03463b005b488fd27cb735317394
 
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: ac893960c324d879b6923a4c1abaea352d8caeb5
+    rev: ebd2239edb2f430ad5d9a50deca793201e0d4bd1
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -268,7 +268,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 17568d67a1dfaa22a84901d99c7420abf808bbdb
+    rev: ee4e527af01283a8aaee8c743c566c7fc8594eec
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -278,7 +278,7 @@ git module atach:
 curl module cpanm:
     url: http://xrl.us/cpanm
     executable: cpanm
-    sha1: c506f1d2d078eb7376c5fbf177f6ea2cbf268cc1
+    sha1: 98feb9747509b1aa1ba2b050b3cacd066d5e8f0c
 
 hg module cwdiff:
     url: https://code.google.com/p/cj-overlay.evergreens
@@ -310,7 +310,7 @@ git module gibo:
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
     pick: ssh-copy-rsub
-    rev: fb9a4cda4b46875e12131f9c30ec847ec7201711
+    rev: 70172891b5e34dd12cb12559ac39c7f523a3ae13
 
 git module pom:
     url: https://github.com/tobym/pom
@@ -426,7 +426,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 16017e1bb2a1796c999a6ecb4ac8b8da27dfc6e4
+    rev: fa1a27009c7653116d6dd1c25b1be4bf4e452e79
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -472,4 +472,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 5c6e78a2711aa5d04d116123d78684b620033c3d
+    rev: 4708cdd12292995b44ed8433190a1b3857ac35e8

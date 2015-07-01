@@ -289,9 +289,9 @@ I have a new commit but I realize that don't want it. (transport shop list does
 not fit well in my standard shopping list)
 
   $ hg prune . # "." is for working directory parent
-  1 changesets pruned
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory now at 41aff6a42b75
+  1 changesets pruned
 
 The silly changeset is gone.
 
@@ -406,7 +406,7 @@ we can now push our change:
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 1 files
-  pushing 6 obsolescence markers (* bytes) (glob)
+  pushing 6 obsolescence markers (*) (glob)
   6 obsolescence markers added
 
 for simplicity sake we get the bathroom change in line again
@@ -482,9 +482,8 @@ The tutorial part is not written yet but can use `hg fold`:
   
   fold multiple revisions into a single one
   
-      Folds a set of revisions with the parent of the working directory. All
-      revisions linearly between the given revisions and the parent of the
-      working directory will also be folded.
+      By default, folds all the revisions linearly between the given revisions
+      and the parent of the working directory.
   
       Use --exact for folding only the specified revisions while ignoring the
       parent of the working directory. In this case, the given revisions must
@@ -738,7 +737,7 @@ We can push this evolution to remote
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 1 files (+1 heads)
-  pushing 10 obsolescence markers (* bytes) (glob)
+  pushing 10 obsolescence markers (*) (glob)
   3 obsolescence markers added
 
 remote get a warning that current working directory is based on an obsolete changeset
@@ -751,12 +750,14 @@ remote get a warning that current working directory is based on an obsolete chan
   pull obsolescence markers
   0 obsolescence markers added
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
 
 now let's see where we are, and update to the successor
 
   $ hg parents
   bf1b0d202029 (draft): animals
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ hg evolve
   update:[8] animals
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -804,9 +805,9 @@ I'm pulling its work locally.
 In the mean time I noticed you can't buy animals in a super market and I prune the animal changeset:
 
   $ hg prune ee942144f952
-  1 changesets pruned
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory now at a44c85f957d3
+  1 changesets pruned
   1 new unstable changesets
 
 

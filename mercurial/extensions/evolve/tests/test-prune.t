@@ -38,9 +38,9 @@ Check simple case
 prune current and tip changeset
 
   $ hg prune --user blah --date '1979-12-15' .
-  1 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 47d2a3944de8
+  1 changesets pruned
   $ hg bookmark
    * BABAR                     3:47d2a3944de8
   $ hg debugobsolete
@@ -59,9 +59,9 @@ prune leaving instability behind
 pruning multiple changeset at once
 
   $ hg prune 2:
-  2 changesets pruned
   0 files updated, 0 files merged, 3 files removed, 0 files unresolved
   working directory now at 1f0dee641bb7
+  2 changesets pruned
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
   7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'user': 'test'} (glob)
@@ -120,9 +120,9 @@ one old, one new
   $ hg up 'desc("add ee")'
   4 files updated, 0 files merged, 4 files removed, 0 files unresolved
   $ hg prune 'desc("add ee")' -s 'desc("add nE")'
-  1 changesets pruned
   4 files updated, 0 files merged, 4 files removed, 0 files unresolved
   working directory now at 6e8148413dd5
+  1 changesets pruned
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
   7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'user': 'test'} (glob)
@@ -210,9 +210,9 @@ two old, two new with --biject
   $ mkcommit n2
 
   $ hg prune 'desc("add n1")::desc("add n2")' -s 'desc("add nD")::desc("add nE")' --biject
-  2 changesets pruned
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   working directory now at 1f0dee641bb7
+  2 changesets pruned
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
   7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'user': 'test'} (glob)
@@ -224,6 +224,35 @@ two old, two new with --biject
   354011cd103f58bbbd9091a3cee6d6a6bd0dddf7 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (*) {'user': 'test'} (glob)
   cb7f8f706a6532967b98cf8583a81baab79a0fa7 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'user': 'test'} (glob)
   21b6f2f1cece8c10326e575dd38239189d467190 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'user': 'test'} (glob)
+
+test hg strip replacement
+
+  $ hg up 10
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ mkcommit n1
+  created new head
+  $ mkcommit n2
+  $ hg --config extensions.strip= --config experimental.prunestrip=True strip -r .
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory now at c7e58696a948
+  1 changesets pruned
+  $ hg --config extensions.strip= --config experimental.prunestrip=True strip -r . --bundle
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/c7e58696a948-69ca36d3-backup.hg (glob)
+
+test hg prune --keep
+  $ mkcommit n1
+  created new head
+  $ hg diff -r .^
+  diff -r aa96dc3f04c2 n1
+  --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+  +++ b/n1	* +0000 (glob)
+  @@ -0,0 +1,1 @@
+  +n1
+  $ hg prune -r . --keep
+  1 changesets pruned
+  $ hg status
+  ? n1
 
 test hg prune -B bookmark
 yoinked from test-mq-strip.t
@@ -245,11 +274,11 @@ yoinked from test-mq-strip.t
   [255]
   $ hg tag --remove --local a
   $ hg prune -B todelete
-  1 changesets pruned
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   (leaving bookmark todelete)
   working directory now at d62d843c9a01
   bookmark 'todelete' deleted
+  1 changesets pruned
   $ hg id -ir dcbb326fdec2
   abort: hidden revision 'dcbb326fdec2'!
   (use --hidden to access hidden revisions)
@@ -260,8 +289,8 @@ yoinked from test-mq-strip.t
      B                         10:ff43616e5d0f
      delete                    6:2702dd0c91e7
   $ hg prune -B delete
-  3 changesets pruned
   bookmark 'delete' deleted
+  3 changesets pruned
   $ hg tag --remove --local c
   $ hg id -ir 6:2702dd0c91e7
   abort: hidden revision '6'!
@@ -332,3 +361,12 @@ yoinked from test-mq-strip.t
   |/
   o  0:1ea73414a91b[] (stable/draft) r0
   
+  $ hg book CELESTE
+  $ hg prune -r . --keep
+  1 changesets pruned
+  $ hg book
+     B                         8:d62d843c9a01
+   * CELESTE                   8:d62d843c9a01
+     r10                       8:d62d843c9a01
+     rg                        8:d62d843c9a01
+

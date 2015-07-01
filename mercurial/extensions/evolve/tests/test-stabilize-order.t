@@ -153,8 +153,8 @@ Test behaviour with --any
   $ hg up 9
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg evolve -v
-  nothing to evolve here
-  (1 troubled changesets, do you want --any ?)
+  nothing to evolve on current working copy parent
+  (1 other unstable in the repository, do you want --any or --rev)
   [2]
   $ hg evolve --any -v
   move:[9] addc
@@ -180,5 +180,68 @@ Test behaviour with --any
   o  0:c471ef929e6a@default(draft) addroot
   
   $ hg evolve --any -v
-  no troubled changesets
+  no unstable changesets to evolve
   [1]
+
+Ambiguous evolution
+  $ echo a > k
+  $ hg add k
+  $ hg ci -m firstambiguous
+  $ hg up .^
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ echo a > l
+  $ hg add l
+  $ hg ci -m secondambiguous
+  created new head
+  $ hg up .^
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ hg commit --amend -m "newmessage"
+  2 new unstable changesets
+  $ hg log -G
+  @  changeset:   15:49773ccde390
+  |  tag:         tip
+  |  parent:      11:036cf654e942
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     newmessage
+  |
+  | o  changeset:   14:a9892777b519
+  | |  parent:      12:e99ecf51c867
+  | |  user:        test
+  | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  summary:     secondambiguous
+  | |
+  | | o  changeset:   13:0b6e26b2472d
+  | |/   user:        test
+  | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    summary:     firstambiguous
+  | |
+  | x  changeset:   12:e99ecf51c867
+  |/   user:        test
+  |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    summary:     addc
+  |
+  o  changeset:   11:036cf654e942
+  |  parent:      7:005fe5914f78
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     addb
+  |
+  o  changeset:   7:005fe5914f78
+  |  parent:      0:c471ef929e6a
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     adda
+  |
+  o  changeset:   0:c471ef929e6a
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     addroot
+  
+  $ hg evolve
+  abort: multiple evolve candidates
+  (select one of *, * with --rev) (glob)
+  [255]
+
+
+

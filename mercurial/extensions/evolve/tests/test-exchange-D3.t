@@ -39,9 +39,9 @@ Expected exchange:
   $ mkcommit A1
   $ hg debugobsolete `getid 'desc(A0)'` `getid 'desc(A1)'`
   $ hg prune -d '0 0' .
-  1 changesets pruned
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 35b183996678
+  1 changesets pruned
   $ hg strip --hidden -q 'desc(A1)'
   $ hg log -G --hidden
   @  35b183996678 (draft): B

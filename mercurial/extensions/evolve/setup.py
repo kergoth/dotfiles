@@ -1,6 +1,7 @@
 # Copied from histedit setup.py
 # Credit to Augie Fackler <durin42@gmail.com>
 
+import os
 from distutils.core import setup
 from os.path import dirname, join
 
@@ -14,6 +15,14 @@ def get_version(relpath):
           if "'" in line:
             return line.split("'")[1]
 
+py_modules = [
+    'hgext.evolve',
+]
+
+if os.environ.get('INCLUDE_INHIBIT'):
+    py_modules.append('hgext.inhibit')
+    py_modules.append('hgext.directaccess')
+
 setup(
     name='hg-evolve',
     version=get_version('hgext/evolve.py'),
@@ -25,5 +34,5 @@ setup(
     long_description=open('README').read(),
     keywords='hg mercurial',
     license='GPLv2+',
-    py_modules=['hgext.evolve'],
+    py_modules=py_modules
 )

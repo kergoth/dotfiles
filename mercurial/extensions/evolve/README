@@ -51,7 +51,26 @@ add a feature. To run the tests:
 Changelog
 =========
 
-5.1.5 --
+5.2.0 -- 2015-06-25
+
+- evolve: gain a --rev option to control what revisions to evolve (issue4391)
+- evolve: revision are processed in the order they stack on destination
+- evolve: properly skip unstable revision with non-evolved unstable parent
+- evolve: gain --unstable --divergent --bumped flag to select the trouble
+- evolve: issue more useful error message and hint when evolve has nothing to
+          do as invocated.
+- evolve: bare `hg evolve` commands now abort when multiple changesets could be
+          a target.
+- evolve: `hg evolve --all` only evolve changeset that will end up as
+          descendant of the current working copy. The old behavior of `--all`
+          in now in `--all --any`.
+- evolve: add a 'experimental.evolutioncommands' for fine grained commands
+          enabling
+- next/prev: requires `--merge` to move with uncommited changes
+- next: significantly reword error messages
+- next: add a --evolve flag to evolve aspiring children when on a head
+
+5.1.5 -- 2015-06-23
 
 - minor documentation cleanup
 - support -i option for `hg amend` if commit supports it (3.4)
@@ -60,6 +79,10 @@ Changelog
 - fix simple4server bug tracker URL
 - compatibility with bookmark API change in future Mercurial 3.5
 - prune no longer move the active bookmark for no reason (issue4559)
+- evolve: stop reporting divergence base as missing when we actually have it
+- significant performance improvement for all revsets.
+- provide a hint of how to update to the successor of an obsolete working copy
+  parent.
 
 5.1.4 -- 2015-04-23
 

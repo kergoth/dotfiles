@@ -7,25 +7,28 @@ if exists("g:loaded_obsession") || v:version < 700 || &cp
 endif
 let g:loaded_obsession = 1
 
-command! -bar -bang -complete=file -nargs=? Obsession execute s:dispatch(<bang>0, <q-args>)
+command! -bar -bang -complete=file -nargs=? Obsession
+      \ execute s:dispatch(<bang>0, <q-args>)
 
 function! s:dispatch(bang, file) abort
+  let session = get(g:, 'this_obsession', v:this_session)
   try
-    if a:bang && empty(a:file) && filereadable(get(g:, 'this_obsession', v:this_session))
-      echo 'Deleting session in '.fnamemodify(get(g:, 'this_obsession', v:this_session), ':~:.')
-      call delete(get(g:, 'this_obsession', v:this_session))
+    if a:bang && empty(a:file) && filereadable(session)
+      echo 'Deleting session in '.fnamemodify(session, ':~:.')
+      call delete(session)
       unlet! g:this_obsession
       return ''
     elseif empty(a:file) && exists('g:this_obsession')
-      echo 'Pausing session in '.fnamemodify(g:this_obsession, ':~:.')
+      echo 'Pausing session in '.fnamemodify(session, ':~:.')
       unlet g:this_obsession
       return ''
-    elseif empty(a:file) && !empty(v:this_session)
-      let file = v:this_session
+    elseif empty(a:file) && !empty(session)
+      let file = session
     elseif empty(a:file)
       let file = getcwd() . '/Session.vim'
     elseif isdirectory(a:file)
-      let file = fnamemodify(expand(a:file), ':p') . '/Session.vim'
+      let file = substitute(fnamemodify(expand(a:file), ':p'), '[\/]$', '', '')
+            \ . '/Session.vim'
     else
       let file = fnamemodify(expand(a:file), ':p')
     endif
@@ -46,20 +49,28 @@ function! s:dispatch(bang, file) abort
       return error
     endif
   finally
-    let &readonly = &readonly
+    let &l:readonly = &l:readonly
   endtry
 endfunction
 
 function! s:persist() abort
+  if exists('g:SessionLoad')
+    return ''
+  endif
+  let sessionoptions = &sessionoptions
   if exists('g:this_obsession')
-    let sessionoptions = &sessionoptions
     try
-      set sessionoptions-=blank sessionoptions-=options
+      set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
       execute 'mksession! '.fnameescape(g:this_obsession)
-      call writefile(insert(readfile(g:this_obsession), 'let g:this_obsession = v:this_session', -2), g:this_obsession)
+      let body = readfile(g:this_obsession)
+      call insert(body, 'let g:this_session = v:this_session', -3)
+      call insert(body, 'let g:this_obsession = v:this_session', -3)
+      call insert(body, 'let g:this_obsession_status = 2', -3)
+      call writefile(body, g:this_obsession)
+      let g:this_session = g:this_obsession
     catch
       unlet g:this_obsession
-      let &readonly = &readonly
+      let &l:readonly = &l:readonly
       return 'echoerr '.string(v:exception)
     finally
       let &sessionoptions = sessionoptions
@@ -69,26 +80,28 @@ function! s:persist() abort
 endfunction
 
 function! ObsessionStatus(...) abort
+  let args = copy(a:000)
   let numeric = !empty(v:this_session) + exists('g:this_obsession')
-  if !a:0
-    return numeric
-  elseif a:0 > 1
-    return get(a:000, 2-numeric, '')
+  if type(get(args, 0, '')) == type(0)
+    if !remove(args, 0)
+      return ''
+    endif
   endif
-  let fmt = type(a:1) == type('') && a:1 =~# '^[^%]*%s[^%]*$' ? a:1 : '[%s]'
-  if empty(v:this_session)
-    return ''
-  elseif exists('g:this_obsession')
-    let status = 'Obsession'
+  if empty(args)
+    let args = ['[$]', '[S]']
+  endif
+  if len(args) == 1 && numeric == 1
+    let fmt = args[0]
   else
-    let status = 'Session'
+    let fmt = get(args, 2-numeric, '')
   endif
-  return printf(fmt, status)
+  return substitute(fmt, '%s', get(['', 'Session', 'Obsession'], numeric), 'g')
 endfunction
 
 augroup obsession
   autocmd!
   autocmd BufEnter,VimLeavePre * exe s:persist()
+  autocmd User Flags call Hoist('global', 'ObsessionStatus')
 augroup END
 
 " vim:set et sw=2:

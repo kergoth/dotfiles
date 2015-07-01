@@ -66,9 +66,9 @@ example 4: prune at head (figure 3)
   $ echo 'debug hack' >> file1.c
   $ hg commit -m 'debug hack'
   $ hg prune .
-  1 changesets pruned
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory now at 934359450037
+  1 changesets pruned
   $ hg parents --template '{rev}:{node|short}  {desc|firstline}\n'
   3:934359450037  implement feature Y
   $ hg --hidden shortlog -G -r 3:
@@ -219,7 +219,7 @@ example 8: prune an older changeset (figures 8, 9)
   |
   o  18:1f33e68b18b9  draft  useful work
   |
-  $ hg evolve -q --all
+  $ hg evolve -q --all --any
   $ hg --hidden shortlog -G -r 18::
   @  21:4393e5877437  draft  more work
   |
@@ -251,7 +251,7 @@ example 9: uncommit files from an older changeset (discard changes)
   $ hg status
   M file2.c
   $ hg revert file2.c
-  $ hg evolve --all
+  $ hg evolve --all --any
   move:[23] fix bug 67
   atop:[24] fix bug 53
   working directory is now at 0d972d6888e6
@@ -300,7 +300,7 @@ example 10: uncommit files from an older changeset (keep changes)
   |/
   o  25:0d972d6888e6  draft  fix bug 67
   |
-  $ hg evolve --all
+  $ hg evolve --all --any
   move:[27] new feature
   atop:[28] fix a bug
   working directory is now at 166c1c368ab6

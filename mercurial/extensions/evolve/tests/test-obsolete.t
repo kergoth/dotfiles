@@ -131,6 +131,7 @@ test obsolete changeset with non-obsolete descendant
   summary:     add obsol_c
   
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ mkcommit d # 5 (on 3)
   1 new unstable changesets
   $ qlog -r 'obsolete()'
@@ -183,7 +184,7 @@ Test communication of obsolete relation with a compatible client
   adding manifests
   adding file changes
   added 5 changesets with 5 changes to 5 files (+1 heads)
-  pushing 2 obsolescence markers (* bytes) (glob)
+  pushing 2 obsolescence markers (*) (glob)
   2 obsolescence markers added
   $ hg -R ../other-new verify
   checking changesets
@@ -238,7 +239,7 @@ Test communication of obsolete relation with a compatible client
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 3 obsolescence markers (* bytes) (glob)
+  pushing 3 obsolescence markers (*) (glob)
   1 obsolescence markers added
   $ qlog -R ../other-new
   5
@@ -261,7 +262,7 @@ Pushing again does not advertise extinct changesets
   pushing to ../other-new
   searching for changes
   no changes found
-  pushing 3 obsolescence markers (* bytes) (glob)
+  pushing 3 obsolescence markers (*) (glob)
   0 obsolescence markers added
   [1]
 
@@ -543,7 +544,7 @@ Does not complain about new head if you obsolete the old one
   adding manifests
   adding file changes
   added 2 changesets with 1 changes to [12] files (re)
-  pushing 7 obsolescence markers (* bytes) (glob)
+  pushing 7 obsolescence markers (*) (glob)
   3 obsolescence markers added
   $ hg up -q 10
   $ mkcommit "obsol_d'''"
@@ -556,7 +557,7 @@ Does not complain about new head if you obsolete the old one
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 8 obsolescence markers (* bytes) (glob)
+  pushing 8 obsolescence markers (*) (glob)
   1 obsolescence markers added
   $ cd ..
 
@@ -705,6 +706,7 @@ Check import reports new unstable changeset:
   $ hg up --hidden 2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ hg export 9468a5f5d8b2 | hg import -
   applying patch from stdin
   1 new unstable changesets

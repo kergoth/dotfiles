@@ -12,7 +12,6 @@ testedwith = '3.3.3 3.4-rc'
 buglink = 'http://bz.selenic.com/'
 
 import mercurial.obsolete
-mercurial.obsolete._enabled = True
 
 import struct
 from mercurial import util
@@ -31,8 +30,6 @@ _pack = struct.pack
 gboptslist = gboptsmap = None
 try:
     from mercurial import obsolete
-    if not obsolete._enabled:
-        obsolete._enabled = True
     from mercurial import wireproto
     gboptslist = getattr(wireproto, 'gboptslist', None)
     gboptsmap = getattr(wireproto, 'gboptsmap', None)
@@ -247,7 +244,7 @@ def capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
     caps = orig(repo, proto)
     advertise = repo.ui.configbool('__temporary__', 'advertiseobsolete', True)
-    if obsolete._enabled and advertise:
+    if obsolete.isenabled(repo, obsolete.exchangeopt) and advertise:
         caps += ' _evoext_pushobsmarkers_0'
         caps += ' _evoext_pullobsmarkers_0'
         caps += ' _evoext_obshash_0'
@@ -302,3 +299,8 @@ def extsetup(ui):
     extensions.wrapfunction(pushkey, '_nslist', _nslist)
     pushkey._namespaces['namespaces'] = (lambda *x: False, pushkey._nslist)
 
+def reposetup(ui, repo):
+    evolveopts = ui.configlist('experimental', 'evolution')
+    if not evolveopts:
+        evolveopts = 'all'
+        ui.setconfig('experimental', 'evolution', evolveopts)

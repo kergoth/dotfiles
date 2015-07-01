@@ -49,7 +49,8 @@ def srv_pushobsmarkers(repo, proto):
 
 def syncpush(orig, repo, remote):
     """wraper for obsolete.syncpush to use the fast way if possible"""
-    if not (obsolete._enabled and repo.obsstore):
+    if not (obsolete.isenabled(repo, obsolete.exchangeopt) and
+            repo.obsstore):
         return
     if remote.capable('_push_experiment_pushobsmarkers_0'):
         return # already pushed before changeset
@@ -75,11 +76,11 @@ def augmented_push(orig, repo, remote, *args, **kwargs):
     """push wrapped that call the wire protocol command"""
     if not remote.canpush():
         raise util.Abort(_("destination does not support push"))
-    if (obsolete._enabled and repo.obsstore
+    if (obsolete.isenabled(repo, obsolete.exchangeopt) and repo.obsstore
         and remote.capable('_push_experiment_pushobsmarkers_0')):
         # push marker early to limit damage of pushing too early.
         try:
-            obsfp = repo.sopener('obsstore')
+            obsfp = repo.svfs('obsstore')
         except IOError as e:
             if e.errno != errno.ENOENT:
                 raise
@@ -94,7 +95,7 @@ def augmented_push(orig, repo, remote, *args, **kwargs):
 def capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
     caps = orig(repo, proto)
-    if obsolete._enabled:
+    if obsolete.isenabled(repo, obsolete.exchangeopt):
         caps += ' _push_experiment_pushobsmarkers_0'
     caps += ' _push_experiment_notifypushend_0'
     return caps

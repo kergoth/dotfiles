@@ -110,7 +110,7 @@
   adding manifests
   adding file changes
   added 1 changesets with 2 changes to 2 files
-  pushing 2 obsolescence markers (* bytes) (glob)
+  pushing 2 obsolescence markers (*) (glob)
   2 obsolescence markers added
   $ hg -R ../other verify
   checking changesets

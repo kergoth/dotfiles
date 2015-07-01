@@ -23,6 +23,7 @@
 # usage:
 #   filter-select [-t title] [-A assoc-array-name]
 #                 [-d array-of-description] [-D assoc-array-of-descrption]
+#                 [-s initial-filter-contents]
 #                 [-n] [-r] [-m] [-e exit-zle-widget-name]... [--] [arg]...
 #   filter-select -i
 #
@@ -38,6 +39,9 @@
 #       it is used to display and filter candidates.
 #
 #       if not specified, copied from candidates.
+#
+#     -s initial-filter-contents
+#        initial contents of the filter buffer that users type into
 #
 #     -n
 #       assign a number to the description when -d is not specified
@@ -122,7 +126,7 @@ function filter-select() {
     local -a orig_region_highlight words
     orig_region_highlight=("${region_highlight[@]}")
 
-    local key cand lines selected cand_disp buffer_pre_zle last_buffer=''
+    local key cand lines selected cand_disp buffer_pre_zle last_buffer initbuffer=''
     local opt pattern msg unused title='' exit_pattern nl=$'\n'
     local selected_index mark_idx_disp hi start end spec
 
@@ -153,7 +157,7 @@ function filter-select() {
     descriptions=()
     exit_wigdets=(accept-line accept-search send-break)
 
-    while getopts 't:A:d:D:nrme:i' opt; do
+    while getopts 't:A:d:D:nrme:s:i' opt; do
         case "${opt}" in
             t)
                 title="${OPTARG}"
@@ -187,6 +191,9 @@ function filter-select() {
                 ;;
             e)
                 exit_wigdets+="${OPTARG}"
+                ;;
+            s)
+                initbuffer="${OPTARG}"
                 ;;
             i)
                 # do nothing. only keybinds are initialized
@@ -230,7 +237,7 @@ function filter-select() {
     bounds=''
 
     # clear edit buffer
-    BUFFER=''
+    BUFFER="$initbuffer"
 
     # display original edit buffer's contants as PREDISPLAY
     PREDISPLAY="${orig_predisplay}${orig_lbuffer}${orig_rbuffer}${orig_postdisplay}${nl}"
@@ -640,10 +647,10 @@ function _filter-select-init-keybind() {
 
         bindkey -M filterselect '^J' accept-line
         bindkey -M filterselect '^M' accept-line
-        bindkey -M filterselect '^[^J' accept-search
-        bindkey -M filterselect '^[^M' accept-search
+        bindkey -M filterselect '\e^J' accept-search
+        bindkey -M filterselect '\e^M' accept-search
 
-        bindkey -M filterselect '^[^G' send-break
+        bindkey -M filterselect '\e^G' send-break
         bindkey -M filterselect '^G' send-break
 
         bindkey -M filterselect '^@' set-mark-command
@@ -652,12 +659,12 @@ function _filter-select-init-keybind() {
         bindkey -M filterselect '^?' backward-delete-char
 
         bindkey -M filterselect '^F' forward-char
-        bindkey -M filterselect '^[[C' forward-char
-        bindkey -M filterselect '^[OC' forward-char
+        bindkey -M filterselect '\e[C' forward-char
+        bindkey -M filterselect '\eOC' forward-char
 
         bindkey -M filterselect '^B' backward-char
-        bindkey -M filterselect '^[[D' backward-char
-        bindkey -M filterselect '^[OD' backward-char
+        bindkey -M filterselect '\e[D' backward-char
+        bindkey -M filterselect '\eOD' backward-char
 
         bindkey -M filterselect '^A' beginning-of-line
         bindkey -M filterselect '^E' end-of-line
@@ -668,26 +675,26 @@ function _filter-select-init-keybind() {
 
         # move cursor down/up
         bindkey -M filterselect '^N' down-line-or-history
-        bindkey -M filterselect '^[[B' down-line-or-history
-        bindkey -M filterselect '^[OB' down-line-or-history
+        bindkey -M filterselect '\e[B' down-line-or-history
+        bindkey -M filterselect '\eOB' down-line-or-history
         bindkey -M filterselect '^P' up-line-or-history
-        bindkey -M filterselect '^[[A' up-line-or-history
-        bindkey -M filterselect '^[OA' up-line-or-history
+        bindkey -M filterselect '\e[A' up-line-or-history
+        bindkey -M filterselect '\eOA' up-line-or-history
 
         # page down/up
         bindkey -M filterselect '^V' forward-word
-        bindkey -M filterselect '^[[6~' forward-word
+        bindkey -M filterselect '\e[6~' forward-word
 
-        bindkey -M filterselect '^[V' backward-word
-        bindkey -M filterselect '^[v' backward-word
-        bindkey -M filterselect '^[[5~' backward-word
+        bindkey -M filterselect '\eV' backward-word
+        bindkey -M filterselect '\ev' backward-word
+        bindkey -M filterselect '\e[5~' backward-word
 
         # home/end
-        bindkey -M filterselect '^[<' beginning-of-history
-        bindkey -M filterselect '^[[1~' beginning-of-history
+        bindkey -M filterselect '\e<' beginning-of-history
+        bindkey -M filterselect '\e[1~' beginning-of-history
 
-        bindkey -M filterselect '^[>' end-of-history
-        bindkey -M filterselect '^[[4~' end-of-history
+        bindkey -M filterselect '\e>' end-of-history
+        bindkey -M filterselect '\e[4~' end-of-history
     fi
 }
 

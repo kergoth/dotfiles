@@ -241,6 +241,7 @@ Test phase is preserved, no local changes
   8 files updated, 0 files merged, 1 files removed, 0 files unresolved
   (leaving bookmark touncommit-bm)
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ hg --config extensions.purge= purge
   $ hg uncommit -I 'set:added() and e'
   2 new divergent changesets
@@ -285,6 +286,7 @@ Test --all
   $ hg up -C 3 --hidden
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
+  (use "hg evolve" to update to its successor)
   $ hg --config extensions.purge= purge
   $ hg uncommit --all -X e
   1 new divergent changesets

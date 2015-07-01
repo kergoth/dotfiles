@@ -14,8 +14,6 @@ from mercurial import util
 
 try:
     from mercurial import obsolete
-    if not obsolete._enabled:
-        obsolete._enabled = True
 except ImportError:
     raise util.Abort('Obsolete extension requires Mercurial 2.3 (or later)')
 
@@ -40,13 +38,17 @@ def reposetup(ui, repo):
     """
     if not repo.local():
         return
+    evolveopts = ui.configlist('experimental', 'evolution')
+    if not evolveopts:
+        evolveopts = 'all'
+        ui.setconfig('experimental', 'evolution', evolveopts)
     for arg in sys.argv:
         if 'debugc' in arg:
             break
     else:
         data = repo.opener.tryread('obsolete-relations')
         if not data:
-            data = repo.sopener.tryread('obsoletemarkers')
+            data = repo.svfs.tryread('obsoletemarkers')
         if data:
             raise util.Abort('old format of obsolete marker detected!\n'
                              'run `hg debugconvertobsolete` once.')
@@ -108,7 +110,7 @@ def cmddebugconvertobsolete(ui, repo):
             except IOError:
                 pass
             ### second (json) format
-            data = repo.sopener.tryread('obsoletemarkers')
+            data = repo.svfs.tryread('obsoletemarkers')
             if data:
                 some = True
                 for oldmark in json.loads(data):
