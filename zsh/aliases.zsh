@@ -57,7 +57,7 @@ else
     alias ps='ps fux'
     if (( $+commands[dfc] )); then
         alias df=dfc
-        alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs'
+        alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs,none'
     fi
     alias rm='rm --one-file-system -I'
 fi
