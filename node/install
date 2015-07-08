@@ -1,0 +1,4 @@
+: ${XDG_DATA_HOME:=~/.local/share}
+NPM_PACKAGES="$XDG_DATA_HOME/npm"
+mkdir -p "$NPM_PACKAGES"
+npm config set prefix "$NPM_PACKAGES"
