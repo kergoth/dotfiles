@@ -47,7 +47,7 @@ if [[ $OSTYPE =~ darwin ]]; then
         alias df=dfc
         alias dfc='dfc -T'
     else
-        alias df='df -h -T nodevfs,autofs,mtmfs'
+        alias df='df -P -h -T nodevfs,autofs,mtmfs'
     fi
     alias locate='mdfind -name'
     alias vim='mvim -v'
