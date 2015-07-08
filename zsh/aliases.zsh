@@ -46,6 +46,8 @@ if [[ $OSTYPE =~ darwin ]]; then
     if (( $+commands[dfc] )); then
         alias df=dfc
         alias dfc='dfc -T'
+    else
+        alias df='df -h -T nodevfs,autofs,mtmfs'
     fi
     alias locate='mdfind -name'
     alias vim='mvim -v'
@@ -58,6 +60,8 @@ else
     if (( $+commands[dfc] )); then
         alias df=dfc
         alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs,none'
+    else
+        alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none'
     fi
     alias rm='rm --one-file-system -I'
 fi
