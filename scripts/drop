@@ -1,0 +1,18 @@
+#!/bin/sh
+
+case "$OSTYPE" in
+    darwin*)
+        alias remove=trash
+        ;;
+    *)
+        alias remove=bgrm
+        ;;
+esac
+
+for arg; do
+    if [ -h "$arg" ]; then
+        rm -fv "$arg"
+    else
+        remove "$arg"
+    fi
+done
