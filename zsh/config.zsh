@@ -85,6 +85,9 @@ expand-or-complete-with-dots() {
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
 
+# Completion menu
+zstyle ':completion:*' menu select
+
 # Case-insensitive completion (after trying normal first)
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
