@@ -179,7 +179,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: 78566c37aeb3b7609eee84a7b10114a0f512830e
+    rev: cdc6d98a09db60d3dda58815616f78338cbdaa9d
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -214,7 +214,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: c514fe76c74a21292f0584a4b7cd59bf068004fc
+    rev: 06af3287fb5df1f955345d7b381c7142a80bccb0
 
 # continuously updated session files
 git module vim-obsession:
@@ -276,7 +276,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: ee4e527af01283a8aaee8c743c566c7fc8594eec
+    rev: 1e96f6b02a35aeae730478a10da66e3fceb1c82e
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -434,7 +434,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: fa1a27009c7653116d6dd1c25b1be4bf4e452e79
+    rev: a8a4c8b8550d93b6abb48acc64fabd04aa338af0
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -480,4 +480,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 4708cdd12292995b44ed8433190a1b3857ac35e8
+    rev: eba7ae6d6419974654a511ea391bebdfbaefc317

@@ -155,14 +155,16 @@ def _deinhibitmarkers(repo, nodes):
 def _createmarkers(orig, repo, relations, flag=0, date=None, metadata=None):
     """wrap markers create to make sure we de-inhibit target nodes"""
     # wrapping transactio to unify the one in each function
-    tr = repo.transaction('add-obsolescence-marker')
+    lock = tr = None
     try:
+        lock = repo.lock()
+        tr = repo.transaction('add-obsolescence-marker')
         orig(repo, relations, flag, date, metadata)
         precs = (r[0].node() for r in relations)
         _deinhibitmarkers(repo, precs)
         tr.close()
     finally:
-        tr.release()
+        lockmod.release(tr, lock)
 
 def transactioncallback(orig, repo, *args, **kwargs):
     """ Wrap localrepo.transaction to inhibit new obsolete changes """
