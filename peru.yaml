@@ -10,6 +10,7 @@ imports:
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
+    iterm2-zsh: iterm2
 
     # Scripts
     appify: scripts
@@ -108,6 +109,13 @@ git module autoenv:
 git module zsh-command-not-found:
     url: https://github.com/Tarrasch/zsh-command-not-found
     rev: c8c330b894a723ab7ba4dd2a8969cd71ea2df730
+
+curl module iterm2-zsh:
+    url: http://iterm2.com/misc/zsh_startup.in
+    move:
+        zsh_startup.in: iterm2.zsh
+    pick: iterm2.zsh
+    sha1: 7f6e6b65136b4526ea6a75a0b7cc21924fd44c06
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
