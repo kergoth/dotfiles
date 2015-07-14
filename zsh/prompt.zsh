@@ -40,9 +40,9 @@ unpushed () {
 need_push () {
   if [[ $(unpushed) == "" ]]
   then
-    echo " "
+    echo ""
   else
-    echo " with %{$fg_bold[magenta]%}unpushed%{$reset_color%} "
+    echo " with %{$fg_bold[magenta]%}unpushed%{$reset_color%}"
   fi
 }
 
@@ -72,7 +72,7 @@ directory_name() {
   echo "%{$fg_bold[cyan]%}$REPLY%{$reset_color%}"
 }
 
-export PROMPT=$'\n$(rb_prompt)$(directory_name) $(git_dirty)$(need_push)\n› '
+export PROMPT=$'$(rb_prompt)$(directory_name) $(git_dirty)$(need_push)› '
 set_prompt () {
   export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
 }
