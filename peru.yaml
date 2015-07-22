@@ -96,7 +96,7 @@ git module zsh-completions:
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: 396180f4ba6a62906770604a0ed3c3a4af4dea01
+    rev: f6c67f082633a6b929f8d61d6ef514334969f951
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -154,7 +154,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 7c4a90614792cf4b74e0f3386cc6b14046419312
+    rev: 03cc95cc198ea94a6a003a92cd0e58af4416ec25
 
 # go language support
 git module vim-golang:
@@ -169,7 +169,7 @@ git module vim-bitbake:
 # markdown runtime files
 git module vim-markdown:
     url: https://github.com/tpope/vim-markdown.git
-    rev: 409c37b205afa2f9d590e23de8171482d66770e2
+    rev: ba294150d192d40e51d749e30a7079977eb23a0b
 
 # taskpaper todo file support
 git module taskpaper:
@@ -480,4 +480,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: eba7ae6d6419974654a511ea391bebdfbaefc317
+    rev: a6012f2b4c62a2385bc4292090115f8c9c9d7611
