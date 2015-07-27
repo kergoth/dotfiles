@@ -18,6 +18,6 @@ if [ -z "$relativeto" ]; then
 fi
 
 for arg; do
-    testabs=${arg##[^/]*}
+    testabs=${arg##[!/]*}
     echo ${testabs:-$relativeto/$arg}
 done

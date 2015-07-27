@@ -15,7 +15,7 @@ done
 shift $((OPTIND - 1))
 
 abspath () {
-    testabs=${1##[^/]*}
+    testabs=${1##[!/]*}
     echo ${testabs:-$PWD/$1}
 }
 

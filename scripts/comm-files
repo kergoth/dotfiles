@@ -14,7 +14,7 @@ fi
 
 abspath () {
     for arg; do
-        testabs=${arg##[^/]*}
+        testabs=${arg##[!/]*}
         echo ${testabs:-$PWD/$arg}
     done
 }
