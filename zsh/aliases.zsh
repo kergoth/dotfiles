@@ -11,7 +11,8 @@ alias ll='ls -hl'
 alias la='ls -Ah'
 alias l='ls -1h'
 
-alias which='whence -avf'
+alias which=which-command
+alias which-command='whence -avf'
 alias tmux='tmux -u2 -f ~/.config/tmux/config'
 alias bback='ack --type=bitbake'
 alias chrome='google-chrome'
