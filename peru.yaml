@@ -24,8 +24,9 @@ imports:
     friendly-find: scripts
     gibo: scripts
     git-cherry-tree: scripts
-    git-pull-requests: scripts
     git-imerge: scripts
+    git-pull-requests: scripts
+    git-remote-hg: scripts
     git-wtf: scripts
     git|git-jump: scripts
     git|git-subtree: scripts
@@ -457,6 +458,11 @@ git module damian-conway-vim:
     url: https://github.com/thoughtstream/Damian-Conway-s-Vim-Setup
     rev: 94a406e82df449f65ae654e17d250d5b2fe74825
     pick: plugin/undowarnings.vim
+
+git module git-remote-hg:
+    url: https://github.com/fingolfin/git-remote-hg
+    pick: git-remote-hg
+    rev: 7cf244530945676ec32040a02c46e612762ca1ec
 
 # Not used
 git module dropdiff:
