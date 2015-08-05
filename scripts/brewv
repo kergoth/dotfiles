@@ -40,8 +40,8 @@ mkdir -p "$dest"
 
 for brew; do
     for bin in "$brewenv_dir/opt/$brew/bin/"*; do
-        if [ -e "$bin" ]; then
-            filename="${bin##*/}"
+        filename="${bin##*/}"
+        if [ -e "$bin" ] && [ -e "$brewenv_dir/bin/$filename" ]; then
             rm -f "$dest/$filename"
             cat >"$dest/$filename" <<END
 PATH="$brewenv_dir/bin:\$PATH"
