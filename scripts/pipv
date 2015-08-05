@@ -38,5 +38,12 @@ for script in "$venv_dir/bin/"*; do
             continue
             ;;
     esac
-    ln -sfv "$script" "$XDG_DATA_HOME/../bin/$filename"
+    mv "$script" "$script.orig"
+    cat >"$script" <<END
+#!/bin/sh
+scriptdir="\$(cd "\$(dirname "\$0")" && pwd)"
+. "\$scriptdir/activate"
+exec "\$0.orig" "$@"
+END
+    chmod +x "$script"
 done
