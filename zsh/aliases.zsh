@@ -25,6 +25,8 @@ alias mosh='mosh --forward-agent'
 alias smem='smem -k'
 alias ytdl=youtube-dl
 alias pipsi='pipsi --home="$WORKON_HOME"'
+# Convenience when pasting shell snippets
+alias '$='
 
 if (( $+commands[hub] )); then
     eval $(hub alias -s zsh)
