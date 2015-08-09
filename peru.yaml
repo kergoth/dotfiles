@@ -93,11 +93,11 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: d723fe922ab43c6fc89467d5545c336a30afd2b3
+    rev: 4894cf8c5fb68a118d4a2e7a95717b27f6776684
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: f6c67f082633a6b929f8d61d6ef514334969f951
+    rev: c70b9b201ac3b72ac0edb61d1718ddb47cdc91ec
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -116,7 +116,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: 7f6e6b65136b4526ea6a75a0b7cc21924fd44c06
+    sha1: 8052cf5c86e51c6cd7ded07e1b77b4904b8070cb
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -155,7 +155,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 03cc95cc198ea94a6a003a92cd0e58af4416ec25
+    rev: b319b694539017dcd789dc2c42f784a30d7b28b8
 
 # go language support
 git module vim-golang:
@@ -190,7 +190,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary.git
-    rev: 9c685131a5facfa0d643feca3a61b41c007d8170
+    rev: 7fb632aab475b1d2560fe18a329742ba3b4725c6
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -205,7 +205,7 @@ git module gundo:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround.git
-    rev: 772ab9587b7d1e2c3bae75395c9123803059ba8a
+    rev: 2d05440ad23f97a7874ebd9b5de3a0e65d25d85c
 
 # readline style insertion
 git module vim-rsi:
@@ -215,7 +215,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 06af3287fb5df1f955345d7b381c7142a80bccb0
+    rev: 69fea418692f76058d5cd95f0a17ed6b0f5bbb77
 
 # continuously updated session files
 git module vim-obsession:
@@ -435,7 +435,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: a8a4c8b8550d93b6abb48acc64fabd04aa338af0
+    rev: 72eab894a89d636429f7487a9a6853237cb11bbd
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -486,4 +486,4 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: a6012f2b4c62a2385bc4292090115f8c9c9d7611
+    rev: 7014a52acefa594d45c40b3eaefee70549bdcaeb
