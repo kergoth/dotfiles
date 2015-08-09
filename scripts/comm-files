@@ -28,14 +28,15 @@ if [ $# -eq 0 ]; then
     set -- -type f -o -type l
 fi
 
-fromfiles="$(abspath "$(mktemp -t "${0##*/}.XXXXXX")")"
-tofiles="$(abspath "$(mktemp -t "${0##*/}.XXXXXX")")"
+fromfiles="$(mktemp -t "${0##*/}.XXXXXX")"
+tofiles="$(mktemp -t "${0##*/}.XXXXXX")"
 trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
 echo >&2 "Comparing the list of files from $from to $to"
 
 cd "$from"
 find . "$@" | sort >"$fromfiles"
+cd - >/dev/null
 cd "$to"
 find . "$@" | sort >"$tofiles"
 comm "$fromfiles" "$tofiles" | \
