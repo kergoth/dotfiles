@@ -17,6 +17,10 @@ for link; do
         echo >&2 "No destination found for $link, skipping"
         ret=1
         continue
+    elif [ ! -e "$dest" ]; then
+        printf >&2 'Destination `%s` for `%s` does not exist, skipping\n' "$dest" "$link"
+        ret=1
+        continue
     fi
 
     mv "$link" "$backup"
