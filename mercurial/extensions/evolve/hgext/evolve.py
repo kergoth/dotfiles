@@ -2063,7 +2063,7 @@ def cmdnext(ui, repo, **opts):
         result = 1
     else:
         aspchildren = _aspiringchildren(repo, [repo['.'].rev()])
-        if not opts['evolve']:
+        if not opts['evolve'] or not aspchildren:
             ui.warn(_('no children\n'))
             if aspchildren:
                 msg = _('(%i unstable changesets to be evolved here, '

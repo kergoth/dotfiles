@@ -137,6 +137,9 @@ no children of any kind
   $ hg next
   no children
   [1]
+  $ hg next --evolve
+  no children
+  [1]
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [1] added b

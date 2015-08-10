@@ -166,7 +166,7 @@ def _createmarkers(orig, repo, relations, flag=0, date=None, metadata=None):
     finally:
         lockmod.release(tr, lock)
 
-def transactioncallback(orig, repo, *args, **kwargs):
+def transactioncallback(orig, repo, desc, *args, **kwargs):
     """ Wrap localrepo.transaction to inhibit new obsolete changes """
     def inhibitposttransaction(transaction):
         # At the end of the transaction we catch all the new visible and
@@ -176,8 +176,9 @@ def transactioncallback(orig, repo, *args, **kwargs):
         visibleobsolete = list(r for r in visibleobsolete if r not in ignoreset)
         if visibleobsolete:
             _inhibitmarkers(repo, [repo[r].node() for r in visibleobsolete])
-    transaction = orig(repo, *args, **kwargs)
-    transaction.addpostclose('inhibitposttransaction', inhibitposttransaction)
+    transaction = orig(repo, desc, *args, **kwargs)
+    if desc != 'strip':
+        transaction.addpostclose('inhibitposttransaction', inhibitposttransaction)
     return transaction
 
 def extsetup(ui):
