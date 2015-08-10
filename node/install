@@ -1,4 +1,6 @@
-: ${XDG_DATA_HOME:=~/.local/share}
-NPM_PACKAGES="$XDG_DATA_HOME/npm"
-mkdir -p "$NPM_PACKAGES"
-npm config set prefix "$NPM_PACKAGES"
+if which npm >/dev/null 2>&1; then
+    : ${XDG_DATA_HOME:=~/.local/share}
+    NPM_PACKAGES="$XDG_DATA_HOME/npm"
+    mkdir -p "$NPM_PACKAGES"
+    npm config set prefix "$NPM_PACKAGES"
+fi
