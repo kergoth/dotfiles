@@ -97,7 +97,7 @@ git module zsh-completions:
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: c70b9b201ac3b72ac0edb61d1718ddb47cdc91ec
+    rev: a21b96c9445c6b2aa5ef19009774f605936323c9
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -277,7 +277,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 1e96f6b02a35aeae730478a10da66e3fceb1c82e
+    rev: e0adb0d62e9deec936b9159c6fc680f48ae04ab9
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -435,7 +435,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 72eab894a89d636429f7487a9a6853237cb11bbd
+    rev: ee5391999f2d05d1e6bd06e273b4d34a3b8afe33
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit

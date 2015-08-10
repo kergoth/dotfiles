@@ -29,7 +29,7 @@ To start things off, let's make one public, immutable changeset::
   $ hg add file1
   $ hg commit -m'create new project'
   $ hg push
-  pushing to $TESTTMP/public
+  pushing to $TESTTMP/public (glob)
   searching for changes
   adding changesets
   adding manifests
@@ -40,7 +40,7 @@ and pull that into the development repository::
 
   $ cd ../dev-repo
   $ hg pull -u
-  pulling from $TESTTMP/test-repo
+  pulling from $TESTTMP/test-repo (glob)
   requesting all changes
   adding changesets
   adding manifests
@@ -82,7 +82,7 @@ Pull into dev-repo: obsolescence markers are transferred, but not
 the new obsolete changeset.
   $ cd ../dev-repo
   $ hg pull -u
-  pulling from $TESTTMP/test-repo
+  pulling from $TESTTMP/test-repo (glob)
   searching for changes
   adding changesets
   adding manifests
@@ -190,7 +190,7 @@ Alice commits a draft bug fix, pushes to review repo.
   $ hg commit -A -u alice -m 'fix bug 15 (v1)'
   adding file2
   $ hg push -B bug15
-  pushing to $TESTTMP/review
+  pushing to $TESTTMP/review (glob)
   searching for changes
   adding changesets
   adding manifests
@@ -207,7 +207,7 @@ await second review.
   $ echo 'Fix.' > file2
   $ hg amend -m 'fix bug 15 (v2)'
   $ hg push
-  pushing to $TESTTMP/review
+  pushing to $TESTTMP/review (glob)
   searching for changes
   adding changesets
   adding manifests
@@ -234,7 +234,7 @@ Bob commits a draft changeset, pushes to review repo.
   $ hg bookmark featureX
   $ hg commit -u bob -m 'implement feature X (v1)'
   $ hg push -B featureX
-  pushing to $TESTTMP/review
+  pushing to $TESTTMP/review (glob)
   searching for changes
   remote has heads on branch 'default' that are not known locally: cbdfbd5a5db2
   adding changesets
@@ -252,7 +252,7 @@ Bob receives first review, amends and pushes.
   $ echo 'do stuff' > file1
   $ hg amend -m 'implement feature X (v2)'
   $ hg push
-  pushing to $TESTTMP/review
+  pushing to $TESTTMP/review (glob)
   searching for changes
   remote has heads on branch 'default' that are not known locally: cbdfbd5a5db2
   adding changesets

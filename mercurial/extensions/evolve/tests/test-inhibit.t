@@ -744,15 +744,15 @@ We copy the inhibhit repo to inhibit2 and make some changes to push to inhibit
   71eb4f100663 tip
 
 Hidden commits cannot be pushed without --hidden
-  $ hg push -r 003a4735afde file://$pwd/inhibit2
-  pushing to file://$TESTTMP/inhibit2
+  $ hg push -r 003a4735afde $pwd/inhibit2
+  pushing to $TESTTMP/inhibit2
   abort: hidden revision '003a4735afde'!
   (use --hidden to access hidden revisions)
   [255]
 
 Visible commits can still be pushed
-  $ hg push -r 71eb4f100663 file://$pwd/inhibit2
-  pushing to file://$TESTTMP/inhibit2
+  $ hg push -r 71eb4f100663 $pwd/inhibit2
+  pushing to $TESTTMP/inhibit2
   searching for changes
   adding changesets
   adding manifests
