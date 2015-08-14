@@ -1,0 +1,62 @@
+#!/bin/sh
+# Install packages into isolated environments for npm/node, then link/wrap
+# binaries/scripts into $XDG_DATA_HOME/../bin
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+NPMENV_HOME="${NPMENV_HOME:-$XDG_DATA_HOME/npm_envs}"
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} NPMENV_NAME [NPM_INSTALL_ARGS..]"
+    echo >&2
+    echo >&2 "Existing isolated homebrew installations:"
+    for dir in "$NPMENV_HOME"/*/; do
+        if [ -e "$dir" ]; then
+            printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        fi
+    done
+    exit 2
+fi
+
+npmenv="$1"
+shift
+npmenv_dir="$NPMENV_HOME/$npmenv"
+mkdir -p "$npmenv_dir/bin"
+cat >"$npmenv_dir/bin/activate" <<END
+PATH="$npmenv_dir/bin:\$PATH"
+export MANPATH="$npmenv_dir/share/man:\$(manpath)"
+export NODE_PATH="$npmenv_dir/lib/node_modules:\$NODE_PATH"
+END
+. "$npmenv_dir/bin/activate"
+
+# To install npm, if we have node but not npm
+if ! which npm >/dev/null 2>&1; then
+    npm_config_prefix="$npmenv_dir" curl -L https://npmjs.org/install.sh | sh
+fi
+
+
+if [ $# -eq 0 ]; then
+    set -- "$npmenv"
+fi
+npm install -g --prefix="$npmenv_dir" "$@"
+
+dest="$XDG_DATA_HOME/../bin"
+mkdir -p "$dest"
+
+for bin in "$npmenv_dir/bin/"*; do
+    if [ -e "$bin" ]; then
+        filename="${bin##*/}"
+        case "$filename" in
+            activate):
+                continue
+                ;;
+        esac
+
+        rm -f "$dest/$filename"
+        cat >"$dest/$filename" <<END
+. "$npmenv_dir/bin/activate"
+exec "$npmenv_dir/bin/$filename" "\$@"
+END
+        chmod u+x "$dest/$filename"
+        echo >&2 "Created wrapper script at $dest/$filename"
+    fi
+done
