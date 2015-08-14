@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 current_path="$1"
 expected_install_path="$2"

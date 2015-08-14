@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # install AUR packages with cower
 
 mkdir -p "$HOME/Build"

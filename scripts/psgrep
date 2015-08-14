@@ -10,8 +10,11 @@ if [ -z "$pids" ]; then
     exit 1
 fi
 
-if echo $OSTYPE | grep -q "^darwin"; then
-    exec ps u -p"$pids"
-else
-    exec ps fu -p"$pids"
-fi
+case "$(uname -s)" in
+    Darwin)
+        exec ps u -p"$pids"
+        ;;
+    *)
+        exec ps fu -p"$pids"
+        ;;
+esac
