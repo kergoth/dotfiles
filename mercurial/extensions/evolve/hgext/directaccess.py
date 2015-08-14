@@ -13,6 +13,7 @@ from mercurial import revset
 from mercurial import error
 from mercurial import commands
 from mercurial import hg
+from mercurial import util
 from mercurial.i18n import _
 
 cmdtable = {}
@@ -126,6 +127,8 @@ def extsetup(ui):
     extensions.wrapfunction(hg, 'repository', _repository)
     setupdirectaccess()
 
+hashre = util.re.compile('[0-9a-fA-F]{1,40}')
+
 def gethashsymbols(tree):
     # Returns the list of symbols of the tree that look like hashes
     # for example for the revset 3::abe3ff it will return ('abe3ff')
@@ -137,7 +140,9 @@ def gethashsymbols(tree):
             int(tree[1])
             return []
         except ValueError as e:
-            return [tree[1]]
+            if hashre.match(tree[1]):
+                return [tree[1]]
+            return []
     elif len(tree) == 3:
         return gethashsymbols(tree[1]) + gethashsymbols(tree[2])
     else:

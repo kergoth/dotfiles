@@ -23,10 +23,14 @@ from mercurial import scmutil
 from mercurial import commands
 from mercurial import lock as lockmod
 from mercurial import bookmarks
+from mercurial import util
 from mercurial.i18n import _
 
 cmdtable = {}
 command = cmdutil.command(cmdtable)
+
+def _inhibitenabled(repo):
+    return util.safehasattr(repo, '_obsinhibit')
 
 def reposetup(ui, repo):
 
@@ -122,6 +126,9 @@ def _inhibitmarkers(repo, nodes):
     Content of <nodes> and all mutable ancestors are considered. Marker for
     obsolete revision only are created.
     """
+    if not _inhibitenabled(repo):
+        return
+
     newinhibit = repo.set('::%ln and obsolete()', nodes)
     if newinhibit:
         lock = tr = None
@@ -141,6 +148,9 @@ def _deinhibitmarkers(repo, nodes):
     This will be triggered when inhibited nodes received new obsolescence
     markers. Otherwise the new obsolescence markers would also be inhibited.
     """
+    if not _inhibitenabled(repo):
+        return
+
     deinhibited = repo._obsinhibit & set(nodes)
     if deinhibited:
         tr = repo.transaction('obsinhibit')
@@ -177,7 +187,7 @@ def transactioncallback(orig, repo, desc, *args, **kwargs):
         if visibleobsolete:
             _inhibitmarkers(repo, [repo[r].node() for r in visibleobsolete])
     transaction = orig(repo, desc, *args, **kwargs)
-    if desc != 'strip':
+    if desc != 'strip' and _inhibitenabled(repo):
         transaction.addpostclose('inhibitposttransaction', inhibitposttransaction)
     return transaction
 
@@ -190,9 +200,10 @@ def extsetup(ui):
 
         This will trickle down to other part of mercurial (hidden, log, etc)"""
         obs = obsfunc(repo)
-        getrev = repo.changelog.nodemap.get
-        for n in repo._obsinhibit:
-            obs.discard(getrev(n))
+        if _inhibitenabled(repo):
+            getrev = repo.changelog.nodemap.get
+            for n in repo._obsinhibit:
+                obs.discard(getrev(n))
         return obs
     try:
         extensions.find('directaccess')

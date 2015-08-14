@@ -760,3 +760,21 @@ Visible commits can still be pushed
   added 1 changesets with 1 changes to 1 files
   pushing 33 obsolescence markers (*) (glob)
   2 obsolescence markers added
+
+Pulling from a inhibit repo to a non-inhibit repo should work
+
+  $ cd ..
+  $ hg clone -q inhibit not-inhibit
+  $ cat >> not-inhibit/.hg/hgrc <<EOF
+  > [extensions]
+  > inhibit=!
+  > directaccess=!
+  > evolve=!
+  > EOF
+  $ cd not-inhibit
+  $ hg book -d foo
+  $ hg pull
+  pulling from $TESTTMP/inhibit
+  searching for changes
+  no changes found
+  adding remote bookmark foo

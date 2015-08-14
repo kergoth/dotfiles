@@ -93,7 +93,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 4894cf8c5fb68a118d4a2e7a95717b27f6776684
+    rev: fb1bf123198bef4710aafc7d59cce4e2e0a3dd20
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
@@ -165,7 +165,7 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: ec7b9514616efcceb405271082c268bd09b7f5f6
+    rev: a12529bee91dbdf631c419587bbdd4c136d60441
 
 # markdown runtime files
 git module vim-markdown:
@@ -435,7 +435,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: ee5391999f2d05d1e6bd06e273b4d34a3b8afe33
+    rev: bc7eec65dfcff71425a6adfc16790d5e15cf1ba1
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
