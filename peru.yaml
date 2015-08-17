@@ -16,6 +16,7 @@ imports:
     appify: scripts
     atach: scripts
     cheat: scripts
+    checkbashisms: scripts
     cpanm: scripts
     cwdiff: scripts
     dtrx: scripts
@@ -487,3 +488,10 @@ git module vitag:
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
     rev: 7014a52acefa594d45c40b3eaefee70549bdcaeb
+
+git module checkbashisms:
+    url: git://anonscm.debian.org/collab-maint/devscripts.git
+    move:
+        scripts/checkbashisms.pl: checkbashisms
+    pick: checkbashisms
+    rev: 3462d60b6cec856baa89f5e31c80f7d8c9681ad9
