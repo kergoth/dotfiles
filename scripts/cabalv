@@ -37,6 +37,7 @@ PATH="$cabal_sandbox_dir/bin:$PATH"
 if [ $# -eq 0 ]; then
     set -- "$cabal_sandbox_name"
 fi
+cabal update
 cabal install "$@"
 
 mkdir -p "$XDG_DATA_HOME/../bin"
