@@ -1,6 +1,6 @@
 #!/bin/sh
 # Get a list of process ids which match the provided pattern, excluding the
-# current process, and pass that process list to ps.
+# current process, and pass all their session IDs to ps.
 
 pids="$(pgrep -f "$*" | grep -vx "$$")"
 
