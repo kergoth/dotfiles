@@ -10,7 +10,7 @@ set --
 sed_current_path="${current_path/&/\&}"
 find "$current_path" -type f -perm +001 | while read f; do
     otool -L "$f" 2>/dev/null | grep -v ':$' | sed -e "s#^[^/]*/#/#; s, (.*,," | grep "^$expected_install_path/" >$tempfiles || continue
-    if [ $(wc -l <$tempfiles) = 0 ]; then
+    if [ ! -s "$tempfiles" ]; then
         continue
     fi
     echo >&2 "Processing $f.."

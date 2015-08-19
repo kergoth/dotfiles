@@ -89,7 +89,7 @@ main () {
         sips -i "$appname.app/Contents/Resources/app.icns" >/dev/null
     fi
 
-    if [ "$(wc -l <"$resourcesfile")" -gt 0 ]; then
+    if [ -s "$resourcesfile" ]; then
         while read resource; do
             cp -a "$resource" "$appname.app"/Contents/Resources/
         done <"$resourcesfile"
