@@ -43,7 +43,7 @@ for script in "$venv_dir/bin/"*; do
     printf >&2 '’%s’ -> ’%s’\n' "$link_name" "$script"
     cat >"$link_name" <<END
 #!/bin/bash
-. "/bin/activate"
+. "$venv_dir/bin/activate"
 exec "$venv_dir/bin/\${0##*/}" "\$@"
 END
     chmod +x "$link_name"
