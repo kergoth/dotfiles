@@ -117,7 +117,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: 8052cf5c86e51c6cd7ded07e1b77b4904b8070cb
+    sha1: c209630c4eb77d50053e469ef6f04ad8c3e634e1
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -278,7 +278,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: e0adb0d62e9deec936b9159c6fc680f48ae04ab9
+    rev: e428d711cc88289f581aa3c9bfcb4b5320074d4d
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -315,7 +315,7 @@ hg module friendly-find:
 git module gibo:
     url: https://github.com/simonwhitaker/gibo
     pick: gibo
-    rev: bad8be3d5a093beb2faf6d96b252699b1ecf61e8
+    rev: d2dd7e0db4571c01134e8295589b08cadffed627
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
@@ -487,11 +487,11 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 7014a52acefa594d45c40b3eaefee70549bdcaeb
+    rev: 47c70b3e1e388d8f9cc7c6d9687efc047df843ac
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 3462d60b6cec856baa89f5e31c80f7d8c9681ad9
+    rev: ecfa032adbda8d971ec92ff418aee0b92248363f
