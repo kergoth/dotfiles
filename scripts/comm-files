@@ -1,16 +1,21 @@
 #!/bin/sh
-# TODO: support -123 arguments the way comm itself does
 
-if [ $# -lt 2 ]; then
+usage () {
     cat >&2 <<END
-Usage: comm-files DIR1 DIR2 [find arguments..]
+Usage: comm-files [-123] DIR1 DIR2 [find arguments..]
 
 Compare the files within two directories, but not the contents of those files.
+
+Options (default: -3. To specify multiple, use a single argument, e.g. -23):
+
+     -1      Suppress printing of column 1.
+     -2      Suppress printing of column 2.
+     -3      Suppress printing of column 3.
 
 find arguments default to: -type f -o -type l
 END
     exit 1
-fi
+}
 
 abspath () {
     for arg; do
@@ -47,6 +52,10 @@ if echo "$comm_arg" | grep -q 3; then
     exclusion="$exclusion| "
 fi
 exclusion="${exclusion#|*}"
+
+if [ $# -lt 2 ]; then
+    usage
+fi
 
 from="$(abspath "$1")"
 to="$(abspath "$2")"
