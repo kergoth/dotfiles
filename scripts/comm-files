@@ -39,6 +39,9 @@ case "$1" in
         comm_arg="$1"
         shift
         ;;
+    -h)
+        usage
+        ;;
 esac
 
 exclusion=
