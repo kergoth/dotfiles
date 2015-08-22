@@ -19,6 +19,34 @@ abspath () {
     done
 }
 
+exclude () {
+    if [ -n "$exclusion" ]; then
+        grep -Ev "^$exclusion"
+    else
+        cat
+    fi
+}
+
+
+comm_arg=
+case "$1" in
+    -[123]*)
+        comm_arg="$1"
+        shift
+        ;;
+esac
+
+exclusion=
+if echo "$comm_arg" | grep -q 1; then
+    exclusion="-"
+fi
+if echo "$comm_arg" | grep -q 2; then
+    exclusion="$exclusion|+"
+fi
+if echo "$comm_arg" | grep -q 3; then
+    exclusion="$exclusion| "
+fi
+exclusion="${exclusion#|*}"
 
 from="$(abspath "$1")"
 to="$(abspath "$2")"
@@ -40,5 +68,5 @@ cd - >/dev/null
 cd "$to"
 find . "$@" | sort >"$tofiles"
 comm "$fromfiles" "$tofiles" | \
-    sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" | sort | \
-    ${PAGER:-more}
+    sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" | exclude | \
+        sort | ${PAGER:-more}
