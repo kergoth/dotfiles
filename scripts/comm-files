@@ -28,7 +28,7 @@ exclude () {
 }
 
 
-comm_arg=
+comm_arg=-3
 case "$1" in
     -[123]*)
         comm_arg="$1"
