@@ -1,10 +1,8 @@
-dotfiles
-========
+## dotfiles
 
 Experimentation with a new way of handling my dotfiles
 
-Installation
-------------
+### Installation
 
     curl -O https://raw.github.com/kergoth/dotfiles/master/bootstrap
     less bootstrap
