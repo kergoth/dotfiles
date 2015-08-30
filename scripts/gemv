@@ -19,7 +19,9 @@ fi
 
 gemenv="$1"
 shift
-gemenv_dir="$GEMENV_HOME/$gemenv"
+
+ruby_version="$(gem env | grep 'RUBY VERSION:' | cut -d: -f2 | awk '{print $1}')" || exit 1
+gemenv_dir="$GEMENV_HOME/$gemenv/$ruby_version"
 
 mkdir -p "$gemenv_dir/bin"
 cat >"$gemenv_dir/bin/activate" <<END
