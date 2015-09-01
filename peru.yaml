@@ -86,7 +86,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 3dc574190071ef59054f6d693132410b37aa3ae4
+    rev: 7ee9df915d3c0d02d4872806e954b3f86ce0ad12
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -278,7 +278,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 13c3ae2f0e63d64f1a9f771cfa90040b1b47f811
+    rev: 1f332c14aa3348c52cc915bd7e0d60da079a9239
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -431,7 +431,7 @@ hg module hg-extension-prompt:
 
 hg module hg-extension-shelve:
     url: https://bitbucket.org/astiob/hgshelve
-    rev: b81580adae4ecd2adb1c5ecdbb15154a8862dcae
+    rev: 4e1906e8723b13b3a8039327b8b0aa6a76a8f035
 
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
@@ -487,7 +487,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 3c2e7e4ce37bc68b54f23c62efd0be291e6dc450
+    rev: 0fe6035959a263efe7977d203221461e45c5a068
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git

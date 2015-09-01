@@ -82,7 +82,7 @@ class header(object):
         self.hunks = []
 
     def binary(self):
-        return util.any(h.startswith('index ') for h in self.header)
+        return any(h.startswith('index ') for h in self.header)
 
     def pretty(self, fp):
         for h in self.header:
@@ -105,7 +105,7 @@ class header(object):
         fp.write(''.join(self.header))
 
     def allhunks(self):
-        return util.any(self.allhunks_re.match(h) for h in self.header)
+        return any(self.allhunks_re.match(h) for h in self.header)
 
     def files(self):
         match = self.diffgit_re.match(self.header[0])
@@ -124,7 +124,7 @@ class header(object):
         return '<header %s>' % (' '.join(map(repr, self.files())))
 
     def special(self):
-        return util.any(self.special_re.match(h) for h in self.header)
+        return any(self.special_re.match(h) for h in self.header)
 
 def countchanges(hunk):
     """hunk -> (n+,n-)"""
