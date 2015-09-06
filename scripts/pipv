@@ -41,6 +41,7 @@ for script in "$venv_dir/bin/"*; do
 
     link_name="$XDG_DATA_HOME/../bin/$filename"
     printf >&2 '’%s’ -> ’%s’\n' "$link_name" "$script"
+    rm -f "$link_name"
     cat >"$link_name" <<END
 #!/bin/bash
 . "$venv_dir/bin/activate"
