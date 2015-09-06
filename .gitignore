@@ -1,4 +1,5 @@
 .DS_Store
+.flickrExclusion
 __pycache__
 *.pyo
 *.pyc
