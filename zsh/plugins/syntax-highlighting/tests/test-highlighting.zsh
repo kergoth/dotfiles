@@ -49,6 +49,7 @@
 
 local -a errors highlight_zone
 local -A observed_result
+integer something_failed=0
 
 # Load the main script.
 . ${0:h:h}/zsh-syntax-highlighting.zsh
@@ -60,13 +61,13 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=($1)
 for data_file in ${0:h:h}/highlighters/$1/test-data/*; do
 
   # Load the data and prepare checking it.
-  BUFFER= ; expected_region_highlight=(); errors=()
+  PREBUFFER= BUFFER= ; expected_region_highlight=(); errors=()
   echo -n "* ${data_file:t:r}: "
   . $data_file
 
-  # Check the data declares $BUFFER.
-  if [[ ${#BUFFER} -eq 0 ]]; then
-    errors+=("'BUFFER' is not declared or blank.")
+  # Check the data declares $PREBUFFER or $BUFFER.
+  if [[ ${#PREBUFFER} -eq 0 && ${#BUFFER} -eq 0 ]]; then
+    errors+=("Either 'PREBUFFER' or 'BUFFER' must be declared and non-blank")
   else
 
     # Check the data declares $expected_region_highlight.
@@ -107,9 +108,12 @@ for data_file in ${0:h:h}/highlighters/$1/test-data/*; do
     echo "OK"
   else
     echo "KO"
+    (( something_failed=1 ))
     for error in $errors; do
       echo "   - $error"
     done
   fi
 
 done
+
+exit $something_failed

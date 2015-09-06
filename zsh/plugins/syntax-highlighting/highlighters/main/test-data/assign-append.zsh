@@ -28,9 +28,8 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='A=1 b=("foo" bar)'
+BUFFER='a+=(lorem ipsum)'
 
 expected_region_highlight=(
-  "1 3 $ZSH_HIGHLIGHT_STYLES[assign]" # A=1
-  "8 12 $ZSH_HIGHLIGHT_STYLES[double-quoted-argument]" # "foo"
+  "1 4 $ZSH_HIGHLIGHT_STYLES[assign]" # a+=(
 )
