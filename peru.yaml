@@ -87,7 +87,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: eaffd88793e82e27b65017e669b545a3f97d33f5
+    rev: e13c5a1611d40af8f7f49520ce361caa52fa6854
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -497,11 +497,11 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 703287c761b198d98cde0488b0c565ae9e92d3cc
+    rev: 1be907716e4940d2387545e3e42b6411c9c58a6c
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: cc273a9df821817bbc8948c37ce337ff85e346f6
+    rev: d1fc7c1b6414631c463ca91d86e8620baf4ec91e
