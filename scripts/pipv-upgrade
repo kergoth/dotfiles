@@ -15,5 +15,5 @@ for env in "${WORKON_HOME}/"*/; do
             pip list -l -o --isolated --disable-pip-version-check | awk '{print $1}' | grep -vx setuptools | \
                 tr '\n' '\0' | xargs -0 pip install --disable-pip-version-check -U
         fi
-    ) || echo >&2 "Error upgrading for $env"
+    ) || { echo >&2 "Error upgrading for $env"; exit 1; }
 done
