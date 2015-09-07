@@ -9,10 +9,11 @@ for env in "${WORKON_HOME}/"*/; do
     (
         set -e
         . "$env/bin/activate"
-        pip install -U pip
         if pip freeze -l | grep -q "^$package=="; then
-            pip install -U "${env##*/}"
+            pip install --disable-pip-version-check -U pip "$package"
+        else
+            pip list -l -o --isolated --disable-pip-version-check | awk '{print $1}' | grep -vx setuptools | \
+                tr '\n' '\0' | xargs -0 pip install --disable-pip-version-check -U
         fi
-        #pip list -l -o --isolated --disable-pip-version-check | awk '{print $1}' | tr '\n' '\0' | xargs -0 pip install -U
     ) || echo >&2 "Error upgrading for $env"
 done
