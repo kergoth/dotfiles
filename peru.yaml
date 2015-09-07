@@ -33,6 +33,7 @@ imports:
     git|git-subtree: scripts
     icdiff: scripts
     iln: scripts
+    lesspipe: scripts
     moreutils: scripts
     planter: scripts
     pom: scripts
@@ -258,6 +259,15 @@ curl module rpm2cpio:
     move:
         rpm-4.12.0/scripts/rpm2cpio.sh: rpm2cpio
     pick: rpm2cpio
+
+git module lesspipe:
+    url: https://github.com/wofr06/lesspipe
+    pick:
+        - lesspipe.sh
+        - code2color
+        - tarcolor
+        - sxw2txt
+    rev: f444b8e88985822bab6b58e7ffa30d59cdaaedac
 
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
