@@ -2004,11 +2004,15 @@ def cmdprevious(ui, repo, **opts):
         shouldmove = opts.get('move_bookmark') and bm is not None
         ret = hg.update(repo, p.rev())
         if not ret:
-            if shouldmove:
-                repo._bookmarks[bm] = p.node()
-                repo._bookmarks.write()
-            else:
-                bmdeactivate(repo)
+            wlock = repo.wlock()
+            try:
+                if shouldmove:
+                    repo._bookmarks[bm] = p.node()
+                    repo._bookmarks.write()
+                else:
+                    bmdeactivate(repo)
+            finally:
+                wlock.release()
         displayer.show(p)
         return 0
     else:
@@ -2048,11 +2052,15 @@ def cmdnext(ui, repo, **opts):
         shouldmove = opts.get('move_bookmark') and bm is not None
         ret = hg.update(repo, c.rev())
         if not ret:
-            if shouldmove:
-                repo._bookmarks[bm] = c.node()
-                repo._bookmarks.write()
-            else:
-                bmdeactivate(repo)
+            wlock = repo.wlock()
+            try:
+                if shouldmove:
+                    repo._bookmarks[bm] = c.node()
+                    repo._bookmarks.write()
+                else:
+                    bmdeactivate(repo)
+            finally:
+                wlock.release()
         displayer.show(c)
         result = 0
     elif children:
@@ -2113,10 +2121,18 @@ def _reachablefrombookmark(repo, revs, mark):
         revs = sorted(revs)
     return marks, revs
 
-def _deletebookmark(ui, marks, mark):
-    del marks[mark]
-    marks.write()
-    ui.write(_("bookmark '%s' deleted\n") % mark)
+def _deletebookmark(repo, marks, mark):
+    wlock = lock = tr = None
+    try:
+        wlock = repo.wlock()
+        lock = repo.lock()
+        tr = repo.transaction('prune')
+        del marks[mark]
+        marks.recordchange(tr)
+        tr.close()
+        repo.ui.write(_("bookmark '%s' deleted\n") % mark)
+    finally:
+        lockmod.release(tr, lock, wlock)
 
 
 
@@ -2170,7 +2186,7 @@ def cmdprune(ui, repo, *revs, **opts):
         marks,revs = _reachablefrombookmark(repo, revs, bookmark)
         if not revs:
             # no revisions to prune - delete bookmark immediately
-            _deletebookmark(ui, marks, bookmark)
+            _deletebookmark(repo, marks, bookmark)
 
     if not revs:
         raise util.Abort(_('nothing to prune'))
@@ -2264,7 +2280,7 @@ def cmdprune(ui, repo, *revs, **opts):
 
         # update bookmarks
         if bookmark:
-            _deletebookmark(ui, marks, bookmark)
+            _deletebookmark(repo, marks, bookmark)
 
         # create markers
         obsolete.createmarkers(repo, relations, metadata=metadata)

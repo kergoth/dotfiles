@@ -87,7 +87,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: e13c5a1611d40af8f7f49520ce361caa52fa6854
+    rev: a8afbdf2f548b6782d2a33d40c6d72464e23beee
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -95,11 +95,11 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: fb1bf123198bef4710aafc7d59cce4e2e0a3dd20
+    rev: c2dde89fb34e2734106e50689bf4127f6b0a288d
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: a21b96c9445c6b2aa5ef19009774f605936323c9
+    rev: f574b4a3de989e64c707931d2b7f494be4924fe1
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -157,7 +157,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: b319b694539017dcd789dc2c42f784a30d7b28b8
+    rev: b7b23001def8d2ae816ff6dd772cd50976189e0e
 
 # go language support
 git module vim-golang:
@@ -192,7 +192,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary.git
-    rev: 7fb632aab475b1d2560fe18a329742ba3b4725c6
+    rev: e0f4850d78137a35b9461c530078bd77f39e4dce
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -233,7 +233,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: b8bd1804f432ecf1bab730949c82b93b0fc5fede
+    sha1: da0514e484f74648a890c0467d61ca415379f791
 
 hg module smem:
     url: http://selenic.com/repo/smem
@@ -446,7 +446,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: bc7eec65dfcff71425a6adfc16790d5e15cf1ba1
+    rev: e8f7e4c5353792aa35a304fd601f6037d420297e
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -497,11 +497,11 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 1be907716e4940d2387545e3e42b6411c9c58a6c
+    rev: 8164240f6f0aaed2055dae45fc0e5c6f6ec30b3d
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: d1fc7c1b6414631c463ca91d86e8620baf4ec91e
+    rev: 287ee6febc4012f920a94686486d529c67ab9523

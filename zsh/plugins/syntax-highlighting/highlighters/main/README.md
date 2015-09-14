@@ -35,19 +35,23 @@ This highlighter defines the following styles:
 * `path` - paths
 * `path_prefix` - path prefixes
 * `path_approx` - approximated paths
-* `globbing` - globbing expressions
-* `history-expansion` - history expansion expressions
-* `single-hyphen-option` - single hyphen options
-* `double-hyphen-option` - double hyphen options
-* `back-quoted-argument` - backquoted expressions
-* `single-quoted-argument` - single quoted arguments
-* `double-quoted-argument` - double quoted arguments
-* `dollar-double-quoted-argument` -  dollar double quoted arguments
-* `back-double-quoted-argument` -  back double quoted arguments
+* `globbing` - globbing expressions (`*.txt`)
+* `history-expansion` - history expansion expressions (`!foo` and `^foo^bar`)
+* `single-hyphen-option` - single hyphen options (-o)
+* `double-hyphen-option` - double hyphen options (--option)
+* `back-quoted-argument` - backquoted expressions (`` `foo` ``)
+* `single-quoted-argument` - single quoted arguments (`` 'foo' ``)
+* `double-quoted-argument` - double quoted arguments (`` "foo" ``)
+* `dollar-quoted-argument` - dollar quoted arguments (`` $'foo' ``)
+* `dollar-double-quoted-argument` -  dollar double quoted arguments ($foo inside "")
+* `back-double-quoted-argument` -  back double quoted arguments (\x inside "")
 * `assign` - variable assignments
 * `default` - parts of the buffer that do not match anything
 
 To override one of those styles, change its entry in `ZSH_HIGHLIGHT_STYLES`, for example in `~/.zshrc`:
+
+    # Declare the variable
+    typeset -A ZSH_HIGHLIGHT_STYLES
 
     # To differentiate aliases from other command types
     ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
@@ -58,4 +62,5 @@ To override one of those styles, change its entry in `ZSH_HIGHLIGHT_STYLES`, for
     # To disable highlighting of globbing expressions
     ZSH_HIGHLIGHT_STYLES[globbing]='none'
 
-The syntax for declaring styles is [documented here](http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#SEC135).
+The syntax for declaring styles is documented in [the `zshzle(1)` manual
+page](http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#SEC135).

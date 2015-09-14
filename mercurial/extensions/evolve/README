@@ -51,6 +51,11 @@ add a feature. To run the tests:
 Changelog
 =========
 
+5.2.1 --
+
+- prune: fixed possible issue with lock and bookmark
+- next/prev: fixed possible issue with lock and bookmark
+
 5.2.0 -- 2015-06-25
 
 - evolve: gain a --rev option to control what revisions to evolve (issue4391)
