@@ -38,7 +38,7 @@ for link; do
     fi
 
     mv "$link" "$backup"
-    cp -av "$dest" "${link##*/}" || {
+    cp -av "$dest" "$link" || {
         ret=$?
         echo >&2 "Restoring original link for $link"
         mv "$backup" "$link"
