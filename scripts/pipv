@@ -49,3 +49,15 @@ exec "$venv_dir/bin/\${0##*/}" "\$@"
 END
     chmod +x "$link_name"
 done
+
+pydoc="$venv_dir/bin/pydoc"
+if [ ! -e "$pydoc" ]; then
+    cat >"$pydoc" <<END
+#!$venv_dir/bin/python
+
+import pydoc
+if __name__ == '__main__':
+    pydoc.cli()
+END
+    chmod +x "$pydoc"
+fi
