@@ -27,6 +27,7 @@ imports:
     git-cherry-tree: scripts
     git-imerge: scripts
     git-pull-requests: scripts
+    git-remote-dropbox: scripts
     git-remote-hg: scripts
     git-wtf: scripts
     git|git-jump: scripts
@@ -259,6 +260,11 @@ curl module rpm2cpio:
     move:
         rpm-4.12.0/scripts/rpm2cpio.sh: rpm2cpio
     pick: rpm2cpio
+
+git module git-remote-dropbox:
+    url: https://github.com/anishathalye/git-remote-dropbox
+    pick: git-remote-dropbox
+    rev: c9ff8a99269d4b0589446c4945fe93e391a25495
 
 git module lesspipe:
     url: https://github.com/wofr06/lesspipe
