@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
+# Copyright (c) 2015 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,8 +28,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER=": \$'*'"
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]=$unused_highlight
+BUFFER=": \$'*' 'foo'"
 
 expected_region_highlight=(
   "3 6 $ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]" # $'*' - not a glob
+  "8 12 $ZSH_HIGHLIGHT_STYLES[single-quoted-argument]" # 'foo'
 )

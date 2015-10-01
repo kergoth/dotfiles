@@ -28,9 +28,25 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+alias alias1="unused expansion"
+alias -s alias2="echo"
+alias1() {} # to check that it's highlighted as an alias, not as a function
 
-expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+ZSH_HIGHLIGHT_STYLES[alias]=$unused_highlight
+BUFFER='x.alias2; alias1'
+
+# Set expected_region_highlight as a function of zsh version.
+#
+# Highlight of suffix alias requires zsh-5.1.1 or newer; see issue #126,
+# and commit 36403 to zsh itself.  Therefore, check if the requisite zsh
+# functionality is present, and skip verifying suffix-alias highlighting
+# if it isn't.
+expected_region_highlight=()
+if [[ "$(type -w x.alias2)" == *suffix* ]]; then
+  expected_region_highlight+=(
+    "1 8 $ZSH_HIGHLIGHT_STYLES[suffix-alias]" # x.alias2
+  )
+fi
+expected_region_highlight+=(
+  "11 16 $ZSH_HIGHLIGHT_STYLES[alias]" # alias1
 )

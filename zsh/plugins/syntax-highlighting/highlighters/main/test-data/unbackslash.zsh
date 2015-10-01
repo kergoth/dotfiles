@@ -28,9 +28,9 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+ZSH_HIGHLIGHT_STYLES[command]=$unused_highlight
+BUFFER='\sh'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 3 $ZSH_HIGHLIGHT_STYLES[command]" # \sh (runs 'sh', bypassing aliases)
 )

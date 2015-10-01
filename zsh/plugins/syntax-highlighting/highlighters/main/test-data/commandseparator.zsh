@@ -28,9 +28,11 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+ZSH_HIGHLIGHT_STYLES[commandseparator]=$unused_highlight
+
+BUFFER=':; pwd'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "2 2 $ZSH_HIGHLIGHT_STYLES[commandseparator]" # ;
+  "4 6 $ZSH_HIGHLIGHT_STYLES[builtin]" # pwd
 )

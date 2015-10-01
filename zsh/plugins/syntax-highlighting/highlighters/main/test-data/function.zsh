@@ -28,9 +28,21 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+ZSH_HIGHLIGHT_STYLES[function]=$unused_highlight
+cd() {
+  builtin cd "$@"
+}
+ls() {
+  command ls "$@"
+}
+BUFFER='cd;ls'
+
+# Use $unused_highlight to see that function highlighting has precedence over command and builtin
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 2 $ZSH_HIGHLIGHT_STYLES[function]" # cd
+  "4 5 $ZSH_HIGHLIGHT_STYLES[function]" # ls
 )
+
+# don't 'unfunction cd ls', since cd() and ls() should still be a functions
+# when _zsh_highlight runs.  Leaving the wrapper functions is harmless.

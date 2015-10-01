@@ -28,9 +28,13 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+# Must be at command word, since the word following 'if' isn't currently considered
+# a command word (issue #207).
+#
+# An opening '((' without matching '))' is highlighted correctly under zsh-5.1.1-52-g4bed2cf
+# or newer, only (issue #188).
+BUFFER='(( x == 42 ))'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 2 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # ((
 )

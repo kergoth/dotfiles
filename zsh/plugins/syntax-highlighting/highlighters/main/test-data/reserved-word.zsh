@@ -28,9 +28,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+ZSH_HIGHLIGHT_STYLES[reserved-word]=$unused_highlight
+BUFFER='repeat "1" do done'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 6 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # repeat
+  "8 10 $ZSH_HIGHLIGHT_STYLES[double-quoted-argument]" # "1"
 )

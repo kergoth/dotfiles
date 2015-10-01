@@ -28,9 +28,9 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=$unused_highlight
+BUFFER='hello --world'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "7 13 $ZSH_HIGHLIGHT_STYLES[double-hyphen-option]" # --world
 )

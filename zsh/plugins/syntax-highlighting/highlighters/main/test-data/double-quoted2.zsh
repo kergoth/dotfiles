@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,9 +28,11 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+# Similar to dollar-quoted3.zsh
+# This test checks that the 'r' gets highlighted correctly.  Do not append to the BUFFER.
+BUFFER=': "foo$bar'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "3 6 $ZSH_HIGHLIGHT_STYLES[double-quoted-argument]" # "foo
+  "7 10 $ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]" # $bar
 )

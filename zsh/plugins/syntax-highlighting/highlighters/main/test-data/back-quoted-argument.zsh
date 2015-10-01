@@ -28,9 +28,9 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=$unused_highlight
+BUFFER='echo `echo 42`'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "6 14 $ZSH_HIGHLIGHT_STYLES[back-quoted-argument]"
 )

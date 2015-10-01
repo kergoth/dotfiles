@@ -88,11 +88,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: a8afbdf2f548b6782d2a33d40c6d72464e23beee
+    rev: 07fd773d7e619d685514784567f4f904f2f1d945
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: c4a83561a12b898ff7145856d0e6ae50757e28ba
+    rev: 2c295432175990c1bb4e90bc13f609daa67a25d6
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
@@ -100,7 +100,7 @@ git module zsh-completions:
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: f574b4a3de989e64c707931d2b7f494be4924fe1
+    rev: 5e466526d8abc1865691d238b660b2a8591b61fc
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -123,7 +123,7 @@ curl module iterm2-zsh:
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: fa6d1ad4b4c751706a06f7fda2ec313b9287c89e
+    rev: 39bd36d861193685dabc6be54c132c70416fdc75
     pick: git-imerge
 
 git module cheat:
@@ -144,7 +144,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
     export: autoload/
-    rev: b9fb0dfd811004010f5f6903edef42d6004ebea2
+    rev: b4174e4d1a16e7f0c5c6dfca923269a20a9f50c2
 
 # secure alternative to vim modelines
 git module securemodelines:
@@ -158,7 +158,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: b7b23001def8d2ae816ff6dd772cd50976189e0e
+    rev: 073f3a37b9a7c2db488802e0da7b8d84fef2ab84
 
 # go language support
 git module vim-golang:
@@ -264,7 +264,7 @@ curl module rpm2cpio:
 git module git-remote-dropbox:
     url: https://github.com/anishathalye/git-remote-dropbox
     pick: git-remote-dropbox
-    rev: c9ff8a99269d4b0589446c4945fe93e391a25495
+    rev: 1997b9968e61b77416a3d97f645e1731cc270ef1
 
 git module lesspipe:
     url: https://github.com/wofr06/lesspipe
@@ -294,7 +294,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 1f332c14aa3348c52cc915bd7e0d60da079a9239
+    rev: 9a55c7ac9ff77019317fa37b5239a9a2fd5e89f2
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -464,7 +464,7 @@ curl module zsh-globalias:
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
-    rev: e56411daa979996297295515422b618e7419f8fb
+    rev: 37242335a31bddad1a65f55c54639cf9deab96e1
 
 git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
@@ -503,11 +503,11 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 8164240f6f0aaed2055dae45fc0e5c6f6ec30b3d
+    rev: e1217a888a6d1f3266ca610b04d1752cea837438
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 287ee6febc4012f920a94686486d529c67ab9523
+    rev: fec01a5eb0ca5eca331a6faef674bce343a77662

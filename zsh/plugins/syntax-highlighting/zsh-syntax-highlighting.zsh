@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
+# Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -45,7 +45,7 @@ _zsh_highlight()
   # Store the previous command return code to restore it whatever happens.
   local ret=$?
 
-  setopt localoptions nowarncreateglobal
+  setopt localoptions warncreateglobal
 
   # Do not highlight if there are more than 300 chars in the buffer. It's most
   # likely a pasted command or a huge list of files in that case..
@@ -55,6 +55,7 @@ _zsh_highlight()
   [[ $PENDING -gt 0 ]] && return $ret
 
   # Reset region highlight to build it from scratch
+  typeset -ga region_highlight
   region_highlight=();
 
   {
@@ -92,10 +93,41 @@ _zsh_highlight()
 
     done
 
-  } always {
-    _ZSH_HIGHLIGHT_PRIOR_BUFFER=$BUFFER
-    _ZSH_HIGHLIGHT_PRIOR_CURSOR=$CURSOR
+    # Re-apply zle_highlight settings
+    () {
+      if (( REGION_ACTIVE )) ; then
+        # zle_highlight[region] defaults to 'standout' if unspecified
+        local region="${${zle_highlight[(r)region:*]#region:}:-standout}"
+        integer start end
+        if (( MARK > CURSOR )) ; then
+          start=$CURSOR end=$MARK
+        else
+          start=$MARK end=$CURSOR
+        fi
+        region_highlight+=("$start $end $region")
+      fi
+    }
+    # YANK_ACTIVE is only available in zsh-5.1.1 and newer
+    (( $+YANK_ACTIVE )) && () {
+      if (( YANK_ACTIVE )) ; then
+        # zle_highlight[paste] defaults to 'standout' if unspecified
+        local paste="${${zle_highlight[(r)paste:*]#paste:}:-standout}"
+        integer start end
+        if (( YANK_END > YANK_START )) ; then
+          start=$YANK_START end=$YANK_END
+        else
+          start=$YANK_END end=$YANK_START
+        fi
+        region_highlight+=("$start $end $paste")
+      fi
+    }
+
     return $ret
+
+
+  } always {
+    typeset -g _ZSH_HIGHLIGHT_PRIOR_BUFFER="$BUFFER"
+    typeset -gi _ZSH_HIGHLIGHT_PRIOR_CURSOR=$CURSOR
   }
 }
 
@@ -139,7 +171,7 @@ _zsh_highlight_bind_widgets()
 
   # Override ZLE widgets to make them invoke _zsh_highlight.
   local cur_widget
-  for cur_widget in ${${(f)"$(builtin zle -la)"}:#(.*|_*|orig-*|run-help|which-command|beep|yank-pop)}; do
+  for cur_widget in ${${(f)"$(builtin zle -la)"}:#(.*|_*|orig-*|run-help|which-command|beep|yank-pop|set-local-history)}; do
     case $widgets[$cur_widget] in
 
       # Already rebound event: do nothing.
@@ -211,8 +243,8 @@ _zsh_highlight_load_highlighters "${ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR:-${${0:A}:h}/
 # Reset scratch variables when commandline is done.
 _zsh_highlight_preexec_hook()
 {
-  _ZSH_HIGHLIGHT_PRIOR_BUFFER=
-  _ZSH_HIGHLIGHT_PRIOR_CURSOR=
+  typeset -g _ZSH_HIGHLIGHT_PRIOR_BUFFER=
+  typeset -gi _ZSH_HIGHLIGHT_PRIOR_CURSOR=
 }
 autoload -U add-zsh-hook
 add-zsh-hook preexec _zsh_highlight_preexec_hook 2>/dev/null || {

@@ -28,9 +28,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+BUFFER='!foo bar !baz'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 4 $ZSH_HIGHLIGHT_STYLES[history-expansion]" # !foo
+  "6 8 $ZSH_HIGHLIGHT_STYLES[default]" # bar
+  "10 13 $ZSH_HIGHLIGHT_STYLES[history-expansion]" # !baz
 )

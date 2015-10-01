@@ -28,9 +28,11 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+# Redirection before and after the command word are implemented differently; test both.
+ZSH_HIGHLIGHT_STYLES[redirection]=$unused_highlight
+BUFFER='<<<foo echo >>&!bar'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 3 $ZSH_HIGHLIGHT_STYLES[redirection]" # <<<
+  "13 16 $ZSH_HIGHLIGHT_STYLES[redirection]" # >>&!
 )

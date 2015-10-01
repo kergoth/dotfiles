@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
+# Copyright (c) 2015 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,10 +28,12 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER=': foo* bar?'
+BUFFER=': foo* bar? *baz qux\?'
 
 expected_region_highlight=(
   "1 1 $ZSH_HIGHLIGHT_STYLES[builtin]" # :
   "3 6 $ZSH_HIGHLIGHT_STYLES[globbing]" # foo*
   "8 11 $ZSH_HIGHLIGHT_STYLES[globbing]" # bar?
+  "13 16 $ZSH_HIGHLIGHT_STYLES[globbing]" # *baz
+  "18 22 $ZSH_HIGHLIGHT_STYLES[default]" # qux\?
 )

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
+# Copyright (c) 2015 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -34,5 +34,5 @@ BUFFER='ls ~D/path-tilde-named.zsh'
 
 expected_region_highlight=(
   "1 2  $ZSH_HIGHLIGHT_STYLES[command]" # ls
-  "4 23 $ZSH_HIGHLIGHT_STYLES[path]"    # ~D/path-tilde-named.zsh
+  "4 26 $ZSH_HIGHLIGHT_STYLES[path]"    # ~D/path-tilde-named.zsh
 )

@@ -28,9 +28,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+# without the trailing space, it's highlighted as path_approx (issue #187, issue #204)
+BUFFER='echo; ; '
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "5 5 $ZSH_HIGHLIGHT_STYLES[commandseparator]" # ;
+  "7 7 $ZSH_HIGHLIGHT_STYLES[unknown-token]" # ;
 )

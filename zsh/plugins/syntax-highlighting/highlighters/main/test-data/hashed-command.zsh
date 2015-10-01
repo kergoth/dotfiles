@@ -28,9 +28,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='noglob echo *; echo *'
+hash zsh_syntax_highlighting_hash=/doesnotexist
+ZSH_HIGHLIGHT_STYLES[hashed-command]=$unused_highlight
+BUFFER='zsh_syntax_highlighting_hash'
 
 expected_region_highlight=(
-  "13 13 $ZSH_HIGHLIGHT_STYLES[default]" # *
-  "21 21 $ZSH_HIGHLIGHT_STYLES[globbing]" # *
+  "1 28 $ZSH_HIGHLIGHT_STYLES[hashed-command]"
 )

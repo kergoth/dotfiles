@@ -247,7 +247,8 @@ You can selectively disable some of the errors found by checkers either
 using |'syntastic_quiet_messages'|, or by specifying a list of patterns in
 |'syntastic_ignore_files'|.
 
-See also: |'syntastic_<filetype>_<checker>_quiet_messages'|.
+See also: |'syntastic_<filetype>_<checker>_quiet_messages'| and
+|'b:syntastic_skip_checks'|.
 
 ==============================================================================
 3. Commands                                               *syntastic-commands*
@@ -356,7 +357,7 @@ Default: 1
 This option controls which errors are echoed to the command window if
 |'syntastic_echo_current_error'| is set and multiple errors are found on the
 same line. When the option is enabled, the first error corresponding to the
-current column is show. Otherwise, the first error on the current line is
+current column is shown. Otherwise, the first error on the current line is
 echoed, regardless of the cursor position on the current line.
 
 When dealing with very large lists of errors, disabling this option can speed
@@ -572,12 +573,25 @@ ones produced by "pylint": >
 Default: [Syntax: line:%F (%t)]
 Use this option to control what the syntastic statusline text contains. Several
 magic flags are available to insert information:
-    %e - number of errors
-    %w - number of warnings
-    %t - total number of warnings and errors
+    %e  - number of errors
+    %w  - number of warnings
+    %t  - total number of warnings and errors
+    %ne - filename of file containing first error
+    %nw - filename of file containing first warning
+    %N  - filename of file containing first warning or error
+    %pe - filename with path of file containing first error
+    %pw - filename with path of file containing first warning
+    %P  - filename with path of file containing first warning or error
     %fe - line number of first error
     %fw - line number of first warning
-    %F - line number of first warning or error
+    %F  - line number of first warning or error
+
+These flags accept width and alignment controls similar to the ones used by
+|'statusline'| flags:
+    %-0{minwid}.{maxwid}{flag}
+
+All fields except {flag} are optional. A single percent sign can be given as
+"%%".
 
 Several additional flags are available to hide text under certain conditions:
     %E{...} - hide the text in the brackets unless there are errors
