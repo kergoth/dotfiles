@@ -67,6 +67,7 @@ imports:
     vim-airline: vim/bundle/airline
     vim-bitbake: vim/bundle/bitbake
     vim-commentary: vim/bundle/commentary
+    vim-ctrlp: vim/bundle/ctrlp
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-golang: vim/bundle/golang
@@ -511,3 +512,7 @@ git module checkbashisms:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
     rev: fec01a5eb0ca5eca331a6faef674bce343a77662
+
+git module vim-ctrlp:
+    url: https://github.com/kien/ctrlp.vim
+    rev: b5d3fe66a58a13d2ff8b6391f4387608496a030f

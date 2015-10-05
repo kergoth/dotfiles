@@ -580,6 +580,9 @@ nmap <leader>G :GundoToggle<CR>
 let g:Modeliner_format = 'fenc= sts= sw= ts= et'
 nmap <leader>m :Modeliner<CR>
 
+nnoremap <silent> <leader>b :<c-u>CtrlPBuffer<cr>
+nnoremap <silent> <c-b> :<c-u>CtrlPBuffer<cr>
+
 " Add foldlevel to allowed items in modelines
 let g:secure_modelines_allowed_items = [
             \ "textwidth",   "tw",
