@@ -17,6 +17,9 @@
 [apply]
 	whitespace = fix
 
+[rebase]
+	autosquash = true
+
 [status]
 	submodulesummary = true
 
