@@ -1029,7 +1029,11 @@ def _installimportobsolete(ui):
 @eh.wrapfunction(mercurial.cmdutil, 'tryimportone')
 def tryimportone(orig, ui, repo, hunk, parents, opts, *args, **kwargs):
     extracted = patch.extract(ui, hunk)
-    expected = extracted[5]
+    if util.safehasattr(extracted, 'get'):
+        # mercurial 3.6 return a dictionary there
+        expected = extracted.get('nodeid')
+    else:
+        expected = extracted[5]
     if expected is not None:
         expected = node.bin(expected)
     oldextract = patch.extract

@@ -220,7 +220,7 @@ endfunction
 
 augroup fugitive
   autocmd!
-  autocmd BufNewFile,BufReadPost * call fugitive#detect(expand('<amatch>:p'))
+  autocmd BufNewFile,BufReadPost * call fugitive#detect(expand('%:p'))
   autocmd FileType           netrw call fugitive#detect(expand('%:p'))
   autocmd User NERDTreeInit,NERDTreeNewRoot call fugitive#detect(b:NERDTreeRoot.path.str())
   autocmd VimEnter * if expand('<amatch>')==''|call fugitive#detect(getcwd())|endif
@@ -404,6 +404,11 @@ function! s:repo_superglob(base) dict abort
     if a:base !~# '^/'
       let heads = ["HEAD","ORIG_HEAD","FETCH_HEAD","MERGE_HEAD"]
       let heads += sort(split(s:repo().git_chomp("rev-parse","--symbolic","--branches","--tags","--remotes"),"\n"))
+      " Add any stashes.
+      if filereadable(s:repo().dir('refs/stash'))
+        let heads += ["stash"]
+        let heads += sort(split(s:repo().git_chomp("stash","list","--pretty=format:%gd"),"\n"))
+      endif
       call filter(heads,'v:val[ 0 : strlen(a:base)-1 ] ==# a:base')
       let results += heads
     endif
@@ -1328,7 +1333,12 @@ function! s:Edit(cmd,bang,...) abort
   let buffer = s:buffer()
   if a:cmd !~# 'read'
     if &previewwindow && getbufvar('','fugitive_type') ==# 'index'
-      wincmd p
+      if winnr('$') == 1
+        let tabs = (&go =~# 'e' || !has('gui_running')) && &stal && (tabpagenr('$') >= &stal)
+        execute 'rightbelow' (&lines - &previewheight - &cmdheight - tabs - 1 - !!&laststatus).'new'
+      else
+        wincmd p
+      endif
       if &diff
         let mywinnr = winnr()
         for winnr in range(winnr('$'),1,-1)
@@ -1456,6 +1466,9 @@ function! s:Write(force,...) abort
   let mytab = tabpagenr()
   let mybufnr = bufnr('')
   let path = a:0 ? join(a:000, ' ') : s:buffer().path()
+  if empty(path)
+    return 'echoerr '.string('fugitive: cannot determine file path')
+  endif
   if path =~# '^:\d\>'
     return 'write'.(a:force ? '! ' : ' ').s:fnameescape(s:repo().translate(s:buffer().expand(path)))
   endif
@@ -1730,10 +1743,15 @@ endfunction
 call s:add_methods('buffer',['compare_age'])
 
 function! s:Diff(vert,...) abort
+  let args = copy(a:000)
+  let post = ''
+  if get(args, 0) =~# '^+'
+    let post = remove(args, 0)[1:-1]
+  endif
   let vert = empty(a:vert) ? s:diff_modifier(2) : a:vert
   if exists(':DiffGitCached')
     return 'DiffGitCached'
-  elseif (!a:0 || a:1 == ':') && s:buffer().commit() =~# '^[0-1]\=$' && s:repo().git_chomp_in_tree('ls-files', '--unmerged', '--', s:buffer().path()) !=# ''
+  elseif (empty(args) || args[0] == ':') && s:buffer().commit() =~# '^[0-1]\=$' && s:repo().git_chomp_in_tree('ls-files', '--unmerged', '--', s:buffer().path()) !=# ''
     let vert = empty(a:vert) ? s:diff_modifier(3) : a:vert
     let nr = bufnr('')
     execute 'leftabove '.vert.'split `=fugitive#buffer().repo().translate(s:buffer().expand('':2''))`'
@@ -1745,11 +1763,11 @@ function! s:Diff(vert,...) abort
     call s:diffthis()
     wincmd p
     call s:diffthis()
-    return ''
-  elseif a:0
-    let arg = join(a:000, ' ')
+    return post
+  elseif len(args)
+    let arg = join(args, ' ')
     if arg ==# ''
-      return ''
+      return post
     elseif arg ==# '/'
       let file = s:buffer().path('/')
     elseif arg ==# ':'
@@ -1788,7 +1806,7 @@ function! s:Diff(vert,...) abort
       wincmd p
       call feedkeys(winnr."\<C-W>w", 'n')
     endif
-    return ''
+    return post
   catch /^fugitive:/
     return 'echoerr v:errmsg'
   endtry
@@ -2393,11 +2411,15 @@ function! s:ReplaceCmd(cmd,...) abort
         let prefix = 'env GIT_INDEX_FILE='.s:shellesc(a:1).' '
       endif
     endif
+    let redir = ' > '.tmp
+    if &shellpipe =~ '2>&1'
+      let redir .= ' 2>&1'
+    endif
     if s:winshell()
       let cmd_escape_char = &shellxquote == '(' ?  '^' : '^^^'
-      call system('cmd /c "'.prefix.s:gsub(a:cmd,'[<>]', cmd_escape_char.'&').' > '.tmp.'"')
+      call system('cmd /c "'.prefix.s:gsub(a:cmd,'[<>]', cmd_escape_char.'&').redir.'"')
     else
-      call system(' ('.prefix.a:cmd.' > '.tmp.') ')
+      call system(' ('.prefix.a:cmd.redir.') ')
     endif
   finally
     if exists('old_index')
@@ -2712,7 +2734,7 @@ function! s:JumpInit() abort
   endif
 endfunction
 
-function! s:GF(mode) abort
+function! s:cfile() abort
   try
     let buffer = s:buffer()
     let myhash = buffer.sha1()
@@ -2722,12 +2744,10 @@ function! s:GF(mode) abort
 
     if buffer.type('tree')
       let showtree = (getline(1) =~# '^tree ' && getline(2) == "")
-      if showtree && line('.') == 1
-        return ""
-      elseif showtree && line('.') > 2
-        return s:Edit(a:mode,0,buffer.commit().':'.s:buffer().path().(buffer.path() =~# '^$\|/$' ? '' : '/').s:sub(getline('.'),'/$',''))
+      if showtree && line('.') > 2
+        return [buffer.commit().':'.s:buffer().path().(buffer.path() =~# '^$\|/$' ? '' : '/').s:sub(getline('.'),'/$','')]
       elseif getline('.') =~# '^\d\{6\} \l\{3,8\} \x\{40\}\t'
-        return s:Edit(a:mode,0,buffer.commit().':'.s:buffer().path().(buffer.path() =~# '^$\|/$' ? '' : '/').s:sub(matchstr(getline('.'),'\t\zs.*'),'/$',''))
+        return [buffer.commit().':'.s:buffer().path().(buffer.path() =~# '^$\|/$' ? '' : '/').s:sub(matchstr(getline('.'),'\t\zs.*'),'/$','')]
       endif
 
     elseif buffer.type('blob')
@@ -2737,7 +2757,7 @@ function! s:GF(mode) abort
       catch /^fugitive:/
       endtry
       if exists('sha1')
-        return s:Edit(a:mode,0,ref)
+        return [ref]
       endif
 
     else
@@ -2746,29 +2766,29 @@ function! s:GF(mode) abort
       if getline('.') =~# '^\d\{6\} \x\{40\} \d\t'
         let ref = matchstr(getline('.'),'\x\{40\}')
         let file = ':'.s:sub(matchstr(getline('.'),'\d\t.*'),'\t',':')
-        return s:Edit(a:mode,0,file)
+        return [file]
 
       elseif getline('.') =~# '^#\trenamed:.* -> '
         let file = '/'.matchstr(getline('.'),' -> \zs.*')
-        return s:Edit(a:mode,0,file)
+        return [file]
       elseif getline('.') =~# '^#\t[[:alpha:] ]\+: *.'
         let file = '/'.matchstr(getline('.'),': *\zs.\{-\}\ze\%( ([^()[:digit:]]\+)\)\=$')
-        return s:Edit(a:mode,0,file)
+        return [file]
       elseif getline('.') =~# '^#\t.'
         let file = '/'.matchstr(getline('.'),'#\t\zs.*')
-        return s:Edit(a:mode,0,file)
+        return [file]
       elseif getline('.') =~# ': needs merge$'
         let file = '/'.matchstr(getline('.'),'.*\ze: needs merge$')
-        return s:Edit(a:mode,0,file).'|Gdiff'
+        return [file, 'Gdiff']
 
       elseif getline('.') ==# '# Not currently on any branch.'
-        return s:Edit(a:mode,0,'HEAD')
+        return ['HEAD']
       elseif getline('.') =~# '^# On branch '
         let file = 'refs/heads/'.getline('.')[12:]
-        return s:Edit(a:mode,0,file)
+        return [file]
       elseif getline('.') =~# "^# Your branch .*'"
         let file = matchstr(getline('.'),"'\\zs\\S\\+\\ze'")
-        return s:Edit(a:mode,0,file)
+        return [file]
       endif
 
       let showtree = (getline(1) =~# '^tree ' && getline(2) == "")
@@ -2778,7 +2798,7 @@ function! s:GF(mode) abort
 
       elseif getline('.') =~# '^commit \x\{40\}\>'
         let ref = matchstr(getline('.'),'\x\{40\}')
-        return s:Edit(a:mode,0,ref)
+        return [ref]
 
       elseif getline('.') =~# '^parent \x\{40\}\>'
         let ref = matchstr(getline('.'),'\x\{40\}')
@@ -2788,21 +2808,21 @@ function! s:GF(mode) abort
           let parent += 1
           let line -= 1
         endwhile
-        return s:Edit(a:mode,0,ref)
+        return [ref]
 
       elseif getline('.') =~ '^tree \x\{40\}$'
         let ref = matchstr(getline('.'),'\x\{40\}')
         if s:repo().rev_parse(myhash.':') == ref
           let ref = myhash.':'
         endif
-        return s:Edit(a:mode,0,ref)
+        return [ref]
 
       elseif getline('.') =~# '^object \x\{40\}$' && getline(line('.')+1) =~ '^type \%(commit\|tree\|blob\)$'
         let ref = matchstr(getline('.'),'\x\{40\}')
         let type = matchstr(getline(line('.')+1),'type \zs.*')
 
       elseif getline('.') =~# '^\l\{3,8\} '.myhash.'$'
-        return ''
+        let ref = buffer.rev()
 
       elseif getline('.') =~# '^\l\{3,8\} \x\{40\}\>'
         let ref = matchstr(getline('.'),'\x\{40\}')
@@ -2823,7 +2843,7 @@ function! s:GF(mode) abort
         endwhile
         let offset += matchstr(getline(lnum), type.'\zs\d\+')
         let ref = getline(search('^'.type.'\{3\} [ab]/','bnW'))[4:-1]
-        let dcmd = '+'.offset.'|normal! zv'
+        let dcmd = offset.'|normal!zv'
         let dref = ''
 
       elseif getline('.') =~# '^rename from '
@@ -2846,7 +2866,7 @@ function! s:GF(mode) abort
         let ref = getline('.')
 
       elseif expand('<cword>') =~# '^\x\{7,40\}\>'
-        return s:Edit(a:mode,0,expand('<cword>'))
+        return [expand('<cword>')]
 
       else
         let ref = ''
@@ -2872,16 +2892,29 @@ function! s:GF(mode) abort
       endif
 
       if exists('dref')
-        return s:Edit(a:mode,0,ref) . '|'.dcmd.' '.s:fnameescape(dref)
+        return [ref, dcmd] + (empty(dref) ? [] : [dref])
       elseif ref != ""
-        return s:Edit(a:mode,0,ref)
+        return [ref]
       endif
 
     endif
-    return ''
+    return []
+  endtry
+endfunction
+
+function! s:GF(mode) abort
+  try
+    let results = s:cfile()
   catch /^fugitive:/
     return 'echoerr v:errmsg'
   endtry
+  if len(results) > 1
+    return s:Edit(a:mode, 0, results[0]).'|'.results[1].join(map(results[2:-1], '" ".s:fnameescape(v:val)'), '')
+  elseif len(results)
+    return s:Edit(a:mode, 0, results[0])
+  else
+    return ''
+  endif
 endfunction
 
 " Section: Statusline

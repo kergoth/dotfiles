@@ -53,6 +53,7 @@ Changelog
 
 5.2.1 --
 
+- add compatibility with Mercurial 3.6
 - prune: fixed possible issue with lock and bookmark
 - next/prev: fixed possible issue with lock and bookmark
 

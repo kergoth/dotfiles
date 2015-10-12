@@ -89,7 +89,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 07fd773d7e619d685514784567f4f904f2f1d945
+    rev: e138cfd76526614b954f4c45c80e03b5c4a5e7be
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -120,7 +120,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: c209630c4eb77d50053e469ef6f04ad8c3e634e1
+    sha1: a4dc625a59611770a842b0be40e241e91d5fcd19
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -159,7 +159,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 073f3a37b9a7c2db488802e0da7b8d84fef2ab84
+    rev: b5188a1b4f9aabd1454f7b8dd621d467ca7ee3a7
 
 # go language support
 git module vim-golang:
@@ -174,7 +174,7 @@ git module vim-bitbake:
 # markdown runtime files
 git module vim-markdown:
     url: https://github.com/tpope/vim-markdown.git
-    rev: ba294150d192d40e51d749e30a7079977eb23a0b
+    rev: 6eac9ffb58c39b42b433002fad4e7a633fd51c5e
 
 # taskpaper todo file support
 git module taskpaper:
@@ -184,7 +184,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: cdc6d98a09db60d3dda58815616f78338cbdaa9d
+    rev: 8c30610c5f60eada1d21ab23e96d45848a1e6e58
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -349,7 +349,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: fc4e100b855ecfed8f885e5119bc7218f810830e
+    rev: 6a7c9a73fc9566dd3e82fdaa8bc381e1a401c6a8
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -365,7 +365,7 @@ git module dustin-bindir:
 git module git-wtf:
     url: https://github.com/michaelklishin/git-wtf
     pick: git-wtf
-    rev: 05c4296f6288792ba0f46128644eb3607fec9c59
+    rev: e707548e3c144e2b6ecaba8e7851b5f51bdd517f
 
 curl module git:
     url: https://www.kernel.org/pub/software/scm/git/git-2.2.0.tar.xz
@@ -453,7 +453,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: e8f7e4c5353792aa35a304fd601f6037d420297e
+    rev: 91b6a30424a366e87771fc2544c95633f4abfe81
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -504,14 +504,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: e1217a888a6d1f3266ca610b04d1752cea837438
+    rev: d36bc78070011b4721eee8685cf5d240b8733956
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: fec01a5eb0ca5eca331a6faef674bce343a77662
+    rev: f7ac0ef64adaca0222e2108e770f500ac0496e31
 
 git module vim-ctrlp:
     url: https://github.com/kien/ctrlp.vim
