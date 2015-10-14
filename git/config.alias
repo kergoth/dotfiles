@@ -12,8 +12,9 @@
 	br = branch
 	id = rev-parse
 	ls = ls-files --exclude-standard
+	lsi = ls-files --exclude-standard --directory -oi
 	staged = diff --cached
-	ignored = ls-files --exclude-standard --directory -oi
+	ignored = lsi
 
 	# remove changes to a file from the index
 	unstage = reset HEAD --
