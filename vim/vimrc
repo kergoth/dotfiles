@@ -235,11 +235,13 @@ if &term == 'rxvt-unicode'
   set t_Co=256
 endif
 
+let base16colorspace=256
+set background=dark
 if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
 else
   try
-    colorscheme baycomb
+    colorscheme base16-default
   catch
     colorscheme desert
   endtry
