@@ -1336,8 +1336,10 @@ function! s:Edit(cmd,bang,...) abort
       if winnr('$') == 1
         let tabs = (&go =~# 'e' || !has('gui_running')) && &stal && (tabpagenr('$') >= &stal)
         execute 'rightbelow' (&lines - &previewheight - &cmdheight - tabs - 1 - !!&laststatus).'new'
-      else
+      elseif winnr('#')
         wincmd p
+      else
+        wincmd w
       endif
       if &diff
         let mywinnr = winnr()
@@ -1626,9 +1628,9 @@ endfunction
 
 " Section: Gdiff
 
-call s:command("-bang -bar -nargs=* -complete=customlist,s:EditComplete Gdiff :execute s:Diff('',<f-args>)")
-call s:command("-bar -nargs=* -complete=customlist,s:EditComplete Gvdiff :execute s:Diff('keepalt vert ',<f-args>)")
-call s:command("-bar -nargs=* -complete=customlist,s:EditComplete Gsdiff :execute s:Diff('keepalt ',<f-args>)")
+call s:command("-bang -bar -nargs=* -complete=customlist,s:EditComplete Gdiff :execute s:Diff('',<bang>0,<f-args>)")
+call s:command("-bang -bar -nargs=* -complete=customlist,s:EditComplete Gvdiff :execute s:Diff('keepalt vert ',<bang>0,<f-args>)")
+call s:command("-bang -bar -nargs=* -complete=customlist,s:EditComplete Gsdiff :execute s:Diff('keepalt ',<bang>0,<f-args>)")
 
 augroup fugitive_diff
   autocmd!
@@ -1742,7 +1744,7 @@ endfunction
 
 call s:add_methods('buffer',['compare_age'])
 
-function! s:Diff(vert,...) abort
+function! s:Diff(vert,keepfocus,...) abort
   let args = copy(a:000)
   let post = ''
   if get(args, 0) =~# '^+'
@@ -1800,11 +1802,15 @@ function! s:Diff(vert,...) abort
     else
       execute 'leftabove '.vert.'diffsplit '.s:fnameescape(spec)
     endif
+    let &l:readonly = &l:readonly
+    redraw
     let w:fugitive_diff_restore = restore
     let winnr = winnr()
     if getwinvar('#', '&diff')
       wincmd p
-      call feedkeys(winnr."\<C-W>w", 'n')
+      if !a:keepfocus
+        call feedkeys(winnr."\<C-W>w", 'n')
+      endif
     endif
     return post
   catch /^fugitive:/
@@ -2692,6 +2698,10 @@ augroup fugitive_files
         \ if exists('b:git_dir') |
         \  call s:JumpInit() |
         \ endif
+  autocmd FileType git,gitcommit,gitrebase
+        \ if exists('b:git_dir') |
+        \   call s:GFInit() |
+        \ endif
 augroup END
 
 " Section: Temp files
@@ -2715,7 +2725,18 @@ augroup END
 
 " Section: Go to file
 
-function! s:JumpInit() abort
+nnoremap <SID>: :<C-U><C-R>=v:count ? v:count : ''<CR>
+function! s:GFInit(...) abort
+  cnoremap <buffer> <expr> <Plug><cfile> fugitive#cfile()
+  if !exists('g:fugitive_no_maps') && empty(mapcheck('gf', 'n'))
+    nmap <buffer> <silent> gf          <SID>:find <Plug><cfile><CR>
+    nmap <buffer> <silent> <C-W>f     <SID>:sfind <Plug><cfile><CR>
+    nmap <buffer> <silent> <C-W><C-F> <SID>:sfind <Plug><cfile><CR>
+    nmap <buffer> <silent> <C-W>gf  <SID>:tabfind <Plug><cfile><CR>
+  endif
+endfunction
+
+function! s:JumpInit(...) abort
   nnoremap <buffer> <silent> <CR>    :<C-U>exe <SID>GF("edit")<CR>
   if !&modifiable
     nnoremap <buffer> <silent> o     :<C-U>exe <SID>GF("split")<CR>
@@ -2762,6 +2783,8 @@ function! s:cfile() abort
 
     else
 
+      let dcmds = []
+
       " Index
       if getline('.') =~# '^\d\{6\} \x\{40\} \d\t'
         let ref = matchstr(getline('.'),'\x\{40\}')
@@ -2779,7 +2802,7 @@ function! s:cfile() abort
         return [file]
       elseif getline('.') =~# ': needs merge$'
         let file = '/'.matchstr(getline('.'),'.*\ze: needs merge$')
-        return [file, 'Gdiff']
+        return [file, 'Gdiff!']
 
       elseif getline('.') ==# '# Not currently on any branch.'
         return ['HEAD']
@@ -2843,18 +2866,25 @@ function! s:cfile() abort
         endwhile
         let offset += matchstr(getline(lnum), type.'\zs\d\+')
         let ref = getline(search('^'.type.'\{3\} [ab]/','bnW'))[4:-1]
-        let dcmd = offset.'|normal!zv'
-        let dref = ''
+        let dcmds = [offset, 'normal!zv']
 
       elseif getline('.') =~# '^rename from '
         let ref = 'a/'.getline('.')[12:]
       elseif getline('.') =~# '^rename to '
         let ref = 'b/'.getline('.')[10:]
 
+      elseif getline('.') =~# '^@@ -\d\+,\d\+ +\d\+,'
+        let diff = getline(search('^diff --git \%(a/.*\|/dev/null\) \%(b/.*\|/dev/null\)', 'bcnW'))
+        let offset = matchstr(getline('.'), '+\zs\d\+')
+
+        let dref = matchstr(diff, '\Cdiff --git \zs\%(a/.*\|/dev/null\)\ze \%(b/.*\|/dev/null\)')
+        let ref = matchstr(diff, '\Cdiff --git \%(a/.*\|/dev/null\) \zs\%(b/.*\|/dev/null\)')
+        let dcmd = 'Gdiff! +'.offset
+
       elseif getline('.') =~# '^diff --git \%(a/.*\|/dev/null\) \%(b/.*\|/dev/null\)'
         let dref = matchstr(getline('.'),'\Cdiff --git \zs\%(a/.*\|/dev/null\)\ze \%(b/.*\|/dev/null\)')
         let ref = matchstr(getline('.'),'\Cdiff --git \%(a/.*\|/dev/null\) \zs\%(b/.*\|/dev/null\)')
-        let dcmd = 'Gdiff'
+        let dcmd = 'Gdiff!'
 
       elseif getline('.') =~# '^index ' && getline(line('.')-1) =~# '^diff --git \%(a/.*\|/dev/null\) \%(b/.*\|/dev/null\)'
         let line = getline(line('.')-1)
@@ -2892,9 +2922,9 @@ function! s:cfile() abort
       endif
 
       if exists('dref')
-        return [ref, dcmd] + (empty(dref) ? [] : [dref])
+        return [ref, dcmd . ' ' . s:fnameescape(dref)] + dcmds
       elseif ref != ""
-        return [ref]
+        return [ref] + dcmds
       endif
 
     endif
@@ -2908,13 +2938,22 @@ function! s:GF(mode) abort
   catch /^fugitive:/
     return 'echoerr v:errmsg'
   endtry
-  if len(results) > 1
-    return s:Edit(a:mode, 0, results[0]).'|'.results[1].join(map(results[2:-1], '" ".s:fnameescape(v:val)'), '')
-  elseif len(results)
-    return s:Edit(a:mode, 0, results[0])
+  if len(results)
+    return s:Edit(a:mode, 0, results[0]).join(map(results[1:-1], '"|".v:val'), '')
   else
     return ''
   endif
+endfunction
+
+function! fugitive#cfile() abort
+  let pre = ''
+  let results = s:cfile()
+  if empty(results)
+    return expand('<cfile>')
+  elseif len(results) > 1
+    let pre = '+' . join(map(results[1:-1], 'escape(v:val, " ")'), '\|') . ' '
+  endif
+  return pre . s:fnameescape(fugitive#repo().translate(results[0]))
 endfunction
 
 " Section: Statusline

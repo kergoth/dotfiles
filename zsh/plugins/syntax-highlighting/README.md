@@ -5,6 +5,11 @@ zsh-syntax-highlighting
 
 *Requirements: zsh 4.3.17+.*
 
+This package provides syntax highlighing for the shell zsh.  It enables
+highlighing of commands whilst they are typed at a zsh prompt into an
+interactive terminal.  This helps in reviewing commands before running
+them, particularly in catching syntax errors.
+
 
 How to install
 --------------
@@ -36,10 +41,9 @@ How to install
 
 * Download the script or clone this repository in [oh-my-zsh](http://github.com/robbyrussell/oh-my-zsh) plugins directory:
 
-        cd ~/.oh-my-zsh/custom/plugins
-        git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
+        git clone git://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
-* Activate the plugin in `~/.zshrc` (in **last** position):
+* Activate the plugin in `~/.zshrc`:
 
         plugins=( [plugins...] zsh-syntax-highlighting)
 
@@ -47,6 +51,8 @@ How to install
 
         source ~/.zshrc
 
+Note that `zsh-syntax-highlighting` must be the last plugin sourced,
+so make it the last element of the `$plugins` array.
 
 FAQ
 ---

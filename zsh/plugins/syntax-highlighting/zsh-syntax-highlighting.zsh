@@ -1,4 +1,3 @@
-#!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
 # Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
 # All rights reserved.
@@ -29,6 +28,24 @@
 # -------------------------------------------------------------------------------------------------
 
 
+if [[ -o function_argzero ]]; then
+  # $0 is reliable
+  ZSH_HIGHLIGHT_VERSION=$(<"$0:A:h"/.version)
+  ZSH_HIGHLIGHT_REVISION=$(<"$0:A:h"/.revision-hash)
+  if [[ $ZSH_HIGHLIGHT_REVISION == \$Format:* ]]; then
+    # When running from a source tree without 'make install', $ZSH_HIGHLIGHT_REVISION
+    # would be set to '$Format:%H$' literally.  That's an invalid value, and obtaining
+    # the valid value (via `git rev-parse HEAD`, as Makefile does) might be costly, so:
+    unset ZSH_HIGHLIGHT_REVISION
+  fi
+else
+  # $0 is unreliable, so the call to _zsh_highlight_load_highlighters will fail.
+  # TODO: If 'zmodload zsh/parameter' is available, ${funcsourcetrace[1]%:*} might serve as a substitute?
+  # TODO: also check POSIX_ARGZERO, but not it's not available in older zsh
+  echo "zsh-syntax-highlighting: error: not compatible with FUNCTION_ARGZERO" >&2
+  return 1
+fi
+
 # -------------------------------------------------------------------------------------------------
 # Core highlighting update system
 # -------------------------------------------------------------------------------------------------
@@ -46,6 +63,7 @@ _zsh_highlight()
   local ret=$?
 
   setopt localoptions warncreateglobal
+  local REPLY # don't leak $REPLY into global scope
 
   # Do not highlight if there are more than 300 chars in the buffer. It's most
   # likely a pasted command or a huge list of files in that case..
@@ -171,7 +189,7 @@ _zsh_highlight_bind_widgets()
 
   # Override ZLE widgets to make them invoke _zsh_highlight.
   local cur_widget
-  for cur_widget in ${${(f)"$(builtin zle -la)"}:#(.*|_*|orig-*|run-help|which-command|beep|yank-pop|set-local-history)}; do
+  for cur_widget in ${${(f)"$(builtin zle -la)"}:#(.*|_*|orig-*|run-help|which-command|beep|set-local-history|yank)}; do
     case $widgets[$cur_widget] in
 
       # Already rebound event: do nothing.
