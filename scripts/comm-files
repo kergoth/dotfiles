@@ -8,6 +8,7 @@ Compare the files within two directories, but not the contents of those files.
 
 Options (default: -3. To specify multiple, use a single argument, e.g. -23):
 
+     -0      Suppress nothing: Show all columns.
      -1      Suppress printing of column 1.
      -2      Suppress printing of column 2.
      -3      Suppress printing of column 3.
@@ -37,6 +38,10 @@ comm_arg=-3
 case "$1" in
     -[123]*)
         comm_arg="$1"
+        shift
+        ;;
+    -0)
+        comm_arg=
         shift
         ;;
     -h)
