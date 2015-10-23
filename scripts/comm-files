@@ -49,12 +49,12 @@ if echo "$comm_arg" | grep -q 1; then
     exclusion="-"
 fi
 if echo "$comm_arg" | grep -q 2; then
-    exclusion="$exclusion|+"
+    exclusion="$exclusion|\+"
 fi
 if echo "$comm_arg" | grep -q 3; then
     exclusion="$exclusion| "
 fi
-exclusion="${exclusion#|*}"
+exclusion="${exclusion#|}"
 
 if [ $# -lt 2 ]; then
     usage
