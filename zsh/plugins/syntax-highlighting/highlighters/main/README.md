@@ -34,7 +34,6 @@ This highlighter defines the following styles:
 * `hashed-command` - hashed commands
 * `path` - paths
 * `path_prefix` - path prefixes
-* `path_approx` - approximated paths
 * `globbing` - globbing expressions (`*.txt`)
 * `history-expansion` - history expansion expressions (`!foo` and `^foo^bar`)
 * `single-hyphen-option` - single hyphen options (-o)
@@ -48,6 +47,7 @@ This highlighter defines the following styles:
 * `back-dollar-quoted-argument` -  back dollar quoted arguments (\x inside $'')
 * `assign` - variable assignments
 * `redirection` - redirection operators (`<`, `>`, etc)
+* `comment` - interactive comments, when `setopt INTERACTIVE_COMMENTS` is in effect (`echo # foo`)
 * `default` - parts of the buffer that do not match anything
 
 To override one of those styles, change its entry in `ZSH_HIGHLIGHT_STYLES`, for example in `~/.zshrc`:

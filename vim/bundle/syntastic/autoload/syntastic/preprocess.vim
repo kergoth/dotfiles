@@ -214,6 +214,42 @@ function! syntastic#preprocess#rparse(errors) abort " {{{2
     return out
 endfunction " }}}2
 
+function! syntastic#preprocess#stylelint(errors) abort " {{{2
+    let out = []
+
+    " CssSyntaxError: /path/to/file.css:2:11: Missed semicolon
+    let parts = matchlist(a:errors[0], '\v^CssSyntaxError: (.{-1,}):(\d+):(\d+): (.+)')
+    if len(parts) > 4
+        call add(out, 'E:' . join(parts[1:4], ':'))
+    else
+        let errs = s:_decode_JSON(join(a:errors, ''))
+
+        let out = []
+        if type(errs) == type([]) && len(errs) == 1 && type(errs[0]) == type({}) &&
+            \ has_key(errs[0], 'source') && has_key(errs[0], 'warnings') && type(errs[0]['warnings']) == type([])
+
+            for e in errs[0]['warnings']
+                try
+                    let msg =
+                        \ ['W', 'E'][e['severity']-1] . ':' .
+                        \ errs[0]['source'] . ':' .
+                        \ e['line'] . ':' .
+                        \ e['column'] . ':' .
+                        \ e['text']
+                    call add(out, msg)
+                catch /\m^Vim\%((\a\+)\)\=:E716/
+                    call syntastic#log#warn('checker css/stylelint: unrecognized error format')
+                    let out = []
+                    break
+                endtry
+            endfor
+        else
+            call syntastic#log#warn('checker css/stylelint: unrecognized error format')
+        endif
+    endif
+    return out
+endfunction " }}}2
+
 function! syntastic#preprocess#tslint(errors) abort " {{{2
     return map(copy(a:errors), 'substitute(v:val, ''\m^\(([^)]\+)\)\s\(.\+\)$'', ''\2 \1'', "")')
 endfunction " }}}2
@@ -265,6 +301,146 @@ function! syntastic#preprocess#vint(errors) abort " {{{2
         call syntastic#log#warn('checker vim/vint: unrecognized error format')
     endif
 
+    return out
+endfunction " }}}2
+
+" }}}1
+
+" Workarounds {{{1
+
+" In errorformat, \ or % following %f make it depend on isfname.  The default
+" setting of isfname is crafted to work with completion, rather than general
+" filename matching.  The result for syntastic is that filenames containing
+" spaces (or a few other special characters) can't be matched.
+"
+" Fixing isfname to address this problem would depend on the set of legal
+" characters for filenames on the filesystem the project's files lives on.
+" Inferring the kind of filesystem a file lives on, in advance to parsing the
+" file's name, is an interesting problem (think f.i. a file loaded from a VFAT
+" partition, mounted on Linux).  A problem syntastic is not prepared to solve.
+"
+" As a result, the functions below exist for the only reason to avoid using
+" things like %f\, in errorformat.
+"
+" References:
+" https://groups.google.com/forum/#!topic/vim_dev/pTKmZmouhio
+" https://vimhelp.appspot.com/quickfix.txt.html#error-file-format
+
+function! syntastic#preprocess#basex(errors) abort " {{{2
+    let out = []
+    let idx = 0
+    while idx < len(a:errors)
+        let parts = matchlist(a:errors[idx], '\v^\[\S+\] Stopped at (.+), (\d+)/(\d+):')
+        if len(parts) > 3
+            let err = parts[1] . ':' . parts[2] . ':' . parts[3] . ':'
+            let parts = matchlist(a:errors[idx+1], '\v^\[(.)\D+(\d+)\] (.+)')
+            if len(parts) > 3
+                let err .= (parts[1] ==? 'W' || parts[1] ==? 'E' ? parts[1] : 'E') . ':' . parts[2] . ':' . parts[3]
+                call add(out, err)
+                let idx +=1
+            endif
+        elseif a:errors[idx] =~# '\m^\['
+            " unparseable errors
+            call add(out, a:errors[idx])
+        endif
+        let idx +=1
+    endwhile
+    return out
+endfunction " }}}2
+
+function! syntastic#preprocess#bro(errors) abort " {{{2
+    let out = []
+    for e in a:errors
+        let parts = matchlist(e, '\v^%(fatal )?(error|warning) in (.{-1,}), line (\d+): (.+)')
+        if len(parts) > 4
+            let parts[1] = parts[1][0]
+            call add(out, join(parts[1:4], ':'))
+        endif
+    endfor
+    return out
+endfunction " }}}2
+
+function! syntastic#preprocess#coffeelint(errors) abort " {{{2
+    let out = []
+    for e in a:errors
+        let parts = matchlist(e, '\v^(.{-1,}),(\d+)%(,\d*)?,(error|warn),(.+)')
+        if len(parts) > 4
+            let parts[3] = parts[3][0]
+            call add(out, join(parts[1:4], ':'))
+        endif
+    endfor
+    return out
+endfunction " }}}2
+
+function! syntastic#preprocess#mypy(errors) abort " {{{2
+    let out = []
+    for e in a:errors
+        " new format
+        let parts = matchlist(e, '\v^(.{-1,}):(\d+): error: (.+)')
+        if len(parts) > 3
+            call add(out, join(parts[1:3], ':'))
+            continue
+        endif
+
+        " old format
+        let parts = matchlist(e, '\v^(.{-1,}), line (\d+): (.+)')
+        if len(parts) > 3
+            call add(out, join(parts[1:3], ':'))
+        endif
+    endfor
+    return out
+endfunction " }}}2
+
+function! syntastic#preprocess#nix(errors) abort " {{{2
+    let out = []
+    for e in a:errors
+        let parts = matchlist(e, '\v^(.{-1,}), at (.{-1,}):(\d+):(\d+)$')
+        if len(parts) > 4
+            call add(out, join(parts[2:4], ':') . ':' . parts[1])
+            continue
+        endif
+
+        let parts = matchlist(e, '\v^(.{-1,}) at (.{-1,}), line (\d+):')
+        if len(parts) > 3
+            call add(out, parts[2] . ':' . parts[3] . ':' . parts[1])
+            continue
+        endif
+
+        let parts = matchlist(e, '\v^error: (.{-1,}), in (.{-1,})$')
+        if len(parts) > 2
+            call add(out, parts[2] . ':' . parts[1])
+        endif
+    endfor
+    return out
+endfunction " }}}2
+
+function! syntastic#preprocess#slimrb(errors) abort " {{{2
+    let out = []
+    for e in a:errors
+        " slimrb >= 1.3.1
+        let parts = matchlist(e, '\v^\s*(\S.{-1,}), Line (\d+), Column (\d+)$')
+        if len(parts) > 3
+            call add(out, join(parts[1:3], ':'))
+            continue
+        endif
+
+        " slimrb < 1.3.1
+        let parts = matchlist(e, '\v^\s*(\S.{-1,}), Line (\d+)$')
+        if len(parts) > 2
+            call add(out, parts[1] . ':' . parts[2])
+            continue
+        endif
+
+        let parts = matchlist(e, '\m^Slim::Parser::SyntaxError: (.+)$')
+        if len(parts) > 1
+            let out[-1] .= ':' . parts[1]
+            continue
+        endif
+
+        if e !~# '\m^\s'
+            let out[-1] .= ' ' . e
+        endif
+    endfor
     return out
 endfunction " }}}2
 

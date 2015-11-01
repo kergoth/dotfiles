@@ -3,6 +3,7 @@ NAME=zsh-syntax-highlighting
 INSTALL?=install -c
 PREFIX?=/usr/local
 SHARE_DIR=$(DESTDIR)$(PREFIX)/share/$(NAME)
+ZSH?=zsh # zsh binary to run tests with
 
 # Have the default target do nothing.
 all:
@@ -22,7 +23,18 @@ test:
 	for test in highlighters/*; do \
 		if [ -d $$test/test-data ]; then \
 			echo "Running test $${test##*/}"; \
-			zsh -f tests/test-highlighting.zsh "$${test##*/}"; \
+			$(ZSH) -f tests/test-highlighting.zsh "$${test##*/}"; \
+			: $$(( result |= $$? )); \
+		fi \
+	done; \
+	exit $$result
+
+perf:
+	@result=0; \
+	for test in highlighters/*; do \
+		if [ -d $$test/test-data ]; then \
+			echo "Running test $${test##*/}"; \
+			$(ZSH) -f tests/test-perfs.zsh "$${test##*/}"; \
 			: $$(( result |= $$? )); \
 		fi \
 	done; \

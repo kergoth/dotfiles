@@ -1,7 +1,8 @@
 "============================================================================
-"File:        coqtop.vim
-"Description: Syntax checking plugin for syntastic.vim
-"Maintainer:  Matvey Aksenov <matvey.aksenov at gmail dot com>
+"File:        stylelint.vim
+"Description: Syntax checking plugin for syntastic.vim using `stylelint`
+"             (https://github.com/stylelint/stylelint).
+"Maintainer:  Tim Carry <tim at pixelastic dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
@@ -10,31 +11,33 @@
 "
 "============================================================================
 
-if exists('g:loaded_syntastic_coq_coqtop_checker')
+if exists('g:loaded_syntastic_css_stylelint_checker')
     finish
 endif
-let g:loaded_syntastic_coq_coqtop_checker = 1
+let g:loaded_syntastic_css_stylelint_checker = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! SyntaxCheckers_coq_coqtop_GetLocList() dict
-    let makeprg = self.makeprgBuild({ 'args_after': '-noglob -batch -load-vernac-source' })
+function! SyntaxCheckers_css_stylelint_GetLocList() dict
+    let makeprg = self.makeprgBuild({ 'args_after': '-f json' })
 
-    let errorformat =
-        \ '%AFile "%f"\, line %l\, characters %c-%.%#\:,'.
-        \ '%C%m'
+    let errorformat = '%t:%f:%l:%c:%m'
 
     return SyntasticMake({
         \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat })
+        \ 'errorformat': errorformat,
+        \ 'subtype': 'Style',
+        \ 'preprocess': 'stylelint',
+        \ 'returns': [0, 1, 2] })
 endfunction
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'coq',
-    \ 'name': 'coqtop'})
+    \ 'filetype': 'css',
+    \ 'name': 'stylelint'})
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
 " vim: set sw=4 sts=4 et fdm=marker:
+

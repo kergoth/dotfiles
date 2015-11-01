@@ -10,6 +10,8 @@ highlighing of commands whilst they are typed at a zsh prompt into an
 interactive terminal.  This helps in reviewing commands before running
 them, particularly in catching syntax errors.
 
+[![Screenshot](images/preview-smaller.png)](images/preview.png)
+
 
 How to install
 --------------
@@ -53,6 +55,15 @@ How to install
 
 Note that `zsh-syntax-highlighting` must be the last plugin sourced,
 so make it the last element of the `$plugins` array.
+
+### System-wide installation
+
+Either of the above methods is suitable for a single-user installation, which requires
+no special privileges.  If, however, you desire to install zsh-syntax-highlighting
+system-wide, you may do so by running `make install` and directing your users to
+add `source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh`
+in their `.zshrc`s.
+
 
 FAQ
 ---

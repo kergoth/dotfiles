@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
 # Copyright (c) 2015 zsh-syntax-highlighting contributors
 # All rights reserved.
@@ -27,13 +28,40 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='>/tmp >/tmp sudo echo >/tmp foo'
+# This is a stdin-to-stdout filter that takes TAP output (such as 'make test')
+# on stdin and passes it, colorized, to stdout.
 
-expected_region_highlight=(
-  "2  5  $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "8  11 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "13 16 $ZSH_HIGHLIGHT_STYLES[precommand]" # sudo
-  "18 21 $ZSH_HIGHLIGHT_STYLES[builtin]"    # echo
-  "24 27 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "29 31 $ZSH_HIGHLIGHT_STYLES[default]"    # foo
-)
+emulate -LR zsh
+
+if [[ ! -t 1 ]] ; then
+  exec cat
+fi
+
+while read -r line;
+do
+  case $line in
+    # comment (filename header) or plan
+    (#* | <->..<->)
+      print -nP %F{blue}
+      ;;
+    # XPASS
+    (ok*# TODO*)
+      print -nP %F{red}
+      ;;
+    # XFAIL
+    (not ok*# TODO*)
+      print -nP %F{yellow}
+      ;;
+    # FAIL
+    (not ok*)
+      print -nP %F{red}
+      ;;
+    # PASS
+    (ok*)
+      print -nP %F{green}
+      ;;
+  esac
+  print -nr - "$line"
+  print -nP %f
+  echo "" # newline
+done

@@ -27,13 +27,25 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='>/tmp >/tmp sudo echo >/tmp foo'
+ZSH_HIGHLIGHT_STYLES[alias]=$unused_highlight
+BUFFER='while if echo Hello; then ls /; else ls; fi; do stat "x"; done; repeat 10 ls'
 
-expected_region_highlight=(
-  "2  5  $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "8  11 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "13 16 $ZSH_HIGHLIGHT_STYLES[precommand]" # sudo
-  "18 21 $ZSH_HIGHLIGHT_STYLES[builtin]"    # echo
-  "24 27 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "29 31 $ZSH_HIGHLIGHT_STYLES[default]"    # foo
+expected_region_highlight+=(
+  "1 5 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # while
+  "7 8 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # if
+  "10 13 $ZSH_HIGHLIGHT_STYLES[builtin]" # echo
+  "15 19 $ZSH_HIGHLIGHT_STYLES[default]" # Hello
+  "22 25 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # then
+  "27 28 $ZSH_HIGHLIGHT_STYLES[command]" # ls
+  "30 30 $ZSH_HIGHLIGHT_STYLES[path]" # /
+  "31 31 $ZSH_HIGHLIGHT_STYLES[commandseparator]" # ;
+  "33 36 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # else
+  "38 39 $ZSH_HIGHLIGHT_STYLES[command]" # ls
+  "42 43 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # fi
+  "46 47 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # do
+  "49 52 $ZSH_HIGHLIGHT_STYLES[command]" # stat
+  "54 56 $ZSH_HIGHLIGHT_STYLES[double-quoted-argument]" # "x"
+  "59 62 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # done
+  "65 70 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # repeat
+  "75 76 $ZSH_HIGHLIGHT_STYLES[command]" # ls
 )

@@ -27,13 +27,15 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='>/tmp >/tmp sudo echo >/tmp foo'
+BUFFER='tar cf - * | (cd /target; tar xfp -) | { cat }'
 
 expected_region_highlight=(
-  "2  5  $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "8  11 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "13 16 $ZSH_HIGHLIGHT_STYLES[precommand]" # sudo
-  "18 21 $ZSH_HIGHLIGHT_STYLES[builtin]"    # echo
-  "24 27 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "29 31 $ZSH_HIGHLIGHT_STYLES[default]"    # foo
+  "1 3 $ZSH_HIGHLIGHT_STYLES[command]" # tar
+  "14 14 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # (
+  "15 16 $ZSH_HIGHLIGHT_STYLES[command]" # cd
+  "27 29 $ZSH_HIGHLIGHT_STYLES[command]" # tar
+  "36 36 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # )
+  "40 40 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # {
+  "42 44 $ZSH_HIGHLIGHT_STYLES[command]" # cat
+  "46 46 $ZSH_HIGHLIGHT_STYLES[reserved-word]" # }
 )

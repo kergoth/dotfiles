@@ -91,7 +91,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 083c47b00707f87f0f9f7ec08d91abbbcec64d7b
+    rev: 44e5323b53edd221a79a585869cf4833d555ba58
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -103,7 +103,7 @@ git module zsh-completions:
 
 git module zaw:
     url: https://github.com/zsh-users/zaw
-    rev: 5e466526d8abc1865691d238b660b2a8591b61fc
+    rev: fade503b6db0da5f3c8e01e370875fbe5736d432
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -297,7 +297,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 89b705322f3b898de5547e0a2db2d7263c168607
+    rev: 6d10c09d9fab2ab4f281a7d56c41a84c9dbf64ae
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -506,14 +506,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: f6eaf7e8b85b16a049c9985a13e8e237d906a71d
+    rev: 630169bfc21bf5a114616238810e4b31b19eb983
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: f9ef0a21e76145142423efd61c9eac8753cb0edc
+    rev: e597d8cb294bf9f2e5c4443a347b2fa7e7a7388d
 
 git module vim-ctrlp:
     url: https://github.com/kien/ctrlp.vim

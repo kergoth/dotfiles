@@ -27,13 +27,13 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='>/tmp >/tmp sudo echo >/tmp foo'
+BUFFER='sudo >/tmp -u otheruser ls'
 
 expected_region_highlight=(
-  "2  5  $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "8  11 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "13 16 $ZSH_HIGHLIGHT_STYLES[precommand]" # sudo
-  "18 21 $ZSH_HIGHLIGHT_STYLES[builtin]"    # echo
-  "24 27 $ZSH_HIGHLIGHT_STYLES[path]"       # /tmp
-  "29 31 $ZSH_HIGHLIGHT_STYLES[default]"    # foo
+  "1 4 $ZSH_HIGHLIGHT_STYLES[precommand]" # sudo
+  "6 6 $ZSH_HIGHLIGHT_STYLES[redirection]" # >
+  "7 10 $ZSH_HIGHLIGHT_STYLES[path]" # /tmp
+  "12 13 $ZSH_HIGHLIGHT_STYLES[single-hyphen-option]" # -u
+  "15 23 $ZSH_HIGHLIGHT_STYLES[default]" # otheruser
+  "25 26 $ZSH_HIGHLIGHT_STYLES[command]" # ls
 )
