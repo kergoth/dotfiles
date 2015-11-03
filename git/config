@@ -19,6 +19,7 @@
 
 [rebase]
 	autosquash = true
+	autostash = true
 
 [status]
 	submodulesummary = true
