@@ -215,11 +215,15 @@ if &encoding == 'utf-8'
   set fillchars=
 
   " Make soft word wrapping obvious
-  set showbreak=⇇
+  let &showbreak = '↳ '
 endif
 
 " Do soft word wrapping at chars in breakat
-set linebreak
+if has('linebreak')
+  set linebreak
+  set breakindent
+  set cpo+=n
+end
 
 " Vim makes assumptions about shell behavior, so don't rely on $SHELL
 set shell=sh
