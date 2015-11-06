@@ -221,7 +221,10 @@ endif
 " Do soft word wrapping at chars in breakat
 if has('linebreak')
   set linebreak
-  set breakindent
+  try
+    set breakindent
+  catch
+  endtry
   set cpo+=n
 end
 
