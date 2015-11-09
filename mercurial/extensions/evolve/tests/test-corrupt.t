@@ -101,7 +101,7 @@
      summary:     add A
   
 
-  $ hg kill -n -1 -- -2 -3
+  $ hg kill --fold -n -1 -- -2 -3
   2 changesets pruned
   $ hg push ../other
   pushing to ../other
@@ -110,8 +110,7 @@
   adding manifests
   adding file changes
   added 1 changesets with 2 changes to 2 files
-  pushing 2 obsolescence markers (*) (glob)
-  2 obsolescence markers added
+  2 new obsolescence markers
   $ hg -R ../other verify
   checking changesets
   checking manifests

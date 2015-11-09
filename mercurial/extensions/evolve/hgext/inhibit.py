@@ -208,8 +208,11 @@ def extsetup(ui):
     try:
         extensions.find('directaccess')
     except KeyError:
-        errormsg = _('Cannot use inhibit without the direct access extension')
-        raise error.Abort(errormsg)
+        errormsg = _('cannot use inhibit without the direct access extension\n')
+        hint = _("(please enable it or inhibit won\'t work)\n")
+        ui.warn(errormsg)
+        ui.warn(hint)
+        return
 
     # Wrapping this to inhibit obsolete revs resulting from a transaction
     extensions.wrapfunction(localrepo.localrepository,

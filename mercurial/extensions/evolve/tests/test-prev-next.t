@@ -22,6 +22,10 @@ hg prev -B should move active bookmark
    * mark                      0:a154386e50d1
 
 hg next -B should move active bookmark
+  $ hg next -B --dry-run
+  hg update 1;
+  hg bookmark mark -r 1;
+  [1] added b
   $ hg next -B
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   [1] added b
@@ -29,6 +33,9 @@ hg next -B should move active bookmark
    * mark                      1:6e742c9127b3
 
 hg prev should unset active bookmark
+  $ hg prev --dry-run
+  hg update 0;
+  [0] added a
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [0] added a
@@ -152,6 +159,11 @@ some aspiring children
   no children
   (1 unstable changesets to be evolved here, do you want --evolve?)
   [1]
+  $ hg next --evolve --dry-run
+  move:[2] added c
+  atop:[3] added b (2)
+  hg rebase -r 4e26ef31f919 -d 9ad178109a19
+  working directory now at 9ad178109a19
   $ hg next --evolve
   move:[2] added c
   atop:[3] added b (2)

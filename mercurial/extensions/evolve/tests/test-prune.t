@@ -32,6 +32,19 @@
   o  0:1f0dee641bb7[] (stable/public) add a
   
 
+Check arguments exclusive to each other
+---------------------------------------
+
+  $ hg prune --fold --biject
+  abort: can only specify one of biject, fold
+  [255]
+  $ hg prune --split --fold
+  abort: can only specify one of fold, split
+  [255]
+  $ hg prune --split --fold --biject
+  abort: can only specify one of biject, fold, split
+  [255]
+
 Check simple case
 ----------------------------
 
@@ -150,6 +163,9 @@ one old, one new
 one old, two new
 
   $ hg prune 'desc("add dd")' -s 'desc("add nD")' -s 'desc("add nC")'
+  abort: please add --split if you want to do a split
+  [255]
+  $ hg prune 'desc("add dd")' -s 'desc("add nD")' -s 'desc("add nC")' --split
   1 changesets pruned
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
@@ -190,6 +206,9 @@ two old, two new (should be denied)
 two old, one new:
 
   $ hg prune 'desc("add cc")' 'desc("add bb")' -s 'desc("add nB")'
+  abort: please add --fold if you want to do a fold
+  [255]
+  $ hg prune 'desc("add cc")' 'desc("add bb")' -s 'desc("add nB")' --fold
   2 changesets pruned
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}

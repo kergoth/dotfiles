@@ -115,6 +115,7 @@ Check that --logfile works
   branch: foo
   commit: 1 unknown (clean)
   update: (current)
+  phases: 3 draft
 
 Check the help
   $ hg amend -h

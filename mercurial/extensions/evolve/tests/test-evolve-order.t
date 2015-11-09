@@ -110,13 +110,13 @@ accross three stacks in growing rev numbers.
   atop:[13] bprime
   move:[8] add _d
   atop:[14] add _c
-  working directory is now at 225d2cc5d3fc
+  working directory is now at 739f18ac1d03
   $ hg log -G
-  @  15:225d2cc5d3fc@default(draft) add _d
+  @  15:739f18ac1d03@default(draft) add _d
   |
-  o  14:0fc229278e4d@default(draft) add _c
+  o  14:e5960578d158@default(draft) add _c
   |
-  o  13:c3741b9eafae@default(draft) bprime
+  o  13:4ad33fa88946@default(draft) bprime
   |
   o  12:9a584314f3f3@default(draft) asecond
   |
@@ -139,21 +139,21 @@ First set of stack:
   1 changesets pruned
   1 new unstable changesets
   $ hg log -G -r "desc(_d)::"
-  @  22:a329855d0bc1@default(draft) add c1second
+  @  22:dcf786e878fd@default(draft) add c1second
   |
-  | o  21:072276ece1bf@default(draft) add c2prime
+  | o  21:507d52d715f6@default(draft) add c2prime
   | |
-  | x  20:f137acd06692@default(draft) add c1prime
+  | x  20:c995cb124ddc@default(draft) add c1prime
   |/
-  | o  19:0a1d9b2ce733@default(draft) add c4_
+  | o  19:d096a2437fd0@default(draft) add c4_
   | |
-  | o  18:e2874f41c56c@default(draft) add c3_
+  | o  18:cde95c6cba7a@default(draft) add c3_
   | |
-  | x  17:3247c33339fa@default(draft) add c2_
+  | x  17:e0d9f7a099fe@default(draft) add c2_
   | |
-  | x  16:df322257c182@default(draft) add c1_
+  | x  16:43b7c338b1f8@default(draft) add c1_
   |/
-  o  15:225d2cc5d3fc@default(draft) add _d
+  o  15:739f18ac1d03@default(draft) add _d
   |
 
 Second set of stack with no successor for b2_:
@@ -168,45 +168,45 @@ Second set of stack with no successor for b2_:
   1 changesets pruned
 
   $ hg log -G -r "desc(_d)::"
-  @  28:ba4c348b6d5e@default(draft) add b3prime
+  @  28:b253ff5b65d1@default(draft) add b3prime
   |
-  o  27:8fe985f5d0aa@default(draft) add b1prime
+  o  27:4acf61f11dfb@default(draft) add b1prime
   |
-  | o  26:1d9ba2e75c93@default(draft) add b4_
+  | o  26:594e1fbbd61f@default(draft) add b4_
   | |
-  | x  25:aec6a9657b6c@default(draft) add b3_
+  | x  25:be27500cfc76@default(draft) add b3_
   | |
-  | x  24:a69b58575918@default(draft) add b2_
+  | x  24:b54f77dc5831@default(draft) add b2_
   | |
-  | x  23:3564eb18e448@default(draft) add b1_
+  | x  23:0e1eba27e9aa@default(draft) add b1_
   |/
-  | o  22:a329855d0bc1@default(draft) add c1second
+  | o  22:dcf786e878fd@default(draft) add c1second
   |/
-  | o  21:072276ece1bf@default(draft) add c2prime
+  | o  21:507d52d715f6@default(draft) add c2prime
   | |
-  | x  20:f137acd06692@default(draft) add c1prime
+  | x  20:c995cb124ddc@default(draft) add c1prime
   |/
-  | o  19:0a1d9b2ce733@default(draft) add c4_
+  | o  19:d096a2437fd0@default(draft) add c4_
   | |
-  | o  18:e2874f41c56c@default(draft) add c3_
+  | o  18:cde95c6cba7a@default(draft) add c3_
   | |
-  | x  17:3247c33339fa@default(draft) add c2_
+  | x  17:e0d9f7a099fe@default(draft) add c2_
   | |
-  | x  16:df322257c182@default(draft) add c1_
+  | x  16:43b7c338b1f8@default(draft) add c1_
   |/
-  o  15:225d2cc5d3fc@default(draft) add _d
+  o  15:739f18ac1d03@default(draft) add _d
   |
 
 Solve the full second stack and only part of the first one
   $ echo "(desc(_d)::) - desc(c3_)"
   (desc(_d)::) - desc(c3_)
   $ hg evolve --rev "(desc(_d)::) - desc(c3_)"
-  cannot solve instability of 0a1d9b2ce733, skipping
+  cannot solve instability of d096a2437fd0, skipping
   move:[21] add c2prime
   atop:[22] add c1second
   move:[26] add b4_
   atop:[28] add b3prime
-  working directory is now at 4897c8ed7645
+  working directory is now at ea93190a9cd1
 
 Cleanup
   $ hg evolve --rev "(desc(_d)::)"
@@ -214,23 +214,23 @@ Cleanup
   atop:[29] add c2prime
   move:[19] add c4_
   atop:[31] add c3_
-  working directory is now at 4ee8feb52325
+  working directory is now at 35e7b797ace5
   $ hg log -G -r "desc(_d)::"
-  @  32:4ee8feb52325@default(draft) add c4_
+  @  32:35e7b797ace5@default(draft) add c4_
   |
-  o  31:08a530ce67e1@default(draft) add c3_
+  o  31:0b9488394e89@default(draft) add c3_
   |
-  | o  30:4897c8ed7645@default(draft) add b4_
+  | o  30:ea93190a9cd1@default(draft) add b4_
   | |
-  o |  29:3abc7618dd5f@default(draft) add c2prime
+  o |  29:881b9c092e53@default(draft) add c2prime
   | |
-  | o  28:ba4c348b6d5e@default(draft) add b3prime
+  | o  28:b253ff5b65d1@default(draft) add b3prime
   | |
-  | o  27:8fe985f5d0aa@default(draft) add b1prime
+  | o  27:4acf61f11dfb@default(draft) add b1prime
   | |
-  o |  22:a329855d0bc1@default(draft) add c1second
+  o |  22:dcf786e878fd@default(draft) add c1second
   |/
-  o  15:225d2cc5d3fc@default(draft) add _d
+  o  15:739f18ac1d03@default(draft) add _d
   |
 
 Test multiple revision with some un-evolvable because parent is splitted
@@ -258,6 +258,6 @@ Test multiple revision with some un-evolvable because parent is splitted
   $ hg evolve --rev 'unstable()'
   move:[30] add b4_
   atop:[35] b3second
-  skipping 08a530ce67e1: divergent rewriting. can't choose destination
-  working directory is now at a51a8a82fdba
+  skipping 0b9488394e89: divergent rewriting. can't choose destination
+  working directory is now at 31809a198477
 

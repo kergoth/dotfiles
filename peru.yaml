@@ -126,7 +126,7 @@ curl module iterm2-zsh:
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: 39bd36d861193685dabc6be54c132c70416fdc75
+    rev: 5d1c5347722e384ec223d21ecca3c4f05cbc95a3
     pick: git-imerge
 
 git module cheat:
@@ -161,7 +161,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: dba8a0705d95cda76d599bb7d09964d67741a5c5
+    rev: 1ecd12d523ffe031b5840316eeae1f24dd8920e4
 
 # go language support
 git module vim-golang:
@@ -297,7 +297,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 6d10c09d9fab2ab4f281a7d56c41a84c9dbf64ae
+    rev: 8e237401c88f55464131e76ac4893dc530281b25
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -324,7 +324,7 @@ git module planter:
 git module fasd:
     url: https://github.com/clvv/fasd
     pick: fasd
-    rev: 61ce53be996189e1c325916e45a7dc0aa89660e3
+    rev: 90b531a5daaa545c74c7d98974b54cbdb92659fc
 
 hg module friendly-find:
     url: https://bitbucket.org/sjl/friendly-find
@@ -455,7 +455,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 91b6a30424a366e87771fc2544c95633f4abfe81
+    rev: b338fe4e06574aeeb99f1c202828cafaf074717c
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -506,7 +506,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 630169bfc21bf5a114616238810e4b31b19eb983
+    rev: 85cde9235c06e6d4ec631551fb0fc57fe676f05c
 
 git module checkbashisms:
     url: git://anonscm.debian.org/collab-maint/devscripts.git

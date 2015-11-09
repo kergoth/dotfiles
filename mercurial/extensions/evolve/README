@@ -42,20 +42,36 @@ http://mercurial.selenic.com/wiki/ContributingChanges#Patch_descriptions
 for guidelines on the patch description.
 
 Please don't forget to update and run the tests when you fix a bug or
-add a feature. To run the tests:
+add a feature. To run the tests, you need a working copy of Mercurial,
+say in $HGSRC:
 
     cd tests
-    python run-tests.py --with-hg=/path/to/hg
+    python $HGSRC/tests/run-tests.py --with-hg=$HGSRC/hg
+
+(evolve's stable and default branches correspond to Mercurial's stable
+and default branches. So to test evolve from default, you need
+Mercurial on default.)
 
 
 Changelog
 =========
 
-5.2.1 --
+5.3.0 --
+
+- split: add a new command to split changesets
+
+5.2.2 --
+
+- no longer lock the repository for `hg parents` (issue4895)
+- updated help for the `evolve` command
+
+5.2.1 -- 2015-11-02
 
 - add compatibility with Mercurial 3.6
 - prune: fixed possible issue with lock and bookmark
 - next/prev: fixed possible issue with lock and bookmark
+- add some progress data during changesets discovery
+- take advantage of dirstate/transaction collaboration
 
 5.2.0 -- 2015-06-25
 

@@ -82,8 +82,7 @@ Test evolve with conflict
   move:[5] newer a
   atop:[7] changea
   merging a
-  warning: conflicts during merge.
-  merging a incomplete! (edit conflicts, then use 'hg resolve --mark')
+  warning: conflicts while merging a! (edit, then use 'hg resolve --mark')
   evolve failed!
   fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
   abort: unresolved merge conflicts (see hg help resolve)
@@ -307,6 +306,7 @@ Stabilize it
   branch: default
   commit: (clean)
   update: 2 new changesets, 2 branch heads (merge)
+  phases: 3 draft
   $ hg export .
   # HG changeset patch
   # User test
@@ -357,8 +357,7 @@ Check conflict during divergence resolution
   with: [21] More addition
   base: [15] More addition
   merging a
-  warning: conflicts during merge.
-  merging a incomplete! (edit conflicts, then use 'hg resolve --mark')
+  warning: conflicts while merging a! (edit, then use 'hg resolve --mark')
   0 files updated, 0 files merged, 0 files removed, 1 files unresolved
   use 'hg resolve' to retry unresolved file merges or 'hg update -C .' to abandon
   abort: merge conflict between several amendments (this is not automated yet)

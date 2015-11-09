@@ -73,9 +73,9 @@ Test stabilizing a predecessor child
   b
   committing manifest
   committing changelog
-  working directory is now at bede829dd2d3
+  working directory is now at 81b8bbcd5892
   $ glog
-  @  8:bede829dd2d3@default(draft) addb
+  @  8:81b8bbcd5892@default(draft) addb
   |
   o  7:005fe5914f78@default(draft) adda
   |
@@ -96,7 +96,7 @@ Test stabilizing a descendant predecessor's child
   $ hg evolve -v
   move:[3] addc
   atop:[8] addb
-  hg rebase -r 7a7552255fb5 -d bede829dd2d3
+  hg rebase -r 7a7552255fb5 -d 81b8bbcd5892
   resolving manifests
   getting b
   resolving manifests
@@ -105,7 +105,7 @@ Test stabilizing a descendant predecessor's child
   c
   committing manifest
   committing changelog
-  working directory is now at 65095d7d0dd5
+  working directory is now at 0f691739f917
   $ hg debugobsolete > successors.new
   $ diff -u successors.old successors.new
   --- successors.old* (glob)
@@ -113,16 +113,16 @@ Test stabilizing a descendant predecessor's child
   @@ -3,3 +3,4 @@
    93418d2c0979643ad446f621195e78720edb05b4 005fe5914f78e8bc64c7eba28117b0b1fa210d0d 0 (*) {'user': 'test'} (glob)
    7a7d76dc97c57751de9e80f61ed2a639bd03cd24 0 {93418d2c0979643ad446f621195e78720edb05b4} (*) {'user': 'test'} (glob)
-   22619daeed78036f80fbd326b6852519c4f0c25e bede829dd2d3b2ae9bf198c23432b250dc964458 0 (*) {'user': 'test'} (glob)
-  +7a7552255fb5f8bd745e46fba6f0ca633a4dd716 65095d7d0dd5e4f15503bb7b1f433a5fe9bac052 0 (*) {'user': 'test'} (glob)
+   22619daeed78036f80fbd326b6852519c4f0c25e 81b8bbcd5892841efed41433d7a5e9df922396cb 0 (*) {'user': 'test'} (glob)
+  +7a7552255fb5f8bd745e46fba6f0ca633a4dd716 0f691739f91762462bf8ba21f35fdf71fe64310e 0 (*) {'user': 'test'} (glob)
   [1]
 
 
 
   $ glog
-  @  9:65095d7d0dd5@default(draft) addc
+  @  9:0f691739f917@default(draft) addc
   |
-  o  8:bede829dd2d3@default(draft) addb
+  o  8:81b8bbcd5892@default(draft) addb
   |
   o  7:005fe5914f78@default(draft) adda
   |
@@ -140,11 +140,11 @@ Test behaviour with --any
   $ hg amend
   1 new unstable changesets
   $ glog
-  @  11:036cf654e942@default(draft) addb
+  @  11:7a68bc4596ea@default(draft) addb
   |
-  | o  9:65095d7d0dd5@default(draft) addc
+  | o  9:0f691739f917@default(draft) addc
   | |
-  | x  8:bede829dd2d3@default(draft) addb
+  | x  8:81b8bbcd5892@default(draft) addb
   |/
   o  7:005fe5914f78@default(draft) adda
   |
@@ -159,7 +159,7 @@ Test behaviour with --any
   $ hg evolve --any -v
   move:[9] addc
   atop:[11] addb
-  hg rebase -r 65095d7d0dd5 -d 036cf654e942
+  hg rebase -r 0f691739f917 -d 7a68bc4596ea
   resolving manifests
   removing c
   getting b
@@ -169,11 +169,11 @@ Test behaviour with --any
   c
   committing manifest
   committing changelog
-  working directory is now at e99ecf51c867
+  working directory is now at 2256dae6521f
   $ glog
-  @  12:e99ecf51c867@default(draft) addc
+  @  12:2256dae6521f@default(draft) addc
   |
-  o  11:036cf654e942@default(draft) addb
+  o  11:7a68bc4596ea@default(draft) addb
   |
   o  7:005fe5914f78@default(draft) adda
   |
@@ -198,30 +198,30 @@ Ambiguous evolution
   $ hg commit --amend -m "newmessage"
   2 new unstable changesets
   $ hg log -G
-  @  changeset:   15:49773ccde390
+  @  changeset:   15:f83a0bce03e4
   |  tag:         tip
-  |  parent:      11:036cf654e942
+  |  parent:      11:7a68bc4596ea
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     newmessage
   |
-  | o  changeset:   14:a9892777b519
-  | |  parent:      12:e99ecf51c867
+  | o  changeset:   14:fa68011f392e
+  | |  parent:      12:2256dae6521f
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  summary:     secondambiguous
   | |
-  | | o  changeset:   13:0b6e26b2472d
+  | | o  changeset:   13:bdc003b6eec2
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
   | |    summary:     firstambiguous
   | |
-  | x  changeset:   12:e99ecf51c867
+  | x  changeset:   12:2256dae6521f
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
   |    summary:     addc
   |
-  o  changeset:   11:036cf654e942
+  o  changeset:   11:7a68bc4596ea
   |  parent:      7:005fe5914f78
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000

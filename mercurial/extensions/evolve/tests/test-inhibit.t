@@ -133,6 +133,7 @@ and no divergence
   branch: default
   commit: (clean)
   update: 1 new changesets, 2 branch heads (merge)
+  phases: 6 draft
 
 check public revision got cleared
 (when adding the second inhibitor, the first one is removed because it is public)
@@ -352,9 +353,17 @@ But only with hash
   +cD
 
   $ hg export 1 3
-  abort: filtered revision '1' (not in 'visible-directaccess-nowarn' subset)!
+  abort: hidden revision '1'!
+  (use --hidden to access hidden revisions)
   [255]
 
+
+Test directaccess in a larger revset
+
+  $ hg log -r '. + .^ + 2db36d8066ff' -T '{node|short}\n'
+  55c73a90e4b4
+  cf5c4f4554ce
+  2db36d8066ff
 
 With severals hidden sha, rebase of one hidden stack onto another one:
   $ hg update -C 0
@@ -397,12 +406,12 @@ With severals hidden sha, rebase of one hidden stack onto another one:
   o  0:54ccbc537fc2 add cA
   
   $ hg rebase -s 10 -d 3 
-  abort: filtered revision '3' (not in 'visible-directaccess-warn' subset)!
+  abort: hidden revision '3'!
+  (use --hidden to access hidden revisions)
   [255]
   $ hg rebase -r ad78ff7d621f -r 53a94305e133 -d  2db36d8066ff
   Warning: accessing hidden changesets 2db36d8066ff for write operation
-  Warning: accessing hidden changesets ad78ff7d621f for write operation
-  Warning: accessing hidden changesets 53a94305e133 for write operation
+  Warning: accessing hidden changesets ad78ff7d621f,53a94305e133 for write operation
   rebasing 10:ad78ff7d621f "add cK"
   rebasing 11:53a94305e133 "add cL"
   $ hg log -G
@@ -722,9 +731,10 @@ Inhibit should not work without directaccess
   > directaccess=!
   > testextension=!
   > EOF
-  $ hg up 15
-  abort: Cannot use inhibit without the direct access extension
-  [255]
+  $ hg up .
+  cannot use inhibit without the direct access extension
+  (please enable it or inhibit won't work)
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ echo "directaccess=$(echo $(dirname $TESTDIR))/hgext/directaccess.py" >> $HGRCPATH
   $ cd ..
 
@@ -758,8 +768,7 @@ Visible commits can still be pushed
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pushing 33 obsolescence markers (*) (glob)
-  2 obsolescence markers added
+  2 new obsolescence markers
 
 Pulling from a inhibit repo to a non-inhibit repo should work
 

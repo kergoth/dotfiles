@@ -43,7 +43,7 @@ Create a split commit
   $ printf "pp" > pp;
   $ hg add pp
   $ hg commit -m "_pp"
-  $ hg prune --succ "desc(_oo) + desc(_pp)" -r "desc('oo+pp')"
+  $ hg prune --succ "desc(_oo) + desc(_pp)" -r "desc('oo+pp')" --split
   1 changesets pruned
   1 new unstable changesets
   $ hg log -G
@@ -58,4 +58,6 @@ Create a split commit
   o  0:58663bb03074@default(draft) add aa
   
   $ hg evolve --rev "0::"
-  does not handle split parents yet
+  move:[2] add uu
+  atop:[4] _pp
+  working directory is now at 6f5bbe2e3df3

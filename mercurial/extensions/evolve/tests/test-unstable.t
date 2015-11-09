@@ -182,7 +182,6 @@ Not supported yet
 ===============================================================================
 Test instability resolution for a changeset unstable because its parent
 is obsolete with multiple successors all in one chain (simple split)
-Not supported yet
 ==============================================================================
 
   $ hg init test4
@@ -208,16 +207,16 @@ Not supported yet
   
 
   $ hg evo --all --any --unstable
-  does not handle split parents yet
+  move:[2] add _c
+  atop:[4] add bprimesplit2
+  working directory is now at 387cc1e837d7
   $ hg log -G
-  @  4:2a4ccc0bb20c@default(draft) add bprimesplit2
+  @  5:387cc1e837d7@default(draft) add _c
+  |
+  o  4:2a4ccc0bb20c@default(draft) add bprimesplit2
   |
   o  3:8b87864bd0f4@default(draft) add bprimesplit1
   |
-  | o  2:102002290587@default(draft) add _c
-  | |
-  | x  1:37445b16603b@default(draft) add _b
-  |/
   o  0:135f39f4bd78@default(draft) add _a
   
 
@@ -228,7 +227,6 @@ Not supported yet
 Test instability resolution for a changeset unstable because its parent
 is obsolete with multiple successors on one branches but in reverse
 order (cross-split).
-Not supported yet
 ==============================================================================
 
   $ hg init test5
@@ -263,16 +261,16 @@ Not supported yet
   
 
   $ hg evo --all --any --unstable
-  does not handle split parents yet
+  move:[2] add _c
+  atop:[6] add bsecondsplit2
+  working directory is now at 98e3f21461ff
   $ hg log -G
-  @  6:59b942dbda14@default(draft) add bsecondsplit2
+  @  7:98e3f21461ff@default(draft) add _c
+  |
+  o  6:59b942dbda14@default(draft) add bsecondsplit2
   |
   o  5:8ffdae67d696@default(draft) add bsecondsplit1
   |
-  | o  2:102002290587@default(draft) add _c
-  | |
-  | x  1:37445b16603b@default(draft) add _b
-  |/
   o  0:135f39f4bd78@default(draft) add _a
   
 
@@ -312,7 +310,7 @@ Not supported yet
   
 
   $ hg evo --all --any --unstable
-  does not handle split parents yet
+  cannot solve split accross two branches
   $ hg log -G
   @  4:3c69ea6aa93e@default(draft) add bprimesplit2
   |

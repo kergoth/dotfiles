@@ -224,7 +224,6 @@ I'll get this remote changeset when pulling
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pull obsolescence markers
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
 I now have a new heads. Note that this remote head is immutable
@@ -406,8 +405,7 @@ we can now push our change:
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 1 files
-  pushing 6 obsolescence markers (*) (glob)
-  6 obsolescence markers added
+  6 new obsolescence markers
 
 for simplicity sake we get the bathroom change in line again
 
@@ -527,8 +525,7 @@ is ``true`` by default.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pull obsolescence markers
-  1 obsolescence markers added
+  1 new obsolescence markers
   (run 'hg update' to get a working copy)
   $ hg log -G
   o  75954b8cd933 (public): bathroom stuff
@@ -585,8 +582,7 @@ I can now exchange mutable changeset between "remote" and "local" repository.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pull obsolescence markers
-  1 obsolescence markers added
+  1 new obsolescence markers
   (run 'hg update' to get a working copy)
   $ hg log -G
   o  75954b8cd933 (draft): bathroom stuff
@@ -646,8 +642,6 @@ When we pull from remote again we get an unstable state!
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pull obsolescence markers
-  0 obsolescence markers added
   (run 'hg heads' to see heads, 'hg merge' to merge)
   1 new unstable changesets
 
@@ -737,8 +731,7 @@ We can push this evolution to remote
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 1 files (+1 heads)
-  pushing 10 obsolescence markers (*) (glob)
-  3 obsolescence markers added
+  3 new obsolescence markers
 
 remote get a warning that current working directory is based on an obsolete changeset
 
@@ -747,8 +740,6 @@ remote get a warning that current working directory is based on an obsolete chan
   pulling from $TESTTMP/local (glob)
   searching for changes
   no changes found
-  pull obsolescence markers
-  0 obsolescence markers added
   working directory parent is obsolete!
   (use "hg evolve" to update to its successor)
 
@@ -781,8 +772,6 @@ I'm pulling its work locally.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pull obsolescence markers
-  0 obsolescence markers added
   (run 'hg update' to get a working copy)
   $ hg log -G
   o  99f039c5ec9e (draft): SPAM SPAM SPAM

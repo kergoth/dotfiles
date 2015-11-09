@@ -129,6 +129,8 @@ def extsetup(ui):
 
 hashre = util.re.compile('[0-9a-fA-F]{1,40}')
 
+_listtuple = ('symbol', '_list')
+
 def gethashsymbols(tree):
     # Returns the list of symbols of the tree that look like hashes
     # for example for the revset 3::abe3ff it will return ('abe3ff')
@@ -143,8 +145,18 @@ def gethashsymbols(tree):
             if hashre.match(tree[1]):
                 return [tree[1]]
             return []
-    elif len(tree) == 3:
-        return gethashsymbols(tree[1]) + gethashsymbols(tree[2])
+    elif tree[0] == "func" and tree[1] == _listtuple:
+        # the optimiser will group sequence of hash request
+        result = []
+        for entry in tree[2][1].split('\0'):
+            if hashre.match(entry):
+                result.append(entry)
+        return result
+    elif len(tree) >= 3:
+        results = []
+        for subtree in tree[1:]:
+            results += gethashsymbols(subtree)
+        return results
     else:
         return []
 

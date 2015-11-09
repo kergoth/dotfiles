@@ -19,8 +19,8 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.2.0'
-testedwith = '3.3.3 3.4.1'
+__version__ = '5.2.1'
+testedwith = '3.4.3 3.5.2 3.6'
 buglink = 'http://bz.selenic.com/'
 
 
@@ -71,6 +71,7 @@ sha1re = re.compile(r'\b[0-9a-f]{6,40}\b')
 
 import mercurial
 from mercurial import util
+from mercurial import repair
 
 try:
     from mercurial import obsolete
@@ -677,16 +678,19 @@ def showtroubles(repo, ctx, **args):
 
 # This section take care of issue warning to the user when troubles appear
 
+
+def _warnobsoletewc(ui, repo):
+    if repo['.'].obsolete():
+        ui.warn(_('working directory parent is obsolete!\n'))
+        if (not ui.quiet) and obsolete.isenabled(repo, commandopt):
+            ui.warn(_('(use "hg evolve" to update to its successor)\n'))
+
 @eh.wrapcommand("update")
-@eh.wrapcommand("parents")
 @eh.wrapcommand("pull")
 def wrapmayobsoletewc(origfn, ui, repo, *args, **opts):
     """Warn that the working directory parent is an obsolete changeset"""
     def warnobsolete():
-        if repo['.'].obsolete():
-            ui.warn(_('working directory parent is obsolete!\n'))
-            if (not ui.quiet) and obsolete.isenabled(repo, commandopt):
-                ui.warn(_('(use "hg evolve" to update to its successor)\n'))
+        _warnobsoletewc(ui, repo)
     wlock = None
     try:
         wlock = repo.wlock()
@@ -694,6 +698,12 @@ def wrapmayobsoletewc(origfn, ui, repo, *args, **opts):
         res = origfn(ui, repo, *args, **opts)
     finally:
         lockmod.release(wlock)
+    return res
+
+@eh.wrapcommand("parents")
+def wrapparents(origfn, ui, repo, *args, **opts):
+    res = origfn(ui, repo, *args, **opts)
+    _warnobsoletewc(ui, repo)
     return res
 
 # XXX this could wrap transaction code
@@ -805,74 +815,82 @@ def rewrite(repo, old, updates, head, newbases, commitopts):
     nodeid was actually created. If created is False, nodeid
     references a changeset existing before the rewrite call.
     """
-    if len(old.parents()) > 1: #XXX remove this unecessary limitation.
-        raise error.Abort(_('cannot amend merge changesets'))
-    base = old.p1()
-    updatebookmarks = _bookmarksupdater(repo, old.node())
+    wlock = lock = tr = None
+    try:
+        wlock = repo.wlock()
+        lock = repo.lock()
+        tr = repo.transaction('rewrite')
+        if len(old.parents()) > 1: #XXX remove this unecessary limitation.
+            raise error.Abort(_('cannot amend merge changesets'))
+        base = old.p1()
+        updatebookmarks = _bookmarksupdater(repo, old.node(), tr)
 
-    # commit a new version of the old changeset, including the update
-    # collect all files which might be affected
-    files = set(old.files())
-    for u in updates:
-        files.update(u.files())
+        # commit a new version of the old changeset, including the update
+        # collect all files which might be affected
+        files = set(old.files())
+        for u in updates:
+            files.update(u.files())
 
-    # Recompute copies (avoid recording a -> b -> a)
-    copied = copies.pathcopies(base, head)
+        # Recompute copies (avoid recording a -> b -> a)
+        copied = copies.pathcopies(base, head)
 
 
-    # prune files which were reverted by the updates
-    def samefile(f):
-        if f in head.manifest():
-            a = head.filectx(f)
-            if f in base.manifest():
-                b = base.filectx(f)
-                return (a.data() == b.data()
-                        and a.flags() == b.flags())
+        # prune files which were reverted by the updates
+        def samefile(f):
+            if f in head.manifest():
+                a = head.filectx(f)
+                if f in base.manifest():
+                    b = base.filectx(f)
+                    return (a.data() == b.data()
+                            and a.flags() == b.flags())
+                else:
+                    return False
             else:
-                return False
-        else:
-            return f not in base.manifest()
-    files = [f for f in files if not samefile(f)]
-    # commit version of these files as defined by head
-    headmf = head.manifest()
-    def filectxfn(repo, ctx, path):
-        if path in headmf:
-            fctx = head[path]
-            flags = fctx.flags()
-            mctx = memfilectx(repo, fctx.path(), fctx.data(),
-                              islink='l' in flags,
-                              isexec='x' in flags,
-                              copied=copied.get(path))
-            return mctx
-        return None
+                return f not in base.manifest()
+        files = [f for f in files if not samefile(f)]
+        # commit version of these files as defined by head
+        headmf = head.manifest()
+        def filectxfn(repo, ctx, path):
+            if path in headmf:
+                fctx = head[path]
+                flags = fctx.flags()
+                mctx = memfilectx(repo, fctx.path(), fctx.data(),
+                                  islink='l' in flags,
+                                  isexec='x' in flags,
+                                  copied=copied.get(path))
+                return mctx
+            return None
 
-    message = cmdutil.logmessage(repo.ui, commitopts)
-    if not message:
-        message = old.description()
+        message = cmdutil.logmessage(repo.ui, commitopts)
+        if not message:
+            message = old.description()
 
-    user = commitopts.get('user') or old.user()
-    date = commitopts.get('date') or None # old.date()
-    extra = dict(commitopts.get('extra', {}))
-    extra['branch'] = head.branch()
+        user = commitopts.get('user') or old.user()
+        date = commitopts.get('date') or None # old.date()
+        extra = dict(commitopts.get('extra', old.extra()))
+        extra['branch'] = head.branch()
 
-    new = context.memctx(repo,
-                         parents=newbases,
-                         text=message,
-                         files=files,
-                         filectxfn=filectxfn,
-                         user=user,
-                         date=date,
-                         extra=extra)
+        new = context.memctx(repo,
+                             parents=newbases,
+                             text=message,
+                             files=files,
+                             filectxfn=filectxfn,
+                             user=user,
+                             date=date,
+                             extra=extra)
 
-    if commitopts.get('edit'):
-        new._text = cmdutil.commitforceeditor(repo, new, [])
-    revcount = len(repo)
-    newid = repo.commitctx(new)
-    new = repo[newid]
-    created = len(repo) != revcount
-    updatebookmarks(newid)
+        if commitopts.get('edit'):
+            new._text = cmdutil.commitforceeditor(repo, new, [])
+        revcount = len(repo)
+        newid = repo.commitctx(new)
+        new = repo[newid]
+        created = len(repo) != revcount
+        updatebookmarks(newid)
 
-    return newid, created
+        tr.close()
+        return newid, created
+    finally:
+        lockmod.release(lock, wlock, tr)
 
 class MergeFailure(util.Abort):
     pass
@@ -935,7 +953,10 @@ def relocate(repo, orig, dest, keepbranch=False):
                         'unresolved merge conflicts (see hg help resolve)')
             if commitmsg is None:
                 commitmsg = orig.description()
-            extra = {'rebase_source': orig.hex()}
+            extra = dict(orig.extra())
+            if 'branch' in extra:
+                del extra['branch']
+            extra['rebase_source'] = orig.hex()
 
             backup = repo.ui.backupconfig('phases', 'new-commit')
             try:
@@ -949,7 +970,7 @@ def relocate(repo, orig, dest, keepbranch=False):
         except util.Abort, exc:
             repo.dirstate.beginparentchange()
             repo.setparents(repo['.'].node(), nullid)
-            repo.dirstate.write()
+            writedirstate(repo.dirstate, tr)
             # fix up dirstate for copies and renames
             copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
             repo.dirstate.endparentchange()
@@ -971,13 +992,13 @@ def relocate(repo, orig, dest, keepbranch=False):
         for book in destbookmarks: # restore bookmark that rebase move
             repo._bookmarks[book] = dest.node()
         if oldbookmarks or destbookmarks:
-            repo._bookmarks.write()
+            repo._bookmarks.recordchange(tr)
         tr.close()
     finally:
         tr.release()
     return nodenew
 
-def _bookmarksupdater(repo, oldid):
+def _bookmarksupdater(repo, oldid, tr):
     """Return a callable update(newid) updating the current bookmark
     and bookmarks bound to oldid to newid.
     """
@@ -989,7 +1010,7 @@ def _bookmarksupdater(repo, oldid):
                 repo._bookmarks[b] = newid
             dirty = True
         if dirty:
-            repo._bookmarks.write()
+            repo._bookmarks.recordchange(tr)
     return updatebookmarks
 
 ### bookmarks api compatibility layer ###
@@ -1009,6 +1030,15 @@ def bmactive(repo):
         return repo._activebookmark
     except AttributeError:
         return repo._bookmarkcurrent
+
+### dirstate compatibility layer < hg 3.6
+
+def writedirstate(dirstate, tr):
+    if dirstate.write.func_defaults is not None: # mercurial 3.6 and above
+        return dirstate.write(tr)
+    return dirstate.write()
+
+
 
 ### new command
 #############################
@@ -1081,8 +1111,8 @@ def _deprecatealias(oldalias, newalias):
         fn, opts, _syn = entry
     else:
         fn, opts, = entry
-    deprecationwarning = _('%s have been deprecated in favor of %s\n' % (
-        oldalias, newalias))
+    deprecationwarning = _('%s have been deprecated in favor of %s\n') % (
+        oldalias, newalias)
     def newfn(*args, **kwargs):
         ui = args[0]
         ui.warn(deprecationwarning)
@@ -1500,52 +1530,80 @@ def _orderrevs(repo, revs):
 
 @command('^evolve|stabilize|solve',
     [('n', 'dry-run', False,
-        'do not perform actions, just print what would be done'),
+        _('do not perform actions, just print what would be done')),
      ('', 'confirm', False,
-        'ask for confirmation before performing the action'),
-    ('A', 'any', False, 'also consider troubled changesets unrelated to current working directory'),
-    ('r', 'rev', [], 'solves troubles of these revisions'),
-    ('', 'bumped', False, 'solves only bumped changesets'),
-    ('', 'divergent', False, 'solves only divergent changesets'),
-    ('', 'unstable', False, 'solves only unstable changesets (default)'),
-    ('a', 'all', False, 'evolve all troubled changesets related to the current '
-                         'working directory and its descendants'),
-    ('c', 'continue', False, 'continue an interrupted evolution'),
+        _('ask for confirmation before performing the action')),
+    ('A', 'any', False, _('also consider troubled changesets unrelated to current working directory')),
+    ('r', 'rev', [], _('solves troubles of these revisions')),
+    ('', 'bumped', False, _('solves only bumped changesets')),
+    ('', 'divergent', False, _('solves only divergent changesets')),
+    ('', 'unstable', False, _('solves only unstable changesets (default)')),
+    ('a', 'all', False, _('evolve all troubled changesets related to the current '
+                         'working directory and its descendants')),
+    ('c', 'continue', False, _('continue an interrupted evolution')),
     ] + mergetoolopts,
     _('[OPTIONS]...'))
 def evolve(ui, repo, **opts):
-    """solve troubles in your repository
+    """solve troubled changesets in your repository
 
-    - rebase unstable changesets to make them stable again,
-    - create proper diffs from bumped changesets,
-    - fuse divergent changesets back together,
-    - update to a successor if the working directory parent is
-      obsolete
+    Modifying history can lead to various types of troubled changesets: unstable,
+    bumped, or divergent. The evolve command resolves your troubles by executing one
+    of the following actions:
 
-    If no argument are passed and the current working copy parent is obsolete,
-    :hg:`evolve` will update the working copy to the successors of this working
-    copy parent. If the working copy parent is not obsolete (and still no
-    argument passed) each invocation of :hg:`evolve` will evolve a single
-    unstable changeset, It will only select a changeset to be evolved if it
-    will result in a new children for the current working copy parent or its
-    descendants. The working copy will be updated on the result
-    (this last behavior will most likely to change in the future).
-    You can evolve all the unstable changesets that will be evolved on the
-    parent of the working copy and all its descendants recursively by using
-    :hg:`evolve` --all.
+    - update working copy to a successor
+    - rebase an unstable changeset
+    - extract the desired changes from a bumped changeset
+    - fuse divergent changesets back together
 
-    You can decide to evolve other categories of trouble using the --divergent
-    and --bumped flags. If no other option are specified, this will try to
-    solve the specified troubles for the working copy parent.
+    If you pass no arguments, evolve works in automatic mode: it will execute a
+    single action to reduce instability related to your working copy. There are two
+    cases for this action. First, if the parent of your working copy is obsolete,
+    evolve updates to the parent's successor. Second, if the working copy parent is
+    not obsolete but has obsolete predecessors, then evolve determines if there is an
+    unstable changeset that can be rebased onto the working copy parent in order to
+    reduce instability. If so, evolve rebases that changeset. If not, evolve refuses
+    to guess your intention, and gives a hint about what you might want to do next.
 
-    You can also evolve changesets affected by troubles of the selected
-    category using the --rev options. You can pick the next one anywhere in the
-    repo using --any.
+    Any time evolve creates a changeset, it updates the working copy to the new
+    changeset. (Currently, every successful evolve operation involves an update as
+    well; this may change in future.)
 
-    You can evolve all the changesets affected by troubles of the selected
-    category using --all --any.
+    Automatic mode only handles common use cases. For example, it avoids taking
+    action in the case of ambiguity, and it ignores unstable changesets that are not
+    related to your working copy. It also refuses to solve bumped or divergent
+    changesets unless you explicity request such behavior (see below).
 
-    The working directory is updated to the newly created revision.
+    Eliminating all instability around your working copy may require multiple
+    invocations of :hg:`evolve`. Alternately, use ``--all`` to recursively select and
+    evolve all unstable changesets that can be rebased onto the working copy parent.
+    This is more powerful than successive invocations, since ``--all`` handles
+    ambiguous cases (e.g. unstable changesets with multiple children) by evolving all
+    branches.
+
+    When your repository cannot be handled by automatic mode, you might need to use
+    ``--rev`` to specify a changeset to evolve. For example, if you have an unstable
+    changeset that is not related to the working copy parent, you could use ``--rev``
+    to evolve it. Or, if some changeset has multiple unstable children, evolve in
+    automatic mode refuses to guess which one to evolve; you have to use ``--rev``
+    in that case.
+
+    Alternately, ``--any`` makes evolve search for the next evolvable changeset
+    regardless of whether it is related to the working copy parent.
+
+    You can supply multiple revisions to evolve multiple troubled changesets in a
+    single invocation. In revset terms, ``--any`` is equivalent to ``--rev
+    first(unstable())``. ``--rev`` and ``--all`` are mutually exclusive, as are
+    ``--rev`` and ``--any``.
+
+    ``hg evolve --any --all`` is useful for cleaning up instability across all
+    branches, letting evolve figure out the appropriate order and destination.
+
+    When you have troubled changesets that are not unstable, :hg:`evolve` refuses to
+    consider them unless you specify the category of trouble you wish to resolve,
+    with ``--bumped`` or ``--divergent``. These options are currently mutually
+    exclusive with each other and with ``--unstable`` (the default). You can combine
+    ``--bumped`` or ``--divergent`` with ``--rev``, ``--all``, or ``--any``.
+
     """
 
     # Options
@@ -1706,16 +1764,23 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         obs = obs.parents()[0]
         newer = obsolete.successorssets(repo, obs.node())
     if len(newer) > 1:
-        msg = _("skipping %s: divergent rewriting. can't choose destination\n" % obs)
+        msg = _("skipping %s: divergent rewriting. can't choose destination\n") % obs
         ui.write_err(msg)
         return 2
     targets = newer[0]
     assert targets
     if len(targets) > 1:
-        msg = _("does not handle split parents yet\n")
-        ui.write_err(msg)
-        return 2
-    target = targets[0]
+        # split target, figure out which one to pick, are they all in line?
+        targetrevs = [repo[r].rev() for r in targets]
+        roots = repo.revs('roots(%ld)', targetrevs)
+        heads = repo.revs('heads(%ld)', targetrevs)
+        if len(roots) > 1 or len(heads) > 1:
+            msg = "cannot solve split accross two branches\n"
+            ui.write_err(msg)
+            return 2
+        target = repo[heads.first()]
+    else:
+        target = targets[0]
     displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
     target = repo[target]
     if not ui.quiet or confirm:
@@ -1750,13 +1815,13 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
     bumped = repo[bumped.rev()]
     # For now we deny bumped merge
     if len(bumped.parents()) > 1:
-        msg = _('skipping %s : we do not handle merge yet\n' % bumped)
+        msg = _('skipping %s : we do not handle merge yet\n') % bumped
         ui.write_err(msg)
         return 2
     prec = repo.set('last(allprecursors(%d) and public())', bumped).next()
     # For now we deny target merge
     if len(prec.parents()) > 1:
-        msg = _('skipping: %s: public version is a merge, this not handled yet\n' % prec)
+        msg = _('skipping: %s: public version is a merge, this not handled yet\n') % prec
         ui.write_err(msg)
         return 2
 
@@ -1778,9 +1843,9 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
     if progresscb: progresscb()
     newid = tmpctx = None
     tmpctx = bumped
-    bmupdate = _bookmarksupdater(repo, bumped.node())
     # Basic check for common parent. Far too complicated and fragile
     tr = repo.transaction('bumped-stabilize')
+    bmupdate = _bookmarksupdater(repo, bumped.node(), tr)
     try:
         if not list(repo.set('parents(%d) and parents(%d)', bumped, prec)):
             # Need to rebase the changeset at the right place
@@ -1904,7 +1969,7 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
         displayer.show(other)
         ui.write(_('base: '))
         displayer.show(base)
-    if confirm and ui.prompt('perform evolve? [Ny]', 'n') != 'y':
+    if confirm and ui.prompt(_('perform evolve? [Ny]'), 'n') != 'y':
         raise util.Abort(_('evolve aborted by user'))
     if dryrun:
         ui.write('hg update -c %s &&\n' % divergent)
@@ -1984,13 +2049,15 @@ shorttemplate = '[{rev}] {desc|firstline}\n'
 
 @command('^previous',
          [('B', 'move-bookmark', False,
-             _('Move active bookmark after update')),
-          ('', 'merge', False, _('bring uncommited change along'))],
-         '[-B]')
+             _('move active bookmark after update')),
+          ('', 'merge', False, _('bring uncommitted change along')),
+          ('n', 'dry-run', False, _('do not perform actions, just print what would be done'))],
+         '[OPTION]...')
 def cmdprevious(ui, repo, **opts):
     """update to parent and display summary lines"""
     wkctx = repo[None]
     wparents = wkctx.parents()
+    dryrunopt = opts['dry_run']
     if len(wparents) != 1:
         raise util.Abort('merge in progress')
     if not opts['merge']:
@@ -2006,17 +2073,22 @@ def cmdprevious(ui, repo, **opts):
         p = parents[0]
         bm = bmactive(repo)
         shouldmove = opts.get('move_bookmark') and bm is not None
-        ret = hg.update(repo, p.rev())
-        if not ret:
-            wlock = repo.wlock()
-            try:
-                if shouldmove:
-                    repo._bookmarks[bm] = p.node()
-                    repo._bookmarks.write()
-                else:
-                    bmdeactivate(repo)
-            finally:
-                wlock.release()
+        if dryrunopt:
+            ui.write('hg update %s;\n' % p.rev())
+            if shouldmove:
+                ui.write('hg bookmark %s -r %s;\n' % (bm, p.rev()))
+        else:
+            ret = hg.update(repo, p.rev())
+            if not ret:
+                wlock = repo.wlock()
+                try:
+                    if shouldmove:
+                        repo._bookmarks[bm] = p.node()
+                        repo._bookmarks.write()
+                    else:
+                        bmdeactivate(repo)
+                finally:
+                    wlock.release()
         displayer.show(p)
         return 0
     else:
@@ -2027,10 +2099,11 @@ def cmdprevious(ui, repo, **opts):
 
 @command('^next',
          [('B', 'move-bookmark', False,
-             _('Move active bookmark after update')),
-          ('', 'merge', False, _('bring uncommited change along')),
-          ('', 'evolve', False, _('evolve the next changeset if necessary'))],
-         '[-B]')
+             _('move active bookmark after update')),
+          ('', 'merge', False, _('bring uncommitted change along')),
+          ('', 'evolve', False, _('evolve the next changeset if necessary')),
+          ('n', 'dry-run', False, _('do not perform actions, just print what would be done'))],
+         '[OPTION]...')
 def cmdnext(ui, repo, **opts):
     """update to next child
 
@@ -2039,6 +2112,7 @@ def cmdnext(ui, repo, **opts):
     The summary line of the destination is displayed for clarity"""
     wkctx = repo[None]
     wparents = wkctx.parents()
+    dryrunopt = opts['dry_run']
     if len(wparents) != 1:
         raise util.Abort('merge in progress')
     if not opts['merge']:
@@ -2054,17 +2128,22 @@ def cmdnext(ui, repo, **opts):
         c = children[0]
         bm = bmactive(repo)
         shouldmove = opts.get('move_bookmark') and bm is not None
-        ret = hg.update(repo, c.rev())
-        if not ret:
-            wlock = repo.wlock()
-            try:
-                if shouldmove:
-                    repo._bookmarks[bm] = c.node()
-                    repo._bookmarks.write()
-                else:
-                    bmdeactivate(repo)
-            finally:
-                wlock.release()
+        if dryrunopt:
+            ui.write('hg update %s;\n' % c.rev())
+            if shouldmove:
+                ui.write('hg bookmark %s -r %s;\n' % (bm, c.rev()))
+        else:
+            ret = hg.update(repo, c.rev())
+            if not ret:
+                wlock = repo.wlock()
+                try:
+                    if shouldmove:
+                        repo._bookmarks[bm] = c.node()
+                        repo._bookmarks.write()
+                    else:
+                        bmdeactivate(repo)
+                finally:
+                    wlock.release()
         displayer.show(c)
         result = 0
     elif children:
@@ -2083,14 +2162,14 @@ def cmdnext(ui, repo, **opts):
                 ui.warn(msg % len(aspchildren))
             result = 1
         elif 1 < len(aspchildren):
-            ui.warn("ambigious next (unstable) changeset:\n")
+            ui.warn(_("ambigious next (unstable) changeset:\n"))
             for c in aspchildren:
                 displayer.show(repo[c])
             ui.warn(_('(run "hg evolve --rev REV" on one of them)\n'))
             return 1
         else:
             cmdutil.bailifchanged(repo)
-            result = _solveone(ui, repo, repo[aspchildren[0]], False,
+            result = _solveone(ui, repo, repo[aspchildren[0]], dryrunopt,
                                False, lambda:None, category='unstable')
             if not result:
                 ui.status(_('working directory now at %s\n') % repo['.'])
@@ -2115,11 +2194,14 @@ def _reachablefrombookmark(repo, revs, mark):
             uniquebm = False
             break
     if uniquebm:
-        rsrevs = repo.revs("ancestors(bookmark(%s)) - "
-                           "ancestors(head() and not bookmark(%s)) - "
-                           "ancestors(bookmark() and not bookmark(%s)) - "
-                           "obsolete()",
-                           mark, mark, mark)
+        if util.safehasattr(repair, 'stripbmrevset'):
+            rsrevs = repair.stripbmrevset(repo, mark)
+        else:
+            rsrevs = repo.revs("ancestors(bookmark(%s)) - "
+                               "ancestors(head() and not bookmark(%s)) - "
+                               "ancestors(bookmark() and not bookmark(%s)) - "
+                               "obsolete()",
+                               mark, mark, mark)
         revs = set(revs)
         revs.update(set(rsrevs))
         revs = sorted(revs)
@@ -2157,6 +2239,8 @@ def _getmetadata(**opts):
      ('r', 'rev', [], _("revisions to prune")),
      ('k', 'keep', None, _("does not modify working copy during prune")),
      ('', 'biject', False, _("do a 1-1 map between rev and successor ranges")),
+     ('', 'fold', False, _("record a fold (multiple precursors, one successors)")),
+     ('', 'split', False, _("record a split (on precursor, multiple successors)")),
      ('B', 'bookmark', '', _("remove revs only reachable from given"
                              " bookmark"))] + metadataopts,
     _('[OPTION] [-r] REV...'))
@@ -2179,12 +2263,22 @@ def cmdprune(ui, repo, *revs, **opts):
     revisions to prune and successor changesets. This option may be removed in
     a future release (with the functionality absorbed automatically).
 
+    If you specify multiple revisions in --succ, you are recording a "split"
+    and have to acknowledge it by usng --split. The same logic apply when you
+    prune multiple changesets with a single successors, this will record a
+    "fold" requires a --fold flag.
     """
     revs = scmutil.revrange(repo, list(revs) + opts.get('rev'))
     succs = opts['new'] + opts['succ']
     bookmark = opts.get('bookmark')
     metadata = _getmetadata(**opts)
     biject = opts.get('biject')
+    fold = opts.get('fold')
+    split = opts.get('split')
+
+    options = [o for o in ('biject', 'fold', 'split') if opts.get(o)]
+    if 1 < len(options):
+        raise util.Abort(_("can only specify one of %s") % ', '.join(options))
 
     if bookmark:
         marks,revs = _reachablefrombookmark(repo, revs, bookmark)
@@ -2224,15 +2318,20 @@ def cmdprune(ui, repo, *revs, **opts):
         if not biject and len(sucs) > 1 and len(precs) > 1:
             msg = "Can't use multiple successors for multiple precursors"
             raise util.Abort(msg)
-
-        if biject and len(sucs) != len(precs):
+        elif biject and len(sucs) != len(precs):
             msg = "Can't use %d successors for %d precursors" \
                 % (len(sucs), len(precs))
             raise util.Abort(msg)
-
-        relations = [(p, sucs) for p in precs]
-        if biject:
+        elif (len(precs) == 1 and len(sucs) > 1) and not split:
+            msg = "please add --split if you want to do a split"
+            raise util.Abort(msg)
+        elif len(sucs) == 1 and len(precs) > 1 and not fold:
+            msg = "please add --fold if you want to do a fold"
+            raise util.Abort(msg)
+        elif biject:
             relations = [(p, (s,)) for p, s in zip(precs, sucs)]
+        else:
+            relations = [(p, sucs) for p in precs]
 
         wdp = repo['.']
 
@@ -2266,7 +2365,7 @@ def cmdprune(ui, repo, *revs, **opts):
                 dirchanges = [f for f in dirstate if dirstate[f] != 'n']
                 changedfiles.extend(dirchanges)
                 repo.dirstate.rebuild(newnode.node(), newnode.manifest(), changedfiles)
-                repo.dirstate.write()
+                writedirstate(dirstate, tr)
             else:
                 bookactive = bmactive(repo)
                 # Active bookmark that we don't want to delete (with -B option)
@@ -2303,7 +2402,7 @@ def cmdprune(ui, repo, *revs, **opts):
             # slower. The new forms makes as much sense and a much faster.
             for dest in ctx.ancestors():
                 if not dest.obsolete():
-                    updatebookmarks = _bookmarksupdater(repo, ctx.node())
+                    updatebookmarks = _bookmarksupdater(repo, ctx.node(), tr)
                     updatebookmarks(dest.node())
                     break
 
@@ -2488,7 +2587,6 @@ def uncommit(ui, repo, *pats, **opts):
         if len(old.parents()) > 1:
             raise util.Abort(_("cannot uncommit merge changeset"))
         oldphase = old.phase()
-        updatebookmarks = _bookmarksupdater(repo, old.node())
 
 
         rev = None
@@ -2505,6 +2603,7 @@ def uncommit(ui, repo, *pats, **opts):
 
         # Recommit the filtered changeset
         tr = repo.transaction('uncommit')
+        updatebookmarks = _bookmarksupdater(repo, old.node(), tr)
         newid = None
         includeorexclude = opts.get('include') or opts.get('exclude')
         if (pats or includeorexclude or opts.get('all')):
@@ -2556,6 +2655,84 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
         return result
     finally:
         lockmod.release(lock, wlock)
+
+@command('^split',
+    [('r', 'rev', [], _("revision to fold")),
+    ] + commitopts + commitopts2,
+    _('hg split [OPTION]... [-r] REV'))
+def cmdsplit(ui, repo, *revs, **opts):
+    """Split the current commit using interactive selection (EXPERIMENTAL)
+
+    By default, split the current revision by prompting for all its hunk to be
+    redistributed into new changesets.
+
+    Use --rev for splitting a given changeset instead.
+    """
+    tr = wlock = lock = None
+    newcommits = []
+
+    revopt = opts.get('rev')
+    if revopt:
+        revs = scmutil.revrange(repo, revopt)
+        if len(revs) != 1:
+            raise util.Abort(_("you can only specify one revision to split"))
+        else:
+            rev = list(revs)[0]
+    else:
+        rev = '.'
+
+    try:
+        wlock = repo.wlock()
+        lock = repo.lock()
+        cmdutil.bailifchanged(repo)
+        tr = repo.transaction('split')
+        ctx = repo[rev]
+        r = ctx.rev()
+        disallowunstable = not obsolete.isenabled(repo,
+                                                  obsolete.allowunstableopt)
+        if disallowunstable:
+            # XXX We should check head revs
+            if repo.revs("(%d::) - %d", rev, rev):
+                raise util.Abort(_("cannot split commit: %s not a head") % ctx)
+
+        if len(ctx.parents()) > 1:
+            raise util.Abort(_("cannot split merge commits"))
+        prev = ctx.p1()
+        bmupdate = _bookmarksupdater(repo, ctx.node(), tr)
+        bookactive = bmactive(repo)
+        if bookactive is not None:
+            repo.ui.status(_("(leaving bookmark %s)\n") % bmactive(repo))
+        bmdeactivate(repo)
+        hg.update(repo, prev)
+
+        commands.revert(ui, repo, rev=r, all=True)
+        def haschanges():
+            modified, added, removed, deleted = repo.status()[:4]
+            return modified or added or removed or deleted
+        while haschanges():
+            pats = ()
+            cmdutil.dorecord(ui, repo, commands.commit, 'commit', False,
+                             cmdutil.recordfilter, *pats, **opts)
+            # TODO: Does no seem like the best way to do this
+            # We should make dorecord return the newly created commit
+            newcommits.append(repo['.'])
+            if haschanges():
+                if ui.prompt('Done splitting? [yN]', default='n') == 'y':
+                    commands.commit(ui, repo, **opts)
+                    newcommits.append(repo['.'])
+                    break
+            else:
+                ui.status("no more change to split\n")
+
+        tip = repo[newcommits[-1]]
+        bmupdate(tip.node())
+        if bookactive is not None:
+            bmactivate(repo, bookactive)
+        obsolete.createmarkers(repo, [(repo[r], newcommits)])
+        tr.close()
+    finally:
+        lockmod.release(tr, lock, wlock)
+
 
 @eh.wrapcommand('strip', extension='strip', opts=[
     ('', 'bundle', None, _("delete the commit entirely and move it to a "
@@ -2940,6 +3117,8 @@ def findcommonobsmarkers(ui, local, remote, probeset,
     missing = set()
     common = set()
     undecided = set(probeset)
+    totalnb = len(undecided)
+    ui.progress("comparing with other", 0, total=totalnb)
     _takefullsample = setdiscovery._takefullsample
     if remote.capable('_evoext_obshash_1'):
         getremotehash = remote.evoext_obshash1
@@ -2957,6 +3136,8 @@ def findcommonobsmarkers(ui, local, remote, probeset,
             sample = _takefullsample(dag, undecided, size=fullsamplesize)
 
         roundtrips += 1
+        ui.progress("comparing with other", totalnb - len(undecided),
+                    total=totalnb)
         ui.debug("query %i; still undecided: %i, sample size is: %i\n"
                  % (roundtrips, len(undecided), len(sample)))
         # indices between sample and externalized version must match
@@ -2976,6 +3157,7 @@ def findcommonobsmarkers(ui, local, remote, probeset,
         undecided.difference_update(common)
 
 
+    ui.progress("comparing with other", None, total=totalnb)
     result = dag.headsetofconnecteds(common)
     ui.debug("%d total queries\n" % roundtrips)
 
@@ -3294,6 +3476,7 @@ def _obsrelsethashtree(repo, encodeonemarker):
     cache = []
     unfi = repo.unfiltered()
     markercache = {}
+    repo.ui.progress("preparing locally", 0, total=len(unfi))
     for i in unfi:
         ctx = unfi[i]
         entry = 0
@@ -3323,6 +3506,8 @@ def _obsrelsethashtree(repo, encodeonemarker):
             cache.append((ctx.node(), sha.digest()))
         else:
             cache.append((ctx.node(), nullid))
+        repo.ui.progress("preparing locally", i, total=len(unfi))
+    repo.ui.progress("preparing locally", None)
     return cache
 
 @command('debugobsrelsethashtree',
@@ -3368,11 +3553,11 @@ def _checkinvalidmarkers(orig, markers):
     [('', 'new-format', _bestformat, _('Destination format for markers.'))],
     '')
 def debugobsconvert(ui, repo, new_format):
+    origmarkers = repo.obsstore._all  # settle version
     if new_format == repo.obsstore._version:
         msg = _('New format is the same as the old format, not upgrading!')
         raise util.Abort(msg)
     f = repo.svfs('obsstore', 'wb', atomictemp=True)
-    origmarkers = repo.obsstore._all
     known = set()
     markers = []
     for m in origmarkers:
@@ -3418,7 +3603,8 @@ def _installwireprotocol(ui):
         return capabilities(oldcap, repo, proto)
     wireproto.commands['capabilities'] = (newcap, args)
 
-def _helploader():
+# Mercurial >= 3.6 passes ui
+def _helploader(ui=None):
     return help.gettext(evolutionhelptext)
 
 @eh.uisetup

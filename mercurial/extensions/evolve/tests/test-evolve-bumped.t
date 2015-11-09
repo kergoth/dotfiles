@@ -49,7 +49,6 @@
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pull obsolescence markers
   (run 'hg update' to get a working copy)
   $ hg log -r 'draft()'
   1:4d1169d82e47@default(draft) modify a
@@ -68,7 +67,6 @@
   pulling from ../public
   searching for changes
   no changes found
-  pull obsolescence markers
   1 new bumped changesets
 
   $ hg evolve -a -A --bumped

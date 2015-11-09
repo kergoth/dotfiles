@@ -335,7 +335,7 @@ changeset plus the updating changeset are hidden from view by default::
   move:[4] another feature (child of 568a468b60fc)
   atop:[6] a nifty feature
   merging main-file-1
-  working directory is now at 5c9c8d9c2e4e
+  working directory is now at 99833d22b0c6
   $ hg log
   7	feature-B: another feature (child of ba0ec09b1bab) - test
   6	feature-A: a nifty feature - test
@@ -376,10 +376,10 @@ all solving bumped troubled
   recreate:[8] another feature that rox
   atop:[7] another feature (child of ba0ec09b1bab)
   computing new diff
-  committed as 476d0454d60e
-  working directory is now at 476d0454d60e
+  committed as 2d8c5414e9f0
+  working directory is now at 2d8c5414e9f0
   $ hg glog
-  @  9	feature-B: bumped update to 5c9c8d9c2e4e: - test
+  @  9	feature-B: bumped update to 99833d22b0c6: - test
   |
   o  7	: another feature (child of ba0ec09b1bab) - test
   |
@@ -436,7 +436,7 @@ test evolve --all
   move:[11] dansk 3!
   atop:[14] dansk 2!
   merging main-file-1
-  working directory is now at cfb5ebed336d
+  working directory is now at 536984593824
   $ hg glog
   @  15	: dansk 3! - test
   |
@@ -474,7 +474,6 @@ enable general delta
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pull obsolescence markers
   $ cd alpha
 
   $ cat << EOF > A
@@ -531,8 +530,7 @@ Clone just this branch
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  pull obsolescence markers
-  2 obsolescence markers added
+  2 new obsolescence markers
   (run 'hg update' to get a working copy)
   $ hg up
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -594,8 +592,7 @@ Test graft --continue
   $ hg graft -O 7
   grafting 7:a5bfd90a2f29 "conflict" (tip)
   merging 1
-  warning: conflicts during merge.
-  merging 1 incomplete! (edit conflicts, then use 'hg resolve --mark')
+  warning: conflicts while merging 1! (edit, then use 'hg resolve --mark')
   abort: unresolved conflicts, can't continue
   (use hg resolve and hg graft --continue)
   [255]
@@ -811,11 +808,11 @@ Test fold with commit messages
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ glog
-  @  16:d6239ff09c9f@default(draft) Folding with custom commit message
+  @  16:d1297ecc971f@default(draft) Folding with custom commit message
   |
-  o  13:56ade053f46d@default(draft) dansk!
+  o  13:27b934eaf1f9@default(draft) dansk!
   |
-  o  7:5c9c8d9c2e4e@default(public) another feature (child of ba0ec09b1bab)
+  o  7:99833d22b0c6@default(public) another feature (child of ba0ec09b1bab)
   |
   o  6:ba0ec09b1bab@default(public) a nifty feature
   |
@@ -830,9 +827,9 @@ Test fold with commit messages
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg qlog
-  17 - dba606655966 A longer
+  17 - 0b1eca0e871b A longer
                     commit message (draft)
-  7 - 5c9c8d9c2e4e another feature (child of ba0ec09b1bab) (public)
+  7 - 99833d22b0c6 another feature (child of ba0ec09b1bab) (public)
   6 - ba0ec09b1bab a nifty feature (public)
   0 - e55e0562ee93 base (public)
 
@@ -897,11 +894,11 @@ branch change preserved
   $ hg evolve
   move:[5] a2
   atop:[7] a1_
-  working directory is now at 5406c5cfee42
+  working directory is now at eb07e22a0e63
   $ hg evolve
   move:[6] a3
   atop:[8] a2
-  working directory is now at c7661e655801
+  working directory is now at 777c26ca5e78
   $ hg log -G --template '{rev} [{branch}] {desc|firstline}\n'
   @  9 [mybranch] a3
   |
@@ -950,7 +947,7 @@ Evolve disables active bookmarks.
   move:[8] a2
   atop:[10] a1__
   (leaving bookmark testbookmark)
-  working directory is now at f37ed7a60f43
+  working directory is now at d952e93add6f
   $ ls .hg/bookmarks*
   .hg/bookmarks
 
@@ -1016,12 +1013,12 @@ normally the unstable changeset would be solve first
   recreate:[12] add new file bumped
   atop:[11] a2
   computing new diff
-  committed as d66b1e328488
-  working directory is now at d66b1e328488
+  committed as f15d32934071
+  working directory is now at f15d32934071
   $ hg evolve --any
   move:[9] a3
-  atop:[13] bumped update to f37ed7a60f43:
-  working directory is now at 7d2ce5f38f9b
+  atop:[13] bumped update to d952e93add6f:
+  working directory is now at cce26b684bfe
 Check that we can resolve troubles in a revset with more than one commit
   $ hg up 14 -C
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -1040,7 +1037,7 @@ Check that we can resolve troubles in a revset with more than one commit
   |/
   @  14	: a3 - test
   |
-  o  13	: bumped update to f37ed7a60f43: - test
+  o  13	: bumped update to d952e93add6f: - test
   |
   o  11	: a2 - test
   |
@@ -1059,7 +1056,7 @@ Check that we can resolve troubles in a revset with more than one commit
   | |/
   | x  14	: a3 - test
   |/
-  o  13	: bumped update to f37ed7a60f43: - test
+  o  13	: bumped update to d952e93add6f: - test
   |
   o  11	: a2 - test
   |
@@ -1082,7 +1079,7 @@ Evolving an empty revset should do nothing
   atop:[18] a3
   move:[16] add gh
   atop:[18] a3
-  working directory is now at db3d894869b0
+  working directory is now at e02107f98737
   $ hg glog
   @  20	: add gh - test
   |
@@ -1090,7 +1087,7 @@ Evolving an empty revset should do nothing
   |/
   o  18	: a3 - test
   |
-  o  13	: bumped update to f37ed7a60f43: - test
+  o  13	: bumped update to d952e93add6f: - test
   |
   o  11	: a2 - test
   |
@@ -1212,26 +1209,26 @@ Check hg evolve --rev on singled out commit
   $ hg amend
   2 new unstable changesets
   $ glog -r "18::"
-  @  25:4c0bc042ef3b@default(draft) add j1
+  @  25:8dc373be86d9@default(draft) add j1
   |
-  | o  23:c70048fd3350@default(draft) add j3
+  | o  23:d7eadcf6eccd@default(draft) add j3
   | |
-  | o  22:714e60ca57b7@default(draft) add j2
+  | o  22:2223ea564144@default(draft) add j2
   | |
-  | x  21:b430835af718@default(draft) add j1
+  | x  21:48490698b269@default(draft) add j1
   |/
-  | o  20:db3d894869b0@default(draft) add gh
+  | o  20:e02107f98737@default(draft) add gh
   | |
-  o |  19:10ffdd7e3cc9@default(draft) add gg
+  o |  19:24e63b319adf@default(draft) add gg
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
 
   $ hg evolve --rev 23 --any
   abort: cannot specify both "--rev" and "--any"
   [255]
   $ hg evolve --rev 23
-  cannot solve instability of c70048fd3350, skipping
+  cannot solve instability of d7eadcf6eccd, skipping
 
 Check that uncommit respects the allowunstable option
 With only createmarkers we can only uncommit on a head
@@ -1239,30 +1236,30 @@ With only createmarkers we can only uncommit on a head
   > [experimental]
   > evolution=createmarkers, allnewcommands
   > EOF
-  $ hg up 4c0bc042ef3b^
+  $ hg up 8dc373be86d9^
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ hg uncommit --all
   abort: cannot uncommit in the middle of a stack
   [255]
-  $ hg up 4c0bc042ef3b
+  $ hg up 8dc373be86d9
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg uncommit --all
   new changeset is empty
   (use "hg prune ." to remove it)
   $ glog -r "18::"
-  @  26:04b32348803e@default(draft) add j1
+  @  26:044804d0c10d@default(draft) add j1
   |
-  | o  23:c70048fd3350@default(draft) add j3
+  | o  23:d7eadcf6eccd@default(draft) add j3
   | |
-  | o  22:714e60ca57b7@default(draft) add j2
+  | o  22:2223ea564144@default(draft) add j2
   | |
-  | x  21:b430835af718@default(draft) add j1
+  | x  21:48490698b269@default(draft) add j1
   |/
-  | o  20:db3d894869b0@default(draft) add gh
+  | o  20:e02107f98737@default(draft) add gh
   | |
-  o |  19:10ffdd7e3cc9@default(draft) add gg
+  o |  19:24e63b319adf@default(draft) add gg
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
 
 Check that prune respects the allowunstable option
@@ -1279,19 +1276,19 @@ Check that prune respects the allowunstable option
   atop:[26] add j1
   move:[23] add j3
   atop:[27] add j2
-  working directory is now at 920a35e8dbd0
+  working directory is now at c9a20e2d74aa
   $ glog -r "18::"
-  @  28:920a35e8dbd0@default(draft) add j3
+  @  28:c9a20e2d74aa@default(draft) add j3
   |
-  o  27:31e050d895dd@default(draft) add j2
+  o  27:b0e3066231e2@default(draft) add j2
   |
-  o  26:04b32348803e@default(draft) add j1
+  o  26:044804d0c10d@default(draft) add j1
   |
-  | o  20:db3d894869b0@default(draft) add gh
+  | o  20:e02107f98737@default(draft) add gh
   | |
-  o |  19:10ffdd7e3cc9@default(draft) add gg
+  o |  19:24e63b319adf@default(draft) add gg
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
   $ hg up 19
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
@@ -1306,30 +1303,30 @@ Check that prune respects the allowunstable option
   $ hg prune '26::'
   3 changesets pruned
   $ glog -r "18::"
-  @  29:5a6c53544778@default(draft) add c5_
+  @  29:2251801b6c91@default(draft) add c5_
   |
-  | o  20:db3d894869b0@default(draft) add gh
+  | o  20:e02107f98737@default(draft) add gh
   | |
-  o |  19:10ffdd7e3cc9@default(draft) add gg
+  o |  19:24e63b319adf@default(draft) add gg
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
 
 Check that fold respects the allowunstable option
-  $ hg up 0bb66d4c1968
+  $ hg up edc3c9de504e
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ mkcommit unstableifparentisfolded
   created new head
   $ glog -r "18::"
-  @  30:30ecefd67c0a@default(draft) add unstableifparentisfolded
+  @  30:68330ac625b8@default(draft) add unstableifparentisfolded
   |
-  | o  29:5a6c53544778@default(draft) add c5_
+  | o  29:2251801b6c91@default(draft) add c5_
   | |
-  +---o  20:db3d894869b0@default(draft) add gh
+  +---o  20:e02107f98737@default(draft) add gh
   | |
-  | o  19:10ffdd7e3cc9@default(draft) add gg
+  | o  19:24e63b319adf@default(draft) add gg
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
 
   $ hg fold --exact "19 + 18"
@@ -1350,13 +1347,13 @@ Check that evolve shows error while handling split commits
   > EOF
 
   $ glog -r "18::"
-  o  31:5cc6eda0f00d@default(draft) add gg
+  o  31:580886d07058@default(draft) add gg
   |
-  | @  30:30ecefd67c0a@default(draft) add unstableifparentisfolded
+  | @  30:68330ac625b8@default(draft) add unstableifparentisfolded
   |/
-  | o  20:db3d894869b0@default(draft) add gh
+  | o  20:e02107f98737@default(draft) add gh
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
 
 Create a split commit
@@ -1374,27 +1371,29 @@ Create a split commit
   $ printf "pp" > pp;
   $ hg add pp
   $ hg commit -m "_pp"
-  $ hg prune --succ "desc(_oo) + desc(_pp)" -r "desc('oo+pp')"
+  $ hg prune --succ "desc(_oo) + desc(_pp)" -r "desc('oo+pp')" --split
   1 changesets pruned
   1 new unstable changesets
   $ glog -r "18::"
-  @  35:072908d77206@default(draft) _pp
+  @  35:7a555adf2b4a@default(draft) _pp
   |
-  o  34:68e429987343@default(draft) _oo
+  o  34:2be4d2d5bf34@default(draft) _oo
   |
-  | o  33:030868870864@default(draft) add uu
+  | o  33:53f0c003e03e@default(draft) add uu
   | |
-  | x  32:7e9688cf0a1b@default(draft) oo+pp
+  | x  32:1bf2152f4f82@default(draft) oo+pp
   |/
-  | o  31:5cc6eda0f00d@default(draft) add gg
+  | o  31:580886d07058@default(draft) add gg
   | |
-  o |  30:30ecefd67c0a@default(draft) add unstableifparentisfolded
+  o |  30:68330ac625b8@default(draft) add unstableifparentisfolded
   |/
-  | o  20:db3d894869b0@default(draft) add gh
+  | o  20:e02107f98737@default(draft) add gh
   |/
-  o  18:0bb66d4c1968@default(draft) a3
+  o  18:edc3c9de504e@default(draft) a3
   |
   $ hg evolve --rev "18::"
-  does not handle split parents yet
+  move:[33] add uu
+  atop:[35] _pp
+  working directory is now at 43c3f5ef149f
 
 

@@ -184,8 +184,7 @@ Test communication of obsolete relation with a compatible client
   adding manifests
   adding file changes
   added 5 changesets with 5 changes to 5 files (+1 heads)
-  pushing 2 obsolescence markers (*) (glob)
-  2 obsolescence markers added
+  2 new obsolescence markers
   $ hg -R ../other-new verify
   checking changesets
   checking manifests
@@ -239,8 +238,7 @@ Test communication of obsolete relation with a compatible client
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 3 obsolescence markers (*) (glob)
-  1 obsolescence markers added
+  1 new obsolescence markers
   $ qlog -R ../other-new
   5
   - 95de7fc6918d
@@ -262,8 +260,6 @@ Pushing again does not advertise extinct changesets
   pushing to ../other-new
   searching for changes
   no changes found
-  pushing 3 obsolescence markers (*) (glob)
-  0 obsolescence markers added
   [1]
 
   $ hg up --hidden -q .^ # 3
@@ -279,9 +275,8 @@ Pushing again does not advertise extinct changesets
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
-  pull obsolescence markers
-  1 obsolescence markers added
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  1 new obsolescence markers
+  (run 'hg heads .' to see heads, 'hg merge' to merge)
   $ qlog -R ../other-new
   6
   - 909a0fb57e5d
@@ -370,9 +365,8 @@ Test rollback support
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
-  pull obsolescence markers
-  1 obsolescence markers added
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  1 new obsolescence markers
+  (run 'hg heads .' to see heads, 'hg merge' to merge)
 
   $ hg up -q 7 # to check rollback update behavior
   $ qlog
@@ -395,6 +389,7 @@ Test rollback support
   branch: default
   commit: 1 deleted, 2 unknown (clean)
   update: 2 new changesets, 2 branch heads (merge)
+  phases: 4 draft
   unstable: 1 changesets
   $ qlog
   6
@@ -544,8 +539,7 @@ Does not complain about new head if you obsolete the old one
   adding manifests
   adding file changes
   added 2 changesets with 1 changes to [12] files (re)
-  pushing 7 obsolescence markers (*) (glob)
-  3 obsolescence markers added
+  3 new obsolescence markers
   $ hg up -q 10
   $ mkcommit "obsol_d'''"
   created new head
@@ -557,8 +551,7 @@ Does not complain about new head if you obsolete the old one
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 8 obsolescence markers (*) (glob)
-  1 obsolescence markers added
+  1 new obsolescence markers
   $ cd ..
 
 check bumped detection
@@ -659,7 +652,7 @@ Check hg commit --amend compat
 #no produced by 2.3
 33d458d86621f3186c40bfccd77652f4a122743e 3734a65252e69ddcced85901647a4f335d40de1e 0 {'date': '* *', 'user': 'test'} (glob)
 
-Check divergence detection
+Check divergence detection (note: multiple successors is sorted by changeset hash)
 
   $ hg up 9468a5f5d8b2 #  add obsol_d''
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
@@ -670,6 +663,7 @@ Check divergence detection
   branch: default
   commit: (clean)
   update: (2|9|11) new changesets, (3|9|10) branch heads \(merge\) (re)
+  phases: 3 draft
   bumped: 1 changesets
   $ hg debugobsolete `getid a7a6f2b5d8a5` `getid 50f11e5e3a63`
   $ hg log -r 'divergent()'

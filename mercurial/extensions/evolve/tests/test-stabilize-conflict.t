@@ -127,8 +127,7 @@ proper behavior with conflict using internal:merge
   move:[5] babar count up to fifteen
   atop:[7] babar count up to ten
   merging babar
-  warning: conflicts during merge.
-  merging babar incomplete! (edit conflicts, then use 'hg resolve --mark')
+  warning: conflicts while merging babar! (edit, then use 'hg resolve --mark')
   evolve failed!
   fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
   abort: unresolved merge conflicts (see hg help resolve)

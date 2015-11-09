@@ -143,11 +143,11 @@ function! fugitive#extract_git_dir(path) abort
       break
     endif
     if root ==# $GIT_WORK_TREE && fugitive#is_git_dir($GIT_DIR)
-      return $GIT_DIR
+      return simplify(fnamemodify(expand($GIT_DIR), ':p:s?[\/]$??'))
     endif
     if fugitive#is_git_dir($GIT_DIR)
       " Ensure that we've cached the worktree
-      call s:configured_tree($GIT_DIR)
+      call s:configured_tree(simplify(fnamemodify(expand($GIT_DIR), ':p:s?[\/]$??')))
       if has_key(s:dir_for_worktree, root)
         return s:dir_for_worktree[root]
       endif
@@ -2424,6 +2424,8 @@ function! s:ReplaceCmd(cmd,...) abort
     if s:winshell()
       let cmd_escape_char = &shellxquote == '(' ?  '^' : '^^^'
       call system('cmd /c "'.prefix.s:gsub(a:cmd,'[<>]', cmd_escape_char.'&').redir.'"')
+    elseif &shell =~# 'fish'
+      call system(' begin;'.prefix.a:cmd.redir.';end ')
     else
       call system(' ('.prefix.a:cmd.redir.') ')
     endif

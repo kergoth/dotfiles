@@ -96,7 +96,7 @@ Push
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
-  pushing 2 obsolescence markers (*) (glob)
+  pushing 2 obsolescence markers (* bytes) (glob)
   $ cat ../errors.log
   $ hg push
   pushing to http://localhost:$HGPORT/
