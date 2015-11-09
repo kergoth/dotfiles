@@ -69,6 +69,16 @@ from="$(abspath "$1")"
 to="$(abspath "$2")"
 shift 2
 
+if [ ! -e "$from" ]; then
+    echo >&2 "$from: No such file or directory"
+    exit 1
+fi
+
+if [ ! -e "$to" ]; then
+    echo >&2 "$to: No such file or directory"
+    exit 1
+fi
+
 if [ $# -eq 0 ]; then
     set -- -type f -o -type l
 fi
