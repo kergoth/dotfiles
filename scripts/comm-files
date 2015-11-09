@@ -89,10 +89,10 @@ trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
 echo >&2 "Comparing the list of files from $from to $to"
 
-cd "$from"
+cd "$from" || exit 2
 find . "$@" | sort >"$fromfiles"
 cd - >/dev/null
-cd "$to"
+cd "$to" || exit 2
 find . "$@" | sort >"$tofiles"
 comm "$fromfiles" "$tofiles" | \
     sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" | exclude | \
