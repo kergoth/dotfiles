@@ -1,0 +1,37 @@
+#!/bin/sh
+# vim: set ts=8 sts=3 sw=3 et ai:
+
+# fail if a command fails
+set -e
+
+XGIT_DIR=$(git rev-parse --git-dir)
+if test -z "$XGIT_DIR"; then
+   XGIT_DIR=.
+fi
+
+# commands to list all the objects in the repository from this SO answer:
+#   http://stackoverflow.com/questions/7348698/git-how-to-list-all-objects-in-the-database/7350019#7350019
+
+# send list through sort -u because packs may contain duplicate objects
+{
+   # all objects from refs/
+   git rev-list --objects --all
+   # all objects from the reflogs
+   git rev-list --objects -g --no-walk --all
+   # all unreachable objects
+   git rev-list --objects --no-walk \
+      $( git fsck --unreachable | grep '^unreachable commit' | cut -d' ' -f3 )
+} | sort | uniq -w40 |
+while read info; do
+   sha1=$( printf '%s' "${info}" | cut -d' ' -f1 )
+   extra=$( printf '%s' "${info}" | cut -d' ' -f2 )
+   objtype=$( git cat-file -t ${sha1} )
+   case ${objtype} in
+      commit)
+         printf '%s %s %s\n' ${sha1} ${objtype} "$( git show -s --format=format:'%aN -- %s' ${sha1} )" ;;
+      blob)
+         printf '%s %s %s\n' ${sha1} ${objtype} "${extra}" ;;
+      *)
+         printf '%s %s\n' ${sha1} ${objtype} ;;
+   esac
+done

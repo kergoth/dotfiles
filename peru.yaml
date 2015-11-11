@@ -33,6 +33,7 @@ imports:
     git-wtf: scripts
     git|git-jump: scripts
     git|git-subtree: scripts
+    gitvoodoo: scripts
     icdiff: scripts
     iln: scripts
     lesspipe: scripts
@@ -526,3 +527,14 @@ git module base16-shell:
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
     rev: e711e9b1412b55fec7e8a5cff4ac5c06f9078729
+
+git module gitvoodoo:
+    url: https://github.com/johnbartholomew/gitvoodoo
+    export: bin
+    pick:
+        - bin/git-create-ref
+        - bin/git-ls-objects
+        - bin/git-merge-into
+        - bin/git-xbranch
+        - bin/git-xclean
+    rev: 518f710546d5f110822f6f84a801c66f6dd0982e

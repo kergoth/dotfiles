@@ -1,0 +1,3 @@
+#!/bin/sh
+nullref=0000000000000000000000000000000000000000
+exec git update-ref "$@" $nullref

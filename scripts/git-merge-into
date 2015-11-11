@@ -1,0 +1,73 @@
+#!/bin/sh
+# vim: set ts=8 sts=3 sw=3 et ai:
+
+# uses logic courtesy of Jefromi on stackoverflow
+#   http://stackoverflow.com/questions/3408532/merging-without-changing-the-working-directory/3409382#3409382
+
+eval "$( { git rev-parse --parseopt -- "$@" || printf 'exit %d' "$?" ; } << EOX
+merge-into <branch>
+
+merge-into creates a merge commit (i.e., does a non-fast-foward merge)
+merging HEAD into the specified <branch>, without having to check out
+that branch to change it.
+
+It requires that the merge *could* be done as a fast-forward,
+i.e., that the branch tip is at the merge-base.
+(non fast-forward merges require conflict resolution or at least checking
+of the auto-resolved merge result; they must therefore be done in the
+working tree)
+--
+EOX
+)"
+
+while test $# -gt 0; do
+   case "$1" in
+      "--") shift; break; ;; # end of arguments
+      *) printf "unknown argument '%s'\n" "$1" ;;
+   esac; shift
+done
+
+test $# -ge 1 || { echo "no merge destination branch specified" ; exit 1 ; }
+test $# -eq 1 || { echo "unexpected arguments" ; exit 1 ; }
+
+into="$1"
+
+# make sure the branch exists
+if ! git rev-parse --verify --quiet --heads "$into" > /dev/null; then
+   echo "error: target branch '$into' does not exist"
+   exit 1
+fi
+
+# find the branch name associated with HEAD
+from=$(git symbolic-ref --quiet HEAD) || exit 1
+from=${from#refs/heads/#}
+
+intocommit=$(git rev-parse --quiet --verify "$into")
+basecommit=$(git merge-base $intocommit HEAD) || exit 1
+fromcommit=$(git rev-parse --quiet --verify HEAD)
+
+# make sure this could be a fast-forward   
+if test "$basecommit" != "$intocommit"; then
+   echo "error: merging '$from' into '$into' would not be a fast-forward"
+   exit 1
+fi
+
+basetree=$(git log -n 1 --pretty=%T $basecommit) || exit 1
+fromtree=$(git log -n 1 --pretty=%T $fromcommit) || exit 1
+
+# avoid obvious repetition (running merge-into twice in succession)
+if test "$basetree" = "$fromtree"; then
+   echo "error: cowardly refusing to merge when '$from' and '$into' are already equal"
+   exit 1
+fi
+
+# create the new commit object
+commitmsg="Merge branch '$from'"
+newcommit=$(echo "$commitmsg" | git commit-tree $fromtree -p $basecommit -p $fromcommit) || exit 1
+# move the branch to point to the new commit
+# (last parameter is used to make this a "compare-and-exchange" operation; so it will
+#  fail if something else comes in and updates the ref between when we find all our
+#  sha1s and when we finally update the branch tip)
+git update-ref -m "merge $from: Merge made by simulated no-ff" "refs/heads/$into" $newcommit $basecommit || exit 1
+
+printf "merged '%s' into '%s', using simulated no-fast-foward\n" "$from" "$into"

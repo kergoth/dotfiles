@@ -1,0 +1,15 @@
+#!/bin/sh
+# vim: set ts=8 sts=3 sw=3 et ai:
+
+GIT_DIR="$(git rev-parse --git-dir)" || exit 1
+
+if test -f "$GIT_DIR/info/noclean"; then
+   {
+      grep -v '^\s*\(#\|$\)' "$GIT_DIR/info/noclean" | while read pattern; do
+         printf -- '--exclude=%s\0' "$pattern"
+      done
+      printf '%s\0' "$@"
+   } | exec xargs -0 git clean
+else
+   exec git clean "$@"
+fi

@@ -1,0 +1,161 @@
+#!/bin/sh
+# vim: set ts=8 sts=3 sw=3 et ai:
+
+eval "$( { git rev-parse --parseopt -- "$@" || printf 'exit %d' "$?" ; } << EOX
+xbranch [options]
+
+xbranch shows a branch list, like branch, but with extra information about
+how each branch relates to its upstream or to a specified target branch.
+
+The first character of each line is '*' for the current HEAD, '=' if the
+branch matches the current HEAD, or ' ' otherwise.
+--
+rel=        a commit to relate the listed branches to
+a,all       list all branches, not just local branches
+r,remote=?  list only remote branches, or branches of a specified remote
+EOX
+)"
+
+refpatterns="refs/heads"
+relto=""
+reltosha1=""
+while test $# -gt 0; do
+   case "$1" in
+      "--rel")
+         reltosha1=$(git rev-parse --quiet --verify "$2") ||
+            { printf "'%s' does not name a commit\n" "$2" ; exit 1 ; }
+         relto=$(git rev-parse --symbolic "$2")
+         shift
+         ;;
+      "-a") refpatterns="refs/heads refs/remotes" ;;
+      "-r")
+         case "$2" in
+            -*) refpatterns=refs/remotes ;;
+            # double-quote because we give refpatterns unquoted to for-each-ref
+            *) refpatterns=refs/remotes/"$2"
+               shift
+               ;;
+         esac
+         ;;
+      "--") shift; break; ;; # end of arguments
+      *) printf "unknown argument '%s'\n" "$1" ;;
+   esac; shift
+done
+
+test $# -eq 0 || { echo "unexpected arguments" ; exit 1 ; }
+
+commitcountstr() {
+   read count
+   if test "$count" -eq 1; then
+      printf "1 commit"
+   else
+      printf "%d commits" "$count"
+   fi
+}
+
+countcommits() {
+   local fromrev="$1"
+   local torev="$2"
+
+   git rev-list ^"$fromrev"  "$torev" | wc -l
+}
+
+headref=$(git symbolic-ref -q HEAD) ||
+   { echo "HEAD must be valid to use xbranch"; exit 1; }
+headsha1=$(git rev-parse --quiet --verify HEAD) ||
+   { echo "HEAD must be valid to use xbranch"; exit 1; }
+if git config --get-colorbool color.xbranch; then
+   colcurbranch="$(git config --get-color color.xbranch.current "green")"
+   colahead="$(git config --get-color color.xbranch.ahead "yellow bold")"
+   colbehind="$(git config --get-color color.xbranch.behind "yellow bold")"
+   coluptodate="$(git config --get-color color.xbranch.uptodate "green bold")"
+   coldiverged="$(git config --get-color color.xbranch.diverged "red bold")"
+   colbroken="$(git config --get-color color.xbranch.broken "red bold")"
+   colreset="$(git config --get-color "" "reset")"
+else
+   colcurbranch=""
+   colahead=""
+   colbehind=""
+   coluptodate=""
+   coldiverged=""
+   colbroken=""
+   colreset=""
+fi
+
+print_branch() {
+   local sha1="$1"
+   local objtype="$2"
+   local ref="$3"
+   local branch="$4"
+
+   # is this branch the current branch?
+   local marker; local uibranch;
+   if test "$ref" = "$headref"; then
+      marker="*"
+      uibranch="$colcurbranch$branch$colreset"
+   else
+      test "$sha1" = "$headsha1" && marker="=" || marker=" "
+      uibranch="$branch"
+   fi
+
+   # find remote tracking info for the branch
+   local info=""
+   local istracking=true
+   local remoteref
+   local basesha1; local remotesha1
+   if test z"$reltosha1" = z; then
+      # relative to corresponding upstream branch
+
+      local remote=$(git config --get branch."$branch".remote) || istracking=false
+      local merge=$(git config --get branch."$branch".merge) || istracking=false
+      if test z"$remote" = z || test z"$merge" = z ; then
+         istracking=false
+      fi
+      $istracking && {
+         remoteref="$remote"/"${merge#refs/heads/}"
+         $istracking && {
+            remotesha1=$(git rev-parse --quiet --verify refs/remotes/"$remoteref" 2> /dev/null) ||
+               { istracking=false; info=" [${colbroken}tracking broken${colreset}: 'refs/remotes/$remoteref' doesn't exist]" ; }
+         }
+         $istracking && {
+            basesha1=$(git merge-base "$sha1" "$remotesha1" 2> /dev/null) ||
+               { istracking=false; info=" [${colbroken}full divergence${colreset}: no merge base found]" ; }
+         }
+      }
+   else
+      # relative to the named commit
+      $istracking && {
+         remoteref=$relto
+         remotesha1=$reltosha1
+         basesha1=$(git merge-base "$sha1" "$remotesha1" 2> /dev/null) || istracking=false
+      }
+   fi
+
+   $istracking && {
+      if test "$basesha1" = "$sha1" && test "$basesha1" = "$remotesha1"; then
+         # HEAD is up-to-date
+         info=" [${coluptodate}up-to-date${colreset} with '${remoteref}']"
+      elif test "$basesha1" = "$sha1"; then
+         # HEAD is behind upstream
+         local count="$(countcommits "$sha1" "$remotesha1" | commitcountstr)"
+         info=" [${colbehind}behind${colreset} '${remoteref}' by ${count}]"
+      elif test "$basesha1" = "$remotesha1"; then
+         # upstream is behind HEAD
+         local count="$(countcommits "$basesha1" "$sha1" | commitcountstr)"
+         info=" [${colahead}ahead${colreset} of '${remoteref}' by ${count}]"
+      else
+         # upstream and HEAD have diverged
+         local counthead="$(countcommits "$basesha1" "$sha1" | commitcountstr)"
+         local countremote="$(countcommits "$basesha1" "$remotesha1" | commitcountstr)"
+         info=" [${coldiverged}diverged${colreset} from '${remoteref}', by ${counthead}/${countremote} (us/them)]"
+      fi
+   }
+
+   printf "%s %s%s\n" "$marker" "$uibranch" "$info"
+
+   return 0
+}
+
+# this is filled in by git for-each-ref and then evaluated
+fmt='print_branch %(objectname) %(objecttype) %(refname) %(refname:short)'
+eval "$(git for-each-ref --shell --format="$fmt" $refpatterns)"
