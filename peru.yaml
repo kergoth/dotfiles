@@ -127,7 +127,7 @@ curl module iterm2-zsh:
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: 5d1c5347722e384ec223d21ecca3c4f05cbc95a3
+    rev: 59af371e470dd0a26cc1923ffc791202701c945d
     pick: git-imerge
 
 git module cheat:
@@ -232,7 +232,7 @@ git module vim-obsession:
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: ebd2239edb2f430ad5d9a50deca793201e0d4bd1
+    rev: a5f776c97c56ca305da520c2a83bd9246d0b48f5
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -298,7 +298,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 8e237401c88f55464131e76ac4893dc530281b25
+    rev: 462c6f8499891e4933b028fed723a8bcdc017e18
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -306,7 +306,8 @@ git module atach:
     rev: 754af1492654460e5abccb238b038d42f02ec1e1
 
 curl module cpanm:
-    url: https://cpanmin.us/
+    # url: https://cpanmin.us/
+    url: https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm
     executable: cpanm
     sha1: 98feb9747509b1aa1ba2b050b3cacd066d5e8f0c
 
@@ -507,14 +508,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 85cde9235c06e6d4ec631551fb0fc57fe676f05c
+    rev: cd40fe97519dc798c1b3e31eb9741d3d60fee17c
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: e597d8cb294bf9f2e5c4443a347b2fa7e7a7388d
+    rev: b0da1e38d1f559503d3abcae77dc577a64e79280
 
 git module vim-ctrlp:
     url: https://github.com/kien/ctrlp.vim
