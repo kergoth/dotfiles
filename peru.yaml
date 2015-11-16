@@ -119,7 +119,7 @@ git module zsh-command-not-found:
     rev: c8c330b894a723ab7ba4dd2a8969cd71ea2df730
 
 curl module iterm2-zsh:
-    url: http://iterm2.com/misc/zsh_startup.in
+    url: https://iterm2.com/misc/zsh_startup.in
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
@@ -241,7 +241,7 @@ curl module repo:
     sha1: da0514e484f74648a890c0467d61ca415379f791
 
 hg module smem:
-    url: http://selenic.com/repo/smem
+    url: https://selenic.com/repo/smem
     pick: smem
     rev: 2ab5040d56330b277adf5a0370c7432dbd9d743d
 
@@ -306,7 +306,7 @@ git module atach:
     rev: 754af1492654460e5abccb238b038d42f02ec1e1
 
 curl module cpanm:
-    url: http://xrl.us/cpanm
+    url: https://cpanmin.us/
     executable: cpanm
     sha1: 98feb9747509b1aa1ba2b050b3cacd066d5e8f0c
 
@@ -510,7 +510,7 @@ git module vim-syntastic:
     rev: 85cde9235c06e6d4ec631551fb0fc57fe676f05c
 
 git module checkbashisms:
-    url: git://anonscm.debian.org/collab-maint/devscripts.git
+    url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
