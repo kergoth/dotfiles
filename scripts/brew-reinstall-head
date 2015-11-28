@@ -1,3 +1,0 @@
-#!/bin/sh
-
-brew reinstall --HEAD $(brew ls --versions | grep ' HEAD$' | awk '{print $1}')
