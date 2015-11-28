@@ -1,0 +1,57 @@
+#!/bin/sh
+
+dry_run=0
+head_recipes=0
+normal_recipes=1
+while getopts nNHach opt; do
+    case "$opt" in
+        n)
+            dry_run=1
+            ;;
+        N)
+            head_recipes=0
+            normal_recipes=1
+            ;;
+        H)
+            head_recipes=1
+            normal_recipes=0
+            ;;
+        a)
+            head_recipes=1
+            normal_recipes=1
+            ;;
+        \?|h)
+            echo >&2 "${0##*/} [options]"
+            echo >&2
+            echo >&2 "Update homebrew and upgrade its recipes. Lightweight wrapper"
+            echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
+            echo >&2
+            echo >&2 "Options:"
+            echo >&2 "  -n  Dry run, show what would be updated"
+            echo >&2 "  -N  Upgrade only non-HEAD recipes (default)"
+            echo >&2 "  -H  Upgrade only HEAD recipes"
+            echo >&2 "  -a  Upgrade all recipes, including HEAD"
+            echo >&2 "  -h  Show this usage/help"
+            exit 2
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+brew update || exit 1
+
+if [ $normal_recipes -eq 1 ]; then
+    if [ $dry_run -eq 1 ]; then
+        brew outdated
+    else
+        brew upgrade --all
+    fi || exit 3
+fi
+
+if [ $head_recipes -eq 1 ]; then
+    if [ $dry_run -eq 1 ]; then
+        brew ls --versions | grep ' HEAD$'
+    else
+        brew ls --versions | grep ' HEAD$' | awk '{print $1}' | xargs brew reinstall --HEAD
+    fi || exit 4
+fi
