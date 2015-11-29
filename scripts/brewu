@@ -1,9 +1,10 @@
 #!/bin/sh
 
+prefix=
 dry_run=0
 head_recipes=0
 normal_recipes=1
-while getopts nNHach opt; do
+while getopts nNHap:h opt; do
     case "$opt" in
         n)
             dry_run=1
@@ -20,6 +21,9 @@ while getopts nNHach opt; do
             head_recipes=1
             normal_recipes=1
             ;;
+        p)
+            prefix=$OPTARG
+            ;;
         \?|h)
             echo >&2 "${0##*/} [options]"
             echo >&2
@@ -27,6 +31,8 @@ while getopts nNHach opt; do
             echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
             echo >&2
             echo >&2 "Options:"
+            echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
+            echo >&2
             echo >&2 "  -n  Dry run, show what would be updated"
             echo >&2 "  -N  Upgrade only non-HEAD recipes (default)"
             echo >&2 "  -H  Upgrade only HEAD recipes"
@@ -37,6 +43,10 @@ while getopts nNHach opt; do
     esac
 done
 shift $((OPTIND - 1))
+
+if [ -n "$prefix" ]; then
+    alias brew='$prefix/bin/brew'
+fi
 
 brew update || exit 1
 
@@ -52,6 +62,6 @@ if [ $head_recipes -eq 1 ]; then
     if [ $dry_run -eq 1 ]; then
         brew ls --versions | grep ' HEAD$'
     else
-        brew ls --versions | grep ' HEAD$' | awk '{print $1}' | xargs brew reinstall --HEAD
+        brew ls --versions | grep ' HEAD$' | awk '{print $1}' | xargs "$prefix/bin/brew" reinstall --HEAD
     fi || exit 4
 fi
