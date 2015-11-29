@@ -1,5 +1,10 @@
 #!/bin/sh
 
+usage () {
+    echo >&2 "${0##*/} [-r RELATIVETO] PATH [PATH..]"
+    exit 2
+}
+
 while getopts r:h opt; do
     case "$opt" in
         r)
@@ -7,11 +12,14 @@ while getopts r:h opt; do
             ;;
         \?|h)
             usage
-            echo >&2 "${0##*/}: [-r RELATIVETO] PATH [PATH..]"
             ;;
     esac
 done
 shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
+fi
 
 if [ -z "$relativeto" ]; then
     relativeto="$PWD"
