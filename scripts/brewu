@@ -1,5 +1,24 @@
 #!/bin/sh
 
+usage () {
+    echo >&2 "${0##*/} [options] [[formula]..]"
+    echo >&2
+    echo >&2 "Update homebrew and upgrade its formulas. Lightweight wrapper"
+    echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
+    echo >&2
+    echo >&2 "Optionally specify formulas to update."
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
+    echo >&2
+    echo >&2 "  -n  Dry run, show what would be updated"
+    echo >&2 "  -N  Upgrade only non-HEAD formulas (default)"
+    echo >&2 "  -H  Upgrade only HEAD formulas (by re-installing). This will"
+    echo >&2 "      reinstall all HEAD formulas regardless of actual updates."
+    echo >&2 "  -a  Upgrade all formulas, including HEAD"
+    echo >&2 "  -h  Show this usage/help"
+}
+
 prefix=
 dry_run=0
 head_formulas=0
@@ -25,21 +44,7 @@ while getopts nNHap:h opt; do
             prefix=$OPTARG
             ;;
         \?|h)
-            echo >&2 "${0##*/} [options] [[formula]..]"
-            echo >&2
-            echo >&2 "Update homebrew and upgrade its formulas. Lightweight wrapper"
-            echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
-            echo >&2
-            echo >&2 "Optionally specify formulas to update."
-            echo >&2
-            echo >&2 "Options:"
-            echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
-            echo >&2
-            echo >&2 "  -n  Dry run, show what would be updated"
-            echo >&2 "  -N  Upgrade only non-HEAD formulas (default)"
-            echo >&2 "  -H  Upgrade only HEAD formulas"
-            echo >&2 "  -a  Upgrade all formulas, including HEAD"
-            echo >&2 "  -h  Show this usage/help"
+            usage
             exit 2
             ;;
     esac
