@@ -73,7 +73,7 @@ if [ $head_formulas -eq 1 ]; then
         if [ $# -eq 0 ]; then
             grep ' HEAD$'
         else
-            grep -E "^$(echo "$@" | tr ' ' '|')$" | grep ' HEAD$'
+            grep -E "^$(echo "$@" | tr ' ' '|') " | grep ' HEAD$'
         fi
     }
     if [ $dry_run -eq 1 ]; then
