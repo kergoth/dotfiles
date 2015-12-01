@@ -2,43 +2,43 @@
 
 prefix=
 dry_run=0
-head_recipes=0
-normal_recipes=1
+head_formulas=0
+normal_formulas=1
 while getopts nNHap:h opt; do
     case "$opt" in
         n)
             dry_run=1
             ;;
         N)
-            head_recipes=0
-            normal_recipes=1
+            head_formulas=0
+            normal_formulas=1
             ;;
         H)
-            head_recipes=1
-            normal_recipes=0
+            head_formulas=1
+            normal_formulas=0
             ;;
         a)
-            head_recipes=1
-            normal_recipes=1
+            head_formulas=1
+            normal_formulas=1
             ;;
         p)
             prefix=$OPTARG
             ;;
         \?|h)
-            echo >&2 "${0##*/} [options] [[recipe]..]"
+            echo >&2 "${0##*/} [options] [[formula]..]"
             echo >&2
-            echo >&2 "Update homebrew and upgrade its recipes. Lightweight wrapper"
+            echo >&2 "Update homebrew and upgrade its formulas. Lightweight wrapper"
             echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
             echo >&2
-            echo >&2 "Optionally specify recipes to update."
+            echo >&2 "Optionally specify formulas to update."
             echo >&2
             echo >&2 "Options:"
             echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
             echo >&2
             echo >&2 "  -n  Dry run, show what would be updated"
-            echo >&2 "  -N  Upgrade only non-HEAD recipes (default)"
-            echo >&2 "  -H  Upgrade only HEAD recipes"
-            echo >&2 "  -a  Upgrade all recipes, including HEAD"
+            echo >&2 "  -N  Upgrade only non-HEAD formulas (default)"
+            echo >&2 "  -H  Upgrade only HEAD formulas"
+            echo >&2 "  -a  Upgrade all formulas, including HEAD"
             echo >&2 "  -h  Show this usage/help"
             exit 2
             ;;
@@ -52,7 +52,7 @@ fi
 
 brew update >/dev/null
 
-if [ $normal_recipes -eq 1 ]; then
+if [ $normal_formulas -eq 1 ]; then
     if [ $dry_run -eq 1 ]; then
         brew outdated "$@"
     else
@@ -63,7 +63,7 @@ if [ $normal_recipes -eq 1 ]; then
     fi || exit 3
 fi
 
-if [ $head_recipes -eq 1 ]; then
+if [ $head_formulas -eq 1 ]; then
     head_filter () {
         if [ $# -eq 0 ]; then
             grep ' HEAD$'
