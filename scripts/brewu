@@ -25,10 +25,12 @@ while getopts nNHap:h opt; do
             prefix=$OPTARG
             ;;
         \?|h)
-            echo >&2 "${0##*/} [options]"
+            echo >&2 "${0##*/} [options] [[recipe]..]"
             echo >&2
             echo >&2 "Update homebrew and upgrade its recipes. Lightweight wrapper"
             echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
+            echo >&2
+            echo >&2 "Optionally specify recipes to update."
             echo >&2
             echo >&2 "Options:"
             echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
@@ -52,16 +54,26 @@ brew update >/dev/null
 
 if [ $normal_recipes -eq 1 ]; then
     if [ $dry_run -eq 1 ]; then
-        brew outdated
+        brew outdated "$@"
     else
-        brew upgrade --all
+        if [ $# -eq 0 ]; then
+            set -- --all
+        fi
+        brew upgrade "$@"
     fi || exit 3
 fi
 
 if [ $head_recipes -eq 1 ]; then
+    head_filter () {
+        if [ $# -eq 0 ]; then
+            grep ' HEAD$'
+        else
+            grep -E "^$(echo "$@" | tr ' ' '|')$" | grep ' HEAD$'
+        fi
+    }
     if [ $dry_run -eq 1 ]; then
-        brew ls --versions | grep ' HEAD$'
+        brew ls --versions | head_filter "$@"
     else
-        brew ls --versions | grep ' HEAD$' | awk '{print $1}' | xargs "$prefix/bin/brew" reinstall --HEAD
+        brew ls --versions | head_filter "$@" | awk '{print $1}' | xargs "$prefix/bin/brew" reinstall --HEAD
     fi || exit 4
 fi
