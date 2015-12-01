@@ -52,7 +52,7 @@ done
 shift $((OPTIND - 1))
 
 if [ -n "$prefix" ]; then
-    alias brew='$prefix/bin/brew'
+    PATH="$prefix/bin:$PATH"
 fi
 
 brew update >/dev/null
@@ -79,6 +79,6 @@ if [ $head_formulas -eq 1 ]; then
     if [ $dry_run -eq 1 ]; then
         brew ls --versions | head_filter "$@"
     else
-        brew ls --versions | head_filter "$@" | awk '{print $1}' | xargs "$prefix/bin/brew" reinstall --HEAD
+        brew ls --versions | head_filter "$@" | awk '{print $1}' | xargs brew reinstall --HEAD
     fi || exit 4
 fi
