@@ -7,6 +7,7 @@ usage () {
     echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
     echo >&2
     echo >&2 "Optionally specify formulas to update."
+    echo >&2 "NOTE: -a is currently incompatible with specification of formulas."
     echo >&2
     echo >&2 "Options:"
     echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
