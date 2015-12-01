@@ -48,7 +48,7 @@ if [ -n "$prefix" ]; then
     alias brew='$prefix/bin/brew'
 fi
 
-brew update || exit 1
+brew update >/dev/null || exit 1
 
 if [ $normal_recipes -eq 1 ]; then
     if [ $dry_run -eq 1 ]; then
