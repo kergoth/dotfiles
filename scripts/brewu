@@ -77,7 +77,7 @@ if [ $head_formulas -eq 1 ]; then
         fi
     }
     if [ $dry_run -eq 1 ]; then
-        brew ls --versions | head_filter "$@"
+        brew ls --versions | head_filter "$@" | sed 's, HEAD$, (HEAD),'
     else
         brew ls --versions | head_filter "$@" | awk '{print $1}' | xargs brew reinstall --HEAD
     fi || exit 4
