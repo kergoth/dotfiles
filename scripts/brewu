@@ -1,4 +1,10 @@
 #!/bin/sh
+# TODO: add -V argument to specify a brewv env rather than prefix path, for
+# convenience / to save typing for my most common case
+# TODO: fix -a usage combined with specification of formulas. The issue here
+# is, since the upgrade method is different, we need to determine which of the
+# user-specified formulas are HEAD and which are not. Not terribly difficult,
+# just need to implement it
 
 usage () {
     echo >&2 "${0##*/} [options] [[formula]..]"
