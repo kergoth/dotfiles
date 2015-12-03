@@ -136,8 +136,8 @@ git module cheat:
     pick: cheat
 
 git module git-cherry-tree:
-    url: https://github.com/pv/git-cherry-tree
-    rev: 8d4fe3cd91037dff65c7f145fa8862c323607f3f
+    url: https://github.com/kergoth/git-cherry-tree
+    rev: 8b99599d88c254a56e98fc0d6cf34ccfdc19dffd
     pick: git-cherry-tree
 
 git module iln:

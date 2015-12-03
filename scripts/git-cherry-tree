@@ -197,7 +197,7 @@ def _do_cherry_pick(filename, to_pick, pick_args):
     infos = []
     for patch in to_pick:
         pretty = git('show', '--quiet', '--pretty=oneline', '--abbrev-commit', patch).strip()
-        f.write("skip " + pretty[:70] + "\n")
+        f.write("skip " + pretty + "\n")
 
         info = git('show', '--abbrev-commit', '--stat', patch)
         lines = ["# " + pretty[:70], "# "]
