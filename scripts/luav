@@ -126,7 +126,9 @@ fi
 
 (
     . "$VERTS_HOME/vert/bin/activate"
-    vert_init "$luaenv_dir"
+    if [ ! -e "$luaenv_dir/bin/activate" ]; then
+        vert_init "$luaenv_dir"
+    fi
 
     . "$luaenv_dir/bin/activate"
     luarocks install "$@"
