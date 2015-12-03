@@ -19,6 +19,7 @@ from mercurial import changegroup
 import re
 import sys
 import os
+import posixpath
 import json
 import shutil
 import subprocess
@@ -73,8 +74,36 @@ def warn(msg, *args):
 def gitmode(flags):
     return 'l' in flags and '120000' or 'x' in flags and '100755' or '100644'
 
+# convert between git timezone and mercurial timezone data.
+# git stores timezone as a string in the form "+HHMM" or "-HHMM".
+# Mercurial instead encodes the timezone as an offset to UTC in seconds.
+# This offset has the opposite sign from the one used by git.
+#
+# To convert between the two, we have to be a bit careful, as
+# dividing a negativ integer in python 2 rounds differently than
+# in C.
+
+# convert timezone offset in second to  string '+HHMM' or '-HHMM'
 def gittz(tz):
-    return '%+03d%02d' % (-tz / 3600, -tz % 3600 / 60)
+    if tz < 0:
+        tz = -tz
+        sign = +1
+    else:
+        sign = -1
+    hours = tz / 3600
+    minutes = tz % 3600 / 60
+    return '%+03d%02d' % (sign * hours, minutes)
+
+# convert timezone string '+HHMM' or '-HHMM' to time offset in seconds
+def hgtz(tz):
+    tz = int(tz)
+    if tz < 0:
+        tz = -tz
+        sign = +1
+    else:
+        sign = -1
+    tz = ((tz / 100) * 3600) + ((tz % 100) * 60)
+    return sign * tz
 
 def hgmode(mode):
     m = { '100755': 'x', '120000': 'l' }
@@ -262,15 +291,13 @@ class Parser:
         if ex:
             user += ex
 
-        tz = int(tz)
-        tz = ((tz / 100) * 3600) + ((tz % 100) * 60)
-        return (user, int(date), -tz)
+        return (user, int(date), hgtz(tz))
 
 def fix_file_path(path):
-    path = os.path.normpath(path)
+    path = posixpath.normpath(path)
     if not os.path.isabs(path):
         return path
-    return os.path.relpath(path, '/')
+    return posixpath.relpath(path, '/')
 
 def export_files(files):
     final = []
@@ -1331,11 +1358,12 @@ def bye():
     if is_tmp:
         shutil.rmtree(dirname)
 
-atexit.register(bye)
+if __name__ == "__main__":
+    atexit.register(bye)
 
-try:
-    sys.exit(main(sys.argv))
-except Exception, e:
-    if DEBUG_REMOTEHG:
-       raise
-    die(str(e))
+    try:
+        sys.exit(main(sys.argv))
+    except Exception, e:
+        if DEBUG_REMOTEHG:
+           raise
+        die(str(e))

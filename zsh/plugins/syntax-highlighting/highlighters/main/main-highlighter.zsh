@@ -80,23 +80,55 @@ _zsh_highlight_main_add_region_highlight() {
   region_highlight+=("$start $end $style")
 }
 
+# Wrapper around 'type -w'.
+#
+# Takes a single argument and outputs the output of 'type -w $1'.
+#
+# NOTE: This runs 'setopt', but that should be safe since it'll only ever be
+# called inside a $(...) subshell, so the effects will be local.
+_zsh_highlight_main__type() {
+  if (( $#options_to_set )); then
+    setopt $options_to_set;
+  fi
+  LC_ALL=C builtin type -w -- $1 2>/dev/null
+}
+
 # Main syntax highlighting function.
 _zsh_highlight_main_highlighter()
 {
+  ## Before we even 'emulate -L', we must test a few options that would reset.
   if [[ -o interactive_comments ]]; then
     local interactive_comments= # set to empty
   fi
+  if [[ -o path_dirs ]]; then
+    integer path_dirs_was_set=1
+  else
+    integer path_dirs_was_set=0
+  fi
   emulate -L zsh
   setopt localoptions extendedglob bareglobqual
+
+  ## Variable declarations and initializations
   local start_pos=0 end_pos highlight_glob=true arg style
+  local in_array_assignment=false # true between 'a=(' and the matching ')'
   typeset -a ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR
   typeset -a ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS
   typeset -a ZSH_HIGHLIGHT_TOKENS_CONTROL_FLOW
+  local -a options_to_set # used in callees
   local buf="$PREBUFFER$BUFFER"
   region_highlight=()
 
+  if (( path_dirs_was_set )); then
+    options_to_set+=( PATH_DIRS )
+  fi
+  unset path_dirs_was_set
+
   ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR=(
     '|' '||' ';' '&' '&&'
+    '|&'
+    '&!' '&|'
+    # ### 'case' syntax, but followed by a pattern, not by a command
+    # ';;' ';&' ';|'
   )
   ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS=(
     'builtin' 'command' 'exec' 'nocorrect' 'noglob'
@@ -128,7 +160,7 @@ _zsh_highlight_main_highlighter()
   # - :sudo_arg:   The argument to a sudo leading-dash option that takes one,
   #                when given as a separate word; i.e., "foo" in "-u foo" (two
   #                words) but not in "-ufoo" (one word).
-  # - :regular:    "Not a command word".
+  # - :regular:    "Not a command word", and command delimiters are permitted.
   #                Mainly used to detect premature termination of commands.
   #
   # When the kind of a word is not yet known, $this_word / $next_word may contain
@@ -163,7 +195,10 @@ _zsh_highlight_main_highlighter()
       (( --in_redirection ))
     fi
     if (( in_redirection == 0 )); then
+      # Initialize $next_word to its default value.
       next_word=':regular:'
+    else
+      # Stall $next_word.
     fi
     # $already_added is set to 1 to disable adding an entry to region_highlight
     # for this iteration.  Currently, that is done for "" and $'' strings,
@@ -171,8 +206,11 @@ _zsh_highlight_main_highlighter()
     # the string's color.
     integer already_added=0
     local style_override=""
-    if [[ $this_word == *':start:'* ]] && [[ $arg = 'noglob' ]]; then
-      highlight_glob=false
+    if [[ $this_word == *':start:'* ]]; then
+      in_array_assignment=false
+      if [[ $arg == 'noglob' ]]; then
+        highlight_glob=false
+      fi
     fi
 
     # advance $start_pos, skipping over whitespace in $buf.
@@ -235,7 +273,21 @@ _zsh_highlight_main_highlighter()
      else
       _zsh_highlight_main_highlighter_expand_path $arg
       local expanded_arg="$REPLY"
-      local res="$(LC_ALL=C builtin type -w -- ${expanded_arg} 2>/dev/null)"
+      local res="$(_zsh_highlight_main__type ${expanded_arg})"
+      () {
+        # Special-case: command word is '$foo', like that, without braces or anything.
+        #
+        # That's not entirely correct --- if the parameter's value happens to be a reserved
+        # word, the parameter expansion will be highlighted as a reserved word --- but that
+        # incorrectness is outweighed by the usability improvement of permitting the use of
+        # parameters that refer to commands, functions, and builtins.
+        local -a match mbegin mend
+        local MATCH; integer MBEGIN MEND
+        if [[ $res == *': none' ]] && (( ${+parameters} )) &&
+           [[ ${arg[1]} == \$ ]] && [[ ${arg:1} =~ ^([A-Za-z_][A-Za-z0-9_]*|[0-9]+)$ ]]; then
+          res="$(_zsh_highlight_main__type ${(P)MATCH})"
+        fi
+      }
       case $res in
         *': reserved')  style=$ZSH_HIGHLIGHT_STYLES[reserved-word];;
         *': suffix alias')
@@ -251,19 +303,25 @@ _zsh_highlight_main_highlighter()
         *': hashed')    style=$ZSH_HIGHLIGHT_STYLES[hashed-command];;
         *)              if _zsh_highlight_main_highlighter_check_assign; then
                           style=$ZSH_HIGHLIGHT_STYLES[assign]
-                          if [[ $arg[-1] != '(' ]]; then
+                          if [[ $arg[-1] == '(' ]]; then
+                            in_array_assignment=true
+                          else
                             # assignment to a scalar parameter.
                             # (For array assignments, the command doesn't start until the ")" token.)
                             next_word+=':start:'
                           fi
                         elif [[ $arg[0,1] == $histchars[0,1] || $arg[0,1] == $histchars[2,2] ]]; then
                           style=$ZSH_HIGHLIGHT_STYLES[history-expansion]
-                        elif [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR:#"$arg"} ]] &&
-                             [[ $this_word == *':regular:'* ]]; then
-                          # This highlights empty commands (semicolon follows nothing) as an error.
-                          # Zsh accepts them, though.
-                          style=$ZSH_HIGHLIGHT_STYLES[commandseparator]
-                        elif [[ $arg[1] == '<' || $arg[1] == '>' ]]; then
+                        elif [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR:#"$arg"} ]]; then
+                          if [[ $this_word == *':regular:'* ]]; then
+                            # This highlights empty commands (semicolon follows nothing) as an error.
+                            # Zsh accepts them, though.
+                            style=$ZSH_HIGHLIGHT_STYLES[commandseparator]
+                          else
+                            style=$ZSH_HIGHLIGHT_STYLES[unknown-token]
+                          fi
+                        elif [[ $arg == (<0-9>|)(\<|\>)* ]]; then
+                          # A '<' or '>', possibly followed by a digit
                           style=$ZSH_HIGHLIGHT_STYLES[redirection]
                           (( in_redirection=2 ))
                         elif [[ $arg[1,2] == '((' ]]; then
@@ -299,7 +357,13 @@ _zsh_highlight_main_highlighter()
      fi
     else # $arg is a non-command word
       case $arg in
-        $'\x29') style=$ZSH_HIGHLIGHT_STYLES[reserved-word];; # subshell
+        $'\x29') # subshell or end of array assignment
+                 if $in_array_assignment; then
+                   style=$ZSH_HIGHLIGHT_STYLES[assign]
+                   in_array_assignment=false
+                 else
+                   style=$ZSH_HIGHLIGHT_STYLES[reserved-word]
+                 fi;;
         $'\x7d') style=$ZSH_HIGHLIGHT_STYLES[reserved-word];; # block
         '--'*)   style=$ZSH_HIGHLIGHT_STYLES[double-hyphen-option];;
         '-'*)    style=$ZSH_HIGHLIGHT_STYLES[single-hyphen-option];;
@@ -326,7 +390,7 @@ _zsh_highlight_main_highlighter()
                    else
                      style=$ZSH_HIGHLIGHT_STYLES[unknown-token]
                    fi
-                 elif [[ $arg[1] == '<' || $arg[1] == '>' ]]; then
+                 elif [[ $arg == (<0-9>|)(\<|\>)* ]]; then
                    style=$ZSH_HIGHLIGHT_STYLES[redirection]
                    (( in_redirection=2 ))
                  else
@@ -344,9 +408,10 @@ _zsh_highlight_main_highlighter()
     (( already_added )) || _zsh_highlight_main_add_region_highlight $start_pos $end_pos $style
     if [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR:#"$arg"} ]]; then
       next_word=':start:'
+      highlight_glob=true
     elif
-       [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_CONTROL_FLOW:#"$arg"} && $this_word == *':start:' ]] ||
-       [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS:#"$arg"} && $this_word == *':start:' ]]; then
+       [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_CONTROL_FLOW:#"$arg"} && $this_word == *':start:'* ]] ||
+       [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS:#"$arg"} && $this_word == *':start:'* ]]; then
       next_word=':start:'
     elif [[ $arg == "repeat" && $this_word == *':start:'* ]]; then
       # skip the repeat-count word
@@ -357,7 +422,6 @@ _zsh_highlight_main_highlighter()
       # The repeat-count word will be handled like a redirection target.
       this_word=':start:'
     fi
-    [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR:#"$arg"} ]] && highlight_glob=true
     start_pos=$end_pos
     (( in_redirection == 0 )) && this_word=$next_word
   done
@@ -416,6 +480,9 @@ _zsh_highlight_main_highlighter_highlight_string()
             # Look for an alphanumeric parameter name.
             if [[ ${arg:$i} =~ ^([A-Za-z_][A-Za-z0-9_]*|[0-9]+) ]] ; then
               (( k += $#MATCH )) # highlight the parameter name
+              (( i += $#MATCH )) # skip past it
+            elif [[ ${arg:$i} =~ ^[{]([A-Za-z_][A-Za-z0-9_]*|[0-9]+)[}] ]] ; then
+              (( k += $#MATCH )) # highlight the parameter name and braces
               (( i += $#MATCH )) # skip past it
             else
               continue

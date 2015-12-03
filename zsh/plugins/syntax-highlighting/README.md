@@ -1,9 +1,12 @@
 zsh-syntax-highlighting
 =======================
 
-**[Fish shell](http://www.fishshell.com) like syntax highlighting for [Zsh](http://www.zsh.org).**
+**[Fish shell][fish]-like like syntax highlighting for [Zsh][zsh].**
 
 *Requirements: zsh 4.3.17+.*
+
+[fish]: http://www.fishshell.com/
+[zsh]: http://www.zsh.org/
 
 This package provides syntax highlighing for the shell zsh.  It enables
 highlighing of commands whilst they are typed at a zsh prompt into an
@@ -16,53 +19,7 @@ them, particularly in catching syntax errors.
 How to install
 --------------
 
-### Using packages
-
-* Arch Linux: [community/zsh-syntax-highlighting](https://www.archlinux.org/packages/zsh-syntax-highlighting) / [AUR/zsh-syntax-highlighting-git](https://aur.archlinux.org/packages/zsh-syntax-highlighting-git)
-* Gentoo: [mv overlay](http://gpo.zugaina.org/app-shells/zsh-syntax-highlighting)
-* Mac OS X / Homebrew: [brew install zsh-syntax-highlighting](https://github.com/Homebrew/homebrew/blob/master/Library/Formula/zsh-syntax-highlighting.rb)
-
-### In your ~/.zshrc
-
-* Clone this repository:
-
-        git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
-
-  (or [download a snapshot](https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz))
-
-* Source the script **at the end** of `~/.zshrc`:
-
-        source /path/to/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-* Source `~/.zshrc`  to take changes into account:
-
-        source ~/.zshrc
-
-
-### With oh-my-zsh
-
-* Download the script or clone this repository in [oh-my-zsh](http://github.com/robbyrussell/oh-my-zsh) plugins directory:
-
-        git clone git://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-
-* Activate the plugin in `~/.zshrc`:
-
-        plugins=( [plugins...] zsh-syntax-highlighting)
-
-* Source `~/.zshrc`  to take changes into account:
-
-        source ~/.zshrc
-
-Note that `zsh-syntax-highlighting` must be the last plugin sourced,
-so make it the last element of the `$plugins` array.
-
-### System-wide installation
-
-Either of the above methods is suitable for a single-user installation, which requires
-no special privileges.  If, however, you desire to install zsh-syntax-highlighting
-system-wide, you may do so by running `make install` and directing your users to
-add `source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh`
-in their `.zshrc`s.
+See [INSTALL.md](INSTALL.md).
 
 
 FAQ
@@ -77,13 +34,16 @@ syntax highlighting.
 
 ### How are new releases announced?
 
-There is currently no "push" announcements channel.  However, the following alternatives exist:
+There is currently no "push" announcements channel.  However, the following
+alternatives exist:
 
 - GitHub's RSS feed of releases: https://github.com/zsh-users/zsh-syntax-highlighting/releases.atom
 - An anitya entry: https://release-monitoring.org/project/7552/
 
+
 How to tweak
 ------------
 
-Syntax highlighting is done by pluggable highlighter scripts, see the [highlighters directory](highlighters)
-for documentation and configuration settings.
+Syntax highlighting is done by pluggable highlighter scripts.  See the
+[documentation on highlighters](docs/highlighters.md) for details and
+configuration settings.

@@ -92,7 +92,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 44e5323b53edd221a79a585869cf4833d555ba58
+    rev: 73ee7c1f6c4a2bbb77029a93c79e0289e0ffef57
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -112,7 +112,7 @@ git module zsh-git-escape-magic:
 
 git module autoenv:
     url: https://github.com/kennethreitz/autoenv
-    rev: c4bc3f5093f73e5c23563aa5cd66307e2804f35d
+    rev: 7858eaaf6b23a968e63fbb7584ff0df2795181ec
 
 git module zsh-command-not-found:
     url: https://github.com/Tarrasch/zsh-command-not-found
@@ -162,7 +162,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 1ecd12d523ffe031b5840316eeae1f24dd8920e4
+    rev: d854197c03c0b027cca41abf86a5557c5473b82f
 
 # go language support
 git module vim-golang:
@@ -268,7 +268,7 @@ curl module rpm2cpio:
 git module git-remote-dropbox:
     url: https://github.com/anishathalye/git-remote-dropbox
     pick: git-remote-dropbox
-    rev: 6a951154216e610acded1df5e4ae38c646c6c9e4
+    rev: 682f9858050108f2f59b35512bbcb6159a5817ad
 
 git module lesspipe:
     url: https://github.com/wofr06/lesspipe
@@ -298,7 +298,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 462c6f8499891e4933b028fed723a8bcdc017e18
+    rev: 3b8f6e0227ebd9c322e57bd9e67ad98f7dc3053f
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -444,7 +444,7 @@ git module git-pull-requests:
 
 hg module hg-extension-crecord:
     url: https://bitbucket.org/edgimar/crecord
-    rev: 5cfaabfe9cb9f0a0d6837956d73127f290a213be
+    rev: b9bfbcdbc070ede5c66d7494717cdcc0b9f16079
 
 hg module hg-extension-prompt:
     url: https://bitbucket.org/obensonne/hg-prompt
@@ -484,7 +484,7 @@ git module damian-conway-vim:
 git module git-remote-hg:
     url: https://github.com/fingolfin/git-remote-hg
     pick: git-remote-hg
-    rev: 7cf244530945676ec32040a02c46e612762ca1ec
+    rev: 391c7e91046f5209f675f6e238f28df724b23086
 
 # Not used
 git module dropdiff:
@@ -508,18 +508,18 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: cd40fe97519dc798c1b3e31eb9741d3d60fee17c
+    rev: 77e20e22d82d271702b51da0259a0b34545b531f
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: b0da1e38d1f559503d3abcae77dc577a64e79280
+    rev: 8f68f2a3f015d1d512cf4132bd6be045eeba23d5
 
 git module vim-ctrlp:
-    url: https://github.com/kien/ctrlp.vim
-    rev: b5d3fe66a58a13d2ff8b6391f4387608496a030f
+    url: https://github.com/ctrlpvim/ctrlp.vim
+    rev: 7a80267ed061f3dc30bb319f438bdadfd8c7b1fd
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell

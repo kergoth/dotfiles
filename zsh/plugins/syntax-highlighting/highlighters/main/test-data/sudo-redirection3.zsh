@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
+# Copyright (c) 2015 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -27,9 +27,14 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='ls highlighters/main/test-data/path-space-\ .zsh'
+ZSH_HIGHLIGHT_STYLES[redirection]=$unused_highlight
+BUFFER='sudo 2>./. -u otheruser ls'
 
 expected_region_highlight=(
-  "1 2  $ZSH_HIGHLIGHT_STYLES[command]" # ls
-  "4 48 $ZSH_HIGHLIGHT_STYLES[path]"    # highlighters/main/test-data/path-space-\ .zsh
+  "1 4 $ZSH_HIGHLIGHT_STYLES[precommand]" # sudo
+  "6 7 $ZSH_HIGHLIGHT_STYLES[redirection]" # 2>
+  "8 10 $ZSH_HIGHLIGHT_STYLES[path]" # ./. # a 3-character path, for alignment with sudo-redirection2.zsh
+  "12 13 $ZSH_HIGHLIGHT_STYLES[single-hyphen-option]" # -u
+  "15 23 $ZSH_HIGHLIGHT_STYLES[default]" # otheruser
+  "25 26 $ZSH_HIGHLIGHT_STYLES[command]" # ls
 )

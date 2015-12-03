@@ -2318,6 +2318,8 @@ function! s:github_url(opts, ...) abort
     else
       return root . '/commits/' . branch
     endif
+  elseif path =~# '^\.git/refs/tags/'
+    return root . '/releases/tag/' . matchstr(path,'[^/]\+$')
   elseif path =~# '^\.git/refs/.'
     return root . '/commits/' . matchstr(path,'[^/]\+$')
   elseif path =~# '.git/\%(config$\|hooks\>\)'
@@ -2345,9 +2347,6 @@ function! s:github_url(opts, ...) abort
     elseif get(a:opts, 'line2')
       let url .= '#L' . a:opts.line1 . '-L' . a:opts.line2
     endif
-  elseif a:opts.type == 'tag'
-    let commit = matchstr(getline(3),'^tag \zs.*')
-    let url = root . '/tree/' . commit
   else
     let url = root . '/commit/' . commit
   endif
@@ -2470,16 +2469,13 @@ function! s:BufReadIndex() abort
     else
       let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd ' : 'cd '
       let dir = getcwd()
-      if fugitive#git_version() =~# '^0\|^1\.[1-3]\.'
+      if fugitive#git_version() =~# '^0\|^1\.[1-7]\.'
         let cmd = s:repo().git_command('status')
-      elseif fugitive#git_version() =~# '^1\.[4-7]\.'
-        let cmd = s:repo().git_command('status', '-u')
       else
         let cmd = s:repo().git_command(
               \ '-c', 'status.displayCommentPrefix=true',
               \ '-c', 'color.status=false',
               \ '-c', 'status.short=false',
-              \ '-c', 'status.showUntrackedFiles=all',
               \ 'status')
       endif
       try
