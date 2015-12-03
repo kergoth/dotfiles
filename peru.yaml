@@ -49,7 +49,7 @@ imports:
     vitag: scripts
     wget-finder: scripts
 
-    chneukirchen: scripts
+    chneukirchen-tools: scripts
     git-attic: scripts
     git-ltr: scripts
     git-neck: scripts
@@ -396,14 +396,14 @@ git module moreutils:
         - vipe
     rev: 5ca552dd82dc3ef5ee0d388716148c5a653b72bb
 
-git module chneukirchen:
-    url: https://github.com/chneukirchen/tools
+git module chneukirchen-tools:
+    url: https://github.com/kergoth/chneukirchen-tools
     pick:
         - base
         - pacverify
         - spongegrep
         - swaptop
-    rev: f27547b02f21cf1b054d1614e4b01faae9af038b
+    rev: db08c7e7dc8c6e819fc03daba8ab7ca52a9c1ac5
 
 curl module git-neck:
     url: http://chneukirchen.org/dotfiles/bin/git-neck
