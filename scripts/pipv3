@@ -25,6 +25,6 @@ esac
 
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
-    pyvenv "$venv_dir"
+    pyvenv "$venv_dir" || exit 3
 fi
 "$(dirname "$0")"/pipv "$@"
