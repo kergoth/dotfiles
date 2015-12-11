@@ -16,11 +16,12 @@ if [ ! -e /etc/manpaths.d/homebrew ]; then
     sudo sh -c "echo \"$HOMEBREW_PATH/share/man\" >/etc/manpaths.d/homebrew"
 fi
 
-if ! grep -q $HOMEBREW_PATH/bin/fish /etc/shells; then
-    sudo sh -c "echo $HOMEBREW_PATH/bin/fish >>/etc/shells"
+if ! grep -q $HOMEBREW_PATH/bin/zsh /etc/shells; then
+    sudo sh -c "echo $HOMEBREW_PATH/bin/zsh >>/etc/shells"
 fi
 
 # Ensure that we can use the python modules homebrew installs
 pythonuserdir="$(python -c 'import site; print(site.getusersitepackages())')" || exit 1
-pythonversion="$(python -c "'.'.join(str(v) for v in sys.version_info[0:2])" || exit 1)"
-echo "$HOMEBREW_PATH/lib/python$pythonversion/site-packages" >$pythonuserdir/homebrew.pth
+pythonversion="$(python -c "import sys; '.'.join(str(v) for v in sys.version_info[0:2])" || exit 1)"
+mkdir -p "$pythonuserdir"
+echo "$HOMEBREW_PATH/lib/python$pythonversion/site-packages" >"$pythonuserdir/homebrew.pth"

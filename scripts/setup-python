@@ -30,12 +30,12 @@ pip install --user SOAPpy
 # So we can clone git repositories with mercurial
 ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future" pip install --user hg-git
 
-# So we can clone hg repositories with git
-pip install --user gitifyhg
+# For git-remote-dropbox
+pip install --user dropbox
 
 # Other useful bits I don't need installed right now
 #pip install --user pip-tools
 #pip install --user tox
 #pip install --user stormssh
 #pip install --user dash.py doc2dash
-#pip install --user pep8 pyflakes pylint
+#pip install --user pylint

@@ -47,7 +47,6 @@ defaults write com.apple.dock showhidden -bool true
 
 defaults write com.apple.iTunes allow-half-stars -bool true
 
-
 # Show the ~/Library folder
 chflags nohidden ~/Library
 
@@ -67,13 +66,13 @@ sudo sysctl -w $(cat /etc/sysctl.conf)
 killall Finder
 killall Dock
 
-$(dirname "$0")/setup-brew-system
-
-chsh -s /opt/homebrew/bin/fish
-
 sudo mkdir -p /usr/local /opt
 sudo chgrp -R staff /usr/local /opt
 sudo find /usr/local /opt -type d -exec chmod g+wXs "{}" \;
 sudo find /usr/local /opt -not -type d -exec chmod g+wX "{}" \;
+
+$(dirname "$0")/setup-brew-system
+
+chsh -s /opt/homebrew/bin/zsh
 
 # launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
