@@ -21,6 +21,7 @@ CONTENTS                                                      *Gundo-contents*
              gundo_tree_statusline ..... |gundo_tree_statusline|
         3.10 gundo_auto_preview ........ |gundo_auto_preview|
         3.11 gundo_playback_delay ...... |gundo_playback_delay|
+        3.12 gundo_return_on_revert .... |gundo_return_on_revert|
     4. License ......................... |GundoLicense|
     5. Bugs ............................ |GundoBugs|
     6. Contributing .................... |GundoContributing|
@@ -226,6 +227,13 @@ for a faster playback.
 
 Default: 60
 
+------------------------------------------------------------------------------
+3.12 g:gundo_return_on_revert                         *gundo_return_on_revert*
+
+Set this to 0 to keep focus in the Gundo window after a revert.
+
+Default: 1
+
 ==============================================================================
 4. License                                                      *GundoLicense*
 
@@ -249,6 +257,9 @@ GitHub: http://github.com/sjl/gundo.vim/
 ==============================================================================
 7. Changelog                                                  *GundoChangelog*
 
+v2.6.0
+    * Fix several Python-related bugs.
+    * Add g:gundo_return_on_revert option.
 v2.5.0
     * Fix the help window to take custom mappings into account.
     * Add g:gundo_playback_delay option.

@@ -1,7 +1,7 @@
 "============================================================================
-"File:        pc_lint.vim
+"File:        lintr.vim
 "Description: Syntax checking plugin for syntastic.vim
-"Maintainer:  Steve Bragg <steve at empresseffects dot com>
+"Maintainer:  Jim Hester <james.f.hester at gmail dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
@@ -10,15 +10,14 @@
 "
 "============================================================================
 
-if exists('g:loaded_syntastic_cpp_pc_lint_checker')
+if exists('g:loaded_syntastic_rmd_lintr_checker')
     finish
 endif
-let g:loaded_syntastic_cpp_pc_lint_checker = 1
+let g:loaded_syntastic_rmd_lintr_checker = 1
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'cpp',
-    \ 'name': 'pc_lint',
-    \ 'exec': 'lint-nt',
-    \ 'redirect': 'c/pc_lint'})
+    \ 'filetype': 'rmd',
+    \ 'name': 'lintr',
+    \ 'redirect': 'r/lintr'})
 
 " vim: set sw=4 sts=4 et fdm=marker:

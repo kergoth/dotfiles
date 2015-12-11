@@ -18,6 +18,7 @@ from optparse import OptionParser, OptionGroup
 
 
 # Constants -------------------------------------------------------------------
+VERSION = ('1', '0', '0')
 CASE_SENSITIVE = 1
 CASE_INSENSITIVE = 2
 CASE_SMART = 3
@@ -189,7 +190,7 @@ def compile_git(line):
     # If you can't tell what the hell this means you're not alone, because git's
     # documentation is fucking inscrutable.  Here's what I've come up with from
     # trial and error:
-    # 
+    #
     # 0. Patterns ending in a slash will only match directories, and then you
     #    can ignore that slash for the rest of these rules.
     # 1. Patterns are shell globs, except * doesn't match / and there's no **.
@@ -381,6 +382,9 @@ def parse_ignore_files(dir):
             ignorers.extend(parse_hgignore_file(target))
     return ignorers
 
+def parse_ignore_args():
+    return [compile_ff_glob(pattern) for pattern in options.ignore]
+
 
 def get_initial_ignorers():
     if '.ffignore' in options.ignore_files:
@@ -460,13 +464,20 @@ def match(query, path, basename):
 
 
 def _search(query, dir, depth, ignorers):
-    ignorers = ignorers + parse_ignore_files(dir)
+    ignorers = ignorers + parse_ignore_files(dir) + parse_ignore_args()
 
-    contents = os.listdir(dir)
+    try:
+        contents = os.listdir(dir)
+    except OSError:
+        err('Error: `' + dir + '`: Permission denied')
+        return
     next = []
 
     for item in contents:
         path = os.path.join(dir, item)
+        if options.full_path:
+            path = os.path.abspath(path)
+
         if not should_ignore(item, path, ignorers):
             if match(query, path, item):
                 out(path, '\0' if options.zero else '\n')
@@ -490,6 +501,9 @@ def build_option_parser():
     p = OptionParser("usage: %prog [options] PATTERN")
 
     # Main options
+    p.add_option('--version',
+                 action='store_true', default=False,
+                 help='print the version and exit')
     p.add_option('-d', '--dir', default='.',
                  help='root the search in DIR (default .)',
                  metavar='DIR')
@@ -517,6 +531,12 @@ def build_option_parser():
     p.add_option('-E', '--non-entire', dest='entire',
                  action='store_false',
                  help='match PATTERN against only the filenames (default)')
+    p.add_option('-p', '--full-path', dest='full_path',
+                  action='store_true', default=False,
+                  help="print the file's full path")
+    p.add_option('-P', '--relative-path', dest='full_path',
+                  action='store_false',
+                  help="print the file's relative path (default)")
 
     # Case sensitivity
     g = OptionGroup(p, "Configuring Case Sensitivity")
@@ -565,7 +585,7 @@ def build_option_parser():
                  help="don't ignore anything (ALL files can match)")
 
     g.add_option('-I', '--ignore', metavar='PATTERN',
-                 action='append',
+                 action='append', default=[],
                  help="add a pattern to be ignored (can be given multiple times)")
 
     p.add_option_group(g)
@@ -768,6 +788,10 @@ def main():
     global options
 
     (options, args) = build_option_parser().parse_args()
+
+    if options.version:
+        print('friendly-find version %s' % '.'.join(VERSION))
+        sys.exit(0)
 
     # PATTERN
     if len(args) > 1:

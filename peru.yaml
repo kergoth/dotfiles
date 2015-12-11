@@ -92,7 +92,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 73ee7c1f6c4a2bbb77029a93c79e0289e0ffef57
+    rev: 4f3910cbbaa5b77d2abda65cd19b25b86554e552
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -207,7 +207,7 @@ git module vim-eunuch:
 # graph your Vim undo tree in style
 git module gundo:
     url: https://github.com/sjl/gundo.vim.git
-    rev: 3975ac871565115e3769dc69c06bc88ddc1369af
+    rev: dd5ab1e930deb8c74ea9046654dd0587df0cf459
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -298,7 +298,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 3b8f6e0227ebd9c322e57bd9e67ad98f7dc3053f
+    rev: 657fa4e3e130406f93fd9ab440471765c389561d
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -331,12 +331,12 @@ git module fasd:
 hg module friendly-find:
     url: https://bitbucket.org/sjl/friendly-find
     pick: ffind
-    rev: a9e32bdb260bdad375ce93fe70b957fb9783e0bb
+    rev: 59b3a26fd6724d77f0b49b3b5981ff167ee31e6a
 
 git module gibo:
     url: https://github.com/simonwhitaker/gibo
     pick: gibo
-    rev: d2dd7e0db4571c01134e8295589b08cadffed627
+    rev: bf3f5ddf497e5d0c6b43fa9505185b4591d4287a
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
@@ -484,7 +484,7 @@ git module damian-conway-vim:
 git module git-remote-hg:
     url: https://github.com/fingolfin/git-remote-hg
     pick: git-remote-hg
-    rev: 391c7e91046f5209f675f6e238f28df724b23086
+    rev: bd8c46e1ea29d192bb8ad67708b33ea59d396b7a
 
 # Not used
 git module dropdiff:
@@ -508,14 +508,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 77e20e22d82d271702b51da0259a0b34545b531f
+    rev: 48736aa376341518d7bedf3a39daf0ae9e1dcdc0
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 8f68f2a3f015d1d512cf4132bd6be045eeba23d5
+    rev: f031c9da52c27c9c3389d00a0d7cb846bb90281d
 
 git module vim-ctrlp:
     url: https://github.com/ctrlpvim/ctrlp.vim

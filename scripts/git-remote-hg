@@ -43,6 +43,11 @@ import time as ptime
 # If you want to switch to hg-git compatibility mode:
 # git config --global remote-hg.hg-git-compat true
 #
+
+
+# The 'mode' variable indicates whether we are in 'git' or 'hg' compatibility mode.
+# This has the following effects:
+#
 # git:
 # Sensible defaults for git.
 # hg bookmarks are exported as git branches, hg branches are prefixed
@@ -53,6 +58,7 @@ import time as ptime
 # Only hg bookmarks are exported as git branches.
 # Commits are modified to preserve hg information and allow bidirectionality.
 #
+mode = 'git'
 
 DEBUG_REMOTEHG = os.environ.get("DEBUG_REMOTEHG") != None
 
@@ -64,15 +70,13 @@ RAW_AUTHOR_RE = re.compile('^(\w+) (?:(.+)? )?<(.*)> (\d+) ([+-]\d+)')
 
 VERSION = 2
 
+
 def die(msg, *args):
     sys.stderr.write('ERROR: %s\n' % (msg % args))
     sys.exit(1)
 
 def warn(msg, *args):
     sys.stderr.write('WARNING: %s\n' % (msg % args))
-
-def gitmode(flags):
-    return 'l' in flags and '120000' or 'x' in flags and '100755' or '100644'
 
 # convert between git timezone and mercurial timezone data.
 # git stores timezone as a string in the form "+HHMM" or "-HHMM".
@@ -83,7 +87,7 @@ def gitmode(flags):
 # dividing a negativ integer in python 2 rounds differently than
 # in C.
 
-# convert timezone offset in second to  string '+HHMM' or '-HHMM'
+# hg->git: convert timezone offset in seconds to string '+HHMM' or '-HHMM'
 def gittz(tz):
     if tz < 0:
         tz = -tz
@@ -94,7 +98,7 @@ def gittz(tz):
     minutes = tz % 3600 / 60
     return '%+03d%02d' % (sign * hours, minutes)
 
-# convert timezone string '+HHMM' or '-HHMM' to time offset in seconds
+# git->hg: convert timezone string '+HHMM' or '-HHMM' to time offset in seconds
 def hgtz(tz):
     tz = int(tz)
     if tz < 0:
@@ -105,6 +109,11 @@ def hgtz(tz):
     tz = ((tz / 100) * 3600) + ((tz % 100) * 60)
     return sign * tz
 
+# hg->git: convert hg flags to git file mode
+def gitmode(flags):
+    return 'l' in flags and '120000' or 'x' in flags and '100755' or '100644'
+
+# git->hg: convert git file mode to hg flags
 def hgmode(mode):
     m = { '100755': 'x', '120000': 'l' }
     return m.get(mode, '')
@@ -141,6 +150,7 @@ def get_config_bool(config, default=False):
     else:
         return default
 
+# Handle loading and storing git marks files
 class Marks:
 
     def __init__(self, path, repo):
@@ -229,6 +239,9 @@ class Marks:
     def set_tip(self, branch, tip):
         self.tips[branch] = tip
 
+# Parser class for the input git feeds to us. See
+# - http://git-scm.com/docs/gitremote-helpers
+# - http://git-scm.com/docs/git-fast-import
 class Parser:
 
     def __init__(self, repo):
@@ -293,12 +306,17 @@ class Parser:
 
         return (user, int(date), hgtz(tz))
 
+# hg->git: helper function for export_files, which modifies the given
+# file path, taken from a hg commit, for use in a fast-import stream.
 def fix_file_path(path):
     path = posixpath.normpath(path)
     if not os.path.isabs(path):
         return path
     return posixpath.relpath(path, '/')
 
+# hg->git: export files from hg to git. That is, read them from the hg
+# repository, and print them into the fast-import stream we are feeding
+# to git.
 def export_files(files):
     final = []
     for f in files:
@@ -321,6 +339,7 @@ def export_files(files):
 
     return final
 
+# hg->git: determine which files changed on the hg side.
 def get_filechanges(repo, ctx, parent):
     modified = set()
     added = set()
@@ -392,6 +411,7 @@ def fixup_user(user):
 
     return '%s <%s>' % (name, mail)
 
+# helper function for get_repo
 def updatebookmarks(repo, peer):
     remotemarks = peer.listkeys('bookmarks')
     localmarks = repo._bookmarks
@@ -407,6 +427,9 @@ def updatebookmarks(repo, peer):
     else:
         bookmarks.write(repo)
 
+# instantiate a Mercurial "repo" object so that
+# we can interact with the hg repository.
+# Also pulls remote changes.
 def get_repo(url, alias):
     global peer
 
@@ -467,13 +490,16 @@ def get_repo(url, alias):
 
     return repo
 
+# hg->git: helper function for export_ref
 def rev_to_mark(rev):
     return marks.from_rev(rev.hex())
 
+# git->hg: helper function for parse_reset and parse_commit
 def mark_to_rev(mark):
     return marks.to_rev(mark)
 
-# Get a range of revisions in the form of a..b (git committish)
+# hg->git: helper function for export_ref
+# Get a range of hg revisions in the form of a..b (git committish)
 def gitrange(repo, a, b):
     positive = []
     pending = set([int(b)])
@@ -501,6 +527,7 @@ def gitrange(repo, a, b):
     positive.reverse()
     return positive
 
+# hg->git: export ref from hg to git
 def export_ref(repo, name, kind, head):
     ename = '%s/%s' % (kind, name)
     try:
@@ -631,21 +658,26 @@ def export_ref(repo, name, kind, head):
 
     marks.set_tip(ename, head.hex())
 
+# hg->git: export tag ref from hg to git
 def export_tag(repo, tag):
     export_ref(repo, tag, 'tags', repo[hgref(tag)])
 
+# hg->git: export bookmark ref from hg to git
 def export_bookmark(repo, bmark):
     head = bmarks[hgref(bmark)]
     export_ref(repo, bmark, 'bookmarks', head)
 
+# hg->git: export branch ref from hg to git
 def export_branch(repo, branch):
     tip = get_branch_tip(repo, branch)
     head = repo[tip]
     export_ref(repo, branch, 'branches', head)
 
+# hg->git: export HEAD ref from hg to git
 def export_head(repo):
     export_ref(repo, g_head[0], 'bookmarks', g_head[1])
 
+# Handle the 'capabilities' remote-helper command.
 def do_capabilities(parser):
     print "import"
     print "export"
@@ -655,6 +687,7 @@ def do_capabilities(parser):
 
     path = os.path.join(dirname, 'marks-git')
 
+    # capabilities preceded with * are mandatory
     if os.path.exists(path):
         print "*import-marks %s" % path
     print "*export-marks %s" % path
@@ -677,6 +710,8 @@ def get_branch_tip(repo, branch):
 
     return heads[0]
 
+# helper function for do_list
+# hg->git: figure out the 'head' of the hg repository
 def list_head(repo, cur):
     global g_head, fake_bmark
 
@@ -693,6 +728,8 @@ def list_head(repo, cur):
     print "@refs/heads/%s HEAD" % head
     g_head = (head, node)
 
+# Handle the 'list' remote-helper command.
+# hg->git: list refs available in the hg repository
 def do_list(parser):
     repo = parser.repo
     for bmark, node in bookmarks.listbookmarks(repo).iteritems():
@@ -726,6 +763,9 @@ def do_list(parser):
 
     print
 
+# Handle the 'import' remote-helper command.
+# hg->git: read the hg repository and generate a fast-import stream from
+# it which git then parses.
 def do_import(parser):
     repo = parser.repo
 
@@ -763,6 +803,7 @@ def do_import(parser):
 
     print 'done'
 
+# git->hg: parse 'blob' in the fast-import stream git feeds us
 def parse_blob(parser):
     parser.next()
     mark = parser.get_mark()
@@ -771,6 +812,7 @@ def parse_blob(parser):
     blob_marks[mark] = data
     parser.next()
 
+# git->hg: helper function for parse_commit
 def get_merge_files(repo, p1, p2, files):
     for e in repo[p1].files():
         if e not in files:
@@ -779,11 +821,13 @@ def get_merge_files(repo, p1, p2, files):
             f = { 'ctx': repo[p1][e] }
             files[e] = f
 
+# git->hg: helper function for parse_commit
 def c_style_unescape(string):
     if string[0] == string[-1] == '"':
         return string.decode('string-escape')[1:-1]
     return string
 
+# git->hg: parse 'commit' in the fast-import stream git feeds us
 def parse_commit(parser):
     from_mark = merge_mark = None
 
@@ -913,6 +957,7 @@ def parse_commit(parser):
     parsed_refs[ref] = node
     marks.new_mark(node, commit_mark)
 
+# git->hg: parse 'reset' in the fast-import stream git feeds us
 def parse_reset(parser):
     ref = parser[1]
     parser.next()
@@ -931,6 +976,7 @@ def parse_reset(parser):
         rev = None
     parsed_refs[ref] = rev
 
+# git->hg: parse 'tag' in the fast-import stream git feeds us
 def parse_tag(parser):
     name = parser[1]
     parser.next()
@@ -1126,12 +1172,17 @@ def check_tip(ref, kind, name, heads):
     else:
         return tip in heads
 
+# Handle the 'export' remote-helper command.
+# git->hg: parse the fast-import stream git feeds us,
+# and add the commits and data in it to the hg repository.
 def do_export(parser):
     p_bmarks = []
     p_revs = {}
 
     parser.next()
 
+    # parse the fast-import stream
+    # see also http://git-scm.com/docs/git-fast-import
     for line in parser.each_block('done'):
         if parser.check('blob'):
             parse_blob(parser)
@@ -1242,6 +1293,7 @@ def do_export(parser):
 
     print
 
+# Handle the 'option' remote-helper command.
 def do_option(parser):
     global dry_run, force_push
     _, key, value = parser.line.split(' ')
@@ -1366,4 +1418,4 @@ if __name__ == "__main__":
     except Exception, e:
         if DEBUG_REMOTEHG:
            raise
-        die(str(e))
+        die("%s", e)
