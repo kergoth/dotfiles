@@ -95,6 +95,12 @@ def shrink_repo():
     """Shrink the newly shallow repository, removing the unreachable objects."""
     subprocess.check_call(['git', 'reflog', 'expire', '--expire-unreachable=now', '--all'])
     subprocess.check_call(['git', 'repack', '-ad'])
+    git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
+    try:
+        os.unlink(os.path.join(git_dir, 'objects', 'info', 'alternates'))
+    except OSError as exc:
+        if exc.errno != errno.ENOENT:
+            raise
     subprocess.check_call(['git', 'prune', '--expire', 'now'])
 
 
