@@ -106,7 +106,7 @@ def shrink_repo():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='make the current git repository shallow, removing the history of the specified revisions')
-    parser.add_argument('--refs', '-r', metavar='REF', action='append', help='remove all but the specified refs (cumulative)')
+    parser.add_argument('--ref', '-r', metavar='REF', action='append', dest='refs', help='remove all but the specified refs (cumulative)')
     parser.add_argument('revisions', metavar='REVISION', nargs='+', help='a git revision/commit')
     args = parser.parse_args()
 
