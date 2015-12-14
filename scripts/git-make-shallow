@@ -9,6 +9,7 @@ import errno
 import itertools
 import os
 import subprocess
+import sys
 
 
 def iter_except(func, exception, start=None):
@@ -105,11 +106,14 @@ def shrink_repo():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='make the current git repository shallow, removing the history of the specified revisions')
+    parser = argparse.ArgumentParser(description='Make the current git repository shallow, removing the history of the specified revisions')
     parser.add_argument('--ref', '-r', metavar='REF', action='append', dest='refs', help='remove all but the specified refs (cumulative)')
     parser.add_argument('revisions', metavar='REVISION', nargs='+', help='a git revision/commit')
-    args = parser.parse_args()
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(2)
 
+    args = parser.parse_args()
     parsed_revs = subprocess.check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in args.revisions]).splitlines()
 
     if args.refs:
