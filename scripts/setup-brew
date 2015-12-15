@@ -30,11 +30,15 @@ brew tap monochromegane/pt
 brew install zsh
 brew install the_silver_searcher
 brew install mercurial git
-brew install sshuttle
 brew install wget
+brew install trash
 brew install tag
-brew install dylibbundler
+brew install jq pup
 brew install p7zip
+brew install sshuttle
+
+# Gaming
+brew install dylibbundler innoextract makeicns icoutils
 
 # For brew-cask
 brew install caskroom/cask/brew-cask
