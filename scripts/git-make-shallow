@@ -75,6 +75,12 @@ def filter_refs(refs):
 
 def make_shallow(revisions, refs):
     """Make the current git repository shallow at the specified revisions, given the specified refs."""
+    if refs is None:
+        refs = get_all_refs(lambda (r, t): not t or t == 'commit')
+    else:
+        filter_refs(refs)
+
+    parsed_revs = subprocess.check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in revisions]).splitlines()
     git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     shallow_file = os.path.join(git_dir, 'shallow')
     try:
@@ -83,7 +89,7 @@ def make_shallow(revisions, refs):
         if exc.errno != errno.ENOENT:
             raise
 
-    for rev in follow_history_intersections(revisions, refs):
+    for rev in follow_history_intersections(parsed_revs, refs):
         print("Processing %s" % rev)
         with open(shallow_file, 'a') as f:
             f.write(rev + '\n')
@@ -114,11 +120,4 @@ if __name__ == '__main__':
         sys.exit(2)
 
     args = parser.parse_args()
-    parsed_revs = subprocess.check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in args.revisions]).splitlines()
-
-    if args.refs:
-        filter_refs(args.refs)
-    else:
-        args.refs = get_all_refs(lambda (r, t): not t or t == 'commit')
-
-    make_shallow(parsed_revs, args.refs)
+    make_shallow(args.revisions, args.refs)
