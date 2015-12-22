@@ -170,7 +170,7 @@ write_info () {
         <key>CFBundleExecutable</key>
         <string>${executable:-app}</string>
         <key>CFBundleIconFile</key>
-        <string>app</string>
+        <string>app.icns</string>
         <key>CFBundleIdentifier</key>
         <string>$identifier</string>
         <key>CFBundleInfoDictionaryVersion</key>
