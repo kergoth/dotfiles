@@ -12,65 +12,16 @@ import subprocess
 import sys
 
 
-def iter_except(func, exception, start=None):
-    """Yield a function repeatedly until it raises an exception."""
-    try:
-        if start is not None:
-            yield start()
-        while True:
-            yield func()
-    except exception:
-        pass
+def main():
+    parser = argparse.ArgumentParser(description='Make the current git repository shallow, removing the history of the specified revisions')
+    parser.add_argument('--ref', '-r', metavar='REF', action='append', dest='refs', help='remove all but the specified refs (cumulative)')
+    parser.add_argument('revisions', metavar='REVISION', nargs='+', help='a git revision/commit')
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(2)
 
-
-def iter_extend(iterable, length, obj=None):
-    """Ensure that iterable is the specified length by extending with obj."""
-    return itertools.islice(itertools.chain(iterable, itertools.repeat(obj)), length)
-
-
-def get_all_refs(ref_filter=None):
-    """Return all the existing refs in this repository, optionally filtering the refs."""
-    ref_output = subprocess.check_output(['git', 'for-each-ref', '--format=%(refname)	%(*objecttype)'])
-    ref_split = [tuple(iter_extend(l.rstrip().rsplit('\t', 1), 2)) for l in ref_output.splitlines()]
-    if ref_filter:
-        ref_split = (e for e in ref_split if ref_filter(e))
-    refs = [r for r, _ in ref_split]
-    return refs
-
-
-def follow_history_intersections(revisions, refs):
-    """Determine all the points where the history of the specified revisions intersects the specified refs."""
-    queue = collections.deque(revisions)
-    seen = set()
-
-    for rev in iter_except(queue.popleft, IndexError):
-        if rev in seen:
-            continue
-
-        parent_output = subprocess.check_output(['git', 'rev-parse', '%s^@' % rev])
-        parents = [p.rstrip() for p in parent_output.splitlines()]
-
-        yield rev
-        seen.add(rev)
-
-        for parent in parents:
-            for ref in refs:
-                print("Checking %s vs %s" % (parent, ref))
-                try:
-                    merge_base = subprocess.check_output(['git', 'merge-base', parent, ref]).rstrip()
-                except subprocess.CalledProcessError:
-                    continue
-                queue.append(merge_base)
-
-
-def filter_refs(refs):
-    """Remove all but the specified refs from the git repository."""
-    all_refs = get_all_refs()
-    full_refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
-    to_remove = set(all_refs) - set(full_refs)
-    if to_remove:
-        p = subprocess.Popen(['xargs', '-n', '1', 'git', 'update-ref', '-d', '--no-deref'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p.communicate(''.join(l + '\n' for l in to_remove))
+    args = parser.parse_args()
+    make_shallow(args.revisions, args.refs)
 
 
 def make_shallow(revisions, refs):
@@ -98,6 +49,67 @@ def make_shallow(revisions, refs):
     subprocess.check_call(['git', 'fsck', '--unreachable'])
 
 
+def get_all_refs(ref_filter=None):
+    """Return all the existing refs in this repository, optionally filtering the refs."""
+    ref_output = subprocess.check_output(['git', 'for-each-ref', '--format=%(refname)	%(*objecttype)'])
+    ref_split = [tuple(iter_extend(l.rstrip().rsplit('\t', 1), 2)) for l in ref_output.splitlines()]
+    if ref_filter:
+        ref_split = (e for e in ref_split if ref_filter(e))
+    refs = [r for r, _ in ref_split]
+    return refs
+
+
+def iter_extend(iterable, length, obj=None):
+    """Ensure that iterable is the specified length by extending with obj."""
+    return itertools.islice(itertools.chain(iterable, itertools.repeat(obj)), length)
+
+
+def filter_refs(refs):
+    """Remove all but the specified refs from the git repository."""
+    all_refs = get_all_refs()
+    full_refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
+    to_remove = set(all_refs) - set(full_refs)
+    if to_remove:
+        p = subprocess.Popen(['xargs', '-n', '1', 'git', 'update-ref', '-d', '--no-deref'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p.communicate(''.join(l + '\n' for l in to_remove))
+
+
+def follow_history_intersections(revisions, refs):
+    """Determine all the points where the history of the specified revisions intersects the specified refs."""
+    queue = collections.deque(revisions)
+    seen = set()
+
+    for rev in iter_except(queue.popleft, IndexError):
+        if rev in seen:
+            continue
+
+        parent_output = subprocess.check_output(['git', 'rev-parse', '%s^@' % rev])
+        parents = [p.rstrip() for p in parent_output.splitlines()]
+
+        yield rev
+        seen.add(rev)
+
+        for parent in parents:
+            for ref in refs:
+                print("Checking %s vs %s" % (parent, ref))
+                try:
+                    merge_base = subprocess.check_output(['git', 'merge-base', parent, ref]).rstrip()
+                except subprocess.CalledProcessError:
+                    continue
+                queue.append(merge_base)
+
+
+def iter_except(func, exception, start=None):
+    """Yield a function repeatedly until it raises an exception."""
+    try:
+        if start is not None:
+            yield start()
+        while True:
+            yield func()
+    except exception:
+        pass
+
+
 def shrink_repo():
     """Shrink the newly shallow repository, removing the unreachable objects."""
     subprocess.check_call(['git', 'reflog', 'expire', '--expire-unreachable=now', '--all'])
@@ -112,12 +124,4 @@ def shrink_repo():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Make the current git repository shallow, removing the history of the specified revisions')
-    parser.add_argument('--ref', '-r', metavar='REF', action='append', dest='refs', help='remove all but the specified refs (cumulative)')
-    parser.add_argument('revisions', metavar='REVISION', nargs='+', help='a git revision/commit')
-    if len(sys.argv) < 2:
-        parser.print_help()
-        sys.exit(2)
-
-    args = parser.parse_args()
-    make_shallow(args.revisions, args.refs)
+    main()
