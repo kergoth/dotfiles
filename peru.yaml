@@ -69,6 +69,7 @@ imports:
     taskpaper: vim/bundle/taskpaper
     vim-airline: vim/bundle/airline
     vim-bitbake: vim/bundle/bitbake
+    vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
     vim-ctrlp: vim/bundle/ctrlp
     vim-dispatch: vim/bundle/dispatch
@@ -233,6 +234,10 @@ git module vim-obsession:
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
     rev: a5f776c97c56ca305da520c2a83bd9246d0b48f5
+
+git module vim-bracketed-paste:
+    url: https://github.com/ConradIrwin/vim-bracketed-paste.git
+    rev: 36779ba3b1af4b81fcba7b83095afe794a07b71a
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
