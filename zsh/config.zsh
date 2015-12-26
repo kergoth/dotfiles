@@ -50,7 +50,11 @@ WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 # Automatic URL escaping
 if autoload -U url-quote-magic; then
     zle -N self-insert url-quote-magic
-    zstyle ':url-quote-magic:*' url-metas '*?[]^()~#{}='
+    zstyle ':url-quote-magic:*' url-metas '*?[]^()~#{}=&'
+fi
+
+if autoload -Uz bracketed-paste-magic; then
+    zle -N bracketed-paste bracketed-paste-magic
 fi
 
 if autoload -Uz manydots-magic; then
