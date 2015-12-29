@@ -147,8 +147,8 @@ else:
 class exthelper(object):
     """Helper for modular extension setup
 
-    A single helper should be instanciated for each extension. Helper
-    methods are then used as decorator for various purpose.
+    A single helper should be instantiated for each extension. Helper
+    methods are then used as decorators for various purpose.
 
     All decorators return the original function and may be chained.
     """
@@ -795,7 +795,7 @@ def _rebasewrapping(ui):
         if histedit:
             extensions.wrapcommand(histedit.cmdtable, 'histedit', warnobserrors)
     except KeyError:
-        pass  # rebase not found
+        pass  # histedit not found
 
 #####################################################################
 ### Old Evolve extension content                                  ###
@@ -1128,11 +1128,12 @@ def deprecatealiases(ui):
 
 @command('debugrecordpruneparents', [], '')
 def cmddebugrecordpruneparents(ui, repo):
-    """add parents data to prune markers when possible
+    """add parent data to prune markers when possible
 
-    This commands search the repo for prune markers without parent information.
-    If the pruned node is locally known, a new markers with parent data is
-    created."""
+    This command searches the repo for prune markers without parent information.
+    If the pruned node is locally known, it creates a new marker with parent
+    data.
+    """
     pgop = 'reading markers'
 
     # lock from the beginning to prevent race
@@ -1164,6 +1165,7 @@ def cmddebugrecordpruneparents(ui, repo):
 
 @command('debugobsstorestat', [], '')
 def cmddebugobsstorestat(ui, repo):
+    """print statistics about obsolescence markers in the repo"""
     def _updateclustermap(nodes, mark, clustersmap):
         c = (set(nodes), set([mark]))
         toproceed = set(nodes)
@@ -1181,7 +1183,6 @@ def cmddebugobsstorestat(ui, repo):
                 c = other
             clustersmap[n] = c
 
-    """print statistic about obsolescence markers in the repo"""
     store = repo.obsstore
     unfi = repo.unfiltered()
     nm = unfi.changelog.nodemap
@@ -1393,7 +1394,7 @@ def _cleanup(ui, repo, startnode, showprogress):
         ui.status(_('working directory is now at %s\n') % repo['.'])
 
 class MultipleSuccessorsError(RuntimeError):
-    """Exception raised by _singlesuccessor when multiple sucessors sets exists
+    """Exception raised by _singlesuccessor when multiple successor sets exists
 
     The object contains the list of successorssets in its 'successorssets'
     attribute to call to easily recover.
@@ -1496,14 +1497,14 @@ def _selectrevs(repo, allopt, revopt, anyopt, targetcat):
 def _orderrevs(repo, revs):
     """Compute an ordering to solve instability for the given revs
 
-    - Takes revs a list of instable revisions
+    revs is a list of unstable revisions.
 
-    - Returns the same revisions ordered to solve their instability from the
+    Returns the same revisions ordered to solve their instability from the
     bottom to the top of the stack that the stabilization process will produce
     eventually.
 
-    This ensure the minimal number of stabilization as we can stabilize each
-    revision on its final, stabilized, destination.
+    This ensures the minimal number of stabilizations, as we can stabilize each
+    revision on its final stabilized destination.
     """
     # Step 1: Build the dependency graph
     dependencies, rdependencies = builddependencies(repo, revs)
@@ -1747,7 +1748,7 @@ def _aspiringdescendant(repo, revs):
 
 def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
                    progresscb=None):
-    """Stabilize a unstable changeset"""
+    """Stabilize an unstable changeset"""
     obs = orig.parents()[0]
     if not obs.obsolete() and len(orig.parents()) == 2:
         obs = orig.parents()[1] # second parent is obsolete ?
@@ -2054,7 +2055,9 @@ shorttemplate = '[{rev}] {desc|firstline}\n'
           ('n', 'dry-run', False, _('do not perform actions, just print what would be done'))],
          '[OPTION]...')
 def cmdprevious(ui, repo, **opts):
-    """update to parent and display summary lines"""
+    """update to parent revision
+
+    Displays the summary line of the destination for clarity."""
     wkctx = repo[None]
     wparents = wkctx.parents()
     dryrunopt = opts['dry_run']
@@ -2105,11 +2108,12 @@ def cmdprevious(ui, repo, **opts):
           ('n', 'dry-run', False, _('do not perform actions, just print what would be done'))],
          '[OPTION]...')
 def cmdnext(ui, repo, **opts):
-    """update to next child
+    """update to next child revision
 
-    You can use the --evolve flag to get unstable children evolved on demand.
+    Use the ``--evolve`` flag to evolve unstable children on demand.
 
-    The summary line of the destination is displayed for clarity"""
+    Displays the summary line of the destination for clarity.
+    """
     wkctx = repo[None]
     wparents = wkctx.parents()
     dryrunopt = opts['dry_run']
@@ -2248,25 +2252,26 @@ def _getmetadata(**opts):
 def cmdprune(ui, repo, *revs, **opts):
     """hide changesets by marking them obsolete
 
-    Obsolete changesets becomes invisible to all commands.
+    Pruned changesets are obsolete with no successors. If they also have no
+    descendants, they are hidden (invisible to all commands).
 
-    Unpruned descendants of pruned changesets becomes "unstable". Use the
-    :hg:`evolve` to handle such situation.
+    Non-obsolete descendants of pruned changesets become "unstable". Use :hg:`evolve`
+    to handle this situation.
 
-    When the working directory parent is pruned, the repository is updated to a
-    non-obsolete parent.
+    When you prune the parent of your working copy, Mercurial updates the working
+    copy to a non-obsolete parent.
 
-    You can use the ``--succ`` option to inform mercurial that a newer version
-    of the pruned changeset exists.
+    You can use ``--succ`` to tell Mercurial that a newer version (successor) of the
+    pruned changeset exists. Mercurial records successor revisions in obsolescence
+    markers.
 
-    You can use the ``--biject`` option to specify a 1-1 (bijection) between
-    revisions to prune and successor changesets. This option may be removed in
-    a future release (with the functionality absorbed automatically).
+    You can use the ``--biject`` option to specify a 1-1 mapping (bijection) between
+    revisions to pruned (precursor) and successor changesets. This option may be
+    removed in a future release (with the functionality provided automatically).
 
-    If you specify multiple revisions in --succ, you are recording a "split"
-    and have to acknowledge it by usng --split. The same logic apply when you
-    prune multiple changesets with a single successors, this will record a
-    "fold" requires a --fold flag.
+    If you specify multiple revisions in ``--succ``, you are recording a "split" and
+    must acknowledge it by passing ``--split``. Similarly, when you prune multiple
+    changesets with a single successor, you must pass the ``--fold`` option.
     """
     revs = scmutil.revrange(repo, list(revs) + opts.get('rev'))
     succs = opts['new'] + opts['succ']
@@ -2661,12 +2666,12 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
     ] + commitopts + commitopts2,
     _('hg split [OPTION]... [-r] REV'))
 def cmdsplit(ui, repo, *revs, **opts):
-    """Split the current commit using interactive selection (EXPERIMENTAL)
+    """split a changeset into smaller changesets (EXPERIMENTAL)
 
-    By default, split the current revision by prompting for all its hunk to be
+    By default, split the current revision by prompting for all its hunks to be
     redistributed into new changesets.
 
-    Use --rev for splitting a given changeset instead.
+    Use --rev to split a given changeset instead.
     """
     tr = wlock = lock = None
     newcommits = []

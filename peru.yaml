@@ -93,11 +93,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 4f3910cbbaa5b77d2abda65cd19b25b86554e552
+    rev: 38c3ac8831159187bac26dc22ac60c92d680064f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 2c295432175990c1bb4e90bc13f609daa67a25d6
+    rev: 7a4b54b708ab88e0421097614f1acaa7a973c795
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
@@ -149,7 +149,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
     export: autoload/
-    rev: b4174e4d1a16e7f0c5c6dfca923269a20a9f50c2
+    rev: 4d584ea8c85408ca0d68b7b1693f3e2db8aa762a
 
 # secure alternative to vim modelines
 git module securemodelines:
@@ -163,7 +163,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: d854197c03c0b027cca41abf86a5557c5473b82f
+    rev: 18d6d1ab82d9ac15586d7d3c1a36f9ef6fb50eae
 
 # go language support
 git module vim-golang:
@@ -178,7 +178,7 @@ git module vim-bitbake:
 # markdown runtime files
 git module vim-markdown:
     url: https://github.com/tpope/vim-markdown.git
-    rev: 15d19778a3be4ab3f949cba636d53a87e2c03f29
+    rev: de42c8a325fa964f0e3031fe0c029e7437195106
 
 # taskpaper todo file support
 git module taskpaper:
@@ -188,7 +188,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: 14d14cf951c08fc88ca6c3e6f28fe47b99421e23
+    rev: 01383136565840a63aa056b82c74be40afcb8ba3
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -223,7 +223,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 69fea418692f76058d5cd95f0a17ed6b0f5bbb77
+    rev: 2e42270923f165e6fee8d051030448b3b22b3c7a
 
 # continuously updated session files
 git module vim-obsession:
@@ -233,7 +233,7 @@ git module vim-obsession:
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: a5f776c97c56ca305da520c2a83bd9246d0b48f5
+    rev: b8b6de8d4affb7ed4215e90686b482e2bb53bc65
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
@@ -303,7 +303,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 657fa4e3e130406f93fd9ab440471765c389561d
+    rev: c8204086b4dc819e9c8aa5a3df96dcd751e10335
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -462,7 +462,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: b338fe4e06574aeeb99f1c202828cafaf074717c
+    rev: dcfe3afe548bca7c8195a3750440dc29e82d5ad1
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -513,18 +513,18 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 48736aa376341518d7bedf3a39daf0ae9e1dcdc0
+    rev: 91814d6723b03ea9f9437e1950d12861957d4b9a
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: f031c9da52c27c9c3389d00a0d7cb846bb90281d
+    rev: 6f7ab104d9170c76c84464ea1edf801a6f277151
 
 git module vim-ctrlp:
     url: https://github.com/ctrlpvim/ctrlp.vim
-    rev: 7a80267ed061f3dc30bb319f438bdadfd8c7b1fd
+    rev: 97490deda3326182281133454b8813850db4c444
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
