@@ -1,0 +1,15 @@
+#!/bin/sh
+
+brew_prefix="$(brew --prefix 2>/dev/null || echo /usr/local)"
+caskroom="/opt/homebrew-cask/Caskroom"
+mdfind -onlyin / 'kMDItemContentType == "com.apple.application-bundle" && kMDItemCFBundleIdentifier != "com.apple.*"' | \
+    grep -Ev "^(/System/|/Library/|$HOME/Library/|.*/Battle\.net/|$brew_prefix/|$caskroom/|.*\.(app|framework)/)" | while read app; do
+        if [ -e "$app/Contents/_MASReceipt/receipt" ]; then
+            continue
+        fi
+        app="${app##*/}"
+        app="${app%.app}"
+        app="$(printf '%s' "$app" | tr '[:upper:]' '[:lower:]' | tr ' .()' '----' | sed 's,---*,-,g; s,^-,,; s,-$,,;')"
+
+        printf "%s\0" "$app"
+    done | sort -zu | xargs -0tn 1 brew cask search
