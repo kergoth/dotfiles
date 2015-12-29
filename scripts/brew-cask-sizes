@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd "$(brew --cellar | sed -e 's#/Cellar$#-cask/Caskroom#')"
+du -s */* | sort -n -r
