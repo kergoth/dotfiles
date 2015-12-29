@@ -28,9 +28,6 @@ for file in $ZSH/plugins/*/*.plugin.zsh $ZSH/plugins/*/activate.sh; do
         */syntax-highlighting/*)
             continue
             ;;
-        */history-substring-search/*)
-            continue
-            ;;
     esac
     source $file
 done
