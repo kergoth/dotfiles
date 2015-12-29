@@ -13,12 +13,14 @@
 
 set -e
 
-if [ $# -ne 1 ]; then
+if [ $# -eq 0 ]; then
+    commit="HEAD^"
+elif [ $# -ne 1 ] || [ "$1" = "-h" ]; then
     echo >&2 "${0##*/} COMMIT"
     exit 2
 fi
 
-commit="$(git rev-parse -q --verify "$1")"
+commit="$(git rev-parse -q --verify "$commit")"
 
 original_stash="$(git rev-parse refs/stash 2>/dev/null)" || true
 ret=0; git mstash "local changes" || ret=$?
