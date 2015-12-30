@@ -239,8 +239,8 @@ PATH="$dotfilesdir/scripts:$PATH"
 
 do_install () {
     installscript="$1"
-    cd ${installscript%/*}
-    . ./${installscript##*/}
+    cd "${installscript%/*}"
+    . "./${installscript##*/}"
     cd - >/dev/null
 }
 
@@ -254,13 +254,13 @@ if [ -n "$include" ]; then
 fi
 
 HOME="$DOTFILE_HOME"
-for installscript in $dotfilesdir/*/install; do
-    installdir=${installscript%/*}
+for installscript in "$dotfilesdir/"*/install; do
+    installdir="${installscript%/*}"
     if echo "$exclude" | grep -qw "${installdir##*/}"; then
         continue
     fi
 
-    do_install $installscript
+    do_install "$installscript"
 done
 
 for includepath in $include; do
