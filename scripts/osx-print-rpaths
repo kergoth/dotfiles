@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Load command 19
+#           cmd LC_RPATH
+#       cmdsize 48
+#          path @executable_path/../Libraries (offset 12)
+
+sedscript="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$sedscript"' EXIT INT TERM
+cat <<END >"$sedscript"
+/^Load command 19/{
+    :s
+    n
+    s/ *path (.*) \(.*\)/\1/p
+    /^Load command/b e
+    b s
+}
+:e
+END
+otool -l "$1" | sed -nEf "$sedscript"
