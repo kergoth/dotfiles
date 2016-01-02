@@ -35,6 +35,13 @@ if [ $# -eq 0 ]; then
 fi
 brew install "$@"
 
+cat <<END >"$brewenv_dir/bin/man"
+#!/bin/sh
+scriptdir="\$(dirname "\$0")"
+MANPATH="\${scriptdir%/*}/share/man:\$(manpath)" /usr/bin/man "\$@"
+END
+chmod +x "$brewenv_dir/bin/man"
+
 dest="$XDG_DATA_HOME/../bin"
 mkdir -p "$dest"
 
