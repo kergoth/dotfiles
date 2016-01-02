@@ -39,6 +39,12 @@ dest="$XDG_DATA_HOME/../bin"
 mkdir -p "$dest"
 
 for brew; do
+    case "$brew" in
+        -*)
+            continue
+            ;;
+    esac
+    brew="${brew##*/}"
     for bin in "$brewenv_dir/opt/$brew/bin/"*; do
         filename="${bin##*/}"
         if [ -e "$bin" ] && [ -e "$brewenv_dir/bin/$filename" ]; then
