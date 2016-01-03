@@ -5,7 +5,7 @@
 XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
 HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
 
-if [ $# -eq 0 ]; then
+usage () {
     echo >&2 "Usage: ${0##*/} BREWENV_NAME [BREW_ARGS..]"
     echo >&2
     echo >&2 "Existing isolated homebrew installations:"
@@ -15,6 +15,20 @@ if [ $# -eq 0 ]; then
         fi
     done
     exit 2
+    exit 1
+}
+
+while getopts h opt; do
+    case "$opt" in
+        \?|h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
 fi
 
 brewenv="$1"
