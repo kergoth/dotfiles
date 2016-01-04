@@ -1,0 +1,7 @@
+#!/bin/sh
+# Wrapper around httpie piped to less. This is needed, as it normally
+# suppresses colors and headers when redirected.
+#
+# Ex: `httpless example.org`
+
+http --pretty=all --print=hb "$@" | less -R;
