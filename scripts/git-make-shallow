@@ -30,8 +30,8 @@ def make_shallow(revisions, refs):
         refs = get_all_refs(lambda (r, t): not t or t == 'commit')
     else:
         filter_refs(refs)
+        refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
 
-    parsed_revs = subprocess.check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in revisions]).splitlines()
     git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     shallow_file = os.path.join(git_dir, 'shallow')
     try:
@@ -40,6 +40,7 @@ def make_shallow(revisions, refs):
         if exc.errno != errno.ENOENT:
             raise
 
+    parsed_revs = subprocess.check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in revisions]).splitlines()
     for rev in follow_history_intersections(parsed_revs, refs):
         print("Processing %s" % rev)
         with open(shallow_file, 'a') as f:
@@ -78,6 +79,7 @@ def follow_history_intersections(revisions, refs):
     """Determine all the points where the history of the specified revisions intersects the specified refs."""
     queue = collections.deque(revisions)
     seen = set()
+    refs = sorted(set(refs))
 
     for rev in iter_except(queue.popleft, IndexError):
         if rev in seen:
