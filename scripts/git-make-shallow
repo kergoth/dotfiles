@@ -1,6 +1,12 @@
 #!/usr/bin/env python
-# TODO: expire tag reflogs even when keeping reflogs, as we aren't processing
-# those, so we don't want them keeping anything around.
+# TODO: by default, keep refs which don't belong to any remote, as they can't
+# be restored with git fetch. add a new argument to force their removal unless
+# specified with -r.
+# TODO: complete sane handling of reflogs. Possibly add multiple arguments,
+# keep only HEAD reflog, keep all local relogs, keep all non-tag reflogs, keep
+# all reflogs
+# TODO: should detaching from alternates be optional instead of automatic?
+# TODO: avoid corrupting or disrupting repository state when interrupted
 
 """git-make-shallow: make the current git repository shallow."""
 
@@ -15,35 +21,24 @@ import subprocess
 import sys
 
 
-NULL = open('/dev/null', 'w')
-
-
 def main():
     parser = argparse.ArgumentParser(description='Make the current git repository shallow, removing the history of the specified revisions')
     parser.add_argument('--ref', '-r', metavar='REF', action='append', dest='refs', help='remove all but the specified refs (cumulative)')
-    parser.add_argument('--keep-reflogs', '-k', action='store_true', help='keep and process reflogs')
     parser.add_argument('revisions', metavar='REVISION', nargs='+', help='a git revision/commit')
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit(2)
 
     args = parser.parse_args()
-    make_shallow(args.revisions, args.refs, args.keep_reflogs)
+    make_shallow(args.revisions, args.refs)
 
 
-def make_shallow(revisions, refs, keep_reflogs=False):
+def make_shallow(revisions, refs):
     """Make the current git repository shallow at the specified revisions, given the specified refs."""
     if refs is None:
         refs = get_all_refs(lambda (r, t): not t or t == 'commit')
     else:
-        filter_refs(refs)
         refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
-
-    if keep_reflogs:
-        ref_input = 'HEAD\0' + ''.join('%s\0' % r for r in refs if not r.startswith('refs/tags'))
-        p = subprocess.Popen(['xargs', '-0', 'git', 'rev-list', '--walk-reflogs', '--skip=1'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=NULL)
-        reflogs, _ = p.communicate(input=ref_input)
-        refs = itertools.chain(refs, reflogs.splitlines())
 
     git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     shallow_file = os.path.join(git_dir, 'shallow')
@@ -59,7 +54,8 @@ def make_shallow(revisions, refs, keep_reflogs=False):
         with open(shallow_file, 'a') as f:
             f.write(rev + '\n')
 
-    shrink_repo(keep_reflogs)
+    filter_refs(refs)
+    shrink_repo()
     subprocess.check_call(['git', 'fsck', '--unreachable'])
 
 
@@ -125,10 +121,9 @@ def iter_except(func, exception, start=None):
         pass
 
 
-def shrink_repo(keep_reflogs=False):
+def shrink_repo():
     """Shrink the newly shallow repository, removing the unreachable objects."""
-    if not keep_reflogs:
-        subprocess.check_call(['git', 'reflog', 'expire', '--expire-unreachable=now', '--all'])
+    subprocess.check_call(['git', 'reflog', 'expire', '--expire-unreachable=now', '--all'])
     subprocess.check_call(['git', 'repack', '-ad'])
     git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     try:
