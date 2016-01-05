@@ -34,16 +34,6 @@ if [[ -z "$LANG" ]]; then
   eval "$(locale)"
 fi
 
-export TERMINFO=$XDG_CONFIG_HOME/ncurses/terminfo
-typeset -xTU TERMINFO_DIRS terminfo_dirs
-terminfo_dirs=(/opt/homebrew/opt/*/share/terminfo(N))
-
-export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
-export CURL_HOME=$XDG_CONFIG_HOME/curl
-export _FASD_VIMINFO=$XDG_DATA_HOME/vim/viminfo
-export LESSHISTFILE=$XDG_DATA_HOME/less/lesshist
-export _FASD_DATA=$XDG_DATA_HOME/fasd/data
-export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export ACKRC=.ackrc
 
 export EMAIL='kergoth@gmail.com'
@@ -54,3 +44,14 @@ export DEBFULLNAME=$FULLNAME
 if [[ -e $DOTFILESDIR/zsh/zshenv.local ]]; then
     . "$DOTFILESDIR/zsh/zshenv.local"
 fi
+
+export TERMINFO=$XDG_CONFIG_HOME/ncurses/terminfo
+typeset -xTU TERMINFO_DIRS terminfo_dirs
+terminfo_dirs=(/opt/homebrew/opt/*/share/terminfo(N))
+
+export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
+export CURL_HOME=$XDG_CONFIG_HOME/curl
+export _FASD_VIMINFO=$XDG_DATA_HOME/vim/viminfo
+export LESSHISTFILE=$XDG_DATA_HOME/less/lesshist
+export _FASD_DATA=$XDG_DATA_HOME/fasd/data
+export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
