@@ -24,14 +24,25 @@ set_launchd () {
     var="$1"
     value="$2"
 
+    plist_set () {
+        plist_key="$(printf "%s" "$1" | sed "s/'/\\\\'/g")"
+        plist_val="$(printf "%s" "$2" | sed "s/'/\\\\'/g")"
+        if /usr/libexec/PlistBuddy -c "Print '$plist_key'" "$3" >/dev/null 2>&1; then
+            /usr/libexec/PlistBuddy -c "Set '$plist_key' '$plist_val'" "$3"
+        else
+            /usr/libexec/PlistBuddy -c "Add '$plist_key' "${4:-string}" '$plist_val'" "$3"
+        fi
+    }
+
+    mkdir -p ~/.MacOSX
+    plist_set "$var" "$value" ~/.MacOSX/environment.plist
+
     if which launchctl &>/dev/null; then
         launchctl setenv "$var" "$value"
     fi
 
-    value="${value//\"/\\\"}"
-    value="${value//\$/\\\$}"
-    if [ ! -e /etc/launchd.conf ] || ! grep -q "setenv $var " /etc/launchd.conf; then
-        printf 'echo "setenv %s '"'%s'"'" >>/etc/launchd.conf\n' "$var" "$value" | sudo sh -
+    if [ ! -e ~/Library/PreferencePanes/EnvPane.prefPane ]; then
+        printf >&2 "Warning: EnvPane is not installed, set of env var %s to %s will not persist\n" "$var" "$value"
     fi
 }
 
