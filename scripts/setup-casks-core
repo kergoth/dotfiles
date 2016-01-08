@@ -2,13 +2,7 @@
 
 brew cask install \
      the-unarchiver \
-     flycut \
-     xtrafinder \
-     popclip \
-     daisydisk \
+     xbox360-controller-driver \
      appcleaner \
      unpkg \
-     niceplayer \
-     flash-player \
-     google-chrome-dev \
-
+     flash-player
