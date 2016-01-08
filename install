@@ -24,6 +24,14 @@ set_launchd () {
     var="$1"
     value="$2"
 
+    case "$OSTYPE" in
+        darwin*)
+            ;;
+        *)
+            return
+            ;;
+    esac
+
     plist_set () {
         plist_key="$(printf "%s" "$1" | sed "s/'/\\\\'/g")"
         plist_val="$(printf "%s" "$2" | sed "s/'/\\\\'/g")"
