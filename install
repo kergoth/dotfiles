@@ -4,7 +4,14 @@ set -u
 
 : ${XDG_CONFIG_HOME:=~/.config}
 : ${XDG_DATA_HOME:=~/.local/share}
-: ${XDG_CACHE_HOME:=~/.cache}
+case "$OSTYPE" in
+    darwin*)
+        : ${XDG_CACHE_HOME:=~/Library/Caches}
+        ;;
+    *)
+        : ${XDG_CACHE_HOME:=~/.cache}
+        ;;
+esac
 
 osname="$(uname -s)"
 HOSTNAME=$(hostname -s)
