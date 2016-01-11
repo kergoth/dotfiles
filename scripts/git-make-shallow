@@ -2,10 +2,14 @@
 # TODO: by default, keep refs which don't belong to any remote, as they can't
 # be restored with git fetch. add a new argument to force their removal unless
 # specified with -r.
+#   If any remotes are marked as mirror=true, or have +refs/*:refs/*, there are
+#   no local refs to keep, otherwise grab all refs other than refs/remotes/*.
 # TODO: complete sane handling of reflogs. Possibly add multiple arguments,
 # keep only HEAD reflog, keep all local relogs, keep all non-tag reflogs, keep
 # all reflogs
 # TODO: should detaching from alternates be optional instead of automatic?
+# The repo can be shallow with or without alternates, it's just that it makes
+# git fsck show a lot of unreachable objects.
 # TODO: avoid corrupting or disrupting repository state when interrupted
 
 """git-make-shallow: make the current git repository shallow."""
@@ -19,6 +23,8 @@ import itertools
 import os
 import subprocess
 import sys
+
+version = 0.9
 
 
 def main():
