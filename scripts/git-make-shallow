@@ -80,8 +80,8 @@ def filter_refs(refs):
     full_refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
     to_remove = set(all_refs) - set(full_refs)
     if to_remove:
-        p = subprocess.Popen(['xargs', '-n', '1', 'git', 'update-ref', '-d', '--no-deref'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p.communicate(''.join(l + '\n' for l in to_remove))
+        p = subprocess.Popen(['xargs', '-0', '-n', '1', 'git', 'update-ref', '-d', '--no-deref'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p.communicate(''.join(l + '\0' for l in to_remove))
 
 
 def follow_history_intersections(revisions, refs):
