@@ -54,3 +54,8 @@ do
 done
 
 unset config_files
+
+# Load manually loaded "plugins"
+. $ZSH/plugins/bd/bd.zsh
+. $ZSH/plugins/fzf/key-bindings.zsh
+. $ZSH/plugins/fzf/completion.zsh

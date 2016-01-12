@@ -1,7 +1,6 @@
 imports:
     # Zsh
     autoenv: zsh/plugins/autoenv
-    zaw: zsh/plugins/zaw
     zsh-bd: zsh/plugins/bd
     zsh-command-not-found: zsh/plugins/command-not-found
     zsh-completions: zsh/plugins/completions
@@ -12,6 +11,9 @@ imports:
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
     iterm2-zsh: iterm2
     base16-shell: base16
+
+    # Multiple components (shell+vim)
+    fzf: .
 
     # Scripts
     appify: scripts
@@ -71,9 +73,9 @@ imports:
     vim-bitbake: vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
-    vim-ctrlp: vim/bundle/ctrlp
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
+    vim-fzf-extra: vim/bundle/fzf-extra
     vim-golang: vim/bundle/golang
     vim-markdown: vim/bundle/markdown
     vim-obsession: vim/bundle/obsession
@@ -102,10 +104,6 @@ git module zsh-history-substring-search:
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
     rev: c2dde89fb34e2734106e50689bf4127f6b0a288d
-
-git module zaw:
-    url: https://github.com/zsh-users/zaw
-    rev: 9557d2d72119c50d990de833bb37a56efce4e309
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -239,6 +237,10 @@ git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
     rev: 36779ba3b1af4b81fcba7b83095afe794a07b71a
 
+git module vim-fzf-extra:
+    url: https://github.com/junegunn/fzf.vim
+    rev: 2a225396d4e2b55da700a2d06771e1de5e69fa33
+
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
@@ -261,6 +263,17 @@ hg module t:
     url: https://bitbucket.org/sjl/t
     pick: t.py
     rev: 1c496e933168ffb33622c8549bc1372d7a368f4f
+
+git module fzf:
+    url: https://github.com/junegunn/fzf
+    move:
+        plugin/fzf.vim: vim/bundle/fzf/plugin/fzf.vim
+        shell/key-bindings.zsh: zsh/plugins/fzf/key-bindings.zsh
+        shell/completion.zsh: zsh/plugins/fzf/completion.zsh
+    pick:
+        - vim/bundle/fzf
+        - zsh/plugins/fzf
+    rev: 0f281ef89410cd581b581fd6087e9edd1832d1e8
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -521,10 +534,6 @@ git module checkbashisms:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
     rev: 4b37be15e4a6ff58b6d848f38879323404f2a0b4
-
-git module vim-ctrlp:
-    url: https://github.com/ctrlpvim/ctrlp.vim
-    rev: 0fb2c58353ee041500eb67fb5bde2377bf486417
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell

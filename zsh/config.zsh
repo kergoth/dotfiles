@@ -65,8 +65,6 @@ if autoload -Uz git-escape-magic; then
     git-escape-magic
 fi
 
-. $ZSH/plugins/bd/bd.zsh
-
 # Keybinds
 
 # Emacs mode
@@ -75,10 +73,6 @@ bindkey -e
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
-
-# zaw binds
-bindkey '^X;' zaw
-bindkey '^R' zaw-history
 
 # Display red dots when autocompleting with the tab key
 expand-or-complete-with-dots() {
