@@ -1,6 +1,7 @@
 imports:
     # Zsh
     autoenv: zsh/plugins/autoenv
+    z: zsh/plugins/z
     zsh-bd: zsh/plugins/bd
     zsh-command-not-found: zsh/plugins/command-not-found
     zsh-completions: zsh/plugins/completions
@@ -24,7 +25,6 @@ imports:
     cwdiff: scripts
     dtrx: scripts
     dustin-bindir: scripts
-    fasd: scripts
     friendly-find: scripts
     gibo: scripts
     git-cherry-tree: scripts
@@ -341,10 +341,9 @@ git module planter:
     executable: planter
     rev: 9b39c1bff8a4e2b49bb62889d7d51f1cb45f0b9d
 
-git module fasd:
-    url: https://github.com/clvv/fasd
-    pick: fasd
-    rev: 90b531a5daaa545c74c7d98974b54cbdb92659fc
+git module z:
+    url: https://github.com/rupa/z
+    rev: 5dc2a863ccdcefb28aaf87cc99c31c6619158ed4
 
 hg module friendly-find:
     url: https://bitbucket.org/sjl/friendly-find
