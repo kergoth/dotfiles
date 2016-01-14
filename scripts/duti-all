@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} APP_ID"
+    exit 1
+fi
+
+id="$1"
+app="$(locate_app_by_id "$id")" || exit $?
+
+plutil -convert json "$app"/Contents/Info.plist -o - | \
+    jq '.CFBundleDocumentTypes[] | .CFBundleTypeRole + "," + (.LSItemContentTypes | join(","))' | \
+    sed 's,^",,; s,"$,,' | tr '[:upper:]' '[:lower:]' | \
+    while IFS="," read role types; do
+        echo "$types" | tr "," "\n" | while read type; do
+            duti -s "$id" "$type" "$role"
+        done
+    done
