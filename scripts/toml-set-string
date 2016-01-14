@@ -1,0 +1,3 @@
+#!/bin/sh
+
+toml-set "$1" "$(python -c 'import toml,sys; print(toml.dump_value(sys.argv[1]))' "$2")"
