@@ -1,0 +1,55 @@
+#!/bin/bash
+
+usage () {
+    echo >&2 "Usage: ${0##*/} [-n] GIST_URL [FILENAME]"
+    echo >&2
+    echo >&2 "If FILENAME is unspecified, '-' will be used."
+    echo >&2
+    echo >&2 "-n    Dry run, show what would be updated."
+    exit 1
+}
+
+dry_run=0
+while getopts nh opt; do
+    case "$opt" in
+        n)
+            dry_run=1
+            ;;
+        \?|h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ] || [ $# -gt 2 ]; then
+    usage
+fi
+
+gist_url="$1"
+filename="${2:--}"
+raw_url="$(echo "$gist_url" | sed "s,github\.com,githubusercontent.com,")/raw/$filename"
+
+tmpfile="$(mktemp -t ${0##*/}.XXXXXX)"
+trap "rm -f \"$tmpfile\"" EXIT INT TERM
+
+cat >>"$tmpfile"
+curl -s "$raw_url" | diff -urNd - "$tmpfile"
+
+if [ $? -ne 0 ] && [ $dry_run -ne 1 ]; then
+    if [ -t 1 ]; then
+        while true; do
+            read -r -n 1 -p 'Continue [Y/n]? ' i </dev/tty
+            printf '\n'
+            case "$i" in
+                [Yy]|"")
+                    break
+                    ;;
+                [Nn])
+                    exit 0
+                    ;;
+            esac
+        done
+    fi
+    gist -s -f "$filename" -u "$gist_url" "$tmpfile"
+fi
