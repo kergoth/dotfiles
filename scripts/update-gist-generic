@@ -30,7 +30,7 @@ gist_url="$1"
 filename="${2:--}"
 raw_url="$(echo "$gist_url" | sed "s,github\.com,githubusercontent.com,")/raw/$filename"
 
-tmpfile="$(mktemp -t ${0##*/}.XXXXXX)"
+tmpfile="$(mktemp -t "$filename.XXXXXX")"
 trap "rm -f \"$tmpfile\"" EXIT INT TERM
 
 cat >>"$tmpfile"
