@@ -1,0 +1,3 @@
+#!/bin/sh
+# Use vim to edit the files listed on stdin, newline separated
+tr '\n' '\0' | xargs -0 sh -c 'vim </dev/tty "$@"'
