@@ -28,9 +28,9 @@ esac
 
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
-    virtualenv "$venv_dir"
+    virtualenv "$venv_dir" || exit 1
 fi
-. "$venv_dir/bin/activate"
+. "$venv_dir/bin/activate" || exit 2
 
 case "$(which pip)" in
     "$venv_dir/"*)
@@ -43,7 +43,7 @@ esac
 if [ $# -eq 0 ]; then
     set -- "$venv"
 fi
-pip install "$@"
+pip install "$@" || exit 4
 
 mkdir -p "$XDG_DATA_HOME/../bin"
 for script in "$venv_dir/bin/"*; do
