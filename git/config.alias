@@ -51,7 +51,7 @@
 	save = !git mstash saved && git stash apply
 
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
-	last = "!f(){ since="${1:-week}"; shift; git lg --since=\"last $since\" "$@"; }; f"
+	last = "!f(){ if [ $# -gt 0 ]; then since="$1"; shift; else since="week"; fi; git lg --since=\"last $since\" "$@"; }; f"
 
 	# List dangling commit hashes
 	dangling = !git fsck | sed -n 's/^dangling commit //p'
