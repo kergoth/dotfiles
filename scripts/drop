@@ -1,13 +1,8 @@
 #!/bin/sh
 
-case "$(uname -s)" in
-    Darwin)
-        alias remove=trash
-        ;;
-    *)
-        alias remove=bgrm
-        ;;
-esac
+if which trash >/dev/null 2>&1; then
+    alias remove=trash
+fi
 
 for arg; do
     if [ -h "$arg" ]; then
