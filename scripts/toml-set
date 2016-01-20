@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import itertools
 import sys
 import toml
 
@@ -7,10 +8,26 @@ import toml
 def lookup(obj, key):
     return reduce(lambda x, y: x[y], key, obj)
 
-o = toml.load(sys.stdin)
+
+def pairs(iterable):
+    a, b = itertools.tee(iterable)
+    a = itertools.islice(a, 0, None, 2)
+    b = itertools.islice(b, 1, None, 2)
+    return itertools.izip(a, b)
+
+
+if not sys.stdin.isatty():
+    o = toml.load(sys.stdin)
+else:
+    o = {}
+
+if len(sys.argv[1:]) % 2 != 0:
+    sys.exit("Error: odd number of arguments. Arguments must be in key/value pairs")
+
 try:
-    k = sys.argv[1].split(".")
-    i, v = k[:-1], k[len(k)-1]
-    lookup(o, i)[v] = toml.load_value(sys.argv[2])[0]
+    for key, value in pairs(sys.argv[1:]):
+        key = key.split(".")
+        prefix, final_key = key[:-1], key[len(key)-1]
+        lookup(o, prefix)[final_key] = toml.load_value(value)[0]
 finally:
     toml.dump(o, sys.stdout)

@@ -1,3 +1,23 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-toml-set "$1" "$(python -c 'import toml,sys; print(toml.dump_value(sys.argv[1]))' "$2")"
+import itertools
+import subprocess
+import sys
+import toml
+
+
+def pairs(iterable):
+    a, b = itertools.tee(iterable)
+    a = itertools.islice(a, 0, None, 2)
+    b = itertools.islice(b, 1, None, 2)
+    return itertools.izip(a, b)
+
+
+if len(sys.argv[1:]) % 2 != 0:
+    sys.exit("Error: odd number of arguments. Arguments must be in key/value pairs")
+
+
+try:
+    subprocess.check_call(["toml-set"] + list(itertools.chain.from_iterable((k, toml.dump_value(v)) for k, v in pairs(sys.argv[1:]))))
+except subprocess.CalledProcessError:
+    sys.exit(1)

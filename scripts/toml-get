@@ -4,5 +4,5 @@ import sys
 import toml
 
 obj = toml.load(sys.stdin)
-key = sys.argv[1].split(".")
-print(reduce(lambda x, y: x[y], key, obj))
+for key in sys.argv[1:]:
+    print(reduce(lambda x, y: x[y], key.split("."), obj))
