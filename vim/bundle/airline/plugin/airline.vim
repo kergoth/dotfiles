@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2015 Bailey Ling.
+" MIT License. Copyright (c) 2013-2016 Bailey Ling.
 " vim: et ts=2 sts=2 sw=2
 
 if &cp || v:version < 702 || (exists('g:loaded_airline') && g:loaded_airline)
@@ -27,7 +27,7 @@ function! s:init()
 endfunction
 
 function! s:on_window_changed()
-  if pumvisible()
+  if pumvisible() && (!&previewwindow || g:airline_exclude_preview)
     return
   endif
   call s:init()

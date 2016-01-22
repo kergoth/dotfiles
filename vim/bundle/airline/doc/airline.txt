@@ -413,6 +413,8 @@ eclim <https://eclim.org>
   " the default value matches filetypes typically used for documentation
   " such as markdown and help files.
   let g:airline#extensions#wordcount#filetypes = ...
+  (default: markdown,rst,org,help,text)
+
 <
 -------------------------------------                   *airline-whitespace*
 * enable/disable detection of whitespace errors. >
@@ -498,7 +500,9 @@ exposed.
   let g:airline#extensions#tabline#formatter = 'default'
 
   " here is how you can define a 'foo' formatter:
-  function! airline#extensions#tabline#foo#format(bufnr, buffers)
+  " create a file in the dir autoload/airline/extensions/tabline/formatter/
+  " called foo.vim
+  function! airline#extensions#tabline#formatter#foo#format(bufnr, buffers)
     return fnamemodify(bufname(a:bufnr), ':t')
   endfunction
   let g:airline#extensions#tabline#formatter = 'foo'
@@ -878,7 +882,7 @@ Contributions and pull requests are welcome.
 ==============================================================================
 LICENSE                                                    *airline-license*
 
-MIT License.  Copyright © 2013-2015 Bailey Ling.
+MIT License.  Copyright © 2013-2016 Bailey Ling.
 
 
  vim:tw=78:ts=8:ft=help:norl:

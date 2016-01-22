@@ -128,7 +128,7 @@ Check the help
       Commits a new changeset incorporating both the changes to the given files
       and all the changes from the current parent changeset into the repository.
   
-      See "hg commit" for details about committing changes.
+      See 'hg commit' for details about committing changes.
   
       If you don't specify -m, the parent's message will be reused.
   
@@ -136,7 +136,7 @@ Check the help
       of the current parent. Then it creates a new commit on the parent's
       parents with the updated contents. Then it changes the working copy parent
       to this new combined changeset. Finally, the old changeset and its update
-      are hidden from "hg log" (unless you use --hidden with log).
+      are hidden from 'hg log' (unless you use --hidden with log).
   
       Returns 0 on success, 1 if nothing changed.
   

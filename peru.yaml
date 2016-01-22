@@ -95,7 +95,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 28932316cca6004253ec57f5d87981c72be64e86
+    rev: 451665cb2a8ba80626aab295c88d23d0f341ea6c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -111,7 +111,7 @@ git module zsh-git-escape-magic:
 
 git module autoenv:
     url: https://github.com/kennethreitz/autoenv
-    rev: 7858eaaf6b23a968e63fbb7584ff0df2795181ec
+    rev: 44bc4ce537b14d60eb775d0fbac3500daaaf1090
 
 git module zsh-command-not-found:
     url: https://github.com/Tarrasch/zsh-command-not-found
@@ -147,7 +147,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
     export: autoload/
-    rev: 4d584ea8c85408ca0d68b7b1693f3e2db8aa762a
+    rev: b4f20ff0acc8267875ca7a3841756fe18d55db15
 
 # secure alternative to vim modelines
 git module securemodelines:
@@ -186,7 +186,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/bling/vim-airline.git
-    rev: ca6ab34e3ce2d25e5625fe56ef31d5032c69dbec
+    rev: 8afd72d886f90c2f6632545691920c51920bbee0
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -206,7 +206,7 @@ git module vim-eunuch:
 # graph your Vim undo tree in style
 git module gundo:
     url: https://github.com/sjl/gundo.vim.git
-    rev: dd5ab1e930deb8c74ea9046654dd0587df0cf459
+    rev: e7fe41024ace9047eee610f23311d44fd9d917c0
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -216,7 +216,7 @@ git module vim-surround:
 # readline style insertion
 git module vim-rsi:
     url: https://github.com/tpope/vim-rsi.git
-    rev: dfc5288097b83d1eb3173d8be348a11f3d467d8e
+    rev: b689ee4276d82feb21b21661a6500755ff6b2fde
 
 # asynchronous build and test dispatcher
 git module vim-dispatch:
@@ -239,7 +239,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 2a225396d4e2b55da700a2d06771e1de5e69fa33
+    rev: 00fdb54c9d64082d978504be84b1ff704d12437a
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -273,7 +273,7 @@ git module fzf:
     pick:
         - vim/bundle/fzf
         - zsh/plugins/fzf
-    rev: 0f281ef89410cd581b581fd6087e9edd1832d1e8
+    rev: ce9c51d3997ca0fa4ac9ac77c5df94a0f82bfd80
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -316,7 +316,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: a6bf8dea8972ff5a3ef17663ab8964e0a852d69b
+    rev: fc42f1ef0e8fc0084304ed883257077cba0121a3
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -474,7 +474,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: ec4fae88831d857c60fc5dce40d11e4f5188d0b3
+    rev: 190e4e526c66e528d872d02c8ebe9797509b53a9
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -525,14 +525,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 1f4846fecca79fa6a56f054d40761bd8c63a236f
+    rev: d1a179d750bd1d136d7f38e69f2c5b8439886de7
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 4b37be15e4a6ff58b6d848f38879323404f2a0b4
+    rev: 109ce16f3ca067e6c01fc69e2112c9923b452b0e
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
