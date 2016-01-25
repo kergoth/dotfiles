@@ -494,8 +494,8 @@ git module zsh-manydots-magic:
 
 # From Damian Conway's vim setup. Note: review more of the plugins there
 git module damian-conway-vim:
-    url: https://github.com/thoughtstream/Damian-Conway-s-Vim-Setup
-    rev: 94a406e82df449f65ae654e17d250d5b2fe74825
+    url: https://github.com/kergoth/Damian-Conway-s-Vim-Setup
+    rev: 0dec44631fa82ee8e299ff8e403372dee64bd3de
     pick: plugin/undowarnings.vim
 
 git module git-remote-hg:
