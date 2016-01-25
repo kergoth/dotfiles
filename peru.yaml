@@ -10,7 +10,7 @@ imports:
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
-    iterm2-zsh: iterm2
+    iterm2-zsh: zsh/plugins/iterm2
     base16-shell: base16
 
     # Multiple components (shell+vim)
