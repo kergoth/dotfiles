@@ -38,7 +38,8 @@ brew install p7zip
 brew install sshuttle
 
 # Gaming
-brew install dylibbundler innoextract makeicns icoutils
+brew install dylibbundler makeicns icoutils
+brew install --HEAD innoextract
 
 # For brew-cask
 brew install caskroom/cask/brew-cask
