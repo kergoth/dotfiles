@@ -71,9 +71,12 @@ else
     fi
     alias rm='rm --one-file-system -I'
 fi
-
-alias wildcard_to_re="python -c 'import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))'"
-alias fnmatch="python -c 'import fnmatch,sys; sys.exit(not fnmatch.fnmatch(*sys.argv[1:3]))'"
+alias wildcard_to_re='python -c "import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))"'
+alias fnmatch='python -c "import fnmatch,sys; sys.exit(not fnmatch.fnmatch(*sys.argv[1:3]))"'
+alias relpath='python -c "import os, sys; print(os.path.relpath(*sys.argv[1:]))"'
+alias htmldecode='python -c "import HTMLParser,sys; print(HTMLParser.HTMLParser().unescape(sys.argv[1]))"'
+alias common_prefix='python -c "import os, sys; print(os.path.commonprefix(sys.argv[1:]))"'
+alias titlecase='python -c "import titlecase; import sys; print(titlecase.titlecase(" ".join(sys.argv[1:])))"'
 
 # Global
 alias -g G='| grep'
