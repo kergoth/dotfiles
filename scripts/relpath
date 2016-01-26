@@ -1,29 +1,10 @@
 #!/bin/sh
-# http://stackoverflow.com/questions/2564634/bash-convert-absolute-path-into-relative-path-given-a-current-directory
-#
-# both $1 and $2 are absolute paths
-# returns $2 relative to $1
 
-if [ $# -ne 2 ]; then
-    echo >&2 "Usage: relpath TO FROM"
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo >&2 "Usage: relpath PATH [START]"
     echo >&2
-    echo >&2 "Returns FROM relative to TO"
+    echo >&2 "Returns a relative version of PATH."
     exit 2
 fi
 
-source="$1"
-target="$2"
-
-common_part="$source"
-back=
-while [ -n "$common_part" -a "${target#$common_part}" = "${target}" ]; do
-  common_part="${common_part%/*}"
-  back="../${back}"
-done
-
-if [ -z "$common_part" ]; then
-    # nothing in common, keep absolute
-    back="/"
-fi
-
-echo ${back}${target#$common_part/}
+python -c "import os, sys; print(os.path.relpath(*sys.argv[1:]))" "$@"
