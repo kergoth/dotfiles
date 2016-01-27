@@ -1,10 +1,23 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-    echo >&2 "Usage: relpath PATH [START]"
-    echo >&2
-    echo >&2 "Returns a relative version of PATH."
-    exit 2
-fi
+import os
+import sys
 
-python -c "import os, sys; print(os.path.relpath(*sys.argv[1:]))" "$@"
+args = sys.argv[1:]
+if len(args) < 1 or len(args) > 2:
+    sys.stderr.write('Usage: relpath PATH [START]\n')
+    sys.stderr.write('\n')
+    sys.stderr.write('Returns a relative version of PATH.')
+    sys.exit(2)
+
+if len(args) == 2:
+    first, second = args
+else:
+    first, second = args[0], '.'
+first, second = os.path.realpath(first), os.path.realpath(second)
+
+common_prefix = os.path.commonprefix([first, second])
+if common_prefix == '/':
+    sys.stderr.write("Warning: common prefix of '%s' and '%s' is /\n" % (first, second))
+
+print(os.path.relpath(first, second))
