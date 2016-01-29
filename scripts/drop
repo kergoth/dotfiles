@@ -6,7 +6,7 @@ fi
 
 for arg; do
     if [ -h "$arg" ]; then
-        rm -fv "$arg"
+        bgrm "$arg"
     else
         remove "$arg"
     fi
