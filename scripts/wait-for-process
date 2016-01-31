@@ -5,24 +5,61 @@
 # passed directly to pgrep as a regular expression matched against the entire
 # commandline of the running processes.
 
+set -eu
+
+usage () {
+    cat <<END >&2
+Usage: ${0##*/} [options] pattern ..."
+
+Options:
+
+  -w            Wait for process to start first
+  -i INTERVAL   Specify check interval / delay. Default: 0.75
+END
+    exit 1
+}
+
+
+wait_for_start=0
 interval=0.75
 
-if [ $# -lt 1 ]; then
-    echo >&2 "wait-for-process pattern ..."
-    exit 1
+while getopts wi:h opt; do
+    case "$opt" in
+        w)
+            wait_for_start=1
+            ;;
+        i)
+            interval="$OPTARG"
+            ;;
+        h|\?)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
 fi
 
+
 # Wait for process(es) to start
-while true; do
+if [ $wait_for_start -eq 1 ]; then
+    while true; do
+        pids="$(pgrep -d, -f "$*" | sed -e "s/$/,/; s/$$,//; s/,$//;")"
+        if [ -n "$pids" ] && ps -p"$pids" >/dev/null 2>&1; then
+            break
+        fi
+        sleep "$interval"
+    done
+else
     pids="$(pgrep -d, -f "$*" | sed -e "s/$/,/; s/$$,//; s/,$//;")"
-    if [ -n "$pids" ] && ps -p"$pids" >/dev/null 2>&1; then
-        break
-    fi
-    sleep $interval
-done
+fi
 
 # Wait for process(es) to exit
-while true; do
-    ps -p"$pids" >/dev/null 2>&1 || break
-    sleep $interval
-done
+if [ -n "$pids" ]; then
+    while true; do
+        ps -p"$pids" >/dev/null 2>&1 || break
+        sleep "$interval"
+    done
+fi
