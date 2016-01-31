@@ -554,7 +554,7 @@ augroup vimrc_filetypes
   au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
 
   " Use :help for K in vim files
-  au FileType vim nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
+  au FileType vim,help nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
 
 
   " Show diff when editing git commit messages
