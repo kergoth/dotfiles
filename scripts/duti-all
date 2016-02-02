@@ -1,20 +1,51 @@
 #!/bin/sh
 
+locate_app_by_id () {
+    mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"
+}
+
 set -e
 
 if [ $# -eq 0 ]; then
-    echo >&2 "Usage: ${0##*/} APP_ID"
+    echo >&2 "Usage: ${0##*/} [-n] APP_ID"
     exit 1
 fi
 
+dry_run=0
+if [ "$1" = "-n" ]; then
+    dry_run=1
+    shift
+fi
+
 id="$1"
-app="$(locate_app_by_id "$id")" || exit $?
+if [ -d "$id" ]; then
+    app="$id"
+else
+    app="$(locate_app_by_id "$id")" || exit $?
+fi
 
 plutil -convert json "$app"/Contents/Info.plist -o - | \
-    jq '.CFBundleDocumentTypes[] | .CFBundleTypeRole + "," + (.LSItemContentTypes | join(","))' | \
-    sed 's,^",,; s,"$,,' | tr '[:upper:]' '[:lower:]' | \
-    while IFS="," read role types; do
-        echo "$types" | tr "," "\n" | while read type; do
-            duti -s "$id" "$type" "$role"
+    jq -r '.CFBundleDocumentTypes[] | select(.CFBundleTypeExtensions) | .CFBundleTypeRole + "|" + (.CFBundleTypeExtensions | join(","))' | \
+        tr '[:upper:]' '[:lower:]' | \
+        while IFS="|" read -r role extensions; do
+            echo "$extensions" | tr ',' '\n' | while read -r extension; do
+                if [ $dry_run -eq 1 ]; then
+                    echo duti -s "$id" ".$extension" "$role"
+                else
+                    duti -s "$id" ".$extension" "$role"
+                fi
+            done
         done
-    done
+
+plutil -convert json "$app"/Contents/Info.plist -o - | \
+    jq -r '.CFBundleDocumentTypes[] | select(.LSItemContentTypes) | .CFBundleTypeRole + "|" + (.LSItemContentTypes | join(","))' | \
+        tr '[:upper:]' '[:lower:]' | \
+        while IFS="|" read -r role types; do
+            echo "$types" | tr ',' '\n' | while read -r type; do
+                if [ $dry_run -eq 1 ]; then
+                    echo duti -s "$id" "$type" "$role"
+                else
+                    duti -s "$id" "$type" "$role"
+                fi
+            done
+        done
