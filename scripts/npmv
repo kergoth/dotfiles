@@ -30,7 +30,11 @@ END
 
 # To install npm, if we have node but not npm
 if ! which npm >/dev/null 2>&1; then
-    npm_config_prefix="$npmenv_dir" sh -c "curl -L https://npmjs.org/install.sh | sh"
+    if which hashpipe >/dev/null 2>&1; then
+        curl -L https://npmjs.org/install.sh | hashpipe QmPXLdPeNdQSFn9W9wJyFv71cNvrwEuRdcjpCMrXvxi1xs | npm_config_prefix="$npmenv_dir" sh
+    else
+        curl -L https://npmjs.org/install.sh | npm_config_prefix="$npmenv_dir" sh
+    fi
 fi
 
 
