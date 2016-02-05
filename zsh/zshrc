@@ -62,3 +62,8 @@ unset config_files
 if [[ $OSTYPE =~ darwin ]]; then
     . $ZSH/plugins/iterm2/iterm2.zsh
 fi
+
+if [[ "$PROFILE_STARTUP" == true ]]; then
+    unsetopt xtrace
+    exec 2>&3 3>&-
+fi

@@ -6,6 +6,13 @@ else
     export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
 fi
 
+if [[ "${PROFILE_STARTUP:-false}" == true ]]; then
+    # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
+    PS4=$'%D{%M%S%.} %N:%i> '
+    exec 3>&2 2>${XDG_DATA_HOME}/zsh-start.log.$$
+    setopt xtrace prompt_subst
+fi
+
 if [[ -h $ZDOTDIR/.zshrc ]]; then
     DOTFILESDIR=$(dirname $(readlink $ZDOTDIR/.zshrc))/..
     if [[ ${DOTFILESDIR#/} = $DOTFILESDIR ]]; then
