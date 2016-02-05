@@ -564,3 +564,4 @@ git module diff-so-fancy:
     url: https://github.com/paulirish/dotfiles
     export: bin
     pick: bin/diff-so-fancy
+    rev: af8870104eccc8ac1301b90b51e477b0ea1a3235
