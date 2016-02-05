@@ -35,6 +35,7 @@ imports:
     git-wtf: scripts
     git|git-jump: scripts
     git|git-subtree: scripts
+    git|diff-highlight: scripts
     gitvoodoo: scripts
     icdiff: scripts
     iln: scripts
@@ -403,6 +404,11 @@ rule git-subtree:
     move:
         contrib/subtree/git-subtree.sh: git-subtree
     pick: git-subtree
+
+rule diff-highlight:
+    move:
+        contrib/diff-highlight/diff-highlight: diff-highlight
+    pick: diff-highlight
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
