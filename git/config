@@ -3,6 +3,7 @@
 	excludesfile = ~/.config/git/ignore
 	attributesfile = ~/.config/git/attributes
 	whitespace = cr-at-eol
+	pager = diff-highlight | diff-so-fancy | less -r
 
 [user]
 	name = Christopher Larson
