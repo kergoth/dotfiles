@@ -23,6 +23,7 @@ imports:
     checkbashisms: scripts
     cpanm: scripts
     cwdiff: scripts
+    diff-so-fancy: scripts
     dtrx: scripts
     dustin-bindir: scripts
     friendly-find: scripts
@@ -558,3 +559,8 @@ git module gitvoodoo:
         - bin/git-xbranch
         - bin/git-xclean
     rev: 518f710546d5f110822f6f84a801c66f6dd0982e
+
+git module diff-so-fancy:
+    url: https://github.com/paulirish/dotfiles
+    export: bin
+    pick: bin/diff-so-fancy
