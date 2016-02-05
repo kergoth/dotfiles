@@ -10,6 +10,7 @@ imports:
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
+    hub-completion: git/functions
     iterm2-zsh: zsh/plugins/iterm2
     base16-shell: base16
 
@@ -565,3 +566,10 @@ git module diff-so-fancy:
     export: bin
     pick: bin/diff-so-fancy
     rev: af8870104eccc8ac1301b90b51e477b0ea1a3235
+
+git module hub-completion:
+    url: https://github.com/github/hub
+    move:
+        etc/hub.zsh_completion: _hub
+    pick: _hub
+    rev: f412a353b8d9c374f10d8d14cfbbfd0ee245cb32
