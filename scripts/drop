@@ -7,7 +7,7 @@ fi
 for arg; do
     if [ -h "$arg" ]; then
         bgrm "$arg"
-    else
+    elif [ -e "$arg" ]; then
         remove "$arg"
     fi
 done
