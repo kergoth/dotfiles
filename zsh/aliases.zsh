@@ -31,7 +31,7 @@ alias parallel='parallel --bibtex'
 alias '$='
 
 if (( $+commands[hub] )); then
-    eval $(hub alias -s zsh)
+    alias git=hub
 fi
 
 if (( $+commands[pacman-color] )); then
