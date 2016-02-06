@@ -51,7 +51,7 @@ endfunction " }}}2
 function! syntastic#util#tmpdir() abort " {{{2
     let tempdir = ''
 
-    if (has('unix') || has('mac')) && executable('mktemp')
+    if (has('unix') || has('mac')) && executable('mktemp') && !has('win32unix')
         " TODO: option "-t" to mktemp(1) is not portable
         let tmp = $TMPDIR !=# '' ? $TMPDIR : $TMP !=# '' ? $TMP : '/tmp'
         let out = split(syntastic#util#system('mktemp -q -d ' . tmp . '/vim-syntastic-' . getpid() . '-XXXXXXXX'), "\n")
@@ -263,8 +263,9 @@ function! syntastic#util#unique(list) abort " {{{2
     let seen = {}
     let uniques = []
     for e in a:list
-        if !has_key(seen, e)
-            let seen[e] = 1
+        let k = string(e)
+        if !has_key(seen, k)
+            let seen[k] = 1
             call add(uniques, e)
         endif
     endfor

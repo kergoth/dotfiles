@@ -4,7 +4,7 @@
 let s:formatter = get(g:, 'airline#extensions#tabline#formatter', 'default')
 let s:show_buffers = get(g:, 'airline#extensions#tabline#show_buffers', 1)
 let s:show_tabs = get(g:, 'airline#extensions#tabline#show_tabs', 1)
-
+let s:ignore_bufadd_pat = get(g:, 'airline#extensions#tabline#ignore_bufadd_pat', '\c\vgundo|undotree|vimfiler|tagbar|nerd_tree')
 let s:taboo = get(g:, 'airline#extensions#taboo#enabled', 1) && get(g:, 'loaded_taboo', 0)
 if s:taboo
   let g:taboo_tabline = 0
@@ -38,15 +38,24 @@ function! s:toggle_on()
 endfunction
 
 function! s:update_tabline()
+  let match = expand('<afile>')
   if pumvisible()
     return
   elseif !get(g:, 'airline#extensions#tabline#enabled', 0)
     return
+  " return, if buffer matches ignore pattern or is directory (netrw)
+  elseif empty(match) 
+        \ || match(match, s:ignore_bufadd_pat) > -1
+        \ || isdirectory(expand("<afile>"))
+    return
   endif
   " force re-evaluation of tabline setting
-  set mod!
-  redraw
-  set mod!
+  sil call feedkeys(":set mod!\n")
+  sil call feedkeys(":set mod!\n")
+  " disable explicit redraw, may cause E315
+  " https://groups.google.com/d/msg/vim_dev/fYl4dP1i9fo/rPT5f7h1DAAJ
+  "redraw
+  "set mod!
 endfunction
 
 function! airline#extensions#tabline#load_theme(palette)

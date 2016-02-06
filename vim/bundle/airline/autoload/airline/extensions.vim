@@ -138,6 +138,10 @@ function! airline#extensions#load()
     call airline#extensions#netrw#init(s:ext)
   endif
 
+  if get(g:, 'airline#extensions#ycm#enabled', 0)
+    call airline#extensions#ycm#init(s:ext)
+  endif
+
   if get(g:, 'loaded_vimfiler', 0)
     let g:vimfiler_force_overwrite_statusline = 0
   endif
@@ -158,17 +162,17 @@ function! airline#extensions#load()
     call airline#extensions#undotree#init(s:ext)
   endif
 
-  if (get(g:, 'airline#extensions#hunks#enabled', 1) && get(g:, 'airline_enable_hunks', 1))
+  if get(g:, 'airline#extensions#hunks#enabled', 1)
         \ && (exists('g:loaded_signify') || exists('g:loaded_gitgutter') || exists('g:loaded_changes') || exists('g:loaded_quickfixsigns'))
     call airline#extensions#hunks#init(s:ext)
   endif
 
-  if (get(g:, 'airline#extensions#tagbar#enabled', 1) && get(g:, 'airline_enable_tagbar', 1))
+  if get(g:, 'airline#extensions#tagbar#enabled', 1)
         \ && exists(':TagbarToggle')
     call airline#extensions#tagbar#init(s:ext)
   endif
 
-  if (get(g:, 'airline#extensions#csv#enabled', 1) && get(g:, 'airline_enable_csv', 1))
+  if get(g:, 'airline#extensions#csv#enabled', 1)
         \ && (get(g:, 'loaded_csv', 0) || exists(':Table'))
     call airline#extensions#csv#init(s:ext)
   endif
@@ -178,13 +182,13 @@ function! airline#extensions#load()
     let s:filetype_regex_overrides['^int-'] = ['vimshell','%{substitute(&ft, "int-", "", "")}']
   endif
 
-  if (get(g:, 'airline#extensions#branch#enabled', 1) && get(g:, 'airline_enable_branch', 1))
+  if get(g:, 'airline#extensions#branch#enabled', 1)
         \ && (exists('*fugitive#head') || exists('*lawrencium#statusline') ||
         \     (get(g:, 'airline#extensions#branch#use_vcscommand', 0) && exists('*VCSCommandGetStatusLine')))
     call airline#extensions#branch#init(s:ext)
   endif
 
-  if (get(g:, 'airline#extensions#bufferline#enabled', 1) && get(g:, 'airline_enable_bufferline', 1))
+  if get(g:, 'airline#extensions#bufferline#enabled', 1)
         \ && exists('*bufferline#get_status_string')
     call airline#extensions#bufferline#init(s:ext)
   endif
@@ -197,12 +201,12 @@ function! airline#extensions#load()
     call airline#extensions#eclim#init(s:ext)
   endif
 
-  if (get(g:, 'airline#extensions#syntastic#enabled', 1) && get(g:, 'airline_enable_syntastic', 1))
+  if get(g:, 'airline#extensions#syntastic#enabled', 1)
         \ && exists(':SyntasticCheck')
     call airline#extensions#syntastic#init(s:ext)
   endif
 
-  if (get(g:, 'airline#extensions#whitespace#enabled', 1) && get(g:, 'airline_detect_whitespace', 1))
+  if get(g:, 'airline#extensions#whitespace#enabled', 1)
     call airline#extensions#whitespace#init(s:ext)
   endif
 

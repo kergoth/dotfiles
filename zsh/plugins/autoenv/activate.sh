@@ -23,7 +23,7 @@ autoenv_init()
     while [[ "$PWD" != "/" && "$PWD" != "$home" ]]
     do
       _file="$PWD/$AUTOENV_ENV_FILENAME"
-      if [[ -e "${_file}" ]]
+      if [[ -f "${_file}" ]]
       then echo "${_file}"
       fi
       builtin cd .. &>/dev/null
@@ -64,10 +64,7 @@ autoenv_hashline()
 {
   typeset envfile hash
   envfile=$1
-  if which shasum &> /dev/null
-  then hash=$(shasum "$envfile" | cut -d' ' -f 1)
-  else hash=$(sha1sum "$envfile" | cut -d' ' -f 1)
-  fi
+  hash=$(autoenv_shasum "$envfile" | cut -d' ' -f 1)
   echo "$envfile:$hash"
 }
 
@@ -100,7 +97,7 @@ autoenv_check_authz_and_run()
     autoenv_env
     autoenv_printf "Are you sure you want to allow this? (y/N) "
     read answer
-    if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
+    if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
       autoenv_authorize_env "$envfile"
       autoenv_source "$envfile"
     fi
@@ -123,7 +120,7 @@ autoenv_authorize_env() {
 
 autoenv_source() {
   typeset allexport
-  allexport=$(set +o | grep allexport)
+  allexport=$(set +o | \grep allexport)
   set -a
   source "$1"
   eval "$allexport"
@@ -140,8 +137,30 @@ autoenv_cd()
   fi
 }
 
-cd() {
-  autoenv_cd "$@"
+enable_autoenv() {
+    cd() {
+        autoenv_cd "$@"
+    }
+
+    cd .
 }
 
-cd .
+# probe to see if we have access to a shasum command, otherwise disable autoenv
+if which gsha1sum 2>/dev/null >&2 ; then
+    autoenv_shasum() {
+        gsha1sum "$@"
+    }
+    enable_autoenv
+elif which sha1sum 2>/dev/null >&2; then
+    autoenv_shasum() {
+        sha1sum "$@"
+    }
+    enable_autoenv
+elif which shasum 2>/dev/null >&2; then
+    autoenv_shasum() {
+        shasum "$@"
+    }
+    enable_autoenv
+else
+    echo "Autoenv cannot locate a compatible shasum binary; not enabling"
+fi

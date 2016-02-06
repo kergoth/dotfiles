@@ -1,6 +1,6 @@
-#compdef watch
+#compdef gtk-launch
 # ------------------------------------------------------------------------------
-# Copyright (c) 2014 Github zsh-users - http://github.com/zsh-users
+# Copyright (c) 2011 Github zsh-users - http://github.com/zsh-users
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,28 +28,60 @@
 # Description
 # -----------
 #
-#  Completion script for watch (https://gitorious.org/procps/procps).
+#  Completion script for gtk-launch on gtk+-3.14.8 (http://www.gtk.org/).
 #
 # ------------------------------------------------------------------------------
 # Authors
 # -------
 #
-#  * Nicolas Iooss (https://github.com/fishilico)
+#  * ncaq <ncaq@ncaq.net> (version 3.14.8)
 #
 # ------------------------------------------------------------------------------
 
-_arguments \
-  '(-b --beep)'{-b,--beep}'[beep if command has a non-zero exit]' \
-  '(-c --color)'{-c,--color}'[interpret ANSI color sequences]' \
-  '(-d --differences)'{-d,--differences}'[highlight changes between updates]' \
-  '(-d --differences)--differences=permanent[highlight changes since the first iteration]' \
-  '(-e --errexit)'{-e,--errexit}'[exit if command has a non-zero exit]' \
-  '(-g --chgexit)'{-g,--chgexit}'[exit when output from command changes]' \
-  '(-n --interval)'{-n,--interval}'[seconds to wait between updates]:interval:' \
-  '(-p --precise)'{-p,--precise}'[attempt run command in precise intervals]' \
-  '(-t --no-title)'{-t,--no-title}'[turn off showing the header]' \
-  '(-x --exec)'{-x,--exec}'[pass command to exec instead of "sh -c"]' \
-  '(-h --help)'{-h,--help}'[display help information]' \
-  '(-v --version)'{-v,--version}'[output version information]' \
-  '(-):command: _command_names -e' \
-  '*::arguments: _normal'
+_gtk-launch() {
+  _arguments \
+    {-h,--help}'[Show help options]' \
+    --help-all'[Show all help options]' \
+    --help-gtk'[Show GTK+ Options]' \
+    --display='[X display to use]' \
+    '1: :_applications'
+}
+
+_applications() {
+  local -a applications
+
+  for file in /usr/share/applications/*.desktop; do
+    applications+=`_format_entry $file`
+  done
+
+  _values -w \
+          'applications' \
+          $applications
+}
+
+_format_entry() {
+  echo "`_remove_path_extension $1`[`_get_description $1`]"
+}
+
+_remove_path_extension() {
+  # echo arg
+  # remove path string
+  # remove extension string
+  echo $1 | \
+    sed 's/.*\///' | \
+    sed 's/\.desktop//'
+}
+
+_get_description() {
+  # grep --no-messages option is handling of not UTF-8 text
+  grep --no-messages '^Comment=\|^Exec=' $1 | \
+    tr '\n' ' '
+}
+
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
