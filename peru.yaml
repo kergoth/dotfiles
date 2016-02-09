@@ -72,6 +72,7 @@ imports:
     securemodelines: vim/bundle/securemodelines
     tabular: vim/bundle/tabular
     taskpaper: vim/bundle/taskpaper
+    vim-abolish: vim/bundle/abolish
     vim-airline: vim/bundle/airline
     vim-bitbake: vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
@@ -573,3 +574,7 @@ git module hub-completion:
         etc/hub.zsh_completion: _hub
     pick: _hub
     rev: f412a353b8d9c374f10d8d14cfbbfd0ee245cb32
+
+git module vim-abolish:
+    url: https://github.com/tpope/vim-abolish
+    rev: e6a170cda8ee542ec5f1384c9643d4330ee6b181
