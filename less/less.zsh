@@ -6,5 +6,7 @@ export LESS='-F -g -i -M -R -w -X -z-4'
 export LESSOPEN="|mylesspipe.sh %s"
 if (( $+commands[pygmentize] )); then
     # If we have pygmentize, prefer it over code2color
-    export LESSCOLORIZER=pygmentize
+    export LESSCOLORIZER=mypygmentize
+    export PYGMENTIZE_FORMATTER=terminal256
+    export PYGMENTIZE_STYLE=monokai
 fi

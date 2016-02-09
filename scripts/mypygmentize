@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -n "$PYGMENTIZE_FORMATTER" ]; then
+    set -- -f "$PYGMENTIZE_FORMATTER" "$@"
+fi
+if [ -n "$PYGMENTIZE_STYLE" ]; then
+    set -- -O style="$PYGMENTIZE_STYLE" "$@"
+fi
+
+exec pygmentize -g "$@"
