@@ -1,0 +1,10 @@
+#!/bin/sh
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+
+for vact in "$WORKON_HOME"/*/bin/activate; do
+    venv="${vact%/bin/activate}"
+    venv_name="${venv##*/}"
+    cd "$venv" && . "$vact" && eval "$*"
+done
