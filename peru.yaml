@@ -51,6 +51,7 @@ imports:
     smem: scripts
     ssh-copy-rsub: scripts
     t: scripts
+    tagbak: scripts
     vitag: scripts
     wget-finder: scripts
 
@@ -578,3 +579,10 @@ git module hub-completion:
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
     rev: e6a170cda8ee542ec5f1384c9643d4330ee6b181
+
+git module tagbak:
+    url: https://github.com/ttscoff/tagbak
+    pick:
+        - tagbak
+        - bookmark
+    rev: 86144aaece6086a39da4c226c6b9b3c8867a4a8f
