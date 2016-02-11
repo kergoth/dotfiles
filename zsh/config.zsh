@@ -45,6 +45,9 @@ setopt complete_aliases
 # Allow comments in an interactive shell, this is helpful when pasting
 setopt interactive_comments
 
+# Disable the prompt for rm * or rm foo/*, as I use rm -I by default
+setopt rm_star_silent
+
 # Let ^W only erase individual path components, as bash does
 autoload -U select-word-style
 select-word-style normal
