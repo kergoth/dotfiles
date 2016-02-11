@@ -3,7 +3,7 @@
 # $XDG_DATA_HOME/../bin.
 
 GEM="${GEM:-gem}"
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 GEMENV_HOME="${GEMENV_HOME:-$XDG_DATA_HOME/gem}"
 
 if [ $# -eq 0 ]; then

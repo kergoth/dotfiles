@@ -83,7 +83,7 @@ END
 }
 
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 VERTS_HOME="${VERTS_HOME:-$XDG_DATA_HOME/luaenvs}"
 
 if [ $# -eq 0 ]; then

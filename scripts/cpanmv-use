@@ -1,6 +1,6 @@
 #!/bin/sh
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 CPANM_HOME="${CPANM_HOME:-$XDG_DATA_HOME/perlenvs}"
 
 if [ $# -eq 0 ]; then

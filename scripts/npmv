@@ -2,7 +2,7 @@
 # Install packages into isolated environments for npm/node, then link/wrap
 # binaries/scripts into $XDG_DATA_HOME/../bin
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 NPMENV_HOME="${NPMENV_HOME:-$XDG_DATA_HOME/npm_envs}"
 
 if [ $# -eq 0 ]; then

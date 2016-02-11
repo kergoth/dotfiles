@@ -1,6 +1,6 @@
 #!/bin/sh
 
-XDG_DATA_HOME="${XDG_DATA_HOME:-~/.local/share}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
 for brewenv in "$HOMEBREWS_HOME/"*/; do
     echo "Updating $brewenv"

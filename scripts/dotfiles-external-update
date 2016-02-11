@@ -20,7 +20,7 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 if ! which peru >/dev/null 2>&1; then
     "$dotfilesdir/scripts/pipv3" peru || die "peru install failed"
 fi
-PATH="$PATH:${XDG_DATA_HOME:-~/.local/share}/../bin"
+PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 
 peru reup || echo >&2 "peru reup failed"
 peru sync -f || die "peru sync failed"
