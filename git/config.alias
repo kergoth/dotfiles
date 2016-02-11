@@ -45,10 +45,10 @@
 
 	# Drop the current modifications. Stashes, then drops the stash,
 	# leaving a dangling commit with the changes.
-	drop = !git mstash dropped && git stash drop
+	drop = "!f(){ git mstash \"$@\" dropped && git stash drop; }; f"
 
 	# Save the current modifications to the stash, but keep them.
-	save = !git mstash saved && git stash apply
+	save = "!f(){ git mstash \"$@\" saved && git stash apply; }; f"
 
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ if [ $# -gt 0 ]; then since="$1"; shift; else since="week"; fi; git lg --since=\"last $since\" "$@"; }; f"
