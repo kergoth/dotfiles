@@ -42,6 +42,9 @@ setopt HIST_REDUCE_BLANKS
 #   like: git comm-[tab]
 setopt complete_aliases
 
+# Allow comments in an interactive shell, this is helpful when pasting
+setopt interactive_comments
+
 # Let ^W only erase individual path components, as bash does
 autoload -U select-word-style
 select-word-style normal
