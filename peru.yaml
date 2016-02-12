@@ -3,7 +3,6 @@ imports:
     autoenv: zsh/plugins/autoenv
     z: zsh/plugins/z
     zsh-bd: zsh/plugins/bd
-    zsh-command-not-found: zsh/plugins/command-not-found
     zsh-completions: zsh/plugins/completions
     zsh-git-escape-magic: zsh/plugins/git-escape-magic
     zsh-globalias: zsh/plugins/globalias
@@ -117,10 +116,6 @@ git module zsh-git-escape-magic:
 git module autoenv:
     url: https://github.com/kennethreitz/autoenv
     rev: efb7e7e9d9c59c6452157b4760b8521b08db705a
-
-git module zsh-command-not-found:
-    url: https://github.com/Tarrasch/zsh-command-not-found
-    rev: c8c330b894a723ab7ba4dd2a8969cd71ea2df730
 
 curl module iterm2-zsh:
     url: https://iterm2.com/misc/zsh_startup.in
