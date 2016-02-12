@@ -8,9 +8,13 @@ override_dh_auto_build:
 	dh_auto_build
 	$(MAKE) -C docs
 
+hgsrc_defined:
+	# Use "! -z" instead of "-n", because "-n" without arguments is true
+	test ! -z $(HGSRC) && test -d $(HGSRC) || (echo "$(HGSRC) is not a directory"; false)
+
 ifeq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
-override_dh_auto_test:
-	cd tests &&  python run-tests.py --with-hg=`which hg` --blacklist=$(CURDIR)/debian/test-blacklist
+override_dh_auto_test: hgsrc_defined
+	cd tests && python $(HGSRC)/tests/run-tests.py --with-hg=$(HGSRC)/hg --blacklist=$(CURDIR)/debian/test-blacklist
 endif
 
 override_dh_python2:

@@ -34,8 +34,8 @@ try:
     gboptslist = getattr(wireproto, 'gboptslist', None)
     gboptsmap = getattr(wireproto, 'gboptsmap', None)
 except (ImportError, AttributeError):
-    raise util.Abort('Your Mercurial is too old for this version of Evolve\n'
-                     'requires version 3.0.1 or above')
+    raise error.Abort('Your Mercurial is too old for this version of Evolve\n'
+                      'requires version 3.0.1 or above')
 
 # Start of simple4server specific content
 
@@ -101,10 +101,11 @@ def _getobsmarkersstream(repo, heads=None, common=None):
 if not util.safehasattr(obsolete.obsstore, 'relevantmarkers'):
     # from evolve extension: 1a23c7c52a43
     class pruneobsstore(obsolete.obsstore):
-        """And extended obsstore class that read parent information from v1 format
+        """And extended obsstore class that read parent information from v1
+        format
 
-        Evolve extension adds parent information in prune marker. We use it to make
-        markers relevant to pushed changeset."""
+        Evolve extension adds parent information in prune marker.
+        We use it to make markers relevant to pushed changeset."""
 
         def __init__(self, *args, **kwargs):
             self.prunedchildren = {}
@@ -237,7 +238,8 @@ def srv_obshash(repo, proto, nodes):
 
 # from evolve extension: 3249814dabd1
 def srv_obshash1(repo, proto, nodes):
-    return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes), version=1))
+    return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes),
+                                version=1))
 
 # from evolve extension: 3249814dabd1
 def capabilities(orig, repo, proto):

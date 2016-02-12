@@ -6,7 +6,7 @@
   > obsmarkers-exchange-debug=true
   > bundle2-exp=true
   > [ui]
-  > ssh=python "$TESTDIR/dummyssh"
+  > ssh=python "$RUNTESTDIR/dummyssh"
   > [phases]
   > publish = False
   > [extensions]
@@ -144,7 +144,7 @@ some common hidden
   adding changesets
   adding manifests
   adding file changes
-  added 1 changesets with 0 changes to 3 files (+1 heads)
+  added 1 changesets with 0 changes to 1 files (+1 heads)
   obsmarker-exchange: 208 bytes received
   1 new obsolescence markers
   (run 'hg heads' to see heads, 'hg merge' to merge)

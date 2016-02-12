@@ -3,7 +3,8 @@
 - Add a new wire protocol command to exchange obsolescence markers. Sending the
   raw file as a binary instead of using pushkey hack.
 - Add a "push done" notification
-- Push obsolescence marker before anything else (This works around the lack of global transaction)
+- Push obsolescence marker before anything else (This works around the lack
+of global transaction)
 
 """
 
@@ -61,7 +62,8 @@ def syncpush(orig, repo, remote):
 
 def client_notifypushend(self):
     """wire peer  command to notify a push is done"""
-    self.requirecap('_push_experiment_notifypushend_0', _('hook once push is all done'))
+    self.requirecap('_push_experiment_notifypushend_0',
+                    _('hook once push is all done'))
     return self._call('push_experiment_notifypushend_0')
 
 
@@ -75,7 +77,7 @@ def srv_notifypushend(repo, proto):
 def augmented_push(orig, repo, remote, *args, **kwargs):
     """push wrapped that call the wire protocol command"""
     if not remote.canpush():
-        raise util.Abort(_("destination does not support push"))
+        raise error.Abort(_("destination does not support push"))
     if (obsolete.isenabled(repo, obsolete.exchangeopt) and repo.obsstore
         and remote.capable('_push_experiment_pushobsmarkers_0')):
         # push marker early to limit damage of pushing too early.
@@ -104,8 +106,10 @@ def capabilities(orig, repo, proto):
 def extsetup(ui):
     wireproto.wirepeer.push_experiment_pushobsmarkers_0 = client_pushobsmarkers
     wireproto.wirepeer.push_experiment_notifypushend_0 = client_notifypushend
-    wireproto.commands['push_experiment_pushobsmarkers_0'] = (srv_pushobsmarkers, '')
-    wireproto.commands['push_experiment_notifypushend_0'] = (srv_notifypushend, '')
+    wireproto.commands['push_experiment_pushobsmarkers_0'] = \
+        (srv_pushobsmarkers, '')
+    wireproto.commands['push_experiment_notifypushend_0'] = \
+        (srv_notifypushend, '')
     extensions.wrapfunction(wireproto, 'capabilities', capabilities)
     extensions.wrapfunction(obsolete, 'syncpush', syncpush)
     extensions.wrapfunction(localrepo.localrepository, 'push', augmented_push)

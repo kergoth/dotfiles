@@ -150,7 +150,8 @@ def cmddrop(ui, repo, *revs, **opts):
                 stripmarker(ui, repo, markers)
         # strip the changeset
         with timed(ui, 'strip nodes'):
-            repair.strip(ui, repo, list(allnodes), backup="all", topic='drophack')
+            repair.strip(ui, repo, list(allnodes), backup="all",
+                         topic='drophack')
 
     finally:
         lockmod.release(lock, wlock)

@@ -204,7 +204,7 @@ test obsmarkers exchange.
   adding changesets
   adding manifests
   adding file changes
-  added 1 changesets with 1 changes to 2 files (+1 heads)
+  added 1 changesets with 1 changes to 1 files (+1 heads)
   1 new obsolescence markers
   (run 'hg heads' to see heads, 'hg merge' to merge)
   1 new unstable changesets

@@ -41,6 +41,9 @@ Revive usage
   @  1:[0-9a-f]{12} a (re)
   
   $ hg touch .
+  [1] a
+  reviving this changeset will create divergence unless you make a duplicate.
+  (a)llow divergence or (d)uplicate the changeset?  a
   2 new divergent changesets
   $ hg log -G
   @  4:[0-9a-f]{12} a (re)
@@ -110,3 +113,15 @@ check move data kept after rebase on touch:
   A gna2
     gna1
   R gna1
+
+check that the --duplicate option does not create divergence
+
+  $ hg touch --duplicate 11 --hidden
+  1 new unstable changesets
+
+check that reviving a changeset with no successor does not show the prompt
+
+  $ hg prune 14
+  1 changesets pruned
+  $ hg touch 14 --hidden
+  1 new unstable changesets

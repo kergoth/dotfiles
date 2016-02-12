@@ -305,6 +305,16 @@ that are not reachable from another bookmark or head
   |
   o  0:54ccbc537fc2 add cA
   
+Test edge cases of bookmark -D
+  $ hg book -D book2 -m hello
+  abort: Cannot use both -m and -D
+  [255]
+
+  $ hg book -Draster-fix
+  abort: Error, please check your command
+  (make sure to put a space between -D and your bookmark name)
+  [255]
+
 Test that direct access make changesets visible
 
   $ hg export 2db36d8066ff 02bcbc3f6e56
@@ -437,6 +447,7 @@ With severals hidden sha, rebase of one hidden stack onto another one:
   |/
   o  0:54ccbc537fc2 add cA
   
+
 Check that amending in the middle of a stack does not show obsolete revs
 Since we are doing operation in the middle of the stack we cannot just
 have createmarkers as we are creating instability
@@ -525,8 +536,14 @@ Check that rebasing a commit twice makes the commit visible again
   |/
   o  14:d66ccb8c5871 add cL
   |
-  $ hg strip -r 104eed5354c7
-  1 changesets pruned
+  $ hg strip -r 210589181b14
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory now at d66ccb8c5871
+  2 changesets pruned
+
+Using a hash prefix solely made of digits should work
+  $ hg update 210589181
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg rebase -d 18 -r 16 --keep
   rebasing 16:a438c045eb37 "add cN"
   $ hg log -r 14:: -G
@@ -651,7 +668,7 @@ check that pruning and inhibited node does not confuse anything
   adding manifests
   adding file changes
   added 2 changesets with 1 changes to 2 files (+1 heads)
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  (run 'hg heads .' to see heads, 'hg merge' to merge)
 
  Only allow direct access and check that evolve works like before
 (also disable evolve commands to avoid hint about using evolve)
@@ -700,6 +717,17 @@ Empty commit
   nothing changed
   [1]
 
+Check that the behavior of rebase with obsolescence markers is maintained
+despite inhibit
+
+  $ hg up a438c045eb37
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg rebase -r 15:: -d 21 --config experimental.rebaseskipobsolete=True
+  note: not rebasing 15:2d66e189f5b5 "add cM", already in destination as 21:721c3c279519 "add cM"
+  rebasing 16:a438c045eb37 "add cN"
+  $ hg up -q 2d66e189f5b5 # To inhibit it as the rest of test depends on it
+  $ hg up -q 21
+
 Directaccess should load after some extensions precised in the conf
 With no extension specified:
 
@@ -714,7 +742,7 @@ With no extension specified:
   > EOF
   $ hg id
   ['rebase', 'strip', 'evolve', 'directaccess', 'inhibit', 'testextension']
-  721c3c279519 tip
+  721c3c279519
 
 With test_extension specified:
   $ cat >> $HGRCPATH << EOF
@@ -723,7 +751,7 @@ With test_extension specified:
   > EOF
   $ hg id
   ['rebase', 'strip', 'evolve', 'inhibit', 'testextension', 'directaccess']
-  721c3c279519 tip
+  721c3c279519
 
 Inhibit should not work without directaccess
   $ cat >> $HGRCPATH <<EOF
@@ -738,7 +766,6 @@ Inhibit should not work without directaccess
   $ echo "directaccess=$(echo $(dirname $TESTDIR))/hgext/directaccess.py" >> $HGRCPATH
   $ cd ..
 
-
 hg push should not allow directaccess unless forced with --hidden
 We copy the inhibhit repo to inhibit2 and make some changes to push to inhibit
 
@@ -746,6 +773,7 @@ We copy the inhibhit repo to inhibit2 and make some changes to push to inhibit
   $ pwd=$(pwd)
   $ cd inhibit
   $ mkcommit pk
+  created new head
   $ hg id
   003a4735afde tip
   $ echo "OO" > pk
@@ -767,8 +795,85 @@ Visible commits can still be pushed
   adding changesets
   adding manifests
   adding file changes
-  added 1 changesets with 1 changes to 1 files
+  added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+
+Create a stack (obsolete with successor in dest) -> (not obsolete) and rebase
+it. We expect to not see the stack at the end of the rebase.
+  $ hg log -G  -r "25::"
+  @  25:71eb4f100663 add pk
+  |
+  $ hg up -C 22
+  1 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit Dk
+  $ hg prune 22 -s 25
+  1 changesets pruned
+  $ hg rebase -s 22 -d 25 --config experimental.rebaseskipobsolete=True
+  note: not rebasing 22:46cb6daad392 "add cN", already in destination as 25:71eb4f100663 "add pk"
+  rebasing 26:7ad60e760c7b "add Dk" (tip)
+  $ hg log -G  -r "25::"
+  @  27:1192fa9fbc68 add Dk
+  |
+  o  25:71eb4f100663 add pk
+  |
+
+Create a stack (obsolete with succ in dest) -> (not obsolete) -> (not obsolete).
+Rebase the first two revs of the stack onto dest, we expect to see one new
+revision on the destination and everything visible.
+  $ hg up 25
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit Dl
+  created new head
+  $ mkcommit Dp
+  $ mkcommit Do
+  $ hg log -G -r "25::"
+  @  30:b517facce1ef add Do
+  |
+  o  29:c5a47ab27c2e add Dp
+  |
+  o  28:8c1c2edbaf1b add Dl
+  |
+  | o  27:1192fa9fbc68 add Dk
+  |/
+  o  25:71eb4f100663 add pk
+  |
+  $ hg prune 28 -s 27
+  1 changesets pruned
+  $ hg up 25
+  0 files updated, 0 files merged, 3 files removed, 0 files unresolved
+  $ hg rebase -r "28 + 29" --keep -d 27 --config experimental.rebaseskipobsolete=True
+  note: not rebasing 28:8c1c2edbaf1b "add Dl", already in destination as 27:1192fa9fbc68 "add Dk"
+  rebasing 29:c5a47ab27c2e "add Dp"
+  $ hg log -G  -r "25::"
+  o  31:7d8affb1f604 add Dp
+  |
+  | o  30:b517facce1ef add Do
+  | |
+  | o  29:c5a47ab27c2e add Dp
+  | |
+  | o  28:8c1c2edbaf1b add Dl
+  | |
+  o |  27:1192fa9fbc68 add Dk
+  |/
+  @  25:71eb4f100663 add pk
+  |
+
+Rebase the same stack in full on the destination, we expect it to disappear
+and only see the top revision added to destination. We don\'t expect 29 to be
+skipped as we used --keep before.
+  $ hg rebase -s 28 -d 27 --config experimental.rebaseskipobsolete=True
+  note: not rebasing 28:8c1c2edbaf1b "add Dl", already in destination as 27:1192fa9fbc68 "add Dk"
+  rebasing 29:c5a47ab27c2e "add Dp"
+  rebasing 30:b517facce1ef "add Do"
+  $ hg log -G  -r "25::"
+  o  32:1d43fff9e26f add Do
+  |
+  o  31:7d8affb1f604 add Dp
+  |
+  o  27:1192fa9fbc68 add Dk
+  |
+  @  25:71eb4f100663 add pk
+  |
 
 Pulling from a inhibit repo to a non-inhibit repo should work
 
@@ -787,3 +892,16 @@ Pulling from a inhibit repo to a non-inhibit repo should work
   searching for changes
   no changes found
   adding remote bookmark foo
+
+Test that bookmark -D can take multiple branch names
+  $ cd ../inhibit
+  $ hg bookmark book2 book1 book3
+  $ touch foo && hg add foo && hg ci -m "add foo"
+  created new head
+  $ hg up book1
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  (activating bookmark book1)
+  $ hg bookmark -D book2 book3
+  bookmark 'book2' deleted
+  bookmark 'book3' deleted
+  1 changesets pruned

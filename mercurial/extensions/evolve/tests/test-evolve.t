@@ -601,6 +601,7 @@ Test graft --continue
   $ echo 3 > 1
   $ hg resolve -m 1
   (no more unresolved files)
+  continue: hg graft --continue
   $ hg graft --continue -O
   grafting 7:a5bfd90a2f29 "conflict" (tip)
   $ glog --hidden
@@ -1397,3 +1398,54 @@ Create a split commit
   working directory is now at 43c3f5ef149f
 
 
+Check that dirstate changes are kept at failure for conflicts (issue4966)
+----------------------------------------
+
+  $ echo "will be amended" > newfile
+  $ hg commit -m "will be amended"
+  $ hg parents
+  37	: will be amended - test
+
+  $ echo "will be evolved safely" >> a
+  $ hg commit -m "will be evolved safely"
+
+  $ echo "will cause conflict at evolve" > newfile
+  $ echo "newly added" > newlyadded
+  $ hg add newlyadded
+  $ hg commit -m "will cause conflict at evolve"
+
+  $ hg update -q 37
+  $ echo "amended" > newfile
+  $ hg amend -m "amended"
+  2 new unstable changesets
+
+  $ hg evolve --rev "37::"
+  move:[38] will be evolved safely
+  atop:[41] amended
+  move:[39] will cause conflict at evolve
+  atop:[42] will be evolved safely
+  merging newfile
+  warning: conflicts while merging newfile! (edit, then use 'hg resolve --mark')
+  evolve failed!
+  fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
+  abort: unresolved merge conflicts (see hg help resolve)
+  [255]
+
+  $ glog -r "36::" --hidden
+  @  42:c904da5245b0@default(draft) will be evolved safely
+  |
+  o  41:34ae045ec400@default(draft) amended
+  |
+  | x  40:e88bee38ffc2@default(draft) temporary amend commit for 36030b147271
+  | |
+  | | o  39:02e943732647@default(draft) will cause conflict at evolve
+  | | |
+  | | x  38:f8e30e9317aa@default(draft) will be evolved safely
+  | |/
+  | x  37:36030b147271@default(draft) will be amended
+  |/
+  o  36:43c3f5ef149f@default(draft) add uu
+  |
+
+  $ hg status newlyadded
+  A newlyadded

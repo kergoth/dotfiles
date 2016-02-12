@@ -5,9 +5,12 @@
 # GNU General Public License version 2 or any later version.
 """Deprecated extension that formely introduces "Changeset Obsolescence".
 
-This concept is now partially in Mercurial core (starting with mercurial 2.3). The remaining logic have been grouped with the evolve extension.
+This concept is now partially in Mercurial core (starting with mercurial 2.3).
+The remaining logic have been grouped with the evolve extension.
 
-Some code cemains in this extensions to detect and convert prehistoric format of obsolete marker than early user may have create. Keep it enabled if you were such user.
+Some code cemains in this extensions to detect and convert prehistoric format
+of obsolete marker than early user may have create. Keep it enabled if you
+were such user.
 """
 
 from mercurial import util
@@ -15,13 +18,14 @@ from mercurial import util
 try:
     from mercurial import obsolete
 except ImportError:
-    raise util.Abort('Obsolete extension requires Mercurial 2.3 (or later)')
+    raise error.Abort('Obsolete extension requires Mercurial 2.3 (or later)')
 
 import sys
 import json
 
 from mercurial import cmdutil
 from mercurial import error
+from mercurial.i18n import _
 from mercurial.node import bin, nullid
 
 
@@ -50,8 +54,8 @@ def reposetup(ui, repo):
         if not data:
             data = repo.svfs.tryread('obsoletemarkers')
         if data:
-            raise util.Abort('old format of obsolete marker detected!\n'
-                             'run `hg debugconvertobsolete` once.')
+            raise error.Abort('old format of obsolete marker detected!\n'
+                              'run `hg debugconvertobsolete` once.')
 
 def _obsdeserialise(flike):
     """read a file like object serialised with _obsserialise
@@ -65,7 +69,7 @@ def _obsdeserialise(flike):
         subnode = bin(subhex)
         if subnode == nullid:
             subnode = None
-        rels.setdefault( subnode, set()).add(bin(objhex))
+        rels.setdefault(subnode, set()).add(bin(objhex))
     return rels
 
 cmdtable = {}
@@ -153,7 +157,7 @@ def cmddebugconvertobsolete(ui, repo):
         del repo._importoldobsolete
         l.release()
     if not some:
-            ui.warn('nothing to do\n')
+        ui.warn(_('nothing to do\n'))
     ui.status('%i obsolete marker converted\n' % cnt)
     if err:
         ui.write_err('%i conversion failed. check you graph!\n' % err)

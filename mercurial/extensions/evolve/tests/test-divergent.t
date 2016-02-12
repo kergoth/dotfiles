@@ -67,4 +67,45 @@ With --all --any we dedupe the divergent and solve the divergence once
   |
   o  0:135f39f4bd78@default(draft) add _a []
   
+Test divergence resolution when it yields to an empty commit (issue4950)
+cdivergent2 contains the same content than cdivergent1 and they are divergent
+versions of the revision _c
+
+  $ hg up "desc(_a)"
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ mkcommit _c
+  created new head
+  $ hg up "desc(_a)"
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit cdivergent1
+  created new head
+  $ hg up "desc(_a)"
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ echo "cdivergent1" > cdivergent1
+  $ hg add cdivergent1
+  $ hg ci -m "cdivergent2"
+  created new head
+  $ hg prune -s "desc(cdivergent1)" "desc(_c)"
+  1 changesets pruned
+  $ hg prune -s "desc(cdivergent2)" "desc(_c)" --hidden
+  1 changesets pruned
+  2 new divergent changesets
+  $ hg log -G
+  @  8:0a768ef678d9@default(draft) cdivergent2 [divergent]
+  |
+  | o  7:26c7705fee96@default(draft) add cdivergent1 [divergent]
+  |/
+  | o  5:c26f1d3baed2@default(draft) add bdivergent1 []
+  |/
+  o  0:135f39f4bd78@default(draft) add _a []
+  
+  $ hg evolve --all --any --divergent
+  merge:[7] add cdivergent1
+  with: [8] cdivergent2
+  base: [6] add _c
+  updating to "local" conflict
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  working directory is now at 6602ff5a79dc
+ 
   $ cd ..  

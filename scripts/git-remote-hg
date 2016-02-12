@@ -20,7 +20,10 @@ import re
 import sys
 import os
 import posixpath
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json 
 import shutil
 import subprocess
 import urllib

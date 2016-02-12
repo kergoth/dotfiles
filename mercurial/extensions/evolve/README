@@ -28,17 +28,17 @@ Or see the ``doc/`` directory for a local copy.
 Contribute
 ==========
 
-Bugs are to be reported on the mercurial's bug tracker: http://bz.selenic.com/
+Bugs are to be reported on the mercurial's bug tracker: http://bz.mercurial-scm.com/
 Use the the "evolution" component.
 
 Please use the patchbomb extension to send email to mercurial devel. Please
 make sure to use the evolve-ext flag when doing so. You can use a command like
 this:
 
-    hg email --to mercurial-devel@selenic.com --flag evolve-ext --rev '<your patches>'
+    hg email --to mercurial-devel@mercurial-scm.org --flag evolve-ext --rev '<your patches>'
 
 See also
-http://mercurial.selenic.com/wiki/ContributingChanges#Patch_descriptions
+http://mercurial-scm.org/wiki/ContributingChanges#Patch_descriptions
 for guidelines on the patch description.
 
 Please don't forget to update and run the tests when you fix a bug or
@@ -56,12 +56,18 @@ Mercurial on default.)
 Changelog
 =========
 
-5.3.0 --
+5.3.0 -- 2016-02-11
 
-- split: add a new command to split changesets
-
-5.2.2 --
-
+- split: add a new command to split changesets,
+- tests: drop our copy of 'run-tests.py' use core one instead,
+- bookmark: do all bookmark movement within a transaction.
+- evolve: compatibility with Mercurial 3.7
+- evolve: support merge with a single obsolete parent (hg-3.7+ only)
+- evolve: prevent added file to be marked as unknown if evolve fails (issue4966)
+- evolve: stop relying on graftstate file for save evolve state
+          (for `hg evolve --continue`)
+- evolve: fix divergence resolution when it result in an empty commit
+          (issue4950) (hg-3.5+ only)
 - no longer lock the repository for `hg parents` (issue4895)
 - updated help for the `evolve` command
 

@@ -320,9 +320,14 @@ active bookmark as active
      bookA                     19:a2b5c9d9b362
    * bookB                     19:a2b5c9d9b362
  
-Cannot specify multiple revisions with -r
+Lastest revision is selected if multiple are given to -r
   $ hg split -r "desc(_a)::"
-  abort: you can only specify one revision to split
+  (leaving bookmark bookB)
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  adding _d
+  diff --git a/_d b/_d
+  new file mode 100644
+  examine changes to '_d'? [Ynesfdaq?] abort: response expected
   [255]
 
 Cannot split a commit that is not a head if instability is not allowed
@@ -335,4 +340,41 @@ Cannot split a commit that is not a head if instability is not allowed
   abort: cannot split commit: ced8fbcce3a7 not a head
   [255]
 
+Changing evolution level to createmarkers
+  $ echo "[experimental]" >> $HGRCPATH
+  $ echo "evolution=createmarkers" >> $HGRCPATH
+
+Running split without any revision operates on the parent of the working copy
+  $ hg split << EOF
+  > q
+  > EOF
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  adding _d
+  diff --git a/_d b/_d
+  new file mode 100644
+  examine changes to '_d'? [Ynesfdaq?] q
+  
+  abort: user quit
+  [255]
+
+Running split with tip revision, specified as unnamed argument
+  $ hg split . << EOF
+  > q
+  > EOF
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  adding _d
+  diff --git a/_d b/_d
+  new file mode 100644
+  examine changes to '_d'? [Ynesfdaq?] q
+  
+  abort: user quit
+  [255]
+
+Running split with both unnamed and named revision arguments shows an error msg
+  $ hg split . --rev .^ << EOF
+  > q
+  > EOF
+  abort: more than one revset is given
+  (use either `hg split <rs>` or `hg split --rev <rs>`, not both)
+  [255]
 

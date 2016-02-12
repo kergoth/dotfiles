@@ -9,9 +9,9 @@ extension is only recommended for large scale organisations. individual user
 should probably stick on using evolution in its current state, understand its
 concept and provide feedback
 
-This extension provides the ability to "inhibit" obsolescence markers. obsolete 
-revision can be cheaply brought back to life that way. 
-However as the inhibitor are not fitting in an append only model, this is 
+This extension provides the ability to "inhibit" obsolescence markers. obsolete
+revision can be cheaply brought back to life that way.
+However as the inhibitor are not fitting in an append only model, this is
 incompatible with sharing mutable history.
 """
 from mercurial import localrepo
@@ -42,7 +42,7 @@ def reposetup(ui, repo):
             obsinhibit = set()
             raw = self.svfs.tryread('obsinhibit')
             for i in xrange(0, len(raw), 20):
-                obsinhibit.add(raw[i:i+20])
+                obsinhibit.add(raw[i:i + 20])
             return obsinhibit
 
         def commit(self, *args, **kwargs):
@@ -61,7 +61,7 @@ def _update(orig, ui, repo, *args, **kwargs):
     """
     wlock = None
     try:
-        # Evolve is running a hook on lock release to display a warning message 
+        # Evolve is running a hook on lock release to display a warning message
         # if the workind dir's parent is obsolete.
         # We take the lock here to make sure that we inhibit the parent before
         # that hook get a chance to run.
@@ -85,6 +85,11 @@ def _bookmark(orig, ui, repo, *bookmarks, **opts):
     haspruneopt = opts.get('prune', False)
     if not haspruneopt:
         return orig(ui, repo, *bookmarks, **opts)
+    elif opts.get('rename'):
+        raise error.Abort('Cannot use both -m and -D')
+    elif len(bookmarks) == 0:
+        hint = _('make sure to put a space between -D and your bookmark name')
+        raise error.Abort(_('Error, please check your command'), hint=hint)
 
     # Call prune -B
     evolve = extensions.find('evolve')
@@ -92,7 +97,7 @@ def _bookmark(orig, ui, repo, *bookmarks, **opts):
         'new': [],
         'succ': [],
         'rev': [],
-        'bookmark': bookmarks[0],
+        'bookmark': bookmarks,
         'keep': None,
         'biject': False,
     }
@@ -117,7 +122,7 @@ def _filterpublic(repo, nodes):
     Public changesets are already immune to obsolescence"""
     getrev = repo.changelog.nodemap.get
     getphase = repo._phasecache.phase
-    return (n for n in repo._obsinhibit
+    return (n for n in nodes
             if getrev(n) is not None and getphase(repo, getrev(n)))
 
 def _inhibitmarkers(repo, nodes):
@@ -129,13 +134,22 @@ def _inhibitmarkers(repo, nodes):
     if not _inhibitenabled(repo):
         return
 
-    newinhibit = repo.set('::%ln and obsolete()', nodes)
+    # we add (non public()) as a lower boundary to
+    # - use the C code in 3.6 (no ancestors in C as this is written)
+    # - restrict the search space. Otherwise, the ancestors can spend a lot of
+    #   time iterating if you have a check very low in the repo. We do not need
+    #   to iterate over tens of thousand of public revisions with higher
+    #   revision number
+    #
+    # In addition, the revset logic could be made significantly smarter here.
+    newinhibit = repo.revs('(not public())::%ln and obsolete()', nodes)
     if newinhibit:
+        node = repo.changelog.node
         lock = tr = None
         try:
             lock = repo.lock()
             tr = repo.transaction('obsinhibit')
-            repo._obsinhibit.update(c.node() for c in newinhibit)
+            repo._obsinhibit.update(node(r) for r in newinhibit)
             _schedulewrite(tr, _filterpublic(repo, repo._obsinhibit))
             repo.invalidatevolatilesets()
             tr.close()
@@ -176,6 +190,16 @@ def _createmarkers(orig, repo, relations, flag=0, date=None, metadata=None):
     finally:
         lockmod.release(tr, lock)
 
+def _filterobsoleterevswrap(orig, repo, rebasesetrevs, *args, **kwargs):
+    repo._notinhibited = rebasesetrevs
+    try:
+        repo.invalidatevolatilesets()
+        r = orig(repo, rebasesetrevs, *args, **kwargs)
+    finally:
+        del repo._notinhibited
+        repo.invalidatevolatilesets()
+    return r
+
 def transactioncallback(orig, repo, desc, *args, **kwargs):
     """ Wrap localrepo.transaction to inhibit new obsolete changes """
     def inhibitposttransaction(transaction):
@@ -183,13 +207,37 @@ def transactioncallback(orig, repo, desc, *args, **kwargs):
         # obsolete commit to inhibit them
         visibleobsolete = repo.revs('obsolete() - hidden()')
         ignoreset = set(getattr(repo, '_rebaseset', []))
+        ignoreset |= set(getattr(repo, '_obsoletenotrebased', []))
         visibleobsolete = list(r for r in visibleobsolete if r not in ignoreset)
         if visibleobsolete:
             _inhibitmarkers(repo, [repo[r].node() for r in visibleobsolete])
     transaction = orig(repo, desc, *args, **kwargs)
     if desc != 'strip' and _inhibitenabled(repo):
-        transaction.addpostclose('inhibitposttransaction', inhibitposttransaction)
+        transaction.addpostclose('inhibitposttransaction',
+                                 inhibitposttransaction)
     return transaction
+
+
+# We wrap these two functions to address the following scenario:
+# - Assuming that we have markers between commits in the rebase set and
+#   destination and that these markers are inhibited
+# - At the end of the rebase the nodes are still visible because rebase operate
+#   without inhibition and skip these nodes
+# We keep track in repo._obsoletenotrebased of the obsolete commits skipped by
+# the rebase and lift the inhibition in the end of the rebase.
+
+def _computeobsoletenotrebased(orig, repo, *args, **kwargs):
+    r = orig(repo, *args, **kwargs)
+    repo._obsoletenotrebased = r.keys()
+    return r
+
+def _clearrebased(orig, ui, repo, *args, **kwargs):
+    r = orig(ui, repo, *args, **kwargs)
+    tonode = repo.changelog.node
+    if util.safehasattr(repo, '_obsoletenotrebased'):
+        _deinhibitmarkers(repo, [tonode(k) for k in repo._obsoletenotrebased])
+    return r
+
 
 def extsetup(ui):
     # lets wrap the computation of the obsolete set
@@ -202,8 +250,10 @@ def extsetup(ui):
         obs = obsfunc(repo)
         if _inhibitenabled(repo):
             getrev = repo.changelog.nodemap.get
+            blacklist = getattr(repo, '_notinhibited', set())
             for n in repo._obsinhibit:
-                obs.discard(getrev(n))
+                if getrev(n) not in blacklist:
+                    obs.discard(getrev(n))
         return obs
     try:
         extensions.find('directaccess')
@@ -228,6 +278,21 @@ def extsetup(ui):
     # wrap update to make sure that no obsolete commit is visible after an
     # update
     extensions.wrapcommand(commands.table, 'update', _update)
+    try:
+        rebase = extensions.find('rebase')
+        if rebase:
+            if util.safehasattr(rebase, '_filterobsoleterevs'):
+                extensions.wrapfunction(rebase,
+                                        '_filterobsoleterevs',
+                                        _filterobsoleterevswrap)
+            extensions.wrapfunction(rebase, 'clearrebased', _clearrebased)
+            if util.safehasattr(rebase, '_computeobsoletenotrebased'):
+                extensions.wrapfunction(rebase,
+                                        '_computeobsoletenotrebased',
+                                        _computeobsoletenotrebased)
+
+    except KeyError:
+        pass
     # There are two ways to save bookmark changes during a transation, we
     # wrap both to add inhibition markers.
     extensions.wrapfunction(bookmarks.bmstore, 'recordchange', _bookmarkchanged)

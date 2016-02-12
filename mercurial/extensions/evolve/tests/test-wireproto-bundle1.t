@@ -3,7 +3,7 @@
   > [defaults]
   > amend=-d "0 0"
   > [ui]
-  > ssh=python "$TESTDIR/dummyssh"
+  > ssh=python "$RUNTESTDIR/dummyssh"
   > [phases]
   > publish = False
   > [extensions]

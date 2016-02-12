@@ -1,5 +1,5 @@
 """ This extension provides direct access
-It is the ability to refer and access hidden sha in commands provided that you 
+It is the ability to refer and access hidden sha in commands provided that you
 know their value.
 For example hg log -r xxx where xxx is a commit has should work whether xxx is
 hidden or not as we assume that the user knows what he is doing when referring
@@ -72,7 +72,8 @@ def _computehidden(repo):
 
 def setupdirectaccess():
     """ Add two new filtername that behave like visible to provide direct access
-    and direct access with warning. Wraps the commands to setup direct access """
+    and direct access with warning. Wraps the commands to setup direct access
+    """
     repoview.filtertable.update({'visible-directaccess-nowarn': _computehidden})
     repoview.filtertable.update({'visible-directaccess-warn': _computehidden})
     branchmap.subsettable['visible-directaccess-nowarn'] = 'visible'
@@ -131,7 +132,7 @@ hashre = util.re.compile('[0-9a-fA-F]{1,40}')
 
 _listtuple = ('symbol', '_list')
 
-def gethashsymbols(tree):
+def gethashsymbols(tree, maxrev):
     # Returns the list of symbols of the tree that look like hashes
     # for example for the revset 3::abe3ff it will return ('abe3ff')
     if not tree:
@@ -139,8 +140,12 @@ def gethashsymbols(tree):
 
     if len(tree) == 2 and tree[0] == "symbol":
         try:
-            int(tree[1])
-            return []
+            n = int(tree[1])
+            # This isn't necessarily a rev number, could be a hash prefix
+            if n > maxrev:
+                return [tree[1]]
+            else:
+                return []
         except ValueError as e:
             if hashre.match(tree[1]):
                 return [tree[1]]
@@ -155,7 +160,7 @@ def gethashsymbols(tree):
     elif len(tree) >= 3:
         results = []
         for subtree in tree[1:]:
-            results += gethashsymbols(subtree)
+            results += gethashsymbols(subtree, maxrev)
         return results
     else:
         return []
@@ -171,8 +176,8 @@ def _posttreebuilthook(orig, tree, repo):
     if filternm is not None and filternm.startswith('visible-directaccess'):
         prelength = len(repo._explicitaccess)
         accessbefore = set(repo._explicitaccess)
-        repo.symbols = gethashsymbols(tree)
         cl = repo.unfiltered().changelog
+        repo.symbols = gethashsymbols(tree, len(cl))
         for node in repo.symbols:
             try:
                 node = cl._partialmatch(node)
@@ -185,8 +190,8 @@ def _posttreebuilthook(orig, tree, repo):
         if prelength != len(repo._explicitaccess):
             if repo.filtername != 'visible-directaccess-nowarn':
                 unhiddencommits = repo._explicitaccess - accessbefore
-                repo.ui.warn( _("Warning: accessing hidden changesets %s " 
-                                "for write operation\n") % 
-                                (",".join([str(repo.unfiltered()[l]) 
+                repo.ui.warn(_("Warning: accessing hidden changesets %s "
+                                "for write operation\n") %
+                                (",".join([str(repo.unfiltered()[l])
                                     for l in unhiddencommits])))
             repo.invalidatevolatilesets()

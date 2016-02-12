@@ -140,7 +140,7 @@ Test disabling obsolete advertisement
 
   $ echo '[__temporary__]' >> server/.hg/hgrc
   $ echo 'advertiseobsolete=False' >> server/.hg/hgrc
-  $ $TESTDIR/killdaemons.py $DAEMON_PIDS
+  $ $RUNTESTDIR/killdaemons.py $DAEMON_PIDS
   $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log
   $ cat hg.pid >> $DAEMON_PIDS
 
@@ -150,7 +150,7 @@ Test disabling obsolete advertisement
   phases	
 
   $ echo 'advertiseobsolete=True' >> server/.hg/hgrc
-  $ $TESTDIR/killdaemons.py $DAEMON_PIDS
+  $ $RUNTESTDIR/killdaemons.py $DAEMON_PIDS
   $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log
   $ cat hg.pid >> $DAEMON_PIDS
 

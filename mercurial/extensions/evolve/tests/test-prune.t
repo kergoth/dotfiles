@@ -279,11 +279,15 @@ yoinked from test-mq-strip.t
   $ cd ..
   $ hg init bookmarks
   $ cd bookmarks
-  $ hg debugbuilddag '..<2.*1/2:m<2+3:c<m+3:a<2.:b'
+  $ hg debugbuilddag '..<2.*1/2:m<2+3:c<m+3:a<2.:b<m+2:d<2.:e<m+1:f'
   $ hg bookmark -r 'a' 'todelete'
   $ hg bookmark -r 'b' 'B'
   $ hg bookmark -r 'b' 'nostrip'
   $ hg bookmark -r 'c' 'delete'
+  $ hg bookmark -r 'd' 'multipledelete1'
+  $ hg bookmark -r 'e' 'multipledelete2'
+  $ hg bookmark -r 'f' 'singlenode1'
+  $ hg bookmark -r 'f' 'singlenode2'
   $ hg up -C todelete
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   (activating bookmark todelete)
@@ -307,6 +311,27 @@ yoinked from test-mq-strip.t
   $ hg bookmarks
      B                         10:ff43616e5d0f
      delete                    6:2702dd0c91e7
+     multipledelete1           12:e46a4836065c
+     multipledelete2           13:b4594d867745
+     singlenode1               14:43227190fef8
+     singlenode2               14:43227190fef8
+  $ hg prune -B multipledelete1 -B multipledelete2
+  bookmark 'multipledelete1' deleted
+  bookmark 'multipledelete2' deleted
+  2 changesets pruned
+  $ hg prune -B singlenode1 -B singlenode2
+  bookmark 'singlenode1' deleted
+  bookmark 'singlenode2' deleted
+  1 changesets pruned
+  $ hg prune -B unknownbookmark
+  abort: bookmark 'unknownbookmark' not found
+  [255]
+  $ hg prune -B unknownbookmark1 -B unknownbookmark2
+  abort: bookmark 'unknownbookmark1,unknownbookmark2' not found
+  [255]
+  $ hg prune -B delete -B unknownbookmark
+  abort: bookmark 'unknownbookmark' not found
+  [255]
   $ hg prune -B delete
   bookmark 'delete' deleted
   3 changesets pruned
@@ -317,23 +342,23 @@ yoinked from test-mq-strip.t
   [255]
 
   $ hg debugobsstorestat
-  markers total:                      4
-      for known precursors:           4
+  markers total:                      7
+      for known precursors:           7
       with parents data:              [04] (re)
-  markers with no successors:         4
+  markers with no successors:         7
                 1 successors:         0
                 2 successors:         0
       more than 2 successors:         0
       available  keys:
-                 user:                4
-  disconnected clusters:              4
-          any known node:             4
+                 user:                7
+  disconnected clusters:              7
+          any known node:             7
           smallest length:            1
           longer length:              1
           median length:              1
           mean length:                1
-      using parents data:             4
-          any known node:             4
+      using parents data:             7
+          any known node:             7
           smallest length:            1
           longer length:              1
           median length:              1
@@ -347,14 +372,22 @@ yoinked from test-mq-strip.t
   (leaving bookmark rg)
   $ hg bookmark r10
   $ hg log -G
-  o  11:cd0038e05e1b[rg] (stable/draft) add rg
+  o  15:cd0038e05e1b[rg] (stable/draft) add rg
   |
-  | @  10:ff43616e5d0f[B r10] (stable/draft) r10
+  | x  14:43227190fef8[] (extinct/draft) r14
+  | |
+  | | x  13:b4594d867745[] (extinct/draft) r13
+  | | |
+  | | | x  12:e46a4836065c[] (extinct/draft) r12
+  | | |/
+  | | o  11:bab5d5bf48bd[] (stable/draft) r11
+  | |/
+  +---@  10:ff43616e5d0f[B r10] (stable/draft) r10
+  | |
+  o |  8:d62d843c9a01[] (stable/draft) r8
+  | |
+  o |  7:e7d9710d9fc6[] (stable/draft) r7
   |/
-  o  8:d62d843c9a01[] (stable/draft) r8
-  |
-  o  7:e7d9710d9fc6[] (stable/draft) r7
-  |
   o    3:2b6d669947cd[] (stable/draft) r3
   |\
   | o  2:fa942426a6fd[] (stable/draft) r2
@@ -366,12 +399,22 @@ yoinked from test-mq-strip.t
   $ hg prune 11
   1 changesets pruned
   $ hg log -G
-  @  10:ff43616e5d0f[B r10] (stable/draft) r10
+  o  15:cd0038e05e1b[rg] (stable/draft) add rg
   |
-  o  8:d62d843c9a01[rg] (stable/draft) r8
-  |
-  o  7:e7d9710d9fc6[] (stable/draft) r7
-  |
+  | x  14:43227190fef8[] (extinct/draft) r14
+  | |
+  | | x  13:b4594d867745[] (extinct/draft) r13
+  | | |
+  | | | x  12:e46a4836065c[] (extinct/draft) r12
+  | | |/
+  | | x  11:bab5d5bf48bd[] (extinct/draft) r11
+  | |/
+  +---@  10:ff43616e5d0f[B r10] (stable/draft) r10
+  | |
+  o |  8:d62d843c9a01[] (stable/draft) r8
+  | |
+  o |  7:e7d9710d9fc6[] (stable/draft) r7
+  |/
   o    3:2b6d669947cd[] (stable/draft) r3
   |\
   | o  2:fa942426a6fd[] (stable/draft) r2
@@ -387,5 +430,5 @@ yoinked from test-mq-strip.t
      B                         8:d62d843c9a01
    * CELESTE                   8:d62d843c9a01
      r10                       8:d62d843c9a01
-     rg                        8:d62d843c9a01
+     rg                        15:cd0038e05e1b
 

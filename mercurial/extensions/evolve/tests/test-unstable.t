@@ -103,17 +103,13 @@ Not supported yet
   $ hg evo --all --any --unstable
   move:[3] merge
   atop:[4] aprime
-  abort: no support for evolving merge changesets yet
-  (Redo the merge and use `hg prune <old> --succ <new>` to obsolete the old one)
-  [255]
+  working directory is now at 0bf3f3a59c8c
   $ hg log -G
-  @  4:47127ea62e5f@default(draft) aprime
-  |
-  | o    3:6b4280e33286@default(draft) merge
-  | |\
-  +---o  2:474da87dd33b@default(draft) add _c
+  @    5:0bf3f3a59c8c@default(draft) merge
+  |\
+  | o  4:47127ea62e5f@default(draft) aprime
   | |
-  | x  1:b3264cec9506@default(draft) add _a
+  o |  2:474da87dd33b@default(draft) add _c
   |/
   o  0:b4952fcf48cf@default(draft) add base
   
@@ -158,9 +154,7 @@ Not supported yet
   
 
   $ hg evo --all --any --unstable
-  move:[3] merge
-  atop:[5] cprime
-  abort: no support for evolving merge changesets yet
+  abort: no support for evolving merge changesets with two obsolete parents yet
   (Redo the merge and use `hg prune <old> --succ <new>` to obsolete the old one)
   [255]
   $ hg log -G
