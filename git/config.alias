@@ -34,7 +34,8 @@
 	lga = !git lg --all
 
 	# Log of all dangling commits
-	lgd = !git lg $(git dangling) $(git for-each-ref | awk '{print $1}' | sed 's,^,^,') $(git reflog show refs/stash | awk '{print $1}' | sed 's,^,^,')
+	dangling = !git fsck | sed -n 's/^dangling commit //p' | git log --stdin --no-walk -g --first-parent -m -p
+	lgd = dangling
 
 	# Remove existing files from the index
 	forget = update-index --force-remove
@@ -56,9 +57,6 @@
 
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ if [ $# -gt 0 ]; then since="$1"; shift; else since="week"; fi; git lg --since=\"last $since\" "$@"; }; f"
-
-	# List dangling commit hashes
-	dangling = !git fsck | sed -n 's/^dangling commit //p'
 
 	# example: git subdo pull
 	subdo = submodule foreach git
