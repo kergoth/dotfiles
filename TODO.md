@@ -1,3 +1,4 @@
+- Bring back zsh-autosuggestions once zsh 5.2 stops segfaulting
 - Move to the XDG paths
     - .wget-hsts
     - .httpie
