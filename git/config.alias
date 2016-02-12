@@ -51,6 +51,7 @@
 	# Drop the current modifications. Stashes, then drops the stash,
 	# leaving a dangling commit with the changes.
 	drop = "!f(){ git mstash \"$@\" dropped && git stash drop; }; f"
+	dropped = dangling '--grep=: dropped'
 
 	# Save the current modifications to the stash, but keep them.
 	save = "!f(){ git mstash \"$@\" saved && git stash apply; }; f"
