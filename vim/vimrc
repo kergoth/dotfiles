@@ -291,6 +291,11 @@ hi def link gitcommitOverflow Error
 hi def link vimModeline Special
 2match vimModeline /vim:\s*set[^:]\{-1,\}:/
 
+" Fix the difficult-to-read default setting for diff text highlighting.  The
+" bang (!) is required since we are overwriting the DiffText setting. The highlighting
+" for "Todo" also looks nice (yellow) if you don't like the "MatchParen" colors.
+hi! link DiffText MatchParen
+
 " Highlight the textwidth column
 if exists('&colorcolumn')
   augroup KergothColorColumn
