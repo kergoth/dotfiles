@@ -620,6 +620,26 @@ if has("multi_byte") | let g:netrw_xstrlen = 0 | endif
 
 " Place .netrwhist and .netrwbook in XDG_DATA_HOME, not $VIMDOTDIR
 let g:netrw_home = $XDG_DATA_HOME . "/vim"
+
+if has('macunix')
+  " Dash.app integration
+  let g:dash_map = {
+        \ 'python'     : 'python2',
+        \ 'lua'        : 'lua',
+        \ 'sh'         : 'man',
+        \ }
+
+  " Map K to look up the current word in dash for supported filetypes
+  augroup DashMap
+    au!
+    for key in keys(g:dash_map)
+      exe 'au FileType ' . key . ' nnoremap <buffer> K :Dash<cr>'
+    endfor
+  augroup END
+
+  " Disable python-mode's pydoc integration, since we're using Dash
+  let g:pymode_doc = 0
+endif
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
