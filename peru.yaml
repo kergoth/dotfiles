@@ -559,10 +559,9 @@ git module gitvoodoo:
     rev: 518f710546d5f110822f6f84a801c66f6dd0982e
 
 git module diff-so-fancy:
-    url: https://github.com/paulirish/dotfiles
-    export: bin
-    pick: bin/diff-so-fancy
-    rev: 63cb8193b0e66cf80ab6332477f1f52c7fbb9311
+    url: https://github.com/stevemao/diff-so-fancy
+    pick: diff-so-fancy
+    rev: 6eed8a95453e0f82f5bcc59d8736d082508d7969
 
 git module hub-completion:
     url: https://github.com/github/hub
