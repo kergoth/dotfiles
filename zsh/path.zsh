@@ -9,7 +9,7 @@ path=(
   $HOME/bin
   $XDG_DATA_HOME/../bin(N:A)
   $DOTFILESDIR/scripts(:A)
-  $DOTFILESDIR/*/scripts(:A)
+  $DOTFILESDIR/*/scripts(N:A)
   /opt/homebrew/bin
   /usr/local/{bin,sbin}
   $path
