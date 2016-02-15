@@ -87,16 +87,17 @@ link () {
     # link zsh/.zshenv.redir ~/.zshenv.redir
     # link zshrc       # links to ~/.zshrc (relatively)
     # link config/curl # links to ~/.config/curl (relatively)
-    dotfile="${1#$PWD/}"
+    dotfile="$(abspath "$1")"
     if [ $# -gt 1 ]; then
         dotfile_dest="$(abspath "$2")"
     else
-        case "$dotfile" in
+        dotfile_base="${dotfile##*/}"
+        case "$dotfile_base" in
             .*)
-                dotfile_dest="$HOME/$dotfile"
+                dotfile_dest="$HOME/$dotfile_base"
                 ;;
             *)
-                dotfile_dest="$HOME/.$dotfile"
+                dotfile_dest="$HOME/.$dotfile_base"
                 ;;
         esac
     fi
@@ -104,7 +105,7 @@ link () {
     if [ "$destdir" != "$dotfile_dest" ]; then
         mkdir -p "$destdir"
     fi
-    dotfile_relpath="$(relpath "$PWD/$dotfile" "$destdir")"
+    dotfile_relpath="$(relpath "$dotfile" "$destdir")"
 
     # Sanity check
     dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
