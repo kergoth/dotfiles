@@ -9,7 +9,7 @@ my $VERSION = "0.3";
 my $vernr = "0.9.1"; # this is the underlying version of Peter Palfraders script
 ##########################################################################
 # allow only a limited set of known (external) colorizers
-my @colorizers = qw(code2color pygmentize);
+my @colorizers = qw(code2color pygmentize mypygmentize);
 ##########################################################################
 #
 # very early check whether this routine is called from less -R or less -r
