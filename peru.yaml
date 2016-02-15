@@ -2,6 +2,7 @@ imports:
     # Zsh
     autoenv: zsh/plugins/autoenv
     z: zsh/plugins/z
+    zsh-autosuggestions: zsh/plugins/autosuggestions
     zsh-bd: zsh/plugins/bd
     zsh-completions: zsh/plugins/completions
     zsh-git-escape-magic: zsh/plugins/git-escape-magic
@@ -593,3 +594,7 @@ git module git-tbdiff:
         git-tbdiff.py: git-tbdiff.real
     pick: git-tbdiff.real
     rev: 047d1c79dfada57522a42f307cd4b0ddcb098934
+
+git module zsh-autosuggestions:
+    url: https://github.com/tarruda/zsh-autosuggestions
+    rev: 45ab49d1f2024f9422ab9eb41178e4d9edf2e91c

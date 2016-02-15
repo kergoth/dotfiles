@@ -53,6 +53,18 @@ autoload -U select-word-style
 select-word-style normal
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
+source $ZSH/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
+# autosuggestions must be loaded before history-substring-search
+source $ZSH/plugins/autosuggestions/zsh-autosuggestions.zsh
+# history-substring-search must be loaded after syntax-highlighting
+source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
+
+# Add history-substring-search-* widgets to list of widgets that clear the autosuggestion
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-search-down)
+
+# Work around https://github.com/tarruda/zsh-autosuggestions/issues/118
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete)
+
 if autoload -Uz bracketed-paste-magic; then
     zle -N bracketed-paste bracketed-paste-magic
 fi
