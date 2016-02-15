@@ -1,0 +1,11 @@
+asciinema-rec () {
+	local rows cols ret
+	rows="$ROWS"
+	cols="$COLUMNS"
+	stty rows 24 cols 80
+	asciinema rec "$@"
+	ret=$?
+	stty rows "$ROWS" cols "$COLUMNS"
+	return $ret
+}
+# vim: set ft=zsh :
