@@ -33,6 +33,7 @@ imports:
     git-pull-requests: scripts
     git-remote-dropbox: scripts
     git-remote-hg: scripts
+    git-tbdiff: scripts
     git-wtf: scripts
     git|git-jump: scripts
     git|git-subtree: scripts
@@ -585,3 +586,10 @@ git module tagbak:
 git module vim-dash:
     url: https://github.com/rizzatti/dash.vim
     rev: 4b01b6cd20fb77089b4222133c791602d140d901
+
+git module git-tbdiff:
+    url: https://github.com/trast/tbdiff
+    move:
+        git-tbdiff.py: git-tbdiff.real
+    pick: git-tbdiff.real
+    rev: 047d1c79dfada57522a42f307cd4b0ddcb098934
