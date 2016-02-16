@@ -8,9 +8,11 @@ case "$1" in
         ;;
     *.diff|*.patch)
         if which diff-so-fancy >/dev/null 2>&1; then
-            exec lesspipe.sh "$1" | diff-so-fancy
+            lesspipe.sh "$1" | diff-so-fancy
+            exit $?
         elif which diff-highlight >/dev/null 2>&1; then
-            exec lesspipe.sh "$1" | diff-highlight
+            lesspipe.sh "$1" | diff-highlight
+            exit $?
         fi
         ;;
 esac
