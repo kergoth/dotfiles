@@ -1,0 +1,6 @@
+#!/bin/sh
+
+mdfind kMDItemContentType=com.apple.application-bundle | while read app; do
+    category=$(/usr/libexec/PlistBuddy -c 'Print :LSApplicationCategoryType' "$app/Contents/Info.plist" 2>/dev/null || echo "unknown")
+    printf '%s\t%s\n' "$app" "${category#public.app-category.}"
+done | sort -k2 -t"$(printf "\t")"
