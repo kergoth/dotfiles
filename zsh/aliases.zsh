@@ -26,7 +26,7 @@ alias smem='smem -k'
 alias ytdl=youtube-dl
 alias pipsi='pipsi --home="$WORKON_HOME"'
 alias parallel='parallel --bibtex'
-alias mr='mr -d "$(dirname "$(find_up .mrconfig)")"'
+alias mr='mr -d "$(find_up .mrconfig)"'
 
 # Convenience when pasting shell snippets
 alias '$='
