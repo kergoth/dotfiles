@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 37231dac3a427321cee4b4166a41cf4f34458114
+    rev: 8af213d3f9c78123d51c5eded7e0395f95f14364
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -224,7 +224,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: e8c075f30d6e003e94c6bab6e37d4e5f7f6056cc
+    rev: 8c68969463383fa2cab3047b995d3f6d52c0b562
 
 # continuously updated session files
 git module vim-obsession:
@@ -238,7 +238,7 @@ git module vim-vinegar:
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
-    rev: 148df8cb2621beb9d5865336ddea7caeb6f6dd79
+    rev: 765e757dbcd05bc9d33debc3e9cab8bda9dabdbf
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
@@ -564,7 +564,7 @@ git module gitvoodoo:
 git module diff-so-fancy:
     url: https://github.com/stevemao/diff-so-fancy
     pick: diff-so-fancy
-    rev: 78b5386e8e587b48d111fb8fee65aef36702006c
+    rev: a0812a1ba6880bd690b773f75d09dc35e7ec3910
 
 git module hub-completion:
     url: https://github.com/github/hub
@@ -597,4 +597,4 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/tarruda/zsh-autosuggestions
-    rev: 0faa2b6584928a17fef8904e8439d1268729f37a
+    rev: aa5ceee256a74b90dfcc7e6351a072e51bf345ca
