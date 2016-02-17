@@ -1,0 +1,8 @@
+find_up () {
+    walk_up "${2:-$PWD}" | while read p; do
+        if [ -e "$p/$1" ]; then
+            echo "$p"
+        fi
+    done
+}
+# vim: set ft=zsh :
