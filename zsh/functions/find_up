@@ -2,7 +2,9 @@ find_up () {
     walk_up "${2:-$PWD}" | while read p; do
         if [ -e "$p/$1" ]; then
             echo "$p"
+            return 0
         fi
     done
+    return 1
 }
 # vim: set ft=zsh :
