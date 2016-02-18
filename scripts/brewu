@@ -12,8 +12,9 @@ usage () {
     echo >&2 "Update homebrew and upgrade its formulas. Lightweight wrapper"
     echo >&2 "around brew update + brew upgrade, and --reinstall for HEAD."
     echo >&2
-    echo >&2 "Optionally specify formulas to update."
-    echo >&2 "NOTE: -a is currently incompatible with specification of formulas."
+    echo >&2 "If no formulas are specified, all which can be upgraded will be"
+    echo >&2 "upgraded. HEAD recipes are always reinstalled, as their versions"
+    echo >&2 "are untracked."
     echo >&2
     echo >&2 "Options:"
     echo >&2 "  -p PREFIX  Specify an alternate homebrew install prefix"
@@ -64,28 +65,32 @@ fi
 
 brew update >/dev/null
 
-if [ $normal_formulas -eq 1 ]; then
-    if [ $dry_run -eq 1 ]; then
-        brew outdated "$@"
-    else
-        if [ $# -eq 0 ]; then
-            set -- --all
-        fi
-        brew upgrade "$@"
-    fi || exit 3
+outdated="$(mktemp -t "${0##*/}")"
+brew outdated --quiet >"$outdated"
+trap 'rm -f "$outdated"' EXIT INT TERM
+
+if [ $# -gt 0 ]; then
+    formula_filter () {
+        grep -E "^$(echo "$@" | tr " " "|") "
+    }
+else
+    formula_filter () {
+        cat
+    }
 fi
 
-if [ $head_formulas -eq 1 ]; then
-    head_filter () {
-        if [ $# -eq 0 ]; then
-            grep ' HEAD$'
-        else
-            grep -E "^$(echo "$@" | tr ' ' '|') " | grep ' HEAD$'
+brew ls --versions | formula_filter "$@" | \
+    while read -r formula versions; do
+        version="$(echo "$versions" | sed "s,* ,,")"
+        if [ $head_formulas -eq 1 ] && [ "$version" = "HEAD" ]; then
+            echo >&2 "Upgrading HEAD formula $formula"
+            if [ $dry_run -eq 0 ]; then
+                brew reinstall --HEAD "$formula"
+            fi
+        elif [ $normal_formulas -eq 1 ] && grep -qx "$formula" "$outdated"; then
+            echo >&2 "Upgrading formula $formula"
+            if [ $dry_run -eq 0 ]; then
+                brew upgrade "$formula"
+            fi
         fi
-    }
-    if [ $dry_run -eq 1 ]; then
-        brew ls --versions | head_filter "$@" | sed 's, HEAD$, (HEAD),'
-    else
-        brew ls --versions | head_filter "$@" | awk '{print $1}' | xargs brew reinstall --HEAD
-    fi || exit 4
-fi
+    done
