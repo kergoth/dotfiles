@@ -110,6 +110,9 @@
 	# Pull with rebase and autostash
 	purr = "!f() { git mstash purring; ret=$?; git pull --rebase; if [ $ret -eq 0 ]; then git stash pop; fi }; f"
 
+	# Run a topic branch interdiff between HEAD and upstream
+	tbdiff-upstream = tbdiff @{u}...HEAD
+
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence @{u}..
 
