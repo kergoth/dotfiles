@@ -110,7 +110,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 99cc7ea060637884293f38efb0d192828adcf8ff
+    rev: 6953a4f892df1095e48d43751ccaf9e3ece02190
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -224,7 +224,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 8c68969463383fa2cab3047b995d3f6d52c0b562
+    rev: eb3e564fb1edfee09fe6aeb57f3388e273da72c8
 
 # continuously updated session files
 git module vim-obsession:
@@ -276,7 +276,7 @@ git module fzf:
     pick:
         - vim/bundle/fzf
         - zsh/plugins/fzf
-    rev: 45108ddd5366da5503c670ae6ab8259b1f434ea0
+    rev: e72a360337548ffe6db0c97e9c79416e42521450
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -597,4 +597,4 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/tarruda/zsh-autosuggestions
-    rev: aa5ceee256a74b90dfcc7e6351a072e51bf345ca
+    rev: ba029e83d0aa2d859d7ac46299462fa5b5a43a68
