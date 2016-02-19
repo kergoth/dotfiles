@@ -1,13 +1,12 @@
-set nocompatible
 filetype off
 
 " Filesystem paths
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
-let &runtimepath = $VIMDOTDIR . "," . &runtimepath . "," . $VIMDOTDIR . "/after"
+let &runtimepath = $VIMDOTDIR . ',' . &runtimepath . ',' . $VIMDOTDIR . '/after'
 
 if !exists('$XDG_DATA_HOME')
-  let $XDG_DATA_HOME = $HOME . "/.local/share"
+  let $XDG_DATA_HOME = $HOME . '/.local/share'
 endif
 
 if !isdirectory(expand('$XDG_DATA_HOME/vim'))
@@ -24,14 +23,14 @@ set directory=$XDG_DATA_HOME/vim/swap,/tmp,/var/tmp,$TEMP
 set backupdir=$XDG_DATA_HOME/vim/backup,/tmp,/var/tmp,$TEMP
 
 " Ensure we cover all temp files for backup file creation
-if $OSTYPE =~ 'darwin'
+if $OSTYPE =~? 'darwin'
   set backupskip+=/private/tmp/*
 endif
 
 " Appropriate path for viminfo
 if has('viminfo')
   if !exists('$VIMINFO')
-    let $VIMINFO = $XDG_DATA_HOME . "/vim/viminfo"
+    let $VIMINFO = $XDG_DATA_HOME . '/vim/viminfo'
   endif
 endif
 
@@ -45,6 +44,7 @@ if has('multi_byte')
   " fileencoding value is used for new files
   let &fileencoding = &encoding
   set fileencodings=ucs-bom,utf-8,default,latin1
+  scriptencoding utf-8
   " set bomb
 endif
 
@@ -103,7 +103,7 @@ augroup vimrc
 
   " Close out the quickfix window if it's the only open window
   fun! <SID>QuickFixClose()
-    if &buftype == 'quickfix'
+    if &buftype ==# 'quickfix'
       " if this window is last on screen, quit
       if winnr('$') < 2
         quit
@@ -202,7 +202,7 @@ endif
 " Ignore binary files matched with grep by default
 set grepformat+=%-OBinary\ file%.%#
 
-if &encoding == 'utf-8'
+if &encoding ==# 'utf-8'
   " Display of hidden characters
   set listchars=tab:»·,eol:¬,extends:❯,precedes:❮
 
@@ -238,7 +238,7 @@ set splitright
 " More useful % matching
 runtime macros/matchit.vim
 
-if &term == 'rxvt-unicode'
+if &term ==# 'rxvt-unicode'
   set t_Co=256
 endif
 
@@ -347,7 +347,7 @@ noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
 
 " Tmux will send xterm-style keys when its xterm-keys option is on
-if &term =~ '^screen'
+if &term =~# '^screen'
   execute "set <xUp>=\e[1;*A"
   execute "set <xDown>=\e[1;*B"
   execute "set <xRight>=\e[1;*C"
@@ -451,7 +451,7 @@ set number
 set titleold=
 
 " Allow setting window title for screen
-if &term =~ '^screen'
+if &term =~# '^screen'
   set t_ts=k
   set t_fs=\
   set notitle
@@ -586,7 +586,7 @@ let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
 let g:syntastic_auto_loc_list = 0
-let g:vundle_default_git_proto = "git"
+let g:vundle_default_git_proto = 'git'
 " let g:EasyMotion_leader_key = '<Leader>'
 
 nmap <leader>G :GundoToggle<CR>
@@ -603,28 +603,28 @@ nnoremap <silent> <c-p> :FZFFiles<cr>
 
 " Add foldlevel to allowed items in modelines
 let g:secure_modelines_allowed_items = [
-            \ "textwidth",   "tw",
-            \ "softtabstop", "sts",
-            \ "tabstop",     "ts",
-            \ "shiftwidth",  "sw",
-            \ "expandtab",   "et",   "noexpandtab", "noet",
-            \ "filetype",    "ft",
-            \ "foldmethod",  "fdm",
-            \ "foldlevel",   "fdl",
-            \ "readonly",    "ro",   "noreadonly", "noro",
-            \ "rightleft",   "rl",   "norightleft", "norl",
-            \ "cindent",     "cin",  "nocindent", "nocin",
-            \ "smartindent", "si",   "nosmartindent", "nosi",
-            \ "autoindent",  "ai",   "noautoindent", "noai",
-            \ "spell", "nospell",
-            \ "spelllang"
+            \ 'textwidth',   'tw',
+            \ 'softtabstop', 'sts',
+            \ 'tabstop',     'ts',
+            \ 'shiftwidth',  'sw',
+            \ 'expandtab',   'et',   'noexpandtab', 'noet',
+            \ 'filetype',    'ft',
+            \ 'foldmethod',  'fdm',
+            \ 'foldlevel',   'fdl',
+            \ 'readonly',    'ro',   'noreadonly', 'noro',
+            \ 'rightleft',   'rl',   'norightleft', 'norl',
+            \ 'cindent',     'cin',  'nocindent', 'nocin',
+            \ 'smartindent', 'si',   'nosmartindent', 'nosi',
+            \ 'autoindent',  'ai',   'noautoindent', 'noai',
+            \ 'spell', 'nospell',
+            \ 'spelllang'
             \ ]
 
 " Vim's strlen works fine while netrw's Strlen is broken
-if has("multi_byte") | let g:netrw_xstrlen = 0 | endif
+if has('multi_byte') | let g:netrw_xstrlen = 0 | endif
 
 " Place .netrwhist and .netrwbook in XDG_DATA_HOME, not $VIMDOTDIR
-let g:netrw_home = $XDG_DATA_HOME . "/vim"
+let g:netrw_home = $XDG_DATA_HOME . '/vim'
 
 if has('macunix')
   " Dash.app integration
@@ -649,7 +649,7 @@ endif
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
 if !exists('$HOSTNAME') && executable('hostname')
-  let $HOSTNAME = substitute(system('hostname -s'), "\n", "", "")
+  let $HOSTNAME = substitute(system('hostname -s'), '\n', '', '')
 endif
 runtime vimrc.$HOSTNAME
 
