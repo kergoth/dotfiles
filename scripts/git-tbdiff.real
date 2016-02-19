@@ -75,7 +75,7 @@ def read_patches(rev_list_args):
     series = []
     diffs = {}
     p = subprocess.Popen(['git', 'log', '--no-color', '-p', '--no-merges',
-                          '--reverse', '--date-order']
+                          '--no-decorate', '--reverse', '--date-order']
                          + rev_list_args,
                          stdout=subprocess.PIPE)
     sha1 = None
