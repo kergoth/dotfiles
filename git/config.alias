@@ -112,6 +112,7 @@
 
 	# Run a topic branch interdiff between HEAD and upstream
 	tbdiff-upstream = tbdiff @{u}...HEAD
+	tbdiff-old-head = tbdiff HEAD@{1}...HEAD
 
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence @{u}..
