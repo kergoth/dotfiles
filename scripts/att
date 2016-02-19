@@ -40,6 +40,11 @@ fi
 
 if [ $# -lt 1 ]; then
     list_sessions
+elif [ $# -gt 1 ]; then
+    echo >&2 "Error: too many arguments"
+    echo >&2
+    echo >&2 "Usage: ${0##*/} [SESSION_NAME]"
+    exit 2
 else
     if [ -n "$ATT_SESSION" ]; then
         echo >&2 "att: already inside an att session"
