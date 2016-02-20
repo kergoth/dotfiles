@@ -27,6 +27,7 @@ alias ytdl=youtube-dl
 alias pipsi='pipsi --home="$WORKON_HOME"'
 alias parallel='parallel --bibtex'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
+alias sshnew='ssh -o "ControlPath none"'
 
 # Convenience when pasting shell snippets
 alias '$='
