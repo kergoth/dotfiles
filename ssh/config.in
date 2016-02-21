@@ -1,7 +1,9 @@
+# vim: set ft=sshconfig :
+
 Protocol 2
 SendEnv LANG LC_*
-HashKnownHosts no
-ServerAliveInterval 15
+HashKnownHosts yes
+ServerAliveInterval 60
 Compression yes
 ForwardX11 no
 NoHostAuthenticationForLocalhost yes
