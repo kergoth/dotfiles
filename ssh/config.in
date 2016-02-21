@@ -9,10 +9,6 @@ ControlMaster auto
 ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
 
-IdentityFile %d/.ssh/%l
-IdentityFile %d/.ssh/id_rsa
-IdentityFile %d/.ssh/id_dsa
-
 %include config.d/*
 
 Host *.local localhost 192.168.* 172.*
