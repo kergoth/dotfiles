@@ -13,8 +13,12 @@
 	id = rev-parse
 	ls = ls-files --exclude-standard
 	lsi = ls-files --exclude-standard --directory -oi
+	d = diff
+	dc = diff --cached
 	staged = diff --cached
 	ignored = lsi
+	r = remote -v
+	b = branch -v
 
 	# remove changes to a file from the index
 	unstage = reset HEAD --
