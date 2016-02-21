@@ -286,6 +286,11 @@ for installscript in "$dotfilesdir/"*/install; do
     if echo "$exclude" | grep -qw "${installdir##*/}"; then
         continue
     fi
+    case "" in
+        "/local")
+            continue
+            ;;
+    esac
 
     do_install "$installscript"
 done
@@ -293,6 +298,10 @@ done
 for includepath in $include; do
     do_install $include/install
 done
+
+if [ -e "/local/install" ]; then
+    do_install "/local/install"
+fi
 
 exit 0
 
