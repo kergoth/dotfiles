@@ -10,9 +10,3 @@ ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
 
 %include config.d/*
-
-Host *.local localhost 192.168.* 172.*
-    ForwardAgent yes
-
-Host *
-    User kergoth
