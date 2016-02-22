@@ -31,7 +31,7 @@
 	amend = commit --amend -C HEAD
 
 	# Clean out the ignored files (i.e. to rebuild)
-	iclean = clean -fdX
+	iclean = xclean -Xf
 
 	# Pretty one line logs
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
