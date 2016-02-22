@@ -248,7 +248,7 @@ if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
 else
   try
-    colorscheme base16-default
+    colorscheme base16-tomorrow
   catch
     colorscheme desert
   endtry
