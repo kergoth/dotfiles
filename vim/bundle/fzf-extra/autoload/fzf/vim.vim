@@ -194,9 +194,14 @@ function! fzf#vim#_lines(all)
   let rest = []
   let buf = bufnr('')
   for b in s:buflisted()
+    let lines = getbufline(b, 1, "$")
+    if empty(lines)
+      let path = fnamemodify(bufname(b), ':p')
+      let lines = filereadable(path) ? readfile(path) : []
+    endif
     call extend(b == buf ? cur : rest,
     \ filter(
-    \   map(getbufline(b, 1, "$"),
+    \   map(lines,
     \       '(!a:all && empty(v:val)) ? "" : printf("[%s]\t%s:\t%s", s:blue(b), s:yellow(v:key + 1), v:val)'),
     \   'a:all || !empty(v:val)'))
   endfor
@@ -427,14 +432,12 @@ endfunction
 " ------------------------------------------------------------------
 " BTags
 " ------------------------------------------------------------------
-function! s:btags_source()
+function! s:btags_source(tag_cmds)
   if !filereadable(expand('%'))
     throw 'Save the file first'
   endif
 
-  for cmd in [
-    \ printf('ctags -f - --sort=no --excmd=number --language-force=%s %s', &filetype, expand('%:S')),
-    \ printf('ctags -f - --sort=no --excmd=number %s', expand('%:S'))]
+  for cmd in a:tag_cmds
     let lines = split(system(cmd), "\n")
     if !v:shell_error
       break
@@ -471,12 +474,17 @@ function! s:btags_sink(lines)
   normal! zz
 endfunction
 
+" [tag commands], options
 function! fzf#vim#buffer_tags(...)
+  let args = copy(a:000)
+  let tag_cmds = len(args) > 1 ? remove(args, 0) : [
+    \ printf('ctags -f - --sort=no --excmd=number --language-force=%s %s', &filetype, expand('%:S')),
+    \ printf('ctags -f - --sort=no --excmd=number %s', expand('%:S'))]
   try
     return s:fzf(fzf#vim#wrap({
-    \ 'source':  s:btags_source(),
+    \ 'source':  s:btags_source(tag_cmds),
     \ 'sink*':   s:function('s:btags_sink'),
-    \ 'options': '--reverse -m -d "\t" --with-nth 1,4.. -n 1 --prompt "BTags> "'}), a:000)
+    \ 'options': '--reverse -m -d "\t" --with-nth 1,4.. -n 1 --prompt "BTags> "'}), args)
   catch
     return s:warn(v:exception)
   endtry
