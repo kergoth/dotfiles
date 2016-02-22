@@ -1,0 +1,4 @@
+pydoc () {
+    pythonversion="$(python -c "import sys; print('.'.join(str(v) for v in sys.version_info[0:2]))" || exit 1)" || return 1
+    pythonpath=(${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}/*/lib/python$pythonversion/site-packages(N) $pythonpath) command pydoc "$@"
+}
