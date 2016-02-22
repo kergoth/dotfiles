@@ -1,0 +1,1 @@
+typeset -gxT PYTHONPATH pythonpath
