@@ -80,6 +80,20 @@ exec "\$(basename "\$0")" "\$@"
 END
         chmod +x "$link_name"
     done
+
+    for man in "$1/man/"man*/*; do
+        if [ -e "$man" ]; then
+            manbase="${man##*/}"
+            case "$manbase" in
+                lua.1|luac.1)
+                    continue
+                    ;;
+            esac
+            mandest="$XDG_DATA_HOME/${man#$1/}"
+            mkdir -p "${mandest%/*}"
+            ln -sfv "$man" "$mandest"
+        fi
+    done
 }
 
 
