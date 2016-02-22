@@ -28,6 +28,7 @@ alias pipsi='pipsi --home="$WORKON_HOME"'
 alias parallel='parallel --bibtex'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
+alias diff='diff -urNd'
 
 # Convenience when pasting shell snippets
 alias '$='
