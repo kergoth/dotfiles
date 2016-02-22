@@ -1,0 +1,7 @@
+diff () {
+    if [ -t 1 ]; then
+        command diff "$@" | $LESSCOLORIZER -l diff | diff-so-fancy | less -R
+    else
+        command diff "$@"
+    fi
+}
