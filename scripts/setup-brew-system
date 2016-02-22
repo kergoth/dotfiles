@@ -22,6 +22,6 @@ fi
 
 # Ensure that we can use the python modules homebrew installs
 pythonuserdir="$(python -c 'import site; print(site.getusersitepackages())')" || exit 1
-pythonversion="$(python -c "import sys; '.'.join(str(v) for v in sys.version_info[0:2])" || exit 1)"
+pythonversion="$(python -c "import sys; print('.'.join(str(v) for v in sys.version_info[0:2]))" || exit 1)"
 mkdir -p "$pythonuserdir"
 echo "$HOMEBREW_PATH/lib/python$pythonversion/site-packages" >"$pythonuserdir/homebrew.pth"
