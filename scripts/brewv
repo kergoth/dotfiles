@@ -78,4 +78,12 @@ END
             echo >&2 "Created wrapper script at $dest/$filename"
         fi
     done
+
+    for man in "$brewenv_dir/opt/$brew/share/man/"man*/*; do
+        if [ -e "$man" ]; then
+            mandest="$XDG_DATA_HOME/man/${man#$brewenv_dir/opt/$brew/share/man/}"
+            mkdir -p "${mandest%/*}"
+            ln -sfv "$man" "$mandest"
+        fi
+    done
 done

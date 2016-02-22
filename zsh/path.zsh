@@ -16,6 +16,9 @@ path=(
   /usr/bin/core_perl
 )
 
+MANPATH=$(manpath)
+manpath=($XDG_DATA_HOME/man $manpath)
+
 if [[ -n $GOPATH ]]; then
     path=($GOPATH/bin $path)
 fi
