@@ -1,0 +1,6 @@
+---
+versions:
+    - heads/master
+ignore:
+    - heads/attic
+max_commits: 5
