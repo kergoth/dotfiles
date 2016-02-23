@@ -588,6 +588,8 @@ let g:bb_create_on_empty = 0
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+" Silence Kramdown warnings, for now, as they can't handle github task lists
+let g:syntastic_markdown_mdl_args = ''
 let g:vundle_default_git_proto = 'git'
 " let g:EasyMotion_leader_key = '<Leader>'
 
