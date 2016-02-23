@@ -276,7 +276,7 @@ git module fzf:
     pick:
         - vim/bundle/fzf
         - zsh/plugins/fzf
-    rev: 42c006d07c7d795517aa6040f4ac789b371a3ea6
+    rev: 85751966e9d7628893796e3eac7e9051108a144b
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
