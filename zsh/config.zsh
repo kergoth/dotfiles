@@ -111,7 +111,7 @@ zstyle ':filter-select' max-lines 10 # don't fill the screen
 zstyle ':filter-select' case-insensitive yes # enable case-insensitive
 zstyle ':filter-select' extended-search yes # see below
 
-if [[ -n $SSH_AUTH_SOCK ]]; then
+if [[ -n $SSH_CLIENT ]]; then
     zstyle ':prezto:module:terminal:window-title' format "$USER@$HOST:%s"
     zstyle ':prezto:module:terminal:tab-title' format "$HOST:%s"
 fi
