@@ -1,0 +1,8 @@
+reset_title () {
+    zstyle ':prezto:module:terminal:tab-title' format "%s"
+    zstyle ':prezto:module:terminal:window-title' format "%s"
+}
+
+reset_title
+
+# vim: set ft=zsh :
