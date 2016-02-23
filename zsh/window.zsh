@@ -69,8 +69,10 @@ function _terminal-set-titles-with-path {
   emulate -L zsh
   setopt EXTENDED_GLOB
 
-  local absolute_path="${${1:a}:-$PWD}"
-  local abbreviated_path="${absolute_path/#$HOME/~}"
+  disambiguate -k "${1:a}"
+  local abbreviated_path="$REPLY"
+  unset REPLY
+
   local truncated_path="${abbreviated_path/(#m)?(#c15,)/...${MATCH[-12,-1]}}"
   unset MATCH
 
