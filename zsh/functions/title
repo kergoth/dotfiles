@@ -1,6 +1,8 @@
 title () {
-    zstyle ':prezto:module:terminal:tab-title' format "$*"
-    zstyle ':prezto:module:terminal:window-title' format "$*"
+    zstyle -s ':prezto:module:terminal:tab-title' format 'old_tab_title' || old_tab_title="%s"
+    zstyle -s ':prezto:module:terminal:window-title' format 'old_window_title' || old_window_title="%s"
+    zstyle ':prezto:module:terminal:tab-title' format "${old_tab_title/\%s/$*}"
+    zstyle ':prezto:module:terminal:window-title' format "${old_window_title/\%s/$*}"
 }
 
 title "$@"

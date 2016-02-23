@@ -1,6 +1,7 @@
 reset_title () {
-    zstyle ':prezto:module:terminal:tab-title' format "%s"
-    zstyle ':prezto:module:terminal:window-title' format "%s"
+    zstyle ':prezto:module:terminal:tab-title' format "${old_tab_title:-%s}"
+    zstyle ':prezto:module:terminal:window-title' format "${old_window_title:-%s}"
+    unset old_tab_title old_window_title
 }
 
 reset_title
