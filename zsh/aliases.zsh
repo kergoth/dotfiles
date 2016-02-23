@@ -50,6 +50,17 @@ elif (( $+commands[ack] )); then
     alias bbag=bback
 fi
 
+if (( $+commands[fzf] )); then
+    _z_fzf () {
+        if [[ $# -eq 0 ]]; then
+            cd "$(_z -l 2>&1 | fzf +s --tac | sed 's/^[0-9,.]* *//')"
+        else
+            _z "$@"
+        fi
+    }
+    alias z=_z_fzf
+fi
+
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if (( $+commands[dfc] )); then
