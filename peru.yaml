@@ -76,6 +76,7 @@ imports:
     taskpaper: vim/bundle/taskpaper
     vim-abolish: vim/bundle/abolish
     vim-airline: vim/bundle/airline
+    vim-airline-themes: vim/bundle/airline-themes
     vim-bitbake: vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
@@ -190,6 +191,10 @@ git module taskpaper:
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
     rev: 7418df5583ff83056510cb5bfec2475c8cb68c49
+
+git module vim-airline-themes:
+    url: https://github.com/vim-airline/vim-airline-themes.git
+    rev: 13bad30d4ee3892cae755c83433ee85fbc96d028
 
 # generates modeline according to the current settings
 git module Modeliner:
