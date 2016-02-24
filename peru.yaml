@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: e6ab7bdf6d2f906ecf292268785f80da36e49cba
+    rev: 7418df5583ff83056510cb5bfec2475c8cb68c49
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -242,7 +242,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: df25989b2b92d23fcdd1c14213ddcdb910ed09c8
+    rev: b9285c87db7273a3a8c700c29c5e7910868392dd
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -321,7 +321,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: c595a85879febe2b5e1777625a476b189d63aa90
+    rev: 440bf17ba61622a1b1830c5baf4a4dd3c672a141
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -542,7 +542,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 52182c6ed3bc04b600e7e433c055fe8049f98190
+    rev: 87a3f1e9665749467cb344a9137322296de83113
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -566,7 +566,7 @@ git module gitvoodoo:
 git module diff-so-fancy:
     url: https://github.com/stevemao/diff-so-fancy
     pick: diff-so-fancy
-    rev: 6b9ddf8af4ce068088ab6d089f08169df6134b67
+    rev: 3e3e0b467be8babe25e8453e647bfe8b6c3c0bea
 
 git module hub-completion:
     url: https://github.com/github/hub
@@ -599,4 +599,4 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/tarruda/zsh-autosuggestions
-    rev: ba029e83d0aa2d859d7ac46299462fa5b5a43a68
+    rev: 2a5791710a9038ad21b9f528e6923f33fe3b8edd
