@@ -98,7 +98,6 @@ imports:
     hg-extension-prompt: mercurial/extensions/prompt
     hg-extension-shelve: mercurial/extensions/shelve
     hg-extension-evolve: mercurial/extensions/evolve
-    hg-extension-histedit: mercurial/extensions/histedit
 
 
 git module zsh-syntax-highlighting:
@@ -490,10 +489,6 @@ hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
     rev: 160968654581eb83f58f2b913124a16f7bef56ee
-
-hg module hg-extension-histedit:
-    url: https://bitbucket.org/durin42/histedit
-    rev: 2b080f1704f836d83b04b4728e244e6bbd50f848
 
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
