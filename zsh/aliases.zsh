@@ -42,6 +42,15 @@ if (( $+commands[pacman-color] )); then
 fi
 
 alias ag='ag -S --pager=${PAGER:-less}'
+alias pt='pt -S'
+pt () {
+    if [[ -t 1 ]]; then
+        command pt --color --group "$@" | ${PAGER:-less}
+    else
+        command pt "$@"
+    fi
+}
+
 if (( $+commands[ag] )); then
     alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
 elif (( $+commands[ack] )); then
