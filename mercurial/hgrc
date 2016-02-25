@@ -83,7 +83,7 @@ rebase = --keepbranches
 addremove = --similarity 100
 
 [pager]
-pager = LESS=FRSXQ less
+pager = diff-so-fancy | LESS=FRSXQ less
 quiet = True
 attend = diff,status,log,qdiff,blame,annotate,pdiff,glog,show,help,export
 
