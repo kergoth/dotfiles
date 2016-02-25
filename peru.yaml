@@ -126,7 +126,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: a4dc625a59611770a842b0be40e241e91d5fcd19
+    sha1: 27c09410c9049d1904bba7d505f534875687d7e3
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -165,7 +165,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 9835920a3c91236021fc8c88cc4157304e24356b
+    rev: 008b9570860f552534109b4f618cf2ddd145eeb4
 
 # go language support
 git module vim-golang:
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 7418df5583ff83056510cb5bfec2475c8cb68c49
+    rev: 5ab8b754d8778a2a0b3b1a37bbb322e020ef4d9e
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -247,7 +247,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: b9285c87db7273a3a8c700c29c5e7910868392dd
+    rev: 03521537897297be09bda2deac547f53fcd17281
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -547,7 +547,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 87a3f1e9665749467cb344a9137322296de83113
+    rev: 88e0770dcd127dd97ec505def4eb1bf5d7fe374d
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -604,4 +604,4 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/tarruda/zsh-autosuggestions
-    rev: 2a5791710a9038ad21b9f528e6923f33fe3b8edd
+    rev: c761dc81509b137748190d254e8beb6845dedf21
