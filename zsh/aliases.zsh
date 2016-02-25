@@ -41,6 +41,10 @@ if (( $+commands[pacman-color] )); then
     alias pacman='pacman-color'
 fi
 
+if (( $+commands[ack-grep] )); then
+    alias ack=ack-grep
+fi
+
 alias ag='ag -S --pager=${PAGER:-less}'
 alias pt='pt -S'
 pt () {
