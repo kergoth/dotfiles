@@ -55,12 +55,19 @@ pt () {
     fi
 }
 
-if (( $+commands[ag] )); then
+if (( $+commands[pt] )); then
+    alias s=pt
+    alias bbs="pt -G '\.(bb|bbappend|inc|conf)$'"
+elif (( $+commands[ag] )); then
+    alias s=ag
     alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
+    alias bbs=bbag
 elif (( $+commands[ack] )); then
+    alias s=ack
     alias ag=ack
     alias bback='ack --type=bitbake'
     alias bbag=bback
+    alias bbs=bbag
 fi
 
 if (( $+commands[fzf] )); then
