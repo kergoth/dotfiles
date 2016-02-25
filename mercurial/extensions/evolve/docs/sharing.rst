@@ -102,7 +102,7 @@ and add ::
   publish = false
 
   [extensions]
-  evolve = /path/to/mutable-history/hgext/evolve.py
+  evolve = /path/to/evolve-main/hgext/evolve.py
 
 Then edit the configuration for ``dev-repo``::
 
@@ -111,7 +111,7 @@ Then edit the configuration for ``dev-repo``::
 and add ::
 
   [extensions]
-  evolve = /path/to/mutable-history/hgext/evolve.py
+  evolve = /path/to/evolve-main/hgext/evolve.py
 
 Keep in mind that in real life, these repositories would probably be
 on separate computers, so you'd have to login to each one to configure
@@ -331,7 +331,7 @@ We need to configure Alice's and Bob's working repositories to enable
 and add ::
 
   [extensions]
-  evolve = /path/to/mutable-history/hgext/evolve.py
+  evolve = /path/to/evolve-main/hgext/evolve.py
 
 Then edit Bob's repository configuration::
 
@@ -545,7 +545,7 @@ and add ::
 
   [extensions]
   rebase =
-  evolve = /path/to/mutable-history/hgext/evolve.py
+  evolve = /path/to/evolve-main/hgext/evolve.py
 
   [phases]
   publish = false

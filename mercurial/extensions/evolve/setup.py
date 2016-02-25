@@ -29,7 +29,7 @@ setup(
     author='Pierre-Yves David',
     maintainer='Pierre-Yves David',
     maintainer_email='pierre-yves.david@ens-lyon.org',
-    url='https://bitbucket.org/marmoute/mutable-history',
+    url='http://evolution.experimentalworks.net/',
     description='Flexible evolution of Mercurial history.',
     long_description=open('README').read(),
     keywords='hg mercurial',

@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 5ab8b754d8778a2a0b3b1a37bbb322e020ef4d9e
+    rev: 23fb1263228a896e1bd2bf6d0ebb28049d1346e6
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -489,7 +489,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: b04d73c0a13e5f2c37566aeb1e9ec41ac2cef613
+    rev: 160968654581eb83f58f2b913124a16f7bef56ee
 
 hg module hg-extension-histedit:
     url: https://bitbucket.org/durin42/histedit
@@ -571,7 +571,7 @@ git module gitvoodoo:
 git module diff-so-fancy:
     url: https://github.com/stevemao/diff-so-fancy
     pick: diff-so-fancy
-    rev: 3e3e0b467be8babe25e8453e647bfe8b6c3c0bea
+    rev: 1968ba2fb5de14736aad0f8925f2f0c82d4dfff9
 
 git module hub-completion:
     url: https://github.com/github/hub

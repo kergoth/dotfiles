@@ -16,7 +16,7 @@ It also:
 You can enable it by adding the line below to the ``extensions``
 section of your hgrc::
 
-    evolve = PATH/TO/mutable-history/hgext/evolve.py
+    evolve = PATH/TO/evolve-main/hgext/evolve.py
 
 We recommend reading the documentation first. An online version is
 available here:

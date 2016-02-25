@@ -113,7 +113,7 @@ To use ``evolve``, you must:
   #. Clone the ``evolve`` repository::
 
        cd ~/src
-       hg clone https://bitbucket.org/marmoute/mutable-history
+       hg clone http://hg.netv6.net/evolve-main
 
   #. Configure the extension, either locally ::
 
@@ -125,7 +125,7 @@ To use ``evolve``, you must:
 
      Then add ::
 
-       evolve=~/src/mutable-history/hgext/evolve.py
+       evolve=~/src/evolve-main/hgext/evolve.py
 
      in the ``[extensions]`` section (adding the section if necessary). Use
      the directory that you actually cloned to, of course.

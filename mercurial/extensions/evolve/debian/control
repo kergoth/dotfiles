@@ -15,7 +15,7 @@ Build-Depends:
  librsvg2-bin,
  wget,
 Python-Version: >= 2.6
-Homepage: https://bitbucket.org/marmoute/mutable-history
+Homepage: http://evolution.experimentalworks.net/
 
 Package: mercurial-evolve
 Architecture: all
