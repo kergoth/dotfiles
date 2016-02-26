@@ -93,6 +93,7 @@ bitbucket.org = 46:de:34:e7:9b:18:cd:7f:ae:fd:8b:e3:bc:f4:1a:5e:38:d7:ac:24
 [alias]
 # Some useful little aliases.
 st = status -SC
+blame = annotate -nul
 untrack = rm -Af
 
 # Nudge: just push the current branch.
