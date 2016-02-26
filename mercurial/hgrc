@@ -114,7 +114,7 @@ describe = log --template '{latesttag}-{latesttagdistance}-{node|short}\n' --rev
 qstatus = status --rev -2:.
 
 # Edit the current repo's hgrc file.
-erc = !$EDITOR `$HG root`/.hg/hgrc
+erc = config --local
 
 # Simple bug/todo tracking
 # Idea from Justin: http://gist.github.com/464871
