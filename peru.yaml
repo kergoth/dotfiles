@@ -598,5 +598,5 @@ git module git-tbdiff:
     rev: 047d1c79dfada57522a42f307cd4b0ddcb098934
 
 git module zsh-autosuggestions:
-    url: https://github.com/tarruda/zsh-autosuggestions
+    url: https://github.com/zsh-users/zsh-autosuggestions
     rev: c761dc81509b137748190d254e8beb6845dedf21
