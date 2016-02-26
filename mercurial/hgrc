@@ -18,7 +18,7 @@ status.added = green bold
 status.removed = red bold
 status.deleted = cyan bold
 status.unknown = blue
-status.ignored = black
+status.ignored = yellow
 
 [extensions]
 color =
