@@ -110,7 +110,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 6953a4f892df1095e48d43751ccaf9e3ece02190
+    rev: 3a2bb8781d32d05d1bf05deeeb476beb651e8272
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -599,4 +599,4 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: c761dc81509b137748190d254e8beb6845dedf21
+    rev: 985de56f6e4e6054ff574730a0d73d9e6b8f474f
