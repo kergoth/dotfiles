@@ -115,6 +115,9 @@ alias titlecase='python -c "import titlecase; import sys; print(titlecase.titlec
 # Git
 alias wgit='git clone --recursive'
 
+alias fls='fls -f %n%F'
+alias fll='command fls'
+
 # Global
 alias -g G='| grep'
 alias -g L='| less'
