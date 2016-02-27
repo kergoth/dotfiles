@@ -117,6 +117,9 @@ qstatus = status --rev -2:.
 # Edit the current repo's hgrc file.
 erc = config --local
 
+# Merge, dropping changes from the other branch
+merge-ours = !"$HG" -y merge --tool=internal:fail "$@" && "$HG" revert --all --rev . && "$HG" resolve -a -m
+
 # Simple bug/todo tracking
 # Idea from Justin: http://gist.github.com/464871
 # Install t first: http://bitbucket.org/sjl/t/
