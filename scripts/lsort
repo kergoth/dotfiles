@@ -1,0 +1,3 @@
+#!/usr/bin/perl -s
+# lsort [-r] - print lines sorted by length, then alphabetically
+print sort { (length $a <=> length $b)*($r?-1:1) || $a cmp $b } <>;
