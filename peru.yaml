@@ -57,6 +57,8 @@ imports:
     wget-finder: scripts
 
     chneukirchen-tools: scripts
+    1t: scripts
+    f: scripts
     frep: scripts
     git-attic: scripts
     git-ltr: scripts
@@ -64,7 +66,9 @@ imports:
     git-trail: scripts
     lsort: scripts
     pacsrc: scripts
+    stee: scripts
     tlog: scripts
+    utter: scripts
     zombies: scripts
 
     # Vim
@@ -483,6 +487,26 @@ curl module tlog:
     url: http://chneukirchen.org/dotfiles/bin/tlog
     executable: tlog
     sha1: 56bd26df321a3896ee97db454c71603bd8f27fbd
+
+curl module stee:
+    url: http://chneukirchen.org/dotfiles/bin/stee
+    executable: stee
+    sha1: af151e649512d7ac036c262cdae7b720475beacb
+
+curl module utter:
+    url: http://chneukirchen.org/dotfiles/bin/utter
+    executable: utter
+    sha1: e077c96ca16fe40e337f317bd4340218a9c7864c
+
+curl module f:
+    url: http://chneukirchen.org/dotfiles/bin/f
+    executable: f
+    sha1: 022679ab48e6436a5d286cc636e15ad81f3b09b5
+
+curl module 1t:
+    url: http://chneukirchen.org/dotfiles/bin/1t
+    executable: 1t
+    sha1: 55259d24da04f735f95ec7b32c120b33a9f2d4cb
 
 git module git-pull-requests:
     url: https://github.com/splitbrain/git-pull-request
