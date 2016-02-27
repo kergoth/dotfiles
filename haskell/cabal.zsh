@@ -1,1 +1,1 @@
-path=($HOME/.cabal/bin $path)
+path=(~/.cabal/bin $path)

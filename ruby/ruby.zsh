@@ -1,1 +1,1 @@
-path=($HOME/.gem/ruby/*/bin(N) $path)
+path=(~/.gem/ruby/*/bin(Nn[-1]) $path)

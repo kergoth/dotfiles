@@ -31,5 +31,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     )
 fi
 
+path=( ${(u)^path:A}(N-/) )
+
 # add plugins & topic directories to fpath
 fpath=($ZSH/plugins/completions/src $ZSH/plugins/*/(N) $DOTFILESDIR/*/functions(N) /opt/homebrew/share/zsh/site-functions $fpath)
