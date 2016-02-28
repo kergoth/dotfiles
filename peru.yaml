@@ -93,6 +93,7 @@ imports:
     vim-golang: vim/bundle/golang
     vim-markdown: vim/bundle/markdown
     vim-obsession: vim/bundle/obsession
+    vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
     vim-surround: vim/bundle/surround
     vim-syntastic: vim/bundle/syntastic
@@ -620,6 +621,10 @@ git module hub-completion:
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
     rev: e6a170cda8ee542ec5f1384c9643d4330ee6b181
+
+git module vim-repeat:
+    url: https://github.com/tpope/vim-repeat
+    rev: 7a6675f092842c8f81e71d5345bd7cdbf3759415
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
