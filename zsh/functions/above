@@ -1,0 +1,4 @@
+above () {
+    print (../)#$1(Od[1]:A)
+}
+above "$1"
