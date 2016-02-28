@@ -65,6 +65,9 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-se
 # Work around https://github.com/tarruda/zsh-autosuggestions/issues/118
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete)
 
+# Move prioritize-cwd-history into xdg path
+ZSH_PRIORITIZE_CWD_HISTORY_DIR=$XDG_DATA_HOME/zsh/prioritize-cwd-history
+
 if autoload -Uz bracketed-paste-magic; then
     zle -N bracketed-paste bracketed-paste-magic
 fi
