@@ -133,7 +133,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: 27c09410c9049d1904bba7d505f534875687d7e3
+    sha1: 6a04b8f01ca558bb1bd87c6f7b593ef5b9231d47
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -197,7 +197,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 23fb1263228a896e1bd2bf6d0ebb28049d1346e6
+    rev: 4fa37e5e20b5ae9b60adfbf9b25f0afad285afa6
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 85751966e9d7628893796e3eac7e9051108a144b
+    rev: 1d6f05f974fa31db54ede4fefe0d85cf50491e54
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -579,14 +579,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 8f97e64c78e9ade6cf09fc5d5446f5d2a8deaa35
+    rev: 1de31fa5e8b5cf09cdc77c30e59516fe49724527
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 88e0770dcd127dd97ec505def4eb1bf5d7fe374d
+    rev: d8b407a70d7b982a1cbfe85a6a55c345565ea804
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -617,7 +617,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: f1a1c1e38c4c4611047257cb5667153ce9e88fa6
+    rev: aa4611dd9add76b1facda9906fcdf8078a2e89e6
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
