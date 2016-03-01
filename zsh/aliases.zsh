@@ -107,6 +107,17 @@ if [[ $OSTYPE =~ darwin ]]; then
     if (( $+commands[grm] )); then
         alias rm='grm --one-file-system -I'
     fi
+
+    locate_app_by_id () {
+        mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"
+    }
+
+    locate_app() {
+        mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemDisplayName == '${*%.app}'cd"
+    }
+
+    alias daisydisk="open -b com.daisydiskapp.DaisyDiskStandAlone"
+    alias marked="open -b com.brettterpstra.marked2"
 else
     alias ps='ps fux'
     if (( $+commands[dfc] )); then
