@@ -30,6 +30,10 @@ alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
 alias diff='diff -urNd'
 
+what () {
+    tldr "$1" || cheat "$1"
+}
+
 pc () {
     pin-cushion "$1" --format json | jq .
 }
