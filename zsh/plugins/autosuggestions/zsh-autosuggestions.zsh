@@ -1,6 +1,6 @@
 # Fish-like fast/unobtrusive autosuggestions for zsh.
 # https://github.com/zsh-users/zsh-autosuggestions
-# v0.2.16
+# v0.2.17
 # Copyright (c) 2013 Thiago de Arruda
 # Copyright (c) 2016 Eric Freese
 # 
@@ -43,6 +43,8 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS=(
 	history-search-backward
 	history-beginning-search-forward
 	history-beginning-search-backward
+	history-substring-search-up
+	history-substring-search-down
 	up-line-or-history
 	down-line-or-history
 	accept-line

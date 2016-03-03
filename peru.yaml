@@ -197,7 +197,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 4fa37e5e20b5ae9b60adfbf9b25f0afad285afa6
+    rev: 110463970823f5cf7361fc9e5d5d29e6f28a2953
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 1d6f05f974fa31db54ede4fefe0d85cf50491e54
+    rev: b47ab633e297a64a4dacd59dea008144638d8e97
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -333,7 +333,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 440bf17ba61622a1b1830c5baf4a4dd3c672a141
+    rev: fc1e712923e06c8993011b833b6fbfef900f0068
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -586,7 +586,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: d8b407a70d7b982a1cbfe85a6a55c345565ea804
+    rev: dae1f81ab1f5f5d2c6c68616e6fef438091717ec
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -647,7 +647,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 985de56f6e4e6054ff574730a0d73d9e6b8f474f
+    rev: f0a745576ff69fa608421ee7214d4cd77b43e62f
 
 git module zsh-prioritize-cwd-history:
     url: https://github.com/ericfreese/zsh-prioritize-cwd-history
