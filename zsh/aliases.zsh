@@ -31,7 +31,7 @@ alias sshnew='ssh -o "ControlPath none"'
 alias diff='diff -urNd'
 
 what () {
-    tldr "$1" || cheat "$1"
+    tldr "$1" || cheat "$1" || man "$1"
 }
 
 pc () {
