@@ -85,19 +85,9 @@ if autoload -Uz git-escape-magic; then
 fi
 
 # Keybinds
-
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
-
-# Display red dots when autocompleting with the tab key
-expand-or-complete-with-dots() {
-    echo -n "\e[31m…………\e[0m"
-    zle expand-or-complete
-    zle redisplay
-}
-zle -N expand-or-complete-with-dots
-bindkey "^I" expand-or-complete-with-dots
 
 # Completion menu
 zstyle ':completion:*' menu select
