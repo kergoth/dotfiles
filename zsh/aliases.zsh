@@ -136,6 +136,12 @@ alias htmldecode='python -c "import HTMLParser,sys; print(HTMLParser.HTMLParser(
 alias common_prefix='python -c "import os, sys; print(os.path.commonprefix(sys.argv[1:]))"'
 alias titlecase='python -c "import titlecase; import sys; print(titlecase.titlecase(" ".join(sys.argv[1:])))"'
 
+# zmv
+autoload -U zmv
+alias lln="noglob zmv -WL"
+alias ccp="noglob zmv -WC"
+alias mmv="noglob zmv -W"
+
 # Suffixed for alias expansion
 alias s="smart_sudo "
 alias funced="_funced "
