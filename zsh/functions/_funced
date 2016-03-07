@@ -1,0 +1,4 @@
+_funced () {
+  autoload -U zed
+  zed -x 2 -f "$argv"
+}

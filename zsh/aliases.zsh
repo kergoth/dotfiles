@@ -138,6 +138,7 @@ alias titlecase='python -c "import titlecase; import sys; print(titlecase.titlec
 
 # Suffixed for alias expansion
 alias s="smart_sudo "
+alias funced="_funced "
 
 # Git
 alias wgit='git clone --recursive'
