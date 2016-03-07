@@ -19,6 +19,7 @@
 	ignored = lsi
 	r = remote -v
 	b = branch -v
+	ri = rebase -i
 
 	# remove changes to a file from the index
 	unstage = reset HEAD --
