@@ -9,6 +9,9 @@
 	name = Christopher Larson
 	email = kergoth@gmail.com
 
+[github]
+	user = kergoth
+
 [interactive]
 	singlekey = true
 
