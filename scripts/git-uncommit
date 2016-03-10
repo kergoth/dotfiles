@@ -18,6 +18,8 @@ if [ $# -eq 0 ]; then
 elif [ $# -ne 1 ] || [ "$1" = "-h" ]; then
     echo >&2 "${0##*/} COMMIT"
     exit 2
+else
+    commit="$1"
 fi
 
 commit="$(git rev-parse -q --verify "$commit")"
