@@ -4,6 +4,7 @@
 	ci = commit -s
 	ic = commit -s
 	cm = commit -s -m
+	cma = !git add -u && git commit -s -m
 	co = checkout
 	cp = cherry-pick -x
 	au = add -u
