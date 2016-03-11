@@ -652,3 +652,10 @@ git module zsh-autosuggestions:
 git module zsh-prioritize-cwd-history:
     url: https://github.com/ericfreese/zsh-prioritize-cwd-history
     rev: 9d3f8dbed5aaf91916f33836ec19d9fafca82e61
+
+git module git-extras:
+    url: https://github.com/tj/git-extras
+    export: bin
+    pick:
+        - bin/git-alias
+    rev: ddb097d65d6e96576df06d5cdf45d4b08d54d425
