@@ -31,6 +31,7 @@ imports:
     friendly-find: scripts
     gibo: scripts
     git-cherry-tree: scripts
+    git-extras: scripts
     git-imerge: scripts
     git-pull-requests: scripts
     git-remote-dropbox: scripts
@@ -658,4 +659,6 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
+        - bin/git-setup
+        - bin/git-show-tree
     rev: ddb097d65d6e96576df06d5cdf45d4b08d54d425
