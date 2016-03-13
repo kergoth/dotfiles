@@ -111,7 +111,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 7044c1986e2f6b15eec27a03651207fccb0a2fbe
+    rev: e635f766bef9ffe1c0d646d8fd256e9134e94468
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -119,7 +119,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 3a2bb8781d32d05d1bf05deeeb476beb651e8272
+    rev: 2082c7573fc1cd393ea0b2948aff6f0bdf3798cd
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -173,7 +173,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 099d65826e0e0863552a92f7e574e3f24c8f4197
+    rev: 19d1c944dbf59f252135688018610a12ce5718b4
 
 # go language support
 git module vim-golang:
@@ -198,7 +198,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: e8cc5f8b840fa491248e400cfe0130a7ea262759
+    rev: 410429a95c67eed8eeb26681838d3766a2437806
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -212,7 +212,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary.git
-    rev: 4dcfc318e0b02fdbb0c2d9ff77cf3562b46eea25
+    rev: 73e0d9a9d1f51b6cc9dc965f62669194ae851cb1
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -255,7 +255,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: fe7bebb62a0613e45097fc5b6b1c6c0d2d552775
+    rev: 49e88a1d75b059841f46dcf71459db4687be653c
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -533,7 +533,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 160968654581eb83f58f2b913124a16f7bef56ee
+    rev: d49f4ad04fbdeb62a5ce97ebf9f3a77946604b8a
 
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
@@ -587,7 +587,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 42f9462a19d92380197c529aebd3815b2e6d7939
+    rev: daafa8b3b890af91706dc248c7a0d1b8a95b9de9
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -612,6 +612,7 @@ git module diff-so-fancy:
     url: https://github.com/stevemao/diff-so-fancy
     pick: diff-so-fancy
     rev: 1968ba2fb5de14736aad0f8925f2f0c82d4dfff9
+    reup: 1968ba2fb5de14736aad0f8925f2f0c82d4dfff9
 
 git module hub-completion:
     url: https://github.com/github/hub
