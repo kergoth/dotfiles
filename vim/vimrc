@@ -341,11 +341,20 @@ nnoremap J mzJ`z
 " Allow selection past the end of the file for block selection
 set virtualedit=block
 
+" Make Y behave sanely (consistent with C, D, ..)
+map Y y$
+
 " Easy buffer navigation
 noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
+
+" Easy indentation in normal/visual mode
+nnoremap <Tab> >>
+nnoremap <S-Tab> <<
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
 
 " Tmux will send xterm-style keys when its xterm-keys option is on
 if &term =~# '^screen'
@@ -358,9 +367,6 @@ endif
 " , is much more convenient than \, as it's closer to the home row
 let mapleader = ','
 let maplocalleader = mapleader
-
-" Make Y behave sanely (consistent with C, D, ..)
-map Y y$
 
 " Toggle display of invisible characters
 nnoremap <leader>i :set list!<cr>
