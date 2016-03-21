@@ -107,5 +107,53 @@ versions of the revision _c
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory is now at 6602ff5a79dc
- 
-  $ cd ..  
+
+Test None docstring issue of evolve divergent, which caused hg crush
+
+  $ hg init test2
+  $ cd test2
+  $ mkcommits _a _b
+  $ hg up "desc(_a)"
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit bdivergent1
+  created new head
+  $ hg up "desc(_a)"
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ mkcommit bdivergent2
+  created new head
+  $ hg prune -s "desc(bdivergent1)" "desc(_b)"
+  1 changesets pruned
+  $ hg prune -s "desc(bdivergent2)" "desc(_b)" --hidden
+  1 changesets pruned
+  2 new divergent changesets
+  $ hg log -G
+  @  3:e708fd28d5cf@default(draft) add bdivergent2 [divergent]
+  |
+  | o  2:c2f698071cba@default(draft) add bdivergent1 [divergent]
+  |/
+  o  0:135f39f4bd78@default(draft) add _a []
+  
+  $ cat >$TESTTMP/test_extension.py  << EOF
+  > from mercurial import merge
+  > origupdate = merge.update
+  > def newupdate(*args, **kwargs):
+  >   return origupdate(*args, **kwargs)
+  > merge.update = newupdate
+  > EOF
+  $ cat >> $HGRCPATH << EOF
+  > [extensions]
+  > testextension=$TESTTMP/test_extension.py
+  > EOF
+  $ hg evolve --all
+  nothing to evolve on current working copy parent
+  (do you want to use --divergent)
+  [2]
+  $ hg evolve --divergent
+  merge:[3] add bdivergent2
+  with: [2] add bdivergent1
+  base: [1] add _b
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  working directory is now at aa26817f6fbe
+
+
+  $ cd ..

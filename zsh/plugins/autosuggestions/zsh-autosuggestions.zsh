@@ -1,6 +1,6 @@
 # Fish-like fast/unobtrusive autosuggestions for zsh.
 # https://github.com/zsh-users/zsh-autosuggestions
-# v0.2.17
+# v0.3.1
 # Copyright (c) 2013 Thiago de Arruda
 # Copyright (c) 2016 Eric Freese
 # 
@@ -37,6 +37,8 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 # Prefix to use when saving original versions of bound widgets
 ZSH_AUTOSUGGEST_ORIGINAL_WIDGET_PREFIX=autosuggest-orig-
 
+ZSH_AUTOSUGGEST_STRATEGY=default
+
 # Widgets that clear the suggestion
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS=(
 	history-search-forward
@@ -56,6 +58,10 @@ ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=(
 	end-of-line
 	vi-forward-char
 	vi-end-of-line
+)
+
+# Widgets that accept the entire suggestion and execute it
+ZSH_AUTOSUGGEST_EXECUTE_WIDGETS=(
 )
 
 # Widgets that accept the suggestion as far as the cursor moves
@@ -159,6 +165,8 @@ _zsh_autosuggest_bind_widgets() {
 			_zsh_autosuggest_bind_widget $widget clear
 		elif [ ${ZSH_AUTOSUGGEST_ACCEPT_WIDGETS[(r)$widget]} ]; then
 			_zsh_autosuggest_bind_widget $widget accept
+		elif [ ${ZSH_AUTOSUGGEST_EXECUTE_WIDGETS[(r)$widget]} ]; then
+			_zsh_autosuggest_bind_widget $widget execute
 		elif [ ${ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS[(r)$widget]} ]; then
 			_zsh_autosuggest_bind_widget $widget partial_accept
 		else
@@ -173,7 +181,7 @@ _zsh_autosuggest_invoke_original_widget() {
 	# Do nothing unless called with at least one arg
 	[ $# -gt 0 ] || return
 
-	local original_widget_name=$1
+	local original_widget_name="$1"
 
 	shift
 
@@ -188,6 +196,8 @@ _zsh_autosuggest_invoke_original_widget() {
 
 # If there was a highlight, remove it
 _zsh_autosuggest_highlight_reset() {
+	typeset -g _ZSH_AUTOSUGGEST_LAST_HIGHLIGHT
+
 	if [ -n "$_ZSH_AUTOSUGGEST_LAST_HIGHLIGHT" ]; then
 		region_highlight=("${(@)region_highlight:#$_ZSH_AUTOSUGGEST_LAST_HIGHLIGHT}")
 		unset _ZSH_AUTOSUGGEST_LAST_HIGHLIGHT
@@ -196,6 +206,8 @@ _zsh_autosuggest_highlight_reset() {
 
 # If there's a suggestion, highlight it
 _zsh_autosuggest_highlight_apply() {
+	typeset -g _ZSH_AUTOSUGGEST_LAST_HIGHLIGHT
+
 	if [ $#POSTDISPLAY -gt 0 ]; then
 		_ZSH_AUTOSUGGEST_LAST_HIGHLIGHT="$#BUFFER $(($#BUFFER + $#POSTDISPLAY)) $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE"
 		region_highlight+=("$_ZSH_AUTOSUGGEST_LAST_HIGHLIGHT")
@@ -224,12 +236,12 @@ _zsh_autosuggest_modify() {
 	# Get a new suggestion if the buffer is not empty after modification
 	local suggestion
 	if [ $#BUFFER -gt 0 ]; then
-		suggestion=$(_zsh_autosuggest_suggestion "$BUFFER")
+		suggestion="$(_zsh_autosuggest_suggestion "$BUFFER")"
 	fi
 
 	# Add the suggestion to the POSTDISPLAY
 	if [ -n "$suggestion" ]; then
-		POSTDISPLAY=${suggestion#$BUFFER}
+		POSTDISPLAY="${suggestion#$BUFFER}"
 	else
 		unset POSTDISPLAY
 	fi
@@ -237,8 +249,16 @@ _zsh_autosuggest_modify() {
 
 # Accept the entire suggestion
 _zsh_autosuggest_accept() {
+	local -i max_cursor_pos=$#BUFFER
+
+	# When vicmd keymap is active, the cursor can't move all the way
+	# to the end of the buffer
+	if [ "$KEYMAP" = "vicmd" ]; then
+		max_cursor_pos=$((max_cursor_pos - 1))
+	fi
+
 	# Only accept if the cursor is at the end of the buffer
-	if [ $CURSOR -eq $#BUFFER ]; then
+	if [ $CURSOR -eq $max_cursor_pos ]; then
 		# Add the suggestion to the buffer
 		BUFFER="$BUFFER$POSTDISPLAY"
 
@@ -252,10 +272,23 @@ _zsh_autosuggest_accept() {
 	_zsh_autosuggest_invoke_original_widget $@
 }
 
+# Accept the entire suggestion and execute it
+_zsh_autosuggest_execute() {
+	# Add the suggestion to the buffer
+	BUFFER="$BUFFER$POSTDISPLAY"
+
+	# Remove the suggestion
+	unset POSTDISPLAY
+
+	# Call the original `accept-line` to handle syntax highlighting or
+	# other potential custom behavior
+	_zsh_autosuggest_invoke_original_widget "accept-line"
+}
+
 # Partially accept the suggestion
 _zsh_autosuggest_partial_accept() {
 	# Save the contents of the buffer so we can restore later if needed
-	local original_buffer=$BUFFER
+	local original_buffer="$BUFFER"
 
 	# Temporarily accept the suggestion.
 	BUFFER="$BUFFER$POSTDISPLAY"
@@ -266,17 +299,17 @@ _zsh_autosuggest_partial_accept() {
 	# If we've moved past the end of the original buffer
 	if [ $CURSOR -gt $#original_buffer ]; then
 		# Set POSTDISPLAY to text right of the cursor
-		POSTDISPLAY=$RBUFFER
+		POSTDISPLAY="$RBUFFER"
 
 		# Clip the buffer at the cursor
-		BUFFER=$LBUFFER
+		BUFFER="$LBUFFER"
 	else
 		# Restore the original buffer
-		BUFFER=$original_buffer
+		BUFFER="$original_buffer"
 	fi
 }
 
-for action in clear modify accept partial_accept; do
+for action in clear modify accept partial_accept execute; do
 	eval "_zsh_autosuggest_widget_$action() {
 		_zsh_autosuggest_highlight_reset
 		_zsh_autosuggest_$action \$@
@@ -286,28 +319,100 @@ done
 
 zle -N autosuggest-accept _zsh_autosuggest_widget_accept
 zle -N autosuggest-clear _zsh_autosuggest_widget_clear
+zle -N autosuggest-execute _zsh_autosuggest_widget_execute
 
 #--------------------------------------------------------------------#
 # Suggestion                                                         #
 #--------------------------------------------------------------------#
 
-# Get a suggestion from history that matches a given prefix
+# Delegate to the selected strategy to determine a suggestion
 _zsh_autosuggest_suggestion() {
-	local prefix="$(_zsh_autosuggest_escape_command_prefix "$1")"
+	local prefix="$1"
+	local strategy_function="_zsh_autosuggest_strategy_$ZSH_AUTOSUGGEST_STRATEGY"
 
-	# Get all history items (reversed) that match pattern $prefix*
-	local history_matches
-	history_matches=(${(j:\0:s:\0:)history[(R)$prefix*]})
-
-	# Echo the first item that matches
-	echo -E "$history_matches[1]"
+	if [ -n "$functions[$strategy_function]" ]; then
+		echo -E "$($strategy_function "$prefix")"
+	fi
 }
 
-_zsh_autosuggest_escape_command_prefix() {
+_zsh_autosuggest_escape_command() {
 	setopt localoptions EXTENDED_GLOB
 
 	# Escape special chars in the string (requires EXTENDED_GLOB)
 	echo -E "${1//(#m)[\\()\[\]|*?]/\\$MATCH}"
+}
+
+# Get the previously executed command
+_zsh_autosuggest_prev_command() {
+	echo -E "${history[$((HISTCMD-1))]}"
+}
+
+#--------------------------------------------------------------------#
+# Default Suggestion Strategy                                        #
+#--------------------------------------------------------------------#
+# Suggests the most recent history item that matches the given
+# prefix.
+#
+
+_zsh_autosuggest_strategy_default() {
+	local prefix="$(_zsh_autosuggest_escape_command "$1")"
+
+	# Get the keys of the history items that match
+	local -a histkeys
+	histkeys=(${(k)history[(r)$prefix*]})
+
+	# Echo the value of the first key
+	echo -E "${history[$histkeys[1]]}"
+}
+
+#--------------------------------------------------------------------#
+# Match Previous Command Suggestion Strategy                         #
+#--------------------------------------------------------------------#
+# Suggests the most recent history item that matches the given
+# prefix and whose preceding history item also matches the most
+# recently executed command.
+#
+# For example, suppose your history has the following entries:
+#   - pwd
+#   - ls foo
+#   - ls bar
+#   - pwd
+#
+# Given the history list above, when you type 'ls', the suggestion
+# will be 'ls foo' rather than 'ls bar' because your most recently
+# executed command (pwd) was previously followed by 'ls foo'.
+#
+
+_zsh_autosuggest_strategy_match_prev_cmd() {
+	local prefix="$(_zsh_autosuggest_escape_command "$1")"
+
+	# Get all history event numbers that correspond to history
+	# entries that match pattern $prefix*
+	local history_match_keys
+	history_match_keys=(${(k)history[(R)$prefix*]})
+
+	# By default we use the first history number (most recent history entry)
+	local histkey="${history_match_keys[1]}"
+
+	# Get the previously executed command
+	local prev_cmd="$(_zsh_autosuggest_prev_command)"
+	prev_cmd="$(_zsh_autosuggest_escape_command "$prev_cmd")"
+
+	# Iterate up to the first 200 history event numbers that match $prefix
+	for key in "${(@)history_match_keys[1,200]}"; do
+		# Stop if we ran out of history
+		[[ $key -gt 1 ]] || break
+
+		# See if the history entry preceding the suggestion matches the
+		# previous command, and use it if it does
+		if [[ "${history[$((key - 1))]}" == "$prev_cmd" ]]; then
+			histkey="$key"
+			break
+		fi
+	done
+
+	# Echo the matched history entry
+	echo -E "$history[$histkey]"
 }
 
 #--------------------------------------------------------------------#

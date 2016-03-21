@@ -111,7 +111,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: e635f766bef9ffe1c0d646d8fd256e9134e94468
+    rev: cb02451a4e08d7c0157595db52769ed994aea3b5
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -134,7 +134,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: 0064dc6716622ca28df30f7f11ca5fd6b14d5b04
+    sha1: 5c38b311f4d146387996b471d07dc05fbb9f0d9c
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -173,7 +173,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 19d1c944dbf59f252135688018610a12ce5718b4
+    rev: e1ae9effbcc9673bdc4bedbdbe6028f00114108c
 
 # go language support
 git module vim-golang:
@@ -255,7 +255,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 49e88a1d75b059841f46dcf71459db4687be653c
+    rev: 852cfa0c11d5661d79ed1faf1cc211b3c6ef7b00
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -291,7 +291,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: f704b94603f386c7b6458ba358816f52bbad2b36
+    rev: 6cc9d539783716c8e614364562cce8709be2957f
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -533,7 +533,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: d49f4ad04fbdeb62a5ce97ebf9f3a77946604b8a
+    rev: 498329a3c90048f5c211dabcfaab1bfc7bdbd3fa
 
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
@@ -580,14 +580,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 0f82191a74328ecb618ac74735645fbd1c36d9a1
+    rev: 9f766ead6aaa91802c5dd86bcd00ccab0b7e189c
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: daafa8b3b890af91706dc248c7a0d1b8a95b9de9
+    rev: 4632f61206d2a4a9dd443b6b4a4257220437be74
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -649,7 +649,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: f0a745576ff69fa608421ee7214d4cd77b43e62f
+    rev: 87facd9b85630f288433aa0a20a963cffc612ee5
 
 git module zsh-prioritize-cwd-history:
     url: https://github.com/ericfreese/zsh-prioritize-cwd-history
@@ -662,4 +662,4 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: ddb097d65d6e96576df06d5cdf45d4b08d54d425
+    rev: e91343e376998b89c51f56d5ac59137871b9d8ac

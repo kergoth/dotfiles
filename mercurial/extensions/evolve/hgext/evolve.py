@@ -1998,20 +1998,20 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
         hg.update(repo, divergent.rev())
     repo.ui.note(_('merging divergent changeset\n'))
     if progresscb: progresscb()
-    if 'partial' in merge.update.__doc__:
+    try:
+        stats = merge.update(repo,
+                             other.node(),
+                             branchmerge=True,
+                             force=False,
+                             ancestor=base.node(),
+                             mergeancestor=True)
+    except TypeError:
         # Mercurial  < 43c00ca887d1 (3.7)
         stats = merge.update(repo,
                              other.node(),
                              branchmerge=True,
                              force=False,
                              partial=None,
-                             ancestor=base.node(),
-                             mergeancestor=True)
-    else:
-        stats = merge.update(repo,
-                             other.node(),
-                             branchmerge=True,
-                             force=False,
                              ancestor=base.node(),
                              mergeancestor=True)
 

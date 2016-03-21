@@ -64,12 +64,21 @@ You may want to override the default global config variables after sourcing the 
 Set `ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE` to configure the style that the suggestion is shown with. The default is `fg=8`.
 
 
+### Suggestion Strategy
+
+Set `ZSH_AUTOSUGGEST_STRATEGY` to choose the strategy for generating suggestions. There are currently two to choose from:
+
+- `default`: Chooses the most recent match.
+- `match_prev_cmd`: Chooses the most recent match whose preceding history item matches the most recently executed command ([more info](src/strategies/match_prev_cmd.zsh)).
+
+
 ### Widget Mapping
 
 This plugin works by triggering custom behavior when certain [zle widgets](http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#Zle-Widgets) are invoked. You can add and remove widgets from these arrays to change the behavior of this plugin:
 
 - `ZSH_AUTOSUGGEST_CLEAR_WIDGETS`: Widgets in this array will clear the suggestion when invoked.
 - `ZSH_AUTOSUGGEST_ACCEPT_WIDGETS`: Widgets in this array will accept the suggestion when invoked.
+- `ZSH_AUTOSUGGEST_EXECUTE_WIDGETS`: Widgets in this array will execute the suggestion when invoked.
 - `ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS`: Widgets in this array will partially accept the suggestion when invoked.
 
 Widgets not in any of these lists will update the suggestion when invoked.
@@ -79,10 +88,11 @@ Widgets not in any of these lists will update the suggestion when invoked.
 
 ### Key Bindings
 
-This plugin provides two widgets that you can use with `bindkey`:
+This plugin provides three widgets that you can use with `bindkey`:
 
 1. `autosuggest-accept`: Accepts the current suggestion.
-2. `autosuggest-clear`: Clears the current suggestion.
+2. `autosuggest-execute`: Accepts and executes the current suggestion.
+3. `autosuggest-clear`: Clears the current suggestion.
 
 For example, this would bind <kbd>ctrl</kbd> + <kbd>space</kbd> to accept the current suggestion.
 
