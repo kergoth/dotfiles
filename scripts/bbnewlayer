@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+if ! which bitbake >/dev/null 2>&1; then
+    echo >&2 "Error: unable to find bitbake, please source the environemnt setup script"
+    exit 1
+fi
+
+layer="${1:-local}"
+priority="${2:-1}"
+
+layer="${layer#meta-}"
+if [ ! -e "meta-$layer" ]
+then
+    yocto-layer create "$layer" "$priority"
+fi && bitbake-layers add-layer "meta-$layer"
