@@ -1,11 +1,22 @@
+if [[ $OSTYPE =~ darwin ]]; then
+    get-tty-geom () {
+        stty -a | sed -n '1s/.*\; \([0-9]*\) rows\; \([0-9]*\) columns\;/\1 \2/p'
+    }
+else
+    get-tty-geom () {
+        stty -a | sed -n '1s/.*\; rows \([0-9]*\)\; columns \([0-9]*\)\;.*/\1 \2/p'
+    }
+fi
+
 asciinema-rec () {
     local ret rows cols
 
-    stty -a | sed -n '1s/.*\; \([0-9]*\) rows\; \([0-9]*\) columns\;/\1 \2/p' | read -r rows cols
+    get-tty-geom | read -r rows cols
     stty rows 24 columns 80
     asciinema rec "$@"
     stty rows $rows columns $cols
     ret=$?
     return $ret
 }
+
 # vim: set ft=zsh :
