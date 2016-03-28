@@ -1,3 +1,3 @@
 #!/bin/sh
 
-repo forall -p -c git outgoing HEAD --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short "$@" | ${PAGER:-less}
+repo forall -pvc sh -c 'git fetch && git log --pretty=format:"%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset" --date=short "@{u}.."'
