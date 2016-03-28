@@ -29,7 +29,6 @@ imports:
     dtrx: scripts
     dustin-bindir: scripts
     friendly-find: scripts
-    gibo: scripts
     git-cherry-tree: scripts
     git-extras: scripts
     git-imerge: scripts
@@ -367,11 +366,6 @@ hg module friendly-find:
     url: https://bitbucket.org/sjl/friendly-find
     pick: ffind
     rev: 59b3a26fd6724d77f0b49b3b5981ff167ee31e6a
-
-git module gibo:
-    url: https://github.com/simonwhitaker/gibo
-    pick: gibo
-    rev: bf3f5ddf497e5d0c6b43fa9505185b4591d4287a
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
