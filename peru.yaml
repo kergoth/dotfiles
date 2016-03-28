@@ -110,7 +110,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: cb02451a4e08d7c0157595db52769ed994aea3b5
+    rev: bc7f8ea433adf3efd71a3e950e9a8dec846a1171
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -118,7 +118,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 2082c7573fc1cd393ea0b2948aff6f0bdf3798cd
+    rev: 3e81c156e7bb42b916138bf7990009a1ad78b517
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -172,7 +172,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: e1ae9effbcc9673bdc4bedbdbe6028f00114108c
+    rev: 57afba5bdd49b59d57485f90aa0cf3f3a6c47f63
 
 # go language support
 git module vim-golang:
@@ -197,7 +197,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 410429a95c67eed8eeb26681838d3766a2437806
+    rev: 842e5623593bc34278b8c2cf5f5a884ef581b1a0
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 6cc9d539783716c8e614364562cce8709be2957f
+    rev: 3cb5fef6b6e9fae3166c29daf8532aaafc3cacb9
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -574,14 +574,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 9f766ead6aaa91802c5dd86bcd00ccab0b7e189c
+    rev: 85b5cabdcd933f940536c91e50f071ace088ba94
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 4632f61206d2a4a9dd443b6b4a4257220437be74
+    rev: dd0a605065d2e730f79043fdec003240957d0288
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
