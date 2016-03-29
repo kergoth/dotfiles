@@ -9,7 +9,7 @@ set -eu
 
 usage () {
     cat <<END >&2
-Usage: ${0##*/} [options] pattern ..."
+Usage: ${0##*/} [options] PATTERN ...
 
 Options:
 
