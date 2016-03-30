@@ -57,6 +57,7 @@ pip install -U --user toml # toml-set/toml-get, used by the game scripts
 pip install -U --user sh # various scripts
 pip install -U --user hungarian # git-tbdiff
 pipv json2yaml # pcposts zsh function
+pip install -U --user gitpython # buildhistory-diff
 
 ## Pinboard client
 npmv pin-cushion
