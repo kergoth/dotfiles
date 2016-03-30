@@ -47,7 +47,7 @@ pipv dropblame &&
     mv "$XDG_DATA_HOME/../bin/drop" "$XDG_DATA_HOME/../bin/dropb"
 
 ## For dotfiles
-PYVENV=pyvenv-3.4 pipv3 peru
+pipv3 peru
 
 ## Script dependencies
 pip install -U --user SOAPpy # lmwsaction
