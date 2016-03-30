@@ -5,6 +5,13 @@ if which trash >/dev/null 2>&1; then
 fi
 
 for arg; do
+    case "${arg##*/}" in
+        build|tmp)
+            bgrm "$arg"
+            continue
+            ;;
+    esac
+
     if [ -h "$arg" ]; then
         bgrm "$arg"
     elif [ -e "$arg" ]; then

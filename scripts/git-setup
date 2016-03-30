@@ -10,6 +10,7 @@ gitdirexists(){
 dir=$(test -z "$*" && echo "." || echo "$*")
 mkdir -p "$dir" \
   && cd "$dir" \
+  && export GIT_DIR="$PWD/.git" \
   && gitdirexists \
   && git init \
   && git add . \
