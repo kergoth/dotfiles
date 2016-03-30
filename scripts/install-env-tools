@@ -16,6 +16,9 @@ setup_pip () {
             exit 2
         fi
     fi
+    if  ! which virtualenv >/dev/null 2>&1; then
+        pip install --user virtualenv
+    fi
 }
 
 setup_pip
