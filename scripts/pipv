@@ -27,7 +27,9 @@ case "$venv" in
 esac
 
 venv_dir="$WORKON_HOME/$venv"
-virtualenv "$venv_dir" || exit 1
+if [ ! -e "$venv_dir" ]; then
+    virtualenv "$venv_dir" || exit 1
+fi
 . "$venv_dir/bin/activate" || exit 2
 
 case "$(which pip)" in
