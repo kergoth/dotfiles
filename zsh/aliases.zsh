@@ -48,6 +48,7 @@ alias '$='
 if (( $+commands[hub] )); then
     alias git=hub
 fi
+alias gitcolor='git -c color.ui=always'
 
 if (( $+commands[pacman-color] )); then
     alias pacman='pacman-color'
