@@ -79,7 +79,7 @@
 	todo = !t.py -t $(git root) -l TODO
 
 	# show list of contributors in descending order by number of commits
-	rank = shortlog -sn --no-merges
+	authors = shortlog -sne --no-merges
 
 	# given a string for an author, try to figure out full name and email:
 	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>%n\" --author=\"$1\"' -"
