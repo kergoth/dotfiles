@@ -41,7 +41,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 ```
 
-Make sure to use the latest version of fzf and Vim 7.4 or above.
+- Use `./install --bin` instead if you don't need fzf outside of Vim
+- Make sure to use Vim 7.4 or above
 
 Commands
 --------
@@ -69,6 +70,7 @@ Commands
 | `Commands`       | Commands                                                                  |
 | `Maps`           | Normal mode mappings                                                      |
 | `Helptags`       | Help tags <sup id="a1">[1](#helptags)</sup>                               |
+| `Filetypes`      | File types
 
 - Most commands support `CTRL-T` / `CTRL-X` / `CTRL-V` key
   bindings to open in a new tab, a new split, or in a new vertical split

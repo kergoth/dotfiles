@@ -110,7 +110,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: bc7f8ea433adf3efd71a3e950e9a8dec846a1171
+    rev: 367929502fc1e6cb5a1bacc5ff8cc8a317cb998a
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -133,7 +133,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: 5c38b311f4d146387996b471d07dc05fbb9f0d9c
+    sha1: ed6e8ace9500358754ae1ddfb6759d5d9564ef20
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -197,11 +197,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 842e5623593bc34278b8c2cf5f5a884ef581b1a0
+    rev: 377010ea6e73f2d2b4b15a31137aa6922e53e546
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 13bad30d4ee3892cae755c83433ee85fbc96d028
+    rev: a59cea9cae61654d7ba98ef100e3e8883c4b4022
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -236,7 +236,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: eb3e564fb1edfee09fe6aeb57f3388e273da72c8
+    rev: fc8d1e68cd58fb3ffdd56109bf855cda92b10b70
 
 # continuously updated session files
 git module vim-obsession:
@@ -254,7 +254,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 852cfa0c11d5661d79ed1faf1cc211b3c6ef7b00
+    rev: 1ed70a995d3c03b66b96c726a29d0219f059f4a1
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 3cb5fef6b6e9fae3166c29daf8532aaafc3cacb9
+    rev: 8d6e13bf94234addd3801f25de7d966d32d53133
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -333,7 +333,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: fc1e712923e06c8993011b833b6fbfef900f0068
+    rev: 4f5f59b80a757db4ba319ba789f2d4ef3df08760
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -574,14 +574,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 85b5cabdcd933f940536c91e50f071ace088ba94
+    rev: 0182aeb27b30b7347e3da12169b07d163de4f44b
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: dd0a605065d2e730f79043fdec003240957d0288
+    rev: 0b3b999ef721c406bdf5f45e9013ceeca7d73bdb
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell

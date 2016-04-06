@@ -103,8 +103,8 @@ run_test_internal() {
     highlight_zone=${(z)expected_region_highlight[$i]}
     [[ -n "$highlight_zone[4]" ]] && todo=" # TODO $highlight_zone[4]"
     for j in {$highlight_zone[1]..$highlight_zone[2]}; do
-      if [[ "$observed_result[$j]" != "$highlight_zone[3]" ]]; then
-        echo "not ok $i ${(qqq)BUFFER[$highlight_zone[1],$highlight_zone[2]]} [$highlight_zone[1],$highlight_zone[2]]: expected ${(qqq)highlight_zone[3]}, observed ${(qqq)observed_result[$j]}.$todo"
+      if [[ "$observed_result[$j]" != "${(Q)highlight_zone[3]}" ]]; then
+        echo "not ok $i ${(qqq)BUFFER[$highlight_zone[1],$highlight_zone[2]]} [$highlight_zone[1],$highlight_zone[2]]: expected ${(Q)highlight_zone[3]}, observed ${(qqq)observed_result[$j]}.$todo"
         continue 2
       fi
     done
@@ -148,7 +148,7 @@ fi
 # Process each test data file in test data directory.
 integer something_failed=0
 for data_file in ${0:h:h}/highlighters/$1/test-data/*.zsh; do
-  run_test "$data_file" | tee >($results_filter | ${0:A:h}/tap-colorizer.zsh) | grep -v '^not ok.*# TODO' | grep -q '^not ok\|^ok.*# TODO' && (( something_failed=1 ))
+  run_test "$data_file" | tee >($results_filter | ${0:A:h}/tap-colorizer.zsh) | grep -v '^not ok.*# TODO' | grep -Eq '^not ok|^ok.*# TODO' && (( something_failed=1 ))
   (( $pipestatus[1] )) && exit 2
 done
 

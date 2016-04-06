@@ -274,7 +274,7 @@ endfunction
 function! s:all_files()
   return extend(
   \ filter(reverse(copy(v:oldfiles)),
-  \        "v:val !~ 'fugitive:\\|__Tagbar__\\|NERD_tree\\|^/tmp/\\|\\.git/'"),
+  \        "v:val !~ 'fugitive:\\|__Tagbar__\\|NERD_tree\\|^/tmp/\\|\\.git/\\|term://'"),
   \ filter(map(s:buflisted(), 'bufname(v:val)'), '!empty(v:val)'))
 endfunction
 
@@ -711,6 +711,18 @@ function! fzf#vim#helptags(...)
     \ "| perl -ne '/(.*?):(.*?)\t(.*?)\t/; printf(qq(\x1b[33m%-40s\x1b[m\t%s\t%s\n), $2, $3, $1)' | sort",
   \ 'sink':    s:function('s:helptag_sink'),
   \ 'options': '--ansi +m --tiebreak=begin --with-nth ..-2'}, a:000)
+endfunction
+
+" ------------------------------------------------------------------
+" File types
+" ------------------------------------------------------------------
+function! fzf#vim#filetypes(...)
+  return s:fzf({
+  \ 'source':  sort(map(split(globpath(&rtp, 'syntax/*.vim'), '\n'),
+  \            'fnamemodify(v:val, ":t:r")')),
+  \ 'sink':    'setf',
+  \ 'options': '+m --prompt="File types> "'
+  \}, a:000)
 endfunction
 
 " ------------------------------------------------------------------
