@@ -133,7 +133,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: ed6e8ace9500358754ae1ddfb6759d5d9564ef20
+    sha1: 5c38b311f4d146387996b471d07dc05fbb9f0d9c
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge

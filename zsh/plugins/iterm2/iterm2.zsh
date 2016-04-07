@@ -1,6 +1,5 @@
 if [[ -o login ]]; then
-  if [ "$TERM" != "screen" -a "$ITERM_SHELL_INTEGRATION_INSTALLED" = "" ]; then
-    export ITERM_SHELL_INTEGRATION_INSTALLED=Yes
+  if [ x"$TERM" != "xscreen" ]; then
     # Indicates start of command output. Runs just before command executes.
     iterm2_before_cmd_executes() {
       printf "\033]133;C;\007"
@@ -49,7 +48,7 @@ if [[ -o login ]]; then
     #    The following steps happen:
     #    * iterm2_preexec is invoked
     #      * PS1 is set to ITERM2_PRECMD_PS1
-    #      * ITERM2_PREEXEC_RAN is set to 1
+    #      * ITERM2_PRECMD_PS1 is set to empty string
     #    * The command executes (possibly reading or modifying PS1)
     #    * iterm2_precmd is invoked
     #      * ITERM2_PRECMD_PS1 is set to PS1 (as modified by command execution)
@@ -75,8 +74,7 @@ if [[ -o login ]]; then
     #    * Your prompt is shown and you may begin entering a command.
     #
     # Invariants:
-    # * ITERM2_PREEXEC_RAN is 1 during and just after command execution, and "" while the prompt is
-    #   shown and until you enter a command and press return.
+    # * ITERM2_PRECMD_PS1 is empty during and just after command execution
     # * PS1 does not have our escape sequences during command execution
     # * After the command executes but before a new one begins, PS1 has escape sequences and
     #   ITERM2_PRECMD_PS1 has PS1's original value.
@@ -84,7 +82,6 @@ if [[ -o login ]]; then
       # This should be a raw PS1 without iTerm2's stuff. It could be changed during command
       # execution.
       ITERM2_PRECMD_PS1="$PS1"
-      ITERM2_PREEXEC_RAN=""
 
       # Add our escape sequences just before the prompt is shown.
       PS1="%{$(iterm2_prompt_start)%}$PS1%{$(iterm2_prompt_end)%}"
@@ -92,14 +89,14 @@ if [[ -o login ]]; then
 
     iterm2_precmd() {
       local STATUS="$?"
-      if [ -z "$ITERM2_PREEXEC_RAN" ]; then
+      if [ -n "$ITERM2_PRECMD_PS1" ]; then
         # You pressed ^C while entering a command (iterm2_preexec did not run)
         iterm2_before_cmd_executes
       fi
 
       iterm2_after_cmd_executes "$STATUS"
 
-      if [ -n "$ITERM2_PREEXEC_RAN" ]; then
+      if [ -z "$ITERM2_PRECMD_PS1" ]; then
         iterm2_decorate_prompt
       fi
     }
@@ -108,7 +105,7 @@ if [[ -o login ]]; then
     iterm2_preexec() {
       # Set PS1 back to its raw value prior to executing the command.
       PS1="$ITERM2_PRECMD_PS1"
-      ITERM2_PREEXEC_RAN="1"
+      ITERM2_PRECMD_PS1=""
       iterm2_before_cmd_executes
     }
 
