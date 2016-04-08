@@ -69,7 +69,8 @@ pt () {
 }
 
 if (( $+commands[pt] )); then
-    alias bbs="pt -G '\.(bb|bbappend|inc|conf)$'"
+    alias bbag="pt -G '\.(bb|bbappend|inc|conf)$'"
+    alias bbs=bbag
 elif (( $+commands[ag] )); then
     alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
     alias bbs=bbag
