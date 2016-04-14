@@ -97,9 +97,6 @@ go get -u github.com/shurcooL/markdownfmt
 
 ## As Needed
 
-### StackOverflow from the commandline
-#npmv how2
-
 #go get -u github.com/jbenet/go-multihash/multihash # If needed to create a hash for use by hashpipe
 #go get -u github.com/jbenet/hashpipe
 #pipv pockyt # cli for Pocket
@@ -110,7 +107,13 @@ go get -u github.com/shurcooL/markdownfmt
 # Seemingly no cli install for: terra (terralang.org)
 #go get -u github.com/asciinema/asciinema # or brew install asciinema
 
-## Lua Development
+### Lua Development
 # luvi?
 #luav moonscript
 #luav busted
+
+### StackOverflow from the commandline
+#npmv how2
+
+### Video Downloading
+#pipv3 youtube-dl
