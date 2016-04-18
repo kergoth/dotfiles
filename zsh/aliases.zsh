@@ -92,7 +92,10 @@ if (( $+commands[fzf] )); then
     alias z=_z_fzf
 fi
 
-alias vi=vim
+if (( $+commands[vim] )); then
+    alias vi=vim
+fi
+
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if (( $+commands[dfc] )); then
