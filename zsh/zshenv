@@ -43,7 +43,11 @@ export CVS_RSH=ssh
 export CVSREAD=yes
 
 if [[ -z "$LANG" ]]; then
-  eval "$(locale)"
+  if [[ -n $commands[locale] ]]; then
+    eval "$(locale)"
+  else
+    export LANG=en_US.UTF-8
+  fi
 fi
 
 export ACKRC=.ackrc
