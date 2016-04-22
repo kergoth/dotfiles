@@ -63,7 +63,7 @@ fi
 
 export TERMINFO=$XDG_CONFIG_HOME/ncurses/terminfo
 typeset -xTU TERMINFO_DIRS terminfo_dirs
-terminfo_dirs=(/opt/homebrew/opt/*/share/terminfo(N))
+terminfo_dirs=(~/.terminfo /opt/homebrew/opt/*/share/terminfo(N) /usr/local/share/terminfo /usr/share/terminfo)
 
 export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
 export CURL_HOME=$XDG_CONFIG_HOME/curl
