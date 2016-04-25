@@ -38,6 +38,7 @@ pipv pythonpy
 pipv httpie
 go get -u github.com/EricChiang/pup # or brew install pup
 pip install --user -U hg-git
+pipv git-remote-dropbox
 # Dropblame, constructs git history for individual files in dropbox, using
 # dropbox's revision history.
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
