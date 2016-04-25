@@ -54,7 +54,7 @@ __fzf_generic_path_completion() {
       [ "$dir" != "/" ] && dir="${dir/%\//}"
       dir=${~dir}
       matches=$(eval "$compgen $(printf %q "$dir")" | ${=fzf} ${=FZF_COMPLETION_OPTS} ${=fzf_opts} -q "$leftover" | while read item; do
-        printf "%q$suffix " "$item"
+        echo -n "${(q)item}$suffix "
       done)
       matches=${matches% }
       if [ -n "$matches" ]; then
@@ -145,7 +145,7 @@ fzf-completion() {
   # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
   tokens=(${(z)LBUFFER})
   if [ ${#tokens} -lt 1 ]; then
-    eval "zle ${fzf_default_completion:-expand-or-complete}"
+    zle ${fzf_default_completion:-expand-or-complete}
     return
   fi
 
@@ -180,7 +180,7 @@ fzf-completion() {
     fi
   # Fall back to default completion
   else
-    eval "zle ${fzf_default_completion:-expand-or-complete}"
+    zle ${fzf_default_completion:-expand-or-complete}
   fi
 }
 

@@ -41,6 +41,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 ```
 
+- `dir` option is not mandatory
 - Use `./install --bin` instead if you don't need fzf outside of Vim
 - Make sure to use Vim 7.4 or above
 
@@ -50,7 +51,8 @@ Commands
 | Command          | List                                                                      |
 | ---              | ---                                                                       |
 | `Files [PATH]`   | Files (similar to `:FZF`)                                                 |
-| `GitFiles`       | Git files                                                                 |
+| `GitFiles`       | Git files (git ls-files)                                                  |
+| `GitFiles?`      | Git files (git status)                                                    |
 | `Buffers`        | Open buffers                                                              |
 | `Colors`         | Color schemes                                                             |
 | `Ag [PATTERN]`   | [ag][ag] search result (`ALT-A` to select all, `ALT-D` to deselect all)   |

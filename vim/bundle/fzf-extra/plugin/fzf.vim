@@ -43,7 +43,7 @@ endfunction
 
 call s:defs([
 \'command! -bang -nargs=? -complete=dir Files  call fzf#vim#files(<q-args>, s:w(<bang>0))',
-\'command! -bang GitFiles                      call fzf#vim#gitfiles(s:w(<bang>0))',
+\'command! -bang -nargs=? GitFiles             call fzf#vim#gitfiles(<q-args>, s:w(<bang>0))',
 \'command! -bang Buffers                       call fzf#vim#buffers(s:w(<bang>0))',
 \'command! -bang Lines                         call fzf#vim#lines(s:w(<bang>0))',
 \'command! -bang BLines                        call fzf#vim#buffer_lines(s:w(<bang>0))',
@@ -85,13 +85,13 @@ if has('nvim') && get(g:, 'fzf_nvim_statusline', 1)
       doautocmd User FzfStatusLine
     else
       if $TERM !~ "256color"
-        highlight fzf1 ctermfg=1 ctermbg=8
-        highlight fzf2 ctermfg=2 ctermbg=8
-        highlight fzf3 ctermfg=7 ctermbg=8
+        highlight fzf1 ctermfg=1 ctermbg=8 guifg=#E12672 guibg=#565656
+        highlight fzf2 ctermfg=2 ctermbg=8 guifg=#BCDDBD guibg=#565656
+        highlight fzf3 ctermfg=7 ctermbg=8 guifg=#D9D9D9 guibg=#565656
       else
-        highlight fzf1 ctermfg=161 ctermbg=238
-        highlight fzf2 ctermfg=151 ctermbg=238
-        highlight fzf3 ctermfg=252 ctermbg=238
+        highlight fzf1 ctermfg=161 ctermbg=238 guifg=#E12672 guibg=#565656
+        highlight fzf2 ctermfg=151 ctermbg=238 guifg=#BCDDBD guibg=#565656
+        highlight fzf3 ctermfg=252 ctermbg=238 guifg=#D9D9D9 guibg=#565656
       endif
       setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
     endif

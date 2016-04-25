@@ -63,8 +63,9 @@ Objective-C, Objective-C++, OCaml, Perl, Perl POD, PHP, gettext Portable
 Object, OS X and iOS property lists, Pug (formerly Jade), Puppet, Python, QML,
 R, Racket, Relax NG, reStructuredText, RPM spec, Ruby, SASS/SCSS, Scala, Slim,
 SML, Sphinx, SQL, Stylus, Tcl, TeX, Texinfo, Twig, TypeScript, Vala, Verilog,
-VHDL, VimL, xHtml, XML, XSLT, XQuery, YACC, YAML, z80, Zope page templates, and
-zsh. See the [wiki][3] for details about the corresponding supported checkers.
+VHDL, VimL, xHtml, XML, XSLT, XQuery, YACC, YAML, YANG data models, z80, Zope
+page templates, and zsh. See the [wiki][3] for details about the corresponding
+supported checkers.
 
 A number of third-party Vim plugins also provide checkers for syntastic,
 for example: [merlin][30], [omnisharp-vim][25], [rust.vim][12],
@@ -190,7 +191,7 @@ let g:syntastic_check_on_wq = 0
 __4.1. Q. I installed syntastic but it isn't reporting any errors...__
 
 A. The most likely reason is that none of the syntax checkers that it requires
-is installed. For example: by default, python requires either `flake8` or
+are installed. For example: by default, python requires either `flake8` or
 `pylint` to be installed and in your `$PATH`. To see which executables are
 supported, look at the [wiki][3]. Note that aliases do not work; the actual
 executables must be available in your `$PATH`. Symbolic links are okay though.

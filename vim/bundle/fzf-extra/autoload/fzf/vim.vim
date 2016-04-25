@@ -58,7 +58,7 @@ endif
 
 function! s:get_color(attr, ...)
   for group in a:000
-    let code = synIDattr(synIDtrans(hlID(group)), a:attr)
+    let code = synIDattr(synIDtrans(hlID(group)), a:attr, 'cterm')
     if code =~ '^[0-9]\+$'
       return code
     endif
@@ -106,6 +106,13 @@ let s:default_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
+function! s:open(cmd, target)
+  if stridx('edit', a:cmd) == 0 && fnamemodify(a:target, ':p') ==# expand('%:p')
+    return
+  endif
+  execute a:cmd s:escape(a:target)
+endfunction
+
 function! s:common_sink(lines) abort
   if len(a:lines) < 2
     return
@@ -127,7 +134,7 @@ function! s:common_sink(lines) abort
         execute 'e' s:escape(item)
         let empty = 0
       else
-        execute cmd s:escape(item)
+        call s:open(cmd, item)
       endif
       if exists('#BufEnter') && isdirectory(item)
         doautocmd BufEnter
@@ -201,13 +208,13 @@ function! s:line_handler(lines)
   endif
   normal! m'
   let cmd = get(get(g:, 'fzf_action', s:default_action), a:lines[0], '')
-  if !empty(cmd)
+  if !empty(cmd) && stridx('edit', cmd) < 0
     execute 'silent' cmd
   endif
 
   let keys = split(a:lines[1], '\t')
-  execute 'buffer' keys[0][1:-2]
-  execute keys[1][0:-2]
+  execute 'buffer' keys[0]
+  execute keys[1]
   normal! ^zz
 endfunction
 
@@ -251,7 +258,7 @@ function! s:buffer_line_handler(lines)
     execute 'silent' cmd
   endif
 
-  execute split(a:lines[1], '\t')[0][0:-2]
+  execute split(a:lines[1], '\t')[0]
   normal! ^zz
 endfunction
 
@@ -316,9 +323,10 @@ function! s:history_sink(type, lines)
   endif
 
   let key  = a:lines[0]
-  let item = matchstr(a:lines[1], ': \zs.*')
+  let item = matchstr(a:lines[1], ' *[0-9]\+ *\zs.*')
   if key == 'ctrl-e'
     call histadd(a:type, item)
+    redraw
     call feedkeys(a:type."\<up>")
   else
     let g:__fzf_command = "normal ".a:type.item."\<cr>"
@@ -356,18 +364,34 @@ function! fzf#vim#history(...)
 endfunction
 
 " ------------------------------------------------------------------
-" GitFiles
+" GitFiles[?]
 " ------------------------------------------------------------------
 
-function! fzf#vim#gitfiles(...)
+function! s:git_status_sink(lines) abort
+  if len(a:lines) < 2
+    return
+  endif
+  let lines = extend(a:lines[0:0], map(a:lines[1:], 'v:val[3:]'))
+  return s:common_sink(lines)
+endfunction
+
+function! fzf#vim#gitfiles(args, ...)
   let root = systemlist('git rev-parse --show-toplevel')[0]
   if v:shell_error
     return s:warn('Not in git repo')
   endif
+  if a:args !~ '^?'
+    return s:fzf(fzf#vim#wrap({
+    \ 'source':  'git ls-files',
+    \ 'dir':     root,
+    \ 'options': '-m --prompt "GitFiles> "'
+    \}), a:000)
+  endif
   return s:fzf(fzf#vim#wrap({
-  \ 'source':  'git ls-tree --name-only -r HEAD',
+  \ 'source':  'git -c color.status=always status --short',
   \ 'dir':     root,
-  \ 'options': '-m --prompt "GitFiles> "'
+  \ 'sink*':   s:function('s:git_status_sink'),
+  \ 'options': '--ansi --multi --nth 2..,.. --prompt "GitFiles?> "'
   \}), a:000)
 endfunction
 
@@ -457,7 +481,7 @@ function! s:ag_handler(lines)
 
   let first = list[0]
   try
-    execute cmd s:escape(first.filename)
+    call s:open(cmd, first.filename)
     execute first.lnum
     execute 'normal!' first.col.'|zz'
   catch
@@ -563,7 +587,7 @@ function! s:tags_sink(lines)
   for line in a:lines[1:]
     let parts = split(line, '\t\zs')
     let excmd = matchstr(join(parts[2:], ''), '^.*\ze;"\t')
-    execute cmd s:escape(parts[1][:-2])
+    call s:open(cmd, parts[1][:-2])
     execute excmd
     call add(qfl, {'filename': expand('%'), 'lnum': line('.'), 'text': getline('.')})
   endfor
@@ -579,10 +603,20 @@ endfunction
 
 function! fzf#vim#tags(query, ...)
   if empty(tagfiles())
-    call s:warn('Preparing tags')
-    call system('ctags -R')
-    if empty(tagfiles())
-      return s:warn('Failed to create tags')
+    call inputsave()
+    echohl WarningMsg
+    let gen = input('tags not found. Generate? (y/N) ')
+    echohl None
+    call inputrestore()
+    redraw
+    if gen =~ '^y'
+      call s:warn('Preparing tags')
+      call system('ctags -R')
+      if empty(tagfiles())
+        return s:warn('Failed to create tags')
+      endif
+    else
+      return s:warn('No tags found')
     endif
   endif
 
@@ -759,7 +793,7 @@ function! s:format_win(tab, win, buf)
 endfunction
 
 function! s:windows_sink(line)
-  let list = matchlist(a:line, '\([ 0-9]*\):\([ 0-9]*\)')
+  let list = matchlist(a:line, '^ *\([0-9]\+\) *\([0-9]\+\)')
   call s:jump(list[1], list[2])
 endfunction
 

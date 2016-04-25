@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 367929502fc1e6cb5a1bacc5ff8cc8a317cb998a
+    rev: c54c076cfa4501f9ef36652395011b8e661feb90
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -132,11 +132,11 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: 5c38b311f4d146387996b471d07dc05fbb9f0d9c
+    sha1: 10823d51a0c9a16a72d4a729afd4ac1126e68a93
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: 59af371e470dd0a26cc1923ffc791202701c945d
+    rev: 56dcbfbb7bd4fd05f2cd5420263385cbbfd8752b
     pick: git-imerge
 
 git module cheat:
@@ -171,7 +171,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 841adb49add27ccc45e73e231d02103f1be987c4
+    rev: bdd216827ae53cdf70d933bb30762da9bf42cad4
 
 # go language support
 git module vim-golang:
@@ -196,11 +196,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 168dd7970a95c0c5049fec0b101b7f53b6a22469
+    rev: 81b58028f0131ae942fe81dceb6d40abf4f25b93
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: a59cea9cae61654d7ba98ef100e3e8883c4b4022
+    rev: ff7a287321c89f47af61ce22ac4a1222f92a30b3
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -215,7 +215,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch.git
-    rev: d02b2d0404134e6cae2708069d6888110d3c2272
+    rev: 5ee2b82b565e6c6d80f1cb7735c78f66a159b198
 
 # graph your Vim undo tree in style
 git module gundo:
@@ -253,7 +253,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 7cfff6b16f43c74702e93e20ec9bc846647650ba
+    rev: 2eebbf654051cb115b3434ce59bc12ac731650a2
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -289,7 +289,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: e5ac2ebd7c6f845d34b908455a7f12d1be40d6a4
+    rev: 633aec38f573ca34ef1336a2b1cb46462d4893b0
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -327,7 +327,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 4f5f59b80a757db4ba319ba789f2d4ef3df08760
+    rev: 34b68c4547fe6d019425d028602b12ce0d416d45
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -354,7 +354,7 @@ git module planter:
 
 git module z:
     url: https://github.com/rupa/z
-    rev: cd9f1e2d965eeb0f939d97352726bdfc8da7d504
+    rev: 9dafe447af59e1ccc5ef45f8fbc5550dcbd2bfbd
 
 hg module friendly-find:
     url: https://bitbucket.org/sjl/friendly-find
@@ -568,14 +568,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: cc6b92afa640db4342dc9ab9fd4215316888d6fa
+    rev: eb2b9cfcd9f5d7cb0e5b3509e4ebceff95948d2a
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: b59a30f6c75b3771d5d323e337d49f455c320ef6
+    rev: 8e25f396572bd94e93b0548057cf96a17503a354
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -607,7 +607,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: aa4611dd9add76b1facda9906fcdf8078a2e89e6
+    rev: 80da4d047daa8aa18cd513c01c3f0195d8580a02
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -650,4 +650,4 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: e91343e376998b89c51f56d5ac59137871b9d8ac
+    rev: e7826a717cedbb2dc295aa21c93e9e741b2843fd

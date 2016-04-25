@@ -122,13 +122,14 @@ endfunction
 
 function! s:SudoReadCmd() abort
   silent %delete_
-  execute (has('gui_running') ? '' : 'silent') 'read !env SUDO_EDITOR=cat sudo -e %'
+  let pipe = printf(&shellpipe . (&shellpipe =~ '%s' ? '' : ' %s'), '/dev/null')
+  execute (has('gui_running') ? '' : 'silent') 'read !env SUDO_EDITOR=cat sudo -e "%" ' . pipe
   silent 1delete_
   set nomodified
 endfunction
 
 function! s:SudoWriteCmd() abort
-  execute (has('gui_running') ? '' : 'silent') 'write !env SUDO_EDITOR=tee sudo -e % >/dev/null'
+  execute (has('gui_running') ? '' : 'silent') 'write !env SUDO_EDITOR=tee sudo -e "%" >/dev/null'
   let &modified = v:shell_error
 endfunction
 
