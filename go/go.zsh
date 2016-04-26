@@ -5,3 +5,4 @@ path=($path ${GOROOT:-/opt/homebrew/opt/go/libexec}/bin)
 for gp in "${gopath[@]}"; do
     path=($gp/bin $path)
 done
+export GO15VENDOREXPERIMENT=1
