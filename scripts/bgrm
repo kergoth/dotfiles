@@ -13,7 +13,7 @@ while read item; do
         # Existing bgrm directories can presumably be skipped
         continue
     fi
-    if [ ! -e "$item" ]; then
+    if [ ! -e "$item" ] && [ ! -L "$item" ]; then
         continue
     fi
 
