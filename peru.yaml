@@ -117,7 +117,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 3e81c156e7bb42b916138bf7990009a1ad78b517
+    rev: 17743e1e174830693026d3adbba265922440f48c
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -200,7 +200,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: ff7a287321c89f47af61ce22ac4a1222f92a30b3
+    rev: 10b3e6ab62942d413e7031ad33f996f194223a47
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -253,7 +253,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 2eebbf654051cb115b3434ce59bc12ac731650a2
+    rev: 815660d8dc4c5134fd2d25398ac5823af20fee8b
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -289,7 +289,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 633aec38f573ca34ef1336a2b1cb46462d4893b0
+    rev: 0231617857f812abfae5f68e2b8c7e9ce7053d59
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -327,7 +327,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 34b68c4547fe6d019425d028602b12ce0d416d45
+    rev: f4428d428bdb5b3f1b537621a888cc90484dd6bd
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -568,7 +568,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: eb2b9cfcd9f5d7cb0e5b3509e4ebceff95948d2a
+    rev: 23abc77a83a91c918e19e6967245561c6867bafd
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
