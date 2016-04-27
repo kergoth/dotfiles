@@ -6,6 +6,7 @@ fi
 
 for arg; do
     if [ -h "$arg" ]; then
+        echo >&2 "$arg"
         bgrm "$arg"
     elif [ -e "$arg" ]; then
         remove "$arg"
