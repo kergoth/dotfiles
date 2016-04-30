@@ -1,0 +1,33 @@
+#!/bin/sh
+# OSX-only script to run ddimage against the internal SD Card Reader on a Mac
+
+get_sdcard_device () {
+    diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' | \
+        grep -v '/dev/disk0$' | while read -r disk; do
+            if [ "$(diskutil info "$disk" | sed -n 's# *Device / Media Name: *##p')" = "SD Card Reader" ]; then
+                echo "$disk"
+                return 0
+            fi
+        done
+    return 1
+}
+
+sdcard_device="$(get_sdcard_device)"
+if [ $? -ne 0 ]; then
+    echo >&2 "Error: no SD Card Reader found"
+    return 1
+fi
+
+diskutil unmountDisk "$sdcard_device" || return $?
+
+if [ "$sdcard_device" = "/dev/disk1" ]; then
+    # ddimage is picky, excluding disk0 & disk1, but disk1 as the SD card
+    # reader is valid on some Macs.
+    if which pv >/dev/null 2>&1; then
+        pv "$1" | sudo dd of="/dev/r${sdcard_device#/dev/}" bs="1m"
+    else
+        sudo dd if="$1" of="/dev/r${sdcard_device#/dev/}" bs="1m"
+    fi
+else
+    sudo ddimage "$1" "/dev/r${sdcard_device#/dev/}"
+fi
