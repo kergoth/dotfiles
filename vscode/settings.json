@@ -1,0 +1,14 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "editor.fontFamily": "Input Mono Narrow",
+    "editor.scrollBeyondLastLine": false,
+
+    // Wrap at viewport width
+    "editor.wrappingColumn": 0,
+
+    "telemetry.enableTelemetry": false,
+    "go.formatOnSave": true,
+
+    // Controls auto save of dirty files. Accepted values:  "off", "afterDelay", "onFocusChange". If set to "afterDelay" you can configure the delay in "files.autoSaveDelay".
+    "files.autoSave": "afterDelay",
+}

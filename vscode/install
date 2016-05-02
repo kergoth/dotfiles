@@ -1,0 +1,7 @@
+VSCODE_HOME="$HOME/Library/Application Support/Code"
+
+link settings.json "$VSCODE_HOME/settings.json"
+link keybindings.json "$VSCODE_HOME/keybindings.json"
+link snippets "$VSCODE_HOME/snippets"
+
+# vim: set ft=sh :
