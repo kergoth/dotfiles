@@ -41,7 +41,7 @@
 	l = !git lg -n25
 
 	# Show branches by date
-	recent = "!r() { cur=$(git rev-parse --abbrev-ref HEAD); git for-each-ref --sort=committerdate refs/heads/ --format='%(color:yellow)%(HEAD) %(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:reset)%(objectname:short) %(upstream:trackshort) %(subject) <%(color:blue)%(authorname)>%(color:reset)' \"$@\"| column -ts'|'; }; r"
+	recent = "!f(){ git for-each-ref --sort=committerdate refs/heads/ --format='%(color:yellow)%(HEAD) %(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:reset)%(objectname:short) %(upstream:trackshort) %(subject) <%(color:blue)%(authorname)>%(color:reset)' \"$@\" | column -ts'|'; }; f"
 
 	# Log of all dangling commits
 	dangling = !git fsck | sed -n 's/^dangling commit //p' | git log --stdin --no-walk -g --first-parent -m -p
