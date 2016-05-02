@@ -19,6 +19,7 @@
 	staged = diff --cached
 	ignored = lsi
 	r = remote -v
+	fetchall = fetch -v --all
 	b = branch -v
 	ri = rebase -i
 
