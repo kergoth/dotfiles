@@ -38,6 +38,7 @@
 	# Pretty one line logs
 	lg = log --graph --pretty=format:'%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --date=short
 	lga = !git lg --all
+	l = !git lg -n25
 
 	# Show branches by date
 	recent = "!r() { cur=$(git rev-parse --abbrev-ref HEAD); git for-each-ref --sort=committerdate refs/heads/ --format='%(color:yellow)%(HEAD) %(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:reset)%(objectname:short) %(upstream:trackshort) %(subject) <%(color:blue)%(authorname)>%(color:reset)' \"$@\"| column -ts'|'; }; r"
