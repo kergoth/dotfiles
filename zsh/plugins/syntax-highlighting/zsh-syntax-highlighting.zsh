@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -121,7 +121,7 @@ _zsh_highlight()
     (( $+YANK_ACTIVE )) && (( YANK_ACTIVE )) && _zsh_highlight_apply_zle_highlight paste standout "$YANK_START" "$YANK_END"
 
     # isearch
-    (( $+ISEARCH_ACTIVE )) && (( ISEARCH_ACTIVE )) && _zsh_highlight_apply_zle_highlight isearch underline "$ISEARCH_START" "$ISEARCH_END"
+    (( $+ISEARCHMATCH_ACTIVE )) && (( ISEARCHMATCH_ACTIVE )) && _zsh_highlight_apply_zle_highlight isearch underline "$ISEARCHMATCH_START" "$ISEARCHMATCH_END"
 
     # suffix
     (( $+SUFFIX_ACTIVE )) && (( SUFFIX_ACTIVE )) && _zsh_highlight_apply_zle_highlight suffix bold "$SUFFIX_START" "$SUFFIX_END"
@@ -196,6 +196,24 @@ _zsh_highlight_cursor_moved()
   [[ -n $CURSOR ]] && [[ -n ${_ZSH_HIGHLIGHT_PRIOR_CURSOR-} ]] && (($_ZSH_HIGHLIGHT_PRIOR_CURSOR != $CURSOR))
 }
 
+# Add a highlight defined by ZSH_HIGHLIGHT_STYLES.
+#
+# Should be used by all highlighters aside from 'pattern' (cf. ZSH_HIGHLIGHT_PATTERN).
+# Overwritten in tests/test-highlighting.zsh when testing.
+_zsh_highlight_add_highlight()
+{
+  local -i start end
+  local highlight
+  start=$1
+  end=$2
+  shift 2
+  for highlight; do
+    if (( $+ZSH_HIGHLIGHT_STYLES[$highlight] )); then
+      region_highlight+=("$start $end $ZSH_HIGHLIGHT_STYLES[$highlight]")
+      break
+    fi
+  done
+}
 
 # -------------------------------------------------------------------------------------------------
 # Setup functions

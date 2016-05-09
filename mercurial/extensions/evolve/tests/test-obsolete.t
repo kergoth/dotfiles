@@ -457,6 +457,7 @@ Check that auto update ignores hidden changeset
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg up 
   3 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  1 other heads for branch "default"
   $ hg id -n
   8
 
@@ -508,7 +509,7 @@ check rebase compat
 should not rebase extinct changesets
 
 #excluded 'whole rebase set is extinct and ignored.' message not in core
-  $ hg rebase -b '3' -d 4 --traceback
+  $ hg rebase -b '3' -d 4 --traceback --config experimental.rebaseskipobsolete=0
   rebasing 3:0d3f46688ccc "add obsol_c"
   rebasing 8:159dfc9fa5d3 "add obsol_d''" (tip)
   2 new divergent changesets

@@ -2,6 +2,7 @@
   > [defaults]
   > amend=-d "0 0"
   > fold=-d "0 0"
+  > metaedit=-d "0 0"
   > [web]
   > push_ssl = false
   > allow_push = *
@@ -112,7 +113,7 @@ test kill and immutable changeset
 
   $ hg log -r 1 --template '{rev} {phase} {obsolete}\n'
   1 public stable
-  $ hg kill 1
+  $ hg prune 1
   abort: cannot prune immutable changeset: 7c3bad9141dc
   (see "hg help phases" for details)
   [255]
@@ -123,7 +124,7 @@ test simple kill
 
   $ hg id -n
   5
-  $ hg kill .
+  $ hg prune .
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at fbb94e3a0ecf
   1 changesets pruned
@@ -136,7 +137,7 @@ test simple kill
 
 test multiple kill
 
-  $ hg kill 4 -r 3
+  $ hg prune 4 -r 3
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 7c3bad9141dc
   2 changesets pruned
@@ -151,7 +152,7 @@ test kill with dirty changes
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ echo 4 > g
   $ hg add g
-  $ hg kill .
+  $ hg prune .
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 7c3bad9141dc
   1 changesets pruned
@@ -594,7 +595,7 @@ Test graft --continue
   merging 1
   warning: conflicts while merging 1! (edit, then use 'hg resolve --mark')
   abort: unresolved conflicts, can't continue
-  (use hg resolve and hg graft --continue)
+  (use 'hg resolve' and 'hg graft --continue')
   [255]
   $ hg log -r7 --template '{rev}:{node|short} {obsolete}\n'
   7:a5bfd90a2f29 stable
@@ -790,7 +791,7 @@ Test evolving renames
   adding b
   $ hg mv a c
   $ hg ci -m c
-  $ hg kill .^
+  $ hg prune .^
   1 changesets pruned
   1 new unstable changesets
   $ hg stab --any
@@ -1224,6 +1225,7 @@ Check hg evolve --rev on singled out commit
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
 
   $ hg evolve --rev 23 --any
   abort: cannot specify both "--rev" and "--any"
@@ -1262,6 +1264,7 @@ With only createmarkers we can only uncommit on a head
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
 
 Check that prune respects the allowunstable option
   $ hg up -C .
@@ -1291,6 +1294,7 @@ Check that prune respects the allowunstable option
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
   $ hg up 19
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ mkcommit c5_
@@ -1312,6 +1316,7 @@ Check that prune respects the allowunstable option
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
 
 Check that fold respects the allowunstable option
   $ hg up edc3c9de504e
@@ -1329,6 +1334,7 @@ Check that fold respects the allowunstable option
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
 
   $ hg fold --exact "19 + 18"
   abort: cannot fold chain not ending with a head or with branching
@@ -1356,6 +1362,7 @@ Check that evolve shows error while handling split commits
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
 
 Create a split commit
   $ printf "oo" > oo;
@@ -1392,6 +1399,7 @@ Create a split commit
   |/
   o  18:edc3c9de504e@default(draft) a3
   |
+  ~
   $ hg evolve --rev "18::"
   move:[33] add uu
   atop:[35] _pp
@@ -1446,6 +1454,124 @@ Check that dirstate changes are kept at failure for conflicts (issue4966)
   |/
   o  36:43c3f5ef149f@default(draft) add uu
   |
+  ~
 
   $ hg status newlyadded
   A newlyadded
+
+hg metaedit
+-----------
+
+  $ hg update --clean .
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ rm newlyadded
+  $ hg metaedit -r 0
+  abort: cannot edit commit information for public revisions
+  [255]
+  $ hg metaedit --fold
+  abort: revisions must be specified with --fold
+  [255]
+  $ hg metaedit -r 0 --fold
+  abort: cannot fold public revisions
+  [255]
+  $ hg metaedit '36 + 42' --fold
+  abort: cannot fold non-linear revisions (multiple roots given)
+  [255]
+  $ hg metaedit '36::39 + 41' --fold
+  abort: cannot fold non-linear revisions (multiple heads given)
+  [255]
+check that metaedit respects allowunstable
+  $ hg metaedit '.^' --config 'experimental.evolution=createmarkers, allnewcommands'
+  abort: cannot edit commit information in the middle of a stack
+  (c904da5245b0 will be affected)
+  [255]
+  $ hg metaedit '18::20' --fold --config 'experimental.evolution=createmarkers, allnewcommands'
+  abort: cannot fold chain not ending with a head or with branching
+  [255]
+  $ hg metaedit --user foobar
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg log --template '{rev}: {author}\n' -r '42:' --hidden
+  42: test
+  43: foobar
+  $ hg log --template '{rev}: {author}\n' -r .
+  43: foobar
+
+TODO: support this
+  $ hg metaedit '.^::.'
+  abort: editing multiple revisions without --fold is not currently supported
+  [255]
+
+  $ HGEDITOR=cat hg metaedit '.^::.' --fold
+  HG: This is a fold of 2 changesets.
+  HG: Commit message of changeset 41.
+  
+  amended
+  
+  HG: Commit message of changeset 43.
+  
+  will be evolved safely
+  
+  
+  
+  HG: Enter commit message.  Lines beginning with 'HG:' are removed.
+  HG: Leave message empty to abort commit.
+  HG: --
+  HG: user: test
+  HG: branch 'default'
+  HG: changed a
+  HG: changed newfile
+  2 changesets folded
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+  $ glog -r .
+  @  44:41bf1183869c@default(draft) amended
+  |
+  ~
+
+no new commit is created here because the date is the same
+  $ HGEDITOR=cat hg metaedit
+  amended
+  
+  
+  will be evolved safely
+  
+  
+  HG: Enter commit message.  Lines beginning with 'HG:' are removed.
+  HG: Leave message empty to abort commit.
+  HG: --
+  HG: user: test
+  HG: branch 'default'
+  HG: changed a
+  HG: changed newfile
+  nothing changed
+
+  $ glog -r '.^::.'
+  @  44:41bf1183869c@default(draft) amended
+  |
+  o  36:43c3f5ef149f@default(draft) add uu
+  |
+  ~
+
+TODO: don't create a new commit in this case
+  $ hg metaedit --config defaults.metaedit=
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg log -r '.^::.' --template '{rev}: {desc|firstline}\n'
+  36: add uu
+  45: amended
+
+  $ hg up .^
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg metaedit --user foobar2 45
+  $ hg log --template '{rev}: {author}\n' -r '42:' --hidden
+  42: test
+  43: foobar
+  44: test
+  45: test
+  46: foobar2
+  $ hg diff -r 45 -r 46 --hidden
+
+'fold' one commit
+  $ hg metaedit 39 --fold --user foobar3
+  1 changesets folded
+  $ hg log -r 47 --template '{rev}: {author}\n'
+  47: foobar3

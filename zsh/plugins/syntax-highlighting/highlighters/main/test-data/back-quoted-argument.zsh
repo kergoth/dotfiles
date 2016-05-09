@@ -27,9 +27,8 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=$unused_highlight
 BUFFER='echo `echo 42`'
 
 expected_region_highlight=(
-  "6 14 ${(q-)ZSH_HIGHLIGHT_STYLES[back-quoted-argument]}"
+  "6 14 back-quoted-argument"
 )

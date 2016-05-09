@@ -89,6 +89,7 @@ the new obsolete changeset.
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  1 other heads for branch "default"
 
 Figure SG03
   $ hg shortlog --hidden -G
@@ -119,6 +120,7 @@ Figure SG04 (test-repo)
   $ cd ../test-repo
   $ hg update
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  1 other heads for branch "default"
   $ hg shortlog --hidden -G
   @  4:de6151c48e1c  draft  fix bug 37
   |
@@ -219,6 +221,7 @@ Figure SG06: review repository after Alice pushes her amended changeset.
   |/
   @  1:de6151c48e1c  public  fix bug 37
   |
+  ~
 
 Bob commits a draft changeset, pushes to review repo.
   $ cd ../bob
@@ -294,11 +297,13 @@ Figure SG07: review and public repos after Bob implements feature X.
   |/
   @  1:de6151c48e1c  public  fix bug 37
   |
+  ~
   $ hg --hidden -R ../public shortlog -G -r 1::
   o  2:540ba8f317e6  public  implement feature X (v3)
   |
   o  1:de6151c48e1c  public  fix bug 37
   |
+  ~
 
 How do things look in the review repo?
   $ cd ../review
@@ -315,6 +320,7 @@ How do things look in the review repo?
   |/
   @  1:de6151c48e1c  public  fix bug 37
   |
+  ~
 
 Meantime, Alice is back from lunch. While she was away, Bob approved
 her change, so now she can publish it.
@@ -328,6 +334,7 @@ her change, so now she can publish it.
   |/
   o  1:de6151c48e1c  public  fix bug 37
   |
+  ~
   $ hg outgoing -q ../public
   4:cbdfbd5a5db2
   $ hg push ../public
@@ -349,8 +356,10 @@ her change, so now she can publish it.
   $ hg log -G -q -r 'head()'
   o  5:540ba8f317e6
   |
-  | @  4:cbdfbd5a5db2
-  |/
+  ~
+  @  4:cbdfbd5a5db2
+  |
+  ~
   $ hg --hidden shortlog -G -r 1::
   o  5:540ba8f317e6  public  implement feature X (v3)
   |
@@ -362,6 +371,7 @@ her change, so now she can publish it.
   |/
   o  1:de6151c48e1c  public  fix bug 37
   |
+  ~
 
 Alice rebases her draft changeset on top of Bob's public changeset and
 publishes the result.
@@ -401,6 +411,7 @@ Figure SG08: review and public changesets after Alice pushes.
   |/
   @  1:de6151c48e1c  public  fix bug 37
   |
+  ~
   $ hg --hidden -R ../public shortlog -G -r 1::
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
@@ -408,6 +419,7 @@ Figure SG08: review and public changesets after Alice pushes.
   |
   o  1:de6151c48e1c  public  fix bug 37
   |
+  ~
   $ cd ..
 
 Setup for "cowboy mode" shared mutable history (to illustrate divergent
@@ -462,6 +474,7 @@ Bob implements a better fix of his own::
   |/
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
+  ~
 
 Bob discovers the divergence.
   $ hg pull ../alice
@@ -487,6 +500,7 @@ Figure SG09: multiple heads! divergence! oh my!
   |/
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
+  ~
   $ hg --hidden shortlog -r 'successors(2fe6)'
   6:a360947f6faf  draft  fix bug 24 (v2 by bob)
   7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
@@ -516,6 +530,7 @@ Figure SG10: Bob's repository after fixing divergence.
   |/
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
+  ~
   $ hg --hidden shortlog -r 'precursors(9)'
   6:a360947f6faf  draft  fix bug 24 (v2 by bob)
   7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)

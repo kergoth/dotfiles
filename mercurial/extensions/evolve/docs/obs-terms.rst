@@ -20,7 +20,7 @@ Old changesets are called **precursors** while their new versions are called
 - multiple *successors*: the *precursor* were splits in multiple
   changesets.
 
-.. The *precursors* and *successors* terms can be used on changeset directy:
+.. The *precursors* and *successors* terms can be used on changeset directly:
 
 .. :precursors: of a changeset `A` are changesets used as *precursors* by
 ..              obsolete marker using changeset `A` as *successors*
@@ -84,8 +84,8 @@ columns are about sub-categories.
 |                     |                          | *obsolete* with at least    |
 |                     |                          | one non-obsolete descendant |
 |                     |                          |                             |
-|                     |                          | Thoses descendants prevent  |
-|                     |                          | properties of extincts      |
+|                     |                          | Those descendants prevent   |
+|                     |                          | properties of extinct       |
 |                     |                          | changesets to apply. But    |
 |                     |                          | they will refuse to be      |
 |                     |                          | pushed without --force.     |
@@ -169,7 +169,7 @@ columns are about sub-categories.
 | Rewriting operation refuse to work on immutable changeset.                   |
 |                                                                              |
 | Obsolete markers that refer an immutable changeset as precursors have        |
-| no effect on the precussors but may have effect on the successors.           |
+| no effect on the precursors but may have effect on the successors.           |
 |                                                                              |
 | When a *mutable* changeset becomes *immutable* (changing its phase from draft|
 | to public) it is just *immutable* and loose any property of it's former      |

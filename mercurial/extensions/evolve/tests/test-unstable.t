@@ -154,9 +154,8 @@ Not supported yet
   
 
   $ hg evo --all --any --unstable
-  abort: no support for evolving merge changesets with two obsolete parents yet
-  (Redo the merge and use `hg prune <old> --succ <new>` to obsolete the old one)
-  [255]
+  warning: no support for evolving merge changesets with two obsolete parents yet
+  (Redo the merge (6b4280e33286) and use `hg prune <old> --succ <new>` to obsolete the old one)
   $ hg log -G
   @  5:2db39fda7e2f@default(draft) cprime
   |

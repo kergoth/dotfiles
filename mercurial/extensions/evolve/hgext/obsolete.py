@@ -3,12 +3,12 @@
 #
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
-"""Deprecated extension that formely introduces "Changeset Obsolescence".
+"""Deprecated extension that formerly introduced "Changeset Obsolescence".
 
-This concept is now partially in Mercurial core (starting with mercurial 2.3).
-The remaining logic have been grouped with the evolve extension.
+This concept is now partially in Mercurial core (starting with Mercurial 2.3).
+The remaining logic has been grouped with the evolve extension.
 
-Some code cemains in this extensions to detect and convert prehistoric format
+Some code remains in this extensions to detect and convert prehistoric format
 of obsolete marker than early user may have create. Keep it enabled if you
 were such user.
 """
@@ -57,10 +57,10 @@ def reposetup(ui, repo):
             raise error.Abort('old format of obsolete marker detected!\n'
                               'run `hg debugconvertobsolete` once.')
 
-def _obsdeserialise(flike):
-    """read a file like object serialised with _obsserialise
+def _obsdeserialize(flike):
+    """read a file like object serialized with _obsserialize
 
-    this desierialize into a {subject -> objects} mapping
+    this deserialize into a {subject -> objects} mapping
 
     this was the very first format ever."""
     rels = {}

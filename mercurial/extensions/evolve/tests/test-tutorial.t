@@ -74,7 +74,7 @@ This tutorial shows how to use evolution to rewrite history locally.
 Fixing mistake with `hg amend`
 --------------------------------
 
-We are versionning a shopping list
+We are versioning a shopping list
 
   $ cd local
   $ cat  >> shopping << EOF
@@ -207,7 +207,7 @@ A new changeset with the right diff replace the wrong one.
 Getting rid of branchy history
 ----------------------------------
 
-While I was working on my list. someone made a change remotly.
+While I was working on my list. someone made a change remotely.
 
   $ cd ../remote
   $ hg up -q

@@ -25,7 +25,7 @@ has A and B, neither A or C should be in outgoing.
   $ echo c > c
   $ hg ci -qAm C c
   $ hg phase --secret --force .
-  $ hg kill 0 1
+  $ hg prune 0 1
   2 changesets pruned
   1 new unstable changesets
   $ glog --hidden

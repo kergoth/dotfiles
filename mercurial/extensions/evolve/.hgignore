@@ -1,7 +1,5 @@
 syntax: re
 /figures/[^/]+\.png$
-^docs/build/
-^docs/html/
 ^html/
 \.pyc$
 ~$
@@ -14,3 +12,4 @@ syntax: re
 ^MANIFEST$
 ^docs/tutorials/.*\.rst$
 \.ico$
+tests/\.testtimes

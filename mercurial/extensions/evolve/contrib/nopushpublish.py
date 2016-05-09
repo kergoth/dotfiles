@@ -27,7 +27,7 @@ def checkpublish(orig, repo, remote, outgoing, *args):
 
     ret = orig(repo, remote, outgoing, *args)
     if npublish:
-        raise util.Abort("Publishing push forbiden",
+        raise util.Abort("Publishing push forbidden",
                          hint="Use `hg phase -p <rev>` to manually publish them")
 
     return ret

@@ -28,11 +28,10 @@
 # -------------------------------------------------------------------------------------------------
 
 # Similar to double-quoted2.zsh
-ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]=$unused_highlight
 # This test checks that the '1' gets highlighted correctly.  Do not append to the BUFFER.
 BUFFER=": \$'\xa1"
 
 expected_region_highlight=(
-  "3 4 ${(q-)ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]}" # $'
-  "5 8 ${(q-)ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]}" # \xa1
+  "3 4 dollar-quoted-argument" # $'
+  "5 8 back-dollar-quoted-argument" # \xa1
 )

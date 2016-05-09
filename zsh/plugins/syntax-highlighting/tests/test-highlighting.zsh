@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -50,14 +50,18 @@
 # Load the main script.
 . ${0:h:h}/zsh-syntax-highlighting.zsh
 
+# Overwrite _zsh_highlight_add_highlight so we get the key itself instead of the style
+_zsh_highlight_add_highlight()
+{
+  region_highlight+=("$1 $2 $3")
+}
+
 # Activate the highlighter.
 ZSH_HIGHLIGHT_HIGHLIGHTERS=($1)
 
 # Runs a highlighting test
 # $1: data file
 run_test_internal() {
-  local -a highlight_zone
-  local unused_highlight='bg=red,underline' # a style unused by anything else, for tests to use
 
   local tests_tempdir="$1"; shift
   local srcdir="$PWD"
@@ -82,7 +86,7 @@ run_test_internal() {
   # observed highlighting.
   local -A observed_result
   for ((i=1; i<=${#region_highlight}; i++)); do
-    highlight_zone=${(z)region_highlight[$i]}
+    local -a highlight_zone; highlight_zone=( ${(z)region_highlight[$i]} )
     integer start=$highlight_zone[1] end=$highlight_zone[2]
     if (( start < end )) # region_highlight ranges are half-open
     then
@@ -94,21 +98,31 @@ run_test_internal() {
     else
       # noop range; ignore.
     fi
+    unset start end
+    unset highlight_zone
   done
 
   # Then we compare the observed result with the expected one.
   echo "1..${#expected_region_highlight}"
   for ((i=1; i<=${#expected_region_highlight}; i++)); do
+    local -a highlight_zone; highlight_zone=( ${(z)expected_region_highlight[$i]} )
     local todo=
-    highlight_zone=${(z)expected_region_highlight[$i]}
+    integer start=$highlight_zone[1] end=$highlight_zone[2]
+    # Escape # as ♯ since the former is illegal in the 'description' part of TAP output
+    local desc="[$start,$end] «${BUFFER[$start,$end]//'#'/♯}»"
+    [[ $highlight_zone[3] == NONE ]] && highlight_zone[3]=
     [[ -n "$highlight_zone[4]" ]] && todo=" # TODO $highlight_zone[4]"
-    for j in {$highlight_zone[1]..$highlight_zone[2]}; do
-      if [[ "$observed_result[$j]" != "${(Q)highlight_zone[3]}" ]]; then
-        echo "not ok $i ${(qqq)BUFFER[$highlight_zone[1],$highlight_zone[2]]} [$highlight_zone[1],$highlight_zone[2]]: expected ${(Q)highlight_zone[3]}, observed ${(qqq)observed_result[$j]}.$todo"
+    for j in {$start..$end}; do
+      if [[ "$observed_result[$j]" != "$highlight_zone[3]" ]]; then
+        print -r -- "not ok $i - $desc - expected ${(qqq)highlight_zone[3]}, observed ${(qqq)observed_result[$j]}.$todo"
         continue 2
       fi
     done
-    echo "ok $i$todo"
+    print -r -- "ok $i - $desc${todo:+' - '}$todo"
+    unset desc
+    unset start end
+    unset todo
+    unset highlight_zone
   done
 }
 
@@ -147,6 +161,7 @@ fi
 
 # Process each test data file in test data directory.
 integer something_failed=0
+ZSH_HIGHLIGHT_STYLES=()
 for data_file in ${0:h:h}/highlighters/$1/test-data/*.zsh; do
   run_test "$data_file" | tee >($results_filter | ${0:A:h}/tap-colorizer.zsh) | grep -v '^not ok.*# TODO' | grep -Eq '^not ok|^ok.*# TODO' && (( something_failed=1 ))
   (( $pipestatus[1] )) && exit 2

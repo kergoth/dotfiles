@@ -30,9 +30,8 @@
 # Issue #263 (more-pathological case): aliases[x=y]=z works; the ${(z)} splitter considers
 # that a single word; but it's not looked up as an alias.  Hence, highlight it as an error.
 aliases[x=y]='lorem ipsum dolor sit amet'
-ZSH_HIGHLIGHT_STYLES[alias]=$unused_highlight
 BUFFER='x=y ls'
 
 expected_region_highlight=(
-  "1 3 ${(q-)ZSH_HIGHLIGHT_STYLES[unknown-token]}" # x=y
+  "1 3 unknown-token" # x=y
 )

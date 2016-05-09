@@ -123,7 +123,7 @@ To create commits with the number of split
      summary:     add _a
   
 
-Cannot split a commit with uncommited changes
+Cannot split a commit with uncommitted changes
   $ hg up "desc(_c)"
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ echo "_cd" > _c
@@ -267,9 +267,9 @@ active bookmark as active
   |
   o  changeset:   14:aec57822a8ff
   |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     split1
-  |
+  ~  date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     split1
+  
   $ hg split <<EOF
   > y
   > y
@@ -313,9 +313,9 @@ active bookmark as active
   |
   o  changeset:   14:aec57822a8ff
   |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     split1
-  |
+  ~  date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     split1
+  
   $ hg book
      bookA                     19:a2b5c9d9b362
    * bookB                     19:a2b5c9d9b362

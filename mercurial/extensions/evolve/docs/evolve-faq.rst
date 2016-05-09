@@ -110,7 +110,7 @@ However, it is easily achieved by manual operation::
   $ hg record
   # commit the second part
   $ hg commit
-  # informs mercurial of what appened
+  # informs mercurial of what happened
   # current changeset (.) and previous one (.^) replace A (42)
   $ hg prune --new . --new .^ 42
 

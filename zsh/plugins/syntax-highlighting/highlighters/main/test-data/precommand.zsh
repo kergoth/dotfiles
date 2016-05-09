@@ -27,11 +27,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-ZSH_HIGHLIGHT_STYLES[assign]=$unused_highlight
 BUFFER=': command zzzzzz'
 
 expected_region_highlight=(
-  "1 1 ${(q-)ZSH_HIGHLIGHT_STYLES[builtin]}" # :
-  "3 9 ${(q-)ZSH_HIGHLIGHT_STYLES[default]}" # not precommand
-  "11 16 ${(q-)ZSH_HIGHLIGHT_STYLES[default]}" # not unknown-token (since 'zzzzzz' is not a command)
+  "1 1 builtin" # :
+  "3 9 default" # not precommand
+  "11 16 default" # not unknown-token (since 'zzzzzz' is not a command)
 )

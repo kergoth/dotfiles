@@ -85,7 +85,7 @@ to edit the commit message in an editor.
 ..   $ hg record -m 'feature A'
 ..   # oups, I forgot some stuff
 ..   $ hg record babar.py
-..   $ hg amend -c .^ # .^ refer to "working directoy parent, here 'feature A'
+..   $ hg amend -c .^ # .^ refer to "working directory parent, here 'feature A'
 
 .. note: refresh is an alias for amend
 

@@ -132,7 +132,7 @@ Test stabilizing a descendant predecessor's child
   no troubled changesets
   [1]
 
-Test behaviour with --any
+Test behavior with --any
 
   $ hg up 8
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved

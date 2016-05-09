@@ -15,7 +15,7 @@ Build-Depends:
  librsvg2-bin,
  wget,
 Python-Version: >= 2.6
-Homepage: http://evolution.experimentalworks.net/
+Homepage: https://www.mercurial-scm.org/doc/evolution/
 
 Package: mercurial-evolve
 Architecture: all

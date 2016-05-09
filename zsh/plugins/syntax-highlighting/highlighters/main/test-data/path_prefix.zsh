@@ -30,9 +30,8 @@
 # Assumes that '/bin/sh' exists and '/bin/s' does not exist.
 # Related to path_prefix2.zsh
 
-ZSH_HIGHLIGHT_STYLES[path_prefix]=$unused_highlight
 BUFFER='ls /bin/s'
 
 expected_region_highlight=(
-  "4 9 ${(q-)ZSH_HIGHLIGHT_STYLES[path_prefix]}"    # /bin/s
+  "4 9 path_prefix"    # /bin/s
 )

@@ -366,6 +366,6 @@ Check conflict during divergence resolution
   /!\ * hg up to the parent of the amended changeset (which are named W and Z)
   /!\ * hg revert --all -r X
   /!\ * hg ci -m "same message as the amended changeset" => new cset Y
-  /!\ * hg kill -n Y W Z
+  /!\ * hg prune -n Y W Z
   )
   [255]

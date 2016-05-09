@@ -194,6 +194,7 @@ two old, two new (should be denied)
 
   $ hg prune 'desc("add cc")' 'desc("add bb")' -s 'desc("add nD")' -s 'desc("add nC")'
   abort: Can't use multiple successors for multiple precursors
+  (use --biject to mark a series as a replacement for another)
   [255]
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}

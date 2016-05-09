@@ -250,17 +250,19 @@ function! fzf#vim#_lines(all)
     call extend(b == buf ? cur : rest,
     \ filter(
     \   map(lines,
-    \       '(!a:all && empty(v:val)) ? "" : printf(s:blue("%2d\t", "TabLine")."%s".s:yellow("\t%4d ", "LineNr")."\t%s\t", b, bufname, v:key + 1, v:val)'),
+    \       '(!a:all && empty(v:val)) ? "" : printf(s:blue("%2d\t", "TabLine")."%s".s:yellow("\t%4d ", "LineNr")."\t%s", b, bufname, v:key + 1, v:val)'),
     \   'a:all || !empty(v:val)'))
   endfor
-  return extend(cur, rest)
+  return [display_bufnames, extend(cur, rest)]
 endfunction
 
 function! fzf#vim#lines(...)
+  let [display_bufnames, lines] = fzf#vim#_lines(1)
+  let nth = display_bufnames ? 3 : 2
   return s:fzf(fzf#vim#wrap({
-  \ 'source':  fzf#vim#_lines(1),
+  \ 'source':  lines,
   \ 'sink*':   s:function('s:line_handler'),
-  \ 'options': '+m --tiebreak=index --prompt "Lines> " --ansi --extended --nth=3.. --reverse --tabstop=1'
+  \ 'options': '+m --tiebreak=index --prompt "Lines> " --ansi --extended --nth='.nth.'.. --reverse --tabstop=1'
   \}), a:000)
 endfunction
 
@@ -602,7 +604,7 @@ function! s:tags_sink(lines)
   normal! m'
   let qfl = []
   let cmd = get(get(g:, 'fzf_action', s:default_action), a:lines[0], 'e')
-  let [magic, &magic] = [&magic, 0]
+  let [magic, &magic, wrapscan, &wrapscan] = [&magic, 0, &wrapscan, 1]
   for line in a:lines[1:]
     let parts = split(line, '\t\zs')
     let excmd = matchstr(join(parts[2:], ''), '^.*\ze;"\t')
@@ -610,7 +612,7 @@ function! s:tags_sink(lines)
     execute excmd
     call add(qfl, {'filename': expand('%'), 'lnum': line('.'), 'text': getline('.')})
   endfor
-  let &magic = magic
+  let [&magic, &wrapscan] = [magic, wrapscan]
   if len(qfl) > 1
     call setqflist(qfl)
     copen

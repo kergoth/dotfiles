@@ -76,6 +76,7 @@ example 4: prune at head (figure 3)
   |
   @  3:934359450037  draft  implement feature Y
   |
+  ~
 
 example 5: uncommit files at head (figure 4)
   $ echo 'relevant' >> file1.c
@@ -91,6 +92,7 @@ example 5: uncommit files at head (figure 4)
   |/
   o  3:934359450037  draft  implement feature Y
   |
+  ~
   $ hg parents --template '{rev}:{node|short}  {desc|firstline}\n{files}\n'
   6:c8defeecf7a4  fix bug 234
   file1.c
@@ -121,6 +123,7 @@ example 6: fold multiple changesets together into one (figure 5)
   |/
   o  6:c8defeecf7a4  draft  fix bug 234
   |
+  ~
   $ hg --hidden log -q -r 'successors(7) | successors(8) | successors(9)'
   10:171c6a79a27b
   $ hg --hidden log -q -r 'precursors(10)'
@@ -156,6 +159,7 @@ setup for example 7: amend an older changeset
   |
   o  10:171c6a79a27b  draft  fix bug 64
   |
+  ~
 
 example 7: amend an older changeset (figures 6, 7)
   $ hg update -q 11
@@ -180,6 +184,7 @@ example 7: amend an older changeset (figures 6, 7)
   |/
   o  10:171c6a79a27b  draft  fix bug 64
   |
+  ~
   $ hg evolve -q --all
   $ hg shortlog -G -r 10::
   @  17:91b4b0f8b5c5  draft  feature 23
@@ -190,6 +195,7 @@ example 7: amend an older changeset (figures 6, 7)
   |
   o  10:171c6a79a27b  draft  fix bug 64
   |
+  ~
 
 setup for example 8: prune an older changeset (figure 8)
   $ echo 'useful' >> file1.c
@@ -207,6 +213,7 @@ setup for example 8: prune an older changeset (figure 8)
   |
   o  17:91b4b0f8b5c5  draft  feature 23
   |
+  ~
 
 example 8: prune an older changeset (figures 8, 9)
   $ hg prune 19
@@ -219,6 +226,7 @@ example 8: prune an older changeset (figures 8, 9)
   |
   o  18:1f33e68b18b9  draft  useful work
   |
+  ~
   $ hg evolve -q --all --any
   $ hg --hidden shortlog -G -r 18::
   @  21:4393e5877437  draft  more work
@@ -229,6 +237,7 @@ example 8: prune an older changeset (figures 8, 9)
   |/
   o  18:1f33e68b18b9  draft  useful work
   |
+  ~
 
 example 9: uncommit files from an older changeset (discard changes)
 (figure 10)
@@ -246,6 +255,7 @@ example 9: uncommit files from an older changeset (discard changes)
   |
   o  21:4393e5877437  draft  more work
   |
+  ~
   $ hg uncommit file2.c
   1 new unstable changesets
   $ hg status
@@ -266,6 +276,7 @@ example 9: uncommit files from an older changeset (discard changes)
   |/
   o  21:4393e5877437  draft  more work
   |
+  ~
   $ rm file2.c.orig
 
 example 10: uncommit files from an older changeset (keep changes)
@@ -284,6 +295,7 @@ example 10: uncommit files from an older changeset (keep changes)
   |
   o  25:0d972d6888e6  draft  fix bug 67
   |
+  ~
   $ hg uncommit file2.c
   1 new unstable changesets
   $ hg status
@@ -300,6 +312,7 @@ example 10: uncommit files from an older changeset (keep changes)
   |/
   o  25:0d972d6888e6  draft  fix bug 67
   |
+  ~
   $ hg evolve --all --any
   move:[27] new feature
   atop:[28] fix a bug
@@ -317,3 +330,4 @@ example 10: uncommit files from an older changeset (keep changes)
   |/
   o  25:0d972d6888e6  draft  fix bug 67
   |
+  ~

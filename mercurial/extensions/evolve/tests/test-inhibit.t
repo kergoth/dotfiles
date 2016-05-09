@@ -419,7 +419,7 @@ With severals hidden sha, rebase of one hidden stack onto another one:
   abort: hidden revision '3'!
   (use --hidden to access hidden revisions)
   [255]
-  $ hg rebase -r ad78ff7d621f -r 53a94305e133 -d  2db36d8066ff
+  $ hg rebase -r ad78ff7d621f -r 53a94305e133 -d  2db36d8066ff --config experimental.rebaseskipobsolete=0
   Warning: accessing hidden changesets 2db36d8066ff for write operation
   Warning: accessing hidden changesets ad78ff7d621f,53a94305e133 for write operation
   rebasing 10:ad78ff7d621f "add cK"
@@ -536,6 +536,7 @@ Check that rebasing a commit twice makes the commit visible again
   |/
   o  14:d66ccb8c5871 add cL
   |
+  ~
   $ hg strip -r 210589181b14
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at d66ccb8c5871
@@ -557,6 +558,7 @@ Using a hash prefix solely made of digits should work
   |/
   o  14:d66ccb8c5871 add cL
   |
+  ~
 
 Test prunestrip
 
@@ -572,6 +574,7 @@ Test prunestrip
   |
   @  14:d66ccb8c5871 add cL foo
   |
+  ~
 
 Check that --hidden used with inhibit does not hide every obsolete commit
 We show the log before and after a log -G --hidden, they should be the same
@@ -803,6 +806,7 @@ it. We expect to not see the stack at the end of the rebase.
   $ hg log -G  -r "25::"
   @  25:71eb4f100663 add pk
   |
+  ~
   $ hg up -C 22
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit Dk
@@ -816,6 +820,7 @@ it. We expect to not see the stack at the end of the rebase.
   |
   o  25:71eb4f100663 add pk
   |
+  ~
 
 Create a stack (obsolete with succ in dest) -> (not obsolete) -> (not obsolete).
 Rebase the first two revs of the stack onto dest, we expect to see one new
@@ -837,6 +842,7 @@ revision on the destination and everything visible.
   |/
   o  25:71eb4f100663 add pk
   |
+  ~
   $ hg prune 28 -s 27
   1 changesets pruned
   $ hg up 25
@@ -857,6 +863,7 @@ revision on the destination and everything visible.
   |/
   @  25:71eb4f100663 add pk
   |
+  ~
 
 Rebase the same stack in full on the destination, we expect it to disappear
 and only see the top revision added to destination. We don\'t expect 29 to be
@@ -874,6 +881,7 @@ skipped as we used --keep before.
   |
   @  25:71eb4f100663 add pk
   |
+  ~
 
 Pulling from a inhibit repo to a non-inhibit repo should work
 

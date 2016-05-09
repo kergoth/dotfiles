@@ -101,7 +101,7 @@
      summary:     add A
   
 
-  $ hg kill --fold -n -1 -- -2 -3
+  $ hg prune --fold -n -1 -- -2 -3
   2 changesets pruned
   $ hg push ../other
   pushing to ../other

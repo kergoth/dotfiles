@@ -155,6 +155,7 @@ First set of stack:
   |/
   o  15:739f18ac1d03@default(draft) add _d
   |
+  ~
 
 Second set of stack with no successor for b2_:
   $ mkstack "desc(_d)" b1_ b2_ b3_ b4_ >/dev/null
@@ -196,6 +197,7 @@ Second set of stack with no successor for b2_:
   |/
   o  15:739f18ac1d03@default(draft) add _d
   |
+  ~
 
 Solve the full second stack and only part of the first one
   $ echo "(desc(_d)::) - desc(c3_)"
@@ -232,6 +234,7 @@ Cleanup
   |/
   o  15:739f18ac1d03@default(draft) add _d
   |
+  ~
 
 Test multiple revision with some un-evolvable because parent is splitted
 ------------------------------------------------------------------------

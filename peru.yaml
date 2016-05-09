@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: c54c076cfa4501f9ef36652395011b8e661feb90
+    rev: 217669270418fbc6ae98836b09357b5ba8f85b7d
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -117,7 +117,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 17743e1e174830693026d3adbba265922440f48c
+    rev: 69e89c5e4a1eae49325314df3718f0c734536e2a
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -167,7 +167,7 @@ git module securemodelines:
 # text filtering and alignment
 git module tabular:
     url: https://github.com/godlygeek/tabular.git
-    rev: 60f25648814f0695eeb6c1040d97adca93c4e0bb
+    rev: 00e1e7fcdbc6d753e0bc8043e0d2546fa81bf367
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
@@ -186,7 +186,7 @@ git module vim-bitbake:
 # markdown runtime files
 git module vim-markdown:
     url: https://github.com/tpope/vim-markdown.git
-    rev: 4260faa48f5b89261f1168d4a1ad195106f5959c
+    rev: 5c21f1677180b76310a05e5a9fce46de64c23041
 
 # taskpaper todo file support
 git module taskpaper:
@@ -196,11 +196,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 81b58028f0131ae942fe81dceb6d40abf4f25b93
+    rev: 30f078daf569e7d5e4f7829e39316387af349b41
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 10b3e6ab62942d413e7031ad33f996f194223a47
+    rev: 332678ba862e0fccf48ef8b7fdb836dd26f2a7f5
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -253,7 +253,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 815660d8dc4c5134fd2d25398ac5823af20fee8b
+    rev: 94bdefe123dcc1942be5fa59e6bd57291dd2259f
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -289,7 +289,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 0231617857f812abfae5f68e2b8c7e9ce7053d59
+    rev: 24516bcf4d3be8a1a626b6ccdbe79a740fd5754f
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -338,7 +338,7 @@ curl module cpanm:
     # url: https://cpanmin.us/
     url: https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm
     executable: cpanm
-    sha1: 7df0a95b60179d04365ba3098657d79cd898c62b
+    sha1: f680fb649127da5aa72912e3a2d1e130e38c9220
 
 hg module cwdiff:
     url: https://code.google.com/p/cj-overlay.evergreens
@@ -376,7 +376,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 6a7c9a73fc9566dd3e82fdaa8bc381e1a401c6a8
+    rev: 828991e18acc537fd883dbffdc41d73e33672218
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -521,7 +521,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 498329a3c90048f5c211dabcfaab1bfc7bdbd3fa
+    rev: 3460887b68596c99fa6b7c1e66b1cf0c4ee3799a
 
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
@@ -568,14 +568,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 23abc77a83a91c918e19e6967245561c6867bafd
+    rev: 822cb14be50bf0551860b84c07190eb5a2529c37
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 8e25f396572bd94e93b0548057cf96a17503a354
+    rev: 97d8771e5b76d6f8d90896f3ab2547722c31d9b6
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -607,7 +607,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 80da4d047daa8aa18cd513c01c3f0195d8580a02
+    rev: 9fc5600205a579aee549a6208101c98634d5b2b0
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -650,4 +650,4 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: e7826a717cedbb2dc295aa21c93e9e741b2843fd
+    rev: b485aabea0e043732fa1d910f3f330c8f410d4f9

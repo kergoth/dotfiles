@@ -27,7 +27,7 @@ Rewrite your changes only
 There is no descent conflict detection and handling right now.
 Rewriting other people's changesets guarantees that you will get
 conflicts. Communicate with your fellow developers before trying to
-touch other people's work (which is a good pratice in any case).
+touch other people's work (which is a good practice in any case).
 
 Using multiple branches will help you to achieve this goal.
 

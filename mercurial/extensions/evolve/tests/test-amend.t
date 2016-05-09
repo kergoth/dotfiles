@@ -107,7 +107,7 @@ Check that --logfile works
   $ HGUSER=
   $ hg amend -e --config ui.username= -m "empty user"
   abort: no username supplied
-  (use "hg config --edit" to set your username)
+  (use 'hg config --edit' to set your username)
   [255]
   $ hg sum
   parent: 8:* tip (glob)
