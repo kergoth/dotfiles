@@ -539,6 +539,7 @@ augroup vimrc_filetypes
   " Comment string
   au FileType fish set cms=#%s
   au FileType gitconfig set cms=#%s
+  au FileType cfg set cms=#%s
 
   " Set up folding
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
