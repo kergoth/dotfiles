@@ -339,10 +339,10 @@ curl module cpanm:
     executable: cpanm
     sha1: f680fb649127da5aa72912e3a2d1e130e38c9220
 
-hg module cwdiff:
-    url: https://code.google.com/p/cj-overlay.evergreens
+git module cwdiff:
+    url: https://github.com/junghans/cwdiff
     pick: cwdiff
-    rev: f686249254de30778aad9b27540051d3d94695a4
+    rev: 20e59f4db32b95dd7294a477813dc2f841734ac5
 
 git module planter:
     url: https://gist.github.com/3767188.git
