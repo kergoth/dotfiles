@@ -28,7 +28,6 @@ imports:
     diff-so-fancy: scripts
     dtrx: scripts
     dustin-bindir: scripts
-    friendly-find: scripts
     git-cherry-tree: scripts
     git-extras: scripts
     git-imerge: scripts
@@ -355,11 +354,6 @@ git module planter:
 git module z:
     url: https://github.com/rupa/z
     rev: 9dafe447af59e1ccc5ef45f8fbc5550dcbd2bfbd
-
-hg module friendly-find:
-    url: https://bitbucket.org/sjl/friendly-find
-    pick: ffind
-    rev: 59b3a26fd6724d77f0b49b3b5981ff167ee31e6a
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
