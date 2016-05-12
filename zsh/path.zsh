@@ -31,6 +31,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     path=(
         $HOME/Library/Perl/*/bin(N)
         $HOME/Library/Python/*/bin(N)
+        /opt/homebrew/opt/ccache/libexec
         $path
     )
 fi
