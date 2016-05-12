@@ -88,7 +88,7 @@ quiet = True
 attend = diff,status,log,qdiff,blame,annotate,pdiff,glog,show,help,export
 
 [hostfingerprints]
-bitbucket.org = 46:de:34:e7:9b:18:cd:7f:ae:fd:8b:e3:bc:f4:1a:5e:38:d7:ac:24
+bitbucket.org = 3f:d3:c5:17:23:3c:cd:f5:2d:17:76:06:93:7e:ee:97:42:21:14:aa
 
 [alias]
 # Some useful little aliases.
