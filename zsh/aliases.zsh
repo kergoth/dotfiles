@@ -104,13 +104,15 @@ if [[ $OSTYPE =~ darwin ]]; then
     else
         alias df='df -P -h -T nodevfs,autofs,mtmfs'
     fi
-    alias locate='mdfind -name'
-    alias vim='mvim -v'
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
+    if (( $+commands[mvim] )); then
+        alias vim='mvim -v'
+    fi
     if (( $+commands[grm] )); then
         alias rm='grm --one-file-system -I'
     fi
 
+    alias locate='mdfind -name'
     locate_app_by_id () {
         mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"
     }
