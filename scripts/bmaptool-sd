@@ -1,0 +1,24 @@
+#!/bin/sh
+# OSX-only script to run bmaptool against the internal SD Card Reader on a Mac
+
+get_sdcard_device () {
+    diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' | \
+        grep -v '/dev/disk0$' | while read -r disk; do
+            if [ "$(diskutil info "$disk" | sed -n 's# *Device / Media Name: *##p')" = "SD Card Reader" ]; then
+                echo "$disk"
+                return 0
+            fi
+        done
+    return 1
+}
+
+sdcard_device="$(get_sdcard_device)"
+if [ -z "$sdcard_device" ]; then
+    echo >&2 "Error: no SD Card Reader found"
+    exit 1
+fi
+
+diskutil info "$sdcard_device"
+diskutil unmountDisk "$sdcard_device" || return $?
+rdevice="/dev/r${sdcard_device#/dev/}"
+sudo -k bmaptool copy --bmap "$1" "$2" "$rdevice"
