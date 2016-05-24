@@ -43,7 +43,7 @@ esac
 if [ $# -eq 0 ]; then
     set -- "$venv"
 fi
-pip install "$@" || exit 4
+pip install --disable-pip-version-check "$@" || exit 4
 
 mkdir -p "$XDG_DATA_HOME/../bin"
 for script in "$venv_dir/bin/"*; do
