@@ -75,13 +75,13 @@ COMMANDS                                                      *fzf-vim-commands*
  Command          | List                                                                ~
  -----------------+-------------------------------------------------------------------
   `Files [PATH]`    | Files (similar to  `:FZF` )
-  `GitFiles`        | Git files (git ls-files)
+  `GitFiles [OPTS]` | Git files (git ls-files)
   `GitFiles?`       | Git files (git status)
   `Buffers`         | Open buffers
   `Colors`          | Color schemes
   `Ag [PATTERN]`    | {ag}{5} search result (ALT-A to select all, ALT-D to deselect all)
-  `Lines`           | Lines in loaded buffers
-  `BLines`          | Lines in the current buffer
+  `Lines [QUERY]`   | Lines in loaded buffers
+  `BLines [QUERY]`  | Lines in the current buffer
   `Tags [QUERY]`    | Tags in the project ( `ctags -R` )
   `BTags [QUERY]`   | Tags in the current buffer
   `Marks`           | Marks
@@ -154,9 +154,12 @@ Command-local options~
     " [Buffers] Jump to the existing window if possible
     let g:fzf_buffers_jump = 1
 
-    " [[B]Commits] to customize the options used by 'git log':
+    " [[B]Commits] Customize the options used by 'git log':
     let g:fzf_commits_log_options = \
         '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+    " [Tags] Command to generate tags file
+    let g:fzf_tags_command = 'ctags -R'
 <
 
 Advanced customization using autoload functions~

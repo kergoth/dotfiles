@@ -1,49 +1,41 @@
 "============================================================================
-"File:        racket.vim
-"Description: Syntax checking plugin for syntastic.vim
-"Author:      Steve Bragg <steve at empresseffects dot com>
-"
+"File:        ttl.vim
+"Description: turtle syntax checker - using ttl from turtle-validator (npm)
+"Maintainer:  Antoine Reilles (tonio@NetBSD.org)
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
 "             Want To Public License, Version 2, as published by Sam Hocevar.
 "             See http://sam.zoy.org/wtfpl/COPYING for more details.
-"
 "============================================================================
 
-if exists('g:loaded_syntastic_racket_racket_checker')
+if exists('g:loaded_syntastic_turtle_ttl_checker')
     finish
 endif
-let g:loaded_syntastic_racket_racket_checker=1
+let g:loaded_syntastic_turtle_ttl_checker = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! SyntaxCheckers_racket_racket_GetLocList() dict
+function! SyntaxCheckers_turtle_ttl_GetHighlightRegex(item)
+    let term = matchstr(a:item['text'], '\m"\zs[^"]\+\ze"')
+    return term !=# '' ? '\V\<' . escape(term, '\') . '\>' : ''
+endfunction
+
+function! SyntaxCheckers_turtle_ttl_GetLocList() dict
     let makeprg = self.makeprgBuild({})
 
-    " example of error message
-    "eval-apply.rkt:460:30: the-empty-environment: unbound identifier in module
-    "  in: the-empty-environment
-    let errorformat = '%f:%l:%v: %m'
+    let errorformat = '%\m[Error: %m %\%%(at%\|on%\) line %l%\%.]'
 
-    let loclist = SyntasticMake({
+    return SyntasticMake({
         \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat })
-
-    for e in loclist
-        if has_key(e, 'col')
-            let e['col'] += 1
-        endif
-    endfor
-
-    return loclist
+        \ 'errorformat': errorformat,
+        \ 'defaults': {'bufnr': bufnr('')} })
 endfunction
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'racket',
-    \ 'name': 'racket',
-    \ 'enable': 'enable_racket_racket_checker' })
+    \ 'filetype': 'turtle',
+    \ 'name': 'ttl'})
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

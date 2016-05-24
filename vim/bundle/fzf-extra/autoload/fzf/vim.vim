@@ -33,6 +33,10 @@ function! fzf#vim#wrap(opts)
   \ 'sink*':   get(a:opts, 'sink*', s:function('s:common_sink'))})
 endfunction
 
+function! fzf#vim#layout(...)
+  return (a:0 && a:1) ? {} : copy(get(g:, 'fzf_layout', g:fzf#vim#default_layout))
+endfunction
+
 function! s:strip(str)
   return substitute(a:str, '^\s*\|\s*$', '', 'g')
 endfunction
@@ -93,7 +97,7 @@ function! s:defaults()
 endfunction
 
 function! s:fzf(opts, extra)
-  let extra  = copy(get(a:extra, 0, {}))
+  let extra  = empty(a:extra) ? fzf#vim#layout() : a:extra[0]
   let eopts  = has_key(extra, 'options') ? remove(extra, 'options') : ''
   let merged = extend(copy(a:opts), extra)
   let merged.options = join(filter([s:defaults(), get(merged, 'options', ''), eopts], '!empty(v:val)'))
@@ -259,11 +263,13 @@ endfunction
 function! fzf#vim#lines(...)
   let [display_bufnames, lines] = fzf#vim#_lines(1)
   let nth = display_bufnames ? 3 : 2
+  let [query, args] = (a:0 && type(a:1) == type('')) ?
+        \ [a:1, a:000[1:]] : ['', a:000]
   return s:fzf(fzf#vim#wrap({
   \ 'source':  lines,
   \ 'sink*':   s:function('s:line_handler'),
-  \ 'options': '+m --tiebreak=index --prompt "Lines> " --ansi --extended --nth='.nth.'.. --reverse --tabstop=1'
-  \}), a:000)
+  \ 'options': '+m --tiebreak=index --prompt "Lines> " --ansi --extended --nth='.nth.'.. --reverse --tabstop=1'.s:q(query)
+  \}), args)
 endfunction
 
 " ------------------------------------------------------------------
@@ -289,11 +295,13 @@ function! s:buffer_lines()
 endfunction
 
 function! fzf#vim#buffer_lines(...)
+  let [query, args] = (a:0 && type(a:1) == type('')) ?
+        \ [a:1, a:000[1:]] : ['', a:000]
   return s:fzf(fzf#vim#wrap({
   \ 'source':  s:buffer_lines(),
   \ 'sink*':   s:function('s:buffer_line_handler'),
-  \ 'options': '+m --tiebreak=index --prompt "BLines> " --ansi --extended --nth=2.. --reverse --tabstop=1'
-  \}), a:000)
+  \ 'options': '+m --tiebreak=index --prompt "BLines> " --ansi --extended --nth=2.. --reverse --tabstop=1'.s:q(query)
+  \}), args)
 endfunction
 
 " ------------------------------------------------------------------
@@ -401,9 +409,9 @@ function! fzf#vim#gitfiles(args, ...)
   if v:shell_error
     return s:warn('Not in git repo')
   endif
-  if a:args !~ '^?'
+  if a:args != '?'
     return s:fzf(fzf#vim#wrap({
-    \ 'source':  'git ls-files',
+    \ 'source':  'git ls-files '.a:args,
     \ 'dir':     root,
     \ 'options': '-m --prompt "GitFiles> "'
     \}), a:000)
@@ -517,16 +525,21 @@ endfunction
 
 " query, [[ag options], options]
 function! fzf#vim#ag(query, ...)
+  let query = escape(empty(a:query) ? '^(?=.)' : a:query, '"\-')
   let args = copy(a:000)
   let ag_opts = len(args) > 1 ? remove(args, 0) : ''
+  let command = printf('%s "%s"', ag_opts, query)
+  return call('fzf#vim#ag_raw', insert(args, command, 0))
+endfunction
+
+" ag command suffix, [options]
+function! fzf#vim#ag_raw(command_suffix, ...)
   return s:fzf(fzf#vim#wrap({
-  \ 'source':  printf('ag --nogroup --column --color %s "%s"',
-  \                   ag_opts,
-  \                   escape(empty(a:query) ? '^(?=.)' : a:query, '"\-')),
+  \ 'source':  'ag --nogroup --column --color '.a:command_suffix,
   \ 'sink*':    s:function('s:ag_handler'),
   \ 'options': '--ansi --delimiter : --nth 4..,.. --prompt "Ag> " '.
   \            '--multi --bind alt-a:select-all,alt-d:deselect-all '.
-  \            '--color hl:68,hl+:110'}), args)
+  \            '--color hl:68,hl+:110'}), a:000)
 endfunction
 
 " ------------------------------------------------------------------
@@ -575,7 +588,7 @@ function! s:btags_sink(lines)
 endfunction
 
 function! s:q(query)
-  return ' --query "'.escape(a:query, '"').'"'
+  return ' --query "'.escape(a:query, '"\').'"'
 endfunction
 
 " query, [[tag commands], options]
@@ -632,7 +645,7 @@ function! fzf#vim#tags(query, ...)
     redraw
     if gen =~ '^y'
       call s:warn('Preparing tags')
-      call system('ctags -R')
+      call system(get(g:, 'fzf_tags_command', 'ctags -R'))
       if empty(tagfiles())
         return s:warn('Failed to create tags')
       endif

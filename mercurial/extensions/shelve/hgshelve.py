@@ -13,6 +13,9 @@ from mercurial import cmdutil, commands, hg, patch, scmutil
 from mercurial import util, fancyopts, extensions
 import copy, cStringIO, errno, os, re, shutil, tempfile, sys
 
+cmdtable = {}
+command = cmdutil.command(cmdtable)
+
 lines_re = re.compile(r'@@ -(\d+),(\d+) \+(\d+),(\d+) @@\s*(.*)')
 
 def scanpatch(fp):
@@ -415,6 +418,16 @@ def getshelfpath(repo, name):
 
     return shelfpath
 
+@command('shelve',
+         [('A', 'addremove', None,
+           _('mark new/missing files as added/removed before shelving')),
+          ('f', 'force', None, _('overwrite existing shelve data')),
+          ('a', 'append', None, _('append to existing shelve data')),
+          ('', 'all', None, _('shelve all changes')),
+          ('n', 'name', '', _('shelve changes to specified shelf name')),
+          ('l', 'list', None, _('list active shelves')),
+         ] + commands.walkopts,
+         _('hg shelve [OPTION]... [FILE]...'), inferrepo=True)
 def shelve(ui, repo, *pats, **opts):
     '''interactively select changes to set aside
 
@@ -608,6 +621,14 @@ def listshelves(ui, repo):
         for filename in sorted(os.listdir(repo.join('shelves'))):
             ui.status(filename + '\n')
 
+@command('unshelve',
+         [('i', 'inspect', None, _('inspect shelved changes only')),
+          ('f', 'force', None,
+           _('proceed even if patches do not unshelve cleanly')),
+          ('n', 'name', '', _('unshelve changes from specified shelf name')),
+          ('l', 'list', None, _('list active shelves')),
+         ],
+         _('hg unshelve [OPTION]...'))
 def unshelve(ui, repo, **opts):
     '''restore shelved changes'''
 
@@ -675,28 +696,3 @@ def unshelve(ui, repo, **opts):
                 ui.status("unshelve completed\n")
     except IOError:
         ui.warn('nothing to unshelve\n')
-
-cmdtable = {
-    "shelve":
-        (shelve,
-         [('A', 'addremove', None,
-           _('mark new/missing files as added/removed before shelving')),
-          ('f', 'force', None, _('overwrite existing shelve data')),
-          ('a', 'append', None, _('append to existing shelve data')),
-          ('', 'all', None, _('shelve all changes')),
-          ('n', 'name', '', _('shelve changes to specified shelf name')),
-          ('l', 'list', None, _('list active shelves')),
-         ] + commands.walkopts,
-         _('hg shelve [OPTION]... [FILE]...')),
-    "unshelve":
-        (unshelve,
-         [('i', 'inspect', None, _('inspect shelved changes only')),
-          ('f', 'force', None,
-           _('proceed even if patches do not unshelve cleanly')),
-          ('n', 'name', '', _('unshelve changes from specified shelf name')),
-          ('l', 'list', None, _('list active shelves')),
-         ],
-         _('hg unshelve [OPTION]...')),
-}
-
-commands.inferrepo += " shelve"

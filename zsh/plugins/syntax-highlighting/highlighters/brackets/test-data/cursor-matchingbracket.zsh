@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -27,9 +27,13 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-hash zsh_syntax_highlighting_hash=/doesnotexist
-BUFFER='zsh_syntax_highlighting_hash'
+ZSH_HIGHLIGHT_STYLES[bracket-level-1]=
+ZSH_HIGHLIGHT_STYLES[bracket-level-2]=
+ZSH_HIGHLIGHT_STYLES[bracket-level-3]=
+
+BUFFER=': ((( )))'
+CURSOR=2 # cursor is zero-based
 
 expected_region_highlight=(
-  "1 28 hashed-command 'zsh/parameter cannot distinguish between hashed and command'"
+  "9 9 cursor-matchingbracket"
 )

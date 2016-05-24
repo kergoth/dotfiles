@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -68,7 +68,7 @@ _zsh_highlight_main_highlighter_predicate()
 # Helper to deal with tokens crossing line boundaries.
 _zsh_highlight_main_add_region_highlight() {
   integer start=$1 end=$2
-  local style=$3
+  shift 2
 
   # The calculation was relative to $PREBUFFER$BUFFER, but region_highlight is
   # relative to $BUFFER.
@@ -77,20 +77,65 @@ _zsh_highlight_main_add_region_highlight() {
 
   (( end < 0 )) && return # having end<0 would be a bug
   (( start < 0 )) && start=0 # having start<0 is normal with e.g. multiline strings
-  _zsh_highlight_add_highlight $start $end $style
+  _zsh_highlight_add_highlight $start $end "$@"
 }
 
-# Wrapper around 'type -w'.
+# Get the type of a command.
 #
-# Takes a single argument and outputs the output of 'type -w $1'.
+# Uses the zsh/parameter module if available to avoid forks, and a
+# wrapper around 'type -w' as fallback.
 #
-# NOTE: This runs 'setopt', but that should be safe since it'll only ever be
-# called inside a $(...) subshell, so the effects will be local.
+# Takes a single argument.
+#
+# The result will be stored in REPLY.
 _zsh_highlight_main__type() {
   if (( $#options_to_set )); then
-    setopt $options_to_set;
+    setopt localoptions $options_to_set;
   fi
-  LC_ALL=C builtin type -w -- $1 2>/dev/null
+  unset REPLY
+  if zmodload -e zsh/parameter; then
+    if (( $+aliases[(e)$1] )); then
+      REPLY=alias
+    elif (( $+saliases[(e)${1##*.}] )); then
+      REPLY='suffix alias'
+    elif (( $reswords[(Ie)$1] )); then
+      REPLY=reserved
+    elif (( $+functions[(e)$1] )); then
+      REPLY=function
+    elif (( $+builtins[(e)$1] )); then
+      REPLY=builtin
+    elif (( $+commands[(e)$1] )); then
+      REPLY=command
+    elif ! builtin type -w -- $1 >/dev/null 2>&1; then
+      REPLY=none
+    fi
+  fi
+  if ! (( $+REPLY )); then
+    REPLY="${$(LC_ALL=C builtin type -w -- $1 2>/dev/null)#*: }"
+  fi
+}
+
+# Check whether the first argument is a redirection operator token.
+# Report result via the exit code.
+_zsh_highlight_main__is_redirection() {
+  # A redirection operator token:
+  # - starts with an optional single-digit number;
+  # - then, has a '<' or '>' character;
+  # - is not a process substitution [<(...) or >(...)].
+  [[ $1 == (<0-9>|)(\<|\>)* ]] && [[ $1 != (\<|\>)$'\x28'* ]]
+}
+
+# Resolve alias.
+#
+# Takes a single argument.
+#
+# The result will be stored in REPLY.
+_zsh_highlight_main__resolve_alias() {
+  if zmodload -e zsh/parameter; then
+    REPLY=${aliases[$arg]}
+  else
+    REPLY="${"$(alias -- $arg)"#*=}"
+  fi
 }
 
 # Main syntax highlighting function.
@@ -199,6 +244,8 @@ _zsh_highlight_main_highlighter()
   #
   local this_word=':start:' next_word
   integer in_redirection
+  # Processing buffer
+  local proc_buf="$buf"
   for arg in ${interactive_comments-${(z)buf}} \
              ${interactive_comments+${(zZ+c+)buf}}; do
     if (( in_redirection )); then
@@ -234,13 +281,34 @@ _zsh_highlight_main_highlighter()
       # indistinguishable from 'echo foo echo bar' (one command with three
       # words for arguments).
       local needle=$'[;\n]'
-      integer offset=${${buf[start_pos+1,len]}[(i)$needle]}
-      (( start_pos += offset - 1 ))
+      integer offset=$(( ${proc_buf[(i)$needle]} - 1 ))
+      (( start_pos += offset ))
       (( end_pos = start_pos + $#arg ))
     else
-      ((start_pos+=(len-start_pos)-${#${${buf[start_pos+1,len]}##([[:space:]]|\\[[:space:]])#}}))
+      integer offset=$(((len-start_pos)-${#${proc_buf##([[:space:]]|\\[[:space:]])#}}))
+      ((start_pos+=offset))
       ((end_pos=$start_pos+${#arg}))
     fi
+
+    # Above `if` computes new start_pos and end_pos.
+    # Here we compute new proc_buf. We advance it
+    # (chop off characters from the beginning)
+    # beyond what end_pos points to, by skipping
+    # as many characters as end_pos was advanced.
+    #
+    # end_pos was advanced by $offset (via start_pos)
+    # and by $#arg. Note the `start_pos=$end_pos`
+    # below.
+    #
+    # As for the [,len]. We could use [,len-start_pos+offset]
+    # here, but to make it easier on eyes, we use len and
+    # rely on the fact that Zsh simply handles that. The
+    # length of proc_buf is len-start_pos+offset because
+    # we're chopping it to match current start_pos, so its
+    # length matches the previous value of start_pos.
+    #
+    # Why [,-1] is slower than [,length] isn't clear.
+    proc_buf="${proc_buf[offset + $#arg + 1,len]}"
 
     if [[ -n ${interactive_comments+'set'} && $arg[1] == $histchars[3] ]]; then
       if [[ $this_word == *(':regular:'|':start:')* ]]; then
@@ -283,7 +351,8 @@ _zsh_highlight_main_highlighter()
      else
       _zsh_highlight_main_highlighter_expand_path $arg
       local expanded_arg="$REPLY"
-      local res="$(_zsh_highlight_main__type ${expanded_arg})"
+      _zsh_highlight_main__type ${expanded_arg}
+      local res="$REPLY"
       () {
         # Special-case: command word is '$foo', like that, without braces or anything.
         #
@@ -293,17 +362,16 @@ _zsh_highlight_main_highlighter()
         # parameters that refer to commands, functions, and builtins.
         local -a match mbegin mend
         local MATCH; integer MBEGIN MEND
-        if [[ $res == *': none' ]] && (( ${+parameters} )) &&
+        if [[ $res == none ]] && (( ${+parameters} )) &&
            [[ ${arg[1]} == \$ ]] && [[ ${arg:1} =~ ^([A-Za-z_][A-Za-z0-9_]*|[0-9]+)$ ]]; then
-          res="$(_zsh_highlight_main__type ${(P)MATCH})"
+          _zsh_highlight_main__type ${(P)MATCH}
+          res=$REPLY
         fi
       }
       case $res in
-        *': reserved')  style=reserved-word;;
-        *': suffix alias')
-                        style=suffix-alias
-                        ;;
-        *': alias')     () {
+        reserved)       style=reserved-word;;
+        'suffix alias') style=suffix-alias;;
+        alias)          () {
                           integer insane_alias
                           case $arg in 
                             # Issue #263: aliases with '=' on their LHS.
@@ -321,16 +389,17 @@ _zsh_highlight_main_highlighter()
                             style=unknown-token
                           else
                             style=alias
-                            local aliased_command="${"$(alias -- $arg)"#*=}"
-                            [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS:#"$aliased_command"} && -z ${(M)ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS:#"$arg"} ]] && ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS+=($arg)
+                            _zsh_highlight_main__resolve_alias $arg
+                            local alias_target="$REPLY"
+                            [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS:#"$alias_target"} && -z ${(M)ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS:#"$arg"} ]] && ZSH_HIGHLIGHT_TOKENS_PRECOMMANDS+=($arg)
                           fi
                         }
                         ;;
-        *': builtin')   style=builtin;;
-        *': function')  style=function;;
-        *': command')   style=command;;
-        *': hashed')    style=hashed-command;;
-        *)              if _zsh_highlight_main_highlighter_check_assign; then
+        builtin)        style=builtin;;
+        function)       style=function;;
+        command)        style=command;;
+        hashed)         style=hashed-command;;
+        none)           if _zsh_highlight_main_highlighter_check_assign; then
                           style=assign
                           if [[ $arg[-1] == '(' ]]; then
                             in_array_assignment=true
@@ -351,7 +420,7 @@ _zsh_highlight_main_highlighter()
                           else
                             style=unknown-token
                           fi
-                        elif [[ $arg == (<0-9>|)(\<|\>)* ]]; then
+                        elif _zsh_highlight_main__is_redirection $arg; then
                           # A '<' or '>', possibly followed by a digit
                           style=redirection
                           (( in_redirection=2 ))
@@ -383,6 +452,9 @@ _zsh_highlight_main_highlighter()
                             style=unknown-token
                           fi
                         fi
+                        ;;
+        *)              _zsh_highlight_main_add_region_highlight commandtypefromthefuture-$res
+                        already_added=1
                         ;;
       esac
      fi
@@ -421,7 +493,7 @@ _zsh_highlight_main_highlighter()
                    else
                      style=unknown-token
                    fi
-                 elif [[ $arg == (<0-9>|)(\<|\>)* ]]; then
+                 elif _zsh_highlight_main__is_redirection $arg; then
                    style=redirection
                    (( in_redirection=2 ))
                  else

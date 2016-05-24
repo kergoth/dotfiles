@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -27,9 +27,14 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-hash zsh_syntax_highlighting_hash=/doesnotexist
-BUFFER='zsh_syntax_highlighting_hash'
+alias a=A
+f() {}
+
+BUFFER='a;f;'
 
 expected_region_highlight=(
-  "1 28 hashed-command 'zsh/parameter cannot distinguish between hashed and command'"
+  "1 1 alias" # f
+  "2 2 commandseparator" # ;
+  "3 3 function" # g
+  "4 4 commandseparator" # ;
 )

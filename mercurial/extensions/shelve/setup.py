@@ -26,6 +26,6 @@ setup(name='hgshelve',
       ],
       license='GNU GPLv2 or any later version',
       install_requires=[
-          'Mercurial >= 2.7',
+          'Mercurial >= 2.9',
       ],
      )

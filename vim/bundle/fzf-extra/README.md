@@ -48,31 +48,31 @@ Plug 'junegunn/fzf.vim'
 Commands
 --------
 
-| Command          | List                                                                      |
-| ---              | ---                                                                       |
-| `Files [PATH]`   | Files (similar to `:FZF`)                                                 |
-| `GitFiles`       | Git files (git ls-files)                                                  |
-| `GitFiles?`      | Git files (git status)                                                    |
-| `Buffers`        | Open buffers                                                              |
-| `Colors`         | Color schemes                                                             |
-| `Ag [PATTERN]`   | [ag][ag] search result (`ALT-A` to select all, `ALT-D` to deselect all)   |
-| `Lines`          | Lines in loaded buffers                                                   |
-| `BLines`         | Lines in the current buffer                                               |
-| `Tags [QUERY]`   | Tags in the project (`ctags -R`)                                          |
-| `BTags [QUERY]`  | Tags in the current buffer                                                |
-| `Marks`          | Marks                                                                     |
-| `Windows`        | Windows                                                                   |
-| `Locate PATTERN` | `locate` command output                                                   |
-| `History`        | `v:oldfiles` and open buffers                                             |
-| `History:`       | Command history                                                           |
-| `History/`       | Search history                                                            |
-| `Snippets`       | Snippets ([UltiSnips][us])                                                |
-| `Commits`        | Git commits (requires [fugitive.vim][f])                                  |
-| `BCommits`       | Git commits for the current buffer                                        |
-| `Commands`       | Commands                                                                  |
-| `Maps`           | Normal mode mappings                                                      |
-| `Helptags`       | Help tags <sup id="a1">[1](#helptags)</sup>                               |
-| `Filetypes`      | File types
+| Command           | List                                                                    |
+| ---               | ---                                                                     |
+| `Files [PATH]`    | Files (similar to `:FZF`)                                               |
+| `GitFiles [OPTS]` | Git files (git ls-files)                                                |
+| `GitFiles?`       | Git files (git status)                                                  |
+| `Buffers`         | Open buffers                                                            |
+| `Colors`          | Color schemes                                                           |
+| `Ag [PATTERN]`    | [ag][ag] search result (`ALT-A` to select all, `ALT-D` to deselect all) |
+| `Lines [QUERY]`   | Lines in loaded buffers                                                 |
+| `BLines [QUERY]`  | Lines in the current buffer                                             |
+| `Tags [QUERY]`    | Tags in the project (`ctags -R`)                                        |
+| `BTags [QUERY]`   | Tags in the current buffer                                              |
+| `Marks`           | Marks                                                                   |
+| `Windows`         | Windows                                                                 |
+| `Locate PATTERN`  | `locate` command output                                                 |
+| `History`         | `v:oldfiles` and open buffers                                           |
+| `History:`        | Command history                                                         |
+| `History/`        | Search history                                                          |
+| `Snippets`        | Snippets ([UltiSnips][us])                                              |
+| `Commits`         | Git commits (requires [fugitive.vim][f])                                |
+| `BCommits`        | Git commits for the current buffer                                      |
+| `Commands`        | Commands                                                                |
+| `Maps`            | Normal mode mappings                                                    |
+| `Helptags`        | Help tags <sup id="a1">[1](#helptags)</sup>                             |
+| `Filetypes`       | File types
 
 - Most commands support `CTRL-T` / `CTRL-X` / `CTRL-V` key
   bindings to open in a new tab, a new split, or in a new vertical split
@@ -125,8 +125,11 @@ let g:fzf_colors =
 " [Buffers] Jump to the existing window if possible
 let g:fzf_buffers_jump = 1
 
-" [[B]Commits] to customize the options used by 'git log':
+" [[B]Commits] Customize the options used by 'git log':
 let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+" [Tags] Command to generate tags file
+let g:fzf_tags_command = 'ctags -R'
 ```
 
 #### Advanced customization using autoload functions
