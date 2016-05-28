@@ -56,7 +56,7 @@ Test the evolution test topic is installed
       between repositories. This allows for a safe and simple way of exchanging
       mutable history and altering it after the fact. Changeset phases are
       respected, such that only draft and secret changesets can be altered (see
-      'hg hg phases' for details).
+      'hg help phases' for details).
   
       Obsolescence is tracked using "obsolete markers", a piece of metadata
       tracking which changesets have been made obsolete, potential successors
@@ -76,7 +76,7 @@ Test the evolution test topic is installed
       ======================
   
       This feature is still in development.  If you see this help, you have
-      enable an extension that turned this feature on.
+      enabled an extension that turned this feature on.
   
       Obsolescence markers will be exchanged between repositories that
       explicitly assert support for the obsolescence feature (this can currently

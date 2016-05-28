@@ -296,7 +296,8 @@ def extsetup(ui):
     # There are two ways to save bookmark changes during a transation, we
     # wrap both to add inhibition markers.
     extensions.wrapfunction(bookmarks.bmstore, 'recordchange', _bookmarkchanged)
-    extensions.wrapfunction(bookmarks.bmstore, 'write', _bookmarkchanged)
+    if getattr(bookmarks.bmstore, 'write', None) is not None:# mercurial < 3.9
+        extensions.wrapfunction(bookmarks.bmstore, 'write', _bookmarkchanged)
     # Add bookmark -D option
     entry = extensions.wrapcommand(commands.table, 'bookmark', _bookmark)
     entry[1].append(('D','prune',None,

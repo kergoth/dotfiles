@@ -59,9 +59,6 @@ source $ZSH/plugins/autosuggestions/zsh-autosuggestions.zsh
 # history-substring-search must be loaded after syntax-highlighting
 source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
 
-# Work around https://github.com/tarruda/zsh-autosuggestions/issues/118
-ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete)
-
 # Move prioritize-cwd-history into xdg path
 ZSH_PRIORITIZE_CWD_HISTORY_DIR=$XDG_DATA_HOME/zsh/prioritize-cwd-history
 

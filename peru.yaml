@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 12b879caf7a6f96921d1c03ab9b839a7f6c8eb1e
+    rev: 3b67e656bff5b8543e16d44fbb56ad9c98afe43f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -116,7 +116,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 69e89c5e4a1eae49325314df3718f0c734536e2a
+    rev: 551934dee28939221fcd72922a9b61b0fc44b068
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -288,7 +288,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: bdb94fba7db3d0b59954b474439c28fb1f3fa8d8
+    rev: e0b29e437be458066fca4dab39b282dfc11466f6
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -515,7 +515,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 3460887b68596c99fa6b7c1e66b1cf0c4ee3799a
+    rev: 7a2e0629bdee8cd842bb884094cef9683ed49520
 
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
@@ -562,7 +562,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 95879f19a9f8a72282717e07d0d4e006d8561580
+    rev: 6e467b89302bd1446c30d5d9896704c8e139ff88
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
@@ -631,7 +631,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 87facd9b85630f288433aa0a20a963cffc612ee5
+    rev: 62cdba4e0f7e1028dd52a6dcfe79b5bbb0d51b65
 
 git module zsh-prioritize-cwd-history:
     url: https://github.com/ericfreese/zsh-prioritize-cwd-history

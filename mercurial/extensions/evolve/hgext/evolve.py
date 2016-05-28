@@ -33,7 +33,7 @@ changesets from the repository, obsolescence markers can be propagated
 between repositories. This allows for a safe and simple way of exchanging
 mutable history and altering it after the fact. Changeset phases are
 respected, such that only draft and secret changesets can be altered (see
-:hg:`hg phases` for details).
+:hg:`help phases` for details).
 
 Obsolescence is tracked using "obsolete markers", a piece of metadata
 tracking which changesets have been made obsolete, potential successors for
@@ -51,7 +51,7 @@ of history concurrently.
 Current feature status
 ======================
 
-This feature is still in development.  If you see this help, you have enable an
+This feature is still in development.  If you see this help, you have enabled an
 extension that turned this feature on.
 
 Obsolescence markers will be exchanged between repositories that explicitly

@@ -18,11 +18,6 @@ for file in ${(M)config_files:#*/path.zsh}; do
     source $file
 done
 
-# Per zsh-history-substring-search's documentation, it needs to be loaded after
-# zsh-syntax-highlighting.
-source $ZSH/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
-source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
-
 # Load "plugins"
 for file in $ZSH/plugins/*/*.plugin.zsh $ZSH/plugins/*/activate.sh; do
     case "$file" in
