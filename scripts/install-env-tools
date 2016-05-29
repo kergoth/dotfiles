@@ -7,6 +7,10 @@ pipv () {
     command pipv "$1" -U "$@"
 }
 
+pip_install () {
+    command pip install --user --disable-pip-version-check -U "$@"
+}
+
 setup_pip () {
     if ! which pip >/dev/null 2>&1; then
         # Install pip (and setuptools if needed)
@@ -17,7 +21,7 @@ setup_pip () {
         fi
     fi
     if  ! which virtualenv >/dev/null 2>&1; then
-        pip install --user virtualenv
+        pip_install virtualenv
     fi
 }
 
@@ -37,7 +41,7 @@ gemv boom
 pipv pythonpy
 pipv httpie
 go get -u github.com/EricChiang/pup # or brew install pup
-pip install --user -U hg-git
+pip_install --user --disable-pip-version-check -U hg-git
 pipv git-remote-dropbox
 # Dropblame, constructs git history for individual files in dropbox, using
 # dropbox's revision history.
@@ -51,14 +55,14 @@ pipv dropblame &&
 pipv3 peru
 
 ## Script dependencies
-pip install -U --user SOAPpy # lmwsaction
-pip install -U --user dropbox # git-remote-dropbox
-pip install -U --user titlecase # variety of scripts, and zsh alias
-pip install -U --user toml # toml-set/toml-get, used by the game scripts
-pip install -U --user sh # various scripts
-pip install -U --user hungarian # git-tbdiff
+pip_install SOAPpy # lmwsaction
+pip_install dropbox # git-remote-dropbox
+pip_install titlecase # variety of scripts, and zsh alias
+pip_install toml # toml-set/toml-get, used by the game scripts
+pip_install sh # various scripts
+pip_install hungarian # git-tbdiff
 pipv json2yaml # pcposts zsh function
-pip install -U --user gitpython # buildhistory-diff
+pip_install gitpython # buildhistory-diff
 
 ## Pinboard client
 npmv pin-cushion
@@ -68,9 +72,9 @@ go get -u github.com/github/hub
 # pprintpp + pp-ez?
 # twine?
 # wheel?
-pip install -U --user ptpython
-pip install -U --user pathlib2
-pip install -U --user click
+pip_install ptpython
+pip_install pathlib2
+pip_install click
 
 ## Documentation
 gemv ronn
@@ -102,8 +106,8 @@ go get -u github.com/shurcooL/markdownfmt
 #go get -u github.com/jbenet/hashpipe
 #pipv pockyt # cli for Pocket
 #pipv pocket-cli # other cli for Pocket, better interface
-#pip install -U --user datefinder # search text for dates, ala path-extractor
-#pip install -U --user pipdeptree
+#pip_install datefinder # search text for dates, ala path-extractor
+#pip_install pipdeptree
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
 #go get -u github.com/asciinema/asciinema # or brew install asciinema
