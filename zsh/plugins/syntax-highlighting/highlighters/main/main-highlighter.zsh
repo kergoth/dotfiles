@@ -41,7 +41,9 @@
 : ${ZSH_HIGHLIGHT_STYLES[commandseparator]:=none}
 : ${ZSH_HIGHLIGHT_STYLES[hashed-command]:=fg=green}
 : ${ZSH_HIGHLIGHT_STYLES[path]:=underline}
+: ${ZSH_HIGHLIGHT_STYLES[path_pathseparator]:=${ZSH_HIGHLIGHT_STYLES[path]}}
 : ${ZSH_HIGHLIGHT_STYLES[path_prefix]:=underline}
+: ${ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]:=${ZSH_HIGHLIGHT_STYLES[path_prefix]}}
 : ${ZSH_HIGHLIGHT_STYLES[globbing]:=fg=blue}
 : ${ZSH_HIGHLIGHT_STYLES[history-expansion]:=fg=blue}
 : ${ZSH_HIGHLIGHT_STYLES[single-hyphen-option]:=none}
@@ -271,7 +273,7 @@ _zsh_highlight_main_highlighter()
     # which add the entry early so escape sequences within the string override
     # the string's color.
     integer already_added=0
-    local style_override=""
+    style=unknown-token
     if [[ $this_word == *':start:'* ]]; then
       in_array_assignment=false
       if [[ $arg == 'noglob' ]]; then
@@ -456,7 +458,7 @@ _zsh_highlight_main_highlighter()
                           style=reserved-word
                         else
                           if _zsh_highlight_main_highlighter_check_path; then
-                            style=path
+                            style=$REPLY
                           else
                             style=unknown-token
                           fi
@@ -467,12 +469,16 @@ _zsh_highlight_main_highlighter()
                         ;;
       esac
      fi
-    else # $arg is a non-command word
+   fi
+   if (( ! already_added )) && [[ $style == unknown-token ]] && # not handled by the 'command word' codepath
+      { (( in_redirection )) || [[ $this_word == *':regular:'* ]] || [[ $this_word == *':sudo_opt:'* ]] || [[ $this_word == *':sudo_arg:'* ]] }
+   then # $arg is a non-command word
       case $arg in
         $'\x29') # subshell or end of array assignment
                  if $in_array_assignment; then
                    style=assign
                    in_array_assignment=false
+                   next_word+=':start:'
                  else
                    style=reserved-word
                  fi;;
@@ -507,7 +513,7 @@ _zsh_highlight_main_highlighter()
                    (( in_redirection=2 ))
                  else
                    if _zsh_highlight_main_highlighter_check_path; then
-                     style=path
+                     style=$REPLY
                    else
                      style=default
                    fi
@@ -515,9 +521,10 @@ _zsh_highlight_main_highlighter()
                  ;;
       esac
     fi
-    # if a style_override was set (eg in _zsh_highlight_main_highlighter_check_path), use it
-    [[ -n $style_override ]] && style=$style_override
-    (( already_added )) || _zsh_highlight_main_add_region_highlight $start_pos $end_pos $style
+    if ! (( already_added )); then
+      _zsh_highlight_main_add_region_highlight $start_pos $end_pos $style
+      [[ $style == path || $style == path_prefix ]] && _zsh_highlight_main_highlighter_highlight_path_separators
+    fi
     if [[ -n ${(M)ZSH_HIGHLIGHT_TOKENS_COMMANDSEPARATOR:#"$arg"} ]]; then
       next_word=':start:'
       highlight_glob=true
@@ -531,8 +538,11 @@ _zsh_highlight_main_highlighter()
       # The redirection mechanism assumes $this_word describes the word
       # following the redirection.  Make it so.
       #
+      # That word can be a command word with shortloops (`repeat 2 ls`)
+      # or a command separator (`repeat 2; ls` or `repeat 2; do ls; done`).
+      #
       # The repeat-count word will be handled like a redirection target.
-      this_word=':start:'
+      this_word=':start::regular:'
     fi
     start_pos=$end_pos
     (( in_redirection == 0 )) && this_word=$next_word
@@ -543,14 +553,31 @@ _zsh_highlight_main_highlighter()
 _zsh_highlight_main_highlighter_check_assign()
 {
     setopt localoptions extended_glob
-    [[ $arg == [[:alpha:]_][[:alnum:]_]#(|\[*\])(|[+])=* ]]
+    [[ $arg == [[:alpha:]_][[:alnum:]_]#(|\[*\])(|[+])=* ]] ||
+      [[ $arg == [0-9]##(|[+])=* ]]
+}
+
+_zsh_highlight_main_highlighter_highlight_path_separators()
+{
+  local pos style_pathsep
+  style_pathsep=${style}_pathseparator
+  [[ -z "$ZSH_HIGHLIGHT_STYLES[$style_pathsep]" || "$ZSH_HIGHLIGHT_STYLES[$style]" == "$ZSH_HIGHLIGHT_STYLES[$style_pathsep]" ]] && return 0
+  for (( pos = start_pos; $pos <= end_pos; pos++ )) ; do
+    if [[ $BUFFER[pos] == / ]]; then
+      _zsh_highlight_main_add_region_highlight $((pos - 1)) $pos $style_pathsep
+    fi
+  done
 }
 
 # Check if $arg is a path.
+# If yes, return 0 and in $REPLY the style to use.
+# Else, return non-zero (and the contents of $REPLY is undefined).
 _zsh_highlight_main_highlighter_check_path()
 {
   _zsh_highlight_main_highlighter_expand_path $arg;
   local expanded_path="$REPLY"
+
+  REPLY=path
 
   [[ -z $expanded_path ]] && return 1
   [[ -e $expanded_path ]] && return 0
@@ -562,14 +589,14 @@ _zsh_highlight_main_highlighter_check_path()
   done
 
   # If dirname($arg) doesn't exist, neither does $arg.
-  [[ ! -e ${expanded_path:h} ]] && return 1
+  [[ ! -d ${expanded_path:h} ]] && return 1
 
   # If this word ends the buffer, check if it's the prefix of a valid path.
   if [[ ${BUFFER[1]} != "-" && ${#BUFFER} == $end_pos ]] &&
      [[ $WIDGET != accept-* ]]; then
     local -a tmp
     tmp=( ${expanded_path}*(N) )
-    (( $#tmp > 0 )) && style_override=path_prefix && return 0
+    (( $#tmp > 0 )) && REPLY=path_prefix && return 0
   fi
 
   # It's not a path.

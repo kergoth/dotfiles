@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 3b67e656bff5b8543e16d44fbb56ad9c98afe43f
+    rev: e35a0b256ebcc10ec1d9f362a3b7caf7c4dc7edc
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -195,7 +195,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 4d39cb6f2078326dd07f2ab680a0365299a2589e
+    rev: 6c8f33f19223757a1a45ec7698c73a59b2d9a5d1
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -224,7 +224,7 @@ git module gundo:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround.git
-    rev: 2d05440ad23f97a7874ebd9b5de3a0e65d25d85c
+    rev: e49d6c2459e0f5569ff2d533b4df995dd7f98313
 
 # readline style insertion
 git module vim-rsi:
@@ -252,7 +252,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 4d911563cdb06c1a92452232b3a2c991c3d21981
+    rev: 08977185231610aab6edff557ff57717c91ff93a
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -288,7 +288,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: e0b29e437be458066fca4dab39b282dfc11466f6
+    rev: 1c86aaf342120700c169683dd538a6d15b184369
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -326,7 +326,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 894c1a6c02b7d903385ddac317f75dd6d482c4b8
+    rev: 72d43942384ff81ba88df665299ed57810eb4b5e
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -562,14 +562,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 6e467b89302bd1446c30d5d9896704c8e139ff88
+    rev: b8bdaa20be5e3caf8808da4da0a9b72706d416e3
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 38b312497ea7a1e7be087bb829eb9fdcf5607489
+    rev: 385484b8c4ccae0cab176b26f96df1f27a7aa62a
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -644,4 +644,4 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: becb14ad0162a6462ec0046d983fc20618b3f0d8
+    rev: 1f374d1ea9f7e595f127b805184b8288c056c1e5

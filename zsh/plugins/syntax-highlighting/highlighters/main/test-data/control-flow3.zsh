@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -27,12 +27,13 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='A=1 b=("foo" bar)'
+BUFFER='repeat 42; ls; pwd'
 
-expected_region_highlight=(
-  "1 3 assign" # A=1
-  "5 7 assign" # b=(
-  "8 12 double-quoted-argument" # "foo"
-  "14 16 default" # bar
-  "17 17 assign" # )
+expected_region_highlight+=(
+  "1 6 reserved-word" # repeat
+  "8 9 default" # 42
+  "10 10 commandseparator" # ;
+  "12 13 command" # ls
+  "14 14 commandseparator" # ;
+  "16 18 builtin" # pwd
 )

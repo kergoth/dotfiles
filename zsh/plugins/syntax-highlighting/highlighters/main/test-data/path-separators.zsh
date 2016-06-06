@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2015 zsh-syntax-highlighting contributors
+# Copyright (c) 2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -27,12 +27,27 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER='A=1 b=("foo" bar)'
+# ZSH_HIGHLIGHT_STYLES is empty in tests. The path-separator code however compares its values.
+# Make sure the relevant ones are set to something.
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]=set
+ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]=set
+
+mkdir A
+touch A/mu
+BUFFER='ls /bin/ / A/mu A/m'
 
 expected_region_highlight=(
-  "1 3 assign" # A=1
-  "5 7 assign" # b=(
-  "8 12 double-quoted-argument" # "foo"
-  "14 16 default" # bar
-  "17 17 assign" # )
+  "4 4 path_pathseparator"           # /
+  "5 7 path"                         # bin
+  "8 8 path_pathseparator"           # /
+
+  "10 10 path_pathseparator"         # /
+
+  "12 12 path"                       # A
+  "13 13 path_pathseparator"         # /
+  "14 15 path"                       # mu
+
+  "17 17 path_prefix"                # A
+  "18 18 path_prefix_pathseparator"  # /
+  "19 19 path_prefix"                # m
 )
