@@ -154,7 +154,6 @@ alias funced="_funced "
 
 # Git
 alias wgit='git clone --recursive'
-alias gi='gitignore'
 
 alias fls='fls -f %n%F'
 alias fll='command fls'
