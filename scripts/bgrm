@@ -1,26 +1,70 @@
 #!/bin/sh
 
-items="$(mktemp bgrm.XXXXXX)" || exit 1
-trap "rm -f $items" EXIT
+set -eu
 
-while [ $# -gt 0 ]; do
-    echo "$1" >>$items
-    shift
-done
+usage () {
+    cat <<END >&2
+Usage: ${0##*/} [-d DELAY_SECONDS] PATH [PATH..]
 
-while read item; do
-    if [ "${item%bgrm.}" != "$item" ]; then
-        # Existing bgrm directories can presumably be skipped
-        continue
+Rename/move the specified paths out of the way, then remove them in the
+background.
+END
+    exit 1
+}
+
+main () {
+    process_arguments "$@"
+    shift $((OPTIND - 1))
+
+    items="$(mktemp bgrm.XXXXXX)" || exit 1
+    trap 'rm -f "$items"' EXIT INT TERM
+
+    while [ $# -gt 0 ]; do
+        echo "$1" >>"$items"
+        shift
+    done
+
+    while read -r item; do
+        if [ "${item%bgrm.}" != "$item" ]; then
+            # Existing bgrm directories can presumably be skipped
+            continue
+        fi
+        if [ ! -e "$item" ] && [ ! -L "$item" ]; then
+            continue
+        fi
+
+        dir="$(dirname "$item")"
+        tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
+
+        mv "$item" "$tmpdir/" && set -- "$@" "$tmpdir"
+    done <"$items"
+
+    if [ -n "$delay" ]; then
+        nohup sh -c "sleep \"$delay\" && rm -rf \"\$@\"" - "$@" &
+    else
+        nohup rm -rf "$@" &
+    fi >/dev/null 2>&1 </dev/null
+}
+
+process_arguments () {
+    delay=
+
+    while getopts d:h opt; do
+        case "$opt" in
+            d)
+                delay="$OPTARG"
+                ;;
+            h|\?)
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        echo >&2 "Error: no argument specified"
+        usage
     fi
-    if [ ! -e "$item" ] && [ ! -L "$item" ]; then
-        continue
-    fi
+}
 
-    dir="$(dirname "$item")"
-    tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
-
-    mv "$item" "$tmpdir/" && set -- "$@" "$tmpdir"
-done <$items
-
-nohup rm -rf "$@" >/dev/null 2>&1 </dev/null &
+main "$@"
