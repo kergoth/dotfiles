@@ -16,8 +16,8 @@ Options:
                     which is Idle, but if it this is too slow, one could set
                     it to 2, which is Best-Effort.
 
-  -p IONICE_BESTEFFORT_PRIORITY     Set the priority used when IONICE_CLASS
-                                    is set to 2 (Best-Effort). Default: 7 (Lowest)
+  -p IONICE_BESTEFFORT_PRIORITY  Set the priority used when IONICE_CLASS
+                                 is set to 2 (Best-Effort). Default: 7 (Lowest)
 END
     exit 1
 }
@@ -58,8 +58,8 @@ main () {
 
 process_arguments () {
     delay=
-    idle_class=3
-    idle_2_priority=7
+    io_class=3
+    io_besteffort_priority=7
 
     while getopts d:n:p:h opt; do
         case "$opt" in
@@ -67,24 +67,24 @@ process_arguments () {
                 delay="$OPTARG"
                 ;;
             n)
-                idle_class="$OPTARG"
-                case "$idle_class" in
+                io_class="$OPTARG"
+                case "$io_class" in
                     [0123])
                         ;;
                     *)
-                        echo >&2 "Invalid idle class: $idle_class, please specify 0, 1, 2, or 3."
+                        echo >&2 "Invalid I/O scheduling class: $io_class, please specify 0, 1, 2, or 3."
                         echo >&2 "See 'man ionice' for details."
                         return 1
                         ;;
                 esac
                 ;;
             p)
-                idle_2_priority="$OPTARG"
-                case "$idle_2_priority" in
+                io_besteffort_priority="$OPTARG"
+                case "$io_besteffort_priority" in
                     [01234567])
                         ;;
                     *)
-                        echo >&2 "Invalid idle Best-Effort priority: $idle_2_priority, please specify 0-7."
+                        echo >&2 "Invalid Best-Effort priority: $io_besteffort_priority, please specify 0-7."
                         echo >&2 "See 'man ionice' for details."
                         return 1
                         ;;
@@ -102,11 +102,11 @@ process_arguments () {
         usage
     fi
 
-    if [ -n "$idle_class" ] && which ionice >/dev/null 2>&1; then
-        if [ "$idle_class" = "2" ]; then
-            rm_cmd="ionice -c $idle_class -n $idle_2_priority rm -rf"
+    if [ -n "$io_class" ] && which ionice >/dev/null 2>&1; then
+        if [ "$io_class" = "2" ]; then
+            rm_cmd="ionice -c $io_class -n $io_besteffort_priority rm -rf"
         else
-            rm_cmd="ionice -c $idle_class rm -rf"
+            rm_cmd="ionice -c $io_class rm -rf"
         fi
     else
         rm_cmd="rm -rf"
