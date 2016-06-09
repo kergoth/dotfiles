@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+set -u
 
 usage () {
     cat <<END >&2
