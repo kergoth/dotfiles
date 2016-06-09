@@ -4,10 +4,17 @@ set -eu
 
 usage () {
     cat <<END >&2
-Usage: ${0##*/} [-d DELAY_SECONDS] PATH [PATH..]
+Usage: ${0##*/} [options] PATH [PATH..]
 
-Rename/move the specified paths out of the way, then remove them in the
-background.
+Options:
+
+  -d DELAY_SECONDS  Rename/move the specified paths out of the way, then
+                    remove them in the background.
+
+  -n IONICE_CLASS   Class to specify for ionice to lower the I/O priority of
+                    the removal process.
+  -p IONICE_BESTEFFORT_PRIORITY     Set the priority used when IONICE_CLASS
+                                    is set to 2 (Best-Effort). Default: 7 (Lowest)
 END
     exit 1
 }
@@ -40,19 +47,45 @@ main () {
     done <"$items"
 
     if [ -n "$delay" ]; then
-        nohup sh -c "sleep \"$delay\" && rm -rf \"\$@\"" - "$@" &
+        nohup sh -c "sleep \"$delay\" && $rm_cmd \"\$@\"" - "$@" &
     else
-        nohup rm -rf "$@" &
+        nohup $rm_cmd "$@" &
     fi >/dev/null 2>&1 </dev/null
 }
 
 process_arguments () {
     delay=
+    idle_class=
+    idle_2_priority=7
 
-    while getopts d:h opt; do
+    while getopts d:n:p:h opt; do
         case "$opt" in
             d)
                 delay="$OPTARG"
+                ;;
+            n)
+                idle_class="$OPTARG"
+                case "$idle_class" in
+                    [0123])
+                        ;;
+                    *)
+                        echo >&2 "Invalid idle class: $idle_class, please specify 0, 1, 2, or 3."
+                        echo >&2 "See 'man ionice' for details."
+                        return 1
+                        ;;
+                esac
+                ;;
+            p)
+                idle_2_priority="$OPTARG"
+                case "$idle_2_priority" in
+                    [01234567])
+                        ;;
+                    *)
+                        echo >&2 "Invalid idle Best-Effort priority: $idle_2_priority, please specify 0-7."
+                        echo >&2 "See 'man ionice' for details."
+                        return 1
+                        ;;
+                esac
                 ;;
             h|\?)
                 usage
@@ -64,6 +97,16 @@ process_arguments () {
     if [ $# -eq 0 ]; then
         echo >&2 "Error: no argument specified"
         usage
+    fi
+
+    if [ -n "$idle_class" ] && which ionice >/dev/null 2>&1; then
+        if [ "$idle_class" = "2" ]; then
+            rm_cmd="ionice -c $idle_class -n $idle_2_priority rm -rf"
+        else
+            rm_cmd="ionice -c $idle_class rm -rf"
+        fi
+    else
+        rm_cmd="rm -rf"
     fi
 }
 
