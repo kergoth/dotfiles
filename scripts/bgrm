@@ -48,7 +48,12 @@ main () {
         dir="$(dirname "$item")"
         tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
 
-        mv "$item" "$tmpdir/" && set -- "$@" "$tmpdir"
+        mv "$item" "$tmpdir/"
+        if [ $? -eq 0 ]; then
+            set -- "$@" "$tmpdir"
+        else
+            rmdir "$tmpdir"
+        fi
     done <"$items"
 
     if [ -n "$delay" ]; then
