@@ -12,7 +12,10 @@ Options:
                     remove them in the background.
 
   -n IONICE_CLASS   Class to specify for ionice to lower the I/O priority of
-                    the removal process.
+                    the removal process. By default, the class is set to 3,
+                    which is Idle, but if it this is too slow, one could set
+                    it to 2, which is Best-Effort.
+
   -p IONICE_BESTEFFORT_PRIORITY     Set the priority used when IONICE_CLASS
                                     is set to 2 (Best-Effort). Default: 7 (Lowest)
 END
@@ -55,7 +58,7 @@ main () {
 
 process_arguments () {
     delay=
-    idle_class=
+    idle_class=3
     idle_2_priority=7
 
     while getopts d:n:p:h opt; do
