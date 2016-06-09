@@ -6,10 +6,12 @@ usage () {
     cat <<END >&2
 Usage: ${0##*/} [options] PATH [PATH..]
 
+Rename/move the specified paths out of the way, then remove them in the
+background.
+
 Options:
 
-  -d DELAY_SECONDS  Rename/move the specified paths out of the way, then
-                    remove them in the background.
+  -d DELAY_SECONDS  Specify a delay to control when the actual removal occurs.
 
   -n IONICE_CLASS   Class to specify for ionice to lower the I/O priority of
                     the removal process. By default, the class is set to 3,
