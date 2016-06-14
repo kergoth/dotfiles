@@ -49,6 +49,10 @@ function! s:escape(path)
   return escape(a:path, ' $%#''"\')
 endfunction
 
+function! s:q1(str)
+  return "'".substitute(a:str, "'", "'\\\\''", 'g')."'"
+endfunction
+
 if v:version >= 704
   function! s:function(name)
     return function(a:name)
@@ -101,8 +105,7 @@ function! s:fzf(opts, extra)
   let eopts  = has_key(extra, 'options') ? remove(extra, 'options') : ''
   let merged = extend(copy(a:opts), extra)
   let merged.options = join(filter([s:defaults(), get(merged, 'options', ''), eopts], '!empty(v:val)'))
-  call fzf#run(merged)
-  return 1
+  return fzf#run(merged)
 endfunction
 
 let s:default_action = {
@@ -479,7 +482,8 @@ endfunction
 
 function! s:sort_buffers(...)
   let [b1, b2] = map(copy(a:000), 'get(g:fzf#vim#buffers, v:val, v:val)')
-  return b1 - b2
+  " Using minus between a float and a number in a sort function causes an error
+  return b1 > b2 ? 1 : -1
 endfunction
 
 function! fzf#vim#buffers(...)
@@ -525,10 +529,10 @@ endfunction
 
 " query, [[ag options], options]
 function! fzf#vim#ag(query, ...)
-  let query = escape(empty(a:query) ? '^(?=.)' : a:query, '"\-')
+  let query = empty(a:query) ? '^(?=.)' : a:query
   let args = copy(a:000)
   let ag_opts = len(args) > 1 ? remove(args, 0) : ''
-  let command = printf('%s "%s"', ag_opts, query)
+  let command = ag_opts . ' ' . s:q1(query)
   return call('fzf#vim#ag_raw', insert(args, command, 0))
 endfunction
 
@@ -588,7 +592,7 @@ function! s:btags_sink(lines)
 endfunction
 
 function! s:q(query)
-  return ' --query "'.escape(a:query, '"\').'"'
+  return ' --query '.s:q1(a:query)
 endfunction
 
 " query, [[tag commands], options]

@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: e35a0b256ebcc10ec1d9f362a3b7caf7c4dc7edc
+    rev: f3d3aaa00cc49ccf512164afa2e13290ff934ed7
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -195,11 +195,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 6c8f33f19223757a1a45ec7698c73a59b2d9a5d1
+    rev: 7b9b68f15dc50ef3c6382bd9df3a5e70c9ddcee9
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 97a042a57af7f04e25fddb6e694d75be1d55be02
+    rev: 796478723c01a275269b96f63ee5cd5b44a342f4
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -252,7 +252,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 08977185231610aab6edff557ff57717c91ff93a
+    rev: 0867178d9963e9f971c7799b0820aab985676c3c
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -288,7 +288,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 1c86aaf342120700c169683dd538a6d15b184369
+    rev: 8a90f26c8a4ac34517eeed9f3498dd790d255474
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -562,14 +562,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: b8bdaa20be5e3caf8808da4da0a9b72706d416e3
+    rev: d6b96c079be137c83009827b543a83aa113cc011
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 385484b8c4ccae0cab176b26f96df1f27a7aa62a
+    rev: e296b1b95f772fd0c084023f87a75da651a285cf
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
