@@ -28,6 +28,7 @@ imports:
     diff-so-fancy: scripts
     dtrx: scripts
     dustin-bindir: scripts
+    flu: scripts
     git-cherry-tree: scripts
     git-extras: scripts
     git-imerge: scripts
@@ -645,3 +646,10 @@ git module git-extras:
         - bin/git-setup
         - bin/git-show-tree
     rev: 1f374d1ea9f7e595f127b805184b8288c056c1e5
+
+git module flu:
+    url: https://github.com/eventi/noreallyjustfuckingstopalready
+    pick: flu
+    rev: 7cdce09d0c98eee2839b3d87f31b775c15207102
+    move:
+        flu.sh: flu
