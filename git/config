@@ -48,6 +48,9 @@
 [tar "tar.xz"]
 	command = xz -c
 
+[submodule]
+	fetchJobs = 4
+
 [pack]
 	threads = 3
 
