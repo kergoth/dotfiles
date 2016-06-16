@@ -36,6 +36,7 @@
 	renames = copy
 	mnemonicprefix = true
 	ignoreSubmodules = dirty
+	compactionHeuristic = true
 
 [merge]
 	tool = fugitive
