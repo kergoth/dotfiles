@@ -592,10 +592,11 @@ git module gitvoodoo:
     rev: 518f710546d5f110822f6f84a801c66f6dd0982e
 
 git module diff-so-fancy:
-    url: https://github.com/stevemao/diff-so-fancy
-    pick: diff-so-fancy
-    rev: 1968ba2fb5de14736aad0f8925f2f0c82d4dfff9
-    reup: 1968ba2fb5de14736aad0f8925f2f0c82d4dfff9
+    url: https://github.com/so-fancy/diff-so-fancy
+    pick:
+        - diff-so-fancy
+        - lib
+    rev: 0ea7c129420c57ec0384a704325e27c41f8f450d
 
 git module hub-completion:
     url: https://github.com/github/hub
