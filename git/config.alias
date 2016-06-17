@@ -22,6 +22,7 @@
 	fetchall = fetch --all
 	b = branch -v
 	ri = rebase -i
+	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
 
 	# remove changes to a file from the index
 	unstage = reset HEAD --
