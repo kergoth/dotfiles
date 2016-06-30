@@ -1,1 +1,1 @@
-. $DOTFILESDIR/base16/base16-tomorrow.dark.sh
+. $DOTFILESDIR/base16/scripts/base16-tomorrow-night.sh
