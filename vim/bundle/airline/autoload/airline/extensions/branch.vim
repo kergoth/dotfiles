@@ -117,7 +117,11 @@ function! airline#extensions#branch#head()
   let l:vcs_priority = get(g:, "airline#extensions#branch#vcs_priority", ["git", "mercurial"])
   let found_fugitive_head = 0
 
-  let l:git_head = s:get_git_branch(expand("%:p:h"))
+  if exists("*fnamemodify")
+    let l:git_head = s:get_git_branch(fnamemodify(resolve(@%), ":p:h"))
+  else
+    let l:git_head = s:get_git_branch(expand("%:p:h"))
+  endif
   let l:hg_head = s:get_hg_branch()
 
   if !empty(l:git_head)
@@ -162,6 +166,7 @@ function! airline#extensions#branch#head()
   if empty(b:airline_head) || !found_fugitive_head && !s:check_in_path()
     let b:airline_head = ''
   endif
+  let b:airline_head = airline#util#shorten(b:airline_head, 120, 9)
   return b:airline_head
 endfunction
 

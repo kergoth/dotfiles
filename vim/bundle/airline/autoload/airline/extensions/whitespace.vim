@@ -106,7 +106,7 @@ function! airline#extensions#whitespace#check()
       endif
     endif
   endif
-  return b:airline_whitespace_check
+  return airline#util#shorten(b:airline_whitespace_check, 120, 9)
 endfunction
 
 function! airline#extensions#whitespace#toggle()

@@ -41,7 +41,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 ```
 
-- `dir` option is not mandatory
+- `dir` and `do` options are not mandatory
 - Use `./install --bin` instead if you don't need fzf outside of Vim
 - Make sure to use Vim 7.4 or above
 
@@ -100,8 +100,11 @@ let g:fzf_action = {
 
 " Default fzf layout
 " - down / up / left / right
-" - window (nvim only)
 let g:fzf_layout = { 'down': '~40%' }
+
+" In Neovim, you can set up fzf window using a Vim command
+let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_layout = { 'window': '-tabnew' }
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =

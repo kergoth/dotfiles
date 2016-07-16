@@ -2,25 +2,51 @@
 # fzf-tmux: starts fzf in a tmux pane
 # usage: fzf-tmux [-u|-d [HEIGHT[%]]] [-l|-r [WIDTH[%]]] [--] [FZF OPTIONS]
 
+fail() {
+  >&2 echo "$1"
+  exit 2
+}
+
+fzf="$(command -v fzf 2> /dev/null)" || fzf="$(dirname "$0")/fzf"
+[[ -x "$fzf" ]] || fail 'fzf executable not found'
+
 args=()
 opt=""
 skip=""
 swap=""
 close=""
 term=""
-[ -n "$LINES" ] && lines=$LINES || lines=$(tput lines)
-while [ $# -gt 0 ]; do
+[[ -n "$LINES" ]] && lines=$LINES || lines=$(tput lines)
+
+help() {
+  >&2 echo 'usage: fzf-tmux [-u|-d [HEIGHT[%]]] [-l|-r [WIDTH[%]]] [--] [FZF OPTIONS]
+
+  Layout
+    -u [HEIGHT[%]]  Split above (up)
+    -d [HEIGHT[%]]  Split below (down)
+    -l [WIDTH[%]]   Split left
+    -r [WIDTH[%]]   Split right
+
+    (default: -d 50%)
+'
+  exit
+}
+
+while [[ $# -gt 0 ]]; do
   arg="$1"
-  case "$arg" in
+  shift
+  [[ -z "$skip" ]] && case "$arg" in
     -)
       term=1
       ;;
+    --help)
+      help
+      ;;
+    --version)
+      echo "fzf-tmux (with fzf $("$fzf" --version))"
+      exit
+      ;;
     -w*|-h*|-d*|-u*|-r*|-l*)
-      if [ -n "$skip" ]; then
-        args+=("$1")
-        shift
-        continue
-      fi
       if [[ "$arg" =~ ^.[lrw] ]]; then
         opt="-h"
         if [[ "$arg" =~ ^.l ]]; then
@@ -36,35 +62,33 @@ while [ $# -gt 0 ]; do
           close="; tmux swap-pane -D"
         fi
       fi
-      if [ ${#arg} -gt 2 ]; then
+      if [[ ${#arg} -gt 2 ]]; then
         size="${arg:2}"
       else
-        shift
         if [[ "$1" =~ ^[0-9]+%?$ ]]; then
           size="$1"
-        else
-          [ -n "$1" -a "$1" != "--" ] && args+=("$1")
           shift
+        else
           continue
         fi
       fi
 
       if [[ "$size" =~ %$ ]]; then
         size=${size:0:((${#size}-1))}
-        if [ -n "$swap" ]; then
+        if [[ -n "$swap" ]]; then
           opt="$opt -p $(( 100 - size ))"
         else
           opt="$opt -p $size"
         fi
       else
-        if [ -n "$swap" ]; then
+        if [[ -n "$swap" ]]; then
           if [[ "$arg" =~ ^.l ]]; then
-            [ -n "$COLUMNS" ] && max=$COLUMNS || max=$(tput cols)
+            [[ -n "$COLUMNS" ]] && max=$COLUMNS || max=$(tput cols)
           else
             max=$lines
           fi
           size=$(( max - size ))
-          [ $size -lt 0 ] && size=0
+          [[ $size -lt 0 ]] && size=0
           opt="$opt -l $size"
         else
           opt="$opt -l $size"
@@ -75,16 +99,17 @@ while [ $# -gt 0 ]; do
       # "--" can be used to separate fzf-tmux options from fzf options to
       # avoid conflicts
       skip=1
+      continue
       ;;
     *)
-      args+=("$1")
+      args+=("$arg")
       ;;
   esac
-  shift
+  [[ -n "$skip" ]] && args+=("$arg")
 done
 
-if ! [ -n "$TMUX" -a "$lines" -gt 15 ]; then
-  fzf "${args[@]}"
+if [[ -z "$TMUX" ]] || [[ "$lines" -le 15 ]]; then
+  "$fzf" "${args[@]}"
   exit $?
 fi
 
@@ -108,7 +133,7 @@ cleanup() {
   rm -f $argsf $fifo1 $fifo2 $fifo3
 
   # Remove temp window if we were zoomed
-  if [ -n "$zoomed" ]; then
+  if [[ -n "$zoomed" ]]; then
     tmux swap-pane -t $original_window \; \
       select-window -t $original_window \; \
       kill-window -t $tmp_window \; \
@@ -117,16 +142,9 @@ cleanup() {
 }
 trap cleanup EXIT SIGINT SIGTERM
 
-fail() {
-  >&2 echo "$1"
-  exit 2
-}
-fzf="$(which fzf 2> /dev/null)" || fzf="$(dirname "$0")/fzf"
-[ -x "$fzf" ] || fail "fzf executable not found"
-
 envs="env TERM=$TERM "
-[ -n "$FZF_DEFAULT_OPTS"    ] && envs="$envs FZF_DEFAULT_OPTS=$(printf %q "$FZF_DEFAULT_OPTS")"
-[ -n "$FZF_DEFAULT_COMMAND" ] && envs="$envs FZF_DEFAULT_COMMAND=$(printf %q "$FZF_DEFAULT_COMMAND")"
+[[ -n "$FZF_DEFAULT_OPTS"    ]] && envs="$envs FZF_DEFAULT_OPTS=$(printf %q "$FZF_DEFAULT_OPTS")"
+[[ -n "$FZF_DEFAULT_COMMAND" ]] && envs="$envs FZF_DEFAULT_COMMAND=$(printf %q "$FZF_DEFAULT_COMMAND")"
 
 mkfifo -m o+w $fifo2
 mkfifo -m o+w $fifo3
@@ -141,7 +159,7 @@ for arg in "${args[@]}"; do
   opts="$opts \"$arg\""
 done
 
-if [ -n "$term" -o -t 0 ]; then
+if [[ -n "$term" ]] || [[ -t 0 ]]; then
   cat <<< "\"$fzf\" $opts > $fifo2; echo \$? > $fifo3 $close" > $argsf
   tmux set-window-option synchronize-panes off \;\
     set-window-option remain-on-exit off \;\
