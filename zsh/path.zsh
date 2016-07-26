@@ -39,4 +39,4 @@ fi
 path=( ${(u)^path:A}(N-/) )
 
 # add plugins & topic directories to fpath
-fpath=($ZSH/plugins/completions/src $ZSH/plugins/*/(N) $DOTFILESDIR/*/functions(N) /opt/homebrew/share/zsh/site-functions $fpath)
+fpath=($ZSH/plugins/completions/src $ZSH/plugins/*/(N) $DOTFILESDIR/*/functions(N) $XDG_DATA_HOME/homebrews/*/share/zsh/site-functions(N) /opt/homebrew/share/zsh/site-functions $fpath)
