@@ -43,6 +43,8 @@ Plug 'junegunn/fzf.vim'
 
 - `dir` and `do` options are not mandatory
 - Use `./install --bin` instead if you don't need fzf outside of Vim
+- If you installed fzf using Homebrew, the following should suffice:
+    - `Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'`
 - Make sure to use Vim 7.4 or above
 
 Commands
@@ -120,6 +122,12 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+
+" Enable per-command history.
+" CTRL-N and CTRL-P will be automatically bound to next-history and
+" previous-history instead of down and up. If you don't like the change,
+" explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
+let g:fzf_history_dir = '~/.fzf-history'
 ```
 
 #### Command-local options

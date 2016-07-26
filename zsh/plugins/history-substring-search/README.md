@@ -1,5 +1,4 @@
-zsh-history-substring-search
-==============================================================================
+# zsh-history-substring-search
 
 This is a clean-room implementation of the [Fish shell][1]'s history search
 feature, where you can type in any part of any previously entered command
@@ -13,13 +12,13 @@ You can also use K and J in VI mode or ^P and ^N in EMACS mode for the same.
 [5]: https://github.com/zsh-users/zsh-history-substring-search
 [6]: https://github.com/zsh-users/zsh-syntax-highlighting
 
-------------------------------------------------------------------------------
+
 Requirements
 ------------------------------------------------------------------------------
 
 * [ZSH](http://zsh.sourceforge.net) 4.3 or newer
 
-------------------------------------------------------------------------------
+
 Usage
 ------------------------------------------------------------------------------
 
@@ -84,33 +83,33 @@ Usage
       the cursor reaches the last line of the command, pressing the DOWN
       arrow key again will cause this script to perform another search.
 
-------------------------------------------------------------------------------
+
 Configuration
 ------------------------------------------------------------------------------
 
 This script defines the following global variables. You may override their
 default values only after having loaded this script into your ZSH session.
 
-* HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND is a global variable that defines
+* `HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND` is a global variable that defines
   how the query should be highlighted inside a matching command. Its default
   value causes this script to highlight using bold, white text on a magenta
   background. See the "Character Highlighting" section in the zshzle(1) man
   page to learn about the kinds of values you may assign to this variable.
 
-* HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND is a global variable that
+* `HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND` is a global variable that
   defines how the query should be highlighted when no commands in the
   history match it. Its default value causes this script to highlight using
   bold, white text on a red background. See the "Character Highlighting"
   section in the zshzle(1) man page to learn about the kinds of values you
   may assign to this variable.
 
-* HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS is a global variable that defines
+* `HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS` is a global variable that defines
   how the command history will be searched for your query. Its default value
   causes this script to perform a case-insensitive search. See the "Globbing
   Flags" section in the zshexpn(1) man page to learn about the kinds of
   values you may assign to this variable.
 
-* HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE is a global variable that defines
+* `HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE` is a global variable that defines
   whether all search results returned are _unique_. If set to a non-empty
   value, then only unique search results are presented. This behaviour is off
   by default. An alternative way to ensure that search results are unique is
@@ -124,18 +123,22 @@ default values only after having loaded this script into your ZSH session.
   receive globally unique search results only once, then use this
   configuration variable, or use `setopt HIST_IGNORE_ALL_DUPS`.
 
-------------------------------------------------------------------------------
+
 History
 ------------------------------------------------------------------------------
 
-This script was originally written by [Peter Stephenson][2], who published it
-to the ZSH users mailing list (thereby making it public domain) in September
-2009. It was later revised by Guido van Steen and released under the BSD
-license (see below) as part of [the fizsh project][3] in January 2011.
+* September 2009: [Peter Stephenson][2] originally wrote this script and it
+  published to the zsh-users mailing list.
 
-It was later extracted from fizsh release 1.0.1, refactored heavily, and
-repackaged as both an [oh-my-zsh plugin][4] and as an independently loadable
-[ZSH script][5] by Suraj N. Kurapati in 2011.
+* January 2011: Guido van Steen (@guidovansteen) revised this script and
+  released it under the 3-clause BSD license as part of [fizsh][3], the
+  Friendly Interactive ZSHell.
 
-It was [further developed][4] by Guido van Steen, Suraj N. Kurapati, Sorin
-Ionescu, and Vincent Guerci in 2011.
+* January 2011: Suraj N. Kurapati (@sunaku) extracted this script from
+  [fizsh][3] 1.0.1, refactored it heavily, and finally repackaged it as an
+  [oh-my-zsh plugin][4] and as an independently loadable [ZSH script][5].
+
+* July 2011: Guido van Steen, Suraj N. Kurapati, and Sorin Ionescu
+  (@sorin-ionescu) [further developed it][4] with Vincent Guerci (@vguerci).
+
+* March 2016: Geza Lore (@gezalore) greatly refactored it in pull request #55.

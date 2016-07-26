@@ -25,7 +25,7 @@ Usage
 
 #### Using frameworks
 
-* If you're using [antigen](https://github.com/zsh-users/antigen), just add `antigen bundle zsh-users/zsh-completions src` to your .zshrc where you're loading your other zsh plugins.
+* If you're using [antigen](https://github.com/zsh-users/antigen), just add `antigen bundle zsh-users/zsh-completions` to your .zshrc where you're loading your other zsh plugins.
 
 
 #### Manual installation
@@ -50,10 +50,10 @@ If you use [oh-my-zsh][] then just clone the repository inside your oh-my-zsh re
 git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
 ```
 
-and enable it in your `.zshrc`:
+and enable it in your `.zshrc` by adding it to your plugin list and reloading the completion:
 
 ```zsh
-plugins+=(zsh-completions)
+plugins=(… zsh-completions)
 autoload -U compinit && compinit
 ```
 

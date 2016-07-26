@@ -57,7 +57,7 @@ _z() {
 
         # maintain the data file
         local tempfile="$datafile.$RANDOM"
-        awk < <( _z_dirs ) -v path="$*" -v now="$(date +%s)" -F"|" '
+        awk < <(_z_dirs 2>/dev/null) -v path="$*" -v now="$(date +%s)" -F"|" '
             BEGIN {
                 rank[path] = 1
                 time[path] = now
@@ -125,7 +125,7 @@ _z() {
         # if we hit enter on a completion just go there
         case "$last" in
             # completions will always start with /
-            /*) [ -z "$list" -a -d "$last" ] && cd "$last" && return;;
+            /*) [ -z "$list" -a -d "$last" ] && builtin cd "$last" && return;;
         esac
 
         # no file yet
@@ -202,7 +202,9 @@ _z() {
             }
         ')"
 
-        [ $? -eq 0 ] && [ "$cd" ] && ${echo:-cd} "$cd"
+        [ $? -eq 0 ] && [ "$cd" ] && {
+          if [ "$echo" ]; then echo "$cd"; else builtin cd "$cd"; fi
+        }
     fi
 }
 
