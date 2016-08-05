@@ -500,7 +500,7 @@ eclim <https://eclim.org>
 
 * configure, which filetypes have special treatment of /* */ comments,
   matters for mix-indent-file algorithm: >
-  let airline#extensions#c_like_langs = ['c', 'cpp', 'cuda', 'javascript', 'ld', 'php']
+  let airline#extensions#c_like_langs = ['c', 'cpp', 'cuda', 'go', 'javascript', 'ld', 'php']
 <
 * disable whitespace checking for an individual buffer >
   " Checking is enabled by default because b:airline_whitespace_disabled
@@ -551,6 +551,9 @@ with the middle mouse button to delete that buffer.
 
 * enable/disable displaying tab type (far right) >
   let g:airline#extensions#tabline#show_tab_type = 1
+  
+  Note: The tab-type will only be displayed in tab-mode, 
+  if there are no splits shown. (See: g:airline#extensions#tabline#show_splits)
 
 * rename label for buffers (default: 'buffers') (c)
   let g:airline#extensions#tabline#buffers_label = 'b'

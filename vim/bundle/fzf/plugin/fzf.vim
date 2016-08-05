@@ -204,7 +204,7 @@ function! fzf#run(...) abort
 try
   let oshell = &shell
   set shell=sh
-  if has('nvim') && bufexists('term://*:FZF')
+  if has('nvim') && len(filter(range(1, bufnr('$')), 'bufname(v:val) =~# ";#FZF"'))
     call s:warn('FZF is already running!')
     return []
   endif
@@ -348,8 +348,9 @@ function! s:execute(dict, command, temps) abort
     let command = escaped
   endif
   execute 'silent !'.command
+  let exit_status = v:shell_error
   redraw!
-  return s:exit_handler(v:shell_error, command) ? s:collect(a:temps) : []
+  return s:exit_handler(exit_status, command) ? s:collect(a:temps) : []
 endfunction
 
 function! s:execute_tmux(dict, command, temps) abort
@@ -360,8 +361,9 @@ function! s:execute_tmux(dict, command, temps) abort
   endif
 
   call system(command)
+  let exit_status = v:shell_error
   redraw!
-  return s:exit_handler(v:shell_error, command) ? s:collect(a:temps) : []
+  return s:exit_handler(exit_status, command) ? s:collect(a:temps) : []
 endfunction
 
 function! s:calc_size(max, val, dict)
@@ -422,7 +424,7 @@ endfunction
 function! s:execute_term(dict, command, temps) abort
   let [ppos, winopts] = s:split(a:dict)
   let fzf = { 'buf': bufnr('%'), 'ppos': ppos, 'dict': a:dict, 'temps': a:temps,
-            \ 'name': 'FZF', 'winopts': winopts, 'command': a:command }
+            \ 'winopts': winopts, 'command': a:command }
   function! fzf.switch_back(inplace)
     if a:inplace && bufnr('') == self.buf
       " FIXME: Can't re-enter normal mode from terminal mode
@@ -450,6 +452,10 @@ function! s:execute_term(dict, command, temps) abort
       execute self.ppos.win.'wincmd w'
     endif
 
+    if bufexists(self.buf)
+      execute 'bd!' self.buf
+    endif
+
     if !s:exit_handler(a:code, self.command, 1)
       return
     endif
@@ -464,7 +470,7 @@ function! s:execute_term(dict, command, temps) abort
     if s:present(a:dict, 'dir')
       execute 'lcd' s:escape(a:dict.dir)
     endif
-    call termopen(a:command, fzf)
+    call termopen(a:command . ';#FZF', fzf)
   finally
     if s:present(a:dict, 'dir')
       lcd -
@@ -548,4 +554,3 @@ command! -nargs=* -complete=dir -bang FZF call s:cmd(<bang>0, <f-args>)
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
-

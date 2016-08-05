@@ -56,6 +56,10 @@ Mercurial on default.)
 Changelog
 =========
 
+5.4.1 -- 2016-08-01
+
+ - compat with Mercurial 3.9
+
 5.4.0 -- 2016-05-06
 
 - Some collaboration with the topic experimental extensions,

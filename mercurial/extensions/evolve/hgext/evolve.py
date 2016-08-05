@@ -19,8 +19,8 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.4.0'
-testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1'
+__version__ = '5.4.1'
+testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1 3.9'
 buglink = 'http://bz.selenic.com/'
 
 
@@ -71,6 +71,7 @@ import re
 import collections
 import socket
 import errno
+import hashlib
 import struct
 sha1re = re.compile(r'\b[0-9a-f]{6,40}\b')
 
@@ -3859,7 +3860,7 @@ def _obsrelsethashtree(repo, encodeonemarker):
     for i in unfi:
         ctx = unfi[i]
         entry = 0
-        sha = util.sha1()
+        sha = hashlib.sha1()
         # add data from p1
         for p in ctx.parents():
             p = p.rev()

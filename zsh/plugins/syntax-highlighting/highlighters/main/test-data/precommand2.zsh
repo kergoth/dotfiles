@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2010-2011 zsh-syntax-highlighting contributors
+# Copyright (c) 2016 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -27,21 +27,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
+BUFFER='command -v ls'
 
-# Define default styles.
-: ${ZSH_HIGHLIGHT_STYLES[cursor]:=standout}
-
-# Whether the cursor highlighter should be called or not.
-_zsh_highlight_cursor_highlighter_predicate()
-{
-  # remove cursor highlighting when the line is finished
-  [[ $WIDGET == zle-line-finish ]] || _zsh_highlight_cursor_moved
-}
-
-# Cursor highlighting function.
-_zsh_highlight_cursor_highlighter()
-{
-  [[ $WIDGET == zle-line-finish ]] && return
-  
-  _zsh_highlight_add_highlight $CURSOR $(( $CURSOR + 1 )) cursor
-}
+expected_region_highlight=(
+  "1 7 precommand" # command
+  "9 10 single-hyphen-option 'issue #343'" # -v
+  "12 13 command 'issue #343'" # ls
+)

@@ -132,38 +132,35 @@ hashre = util.re.compile('[0-9a-fA-F]{1,40}')
 
 _listtuple = ('symbol', '_list')
 
+def _ishashsymbol(symbol, maxrev):
+    # Returns true if symbol looks like a hash
+    try:
+        n = int(symbol)
+        if n <= maxrev:
+            # It's a rev number
+            return False
+    except ValueError:
+        pass
+    return hashre.match(symbol)
+
 def gethashsymbols(tree, maxrev):
     # Returns the list of symbols of the tree that look like hashes
     # for example for the revset 3::abe3ff it will return ('abe3ff')
     if not tree:
         return []
 
+    results = []
     if len(tree) == 2 and tree[0] == "symbol":
-        try:
-            n = int(tree[1])
-            # This isn't necessarily a rev number, could be a hash prefix
-            if n > maxrev:
-                return [tree[1]]
-            else:
-                return []
-        except ValueError as e:
-            if hashre.match(tree[1]):
-                return [tree[1]]
-            return []
+        results.append(tree[1])
     elif tree[0] == "func" and tree[1] == _listtuple:
         # the optimiser will group sequence of hash request
-        result = []
-        for entry in tree[2][1].split('\0'):
-            if hashre.match(entry):
-                result.append(entry)
-        return result
+        results += tree[2][1].split('\0')
     elif len(tree) >= 3:
-        results = []
         for subtree in tree[1:]:
             results += gethashsymbols(subtree, maxrev)
+        # return directly, we don't need to filter symbols again
         return results
-    else:
-        return []
+    return [s for s in results if _ishashsymbol(s, maxrev)]
 
 def _posttreebuilthook(orig, tree, repo):
     # This is use to enabled direct hash access

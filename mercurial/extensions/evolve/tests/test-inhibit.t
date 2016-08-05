@@ -375,6 +375,21 @@ Test directaccess in a larger revset
   cf5c4f4554ce
   2db36d8066ff
 
+Test directaccess only takes hashes
+
+  $ HOOKPATH=$TESTTMP/printexplicitaccess.py
+  $ cat >> $HOOKPATH <<EOF
+  > def hook(ui, repo, **kwds):
+  >     for i in sorted(repo._explicitaccess):
+  >         ui.write('directaccess: %s\n' % i)
+  > EOF
+
+  $ hg log -r 1 -r 2 -r 2db36d8066f -T '{rev}\n' --config hooks.post-log=python:$HOOKPATH:hook
+  1
+  2
+  3
+  directaccess: 3
+
 With severals hidden sha, rebase of one hidden stack onto another one:
   $ hg update -C 0
   0 files updated, 0 files merged, 4 files removed, 0 files unresolved

@@ -13,6 +13,7 @@ buglink = 'http://bz.selenic.com/'
 
 import mercurial.obsolete
 
+import hashlib
 import struct
 from mercurial import util
 from mercurial import wireproto
@@ -192,7 +193,7 @@ def _obsrelsethashtree(repo, encodeonemarker):
     for i in unfi:
         ctx = unfi[i]
         entry = 0
-        sha = util.sha1()
+        sha = hashlib.sha1()
         # add data from p1
         for p in ctx.parents():
             p = p.rev()
