@@ -76,3 +76,11 @@ if __name__ == '__main__':
 END
     chmod +x "$pydoc"
 fi
+
+for man in "$venv_dir/share/man/"man*/*; do
+    if [ -e "$man" ]; then
+        mandest="$XDG_DATA_HOME/man/${man#$venv_dir/share/man/}"
+        mkdir -p "${mandest%/*}"
+        ln -sfv "$man" "$mandest"
+    fi
+done
