@@ -16,9 +16,9 @@ This is great for...
 - project-specific environment variables
 - making millions
 
-You can also nest envs within eachother. How awesome is that!?
+You can also nest envs within each other. How awesome is that!?
 
-When executing, autoenv, will walk up the directories until the mount point and execute all ``.env`` files.
+When executing, autoenv, will walk up the directories until the mount point and execute all ``.env`` files beginning at the top.
 
 Usage
 -----
@@ -65,6 +65,18 @@ Using git
     $ echo 'source ~/.autoenv/activate.sh' >> ~/.bashrc
 
 
+Using AUR
+~~~~~~~~~
+
+Arch Linux users can install `autoenv <https://aur.archlinux.org/packages/autoenv/>`_ or `autoenv-git <https://aur.archlinux.org/packages/autoenv-git/>`_ with their favorite AUR helper.
+
+You need to source activate.sh in your bashrc afterwards:
+
+::
+
+    $ echo 'source /usr/share/autoenv/activate.sh' >> ~/.bashrc
+
+
 Configuration
 -------------
 
@@ -72,6 +84,17 @@ Before sourcing activate.sh, you can set the following variables:
 
 - ``AUTOENV_AUTH_FILE``: Authorized env files, defaults to ``~/.autoenv_authorized``
 - ``AUTOENV_ENV_FILENAME``: Name of the ``.env`` file, defaults to ``.env``
+- ``AUTOENV_LOWER_FIRST``: Set this variable to flip the order of ``.env`` files exectued
+
+Shells
+------
+
+autoenv is tested on:
+
+- bash
+- zsh
+- dash
+- more to come
 
 
 Disclaimer

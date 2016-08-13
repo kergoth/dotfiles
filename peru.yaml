@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 4ad311ec0a6837b7c83bcfd1a1bf12cceb03f363
+    rev: d711563fe1bf8fa6810bc34ac92a2fd3150290ed
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -117,7 +117,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 4195d4f6ee8f68f231766fa33285d8cfce9c1164
+    rev: e09fa74f2d1bf66fd4838294451b42d872c9b71b
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -125,7 +125,7 @@ git module zsh-git-escape-magic:
 
 git module autoenv:
     url: https://github.com/kennethreitz/autoenv
-    rev: 6c207ee81cad546c96752fa1bfccf39985a4d49f
+    rev: 16359a875163368d277dad2ba311f0c6131463e6
 
 curl module iterm2-zsh:
     url: https://iterm2.com/misc/zsh_startup.in
@@ -171,7 +171,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: c00ebd75ac23f4080c0d0bf9453b16304a3fb316
+    rev: aac85a268e89a6c8be79341e130ac90256fadbd6
 
 # go language support
 git module vim-golang:
@@ -289,7 +289,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 7cef92fffe4bf020fba08cdc8ad50b137e7b7974
+    rev: 1e74dbb93764e46d71199a44ae12d4b82bc0c0b2
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -327,7 +327,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 429c6269eec8a157148fc304ed41a540a4dbc091
+    rev: 30da6a868efd149075698a309c9f89970d0b8ff1
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -563,14 +563,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 88b66584b5c5bdc25bc941a0aae217d420747552
+    rev: aa2a09110956e46652a9cb247ec24a57797066fd
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 1437ccf7d99e86484ac1ccb908b4623d088344cb
+    rev: 15d78fbece29646ae5f27f39f266b5e2720eeebb
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -595,15 +595,15 @@ git module diff-so-fancy:
     url: https://github.com/so-fancy/diff-so-fancy
     pick:
         - diff-so-fancy
-        - lib
-    rev: 70687a24e40716a8dd9a07fbaf75251910c6d7ba
+        - libexec
+    rev: 6f75104fa85e335fd401691bc912c579971574a9
 
 git module hub-completion:
     url: https://github.com/github/hub
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: c25e33e2dba28b80729b024060d398545efb6e87
+    rev: 7633e5b182c99c76ce96f40383ca5b337ec89e32
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -622,7 +622,7 @@ git module tagbak:
 
 git module vim-dash:
     url: https://github.com/rizzatti/dash.vim
-    rev: 4b01b6cd20fb77089b4222133c791602d140d901
+    rev: 96221024a6a0377bab13472881c31009bc93e6d0
 
 git module git-tbdiff:
     url: https://github.com/trast/tbdiff
@@ -646,7 +646,7 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: 5d15928e82fab9203d597cbc98384f8daf87a6fd
+    rev: 9d941e15e53d94c0b88c653fbb6cd342e05afb80
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready

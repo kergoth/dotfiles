@@ -20,10 +20,6 @@ done
 
 # pre-load plugin configuration
 AUTOENV_AUTH_FILE=$XDG_DATA_HOME/autoenv_authorized
-if [[ $OSTYPE =~ darwin ]] && (( $+commands[gstat] )); then
-    # work around autoenv's use of `stat -c`
-    alias stat=gstat
-fi
 
 # Load "plugins"
 for file in $ZSH/plugins/*/*.plugin.zsh $ZSH/plugins/*/activate.sh; do
