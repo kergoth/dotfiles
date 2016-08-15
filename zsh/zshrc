@@ -22,7 +22,7 @@ done
 AUTOENV_AUTH_FILE=$XDG_DATA_HOME/autoenv_authorized
 
 # Load "plugins"
-for file in $ZSH/plugins/*/*.plugin.zsh $ZSH/plugins/*/activate.sh; do
+for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N); do
     case "$file" in
         */syntax-highlighting/*)
             continue
