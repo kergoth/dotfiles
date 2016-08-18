@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: d711563fe1bf8fa6810bc34ac92a2fd3150290ed
+    rev: 11c908196700c00c4662295f44747a5826615c4b
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -284,7 +284,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 1e74dbb93764e46d71199a44ae12d4b82bc0c0b2
+    rev: 935272824ebb7ec6de3cd981caf71c8b5208f9b3
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -558,14 +558,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: aa2a09110956e46652a9cb247ec24a57797066fd
+    rev: 25a1ddbdd73778a8b3ad16fda73ffcaf223f22df
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 15d78fbece29646ae5f27f39f266b5e2720eeebb
+    rev: c3d70ab470a00caaa4b78bd3ab702d913a72f6be
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -598,7 +598,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 7633e5b182c99c76ce96f40383ca5b337ec89e32
+    rev: a11d3b493a5180a361481075b4393c2d827dd3c9
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish

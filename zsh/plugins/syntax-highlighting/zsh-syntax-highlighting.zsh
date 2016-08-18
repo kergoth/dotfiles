@@ -88,11 +88,11 @@ _zsh_highlight()
     local highlighter; for highlighter in $ZSH_HIGHLIGHT_HIGHLIGHTERS; do
 
       # eval cache place for current highlighter and prepare it
-      cache_place="_zsh_highlight_highlighter_${highlighter}_cache"
+      cache_place="_zsh_highlight__highlighter_${highlighter}_cache"
       typeset -ga ${cache_place}
 
       # If highlighter needs to be invoked
-      if "_zsh_highlight_${highlighter}_highlighter_predicate"; then
+      if "_zsh_highlight_highlighter_${highlighter}_predicate"; then
 
         # save a copy, and cleanup region_highlight
         region_highlight_copy=("${region_highlight[@]}")
@@ -100,7 +100,7 @@ _zsh_highlight()
 
         # Execute highlighter and save result
         {
-          "_zsh_highlight_${highlighter}_highlighter"
+          "_zsh_highlight_highlighter_${highlighter}_paint"
         } always {
           eval "${cache_place}=(\"\${region_highlight[@]}\")"
         }
@@ -249,6 +249,7 @@ _zsh_highlight_call_widget()
 _zsh_highlight_bind_widgets()
 {
   setopt localoptions noksharrays
+  typeset -F SECONDS
   local prefix=orig-s$SECONDS-r$RANDOM # unique each time, in case we're sourced more than once
 
   # Load ZSH module zsh/zleparameter, needed to override user defined widgets.
@@ -285,17 +286,17 @@ _zsh_highlight_bind_widgets()
 
       # User defined widget: override and rebind old one with prefix "orig-".
       user:*) zle -N $prefix-$cur_widget ${widgets[$cur_widget]#*:}
-              eval "_zsh_highlight_widget_${(q)cur_widget}() { _zsh_highlight_call_widget ${(q)prefix}-${(q)cur_widget} -- \"\$@\" }"
-              zle -N $cur_widget _zsh_highlight_widget_$cur_widget;;
+              eval "_zsh_highlight_widget_${(q)prefix}-${(q)cur_widget}() { _zsh_highlight_call_widget ${(q)prefix}-${(q)cur_widget} -- \"\$@\" }"
+              zle -N $cur_widget _zsh_highlight_widget_$prefix-$cur_widget;;
 
       # Completion widget: override and rebind old one with prefix "orig-".
       completion:*) zle -C $prefix-$cur_widget ${${(s.:.)widgets[$cur_widget]}[2,3]} 
-                    eval "_zsh_highlight_widget_${(q)cur_widget}() { _zsh_highlight_call_widget ${(q)prefix}-${(q)cur_widget} -- \"\$@\" }"
-                    zle -N $cur_widget _zsh_highlight_widget_$cur_widget;;
+                    eval "_zsh_highlight_widget_${(q)prefix}-${(q)cur_widget}() { _zsh_highlight_call_widget ${(q)prefix}-${(q)cur_widget} -- \"\$@\" }"
+                    zle -N $cur_widget _zsh_highlight_widget_$prefix-$cur_widget;;
 
       # Builtin widget: override and make it call the builtin ".widget".
-      builtin) eval "_zsh_highlight_widget_${(q)cur_widget}() { _zsh_highlight_call_widget .${(q)cur_widget} -- \"\$@\" }"
-               zle -N $cur_widget _zsh_highlight_widget_$cur_widget;;
+      builtin) eval "_zsh_highlight_widget_${(q)prefix}-${(q)cur_widget}() { _zsh_highlight_call_widget .${(q)cur_widget} -- \"\$@\" }"
+               zle -N $cur_widget _zsh_highlight_widget_$prefix-$cur_widget;;
 
       # Incomplete or nonexistent widget: Bind to z-sy-h directly.
       *) 
@@ -304,7 +305,7 @@ _zsh_highlight_bind_widgets()
            zle -N $cur_widget _zsh_highlight_widget_$cur_widget
          else
       # Default: unhandled case.
-           print -r -- >&2 "zsh-syntax-highlighting: unhandled ZLE widget '$cur_widget'"
+           print -r -- >&2 "zsh-syntax-highlighting: unhandled ZLE widget ${(qq)cur_widget}"
          fi
     esac
   done
@@ -320,7 +321,7 @@ _zsh_highlight_load_highlighters()
 
   # Check the directory exists.
   [[ -d "$1" ]] || {
-    print -r -- >&2 "zsh-syntax-highlighting: highlighters directory '$1' not found."
+    print -r -- >&2 "zsh-syntax-highlighting: highlighters directory ${(qq)1} not found."
     return 1
   }
 
@@ -328,13 +329,26 @@ _zsh_highlight_load_highlighters()
   local highlighter highlighter_dir
   for highlighter_dir ($1/*/); do
     highlighter="${highlighter_dir:t}"
-    [[ -f "$highlighter_dir/${highlighter}-highlighter.zsh" ]] && {
+    [[ -f "$highlighter_dir/${highlighter}-highlighter.zsh" ]] &&
       . "$highlighter_dir/${highlighter}-highlighter.zsh"
-      type "_zsh_highlight_${highlighter}_highlighter" &> /dev/null &&
-      type "_zsh_highlight_${highlighter}_highlighter_predicate" &> /dev/null || {
-        print -r -- >&2 "zsh-syntax-highlighting: '${highlighter}' highlighter should define both required functions '_zsh_highlight_${highlighter}_highlighter' and '_zsh_highlight_${highlighter}_highlighter_predicate' in '${highlighter_dir}/${highlighter}-highlighter.zsh'."
-      }
-    }
+    if type "_zsh_highlight_highlighter_${highlighter}_paint" &> /dev/null &&
+       type "_zsh_highlight_highlighter_${highlighter}_predicate" &> /dev/null;
+    then
+        # New (0.5.0) function names
+    elif type "_zsh_highlight_${highlighter}_highlighter" &> /dev/null &&
+         type "_zsh_highlight_${highlighter}_highlighter_predicate" &> /dev/null;
+    then
+        # Old (0.4.x) function names
+        if false; then
+            # TODO: only show this warning for plugin authors/maintainers, not for end users
+            print -r -- >&2 "zsh-syntax-highlighting: warning: ${(qq)highlighter} highlighter uses deprecated entry point names; please ask its maintainer to update it: https://github.com/zsh-users/zsh-syntax-highlighting/issues/329"
+        fi
+        # Make it work.
+        eval "_zsh_highlight_highlighter_${(q)highlighter}_paint() { _zsh_highlight_${(q)highlighter}_highlighter \"\$@\" }"
+        eval "_zsh_highlight_highlighter_${(q)highlighter}_predicate() { _zsh_highlight_${(q)highlighter}_highlighter_predicate \"\$@\" }"
+    else
+        print -r -- >&2 "zsh-syntax-highlighting: ${(qq)highlighter} highlighter should define both required functions '_zsh_highlight_highlighter_${highlighter}_paint' and '_zsh_highlight_highlighter_${highlighter}_predicate' in ${(qq):-"$highlighter_dir/${highlighter}-highlighter.zsh"}."
+    fi
   done
 }
 
