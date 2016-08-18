@@ -20,18 +20,16 @@ pip3_install () {
 }
 
 setup_pip () {
-    if ! which pip >/dev/null 2>&1; then
-        # Install pip (and setuptools if needed)
-        curl https://bootstrap.pypa.io/get-pip.py | python - --user
-        if ! which pip >/dev/null 2>&1; then
-            echo >&2 "Error: after installing pip, we are not able to execute it"
-            exit 2
-        fi
-    fi
-    if  ! which virtualenv >/dev/null 2>&1; then
-        pip_install virtualenv
+    python -m ensurepip --user
+    python -m pip install --user --upgrade pip
+    python -m pip install --user --upgrade virtualenv
+    if which python3 >/dev/null 2>&1; then
+        python3 -m ensurepip --user
+        python3 -m pip install --user --upgrade pip
+        python3 -m pip install --user --upgrade virtualenv
     fi
 }
+
 
 setup_pip
 
