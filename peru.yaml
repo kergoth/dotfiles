@@ -1,6 +1,5 @@
 imports:
     # Zsh
-    autoenv: zsh/plugins/autoenv
     z: zsh/plugins/z
     zsh-autosuggestions: zsh/plugins/autosuggestions
     zsh-bd: zsh/plugins/bd
@@ -122,10 +121,6 @@ git module zsh-completions:
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
     rev: 62af4f6a66601a517e168039614e5b528741a844
-
-git module autoenv:
-    url: https://github.com/kennethreitz/autoenv
-    rev: 16359a875163368d277dad2ba311f0c6131463e6
 
 curl module iterm2-zsh:
     url: https://iterm2.com/misc/zsh_startup.in
