@@ -18,6 +18,6 @@ if len(sys.argv[1:]) % 2 != 0:
 
 
 try:
-    subprocess.check_call(["toml-set"] + list(itertools.chain.from_iterable((k, toml.dump_value(v)) for k, v in pairs(sys.argv[1:]))))
+    subprocess.check_call(["toml-set"] + list(itertools.chain.from_iterable((k, toml._dump_value(v)) for k, v in pairs(sys.argv[1:]))))
 except subprocess.CalledProcessError:
     sys.exit(1)

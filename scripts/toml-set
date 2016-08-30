@@ -28,6 +28,6 @@ try:
     for key, value in pairs(sys.argv[1:]):
         key = key.split(".")
         prefix, final_key = key[:-1], key[len(key)-1]
-        lookup(o, prefix)[final_key] = toml.load_value(value)[0]
+        lookup(o, prefix)[final_key] = toml._load_value(value)[0]
 finally:
     toml.dump(o, sys.stdout)
