@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # TODO: by default, keep refs which don't belong to any remote, as they can't
 # be restored with git fetch. add a new argument to force their removal unless
 # specified with -r.
@@ -13,8 +13,6 @@
 # TODO: avoid corrupting or disrupting repository state when interrupted
 
 """git-make-shallow: make the current git repository shallow."""
-
-from __future__ import print_function
 
 import argparse
 import collections
@@ -35,18 +33,24 @@ def main():
         parser.print_help()
         sys.exit(2)
 
+    if sys.version_info < (3, 4, 0):
+        sys.exit('Python 3.4 or greater is required')
+
     args = parser.parse_args()
     make_shallow(args.revisions, args.refs)
 
 
+def check_output(cmd, input=None):
+    return subprocess.check_output(cmd, universal_newlines=True, input=input)
+
 def make_shallow(revisions, refs):
     """Make the current git repository shallow at the specified revisions, given the specified refs."""
     if refs is None:
-        refs = get_all_refs(lambda (r, t): not t or t == 'commit')
+        refs = get_all_refs(lambda p: not p[1] or p[1] == 'commit')
     else:
-        refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
+        refs = check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
 
-    git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
+    git_dir = check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     shallow_file = os.path.join(git_dir, 'shallow')
     try:
         os.unlink(shallow_file)
@@ -54,7 +58,7 @@ def make_shallow(revisions, refs):
         if exc.errno != errno.ENOENT:
             raise
 
-    parsed_revs = subprocess.check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in revisions]).splitlines()
+    parsed_revs = check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in revisions]).splitlines()
     for rev in follow_history_intersections(parsed_revs, refs):
         print("Processing %s" % rev)
         with open(shallow_file, 'a') as f:
@@ -67,7 +71,7 @@ def make_shallow(revisions, refs):
 
 def get_all_refs(ref_filter=None):
     """Return all the existing refs in this repository, optionally filtering the refs."""
-    ref_output = subprocess.check_output(['git', 'for-each-ref', '--format=%(refname)	%(*objecttype)'])
+    ref_output = check_output(['git', 'for-each-ref', '--format=%(refname)	%(*objecttype)'])
     ref_split = [tuple(iter_extend(l.rstrip().rsplit('\t', 1), 2)) for l in ref_output.splitlines()]
     if ref_filter:
         ref_split = (e for e in ref_split if ref_filter(e))
@@ -83,11 +87,11 @@ def iter_extend(iterable, length, obj=None):
 def filter_refs(refs):
     """Remove all but the specified refs from the git repository."""
     all_refs = get_all_refs()
-    full_refs = subprocess.check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
+    full_refs = check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
     to_remove = set(all_refs) - set(full_refs)
     if to_remove:
-        p = subprocess.Popen(['xargs', '-0', '-n', '1', 'git', 'update-ref', '-d', '--no-deref'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        p.communicate(''.join(l + '\0' for l in to_remove))
+        check_output(['xargs', '-0', '-n', '1', 'git', 'update-ref', '-d', '--no-deref'],
+                     input=''.join(l + '\0' for l in to_remove))
 
 
 def follow_history_intersections(revisions, refs):
@@ -100,7 +104,7 @@ def follow_history_intersections(revisions, refs):
         if rev in seen:
             continue
 
-        parent_output = subprocess.check_output(['git', 'rev-parse', '%s^@' % rev])
+        parent_output = check_output(['git', 'rev-parse', '%s^@' % rev])
         parents = [p.rstrip() for p in parent_output.splitlines()]
 
         yield rev
@@ -110,7 +114,7 @@ def follow_history_intersections(revisions, refs):
             for ref in refs:
                 print("Checking %s vs %s" % (parent, ref))
                 try:
-                    merge_base = subprocess.check_output(['git', 'merge-base', parent, ref]).rstrip()
+                    merge_base = check_output(['git', 'merge-base', parent, ref]).rstrip()
                 except subprocess.CalledProcessError:
                     continue
                 queue.append(merge_base)
@@ -131,7 +135,7 @@ def shrink_repo():
     """Shrink the newly shallow repository, removing the unreachable objects."""
     subprocess.check_call(['git', 'reflog', 'expire', '--expire-unreachable=now', '--all'])
     subprocess.check_call(['git', 'repack', '-ad'])
-    git_dir = subprocess.check_output(['git', 'rev-parse', '--git-dir']).rstrip()
+    git_dir = check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     try:
         os.unlink(os.path.join(git_dir, 'objects', 'info', 'alternates'))
     except OSError as exc:
