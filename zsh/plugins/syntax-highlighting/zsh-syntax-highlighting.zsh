@@ -32,8 +32,8 @@
 0=${(%):-%N}
 if true; then
   # $0 is reliable
-  ZSH_HIGHLIGHT_VERSION=$(<"${0:A:h}"/.version)
-  ZSH_HIGHLIGHT_REVISION=$(<"${0:A:h}"/.revision-hash)
+  typeset -g ZSH_HIGHLIGHT_VERSION=$(<"${0:A:h}"/.version)
+  typeset -g ZSH_HIGHLIGHT_REVISION=$(<"${0:A:h}"/.revision-hash)
   if [[ $ZSH_HIGHLIGHT_REVISION == \$Format:* ]]; then
     # When running from a source tree without 'make install', $ZSH_HIGHLIGHT_REVISION
     # would be set to '$Format:%H$' literally.  That's an invalid value, and obtaining
@@ -382,6 +382,8 @@ add-zsh-hook preexec _zsh_highlight_preexec_hook 2>/dev/null || {
 
 # Load zsh/parameter module if available
 zmodload zsh/parameter 2>/dev/null || true
+
+autoload -U is-at-least
 
 # Initialize the array of active highlighters if needed.
 [[ $#ZSH_HIGHLIGHT_HIGHLIGHTERS -eq 0 ]] && ZSH_HIGHLIGHT_HIGHLIGHTERS=(main) || true
