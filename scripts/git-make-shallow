@@ -46,7 +46,7 @@ def check_output(cmd, input=None):
 def make_shallow(revisions, refs):
     """Make the current git repository shallow at the specified revisions, given the specified refs."""
     if refs is None:
-        refs = get_all_refs(lambda r, t, tt: t == 'commit' or tt == 'commit')
+        refs = get_all_refs(lambda r, t, tt: not r.endswith('/HEAD') and (t == 'commit' or tt == 'commit'))
     else:
         refs = check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
 
