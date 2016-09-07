@@ -42,7 +42,15 @@ def main():
                     raise
 
     args = process_args()
+    revs = check_output(['git', 'rev-list'] + args.revisions).splitlines()
+
     make_shallow(args.revisions, args.refs)
+
+    ref_revs = check_output(['git', 'rev-list'] + args.refs).splitlines()
+    remaining_history = set(revs) & set(ref_revs)
+    for rev in remaining_history:
+        if check_output(['git', 'rev-parse', '{}^@'.format(rev)]):
+            sys.exit('Error: %s was not made shallow' % rev)
 
     filter_refs(args.refs)
     shrink_repo(git_dir)
