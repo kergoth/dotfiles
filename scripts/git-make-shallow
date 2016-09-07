@@ -98,7 +98,6 @@ def follow_history_intersections(revisions, refs):
     """Determine all the points where the history of the specified revisions intersects the specified refs."""
     queue = collections.deque(revisions)
     seen = set()
-    refs = sorted(set(refs))
 
     for rev in iter_except(queue.popleft, IndexError):
         if rev in seen:
@@ -110,14 +109,19 @@ def follow_history_intersections(revisions, refs):
         yield rev
         seen.add(rev)
 
+        if not parents:
+            continue
+
+        check_refs = check_output(['git', 'merge-base', '--independent'] + sorted(refs)).splitlines()
         for parent in parents:
-            for ref in refs:
+            for ref in check_refs:
                 print("Checking %s vs %s" % (parent, ref))
                 try:
                     merge_base = check_output(['git', 'merge-base', parent, ref]).rstrip()
                 except subprocess.CalledProcessError:
                     continue
-                queue.append(merge_base)
+                else:
+                    queue.append(merge_base)
 
 
 def iter_except(func, exception, start=None):
