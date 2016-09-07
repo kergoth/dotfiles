@@ -52,11 +52,15 @@ def make_shallow(revisions, refs):
 
     git_dir = check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     shallow_file = os.path.join(git_dir, 'shallow')
-    try:
-        os.unlink(shallow_file)
-    except OSError as exc:
-        if exc.errno != errno.ENOENT:
-            raise
+    if os.path.exists(shallow_file):
+        try:
+            check_output(['git', 'fetch', '--unshallow'])
+        except subprocess.CalledProcessError:
+            try:
+                os.unlink(shallow_file)
+            except OSError as exc:
+                if exc.errno != errno.ENOENT:
+                    raise
 
     parsed_revs = check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in revisions]).splitlines()
     for rev in follow_history_intersections(parsed_revs, refs):
