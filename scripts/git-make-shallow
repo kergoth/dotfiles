@@ -69,7 +69,7 @@ def make_shallow(revisions, refs):
             f.write(rev + '\n')
 
     filter_refs(refs)
-    shrink_repo()
+    shrink_repo(git_dir)
     subprocess.check_call(['git', 'fsck', '--unreachable'])
 
 
@@ -139,11 +139,13 @@ def iter_except(func, exception, start=None):
         pass
 
 
-def shrink_repo():
+def shrink_repo(git_dir=None):
     """Shrink the newly shallow repository, removing the unreachable objects."""
+    if git_dir is None:
+        git_dir = check_output(['git', 'rev-parse', '--git-dir']).rstrip()
+
     subprocess.check_call(['git', 'reflog', 'expire', '--expire-unreachable=now', '--all'])
     subprocess.check_call(['git', 'repack', '-ad'])
-    git_dir = check_output(['git', 'rev-parse', '--git-dir']).rstrip()
     try:
         os.unlink(os.path.join(git_dir, 'objects', 'info', 'alternates'))
     except OSError as exc:
