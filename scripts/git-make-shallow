@@ -117,8 +117,7 @@ def follow_history_intersections(revisions, refs):
         if rev in seen:
             continue
 
-        parent_output = check_output(['git', 'rev-parse', '%s^@' % rev])
-        parents = [p.rstrip() for p in parent_output.splitlines()]
+        parents = check_output(['git', 'rev-parse', '%s^@' % rev]).splitlines()
 
         yield rev
         seen.add(rev)
