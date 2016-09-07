@@ -46,7 +46,7 @@ def check_output(cmd, input=None):
 def make_shallow(revisions, refs):
     """Make the current git repository shallow at the specified revisions, given the specified refs."""
     if refs is None:
-        refs = get_all_refs(lambda p: not p[1] or p[1] == 'commit')
+        refs = get_all_refs(lambda r, t, tt: t == 'commit' or tt == 'commit')
     else:
         refs = check_output(['git', 'rev-parse', '--symbolic-full-name'] + refs).splitlines()
 
@@ -71,11 +71,11 @@ def make_shallow(revisions, refs):
 
 def get_all_refs(ref_filter=None):
     """Return all the existing refs in this repository, optionally filtering the refs."""
-    ref_output = check_output(['git', 'for-each-ref', '--format=%(refname)	%(*objecttype)'])
-    ref_split = [tuple(iter_extend(l.rstrip().rsplit('\t', 1), 2)) for l in ref_output.splitlines()]
+    ref_output = check_output(['git', 'for-each-ref', '--format=%(refname)\t%(objecttype)\t%(*objecttype)'])
+    ref_split = [tuple(iter_extend(l.rsplit('\t'), 3)) for l in ref_output.splitlines()]
     if ref_filter:
-        ref_split = (e for e in ref_split if ref_filter(e))
-    refs = [r for r, _ in ref_split]
+        ref_split = (e for e in ref_split if ref_filter(*e))
+    refs = [r[0] for r in ref_split]
     return refs
 
 
