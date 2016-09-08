@@ -70,8 +70,9 @@ def process_args():
     if args.refs:
         args.refs = check_output(['git', 'rev-parse', '--symbolic-full-name'] + args.refs).splitlines()
     else:
-        args.refs = get_all_refs(lambda r, t, tt: not r.endswith('/HEAD') and (t == 'commit' or tt == 'commit'))
+        args.refs = get_all_refs(lambda r, t, tt: t == 'commit' or tt == 'commit')
 
+    args.refs = filter(lambda r: not r.endswith('/HEAD'), args.refs)
     args.revisions = check_output(['git', 'rev-parse'] + ['%s^{}' % i for i in args.revisions]).splitlines()
     return args
 
