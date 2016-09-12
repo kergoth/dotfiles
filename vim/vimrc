@@ -1,6 +1,139 @@
-filetype off
+" Defaults {{{
+if v:version >= 800
+  unlet! skip_defaults_vim
+  source $VIMRUNTIME/defaults.vim
+else
+  " The default vimrc file.
+  "
+  " Maintainer:	Bram Moolenaar <Bram@vim.org>
+  " Last change:	2016 Sep 02
+  "
+  " This is loaded if no vimrc file was found.
+  " Except when Vim is run with "-u NONE" or "-C".
+  " Individual settings can be reverted with ":set option&".
+  " Other commands can be reverted as mentioned below.
 
-" Filesystem paths
+  " When started as "evim", evim.vim will already have done these settings.
+  if v:progname =~? "evim"
+    finish
+  endif
+
+  " Bail out if something that ran earlier, e.g. a system wide vimrc, does not
+  " want Vim to use these default values.
+  if exists('skip_defaults_vim')
+    finish
+  endif
+
+  " Use Vim settings, rather than Vi settings (much better!).
+  " This must be first, because it changes other options as a side effect.
+  set nocompatible
+
+  " Allow backspacing over everything in insert mode.
+  set backspace=indent,eol,start
+
+  set history=200		" keep 200 lines of command line history
+  set ruler		" show the cursor position all the time
+  set showcmd		" display incomplete commands
+  set wildmenu		" display completion matches in a status line
+
+  set ttimeout		" time out for key codes
+  set ttimeoutlen=100	" wait up to 100ms after Esc for special key
+
+  " Show @@@ in the last line if it is truncated.
+  set display=truncate
+
+  " Show a few lines of context around the cursor.  Note that this makes the
+  " text scroll if you mouse-click near the start or end of the window.
+  set scrolloff=5
+
+  " Do incremental searching when it's possible to timeout.
+  if has('reltime')
+    set incsearch
+  endif
+
+  " Do not recognize octal numbers for Ctrl-A and Ctrl-X, most users find it
+  " confusing.
+  set nrformats-=octal
+
+  " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries.
+  if has('win32')
+    set guioptions-=t
+  endif
+
+  " Don't use Ex mode, use Q for formatting.
+  " Revert with ":unmap Q".
+  map Q gq
+
+  " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+  " so that you can undo CTRL-U after inserting a line break.
+  " Revert with ":iunmap <C-U>".
+  inoremap <C-U> <C-G>u<C-U>
+
+  " In many terminal emulators the mouse works just fine.  By enabling it you
+  " can position the cursor, Visually select and scroll with the mouse.
+  if has('mouse')
+    set mouse=a
+  endif
+
+  " Switch syntax highlighting on when the terminal has colors or when using the
+  " GUI (which always has colors).
+  if &t_Co > 2 || has("gui_running")
+    " Revert with ":syntax off".
+    syntax on
+
+    " I like highlighting strings inside C comments.
+    " Revert with ":unlet c_comment_strings".
+    let c_comment_strings=1
+  endif
+
+  " Only do this part when compiled with support for autocommands.
+  if has("autocmd")
+
+    " Enable file type detection.
+    " Use the default filetype settings, so that mail gets 'tw' set to 72,
+    " 'cindent' is on in C files, etc.
+    " Also load indent files, to automatically do language-dependent indenting.
+    " Revert with ":filetype off".
+    filetype plugin indent on
+
+    " Put these in an autocmd group, so that you can revert them with:
+    " ":augroup vimStartup | au! | augroup END"
+    augroup vimStartup
+      au!
+
+      " When editing a file, always jump to the last known cursor position.
+      " Don't do it when the position is invalid or when inside an event handler
+      " (happens when dropping a file on gvim).
+      autocmd BufReadPost *
+        \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
+
+    augroup END
+
+  endif " has("autocmd")
+
+  " Convenient command to see the difference between the current buffer and the
+  " file it was loaded from, thus the changes you made.
+  " Only define it when not defined already.
+  " Revert with: ":delcommand DiffOrig".
+  if !exists(":DiffOrig")
+    command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+		    \ | wincmd p | diffthis
+  endif
+
+  if has('langmap') && exists('+langremap')
+    " Prevent that the langmap option applies to characters that result from a
+    " mapping.  If set (default), this may break plugins (but it's backward
+    " compatible).
+    set nolangremap
+  endif
+endif
+
+" Longer command/search history
+set history=1000
+" }}} Defaults
+" Filesystem paths {{{
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
 let &runtimepath = $VIMDOTDIR . ',' . &runtimepath . ',' . $VIMDOTDIR . '/after'
@@ -33,7 +166,7 @@ if has('viminfo')
     let $VIMINFO = $XDG_DATA_HOME . '/vim/viminfo'
   endif
 endif
-
+" }}} Filesystem paths
 " Encoding {{{
 " Termencoding will reflect the current system locale, but internally,
 " we use utf-8, and for files, we use whichever encoding from
@@ -58,9 +191,6 @@ call pathogen#infect()
 let g:badwolf_darkgutter = 1
 " }}}
 " General settings {{{
-filetype plugin indent on
-syntax on
-
 " Enable backup files
 set backup
 
@@ -88,11 +218,6 @@ endif
 
 augroup vimrc
   au!
-
-  " Jump to the last position when reopening a file
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") |
-                   \ exe "normal! g'\"" |
-                   \ endif
 
   " Resize splits when the window is resized
   au VimResized * exe "normal! \<c-w>="
@@ -126,18 +251,12 @@ set autoread
 noremap j gj
 noremap k gk
 
-" Intuitive backspacing in insert mode
-set backspace=indent,eol,start
-
 " Don't insert 2 spaces after the end of a sentence
 set nojoinspaces
 
 " Automatically write buffers on switch/make/exit
 set autowrite
 set autowriteall
-
-" Longer command/search history
-set history=1000
 
 " Kill annoying Press ENTER or type command to continue prompts
 set shortmess=atIWo
@@ -152,9 +271,6 @@ if has('folding')
   " Default to indent based folding rather than manual
   set foldmethod=indent
 endif
-
-" Show completion list
-set wildmenu
 
 " Make completion list behave more like a shell
 set wildmode=list:longest
@@ -183,9 +299,8 @@ set nomodeline
 " Fast terminal, bump sidescroll to 1
 set sidescroll=1
 
-" Show 2 rows/cols of context when scrolling
-set scrolloff=2
-set sidescrolloff=2
+" Show columns of context when scrolling horizontally
+set sidescrolloff=5
 
 " Persistent undo
 if has('persistent_undo')
@@ -328,9 +443,6 @@ nmap ; :
 " :help is the best interface, not F1
 nnoremap <F1> <nop>
 
-" ex mode is irritating
-nnoremap Q <nop>
-
 " Make zO recursively open whatever top level fold we're in, no matter where
 " the cursor happens to be.
 nnoremap zO zCzO
@@ -445,12 +557,6 @@ if has('conceal')
   set conceallevel=2
 endif
 
-" Show the cursor position all the time
-set ruler
-
-" Show partial command in last line
-set showcmd
-
 " Enable line number column
 set number
 
@@ -481,9 +587,6 @@ set laststatus=2
 set ttyfast
 
 if has('mouse_xterm')
-  " Enable mouse support in terminals
-  set mouse=a
-
   " Assume we're using a terminal that can handle this, as vim's automatic
   " enable only recognizes a limited set of $TERM values
   if !&ttymouse
