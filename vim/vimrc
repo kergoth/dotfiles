@@ -346,6 +346,12 @@ end
 if has('unix')
   " Vim makes assumptions about shell behavior, so don't rely on $SHELL
   set shell=sh
+elseif has('win32')
+  " Enable dwrite support
+  try
+    set renderoptions=type:directx
+  catch
+  endtry
 endif
 
 " Prefer opening splits down and right rather than up and left
