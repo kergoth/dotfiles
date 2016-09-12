@@ -343,8 +343,10 @@ if has('linebreak')
   set cpo+=n
 end
 
-" Vim makes assumptions about shell behavior, so don't rely on $SHELL
-set shell=sh
+if has('unix')
+  " Vim makes assumptions about shell behavior, so don't rely on $SHELL
+  set shell=sh
+endif
 
 " Prefer opening splits down and right rather than up and left
 set splitbelow
