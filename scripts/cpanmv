@@ -19,11 +19,13 @@ fi
 
 env="$1"
 shift
-env_dir="$CPANM_HOME/$env"
 
 if [ $# -eq 0 ]; then
     set -- "$env"
 fi
+
+env="$(echo "$env" | sed 's/::/-/g')"
+env_dir="$CPANM_HOME/$env"
 
 if [ ! -e "$env_dir/lib/perl5/local/lib.pm" ]; then
     cpanm -l "$env_dir" local::lib
