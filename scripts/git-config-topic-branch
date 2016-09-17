@@ -1,0 +1,13 @@
+#!/bin/sh
+
+branch_name="$(basename "$(git rev-parse --symbolic-full-name HEAD)")"
+github_user="$(git config github.user 2>/dev/null)" || github_user="$LOGNAME"
+if [ -z "$github_user" ]; then
+    github_user="$(id -nu)"
+fi
+git config push.default simple
+git branch -u "${1:-origin/master}"
+git config "branch.$branch_name.rebase" true
+git config "branch.$branch_name.pushremote" "${2:-$github_user}"
+git fork kergoth 2>/dev/null
+git fetch -p "${2:-$github_user}"
