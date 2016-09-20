@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+import re
+import sys
+
+content, entries = [], []
+for line in sys.stdin.readlines():
+    line = line.rstrip()
+    if line.startswith('====='):
+        if content:
+            entries.append(content)
+            content = []
+    else:
+        content.append(line)
+
+id_pat = re.compile(r'^([0-9]+) - ')
+for entry in entries:
+    num, url, time = None, None, None
+    for line in entry:
+        if line.startswith('URL: '):
+            url = line[5:]
+        elif line.startswith('Reading Time: '):
+            time = line[14:]
+        else:
+            m = id_pat.match(line)
+            if m:
+                num = m.group(1)
+    d = [num, url, time]
+    print('\t'.join(filter(None, d)))

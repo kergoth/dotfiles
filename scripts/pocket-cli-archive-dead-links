@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pocket-cli search -s unread '' | pocket-cli-join-entries | while IFS="$(printf '\t')" read -r id url time; do http -hFI --check-status "$url" >/dev/null 2>&1; case "$?" in [45]) echo "$id";;; esac; done | tee log | nlxargs -n 1 pocket-cli archive
