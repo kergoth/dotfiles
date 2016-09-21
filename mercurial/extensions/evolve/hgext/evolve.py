@@ -2014,7 +2014,7 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
         repo.ui.status(_('computing new diff\n'))
         files = set()
         copied = copies.pathcopies(prec, bumped)
-        precmanifest = prec.manifest()
+        precmanifest = prec.manifest().copy()
         # 3.3.2 needs a list.
         # future 3.4 don't detect the size change during iteration
         # this is fishy

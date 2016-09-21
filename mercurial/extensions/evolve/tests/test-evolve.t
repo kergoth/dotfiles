@@ -377,8 +377,8 @@ all solving bumped troubled
   recreate:[8] another feature that rox
   atop:[7] another feature (child of ba0ec09b1bab)
   computing new diff
-  committed as 2d8c5414e9f0
-  working directory is now at 2d8c5414e9f0
+  committed as 6707c5e1c49d
+  working directory is now at 6707c5e1c49d
   $ hg glog
   @  9	feature-B: bumped update to 99833d22b0c6: - test
   |
@@ -437,7 +437,7 @@ test evolve --all
   move:[11] dansk 3!
   atop:[14] dansk 2!
   merging main-file-1
-  working directory is now at 536984593824
+  working directory is now at 68557e4f0048
   $ hg glog
   @  15	: dansk 3! - test
   |
@@ -810,9 +810,9 @@ Test fold with commit messages
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ glog
-  @  16:d1297ecc971f@default(draft) Folding with custom commit message
+  @  16:98cb758db56d@default(draft) Folding with custom commit message
   |
-  o  13:27b934eaf1f9@default(draft) dansk!
+  o  13:0a2f9b959bb4@default(draft) dansk!
   |
   o  7:99833d22b0c6@default(public) another feature (child of ba0ec09b1bab)
   |
@@ -829,7 +829,7 @@ Test fold with commit messages
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg qlog
-  17 - 0b1eca0e871b A longer
+  17 - a00182c58888 A longer
                     commit message (draft)
   7 - 99833d22b0c6 another feature (child of ba0ec09b1bab) (public)
   6 - ba0ec09b1bab a nifty feature (public)

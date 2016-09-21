@@ -176,10 +176,10 @@ Stabilize!
   perform evolve? [Ny] y
   rebasing to destination parent: 66719795a494
   computing new diff
-  committed as (a7cabd7bd9c2|671b9d7eeaec) (re)
-  working directory is now at (a7cabd7bd9c2|671b9d7eeaec) (re)
+  committed as c2c1151aa854
+  working directory is now at c2c1151aa854
   $ glog
-  @  14:(a7cabd7bd9c2|671b9d7eeaec)@default\(draft\) bk:\[\] bumped update to 1cf0aacfd363: (re)
+  @  14:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
   |
   | o  9:7bc2f5967f5e@default(draft) bk:[] add c
   | |
