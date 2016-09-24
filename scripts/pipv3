@@ -4,7 +4,6 @@
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
-PYVENV="${PYVENV:-pyvenv}"
 
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} VENV_NAME [PIP_ARGS..]"
@@ -26,6 +25,6 @@ esac
 
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
-    "$PYVENV" "$venv_dir" || exit 3
+    python3 -m venv "$venv_dir" || exit 3
 fi
 "$(dirname "$0")"/pipv "$@"
