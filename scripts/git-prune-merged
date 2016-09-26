@@ -16,7 +16,7 @@ usage () {
 
 prune_remote_repo=0
 ref_prefix=refs/heads
-while getopts r:h opt; do
+while getopts r:Rh opt; do
     case "$opt" in
         r)
             ref_prefix="refs/remotes/$OPTARG"
