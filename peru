@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    state_dir="$HOME/Library/Application Support/peru/dotfiles"
+else
+    state_dir="${XDG_DATA_HOME:-$HOME/.local/share}/peru/dotfiles"
+fi
+
+if [ ! -e "$state_dir" ]; then
+    for dir in _override/*; do
+        if [ -d "$dir" ]; then
+            peru --state-dir="$state_dir" override "${dir##*/}" "$dir"
+        fi
+    done
+fi
+
+peru --state-dir="$state_dir" "$@"
