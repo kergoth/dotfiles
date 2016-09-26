@@ -507,7 +507,10 @@ nnoremap <leader>U :syntax sync fromstart<cr>:redraw!<cr>
 map <Esc>[B <Down>
 
 " Select the just-pasted text
-nnoremap <expr> <leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
+nnoremap <expr> <leader><leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" Paste and re-indent
+nnoremap <leader>p p`[v`]=
 
 " Pressing ,ss will toggle spell checking
 map <leader>ss :set spell!<cr>
@@ -725,9 +728,7 @@ nmap <leader>m :Modeliner<CR>
 
 " Fzf binds
 let g:fzf_command_prefix = 'FZF'
-nnoremap <silent> <leader>b :FZFBuffers<cr>
 nnoremap <silent> <c-b> :FZFBuffers<cr>
-nnoremap <silent> <leader>p :FZFFiles<cr>
 nnoremap <silent> <c-p> :FZFFiles<cr>
 
 " Add foldlevel to allowed items in modelines
