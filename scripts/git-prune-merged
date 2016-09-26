@@ -11,18 +11,23 @@ usage () {
     echo >&2 "                      changes are merged, defaults to origin/master."
     echo >&2 "  -r REMOTE   Prune branches of the specified remote, not local."
     echo >&2 "  -R          Prune the branches in the repo repo, not just the tracking branches."
+    echo >&2 "  -n          Dry-run"
     exit 2
 }
 
-prune_remote_repo=0
 ref_prefix=refs/heads
-while getopts r:Rh opt; do
+prune_remote_repo=0
+dry_run=0
+while getopts r:Rnh opt; do
     case "$opt" in
         r)
             ref_prefix="refs/remotes/$OPTARG"
             ;;
         R)
             prune_remote_repo=1
+            ;;
+        n)
+            dry_run=1
             ;;
         \?|h)
             usage
@@ -31,7 +36,11 @@ while getopts r:Rh opt; do
 done
 shift $((OPTIND - 1))
 
-git for-each-ref "--merged=${1:-origin/master}" --format='%(refname)' "$ref_prefix" | \
+if [ $dry_run -eq 1 ]; then
+    alias git="echo git"
+fi
+
+command git for-each-ref "--merged=${1:-origin/master}" --format='%(refname)' "$ref_prefix" | \
     while read -r ref; do
         ref="${ref#$ref_prefix/}"
         case "$ref" in
@@ -43,7 +52,7 @@ git for-each-ref "--merged=${1:-origin/master}" --format='%(refname)' "$ref_pref
         case "$ref_prefix" in
             refs/heads)
                 remote="$(git config "branch.$ref.pushremote" 2>/dev/null || git config "branch.$ref.remote")"
-                git br -d "$ref"
+                git branch -d "$ref"
                 if [ $prune_remote_repo -eq 1 ] && git rev-parse --quiet --verify "refs/remotes/$remote/$ref"; then
                     git push "$remote" ":$ref"
                 fi
@@ -53,7 +62,7 @@ git for-each-ref "--merged=${1:-origin/master}" --format='%(refname)' "$ref_pref
                 if [ $prune_remote_repo -eq 1 ]; then
                     git push "$remote" ":$ref"
                 else
-                    git br -r -d "${ref_prefix#refs/remotes/}/$ref"
+                    git branch -r -d "${ref_prefix#refs/remotes/}/$ref"
                 fi
                 ;;
         esac
