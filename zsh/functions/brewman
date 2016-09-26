@@ -1,3 +1,0 @@
-brewman() {
-    PAGER="less -g -s '+/^       "$1"'" man brew
-}
