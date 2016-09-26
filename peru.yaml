@@ -131,7 +131,8 @@ curl module iterm2-zsh:
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: 666f38a904483ab368a90b99e7def156e5905f6a
+    rev: e8da000b925562cc34941079cd74fd4a1ae51de1
+    reup: e8da000b925562cc34941079cd74fd4a1ae51de1
     pick: git-imerge
 
 git module cheat:
