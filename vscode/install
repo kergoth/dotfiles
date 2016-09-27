@@ -1,4 +1,4 @@
-VSCODE_HOME="$HOME/Library/Application Support/Code"
+VSCODE_HOME="$HOME/Library/Application Support/Code/User"
 
 link settings.json "$VSCODE_HOME/settings.json"
 link keybindings.json "$VSCODE_HOME/keybindings.json"
