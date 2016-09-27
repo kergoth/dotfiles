@@ -1,6 +1,8 @@
 " MIT License. Copyright (c) 2013-2016 Bailey Ling.
 " vim: et ts=2 sts=2 sw=2
 
+scriptencoding utf-8
+
 let s:prototype = {}
 
 function! s:prototype.split(...)
@@ -49,6 +51,8 @@ function! s:prototype.build()
     let prev_group = s:get_prev_group(self._sections, i)
     if group ==# 'airline_c' && !self._context.active && has_key(self._context, 'bufnr')
       let group = 'airline_c'. self._context.bufnr
+    elseif prev_group ==# 'airline_c' && !self._context.active && has_key(self._context, 'bufnr')
+      let prev_group = 'airline_c'. self._context.bufnr
     endif
     if is_empty
       let prev_group = pgroup
@@ -58,7 +62,7 @@ function! s:prototype.build()
     if is_empty
       " need to fix highlighting groups, since we
       " have skipped a section, we actually need
-      " the previous previous group and so the 
+      " the previous previous group and so the
       " seperator goes from the previous previous group
       " to the current group
       let pgroup = group
@@ -159,6 +163,9 @@ function! s:section_is_empty(self, content)
   " (avoides, that on startup the mode message becomes empty)
   if match(a:content, '%#__accent_[^#]*#.*__restore__#') > -1
     return 0
+  endif
+  if empty(a:content)
+    return 1
   endif
   let list=matchlist(a:content, '%{\zs.\{-}\ze}', 1, start)
   if empty(list)

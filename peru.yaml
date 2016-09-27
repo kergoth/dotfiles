@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: fdaeec45146b5fe6b2c2b01da6f97681d89f8094
+    rev: 79198759b3121b5f69beb81fbffe264a19420105
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -192,11 +192,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 7a720bbbd74b22fc029844c9ff087bbc1e09effb
+    rev: 1c052e39b15c3d4efd37f83cdf7f12ef3721741f
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 020b843077f6b2b3b85070b08203babbffbfeaca
+    rev: bcee47632ea4e9ea5120ac39a22d0eca85b2b132
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -249,7 +249,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: d36b6cb12c4eb1bf31b3c6a5290fbed9d28e36a3
+    rev: 7060bbb07b9a3e209db2a092fe3c05bfe60f7000
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -285,7 +285,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 7fa5e6c86184b3127f64ce0f7a45b945df077e77
+    rev: 1acd2adce271ffaf0bfb303c6dc27fe2b03c9e04
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -323,7 +323,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 859d32f2a24f79810dbaf79c92c66f043e042f3c
+    rev: c963982ea95b2b891e8284e24930443e49e8e5da
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -559,7 +559,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 2b84b14cd1ef0d4bb74d91ca08a8818d84d8982d
+    rev: 59cc80a8f7f7544a364814622dc62efd00d17ca4
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
@@ -642,7 +642,7 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: 8e15d4245d534807c7a45219caa9fe4a0201da54
+    rev: 5c11295852df4fda8dcfc0728c1233585cbea3e5
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready

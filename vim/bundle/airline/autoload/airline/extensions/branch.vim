@@ -1,6 +1,8 @@
 " MIT License. Copyright (c) 2013-2016 Bailey Ling.
 " vim: et ts=2 sts=2 sw=2
 
+scriptencoding utf-8
+
 let s:has_fugitive = exists('*fugitive#head')
 let s:has_lawrencium = exists('*lawrencium#statusline')
 let s:has_vcscommand = get(g:, 'airline#extensions#branch#use_vcscommand', 0) && exists('*VCSCommandGetStatusLine')
@@ -203,7 +205,16 @@ function! s:check_in_path()
   return b:airline_file_in_root
 endfunction
 
-function! s:reset_untracked_cache()
+function! s:reset_untracked_cache(shellcmdpost)
+  if a:shellcmdpost
+    " function called after executing a shell command,
+    " only clear cache, if there was no error, else the
+    " system() command from get_git_untracked() would
+    " overwrite the v:shell_error status
+    if v:shell_error
+      return
+    endif
+  endif
   if exists("s:untracked_git")
     let s:untracked_git={}
   endif
@@ -218,5 +229,6 @@ function! airline#extensions#branch#init(ext)
   autocmd BufReadPost * unlet! b:airline_file_in_root
   autocmd CursorHold,ShellCmdPost,CmdwinLeave * unlet! b:airline_head
   autocmd User AirlineBeforeRefresh unlet! b:airline_head
-  autocmd BufWritePost,ShellCmdPost * call s:reset_untracked_cache()
+  autocmd BufWritePost * call s:reset_untracked_cache(0)
+  autocmd ShellCmdPost * call s:reset_untracked_cache(1)
 endfunction
