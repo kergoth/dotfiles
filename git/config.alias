@@ -24,6 +24,13 @@
 	ri = rebase -i
 	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
 
+	# Update without merge commits
+	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
+
+	# Update with rebase, re-applying merges
+	upr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
+	purr = !git upr
+
 	# remove changes to a file from the index
 	unstage = reset HEAD --
 
@@ -109,6 +116,8 @@
 	# Compare two commits with interdiff (used to compare two commits which implement the same feature, for example)
 	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
 
+	tracking-remote = "!f() { git rev-parse --symbolic-full-name '@{u}' | sed -n 's,refs/remotes/\\([^/][^/]*\\)/.*,\\1,p'; }; f"
+	tracking-ref = rev-parse --symbolic-full-name @{u}
 	remote-ref = rev-parse --symbolic-full-name @{u}
 	in = !git fetch && git lg \"..@{u}\"
 	out = !git fetch && git lg \"@{u}..\"
@@ -116,9 +125,6 @@
 	# Rebase the current branch on its upstream
 	rebase-upstream = rebase -i @{u}
 	ru = rebase-upstream
-
-	# Pull with rebase and autostash
-	purr = "!f() { git mstash purring; ret=$?; git pull --rebase; if [ $ret -eq 0 ]; then git stash pop; fi }; f"
 
 	# Run a topic branch interdiff between HEAD and upstream
 	tbdiff-upstream = tbdiff @{u}...HEAD

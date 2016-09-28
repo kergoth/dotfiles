@@ -16,6 +16,9 @@
 	singlekey = true
 	diffFilter = diff-highlight
 
+[pull]
+	ff = only
+
 [push]
 	default = tracking
 
