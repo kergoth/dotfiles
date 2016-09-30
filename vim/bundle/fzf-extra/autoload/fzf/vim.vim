@@ -52,7 +52,7 @@ endfunction
 function! s:wrap(name, opts, bang)
   " fzf#wrap does not append --expect if sink or sink* is found
   let opts = copy(a:opts)
-  if has_key(opts, 'sink*')
+  if get(opts, 'options', '') !~ '--expect' && has_key(opts, 'sink*')
     let Sink = remove(opts, 'sink*')
     let wrapped = fzf#wrap(a:name, opts, a:bang)
     let wrapped['sink*'] = Sink
@@ -521,7 +521,10 @@ function! s:ag_handler(lines, with_column)
   endif
 
   let cmd = get(get(g:, 'fzf_action', s:default_action), a:lines[0], 'e')
-  let list = map(a:lines[1:], 's:ag_to_qf(v:val, a:with_column)')
+  let list = map(filter(a:lines[1:], 'len(v:val)'), 's:ag_to_qf(v:val, a:with_column)')
+  if empty(list)
+    return
+  endif
 
   let first = list[0]
   try
@@ -956,12 +959,14 @@ function! s:commits(buffer_local, args)
   endif
 
   let command = a:buffer_local ? 'BCommits' : 'Commits'
-  let options = s:wrap({
+  let expect_keys = join(keys(get(g:, 'fzf_action', s:default_action)), ',')
+  let options = {
   \ 'source':  source,
   \ 'sink*':   s:function('s:commits_sink'),
   \ 'options': '--ansi --multi --no-sort --tiebreak=index --reverse '.
-  \   '--inline-info --prompt "'.command.'> " --bind=ctrl-s:toggle-sort'
-  \ })
+  \   '--inline-info --prompt "'.command.'> " --bind=ctrl-s:toggle-sort '.
+  \   '--expect='.expect_keys
+  \ }
 
   if a:buffer_local
     let options.options .= ',ctrl-d --header ":: Press '.s:magenta('CTRL-S', 'Special').' to toggle sort, '.s:magenta('CTRL-D', 'Special').' to diff"'

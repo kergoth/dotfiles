@@ -218,11 +218,11 @@ if type compctl >/dev/null 2>&1; then
         # populate directory list, avoid clobbering any other precmds.
         if [ "$_Z_NO_RESOLVE_SYMLINKS" ]; then
             _z_precmd() {
-                _z --add "${PWD:a}"
+                (_z --add "${PWD:a}" &)
             }
         else
             _z_precmd() {
-                _z --add "${PWD:A}"
+                (_z --add "${PWD:A}" &)
             }
         fi
         [[ -n "${precmd_functions[(r)_z_precmd]}" ]] || {
@@ -243,7 +243,7 @@ elif type complete >/dev/null 2>&1; then
     [ "$_Z_NO_PROMPT_COMMAND" ] || {
         # populate directory list. avoid clobbering other PROMPT_COMMANDs.
         grep "_z --add" <<< "$PROMPT_COMMAND" >/dev/null || {
-            PROMPT_COMMAND="$PROMPT_COMMAND"$'\n''_z --add "$(command pwd '$_Z_RESOLVE_SYMLINKS' 2>/dev/null)" 2>/dev/null;'
+            PROMPT_COMMAND="$PROMPT_COMMAND"$'\n''(_z --add "$(command pwd '$_Z_RESOLVE_SYMLINKS' 2>/dev/null)" 2>/dev/null &);'
         }
     }
 fi

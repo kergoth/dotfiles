@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 79198759b3121b5f69beb81fbffe264a19420105
+    rev: 094329eb145e00b810e65415ed4b9ad58aa7c34a
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -192,11 +192,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 1c052e39b15c3d4efd37f83cdf7f12ef3721741f
+    rev: 2be9a044e09f68bef0eb4dff27af7d22405968fe
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: bcee47632ea4e9ea5120ac39a22d0eca85b2b132
+    rev: 0ff72ad84c560b5827db3e7d1034722e9ec55e45
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -249,7 +249,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 7060bbb07b9a3e209db2a092fe3c05bfe60f7000
+    rev: 7d1b007cb234d181fd09a50e40e50cb49642861b
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -285,7 +285,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 1acd2adce271ffaf0bfb303c6dc27fe2b03c9e04
+    rev: 04492bab10aeb0d081eeb8806792ccb77a8c5cb6
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -350,7 +350,7 @@ git module planter:
 
 git module z:
     url: https://github.com/rupa/z
-    rev: 78f0d97d3dd334109fb42502c1b3d46c9ab3482d
+    rev: 1a361f6dc10e54e34e42f1e03850692959c6b413
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
@@ -367,7 +367,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 4e42e1c128f2cd0a2db53e418394a67d94788e98
+    rev: eb5a269f27370bddb16317e9eba6f0795705907b
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -566,7 +566,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 6006c4d230fdadbfdd62903931bf10b632b386b8
+    rev: 980e32daf678dc797c5b38e497b07d79252a4d1a
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
