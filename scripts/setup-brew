@@ -21,9 +21,8 @@ $HOMEBREW_PATH/bin/brew install reattach-to-user-namespace --with-wrap-pbcopy-an
 
 brew tap homebrew/dupes
 brew tap homebrew/versions
-brew tap homebrew/binary
 brew tap homebrew/games
-brew tap homebrew/headonly
+brew tap homebrew/head-only
 brew tap homebrew/python
 brew tap monochromegane/pt
 
