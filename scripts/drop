@@ -4,8 +4,20 @@ if which trash >/dev/null 2>&1; then
     alias remove="trash -v"
 fi
 
+if which drop-external >/dev/null 2>&1; then
+    drop_external () {
+        drop-external "$@"
+    }
+else
+    drop_external () {
+        false
+    }
+fi
+
 for arg; do
-    if [ -h "$arg" ]; then
+    if drop_external "$arg"; then
+        :
+    elif [ -h "$arg" ]; then
         echo >&2 "$arg"
         bgrm "$arg"
     elif [ -e "$arg" ]; then
