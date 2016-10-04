@@ -35,11 +35,7 @@ brewenv="$1"
 shift
 brewenv_dir="$HOMEBREWS_HOME/$brewenv"
 if [ ! -e "$brewenv_dir" ]; then
-    if which brew >/dev/null 2>&1; then
-        git clone-via "$(brew --prefix)" "$brewenv_dir"
-    else
-        git clone https://github.com/Homebrew/homebrew.git "$brewenv_dir"
-    fi
+    "$(dirname "$0")/install-brew" "$brewenv_dir"
 fi
 
 PATH="$brewenv_dir/bin:$PATH"
