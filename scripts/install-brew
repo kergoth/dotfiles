@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+mkdir -p "$1"
+HOMEBREW_PATH="$(cd "$1" && pwd -P)"
+PATH="$HOMEBREW_PATH/bin:$PATH"
+
+mkdir -p "$HOMEBREW_PATH" && \
+    curl -sSfL https://github.com/Homebrew/homebrew/tarball/master | \
+        tar xz --strip 1 -C "$HOMEBREW_PATH"
+
+if [ "$(brew --prefix)" != "$HOMEBREW_PATH" ]; then
+    printf >&2 "Error: brew prefix %s does not match the specified %s" "$(brew --prefix)" "$HOMEBREW_PATH"
+    exit 1
+fi
+
+if [ -d "$HOMEBREW_PATH/share/doc/homebrew" ]; then
+    rm -rf "$HOMEBREW_PATH/share/doc/homebrew"
+fi
+brew update || exit 2
+
+git config -f "$(brew --repo)/.git/config" homebrew.analyticsdisabled true
