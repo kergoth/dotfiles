@@ -35,7 +35,9 @@ brewenv="$1"
 shift
 brewenv_dir="$HOMEBREWS_HOME/$brewenv"
 if [ ! -e "$brewenv_dir" ]; then
-    "$(dirname "$0")/install-brew" "$brewenv_dir"
+    "$(dirname "$0")/install-brew" "$brewenv_dir/homebrew"
+    mkdir -p "$brewenv_dir/bin"
+    ln -s ../homebrew/bin/brew "$brewenv_dir/bin/brew"
 fi
 
 PATH="$brewenv_dir/bin:$PATH"
