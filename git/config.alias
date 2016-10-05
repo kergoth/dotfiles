@@ -31,6 +31,9 @@
 	upr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
 	purr = !git upr
 
+	# Push with lease
+	please = push --force-with-lease
+
 	# remove changes to a file from the index
 	unstage = reset HEAD --
 
