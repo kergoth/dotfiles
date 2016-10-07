@@ -1,0 +1,2 @@
+#!/bin/sh
+brew upgrade --fetch-HEAD && brew clean
