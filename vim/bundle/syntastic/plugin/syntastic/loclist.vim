@@ -28,8 +28,8 @@ function! g:SyntasticLoclist.New(rawLoclist) abort " {{{2
 endfunction " }}}2
 
 function! g:SyntasticLoclist.current(...) abort " {{{2
-    let buf = a:0 > 1 ? a:1 : bufnr('')
-    let loclist = getbufvar(buf, 'syntastic_loclist')
+    let buf = a:0 ? a:1 : bufnr('')
+    let loclist = syntastic#util#getbufvar(buf, 'syntastic_loclist', {})
     if type(loclist) != type({}) || empty(loclist)
         unlet! loclist
         let loclist = g:SyntasticLoclist.New([])
@@ -281,7 +281,7 @@ endfunction " }}}2
 "
 "would return all errors for buffer 10.
 "
-"Note that all comparisons are done with ==?
+"Note that all string comparisons are done with ==?
 function! g:SyntasticLoclist.filter(filters) abort " {{{2
     let conditions = values(map(copy(a:filters), 's:_translate(v:key, v:val)'))
     let filter = len(conditions) == 1 ?

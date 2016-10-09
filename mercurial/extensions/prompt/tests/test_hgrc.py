@@ -8,16 +8,16 @@ from util import *
 def test_hgrc():
 
     with open(os.path.join(sandbox_path, '.hg', 'hgrc'), 'w') as fp:
-        fp.write('[prompt]\ntemplate =\n')
+        fp.write('[prompt]\ntemplate = foo\n')
 
-    output = prompt(fs='{node}')
-    assert output == ''
+    output = prompt(fs='')
+    assert output == 'foo'
+
+    output = prompt(fs='bar')
+    assert output == 'bar'  # command line overwrites hgrc
 
     with open(os.path.join(sandbox_path, '.hg', 'hgrc'), 'w') as fp:
         fp.write('[prompt]\ntemplate = { at node {node}}\n')
-
-    output = prompt(fs='{node}')
-    assert output == ' at node 0000000000000000000000000000000000000000'
 
     output = prompt(fs='')
     assert output == ' at node 0000000000000000000000000000000000000000'

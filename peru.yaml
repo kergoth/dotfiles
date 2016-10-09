@@ -127,7 +127,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: e90a56b3ae519c7241b2012eb37ec762f8f85aa2
+    sha1: bd4907ff25b1afc1c3356277d5bd34f88a3e6d23
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -177,7 +177,7 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: 18155f4713241d14c059cd70e496099cd23ed2a2
+    rev: 3592ea539620f1961f1eca9c5fecc86b5923f09d
 
 # markdown runtime files
 git module vim-markdown:
@@ -192,11 +192,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 2be9a044e09f68bef0eb4dff27af7d22405968fe
+    rev: 75a0199a7dd5d7e591ebe9050ede60dae7f56339
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 0ff72ad84c560b5827db3e7d1034722e9ec55e45
+    rev: 3e8ecba0dea8b4ea35e81780a9aa00f2ca6823e8
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -272,7 +272,7 @@ hg module dtrx:
 hg module t:
     url: https://bitbucket.org/sjl/t
     pick: t.py
-    rev: 1c496e933168ffb33622c8549bc1372d7a368f4f
+    rev: ddd4a3af16d7f9db13688b646bd51624db8551a2
 
 git module fzf:
     url: https://github.com/junegunn/fzf
@@ -285,7 +285,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 04492bab10aeb0d081eeb8806792ccb77a8c5cb6
+    rev: 3222d62ddf0b8072e43ac2b5abd52b1d6d3f6eef
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -503,7 +503,7 @@ hg module hg-extension-crecord:
 
 hg module hg-extension-prompt:
     url: https://bitbucket.org/obensonne/hg-prompt
-    rev: 2e292ca8d7688a965488da61e0f7b8f55af1fbb9
+    rev: 064a8c1d11beba9b42062e7586f0c4f0e7c0d786
 
 hg module hg-extension-shelve:
     url: https://bitbucket.org/astiob/hgshelve
@@ -559,14 +559,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 59cc80a8f7f7544a364814622dc62efd00d17ca4
+    rev: adf899f1ba863b1ea2c3327e7cde79ba21354435
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 980e32daf678dc797c5b38e497b07d79252a4d1a
+    rev: e88eb792a5c8b3ff4aea2b2676c4af13fe383226
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -599,7 +599,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 4777bd363058213605ebb292b35ef1a6edb3663c
+    rev: c30065a606ce4d5f7acc3a198ee070b17bb6d93d
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -642,7 +642,7 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: 5c11295852df4fda8dcfc0728c1233585cbea3e5
+    rev: 805d43831f160b9ee640efa83c08994fa3b7c2f5
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
