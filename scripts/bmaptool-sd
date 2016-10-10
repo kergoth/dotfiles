@@ -7,6 +7,7 @@ get_sdcard_device () {
     diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' | \
         grep -v '/dev/disk0$' | while read -r disk; do
             if [ "$(diskutil info "$disk" | sed -n 's# *Device / Media Name: *##p')" = "SD Card Reader" ]; then
+                diskutil list "$disk"
                 echo "$disk"
                 return 0
             fi
