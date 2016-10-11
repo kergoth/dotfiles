@@ -31,9 +31,9 @@ plutil -convert json "$app"/Contents/Info.plist -o - | \
                 if [ -z "$extension" ]; then
                     continue
                 elif [ $dry_run -eq 1 ]; then
-                    echo duti -s "$id" ".$extension" "$role"
+                    echo duti -vs "$id" ".$extension" "$role"
                 else
-                    duti -s "$id" ".$extension" "$role"
+                    duti -vs "$id" ".$extension" "$role"
                 fi
             done
         done
@@ -46,9 +46,9 @@ plutil -convert json "$app"/Contents/Info.plist -o - | \
                 if [ -z "$type" ]; then
                     continue
                 elif [ $dry_run -eq 1 ]; then
-                    echo duti -s "$id" "$type" "$role"
+                    echo duti -vs "$id" "$type" "$role"
                 else
-                    duti -s "$id" "$type" "$role"
+                    duti -vs "$id" "$type" "$role"
                 fi
             done
         done
