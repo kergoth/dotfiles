@@ -559,7 +559,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: adf899f1ba863b1ea2c3327e7cde79ba21354435
+    rev: 753ed1fbe96bc734a588041f9afb830542aad4d3
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
