@@ -54,3 +54,13 @@ plutil -convert json "$app"/Contents/Info.plist -o - | \
                 fi
             done
         done
+
+plutil -convert json "$app"/Contents/Info.plist -o - | \
+    jq -r '.CFBundleURLTypes[] | .CFBundleURLSchemes | join(",")' | tr ',' '\n' | \
+    while read -r scheme; do
+        if [ $dry_run -eq 1 ]; then
+            echo duti -vs "$id" "$scheme"
+        else
+            duti -vs "$id" "$scheme"
+        fi
+    done
