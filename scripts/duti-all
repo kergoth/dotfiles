@@ -4,8 +4,6 @@ locate_app_by_id () {
     mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"
 }
 
-set -e
-
 if [ $# -eq 0 ]; then
     echo >&2 "Usage: ${0##*/} [-n] APP_ID"
     exit 1
