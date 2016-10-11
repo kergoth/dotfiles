@@ -23,6 +23,8 @@ else
     app="$(locate_app_by_id "$id")" || exit $?
 fi
 
+alias jq='jq 2>/dev/null'
+
 plutil -convert json "$app"/Contents/Info.plist -o - | \
     jq -r '.CFBundleDocumentTypes[] | select(.CFBundleTypeExtensions) | .CFBundleTypeRole + "|" + (.CFBundleTypeExtensions | join(","))' | \
         tr '[:upper:]' '[:lower:]' | \
