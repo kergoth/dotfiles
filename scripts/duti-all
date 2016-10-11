@@ -18,6 +18,7 @@ fi
 id="$1"
 if [ -d "$id" ]; then
     app="$id"
+    id="$(mdls -name kMDItemCFBundleIdentifier -raw "$app")"
 else
     app="$(locate_app_by_id "$id")" || exit $?
 fi
