@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import argparse
+import itertools
+import subprocess
+
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
+def get_base_series(rev):
+    base, series = None, None
+    t = subprocess.check_output(['git', 'cat-file', '-p', '%s^{tree}' % rev]).decode()
+    for l in t.splitlines():
+        mode, objtype, objhash, name = l.split(maxsplit=3)
+        if name == 'base':
+            base = objhash
+        elif name == 'series':
+            series = objhash
+    return base, series
+
+
+def tbdiff_revs(revs):
+    revs = list(revs)
+    revs.append(None)
+    pairs = reversed(list(pairwise(reversed(revs))))
+    for parent, commit in pairs:
+        o = subprocess.check_output(['git', '-c', 'color.ui=always', 'show', '-s', commit]).decode() + '\n'
+        if parent is not None:
+            pbase, pseries = get_base_series(parent)
+            base, series = get_base_series(commit)
+            if pbase != base or pseries != series:
+                o += subprocess.check_output(['git', 'tbdiff', '{}..{}'.format(pbase, pseries), '{}..{}'.format(base, series)]).decode() + '\n'
+        yield o
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('series')
+    args = parser.parse_args()
+    o = subprocess.check_output(['git', 'rev-list',
+                                'refs/heads/git-series/' + args.series, '--',
+                                'base', 'cover', 'series']).decode()
+    revs = o.splitlines()
+    for entry in tbdiff_revs(revs):
+        print(entry)
