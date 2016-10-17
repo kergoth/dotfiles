@@ -59,6 +59,10 @@ source $ZSH/plugins/autosuggestions/zsh-autosuggestions.zsh
 # history-substring-search must be loaded after syntax-highlighting
 source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
 
+# Use the recommended max buffer size value for autosuggestions, which keeps
+# it from processing large pastes
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
 # Move prioritize-cwd-history into xdg path
 ZSH_PRIORITIZE_CWD_HISTORY_DIR=$XDG_DATA_HOME/zsh/prioritize-cwd-history
 
