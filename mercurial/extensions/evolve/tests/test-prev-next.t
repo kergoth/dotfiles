@@ -206,3 +206,34 @@ next with ambiguity in aspiring children
   move:[5] added d
   atop:[6] added b (3)
   working directory is now at 47ea25be8aea
+
+prev and next should lock properly against other commands
+
+  $ hg init repo
+  $ cd repo
+  $ HGEDITOR=${TESTDIR}/fake-editor.sh
+  $ echo hi > foo
+  $ hg ci -Am 'one'
+  adding foo
+  $ echo bye > foo
+  $ hg ci -Am 'two'
+
+  $ hg amend --edit &
+  $ sleep 1
+  $ hg prev
+  waiting for lock on working directory of $TESTTMP/repo held by '*' (glob)
+  got lock after [4-6] seconds (re)
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  [0] one
+  $ wait
+
+  $ hg amend --edit &
+  $ sleep 1
+  $ hg next --evolve
+  waiting for lock on working directory of $TESTTMP/repo held by '*' (glob)
+  1 new unstable changesets
+  got lock after [4-6] seconds (re)
+  move:[2] two
+  atop:[3] one
+  working directory now at a7d885c75614
+  $ wait

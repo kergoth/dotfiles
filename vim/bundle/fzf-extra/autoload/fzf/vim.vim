@@ -420,14 +420,14 @@ function! fzf#vim#gitfiles(args, ...)
   " We're trying to access the common sink function that fzf#wrap injects to
   " the options dictionary.
   let wrapped = fzf#wrap({
-  \ 'source':  'git -c color.status=always status --short',
+  \ 'source':  'git -c color.status=always status --short --untracked-files=all',
   \ 'dir':     root,
-  \ 'options': '--ansi --multi --nth 2..,.. --prompt "GitFiles?> "'
+  \ 'options': '--ansi --multi --nth 2..,.. --prompt "GitFiles?> " --preview ''(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500'''
   \})
   call s:remove_layout(wrapped)
   let wrapped.common_sink = remove(wrapped, 'sink*')
   function! wrapped.newsink(lines)
-    let lines = extend(a:lines[0:0], map(a:lines[1:], 'v:val[3:]'))
+    let lines = extend(a:lines[0:0], map(a:lines[1:], 'substitute(v:val[3:], ".* -> ", "", "")'))
     return self.common_sink(lines)
   endfunction
   let wrapped['sink*'] = remove(wrapped, 'newsink')

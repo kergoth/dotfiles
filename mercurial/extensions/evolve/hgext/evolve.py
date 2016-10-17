@@ -2221,57 +2221,63 @@ def cmdprevious(ui, repo, **opts):
     """update to parent revision
 
     Displays the summary line of the destination for clarity."""
-    wkctx = repo[None]
-    wparents = wkctx.parents()
+    wlock = None
     dryrunopt = opts['dry_run']
-    if len(wparents) != 1:
-        raise error.Abort('merge in progress')
-    if not opts['merge']:
-        try:
-            cmdutil.bailifchanged(repo)
-        except error.Abort as exc:
-            exc.hint = _('do you want --merge?')
-            raise
+    if not dryrunopt:
+        wlock = repo.wlock()
+    try:
+        wkctx = repo[None]
+        wparents = wkctx.parents()
+        if len(wparents) != 1:
+            raise error.Abort('merge in progress')
+        if not opts['merge']:
+            try:
+                cmdutil.bailifchanged(repo)
+            except error.Abort as exc:
+                exc.hint = _('do you want --merge?')
+                raise
 
-    parents = wparents[0].parents()
-    topic = getattr(repo, 'currenttopic', '')
-    if topic and not opts.get("no_topic", False):
-        parents = [ctx for ctx in parents if ctx.topic() == topic]
-    displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
-    if not parents:
-        ui.warn(_('no parent in topic "%s"\n') % topic)
-        ui.warn(_('(do you want --no-topic)\n'))
-    elif len(parents) == 1:
-        p = parents[0]
-        bm = bmactive(repo)
-        shouldmove = opts.get('move_bookmark') and bm is not None
-        if dryrunopt:
-            ui.write(('hg update %s;\n' % p.rev()))
-            if shouldmove:
-                ui.write(('hg bookmark %s -r %s;\n' % (bm, p.rev())))
-        else:
-            ret = hg.update(repo, p.rev())
-            if not ret:
-                tr = lock = None
-                wlock = repo.wlock()
-                try:
-                    lock = repo.lock()
-                    tr = repo.transaction('previous')
-                    if shouldmove:
-                        repo._bookmarks[bm] = p.node()
-                        repo._bookmarks.recordchange(tr)
-                    else:
-                        bmdeactivate(repo)
-                    tr.close()
-                finally:
-                    lockmod.release(tr, lock, wlock)
-        displayer.show(p)
-        return 0
-    else:
-        for p in parents:
+        parents = wparents[0].parents()
+        topic = getattr(repo, 'currenttopic', '')
+        if topic and not opts.get("no_topic", False):
+            parents = [ctx for ctx in parents if ctx.topic() == topic]
+        displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+        if not parents:
+            ui.warn(_('no parent in topic "%s"\n') % topic)
+            ui.warn(_('(do you want --no-topic)\n'))
+        elif len(parents) == 1:
+            p = parents[0]
+            bm = bmactive(repo)
+            shouldmove = opts.get('move_bookmark') and bm is not None
+            if dryrunopt:
+                ui.write(('hg update %s;\n' % p.rev()))
+                if shouldmove:
+                    ui.write(('hg bookmark %s -r %s;\n' % (bm, p.rev())))
+            else:
+                ret = hg.update(repo, p.rev())
+                if not ret:
+                    tr = lock = None
+                    try:
+                        lock = repo.lock()
+                        tr = repo.transaction('previous')
+                        if shouldmove:
+                            repo._bookmarks[bm] = p.node()
+                            repo._bookmarks.recordchange(tr)
+                        else:
+                            bmdeactivate(repo)
+                        tr.close()
+                    finally:
+                        lockmod.release(tr, lock)
+
             displayer.show(p)
-        ui.warn(_('multiple parents, explicitly update to one\n'))
-        return 1
+            return 0
+        else:
+            for p in parents:
+                displayer.show(p)
+            ui.warn(_('multiple parents, explicitly update to one\n'))
+            return 1
+    finally:
+        lockmod.release(wlock)
 
 @command('^next',
          [('B', 'move-bookmark', False,
@@ -2289,91 +2295,96 @@ def cmdnext(ui, repo, **opts):
 
     Displays the summary line of the destination for clarity.
     """
-    wkctx = repo[None]
-    wparents = wkctx.parents()
+    wlock = None
     dryrunopt = opts['dry_run']
-    if len(wparents) != 1:
-        raise error.Abort('merge in progress')
-    if not opts['merge']:
-        try:
-            cmdutil.bailifchanged(repo)
-        except error.Abort as exc:
-            exc.hint = _('do you want --merge?')
-            raise
+    if not dryrunopt:
+        wlock = repo.wlock()
+    try:
+        wkctx = repo[None]
+        wparents = wkctx.parents()
+        if len(wparents) != 1:
+            raise error.Abort('merge in progress')
+        if not opts['merge']:
+            try:
+                cmdutil.bailifchanged(repo)
+            except error.Abort as exc:
+                exc.hint = _('do you want --merge?')
+                raise
 
-    children = [ctx for ctx in wparents[0].children() if not ctx.obsolete()]
-    topic = getattr(repo, 'currenttopic', '')
-    filtered = []
-    if topic and not opts.get("no_topic", False):
-        filtered = [ctx for ctx in children if ctx.topic() != topic]
-        # XXX N-square membership on children
-        children = [ctx for ctx in children if ctx not in filtered]
-    displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
-    if len(children) == 1:
-        c = children[0]
-        bm = bmactive(repo)
-        shouldmove = opts.get('move_bookmark') and bm is not None
-        if dryrunopt:
-            ui.write(('hg update %s;\n' % c.rev()))
-            if shouldmove:
-                ui.write(('hg bookmark %s -r %s;\n' % (bm, c.rev())))
-        else:
-            ret = hg.update(repo, c.rev())
-            if not ret:
-                lock = tr = None
-                wlock = repo.wlock()
-                try:
-                    lock = repo.lock()
-                    tr = repo.transaction('next')
-                    if shouldmove:
-                        repo._bookmarks[bm] = c.node()
-                        repo._bookmarks.recordchange(tr)
-                    else:
-                        bmdeactivate(repo)
-                    tr.close()
-                finally:
-                    lockmod.release(tr, lock, wlock)
-        displayer.show(c)
-        result = 0
-    elif children:
-        ui.warn(_("ambigious next changeset:\n"))
-        for c in children:
-            displayer.show(c)
-        ui.warn(_('explicitly update to one of them\n'))
-        result = 1
-    else:
-        aspchildren = _aspiringchildren(repo, [repo['.'].rev()])
-        if topic:
-            filtered.extend(repo[c] for c in children
-                            if repo[c].topic() != topic)
+        children = [ctx for ctx in wparents[0].children() if not ctx.obsolete()]
+        topic = getattr(repo, 'currenttopic', '')
+        filtered = []
+        if topic and not opts.get("no_topic", False):
+            filtered = [ctx for ctx in children if ctx.topic() != topic]
             # XXX N-square membership on children
-            aspchildren = [ctx for ctx in aspchildren if ctx not in filtered]
-        if not opts['evolve'] or not aspchildren:
-            if filtered:
-                ui.warn(_('no children on topic "%s"\n') % topic)
-                ui.warn(_('do you want --no-topic\n'))
+            children = [ctx for ctx in children if ctx not in filtered]
+        displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+        if len(children) == 1:
+            c = children[0]
+            bm = bmactive(repo)
+            shouldmove = opts.get('move_bookmark') and bm is not None
+            if dryrunopt:
+                ui.write(('hg update %s;\n' % c.rev()))
+                if shouldmove:
+                    ui.write(('hg bookmark %s -r %s;\n' % (bm, c.rev())))
             else:
-                ui.warn(_('no children\n'))
-            if aspchildren:
-                msg = _('(%i unstable changesets to be evolved here, '
-                        'do you want --evolve?)\n')
-                ui.warn(msg % len(aspchildren))
+                ret = hg.update(repo, c.rev())
+                if not ret:
+                    lock = tr = None
+                    try:
+                        lock = repo.lock()
+                        tr = repo.transaction('next')
+                        if shouldmove:
+                            repo._bookmarks[bm] = c.node()
+                            repo._bookmarks.recordchange(tr)
+                        else:
+                            bmdeactivate(repo)
+                        tr.close()
+                    finally:
+                        lockmod.release(tr, lock)
+            displayer.show(c)
+            result = 0
+        elif children:
+            ui.warn(_("ambigious next changeset:\n"))
+            for c in children:
+                displayer.show(c)
+            ui.warn(_('explicitly update to one of them\n'))
             result = 1
-        elif 1 < len(aspchildren):
-            ui.warn(_("ambigious next (unstable) changeset:\n"))
-            for c in aspchildren:
-                displayer.show(repo[c])
-            ui.warn(_('(run "hg evolve --rev REV" on one of them)\n'))
-            return 1
         else:
-            cmdutil.bailifchanged(repo)
-            result = _solveone(ui, repo, repo[aspchildren[0]], dryrunopt,
-                               False, lambda:None, category='unstable')
-            if not result:
-                ui.status(_('working directory now at %s\n') % repo['.'])
-            return result
-        return 1
-    return result
+            aspchildren = _aspiringchildren(repo, [repo['.'].rev()])
+            if topic:
+                filtered.extend(repo[c] for c in children
+                                if repo[c].topic() != topic)
+                # XXX N-square membership on children
+                aspchildren = [ctx for ctx in aspchildren if ctx not in filtered]
+            if not opts['evolve'] or not aspchildren:
+                if filtered:
+                    ui.warn(_('no children on topic "%s"\n') % topic)
+                    ui.warn(_('do you want --no-topic\n'))
+                else:
+                    ui.warn(_('no children\n'))
+                if aspchildren:
+                    msg = _('(%i unstable changesets to be evolved here, '
+                            'do you want --evolve?)\n')
+                    ui.warn(msg % len(aspchildren))
+                result = 1
+            elif 1 < len(aspchildren):
+                ui.warn(_("ambigious next (unstable) changeset:\n"))
+                for c in aspchildren:
+                    displayer.show(repo[c])
+                ui.warn(_('(run "hg evolve --rev REV" on one of them)\n'))
+                return 1
+            else:
+                cmdutil.bailifchanged(repo)
+                result = _solveone(ui, repo, repo[aspchildren[0]], dryrunopt,
+                                   False, lambda:None, category='unstable')
+                if not result:
+                    ui.status(_('working directory now at %s\n') % repo['.'])
+                return result
+            return 1
+        return result
+    finally:
+        lockmod.release(wlock)
 
 def _reachablefrombookmark(repo, revs, bookmarks):
     """filter revisions and bookmarks reachable from the given bookmark
@@ -2940,11 +2951,12 @@ def cmdsplit(ui, repo, *revs, **opts):
             else:
                 ui.status(_("no more change to split\n"))
 
-        tip = repo[newcommits[-1]]
-        bmupdate(tip.node())
-        if bookactive is not None:
-            bmactivate(repo, bookactive)
-        obsolete.createmarkers(repo, [(repo[r], newcommits)])
+        if newcommits:
+            tip = repo[newcommits[-1]]
+            bmupdate(tip.node())
+            if bookactive is not None:
+                bmactivate(repo, bookactive)
+            obsolete.createmarkers(repo, [(repo[r], newcommits)])
         tr.close()
     finally:
         lockmod.release(tr, lock, wlock)

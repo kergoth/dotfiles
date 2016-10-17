@@ -76,6 +76,8 @@ make a mess
   switching to topic foo
   0 files updated, 0 files merged, 4 files removed, 0 files unresolved
   $ hg topic -l 
+  ### topic: foo (?)
+  ### branch: default (?)
   t4@ add fff (current)
   t3: add eee
   t2: add ddd

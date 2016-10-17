@@ -59,6 +59,9 @@ Changelog
 5.4.2 --
 
  - Fix erroneous manifest computation when solving 'bumped' changeset.
+ - split: avoid crash on empty commit (issue5191),
+ - next: improve locking to avoid issue with working copy parent (issue5244)
+ - prev: improve locking to avoid issue with working copy parent (issue5244)
 
 5.4.1 -- 2016-08-01
 

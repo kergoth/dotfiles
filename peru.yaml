@@ -116,7 +116,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: f0438a05edf669232daac65d3c26e23564c7d620
+    rev: 2d1f793d9473d1b572fe43136422a3dcc9851765
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -153,7 +153,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
     export: autoload/
-    rev: 8c91196cfd9c8fe619f35fac6f2ac81be10677f8
+    rev: 7ba2e1b67a8f8bcbafedaf6763580390dfd93436
 
 # secure alternative to vim modelines
 git module securemodelines:
@@ -192,11 +192,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 75a0199a7dd5d7e591ebe9050ede60dae7f56339
+    rev: 89646038445ccfefc00724a9a860db2cbc4f1e70
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 3e8ecba0dea8b4ea35e81780a9aa00f2ca6823e8
+    rev: 0d121684a8d7d8d985e7385c4492e1a079085a0c
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -249,7 +249,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 7d1b007cb234d181fd09a50e40e50cb49642861b
+    rev: 47d4655bd884975fec0b57c572e04a20bdf73a61
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -261,6 +261,7 @@ hg module smem:
     url: https://selenic.com/repo/smem
     pick: smem
     rev: 2ab5040d56330b277adf5a0370c7432dbd9d743d
+    reup: 2ab5040d56330b277adf5a0370c7432dbd9d743d
 
 hg module dtrx:
     url: http://brettcsmith.org/2007/dtrx/dtrx
@@ -285,7 +286,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 3222d62ddf0b8072e43ac2b5abd52b1d6d3f6eef
+    rev: 0541c0dbcf96ff40bd80cb8359191dc0fa01d83d
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -323,7 +324,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: c963982ea95b2b891e8284e24930443e49e8e5da
+    rev: 69b26dd8247c76deebb8b173a2f6daf8c7ebf2c9
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -512,7 +513,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: http://42.netv6.net/evolve-main
     reup: stable
-    rev: 8f902ec9ed9a296d92c2c2df1536af8c44b5321c
+    rev: 970a4c13ebc320a034bc0aff21e0ef0a84157a92
 
 curl module zsh-globalias:
     url: http://patshead.com/misc-files/globalias.plugin.zsh
@@ -559,7 +560,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 753ed1fbe96bc734a588041f9afb830542aad4d3
+    rev: 6ffba7395c562e152cb84bc8f7906de2b1ed0b8a
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
@@ -570,11 +571,11 @@ git module checkbashisms:
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: 60c91eb1c33ea33d872624140c4ffa4990c8d8fb
+    rev: bff76e55e39456142f5f920e240a33f1143fc91a
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: acf210d5f62410b9b74ac142b7d9bd85cb7d41d4
+    rev: ce6cc2ea1afb69d0684bde08bed90ecfb96533a0
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -629,7 +630,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 62cdba4e0f7e1028dd52a6dcfe79b5bbb0d51b65
+    rev: fedc22e9bbd046867860e772d7d6787f5dae9d4c
 
 git module zsh-prioritize-cwd-history:
     url: https://github.com/ericfreese/zsh-prioritize-cwd-history
@@ -642,7 +643,7 @@ git module git-extras:
         - bin/git-alias
         - bin/git-setup
         - bin/git-show-tree
-    rev: 805d43831f160b9ee640efa83c08994fa3b7c2f5
+    rev: 249a6cd27cff7f6d71fe9f1b865e872a2987e88a
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready

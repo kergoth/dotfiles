@@ -378,3 +378,10 @@ Running split with both unnamed and named revision arguments shows an error msg
   (use either `hg split <rs>` or `hg split --rev <rs>`, not both)
   [255]
 
+Split empty commit (issue5191)
+  $ hg branch new-branch
+  marked working directory as branch new-branch
+  (branches are permanent and global, did you want a bookmark?)
+  $ hg commit -m "empty"
+  $ hg split
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
