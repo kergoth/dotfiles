@@ -136,6 +136,10 @@
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence @{u}..
 
+	# Non-interactive git rebase -x
+	rebase-test = !git -c core.editor=/bin/true rebase -ix
+	rebase-test-i = rebase -ix
+
 	# For each submodule
 	subs = submodule foreach --recursive
 
