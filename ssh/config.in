@@ -14,7 +14,7 @@ ControlPath ~/.ssh/socket.%r@%h:%p
 %include config.d/*
 
 # Github needs diffie-hellman-group-exchange-sha1 some of the time but not always.
-Host github.com
+Host github.com gist.github.com
     KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1
 
 Host *
