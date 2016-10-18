@@ -1,0 +1,2 @@
+#!/bin/sh
+brew cu && brew clean
