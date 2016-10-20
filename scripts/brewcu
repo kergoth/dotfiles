@@ -1,2 +1,3 @@
 #!/bin/sh
+brew update
 brew cu && brew clean
