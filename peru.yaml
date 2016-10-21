@@ -108,15 +108,15 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 094329eb145e00b810e65415ed4b9ad58aa7c34a
+    rev: 28d7056a7a0652fafe84e38b58ac5366326531d9
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 60085528959341087b088970c8bea4b7870d6f5b
+    rev: af69798423277c89bdeebde80daf6d04bfd808de
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 2d1f793d9473d1b572fe43136422a3dcc9851765
+    rev: cd61ca5054a2243ed7c6a2363404ad4a9b2d9eaf
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -167,7 +167,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: aac85a268e89a6c8be79341e130ac90256fadbd6
+    rev: 58ed86e434951319ff7d438fb1096f24a51e6458
 
 # go language support
 git module vim-golang:
@@ -192,7 +192,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 89646038445ccfefc00724a9a860db2cbc4f1e70
+    rev: 64d91665fe7b979653fe2b3610e3441afdc69aa8
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -286,7 +286,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 0541c0dbcf96ff40bd80cb8359191dc0fa01d83d
+    rev: 37f2d8f7952879bffd1326b88e4f0069ec1188d7
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -324,7 +324,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 69b26dd8247c76deebb8b173a2f6daf8c7ebf2c9
+    rev: ab8176c71f87e2b9914a399347a8c363a95bbaae
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -560,14 +560,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: 6ffba7395c562e152cb84bc8f7906de2b1ed0b8a
+    rev: 9b45d5c4b46031c29a31ba72fbf1dcb6f0db6d5f
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: e88eb792a5c8b3ff4aea2b2676c4af13fe383226
+    rev: 53eb5d1e46e7086e59372a9f20971b8d56404d53
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -600,7 +600,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: c30065a606ce4d5f7acc3a198ee070b17bb6d93d
+    rev: d67ca0ee88f8d9a174e9caac536903b9c52a0d9e
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish

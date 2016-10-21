@@ -140,7 +140,7 @@ _zsh_highlight_main__type() {
     # exists and is in $PATH).  Avoid triggering the bug, at the expense of
     # falling through to the $() below, incurring a fork.  (Issue #354.)
     #
-    # The second disjunct mimics the isrelative() C call from the zsh bug.
+    # The first disjunct mimics the isrelative() C call from the zsh bug.
     elif {  [[ $1 != */* ]] || is-at-least 5.3 } &&
          ! builtin type -w -- $1 >/dev/null 2>&1; then
       REPLY=none
@@ -810,7 +810,7 @@ _zsh_highlight_main_highlighter_highlight_string()
             fi
             ;;
       "\\") style=back-double-quoted-argument
-            if [[ \\\`\"\$ == *$arg[$i+1]* ]]; then
+            if [[ \\\`\"\$${histchars[1]} == *$arg[$i+1]* ]]; then
               (( k += 1 )) # Color following char too.
               (( i += 1 )) # Skip parsing the escaped char.
             else
