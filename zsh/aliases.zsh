@@ -156,8 +156,19 @@ alias funced="_funced "
 # Git
 alias wgit='git clone --recursive'
 
-alias fls='fls -f %n%F'
-alias fll='command fls'
+# fls
+fls () {
+    if [ $# -eq 0 ]; then
+        set -- *
+    fi
+    command fls -f %n%F "$@"
+}
+fll () {
+    if [ $# -eq 0 ]; then
+        set -- *
+    fi
+    command fls "$@"
+}
 
 # Global
 alias -g G='| grep'
