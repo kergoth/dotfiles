@@ -14,7 +14,7 @@ package main;
 use strict;
 use warnings;
 
-our $VERSION = '2.15_01'; # Check http://beyondgrep.com/ for updates
+our $VERSION = '2.15_02'; # Check http://beyondgrep.com/ for updates
 
 use 5.008008;
 use Getopt::Long 2.38 ();
@@ -390,7 +390,7 @@ sub setup_line_context_for_file {
     return;
 }
 
-=for Developers
+=begin Developers
 
 This subroutine jumps through a number of optimization hoops to
 try to be fast in the more common use cases of ack.  For one thing,
@@ -401,6 +401,8 @@ and normal searching.  Any changes that happen to one should propagate
 to the others if they make sense.  The non-context branches also inline
 does_match for performance reasons; any relevant changes that happen here
 must also happen there.
+
+=end Developers
 
 =cut
 
@@ -520,68 +522,24 @@ sub print_matches_in_resource {
             }
         }
         else {
-            # XXX unroll first match check ($has_printed_for_this_resource)
-            # XXX what if this is a *huge* file? (see also -l)
-            my $contents = do {
-                local $/;
-                <$fh>;
-            };
-
-            my $prev_match_end = 0;
-            my $line_no = 1;
-
-            $match_column_number = undef;
-            while ( $contents =~ /$opt_regex/og ) {
-                my $match_start = $-[0];
-                my $match_end   = $+[0];
-                next if $match_start == $match_end; # continue to the next line
-                                                    # if we match nothing, since
-                                                    # some regexes allow this
-                                                    # and would throw us into
-                                                    # an infinite loop
-
-                pos($contents)  = $prev_match_end;
-                $prev_match_end = $match_end;
-
-                while ( $contents =~ /\n/og && $-[0] < $match_start ) {
-                    $line_no++;
-                }
-
-                my $start_line = rindex($contents, "\n", $match_start);
-                my $end_line   = index($contents, "\n", $match_end);
-
-                if ( $start_line == -1 ) {
-                    $start_line = 0;
-                }
-                else {
-                    $start_line++;
-                }
-
-                if ( $end_line == -1 ) {
-                    $end_line = length($contents);
-                }
-                else {
-                    $end_line--;
-                }
-                $match_column_number = $match_start - $start_line + 1;
-                if ( !$has_printed_for_this_resource ) {
-                    if ( $opt_break && $has_printed_something ) {
-                        App::Ack::print_blank_line();
+            while ( <$fh> ) {
+                $match_column_number = undef;
+                if ( /$opt_regex/o ) {
+                    $match_column_number = $-[0] + 1;
+                    if ( !$has_printed_for_this_resource ) {
+                        if ( $opt_break && $has_printed_something ) {
+                            App::Ack::print_blank_line();
+                        }
+                        if ( $opt_show_filename && $opt_heading ) {
+                            App::Ack::print_filename( $display_filename, $ors );
+                        }
                     }
-                    if ( $opt_show_filename && $opt_heading ) {
-                        App::Ack::print_filename( $display_filename, $ors );
-                    }
+                    s/[\r\n]+$//g;
+                    print_line_with_options($opt, $filename, $_, $., ':');
+                    $has_printed_for_this_resource = 1;
+                    $nmatches++;
+                    $max_count--;
                 }
-                my $line = substr($contents, $start_line, $end_line - $start_line + 1);
-                $line =~ s/[\r\n]+$//g;
-                print_line_with_options($opt, $filename, $line, $line_no, ':');
-
-                pos($contents) = $end_line + 1;
-
-                $has_printed_for_this_resource = 1;
-                $nmatches++;
-                $max_count--;
-
                 last unless $max_count != 0;
             }
         }
@@ -642,9 +600,7 @@ sub print_line_with_options {
                     my $offset = 0; # additional offset for when we add stuff
                     my $previous_match_end = 0;
 
-                    last if $-[0] == $+[0]; # stop highlighting if we've hit an
-                                            # empty match, since continuing would
-                                            # result in an infinite loop
+                    last if $-[0] == $+[0];
 
                     for ( my $i = 1; $i < @+; $i++ ) {
                         my ( $match_start, $match_end ) = ( $-[$i], $+[$i] );
@@ -675,9 +631,7 @@ sub print_line_with_options {
                     $matched = 1;
                     my ( $match_start, $match_end ) = ($-[0], $+[0]);
                     next unless defined($match_start);
-                    last if $match_start == $match_end; # stop highlighting if we've hit an
-                                                        # empty match, since continuing would
-                                                        # result in an infinite loop
+                    last if $match_start == $match_end;
 
                     my $substring = substr( $line, $match_start,
                         $match_end - $match_start );
@@ -804,11 +758,13 @@ sub print_line_if_context {
 
 # does_match() MUST have an $opt_regex set.
 
-=for Developers
+=begin Developers
 
 This subroutine is inlined a few places in print_matches_in_resource
 for performance reasons, so any changes here must be copied there as
 well.
+
+=end Developers
 
 =cut
 
@@ -848,22 +804,11 @@ sub resource_has_match {
         }
     }
     else {
-        if ( $opt_v ) {
-            while ( <$fh> ) {
-                if (!/$opt_regex/o) {
-                    $has_match = 1;
-                    last;
-                }
+        while ( <$fh> ) {
+            if (/$opt_regex/o xor $opt_v) {
+                $has_match = 1;
+                last;
             }
-        }
-        else {
-            # XXX read in chunks
-            # XXX only do this for certain file sizes?
-            my $content = do {
-                local $/;
-                <$fh>;
-            };
-            $has_match = $content =~ /$opt_regex/o;
         }
         close $fh;
     }
@@ -882,17 +827,8 @@ sub count_matches_in_resource {
         }
     }
     else {
-        if ( $opt_v ) {
-            while ( <$fh> ) {
-                ++$nmatches if (!/$opt_regex/o);
-            }
-        }
-        else {
-            my $content = do {
-                local $/;
-                <$fh>;
-            };
-            $nmatches =()= ($content =~ /$opt_regex/og);
+        while ( <$fh> ) {
+            ++$nmatches if (/$opt_regex/o xor $opt_v);
         }
         close $fh;
     }
@@ -1115,7 +1051,9 @@ RESOURCES:
     App::Ack::exit_from_ack( $nmatches );
 }
 
+=pod
 
+=encoding UTF-8
 
 =head1 NAME
 
@@ -1941,13 +1879,19 @@ them here.
 
 =head2 Why isn't ack finding a match in (some file)?
 
-Probably because it's of a type that ack doesn't recognize.  ack's
-searching behavior is driven by filetype.  B<If ack doesn't know
-what kind of file it is, ack ignores the file.>
+First, take a look and see if ack is even looking at the file.  ack is
+intelligent in what files it will search and which ones it won't, but
+sometimes that can be surprising.
 
-Use the C<-f> switch to see a list of files that ack will search
-for you.  You can use the C<--show-types> switch to show which type
-ack thinks each file is.
+Use the C<-f> switch, with no regex, to see a list of files that ack
+will search for you.  If your file doesn't show up in the list of files
+that C<ack -f> shows, then ack never looks in it.
+
+NOTE: If you're using an old ack before 2.0, it's probably because it's of
+a type that ack doesn't recognize.  In ack 1.x, the searching behavior is
+driven by filetype.  B<If ack 1.x doesn't know what kind of file it is,
+ack ignores the file.>  You can use the C<--show-types> switch to show
+which type ack thinks each file is.
 
 =head2 Wouldn't it be great if F<ack> did search & replace?
 
@@ -2015,7 +1959,7 @@ expression metacharacter!)
 
 =head2 Why does C<"ack '.{40000,}'"> fail?  Isn't that a valid regex?
 
-The Perl language limits the repetition quanitifier to 32K.  You
+The Perl language limits the repetition quantifier to 32K.  You
 can search for C<.{32767}> but not C<.{32768}>.
 
 =head2 Ack does "X" and shouldn't, should it?
@@ -2294,6 +2238,12 @@ L<https://github.com/petdance/ack2>
 How appropriate to have I<ack>nowledgements!
 
 Thanks to everyone who has contributed to ack in any way, including
+Nick Morrott,
+Austin Chamberlin,
+Varadinsky,
+SE<eacute>bastien FeugE<egrave>re,
+Jakub Wilk,
+Pete Houston,
 Stephen Thirlwall,
 Jonah Bishop,
 Chris Rebert,
@@ -2413,7 +2363,7 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = '2.15_01';
+    $VERSION = '2.15_02';
     $COPYRIGHT = 'Copyright 2005-2015 Andy Lester.';
 }
 
@@ -3437,7 +3387,7 @@ sub _options_block {
 
 # Clojure
 # http://clojure.org/
---type-add=clojure:ext:clj
+--type-add=clojure:ext:clj,cljs,edn,cljc
 
 # C
 # .xs are Perl C files
@@ -3515,7 +3465,7 @@ sub _options_block {
 
 # JSP
 # http://www.oracle.com/technetwork/java/javaee/jsp/index.html
---type-add=jsp:ext:jsp,jspx,jhtm,jhtml
+--type-add=jsp:ext:jsp,jspx,jspf,jhtm,jhtml
 
 # JSON
 # http://www.json.org/
@@ -3644,7 +3594,7 @@ sub _options_block {
 
 # XML
 # http://www.w3.org/TR/REC-xml/
---type-add=xml:ext:xml,dtd,xsl,xslt,ent
+--type-add=xml:ext:xml,dtd,xsd,xsl,xslt,ent
 --type-add=xml:firstlinematch:/<[?]xml/
 
 # YAML
@@ -3780,7 +3730,7 @@ use strict;
 use warnings;
 
 use Carp 1.04 ();
-use Getopt::Long 2.35 ();
+use Getopt::Long 2.38 ();
 use Text::ParseWords 3.1 ();
 
 
@@ -5189,7 +5139,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = '1.12';
+our $VERSION = '1.16';
 
 
 
@@ -5205,7 +5155,7 @@ BEGIN {
     %files_defaults = (
         file_filter     => undef,
         descend_filter  => undef,
-        error_handler   => sub { CORE::die @_ },
+        error_handler   => sub { CORE::die $_[0] },
         warning_handler => sub { CORE::warn @_ },
         sort_files      => undef,
         follow_symlinks => 1,
@@ -5219,12 +5169,12 @@ sub files {
     die _bad_invocation() if @_ && defined($_[0]) && ($_[0] eq __PACKAGE__);
 
     my ($parms,@queue) = _setup( \%files_defaults, @_ );
-    my $filter = $parms->{file_filter};
 
     return sub {
+        my $filter = $parms->{file_filter};
         while (@queue) {
             my ($dirname,$file,$fullpath) = splice( @queue, 0, 3 );
-            if ( -f $fullpath || -p $fullpath || $fullpath =~ m{^/dev/fd} ) {
+            if ( -f $fullpath || -p _ || $fullpath =~ m{^/dev/fd} ) {
                 if ( $filter ) {
                     local $_ = $file;
                     local $File::Next::dir = $dirname;
@@ -5233,7 +5183,7 @@ sub files {
                 }
                 return wantarray ? ($dirname,$file,$fullpath) : $fullpath;
             }
-            elsif ( -d _ ) {
+            if ( -d _ ) {
                 unshift( @queue, _candidate_files( $parms, $fullpath ) );
             }
         } # while
@@ -5252,7 +5202,7 @@ sub from_file {
 
     my ($parms,@queue) = _setup( \%files_defaults, @_ );
     my $err  = $parms->{error_handler};
-    my $warn = $parms->{error_handler};
+    my $warn = $parms->{warning_handler};
 
     my $filename = $queue[1];
 
@@ -5267,13 +5217,13 @@ sub from_file {
     }
     else {
         if ( !open( $fh, '<', $filename ) ) {
-            $err->( "Unable to open $filename: $!" );
+            $err->( "Unable to open $filename: $!", $! + 0 );
             return undef;
         }
     }
-    my $filter = $parms->{file_filter};
 
     return sub {
+        my $filter = $parms->{file_filter};
         local $/ = $parms->{nul_separated} ? "\x00" : $/;
         while ( my $fullpath = <$fh> ) {
             chomp $fullpath;
@@ -5366,7 +5316,7 @@ sub _candidate_files {
 
     my $dh;
     if ( !opendir $dh, $dirname ) {
-        $parms->{error_handler}->( "$dirname: $!" );
+        $parms->{error_handler}->( "$dirname: $!", $! + 0 );
         return;
     }
 
@@ -5378,13 +5328,13 @@ sub _candidate_files {
     for my $file ( grep { !exists $skip_dirs{$_} } readdir $dh ) {
         my $has_stat;
 
-        # Only do directory checking if we have a descend_filter
         my $fullpath = File::Spec->catdir( $dirname, $file );
         if ( !$follow_symlinks ) {
             next if -l $fullpath;
             $has_stat = 1;
         }
 
+        # Only do directory checking if we have a descend_filter
         if ( $descend_filter ) {
             if ( $has_stat ? (-d _) : (-d $fullpath) ) {
                 local $File::Next::dir = $fullpath;
