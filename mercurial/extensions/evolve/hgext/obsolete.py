@@ -13,7 +13,7 @@ of obsolete marker than early user may have create. Keep it enabled if you
 were such user.
 """
 
-from mercurial import util
+from mercurial import error
 
 try:
     from mercurial import obsolete
@@ -24,9 +24,9 @@ import sys
 import json
 
 from mercurial import cmdutil
-from mercurial import error
 from mercurial.i18n import _
 from mercurial.node import bin, nullid
+from mercurial import util
 
 
 #####################################################################

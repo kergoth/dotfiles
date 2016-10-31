@@ -112,13 +112,13 @@ various init
 test kill and immutable changeset
 
   $ hg log -r 1 --template '{rev} {phase} {obsolete}\n'
-  1 public stable
+  1 public 
   $ hg prune 1
   abort: cannot prune immutable changeset: 7c3bad9141dc
-  (see "hg help phases" for details)
+  (see 'hg help phases' for details)
   [255]
   $ hg log -r 1 --template '{rev} {phase} {obsolete}\n'
-  1 public stable
+  1 public 
 
 test simple kill
 
@@ -598,7 +598,7 @@ Test graft --continue
   (use 'hg resolve' and 'hg graft --continue')
   [255]
   $ hg log -r7 --template '{rev}:{node|short} {obsolete}\n'
-  7:a5bfd90a2f29 stable
+  7:a5bfd90a2f29 
   $ echo 3 > 1
   $ hg resolve -m 1
   (no more unresolved files)
@@ -1126,7 +1126,7 @@ Enabling commands selectively, no command enabled, next and fold and unknown
    summary       summarize working directory state
    update        update working directory (or switch revisions)
   
-  (use "hg help" for the full list of commands or "hg -v" for details)
+  (use 'hg help' for the full list of commands or 'hg -v' for details)
   [255]
   $ hg fold
   hg: unknown command 'fold'
@@ -1152,7 +1152,7 @@ Enabling commands selectively, no command enabled, next and fold and unknown
    summary       summarize working directory state
    update        update working directory (or switch revisions)
   
-  (use "hg help" for the full list of commands or "hg -v" for details)
+  (use 'hg help' for the full list of commands or 'hg -v' for details)
   [255]
 Enabling commands selectively, only fold enabled, next is still unknown
   $ cat >> $HGRCPATH <<EOF
@@ -1188,7 +1188,7 @@ Enabling commands selectively, only fold enabled, next is still unknown
    summary       summarize working directory state
    update        update working directory (or switch revisions)
   
-  (use "hg help" for the full list of commands or "hg -v" for details)
+  (use 'hg help' for the full list of commands or 'hg -v' for details)
   [255]
 
 Restore all of the evolution features
@@ -1248,7 +1248,7 @@ With only createmarkers we can only uncommit on a head
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg uncommit --all
   new changeset is empty
-  (use "hg prune ." to remove it)
+  (use 'hg prune .' to remove it)
   $ glog -r "18::"
   @  26:044804d0c10d@default(draft) add j1
   |
@@ -1435,7 +1435,7 @@ Check that dirstate changes are kept at failure for conflicts (issue4966)
   merging newfile
   warning: conflicts while merging newfile! (edit, then use 'hg resolve --mark')
   evolve failed!
-  fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
+  fix conflict and run 'hg evolve --continue' or use 'hg update -C .' to abort
   abort: unresolved merge conflicts (see hg help resolve)
   [255]
 

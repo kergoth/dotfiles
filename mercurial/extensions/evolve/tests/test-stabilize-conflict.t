@@ -129,7 +129,7 @@ proper behavior with conflict using internal:merge
   merging babar
   warning: conflicts while merging babar! (edit, then use 'hg resolve --mark')
   evolve failed!
-  fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
+  fix conflict and run 'hg evolve --continue' or use 'hg update -C .' to abort
   abort: unresolved merge conflicts (see hg help resolve)
   [255]
   $ hg resolve -l
@@ -219,7 +219,7 @@ proper behavior with conflict using an external merge tool
   was merge successful (yn)? n
   merging babar failed!
   evolve failed!
-  fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
+  fix conflict and run 'hg evolve --continue' or use 'hg update -C .' to abort
   abort: unresolved merge conflicts (see hg help resolve)
   [255]
   $ hg resolve -l

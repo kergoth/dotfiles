@@ -8,7 +8,9 @@
   > [phases]
   > publish = False
   > [experimental]
-  > bundle2-exp=False
+  > bundle2-exp=False # < Mercurial-4.0
+  > [devel]
+  > legacy.exchange=bundle1
   > [extensions]
   > EOF
 

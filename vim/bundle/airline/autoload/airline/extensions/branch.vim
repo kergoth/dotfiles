@@ -80,7 +80,7 @@ function! s:get_git_untracked(file)
     else
       let output = system(s:git_cmd. shellescape(a:file))
       let untracked = ''
-      if output[0:1] is# '??' && output[3:-2] is? a:file
+      if output[0:1] is# '??'
         let untracked = get(g:, 'airline#extensions#branch#notexists', g:airline_symbols.notexists)
       endif
       let s:untracked_git[a:file] = untracked
@@ -106,7 +106,18 @@ endfunction
 
 function! s:get_hg_branch()
   if s:has_lawrencium
-    return lawrencium#statusline()
+    let stl=lawrencium#statusline()
+    if !empty(stl) && has('job')
+      call s:get_mq_async('hg qtop', expand('%:p'))
+    endif
+    if exists("s:mq") && !empty(s:mq)
+      if stl is# 'default'
+        " Shorten default a bit
+        let stl='def'
+      endif
+      let stl.=' ['.s:mq.']'
+    endif
+    return stl
   endif
   return ''
 endfunction
@@ -154,6 +165,44 @@ if s:has_async
           \ 'close_cb': function('s:on_exit', options)})
     let s:jobs[a:file] = id
   endfu
+
+  function! s:on_exit_mq(channel) dict abort
+    if !empty(self.buf)
+      if self.buf is# 'no patches applied' ||
+        \ self.buf =~# "unknown command 'qtop'"
+        let self.buf = ''
+      elseif exists("s:mq") && s:mq isnot# self.buf
+        " make sure, statusline is updated
+        unlet! b:airline_head
+      endif
+      let s:mq = self.buf
+    endif
+    if has_key(s:jobs, self.file)
+      call remove(s:jobs, self.file)
+    endif
+  endfunction
+
+  function! s:get_mq_async(cmd, file)
+    if g:airline#util#is_windows && &shell =~ 'cmd'
+      let cmd = a:cmd. shellescape(a:file)
+    else
+      let cmd = ['sh', '-c', a:cmd]
+    endif
+
+    let options = {'cmd': a:cmd, 'buf': '', 'file': a:file}
+    if has_key(s:jobs, a:file)
+      if job_status(get(s:jobs, a:file)) == 'run'
+        return
+      elseif has_key(s:jobs, a:file)
+        call remove(s:jobs, a:file)
+      endif
+    endif
+    let id = job_start(cmd, {
+          \ 'err_io':   'out',
+          \ 'out_cb':   function('s:on_stdout', options),
+          \ 'close_cb': function('s:on_exit_mq', options)})
+    let s:jobs[a:file] = id
+  endfu
 endif
 
 function! airline#extensions#branch#head()
@@ -174,17 +223,23 @@ function! airline#extensions#branch#head()
   let l:hg_head = s:get_hg_branch()
 
   let l:file = expand("%:p")
+  " Do not get untracked flag if we are modifying a directory.
+  let l:is_file_and_not_dir = !isdirectory(l:file)
   if !empty(l:git_head)
     let found_fugitive_head = 1
     let l:heads.git = (!empty(l:hg_head) ? "git:" : '') . s:format_name(l:git_head)
-    call s:get_git_untracked(l:file)
-    let l:heads.git .= get(s:untracked_git, l:file, '')
+    if l:is_file_and_not_dir
+      call s:get_git_untracked(l:file)
+      let l:heads.git .= get(s:untracked_git, l:file, '')
+    endif
   endif
 
   if !empty(l:hg_head)
     let l:heads.mercurial = (!empty(l:git_head) ? "hg:" : '') . s:format_name(l:hg_head)
-    call s:get_hg_untracked(l:file)
-    let l:heads.mercurial.= get(s:untracked_hg, l:file, '')
+    if l:is_file_and_not_dir
+      call s:get_hg_untracked(l:file)
+      let l:heads.mercurial.= get(s:untracked_hg, l:file, '')
+    endif
   endif
 
   if empty(l:heads)

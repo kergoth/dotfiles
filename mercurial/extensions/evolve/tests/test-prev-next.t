@@ -200,7 +200,7 @@ next with ambiguity in aspiring children
   ambigious next (unstable) changeset:
   [4] added c
   [5] added d
-  (run "hg evolve --rev REV" on one of them)
+  (run 'hg evolve --rev REV' on one of them)
   [1]
   $ hg evolve -r 5
   move:[5] added d
@@ -221,7 +221,7 @@ prev and next should lock properly against other commands
   $ hg amend --edit &
   $ sleep 1
   $ hg prev
-  waiting for lock on working directory of $TESTTMP/repo held by '*' (glob)
+  waiting for lock on working directory of $TESTTMP/repo held by process '*' on host '*' (glob)
   got lock after [4-6] seconds (re)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   [0] one
@@ -230,7 +230,7 @@ prev and next should lock properly against other commands
   $ hg amend --edit &
   $ sleep 1
   $ hg next --evolve
-  waiting for lock on working directory of $TESTTMP/repo held by '*' (glob)
+  waiting for lock on working directory of $TESTTMP/repo held by process '*' on host '*' (glob)
   1 new unstable changesets
   got lock after [4-6] seconds (re)
   move:[2] two

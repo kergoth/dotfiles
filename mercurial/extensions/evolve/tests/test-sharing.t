@@ -342,7 +342,7 @@ her change, so now she can publish it.
   searching for changes
   remote has heads on branch 'default' that are not known locally: 540ba8f317e6
   abort: push creates new remote head cbdfbd5a5db2 with bookmark 'bug15'!
-  (pull and merge or see "hg help push" for details about pushing new heads)
+  (pull and merge or see 'hg help push' for details about pushing new heads)
   [255]
   $ hg pull ../public
   pulling from ../public

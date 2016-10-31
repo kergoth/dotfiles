@@ -14,7 +14,7 @@ Changeset Evolution with Mercurial
 
 `evolve`_ is an experimental Mercurial extension for safe mutable history.
 
-.. _`evolve`: http://mercurial.selenic.com/wiki/EvolveExtension
+.. _`evolve`: https://www.mercurial-scm.org/wiki/EvolveExtension
 
 With core Mercurial, changesets are permanent and immutable. You can
 commit new changesets to modify your source code, but you cannot
@@ -99,11 +99,11 @@ However, it is not yet stable enough for that. In particular:
 
   * There are still some corner cases that aren't handled yet. If you
     think you have found such a case, please check if it's already
-    described in the Mercurial bug tracker (http://bz.selenic.com).
+    described in the Mercurial bug tracker (https://bz.mercurial-scm.org/).
     Bugs in ``evolve`` are files under component "evolution": use
     `this query`_ to view open bugs in ``evolve``.
 
-.. _`this query`: http://bz.selenic.com/buglist.cgi?component=evolution&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEED_EXAMPLE
+.. _`this query`: https://bz.mercurial-scm.org/buglist.cgi?component=evolution&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEED_EXAMPLE
 
 Installation and setup
 ----------------------

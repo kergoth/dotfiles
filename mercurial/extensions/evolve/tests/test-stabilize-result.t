@@ -84,7 +84,7 @@ Test evolve with conflict
   merging a
   warning: conflicts while merging a! (edit, then use 'hg resolve --mark')
   evolve failed!
-  fix conflict and run "hg evolve --continue" or use "hg update -C" to abort
+  fix conflict and run 'hg evolve --continue' or use 'hg update -C .' to abort
   abort: unresolved merge conflicts (see hg help resolve)
   [255]
   $ hg revert -r 'unstable()' a
@@ -98,7 +98,7 @@ Test evolve with conflict
   +newer a
   $ hg evolve --continue
   grafting 5:3655f0f50885 "newer a"
-  abort: unresolved merge conflicts (see "hg help resolve")
+  abort: unresolved merge conflicts (see 'hg help resolve')
   [255]
   $ hg resolve -m a
   (no more unresolved files)
@@ -223,7 +223,7 @@ Stabilize divergent changesets with same parent
   $ hg up --hidden 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ mv a a.old
   $ echo 'jungle' > a
   $ cat a.old >> a
@@ -336,7 +336,7 @@ Check conflict during divergence resolution
   $ hg up --hidden 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ echo 'gotta break' >> a
   $ hg amend
   2 new divergent changesets
@@ -359,7 +359,7 @@ Check conflict during divergence resolution
   merging a
   warning: conflicts while merging a! (edit, then use 'hg resolve --mark')
   0 files updated, 0 files merged, 0 files removed, 1 files unresolved
-  use 'hg resolve' to retry unresolved file merges or 'hg update -C .' to abandon
+  use 'hg resolve' to retry unresolved file merges or 'hg update -C .' to abort
   abort: merge conflict between several amendments (this is not automated yet)
   (/!\ You can try:
   /!\ * manual merge + resolve => new cset X

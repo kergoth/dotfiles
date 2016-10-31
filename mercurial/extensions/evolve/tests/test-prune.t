@@ -1,6 +1,6 @@
   $ cat >> $HGRCPATH <<EOF
   > [ui]
-  > logtemplate={rev}:{node|short}[{bookmarks}] ({obsolete}/{phase}) {desc|firstline}\n
+  > logtemplate={rev}:{node|short}[{bookmarks}] ({separate('/', obsolete ,phase)}) {desc|firstline}\n
   > [extensions]
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
@@ -21,15 +21,15 @@
   $ mkcommit e
   $ hg bookmarks BABAR
   $ hg log -G
-  @  4:9d206ffc875e[BABAR] (stable/draft) add e
+  @  4:9d206ffc875e[BABAR] (draft) add e
   |
-  o  3:47d2a3944de8[] (stable/draft) add d
+  o  3:47d2a3944de8[] (draft) add d
   |
-  o  2:4538525df7e2[] (stable/draft) add c
+  o  2:4538525df7e2[] (draft) add c
   |
-  o  1:7c3bad9141dc[] (stable/draft) add b
+  o  1:7c3bad9141dc[] (draft) add b
   |
-  o  0:1f0dee641bb7[] (stable/public) add a
+  o  0:1f0dee641bb7[] (public) add a
   
 
 Check arguments exclusive to each other
@@ -85,7 +85,7 @@ cannot prune public changesets
 
   $ hg prune 0
   abort: cannot prune immutable changeset: 1f0dee641bb7
-  (see "hg help phases" for details)
+  (see 'hg help phases' for details)
   [255]
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
@@ -109,23 +109,23 @@ Check successors addition
   $ mkcommit nE
 
   $ hg log -G
-  @  12:6e8148413dd5[] (stable/draft) add nE
+  @  12:6e8148413dd5[] (draft) add nE
   |
-  o  11:8ee176ff1d4b[] (stable/draft) add nD
+  o  11:8ee176ff1d4b[] (draft) add nD
   |
-  o  10:aa96dc3f04c2[] (stable/draft) add nC
+  o  10:aa96dc3f04c2[] (draft) add nC
   |
-  o  9:6f6f25e4f748[] (stable/draft) add nB
+  o  9:6f6f25e4f748[] (draft) add nB
   |
-  | o  8:bb5e90a7ea1f[] (stable/draft) add ee
+  | o  8:bb5e90a7ea1f[] (draft) add ee
   | |
-  | o  7:00ded550b1e2[] (stable/draft) add dd
+  | o  7:00ded550b1e2[] (draft) add dd
   | |
-  | o  6:354011cd103f[] (stable/draft) add cc
+  | o  6:354011cd103f[] (draft) add cc
   | |
-  | o  5:814c38b95e72[] (stable/draft) add bb
+  | o  5:814c38b95e72[] (draft) add bb
   |/
-  o  0:1f0dee641bb7[BABAR] (stable/public) add a
+  o  0:1f0dee641bb7[BABAR] (public) add a
   
 
 one old, one new
@@ -143,21 +143,21 @@ one old, one new
   47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'user': 'test'} (glob)
   bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'user': 'test'} (glob)
   $ hg log -G
-  @  12:6e8148413dd5[] (stable/draft) add nE
+  @  12:6e8148413dd5[] (draft) add nE
   |
-  o  11:8ee176ff1d4b[] (stable/draft) add nD
+  o  11:8ee176ff1d4b[] (draft) add nD
   |
-  o  10:aa96dc3f04c2[] (stable/draft) add nC
+  o  10:aa96dc3f04c2[] (draft) add nC
   |
-  o  9:6f6f25e4f748[] (stable/draft) add nB
+  o  9:6f6f25e4f748[] (draft) add nB
   |
-  | o  7:00ded550b1e2[] (stable/draft) add dd
+  | o  7:00ded550b1e2[] (draft) add dd
   | |
-  | o  6:354011cd103f[] (stable/draft) add cc
+  | o  6:354011cd103f[] (draft) add cc
   | |
-  | o  5:814c38b95e72[] (stable/draft) add bb
+  | o  5:814c38b95e72[] (draft) add bb
   |/
-  o  0:1f0dee641bb7[BABAR] (stable/public) add a
+  o  0:1f0dee641bb7[BABAR] (public) add a
   
 
 one old, two new
@@ -175,19 +175,19 @@ one old, two new
   bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'user': 'test'} (glob)
   00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'user': 'test'} (glob)
   $ hg log -G
-  @  12:6e8148413dd5[] (stable/draft) add nE
+  @  12:6e8148413dd5[] (draft) add nE
   |
-  o  11:8ee176ff1d4b[] (stable/draft) add nD
+  o  11:8ee176ff1d4b[] (draft) add nD
   |
-  o  10:aa96dc3f04c2[] (stable/draft) add nC
+  o  10:aa96dc3f04c2[] (draft) add nC
   |
-  o  9:6f6f25e4f748[] (stable/draft) add nB
+  o  9:6f6f25e4f748[] (draft) add nB
   |
-  | o  6:354011cd103f[] (stable/draft) add cc
+  | o  6:354011cd103f[] (draft) add cc
   | |
-  | o  5:814c38b95e72[] (stable/draft) add bb
+  | o  5:814c38b95e72[] (draft) add bb
   |/
-  o  0:1f0dee641bb7[BABAR] (stable/public) add a
+  o  0:1f0dee641bb7[BABAR] (public) add a
   
 
 two old, two new (should be denied)
@@ -373,56 +373,56 @@ yoinked from test-mq-strip.t
   (leaving bookmark rg)
   $ hg bookmark r10
   $ hg log -G
-  o  15:cd0038e05e1b[rg] (stable/draft) add rg
+  o  15:cd0038e05e1b[rg] (draft) add rg
   |
-  | x  14:43227190fef8[] (extinct/draft) r14
+  | x  14:43227190fef8[] (obsolete/draft) r14
   | |
-  | | x  13:b4594d867745[] (extinct/draft) r13
+  | | x  13:b4594d867745[] (obsolete/draft) r13
   | | |
-  | | | x  12:e46a4836065c[] (extinct/draft) r12
+  | | | x  12:e46a4836065c[] (obsolete/draft) r12
   | | |/
-  | | o  11:bab5d5bf48bd[] (stable/draft) r11
+  | | o  11:bab5d5bf48bd[] (draft) r11
   | |/
-  +---@  10:ff43616e5d0f[B r10] (stable/draft) r10
+  +---@  10:ff43616e5d0f[B r10] (draft) r10
   | |
-  o |  8:d62d843c9a01[] (stable/draft) r8
+  o |  8:d62d843c9a01[] (draft) r8
   | |
-  o |  7:e7d9710d9fc6[] (stable/draft) r7
+  o |  7:e7d9710d9fc6[] (draft) r7
   |/
-  o    3:2b6d669947cd[] (stable/draft) r3
+  o    3:2b6d669947cd[] (draft) r3
   |\
-  | o  2:fa942426a6fd[] (stable/draft) r2
+  | o  2:fa942426a6fd[] (draft) r2
   | |
-  o |  1:66f7d451a68b[] (stable/draft) r1
+  o |  1:66f7d451a68b[] (draft) r1
   |/
-  o  0:1ea73414a91b[] (stable/draft) r0
+  o  0:1ea73414a91b[] (draft) r0
   
   $ hg prune 11
   1 changesets pruned
   $ hg log -G
-  o  15:cd0038e05e1b[rg] (stable/draft) add rg
+  o  15:cd0038e05e1b[rg] (draft) add rg
   |
-  | x  14:43227190fef8[] (extinct/draft) r14
+  | x  14:43227190fef8[] (obsolete/draft) r14
   | |
-  | | x  13:b4594d867745[] (extinct/draft) r13
+  | | x  13:b4594d867745[] (obsolete/draft) r13
   | | |
-  | | | x  12:e46a4836065c[] (extinct/draft) r12
+  | | | x  12:e46a4836065c[] (obsolete/draft) r12
   | | |/
-  | | x  11:bab5d5bf48bd[] (extinct/draft) r11
+  | | x  11:bab5d5bf48bd[] (obsolete/draft) r11
   | |/
-  +---@  10:ff43616e5d0f[B r10] (stable/draft) r10
+  +---@  10:ff43616e5d0f[B r10] (draft) r10
   | |
-  o |  8:d62d843c9a01[] (stable/draft) r8
+  o |  8:d62d843c9a01[] (draft) r8
   | |
-  o |  7:e7d9710d9fc6[] (stable/draft) r7
+  o |  7:e7d9710d9fc6[] (draft) r7
   |/
-  o    3:2b6d669947cd[] (stable/draft) r3
+  o    3:2b6d669947cd[] (draft) r3
   |\
-  | o  2:fa942426a6fd[] (stable/draft) r2
+  | o  2:fa942426a6fd[] (draft) r2
   | |
-  o |  1:66f7d451a68b[] (stable/draft) r1
+  o |  1:66f7d451a68b[] (draft) r1
   |/
-  o  0:1ea73414a91b[] (stable/draft) r0
+  o  0:1ea73414a91b[] (draft) r0
   
   $ hg book CELESTE
   $ hg prune -r . --keep

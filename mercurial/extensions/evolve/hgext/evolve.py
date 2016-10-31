@@ -19,9 +19,9 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.4.1'
-testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1 3.9'
-buglink = 'http://bz.selenic.com/'
+__version__ = '5.5.0'
+testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1 3.9 4.0'
+buglink = 'https://bz.mercurial-scm.org/'
 
 
 evolutionhelptext = """
@@ -665,17 +665,11 @@ def revsetallsuccessors(repo, subset, x):
 
 @eh.templatekw('obsolete')
 def obsoletekw(repo, ctx, templ, **args):
-    """:obsolete: String. The obsolescence level of the node, could be
-    ``stable``, ``unstable``, ``suspended`` or ``extinct``.
+    """:obsolete: String. Whether the changeset is ``obsolete``.
     """
     if ctx.obsolete():
-        if ctx.extinct():
-            return 'extinct'
-        else:
-            return 'suspended'
-    elif ctx.unstable():
-        return 'unstable'
-    return 'stable'
+        return 'obsolete'
+    return ''
 
 @eh.templatekw('troubles')
 def showtroubles(repo, ctx, **args):
@@ -695,7 +689,7 @@ def _warnobsoletewc(ui, repo):
     if repo['.'].obsolete():
         ui.warn(_('working directory parent is obsolete!\n'))
         if (not ui.quiet) and obsolete.isenabled(repo, commandopt):
-            ui.warn(_('(use "hg evolve" to update to its successor)\n'))
+            ui.warn(_("(use 'hg evolve' to update to its successor)\n"))
 
 @eh.wrapcommand("update")
 @eh.wrapcommand("pull")
@@ -964,28 +958,25 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
     tr = repo.currenttransaction()
     assert tr is not None
     try:
-        try:
-            r = _evolvemerge(repo, orig, dest, pctx, keepbranch)
-            if r[-1]:  #some conflict
-                raise error.Abort(
-                        'unresolved merge conflicts (see hg help resolve)')
-            nodenew = _relocatecommit(repo, orig, commitmsg)
-        except error.Abort as exc:
-            repo.dirstate.beginparentchange()
-            repo.setparents(repo['.'].node(), nullid)
-            writedirstate(repo.dirstate, tr)
-            # fix up dirstate for copies and renames
-            copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
-            repo.dirstate.endparentchange()
-            class LocalMergeFailure(MergeFailure, exc.__class__):
-                pass
-            exc.__class__ = LocalMergeFailure
-            tr.close() # to keep changes in this transaction (e.g. dirstate)
-            raise
-        oldbookmarks = repo.nodebookmarks(nodesrc)
-        _finalizerelocate(repo, orig, dest, nodenew, tr)
-    finally:
-        pass # TODO: remove this redundant try/finally block
+        r = _evolvemerge(repo, orig, dest, pctx, keepbranch)
+        if r[-1]:  #some conflict
+            raise error.Abort(
+                    'unresolved merge conflicts (see hg help resolve)')
+        nodenew = _relocatecommit(repo, orig, commitmsg)
+    except error.Abort as exc:
+        repo.dirstate.beginparentchange()
+        repo.setparents(repo['.'].node(), nullid)
+        writedirstate(repo.dirstate, tr)
+        # fix up dirstate for copies and renames
+        copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
+        repo.dirstate.endparentchange()
+        class LocalMergeFailure(MergeFailure, exc.__class__):
+            pass
+        exc.__class__ = LocalMergeFailure
+        tr.close() # to keep changes in this transaction (e.g. dirstate)
+        raise
+    oldbookmarks = repo.nodebookmarks(nodesrc)
+    _finalizerelocate(repo, orig, dest, nodenew, tr)
     return nodenew
 
 def _bookmarksupdater(repo, oldid, tr):
@@ -1024,7 +1015,7 @@ def bmactive(repo):
 ### dirstate compatibility layer < hg 3.6
 
 def writedirstate(dirstate, tr):
-    if dirstate.write.func_defaults is not None: # mercurial 3.6 and above
+    if dirstate.write.func_code.co_argcount != 1: # mercurial 3.6 and above
         return dirstate.write(tr)
     return dirstate.write()
 
@@ -1794,14 +1785,18 @@ def evolve(ui, repo, **opts):
             raise error.Abort('no evolve to continue')
         orig = repo[state['current']]
         # XXX This is a terrible terrible hack, please get rid of it.
-        repo.opener.write('graftstate', orig.hex() + '\n')
+        lock = repo.wlock()
         try:
-            graftcmd = commands.table['graft'][0]
-            ret = graftcmd(ui, repo, old_obsolete=True, **{'continue': True})
-            _evolvestatedelete(repo)
-            return ret
+            repo.opener.write('graftstate', orig.hex() + '\n')
+            try:
+                graftcmd = commands.table['graft'][0]
+                ret = graftcmd(ui, repo, old_obsolete=True, **{'continue': True})
+                _evolvestatedelete(repo)
+                return ret
+            finally:
+                util.unlinkpath(repo.join('graftstate'), ignoremissing=True)
         finally:
-            util.unlinkpath(repo.join('graftstate'), ignoremissing=True)
+            lock.release()
     cmdutil.bailifchanged(repo)
 
 
@@ -1950,8 +1945,8 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
             _evolvestatewrite(repo, {'current': orig.node()})
             repo.ui.write_err(_('evolve failed!\n'))
             repo.ui.write_err(
-                _('fix conflict and run "hg evolve --continue"'
-                  ' or use "hg update -C" to abort\n'))
+                _("fix conflict and run 'hg evolve --continue'"
+                  " or use 'hg update -C .' to abort\n"))
             raise
 
 def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
@@ -1994,73 +1989,70 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
     tr = repo.currenttransaction()
     assert tr is not None
     bmupdate = _bookmarksupdater(repo, bumped.node(), tr)
-    try:
-        if not list(repo.set('parents(%d) and parents(%d)', bumped, prec)):
-            # Need to rebase the changeset at the right place
-            repo.ui.status(
-                _('rebasing to destination parent: %s\n') % prec.p1())
-            try:
-                tmpid = relocate(repo, bumped, prec.p1())
-                if tmpid is not None:
-                    tmpctx = repo[tmpid]
-                    obsolete.createmarkers(repo, [(bumped, (tmpctx,))])
-            except MergeFailure:
-                repo.opener.write('graftstate', bumped.hex() + '\n')
-                repo.ui.write_err(_('evolution failed!\n'))
-                repo.ui.write_err(
-                    _('fix conflict and run "hg evolve --continue"\n'))
-                raise
-        # Create the new commit context
-        repo.ui.status(_('computing new diff\n'))
-        files = set()
-        copied = copies.pathcopies(prec, bumped)
-        precmanifest = prec.manifest().copy()
-        # 3.3.2 needs a list.
-        # future 3.4 don't detect the size change during iteration
-        # this is fishy
-        for key, val in list(bumped.manifest().iteritems()):
-            precvalue = precmanifest.get(key, None)
-            if precvalue is not None:
-                del precmanifest[key]
-            if precvalue != val:
-                files.add(key)
-        files.update(precmanifest)  # add missing files
-        # commit it
-        if files: # something to commit!
-            def filectxfn(repo, ctx, path):
-                if path in bumped:
-                    fctx = bumped[path]
-                    flags = fctx.flags()
-                    mctx = memfilectx(repo, fctx.path(), fctx.data(),
-                                      islink='l' in flags,
-                                      isexec='x' in flags,
-                                      copied=copied.get(path))
-                    return mctx
-                return None
-            text = 'bumped update to %s:\n\n' % prec
-            text += bumped.description()
+    if not list(repo.set('parents(%d) and parents(%d)', bumped, prec)):
+        # Need to rebase the changeset at the right place
+        repo.ui.status(
+            _('rebasing to destination parent: %s\n') % prec.p1())
+        try:
+            tmpid = relocate(repo, bumped, prec.p1())
+            if tmpid is not None:
+                tmpctx = repo[tmpid]
+                obsolete.createmarkers(repo, [(bumped, (tmpctx,))])
+        except MergeFailure:
+            repo.opener.write('graftstate', bumped.hex() + '\n')
+            repo.ui.write_err(_('evolution failed!\n'))
+            repo.ui.write_err(
+                _("fix conflict and run 'hg evolve --continue'\n"))
+            raise
+    # Create the new commit context
+    repo.ui.status(_('computing new diff\n'))
+    files = set()
+    copied = copies.pathcopies(prec, bumped)
+    precmanifest = prec.manifest().copy()
+    # 3.3.2 needs a list.
+    # future 3.4 don't detect the size change during iteration
+    # this is fishy
+    for key, val in list(bumped.manifest().iteritems()):
+        precvalue = precmanifest.get(key, None)
+        if precvalue is not None:
+            del precmanifest[key]
+        if precvalue != val:
+            files.add(key)
+    files.update(precmanifest)  # add missing files
+    # commit it
+    if files: # something to commit!
+        def filectxfn(repo, ctx, path):
+            if path in bumped:
+                fctx = bumped[path]
+                flags = fctx.flags()
+                mctx = memfilectx(repo, fctx.path(), fctx.data(),
+                                  islink='l' in flags,
+                                  isexec='x' in flags,
+                                  copied=copied.get(path))
+                return mctx
+            return None
+        text = 'bumped update to %s:\n\n' % prec
+        text += bumped.description()
 
-            new = context.memctx(repo,
-                                 parents=[prec.node(), node.nullid],
-                                 text=text,
-                                 files=files,
-                                 filectxfn=filectxfn,
-                                 user=bumped.user(),
-                                 date=bumped.date(),
-                                 extra=bumped.extra())
+        new = context.memctx(repo,
+                             parents=[prec.node(), node.nullid],
+                             text=text,
+                             files=files,
+                             filectxfn=filectxfn,
+                             user=bumped.user(),
+                             date=bumped.date(),
+                             extra=bumped.extra())
 
-            newid = repo.commitctx(new)
-        if newid is None:
-            obsolete.createmarkers(repo, [(tmpctx, ())])
-            newid = prec.node()
-        else:
-            phases.retractboundary(repo, tr, bumped.phase(), [newid])
-            obsolete.createmarkers(repo, [(tmpctx, (repo[newid],))],
-                                   flag=obsolete.bumpedfix)
-        bmupdate(newid)
-        repo.ui.status(_('committed as %s\n') % node.short(newid))
-    finally:
-        pass # TODO: remove this redundant try/finally block
+        newid = repo.commitctx(new)
+    if newid is None:
+        obsolete.createmarkers(repo, [(tmpctx, ())])
+        newid = prec.node()
+    else:
+        phases.retractboundary(repo, tr, bumped.phase(), [newid])
+        obsolete.createmarkers(repo, [(tmpctx, (repo[newid],))],
+                               flag=obsolete.bumpedfix)
+    bmupdate(newid)
+    repo.ui.status(_('committed as %s\n') % node.short(newid))
     # reroute the working copy parent to the new changeset
     repo.dirstate.beginparentchange()
     repo.dirstate.setparents(newid, node.nullid)
@@ -2156,7 +2148,7 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
     hg._showstats(repo, stats)
     if stats[3]:
         repo.ui.status(_("use 'hg resolve' to retry unresolved file merges "
-                         "or 'hg update -C .' to abandon\n"))
+                         "or 'hg update -C .' to abort\n"))
     if stats[3] > 0:
         raise error.Abort('merge conflict between several amendments '
             '(this is not automated yet)',
@@ -2372,7 +2364,7 @@ def cmdnext(ui, repo, **opts):
                 ui.warn(_("ambigious next (unstable) changeset:\n"))
                 for c in aspchildren:
                     displayer.show(repo[c])
-                ui.warn(_('(run "hg evolve --rev REV" on one of them)\n'))
+                ui.warn(_("(run 'hg evolve --rev REV' on one of them)\n"))
                 return 1
             else:
                 cmdutil.bailifchanged(repo)
@@ -2516,7 +2508,7 @@ def cmdprune(ui, repo, *revs, **opts):
             if not cp.mutable():
                 # note: createmarkers() would have raised something anyway
                 raise error.Abort('cannot prune immutable changeset: %s' % cp,
-                                 hint='see "hg help phases" for details')
+                                 hint="see 'hg help phases' for details")
             precs.append(cp)
         if not precs:
             raise error.Abort('nothing to prune')
@@ -2840,7 +2832,7 @@ def uncommit(ui, repo, *pats, **opts):
         updatebookmarks(newid)
         if not repo[newid].files():
             ui.warn(_("new changeset is empty\n"))
-            ui.status(_('(use "hg prune ." to remove it)\n'))
+            ui.status(_("(use 'hg prune .' to remove it)\n"))
         tr.close()
     finally:
         lockmod.release(tr, lock, wlock)
@@ -4052,7 +4044,7 @@ evolvestateversion = 0
 @eh.uisetup
 def setupevolveunfinished(ui):
     data = ('evolvestate', True, False, _('evolve in progress'),
-           _("use 'hg evolve --continue' or 'hg update' to abort"))
+           _("use 'hg evolve --continue' or 'hg update -C .' to abort"))
     cmdutil.unfinishedstates.append(data)
 
 @eh.wrapfunction(hg, 'clean')

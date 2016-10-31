@@ -131,7 +131,7 @@ test obsolete changeset with non-obsolete descendant
   summary:     add obsol_c
   
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ mkcommit d # 5 (on 3)
   1 new unstable changesets
   $ qlog -r 'obsolete()'
@@ -150,19 +150,19 @@ test obsolete changeset with non-obsolete descendant
 
 Test obsolete keyword
 
-  $ hg log -G --template '{rev}:{node|short}@{branch}({obsolete}/{phase}) {desc|firstline}\n' \
-  >   --hidden
-  @  5:a7a6f2b5d8a5@default(unstable/draft) add d
+  $ hg --hidden log -G \
+  >  --template '{rev}:{node|short}@{branch}({separate("/", obsolete, phase)}) {desc|firstline}\n'
+  @  5:a7a6f2b5d8a5@default(draft) add d
   |
-  | o  4:725c380fe99b@default(stable/draft) add obsol_c'
+  | o  4:725c380fe99b@default(draft) add obsol_c'
   | |
-  x |  3:0d3f46688ccc@default(suspended/draft) add obsol_c
+  x |  3:0d3f46688ccc@default(obsolete/draft) add obsol_c
   |/
-  | x  2:4538525df7e2@default(extinct/draft) add c
+  | x  2:4538525df7e2@default(obsolete/draft) add c
   |/
-  o  1:7c3bad9141dc@default(stable/draft) add b
+  o  1:7c3bad9141dc@default(draft) add b
   |
-  o  0:1f0dee641bb7@default(stable/public) add a
+  o  0:1f0dee641bb7@default(public) add a
   
 
 Test communication of obsolete relation with a compatible client
@@ -701,7 +701,7 @@ Check import reports new unstable changeset:
   $ hg up --hidden 2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ hg export 9468a5f5d8b2 | hg import -
   applying patch from stdin
   1 new unstable changesets

@@ -6,7 +6,7 @@
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
 
-  $ template='{rev}:{node|short}@{branch}({obsolete}/{phase}) {desc|firstline}\n'
+  $ template='{rev}:{node|short}@{branch}({separate("/", obsolete, phase)}) {desc|firstline}\n'
   $ glog() {
   >   hg glog --template "$template" "$@"
   > }
@@ -29,11 +29,11 @@ has A and B, neither A or C should be in outgoing.
   2 changesets pruned
   1 new unstable changesets
   $ glog --hidden
-  @  2:244232c2222a@default(unstable/secret) C
+  @  2:244232c2222a@default(secret) C
   |
-  | x  1:6c81ed0049f8@default(extinct/draft) B
+  | x  1:6c81ed0049f8@default(obsolete/draft) B
   |/
-  x  0:1994f17a630e@default(suspended/draft) A
+  x  0:1994f17a630e@default(obsolete/draft) A
   
   $ hg init ../clone
   $ cat >  ../clone/.hg/hgrc <<EOF
@@ -43,4 +43,4 @@ has A and B, neither A or C should be in outgoing.
   $ hg outgoing ../clone --template "$template"
   comparing with ../clone
   searching for changes
-  0:1994f17a630e@default(suspended/draft) A
+  0:1994f17a630e@default(obsolete/draft) A

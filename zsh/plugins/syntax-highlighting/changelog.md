@@ -1,4 +1,15 @@
-up to 0020f592c108
+up to 28d7056a7a06
+
+# Changes in version 0.6.0
+
+
+## Added highlighting of:
+
+- The `isearch` and `suffix` [`$zle_highlight` settings][zshzle-Character-Highlighting].
+  (79e4d3d12405, 15db71abd0cc; requires zsh 5.3 for `$ISEARCHMATCH_ACTIVE` / `$SUFFIX_ACTIVE` support)
+
+[zshzle-Character-Highlighting]: http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#Character-Highlighting
+
 
 # Changes in version 0.5.0
 
@@ -26,11 +37,6 @@ in this area.
 
 - Aliases that cannot be defined normally nor invoked normally (highlighted as an error).
   (#263 (in part), 28932316cca6)
-
-- The `isearch` and `suffix` [`$zle_highlight` settings][zshzle-Character-Highlighting].
-  (79e4d3d12405, 15db71abd0cc; requires zsh 5.3 for `$ISEARCHMATCH_ACTIVE` / `$SUFFIX_ACTIVE` support)
-
-[zshzle-Character-Highlighting]: http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#Character-Highlighting
 
 - Path separators (`/`) — the default behaviour remains to highlight path separators
   and path components the same way.
@@ -74,6 +80,9 @@ in this area.
 - Command words from future versions of zsh (forward compatibly).
   This also adds an `arg0` style that all other command word styles fall back to.
   (b4537a972eed, bccc3dc26943)
+
+- Escaped history expansions inside double quotes: `: "\!"`
+  (28d7056a7a06, et seq)
 
 
 ## Fixed highlighting of:

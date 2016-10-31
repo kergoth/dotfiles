@@ -168,7 +168,7 @@ check it complains about multiple heads
   pushing to pushdest
   searching for changes
   abort: push creates new remote head e5ea8f9c7314!
-  (merge or see "hg help push" for details about pushing new heads)
+  (merge or see 'hg help push' for details about pushing new heads)
   [255]
   $ cd ..
 

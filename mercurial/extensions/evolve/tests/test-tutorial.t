@@ -741,14 +741,14 @@ remote get a warning that current working directory is based on an obsolete chan
   searching for changes
   no changes found
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
 
 now let's see where we are, and update to the successor
 
   $ hg parents
   bf1b0d202029 (draft): animals
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ hg evolve
   update:[8] animals
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved

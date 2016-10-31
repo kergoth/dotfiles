@@ -422,7 +422,7 @@ function! fzf#vim#gitfiles(args, ...)
   let wrapped = fzf#wrap({
   \ 'source':  'git -c color.status=always status --short --untracked-files=all',
   \ 'dir':     root,
-  \ 'options': '--ansi --multi --nth 2..,.. --prompt "GitFiles?> " --preview ''(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500'''
+  \ 'options': '--ansi --multi --nth 2..,.. --prompt "GitFiles?> " --preview ''sh -c "(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500"'''
   \})
   call s:remove_layout(wrapped)
   let wrapped.common_sink = remove(wrapped, 'sink*')
@@ -478,7 +478,7 @@ endfunction
 
 function! s:format_buffer(b)
   let name = bufname(a:b)
-  let name = empty(name) ? '[No Name]' : name
+  let name = empty(name) ? '[No Name]' : fnamemodify(name, ":~:.")
   let flag = a:b == bufnr('')  ? s:blue('%', 'Conditional') :
           \ (a:b == bufnr('#') ? s:magenta('#', 'Special') : ' ')
   let modified = getbufvar(a:b, '&modified') ? s:red(' [+]', 'Exception') : ''

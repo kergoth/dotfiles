@@ -12,6 +12,7 @@ import errno
 from StringIO import StringIO
 
 from mercurial.i18n import _
+from mercurial import error
 from mercurial import extensions
 from mercurial import wireproto
 from mercurial import obsolete

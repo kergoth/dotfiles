@@ -1,3 +1,9 @@
+mercurial-evolve (5.5.0) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Sun, 30 Oct 2016 23:27:14 +0100
+
 mercurial-evolve (5.2.1-1) unstable; urgency=medium
 
   * New upstream release.

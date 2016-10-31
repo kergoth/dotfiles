@@ -5,7 +5,7 @@
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
 
   $ glog() {
-  >   hg glog --template '{rev}:{node|short}@{branch}({obsolete}/{phase}) {desc|firstline}\n' "$@"
+  >   hg glog --template '{rev}:{node|short}@{branch}({separate("/", obsolete, phase)}) {desc|firstline}\n' "$@"
   > }
 
   $ hg init repo
@@ -118,13 +118,13 @@ Prepare complicated changeset
 Add a couple of bookmarks
 
   $ glog --hidden
-  @  3:5eb72dbe0cb4@bar(stable/draft) touncommit
+  @  3:5eb72dbe0cb4@bar(draft) touncommit
   |
-  o    2:f63b90038565@default(stable/draft) merge
+  o    2:f63b90038565@default(draft) merge
   |\
-  | o  1:f15c744d48e8@default(stable/draft) addmore
+  | o  1:f15c744d48e8@default(draft) addmore
   |
-  o  0:07f494440405@default(stable/draft) adda
+  o  0:07f494440405@default(draft) adda
   
   $ hg bookmark -r 2 unrelated
   $ hg bookmark touncommit-bm
@@ -217,15 +217,15 @@ Enjoy uncommit
   $ hg cat -r . e
   e
   $ glog --hidden
-  @  4:e8db4aa611f6@bar(stable/draft) touncommit
+  @  4:e8db4aa611f6@bar(draft) touncommit
   |
-  | x  3:5eb72dbe0cb4@bar(extinct/draft) touncommit
+  | x  3:5eb72dbe0cb4@bar(obsolete/draft) touncommit
   |/
-  o    2:f63b90038565@default(stable/draft) merge
+  o    2:f63b90038565@default(draft) merge
   |\
-  | o  1:f15c744d48e8@default(stable/draft) addmore
+  | o  1:f15c744d48e8@default(draft) addmore
   |
-  o  0:07f494440405@default(stable/draft) adda
+  o  0:07f494440405@default(draft) adda
   
   $ hg bookmarks
    * touncommit-bm             4:e8db4aa611f6
@@ -240,7 +240,7 @@ Test phase is preserved, no local changes
   8 files updated, 0 files merged, 1 files removed, 0 files unresolved
   (leaving bookmark touncommit-bm)
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ hg --config extensions.purge= purge
   $ hg uncommit -I 'set:added() and e'
   2 new divergent changesets
@@ -264,17 +264,17 @@ Test phase is preserved, no local changes
   R m
   R n
   $ glog --hidden
-  @  5:c706fe2c12f8@bar(stable/draft) touncommit
+  @  5:c706fe2c12f8@bar(draft) touncommit
   |
-  | o  4:e8db4aa611f6@bar(stable/draft) touncommit
+  | o  4:e8db4aa611f6@bar(draft) touncommit
   |/
-  | x  3:5eb72dbe0cb4@bar(extinct/draft) touncommit
+  | x  3:5eb72dbe0cb4@bar(obsolete/draft) touncommit
   |/
-  o    2:f63b90038565@default(stable/draft) merge
+  o    2:f63b90038565@default(draft) merge
   |\
-  | o  1:f15c744d48e8@default(stable/draft) addmore
+  | o  1:f15c744d48e8@default(draft) addmore
   |
-  o  0:07f494440405@default(stable/draft) adda
+  o  0:07f494440405@default(draft) adda
   
   $ hg debugobsolete
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
@@ -285,7 +285,7 @@ Test --all
   $ hg up -C 3 --hidden
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
-  (use "hg evolve" to update to its successor)
+  (use 'hg evolve' to update to its successor)
   $ hg --config extensions.purge= purge
   $ hg uncommit --all -X e
   1 new divergent changesets
@@ -319,7 +319,7 @@ Display a warning if nothing left
 
   $ hg uncommit e
   new changeset is empty
-  (use "hg prune ." to remove it)
+  (use 'hg prune .' to remove it)
   $ hg debugobsolete
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c706fe2c12f83ba5010cb60ea6af3bd1f0c2d6d3 0 (*) {'user': 'test'} (glob)

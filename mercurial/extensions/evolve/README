@@ -38,7 +38,7 @@ this:
     hg email --to mercurial-devel@mercurial-scm.org --flag evolve-ext --rev '<your patches>'
 
 See also
-http://mercurial-scm.org/wiki/ContributingChanges#Patch_descriptions
+https://mercurial-scm.org/wiki/ContributingChanges#Patch_descriptions
 for guidelines on the patch description.
 
 Please don't forget to update and run the tests when you fix a bug or
@@ -56,12 +56,15 @@ Mercurial on default.)
 Changelog
 =========
 
-5.4.2 --
+5.5.0 -- 2016-10-30
 
+ - The {obsolete} template now yield "obsolete" or "".
+ - compatibility with Mercurial 4.0
  - Fix erroneous manifest computation when solving 'bumped' changeset.
  - split: avoid crash on empty commit (issue5191),
  - next: improve locking to avoid issue with working copy parent (issue5244)
  - prev: improve locking to avoid issue with working copy parent (issue5244)
+ - evolve: fix abort suggestion to include '.' in 'hg update -C .'
 
 5.4.1 -- 2016-08-01
 
@@ -129,7 +132,7 @@ the leading 'hg' will give you an hardtime)
 - minor documentation cleanup
 - support -i option for `hg amend` if commit supports it (3.4)
 - fix the `debugrecordpruneparents` utility
-- fix some possible crash during command abort (release non-existant transaction)
+- fix some possible crash during command abort (release nonexistent transaction)
 - fix simple4server bug tracker URL
 - compatibility with bookmark API change in future Mercurial 3.5
 - prune no longer move the active bookmark for no reason (issue4559)
@@ -147,7 +150,7 @@ the leading 'hg' will give you an hardtime)
 
 5.1.3 -- 2015-04-20
 
-- discovery: fix misbehaving discovery accros python version
+- discovery: fix misbehaving discovery across python version
 - pull: properly install the bundle2 par generator
   (avoid sending all markers for each pull)
 - commit: avoid potential deadlock (acquires wlock before lock)
@@ -167,7 +170,7 @@ the leading 'hg' will give you an hardtime)
 
 - evolve: explicitly disable bookmark on evolve (issue4432)
 - evolve: don't abort Mercurial on version mismatch
-- comptatibility with mercurial 3.3
+- compatibility with mercurial 3.3
 
 5.0.2 -- 2014-12-14
 
@@ -242,7 +245,7 @@ the leading 'hg' will give you an hardtime)
 
 - fix a bug where evolve were creating changeset with 2 parents on windows
   (fix issues #16, #35 and #42)
-- adds a --obsolete flag to import (requieres Mercurial 3.0)
+- adds a --obsolete flag to import (requires Mercurial 3.0)
 - prune: update to successor rather than parent when pruning '.' with -s
 - fold: add missing --message and --logfile option
 - fold: add squash as an alias
@@ -283,7 +286,7 @@ the leading 'hg' will give you an hardtime)
 3.1.0 -- 2013-02-11
 
 - amend: drop deprecated --change option for amend
-- alias: add a grab aliast to be used instead of graft -O
+- alias: add a grab alias to be used instead of graft -O
 - touch: add a --duplicate option to *not* obsolete the old version
 - touch: fix touching multiple revision at the same time
 - evolve: add a --all option
@@ -361,7 +364,7 @@ the leading 'hg' will give you an hardtime)
 0.6 -- 2012-07-31
 
 - obsolete: change warning output to match mercurial core on
-- qsync: ignore unexistent nodes
+- qsync: ignore nonexistent nodes
 - make compat server both compatible with "dump" and "dump%i" version
 
 0.5 -- 2012-07-16
@@ -375,7 +378,7 @@ the leading 'hg' will give you an hardtime)
 
 0.4.1 -- 2012-07-10
 
-- [convert] properly exclude null successors from convertion
+- [convert] properly exclude null successors from conversion
 - Ignore buggy marker in newerversion
 
 
@@ -396,7 +399,7 @@ the leading 'hg' will give you an hardtime)
 - revset:    add, successors(), allsuccessors(), precursors(), allprecursors(),
              latecomer() and hidden()
 - evolve:    add `prune` alias to `kill`.
-- stabilize: clearly state that stabilize does nto handle conflict
+- stabilize: clearly state that stabilize does not handle conflict
 - template:  add an {obsolete} keyword
 
 0.2.0 -- 2012-06-20

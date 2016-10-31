@@ -116,7 +116,7 @@ However, it is easily achieved by manual operation::
 
 For more complexe scenario we recommend the use of the histedit_ extension.
 
-.. _histedit: http://mercurial.selenic.com/wiki/HisteditExtension
+.. _histedit: https://www.mercurial-scm.org/wiki/HisteditExtension
 
 
 Update my current work in progress after a pull

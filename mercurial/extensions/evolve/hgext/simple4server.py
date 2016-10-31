@@ -8,13 +8,14 @@ CONCEPT BEFORE USING IT.
 For client side usages it is recommended to use the evolve extension for
 improved user interface.'''
 
-testedwith = '3.3.3 3.4-rc'
-buglink = 'http://bz.selenic.com/'
+testedwith = '3.3 3.4-rc'
+buglink = 'https://bz.mercurial-scm.org/'
 
 import mercurial.obsolete
 
 import hashlib
 import struct
+from mercurial import error
 from mercurial import util
 from mercurial import wireproto
 from mercurial import extensions
