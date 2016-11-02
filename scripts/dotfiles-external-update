@@ -12,7 +12,7 @@ die () {
 export HGRCPATH=
 
 dotfilesdir="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$dotfilesdir"
+cd "$dotfilesdir" || exit 1
 
 tmpdir="$(cd "$(mktemp -dt "${0##*/}.XXXXXX")" && pwd)"
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
@@ -25,7 +25,7 @@ PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 peru reup || echo >&2 "peru reup failed"
 peru sync -f || die "peru sync failed"
 
-cd "$tmpdir"
+cd "$tmpdir" || exit 1
 git clone https://github.com/petdance/ack2 && \
     cd ack2 && \
     "$dotfilesdir/scripts/cpanmv" ack2 File::Next && \
@@ -34,7 +34,7 @@ git clone https://github.com/petdance/ack2 && \
     make ack-standalone && \
     cp -f ack-standalone "$dotfilesdir/scripts/ack"
 
-cd "$tmpdir"
+cd "$tmpdir" || exit 1
 git clone https://github.com/defunkt/gist && \
     cd gist && \
     rake standalone && \
