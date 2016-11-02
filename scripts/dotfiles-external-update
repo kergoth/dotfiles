@@ -23,7 +23,7 @@ fi
 PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 
 alias peru='$dotfilesdir/peru'
-peru reup || echo >&2 "peru reup failed"
+peru reup -f || echo >&2 "peru reup failed"
 peru sync -f || die "peru sync failed"
 
 cd "$tmpdir" || exit 1
