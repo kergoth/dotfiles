@@ -33,7 +33,7 @@ fi
 
 eval "$(perl -I "$env_dir/lib/perl5" "-Mlocal::lib=$env_dir")"
 
-cpanm "$@"
+cpanm -l "$env_dir" "$@"
 
 mkdir -p "$XDG_DATA_HOME/../bin"
 for script in "$env_dir/bin/"*; do
