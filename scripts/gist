@@ -1318,18 +1318,18 @@ end
 module Gist
   extend self
 
-  VERSION = '4.3.0'
+  VERSION = '4.5.0'
 
   # A list of clipboard commands with copy and paste support.
   CLIPBOARD_COMMANDS = {
+    'pbcopy'  => 'pbpaste',
     'xclip'   => 'xclip -o',
     'xsel -i' => 'xsel -o',
-    'pbcopy'  => 'pbpaste',
-    'putclip' => 'getclip'
+    'putclip' => 'getclip',
   }
 
   GITHUB_API_URL   = URI("https://api.github.com/")
-  GIT_IO_URL       = URI("http://git.io")
+  GIT_IO_URL       = URI("https://git.io")
 
   GITHUB_BASE_PATH = ""
   GHE_BASE_PATH    = "/api/v3"
@@ -1458,6 +1458,7 @@ module Gist
   # otherwise list public gists for given username (optional argument)
   #
   # @param [String] user
+  # @deprecated
   #
   # see https://developer.github.com/v3/gists/#list-gists
   def list_gists(user = "")
@@ -1487,6 +1488,62 @@ module Gist
     end
   end
 
+  def list_all_gists(user = "")
+    url = "#{base_path}"
+
+    if user == ""
+      access_token = auth_token()
+      if access_token.to_s != ''
+        url << "/gists?per_page=100&access_token=" << CGI.escape(access_token)
+        get_gist_pages(url)
+      else
+        raise Error, "Not authenticated. Use 'gist --login' to login or 'gist -l username' to view public gists."
+      end
+
+    else
+      url << "/users/#{user}/gists?per_page=100"
+      get_gist_pages(url)
+    end
+
+  end
+
+  def read_gist(id, file_name=nil)
+    url = "#{base_path}/gists/#{id}"
+    request = Net::HTTP::Get.new(url)
+    response = http(api_url, request)
+
+    if response.code == '200'
+      body = JSON.parse(response.body)
+      files = body["files"]
+
+      if file_name
+        file = files[file_name]
+        raise Error, "Gist with id of #{id} and file #{file_name} does not exist." unless file
+      else
+        file = files.values.first
+      end
+
+      puts file["content"]
+    else
+      raise Error, "Gist with id of #{id} does not exist."
+    end
+  end
+
+  def get_gist_pages(url)
+
+    request = Net::HTTP::Get.new(url)
+    response = http(api_url, request)
+    pretty_gist(response)
+
+    link_header = response.header['link']
+
+    if link_header
+      links = Hash[ link_header.gsub(/(<|>|")/, "").split(',').map { |link| link.split('; rel=') } ].invert
+      get_gist_pages(links['next']) if links['next']
+    end
+
+  end
+
   # return prettified string result of response body for all gists
   #
   # @params [Net::HTTPResponse] response
@@ -1497,7 +1554,9 @@ module Gist
     body = JSON.parse(response.body)
     if response.code == '200'
       body.each do |gist|
-        puts "#{gist['html_url']} #{gist['description'] || gist['files'].keys.join(" ")} #{gist['public'] ? '' : '(secret)'}\n"
+        description = "#{gist['description'] || gist['files'].keys.join(" ")} #{gist['public'] ? '' : '(secret)'}"
+        puts "#{gist['html_url']} #{description.tr("\n", " ")}\n"
+        $stdout.flush
       end
 
     else
@@ -1510,10 +1569,12 @@ module Gist
   # @param [String] url
   # @return [String] shortened url, or long url if shortening fails
   def shorten(url)
-    request = Net::HTTP::Post.new("/")
+    request = Net::HTTP::Post.new("/create")
     request.set_form_data(:url => url)
     response = http(GIT_IO_URL, request)
     case response.code
+    when "200"
+      URI.join(GIT_IO_URL, response.body).to_s
     when "201"
       response['Location']
     else
@@ -1586,7 +1647,7 @@ module Gist
 
       if Net::HTTPCreated === response
         AuthTokenFile.write JSON.parse(response.body)['token']
-        puts "Success! #{ENV[URL_ENV_NAME] || "https://github.com/"}settings/applications"
+        puts "Success! #{ENV[URL_ENV_NAME] || "https://github.com/"}settings/tokens"
         return
       elsif Net::HTTPUnauthorized === response
         puts "Error: #{JSON.parse(response.body)['message']}"
@@ -1784,6 +1845,10 @@ end
 # Silence Ctrl-C's
 trap('INT'){ exit 1 }
 
+if Signal.list.include? 'PIPE'
+  trap('PIPE', 'EXIT')
+end
+
 require 'optparse'
 
 # For the holdings of options.
@@ -1825,6 +1890,7 @@ original gist with the same GitHub account.
 
 Usage: #{executable_name} [-o|-c|-e] [-p] [-s] [-R] [-d DESC] [-a] [-u URL] [-P] [-f NAME|-t EXT]* FILE*
        #{executable_name} --login
+       #{executable_name} [-l|-r]
 
   EOS
 
@@ -1894,6 +1960,10 @@ Usage: #{executable_name} [-o|-c|-e] [-p] [-s] [-R] [-d DESC] [-a] [-u URL] [-P]
     options[:list] = user
   end
 
+  opts.on("-r", "--read ID [FILENAME]", "Read a gist and print out the contents") do |id|
+    options[:read] = id
+  end
+
   opts.on_tail("-h","--help", "Show this message.") do
     puts opts
     exit
@@ -1925,10 +1995,16 @@ begin
 
   if options.key? :list
     if options[:list]
-      Gist.list_gists(options[:list])
+      Gist.list_all_gists(options[:list])
     else
-      Gist.list_gists
+      Gist.list_all_gists
     end
+    exit
+  end
+
+  if options.key? :read
+    file_name = ARGV.first
+    Gist.read_gist(options[:read], file_name)
     exit
   end
 

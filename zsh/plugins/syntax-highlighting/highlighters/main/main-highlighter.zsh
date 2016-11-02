@@ -147,7 +147,7 @@ _zsh_highlight_main__type() {
     fi
   fi
   if ! (( $+REPLY )); then
-    REPLY="${$(LC_ALL=C builtin type -w -- $1 2>/dev/null)#*: }"
+    REPLY="${$(LC_ALL=C builtin type -w -- $1 2>/dev/null)##*: }"
   fi
   if (( $+_zsh_highlight_main__command_type_cache )); then
     _zsh_highlight_main__command_type_cache[(e)$1]=$REPLY
@@ -418,6 +418,7 @@ _zsh_highlight_highlighter_main_paint()
       fi
       _zsh_highlight_main_add_region_highlight $start_pos $end_pos $style
       already_added=1
+      start_pos=$end_pos
       continue
     fi
 
