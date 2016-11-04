@@ -25,6 +25,7 @@ setopt PROMPT_SUBST
 setopt CORRECT
 setopt COMPLETE_IN_WORD
 setopt EXTENDED_GLOB
+setopt NULL_GLOB
 
 # More useful with manydots-magic
 setopt auto_cd
