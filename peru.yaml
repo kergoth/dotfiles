@@ -641,7 +641,6 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-        - bin/git-setup
         - bin/git-show-tree
     rev: db62a6d95c6815f177195b09fb7e59193d466883
 
