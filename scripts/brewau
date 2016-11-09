@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+trap 'brew clean' EXIT INT TERM
+
+brew update || :
+brew upgrade --fetch-HEAD
+brew cu
