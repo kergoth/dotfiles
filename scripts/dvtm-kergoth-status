@@ -21,7 +21,11 @@ rm -f "$FIFO"
 mkfifo "$FIFO"
 chmod 600 "$FIFO"
 
-dvtm-print-status -s -c 30 "$ID" >$FIFO 2>&1 </dev/null &
+if [ -z "$DVTM_FMT" ]; then
+    DVTM_FMT='{id} | {user}@{host}'
+fi
+
+dvtm-print-status -s -c 30 "$ID" "$DVTM_FMT" >$FIFO 2>&1 </dev/null &
 
 STATUS_PID=$!
 trap 'kill $STATUS_PID' EXIT INT TERM
