@@ -25,7 +25,10 @@ if [ -z "$DVTM_FMT" ]; then
     DVTM_FMT='{id} | {user}@{host}'
 fi
 
-dvtm-print-status -s -c 30 "$ID" "$DVTM_FMT" >$FIFO 2>&1 </dev/null &
+while true; do
+    dvtm-print-status "$ID" "$DVTM_FMT"
+    sleep 30
+done >"$FIFO" 2>/dev/null </dev/null &
 
 STATUS_PID=$!
 trap 'kill $STATUS_PID' EXIT INT TERM
