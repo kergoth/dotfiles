@@ -40,7 +40,7 @@ update_static_data () {
         dset static_data debian_chroot "$(cat /etc/debian_chroot)"
     fi
     if [ -n "$CLEARCASE_ROOT" ]; then
-        dset static_data ccache "$(echo $CLEARCASE_ROOT | cut -d/ -f3)"
+        dset static_data clearcase_root "$(echo $CLEARCASE_ROOT | cut -d/ -f3)"
     fi
 }
 
