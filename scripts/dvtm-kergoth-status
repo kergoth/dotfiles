@@ -33,4 +33,4 @@ done >"$FIFO" 2>/dev/null </dev/null &
 STATUS_PID=$!
 trap 'kill $STATUS_PID' EXIT INT TERM
 export DVTM_ID="$ID"
-dvtm -M -s "$FIFO" -h 4096 "$@"
+dvtm -M -s "$FIFO" -h 16384 "$@"
