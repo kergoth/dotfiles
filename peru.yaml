@@ -167,7 +167,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 58ed86e434951319ff7d438fb1096f24a51e6458
+    rev: b3a8be6975dcc27b523b030bf5d35d9c737aef18
 
 # go language support
 git module vim-golang:
@@ -192,7 +192,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 516870bf9f17ffa8c3ac16b98684cb1baa18b46e
+    rev: 258430db82329c1298750af91391c1b21a5a5b58
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -249,7 +249,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 0bc9b231fbab6749f18f2f34cc21c649b9a7d3ed
+    rev: 7721fb2677e601943c9d6872ae36380cac66b78c
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -273,7 +273,7 @@ hg module dtrx:
 hg module t:
     url: https://bitbucket.org/sjl/t
     pick: t.py
-    rev: ddd4a3af16d7f9db13688b646bd51624db8551a2
+    rev: 655800c5080d713175847fd33ed37d85517bdfcb
 
 git module fzf:
     url: https://github.com/junegunn/fzf
@@ -286,7 +286,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 2cff00dce24df2a7e5add001423c6d8200b57c87
+    rev: a2beb159f1757961f1314b2739b5707ea2af2ea0
 
 curl module rpm2cpio:
     url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
@@ -324,7 +324,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 193336d4fcbe3f84df9e0fb95ada52c32a333016
+    rev: 3f4fdee6c06f5ace525e0bccab73d9c6f82f15ea
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -567,7 +567,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: dd1eac79bc7d9db60e3aefa998a1a78cb746def0
+    rev: 118f7c1a97e6f7f7f95989159eb8455d5466aa06
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -600,7 +600,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 490887a02add44d4451dd8fdbc40147461c7c51c
+    rev: 3021e584ee14ebe115a3634fe983d59f56d8e103
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -642,7 +642,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: db62a6d95c6815f177195b09fb7e59193d466883
+    rev: 2d6e4eaf8a7b315c38c8087afa9ed0143c85f39e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready

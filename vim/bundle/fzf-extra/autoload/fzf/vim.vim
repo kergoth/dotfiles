@@ -403,9 +403,21 @@ endfunction
 " GFiles[?]
 " ------------------------------------------------------------------
 
-function! fzf#vim#gitfiles(args, ...)
+" helper function to get the git root. Uses vim-fugitive if available for EXTRA SPEED!
+function! s:get_git_root()
+  if exists('*fugitive#repo')
+    try
+      return fugitive#repo().tree()
+    catch
+    endtry
+  endif
   let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
-  if v:shell_error
+  return v:shell_error ? '' : root
+endfunction
+
+function! fzf#vim#gitfiles(args, ...)
+  let root = s:get_git_root()
+  if empty(root)
     return s:warn('Not in git repo')
   endif
   if a:args != '?'
@@ -938,8 +950,8 @@ function! s:commits_sink(lines)
 endfunction
 
 function! s:commits(buffer_local, args)
-  let s:git_root = s:chomp(system('git rev-parse --show-toplevel'))
-  if v:shell_error
+  let s:git_root = s:get_git_root()
+  if empty(s:git_root)
     return s:warn('Not in git repository')
   endif
 
