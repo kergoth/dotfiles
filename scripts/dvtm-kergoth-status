@@ -7,7 +7,7 @@ if [ $# -lt 1 ] || [ -z "$1" ]; then
 fi
 
 
-ID=$(echo $1 | tr [A-Z] [a-z])
+ID="$(echo "$1" | tr "[:upper:]" "[:lower:]")"
 shift
 LOGNAME="${LOGNAME:-$(logname)}"
 DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
