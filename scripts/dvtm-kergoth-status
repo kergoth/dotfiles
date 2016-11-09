@@ -22,7 +22,7 @@ mkfifo "$FIFO"
 chmod 600 "$FIFO"
 
 if [ -z "$DVTM_FMT" ]; then
-    DVTM_FMT='{id} | {user}@{host}'
+    DVTM_FMT='{id} | {loadavg} | {user}@{host}'
 fi
 
 while true; do
