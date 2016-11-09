@@ -2,7 +2,7 @@
 # Courtesy http://waxandwane.org/dvtm.html, with modification
 
 if [ $# -lt 1 ] || [ -z "$1" ]; then
-    printf "Usage:  ${0##*/} ID [CMD..]\n" >&2
+    printf 'Usage: %s ID [CMD..]\n' "${0##*/}"
     exit 1
 fi
 
@@ -12,8 +12,8 @@ shift
 LOGNAME="${LOGNAME:-$(logname)}"
 DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
 if [ ! -e "$DVTM_TMPDIR" ]; then
-    mkdir -p $DVTM_TMPDIR
-    chmod 0700 $DVTM_TMPDIR
+    mkdir -p "$DVTM_TMPDIR"
+    chmod 0700 "$DVTM_TMPDIR"
 fi
 FIFO="$DVTM_TMPDIR/$ID-status"
 
@@ -25,5 +25,5 @@ dvtm-print-status -s -c 30 "$ID" >$FIFO 2>&1 </dev/null &
 
 STATUS_PID=$!
 trap 'kill $STATUS_PID' EXIT INT TERM
-export DVTM_ID=$ID
-dvtm -s $FIFO -h 4096 "$@" 2>/dev/null
+export DVTM_ID="$ID"
+dvtm -s "$FIFO" -h 4096 "$@" 2>/dev/null
