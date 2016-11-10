@@ -150,7 +150,6 @@ alias ccp="noglob zmv -WC"
 alias mmv="noglob zmv -W"
 
 # Suffixed for alias expansion
-alias s="smart_sudo "
 alias funced="_funced "
 
 # Git

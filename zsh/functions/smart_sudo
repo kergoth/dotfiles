@@ -1,8 +1,0 @@
-smart_sudo () {
-    if [[ -n $1 ]]; then
-        sudo $argv
-    else
-        #if no parameters were given, then assume we want a root shell
-        sudo -s
-    fi
-}
