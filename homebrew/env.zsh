@@ -1,0 +1,1 @@
+export HOMEBREW_AUTO_UPDATE=1
