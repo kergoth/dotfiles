@@ -14,7 +14,7 @@ if which abduco >/dev/null 2>&1; then
     create_session () {
         name="$1"
         shift
-        abduco -A "$name" dvtm-kergoth-status "$name"
+        abduco -A "$name" dvtm-kergoth-status "$name" "$@"
     }
 else
     : "${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}/runtime-$LOGNAME}"
@@ -34,17 +34,12 @@ else
     create_session () {
         name="$1"
         shift
-        dtach -A "$socket_dir/$name.socket" -z -r winch dvtm-kergoth-status "$name"
+        dtach -A "$socket_dir/$name.socket" -z -r winch dvtm-kergoth-status "$name" "$@"
     }
 fi
 
-if [ $# -lt 1 ]; then
+if [ $# -eq 0 ]; then
     list_sessions
-elif [ $# -gt 1 ]; then
-    echo >&2 "Error: too many arguments"
-    echo >&2
-    echo >&2 "Usage: ${0##*/} [SESSION_NAME]"
-    exit 2
 else
     if [ -n "$ATT_SESSION" ]; then
         echo >&2 "att: already inside an att session"
@@ -53,13 +48,19 @@ else
 
     session_name="$1"
     shift
+    case "$session_name" in
+        -*)
+            echo >&2 "Usage: ${0##*/} [SESSION_NAME] [DVTM_ARGS..]"
+            exit 2
+            ;;
+    esac
     ENV_VARS="^(DISPLAY|SSH_AGENT_PID|SSH_ASKPASS|SSH_CONNECTION|SSH_AUTH_SOCK|WINDOWID|XAUTHORITY)="
 
     mkdir -p "$socket_dir"
     export ATT_SESSION="$session_name"
     export ATT_ENV="$socket_dir/$session_name.env"
     env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
-    if [ -n "$STY" -o -n "$TMUX" ]; then
+    if [ -n "$STY" ] || [ -n "$TMUX" ]; then
         printf "\033k%s\033\\" "$session_name"
     else
         printf "\033]0;%s\007" "$session_name"
