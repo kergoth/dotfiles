@@ -22,9 +22,6 @@
 [push]
 	default = tracking
 
-[apply]
-	whitespace = fix
-
 [rebase]
 	autosquash = true
 	autostash = true
