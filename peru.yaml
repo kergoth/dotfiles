@@ -511,7 +511,7 @@ hg module hg-extension-shelve:
     rev: 963742647a2d914fb275828e24e30cb84a51aa4d
 
 hg module hg-extension-evolve:
-    url: http://42.netv6.net/evolve-main
+    url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
     rev: c56b6210dd6cb41466db8cafb52b637bc204d7c0
 
