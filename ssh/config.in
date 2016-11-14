@@ -12,6 +12,7 @@ ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
 
 %include config.d/*
+%include ../*/ssh-config.d/*
 
 # Github needs diffie-hellman-group-exchange-sha1 some of the time but not always.
 Host github.com gist.github.com
