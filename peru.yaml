@@ -108,7 +108,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 9396ad5c5f9cc40f461e59fe1c5fd2cb70d9b723
+    rev: 2dce602727d715f142b5067be4f85de84d98a8b7
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -116,7 +116,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 44e821b7032bcaea90cbdaa724e94b8e3e98ddd1
+    rev: 7a24a5e561a086c430ed4774cc194b3c91b3b31c
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -167,7 +167,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: b3a8be6975dcc27b523b030bf5d35d9c737aef18
+    rev: b754bc2031f21a532c083dd0d072ba373bbe3a37
 
 # go language support
 git module vim-golang:
@@ -249,7 +249,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 7721fb2677e601943c9d6872ae36380cac66b78c
+    rev: 30b93d5a8258b7eb746f97746ee42437cb120a8f
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -286,14 +286,14 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: a2beb159f1757961f1314b2739b5707ea2af2ea0
+    rev: 2e8814bb578f672daa3afb0424666b67a87bd34e
 
 curl module rpm2cpio:
-    url: http://rpm.org/releases/rpm-4.12.x/rpm-4.12.0.tar.bz2
-    sha1: 9e91dd0cdd8178aafdb165a7c9ae3a60ce8f6007
+    url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
+    sha1: c6ce4f879ca6a75340921093105e5ef9d33381d3
     unpack: tar
     move:
-        rpm-4.12.0/scripts/rpm2cpio.sh: rpm2cpio
+        rpm-4.13.0/scripts/rpm2cpio.sh: rpm2cpio
     pick: rpm2cpio
 
 git module lesspipe:
@@ -567,7 +567,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 118f7c1a97e6f7f7f95989159eb8455d5466aa06
+    rev: e1fdbe615946cb26c4bb6ecabc97617b9811a5b9
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -604,7 +604,7 @@ git module hub-completion:
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
-    rev: 0d6316824906725418b5532b19314cc40eb224eb
+    rev: 05c7d31f6b3066582017edf5198502a94f6a7cb5
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
@@ -642,7 +642,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 2d6e4eaf8a7b315c38c8087afa9ed0143c85f39e
+    rev: ec64fe6500454cf0a411224dfedcec8d7756f7e9
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
