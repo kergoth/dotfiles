@@ -32,7 +32,7 @@ for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N); do
 done
 
 # load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
+for file in ${${${config_files:#*/path.zsh}:#*/completion.zsh}:#*/env.zsh}; do
     source $file
 done
 

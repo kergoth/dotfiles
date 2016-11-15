@@ -72,3 +72,7 @@ export LESSHISTFILE=$XDG_DATA_HOME/less/lesshist
 export _FASD_DATA=$XDG_DATA_HOME/fasd/data
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export PERU_CACHE_DIR=$XDG_CACHE_HOME/peru
+
+for env in $DOTFILESDIR/*/env.zsh(N); do
+    . "$env"
+done
