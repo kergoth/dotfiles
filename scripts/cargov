@@ -29,7 +29,7 @@ root_dir="$CARGO_ENV_HOME/$root"
 if [ $# -eq 0 ]; then
     set -- "$root"
 fi
-cargo install --root "$root_dir" "$@" || exit 4
+cargo install --force --root "$root_dir" "$@" || exit 4
 
 mkdir -p "$XDG_DATA_HOME/../bin"
 for script in "$root_dir/bin/"*; do
