@@ -1,1 +1,1 @@
-path=($RUST_HOME/bin $path)
+path=($CARGO_HOME/bin $RUST_HOME/bin $path)
