@@ -48,6 +48,7 @@ imports:
     dev-goodies: scripts
     repo: scripts
     rpm2cpio: scripts
+    rustup: rust/scripts
     smem: scripts
     ssh-copy-rsub: scripts
     t: scripts
@@ -650,3 +651,9 @@ git module flu:
     rev: 0cd2fd44456e11ada29c94357d1a9a050f03369b
     move:
         flu.sh: flu
+
+curl module rustup:
+    url: https://static.rust-lang.org/rustup.sh
+    move:
+        rustup.sh: rustup
+    sha1: 7495608d175114ae0cefc5105f5c92a2b7e575e5

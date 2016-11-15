@@ -1,0 +1,2 @@
+#!/bin/sh
+rustup --disable-sudo --disable-ldconfig --prefix="${RUST_HOME:-${XDG_DATA_HOME:-~/.local/share}/rust}" "$@"
