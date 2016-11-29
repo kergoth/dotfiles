@@ -442,6 +442,12 @@ runtime! ftplugin/man.vim
 " Change the current directory to the location of the
 " file being edited.
 command! -nargs=0 -complete=command Bcd lcd %:p:h
+
+autocmd VimEnter * command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
 " }}}
 " Abbreviations {{{
 iabbrev adn and
