@@ -6010,9 +6010,7 @@ Maintainer:  LCD 47 <lcd047@gmail.com>
 "Stylint" is a linter for Stylus (http://learnboost.github.io/stylus). See
 the project's page at GitHub for details:
 
-    https://github.com/rossPatton/stylint
-
-Syntastic doesn't support "Stylint" version 1.5.7 or later.
+    https://github.com/SimenB/stylint
 
 Checker options~
 
