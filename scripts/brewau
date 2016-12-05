@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -eu
-trap 'brew clean' EXIT INT TERM
+trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
 brew update || :
 brew upgrade --fetch-HEAD
