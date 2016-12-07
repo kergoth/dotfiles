@@ -518,6 +518,9 @@ nnoremap <expr> <leader><leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
 " Paste and re-indent
 nnoremap <leader>p p`[v`]=
 
+" Escape alternative from insert-mode
+inoremap jj <Esc>
+
 " Pressing ,ss will toggle spell checking
 map <leader>ss :set spell!<cr>
 
