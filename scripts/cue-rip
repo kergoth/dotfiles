@@ -8,10 +8,25 @@ if [ -z "$title" ]; then
     exit 2
 fi
 
-tocfile="$(mktemp -t $(basename $0).XXXXXX)"
+get_cd_device () {
+    diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' | \
+        grep -v '/dev/disk0$' | while read -r disk; do
+            if diskutil info "$disk" | grep -Eq ' *Optical Media Type: *CD-ROM$'; then
+                echo "$disk"
+                return 0
+            fi
+        done
+    return 1
+}
+
+tocfile="$(mktemp -t "$(basename "$0").XXXXXX")"
 trap 'rm -f "$tocfile"' EXIT
 
 rm -f "$tocfile"
+device="$(get_cd_device)" || :
+if [ -n "$device" ]; then
+    diskutil unmountDisk "$device"
+fi
 cdrdao read-cd --driver generic-mmc:0x20000 --read-raw --datafile "$title.bin" "$tocfile"
 toc2cue "$tocfile" "$title".cue
 #growlnotify -m "$title" rip complete
