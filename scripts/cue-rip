@@ -2,16 +2,20 @@
 
 set -e
 
-title="$1"
-if [ -z "$title" ]; then
-    echo >&2 "Usage: $0 TITLE"
-    exit 2
-fi
-
 get_cd_device () {
     diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' | \
         grep -v '/dev/disk0$' | while read -r disk; do
             if diskutil info "$disk" | grep -Eq ' *Optical Media Type: *CD-ROM$'; then
+                echo "$disk"
+                return 0
+            fi
+        done
+    return 1
+}
+get_sdcard_device () {
+    diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' | \
+        grep -v '/dev/disk0$' | while read -r disk; do
+            if [ "$(diskutil info "$disk" | sed -n 's# *Device / Media Name: *##p')" = "SD Card Reader" ]; then
                 echo "$disk"
                 return 0
             fi
@@ -26,7 +30,22 @@ rm -f "$tocfile"
 device="$(get_cd_device)" || :
 if [ -n "$device" ]; then
     diskutil unmountDisk "$device"
+    if [ $# -eq 0 ]; then
+        name="$(diskutil info "${device}s0" | sed -n 's# *Volume Name: *##p')" || :
+        if [ -n "$name" ]; then
+            echo >&2 "No title specified: using volume name '$name'"
+            title="$name"
+        fi
+    fi
 fi
+
+if [ $# -eq 1 ]; then
+    title="$1"
+elif [ -z "$title" ]; then
+    echo >&2 "Usage: $0 TITLE"
+    exit 2
+fi
+
 cdrdao read-cd --driver generic-mmc:0x20000 --read-raw --datafile "$title.bin" "$tocfile"
 toc2cue "$tocfile" "$title".cue
 #growlnotify -m "$title" rip complete
