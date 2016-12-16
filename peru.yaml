@@ -109,11 +109,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: b8fa1b9dc954d66748cc5b593f531687f24b8d48
+    rev: aac4a4423898fccbd1ab72c369ac09995a9139f1
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: af69798423277c89bdeebde80daf6d04bfd808de
+    rev: aae3388491c2312c4efb2e86bcb999927bb2900e
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
@@ -192,11 +192,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 7cb5c2415172372ecd89662279350baf890dc8a0
+    rev: 73a1238205bdd7a658e8da3dacb76fca9e161b8b
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 5bfa07ae06cbf3e73a137c2953e9877167e5986b
+    rev: 2a97d9ee410d7b9980a7741fc6e705d53eea23c2
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -216,7 +216,7 @@ git module vim-eunuch:
 # graph your Vim undo tree in style
 git module gundo:
     url: https://github.com/sjl/gundo.vim.git
-    rev: e7fe41024ace9047eee610f23311d44fd9d917c0
+    rev: b4f3624d01ffdfd7bdcd2e19128fffe768fe6262
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -249,7 +249,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: abdf894edf5dbbe8eaa734a6a4dce39c9f174e33
+    rev: 7460b4382cd9e22651c5fb252471d403cef07aee
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -286,7 +286,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 16b5902aa278639fd99be89abe8ac50eb49b34aa
+    rev: 0508e70f9bf941e3429668fcef955919a71e03c2
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -567,7 +567,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: fd4bab1158e79bdee8501114e72474befa03b207
+    rev: 45b96c654e8fd15cb60caf581e3ee4ba56c6067f
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell

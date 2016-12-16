@@ -430,7 +430,7 @@ function! s:split(dict)
   let ppos = s:getpos()
   try
     if s:present(a:dict, 'window')
-      execute a:dict.window
+      execute 'keepalt' a:dict.window
     elseif !s:splittable(a:dict)
       execute (tabpagenr()-1).'tabnew'
     else
@@ -457,22 +457,21 @@ endfunction
 
 function! s:execute_term(dict, command, temps) abort
   let winrest = winrestcmd()
+  let pbuf = bufnr('')
   let [ppos, winopts] = s:split(a:dict)
-  let fzf = { 'buf': bufnr('%'), 'ppos': ppos, 'dict': a:dict, 'temps': a:temps,
+  let fzf = { 'buf': bufnr(''), 'pbuf': pbuf, 'ppos': ppos, 'dict': a:dict, 'temps': a:temps,
             \ 'winopts': winopts, 'winrest': winrest, 'lines': &lines,
             \ 'columns': &columns, 'command': a:command }
   function! fzf.switch_back(inplace)
     if a:inplace && bufnr('') == self.buf
-      " FIXME: Can't re-enter normal mode from terminal mode
-      " execute "normal! \<c-^>"
-      b #
+      execute 'keepalt b' self.pbuf
       " No other listed buffer
       if bufnr('') == self.buf
         enew
       endif
     endif
   endfunction
-  function! fzf.on_exit(id, code)
+  function! fzf.on_exit(id, code, _event)
     if s:getpos() == self.ppos " {'window': 'enew'}
       for [opt, val] in items(self.winopts)
         execute 'let' opt '=' val
