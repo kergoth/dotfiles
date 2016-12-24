@@ -117,7 +117,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: d170ef1363924eaa8f9183c98e5830eb3031d90c
+    rev: 75b70de1f940c03787cf6f219d6540fcacd22ba0
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -128,7 +128,7 @@ curl module iterm2-zsh:
     move:
         zsh_startup.in: iterm2.zsh
     pick: iterm2.zsh
-    sha1: bd4907ff25b1afc1c3356277d5bd34f88a3e6d23
+    sha1: 61b879a2f70416ff99cbc260c6b22cf5fc72dc2a
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
@@ -192,7 +192,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 73a1238205bdd7a658e8da3dacb76fca9e161b8b
+    rev: e83ed2408878ddd3bedf07d563b3ec1139a8f5ec
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -286,7 +286,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 0508e70f9bf941e3429668fcef955919a71e03c2
+    rev: c7b076400297e53b3fdb9bb0605b0c688a39fa40
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -379,7 +379,7 @@ git module dustin-bindir:
         - git-test-bisect
     executable:
         - git-test-bisect
-    rev: 05062e5f3602a17d97ee1289010c6640420d1d41
+    rev: 1842322f8ecff8696e4723eadbd5ed984858713d
 
 git module git-wtf:
     url: https://github.com/michaelklishin/git-wtf
@@ -567,7 +567,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 45b96c654e8fd15cb60caf581e3ee4ba56c6067f
+    rev: bce34b8d7fa410e64c411bd780f8e21603167ae7
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
