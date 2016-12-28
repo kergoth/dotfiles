@@ -506,14 +506,11 @@ nnoremap <leader>n :set number!<cr>
 " Toggle paste mode with ,P
 set pastetoggle=<leader>P
 
-" Courtesy Steve Losh
+" Resync syntax & redraw the screen, courtesy Steve Losh
 nnoremap <leader>U :syntax sync fromstart<cr>:redraw!<cr>
 
 " Ensure arrows always work correctly with command-T
 map <Esc>[B <Down>
-
-" Select the just-pasted text
-nnoremap <expr> <leader><leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Paste and re-indent
 nnoremap <leader>p p`[v`]=
@@ -521,19 +518,32 @@ nnoremap <leader>p p`[v`]=
 " Escape alternative from insert-mode
 inoremap jj <Esc>
 
-" Pressing ,ss will toggle spell checking
+" Select the just-pasted text
+nnoremap <expr> <leader><leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" Toggle spell checking
 map <leader>ss :set spell!<cr>
 
 " Open a file in the same directory as the current file
 map <leader>ew :e <c-r>=expand("%:p:h") . "/" <cr>
+" Open a file in the same directory as the current file, in a split
 map <leader>es :sp <c-r>=expand("%:p:h") . "/" <cr>
+" Open a file in the same directory as the current file, in a vsplit
 map <leader>ev :vsp <c-r>=expand("%:p:h") . "/" <cr>
+" Open a file in the same directory as the current file, in a tab
 map <leader>et :tabe <c-r>=expand("%:p:h") . "/" <cr>
 
-" Quickfix window manipulation
+" Close quickfix window
 nmap <leader>cwc :cclose<cr>
+
+" Open quickfix window
 nmap <leader>cwo :botright copen 5<cr><c-w>p
+
+" Next error in the quickfix list
 nmap <leader>ccn :cnext<cr>
+
+" Open a Quickfix window for the last search.
+nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
 " Delete trailing whitespace
 nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
@@ -541,11 +551,10 @@ nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 " Search for the word under the cursor
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 
-" Open a Quickfix window for the last search.
-nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
-
-" Edit and reload vimrc
+" Edit the vimrc
 nmap <leader>ve :e $MYVIMRC<CR>
+
+" Reload the vimrc
 nmap <leader>vr :so $MYVIMRC<CR>
 
 " Core functionality from https://github.com/tpope/vim-unimpaired
