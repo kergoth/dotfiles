@@ -6,7 +6,6 @@ imports:
     zsh-bd: zsh/plugins/bd
     zsh-completions: zsh/plugins/completions
     zsh-git-escape-magic: zsh/plugins/git-escape-magic
-    zsh-globalias: zsh/plugins/globalias
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
@@ -519,10 +518,6 @@ hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
     rev: c56b6210dd6cb41466db8cafb52b637bc204d7c0
-
-curl module zsh-globalias:
-    url: http://patshead.com/misc-files/globalias.plugin.zsh
-    sha1: 45958e9baa5275f32e11a8d41f8f869178265d28
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
