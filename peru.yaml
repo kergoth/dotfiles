@@ -652,8 +652,8 @@ git module flu:
         flu.sh: flu
 
 curl module rustup:
-    url: https://static.rust-lang.org/rustup.sh
+    url: https://sh.rustup.rs
     move:
-        rustup.sh: rustup
+        rustup-init.sh: rustup
     executable: rustup
-    sha1: b487a19c0b51e423d05ae18e50c95eba685ec153
+    sha1: 7e6890e31121445985f42da1dc7584f80eacb0a7
