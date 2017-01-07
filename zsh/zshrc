@@ -14,7 +14,11 @@ typeset -U config_files
 config_files=($DOTFILESDIR/*/*.zsh)
 
 # load the path files
+source $ZSH/path.zsh
 for file in ${(M)config_files:#*/path.zsh}; do
+    if [[ $file = $ZSH/path.zsh ]]; then
+        continue
+    fi
     source $file
 done
 
