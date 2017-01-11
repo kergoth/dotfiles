@@ -13,6 +13,9 @@ for line in sys.stdin.readlines():
     else:
         content.append(line)
 
+if content:
+    entries.append(content)
+
 id_pat = re.compile(r'^([0-9]+) - ')
 for entry in entries:
     num, url, time = None, None, None
