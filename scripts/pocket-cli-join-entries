@@ -16,7 +16,7 @@ for line in sys.stdin.readlines():
 if content:
     entries.append(content)
 
-id_pat = re.compile(r'^([0-9]+) - ')
+id_pat = re.compile(r'^([0-9]+) - (.*)')
 for entry in entries:
     num, url, time = None, None, None
     for line in entry:
@@ -28,5 +28,6 @@ for entry in entries:
             m = id_pat.match(line)
             if m:
                 num = m.group(1)
-    d = [num, url, time]
+                desc = m.group(2)
+    d = [num, url, time, desc]
     print('\t'.join(filter(None, d)))
