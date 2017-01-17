@@ -16,5 +16,5 @@ pocket-cli search -s unread -t watch -o newest '' | \
     pocket-cli-join-entries | \
     grep -v '/user/' | \
     while read -r id url _; do
-        youtube-dl --convert-subs srt --write-sub --write-auto-sub --embed-subs --no-playlist "$url" && pocket-cli archive "$id"
+        youtube-dl --write-sub --write-auto-sub --embed-subs --no-playlist "$url" && pocket-cli archive "$id"
     done

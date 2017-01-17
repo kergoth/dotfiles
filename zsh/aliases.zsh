@@ -24,7 +24,7 @@ alias mosh='mosh --forward-agent'
 #alias mosh="perl -E 'print \'\e[?1005h\e[?1002h\''; mosh"
 alias smem='smem -k'
 alias ytdl=youtube-dl
-alias youtube-dl='youtube-dl --convert-subs srt --write-sub --write-auto-sub --embed-subs --no-playlist -f best'
+alias youtube-dl='youtube-dl --write-sub --write-auto-sub --embed-subs --no-playlist -f best'
 alias pipsi='pipsi --home="$WORKON_HOME"'
 alias parallel='parallel --bibtex'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
