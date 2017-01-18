@@ -548,11 +548,14 @@ endfunction
 
 function! fzf#vim#buffers(...)
   let bufs = map(sort(s:buflisted(), 's:sort_buffers'), 's:format_buffer(v:val)')
+
+  let [query, args] = (a:0 && type(a:1) == type('')) ?
+        \ [a:1, a:000[1:]] : ['', a:000]
   return s:fzf('buffers', {
   \ 'source':  reverse(bufs),
   \ 'sink*':   s:function('s:bufopen'),
-  \ 'options': '+m -x --tiebreak=index --header-lines=1 --ansi -d "\t" -n 2,1..2 --prompt="Buf> "',
-  \}, a:000)
+  \ 'options': '+m -x --tiebreak=index --header-lines=1 --ansi -d "\t" -n 2,1..2 --prompt="Buf> "'.s:q(query)
+  \}, args)
 endfunction
 
 " ------------------------------------------------------------------
@@ -766,7 +769,7 @@ function! fzf#vim#tags(query, ...)
   " We don't want to apply --ansi option when tags file is large as it makes
   " processing much slower.
   if getfsize(tagfile) > 1024 * 1024 * 20
-    let proc = 'grep -v ''^\!'' '
+    let proc = 'grep -av ''^\!'' '
     let copt = ''
   else
     let proc = 'perl -ne ''unless (/^\!/) { s/^(.*?)\t(.*?)\t/'.s:yellow('\1', 'Function').'\t'.s:blue('\2', 'String').'\t/; print }'' '
