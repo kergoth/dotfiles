@@ -23,7 +23,18 @@ fi
 
 bmap_file="$1"
 if [ $# -lt 2 ]; then
-    image_file="${bmap_file%.bmap}.bz2"
+    found=0
+    for ext in '' '.bz2' '.gz' '.xz'; do
+        image_file="${bmap_file%.bmap}$ext"
+        if [ -f "$image_file" ]; then
+            found=1
+            break
+        fi
+    done
+    if [ $found -eq 0 ]; then
+        echo >&2 "Error: unable to find image file for $bmap_file, please specify"
+        exit 1
+    fi
 fi
 
 sdcard_device="$(get_sdcard_device)"
