@@ -10,5 +10,6 @@ if __name__ == '__main__':
     with open(uniq_seen, 'rU') as f:
         exec(f.read(), globals(), l)
 
-    lines = reversed(list(l.get('unique_everseen')(reversed(sys.stdin.readlines()))))
+    unique_everseen = l['unique_everseen']
+    lines = reversed(list(unique_everseen(reversed(sys.stdin.readlines()))))
     sys.stdout.writelines(lines)
