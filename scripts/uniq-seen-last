@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+
+import itertools
+import os
+import sys
+
+if __name__ == '__main__':
+    uniq_seen = os.path.join(os.path.dirname(sys.argv[0]), 'uniq-seen')
+    l = {'__name__': 'uniq-seen'}
+    with open(uniq_seen, 'rU') as f:
+        exec(f.read(), globals(), l)
+
+    lines = reversed(list(l.get('unique_everseen')(reversed(sys.stdin.readlines()))))
+    sys.stdout.writelines(lines)

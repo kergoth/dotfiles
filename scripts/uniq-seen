@@ -3,8 +3,9 @@
 import itertools
 import sys
 
+
 def unique_everseen(iterable, key=None):
-    "List unique elements, preserving order. Remember all elements ever seen."
+    """List unique elements, preserving order. Remember all elements ever seen."""
     # unique_everseen('AAAABBBCCDAABBB') --> A B C D
     # unique_everseen('ABBCcAD', str.lower) --> A B C D
     seen = set()
@@ -20,5 +21,7 @@ def unique_everseen(iterable, key=None):
                 seen_add(k)
                 yield element
 
-for line in unique_everseen(sys.stdin.readlines()):
-    sys.stdout.write(line)
+
+if __name__ == '__main__':
+    for line in unique_everseen(sys.stdin.readlines()):
+        sys.stdout.write(line)
