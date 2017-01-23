@@ -1,3 +1,17 @@
 #!/bin/sh
 
-pocket-cli search -s unread '' | pocket-cli-join-entries | while IFS="$(printf '\t')" read -r id url time; do http -hFI --check-status "$url" >/dev/null 2>&1; case "$?" in [45]) echo "$id";;; esac; done | tee log | nlxargs -n 1 pocket-cli archive
+if which parallel >/dev/null 2>&1; then
+    alias xargs=parallel
+fi
+
+pocket-cli search -s unread -o oldest '' | \
+    pocket-cli-join-entries | \
+    while IFS="$(printf '\t')" read -r id url _; do
+        echo >&2 "Checking '$url'"
+        http -hFI --check-status "$url" >/dev/null 2>&1
+        case "$?" in
+            [45])
+                echo "$id"
+                ;;
+        esac
+    done | tee log | nlxargs -t -n 1 pocket-cli archive
