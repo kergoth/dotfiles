@@ -46,7 +46,7 @@ add a feature. To run the tests, you need a working copy of Mercurial,
 say in $HGSRC:
 
     cd tests
-    python $HGSRC/tests/run-tests.py --with-hg=$HGSRC/hg
+    python $HGSRC/tests/run-tests.py
 
 (evolve's stable and default branches correspond to Mercurial's stable
 and default branches. So to test evolve from default, you need
@@ -55,6 +55,10 @@ Mercurial on default.)
 
 Changelog
 =========
+
+5.5.1 --
+
+ - fix crash when trying to fold an empty revision set (issue5453)
 
 5.5.0 -- 2016-10-30
 

@@ -3124,7 +3124,10 @@ def fold(ui, repo, *revs, **opts):
                                       "of working directory"))
         revs = extrevs
 
-    if len(revs) == 1:
+    if not revs:
+        raise error.Abort(_('specified revisions evaluate to an empty set'),
+                          hint=_('use different revision arguments'))
+    elif len(revs) == 1:
         ui.write_err(_('single revision specified, nothing to fold\n'))
         return 1
 

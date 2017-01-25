@@ -688,6 +688,10 @@ Test fold
   $ hg fold -r 4 -r 6 --exact
   abort: cannot fold non-linear revisions (multiple roots given)
   [255]
+  $ hg fold --exact -r "4 and not 4"
+  abort: specified revisions evaluate to an empty set
+  (use different revision arguments)
+  [255]
   $ hg fold 10 1
   abort: cannot fold non-linear revisions
   (given revisions are unrelated to parent of working directory)
