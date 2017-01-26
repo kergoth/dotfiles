@@ -123,6 +123,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     }
 
     alias daisydisk="open -b com.daisydiskapp.DaisyDiskStandAlone"
+    alias ddisk=daisydisk
     alias marked="open -b com.brettterpstra.marked2"
 else
     alias ps='ps fux'
