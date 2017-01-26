@@ -23,5 +23,8 @@ def unique_everseen(iterable, key=None):
 
 
 if __name__ == '__main__':
-    for line in unique_everseen(sys.stdin.readlines()):
+    for line in unique_everseen(iter(sys.stdin.readline, None)):
+        if line is None:
+            break
         sys.stdout.write(line)
+        sys.stdout.flush()
