@@ -59,6 +59,12 @@ if [ $# -lt 2 ]; then
     fi
 fi
 
+if [ "$image_file" = "$bmap_file" ]; then
+    if [ -e "$image_file.bmap" ]; then
+        bmap_file="$image_file.bmap"
+    fi
+fi
+
 sdcard_device="$(get_sdcard_device)"
 if [ -z "$sdcard_device" ]; then
     echo >&2 "Error: no SD Card Reader found"
