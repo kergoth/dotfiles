@@ -25,6 +25,7 @@ if [ -z "$sdcard_device" ]; then
     exit 1
 fi
 
+diskutil info "$sdcard_device"
 diskutil list "$sdcard_device"
 diskutil unmountDisk "$sdcard_device" || exit $?
 
