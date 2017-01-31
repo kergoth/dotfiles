@@ -14,6 +14,28 @@ get_sdcard_device () {
     return 1
 }
 
+should_continue () {
+    while true; do
+        printf '%s [Yn]? ' "${1:-Continue}"
+        read -r input
+        case "$input" in
+            [Nn])
+                return 1
+                ;;
+            [Yy])
+                break
+                ;;
+            "")
+                break
+                ;;
+            *)
+                printf 'Invalid input: `%s`\n' "$input"
+                ;;
+        esac
+    done
+    return 0
+}
+
 if [ $# -ne 1 ]; then
     echo >&2 "Usage: ${0##*/} IMAGE_FILE"
     exit 2
@@ -27,8 +49,12 @@ fi
 
 diskutil info "$sdcard_device"
 diskutil list "$sdcard_device"
-diskutil unmountDisk "$sdcard_device" || exit $?
 
+if ! should_continue; then
+    exit 1
+fi
+
+diskutil unmountDisk "$sdcard_device" || exit $?
 rdevice="/dev/r${sdcard_device#/dev/}"
 if [ "$sdcard_device" = "/dev/disk1" ]; then
     # ddimage is picky, excluding disk0 & disk1, but disk1 as the SD card
