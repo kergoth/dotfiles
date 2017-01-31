@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: aac4a4423898fccbd1ab72c369ac09995a9139f1
+    rev: 9523d6d49cb3d4db5bd84c3cec6168a2057fe3ab
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -196,7 +196,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: b56a064377fcd4340e60ffd9a7fcf157f8a26939
+    rev: 7df411d59b71e8950954a7cb981e8b7c902e8b0d
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: dbddee9de9c7db52f6c4cbbadabc05790f6e31de
+    rev: dd1f26522c965612cb4f55b44e700b8b85868b27
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -328,7 +328,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 3c3032d6aa10f628e028fa95f5cdfd13fc9b3f34
+    rev: 802919111ae085aeb65607bf05cf1440652553fc
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -560,14 +560,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: b03f26d049c31c9ae341a94f4f3c680fecd9eda5
+    rev: 2124af80abfb856e8806c3b508b3982b7157c4a3
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 2d7171e951d126bc8263c621b6218fac932fa942
+    rev: 00a3307137b96cc2d8789d70b988ae0a9d34ea04
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -642,7 +642,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 2e8b36814159593aae4c4413f18d1c4e373b06ca
+    rev: e93f206bad4364b7d5c7e09321fa58c40a0d5f59
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
