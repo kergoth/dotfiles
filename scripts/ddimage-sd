@@ -43,7 +43,7 @@ fi
 
 sdcard_device="$(get_sdcard_device)"
 if [ -z "$sdcard_device" ]; then
-    echo >&2 "Error: no SD Card Reader found"
+    echo >&2 "Error: no SD card found"
     exit 1
 fi
 
