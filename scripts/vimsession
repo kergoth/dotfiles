@@ -5,4 +5,7 @@ if [ -e Session.vim ]; then
 else
     touch Session.vim
     vim -c Obsession "$@"
+    if ! [ -s Session.vim ]; then
+        rm -f Session.vim
+    fi
 fi
