@@ -2,6 +2,7 @@
 
 if [ -e Session.vim ]; then
     exec vim -S Session.vim "$@"
-else touch Session.vim
-    exec vim -c Obsession "$@"
+else
+    touch Session.vim
+    vim -c Obsession "$@"
 fi
