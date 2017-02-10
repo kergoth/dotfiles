@@ -1,0 +1,5 @@
+#!/bin/sh
+
+url="$1"
+shift
+curl -sL "$url" | pup-links "$url" "$@"
