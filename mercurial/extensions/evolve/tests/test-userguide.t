@@ -109,7 +109,7 @@ example 6: fold multiple changesets together into one (figure 5)
   7:05e61aab8294  step 1
   8:be6d5bc8e4cc  step 2
   9:35f432d9f7c1  step 3
-  $ hg fold -d '0 0' -m 'fix bug 64' -r 7::
+  $ hg fold -d '0 0' -m 'fix bug 64' --from -r 7::
   3 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg --hidden shortlog -G -r 6::

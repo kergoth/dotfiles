@@ -56,9 +56,13 @@ Mercurial on default.)
 Changelog
 =========
 
-5.5.1 --
+5.6.0 -- 2017-02-01
 
+ - compatibility with Mercurial 4.1.
+ - improvement of prune error message.
+ - fold: require --from flag for folding revisions to working copy
  - fix crash when trying to fold an empty revision set (issue5453)
+ - uncommit: preserve copy information of remaining files (issue5403)
 
 5.5.0 -- 2016-10-30
 

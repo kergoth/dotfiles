@@ -145,6 +145,7 @@ proper behavior with conflict using internal:merge
   | o  changeset:   5:71c18f70c34f
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  trouble:     unstable
   | |  summary:     babar count up to fifteen
   | |
   | x  changeset:   4:5977072d13c5
@@ -235,6 +236,7 @@ proper behavior with conflict using an external merge tool
   | o  changeset:   8:1836b91c6c1d
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  trouble:     unstable
   | |  summary:     babar count up to fifteen
   | |
   | x  changeset:   7:e04690b09bc6

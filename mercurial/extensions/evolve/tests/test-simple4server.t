@@ -75,12 +75,12 @@ Smoke testing
 Capacity testing
 ===================
 
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  $ curl -s http://localhost:$HGPORT/?cmd=hello
   capabilities: * _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (glob)
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  $ curl -s http://localhost:$HGPORT/?cmd=capabilities
   * _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (no-eol) (glob)
 
-  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ curl -s "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   obsolete	
@@ -133,14 +133,14 @@ Test disabling obsolete advertisement
 ===========================================
 (used by bitbucket to select which repo use evolve)
 
-  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ curl -s "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   obsolete	
   phases	
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  $ curl -s http://localhost:$HGPORT/?cmd=hello
   capabilities: * _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (glob)
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  $ curl -s http://localhost:$HGPORT/?cmd=capabilities
   * _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (no-eol) (glob)
 
   $ echo '[__temporary__]' >> server/.hg/hgrc
@@ -149,13 +149,13 @@ Test disabling obsolete advertisement
   $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log
   $ cat hg.pid >> $DAEMON_PIDS
 
-  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ curl -s "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   phases	
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello | grep _evoext_pushobsmarkers_0
+  $ curl -s http://localhost:$HGPORT/?cmd=hello | grep _evoext_pushobsmarkers_0
   [1]
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities | grep _evoext_pushobsmarkers_0
+  $ curl -s http://localhost:$HGPORT/?cmd=capabilities | grep _evoext_pushobsmarkers_0
   [1]
 
   $ echo 'advertiseobsolete=True' >> server/.hg/hgrc
@@ -163,12 +163,12 @@ Test disabling obsolete advertisement
   $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log
   $ cat hg.pid >> $DAEMON_PIDS
 
-  $ wget -q -O - "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
+  $ curl -s "http://localhost:$HGPORT/?cmd=listkeys&namespace=namespaces" | sort
   bookmarks	
   namespaces	
   obsolete	
   phases	
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=hello
+  $ curl -s http://localhost:$HGPORT/?cmd=hello
   capabilities: * _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (glob)
-  $ wget -q -O - http://localhost:$HGPORT/?cmd=capabilities
+  $ curl -s http://localhost:$HGPORT/?cmd=capabilities
   * _evoext_pushobsmarkers_0 _evoext_pullobsmarkers_0 _evoext_obshash_0 _evoext_obshash_1 _evoext_getbundle_obscommon (no-eol) (glob)

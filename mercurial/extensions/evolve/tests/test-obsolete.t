@@ -580,6 +580,7 @@ check bumped detection
   parent:      10:2033b4e49474
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
+  trouble:     bumped
   summary:     add obsol_d'''
   
   $ hg push ../other-new/
@@ -609,6 +610,7 @@ Check hg commit --amend compat
   |/   parent:      10:2033b4e49474
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    trouble:     bumped
   |    summary:     add obsol_d'''
   |
   | o  changeset:   11:9468a5f5d8b2
@@ -672,6 +674,7 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   parent:      10:2033b4e49474
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
+  trouble:     bumped, divergent
   summary:     add obsol_d'''
   
   changeset:   16:50f11e5e3a63
@@ -679,6 +682,7 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   parent:      11:9468a5f5d8b2
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
+  trouble:     divergent
   summary:     add obsolet_conflicting_d
   
 
@@ -716,12 +720,14 @@ Relevant marker computation
   |  parent:      2:4538525df7e2
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  trouble:     unstable
   |  summary:     add obsol_d''
   |
   | o  changeset:   16:50f11e5e3a63
   | |  parent:      11:9468a5f5d8b2
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  trouble:     divergent
   | |  summary:     add obsolet_conflicting_d
   | |
   | | o  changeset:   15:705ab2a6b72e
@@ -745,6 +751,7 @@ Relevant marker computation
   | | |/   parent:      10:2033b4e49474
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |    trouble:     bumped, divergent
   | | |    summary:     add obsol_d'''
   | | |
   | o |  changeset:   11:9468a5f5d8b2

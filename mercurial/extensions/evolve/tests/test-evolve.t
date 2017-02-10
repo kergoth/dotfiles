@@ -679,7 +679,16 @@ Test fold
   $ hg fold
   abort: no revisions specified
   [255]
+  $ hg fold --from
+  abort: no revisions specified
+  [255]
   $ hg fold .
+  abort: must specify either --from or --exact
+  [255]
+  $ hg fold --from . --exact
+  abort: cannot use both --from and --exact
+  [255]
+  $ hg fold --from .
   single revision specified, nothing to fold
   [1]
   $ hg fold 0::10 --rev 1 --exact
@@ -688,22 +697,22 @@ Test fold
   $ hg fold -r 4 -r 6 --exact
   abort: cannot fold non-linear revisions (multiple roots given)
   [255]
+  $ hg fold --from 10 1
+  abort: cannot fold non-linear revisions
+  (given revisions are unrelated to parent of working directory)
+  [255]
   $ hg fold --exact -r "4 and not 4"
   abort: specified revisions evaluate to an empty set
   (use different revision arguments)
   [255]
-  $ hg fold 10 1
-  abort: cannot fold non-linear revisions
-  (given revisions are unrelated to parent of working directory)
-  [255]
   $ hg phase --public 0
-  $ hg fold -r 0
+  $ hg fold --from -r 0
   abort: cannot fold public revisions
   [255]
-  $ hg fold -r 5
+  $ hg fold --from -r 5
   3 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg fold 6 # want to run hg fold 6
+  $ hg fold --from 6 # want to run hg fold 6
   abort: hidden revision '6'!
   (use --hidden to access hidden revisions)
   [255]
@@ -810,7 +819,7 @@ Test evolving renames
 Test fold with commit messages
 
   $ cd ../work
-  $ hg fold .^ --message "Folding with custom commit message"
+  $ hg fold --from .^ --message "Folding with custom commit message"
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ glog
@@ -829,7 +838,7 @@ Test fold with commit messages
   >                   commit message
   > EOF
 
-  $ hg fold .^ --logfile commit-message
+  $ hg fold --from .^ --logfile commit-message
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg qlog
@@ -1305,9 +1314,11 @@ Check that prune respects the allowunstable option
   created new head
   $ hg prune '26 + 27'
   abort: cannot prune in the middle of a stack
+  (new unstable changesets are not allowed)
   [255]
   $ hg prune '19::28'
   abort: cannot prune in the middle of a stack
+  (new unstable changesets are not allowed)
   [255]
   $ hg prune '26::'
   3 changesets pruned
@@ -1342,9 +1353,11 @@ Check that fold respects the allowunstable option
 
   $ hg fold --exact "19 + 18"
   abort: cannot fold chain not ending with a head or with branching
+  (new unstable changesets are not allowed)
   [255]
   $ hg fold --exact "18::29"
   abort: cannot fold chain not ending with a head or with branching
+  (new unstable changesets are not allowed)
   [255]
   $ hg fold --exact "19::"
   2 changesets folded
@@ -1487,10 +1500,11 @@ hg metaedit
 check that metaedit respects allowunstable
   $ hg metaedit '.^' --config 'experimental.evolution=createmarkers, allnewcommands'
   abort: cannot edit commit information in the middle of a stack
-  (c904da5245b0 will be affected)
+  (c904da5245b0 will become unstable and new unstable changes are not allowed)
   [255]
   $ hg metaedit '18::20' --fold --config 'experimental.evolution=createmarkers, allnewcommands'
   abort: cannot fold chain not ending with a head or with branching
+  (new unstable changesets are not allowed)
   [255]
   $ hg metaedit --user foobar
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved

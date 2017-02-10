@@ -19,8 +19,8 @@ It also:
     - improves some aspect of the early implementation in Mercurial core
 '''
 
-__version__ = '5.5.0'
-testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1 3.9 4.0'
+__version__ = '5.6.0'
+testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1 3.9 4.0 4.1'
 buglink = 'https://bz.mercurial-scm.org/'
 
 
@@ -2514,7 +2514,8 @@ def cmdprune(ui, repo, *revs, **opts):
             raise error.Abort('nothing to prune')
 
         if _disallowednewunstable(repo, revs):
-            raise error.Abort(_("cannot prune in the middle of a stack"))
+            raise error.Abort(_("cannot prune in the middle of a stack"),
+                        hint = _("new unstable changesets are not allowed"))
 
         # defines successors changesets
         sucs = scmutil.revrange(repo, succs)
@@ -2687,7 +2688,7 @@ def _commitfiltered(repo, ctx, match, target=None):
 
     # Filter copies
     copied = copies.pathcopies(target, ctx)
-    copied = dict((src, dst) for src, dst in copied.iteritems()
+    copied = dict((dst, src) for dst, src in copied.iteritems()
                   if dst in files)
     def filectxfn(repo, memctx, path, contentctx=ctx, redirect=newcontent):
         if path in redirect:
@@ -3067,16 +3068,17 @@ def touch(ui, repo, *revs, **opts):
 
 @command('^fold|squash',
     [('r', 'rev', [], _("revision to fold")),
-     ('', 'exact', None, _("only fold specified revisions"))
+     ('', 'exact', None, _("only fold specified revisions")),
+     ('', 'from', None, _("fold revisions linearly to working copy parent"))
     ] + commitopts + commitopts2,
     _('hg fold [OPTION]... [-r] REV'))
 def fold(ui, repo, *revs, **opts):
     """fold multiple revisions into a single one
 
-    By default, folds all the revisions linearly between the given revisions
+    With --from, folds all the revisions linearly between the given revisions
     and the parent of the working directory.
 
-    Use --exact for folding only the specified revisions while ignoring the
+    With --exact, folds only the specified revisions while ignoring the
     parent of the working directory. In this case, the given revisions must
     form a linear unbroken chain.
 
@@ -3086,18 +3088,18 @@ def fold(ui, repo, *revs, **opts):
 
      - Fold the current revision with its parent::
 
-         hg fold .^
+         hg fold --from .^
 
      - Fold all draft revisions with working directory parent::
 
-         hg fold 'draft()'
+         hg fold --from 'draft()'
 
        See :hg:`help phases` for more about draft revisions and
        :hg:`help revsets` for more about the `draft()` keyword
 
      - Fold revisions between 3 and 6 with the working directory parent::
 
-         hg fold 3::6
+         hg fold --from 3::6
 
      - Fold revisions 3 and 4:
 
@@ -3114,7 +3116,9 @@ def fold(ui, repo, *revs, **opts):
 
     revs = scmutil.revrange(repo, revs)
 
-    if not opts['exact']:
+    if opts['from'] and opts['exact']:
+        raise error.Abort(_('cannot use both --from and --exact'))
+    elif opts['from']:
         # Try to extend given revision starting from the working directory
         extrevs = repo.revs('(%ld::.) or (.::%ld)', revs, revs)
         discardedrevs = [r for r in revs if r not in extrevs]
@@ -3123,6 +3127,11 @@ def fold(ui, repo, *revs, **opts):
                                hint=_("given revisions are unrelated to parent "
                                       "of working directory"))
         revs = extrevs
+    elif opts['exact']:
+        # Nothing to do; "revs" is already set correctly
+        pass
+    else:
+        raise error.Abort(_('must specify either --from or --exact'))
 
     if not revs:
         raise error.Abort(_('specified revisions evaluate to an empty set'),
@@ -3138,7 +3147,7 @@ def fold(ui, repo, *revs, **opts):
 
         root, head = _foldcheck(repo, revs)
 
-        tr = repo.transaction('touch')
+        tr = repo.transaction('fold')
         try:
             commitopts = opts.copy()
             allctx = [repo[r] for r in revs]
@@ -3237,8 +3246,9 @@ def metaedit(ui, repo, *revs, **opts):
             newunstable = _disallowednewunstable(repo, revs)
             if newunstable:
                 raise error.Abort(
-                    _('cannot edit commit information in the middle of a stack'),
-                    hint=_('%s will be affected') % repo[newunstable.first()])
+                    _('cannot edit commit information in the middle of a '\
+                    'stack'), hint=_('%s will become unstable and new unstable'\
+                    ' changes are not allowed') % repo[newunstable.first()])
             root = head = repo[revs.first()]
 
         wctx = repo[None]
@@ -3302,7 +3312,8 @@ def _foldcheck(repo, revs):
     head = repo[heads.first()]
     if _disallowednewunstable(repo, revs):
         raise error.Abort(_("cannot fold chain not ending with a head "\
-                            "or with branching"))
+                            "or with branching"), hint = _("new unstable"\
+                            " changesets are not allowed"))
     return root, head
 
 def _disallowednewunstable(repo, revs):
@@ -3840,6 +3851,17 @@ def client_pullobsmarkers(self, heads=None, common=None):
 def local_pullobsmarkers(self, heads=None, common=None):
     return _getobsmarkersstream(self._repo, heads=heads, common=common)
 
+# The wireproto.streamres API changed, handling chunking and compression
+# directly. Handle either case.
+if util.safehasattr(wireproto.abstractserverproto, 'groupchunks'):
+    # We need to handle chunking and compression directly
+    def streamres(d, proto):
+        return wireproto.streamres(proto.groupchunks(d))
+else:
+    # Leave chunking and compression to streamres
+    def streamres(d, proto):
+        return wireproto.streamres(reader=d, v1compressible=True)
+
 def srv_pullobsmarkers(repo, proto, others):
     opts = wireproto.options('', ['heads', 'common'], others)
     for k, v in opts.iteritems():
@@ -3851,7 +3873,7 @@ def srv_pullobsmarkers(repo, proto, others):
     finaldata.write('%20i' % len(obsdata))
     finaldata.write(obsdata)
     finaldata.seek(0)
-    return wireproto.streamres(proto.groupchunks(finaldata))
+    return streamres(finaldata, proto)
 
 def _obsrelsethashtreefm0(repo):
     return _obsrelsethashtree(repo, obsolete._fm0encodeonemarker)

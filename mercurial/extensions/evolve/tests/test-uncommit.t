@@ -252,6 +252,7 @@ Test phase is preserved, no local changes
   M j
   M o
   A aa
+    a
   A ff
     f
   A h
@@ -264,7 +265,7 @@ Test phase is preserved, no local changes
   R m
   R n
   $ glog --hidden
-  @  5:c706fe2c12f8@bar(draft) touncommit
+  @  5:a1d4c1ad76cc@bar(draft) touncommit
   |
   | o  4:e8db4aa611f6@bar(draft) touncommit
   |/
@@ -278,12 +279,12 @@ Test phase is preserved, no local changes
   
   $ hg debugobsolete
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c706fe2c12f83ba5010cb60ea6af3bd1f0c2d6d3 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'user': 'test'} (glob)
 
 Test --all
 
   $ hg up -C 3 --hidden
-  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete!
   (use 'hg evolve' to update to its successor)
   $ hg --config extensions.purge= purge
@@ -312,7 +313,7 @@ Test --all
 
   $ hg debugobsolete
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c706fe2c12f83ba5010cb60ea6af3bd1f0c2d6d3 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'user': 'test'} (glob)
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c4cbebac3751269bdf12d1466deabcc78521d272 0 (*) {'user': 'test'} (glob)
 
 Display a warning if nothing left
@@ -322,7 +323,7 @@ Display a warning if nothing left
   (use 'hg prune .' to remove it)
   $ hg debugobsolete
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c706fe2c12f83ba5010cb60ea6af3bd1f0c2d6d3 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'user': 'test'} (glob)
   5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c4cbebac3751269bdf12d1466deabcc78521d272 0 (*) {'user': 'test'} (glob)
   c4cbebac3751269bdf12d1466deabcc78521d272 4f1c269eab68720f54e88ce3c1dc02b2858b6b89 0 (*) {'user': 'test'} (glob)
 

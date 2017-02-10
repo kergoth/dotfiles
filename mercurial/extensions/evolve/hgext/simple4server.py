@@ -158,6 +158,17 @@ if not util.safehasattr(obsolete.obsstore, 'relevantmarkers'):
             seennodes |= pendingnodes
         return seenmarkers
 
+# The wireproto.streamres API changed, handling chunking and compression
+# directly. Handle either case.
+if util.safehasattr(wireproto.abstractserverproto, 'groupchunks'):
+    # We need to handle chunking and compression directly
+    def streamres(d, proto):
+        return wireproto.streamres(proto.groupchunks(d))
+else:
+    # Leave chunking and compression to streamres
+    def streamres(d, proto):
+        return wireproto.streamres(reader=d, v1compressible=True)
+
 # from evolve extension: cf35f38d6a10
 def srv_pullobsmarkers(repo, proto, others):
     """serves a binary stream of markers.
@@ -175,7 +186,7 @@ def srv_pullobsmarkers(repo, proto, others):
     finaldata.write('%20i' % len(obsdata))
     finaldata.write(obsdata)
     finaldata.seek(0)
-    return wireproto.streamres(proto.groupchunks(finaldata))
+    return streamres(finaldata, proto)
 
 
 # from evolve extension: 3249814dabd1

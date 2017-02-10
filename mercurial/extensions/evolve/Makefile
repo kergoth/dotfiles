@@ -3,9 +3,7 @@ VERSION=$(shell python setup.py --version)
 
 help:
 	@echo 'Commonly used make targets:'
-	@echo '  tests              - run all tests in the automatic test suite'
-	@echo '  all-version-tests - run all tests against many hg versions'
-	@echo '  tests-%s           - run all tests in the specified hg version'
+	@echo '  deb-prepare - prepare the build of a debian package'
 
 all: help
 

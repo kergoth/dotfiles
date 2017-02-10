@@ -480,17 +480,18 @@ The tutorial part is not written yet but can use `hg fold`:
   
   fold multiple revisions into a single one
   
-      By default, folds all the revisions linearly between the given revisions
+      With --from, folds all the revisions linearly between the given revisions
       and the parent of the working directory.
   
-      Use --exact for folding only the specified revisions while ignoring the
-      parent of the working directory. In this case, the given revisions must
-      form a linear unbroken chain.
+      With --exact, folds only the specified revisions while ignoring the parent
+      of the working directory. In this case, the given revisions must form a
+      linear unbroken chain.
   
   options ([+] can be repeated):
   
    -r --rev VALUE [+] revision to fold
       --exact         only fold specified revisions
+      --from          fold revisions linearly to working copy parent
    -m --message TEXT  use text as commit message
    -l --logfile FILE  read commit message from file
    -d --date DATE     record the specified date as commit date

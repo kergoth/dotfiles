@@ -209,11 +209,13 @@ Ambiguous evolution
   | |  parent:      12:2256dae6521f
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  trouble:     unstable
   | |  summary:     secondambiguous
   | |
   | | o  changeset:   13:bdc003b6eec2
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    trouble:     unstable
   | |    summary:     firstambiguous
   | |
   | x  changeset:   12:2256dae6521f
