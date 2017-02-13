@@ -1,3 +1,5 @@
 #!/bin/sh
 
-pup a 'attr{href}' | tr '\n' '\0' | xargs -0 urljoin "$1"
+url="$1"
+shift
+pup "$@" a 'attr{href}' | tr '\n' '\0' | xargs -0 urljoin "$url"
