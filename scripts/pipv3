@@ -26,5 +26,7 @@ esac
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
     python3 -m venv "$venv_dir" || exit 3
+    . "$venv_dir/bin/activate" || exit 4
+    pip install -U pip || :
 fi
 "$(dirname "$0")"/pipv "$@"

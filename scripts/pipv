@@ -29,6 +29,7 @@ esac
 venv_dir="$WORKON_HOME/$venv"
 if [ ! -e "$venv_dir" ]; then
     virtualenv "$venv_dir" || exit 1
+    pip install -U pip || exit 5
 fi
 . "$venv_dir/bin/activate" || exit 2
 
