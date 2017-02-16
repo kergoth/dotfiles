@@ -58,7 +58,7 @@ for bin in "$npmenv_dir/bin/"*; do
     if [ -e "$bin" ]; then
         filename="${bin##*/}"
         case "$filename" in
-            activate):
+            activate|npm|node):
                 continue
                 ;;
         esac
