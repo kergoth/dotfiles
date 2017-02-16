@@ -1,3 +1,5 @@
 /.SublimeREPLHistory/
 /GoSublime/
 /Package Control.cache/
+*.crt
+*ca-bundle
