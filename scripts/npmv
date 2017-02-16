@@ -29,6 +29,14 @@ END
 . "$npmenv_dir/bin/activate"
 
 # To install npm, if we have node but not npm
+if ! which node >/dev/null 2>&1; then
+    if which nodejs >/dev/null 2>&1; then
+        ln -s $(which nodejs) "$npmenv_dir/bin/node"
+    else
+        echo >&2 "Error: Node.js must be installed to install npm"
+        exit 1
+    fi
+fi
 if ! which npm >/dev/null 2>&1; then
     if which hashpipe >/dev/null 2>&1; then
         curl -L https://npmjs.org/install.sh | hashpipe QmPXLdPeNdQSFn9W9wJyFv71cNvrwEuRdcjpCMrXvxi1xs | npm_config_prefix="$npmenv_dir" sh
