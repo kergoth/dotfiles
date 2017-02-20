@@ -1,0 +1,6 @@
+#!/bin/sh
+
+tmp="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$tmp"' EXIT INT TERM
+cat >"$tmp"
+cat "$tmp"
