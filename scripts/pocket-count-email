@@ -7,6 +7,8 @@ set -euo pipefail
 
 : "${XDG_DATA_HOME:=~/.local/share}"
 : "${EMAIL:=${DEBEMAIL:=$(git config user.email 2>/dev/null)}}"
+PATH="$(dirname "$0"):$PATH"
+
 if [ -z "$EMAIL" ]; then
     echo >&2 "Error: unable to determine email, please set EMAIL"
     exit 1
