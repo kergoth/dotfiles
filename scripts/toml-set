@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import itertools
 import sys
 import toml
@@ -15,19 +16,29 @@ def pairs(iterable):
     b = itertools.islice(b, 1, None, 2)
     return itertools.izip(a, b)
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file', help='Input path rather than stdin')
+parser.add_argument('-o', '--output', help='Output path. If --file is specified, defaults to that, otherwise stdout')
+parser.add_argument('-n', '--new', help='Create a new file from the arguments, do not read input', action='store_true')
+parser.add_argument('values', metavar='VALUE', nargs='+')
 
-if not sys.stdin.isatty():
-    o = toml.load(sys.stdin)
-else:
-    o = {}
+args = parser.parse_args()
 
-if len(sys.argv[1:]) % 2 != 0:
+if len(args.values) % 2 != 0:
     sys.exit("Error: odd number of arguments. Arguments must be in key/value pairs")
 
+if args.new:
+    o = {}
+else:
+    infile = args.file or sys.stdin
+    o = toml.load(infile)
+
 try:
-    for key, value in pairs(sys.argv[1:]):
+    for key, value in pairs(args.values):
         key = key.split(".")
         prefix, final_key = key[:-1], key[len(key)-1]
         lookup(o, prefix)[final_key] = toml._load_value(value)[0]
 finally:
-    toml.dump(o, sys.stdout)
+    outfile = args.file or sys.stdout
+    with open(outfile, 'w') as f:
+        toml.dump(o, f)
