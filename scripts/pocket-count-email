@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-: "${XDG_DATA_HOME:=~/.local/share}"
+: "${XDG_DATA_HOME:=$HOME/.local/share}"
 : "${EMAIL:=${DEBEMAIL:=$(git config user.email 2>/dev/null)}}"
 PATH="$(dirname "$0"):$PATH"
 
