@@ -701,9 +701,12 @@ endfunction
 " query, [[tag commands], options]
 function! fzf#vim#buffer_tags(query, ...)
   let args = copy(a:000)
-  let tag_cmds = len(args) > 1 ? remove(args, 0) : [
+  let tag_cmds = (len(args) > 1 && type(args[0]) != type({})) ? remove(args, 0) : [
     \ printf('ctags -f - --sort=no --excmd=number --language-force=%s %s 2>/dev/null', &filetype, expand('%:S')),
     \ printf('ctags -f - --sort=no --excmd=number %s 2>/dev/null', expand('%:S'))]
+  if type(tag_cmds) != type([])
+    let tag_cmds = [tag_cmds]
+  endif
   try
     return s:fzf('btags', {
     \ 'source':  s:btags_source(tag_cmds),
@@ -725,7 +728,7 @@ function! s:tags_sink(lines)
   let qfl = []
   let cmd = get(get(g:, 'fzf_action', s:default_action), a:lines[0], 'e')
   try
-    let [magic, &magic, wrapscan, &wrapscan] = [&magic, 0, &wrapscan, 1]
+    let [magic, &magic, wrapscan, &wrapscan, acd, &acd] = [&magic, 0, &wrapscan, 1, &acd, 0]
     for line in a:lines[1:]
       try
         let parts = split(line, '\t\zs')
@@ -740,7 +743,7 @@ function! s:tags_sink(lines)
       endtry
     endfor
   finally
-    let [&magic, &wrapscan] = [magic, wrapscan]
+    let [&magic, &wrapscan, &acd] = [magic, wrapscan, acd]
   endtry
   if len(qfl) > 1
     call setqflist(qfl)

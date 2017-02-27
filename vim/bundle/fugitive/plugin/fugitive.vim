@@ -700,7 +700,11 @@ function! s:Git(bang, args) abort
   let args = matchstr(a:args,'\v\C.{-}%($|\\@<!%(\\\\)*\|)@=')
   if exists(':terminal')
     let dir = s:repo().tree()
-    -tabedit %
+    if expand('%') != ''
+      -tabedit %
+    else
+      -tabnew
+    endif
     execute 'lcd' fnameescape(dir)
     execute 'terminal' git args
   else
@@ -1056,13 +1060,14 @@ function! s:Commit(args, ...) abort
       else
         noautocmd silent execute '!'.command.' > '.outfile.' 2> '.errorfile
       endif
+      let error = v:shell_error
     finally
       execute cd.'`=dir`'
     endtry
     if !has('gui_running')
       redraw!
     endif
-    if !v:shell_error
+    if !error
       if filereadable(outfile)
         for line in readfile(outfile)
           echo line

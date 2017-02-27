@@ -102,9 +102,12 @@ values):
     endif
   endfunction
 <
-* enable/disable automatic population of the `g:airline_symbols` dictionary
-  with powerline symbols. >
-  let g:airline_powerline_fonts=0
+* By default, airline will use unicode symbols if your encoding matches
+  utf-8. If you want the powerline symbols set this variable: >
+  let g:airline_powerline_fonts = 1
+<
+  If you want to use plain ascii symbols, set this variable: >
+  let g:airline_symbols_ascii = 1
 <
 * define the set of text to display for each mode.  >
   let g:airline_mode_map = {} " see source for the defaults
@@ -485,6 +488,10 @@ eclim <https://eclim.org>
 -------------------------------------                   *airline-whitespace*
 * enable/disable detection of whitespace errors. >
   let g:airline#extensions#whitespace#enabled = 1
+<
+* disable detection of whitespace errors. >
+  " useful to call for particular file types (e.g., in "ftplugin/*")
+  silent! call airline#extensions#whitespace#disable()
 <
 * customize the type of mixed indent checking to perform. >
   " must be all spaces or all tabs before the first non-whitespace character
