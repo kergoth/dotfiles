@@ -40,5 +40,5 @@ if [ -z "$article_count" ] || [ $new_article_count -gt $article_count ]; then
         set --
     fi
     pocket-search-formatted "$@" | mail -s "Pocket article count grew from $article_count to $new_article_count" "$EMAIL"
-    toml-set -f "$cfg" article-count "$new_article_count"
 fi
+toml-set -f "$cfg" article-count "$new_article_count"
