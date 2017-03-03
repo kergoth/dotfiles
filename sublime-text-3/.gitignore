@@ -3,3 +3,5 @@
 /Package Control.cache/
 *.crt
 *ca-bundle
+*.ca-list
+*.last-run
