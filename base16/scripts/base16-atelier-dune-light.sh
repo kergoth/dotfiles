@@ -1,38 +1,38 @@
 #!/bin/sh
 # base16-shell (https://github.com/chriskempson/base16-shell)
 # Base16 Shell template by Chris Kempson (http://chriskempson.com)
-# Green Screen scheme by Chris Kempson (http://chriskempson.com)
+# Atelier Dune scheme by Bram de Haan (http://atelierbramdehaan.nl)
 
 # This script doesn't support linux console (use 'vconsole' template instead)
 if [ "${TERM%%-*}" = 'linux' ]; then
     return 2>/dev/null || exit 0
 fi
 
-color00="00/11/00" # Base 00 - Black
-color01="00/77/00" # Base 08 - Red
-color02="00/bb/00" # Base 0B - Green
-color03="00/77/00" # Base 0A - Yellow
-color04="00/99/00" # Base 0D - Blue
-color05="00/bb/00" # Base 0E - Magenta
-color06="00/55/00" # Base 0C - Cyan
-color07="00/bb/00" # Base 05 - White
-color08="00/77/00" # Base 03 - Bright Black
+color00="fe/fb/ec" # Base 00 - Black
+color01="d7/37/37" # Base 08 - Red
+color02="60/ac/39" # Base 0B - Green
+color03="ae/95/13" # Base 0A - Yellow
+color04="66/84/e1" # Base 0D - Blue
+color05="b8/54/d4" # Base 0E - Magenta
+color06="1f/ad/83" # Base 0C - Cyan
+color07="6e/6b/5e" # Base 05 - White
+color08="99/95/80" # Base 03 - Bright Black
 color09=$color01 # Base 08 - Bright Red
 color10=$color02 # Base 0B - Bright Green
 color11=$color03 # Base 0A - Bright Yellow
 color12=$color04 # Base 0D - Bright Blue
 color13=$color05 # Base 0E - Bright Magenta
 color14=$color06 # Base 0C - Bright Cyan
-color15="00/ff/00" # Base 07 - Bright White
-color16="00/99/00" # Base 09
-color17="00/55/00" # Base 0F
-color18="00/33/00" # Base 01
-color19="00/55/00" # Base 02
-color20="00/99/00" # Base 04
-color21="00/dd/00" # Base 06
-color_foreground="00/bb/00" # Base 05
-color_background="00/11/00" # Base 00
-color_cursor="00/bb/00" # Base 05
+color15="20/20/1d" # Base 07 - Bright White
+color16="b6/56/11" # Base 09
+color17="d4/35/52" # Base 0F
+color18="e8/e4/cf" # Base 01
+color19="a6/a2/8c" # Base 02
+color20="7d/7a/68" # Base 04
+color21="29/28/24" # Base 06
+color_foreground="6e/6b/5e" # Base 05
+color_background="fe/fb/ec" # Base 00
+color_cursor="6e/6b/5e" # Base 05
 
 if [ -n "$TMUX" ]; then
   # Tell tmux to pass the escape sequences through
@@ -80,16 +80,21 @@ printf $printf_template 21 $color21
 # foreground / background / cursor color
 if [ -n "$ITERM_SESSION_ID" ]; then
   # iTerm2 proprietary escape codes
-  printf $printf_template_custom Pg 00bb00 # forground
-  printf $printf_template_custom Ph 001100 # background
-  printf $printf_template_custom Pi 00bb00 # bold color
-  printf $printf_template_custom Pj 005500 # selection color
-  printf $printf_template_custom Pk 00bb00 # selected text color
-  printf $printf_template_custom Pl 00bb00 # cursor
-  printf $printf_template_custom Pm 001100 # cursor text
+  printf $printf_template_custom Pg 6e6b5e # forground
+  printf $printf_template_custom Ph fefbec # background
+  printf $printf_template_custom Pi 6e6b5e # bold color
+  printf $printf_template_custom Pj a6a28c # selection color
+  printf $printf_template_custom Pk 6e6b5e # selected text color
+  printf $printf_template_custom Pl 6e6b5e # cursor
+  printf $printf_template_custom Pm fefbec # cursor text
 else
   printf $printf_template_var 10 $color_foreground
-  printf $printf_template_var 11 $color_background
+  if [ "$BASE16_SHELL_SET_BACKGROUND" != false ]; then
+    printf $printf_template_var 11 $color_background
+    if [ "${TERM%%-*}" = "rxvt" ]; then
+      printf $printf_template_var 708 $color_background # internal border (rxvt)
+    fi
+  fi
   printf $printf_template_custom 12 ";7" # cursor (reverse video)
 fi
 

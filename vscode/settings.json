@@ -1,15 +1,12 @@
 // Place your settings in this file to overwrite the default settings
 {
     "editor.fontFamily": "Input Mono Narrow",
-    "editor.fontWeight": "ExLight",
+    "editor.fontWeight": "300",
+    "editor.fontSize": 14,
     "editor.scrollBeyondLastLine": false,
-
-    // Wrap at viewport width
-    "editor.wrappingColumn": 0,
-
     "telemetry.enableTelemetry": false,
-    "editor.formatOnSave": true
-
+    "editor.formatOnSave": true,
     // Controls auto save of dirty files. Accepted values:  "off", "afterDelay", "onFocusChange". If set to "afterDelay" you can configure the delay in "files.autoSaveDelay".
     "files.autoSave": "afterDelay",
+    "workbench.colorTheme": "Base16 Dark Monokai",
 }

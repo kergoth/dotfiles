@@ -56,6 +56,10 @@ Mercurial on default.)
 Changelog
 =========
 
+5.6.1 -- 2017-02-28
+
+ - fix a crash that sometime happened when evolving merges.
+
 5.6.0 -- 2017-02-01
 
  - compatibility with Mercurial 4.1.

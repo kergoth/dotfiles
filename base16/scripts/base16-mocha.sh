@@ -89,7 +89,12 @@ if [ -n "$ITERM_SESSION_ID" ]; then
   printf $printf_template_custom Pm 3B3228 # cursor text
 else
   printf $printf_template_var 10 $color_foreground
-  printf $printf_template_var 11 $color_background
+  if [ "$BASE16_SHELL_SET_BACKGROUND" != false ]; then
+    printf $printf_template_var 11 $color_background
+    if [ "${TERM%%-*}" = "rxvt" ]; then
+      printf $printf_template_var 708 $color_background # internal border (rxvt)
+    fi
+  fi
   printf $printf_template_custom 12 ";7" # cursor (reverse video)
 fi
 

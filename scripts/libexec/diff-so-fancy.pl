@@ -18,6 +18,7 @@ my $change_hunk_indicators     = git_config_boolean("diff-so-fancy.changeHunkInd
 my $strip_leading_indicators   = git_config_boolean("diff-so-fancy.stripLeadingSymbols","true");
 my $mark_empty_lines           = git_config_boolean("diff-so-fancy.markEmptyLines","true");
 my $use_unicode_dash_for_ruler = git_config_boolean("diff-so-fancy.useUnicodeRuler","true");
+my $git_strip_prefix           = git_config_boolean("diff.noprefix","false");
 
 #################################################################################
 
@@ -69,7 +70,12 @@ while (my $line = <>) {
 	# Find the first file: --- a/README.md #
 	########################################
 	} elsif (!$in_hunk && $line =~ /^$ansi_color_regex--- (\w\/)?(.+?)(\e|\t|$)/) {
-		$file_1 = $5;
+		if ($git_strip_prefix) {
+			my $file_dir = $4 || "";
+			$file_1 = $file_dir . $5;
+		} else {
+			$file_1 = $5;
+		}
 
 		# Find the second file on the next line: +++ b/README.md
 		my $next = <>;
@@ -77,7 +83,13 @@ while (my $line = <>) {
 		if ($1) {
 			print $1; # Print out whatever color we're using
 		}
-		$file_2 = $5;
+		if ($git_strip_prefix) {
+			my $file_dir = $4 || "";
+			$file_2 = $file_dir . $5;
+		} else {
+			$file_2 = $5;
+		}
+
 		if ($file_2 ne "/dev/null") {
 			$last_file_seen = $file_2;
 		}
@@ -90,10 +102,14 @@ while (my $line = <>) {
 	# Check for "@@ -3,41 +3,63 @@" syntax #
 	########################################
 	} elsif ($change_hunk_indicators && $line =~ /^${ansi_color_regex}(@@@* .+? @@@*)(.*)/) {
-		$in_hunk = 1;
-		my $hunk_header    = $4;
-		my $remain         = bleach_text($5);
-		$columns_to_remove = (char_count(",",$hunk_header)) - 1;
+		$in_hunk        = 1;
+		my $hunk_header = $4;
+		my $remain      = bleach_text($5);
+
+		# The number of colums to remove (1 or 2) is based on how many commas in the hunk header
+		$columns_to_remove   = (char_count(",",$hunk_header)) - 1;
+		# On single line removes there is NO comma in the hunk so we force one
+		$columns_to_remove ||= 1;
 
 		if ($1) {
 			print $1; # Print out whatever color we're using
@@ -247,7 +263,7 @@ sub git_config_boolean {
 
 	# If we're in a unit test, use the default (don't read the users config)
 	if (in_unit_test()) {
-		return $default_value;
+		return boolean($default_value);
 	}
 
 	my $result = git_config($search_key,$default_value);
@@ -312,6 +328,10 @@ sub get_git_config_hash {
 sub start_line_calc {
 	my ($line_num,$diff_context) = @_;
 	my $ret;
+
+	if ($line_num == 0 && $diff_context == 0) {
+		return 1;
+	}
 
 	# Git defaults to three lines of context
 	my $default_context_lines = 3;

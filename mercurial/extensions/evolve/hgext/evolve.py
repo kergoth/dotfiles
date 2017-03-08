@@ -4146,7 +4146,19 @@ def _evolvemerge(repo, orig, dest, pctx, keepbranch):
     """Used by the evolve function to merge dest on top of pctx.
     return the same tuple as merge.graft"""
     if repo['.'].rev() != dest.rev():
-       merge.update(repo, dest, False, True, False)
+        #assert False
+        try:
+            merge.update(repo,
+                         dest,
+                         branchmerge=False,
+                         force=True)
+        except TypeError:
+            # Mercurial  < 43c00ca887d1 (3.7)
+            merge.update(repo,
+                         dest,
+                         branchmerge=False,
+                         force=True,
+                         partial=False)
     if bmactive(repo):
        repo.ui.status(_("(leaving bookmark %s)\n") % bmactive(repo))
     bmdeactivate(repo)
