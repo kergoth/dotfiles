@@ -200,7 +200,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 758c4813939fbcc2c7b7ffc9aa5b5c8f630e1eca
+    rev: 9eb53e1c08ff1b27b8a6525b333a61de6f41605d
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -215,7 +215,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch.git
-    rev: 7eeb681ff3caedc1c01e50966bc293951f7b3e21
+    rev: dcd29a00eb708be211d856afd3fddfbff7bc6208
 
 # graph your Vim undo tree in style
 git module gundo:
@@ -253,7 +253,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: e4f79f6e981dcf5d5e007f160a3d1e79f92469bf
+    rev: 06a8b870c0ba6936935e4a57cc57c3b54d71b2a9
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 54a4ab0f26042c912a2e5524813eb9cbe2a3f814
+    rev: 505dc0491b727657569359b3318fe76278530265
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -571,7 +571,7 @@ git module checkbashisms:
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: 2f425367a2a5091deb4005bc99e2465e592bb7e4
+    rev: f8073314a316ed06a240ac06e25add1d1d296b27
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
