@@ -9,7 +9,7 @@ fi
 if [ ! -e "$state_dir" ]; then
     for dir in _override/*; do
         if [ -d "$dir" ]; then
-            peru --state-dir="$state_dir" override "${dir##*/}" "$dir"
+            peru --state-dir="$state_dir" override add "${dir##*/}" "$dir"
         fi
     done
 fi
