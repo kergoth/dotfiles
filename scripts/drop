@@ -2,6 +2,8 @@
 
 if which trash >/dev/null 2>&1; then
     alias remove="trash -v"
+else
+    alias remove=bgrm
 fi
 
 if which drop-external >/dev/null 2>&1; then
