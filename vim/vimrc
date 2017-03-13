@@ -202,7 +202,10 @@ set noswapfile
 
 " I always run on journaled filesystems
 set nofsync
-set swapsync=
+try
+  set swapsync=
+catch
+endtry
 
 " Rename the file to the backup when possible.
 set backupcopy=auto
