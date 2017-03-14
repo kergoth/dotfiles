@@ -9,4 +9,28 @@ if ! which cmark.py >/dev/null 2>&1; then
     fi
 fi
 
-cmark "$@" | pup a 'attr{href}'
+verbose=0
+while getopts vh opt; do
+    case "$opt" in
+        v)
+            verbose=1
+            ;;
+        \?|h)
+            echo >&2 "${0##*/} [-v] [PATH..]"
+            exit 2
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    cmark
+else
+    for arg; do
+        echo "$arg"
+    done | tr '\n' '\0' | xargs -0 -n 1 cmark
+fi | if [ $verbose -eq 0 ]; then
+    pup a 'attr{href}'
+else
+    pup 'a json{}' | jq -r '.[] | .text + "\t" + .href'
+fi
