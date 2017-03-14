@@ -24,23 +24,19 @@ while getopts vh opt; do
 done
 shift $((OPTIND - 1))
 
+if [ $# -eq 0 ]; then
+    set -- -
+fi
+
 if [ $verbose -eq 0 ]; then
-    if [ $# -eq 0 ]; then
-        cmark | pup a 'attr{href}'
-    else
-        for arg; do
-            cmark "$arg" | pup a 'attr{href}'
-        done
-    fi
+    for fn; do
+        cmark "$fn" | pup a 'attr{href}'
+    done
 else
-    if [ $# -eq 0 ]; then
-        cmark | pup 'a json{}' | jq -r '.[] | .text + "\t" + .href'
-    else
-        for arg; do
-            if [ $verbose -eq 1 ]; then
-                echo "# $arg"
-            fi
-            cmark "$arg" | pup 'a json{}' | jq -r '.[] | .text + "\t" + .href'
-        done
-    fi
+    for fn; do
+        if [ $verbose -eq 1 ]; then
+            echo "# $fn"
+        fi
+        cmark "$fn" | pup 'a json{}' | jq -r '.[] | .text + "\t" + .href'
+    done
 fi
