@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if ! which cmark.py >/dev/null 2>&1; then
+    if [ ! -e "${WORKON_HOME:-~/.virtualenvs}/commonmark" ]; then
+        pipv commonmark
+    fi
+    if [ -e "${WORKON_HOME:-~/.virtualenvs}/commonmark" ]; then
+        . "${WORKON_HOME:-~/.virtualenvs}/commonmark/bin/activate"
+    fi
+fi
+
+cmark "$@" | pup a 'attr{href}'
