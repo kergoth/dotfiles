@@ -1,4 +1,5 @@
 #!/bin/sh
+# Extract the links from markdown
 
 if ! which cmark.py >/dev/null 2>&1; then
     if [ ! -e "${WORKON_HOME:-~/.virtualenvs}/commonmark" ]; then
