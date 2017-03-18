@@ -1934,6 +1934,7 @@ SYNTAX CHECKERS FOR DOCKERFILE                 *syntastic-checkers-dockerfile*
 The following checkers are available for Dockerfile (filetype "dockerfile"):
 
     1. dockerfile-lint..........|syntastic-dockerfile-dockerfile_lint|
+    2. Hadolint.................|syntastic-dockerfile-hadolint|
 
 ------------------------------------------------------------------------------
 1. dockerfile-lint                      *syntastic-dockerfile-dockerfile_lint*
@@ -1952,6 +1953,22 @@ Installation~
 Install it with: >
     npm install -g dockerfile_lint
 <
+Checker options~
+
+This checker is initialised using the "makeprgBuild()" function and thus it
+accepts the standard options described at |syntastic-config-makeprg|.
+
+------------------------------------------------------------------------------
+2. Hadolint                                    *syntastic-dockerfile-hadolint*
+
+Name:        hadolint
+Maintainer:  Jesper B. Rosenkilde <jbr@humppa.dk>
+
+"Hadolint" is a dockerfile linter written in Haskell. See the project's page
+at GitHub for details:
+
+    https://github.com/lukasmartinelli/hadolint
+
 Checker options~
 
 This checker is initialised using the "makeprgBuild()" function and thus it
@@ -5953,6 +5970,7 @@ SYNTAX CHECKERS FOR SOLIDITY                     *syntastic-checkers-solidity*
 The following checkers are available for Solidity (filetype "solidity"):
 
     1. solc.....................|syntastic-solidity-solc|
+    2. Solium...................|syntastic-solidity-solium|
 
 ------------------------------------------------------------------------------
 1. solc                                              *syntastic-solidity-solc*
@@ -5977,6 +5995,27 @@ You probably also need a plugin to set |filetype| for Solidity files, such as
 
     https://github.com/tomlion/vim-solidity
 
+------------------------------------------------------------------------------
+2. Solium                                          *syntastic-solidity-solium*
+
+Name:        solium
+Maintainer:  Matthijs van den Bos <matthijs@vandenbos.org>
+
+"Solium" is a linter for "Solidity" files. See the project's page for details:
+
+    https://github.com/duaraghav8/Solium
+
+Checker options~
+
+This checker is initialised using the "makeprgBuild()" function and thus it
+accepts the standard options described at |syntastic-config-makeprg|.
+
+Note~
+
+You probably also need a plugin to set |filetype| for Solidity files, such as
+"vim-solidity":
+
+    https://github.com/tomlion/vim-solidity
 
 ==============================================================================
 SYNTAX CHECKERS FOR SQL                               *syntastic-checkers-sql*
