@@ -79,6 +79,7 @@ npmv pin-cushion
 
 ## Development Tools
 go get -u github.com/github/hub
+OPENSSL_DIR=/opt/homebrew/opt/openssl cargov git-series
 # pprintpp + pp-ez?
 # twine?
 # wheel?
@@ -124,6 +125,11 @@ go get -u github.com/shurcooL/markdownfmt
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
 #go get -u github.com/asciinema/asciinema # or brew install asciinema
+
+### Elixir Development
+# erlang is specifically listed to ensure its binaries are symlinked as well
+# as the elixir binaries, so erl is available
+#brewv elixir elixir erlang
 
 ### Lua Development
 # luvi?
