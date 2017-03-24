@@ -37,7 +37,7 @@ for script in "$root_dir/bin/"*; do
     link_name="$XDG_DATA_HOME/../bin/$filename"
     printf >&2 '’%s’ -> ’%s’\n' "$link_name" "$script"
     rm -f "$link_name"
-    ln -f "$root_dir/bin/$filename" "$link_name"
+    ln -sf "$root_dir/bin/$filename" "$link_name"
 done
 
 for man in "$root_dir/share/man/"man*/*; do
