@@ -39,6 +39,13 @@ try:
         prefix, final_key = key[:-1], key[len(key)-1]
         lookup(o, prefix)[final_key] = toml._load_value(value)[0]
 finally:
-    outfile = args.file or sys.stdout
-    with open(outfile, 'w') as f:
+    if not args.file or args.file == '-':
+        f = sys.stdout
+    else:
+        f = open(args.file, 'w')
+
+    try:
         toml.dump(o, f)
+    finally:
+        if f is not sys.stdout:
+            f.close()
