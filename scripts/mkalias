@@ -1,30 +1,38 @@
 #!/bin/sh
 
-alias_snippet () {
-    aliaspath="$(cd "$2" && pwd)"
-    realpath="$(cd "$(dirname "$1")" && pwd)/${1##*/}"
-    eval "$(mdls -name kMDItemKind "$aliaspath" | sed 's, = ,=,; s,(null),"(null)",')"
-    case "$kMDItemKind" in
-        \(null\)|Folder)
-            # If null, spotlight likely hasn't updated its metadata, so skip it.
-            ;;
-        *)
-            echo >&2 "Error: alias path must be a directory"
-            return 1
-            ;;
-    esac
-    printf 'tell application "Finder" to make new alias to POSIX file "%s" at POSIX file "%s"\n' "$realpath" "$aliaspath"
-}
+if [ $# -eq 0 ]; then
+    echo >&2 "${0##*/} source_path alias_path"
+    echo >&2 "${0##*/} source_path existing_destdir"
+    echo >&2 "${0##*/} source_path destdir/"
+    exit 0
+fi
 
+dest=
+source_path="$1"
+dest_dir="$2"
 
-if [ $# -eq 1 ]; then
-    realpath="$1"
-    aliaspath="."
-    alias_snippet "$realpath" "$aliaspath" || exit $?
-else
-    aliaspath="$(eval echo "\${$#}")"
-    while [ $# -gt 1 ]; do
-        alias_snippet "$1" "$aliaspath" || exit $?
-        shift
-    done
-fi | osascript
+case "$dest_dir" in
+    */)
+        dest="$dest_dir/$(basename "$source_path")"
+        ;;
+    *)
+        if [ -d "$dest_dir" ]; then
+            dest="$dest_dir/$(basename "$source_path")"
+        fi
+        ;;
+esac
+
+if [ -z "$dest" ]; then
+    dest="$dest_dir"
+    dest_dir="$(dirname "$dest")"
+fi
+
+osascript <<END
+tell application "Finder"
+    make new alias at POSIX file "$dest_dir" to POSIX file "$source_path"
+end tell
+END
+
+if [ "$dest" != "$dest_dir/$(basename "$source_path")" ]; then
+    mv "$dest_dir/$(basename "$source_path")" "$dest"
+fi
