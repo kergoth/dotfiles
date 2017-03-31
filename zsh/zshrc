@@ -42,12 +42,18 @@ done
 
 # initialize autocomplete here, otherwise functions won't be loaded
 autoload -U compinit
-if [[ $PSEUDO_DISABLED = 0 ]]; then
-    # When running under pseudo, we're actually still ourselves, so silently
-    # ignore the compaudit.
-    compinit -u -d $XDG_CACHE_HOME/zsh/zcompdump
+# only check for new functions once a day
+ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"
+if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
+    if [[ $PSEUDO_DISABLED = 0 ]]; then
+        # When running under pseudo, we're actually still ourselves, so silently
+        # ignore the compaudit.
+        compinit -u -d $ZSH_COMPDUMP
+    else
+        compinit -d $ZSH_COMPDUMP
+    fi
 else
-    compinit -d $XDG_CACHE_HOME/zsh/zcompdump
+  compinit -C -d $ZSH_COMPDUMP
 fi
 
 # load every completion after autocomplete loads
