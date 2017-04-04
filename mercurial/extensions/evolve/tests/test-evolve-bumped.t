@@ -10,7 +10,7 @@
   adding a
   $ cd ..
 
-  $ evolvepath=$(echo $(dirname $TESTDIR))/hgext/evolve.py
+  $ evolvepath=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/
   $ hg clone -U public private
   $ cd private
   $ cat >> .hg/hgrc <<EOF

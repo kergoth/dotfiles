@@ -2,7 +2,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 === D.2 missing prune target (prune in "pushed set") ===
 
@@ -49,6 +49,12 @@ Expected exchange:
   $ hg debugobsolete
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 554c0b12f7d9fff20cb904c26e12eee337e3309c
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f 5c81c58ce0a8ad61dd9cf4c6949846b5990af30d
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             0 a9bdc8b26820            0            1            1 554c0b12f7d9
   $ cd ..
   $ cd ..
 

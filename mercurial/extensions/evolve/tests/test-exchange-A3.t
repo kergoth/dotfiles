@@ -1,7 +1,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 === A.3 new branch created ===
 
@@ -70,6 +70,19 @@ initial
   $ hg debugobsolete
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0000000000000000000000000000000000000000
+  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 0000000000000000000000000000000000000000
+  e5ea8f9c73143125d36658e90ef70c6d2027a5b7 3bc2ee626e11a7cf8fee7a66d069271e17d5a597
+  f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 91716bfd671b5a5854a47ac5d392edfdd25e431a
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             3 e5ea8f9c7314            0            2            2 3bc2ee626e11
+             4 f6298a8ac3a4            0            2            2 91716bfd671b
+             0 a9bdc8b26820            0            1            1 000000000000
+             3 e5ea8f9c7314            1            1            2 3bc2ee626e11
+             4 f6298a8ac3a4            1            1            2 91716bfd671b
   $ cd ..
   $ cd ..
 

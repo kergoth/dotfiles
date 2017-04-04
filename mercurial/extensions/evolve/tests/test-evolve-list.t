@@ -3,7 +3,7 @@ Set up some configs
   > [extensions]
   > rebase=
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
 Test the instability listing
   $ hg init r2

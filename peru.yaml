@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 73cb83270262bbb6bf110a8a6a99f36db8f56cef
+    rev: 462779629a0c66e652d3bf9f8a1f18330f379ee7
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -171,7 +171,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 87c1bda4d5573185a1f79c42a919c4b62bc34c42
+    rev: eb945e9a114a973073a206202bd0d5df851a5193
 
 # go language support
 git module vim-golang:
@@ -196,11 +196,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: b4ad02f9061d4fff1431653b0176aa8fb05db8ef
+    rev: 396b49be4c886c96e949d535b638cc5a79440148
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 793ce6615b1982d87a083aea301e7db18d59e9c7
+    rev: 66c2839bb1126c71a0a2d1da9804161ccd3b78b6
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -235,7 +235,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: a54f2c5e18b8c2aad8c6f8ba474760e70fdaaca3
+    rev: dafa9414fa36293333b129e6445af2790f2bc912
 
 # continuously updated session files
 git module vim-obsession:
@@ -290,7 +290,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 2ba10071c96334f3241c39cff5682bc2256badda
+    rev: 7c8f7d3f201b89c2e1fb1aca4b7289964469cba8
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -339,7 +339,7 @@ curl module cpanm:
     # url: https://cpanmin.us/
     url: https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm
     executable: cpanm
-    sha1: 7f9f78478072dd43010b7b094a516a8f92f8fb78
+    sha1: 6ed7931a60cab4458f62ac06b59deadb8ce3b7c0
 
 git module cwdiff:
     url: https://github.com/junghans/cwdiff
@@ -517,7 +517,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: efda653c96a78107a52a0a5b988cbbf405a1cd20
+    rev: 237ea5ce21a320e9d6af75aac6cd0a0fcfd16642
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -560,14 +560,14 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: d7338f8a635514270b441e381164ec477a2e0cfd
+    rev: b2b125cfade75468faef6ac87742a78f2de26bfa
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 5d65fe3897e9be1fb41b2fea9b6f79ff597b735d
+    rev: 3ff2f9dbe4397bcf39dee613b22dd3763468676e
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -575,7 +575,7 @@ git module base16-shell:
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: bf6ea69b4bbeb64b336e2e34fddc26869da2033c
+    rev: 02955c949ddbdc4f44811a4dd9194ae9f3ce19f9
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -592,7 +592,7 @@ git module diff-so-fancy:
     url: https://github.com/so-fancy/diff-so-fancy
     pick:
         - diff-so-fancy
-    rev: 9694daf63b76f94bcd6eb8e68e9ed0c9627ef7f9
+    rev: 3adf0114da99643ec53a16253a3d6f42390e4c19
 
 git module hub-completion:
     url: https://github.com/github/hub
@@ -641,7 +641,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 49771ba01882c82dd2fa13431e62e9ef9c024f41
+    rev: 61211634c95218d27f70f2d5dd8c388fd06e5ec4
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready

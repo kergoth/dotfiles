@@ -125,7 +125,7 @@ To use ``evolve``, you must:
 
      Then add ::
 
-       evolve=~/src/evolve-main/hgext/evolve.py
+       evolve=~/src/evolve-main/hgext3rd/evolve/
 
      in the ``[extensions]`` section (adding the section if necessary). Use
      the directory that you actually cloned to, of course.

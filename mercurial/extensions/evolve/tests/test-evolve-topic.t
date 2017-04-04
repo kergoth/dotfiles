@@ -1,10 +1,6 @@
 
 Check we can find the topic extensions
 
-  $ [ -z "$HGTEST_TOPICROOT" ] && echo 'skipped: $HGTEST_TOPICROOT not set' >&2 && exit 80
-  [1]
-  $ [ ! -e $HGTEST_TOPICROOT/hgext3rd/topic/__init__.py ] && echo 'skipped: no topic repo found at $HGTEST_TOPICROOT' >&2 && exit 80
-  [1]
   $ cat >> $HGRCPATH <<EOF
   > [defaults]
   > amend=-d "0 0"
@@ -18,9 +14,9 @@ Check we can find the topic extensions
   > unified = 0
   > [extensions]
   > rebase = 
-  > topic = $HGTEST_TOPICROOT/hgext3rd/topic/
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
+  $ echo "topic=$(echo $(dirname $TESTDIR))/hgext3rd/topic/" >> $HGRCPATH
 
   $ mkcommit() {
   >    echo "$1" > "$1"

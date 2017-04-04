@@ -32,7 +32,7 @@ def timed(ui, caption):
     ostop = os.times()
     wall = cstop - cstart
     user = ostop[0] - ostart[0]
-    sys  = ostop[1] - ostart[1]
+    sys = ostop[1] - ostart[1]
     comb = user + sys
     ui.write("%s: wall %f comb %f user %f sys %f\n"
              % (caption, wall, comb, user, sys))
@@ -66,8 +66,8 @@ def stripmarker(ui, repo, markers):
     repo = repo.unfiltered()
     repo.destroying()
     oldmarkers = list(repo.obsstore._all)
-    util.rename(repo.sjoin('obsstore'),
-                repo.join('obsstore.prestrip'))
+    util.rename(repo.svfs.join('obsstore'),
+                repo.vfs.join('obsstore.prestrip'))
     del repo.obsstore # drop the cache
     newstore = repo.obsstore
     assert not newstore # should be empty after rename

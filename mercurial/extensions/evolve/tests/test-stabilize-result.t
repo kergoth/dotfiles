@@ -5,7 +5,7 @@
   > hgext.rebase=
   > hgext.graphlog=
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ glog() {
   >   hg glog --template \

@@ -1,7 +1,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 
 === A.4 Push in the middle of the obsolescence chain ===
@@ -63,6 +63,20 @@ initial
   $ hg debugobsolete
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f 5d69322fad9eb1ba8f8f2c2312346ed347fdde76
+  06055a7959d4128e6e3bccfd01482e83a2db8a3a fd3e5712c9c2d216547d7a1b87ac815ee1fb7542
+  e5ea8f9c73143125d36658e90ef70c6d2027a5b7 cf518031fa753e9b049d727e6b0e19f645bab38f
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             2 06055a7959d4            0            3            3 000000000000
+             1 28b51eb45704            0            2            2 5d69322fad9e
+             3 e5ea8f9c7314            0            2            2 cf518031fa75
+             2 06055a7959d4            2            1            3 000000000000
+             1 28b51eb45704            1            1            2 5d69322fad9e
+             0 a9bdc8b26820            0            1            1 000000000000
+             3 e5ea8f9c7314            1            1            2 cf518031fa75
   $ cd ..
   $ cd ..
 

@@ -32,7 +32,7 @@ enable evolve for safe history modification
   > [extensions]
   > rebase =
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
 example 3: safe amend with "hg commit --amend" (figure 2)
   $ echo 'tweak feature Y' >> file1.c

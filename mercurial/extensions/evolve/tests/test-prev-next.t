@@ -2,7 +2,7 @@
   > [extensions]
   > hgext.graphlog=
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
 hg prev -B should move active bookmark
   $ hg init

@@ -17,7 +17,7 @@ Initial setup
   > touch.args=babar
   > [extensions]
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ safesed() {
   >   sed "$1" "$2" > `pwd`/sed.temp

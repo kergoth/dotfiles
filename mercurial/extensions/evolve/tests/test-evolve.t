@@ -16,7 +16,7 @@
   > [extensions]
   > hgext.graphlog=
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {
   >    echo "$1" > "$1"
   >    hg add "$1"
@@ -168,6 +168,14 @@ Smoketest debugobsrelsethashtree:
   47d2a3944de8b013de3be9578e8e344ea2e6c097 * (glob)
   fbb94e3a0ecf6d20c2cc31152ef162ce45af982f * (glob)
   e44648563c73f75950076031c6fdf06629de95f1 * (glob)
+
+Smoketest stablerange.obshash:
+
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             1 7c3bad9141dc            0            2            2 * (glob)
+             0 1f0dee641bb7            0            1            1 000000000000
+             1 7c3bad9141dc            1            1            2 * (glob)
 
   $ cd ..
 

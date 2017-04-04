@@ -8,9 +8,9 @@
   > rebase=
   > strip=
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
-  $ echo "directaccess=$(echo $(dirname $TESTDIR))/hgext/directaccess.py" >> $HGRCPATH
-  $ echo "inhibit=$(echo $(dirname $TESTDIR))/hgext/inhibit.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
+  $ echo "directaccess=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/directaccess.py" >> $HGRCPATH
+  $ echo "inhibit=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/inhibit.py" >> $HGRCPATH
   $ mkcommit() {
   >    echo "$1" > "$1"
   >    hg add "$1"
@@ -728,7 +728,7 @@ check that pruning and inhibited node does not confuse anything
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
   > EOF
-  $ echo "inhibit=$(echo $(dirname $TESTDIR))/hgext/inhibit.py" >> $HGRCPATH
+  $ echo "inhibit=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/inhibit.py" >> $HGRCPATH
 
 Empty commit
   $ hg amend
@@ -781,7 +781,7 @@ Inhibit should not work without directaccess
   cannot use inhibit without the direct access extension
   (please enable it or inhibit won't work)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ echo "directaccess=$(echo $(dirname $TESTDIR))/hgext/directaccess.py" >> $HGRCPATH
+  $ echo "directaccess=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/directaccess.py" >> $HGRCPATH
   $ cd ..
 
 hg push should not allow directaccess unless forced with --hidden
@@ -807,7 +807,7 @@ Hidden commits cannot be pushed without --hidden
   [255]
 
 Visible commits can still be pushed
-  $ hg push -r 71eb4f100663 $pwd/inhibit2
+  $ hg push -fr 71eb4f100663 $pwd/inhibit2
   pushing to $TESTTMP/inhibit2
   searching for changes
   adding changesets
@@ -911,7 +911,7 @@ Pulling from a inhibit repo to a non-inhibit repo should work
   $ cd not-inhibit
   $ hg book -d foo
   $ hg pull
-  pulling from $TESTTMP/inhibit
+  pulling from $TESTTMP/inhibit (glob)
   searching for changes
   no changes found
   adding remote bookmark foo

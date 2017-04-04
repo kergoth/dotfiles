@@ -5,8 +5,7 @@
 #
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
-
-'''extends Mercurial feature related to Changeset Evolution
+"""extends Mercurial feature related to Changeset Evolution
 
 This extension provides several commands to mutate history and deal with
 resulting issues.
@@ -17,11 +16,7 @@ It also:
     - alters core commands and extensions that rewrite history to use
       this feature,
     - improves some aspect of the early implementation in Mercurial core
-'''
-
-__version__ = '5.6.0'
-testedwith = '3.4.3 3.5.2 3.6.2 3.7.3 3.8.1 3.9 4.0 4.1'
-buglink = 'https://bz.mercurial-scm.org/'
+"""
 
 
 evolutionhelptext = """
@@ -59,87 +54,89 @@ assert support for the obsolescence feature (this can currently only be done
 via an extension).""".strip()
 
 
-import sys, os
+import os
+import sys
 import random
+import re
+import collections
+import errno
+import struct
+
 try:
     import StringIO as io
     StringIO = io.StringIO
 except ImportError:
     import io
     StringIO = io.StringIO
-import re
-import collections
-import socket
-import errno
-import hashlib
-import struct
-sha1re = re.compile(r'\b[0-9a-f]{6,40}\b')
+
+
+try:
+    from mercurial import registrar
+    registrar.templatekeyword # new in hg-3.8
+except ImportError:
+    from . import metadata
+    raise ImportError('evolve needs version %s or above' %
+                      min(metadata.testedwith.split()))
 
 import mercurial
 from mercurial import util
 from mercurial import repair
 
-try:
-    from mercurial import obsolete
-    if not obsolete._enabled:
-        obsolete._enabled = True
-    from mercurial import wireproto
-    gboptslist = getattr(wireproto, 'gboptslist', None)
-    gboptsmap = getattr(wireproto, 'gboptsmap', None)
-except (ImportError, AttributeError):
-    gboptslist = gboptsmap = None
+from mercurial import obsolete
+if not obsolete._enabled:
+    obsolete._enabled = True
+
+from mercurial import (
+    bookmarks as bookmarksmod,
+    cmdutil,
+    commands,
+    context,
+    copies,
+    error,
+    extensions,
+    help,
+    hg,
+    lock as lockmod,
+    merge,
+    node,
+    patch,
+    phases,
+    revset,
+    scmutil,
+    templatekw,
+)
+
+from mercurial.commands import walkopts, commitopts, commitopts2, mergetoolopts
+from mercurial.i18n import _
+from mercurial.node import nullid
+
+from . import (
+    checkheads,
+    debugcmd,
+    obsdiscovery,
+    obsexchange,
+    exthelper,
+    metadata,
+    utility,
+)
+
+__version__ = metadata.__version__
+testedwith = metadata.testedwith
+minimumhgversion = metadata.minimumhgversion
+buglink = metadata.buglink
+
+sha1re = re.compile(r'\b[0-9a-f]{6,40}\b')
 
 # Flags for enabling optional parts of evolve
 commandopt = 'allnewcommands'
 
-from mercurial import bookmarks as bookmarksmod
-from mercurial import cmdutil
-from mercurial import commands
-from mercurial import context
-from mercurial import copies
-from mercurial import error
-from mercurial import exchange
-from mercurial import extensions
-from mercurial import help
-from mercurial import httppeer
-from mercurial import hg
-from mercurial import lock as lockmod
-from mercurial import merge
-from mercurial import node
-from mercurial import phases
-from mercurial import patch
-from mercurial import revset
-from mercurial import scmutil
-from mercurial import templatekw
-from mercurial.i18n import _
-from mercurial.commands import walkopts, commitopts, commitopts2, mergetoolopts
-from mercurial.node import nullid
-from mercurial import wireproto
-from mercurial import localrepo
-from mercurial.hgweb import hgweb_mod
-
-cmdtable = {}
-command = cmdutil.command(cmdtable)
+obsexcmsg = utility.obsexcmsg
 
 _pack = struct.pack
 _unpack = struct.unpack
 
-if gboptsmap is not None:
-    memfilectx = context.memfilectx
-elif gboptslist is not None:
-    oldmemfilectx = context.memfilectx
-    def memfilectx(repo, *args, **kwargs):
-        return oldmemfilectx(*args, **kwargs)
-else:
-    raise ImportError('evolve needs version %s or above' %
-                      min(testedwith.split()))
-
 aliases, entry = cmdutil.findcmd('commit', commands.table)
-hasinteractivemode = any(['interactive' in e for e in entry[1]])
-if hasinteractivemode:
-    interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
-else:
-    interactiveopt = []
+interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
 # This extension contains the following code
 #
 # - Extension Helper code
@@ -147,250 +144,15 @@ else:
 # - ...
 # - Older format compat
 
-
-#####################################################################
-### Extension helper                                              ###
-#####################################################################
-
-class exthelper(object):
-    """Helper for modular extension setup
-
-    A single helper should be instantiated for each extension. Helper
-    methods are then used as decorators for various purpose.
-
-    All decorators return the original function and may be chained.
-    """
-
-    def __init__(self):
-        self._uicallables = []
-        self._extcallables = []
-        self._repocallables = []
-        self._revsetsymbols = []
-        self._templatekws = []
-        self._commandwrappers = []
-        self._extcommandwrappers = []
-        self._functionwrappers = []
-        self._duckpunchers = []
-
-    def final_uisetup(self, ui):
-        """Method to be used as the extension uisetup
-
-        The following operations belong here:
-
-        - Changes to ui.__class__ . The ui object that will be used to run the
-          command has not yet been created. Changes made here will affect ui
-          objects created after this, and in particular the ui that will be
-          passed to runcommand
-        - Command wraps (extensions.wrapcommand)
-        - Changes that need to be visible to other extensions: because
-          initialization occurs in phases (all extensions run uisetup, then all
-          run extsetup), a change made here will be visible to other extensions
-          during extsetup
-        - Monkeypatch or wrap function (extensions.wrapfunction) of dispatch
-          module members
-        - Setup of pre-* and post-* hooks
-        - pushkey setup
-        """
-        for cont, funcname, func in self._duckpunchers:
-            setattr(cont, funcname, func)
-        for command, wrapper, opts in self._commandwrappers:
-            entry = extensions.wrapcommand(commands.table, command, wrapper)
-            if opts:
-                for short, long, val, msg in opts:
-                    entry[1].append((short, long, val, msg))
-        for cont, funcname, wrapper in self._functionwrappers:
-            extensions.wrapfunction(cont, funcname, wrapper)
-        for c in self._uicallables:
-            c(ui)
-
-    def final_extsetup(self, ui):
-        """Method to be used as a the extension extsetup
-
-        The following operations belong here:
-
-        - Changes depending on the status of other extensions. (if
-          extensions.find('mq'))
-        - Add a global option to all commands
-        - Register revset functions
-        """
-        knownexts = {}
-        for name, symbol in self._revsetsymbols:
-            revset.symbols[name] = symbol
-        for name, kw in self._templatekws:
-            templatekw.keywords[name] = kw
-        for ext, command, wrapper, opts in self._extcommandwrappers:
-            if ext not in knownexts:
-                try:
-                    e = extensions.find(ext)
-                except KeyError:
-                    # Extension isn't enabled, so don't bother trying to wrap
-                    # it.
-                    continue
-                knownexts[ext] = e.cmdtable
-            entry = extensions.wrapcommand(knownexts[ext], command, wrapper)
-            if opts:
-                for short, long, val, msg in opts:
-                    entry[1].append((short, long, val, msg))
-
-        for c in self._extcallables:
-            c(ui)
-
-    def final_reposetup(self, ui, repo):
-        """Method to be used as the extension reposetup
-
-        The following operations belong here:
-
-        - All hooks but pre-* and post-*
-        - Modify configuration variables
-        - Changes to repo.__class__, repo.dirstate.__class__
-        """
-        for c in self._repocallables:
-            c(ui, repo)
-
-    def uisetup(self, call):
-        """Decorated function will be executed during uisetup
-
-        example::
-
-            @eh.uisetup
-            def setupbabar(ui):
-                print 'this is uisetup!'
-        """
-        self._uicallables.append(call)
-        return call
-
-    def extsetup(self, call):
-        """Decorated function will be executed during extsetup
-
-        example::
-
-            @eh.extsetup
-            def setupcelestine(ui):
-                print 'this is extsetup!'
-        """
-        self._extcallables.append(call)
-        return call
-
-    def reposetup(self, call):
-        """Decorated function will be executed during reposetup
-
-        example::
-
-            @eh.reposetup
-            def setupzephir(ui, repo):
-                print 'this is reposetup!'
-        """
-        self._repocallables.append(call)
-        return call
-
-    def revset(self, symbolname):
-        """Decorated function is a revset symbol
-
-        The name of the symbol must be given as the decorator argument.
-        The symbol is added during `extsetup`.
-
-        example::
-
-            @eh.revset('hidden')
-            def revsetbabar(repo, subset, x):
-                args = revset.getargs(x, 0, 0, 'babar accept no argument')
-                return [r for r in subset if 'babar' in repo[r].description()]
-        """
-        def dec(symbol):
-            self._revsetsymbols.append((symbolname, symbol))
-            return symbol
-        return dec
-
-
-    def templatekw(self, keywordname):
-        """Decorated function is a template keyword
-
-        The name of the keyword must be given as the decorator argument.
-        The symbol is added during `extsetup`.
-
-        example::
-
-            @eh.templatekw('babar')
-            def kwbabar(ctx):
-                return 'babar'
-        """
-        def dec(keyword):
-            self._templatekws.append((keywordname, keyword))
-            return keyword
-        return dec
-
-    def wrapcommand(self, command, extension=None, opts=[]):
-        """Decorated function is a command wrapper
-
-        The name of the command must be given as the decorator argument.
-        The wrapping is installed during `uisetup`.
-
-        If the second option `extension` argument is provided, the wrapping
-        will be applied in the extension commandtable. This argument must be a
-        string that will be searched using `extension.find` if not found and
-        Abort error is raised. If the wrapping applies to an extension, it is
-        installed during `extsetup`.
-
-        example::
-
-            @eh.wrapcommand('summary')
-            def wrapsummary(orig, ui, repo, *args, **kwargs):
-                ui.note('Barry!')
-                return orig(ui, repo, *args, **kwargs)
-
-        The `opts` argument allows specifying additional arguments for the
-        command.
-
-        """
-        def dec(wrapper):
-            if extension is None:
-                self._commandwrappers.append((command, wrapper, opts))
-            else:
-                self._extcommandwrappers.append((extension, command, wrapper,
-                    opts))
-            return wrapper
-        return dec
-
-    def wrapfunction(self, container, funcname):
-        """Decorated function is a function wrapper
-
-        This function takes two arguments, the container and the name of the
-        function to wrap. The wrapping is performed during `uisetup`.
-        (there is no extension support)
-
-        example::
-
-            @eh.function(discovery, 'checkheads')
-            def wrapfunction(orig, *args, **kwargs):
-                ui.note('His head smashed in and his heart cut out')
-                return orig(*args, **kwargs)
-        """
-        def dec(wrapper):
-            self._functionwrappers.append((container, funcname, wrapper))
-            return wrapper
-        return dec
-
-    def addattr(self, container, funcname):
-        """Decorated function is to be added to the container
-
-        This function takes two arguments, the container and the name of the
-        function to wrap. The wrapping is performed during `uisetup`.
-
-        example::
-
-            @eh.function(context.changectx, 'babar')
-            def babar(ctx):
-                return 'babar' in ctx.description
-        """
-        def dec(func):
-            self._duckpunchers.append((container, funcname, func))
-            return func
-        return dec
-
-eh = exthelper()
+eh = exthelper.exthelper()
+eh.merge(debugcmd.eh)
+eh.merge(obsdiscovery.eh)
+eh.merge(obsexchange.eh)
+eh.merge(checkheads.eh)
 uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
 reposetup = eh.final_reposetup
+cmdtable = eh.cmdtable
 
 #####################################################################
 ### Option configuration                                          ###
@@ -481,17 +243,18 @@ def _installalias(ui):
                      'evolve')
     if ui.config('alias', 'odiff', None) is None:
         ui.setconfig('alias', 'odiff',
-            "diff --hidden --rev 'limit(precursors(.),1)' --rev .",
-            'evolve')
+                     "diff --hidden --rev 'limit(precursors(.),1)' --rev .",
+                     'evolve')
     if ui.config('alias', 'grab', None) is None:
         if os.name == 'nt':
             ui.setconfig('alias', 'grab',
-                "! " + util.hgexecutable() + " rebase --dest . --rev $@ && "
-                 + util.hgexecutable() + " up tip",
+                         "! " + util.hgexecutable()
+                         + " rebase --dest . --rev $@ && "
+                         + util.hgexecutable() + " up tip",
                          'evolve')
         else:
             ui.setconfig('alias', 'grab',
-                "! $HG rebase --dest . --rev $@ && $HG up tip",
+                         "! $HG rebase --dest . --rev $@ && $HG up tip",
                          'evolve')
 
 
@@ -594,9 +357,6 @@ def _allsuccessors(repo, s, haltonflags=0):  # XXX we need a better naming
             cs.add(sr)
     cs -= repo.changelog.filteredrevs # nodemap has no filtering
     return cs
-
-
-
 
 #####################################################################
 ### Extending revset and template                                 ###
@@ -730,8 +490,6 @@ def warnobserrors(orig, ui, repo, *args, **kwargs):
     priorbumpeds = len(set(getrevs(repo, 'bumped')) - filtered)
     priordivergents = len(set(getrevs(repo, 'divergent')) - filtered)
     ret = orig(ui, repo, *args, **kwargs)
-    # workaround phase stupidity
-    #phases._filterunknown(ui, repo.changelog, repo._phasecache.phaseroots)
     filtered = repo.changelog.filteredrevs
     newunstables = \
         len(set(getrevs(repo, 'unstable')) - filtered) - priorunstables
@@ -770,17 +528,6 @@ def summaryhook(ui, repo):
         else:
             ui.note(s)
 
-    # util.versiontuple was introduced in 3.6.2
-    if not util.safehasattr(util, 'versiontuple'):
-        nbunstable = len(getrevs(repo, 'unstable'))
-        nbbumped = len(getrevs(repo, 'bumped'))
-        nbdivergent = len(getrevs(repo, 'divergent'))
-        write('unstable: %i changesets\n', nbunstable)
-        write('bumped: %i changesets\n', nbbumped)
-        write('divergent: %i changesets\n', nbdivergent)
-    else:
-        # In 3.6.2, summary in core gained this feature, no need to display it
-        pass
     state = _evolvestateread(repo)
     if state is not None:
         # i18n: column positioning for "hg summary"
@@ -818,9 +565,6 @@ def _rebasewrapping(ui):
 
 # XXX need clean up and proper sorting in other section
 
-### util function
-#############################
-
 ### changeset rewriting logic
 #############################
 
@@ -835,7 +579,7 @@ def rewrite(repo, old, updates, head, newbases, commitopts):
         wlock = repo.wlock()
         lock = repo.lock()
         tr = repo.transaction('rewrite')
-        if len(old.parents()) > 1: #XXX remove this unnecessary limitation.
+        if len(old.parents()) > 1: # XXX remove this unnecessary limitation.
             raise error.Abort(_('cannot amend merge changesets'))
         base = old.p1()
         updatebookmarks = _bookmarksupdater(repo, old.node(), tr)
@@ -848,7 +592,6 @@ def rewrite(repo, old, updates, head, newbases, commitopts):
 
         # Recompute copies (avoid recording a -> b -> a)
         copied = copies.pathcopies(base, head)
-
 
         # prune files which were reverted by the updates
         def samefile(f):
@@ -865,14 +608,15 @@ def rewrite(repo, old, updates, head, newbases, commitopts):
         files = [f for f in files if not samefile(f)]
         # commit version of these files as defined by head
         headmf = head.manifest()
+
         def filectxfn(repo, ctx, path):
             if path in headmf:
                 fctx = head[path]
                 flags = fctx.flags()
-                mctx = memfilectx(repo, fctx.path(), fctx.data(),
-                                  islink='l' in flags,
-                                  isexec='x' in flags,
-                                  copied=copied.get(path))
+                mctx = context.memfilectx(repo, fctx.path(), fctx.data(),
+                                          islink='l' in flags,
+                                          isexec='x' in flags,
+                                          copied=copied.get(path))
                 return mctx
             return None
 
@@ -914,10 +658,10 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
     """rewrite <rev> on dest"""
     if orig.rev() == dest.rev():
         raise error.Abort(_('tried to relocate a node on top of itself'),
-                         hint=_("This shouldn't happen. If you still "
-                                "need to move changesets, please do so "
-                                "manually with nothing to rebase - working "
-                                "directory parent is also destination"))
+                          hint=_("This shouldn't happen. If you still "
+                                 "need to move changesets, please do so "
+                                 "manually with nothing to rebase - working "
+                                 "directory parent is also destination"))
 
     if pctx is None:
         if len(orig.parents()) == 2:
@@ -926,9 +670,6 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
                               hint=_("Specify the parent by passing in pctx"))
         pctx = orig.p1()
 
-    destbookmarks = repo.nodebookmarks(dest.node())
-    nodesrc = orig.node()
-    destphase = repo[nodesrc].phase()
     commitmsg = orig.description()
 
     cache = {}
@@ -959,23 +700,23 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
     assert tr is not None
     try:
         r = _evolvemerge(repo, orig, dest, pctx, keepbranch)
-        if r[-1]:  #some conflict
-            raise error.Abort(
-                    'unresolved merge conflicts (see hg help resolve)')
+        if r[-1]: # some conflict
+            raise error.Abort(_('unresolved merge conflicts '
+                                '(see hg help resolve)'))
         nodenew = _relocatecommit(repo, orig, commitmsg)
     except error.Abort as exc:
         repo.dirstate.beginparentchange()
         repo.setparents(repo['.'].node(), nullid)
-        writedirstate(repo.dirstate, tr)
+        repo.dirstate.write(tr)
         # fix up dirstate for copies and renames
         copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
         repo.dirstate.endparentchange()
+
         class LocalMergeFailure(MergeFailure, exc.__class__):
             pass
         exc.__class__ = LocalMergeFailure
         tr.close() # to keep changes in this transaction (e.g. dirstate)
         raise
-    oldbookmarks = repo.nodebookmarks(nodesrc)
     _finalizerelocate(repo, orig, dest, nodenew, tr)
     return nodenew
 
@@ -993,33 +734,6 @@ def _bookmarksupdater(repo, oldid, tr):
         if dirty:
             repo._bookmarks.recordchange(tr)
     return updatebookmarks
-
-### bookmarks api compatibility layer ###
-def bmdeactivate(repo):
-    try:
-        return bookmarksmod.deactivate(repo)
-    except AttributeError:
-        return bookmarksmod.unsetcurrent(repo)
-def bmactivate(repo, book):
-    try:
-        return bookmarksmod.activate(repo, book)
-    except AttributeError:
-        return bookmarksmod.setcurrent(repo, book)
-
-def bmactive(repo):
-    try:
-        return repo._activebookmark
-    except AttributeError:
-        return repo._bookmarkcurrent
-
-### dirstate compatibility layer < hg 3.6
-
-def writedirstate(dirstate, tr):
-    if dirstate.write.func_code.co_argcount != 1: # mercurial 3.6 and above
-        return dirstate.write(tr)
-    return dirstate.write()
-
-
 
 ### new command
 #############################
@@ -1040,11 +754,7 @@ def _installimportobsolete(ui):
 @eh.wrapfunction(mercurial.cmdutil, 'tryimportone')
 def tryimportone(orig, ui, repo, hunk, parents, opts, *args, **kwargs):
     extracted = patch.extract(ui, hunk)
-    if util.safehasattr(extracted, 'get'):
-        # mercurial 3.6 return a dictionary there
-        expected = extracted.get('nodeid')
-    else:
-        expected = extracted[5]
+    expected = extracted.get('nodeid')
     if expected is not None:
         expected = node.bin(expected)
     oldextract = patch.extract
@@ -1094,165 +804,19 @@ def _deprecatealias(oldalias, newalias):
         fn, opts, = entry
     deprecationwarning = _('%s have been deprecated in favor of %s\n') % (
         oldalias, newalias)
+
     def newfn(*args, **kwargs):
         ui = args[0]
         ui.warn(deprecationwarning)
         util.checksignature(fn)(*args, **kwargs)
-    newfn.__doc__  = deprecationwarning
-    cmdwrapper = command(oldalias, opts, synopsis)
+    newfn.__doc__ = deprecationwarning
+    cmdwrapper = eh.command(oldalias, opts, synopsis)
     cmdwrapper(newfn)
 
 @eh.extsetup
 def deprecatealiases(ui):
     _deprecatealias('gup', 'next')
     _deprecatealias('gdown', 'previous')
-
-@command('debugrecordpruneparents', [], '')
-def cmddebugrecordpruneparents(ui, repo):
-    """add parent data to prune markers when possible
-
-    This command searches the repo for prune markers without parent information.
-    If the pruned node is locally known, it creates a new marker with parent
-    data.
-    """
-    pgop = 'reading markers'
-
-    # lock from the beginning to prevent race
-    wlock = lock = tr = None
-    try:
-        wlock = repo.wlock()
-        lock = repo.lock()
-        tr = repo.transaction('recordpruneparents')
-        unfi = repo.unfiltered()
-        nm = unfi.changelog.nodemap
-        store = repo.obsstore
-        pgtotal = len(store._all)
-        for idx, mark in enumerate(list(store._all)):
-            if not mark[1]:
-                rev = nm.get(mark[0])
-                if rev is not None:
-                    ctx = unfi[rev]
-                    parents = tuple(p.node() for p in ctx.parents())
-                    before = len(store._all)
-                    store.create(tr, mark[0], mark[1], mark[2], mark[3],
-                                 parents=parents)
-                    if len(store._all) - before:
-                        ui.write(_('created new markers for %i\n') % rev)
-            ui.progress(pgop, idx, total=pgtotal)
-        tr.close()
-        ui.progress(pgop, None)
-    finally:
-        lockmod.release(tr, lock, wlock)
-
-@command('debugobsstorestat', [], '')
-def cmddebugobsstorestat(ui, repo):
-    """print statistics about obsolescence markers in the repo"""
-    def _updateclustermap(nodes, mark, clustersmap):
-        c = (set(nodes), set([mark]))
-        toproceed = set(nodes)
-        while toproceed:
-            n = toproceed.pop()
-            other = clustersmap.get(n)
-            if (other is not None
-                and other is not c):
-                other[0].update(c[0])
-                other[1].update(c[1])
-                for on in c[0]:
-                    if on in toproceed:
-                        continue
-                    clustersmap[on] = other
-                c = other
-            clustersmap[n] = c
-
-    store = repo.obsstore
-    unfi = repo.unfiltered()
-    nm = unfi.changelog.nodemap
-    ui.write(_('markers total:              %9i\n') % len(store._all))
-    sucscount = [0, 0 , 0, 0]
-    known = 0
-    parentsdata = 0
-    metakeys = {}
-    # node -> cluster mapping
-    #   a cluster is a (set(nodes), set(markers)) tuple
-    clustersmap = {}
-    # same data using parent information
-    pclustersmap = {}
-    for mark in store:
-        if mark[0] in nm:
-            known += 1
-        nbsucs = len(mark[1])
-        sucscount[min(nbsucs, 3)] += 1
-        meta = mark[3]
-        for key, value in meta:
-            metakeys.setdefault(key, 0)
-            metakeys[key] += 1
-        meta = dict(meta)
-        parents = [meta.get('p1'), meta.get('p2')]
-        parents = [node.bin(p) for p in parents if p is not None]
-        if parents:
-            parentsdata += 1
-        # cluster handling
-        nodes = set(mark[1])
-        nodes.add(mark[0])
-        _updateclustermap(nodes, mark, clustersmap)
-        # same with parent data
-        nodes.update(parents)
-        _updateclustermap(nodes, mark, pclustersmap)
-
-    # freezing the result
-    for c in clustersmap.values():
-        fc = (frozenset(c[0]), frozenset(c[1]))
-        for n in fc[0]:
-            clustersmap[n] = fc
-    # same with parent data
-    for c in pclustersmap.values():
-        fc = (frozenset(c[0]), frozenset(c[1]))
-        for n in fc[0]:
-            pclustersmap[n] = fc
-    ui.write(('    for known precursors:   %9i\n' % known))
-    ui.write(('    with parents data:      %9i\n' % parentsdata))
-    # successors data
-    ui.write(('markers with no successors: %9i\n' % sucscount[0]))
-    ui.write(('              1 successors: %9i\n' % sucscount[1]))
-    ui.write(('              2 successors: %9i\n' % sucscount[2]))
-    ui.write(('    more than 2 successors: %9i\n' % sucscount[3]))
-    # meta data info
-    ui.write(('    available  keys:\n'))
-    for key in sorted(metakeys):
-        ui.write(('    %15s:        %9i\n' % (key, metakeys[key])))
-
-    allclusters = list(set(clustersmap.values()))
-    allclusters.sort(key=lambda x: len(x[1]))
-    ui.write(('disconnected clusters:      %9i\n' % len(allclusters)))
-
-    ui.write('        any known node:     %9i\n'
-             % len([c for c in allclusters
-                    if [n for n in c[0] if nm.get(n) is not None]]))
-    if allclusters:
-        nbcluster = len(allclusters)
-        ui.write(('        smallest length:    %9i\n' % len(allclusters[0][1])))
-        ui.write(('        longer length:      %9i\n'
-                 % len(allclusters[-1][1])))
-        median = len(allclusters[nbcluster//2][1])
-        ui.write(('        median length:      %9i\n' % median))
-        mean = sum(len(x[1]) for x in allclusters) // nbcluster
-        ui.write(('        mean length:        %9i\n' % mean))
-    allpclusters = list(set(pclustersmap.values()))
-    allpclusters.sort(key=lambda x: len(x[1]))
-    ui.write(('    using parents data:     %9i\n' % len(allpclusters)))
-    ui.write('        any known node:     %9i\n'
-             % len([c for c in allclusters
-                    if [n for n in c[0] if nm.get(n) is not None]]))
-    if allpclusters:
-        nbcluster = len(allpclusters)
-        ui.write(('        smallest length:    %9i\n'
-                 % len(allpclusters[0][1])))
-        ui.write(('        longer length:      %9i\n'
-                 % len(allpclusters[-1][1])))
-        median = len(allpclusters[nbcluster//2][1])
-        ui.write(('        median length:      %9i\n' % median))
-        mean = sum(len(x[1]) for x in allpclusters) // nbcluster
-        ui.write(('        mean length:        %9i\n' % mean))
 
 def _solveone(ui, repo, ctx, dryrun, confirm, progresscb, category):
     """Resolve the troubles affecting one revision"""
@@ -1267,7 +831,7 @@ def _solveone(ui, repo, ctx, dryrun, confirm, progresscb, category):
             result = _solvebumped(ui, repo, ctx, dryrun, confirm, progresscb)
         elif 'divergent' == category:
             result = _solvedivergent(ui, repo, ctx, dryrun, confirm,
-                                   progresscb)
+                                     progresscb)
         else:
             assert False, "unknown trouble category: %s" % (category)
         tr.close()
@@ -1284,32 +848,31 @@ def _handlenotrouble(ui, repo, allopt, revopt, anyopt, targetcat):
     hint = None
 
     troubled = {
-            "unstable": repo.revs("unstable()"),
-            "divergent": repo.revs("divergent()"),
-            "bumped": repo.revs("bumped()"),
-            "all": repo.revs("troubled()"),
+        "unstable": repo.revs("unstable()"),
+        "divergent": repo.revs("divergent()"),
+        "bumped": repo.revs("bumped()"),
+        "all": repo.revs("troubled()"),
     }
 
-
     hintmap = {
-            'bumped': _("do you want to use --bumped"),
-            'bumped+divergent': _("do you want to use --bumped or --divergent"),
-            'bumped+unstable': _("do you want to use --bumped or --unstable"),
-            'divergent': _("do you want to use --divergent"),
-            'divergent+unstable': _("do you want to use --divergent"
-                                    " or --unstable"),
-            'unstable': _("do you want to use --unstable"),
-            'any+bumped': _("do you want to use --any (or --rev) and --bumped"),
-            'any+bumped+divergent': _("do you want to use --any (or --rev) and"
-                                      " --bumped or --divergent"),
-            'any+bumped+unstable': _("do you want to use --any (or --rev) and"
-                                     "--bumped or --unstable"),
-            'any+divergent': _("do you want to use --any (or --rev) and"
-                               " --divergent"),
-            'any+divergent+unstable': _("do you want to use --any (or --rev)"
-                                        " and --divergent or --unstable"),
-            'any+unstable': _("do you want to use --any (or --rev)"
-                              "and --unstable"),
+        'bumped': _("do you want to use --bumped"),
+        'bumped+divergent': _("do you want to use --bumped or --divergent"),
+        'bumped+unstable': _("do you want to use --bumped or --unstable"),
+        'divergent': _("do you want to use --divergent"),
+        'divergent+unstable': _("do you want to use --divergent"
+                                " or --unstable"),
+        'unstable': _("do you want to use --unstable"),
+        'any+bumped': _("do you want to use --any (or --rev) and --bumped"),
+        'any+bumped+divergent': _("do you want to use --any (or --rev) and"
+                                  " --bumped or --divergent"),
+        'any+bumped+unstable': _("do you want to use --any (or --rev) and"
+                                 "--bumped or --unstable"),
+        'any+divergent': _("do you want to use --any (or --rev) and"
+                           " --divergent"),
+        'any+divergent+unstable': _("do you want to use --any (or --rev)"
+                                    " and --divergent or --unstable"),
+        'any+unstable': _("do you want to use --any (or --rev)"
+                          "and --unstable"),
     }
 
     if revopt:
@@ -1352,21 +915,21 @@ def _handlenotrouble(ui, repo, allopt, revopt, anyopt, targetcat):
             l = len(troubled[targetcat])
             if l:
                 hint = _("%d other %s in the repository, do you want --any "
-                        "or --rev") % (l, targetcat)
+                         "or --rev") % (l, targetcat)
             else:
                 othertroubles = []
                 for cat in unselectedcategories:
                     if troubled[cat]:
                         othertroubles.append(cat)
                 if othertroubles:
-                    hint = hintmap['any+'+('+'.join(othertroubles))]
+                    hint = hintmap['any+' + ('+'.join(othertroubles))]
                 else:
                     msg = _("no troubled changesets")
 
     assert msg is not None
-    ui.write_err(msg+"\n")
+    ui.write_err("%s\n" % msg)
     if hint:
-        ui.write_err("("+hint+")\n")
+        ui.write_err("(%s)\n" % hint)
         return 2
     else:
         return 1
@@ -1456,7 +1019,7 @@ def _selectrevs(repo, allopt, revopt, anyopt, targetcat):
     """select troubles in repo matching according to given options"""
     revs = set()
     if allopt or revopt:
-        revs = repo.revs(targetcat+'()')
+        revs = repo.revs("%s()" % targetcat)
         if revopt:
             revs = scmutil.revrange(repo, revopt) & revs
         elif not anyopt:
@@ -1522,7 +1085,6 @@ def _orderrevs(repo, revs):
 def divergentsets(repo, ctx):
     """Compute sets of commits divergent with a given one"""
     cache = {}
-    succsets = {}
     base = {}
     for n in obsolete.allprecursors(repo.obsstore, [ctx.node()]):
         if n == ctx.node():
@@ -1628,24 +1190,26 @@ def listtroubles(ui, repo, troublecategories, **opts):
 
     fm.end()
 
-@command('^evolve|stabilize|solve',
+@eh.command(
+    '^evolve|stabilize|solve',
     [('n', 'dry-run', False,
-        _('do not perform actions, just print what would be done')),
+      _('do not perform actions, just print what would be done')),
      ('', 'confirm', False,
-        _('ask for confirmation before performing the action')),
-    ('A', 'any', False,
-        _('also consider troubled changesets unrelated to current working '
-          'directory')),
-    ('r', 'rev', [], _('solves troubles of these revisions')),
-    ('', 'bumped', False, _('solves only bumped changesets')),
-    ('', 'divergent', False, _('solves only divergent changesets')),
-    ('', 'unstable', False, _('solves only unstable changesets (default)')),
-    ('a', 'all', False, _('evolve all troubled changesets related to the '
-                          'current  working directory and its descendants')),
-    ('c', 'continue', False, _('continue an interrupted evolution')),
-    ('l', 'list', False, 'provide details on troubled changesets in the repo'),
+      _('ask for confirmation before performing the action')),
+     ('A', 'any', False,
+      _('also consider troubled changesets unrelated to current working '
+        'directory')),
+     ('r', 'rev', [], _('solves troubles of these revisions')),
+     ('', 'bumped', False, _('solves only bumped changesets')),
+     ('', 'divergent', False, _('solves only divergent changesets')),
+     ('', 'unstable', False, _('solves only unstable changesets (default)')),
+     ('a', 'all', False, _('evolve all troubled changesets related to the '
+                           'current  working directory and its descendants')),
+     ('c', 'continue', False, _('continue an interrupted evolution')),
+     ('l', 'list', False, 'provide details on troubled changesets in the repo'),
     ] + mergetoolopts,
-    _('[OPTIONS]...'))
+    _('[OPTIONS]...')
+)
 def evolve(ui, repo, **opts):
     """solve troubled changesets in your repository
 
@@ -1750,7 +1314,6 @@ def evolve(ui, repo, **opts):
                     displayer.show(repo[n])
             return 2
 
-
         ui.status(_('update:'))
         if not ui.quiet:
             displayer.show(ctx)
@@ -1787,18 +1350,17 @@ def evolve(ui, repo, **opts):
         # XXX This is a terrible terrible hack, please get rid of it.
         lock = repo.wlock()
         try:
-            repo.opener.write('graftstate', orig.hex() + '\n')
+            repo.vfs.write('graftstate', orig.hex() + '\n')
             try:
                 graftcmd = commands.table['graft'][0]
                 ret = graftcmd(ui, repo, old_obsolete=True, **{'continue': True})
                 _evolvestatedelete(repo)
                 return ret
             finally:
-                util.unlinkpath(repo.join('graftstate'), ignoremissing=True)
+                util.unlinkpath(repo.vfs.join('graftstate'), ignoremissing=True)
         finally:
             lock.release()
     cmdutil.bailifchanged(repo)
-
 
     if revopt and allopt:
         raise error.Abort('cannot specify both "--rev" and "--all"')
@@ -1818,7 +1380,7 @@ def evolve(ui, repo, **opts):
     for rev in revs:
         progresscb()
         _solveone(ui, repo, repo[rev], dryrunopt, confirmopt,
-                progresscb, targetcat)
+                  progresscb, targetcat)
         seen += 1
     progresscb()
     _cleanup(ui, repo, startnode, showprogress)
@@ -1931,13 +1493,15 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         displayer.show(target)
     if confirm and ui.prompt('perform evolve? [Ny]', 'n') != 'y':
             raise error.Abort(_('evolve aborted by user'))
-    if progresscb: progresscb()
+    if progresscb:
+        progresscb()
     todo = 'hg rebase -r %s -d %s\n' % (orig, target)
     if dryrun:
         repo.ui.write(todo)
     else:
         repo.ui.note(todo)
-        if progresscb: progresscb()
+        if progresscb:
+            progresscb()
         keepbranch = orig.p1().branch() != orig.branch()
         try:
             relocate(repo, orig, target, pctx, keepbranch)
@@ -1982,7 +1546,8 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
         repo.ui.write(('hg revert --all --rev %s;\n' % bumped))
         repo.ui.write(('hg commit --msg "bumped update to %s"'))
         return 0
-    if progresscb: progresscb()
+    if progresscb:
+        progresscb()
     newid = tmpctx = None
     tmpctx = bumped
     # Basic check for common parent. Far too complicated and fragile
@@ -1999,10 +1564,10 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
                 tmpctx = repo[tmpid]
                 obsolete.createmarkers(repo, [(bumped, (tmpctx,))])
         except MergeFailure:
-            repo.opener.write('graftstate', bumped.hex() + '\n')
+            repo.vfs.write('graftstate', bumped.hex() + '\n')
             repo.ui.write_err(_('evolution failed!\n'))
-            repo.ui.write_err(
-                _("fix conflict and run 'hg evolve --continue'\n"))
+            msg = _("fix conflict and run 'hg evolve --continue'\n")
+            repo.ui.write_err(msg)
             raise
     # Create the new commit context
     repo.ui.status(_('computing new diff\n'))
@@ -2025,10 +1590,10 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
             if path in bumped:
                 fctx = bumped[path]
                 flags = fctx.flags()
-                mctx = memfilectx(repo, fctx.path(), fctx.data(),
-                                  islink='l' in flags,
-                                  isexec='x' in flags,
-                                  copied=copied.get(path))
+                mctx = context.memfilectx(repo, fctx.path(), fctx.data(),
+                                          islink='l' in flags,
+                                          isexec='x' in flags,
+                                          copied=copied.get(path))
                 return mctx
             return None
         text = 'bumped update to %s:\n\n' % prec
@@ -2067,15 +1632,15 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
         othersstr = "[%s]" % (','.join([str(i) for i in others]))
         msg = _("skipping %d:divergent with a changeset that got splitted"
                 " into multiple ones:\n"
-                 "|[%s]\n"
-                 "| This is not handled by automatic evolution yet\n"
-                 "| You have to fallback to manual handling with commands "
-                 "such as:\n"
-                 "| - hg touch -D\n"
-                 "| - hg prune\n"
-                 "| \n"
-                 "| You should contact your local evolution Guru for help.\n"
-                 ) % (divergent, othersstr)
+                "|[%s]\n"
+                "| This is not handled by automatic evolution yet\n"
+                "| You have to fallback to manual handling with commands "
+                "such as:\n"
+                "| - hg touch -D\n"
+                "| - hg prune\n"
+                "| \n"
+                "| You should contact your local evolution Guru for help.\n"
+                ) % (divergent, othersstr)
         ui.write_err(msg)
         return 2
     other = others[0]
@@ -2127,39 +1692,30 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
         repo.ui.status(_('updating to "local" conflict\n'))
         hg.update(repo, divergent.rev())
     repo.ui.note(_('merging divergent changeset\n'))
-    if progresscb: progresscb()
-    try:
-        stats = merge.update(repo,
-                             other.node(),
-                             branchmerge=True,
-                             force=False,
-                             ancestor=base.node(),
-                             mergeancestor=True)
-    except TypeError:
-        # Mercurial  < 43c00ca887d1 (3.7)
-        stats = merge.update(repo,
-                             other.node(),
-                             branchmerge=True,
-                             force=False,
-                             partial=None,
-                             ancestor=base.node(),
-                             mergeancestor=True)
-
+    if progresscb:
+        progresscb()
+    stats = merge.update(repo,
+                         other.node(),
+                         branchmerge=True,
+                         force=False,
+                         ancestor=base.node(),
+                         mergeancestor=True)
     hg._showstats(repo, stats)
     if stats[3]:
         repo.ui.status(_("use 'hg resolve' to retry unresolved file merges "
                          "or 'hg update -C .' to abort\n"))
     if stats[3] > 0:
         raise error.Abort('merge conflict between several amendments '
-            '(this is not automated yet)',
-            hint="""/!\ You can try:
+                          '(this is not automated yet)',
+                          hint="""/!\ You can try:
 /!\ * manual merge + resolve => new cset X
 /!\ * hg up to the parent of the amended changeset (which are named W and Z)
 /!\ * hg revert --all -r X
 /!\ * hg ci -m "same message as the amended changeset" => new cset Y
 /!\ * hg prune -n Y W Z
 """)
-    if progresscb: progresscb()
+    if progresscb:
+        progresscb()
     emtpycommitallowed = repo.ui.backupconfig('ui', 'allowemptycommit')
     tr = repo.currenttransaction()
     assert tr is not None
@@ -2195,20 +1751,19 @@ def divergentdata(ctx):
         if newer:
             return base, tuple(ctx._repo[o] for o in newer[0])
     raise error.Abort("base of divergent changeset %s not found" % ctx,
-                     hint='this case is not yet handled')
-
-
+                      hint='this case is not yet handled')
 
 shorttemplate = '[{rev}] {desc|firstline}\n'
 
-@command('^previous',
-         [('B', 'move-bookmark', False,
-             _('move active bookmark after update')),
-          ('', 'merge', False, _('bring uncommitted change along')),
-          ('', 'no-topic', False, _('ignore topic and move topologically')),
-          ('n', 'dry-run', False,
-             _('do not perform actions, just print what would be done'))],
-         '[OPTION]...')
+@eh.command(
+    '^previous',
+    [('B', 'move-bookmark', False,
+        _('move active bookmark after update')),
+     ('', 'merge', False, _('bring uncommitted change along')),
+     ('', 'no-topic', False, _('ignore topic and move topologically')),
+     ('n', 'dry-run', False,
+        _('do not perform actions, just print what would be done'))],
+    '[OPTION]...')
 def cmdprevious(ui, repo, **opts):
     """update to parent revision
 
@@ -2239,7 +1794,7 @@ def cmdprevious(ui, repo, **opts):
             ui.warn(_('(do you want --no-topic)\n'))
         elif len(parents) == 1:
             p = parents[0]
-            bm = bmactive(repo)
+            bm = repo._activebookmark
             shouldmove = opts.get('move_bookmark') and bm is not None
             if dryrunopt:
                 ui.write(('hg update %s;\n' % p.rev()))
@@ -2256,7 +1811,7 @@ def cmdprevious(ui, repo, **opts):
                             repo._bookmarks[bm] = p.node()
                             repo._bookmarks.recordchange(tr)
                         else:
-                            bmdeactivate(repo)
+                            bookmarksmod.deactivate(repo)
                         tr.close()
                     finally:
                         lockmod.release(tr, lock)
@@ -2271,15 +1826,16 @@ def cmdprevious(ui, repo, **opts):
     finally:
         lockmod.release(wlock)
 
-@command('^next',
-         [('B', 'move-bookmark', False,
-             _('move active bookmark after update')),
-          ('', 'merge', False, _('bring uncommitted change along')),
-          ('', 'evolve', False, _('evolve the next changeset if necessary')),
-          ('', 'no-topic', False, _('ignore topic and move topologically')),
-          ('n', 'dry-run', False,
-              _('do not perform actions, just print what would be done'))],
-              '[OPTION]...')
+@eh.command(
+    '^next',
+    [('B', 'move-bookmark', False,
+        _('move active bookmark after update')),
+     ('', 'merge', False, _('bring uncommitted change along')),
+     ('', 'evolve', False, _('evolve the next changeset if necessary')),
+     ('', 'no-topic', False, _('ignore topic and move topologically')),
+     ('n', 'dry-run', False,
+      _('do not perform actions, just print what would be done'))],
+    '[OPTION]...')
 def cmdnext(ui, repo, **opts):
     """update to next child revision
 
@@ -2313,7 +1869,7 @@ def cmdnext(ui, repo, **opts):
         displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
         if len(children) == 1:
             c = children[0]
-            bm = bmactive(repo)
+            bm = repo._activebookmark
             shouldmove = opts.get('move_bookmark') and bm is not None
             if dryrunopt:
                 ui.write(('hg update %s;\n' % c.rev()))
@@ -2330,7 +1886,7 @@ def cmdnext(ui, repo, **opts):
                             repo._bookmarks[bm] = c.node()
                             repo._bookmarks.recordchange(tr)
                         else:
-                            bmdeactivate(repo)
+                            bookmarksmod.deactivate(repo)
                         tr.close()
                     finally:
                         lockmod.release(tr, lock)
@@ -2369,7 +1925,7 @@ def cmdnext(ui, repo, **opts):
             else:
                 cmdutil.bailifchanged(repo)
                 result = _solveone(ui, repo, repo[aspchildren[0]], dryrunopt,
-                                   False, lambda:None, category='unstable')
+                                   False, lambda: None, category='unstable')
                 if not result:
                     ui.status(_('working directory now at %s\n') % repo['.'])
                 return result
@@ -2385,27 +1941,20 @@ def _reachablefrombookmark(repo, revs, bookmarks):
     repomarks = repo._bookmarks
     if not bookmarks.issubset(repomarks):
         raise error.Abort(_("bookmark '%s' not found") %
-            ','.join(sorted(bookmarks - set(repomarks.keys()))))
+                          ','.join(sorted(bookmarks - set(repomarks.keys()))))
 
     # If the requested bookmark is not the only one pointing to a
     # a revision we have to only delete the bookmark and not strip
     # anything. revsets cannot detect that case.
     nodetobookmarks = {}
-    for mark, node in repomarks.iteritems():
-        nodetobookmarks.setdefault(node, []).append(mark)
+    for mark, bnode in repomarks.iteritems():
+        nodetobookmarks.setdefault(bnode, []).append(mark)
     for marks in nodetobookmarks.values():
         if bookmarks.issuperset(marks):
-           if util.safehasattr(repair, 'stripbmrevset'):
-               rsrevs = repair.stripbmrevset(repo, marks[0])
-           else:
-               rsrevs = repo.revs("ancestors(bookmark(%s)) - "
-                                  "ancestors(head() and not bookmark(%s)) - "
-                                  "ancestors(bookmark() and not bookmark(%s)) - "
-                                  "obsolete()",
-                                  marks[0], marks[0], marks[0])
-           revs = set(revs)
-           revs.update(set(rsrevs))
-           revs = sorted(revs)
+            rsrevs = repair.stripbmrevset(repo, marks[0])
+            revs = set(revs)
+            revs.update(set(rsrevs))
+            revs = sorted(revs)
     return repomarks, revs
 
 def _deletebookmark(repo, repomarks, bookmarks):
@@ -2423,8 +1972,6 @@ def _deletebookmark(repo, repomarks, bookmarks):
     finally:
         lockmod.release(tr, lock, wlock)
 
-
-
 def _getmetadata(**opts):
     metadata = {}
     date = opts.get('date')
@@ -2435,21 +1982,21 @@ def _getmetadata(**opts):
         metadata['user'] = user
     return metadata
 
-
-@command('^prune|obsolete',
+@eh.command(
+    '^prune|obsolete',
     [('n', 'new', [], _("successor changeset (DEPRECATED)")),
      ('s', 'succ', [], _("successor changeset")),
      ('r', 'rev', [], _("revisions to prune")),
      ('k', 'keep', None, _("does not modify working copy during prune")),
      ('', 'biject', False, _("do a 1-1 map between rev and successor ranges")),
      ('', 'fold', False,
-        _("record a fold (multiple precursors, one successors)")),
+      _("record a fold (multiple precursors, one successors)")),
      ('', 'split', False,
-        _("record a split (on precursor, multiple successors)")),
+      _("record a split (on precursor, multiple successors)")),
      ('B', 'bookmark', [], _("remove revs only reachable from given"
                              " bookmark"))] + metadataopts,
     _('[OPTION] [-r] REV...'))
-    # -U  --noupdate option to prevent wc update and or bookmarks update ?
+# XXX -U  --noupdate option to prevent wc update and or bookmarks update ?
 def cmdprune(ui, repo, *revs, **opts):
     """hide changesets by marking them obsolete
 
@@ -2508,14 +2055,14 @@ def cmdprune(ui, repo, *revs, **opts):
             if not cp.mutable():
                 # note: createmarkers() would have raised something anyway
                 raise error.Abort('cannot prune immutable changeset: %s' % cp,
-                                 hint="see 'hg help phases' for details")
+                                  hint="see 'hg help phases' for details")
             precs.append(cp)
         if not precs:
             raise error.Abort('nothing to prune')
 
         if _disallowednewunstable(repo, revs):
             raise error.Abort(_("cannot prune in the middle of a stack"),
-                        hint = _("new unstable changesets are not allowed"))
+                              hint=_("new unstable changesets are not allowed"))
 
         # defines successors changesets
         sucs = scmutil.revrange(repo, succs)
@@ -2553,7 +2100,6 @@ def cmdprune(ui, repo, *revs, **opts):
             while newnode in precs or newnode.obsolete():
                 newnode = newnode.parents()[0]
 
-
         if newnode.node() != wdp.node():
             if opts.get('keep', False):
                 # This is largely the same as the implementation in
@@ -2575,21 +2121,21 @@ def cmdprune(ui, repo, *revs, **opts):
                 changedfiles.extend(dirchanges)
                 repo.dirstate.rebuild(newnode.node(), newnode.manifest(),
                                       changedfiles)
-                writedirstate(dirstate, tr)
+                dirstate.write(tr)
             else:
-                bookactive = bmactive(repo)
+                bookactive = repo._activebookmark
                 # Active bookmark that we don't want to delete (with -B option)
                 # we deactivate and move it before the update and reactivate it
                 # after
                 movebookmark = bookactive and not bookmarks
                 if movebookmark:
-                    bmdeactivate(repo)
+                    bookmarksmod.deactivate(repo)
                     repo._bookmarks[bookactive] = newnode.node()
                     repo._bookmarks.recordchange(tr)
                 commands.update(ui, repo, newnode.rev())
                 ui.status(_('working directory now at %s\n') % newnode)
                 if movebookmark:
-                    bmactivate(repo, bookactive)
+                    bookmarksmod.activate(repo, bookactive)
 
         # update bookmarks
         if bookmarks:
@@ -2620,13 +2166,14 @@ def cmdprune(ui, repo, *revs, **opts):
     finally:
         lockmod.release(tr, lock, wlock)
 
-@command('amend|refresh',
+@eh.command(
+    'amend|refresh',
     [('A', 'addremove', None,
-     _('mark new/missing files as added/removed before committing')),
-    ('e', 'edit', False, _('invoke editor on commit messages')),
-    ('', 'close-branch', None,
-     _('mark a branch as closed, hiding it from the branch list')),
-    ('s', 'secret', None, _('use the secret phase for committing')),
+      _('mark new/missing files as added/removed before committing')),
+     ('e', 'edit', False, _('invoke editor on commit messages')),
+     ('', 'close-branch', None,
+      _('mark a branch as closed, hiding it from the branch list')),
+     ('s', 'secret', None, _('use the secret phase for committing')),
     ] + walkopts + commitopts + commitopts2 + commitopts3 + interactiveopt,
     _('[OPTION]... [FILE]...'))
 def amend(ui, repo, *pats, **opts):
@@ -2690,6 +2237,7 @@ def _commitfiltered(repo, ctx, match, target=None):
     copied = copies.pathcopies(target, ctx)
     copied = dict((dst, src) for dst, src in copied.iteritems()
                   if dst in files)
+
     def filectxfn(repo, memctx, path, contentctx=ctx, redirect=newcontent):
         if path in redirect:
             return filectxfn(repo, memctx, path, contentctx=target, redirect=())
@@ -2697,10 +2245,10 @@ def _commitfiltered(repo, ctx, match, target=None):
             return None
         fctx = contentctx[path]
         flags = fctx.flags()
-        mctx = memfilectx(repo, fctx.path(), fctx.data(),
-                          islink='l' in flags,
-                          isexec='x' in flags,
-                          copied=copied.get(path))
+        mctx = context.memfilectx(repo, fctx.path(), fctx.data(),
+                                  islink='l' in flags,
+                                  isexec='x' in flags,
+                                  copied=copied.get(path))
         return mctx
 
     new = context.memctx(repo,
@@ -2759,7 +2307,8 @@ def _uncommitdirstate(repo, oldctx, match):
             src = None
         ds.copy(src, dst)
 
-@command('^uncommit',
+@eh.command(
+    '^uncommit',
     [('a', 'all', None, _('uncommit all changes when no arguments given')),
      ('r', 'rev', '', _('revert commit content to REV instead')),
      ] + commands.walkopts,
@@ -2798,7 +2347,6 @@ def uncommit(ui, repo, *pats, **opts):
             raise error.Abort(_("cannot uncommit merge changeset"))
         oldphase = old.phase()
 
-
         rev = None
         if opts.get('rev'):
             rev = scmutil.revsingle(repo, opts.get('rev'))
@@ -2822,7 +2370,7 @@ def uncommit(ui, repo, *pats, **opts):
             newid = _commitfiltered(repo, old, match, target=rev)
         if newid is None:
             raise error.Abort(_('nothing to uncommit'),
-                             hint=_("use --all to uncommit all files"))
+                              hint=_("use --all to uncommit all files"))
         # Move local changes on filtered changeset
         obsolete.createmarkers(repo, [(old, (repo[newid],))])
         phases.retractboundary(repo, tr, oldphase, [newid])
@@ -2874,7 +2422,8 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
     finally:
         lockmod.release(tr, lock, wlock)
 
-@command('^split',
+@eh.command(
+    '^split',
     [('r', 'rev', [], _("revision to split")),
     ] + commitopts + commitopts2,
     _('hg split [OPTION]... [-r] REV'))
@@ -2914,13 +2463,14 @@ def cmdsplit(ui, repo, *revs, **opts):
             raise error.Abort(_("cannot split merge commits"))
         prev = ctx.p1()
         bmupdate = _bookmarksupdater(repo, ctx.node(), tr)
-        bookactive = bmactive(repo)
+        bookactive = repo._activebookmark
         if bookactive is not None:
-            repo.ui.status(_("(leaving bookmark %s)\n") % bmactive(repo))
-        bmdeactivate(repo)
+            repo.ui.status(_("(leaving bookmark %s)\n") % repo._activebookmark)
+        bookmarksmod.deactivate(repo)
         hg.update(repo, prev)
 
         commands.revert(ui, repo, rev=r, all=True)
+
         def haschanges():
             modified, added, removed, deleted = repo.status()[:4]
             return modified or added or removed or deleted
@@ -2948,7 +2498,7 @@ def cmdsplit(ui, repo, *revs, **opts):
             tip = repo[newcommits[-1]]
             bmupdate(tip.node())
             if bookactive is not None:
-                bmactivate(repo, bookactive)
+                bookmarksmod.activate(repo, bookactive)
             obsolete.createmarkers(repo, [(repo[r], newcommits)])
         tr.close()
     finally:
@@ -2957,7 +2507,7 @@ def cmdsplit(ui, repo, *revs, **opts):
 
 @eh.wrapcommand('strip', extension='strip', opts=[
     ('', 'bundle', None, _("delete the commit entirely and move it to a "
-        "backup bundle")),
+                           "backup bundle")),
     ])
 def stripwrapper(orig, ui, repo, *revs, **kwargs):
     if (not ui.configbool('experimental', 'prunestrip') or
@@ -2980,7 +2530,8 @@ def stripwrapper(orig, ui, repo, *revs, **kwargs):
     kwargs['biject'] = False
     return cmdprune(ui, repo, *revs, **kwargs)
 
-@command('^touch',
+@eh.command(
+    '^touch',
     [('r', 'rev', [], 'revision to update'),
      ('D', 'duplicate', False,
       'do not mark the new revision as successor of the old one'),
@@ -3029,20 +2580,20 @@ def touch(ui, repo, *revs, **opts):
                 # The user hasn't yet decided what to do with the revived
                 # cset, let's ask
                 sset = obsolete.successorssets(repo, ctx.node())
-                nodivergencerisk = len(sset) == 0 or (
-                                    len(sset) == 1 and
-                                    len(sset[0]) == 1 and
-                                    repo[sset[0][0]].rev() == ctx.rev()
-                                   )
+                nodivergencerisk = (len(sset) == 0 or
+                                    (len(sset) == 1 and
+                                     len(sset[0]) == 1 and
+                                     repo[sset[0][0]].rev() == ctx.rev()
+                                    ))
                 if nodivergencerisk:
                     duplicate = False
                 else:
                     displayer.show(ctx)
                     index = ui.promptchoice(
                         _("reviving this changeset will create divergence"
-                        " unless you make a duplicate.\n(a)llow divergence or"
-                        " (d)uplicate the changeset? $$ &Allowdivergence $$ "
-                        "&Duplicate"), 0)
+                          " unless you make a duplicate.\n(a)llow divergence or"
+                          " (d)uplicate the changeset? $$ &Allowdivergence $$ "
+                          "&Duplicate"), 0)
                     choice = ['allowdivergence', 'duplicate'][index]
                     if choice == 'allowdivergence':
                         duplicate = False
@@ -3066,7 +2617,8 @@ def touch(ui, repo, *revs, **opts):
     finally:
         lockmod.release(tr, lock, wlock)
 
-@command('^fold|squash',
+@eh.command(
+    '^fold|squash',
     [('r', 'rev', [], _("revision to fold")),
      ('', 'exact', None, _("only fold specified revisions")),
      ('', 'from', None, _("fold revisions linearly to working copy parent"))
@@ -3123,9 +2675,10 @@ def fold(ui, repo, *revs, **opts):
         extrevs = repo.revs('(%ld::.) or (.::%ld)', revs, revs)
         discardedrevs = [r for r in revs if r not in extrevs]
         if discardedrevs:
-            raise error.Abort(_("cannot fold non-linear revisions"),
-                               hint=_("given revisions are unrelated to parent "
-                                      "of working directory"))
+            msg = _("cannot fold non-linear revisions")
+            hint = _("given revisions are unrelated to parent of working"
+                     " directory")
+            raise error.Abort(msg, hint=hint)
         revs = extrevs
     elif opts['exact']:
         # Nothing to do; "revs" is already set correctly
@@ -3159,7 +2712,7 @@ def fold(ui, repo, *revs, **opts):
                 msgs = ["HG: This is a fold of %d changesets." % len(allctx)]
                 msgs += ["HG: Commit message of changeset %s.\n\n%s\n" %
                          (c.rev(), c.description()) for c in allctx]
-                commitopts['message'] =  "\n".join(msgs)
+                commitopts['message'] = "\n".join(msgs)
                 commitopts['edit'] = True
 
             newid, unusedvariable = rewrite(repo, root, allctx, head,
@@ -3168,7 +2721,7 @@ def fold(ui, repo, *revs, **opts):
                                             commitopts=commitopts)
             phases.retractboundary(repo, tr, targetphase, [newid])
             obsolete.createmarkers(repo, [(ctx, (repo[newid],))
-                                 for ctx in allctx])
+                                   for ctx in allctx])
             tr.close()
         finally:
             tr.release()
@@ -3178,11 +2731,12 @@ def fold(ui, repo, *revs, **opts):
     finally:
         lockmod.release(lock, wlock)
 
-@command('^metaedit',
-         [('r', 'rev', [], _("revision to edit")),
-         ('', 'fold', None, _("also fold specified revisions into one")),
-         ] + commitopts + commitopts2,
-         _('hg metaedit [OPTION]... [-r] [REV]'))
+@eh.command(
+    '^metaedit',
+    [('r', 'rev', [], _("revision to edit")),
+     ('', 'fold', None, _("also fold specified revisions into one")),
+    ] + commitopts + commitopts2,
+    _('hg metaedit [OPTION]... [-r] [REV]'))
 def metaedit(ui, repo, *revs, **opts):
     """edit commit information
 
@@ -3245,10 +2799,12 @@ def metaedit(ui, repo, *revs, **opts):
                                     'revisions'))
             newunstable = _disallowednewunstable(repo, revs)
             if newunstable:
-                raise error.Abort(
-                    _('cannot edit commit information in the middle of a '\
-                    'stack'), hint=_('%s will become unstable and new unstable'\
-                    ' changes are not allowed') % repo[newunstable.first()])
+                msg = _('cannot edit commit information in the middle'
+                        ' of a stack')
+                hint = _('%s will become unstable and new unstable changes'
+                         ' are not allowed')
+                hint %= repo[newunstable.first()]
+                raise error.Abort(msg, hint=hint)
             root = head = repo[revs.first()]
 
         wctx = repo[None]
@@ -3269,7 +2825,7 @@ def metaedit(ui, repo, *revs, **opts):
                              (c.rev(), c.description()) for c in allctx]
                 else:
                     msgs = [head.description()]
-                commitopts['message'] =  "\n".join(msgs)
+                commitopts['message'] = "\n".join(msgs)
                 commitopts['edit'] = True
 
             # TODO: if the author and message are the same, don't create a new
@@ -3301,19 +2857,19 @@ def _foldcheck(repo, revs):
     roots = repo.revs('roots(%ld)', revs)
     if len(roots) > 1:
         raise error.Abort(_("cannot fold non-linear revisions "
-                           "(multiple roots given)"))
+                            "(multiple roots given)"))
     root = repo[roots.first()]
     if root.phase() <= phases.public:
         raise error.Abort(_("cannot fold public revisions"))
     heads = repo.revs('heads(%ld)', revs)
     if len(heads) > 1:
         raise error.Abort(_("cannot fold non-linear revisions "
-                           "(multiple heads given)"))
+                            "(multiple heads given)"))
     head = repo[heads.first()]
     if _disallowednewunstable(repo, revs):
-        raise error.Abort(_("cannot fold chain not ending with a head "\
-                            "or with branching"), hint = _("new unstable"\
-                            " changesets are not allowed"))
+        msg = _("cannot fold chain not ending with a head or with branching")
+        hint = _("new unstable changesets are not allowed")
+        raise error.Abort(msg, hint=hint)
     return root, head
 
 def _disallowednewunstable(repo, revs):
@@ -3335,7 +2891,7 @@ def graftwrapper(orig, ui, repo, *revs, **kwargs):
         lock = repo.lock()
         if kwargs.get('old_obsolete'):
             if kwargs.get('continue'):
-                obsoleted.extend(repo.opener.read('graftstate').splitlines())
+                obsoleted.extend(repo.vfs.read('graftstate').splitlines())
             else:
                 obsoleted.extend(revs)
         # convert obsolete target into revs to avoid alias joke
@@ -3345,7 +2901,7 @@ def graftwrapper(orig, ui, repo, *revs, **kwargs):
             raise error.Abort(_('cannot graft multiple revisions while '
                                 'obsoleting (for now).'))
 
-        return commitwrapper(orig, ui, repo,*revs, **kwargs)
+        return commitwrapper(orig, ui, repo, *revs, **kwargs)
     finally:
         lockmod.release(lock, wlock)
 
@@ -3368,579 +2924,6 @@ def oldevolveextsetup(ui):
     entry[1].append(('O', 'old-obsolete', False,
                      _("make graft obsoletes its source (DEPRECATED)")))
 
-#####################################################################
-### Obsolescence marker exchange experimenation                   ###
-#####################################################################
-
-def obsexcmsg(ui, message, important=False):
-    verbose = ui.configbool('experimental', 'verbose-obsolescence-exchange',
-                             False)
-    if verbose:
-        message = 'OBSEXC: ' + message
-    if important or verbose:
-        ui.status(message)
-
-def obsexcprg(ui, *args, **kwargs):
-    topic = 'obsmarkers exchange'
-    if ui.configbool('experimental', 'verbose-obsolescence-exchange', False):
-        topic = 'OBSEXC'
-    ui.progress(topic, *args, **kwargs)
-
-@eh.wrapfunction(exchange, '_pushdiscoveryobsmarkers')
-def _pushdiscoveryobsmarkers(orig, pushop):
-    if (obsolete.isenabled(pushop.repo, obsolete.exchangeopt)
-        and pushop.repo.obsstore
-        and 'obsolete' in pushop.remote.listkeys('namespaces')):
-        repo = pushop.repo
-        obsexcmsg(repo.ui, "computing relevant nodes\n")
-        revs = list(repo.revs('::%ln', pushop.futureheads))
-        unfi = repo.unfiltered()
-        cl = unfi.changelog
-        if not pushop.remote.capable('_evoext_obshash_0'):
-            # do not trust core yet
-            # return orig(pushop)
-            nodes = [cl.node(r) for r in revs]
-            if nodes:
-                obsexcmsg(repo.ui, "computing markers relevant to %i nodes\n"
-                                   % len(nodes))
-                pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
-            else:
-                obsexcmsg(repo.ui, "markers already in sync\n")
-                pushop.outobsmarkers = []
-                pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
-            return
-
-        common = []
-        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
-                           % len(revs))
-        commonrevs = list(unfi.revs('::%ln', pushop.outgoing.commonheads))
-        common = findcommonobsmarkers(pushop.ui, unfi, pushop.remote,
-                                      commonrevs)
-
-        revs = list(unfi.revs('%ld - (::%ln)', revs, common))
-        nodes = [cl.node(r) for r in revs]
-        if nodes:
-            obsexcmsg(repo.ui, "computing markers relevant to %i nodes\n"
-                               % len(nodes))
-            pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
-        else:
-            obsexcmsg(repo.ui, "markers already in sync\n")
-            pushop.outobsmarkers = []
-
-@eh.wrapfunction(wireproto, 'capabilities')
-def discocapabilities(orig, repo, proto):
-    """wrapper to advertise new capability"""
-    caps = orig(repo, proto)
-    if obsolete.isenabled(repo, obsolete.exchangeopt):
-        caps += ' _evoext_obshash_0'
-    return caps
-
-@eh.extsetup
-def _installobsmarkersdiscovery(ui):
-    hgweb_mod.perms['evoext_obshash'] = 'pull'
-    hgweb_mod.perms['evoext_obshash1'] = 'pull'
-    # wrap command content
-    oldcap, args = wireproto.commands['capabilities']
-    def newcap(repo, proto):
-        return discocapabilities(oldcap, repo, proto)
-    wireproto.commands['capabilities'] = (newcap, args)
-    wireproto.commands['evoext_obshash'] = (srv_obshash, 'nodes')
-    wireproto.commands['evoext_obshash1'] = (srv_obshash1, 'nodes')
-    if getattr(exchange, '_pushdiscoveryobsmarkers', None) is None:
-        ui.warn(_('evolve: your mercurial version is too old\n'
-                  'evolve: (running in degraded mode, push will '
-                  'includes all markers)\n'))
-    else:
-        olddisco = exchange.pushdiscoverymapping['obsmarker']
-        def newdisco(pushop):
-            _pushdiscoveryobsmarkers(olddisco, pushop)
-        exchange.pushdiscoverymapping['obsmarker'] = newdisco
-
-### Set discovery START
-
-from mercurial import dagutil
-from mercurial import setdiscovery
-
-def _obshash(repo, nodes, version=0):
-    if version == 0:
-        hashs = _obsrelsethashtreefm0(repo)
-    elif version ==1:
-        hashs = _obsrelsethashtreefm1(repo)
-    else:
-        assert False
-    nm = repo.changelog.nodemap
-    revs = [nm.get(n) for n in nodes]
-    return [r is None and nullid or hashs[r][1] for r in revs]
-
-def srv_obshash(repo, proto, nodes):
-    return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes)))
-
-def srv_obshash1(repo, proto, nodes):
-    return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes),
-                                version=1))
-
-@eh.addattr(localrepo.localpeer, 'evoext_obshash')
-def local_obshash(peer, nodes):
-    return _obshash(peer._repo, nodes)
-
-@eh.addattr(localrepo.localpeer, 'evoext_obshash1')
-def local_obshash1(peer, nodes):
-    return _obshash(peer._repo, nodes, version=1)
-
-@eh.addattr(wireproto.wirepeer, 'evoext_obshash')
-def peer_obshash(self, nodes):
-    d = self._call("evoext_obshash", nodes=wireproto.encodelist(nodes))
-    try:
-        return wireproto.decodelist(d)
-    except ValueError:
-        self._abort(error.ResponseError(_("unexpected response:"), d))
-
-@eh.addattr(wireproto.wirepeer, 'evoext_obshash1')
-def peer_obshash1(self, nodes):
-    d = self._call("evoext_obshash1", nodes=wireproto.encodelist(nodes))
-    try:
-        return wireproto.decodelist(d)
-    except ValueError:
-        self._abort(error.ResponseError(_("unexpected response:"), d))
-
-def findcommonobsmarkers(ui, local, remote, probeset,
-                         initialsamplesize=100,
-                         fullsamplesize=200):
-    # from discovery
-    roundtrips = 0
-    cl = local.changelog
-    dag = dagutil.revlogdag(cl)
-    missing = set()
-    common = set()
-    undecided = set(probeset)
-    totalnb = len(undecided)
-    ui.progress(_("comparing with other"), 0, total=totalnb)
-    _takefullsample = setdiscovery._takefullsample
-    if remote.capable('_evoext_obshash_1'):
-        getremotehash = remote.evoext_obshash1
-        localhash = _obsrelsethashtreefm1(local)
-    else:
-        getremotehash = remote.evoext_obshash
-        localhash = _obsrelsethashtreefm0(local)
-
-    while undecided:
-
-        ui.note(_("sampling from both directions\n"))
-        if len(undecided) < fullsamplesize:
-            sample = set(undecided)
-        else:
-            sample = _takefullsample(dag, undecided, size=fullsamplesize)
-
-        roundtrips += 1
-        ui.progress(_("comparing with other"), totalnb - len(undecided),
-                    total=totalnb)
-        ui.debug("query %i; still undecided: %i, sample size is: %i\n"
-                 % (roundtrips, len(undecided), len(sample)))
-        # indices between sample and externalized version must match
-        sample = list(sample)
-        remotehash = getremotehash(dag.externalizeall(sample))
-
-        yesno = [localhash[ix][1] == remotehash[si]
-                 for si, ix in enumerate(sample)]
-
-        commoninsample = set(n for i, n in enumerate(sample) if yesno[i])
-        common.update(dag.ancestorset(commoninsample, common))
-
-        missinginsample = [n for i, n in enumerate(sample) if not yesno[i]]
-        missing.update(dag.descendantset(missinginsample, missing))
-
-        undecided.difference_update(missing)
-        undecided.difference_update(common)
-
-
-    ui.progress(_("comparing with other"), None)
-    result = dag.headsetofconnecteds(common)
-    ui.debug("%d total queries\n" % roundtrips)
-
-    if not result:
-        return set([nullid])
-    return dag.externalizeall(result)
-
-
-_pushkeyescape = getattr(obsolete, '_pushkeyescape', None)
-
-class pushobsmarkerStringIO(StringIO):
-    """hacky string io for progress"""
-
-    @util.propertycache
-    def length(self):
-        return len(self.getvalue())
-
-    def read(self, size=None):
-        obsexcprg(self.ui, self.tell(), unit=_("bytes"), total=self.length)
-        return StringIO.read(self, size)
-
-    def __iter__(self):
-        d = self.read(4096)
-        while d:
-            yield d
-            d = self.read(4096)
-
-@eh.wrapfunction(exchange, '_pushobsolete')
-def _pushobsolete(orig, pushop):
-    """utility function to push obsolete markers to a remote"""
-    stepsdone = getattr(pushop, 'stepsdone', None)
-    if stepsdone is not None:
-        if 'obsmarkers' in stepsdone:
-            return
-        stepsdone.add('obsmarkers')
-    if util.safehasattr(pushop, 'cgresult'):
-        cgresult = pushop.cgresult
-    else:
-        cgresult = pushop.ret
-    if cgresult == 0:
-        return
-    pushop.ui.debug('try to push obsolete markers to remote\n')
-    repo = pushop.repo
-    remote = pushop.remote
-    if (obsolete.isenabled(repo, obsolete.exchangeopt) and repo.obsstore and
-        'obsolete' in remote.listkeys('namespaces')):
-        markers = pushop.outobsmarkers
-        if not markers:
-            obsexcmsg(repo.ui, "no marker to push\n")
-        elif remote.capable('_evoext_pushobsmarkers_0'):
-            obsdata = pushobsmarkerStringIO()
-            for chunk in obsolete.encodemarkers(markers, True):
-                obsdata.write(chunk)
-            obsdata.seek(0)
-            obsdata.ui = repo.ui
-            obsexcmsg(repo.ui, "pushing %i obsolescence markers (%i bytes)\n"
-                               % (len(markers), len(obsdata.getvalue())),
-                      True)
-            remote.evoext_pushobsmarkers_0(obsdata)
-            obsexcprg(repo.ui, None)
-        else:
-            rslts = []
-            remotedata = _pushkeyescape(markers).items()
-            totalbytes = sum(len(d) for k, d in remotedata)
-            sentbytes = 0
-            obsexcmsg(repo.ui, "pushing %i obsolescence markers in %i "
-                               "pushkey payload (%i bytes)\n"
-                               % (len(markers), len(remotedata), totalbytes),
-                      True)
-            for key, data in remotedata:
-                obsexcprg(repo.ui, sentbytes, item=key, unit=_("bytes"),
-                          total=totalbytes)
-                rslts.append(remote.pushkey('obsolete', key, '', data))
-                sentbytes += len(data)
-                obsexcprg(repo.ui, sentbytes, item=key, unit=_("bytes"),
-                          total=totalbytes)
-            obsexcprg(repo.ui, None)
-            if [r for r in rslts if not r]:
-                msg = _('failed to push some obsolete markers!\n')
-                repo.ui.warn(msg)
-        obsexcmsg(repo.ui, "DONE\n")
-
-
-@eh.addattr(wireproto.wirepeer, 'evoext_pushobsmarkers_0')
-def client_pushobsmarkers(self, obsfile):
-    """wireprotocol peer method"""
-    self.requirecap('_evoext_pushobsmarkers_0',
-                    _('push obsolete markers faster'))
-    ret, output = self._callpush('evoext_pushobsmarkers_0', obsfile)
-    for l in output.splitlines(True):
-        self.ui.status(_('remote: '), l)
-    return ret
-
-@eh.addattr(httppeer.httppeer, 'evoext_pushobsmarkers_0')
-def httpclient_pushobsmarkers(self, obsfile):
-    """httpprotocol peer method
-    (Cannot simply use _callpush as http is doing some special handling)"""
-    self.requirecap('_evoext_pushobsmarkers_0',
-                    _('push obsolete markers faster'))
-    try:
-        r = self._call('evoext_pushobsmarkers_0', data=obsfile)
-        vals = r.split('\n', 1)
-        if len(vals) < 2:
-            raise error.ResponseError(_("unexpected response:"), r)
-
-        for l in vals[1].splitlines(True):
-            if l.strip():
-                self.ui.status(_('remote: '), l)
-        return vals[0]
-    except socket.error as err:
-        if err.args[0] in (errno.ECONNRESET, errno.EPIPE):
-            raise error.Abort(_('push failed: %s') % err.args[1])
-        raise error.Abort(err.args[1])
-
-@eh.wrapfunction(localrepo.localrepository, '_restrictcapabilities')
-def local_pushobsmarker_capabilities(orig, repo, caps):
-    caps = orig(repo, caps)
-    caps.add('_evoext_pushobsmarkers_0')
-    return caps
-
-def _pushobsmarkers(repo, data):
-    tr = lock = None
-    try:
-        lock = repo.lock()
-        tr = repo.transaction('pushkey: obsolete markers')
-        new = repo.obsstore.mergemarkers(tr, data)
-        if new is not None:
-            obsexcmsg(repo.ui, "%i obsolescence markers added\n" % new, True)
-        tr.close()
-    finally:
-        lockmod.release(tr, lock)
-    repo.hook('evolve_pushobsmarkers')
-
-@eh.addattr(localrepo.localpeer, 'evoext_pushobsmarkers_0')
-def local_pushobsmarkers(peer, obsfile):
-    data = obsfile.read()
-    _pushobsmarkers(peer._repo, data)
-
-def srv_pushobsmarkers(repo, proto):
-    """wireprotocol command"""
-    fp = StringIO()
-    proto.redirect()
-    proto.getfile(fp)
-    data = fp.getvalue()
-    fp.close()
-    _pushobsmarkers(repo, data)
-    return wireproto.pushres(0)
-
-def _buildpullobsmarkersboundaries(pullop):
-    """small funtion returning the argument for pull markers call
-    may to contains 'heads' and 'common'. skip the key for None.
-
-    Its a separed functio to play around with strategy for that."""
-    repo = pullop.repo
-    remote = pullop.remote
-    unfi = repo.unfiltered()
-    revs = unfi.revs('::(%ln - null)', pullop.common)
-    common = [nullid]
-    if remote.capable('_evoext_obshash_0'):
-        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
-                           % len(revs))
-        common = findcommonobsmarkers(repo.ui, repo, remote, revs)
-    return {'heads': pullop.pulledsubset, 'common': common}
-
-@eh.uisetup
-def addgetbundleargs(self):
-    gboptsmap['evo_obscommon'] = 'nodes'
-
-@eh.wrapfunction(exchange, '_pullbundle2extraprepare')
-def _addobscommontob2pull(orig, pullop, kwargs):
-    ret = orig(pullop, kwargs)
-    if ('obsmarkers' in kwargs and
-        pullop.remote.capable('_evoext_getbundle_obscommon')):
-        boundaries = _buildpullobsmarkersboundaries(pullop)
-        common = boundaries['common']
-        if common != [nullid]:
-            kwargs['evo_obscommon'] = common
-    return ret
-
-@eh.wrapfunction(exchange, '_getbundleobsmarkerpart')
-def _getbundleobsmarkerpart(orig, bundler, repo, source, **kwargs):
-    if 'evo_obscommon' not in kwargs:
-        return orig(bundler, repo, source, **kwargs)
-
-    heads = kwargs.get('heads')
-    if kwargs.get('obsmarkers', False):
-        if heads is None:
-            heads = repo.heads()
-        obscommon = kwargs.get('evo_obscommon', ())
-        assert obscommon
-        obsset = repo.unfiltered().set('::%ln - ::%ln', heads, obscommon)
-        subset = [c.node() for c in obsset]
-        markers = repo.obsstore.relevantmarkers(subset)
-        exchange.buildobsmarkerspart(bundler, markers)
-
-@eh.uisetup
-def installgetbundlepartgen(ui):
-    origfunc = exchange.getbundle2partsmapping['obsmarkers']
-    def newfunc(*args, **kwargs):
-        return _getbundleobsmarkerpart(origfunc, *args, **kwargs)
-    exchange.getbundle2partsmapping['obsmarkers'] = newfunc
-
-@eh.wrapfunction(exchange, '_pullobsolete')
-def _pullobsolete(orig, pullop):
-    if not obsolete.isenabled(pullop.repo, obsolete.exchangeopt):
-        return None
-    if 'obsmarkers' not in getattr(pullop, 'todosteps', ['obsmarkers']):
-        return None
-    if 'obsmarkers' in getattr(pullop, 'stepsdone', []):
-        return None
-    wirepull = pullop.remote.capable('_evoext_pullobsmarkers_0')
-    if not wirepull:
-        return orig(pullop)
-    if 'obsolete' not in pullop.remote.listkeys('namespaces'):
-        return None # remote opted out of obsolescence marker exchange
-    tr = None
-    ui = pullop.repo.ui
-    boundaries = _buildpullobsmarkersboundaries(pullop)
-    if not set(boundaries['heads']) - set(boundaries['common']):
-        obsexcmsg(ui, "nothing to pull\n")
-        return None
-
-    obsexcmsg(ui, "pull obsolescence markers\n", True)
-    new = 0
-
-    if wirepull:
-        obsdata = pullop.remote.evoext_pullobsmarkers_0(**boundaries)
-        obsdata = obsdata.read()
-        if len(obsdata) > 5:
-            obsexcmsg(ui, "merging obsolescence markers (%i bytes)\n"
-                           % len(obsdata))
-            tr = pullop.gettransaction()
-            old = len(pullop.repo.obsstore._all)
-            pullop.repo.obsstore.mergemarkers(tr, obsdata)
-            new = len(pullop.repo.obsstore._all) - old
-            obsexcmsg(ui, "%i obsolescence markers added\n" % new, True)
-        else:
-            obsexcmsg(ui, "no unknown remote markers\n")
-        obsexcmsg(ui, "DONE\n")
-    if new:
-        pullop.repo.invalidatevolatilesets()
-    return tr
-
-def _getobsmarkersstream(repo, heads=None, common=None):
-    revset = ''
-    args = []
-    repo = repo.unfiltered()
-    if heads is None:
-        revset = 'all()'
-    elif heads:
-        revset += "(::%ln)"
-        args.append(heads)
-    else:
-        assert False, 'pulling no heads?'
-    if common:
-        revset += ' - (::%ln)'
-        args.append(common)
-    nodes = [c.node() for c in repo.set(revset, *args)]
-    markers = repo.obsstore.relevantmarkers(nodes)
-    obsdata = StringIO()
-    for chunk in obsolete.encodemarkers(markers, True):
-        obsdata.write(chunk)
-    obsdata.seek(0)
-    return obsdata
-
-@eh.addattr(wireproto.wirepeer, 'evoext_pullobsmarkers_0')
-def client_pullobsmarkers(self, heads=None, common=None):
-    self.requirecap('_evoext_pullobsmarkers_0', _('look up remote obsmarkers'))
-    opts = {}
-    if heads is not None:
-        opts['heads'] = wireproto.encodelist(heads)
-    if common is not None:
-        opts['common'] = wireproto.encodelist(common)
-    if util.safehasattr(self, '_callcompressable'):
-        f = self._callcompressable("evoext_pullobsmarkers_0", **opts)
-    else:
-        f = self._callstream("evoext_pullobsmarkers_0", **opts)
-        f = self._decompress(f)
-    length = int(f.read(20))
-    chunk = 4096
-    current = 0
-    data = StringIO()
-    ui = self.ui
-    obsexcprg(ui, current, unit=_("bytes"), total=length)
-    while current < length:
-        readsize = min(length - current, chunk)
-        data.write(f.read(readsize))
-        current += readsize
-        obsexcprg(ui, current, unit=_("bytes"), total=length)
-    obsexcprg(ui, None)
-    data.seek(0)
-    return data
-
-@eh.addattr(localrepo.localpeer, 'evoext_pullobsmarkers_0')
-def local_pullobsmarkers(self, heads=None, common=None):
-    return _getobsmarkersstream(self._repo, heads=heads, common=common)
-
-# The wireproto.streamres API changed, handling chunking and compression
-# directly. Handle either case.
-if util.safehasattr(wireproto.abstractserverproto, 'groupchunks'):
-    # We need to handle chunking and compression directly
-    def streamres(d, proto):
-        return wireproto.streamres(proto.groupchunks(d))
-else:
-    # Leave chunking and compression to streamres
-    def streamres(d, proto):
-        return wireproto.streamres(reader=d, v1compressible=True)
-
-def srv_pullobsmarkers(repo, proto, others):
-    opts = wireproto.options('', ['heads', 'common'], others)
-    for k, v in opts.iteritems():
-        if k in ('heads', 'common'):
-            opts[k] = wireproto.decodelist(v)
-    obsdata = _getobsmarkersstream(repo, **opts)
-    finaldata = StringIO()
-    obsdata = obsdata.getvalue()
-    finaldata.write('%20i' % len(obsdata))
-    finaldata.write(obsdata)
-    finaldata.seek(0)
-    return streamres(finaldata, proto)
-
-def _obsrelsethashtreefm0(repo):
-    return _obsrelsethashtree(repo, obsolete._fm0encodeonemarker)
-
-def _obsrelsethashtreefm1(repo):
-    return _obsrelsethashtree(repo, obsolete._fm1encodeonemarker)
-
-def _obsrelsethashtree(repo, encodeonemarker):
-    cache = []
-    unfi = repo.unfiltered()
-    markercache = {}
-    repo.ui.progress(_("preparing locally"), 0, total=len(unfi))
-    for i in unfi:
-        ctx = unfi[i]
-        entry = 0
-        sha = hashlib.sha1()
-        # add data from p1
-        for p in ctx.parents():
-            p = p.rev()
-            if p < 0:
-                p = nullid
-            else:
-                p = cache[p][1]
-            if p != nullid:
-                entry += 1
-                sha.update(p)
-        tmarkers = repo.obsstore.relevantmarkers([ctx.node()])
-        if tmarkers:
-            bmarkers = []
-            for m in tmarkers:
-                if not m in markercache:
-                    markercache[m] = encodeonemarker(m)
-                bmarkers.append(markercache[m])
-            bmarkers.sort()
-            for m in bmarkers:
-                entry += 1
-                sha.update(m)
-        if entry:
-            cache.append((ctx.node(), sha.digest()))
-        else:
-            cache.append((ctx.node(), nullid))
-        repo.ui.progress(_("preparing locally"), i, total=len(unfi))
-    repo.ui.progress(_("preparing locally"), None)
-    return cache
-
-@command('debugobsrelsethashtree',
-        [('', 'v0', None, 'hash on marker format "0"'),
-         ('', 'v1', None, 'hash on marker format "1" (default)')] , _(''))
-def debugobsrelsethashtree(ui, repo, v0=False, v1=False):
-    """display Obsolete markers, Relevant Set, Hash Tree
-    changeset-node obsrelsethashtree-node
-
-    It computed form the "orsht" of its parent and markers
-    relevant to the changeset itself."""
-    if v0 and v1:
-        raise error.Abort('cannot only specify one format')
-    elif v0:
-        treefunc = _obsrelsethashtreefm0
-    else:
-        treefunc = _obsrelsethashtreefm1
-
-    for chg, obs in treefunc(repo):
-        ui.status('%s %s\n' % (node.hex(chg), node.hex(obs)))
-
-_bestformat = max(obsolete.formats.keys())
-
-
 @eh.wrapfunction(obsolete, '_checkinvalidmarkers')
 def _checkinvalidmarkers(orig, markers):
     """search for marker with invalid data and raise error if needed
@@ -3952,13 +2935,13 @@ def _checkinvalidmarkers(orig, markers):
         return
     for mark in markers:
         if node.nullid in mark[1]:
-            raise error.Abort(_('bad obsolescence marker detected: '
-                               'invalid successors nullid'),
-                             hint=_('You should run `hg debugobsconvert`'))
+            msg = _('bad obsolescence marker detected: invalid successors nullid')
+            hint = _('You should run `hg debugobsconvert`')
+            raise error.Abort(msg, hint=hint)
 
-@command(
+@eh.command(
     'debugobsconvert',
-    [('', 'new-format', _bestformat, _('Destination format for markers.'))],
+    [('', 'new-format', obsexchange._bestformat, _('Destination format for markers.'))],
     '')
 def debugobsconvert(ui, repo, new_format):
     origmarkers = repo.obsstore._all  # settle version
@@ -3985,34 +2968,7 @@ def debugobsconvert(ui, repo, new_format):
     ui.write(_('Done!\n'))
 
 
-@eh.wrapfunction(wireproto, 'capabilities')
-def capabilities(orig, repo, proto):
-    """wrapper to advertise new capability"""
-    caps = orig(repo, proto)
-    if obsolete.isenabled(repo, obsolete.exchangeopt):
-        caps += ' _evoext_pushobsmarkers_0'
-        caps += ' _evoext_pullobsmarkers_0'
-        caps += ' _evoext_obshash_0'
-        caps += ' _evoext_obshash_1'
-        caps += ' _evoext_getbundle_obscommon'
-    return caps
-
-
-@eh.extsetup
-def _installwireprotocol(ui):
-    localrepo.moderncaps.add('_evoext_pullobsmarkers_0')
-    hgweb_mod.perms['evoext_pushobsmarkers_0'] = 'push'
-    hgweb_mod.perms['evoext_pullobsmarkers_0'] = 'pull'
-    wireproto.commands['evoext_pushobsmarkers_0'] = (srv_pushobsmarkers, '')
-    wireproto.commands['evoext_pullobsmarkers_0'] = (srv_pullobsmarkers, '*')
-    # wrap command content
-    oldcap, args = wireproto.commands['capabilities']
-    def newcap(repo, proto):
-        return capabilities(oldcap, repo, proto)
-    wireproto.commands['capabilities'] = (newcap, args)
-
-# Mercurial >= 3.6 passes ui
-def _helploader(ui=None):
+def _helploader(ui):
     return help.gettext(evolutionhelptext)
 
 @eh.uisetup
@@ -4022,7 +2978,7 @@ def _setuphelp(ui):
             break
     else:
         help.helptable.append((["evolution"], _("Safely Rewriting History"),
-                      _helploader))
+                              _helploader))
         help.helptable.sort()
 
 def _relocatecommit(repo, orig, commitmsg):
@@ -4069,13 +3025,13 @@ evolvestateversion = 0
 @eh.uisetup
 def setupevolveunfinished(ui):
     data = ('evolvestate', True, False, _('evolve in progress'),
-           _("use 'hg evolve --continue' or 'hg update -C .' to abort"))
+            _("use 'hg evolve --continue' or 'hg update -C .' to abort"))
     cmdutil.unfinishedstates.append(data)
 
 @eh.wrapfunction(hg, 'clean')
 def clean(orig, repo, *args, **kwargs):
     ret = orig(repo, *args, **kwargs)
-    util.unlinkpath(repo.join('evolvestate'), ignoremissing=True)
+    util.unlinkpath(repo.vfs.join('evolvestate'), ignoremissing=True)
     return ret
 
 def _evolvestatewrite(repo, state):
@@ -4110,8 +3066,8 @@ def _evolvestateread(repo):
             return None
         version = _unpack('>I', versionblob)[0]
         if version != evolvestateversion:
-            raise error.Abort(_('unknown evolvestate version %i')
-                                % version, hint=_('upgrade your evolve'))
+            msg = _('unknown evolvestate version %i') % version
+            raise error.Abort(msg, hint=_('upgrade your evolve'))
         records = []
         data = f.read()
         off = 0
@@ -4140,30 +3096,21 @@ def _evolvestateread(repo):
         f.close()
 
 def _evolvestatedelete(repo):
-    util.unlinkpath(repo.join('evolvestate'), ignoremissing=True)
+    util.unlinkpath(repo.vfs.join('evolvestate'), ignoremissing=True)
 
 def _evolvemerge(repo, orig, dest, pctx, keepbranch):
     """Used by the evolve function to merge dest on top of pctx.
     return the same tuple as merge.graft"""
     if repo['.'].rev() != dest.rev():
-        #assert False
-        try:
-            merge.update(repo,
-                         dest,
-                         branchmerge=False,
-                         force=True)
-        except TypeError:
-            # Mercurial  < 43c00ca887d1 (3.7)
-            merge.update(repo,
-                         dest,
-                         branchmerge=False,
-                         force=True,
-                         partial=False)
-    if bmactive(repo):
-       repo.ui.status(_("(leaving bookmark %s)\n") % bmactive(repo))
-    bmdeactivate(repo)
+        merge.update(repo,
+                     dest,
+                     branchmerge=False,
+                     force=True)
+    if repo._activebookmark:
+        repo.ui.status(_("(leaving bookmark %s)\n") % repo._activebookmark)
+    bookmarksmod.deactivate(repo)
     if keepbranch:
-       repo.dirstate.setbranch(orig.branch())
+        repo.dirstate.setbranch(orig.branch())
     if util.safehasattr(repo, 'currenttopic'):
         # uurrgs
         # there no other topic setter yet
@@ -4173,15 +3120,4 @@ def _evolvemerge(repo, orig, dest, pctx, keepbranch):
             with repo.vfs.open('topic', 'w') as f:
                 f.write(orig.topic())
 
-    try:
-       r = merge.graft(repo, orig, pctx, ['local', 'graft'], True)
-    except TypeError:
-       # not using recent enough mercurial
-       if len(orig.parents()) == 2:
-           raise error.Abort(
-               _("no support for evolving merge changesets yet"),
-               hint=_("Redo the merge and use `hg prune <old> --succ "
-                      "<new>` to obsolete the old one"))
-
-       r = merge.graft(repo, orig, pctx, ['local', 'graft'])
-    return r
+    return merge.graft(repo, orig, pctx, ['local', 'graft'], True)

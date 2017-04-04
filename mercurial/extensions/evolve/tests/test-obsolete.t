@@ -9,7 +9,7 @@
   > [extensions]
   > hgext.rebase=
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {
   >    echo "$1" > "$1"
   >    hg add "$1"

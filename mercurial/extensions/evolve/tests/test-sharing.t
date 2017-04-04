@@ -9,7 +9,7 @@ Setting things up
   > [extensions]
   > rebase =
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ hg init public
   $ hg clone public test-repo
   updating to branch default

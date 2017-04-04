@@ -1,8 +1,8 @@
-exclude contrib/nopushpublish.py
-exclude hgext/directaccess.py
-exclude hgext/drophack.py
-exclude hgext/inhibit.py
-exclude hgext/obsolete.py
+exclude contrib
+recursive-exclude contrib *
+exclude hgext3rd/evolve/hack
+recursive-exclude hgext3rd/evolve/hack *
+exclude hgext3rd/evolve/legacy.py
 exclude Makefile
 exclude tests/test-drop.t
 exclude tests/test-inhibit.t
@@ -15,15 +15,16 @@ include docs/README
 include docs/*.rst
 include docs/static/*.svg
 include docs/tutorials/*.t
-include hgext/evolve.py
-include hgext/__init__.py
-include hgext/pushexperiment.py
-include hgext/simple4server.py
+include hgext3rd/__init__.py
+include hgext3rd/evolve/*.py
+include hgext3rd/topic/*.py
 include MANIFEST.in
 include README
+include README-topic
 include setup.py
 include tests/*.py
 include tests/*.sh
+include tests/testlib/*.sh
 include tests/*.t
 prune debian
 recursive-include docs/figures *.svg

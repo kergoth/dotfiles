@@ -3,7 +3,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 
 === B.5 Push of a children of changeset which successors is pruned ===
@@ -66,6 +66,18 @@ Initial setup
   $ hg debugobsolete
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 554c0b12f7d9fff20cb904c26e12eee337e3309c
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f 5c81c58ce0a8ad61dd9cf4c6949846b5990af30d
+  06055a7959d4128e6e3bccfd01482e83a2db8a3a 201e20697f2a6b0752335af7cd813f140e9e653e
+  e5ea8f9c73143125d36658e90ef70c6d2027a5b7 ae1ac676a5e6d6f4216595c53da763d588929970
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             2 06055a7959d4            0            3            3 000000000000
+             1 28b51eb45704            0            2            2 000000000000
+             2 06055a7959d4            2            1            3 000000000000
+             1 28b51eb45704            1            1            2 000000000000
+             0 a9bdc8b26820            0            1            1 554c0b12f7d9
   $ cd ..
   $ cd ..
 

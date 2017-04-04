@@ -243,6 +243,7 @@ def extsetup(ui):
     # lets wrap the computation of the obsolete set
     # We apply inhibition there
     obsfunc = obsolete.cachefuncs['obsolete']
+
     def _computeobsoleteset(repo):
         """remove any inhibited nodes from the obsolete set
 
@@ -300,7 +301,7 @@ def extsetup(ui):
         extensions.wrapfunction(bookmarks.bmstore, 'write', _bookmarkchanged)
     # Add bookmark -D option
     entry = extensions.wrapcommand(commands.table, 'bookmark', _bookmark)
-    entry[1].append(('D','prune',None,
+    entry[1].append(('D', 'prune', None,
                     _('delete the bookmark and prune the commits underneath')))
 
 @command('debugobsinhibit', [], '')

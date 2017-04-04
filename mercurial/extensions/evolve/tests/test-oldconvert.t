@@ -32,7 +32,7 @@ forge old style relation files
 
 enable the extensions
 
-  $ echo "obsolete=$(echo $(dirname $TESTDIR))/hgext/obsolete.py" >> $HGRCPATH
+  $ echo "obsolete=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/legacy.py" >> $HGRCPATH
 
   $ hg glog
   abort: old format of obsolete marker detected!

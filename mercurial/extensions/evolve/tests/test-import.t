@@ -9,7 +9,7 @@ Test creation of obsolescence marker by path import
   $ hg init auto-obsolete
   $ cd auto-obsolete
   $ echo '[extensions]' >> $HGRCPATH
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext/evolve.py" >> $HGRCPATH
+  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ echo A > a
   $ hg commit -Am A
   adding a

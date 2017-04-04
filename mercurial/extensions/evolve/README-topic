@@ -1,0 +1,53 @@
+Topic Extension
+================
+
+This packages also provides the ``topic`` experiment in an independent
+extension. It implements a new experimental concept to provide lightweight
+feature branches for the mutable parts of the history. The experiments is still
+at an early stage and have significant usability and performance issues when
+enabled.
+
+How to Install
+==============
+
+The ``topic`` extension is included into the ``evolve` package, so the same instruction apply.
+
+Using Pip
+---------
+
+You can install the latest version using pip::
+
+    $ pip install --user hg-evolve
+
+Then just enable it in you hgrc::
+
+    $ hg config --edit # adds the two line below:
+    [extensions]
+    topic =
+
+From Source
+-----------
+
+To install a local version from source::
+
+    $ hg clone https://www.mercurial-scm.org/repo/evolve/
+    $ cd evolve
+    $ make install-home
+
+Enable
+------
+
+The topic extensions is included in the evolve package. See the install instruction for evolve.
+
+Then enable it in you configuration::
+
+    $ hg config --edit # adds the two line below:
+    [extensions]
+    topic =
+
+Documentation
+-------------
+
+* See 'hg help -e topic' for a generic help.
+* See 'hg help topics' and 'hg help stack' for help on specific commands.
+* See the 'tests/test-topic-tutorial.t' file for a quick tutorial.

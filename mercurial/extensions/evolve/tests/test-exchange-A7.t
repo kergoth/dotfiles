@@ -1,7 +1,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 === A.7 Non targeted common changeset ===
 
@@ -42,6 +42,14 @@ Initial setup
   
   $ hg debugobsolete
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 50656e04a95ecdfed94659dd61f663b2caa55e98
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             1 f5bc6836db60            0            2            2 50656e04a95e
+             0 a9bdc8b26820            0            1            1 000000000000
+             1 f5bc6836db60            1            1            2 50656e04a95e
   $ cd ..
   $ cd ..
 

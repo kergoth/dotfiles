@@ -100,7 +100,7 @@ def wrapwithoutwarning(orig, ui, repo, *args, **kwargs):
 def uisetup(ui):
     """ Change ordering of extensions to ensure that directaccess extsetup comes
     after the one of the extensions in the loadsafter list """
-    loadsafter = ui.configlist('directaccess','loadsafter')
+    loadsafter = ui.configlist('directaccess', 'loadsafter')
     order = list(extensions._order)
     directaccesidx = order.index('directaccess')
 
@@ -188,7 +188,7 @@ def _posttreebuilthook(orig, tree, repo):
             if repo.filtername != 'visible-directaccess-nowarn':
                 unhiddencommits = repo._explicitaccess - accessbefore
                 repo.ui.warn(_("Warning: accessing hidden changesets %s "
-                                "for write operation\n") %
-                                (",".join([str(repo.unfiltered()[l])
-                                    for l in unhiddencommits])))
+                               "for write operation\n") %
+                             (",".join([str(repo.unfiltered()[l])
+                              for l in unhiddencommits])))
             repo.invalidatevolatilesets()

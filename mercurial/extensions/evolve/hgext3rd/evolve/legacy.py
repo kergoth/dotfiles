@@ -17,6 +17,7 @@ from mercurial import error
 
 try:
     from mercurial import obsolete
+    obsolete._enabled
 except ImportError:
     raise error.Abort('Obsolete extension requires Mercurial 2.3 (or later)')
 
@@ -25,6 +26,7 @@ import json
 
 from mercurial import cmdutil
 from mercurial.i18n import _
+from mercurial import lock as lockmod
 from mercurial.node import bin, nullid
 from mercurial import util
 
@@ -50,7 +52,7 @@ def reposetup(ui, repo):
         if 'debugc' in arg:
             break
     else:
-        data = repo.opener.tryread('obsolete-relations')
+        data = repo.vfs.tryread('obsolete-relations')
         if not data:
             data = repo.svfs.tryread('obsoletemarkers')
         if data:
@@ -89,16 +91,16 @@ def cmddebugconvertobsolete(ui, repo):
             store = repo.obsstore
             ### very first format
             try:
-                f = repo.opener('obsolete-relations')
+                f = repo.vfs('obsolete-relations')
                 try:
                     some = True
                     for line in f:
                         subhex, objhex = line.split()
                         suc = bin(subhex)
                         prec = bin(objhex)
-                        sucs = (suc==nullid) and [] or [suc]
+                        sucs = (suc == nullid) and [] or [suc]
                         meta = {
-                            'date':  '%i %i' % util.makedate(),
+                            'date': '%i %i' % util.makedate(),
                             'user': ui.username(),
                             }
                         try:
@@ -110,7 +112,7 @@ def cmddebugconvertobsolete(ui, repo):
                             err += 1
                 finally:
                     f.close()
-                unlink.append(repo.join('obsolete-relations'))
+                unlink.append(repo.vfs.join('obsolete-relations'))
             except IOError:
                 pass
             ### second (json) format
@@ -136,7 +138,7 @@ def cmddebugconvertobsolete(ui, repo):
 
                     oldmark['date'] = '%i %i' % tuple(oldmark['date'])
                     meta = dict((k.encode('utf-8'), v.encode('utf-8'))
-                                 for k, v in oldmark.iteritems())
+                                for k, v in oldmark.iteritems())
                     try:
                         succs = [bin(n) for n in oldsubjects]
                         succs = [n for n in succs if n != nullid]
@@ -144,10 +146,11 @@ def cmddebugconvertobsolete(ui, repo):
                                      0, metadata=meta)
                         cnt += 1
                     except ValueError:
-                        repo.ui.write_err("invalid marker %s -> %s\n"
-                                     % (oldobject, oldsubjects))
+                        msg = "invalid marker %s -> %s\n"
+                        msg %= (oldobject, oldsubjects)
+                        repo.ui.write_err(msg)
                         err += 1
-                unlink.append(repo.sjoin('obsoletemarkers'))
+                unlink.append(repo.svfs.join('obsoletemarkers'))
             tr.close()
             for path in unlink:
                 util.unlink(path)
@@ -161,3 +164,40 @@ def cmddebugconvertobsolete(ui, repo):
     ui.status('%i obsolete marker converted\n' % cnt)
     if err:
         ui.write_err('%i conversion failed. check you graph!\n' % err)
+
+@command('debugrecordpruneparents', [], '')
+def cmddebugrecordpruneparents(ui, repo):
+    """add parent data to prune markers when possible
+
+    This command searches the repo for prune markers without parent information.
+    If the pruned node is locally known, it creates a new marker with parent
+    data.
+    """
+    pgop = 'reading markers'
+
+    # lock from the beginning to prevent race
+    wlock = lock = tr = None
+    try:
+        wlock = repo.wlock()
+        lock = repo.lock()
+        tr = repo.transaction('recordpruneparents')
+        unfi = repo.unfiltered()
+        nm = unfi.changelog.nodemap
+        store = repo.obsstore
+        pgtotal = len(store._all)
+        for idx, mark in enumerate(list(store._all)):
+            if not mark[1]:
+                rev = nm.get(mark[0])
+                if rev is not None:
+                    ctx = unfi[rev]
+                    parents = tuple(p.node() for p in ctx.parents())
+                    before = len(store._all)
+                    store.create(tr, mark[0], mark[1], mark[2], mark[3],
+                                 parents=parents)
+                    if len(store._all) - before:
+                        ui.write(_('created new markers for %i\n') % rev)
+            ui.progress(pgop, idx, total=pgtotal)
+        tr.close()
+        ui.progress(pgop, None)
+    finally:
+        lockmod.release(tr, lock, wlock)

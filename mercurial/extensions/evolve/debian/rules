@@ -18,8 +18,8 @@ override_dh_auto_test: hgsrc_defined
 endif
 
 override_dh_python2:
-	# avoid conflict with mercurial's own hgext/__init__.py
-	find debian -name __init__.py -delete
+	# avoid conflict with mercurial's own hgext3rd/__init__.py
+	find debian -path '*/hgext3rd/__init__.py' -delete
 	dh_python2
 
 override_dh_auto_clean: clean-docs

@@ -2,7 +2,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 === C.4 multiple successors, one is pruned ===
 
@@ -70,6 +70,16 @@ Implemented as the non-split version
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 35b1839966785d5703a01607229eea932db42f87 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 7f7f229b13a629a5b20581c6cb723f4e2ca54bed 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   7f7f229b13a629a5b20581c6cb723f4e2ca54bed 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 a9c02d134f5b98acc74d1dc4eb28fd59f958a2bd
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 619b4d13bd9878f04d7208dcfcf1e89da826f6be
+  35b1839966785d5703a01607229eea932db42f87 ddeb7b7a87378f59cecb36d5146df0092b6b3327
+  7f7f229b13a629a5b20581c6cb723f4e2ca54bed 58ef2e726c5bd89bceffb6243294b38eadbf3d60
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             2 35b183996678            0            2            2 2a098b4a877f
+             2 35b183996678            1            1            2 916e804c50de
+             0 a9bdc8b26820            0            1            1 a9c02d134f5b
   $ cd ..
   $ cd ..
 

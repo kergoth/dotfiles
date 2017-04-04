@@ -59,7 +59,7 @@ And of course, we enable the experimental extensions for mutable history:
 
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
-  > evolve = $TESTDIR/../hgext/evolve.py
+  > evolve = $TESTDIR/../hgext3rd/evolve/
   > # enabling rebase is also needed for now
   > rebase =
   > EOF

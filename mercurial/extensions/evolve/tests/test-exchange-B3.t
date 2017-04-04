@@ -2,7 +2,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 === B.3 Pruned changeset on non-pushed part of the history ===
 
@@ -57,6 +57,18 @@ Initial setup
   
   $ hg debugobsolete
   e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0000000000000000000000000000000000000000
+  35b1839966785d5703a01607229eea932db42f87 631ab4cd02ffa1d144dc8f32a18be574076031e3
+  e56289ab6378dc752fd7965f8bf66b58bda740bd 47c9d2d8db5d4b1eddd0266329ad260ccc84772c
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             2 35b183996678            0            2            2 631ab4cd02ff
+             1 f5bc6836db60            0            2            2 000000000000
+             2 35b183996678            1            1            2 631ab4cd02ff
+             0 a9bdc8b26820            0            1            1 000000000000
+             1 f5bc6836db60            1            1            2 000000000000
   $ cd ..
   $ cd ..
 

@@ -2,7 +2,7 @@
 
 Initial setup
 
-  $ . $TESTDIR/_exc-util.sh
+  $ . $TESTDIR/testlib/exchange-util.sh
 
 === D.4 Unknown changeset in between known one ===
 
@@ -65,6 +65,19 @@ initial
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  $ hg debugobsrelsethashtree
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0000000000000000000000000000000000000000
+  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 0000000000000000000000000000000000000000
+  e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0aacc2f86e8fca29f2d5fd8d0790644620acd58a
+  069b05c3876d56f62895e853a501ea58ea85f68d 40b98bc2b5b1152416ea8e9665ae1c6a3ce32ba0
+  $ hg debugobshashrange --subranges --rev 'head()'
+           rev         node        index         size        depth      obshash
+             4 069b05c3876d            0            3            3 a2b2331da650
+             3 e5ea8f9c7314            0            2            2 0aacc2f86e8f
+             4 069b05c3876d            2            1            3 901f118d4333
+             0 a9bdc8b26820            0            1            1 000000000000
+             3 e5ea8f9c7314            1            1            2 0aacc2f86e8f
   $ cd ..
   $ cd ..
 
