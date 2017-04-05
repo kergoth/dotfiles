@@ -22,6 +22,7 @@ if [[ -h $ZDOTDIR/.zshrc ]]; then
 else
     DOTFILESDIR=$ZDOTDIR/..
 fi
+DOTFILESDIR=${DOTFILESDIR:A}
 
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
