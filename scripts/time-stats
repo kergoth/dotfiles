@@ -11,7 +11,16 @@ shift
 times="$(mktemp "${0##*/}.XXXX")"
 trap 'rm -f $times' EXIT INT TERM
 
+case "$OSTYPE" in
+    darwin*)
+        timecmd=gtime
+        ;;
+    *)
+        timecmd=time
+        ;;
+esac
+
 for i in $(seq 1 "${count:-1}"); do
-    command time -a -o "$times" "$@"
+    command $timecmd -a -o "$times" "$@"
 done
 stats --trim-outliers <"$times"
