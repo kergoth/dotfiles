@@ -171,6 +171,14 @@ fll () {
     command fls "$@"
 }
 
+# Startup time profiling
+alias zsh-profile-startup="PROFILE_STARTUP=true zsh -i -c exit"
+zsh-profile-startup-stats () {
+    for i in $(seq 1 10); do zsh-profile-startup; done | sed 's,^[^ ]* ,,' | \
+        sort -nrk2 | uniq -f 1 | stats --trim-outliers | less -RSXFE
+}
+alias vim-profile-startup="vim -c StartupTime"
+
 # Global
 alias -g G='| grep'
 alias -g L='| less'
