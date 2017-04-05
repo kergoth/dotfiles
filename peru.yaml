@@ -95,6 +95,7 @@ imports:
     vim-obsession: vim/bundle/obsession
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
+    vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
     vim-syntastic: vim/bundle/syntastic
     vim-vinegar: vim/bundle/vinegar
@@ -656,3 +657,7 @@ curl module rustup:
         rustup-init.sh: rustup
     executable: rustup
     sha1: 7e6890e31121445985f42da1dc7584f80eacb0a7
+
+git module vim-startuptime:
+    url: https://github.com/tweekmonster/startuptime.vim
+    rev: dfa57f522d6f61793fe5fea65bca7484751b8ca2
