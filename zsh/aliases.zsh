@@ -56,7 +56,9 @@ if (( $+commands[pacman-color] )); then
 fi
 
 if (( $+commands[ack-grep] )); then
-    alias ack=ack-grep
+    alias ack='ack-grep --smart-case --pager=${PAGER:-less}'
+else
+    alias ack='ack --smart-case --pager=${PAGER:-less}'
 fi
 
 alias ag='ag -S --pager=${PAGER:-less}'
