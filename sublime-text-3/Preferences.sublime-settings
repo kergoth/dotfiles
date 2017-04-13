@@ -1,5 +1,5 @@
 {
-	"color_scheme": "Packages/Color Scheme - Default/Monokai Bright.tmTheme",
+	"color_scheme": "Packages/Base16 Color Schemes/Themes/base16-tomorrow-night.tmTheme",
 	"com.khiltd.abacus.separators":
 	[
 		{
@@ -33,5 +33,6 @@
 	[
 		"Vintage"
 	],
+	"theme": "Adaptive.sublime-theme",
 	"trim_trailing_white_space_on_save": true
 }
