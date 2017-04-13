@@ -1,9 +1,19 @@
+============================================
+Testing obsolescence markers push: Cases A.7
+============================================
 
-Initial setup
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-=== A.7 Non targeted common changeset ===
+Category A: simple cases
+TestCase 7: markers one non targeted common changeset
+
+A.7 non targeted common changeset
+=================================
 
 .. {{{
 ..    ⇠◕ A
@@ -11,7 +21,7 @@ Initial setup
 ..     ● O
 .. }}}
 ..
-.. Marker exist from:
+.. Markers exist from:
 ..
 ..  * Chain from A
 ..
@@ -23,6 +33,12 @@ Initial setup
 ..
 ..  * ø
 
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+Initial
 
   $ setuprepos A.7
   creating test repo for test case A.7
@@ -40,12 +56,16 @@ Initial setup
   |
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 50656e04a95ecdfed94659dd61f663b2caa55e98
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              1 f5bc6836db60            0            2            2 50656e04a95e
              0 a9bdc8b26820            0            1            1 000000000000

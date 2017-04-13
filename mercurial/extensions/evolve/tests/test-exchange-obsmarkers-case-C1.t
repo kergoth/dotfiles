@@ -1,10 +1,23 @@
+============================================
+Testing obsolescence markers push: Cases C.1
+============================================
 
-Initial setup
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-=== C.1 Multiple pruned changeset atop each other ===
-.. 
+Category C: advanced case
+TestCase 1: Multiple pruned changeset atop each other
+Variants:
+# a: explicite push
+# b: bare push
+
+C.1 Multiple pruned changeset atop each other
+=============================================
+
 .. {{{
 ..   ⊗ B
 ..   |
@@ -12,21 +25,28 @@ Initial setup
 ..   |
 ..   ● O
 .. }}}
-.. 
+..
 .. Marker exist from:
-.. 
+..
 ..  * A (prune)
 ..  * B (prune)
-.. 
-.. Command run:
-.. 
+..
+.. Commands run:
+..
 ..  * hg push -r O
 ..  * hg push
-.. 
+..
 .. Expected exchange:
-.. 
+..
 ..  * A (prune)
 ..  * B (prune)
+
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+Initial
 
   $ setuprepos C.1
   creating test repo for test case C.1
@@ -37,7 +57,9 @@ Initial setup
   $ cd main
   $ mkcommit A
   $ mkcommit B
-  $ hg prune -qd '0 0' .^::.
+  $ hg prune -qd '0 0' '.~1'
+  1 new unstable changesets
+  $ hg prune -qd '0 0' .
   $ hg log -G --hidden
   x  f6fbb35d8ac9 (draft): B
   |
@@ -45,21 +67,25 @@ Initial setup
   |
   @  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 1ce18e5a71f78d443a80c819f2f7197c4706af70
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 92af733686ce7e0469d8b2b87b4612a4c2d33468
   f6fbb35d8ac958bbe70035e4c789c18471cdc0af 3800aeba3728457abb9c508c94f6abc59e698c55
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              0 a9bdc8b26820            0            1            1 1ce18e5a71f7
   $ cd ..
   $ cd ..
 
-  $ cp -r C.1 C.1.a
-  $ cp -r C.1 C.1.b
+  $ cp -R C.1 C.1.a
+  $ cp -R C.1 C.1.b
 
 Actual Test (explicit push)
 ---------------------------

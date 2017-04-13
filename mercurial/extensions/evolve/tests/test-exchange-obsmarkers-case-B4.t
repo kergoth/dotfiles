@@ -1,9 +1,22 @@
+============================================
+Testing obsolescence markers push: Cases B.4
+============================================
 
-Initial setup
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-=== B.4 Pruned changeset on common part of history ===
+Category B: pruning case
+TestCase 4: Pruned changeset on common part of the history
+Variants:
+# a: explicite push
+# b: bare push
+
+B.4 Pruned changeset on common part of history
+=============================================
 
 .. {{{
 ..   ⊗ C
@@ -27,6 +40,12 @@ Initial setup
 ..
 ..  * prune for C
 
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+initial
 
   $ setuprepos B.4
   creating test repo for test case B.4
@@ -65,14 +84,18 @@ Initial setup
   |/
   @  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   7f7f229b13a629a5b20581c6cb723f4e2ca54bed 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 1900882e85db10a1dc5bc7748f436a8a834356c6
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 c27e764c783f451ef3aa40daf2a3795e6674cd06
   f6fbb35d8ac958bbe70035e4c789c18471cdc0af 907beff79fdff2b82b5d3bed7989107a6d744508
   7f7f229b13a629a5b20581c6cb723f4e2ca54bed c27e764c783f451ef3aa40daf2a3795e6674cd06
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              2 f6fbb35d8ac9            0            3            3 000000000000
              1 f5bc6836db60            0            2            2 000000000000
@@ -82,9 +105,8 @@ Initial setup
   $ cd ..
   $ cd ..
 
-
-  $ cp -r B.4 B.4.a
-  $ cp -r B.4 B.4.b
+  $ cp -R B.4 B.4.a
+  $ cp -R B.4 B.4.b
 
 Actual Test (explicit push version)
 -----------------------------------

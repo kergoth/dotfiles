@@ -1,12 +1,19 @@
+============================================
+Testing obsolescence markers push: Cases B.6
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
+Category B: pruning case
+TestCase 6: Pruned changeset with precursors not in pushed set
 
-Initial setup
-
-  $ . $TESTDIR/testlib/exchange-util.sh
-
-== B.6 Pruned changeset with ancestors not in pushed set ===
+B.6 Pruned changeset with precursors not in pushed set
+======================================================
 
 .. {{{
 ..   B ø⇠⊗ B'
@@ -18,7 +25,7 @@ Initial setup
 ..
 .. Marker exist from:
 ..
-..  * `Bø⇠⊗ B'`
+..  * `B ø⇠⊗ B'`
 ..  * B' prune
 ..
 .. Command run:
@@ -27,8 +34,15 @@ Initial setup
 ..
 .. Expected exchange:
 ..
-..  * `Bø⇠⊗ B'`
+..  * `B ø⇠⊗ B'`
 ..  * B' prune
+
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+Initial
 
   $ setuprepos B.6
   creating test repo for test case B.6
@@ -53,15 +67,19 @@ Initial setup
   |/
   @  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   962ecf6b1afc94e15c7e48fdfb76ef8abd11372b f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 86e41541149f4b6cccc5fd131d744d8e83a681e5
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 f2e05412d3f1d5bc1ae647cf9efc43e0399c26ca
   962ecf6b1afc94e15c7e48fdfb76ef8abd11372b 974507d1c466d0aa86d288836194339ed3b98736
   f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 04e03a8959d8a39984e6a8f4a16fba975b364747
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              1 f5bc6836db60            0            2            2 000000000000
              0 a9bdc8b26820            0            1            1 86e41541149f

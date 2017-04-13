@@ -1,22 +1,32 @@
 #!/bin/sh
+# setup config and various utility to test obsolescence marker exchanges tests
 
 cat >> $HGRCPATH <<EOF
 [web]
+# We test http pull and push, drop authentication requirement
 push_ssl = false
 allow_push = *
 
 [ui]
+# simpler log output
 logtemplate ="{node|short} ({phase}): {desc}\n"
 
 [phases]
+# non publishing server
 publish=False
 
 [experimental]
-verbose-obsolescence-exchange=false
-bundle2-exp=true
+# reduce output changes
 bundle2-output-capture=True
+# enable evolution
+evolution=all
+
+[extensions]
+# we need to strip some changeset for some test cases
+hgext.strip=
 
 [alias]
+# fix date used to create obsolete markers.
 debugobsolete=debugobsolete -d '0 0'
 
 [extensions]
@@ -50,8 +60,28 @@ setuprepos() {
     echo 'cd into `main` and proceed with env setup'
 }
 
+inspect_obsmarkers (){
+    # This exist as its own function to help the evolve extension reuse the tests as is.
+    # The evolve extensions version will includes more advances query (eg:
+    # related to obsmarkers discovery) to this.
+    echo 'obsstore content'
+    echo '================'
+    hg debugobsolete
+    echo 'obshashtree'
+    echo '==========='
+    hg debugobsrelsethashtree
+    echo 'obshashrange'
+    echo '============'
+    hg debugobshashrange --subranges --rev 'head()'
+}
+
 dotest() {
-# dotest TESTNAME [TARGETNODE]
+    # dotest TESTNAME [TARGETNODE] [PUSHFLAGS+]
+    #
+    # test exchange for the given test case.
+    #
+    # This function performs push and pull in all directions through all
+    # protocols and display the resulting obsolescence markers on all sides.
 
     testcase=$1
     shift

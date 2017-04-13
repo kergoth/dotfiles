@@ -1,11 +1,20 @@
+============================================
+Testing obsolescence markers push: Cases A.5
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-Initial setup
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+Category A: simple cases
+TestCase 5: partial reordering
 
+A.5 partial reordering
+======================
 
-=== A.5 partial reordering ===
 ..
 .. {{{
 ..   B ø⇠⇠
@@ -34,6 +43,10 @@ Initial setup
 ..
 ..  * `Aø⇠○ A'`
 
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
 initial
 
@@ -65,17 +78,21 @@ initial
   |/
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 8c0a98c8372212c6efde4bfdcef006f27ff759d3 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 5d69322fad9eb1ba8f8f2c2312346ed347fdde76
   6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 fd3e5712c9c2d216547d7a1b87ac815ee1fb7542
   f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 91716bfd671b5a5854a47ac5d392edfdd25e431a
   8c0a98c8372212c6efde4bfdcef006f27ff759d3 6e8c8c71c47a2bfc27c7cf2b1f4174977ede9f21
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              4 8c0a98c83722            0            3            3 70185b996296
              3 f6298a8ac3a4            0            2            2 91716bfd671b

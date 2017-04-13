@@ -1,28 +1,46 @@
+============================================
+Testing obsolescence markers push: Cases D.2
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-Initial setup
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+Category D: Partial Information Case
+TestCase 2: missing prune target (prune in "pushed set")
 
-=== D.2 missing prune target (prune in "pushed set") ===
+D.2 missing prune target (prune in "pushed set")
+================================================
 
-{{{
-}}}
+.. {{{
+..   A ø⇠✕ A'
+..     |/
+..     ● O
+.. }}}
+..
+.. Marker exist from:
+..
+..  * A' succeed to A
+..  * A' (prune)
+..
+.. Command runs:
+..
+..  * hg push
+..
+.. Expected exchange:
+..
+..  * `A ø⇠o A'`
+..  * A' (prune)
 
-Marker exist from:
+Setup
+-----
 
- * A' succeed to A
- * A' (prune)
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
-Command run:
-
- * hg push
-
-Expected exchange:
-
- * `A ø⇠o A'`
- * A' (prune)
-
+Initial
 
   $ setuprepos D.2
   creating test repo for test case D.2
@@ -46,20 +64,24 @@ Expected exchange:
   |
   @  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 554c0b12f7d9fff20cb904c26e12eee337e3309c
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 5c81c58ce0a8ad61dd9cf4c6949846b5990af30d
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              0 a9bdc8b26820            0            1            1 554c0b12f7d9
   $ cd ..
   $ cd ..
 
 Actual Test
--------------------------------------
+-----------
 
   $ dotest D.2
   ## Running testcase D.2

@@ -1,11 +1,22 @@
+============================================
+Testing obsolescence markers push: Cases C.3
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-Initial setup
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+Category C: advanced case
+TestCase 3: Pruned changeset on precursors of another pruned one
+Variants:
+# a: explicite push
+# b: bare push
 
-
-=== C.3 Pruned changeset on precursors of another pruned one ===
+C.3 Pruned changeset on precursors of another pruned one
+========================================================
 
 .. {{{
 ..   B ⊗
@@ -14,23 +25,30 @@ Initial setup
 ..     |/
 ..     ● O
 .. }}}
-.. 
+..
 .. Marker exist from:
-.. 
+..
 ..  * A' succeed to A
 ..  * A' (prune
 ..  * B (prune)
-.. 
+..
 .. Command run:
-.. 
+..
 ..  * hg push -r A'
 ..  * hg push
-.. 
+..
 .. Expected exchange:
-.. 
+..
 ..  * `A ø⇠⊗ A'`
 ..  * A (prune)
 ..  * B (prune)
+
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+Initial
 
   $ setuprepos C.3
   creating test repo for test case C.3
@@ -56,23 +74,27 @@ Initial setup
   |/
   @  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   06055a7959d4128e6e3bccfd01482e83a2db8a3a 0 {28b51eb45704506b5c603decd6bf7ac5e0f6a52f} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 40be80b35671116f2c61ef25797806536a6eb5a0
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f beac7228bbe708bc7c9181c3c27f8a17f21dbd9f
   06055a7959d4128e6e3bccfd01482e83a2db8a3a 8b648bd67281e9e525919285ac7b3bb2836c2f02
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 dcd2b566ad0983333be704afdc205066e1a6b742
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              0 a9bdc8b26820            0            1            1 40be80b35671
   $ cd ..
   $ cd ..
 
-  $ cp -r C.3 C.3.a
-  $ cp -r C.3 C.3.b
+  $ cp -R C.3 C.3.a
+  $ cp -R C.3 C.3.b
 
 Actual Test (explicit push)
 ---------------------------

@@ -1,10 +1,19 @@
+============================================
+Testing obsolescence markers push: Cases A.2
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-Initial setup
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+Category A: simple cases
+TestCase 2: Two heads, only one of them pushed
 
-=== A.2 Two heads ===
+A.2 Two heads, only on of then pushed
+=====================================
 
 .. {{{
 ..     ⇠○ B
@@ -13,13 +22,13 @@ Initial setup
 ..    ● O
 .. }}}
 ..
-.. Marker exist from:
+.. Markers exist from:
 ..
 ..  * A
 ..  * B
 ..
 ..
-.. Command run:
+.. Command runs:
 ..
 ..  * hg push -r A
 ..
@@ -30,6 +39,11 @@ Initial setup
 .. Expected Exclude:
 ..
 ..  * chain from B
+
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
 initial
 
@@ -42,7 +56,7 @@ initial
   $ cd main
   $ mkcommit A
   $ hg debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa `getid 'desc(A)'`
-  $ hg up .^
+  $ hg up '.~1'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit B
   created new head
@@ -54,14 +68,18 @@ initial
   |/
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 35b1839966785d5703a01607229eea932db42f87 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 50656e04a95ecdfed94659dd61f663b2caa55e98
   35b1839966785d5703a01607229eea932db42f87 b9c8f20eef8938ebab939fe6a592587feacf3245
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              2 35b183996678            0            2            2 b9c8f20eef89
              1 f5bc6836db60            0            2            2 50656e04a95e
@@ -71,9 +89,8 @@ initial
   $ cd ..
   $ cd ..
 
-
 Actual Test
----------------
+-----------
 
   $ dotest A.2 A
   ## Running testcase A.2
@@ -116,6 +133,5 @@ Actual Test
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   # obstore: pulldest
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-
 
   $ cd ..

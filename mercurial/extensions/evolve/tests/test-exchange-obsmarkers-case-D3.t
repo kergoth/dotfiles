@@ -1,32 +1,51 @@
+============================================
+Testing obsolescence markers push: Cases D.3
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-Initial setup
+Category D: Partial Information Case
+TestCase 3: missing prune target (prune not in "pushed set")
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+D.3 missing prune target (prune not in "pushed set")
+====================================================
 
-=== D.2 missing prune target (prune in "pushed set") ===
+.. {{{
+..  A ø⇠✕ A'
+..     | |
+..     | ○ B
+..     |/
+..     ● O
+.. }}}
+..
+.. Marker exist from:
+..
+..  * `A ø⇠o A'`
+..  * A' (prune)
+..
+.. Command runs:
+..
+..  * hg push
+..
+.. Expected exclude:
+..
+..  * `A ø⇠o A'`
+..  * A' (prune)
 
-{{{
-}}}
+Setup
+-----
 
-Marker exist from:
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
- * A' succeed to A
- * A' (prune)
+initial
 
-Command run:
-
- * hg push
-
-Expected exchange:
-
- * `A ø⇠o A'`
- * A' (prune)
-
-
-  $ setuprepos D.2
-  creating test repo for test case D.2
+  $ setuprepos D.3
+  creating test repo for test case D.3
   - pulldest
   - main
   - pushdest
@@ -50,14 +69,18 @@ Expected exchange:
   |/
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 6aa67a7b4baa6fb41b06aed38d5b1201436546e2 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   6aa67a7b4baa6fb41b06aed38d5b1201436546e2 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0000000000000000000000000000000000000000
   35b1839966785d5703a01607229eea932db42f87 65a9f21dff0702355e973a8f31d3b3b7e59376fb
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              2 35b183996678            0            2            2 65a9f21dff07
              2 35b183996678            1            1            2 65a9f21dff07
@@ -66,10 +89,10 @@ Expected exchange:
   $ cd ..
 
 Actual Test
--------------------------------------
+-----------
 
-  $ dotest D.2 O
-  ## Running testcase D.2
+  $ dotest D.3 O
+  ## Running testcase D.3
   # testing echange of "O" (a9bdc8b26820)
   ## initial state
   # obstore: main

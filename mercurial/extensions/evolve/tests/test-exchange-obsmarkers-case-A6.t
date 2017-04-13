@@ -1,12 +1,22 @@
+============================================
+Testing obsolescence markers push: Cases A.6
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-Initial setup
+Category A: simple cases
+TestCase 6: new markers between changesets already known on both side
+Variants:
+# a: explicit push
+# b: bare push
 
-  $ . $TESTDIR/testlib/exchange-util.sh
-
-
-=== A.6 between existing changeset ===
+A.6  new markers between changesets already known on both side
+==============================================================
 
 .. {{{
 ..   A ◕⇠● B
@@ -18,7 +28,7 @@ Initial setup
 ..
 ..  * `A◕⇠● B`
 ..
-.. Command run:
+.. Command runs:
 ..
 ..  * hg push -r B
 ..  * hg push
@@ -27,6 +37,10 @@ Initial setup
 ..
 ..  * `A◕⇠● B`
 
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
 initial
 
@@ -57,13 +71,17 @@ create a marker after this
   |/
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0000000000000000000000000000000000000000
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 3bc2ee626e11a7cf8fee7a66d069271e17d5a597
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              2 e5ea8f9c7314            0            2            2 3bc2ee626e11
              0 a9bdc8b26820            0            1            1 000000000000
@@ -71,8 +89,8 @@ create a marker after this
   $ cd ..
   $ cd ..
 
-  $ cp -r A.6 A.6.a
-  $ cp -r A.6 A.6.b
+  $ cp -R A.6 A.6.a
+  $ cp -R A.6 A.6.b
 
 Actual Test (explicit push version)
 -----------------------------------

@@ -1,10 +1,19 @@
+============================================
+Testing obsolescence markers push: Cases B.3
+============================================
 
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-Initial setup
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+Category B: pruning case
+TestCase 3: Pruned changeset on non-pushed part of the history
 
-=== B.3 Pruned changeset on non-pushed part of the history ===
+B.3 Pruned changeset on non-pushed part of the history
+======================================================
 
 .. {{{
 ..   ⊗ C
@@ -15,23 +24,28 @@ Initial setup
 ..   ● O
 .. }}}
 ..
-.. Marker exist from:
+.. Marker exists from:
 ..
 ..  * C (prune)
 ..
-.. Command run:
+.. Commands run:
 ..
 ..  * hg push -r A
-..  * hg push
 ..
 .. Expected exchange:
 ..
 ..  * ø
 ..
-.. Expected Exclude:
+.. Expected exclude:
 ..
 ..  * chain from B
 
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+initial
 
   $ setuprepos B.3
   creating test repo for test case B.3
@@ -55,14 +69,18 @@ Initial setup
   |/
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 0000000000000000000000000000000000000000
   35b1839966785d5703a01607229eea932db42f87 631ab4cd02ffa1d144dc8f32a18be574076031e3
   e56289ab6378dc752fd7965f8bf66b58bda740bd 47c9d2d8db5d4b1eddd0266329ad260ccc84772c
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              2 35b183996678            0            2            2 631ab4cd02ff
              1 f5bc6836db60            0            2            2 000000000000
@@ -71,7 +89,6 @@ Initial setup
              1 f5bc6836db60            1            1            2 000000000000
   $ cd ..
   $ cd ..
-
 
 Actual Test
 -----------------------------------

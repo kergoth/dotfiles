@@ -1,10 +1,19 @@
+============================================
+Testing obsolescence markers push: Cases A.4
+============================================
 
-Initial setup
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+This test belongs to a series of tests checking such set is properly computed
+and applied. this does not tests "obsmarkers" discovery capabilities.
 
+Category A: simple cases
+Testcase 4: Push in the middle of the obsolescence chain
 
-=== A.4 Push in the middle of the obsolescence chain ===
+A.4 Push in the middle of the obsolescence chain
+================================================
 
 .. (Where we show that we should not push the marker without the successors)
 ..
@@ -16,12 +25,12 @@ Initial setup
 ..     ● O
 .. }}}
 ..
-.. Marker exist from:
+.. Markers exist from:
 ..
-..  * `Aø⇠○ A'`
+..  * `A ø⇠○ A'`
 ..  * chain from A
 ..
-.. Command run:
+.. Command runs:
 ..
 ..  * hg push -r B
 ..
@@ -31,8 +40,12 @@ Initial setup
 ..
 .. Expected Exclude:
 ..
-..  * `Aø⇠○ A'`
+..  * `Ai ø⇠○ A'`
 
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
 initial
 
@@ -60,15 +73,19 @@ initial
   |/
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 28b51eb45704506b5c603decd6bf7ac5e0f6a52f 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f 5d69322fad9eb1ba8f8f2c2312346ed347fdde76
   06055a7959d4128e6e3bccfd01482e83a2db8a3a fd3e5712c9c2d216547d7a1b87ac815ee1fb7542
   e5ea8f9c73143125d36658e90ef70c6d2027a5b7 cf518031fa753e9b049d727e6b0e19f645bab38f
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              2 06055a7959d4            0            3            3 000000000000
              1 28b51eb45704            0            2            2 5d69322fad9e
@@ -80,8 +97,8 @@ initial
   $ cd ..
   $ cd ..
 
-Actual Test for first version (changeset unknown in remote)
------------------------------------------------------------
+Actual Test for first version
+-----------------------------
 
   $ dotest A.4 B -f
   ## Running testcase A.4

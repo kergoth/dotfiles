@@ -1,10 +1,21 @@
+============================================
+Testing obsolescence markers push: Cases B.7
+============================================
 
-Initial setup
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
+Category B: pruning case
+TestCase 7: Prune on non-targeted common changeset
 
-=== B.7 Prune on non-targeted common changeset ===
+B.7 Prune above non-targeted common changeset
+=============================================
+
+.. (very similar to B1, but the prune changeset is unknown on remote)
 ..
 .. {{{
 ..     ⊗ B
@@ -18,15 +29,20 @@ Initial setup
 ..
 ..  * B (prune)
 ..
-.. Command run:
+.. Command runs:
 ..
 ..  * hg push -r O
-........  * hg push
 ..
-.. Expected exchange:
+.. Expected exclude:
 ..
-..  * ø
-.......  * B (prune)
+..  * B (prune)
+
+Setup
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
+
+Initial
 
   $ setuprepos B.7
   creating test repo for test case B.7
@@ -47,13 +63,17 @@ Initial setup
   |
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 926d9d84b97b3483891ae983990ad87c1f7827e9
   f6fbb35d8ac958bbe70035e4c789c18471cdc0af e041f7ff1c7bd5501c7ab602baa35f0873128021
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              1 f5bc6836db60            0            2            2 926d9d84b97b
              0 a9bdc8b26820            0            1            1 000000000000
@@ -89,4 +109,3 @@ Actual Test
   f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
-

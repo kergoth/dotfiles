@@ -1,9 +1,22 @@
+============================================
+Testing obsolescence markers push: Cases A.1
+============================================
 
-Initial setup
+Mercurial pushes obsolescences markers relevant to the "pushed-set", the set of
+all changesets that requested to be "in sync" after the push (even if they are
+already on both side).
 
-  $ . $TESTDIR/testlib/exchange-util.sh
+This test belongs to a series of tests checking such set is properly computed
+and applied. This does not tests "obsmarkers" discovery capabilities.
 
-==== A.1.1 pushing a single head ====
+Category A: simple cases
+TestCase 1: pushing a single head
+Subcases:
+# A.1.1 pushing a single head (2 variants)
+# A.1.2 pushing multiple changesets into a single head (2 variants)
+
+Case: A.1.1 pushing a single head
+=================================
 ..
 .. {{{
 ..     ⇠◔ A
@@ -11,11 +24,11 @@ Initial setup
 ..      ● O
 .. }}}
 ..
-.. Marker exist from:
+.. Marker exists from:
 ..
 ..  * A
 ..
-.. Command run:
+.. Commands run:
 ..
 ..  * hg push -r A
 ..  * hg push
@@ -25,7 +38,9 @@ Initial setup
 ..  * chain from A
 
 Setup
----------------
+-----
+
+  $ . $TESTDIR/testlib/exchange-obsmarker-util.sh
 
 initial
 
@@ -43,12 +58,16 @@ initial
   |
   o  a9bdc8b26820 (public): O
   
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  $ hg debugobsrelsethashtree
+  obshashtree
+  ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 50656e04a95ecdfed94659dd61f663b2caa55e98
-  $ hg debugobshashrange --subranges --rev 'head()'
+  obshashrange
+  ============
            rev         node        index         size        depth      obshash
              1 f5bc6836db60            0            2            2 50656e04a95e
              0 a9bdc8b26820            0            1            1 000000000000
@@ -58,9 +77,8 @@ initial
 
 setup both variants
 
-  $ cp -r A.1.1 A.1.1.a
-  $ cp -r A.1.1 A.1.1.b
-
+  $ cp -R A.1.1 A.1.1.a
+  $ cp -R A.1.1 A.1.1.b
 
 Variant a: push -r A
 --------------------
@@ -104,9 +122,6 @@ Variant a: push -r A
   # obstore: pulldest
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
 
-
-
-
 Variant b: push
 ---------------
 
@@ -148,12 +163,8 @@ Variant b: push
   # obstore: pulldest
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
 
-
-
-
-
-
-==== A.1.2 pushing a multiple changeset into a single head  ====
+A.1.2 pushing multiple changesets into a single head
+====================================================
 
 .. {{{
 ..      ◔ B
@@ -177,7 +188,7 @@ Variant b: push
 ..  * chain from A
 
 Setup
----------------
+-----
 
 initial
 
@@ -198,16 +209,30 @@ initial
   o  a9bdc8b26820 (public): O
   
   $ hg debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa `getid 'desc(A)'`
-  $ hg debugobsolete
+  $ inspect_obsmarkers
+  obsstore content
+  ================
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  obshashtree
+  ===========
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 50656e04a95ecdfed94659dd61f663b2caa55e98
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 9cfa25b36856aa720419146abddd011cf87d368c
+  obshashrange
+  ============
+           rev         node        index         size        depth      obshash
+             2 f6fbb35d8ac9            0            3            3 000000000000
+             1 f5bc6836db60            0            2            2 50656e04a95e
+             0 a9bdc8b26820            0            1            1 000000000000
+             1 f5bc6836db60            1            1            2 50656e04a95e
+             2 f6fbb35d8ac9            2            1            3 000000000000
   $ cd ..
   $ cd ..
 
 setup both variants
 
-  $ cp -r A.1.2 A.1.2.a
-  $ cp -r A.1.2 A.1.2.b
-
+  $ cp -R A.1.2 A.1.2.a
+  $ cp -R A.1.2 A.1.2.b
 
 Variant a: push -r A
 --------------------
