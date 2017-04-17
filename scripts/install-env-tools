@@ -88,6 +88,8 @@ pip_install pathlib2
 pip_install click
 pip_install e
 pip3_install e
+pip_install better-exceptions-hook
+pip3_install better-exceptions-hook
 
 ## Documentation
 gemv ronn
