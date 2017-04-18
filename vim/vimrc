@@ -741,6 +741,10 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_markdown_mdl_args = ''
 
 let g:airline#extensions#tabline#enabled = 1
+" When airline is showing our mode, we don't need vim to do so
+if exists('g:loaded_airline')
+  set noshowmode
+endif
 
 let g:vundle_default_git_proto = 'git'
 " let g:EasyMotion_leader_key = '<Leader>'
