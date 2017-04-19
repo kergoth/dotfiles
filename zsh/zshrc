@@ -32,9 +32,6 @@ for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N) \
         */base16/*)
             continue
             ;;
-        */syntax-highlighting/*)
-            continue
-            ;;
     esac
     source $file
 done
