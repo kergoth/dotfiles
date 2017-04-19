@@ -54,8 +54,6 @@ autoload -U select-word-style
 select-word-style normal
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-# autosuggestions must be loaded before history-substring-search
-source $ZSH/plugins/autosuggestions/zsh-autosuggestions.zsh
 # history-substring-search must be loaded after syntax-highlighting
 source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
 
