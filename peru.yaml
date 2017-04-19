@@ -8,7 +8,7 @@ imports:
     zsh-git-escape-magic: zsh/plugins/git-escape-magic
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
-    zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
+    zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
     zsh-prioritize-cwd-history: zsh/plugins/prioritize-cwd-history
     hub-completion: git/functions
     iterm2-zsh: zsh/plugins/iterm2
@@ -111,6 +111,10 @@ imports:
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
     rev: ad522a091429ba180c930f84b2a023b40de4dbcc
+
+git module zsh-fast-syntax-highlighting:
+    url: https://github.com/zdharma/fast-syntax-highlighting
+    rev: 78d06f1369e5824e6a08c71dd99fa71739065c47
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
