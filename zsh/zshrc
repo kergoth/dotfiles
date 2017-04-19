@@ -26,7 +26,8 @@ done
 AUTOENV_AUTH_FILE=$XDG_DATA_HOME/autoenv_authorized
 
 # Load "plugins"
-for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N); do
+for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N) \
+            $DOTFILESDIR/*/*.plugin.zsh(N); do
     case "$file" in
         */base16/*)
             continue
@@ -38,8 +39,8 @@ for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N); do
     source $file
 done
 
-# load everything but the path and completion files
-for file in ${${${config_files:#*/path.zsh}:#*/completion.zsh}:#*/env.zsh}; do
+# load everything but the path, plugin, and completion files
+for file in ${${${${config_files:#*/path.zsh}:#*/completion.zsh}:#*/env.zsh}:#*/*.plugin.zsh}; do
     source $file
 done
 
