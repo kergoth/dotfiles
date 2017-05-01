@@ -886,6 +886,7 @@ def setupcache(ui, repo):
         def destroyed(self):
             if 'stablerange' in vars(self):
                 del self.stablerange
+            super(stablerangerepo, self).destroyed()
 
         def transaction(self, *args, **kwargs):
             tr = super(stablerangerepo, self).transaction(*args, **kwargs)

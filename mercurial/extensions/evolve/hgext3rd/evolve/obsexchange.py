@@ -39,6 +39,7 @@ from . import (
 )
 
 eh = exthelper.exthelper()
+eh.merge(obsdiscovery.eh)
 obsexcmsg = utility.obsexcmsg
 obsexcprg = utility.obsexcprg
 

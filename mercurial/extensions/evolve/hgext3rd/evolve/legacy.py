@@ -192,8 +192,8 @@ def cmddebugrecordpruneparents(ui, repo):
                     ctx = unfi[rev]
                     parents = tuple(p.node() for p in ctx.parents())
                     before = len(store._all)
-                    store.create(tr, mark[0], mark[1], mark[2], mark[3],
-                                 parents=parents)
+                    store.create(tr, prec=mark[0], succs=mark[1], flag=mark[2],
+                                 metadata=dict(mark[3]), parents=parents)
                     if len(store._all) - before:
                         ui.write(_('created new markers for %i\n') % rev)
             ui.progress(pgop, idx, total=pgtotal)

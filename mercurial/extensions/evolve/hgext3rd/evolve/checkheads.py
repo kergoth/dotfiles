@@ -30,10 +30,8 @@ eh = exthelper.exthelper()
 
 @eh.uisetup
 def setupcheckheadswrapper(ui):
-    if util.safehasattr(discovery, '_postprocessobsolete'):
-        extensions.wrapfunction(discovery, '_postprocessobsolete',
-                                checkheadslightoverlay)
-    else:
+    if not util.safehasattr(discovery, '_postprocessobsolete'):
+        # hg-4.2+ has all the code natively
         extensions.wrapfunction(discovery, 'checkheads',
                                 checkheadsfulloverlay)
 
@@ -43,9 +41,6 @@ def checkheadsfulloverlay(orig, pushop):
         return corecheckheads(pushop)
     else:
         return orig(pushop)
-
-def checkheadslightoverlay(orig, *args, **kwargs):
-    return _postprocessobsolete(*args, **kwargs)
 
 # copied from mercurial.discovery.checkheads as in a5bad127128d (4.1)
 #

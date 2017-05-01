@@ -7,6 +7,8 @@
   > [web]
   > push_ssl = false
   > allow_push = *
+  > [ui]
+  > ssh=python "$RUNTESTDIR/dummyssh"
   > [phases]
   > publish = False
   > [experimental]
@@ -41,6 +43,8 @@ setup repo
   $ cat ./errors.log
   $ echo "[extensions]" >> ./client/.hg/hgrc
   $ echo "evolve=" >> ./client/.hg/hgrc
+  $ echo "[paths]" >> ./client/.hg/hgrc
+  $ echo "ssh=ssh://user@dummy/server/" >> ./client/.hg/hgrc
   $ cp -r client other
 
 Smoke testing
@@ -173,3 +177,16 @@ Test disabling obsolete advertisement
   capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_pullobsmarkers_0 _evoext_pushobsmarkers_0 batch * (glob)
   $ curl -s http://localhost:$HGPORT/?cmd=capabilities
   _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_pullobsmarkers_0 _evoext_pushobsmarkers_0 batch * (no-eol) (glob)
+
+Test obshashrange discover
+===========================================
+
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > obshashrange = True
+  > EOF
+  $ cd client
+  $ hg pull ssh
+  pulling from ssh://user@dummy/server/
+  searching for changes
+  no changes found

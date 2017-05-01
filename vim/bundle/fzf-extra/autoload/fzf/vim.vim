@@ -219,7 +219,7 @@ function! s:warn(message)
   return 0
 endfunction
 
-function! s:uniq(list)
+function! fzf#vim#_uniq(list)
   let visited = {}
   let ret = []
   for l in a:list
@@ -361,7 +361,7 @@ endfunction
 " ------------------------------------------------------------------
 function! fzf#vim#colors(...)
   return s:fzf('colors', {
-  \ 'source':  s:uniq(map(split(globpath(&rtp, "colors/*.vim"), "\n"),
+  \ 'source':  fzf#vim#_uniq(map(split(globpath(&rtp, "colors/*.vim"), "\n"),
   \               "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')")),
   \ 'sink':    'colo',
   \ 'options': '+m --prompt="Colors> "'
@@ -922,7 +922,7 @@ endfunction
 
 function! fzf#vim#helptags(...)
   let sorted = sort(split(globpath(&runtimepath, '**/doc/tags'), '\n'))
-  let tags = exists('*uniq') ? uniq(sorted) : s:uniq(sorted)
+  let tags = exists('*uniq') ? uniq(sorted) : fzf#vim#_uniq(sorted)
 
   return s:fzf('helptags', {
   \ 'source':  "grep -H '.*' ".join(map(tags, 'shellescape(v:val)')).
@@ -1094,13 +1094,12 @@ function! fzf#vim#maps(mode, ...)
   let list = []
   let curr = ''
   for line in split(cout, "\n")
-    let src = matchstr(line, 'Last set from \zs.*')
-    if empty(src)
-      let curr = line[3:]
-    else
-      let src = '  '.join(reverse(reverse(split(src, '/'))[0:2]), '/')
+    if line =~ "^\t"
+      let src = '  '.join(reverse(reverse(split(split(line)[-1], '/'))[0:2]), '/')
       call add(list, printf('%s %s', curr, s:green(src, 'Comment')))
       let curr = ''
+    else
+      let curr = line[3:]
     endif
   endfor
   if !empty(curr)

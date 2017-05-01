@@ -551,6 +551,7 @@ def setupcache(ui, repo):
         def destroyed(self):
             if 'stablerange' in vars(self):
                 del self.stablerange
+            super(obshashrepo, self).destroyed()
 
     repo.__class__ = obshashrepo
 

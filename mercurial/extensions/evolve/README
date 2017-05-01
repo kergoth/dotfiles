@@ -112,7 +112,21 @@ Mercurial on default.), Older version of Mercurial are supportd on their respect
 Changelog
 =========
 
-6.0.0 -- 2017-02-31
+
+6.0.2 - in progress
+-------------------
+
+ - fix the propagation of some some cache invalidation,
+
+6.0.1 -- 2017-04-20
+-------------------
+
+ - template: adapt to change in 4.2,
+ - fix 'debugrecordpruneparents' (outdated API usage)
+ - checkheads: give priority to updated 4.2 code,
+ - serveronly: fix repository initialization.
+
+6.0.0 -- 2017-03-31
 -------------------
 
 - push: improved detection of obsoleted remote branch (issue4354),

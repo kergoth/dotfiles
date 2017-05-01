@@ -60,6 +60,5 @@ fi
 if [ -d "$HOMEBREW_PREFIX/share/doc/homebrew" ]; then
     rm -rf "$HOMEBREW_PREFIX/share/doc/homebrew"
 fi
+brew analytics off || exit 3
 brew update || exit 2
-
-git config -f "$(brew --repo)/.git/config" homebrew.analyticsdisabled true

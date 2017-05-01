@@ -17,7 +17,6 @@ try:
     from . import (
         exthelper,
         metadata,
-        obsdiscovery,
         obsexchange,
     )
 except ValueError as exc:
@@ -28,7 +27,6 @@ except ValueError as exc:
     from evolve import (
         exthelper,
         metadata,
-        obsdiscovery,
         obsexchange,
     )
 
@@ -38,7 +36,6 @@ minimumhgversion = metadata.minimumhgversion
 buglink = metadata.buglink
 
 eh = exthelper.exthelper()
-eh.merge(obsdiscovery.eh)
 eh.merge(obsexchange.eh)
 uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
@@ -46,7 +43,7 @@ reposetup = eh.final_reposetup
 cmdtable = eh.cmdtable
 
 @eh.reposetup
-def reposetup(ui, repo):
+def default2evolution(ui, repo):
     evolveopts = ui.configlist('experimental', 'evolution')
     if not evolveopts:
         evolveopts = 'all'

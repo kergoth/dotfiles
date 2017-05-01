@@ -113,7 +113,6 @@ from mercurial.node import nullid
 from . import (
     checkheads,
     debugcmd,
-    obsdiscovery,
     obsexchange,
     exthelper,
     metadata,
@@ -146,7 +145,6 @@ interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
 
 eh = exthelper.exthelper()
 eh.merge(debugcmd.eh)
-eh.merge(obsdiscovery.eh)
 eh.merge(obsexchange.eh)
 eh.merge(checkheads.eh)
 uisetup = eh.final_uisetup
@@ -432,11 +430,17 @@ def obsoletekw(repo, ctx, templ, **args):
     return ''
 
 @eh.templatekw('troubles')
-def showtroubles(repo, ctx, **args):
+def showtroubles(**args):
     """:troubles: List of strings. Evolution troubles affecting the changeset
     (zero or more of "unstable", "divergent" or "bumped")."""
-    return templatekw.showlist('trouble', ctx.troubles(), plural='troubles',
-                               **args)
+    ctx = args['ctx']
+    try:
+        # specify plural= explicitly to trigger TypeError on hg < 4.2
+        return templatekw.showlist('trouble', ctx.troubles(), args,
+                                   plural='troubles')
+    except TypeError:
+        return templatekw.showlist('trouble', ctx.troubles(), plural='troubles',
+                                   **args)
 
 #####################################################################
 ### Various trouble warning                                       ###

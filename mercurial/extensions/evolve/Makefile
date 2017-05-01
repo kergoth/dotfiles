@@ -2,10 +2,6 @@ VERSION=$(shell python setup.py --version)
 
 PYTHON=python
 
-help:
-	@echo 'Commonly used make targets:'
-	@echo '  deb-prepare - prepare the build of a debian package'
-
 all: help
 
 deb-prepare:
@@ -27,6 +23,7 @@ HGTESTS=$(HGROOT)/tests
 
 help:
 	@echo 'Commonly used make targets:'
+	@echo '  deb-prepare        - prepare the build of a debian package'
 	@echo '  tests              - run all tests in the automatic test suite'
 	@echo '  all-version-tests - run all tests against many hg versions'
 	@echo '  tests-%s           - run all tests in the specified hg version'
@@ -34,9 +31,9 @@ help:
 all: help
 
 _check_hgroot:
-	ifeq ($(HGROOT),)
-	  $(error HGROOT is not set to the root of the hg source tree)
-	endif
+ifeq ($(HGROOT),)
+	$(error HGROOT is not set to the root of the hg source tree)
+endif
 
 tests: _check_hgroot
 	cd tests && $(PYTHON) $(HGTESTS)/run-tests.py $(TESTFLAGS)
