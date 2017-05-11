@@ -87,7 +87,7 @@ def showstack(ui, repo, topic, opts):
                      ' (%s)', state,
                      label='topic.stack.state topic.stack.state.%s' % state)
         fm.plain('\n')
-        fm.end()
+    fm.end()
 
 def stackdata(repo, topic):
     """get various data about a stack

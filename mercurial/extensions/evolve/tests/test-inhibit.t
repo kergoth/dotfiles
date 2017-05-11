@@ -364,7 +364,7 @@ But only with hash
 
   $ hg export 1 3
   abort: hidden revision '1'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; pruned)
   [255]
 
 
@@ -432,7 +432,7 @@ With severals hidden sha, rebase of one hidden stack onto another one:
   
   $ hg rebase -s 10 -d 3 
   abort: hidden revision '3'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; pruned)
   [255]
   $ hg rebase -r ad78ff7d621f -r 53a94305e133 -d  2db36d8066ff --config experimental.rebaseskipobsolete=0
   Warning: accessing hidden changesets 2db36d8066ff for write operation
@@ -699,7 +699,7 @@ check that pruning and inhibited node does not confuse anything
 
   $ hg up 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory parent is obsolete!
+  working directory parent is obsolete! (2d66e189f5b5)
   $ cat >> $HGRCPATH <<EOF
   > [experimental]
   > evolution=all
@@ -803,7 +803,7 @@ Hidden commits cannot be pushed without --hidden
   $ hg push -r 003a4735afde $pwd/inhibit2
   pushing to $TESTTMP/inhibit2
   abort: hidden revision '003a4735afde'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; successor: 71eb4f100663)
   [255]
 
 Visible commits can still be pushed

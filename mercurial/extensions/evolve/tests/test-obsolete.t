@@ -121,7 +121,7 @@ test obsolete changeset with non-obsolete descendant
   4
   - 725c380fe99b
   $ hg up --hidden 3 -q
-  working directory parent is obsolete!
+  working directory parent is obsolete! (0d3f46688ccc)
 (reported by parents too)
   $ hg parents
   changeset:   3:0d3f46688ccc
@@ -130,8 +130,8 @@ test obsolete changeset with non-obsolete descendant
   date:        Thu Jan 01 00:00:00 1970 +0000
   summary:     add obsol_c
   
-  working directory parent is obsolete!
-  (use 'hg evolve' to update to its successor)
+  working directory parent is obsolete! (0d3f46688ccc)
+  (use 'hg evolve' to update to its successor: 725c380fe99b)
   $ mkcommit d # 5 (on 3)
   1 new unstable changesets
   $ qlog -r 'obsolete()'
@@ -206,7 +206,7 @@ Test communication of obsolete relation with a compatible client
   0
   - 1f0dee641bb7
   $ hg up --hidden 3 -q
-  working directory parent is obsolete!
+  working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit obsol_d # 6
   created new head
   1 new unstable changesets
@@ -263,7 +263,7 @@ Pushing again does not advertise extinct changesets
   [1]
 
   $ hg up --hidden -q .^ # 3
-  working directory parent is obsolete!
+  working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit "obsol_d'" # 7
   created new head
   1 new unstable changesets
@@ -351,7 +351,7 @@ clone support
 Test rollback support
 
   $ hg up --hidden .^ -q # 3
-  working directory parent is obsolete!
+  working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit "obsol_d''"
   created new head
   1 new unstable changesets
@@ -687,7 +687,7 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   
 
   $ hg up --hidden 3 -q
-  working directory parent is obsolete!
+  working directory parent is obsolete! (0d3f46688ccc)
   $ hg evolve
   parent is obsolete with multiple successors:
   [4] add obsol_c'
@@ -704,8 +704,8 @@ Check import reports new unstable changeset:
 
   $ hg up --hidden 2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  working directory parent is obsolete!
-  (use 'hg evolve' to update to its successor)
+  working directory parent is obsolete! (4538525df7e2)
+  (4538525df7e2 has diverged, use 'hg evolve -list --divergent' to resolve the issue)
   $ hg export 9468a5f5d8b2 | hg import -
   applying patch from stdin
   1 new unstable changesets

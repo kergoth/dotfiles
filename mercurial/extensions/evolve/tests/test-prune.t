@@ -305,7 +305,7 @@ yoinked from test-mq-strip.t
   1 changesets pruned
   $ hg id -ir dcbb326fdec2
   abort: hidden revision 'dcbb326fdec2'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; pruned)
   [255]
   $ hg id -ir d62d843c9a01
   d62d843c9a01
@@ -339,7 +339,7 @@ yoinked from test-mq-strip.t
   $ hg tag --remove --local c
   $ hg id -ir 6:2702dd0c91e7
   abort: hidden revision '6'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; pruned)
   [255]
 
   $ hg debugobsstorestat

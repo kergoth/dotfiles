@@ -154,7 +154,6 @@ def uisetup(ui):
 
 
 def reposetup(ui, repo):
-    orig = repo.__class__
     if not isinstance(repo, localrepo.localrepository):
         return # this can be a peer in the ssh case (puzzling)
 
@@ -171,7 +170,7 @@ def reposetup(ui, repo):
                 if repo.currenttopic != repo['.'].topic():
                     # bypass the core "nothing changed" logic
                     self.ui.setconfig('ui', 'allowemptycommit', True)
-                return orig.commit(self, *args, **kwargs)
+                return super(topicrepo, self).commit(*args, **kwargs)
             finally:
                 self.ui.restoreconfig(backup)
 
@@ -187,7 +186,7 @@ def reposetup(ui, repo):
                 # we are amending and need to remove a topic
                 del ctx.extra()[constants.extrakey]
             with topicmap.usetopicmap(self):
-                return orig.commitctx(self, ctx, error=error)
+                return super(topicrepo, self).commitctx(ctx, error=error)
 
         @property
         def topics(self):

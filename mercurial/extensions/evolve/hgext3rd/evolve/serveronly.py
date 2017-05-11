@@ -17,6 +17,7 @@ try:
     from . import (
         exthelper,
         metadata,
+        obscache,
         obsexchange,
     )
 except ValueError as exc:
@@ -27,6 +28,7 @@ except ValueError as exc:
     from evolve import (
         exthelper,
         metadata,
+        obscache,
         obsexchange,
     )
 
@@ -36,6 +38,7 @@ minimumhgversion = metadata.minimumhgversion
 buglink = metadata.buglink
 
 eh = exthelper.exthelper()
+eh.merge(obscache.eh)
 eh.merge(obsexchange.eh)
 uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup

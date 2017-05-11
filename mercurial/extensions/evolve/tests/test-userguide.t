@@ -39,7 +39,7 @@ example 3: safe amend with "hg commit --amend" (figure 2)
   $ hg commit --amend -u alice -d '2 0' -m 'implement feature Y'
   $ hg shortlog -q -r fe0ecd3bd2a4
   abort: hidden revision 'fe0ecd3bd2a4'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; successor: 934359450037)
   [255]
   $ hg --hidden shortlog -G
   @  3:934359450037  draft  implement feature Y

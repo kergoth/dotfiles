@@ -35,24 +35,27 @@ Usage
 
     Users typically bind their UP and DOWN arrow keys to this script, thus:
     * Run `cat -v` in your favorite terminal emulator to observe key codes.
+      (**NOTE:** In some cases, `cat -v` shows the wrong key codes.  If the
+      key codes shown by `cat -v` don't work for you, press `<C-v><UP>` and
+      `<C-v><DOWN>` at your ZSH command line prompt for correct key codes.)
     * Press the UP arrow key and observe what is printed in your terminal.
     * Press the DOWN arrow key and observe what is printed in your terminal.
     * Press the Control and C keys simultaneously to terminate the `cat -v`.
     * Use your observations from the previous steps to create key bindings.
       For example, if you observed `^[[A` for UP and `^[[B` for DOWN, then:
 
-            bindkey '^[[A' history-substring-search-up
-            bindkey '^[[B' history-substring-search-down
+          bindkey '^[[A' history-substring-search-up
+          bindkey '^[[B' history-substring-search-down
 
-    You might also want to bind the Control-P/N keys for use in EMACS mode:
+      You might also want to bind the Control-P/N keys for use in EMACS mode:
 
-        bindkey -M emacs '^P' history-substring-search-up
-        bindkey -M emacs '^N' history-substring-search-down
+          bindkey -M emacs '^P' history-substring-search-up
+          bindkey -M emacs '^N' history-substring-search-down
 
-    You might also want to bind the `k` and `j` keys for use in VI mode:
+      You might also want to bind the `k` and `j` keys for use in VI mode:
 
-        bindkey -M vicmd 'k' history-substring-search-up
-        bindkey -M vicmd 'j' history-substring-search-down
+          bindkey -M vicmd 'k' history-substring-search-up
+          bindkey -M vicmd 'j' history-substring-search-down
 
 3.  Type any part of any previous command and then:
 

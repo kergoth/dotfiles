@@ -105,6 +105,9 @@ vim-airline integrates with a variety of plugins out of the box.  These extensio
 #### [xkb-switch][48]/[xkb-layout][49]
 ![image](https://cloud.githubusercontent.com/assets/5715281/22061422/347e7842-ddb8-11e6-8bdb-7abbd418653c.gif)
 
+#### [vimtex][53]
+![image](https://cloud.githubusercontent.com/assets/1798172/25799740/e77d5c2e-33ee-11e7-8660-d34ce4c5f13f.png)
+
 ## Extras
 
 vim-airline also supplies some supplementary stand-alone extensions.  In addition to the tabline extension mentioned earlier, there is also:
@@ -155,6 +158,7 @@ This plugin follows the standard runtime path structure, and as such it can be i
 | [Vundle][13] | `Plugin 'vim-airline/vim-airline'` |
 | [Plug][40] | `Plug 'vim-airline/vim-airline'` |
 | [VAM][22] | `call vam#ActivateAddons([ 'vim-airline' ])` |
+| [Dein][52] | `call dein#add('vim-airline/vim-airline')` |
 | manual | copy all of the files into your `~/.vim` directory |
 
 # Configuration
@@ -251,3 +255,5 @@ MIT License. Copyright (c) 2013-2016 Bailey Ling.
 [49]: https://github.com/vovkasm/input-source-switcher
 [50]: https://github.com/jreybert/vimagit
 [51]: https://github.com/Shougo/denite.nvim
+[52]: https://github.com/Shougo/dein.vim
+[53]: https://github.com/lervag/vimtex

@@ -77,6 +77,43 @@ Simple test
   t2: c_d
   t1: c_c
     ^ c_b
+  $ hg stack -Tjson | python -m json.tool
+  [
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_f",
+          "topic.stack.index": 4,
+          "topic.stack.state": "current",
+          "topic.stack.state.symbol": "@"
+      },
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_e",
+          "topic.stack.index": 3,
+          "topic.stack.state": "clean",
+          "topic.stack.state.symbol": ":"
+      },
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_d",
+          "topic.stack.index": 2,
+          "topic.stack.state": "clean",
+          "topic.stack.state.symbol": ":"
+      },
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_c",
+          "topic.stack.index": 1,
+          "topic.stack.state": "clean",
+          "topic.stack.state.symbol": ":"
+      },
+      {
+          "isentry": false,
+          "topic.stack.desc": "c_b",
+          "topic.stack.state": "base",
+          "topic.stack.state.symbol": "^"
+      }
+  ]
 
 error case, nothing to list
 

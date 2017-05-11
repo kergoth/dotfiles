@@ -722,7 +722,7 @@ Test fold
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg fold --from 6 # want to run hg fold 6
   abort: hidden revision '6'!
-  (use --hidden to access hidden revisions)
+  (use --hidden to access hidden revisions; successor: af636757ce3b)
   [255]
   $ hg log -r 11 --template '{desc}\n'
   add 3

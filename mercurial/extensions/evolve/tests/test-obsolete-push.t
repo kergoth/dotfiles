@@ -44,3 +44,50 @@ has A and B, neither A or C should be in outgoing.
   comparing with ../clone
   searching for changes
   0:1994f17a630e@default(obsolete/draft) A
+  $ cd ..
+
+Test options to prevent implicite publishing of changesets
+----------------------------------------------------------
+
+
+  $ hg clone source strict-publish-client --pull
+  requesting all changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  1 new obsolescence markers
+  updating to branch default
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ cd strict-publish-client
+  $ echo c > c
+  $ hg ci -qAm C c
+
+abort behavior
+
+  $ cat >> .hg/hgrc <<eof
+  > [experimental]
+  > auto-publish = abort
+  > eof
+  $ hg push -r .
+  pushing to $TESTTMP/source
+  abort: push would publish 1 changesets
+  (behavior controlled by 'experimental.auto-publish' config)
+  [255]
+  $ hg push
+  pushing to $TESTTMP/source
+  abort: push would publish 1 changesets
+  (behavior controlled by 'experimental.auto-publish' config)
+  [255]
+
+warning behavior
+
+  $ echo 'auto-publish = warn' >> .hg/hgrc
+  $ hg push
+  pushing to $TESTTMP/source
+  1 changesets about to be published
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 0 changesets with 0 changes to 1 files

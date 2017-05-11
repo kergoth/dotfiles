@@ -33,8 +33,8 @@ Revive usage
   $ hg commit -m ab --amend
   $ hg up --hidden 1
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  working directory parent is obsolete!
-  (use 'hg evolve' to update to its successor)
+  working directory parent is obsolete! (*) (glob)
+  (use 'hg evolve' to update to its successor: *) (glob)
   $ hg log -G
   o  3:[0-9a-f]{12} ab (re)
   

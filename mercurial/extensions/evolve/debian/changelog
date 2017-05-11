@@ -1,4 +1,10 @@
-mercurial-evolve (6.0.1-1) UNRELEASED; urgency=medium
+mercurial-evolve (6.1.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Pierre-Yves David <marmoute@nodosa.octopoid.net>  Wed, 03 May 2017 13:57:15 +0200
+
+mercurial-evolve (6.0.1-1) unstable; urgency=medium
 
   * New upstream version
 

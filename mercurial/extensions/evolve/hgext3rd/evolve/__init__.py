@@ -7,15 +7,43 @@
 # GNU General Public License version 2 or any later version.
 """extends Mercurial feature related to Changeset Evolution
 
-This extension provides several commands to mutate history and deal with
-resulting issues.
+This extension:
 
-It also:
+- provides several commands to mutate history and deal with resulting issues,
+- enable the changeset-evolution feature for Mercurial,
+- improves some aspect of the early implementation in Mercurial core,
 
-    - enables the "Changeset Obsolescence" feature of Mercurial,
-    - alters core commands and extensions that rewrite history to use
-      this feature,
-    - improves some aspect of the early implementation in Mercurial core
+Note that a version dedicated to server usage only (no local working copy) is
+available as 'evolve.serveronly'.
+
+While many feature related to changeset evolution are directly handled by core
+this extensions contains significant additions recommended to any user of
+changeset evolution.
+
+With the extensions various evolution events will display warning (new unstable
+changesets, obsolete working copy parent, improved error when accessing hidden
+revision, etc).
+
+In addition, the extension contains better discovery protocol for obsolescence
+markers. This means less obs-markers will have to be pushed and pulled around,
+speeding up such operation.
+
+Some improvement and bug fixes available in newer version of Mercurial are also
+backported to older version of Mercurial by this extension. Some older
+experimental protocol are also supported for a longer time in the extensions to
+help people transitioning. (The extensions is currently compatible down to
+Mercurial version 3.8).
+
+New Config:
+
+    [experimental]
+    # Set to control the behavior when pushing draft changesets to a publishing
+    # repository. Possible value:
+    # * ignore: current core behavior (default)
+    # * warn: proceed with the push, but issue a warning
+    # * abort: abort the push
+    auto-publish = ignore
+
 """
 
 
@@ -104,6 +132,7 @@ from mercurial import (
     revset,
     scmutil,
     templatekw,
+    obsolete
 )
 
 from mercurial.commands import walkopts, commitopts, commitopts2, mergetoolopts
@@ -113,9 +142,11 @@ from mercurial.node import nullid
 from . import (
     checkheads,
     debugcmd,
-    obsexchange,
     exthelper,
     metadata,
+    obscache,
+    obsexchange,
+    safeguard,
     utility,
 )
 
@@ -147,6 +178,8 @@ eh = exthelper.exthelper()
 eh.merge(debugcmd.eh)
 eh.merge(obsexchange.eh)
 eh.merge(checkheads.eh)
+eh.merge(safeguard.eh)
+eh.merge(obscache.eh)
 uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
 reposetup = eh.final_reposetup
@@ -449,11 +482,102 @@ def showtroubles(**args):
 # This section take care of issue warning to the user when troubles appear
 
 
+def _getobsoletereason(repo, revnode):
+    """ Return a tuple containing:
+    - the reason a revision is obsolete (diverged, pruned or superseed)
+    - the list of successors short node if the revision is neither pruned
+    or has diverged
+    """
+    successorssets = obsolete.successorssets(repo, revnode)
+
+    if len(successorssets) == 0:
+        # The commit has been pruned
+        return ('pruned', [])
+    elif len(successorssets) > 1:
+        return ('diverged', [])
+    else:
+        # No divergence, only one set of successors
+        successors = [node.short(node_id) for node_id in successorssets[0]]
+
+        if len(successors) == 1:
+            return ('superseed', successors)
+        else:
+            return ('superseed_split', successors)
+
 def _warnobsoletewc(ui, repo):
-    if repo['.'].obsolete():
-        ui.warn(_('working directory parent is obsolete!\n'))
-        if (not ui.quiet) and obsolete.isenabled(repo, commandopt):
-            ui.warn(_("(use 'hg evolve' to update to its successor)\n"))
+    rev = repo['.']
+
+    if not rev.obsolete():
+        return
+
+    msg = _("working directory parent is obsolete! (%s)\n")
+    shortnode = node.short(rev.node())
+
+    ui.warn(msg % shortnode)
+
+    # Check that evolve is activated for performance reasons
+    if ui.quiet or not obsolete.isenabled(repo, commandopt):
+        return
+
+    # Show a warning for helping the user to solve the issue
+    reason, successors = _getobsoletereason(repo, rev.node())
+
+    if reason == 'pruned':
+        solvemsg = _("use 'hg evolve' to update to its parent successor")
+    elif reason == 'diverged':
+        debugcommand = "hg evolve -list --divergent"
+        basemsg = _("%s has diverged, use '%s' to resolve the issue")
+        solvemsg = basemsg % (shortnode, debugcommand)
+    elif reason == 'superseed':
+        msg = _("use 'hg evolve' to update to its successor: %s")
+        solvemsg = msg % successors[0]
+    elif reason == 'superseed_split':
+        msg = _("use 'hg evolve' to update to its tipmost successor: %s")
+
+        if len(successors) <= 2:
+            solvemsg = msg % ", ".join(successors)
+        else:
+            firstsuccessors = ", ".join(successors[:2])
+            remainingnumber = len(successors) - 2
+            successorsmsg = _("%s and %d more") % (firstsuccessors, remainingnumber)
+            solvemsg = msg % successorsmsg
+    else:
+        raise ValueError(reason)
+
+    ui.warn("(%s)\n" % solvemsg)
+
+if util.safehasattr(context, '_filterederror'):
+    # if < hg-4.2 we do not update the message
+    @eh.wrapfunction(context, '_filterederror')
+    def evolve_filtererror(original, repo, changeid):
+        """build an exception to be raised about a filtered changeid
+
+        This is extracted in a function to help extensions (eg: evolve) to
+        experiment with various message variants."""
+        if repo.filtername.startswith('visible'):
+
+            unfilteredrepo = repo.unfiltered()
+            rev = unfilteredrepo[changeid]
+            reason, successors = _getobsoletereason(unfilteredrepo, rev.node())
+
+            # Be more precise in cqse the revision is superseed
+            if reason == 'superseed':
+                reason = _("successor: %s") % successors[0]
+            elif reason == 'superseed_split':
+                if len(successors) <= 2:
+                    reason = _("successors: %s") % ", ".join(successors)
+                else:
+                    firstsuccessors = ", ".join(successors[:2])
+                    remainingnumber = len(successors) - 2
+                    successorsmsg = _("%s and %d more") % (firstsuccessors, remainingnumber)
+                    reason = _("successors: %s") % successorsmsg
+
+            msg = _("hidden revision '%s'") % changeid
+            hint = _('use --hidden to access hidden revisions; %s') % reason
+            return error.FilteredRepoLookupError(msg, hint=hint)
+        msg = _("filtered revision '%s' (not in '%s' subset)")
+        msg %= (changeid, repo.filtername)
+        return error.FilteredRepoLookupError(msg)
 
 @eh.wrapcommand("update")
 @eh.wrapcommand("pull")

@@ -222,8 +222,8 @@ Stabilize divergent changesets with same parent
   $ hg amend
   $ hg up --hidden 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory parent is obsolete!
-  (use 'hg evolve' to update to its successor)
+  working directory parent is obsolete! (3932c176bbaa)
+  (use 'hg evolve' to update to its successor: d2f173e25686)
   $ mv a a.old
   $ echo 'jungle' > a
   $ cat a.old >> a
@@ -335,8 +335,8 @@ Check conflict during divergence resolution
 
   $ hg up --hidden 15
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory parent is obsolete!
-  (use 'hg evolve' to update to its successor)
+  working directory parent is obsolete! (3932c176bbaa)
+  (use 'hg evolve' to update to its successor: f344982e63c4)
   $ echo 'gotta break' >> a
   $ hg amend
   2 new divergent changesets
