@@ -83,34 +83,44 @@ Simple test
           "isentry": true,
           "topic.stack.desc": "c_f",
           "topic.stack.index": 4,
-          "topic.stack.state": "current",
+          "topic.stack.state": [
+              "current"
+          ],
           "topic.stack.state.symbol": "@"
       },
       {
           "isentry": true,
           "topic.stack.desc": "c_e",
           "topic.stack.index": 3,
-          "topic.stack.state": "clean",
+          "topic.stack.state": [
+              "clean"
+          ],
           "topic.stack.state.symbol": ":"
       },
       {
           "isentry": true,
           "topic.stack.desc": "c_d",
           "topic.stack.index": 2,
-          "topic.stack.state": "clean",
+          "topic.stack.state": [
+              "clean"
+          ],
           "topic.stack.state.symbol": ":"
       },
       {
           "isentry": true,
           "topic.stack.desc": "c_c",
           "topic.stack.index": 1,
-          "topic.stack.state": "clean",
+          "topic.stack.state": [
+              "clean"
+          ],
           "topic.stack.state.symbol": ":"
       },
       {
           "isentry": false,
           "topic.stack.desc": "c_b",
-          "topic.stack.state": "base",
+          "topic.stack.state": [
+              "base"
+          ],
           "topic.stack.state.symbol": "^"
       }
   ]
@@ -172,6 +182,26 @@ Case with some of the topic unstable
   t2@ c_d (current)
   t1: c_c
     ^ c_b
+  $ hg up t3
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg topic --list
+  ### topic: foo
+  ### branch: default
+  t4$ c_f (unstable)
+  t3@ c_e (current)
+  t2: c_d
+  t1: c_c
+    ^ c_b
+  $ hg topic --list --color=debug
+  [topic.stack.summary.topic|### topic: [topic.active|foo]]
+  [topic.stack.summary.branches|### branch: default]
+  [topic.stack.index topic.stack.index.unstable|t4][topic.stack.state topic.stack.state.unstable|$] [topic.stack.desc topic.stack.desc.unstable|c_f][topic.stack.state topic.stack.state.unstable| (unstable)]
+  [topic.stack.index topic.stack.index.current|t3][topic.stack.state topic.stack.state.current|@] [topic.stack.desc topic.stack.desc.current|c_e][topic.stack.state topic.stack.state.current| (current)]
+  [topic.stack.index topic.stack.index.clean|t2][topic.stack.state topic.stack.state.clean|:] [topic.stack.desc topic.stack.desc.clean|c_d]
+  [topic.stack.index topic.stack.index.clean|t1][topic.stack.state topic.stack.state.clean|:] [topic.stack.desc topic.stack.desc.clean|c_c]
+    [topic.stack.state topic.stack.state.base|^] [topic.stack.desc topic.stack.desc.base|c_b]
+  $ hg up t2
+  1 files updated, 0 files merged, 1 files removed, 0 files unresolved
 
 Also test the revset:
 

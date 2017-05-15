@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: fa1c72058439015e74b914325f43cfca94866f1f
+    rev: 10609c16ec87ec30e4908b80a8cba19b0987bc01
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -141,7 +141,7 @@ curl module iterm2-zsh:
 
 git module git-imerge:
     url: https://github.com/mhagger/git-imerge
-    rev: 5951fad2945814930374cf0967d3f6b4c050b112
+    rev: 269969ec973deb3585445ed86d2fd8082ff59212
     pick: git-imerge
 
 git module cheat:
@@ -176,7 +176,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 7ebe5c143dcda62e5a66891322b7cd66470841c4
+    rev: e5935c116570d2375c57242cf64fc2fd32d8cb01
 
 # go language support
 git module vim-golang:
@@ -205,7 +205,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 66c2839bb1126c71a0a2d1da9804161ccd3b78b6
+    rev: 3a39c85598aae19052aa0e2fe0512c8b228c0136
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -522,7 +522,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: a5117a5becf84d31bc53408d95b703eeb0647d6d
+    rev: 5737e0680f10044a2f3189fdc4f33762046c8e7f
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -565,7 +565,7 @@ git module vitag:
 
 git module vim-syntastic:
     url: https://github.com/scrooloose/syntastic.git
-    rev: e07319fd4583a2e9725290fa1d44fd0940d543b2
+    rev: 5efeecece3f512076513e8ee1e7444157a16a77b
 
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
@@ -604,7 +604,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 6d695a80b1c38034698ad049f58fca2d5d55cbeb
+    rev: b13006826a5db3ea02329d21044ce06cfbaf5278
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish

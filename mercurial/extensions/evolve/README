@@ -117,6 +117,7 @@ Changelog
 
  - also enable the new cache (from 6.1.0) for 'evolve.server-only',
  - fix hg stack json output to be valid json
+ - stack: now display if current revision is in bad state (issue5533)
 
 6.1.0 -- 2017-05-03
 -------------------

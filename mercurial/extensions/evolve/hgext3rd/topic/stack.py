@@ -15,6 +15,12 @@ def getstack(repo, topic):
     trevs = repo.revs("topic(%s) - obsolete()", topic)
     return _orderrevs(repo, trevs)
 
+def labelsgen(prefix, labelssuffix):
+    """ Takes a label prefix and a list of suffixes. Returns a string of the prefix
+    formatted with each suffix separated with a space.
+    """
+    return ' '.join(prefix % suffix for suffix in labelssuffix)
+
 def showstack(ui, repo, topic, opts):
     fm = ui.formatter('topicstack', opts)
     prev = None
@@ -59,33 +65,42 @@ def showstack(ui, repo, topic, opts):
 
     # super crude initial version
     for idx, isentry, ctx in entries[::-1]:
+
+        states = []
+        iscurrentrevision = repo.revs('%d and parents()', ctx.rev())
+
+        if iscurrentrevision:
+            states.append('current')
+
         if not isentry:
             symbol = '^'
-            state = 'base'
-        elif repo.revs('%d and parents()', ctx.rev()):
+            # "base" is kind of a "ghost" entry
+            # skip other label for them (no current, no unstable)
+            states = ['base']
+        elif iscurrentrevision:
             symbol = '@'
-            state = 'current'
         elif repo.revs('%d and unstable()', ctx.rev()):
             symbol = '$'
-            state = 'unstable'
+            states.append('unstable')
         else:
             symbol = ':'
-            state = 'clean'
+            states.append('clean')
         fm.startitem()
         fm.data(isentry=isentry)
+
         if idx is None:
             fm.plain('  ')
         else:
             fm.write('topic.stack.index', 't%d', idx,
-                     label='topic.stack.index topic.stack.index.%s' % state)
+                     label='topic.stack.index ' + labelsgen('topic.stack.index.%s', states))
         fm.write('topic.stack.state.symbol', '%s', symbol,
-                 label='topic.stack.state topic.stack.state.%s' % state)
+                 label='topic.stack.state ' + labelsgen('topic.stack.state.%s', states))
         fm.plain(' ')
         fm.write('topic.stack.desc', '%s', ctx.description().splitlines()[0],
-                 label='topic.stack.desc topic.stack.desc.%s' % state)
-        fm.condwrite(state != 'clean' and idx is not None, 'topic.stack.state',
-                     ' (%s)', state,
-                     label='topic.stack.state topic.stack.state.%s' % state)
+                 label='topic.stack.desc ' + labelsgen('topic.stack.desc.%s', states))
+        fm.condwrite(states != ['clean'] and idx is not None, 'topic.stack.state',
+                     ' (%s)', fm.formatlist(states, 'topic.stack.state'),
+                     label='topic.stack.state ' + labelsgen('topic.stack.state.%s', states))
         fm.plain('\n')
     fm.end()
 
