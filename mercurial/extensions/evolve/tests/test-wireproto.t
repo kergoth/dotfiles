@@ -92,7 +92,7 @@ Pull
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   obsmarker-exchange: 139 bytes received
   2 new obsolescence markers
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  (run 'hg heads' to see heads)
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
   searching for changes
@@ -147,6 +147,6 @@ some common hidden
   added 1 changesets with 0 changes to 1 files (+1 heads)
   obsmarker-exchange: 208 bytes received
   1 new obsolescence markers
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  (run 'hg heads' to see heads)
 
   $ cd ..

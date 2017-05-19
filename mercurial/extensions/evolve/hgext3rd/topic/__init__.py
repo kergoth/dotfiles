@@ -100,9 +100,13 @@ colortable = {'topic.active': 'green',
               'topic.stack.summary.behindcount': 'cyan',
               'topic.stack.summary.behinderror': 'red',
               'topic.stack.summary.headcount.multiple': 'yellow',
+              # default color to help log output and thg
+              # (first pick I could think off, update as needed
+              'log.topic': 'green_background',
+              'topic.active': 'green',
              }
 
-testedwith = '3.9'
+testedwith = '4.0.2 4.1.3 4.2'
 
 def _contexttopic(self):
     return self.extra().get(constants.extrakey, '')
@@ -156,6 +160,10 @@ def uisetup(ui):
 def reposetup(ui, repo):
     if not isinstance(repo, localrepo.localrepository):
         return # this can be a peer in the ssh case (puzzling)
+
+    if repo.ui.config('experimental', 'thg.displaynames', None) is None:
+        repo.ui.setconfig('experimental', 'thg.displaynames', 'topics',
+                          source='topic-extension')
 
     class topicrepo(repo.__class__):
 

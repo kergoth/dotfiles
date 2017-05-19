@@ -769,9 +769,17 @@ Test fold with wc parent is not the head of the folded revision
 
 Test olog
 
-  $ hg olog
-  4	: add 4 - test
-  11	: add 3 - test
+  $ hg olog | head -n 10 # hg touch makes the output unstable (fix it with devel option for more stable touch)
+  @    d26d339c513f (12) add 4
+  |\
+  x |    af636757ce3b (11) add 3
+  |\ \     rewritten by test (*) as d26d339c513f (glob)
+  | | |
+  | \ \
+  | |\ \
+  | | | x  ce341209337f (4) add 4
+  | | |      rewritten by test (*) as d26d339c513f (glob)
+  | | |
 
 Test obsstore stat
 

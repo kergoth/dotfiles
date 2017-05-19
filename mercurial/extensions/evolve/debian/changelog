@@ -1,20 +1,26 @@
+mercurial-evolve (6.2.0-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Thu, 18 May 2017 22:24:10 +0200
+
 mercurial-evolve (6.1.0-1) unstable; urgency=medium
 
   * New upstream release
 
- -- Pierre-Yves David <marmoute@nodosa.octopoid.net>  Wed, 03 May 2017 13:57:15 +0200
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Wed, 03 May 2017 13:57:15 +0200
 
 mercurial-evolve (6.0.1-1) unstable; urgency=medium
 
   * New upstream version
 
- -- Pierre-Yves David <marmoute@nodosa.octopoid.net>  Thu, 20 Apr 2017 12:58:35 +0200
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Thu, 20 Apr 2017 12:58:35 +0200
 
 mercurial-evolve (6.0.0-1) unstable; urgency=medium
 
   * New Upstream Release
 
- -- Pierre-Yves David <marmoute@nodosa.octopoid.net>  Thu, 20 Apr 2017 12:58:03 +0200
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Thu, 20 Apr 2017 12:58:03 +0200
 
 mercurial-evolve (5.5.0-1) unstable; urgency=medium
 

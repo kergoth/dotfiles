@@ -10,7 +10,9 @@
 import collections
 import heapq
 import math
+import os
 import sqlite3
+import time
 import weakref
 
 from mercurial import (
@@ -19,6 +21,7 @@ from mercurial import (
     error,
     localrepo,
     node as nodemod,
+    pycompat,
     scmutil,
     util,
 )
@@ -30,6 +33,16 @@ from . import (
 )
 
 eh = exthelper.exthelper()
+
+# prior to hg-4.2 there are not util.timer
+if util.safehasattr(util, 'timer'):
+    timer = util.timer
+elif util.safehasattr(time, "perf_counter"):
+    timer = time.perf_counter
+elif getattr(pycompat, 'osname', os.name) == 'nt':
+    timer = time.clock
+else:
+    timer = time.time
 
 ##################################
 ### Stable topological sorting ###
@@ -263,6 +276,7 @@ class stablerange(object):
         #
         # we use the revnumber as an approximation for depth
         ui = repo.ui
+        starttime = timer()
 
         if upto is None:
             upto = len(cl) - 1
@@ -307,6 +321,10 @@ class stablerange(object):
 
         self._tiprev = upto
         self._tipnode = cl.node(upto)
+
+        duration = timer() - starttime
+        repo.ui.log('evoext-cache', 'updated stablerange cache in %.4f seconds\n',
+                    duration)
 
     def depthrev(self, repo, rev):
         repo = repo.unfiltered()
@@ -714,6 +732,7 @@ class sqlstablerange(stablerange):
 
     def __init__(self, repo):
         super(sqlstablerange, self).__init__()
+        self._vfs = repo.vfs
         self._path = repo.vfs.join('cache/evoext_stablerange_v0.sqlite')
         self._cl = repo.unfiltered().changelog # (okay to keep an old one)
         self._ondisktiprev = None
@@ -777,10 +796,20 @@ class sqlstablerange(stablerange):
         self._loaddepth()
         return super(sqlstablerange, self)._inheritancepoint(*args, **kwargs)
 
-    @util.propertycache
-    def _con(self):
+    def _db(self):
+        try:
+            util.makedirs(self._vfs.dirname(self._path))
+        except OSError:
+            return None
         con = sqlite3.connect(self._path)
         con.text_factory = str
+        return con
+
+    @util.propertycache
+    def _con(self):
+        con = self._db()
+        if con is None:
+            return None
         cur = con.execute(_queryexist)
         if cur.fetchone() is None:
             return None
@@ -810,8 +839,9 @@ class sqlstablerange(stablerange):
             if '_con' in vars(self):
                 del self._con
 
-            con = sqlite3.connect(self._path)
-            con.text_factory = str
+            con = self._db()
+            if con is None:
+                return
             with con:
                 for req in _sqliteschema:
                     con.execute(req)
@@ -902,7 +932,7 @@ def setupcache(ui, repo):
                     # new nodes !
                     repo.stablerange.warmup(repo)
 
-            tr.addpostclose('warmcache-stablerange', _warmcache)
+            tr.addpostclose('warmcache-10-stablerange', _warmcache)
             return tr
 
     repo.__class__ = stablerangerepo

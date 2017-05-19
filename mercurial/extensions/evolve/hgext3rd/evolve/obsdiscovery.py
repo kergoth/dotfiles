@@ -24,8 +24,10 @@ except ImportError:
 
 import hashlib
 import heapq
+import os
 import sqlite3
 import struct
+import time
 import weakref
 
 from mercurial import (
@@ -36,6 +38,7 @@ from mercurial import (
     localrepo,
     node,
     obsolete,
+    pycompat,
     scmutil,
     setdiscovery,
     util,
@@ -46,9 +49,20 @@ from mercurial.i18n import _
 
 from . import (
     exthelper,
+    obscache,
     utility,
     stablerange,
 )
+
+# prior to hg-4.2 there are not util.timer
+if util.safehasattr(util, 'timer'):
+    timer = util.timer
+elif util.safehasattr(time, "perf_counter"):
+    timer = time.perf_counter
+elif getattr(pycompat, 'osname', os.name) == 'nt':
+    timer = time.clock
+else:
+    timer = time.time
 
 _pack = struct.pack
 _unpack = struct.unpack
@@ -214,6 +228,7 @@ def findmissingrange(ui, local, remote, probeset,
                      initialsamplesize=100,
                      fullsamplesize=200):
     missing = set()
+    starttime = timer()
 
     heads = local.revs('heads(%ld)', probeset)
     local.stablerange.warmup(local)
@@ -241,6 +256,7 @@ def findmissingrange(ui, local, remote, probeset,
         entry = (h, 0)
         addentry(entry)
 
+    local.obsstore.rangeobshashcache.update(local)
     querycount = 0
     ui.progress(_("comparing obsmarker with other"), querycount)
     overflow = []
@@ -300,6 +316,12 @@ def findmissingrange(ui, local, remote, probeset,
         ui.progress(_("comparing obsmarker with other"), querycount)
     ui.progress(_("comparing obsmarker with other"), None)
     local.obsstore.rangeobshashcache.save(local)
+    duration = timer() - starttime
+    logmsg = ('obsdiscovery, %d/%d mismatch'
+              ' - %d obshashrange queries in %.4f seconds\n')
+    logmsg %= (len(missing), len(probeset), querycount, duration)
+    ui.log('evoext-obsdiscovery', logmsg)
+    ui.debug(logmsg)
     return sorted(missing)
 
 def _queryrange(ui, repo, remote, allentries):
@@ -342,6 +364,7 @@ def debugobshashrange(ui, repo, **opts):
     linetemplate = '%12d %12s %12d %12d %12d %12s\n'
     headertemplate = linetemplate.replace('d', 's')
     ui.status(headertemplate % headers)
+    repo.obsstore.rangeobshashcache.update(repo)
     for r in ranges:
         d = (r[0],
              s(cl.node(r[0])),
@@ -392,10 +415,11 @@ def _obshashrange(repo, rangeid):
 
 _sqliteschema = [
     """CREATE TABLE meta(schemaversion INTEGER NOT NULL,
-                         nbobsmarker   INTEGER NOT NULL,
-                         obstipdata    BLOB    NOT NULL,
                          tiprev        INTEGER NOT NULL,
-                         tipnode       BLOB    NOT NULL
+                         tipnode       BLOB    NOT NULL,
+                         nbobsmarker   INTEGER NOT NULL,
+                         obssize       BLOB    NOT NULL,
+                         obskey        BLOB    NOT NULL
                         );""",
     """CREATE TABLE obshashrange(rev     INTEGER NOT NULL,
                                  idx     INTEGER NOT NULL,
@@ -404,53 +428,132 @@ _sqliteschema = [
     "CREATE INDEX range_index ON obshashrange(rev, idx);",
 ]
 _queryexist = "SELECT name FROM sqlite_master WHERE type='table' AND name='meta';"
-_newmeta = """INSERT INTO meta (schemaversion, nbobsmarker, obstipdata, tiprev, tipnode)
-            VALUES (?,?,?,?,?);"""
+_clearmeta = """DELETE FROM meta;"""
+_newmeta = """INSERT INTO meta (schemaversion, tiprev, tipnode, nbobsmarker, obssize, obskey)
+            VALUES (?,?,?,?,?,?);"""
 _updateobshash = "INSERT INTO obshashrange(rev, idx, obshash) VALUES (?,?,?);"
-_querymeta = "SELECT schemaversion, nbobsmarker, obstipdata, tiprev, tipnode FROM meta;"
+_querymeta = "SELECT schemaversion, tiprev, tipnode, nbobsmarker, obssize, obskey FROM meta;"
 _queryobshash = "SELECT obshash FROM obshashrange WHERE (rev = ? AND idx = ?);"
 
-class _obshashcache(dict):
+_reset = "DELETE FROM obshashrange;"
 
-    _schemaversion = 0
+class _obshashcache(obscache.dualsourcecache):
+
+    _schemaversion = 1
+
+    _cachename = 'evo-ext-obshashrange' # used for error message
 
     def __init__(self, repo):
         super(_obshashcache, self).__init__()
-        self._path = repo.vfs.join('cache/evoext_obshashrange_v0.sqlite')
+        self._vfs = repo.vfs
+        self._path = repo.vfs.join('cache/evoext_obshashrange_v1.sqlite')
         self._new = set()
         self._valid = True
         self._repo = weakref.ref(repo.unfiltered())
         # cache status
         self._ondiskcachekey = None
+        self._data = {}
 
-    def clear(self):
-        self._valid = False
-        super(_obshashcache, self).clear()
+    def clear(self, reset=False):
+        super(_obshashcache, self).clear(reset=reset)
+        self._data.clear()
         self._new.clear()
+        if reset:
+            self._valid = False
+        if '_con' in vars(self):
+            del self._con
 
     def get(self, rangeid):
-        value = super(_obshashcache, self).get(rangeid)
+        # revision should be covered by the tiprev
+        #
+        # XXX there are issue with cache warming, we hack around it for now
+        if not getattr(self, '_updating', False):
+            if self._cachekey[0] < rangeid[0]:
+                msg = ('using unwarmed obshashrangecache (%s %s)'
+                       % (rangeid[0], self._cachekey[0]))
+                raise error.ProgrammingError(msg)
+
+        value = self._data.get(rangeid)
         if value is None and self._con is not None:
             nrange = (rangeid[0], rangeid[1])
             obshash = self._con.execute(_queryobshash, nrange).fetchone()
             if obshash is not None:
                 value = obshash[0]
+            self._data[rangeid] = value
         return value
 
     def __setitem__(self, rangeid, obshash):
         self._new.add(rangeid)
-        super(_obshashcache, self).__setitem__(rangeid, obshash)
+        self._data[rangeid] = obshash
 
-    def _cachekey(self, repo):
-        # XXX for now the cache is very volatile, but this is still a win
-        nbobsmarker = len(repo.obsstore._all)
-        if nbobsmarker:
-            tipdata = obsolete._fm1encodeonemarker(repo.obsstore._all[-1])
-        else:
-            tipdata = node.nullid
-        tiprev = len(repo.changelog) - 1
-        tipnode = repo.changelog.node(tiprev)
-        return (self._schemaversion, nbobsmarker, tipdata, tiprev, tipnode)
+    def _updatefrom(self, repo, revs, obsmarkers):
+        """override this method to update your cache data incrementally
+
+        revs:      list of new revision in the changelog
+        obsmarker: list of new obsmarkers in the obsstore
+        """
+        # XXX for now, we'll not actually update the cache, but we'll be
+        # smarter at invalidating it.
+        #
+        # 1) new revisions does not get their entry updated (not update)
+        # 2) if we detect markers affecting non-new revision we reset the cache
+
+        self._updating = True
+
+        setrevs = set(revs)
+        rev = repo.changelog.nodemap.get
+        # if we have a new markers affecting a node already covered by the
+        # cache, we must abort.
+        affected = set()
+        for m in obsmarkers:
+            # check successors and parent
+            for l in (m[1], m[5]):
+                if l is None:
+                    continue
+                for p in l:
+                    r = rev(p)
+                    if r is not None and r not in setrevs:
+                        # XXX should check < min(setrevs) or tiprevs
+                        affected.add(r)
+
+        if affected:
+            repo.ui.log('evoext-cache', 'obshashcache reset - '
+                        'new markers affect cached ranges\n')
+            # XXX the current reset is too strong we could just drop the affected range
+            con = self._con
+            if con is not None:
+                con.execute(_reset)
+            # rewarm the whole cache
+            stop = self._cachekey[0] # tiprev
+            if revs:
+                stop = max(revs)
+            if 0 <= stop:
+                revs = repo.changelog.revs(stop=stop)
+
+        # warm the cache for the new revs
+        for r in revs:
+            _obshashrange(repo, (r, 0))
+
+        del self._updating
+
+    @property
+    def _fullcachekey(self):
+        return (self._schemaversion, ) + self._cachekey
+
+    def load(self, repo):
+        if self._con is None:
+            self._cachekey = self.emptykey
+            self._ondiskcachekey = self.emptykey
+        assert self._cachekey is not None
+
+    def _db(self):
+        try:
+            util.makedirs(self._vfs.dirname(self._path))
+        except OSError:
+            return None
+        con = sqlite3.connect(self._path)
+        con.text_factory = str
+        return con
 
     @util.propertycache
     def _con(self):
@@ -459,25 +562,27 @@ class _obshashcache(dict):
         repo = self._repo()
         if repo is None:
             return None
-        cachekey = self._cachekey(repo)
-        con = sqlite3.connect(self._path)
-        con.text_factory = str
+        con = self._db()
+        if con is None:
+            return None
         cur = con.execute(_queryexist)
         if cur.fetchone() is None:
             self._valid = False
             return None
         meta = con.execute(_querymeta).fetchone()
-        if meta != cachekey:
+        if meta is None or meta[0] != self._schemaversion:
             self._valid = False
             return None
-        self._ondiskcachekey = meta
+        self._cachekey = self._ondiskcachekey = meta[1:]
         return con
 
     def save(self, repo):
+        if self._cachekey is None:
+            return
+        if self._cachekey == self._ondiskcachekey and not self._new:
+            return
         repo = repo.unfiltered()
         try:
-            if not self._new:
-                return
             with repo.lock():
                 self._save(repo)
         except error.LockError:
@@ -493,32 +598,38 @@ class _obshashcache(dict):
             if '_con' in vars(self):
                 del self._con
 
-            con = sqlite3.connect(self._path)
-            con.text_factory = str
+            con = self._db()
+            if con is None:
+                repo.ui.log('evoext-cache', 'unable to write obshashrange cache'
+                            ' - cannot create database')
+                return
             with con:
                 for req in _sqliteschema:
                     con.execute(req)
 
-                con.execute(_newmeta, self._cachekey(repo))
+                con.execute(_newmeta, self._fullcachekey)
         else:
             con = self._con
             if self._ondiskcachekey is not None:
                 meta = con.execute(_querymeta).fetchone()
-                if meta != self._ondiskcachekey:
+                if meta[1:] != self._ondiskcachekey:
                     # drifting is currently an issue because this means another
                     # process might have already added the cache line we are about
                     # to add. This will confuse sqlite
                     msg = _('obshashrange cache: skipping write, '
                             'database drifted under my feet\n')
-                    data = (meta[2], meta[1], self._ondisktiprev, self._ondisktipnode)
+                    data = (meta[2], meta[1], self._ondiskcachekey[0], self._ondiskcachekey[1])
                     repo.ui.warn(msg)
-        data = ((rangeid[0], rangeid[1], self[rangeid]) for rangeid in self._new)
+                    return
+        data = ((rangeid[0], rangeid[1], self.get(rangeid)) for rangeid in self._new)
         con.executemany(_updateobshash, data)
-        cachekey = self._cachekey(repo)
+        cachekey = self._fullcachekey
+        con.execute(_clearmeta) # remove the older entry
         con.execute(_newmeta, cachekey)
         con.commit()
         self._new.clear()
-        self._ondiskcachekey = cachekey
+        self._ondiskcachekey = self._cachekey
+        self._valid = True
 
 @eh.wrapfunction(obsolete.obsstore, '_addmarkers')
 def _addmarkers(orig, obsstore, *args, **kwargs):
@@ -549,9 +660,30 @@ def setupcache(ui, repo):
     class obshashrepo(repo.__class__):
         @localrepo.unfilteredmethod
         def destroyed(self):
-            if 'stablerange' in vars(self):
-                del self.stablerange
+            if 'obsstore' in vars(self):
+                self.obsstore.rangeobshashcache.clear()
             super(obshashrepo, self).destroyed()
+
+        def transaction(self, *args, **kwargs):
+            tr = super(obshashrepo, self).transaction(*args, **kwargs)
+            reporef = weakref.ref(self)
+
+            def _warmcache(tr):
+                repo = reporef()
+                if repo is None:
+                    return
+                if not repo.ui.configbool('experimental', 'obshashrange', False):
+                    return
+                repo = repo.unfiltered()
+                # As pointed in 'obscache.update', we could have the changelog
+                # and the obsstore in charge of updating the cache when new
+                # items goes it. The tranaction logic would then only be
+                # involved for the 'pending' and final writing on disk.
+                self.obsstore.rangeobshashcache.update(repo)
+                self.obsstore.rangeobshashcache.save(repo)
+
+            tr.addpostclose('warmcache-20-obscacherange', _warmcache)
+            return tr
 
     repo.__class__ = obshashrepo
 
@@ -570,6 +702,7 @@ def _obshashrange_v0(repo, ranges):
         if maxrev is not None:
             repo.stablerange.warmup(repo, upto=maxrev)
     result = []
+    repo.obsstore.rangeobshashcache.update(repo)
     for r in ranges:
         if r[0] is None:
             result.append(node.wdirid)

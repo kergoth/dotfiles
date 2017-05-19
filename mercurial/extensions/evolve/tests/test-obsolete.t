@@ -1,3 +1,5 @@
+
+  $ . $TESTDIR/testlib/common.sh
   $ cat >> $HGRCPATH <<EOF
   > [web]
   > push_ssl = false
@@ -15,10 +17,6 @@
   >    hg add "$1"
   >    hg ci -m "add $1"
   > }
-  $ getid() {
-  >    hg id --hidden --debug -ir "$1"
-  > }
-
   $ alias qlog="hg log --template='{rev}\n- {node|short}\n'"
   $ hg init local
   $ cd local
@@ -276,7 +274,7 @@ Pushing again does not advertise extinct changesets
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   1 new obsolescence markers
-  (run 'hg heads .' to see heads, 'hg merge' to merge)
+  (run 'hg heads' to see heads, 'hg merge' to merge)
   $ qlog -R ../other-new
   6
   - 909a0fb57e5d
@@ -366,7 +364,7 @@ Test rollback support
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   1 new obsolescence markers
-  (run 'hg heads .' to see heads, 'hg merge' to merge)
+  (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg up -q 7 # to check rollback update behavior
   $ qlog
@@ -694,10 +692,12 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   [10] add obsol_c
   [2]
   $ hg olog
-  changeset:   2:4538525df7e2
-  user:        test
-  date:        Thu Jan 01 00:00:00 1970 +0000
-  summary:     add c
+  @  0d3f46688ccc (3) add obsol_c
+  |    rewritten by test (*) as 2033b4e49474 (glob)
+  |    rewritten by test (Thu Jan 01 00:00:00 1970 +0000) as 725c380fe99b
+  |
+  x  4538525df7e2 (2) add c
+       rewritten by test (Thu Jan 01 00:00:00 1970 +0000) as 0d3f46688ccc
   
 
 Check import reports new unstable changeset:

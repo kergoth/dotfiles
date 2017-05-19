@@ -112,12 +112,28 @@ Mercurial on default.), Older version of Mercurial are supportd on their respect
 Changelog
 =========
 
-6.1.1 - in progress
+6.2.1 - in progress
 -------------------
 
- - also enable the new cache (from 6.1.0) for 'evolve.server-only',
- - fix hg stack json output to be valid json
- - stack: now display if current revision is in bad state (issue5533)
+- prune: fix a crash related to color handling,
+- next: fix a crash related to color handling,
+
+6.2.0 -- 2017-05-18
+-------------------
+
+ - olog: a new command to inspect the obs-history of a changeset (hg-4.0 + only),
+ - topic: have thg display topic name if possible,
+ - blackbox: log more information about discovery and cache computation,
+ - obscache: more efficient update in the (rare) case of a transaction adding
+   markers without changesets,
+ - obscache: fix more cache invalidation propagation,
+ - obscache: also enable the new cache (from 6.1.0) for 'evolve.server-only',
+ - obshashrange-cache: update incrementally in the (common) case of a
+   transaction not affecting existing range,
+ - obshashrange-cache: keep the cache warm after each transaction,
+ - topic: now requires Mercurial 4.0 or above,
+ - stack: now display if current revision is in bad state (issue5533),
+ - stack: fix json output to be valid json.
 
 6.1.0 -- 2017-05-03
 -------------------

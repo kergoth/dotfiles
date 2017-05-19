@@ -7,24 +7,41 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
-import hashlib
-import struct
-import weakref
 import errno
+import hashlib
+import os
+import struct
+import time
+import weakref
 
 from mercurial import (
+    error,
     localrepo,
     obsolete,
     phases,
+    pycompat,
     node,
     util,
 )
+
+from mercurial.i18n import _
 
 from . import (
     exthelper,
 )
 
 eh = exthelper.exthelper()
+
+# prior to hg-4.2 there are not util.timer
+if util.safehasattr(util, 'timer'):
+    timer = util.timer
+elif util.safehasattr(time, "perf_counter"):
+    timer = time.perf_counter
+elif getattr(pycompat, 'osname', os.name) == 'nt':
+    timer = time.clock
+else:
+    timer = time.time
+
 
 try:
     obsstorefilecache = localrepo.localrepository.obsstore
@@ -76,91 +93,235 @@ def obsstorewithcache(orig, repo):
             except (OSError, IOError) as e:
                 if e.errno != errno.ENOENT:
                     raise
-            key = hashlib.sha1(keydata).digest()
+            if keydata:
+                key = hashlib.sha1(keydata).digest()
+            else:
+                # reusing an existing "empty" value make it easier to define a
+                # default cachekey for 'no data'.
+                key = node.nullid
             return obsstoresize, key
 
     obsstore.__class__ = cachekeyobsstore
 
     return obsstore
 
-emptykey = (node.nullrev, node.nullid, 0, 0, node.nullid)
+# XXX copied as is from Mercurial 4.2 and added the "offset" parameters
+@util.nogc
+def _readmarkers(data, offset=None):
+    """Read and enumerate markers from raw data"""
+    off = 0
+    diskversion = struct.unpack('>B', data[off:off + 1])[0]
+    if offset is None:
+        off += 1
+    else:
+        assert 1 <= offset
+        off = offset
+    if diskversion not in obsolete.formats:
+        raise error.Abort(_('parsing obsolete marker: unknown version %r')
+                          % diskversion)
+    return diskversion, obsolete.formats[diskversion][0](data, off)
 
-def getcachekey(repo):
-    """get a cache key covering the changesets and obsmarkers content
+def markersfrom(obsstore, byteoffset, firstmarker):
+    if not firstmarker:
+        return list(obsstore)
+    elif '_all' in vars(obsstore):
+        # if the data are in memory, just use that
+        return obsstore._all[firstmarker:]
+    else:
+        obsdata = obsstore.svfs.tryread('obsstore')
+        return _readmarkers(obsdata, byteoffset)[1]
 
-    IT contains the following data. Combined with 'upgradeneeded' it allows to
-    do iterative upgrade for cache depending of theses two data.
 
-    The cache key parts are"
-    - tip-rev,
-    - tip-node,
-    - obsstore-length (nb markers),
-    - obsstore-file-size (in bytes),
-    - obsstore "cache key"
+class dualsourcecache(object):
+    """An abstract class for cache that needs both changelog and obsstore
+
+    This class handle the tracking of changelog and obsstore update. It provide
+    data to performs incremental update (see the 'updatefrom' function for
+    details).  This class can also detect stripping of the changelog or the
+    obsstore and can reset the cache in this cache (see the 'clear' function
+    for details).
     """
-    assert repo.filtername is None
-    cl = repo.changelog
-    index, key = repo.obsstore.cachekey()
-    tiprev = len(cl) - 1
-    return (tiprev,
-            cl.node(tiprev),
-            len(repo.obsstore),
-            index,
-            key)
 
-def upgradeneeded(repo, key):
-    """return (valid, start-rev, start-obs-idx)
-
-    'valid': is "False" if older cache value needs invalidation,
-
-    'start-rev': first revision not in the cache. None if cache is up to date,
-
-    'start-obs-idx': index of the first obs-markers not in the cache. None is
-                     up to date.
-    """
-
-    # XXX ideally, this function would return a bounded amount of changeset and
-    # obsmarkers and the associated new cache key. Otherwise we are exposed to
-    # a race condition between the time the cache is updated and the new cache
-    # key is computed. (however, we do not want to compute the full new cache
-    # key in all case because we want to skip reading the obsstore content. We
-    # could have a smarter implementation here.
+    # default key used for an empty cache
     #
-    # In pratice the cache is only updated after each transaction within a
-    # lock. So we should be fine. We could enforce this with a new repository
-    # requirement (or fix the race, that is not too hard).
-    invalid = (False, 0, 0)
-    if key is None:
-        return invalid
+    # The cache key covering the changesets and obsmarkers content
+    #
+    # The cache key parts are:
+    # - tip-rev,
+    # - tip-node,
+    # - obsstore-length (nb markers),
+    # - obsstore-file-size (in bytes),
+    # - obsstore "cache key"
+    emptykey = (node.nullrev, node.nullid, 0, 0, node.nullid)
+    _cachename = None # used for error message
 
-    ### Is the cache valid ?
-    keytiprev, keytipnode, keyobslength, keyobssize, keyobskey = key
-    # check for changelog strip
-    cl = repo.changelog
-    tiprev = len(cl) - 1
-    if (tiprev < keytiprev
-            or cl.node(keytiprev) != keytipnode):
-        return invalid
-    # check for obsstore strip
-    obssize, obskey = repo.obsstore.cachekey(index=keyobssize)
-    if obskey != keyobskey:
-        return invalid
+    def __init__(self):
+        super(dualsourcecache, self).__init__()
+        self._cachekey = None
 
-    ### cache is valid, is there anything to update
+    def _updatefrom(self, repo, revs, obsmarkers):
+        """override this method to update your cache data incrementally
 
-    # any new changesets ?
-    startrev = None
-    if keytiprev < tiprev:
-        startrev = keytiprev + 1
+        revs:      list of new revision in the changelog
+        obsmarker: list of new obsmarkers in the obsstore
+        """
+        raise NotImplementedError
 
-    # any new markers
-    startidx = None
-    if keyobssize < obssize:
-        startidx = keyobslength
+    def clear(self, reset=False):
+        """invalidate the cache content
 
-    return True, startrev, startidx
+        if 'reset' is passed, we detected a strip and the cache will have to be
+        recomputed.
+        """
+        # /!\ IMPORTANT /!\
+        # You must overide this method to actually
+        if reset:
+            self._cachekey = self.emptykey if reset else None
+        else:
+            self._cachekey = None
 
-class obscache(object):
+    def load(self, repo):
+        """Load data from disk
+
+        Do not forget to restore the "cachekey" attribute while doing so.
+        """
+        raise NotImplementedError
+
+    # Useful public function (no need to override them)
+
+    def uptodate(self, repo):
+        """return True if the cache content is up to date False otherwise
+
+        This method can be used to detect of the cache is lagging behind new
+        data in either changelog or obsstore.
+        """
+        if self._cachekey is None:
+            self.load(repo)
+        status = self._checkkey(repo.changelog, repo.obsstore)
+        return (status is not None
+                and status[0] == self._cachekey[0] # tiprev
+                and status[1] == self._cachekey[3]) # obssize
+
+    def update(self, repo):
+        """update the cache with new repository data
+
+        The update will be incremental when possible"""
+        repo = repo.unfiltered()
+        # If we do not have any data, try loading from disk
+        if self._cachekey is None:
+            self.load(repo)
+
+        assert repo.filtername is None
+        cl = repo.changelog
+
+        upgrade = self._upgradeneeded(repo)
+        if upgrade is None:
+            return
+
+        reset, revs, obsmarkers, obskeypair = upgrade
+        if reset or self._cachekey is None:
+            repo.ui.log('evoext-cache', 'strip detected, %s cache reset\n' % self._cachename)
+            self.clear(reset=True)
+
+        starttime = timer()
+        self._updatefrom(repo, revs, obsmarkers)
+        duration = timer() - starttime
+        repo.ui.log('evoext-cache', 'updated %s in %.4f seconds (%sr, %so)\n',
+                    self._cachename, duration, len(revs), len(obsmarkers))
+
+        # update the key from the new data
+        key = list(self._cachekey)
+        if revs:
+            key[0] = len(cl) - 1
+            key[1] = cl.node(key[0])
+        if obsmarkers:
+            key[2] += len(obsmarkers)
+            key[3], key[4] = obskeypair
+        self._cachekey = tuple(key)
+
+    # from here, there are internal function only
+
+    def _checkkey(self, changelog, obsstore):
+        """internal function"""
+        key = self._cachekey
+        if key is None:
+            return None
+
+        ### Is the cache valid ?
+        keytiprev, keytipnode, keyobslength, keyobssize, keyobskey = key
+        # check for changelog strip
+        tiprev = len(changelog) - 1
+        if (tiprev < keytiprev
+                or changelog.node(keytiprev) != keytipnode):
+            return None
+        # check for obsstore strip
+        obssize, obskey = obsstore.cachekey(index=keyobssize)
+        if obskey != keyobskey:
+            return None
+        if obssize != keyobssize:
+            # we want to return the obskey for the new size
+            __, obskey = obsstore.cachekey(index=obssize)
+        return tiprev, obssize, obskey
+
+    def _upgradeneeded(self, repo):
+        """return (valid, start-rev, start-obs-idx)
+
+        'valid': is "False" if older cache value needs invalidation,
+
+        'start-rev': first revision not in the cache. None if cache is up to date,
+
+        'start-obs-idx': index of the first obs-markers not in the cache. None is
+                         up to date.
+        """
+
+        # We need to ensure we use the same changelog and obsstore through the
+        # processing. Otherwise some invalidation could update the object and their
+        # content after we computed the cache key.
+        cl = repo.changelog
+        obsstore = repo.obsstore
+        key = self._cachekey
+
+        reset = False
+
+        status = self._checkkey(cl, obsstore)
+        if status is None:
+            reset = True
+            key = self.emptykey
+            obssize, obskey = obsstore.cachekey()
+            tiprev = len(cl) - 1
+        else:
+            tiprev, obssize, obskey = status
+
+        keytiprev, keytipnode, keyobslength, keyobssize, keyobskey = key
+
+        if not reset and keytiprev == tiprev and keyobssize == obssize:
+            return None # nothing to upgrade
+
+        ### cache is valid, is there anything to update
+
+        # any new changesets ?
+        revs = ()
+        if keytiprev < tiprev:
+            revs = list(cl.revs(start=keytiprev + 1, stop=tiprev))
+
+        # any new markers
+        markers = ()
+        if keyobssize < obssize:
+            # XXX Three are a small race change here. Since the obsstore might have
+            # move forward between the time we computed the cache key and we access
+            # the data. To fix this we need so "up to" argument when fetching the
+            # markers here. Otherwise we might return more markers than covered by
+            # the cache key.
+            #
+            # In pratice the cache is only updated after each transaction within a
+            # lock. So we should be fine. We could enforce this with a new repository
+            # requirement (or fix the race, that is not too hard).
+            markers = markersfrom(obsstore, keyobssize, keyobslength)
+
+        return reset, revs, markers, (obssize, obskey)
+
+
+class obscache(dualsourcecache):
     """cache the "does a rev" is the precursors of some obsmarkers data
 
     This is not directly holding the "is this revision obsolete" information,
@@ -197,16 +358,12 @@ class obscache(object):
     _filepath = 'cache/evoext-obscache-00'
     _headerformat = '>q20sQQ20s'
 
+    _cachename = 'evo-ext-obscache' # used for error message
+
     def __init__(self, repo):
-        self._vfs = repo.vfs
-        # The cache key parts are"
-        # - tip-rev,
-        # - tip-node,
-        # - obsstore-length (nb markers),
-        # - obsstore-file-size (in bytes),
-        # - obsstore "cache key"
-        self._cachekey = None
+        super(obscache, self).__init__()
         self._ondiskkey = None
+        self._vfs = repo.vfs
         self._data = bytearray()
 
     def get(self, rev):
@@ -215,90 +372,56 @@ class obscache(object):
         Make sure the cache has been updated to match the repository content before using it"""
         return self._data[rev]
 
-    def clear(self):
+    def clear(self, reset=False):
         """invalidate the cache content"""
-        self._cachekey = None
+        super(obscache, self).clear(reset=reset)
         self._data = bytearray()
 
-    def uptodate(self, repo):
-        if self._cachekey is None:
-            self.load(repo)
-        valid, startrev, startidx = upgradeneeded(repo, self._cachekey)
-        return (valid and startrev is None and startidx is None)
+    def _updatefrom(self, repo, revs, obsmarkers):
+        if revs:
+            self._updaterevs(repo, revs)
+        if obsmarkers:
+            self._updatemarkers(repo, obsmarkers)
 
-    def update(self, repo):
-        """Iteratively update the cache with new repository data"""
-        # If we do not have any data, try loading from disk
-        if self._cachekey is None:
-            self.load(repo)
+    def _updaterevs(self, repo, revs):
+        """update the cache with new revisions
 
-        valid, startrev, startidx = upgradeneeded(repo, self._cachekey)
-        if not valid:
-            self.clear()
+        Newly added changeset might be affected by obsolescence markers
+        we already have locally. So we needs to have some global
+        knowledge about the markers to handle that question.
 
-        if startrev is None and startidx is None:
-            return
+        Right now this requires parsing all markers in the obsstore. We could
+        imagine using various optimisation (eg: another cache, network
+        exchange, etc).
 
-        # process the new changesets
+        A possible approach to this is to build a set of all node used as
+        precursors in `obsstore._obscandidate`. If markers are not loaded yet,
+        we could initialize it by doing a quick scan through the obsstore data
+        and filling a (pre-sized) set. Doing so would be much faster than
+        parsing all the obsmarkers since we would access less data, not create
+        any object beside the nodes and not have to decode any complex data.
+
+        For now we stick to the simpler approach of paying the
+        performance cost on new changesets.
+        """
+        node = repo.changelog.node
+        succs = repo.obsstore.successors
+        for r in revs:
+            if node(r) in succs:
+                val = 1
+            else:
+                val = 0
+            self._data.append(val)
         cl = repo.changelog
-        if startrev is not None:
-            node = cl.node
-            # Note:
-            #
-            #  Newly added changeset might be affected by obsolescence markers
-            #  we already have locally. So we needs to have soem global
-            #  knowledge about the markers to handle that question. Right this
-            #  requires parsing all markers in the obsstore. However, we could
-            #  imagine using various optimisation (eg: bloom filter, other on
-            #  disk cache) to remove this full parsing.
-            #
-            #  For now we stick to the simpler approach or paying the
-            #  performance cost on new changesets.
-            succs = repo.obsstore.successors
-            for r in cl.revs(startrev):
-                if node(r) in succs:
-                    val = 1
-                else:
-                    val = 0
-                self._data.append(val)
         assert len(self._data) == len(cl), (len(self._data), len(cl))
 
-        # process the new obsmarkers
-        if startidx is not None:
-            rev = cl.nodemap.get
-            markers = repo.obsstore._all
-            # Note:
-            #
-            #   There are no actually needs to load the full obsstore here,
-            #   since we only read the latest ones.  We do it for simplicity in
-            #   the first implementation. Loading the full obsstore has a
-            #   performance cost and should go away in this case too. We have
-            #   two simples options for that:
-            #
-            #   1) provide and API to start reading markers from a byte offset
-            #      (we have that data in the cache key)
-            #
-            #   2) directly update the cache at a lower level, in the code
-            #      responsible for adding a markers.
-            #
-            #   Option 2 is probably a bit more invasive, but more solid on the long run
-
-            for i in xrange(startidx, len(repo.obsstore)):
-                r = rev(markers[i][0])
-                # If markers affect a newly added nodes, it would have been
-                # caught in the previous loop, (so we skip < startrev)
-                if r is not None and (startrev is None or r < startrev):
-                    self._data[r] = 1
-
-        assert repo._currentlock(repo._lockref) is not None
-        # XXX note that there are a potential race condition here, since the
-        # repo "might" have changed side the cache update above. However, this
-        # code will only be running in a lock so we ignore the issue for now.
-        #
-        # To work around this, 'upgradeneeded' should return a bounded amount
-        # of changeset and markers to read with their associated cachekey. see
-        # 'upgradeneeded' for detail.
-        self._cachekey = getcachekey(repo)
+    def _updatemarkers(self, repo, obsmarkers):
+        """update the cache with new markers"""
+        rev = repo.changelog.nodemap.get
+        for m in obsmarkers:
+            r = rev(m[0])
+            if r is not None:
+                self._data[r] = 1
 
     def save(self, repo):
         """save the data to disk"""
@@ -319,7 +442,7 @@ class obscache(object):
 
         data = repo.vfs.tryread(self._filepath)
         if not data:
-            self._cachekey = emptykey
+            self._cachekey = self.emptykey
             self._data = bytearray()
         else:
             headersize = struct.calcsize(self._headerformat)
@@ -339,7 +462,7 @@ def _computeobsoleteset(orig, repo):
     if notpublic:
         obscache = repo.obsstore.obscache
         # Since we warm the cache at the end of every transaction, the cache
-        # should be up to date. However a non-enabled client might have touced
+        # should be up to date. However a non-enabled client might have touched
         # the repository.
         #
         # Updating the cache without a lock is sloppy, so we fallback to the
@@ -348,17 +471,18 @@ def _computeobsoleteset(orig, repo):
         #
         # With the current implementation updating the cache will requires to
         # load the obsstore anyway. Once loaded, hitting the obsstore directly
-        # will be about as fast..
+        # will be about as fast...
         if not obscache.uptodate(repo):
             if repo.currenttransaction() is None:
-                repo.ui.log('evoext-obscache',
+                repo.ui.log('evoext-cache',
                             'obscache is out of date, '
                             'falling back to slower obsstore version\n')
                 repo.ui.debug('obscache is out of date')
                 return orig(repo)
             else:
-                # If a transaction is open, it is worthwhile to update and use the
-                # cache as it will be written on disk when the transaction close.
+                # If a transaction is open, it is worthwhile to update and use
+                # the cache, the lock prevent race and it will be written on
+                # disk when the transaction close.
                 obscache.update(repo)
         isobs = obscache.get
     for r in notpublic:
@@ -381,6 +505,7 @@ def setupcache(ui, repo):
         def destroyed(self):
             if 'obsstore' in vars(self):
                 self.obsstore.obscache.clear()
+            super(obscacherepo, self).destroyed()
 
         def transaction(self, *args, **kwargs):
             tr = super(obscacherepo, self).transaction(*args, **kwargs)
@@ -391,11 +516,10 @@ def setupcache(ui, repo):
                 if repo is None:
                     return
                 repo = repo.unfiltered()
-                # As pointed in 'obscache.update', we could have the
-                # changelog and the obsstore in charge of updating the
-                # cache when new items goes it. The tranaction logic would
-                # then only be involved for the 'pending' and final saving
-                # logic.
+                # As pointed in 'obscache.update', we could have the changelog
+                # and the obsstore in charge of updating the cache when new
+                # items goes it. The tranaction logic would then only be
+                # involved for the 'pending' and final writing on disk.
                 self.obsstore.obscache.update(repo)
                 self.obsstore.obscache.save(repo)
 

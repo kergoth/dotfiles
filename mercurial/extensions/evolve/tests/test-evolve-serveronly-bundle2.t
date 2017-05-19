@@ -127,7 +127,7 @@ Pull
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   2 new obsolescence markers
-  (run 'hg heads' to see heads, 'hg merge' to merge)
+  (run 'hg heads' to see heads)
   $ cat ../errors.log
   $ hg -R ../other pull
   pulling from http://localhost:$HGPORT/

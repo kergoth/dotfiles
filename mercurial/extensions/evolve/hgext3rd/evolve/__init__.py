@@ -148,6 +148,7 @@ from . import (
     obsexchange,
     safeguard,
     utility,
+    obshistory
 )
 
 __version__ = metadata.__version__
@@ -161,6 +162,15 @@ sha1re = re.compile(r'\b[0-9a-f]{6,40}\b')
 commandopt = 'allnewcommands'
 
 obsexcmsg = utility.obsexcmsg
+
+colortable = {'evolve.node': 'yellow',
+              'evolve.user': 'green',
+              'evolve.rev': 'blue',
+              'evolve.short_description': '',
+              'evolve.date': 'cyan',
+              'evolve.current_rev': 'bold',
+              'evolve.verb': '',
+              }
 
 _pack = struct.pack
 _unpack = struct.unpack
@@ -180,6 +190,7 @@ eh.merge(obsexchange.eh)
 eh.merge(checkheads.eh)
 eh.merge(safeguard.eh)
 eh.merge(obscache.eh)
+eh.merge(obshistory.eh)
 uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
 reposetup = eh.final_reposetup
@@ -269,9 +280,6 @@ def _installalias(ui):
         ui.setconfig('alias', 'pstatus', 'status --rev .^', 'evolve')
     if ui.config('alias', 'pdiff', None) is None:
         ui.setconfig('alias', 'pdiff', 'diff --rev .^', 'evolve')
-    if ui.config('alias', 'olog', None) is None:
-        ui.setconfig('alias', 'olog', "log -r 'precursors(.)' --hidden",
-                     'evolve')
     if ui.config('alias', 'odiff', None) is None:
         ui.setconfig('alias', 'odiff',
                      "diff --hidden --rev 'limit(precursors(.),1)' --rev .",
@@ -1881,7 +1889,7 @@ def divergentdata(ctx):
     raise error.Abort("base of divergent changeset %s not found" % ctx,
                       hint='this case is not yet handled')
 
-shorttemplate = '[{rev}] {desc|firstline}\n'
+shorttemplate = "[{label('evolve.rev', rev)}] {desc|firstline}\n"
 
 @eh.command(
     '^previous',
@@ -2055,7 +2063,8 @@ def cmdnext(ui, repo, **opts):
                 result = _solveone(ui, repo, repo[aspchildren[0]], dryrunopt,
                                    False, lambda: None, category='unstable')
                 if not result:
-                    ui.status(_('working directory now at %s\n') % repo['.'])
+                    ui.status(_('working directory now at %s\n')
+                              % ui.label(str(repo['.']), 'evolve.node'))
                 return result
             return 1
         return result
@@ -2261,7 +2270,8 @@ def cmdprune(ui, repo, *revs, **opts):
                     repo._bookmarks[bookactive] = newnode.node()
                     repo._bookmarks.recordchange(tr)
                 commands.update(ui, repo, newnode.rev())
-                ui.status(_('working directory now at %s\n') % newnode)
+                ui.status(_('working directory now at %s\n')
+                          % ui.label(str(newnode), 'evolve.node'))
                 if movebookmark:
                     bookmarksmod.activate(repo, bookactive)
 

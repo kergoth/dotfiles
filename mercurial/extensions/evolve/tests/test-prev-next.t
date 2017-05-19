@@ -47,6 +47,9 @@ hg next should move active bookmark
   $ hg bookmarks
      mark                      1:6e742c9127b3
    * mark2                     0:a154386e50d1
+  $ hg next --dry-run --color=debug
+  hg update 1;
+  [[evolve.rev|1]] added b
   $ hg next
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   [1] added b
@@ -147,6 +150,9 @@ no children of any kind
   $ hg next --evolve
   no children
   [1]
+  $ hg prev --dry-run --color=debug
+  hg update 1;
+  [[evolve.rev|1]] added b
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [1] added b
@@ -164,10 +170,13 @@ some aspiring children
   atop:[3] added b (2)
   hg rebase -r 4e26ef31f919 -d 9ad178109a19
   working directory now at 9ad178109a19
-  $ hg next --evolve
-  move:[2] added c
-  atop:[3] added b (2)
-  working directory now at e3b6d5df389b
+
+(add color output for smoke testing)
+
+  $ hg next --evolve --color debug
+  move:[[evolve.rev|2]] added c
+  atop:[[evolve.rev|3]] added b (2)
+  [ ui.status|working directory now at [evolve.node|e3b6d5df389b]]
 
 next with ambiguity
 

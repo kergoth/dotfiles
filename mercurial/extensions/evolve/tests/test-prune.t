@@ -71,10 +71,12 @@ prune leaving instability behind
 
 pruning multiple changeset at once
 
-  $ hg prune 2:
-  0 files updated, 0 files merged, 3 files removed, 0 files unresolved
-  working directory now at 1f0dee641bb7
-  2 changesets pruned
+(add color output to test it does not crash)
+
+  $ hg prune 2: --color debug
+  [ ui.status|0 files updated, 0 files merged, 3 files removed, 0 files unresolved]
+  [ ui.status|working directory now at [evolve.node|1f0dee641bb7]]
+  [ ui.status|2 changesets pruned]
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'user': 'blah'}
   7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'user': 'test'} (glob)
