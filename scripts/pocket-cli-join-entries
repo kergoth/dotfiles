@@ -18,7 +18,7 @@ if content:
 
 id_pat = re.compile(r'^([0-9]+) - (.*)')
 for entry in entries:
-    num, url, time = None, None, None
+    num, url, time, desc = None, None, None, None
     for line in entry:
         if line.startswith('URL: '):
             url = line[5:]
