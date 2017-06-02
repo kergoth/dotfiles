@@ -72,97 +72,6 @@ eh = exthelper.exthelper()
 eh.merge(stablerange.eh)
 obsexcmsg = utility.obsexcmsg
 
-##########################################
-###  trigger discovery during exchange ###
-##########################################
-
-@eh.wrapfunction(exchange, '_pushdiscoveryobsmarkers')
-def _pushdiscoveryobsmarkers(orig, pushop):
-    if (obsolete.isenabled(pushop.repo, obsolete.exchangeopt)
-        and pushop.repo.obsstore
-        and 'obsolete' in pushop.remote.listkeys('namespaces')):
-        repo = pushop.repo
-        obsexcmsg(repo.ui, "computing relevant nodes\n")
-        revs = list(repo.revs('::%ln', pushop.futureheads))
-        unfi = repo.unfiltered()
-        cl = unfi.changelog
-        if not pushop.remote.capable('_evoext_obshash_0'):
-            # do not trust core yet
-            # return orig(pushop)
-            nodes = [cl.node(r) for r in revs]
-            if nodes:
-                obsexcmsg(repo.ui, "computing markers relevant to %i nodes\n"
-                                   % len(nodes))
-                pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
-            else:
-                obsexcmsg(repo.ui, "markers already in sync\n")
-                pushop.outobsmarkers = []
-                pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
-            return
-
-        common = []
-        missing = None
-        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
-                           % len(revs))
-        commonrevs = list(unfi.revs('::%ln', pushop.outgoing.commonheads))
-        if _canobshashrange(repo, pushop.remote):
-            missing = findmissingrange(pushop.ui, unfi, pushop.remote,
-                                       commonrevs)
-        else:
-            common = findcommonobsmarkers(pushop.ui, unfi, pushop.remote,
-                                          commonrevs)
-        if missing is None:
-            revs = list(unfi.revs('%ld - (::%ln)', revs, common))
-            nodes = [cl.node(r) for r in revs]
-        else:
-            revs = list(repo.revs('only(%ln, %ln)', pushop.futureheads,
-                        pushop.outgoing.commonheads))
-            nodes = [cl.node(r) for r in revs]
-            nodes += missing
-
-        if nodes:
-            obsexcmsg(repo.ui, "computing markers relevant to %i nodes\n"
-                               % len(nodes))
-            pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
-        else:
-            obsexcmsg(repo.ui, "markers already in sync\n")
-            pushop.outobsmarkers = []
-
-@eh.extsetup
-def _installobsmarkersdiscovery(ui):
-    olddisco = exchange.pushdiscoverymapping['obsmarker']
-
-    def newdisco(pushop):
-        _pushdiscoveryobsmarkers(olddisco, pushop)
-    exchange.pushdiscoverymapping['obsmarker'] = newdisco
-
-def buildpullobsmarkersboundaries(pullop, bundle2=True):
-    """small function returning the argument for pull markers call
-    may to contains 'heads' and 'common'. skip the key for None.
-
-    It is a separed function to play around with strategy for that."""
-    repo = pullop.repo
-    remote = pullop.remote
-    unfi = repo.unfiltered()
-    revs = unfi.revs('::(%ln - null)', pullop.common)
-    boundaries = {'heads': pullop.pulledsubset}
-    if not revs: # nothing common
-        boundaries['common'] = [node.nullid]
-        return boundaries
-
-    if bundle2 and _canobshashrange(repo, remote):
-        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
-                  % len(revs))
-        boundaries['missing'] = findmissingrange(repo.ui, repo, pullop.remote,
-                                                 revs)
-    elif remote.capable('_evoext_obshash_0'):
-        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
-                           % len(revs))
-        boundaries['common'] = findcommonobsmarkers(repo.ui, repo, remote, revs)
-    else:
-        boundaries['common'] = [node.nullid]
-    return boundaries
-
 ##################################
 ###  Code performing discovery ###
 ##################################
@@ -439,7 +348,7 @@ _reset = "DELETE FROM obshashrange;"
 
 class _obshashcache(obscache.dualsourcecache):
 
-    _schemaversion = 1
+    _schemaversion = 2
 
     _cachename = 'evo-ext-obshashrange' # used for error message
 
@@ -523,12 +432,17 @@ class _obshashcache(obscache.dualsourcecache):
             con = self._con
             if con is not None:
                 con.execute(_reset)
-            # rewarm the whole cache
+            # rewarm key revisions
+            #
+            # (The current invalidation is too wide, but rewarming every single
+            # revision is quite costly)
+            newrevs = []
             stop = self._cachekey[0] # tiprev
-            if revs:
-                stop = max(revs)
-            if 0 <= stop:
-                revs = repo.changelog.revs(stop=stop)
+            for h in repo.filtered('immutable').changelog.headrevs():
+                if h <= stop:
+                    newrevs.append(h)
+            newrevs.extend(revs)
+            revs = newrevs
 
         # warm the cache for the new revs
         for r in revs:
@@ -672,7 +586,12 @@ def setupcache(ui, repo):
                 repo = reporef()
                 if repo is None:
                     return
-                if not repo.ui.configbool('experimental', 'obshashrange', False):
+                hasobshashrange = repo.ui.configbool('experimental',
+                                                     'obshashrange', False)
+                hascachewarm = repo.ui.configbool('experimental',
+                                                  'obshashrange.warm-cache',
+                                                  True)
+                if not (hasobshashrange and hascachewarm):
                     return
                 repo = repo.unfiltered()
                 # As pointed in 'obscache.update', we could have the changelog
@@ -783,6 +702,9 @@ def obshashrange_extsetup(ui):
 # Dash computed from a given changesets using all markers relevant to it and
 # the obshash of its parents.  This is similar to what happend for changeset
 # node where the parent is used in the computation
+
+def _canobshashtree(repo, remote):
+    return remote.capable('_evoext_obshash_0')
 
 @eh.command(
     'debugobsrelsethashtree',
@@ -915,3 +837,126 @@ def obshash_extsetup(ui):
     def newcap(repo, proto):
         return _obshash_capabilities(oldcap, repo, proto)
     wireproto.commands['capabilities'] = (newcap, args)
+
+##########################################
+###  trigger discovery during exchange ###
+##########################################
+
+def _dopushmarkers(pushop):
+    return (# we have any markers to push
+            pushop.repo.obsstore
+            # exchange of obsmarkers is enabled locally
+            and obsolete.isenabled(pushop.repo, obsolete.exchangeopt)
+            # remote server accept markers
+            and 'obsolete' in pushop.remote.listkeys('namespaces'))
+
+def _pushobshashrange(pushop, commonrevs):
+    repo = pushop.repo.unfiltered()
+    remote = pushop.remote
+    missing = findmissingrange(pushop.ui, repo, remote, commonrevs)
+    missing += pushop.outgoing.missing
+    return missing
+
+def _pushobshashtree(pushop, commonrevs):
+    repo = pushop.repo.unfiltered()
+    remote = pushop.remote
+    node = repo.changelog.node
+    common = findcommonobsmarkers(pushop.ui, repo, remote, commonrevs)
+    revs = list(repo.revs('only(%ln, %ln)', pushop.futureheads, common))
+    return [node(r) for r in revs]
+
+# available discovery method, first valid is used
+# tuple (canuse, perform discovery))
+obsdiscoveries = [
+    (_canobshashrange, _pushobshashrange),
+    (_canobshashtree, _pushobshashtree),
+]
+
+obsdiscovery_skip_message = """\
+(skipping discovery of obsolescence markers, will exchange everything)
+(controled by 'experimental.evolution.obsdiscovery' configuration)
+"""
+
+def usediscovery(repo):
+    return repo.ui.configbool('experimental', 'evolution.obsdiscovery', True)
+
+@eh.wrapfunction(exchange, '_pushdiscoveryobsmarkers')
+def _pushdiscoveryobsmarkers(orig, pushop):
+    if _dopushmarkers(pushop):
+        repo = pushop.repo
+        remote = pushop.remote
+        obsexcmsg(repo.ui, "computing relevant nodes\n")
+        revs = list(repo.revs('::%ln', pushop.futureheads))
+        unfi = repo.unfiltered()
+
+        if not usediscovery(repo):
+            # discovery disabled by user
+            repo.ui.status(obsdiscovery_skip_message)
+            return orig(pushop)
+
+        # look for an obs-discovery protocol we can use
+        discovery = None
+        for candidate in obsdiscoveries:
+            if candidate[0](repo, remote):
+                discovery = candidate[1]
+                break
+
+        if discovery is None:
+            # no discovery available, rely on core to push all relevants
+            # obs markers.
+            return orig(pushop)
+
+        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
+                           % len(revs))
+        commonrevs = list(unfi.revs('::%ln', pushop.outgoing.commonheads))
+        # find the nodes where the relevant obsmarkers mismatches
+        nodes = discovery(pushop, commonrevs)
+
+        if nodes:
+            obsexcmsg(repo.ui, "computing markers relevant to %i nodes\n"
+                               % len(nodes))
+            pushop.outobsmarkers = repo.obsstore.relevantmarkers(nodes)
+        else:
+            obsexcmsg(repo.ui, "markers already in sync\n")
+            pushop.outobsmarkers = []
+
+@eh.extsetup
+def _installobsmarkersdiscovery(ui):
+    olddisco = exchange.pushdiscoverymapping['obsmarker']
+
+    def newdisco(pushop):
+        _pushdiscoveryobsmarkers(olddisco, pushop)
+    exchange.pushdiscoverymapping['obsmarker'] = newdisco
+
+def buildpullobsmarkersboundaries(pullop, bundle2=True):
+    """small function returning the argument for pull markers call
+    may to contains 'heads' and 'common'. skip the key for None.
+
+    It is a separed function to play around with strategy for that."""
+    repo = pullop.repo
+    remote = pullop.remote
+    unfi = repo.unfiltered()
+    revs = unfi.revs('::(%ln - null)', pullop.common)
+    boundaries = {'heads': pullop.pulledsubset}
+    if not revs: # nothing common
+        boundaries['common'] = [node.nullid]
+        return boundaries
+
+    if not usediscovery(repo):
+        # discovery disabled by users.
+        repo.ui.status(obsdiscovery_skip_message)
+        boundaries['common'] = [node.nullid]
+        return boundaries
+
+    if bundle2 and _canobshashrange(repo, remote):
+        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
+                  % len(revs))
+        boundaries['missing'] = findmissingrange(repo.ui, repo, pullop.remote,
+                                                 revs)
+    elif remote.capable('_evoext_obshash_0'):
+        obsexcmsg(repo.ui, "looking for common markers in %i nodes\n"
+                           % len(revs))
+        boundaries['common'] = findcommonobsmarkers(repo.ui, repo, remote, revs)
+    else:
+        boundaries['common'] = [node.nullid]
+    return boundaries

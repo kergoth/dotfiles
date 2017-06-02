@@ -24,12 +24,17 @@ except ImportError:
 import sys
 import json
 
-from mercurial import cmdutil
 from mercurial.i18n import _
 from mercurial import lock as lockmod
 from mercurial.node import bin, nullid
+from mercurial import registrar
 from mercurial import util
 
+if util.safehasattr(registrar, 'command'):
+    commandfunc = registrar.command
+else: # compat with hg < 4.3
+    from mercurial import cmdutil
+    commandfunc = cmdutil.command
 
 #####################################################################
 ### Older format management                                       ###
@@ -75,7 +80,7 @@ def _obsdeserialize(flike):
     return rels
 
 cmdtable = {}
-command = cmdutil.command(cmdtable)
+command = commandfunc(cmdtable)
 @command('debugconvertobsolete', [], '')
 def cmddebugconvertobsolete(ui, repo):
     """import markers from an .hg/obsolete-relations file"""

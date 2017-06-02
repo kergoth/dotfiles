@@ -12,7 +12,7 @@ import time
 import contextlib
 
 from mercurial.i18n import _
-from mercurial import cmdutil
+from mercurial import registrar
 from mercurial import repair
 from mercurial import scmutil
 from mercurial import lock as lockmod
@@ -20,7 +20,12 @@ from mercurial import util
 from mercurial import commands
 
 cmdtable = {}
-command = cmdutil.command(cmdtable)
+
+if util.safehasattr(registrar, 'command'):
+    command = registrar.command(cmdtable)
+else: # compat with hg < 4.3
+    from mercurial import cmdutil
+    command = cmdutil.command(cmdtable)
 
 
 @contextlib.contextmanager

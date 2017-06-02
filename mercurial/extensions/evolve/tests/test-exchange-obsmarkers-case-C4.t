@@ -87,7 +87,7 @@ Implemented as the non-split version
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 a9c02d134f5b98acc74d1dc4eb28fd59f958a2bd
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 619b4d13bd9878f04d7208dcfcf1e89da826f6be
   35b1839966785d5703a01607229eea932db42f87 ddeb7b7a87378f59cecb36d5146df0092b6b3327
-  7f7f229b13a629a5b20581c6cb723f4e2ca54bed 58ef2e726c5bd89bceffb6243294b38eadbf3d60
+  7f7f229b13a629a5b20581c6cb723f4e2ca54bed 0ef78fef48a60c677f55ba6efa4126dab2d6caf2
   obshashrange
   ============
            rev         node        index         size        depth      obshash

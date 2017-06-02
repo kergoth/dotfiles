@@ -53,13 +53,13 @@ Test setup
   
 Actual test
 -----------
-  $ hg olog 4ae3a4151de9
+  $ hg obslog 4ae3a4151de9
   @  4ae3a4151de9 (3) A1
   |
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as 4ae3a4151de9 (glob)
+       rewritten by test (*) as 4ae3a4151de9 (glob)
   
-  $ hg olog 4ae3a4151de9 --no-graph -Tjson | python -m json.tool
+  $ hg obslog 4ae3a4151de9 --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [],
@@ -86,11 +86,11 @@ Actual test
           "debugobshistory.shortdescription": "A0"
       }
   ]
-  $ hg olog --hidden 471f378eab4c
+  $ hg obslog --hidden 471f378eab4c
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as 4ae3a4151de9 (glob)
+       rewritten by test (*) as 4ae3a4151de9 (glob)
   
-  $ hg olog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
+  $ hg obslog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [
@@ -173,11 +173,11 @@ Test setup
 Actual test
 -----------
 
-  $ hg olog 'desc(B0)' --hidden
+  $ hg obslog 'desc(B0)' --hidden
   x  0dec01379d3b (2) B0
-       pruned by test (*20*) (glob)
+       pruned by test (*) (glob)
   
-  $ hg olog 'desc(B0)' --hidden --no-graph -Tjson | python -m json.tool
+  $ hg obslog 'desc(B0)' --hidden --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [
@@ -195,10 +195,10 @@ Actual test
           "debugobshistory.shortdescription": "B0"
       }
   ]
-  $ hg olog 'desc(A0)'
+  $ hg obslog 'desc(A0)'
   @  471f378eab4c (1) A0
   
-  $ hg olog 'desc(A0)' --no-graph -Tjson | python -m json.tool
+  $ hg obslog 'desc(A0)' --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [],
@@ -306,11 +306,11 @@ Actual test
 -----------
 
 Check that debugobshistory on splitted commit show both targets
-  $ hg olog 471597cad322 --hidden
+  $ hg obslog 471597cad322 --hidden
   x  471597cad322 (1) A0
-       rewritten by test (*20*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
   
-  $ hg olog 471597cad322 --hidden --no-graph -Tjson | python -m json.tool
+  $ hg obslog 471597cad322 --hidden --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [
@@ -334,29 +334,56 @@ Check that debugobshistory on splitted commit show both targets
   ]
 Check that debugobshistory on the first successor after split show
 the revision plus the splitted one
-  $ hg olog 337fec4d2edc
+  $ hg obslog 337fec4d2edc
   o  337fec4d2edc (2) A0
   |
   x  471597cad322 (1) A0
-       rewritten by test (*20*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
   
-Check that debugobshistory on the second successor after split show
-the revision plus the splitted one
-  $ hg olog f257fde29c7a
-  @  f257fde29c7a (3) A0
-  |
-  x  471597cad322 (1) A0
-       rewritten by test (*20*) as 337fec4d2edc, f257fde29c7a (glob)
-  
-Check that debugobshistory on both successors after split show
-a coherent graph
-  $ hg olog 'f257fde29c7a+337fec4d2edc'
+With the all option, it should show the three changesets
+  $ hg obslog --all 337fec4d2edc
   o  337fec4d2edc (2) A0
   |
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten by test (*20*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+  
+Check that debugobshistory on the second successor after split show
+the revision plus the splitted one
+  $ hg obslog f257fde29c7a
+  @  f257fde29c7a (3) A0
+  |
+  x  471597cad322 (1) A0
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+  
+With the all option, it should show the three changesets
+  $ hg obslog f257fde29c7a --all
+  o  337fec4d2edc (2) A0
+  |
+  | @  f257fde29c7a (3) A0
+  |/
+  x  471597cad322 (1) A0
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+  
+Obslog with all option all should also works on the splitted commit
+  $ hg obslog -a 471597cad322 --hidden
+  o  337fec4d2edc (2) A0
+  |
+  | @  f257fde29c7a (3) A0
+  |/
+  x  471597cad322 (1) A0
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+  
+Check that debugobshistory on both successors after split show
+a coherent graph
+  $ hg obslog 'f257fde29c7a+337fec4d2edc'
+  o  337fec4d2edc (2) A0
+  |
+  | @  f257fde29c7a (3) A0
+  |/
+  x  471597cad322 (1) A0
+       rewritten by test (*) as 337fec4d2edc, f257fde29c7a (glob)
   
   $ hg update 471597cad322
   abort: hidden revision '471597cad322'!
@@ -520,11 +547,23 @@ Test setup
 Actual test
 -----------
 
-  $ hg olog de7290d8b885 --hidden
+  $ hg obslog de7290d8b885 --hidden
   x  de7290d8b885 (1) A0
-       rewritten by test (*20*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
   
-  $ hg olog de7290d8b885 --hidden --no-graph -Tjson | python -m json.tool
+  $ hg obslog de7290d8b885 --hidden --all
+  o  1ae8bc733a14 (4) A0
+  |
+  | o  337fec4d2edc (2) A0
+  |/
+  | @  c7f044602e9b (5) A0
+  |/
+  | o  f257fde29c7a (3) A0
+  |/
+  x  de7290d8b885 (1) A0
+       rewritten by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+  
+  $ hg obslog de7290d8b885 --hidden --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [
@@ -548,13 +587,13 @@ Actual test
           "debugobshistory.shortdescription": "A0"
       }
   ]
-  $ hg olog c7f044602e9b
+  $ hg obslog c7f044602e9b
   @  c7f044602e9b (5) A0
   |
   x  de7290d8b885 (1) A0
-       rewritten by test (*20*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
   
-  $ hg olog c7f044602e9b --no-graph -Tjson | python -m json.tool
+  $ hg obslog c7f044602e9b --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [],
@@ -585,7 +624,7 @@ Actual test
       }
   ]
 Check that debugobshistory on all heads show a coherent graph
-  $ hg olog 2::5
+  $ hg obslog 2::5
   o  1ae8bc733a14 (4) A0
   |
   | o  337fec4d2edc (2) A0
@@ -595,7 +634,19 @@ Check that debugobshistory on all heads show a coherent graph
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten by test (*20*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+  
+  $ hg obslog 5 --all
+  o  1ae8bc733a14 (4) A0
+  |
+  | o  337fec4d2edc (2) A0
+  |/
+  | @  c7f044602e9b (5) A0
+  |/
+  | o  f257fde29c7a (3) A0
+  |/
+  x  de7290d8b885 (1) A0
+       rewritten by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
   
   $ hg update de7290d8b885
   abort: hidden revision 'de7290d8b885'!
@@ -665,28 +716,48 @@ Test setup
 
 Check that debugobshistory on the first folded revision show only
 the revision with the target
-  $ hg olog --hidden 471f378eab4c
+  $ hg obslog --hidden 471f378eab4c
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as eb5a0daa2192 (glob)
+       rewritten by test (*) as eb5a0daa2192 (glob)
   
-Check that debugobshistory on the second folded revision show only
-the revision with the target
-  $ hg olog --hidden 0dec01379d3b
-  x  0dec01379d3b (2) B0
-       rewritten by test (*20*) as eb5a0daa2192 (glob)
-  
-Check that debugobshistory on the successor revision show a coherent
-graph
-  $ hg olog eb5a0daa2192
+Check that with all option, all changesets are shown
+  $ hg obslog --hidden --all 471f378eab4c
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten by test (*20*) as eb5a0daa2192 (glob)
+   /     rewritten by test (*) as eb5a0daa2192 (glob)
   |
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as eb5a0daa2192 (glob)
+       rewritten by test (*) as eb5a0daa2192 (glob)
   
-  $ hg olog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
+Check that debugobshistory on the second folded revision show only
+the revision with the target
+  $ hg obslog --hidden 0dec01379d3b
+  x  0dec01379d3b (2) B0
+       rewritten by test (*) as eb5a0daa2192 (glob)
+  
+Check that with all option, all changesets are shown
+  $ hg obslog --hidden --all 0dec01379d3b
+  @    eb5a0daa2192 (3) C0
+  |\
+  x |  0dec01379d3b (2) B0
+   /     rewritten by test (*) as eb5a0daa2192 (glob)
+  |
+  x  471f378eab4c (1) A0
+       rewritten by test (*) as eb5a0daa2192 (glob)
+  
+Check that debugobshistory on the successor revision show a coherent
+graph
+  $ hg obslog eb5a0daa2192
+  @    eb5a0daa2192 (3) C0
+  |\
+  x |  0dec01379d3b (2) B0
+   /     rewritten by test (*) as eb5a0daa2192 (glob)
+  |
+  x  471f378eab4c (1) A0
+       rewritten by test (*) as eb5a0daa2192 (glob)
+  
+  $ hg obslog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [],
@@ -815,12 +886,23 @@ Actual test
 -----------
 
 Check that debugobshistory on the divergent revision show both destinations
-  $ hg olog --hidden 471f378eab4c
+  $ hg obslog --hidden 471f378eab4c
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as 65b757b745b9 (glob)
-       rewritten by test (*20*) as fdf9bde5129a (glob)
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
   
-  $ hg olog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
+
+Check that with all option, every changeset is shown
+  $ hg obslog --hidden --all 471f378eab4c
+  @  65b757b745b9 (3) A2
+  |
+  | o  fdf9bde5129a (2) A1
+  |/
+  x  471f378eab4c (1) A0
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
+  
+  $ hg obslog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [
@@ -854,34 +936,55 @@ Check that debugobshistory on the divergent revision show both destinations
   ]
 Check that debugobshistory on the first diverged revision show the revision
 and the diverent one
-  $ hg olog fdf9bde5129a
+  $ hg obslog fdf9bde5129a
   o  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as 65b757b745b9 (glob)
-       rewritten by test (*20*) as fdf9bde5129a (glob)
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
   
-Check that debugobshistory on the second diverged revision show the revision
-and the diverent one
-  $ hg olog 65b757b745b9
-  @  65b757b745b9 (3) A2
-  |
-  x  471f378eab4c (1) A0
-       rewritten by test (*20*) as 65b757b745b9 (glob)
-       rewritten by test (*20*) as fdf9bde5129a (glob)
-  
-Check that debugobshistory on the both diverged revision show a coherent
-graph
-  $ hg olog '65b757b745b9+fdf9bde5129a'
+
+Check that all option show all of them
+  $ hg obslog fdf9bde5129a -a
   @  65b757b745b9 (3) A2
   |
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as 65b757b745b9 (glob)
-       rewritten by test (*20*) as fdf9bde5129a (glob)
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
   
-  $ hg olog '65b757b745b9+fdf9bde5129a' --no-graph -Tjson | python -m json.tool
+Check that debugobshistory on the second diverged revision show the revision
+and the diverent one
+  $ hg obslog 65b757b745b9
+  @  65b757b745b9 (3) A2
+  |
+  x  471f378eab4c (1) A0
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
+  
+Check that all option show all of them
+  $ hg obslog 65b757b745b9 -a
+  @  65b757b745b9 (3) A2
+  |
+  | o  fdf9bde5129a (2) A1
+  |/
+  x  471f378eab4c (1) A0
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
+  
+Check that debugobshistory on the both diverged revision show a coherent
+graph
+  $ hg obslog '65b757b745b9+fdf9bde5129a'
+  @  65b757b745b9 (3) A2
+  |
+  | o  fdf9bde5129a (2) A1
+  |/
+  x  471f378eab4c (1) A0
+       rewritten by test (*) as 65b757b745b9 (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
+  
+  $ hg obslog '65b757b745b9+fdf9bde5129a' --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [],
@@ -1005,19 +1108,32 @@ Test setup
  -----------
 
 Check that debugobshistory on head show a coherent graph
-  $ hg olog eb5a0daa2192
+  $ hg obslog eb5a0daa2192
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
-   /     rewritten by test (*20*) as eb5a0daa2192 (glob)
+   /     rewritten by test (*) as eb5a0daa2192 (glob)
   |
   x  b7ea6d14e664 (3) B1
-  |    rewritten by test (*20*) as eb5a0daa2192 (glob)
+  |    rewritten by test (*) as eb5a0daa2192 (glob)
   |
   x  0dec01379d3b (2) B0
-       rewritten by test (*20*) as b7ea6d14e664 (glob)
+       rewritten by test (*) as b7ea6d14e664 (glob)
   
-  $ hg olog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
+Check that obslog on ROOT with all option show everything
+  $ hg obslog 1 --hidden --all
+  @    eb5a0daa2192 (4) C0
+  |\
+  x |  471f378eab4c (1) A0
+   /     rewritten by test (*) as eb5a0daa2192 (glob)
+  |
+  x  b7ea6d14e664 (3) B1
+  |    rewritten by test (*) as eb5a0daa2192 (glob)
+  |
+  x  0dec01379d3b (2) B0
+       rewritten by test (*) as b7ea6d14e664 (glob)
+  
+  $ hg obslog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
   [
       {
           "debugobshistory.markers": [],
@@ -1169,14 +1285,14 @@ Test setup
  Actual test
  -----------
 
-  $ hg olog 7a230b46bf61
+  $ hg obslog 7a230b46bf61
   @  7a230b46bf61 (3) A2
   |
   x  fdf9bde5129a (2) A1
-  |    rewritten by test (*20*) as 7a230b46bf61 (glob)
+  |    rewritten by test (*) as 7a230b46bf61 (glob)
   |
   x  471f378eab4c (1) A0
-       rewritten by test (*20*) as fdf9bde5129a (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
   
   $ cd $TESTTMP/local-remote-markers-2
   $ hg pull
@@ -1192,371 +1308,21 @@ Test setup
   (use 'hg evolve' to update to its successor: 7a230b46bf61)
 Check that debugobshistory works with markers pointing to missing local
 changectx
-  $ hg olog 7a230b46bf61
+  $ hg obslog 7a230b46bf61
   o  7a230b46bf61 (2) A2
   |
   x  fdf9bde5129a
-  |    rewritten by test (*20*) as 7a230b46bf61 (glob)
+  |    rewritten by test (*) as 7a230b46bf61 (glob)
   |
   @  471f378eab4c (1) A0
-       rewritten by test (*20*) as fdf9bde5129a (glob)
+       rewritten by test (*) as fdf9bde5129a (glob)
   
-  $ hg olog 7a230b46bf61 --color=debug
+  $ hg obslog 7a230b46bf61 --color=debug
   o  [evolve.node|7a230b46bf61] [evolve.rev|(2)] [evolve.short_description|A2]
   |
   x  [evolve.node evolve.missing_change_ctx|fdf9bde5129a]
-  |    [evolve.verb|rewritten] by [evolve.user|test] [evolve.date|(*20*)] as [evolve.node|7a230b46bf61] (glob)
+  |    [evolve.verb|rewritten] by [evolve.user|test] [evolve.date|(*)] as [evolve.node|7a230b46bf61] (glob)
   |
   @  [evolve.node|471f378eab4c] [evolve.rev|(1)] [evolve.short_description|A0]
-       [evolve.verb|rewritten] by [evolve.user|test] [evolve.date|(*20*)] as [evolve.node|fdf9bde5129a] (glob)
+       [evolve.verb|rewritten] by [evolve.user|test] [evolve.date|(*)] as [evolve.node|fdf9bde5129a] (glob)
   
-
-Test with cycle
-===============
-
-Test setup
-----------
-
-  $ hg init $TESTTMP/cycle
-  $ cd $TESTTMP/cycle
-  $ mkcommit ROOT
-  $ mkcommit A
-  $ mkcommit B
-  $ mkcommit C
-  $ hg log -G
-  @  changeset:   3:a8df460dbbfe
-  |  tag:         tip
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     C
-  |
-  o  changeset:   2:c473644ee0e9
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     B
-  |
-  o  changeset:   1:2a34000d3544
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     A
-  |
-  o  changeset:   0:ea207398892e
-     user:        test
-     date:        Thu Jan 01 00:00:00 1970 +0000
-     summary:     ROOT
-  
-Create a cycle
-  $ hg prune -s "desc(B)" "desc(A)"
-  1 changesets pruned
-  2 new unstable changesets
-  $ hg prune -s "desc(C)" "desc(B)"
-  1 changesets pruned
-  $ hg prune -s "desc(A)" "desc(C)"
-  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
-  working directory now at 2a34000d3544
-  1 changesets pruned
-  $ hg log --hidden -G
-  x  changeset:   3:a8df460dbbfe
-  |  tag:         tip
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     C
-  |
-  x  changeset:   2:c473644ee0e9
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     B
-  |
-  @  changeset:   1:2a34000d3544
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     A
-  |
-  o  changeset:   0:ea207398892e
-     user:        test
-     date:        Thu Jan 01 00:00:00 1970 +0000
-     summary:     ROOT
-  
-Actual test
------------
-
-Check that debugobshistory never crash on a cycle
-
-  $ hg olog "desc(A)" --hidden
-  @  2a34000d3544 (1) A
-  |    rewritten by test (*20*) as c473644ee0e9 (glob)
-  |
-  x  a8df460dbbfe (3) C
-  |    rewritten by test (*20*) as 2a34000d3544 (glob)
-  |
-  x  c473644ee0e9 (2) B
-  |    rewritten by test (*20*) as a8df460dbbfe (glob)
-  |
-
-  $ hg olog "desc(B)" --hidden
-  @  2a34000d3544 (1) A
-  |    rewritten by test (*20*) as c473644ee0e9 (glob)
-  |
-  x  a8df460dbbfe (3) C
-  |    rewritten by test (*20*) as 2a34000d3544 (glob)
-  |
-  x  c473644ee0e9 (2) B
-  |    rewritten by test (*20*) as a8df460dbbfe (glob)
-  |
-
-  $ hg olog "desc(C)" --hidden
-  @  2a34000d3544 (1) A
-  |    rewritten by test (*20*) as c473644ee0e9 (glob)
-  |
-  x  a8df460dbbfe (3) C
-  |    rewritten by test (*20*) as 2a34000d3544 (glob)
-  |
-  x  c473644ee0e9 (2) B
-  |    rewritten by test (*20*) as a8df460dbbfe (glob)
-  |
-
-Test with multiple cyles
-========================
-
-Test setup
-----------
-
-  $ hg init $TESTTMP/multiple-cycle
-  $ cd $TESTTMP/multiple-cycle
-  $ mkcommit ROOT
-  $ mkcommit A
-  $ mkcommit B
-  $ mkcommit C
-  $ mkcommit D
-  $ mkcommit E
-  $ mkcommit F
-  $ hg log -G
-  @  changeset:   6:d9f908fde1a1
-  |  tag:         tip
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     F
-  |
-  o  changeset:   5:0da815c333f6
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     E
-  |
-  o  changeset:   4:868d2e0eb19c
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     D
-  |
-  o  changeset:   3:a8df460dbbfe
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     C
-  |
-  o  changeset:   2:c473644ee0e9
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     B
-  |
-  o  changeset:   1:2a34000d3544
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     A
-  |
-  o  changeset:   0:ea207398892e
-     user:        test
-     date:        Thu Jan 01 00:00:00 1970 +0000
-     summary:     ROOT
-  
-Create a first cycle
-  $ hg prune -s "desc(B)" "desc(A)"
-  1 changesets pruned
-  5 new unstable changesets
-  $ hg prune -s "desc(C)" "desc(B)"
-  1 changesets pruned
-  $ hg prune --split -s "desc(A)" -s "desc(D)" "desc(C)"
-  1 changesets pruned
-And create a second one
-  $ hg prune -s "desc(E)" "desc(D)"
-  1 changesets pruned
-  $ hg prune -s "desc(F)" "desc(E)"
-  1 changesets pruned
-  $ hg prune -s "desc(D)" "desc(F)"
-  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
-  working directory now at 868d2e0eb19c
-  1 changesets pruned
-  $ hg log --hidden -G
-  x  changeset:   6:d9f908fde1a1
-  |  tag:         tip
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     F
-  |
-  x  changeset:   5:0da815c333f6
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     E
-  |
-  @  changeset:   4:868d2e0eb19c
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     D
-  |
-  x  changeset:   3:a8df460dbbfe
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     C
-  |
-  x  changeset:   2:c473644ee0e9
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     B
-  |
-  x  changeset:   1:2a34000d3544
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     A
-  |
-  o  changeset:   0:ea207398892e
-     user:        test
-     date:        Thu Jan 01 00:00:00 1970 +0000
-     summary:     ROOT
-  
-Actual test
------------
-
-Check that debugobshistory never crash on a cycle
-
-  $ hg olog "desc(D)" --hidden
-  x  0da815c333f6 (5) E
-  |    rewritten by test (*20*) as d9f908fde1a1 (glob)
-  |
-  @    868d2e0eb19c (4) D
-  |\     rewritten by test (*20*) as 0da815c333f6 (glob)
-  | |
-  | x  d9f908fde1a1 (6) F
-  | |    rewritten by test (*20*) as 868d2e0eb19c (glob)
-  | |
-  +---x  2a34000d3544 (1) A
-  | |      rewritten by test (*20*) as c473644ee0e9 (glob)
-  | |
-  x |  a8df460dbbfe (3) C
-  | |    rewritten by test (*20*) as 2a34000d3544, 868d2e0eb19c (glob)
-  | |
-  x |  c473644ee0e9 (2) B
-  | |    rewritten by test (*20*) as a8df460dbbfe (glob)
-  | |
-
-Check the json output is valid in this case
-
-  $ hg olog "desc(D)" --hidden --no-graph -Tjson | python -m json.tool
-  [
-      {
-          "debugobshistory.markers": [
-              {
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
-                      "0da815c333f6"
-                  ],
-                  "debugobshistory.verb": "rewritten"
-              }
-          ],
-          "debugobshistory.node": "868d2e0eb19c",
-          "debugobshistory.rev": 4,
-          "debugobshistory.shortdescription": "D"
-      },
-      {
-          "debugobshistory.markers": [
-              {
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
-                      "868d2e0eb19c"
-                  ],
-                  "debugobshistory.verb": "rewritten"
-              }
-          ],
-          "debugobshistory.node": "d9f908fde1a1",
-          "debugobshistory.rev": 6,
-          "debugobshistory.shortdescription": "F"
-      },
-      {
-          "debugobshistory.markers": [
-              {
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
-                      "d9f908fde1a1"
-                  ],
-                  "debugobshistory.verb": "rewritten"
-              }
-          ],
-          "debugobshistory.node": "0da815c333f6",
-          "debugobshistory.rev": 5,
-          "debugobshistory.shortdescription": "E"
-      },
-      {
-          "debugobshistory.markers": [
-              {
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
-                      "2a34000d3544",
-                      "868d2e0eb19c"
-                  ],
-                  "debugobshistory.verb": "rewritten"
-              }
-          ],
-          "debugobshistory.node": "a8df460dbbfe",
-          "debugobshistory.rev": 3,
-          "debugobshistory.shortdescription": "C"
-      },
-      {
-          "debugobshistory.markers": [
-              {
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
-                      "a8df460dbbfe"
-                  ],
-                  "debugobshistory.verb": "rewritten"
-              }
-          ],
-          "debugobshistory.node": "c473644ee0e9",
-          "debugobshistory.rev": 2,
-          "debugobshistory.shortdescription": "B"
-      },
-      {
-          "debugobshistory.markers": [
-              {
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
-                      "c473644ee0e9"
-                  ],
-                  "debugobshistory.verb": "rewritten"
-              }
-          ],
-          "debugobshistory.node": "2a34000d3544",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A"
-      }
-  ]

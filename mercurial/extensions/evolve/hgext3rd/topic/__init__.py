@@ -69,6 +69,7 @@ from mercurial import (
     obsolete,
     patch,
     phases,
+    registrar,
     util,
 )
 
@@ -81,8 +82,13 @@ from . import (
     discovery,
 )
 
+if util.safehasattr(registrar, 'command'):
+    commandfunc = registrar.command
+else: # compat with hg < 4.3
+    commandfunc = cmdutil.command
+
 cmdtable = {}
-command = cmdutil.command(cmdtable)
+command = commandfunc(cmdtable)
 colortable = {'topic.active': 'green',
               'topic.list.troubledcount': 'red',
               'topic.list.headcount.multiple': 'yellow',

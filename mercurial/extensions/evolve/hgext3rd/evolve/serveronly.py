@@ -15,6 +15,7 @@ import os
 
 try:
     from . import (
+        compat,
         exthelper,
         metadata,
         obscache,
@@ -26,6 +27,7 @@ except ValueError as exc:
     # extension imported using direct path
     sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
     from evolve import (
+        compat,
         exthelper,
         metadata,
         obscache,
@@ -38,6 +40,7 @@ minimumhgversion = metadata.minimumhgversion
 buglink = metadata.buglink
 
 eh = exthelper.exthelper()
+eh.merge(compat.eh)
 eh.merge(obscache.eh)
 eh.merge(obsexchange.eh)
 uisetup = eh.final_uisetup

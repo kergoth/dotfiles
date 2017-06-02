@@ -56,7 +56,7 @@ Test options to prevent implicite publishing of changesets
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  1 new obsolescence markers
+  2 new obsolescence markers
   updating to branch default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd strict-publish-client

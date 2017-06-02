@@ -75,8 +75,8 @@ Initial
   obshashtree
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 1ce18e5a71f78d443a80c819f2f7197c4706af70
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 92af733686ce7e0469d8b2b87b4612a4c2d33468
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 3800aeba3728457abb9c508c94f6abc59e698c55
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 5c3c935df6f4007c633c3386d6f58b22c274809e
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af bccb3d243420ef26782fa11f209830db360c34b2
   obshashrange
   ============
            rev         node        index         size        depth      obshash

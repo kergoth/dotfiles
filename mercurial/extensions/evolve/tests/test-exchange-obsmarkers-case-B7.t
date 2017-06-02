@@ -71,7 +71,7 @@ Initial
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 926d9d84b97b3483891ae983990ad87c1f7827e9
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af e041f7ff1c7bd5501c7ab602baa35f0873128021
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af c2398c6305068b6b377f36402c507b713a7c586f
   obshashrange
   ============
            rev         node        index         size        depth      obshash

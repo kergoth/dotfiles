@@ -76,7 +76,7 @@ test for range based discovery
   $ hg debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa `getid 'desc(r1)'`
   $ hg debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb `getid 'desc(r2)'`
   $ hg debugobsolete cccccccccccccccccccccccccccccccccccccccc `getid 'desc(r4)'`
-  $ hg debugobsolete dddddddddddddddddddddddddddddddddddddddd `getid 'desc(r5)'`
+  $ hg debugobsolete dddddddddddddddddddddddddddddddddddddddd `getid 'desc(r5)'` --config experimental.obshashrange.warm-cache=0
   $ hg debugobsolete eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee `getid 'desc(r7)'`
   $ hg debugobsolete
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 66f7d451a68b85ed82ff5fcc254daf50c74144bd 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
@@ -109,14 +109,12 @@ test for range based discovery
   * @0000000000000000000000000000000000000000 (*)> debugobsolete cccccccccccccccccccccccccccccccccccccccc bebd167eb94d257ace0e814aeb98e6972ed2970d exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
-  * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 exited 0 after *.?? seconds (glob)
+  * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 --config 'experimental.obshashrange.warm-cache=0' exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee 4de32a90b66cd083ebf3c00b41277aa7abca51dd (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
+  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 2o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee 4de32a90b66cd083ebf3c00b41277aa7abca51dd exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete (glob)
@@ -536,17 +534,17 @@ Adding prune markers on existing changeset
   $ hg debugobshashrange --subranges --rev 'heads(all())'
            rev         node        index         size        depth      obshash
              7 f69452c5b1af            0            7            7 000000000000
-             5 45f8b879de92            0            6            6 b8a4206b0fc6
+             5 45f8b879de92            0            6            6 7c49a958a9ac
              3 2dc09a01254d            0            4            4 8932bf980bb4
              7 f69452c5b1af            4            3            7 000000000000
              3 2dc09a01254d            2            2            4 ce1937ca1278
-             5 45f8b879de92            4            2            6 31fc49d36a59
+             5 45f8b879de92            4            2            6 c6795525c540
              1 66f7d451a68b            0            2            2 327c7dd73d29
              6 c8d03c1b5e94            4            2            6 89755fd39e6d
              2 01241442b3c2            2            1            3 1ed3c61fb39a
              0 1ea73414a91b            0            1            1 000000000000
              3 2dc09a01254d            3            1            4 26f996446ecb
-             5 45f8b879de92            5            1            6 1a0c08180b65
+             5 45f8b879de92            5            1            6 796507769034
              1 66f7d451a68b            1            1            2 327c7dd73d29
              4 bebd167eb94d            4            1            5 b21465ecb790
              6 c8d03c1b5e94            5            1            6 446c2dc3bce5
@@ -588,17 +586,17 @@ Recover after rollback
   $ hg debugobshashrange --subranges --rev 'heads(all())'
            rev         node        index         size        depth      obshash
              7 f69452c5b1af            0            7            7 000000000000
-             5 45f8b879de92            0            6            6 b8a4206b0fc6
+             5 45f8b879de92            0            6            6 7c49a958a9ac
              3 2dc09a01254d            0            4            4 8932bf980bb4
              7 f69452c5b1af            4            3            7 000000000000
              3 2dc09a01254d            2            2            4 ce1937ca1278
-             5 45f8b879de92            4            2            6 31fc49d36a59
+             5 45f8b879de92            4            2            6 c6795525c540
              1 66f7d451a68b            0            2            2 327c7dd73d29
              6 c8d03c1b5e94            4            2            6 89755fd39e6d
              2 01241442b3c2            2            1            3 1ed3c61fb39a
              0 1ea73414a91b            0            1            1 000000000000
              3 2dc09a01254d            3            1            4 26f996446ecb
-             5 45f8b879de92            5            1            6 1a0c08180b65
+             5 45f8b879de92            5            1            6 796507769034
              1 66f7d451a68b            1            1            2 327c7dd73d29
              4 bebd167eb94d            4            1            5 b21465ecb790
              6 c8d03c1b5e94            5            1            6 446c2dc3bce5
@@ -633,18 +631,18 @@ Recover after rollback
   $ hg debugobshashrange --subranges --rev 'heads(all())'
            rev         node        index         size        depth      obshash
              8 4de32a90b66c            0            8            8 c7f1f7e9925b
-             5 45f8b879de92            0            6            6 b8a4206b0fc6
+             5 45f8b879de92            0            6            6 7c49a958a9ac
              3 2dc09a01254d            0            4            4 8932bf980bb4
              8 4de32a90b66c            4            4            8 c681c3e58c27
              3 2dc09a01254d            2            2            4 ce1937ca1278
-             5 45f8b879de92            4            2            6 31fc49d36a59
+             5 45f8b879de92            4            2            6 c6795525c540
              8 4de32a90b66c            6            2            8 033544c939f0
              1 66f7d451a68b            0            2            2 327c7dd73d29
              6 c8d03c1b5e94            4            2            6 89755fd39e6d
              2 01241442b3c2            2            1            3 1ed3c61fb39a
              0 1ea73414a91b            0            1            1 000000000000
              3 2dc09a01254d            3            1            4 26f996446ecb
-             5 45f8b879de92            5            1            6 1a0c08180b65
+             5 45f8b879de92            5            1            6 796507769034
              8 4de32a90b66c            7            1            8 033544c939f0
              1 66f7d451a68b            1            1            2 327c7dd73d29
              4 bebd167eb94d            4            1            5 b21465ecb790
@@ -762,18 +760,18 @@ revision are reapplied after the target is stripped.
   $ hg debugobshashrange --subranges --rev 'heads(all())'
            rev         node        index         size        depth      obshash
              7 4de32a90b66c            0            8            8 c7f1f7e9925b
-             8 45f8b879de92            0            6            6 b8a4206b0fc6
+             8 45f8b879de92            0            6            6 7c49a958a9ac
              3 2dc09a01254d            0            4            4 8932bf980bb4
              7 4de32a90b66c            4            4            8 c681c3e58c27
              3 2dc09a01254d            2            2            4 ce1937ca1278
-             8 45f8b879de92            4            2            6 31fc49d36a59
+             8 45f8b879de92            4            2            6 c6795525c540
              7 4de32a90b66c            6            2            8 033544c939f0
              1 66f7d451a68b            0            2            2 327c7dd73d29
              5 c8d03c1b5e94            4            2            6 89755fd39e6d
              2 01241442b3c2            2            1            3 1ed3c61fb39a
              0 1ea73414a91b            0            1            1 000000000000
              3 2dc09a01254d            3            1            4 26f996446ecb
-             8 45f8b879de92            5            1            6 1a0c08180b65
+             8 45f8b879de92            5            1            6 796507769034
              7 4de32a90b66c            7            1            8 033544c939f0
              1 66f7d451a68b            1            1            2 327c7dd73d29
              4 bebd167eb94d            4            1            5 b21465ecb790

@@ -149,4 +149,34 @@ some common hidden
   1 new obsolescence markers
   (run 'hg heads' to see heads)
 
+test discovery avoid exchanging known markers
+
+  $ hg push
+  pushing to ssh://user@dummy/server
+  searching for changes
+  no changes found
+  [1]
+  $ hg -R ../other pull
+  pulling from ssh://user@dummy/server
+  searching for changes
+  no changes found
+
+test discovery can be disabled
+
+  $ hg push --config experimental.evolution.obsdiscovery=no
+  pushing to ssh://user@dummy/server
+  searching for changes
+  (skipping discovery of obsolescence markers, will exchange everything)
+  (controled by 'experimental.evolution.obsdiscovery' configuration)
+  no changes found
+  remote: obsmarker-exchange: 346 bytes received
+  [1]
+  $ hg -R ../other pull --config experimental.evolution.obsdiscovery=no
+  pulling from ssh://user@dummy/server
+  searching for changes
+  no changes found
+  (skipping discovery of obsolescence markers, will exchange everything)
+  (controled by 'experimental.evolution.obsdiscovery' configuration)
+  obsmarker-exchange: 346 bytes received
+
   $ cd ..

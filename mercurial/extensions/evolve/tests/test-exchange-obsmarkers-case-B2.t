@@ -65,7 +65,7 @@ Initial
   obshashtree
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 52a5380bc04783a9ad43bb2ab2f47a02ef02adcc
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 c5a567339e205e8cc4c494e4fb82944daaec449c
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 6892277170c13fec6712303d639965a454b5cabf
   obshashrange
   ============
            rev         node        index         size        depth      obshash

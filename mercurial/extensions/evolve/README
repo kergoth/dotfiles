@@ -105,18 +105,57 @@ say in $HGSRC::
     $ cd tests
     $ python $HGSRC/tests/run-tests.py
 
-(evolve's stable and default branches correspond to Mercurial's stable
-and default branches. So to test evolve from default, you need
-Mercurial on default.), Older version of Mercurial are supportd on their respective ``mercurial-x.y`` branches.
+Branch policy
+-------------
+
+The evolve test are highly impacted by changes in core. To deal with this, we use named branches.
+
+There are two main branches: "stable" and "default". Tests on these branch are
+supposed to pass with the corresponding "default" and "stable" branch from core
+Mercurial. The documentation is built from the tip of stable.
+
+In addition, we have compatibility branches to check tests on older version of
+Mercurial. They are the "mercurial-x.y" branches. They are used to apply
+expected test change only, no code change should happen there.
 
 Changelog
 =========
 
-6.2.1 - in progress
+6.3.1 -- 2017-06-01
 -------------------
 
-- prune: fix a crash related to color handling,
-- next: fix a crash related to color handling,
+ - also backport the "revelant-markers" fix when using "evolve.serveronly"
+
+6.3.0 -- 2017-05-31
+-------------------
+
+ - olog: add an 'obslog' alias
+ - olog: add an '--all' option to show the whole obsolescence history tree.
+ - evolution: add an experiment to track the effect of rewrites.
+   (See hg help - evolve for details)
+ - exchange: fix the "relevant-markers" algorithm to include inline prune.
+   This will impact discovery of obsmarkers between server and client if one
+   still uses the old algorithm. Please upgrade both clients and servers as
+   soon as possible.
+   (See changeset 176d1a0ce385 in core Mercurial for details)
+ - obsdiscovery: add a config flag to disable all obsmarkers discovery
+   (See hg help - evolve for details)
+ - template: add a 'precursors' template that display the closests precursors of changesets
+ - template: add a 'successors' template that display the closests successors of changesets
+ - template: add a 'obsfate' template that display how a changeset has evolved
+ - new discovery experiment: add options to restrict memory consumption on
+   large repository (see "hg help -e evolve" for details).
+ - evolve: fix --rev handling in --list mode
+
+6.2.1 -- 2017-05-23
+-------------------
+
+ - prune: fix a crash related to color handling,
+ - next: fix a crash related to color handling,
+ - discovery: document the 'obshashrange' experiment,
+ - cache: reduce the warming load in case of reset,
+ - cache: add a 'experimental.obshashcache.warm-cache' option to allow
+   disabling post transaction cache warming.
 
 6.2.0 -- 2017-05-18
 -------------------

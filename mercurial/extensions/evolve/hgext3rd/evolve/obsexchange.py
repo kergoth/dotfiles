@@ -18,6 +18,7 @@ import errno
 import socket
 
 from mercurial import (
+    bundle2,
     error,
     exchange,
     extensions,
@@ -98,7 +99,10 @@ def _getbundleobsmarkerpart(orig, bundler, repo, source, **kwargs):
             subset = [c.node() for c in repo.unfiltered().set('only(%ln, %ln)', heads, common)]
             subset += kwargs['evo_missing_nodes']
         markers = repo.obsstore.relevantmarkers(subset)
-        exchange.buildobsmarkerspart(bundler, markers)
+        if util.safehasattr(bundle2, 'buildobsmarkerspart'):
+            bundle2.buildobsmarkerspart(bundler, markers)
+        else:
+            exchange.buildobsmarkerspart(bundler, markers)
 
 # manual wrap up in extsetup because of the wireproto.commands mapping
 def _obscommon_capabilities(orig, repo, proto):

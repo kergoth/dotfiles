@@ -6,9 +6,9 @@ hidden or not as we assume that the user knows what he is doing when referring
 to xxx.
 """
 from mercurial import extensions
-from mercurial import cmdutil
 from mercurial import repoview
 from mercurial import branchmap
+from mercurial import registrar
 from mercurial import revset
 from mercurial import error
 from mercurial import commands
@@ -17,7 +17,12 @@ from mercurial import util
 from mercurial.i18n import _
 
 cmdtable = {}
-command = cmdutil.command(cmdtable)
+
+if util.safehasattr(registrar, 'command'):
+    command = registrar.command(cmdtable)
+else: # compat with hg < 4.3
+    from mercurial import cmdutil
+    command = cmdutil.command(cmdtable)
 
 # By default, all the commands have directaccess with warnings
 # List of commands that have no directaccess and directaccess with no warning

@@ -14,20 +14,25 @@ revision can be cheaply brought back to life that way.
 However as the inhibitor are not fitting in an append only model, this is
 incompatible with sharing mutable history.
 """
-from mercurial import localrepo
-from mercurial import obsolete
-from mercurial import extensions
-from mercurial import cmdutil
-from mercurial import error
-from mercurial import scmutil
-from mercurial import commands
-from mercurial import lock as lockmod
 from mercurial import bookmarks
+from mercurial import commands
+from mercurial import error
+from mercurial import extensions
+from mercurial import localrepo
+from mercurial import lock as lockmod
+from mercurial import obsolete
+from mercurial import registrar
+from mercurial import scmutil
 from mercurial import util
 from mercurial.i18n import _
 
 cmdtable = {}
-command = cmdutil.command(cmdtable)
+
+if util.safehasattr(registrar, 'command'):
+    command = registrar.command(cmdtable)
+else: # compat with hg < 4.3
+    from mercurial import cmdutil
+    command = cmdutil.command(cmdtable)
 
 def _inhibitenabled(repo):
     return util.safehasattr(repo, '_obsinhibit')
@@ -176,14 +181,14 @@ def _deinhibitmarkers(repo, nodes):
         finally:
             tr.release()
 
-def _createmarkers(orig, repo, relations, flag=0, date=None, metadata=None):
+def _createmarkers(orig, repo, relations, *args, **kwargs):
     """wrap markers create to make sure we de-inhibit target nodes"""
     # wrapping transactio to unify the one in each function
     lock = tr = None
     try:
         lock = repo.lock()
         tr = repo.transaction('add-obsolescence-marker')
-        orig(repo, relations, flag, date, metadata)
+        orig(repo, relations, *args, **kwargs)
         precs = (r[0].node() for r in relations)
         _deinhibitmarkers(repo, precs)
         tr.close()

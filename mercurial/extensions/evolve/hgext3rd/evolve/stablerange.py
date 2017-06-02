@@ -196,6 +196,8 @@ def debugstablerange(ui, repo, **opts):
     depth = stablerange.depthrev
     length = stablerange.rangelength
     subranges = stablerange.subranges
+    if not revs:
+        raise error.Abort('no revisions specified')
     repo.stablerange.warmup(repo, max(revs))
     if opts['subranges']:
         ranges = subrangesclosure(repo, revs)
@@ -241,7 +243,7 @@ def debugstablerange(ui, repo, **opts):
 
 class stablerange(object):
 
-    def __init__(self):
+    def __init__(self, lrusize=2000):
         # The point up to which we have data in cache
         self._tiprev = None
         self._tipnode = None
@@ -254,10 +256,10 @@ class stablerange(object):
         # and then use the relevant top most part. This order is going to be
         # the same for all ranges headed at the same merge. So we cache these
         # value to reuse them accross the same invocation.
-        self._stablesortcache = {}
+        self._stablesortcache = util.lrucachedict(lrusize)
         # something useful to compute the above
         # mergerev -> stablesort, length
-        self._stablesortprepared = {}
+        self._stablesortprepared = util.lrucachedict(lrusize)
         # caching parent call # as we do so many of them
         self._parentscache = {}
         # The first part of the stable sorted list of revision of a merge will
@@ -304,12 +306,21 @@ class stablerange(object):
 
         original = set(rangeheap)
         seen = 0
+        # progress report is showing up in the profile for small and fast
+        # repository so we build that complicated work around.
+        progress_each = 100
+        progress_last = time.time()
         heapify(rangeheap)
         while rangeheap:
             value = heappop(rangeheap)
             if value in original:
-                if not seen % 1000:
+                if not seen % progress_each:
+                    # if a lot of time passed, report more often
+                    progress_new = time.time()
+                    if (1 < progress_each) and (0.1 < progress_new - progress_last):
+                        progress_each /= 10
                     ui.progress(_("filling stablerange cache"), seen, total=nbrevs)
+                    progress_last = progress_new
                 seen += 1
                 original.remove(value) # might have been added from other source
             __, rangeid = value
@@ -383,7 +394,14 @@ class stablerange(object):
             # note: In the general case we can just walk down and then request
             # data about the merge. But I'm not sure this function will be even
             # call for the general case.
-            allrevs = self._stablesortcache.get(headrev)
+
+            # Lrudict.get in hg-3.9 returns the lrunode instead of the
+            # value, use __getitem__ instead and catch the exception directly
+            try:
+                allrevs = self._stablesortcache[headrev]
+            except KeyError:
+                allrevs = None
+
             if allrevs is None:
                 allrevs = self._getrevsfrommerge(repo, headrev)
                 if allrevs is None:
@@ -432,8 +450,11 @@ class stablerange(object):
             self._stablesortprepared[merge] = (sortedrevs, len(sortedrevs))
 
     def _getrevsfrommerge(self, repo, merge):
-        prepared = self._stablesortprepared.get(merge)
-        if prepared is None:
+        # Lrudict.get in hg-3.9 returns the lrunode instead of the
+        # value, use __getitem__ instead and catch the exception directly
+        try:
+            prepared = self._stablesortprepared[merge]
+        except KeyError:
             return None
 
         mergedepth = self.depthrev(repo, merge)
@@ -731,7 +752,9 @@ class sqlstablerange(stablerange):
     _schemaversion = 0
 
     def __init__(self, repo):
-        super(sqlstablerange, self).__init__()
+        lrusize = repo.ui.configint('experimental', 'obshashrange.lru-size',
+                                    2000)
+        super(sqlstablerange, self).__init__(lrusize=lrusize)
         self._vfs = repo.vfs
         self._path = repo.vfs.join('cache/evoext_stablerange_v0.sqlite')
         self._cl = repo.unfiltered().changelog # (okay to keep an old one)
@@ -921,6 +944,9 @@ def setupcache(ui, repo):
         def transaction(self, *args, **kwargs):
             tr = super(stablerangerepo, self).transaction(*args, **kwargs)
             if not repo.ui.configbool('experimental', 'obshashrange', False):
+                return tr
+            if not repo.ui.configbool('experimental', 'obshashrange.warm-cache',
+                                      True):
                 return tr
             reporef = weakref.ref(self)
 

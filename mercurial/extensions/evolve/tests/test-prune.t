@@ -354,6 +354,17 @@ yoinked from test-mq-strip.t
       more than 2 successors:         0
       available  keys:
                  user:                7
+  marker size:
+      format v1:
+          smallest length:           69
+          longer length:             69
+          median length:             69
+          mean length:               69
+      format v0:
+          smallest length:          * (glob)
+          longer length:            * (glob)
+          median length:            * (glob)
+          mean length:              * (glob)
   disconnected clusters:              7
           any known node:             7
           smallest length:            1

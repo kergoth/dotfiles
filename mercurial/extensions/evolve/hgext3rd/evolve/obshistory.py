@@ -7,11 +7,14 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
+import re
+
 from mercurial import (
     cmdutil,
     commands,
     error,
     graphmod,
+    obsolete,
     node as nodemod,
     scmutil,
 )
@@ -25,9 +28,10 @@ from . import (
 eh = exthelper.exthelper()
 
 @eh.command(
-    'olog',
+    'obslog|olog',
     [('G', 'graph', True, _("show the revision DAG")),
-     ('r', 'rev', [], _('show the specified revision or revset'), _('REV'))
+     ('r', 'rev', [], _('show the specified revision or revset'), _('REV')),
+     ('a', 'all', False, _('show all related changesets, not only precursors'))
     ] + commands.formatteropts,
     _('hg olog [OPTION]... [REV]'))
 def cmdobshistory(ui, repo, *revs, **opts):
@@ -157,14 +161,14 @@ def cyclic(graph):
             stack.pop()
     return False
 
-def _obshistorywalker(repo, revs):
+def _obshistorywalker(repo, revs, walksuccessors=False):
     """ Directly inspired by graphmod.dagwalker,
     walk the obs marker tree and yield
     (id, CHANGESET, ctx, [parentinfo]) tuples
     """
 
     # Get the list of nodes and links between them
-    candidates, nodesucc, nodeprec = _obshistorywalker_links(repo, revs)
+    candidates, nodesucc, nodeprec = _obshistorywalker_links(repo, revs, walksuccessors)
 
     # Shown, set of nodes presents in items
     shown = set()
@@ -215,15 +219,19 @@ def _obshistorywalker(repo, revs):
             childrens = [(graphmod.PARENT, x) for x in nodeprec.get(cand, ())]
             yield (cand, 'M', changectx, childrens)
 
-def _obshistorywalker_links(repo, revs):
+def _obshistorywalker_links(repo, revs, walksuccessors=False):
     """ Iterate the obs history tree starting from revs, traversing
     each revision precursors recursively.
+    If walksuccessors is True, also check that every successor has been
+    walked, which ends up walking on all connected obs markers. It helps
+    getting a better view with splits and divergences.
     Return a tuple of:
     - The list of node crossed
     - The dictionnary of each node successors, values are a set
     - The dictionnary of each node precursors, values are a list
     """
     precursors = repo.obsstore.precursors
+    successors = repo.obsstore.successors
     nodec = repo.changelog.node
 
     # Parents, set of parents nodes seen during walking the graph for node
@@ -256,12 +264,21 @@ def _obshistorywalker_links(repo, revs):
                 seen.add(precnode)
                 nodes.append(precnode)
 
+        # Also walk on successors if the option is enabled
+        if walksuccessors:
+            for successor in successors.get(node, ()):
+                for succnodeid in successor[1]:
+                    if succnodeid not in seen:
+                        seen.add(succnodeid)
+                        nodes.append(succnodeid)
+
     return sorted(seen), nodesucc, nodeprec
 
 def _debugobshistorygraph(ui, repo, revs, opts):
     displayer = obsmarker_printer(ui, repo.unfiltered(), None, opts, buffered=True)
     edges = graphmod.asciiedges
-    cmdutil.displaygraph(ui, repo, _obshistorywalker(repo.unfiltered(), revs), displayer, edges)
+    walker = _obshistorywalker(repo.unfiltered(), revs, opts.get('all', False))
+    cmdutil.displaygraph(ui, repo, walker, displayer, edges)
 
 def _debugobshistorysingle(fm, repo, revs):
     """ Display the obsolescence history for a single revision
@@ -337,6 +354,36 @@ def _debugobshistorydisplaymarker(fm, repo, marker):
 
     fm.write('debugobshistory.verb', '%s', verb,
              label="evolve.verb")
+
+    effectflag = metadata.get('ef1')
+    if effectflag is not None:
+        try:
+            effectflag = int(effectflag)
+        except ValueError:
+            effectflag = None
+    if effectflag:
+        effect = []
+
+        # XXX should be a dict
+        if effectflag & DESCCHANGED:
+            effect.append('description')
+        if effectflag & METACHANGED:
+            effect.append('meta')
+        if effectflag & USERCHANGED:
+            effect.append('user')
+        if effectflag & DATECHANGED:
+            effect.append('date')
+        if effectflag & BRANCHCHANGED:
+            effect.append('branch')
+        if effectflag & PARENTCHANGED:
+            effect.append('parent')
+        if effectflag & DIFFCHANGED:
+            effect.append('content')
+
+        if effect:
+            fmteffect = fm.formatlist(effect, 'debugobshistory.effect', sep=', ')
+            fm.write('debugobshistory.effect', '(%s)', fmteffect)
+
     fm.plain(' by ')
 
     fm.write('debugobshistory.marker_user', '%s', metadata['user'],
@@ -355,3 +402,205 @@ def _debugobshistorydisplaymarker(fm, repo, marker):
                  label="evolve.node")
 
     fm.plain("\n")
+
+# logic around storing and using effect flags
+DESCCHANGED = 1 << 0 # action changed the description
+METACHANGED = 1 << 1 # action change the meta
+PARENTCHANGED = 1 << 2 # action change the parent
+DIFFCHANGED = 1 << 3 # action change diff introduced by the changeset
+USERCHANGED = 1 << 4 # the user changed
+DATECHANGED = 1 << 5 # the date changed
+BRANCHCHANGED = 1 << 6 # the branch changed
+
+METABLACKLIST = [
+    re.compile('^__touch-noise__$'),
+    re.compile('^branch$'),
+    re.compile('^.*-source$'),
+    re.compile('^.*_source$'),
+    re.compile('^source$'),
+]
+
+def ismetablacklisted(metaitem):
+    """ Check that the key of a meta item (extrakey, extravalue) does not
+    match at least one of the blacklist pattern
+    """
+    metakey = metaitem[0]
+    for pattern in METABLACKLIST:
+        if pattern.match(metakey):
+            return False
+
+    return True
+
+def geteffectflag(relation):
+    """compute the effect flag by comparing the source and destination"""
+    effects = 0
+
+    source = relation[0]
+
+    for changectx in relation[1]:
+        # Check if description has changed
+        if changectx.description() != source.description():
+            effects |= DESCCHANGED
+
+        # Check if known meta has changed
+        if changectx.user() != source.user():
+            effects |= USERCHANGED
+
+        if changectx.date() != source.date():
+            effects |= DATECHANGED
+
+        if changectx.branch() != source.branch():
+            effects |= BRANCHCHANGED
+
+        # Check if other meta has changed
+        changeextra = changectx.extra().items()
+        ctxmeta = filter(ismetablacklisted, changeextra)
+
+        sourceextra = source.extra().items()
+        srcmeta = filter(ismetablacklisted, sourceextra)
+
+        if ctxmeta != srcmeta:
+            effects |= METACHANGED
+
+        # Check if at least one of the parent has changes
+        if changectx.parents() != source.parents():
+            effects |= PARENTCHANGED
+
+        if not _cmpdiff(source, changectx):
+            effects |= DIFFCHANGED
+
+    return effects
+
+def _prepare_hunk(hunk):
+    """Drop all information but the username and patch"""
+    cleanunk = []
+    for line in hunk.splitlines():
+        if line.startswith(b'# User') or not line.startswith(b'#'):
+            if line.startswith(b'@@'):
+                line = b'@@\n'
+            cleanunk.append(line)
+    return cleanunk
+
+def _getdifflines(iterdiff):
+    """return a cleaned up lines"""
+    try:
+        lines = iterdiff.next()
+    except StopIteration:
+        return None
+    return _prepare_hunk(lines)
+
+def _cmpdiff(leftctx, rightctx):
+    """return True if both ctx introduce the "same diff"
+
+    This is a first and basic implementation, with many shortcoming.
+    """
+    leftdiff = leftctx.diff(git=1)
+    rightdiff = rightctx.diff(git=1)
+    left, right = (0, 0)
+    while None not in (left, right):
+        left = _getdifflines(leftdiff)
+        right = _getdifflines(rightdiff)
+
+        if left != right:
+            return False
+    return True
+
+@eh.wrapfunction(obsolete, 'createmarkers')
+def createmarkerswithbits(orig, repo, relations, flag=0, date=None,
+                          metadata=None, **kwargs):
+    """compute 'effect-flag' and augment the created markers
+
+    Wrap obsolete.createmarker in order to compute the effect of each
+    relationship and store them as flag in the metadata.
+
+    While we experiment, we store flag in a metadata field. This field is
+    "versionned" to easilly allow moving to other meaning for flags.
+
+    The comparison of description or other infos just before creating the obs
+    marker might induce overhead in some cases. However it is a good place to
+    start since it automatically makes all markers creation recording more
+    meaningful data. In the future, we can introduce way for commands to
+    provide precomputed effect to avoid the overhead.
+    """
+    if not repo.ui.configbool('experimental', 'evolution.effect-flags', False):
+        return orig(repo, relations, flag, date, metadata, **kwargs)
+    if metadata is None:
+        metadata = {}
+    tr = repo.transaction('add-obsolescence-marker')
+    try:
+        for r in relations:
+            # Compute the effect flag for each obsmarker
+            effect = geteffectflag(r)
+
+            # Copy the metadata in order to add them, we copy because the
+            # effect flag might be different per relation
+            m = metadata.copy()
+            # we store the effect even if "0". This disctinct markers created
+            # without the feature with markers recording a no-op.
+            m['ef1'] = "%d" % effect
+
+            # And call obsolete.createmarkers for creating the obsmarker for real
+            orig(repo, [r], flag, date, m, **kwargs)
+
+        tr.close()
+    finally:
+        tr.release()
+
+def _getobsfate(successorssets):
+    """ Compute a changeset obsolescence fate based on his successorssets.
+    Successors can be the tipmost ones or the immediate ones.
+    Returns one fate in the following list:
+    - pruned
+    - diverged
+    - superseed
+    - superseed_split
+    """
+
+    if len(successorssets) == 0:
+        # The commit has been pruned
+        return 'pruned'
+    elif len(successorssets) > 1:
+        return 'diverged'
+    else:
+        # No divergence, only one set of successors
+        successors = successorssets[0]
+
+        if len(successors) == 1:
+            return 'superseed'
+        else:
+            return 'superseed_split'
+
+def _getobsfateandsuccs(repo, revnode, successorssets=None):
+    """ Return a tuple containing:
+    - the reason a revision is obsolete (diverged, pruned or superseed)
+    - the list of successors short node if the revision is neither pruned
+    or has diverged
+    """
+    if successorssets is None:
+        successorssets = obsolete.successorssets(repo, revnode)
+
+    fate = _getobsfate(successorssets)
+
+    # Apply node.short if we have no divergence
+    if len(successorssets) == 1:
+        successors = [nodemod.short(node_id) for node_id in successorssets[0]]
+    else:
+        successors = []
+        for succset in successorssets:
+            successors.append([nodemod.short(node_id) for node_id in succset])
+
+    return (fate, successors)
+
+def _humanizedobsfate(fate, successors):
+    """ Returns a humanized string for a changeset fate and its successors
+    """
+
+    if fate == 'pruned':
+        return 'pruned'
+    elif fate == 'diverged':
+        msgs = []
+        for successorsset in successors:
+            msgs.append('superseed as %s' % ','.join(successorsset))
+        return ' + '.join(msgs)
+    elif fate in ('superseed', 'superseed_split'):
+        return 'superseed as %s' % ','.join(successors)

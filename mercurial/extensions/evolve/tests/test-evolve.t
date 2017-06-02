@@ -793,6 +793,17 @@ Test obsstore stat
       more than 2 successors:         0
       available  keys:
                  user:               10
+  marker size:
+      format v1:
+          smallest length:           69
+          longer length:             69
+          median length:             69
+          mean length:               69
+      format v0:
+          smallest length:           * (glob)
+          longer length:             * (glob)
+          median length:             * (glob)
+          mean length:               * (glob)
   disconnected clusters:              1
           any known node:             1
           smallest length:           10
@@ -1491,121 +1502,3 @@ Check that dirstate changes are kept at failure for conflicts (issue4966)
 
   $ hg status newlyadded
   A newlyadded
-
-hg metaedit
------------
-
-  $ hg update --clean .
-  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ rm newlyadded
-  $ hg metaedit -r 0
-  abort: cannot edit commit information for public revisions
-  [255]
-  $ hg metaedit --fold
-  abort: revisions must be specified with --fold
-  [255]
-  $ hg metaedit -r 0 --fold
-  abort: cannot fold public revisions
-  [255]
-  $ hg metaedit '36 + 42' --fold
-  abort: cannot fold non-linear revisions (multiple roots given)
-  [255]
-  $ hg metaedit '36::39 + 41' --fold
-  abort: cannot fold non-linear revisions (multiple heads given)
-  [255]
-check that metaedit respects allowunstable
-  $ hg metaedit '.^' --config 'experimental.evolution=createmarkers, allnewcommands'
-  abort: cannot edit commit information in the middle of a stack
-  (c904da5245b0 will become unstable and new unstable changes are not allowed)
-  [255]
-  $ hg metaedit '18::20' --fold --config 'experimental.evolution=createmarkers, allnewcommands'
-  abort: cannot fold chain not ending with a head or with branching
-  (new unstable changesets are not allowed)
-  [255]
-  $ hg metaedit --user foobar
-  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg log --template '{rev}: {author}\n' -r '42:' --hidden
-  42: test
-  43: foobar
-  $ hg log --template '{rev}: {author}\n' -r .
-  43: foobar
-
-TODO: support this
-  $ hg metaedit '.^::.'
-  abort: editing multiple revisions without --fold is not currently supported
-  [255]
-
-  $ HGEDITOR=cat hg metaedit '.^::.' --fold
-  HG: This is a fold of 2 changesets.
-  HG: Commit message of changeset 41.
-  
-  amended
-  
-  HG: Commit message of changeset 43.
-  
-  will be evolved safely
-  
-  
-  
-  HG: Enter commit message.  Lines beginning with 'HG:' are removed.
-  HG: Leave message empty to abort commit.
-  HG: --
-  HG: user: test
-  HG: branch 'default'
-  HG: changed a
-  HG: changed newfile
-  2 changesets folded
-  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-
-  $ glog -r .
-  @  44:41bf1183869c@default(draft) amended
-  |
-  ~
-
-no new commit is created here because the date is the same
-  $ HGEDITOR=cat hg metaedit
-  amended
-  
-  
-  will be evolved safely
-  
-  
-  HG: Enter commit message.  Lines beginning with 'HG:' are removed.
-  HG: Leave message empty to abort commit.
-  HG: --
-  HG: user: test
-  HG: branch 'default'
-  HG: changed a
-  HG: changed newfile
-  nothing changed
-
-  $ glog -r '.^::.'
-  @  44:41bf1183869c@default(draft) amended
-  |
-  o  36:43c3f5ef149f@default(draft) add uu
-  |
-  ~
-
-TODO: don't create a new commit in this case
-  $ hg metaedit --config defaults.metaedit=
-  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg log -r '.^::.' --template '{rev}: {desc|firstline}\n'
-  36: add uu
-  45: amended
-
-  $ hg up .^
-  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg metaedit --user foobar2 45
-  $ hg log --template '{rev}: {author}\n' -r '42:' --hidden
-  42: test
-  43: foobar
-  44: test
-  45: test
-  46: foobar2
-  $ hg diff -r 45 -r 46 --hidden
-
-'fold' one commit
-  $ hg metaedit 39 --fold --user foobar3
-  1 changesets folded
-  $ hg log -r 47 --template '{rev}: {author}\n'
-  47: foobar3

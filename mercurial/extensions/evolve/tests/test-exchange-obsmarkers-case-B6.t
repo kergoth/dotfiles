@@ -77,7 +77,7 @@ Initial
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 86e41541149f4b6cccc5fd131d744d8e83a681e5
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 f2e05412d3f1d5bc1ae647cf9efc43e0399c26ca
   962ecf6b1afc94e15c7e48fdfb76ef8abd11372b 974507d1c466d0aa86d288836194339ed3b98736
-  f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 04e03a8959d8a39984e6a8f4a16fba975b364747
+  f6298a8ac3a4b78bbeae5f1d3dc5bc3c3812f0f3 1e0b6dce792c229c865a543c6f8964b4bba5fb5a
   obshashrange
   ============
            rev         node        index         size        depth      obshash

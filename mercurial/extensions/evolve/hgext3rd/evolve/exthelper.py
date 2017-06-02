@@ -3,12 +3,19 @@
 #####################################################################
 
 from mercurial import (
-    cmdutil,
     commands,
     extensions,
+    registrar,
     revset,
     templatekw,
+    util,
 )
+
+if util.safehasattr(registrar, 'command'):
+    command = registrar.command
+else: # compat with hg < 4.3
+    from mercurial import cmdutil
+    command = cmdutil.command
 
 class exthelper(object):
     """Helper for modular extension setup
@@ -30,7 +37,7 @@ class exthelper(object):
         self._functionwrappers = []
         self._duckpunchers = []
         self.cmdtable = {}
-        self.command = cmdutil.command(self.cmdtable)
+        self.command = command(self.cmdtable)
 
     def merge(self, other):
         self._uicallables.extend(other._uicallables)

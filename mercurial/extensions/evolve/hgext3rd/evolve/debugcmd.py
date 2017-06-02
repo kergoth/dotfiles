@@ -10,7 +10,10 @@
 #  * We could have the same code in core as `hg debugobsolete --stat`,
 #  * We probably want a way for the extension to hook in for extra data.
 
-from mercurial import node
+from mercurial import (
+    obsolete,
+    node,
+)
 
 from mercurial.i18n import _
 
@@ -41,7 +44,8 @@ def cmddebugobsstorestat(ui, repo):
     store = repo.obsstore
     unfi = repo.unfiltered()
     nm = unfi.changelog.nodemap
-    ui.write(_('markers total:              %9i\n') % len(store._all))
+    nbmarkers = len(store._all)
+    ui.write(_('markers total:              %9i\n') % nbmarkers)
     sucscount = [0, 0, 0, 0]
     known = 0
     parentsdata = 0
@@ -51,6 +55,8 @@ def cmddebugobsstorestat(ui, repo):
     clustersmap = {}
     # same data using parent information
     pclustersmap = {}
+    size_v0 = []
+    size_v1 = []
     for mark in store:
         if mark[0] in nm:
             known += 1
@@ -72,6 +78,8 @@ def cmddebugobsstorestat(ui, repo):
         # same with parent data
         nodes.update(parents)
         _updateclustermap(nodes, mark, pclustersmap)
+        size_v0.append(len(obsolete._fm0encodeonemarker(mark)))
+        size_v1.append(len(obsolete._fm1encodeonemarker(mark)))
 
     # freezing the result
     for c in clustersmap.values():
@@ -94,6 +102,27 @@ def cmddebugobsstorestat(ui, repo):
     ui.write(('    available  keys:\n'))
     for key in sorted(metakeys):
         ui.write(('    %15s:        %9i\n' % (key, metakeys[key])))
+
+    size_v0.sort()
+    size_v1.sort()
+    if size_v0:
+        ui.write('marker size:\n')
+        # format v1
+        ui.write('    format v1:\n')
+        ui.write(('        smallest length:    %9i\n' % size_v1[0]))
+        ui.write(('        longer length:      %9i\n' % size_v1[-1]))
+        median = size_v1[nbmarkers // 2]
+        ui.write(('        median length:      %9i\n' % median))
+        mean = sum(size_v1) // nbmarkers
+        ui.write(('        mean length:        %9i\n' % mean))
+        # format v0
+        ui.write('    format v0:\n')
+        ui.write(('        smallest length:    %9i\n' % size_v0[0]))
+        ui.write(('        longer length:      %9i\n' % size_v0[-1]))
+        median = size_v0[nbmarkers // 2]
+        ui.write(('        median length:      %9i\n' % median))
+        mean = sum(size_v0) // nbmarkers
+        ui.write(('        mean length:        %9i\n' % mean))
 
     allclusters = list(set(clustersmap.values()))
     allclusters.sort(key=lambda x: len(x[1]))

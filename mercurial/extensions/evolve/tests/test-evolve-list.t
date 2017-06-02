@@ -72,6 +72,10 @@ Test the divergence listing
   a922b3733e98: b
     divergent: c882616e9d84 (draft) (precursor d2ae7f538514)
   
+  $ hg evolve --list --rev c882616e9d84
+  c882616e9d84: b
+    divergent: a922b3733e98 (draft) (precursor d2ae7f538514)
+  
   $ hg phase -p a922b3733e98
   $ hg evolve --list
   c882616e9d84: b

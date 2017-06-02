@@ -44,8 +44,70 @@ New Config:
     # * abort: abort the push
     auto-publish = ignore
 
-"""
+    # For some large repository with few markers, the current  for obsolescence
+    # markers discovery can get in the way. You can disable it with the
+    # configuration option below. This means all pushes and pulls will
+    # re-exchange all markers every time.
+    evolution.obsdiscovery = yes
 
+Obsolescence Markers Discovery Experiment
+=========================================
+
+We are experimenting with a new protocol to discover common markers during the
+local and remote repository. This experiment is still at an early stage but is
+already raising better result than the previous version when usable.
+
+Large" repositories (hundreds of thousand) are currently unsupported. Some key
+algorithm has a naive implementation with too agressive caching, creating
+memory consumption issue (this will get fixed).
+
+Medium sized repositories works fine, but be prepared for a noticable initial
+cache filling. for the Mercurial repository, this is around 20 seconds
+
+The following config control the experiment::
+
+  [experimental]
+
+  # enable new discovery protocol
+  # (needed on both client and server)
+  obshashrange = yes
+
+  # avoid cache warming after transaction
+  # (recommended 'off' for developer repositories)
+  # (recommended 'yes' for server (default))
+  obshashrange.warm-cache = no
+
+It is recommended to enable the blackbox extension to gather useful
+data about the experiment. It is shipped with Mercurial so no extra
+install needed.
+
+    [extensions]
+    blackbox =
+
+Finally some extra option are available to help tame the experimental
+implementation of some of the algorithms:
+
+    [experimental]
+    # restrict cache size to reduce memory consumption
+    obshashrange.lru-size = 2000 # default is 2000
+
+Effect Flag Experiment
+======================
+
+We are experimenting with a way to register what changed between a precursor
+and its successors (content, description, parent, etc...). For example, having
+this information is helpful to show what changed between an obsolete changeset
+and its tipmost successors.
+
+The following config control the experiment::
+
+  [experimental]
+  # activate the registration of effect flags in obs markers
+  evolution.effect-flags = yes
+
+The effect flags are shown in the obglog command output without particular
+configuration of you want to inspect them.
+"""
 
 evolutionhelptext = """
 Obsolescence markers make it possible to mark changesets that have been
@@ -120,6 +182,7 @@ from mercurial import (
     commands,
     context,
     copies,
+    dirstate,
     error,
     extensions,
     help,
@@ -127,12 +190,11 @@ from mercurial import (
     lock as lockmod,
     merge,
     node,
+    obsolete,
     patch,
     phases,
     revset,
     scmutil,
-    templatekw,
-    obsolete
 )
 
 from mercurial.commands import walkopts, commitopts, commitopts2, mergetoolopts
@@ -141,14 +203,16 @@ from mercurial.node import nullid
 
 from . import (
     checkheads,
+    compat,
     debugcmd,
     exthelper,
     metadata,
     obscache,
     obsexchange,
+    obshistory,
     safeguard,
+    templatekw,
     utility,
-    obshistory
 )
 
 __version__ = metadata.__version__
@@ -191,10 +255,35 @@ eh.merge(checkheads.eh)
 eh.merge(safeguard.eh)
 eh.merge(obscache.eh)
 eh.merge(obshistory.eh)
+eh.merge(templatekw.eh)
+eh.merge(compat.eh)
 uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
 reposetup = eh.final_reposetup
 cmdtable = eh.cmdtable
+
+# pre hg 4.0 compat
+
+if not util.safehasattr(dirstate.dirstate, 'parentchange'):
+    import contextlib
+
+    @contextlib.contextmanager
+    def parentchange(self):
+        '''Context manager for handling dirstate parents.
+
+        If an exception occurs in the scope of the context manager,
+        the incoherent dirstate won't be written when wlock is
+        released.
+        '''
+        self._parentwriters += 1
+        yield
+        # Typically we want the "undo" step of a context manager in a
+        # finally block so it happens even when an exception
+        # occurs. In this case, however, we only want to decrement
+        # parentwriters if the code in the with statement exits
+        # normally, so we don't have a try/finally here on purpose.
+        self._parentwriters -= 1
+    dirstate.dirstate.parentchange = parentchange
 
 #####################################################################
 ### Option configuration                                          ###
@@ -459,58 +548,12 @@ def revsetallsuccessors(repo, subset, x):
     s.sort()
     return subset & s
 
-### template keywords
-# XXX it does not handle troubles well :-/
-
-@eh.templatekw('obsolete')
-def obsoletekw(repo, ctx, templ, **args):
-    """:obsolete: String. Whether the changeset is ``obsolete``.
-    """
-    if ctx.obsolete():
-        return 'obsolete'
-    return ''
-
-@eh.templatekw('troubles')
-def showtroubles(**args):
-    """:troubles: List of strings. Evolution troubles affecting the changeset
-    (zero or more of "unstable", "divergent" or "bumped")."""
-    ctx = args['ctx']
-    try:
-        # specify plural= explicitly to trigger TypeError on hg < 4.2
-        return templatekw.showlist('trouble', ctx.troubles(), args,
-                                   plural='troubles')
-    except TypeError:
-        return templatekw.showlist('trouble', ctx.troubles(), plural='troubles',
-                                   **args)
 
 #####################################################################
 ### Various trouble warning                                       ###
 #####################################################################
 
 # This section take care of issue warning to the user when troubles appear
-
-
-def _getobsoletereason(repo, revnode):
-    """ Return a tuple containing:
-    - the reason a revision is obsolete (diverged, pruned or superseed)
-    - the list of successors short node if the revision is neither pruned
-    or has diverged
-    """
-    successorssets = obsolete.successorssets(repo, revnode)
-
-    if len(successorssets) == 0:
-        # The commit has been pruned
-        return ('pruned', [])
-    elif len(successorssets) > 1:
-        return ('diverged', [])
-    else:
-        # No divergence, only one set of successors
-        successors = [node.short(node_id) for node_id in successorssets[0]]
-
-        if len(successors) == 1:
-            return ('superseed', successors)
-        else:
-            return ('superseed_split', successors)
 
 def _warnobsoletewc(ui, repo):
     rev = repo['.']
@@ -528,7 +571,7 @@ def _warnobsoletewc(ui, repo):
         return
 
     # Show a warning for helping the user to solve the issue
-    reason, successors = _getobsoletereason(repo, rev.node())
+    reason, successors = obshistory._getobsfateandsuccs(repo, rev.node())
 
     if reason == 'pruned':
         solvemsg = _("use 'hg evolve' to update to its parent successor")
@@ -566,7 +609,7 @@ if util.safehasattr(context, '_filterederror'):
 
             unfilteredrepo = repo.unfiltered()
             rev = unfilteredrepo[changeid]
-            reason, successors = _getobsoletereason(unfilteredrepo, rev.node())
+            reason, successors = obshistory._getobsfateandsuccs(unfilteredrepo, rev.node())
 
             # Be more precise in cqse the revision is superseed
             if reason == 'superseed':
@@ -761,7 +804,10 @@ def rewrite(repo, old, updates, head, newbases, commitopts):
             message = old.description()
 
         user = commitopts.get('user') or old.user()
-        date = commitopts.get('date') or None # old.date()
+        # TODO: In case not date is given, we should take the old commit date
+        # if we are working one one changeset or mimic the fold behavior about
+        # date
+        date = commitopts.get('date') or None
         extra = dict(commitopts.get('extra', old.extra()))
         extra['branch'] = head.branch()
 
@@ -841,12 +887,11 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
                                 '(see hg help resolve)'))
         nodenew = _relocatecommit(repo, orig, commitmsg)
     except error.Abort as exc:
-        repo.dirstate.beginparentchange()
-        repo.setparents(repo['.'].node(), nullid)
-        repo.dirstate.write(tr)
-        # fix up dirstate for copies and renames
-        copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
-        repo.dirstate.endparentchange()
+        with repo.dirstate.parentchange():
+            repo.setparents(repo['.'].node(), nullid)
+            repo.dirstate.write(tr)
+            # fix up dirstate for copies and renames
+            copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
 
         class LocalMergeFailure(MergeFailure, exc.__class__):
             pass
@@ -1262,7 +1307,7 @@ def listtroubles(ui, repo, troublecategories, **opts):
 
     revs = repo.revs('+'.join("%s()" % t for t in troublecategories))
     if opts.get('rev'):
-        revs = revs & repo.revs(opts.get('rev'))
+        revs = scmutil.revrange(repo, opts.get('rev'))
 
     fm = ui.formatter('evolvelist', opts)
     for rev in revs:
@@ -1755,9 +1800,8 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
     bmupdate(newid)
     repo.ui.status(_('committed as %s\n') % node.short(newid))
     # reroute the working copy parent to the new changeset
-    repo.dirstate.beginparentchange()
-    repo.dirstate.setparents(newid, node.nullid)
-    repo.dirstate.endparentchange()
+    with repo.dirstate.parentchange():
+        repo.dirstate.setparents(newid, node.nullid)
 
 def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
                     progresscb=None):
@@ -1857,9 +1901,8 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
     assert tr is not None
     try:
         repo.ui.setconfig('ui', 'allowemptycommit', True, 'evolve')
-        repo.dirstate.beginparentchange()
-        repo.dirstate.setparents(divergent.node(), node.nullid)
-        repo.dirstate.endparentchange()
+        with repo.dirstate.parentchange():
+            repo.dirstate.setparents(divergent.node(), node.nullid)
         oldlen = len(repo)
         amend(ui, repo, message='', logfile='')
         if oldlen == len(repo):
@@ -2512,10 +2555,9 @@ def uncommit(ui, repo, *pats, **opts):
         # Move local changes on filtered changeset
         obsolete.createmarkers(repo, [(old, (repo[newid],))])
         phases.retractboundary(repo, tr, oldphase, [newid])
-        repo.dirstate.beginparentchange()
-        repo.dirstate.setparents(newid, node.nullid)
-        _uncommitdirstate(repo, old, match)
-        repo.dirstate.endparentchange()
+        with repo.dirstate.parentchange():
+            repo.dirstate.setparents(newid, node.nullid)
+            _uncommitdirstate(repo, old, match)
         updatebookmarks(newid)
         if not repo[newid].files():
             ui.warn(_("new changeset is empty\n"))
@@ -2748,9 +2790,8 @@ def touch(ui, repo, *revs, **opts):
                 obsolete.createmarkers(repo, [(ctx, (repo[new],))])
             phases.retractboundary(repo, tr, ctx.phase(), [new])
             if ctx in repo[None].parents():
-                repo.dirstate.beginparentchange()
-                repo.dirstate.setparents(new, node.nullid)
-                repo.dirstate.endparentchange()
+                with repo.dirstate.parentchange():
+                    repo.dirstate.setparents(new, node.nullid)
         tr.close()
     finally:
         lockmod.release(tr, lock, wlock)
