@@ -1,0 +1,8 @@
+Before:
+  silent! cd /testplugin/test/util
+
+Execute(CdString should output the correct command string):
+  AssertEqual 'cd ''/foo bar/baz'' && ', ale#path#CdString('/foo bar/baz')
+
+Execute(BufferCdString should output the correct command string):
+  AssertEqual 'cd ' . shellescape(getcwd()) . ' && ', ale#path#BufferCdString(bufnr(''))

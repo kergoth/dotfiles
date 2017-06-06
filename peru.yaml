@@ -97,7 +97,7 @@ imports:
     vim-rsi: vim/bundle/rsi
     vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
-    vim-syntastic: vim/bundle/syntastic
+    vim-ale: vim/bundle/ale
     vim-vinegar: vim/bundle/vinegar
     damian-conway-vim: vim/bundle/damian-conway
 
@@ -563,10 +563,6 @@ git module vitag:
     pick: vitag
     rev: 56366c0709978da4d12ae8e11ff3bcf032265406
 
-git module vim-syntastic:
-    url: https://github.com/scrooloose/syntastic.git
-    rev: 159900a1a2d3db2c4d3757f1085f377c6e59ac02
-
 git module checkbashisms:
     url: https://anonscm.debian.org/git/collab-maint/devscripts.git
     move:
@@ -665,3 +661,7 @@ curl module rustup:
 git module vim-startuptime:
     url: https://github.com/tweekmonster/startuptime.vim
     rev: dfa57f522d6f61793fe5fea65bca7484751b8ca2
+
+git module vim-ale:
+    url: https://github.com/w0rp/ale
+    rev: 9dadde190e2d691c375cde9e2d6988b11f40285a
