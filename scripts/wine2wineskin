@@ -1,0 +1,48 @@
+#!/bin/sh
+# Convert a portable wine tarball to a wineskin engine format file
+
+set -e
+
+tempdir="$(abspath "$(mktemp -d portable_wine2t7z.XXXXXX)")"
+trap 'rm -rf "$tempdir"' EXIT INT TERM
+
+# portable-winehq-devel-2.10-osx64.tar
+# portable-winehq-staging-2.10-3-osx64.tar
+# portable-winehq-stable-2.0.1-osx64.tar
+
+for portable_wine; do
+    portable_wine="$(abspath "$portable_wine")"
+    base="${portable_wine%.tar.gz}"
+    base="${base%-osx}"
+    base="${base%-osx64}"
+    base="${base##*/}"
+    base="${base#portable-winehq-}"
+
+    case "$base" in
+        devel-*)
+            version="${base#devel-}"
+            version="UWine$version"
+            ;;
+        staging-*)
+            version="${base#staging-}"
+            version="UWineStaging$version"
+            ;;
+        stable-*)
+            version="${base#stable-}"
+            version="UWine$version"
+            ;;
+        *)
+            echo >&2 "Unhandled filename: $portable_wine"
+            exit 1
+            ;;
+    esac
+
+    (
+        cd "$tempdir"
+        tar -jxf "$portable_wine"
+        echo "$version" >usr/version
+        mv usr wswine.bundle
+        tar cf - wswine.bundle | 7za a -si "$version.tar.7z"
+        mv -vi "$version.tar.7z" ~/Library/Application\ Support/Wineskin/Engines/ || true
+    )
+done
