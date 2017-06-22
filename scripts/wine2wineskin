@@ -13,23 +13,31 @@ trap 'rm -rf "$tempdir"' EXIT INT TERM
 for portable_wine; do
     portable_wine="$(abspath "$portable_wine")"
     base="${portable_wine%.tar.gz}"
-    base="${base%-osx}"
-    base="${base%-osx64}"
     base="${base##*/}"
     base="${base#portable-winehq-}"
+    case "$base" in
+        *-osx64)
+            base="${base%-osx64}"
+            name="U64Wine"
+            ;;
+        *-osx)
+            base="${base%-osx}"
+            name="UWine"
+            ;;
+    esac
 
     case "$base" in
         devel-*)
             version="${base#devel-}"
-            version="UWine$version"
+            version="$name$version"
             ;;
         staging-*)
             version="${base#staging-}"
-            version="UWineStaging$version"
+            version="${name}Staging$version"
             ;;
         stable-*)
             version="${base#stable-}"
-            version="UWine$version"
+            version="$name$version"
             ;;
         *)
             echo >&2 "Unhandled filename: $portable_wine"
