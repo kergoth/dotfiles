@@ -53,9 +53,9 @@ Test evolve removing the changeset being evolved
   o  0:07f494440405@default(draft) bk:[] adda
   
   $ hg debugobsolete
-  102a90ea7b4a3361e4082ed620918c261189a36a fb9d051ec0a450a4aa2ffc8c324979832ef88065 0 (*) {'user': 'test'} (glob)
-  c5727dbded3c3a6877cf60d6bb552a76812cb844 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'user': 'test'} (glob)
-  cce2c55b896511e0b6e04173c9450ba822ebc740 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'user': 'test'} (glob)
+  102a90ea7b4a3361e4082ed620918c261189a36a fb9d051ec0a450a4aa2ffc8c324979832ef88065 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  c5727dbded3c3a6877cf60d6bb552a76812cb844 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'ef1': '*', 'user': 'test'} (glob)
+  cce2c55b896511e0b6e04173c9450ba822ebc740 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Test evolve with conflict
 

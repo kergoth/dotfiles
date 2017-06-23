@@ -948,6 +948,9 @@ def setupcache(ui, repo):
             if not repo.ui.configbool('experimental', 'obshashrange.warm-cache',
                                       True):
                 return tr
+            maxrevs = self.ui.configint('experimental', 'obshashrange.max-revs', None)
+            if maxrevs is not None and maxrevs < len(self.unfiltered()):
+                return tr
             reporef = weakref.ref(self)
 
             def _warmcache(tr):

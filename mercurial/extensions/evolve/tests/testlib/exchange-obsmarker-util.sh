@@ -20,6 +20,7 @@ publish=False
 bundle2-output-capture=True
 # enable evolution
 evolution=all
+evolution.effect-flags = yes
 
 [extensions]
 # we need to strip some changeset for some test cases

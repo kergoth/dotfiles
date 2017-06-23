@@ -121,6 +121,22 @@ expected test change only, no code change should happen there.
 Changelog
 =========
 
+6.4.1 - in progress
+-------------------
+
+ - obsfate: improve support for advanced template reformating
+
+6.4.0 -- 2017-06-16
+-------------------
+
+ - template: signifiant improvement to the '{obsfate}' template (now 4.2+ only)
+ - template: fix 'successors' and 'precursors' template to expose hex-node
+ - effect flag: the experiment is now active by default,
+   (see 'hg help -e evolve' to opt out)
+ - effect flag: fix a small bug related to hidden changeset,
+ - obscache: reduce impact on large repository
+ - obshashrange: install a '.max-revs' option see extension help for details
+
 6.3.1 -- 2017-06-01
 -------------------
 

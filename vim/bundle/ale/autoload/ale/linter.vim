@@ -51,6 +51,7 @@ function! ale#linter#PreProcess(linter) abort
 
     let l:obj = {
     \   'name': get(a:linter, 'name'),
+    \   'lsp': get(a:linter, 'lsp', ''),
     \   'callback': get(a:linter, 'callback'),
     \}
 
@@ -62,7 +63,27 @@ function! ale#linter#PreProcess(linter) abort
         throw '`callback` must be defined with a callback to accept output'
     endif
 
-    if has_key(a:linter, 'executable_callback')
+    let l:needs_executable = 0
+    let l:needs_address = 0
+    let l:needs_command = 0
+
+    if l:obj.lsp ==# 'tsserver'
+        let l:needs_executable = 1
+    elseif l:obj.lsp ==# 'lsp'
+        let l:needs_address = 1
+    elseif !empty(l:obj.lsp)
+        throw '`lsp` must be either `''lsp''` or `''tsserver''` if defined'
+    else
+        let l:needs_executable = 1
+        let l:needs_command = 1
+    endif
+
+    if !l:needs_executable
+        if has_key(a:linter, 'executable')
+        \|| has_key(a:linter, 'executable_callback')
+            throw '`executable` and `executable_callback` cannot be used when lsp == ''lsp'''
+        endif
+    elseif has_key(a:linter, 'executable_callback')
         let l:obj.executable_callback = a:linter.executable_callback
 
         if !s:IsCallback(l:obj.executable_callback)
@@ -78,7 +99,13 @@ function! ale#linter#PreProcess(linter) abort
         throw 'Either `executable` or `executable_callback` must be defined'
     endif
 
-    if has_key(a:linter, 'command_chain')
+    if !l:needs_command
+        if has_key(a:linter, 'command')
+        \|| has_key(a:linter, 'command_callback')
+        \|| has_key(a:linter, 'command_chain')
+            throw '`command` and `command_callback` and `command_chain` cannot be used when `lsp` is set'
+        endif
+    elseif has_key(a:linter, 'command_chain')
         let l:obj.command_chain = a:linter.command_chain
 
         if type(l:obj.command_chain) != type([])
@@ -136,6 +163,20 @@ function! ale#linter#PreProcess(linter) abort
     \) > 1
         throw 'Only one of `command`, `command_callback`, or `command_chain` '
         \   . 'should be set'
+    endif
+
+    if !l:needs_address
+        if has_key(a:linter, 'address_callback')
+            throw '`address_callback` cannot be used when lsp != ''lsp'''
+        endif
+    elseif has_key(a:linter, 'address_callback')
+        let l:obj.address_callback = a:linter.address_callback
+
+        if !s:IsCallback(l:obj.address_callback)
+            throw '`address_callback` must be a callback if defined'
+        endif
+    else
+        throw '`address_callback` must be defined for getting the LSP address'
     endif
 
     let l:obj.output_stream = get(a:linter, 'output_stream', 'stdout')
@@ -249,7 +290,7 @@ function! s:GetLinterNames(original_filetype) abort
 endfunction
 
 function! ale#linter#Get(original_filetypes) abort
-    let l:combined_linters = []
+    let l:possibly_duplicated_linters = []
 
     " Handle dot-seperated filetypes.
     for l:original_filetype in split(a:original_filetypes, '\.')
@@ -274,8 +315,22 @@ function! ale#linter#Get(original_filetypes) abort
             endfor
         endif
 
-        call extend(l:combined_linters, l:filetype_linters)
+        call extend(l:possibly_duplicated_linters, l:filetype_linters)
     endfor
 
-    return l:combined_linters
+    let l:name_list = []
+    let l:combined_linters = []
+
+    " Make sure we override linters so we don't get two with the same name,
+    " like 'eslint' for both 'javascript' and 'typescript'
+    "
+    " Note that the reverse calls here modify the List variables.
+    for l:linter in reverse(l:possibly_duplicated_linters)
+        if index(l:name_list, l:linter.name) < 0
+            call add(l:name_list, l:linter.name)
+            call add(l:combined_linters, l:linter)
+        endif
+    endfor
+
+    return reverse(l:combined_linters)
 endfunction

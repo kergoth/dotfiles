@@ -38,8 +38,8 @@ Basic case, split a head
   $ echo "change to a" >> _a
   $ hg amend
   $ hg debugobsolete
-  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'user': 'test'} (glob)
-  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'user': 'test'} (glob)
+  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'ef1': '*', 'user': 'test'} (glob)
 
 To create commits with the number of split
   $ echo 0 > num
@@ -91,9 +91,9 @@ To create commits with the number of split
   no more change to split
 
   $ hg debugobsolete
-  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'user': 'test'} (glob)
-  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'user': 'test'} (glob)
-  aa8f656bb307022172d2648be6fb65322f801225 a98b35e86cae589b61892127c5ec1c868e41d910 5410a2352fa3114883327beee89e3085eefac25c 0 (*) {'user': 'test'} (glob)
+  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'ef1': '*', 'user': 'test'} (glob)
+  aa8f656bb307022172d2648be6fb65322f801225 a98b35e86cae589b61892127c5ec1c868e41d910 5410a2352fa3114883327beee89e3085eefac25c 0 (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg glog
   @  changeset:   7:5410a2352fa3
   |  tag:         tip
@@ -127,7 +127,7 @@ Cannot split a commit with uncommitted changes
   $ hg up "desc(_c)"
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ echo "_cd" > _c
-  $ hg split 
+  $ hg split
   abort: uncommitted changes
   [255]
 
@@ -198,14 +198,14 @@ Stop before splitting the commit completely creates a commit with all the
 remaining changes
 
   $ hg debugobsolete
-  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'user': 'test'} (glob)
-  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'user': 'test'} (glob)
-  aa8f656bb307022172d2648be6fb65322f801225 a98b35e86cae589b61892127c5ec1c868e41d910 5410a2352fa3114883327beee89e3085eefac25c 0 (*) {'user': 'test'} (glob)
-  10200229058723ce8d67f6612c1f6b4f73b1fe73 719157b217acc43d397369a448824ed4c7a302f2 0 (*) {'user': 'test'} (glob)
-  5d0c8b0f2d3e5e1ff95f93d7da2ba06650605ab5 0 {10200229058723ce8d67f6612c1f6b4f73b1fe73} (*) {'user': 'test'} (glob)
-  a98b35e86cae589b61892127c5ec1c868e41d910 286887947725085e03455d79649197feaef1eb9d 0 (*) {'user': 'test'} (glob)
-  5410a2352fa3114883327beee89e3085eefac25c 0b67cee46a7f2ad664f994027e7af95b36ae25fe 0 (*) {'user': 'test'} (glob)
-  719157b217acc43d397369a448824ed4c7a302f2 ced8fbcce3a7cd33f0e454d2cd63882ce1b6006b 73309fb98db840ba4ec5ad528346dc6ee0b39dcb 0 (*) {'user': 'test'} (glob)
+  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'ef1': '*', 'user': 'test'} (glob)
+  aa8f656bb307022172d2648be6fb65322f801225 a98b35e86cae589b61892127c5ec1c868e41d910 5410a2352fa3114883327beee89e3085eefac25c 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  10200229058723ce8d67f6612c1f6b4f73b1fe73 719157b217acc43d397369a448824ed4c7a302f2 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5d0c8b0f2d3e5e1ff95f93d7da2ba06650605ab5 0 {10200229058723ce8d67f6612c1f6b4f73b1fe73} (*) {'ef1': '*', 'user': 'test'} (glob)
+  a98b35e86cae589b61892127c5ec1c868e41d910 286887947725085e03455d79649197feaef1eb9d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5410a2352fa3114883327beee89e3085eefac25c 0b67cee46a7f2ad664f994027e7af95b36ae25fe 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  719157b217acc43d397369a448824ed4c7a302f2 ced8fbcce3a7cd33f0e454d2cd63882ce1b6006b 73309fb98db840ba4ec5ad528346dc6ee0b39dcb 0 (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg evolve --all
   move:[10] split1
   atop:[13] split4

@@ -364,18 +364,31 @@ class obscache(dualsourcecache):
         super(obscache, self).__init__()
         self._ondiskkey = None
         self._vfs = repo.vfs
-        self._data = bytearray()
+        self._setdata(bytearray())
 
-    def get(self, rev):
-        """return True if "rev" is used as "precursors for any obsmarkers
+    @util.propertycache
+    def get(self):
+        """final signature: obscache.get(rev)
 
-        Make sure the cache has been updated to match the repository content before using it"""
-        return self._data[rev]
+        return True if "rev" is used as "precursors for any obsmarkers
+
+        IMPORTANT: make sure the cache has been updated to match the repository
+        content before using it
+
+        We use a property cache to skip the attribute resolution overhead in
+        hot loops."""
+        return self._data.__getitem__
+
+    def _setdata(self, data):
+        """set a new bytearray data, invalidating the 'get' shortcut if needed"""
+        self._data = data
+        if 'get' in vars(self):
+            del self.get
 
     def clear(self, reset=False):
         """invalidate the cache content"""
         super(obscache, self).clear(reset=reset)
-        self._data = bytearray()
+        self._setdata(bytearray())
 
     def _updatefrom(self, repo, revs, obsmarkers):
         if revs:
@@ -404,16 +417,18 @@ class obscache(dualsourcecache):
         For now we stick to the simpler approach of paying the
         performance cost on new changesets.
         """
-        node = repo.changelog.node
-        succs = repo.obsstore.successors
-        for r in revs:
-            if node(r) in succs:
-                val = 1
-            else:
-                val = 0
-            self._data.append(val)
-        cl = repo.changelog
-        assert len(self._data) == len(cl), (len(self._data), len(cl))
+        new_entries = bytearray(len(revs))
+        if not self._data:
+            self._setdata(new_entries)
+        else:
+            self._data.extend(new_entries)
+        data = self._data
+        if repo.obsstore:
+            node = repo.changelog.node
+            succs = repo.obsstore.successors
+            for r in revs:
+                if node(r) in succs:
+                    data[r] = 1
 
     def _updatemarkers(self, repo, obsmarkers):
         """update the cache with new markers"""
@@ -443,11 +458,11 @@ class obscache(dualsourcecache):
         data = repo.vfs.tryread(self._filepath)
         if not data:
             self._cachekey = self.emptykey
-            self._data = bytearray()
+            self._setdata(bytearray())
         else:
             headersize = struct.calcsize(self._headerformat)
             self._cachekey = struct.unpack(self._headerformat, data[:headersize])
-            self._data = bytearray(data[headersize:])
+            self._setdata(bytearray(data[headersize:]))
         self._ondiskkey = self._cachekey
 
 def _computeobsoleteset(orig, repo):
@@ -477,7 +492,7 @@ def _computeobsoleteset(orig, repo):
                 repo.ui.log('evoext-cache',
                             'obscache is out of date, '
                             'falling back to slower obsstore version\n')
-                repo.ui.debug('obscache is out of date')
+                repo.ui.debug('obscache is out of date\n')
                 return orig(repo)
             else:
                 # If a transaction is open, it is worthwhile to update and use
@@ -507,23 +522,31 @@ def setupcache(ui, repo):
                 self.obsstore.obscache.clear()
             super(obscacherepo, self).destroyed()
 
-        def transaction(self, *args, **kwargs):
-            tr = super(obscacherepo, self).transaction(*args, **kwargs)
-            reporef = weakref.ref(self)
-
-            def _warmcache(tr):
-                repo = reporef()
-                if repo is None:
-                    return
-                repo = repo.unfiltered()
-                # As pointed in 'obscache.update', we could have the changelog
-                # and the obsstore in charge of updating the cache when new
-                # items goes it. The tranaction logic would then only be
-                # involved for the 'pending' and final writing on disk.
+        if util.safehasattr(repo, 'updatecaches'):
+            @localrepo.unfilteredmethod
+            def updatecaches(self, tr=None):
+                super(obscacherepo, self).updatecaches(tr)
                 self.obsstore.obscache.update(repo)
                 self.obsstore.obscache.save(repo)
 
-            tr.addpostclose('warmcache-obscache', _warmcache)
-            return tr
+        else:
+            def transaction(self, *args, **kwargs):
+                tr = super(obscacherepo, self).transaction(*args, **kwargs)
+                reporef = weakref.ref(self)
+
+                def _warmcache(tr):
+                    repo = reporef()
+                    if repo is None:
+                        return
+                    repo = repo.unfiltered()
+                    # As pointed in 'obscache.update', we could have the changelog
+                    # and the obsstore in charge of updating the cache when new
+                    # items goes it. The tranaction logic would then only be
+                    # involved for the 'pending' and final writing on disk.
+                    self.obsstore.obscache.update(repo)
+                    self.obsstore.obscache.save(repo)
+
+                tr.addpostclose('warmcache-obscache', _warmcache)
+                return tr
 
     repo.__class__ = obscacherepo

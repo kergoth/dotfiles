@@ -362,25 +362,25 @@ walking algorithm works no matter the level of successors + precursors
   o    7b3290f6e0a0 (12) fold1
   |\
   x |    d15d0ffc75f6 (8) fold1
-  |\ \     rewritten by test (*) as 7b3290f6e0a0, d0f33db50670 (glob)
+  |\ \     rewritten(parent, content) by test (*) as 7b3290f6e0a0, d0f33db50670 (glob)
   | | |
   | | x  e036916b63ea (11) fold0
-  | | |    rewritten by test (*) as 7b3290f6e0a0 (glob)
+  | | |    rewritten(description, parent, content) by test (*) as 7b3290f6e0a0 (glob)
   | | |
   x | |  868d2e0eb19c (4) D
-   / /     rewritten by test (*) as d15d0ffc75f6 (glob)
+   / /     rewritten(description, parent, content) by test (*) as d15d0ffc75f6 (glob)
   | |
   x |  a8df460dbbfe (3) C
-   /     rewritten by test (*) as d15d0ffc75f6 (glob)
+   /     rewritten(description, content) by test (*) as d15d0ffc75f6 (glob)
   |
   x    b868bc49b0a4 (7) fold0
-  |\     rewritten by test (*) as 19e14c8397fc, e036916b63ea (glob)
+  |\     rewritten(parent, content) by test (*) as 19e14c8397fc, e036916b63ea (glob)
   | |
   x |  2a34000d3544 (1) A
-   /     rewritten by test (*) as b868bc49b0a4 (glob)
+   /     rewritten(description, content) by test (*) as b868bc49b0a4 (glob)
   |
   x  c473644ee0e9 (2) B
-       rewritten by test (*) as b868bc49b0a4 (glob)
+       rewritten(description, parent, content) by test (*) as b868bc49b0a4 (glob)
   
 While with all option, we should see 15 changesets
 
@@ -394,35 +394,35 @@ While with all option, we should see 15 changesets
   | | | | o  ec31316faa9d (14) fold2
   | | | |/|
   | | | x |    100cc25b765f (9) fold2
-  | | | |\ \     rewritten by test (*) as d4a000f63ee9, ec31316faa9d (glob)
+  | | | |\ \     rewritten(parent, content) by test (*) as d4a000f63ee9, ec31316faa9d (glob)
   | | | | | |
   | +-------x  d0f33db50670 (13) fold1
-  | | | | |      rewritten by test (*) as ec31316faa9d (glob)
+  | | | | |      rewritten(description, parent, content) by test (*) as ec31316faa9d (glob)
   | | | | |
   +---x | |  e036916b63ea (11) fold0
-  | |  / /     rewritten by test (*) as 7b3290f6e0a0 (glob)
+  | |  / /     rewritten(description, parent, content) by test (*) as 7b3290f6e0a0 (glob)
   | | | |
   | | x |  0da815c333f6 (5) E
-  | |  /     rewritten by test (*) as 100cc25b765f (glob)
+  | |  /     rewritten(description, content) by test (*) as 100cc25b765f (glob)
   | | |
   x | |    b868bc49b0a4 (7) fold0
-  |\ \ \     rewritten by test (*) as 19e14c8397fc, e036916b63ea (glob)
+  |\ \ \     rewritten(parent, content) by test (*) as 19e14c8397fc, e036916b63ea (glob)
   | | | |
   | | x |    d15d0ffc75f6 (8) fold1
-  | | |\ \     rewritten by test (*) as 7b3290f6e0a0, d0f33db50670 (glob)
+  | | |\ \     rewritten(parent, content) by test (*) as 7b3290f6e0a0, d0f33db50670 (glob)
   | | | | |
   | | | | x  d9f908fde1a1 (6) F
-  | | | |      rewritten by test (*) as 100cc25b765f (glob)
+  | | | |      rewritten(description, parent, content) by test (*) as 100cc25b765f (glob)
   | | | |
   x | | |  2a34000d3544 (1) A
-   / / /     rewritten by test (*) as b868bc49b0a4 (glob)
+   / / /     rewritten(description, content) by test (*) as b868bc49b0a4 (glob)
   | | |
   | x |  868d2e0eb19c (4) D
-  |  /     rewritten by test (*) as d15d0ffc75f6 (glob)
+  |  /     rewritten(description, parent, content) by test (*) as d15d0ffc75f6 (glob)
   | |
   | x  a8df460dbbfe (3) C
-  |      rewritten by test (*) as d15d0ffc75f6 (glob)
+  |      rewritten(description, content) by test (*) as d15d0ffc75f6 (glob)
   |
   x  c473644ee0e9 (2) B
-       rewritten by test (*) as b868bc49b0a4 (glob)
+       rewritten(description, parent, content) by test (*) as b868bc49b0a4 (glob)
   

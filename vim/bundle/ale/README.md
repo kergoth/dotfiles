@@ -58,6 +58,7 @@ name. That seems to be the fairest way to arrange this table.
 | ASM | [gcc](https://gcc.gnu.org) |
 | Ansible | [ansible-lint](https://github.com/willthames/ansible-lint) |
 | AsciiDoc | [proselint](http://proselint.com/)|
+| Awk | [gawk](https://www.gnu.org/software/gawk/)|
 | Bash | [-n flag](https://www.gnu.org/software/bash/manual/bash.html#index-set), [shellcheck](https://www.shellcheck.net/) |
 | Bourne Shell | [-n flag](http://linux.die.net/man/1/sh), [shellcheck](https://www.shellcheck.net/) |
 | C | [cppcheck](http://cppcheck.sourceforge.net), [gcc](https://gcc.gnu.org/), [clang](http://clang.llvm.org/)|
@@ -76,6 +77,7 @@ name. That seems to be the fairest way to arrange this table.
 | Erb | [erb](https://github.com/jeremyevans/erubi) |
 | Erlang | [erlc](http://erlang.org/doc/man/erlc.html) |
 | Fortran | [gcc](https://gcc.gnu.org/) |
+| FusionScript | [fusion-lint](https://github.com/RyanSquared/fusionscript) |
 | Go | [gofmt -e](https://golang.org/cmd/gofmt/), [go vet](https://golang.org/cmd/vet/), [golint](https://godoc.org/github.com/golang/lint), [gometalinter](https://github.com/alecthomas/gometalinter), [go build](https://golang.org/cmd/go/), [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple), [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) |
 | Haml | [haml-lint](https://github.com/brigade/haml-lint)
 | Handlebars | [ember-template-lint](https://github.com/rwjblue/ember-template-lint) |
@@ -100,7 +102,7 @@ name. That seems to be the fairest way to arrange this table.
 | Pod | [proselint](http://proselint.com/)|
 | Pug | [pug-lint](https://github.com/pugjs/pug-lint) |
 | Puppet | [puppet](https://puppet.com), [puppet-lint](https://puppet-lint.com) |
-| Python | [flake8](http://flake8.pycqa.org/en/latest/), [mypy](http://mypy-lang.org/), [pylint](https://www.pylint.org/) |
+| Python | [autopep8](https://github.com/hhatto/autopep8), [flake8](http://flake8.pycqa.org/en/latest/), [isort](https://github.com/timothycrosley/isort), [mypy](http://mypy-lang.org/), [pylint](https://www.pylint.org/), [yapf](https://github.com/google/yapf) |
 | ReasonML | [merlin](https://github.com/the-lambda-church/merlin) see `:help ale-integration-reason-merlin` for configuration instructions
 | reStructuredText | [proselint](http://proselint.com/)|
 | RPM spec | [rpmlint](https://github.com/rpm-software-management/rpmlint) (disabled by default; see `:help ale-integration-spec`) |
@@ -115,7 +117,7 @@ name. That seems to be the fairest way to arrange this table.
 | Swift | [swiftlint](https://swift.org/) |
 | Texinfo | [proselint](http://proselint.com/)|
 | Text^ | [proselint](http://proselint.com/), [vale](https://github.com/ValeLint/vale) |
-| TypeScript | [tslint](https://github.com/palantir/tslint), typecheck |
+| TypeScript | [eslint](http://eslint.org/), [tslint](https://github.com/palantir/tslint), tsserver, typecheck |
 | Verilog | [iverilog](https://github.com/steveicarus/iverilog), [verilator](http://www.veripool.org/projects/verilator/wiki/Intro) |
 | Vim | [vint](https://github.com/Kuniwak/vint) |
 | Vim help^ | [proselint](http://proselint.com/)|

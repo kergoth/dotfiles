@@ -113,7 +113,7 @@ To use ``evolve``, you must:
   #. Clone the ``evolve`` repository::
 
        cd ~/src
-       hg clone http://hg.netv6.net/evolve-main
+       hg clone https://www.mercurial-scm.org/repo/evolve
 
   #. Configure the extension, either locally ::
 

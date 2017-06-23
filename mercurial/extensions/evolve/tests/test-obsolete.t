@@ -34,7 +34,7 @@
   0d3f46688ccc6e756c7e96cf64c391c411309597
   $ hg debugobsolete 4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597
   $ hg debugobsolete
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (*) {'user': 'test'} (glob)
 
 
 Test hidden() revset
@@ -639,17 +639,17 @@ Check hg commit --amend compat
      summary:     add a
   
   $ hg debugobsolete | grep -v 33d458d86621f3186c40bfccd77652f4a122743e
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  0d3f46688ccc6e756c7e96cf64c391c411309597 725c380fe99b5e76613493f0903e8d11ddc70d54 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  a7a6f2b5d8a54b81bc7aa2fba2934ad6d700a79e 95de7fc6918dea4c9c8d5382f50649794b474c4a 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  95de7fc6918dea4c9c8d5382f50649794b474c4a 909a0fb57e5d909f353d89e394ffd7e0890fec88 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  909a0fb57e5d909f353d89e394ffd7e0890fec88 159dfc9fa5d334d7e03a0aecfc7f7ab4c3431fea 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  1f0dee641bb7258c56bd60e93edfa2405381c41e 83b5778897adafb967ef2f75be3aaa4fce49a4cc 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  83b5778897adafb967ef2f75be3aaa4fce49a4cc 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  0d3f46688ccc6e756c7e96cf64c391c411309597 2033b4e494742365851fac84d276640cbf52833e 0 (*) {'user': 'test'} (glob)
-  159dfc9fa5d334d7e03a0aecfc7f7ab4c3431fea 9468a5f5d8b2c5d91e17474e95ae4791e9718fdf 0 (*) {'user': 'test'} (glob)
-  9468a5f5d8b2c5d91e17474e95ae4791e9718fdf 6db5e282cb91df5c43ff1f1287c119ff83230d42 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  0b1b6dd009c037985363e2290a0b579819f659db 705ab2a6b72e2cd86edb799ebe15f2695f86143e 0 (*) {'user': 'test'} (glob)
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (*) {'user': 'test'} (glob)
+  0d3f46688ccc6e756c7e96cf64c391c411309597 725c380fe99b5e76613493f0903e8d11ddc70d54 0 (*) {'user': 'test'} (glob)
+  a7a6f2b5d8a54b81bc7aa2fba2934ad6d700a79e 95de7fc6918dea4c9c8d5382f50649794b474c4a 0 (*) {'user': 'test'} (glob)
+  95de7fc6918dea4c9c8d5382f50649794b474c4a 909a0fb57e5d909f353d89e394ffd7e0890fec88 0 (*) {'user': 'test'} (glob)
+  909a0fb57e5d909f353d89e394ffd7e0890fec88 159dfc9fa5d334d7e03a0aecfc7f7ab4c3431fea 0 (*) {'user': 'test'} (glob)
+  1f0dee641bb7258c56bd60e93edfa2405381c41e 83b5778897adafb967ef2f75be3aaa4fce49a4cc 0 (*) {'user': 'test'} (glob)
+  83b5778897adafb967ef2f75be3aaa4fce49a4cc 0 (*) {'user': 'test'} (glob)
+  0d3f46688ccc6e756c7e96cf64c391c411309597 2033b4e494742365851fac84d276640cbf52833e 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  159dfc9fa5d334d7e03a0aecfc7f7ab4c3431fea 9468a5f5d8b2c5d91e17474e95ae4791e9718fdf 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  9468a5f5d8b2c5d91e17474e95ae4791e9718fdf 6db5e282cb91df5c43ff1f1287c119ff83230d42 0 (*) {'user': 'test'} (glob)
+  0b1b6dd009c037985363e2290a0b579819f659db 705ab2a6b72e2cd86edb799ebe15f2695f86143e 0 (*) {'ef1': '*', 'user': 'test'} (glob)
 #no produced by 2.3
 33d458d86621f3186c40bfccd77652f4a122743e 3734a65252e69ddcced85901647a4f335d40de1e 0 {'date': '* *', 'user': 'test'} (glob)
 
@@ -693,11 +693,11 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   [2]
   $ hg olog
   @  0d3f46688ccc (3) add obsol_c
-  |    rewritten by test (*) as 2033b4e49474 (glob)
-  |    rewritten by test (Thu Jan 01 00:00:00 1970 +0000) as 725c380fe99b
+  |    rewritten(parent) by test (*) as 2033b4e49474 (glob)
+  |    rewritten by test (*) as 725c380fe99b (glob)
   |
   x  4538525df7e2 (2) add c
-       rewritten by test (Thu Jan 01 00:00:00 1970 +0000) as 0d3f46688ccc
+       rewritten by test (*) as 0d3f46688ccc (glob)
   
 
 Check import reports new unstable changeset:
@@ -705,7 +705,7 @@ Check import reports new unstable changeset:
   $ hg up --hidden 2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (4538525df7e2)
-  (4538525df7e2 has diverged, use 'hg evolve -list --divergent' to resolve the issue)
+  (4538525df7e2 has diverged, use 'hg evolve --list --divergent' to resolve the issue)
   $ hg export 9468a5f5d8b2 | hg import -
   applying patch from stdin
   1 new unstable changesets
@@ -826,18 +826,18 @@ Relevant marker computation
 Simple rewrite
 
   $ hg  --hidden debugobsolete --rev 3
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (*) {'user': 'test'} (glob)
 
 simple rewrite with a prune attached to it
 
   $ hg debugobsolete --rev 15
-  0b1b6dd009c037985363e2290a0b579819f659db 705ab2a6b72e2cd86edb799ebe15f2695f86143e 0 (*) {'user': 'test'} (glob)
-  33d458d86621f3186c40bfccd77652f4a122743e 0 {0b1b6dd009c037985363e2290a0b579819f659db} (*) {'user': 'test'} (glob)
+  0b1b6dd009c037985363e2290a0b579819f659db 705ab2a6b72e2cd86edb799ebe15f2695f86143e 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  33d458d86621f3186c40bfccd77652f4a122743e 0 {0b1b6dd009c037985363e2290a0b579819f659db} (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Transitive rewrite
 
   $ hg --hidden debugobsolete --rev 8
-  909a0fb57e5d909f353d89e394ffd7e0890fec88 159dfc9fa5d334d7e03a0aecfc7f7ab4c3431fea 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  95de7fc6918dea4c9c8d5382f50649794b474c4a 909a0fb57e5d909f353d89e394ffd7e0890fec88 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  a7a6f2b5d8a54b81bc7aa2fba2934ad6d700a79e 95de7fc6918dea4c9c8d5382f50649794b474c4a 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  909a0fb57e5d909f353d89e394ffd7e0890fec88 159dfc9fa5d334d7e03a0aecfc7f7ab4c3431fea 0 (*) {'user': 'test'} (glob)
+  95de7fc6918dea4c9c8d5382f50649794b474c4a 909a0fb57e5d909f353d89e394ffd7e0890fec88 0 (*) {'user': 'test'} (glob)
+  a7a6f2b5d8a54b81bc7aa2fba2934ad6d700a79e 95de7fc6918dea4c9c8d5382f50649794b474c4a 0 (*) {'user': 'test'} (glob)
 

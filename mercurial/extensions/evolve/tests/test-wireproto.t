@@ -72,7 +72,7 @@ Push
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 139 bytes received
+  remote: obsmarker-exchange: 151 bytes received
   remote: 2 new obsolescence markers
   $ hg push
   pushing to ssh://user@dummy/server
@@ -90,7 +90,7 @@ Pull
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
-  obsmarker-exchange: 139 bytes received
+  obsmarker-exchange: 151 bytes received
   2 new obsolescence markers
   (run 'hg heads' to see heads)
   $ hg -R ../other pull
@@ -113,7 +113,7 @@ Test some markers discovery
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files
-  remote: obsmarker-exchange: 139 bytes received
+  remote: obsmarker-exchange: 151 bytes received
   remote: 2 new obsolescence markers
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
@@ -122,7 +122,7 @@ Test some markers discovery
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  obsmarker-exchange: 139 bytes received
+  obsmarker-exchange: 151 bytes received
   2 new obsolescence markers
   (run 'hg update' to get a working copy)
 
@@ -136,7 +136,7 @@ some common hidden
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 0 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 208 bytes received
+  remote: obsmarker-exchange: 227 bytes received
   remote: 1 new obsolescence markers
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
@@ -145,7 +145,7 @@ some common hidden
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 1 files (+1 heads)
-  obsmarker-exchange: 208 bytes received
+  obsmarker-exchange: 227 bytes received
   1 new obsolescence markers
   (run 'hg heads' to see heads)
 
@@ -169,7 +169,7 @@ test discovery can be disabled
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
   no changes found
-  remote: obsmarker-exchange: 346 bytes received
+  remote: obsmarker-exchange: 377 bytes received
   [1]
   $ hg -R ../other pull --config experimental.evolution.obsdiscovery=no
   pulling from ssh://user@dummy/server
@@ -177,6 +177,6 @@ test discovery can be disabled
   no changes found
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
-  obsmarker-exchange: 346 bytes received
+  obsmarker-exchange: 377 bytes received
 
   $ cd ..

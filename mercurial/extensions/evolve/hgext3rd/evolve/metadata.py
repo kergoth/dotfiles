@@ -5,7 +5,7 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
-__version__ = '6.3.1'
+__version__ = '6.4.1.dev'
 testedwith = '3.8.4 3.9.2 4.0.2 4.1.2 4.2'
 minimumhgversion = '3.8'
 buglink = 'https://bz.mercurial-scm.org/'

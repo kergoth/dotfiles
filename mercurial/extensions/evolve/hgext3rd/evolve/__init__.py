@@ -53,11 +53,11 @@ New Config:
 Obsolescence Markers Discovery Experiment
 =========================================
 
-We are experimenting with a new protocol to discover common markers during the
-local and remote repository. This experiment is still at an early stage but is
-already raising better result than the previous version when usable.
+We are experimenting with a new protocol to discover common markers between
+local and remote repositories. This experiment is still at an early stage but
+is already raising better results than the previous version (when usable).
 
-Large" repositories (hundreds of thousand) are currently unsupported. Some key
+"Large" repositories (hundreds of thousand) are currently unsupported. Some key
 algorithm has a naive implementation with too agressive caching, creating
 memory consumption issue (this will get fixed).
 
@@ -77,19 +77,24 @@ The following config control the experiment::
   # (recommended 'yes' for server (default))
   obshashrange.warm-cache = no
 
-It is recommended to enable the blackbox extension to gather useful
-data about the experiment. It is shipped with Mercurial so no extra
-install needed.
+It is recommended to enable the blackbox extension. It gather useful data about
+the experiment. It is shipped with Mercurial so no extra install are needed.
 
     [extensions]
     blackbox =
 
-Finally some extra option are available to help tame the experimental
+Finally some extra options are available to help tame the experimental
 implementation of some of the algorithms:
 
     [experimental]
     # restrict cache size to reduce memory consumption
     obshashrange.lru-size = 2000 # default is 2000
+
+    # automatically disable obshashrange related computation and capabilities
+    # if the repository has more than N revisions.  This is meant to help large
+    # server deployement to enable the feature on smaller repositories while
+    # ensuring no large repository will get affected.
+    obshashrange.max-revs = 100000 # default is None
 
 Effect Flag Experiment
 ======================
@@ -97,16 +102,46 @@ Effect Flag Experiment
 We are experimenting with a way to register what changed between a precursor
 and its successors (content, description, parent, etc...). For example, having
 this information is helpful to show what changed between an obsolete changeset
-and its tipmost successors.
+and its tipmost successors. This experiment is active by default
 
 The following config control the experiment::
 
   [experimental]
-  # activate the registration of effect flags in obs markers
-  evolution.effect-flags = yes
+  # deactivate the registration of effect flags in obs markers
+  evolution.effect-flags = false
 
 The effect flags are shown in the obglog command output without particular
-configuration of you want to inspect them.
+configuration if you want to inspect them.
+
+Templates
+=========
+
+Evolve ship several templates that you can use to have a better visibility
+about your obs history:
+
+  - precursors, for each obsolete changeset show the closest visible
+    precursors.
+  - successors, for each obsolete changeset show the closets visible
+    successors. It is useful when your working directory is obsolete to see
+    what are its successors. This informations can also be retrieved with the
+    obslog command and the --all option.
+  - obsfate, for each obsolete changeset display a line summarizing what
+    changed between the changeset and its successors. Dependending on the
+    verbosity level (-q and -v) it display the changeset successors, the users
+    that created the obsmarkers and the date range of theses changes.
+
+    The template itself is not complex, the data are basically a list of
+    successortset. Each successorset is a dict with these fields:
+
+      - "verb", how did the revision changed, pruned or rewritten for the moment
+      - "users" a sorted list of users that have create obs marker between current
+        changeset and one of its successor
+      - "min_date" the tiniest date of the first obs marker between current
+        changeset and one of its successor
+      - "max_date" the biggest date between current changeset and one of its
+        successor
+      - "successors" a sorted list of locally know successors node ids
+      - "markers" the raw list of changesets.
 """
 
 evolutionhelptext = """
@@ -576,7 +611,7 @@ def _warnobsoletewc(ui, repo):
     if reason == 'pruned':
         solvemsg = _("use 'hg evolve' to update to its parent successor")
     elif reason == 'diverged':
-        debugcommand = "hg evolve -list --divergent"
+        debugcommand = "hg evolve --list --divergent"
         basemsg = _("%s has diverged, use '%s' to resolve the issue")
         solvemsg = basemsg % (shortnode, debugcommand)
     elif reason == 'superseed':

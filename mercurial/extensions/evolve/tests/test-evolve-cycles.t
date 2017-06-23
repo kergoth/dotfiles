@@ -86,48 +86,48 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(A)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
   |
 
   $ hg obslog "desc(B)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
   |
 
   $ hg obslog "desc(C)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
   |
 
 Check that all option don't crash on a cycle either
 
   $ hg obslog "desc(C)" --hidden --all
   @  2a34000d3544 (1) A
-  |    rewritten by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
   |
 
 Test with multiple cyles
@@ -243,42 +243,42 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(D)" --hidden
   x  0da815c333f6 (5) E
-  |    rewritten by test (*) as d9f908fde1a1 (glob)
+  |    rewritten(description, parent, content) by test (*) as d9f908fde1a1 (glob)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten by test (*) as 0da815c333f6 (glob)
+  |\     rewritten(description, parent, content) by test (*) as 0da815c333f6 (glob)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten by test (*) as 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) by test (*) as 868d2e0eb19c (glob)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten by test (*) as c473644ee0e9 (glob)
+  | |      rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten by test (*) as 2a34000d3544, 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) by test (*) as 2a34000d3544, 868d2e0eb19c (glob)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten by test (*) as a8df460dbbfe (glob)
+  | |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
   | |
 Check that all option don't crash either on a cycle
   $ hg obslog --all --hidden "desc(F)"
   x  0da815c333f6 (5) E
-  |    rewritten by test (*) as d9f908fde1a1 (glob)
+  |    rewritten(description, parent, content) by test (*) as d9f908fde1a1 (glob)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten by test (*) as 0da815c333f6 (glob)
+  |\     rewritten(description, parent, content) by test (*) as 0da815c333f6 (glob)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten by test (*) as 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) by test (*) as 868d2e0eb19c (glob)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten by test (*) as c473644ee0e9 (glob)
+  | |      rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten by test (*) as 2a34000d3544, 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) by test (*) as 2a34000d3544, 868d2e0eb19c (glob)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten by test (*) as a8df460dbbfe (glob)
+  | |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
   | |
 Check the json output is valid in this case
 
@@ -287,6 +287,11 @@ Check the json output is valid in this case
       {
           "debugobshistory.markers": [
               {
+                  "debugobshistory.effect": [
+                      "description",
+                      "parent",
+                      "content"
+                  ],
                   "debugobshistory.marker_date": [
                       *, (glob)
                       0
@@ -305,6 +310,11 @@ Check the json output is valid in this case
       {
           "debugobshistory.markers": [
               {
+                  "debugobshistory.effect": [
+                      "description",
+                      "parent",
+                      "content"
+                  ],
                   "debugobshistory.marker_date": [
                       *, (glob)
                       0
@@ -323,6 +333,11 @@ Check the json output is valid in this case
       {
           "debugobshistory.markers": [
               {
+                  "debugobshistory.effect": [
+                      "description",
+                      "parent",
+                      "content"
+                  ],
                   "debugobshistory.marker_date": [
                       *, (glob)
                       0
@@ -341,6 +356,11 @@ Check the json output is valid in this case
       {
           "debugobshistory.markers": [
               {
+                  "debugobshistory.effect": [
+                      "description",
+                      "parent",
+                      "content"
+                  ],
                   "debugobshistory.marker_date": [
                       *, (glob)
                       0
@@ -360,6 +380,11 @@ Check the json output is valid in this case
       {
           "debugobshistory.markers": [
               {
+                  "debugobshistory.effect": [
+                      "description",
+                      "parent",
+                      "content"
+                  ],
                   "debugobshistory.marker_date": [
                       *, (glob)
                       0
@@ -378,6 +403,11 @@ Check the json output is valid in this case
       {
           "debugobshistory.markers": [
               {
+                  "debugobshistory.effect": [
+                      "description",
+                      "parent",
+                      "content"
+                  ],
                   "debugobshistory.marker_date": [
                       *, (glob)
                       0

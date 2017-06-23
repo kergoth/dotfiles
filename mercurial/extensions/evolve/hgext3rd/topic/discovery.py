@@ -15,11 +15,24 @@ from mercurial import (
 
 from . import topicmap
 
-def _headssummary(orig, repo, remote, outgoing):
+def _headssummary(orig, *args):
+    # In mercurial < 4.2, we receive repo, remote and outgoing as arguments
+    if len(args) == 3:
+        repo, remote, outgoing = args
+
+    # In mercurial > 4.3, we receive the pushop as arguments
+    elif len(args) == 1:
+        pushop = args[0]
+        repo = pushop.repo.unfiltered()
+        remote = pushop.remote
+    else:
+        msg = 'topic-ext _headssummary() takes 1 or 3 arguments (%d given)'
+        raise TypeError(msg % len(args))
+
     publishing = ('phases' not in remote.listkeys('namespaces')
                   or bool(remote.listkeys('phases').get('publishing', False)))
     if publishing or not remote.capable('topics'):
-        return orig(repo, remote, outgoing)
+        return orig(*args)
     oldrepo = repo.__class__
     oldbranchcache = branchmap.branchcache
     oldfilename = branchmap._filename
@@ -42,7 +55,7 @@ def _headssummary(orig, repo, remote, outgoing):
         repo.__class__ = repocls
         branchmap.branchcache = topicmap.topiccache
         branchmap._filename = topicmap._filename
-        summary = orig(repo, remote, outgoing)
+        summary = orig(*args)
         for key, value in summary.iteritems():
             if ':' in key: # This is a topic
                 if value[0] is None and value[1]:

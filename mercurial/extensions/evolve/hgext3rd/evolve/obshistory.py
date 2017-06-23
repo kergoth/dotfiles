@@ -484,6 +484,9 @@ def _prepare_hunk(hunk):
 def _getdifflines(iterdiff):
     """return a cleaned up lines"""
     try:
+        # XXX-COMPAT Mercurial 4.1 compat
+        if isinstance(iterdiff, list) and len(iterdiff) == 0:
+            return None
         lines = iterdiff.next()
     except StopIteration:
         return None
@@ -494,8 +497,14 @@ def _cmpdiff(leftctx, rightctx):
 
     This is a first and basic implementation, with many shortcoming.
     """
-    leftdiff = leftctx.diff(git=1)
-    rightdiff = rightctx.diff(git=1)
+
+    # Leftctx or right ctx might be filtered, so we need to use the contexts
+    # with an unfiltered repository to safely compute the diff
+    leftunfi = leftctx._repo.unfiltered()[leftctx.rev()]
+    leftdiff = leftunfi.diff(git=1)
+    rightunfi = rightctx._repo.unfiltered()[rightctx.rev()]
+    rightdiff = rightunfi.diff(git=1)
+
     left, right = (0, 0)
     while None not in (left, right):
         left = _getdifflines(leftdiff)
@@ -522,7 +531,7 @@ def createmarkerswithbits(orig, repo, relations, flag=0, date=None,
     meaningful data. In the future, we can introduce way for commands to
     provide precomputed effect to avoid the overhead.
     """
-    if not repo.ui.configbool('experimental', 'evolution.effect-flags', False):
+    if not repo.ui.configbool('experimental', 'evolution.effect-flags', True):
         return orig(repo, relations, flag, date, metadata, **kwargs)
     if metadata is None:
         metadata = {}
@@ -591,16 +600,104 @@ def _getobsfateandsuccs(repo, revnode, successorssets=None):
 
     return (fate, successors)
 
-def _humanizedobsfate(fate, successors):
-    """ Returns a humanized string for a changeset fate and its successors
+def _successorsetdates(successorset, markers):
+    """returns the max date and the min date of the markers list
     """
 
-    if fate == 'pruned':
-        return 'pruned'
-    elif fate == 'diverged':
-        msgs = []
-        for successorsset in successors:
-            msgs.append('superseed as %s' % ','.join(successorsset))
-        return ' + '.join(msgs)
-    elif fate in ('superseed', 'superseed_split'):
-        return 'superseed as %s' % ','.join(successors)
+    if not markers:
+        return {}
+
+    dates = [m[4] for m in markers]
+
+    return {
+        'min_date': min(dates),
+        'max_date': max(dates)
+    }
+
+def _successorsetusers(successorset, markers):
+    """ Returns a sorted list of markers users without duplicates
+    """
+    if not markers:
+        return {}
+
+    # Check that user is present in meta
+    markersmeta = [dict(m[3]) for m in markers]
+    users = set(meta.get('user') for meta in markersmeta if meta.get('user'))
+
+    return {'users': sorted(users)}
+
+def _successorsetverb(successorset, markers):
+    """ Return the verb summarizing the successorset
+    """
+    if not successorset:
+        verb = 'pruned'
+    elif len(successorset) == 1:
+        verb = 'rewritten'
+    else:
+        verb = 'split'
+    return {'verb': verb}
+
+FORMATSSETSFUNCTIONS = [
+    _successorsetdates,
+    _successorsetusers,
+    _successorsetverb
+]
+
+def successorsetallmarkers(successorset, pathscache):
+    """compute all successors of a successorset.
+
+    pathscache must contains all successors starting from selected nodes
+    or revision. This way, iterating on each successor, we can take all
+    precursors and have the subgraph of all obsmarkers between roots to
+    successors.
+    """
+
+    markers = set()
+    seen = set()
+
+    for successor in successorset:
+        stack = [successor]
+
+        while stack:
+            element = stack.pop()
+            seen.add(element)
+            for prec, mark in pathscache.get(element, []):
+                if prec not in seen:
+                    # Process element precursors
+                    stack.append(prec)
+
+                if mark not in markers:
+                    markers.add(mark)
+
+    return markers
+
+def preparesuccessorset(successorset, rawmarkers):
+    """ For a successor set, get all related markers, compute the set of user,
+    the min date and the max date
+    """
+    hex = nodemod.hex
+
+    successorset = [hex(n) for n in successorset]
+
+    # hex the binary nodes in the markers
+    markers = []
+    for m in rawmarkers:
+        hexprec = hex(m[0])
+        hexsucs = tuple(hex(n) for n in m[1])
+        hexparents = None
+        if m[5] is not None:
+            hexparents = tuple(hex(n) for n in m[5])
+        newmarker = (hexprec, hexsucs) + m[2:5] + (hexparents,) + m[6:]
+        markers.append(newmarker)
+
+    # Format basic data
+    data = {
+        "successors": sorted(successorset),
+        "markers": sorted(markers)
+    }
+
+    # Call an extensible list of functions to override or add new data
+    for function in FORMATSSETSFUNCTIONS:
+        data.update(function(successorset, markers))
+
+    return data

@@ -38,6 +38,14 @@ command! -bar -bang Remove
       \ endif |
       \ unlet s:file
 
+command! -bar -bang Delete
+      \ let s:file = fnamemodify(bufname(<q-args>),':p') |
+      \ execute 'bdelete<bang>' |
+      \ if !bufloaded(s:file) && delete(s:file) |
+      \   echoerr 'Failed to delete "'.s:file.'"' |
+      \ endif |
+      \ unlet s:file
+
 command! -bar -nargs=1 -bang -complete=file Move :
       \ let s:src = expand('%:p') |
       \ let s:dst = expand(<q-args>) |
@@ -59,6 +67,7 @@ command! -bar -nargs=1 -bang -complete=file Move :
       \   if s:src !=# expand('%:p') |
       \     execute 'bwipe '.s:fnameescape(s:src) |
       \   endif |
+      \   filetype detect |
       \ endif |
       \ unlet s:src |
       \ unlet s:dst |
@@ -110,27 +119,70 @@ function! s:Grep(bang,args,prg) abort
   endtry
 endfunction
 
+function! s:SilentSudoCmd(editor) abort
+  let cmd = 'env SUDO_EDITOR=' . a:editor . ' VISUAL=' . a:editor . ' sudo -e'
+  if !has('gui_running')
+    return ['silent', cmd]
+  elseif !empty($SUDO_ASKPASS) ||
+        \ filereadable('/etc/sudo.conf') &&
+        \ len(filter(readfile('/etc/sudo.conf', 50), 'v:val =~# "^Path askpass "'))
+    return ['silent', cmd . ' -A']
+  else
+    return ['', cmd]
+endfunction
+
 function! s:SudoSetup(file) abort
   if !filereadable(a:file) && !exists('#BufReadCmd#'.s:fnameescape(a:file))
-    execute 'autocmd BufReadCmd ' s:fnameescape(a:file) 'call s:SudoReadCmd()'
+    execute 'autocmd BufReadCmd ' s:fnameescape(a:file) 'exe s:SudoReadCmd()'
   endif
   if !filewritable(a:file) && !exists('#BufWriteCmd#'.s:fnameescape(a:file))
     execute 'autocmd BufReadPost ' s:fnameescape(a:file) 'set noreadonly'
-    execute 'autocmd BufWriteCmd ' s:fnameescape(a:file) 'call s:SudoWriteCmd()'
+    execute 'autocmd BufWriteCmd ' s:fnameescape(a:file) 'exe s:SudoWriteCmd()'
+  endif
+endfunction
+
+let s:error_file = tempname()
+
+function! s:SudoError() abort
+  let error = join(readfile(s:error_file), " | ")
+  if error =~# '^sudo' || v:shell_error
+    return len(error) ? error : 'Error invoking sudo'
+  else
+    return error
   endif
 endfunction
 
 function! s:SudoReadCmd() abort
+  if &shellpipe =~ '|&'
+    return 'echoerr ' . string('eunuch.vim: no sudo read support for csh')
+  endif
   silent %delete_
-  let pipe = printf(&shellpipe . (&shellpipe =~ '%s' ? '' : ' %s'), '/dev/null')
-  execute (has('gui_running') ? '' : 'silent') 'read !env SUDO_EDITOR=cat VISUAL=cat sudo -e "%" ' . pipe
+  let [silent, cmd] = s:SilentSudoCmd('cat')
+  execute silent 'read !' . cmd . ' "%" 2> ' . s:error_file
+  let exit_status = v:shell_error
   silent 1delete_
-  set nomodified
+  setlocal nomodified
+  if exit_status
+    return 'echoerr ' . string(s:SudoError())
+  endif
 endfunction
 
 function! s:SudoWriteCmd() abort
-  execute (has('gui_running') ? '' : 'silent') 'write !env SUDO_EDITOR=tee VISUAL=tee sudo -e "%" >/dev/null'
-  let &modified = v:shell_error
+  let [silent, cmd] = s:SilentSudoCmd('tee')
+  let cmd .= ' "%" >/dev/null'
+  if &shellpipe =~ '|&'
+    let cmd = '(' . cmd . ')>& ' . s:error_file
+  else
+    let cmd .= ' 2> ' . s:error_file
+  endif
+  execute silent 'write !'.cmd
+  let error = s:SudoError()
+  if !empty(error)
+    return 'echoerr ' . string(error)
+  else
+    setlocal nomodified
+    return ''
+  endif
 endfunction
 
 command! -bar -bang -complete=file -nargs=? SudoEdit

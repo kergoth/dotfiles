@@ -447,14 +447,7 @@ endfunction
 " GFiles[?]
 " ------------------------------------------------------------------
 
-" helper function to get the git root. Uses vim-fugitive if available for EXTRA SPEED!
 function! s:get_git_root()
-  if exists('*fugitive#repo')
-    try
-      return fugitive#repo().tree()
-    catch
-    endtry
-  endif
   let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
   return v:shell_error ? '' : root
 endfunction
@@ -988,7 +981,7 @@ function! s:commits_sink(lines)
   let cmd = get(extend({'ctrl-d': ''}, get(g:, 'fzf_action', s:default_action)), a:lines[0], 'e')
   let buf = bufnr('')
   for idx in range(1, len(a:lines) - 1)
-    let sha = matchstr(a:lines[idx], '[0-9a-f]\{7}')
+    let sha = matchstr(a:lines[idx], '[0-9a-f]\{7,9}')
     if !empty(sha)
       if empty(cmd)
         if idx > 1

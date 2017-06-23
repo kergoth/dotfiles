@@ -17,7 +17,9 @@ Global setup
   >     {if(precursors, "\n  semi-colon: {join(precursors, "; ")}")}\
   >     {if(successors, "\n  Successors: {successors}")}\
   >     {if(successors, "\n  semi-colon: {join(successors, "; ")}")}\
-  >     {if(successors, "\n  Fate: {obsfate_quiet}")}\n'
+  >     {if(obsfate, "\n  Fate: {join(obsfate, "\n  Fate: ")}\n")}\n'
+  > fatelog = log -G -T '{node|short}\n{if(obsfate, "  Obsfate: {join(obsfate, "; ")}\n\n")}'
+  > fatelogjson = log -G -T '{node|short} {obsfate|json}\n'
   > EOF
 
 Test templates on amended commit
@@ -31,8 +33,8 @@ Test setup
   $ mkcommit ROOT
   $ mkcommit A0
   $ echo 42 >> A0
-  $ hg amend -m "A1"
-  $ hg amend -m "A2"
+  $ HGUSER=test1 hg amend -m "A1" --config devel.default-date="1234567890 0"
+  $ HGUSER=test2 hg amend -m "A2" --config devel.default-date="987654321 0"
   $ hg log --hidden -G
   @  changeset:   4:d004c8f274b9
   |  tag:         tip
@@ -70,6 +72,15 @@ Check templates
   (use 'hg evolve' to update to its successor: d004c8f274b9)
 
 Precursors template should show current revision as it is the working copy
+  $ hg olog tip
+  o  d004c8f274b9 (4) A2
+  |
+  x  a468dc9b3633 (3) A1
+  |    rewritten(description) by test2 (*) as d004c8f274b9 (glob)
+  |
+  @  471f378eab4c (1) A0
+       rewritten(description, content) by test1 (*) as a468dc9b3633 (glob)
+  
   $ hg tlog
   o  d004c8f274b9
   |    Precursors: 471f378eab4c
@@ -77,9 +88,54 @@ Precursors template should show current revision as it is the working copy
   | @  471f378eab4c
   |/     Successors: [d004c8f274b9]
   |      semi-colon: [d004c8f274b9]
-  |      Fate: superseed as d004c8f274b9
+  |      Fate: rewritten by test1, test2 as d004c8f274b9
+  |
   o  ea207398892e
   
+  $ hg fatelog -q
+  o  d004c8f274b9
+  |
+  | @  471f378eab4c
+  |/     Obsfate: rewritten as d004c8f274b9
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelog
+  o  d004c8f274b9
+  |
+  | @  471f378eab4c
+  |/     Obsfate: rewritten by test1, test2 as d004c8f274b9
+  |
+  o  ea207398892e
+  
+  $ hg fatelog -v
+  o  d004c8f274b9
+  |
+  | @  471f378eab4c
+  |/     Obsfate: rewritten by test1, test2 as d004c8f274b9 (between * and *) (glob)
+  |
+  o  ea207398892e
+  
+
+(check json)
+
+  $ hg log -GT '{precursors|json}\n'
+  o  ["471f378eab4c5e25f6c77f785b27c936efb22874"]
+  |
+  | @  []
+  |/
+  o  []
+  
+
+  $ hg log -GT '{successors|json}\n'
+  o  ""
+  |
+  | @  [["d004c8f274b9ec480a47a93c10dac5eee63adb78"]]
+  |/
+  o  ""
+  
+
   $ hg up 'desc(A1)' --hidden
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (a468dc9b3633)
@@ -93,7 +149,8 @@ Precursors template should show current revision as it is the working copy
   | @  a468dc9b3633
   |/     Successors: [d004c8f274b9]
   |      semi-colon: [d004c8f274b9]
-  |      Fate: superseed as d004c8f274b9
+  |      Fate: rewritten by test2 as d004c8f274b9
+  |
   o  ea207398892e
   
 Precursors template should show the precursor as we force its display with
@@ -107,16 +164,26 @@ Precursors template should show the precursor as we force its display with
   |      semi-colon: 471f378eab4c
   |      Successors: [d004c8f274b9]
   |      semi-colon: [d004c8f274b9]
-  |      Fate: superseed as d004c8f274b9
+  |      Fate: rewritten by test2 as d004c8f274b9
+  |
   | x  f137d23bb3e1
+  | |    Fate: pruned by test1
   | |
   | x  471f378eab4c
   |/     Successors: [a468dc9b3633]
   |      semi-colon: [a468dc9b3633]
-  |      Fate: superseed as a468dc9b3633
+  |      Fate: rewritten by test1 as a468dc9b3633
+  |
   o  ea207398892e
   
-
+  $ hg fatelog -v
+  o  d004c8f274b9
+  |
+  | @  a468dc9b3633
+  |/     Obsfate: rewritten by test2 as d004c8f274b9 (at *) (glob)
+  |
+  o  ea207398892e
+  
   $ hg up 'desc(A2)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg tlog
@@ -133,14 +200,49 @@ Precursors template should show the precursor as we force its display with
   |      semi-colon: 471f378eab4c
   |      Successors: [d004c8f274b9]
   |      semi-colon: [d004c8f274b9]
-  |      Fate: superseed as d004c8f274b9
+  |      Fate: rewritten by test2 as d004c8f274b9
+  |
   | x  f137d23bb3e1
+  | |    Fate: pruned by test1
   | |
   | x  471f378eab4c
   |/     Successors: [a468dc9b3633]
   |      semi-colon: [a468dc9b3633]
-  |      Fate: superseed as a468dc9b3633
+  |      Fate: rewritten by test1 as a468dc9b3633
+  |
   o  ea207398892e
+  
+  $ hg fatelog -v
+  @  d004c8f274b9
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelog -v --hidden
+  @  d004c8f274b9
+  |
+  | x  a468dc9b3633
+  |/     Obsfate: rewritten by test2 as d004c8f274b9 (at *) (glob)
+  |
+  | x  f137d23bb3e1
+  | |    Obsfate: pruned by test1 (at *) (glob)
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten by test1 as a468dc9b3633 (at *) (glob)
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelogjson --hidden
+  @  d004c8f274b9 ""
+  |
+  | x  a468dc9b3633 [{"markers": [["a468dc9b36338b14fdb7825f55ce3df4e71517ad", ["d004c8f274b9ec480a47a93c10dac5eee63adb78"], 0, [["ef1", "1"], ["user", "test2"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["d004c8f274b9ec480a47a93c10dac5eee63adb78"], "users": ["test2"], "verb": "rewritten"}] (glob)
+  |/
+  | x  f137d23bb3e1 [{"markers": [["f137d23bb3e11dc1daeb6264fac9cb2433782e15", [], 0, [["ef1", "0"], ["user", "test1"]], [*, *], ["471f378eab4c5e25f6c77f785b27c936efb22874"]]], "max_date": [*, *], "min_date": [*, *], "successors": [], "users": ["test1"], "verb": "pruned"}] (glob)
+  | |
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["a468dc9b36338b14fdb7825f55ce3df4e71517ad"], 0, [["ef1", "9"], ["user", "test1"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["a468dc9b36338b14fdb7825f55ce3df4e71517ad"], "users": ["test1"], "verb": "rewritten"}] (glob)
+  |/
+  o  ea207398892e ""
   
 
 Test templates with splitted commit
@@ -244,9 +346,21 @@ Precursors template should show current revision as it is the working copy
   | @  471597cad322
   |/     Successors: [337fec4d2edc, f257fde29c7a]
   |      semi-colon: [337fec4d2edc, f257fde29c7a]
-  |      Fate: superseed as 337fec4d2edc,f257fde29c7a
+  |      Fate: split as 337fec4d2edc, f257fde29c7a
+  |
   o  ea207398892e
   
+  $ hg fatelog
+  o  f257fde29c7a
+  |
+  o  337fec4d2edc
+  |
+  | @  471597cad322
+  |/     Obsfate: split as 337fec4d2edc, f257fde29c7a
+  |
+  o  ea207398892e
+  
+
   $ hg up f257fde29c7a
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
@@ -271,9 +385,31 @@ Precursors template should show the precursor as we force its display with
   | x  471597cad322
   |/     Successors: [337fec4d2edc, f257fde29c7a]
   |      semi-colon: [337fec4d2edc, f257fde29c7a]
-  |      Fate: superseed as 337fec4d2edc,f257fde29c7a
+  |      Fate: split as 337fec4d2edc, f257fde29c7a
+  |
   o  ea207398892e
   
+  $ hg fatelog --hidden
+  @  f257fde29c7a
+  |
+  o  337fec4d2edc
+  |
+  | x  471597cad322
+  |/     Obsfate: split as 337fec4d2edc, f257fde29c7a
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelogjson --hidden
+  @  f257fde29c7a ""
+  |
+  o  337fec4d2edc ""
+  |
+  | x  471597cad322 [{"markers": [["471597cad322d1f659bb169751be9133dad92ef3", ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], 0, [["ef1", "12"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], "users": ["test"], "verb": "split"}] (glob)
+  |/
+  o  ea207398892e ""
+  
+
 Test templates with folded commit
 ==============================
 
@@ -344,7 +480,16 @@ Precursors template should show current revision as it is the working copy
   | @  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  o  eb5a0daa2192
+  |
+  | @  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
   
   $ hg up 'desc(B0)' --hidden
@@ -361,13 +506,27 @@ displayed
   | @  0dec01379d3b
   | |    Successors: [eb5a0daa2192]
   | |    semi-colon: [eb5a0daa2192]
-  | |    Fate: superseed as eb5a0daa2192
+  | |    Fate: rewritten as eb5a0daa2192
+  | |
   | x  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
   
+  $ hg fatelog
+  o  eb5a0daa2192
+  |
+  | @  0dec01379d3b
+  | |    Obsfate: rewritten as eb5a0daa2192
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+
   $ hg up 'desc(C0)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
@@ -387,12 +546,35 @@ Precursors template should show both precursors as we force its display with
   | x  0dec01379d3b
   | |    Successors: [eb5a0daa2192]
   | |    semi-colon: [eb5a0daa2192]
-  | |    Fate: superseed as eb5a0daa2192
+  | |    Fate: rewritten as eb5a0daa2192
+  | |
   | x  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
+  
+  $ hg fatelog --hidden
+  @  eb5a0daa2192
+  |
+  | x  0dec01379d3b
+  | |    Obsfate: rewritten as eb5a0daa2192
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelogjson --hidden
+  @  eb5a0daa2192 ""
+  |
+  | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | |
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  |/
+  o  ea207398892e ""
   
 
 Test templates with divergence
@@ -464,7 +646,7 @@ Check templates
   $ hg up 'desc(A0)' --hidden
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
-  (471f378eab4c has diverged, use 'hg evolve -list --divergent' to resolve the issue)
+  (471f378eab4c has diverged, use 'hg evolve --list --divergent' to resolve the issue)
 
 Precursors template should show current revision as it is the working copy
   $ hg tlog
@@ -477,14 +659,35 @@ Precursors template should show current revision as it is the working copy
   | @  471f378eab4c
   |/     Successors: [fdf9bde5129a], [019fadeab383]
   |      semi-colon: [fdf9bde5129a]; [019fadeab383]
-  |      Fate: superseed as fdf9bde5129a + superseed as 019fadeab383
+  |      Fate: rewritten as fdf9bde5129a
+  |      Fate: rewritten as 019fadeab383
+  |
   o  ea207398892e
   
+  $ hg fatelog
+  o  019fadeab383
+  |
+  | o  fdf9bde5129a
+  |/
+  | @  471f378eab4c
+  |/     Obsfate: rewritten as fdf9bde5129a; rewritten as 019fadeab383
+  |
+  o  ea207398892e
+  
+
   $ hg up 'desc(A1)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 Precursors template should not show precursors as it's not displayed in the
 log
   $ hg tlog
+  o  019fadeab383
+  |
+  | @  fdf9bde5129a
+  |/
+  o  ea207398892e
+  
+
+  $ hg fatelog
   o  019fadeab383
   |
   | @  fdf9bde5129a
@@ -501,16 +704,45 @@ Precursors template should a precursor as we force its display with --hidden
   |      semi-colon: 471f378eab4c
   |      Successors: [019fadeab383]
   |      semi-colon: [019fadeab383]
-  |      Fate: superseed as 019fadeab383
+  |      Fate: rewritten as 019fadeab383
+  |
   | @  fdf9bde5129a
   |/     Precursors: 471f378eab4c
   |      semi-colon: 471f378eab4c
   | x  471f378eab4c
   |/     Successors: [fdf9bde5129a], [65b757b745b9]
   |      semi-colon: [fdf9bde5129a]; [65b757b745b9]
-  |      Fate: superseed as fdf9bde5129a + superseed as 65b757b745b9
+  |      Fate: rewritten as fdf9bde5129a
+  |      Fate: rewritten as 65b757b745b9
+  |
   o  ea207398892e
   
+  $ hg fatelog --hidden
+  o  019fadeab383
+  |
+  | x  65b757b745b9
+  |/     Obsfate: rewritten as 019fadeab383
+  |
+  | @  fdf9bde5129a
+  |/
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as fdf9bde5129a; rewritten as 65b757b745b9
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelogjson --hidden
+  o  019fadeab383 ""
+  |
+  | x  65b757b745b9 [{"markers": [["65b757b745b935093c87a2bccd877521cccffcbd", ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], 0, [["ef1", "1"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], "users": ["test"], "verb": "rewritten"}] (glob)
+  |/
+  | @  fdf9bde5129a ""
+  |/
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], 0, [["ef1", "1"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], "users": ["test"], "verb": "rewritten"}, {"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["65b757b745b935093c87a2bccd877521cccffcbd"], 0, [["ef1", "1"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["65b757b745b935093c87a2bccd877521cccffcbd"], "users": ["test"], "verb": "rewritten"}] (glob)
+  |/
+  o  ea207398892e ""
+  
+
 Test templates with amended + folded commit
 ===========================================
 
@@ -592,7 +824,16 @@ Check templates
   | @  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  o  eb5a0daa2192
+  |
+  | @  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
   
   $ hg up 'desc(B0)' --hidden
@@ -606,13 +847,27 @@ Check templates
   | @  0dec01379d3b
   | |    Successors: [eb5a0daa2192]
   | |    semi-colon: [eb5a0daa2192]
-  | |    Fate: superseed as eb5a0daa2192
+  | |    Fate: rewritten as eb5a0daa2192
+  | |
   | x  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
   
+  $ hg fatelog
+  o  eb5a0daa2192
+  |
+  | @  0dec01379d3b
+  | |    Obsfate: rewritten as eb5a0daa2192
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+
   $ hg up 'desc(B1)' --hidden
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (b7ea6d14e664)
@@ -624,13 +879,27 @@ Check templates
   | @  b7ea6d14e664
   | |    Successors: [eb5a0daa2192]
   | |    semi-colon: [eb5a0daa2192]
-  | |    Fate: superseed as eb5a0daa2192
+  | |    Fate: rewritten as eb5a0daa2192
+  | |
   | x  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
   
+  $ hg fatelog
+  o  eb5a0daa2192
+  |
+  | @  b7ea6d14e664
+  | |    Obsfate: rewritten as eb5a0daa2192
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+
   $ hg up 'desc(C0)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg tlog
@@ -647,16 +916,44 @@ Check templates
   | |    semi-colon: 0dec01379d3b
   | |    Successors: [eb5a0daa2192]
   | |    semi-colon: [eb5a0daa2192]
-  | |    Fate: superseed as eb5a0daa2192
+  | |    Fate: rewritten as eb5a0daa2192
+  | |
   | | x  0dec01379d3b
   | |/     Successors: [b7ea6d14e664]
   | |      semi-colon: [b7ea6d14e664]
-  | |      Fate: superseed as b7ea6d14e664
+  | |      Fate: rewritten as b7ea6d14e664
+  | |
   | x  471f378eab4c
   |/     Successors: [eb5a0daa2192]
   |      semi-colon: [eb5a0daa2192]
-  |      Fate: superseed as eb5a0daa2192
+  |      Fate: rewritten as eb5a0daa2192
+  |
   o  ea207398892e
+  
+  $ hg fatelog --hidden
+  @  eb5a0daa2192
+  |
+  | x  b7ea6d14e664
+  | |    Obsfate: rewritten as eb5a0daa2192
+  | |
+  | | x  0dec01379d3b
+  | |/     Obsfate: rewritten as b7ea6d14e664
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as eb5a0daa2192
+  |
+  o  ea207398892e
+  
+  $ hg fatelogjson --hidden
+  @  eb5a0daa2192 ""
+  |
+  | x  b7ea6d14e664 [{"markers": [["b7ea6d14e664bdc8922221f7992631b50da3fb07", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | |
+  | | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], 0, [["ef1", "1"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | |/
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  |/
+  o  ea207398892e ""
   
 
 Test template with pushed and pulled obs markers
@@ -742,7 +1039,6 @@ Test setup
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     ROOT
   
-
 Check templates
 ---------------
 
@@ -753,12 +1049,26 @@ Check templates
   | @  471f378eab4c
   |/     Successors: [7a230b46bf61]
   |      semi-colon: [7a230b46bf61]
-  |      Fate: superseed as 7a230b46bf61
+  |      Fate: rewritten as 7a230b46bf61
+  |
+  o  ea207398892e
+  
+  $ hg fatelog --hidden -v
+  o  7a230b46bf61
+  |
+  | @  471f378eab4c
+  |/     Obsfate: rewritten by test as 7a230b46bf61 (between * and *) (glob)
+  |
   o  ea207398892e
   
   $ hg up 'desc(A2)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg tlog
+  @  7a230b46bf61
+  |
+  o  ea207398892e
+  
+  $ hg fatelog -v
   @  7a230b46bf61
   |
   o  ea207398892e
@@ -770,6 +1080,58 @@ Check templates
   | x  471f378eab4c
   |/     Successors: [7a230b46bf61]
   |      semi-colon: [7a230b46bf61]
-  |      Fate: superseed as 7a230b46bf61
+  |      Fate: rewritten as 7a230b46bf61
+  |
+  o  ea207398892e
+  
+  $ hg fatelog --hidden -v
+  @  7a230b46bf61
+  |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten by test as 7a230b46bf61 (between * and *) (glob)
+  |
+  o  ea207398892e
+  
+
+  $ hg fatelogjson --hidden
+  @  7a230b46bf61 ""
+  |
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], 0, [["ef1", "1"], ["user", "test"]], [*, *], null], ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e", ["7a230b46bf61e50b30308c6cfd7bd1269ef54702"], 0, [["ef1", "1"], ["user", "test"]], [*, *], null]], "max_date": [*, *], "min_date": [*, *], "successors": ["7a230b46bf61e50b30308c6cfd7bd1269ef54702"], "users": ["test"], "verb": "rewritten"}] (glob)
+  |/
+  o  ea207398892e ""
+  
+
+Test templates with pruned commits
+==================================
+
+Test setup
+----------
+
+  $ hg init $TESTTMP/templates-local-prune
+  $ cd $TESTTMP/templates-local-prune
+  $ mkcommit ROOT
+  $ mkcommit A0
+  $ hg prune .
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory now at ea207398892e
+  1 changesets pruned
+
+Check output
+------------
+
+  $ hg up "desc(A0)" --hidden
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  working directory parent is obsolete! (471f378eab4c)
+  (use 'hg evolve' to update to its parent successor)
+  $ hg tlog
+  @  471f378eab4c
+  |    Fate: pruned
+  |
+  o  ea207398892e
+  
+  $ hg fatelog -v
+  @  471f378eab4c
+  |    Obsfate: pruned by test (at *) (glob)
+  |
   o  ea207398892e
   

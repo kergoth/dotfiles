@@ -336,10 +336,10 @@ changeset plus the updating changeset are hidden from view by default::
   @  0:e55e0562ee93@default(public) base
   
   $ hg debugobsolete
-  73296a82292a76fb8a7061969d2489ec0d84cd5e 6992c59c6b06a1b4a92e24ff884829ae026d018b 0 (*) {'user': 'test'} (glob)
-  c97947cdc7a2a11cf78419f5c2c3dd3944ec79e8 0 {73296a82292a76fb8a7061969d2489ec0d84cd5e} (*) {'user': 'test'} (glob)
-  568a468b60fc99a42d5d4ddbe181caff1eef308d ba0ec09b1babf3489b567853807f452edd46704f 0 (*) {'user': 'test'} (glob)
-  c296b79833d1d497f33144786174bf35e04e44a3 0 {568a468b60fc99a42d5d4ddbe181caff1eef308d} (*) {'user': 'test'} (glob)
+  73296a82292a76fb8a7061969d2489ec0d84cd5e 6992c59c6b06a1b4a92e24ff884829ae026d018b 0 (*) {'ef1': '8', 'user': 'test'} (glob)
+  c97947cdc7a2a11cf78419f5c2c3dd3944ec79e8 0 {73296a82292a76fb8a7061969d2489ec0d84cd5e} (*) {'ef1': '0', 'user': 'test'} (glob)
+  568a468b60fc99a42d5d4ddbe181caff1eef308d ba0ec09b1babf3489b567853807f452edd46704f 0 (*) {'ef1': '8', 'user': 'test'} (glob)
+  c296b79833d1d497f33144786174bf35e04e44a3 0 {568a468b60fc99a42d5d4ddbe181caff1eef308d} (*) {'ef1': '0', 'user': 'test'} (glob)
   $ hg evolve
   move:[4] another feature (child of 568a468b60fc)
   atop:[6] a nifty feature
@@ -519,7 +519,8 @@ enable general delta
   $ hg --config extensions.hgext.mq= strip 'extinct()'
   abort: empty revision set
   [255]
-  $ hg --config extensions.hgext.mq= strip --hidden 'extinct()'
+(do some garbare collection)
+  $ hg --config extensions.hgext.mq= strip --hidden 'extinct()'  --config devel.strip-obsmarkers=no
   saved backup bundle to $TESTTMP/alpha/.hg/strip-backup/e87767087a57-d7bd82e9-backup.hg (glob)
   $ hg verify
   checking changesets
@@ -588,8 +589,8 @@ Test graft --obsolete/--old-obsolete
   o  0:8685c6d34325@default(draft) add 0
   
   $ hg debugobsolete
-  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (*) {'user': 'test'} (glob)
-  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (*) {'user': 'test'} (glob)
+  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (*) {'ef1': '4', 'user': 'test'} (glob)
+  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (*) {'ef1': '13', 'user': 'test'} (glob)
 
 Test graft --continue
 
@@ -633,9 +634,9 @@ Test graft --continue
   o  0:8685c6d34325@default(draft) add 0
   
   $ hg debugobsolete
-  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (*) {'user': 'test'} (glob)
-  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (*) {'user': 'test'} (glob)
-  a5bfd90a2f29c7ccb8f917ff4e5013a9053d0a04 920e58bb443b73eea9d6d65570b4241051ea3229 0 (*) {'user': 'test'} (glob)
+  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (*) {'ef1': '4', 'user': 'test'} (glob)
+  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (*) {'ef1': '13', 'user': 'test'} (glob)
+  a5bfd90a2f29c7ccb8f917ff4e5013a9053d0a04 920e58bb443b73eea9d6d65570b4241051ea3229 0 (*) {'ef1': '12', 'user': 'test'} (glob)
 
 Test touch
 
@@ -773,32 +774,33 @@ Test olog
   @    d26d339c513f (12) add 4
   |\
   x |    af636757ce3b (11) add 3
-  |\ \     rewritten by test (*) as d26d339c513f (glob)
+  |\ \     rewritten(description, user, parent, content) by test (*) as d26d339c513f (glob)
   | | |
   | \ \
   | |\ \
   | | | x  ce341209337f (4) add 4
-  | | |      rewritten by test (*) as d26d339c513f (glob)
+  | | |      rewritten(description, user, content) by test (*) as d26d339c513f (glob)
   | | |
 
 Test obsstore stat
 
   $ hg debugobsstorestat
   markers total:                     10
-      for known precursors:          10
+      for known precursors:          10 (10/13 obsolete changesets)
       with parents data:              0
   markers with no successors:         0
                 1 successors:        10
                 2 successors:         0
       more than 2 successors:         0
       available  keys:
+                  ef1:               10
                  user:               10
   marker size:
       format v1:
-          smallest length:           69
-          longer length:             69
-          median length:             69
-          mean length:               69
+          smallest length:           75
+          longer length:             76
+          median length:             76
+          mean length:               75
       format v0:
           smallest length:           * (glob)
           longer length:             * (glob)

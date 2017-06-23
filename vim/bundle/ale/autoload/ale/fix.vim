@@ -232,7 +232,11 @@ function! s:RunFixer(options) abort
     let l:index = a:options.callback_index
 
     while len(a:options.callback_list) > l:index
-        let l:result = call(a:options.callback_list[l:index], [l:buffer, copy(l:input)])
+        let l:Function = a:options.callback_list[l:index]
+
+        let l:result = ale#util#FunctionArgCount(l:Function) == 1
+        \   ? call(l:Function, [l:buffer])
+        \   : call(l:Function, [l:buffer, copy(l:input)])
 
         if type(l:result) == type(0) && l:result == 0
             " When `0` is returned, skip this item.
@@ -339,6 +343,11 @@ function! ale#fix#Fix(...) abort
     endif
 
     let l:buffer = bufnr('')
+
+    for l:job_id in keys(s:job_info_map)
+        call remove(s:job_info_map, l:job_id)
+        call ale#job#Stop(l:job_id)
+    endfor
 
     " Clean up any files we might have left behind from a previous run.
     call ale#fix#RemoveManagedFiles(l:buffer)

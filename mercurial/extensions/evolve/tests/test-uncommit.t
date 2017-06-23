@@ -232,7 +232,7 @@ Enjoy uncommit
      touncommit-bm-inactive    4:e8db4aa611f6
      unrelated                 2:f63b90038565
   $ hg debugobsolete
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Test phase is preserved, no local changes
 
@@ -278,15 +278,15 @@ Test phase is preserved, no local changes
   o  0:07f494440405@default(draft) adda
   
   $ hg debugobsolete
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Test --all
 
   $ hg up -C 3 --hidden
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (5eb72dbe0cb4)
-  (5eb72dbe0cb4 has diverged, use 'hg evolve -list --divergent' to resolve the issue)
+  (5eb72dbe0cb4 has diverged, use 'hg evolve --list --divergent' to resolve the issue)
   $ hg --config extensions.purge= purge
   $ hg uncommit --all -X e
   1 new divergent changesets
@@ -312,9 +312,9 @@ Test --all
   A e
 
   $ hg debugobsolete
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c4cbebac3751269bdf12d1466deabcc78521d272 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c4cbebac3751269bdf12d1466deabcc78521d272 0 (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Display a warning if nothing left
 
@@ -322,10 +322,10 @@ Display a warning if nothing left
   new changeset is empty
   (use 'hg prune .' to remove it)
   $ hg debugobsolete
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'user': 'test'} (glob)
-  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c4cbebac3751269bdf12d1466deabcc78521d272 0 (*) {'user': 'test'} (glob)
-  c4cbebac3751269bdf12d1466deabcc78521d272 4f1c269eab68720f54e88ce3c1dc02b2858b6b89 0 (*) {'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 e8db4aa611f6d5706374288e6898e498f5c44098 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 a1d4c1ad76cc7eb5e8a36ef52396da334b6d59c5 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  5eb72dbe0cb409d094e3b4ae8eaa30071c1b8730 c4cbebac3751269bdf12d1466deabcc78521d272 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  c4cbebac3751269bdf12d1466deabcc78521d272 4f1c269eab68720f54e88ce3c1dc02b2858b6b89 0 (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Test instability warning
 

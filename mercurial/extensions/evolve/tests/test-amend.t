@@ -21,8 +21,8 @@ Test that amend captures branches
   (branches are permanent and global, did you want a bookmark?)
   $ hg amend -d '0 0'
   $ hg debugobsolete
-  07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'user': 'test'} (glob)
-  b2e32ffb533cbe1d5759638c0cd4e8abc43b2738 0 {07f4944404050f47db2e5c5071e0e84e7a27bba9} (*) {'user': 'test'} (glob)
+  07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  b2e32ffb533cbe1d5759638c0cd4e8abc43b2738 0 {07f4944404050f47db2e5c5071e0e84e7a27bba9} (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg branch
   foo
   $ hg branches
@@ -66,8 +66,8 @@ Test collapsing into an existing revision, no intermediate revision.
   $ hg pdiff
   $ hg ci -m reseta
   $ hg debugobsolete
-  07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'user': 'test'} (glob)
-  b2e32ffb533cbe1d5759638c0cd4e8abc43b2738 0 {07f4944404050f47db2e5c5071e0e84e7a27bba9} (*) {'user': 'test'} (glob)
+  07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  b2e32ffb533cbe1d5759638c0cd4e8abc43b2738 0 {07f4944404050f47db2e5c5071e0e84e7a27bba9} (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg phase 2
   2: draft
   $ glog

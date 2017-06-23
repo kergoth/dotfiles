@@ -76,10 +76,10 @@ initial
   $ inspect_obsmarkers
   obsstore content
   ================
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)
+  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (*) {'user': 'test'} (glob)
+  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (*) {'user': 'test'} (glob)
   obshashtree
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
@@ -106,10 +106,10 @@ Actual Test
   # testing echange of "A1" (e5ea8f9c7314)
   ## initial state
   # obstore: main
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)
+  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (*) {'user': 'test'} (glob)
   # obstore: pushdest
   # obstore: pulldest
   ## pushing "A1" from main to pushdest
@@ -122,13 +122,13 @@ Actual Test
   remote: 2 new obsolescence markers
   ## post push state
   # obstore: main
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)
+  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (*) {'user': 'test'} (glob)
   # obstore: pushdest
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)
   # obstore: pulldest
   ## pulling "e5ea8f9c7314" from main into pulldest
   pulling from main
@@ -141,13 +141,13 @@ Actual Test
   (run 'hg update' to get a working copy)
   ## post pull state
   # obstore: main
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  6e72f0a95b5e01a7504743aa941f69cb1fbef8b0 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)
+  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 069b05c3876d56f62895e853a501ea58ea85f68d 0 (*) {'user': 'test'} (glob)
   # obstore: pushdest
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)
   # obstore: pulldest
-  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  28b51eb45704506b5c603decd6bf7ac5e0f6a52f aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 0 (*) {'user': 'test'} (glob)
+  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (*) {'user': 'test'} (glob)

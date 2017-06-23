@@ -74,7 +74,7 @@ test for range based discovery
   
 
   $ hg debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa `getid 'desc(r1)'`
-  $ hg debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb `getid 'desc(r2)'`
+  $ hg debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb `getid 'desc(r2)'` --config experimental.obshashrange.max-revs=1
   $ hg debugobsolete cccccccccccccccccccccccccccccccccccccccc `getid 'desc(r4)'`
   $ hg debugobsolete dddddddddddddddddddddddddddddddddddddddd `getid 'desc(r5)'` --config experimental.obshashrange.warm-cache=0
   $ hg debugobsolete eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee `getid 'desc(r7)'`
@@ -97,14 +97,12 @@ test for range based discovery
   * @0000000000000000000000000000000000000000 (*)> debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 66f7d451a68b85ed82ff5fcc254daf50c74144bd exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 01241442b3c2bf3211e593b549c655ea65b295e3 (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
-  * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 01241442b3c2bf3211e593b549c655ea65b295e3 exited 0 after *.?? seconds (glob)
+  * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 01241442b3c2bf3211e593b549c655ea65b295e3 --config 'experimental.obshashrange.max-revs=1' exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete cccccccccccccccccccccccccccccccccccccccc bebd167eb94d257ace0e814aeb98e6972ed2970d (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
+  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 2o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete cccccccccccccccccccccccccccccccccccccccc bebd167eb94d257ace0e814aeb98e6972ed2970d exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 (glob)

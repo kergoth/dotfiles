@@ -176,7 +176,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 7195586b7952a49c3de90dc7dc25c262116eaa83
+    rev: be2ff98db543990d7e59a90189733d7a779788fd
 
 # go language support
 git module vim-golang:
@@ -201,11 +201,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 466198adc015a9d81e975374d8e206dcf3efd173
+    rev: fde2511201399048e34f8e9460d8c6cb5cb066d8
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 43fe3927b884dcf722f9109e39801db110186dab
+    rev: 20a926a1eb6c451ca7767f0f0f00f20e27124381
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -220,7 +220,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch.git
-    rev: dcd29a00eb708be211d856afd3fddfbff7bc6208
+    rev: b536b887072ff3cc382842ce9f675ec222302f4f
 
 # graph your Vim undo tree in style
 git module gundo:
@@ -240,7 +240,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: d6927ff305cc13a605907de8511a738c2f8b2892
+    rev: 1beee74e5ae75c46fd3f1255cce2543769102dc0
 
 # continuously updated session files
 git module vim-obsession:
@@ -258,7 +258,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 990834ab6cb86961e61c55a8e012eb542ceff10e
+    rev: ccc32c31642a42f53a63508de8742674a4ba665f
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -295,7 +295,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 35d407021c468f6faf0d99358d3fca1720d4edc9
+    rev: faedae708e4c288ffd40e7fad3d6a796b48e804a
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -333,7 +333,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 3c255e38c1c5569c703e5ebbf71027cd7bb2bc5e
+    rev: 34450f50c973d086fb319d063f52bfd3571742e5
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -360,7 +360,7 @@ git module planter:
 
 git module z:
     url: https://github.com/rupa/z
-    rev: 1a361f6dc10e54e34e42f1e03850692959c6b413
+    rev: 3eb64444d713b9fc6c9ad1a8fc8814639c584faa
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
@@ -522,7 +522,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: cb0d62ed5e2a057d553d120cb7c4cb8823ac033c
+    rev: 9c0f6b85c28f52533311b7b04440441174731bf4
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -530,7 +530,7 @@ git module zsh-bd:
 
 git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
-    rev: f13ca5dcab9255157175b673ded82b6613455ce0
+    rev: 4372de0718714046f0c7ef87b43fc0a598896af6
 
 # From Damian Conway's vim setup. Note: review more of the plugins there
 git module damian-conway-vim:
@@ -568,15 +568,15 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 7f47730a9c415ada69ab5a2a4343181ae3a7005d
+    rev: f154b48075690d70fa54fbeac42005933a4d000b
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: 47471f6f5ed45216aaa4f94d887a41b25f8cab66
+    rev: 743d0d24f348db94099f2387c6a4923d8f29b543
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: e5f2e537430714e0f07e2ca914c93710704dd9e1
+    rev: a86dfe417dcf852a8985b6115e4a19cde00ce7cb
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -593,7 +593,7 @@ git module diff-so-fancy:
     url: https://github.com/so-fancy/diff-so-fancy
     pick:
         - diff-so-fancy
-    rev: f4fa983df1f2f84a5128391c25c7c607756dfa53
+    rev: 07c4106ca5781e1cef4587f500b3de563feeeebc
 
 git module hub-completion:
     url: https://github.com/github/hub
@@ -642,7 +642,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 4b29351f2f13d38b380d5121c9ff57d9041cb8d8
+    rev: 9a6c60e6a755c6533920c9d89d7a0eae95d8f5e5
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -664,4 +664,4 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 9dadde190e2d691c375cde9e2d6988b11f40285a
+    rev: fbf8ccb882eb7819011fa837ea2b4930ed4fa9c7

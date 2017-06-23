@@ -66,18 +66,18 @@ Initial
   $ inspect_obsmarkers
   obsstore content
   ================
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
   obshashtree
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 926d9d84b97b3483891ae983990ad87c1f7827e9
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af c2398c6305068b6b377f36402c507b713a7c586f
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 8408066feeb4e37fa26d01fe5c93bea92e450608
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 535b0c799a3a273fee10934abcb9e8eb9924b4bf
   obshashrange
   ============
            rev         node        index         size        depth      obshash
-             1 f5bc6836db60            0            2            2 926d9d84b97b
+             1 f5bc6836db60            0            2            2 8408066feeb4
              0 a9bdc8b26820            0            1            1 000000000000
-             1 f5bc6836db60            1            1            2 926d9d84b97b
+             1 f5bc6836db60            1            1            2 8408066feeb4
   $ cd ..
   $ cd ..
 
@@ -89,7 +89,7 @@ Actual Test
   # testing echange of "O" (a9bdc8b26820)
   ## initial state
   # obstore: main
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
   # obstore: pushdest
   # obstore: pulldest
   ## pushing "O" from main to pushdest
@@ -98,7 +98,7 @@ Actual Test
   no changes found
   ## post push state
   # obstore: main
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
   # obstore: pushdest
   # obstore: pulldest
   ## pulling "a9bdc8b26820" from main into pulldest
@@ -106,6 +106,6 @@ Actual Test
   no changes found
   ## post pull state
   # obstore: main
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
   # obstore: pushdest
   # obstore: pulldest

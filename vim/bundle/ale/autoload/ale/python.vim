@@ -4,11 +4,10 @@
 let g:ale_virtualenv_dir_names = get(g:, 'ale_virtualenv_dir_names', [
 \   '.env',
 \   'env',
-\   've',
 \   've-py3',
+\   've',
 \   'virtualenv',
 \])
-
 
 " Given a buffer number, find the project root directory for Python.
 " The root directory is defined as the first directory found while searching
@@ -35,6 +34,35 @@ function! ale#python#FindVirtualenv(buffer) abort
             endif
         endfor
     endfor
+
+    return ''
+endfunction
+
+" Given a buffer number and a command name, find the path to the executable.
+" First search on a virtualenv for Python, if nothing is found, try the global
+" command. Returns an empty string if cannot find the executable
+function! ale#python#FindExecutable(buffer, base_var_name, path_list) abort
+    if ale#Var(a:buffer, a:base_var_name . '_use_global')
+        return ale#Var(a:buffer, a:base_var_name . '_executable')
+    endif
+
+    let l:virtualenv = ale#python#FindVirtualenv(a:buffer)
+
+    if !empty(l:virtualenv)
+        for l:path in a:path_list
+            let l:ve_executable = l:virtualenv . l:path
+
+            if executable(l:ve_executable)
+                return l:ve_executable
+            endif
+        endfor
+    endif
+
+    let l:global_executable = ale#Var(a:buffer, a:base_var_name . '_executable')
+
+    if executable(l:global_executable)
+        return l:global_executable
+    endif
 
     return ''
 endfunction

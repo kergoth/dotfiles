@@ -111,10 +111,10 @@ Test stabilizing a descendant predecessor's child
   --- successors.old* (glob)
   +++ successors.new* (glob)
   @@ -3,3 +3,4 @@
-   93418d2c0979643ad446f621195e78720edb05b4 005fe5914f78e8bc64c7eba28117b0b1fa210d0d 0 (*) {'user': 'test'} (glob)
-   7a7d76dc97c57751de9e80f61ed2a639bd03cd24 0 {93418d2c0979643ad446f621195e78720edb05b4} (*) {'user': 'test'} (glob)
-   22619daeed78036f80fbd326b6852519c4f0c25e 81b8bbcd5892841efed41433d7a5e9df922396cb 0 (*) {'user': 'test'} (glob)
-  +7a7552255fb5f8bd745e46fba6f0ca633a4dd716 0f691739f91762462bf8ba21f35fdf71fe64310e 0 (*) {'user': 'test'} (glob)
+   93418d2c0979643ad446f621195e78720edb05b4 005fe5914f78e8bc64c7eba28117b0b1fa210d0d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+   7a7d76dc97c57751de9e80f61ed2a639bd03cd24 0 {93418d2c0979643ad446f621195e78720edb05b4} (*) {'ef1': '*', 'user': 'test'} (glob)
+   22619daeed78036f80fbd326b6852519c4f0c25e 81b8bbcd5892841efed41433d7a5e9df922396cb 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  +7a7552255fb5f8bd745e46fba6f0ca633a4dd716 0f691739f91762462bf8ba21f35fdf71fe64310e 0 (*) {'ef1': '*', 'user': 'test'} (glob)
   [1]
 
 

@@ -1,4 +1,4 @@
-" Author: w0rp <devw0rp@gmail.com>
+" Author: w0rp <devw0rp@gmail.com>, David Alexander <opensource@thelonelyghost.com>
 " Description: Primary code path for the plugin
 "   Manages execution of linters when requested by autocommands
 
@@ -85,7 +85,8 @@ function! ale#Lint(...) abort
     " Check if we previously requested checking the file.
     if has_key(s:should_lint_file_for_buffer, l:buffer)
         unlet s:should_lint_file_for_buffer[l:buffer]
-        let l:should_lint_file = 1
+        " Lint files if they exist.
+        let l:should_lint_file = filereadable(expand('#' . l:buffer . ':p'))
     endif
 
     " Initialise the buffer information if needed.
@@ -155,25 +156,20 @@ function! ale#Set(variable_name, default) abort
     return l:value
 endfunction
 
-function! s:EscapePercents(str) abort
-    return substitute(a:str, '%', '%%', 'g')
-endfunction
-
 " Escape a string suitably for each platform.
 " shellescape does not work on Windows.
 function! ale#Escape(str) abort
     if fnamemodify(&shell, ':t') ==? 'cmd.exe'
-        if a:str =~# '\v^[a-zA-Z0-9-_\\/:%]+$'
-            return s:EscapePercents(a:str)
-        endif
-
-        if a:str =~# ' '
-            return '"'
-            \   .  substitute(s:EscapePercents(a:str), '"', '""', 'g')
-            \   . '"'
-        endif
-
-        return s:EscapePercents(substitute(a:str, '\v([&|<>^])', '^\1', 'g'))
+        " If the string contains spaces, it will be surrounded by quotes.
+        " Otherwise, special characters will be escaped with carets (^).
+        return substitute(
+        \   a:str =~# ' '
+        \       ?  '"' .  substitute(a:str, '"', '""', 'g') . '"'
+        \       : substitute(a:str, '\v([&|<>^])', '^\1', 'g'),
+        \   '%',
+        \   '%%',
+        \   'g',
+        \)
     endif
 
     return shellescape (a:str)

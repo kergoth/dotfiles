@@ -586,8 +586,7 @@ def setupcache(ui, repo):
                 repo = reporef()
                 if repo is None:
                     return
-                hasobshashrange = repo.ui.configbool('experimental',
-                                                     'obshashrange', False)
+                hasobshashrange = _useobshashrange(repo)
                 hascachewarm = repo.ui.configbool('experimental',
                                                   'obshashrange.warm-cache',
                                                   True)
@@ -665,15 +664,22 @@ def srv_obshashrange_v0(repo, proto, ranges):
     hashes = _obshashrange_v0(repo, ranges)
     return wireproto.encodelist(hashes)
 
+def _useobshashrange(repo):
+    base = repo.ui.configbool('experimental', 'obshashrange', False)
+    if base:
+        maxrevs = repo.ui.configint('experimental', 'obshashrange.max-revs', None)
+        if maxrevs is not None and maxrevs < len(repo.unfiltered()):
+            base = False
+    return base
 
 def _canobshashrange(local, remote):
-    return (local.ui.configbool('experimental', 'obshashrange', False)
+    return (_useobshashrange(local)
             and remote.capable('_evoext_obshashrange_v0'))
 
 def _obshashrange_capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
     caps = orig(repo, proto)
-    enabled = repo.ui.configbool('experimental', 'obshashrange', False)
+    enabled = _useobshashrange(repo)
     if obsolete.isenabled(repo, obsolete.exchangeopt) and enabled:
         caps = caps.split()
         caps.append('_evoext_obshashrange_v0')

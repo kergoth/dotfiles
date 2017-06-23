@@ -3,8 +3,8 @@
   > [extensions]
   > hgext.graphlog=
   > EOF
-  $ echo "drophack=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/drophack.py" >> $HGRCPATH
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
+  $ echo "drophack=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/drophack.py" >> $HGRCPATH
   $ mkcommit() {
   >    echo "$1" > "$1"
   >    hg add "$1"
@@ -225,8 +225,8 @@ Try to drop a changeset with rewrite
      summary:     add base
   
   ============ obsmark ============
-  34b6c051bf1f78db6aef400776de5cb964470207 a2c06c884bfe53d3840026248bd8a7eafa152df8 0 (*) {'user': 'test'} (glob)
-  87ea30a976fdf235bf096f04899cb02a903873e2 0 {34b6c051bf1f78db6aef400776de5cb964470207} (*) {'user': 'test'} (glob)
+  34b6c051bf1f78db6aef400776de5cb964470207 a2c06c884bfe53d3840026248bd8a7eafa152df8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  87ea30a976fdf235bf096f04899cb02a903873e2 0 {34b6c051bf1f78db6aef400776de5cb964470207} (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg drop .
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 19509a42b0d0
@@ -263,4 +263,4 @@ Try to drop a changeset with rewrite
      summary:     add base
   
   ============ obsmark ============
-  87ea30a976fdf235bf096f04899cb02a903873e2 0 {34b6c051bf1f78db6aef400776de5cb964470207} (*) {'user': 'test'} (glob)
+  87ea30a976fdf235bf096f04899cb02a903873e2 0 {34b6c051bf1f78db6aef400776de5cb964470207} (*) {'ef1': '0', 'user': 'test'} (glob)

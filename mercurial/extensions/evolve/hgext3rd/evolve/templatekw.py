@@ -9,6 +9,7 @@
 """
 
 from . import (
+    error,
     exthelper,
     obshistory
 )
@@ -65,18 +66,18 @@ def closestprecursors(repo, nodeid):
 
 @eh.templatekw("precursors")
 def shownextvisibleprecursors(repo, ctx, **args):
-    """Returns a string containing the list if the closest successors
-    displayed
+    """Returns a string containing the list of the closest precursors
     """
     precursors = sorted(closestprecursors(repo, ctx.node()))
+    precursors = [node.hex(p) for p in precursors]
 
     # <= hg-4.1 requires an explicite gen.
     # we can use None once the support is dropped
     #
     # They also requires an iterator instead of an iterable.
-    gen = iter(" ".join(map(node.short, precursors)))
+    gen = iter(" ".join(p[:12] for p in precursors))
     return templatekw._hybrid(gen.__iter__(), precursors, lambda x: {'precursor': x},
-                              lambda d: "%s" % node.short(d['precursor']))
+                              lambda d: d['precursor'][:12])
 
 def closestsuccessors(repo, nodeid):
     """ returns the closest visible successors sets instead.
@@ -85,18 +86,20 @@ def closestsuccessors(repo, nodeid):
 
 @eh.templatekw("successors")
 def shownextvisiblesuccessors(repo, ctx, templ, **args):
-    """Returns a string of sets of successors for a changectx in this format:
-    [ctx1, ctx2], [ctx3] if ctx has been splitted into ctx1 and ctx2 while
-    also diverged into ctx3"""
+    """Returns a string of sets of successors for a changectx
+
+    Format used is: [ctx1, ctx2], [ctx3] if ctx has been splitted into ctx1 and
+    ctx2 while also diverged into ctx3"""
     if not ctx.obsolete():
         return ''
 
-    ssets = closestsuccessors(repo, ctx.node())
+    ssets, _ = closestsuccessors(repo, ctx.node())
+    ssets = [[node.hex(n) for n in ss] for ss in ssets]
 
     data = []
     gen = []
     for ss in ssets:
-        subgen = '[%s]' % ', '.join(map(node.short, ss))
+        subgen = '[%s]' % ', '.join(n[:12] for n in ss)
         gen.append(subgen)
         h = templatekw._hybrid(iter(subgen), ss, lambda x: {'successor': x},
                                lambda d: "%s" % d["successor"])
@@ -106,13 +109,117 @@ def shownextvisiblesuccessors(repo, ctx, templ, **args):
     return templatekw._hybrid(iter(gen), data, lambda x: {'successorset': x},
                               lambda d: d["successorset"])
 
-@eh.templatekw("obsfate_quiet")
-def showobsfate_quiet(repo, ctx, templ, **args):
+def _getusername(ui):
+    """the default username in the config or None"""
+    try:
+        return ui.username()
+    except error.Abort: # no easy way to avoid ui raising Abort here :-/
+        return None
+
+def obsfatedefaulttempl(ui):
+    """ Returns a dict with the default templates for obs fate
+    """
+    # Prepare templates
+    verbtempl = '{verb}'
+    usertempl = '{if(users, " by {join(users, ", ")}")}'
+    succtempl = '{if(successors, " as ")}{successors}' # Bypass if limitation
+    datetempleq = ' (at {min_date|isodate})'
+    datetemplnoteq = ' (between {min_date|isodate} and {max_date|isodate})'
+    datetempl = '{if(max_date, "{ifeq(min_date, max_date, "%s", "%s")}")}' % (datetempleq, datetemplnoteq)
+
+    optionalusertempl = usertempl
+    username = _getusername(ui)
+    if username is not None:
+        optionalusertempl = ('{ifeq(join(users, "\0"), "%s", "", "%s")}'
+                             % (username, usertempl))
+
+    # Assemble them
+    return {
+        'obsfate_quiet': verbtempl + succtempl,
+        'obsfate': verbtempl + optionalusertempl + succtempl,
+        'obsfate_verbose': verbtempl + usertempl + succtempl + datetempl,
+    }
+
+@eh.templatekw("obsfate")
+def showobsfate(repo, ctx, **args):
     if not ctx.obsolete():
         return ''
 
-    successorssets = closestsuccessors(repo, ctx.node())
-    return obshistory._humanizedobsfate(*obshistory._getobsfateandsuccs(repo, ctx, successorssets))
+    successorssets, pathcache = closestsuccessors(repo, ctx.node())
+
+    # closestsuccessors returns an empty list for pruned revisions, remap it
+    # into a list containing en empty list for future processing
+    if successorssets == []:
+        successorssets = [[]]
+
+    succsmap = repo.obsstore.successors
+    fullsuccessorsets = [] # successor set + markers
+    for sset in successorssets:
+        if sset:
+            markers = obshistory.successorsetallmarkers(sset, pathcache)
+            fullsuccessorsets.append((sset, markers))
+        else:
+            # XXX we do not catch all prune markers (eg rewritten then pruned)
+            # (fix me later)
+            foundany = False
+            for mark in succsmap.get(ctx.node(), ()):
+                if not mark[1]:
+                    foundany = True
+                    fullsuccessorsets.append((sset, [mark]))
+            if not foundany:
+                fullsuccessorsets.append(([], []))
+
+    values = []
+    for sset, rawmarkers in fullsuccessorsets:
+        raw = obshistory.preparesuccessorset(sset, rawmarkers)
+
+        # As we can't do something like
+        # "{join(map(nodeshort, successors), ', '}" in template, manually
+        # create a correct textual representation
+        gen = ', '.join(n[:12] for n in raw['successors'])
+
+        makemap = lambda x: {'successor': x}
+        joinfmt = lambda d: "%s" % d['successor']
+        raw['successors'] = templatekw._hybrid(gen, raw['successors'], makemap,
+                                               joinfmt)
+
+        values.append(raw)
+
+    # Insert default obsfate templates
+    args['templ'].cache.update(obsfatedefaulttempl(repo.ui))
+
+    if repo.ui.quiet:
+        name = "obsfate_quiet"
+    elif repo.ui.verbose:
+        name = "obsfate_verbose"
+    elif repo.ui.debugflag:
+        name = "obsfate_debug"
+    else:
+        name = "obsfate"
+
+    # Format a single value
+    def fmt(d):
+        nargs = args.copy()
+        nargs.update(d[name])
+        return args['templ'](name, **nargs)
+
+    # Generate a good enough string representation using templater
+    gen = []
+    for d in values:
+        chunk = fmt({name: d})
+        chunkstr = []
+
+        # Empty the generator
+        try:
+            while True:
+                chunkstr.append(chunk.next())
+        except StopIteration:
+            pass
+
+        gen.append("".join(chunkstr))
+    gen = "; ".join(gen)
+
+    return templatekw._hybrid(gen, values, lambda x: {name: x}, fmt)
 
 # copy from mercurial.obsolete with a small change to stop at first known changeset.
 
@@ -127,6 +234,9 @@ def directsuccessorssets(repo, initialnode, cache=None):
     # set version of above list for fast loop detection
     # element added to "toproceed" must be added here
     stackedset = set(toproceed)
+
+    pathscache = {}
+
     if cache is None:
         cache = {}
     while toproceed:
@@ -156,6 +266,7 @@ def directsuccessorssets(repo, initialnode, cache=None):
                             # of one of those successors we add it to the
                             # `toproceed` stack and stop all work for this
                             # iteration.
+                            pathscache.setdefault(suc, []).append((current, mark))
                             toproceed.append(suc)
                             stackedset.add(suc)
                             break
@@ -195,4 +306,5 @@ def directsuccessorssets(repo, initialnode, cache=None):
                         seen.append(setversion)
                 final.reverse() # put small successors set first
                 cache[current] = final
-    return cache[initialnode]
+
+    return cache[initialnode], pathscache

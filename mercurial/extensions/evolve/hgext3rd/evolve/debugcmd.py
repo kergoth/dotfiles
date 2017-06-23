@@ -91,7 +91,10 @@ def cmddebugobsstorestat(ui, repo):
         fc = (frozenset(c[0]), frozenset(c[1]))
         for n in fc[0]:
             pclustersmap[n] = fc
-    ui.write(('    for known precursors:   %9i\n' % known))
+    numobs = len(unfi.revs('obsolete()'))
+    numtotal = len(unfi)
+    ui.write(('    for known precursors:   %9i' % known))
+    ui.write((' (%i/%i obsolete changesets)\n' % (numobs, numtotal)))
     ui.write(('    with parents data:      %9i\n' % parentsdata))
     # successors data
     ui.write(('markers with no successors: %9i\n' % sucscount[0]))
