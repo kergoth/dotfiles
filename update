@@ -1,2 +1,7 @@
 #!/bin/sh
+git mstash
+ret="$?"
 "$(dirname "$0")/scripts/dotfiles-external-update" "$@"
+if [ "$ret" -eq 0 ]; then
+    git stash apply
+fi
