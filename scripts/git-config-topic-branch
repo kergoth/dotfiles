@@ -9,5 +9,5 @@ git config push.default simple
 git branch -u "${1:-origin/master}"
 git config "branch.$branch_name.rebase" true
 git config "branch.$branch_name.pushremote" "${2:-$github_user}"
-git fork kergoth 2>/dev/null
+hub fork 2>/dev/null
 git fetch -p "${2:-$github_user}"
