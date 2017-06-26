@@ -3,7 +3,7 @@
 
 set -e
 
-tempdir="$(abspath "$(mktemp -d portable_wine2t7z.XXXXXX)")"
+tempdir="$(cd "$(mktemp -d portable_wine2t7z.XXXXXX)" && pwd -P)"
 trap 'rm -rf "$tempdir"' EXIT INT TERM
 
 # portable-winehq-devel-2.10-osx64.tar
@@ -11,9 +11,9 @@ trap 'rm -rf "$tempdir"' EXIT INT TERM
 # portable-winehq-stable-2.0.1-osx64.tar
 
 for portable_wine; do
-    portable_wine="$(abspath "$portable_wine")"
-    base="${portable_wine%.tar.gz}"
-    base="${base##*/}"
+    abs_wine="$(abspath "$portable_wine")"
+    base="${abs_wine%.tar.gz}"
+    base="$(basename "$base")"
     base="${base#portable-winehq-}"
     case "$base" in
         *-osx64)
@@ -45,12 +45,24 @@ for portable_wine; do
             ;;
     esac
 
+    dest="$HOME/Library/Application Support/Wineskin/Engines/$version.tar.7z"
+    if [ -e "$dest" ]; then
+        echo >&2 "$dest already exists, skipping"
+        continue
+    fi
+
+    if [ ! -e "$portable_wine" ]; then
+        base="$(basename "$portable_wine")"
+        http -FIbd --check-status -o "$tempdir/$base" "$portable_wine"
+        portable_wine="$base"
+    fi
+
     (
         cd "$tempdir"
         tar -jxf "$portable_wine"
         echo "$version" >usr/version
         mv usr wswine.bundle
         tar cf - wswine.bundle | 7za a -si "$version.tar.7z"
-        mv -vi "$version.tar.7z" ~/Library/Application\ Support/Wineskin/Engines/ || true
+        mv -vi "$version.tar.7z" "$dest" || true
     )
 done

@@ -1,12 +1,4 @@
 #!/bin/sh
 
-set -e
-tempdir="$(mktemp -d "${0##*/}.XXXXXX")" || exit 1
-trap 'rm -rf "$tempdir"' EXIT INT TERM
-cd "$tempdir"
-
 grab-links https://dl.winehq.org/wine-builds/macosx/download.html | \
-    grep portable-winehq.\*.tar.gz | sort -u | while read -r url; do
-        http -FId --check-status "$url"
-        wine2wineskin "$(basename "$url")" </dev/tty
-    done
+    grep portable-winehq.\*.tar.gz | sort -u | tr '\n' '\0' | xargs -0 wine2wineskin
