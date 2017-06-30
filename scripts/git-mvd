@@ -8,14 +8,6 @@ usage () {
     exit 2
 }
 
-evalf () {
-    fmt="$1"
-    shift
-    # printf >&2 "evalf: $fmt\n" "$@"
-    # eval echo >&2 "evalf: $(printf "$fmt" "$@")"
-    eval "$(printf "$fmt" "$@")"
-}
-
 while getopts vnfkh opt; do
     case "$opt" in
         \?|h)
