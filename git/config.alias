@@ -76,6 +76,10 @@
 
 	# Save the current modifications to the stash, but keep them.
 	save = "!f(){ git mstash \"$@\" saved && git stash apply; }; f"
+	save-all = save --include-untracked
+
+	# Save to the stash, including the specified files, then remove them
+	save-rm = '!f(){ git save --include-untracked && rm \"$@\"; }; f'
 
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ if [ $# -gt 0 ]; then since="$1"; shift; else since="week"; fi; git lg --since=\"last $since\" "$@"; }; f"
