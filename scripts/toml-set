@@ -6,8 +6,14 @@ import sys
 import toml
 
 
+def _lookup(x, y):
+    if y not in x:
+        x[y] = {}
+    return x[y]
+
+
 def lookup(obj, key):
-    return reduce(lambda x, y: x[y], key, obj)
+    return reduce(_lookup, key, obj)
 
 
 def pairs(iterable):
@@ -15,6 +21,7 @@ def pairs(iterable):
     a = itertools.islice(a, 0, None, 2)
     b = itertools.islice(b, 1, None, 2)
     return itertools.izip(a, b)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', help='Input path rather than stdin')
