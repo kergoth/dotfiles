@@ -25,4 +25,4 @@ else
     filename="$2"
 fi
 filename="${filename%.webloc}.webloc"
-/usr/libexec/PlistBuddy -c "Add URL string \"$1\"" -x "$filename"
+/usr/libexec/PlistBuddy -c "Add URL string '$(printf "%s" "$1" | sed "s/'/\\\\'/g")'" "$filename"
