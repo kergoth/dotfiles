@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
+import functools
 import itertools
 import sys
 import toml
@@ -13,14 +14,14 @@ def _lookup(x, y):
 
 
 def lookup(obj, key):
-    return reduce(_lookup, key, obj)
+    return functools.reduce(_lookup, key, obj)
 
 
 def pairs(iterable):
     a, b = itertools.tee(iterable)
     a = itertools.islice(a, 0, None, 2)
     b = itertools.islice(b, 1, None, 2)
-    return itertools.izip(a, b)
+    return zip(a, b)
 
 
 parser = argparse.ArgumentParser()
