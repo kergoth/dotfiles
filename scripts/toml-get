@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
 
+import argparse
 import functools
 import sys
 import toml
 
-obj = toml.load(sys.stdin)
-for key in sys.argv[1:]:
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file', help='Input path rather than stdin')
+parser.add_argument('keys', metavar='KEY', nargs='+')
+args = parser.parse_args()
+
+if not args.file or args.file == '-':
+    obj = toml.load(sys.stdin)
+else:
+    with open(args.file, 'r') as f:
+        obj = toml.load(f)
+
+for key in args.keys:
     print(functools.reduce(lambda x, y: x[y], key.split("."), obj))
