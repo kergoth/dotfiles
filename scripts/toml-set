@@ -36,16 +36,19 @@ if len(args.values) % 2 != 0:
     sys.exit("Error: odd number of arguments. Arguments must be in key/value pairs")
 
 if args.new:
-    o = {}
+    obj = {}
 else:
-    infile = args.file or sys.stdin
-    o = toml.load(infile)
+    if not args.file or args.file == '-':
+        obj = toml.load(sys.stdin)
+    else:
+        with open(args.file, 'r') as f:
+            obj = toml.load(f)
 
 try:
     for key, value in pairs(args.values):
         key = key.split(".")
         prefix, final_key = key[:-1], key[len(key)-1]
-        lookup(o, prefix)[final_key] = toml._load_value(value)[0]
+        lookup(obj, prefix)[final_key] = toml._load_value(value)[0]
 finally:
     if not args.file or args.file == '-':
         f = sys.stdout
@@ -53,7 +56,7 @@ finally:
         f = open(args.file, 'w')
 
     try:
-        toml.dump(o, f)
+        toml.dump(obj, f)
     finally:
         if f is not sys.stdout:
             f.close()
