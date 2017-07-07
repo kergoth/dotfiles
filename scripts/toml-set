@@ -44,19 +44,18 @@ else:
         with open(args.file, 'r') as f:
             obj = toml.load(f)
 
-try:
-    for key, value in pairs(args.values):
-        key = key.split(".")
-        prefix, final_key = key[:-1], key[len(key)-1]
-        lookup(obj, prefix)[final_key] = toml._load_value(value)[0]
-finally:
-    if not args.file or args.file == '-':
-        f = sys.stdout
-    else:
-        f = open(args.file, 'w')
+for key, value in pairs(args.values):
+    key = key.split(".")
+    prefix, final_key = key[:-1], key[len(key)-1]
+    lookup(obj, prefix)[final_key] = toml._load_value(value)[0]
 
-    try:
-        toml.dump(obj, f)
-    finally:
-        if f is not sys.stdout:
-            f.close()
+if not args.file or args.file == '-':
+    f = sys.stdout
+else:
+    f = open(args.file, 'w')
+
+try:
+    toml.dump(obj, f)
+finally:
+    if f is not sys.stdout:
+        f.close()
