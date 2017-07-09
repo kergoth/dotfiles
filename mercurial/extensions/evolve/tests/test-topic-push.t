@@ -3,7 +3,6 @@
   $ cat << EOF >> $HGRCPATH
   > [ui]
   > logtemplate = {rev} {branch} {get(namespaces, "topics")} {phase} {desc|firstline}\n
-  > [ui]
   > ssh =python "$RUNTESTDIR/dummyssh"
   > EOF
 

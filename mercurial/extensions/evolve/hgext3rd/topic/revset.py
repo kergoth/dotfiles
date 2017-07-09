@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 
-from mercurial.i18n import _
 from mercurial import (
-    error,
     revset,
     util,
 )
@@ -37,9 +35,18 @@ def topicset(repo, subset, x):
         _kind, _pattern, matcher = mkmatcher(topic)
     else:
         matcher = lambda t: bool(t)
-    drafts = subset.filter(lambda r: repo[r].mutable())
-    return drafts.filter(
-        lambda r: matcher(repo[r].extra().get(constants.extrakey, '')))
+
+    mutable = revset._notpublic(repo, revset.fullreposet(repo), ())
+
+    rawchange = repo.changelog.changelogrevision
+    key = constants.extrakey
+
+    def matchtopic(r):
+        topic = rawchange(r).extra.get(key)
+        if topic is None:
+            return False
+        return matcher(topic)
+    return (subset & mutable).filter(matchtopic)
 
 def ngtipset(repo, subset, x):
     """`ngtip([branch])`
@@ -62,11 +69,16 @@ def stackset(repo, subset, x):
     This is roughly equivalent to 'topic(.) - obsolete' with a sorting moving
     unstable changeset after there future parent (as if evolve where already
     run)."""
+    err = 'stack() takes no argument, it works on current topic'
+    revset.getargs(x, 0, 0, err)
     topic = repo.currenttopic
+    topic = None
+    branch = None
+    if not topic and repo.currenttopic:
+        topic = repo.currenttopic
     if not topic:
-        raise error.Abort(_('no active topic to list'))
-    # ordering hack, boo
-    return revset.baseset(stack.getstack(repo, topic)) & subset
+        branch = repo[None].branch()
+    return revset.baseset(stack.getstack(repo, branch=branch, topic=topic)) & subset
 
 
 def modsetup(ui):

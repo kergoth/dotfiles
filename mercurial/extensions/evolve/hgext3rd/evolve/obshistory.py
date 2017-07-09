@@ -14,6 +14,8 @@ from mercurial import (
     commands,
     error,
     graphmod,
+    mdiff,
+    patch,
     obsolete,
     node as nodemod,
     scmutil,
@@ -22,6 +24,7 @@ from mercurial import (
 from mercurial.i18n import _
 
 from . import (
+    compat,
     exthelper,
 )
 
@@ -31,7 +34,8 @@ eh = exthelper.exthelper()
     'obslog|olog',
     [('G', 'graph', True, _("show the revision DAG")),
      ('r', 'rev', [], _('show the specified revision or revset'), _('REV')),
-     ('a', 'all', False, _('show all related changesets, not only precursors'))
+     ('a', 'all', False, _('show all related changesets, not only precursors')),
+     ('p', 'patch', False, _('show the patch between two obs versions'))
     ] + commands.formatteropts,
     _('hg olog [OPTION]... [REV]'))
 def cmdobshistory(ui, repo, *revs, **opts):
@@ -51,8 +55,8 @@ def cmdobshistory(ui, repo, *revs, **opts):
     the obsolescence operation (rewritten or pruned) in addition of the user and
     date of the operation.
 
-    The output is a graph by default but can deactivated with the option '--no-
-    graph'.
+    The output is a graph by default but can deactivated with the option
+    '--no-graph'.
 
     'o' is a changeset, '@' is a working directory parent, 'x' is obsolete,
     and '+' represents a fork where the changeset from the lines below is a
@@ -72,7 +76,7 @@ def cmdobshistory(ui, repo, *revs, **opts):
 
     fm = ui.formatter('debugobshistory', opts)
     revs.reverse()
-    _debugobshistorysingle(fm, repo, revs)
+    _debugobshistoryrevs(fm, repo, revs, opts)
 
     fm.end()
 
@@ -91,15 +95,17 @@ class obsmarker_printer(cmdutil.changeset_printer):
             fm = self.ui.formatter('debugobshistory', props)
             _debugobshistorydisplaynode(fm, self.repo, changenode)
 
+            # Succs markers
             succs = self.repo.obsstore.successors.get(changenode, ())
+            succs = sorted(succs)
 
             markerfm = fm.nested("debugobshistory.markers")
-            for successor in sorted(succs):
-                _debugobshistorydisplaymarker(markerfm, self.repo, successor)
+            for successor in succs:
+                _debugobshistorydisplaymarker(markerfm, successor,
+                                              ctx.node(), self.repo, self.diffopts)
             markerfm.end()
 
             markerfm.plain('\n')
-
             self.hunk[ctx.node()] = self.ui.popbuffer()
         else:
             ### graph output is buffered only
@@ -111,6 +117,71 @@ class obsmarker_printer(cmdutil.changeset_printer):
         in self.headers that we don't use
         '''
         pass
+
+def patchavailable(node, repo, marker):
+    if node not in repo:
+        return False, "context is not local"
+
+    successors = marker[1]
+
+    if len(successors) == 0:
+        return False, "no successors"
+    elif len(successors) > 1:
+        return False, "too many successors (%d)" % len(successors)
+
+    succ = successors[0]
+
+    if succ not in repo:
+        return False, "succ is unknown locally"
+
+    # Check that both node and succ have the same parents
+    nodep1, nodep2 = repo[node].p1(), repo[node].p2()
+    succp1, succp2 = repo[succ].p1(), repo[succ].p2()
+
+    if nodep1 != succp1 or nodep2 != succp2:
+        return False, "changesets rebased"
+
+    return True, succ
+
+def _indent(content, indent=4):
+    extra = ' ' * indent
+    return "".join(extra + line for line in content.splitlines(True))
+
+def getmarkercontentpatch(repo, node, succ):
+    # Todo get the ops from the cmd
+    diffopts = patch.diffallopts(repo.ui, {})
+    matchfn = scmutil.matchall(repo)
+
+    repo.ui.pushbuffer()
+    cmdutil.diffordiffstat(repo.ui, repo, diffopts, node, succ,
+                           match=matchfn, stat=False)
+    buffer = repo.ui.popbuffer()
+
+    return _indent(buffer)
+
+def getmarkerdescriptionpatch(repo, base, succ):
+    basectx = repo[base]
+    succctx = repo[succ]
+    # description are stored without final new line,
+    # add one to avoid ugly diff
+    basedesc = basectx.description() + '\n'
+    succdesc = succctx.description() + '\n'
+
+    # fake file name
+    basename = "%s-changeset-description" % basectx
+    succname = "%s-changeset-description" % succctx
+
+    d = mdiff.unidiff(basedesc, '', succdesc, '', basename, succname)
+    # mercurial 4.1 and before return the patch directly
+    if not isinstance(d, tuple):
+        patch = d
+    else:
+        uheaders, hunks = d
+
+        # Copied from patch.diff
+        text = ''.join(sum((list(hlines) for hrange, hlines in hunks), []))
+        patch = "\n".join(uheaders + [text])
+    return _indent(patch)
 
 class missingchangectx(object):
     ''' a minimal object mimicking changectx for change contexts
@@ -275,17 +346,22 @@ def _obshistorywalker_links(repo, revs, walksuccessors=False):
     return sorted(seen), nodesucc, nodeprec
 
 def _debugobshistorygraph(ui, repo, revs, opts):
-    displayer = obsmarker_printer(ui, repo.unfiltered(), None, opts, buffered=True)
+    matchfn = None
+    if opts.get('patch'):
+        matchfn = scmutil.matchall(repo)
+
+    displayer = obsmarker_printer(ui, repo.unfiltered(), matchfn, opts, buffered=True)
     edges = graphmod.asciiedges
     walker = _obshistorywalker(repo.unfiltered(), revs, opts.get('all', False))
     cmdutil.displaygraph(ui, repo, walker, displayer, edges)
 
-def _debugobshistorysingle(fm, repo, revs):
-    """ Display the obsolescence history for a single revision
+def _debugobshistoryrevs(fm, repo, revs, opts):
+    """ Display the obsolescence history for revset
     """
     precursors = repo.obsstore.precursors
     successors = repo.obsstore.successors
     nodec = repo.changelog.node
+    unfi = repo.unfiltered()
     nodes = [nodec(r) for r in revs]
 
     seen = set(nodes)
@@ -293,13 +369,13 @@ def _debugobshistorysingle(fm, repo, revs):
     while nodes:
         ctxnode = nodes.pop()
 
-        _debugobshistorydisplaynode(fm, repo, ctxnode)
+        _debugobshistorydisplaynode(fm, unfi, ctxnode)
 
         succs = successors.get(ctxnode, ())
 
         markerfm = fm.nested("debugobshistory.markers")
         for successor in sorted(succs):
-            _debugobshistorydisplaymarker(markerfm, repo, successor)
+            _debugobshistorydisplaymarker(markerfm, successor, ctxnode, repo, opts)
         markerfm.end()
 
         precs = precursors.get(ctxnode, ())
@@ -310,8 +386,8 @@ def _debugobshistorysingle(fm, repo, revs):
                 nodes.append(p[0])
 
 def _debugobshistorydisplaynode(fm, repo, node):
-    if node in repo.unfiltered():
-        _debugobshistorydisplayctx(fm, repo.unfiltered()[node])
+    if node in repo:
+        _debugobshistorydisplayctx(fm, repo[node])
     else:
         _debugobshistorydisplaymissingctx(fm, node)
 
@@ -338,7 +414,7 @@ def _debugobshistorydisplaymissingctx(fm, nodewithoutctx):
              label="evolve.node evolve.missing_change_ctx")
     fm.plain('\n')
 
-def _debugobshistorydisplaymarker(fm, repo, marker):
+def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
     succnodes = marker[1]
     date = marker[4]
     metadata = dict(marker[3])
@@ -400,6 +476,30 @@ def _debugobshistorydisplaymarker(fm, repo, marker):
         nodes = fm.formatlist(shortsnodes, 'debugobshistory.succnodes', sep=', ')
         fm.write('debugobshistory.succnodes', '%s', nodes,
                  label="evolve.node")
+
+    # Patch display
+    if opts.get('patch'):
+        _patchavailable = patchavailable(node, repo, marker)
+
+        if _patchavailable[0] is True:
+            succ = _patchavailable[1]
+
+            # Description patch
+            descriptionpatch = getmarkerdescriptionpatch(repo, node, succ)
+            if descriptionpatch:
+                fm.plain("\n")
+                fm.plain(descriptionpatch)
+
+            # Content patch
+            contentpatch = getmarkercontentpatch(repo, node, succ)
+            if contentpatch:
+                fm.plain("\n")
+                fm.plain(contentpatch)
+        else:
+            patch = "    (No patch available yet, %s)" % _patchavailable[1]
+            fm.plain("\n")
+            # TODO: should be in json too
+            fm.plain(patch)
 
     fm.plain("\n")
 
@@ -586,7 +686,7 @@ def _getobsfateandsuccs(repo, revnode, successorssets=None):
     or has diverged
     """
     if successorssets is None:
-        successorssets = obsolete.successorssets(repo, revnode)
+        successorssets = compat.successorssets(repo, revnode)
 
     fate = _getobsfate(successorssets)
 

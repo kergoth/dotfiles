@@ -29,7 +29,7 @@ selector with fzf.
 
 fzf is an independent command-line program and thus requires an external
 terminal emulator when on GVim. You may or may not like the experience. Also
-note that fzf currently does not compile on Windows.
+note that Windows support is experimental at the moment.
 
 Installation
 ------------
@@ -245,7 +245,7 @@ following exceptions:
     - Or a function to extract completion prefix
 - Both `source` and `options` can be given as funcrefs that take the
   completion prefix as the argument and return the final value
-- `sink` or `sink*` are not allowed
+- `sink` or `sink*` are ignored
 
 #### Reducer example
 

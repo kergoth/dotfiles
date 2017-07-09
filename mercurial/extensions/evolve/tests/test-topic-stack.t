@@ -129,8 +129,7 @@ error case, nothing to list
 
   $ hg topic --clear
   $ hg stack
-  abort: no active topic to list
-  [255]
+  ### branch: 
 
 Test "t#" reference
 -------------------
@@ -188,7 +187,7 @@ Case with some of the topic unstable
   ### topic: foo
   ### branch: default
   t4$ c_f (unstable)
-  t3@ c_e (current)
+  t3$ c_e (current unstable)
   t2: c_d
   t1: c_c
     ^ c_b
@@ -196,7 +195,7 @@ Case with some of the topic unstable
   [topic.stack.summary.topic|### topic: [topic.active|foo]]
   [topic.stack.summary.branches|### branch: default]
   [topic.stack.index topic.stack.index.unstable|t4][topic.stack.state topic.stack.state.unstable|$] [topic.stack.desc topic.stack.desc.unstable|c_f][topic.stack.state topic.stack.state.unstable| (unstable)]
-  [topic.stack.index topic.stack.index.current|t3][topic.stack.state topic.stack.state.current|@] [topic.stack.desc topic.stack.desc.current|c_e][topic.stack.state topic.stack.state.current| (current)]
+  [topic.stack.index topic.stack.index.current topic.stack.index.unstable|t3][topic.stack.state topic.stack.state.current topic.stack.state.unstable|$] [topic.stack.desc topic.stack.desc.current topic.stack.desc.unstable|c_e][topic.stack.state topic.stack.state.current topic.stack.state.unstable| (current unstable)]
   [topic.stack.index topic.stack.index.clean|t2][topic.stack.state topic.stack.state.clean|:] [topic.stack.desc topic.stack.desc.clean|c_d]
   [topic.stack.index topic.stack.index.clean|t1][topic.stack.state topic.stack.state.clean|:] [topic.stack.desc topic.stack.desc.clean|c_c]
     [topic.stack.state topic.stack.state.base|^] [topic.stack.desc topic.stack.desc.base|c_b]
@@ -210,6 +209,14 @@ Also test the revset:
   7 default {foo} draft c_d
   4 default {foo} draft c_e
   5 default {foo} draft c_f
+
+  $ hg log -r 'stack(foo)'
+  hg: parse error: stack() takes no argument, it works on current topic
+  [255]
+
+  $ hg log -r 'stack(foobar)'
+  hg: parse error: stack() takes no argument, it works on current topic
+  [255]
 
 Case with multiple heads on the topic
 -------------------------------------
@@ -319,3 +326,12 @@ We amend the message to make sure the display base pick the right changeset
   t2@ c_D (current)
   t1: c_c
     ^ c_b
+
+Trying to list non existing topic
+  $ hg stack thisdoesnotexist
+  abort: cannot resolve "thisdoesnotexist": no such topic found
+  [255]
+  $ hg topic --list thisdoesnotexist
+  abort: cannot resolve "thisdoesnotexist": no such topic found
+  [255]
+

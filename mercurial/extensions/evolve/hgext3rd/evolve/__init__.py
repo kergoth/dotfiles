@@ -20,7 +20,7 @@ While many feature related to changeset evolution are directly handled by core
 this extensions contains significant additions recommended to any user of
 changeset evolution.
 
-With the extensions various evolution events will display warning (new unstable
+With the extension various evolution events will display warning (new unstable
 changesets, obsolete working copy parent, improved error when accessing hidden
 revision, etc).
 
@@ -77,14 +77,19 @@ The following config control the experiment::
   # (recommended 'yes' for server (default))
   obshashrange.warm-cache = no
 
-It is recommended to enable the blackbox extension. It gather useful data about
-the experiment. It is shipped with Mercurial so no extra install are needed.
+The initial cache warming is currently a bit slow. To make sure it is build you
+can run the following commands in your repository::
+
+    $ hg debugobshashrange --rev 'head()
+
+It is recommended to enable the blackbox extension. It gathers useful data about
+the experiment. It is shipped with Mercurial so no extra install is needed::
 
     [extensions]
     blackbox =
 
 Finally some extra options are available to help tame the experimental
-implementation of some of the algorithms:
+implementation of some of the algorithms::
 
     [experimental]
     # restrict cache size to reduce memory consumption
@@ -96,22 +101,55 @@ implementation of some of the algorithms:
     # ensuring no large repository will get affected.
     obshashrange.max-revs = 100000 # default is None
 
+For very large repositories. it is currently recommended to disable obsmarkers
+discovery (Make sure you follow release announcement to know when you can turn
+it back on).
+
+    [experimental]
+    evolution.obsdiscovery = no
+
 Effect Flag Experiment
 ======================
 
-We are experimenting with a way to register what changed between a precursor
-and its successors (content, description, parent, etc...). For example, having
-this information is helpful to show what changed between an obsolete changeset
-and its tipmost successors. This experiment is active by default
+Evolve also records what changed between two evolutions of a changeset. For
+example, having this information is helpful to understand what changed between
+an obsolete changeset and its tipmost successors.
 
-The following config control the experiment::
+Evolve currently records:
+
+    - Meta changes, user, date
+    - Tree movement, branch and parent, did the changeset moved?
+    - Description, was the commit description edited
+    - Diff, was there apart from potential diff change due to rebase a change in the diff?
+
+These flags are lightweight and can be combined, so it's easy to see if 4
+evolutions of the same changeset has just updated the description or if the
+content changed and you need to review again the diff.
+
+The effect flag recording is enabled by default in Evolve 6.4.0 so you have
+nothing to do to enjoy it. Now every new evolution that you create will have
+the effect flag attached.
+
+The following config control the effect flag recording::
 
   [experimental]
-  # deactivate the registration of effect flags in obs markers
-  evolution.effect-flags = false
+  # uncomment to deactivate the registration of effect flags in obs markers
+  # evolution.effect-flags = false
 
-The effect flags are shown in the obglog command output without particular
-configuration if you want to inspect them.
+You can display the effect flags with the command obslog, so if you have a
+changeset and you update only the message, you will see:
+
+    $ hg commit -m "WIP
+    $ hg commit -m "A better commit message!"
+    $ hg obslog .
+   @  8e9045855628 (3133) A better commit message!
+   |
+   x  7863a5bb5763 (3132) WIP
+        rewritten(description) by Boris Feld <boris.feld@octobus.net> (Fri Jun 02 12:00:24 2017 +0200) as 8e9045855628
+
+Servers does not need to activate the effect flag recording. Effect flags that
+you create will not cause interference with other clients or servers without
+the effect flag recording.
 
 Templates
 =========
@@ -121,14 +159,14 @@ about your obs history:
 
   - precursors, for each obsolete changeset show the closest visible
     precursors.
-  - successors, for each obsolete changeset show the closets visible
+  - successors, for each obsolete changeset show the closests visible
     successors. It is useful when your working directory is obsolete to see
-    what are its successors. This informations can also be retrieved with the
+    what are its successors. This information can also be retrieved with the
     obslog command and the --all option.
   - obsfate, for each obsolete changeset display a line summarizing what
     changed between the changeset and its successors. Dependending on the
     verbosity level (-q and -v) it display the changeset successors, the users
-    that created the obsmarkers and the date range of theses changes.
+    that created the obsmarkers and the date range of these changes.
 
     The template itself is not complex, the data are basically a list of
     successortset. Each successorset is a dict with these fields:
@@ -410,10 +448,10 @@ def _installalias(ui):
                      'evolve')
     if ui.config('alias', 'grab', None) is None:
         if os.name == 'nt':
-            ui.setconfig('alias', 'grab',
-                         "! " + util.hgexecutable()
+            hgexe = ('"%s"' % util.hgexecutable())
+            ui.setconfig('alias', 'grab', "! " + hgexe
                          + " rebase --dest . --rev $@ && "
-                         + util.hgexecutable() + " up tip",
+                         + hgexe + " up tip",
                          'evolve')
         else:
             ui.setconfig('alias', 'grab',
@@ -902,7 +940,7 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
         if not ctx.obsolete():
             continue
 
-        successors = obsolete.successorssets(repo, ctx.node(), cache)
+        successors = compat.successorssets(repo, ctx.node(), cache)
 
         # We can't make any assumptions about how to update the hash if the
         # cset in question was split or diverged.
@@ -1175,14 +1213,14 @@ def _singlesuccessor(repo, p):
         return p.rev()
     obs = repo[p]
     ui = repo.ui
-    newer = obsolete.successorssets(repo, obs.node())
+    newer = compat.successorssets(repo, obs.node())
     # search of a parent which is not killed
     while not newer:
         ui.debug("stabilize target %s is plain dead,"
                  " trying to stabilize on its parent\n" %
                  obs)
         obs = obs.parents()[0]
-        newer = obsolete.successorssets(repo, obs.node())
+        newer = compat.successorssets(repo, obs.node())
     if len(newer) > 1 or len(newer[0]) > 1:
         raise MultipleSuccessorsError(newer)
 
@@ -1302,11 +1340,11 @@ def divergentsets(repo, ctx):
     """Compute sets of commits divergent with a given one"""
     cache = {}
     base = {}
-    for n in obsolete.allprecursors(repo.obsstore, [ctx.node()]):
+    for n in compat.allprecursors(repo.obsstore, [ctx.node()]):
         if n == ctx.node():
             # a node can't be a base for divergence with itself
             continue
-        nsuccsets = obsolete.successorssets(repo, n, cache)
+        nsuccsets = compat.successorssets(repo, n, cache)
         for nsuccset in nsuccsets:
             if ctx.node() in nsuccset:
                 # we are only interested in *other* successor sets
@@ -1610,7 +1648,7 @@ def _possibledestination(repo, rev):
     tovisit = list(parents(rev))
     while tovisit:
         r = tovisit.pop()
-        succsets = obsolete.successorssets(repo, tonode(r))
+        succsets = compat.successorssets(repo, tonode(r))
         if not succsets:
             tovisit.extend(parents(r))
         else:
@@ -1658,9 +1696,11 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
                    progresscb=None):
     """Stabilize an unstable changeset"""
     pctx = orig.p1()
+    keepbranch = orig.p1().branch() != orig.branch()
     if len(orig.parents()) == 2:
         if not pctx.obsolete():
             pctx = orig.p2()  # second parent is obsolete ?
+            keepbranch = orig.p2().branch() != orig.branch()
         elif orig.p2().obsolete():
             hint = _("Redo the merge (%s) and use `hg prune <old> "
                      "--succ <new>` to obsolete the old one") % orig.hex()[:12]
@@ -1673,14 +1713,14 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         ui.warn(_("cannot solve instability of %s, skipping\n") % orig)
         return False
     obs = pctx
-    newer = obsolete.successorssets(repo, obs.node())
+    newer = compat.successorssets(repo, obs.node())
     # search of a parent which is not killed
     while not newer or newer == [()]:
         ui.debug("stabilize target %s is plain dead,"
                  " trying to stabilize on its parent\n" %
                  obs)
         obs = obs.parents()[0]
-        newer = obsolete.successorssets(repo, obs.node())
+        newer = compat.successorssets(repo, obs.node())
     if len(newer) > 1:
         msg = _("skipping %s: divergent rewriting. can't choose "
                 "destination\n") % obs
@@ -1718,7 +1758,6 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         repo.ui.note(todo)
         if progresscb:
             progresscb()
-        keepbranch = orig.p1().branch() != orig.branch()
         try:
             relocate(repo, orig, target, pctx, keepbranch)
         except MergeFailure:
@@ -1959,7 +1998,7 @@ def divergentdata(ctx):
     """
     repo = ctx._repo.unfiltered()
     for base in repo.set('reverse(allprecursors(%d))', ctx):
-        newer = obsolete.successorssets(ctx._repo, base.node())
+        newer = compat.successorssets(ctx._repo, base.node())
         # drop filter and solution including the original ctx
         newer = [n for n in newer if n and ctx.node() not in n]
         if newer:
@@ -2637,6 +2676,12 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
     finally:
         lockmod.release(tr, lock, wlock)
 
+def presplitupdate(repo, ui, prev, ctx):
+    """prepare the working directory for a split (for topic hooking)
+    """
+    hg.update(repo, prev)
+    commands.revert(ui, repo, rev=ctx.rev(), all=True)
+
 @eh.command(
     '^split',
     [('r', 'rev', [], _("revision to split")),
@@ -2682,9 +2727,9 @@ def cmdsplit(ui, repo, *revs, **opts):
         if bookactive is not None:
             repo.ui.status(_("(leaving bookmark %s)\n") % repo._activebookmark)
         bookmarksmod.deactivate(repo)
-        hg.update(repo, prev)
 
-        commands.revert(ui, repo, rev=r, all=True)
+        # Prepare the working directory
+        presplitupdate(repo, ui, prev, ctx)
 
         def haschanges():
             modified, added, removed, deleted = repo.status()[:4]
@@ -2694,6 +2739,7 @@ def cmdsplit(ui, repo, *revs, **opts):
         msg += ctx.description()
         opts['message'] = msg
         opts['edit'] = True
+        opts['user'] = ctx.user()
         while haschanges():
             pats = ()
             cmdutil.dorecord(ui, repo, commands.commit, 'commit', False,
@@ -2794,7 +2840,7 @@ def touch(ui, repo, *revs, **opts):
             if not (duplicate or allowdivergence):
                 # The user hasn't yet decided what to do with the revived
                 # cset, let's ask
-                sset = obsolete.successorssets(repo, ctx.node())
+                sset = compat.successorssets(repo, ctx.node())
                 nodivergencerisk = (len(sset) == 0 or
                                     (len(sset) == 1 and
                                      len(sset[0]) == 1 and

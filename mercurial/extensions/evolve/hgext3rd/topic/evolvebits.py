@@ -1,6 +1,16 @@
 import collections
 from mercurial import obsolete
 
+successorssets = None
+try:
+    from mercurial import obsutil
+    successorssets = getattr(obsutil, 'successorssets', None)
+except ImportError:
+    pass
+
+if successorssets is None:
+    successorssets = obsolete.successorssets
+
 # Copied from evolve 081605c2e9b6
 
 def _orderrevs(repo, revs):
@@ -72,14 +82,14 @@ def _singlesuccessor(repo, p):
         return p.rev()
     obs = repo[p]
     ui = repo.ui
-    newer = obsolete.successorssets(repo, obs.node())
+    newer = successorssets(repo, obs.node())
     # search of a parent which is not killed
     while not newer:
         ui.debug("stabilize target %s is plain dead,"
                  " trying to stabilize on its parent\n" %
                  obs)
         obs = obs.parents()[0]
-        newer = obsolete.successorssets(repo, obs.node())
+        newer = successorssets(repo, obs.node())
     if len(newer) > 1 or len(newer[0]) > 1:
         raise MultipleSuccessorsError(newer)
 

@@ -22,9 +22,9 @@
   
   options:
   
-      --clear        clear active topic if any
-      --change VALUE revset of existing revisions to change topic
-   -l --list         show the stack of changeset in the topic
+      --clear   clear active topic if any
+   -r --rev REV revset of existing revisions
+   -l --list    show the stack of changeset in the topic
   
   (some details hidden, use --verbose to show complete help)
   $ hg topics
@@ -32,8 +32,8 @@
 Test topics interaction with evolution:
 
   $ hg topics --config experimental.evolution=
-  $ hg topics --config experimental.evolution= --change . bob
-  abort: must have obsolete enabled to use --change
+  $ hg topics --config experimental.evolution= --rev . bob
+  abort: must have obsolete enabled to change topics
   [255]
 
 Create some changes:
@@ -542,21 +542,20 @@ Deactivate the topic.
   $ hg topics
      fran
 Changing topic fails if we don't give a topic
-  $ hg topic --change 9
+  $ hg topic --rev 9
   abort: changing topic requires a topic name or --clear
   [255]
 
 Can't change topic of a public change
-  $ hg topic --change 1:: --clear
+  $ hg topic --rev 1:: --clear
   abort: can't change topic of a public change
   [255]
 
 Can clear topics
-  $ hg topic --change 9 --clear
+  $ hg topic --rev 9 --clear
   changed topic on 1 changes
-  please run hg evolve --rev "not topic()" now
   $ hg log -Gr 'draft() and not obsolete()'
-  o  changeset:   11:783930e1d79e
+  o  changeset:   11:0beca5ab56c3
   |  tag:         tip
   |  parent:      3:a53952faf762
   |  user:        test
@@ -577,11 +576,35 @@ bonus deps in the testsuite.
   rebasing 10:4073470c35e1 "fran?"
 
 Can add a topic to an existing change
-  $ hg topic --change 11 wat
+  $ hg topic
+  $ hg sum
+  parent: 12:18b70b8de1f0 tip
+   fran?
+  branch: default
+  commit: (clean)
+  update: 5 new changesets, 2 branch heads (merge)
+  phases: 2 draft
+  $ hg topic --rev 11 wat
   changed topic on 1 changes
-  please run hg evolve --rev "topic(wat)" now
+  $ hg log -r .
+  changeset:   12:18b70b8de1f0
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  trouble:     unstable
+  summary:     fran?
+  
+  $ hg sum
+  parent: 12:18b70b8de1f0  (unstable)
+   fran?
+  branch: default
+  commit: (clean)
+  update: 5 new changesets, 2 branch heads (merge)
+  phases: 3 draft
+  unstable: 1 changesets
+  $ hg topic
+     wat
   $ hg log -Gr 'draft() and not obsolete()'
-  o  changeset:   13:d91cd8fd490e
+  o  changeset:   13:686a642006db
   |  tag:         tip
   |  topic:       wat
   |  parent:      3:a53952faf762
@@ -589,7 +612,7 @@ Can add a topic to an existing change
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     start on fran
   |
-  | @  changeset:   12:d9e32f4c4806
+  | @  changeset:   12:18b70b8de1f0
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  trouble:     unstable
@@ -599,18 +622,22 @@ Can add a topic to an existing change
 Normally you'd do this with evolve, but we'll use rebase to avoid
 bonus deps in the testsuite.
 
+  $ hg topic
+     wat
   $ hg rebase -d tip -s .
-  rebasing 12:d9e32f4c4806 "fran?"
+  rebasing 12:18b70b8de1f0 "fran?"
+  switching to topic wat
+  $ hg topic
+     wat
 
   $ hg log -Gr 'draft()'
-  @  changeset:   14:cf24ad8bbef5
+  @  changeset:   14:45358f7a5892
   |  tag:         tip
-  |  topic:       wat
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     fran?
   |
-  o  changeset:   13:d91cd8fd490e
+  o  changeset:   13:686a642006db
   |  topic:       wat
   |  parent:      3:a53952faf762
   |  user:        test
@@ -623,15 +650,15 @@ Amend a topic
   $ hg topic watwat
   $ hg ci --amend
   $ hg log -Gr 'draft()'
-  @  changeset:   16:893ffcf66c1f
+  @  changeset:   16:6c40a4c21bbe
   |  tag:         tip
   |  topic:       watwat
-  |  parent:      13:d91cd8fd490e
+  |  parent:      13:686a642006db
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     fran?
   |
-  o  changeset:   13:d91cd8fd490e
+  o  changeset:   13:686a642006db
   |  topic:       wat
   |  parent:      3:a53952faf762
   |  user:        test
@@ -644,13 +671,109 @@ Clear and amend:
   $ hg topic --clear
   $ hg ci --amend
   $ hg log -r .
-  changeset:   18:a13639e22b65
+  changeset:   18:0f9cd5070654
   tag:         tip
-  parent:      13:d91cd8fd490e
+  parent:      13:686a642006db
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
   summary:     fran?
   
-Readding the same topic with topic --change should work:
-  $ hg topic --change . watwat
+Reading the same topic with topic --rev should work:
+  $ hg topic --rev . watwat
+  switching to topic watwat
   changed topic on 1 changes
+
+Testing issue5441
+  $ hg co 19
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg log -Gr 'draft()'
+  @  changeset:   19:980a0f608481
+  |  tag:         tip
+  |  topic:       watwat
+  |  parent:      13:686a642006db
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     fran?
+  |
+  o  changeset:   13:686a642006db
+  |  topic:       wat
+  |  parent:      3:a53952faf762
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     start on fran
+  |
+
+  $ hg topics --rev '13::19' changewat
+  switching to topic changewat
+  changed topic on 2 changes
+  $ hg log -Gr 'draft()'
+  @  changeset:   21:56c83be6105f
+  |  tag:         tip
+  |  topic:       changewat
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     fran?
+  |
+  o  changeset:   20:ceba5be9d56f
+  |  topic:       changewat
+  |  parent:      3:a53952faf762
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     start on fran
+  |
+
+Case with branching:
+
+  $ hg up changewat
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg up t1
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ echo gamma >> gamma
+  $ hg ci -m gamma
+  $ hg log -Gr 'draft()'
+  @  changeset:   22:0d3d805542b4
+  |  tag:         tip
+  |  topic:       changewat
+  |  parent:      20:ceba5be9d56f
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     gamma
+  |
+  | o  changeset:   21:56c83be6105f
+  |/   topic:       changewat
+  |    user:        test
+  |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    summary:     fran?
+  |
+  o  changeset:   20:ceba5be9d56f
+  |  topic:       changewat
+  |  parent:      3:a53952faf762
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     start on fran
+  |
+  $ hg topics --rev 't1::' changewut
+  switching to topic changewut
+  changed topic on 3 changes
+  $ hg log -Gr 'draft()'
+  @  changeset:   25:729ed5717393
+  |  tag:         tip
+  |  topic:       changewut
+  |  parent:      23:62e49f09f883
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     gamma
+  |
+  | o  changeset:   24:369c6e2e5474
+  |/   topic:       changewut
+  |    user:        test
+  |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    summary:     fran?
+  |
+  o  changeset:   23:62e49f09f883
+  |  topic:       changewut
+  |  parent:      3:a53952faf762
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     start on fran
+  |

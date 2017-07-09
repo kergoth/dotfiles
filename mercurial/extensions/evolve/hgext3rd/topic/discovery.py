@@ -4,24 +4,24 @@ import weakref
 
 from mercurial.i18n import _
 from mercurial import (
-    branchmap,
     bundle2,
     discovery,
     error,
     exchange,
     extensions,
+    util,
     wireproto,
 )
-
-from . import topicmap
 
 def _headssummary(orig, *args):
     # In mercurial < 4.2, we receive repo, remote and outgoing as arguments
     if len(args) == 3:
+        pushoparg = False
         repo, remote, outgoing = args
 
     # In mercurial > 4.3, we receive the pushop as arguments
     elif len(args) == 1:
+        pushoparg = True
         pushop = args[0]
         repo = pushop.repo.unfiltered()
         remote = pushop.remote
@@ -33,38 +33,56 @@ def _headssummary(orig, *args):
                   or bool(remote.listkeys('phases').get('publishing', False)))
     if publishing or not remote.capable('topics'):
         return orig(*args)
-    oldrepo = repo.__class__
-    oldbranchcache = branchmap.branchcache
-    oldfilename = branchmap._filename
+
+    class repocls(repo.__class__):
+        # awful hack to see branch as "branch:topic"
+        def __getitem__(self, key):
+            ctx = super(repocls, self).__getitem__(key)
+            oldbranch = ctx.branch
+
+            def branch():
+                branch = oldbranch()
+                topic = ctx.topic()
+                if topic:
+                    branch = "%s:%s" % (branch, topic)
+                return branch
+
+            ctx.branch = branch
+            return ctx
+
+        def revbranchcache(self):
+            rbc = super(repocls, self).revbranchcache()
+            changelog = self.changelog
+
+            def branchinfo(rev):
+                branch, close = changelog.branchinfo(rev)
+                topic = repo[rev].topic()
+                if topic:
+                    branch = "%s:%s" % (branch, topic)
+                return branch, close
+
+            rbc.branchinfo = branchinfo
+            return rbc
+
+    oldrepocls = repo.__class__
     try:
-        class repocls(repo.__class__):
-            def __getitem__(self, key):
-                ctx = super(repocls, self).__getitem__(key)
-                oldbranch = ctx.branch
-
-                def branch():
-                    branch = oldbranch()
-                    topic = ctx.topic()
-                    if topic:
-                        branch = "%s:%s" % (branch, topic)
-                    return branch
-
-                ctx.branch = branch
-                return ctx
-
         repo.__class__ = repocls
-        branchmap.branchcache = topicmap.topiccache
-        branchmap._filename = topicmap._filename
-        summary = orig(*args)
+        unxx = repo.filtered('unfiltered-topic')
+        repo.unfiltered = lambda: unxx
+        if pushoparg:
+            pushop.repo = repo
+            summary = orig(pushop)
+        else:
+            summary = orig(repo, remote, outgoing)
         for key, value in summary.iteritems():
             if ':' in key: # This is a topic
                 if value[0] is None and value[1]:
-                    summary[key] = ([value[1].pop(0)], ) + value[1:]
+                    summary[key] = ([value[1][0]], ) + value[1:]
         return summary
     finally:
-        repo.__class__ = oldrepo
-        branchmap.branchcache = oldbranchcache
-        branchmap._filename = oldfilename
+        if 'unfiltered' in vars(repo):
+            del repo.unfiltered
+        repo.__class__ = oldrepocls
 
 def wireprotobranchmap(orig, repo, proto):
     oldrepo = repo.__class__
@@ -94,6 +112,7 @@ def _nbheads(repo):
     return data
 
 def handlecheckheads(orig, op, inpart):
+    """This is used to check for new heads when publishing changeset"""
     orig(op, inpart)
     if op.repo.publishing():
         return
@@ -124,8 +143,9 @@ def handlecheckheads(orig, op, inpart):
 handlecheckheads.params = frozenset()
 
 def _pushb2phases(orig, pushop, bundler):
-    hascheck = any(p.type == 'check:heads' for p in bundler._parts)
-    if pushop.outdatedphases and not hascheck:
+    checktypes = ('check:heads', 'check:updated-heads')
+    hascheck = any(p.type in checktypes for p in bundler._parts)
+    if not hascheck and pushop.outdatedphases:
         exchange._pushb2ctxcheckheads(pushop, bundler)
     return orig(pushop, bundler)
 
@@ -140,9 +160,14 @@ def modsetup(ui):
     extensions.wrapfunction(discovery, '_headssummary', _headssummary)
     extensions.wrapfunction(wireproto, 'branchmap', wireprotobranchmap)
     extensions.wrapfunction(wireproto, '_capabilities', wireprotocaps)
-    extensions.wrapfunction(bundle2, 'handlecheckheads', handlecheckheads)
     # we need a proper wrap b2 part stuff
+    extensions.wrapfunction(bundle2, 'handlecheckheads', handlecheckheads)
     bundle2.handlecheckheads.params = frozenset()
     bundle2.parthandlermapping['check:heads'] = bundle2.handlecheckheads
+    if util.safehasattr(bundle2, 'handlecheckupdatedheads'):
+        # we still need a proper wrap b2 part stuff
+        extensions.wrapfunction(bundle2, 'handlecheckupdatedheads', handlecheckheads)
+        bundle2.handlecheckupdatedheads.params = frozenset()
+        bundle2.parthandlermapping['check:updated-heads'] = bundle2.handlecheckupdatedheads
     extensions.wrapfunction(exchange, '_pushb2phases', _pushb2phases)
     exchange.b2partsgenmapping['phase'] = exchange._pushb2phases

@@ -1,0 +1,42 @@
+Before:
+  Save g:ale_ruby_rubocop_executable
+
+  " Use an invalid global executable, so we don't match it.
+  let g:ale_ruby_rubocop_executable = 'xxxinvalid'
+
+  silent! execute 'cd /testplugin/test/command_callback'
+  silent cd ..
+  silent cd command_callback
+  let g:dir = getcwd()
+
+After:
+  Restore
+
+  silent execute 'cd ' . fnameescape(g:dir)
+  " Set the file to something else,
+  " or we'll cause issues when running other tests
+  silent file 'dummy.rb'
+  unlet! g:dir
+
+Execute(The rubocop callback should return the correct default values):
+  call ale#test#SetFilename('ruby_paths/dummy.rb')
+
+  AssertEqual
+  \ {
+  \   'read_temporary_file': 1,
+  \   'command': ale#Escape(g:ale_ruby_rubocop_executable)
+  \     . ' --auto-correct %t',
+  \ },
+  \ ale#fixers#rubocop#Fix(bufnr(''))
+
+Execute(The rubocop callback should include configuration files):
+  call ale#test#SetFilename('ruby_paths/with_config/dummy.rb')
+
+  AssertEqual
+  \ {
+  \   'read_temporary_file': 1,
+  \   'command': ale#Escape(g:ale_ruby_rubocop_executable)
+  \     . ' --config ' . ale#Escape(g:dir . '/ruby_paths/with_config/.rubocop.yml')
+  \     . ' --auto-correct %t',
+  \ },
+  \ ale#fixers#rubocop#Fix(bufnr(''))

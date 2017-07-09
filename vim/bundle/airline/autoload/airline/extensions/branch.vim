@@ -29,6 +29,7 @@ let s:vcs_config = {
 \    'cmd': 'git status --porcelain -- ',
 \    'untracked_mark': '??',
 \    'update_branch': 's:update_git_branch',
+\    'exclude': '\.git',
 \    'branch': '',
 \    'untracked': {},
 \  },
@@ -36,6 +37,7 @@ let s:vcs_config = {
 \    'exe': 'hg',
 \    'cmd': 'hg status -u -- ',
 \    'untracked_mark': '?',
+\    'exclude': '\.hg',
 \    'update_branch': 's:update_hg_branch',
 \    'branch': '',
 \    'untracked': {},
@@ -165,6 +167,10 @@ function! s:update_untracked()
 
   let l:needs_update = 1
   for vcs in keys(s:vcs_config)
+    if l:file =~ s:vcs_config[vcs].exclude
+      " Skip check for files that live in the exclude directory
+      let l:needs_update = 0
+    endif
     if has_key(s:vcs_config[vcs].untracked, l:file)
       let l:needs_update = 0
       call s:update_untracked_in_buffer_config(l:file, vcs)
@@ -396,7 +402,7 @@ function! airline#extensions#branch#init(ext)
   call airline#parts#define_function('branch', 'airline#extensions#branch#get_head')
 
   autocmd BufReadPost * unlet! b:airline_file_in_root
-  autocmd CursorHold,ShellCmdPost,CmdwinLeave * unlet! b:airline_head
+  autocmd ShellCmdPost,CmdwinLeave * unlet! b:airline_head
   autocmd User AirlineBeforeRefresh unlet! b:airline_head
   autocmd BufWritePost * call s:reset_untracked_cache(0)
   autocmd ShellCmdPost * call s:reset_untracked_cache(1)

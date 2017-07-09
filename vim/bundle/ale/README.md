@@ -62,7 +62,7 @@ name. That seems to be the fairest way to arrange this table.
 | Bash | [-n flag](https://www.gnu.org/software/bash/manual/bash.html#index-set), [shellcheck](https://www.shellcheck.net/) |
 | Bourne Shell | [-n flag](http://linux.die.net/man/1/sh), [shellcheck](https://www.shellcheck.net/) |
 | C | [cppcheck](http://cppcheck.sourceforge.net), [gcc](https://gcc.gnu.org/), [clang](http://clang.llvm.org/)|
-| C++ (filetype cpp) | [clang](http://clang.llvm.org/), [clangtidy](http://clang.llvm.org/extra/clang-tidy/), [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint), [gcc](https://gcc.gnu.org/)|
+| C++ (filetype cpp) | [clang](http://clang.llvm.org/), [clangcheck](http://clang.llvm.org/docs/ClangCheck.html), [clangtidy](http://clang.llvm.org/extra/clang-tidy/), [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint), [gcc](https://gcc.gnu.org/)|
 | C# | [mcs](http://www.mono-project.com/docs/about-mono/languages/csharp/) |
 | Chef | [foodcritic](http://www.foodcritic.io/) |
 | CMake | [cmakelint](https://github.com/richq/cmake-lint) |
@@ -84,7 +84,7 @@ name. That seems to be the fairest way to arrange this table.
 | Haskell | [ghc](https://www.haskell.org/ghc/), [ghc-mod](https://github.com/DanielG/ghc-mod), [hlint](https://hackage.haskell.org/package/hlint), [hdevtools](https://hackage.haskell.org/package/hdevtools) |
 | HTML | [HTMLHint](http://htmlhint.com/), [proselint](http://proselint.com/), [tidy](http://www.html-tidy.org/) |
 | Java | [checkstyle](http://checkstyle.sourceforge.net), [javac](http://www.oracle.com/technetwork/java/javase/downloads/index.html) |
-| JavaScript | [eslint](http://eslint.org/), [jscs](http://jscs.info/), [jshint](http://jshint.com/), [flow](https://flowtype.org/), [standard](http://standardjs.com/), [prettier](https://github.com/prettier/prettier) (and `prettier-eslint`), [xo](https://github.com/sindresorhus/xo)
+| JavaScript | [eslint](http://eslint.org/), [jscs](http://jscs.info/), [jshint](http://jshint.com/), [flow](https://flowtype.org/), [standard](http://standardjs.com/), [prettier](https://github.com/prettier/prettier) (and `prettier-eslint`, `prettier-standard`), [xo](https://github.com/sindresorhus/xo)
 | JSON | [jsonlint](http://zaa.ch/jsonlint/) |
 | Kotlin | [kotlinc](https://kotlinlang.org), [ktlint](https://ktlint.github.io) see `:help ale-integration-kotlin` for configuration instructions
 | LaTeX | [chktex](http://www.nongnu.org/chktex/), [lacheck](https://www.ctan.org/pkg/lacheck), [proselint](http://proselint.com/) |
@@ -103,6 +103,7 @@ name. That seems to be the fairest way to arrange this table.
 | Pug | [pug-lint](https://github.com/pugjs/pug-lint) |
 | Puppet | [puppet](https://puppet.com), [puppet-lint](https://puppet-lint.com) |
 | Python | [autopep8](https://github.com/hhatto/autopep8), [flake8](http://flake8.pycqa.org/en/latest/), [isort](https://github.com/timothycrosley/isort), [mypy](http://mypy-lang.org/), [pylint](https://www.pylint.org/), [yapf](https://github.com/google/yapf) |
+| R | [lintr](https://github.com/jimhester/lintr) |
 | ReasonML | [merlin](https://github.com/the-lambda-church/merlin) see `:help ale-integration-reason-merlin` for configuration instructions
 | reStructuredText | [proselint](http://proselint.com/)|
 | RPM spec | [rpmlint](https://github.com/rpm-software-management/rpmlint) (disabled by default; see `:help ale-integration-spec`) |
@@ -113,6 +114,7 @@ name. That seems to be the fairest way to arrange this table.
 | Scala | [scalac](http://scala-lang.org) |
 | Slim | [slim-lint](https://github.com/sds/slim-lint)
 | SML | [smlnj](http://www.smlnj.org/) |
+| Stylus | [stylelint](https://github.com/stylelint/stylelint) |
 | SQL | [sqlint](https://github.com/purcell/sqlint) |
 | Swift | [swiftlint](https://swift.org/) |
 | Texinfo | [proselint](http://proselint.com/)|
@@ -298,14 +300,19 @@ highlight clear ALEWarningSign
 
 ### 5.iv. How can I show errors or warnings in my statusline?
 
-[vim-airline](https://github.com/vim-airline/vim-airline) integrates with
-ALE for displaying error information in the status bar. If you want to see
-the status for ALE in a nice format, it is recommended to use vim-airline
-with ALE.
+[vim-airline](https://github.com/vim-airline/vim-airline) integrates with ALE
+for displaying error information in the status bar. If you want to see the
+status for ALE in a nice format, it is recommended to use vim-airline with ALE.
+The airline extension can be enabled by adding the following to your vimrc:
 
-ALE offers the ability to show some information in statuslines with no extra
-plugins. ALE provides a function for getting a summary with the number of
-problems detected, and you can implement your own function for your statusline.
+```vim
+" Set this. Airline will handle the rest.
+let g:airline#extensions#ale#enabled = 1
+```
+
+If you don't want to use vim-airline, you can implement your own statusline
+function without adding any other plugins. ALE provides a function for counting
+the number of problems for this purpose, named `ale#statusline#Count`.
 
 Say you want to display all errors as one figure, and all non-errors as another
 figure. You can do the following:

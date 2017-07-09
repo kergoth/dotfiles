@@ -108,6 +108,7 @@ rebase on branch ngtip
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg rebase
   rebasing 4:cb7ae72f4a80 "babar"
+  switching to topic elephant
   $ hg log -G
   @  7 (elephant) babar
   |
@@ -128,6 +129,7 @@ rebase on branch ngtip
   1 files updated, 0 files merged, 3 files removed, 0 files unresolved
   $ hg rebase
   rebasing 5:d832ddc604ec "zephir"
+  switching to topic monkey
   $ hg log -G
   @  8 (monkey) zephir
   |
@@ -222,6 +224,7 @@ merge destination
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg rebase -d 'desc(c_zeta)' # make sure tip is elsewhere
   rebasing 7:8d0b77140b05 "babar"
+  switching to topic elephant
   $ hg up monkey
   switching to topic monkey
   2 files updated, 0 files merged, 1 files removed, 0 files unresolved

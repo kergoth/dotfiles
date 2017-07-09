@@ -40,7 +40,12 @@ function! ale#fix#ApplyQueuedFixes() abort
         endif
 
         if l:data.should_save
-            set nomodified
+            if empty(&buftype)
+                noautocmd :w!
+            else
+                call writefile(l:data.output, 'fix_test_file')
+                set nomodified
+            endif
         endif
     endif
 
@@ -76,10 +81,6 @@ function! ale#fix#ApplyFixes(buffer, output) abort
         let l:data.done = 1
     endif
 
-    if l:data.changes_made && l:data.should_save
-        call writefile(a:output, l:data.filename)
-    endif
-
     if !bufexists(a:buffer)
         " Remove the buffer data when it doesn't exist.
         call remove(g:ale_fix_buffer_data, a:buffer)
@@ -101,9 +102,15 @@ function! s:HandleExit(job_id, exit_code) abort
         let l:job_info.output = readfile(l:job_info.file_to_read)
     endif
 
+    " Use the output of the job for changing the file if it isn't empty,
+    " otherwise skip this job and use the input from before.
+    let l:input = !empty(l:job_info.output)
+    \   ? l:job_info.output
+    \   : l:job_info.input
+
     call s:RunFixer({
     \   'buffer': l:job_info.buffer,
-    \   'input': l:job_info.output,
+    \   'input': l:input,
     \   'callback_list': l:job_info.callback_list,
     \   'callback_index': l:job_info.callback_index + 1,
     \})
@@ -171,6 +178,7 @@ function! s:RunJob(options) abort
 
     let l:job_info = {
     \   'buffer': l:buffer,
+    \   'input': l:input,
     \   'output': [],
     \   'callback_list': a:options.callback_list,
     \   'callback_index': a:options.callback_index,

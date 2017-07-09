@@ -565,7 +565,7 @@ sub filter_stdin_through_diff_highlight {
 	my $dh  = find_diff_highlight();
 
 	# Pipe the STDIN of this to diff-highlight
-	my $pid = open(my $cmd_output, "-|", $dh);
+	my $pid = open(my $cmd_output, "-|", "\"$dh\"");
 
 	return $cmd_output;
 }
@@ -592,9 +592,13 @@ sub find_diff_highlight {
         }
     }
 
-    if (!-X $ret) {
-        die("Error locating diff-highlight\n");
+    if (!$ret) {
+        die("Error #75913: Unable to locate diff-highlight\n");
+    } elsif (!-X $ret) {
+        die("Error #19391: diff-highlight ($ret) not executable\n");
     }
 
     return $ret;
 }
+
+# vim: tabstop=4 shiftwidth=4 expandtab autoindent softtabstop=4

@@ -101,6 +101,7 @@ _zsh_highlight()
 
   } always {
     typeset -g _ZSH_HIGHLIGHT_PRIOR_BUFFER="$BUFFER"
+    typeset -g _ZSH_HIGHLIGHT_PRIOR_RACTIVE="$REGION_ACTIVE"
     typeset -gi _ZSH_HIGHLIGHT_PRIOR_CURSOR=$CURSOR
   }
 }
@@ -151,7 +152,7 @@ _zsh_highlight_apply_zle_highlight() {
 # Returns 0 if the buffer has changed since _zsh_highlight was last called.
 _zsh_highlight_buffer_modified()
 {
-  [[ "${_ZSH_HIGHLIGHT_PRIOR_BUFFER:-}" != "$BUFFER" ]]
+  [[ "${_ZSH_HIGHLIGHT_PRIOR_BUFFER:-}" != "$BUFFER" ]] || [[ "$REGION_ACTIVE" != "$_ZSH_HIGHLIGHT_PRIOR_RACTIVE" ]] || { _zsh_highlight_cursor_moved && [[ "$REGION_ACTIVE" = 1 || "$REGION_ACTIVE" = 2 ]] }
 }
 
 # Whether the cursor has moved or not.
@@ -261,10 +262,12 @@ add-zsh-hook preexec _zsh_highlight_preexec_hook 2>/dev/null || {
     print -r -- >&2 'zsh-syntax-highlighting: failed loading add-zsh-hook.'
 }
 
+ZSH_HIGHLIGHT_MAXLENGTH=10000
+
 # Load zsh/parameter module if available
 zmodload zsh/parameter 2>/dev/null
 
-autoload -U is-at-least 
+autoload -U is-at-least
 source "${ZERO:h}/fast-highlight"
 
 [[ "${+termcap[Co]}" = 1 && "${termcap[Co]}" = "256" ]] && FAST_HIGHLIGHT_STYLES[variable]="fg=112"

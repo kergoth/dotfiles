@@ -55,11 +55,26 @@ Test setup
   
 Actual test
 -----------
-  $ hg obslog 4ae3a4151de9
+  $ hg obslog --patch 4ae3a4151de9
   @  4ae3a4151de9 (3) A1
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) by test (*) as 4ae3a4151de9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/4ae3a4151de9-changeset-description
+         @@ -1,1 +1,3 @@
+         -A0
+         +A1
+         +
+         +Better commit message
+  
+         diff -r 471f378eab4c -r 4ae3a4151de9 A0
+         --- a/A0	Thu Jan 01 00:00:00 1970 +0000
+         +++ b/A0	Thu Jan 01 00:00:00 1970 +0000
+         @@ -1,1 +1,2 @@
+          A0
+         +42
+  
   
   $ hg obslog 4ae3a4151de9 --no-graph -Tjson | python -m json.tool
   [
@@ -92,9 +107,24 @@ Actual test
           "debugobshistory.shortdescription": "A0"
       }
   ]
-  $ hg obslog --hidden 471f378eab4c
+  $ hg obslog --hidden --patch 471f378eab4c
   x  471f378eab4c (1) A0
        rewritten(description, content) by test (*) as 4ae3a4151de9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/4ae3a4151de9-changeset-description
+         @@ -1,1 +1,3 @@
+         -A0
+         +A1
+         +
+         +Better commit message
+  
+         diff -r 471f378eab4c -r 4ae3a4151de9 A0
+         --- a/A0	Thu Jan 01 00:00:00 1970 +0000
+         +++ b/A0	Thu Jan 01 00:00:00 1970 +0000
+         @@ -1,1 +1,2 @@
+          A0
+         +42
+  
   
   $ hg obslog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
   [
@@ -183,9 +213,10 @@ Test setup
 Actual test
 -----------
 
-  $ hg obslog 'desc(B0)' --hidden
+  $ hg obslog 'desc(B0)' --hidden --patch
   x  0dec01379d3b (2) B0
        pruned by test (*) (glob)
+         (No patch available yet, no successors)
   
   $ hg obslog 'desc(B0)' --hidden --no-graph -Tjson | python -m json.tool
   [
@@ -205,7 +236,7 @@ Actual test
           "debugobshistory.shortdescription": "B0"
       }
   ]
-  $ hg obslog 'desc(A0)'
+  $ hg obslog 'desc(A0)' --patch
   @  471f378eab4c (1) A0
   
   $ hg obslog 'desc(A0)' --no-graph -Tjson | python -m json.tool
@@ -316,9 +347,10 @@ Actual test
 -----------
 
 Check that debugobshistory on splitted commit show both targets
-  $ hg obslog 471597cad322 --hidden
+  $ hg obslog 471597cad322 --hidden --patch
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
   $ hg obslog 471597cad322 --hidden --no-graph -Tjson | python -m json.tool
   [
@@ -348,56 +380,62 @@ Check that debugobshistory on splitted commit show both targets
   ]
 Check that debugobshistory on the first successor after split show
 the revision plus the splitted one
-  $ hg obslog 337fec4d2edc
+  $ hg obslog 337fec4d2edc --patch
   o  337fec4d2edc (2) A0
   |
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
 With the all option, it should show the three changesets
-  $ hg obslog --all 337fec4d2edc
+  $ hg obslog --all 337fec4d2edc --patch
   o  337fec4d2edc (2) A0
   |
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
 Check that debugobshistory on the second successor after split show
 the revision plus the splitted one
-  $ hg obslog f257fde29c7a
+  $ hg obslog f257fde29c7a --patch
   @  f257fde29c7a (3) A0
   |
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
 With the all option, it should show the three changesets
-  $ hg obslog f257fde29c7a --all
+  $ hg obslog f257fde29c7a --all --patch
   o  337fec4d2edc (2) A0
   |
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
 Obslog with all option all should also works on the splitted commit
-  $ hg obslog -a 471597cad322 --hidden
+  $ hg obslog -a 471597cad322 --hidden --patch
   o  337fec4d2edc (2) A0
   |
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
 Check that debugobshistory on both successors after split show
 a coherent graph
-  $ hg obslog 'f257fde29c7a+337fec4d2edc'
+  $ hg obslog 'f257fde29c7a+337fec4d2edc' --patch
   o  337fec4d2edc (2) A0
   |
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+         (No patch available yet, too many successors (2))
   
   $ hg update 471597cad322
   abort: hidden revision '471597cad322'!
@@ -561,11 +599,12 @@ Test setup
 Actual test
 -----------
 
-  $ hg obslog de7290d8b885 --hidden
+  $ hg obslog de7290d8b885 --hidden --patch
   x  de7290d8b885 (1) A0
        rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+         (No patch available yet, too many successors (4))
   
-  $ hg obslog de7290d8b885 --hidden --all
+  $ hg obslog de7290d8b885 --hidden --all --patch
   o  1ae8bc733a14 (4) A0
   |
   | o  337fec4d2edc (2) A0
@@ -576,6 +615,7 @@ Actual test
   |/
   x  de7290d8b885 (1) A0
        rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+         (No patch available yet, too many successors (4))
   
   $ hg obslog de7290d8b885 --hidden --no-graph -Tjson | python -m json.tool
   [
@@ -605,11 +645,12 @@ Actual test
           "debugobshistory.shortdescription": "A0"
       }
   ]
-  $ hg obslog c7f044602e9b
+  $ hg obslog c7f044602e9b --patch
   @  c7f044602e9b (5) A0
   |
   x  de7290d8b885 (1) A0
        rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+         (No patch available yet, too many successors (4))
   
   $ hg obslog c7f044602e9b --no-graph -Tjson | python -m json.tool
   [
@@ -646,7 +687,7 @@ Actual test
       }
   ]
 Check that debugobshistory on all heads show a coherent graph
-  $ hg obslog 2::5
+  $ hg obslog 2::5 --patch
   o  1ae8bc733a14 (4) A0
   |
   | o  337fec4d2edc (2) A0
@@ -657,8 +698,9 @@ Check that debugobshistory on all heads show a coherent graph
   |/
   x  de7290d8b885 (1) A0
        rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+         (No patch available yet, too many successors (4))
   
-  $ hg obslog 5 --all
+  $ hg obslog 5 --all --patch
   o  1ae8bc733a14 (4) A0
   |
   | o  337fec4d2edc (2) A0
@@ -669,6 +711,7 @@ Check that debugobshistory on all heads show a coherent graph
   |/
   x  de7290d8b885 (1) A0
        rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+         (No patch available yet, too many successors (4))
   
   $ hg update de7290d8b885
   abort: hidden revision 'de7290d8b885'!
@@ -738,46 +781,98 @@ Test setup
 
 Check that debugobshistory on the first folded revision show only
 the revision with the target
-  $ hg obslog --hidden 471f378eab4c
+  $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
        rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/eb5a0daa2192-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +C0
+  
+         diff -r 471f378eab4c -r eb5a0daa2192 B0
+         --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+         +++ b/B0	Thu Jan 01 00:00:00 1970 +0000
+         @@ -0,0 +1,1 @@
+         +B0
+  
   
 Check that with all option, all changesets are shown
-  $ hg obslog --hidden --all 471f378eab4c
+  $ hg obslog --hidden --all 471f378eab4c --patch
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
    /     rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |        (No patch available yet, changesets rebased)
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/eb5a0daa2192-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +C0
+  
+         diff -r 471f378eab4c -r eb5a0daa2192 B0
+         --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+         +++ b/B0	Thu Jan 01 00:00:00 1970 +0000
+         @@ -0,0 +1,1 @@
+         +B0
+  
   
 Check that debugobshistory on the second folded revision show only
 the revision with the target
-  $ hg obslog --hidden 0dec01379d3b
+  $ hg obslog --hidden 0dec01379d3b --patch
   x  0dec01379d3b (2) B0
        rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+         (No patch available yet, changesets rebased)
   
 Check that with all option, all changesets are shown
-  $ hg obslog --hidden --all 0dec01379d3b
+  $ hg obslog --hidden --all 0dec01379d3b --patch
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
    /     rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |        (No patch available yet, changesets rebased)
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/eb5a0daa2192-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +C0
+  
+         diff -r 471f378eab4c -r eb5a0daa2192 B0
+         --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+         +++ b/B0	Thu Jan 01 00:00:00 1970 +0000
+         @@ -0,0 +1,1 @@
+         +B0
+  
   
 Check that debugobshistory on the successor revision show a coherent
 graph
-  $ hg obslog eb5a0daa2192
+  $ hg obslog eb5a0daa2192 --patch
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
    /     rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |        (No patch available yet, changesets rebased)
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/eb5a0daa2192-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +C0
+  
+         diff -r 471f378eab4c -r eb5a0daa2192 B0
+         --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+         +++ b/B0	Thu Jan 01 00:00:00 1970 +0000
+         @@ -0,0 +1,1 @@
+         +B0
+  
   
   $ hg obslog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
   [
@@ -917,21 +1012,45 @@ Actual test
 -----------
 
 Check that debugobshistory on the divergent revision show both destinations
-  $ hg obslog --hidden 471f378eab4c
+  $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
 
 Check that with all option, every changeset is shown
-  $ hg obslog --hidden --all 471f378eab4c
+  $ hg obslog --hidden --all 471f378eab4c --patch
   @  65b757b745b9 (3) A2
   |
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
   $ hg obslog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
   [
@@ -973,53 +1092,113 @@ Check that with all option, every changeset is shown
   ]
 Check that debugobshistory on the first diverged revision show the revision
 and the diverent one
-  $ hg obslog fdf9bde5129a
+  $ hg obslog fdf9bde5129a --patch
   o  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
 
 Check that all option show all of them
-  $ hg obslog fdf9bde5129a -a
+  $ hg obslog fdf9bde5129a -a --patch
   @  65b757b745b9 (3) A2
   |
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
 Check that debugobshistory on the second diverged revision show the revision
 and the diverent one
-  $ hg obslog 65b757b745b9
+  $ hg obslog 65b757b745b9 --patch
   @  65b757b745b9 (3) A2
   |
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
 Check that all option show all of them
-  $ hg obslog 65b757b745b9 -a
+  $ hg obslog 65b757b745b9 -a --patch
   @  65b757b745b9 (3) A2
   |
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
 Check that debugobshistory on the both diverged revision show a coherent
 graph
-  $ hg obslog '65b757b745b9+fdf9bde5129a'
+  $ hg obslog '65b757b745b9+fdf9bde5129a' --patch
   @  65b757b745b9 (3) A2
   |
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as 65b757b745b9 (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/65b757b745b9-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A2
+  
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
   $ hg obslog '65b757b745b9+fdf9bde5129a' --no-graph -Tjson | python -m json.tool
   [
@@ -1151,30 +1330,68 @@ Test setup
  -----------
 
 Check that debugobshistory on head show a coherent graph
-  $ hg obslog eb5a0daa2192
+  $ hg obslog eb5a0daa2192 --patch
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
    /     rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+  |        --- a/471f378eab4c-changeset-description
+  |        +++ b/eb5a0daa2192-changeset-description
+  |        @@ -1,1 +1,1 @@
+  |        -A0
+  |        +C0
+  |
+  |        diff -r 471f378eab4c -r eb5a0daa2192 B0
+  |        --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+  |        +++ b/B0	Thu Jan 01 00:00:00 1970 +0000
+  |        @@ -0,0 +1,1 @@
+  |        +B0
+  |
   |
   x  b7ea6d14e664 (3) B1
   |    rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |      (No patch available yet, changesets rebased)
   |
   x  0dec01379d3b (2) B0
        rewritten(description) by test (*) as b7ea6d14e664 (glob)
+         --- a/0dec01379d3b-changeset-description
+         +++ b/b7ea6d14e664-changeset-description
+         @@ -1,1 +1,1 @@
+         -B0
+         +B1
+  
   
 Check that obslog on ROOT with all option show everything
-  $ hg obslog 1 --hidden --all
+  $ hg obslog 1 --hidden --all --patch
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
    /     rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+  |        --- a/471f378eab4c-changeset-description
+  |        +++ b/eb5a0daa2192-changeset-description
+  |        @@ -1,1 +1,1 @@
+  |        -A0
+  |        +C0
+  |
+  |        diff -r 471f378eab4c -r eb5a0daa2192 B0
+  |        --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
+  |        +++ b/B0	Thu Jan 01 00:00:00 1970 +0000
+  |        @@ -0,0 +1,1 @@
+  |        +B0
+  |
   |
   x  b7ea6d14e664 (3) B1
   |    rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |      (No patch available yet, changesets rebased)
   |
   x  0dec01379d3b (2) B0
        rewritten(description) by test (*) as b7ea6d14e664 (glob)
+         --- a/0dec01379d3b-changeset-description
+         +++ b/b7ea6d14e664-changeset-description
+         @@ -1,1 +1,1 @@
+         -B0
+         +B1
+  
   
   $ hg obslog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
   [
@@ -1340,14 +1557,26 @@ Test setup
  Actual test
  -----------
 
-  $ hg obslog 7a230b46bf61
+  $ hg obslog 7a230b46bf61 --patch
   @  7a230b46bf61 (3) A2
   |
   x  fdf9bde5129a (2) A1
   |    rewritten(description) by test (*) as 7a230b46bf61 (glob)
+  |      --- a/fdf9bde5129a-changeset-description
+  |      +++ b/7a230b46bf61-changeset-description
+  |      @@ -1,1 +1,1 @@
+  |      -A1
+  |      +A2
+  |
   |
   x  471f378eab4c (1) A0
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         --- a/471f378eab4c-changeset-description
+         +++ b/fdf9bde5129a-changeset-description
+         @@ -1,1 +1,1 @@
+         -A0
+         +A1
+  
   
   $ cd $TESTTMP/local-remote-markers-2
   $ hg pull
@@ -1363,21 +1592,25 @@ Test setup
   (use 'hg evolve' to update to its successor: 7a230b46bf61)
 Check that debugobshistory works with markers pointing to missing local
 changectx
-  $ hg obslog 7a230b46bf61
+  $ hg obslog 7a230b46bf61 --patch
   o  7a230b46bf61 (2) A2
   |
   x  fdf9bde5129a
   |    rewritten(description) by test (*) as 7a230b46bf61 (glob)
+  |      (No patch available yet, context is not local)
   |
   @  471f378eab4c (1) A0
        rewritten(description) by test (*) as fdf9bde5129a (glob)
+         (No patch available yet, succ is unknown locally)
   
-  $ hg obslog 7a230b46bf61 --color=debug
+  $ hg obslog 7a230b46bf61 --color=debug --patch
   o  [evolve.node|7a230b46bf61] [evolve.rev|(2)] [evolve.short_description|A2]
   |
   x  [evolve.node evolve.missing_change_ctx|fdf9bde5129a]
   |    [evolve.verb|rewritten](description) by [evolve.user|test] [evolve.date|(*)] as [evolve.node|7a230b46bf61] (glob)
+  |      (No patch available yet, context is not local)
   |
   @  [evolve.node|471f378eab4c] [evolve.rev|(1)] [evolve.short_description|A0]
        [evolve.verb|rewritten](description) by [evolve.user|test] [evolve.date|(*)] as [evolve.node|fdf9bde5129a] (glob)
+         (No patch available yet, succ is unknown locally)
   

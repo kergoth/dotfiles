@@ -3,6 +3,8 @@
 Enable obsolescence to avoid the warning issue when obsmarker are found
 
   $ cat << EOF >> $HGRCPATH
+  > [diff]
+  > git = yes
   > [experimental]
   > evolution=all
   > EOF

@@ -10,19 +10,7 @@ let g:ale_python_pylint_options =
 let g:ale_python_pylint_use_global = get(g:, 'ale_python_pylint_use_global', 0)
 
 function! ale_linters#python#pylint#GetExecutable(buffer) abort
-    if !ale#Var(a:buffer, 'python_pylint_use_global')
-        let l:virtualenv = ale#python#FindVirtualenv(a:buffer)
-
-        if !empty(l:virtualenv)
-            let l:ve_pylint = l:virtualenv . '/bin/pylint'
-
-            if executable(l:ve_pylint)
-                return l:ve_pylint
-            endif
-        endif
-    endif
-
-    return ale#Var(a:buffer, 'python_pylint_executable')
+    return ale#python#FindExecutable(a:buffer, 'python_pylint', ['pylint'])
 endfunction
 
 function! ale_linters#python#pylint#GetCommand(buffer) abort
@@ -36,7 +24,7 @@ function! ale_linters#python#pylint#Handle(buffer, lines) abort
     " Matches patterns like the following:
     "
     " test.py:4:4: W0101 (unreachable) Unreachable code
-    let l:pattern = '\v^[^:]+:(\d+):(\d+): ([[:alnum:]]+) \((.*)\) (.*)$'
+    let l:pattern = '\v^[^:]+:(\d+):(\d+): ([[:alnum:]]+) \(([^(]*)\) (.*)$'
     let l:output = []
 
     for l:match in ale#util#GetMatches(a:lines, l:pattern)
@@ -57,7 +45,7 @@ function! ale_linters#python#pylint#Handle(buffer, lines) abort
         call add(l:output, {
         \   'lnum': l:match[1] + 0,
         \   'col': l:match[2] + 1,
-        \   'text': l:code . ': ' . l:match[5],
+        \   'text': l:code . ': ' . l:match[5] . ' (' . l:match[4] . ')',
         \   'type': l:code[:0] ==# 'E' ? 'E' : 'W',
         \})
     endfor

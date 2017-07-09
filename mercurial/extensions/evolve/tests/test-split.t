@@ -24,7 +24,7 @@ test of the split command
   $ mkcommit() {
   >    echo "$1" > "$1"
   >    hg add "$1"
-  >    hg ci -m "add $1"
+  >    hg ci -m "add $1" $2 $3
   > }
 
 
@@ -33,13 +33,13 @@ Basic case, split a head
   $ cd testsplit
   $ mkcommit _a
   $ mkcommit _b
-  $ mkcommit _c
+  $ mkcommit _c --user other-test-user
   $ mkcommit _d
   $ echo "change to a" >> _a
   $ hg amend
   $ hg debugobsolete
-  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'ef1': '*', 'user': 'test'} (glob)
+  1334a80b33c3f9873edab728fbbcf500eab61d2e d2fe56e71366c2c5376c89960c281395062c0619 0 (*) {'ef1': '8', 'user': 'test'} (glob)
+  06be89dfe2ae447383f30a2984933352757b6fb4 0 {1334a80b33c3f9873edab728fbbcf500eab61d2e} (*) {'ef1': '0', 'user': 'test'} (glob)
 
 To create commits with the number of split
   $ echo 0 > num
@@ -91,24 +91,24 @@ To create commits with the number of split
   no more change to split
 
   $ hg debugobsolete
-  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'ef1': '*', 'user': 'test'} (glob)
-  aa8f656bb307022172d2648be6fb65322f801225 a98b35e86cae589b61892127c5ec1c868e41d910 5410a2352fa3114883327beee89e3085eefac25c 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  1334a80b33c3f9873edab728fbbcf500eab61d2e d2fe56e71366c2c5376c89960c281395062c0619 0 (*) {'ef1': '8', 'user': 'test'} (glob)
+  06be89dfe2ae447383f30a2984933352757b6fb4 0 {1334a80b33c3f9873edab728fbbcf500eab61d2e} (*) {'ef1': '0', 'user': 'test'} (glob)
+  d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (*) {'ef1': '13', 'user': 'test'} (glob)
   $ hg glog
-  @  changeset:   7:5410a2352fa3
+  @  changeset:   7:033b3f5ae73d
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split2
   |
-  o  changeset:   6:a98b35e86cae
-  |  parent:      2:102002290587
+  o  changeset:   6:2d8abdb827cd
+  |  parent:      2:52149352b372
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split1
   |
-  o  changeset:   2:102002290587
-  |  user:        test
+  o  changeset:   2:52149352b372
+  |  user:        other-test-user
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     add _c
   |
@@ -144,9 +144,9 @@ Split a revision specified with -r
   atop:[10] split1
   working directory is now at * (glob)
   $ hg log -r "desc(_cprim)" -v -p
-  changeset:   9:719157b217ac
+  changeset:   9:b434287e665c
   parent:      1:37445b16603b
-  user:        test
+  user:        other-test-user
   date:        Thu Jan 01 00:00:00 1970 +0000
   files:       _b _c
   description:
@@ -198,40 +198,40 @@ Stop before splitting the commit completely creates a commit with all the
 remaining changes
 
   $ hg debugobsolete
-  9e84a109b8eb081ad754681ee4b1380d17a3741f aa8f656bb307022172d2648be6fb65322f801225 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  f002b57772d7f09b180c407213ae16d92996a988 0 {9e84a109b8eb081ad754681ee4b1380d17a3741f} (*) {'ef1': '*', 'user': 'test'} (glob)
-  aa8f656bb307022172d2648be6fb65322f801225 a98b35e86cae589b61892127c5ec1c868e41d910 5410a2352fa3114883327beee89e3085eefac25c 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  10200229058723ce8d67f6612c1f6b4f73b1fe73 719157b217acc43d397369a448824ed4c7a302f2 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  5d0c8b0f2d3e5e1ff95f93d7da2ba06650605ab5 0 {10200229058723ce8d67f6612c1f6b4f73b1fe73} (*) {'ef1': '*', 'user': 'test'} (glob)
-  a98b35e86cae589b61892127c5ec1c868e41d910 286887947725085e03455d79649197feaef1eb9d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  5410a2352fa3114883327beee89e3085eefac25c 0b67cee46a7f2ad664f994027e7af95b36ae25fe 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  719157b217acc43d397369a448824ed4c7a302f2 ced8fbcce3a7cd33f0e454d2cd63882ce1b6006b 73309fb98db840ba4ec5ad528346dc6ee0b39dcb 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  1334a80b33c3f9873edab728fbbcf500eab61d2e d2fe56e71366c2c5376c89960c281395062c0619 0 (*) {'ef1': '8', 'user': 'test'} (glob)
+  06be89dfe2ae447383f30a2984933352757b6fb4 0 {1334a80b33c3f9873edab728fbbcf500eab61d2e} (*) {'ef1': '0', 'user': 'test'} (glob)
+  d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (*) {'ef1': '13', 'user': 'test'} (glob)
+  52149352b372d39b19127d5bd2d488b1b63f9f85 b434287e665ce757ee5463a965cb3d119ca9e893 0 (*) {'ef1': '9', 'user': 'test'} (glob)
+  7a4fc25a48a5797bb069563854455aecf738d8f2 0 {52149352b372d39b19127d5bd2d488b1b63f9f85} (*) {'ef1': '0', 'user': 'test'} (glob)
+  2d8abdb827cdf71ca477ef6985d7ceb257c53c1b e2b4afde39803bd42bb1374b230fca1b1e8cc868 0 (*) {'ef1': '4', 'user': 'test'} (glob)
+  033b3f5ae73db67c10de938fb6f26b949aaef172 bb5e4f6020c74e7961a51fda635ea9df9b04dda8 0 (*) {'ef1': '4', 'user': 'test'} (glob)
+  b434287e665ce757ee5463a965cb3d119ca9e893 ead2066d1dbf14833fe1069df1b735e4e9468c40 1188c4216eba37f18a1de6558564601d00ff2143 0 (*) {'ef1': '13', 'user': 'test'} (glob)
   $ hg evolve --all
   move:[10] split1
   atop:[13] split4
   move:[11] split2
   atop:[14] split1
-  working directory is now at f200e612ac86
+  working directory is now at d74c6715e706
   $ hg glog
-  @  changeset:   15:f200e612ac86
+  @  changeset:   15:d74c6715e706
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split2
   |
-  o  changeset:   14:aec57822a8ff
+  o  changeset:   14:3f134f739075
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split1
   |
-  o  changeset:   13:73309fb98db8
-  |  user:        test
+  o  changeset:   13:1188c4216eba
+  |  user:        other-test-user
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split4
   |
-  o  changeset:   12:ced8fbcce3a7
+  o  changeset:   12:ead2066d1dbf
   |  parent:      1:37445b16603b
-  |  user:        test
+  |  user:        other-test-user
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split3
   |
@@ -253,19 +253,19 @@ active bookmark as active
   $ echo "changetofilea" > _a
   $ hg amend
   $ hg book
-     bookA                     17:39d16b69c75d
-   * bookB                     17:39d16b69c75d
+     bookA                     17:7a6b35779b85
+   * bookB                     17:7a6b35779b85
   $ hg glog -r "14::"
-  @  changeset:   17:39d16b69c75d
+  @  changeset:   17:7a6b35779b85
   |  bookmark:    bookA
   |  bookmark:    bookB
   |  tag:         tip
-  |  parent:      14:aec57822a8ff
+  |  parent:      14:3f134f739075
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split2
   |
-  o  changeset:   14:aec57822a8ff
+  o  changeset:   14:3f134f739075
   |  user:        test
   ~  date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     split1
@@ -297,7 +297,7 @@ active bookmark as active
   created new head
   Done splitting? [yN] y
   $ hg glog -r "14::"
-  @  changeset:   19:a2b5c9d9b362
+  @  changeset:   19:60ea019b0f8d
   |  bookmark:    bookA
   |  bookmark:    bookB
   |  tag:         tip
@@ -305,20 +305,20 @@ active bookmark as active
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split6
   |
-  o  changeset:   18:bf3402785e72
-  |  parent:      14:aec57822a8ff
+  o  changeset:   18:2c7a2e53f23b
+  |  parent:      14:3f134f739075
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split5
   |
-  o  changeset:   14:aec57822a8ff
+  o  changeset:   14:3f134f739075
   |  user:        test
   ~  date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     split1
   
   $ hg book
-     bookA                     19:a2b5c9d9b362
-   * bookB                     19:a2b5c9d9b362
+     bookA                     19:60ea019b0f8d
+   * bookB                     19:60ea019b0f8d
  
 Lastest revision is selected if multiple are given to -r
   $ hg split -r "desc(_a)::"
@@ -337,7 +337,7 @@ Cannot split a commit that is not a head if instability is not allowed
   > evolutioncommands=split
   > EOF
   $ hg split -r "desc(split3)"
-  abort: cannot split commit: ced8fbcce3a7 not a head
+  abort: cannot split commit: ead2066d1dbf not a head
   [255]
 
 Changing evolution level to createmarkers
@@ -385,3 +385,84 @@ Split empty commit (issue5191)
   $ hg commit -m "empty"
   $ hg split
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+Check that split keeps the right topic
+
+  $ hg up -r tip
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+Add topic to the hgrc
+
+  $ echo "[extensions]" >> $HGRCPATH
+  $ echo "topic=$(echo $(dirname $TESTDIR))/hgext3rd/topic/" >> $HGRCPATH
+  $ hg topic mytopic
+  $ echo babar > babar
+  $ echo celeste > celeste
+  $ hg add babar celeste
+  $ hg commit -m "Works on mytopic" babar celeste
+  $ hg summary
+  parent: 21:615c369f47f0 tip
+   Works on mytopic
+  branch: new-branch
+  commit: 2 unknown (clean)
+  update: (current)
+  phases: 9 draft
+  topic:  mytopic
+
+Split it
+
+  $ hg split << EOF
+  > Y
+  > Y
+  > N
+  > Y
+  > Y
+  > Y
+  > EOF
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  adding babar
+  adding celeste
+  diff --git a/babar b/babar
+  new file mode 100644
+  examine changes to 'babar'? [Ynesfdaq?] Y
+  
+  @@ -0,0 +1,1 @@
+  +babar
+  record change 1/2 to 'babar'? [Ynesfdaq?] Y
+  
+  diff --git a/celeste b/celeste
+  new file mode 100644
+  examine changes to 'celeste'? [Ynesfdaq?] N
+  
+  Done splitting? [yN] Y
+  diff --git a/celeste b/celeste
+  new file mode 100644
+  examine changes to 'celeste'? [Ynesfdaq?] Y
+  
+  @@ -0,0 +1,1 @@
+  +celeste
+  record this change to 'celeste'? [Ynesfdaq?] Y
+  
+  no more change to split
+
+Check that the topic is still here
+
+  $ hg log -r "tip~1::"
+  changeset:   22:f879ab83f991
+  branch:      new-branch
+  topic:       mytopic
+  parent:      20:89e64a2c68b3
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  summary:     split7
+  
+  changeset:   23:db75dbc1a3a6
+  branch:      new-branch
+  tag:         tip
+  topic:       mytopic
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  summary:     split8
+  
+  $ hg topic
+   * mytopic

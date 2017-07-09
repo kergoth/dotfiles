@@ -11,6 +11,12 @@ from mercurial import (
     obsolete
 )
 
+try:
+    from mercurial import obsutil
+    obsutil.closestpredecessors
+except ImportError:
+    obsutil = None
+
 from . import (
     exthelper,
 )
@@ -55,3 +61,17 @@ if not hasattr(hg, '_copycache'):
             pendingnodes -= seennodes
             seennodes |= pendingnodes
         return seenmarkers
+
+# successors set move from mercurial.obsolete to mercurial.obsutil in 4.3
+def successorssets(*args, **kwargs):
+    func = getattr(obsutil, 'successorssets', None)
+    if func is None:
+        func = obsolete.successorssets
+    return func(*args, **kwargs)
+
+# allprecursors set move from mercurial.obsolete to mercurial.obsutil in 4.3
+def allprecursors(*args, **kwargs):
+    func = getattr(obsutil, 'allprecursors', None)
+    if func is None:
+        func = obsolete.allprecursors
+    return func(*args, **kwargs)

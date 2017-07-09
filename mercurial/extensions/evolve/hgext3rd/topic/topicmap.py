@@ -1,27 +1,63 @@
 import contextlib
 import hashlib
 
-from mercurial.node import hex, bin, nullid
+from mercurial.node import nullid
 from mercurial import (
     branchmap,
     changegroup,
     cmdutil,
-    encoding,
-    error,
     extensions,
-    scmutil,
+    repoview,
 )
 
-def _filename(repo):
-    """name of a branchcache file for a given repo or repoview"""
-    filename = "cache/topicmap"
-    if repo.filtername:
-        filename = '%s-%s' % (filename, repo.filtername)
-    return filename
+basefilter = set(['base', 'immutable'])
+def topicfilter(name):
+    """return a "topic" version of a filter level"""
+    if name in basefilter:
+        return name
+    elif name is None:
+        return None
+    elif name.endswith('-topic'):
+        return name
+    else:
+        return name + '-topic'
 
-oldbranchcache = branchmap.branchcache
+def istopicfilter(filtername):
+    if filtername is None:
+        return False
+    return filtername.endswith('-topic')
+
+def gettopicrepo(repo):
+    filtername = topicfilter(repo.filtername)
+    if filtername == repo.filtername:
+        return repo
+    return repo.filtered(filtername)
+
+def _setuptopicfilter(ui):
+    """extend the filter related mapping with topic related one"""
+    funcmap = repoview.filtertable
+    partialmap = branchmap.subsettable
+
+    # filter level not affected by topic that we should not override
+
+    for plainname in list(funcmap):
+        newfilter = topicfilter(plainname)
+        if newfilter == plainname:
+            continue
+
+        def revsfunc(repo, name=plainname):
+            return repoview.filterrevs(repo, name)
+
+        base = topicfilter(partialmap[plainname])
+
+        if newfilter not in funcmap:
+            funcmap[newfilter] = revsfunc
+            partialmap[newfilter] = base
+    funcmap['unfiltered-topic'] = lambda repo: frozenset()
+    partialmap['unfiltered-topic'] = 'visible-topic'
 
 def _phaseshash(repo, maxrev):
+    """uniq ID for a phase matching a set of rev"""
     revs = set()
     cl = repo.changelog
     fr = cl.filteredrevs
@@ -40,61 +76,65 @@ def _phaseshash(repo, maxrev):
         key = s.digest()
     return key
 
-@contextlib.contextmanager
-def usetopicmap(repo):
-    """use awful monkey patching to ensure topic map usage
+def modsetup(ui):
+    """call at uisetup time to install various wrappings"""
+    _setuptopicfilter(ui)
+    _wrapbmcache(ui)
+    extensions.wrapfunction(changegroup.cg1unpacker, 'apply', cgapply)
+    extensions.wrapfunction(cmdutil, 'commitstatus', commitstatus)
 
-    During the extend of the context block, The topicmap should be used and
-    updated instead of the branchmap."""
-    oldbranchcache = branchmap.branchcache
-    oldfilename = branchmap._filename
-    oldread = branchmap.read
-    oldcaches = getattr(repo, '_branchcaches', {})
-    try:
-        branchmap.branchcache = topiccache
-        branchmap._filename = _filename
-        branchmap.read = readtopicmap
-        repo._branchcaches = getattr(repo, '_topiccaches', {})
-        yield
-        repo._topiccaches = repo._branchcaches
-    finally:
-        repo._branchcaches = oldcaches
-        branchmap.branchcache = oldbranchcache
-        branchmap._filename = oldfilename
-        branchmap.read = oldread
-
-def cgapply(orig, repo, *args, **kwargs):
+def cgapply(orig, self, repo, *args, **kwargs):
     """make sure a topicmap is used when applying a changegroup"""
-    with usetopicmap(repo):
-        return orig(repo, *args, **kwargs)
+    other = repo.filtered(topicfilter(repo.filtername))
+    return orig(self, other, *args, **kwargs)
 
 def commitstatus(orig, repo, node, branch, bheads=None, opts=None):
     # wrap commit status use the topic branch heads
     ctx = repo[node]
     if ctx.topic() and ctx.branch() == branch:
-        bheads = repo.branchheads("%s:%s" % (branch, ctx.topic()))
+        subbranch = "%s:%s" % (branch, ctx.topic())
+        bheads = repo.branchheads("%s:%s" % (subbranch, ctx.topic()))
     return orig(repo, node, branch, bheads=bheads, opts=opts)
 
-class topiccache(oldbranchcache):
+def _wrapbmcache(ui):
+    class topiccache(_topiccache, branchmap.branchcache):
+        pass
+    branchmap.branchcache = topiccache
+    extensions.wrapfunction(branchmap, 'updatecache', _wrapupdatebmcache)
+
+def _wrapupdatebmcache(orig, repo):
+    previous = getattr(repo, '_autobranchmaptopic', False)
+    try:
+        repo._autobranchmaptopic = False
+        return orig(repo)
+    finally:
+        repo._autobranchmaptopic = previous
+
+# needed to prevent reference used for 'super()' call using in branchmap.py to
+# no go into cycle. (yes, URG)
+_oldbranchmap = branchmap.branchcache
+
+@contextlib.contextmanager
+def oldbranchmap():
+    previous = branchmap.branchcache
+    try:
+        branchmap.branchcache = _oldbranchmap
+        yield
+    finally:
+        branchmap.branchcache = previous
+
+class _topiccache(object): # combine me with branchmap.branchcache
 
     def __init__(self, *args, **kwargs):
-        otherbranchcache = branchmap.branchcache
-        try:
-            # super() call may fail otherwise
-            branchmap.branchcache = oldbranchcache
-            super(topiccache, self).__init__(*args, **kwargs)
-            if self.filteredhash is None:
-                self.filteredhash = nullid
-            self.phaseshash = nullid
-        finally:
-            branchmap.branchcache = otherbranchcache
+        # super() call may fail otherwise
+        with oldbranchmap():
+            super(_topiccache, self).__init__(*args, **kwargs)
+        self.phaseshash = None
 
     def copy(self):
         """return an deep copy of the branchcache object"""
-        new = topiccache(self, self.tipnode, self.tiprev, self.filteredhash,
-                         self._closednodes)
-        if self.filteredhash is None:
-            self.filteredhash = nullid
+        new = self.__class__(self, self.tipnode, self.tiprev, self.filteredhash,
+                             self._closednodes)
         new.phaseshash = self.phaseshash
         return new
 
@@ -104,144 +144,61 @@ class topiccache(oldbranchcache):
         Raise KeyError for unknown branch.'''
         if topic:
             branch = '%s:%s' % (branch, topic)
-        return super(topiccache, self).branchtip(branch)
+        return super(_topiccache, self).branchtip(branch)
 
     def branchheads(self, branch, closed=False, topic=''):
         if topic:
             branch = '%s:%s' % (branch, topic)
-        return super(topiccache, self).branchheads(branch, closed=closed)
+        return super(_topiccache, self).branchheads(branch, closed=closed)
 
     def validfor(self, repo):
         """Is the cache content valid regarding a repo
 
         - False when cached tipnode is unknown or if we detect a strip.
         - True when cache is up to date or a subset of current repo."""
-        # This is copy paste of mercurial.branchmap.branchcache.validfor in
-        # 69077c65919d With a small changes to the cache key handling to
-        # include phase information that impact the topic cache.
-        #
-        # All code changes should be flagged on site.
-        try:
-            if (self.tipnode == repo.changelog.node(self.tiprev)):
-                fh = scmutil.filteredhash(repo, self.tiprev)
-                if fh is None:
-                    fh = nullid
-                if ((self.filteredhash == fh)
-                    and (self.phaseshash == _phaseshash(repo, self.tiprev))):
-                    return True
+        valid = super(_topiccache, self).validfor(repo)
+        if not valid:
             return False
-        except IndexError:
-            return False
+        elif not istopicfilter(repo.filtername) or self.phaseshash is None:
+            # phasehash at None means this is a branchmap
+            # come from non topic thing
+            return True
+        else:
+            try:
+                valid = self.phaseshash == _phaseshash(repo, self.tiprev)
+                return valid
+            except IndexError:
+                return False
 
     def write(self, repo):
-        # This is copy paste of mercurial.branchmap.branchcache.write in
-        # 69077c65919d With a small changes to the cache key handling to
-        # include phase information that impact the topic cache.
-        #
-        # All code changes should be flagged on site.
-        try:
-            f = repo.vfs(_filename(repo), "w", atomictemp=True)
-            cachekey = [hex(self.tipnode), str(self.tiprev)]
-            # [CHANGE] we need a hash in all cases
-            assert self.filteredhash is not None
-            cachekey.append(hex(self.filteredhash))
-            cachekey.append(hex(self.phaseshash))
-            f.write(" ".join(cachekey) + '\n')
-            nodecount = 0
-            for label, nodes in sorted(self.iteritems()):
-                for node in nodes:
-                    nodecount += 1
-                    if node in self._closednodes:
-                        state = 'c'
-                    else:
-                        state = 'o'
-                    f.write("%s %s %s\n" % (hex(node), state,
-                                            encoding.fromlocal(label)))
-            f.close()
-            repo.ui.log('branchcache',
-                        'wrote %s branch cache with %d labels and %d nodes\n',
-                        repo.filtername, len(self), nodecount)
-        except (IOError, OSError, error.Abort) as inst:
-            repo.ui.debug("couldn't write branch cache: %s\n" % inst)
-            # Abort may be raise by read only opener
-            pass
+        # we expect mutable set to be small enough to be that computing it all
+        # the time will be fast enough
+        if not istopicfilter(repo.filtername):
+            super(_topiccache, self).write(repo)
 
     def update(self, repo, revgen):
         """Given a branchhead cache, self, that may have extra nodes or be
         missing heads, and a generator of nodes that are strictly a superset of
         heads missing, this function updates self to be correct.
         """
-        oldgetbranchinfo = repo.revbranchcache().branchinfo
+        if not istopicfilter(repo.filtername):
+            return super(_topiccache, self).update(repo, revgen)
+        unfi = repo.unfiltered()
+        oldgetbranchinfo = unfi.revbranchcache().branchinfo
+
+        def branchinfo(r):
+            info = oldgetbranchinfo(r)
+            topic = ''
+            ctx = unfi[r]
+            if ctx.mutable():
+                topic = ctx.topic()
+            branch = info[0]
+            if topic:
+                branch = '%s:%s' % (branch, topic)
+            return (branch, info[1])
         try:
-            def branchinfo(r):
-                info = oldgetbranchinfo(r)
-                topic = ''
-                ctx = repo[r]
-                if ctx.mutable():
-                    topic = ctx.topic()
-                branch = info[0]
-                if topic:
-                    branch = '%s:%s' % (branch, topic)
-                return (branch, info[1])
-            repo.revbranchcache().branchinfo = branchinfo
-            super(topiccache, self).update(repo, revgen)
-            if self.filteredhash is None:
-                self.filteredhash = nullid
+            unfi.revbranchcache().branchinfo = branchinfo
+            super(_topiccache, self).update(repo, revgen)
             self.phaseshash = _phaseshash(repo, self.tiprev)
         finally:
-            repo.revbranchcache().branchinfo = oldgetbranchinfo
-
-def readtopicmap(repo):
-    # This is copy paste of mercurial.branchmap.read in 69077c65919d
-    # With a small changes to the cache key handling to include phase
-    # information that impact the topic cache.
-    #
-    # All code changes should be flagged on site.
-    try:
-        f = repo.vfs(_filename(repo))
-        lines = f.read().split('\n')
-        f.close()
-    except (IOError, OSError):
-        return None
-
-    try:
-        cachekey = lines.pop(0).split(" ", 2)
-        last, lrev = cachekey[:2]
-        last, lrev = bin(last), int(lrev)
-        filteredhash = bin(cachekey[2]) # [CHANGE] unconditional filteredhash
-        partial = topiccache(tipnode=last, tiprev=lrev,
-                             filteredhash=filteredhash)
-        partial.phaseshash = bin(cachekey[3]) # [CHANGE] read phaseshash
-        if not partial.validfor(repo):
-            # invalidate the cache
-            raise ValueError('tip differs')
-        cl = repo.changelog
-        for l in lines:
-            if not l:
-                continue
-            node, state, label = l.split(" ", 2)
-            if state not in 'oc':
-                raise ValueError('invalid branch state')
-            label = encoding.tolocal(label.strip())
-            node = bin(node)
-            if not cl.hasnode(node):
-                raise ValueError('node %s does not exist' % hex(node))
-            partial.setdefault(label, []).append(node)
-            if state == 'c':
-                partial._closednodes.add(node)
-    except KeyboardInterrupt:
-        raise
-    except Exception as inst:
-        if repo.ui.debugflag:
-            msg = 'invalid branchheads cache'
-            if repo.filtername is not None:
-                msg += ' (%s)' % repo.filtername
-            msg += ': %s\n'
-            repo.ui.debug(msg % inst)
-        partial = None
-    return partial
-
-def modsetup(ui):
-    """call at uisetup time to install various wrappings"""
-    extensions.wrapfunction(changegroup.cg1unpacker, 'apply', cgapply)
-    extensions.wrapfunction(cmdutil, 'commitstatus', commitstatus)
+            unfi.revbranchcache().branchinfo = oldgetbranchinfo

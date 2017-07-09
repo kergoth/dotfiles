@@ -121,10 +121,34 @@ expected test change only, no code change should happen there.
 Changelog
 =========
 
-6.4.1 - in progress
+6.5.0 -- 2017-07-02
 -------------------
 
- - obsfate: improve support for advanced template reformating
+features:
+
+ - obslog: gain a --patch flag to display changes introduced by the evolution
+  (Currently limited to in simple case only)
+ - log: display obsolescence fate by default, (future 4.3 only)
+ - doc: various minor improvement.
+
+bugfixes:
+
+ - evolve: fix branch preservation for merge,
+ - obsfate: improve support for advanced template reformating,
+ - split: preserve author of the splitted changeset.
+ - grab: properly fix hg executable on windows.
+
+topic (0.1.0):
+
+ - stack: also show the unstable status for the current changeset, (issue5553)
+ - stack: properly abort when and unknown topic is requested,
+ - stack: add basic and raw support for named branches,
+ - topic: changing topic on revs no longer adds extra instability, (issue5441)
+ - topic: topics: rename '--change' flag to '--rev' flag,
+ - topic: multiple large performance improvements,
+ - topic: various small output improvement,
+ - topic: improved topic preservation for various commands.
+
 
 6.4.0 -- 2017-06-16
 -------------------

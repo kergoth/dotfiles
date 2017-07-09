@@ -243,6 +243,7 @@ But the topic will see that branch head as a valid destination::
   $ hg rebase
   rebasing 1:13900241408b "adding condiments"
   merging shopping
+  switching to topic food
   rebasing 2:287de11b401f "adding fruits"
   merging shopping
   $ hg log --graph
@@ -274,7 +275,7 @@ But the topic will see that branch head as a valid destination::
 The topic information will fade out when we publish the changesets::
 
   $ hg topic
-     food
+   * food
   $ hg push
   pushing to $TESTTMP/server (glob)
   searching for changes
@@ -284,6 +285,7 @@ The topic information will fade out when we publish the changesets::
   added 2 changesets with 2 changes to 1 files
   2 new obsolescence markers
   $ hg topic
+   * food
   $ hg log --graph
   @  changeset:   5:2d50db8b5b4c
   |  tag:         tip
@@ -405,6 +407,7 @@ There is new changes! We can simply use ``hg rebase`` to update our changeset on
   $ hg rebase
   rebasing 6:183984ef46d1 "Adding hammer"
   merging shopping
+  switching to topic tools
   rebasing 7:cffff85af537 "Adding saw"
   merging shopping
   rebasing 8:34255b455dac "Adding drill"
@@ -414,7 +417,7 @@ But what about the other topic? You can use 'hg topic --verbose' to see informat
 
   $ hg topic --verbose
      drinks (on branch: default, 2 changesets, 2 behind)
-     tools  (on branch: default, 3 changesets)
+   * tools  (on branch: default, 3 changesets)
 
 The "2 behind" is telling you that there is 2 new changesets on the named branch of the topic. You need to merge or rebase to incorporate them.
 
@@ -433,6 +436,7 @@ Even after a rebase Pushing all active topics at the same time will complains ab
   $ hg rebase -b drinks
   rebasing 9:8dfa45bd5e0c "Adding apple juice"
   merging shopping
+  switching to topic drinks
   rebasing 10:70dfa201ed73 "Adding orange juice"
   merging shopping
   switching to topic tools

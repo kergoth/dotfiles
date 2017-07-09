@@ -89,14 +89,14 @@ def ngtip(repo, branch, all=False):
     # but that is expensive
     #
     # we should write plain code instead
-    with topicmap.usetopicmap(repo):
-        tmap = repo.branchmap()
-        if branch not in tmap:
-            return []
-        elif all:
-            return tmap.branchheads(branch)
-        else:
-            return [tmap.branchtip(branch)]
+
+    tmap = topicmap.gettopicrepo(repo).branchmap()
+    if branch not in tmap:
+        return []
+    elif all:
+        return tmap.branchheads(branch)
+    else:
+        return [tmap.branchtip(branch)]
 
 def modsetup(ui):
     """run a uisetup time to install all destinations wrapping"""

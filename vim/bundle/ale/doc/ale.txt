@@ -9,6 +9,7 @@ CONTENTS                                                         *ale-contents*
   1. Introduction.........................|ale-introduction|
   2. Supported Languages & Tools..........|ale-support|
   3. Global Options.......................|ale-options|
+    3.1 Highlights........................|ale-highlights|
   4. Fixing Problems......................|ale-fix|
   5. Integration Documentation............|ale-integrations|
     asm...................................|ale-asm-options|
@@ -21,6 +22,7 @@ CONTENTS                                                         *ale-contents*
       foodcritic..........................|ale-chef-foodcritic|
     cpp...................................|ale-cpp-options|
       clang...............................|ale-cpp-clang|
+      clangcheck..........................|ale-cpp-clangcheck|
       clangtidy...........................|ale-cpp-clangtidy|
       cppcheck............................|ale-cpp-cppcheck|
       cpplint.............................|ale-cpp-cpplint|
@@ -51,6 +53,7 @@ CONTENTS                                                         *ale-contents*
       jshint..............................|ale-javascript-jshint|
       prettier............................|ale-javascript-prettier|
       prettier-eslint.....................|ale-javascript-prettier-eslint|
+      prettier-standard...................|ale-javascript-prettier-standard|
       standard............................|ale-javascript-standard|
       xo..................................|ale-javascript-xo|
     kotlin................................|ale-kotlin-options|
@@ -69,6 +72,8 @@ CONTENTS                                                         *ale-contents*
     php...................................|ale-php-options|
       phpcs...............................|ale-php-phpcs|
       phpmd...............................|ale-php-phpmd|
+    pug...................................|ale-pug-options|
+      puglint.............................|ale-pug-puglint|
     python................................|ale-python-options|
       autopep8............................|ale-python-autopep8|
       flake8..............................|ale-python-flake8|
@@ -91,6 +96,8 @@ CONTENTS                                                         *ale-contents*
       shellcheck..........................|ale-sh-shellcheck|
     spec..................................|ale-spec-options|
       rpmlint.............................|ale-spec-rpmlint|
+    stylus................................|ale-stylus-options|
+      stylelint...........................|ale-stylus-stylelint|
     tex...................................|ale-tex-options|
       chktex..............................|ale-tex-chktex|
       lacheck.............................|ale-tex-lacheck|
@@ -98,6 +105,9 @@ CONTENTS                                                         *ale-contents*
       eslint..............................|ale-typescript-eslint|
       tslint..............................|ale-typescript-tslint|
       tsserver............................|ale-typescript-tsserver|
+    verilog/systemverilog.................|ale-verilog-options|
+      iverilog............................|ale-verilog-iverilog|
+      verilator...........................|ale-verilog-verilator|
     vim...................................|ale-vim-options|
       vint................................|ale-vim-vint|
     xml...................................|ale-xml-options|
@@ -129,7 +139,9 @@ ALE supports the following key features for linting:
 7. Setting syntax highlights for errors.
 
 ALE can fix problems with files with the |ALEFix| command, using the same job
-control functionality used for checking for problems.
+control functionality used for checking for problems. Try using the
+|ALEFixSuggest| command for browsing tools that can be used to fix problems
+for the current buffer.
 
 ===============================================================================
 2. Supported Languages & Tools                                    *ale-support*
@@ -182,6 +194,7 @@ The following languages and tools are supported.
 * Pug: 'pug-lint'
 * Puppet: 'puppet', 'puppet-lint'
 * Python: 'autopep8', 'flake8', 'isort', 'mypy', 'pylint', 'yapf'
+* R: 'lintr'
 * ReasonML: 'merlin'
 * reStructuredText: 'proselint'
 * RPM spec: 'spec'
@@ -192,6 +205,7 @@ The following languages and tools are supported.
 * Scala: 'scalac'
 * Slim: 'slim-lint'
 * SML: 'smlnj'
+* Stylus: 'stylelint'
 * SQL: 'sqlint'
 * Swift: 'swiftlint'
 * Texinfo: 'proselint'
@@ -231,6 +245,10 @@ g:ale_change_sign_column_color                 *g:ale_change_sign_column_color*
 
   `ALESignColumnWithErrors`    -  Links to `error` by default.
   `ALESignColumnWithoutErrors` -  Uses the value for `SignColumn` by default.
+
+  The sign column color can only be changed globally in Vim. The sign column
+  might produce unexpected results if editing different files in split
+  windows.
 
 
 g:ale_echo_cursor                                           *g:ale_echo_cursor*
@@ -348,7 +366,7 @@ g:ale_history_enabled                                   *g:ale_history_enabled*
 g:ale_history_log_output                             *g:ale_history_log_output*
 
   Type: |Number|
-  Default: `0`
+  Default: `1`
 
   When set to `1`, ALE will store the output of commands which have completed
   successfully in the command history, and the output will be displayed when
@@ -357,8 +375,9 @@ g:ale_history_log_output                             *g:ale_history_log_output*
   |g:ale_history_enabled| must be set to `1` for this output to be stored or
   printed.
 
-  ALE will likely consume a lot of memory if this option is on, so it should
-  only be used for debugging problems with linters.
+  Some memory will be consumed by this option. It is very useful for figuring
+  out what went wrong with linters, and for bug reports. Turn this option off
+  if you want to save on some memory usage.
 
 
 g:ale_keep_list_window_open                       *g:ale_keep_list_window_open*
@@ -406,6 +425,10 @@ g:ale_lint_on_enter                                       *g:ale_lint_on_enter*
   be used to apply linters when buffers are first opened. If this is not
   desired, this variable can be set to `0` in your vimrc file to disable this
   behaviour.
+
+  The |FileChangedShellPost| and |BufEnter| events will be used to check if
+  files have been changed outside of Vim. If a file is changed outside of
+  Vim, it will be checked when it is next opened.
 
 
 g:ale_lint_on_filetype_changed                 *g:ale_lint_on_filetype_changed*
@@ -586,7 +609,7 @@ g:ale_pattern_options                                   *g:ale_pattern_options*
 
   let g:ale_pattern_options = {
   \   '\.foo\.js$': {
-  \       'ale_linters: {'javascript': ['eslint']},
+  \       'ale_linters': {'javascript': ['eslint']},
   \   },
   \}
 <
@@ -629,11 +652,11 @@ g:ale_set_highlights                                     *g:ale_set_highlights*
 
   ALE will use the following highlight groups for problems:
 
-  `ALEError`        - Items with `'type': 'E'`
-  `ALEWarning`      - Items with `'type': 'W'`
-  `ALEInfo`         - Items with `'type': 'I'`
-  `ALEStyleError`   - Items with `'type': 'E'` and `'sub_type': 'style'`
-  `ALEStyleWarning` - Items with `'type': 'W'` and `'sub_type': 'style'`
+  |ALEError|        - Items with `'type': 'E'`
+  |ALEWarning|      - Items with `'type': 'W'`
+  |ALEInfo.|        - Items with `'type': 'I'`
+  |ALEStyleError|   - Items with `'type': 'E'` and `'sub_type': 'style'`
+  |ALEStyleWarning| - Items with `'type': 'W'` and `'sub_type': 'style'`
 
 
 g:ale_set_loclist                                           *g:ale_set_loclist*
@@ -666,11 +689,18 @@ g:ale_set_signs                                               *g:ale_set_signs*
 
   ALE will use the following highlight groups for problems:
 
-  `ALEErrorSign`        - Items with `'type': 'E'`
-  `ALEWarningSign`      - Items with `'type': 'W'`
-  `ALEInfoSign`         - Items with `'type': 'I'`
-  `ALEStyleErrorSign`   - Items with `'type': 'E'` and `'sub_type': 'style'`
-  `ALEStyleWarningSign` - Items with `'type': 'W'` and `'sub_type': 'style'`
+  |ALEErrorSign|        - Items with `'type': 'E'`
+  |ALEWarningSign|      - Items with `'type': 'W'`
+  |ALEInfoSign|         - Items with `'type': 'I'`
+  |ALEStyleErrorSign|   - Items with `'type': 'E'` and `'sub_type': 'style'`
+  |ALEStyleWarningSign| - Items with `'type': 'W'` and `'sub_type': 'style'`
+
+  In addition to the style of the signs, the style of lines where signs appear
+  can be configured with the following highlights:
+
+  |ALEErrorLine|   - All items with `'type': 'E'`
+  |ALEWarningLine| - All items with `'type': 'W'`
+  |ALEInfoLine|    - All items with `'type': 'I'`
 
   The markers for the highlights can be customized with the following options:
 
@@ -778,6 +808,20 @@ g:ale_type_map                                                 *g:ale_type_map*
   Type maps can be set per-buffer with `b:ale_type_map`.
 
 
+g:ale_virtualenv_dir_names                         *g:ale_virtualenv_dir_names*
+b:ale_virtualenv_dir_names                         *b:ale_virtualenv_dir_names*
+
+  Type: |List|
+  Default: `['.env', 'env', 've-py3', 've', 'virtualenv']`
+
+  A list of directory names to be used when searching upwards from Python
+  files to discover virtulenv directories with.
+
+  For directory named `'foo'`, ALE will search for `'foo/bin/activate'`
+  (`foo\Scripts\activate\` on Windows) in all directories on and above the
+  directory containing the Python file to find virtualenv paths.
+
+
 g:ale_warn_about_trailing_whitespace     *g:ale_warn_about_trailing_whitespace*
 b:ale_warn_about_trailing_whitespace     *b:ale_warn_about_trailing_whitespace*
 
@@ -796,6 +840,100 @@ b:ale_warn_about_trailing_whitespace     *b:ale_warn_about_trailing_whitespace*
   This option may be configured on a per buffer basis.
 
 
+-------------------------------------------------------------------------------
+3.1. Highlights                                                *ale-highlights*
+
+ALEError                                                             *ALEError*
+
+  Default: `highlight link ALEError SpellBad`
+
+  The highlight used for highlighted errors. See |g:ale_set_highlights|.
+
+
+ALEErrorLine                                                     *ALEErrorLine*
+
+  Default: Undefined
+
+  The highlight for lines where error signs appear. See |g:ale_set_signs|.
+
+
+ALEErrorSign                                                     *ALEErrorSign*
+
+  Default: `highlight link ALEErrorSign error`
+
+  The highlight used for error signs. See |g:ale_set_signs|.
+
+
+ALEInfo                                                              *ALEInfo.*
+                                                            *ALEInfo-highlight*
+  Default: `highlight link ALEInfo ALEWarning`
+
+  The highlight used for highlighted info messages. See |g:ale_set_highlights|.
+
+
+ALEInfoSign                                                       *ALEInfoSign*
+
+  Default: `highlight link ALEInfoSign ALEWarningSign`
+
+  The highlight used for info message signs. See |g:ale_set_signs|.
+
+
+ALEInfoLine                                                       *ALEInfoLine*
+
+  Default: Undefined
+
+  The highlight for lines where info signs appear. See |g:ale_set_signs|.
+
+
+ALEStyleError                                                   *ALEStyleError*
+
+  Default: `highlight link ALEStyleError ALEError`
+
+  The highlight used for highlighted style errors. See |g:ale_set_highlights|.
+
+
+ALEStyleErrorSign                                           *ALEStyleErrorSign*
+
+  Default: `highlight link ALEStyleErrorSign ALEErrorSign`
+
+  The highlight used for style error signs. See |g:ale_set_signs|.
+
+
+ALEStyleWarning                                               *ALEStyleWarning*
+
+  Default: `highlight link ALEStyleWarning ALEError`
+
+  The highlight used for highlighted style warnings. See |g:ale_set_highlights|.
+
+
+ALEStyleWarningSign                                       *ALEStyleWarningSign*
+
+  Default: `highlight link ALEStyleWarningSign ALEWarningSign`
+
+  The highlight used for style warning signs. See |g:ale_set_signs|.
+
+
+ALEWarning                                                         *ALEWarning*
+
+  Default: `highlight link ALEWarning SpellCap`
+
+  The highlight used for highlighted warnings. See |g:ale_set_highlights|.
+
+
+ALEWarningLine                                                 *ALEWarningLine*
+
+  Default: Undefined
+
+  The highlight for lines where warning signs appear. See |g:ale_set_signs|.
+
+
+ALEWarningSign                                                 *ALEWarningSign*
+
+  Default: `highlight link ALEWarningSign todo`
+
+  The highlight used for warning signs. See |g:ale_set_signs|.
+
+
 ===============================================================================
 4. Fixing Problems                                                    *ale-fix*
 
@@ -803,6 +941,9 @@ ALE can fix problems with files with the |ALEFix| command. When |ALEFix| is
 run, the variable |g:ale_fixers| will be read for getting a |List| of commands
 for filetypes, split on `.`, and the functions named in |g:ale_fixers| will be
 executed for fixing the errors.
+
+The |ALEFixSuggest| command can be used to suggest tools that be used to
+fix problems for the current buffer.
 
 The values for `g:ale_fixers` can be a list of |String|, |Funcref|, or
 |lambda| values. String values must either name a function, or a short name
@@ -908,6 +1049,13 @@ ALEFix                                                                 *ALEFix*
   A plug mapping `<Plug>(ale_fix)` is defined for this command.
 
 
+ALEFixSuggest                                                   *ALEFixSuggest*
+
+  Suggest tools that can be used to fix problems in the current buffer.
+
+  See |ale-fix| for more information.
+
+
 ALELint                                                               *ALELint*
 
   Run ALE once for the current buffer. This command can be used to run ALE
@@ -962,8 +1110,11 @@ ALEEnable                                                           *ALEEnable*
 ALEDisable                                                         *ALEDisable*
 
   Enable or disable ALE, including all of its autocmd events, loclist items,
-  quickfix items, signs, current jobs, etc. Calling this option will change
-  the |g:ale_enabled| variable.
+  quickfix items, signs, current jobs, etc. Executing any of those commands
+  will change the |g:ale_enabled| variable.
+
+  For convenience, a plug mapping `<Plug>(ale_toggle)` is defined for the
+  |ALEToggle| command.
 
 
 ALEDetail                                                           *ALEDetail*
@@ -972,6 +1123,24 @@ ALEDetail                                                           *ALEDetail*
   effect on lines that contain a linter message.
 
   A plug mapping `<Plug>(ale_detail)` is defined for this command.
+
+
+ALEInfo                                                               *ALEInfo*
+ALEInfoToClipboard                                         *ALEInfoToClipboard*
+
+  Print runtime information about ALE, including the values of global and
+  buffer-local settings for ALE, the linters that are enabled, the commands
+  that have been run, and the output of commands.
+
+  ALE will log the commands that are run by default. If you wish to disable
+  this, set |g:ale_history_enabled| to `0`. Because it could be expensive, ALE
+  does not remember the output of recent commands by default. Set
+  |g:ale_history_log_output| to `1` to enable logging of output for commands.
+  ALE will only log the output captured for parsing problems, etc.
+
+  The command `:ALEInfoToClipboard` can be used to output ALEInfo directly to
+  your clipboard. This might not work on every machine.
+
 
 ===============================================================================
 7. API                                                                *ale-api*

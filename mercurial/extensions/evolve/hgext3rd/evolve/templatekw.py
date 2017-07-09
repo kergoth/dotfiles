@@ -15,8 +15,10 @@ from . import (
 )
 
 from mercurial import (
+    cmdutil,
     templatekw,
     node,
+    util
 )
 
 eh = exthelper.exthelper()
@@ -140,10 +142,12 @@ def obsfatedefaulttempl(ui):
         'obsfate_verbose': verbtempl + usertempl + succtempl + datetempl,
     }
 
-@eh.templatekw("obsfate")
-def showobsfate(repo, ctx, **args):
+def obsfatedata(repo, ctx):
+    """compute the raw data needed for computing obsfate
+    Returns a list of dict
+    """
     if not ctx.obsolete():
-        return ''
+        return None
 
     successorssets, pathcache = closestsuccessors(repo, ctx.node())
 
@@ -172,7 +176,74 @@ def showobsfate(repo, ctx, **args):
     values = []
     for sset, rawmarkers in fullsuccessorsets:
         raw = obshistory.preparesuccessorset(sset, rawmarkers)
+        values.append(raw)
 
+    return values
+
+def obsfatelineprinter(obsfateline, ui):
+    quiet = ui.quiet
+    verbose = ui.verbose
+    normal = not verbose and not quiet
+
+    # Build the line step by step
+    line = []
+
+    # Verb
+    line.append(obsfateline['verb'])
+
+    # Users
+    if (verbose or normal) and 'users' in obsfateline:
+        users = obsfateline['users']
+
+        if normal:
+            username = _getusername(ui)
+            users = [user for user in users if user != username]
+
+        if users:
+            line.append(" by %s" % ",".join(users))
+
+    # Successors
+    successors = obsfateline["successors"]
+
+    if successors:
+        fmtsuccessors = map(lambda s: s[:12], successors)
+        line.append(" as %s" % ", ".join(fmtsuccessors))
+
+    # Date
+    if verbose:
+        min_date = obsfateline['min_date']
+        max_date = obsfateline['max_date']
+
+        if min_date == max_date:
+            fmtmin_date = util.datestr(min_date, '%Y-%m-%d %H:%M %1%2')
+            line.append(" (at %s)" % fmtmin_date)
+        else:
+            fmtmin_date = util.datestr(min_date, '%Y-%m-%d %H:%M %1%2')
+            fmtmax_date = util.datestr(max_date, '%Y-%m-%d %H:%M %1%2')
+            line.append(" (between %s and %s)" % (fmtmin_date, fmtmax_date))
+
+    return "".join(line)
+
+def obsfateprinter(obsfate, ui, prefix=""):
+    lines = []
+    for raw in obsfate:
+        lines.append(obsfatelineprinter(raw, ui))
+
+    if prefix:
+        lines = [prefix + line for line in lines]
+
+    return "\n".join(lines)
+
+@eh.templatekw("obsfate")
+def showobsfate(repo, ctx, **args):
+    # Get the needed obsfate data
+    values = obsfatedata(repo, ctx)
+
+    if values is None:
+        return ''
+
+    # Format each successorset successors list
+    for raw in values:
         # As we can't do something like
         # "{join(map(nodeshort, successors), ', '}" in template, manually
         # create a correct textual representation
@@ -183,8 +254,7 @@ def showobsfate(repo, ctx, **args):
         raw['successors'] = templatekw._hybrid(gen, raw['successors'], makemap,
                                                joinfmt)
 
-        values.append(raw)
-
+    # And then format them
     # Insert default obsfate templates
     args['templ'].cache.update(obsfatedefaulttempl(repo.ui))
 
@@ -220,6 +290,22 @@ def showobsfate(repo, ctx, **args):
     gen = "; ".join(gen)
 
     return templatekw._hybrid(gen, values, lambda x: {name: x}, fmt)
+
+# Check if we can hook directly on the changeset_printer
+if util.safehasattr(cmdutil.changeset_printer, '_exthook'):
+    @eh.wrapfunction(cmdutil.changeset_printer, '_exthook')
+    def exthook(original, self, ctx):
+        # Call potential other extensions
+        original(self, ctx)
+
+        obsfate = obsfatedata(self.repo, ctx)
+        if obsfate is None:
+            return ""
+
+        output = obsfateprinter(obsfate, self.ui, prefix="obsolete:    ")
+
+        self.ui.write(output, label='log.obsfate')
+        self.ui.write("\n")
 
 # copy from mercurial.obsolete with a small change to stop at first known changeset.
 

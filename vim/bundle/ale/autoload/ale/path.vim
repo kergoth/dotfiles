@@ -1,6 +1,12 @@
 " Author: w0rp <devw0rp@gmail.com>
 " Description: Functions for working with paths in the filesystem.
 
+function! ale#path#Simplify(path) abort
+    " //foo is turned into /foo to stop Windows doing stupid things with
+    " search paths.
+    return substitute(simplify(a:path), '^//\+', '/', 'g') " no-custom-checks
+endfunction
+
 " Given a buffer and a filename, find the nearest file by searching upwards
 " through the paths relative to the given buffer.
 function! ale#path#FindNearestFile(buffer, filename) abort
@@ -62,6 +68,23 @@ function! ale#path#IsAbsolute(filename) abort
     return a:filename[:0] ==# '/' || a:filename[1:2] ==# ':\'
 endfunction
 
+" Given a filename, return 1 if the file represents some temporary file
+" created by Vim.
+function! ale#path#IsTempName(filename) abort
+    let l:prefix_list = [
+    \   $TMPDIR,
+    \   '/run/user',
+    \]
+
+    for l:prefix in l:prefix_list
+        if a:filename[:len(l:prefix) - 1] ==# l:prefix
+            return 1
+        endif
+    endfor
+
+    return 0
+endfunction
+
 " Given a buffer number and a relative or absolute path, return 1 if the
 " two paths represent the same file on disk.
 function! ale#path#IsBufferPath(buffer, complex_filename) abort
@@ -72,10 +95,20 @@ function! ale#path#IsBufferPath(buffer, complex_filename) abort
         return 1
     endif
 
-    let l:test_filename = simplify(a:complex_filename)
+    let l:test_filename = ale#path#Simplify(a:complex_filename)
 
     if l:test_filename[:1] ==# './'
         let l:test_filename = l:test_filename[2:]
+    endif
+
+    if l:test_filename[:1] ==# '..'
+        " Remove ../../ etc. from the front of the path.
+        let l:test_filename = substitute(l:test_filename, '\v^(\.\.[/\\])+', '/', '')
+    endif
+
+    " Use the basename for temporary files, as they are likely our files.
+    if ale#path#IsTempName(l:test_filename)
+        let l:test_filename = fnamemodify(l:test_filename, ':t')
     endif
 
     let l:buffer_filename = expand('#' . a:buffer . ':p')
@@ -88,7 +121,7 @@ endfunction
 function! ale#path#Upwards(path) abort
     let l:pattern = ale#Has('win32') ? '\v/+|\\+' : '\v/+'
     let l:sep = ale#Has('win32') ? '\' : '/'
-    let l:parts = split(simplify(a:path), l:pattern)
+    let l:parts = split(ale#path#Simplify(a:path), l:pattern)
     let l:path_list = []
 
     while !empty(l:parts)
@@ -101,8 +134,8 @@ function! ale#path#Upwards(path) abort
         let l:path_list[-1] .= '\'
     elseif a:path[0] ==# '/'
         " If the path starts with /, even on Windows, add / and / to all paths.
-        call add(l:path_list, '')
         call map(l:path_list, '''/'' . v:val')
+        call add(l:path_list, '/')
     endif
 
     return l:path_list
