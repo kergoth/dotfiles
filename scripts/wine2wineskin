@@ -53,6 +53,7 @@ for portable_wine; do
 
     if [ ! -e "$portable_wine" ]; then
         base="$(basename "$portable_wine")"
+        echo >&2 "Downloading $portable_wine"
         http -FIbd --check-status -o "$tempdir/$base" "$portable_wine"
         portable_wine="$base"
     fi
