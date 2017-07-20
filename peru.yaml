@@ -593,6 +593,7 @@ git module diff-so-fancy:
     pick:
         - diff-so-fancy
     rev: aaca0a38a8ed51b565573fb5b4c10733d0d36c0a
+    reup: aaca0a38a8ed51b565573fb5b4c10733d0d36c0a
 
 git module hub-completion:
     url: https://github.com/github/hub
