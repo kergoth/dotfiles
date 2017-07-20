@@ -9,7 +9,6 @@ imports:
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
-    zsh-prioritize-cwd-history: zsh/plugins/prioritize-cwd-history
     hub-completion: git/functions
     iterm2-zsh: zsh/plugins/iterm2
     base16-shell: base16
@@ -631,10 +630,6 @@ git module git-tbdiff:
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
     rev: e30436574599df0f127153fea0c2ea86942ba11a
-
-git module zsh-prioritize-cwd-history:
-    url: https://github.com/ericfreese/zsh-prioritize-cwd-history
-    rev: 9d3f8dbed5aaf91916f33836ec19d9fafca82e61
 
 git module git-extras:
     url: https://github.com/tj/git-extras
