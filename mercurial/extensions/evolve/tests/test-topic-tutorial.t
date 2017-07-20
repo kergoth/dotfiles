@@ -42,7 +42,7 @@ their unfinished work.
 Topic Basics
 ============
 
-Let's says we use Mercurial to manage our shopping list::
+Let's say we use Mercurial to manage our shopping list::
 
   $ hg log --graph
   @  changeset:   0:38da43f0a2ea
@@ -52,12 +52,13 @@ Let's says we use Mercurial to manage our shopping list::
      summary:     Shopping list
   
 
-We are about to do some edition to this list and would like to do them within
-a topic. Creating a new topic is done using the ``topic`` command::
+We are about to make some additions to this list and would like to do them
+within a topic. Creating a new topic is done using the ``topic`` command::
 
   $ hg topic food
 
-As for named branch, our topic is active but it does not contains any changesets yet::
+Much like a named branch, our topic is active but it does not contain any
+changesets yet::
 
   $ hg topic
    * food
@@ -94,7 +95,7 @@ Our next commit will be part of the active topic::
      summary:     adding condiments
   
 
-And future commit will be part of that topic too::
+And future commits will be part of that topic too::
 
   $ cat >> shopping << EOF
   > Bananas
@@ -117,7 +118,8 @@ And future commit will be part of that topic too::
      summary:     adding condiments
   
 
-We can get a compact view of the content of our topic using the ``stack`` command::
+We can get a compact view of the content of our topic using the ``stack``
+command::
 
   $ hg stack
   ### topic: food
@@ -126,14 +128,15 @@ We can get a compact view of the content of our topic using the ``stack`` comman
   t1: adding condiments
     ^ Shopping list
 
-The topic desactivate when we update away from it::
+The topic deactivates when we update away from it::
 
   $ hg up default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg topic
      food
 
-Note that ``default`` (name of the branch) now refers to the tipmost changeset of default without a topic::
+Note that ``default`` (name of the branch) now refers to the tipmost
+changeset of default without a topic::
 
   $ hg log --graph
   o  changeset:   2:287de11b401f
@@ -155,7 +158,7 @@ Note that ``default`` (name of the branch) now refers to the tipmost changeset o
      summary:     Shopping list
   
 
-And updating back to the topic reactivate it::
+And updating back to the topic reactivates it::
 
   $ hg up food
   switching to topic food
@@ -163,7 +166,8 @@ And updating back to the topic reactivate it::
   $ hg topic
    * food
 
-The name used for updating does not affect the activation of the topic, updating to a revision part of a topic will activate it in all cases::
+Updating to any changeset that is part of a topic activates the topic
+regardless of how the revision was specified::
 
   $ hg up default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -190,7 +194,8 @@ The name used for updating does not affect the activation of the topic, updating
   $ hg commit -A -m "Adding clothes"
   $ cd ../client
 
-Topic will also affect rebase and merge destination. Let's pull the latest update from the main server::
+The topic will also affect the rebase and the merge destinations. Let's pull
+the latest update from the main server::
 
   $ hg pull
   pulling from $TESTTMP/server (glob)
@@ -226,7 +231,8 @@ Topic will also affect rebase and merge destination. Let's pull the latest updat
      summary:     Shopping list
   
 
-The topic head will not be considered when merge from the new head of the branch::
+The topic head will not be considered when merging from the new head of the
+branch::
 
   $ hg up default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -272,7 +278,7 @@ But the topic will see that branch head as a valid destination::
      summary:     Shopping list
   
 
-The topic information will fade out when we publish the changesets::
+The topic information will disappear when we publish the changesets::
 
   $ hg topic
    * food
@@ -315,12 +321,12 @@ The topic information will fade out when we publish the changesets::
 Working with Multiple Topics
 ============================
 
-In the above example, topic are not bring much benefit since you only have one
-line of developement. Topic start to be more useful when you have to work on
-multiple features are the same time.
+In the above example, topics do not bring much benefit since you only have one
+line of development. Topics start to be more useful when you have to work on
+multiple features at the same time.
 
 We might go shopping in a hardware store in the same go, so let's add some
-tools to the shopping list withing a new topic::
+tools to the shopping list within a new topic::
 
   $ hg topic tools
   $ echo hammer >> shopping
@@ -330,9 +336,9 @@ tools to the shopping list withing a new topic::
   $ echo drill >> shopping
   $ hg ci -m 'Adding drill'
 
-But are not sure to actually go in the hardward store, so in the meantime, we
-want to extend the list with drinks. We go back to the official default branch
-and start a new topic::
+But we are not sure we will actually go to the hardware store, so in the
+meantime, we want to extend the list with drinks. We go back to the official
+default branch and start a new topic::
 
   $ hg up default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -348,7 +354,7 @@ We now have two topics::
    * drinks
      tools
 
-The information ``hg stack`` command adapt to the active topic::
+The information displayed by ``hg stack`` adapts to the active topic::
 
   $ hg stack
   ### topic: drinks
@@ -367,7 +373,8 @@ The information ``hg stack`` command adapt to the active topic::
   t1: Adding hammer
     ^ adding fruits
 
-They are seen as independant branch by Mercurial. No rebase or merge betwen them will be attempted by default::
+They are seen as independent branches by Mercurial. No rebase or merge
+between them will be attempted by default::
 
   $ hg rebase
   nothing to rebase
@@ -385,13 +392,11 @@ They are seen as independant branch by Mercurial. No rebase or merge betwen them
   $ echo 'Coat' > shopping
   $ echo 'Shoes' >> shopping
   $ cat foo >> shopping
-  $ hg rm foo
-  not removing foo: file is untracked
-  [1]
+  $ rm foo
   $ hg ci -m 'add a pair of shoes'
   $ cd ../client
 
-Lets see what other people did in the mean time::
+Let's see what other people did in the meantime::
 
   $ hg pull
   pulling from $TESTTMP/server (glob)
@@ -402,7 +407,8 @@ Lets see what other people did in the mean time::
   added 2 changesets with 2 changes to 1 files (+1 heads)
   (run 'hg heads' to see heads)
 
-There is new changes! We can simply use ``hg rebase`` to update our changeset on top of the latest::
+There are new changes! We can simply use ``hg rebase`` to update our
+changeset on top of the latest::
 
   $ hg rebase
   rebasing 6:183984ef46d1 "Adding hammer"
@@ -413,15 +419,17 @@ There is new changes! We can simply use ``hg rebase`` to update our changeset on
   rebasing 8:34255b455dac "Adding drill"
   merging shopping
 
-But what about the other topic? You can use 'hg topic --verbose' to see information about them::
+But what about the other topic? You can use 'hg topic --verbose' to see
+information about all the topics::
 
   $ hg topic --verbose
      drinks (on branch: default, 2 changesets, 2 behind)
    * tools  (on branch: default, 3 changesets)
 
-The "2 behind" is telling you that there is 2 new changesets on the named branch of the topic. You need to merge or rebase to incorporate them.
+The "2 behind" is telling you that there are 2 new changesets on the named
+branch of the topic. You need to merge or rebase to incorporate them.
 
-Pushing that topic would create a new heads will be prevented::
+Pushing that topic would create a new head, and therefore will be prevented::
 
   $ hg push --rev drinks
   pushing to $TESTTMP/server (glob)
@@ -431,7 +439,8 @@ Pushing that topic would create a new heads will be prevented::
   [255]
 
 
-Even after a rebase Pushing all active topics at the same time will complains about the multiple heads it would create on that branch::
+Even after a rebase, pushing all active topics at the same time will complain
+about the multiple heads it would create on that branch::
 
   $ hg rebase -b drinks
   rebasing 9:8dfa45bd5e0c "Adding apple juice"
@@ -447,7 +456,8 @@ Even after a rebase Pushing all active topics at the same time will complains ab
   (merge or see 'hg help push' for details about pushing new heads)
   [255]
 
-Publishing only one of them is allowed (as long as it does not create a new branch head has we just saw in the previous case)::
+Publishing only one of them is allowed (as long as it does not create a new
+branch head as we just saw in the previous case)::
 
   $ hg push -r drinks
   pushing to $TESTTMP/server (glob)
@@ -458,7 +468,8 @@ Publishing only one of them is allowed (as long as it does not create a new bran
   added 2 changesets with 2 changes to 1 files
   2 new obsolescence markers
 
-The publishing topic has now vanished, and the one still draft is now marked as "behind"::
+The published topic has now disappeared, and the other is now marked as
+"behind"::
 
   $ hg topic --verbose
    * tools (on branch: default, 3 changesets, 2 behind)

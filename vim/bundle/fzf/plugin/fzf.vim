@@ -149,13 +149,8 @@ function! s:tmux_enabled()
 endfunction
 
 function! s:escape(path)
-  let escaped_chars = '$%#''"'
-
-  if has('unix')
-    let escaped_chars .= ' \'
-  endif
-
-  return escape(a:path, escaped_chars)
+  let path = fnameescape(a:path)
+  return s:is_win ? escape(path, '$') : path
 endfunction
 
 " Upgrade legacy options
@@ -365,10 +360,10 @@ try
     let dict.dir = fnamemodify(dict.dir, ':p')
   endif
 
-  if !has_key(dict, 'source') && !empty($FZF_DEFAULT_COMMAND)
-    let temps.source = s:fzf_tempname().(s:is_win ? '.bat' : '')
+  if !has_key(dict, 'source') && !empty($FZF_DEFAULT_COMMAND) && !s:is_win
+    let temps.source = s:fzf_tempname()
     call writefile(s:wrap_cmds(split($FZF_DEFAULT_COMMAND, "\n")), temps.source)
-    let dict.source = (empty($SHELL) ? &shell : $SHELL) . (s:is_win ? ' /c ' : ' ') . fzf#shellescape(temps.source)
+    let dict.source = (empty($SHELL) ? &shell : $SHELL).' '.fzf#shellescape(temps.source)
   endif
 
   if has_key(dict, 'source')
@@ -529,12 +524,15 @@ function! s:execute(dict, command, use_height, temps) abort
     let command = batchfile
     let a:temps.batchfile = batchfile
     if has('nvim')
-      let s:dict = a:dict
-      let s:temps = a:temps
       let fzf = {}
+      let fzf.dict = a:dict
+      let fzf.temps = a:temps
       function! fzf.on_exit(job_id, exit_status, event) dict
-        let lines = s:collect(s:temps)
-        call s:callback(s:dict, lines)
+        if s:present(self.dict, 'dir')
+          execute 'lcd' s:escape(self.dict.dir)
+        endif
+        let lines = s:collect(self.temps)
+        call s:callback(self.dict, lines)
       endfunction
       let cmd = 'start /wait cmd /c '.command
       call jobstart(cmd, fzf)

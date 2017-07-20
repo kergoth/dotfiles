@@ -5,16 +5,32 @@ ALE C Integration                                               *ale-c-options*
 ===============================================================================
 clang                                                             *ale-c-clang*
 
+g:ale_c_clang_executable                             *g:ale_c_clang_executable*
+                                                     *b:ale_c_clang_executable*
+  Type: |String|
+  Default: `'clang'`
+
+  This variable can be changed to use a different executable for clang.
+
+
 g:ale_c_clang_options                                   *g:ale_c_clang_options*
                                                         *b:ale_c_clang_options*
   Type: |String|
   Default: `'-std=c11 -Wall'`
 
-  This variable can be change to modify flags given to clang.
+  This variable can be changed to modify flags given to clang.
 
 
 ===============================================================================
 cppcheck                                                       *ale-c-cppcheck*
+
+g:ale_c_cppcheck_executable                       *g:ale_c_cppcheck_executable*
+                                                  *b:ale_c_cppcheck_executable*
+  Type: |String|
+  Default: `'cppcheck'`
+
+  This variable can be changed to use a different executable for cppcheck.
+
 
 g:ale_c_cppcheck_options                             *g:ale_c_cppcheck_options*
                                                      *b:ale_c_cppcheck_options*
@@ -26,6 +42,14 @@ g:ale_c_cppcheck_options                             *g:ale_c_cppcheck_options*
 
 ===============================================================================
 gcc                                                                 *ale-c-gcc*
+
+g:ale_c_gcc_executable                                 *g:ale_c_gcc_executable*
+                                                       *b:ale_c_gcc_executable*
+  Type: |String|
+  Default: `'gcc'`
+
+  This variable can be changed to use a different executable for gcc.
+
 
 g:ale_c_gcc_options                                       *g:ale_c_gcc_options*
                                                           *b:ale_c_gcc_options*
