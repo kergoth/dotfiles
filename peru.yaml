@@ -42,6 +42,7 @@ imports:
     iln: scripts
     lesspipe: scripts
     moreutils: scripts
+    osx-wificleaner: scripts
     planter: scripts
     pom: scripts
     dev-goodies: scripts
@@ -661,3 +662,10 @@ git module vim-startuptime:
 git module vim-ale:
     url: https://github.com/w0rp/ale
     rev: 87616c5e91746181182a1f7eb0c09487d6ade3e7
+
+git module osx-wificleaner:
+    url: https://github.com/mubix/osx-wificleaner
+    pick: osx-wificleaner
+    move:
+        osx_wificleaner.py: osx-wificleaner
+    rev: a49340d8dc9b4d81a7d8a4e2ca1932df7aa2cc1a
