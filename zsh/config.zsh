@@ -61,6 +61,9 @@ source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
 # it from processing large pastes
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
+# Enable async mode using zsh/zpty
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+
 # Move prioritize-cwd-history into xdg path
 ZSH_PRIORITIZE_CWD_HISTORY_DIR=$XDG_DATA_HOME/zsh/prioritize-cwd-history
 
