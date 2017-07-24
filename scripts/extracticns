@@ -6,5 +6,5 @@ wrestool -x -t14 -o $tempdir "$@"
 for ico in $tempdir/*.ico; do
     noext="${ico%.ico}"
     base="${noext##*/}"
-    makeicns in="$ico" out="$base.icns"
+    makeicns -in "$ico" -out "$base.icns"
 done
