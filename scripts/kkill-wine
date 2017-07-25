@@ -1,0 +1,4 @@
+#!/bin/sh
+
+kkill wine
+kkill Wineserver
