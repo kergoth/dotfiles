@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 delays=1,2,0
 
 dsleep () {
@@ -19,11 +21,9 @@ if pgrep -f "$*" >/dev/null 2>&1; then
             echo >&2 "'$*' process(es) still running, using pkill -9.."
             pkill -f "$*" -9
             dsleep 3
-            pids="$(pgrep -f "$*" 2>/dev/null)"
-            if [ $? -eq 0 ]; then
-                echo >&2 "'$*' process(es) still running after pkill, using kill -9.."
-                kill -9 "$pids"
-            fi
+            pids="$(pgrep -f "$*" 2>/dev/null)" || exit 0
+            echo >&2 "'$*' process(es) still running after pkill, using kill -9.."
+            kill -9 "$pids"
         fi
     fi
 fi
