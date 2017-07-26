@@ -2,14 +2,19 @@
 #
 # Replace a symlink with a copy of its destination
 
-while getopts r:h opt; do
+relativeto=
+move=0
+while getopts mr:h opt; do
     case "$opt" in
+        m)
+            move=1
+            ;;
         r)
             relativeto="$OPTARG"
             ;;
         \?|h)
             usage
-            echo >&2 "${0##*/}: [-r RELATIVETO] PATH [PATH..]"
+            echo >&2 "${0##*/}: [-m] [-r RELATIVETO] PATH [PATH..]"
             ;;
     esac
 done
@@ -18,7 +23,7 @@ shift $((OPTIND - 1))
 backup=$(mktemp resolvelink.XXXX)
 trap 'rm -f "$backup"' EXIT INT TERM
 
-ret=1
+ret=0
 for link; do
     if [ -n "$relativeto" ]; then
         link_relativeto="$relativeto"
@@ -38,10 +43,15 @@ for link; do
     fi
 
     mv "$link" "$backup"
-    cp -av "$dest" "$link" || {
-        ret=$?
-        echo >&2 "Restoring original link for $link"
-        mv "$backup" "$link"
-    }
+    if [ $move -eq 1 ]; then
+        mv -v "$dest" "$link" || ret=$?
+    else
+        cp -av "$dest" "$link" || {
+            ret=$?
+            rm -rf "$link"
+            echo >&2 "Restoring original link for $link"
+            mv "$backup" "$link"
+        }
+    fi
 done
 exit $ret
