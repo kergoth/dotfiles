@@ -17,4 +17,8 @@ else:
         obj = toml.load(f)
 
 for key in args.keys:
-    print(functools.reduce(lambda x, y: x[y], key.split("."), obj))
+    value = functools.reduce(lambda x, y: x[y], key.split("."), obj)
+    if hasattr(value, 'items'):
+        toml.dump(value, sys.stdout)
+    else:
+        print(value)
