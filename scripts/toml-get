@@ -7,7 +7,7 @@ import toml
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', help='Input path rather than stdin')
-parser.add_argument('keys', metavar='KEY', nargs='+')
+parser.add_argument('keys', metavar='KEY', nargs='*')
 args = parser.parse_args()
 
 if not args.file or args.file == '-':
@@ -16,9 +16,12 @@ else:
     with open(args.file, 'r') as f:
         obj = toml.load(f)
 
-for key in args.keys:
-    value = functools.reduce(lambda x, y: x[y], key.split("."), obj)
-    if hasattr(value, 'items'):
-        toml.dump(value, sys.stdout)
-    else:
-        print(value)
+if not args.keys:
+    toml.dump(obj, sys.stdout)
+else:
+    for key in args.keys:
+        value = functools.reduce(lambda x, y: x[y], key.split("."), obj)
+        if hasattr(value, 'items'):
+            toml.dump(value, sys.stdout)
+        else:
+            print(value)
