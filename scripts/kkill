@@ -23,7 +23,9 @@ if pgrep -f "$*" >/dev/null 2>&1; then
             dsleep 3
             pids="$(pgrep -f "$*" 2>/dev/null)" || exit 0
             echo >&2 "'$*' process(es) still running after pkill, using kill -9.."
-            kill -9 "$pids"
+            for pid in $pids; do
+                kill -9 "$pid" || :
+            done
             dsleep 4
             if pgrep -f "$*" >/dev/null 2>&1; then
                 echo >&2 "Error: '$*' process(es) still running after kill -9"
