@@ -63,12 +63,12 @@ else
 fi
 
 alias ag='ag -S --pager=${PAGER:-less}'
-alias pt='pt -S'
+
 pt () {
     if [[ -t 1 ]]; then
-        command pt --color --group "$@" | ${PAGER:-less}
+        command pt -S --color --group "$@" | ${PAGER:-less}
     else
-        command pt "$@"
+        command pt -S "$@"
     fi
 }
 
