@@ -330,19 +330,24 @@ _autoenv_get_file_upwards() {
   # performance reasons, which is only available in zsh-5.0.5-146-g9381bb6.
   local last
   local parent_dir="$look_from/.."
+  local abs_parent_dir
   while true; do
-    parent_dir=${parent_dir:A}
-    if [[ $parent_dir == $last ]]; then
+    abs_parent_dir=${parent_dir:A}
+    if [[ $abs_parent_dir == $last ]]; then
       break
     fi
     local parent_file="${parent_dir}/${look_for}"
 
     if [[ -f $parent_file ]]; then
-      echo $parent_file
+      if [[ ${parent_file[1,2]} == './' ]]; then
+        echo ${parent_file#./}
+      else
+        echo ${parent_file:A}
+      fi
       break
     fi
 
-    if [[ $parent_dir == $look_until ]]; then
+    if [[ $abs_parent_dir == $look_until ]]; then
       break
     fi
     last=$parent_dir
@@ -350,6 +355,37 @@ _autoenv_get_file_upwards() {
   done
 }
 
+autoenv-edit() {
+  local env_file
+  local -a files
+  local -A check
+  check[enter]=$AUTOENV_FILE_ENTER
+  if [[ "$AUTOENV_FILE_ENTER" != "$AUTOENV_FILE_LEAVE" ]]; then
+    check[leave]=$AUTOENV_FILE_LEAVE
+  fi
+  local f t
+  for t f in ${(kv)check}; do
+    env_file="$f"
+    if ! [[ -f $env_file ]]; then
+      env_file=$(_autoenv_get_file_upwards . $f)
+      if [[ -z $env_file ]]; then
+        echo "No $f file found ($t)." >&2
+        continue
+      fi
+      if ! [[ $AUTOENV_LOOK_UPWARDS == 1 ]]; then
+        echo "Note: found $env_file, but AUTOENV_LOOK_UPWARDS is disabled."
+      fi
+    fi
+    files+=($env_file)
+  done
+  if [[ -z "$files" ]]; then
+    return 1
+  fi
+  echo "Editing $files.."
+  local editor
+  editor="${${AUTOENV_EDITOR:-$EDITOR}:-vim}"
+  eval $editor "$files"
+}
 
 _autoenv_chpwd_handler() {
   _autoenv_debug "Calling chpwd handler: PWD=$PWD"

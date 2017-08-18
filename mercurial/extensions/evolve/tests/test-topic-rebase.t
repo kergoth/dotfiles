@@ -18,7 +18,6 @@ test of the rebase command
   > [ui]
   > interactive = true
   > [extensions]
-  > hgext.graphlog=
   > rebase=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
@@ -46,7 +45,7 @@ Work on myfeature
   ### topic: myfeature
   ### branch: default
   t1@ add feature1 (current)
-    ^ add ROOT
+  t0^ add ROOT (base)
   $ logtopic
   @  1:39e7a938055e87615edf675c24a10997ff05bb06
   |  topics: myfeature
@@ -76,7 +75,7 @@ Rebase the commit
   ### topic: myfeature
   ### branch: default
   t1@ add feature1 (current)
-    ^ add default
+  t0^ add default (base)
   $ logtopic
   @  3:fc6593661cf3256ba165cbccd6019ead17cc3726
   |  topics: myfeature
@@ -90,7 +89,7 @@ Rebase the commit
   ### topic: myfeature
   ### branch: default
   t1@ add feature1 (current)
-    ^ add default
+  t0^ add default (base)
 
 Check that rebase keep the topic in case of merge conflict
 ----------------------------------------------------------
@@ -152,11 +151,11 @@ Check the the commit has the right topic
   ### topic: myotherfeature
   ### branch: default
   t1@ myotherfeature1 (current)
-    ^ default3
+  t0^ default3 (base)
   $ hg update --rev 7
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
   ### topic: myotherfeature
   ### branch: default
   t1@ myotherfeature1 (current)
-    ^ default3
+  t0^ default3 (base)

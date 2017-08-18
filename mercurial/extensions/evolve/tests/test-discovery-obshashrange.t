@@ -34,23 +34,9 @@ test for range based discovery
   * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugbuilddag .+7 (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (8r, 0o) (glob)
+  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
+  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (8r, 0o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugbuilddag .+7 exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> blackbox (glob)
@@ -166,10 +152,10 @@ testing simple pull
   $ rm ../server/.hg/blackbox.log
   $ hg blackbox
   * @0000000000000000000000000000000000000000 (*)> pull --rev 4 (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
   * @0000000000000000000000000000000000000000 (*)> updated stablerange cache in *.???? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (5r, 3o) (glob)
+  * @0000000000000000000000000000000000000000 (*)> updated base branch cache in *.???? seconds (glob)
+  * @0000000000000000000000000000000000000000 (*)> wrote base branch cache with 1 labels and 1 nodes (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (5r, 3o) (glob)
   * @0000000000000000000000000000000000000000 (*)> 5 incoming changes - new heads: bebd167eb94d (glob)
   * @0000000000000000000000000000000000000000 (*)> pull --rev 4 exited 0 after *.?? seconds (glob)
@@ -206,7 +192,7 @@ testing simple push
   taking quick initial sample
   query 2; still undecided: 5, sample size is: 5
   sending known command
-  2 total queries
+  2 total queries in *.????s (glob)
   preparing listkeys for "phases"
   sending listkeys command
   received listkey for "phases": 58 bytes
@@ -238,7 +224,7 @@ testing simple push
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
   remote: 1 new obsolescence markers
-  bundle2-input-bundle: with-transaction
+  bundle2-input-bundle: no-transaction
   bundle2-input-part: "reply:changegroup" (advisory) (params: 0 advisory) supported
   bundle2-input-part: "reply:pushkey" (params: 0 advisory) supported
   bundle2-input-part: "reply:obsmarkers" (params: 0 advisory) supported
@@ -248,12 +234,12 @@ testing simple push
   received listkey for "phases": 58 bytes
   $ hg -R ../server blackbox
   * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (1r, 0o) (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
   * @0000000000000000000000000000000000000000 (*)> updated stablerange cache in *.???? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 1o) (glob)
-  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
+  * @0000000000000000000000000000000000000000 (*)> obscache is out of date, falling back to slower obsstore version (glob)
+  * @0000000000000000000000000000000000000000 (*)> updated served branch cache in *.???? seconds (glob)
+  * @0000000000000000000000000000000000000000 (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
+  * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (1r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> 1 incoming changes - new heads: 45f8b879de92 (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> blackbox (glob)
@@ -310,10 +296,11 @@ testing push with extra local markers
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> add foo (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> add foo exited 0 after *.?? seconds (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> commit -m foo (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obscache in *.???? seconds (1r, 0o) (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated served branch cache in *.???? seconds (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 0o) (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obscache is out of date, falling back to slower obsstore version (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated served branch cache in *.???? seconds (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> wrote served branch cache with 1 labels and 1 nodes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (1r, 0o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> commit -m foo exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobsolete ffffffffffffffffffffffffffffffffffffffff 45f8b879de922f6a6e620ba04205730335b6fc7e (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
@@ -322,6 +309,7 @@ testing push with extra local markers
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobsolete ffffffffffffffffffffffffffffffffffffffff 45f8b879de922f6a6e620ba04205730335b6fc7e exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push -f --debug (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> found 1 common and 1 unknown server heads, 2 roundtrips in *.????s (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated stablerange cache in *.???? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 0/5 mismatch - 1 obshashrange queries in *.???? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push -f --debug exited 0 after *.?? seconds (glob)
@@ -342,7 +330,7 @@ testing push with extra local markers
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobsolete 22222222222222222bbbbbbbbbbbbb2222222222 2dc09a01254db841290af0538aa52f6f52c776e3 exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 2/6 mismatch - 1 obshashrange queries in *.???? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push exited True after *.?? seconds (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push exited 1 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> blackbox (glob)
   $ rm .hg/blackbox.log
   $ hg debugobsolete | sort
@@ -421,13 +409,12 @@ testing pull with extra remote markers
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> log -G exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> pull -r 6 (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 2/6 mismatch - 1 obshashrange queries in *.???? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (2r, 0o) (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated served branch cache in *.???? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated stablerange cache in *.???? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obshashcache reset - new markers affect cached ranges (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obshashrange in *.???? seconds (2r, 3o) (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (0r, 3o) (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated served branch cache in *.???? seconds (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (2r, 3o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> 2 incoming changes - new heads: f69452c5b1af (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> pull -r 6 exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> blackbox (glob)
@@ -567,17 +554,18 @@ Recover after rollback
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobshashrange --subranges --rev 'heads(all())' exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> pull (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 0/8 mismatch - 1 obshashrange queries in *.???? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (1r, 0o) (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated served branch cache in *.???? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated stablerange cache in *.???? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 1o) (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated served branch cache in *.???? seconds (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (1r, 1o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> 1 incoming changes - new heads: 4de32a90b66c (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> pull exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> rollback (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated base branch cache in *.???? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> wrote base branch cache with 1 labels and 2 nodes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> strip detected, evo-ext-obscache cache reset (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (8r, 12o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> rollback exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> blackbox (glob)
   $ rm .hg/blackbox.log
@@ -617,11 +605,9 @@ Recover after rollback
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobshashrange --subranges --rev 'heads(all())' exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> pull (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 0/8 mismatch - 1 obshashrange queries in *.???? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> strip detected, evo-ext-obscache cache reset (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (9r, 12o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated stablerange cache in *.???? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 1o) (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (1r, 1o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> 1 incoming changes - new heads: 4de32a90b66c (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> pull exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> blackbox (glob)
@@ -695,10 +681,12 @@ revision are reapplied after the target is stripped.
   pulling from ssh://user@dummy/server
   searching for changes
   OBSEXC: looking for common markers in 8 nodes
+  OBSEXC: request obsmarkers for 1 common nodes
   adding changesets
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+  2 new obsolescence markers
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg log -G
   o  8 45f8b879de92 foo tip
@@ -728,9 +716,9 @@ revision are reapplied after the target is stripped.
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> strip -r 'desc("foo")' (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> saved backup bundle to $TESTTMP/client/.hg/strip-backup/45f8b879de92-94c82517-backup.hg (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> strip detected, evo-ext-obshashrange cache reset (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obshashrange in *.???? seconds (5r, 13o) (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obshashrange in *.???? seconds (5r, 11o) (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> strip detected, evo-ext-obscache cache reset (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obscache in *.???? seconds (5r, 13o) (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obscache in *.???? seconds (5r, 11o) (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated stablerange cache in *.???? seconds (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obshashrange in *.???? seconds (3r, 0o) (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obscache in *.???? seconds (3r, 0o) (glob)
@@ -742,12 +730,13 @@ revision are reapplied after the target is stripped.
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> writing .hg/cache/tags2-visible with 0 tags (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> log -G exited 0 after *.?? seconds (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> pull (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> obsdiscovery, 0/8 mismatch - 1 obshashrange queries in *.???? seconds (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obscache in *.???? seconds (1r, 0o) (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> obsdiscovery, 1/8 mismatch - 1 obshashrange queries in *.???? seconds (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated stablerange cache in *.???? seconds (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 0o) (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated served branch cache in *.???? seconds (glob)
-  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> wrote served branch cache with 1 labels and 2 nodes (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> obshashcache reset - new markers affect cached ranges (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 2o) (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated base branch cache in *.???? seconds (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> wrote base branch cache with 1 labels and 2 nodes (glob)
+  * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obscache in *.???? seconds (1r, 2o) (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> 1 incoming changes - new heads: 45f8b879de92 (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> pull exited 0 after *.?? seconds (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> log -G (glob)

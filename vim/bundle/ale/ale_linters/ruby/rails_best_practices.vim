@@ -5,17 +5,11 @@ let g:ale_ruby_rails_best_practices_options =
 \   get(g:, 'ale_ruby_rails_best_practices_options', '')
 
 function! ale_linters#ruby#rails_best_practices#Handle(buffer, lines) abort
-    if len(a:lines) == 0
-        return []
-    endif
-
-    let l:result = json_decode(join(a:lines, ''))
-
     let l:output = []
 
-    for l:warning in l:result
+    for l:warning in ale#util#FuzzyJSONDecode(a:lines, [])
         if !ale#path#IsBufferPath(a:buffer, l:warning.filename)
-          continue
+            continue
         endif
 
         call add(l:output, {
@@ -36,7 +30,7 @@ function! ale_linters#ruby#rails_best_practices#GetCommand(buffer) abort
 
     let l:rails_root = ale#ruby#FindRailsRoot(a:buffer)
 
-    if l:rails_root ==? ''
+    if l:rails_root is? ''
         return ''
     endif
 

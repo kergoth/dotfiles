@@ -76,7 +76,7 @@ endfunction
 function! airline#switch_matching_theme()
   if exists('g:colors_name')
     let existing = g:airline_theme
-    let theme = substitute(g:colors_name, '-', '_', 'g')
+    let theme = substitute(tolower(g:colors_name), '-', '_', 'g')
     try
       let palette = g:airline#themes#{theme}#palette
       call airline#switch_theme(theme)
@@ -152,6 +152,9 @@ function! airline#check_mode(winnr)
 
   if get(w:, 'airline_active', 1)
     let l:m = mode()
+    if exists("*term_list") && index(term_list(), bufnr('')) > -1
+      let l:m = "t"
+    endif
     if l:m ==# "i"
       let l:mode = ['insert']
     elseif l:m ==# "R"

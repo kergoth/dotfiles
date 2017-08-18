@@ -53,7 +53,9 @@ Test setup
   $ mkcommit A2
   created new head
   $ hg debugobsolete `getid "desc(A0)" ` `getid "desc(A1)"`
+  obsoleted 1 changesets
   $ hg debugobsolete `getid "desc(A1)" ` `getid "desc(A2)"`
+  obsoleted 1 changesets
   $ hg log -G --hidden
   @  c1f8d089020f (draft): A2
   |
@@ -75,5 +77,6 @@ Actual testing
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
 
   $ cd ../..

@@ -40,10 +40,17 @@ Before:
   Save g:ale_lint_on_save
   Save g:ale_echo_cursor
   Save g:ale_fix_on_save
+  Save g:ale_completion_enabled
 
 After:
   delfunction CheckAutocmd
   Restore
+
+  if g:ale_completion_enabled
+    call ale#completion#Enable()
+  else
+    call ale#completion#Disable()
+  endif
 
   call ALEInitAuGroups()
 
@@ -107,18 +114,20 @@ Execute (g:ale_pattern_options_enabled = 1 should bind BufReadPost and BufEnter)
   \ 'BufReadPost * call ale#pattern_options#SetOptions()',
   \], CheckAutocmd('ALEPatternOptionsGroup')
 
-Execute (g:ale_lint_on_enter = 0 should bind no events):
+Execute (g:ale_lint_on_enter = 0 should bind only the BufEnter event):
   let g:ale_lint_on_enter = 0
 
-  AssertEqual [], CheckAutocmd('ALERunOnEnterGroup')
+  AssertEqual
+  \ ['BufEnter * call ale#events#EnterEvent(str2nr(expand(''<abuf>'')))'],
+  \ CheckAutocmd('ALERunOnEnterGroup')
 
 Execute (g:ale_lint_on_enter = 1 should bind the required events):
   let g:ale_lint_on_enter = 1
 
   AssertEqual [
-  \ 'BufEnter * call ale#events#EnterEvent()',
-  \ 'BufReadPost * call ale#Queue(300, ''lint_file'')',
-  \ 'BufWinEnter * call ale#Queue(300, ''lint_file'')',
+  \ 'BufEnter * call ale#events#EnterEvent(str2nr(expand(''<abuf>'')))',
+  \ 'BufReadPost * call ale#Queue(0, ''lint_file'', str2nr(expand(''<abuf>'')))',
+  \ 'BufWinEnter * call ale#Queue(0, ''lint_file'', str2nr(expand(''<abuf>'')))',
   \ 'FileChangedShellPost * call ale#events#FileChangedEvent(str2nr(expand(''<abuf>'')))',
   \], CheckAutocmd('ALERunOnEnterGroup')
 
@@ -127,18 +136,17 @@ Execute (g:ale_lint_on_filetype_changed = 0 should bind no events):
 
   AssertEqual [], CheckAutocmd('ALERunOnFiletypeChangeGroup')
 
-Execute (g:ale_lint_on_filetype_changed = 1 should bind FileType, and required buffer events):
+Execute (g:ale_lint_on_filetype_changed = 1 should bind the FileType event):
   let g:ale_lint_on_filetype_changed = 1
 
-  AssertEqual [
-  \ 'BufEnter * let b:ale_original_filetype = &filetype',
-  \ 'BufReadPost * let b:ale_original_filetype = &filetype',
-  \ 'FileType * '
-  \   . 'if has_key(b:, ''ale_original_filetype'') '
-  \   . '&& b:ale_original_filetype !=# expand(''<amatch>'')'
-  \   . '| call ale#Queue(300, ''lint_file'')'
-  \   . '| endif',
-  \], CheckAutocmd('ALERunOnFiletypeChangeGroup')
+  AssertEqual
+  \ [
+  \   'FileType * call ale#events#FileTypeEvent( '
+  \     . 'str2nr(expand(''<abuf>'')), '
+  \     . 'expand(''<amatch>'')'
+  \     . ')',
+  \ ],
+  \ CheckAutocmd('ALERunOnFiletypeChangeGroup')
 
 Execute (g:ale_lint_on_save = 0 should bind no events):
   let g:ale_lint_on_save = 0
@@ -151,7 +159,7 @@ Execute (g:ale_lint_on_save = 1 should bind no events):
   let g:ale_fix_on_save = 0
 
   AssertEqual [
-  \ 'BufWritePost * call ale#events#SaveEvent()',
+  \ 'BufWritePost * call ale#events#SaveEvent(str2nr(expand(''<abuf>'')))',
   \], CheckAutocmd('ALERunOnSaveGroup')
 
 Execute (g:ale_lint_on_save = 0 and g:ale_fix_on_save = 1 should bind events):
@@ -159,7 +167,7 @@ Execute (g:ale_lint_on_save = 0 and g:ale_fix_on_save = 1 should bind events):
   let g:ale_fix_on_save = 1
 
   AssertEqual [
-  \ 'BufWritePost * call ale#events#SaveEvent()',
+  \ 'BufWritePost * call ale#events#SaveEvent(str2nr(expand(''<abuf>'')))',
   \], CheckAutocmd('ALERunOnSaveGroup')
 
 Execute (g:ale_fix_on_save = 1 should bind events even when ALE is disabled):
@@ -168,7 +176,7 @@ Execute (g:ale_fix_on_save = 1 should bind events even when ALE is disabled):
   let g:ale_fix_on_save = 1
 
   AssertEqual [
-  \ 'BufWritePost * call ale#events#SaveEvent()',
+  \ 'BufWritePost * call ale#events#SaveEvent(str2nr(expand(''<abuf>'')))',
   \], CheckAutocmd('ALERunOnSaveGroup')
 
 Execute (g:ale_echo_cursor = 0 should bind no events):
@@ -184,3 +192,21 @@ Execute (g:ale_echo_cursor = 1 should bind cursor events):
   \ 'CursorMoved * call ale#cursor#EchoCursorWarningWithDelay()',
   \ 'InsertLeave * call ale#cursor#EchoCursorWarning()',
   \], CheckAutocmd('ALECursorGroup')
+
+Execute(Enabling completion should set up autocmd events correctly):
+  let g:ale_completion_enabled = 0
+  call ale#completion#Enable()
+
+  AssertEqual [
+  \ 'CompleteDone * call ale#completion#Done()',
+  \ 'TextChangedI * call ale#completion#Queue()',
+  \], CheckAutocmd('ALECompletionGroup')
+  AssertEqual 1, g:ale_completion_enabled
+
+Execute(Disabling completion should remove autocmd events correctly):
+  let g:ale_completion_enabled = 1
+  call ale#completion#Enable()
+  call ale#completion#Disable()
+
+  AssertEqual [], CheckAutocmd('ALECompletionGroup')
+  AssertEqual 0, g:ale_completion_enabled

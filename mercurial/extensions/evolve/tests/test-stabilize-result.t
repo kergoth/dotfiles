@@ -3,12 +3,11 @@
   > amend=-d "0 0"
   > [extensions]
   > hgext.rebase=
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ glog() {
-  >   hg glog --template \
+  >   hg log -G --template \
   >     '{rev}:{node|short}@{branch}({phase}) bk:[{bookmarks}] {desc|firstline}\n' "$@"
   > }
 

@@ -3,6 +3,7 @@ Initial setup
 -------------
 
 This Mercurial configuration example is used for testing.
+
 .. Various setup
 
   $ cat >> $HGRCPATH << EOF
@@ -158,7 +159,7 @@ the outside. The first one has been exchanged and is "public" (immutable).
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-hopefully. I can use `hg commit --amend` to rewrite my faulty changeset!
+Hopefully. I can use `hg commit --amend` to rewrite my faulty changeset!
 
   $ sed -i'' -e s/Bananos/Banana/ shopping
   $ hg diff
@@ -207,7 +208,7 @@ A new changeset with the right diff replace the wrong one.
 Getting rid of branchy history
 ----------------------------------
 
-While I was working on my list. someone made a change remotely.
+While I was working on my list. Someone made a change remotely.
 
   $ cd ../remote
   $ hg up -q
@@ -226,7 +227,7 @@ I'll get this remote changeset when pulling
   added 1 changesets with 1 changes to 1 files (+1 heads)
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
-I now have a new heads. Note that this remote head is immutable
+I now have a new head. Note that this remote head is immutable.
 
   $ hg log -G
   o  9ca060c80d74 (public): SPAM
@@ -238,7 +239,7 @@ I now have a new heads. Note that this remote head is immutable
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-instead of merging my head with the new one. I'm going to rebase my work
+Instead of merging my head with the new one. I'm going to rebase my work
 
   $ hg diff
   $ hg rebase --dest 9ca060c80d74 --source 4d5dc8187023
@@ -263,7 +264,7 @@ My local work is now rebased on the remote one.
 Removing changesets
 ------------------------
 
-I add new item to my list
+I add new items to my list.
 
   $ cat >> shopping << EOF
   > car
@@ -284,7 +285,7 @@ I add new item to my list
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-I have a new commit but I realize that don't want it. (transport shop list does
+I have a new commit but I realize that don't want it. (Transport shop list does
 not fit well in my standard shopping list)
 
   $ hg prune . # "." is for working directory parent
@@ -461,6 +462,12 @@ of the `uncommit` command to splitting a change.
    -r --rev VALUE           revert commit content to REV instead
    -I --include PATTERN [+] include names matching the given patterns
    -X --exclude PATTERN [+] exclude names matching the given patterns
+   -m --message TEXT        use text as commit message
+   -l --logfile FILE        read commit message from file
+   -d --date DATE           record the specified date as commit date
+   -u --user USER           record the specified user as committer
+   -D --current-date        record the current date as commit date
+   -U --current-user        record the current user as committer
   
   (some details hidden, use --verbose to show complete help)
 
@@ -496,6 +503,8 @@ The tutorial part is not written yet but can use `hg fold`:
    -l --logfile FILE  read commit message from file
    -d --date DATE     record the specified date as commit date
    -u --user USER     record the specified user as committer
+   -D --current-date  record the current date as commit date
+   -U --current-user  record the current user as committer
   
   (some details hidden, use --verbose to show complete help)
 
@@ -505,7 +514,7 @@ Collaboration
 -----------------------
 
 
-sharing mutable changesets
+Sharing mutable changesets
 ----------------------------
 
 To share mutable changesets with others, just check that the repo you interact
@@ -516,7 +525,7 @@ behavior where exchanged changeset are automatically published.
   $ hg -R ../local/ showconfig phases
   [1]
 
-the localrepo does not have any specific configuration for `phases.publish`. It
+The localrepo does not have any specific configuration for `phases.publish`. It
 is ``true`` by default.
 
   $ hg pull local
@@ -542,8 +551,6 @@ is ``true`` by default.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-
-
 We do not want to publish the "bathroom changeset". Let's rollback the last transaction.
 
 .. Warning: Rollback is actually a dangerous kind of internal command that is deprecated and should not be exposed to user. Please forget you read about it until someone fix this tutorial.
@@ -562,7 +569,7 @@ We do not want to publish the "bathroom changeset". Let's rollback the last tran
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-Let's make the local repo "non publishing"
+Let's make the local repo "non publishing".
 
   $ echo '[phases]' >> ../local/.hg/hgrc
   $ echo 'publish=false' >> ../local/.hg/hgrc
@@ -633,7 +640,6 @@ But at the same time, locally, this same "bathroom changeset" was updated.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-
 When we pull from remote again we get an unstable state!
 
   $ hg pull remote
@@ -684,8 +690,6 @@ share it with the outside:
   [255]
  
 
-
-
 To resolve this unstable state, you need to rebase bf1b0d202029 onto
 a44c85f957d3. The `hg evolve` command will do this for you.
 
@@ -722,8 +726,7 @@ The old version of bathroom is hidden again.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-
-We can push this evolution to remote
+We can push this evolution to remote.
 
   $ hg push remote
   pushing to $TESTTMP/remote (glob)
@@ -733,8 +736,10 @@ We can push this evolution to remote
   adding file changes
   added 2 changesets with 2 changes to 1 files (+1 heads)
   3 new obsolescence markers
+  obsoleted 2 changesets
 
-remote get a warning that current working directory is based on an obsolete changeset
+Remote get a warning that current working directory is based on an obsolete
+changeset.
 
   $ cd ../remote
   $ hg pull local # we up again to trigger the warning. it was displayed during the push
@@ -744,7 +749,7 @@ remote get a warning that current working directory is based on an obsolete chan
   working directory parent is obsolete! (bf1b0d202029)
   (use 'hg evolve' to update to its successor: ee942144f952)
 
-now let's see where we are, and update to the successor
+Now let's see where we are, and update to the successor.
 
   $ hg parents
   bf1b0d202029 (draft): animals
@@ -758,7 +763,7 @@ now let's see where we are, and update to the successor
 Relocating unstable change after prune
 ----------------------------------------------
 
-The remote guy keep working
+The remote guy keeps working.
 
   $ sed -i'' -e 's/Spam/Spam Spam Spam Spam/g' shopping
   $ hg commit -m "SPAM SPAM SPAM"
@@ -802,7 +807,7 @@ In the mean time I noticed you can't buy animals in a super market and I prune t
 
 
 The animals changeset is still displayed because the "SPAM SPAM SPAM" changeset
-is neither dead or obsolete.  My repository is in an unstable state again.
+is neither dead or obsolete. My repository is in an unstable state again.
 
   $ hg log -G
   o  99f039c5ec9e (draft): SPAM SPAM SPAM
@@ -821,7 +826,6 @@ is neither dead or obsolete.  My repository is in an unstable state again.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
-
   $ hg log -r 'unstable()'
   99f039c5ec9e (draft): SPAM SPAM SPAM
 
@@ -846,8 +850,6 @@ is neither dead or obsolete.  My repository is in an unstable state again.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
-
-
 Handling Divergent amend
 ----------------------------------------------
 

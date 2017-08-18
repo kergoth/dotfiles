@@ -121,6 +121,30 @@ expected test change only, no code change should happen there.
 Changelog
 =========
 
+6.6.0 -- 2017-07-25
+-------------------
+
+  - amend: add a --extract flag to move change back to the working copy,
+    (same as uncommit, but accessible through the amend commit)
+  - split: now properly refuse to split public changeset,
+  - commands: unify and improve the pre-rewrite validation and error message,
+  - uncommit: add support for --current-date and --current-user option,
+  - fold: add support for --current-date and --current-user option,
+  - metaedit: add support for --current-date and --current-user option,
+  - split: add support for --current-date and --current-user option,
+  - compat: use various new API instead of the one deprecated in 4.3,
+    (when available)
+  - documentation: various minor documentation update.
+
+topic (0.2.0):
+
+  - topic: add --age option to sort topic by the most recently touched,
+  - topic: add a 't0' to access the root of a topic while keeping it active,
+  - topic: allow 'hg prev' to me move to 't0',
+  - topic: add a config option to enforce topic on new commit,
+    (experimental.enforce-topic)
+  - topic: make command names valid as expected, even if ui.strict=true.
+
 6.5.0 -- 2017-07-02
 -------------------
 

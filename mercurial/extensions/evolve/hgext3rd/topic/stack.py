@@ -10,6 +10,8 @@ from mercurial import (
 )
 from .evolvebits import builddependencies, _orderrevs, _singlesuccessor
 
+short = node.short
+
 def getstack(repo, branch=None, topic=None):
     # XXX need sorting
     if topic is not None and branch is not None:
@@ -20,7 +22,13 @@ def getstack(repo, branch=None, topic=None):
         trevs = repo.revs("branch(%s) - public() - obsolete() - topic()", branch)
     else:
         raise error.ProgrammingError('neither branch and topic specified (not defined yet)')
-    return _orderrevs(repo, trevs)
+    revs = _orderrevs(repo, trevs)
+    if revs:
+        pt1 = repo[revs[0]].p1()
+        if pt1.obsolete():
+            pt1 = repo[_singlesuccessor(repo, pt1)]
+        revs.insert(0, pt1.rev())
+    return revs
 
 def labelsgen(prefix, labelssuffix):
     """ Takes a label prefix and a list of suffixes. Returns a string of the prefix
@@ -84,8 +92,16 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
             fm.plain('%d behind' % data['behindcount'], label='topic.stack.summary.behindcount')
     fm.plain('\n')
 
-    for idx, r in enumerate(getstack(repo, branch=branch, topic=topic), 1):
+    for idx, r in enumerate(getstack(repo, branch=branch, topic=topic), 0):
         ctx = repo[r]
+        # special case for t0, b0 as it's hard to plugin into rest of the logic
+        if idx == 0:
+            # t0, b0 can be None
+            if r == -1:
+                continue
+            entries.append((idx, False, ctx))
+            prev = ctx.rev()
+            continue
         p1 = ctx.p1()
         if p1.obsolete():
             p1 = repo[_singlesuccessor(repo, p1)]
@@ -125,9 +141,14 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
 
         if idx is None:
             fm.plain('  ')
+            if ui.verbose:
+                fm.plain('              ')
         else:
             fm.write('topic.stack.index', '%s%%d' % prefix, idx,
                      label='topic.stack.index ' + labelsgen('topic.stack.index.%s', states))
+            if ui.verbose:
+                fm.write('topic.stack.shortnode', '(%s)', short(ctx.node()),
+                         label='topic.stack.shortnode ' + labelsgen('topic.stack.shortnode.%s', states))
         fm.write('topic.stack.state.symbol', '%s', symbol,
                  label='topic.stack.state ' + labelsgen('topic.stack.state.%s', states))
         fm.plain(' ')
@@ -148,7 +169,7 @@ def stackdata(repo, branch=None, topic=None):
     :behindcount: number of changeset on rebase destination
     """
     data = {}
-    revs = getstack(repo, branch, topic)
+    revs = getstack(repo, branch, topic)[1:]
     data['changesetcount'] = len(revs)
     data['troubledcount'] = len([r for r in revs if repo[r].troubled()])
     deps, rdeps = builddependencies(repo, revs)

@@ -106,7 +106,7 @@ def _bookmark(orig, ui, repo, *bookmarks, **opts):
         'keep': None,
         'biject': False,
     }
-    evolve.cmdprune(ui, repo, **optsdict)
+    evolve.cmdrewrite.cmdprune(ui, repo, **optsdict)
 
 # obsolescence inhibitor
 ########################

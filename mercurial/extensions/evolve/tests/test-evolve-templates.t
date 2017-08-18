@@ -47,16 +47,19 @@ Test setup
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten by test2 as d004c8f274b9
   |    summary:     A1
   |
   | x  changeset:   2:f137d23bb3e1
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    pruned by test1
   | |  summary:     temporary amend commit for 471f378eab4c
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten by test1 as a468dc9b3633
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -76,10 +79,10 @@ Precursors template should show current revision as it is the working copy
   o  d004c8f274b9 (4) A2
   |
   x  a468dc9b3633 (3) A1
-  |    rewritten(description) by test2 (*) as d004c8f274b9 (glob)
+  |    rewritten(description) by test2 (Thu Apr 19 04:25:21 2001 +0000) as d004c8f274b9
   |
   @  471f378eab4c (1) A0
-       rewritten(description, content) by test1 (*) as a468dc9b3633 (glob)
+       rewritten(description, content) by test1 (Fri Feb 13 23:31:30 2009 +0000) as a468dc9b3633
   
   $ hg tlog
   o  d004c8f274b9
@@ -113,7 +116,7 @@ Precursors template should show current revision as it is the working copy
   o  d004c8f274b9
   |
   | @  471f378eab4c
-  |/     Obsfate: rewritten by test1, test2 as d004c8f274b9 (between * and *) (glob)
+  |/     Obsfate: rewritten by test1, test2 as d004c8f274b9 (between 2001-04-19 04:25 +0000 and 2009-02-13 23:31 +0000)
   |
   o  ea207398892e
   
@@ -180,7 +183,7 @@ Precursors template should show the precursor as we force its display with
   o  d004c8f274b9
   |
   | @  a468dc9b3633
-  |/     Obsfate: rewritten by test2 as d004c8f274b9 (at *) (glob)
+  |/     Obsfate: rewritten by test2 as d004c8f274b9 (at 2001-04-19 04:25 +0000)
   |
   o  ea207398892e
   
@@ -222,13 +225,13 @@ Precursors template should show the precursor as we force its display with
   @  d004c8f274b9
   |
   | x  a468dc9b3633
-  |/     Obsfate: rewritten by test2 as d004c8f274b9 (at *) (glob)
+  |/     Obsfate: rewritten by test2 as d004c8f274b9 (at 2001-04-19 04:25 +0000)
   |
   | x  f137d23bb3e1
-  | |    Obsfate: pruned by test1 (at *) (glob)
+  | |    Obsfate: pruned by test1 (at 2009-02-13 23:31 +0000)
   | |
   | x  471f378eab4c
-  |/     Obsfate: rewritten by test1 as a468dc9b3633 (at *) (glob)
+  |/     Obsfate: rewritten by test1 as a468dc9b3633 (at 2009-02-13 23:31 +0000)
   |
   o  ea207398892e
   
@@ -236,11 +239,11 @@ Precursors template should show the precursor as we force its display with
   $ hg fatelogjson --hidden
   @  d004c8f274b9 ""
   |
-  | x  a468dc9b3633 [{"markers": [["a468dc9b36338b14fdb7825f55ce3df4e71517ad", ["d004c8f274b9ec480a47a93c10dac5eee63adb78"], 0, [["ef1", "1"], ["user", "test2"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["d004c8f274b9ec480a47a93c10dac5eee63adb78"], "users": ["test2"], "verb": "rewritten"}] (glob)
+  | x  a468dc9b3633 [{"markers": [["a468dc9b36338b14fdb7825f55ce3df4e71517ad", ["d004c8f274b9ec480a47a93c10dac5eee63adb78"], 0, [["ef1", "1"], ["user", "test2"]], [987654321.0, 0], null]], "max_date": [987654321.0, 0], "min_date": [987654321.0, 0], "successors": ["d004c8f274b9ec480a47a93c10dac5eee63adb78"], "users": ["test2"], "verb": "rewritten"}]
   |/
-  | x  f137d23bb3e1 [{"markers": [["f137d23bb3e11dc1daeb6264fac9cb2433782e15", [], 0, [["ef1", "0"], ["user", "test1"]], [*, 0], ["471f378eab4c5e25f6c77f785b27c936efb22874"]]], "max_date": [*, 0], "min_date": [*, 0], "successors": [], "users": ["test1"], "verb": "pruned"}] (glob)
+  | x  f137d23bb3e1 [{"markers": [["f137d23bb3e11dc1daeb6264fac9cb2433782e15", [], 0, [["ef1", "0"], ["user", "test1"]], [1234567890.0, 0], ["471f378eab4c5e25f6c77f785b27c936efb22874"]]], "max_date": [1234567890.0, 0], "min_date": [1234567890.0, 0], "successors": [], "users": ["test1"], "verb": "pruned"}]
   | |
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["a468dc9b36338b14fdb7825f55ce3df4e71517ad"], 0, [["ef1", "9"], ["user", "test1"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["a468dc9b36338b14fdb7825f55ce3df4e71517ad"], "users": ["test1"], "verb": "rewritten"}] (glob)
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["a468dc9b36338b14fdb7825f55ce3df4e71517ad"], 0, [["ef1", "9"], ["user", "test1"]], [1234567890.0, 0], null]], "max_date": [1234567890.0, 0], "min_date": [1234567890.0, 0], "successors": ["a468dc9b36338b14fdb7825f55ce3df4e71517ad"], "users": ["test1"], "verb": "rewritten"}]
   |/
   o  ea207398892e ""
   
@@ -319,6 +322,7 @@ Test templates with splitted commit
   | x  changeset:   1:471597cad322
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    split as 337fec4d2edc, f257fde29c7a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -405,7 +409,7 @@ Precursors template should show the precursor as we force its display with
   |
   o  337fec4d2edc ""
   |
-  | x  471597cad322 [{"markers": [["471597cad322d1f659bb169751be9133dad92ef3", ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], 0, [["ef1", "12"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], "users": ["test"], "verb": "split"}] (glob)
+  | x  471597cad322 [{"markers": [["471597cad322d1f659bb169751be9133dad92ef3", ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], 0, [["ef1", "12"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], "users": ["test"], "verb": "split"}]
   |/
   o  ea207398892e ""
   
@@ -452,11 +456,13 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    rewritten as eb5a0daa2192
   | |  summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -570,9 +576,9 @@ Precursors template should show both precursors as we force its display with
   $ hg fatelogjson --hidden
   @  eb5a0daa2192 ""
   |
-  | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   | |
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   |/
   o  ea207398892e ""
   
@@ -599,6 +605,7 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -631,6 +638,8 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as fdf9bde5129a
+  |    obsolete:    rewritten as 65b757b745b9
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -734,11 +743,11 @@ Precursors template should a precursor as we force its display with --hidden
   $ hg fatelogjson --hidden
   o  019fadeab383 ""
   |
-  | x  65b757b745b9 [{"markers": [["65b757b745b935093c87a2bccd877521cccffcbd", ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], 0, [["ef1", "1"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  65b757b745b9 [{"markers": [["65b757b745b935093c87a2bccd877521cccffcbd", ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], 0, [["ef1", "1"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], "users": ["test"], "verb": "rewritten"}]
   |/
   | @  fdf9bde5129a ""
   |/
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], 0, [["ef1", "1"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], "users": ["test"], "verb": "rewritten"}, {"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["65b757b745b935093c87a2bccd877521cccffcbd"], 0, [["ef1", "1"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["65b757b745b935093c87a2bccd877521cccffcbd"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], 0, [["ef1", "1"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], "users": ["test"], "verb": "rewritten"}, {"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["65b757b745b935093c87a2bccd877521cccffcbd"], 0, [["ef1", "1"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["65b757b745b935093c87a2bccd877521cccffcbd"], "users": ["test"], "verb": "rewritten"}]
   |/
   o  ea207398892e ""
   
@@ -766,6 +775,7 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as b7ea6d14e664
   |    summary:     B0
   |
   o  changeset:   1:471f378eab4c
@@ -793,16 +803,19 @@ Test setup
   | |  parent:      1:471f378eab4c
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    rewritten as eb5a0daa2192
   | |  summary:     B1
   | |
   | | x  changeset:   2:0dec01379d3b
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    rewritten as b7ea6d14e664
   | |    summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -947,11 +960,11 @@ Check templates
   $ hg fatelogjson --hidden
   @  eb5a0daa2192 ""
   |
-  | x  b7ea6d14e664 [{"markers": [["b7ea6d14e664bdc8922221f7992631b50da3fb07", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  b7ea6d14e664 [{"markers": [["b7ea6d14e664bdc8922221f7992631b50da3fb07", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   | |
-  | | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], 0, [["ef1", "1"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], 0, [["ef1", "1"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], "users": ["test"], "verb": "rewritten"}]
   | |/
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   |/
   o  ea207398892e ""
   
@@ -997,11 +1010,13 @@ Test setup
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as 7a230b46bf61
   |    summary:     A1
   |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1018,6 +1033,7 @@ Test setup
   adding file changes
   added 1 changesets with 0 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads, 'hg merge' to merge)
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: 7a230b46bf61)
@@ -1032,6 +1048,7 @@ Test setup
   | @  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as 7a230b46bf61
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1057,7 +1074,7 @@ Check templates
   o  7a230b46bf61
   |
   | @  471f378eab4c
-  |/     Obsfate: rewritten by test as 7a230b46bf61 (between * and *) (glob)
+  |/     Obsfate: rewritten by test as 7a230b46bf61 (at 1970-01-01 00:00 +0000)
   |
   o  ea207398892e
   
@@ -1088,7 +1105,7 @@ Check templates
   @  7a230b46bf61
   |
   | x  471f378eab4c
-  |/     Obsfate: rewritten by test as 7a230b46bf61 (between * and *) (glob)
+  |/     Obsfate: rewritten by test as 7a230b46bf61 (at 1970-01-01 00:00 +0000)
   |
   o  ea207398892e
   
@@ -1096,7 +1113,7 @@ Check templates
   $ hg fatelogjson --hidden
   @  7a230b46bf61 ""
   |
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], 0, [["ef1", "1"], ["user", "test"]], [*, 0], null], ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e", ["7a230b46bf61e50b30308c6cfd7bd1269ef54702"], 0, [["ef1", "1"], ["user", "test"]], [*, 0], null]], "max_date": [*, 0], "min_date": [*, 0], "successors": ["7a230b46bf61e50b30308c6cfd7bd1269ef54702"], "users": ["test"], "verb": "rewritten"}] (glob)
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e"], 0, [["ef1", "1"], ["user", "test"]], [0.0, 0], null], ["fdf9bde5129a28d4548fadd3f62b265cdd3b7a2e", ["7a230b46bf61e50b30308c6cfd7bd1269ef54702"], 0, [["ef1", "1"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["7a230b46bf61e50b30308c6cfd7bd1269ef54702"], "users": ["test"], "verb": "rewritten"}]
   |/
   o  ea207398892e ""
   
@@ -1131,7 +1148,7 @@ Check output
   
   $ hg fatelog -v
   @  471f378eab4c
-  |    Obsfate: pruned by test (at *) (glob)
+  |    Obsfate: pruned by test (at 1970-01-01 00:00 +0000)
   |
   o  ea207398892e
   

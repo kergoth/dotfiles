@@ -33,6 +33,7 @@
   $ getid 3
   0d3f46688ccc6e756c7e96cf64c391c411309597
   $ hg debugobsolete 4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597
+  obsoleted 1 changesets
   $ hg debugobsolete
   4538525df7e2b9f09423636c61ef63a4cb872a2d 0d3f46688ccc6e756c7e96cf64c391c411309597 0 (*) {'user': 'test'} (glob)
 
@@ -96,6 +97,7 @@ test obsolete changeset with non-obsolete descendant
   $ mkcommit "obsol_c'" # 4 (on 1)
   created new head
   $ hg debugobsolete `getid 3` `getid 4`
+  obsoleted 1 changesets
   $ qlog
   4
   - 725c380fe99b
@@ -126,6 +128,7 @@ test obsolete changeset with non-obsolete descendant
   parent:      1:7c3bad9141dc
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    rewritten as 725c380fe99b
   summary:     add obsol_c
   
   working directory parent is obsolete! (0d3f46688ccc)
@@ -209,6 +212,7 @@ Test communication of obsolete relation with a compatible client
   created new head
   1 new unstable changesets
   $ hg debugobsolete `getid 5` `getid 6`
+  obsoleted 1 changesets
   $ qlog
   6
   - 95de7fc6918d
@@ -237,6 +241,7 @@ Test communication of obsolete relation with a compatible client
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   1 new obsolescence markers
+  obsoleted 1 changesets
   $ qlog -R ../other-new
   5
   - 95de7fc6918d
@@ -266,6 +271,7 @@ Pushing again does not advertise extinct changesets
   created new head
   1 new unstable changesets
   $ hg debugobsolete `getid 6` `getid 7`
+  obsoleted 1 changesets
   $ hg pull -R ../other-new .
   pulling from .
   searching for changes
@@ -274,6 +280,7 @@ Pushing again does not advertise extinct changesets
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   1 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ qlog -R ../other-new
   6
@@ -354,6 +361,7 @@ Test rollback support
   created new head
   1 new unstable changesets
   $ hg debugobsolete `getid 7` `getid 8`
+  obsoleted 1 changesets
   $ cd ../other-new
   $ hg up -q 3
   $ hg pull ../local/
@@ -364,6 +372,7 @@ Test rollback support
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   1 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg up -q 7 # to check rollback update behavior
@@ -437,6 +446,7 @@ allow to just kill changeset
   - 1f0dee641bb7
 
   $ hg debugobsolete `getid 9` #kill
+  obsoleted 1 changesets
   $ hg up null -q # to be not based on 9 anymore
   $ qlog
   8
@@ -455,6 +465,7 @@ Check that auto update ignores hidden changeset
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg up 
   3 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  updated to "159dfc9fa5d3: add obsol_d''"
   1 other heads for branch "default"
   $ hg id -n
   8
@@ -539,10 +550,12 @@ Does not complain about new head if you obsolete the old one
   adding file changes
   added 2 changesets with 1 changes to [12] files (re)
   3 new obsolescence markers
+  obsoleted 1 changesets
   $ hg up -q 10
   $ mkcommit "obsol_d'''"
   created new head
   $ hg debugobsolete `getid 11` `getid 12`
+  obsoleted 1 changesets
   $ hg push ../other-new --traceback
   pushing to ../other-new
   searching for changes
@@ -551,6 +564,7 @@ Does not complain about new head if you obsolete the old one
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   1 new obsolescence markers
+  obsoleted 1 changesets
   $ cd ..
 
 check bumped detection
@@ -739,12 +753,14 @@ Relevant marker computation
   | | | x  changeset:   14:33d458d86621
   | | | |  user:        test
   | | | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | | | |  obsolete:    pruned
   | | | |  summary:     temporary amend commit for 0b1b6dd009c0
   | | | |
   | | | x  changeset:   13:0b1b6dd009c0
   | | |/   parent:      10:2033b4e49474
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |    obsolete:    rewritten as 705ab2a6b72e
   | | |    summary:     add f
   | | |
   | | | o  changeset:   12:6db5e282cb91
@@ -769,30 +785,36 @@ Relevant marker computation
   | |    parent:      -1:000000000000
   | |    user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    pruned
   | |    summary:     add toto
   | |
   | | x  changeset:   8:159dfc9fa5d3
   | | |  parent:      3:0d3f46688ccc
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |  obsolete:    rewritten as 9468a5f5d8b2
   | | |  summary:     add obsol_d''
   | | |
   | | | x  changeset:   7:909a0fb57e5d
   | | |/   parent:      3:0d3f46688ccc
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |    obsolete:    rewritten as 159dfc9fa5d3
   | | |    summary:     add obsol_d'
   | | |
   | | | x  changeset:   6:95de7fc6918d
   | | |/   parent:      3:0d3f46688ccc
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |    obsolete:    rewritten as 909a0fb57e5d
   | | |    summary:     add obsol_d
   | | |
   | | | x  changeset:   5:a7a6f2b5d8a5
   | | |/   parent:      3:0d3f46688ccc
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |    obsolete:    rewritten as 95de7fc6918d
+  | | |    obsolete:    rewritten as 50f11e5e3a63
   | | |    summary:     add d
   | | |
   | o |  changeset:   4:725c380fe99b
@@ -805,11 +827,14 @@ Relevant marker computation
   | |/   parent:      1:7c3bad9141dc
   | |    user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    rewritten as 725c380fe99b
+  | |    obsolete:    rewritten as 2033b4e49474
   | |    summary:     add obsol_c
   | |
   x |  changeset:   2:4538525df7e2
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as 0d3f46688ccc
   |    summary:     add c
   |
   o  changeset:   1:7c3bad9141dc

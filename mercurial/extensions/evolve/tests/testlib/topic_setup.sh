@@ -1,4 +1,5 @@
 #!/bin/sh
+. $TESTDIR/testlib/pythonpath.sh
 
 # This file holds logic that is used in many tests.
 # It can be called in a test like this:
@@ -11,5 +12,5 @@ evolution=createmarkers,exchange
 
 [extensions]
 rebase=
+topic=
 EOF
-echo "topic=$(echo $(dirname $TESTDIR))/hgext3rd/topic" >> $HGRCPATH

@@ -1,11 +1,10 @@
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ glog() {
-  >   hg glog --template '{rev}:{node|short}@{branch}({separate("/", obsolete, phase)}) {desc|firstline}\n' "$@"
+  >   hg log -G --template '{rev}:{node|short}@{branch}({separate("/", obsolete, phase)}) {desc|firstline}\n' "$@"
   > }
 
   $ hg init repo
@@ -14,7 +13,8 @@
 Cannot uncommit null changeset
 
   $ hg uncommit
-  abort: cannot rewrite immutable changeset
+  abort: cannot uncommit the null revision
+  (no changeset checked out)
   [255]
 
 Cannot uncommit public changeset
@@ -23,7 +23,8 @@ Cannot uncommit public changeset
   $ hg ci -Am adda a
   $ hg phase --public .
   $ hg uncommit
-  abort: cannot rewrite immutable changeset
+  abort: cannot uncommit public changesets: 07f494440405
+  (see 'hg help phases' for details)
   [255]
   $ hg phase --force --draft .
 
@@ -358,7 +359,103 @@ Test uncommiting agains a different base
 
 Test uncommiting precursors
 
-  $ hg uncommit --hidden --rev 'precursors(.)' b
+  $ hg uncommit --hidden --rev 'precursors(.)' b --traceback
   $ hg cat b --rev .
   b
   b
+
+Test date, message and user update
+
+  $ hg log -r .
+  changeset:   12:912ed871207c
+  branch:      bar
+  tag:         tip
+  parent:      7:4f1c269eab68
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  summary:     touncommit
+  
+  $ hg uncommit -m 'to-uncommit' d --user test2 --date '1337 0'
+  $ hg log -r .
+  changeset:   13:f1efd9ec508c
+  branch:      bar
+  tag:         tip
+  parent:      7:4f1c269eab68
+  user:        test2
+  date:        Thu Jan 01 00:22:17 1970 +0000
+  summary:     to-uncommit
+  
+
+test -U option
+
+  $ hg uncommit -U b
+  $ hg log -r .
+  changeset:   14:288da4a95941
+  branch:      bar
+  tag:         tip
+  parent:      7:4f1c269eab68
+  user:        test
+  date:        Thu Jan 01 00:22:17 1970 +0000
+  summary:     to-uncommit
+  
+
+test the `hg amend --extract` entry point
+
+  $ hg status --change .
+  M j
+  M o
+  A e
+  A ff
+  A h
+  A k
+  A l
+  R c
+  R f
+  R g
+  R m
+  R n
+  $ hg status
+  M d
+  A aa
+  R b
+  $ hg amend --extract j
+  $ hg status --change .
+  M o
+  A e
+  A ff
+  A h
+  A k
+  A l
+  R c
+  R f
+  R g
+  R m
+  R n
+  $ hg status
+  M d
+  M j
+  A aa
+  R b
+
+(with all)
+
+  $ hg amend --extract --all
+  new changeset is empty
+  (use 'hg prune .' to remove it)
+  $ hg status --change .
+  $ hg status
+  M d
+  M j
+  M o
+  A aa
+  A e
+  A ff
+  A h
+  A k
+  A l
+  R b
+  R c
+  R f
+  R g
+  R m
+  R n

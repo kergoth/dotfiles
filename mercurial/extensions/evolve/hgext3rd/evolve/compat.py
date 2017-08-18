@@ -8,7 +8,8 @@ Compatibility module
 
 from mercurial import (
     hg,
-    obsolete
+    obsolete,
+    util,
 )
 
 try:
@@ -23,7 +24,7 @@ from . import (
 
 eh = exthelper.exthelper()
 
-if not hasattr(hg, '_copycache'):
+if not util.safehasattr(hg, '_copycache'):
     # exact copy of relevantmarkers as in Mercurial-176d1a0ce385
     # this fixes relevant markers computation for version < hg-4.3
     @eh.wrapfunction(obsolete.obsstore, 'relevantmarkers')
@@ -75,3 +76,17 @@ def allprecursors(*args, **kwargs):
     if func is None:
         func = obsolete.allprecursors
     return func(*args, **kwargs)
+
+# compatibility layer for mercurial < 4.3
+def bookmarkapplychanges(repo, tr, changes):
+    """Apply a list of changes to bookmarks
+    """
+    bookmarks = repo._bookmarks
+    if util.safehasattr(bookmarks, 'applychanges'):
+        return bookmarks.applychanges(repo, tr, changes)
+    for name, node in changes:
+        if node is None:
+            del bookmarks[name]
+        else:
+            bookmarks[name] = node
+    bookmarks.recordchange(tr)

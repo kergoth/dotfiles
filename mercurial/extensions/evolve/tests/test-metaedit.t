@@ -14,7 +14,6 @@
   > git = 1
   > unified = 0
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {
@@ -31,7 +30,7 @@
   > }
 
   $ glog() {
-  >   hg glog --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
+  >   hg log -G --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
   > }
 
   $ shaof() {
@@ -104,7 +103,8 @@ Test
   abort: revisions must be specified with --fold
   [255]
   $ hg metaedit -r 0 --fold
-  abort: cannot fold public revisions
+  abort: cannot fold public changesets: ea207398892e
+  (see 'hg help phases' for details)
   [255]
   $ hg metaedit 'desc(C) + desc(F)' --fold
   abort: cannot fold non-linear revisions (multiple roots given)
@@ -118,8 +118,8 @@ check that metaedit respects allowunstable
   (587528abfffe will become unstable and new unstable changes are not allowed)
   [255]
   $ hg metaedit 'desc(A)::desc(B)' --fold --config 'experimental.evolution=createmarkers, allnewcommands'
-  abort: cannot fold chain not ending with a head or with branching
-  (new unstable changesets are not allowed)
+  abort: fold will orphan 4 descendants
+  (see 'hg help evolution.instability')
   [255]
   $ hg metaedit --user foobar
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -209,7 +209,7 @@ but highlight the bug)
   $ hg diff -r "10" -r "11" --hidden
 
 'fold' one commit
-  $ hg metaedit "desc(D2)" --fold --user foobar3
+  $ HGUSER=foobar3 hg metaedit "desc(D2)" --fold -U --config
   1 changesets folded
   $ hg log -r "tip" --template '{rev}: {author}\n'
   13: foobar3

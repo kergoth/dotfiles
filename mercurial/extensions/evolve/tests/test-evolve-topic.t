@@ -78,7 +78,7 @@ make a mess
   t3: add eee
   t2: add ddd
   t1: add ccc
-    ^ add bbb
+  t0^ add bbb (base)
   $ hg up 'desc(ddd)'
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ echo ddd >> ddd
@@ -209,9 +209,14 @@ Basic move are restricted to the current topic
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   [16] add ggg
   $ hg prev
+  preserving the current topic 'bar'
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [15] add fff
+  $ hg prev
   no parent in topic "bar"
   (do you want --no-topic)
+  [1]
   $ hg prev --no-topic
   switching to topic foo
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  [15] add fff
+  [14] add eee

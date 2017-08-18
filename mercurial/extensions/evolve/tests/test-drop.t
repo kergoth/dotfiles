@@ -1,7 +1,6 @@
 
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ echo "drophack=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/hack/drophack.py" >> $HGRCPATH
@@ -207,11 +206,13 @@ Try to drop a changeset with rewrite
   | x  changeset:   3:87ea30a976fd
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    pruned
   | |  summary:     temporary amend commit for 34b6c051bf1f
   | |
   | x  changeset:   2:34b6c051bf1f
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as a2c06c884bfe
   |    summary:     add child
   |
   o  changeset:   1:19509a42b0d0
@@ -263,4 +264,3 @@ Try to drop a changeset with rewrite
      summary:     add base
   
   ============ obsmark ============
-  87ea30a976fdf235bf096f04899cb02a903873e2 0 {34b6c051bf1f78db6aef400776de5cb964470207} (*) {'ef1': '0', 'user': 'test'} (glob)

@@ -74,6 +74,7 @@ Push
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
   remote: obsmarker-exchange: 151 bytes received
   remote: 2 new obsolescence markers
+  remote: obsoleted 1 changesets
   $ hg push
   pushing to ssh://user@dummy/server
   searching for changes
@@ -92,6 +93,7 @@ Pull
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   obsmarker-exchange: 151 bytes received
   2 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads)
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
@@ -136,8 +138,9 @@ some common hidden
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 0 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 227 bytes received
+  remote: obsmarker-exchange: 226 bytes received
   remote: 1 new obsolescence markers
+  remote: obsoleted 1 changesets
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
   searching for changes
@@ -145,8 +148,9 @@ some common hidden
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 1 files (+1 heads)
-  obsmarker-exchange: 227 bytes received
+  obsmarker-exchange: 226 bytes received
   1 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads)
 
 test discovery avoid exchanging known markers
@@ -169,7 +173,7 @@ test discovery can be disabled
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
   no changes found
-  remote: obsmarker-exchange: 377 bytes received
+  remote: obsmarker-exchange: 376 bytes received
   [1]
   $ hg -R ../other pull --config experimental.evolution.obsdiscovery=no
   pulling from ssh://user@dummy/server
@@ -177,6 +181,6 @@ test discovery can be disabled
   no changes found
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
-  obsmarker-exchange: 377 bytes received
+  obsmarker-exchange: 376 bytes received
 
   $ cd ..

@@ -201,7 +201,10 @@ function! s:common_sink(action, lines) abort
     return
   endif
   let key = remove(a:lines, 0)
-  let cmd = get(a:action, key, 'e')
+  let Cmd = get(a:action, key, 'e')
+  if type(Cmd) == type(function('call'))
+    return Cmd(a:lines)
+  endif
   if len(a:lines) > 1
     augroup fzf_swap
       autocmd SwapExists * let v:swapchoice='o'
@@ -217,7 +220,7 @@ function! s:common_sink(action, lines) abort
         execute 'e' s:escape(item)
         let empty = 0
       else
-        call s:open(cmd, item)
+        call s:open(Cmd, item)
       endif
       if !has('patch-8.0.0177') && !has('nvim-0.2') && exists('#BufEnter')
             \ && isdirectory(item)
@@ -466,11 +469,11 @@ augroup fzf_popd
 augroup END
 
 function! s:dopopd()
-  if !exists('w:fzf_prev_dir') || exists('*haslocaldir') && !haslocaldir()
+  if !exists('w:fzf_dir') || s:fzf_getcwd() != w:fzf_dir[1]
     return
   endif
-  execute 'lcd' s:escape(w:fzf_prev_dir)
-  unlet w:fzf_prev_dir
+  execute 'lcd' s:escape(w:fzf_dir[0])
+  unlet w:fzf_dir
 endfunction
 
 function! s:xterm_launcher()
@@ -688,7 +691,7 @@ function! s:execute_term(dict, command, temps) abort
       lcd -
     endif
   endtry
-  setlocal nospell bufhidden=wipe nobuflisted
+  setlocal nospell bufhidden=wipe nobuflisted nonumber
   setf fzf
   startinsert
   return []
@@ -719,7 +722,7 @@ function! s:callback(dict, lines) abort
   let popd = has_key(a:dict, 'prev_dir') &&
         \ (!&autochdir || (empty(a:lines) || len(a:lines) == 1 && empty(a:lines[0])))
   if popd
-    let w:fzf_prev_dir = a:dict.prev_dir
+    let w:fzf_dir = [a:dict.prev_dir, a:dict.dir]
   endif
 
   try
@@ -743,7 +746,7 @@ function! s:callback(dict, lines) abort
 
   " We may have opened a new window or tab
   if popd
-    let w:fzf_prev_dir = a:dict.prev_dir
+    let w:fzf_dir = [a:dict.prev_dir, a:dict.dir]
     call s:dopopd()
   endif
 endfunction
@@ -756,7 +759,7 @@ let s:default_action = {
 function! s:shortpath()
   let short = pathshorten(fnamemodify(getcwd(), ':~:.'))
   let slash = (s:is_win && !&shellslash) ? '\' : '/'
-  return empty(short) ? '~'.slash : short . (short =~ slash.'$' ? '' : slash)
+  return empty(short) ? '~'.slash : short . (short =~ escape(slash, '\').'$' ? '' : slash)
 endfunction
 
 function! s:cmd(bang, ...) abort

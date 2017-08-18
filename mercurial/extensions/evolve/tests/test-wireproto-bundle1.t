@@ -70,6 +70,7 @@ Push
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
   remote: 2 new obsolescence markers
+  remote: obsoleted 1 changesets
   $ hg push
   pushing to ssh://user@dummy/server
   searching for changes
@@ -87,6 +88,7 @@ Pull
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   2 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads)
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server

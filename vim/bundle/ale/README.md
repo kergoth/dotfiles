@@ -15,13 +15,17 @@ back to a filesystem.
 
 In other words, this plugin allows you to lint while you type.
 
-ALE also supports fixing problems with files by running commands in the
-background with a command `ALEFix`.
+In addition to linting support, ALE offers some support for fixing code with
+formatting tools, and completion via Language Server Protocol servers, or
+servers with similar enough protocols, like `tsserver`.
 
 ## Table of Contents
 
 1. [Supported Languages and Tools](#supported-languages)
 2. [Usage](#usage)
+    1. [Linting](#usage-linting)
+    2. [Fixing](#usage-fixing)
+    3. [Completion](#usage-completion)
 3. [Installation](#installation)
     1. [Installation with Vim package management](#standard-installation)
     2. [Installation with Pathogen](#installation-with-pathogen)
@@ -84,6 +88,7 @@ name. That seems to be the fairest way to arrange this table.
 | Handlebars | [ember-template-lint](https://github.com/rwjblue/ember-template-lint) |
 | Haskell | [ghc](https://www.haskell.org/ghc/), [stack-ghc](https://haskellstack.org/), [stack-build](https://haskellstack.org/), [ghc-mod](https://github.com/DanielG/ghc-mod), [stack-ghc-mod](https://github.com/DanielG/ghc-mod), [hlint](https://hackage.haskell.org/package/hlint), [hdevtools](https://hackage.haskell.org/package/hdevtools) |
 | HTML | [HTMLHint](http://htmlhint.com/), [proselint](http://proselint.com/), [tidy](http://www.html-tidy.org/) |
+| Idris | [idris](http://www.idris-lang.org/) |
 | Java | [checkstyle](http://checkstyle.sourceforge.net), [javac](http://www.oracle.com/technetwork/java/javase/downloads/index.html) |
 | JavaScript | [eslint](http://eslint.org/), [jscs](http://jscs.info/), [jshint](http://jshint.com/), [flow](https://flowtype.org/), [standard](http://standardjs.com/), [prettier](https://github.com/prettier/prettier) (and `prettier-eslint`, `prettier-standard`), [xo](https://github.com/sindresorhus/xo)
 | JSON | [jsonlint](http://zaa.ch/jsonlint/) |
@@ -99,7 +104,7 @@ name. That seems to be the fairest way to arrange this table.
 | Objective-C++ | [clang](http://clang.llvm.org/) |
 | OCaml | [merlin](https://github.com/the-lambda-church/merlin) see `:help ale-integration-ocaml-merlin` for configuration instructions
 | Perl | [perl -c](https://perl.org/), [perl-critic](https://metacpan.org/pod/Perl::Critic) |
-| PHP | [hack](http://hacklang.org/), [php -l](https://secure.php.net/), [phpcs](https://github.com/squizlabs/PHP_CodeSniffer), [phpmd](https://phpmd.org), [phpstan](https://github.com/phpstan/phpstan) |
+| PHP | [hack](http://hacklang.org/), [langserver](https://github.com/felixfbecker/php-language-server), [php -l](https://secure.php.net/), [phpcs](https://github.com/squizlabs/PHP_CodeSniffer), [phpmd](https://phpmd.org), [phpstan](https://github.com/phpstan/phpstan) |
 | Pod | [proselint](http://proselint.com/)|
 | Pug | [pug-lint](https://github.com/pugjs/pug-lint) |
 | Puppet | [puppet](https://puppet.com), [puppet-lint](https://puppet-lint.com) |
@@ -109,7 +114,7 @@ name. That seems to be the fairest way to arrange this table.
 | reStructuredText | [proselint](http://proselint.com/)|
 | RPM spec | [rpmlint](https://github.com/rpm-software-management/rpmlint) (disabled by default; see `:help ale-integration-spec`) |
 | Ruby | [brakeman](http://brakemanscanner.org/), [rails_best_practices](https://github.com/flyerhzm/rails_best_practices), [reek](https://github.com/troessner/reek), [rubocop](https://github.com/bbatsov/rubocop), [ruby](https://www.ruby-lang.org) |
-| Rust | [rustc](https://www.rust-lang.org/), cargo (see `:help ale-integration-rust` for configuration instructions) |
+| Rust |  cargo (see `:help ale-integration-rust` for configuration instructions), [rls](https://github.com/rust-lang-nursery/rls), [rustc](https://www.rust-lang.org/) |
 | SASS | [sass-lint](https://www.npmjs.com/package/sass-lint), [stylelint](https://github.com/stylelint/stylelint) |
 | SCSS | [sass-lint](https://www.npmjs.com/package/sass-lint), [scss-lint](https://github.com/brigade/scss-lint), [stylelint](https://github.com/stylelint/stylelint) |
 | Scala | [scalac](http://scala-lang.org), [scalastyle](http://www.scalastyle.org) |
@@ -117,7 +122,8 @@ name. That seems to be the fairest way to arrange this table.
 | SML | [smlnj](http://www.smlnj.org/) |
 | Stylus | [stylelint](https://github.com/stylelint/stylelint) |
 | SQL | [sqlint](https://github.com/purcell/sqlint) |
-| Swift | [swiftlint](https://swift.org/) |
+| Swift | [swiftlint](https://github.com/realm/SwiftLint), [swiftformat](https://github.com/nicklockwood/SwiftFormat) |
+| Tcl | [nagelfar](http://nagelfar.sourceforge.net)|
 | Texinfo | [proselint](http://proselint.com/)|
 | Text^ | [proselint](http://proselint.com/), [vale](https://github.com/ValeLint/vale) |
 | TypeScript | [eslint](http://eslint.org/), [tslint](https://github.com/palantir/tslint), tsserver, typecheck |
@@ -134,6 +140,10 @@ name. That seems to be the fairest way to arrange this table.
 
 ## 2. Usage
 
+<a name="usage-linting"></a>
+
+### 2.i Linting
+
 Once this plugin is installed, while editing your files in supported
 languages and tools which have been correctly installed,
 this plugin will send the contents of your text buffers to a variety of
@@ -146,8 +156,46 @@ documented in [the Vim help file](doc/ale.txt). For more information on the
 options ALE offers, consult `:help ale-options` for global options and `:help
 ale-linter-options` for options specified to particular linters.
 
+<a name="usage-fixing"></a>
+
+### 2.ii Fixing
+
 ALE can fix files with the `ALEFix` command. Functions need to be configured
-for different filetypes with the `g:ale_fixers` variable. See `:help ale-fix`.
+for different filetypes with the `g:ale_fixers` variable. For example, the
+following code can be used to fix JavaScript code with ESLint:
+
+```vim
+" Put this in vimrc or a plugin file of your own.
+" After this is configured, :ALEFix will try and fix your JS code with ESLint.
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\}
+
+" Set this setting in vimrc if you want to fix files automatically on save.
+" This is off by default.
+let g:ale_fix_on_save = 1
+```
+
+The `:ALEFixSuggest` command will suggest some supported tools for fixing code,
+but fixers can be also implemented with functions, including lambda functions
+too. See `:help ale-fix` for detailed information.
+
+<a name="usage-completion"></a>
+
+### 2.iii Completion
+
+ALE offers some support for completion via hijacking of omnicompletion while you
+type. All of ALE's completion information must come from Language Server
+Protocol linters, or similar protocols. At the moment, completion is only
+supported for TypeScript code with `tsserver`, when `tsserver` is enabled. You
+can enable completion like so:
+
+```vim
+" Enable completion where available.
+let g:ale_completion_enabled = 1
+```
+
+See `:help ale-completion` for more information.
 
 <a name="installation"></a>
 
@@ -188,7 +236,7 @@ mkdir -p ~/vimfiles/pack/git-plugins/start
 git clone https://github.com/w0rp/ale.git ~/vimfiles/pack/git-plugins/start/ale
 ```
 
-#### Generating documentation
+#### Generating Vim help files
 
 You can add the following line to your vimrc files to generate documentation
 tags automatically, if you don't have something similar already, so you can use

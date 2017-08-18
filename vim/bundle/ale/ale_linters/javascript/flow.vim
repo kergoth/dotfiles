@@ -40,10 +40,26 @@ function! ale_linters#javascript#flow#GetCommand(buffer, version_lines) abort
     \   . ' --json --from ale %s'
 endfunction
 
-function! ale_linters#javascript#flow#Handle(buffer, lines) abort
-    let l:str = join(a:lines, '')
+" Filter lines of flow output until we find the first line where the JSON
+" output starts.
+function! s:GetJSONLines(lines) abort
+    let l:start_index = 0
 
-    if l:str ==# ''
+    for l:line in a:lines
+        if l:line[:0] is# '{'
+            break
+        endif
+
+        let l:start_index += 1
+    endfor
+
+    return a:lines[l:start_index :]
+endfunction
+
+function! ale_linters#javascript#flow#Handle(buffer, lines) abort
+    let l:str = join(s:GetJSONLines(a:lines), '')
+
+    if empty(l:str)
         return []
     endif
 
@@ -61,13 +77,13 @@ function! ale_linters#javascript#flow#Handle(buffer, lines) abort
             " In certain cases, `l:message.loc.source` points to a different path
             " than the buffer one, thus we skip this loc information too.
             if has_key(l:message, 'loc')
-            \&& l:line ==# 0
+            \&& l:line is# 0
             \&& ale#path#IsBufferPath(a:buffer, l:message.loc.source)
                 let l:line = l:message.loc.start.line + 0
                 let l:col = l:message.loc.start.column + 0
             endif
 
-            if l:text ==# ''
+            if l:text is# ''
                 let l:text = l:message.descr . ':'
             else
                 let l:text = l:text . ' ' . l:message.descr
@@ -82,7 +98,7 @@ function! ale_linters#javascript#flow#Handle(buffer, lines) abort
         \   'lnum': l:line,
         \   'col': l:col,
         \   'text': l:text,
-        \   'type': l:error.level ==# 'error' ? 'E' : 'W',
+        \   'type': l:error.level is# 'error' ? 'E' : 'W',
         \})
     endfor
 

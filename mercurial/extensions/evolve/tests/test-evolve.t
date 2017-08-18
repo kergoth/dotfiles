@@ -14,7 +14,6 @@
   > git = 1
   > unified = 0
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {
@@ -31,7 +30,7 @@
   > }
 
   $ glog() {
-  >   hg glog --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
+  >   hg log -G --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
   > }
 
   $ shaof() {
@@ -81,6 +80,38 @@ Test the evolution test topic is installed
       Obsolescence markers will be exchanged between repositories that
       explicitly assert support for the obsolescence feature (this can currently
       only be done via an extension).
+  
+      Instability ==========
+  
+      (note: the vocabulary is in the process of being updated)
+  
+      Rewriting changesets might introduce instability (currently 'trouble').
+  
+      There are two main kinds of instability: orphaning and diverging.
+  
+      Orphans are changesets left behind when their ancestors are rewritten,
+      (currently: 'unstable'). Divergence has two variants:
+  
+      * Content-divergence occurs when independent rewrites of the same
+        changesets lead to different results. (currently: 'divergent')
+      * Phase-divergence occurs when the old (obsolete) version of a changeset
+        becomes public. (currently: 'bumped')
+  
+      If it possible to prevent local creation of orphans by using the following
+      config:
+  
+        [experimental]
+        evolution=createmarkers,allnewcommands,exchange
+  
+      You can also enable that option explicitly:
+  
+        [experimental]
+        evolution=createmarkers,allnewcommands,allowunstable,exchange
+  
+      or simply:
+  
+        [experimental]
+        evolution=all
 
 various init
 
@@ -114,7 +145,7 @@ test kill and immutable changeset
   $ hg log -r 1 --template '{rev} {phase} {obsolete}\n'
   1 public 
   $ hg prune 1
-  abort: cannot prune immutable changeset: 7c3bad9141dc
+  abort: cannot touch public changesets: 7c3bad9141dc
   (see 'hg help phases' for details)
   [255]
   $ hg log -r 1 --template '{rev} {phase} {obsolete}\n'
@@ -372,7 +403,7 @@ phase change turning obsolete changeset public issue a bumped warning
 
 all solving bumped troubled
 
-  $ hg glog
+  $ hg log -G
   @  8	feature-B: another feature that rox - test
   |
   | o  7	: another feature (child of ba0ec09b1bab) - test
@@ -387,7 +418,7 @@ all solving bumped troubled
   computing new diff
   committed as 6707c5e1c49d
   working directory is now at 6707c5e1c49d
-  $ hg glog
+  $ hg log -G
   @  9	feature-B: bumped update to 99833d22b0c6: - test
   |
   o  7	: another feature (child of ba0ec09b1bab) - test
@@ -446,7 +477,7 @@ test evolve --all
   atop:[14] dansk 2!
   merging main-file-1
   working directory is now at 68557e4f0048
-  $ hg glog
+  $ hg log -G
   @  15	: dansk 3! - test
   |
   o  14	: dansk 2! - test
@@ -683,48 +714,13 @@ Test touch
   
 
 Test fold
+(most of the testing have been moved to test-fold
 
   $ rm *.orig
-  $ hg fold
-  abort: no revisions specified
-  [255]
-  $ hg fold --from
-  abort: no revisions specified
-  [255]
-  $ hg fold .
-  abort: must specify either --from or --exact
-  [255]
-  $ hg fold --from . --exact
-  abort: cannot use both --from and --exact
-  [255]
-  $ hg fold --from .
-  single revision specified, nothing to fold
-  [1]
-  $ hg fold 0::10 --rev 1 --exact
-  abort: cannot fold non-linear revisions (multiple heads given)
-  [255]
-  $ hg fold -r 4 -r 6 --exact
-  abort: cannot fold non-linear revisions (multiple roots given)
-  [255]
-  $ hg fold --from 10 1
-  abort: cannot fold non-linear revisions
-  (given revisions are unrelated to parent of working directory)
-  [255]
-  $ hg fold --exact -r "4 and not 4"
-  abort: specified revisions evaluate to an empty set
-  (use different revision arguments)
-  [255]
   $ hg phase --public 0
-  $ hg fold --from -r 0
-  abort: cannot fold public revisions
-  [255]
   $ hg fold --from -r 5
   3 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg fold --from 6 # want to run hg fold 6
-  abort: hidden revision '6'!
-  (use --hidden to access hidden revisions; successor: af636757ce3b)
-  [255]
   $ hg log -r 11 --template '{desc}\n'
   add 3
   
@@ -1019,7 +1015,7 @@ divergent
   $ hg commit -m "add new file bumped" -o 11
   $ hg phase --public --hidden 11
   1 new bumped changesets
-  $ hg glog
+  $ hg log -G
   @  12	: add new file bumped - test
   |
   | o  11	: a2 - test
@@ -1038,7 +1034,7 @@ divergent
 Now we have a bumped and an unstable changeset, we solve the bumped first
 normally the unstable changeset would be solve first
 
-  $ hg glog
+  $ hg log -G
   @  12	: add new file bumped - test
   |
   | o  11	: a2 - test
@@ -1074,7 +1070,7 @@ Check that we can resolve troubles in a revset with more than one commit
   $ hg up 14 
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ printf "newline\nnewline\n" >> a
-  $ hg glog
+  $ hg log -G
   o  16	: add gh - test
   |
   | o  15	: add gg - test
@@ -1091,7 +1087,7 @@ Check that we can resolve troubles in a revset with more than one commit
   
   $ hg amend
   2 new unstable changesets
-  $ hg glog
+  $ hg log -G
   @  18	: a3 - test
   |
   | o  16	: add gh - test
@@ -1124,7 +1120,7 @@ Evolving an empty revset should do nothing
   move:[16] add gh
   atop:[18] a3
   working directory is now at e02107f98737
-  $ hg glog
+  $ hg log -G
   @  20	: add gh - test
   |
   | o  19	: add gg - test
@@ -1284,7 +1280,8 @@ With only createmarkers we can only uncommit on a head
   $ hg up 8dc373be86d9^
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ hg uncommit --all
-  abort: cannot uncommit in the middle of a stack
+  abort: uncommit will orphan 4 descendants
+  (see 'hg help evolution.instability')
   [255]
   $ hg up 8dc373be86d9
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -1342,12 +1339,12 @@ Check that prune respects the allowunstable option
   $ mkcommit c5_
   created new head
   $ hg prune '26 + 27'
-  abort: cannot prune in the middle of a stack
-  (new unstable changesets are not allowed)
+  abort: touch will orphan 1 descendants
+  (see 'hg help evolution.instability')
   [255]
   $ hg prune '19::28'
-  abort: cannot prune in the middle of a stack
-  (new unstable changesets are not allowed)
+  abort: touch will orphan 1 descendants
+  (see 'hg help evolution.instability')
   [255]
   $ hg prune '26::'
   3 changesets pruned
@@ -1363,6 +1360,9 @@ Check that prune respects the allowunstable option
   ~
 
 Check that fold respects the allowunstable option
+
+(most of this has been moved to test-fold.t)
+
   $ hg up edc3c9de504e
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ mkcommit unstableifparentisfolded
@@ -1380,14 +1380,6 @@ Check that fold respects the allowunstable option
   |
   ~
 
-  $ hg fold --exact "19 + 18"
-  abort: cannot fold chain not ending with a head or with branching
-  (new unstable changesets are not allowed)
-  [255]
-  $ hg fold --exact "18::29"
-  abort: cannot fold chain not ending with a head or with branching
-  (new unstable changesets are not allowed)
-  [255]
   $ hg fold --exact "19::"
   2 changesets folded
 

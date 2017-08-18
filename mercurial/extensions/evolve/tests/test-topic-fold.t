@@ -18,7 +18,6 @@ test of the fold command
   > [ui]
   > interactive = true
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "topic=$(echo $(dirname $TESTDIR))/hgext3rd/topic/" >> $HGRCPATH
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
@@ -54,7 +53,7 @@ Check that fold keep the topic if all revisions have the topic
   ### topic: myfeature
   ### branch: default
   t1@ folded (current)
-    ^ add ROOT
+  t0^ add ROOT (base)
   $ logtopic
   @  3:4fd43e5bdc443dc8489edffac19bd8f93ccf1a5c
   |  topics: myfeature

@@ -75,7 +75,14 @@ Simple test
   b3: c_e
   b2: c_d
   b1: c_c
-    ^ c_b
+  b0^ c_b (base)
+  $ hg stack -v
+  ### branch: foo
+  b4(913c298d8b0a)@ c_f (current)
+  b3(4f2a69f6d380): c_e
+  b2(f61adbacd17a): c_d
+  b1(3e9313bc4b71): c_c
+  b0(4a04f1104a27)^ c_b (base)
 
 Test "t#" reference
 -------------------
@@ -123,7 +130,7 @@ Case with some of the branch unstable
   b3$ c_e (unstable)
   b2@ c_d (current)
   b1: c_c
-    ^ c_b
+  b0^ c_b (base)
   $ hg up b3
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
@@ -132,7 +139,7 @@ Case with some of the branch unstable
   b3$ c_e (current unstable)
   b2: c_d
   b1: c_c
-    ^ c_b
+  b0^ c_b (base)
   $ hg up b2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
 
@@ -206,7 +213,7 @@ Test output
   b3: c_g
   b2: c_d
   b1: c_c
-    ^ c_b
+  b0^ c_b (base)
 
 Case with multiple heads on the topic with unstability involved
 ---------------------------------------------------------------
@@ -249,7 +256,7 @@ We amend the message to make sure the display base pick the right changeset
   b3: c_g
   b2@ c_D (current)
   b1: c_c
-    ^ c_b
+  b0^ c_b (base)
 
 Check that stack doesn't show draft changesets on a branch
 ----------------------------------------------------------
@@ -263,7 +270,7 @@ Check that stack doesn't show draft changesets on a branch
   b3: c_g
   b2@ c_D (current)
   b1: c_c
-    ^ c_b
+  b0^ c_b (base)
   $ hg phase --public b1
   $ hg stack
   ### branch: foo (2 heads)
@@ -273,7 +280,7 @@ Check that stack doesn't show draft changesets on a branch
   b3: c_h
   b2: c_g
   b1@ c_D (current)
-    ^ c_c
+  b0^ c_c (base)
 
 Check that stack doesn't show changeset with a topic
 ----------------------------------------------------
@@ -285,4 +292,4 @@ Check that stack doesn't show changeset with a topic
   b3: c_h
   b2: c_g
   b1@ c_D (current)
-    ^ c_c
+  b0^ c_c (base)

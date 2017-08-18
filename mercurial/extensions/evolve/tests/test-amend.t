@@ -1,11 +1,10 @@
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ glog() {
-  >   hg glog --template '{rev}@{branch}({phase}) {desc|firstline}\n' "$@"
+  >   hg log -G --template '{rev}@{branch}({phase}) {desc|firstline}\n' "$@"
   > }
 
   $ hg init repo --traceback
@@ -132,11 +131,9 @@ Check the help
   
       If you don't specify -m, the parent's message will be reused.
   
-      Behind the scenes, Mercurial first commits the update as a regular child
-      of the current parent. Then it creates a new commit on the parent's
-      parents with the updated contents. Then it changes the working copy parent
-      to this new combined changeset. Finally, the old changeset and its update
-      are hidden from 'hg log' (unless you use --hidden with log).
+      If --extra is specified, the behavior of 'hg amend' is reversed: Changes
+      to selected files in the checked out revision appear again as uncommitted
+      changed in the working directory.
   
       Returns 0 on success, 1 if nothing changed.
   
@@ -144,7 +141,9 @@ Check the help
   
    -A --addremove           mark new/missing files as added/removed before
                             committing
+   -a --all                 match all files
    -e --edit                invoke editor on commit messages
+      --extract             extract changes from the commit to the working copy
       --close-branch        mark a branch as closed, hiding it from the branch
                             list
    -s --secret              use the secret phase for committing

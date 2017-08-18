@@ -5,6 +5,8 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
+shorttemplate = "[{label('evolve.rev', rev)}] {desc|firstline}\n"
+
 def obsexcmsg(ui, message, important=False):
     verbose = ui.configbool('experimental', 'verbose-obsolescence-exchange',
                             False)

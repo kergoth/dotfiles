@@ -73,7 +73,9 @@ initial
   $ mkcommit B1
   created new head
   $ hg debugobsolete `getid 'desc(A0)'` `getid 'desc(A1)'`
+  obsoleted 1 changesets
   $ hg debugobsolete `getid 'desc(B0)'` `getid 'desc(B1)'`
+  obsoleted 1 changesets
   $ hg log -G --hidden
   @  f6298a8ac3a4 (draft): B1
   |
@@ -174,7 +176,9 @@ other variant: changeset known in remote
   $ mkcommit B1
   created new head
   $ hg debugobsolete `getid 'desc(A0)'` `getid 'desc(A1)'`
+  obsoleted 1 changesets
   $ hg debugobsolete `getid 'desc(B0)'` `getid 'desc(B1)'`
+  obsoleted 1 changesets
   $ hg log -G --hidden
   @  f6298a8ac3a4 (draft): B1
   |
@@ -242,6 +246,7 @@ test obsmarkers exchange.
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
   remote: 1 new obsolescence markers
+  remote: obsoleted 1 changesets
   ## post push state
   # obstore: main
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
@@ -257,6 +262,7 @@ test obsmarkers exchange.
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   1 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads, 'hg merge' to merge)
   1 new unstable changesets
   ## post pull state

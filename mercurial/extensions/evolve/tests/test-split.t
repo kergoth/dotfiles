@@ -1,6 +1,8 @@
 test of the split command
 -----------------------
 
+  $ . $TESTDIR/testlib/common.sh
+
   $ cat >> $HGRCPATH <<EOF
   > [defaults]
   > amend=-d "0 0"
@@ -18,9 +20,8 @@ test of the split command
   > [ui]
   > interactive = true
   > [extensions]
-  > hgext.graphlog=
+  > evolve =
   > EOF
-  $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {
   >    echo "$1" > "$1"
   >    hg add "$1"
@@ -94,7 +95,7 @@ To create commits with the number of split
   1334a80b33c3f9873edab728fbbcf500eab61d2e d2fe56e71366c2c5376c89960c281395062c0619 0 (*) {'ef1': '8', 'user': 'test'} (glob)
   06be89dfe2ae447383f30a2984933352757b6fb4 0 {1334a80b33c3f9873edab728fbbcf500eab61d2e} (*) {'ef1': '0', 'user': 'test'} (glob)
   d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (*) {'ef1': '13', 'user': 'test'} (glob)
-  $ hg glog
+  $ hg log -G
   @  changeset:   7:033b3f5ae73d
   |  tag:         tip
   |  user:        test
@@ -130,10 +131,21 @@ Cannot split a commit with uncommitted changes
   $ hg split
   abort: uncommitted changes
   [255]
-
-Split a revision specified with -r
   $ hg up "desc(_c)" -C
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+Cannot split public changeset
+
+  $ hg phase --rev 'desc("_a")'
+  0: draft
+  $ hg phase --rev 'desc("_a")' --public
+  $ hg split --rev 'desc("_a")'
+  abort: cannot split public changesets: 135f39f4bd78
+  (see 'hg help phases' for details)
+  [255]
+  $ hg phase --rev 'desc("_a")' --draft --force
+
+Split a revision specified with -r
   $ echo "change to b" >> _b
   $ hg amend -m "_cprim"
   2 new unstable changesets
@@ -212,7 +224,7 @@ remaining changes
   move:[11] split2
   atop:[14] split1
   working directory is now at d74c6715e706
-  $ hg glog
+  $ hg log -G
   @  changeset:   15:d74c6715e706
   |  tag:         tip
   |  user:        test
@@ -255,7 +267,7 @@ active bookmark as active
   $ hg book
      bookA                     17:7a6b35779b85
    * bookB                     17:7a6b35779b85
-  $ hg glog -r "14::"
+  $ hg log -G -r "14::"
   @  changeset:   17:7a6b35779b85
   |  bookmark:    bookA
   |  bookmark:    bookB
@@ -270,7 +282,7 @@ active bookmark as active
   ~  date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     split1
   
-  $ hg split <<EOF
+  $ hg split --user victor <<EOF
   > y
   > y
   > n
@@ -296,18 +308,18 @@ active bookmark as active
   
   created new head
   Done splitting? [yN] y
-  $ hg glog -r "14::"
-  @  changeset:   19:60ea019b0f8d
+  $ hg log -G -r "14::"
+  @  changeset:   19:452a26648478
   |  bookmark:    bookA
   |  bookmark:    bookB
   |  tag:         tip
-  |  user:        test
+  |  user:        victor
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split6
   |
-  o  changeset:   18:2c7a2e53f23b
+  o  changeset:   18:1315679b77dc
   |  parent:      14:3f134f739075
-  |  user:        test
+  |  user:        victor
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     split5
   |
@@ -317,8 +329,8 @@ active bookmark as active
      summary:     split1
   
   $ hg book
-     bookA                     19:60ea019b0f8d
-   * bookB                     19:60ea019b0f8d
+     bookA                     19:452a26648478
+   * bookB                     19:452a26648478
  
 Lastest revision is selected if multiple are given to -r
   $ hg split -r "desc(_a)::"
@@ -337,7 +349,8 @@ Cannot split a commit that is not a head if instability is not allowed
   > evolutioncommands=split
   > EOF
   $ hg split -r "desc(split3)"
-  abort: cannot split commit: ead2066d1dbf not a head
+  abort: split will orphan 4 descendants
+  (see 'hg help evolution.instability')
   [255]
 
 Changing evolution level to createmarkers
@@ -399,9 +412,18 @@ Add topic to the hgrc
   $ echo babar > babar
   $ echo celeste > celeste
   $ hg add babar celeste
-  $ hg commit -m "Works on mytopic" babar celeste
+  $ hg commit -m "Works on mytopic" babar celeste --user victor
+  $ hg log -r . 
+  changeset:   21:26f72cfaf036
+  branch:      new-branch
+  tag:         tip
+  topic:       mytopic
+  user:        victor
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  summary:     Works on mytopic
+  
   $ hg summary
-  parent: 21:615c369f47f0 tip
+  parent: 21:26f72cfaf036 tip
    Works on mytopic
   branch: new-branch
   commit: 2 unknown (clean)
@@ -411,7 +433,7 @@ Add topic to the hgrc
 
 Split it
 
-  $ hg split << EOF
+  $ hg split -U << EOF
   > Y
   > Y
   > N
@@ -448,15 +470,15 @@ Split it
 Check that the topic is still here
 
   $ hg log -r "tip~1::"
-  changeset:   22:f879ab83f991
+  changeset:   22:addcf498f19e
   branch:      new-branch
   topic:       mytopic
-  parent:      20:89e64a2c68b3
+  parent:      20:fdb403258632
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
   summary:     split7
   
-  changeset:   23:db75dbc1a3a6
+  changeset:   23:2532b288af61
   branch:      new-branch
   tag:         tip
   topic:       mytopic

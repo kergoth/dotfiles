@@ -86,7 +86,7 @@ pruning multiple changeset at once
 cannot prune public changesets
 
   $ hg prune 0
-  abort: cannot prune immutable changeset: 1f0dee641bb7
+  abort: cannot touch public changesets: 1f0dee641bb7
   (see 'hg help phases' for details)
   [255]
   $ hg debugobsolete

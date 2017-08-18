@@ -62,6 +62,21 @@ let s:default_registry = {
 \       'suggested_filetypes': ['ruby'],
 \       'description': 'Fix ruby files with rubocop --auto-correct.',
 \   },
+\   'standard': {
+\       'function': 'ale#fixers#standard#Fix',
+\       'suggested_filetypes': ['javascript'],
+\       'description': 'Fix JavaScript files using standard --fix',
+\   },
+\   'stylelint': {
+\       'function': 'ale#fixers#stylelint#Fix',
+\       'suggested_filetypes': ['css', 'sass', 'scss', 'stylus'],
+\       'description': 'Fix stylesheet files using stylelint --fix.',
+\   },
+\   'swiftformat': {
+\       'function': 'ale#fixers#swiftformat#Fix',
+\       'suggested_filetypes': ['swift'],
+\       'description': 'Apply SwiftFormat to a file.',
+\   },
 \}
 
 " Reset the function registry to the default entries.

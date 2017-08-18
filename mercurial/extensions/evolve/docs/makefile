@@ -1,8 +1,11 @@
 
-all: tutorials/tutorial.rst static/logo-evolve.ico
+all: tutorials/tutorial.rst tutorials/topic-tutorial.rst static/logo-evolve.ico
 	sphinx-build . ../html/
 
 tutorials/tutorial.rst: tutorials/tutorial.t
+	python test2rst.py tutorials/
+
+tutorials/topic-tutorial.rst: tutorials/topic-tutorial.t
 	python test2rst.py tutorials/
 
 static/logo-evolve.ico: static/logo-evolve.svg

@@ -42,6 +42,12 @@ elif getattr(pycompat, 'osname', os.name) == 'nt':
 else:
     timer = time.time
 
+# hg < 4.2 compat
+try:
+    from mercurial import vfs as vfsmod
+    vfsmod.vfs
+except ImportError:
+    from mercurial import scmutil as vfsmod
 
 try:
     obsstorefilecache = localrepo.localrepository.obsstore
@@ -320,6 +326,12 @@ class dualsourcecache(object):
 
         return reset, revs, markers, (obssize, obskey)
 
+def getcachevfs(repo):
+    cachevfs = getattr(repo, 'cachevfs', None)
+    if cachevfs is None:
+        cachevfs = vfsmod.vfs(repo.vfs.join('cache'))
+        cachevfs.createmode = repo.store.createmode
+    return cachevfs
 
 class obscache(dualsourcecache):
     """cache the "does a rev" is the precursors of some obsmarkers data
@@ -355,7 +367,7 @@ class obscache(dualsourcecache):
         zero. That would be especially useful for the '.pending' overlay.
     """
 
-    _filepath = 'cache/evoext-obscache-00'
+    _filepath = 'evoext-obscache-00'
     _headerformat = '>q20sQQ20s'
 
     _cachename = 'evo-ext-obscache' # used for error message
@@ -363,8 +375,7 @@ class obscache(dualsourcecache):
     def __init__(self, repo):
         super(obscache, self).__init__()
         self._ondiskkey = None
-        self._vfs = repo.vfs
-        self._setdata(bytearray())
+        self._vfs = getcachevfs(repo)
 
     @util.propertycache
     def get(self):
@@ -445,7 +456,7 @@ class obscache(dualsourcecache):
         if self._cachekey is None or self._cachekey == self._ondiskkey:
             return
 
-        cachefile = repo.vfs(self._filepath, 'w', atomictemp=True)
+        cachefile = self._vfs(self._filepath, 'w', atomictemp=True)
         headerdata = struct.pack(self._headerformat, *self._cachekey)
         cachefile.write(headerdata)
         cachefile.write(self._data)
@@ -455,7 +466,7 @@ class obscache(dualsourcecache):
         """load data from disk"""
         assert repo.filtername is None
 
-        data = repo.vfs.tryread(self._filepath)
+        data = self._vfs.tryread(self._filepath)
         if not data:
             self._cachekey = self.emptykey
             self._setdata(bytearray())

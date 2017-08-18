@@ -15,13 +15,17 @@ To enable `gometalinter`, update |g:ale_linters| as appropriate:
   let g:ale_linters = {'go': ['gometalinter', 'gofmt']}
 <
 A possible configuration is to enable `gometalinter` and `gofmt` but paired
-with the `--fast` option, set by |g:ale_go_metalinter_options|. This gets you
+with the `--fast` option, set by |g:ale_go_gometalinter_options|. This gets you
 the benefit of running a number of linters, more than ALE would by default,
 while ensuring it doesn't run any linters known to be slow or resource
 intensive.
 
 ===============================================================================
 gometalinter                                              *ale-go-gometalinter*
+
+`gometalinter` is a `lint_file` linter, which only lints files that are
+written to disk. This differs from the default behavior of linting the buffer.
+See: |ale-lint-file|
 
 g:ale_go_gometalinter_executable             *g:ale_go_gometalinter_executable*
                                              *b:ale_go_gometalinter_executable*

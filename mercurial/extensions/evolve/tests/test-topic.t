@@ -15,7 +15,28 @@
   $ hg help topics
   hg topics [TOPIC]
   
-  View current topic, set current topic, or see all topics.
+  View current topic, set current topic, change topic for a set of revisions, or
+  see all topics.
+  
+      Clear topic on existing topiced revisions:
+          'hg topic --rev <related revset> --clear'
+  
+      Change topic on some revisions:
+          'hg topic <newtopicname> --rev <related revset>'
+  
+      Clear current topic:
+          'hg topic --clear'
+  
+      Set current topic:
+          'hg topic <topicname>'
+  
+      List of topics:
+          'hg topics'
+  
+      List of topics with their last touched time sorted according to it:
+          'hg topic --age'
+  
+      The active topic (if any) will be prepended with a "*".
   
       The --verbose version of this command display various information on the
       state of each topic.
@@ -25,6 +46,7 @@
       --clear   clear active topic if any
    -r --rev REV revset of existing revisions
    -l --list    show the stack of changeset in the topic
+      --age     show when you last touched the topics
   
   (some details hidden, use --verbose to show complete help)
   $ hg topics
@@ -777,3 +799,115 @@ Case with branching:
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     start on fran
   |
+
+Testing for updating to t0
+==========================
+
+  $ hg stack
+  ### topic: changewut (2 heads)
+  ### branch: default, 5 behind
+  t3: fran?
+  t1^ start on fran (base)
+  t2@ gamma (current)
+  t1: start on fran
+  t0^ Add file delta (base)
+  $ hg up t0
+  preserving the current topic 'changewut'
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg topic
+   * changewut
+  $ hg stack
+  ### topic: changewut (2 heads)
+  ### branch: default, 5 behind
+  t3: fran?
+  t1^ start on fran (base)
+  t2: gamma
+  t1: start on fran
+  t0^ Add file delta (base)
+
+  $ hg topics --age
+   * changewut (1970-01-01)
+
+  $ cd ..
+
+Testing the new config knob to forbid untopiced commit
+======================================================
+
+  $ hg init ponky
+  $ cd ponky
+  $ cat <<EOF >> .hg/hgrc
+  > [phases]
+  > publish=false
+  > EOF
+  $ cat <<EOF >> $HGRCPATH
+  > [experimental]
+  > enforce-topic = yes
+  > EOF
+  $ touch a b c d
+  $ hg add a
+  $ hg ci -m "Added a"
+  abort: no active topic
+  (set a current topic or use '--config experimental.enforce-topic=no' to commit without a topic)
+  [255]
+
+(same test, checking we abort before the editor)
+
+  $ EDITOR=cat hg ci -m "Added a" --edit
+  abort: no active topic
+  (set a current topic or use '--config experimental.enforce-topic=no' to commit without a topic)
+  [255]
+  $ hg ci -m "added a" --config experimental.enforce-topic=no
+  $ hg log
+  changeset:   0:a154386e50d1
+  tag:         tip
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  summary:     added a
+  
+  $ hg topic topic1970 --rev 0
+  switching to topic topic1970
+  changed topic on 1 changes
+  $ hg add b
+  $ hg topic topic1990
+  $ hg ci -m "Added b" --config devel.default-date="631152000 0"
+  $ hg add c
+  $ hg topic topic2010
+  $ hg ci -m "Added c" --config devel.default-date="1262304000 0"
+  $ hg log
+  changeset:   3:9048b194797d
+  tag:         tip
+  topic:       topic2010
+  user:        test
+  date:        Fri Jan 01 00:00:00 2010 +0000
+  summary:     Added c
+  
+  changeset:   2:186d493c7f8d
+  topic:       topic1990
+  user:        test
+  date:        Mon Jan 01 00:00:00 1990 +0000
+  summary:     Added b
+  
+  changeset:   1:e5a30a141954
+  topic:       topic1970
+  parent:      -1:000000000000
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  summary:     added a
+  
+  $ hg topics
+     topic1970
+     topic1990
+   * topic2010
+  $ hg topics --age
+   * topic2010 (2010-01-01)
+     topic1990 (1990-01-01)
+     topic1970 (1970-01-01)
+  $ hg up topic1970
+  switching to topic topic1970
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ hg topics --age
+     topic2010 (2010-01-01)
+     topic1990 (1990-01-01)
+   * topic1970 (1970-01-01)
+
+  $ cd ..

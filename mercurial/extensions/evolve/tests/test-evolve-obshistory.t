@@ -41,11 +41,13 @@ Test setup
   | x  changeset:   2:f137d23bb3e1
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    pruned
   | |  summary:     temporary amend commit for 471f378eab4c
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as 4ae3a4151de9
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -59,7 +61,7 @@ Actual test
   @  4ae3a4151de9 (3) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (*) as 4ae3a4151de9 (glob)
+       rewritten(description, content) by test (Thu Jan 01 00:00:00 1970 +0000) as 4ae3a4151de9
          --- a/471f378eab4c-changeset-description
          +++ b/4ae3a4151de9-changeset-description
          @@ -1,1 +1,3 @@
@@ -197,6 +199,7 @@ Test setup
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    pruned
   |  summary:     B0
   |
   @  changeset:   1:471f378eab4c
@@ -336,6 +339,7 @@ Test setup
   | x  changeset:   1:471597cad322
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    split as 337fec4d2edc, f257fde29c7a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -589,6 +593,7 @@ Test setup
   | x  changeset:   1:de7290d8b885
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    split as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -764,11 +769,13 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    rewritten as eb5a0daa2192
   | |  summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -969,6 +976,7 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1001,6 +1009,8 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as fdf9bde5129a
+  |    obsolete:    rewritten as 65b757b745b9
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1282,6 +1292,7 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as b7ea6d14e664
   |    summary:     B0
   |
   o  changeset:   1:471f378eab4c
@@ -1309,16 +1320,19 @@ Test setup
   | |  parent:      1:471f378eab4c
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    rewritten as eb5a0daa2192
   | |  summary:     B1
   | |
   | | x  changeset:   2:0dec01379d3b
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    rewritten as b7ea6d14e664
   | |    summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1542,11 +1556,13 @@ Test setup
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as 7a230b46bf61
   |    summary:     A1
   |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1587,6 +1603,7 @@ Test setup
   adding file changes
   added 1 changesets with 0 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
   (run 'hg heads' to see heads, 'hg merge' to merge)
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: 7a230b46bf61)

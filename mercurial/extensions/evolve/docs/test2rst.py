@@ -2,13 +2,7 @@
 
 import os
 import os.path as op
-import re
 import sys
-
-# line starts with two chars one of which is not a space (and both are not
-# newlines obviously) and ends with one or more newlines followed by two spaces
-# on a next line (indented text)
-CODEBLOCK = re.compile(r'()\n(([^ \n][^\n]|[^\n][^ \n])[^\n]*)\n+  ')
 
 INDEX = '''
 Mercurial tests
@@ -20,10 +14,29 @@ Mercurial tests
 
 
 def rstify(orig, name):
-    header = '%s\n%s\n\n' % (name, '=' * len(name))
-    content = header + orig
-    content = CODEBLOCK.sub(r'\n\1\n\n::\n\n  ', content)
-    return content
+    newlines = []
+
+    code_block_mode = False
+
+    for line in orig.splitlines():
+
+        # Emtpy lines doesn't change output
+        if not line:
+            newlines.append(line)
+            continue
+
+        codeline = line.startswith('  ')
+        if codeline:
+            if code_block_mode is False:
+                newlines.extend(['::', ''])
+
+            code_block_mode = True
+        else:
+            code_block_mode = False
+
+        newlines.append(line)
+
+    return "\n".join(newlines)
 
 
 def main(base):

@@ -248,23 +248,33 @@ Also test this situation with 'hg stack'
   t3: bar1_d
   t2: add bar_b
   t1: add bar_a
-    ^ add base_e
+  t0^ add base_e (base)
+  $ hg stack bar -v
+  ### topic: bar (2 heads)
+  ### branch: default
+  t5(9cbadf11b44d): add bar_c
+  t2(e555c7e8c767)^ add bar_b (base)
+  t4(a920412b5a05)$ add bar_e (unstable)
+  t3(6915989374b1): bar1_d
+  t2(e555c7e8c767): add bar_b
+  t1(a5c2b4e00bbf): add bar_a
+  t0(92f489a6251f)^ add base_e (base)
   $ hg stack baz
   ### topic: baz
   ### branch: default, 2 behind
   t2: add baz_b
   t1: add baz_a
-    ^ add base_c
+  t0^ add base_c (base)
   $ hg stack foo
   ### topic: foo
   ### branch: lake, ambigious rebase destination
   t2@ add foo_b (current)
   t1: add foo_a
-    ^ add lake_a
+  t0^ add lake_a (base)
   $ hg stack fuz
   ### topic: fuz
   ### branch: default, 1 behind
   t3$ add fuz_c (unstable)
   t2$ add fuz_b (unstable)
   t1: fuz1_a
-    ^ add base_d
+  t0^ add base_d (base)

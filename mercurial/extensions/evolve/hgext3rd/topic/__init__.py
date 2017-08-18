@@ -53,6 +53,7 @@ are likely to be change/adjusted/dropped over time as we refine the concept.
 from __future__ import absolute_import
 
 import re
+import time
 
 from mercurial.i18n import _
 from mercurial import (
@@ -68,9 +69,11 @@ from mercurial import (
     namespaces,
     node,
     obsolete,
+    obsutil,
     patch,
     phases,
     registrar,
+    templatefilters,
     util,
 )
 
@@ -98,11 +101,13 @@ colortable = {'topic.active': 'green',
               'topic.stack.index': 'yellow',
               'topic.stack.index.base': 'none dim',
               'topic.stack.desc.base': 'none dim',
+              'topic.stack.shortnode.base': 'none dim',
               'topic.stack.state.base': 'dim',
               'topic.stack.state.clean': 'green',
               'topic.stack.index.current': 'cyan',       # random pick
               'topic.stack.state.current': 'cyan bold',  # random pick
               'topic.stack.desc.current': 'cyan',        # random pick
+              'topic.stack.shortnode.current': 'cyan',   # random pick
               'topic.stack.state.unstable': 'red',
               'topic.stack.summary.behindcount': 'cyan',
               'topic.stack.summary.behinderror': 'red',
@@ -113,7 +118,7 @@ colortable = {'topic.active': 'green',
               'topic.active': 'green',
              }
 
-version = '0.1.1.dev'
+___version___ = '0.2.1.dev'
 testedwith = '4.0.2 4.1.3 4.2.1'
 minimumhgversion = '4.0'
 buglink = 'https://bz.mercurial-scm.org/'
@@ -123,6 +128,19 @@ def _contexttopic(self, force=False):
         return ''
     return self.extra().get(constants.extrakey, '')
 context.basectx.topic = _contexttopic
+def _contexttopicidx(self):
+    topic = self.topic()
+    if not topic:
+        # XXX we might want to include t0 here,
+        # however t0 is related to  'currenttopic' which has no place here.
+        return None
+    revlist = stack.getstack(self._repo, topic=topic)
+    try:
+        return revlist.index(self.rev())
+    except IndexError:
+        # Lets move to the last ctx of the current topic
+        return None
+context.basectx.topicidx = _contexttopicidx
 
 topicrev = re.compile(r'^t\d+$')
 branchrev = re.compile(r'^b\d+$')
@@ -144,10 +162,14 @@ def _namemap(repo, name):
 
     if revs is not None:
         try:
-            r = revs[idx - 1]
+            r = revs[idx]
         except IndexError:
             msg = _('cannot resolve "%s": %s "%s" has only %d changesets')
-            raise error.Abort(msg % (name, ttype, tname, len(revs)))
+            raise error.Abort(msg % (name, ttype, tname, len(revs) - 1))
+        # b0 or t0 can be None
+        if r == -1 and idx == 0:
+            msg = _('the %s "%s" has no %s')
+            raise error.Abort(msg % (ttype, tname, name))
         return [repo[r].node()]
     if name not in repo.topics:
         return []
@@ -176,10 +198,16 @@ def uisetup(ui):
 
     extensions.wrapfunction(cmdutil, 'buildcommittext', committextwrap)
     extensions.wrapfunction(merge, 'update', mergeupdatewrap)
+    # We need to check whether t0 or b0 is passed to override the default update
+    # behaviour of changing topic and I can't find a better way
+    # to do that as scmutil.revsingle returns the rev number and hence we can't
+    # plug into logic for this into mergemod.update().
+    extensions.wrapcommand(commands.table, 'update', checkt0)
 
     try:
         evolve = extensions.find('evolve')
-        extensions.wrapfunction(evolve, "presplitupdate", presplitupdatetopic)
+        extensions.wrapfunction(evolve.rewriteutil, "presplitupdate",
+                                presplitupdatetopic)
     except (KeyError, AttributeError):
         pass
 
@@ -279,13 +307,35 @@ def reposetup(ui, repo):
             'topics', 'topic', namemap=_namemap, nodemap=_nodemap,
             listnames=lambda repo: repo.topics))
 
-@command('topics [TOPIC]', [
+@command('topics', [
         ('', 'clear', False, 'clear active topic if any'),
         ('r', 'rev', '', 'revset of existing revisions', _('REV')),
         ('l', 'list', False, 'show the stack of changeset in the topic'),
-    ] + commands.formatteropts)
+        ('', 'age', False, 'show when you last touched the topics')
+    ] + commands.formatteropts,
+    _('hg topics [TOPIC]'))
 def topics(ui, repo, topic='', clear=False, rev=None, list=False, **opts):
-    """View current topic, set current topic, or see all topics.
+    """View current topic, set current topic, change topic for a set of revisions, or see all topics.
+
+    Clear topic on existing topiced revisions:
+        `hg topic --rev <related revset> --clear`
+
+    Change topic on some revisions:
+        `hg topic <newtopicname> --rev <related revset>`
+
+    Clear current topic:
+        `hg topic --clear`
+
+    Set current topic:
+        `hg topic <topicname>`
+
+    List of topics:
+        `hg topics`
+
+    List of topics with their last touched time sorted according to it:
+        `hg topic --age`
+
+    The active topic (if any) will be prepended with a "*".
 
     The --verbose version of this command display various information on the state of each topic."""
     if list:
@@ -316,11 +366,16 @@ def topics(ui, repo, topic='', clear=False, rev=None, list=False, **opts):
 
     _listtopics(ui, repo, opts)
 
-@command('stack [TOPIC]', [] + commands.formatteropts)
+@command('stack', [
+    ] + commands.formatteropts,
+    _('hg stack [TOPIC]'))
 def cmdstack(ui, repo, topic='', **opts):
     """list all changesets in a topic and other information
 
-    List the current topic by default."""
+    List the current topic by default.
+
+    The --verbose version shows short nodes for the commits also.
+    """
     if not topic:
         topic = None
     branch = None
@@ -411,6 +466,11 @@ def _changetopics(ui, repo, revset, newtopic):
 
 def _listtopics(ui, repo, opts):
     fm = ui.formatter('topics', opts)
+    showlast = opts.get('age')
+    if showlast:
+        # we have a new function as plugging logic into existing function is
+        # pretty much difficult
+        return _showlasttouched(repo, fm, opts)
     activetopic = repo.currenttopic
     namemask = '%s'
     if repo.topics and ui.verbose:
@@ -463,6 +523,76 @@ def _listtopics(ui, repo, opts):
         fm.plain('\n')
     fm.end()
 
+def _showlasttouched(repo, fm, opts):
+    topics = repo.topics
+    timedict = _getlasttouched(repo, topics)
+    times = timedict.keys()
+    times.sort()
+    if topics:
+        maxwidth = max(len(t) for t in topics)
+        namemask = '%%-%is' % maxwidth
+    activetopic = repo.currenttopic
+    for timevalue in times:
+        curtopics = timedict[timevalue][1]
+        for topic in curtopics:
+            fm.startitem()
+            marker = ' '
+            label = 'topic'
+            active = (topic == activetopic)
+            if active:
+                marker = '*'
+                label = 'topic.active'
+            fm.plain(' %s ' % marker, label=label)
+            fm.write('topic', namemask, topic, label=label)
+            fm.data(active=active)
+            fm.plain(' (')
+            if timevalue == -1:
+                timestr = 'not yet touched'
+            else:
+                timestr = templatefilters.age(timedict[timevalue][0])
+            fm.write('lasttouched', '%s', timestr, label='topic.list.time')
+            fm.plain(')')
+            fm.plain('\n')
+    fm.end()
+
+def _getlasttouched(repo, topics):
+    """
+    Calculates the last time a topic was used. Returns a dictionary of seconds
+    passed from current time for a topic as keys and topic name as values.
+    """
+    topicstime = {}
+    curtime = time.time()
+    for t in topics:
+        maxtime = (0, 0)
+        trevs = repo.revs("topic(%s)", t)
+        # Need to check for the time of all changesets in the topic, whether
+        # they are obsolete of non-heads
+        # XXX: can we just rely on the max rev number for this
+        for revs in trevs:
+            rt = repo[revs].date()
+            if rt[0] > maxtime[0]:
+                # Can store the rev to gather more info
+                # latesthead = revs
+                maxtime = rt
+            # looking on the markers also to get more information and accurate
+            # last touch time.
+            obsmarkers = obsutil.getmarkers(repo, [repo[revs].node()])
+            for marker in obsmarkers:
+                rt = marker.date()
+                if rt[0] > maxtime[0]:
+                    maxtime = rt
+        # is the topic still yet untouched
+        if not trevs:
+            secspassed = -1
+        else:
+            secspassed = (curtime - maxtime[0])
+        try:
+            topicstime[secspassed][1].append(t)
+        except KeyError:
+            topicstime[secspassed] = (maxtime, [t])
+
+    return topicstime
+
 def summaryhook(ui, repo):
     t = repo.currenttopic
     if not t:
@@ -472,10 +602,16 @@ def summaryhook(ui, repo):
 
 def commitwrap(orig, ui, repo, *args, **opts):
     with repo.wlock():
+        enforcetopic = ui.configbool('experimental', 'enforce-topic')
         if opts.get('topic'):
             t = opts['topic']
             with repo.vfs.open('topic', 'w') as f:
                 f.write(t)
+        elif not repo.currenttopic and enforcetopic:
+            msg = _("no active topic")
+            hint = _("set a current topic or use '--config " +
+                     "experimental.enforce-topic=no' to commit without a topic")
+            raise error.Abort(msg, hint=hint)
         return orig(ui, repo, *args, **opts)
 
 def committextwrap(orig, repo, ctx, subs, extramsg):
@@ -491,6 +627,7 @@ def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
     partial = not (matcher is None or matcher.always())
     wlock = repo.wlock()
     isrebase = False
+    ist0 = False
     try:
         ret = orig(repo, node, branchmerge, force, *args, **kwargs)
         # The mergeupdatewrap function makes the destination's topic as the
@@ -500,7 +637,9 @@ def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
         # running.
         if repo.ui.hasconfig('experimental', 'topicrebase'):
             isrebase = True
-        if (not partial and not branchmerge) or isrebase:
+        if repo.ui.configbool('_internal', 'keep-topic'):
+            ist0 = True
+        if ((not partial and not branchmerge) or isrebase) and not ist0:
             ot = repo.currenttopic
             t = ''
             pctx = repo[node]
@@ -510,9 +649,24 @@ def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
                 f.write(t)
             if t and t != ot:
                 repo.ui.status(_("switching to topic %s\n") % t)
+        elif ist0:
+            repo.ui.status(_("preserving the current topic '%s'\n") %
+                           repo.currenttopic)
         return ret
     finally:
         wlock.release()
+
+def checkt0(orig, ui, repo, node=None, rev=None, *args, **kwargs):
+
+    thezeros = set(['t0', 'b0'])
+    backup = repo.ui.backupconfig('_internal', 'keep-topic')
+    try:
+        if node in thezeros or rev in thezeros:
+            repo.ui.setconfig('_internal', 'keep-topic', 'yes',
+                              source='topic-extension')
+        return orig(ui, repo, node, rev, *args, **kwargs)
+    finally:
+        repo.ui.restoreconfig(backup)
 
 def _fixrebase(loaded):
     if not loaded:

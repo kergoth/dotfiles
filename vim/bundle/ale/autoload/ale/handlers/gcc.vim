@@ -23,6 +23,7 @@ endfunction
 function! s:RemoveUnicodeQuotes(text) abort
     let l:text = a:text
     let l:text = substitute(l:text, '[`´‘’]', '''', 'g')
+    let l:text = substitute(l:text, '\v\\u2018([^\\]+)\\u2019', '''\1''', 'g')
     let l:text = substitute(l:text, '[“”]', '"', 'g')
 
     return l:text
@@ -50,7 +51,7 @@ function! ale#handlers#gcc#HandleGCCFormat(buffer, lines) abort
     " <stdin>:8:5: warning: conversion lacks type at end of format [-Wformat=]
     " <stdin>:10:27: error: invalid operands to binary - (have ‘int’ and ‘char *’)
     " -:189:7: note: $/${} is unnecessary on arithmetic variables. [SC2004]
-    let l:pattern = '^\(.\+\):\(\d\+\):\(\d\+\): \([^:]\+\): \(.\+\)$'
+    let l:pattern = '\v^([a-zA-Z]?:?[^:]+):(\d+):(\d+)?:? ([^:]+): (.+)$'
     let l:output = []
 
     for l:line in a:lines
@@ -80,7 +81,7 @@ function! ale#handlers#gcc#HandleGCCFormat(buffer, lines) abort
                 let l:included_filename = ''
             endif
         elseif l:include_lnum > 0
-        \&& (empty(l:included_filename) || l:included_filename ==# l:match[1])
+        \&& (empty(l:included_filename) || l:included_filename is# l:match[1])
             " If we hit the first error after an include header, or the
             " errors below have the same name as the first filename we see,
             " then include these lines, and remember what that filename was.
@@ -95,16 +96,21 @@ function! ale#handlers#gcc#HandleGCCFormat(buffer, lines) abort
             let l:included_filename = ''
 
             if s:IsHeaderFile(bufname(bufnr('')))
-            \&& l:match[5][:len(s:pragma_error) - 1] ==# s:pragma_error
+            \&& l:match[5][:len(s:pragma_error) - 1] is# s:pragma_error
                 continue
             endif
 
-            call add(l:output, {
-            \   'lnum': l:match[2] + 0,
-            \   'col': l:match[3] + 0,
+            let l:item = {
+            \   'lnum': str2nr(l:match[2]),
             \   'type': l:match[4] =~# 'error' ? 'E' : 'W',
             \   'text': s:RemoveUnicodeQuotes(l:match[5]),
-            \})
+            \}
+
+            if !empty(l:match[3])
+                let l:item.col = str2nr(l:match[3])
+            endif
+
+            call add(l:output, l:item)
         endif
     endfor
 

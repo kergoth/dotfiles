@@ -88,7 +88,9 @@ the new obsolete changeset.
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  updated to "60ffde5765c5: fix bug 37"
   1 other heads for branch "default"
 
 Figure SG03
@@ -120,6 +122,7 @@ Figure SG04 (test-repo)
   $ cd ../test-repo
   $ hg update
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  updated to "de6151c48e1c: fix bug 37"
   1 other heads for branch "default"
   $ hg shortlog --hidden -G
   @  4:de6151c48e1c  draft  fix bug 37
@@ -144,7 +147,8 @@ This bug fix is finished. We can push it to the public repository.
 
 Now that the fix is public, we cannot amend it any more.
   $ hg amend -m 'fix bug 37'
-  abort: cannot amend public changesets
+  abort: cannot amend public changesets: de6151c48e1c
+  (see 'hg help phases' for details)
   [255]
 
 Figure SG05
@@ -209,6 +213,7 @@ await second review.
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
   updating bookmark bug15
   $ hg -R ../review bookmarks
      bug15                     3:cbdfbd5a5db2
@@ -253,6 +258,7 @@ Bob receives first review, amends and pushes.
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
   updating bookmark featureX
 
 Bob receives second review, amends, and pushes to public:
@@ -278,6 +284,7 @@ this time, he's sure he got it right!
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  obsoleted 1 changesets
   updating bookmark featureX
   $ hg -R ../review bookmarks
      bug15                     3:cbdfbd5a5db2
@@ -393,6 +400,7 @@ publishes the result.
   adding file changes
   added 1 changesets with 0 changes to 1 files
   1 new obsolescence markers
+  obsoleted 1 changesets
   updating bookmark bug15
 
 Figure SG08: review and public changesets after Alice pushes.

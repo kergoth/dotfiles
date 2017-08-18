@@ -1,11 +1,11 @@
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
 hg prev -B should move active bookmark
-  $ hg init
+  $ hg init test-repo
+  $ cd test-repo
   $ touch a
   $ hg add a
   $ hg commit -m 'added a'
@@ -93,6 +93,15 @@ hg next/prev should not interfere with inactive bookmarks
      mark                      2:4e26ef31f919
      no-move                   2:4e26ef31f919
 
+test prev on root
+
+  $ hg up null
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ hg prev
+  already at repository root
+  [1]
+  $ hg up 1
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
 Behavior with local modification
 --------------------------------
@@ -215,6 +224,8 @@ next with ambiguity in aspiring children
   move:[5] added d
   atop:[6] added b (3)
   working directory is now at 47ea25be8aea
+
+  $ cd ..
 
 prev and next should lock properly against other commands
 

@@ -78,7 +78,7 @@ def stackset(repo, subset, x):
         topic = repo.currenttopic
     if not topic:
         branch = repo[None].branch()
-    return revset.baseset(stack.getstack(repo, branch=branch, topic=topic)) & subset
+    return revset.baseset(stack.getstack(repo, branch=branch, topic=topic)[1:]) & subset
 
 
 def modsetup(ui):

@@ -2,13 +2,12 @@
   > [defaults]
   > amend=-d "0 0"
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ template='{rev}:{node|short}@{branch}({separate("/", obsolete, phase)}) {desc|firstline}\n'
   $ glog() {
-  >   hg glog --template "$template" "$@"
+  >   hg log -G --template "$template" "$@"
   > }
 
 Test outgoing, common A is suspended, B unstable and C secret, remote

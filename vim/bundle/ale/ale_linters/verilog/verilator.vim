@@ -11,7 +11,8 @@ function! ale_linters#verilog#verilator#GetCommand(buffer) abort
 
     " Create a special filename, so we can detect it in the handler.
     call ale#engine#ManageFile(a:buffer, l:filename)
-    call writefile(getbufline(a:buffer, 1, '$'), l:filename)
+    let l:lines = getbufline(a:buffer, 1, '$')
+    call ale#util#Writefile(a:buffer, l:lines, l:filename)
 
     return 'verilator --lint-only -Wall -Wno-DECLFILENAME '
     \   . ale#Var(a:buffer, 'verilog_verilator_options') .' '
@@ -32,7 +33,7 @@ function! ale_linters#verilog#verilator#Handle(buffer, lines) abort
 
     for l:match in ale#util#GetMatches(a:lines, l:pattern)
         let l:line = l:match[3] + 0
-        let l:type = l:match[1] ==# 'Error' ? 'E' : 'W'
+        let l:type = l:match[1] is# 'Error' ? 'E' : 'W'
         let l:text = l:match[4]
         let l:file = l:match[2]
 

@@ -63,8 +63,11 @@ Test setup
   $ mkcommit B1
   created new head
   $ hg debugobsolete --record-parents `getid "desc(A0)"`
+  obsoleted 1 changesets
   $ hg debugobsolete `getid "desc(B0)"` `getid "desc(B1)"`
+  obsoleted 1 changesets
   $ hg debugobsolete --record-parents `getid "desc(C0)"`
+  obsoleted 1 changesets
   $ hg log -G --hidden
   @  25c56d33e4c4 (draft): B1
   |
@@ -88,5 +91,6 @@ Actual testing
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   3 new obsolescence markers
+  obsoleted 3 changesets
 
   $ cd ../..

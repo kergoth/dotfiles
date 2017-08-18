@@ -7,7 +7,6 @@
   > [alias]
   > odiff=diff --rev 'limit(obsparents(.),1)' --rev .
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ mkcommit() {
   >    echo "$1" > "$1"
@@ -34,13 +33,13 @@ enable the extensions
 
   $ echo "obsolete=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/legacy.py" >> $HGRCPATH
 
-  $ hg glog
+  $ hg log -G
   abort: old format of obsolete marker detected!
   run `hg debugconvertobsolete` once.
   [255]
   $ hg debugconvertobsolete --traceback
   1 obsolete marker converted
-  $ hg glog
+  $ hg log -G
   @  changeset:   2:d67cd0334eee
   |  tag:         tip
   |  parent:      0:1f0dee641bb7
@@ -101,7 +100,7 @@ Convert json
   >     }
   > ]
   > EOF
-  $ hg glog
+  $ hg log -G
   abort: old format of obsolete marker detected!
   run `hg debugconvertobsolete` once.
   [255]

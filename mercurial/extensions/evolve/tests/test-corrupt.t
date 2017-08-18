@@ -13,7 +13,6 @@
   > git = 1
   > unified = 0
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {
@@ -30,7 +29,7 @@
   $ mkcommit A
   $ mkcommit B
   $ mkcommit C
-  $ hg glog
+  $ hg log -G
   @  changeset:   2:829b19580856
   |  tag:         tip
   |  user:        test
@@ -67,7 +66,7 @@
   $ hg up -q .^^
   $ hg revert -r tip -a -q
   $ hg ci -m 'coin' -q
-  $ hg glog
+  $ hg log -G
   @  changeset:   5:8313a6afebbb
   |  tag:         tip
   |  parent:      2:829b19580856

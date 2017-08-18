@@ -15,7 +15,6 @@ Tests the resolution of divergence
   > [ui]
   > logtemplate = {rev}:{node|short}@{branch}({phase}) {desc|firstline} [{troubles}]\n
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {

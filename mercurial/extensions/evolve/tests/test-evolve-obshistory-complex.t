@@ -99,21 +99,25 @@ Split commits two by two
   x | |  changeset:   4:868d2e0eb19c
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |  obsolete:    rewritten as d15d0ffc75f6
   | | |  summary:     D
   | | |
   x | |  changeset:   3:a8df460dbbfe
   |/ /   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    rewritten as d15d0ffc75f6
   | |    summary:     C
   | |
   x |  changeset:   2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    rewritten as b868bc49b0a4
   | |  summary:     B
   | |
   x |  changeset:   1:2a34000d3544
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as b868bc49b0a4
   |    summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -269,21 +273,25 @@ Then split
   x | |  changeset:   4:868d2e0eb19c
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |  obsolete:    split as 7b3290f6e0a0, d0f33db50670
   | | |  summary:     D
   | | |
   x | |  changeset:   3:a8df460dbbfe
   |/ /   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    split as 7b3290f6e0a0, d0f33db50670
   | |    summary:     C
   | |
   x |  changeset:   2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    split as 19e14c8397fc, e036916b63ea
   | |  summary:     B
   | |
   x |  changeset:   1:2a34000d3544
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    split as 19e14c8397fc, e036916b63ea
   |    summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -330,21 +338,25 @@ Connect them all
   x | |  changeset:   4:868d2e0eb19c
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | | |  obsolete:    split as 7b3290f6e0a0, ec31316faa9d
   | | |  summary:     D
   | | |
   x | |  changeset:   3:a8df460dbbfe
   |/ /   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
+  | |    obsolete:    split as 7b3290f6e0a0, ec31316faa9d
   | |    summary:     C
   | |
   x |  changeset:   2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  obsolete:    split as 19e14c8397fc, 7b3290f6e0a0
   | |  summary:     B
   | |
   x |  changeset:   1:2a34000d3544
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    split as 19e14c8397fc, 7b3290f6e0a0
   |    summary:     A
   |
   o  changeset:   0:ea207398892e

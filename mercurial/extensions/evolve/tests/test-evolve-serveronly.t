@@ -116,6 +116,7 @@ Push
   (please upgrade your server)
   pushing 2 obsolescence markers (* bytes) (glob)
   remote: 2 obsolescence markers added
+  remote: obsoleted 1 changesets
   $ cat ../errors.log
   $ hg push
   pushing to http://localhost:$HGPORT/
@@ -139,6 +140,7 @@ Pull
   pulling obsmarker using legacy method
   (please upgrade your server)
   2 obsolescence markers added
+  obsoleted 1 changesets
   (run 'hg heads' to see heads)
   $ cat ../errors.log
   $ hg -R ../other pull

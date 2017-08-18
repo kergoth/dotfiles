@@ -62,16 +62,19 @@ Create a cycle
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as 2a34000d3544
   |  summary:     C
   |
   x  changeset:   2:c473644ee0e9
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as a8df460dbbfe
   |  summary:     B
   |
   @  changeset:   1:2a34000d3544
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as c473644ee0e9
   |  summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -204,31 +207,37 @@ And create a second one
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as 868d2e0eb19c
   |  summary:     F
   |
   x  changeset:   5:0da815c333f6
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as d9f908fde1a1
   |  summary:     E
   |
   @  changeset:   4:868d2e0eb19c
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as 0da815c333f6
   |  summary:     D
   |
   x  changeset:   3:a8df460dbbfe
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    split as 2a34000d3544, 868d2e0eb19c
   |  summary:     C
   |
   x  changeset:   2:c473644ee0e9
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as a8df460dbbfe
   |  summary:     B
   |
   x  changeset:   1:2a34000d3544
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  obsolete:    rewritten as c473644ee0e9
   |  summary:     A
   |
   o  changeset:   0:ea207398892e

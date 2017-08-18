@@ -152,6 +152,7 @@ proper behavior with conflict using internal:merge
   |/   parent:      0:29ec1554cfaf
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as e04690b09bc6
   |    summary:     babar count up to ten
   |
   o  changeset:   0:29ec1554cfaf
@@ -243,6 +244,7 @@ proper behavior with conflict using an external merge tool
   |/   parent:      0:29ec1554cfaf
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as b20d08eea373
   |    summary:     babar count up to ten
   |
   o  changeset:   0:29ec1554cfaf

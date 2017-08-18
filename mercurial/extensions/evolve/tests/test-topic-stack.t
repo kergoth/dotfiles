@@ -76,7 +76,15 @@ Simple test
   t3: c_e
   t2: c_d
   t1: c_c
-    ^ c_b
+  t0^ c_b (base)
+  $ hg stack -v
+  ### topic: foo
+  ### branch: default
+  t4(6559e6d93aea)@ c_f (current)
+  t3(0f9ac936c87d): c_e
+  t2(e629654d7050): c_d
+  t1(8522f9e3fee9): c_c
+  t0(ea705abc4f51)^ c_b (base)
   $ hg stack -Tjson | python -m json.tool
   [
       {
@@ -118,12 +126,89 @@ Simple test
       {
           "isentry": false,
           "topic.stack.desc": "c_b",
+          "topic.stack.index": 0,
           "topic.stack.state": [
               "base"
           ],
           "topic.stack.state.symbol": "^"
       }
   ]
+  $ hg stack -v -Tjson | python -m json.tool
+  [
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_f",
+          "topic.stack.index": 4,
+          "topic.stack.shortnode": "6559e6d93aea",
+          "topic.stack.state": [
+              "current"
+          ],
+          "topic.stack.state.symbol": "@"
+      },
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_e",
+          "topic.stack.index": 3,
+          "topic.stack.shortnode": "0f9ac936c87d",
+          "topic.stack.state": [
+              "clean"
+          ],
+          "topic.stack.state.symbol": ":"
+      },
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_d",
+          "topic.stack.index": 2,
+          "topic.stack.shortnode": "e629654d7050",
+          "topic.stack.state": [
+              "clean"
+          ],
+          "topic.stack.state.symbol": ":"
+      },
+      {
+          "isentry": true,
+          "topic.stack.desc": "c_c",
+          "topic.stack.index": 1,
+          "topic.stack.shortnode": "8522f9e3fee9",
+          "topic.stack.state": [
+              "clean"
+          ],
+          "topic.stack.state.symbol": ":"
+      },
+      {
+          "isentry": false,
+          "topic.stack.desc": "c_b",
+          "topic.stack.index": 0,
+          "topic.stack.shortnode": "ea705abc4f51",
+          "topic.stack.state": [
+              "base"
+          ],
+          "topic.stack.state.symbol": "^"
+      }
+  ]
+
+check that topics and stack are available even if ui.strict=true
+
+  $ hg topics
+   * foo
+  $ hg stack
+  ### topic: foo
+  ### branch: default
+  t4@ c_f (current)
+  t3: c_e
+  t2: c_d
+  t1: c_c
+  t0^ c_b (base)
+  $ hg topics --config ui.strict=true
+   * foo
+  $ hg stack --config ui.strict=true
+  ### topic: foo
+  ### branch: default
+  t4@ c_f (current)
+  t3: c_e
+  t2: c_d
+  t1: c_c
+  t0^ c_b (base)
 
 error case, nothing to list
 
@@ -180,7 +265,7 @@ Case with some of the topic unstable
   t3$ c_e (unstable)
   t2@ c_d (current)
   t1: c_c
-    ^ c_b
+  t0^ c_b (base)
   $ hg up t3
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg topic --list
@@ -190,7 +275,7 @@ Case with some of the topic unstable
   t3$ c_e (current unstable)
   t2: c_d
   t1: c_c
-    ^ c_b
+  t0^ c_b (base)
   $ hg topic --list --color=debug
   [topic.stack.summary.topic|### topic: [topic.active|foo]]
   [topic.stack.summary.branches|### branch: default]
@@ -198,7 +283,7 @@ Case with some of the topic unstable
   [topic.stack.index topic.stack.index.current topic.stack.index.unstable|t3][topic.stack.state topic.stack.state.current topic.stack.state.unstable|$] [topic.stack.desc topic.stack.desc.current topic.stack.desc.unstable|c_e][topic.stack.state topic.stack.state.current topic.stack.state.unstable| (current unstable)]
   [topic.stack.index topic.stack.index.clean|t2][topic.stack.state topic.stack.state.clean|:] [topic.stack.desc topic.stack.desc.clean|c_d]
   [topic.stack.index topic.stack.index.clean|t1][topic.stack.state topic.stack.state.clean|:] [topic.stack.desc topic.stack.desc.clean|c_c]
-    [topic.stack.state topic.stack.state.base|^] [topic.stack.desc topic.stack.desc.base|c_b]
+  [topic.stack.index topic.stack.index.base|t0][topic.stack.state topic.stack.state.base|^] [topic.stack.desc topic.stack.desc.base|c_b][topic.stack.state topic.stack.state.base| (base)]
   $ hg up t2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
 
@@ -281,7 +366,7 @@ Test output
   t3: c_g
   t2: c_d
   t1: c_c
-    ^ c_b
+  t0^ c_b (base)
 
 Case with multiple heads on the topic with unstability involved
 ---------------------------------------------------------------
@@ -325,7 +410,7 @@ We amend the message to make sure the display base pick the right changeset
   t3: c_g
   t2@ c_D (current)
   t1: c_c
-    ^ c_b
+  t0^ c_b (base)
 
 Trying to list non existing topic
   $ hg stack thisdoesnotexist

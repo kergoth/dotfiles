@@ -10,6 +10,7 @@ let s:is_win32term = (has('win32') || has('win64')) &&
 
 let s:separators = {}
 let s:accents = {}
+let s:hl_groups = {}
 
 function! s:gui2cui(rgb, fallback)
   if a:rgb == ''
@@ -41,19 +42,30 @@ function! s:get_syn(group, what)
 endfunction
 
 function! s:get_array(fg, bg, opts)
+  let opts=empty(a:opts) ? '' : join(a:opts, ',')
   return g:airline_gui_mode ==# 'gui'
-        \ ? [ a:fg, a:bg, '', '', join(a:opts, ',') ]
-        \ : [ '', '', a:fg, a:bg, join(a:opts, ',') ]
+        \ ? [ a:fg, a:bg, '', '', opts ]
+        \ : [ '', '', a:fg, a:bg, opts ]
+endfunction
+
+function! airline#highlighter#reset_hlcache()
+  let s:hl_groups = {}
 endfunction
 
 function! airline#highlighter#get_highlight(group, ...)
-  let fg = s:get_syn(a:group, 'fg')
-  let bg = s:get_syn(a:group, 'bg')
-  let reverse = g:airline_gui_mode ==# 'gui'
-        \ ? synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'gui')
-        \ : synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'cterm')
-        \|| synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'term')
-  return reverse ? s:get_array(bg, fg, a:000) : s:get_array(fg, bg, a:000)
+  if get(g:, 'airline_highlighting_cache', 0) && has_key(s:hl_groups, a:group)
+    return s:hl_groups[a:group]
+  else
+    let fg = s:get_syn(a:group, 'fg')
+    let bg = s:get_syn(a:group, 'bg')
+    let reverse = g:airline_gui_mode ==# 'gui'
+          \ ? synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'gui')
+          \ : synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'cterm')
+          \|| synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'term')
+    let res = reverse ? s:get_array(bg, fg, a:000) : s:get_array(fg, bg, a:000)
+  endif
+  let s:hl_groups[a:group] = res
+  return res
 endfunction
 
 function! airline#highlighter#get_highlight2(fg, bg, ...)
@@ -92,11 +104,14 @@ function! airline#highlighter#exec(group, colors)
   let colors = s:CheckDefined(colors)
   if old_hi != new_hi || !s:hl_group_exists(a:group)
     let cmd = printf('hi %s %s %s %s %s %s %s %s',
-        \ a:group, s:Get(colors, 0, 'guifg=', ''), s:Get(colors, 1, 'guibg=', ''),
-        \ s:Get(colors, 2, 'ctermfg=', ''), s:Get(colors, 3, 'ctermbg=', ''),
-        \ s:Get(colors, 4, 'gui=', ''), s:Get(colors, 4, 'cterm=', ''),
-        \ s:Get(colors, 4, 'term=', ''))
+        \ a:group, s:Get(colors, 0, 'guifg='), s:Get(colors, 1, 'guibg='),
+        \ s:Get(colors, 2, 'ctermfg='), s:Get(colors, 3, 'ctermbg='),
+        \ s:Get(colors, 4, 'gui='), s:Get(colors, 4, 'cterm='),
+        \ s:Get(colors, 4, 'term='))
     exe cmd
+    if has_key(s:hl_groups, a:group)
+      let s:hl_groups[a:group] = colors
+    endif
   endif
 endfunction
 
@@ -132,11 +147,12 @@ function! s:CheckDefined(colors)
   return a:colors[0:1] + [fg, bg] + [a:colors[4]]
 endfunction
 
-function! s:Get(dict, key, prefix, default)
-  if get(a:dict, a:key, a:default) isnot# a:default
-    return a:prefix. get(a:dict, a:key)
-  else
+function! s:Get(dict, key, prefix)
+  let res=get(a:dict, a:key, '')
+  if empty(res)
     return ''
+  else
+    return a:prefix. res
   endif
 endfunction
 

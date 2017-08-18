@@ -18,7 +18,7 @@ example 1: commit creates a changeset in draft phase
 example 2: unsafe amend with plain vanilla Mercurial: the original
 commit is stripped
   $ hg commit --amend -u alice -d '1 0' -m 'implement feature Y'
-  saved backup bundle to $TESTTMP/t/.hg/strip-backup/6e725fd2be6f-42cc74d4-amend-backup.hg (glob)
+  saved backup bundle to $TESTTMP/t/.hg/strip-backup/6e725fd2be6f-42cc74d4-amend.hg (glob)
   $ hg log -r 23fe4ac6d3f1
   abort: unknown revision '23fe4ac6d3f1'!
   [255]

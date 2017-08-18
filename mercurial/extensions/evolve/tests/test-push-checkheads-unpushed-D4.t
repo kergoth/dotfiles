@@ -82,7 +82,9 @@ Test setup
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit B1
   $ hg debugobsolete `getid "desc(A0)" ` `getid "desc(A1)"`
+  obsoleted 1 changesets
   $ hg debugobsolete `getid "desc(B0)" ` `getid "desc(B1)"`
+  obsoleted 1 changesets
   $ hg log -G --hidden
   @  d70a1f75a020 (draft): B1
   |
@@ -118,5 +120,6 @@ Actual testing (existing branch only)
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
+  obsoleted 1 changesets
 
   $ cd ../..

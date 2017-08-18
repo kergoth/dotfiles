@@ -13,7 +13,6 @@
   > [ui]
   > logtemplate = {rev}:{node|short}@{branch}({phase}) {desc|firstline}\n
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
   $ mkcommit() {

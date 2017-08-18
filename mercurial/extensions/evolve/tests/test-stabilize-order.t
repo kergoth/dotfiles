@@ -2,12 +2,11 @@
   > [defaults]
   > amend=-d "0 0"
   > [extensions]
-  > hgext.graphlog=
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
   $ glog() {
-  >   hg glog --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
+  >   hg log -G --template '{rev}:{node|short}@{branch}({phase}) {desc|firstline}\n' "$@"
   > }
 
   $ hg init repo
@@ -221,6 +220,7 @@ Ambiguous evolution
   | x  changeset:   12:2256dae6521f
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    rewritten as f83a0bce03e4
   |    summary:     addc
   |
   o  changeset:   11:7a68bc4596ea
