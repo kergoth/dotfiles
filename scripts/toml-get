@@ -16,14 +16,21 @@ else:
     with open(args.file, 'r') as f:
         obj = toml.load(f)
 
+err = 0
 if not args.keys:
     toml.dump(obj, sys.stdout)
 else:
     for key in args.keys:
-        value = functools.reduce(lambda x, y: x[y], key.split("."), obj)
-        if isinstance(value, str):
-            print(value)
-        elif hasattr(value, 'items'):
-            toml.dump(value, sys.stdout)
+        try:
+            value = functools.reduce(lambda x, y: x[y], key.split("."), obj)
+        except KeyError:
+            sys.stderr.write('Error: unable to find key %s\n' % key)
+            err = 1
         else:
-            print(toml._dump_value(value))
+            if isinstance(value, str):
+                print(value)
+            elif hasattr(value, 'items'):
+                toml.dump(value, sys.stdout)
+            else:
+                print(toml._dump_value(value))
+sys.exit(err)
