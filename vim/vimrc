@@ -598,6 +598,9 @@ endif
 " Enable line number column
 set number
 
+" Set window title
+set title
+
 " I hate 'Thanks for flying VIM'
 set titleold=
 
