@@ -54,6 +54,12 @@ npm install -g --prefix="$npmenv_dir" "$@"
 dest="$XDG_DATA_HOME/../bin"
 mkdir -p "$dest"
 
+if [ $(find "$npmenv_dir/bin" -type f | wc -l) -eq 1 ]; then
+    echo >&2 "Error: no binaries exist after installation, aborting"
+    rm -r "$npmenv_dir"
+    exit 1
+fi
+
 for bin in "$npmenv_dir/bin/"*; do
     if [ -e "$bin" ]; then
         filename="${bin##*/}"
