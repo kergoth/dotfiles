@@ -35,14 +35,6 @@ what () {
     tldr "$1" || cheat "$1" || man "$1"
 }
 
-pc () {
-    pin-cushion "$1" --format json | jq .
-}
-
-pcless () {
-    pin-cushion "$1" --format json | jq -C . | ${PAGER:-less}
-}
-
 # Convenience when pasting shell snippets
 alias '$='
 
