@@ -43,7 +43,7 @@ fi
 : ${AUTOENV_DISABLED:=0}
 
 # Public helper functions, which can be used from your .autoenv.zsh files:
-#
+
 # Source the next .autoenv.zsh file from parent directories.
 # This is useful if you want to use a base .autoenv.zsh file for a directory
 # subtree.
@@ -60,7 +60,7 @@ autoenv_source_parent() {
 }
 
 # Internal functions. {{{
-# Internal: stack of entered (and handled) directories. {{{
+# Internal: stack of loaded env files (i.e. entered directories). {{{
 typeset -g -a _autoenv_stack_entered
 # -g: make it global, this is required when used with antigen.
 typeset -g -A _autoenv_stack_entered_mtime
@@ -292,7 +292,7 @@ _autoenv_source() {
   # Source varstash library once.
   # XXX: pollutes environment with e.g. `stash`, and `autostash` will cause
   # an overwritten `stash` function to be called!
-  if [[ -z "$functions[(I)autostash]" ]]; then
+  if ! (( $+functions[autostash] )); then
     if \grep -qE '\b(autostash|autounstash|stash)\b' $autoenv_env_file; then
       source ${${funcsourcetrace[1]%:*}:h}/lib/varstash
     fi
@@ -396,7 +396,7 @@ _autoenv_chpwd_handler() {
   fi
 
   local env_file="$PWD/$AUTOENV_FILE_ENTER"
-  _autoenv_debug "env_file: $env_file"
+  _autoenv_debug "looking for env_file: $env_file"
 
   # Handle leave event for previously sourced env files.
   if [[ $AUTOENV_HANDLE_LEAVE == 1 ]] && (( $#_autoenv_stack_entered )); then
@@ -410,7 +410,7 @@ _autoenv_chpwd_handler() {
         fi
 
         # Unstash any autostashed stuff.
-        if [[ -n "$functions[(I)autostash]" ]]; then
+        if (( $+functions[autostash] )); then
           varstash_dir=$prev_dir autounstash
         fi
 
@@ -422,8 +422,10 @@ _autoenv_chpwd_handler() {
   if ! [[ -f $env_file ]] && [[ $AUTOENV_LOOK_UPWARDS == 1 ]]; then
     env_file=$(_autoenv_get_file_upwards $PWD)
     if [[ -z $env_file ]]; then
+      _autoenv_debug "No env_file found when looking upwards"
       return
     fi
+    _autoenv_debug "Found env_file: $env_file"
   fi
 
   # Load the env file only once: check if $env_file is in the stack of entered

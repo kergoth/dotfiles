@@ -177,7 +177,7 @@ testing simple push
   $ hg debugobsolete ffffffffffffffffffffffffffffffffffffffff `getid '.'`
   $ hg push -f --debug
   pushing to ssh://user@dummy/server
-  running python "*/dummyssh" user@dummy 'hg -R server serve --stdio' (glob)
+  running python "*/dummyssh" 'user@dummy' 'hg -R server serve --stdio' (glob)
   sending hello command
   sending between command
   remote: 516

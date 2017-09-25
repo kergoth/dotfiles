@@ -162,12 +162,9 @@ This plugin follows the standard runtime path structure, and as such it can be i
 | [minpac][54] | `call minpac#add('vim-airline/vim-airline')` |
 | manual | copy all of the files into your `~/.vim` directory |
 
-# Configuration
+# Documentation
 
 `:help airline`
-
-The default setting of 'laststatus' is for the statusline to not appear until a split is created. If you want it to appear all the time, add the following to your vimrc:
-`set laststatus=2`
 
 # Integrating with powerline fonts
 
@@ -189,7 +186,11 @@ Many optimizations have been made such that the majority of users will not see a
 
 The [minivimrc][7] project has some helper mappings to troubleshoot performance related issues.
 
-If you don't want all the bells and whistles enabled by default, you can define a value for `g:airline_extensions`.  When this variable is defined, only the extensions listed will be loaded; an empty array would effectively disable all extensions.
+If you don't want all the bells and whistles enabled by default, you can define a value for `g:airline_extensions`.  When this variable is defined, only the extensions listed will be loaded; an empty array would effectively disable all extensions (e.g. `:let g:airline_extensions = []`).
+
+Also, you can enable caching of the various syntax highlighting groups. This will try to prevent some of the more expensive `:hi` calls in Vim, which seem to be expensive in the Vim core at the expense of possibly not being hunderet percent correct all the times (especially if you often change highlighting groups yourself using `:hi` commands). To set this up do `:let g:airline_highlighting_cache = 1`. A `:AirlineRefresh` will however clear the cache.
+
+In addition you might want to check out the [dark_minimal theme][55], which does not change highlighting groups once they are defined. Also please check the [FAQ][27] for more information on how to diagnose and fix the problem.
 
 # Screenshots
 
@@ -259,3 +260,4 @@ MIT License. Copyright (c) 2013-2017 Bailey Ling & Contributors.
 [52]: https://github.com/Shougo/dein.vim
 [53]: https://github.com/lervag/vimtex
 [54]: https://github.com/k-takata/minpac/
+[55]: https://github.com/vim-airline/vim-airline-themes/blob/master/autoload/airline/themes/dark_minimal.vim

@@ -27,6 +27,11 @@ let s:default_registry = {
 \       'suggested_filetypes': ['javascript', 'typescript'],
 \       'description': 'Apply eslint --fix to a file.',
 \   },
+\   'format': {
+\       'function': 'ale#fixers#format#Fix',
+\       'suggested_filetypes': ['elm'],
+\       'description': 'Apply elm-format to a file.',
+\   },
 \   'isort': {
 \       'function': 'ale#fixers#isort#Fix',
 \       'suggested_filetypes': ['python'],
@@ -34,7 +39,7 @@ let s:default_registry = {
 \   },
 \   'prettier': {
 \       'function': 'ale#fixers#prettier#Fix',
-\       'suggested_filetypes': ['javascript'],
+\       'suggested_filetypes': ['javascript', 'typescript', 'json', 'css', 'scss'],
 \       'description': 'Apply prettier to a file.',
 \   },
 \   'prettier_eslint': {
@@ -76,6 +81,16 @@ let s:default_registry = {
 \       'function': 'ale#fixers#swiftformat#Fix',
 \       'suggested_filetypes': ['swift'],
 \       'description': 'Apply SwiftFormat to a file.',
+\   },
+\   'phpcbf': {
+\       'function': 'ale#fixers#phpcbf#Fix',
+\       'suggested_filetypes': ['php'],
+\       'description': 'Fix PHP files with phpcbf.',
+\   },
+\   'clang-format': {
+\       'function': 'ale#fixers#clangformat#Fix',
+\       'suggested_filetypes': ['c', 'cpp'],
+\       'description': 'Fix C/C++ files with clang-format.',
 \   },
 \}
 
