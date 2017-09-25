@@ -1,7 +1,19 @@
 #!/bin/sh
+
+untracked="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$untracked"' EXIT INT TERM
+
 git mstash
 ret="$?"
-"$(dirname "$0")/scripts/dotfiles-external-update" "$@"
+
+git ls-files -o | sort -u >"$untracked"
+"$(dirname "$0")/scripts/dotfiles-external-update" "$@" || exit 2
+git ls-files -o | sort -u >"$untracked.new"
+
+comm -13 "$untracked" "$untracked.new" | tr '\n' '\0' | xargs -0 git add
+git add -u
+git commit -n -s -m "Update externals"
+
 if [ "$ret" -eq 0 ]; then
     git stash apply
 fi
