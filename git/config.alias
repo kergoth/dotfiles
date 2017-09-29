@@ -1,6 +1,7 @@
 # vim: set noet sts=0 sw=0 ft=gitconfig :
 
 [alias]
+	git = !exec git
 	ci = commit -s
 	ic = commit -s
 	cm = commit -s -m
