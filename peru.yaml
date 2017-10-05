@@ -103,7 +103,6 @@ imports:
 
     # Mercurial
     hg-extension-crecord: mercurial/extensions/crecord
-    hg-extension-prompt: mercurial/extensions/prompt
     hg-extension-shelve: mercurial/extensions/shelve
     hg-extension-evolve: mercurial/extensions/evolve
 
@@ -510,10 +509,6 @@ git module git-pull-requests:
 hg module hg-extension-crecord:
     url: https://bitbucket.org/edgimar/crecord
     rev: b9bfbcdbc070ede5c66d7494717cdcc0b9f16079
-
-hg module hg-extension-prompt:
-    url: https://bitbucket.org/obensonne/hg-prompt
-    rev: 064a8c1d11beba9b42062e7586f0c4f0e7c0d786
 
 hg module hg-extension-shelve:
     url: https://bitbucket.org/astiob/hgshelve
