@@ -47,13 +47,13 @@ With --all --any we dedupe the divergent and solve the divergence once
   1 changesets pruned
   2 new divergent changesets
   $ hg log -G
-  @  3:e708fd28d5cf@default(draft) add bdivergent2 [divergent]
+  @  3:e708fd28d5cf@default(draft) add bdivergent2 [content-divergent]
   |
-  | o  2:c2f698071cba@default(draft) add bdivergent1 [divergent]
+  | o  2:c2f698071cba@default(draft) add bdivergent1 [content-divergent]
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   
-  $ hg evolve --all --any --divergent
+  $ hg evolve --all --any --contentdivergent
   merge:[2] add bdivergent1
   with: [3] add bdivergent2
   base: [1] add _b
@@ -90,15 +90,15 @@ versions of the revision _c
   1 changesets pruned
   2 new divergent changesets
   $ hg log -G
-  @  8:0a768ef678d9@default(draft) cdivergent2 [divergent]
+  @  8:0a768ef678d9@default(draft) cdivergent2 [content-divergent]
   |
-  | o  7:26c7705fee96@default(draft) add cdivergent1 [divergent]
+  | o  7:26c7705fee96@default(draft) add cdivergent1 [content-divergent]
   |/
   | o  5:c26f1d3baed2@default(draft) add bdivergent1 []
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   
-  $ hg evolve --all --any --divergent
+  $ hg evolve --all --any --contentdivergent
   merge:[7] add cdivergent1
   with: [8] cdivergent2
   base: [6] add _c
@@ -126,9 +126,9 @@ Test None docstring issue of evolve divergent, which caused hg crush
   1 changesets pruned
   2 new divergent changesets
   $ hg log -G
-  @  3:e708fd28d5cf@default(draft) add bdivergent2 [divergent]
+  @  3:e708fd28d5cf@default(draft) add bdivergent2 [content-divergent]
   |
-  | o  2:c2f698071cba@default(draft) add bdivergent1 [divergent]
+  | o  2:c2f698071cba@default(draft) add bdivergent1 [content-divergent]
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   
@@ -145,9 +145,9 @@ Test None docstring issue of evolve divergent, which caused hg crush
   > EOF
   $ hg evolve --all
   nothing to evolve on current working copy parent
-  (do you want to use --divergent)
+  (do you want to use --contentdivergent)
   [2]
-  $ hg evolve --divergent
+  $ hg evolve --contentdivergent
   merge:[3] add bdivergent2
   with: [2] add bdivergent1
   base: [1] add _b

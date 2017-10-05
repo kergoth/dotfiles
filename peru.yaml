@@ -110,11 +110,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 5436d3e5fc1ea86203ea4c6b48575809836930b3
+    rev: 8146d58bb2c77e6b9ff7424ba09508071a3fcf12
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 5fab542516579bdea5cc8b94137d9d85a0c3fda5
+    rev: ba4e16334aeb3536c873816935a2cc8ee400e05d
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 6a2895b7f5832f006f602271aee102df46d6c965
+    rev: f13a8d454a5bc2626d2937d57c3bd173c3cbbf96
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -201,7 +201,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 031cb310565e281aa8e0697e6fd753fb1f86d16c
+    rev: 27acd851a780c563cb4807fc0ea3af9caccbb585
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -245,7 +245,7 @@ git module vim-dispatch:
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession.git
-    rev: ad1ef9a0db9a03463b005b488fd27cb735317394
+    rev: b82f48bbcc950ad25db7e9ddd938d9d9f911bb56
 
 # netrw improvements
 git module vim-vinegar:
@@ -258,7 +258,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 36f6e6b5b035bd8ca1dd45aff4b7e6da7ca890bb
+    rev: b24038960e2abd58dfaaa3654e80fd2aec885278
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -295,7 +295,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 41e02083353d277491daaaa9594cdfa062b77737
+    rev: c2614467cf79dcfaca58da30df70d4e6dc6b3792
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -333,7 +333,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 21cf5437a8d0de86e766669879db7852c1272cb4
+    rev: 78ac43e6aba174468ca5033d5732a6d380baa53e
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -365,7 +365,7 @@ git module z:
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
     pick: ssh-copy-rsub
-    rev: 2eb1eedb40233c7bc3c2d826a06c40709df9783b
+    rev: 4ef1ab1fd8756afc77dcc12de1fedcd5e33c598b
 
 git module pom:
     url: https://github.com/tobym/pom
@@ -377,7 +377,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 0e3a4cf259d53b609733e8c1812890b85e185ccc
+    rev: 207a037dc76951d4855c801e92a2b2c2160da22e
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -522,7 +522,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: 0d16c89aa18584443d08fd07c587d4cb14677c4a
+    rev: 0884856a4143a7d18dcd09c9bfcb9686806094fa
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -568,7 +568,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 7126493cb8ecbf85515a6c54132aa6754f67a3f4
+    rev: 153923268f15b2dff12840150fa06528327a2930
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -661,7 +661,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 2bd352370f0df4f260e3e6b5ab926f700acc32c5
+    rev: 25045641fbe92d175f2cd322497c9796d612782a
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

@@ -4,66 +4,98 @@
 Changeset Evolution with Mercurial
 ==================================
 
+`evolve`_ is a Mercurial extension for faster and safer mutable history. It
+implements the `changeset evolution`_ concept for `Mercurial`_.
+
+* It offers a safe and simple way to refine changesets locally and propagate
+  those changes to other repositories.
+
+* It can automatically detect and handle the complex issues that can arise from
+  exchanging draft changesets.
+
+* It even makes it possible for multiple developers to safely rewrite the same
+  parts of history in a distributed way.
+
+* It fully respects the Phases concept so users will only be able to rewrite
+  parts of the history that are safe to change. Phases have been part of
+  Mercurial since early 2012.
+
+.. _`evolve`: https://www.mercurial-scm.org/wiki/EvolveExtension
+.. _`Mercurial`: https://www.mercurial-scm.org/
+
+Installation and setup
+----------------------
+
+We recommend you subscribe to the `evolve-testers`_ mailing list to stay up
+to date with the latest news and announcement.
+
+.. _`evolve-testers`: https://www.mercurial-scm.org/mailman/listinfo/evolve-testers
+
+Using pip::
+
+    pip install --user hg-evolve
+
+Then add in your `hgrc` config::
+
+   [extensions]
+   evolve=
+
+You can easily edit the `hgrc` of a repository using `hg config --local`.
+Alternatively, you can edit your user configuration with `hg config --edit`.
+
+Table of Contents
+-----------------
+
 .. toctree::
    :maxdepth: 2
 
+   index
    user-guide
    sharing
    concepts
    from-mq
+   commands
+   known-doc-issues
 
-`evolve`_ is an experimental Mercurial extension for safe mutable history.
+.. _`changeset evolution`:
 
-.. _`evolve`: https://www.mercurial-scm.org/wiki/EvolveExtension
+What is Changeset Evolution?
+----------------------------
 
 With core Mercurial, changesets are permanent and immutable. You can
 commit new changesets to modify your source code, but you cannot
-modify or remove old changesets—they are carved in stone for all
-eternity.
+modify or remove old changesets.
 
-For years, Mercurial has included various extensions that allow
-history modification: ``rebase``, ``mq``, ``histedit``, and so forth.
-These are useful and popular extensions, and in fact history
-modification is one of the big reasons DVCSes (distributed version
-control systems) like Mercurial took off.
-
-But there's a catch: until now, Mercurial's various mechanisms for
+For years, Mercurial has included various commands that allow
+history modification: ``rebase``, ``histedit``, ``commit --amend`` and so forth.
+However, there's a catch: until now, Mercurial's various mechanisms for
 modifying history have been *unsafe*, in that changesets were
-destroyed (“stripped”) rather than simply made invisible.
+destroyed (“stripped”) rather than simply hidden and still easy to recover.
 
-``evolve`` makes things better in a couple of ways:
+``evolve`` makes things better by changing the behaviour of most existing
+history modification commands so they use a safer mechanism (*changeset
+obsolescence*, covered below) rather than the older, less safe *strip*
+operation.
 
-  * It changes the behaviour of most existing history modification
-    extensions (``rebase``, ``histedit``, etc.) so they use a safer
-    mechanism (*changeset obsolescence*, covered below) rather than
-    the older, less safe *strip* operation.
-
-  * It provides a new way of modifying history that is roughly
-    equivalent to ``mq`` (but much nicer and safer).
-
-It helps to understand that ``evolve`` builds on infrastructure
-already in core Mercurial:
+``evolve`` is built on infrastructure in core Mercurial:
 
   * *Phases* (starting in Mercurial 2.1) allow you to distinguish
-    mutable and immutable changesets. We'll cover phases early in the
-    user guide, since understanding phases is essential to
-    understanding ``evolve``.
+    mutable and immutable changesets.
 
   * *Changeset obsolescence* (starting in Mercurial 2.3) is how
     Mercurial knows how history has been modified, specifically when
     one changeset replaces another. In the obsolescence model, a
     changeset is neither removed nor modified, but is instead marked
     *obsolete* and typically replaced by a *successor*. Obsolete
-    changesets usually become *hidden* as well. Obsolescence is an
-    invisible feature until you start using ``evolve``, so we'll cover
-    it in the user guide too.
+    changesets usually become *hidden* as well. Obsolescence is a
+    disabled feature in Mercurial until you start using ``evolve``.
 
 Some of the things you can do with ``evolve`` are:
 
   * Fix a mistake immediately: “Oops! I just committed a changeset
     with a syntax error—I'll fix that and amend the changeset so no
-    one sees my mistake.” (While this is possible using existing
-    features of core Mercurial, ``evolve`` makes it safer.)
+    one sees my mistake.” (While this is possible using default
+    features of core Mercurial, changeset evolution makes it safer.)
 
   * Fix a mistake a little bit later: “Oops! I broke the tests three
     commits back, but only noticed it now—I'll just update back to the
@@ -86,53 +118,49 @@ Some of the things you can do with ``evolve`` are:
     for code review. The solution is to share mutable history with
     your reviewer, amending each changeset until it passes review.
 
-``evolve`` is experimental!
+  * Explore and audit the rewrite history of a changeset. Since Mercurial is
+    tracking the edits you make to a changeset, you can look at the history of
+    these edits. This is similar to Mercurial tracking the history of file
+    edits, but at the changeset level.
+
+Why the `evolve` extension?
 ---------------------------
 
-The long-term plan for ``evolve`` is to add it to core Mercurial.
-However, it is not yet stable enough for that. In particular:
+Mercurial core already has some support for `changeset evolution`_ so why have a
+dedicated extension?
 
-  * The UI is unstable: ``evolve``'s command names and command options
-    are not completely nailed down yet. They are subject to occasional
-    backwards-incompatible changes. If you write scripts that use
-    evolve commands, a future release could break your scripts.
+The long-term plan for ``evolve`` is to add it to core Mercurial. However,
+having the extension helps us experiment with various user experience
+approaches and technical prototypes. Having a dedicated extension helps current
+users deploy the latest changes quickly and provides developers with low latency
+feedback.
 
-  * There are still some corner cases that aren't handled yet. If you
-    think you have found such a case, please check if it's already
-    described in the Mercurial bug tracker (https://bz.mercurial-scm.org/).
-    Bugs in ``evolve`` are files under component "evolution": use
-    `this query`_ to view open bugs in ``evolve``.
+Whenever we are happy with a experimental direction in the extension, the
+relevant code can go upstream into Core Mercurial.
 
-.. _`this query`: https://bz.mercurial-scm.org/buglist.cgi?component=evolution&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEED_EXAMPLE
+Development status
+------------------
 
-Installation and setup
-----------------------
+While well underway, the full implementation of the `changeset evolution`_
+concept is still a work in progress. Core Mercurial already supports many of the
+associated features, but for now they are still disabled by default. The current
+implementation has been usable for multiple years already, and some parts of it
+are used in production by multiple projects and companies (including the
+Mercurial project itself, Facebook, Google, etc…).
 
-To use ``evolve``, you must:
+However, there are still some areas were the current implementation has gaps.
+This means some use cases or performance issues are not handled as well as they
+currently are without evolution. Mercurial has been around for a long time and
+is strongly committed to backward compatibility. Therefore turning evolution on
+by default today could regress the experience of some of our current users. The
+features will only be enabled by default at the point where users who do not use
+or care about the new features added by evolution won't be negatively impacted
+by the new default.
 
-  #. Clone the ``evolve`` repository::
+.. # .. _`this query`: https://bz.mercurial-scm.org/buglist.cgi?component=evolution&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEED_EXAMPLE
 
-       cd ~/src
-       hg clone https://www.mercurial-scm.org/repo/evolve
-
-  #. Configure the extension, either locally ::
-
-       hg config --local
-
-     or for all your repositories ::
-
-       hg config --edit
-
-     Then add ::
-
-       evolve=~/src/evolve-main/hgext3rd/evolve/
-
-     in the ``[extensions]`` section (adding the section if necessary). Use
-     the directory that you actually cloned to, of course.
-
-
-Next steps:
------------
+Resources
+---------
 
   * For a practical guide to using ``evolve`` in a single repository,
     see the `user guide`_.

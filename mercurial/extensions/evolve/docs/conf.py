@@ -1,6 +1,16 @@
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+from mercurial import demandimport
+demandimport.disable()
+from docutils import nodes
+from docutils.parsers.rst import Directive
+from mercurial import ui
+from mercurial import extensions as hgext
+from mercurial import commands
+import os
+
+extensions = ["sphinx.ext.graphviz"]
+
 # autoclass_content = 'both'
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = []
@@ -122,3 +132,28 @@ html_use_modindex = False
 
 # Output file base name for HTML help builder.
 # htmlhelp_basename = ''
+
+graphviz_output_format = "svg"
+
+class hghelpdirective(Directive):
+    has_content = True
+
+    def run(self):
+        u = ui.ui()
+        if not hasattr(u, 'disablepager'):
+            return []
+        u.disablepager()
+        u.setconfig(
+            'extensions', 'evolve',
+            os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                os.pardir, 'hgext3rd', 'evolve'))
+        hgext.loadall(u)
+        u.pushbuffer()
+        commands.help_(u, self.content[0])
+        return [
+            nodes.literal_block(text=u.popbuffer())]
+
+
+def setup(app):
+    app.add_directive('hghelp', hghelpdirective)

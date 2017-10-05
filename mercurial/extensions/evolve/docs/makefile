@@ -2,10 +2,10 @@
 all: tutorials/tutorial.rst tutorials/topic-tutorial.rst static/logo-evolve.ico
 	sphinx-build . ../html/
 
-tutorials/tutorial.rst: tutorials/tutorial.t
+tutorials/tutorial.rst: tutorials/tutorial.t test2rst.py
 	python test2rst.py tutorials/
 
-tutorials/topic-tutorial.rst: tutorials/topic-tutorial.t
+tutorials/topic-tutorial.rst: tutorials/topic-tutorial.t test2rst.py
 	python test2rst.py tutorials/
 
 static/logo-evolve.ico: static/logo-evolve.svg

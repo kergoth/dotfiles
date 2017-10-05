@@ -212,7 +212,7 @@ Try to drop a changeset with rewrite
   | x  changeset:   2:34b6c051bf1f
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as a2c06c884bfe
+  |    obsolete:    amended as a2c06c884bfe
   |    summary:     add child
   |
   o  changeset:   1:19509a42b0d0

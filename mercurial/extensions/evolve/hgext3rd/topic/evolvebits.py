@@ -1,15 +1,6 @@
 import collections
-from mercurial import obsolete
 
-successorssets = None
-try:
-    from mercurial import obsutil
-    successorssets = getattr(obsutil, 'successorssets', None)
-except ImportError:
-    pass
-
-if successorssets is None:
-    successorssets = obsolete.successorssets
+from . import compat
 
 # Copied from evolve 081605c2e9b6
 
@@ -82,16 +73,24 @@ def _singlesuccessor(repo, p):
         return p.rev()
     obs = repo[p]
     ui = repo.ui
-    newer = successorssets(repo, obs.node())
+    newer = compat.successorssets(repo, obs.node())
     # search of a parent which is not killed
     while not newer:
         ui.debug("stabilize target %s is plain dead,"
                  " trying to stabilize on its parent\n" %
                  obs)
         obs = obs.parents()[0]
-        newer = successorssets(repo, obs.node())
-    if len(newer) > 1 or len(newer[0]) > 1:
+        newer = compat.successorssets(repo, obs.node())
+    if 1 < len(newer):
+        # divergence case
+        # we should pick as arbitrary one
         raise MultipleSuccessorsError(newer)
+    elif 1 < len(newer[0]):
+        splitheads = list(repo.revs('heads(%ln::%ln)', newer[0], newer[0]))
+        if 1 < len(splitheads):
+            # split case, See if we can make sense of it.
+            raise MultipleSuccessorsError(newer)
+        return splitheads[0]
 
     return repo[newer[0][0]].rev()
 

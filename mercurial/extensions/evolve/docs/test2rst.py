@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import re
 import os
 import os.path as op
 import sys
@@ -12,27 +13,54 @@ Mercurial tests
    :maxdepth: 1
 '''
 
+ignored_patterns = [
+    re.compile('^#if'),
+    re.compile('^#else'),
+    re.compile('^#endif'),
+    re.compile('#rest-ignore$'),
+]
+
 
 def rstify(orig, name):
     newlines = []
 
     code_block_mode = False
+    sphinx_directive_mode = False
 
     for line in orig.splitlines():
 
         # Emtpy lines doesn't change output
         if not line:
             newlines.append(line)
+            code_block_mode = False
+            sphinx_directive_mode = False
             continue
 
+        ignored = False
+        for pattern in ignored_patterns:
+            if pattern.search(line):
+                ignored = True
+                break
+        if ignored:
+            continue
+
+        # Sphinx directives mode
+        if line.startswith('  .. '):
+
+            # Insert a empty line to makes sphinx happy
+            newlines.append("")
+
+            # And unindent the directive
+            line = line[2:]
+            sphinx_directive_mode = True
+
+        # Code mode
         codeline = line.startswith('  ')
-        if codeline:
+        if codeline and not sphinx_directive_mode:
             if code_block_mode is False:
                 newlines.extend(['::', ''])
 
             code_block_mode = True
-        else:
-            code_block_mode = False
 
         newlines.append(line)
 

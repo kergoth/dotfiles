@@ -152,7 +152,7 @@ proper behavior with conflict using internal:merge
   |/   parent:      0:29ec1554cfaf
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as e04690b09bc6
+  |    obsolete:    amended as e04690b09bc6
   |    summary:     babar count up to ten
   |
   o  changeset:   0:29ec1554cfaf
@@ -162,7 +162,7 @@ proper behavior with conflict using internal:merge
   
 (fix the conflict and continue)
 
-  $ hg revert -r 5 --all
+  $ hg revert -r 71c18f70c34f --all
   reverting babar
   $ safesed 's/dix/ten/' babar
   $ hg resolve --all -m
@@ -244,7 +244,7 @@ proper behavior with conflict using an external merge tool
   |/   parent:      0:29ec1554cfaf
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as b20d08eea373
+  |    obsolete:    amended as b20d08eea373
   |    summary:     babar count up to ten
   |
   o  changeset:   0:29ec1554cfaf

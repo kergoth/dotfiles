@@ -65,6 +65,10 @@ And of course, we enable the experimental extensions for mutable history:
   > rebase =
   > EOF
 
+#if docgraph-ext
+  $ . "$TESTDIR/testlib/docgraph_setup.sh" #rest-ignore
+#endif
+
 -----------------------
 Single Developer Usage
 -----------------------
@@ -125,6 +129,51 @@ This history is very linear
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	0 -> 1	 [arrowhead=none,
+      		penwidth=2.0];
+      	2	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=2,
+      		pin=true,
+      		pos="1,2!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 2	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 But a typo was made in Babanas!
 
@@ -159,6 +208,52 @@ the outside. The first one has been exchanged and is "public" (immutable).
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	0 -> 1	 [arrowhead=none,
+      		penwidth=2.0];
+      	2	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=2,
+      		pin=true,
+      		pos="1,2!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 2	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 Hopefully. I can use `hg commit --amend` to rewrite my faulty changeset!
 
   $ sed -i'' -e s/Bananos/Banana/ shopping
@@ -185,6 +280,52 @@ A new changeset with the right diff replace the wrong one.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	0 -> 1	 [arrowhead=none,
+      		penwidth=2.0];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
   $ hg export tip
   # HG changeset patch
   # User test
@@ -239,6 +380,64 @@ I now have a new head. Note that this remote head is immutable.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	0 -> 1	 [arrowhead=none,
+      		penwidth=2.0];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 Instead of merging my head with the new one. I'm going to rebase my work
 
   $ hg diff
@@ -260,6 +459,63 @@ My local work is now rebased on the remote one.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 Removing changesets
 ------------------------
@@ -304,6 +560,64 @@ The silly changeset is gone.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 Reordering changesets
 ------------------------
@@ -367,6 +681,88 @@ You can use the 'grab' alias for that.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	9	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=9,
+      		pin=true,
+      		pos="1,9!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	7 -> 9	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 We have a new SPAM SPAM version without the bathroom stuff
 
   $ grep Spam shopping  # enough spam
@@ -429,7 +825,87 @@ for simplicity sake we get the bathroom change in line again
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
-
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	12	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=12,
+      		pin=true,
+      		pos="1,12!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 12	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 Splitting change
 ------------------
@@ -640,6 +1116,88 @@ But at the same time, locally, this same "bathroom changeset" was updated.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	14	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="1,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 When we pull from remote again we get an unstable state!
 
   $ hg pull remote
@@ -673,6 +1231,116 @@ see both version showing up in the log.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	12	 [fillcolor="#DFDFFF",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=12,
+      		pin=true,
+      		pos="2,12!",
+      		shape=pentagon,
+      		style="dotted, filled",
+      		width=0.5];
+      	11 -> 12	 [arrowhead=none,
+      		penwidth=2.0];
+      	14	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="1,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      	12 -> 14	 [arrowhead=none,
+      		minlen=0,
+      		penwidth=2.0,
+      		style=dashed];
+      	15	 [fillcolor="#FF4F4F",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=15,
+      		pin=true,
+      		pos="2,15!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	12 -> 15	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 The older version 75954b8cd933 never ceased to exist in the local repo. It was
 just hidden and excluded from pull and push.
@@ -725,6 +1393,100 @@ The old version of bathroom is hidden again.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	14	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="1,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      	16	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=16,
+      		pin=true,
+      		pos="1,16!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	14 -> 16	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 We can push this evolution to remote.
 
@@ -797,6 +1559,112 @@ I'm pulling its work locally.
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	14	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="1,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      	16	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=16,
+      		pin=true,
+      		pos="1,16!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	14 -> 16	 [arrowhead=none,
+      		penwidth=2.0];
+      	17	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=17,
+      		pin=true,
+      		pos="1,17!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	16 -> 17	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 In the mean time I noticed you can't buy animals in a super market and I prune the animal changeset:
 
   $ hg prune ee942144f952
@@ -826,8 +1694,137 @@ is neither dead or obsolete. My repository is in an unstable state again.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
-  $ hg log -r 'unstable()'
+
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	14	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="1,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      	16	 [fillcolor="#DFDFFF",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=16,
+      		pin=true,
+      		pos="2,16!",
+      		shape=pentagon,
+      		style="dotted, filled",
+      		width=0.5];
+      	14 -> 16	 [arrowhead=none,
+      		penwidth=2.0];
+      	17	 [fillcolor="#FF4F4F",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=17,
+      		pin=true,
+      		pos="2,17!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	16 -> 17	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
+  $ hg log -r "unstable()"
   99f039c5ec9e (draft): SPAM SPAM SPAM
+
+#if docgraph-ext
+  $ hg docgraph -r "unstable()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	17	 [fillcolor="#FF4F4F",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=17,
+      		pin=true,
+      		pos="1,17!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      }
+#endif
 
   $ hg evolve
   move:[17] SPAM SPAM SPAM
@@ -850,6 +1847,101 @@ is neither dead or obsolete. My repository is in an unstable state again.
   |
   o  7e82d3f3c2cb (public): Monthy Python Shopping list
   
+
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	7 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	14	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="1,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	11 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      	18	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=18,
+      		pin=true,
+      		pos="1,18!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	14 -> 18	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 Handling Divergent amend
 ----------------------------------------------
 

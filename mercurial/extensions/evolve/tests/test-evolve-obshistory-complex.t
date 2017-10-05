@@ -374,25 +374,25 @@ walking algorithm works no matter the level of successors + precursors
   o    7b3290f6e0a0 (12) fold1
   |\
   x |    d15d0ffc75f6 (8) fold1
-  |\ \     rewritten(parent, content) by test (*) as 7b3290f6e0a0, d0f33db50670 (glob)
+  |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   | | x  e036916b63ea (11) fold0
-  | | |    rewritten(description, parent, content) by test (*) as 7b3290f6e0a0 (glob)
+  | | |    rewritten(description, parent, content) as 7b3290f6e0a0 by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   x | |  868d2e0eb19c (4) D
-   / /     rewritten(description, parent, content) by test (*) as d15d0ffc75f6 (glob)
+   / /     rewritten(description, parent, content) as d15d0ffc75f6 by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  a8df460dbbfe (3) C
-   /     rewritten(description, content) by test (*) as d15d0ffc75f6 (glob)
+   /     rewritten(description, content) as d15d0ffc75f6 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x    b868bc49b0a4 (7) fold0
-  |\     rewritten(parent, content) by test (*) as 19e14c8397fc, e036916b63ea (glob)
+  |\     rewritten(parent, content) as 19e14c8397fc, e036916b63ea by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  2a34000d3544 (1) A
-   /     rewritten(description, content) by test (*) as b868bc49b0a4 (glob)
+   /     rewritten(description, content) as b868bc49b0a4 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-       rewritten(description, parent, content) by test (*) as b868bc49b0a4 (glob)
+       rewritten(description, parent, content) as b868bc49b0a4 by test (Thu Jan 01 00:00:00 1970 +0000)
   
 While with all option, we should see 15 changesets
 
@@ -406,35 +406,35 @@ While with all option, we should see 15 changesets
   | | | | o  ec31316faa9d (14) fold2
   | | | |/|
   | | | x |    100cc25b765f (9) fold2
-  | | | |\ \     rewritten(parent, content) by test (*) as d4a000f63ee9, ec31316faa9d (glob)
+  | | | |\ \     rewritten(parent, content) as d4a000f63ee9, ec31316faa9d by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | | | |
   | +-------x  d0f33db50670 (13) fold1
-  | | | | |      rewritten(description, parent, content) by test (*) as ec31316faa9d (glob)
+  | | | | |      rewritten(description, parent, content) as ec31316faa9d by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | | |
   +---x | |  e036916b63ea (11) fold0
-  | |  / /     rewritten(description, parent, content) by test (*) as 7b3290f6e0a0 (glob)
+  | |  / /     rewritten(description, parent, content) as 7b3290f6e0a0 by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | |
   | | x |  0da815c333f6 (5) E
-  | |  /     rewritten(description, content) by test (*) as 100cc25b765f (glob)
+  | |  /     rewritten(description, content) as 100cc25b765f by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   x | |    b868bc49b0a4 (7) fold0
-  |\ \ \     rewritten(parent, content) by test (*) as 19e14c8397fc, e036916b63ea (glob)
+  |\ \ \     rewritten(parent, content) as 19e14c8397fc, e036916b63ea by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | |
   | | x |    d15d0ffc75f6 (8) fold1
-  | | |\ \     rewritten(parent, content) by test (*) as 7b3290f6e0a0, d0f33db50670 (glob)
+  | | |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | | |
   | | | | x  d9f908fde1a1 (6) F
-  | | | |      rewritten(description, parent, content) by test (*) as 100cc25b765f (glob)
+  | | | |      rewritten(description, parent, content) as 100cc25b765f by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | |
   x | | |  2a34000d3544 (1) A
-   / / /     rewritten(description, content) by test (*) as b868bc49b0a4 (glob)
+   / / /     rewritten(description, content) as b868bc49b0a4 by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   | x |  868d2e0eb19c (4) D
-  |  /     rewritten(description, parent, content) by test (*) as d15d0ffc75f6 (glob)
+  |  /     rewritten(description, parent, content) as d15d0ffc75f6 by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   | x  a8df460dbbfe (3) C
-  |      rewritten(description, content) by test (*) as d15d0ffc75f6 (glob)
+  |      rewritten(description, content) as d15d0ffc75f6 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-       rewritten(description, parent, content) by test (*) as b868bc49b0a4 (glob)
+       rewritten(description, parent, content) as b868bc49b0a4 by test (Thu Jan 01 00:00:00 1970 +0000)
   

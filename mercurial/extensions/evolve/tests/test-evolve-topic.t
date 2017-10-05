@@ -31,12 +31,15 @@ Create a simple setup
   $ mkcommit aaa
   $ mkcommit bbb
   $ hg topic foo
+  marked working directory as topic: foo
   $ mkcommit ccc
+  active topic 'foo' grew its first changeset
   $ mkcommit ddd
   $ mkcommit eee
   $ mkcommit fff
   $ hg topic bar
   $ mkcommit ggg
+  active topic 'bar' grew its first changeset
   $ mkcommit hhh
   $ mkcommit iii
   $ mkcommit jjj
@@ -74,6 +77,7 @@ make a mess
   $ hg topic -l 
   ### topic: foo (?)
   ### branch: default (?)
+  ### target: default (branch)
   t4@ add fff (current)
   t3: add eee
   t2: add ddd

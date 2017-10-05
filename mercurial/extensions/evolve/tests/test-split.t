@@ -409,10 +409,12 @@ Add topic to the hgrc
   $ echo "[extensions]" >> $HGRCPATH
   $ echo "topic=$(echo $(dirname $TESTDIR))/hgext3rd/topic/" >> $HGRCPATH
   $ hg topic mytopic
+  marked working directory as topic: mytopic
   $ echo babar > babar
   $ echo celeste > celeste
   $ hg add babar celeste
   $ hg commit -m "Works on mytopic" babar celeste --user victor
+  active topic 'mytopic' grew its first changeset
   $ hg log -r . 
   changeset:   21:26f72cfaf036
   branch:      new-branch

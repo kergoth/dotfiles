@@ -69,7 +69,7 @@
   no changes found
   1 new bumped changesets
 
-  $ hg evolve -a -A --bumped
+  $ hg evolve -a -A --phasedivergent
   recreate:[2] tweak a
   atop:[1] modify a
   computing new diff
@@ -121,5 +121,5 @@ product of a merge, we add a test for it.
   |
   o  0:d3873e73d99e@default(public) init
   
-  $ hg evolve --all --bumped
+  $ hg evolve --all --phasedivergent
   skipping b28e84916d8c : we do not handle merge yet

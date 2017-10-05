@@ -50,7 +50,7 @@ def obsmarkerchainfrom(obsstore, nodes):
     seennodes = set(nodes)
     seenmarkers = set()
     pendingnodes = set(nodes)
-    precursorsmarkers = obsstore.precursors
+    precursorsmarkers = obsstore.predecessors
     while pendingnodes:
         current = pendingnodes.pop()
         new = set()

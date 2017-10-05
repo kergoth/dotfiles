@@ -1,3 +1,22 @@
-doc generated with sphinx. tutorial exported using sphinxedhg
+Doc is generated with sphinx.
 
-http://hg.piranha.org.ua/sphinxedhg/
+You can generate the doc with:
+
+```
+make
+```
+
+# Tutorials
+
+For updating the tutorials, you need to have the docgraph extension installed
+(https://pypi.python.org/pypi/hg-docgraph).
+
+Then run the test-topic-tutorial.t and test-tutorial.t to update the output if
+needed.
+
+You'll need the dot binary (likely installed by the graphviz package in your
+package manager) in order to have graphviz graphs rendered in the html output.
+
+Simply run make in the docs directory should takes care of the conversion of
+the tutorial .t files into .rst files. Then sphinx should do the rest of the
+jobs by rendering graphviz graphs.

@@ -28,7 +28,7 @@ eh = exthelper.exthelper()
 
 @eh.templatekw('obsolete')
 def obsoletekw(repo, ctx, templ, **args):
-    """:obsolete: String. Whether the changeset is ``obsolete``.
+    """String. Whether the changeset is ``obsolete``.
     """
     if ctx.obsolete():
         return 'obsolete'
@@ -36,22 +36,22 @@ def obsoletekw(repo, ctx, templ, **args):
 
 @eh.templatekw('troubles')
 def showtroubles(**args):
-    """:troubles: List of strings. Evolution troubles affecting the changeset
+    """List of strings. Evolution troubles affecting the changeset
     (zero or more of "unstable", "divergent" or "bumped")."""
     ctx = args['ctx']
     try:
         # specify plural= explicitly to trigger TypeError on hg < 4.2
-        return templatekw.showlist('trouble', ctx.troubles(), args,
+        return templatekw.showlist('trouble', ctx.instabilities(), args,
                                    plural='troubles')
     except TypeError:
-        return templatekw.showlist('trouble', ctx.troubles(), plural='troubles',
+        return templatekw.showlist('trouble', ctx.instabilities(), plural='troubles',
                                    **args)
 
 def closestprecursors(repo, nodeid):
     """ Yield the list of next precursors pointing on visible changectx nodes
     """
 
-    precursors = repo.obsstore.precursors
+    precursors = repo.obsstore.predecessors
     stack = [nodeid]
 
     while stack:
@@ -138,8 +138,8 @@ def obsfatedefaulttempl(ui):
     # Assemble them
     return {
         'obsfate_quiet': verbtempl + succtempl,
-        'obsfate': verbtempl + optionalusertempl + succtempl,
-        'obsfate_verbose': verbtempl + usertempl + succtempl + datetempl,
+        'obsfate': verbtempl + succtempl + optionalusertempl,
+        'obsfate_verbose': verbtempl + succtempl + usertempl + datetempl,
     }
 
 def obsfatedata(repo, ctx):

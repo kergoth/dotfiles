@@ -89,7 +89,7 @@ Test stabilizing a predecessor child
 
 Test stabilizing a descendant predecessor's child
 
-  $ hg up 7
+  $ hg up -r 005fe5914f78
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg debugobsolete > successors.old
   $ hg evolve -v
@@ -133,7 +133,7 @@ Test stabilizing a descendant predecessor's child
 
 Test behavior with --any
 
-  $ hg up 8
+  $ hg up 81b8bbcd5892
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ echo b >> b
   $ hg amend
@@ -149,11 +149,11 @@ Test behavior with --any
   |
   o  0:c471ef929e6a@default(draft) addroot
   
-  $ hg up 9
+  $ hg up 0f691739f917
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg evolve -v
   nothing to evolve on current working copy parent
-  (1 other unstable in the repository, do you want --any or --rev)
+  (1 other orphan in the repository, do you want --any or --rev)
   [2]
   $ hg evolve --any -v
   move:[9] addc
@@ -179,7 +179,7 @@ Test behavior with --any
   o  0:c471ef929e6a@default(draft) addroot
   
   $ hg evolve --any -v
-  no unstable changesets to evolve
+  no orphan changesets to evolve
   [1]
 
 Ambiguous evolution
@@ -220,7 +220,7 @@ Ambiguous evolution
   | x  changeset:   12:2256dae6521f
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as f83a0bce03e4
+  |    obsolete:    reworded as f83a0bce03e4
   |    summary:     addc
   |
   o  changeset:   11:7a68bc4596ea

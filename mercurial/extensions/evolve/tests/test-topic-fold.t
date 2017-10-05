@@ -37,7 +37,9 @@ Check that fold keep the topic if all revisions have the topic
   $ cd testfold
   $ mkcommit ROOT
   $ hg topic myfeature
+  marked working directory as topic: myfeature
   $ mkcommit feature1
+  active topic 'myfeature' grew its first changeset
   $ mkcommit feature2
   $ logtopic
   @  2:d76a6166b18c835be9a487c5e21c7d260f0a1676
@@ -51,7 +53,7 @@ Check that fold keep the topic if all revisions have the topic
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
   ### topic: myfeature
-  ### branch: default
+  ### target: default (branch)
   t1@ folded (current)
   t0^ add ROOT (base)
   $ logtopic
@@ -77,7 +79,9 @@ Check that fold dismis the topic if not all revisions have the topic
   $ mkcommit feature3
   created new head
   $ hg topic myotherfeature
+  marked working directory as topic: myotherfeature
   $ mkcommit feature4
+  active topic 'myotherfeature' grew its first changeset
   $ logtopic
   @  5:5ded4d6d578c37f339b0716de2e46e12ece7cbde
   |  topics: myotherfeature
@@ -88,7 +92,9 @@ Check that fold dismis the topic if not all revisions have the topic
   o  0:3e7df3b3b17c6deb4a1c70e790782fdf17af96a7
      topics:
   $ hg fold --exact -r "(tip~1)::" -m "folded 2"
+  active topic 'myotherfeature' is now empty
   2 changesets folded
+  clearing empty topic "myotherfeature"
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ logtopic
   @  6:03da8f7238e9a4d708d6b8af402c91c68f271477

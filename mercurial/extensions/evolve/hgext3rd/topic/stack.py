@@ -5,30 +5,180 @@
 from mercurial.i18n import _
 from mercurial import (
     destutil,
+    context,
     error,
     node,
+    phases,
+    util,
 )
-from .evolvebits import builddependencies, _orderrevs, _singlesuccessor
+from .evolvebits import builddependencies, _singlesuccessor
 
 short = node.short
 
-def getstack(repo, branch=None, topic=None):
-    # XXX need sorting
-    if topic is not None and branch is not None:
-        raise error.ProgrammingError('both branch and topic specified (not defined yet)')
-    elif topic is not None:
-        trevs = repo.revs("topic(%s) - obsolete()", topic)
-    elif branch is not None:
-        trevs = repo.revs("branch(%s) - public() - obsolete() - topic()", branch)
-    else:
-        raise error.ProgrammingError('neither branch and topic specified (not defined yet)')
-    revs = _orderrevs(repo, trevs)
-    if revs:
-        pt1 = repo[revs[0]].p1()
+# TODO: compat
+
+if not util.safehasattr(context.basectx, 'orphan'):
+    context.basectx.orphan = context.basectx.unstable
+
+if not util.safehasattr(context.basectx, 'isunstable'):
+    context.basectx.isunstable = context.basectx.troubled
+
+class stack(object):
+    """object represent a stack and common logic associated to it."""
+
+    def __init__(self, repo, branch=None, topic=None):
+        self._repo = repo
+        self.branch = branch
+        self.topic = topic
+        self.behinderror = None
+        if topic is not None and branch is not None:
+            raise error.ProgrammingError('both branch and topic specified (not defined yet)')
+        elif topic is not None:
+            trevs = repo.revs("topic(%s) - obsolete()", topic)
+        elif branch is not None:
+            trevs = repo.revs("branch(%s) - public() - obsolete() - topic()", branch)
+        else:
+            raise error.ProgrammingError('neither branch and topic specified (not defined yet)')
+        self._revs = trevs
+
+    def __iter__(self):
+        return iter(self.revs)
+
+    def __getitem__(self, index):
+        return self.revs[index]
+
+    def index(self, item):
+        return self.revs.index(item)
+
+    @util.propertycache
+    def _dependencies(self):
+        deps, rdeps = builddependencies(self._repo, self._revs)
+
+        repo = self._repo
+        srcpfunc = repo.changelog.parentrevs
+
+        ### post process to skip over possible gaps in the stack
+        #
+        # For example in the following situation, we need to detect that "t3"
+        # indirectly depends on t2.
+        #
+        #  o t3
+        #  |
+        #  o other
+        #  |
+        #  o t2
+        #  |
+        #  o t1
+
+        pmap = {}
+
+        def pfuncrev(repo, rev):
+            """a special "parent func" that also consider successors"""
+            parents = pmap.get(rev)
+            if parents is None:
+                parents = [repo[_singlesuccessor(repo, repo[p])].rev()
+                           for p in srcpfunc(rev) if 0 <= p]
+                pmap[rev] = parents
+            return parents
+
+        revs = self._revs
+        stackrevs = set(self._revs)
+        for root in [r for r in revs if not deps[r]]:
+            seen = set()
+            stack = [root]
+            while stack:
+                current = stack.pop()
+                for p in pfuncrev(repo, current):
+                    if p in seen:
+                        continue
+                    seen.add(p)
+                    if p in stackrevs:
+                        rdeps[p].add(root)
+                        deps[root].add(p)
+                    elif phases.public < repo[p].phase():
+                        # traverse only if we did not found a proper candidate
+                        stack.append(p)
+
+        return deps, rdeps
+
+    @util.propertycache
+    def revs(self):
+        # some duplication/change from _orderrevs because we use a post
+        # processed dependency graph.
+
+        # Step 1: compute relation of revision with each other
+        dependencies, rdependencies = self._dependencies
+        dependencies = dependencies.copy()
+        rdependencies = rdependencies.copy()
+        # Step 2: Build the ordering
+        # Remove the revisions with no dependency(A) and add them to the ordering.
+        # Removing these revisions leads to new revisions with no dependency (the
+        # one depending on A) that we can remove from the dependency graph and add
+        # to the ordering. We progress in a similar fashion until the ordering is
+        # built
+        solvablerevs = [r for r in sorted(dependencies.keys())
+                        if not dependencies[r]]
+        revs = []
+        while solvablerevs:
+            rev = solvablerevs.pop()
+            for dependent in rdependencies[rev]:
+                dependencies[dependent].remove(rev)
+                if not dependencies[dependent]:
+                    solvablerevs.append(dependent)
+            del dependencies[rev]
+            revs.append(rev)
+
+        revs.extend(sorted(dependencies))
+        # step 3: add t0
+        if revs:
+            pt1 = self._repo[revs[0]].p1()
+        else:
+            pt1 = self._repo['.']
+
         if pt1.obsolete():
-            pt1 = repo[_singlesuccessor(repo, pt1)]
+            pt1 = self._repo[_singlesuccessor(self._repo, pt1)]
         revs.insert(0, pt1.rev())
-    return revs
+        return revs
+
+    @util.propertycache
+    def changesetcount(self):
+        return len(self._revs)
+
+    @util.propertycache
+    def troubledcount(self):
+        return len([r for r in self._revs if self._repo[r].isunstable()])
+
+    @util.propertycache
+    def heads(self):
+        revs = self.revs[1:]
+        deps, rdeps = self._dependencies
+        return [r for r in revs if not rdeps[r]]
+
+    @util.propertycache
+    def behindcount(self):
+        revs = self.revs[1:]
+        deps, rdeps = self._dependencies
+        if revs:
+            minroot = [min(r for r in revs if not deps[r])]
+            try:
+                dest = destutil.destmerge(self._repo, action='rebase',
+                                          sourceset=minroot,
+                                          onheadcheck=False)
+                return len(self._repo.revs("only(%d, %ld)", dest, minroot))
+            except error.NoMergeDestAbort:
+                return 0
+            except error.ManyMergeDestAbort as exc:
+                # XXX we should make it easier for upstream to provide the information
+                self.behinderror = str(exc).split('-', 1)[0].rstrip()
+                return -1
+        return 0
+
+    @util.propertycache
+    def branches(self):
+        branches = sorted(set(self._repo[r].branch() for r in self._revs))
+        if not branches:
+            branches = set([self._repo[None].branch()])
+        return branches
 
 def labelsgen(prefix, labelssuffix):
     """ Takes a label prefix and a list of suffixes. Returns a string of the prefix
@@ -63,6 +213,9 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
         label = 'topic.active'
 
     data = stackdata(repo, branch=branch, topic=topic)
+    empty = False
+    if data['changesetcount'] == 0:
+        empty = True
     if topic is not None:
         fm.plain(_('### topic: %s')
                  % ui.label(topic, label),
@@ -74,7 +227,7 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
                      label='topic.stack.summary.headcount.multiple')
             fm.plain(')')
         fm.plain('\n')
-    fm.plain(_('### branch: %s')
+    fm.plain(_('### target: %s (branch)')
              % '+'.join(data['branches']), # XXX handle multi branches
              label='topic.stack.summary.branches')
     if topic is None:
@@ -86,13 +239,17 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
     else:
         if data['behindcount'] == -1:
             fm.plain(', ')
-            fm.plain('ambigious rebase destination', label='topic.stack.summary.behinderror')
+            fm.plain('ambigious rebase destination - %s' % data['behinderror'],
+                     label='topic.stack.summary.behinderror')
         elif data['behindcount']:
             fm.plain(', ')
             fm.plain('%d behind' % data['behindcount'], label='topic.stack.summary.behindcount')
     fm.plain('\n')
 
-    for idx, r in enumerate(getstack(repo, branch=branch, topic=topic), 0):
+    if empty:
+        fm.plain(_("(stack is empty)\n"))
+
+    for idx, r in enumerate(stack(repo, branch=branch, topic=topic), 0):
         ctx = repo[r]
         # special case for t0, b0 as it's hard to plugin into rest of the logic
         if idx == 0:
@@ -103,9 +260,13 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
             prev = ctx.rev()
             continue
         p1 = ctx.p1()
+        p2 = ctx.p2()
         if p1.obsolete():
             p1 = repo[_singlesuccessor(repo, p1)]
-        if p1.rev() != prev and p1.node() != node.nullid:
+        if p2.node() != node.nullid:
+            entries.append((idxmap.get(p1.rev()), False, p1))
+            entries.append((idxmap.get(p2.rev()), False, p2))
+        elif p1.rev() != prev and p1.node() != node.nullid:
             entries.append((idxmap.get(p1.rev()), False, p1))
         entries.append((idx, True, ctx))
         idxmap[ctx.rev()] = idx
@@ -122,7 +283,7 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
             # "base" is kind of a "ghost" entry
             # skip other label for them (no current, no unstable)
             states = ['base']
-        elif ctx.unstable():
+        elif ctx.orphan():
             # current revision can be unstable also, so in that case show both
             # the states and the symbol '@' (issue5553)
             if iscurrentrevision:
@@ -169,24 +330,11 @@ def stackdata(repo, branch=None, topic=None):
     :behindcount: number of changeset on rebase destination
     """
     data = {}
-    revs = getstack(repo, branch, topic)[1:]
-    data['changesetcount'] = len(revs)
-    data['troubledcount'] = len([r for r in revs if repo[r].troubled()])
-    deps, rdeps = builddependencies(repo, revs)
-    data['headcount'] = len([r for r in revs if not rdeps[r]])
-    data['behindcount'] = 0
-    if revs:
-        minroot = [min(r for r in revs if not deps[r])]
-        try:
-            dest = destutil.destmerge(repo, action='rebase',
-                                      sourceset=minroot,
-                                      onheadcheck=False)
-            data['behindcount'] = len(repo.revs("only(%d, %ld)", dest,
-                                                minroot))
-        except error.NoMergeDestAbort:
-            data['behindcount'] = 0
-        except error.ManyMergeDestAbort:
-            data['behindcount'] = -1
-    data['branches'] = sorted(set(repo[r].branch() for r in revs))
-
+    current = stack(repo, branch, topic)
+    data['changesetcount'] = current.changesetcount
+    data['troubledcount'] = current.troubledcount
+    data['headcount'] = len(current.heads)
+    data['behindcount'] = current.behindcount
+    data['behinderror'] = current.behinderror
+    data['branches'] = current.branches
     return data

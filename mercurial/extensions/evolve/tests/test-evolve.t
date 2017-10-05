@@ -412,7 +412,7 @@ all solving bumped troubled
   |
   o  0	: base - test
   
-  $ hg evolve --any --traceback --bumped
+  $ hg evolve --any --traceback --phasedivergent
   recreate:[8] another feature that rox
   atop:[7] another feature (child of ba0ec09b1bab)
   computing new diff
@@ -453,9 +453,9 @@ test evolve --all
   $ hg log -G --template '{rev} {troubles}\n'
   @  13
   |
-  | o  11 unstable
+  | o  11 orphan
   | |
-  | o  10 unstable
+  | o  10 orphan
   | |
   | x  9
   |/
@@ -770,12 +770,12 @@ Test olog
   @    d26d339c513f (12) add 4
   |\
   x |    af636757ce3b (11) add 3
-  |\ \     rewritten(description, user, parent, content) by test (*) as d26d339c513f (glob)
+  |\ \     rewritten(description, user, parent, content) as d26d339c513f by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   | \ \
   | |\ \
   | | | x  ce341209337f (4) add 4
-  | | |      rewritten(description, user, content) by test (*) as d26d339c513f (glob)
+  | | |      rewritten(description, user, content) as d26d339c513f by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
 
 Test obsstore stat
@@ -971,7 +971,7 @@ Evolve from the middle of a stack pick the right changesets.
   
   $ hg evolve
   nothing to evolve on current working copy parent
-  (2 other unstable in the repository, do you want --any or --rev)
+  (2 other orphan in the repository, do you want --any or --rev)
   [2]
 
 
@@ -990,6 +990,19 @@ Evolve disables active bookmarks.
   working directory is now at d952e93add6f
   $ ls .hg/bookmarks*
   .hg/bookmarks
+  $ hg log -G
+  @  11	: a2 - test
+  |
+  o  10	testbookmark: a1__ - test
+  |
+  | o  9	: a3 - test
+  | |
+  | x  8	: a2 - test
+  | |
+  | x  7	: a1_ - test
+  |/
+  o  0	: a0 - test
+  
 
 Possibility to select what trouble to solve first, asking for bumped before
 divergent
@@ -1049,7 +1062,7 @@ normally the unstable changeset would be solve first
   |/
   o  0	: a0 - test
   
-  $ hg evolve -r 12 --bumped
+  $ hg evolve -r 12 --phasedivergent
   recreate:[12] add new file bumped
   atop:[11] a2
   computing new diff
@@ -1059,15 +1072,27 @@ normally the unstable changeset would be solve first
   move:[9] a3
   atop:[13] bumped update to d952e93add6f:
   working directory is now at cce26b684bfe
+  $ glog
+  @  14:cce26b684bfe@default(draft) a3
+  |
+  o  13:f15d32934071@default(draft) bumped update to d952e93add6f:
+  |
+  o  11:d952e93add6f@mybranch(public) a2
+  |
+  o  10:9f8b83c2e7f3@default(public) a1__
+  |
+  o  0:07c1c36d9ef0@default(public) a0
+  
+
 Check that we can resolve troubles in a revset with more than one commit
-  $ hg up 14 -C
+  $ hg up cce26b684bfe -C
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ mkcommit gg
-  $ hg up 14 
+  $ hg up cce26b684bfe
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit gh
   created new head
-  $ hg up 14 
+  $ hg up cce26b684bfe
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ printf "newline\nnewline\n" >> a
   $ hg log -G
@@ -1110,11 +1135,11 @@ Evolving an empty revset should do nothing
   set of specified revisions is empty
   [1]
 
-  $ hg evolve --rev "14::" --bumped
-  no bumped changesets in specified revisions
-  (do you want to use --unstable)
+  $ hg evolve --rev "14::" --phasedivergent
+  no phasedivergent changesets in specified revisions
+  (do you want to use --orphan)
   [2]
-  $ hg evolve --rev "14::" --unstable
+  $ hg evolve --rev "14::" --orphan
   move:[15] add gg
   atop:[18] a3
   move:[16] add gh
@@ -1312,7 +1337,7 @@ Check that prune respects the allowunstable option
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg evolve --all
   nothing to evolve on current working copy parent
-  (2 other unstable in the repository, do you want --any or --rev)
+  (2 other orphan in the repository, do you want --any or --rev)
   [2]
   $ hg evolve --all --any
   move:[22] add j2
@@ -1408,7 +1433,7 @@ Create a split commit
   $ hg add oo pp
   $ hg commit -m "oo+pp"
   $ mkcommit uu
-  $ hg up 30
+  $ hg up 68330ac625b8
   0 files updated, 0 files merged, 3 files removed, 0 files unresolved
   $ printf "oo" > oo;
   $ hg add oo
@@ -1460,7 +1485,30 @@ Check that dirstate changes are kept at failure for conflicts (issue4966)
   $ hg add newlyadded
   $ hg commit -m "will cause conflict at evolve"
 
-  $ hg update -q 37
+  $ glog -r "edc3c9de504e::"
+  @  39:02e943732647@default(draft) will cause conflict at evolve
+  |
+  o  38:f8e30e9317aa@default(draft) will be evolved safely
+  |
+  o  37:36030b147271@default(draft) will be amended
+  |
+  o  36:43c3f5ef149f@default(draft) add uu
+  |
+  o  35:7a555adf2b4a@default(draft) _pp
+  |
+  o  34:2be4d2d5bf34@default(draft) _oo
+  |
+  | o  31:580886d07058@default(draft) add gg
+  | |
+  o |  30:68330ac625b8@default(draft) add unstableifparentisfolded
+  |/
+  | o  20:e02107f98737@default(draft) add gh
+  |/
+  o  18:edc3c9de504e@default(draft) a3
+  |
+  ~
+
+  $ hg update -q 36030b147271
   $ echo "amended" > newfile
   $ hg amend -m "amended"
   2 new unstable changesets

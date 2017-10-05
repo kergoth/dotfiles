@@ -54,7 +54,9 @@ A simple topic that need rebasing
   $ hg up 'desc(base_c)'
   2 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ hg topic baz
+  marked working directory as topic: baz
   $ mkcommit baz_a
+  active topic 'baz' grew its first changeset
   $ mkcommit baz_b
 
 A simple topic with unstability
@@ -62,7 +64,9 @@ A simple topic with unstability
   $ hg up 'desc(base_d)'
   1 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ hg topic fuz
+  marked working directory as topic: fuz
   $ mkcommit fuz_a
+  active topic 'fuz' grew its first changeset
   $ mkcommit fuz_b
   $ mkcommit fuz_c
   $ hg up 'desc(fuz_a)'
@@ -74,7 +78,9 @@ A topic with multiple heads
   $ hg up 'desc(base_e)'
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic bar
+  marked working directory as topic: bar
   $ mkcommit bar_a
+  active topic 'bar' grew its first changeset
   $ mkcommit bar_b
   $ mkcommit bar_c
   $ hg up 'desc(bar_b)'
@@ -90,7 +96,9 @@ topic 'foo' on the multi headed branch
   $ hg up 'desc(lake_a)'
   1 files updated, 0 files merged, 7 files removed, 0 files unresolved
   $ hg topic foo
+  marked working directory as topic: foo
   $ mkcommit foo_a
+  active topic 'foo' grew its first changeset
   $ mkcommit foo_b
 
 Summary
@@ -175,7 +183,7 @@ verbose
   $ hg topic --verbose
      bar (on branch: default, 5 changesets, 1 troubled, 2 heads)
      baz (on branch: default, 2 changesets, 2 behind)
-   * foo (on branch: lake, 2 changesets, ambiguous destination)
+   * foo (on branch: lake, 2 changesets, ambiguous destination: branch 'lake' has 2 heads)
      fuz (on branch: default, 3 changesets, 2 troubled, 1 behind)
 
 json
@@ -221,7 +229,7 @@ json --verbose
    },
    {
     "active": true,
-    "behinderror": "ambiguous destination",
+    "behinderror": "ambiguous destination: branch 'lake' has 2 heads",
     "branches+": "lake",
     "changesetcount": 2,
     "topic": "foo"
@@ -241,7 +249,7 @@ Also test this situation with 'hg stack'
 
   $ hg stack bar
   ### topic: bar (2 heads)
-  ### branch: default
+  ### target: default (branch)
   t5: add bar_c
   t2^ add bar_b (base)
   t4$ add bar_e (unstable)
@@ -251,7 +259,7 @@ Also test this situation with 'hg stack'
   t0^ add base_e (base)
   $ hg stack bar -v
   ### topic: bar (2 heads)
-  ### branch: default
+  ### target: default (branch)
   t5(9cbadf11b44d): add bar_c
   t2(e555c7e8c767)^ add bar_b (base)
   t4(a920412b5a05)$ add bar_e (unstable)
@@ -261,19 +269,19 @@ Also test this situation with 'hg stack'
   t0(92f489a6251f)^ add base_e (base)
   $ hg stack baz
   ### topic: baz
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t2: add baz_b
   t1: add baz_a
   t0^ add base_c (base)
   $ hg stack foo
   ### topic: foo
-  ### branch: lake, ambigious rebase destination
+  ### target: lake (branch), ambigious rebase destination - branch 'lake' has 2 heads
   t2@ add foo_b (current)
   t1: add foo_a
   t0^ add lake_a (base)
   $ hg stack fuz
   ### topic: fuz
-  ### branch: default, 1 behind
+  ### target: default (branch), 1 behind
   t3$ add fuz_c (unstable)
   t2$ add fuz_b (unstable)
   t1: fuz1_a

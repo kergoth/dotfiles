@@ -54,9 +54,12 @@ from __future__ import absolute_import
 
 import re
 import time
+import weakref
 
 from mercurial.i18n import _
 from mercurial import (
+    bookmarks,
+    changelog,
     cmdutil,
     commands,
     context,
@@ -64,20 +67,21 @@ from mercurial import (
     extensions,
     hg,
     localrepo,
-    lock,
+    lock as lockmod,
     merge,
     namespaces,
     node,
     obsolete,
-    obsutil,
     patch,
     phases,
     registrar,
+    scmutil,
     templatefilters,
     util,
 )
 
 from . import (
+    compat,
     constants,
     revset as topicrevset,
     destination,
@@ -118,8 +122,8 @@ colortable = {'topic.active': 'green',
               'topic.active': 'green',
              }
 
-___version___ = '0.2.1.dev'
-testedwith = '4.0.2 4.1.3 4.2.1'
+__version__ = '0.3.1.dev'
+testedwith = '4.0.2 4.1.3 4.2.3 4.3.3'
 minimumhgversion = '4.0'
 buglink = 'https://bz.mercurial-scm.org/'
 
@@ -134,7 +138,7 @@ def _contexttopicidx(self):
         # XXX we might want to include t0 here,
         # however t0 is related to  'currenttopic' which has no place here.
         return None
-    revlist = stack.getstack(self._repo, topic=topic)
+    revlist = stack.stack(self._repo, topic=topic)
     try:
         return revlist.index(self.rev())
     except IndexError:
@@ -153,12 +157,12 @@ def _namemap(repo, name):
         tname = topic = repo.currenttopic
         if not tname:
             raise error.Abort(_('cannot resolve "%s": no active topic') % name)
-        revs = list(stack.getstack(repo, topic=topic))
+        revs = list(stack.stack(repo, topic=topic))
     elif branchrev.match(name):
         ttype = 'branch'
         idx = int(name[1:])
         tname = branch = repo[None].branch()
-        revs = list(stack.getstack(repo, branch=branch))
+        revs = list(stack.stack(repo, branch=branch))
 
     if revs is not None:
         try:
@@ -185,7 +189,6 @@ def _nodemap(repo, node):
 
 def uisetup(ui):
     destination.modsetup(ui)
-    topicrevset.modsetup(ui)
     discovery.modsetup(ui)
     topicmap.modsetup(ui)
     setupimportexport(ui)
@@ -195,6 +198,15 @@ def uisetup(ui):
     entry = extensions.wrapcommand(commands.table, 'commit', commitwrap)
     entry[1].append(('t', 'topic', '',
                      _("use specified topic"), _('TOPIC')))
+
+    entry = extensions.wrapcommand(commands.table, 'push', pushoutgoingwrap)
+    entry[1].append(('t', 'topic', '',
+                     _("topic to push"), _('TOPIC')))
+
+    entry = extensions.wrapcommand(commands.table, 'outgoing',
+                                   pushoutgoingwrap)
+    entry[1].append(('t', 'topic', '',
+                     _("topic to push"), _('TOPIC')))
 
     extensions.wrapfunction(cmdutil, 'buildcommittext', committextwrap)
     extensions.wrapfunction(merge, 'update', mergeupdatewrap)
@@ -300,44 +312,139 @@ def reposetup(ui, repo):
                 peer.__class__ = topicpeer
             return peer
 
+        def transaction(self, desc, *a, **k):
+            ctr = self.currenttransaction()
+            tr = super(topicrepo, self).transaction(desc, *a, **k)
+            if desc in ('strip', 'repair') or ctr is not None:
+                return tr
+
+            # real transaction start
+            ct = self.currenttopic
+            if not ct:
+                return tr
+            ctwasempty = stack.stackdata(self, topic=ct)['changesetcount'] == 0
+
+            reporef = weakref.ref(self)
+
+            def currenttopicempty(tr):
+                # check active topic emptyness
+                repo = reporef()
+                csetcount = stack.stackdata(repo, topic=ct)['changesetcount']
+                empty = csetcount == 0
+                if empty and not ctwasempty:
+                    ui.status('active topic %r is now empty\n' % ct)
+                if ctwasempty and not empty:
+                    if csetcount == 1:
+                        msg = _('active topic %r grew its first changeset\n')
+                        ui.status(msg % ct)
+                    else:
+                        msg = _('active topic %r grew its %s first changesets\n')
+                        ui.status(msg % (ct, csetcount))
+
+            tr.addpostclose('signalcurrenttopicempty', currenttopicempty)
+            return tr
+
     repo.__class__ = topicrepo
     repo._topics = None
     if util.safehasattr(repo, 'names'):
         repo.names.addnamespace(namespaces.namespace(
             'topics', 'topic', namemap=_namemap, nodemap=_nodemap,
             listnames=lambda repo: repo.topics))
+    # Wrap workingctx extra to return the topic name
+    extensions.wrapfunction(context.workingctx, '__init__', wrapinit)
+    # Wrap changelog.add to drop empty topic
+    extensions.wrapfunction(changelog.changelog, 'add', wrapadd)
+
+def wrapinit(orig, self, repo, *args, **kwargs):
+    orig(self, repo, *args, **kwargs)
+    if repo.currenttopic:
+        self._extra[constants.extrakey] = repo.currenttopic
+    else:
+        # Empty key will be dropped from extra by another hack at the changegroup level
+        self._extra[constants.extrakey] = ''
+
+def wrapadd(orig, cl, manifest, files, desc, transaction, p1, p2, user,
+            date=None, extra=None):
+    if constants.extrakey in extra and not extra[constants.extrakey]:
+        extra = extra.copy()
+        del extra[constants.extrakey]
+    return orig(cl, manifest, files, desc, transaction, p1, p2, user,
+                date=date, extra=extra)
+
+# revset predicates are automatically registered at loading via this symbol
+revsetpredicate = topicrevset.revsetpredicate
 
 @command('topics', [
         ('', 'clear', False, 'clear active topic if any'),
-        ('r', 'rev', '', 'revset of existing revisions', _('REV')),
+        ('r', 'rev', [], 'revset of existing revisions', _('REV')),
         ('l', 'list', False, 'show the stack of changeset in the topic'),
-        ('', 'age', False, 'show when you last touched the topics')
+        ('', 'age', False, 'show when you last touched the topics'),
+        ('', 'current', None, 'display the current topic only'),
     ] + commands.formatteropts,
     _('hg topics [TOPIC]'))
-def topics(ui, repo, topic='', clear=False, rev=None, list=False, **opts):
+def topics(ui, repo, topic=None, **opts):
     """View current topic, set current topic, change topic for a set of revisions, or see all topics.
 
-    Clear topic on existing topiced revisions:
-        `hg topic --rev <related revset> --clear`
+    Clear topic on existing topiced revisions::
 
-    Change topic on some revisions:
-        `hg topic <newtopicname> --rev <related revset>`
+      hg topics --rev <related revset> --clear
 
-    Clear current topic:
-        `hg topic --clear`
+    Change topic on some revisions::
 
-    Set current topic:
-        `hg topic <topicname>`
+      hg topics <newtopicname> --rev <related revset>
 
-    List of topics:
-        `hg topics`
+    Clear current topic::
 
-    List of topics with their last touched time sorted according to it:
-        `hg topic --age`
+      hg topics --clear
+
+    Set current topic::
+
+      hg topics <topicname>
+
+    List of topics::
+
+      hg topics
+
+    List of topics sorted according to their last touched time displaying last
+    touched time and the user who last touched the topic::
+
+      hg topics --age
 
     The active topic (if any) will be prepended with a "*".
 
+    The `--current` flag helps to take active topic into account. For
+    example, if you want to set the topic on all the draft changesets to the
+    active topic, you can do:
+        `hg topics -r "draft()" --current`
+
     The --verbose version of this command display various information on the state of each topic."""
+
+    clear = opts.get('clear')
+    list = opts.get('list')
+    rev = opts.get('rev')
+    current = opts.get('current')
+    age = opts.get('age')
+
+    if current and topic:
+        raise error.Abort(_("cannot use --current when setting a topic"))
+    if current and clear:
+        raise error.Abort(_("cannot use --current and --clear"))
+    if clear and topic:
+        raise error.Abort(_("cannot use --clear when setting a topic"))
+    if age and topic:
+        raise error.Abort(_("cannot use --age while setting a topic"))
+
+    touchedrevs = set()
+    if rev:
+        touchedrevs = scmutil.revrange(repo, rev)
+
+    if topic:
+        topic = topic.strip()
+        if not topic:
+            raise error.Abort(_("topic name cannot consist entirely of whitespaces"))
+        # Have some restrictions on the topic name just like bookmark name
+        scmutil.checknewlabel(repo, topic, 'topic')
+
     if list:
         if clear or rev:
             raise error.Abort(_("cannot use --clear or --rev with --list"))
@@ -347,24 +454,58 @@ def topics(ui, repo, topic='', clear=False, rev=None, list=False, **opts):
             raise error.Abort(_('no active topic to list'))
         return stack.showstack(ui, repo, topic=topic, opts=opts)
 
-    if rev:
+    if touchedrevs:
         if not obsolete.isenabled(repo, obsolete.createmarkersopt):
             raise error.Abort(_('must have obsolete enabled to change topics'))
         if clear:
             topic = None
+        elif opts.get('current'):
+            topic = repo.currenttopic
         elif not topic:
             raise error.Abort('changing topic requires a topic name or --clear')
-        if any(not c.mutable() for c in repo.set('%r and public()', rev)):
+        if repo.revs('%ld and public()', touchedrevs):
             raise error.Abort("can't change topic of a public change")
-        return _changetopics(ui, repo, rev, topic)
+        wl = l = txn = None
+        try:
+            wl = repo.wlock()
+            l = repo.lock()
+            txn = repo.transaction('rewrite-topics')
+            rewrote = _changetopics(ui, repo, touchedrevs, topic)
+            txn.close()
+            ui.status('changed topic on %d changes\n' % rewrote)
+        finally:
+            lockmod.release(txn, l, wl)
+            repo.invalidate()
+        return
 
+    ct = repo.currenttopic
     if clear:
+        empty = stack.stackdata(repo, topic=ct)['changesetcount'] == 0
+        if empty:
+            if ct:
+                ui.status(_('clearing empty topic "%s"\n') % ct)
         return _changecurrenttopic(repo, None)
 
     if topic:
+        if not ct:
+            ui.status(_('marked working directory as topic: %s\n') % topic)
         return _changecurrenttopic(repo, topic)
 
-    _listtopics(ui, repo, opts)
+    # `hg topic --current`
+    ret = 0
+    if current and not ct:
+        ui.write_err(_('no active topic\n'))
+        ret = 1
+    elif current:
+        fm = ui.formatter('topic', opts)
+        namemask = '%s\n'
+        label = 'topic.active'
+        fm.startitem()
+        fm.write('topic', namemask, ct, label=label)
+        fm.end()
+    else:
+        _listtopics(ui, repo, opts)
+    return ret
 
 @command('stack', [
     ] + commands.formatteropts,
@@ -385,6 +526,128 @@ def cmdstack(ui, repo, topic='', **opts):
         branch = repo[None].branch()
     return stack.showstack(ui, repo, branch=branch, topic=topic, opts=opts)
 
+@command('debugcb|debugconvertbookmark', [
+        ('b', 'bookmark', '', _('bookmark to convert to topic')),
+        ('', 'all', None, _('convert all bookmarks to topics')),
+    ],
+    _('[-b BOOKMARK] [--all]'))
+def debugconvertbookmark(ui, repo, **opts):
+    """Converts a bookmark to a topic with the same name.
+    """
+
+    bookmark = opts.get('bookmark')
+    convertall = opts.get('all')
+
+    if convertall and bookmark:
+        raise error.Abort(_("cannot use '--all' and '-b' together"))
+    if not (convertall or bookmark):
+        raise error.Abort(_("you must specify either '--all' or '-b'"))
+
+    bmstore = repo._bookmarks
+
+    nodetobook = {}
+    for book, revnode in bmstore.iteritems():
+        if nodetobook.get(revnode):
+            nodetobook[revnode].append(book)
+        else:
+            nodetobook[revnode] = [book]
+
+    # a list of nodes which we have skipped so that we don't print the skip
+    # warning repeatedly
+    skipped = []
+
+    actions = {}
+
+    lock = wlock = tr = None
+    try:
+        wlock = repo.wlock()
+        lock = repo.lock()
+        if bookmark:
+            try:
+                node = bmstore[bookmark]
+            except KeyError:
+                raise error.Abort(_("no such bookmark exists: '%s'") % bookmark)
+
+            revnum = repo[node].rev()
+            if len(nodetobook[node]) > 1:
+                ui.status(_("skipping revision '%d' as it has multiple bookmarks "
+                          "on it\n") % revnum)
+                return
+            targetrevs = _findconvertbmarktopic(repo, bookmark)
+            if targetrevs:
+                actions[(bookmark, revnum)] = targetrevs
+
+        elif convertall:
+            for bmark, revnode in sorted(bmstore.iteritems()):
+                revnum = repo[revnode].rev()
+                if revnum in skipped:
+                    continue
+                if len(nodetobook[revnode]) > 1:
+                    ui.status(_("skipping '%d' as it has multiple bookmarks on"
+                              " it\n") % revnum)
+                    skipped.append(revnum)
+                    continue
+                if bmark == '@':
+                    continue
+                targetrevs = _findconvertbmarktopic(repo, bmark)
+                if targetrevs:
+                    actions[(bmark, revnum)] = targetrevs
+
+        if actions:
+            try:
+                tr = repo.transaction('debugconvertbookmark')
+                for ((bmark, revnum), targetrevs) in sorted(actions.iteritems()):
+                    _applyconvertbmarktopic(ui, repo, targetrevs, revnum, bmark, tr)
+                tr.close()
+            finally:
+                tr.release()
+    finally:
+        lockmod.release(lock, wlock)
+
+# inspired from mercurial.repair.stripbmrevset
+CONVERTBOOKREVSET = """
+not public() and (
+    ancestors(bookmark(%s))
+    and not ancestors(
+        (
+            (head() and not bookmark(%s))
+            or (bookmark() - bookmark(%s))
+        ) - (
+            descendants(bookmark(%s))
+            - bookmark(%s)
+        )
+    )
+)
+"""
+
+def _findconvertbmarktopic(repo, bmark):
+    """find revisions unambigiously defined by a bookmark
+
+    find all changesets under the bookmark and under that bookmark only.
+    """
+    return repo.revs(CONVERTBOOKREVSET, bmark, bmark, bmark, bmark, bmark)
+
+def _applyconvertbmarktopic(ui, repo, revs, old, bmark, tr):
+    """apply bookmark convertion to topic
+
+    Sets a topic as same as bname to all the changesets under the bookmark
+    and delete the bookmark, if topic is set to any changeset
+
+    old is the revision on which bookmark bmark is and tr is transaction object.
+    """
+
+    rewrote = _changetopics(ui, repo, revs, bmark)
+    # We didn't changed topic to any changesets because the revset
+    # returned an empty set of revisions, so let's skip deleting the
+    # bookmark corresponding to which we didn't put a topic on any
+    # changeset
+    if rewrote == 0:
+        return
+    ui.status(_('changed topic to "%s" on %d revisions\n') % (bmark,
+              rewrote))
+    ui.debug('removing bookmark "%s" from "%d"' % (bmark, old))
+    bookmarks.delete(repo, tr, [bmark])
+
 def _changecurrenttopic(repo, newtopic):
     """changes the current topic."""
 
@@ -396,73 +659,69 @@ def _changecurrenttopic(repo, newtopic):
         if repo.vfs.exists('topic'):
             repo.vfs.unlink('topic')
 
-def _changetopics(ui, repo, revset, newtopic):
+def _changetopics(ui, repo, revs, newtopic):
+    """ Changes topic to newtopic of all the revisions in the revset and return
+    the count of revisions whose topic has been changed.
+    """
     rewrote = 0
-    wl = l = txn = None
-    try:
-        wl = repo.wlock()
-        l = repo.lock()
-        txn = repo.transaction('rewrite-topics')
-        p1 = None
-        p2 = None
-        successors = {}
-        for c in repo.set('%r', revset):
-            def filectxfn(repo, ctx, path):
-                try:
-                    return c[path]
-                except error.ManifestLookupError:
-                    return None
-            fixedextra = dict(c.extra())
-            ui.debug('old node id is %s\n' % node.hex(c.node()))
-            ui.debug('origextra: %r\n' % fixedextra)
-            oldtopic = fixedextra.get(constants.extrakey, None)
-            if oldtopic == newtopic:
-                continue
-            if newtopic is None:
-                del fixedextra[constants.extrakey]
-            else:
-                fixedextra[constants.extrakey] = newtopic
-            fixedextra[constants.changekey] = c.hex()
-            if 'amend_source' in fixedextra:
-                # TODO: right now the commitctx wrapper in
-                # topicrepo overwrites the topic in extra if
-                # amend_source is set to support 'hg commit
-                # --amend'. Support for amend should be adjusted
-                # to not be so invasive.
-                del fixedextra['amend_source']
-            ui.debug('changing topic of %s from %s to %s\n' % (
-                c, oldtopic, newtopic))
-            ui.debug('fixedextra: %r\n' % fixedextra)
-            # While changing topic of set of linear commits, make sure that
-            # we base our commits on new parent rather than old parent which
-            # was obsoleted while changing the topic
-            p1 = c.p1().node()
-            p2 = c.p2().node()
-            if p1 in successors:
-                p1 = successors[p1]
-            if p2 in successors:
-                p2 = successors[p2]
-            mc = context.memctx(
-                repo, (p1, p2), c.description(),
-                c.files(), filectxfn,
-                user=c.user(), date=c.date(), extra=fixedextra)
-            newnode = repo.commitctx(mc)
-            successors[c.node()] = newnode
-            ui.debug('new node id is %s\n' % node.hex(newnode))
-            obsolete.createmarkers(repo, [(c, (repo[newnode],))])
-            rewrote += 1
-        # move the working copy too
-        wctx = repo[None]
-        # in-progress merge is a bit too complex for now.
-        if len(wctx.parents()) == 1:
-            newid = successors.get(wctx.p1().node())
-            if newid is not None:
-                hg.update(repo, newid, quietempty=True)
-        txn.close()
-    finally:
-        lock.release(txn, l, wl)
-        repo.invalidate()
-    ui.status('changed topic on %d changes\n' % rewrote)
+    p1 = None
+    p2 = None
+    successors = {}
+    for r in revs:
+        c = repo[r]
+
+        def filectxfn(repo, ctx, path):
+            try:
+                return c[path]
+            except error.ManifestLookupError:
+                return None
+        fixedextra = dict(c.extra())
+        ui.debug('old node id is %s\n' % node.hex(c.node()))
+        ui.debug('origextra: %r\n' % fixedextra)
+        oldtopic = fixedextra.get(constants.extrakey, None)
+        if oldtopic == newtopic:
+            continue
+        if newtopic is None:
+            del fixedextra[constants.extrakey]
+        else:
+            fixedextra[constants.extrakey] = newtopic
+        fixedextra[constants.changekey] = c.hex()
+        if 'amend_source' in fixedextra:
+            # TODO: right now the commitctx wrapper in
+            # topicrepo overwrites the topic in extra if
+            # amend_source is set to support 'hg commit
+            # --amend'. Support for amend should be adjusted
+            # to not be so invasive.
+            del fixedextra['amend_source']
+        ui.debug('changing topic of %s from %s to %s\n' % (
+            c, oldtopic, newtopic))
+        ui.debug('fixedextra: %r\n' % fixedextra)
+        # While changing topic of set of linear commits, make sure that
+        # we base our commits on new parent rather than old parent which
+        # was obsoleted while changing the topic
+        p1 = c.p1().node()
+        p2 = c.p2().node()
+        if p1 in successors:
+            p1 = successors[p1]
+        if p2 in successors:
+            p2 = successors[p2]
+        mc = context.memctx(
+            repo, (p1, p2), c.description(),
+            c.files(), filectxfn,
+            user=c.user(), date=c.date(), extra=fixedextra)
+        newnode = repo.commitctx(mc)
+        successors[c.node()] = newnode
+        ui.debug('new node id is %s\n' % node.hex(newnode))
+        obsolete.createmarkers(repo, [(c, (repo[newnode],))])
+        rewrote += 1
+    # move the working copy too
+    wctx = repo[None]
+    # in-progress merge is a bit too complex for now.
+    if len(wctx.parents()) == 1:
+        newid = successors.get(wctx.p1().node())
+        if newid is not None:
+            hg.update(repo, newid, quietempty=True)
+    return rewrote
 
 def _listtopics(ui, repo, opts):
     fm = ui.formatter('topics', opts)
@@ -517,7 +776,7 @@ def _listtopics(ui, repo, opts):
             elif -1 == data['behindcount']:
                 fm.plain(', ')
                 fm.write('behinderror', '%s',
-                         _('ambiguous destination'),
+                         _('ambiguous destination: %s') % data['behinderror'],
                          label='topic.list.behinderror')
             fm.plain(')')
         fm.plain('\n')
@@ -533,8 +792,8 @@ def _showlasttouched(repo, fm, opts):
         namemask = '%%-%is' % maxwidth
     activetopic = repo.currenttopic
     for timevalue in times:
-        curtopics = timedict[timevalue][1]
-        for topic in curtopics:
+        curtopics = sorted(timedict[timevalue][1])
+        for topic, user in curtopics:
             fm.startitem()
             marker = ' '
             label = 'topic'
@@ -547,10 +806,12 @@ def _showlasttouched(repo, fm, opts):
             fm.data(active=active)
             fm.plain(' (')
             if timevalue == -1:
-                timestr = 'not yet touched'
+                timestr = 'empty and active'
             else:
                 timestr = templatefilters.age(timedict[timevalue][0])
             fm.write('lasttouched', '%s', timestr, label='topic.list.time')
+            if user:
+                fm.write('usertouched', ' by %s', user, label='topic.list.user')
             fm.plain(')')
             fm.plain('\n')
     fm.end()
@@ -563,6 +824,8 @@ def _getlasttouched(repo, topics):
     topicstime = {}
     curtime = time.time()
     for t in topics:
+        secspassed = -1
+        user = None
         maxtime = (0, 0)
         trevs = repo.revs("topic(%s)", t)
         # Need to check for the time of all changesets in the topic, whether
@@ -570,26 +833,38 @@ def _getlasttouched(repo, topics):
         # XXX: can we just rely on the max rev number for this
         for revs in trevs:
             rt = repo[revs].date()
-            if rt[0] > maxtime[0]:
+            if rt[0] >= maxtime[0]:
                 # Can store the rev to gather more info
                 # latesthead = revs
                 maxtime = rt
+                user = repo[revs].user()
             # looking on the markers also to get more information and accurate
             # last touch time.
-            obsmarkers = obsutil.getmarkers(repo, [repo[revs].node()])
+            obsmarkers = compat.getmarkers(repo, [repo[revs].node()])
             for marker in obsmarkers:
                 rt = marker.date()
                 if rt[0] > maxtime[0]:
+                    user = marker.metadata().get('user', user)
                     maxtime = rt
-        # is the topic still yet untouched
-        if not trevs:
-            secspassed = -1
-        else:
+
+        # Making the username more better
+        username = None
+        if user:
+            # user is of form "abc <abc@xyz.com>"
+            username = user.split('<')[0]
+            if not username:
+                # user is of form "<abc@xyz.com>"
+                username = user[1:-1]
+            username = username.strip()
+
+        topicuser = (t, username)
+
+        if trevs:
             secspassed = (curtime - maxtime[0])
         try:
-            topicstime[secspassed][1].append(t)
+            topicstime[secspassed][1].append(topicuser)
         except KeyError:
-            topicstime[secspassed] = (maxtime, [t])
+            topicstime[secspassed] = (maxtime, [topicuser])
 
     return topicstime
 
@@ -622,6 +897,12 @@ def committextwrap(orig, repo, ctx, subs, extramsg):
                           "\nHG: topic '%s'\nHG: branch" % t)
     return ret
 
+def pushoutgoingwrap(orig, ui, repo, *args, **opts):
+    if opts.get('topic'):
+        topicrevs = repo.revs('topic(%s) - obsolete()', opts['topic'])
+        opts.setdefault('rev', []).extend(topicrevs)
+    return orig(ui, repo, *args, **opts)
+
 def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
     matcher = kwargs.get('matcher')
     partial = not (matcher is None or matcher.always())
@@ -635,12 +916,13 @@ def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
         # if rebase is running and update the currenttopic to topic of new
         # rebased commit. We have explicitly stored in config if rebase is
         # running.
+        ot = repo.currenttopic
+        empty = stack.stackdata(repo, topic=ot)['changesetcount'] == 0
         if repo.ui.hasconfig('experimental', 'topicrebase'):
             isrebase = True
         if repo.ui.configbool('_internal', 'keep-topic'):
             ist0 = True
         if ((not partial and not branchmerge) or isrebase) and not ist0:
-            ot = repo.currenttopic
             t = ''
             pctx = repo[node]
             if pctx.phase() > phases.public:
@@ -649,9 +931,10 @@ def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
                 f.write(t)
             if t and t != ot:
                 repo.ui.status(_("switching to topic %s\n") % t)
+            if ot and not t and empty:
+                repo.ui.status(_('clearing empty topic "%s"\n') % ot)
         elif ist0:
-            repo.ui.status(_("preserving the current topic '%s'\n") %
-                           repo.currenttopic)
+            repo.ui.status(_("preserving the current topic '%s'\n") % ot)
         return ret
     finally:
         wlock.release()

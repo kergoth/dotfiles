@@ -53,7 +53,7 @@ is obsolete with one successor
   o  0:135f39f4bd78@default(draft) add _a
   
 
-  $ hg evo --all --any --unstable
+  $ hg evo --all --any --orphan
   move:[2] add _c
   atop:[3] bprime
   working directory is now at fdcf3523a74d
@@ -99,7 +99,7 @@ Not supported yet
   o  0:b4952fcf48cf@default(draft) add base
   
 
-  $ hg evo --all --any --unstable
+  $ hg evo --all --any --orphan
   move:[3] merge
   atop:[4] aprime
   working directory is now at 0bf3f3a59c8c
@@ -152,7 +152,7 @@ Not supported yet
   o  0:b4952fcf48cf@default(draft) add base
   
 
-  $ hg evo --all --any --unstable
+  $ hg evo --all --any --orphan
   warning: no support for evolving merge changesets with two obsolete parents yet
   (Redo the merge (6b4280e33286) and use `hg prune <old> --succ <new>` to obsolete the old one)
   $ hg log -G
@@ -198,7 +198,7 @@ is obsolete with multiple successors all in one chain (simple split)
   o  0:135f39f4bd78@default(draft) add _a
   
 
-  $ hg evo --all --any --unstable
+  $ hg evo --all --any --orphan
   move:[2] add _c
   atop:[4] add bprimesplit2
   working directory is now at 387cc1e837d7
@@ -252,7 +252,7 @@ order (cross-split).
   o  0:135f39f4bd78@default(draft) add _a
   
 
-  $ hg evo --all --any --unstable
+  $ hg evo --all --any --orphan
   move:[2] add _c
   atop:[6] add bsecondsplit2
   working directory is now at 98e3f21461ff
@@ -301,7 +301,7 @@ Not supported yet
   o  0:135f39f4bd78@default(draft) add _a
   
 
-  $ hg evo --all --any --unstable
+  $ hg evo --all --any --orphan
   cannot solve split accross two branches
   $ hg log -G
   @  4:3c69ea6aa93e@default(draft) add bprimesplit2

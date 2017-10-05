@@ -45,10 +45,17 @@ This Mercurial configuration example is used for testing.
   > [ui]
   > user= Tutorial User
   > EOF
+#if docgraph-ext
+  $ . "$TESTDIR/testlib/docgraph_setup.sh" #rest-ignore
+#endif
 
 Topic branches are lightweight branches which disappear when changes are
-finalized (move to the public phase). They can help users to organize and share
+finalized (moved to the public phase). They can help users to organize and share
 their unfinished work.
+
+In this tutorial, we explain how to use topics for local development. In the first part,
+there is a central *publishing* server. Anything pushed to the central server will become public and immutable This means no unfinished work should escapes the local repository.
+
 
 Topic Basics
 ============
@@ -62,16 +69,38 @@ Let's say we use Mercurial to manage our shopping list:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      }
+#endif
 
-We are about to make some additions to this list and would like to do them 
+We are about to make some additions to this list and would like to do them
 within a topic. Creating a new topic is done using the ``topic`` command:
 
-  $ hg topic food
+  $ hg topics food
+  marked working directory as topic: food
 
 Much like a named branch, our topic is active but it does not contain any
-changesets yet:
+changeset yet:
 
-  $ hg topic
+  $ hg topics
    * food
 
   $ hg summary
@@ -90,6 +119,28 @@ changesets yet:
      summary:     Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      }
+#endif
+
 Our next commit will be part of the active topic:
 
   $ cat >> shopping << EOF
@@ -100,6 +151,7 @@ Our next commit will be part of the active topic:
   > EOF
 
   $ hg commit -m "adding condiments"
+  active topic 'food' grew its first changeset
 
   $ hg log --graph --rev 'topic("food")'
   @  changeset:   1:13900241408b
@@ -109,6 +161,28 @@ Our next commit will be part of the active topic:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     adding condiments
   
+
+#if docgraph-ext
+  $ hg docgraph -r "topic("food")" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      }
+#endif
 
 And future commits will be part of that topic too:
 
@@ -135,12 +209,46 @@ And future commits will be part of that topic too:
      summary:     adding condiments
   
 
+#if docgraph-ext
+  $ hg docgraph -r "topic("food")" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	2	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=2,
+      		pin=true,
+      		pos="1,2!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 2	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
 We can get a compact view of the content of our topic using the ``stack``
 command:
 
   $ hg stack
   ### topic: food
-  ### branch: default
+  ### target: default (branch)
   t2@ adding fruits (current)
   t1: adding condiments
   t0^ Shopping list (base)
@@ -150,7 +258,7 @@ The topic deactivates when we update away from it:
   $ hg update default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
-  $ hg topic
+  $ hg topics
      food
 
 Note that ``default`` (name of the branch) now refers to the tipmost
@@ -175,13 +283,59 @@ changeset of default without a topic:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     Shopping list
   
+
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	0 -> 1	 [arrowhead=none,
+      		penwidth=2.0];
+      	2	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=2,
+      		pin=true,
+      		pos="1,2!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 2	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 And updating back to the topic reactivates it:
 
   $ hg update food
   switching to topic food
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
-  $ hg topic
+  $ hg topics
    * food
 
 Updating to any changeset that is part of a topic activates the topic
@@ -194,7 +348,7 @@ regardless of how the revision was specified:
   switching to topic food
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
-  $ hg topic
+  $ hg topics
    * food
 
 .. Server side activity:
@@ -253,6 +407,63 @@ the latest update from the main server:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	1	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=1,
+      		pin=true,
+      		pos="1,1!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	0 -> 1	 [arrowhead=none,
+      		penwidth=2.0];
+      	3	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=3,
+      		pin=true,
+      		pos="1,3!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 3	 [arrowhead=none,
+      		penwidth=2.0];
+      	2	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=2,
+      		pin=true,
+      		pos="1,2!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	1 -> 2	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 The topic head will not be considered when merging from the new head of the
 branch:
@@ -303,10 +514,67 @@ But the topic will see that branch head as a valid destination:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=3,
+      		pin=true,
+      		pos="1,3!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 3	 [arrowhead=none,
+      		penwidth=2.0];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	3 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	4 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 
 The topic information will disappear when we publish the changesets:
 
-  $ hg topic
+  $ hg topics
    * food
 
   $ hg push
@@ -317,9 +585,19 @@ The topic information will disappear when we publish the changesets:
   adding file changes
   added 2 changesets with 2 changes to 1 files
   2 new obsolescence markers
+  active topic 'food' is now empty
 
-  $ hg topic
+  $ hg topics
    * food
+
+The topic still exists, and any new commit will be in the topic. But
+note that it is now devoid of any commit.
+
+  $ hg topics --list
+  ### topic: food
+  ### target: default (branch)
+  (stack is empty)
+  t0^ adding fruits (base)
 
   $ hg log --graph
   @  changeset:   5:2d50db8b5b4c
@@ -344,22 +622,122 @@ The topic information will disappear when we publish the changesets:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=3,
+      		pin=true,
+      		pos="1,3!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 3	 [arrowhead=none,
+      		penwidth=2.0];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	4 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
+If we update to the *default* head, we will leave the topic behind,
+and since it is commit-less, it will vanish.
+
   $ hg update default
+  clearing empty topic "food"
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+From there, the topic has been completely forgotten.
+
+  $ hg topics
+
+
+Keep working within topics
+==========================
+
+Making sure all your new local commit are made within a topic will help your
+organise your work. It is possible to ensure this through the Mercurial
+configuration.
+
+For this tutorial, we'll add the config at the repository level:
+
+  $ cat << EOF >> .hg/hgrc
+  > [experimental]
+  > enforce-topic = yes
+  > EOF
+
+You can also use `hg config --edit` to update your mercurial configuration.
+
+
+Once enforcement is turned on. New local commit will be denied if no topic is active.
+
+  $ echo sickle >> shopping
+  $ hg commit -m 'Adding sickle'
+  abort: no active topic
+  (set a current topic or use '--config experimental.enforce-topic=no' to commit without a topic)
+  [255]
+
+Ok, let's clean this up and delve into multiple topics.
+
+  $ hg revert .
+  reverting shopping
+
 
 Working with Multiple Topics
 ============================
 
-In the above example, topics do not bring much benefit since you only have one
+In the above example, topics do not bring much benefits since you only have one
 line of development. Topics start to be more useful when you have to work on
 multiple features at the same time.
 
 We might go shopping in a hardware store in the same go, so let's add some
 tools to the shopping list within a new topic:
 
-  $ hg topic tools
+  $ hg topics tools
+  marked working directory as topic: tools
   $ echo hammer >> shopping
   $ hg commit -m 'Adding hammer'
+  active topic 'tools' grew its first changeset
 
   $ echo saw >> shopping
   $ hg commit -m 'Adding saw'
@@ -374,16 +752,18 @@ default branch and start a new topic:
   $ hg update default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
-  $ hg topic drinks
+  $ hg topics drinks
+  marked working directory as topic: drinks
   $ echo 'apple juice' >> shopping
   $ hg commit -m 'Adding apple juice'
+  active topic 'drinks' grew its first changeset
 
   $ echo 'orange juice' >> shopping
   $ hg commit -m 'Adding orange juice'
 
 We now have two topics:
 
-  $ hg topic
+  $ hg topics
    * drinks
      tools
 
@@ -391,7 +771,7 @@ The information displayed by ``hg stack`` adapts to the active topic:
 
   $ hg stack
   ### topic: drinks
-  ### branch: default
+  ### target: default (branch)
   t2@ Adding orange juice (current)
   t1: Adding apple juice
   t0^ adding fruits (base)
@@ -402,7 +782,7 @@ The information displayed by ``hg stack`` adapts to the active topic:
 
   $ hg stack
   ### topic: tools
-  ### branch: default
+  ### target: default (branch)
   t3@ Adding drill (current)
   t2: Adding saw
   t1: Adding hammer
@@ -415,7 +795,8 @@ between them will be attempted by default:
   nothing to rebase
   [1]
 
-Server activity:
+We simulate independant contributions to the repo with this
+activity:
 
   $ cd ../server
   $ hg update
@@ -431,7 +812,7 @@ Server activity:
   $ hg commit -m 'add a pair of shoes'
   $ cd ../client
 
-Let's see what other people did in the meantime:
+Let's discover what other people did contribute:
 
   $ hg pull
   pulling from $TESTTMP/server (glob)
@@ -510,6 +891,148 @@ changeset on top of the latest:
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     Shopping list
   
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=3,
+      		pin=true,
+      		pos="1,3!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 3	 [arrowhead=none,
+      		penwidth=2.0];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	4 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	6	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=6,
+      		pin=true,
+      		pos="1,6!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	5 -> 6	 [arrowhead=none,
+      		penwidth=2.0];
+      	9	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=9,
+      		pin=true,
+      		pos="1,9!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	5 -> 9	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	7	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=7,
+      		pin=true,
+      		pos="1,7!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	6 -> 7	 [arrowhead=none,
+      		penwidth=2.0];
+      	8	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=8,
+      		pin=true,
+      		pos="1,8!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	7 -> 8	 [arrowhead=none,
+      		penwidth=2.0];
+      	10	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=10,
+      		pin=true,
+      		pos="1,10!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	9 -> 10	 [arrowhead=none,
+      		penwidth=2.0];
+      	12	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=12,
+      		pin=true,
+      		pos="1,12!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	11 -> 12	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
   $ hg rebase
   rebasing 6:183984ef46d1 "Adding hammer"
   merging shopping
@@ -519,15 +1042,14 @@ changeset on top of the latest:
   rebasing 8:34255b455dac "Adding drill"
   merging shopping
 
-But what about the other topic? You can use 'hg topic --verbose' to see
+But what about the other topic? You can use 'hg topics --verbose' to see
 information about all the topics:
 
-  $ hg topic --verbose
+  $ hg topics --verbose
      drinks (on branch: default, 2 changesets, 2 behind)
    * tools  (on branch: default, 3 changesets)
 
-The "2 behind" is telling you that there are 2 new changesets on the named
-branch of the topic. You need to merge or rebase to incorporate them.
+The "2 behind" is telling you that there are 2 new changesets over the base of the topic.
 
 Pushing that topic would create a new head, and therefore will be prevented:
 
@@ -539,8 +1061,9 @@ Pushing that topic would create a new head, and therefore will be prevented:
   [255]
 
 
-Even after a rebase, pushing all active topics at the same time will complain
-about the multiple heads it would create on that branch:
+Even after a rebase, pushing all active topics at the same time would publish
+them to the default branch, and then mercurial would complain about the
+multiple *public* heads it would create on that branch:
 
   $ hg rebase -b drinks
   rebasing 9:8dfa45bd5e0c "Adding apple juice"
@@ -572,12 +1095,12 @@ branch head as we just saw in the previous case):
 The published topic has now disappeared, and the other is now marked as
 "behind":
 
-  $ hg topic --verbose
+  $ hg topics --verbose
    * tools (on branch: default, 3 changesets, 2 behind)
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3@ Adding drill (current)
   t2: Adding saw
   t1: Adding hammer
@@ -589,14 +1112,14 @@ Working Within Your Stack
 Navigating within your stack
 ----------------------------
 
-As we saw before `stack` display changesets on your current topic in a clean way:
+As we saw before `stack` displays changesets on your current topic in a clean way:
 
   $ hg topics --verbose
    * tools (on branch: default, 3 changesets, 2 behind)
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3@ Adding drill (current)
   t2: Adding saw
   t1: Adding hammer
@@ -604,7 +1127,7 @@ As we saw before `stack` display changesets on your current topic in a clean way
 
 You can navigate in your current stack with `previous` and `next`.
 
-`previous` will takes you to the parent of your working directory parent on the same topic.
+`previous` will bring you back to the parent of the topic head.
 
   $ hg previous
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -612,13 +1135,13 @@ You can navigate in your current stack with `previous` and `next`.
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3: Adding drill
   t2@ Adding saw (current)
   t1: Adding hammer
   t0^ add a pair of shoes (base)
 
-`next` will moves take you to the children of your working directory parent on the same topic.
+`next` will move you forward to the topic head.
 
   $ hg next
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -626,20 +1149,20 @@ You can navigate in your current stack with `previous` and `next`.
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3@ Adding drill (current)
   t2: Adding saw
   t1: Adding hammer
   t0^ add a pair of shoes (base)
 
-You can also directly access changesets within your stack with the revset `t#`.
+You can also directly jump to a changeset within your stack with the revset `t#`.
 
   $ hg update t1
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3: Adding drill
   t2: Adding saw
   t1@ Adding hammer (current)
@@ -652,7 +1175,7 @@ It's easy to edit your work inside your stack:
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3: Adding drill
   t2: Adding saw
   t1@ Adding hammer (current)
@@ -661,7 +1184,8 @@ It's easy to edit your work inside your stack:
   $ hg amend -m "Adding hammer to the shopping list"
   2 new unstable changesets
 
-Understanding the current situation with hg log is not so easy:
+Understanding the current situation with hg log is not so easy, because
+it shows too many things:
 
   $ hg log -G -r "t0::"
   @  changeset:   18:b7509bd417f8
@@ -701,7 +1225,7 @@ Understanding the current situation with hg log is not so easy:
   |/   topic:       tools
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as b7509bd417f8
+  |    obsolete:    reworded as b7509bd417f8
   |    summary:     Adding hammer
   |
   o  changeset:   12:fbff9bc37a43
@@ -709,17 +1233,118 @@ Understanding the current situation with hg log is not so easy:
   ~  date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     add a pair of shoes
   
-Fortunately stack show you a better visualization:
+
+#if docgraph-ext
+  $ hg docgraph -r "t0::" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	12	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=12,
+      		pin=true,
+      		pos="1,12!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	13	 [fillcolor="#DFDFFF",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=13,
+      		pin=true,
+      		pos="2,13!",
+      		shape=pentagon,
+      		style="dotted, filled",
+      		width=0.5];
+      	12 -> 13	 [arrowhead=none,
+      		penwidth=2.0];
+      	18	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=18,
+      		pin=true,
+      		pos="1,18!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	12 -> 18	 [arrowhead=none,
+      		penwidth=2.0];
+      	16	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=16,
+      		pin=true,
+      		pos="1,16!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	12 -> 16	 [arrowhead=none,
+      		penwidth=2.0];
+      	13 -> 18	 [arrowhead=none,
+      		minlen=0,
+      		penwidth=2.0,
+      		style=dashed];
+      	14	 [fillcolor="#FF4F4F",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=14,
+      		pin=true,
+      		pos="2,14!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	13 -> 14	 [arrowhead=none,
+      		penwidth=2.0];
+      	15	 [fillcolor="#FF4F4F",
+      		fixedsize=true,
+      		group=default_alt,
+      		height=0.5,
+      		label=15,
+      		pin=true,
+      		pos="2,15!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	14 -> 15	 [arrowhead=none,
+      		penwidth=2.0];
+      	17	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=17,
+      		pin=true,
+      		pos="1,17!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	16 -> 17	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
+Fortunately stack shows you a better visualization:
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3$ Adding drill (unstable)
   t2$ Adding saw (unstable)
   t1@ Adding hammer to the shopping list (current)
   t0^ add a pair of shoes (base)
 
-It's easy to stabilize the situation, `next` has an `--evolve` option:
+It's easy to stabilize the situation, `next` has an `--evolve` option.  It will
+do the necessary relocation of `t2` and `t3` over the new `t1` without having
+to do that rebase by hand.:
 
   $ hg next --evolve
   move:[14] Adding saw
@@ -728,7 +1353,7 @@ It's easy to stabilize the situation, `next` has an `--evolve` option:
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3$ Adding drill (unstable)
   t2@ Adding saw (current)
   t1: Adding hammer to the shopping list
@@ -743,7 +1368,7 @@ One more to go:
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t3@ Adding drill (current)
   t2: Adding saw
   t1: Adding hammer to the shopping list
@@ -788,6 +1413,88 @@ Let's take a look at `hg log` once again:
   ~  date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     add a pair of shoes
   
+
+#if docgraph-ext
+  $ hg docgraph -r "t0::" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	12	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=12,
+      		pin=true,
+      		pos="1,12!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	16	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=16,
+      		pin=true,
+      		pos="1,16!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	12 -> 16	 [arrowhead=none,
+      		penwidth=2.0];
+      	18	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=18,
+      		pin=true,
+      		pos="1,18!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	12 -> 18	 [arrowhead=none,
+      		penwidth=2.0];
+      	17	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=17,
+      		pin=true,
+      		pos="1,17!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	16 -> 17	 [arrowhead=none,
+      		penwidth=2.0];
+      	19	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=19,
+      		pin=true,
+      		pos="1,19!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	18 -> 19	 [arrowhead=none,
+      		penwidth=2.0];
+      	20	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=20,
+      		pin=true,
+      		pos="1,20!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	19 -> 20	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
 Multi-headed stack
 ------------------
 
@@ -804,7 +1511,7 @@ Stack is also very helpful when you have a multi-headed stack:
 
   $ hg stack
   ### topic: tools (2 heads)
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t4: Adding drill
   t3: Adding saw
   t1^ Adding hammer to the shopping list (base)
@@ -812,9 +1519,10 @@ Stack is also very helpful when you have a multi-headed stack:
   t1: Adding hammer to the shopping list
   t0^ add a pair of shoes (base)
 
-Solving this situation is easy with a topic, use merge or rebase.
+Solving this situation is easy with a topic: use merge or rebase.
 Merge within a multi-headed stack will use the other topic head as
-redestination if the topic has multiple heads.
+destination if the topic has two heads. But rebasing will yield a
+completely linear history so it's what we will do.
 
   $ hg log -G
   @  changeset:   21:f936c6da9d61
@@ -888,6 +1596,160 @@ redestination if the topic has multiple heads.
      summary:     Shopping list
   
 
+#if docgraph-ext
+  $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
+  .. graphviz::
+  
+      strict digraph  {
+      	graph [rankdir=LR,
+      		splines=polyline
+      	];
+      	node [label="\N"];
+      	0	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=0,
+      		pin=true,
+      		pos="1,0!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=3,
+      		pin=true,
+      		pos="1,3!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 3	 [arrowhead=none,
+      		penwidth=2.0];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	3 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      	5	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=5,
+      		pin=true,
+      		pos="1,5!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	4 -> 5	 [arrowhead=none,
+      		penwidth=2.0];
+      	11	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=11,
+      		pin=true,
+      		pos="1,11!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	5 -> 11	 [arrowhead=none,
+      		penwidth=2.0];
+      	12	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=12,
+      		pin=true,
+      		pos="1,12!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	11 -> 12	 [arrowhead=none,
+      		penwidth=2.0];
+      	16	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=16,
+      		pin=true,
+      		pos="1,16!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	12 -> 16	 [arrowhead=none,
+      		penwidth=2.0];
+      	18	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=18,
+      		pin=true,
+      		pos="1,18!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	12 -> 18	 [arrowhead=none,
+      		penwidth=2.0];
+      	17	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=17,
+      		pin=true,
+      		pos="1,17!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	16 -> 17	 [arrowhead=none,
+      		penwidth=2.0];
+      	19	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=19,
+      		pin=true,
+      		pos="1,19!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	18 -> 19	 [arrowhead=none,
+      		penwidth=2.0];
+      	21	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=21,
+      		pin=true,
+      		pos="1,21!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	18 -> 21	 [arrowhead=none,
+      		penwidth=2.0];
+      	20	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=20,
+      		pin=true,
+      		pos="1,20!",
+      		shape=pentagon,
+      		style=filled,
+      		width=0.5];
+      	19 -> 20	 [arrowhead=none,
+      		penwidth=2.0];
+      }
+#endif
+
   $ hg up t4
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
@@ -897,21 +1759,17 @@ redestination if the topic has multiple heads.
   rebasing 20:bae3758e46bf "Adding drill"
   merging shopping
 
-  $ hg commit -m "Merge tools"
-  nothing changed
-  [1]
-
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t4@ Adding drill (current)
   t3: Adding saw
   t2: Adding nails
   t1: Adding hammer to the shopping list
   t0^ add a pair of shoes (base)
 
-Collaborating through non-publishing server
-===========================================
+Collaborating through a non-publishing server
+=============================================
 
 .. setup:
 
@@ -939,7 +1797,7 @@ Collaborating through non-publishing server
 
   $ cd client
 
-We can now share theses drafts changesets:
+We can now share these draft changesets:
 
   $ hg push ../non-publishing-server -r tools
   pushing to ../non-publishing-server
@@ -950,11 +1808,11 @@ We can now share theses drafts changesets:
   added 4 changesets with 4 changes to 1 files (+1 heads)
   8 new obsolescence markers
 
-Pushing the new topic branch to a non publishing server did not required
+Pushing the new topic branch to a non publishing server did not require
 --force. As long as new heads are on their own topic, Mercurial will not
-complains about them.
+complain about them.
 
-From another client, we will gets them with their topic:
+From another client, we will get them with their topic:
 
   $ cd ../other-client
 
@@ -977,7 +1835,7 @@ From another client, we will gets them with their topic:
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t4@ Adding drill (current)
   t3: Adding saw
   t2: Adding nails
@@ -1016,7 +1874,7 @@ And retrieve them on the first client:
 
   $ hg stack
   ### topic: tools
-  ### branch: default, 2 behind
+  ### target: default (branch), 2 behind
   t5@ Adding screws (current)
   t4: Adding drill
   t3: Adding saw

@@ -126,9 +126,11 @@ Local peer tests
   $ hg up -r 'desc(CA)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic babar
+  marked working directory as topic: babar
   $ echo aaa > ddd
   $ hg add ddd
   $ hg commit -m 'CD'
+  active topic 'babar' grew its first changeset
   $ hg log -G # keep track of phase because I saw some strange bug during developement
   @  5 default babar draft CD
   |
@@ -157,6 +159,61 @@ Pushing a new topic to a non publishing server should not be seen as a new head
   |/
   o  0 default  public CA
   
+push --topic
+
+  $ hg log -G -R $TESTTMP/draft
+  o  3 default babar draft CD
+  |
+  | o  2 mountain  public CC
+  |/
+  | o  1 default  public CB
+  |/
+  o  0 default  public CA
+  
+  $ echo bbb >> aaa
+  $ hg commit -m "C'A"
+  $ hg up 1
+  2 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ hg topic --clear
+  $ echo bbb >> bbb
+  $ hg commit -m "C'B"
+  $ hg log -G
+  @  7 default  draft C'B
+  |
+  | o  6 default babar draft C'A
+  | |
+  | o  5 default babar draft CD
+  | |
+  | | o  4 mountain  public CC
+  | |/
+  o |  1 default  public CB
+  |/
+  o  0 default  public CA
+  
+  $ hg outgoing draft --topic babar
+  comparing with $TESTTMP/draft
+  searching for changes
+  6 default babar draft C'A
+  $ hg push draft --topic babar
+  pushing to $TESTTMP/draft
+  searching for changes
+  adding changesets
+  adding manifests
+  adding file changes
+  added 1 changesets with 1 changes to 1 files
+  $ hg log -G -R $TESTTMP/draft
+  o  4 default babar draft C'A
+  |
+  o  3 default babar draft CD
+  |
+  | o  2 mountain  public CC
+  |/
+  | o  1 default  public CB
+  |/
+  o  0 default  public CA
+  
+  $ hg strip --hidden --config extensions.strip= --no-backup -r 6: --quiet
+  $ hg strip --hidden --config extensions.strip= -R $TESTTMP/draft --no-backup -r 4: --quiet
 
 Pushing a new topic to a publishing server should be seen as a new head
 
@@ -182,9 +239,11 @@ wireprotocol tests
   $ hg up -r 'desc(CA)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic celeste
+  marked working directory as topic: celeste
   $ echo aaa > eee
   $ hg add eee
   $ hg commit -m 'CE'
+  active topic 'celeste' grew its first changeset
   $ hg log -G # keep track of phase because I saw some strange bug during developement
   @  6 default celeste draft CE
   |
@@ -270,6 +329,7 @@ Check that we reject multiple head on the same topic
   $ hg up 'desc(CB)'
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic babar
+  marked working directory as topic: babar
   $ echo aaa > fff
   $ hg add fff
   $ hg commit -m 'CF'
@@ -375,13 +435,17 @@ setup, two repo knowns about two small topic branch
   $ echo aaa > aaa
   $ hg add aaa
   $ hg topic topicA
+  marked working directory as topic: topicA
   $ hg commit -m 'CA'
+  active topic 'topicA' grew its first changeset
   $ hg up 'desc(CBASE)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ echo aaa > bbb
   $ hg add bbb
   $ hg topic topicB
+  marked working directory as topic: topicB
   $ hg commit -m 'CB'
+  active topic 'topicB' grew its first changeset
   $ cd ..
   $ hg push -R repoA repoB
   pushing to repoB

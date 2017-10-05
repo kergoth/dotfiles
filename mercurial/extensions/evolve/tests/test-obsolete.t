@@ -707,11 +707,11 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   [2]
   $ hg olog
   @  0d3f46688ccc (3) add obsol_c
-  |    rewritten(parent) by test (*) as 2033b4e49474 (glob)
-  |    rewritten by test (*) as 725c380fe99b (glob)
+  |    rewritten(parent) as 2033b4e49474 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten as 725c380fe99b by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  4538525df7e2 (2) add c
-       rewritten by test (*) as 0d3f46688ccc (glob)
+       rewritten as 0d3f46688ccc by test (Thu Jan 01 00:00:00 1970 +0000)
   
 
 Check import reports new unstable changeset:
@@ -719,7 +719,7 @@ Check import reports new unstable changeset:
   $ hg up --hidden 2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (4538525df7e2)
-  (4538525df7e2 has diverged, use 'hg evolve --list --divergent' to resolve the issue)
+  (4538525df7e2 has diverged, use 'hg evolve --list --contentdivergent' to resolve the issue)
   $ hg export 9468a5f5d8b2 | hg import -
   applying patch from stdin
   1 new unstable changesets
@@ -760,7 +760,7 @@ Relevant marker computation
   | | |/   parent:      10:2033b4e49474
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |    obsolete:    rewritten as 705ab2a6b72e
+  | | |    obsolete:    amended as 705ab2a6b72e
   | | |    summary:     add f
   | | |
   | | | o  changeset:   12:6db5e282cb91
@@ -792,7 +792,7 @@ Relevant marker computation
   | | |  parent:      3:0d3f46688ccc
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |  obsolete:    rewritten as 9468a5f5d8b2
+  | | |  obsolete:    rebased as 9468a5f5d8b2
   | | |  summary:     add obsol_d''
   | | |
   | | | x  changeset:   7:909a0fb57e5d
@@ -828,7 +828,7 @@ Relevant marker computation
   | |    user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
   | |    obsolete:    rewritten as 725c380fe99b
-  | |    obsolete:    rewritten as 2033b4e49474
+  | |    obsolete:    rebased as 2033b4e49474
   | |    summary:     add obsol_c
   | |
   x |  changeset:   2:4538525df7e2

@@ -34,7 +34,14 @@ check result
   @  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "desc(A0)"
+  changeset:   1:471f378eab4c
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    reworded as fdf9bde5129a
+  summary:     A0
   
 
 amend touching the user only
@@ -51,7 +58,14 @@ check result
   @  5485c92d3433 (4) B0
   |
   x  ef4a313b1e0a (3) B0
-       rewritten(user) by test (*) as 5485c92d3433 (glob)
+       rewritten(user) as 5485c92d3433 by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "ef4a313b1e0a"
+  changeset:   3:ef4a313b1e0a
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    reauthored as 5485c92d3433
+  summary:     B0
   
 
 amend touching the date only
@@ -68,7 +82,14 @@ check result
   @  4dd84345082e (6) B1
   |
   x  2ef0680ff450 (5) B1
-       rewritten(date) by test (*) as 4dd84345082e (glob)
+       rewritten(date) as 4dd84345082e by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "2ef0680ff450"
+  changeset:   5:2ef0680ff450
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    date-changed as 4dd84345082e
+  summary:     B1
   
 
 amend touching the branch only
@@ -89,7 +110,14 @@ check result
   @  14a01456e057 (9) B2
   |
   x  bd3db8264cee (7) B2
-       rewritten(branch) by test (*) as 14a01456e057 (glob)
+       rewritten(branch) as 14a01456e057 by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "bd3db8264cee"
+  changeset:   7:bd3db8264cee
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    branch-changed as 14a01456e057
+  summary:     B2
   
 
   $ hg up default
@@ -111,7 +139,14 @@ check result
   @  da86aa2f19a3 (12) D0
   |
   x  c85eff83a034 (11) D0
-       rewritten(parent) by test (*) as da86aa2f19a3 (glob)
+       rewritten(parent) as da86aa2f19a3 by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "c85eff83a034"
+  changeset:   11:c85eff83a034
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    rebased as da86aa2f19a3
+  summary:     D0
   
 
 amend touching the diff
@@ -130,7 +165,14 @@ check result
   @  75781fdbdbf5 (15) E0
   |
   x  ebfe0333e0d9 (13) E0
-       rewritten(content) by test (*) as 75781fdbdbf5 (glob)
+       rewritten(content) as 75781fdbdbf5 by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "ebfe0333e0d9"
+  changeset:   13:ebfe0333e0d9
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    amended as 75781fdbdbf5
+  summary:     E0
   
 
 amend with multiple effect (desc and meta)
@@ -150,8 +192,16 @@ check result
   @  a94e0fd5f1c8 (18) F1
   |
   x  fad47e5bd78e (16) F0
-       rewritten(description, user, date, branch) by test (*) as a94e0fd5f1c8 (glob)
+       rewritten(description, user, date, branch) as a94e0fd5f1c8 by test (Thu Jan 01 00:00:00 1970 +0000)
   
+  $ hg log --hidden -r "fad47e5bd78e"
+  changeset:   16:fad47e5bd78e
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    rewritten as a94e0fd5f1c8
+  summary:     F0
+  
+
 rebase not touching the diff
 ----------------------------
 
@@ -197,7 +247,15 @@ rebase not touching the diff
   o  e509e2eb3df5 (22) H1
   |
   x  b57fed8d8322 (20) H1
-       rewritten(parent) by test (*) as e509e2eb3df5 (glob)
+       rewritten(parent) as e509e2eb3df5 by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "b57fed8d8322"
+  changeset:   20:b57fed8d8322
+  branch:      my-other-branch
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    rebased as e509e2eb3df5
+  summary:     H1
   
 amend closing the branch should be detected as meta change
 ----------------------------------------------------------
@@ -214,5 +272,13 @@ check result
   @  12c6238b5e37 (26) I0
   |
   x  2f599e54c1c6 (24) I0
-       rewritten(meta) by test (*) as 12c6238b5e37 (glob)
+       rewritten(meta) as 12c6238b5e37 by test (Thu Jan 01 00:00:00 1970 +0000)
+  
+  $ hg log --hidden -r "2f599e54c1c6"
+  changeset:   24:2f599e54c1c6
+  branch:      closedbranch
+  user:        test
+  date:        Thu Jan 01 00:00:00 1970 +0000
+  obsolete:    meta-changed as 12c6238b5e37
+  summary:     I0
   

@@ -130,9 +130,11 @@ Local peer tests
   $ hg up -r 'desc(CA)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic babar
+  marked working directory as topic: babar
   $ echo aaa > ddd
   $ hg add ddd
   $ hg commit -m 'CD'
+  active topic 'babar' grew its first changeset
   $ hg log -G # keep track of phase because I saw some strange bug during developement
   @  5 default babar draft CD
   |
@@ -186,9 +188,11 @@ wireprotocol tests
   $ hg up -r 'desc(CA)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic celeste
+  marked working directory as topic: celeste
   $ echo aaa > eee
   $ hg add eee
   $ hg commit -m 'CE'
+  active topic 'celeste' grew its first changeset
   $ hg log -G # keep track of phase because I saw some strange bug during developement
   @  6 default celeste draft CE
   |
@@ -274,6 +278,7 @@ Check that we reject multiple head on the same topic
   $ hg up 'desc(CB)'
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic babar
+  marked working directory as topic: babar
   $ echo aaa > fff
   $ hg add fff
   $ hg commit -m 'CF'
@@ -379,13 +384,17 @@ setup, two repo knowns about two small topic branch
   $ echo aaa > aaa
   $ hg add aaa
   $ hg topic topicA
+  marked working directory as topic: topicA
   $ hg commit -m 'CA'
+  active topic 'topicA' grew its first changeset
   $ hg up 'desc(CBASE)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ echo aaa > bbb
   $ hg add bbb
   $ hg topic topicB
+  marked working directory as topic: topicB
   $ hg commit -m 'CB'
+  active topic 'topicB' grew its first changeset
   $ cd ..
   $ hg push -R repoA repoB
   pushing to repoB

@@ -24,6 +24,7 @@ from mercurial import (
     lock as lockmod,
     node,
     obsolete,
+    patch,
     phases,
     scmutil,
     util,
@@ -44,6 +45,7 @@ walkopts = commands.walkopts
 commitopts = commands.commitopts
 commitopts2 = commands.commitopts2
 mergetoolopts = commands.mergetoolopts
+stringio = util.stringio
 
 # option added by evolve
 
@@ -98,9 +100,6 @@ def amend(ui, repo, *pats, **opts):
     """
     opts = opts.copy()
     if opts.get('extract'):
-        if opts.pop('interactive', False):
-            msg = _('not support for --interactive with --extract yet')
-            raise error.Abort(msg)
         return uncommit(ui, repo, *pats, **opts)
     else:
         if opts.pop('all', False):
@@ -187,7 +186,7 @@ def _commitfiltered(repo, ctx, match, target=None, message=None, user=None,
     newid = repo.commitctx(new)
     return newid
 
-def _uncommitdirstate(repo, oldctx, match):
+def _uncommitdirstate(repo, oldctx, match, interactive):
     """Fix the dirstate after switching the working directory from
     oldctx to a copy of oldctx not containing changed files matched by
     match.
@@ -195,29 +194,82 @@ def _uncommitdirstate(repo, oldctx, match):
     ctx = repo['.']
     ds = repo.dirstate
     copies = dict(ds.copies())
-    m, a, r = repo.status(oldctx.p1(), oldctx, match=match)[:3]
-    for f in m:
-        if ds[f] == 'r':
-            # modified + removed -> removed
-            continue
-        ds.normallookup(f)
-
-    for f in a:
-        if ds[f] == 'r':
-            # added + removed -> unknown
-            ds.drop(f)
-        elif ds[f] != 'a':
-            ds.add(f)
-
-    for f in r:
-        if ds[f] == 'a':
-            # removed + added -> normal
+    if interactive:
+        # In interactive cases, we will find the status between oldctx and ctx
+        # and considering only the files which are changed between oldctx and
+        # ctx, and the status of what changed between oldctx and ctx will help
+        # us in defining the exact behavior
+        m, a, r = repo.status(oldctx, ctx, match=match)[:3]
+        for f in m:
+            # These are files which are modified between oldctx and ctx which
+            # contains two cases: 1) Were modified in oldctx and some
+            # modifications are uncommitted
+            # 2) Were added in oldctx but some part is uncommitted (this cannot
+            # contain the case when added files are uncommitted completely as
+            # that will result in status as removed not modified.)
+            # Also any modifications to a removed file will result the status as
+            # added, so we have only two cases. So in either of the cases, the
+            # resulting status can be modified or clean.
+            if ds[f] == 'r':
+                # But the file is removed in the working directory, leaving that
+                # as removed
+                continue
             ds.normallookup(f)
-        elif ds[f] != 'r':
+
+        for f in a:
+            # These are the files which are added between oldctx and ctx(new
+            # one), which means the files which were removed in oldctx
+            # but uncommitted completely while making the ctx
+            # This file should be marked as removed if the working directory
+            # does not adds it back. If it's adds it back, we do a normallookup.
+            # The file can't be removed in working directory, because it was
+            # removed in oldctx
+            if ds[f] == 'a':
+                ds.normallookup(f)
+                continue
             ds.remove(f)
+
+        for f in r:
+            # These are files which are removed between oldctx and ctx, which
+            # means the files which were added in oldctx and were completely
+            # uncommitted in ctx. If a added file is partially uncommitted, that
+            # would have resulted in modified status, not removed.
+            # So a file added in a commit, and uncommitting that addition must
+            # result in file being stated as unknown.
+            if ds[f] == 'r':
+                # The working directory say it's removed, so lets make the file
+                # unknown
+                ds.drop(f)
+                continue
+            ds.add(f)
+    else:
+        m, a, r = repo.status(oldctx.p1(), oldctx, match=match)[:3]
+        for f in m:
+            if ds[f] == 'r':
+                # modified + removed -> removed
+                continue
+            ds.normallookup(f)
+
+        for f in a:
+            if ds[f] == 'r':
+                # added + removed -> unknown
+                ds.drop(f)
+            elif ds[f] != 'a':
+                ds.add(f)
+
+        for f in r:
+            if ds[f] == 'a':
+                # removed + added -> normal
+                ds.normallookup(f)
+            elif ds[f] != 'r':
+                ds.remove(f)
 
     # Merge old parent and old working dir copies
     oldcopies = {}
+    if interactive:
+        # Interactive had different meaning of the variables so restoring the
+        # original meaning to use them
+        m, a, r = repo.status(oldctx.p1(), oldctx, match=match)[:3]
     for f in (m + a):
         src = oldctx[f].renamed()
         if src:
@@ -234,6 +286,7 @@ def _uncommitdirstate(repo, oldctx, match):
 @eh.command(
     '^uncommit',
     [('a', 'all', None, _('uncommit all changes when no arguments given')),
+     ('i', 'interactive', False, _('interactive mode to uncommit (EXPERIMENTAL)')),
      ('r', 'rev', '', _('revert commit content to REV instead')),
      ] + commands.walkopts + commitopts + commitopts2 + commitopts3,
     _('[OPTION]... [NAME]'))
@@ -252,10 +305,16 @@ def uncommit(ui, repo, *pats, **opts):
     revision. It still does not change the content of your file in the working
     directory.
 
+    .. container:: verbose
+
+       The --interactive option lets you select hunks interactively to uncommit.
+       You can uncommit parts of file using this option.
+
     Return 0 if changed files are uncommitted.
     """
 
     _resolveoptions(ui, opts) # process commitopts3
+    interactive = opts.get('interactive')
     wlock = lock = tr = None
     try:
         wlock = repo.wlock()
@@ -287,25 +346,30 @@ def uncommit(ui, repo, *pats, **opts):
         # Recommit the filtered changeset
         tr = repo.transaction('uncommit')
         updatebookmarks = rewriteutil.bookmarksupdater(repo, old.node(), tr)
-        newid = None
-        includeorexclude = opts.get('include') or opts.get('exclude')
-        if (pats or includeorexclude or opts.get('all')):
+        if interactive:
+            opts['all'] = True
             match = scmutil.match(old, pats, opts)
-            if not (opts['message'] or opts['logfile']):
-                opts['message'] = old.description()
-            message = cmdutil.logmessage(ui, opts)
-            newid = _commitfiltered(repo, old, match, target=rev,
-                                    message=message, user=opts.get('user'),
-                                    date=opts.get('date'))
-        if newid is None:
-            raise error.Abort(_('nothing to uncommit'),
-                              hint=_("use --all to uncommit all files"))
-        # Move local changes on filtered changeset
+            newid = _interactiveuncommit(ui, repo, old, match)
+        else:
+            newid = None
+            includeorexclude = opts.get('include') or opts.get('exclude')
+            if (pats or includeorexclude or opts.get('all')):
+                match = scmutil.match(old, pats, opts)
+                if not (opts['message'] or opts['logfile']):
+                    opts['message'] = old.description()
+                message = cmdutil.logmessage(ui, opts)
+                newid = _commitfiltered(repo, old, match, target=rev,
+                                        message=message, user=opts.get('user'),
+                                        date=opts.get('date'))
+            if newid is None:
+                raise error.Abort(_('nothing to uncommit'),
+                                  hint=_("use --all to uncommit all files"))
+
         obsolete.createmarkers(repo, [(old, (repo[newid],))])
         phases.retractboundary(repo, tr, oldphase, [newid])
         with repo.dirstate.parentchange():
             repo.dirstate.setparents(newid, node.nullid)
-            _uncommitdirstate(repo, old, match)
+            _uncommitdirstate(repo, old, match, interactive)
         updatebookmarks(newid)
         if not repo[newid].files():
             ui.warn(_("new changeset is empty\n"))
@@ -313,6 +377,101 @@ def uncommit(ui, repo, *pats, **opts):
         tr.close()
     finally:
         lockmod.release(tr, lock, wlock)
+
+def _interactiveuncommit(ui, repo, old, match):
+    """ The function which contains all the logic for interactively uncommiting
+    a commit. This function makes a temporary commit with the chunks which user
+    selected to uncommit. After that the diff of the parent and that commit is
+    applied to the working directory and committed again which results in the
+    new commit which should be one after uncommitted.
+    """
+
+    # create a temporary commit with hunks user selected
+    tempnode = _createtempcommit(ui, repo, old, match)
+
+    diffopts = patch.difffeatureopts(repo.ui, whitespace=True)
+    diffopts.nodates = True
+    diffopts.git = True
+    fp = stringio()
+    for chunk, label in patch.diffui(repo, tempnode, old.node(), None,
+                                     opts=diffopts):
+            fp.write(chunk)
+
+    fp.seek(0)
+    newnode = _patchtocommit(ui, repo, old, fp)
+    # creating obs marker temp -> ()
+    obsolete.createmarkers(repo, [(repo[tempnode], ())])
+    return newnode
+
+def _createtempcommit(ui, repo, old, match):
+    """ Creates a temporary commit for `uncommit --interative` which contains
+    the hunks which were selected by the user to uncommit.
+    """
+
+    pold = old.p1()
+    # The logic to interactively selecting something copied from
+    # cmdutil.revert()
+    diffopts = patch.difffeatureopts(repo.ui, whitespace=True)
+    diffopts.nodates = True
+    diffopts.git = True
+    diff = patch.diff(repo, pold.node(), old.node(), match, opts=diffopts)
+    originalchunks = patch.parsepatch(diff)
+    # XXX: The interactive selection is buggy and does not let you
+    # uncommit a removed file partially.
+    # TODO: wrap the operations in mercurial/patch.py and mercurial/crecord.py
+    # to add uncommit as an operation taking care of BC.
+    chunks, opts = cmdutil.recordfilter(repo.ui, originalchunks,
+                                        operation='discard')
+    if not chunks:
+        raise error.Abort(_("nothing selected to uncommit"))
+    fp = stringio()
+    for c in chunks:
+            c.write(fp)
+
+    fp.seek(0)
+    oldnode = node.hex(old.node())[:12]
+    message = 'temporary commit for uncommiting %s' % oldnode
+    tempnode = _patchtocommit(ui, repo, old, fp, message, oldnode)
+    return tempnode
+
+def _patchtocommit(ui, repo, old, fp, message=None, extras=None):
+    """ A function which will apply the patch to the working directory and
+    make a commit whose parents are same as that of old argument. The message
+    argument tells us whether to use the message of the old commit or a
+    different message which is passed. Returns the node of new commit made.
+    """
+    pold = old.p1()
+    parents = (old.p1().node(), old.p2().node())
+    date = old.date()
+    branch = old.branch()
+    user = old.user()
+    extra = old.extra()
+    if extras:
+        extra['uncommit_source'] = extras
+    if not message:
+        message = old.description()
+    store = patch.filestore()
+    try:
+        files = set()
+        try:
+            patch.patchrepo(ui, repo, pold, store, fp, 1, '',
+                            files=files, eolmode=None)
+        except patch.PatchError as err:
+            raise error.Abort(str(err))
+
+        finally:
+            del fp
+
+        memctx = context.memctx(repo, parents, message, files=files,
+                                filectxfn=store,
+                                user=user,
+                                date=date,
+                                branch=branch,
+                                extra=extra)
+        newcm = memctx.commit()
+    finally:
+        store.close()
+    return newcm
 
 @eh.command(
     '^fold|squash',
@@ -350,7 +509,7 @@ def fold(ui, repo, *revs, **opts):
 
          hg fold --from 3::6
 
-     - Fold revisions 3 and 4:
+     - Fold revisions 3 and 4::
 
         hg fold "3 + 4" --exact
 

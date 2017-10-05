@@ -34,7 +34,7 @@ experimental protocol are also supported for a longer time in the extensions to
 help people transitioning. (The extensions is currently compatible down to
 Mercurial version 3.8).
 
-New Config:
+New Config::
 
     [experimental]
     # Set to control the behavior when pushing draft changesets to a publishing
@@ -103,7 +103,7 @@ implementation of some of the algorithms::
 
 For very large repositories. it is currently recommended to disable obsmarkers
 discovery (Make sure you follow release announcement to know when you can turn
-it back on).
+it back on)::
 
     [experimental]
     evolution.obsdiscovery = no
@@ -137,7 +137,7 @@ The following config control the effect flag recording::
   # evolution.effect-flags = false
 
 You can display the effect flags with the command obslog, so if you have a
-changeset and you update only the message, you will see:
+changeset and you update only the message, you will see::
 
     $ hg commit -m "WIP
     $ hg commit -m "A better commit message!"
@@ -271,7 +271,7 @@ try:
     registrar.templatekeyword # new in hg-3.8
 except ImportError:
     from . import metadata
-    raise ImportError('evolve needs version %s or above' %
+    raise ImportError('evolve needs Mercurial version %s or above' %
                       min(metadata.testedwith.split()))
 
 import mercurial
@@ -458,11 +458,40 @@ getrevs = obsolete.getrevs
 ### Useful alias
 
 @eh.uisetup
+def setupparentcommand(ui):
+
+    _alias, statuscmd = cmdutil.findcmd('status', commands.table)
+    pstatusopts = [o for o in statuscmd[1] if o[1] != 'rev']
+
+    @eh.command('pstatus', pstatusopts)
+    def pstatus(ui, repo, *args, **kwargs):
+        """show status combining committed and uncommited changes
+
+        This show the combined status of the current working copy parent commit and
+        the uncommitted change in the working copy itself. The status displayed
+        match the content of the commit that a bare :hg:`amend` will creates.
+
+        See :hg:`help status` for details."""
+        kwargs['rev'] = ['.^']
+        return statuscmd[0](ui, repo, *args, **kwargs)
+
+    _alias, diffcmd = cmdutil.findcmd('diff', commands.table)
+    pdiffopts = [o for o in diffcmd[1] if o[1] != 'rev']
+
+    @eh.command('pdiff', pdiffopts)
+    def pdiff(ui, repo, *args, **kwargs):
+        """show diff combining committed and uncommited changes
+
+        This show the combined diff of the current working copy parent commit and
+        the uncommitted change in the working copy itself. The diff displayed
+        match the content of the commit that a bare :hg:`amend` will creates.
+
+        See :hg:`help diff` for details."""
+        kwargs['rev'] = ['.^']
+        return diffcmd[0](ui, repo, *args, **kwargs)
+
+@eh.uisetup
 def _installalias(ui):
-    if ui.config('alias', 'pstatus', None) is None:
-        ui.setconfig('alias', 'pstatus', 'status --rev .^', 'evolve')
-    if ui.config('alias', 'pdiff', None) is None:
-        ui.setconfig('alias', 'pdiff', 'diff --rev .^', 'evolve')
     if ui.config('alias', 'odiff', None) is None:
         ui.setconfig('alias', 'odiff',
                      "diff --hidden --rev 'limit(precursors(.),1)' --rev .",
@@ -482,16 +511,15 @@ def _installalias(ui):
 
 ### Troubled revset symbol
 
-@eh.revset('troubled')
+@eh.revset('troubled()')
 def revsettroubled(repo, subset, x):
-    """``troubled()``
-    Changesets with troubles.
+    """Changesets with troubles.
     """
     revset.getargs(x, 0, 0, 'troubled takes no arguments')
     troubled = set()
-    troubled.update(getrevs(repo, 'unstable'))
-    troubled.update(getrevs(repo, 'bumped'))
-    troubled.update(getrevs(repo, 'divergent'))
+    troubled.update(getrevs(repo, 'orphan'))
+    troubled.update(getrevs(repo, 'phasedivergent'))
+    troubled.update(getrevs(repo, 'contentdivergent'))
     troubled = revset.baseset(troubled)
     troubled.sort() # set is non-ordered, enforce order
     return subset & troubled
@@ -504,7 +532,7 @@ def _precursors(repo, s):
     """Precursor of a changeset"""
     cs = set()
     nm = repo.changelog.nodemap
-    markerbysubj = repo.obsstore.precursors
+    markerbysubj = repo.obsstore.predecessors
     node = repo.changelog.node
     for r in s:
         for p in markerbysubj.get(node(r), ()):
@@ -519,7 +547,7 @@ def _allprecursors(repo, s):  # XXX we need a better naming
     node = repo.changelog.node
     toproceed = [node(r) for r in s]
     seen = set()
-    allsubjects = repo.obsstore.precursors
+    allsubjects = repo.obsstore.predecessors
     while toproceed:
         nc = toproceed.pop()
         for mark in allsubjects.get(nc, ()):
@@ -589,10 +617,9 @@ def _allsuccessors(repo, s, haltonflags=0):  # XXX we need a better naming
 
 
 ### XXX I'm not sure this revset is useful
-@eh.revset('suspended')
+@eh.revset('suspended()')
 def revsetsuspended(repo, subset, x):
-    """``suspended()``
-    Obsolete changesets with non-obsolete descendants.
+    """Obsolete changesets with non-obsolete descendants.
     """
     revset.getargs(x, 0, 0, 'suspended takes no arguments')
     suspended = revset.baseset(getrevs(repo, 'suspended'))
@@ -600,10 +627,9 @@ def revsetsuspended(repo, subset, x):
     return subset & suspended
 
 
-@eh.revset('precursors')
+@eh.revset('precursors(set)')
 def revsetprecursors(repo, subset, x):
-    """``precursors(set)``
-    Immediate precursors of changesets in set.
+    """Immediate precursors of changesets in set.
     """
     s = revset.getset(repo, revset.fullreposet(repo), x)
     s = revset.baseset(_precursors(repo, s))
@@ -611,10 +637,9 @@ def revsetprecursors(repo, subset, x):
     return subset & s
 
 
-@eh.revset('allprecursors')
+@eh.revset('allprecursors(set)')
 def revsetallprecursors(repo, subset, x):
-    """``allprecursors(set)``
-    Transitive precursors of changesets in set.
+    """Transitive precursors of changesets in set.
     """
     s = revset.getset(repo, revset.fullreposet(repo), x)
     s = revset.baseset(_allprecursors(repo, s))
@@ -622,20 +647,18 @@ def revsetallprecursors(repo, subset, x):
     return subset & s
 
 
-@eh.revset('successors')
+@eh.revset('successors(set)')
 def revsetsuccessors(repo, subset, x):
-    """``successors(set)``
-    Immediate successors of changesets in set.
+    """Immediate successors of changesets in set.
     """
     s = revset.getset(repo, revset.fullreposet(repo), x)
     s = revset.baseset(_successors(repo, s))
     s.sort()
     return subset & s
 
-@eh.revset('allsuccessors')
+@eh.revset('allsuccessors(set)')
 def revsetallsuccessors(repo, subset, x):
-    """``allsuccessors(set)``
-    Transitive successors of changesets in set.
+    """Transitive successors of changesets in set.
     """
     s = revset.getset(repo, revset.fullreposet(repo), x)
     s = revset.baseset(_allsuccessors(repo, s))
@@ -670,7 +693,7 @@ def _warnobsoletewc(ui, repo):
     if reason == 'pruned':
         solvemsg = _("use 'hg evolve' to update to its parent successor")
     elif reason == 'diverged':
-        debugcommand = "hg evolve --list --divergent"
+        debugcommand = "hg evolve --list --contentdivergent"
         basemsg = _("%s has diverged, use '%s' to resolve the issue")
         solvemsg = basemsg % (shortnode, debugcommand)
     elif reason == 'superseed':
@@ -759,23 +782,25 @@ def warnobserrors(orig, ui, repo, *args, **kwargs):
     # part of the troubled stuff may be filtered (stash ?)
     # This needs a better implementation but will probably wait for core.
     filtered = repo.changelog.filteredrevs
-    priorunstables = len(set(getrevs(repo, 'unstable')) - filtered)
-    priorbumpeds = len(set(getrevs(repo, 'bumped')) - filtered)
-    priordivergents = len(set(getrevs(repo, 'divergent')) - filtered)
+    priorunstables = len(set(getrevs(repo, 'orphan')) - filtered)
+    priorbumpeds = len(set(getrevs(repo, 'phasedivergent')) - filtered)
+    priordivergents = len(set(getrevs(repo, 'contentdivergent')) - filtered)
     ret = orig(ui, repo, *args, **kwargs)
     filtered = repo.changelog.filteredrevs
     newunstables = \
-        len(set(getrevs(repo, 'unstable')) - filtered) - priorunstables
+        len(set(getrevs(repo, 'orphan')) - filtered) - priorunstables
     newbumpeds = \
-        len(set(getrevs(repo, 'bumped')) - filtered) - priorbumpeds
+        len(set(getrevs(repo, 'phasedivergent')) - filtered) - priorbumpeds
     newdivergents = \
-        len(set(getrevs(repo, 'divergent')) - filtered) - priordivergents
+        len(set(getrevs(repo, 'contentdivergent')) - filtered) - priordivergents
+
+    base_msg = _('%i new %s changesets\n')
     if newunstables > 0:
-        ui.warn(_('%i new unstable changesets\n') % newunstables)
+        ui.warn(base_msg % (newunstables, compat.TROUBLES['ORPHAN']))
     if newbumpeds > 0:
-        ui.warn(_('%i new bumped changesets\n') % newbumpeds)
+        ui.warn(base_msg % (newbumpeds, compat.TROUBLES['PHASEDIVERGENT']))
     if newdivergents > 0:
-        ui.warn(_('%i new divergent changesets\n') % newdivergents)
+        ui.warn(base_msg % (newdivergents, compat.TROUBLES['CONTENTDIVERGENT']))
     return ret
 
 @eh.wrapfunction(mercurial.exchange, 'push')
@@ -977,7 +1002,7 @@ def _deprecatealias(oldalias, newalias):
         ui = args[0]
         ui.warn(deprecationwarning)
         util.checksignature(fn)(*args, **kwargs)
-    newfn.__doc__ = deprecationwarning
+    newfn.__doc__ = deprecationwarning + ' (DEPRECATED)'
     cmdwrapper = eh.command(oldalias, opts, synopsis)
     cmdwrapper(newfn)
 
@@ -993,11 +1018,11 @@ def _solveone(ui, repo, ctx, dryrun, confirm, progresscb, category):
         wlock = repo.wlock()
         lock = repo.lock()
         tr = repo.transaction("evolve")
-        if 'unstable' == category:
+        if 'orphan' == category:
             result = _solveunstable(ui, repo, ctx, dryrun, confirm, progresscb)
-        elif 'bumped' == category:
+        elif 'phasedivergent' == category:
             result = _solvebumped(ui, repo, ctx, dryrun, confirm, progresscb)
-        elif 'divergent' == category:
+        elif 'contentdivergent' == category:
             result = _solvedivergent(ui, repo, ctx, dryrun, confirm,
                                      progresscb)
         else:
@@ -1010,37 +1035,44 @@ def _solveone(ui, repo, ctx, dryrun, confirm, progresscb, category):
 def _handlenotrouble(ui, repo, allopt, revopt, anyopt, targetcat):
     """Used by the evolve function to display an error message when
     no troubles can be resolved"""
-    troublecategories = ['bumped', 'divergent', 'unstable']
+    troublecategories = ['phasedivergent', 'contentdivergent', 'orphan']
     unselectedcategories = [c for c in troublecategories if c != targetcat]
     msg = None
     hint = None
 
     troubled = {
-        "unstable": repo.revs("unstable()"),
-        "divergent": repo.revs("divergent()"),
-        "bumped": repo.revs("bumped()"),
+        "orphan": repo.revs("orphan()"),
+        "contentdivergent": repo.revs("contentdivergent()"),
+        "phasedivergent": repo.revs("phasedivergent()"),
         "all": repo.revs("troubled()"),
     }
 
     hintmap = {
-        'bumped': _("do you want to use --bumped"),
-        'bumped+divergent': _("do you want to use --bumped or --divergent"),
-        'bumped+unstable': _("do you want to use --bumped or --unstable"),
-        'divergent': _("do you want to use --divergent"),
-        'divergent+unstable': _("do you want to use --divergent"
-                                " or --unstable"),
-        'unstable': _("do you want to use --unstable"),
-        'any+bumped': _("do you want to use --any (or --rev) and --bumped"),
-        'any+bumped+divergent': _("do you want to use --any (or --rev) and"
-                                  " --bumped or --divergent"),
-        'any+bumped+unstable': _("do you want to use --any (or --rev) and"
-                                 "--bumped or --unstable"),
-        'any+divergent': _("do you want to use --any (or --rev) and"
-                           " --divergent"),
-        'any+divergent+unstable': _("do you want to use --any (or --rev)"
-                                    " and --divergent or --unstable"),
-        'any+unstable': _("do you want to use --any (or --rev)"
-                          "and --unstable"),
+        'phasedivergent': _("do you want to use --phasedivergent"),
+        'phasedivergent+contentdivergent': _("do you want to use "
+                                             "--phasedivergent or"
+                                             " --contentdivergent"),
+        'phasedivergent+orphan': _("do you want to use --phasedivergent"
+                                   " or --orphan"),
+        'contentdivergent': _("do you want to use --contentdivergent"),
+        'contentdivergent+orphan': _("do you want to use --contentdivergent"
+                                     " or --orphan"),
+        'orphan': _("do you want to use --orphan"),
+        'any+phasedivergent': _("do you want to use --any (or --rev) and"
+                                " --phasedivergent"),
+        'any+phasedivergent+contentdivergent': _("do you want to use --any"
+                                                 " (or --rev) and"
+                                                 " --phasedivergent or"
+                                                 " --contentdivergent"),
+        'any+phasedivergent+orphan': _("do you want to use --any (or --rev)"
+                                       " and --phasedivergent or --orphan"),
+        'any+contentdivergent': _("do you want to use --any (or --rev) and"
+                                  " --contentdivergent"),
+        'any+contentdivergent+orphan': _("do you want to use --any (or --rev)"
+                                         " and --contentdivergent or "
+                                         "--orphan"),
+        'any+orphan': _("do you want to use --any (or --rev)"
+                        "and --orphan"),
     }
 
     if revopt:
@@ -1067,7 +1099,7 @@ def _handlenotrouble(ui, repo, allopt, revopt, anyopt, targetcat):
 
     else:
         # evolve without any option = relative to the current wdir
-        if targetcat == 'unstable':
+        if targetcat == 'orphan':
             msg = _("nothing to evolve on current working copy parent")
         else:
             msg = _("current working copy parent is not %s") % targetcat
@@ -1183,6 +1215,11 @@ def _dedupedivergents(repo, revs):
         discarded.update(othersrevs)
     return res
 
+instabilities_map = {
+    'contentdivergent': "content-divergent",
+    'phasedivergent': "phase-divergent"
+}
+
 def _selectrevs(repo, allopt, revopt, anyopt, targetcat):
     """select troubles in repo matching according to given options"""
     revs = set()
@@ -1194,23 +1231,23 @@ def _selectrevs(repo, allopt, revopt, anyopt, targetcat):
             topic = getattr(repo, 'currenttopic', '')
             if topic:
                 revs = repo.revs('topic(%s)', topic) & revs
-            elif targetcat == 'unstable':
+            elif targetcat == 'orphan':
                 revs = _aspiringdescendant(repo,
                                            repo.revs('(.::) - obsolete()::'))
                 revs = set(revs)
-        if targetcat == 'divergent':
+        if targetcat == 'contentdivergent':
             # Pick one divergent per group of divergents
             revs = _dedupedivergents(repo, revs)
     elif anyopt:
         revs = repo.revs('first(%s())' % (targetcat))
-    elif targetcat == 'unstable':
+    elif targetcat == 'orphan':
         revs = set(_aspiringchildren(repo, repo.revs('(.::) - obsolete()::')))
         if 1 < len(revs):
             msg = "multiple evolve candidates"
             hint = (_("select one of %s with --rev")
                     % ', '.join([str(repo[r]) for r in sorted(revs)]))
             raise error.Abort(msg, hint=hint)
-    elif targetcat in repo['.'].troubles():
+    elif instabilities_map.get(targetcat, targetcat) in repo['.'].instabilities():
         revs = set([repo['.'].rev()])
     return revs
 
@@ -1287,10 +1324,10 @@ def _formatctx(fm, ctx):
 
 def listtroubles(ui, repo, troublecategories, **opts):
     """Print all the troubles for the repo (or given revset)"""
-    troublecategories = troublecategories or ['divergent', 'unstable', 'bumped']
-    showunstable = 'unstable' in troublecategories
-    showbumped = 'bumped' in troublecategories
-    showdivergent = 'divergent' in troublecategories
+    troublecategories = troublecategories or ['contentdivergent', 'orphan', 'phasedivergent']
+    showunstable = 'orphan' in troublecategories
+    showbumped = 'phasedivergent' in troublecategories
+    showdivergent = 'contentdivergent' in troublecategories
 
     revs = repo.revs('+'.join("%s()" % t for t in troublecategories))
     if opts.get('rev'):
@@ -1299,7 +1336,7 @@ def listtroubles(ui, repo, troublecategories, **opts):
     fm = ui.formatter('evolvelist', opts)
     for rev in revs:
         ctx = repo[rev]
-        unpars = _preparelistctxs(ctx.parents(), lambda p: p.unstable())
+        unpars = _preparelistctxs(ctx.parents(), lambda p: p.orphan())
         obspars = _preparelistctxs(ctx.parents(), lambda p: p.obsolete())
         imprecs = _preparelistctxs(repo.set("allprecursors(%n)", ctx.node()),
                                    lambda p: not p.mutable())
@@ -1317,7 +1354,7 @@ def listtroubles(ui, repo, troublecategories, **opts):
         fm.data(node=ctx.hex(), rev=ctx.rev(), desc=desc, phase=ctx.phasestr())
 
         for unpar in unpars if showunstable else []:
-            fm.plain('  unstable: %s (unstable parent)\n' % unpar[:hashlen])
+            fm.plain('  orphan: %s (orphan parent)\n' % unpar[:hashlen])
         for obspar in obspars if showunstable else []:
             fm.plain('  unstable: %s (obsolete parent)\n' % obspar[:hashlen])
         for imprec in imprecs if showbumped else []:
@@ -1369,8 +1406,11 @@ def listtroubles(ui, repo, troublecategories, **opts):
         'directory')),
      ('r', 'rev', [], _('solves troubles of these revisions')),
      ('', 'bumped', False, _('solves only bumped changesets')),
+     ('', 'phasedivergent', False, _('solves only phase-divergent changesets')),
      ('', 'divergent', False, _('solves only divergent changesets')),
-     ('', 'unstable', False, _('solves only unstable changesets (default)')),
+     ('', 'contentdivergent', False, _('solves only content-divergent changesets')),
+     ('', 'unstable', False, _('solves only unstable changesets')),
+     ('', 'orphan', False, _('solves only orphan changesets (default)')),
      ('a', 'all', False, _('evolve all troubled changesets related to the '
                            'current  working directory and its descendants')),
      ('c', 'continue', False, _('continue an interrupted evolution')),
@@ -1457,13 +1497,36 @@ def evolve(ui, repo, **opts):
     dryrunopt = opts['dry_run']
     confirmopt = opts['confirm']
     revopt = opts['rev']
-    troublecategories = ['bumped', 'divergent', 'unstable']
+
+    # Backward compatibility
+    if opts['unstable']:
+        msg = ("'evolve --unstable' is deprecated, "
+               "use 'evolve --orphan'")
+        repo.ui.deprecwarn(msg, '4.4')
+
+        opts['orphan'] = opts['divergent']
+
+    if opts['divergent']:
+        msg = ("'evolve --divergent' is deprecated, "
+               "use 'evolve --contentdivergent'")
+        repo.ui.deprecwarn(msg, '4.4')
+
+        opts['contentdivergent'] = opts['divergent']
+
+    if opts['bumped']:
+        msg = ("'evolve --bumped' is deprecated, "
+               "use 'evolve --phasedivergent'")
+        repo.ui.deprecwarn(msg, '4.4')
+
+        opts['phasedivergent'] = opts['bumped']
+
+    troublecategories = ['phasedivergent', 'contentdivergent', 'orphan']
     specifiedcategories = [t for t in troublecategories if opts[t]]
     if listopt:
         listtroubles(ui, repo, specifiedcategories, **opts)
         return
 
-    targetcat = 'unstable'
+    targetcat = 'orphan'
     if 1 < len(specifiedcategories):
         msg = _('cannot specify more than one trouble category to solve (yet)')
         raise error.Abort(msg)
@@ -1543,7 +1606,7 @@ def evolve(ui, repo, **opts):
     # For the progress bar to show
     count = len(revs)
     # Order the revisions
-    if targetcat == 'unstable':
+    if targetcat == 'orphan':
         revs = _orderrevs(repo, revs)
     for rev in revs:
         progresscb()
@@ -1580,7 +1643,7 @@ def _aspiringchildren(repo, revs):
     one of its descendants. Empty list if none can be found."""
     target = set(revs)
     result = []
-    for r in repo.revs('unstable() - %ld', revs):
+    for r in repo.revs('orphan() - %ld', revs):
         dest = _possibledestination(repo, r)
         if target & dest:
             result.append(r)
@@ -1592,7 +1655,7 @@ def _aspiringdescendant(repo, revs):
     target = set(revs)
     result = set(target)
     paths = collections.defaultdict(set)
-    for r in repo.revs('unstable() - %ld', revs):
+    for r in repo.revs('orphan() - %ld', revs):
         for d in _possibledestination(repo, r):
             paths[d].add(r)
 
@@ -2131,7 +2194,7 @@ def cmdnext(ui, repo, **opts):
             else:
                 cmdutil.bailifchanged(repo)
                 result = _solveone(ui, repo, repo[aspchildren[0]], dryrunopt,
-                                   False, lambda: None, category='unstable')
+                                   False, lambda: None, category='orphan')
                 if not result:
                     ui.status(_('working directory now at %s\n')
                               % ui.label(str(repo['.']), 'evolve.node'))

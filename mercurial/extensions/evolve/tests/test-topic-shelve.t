@@ -13,16 +13,18 @@ testing topic with shelve extension
   $ touch a
   $ echo "Hello" >> a
   $ hg topic "testing-shelve"
+  marked working directory as topic: testing-shelve
   $ hg topic
    * testing-shelve
   $ hg ci -m "First commit" -A
   adding a
+  active topic 'testing-shelve' grew its first changeset
   $ hg topic
    * testing-shelve
   $ echo " World" >> a
   $ hg stack
   ### topic: testing-shelve
-  ### branch: default
+  ### target: default (branch)
   t1@ First commit (current)
 
 shelve test
@@ -35,7 +37,7 @@ shelve test
    * testing-shelve
   $ hg stack
   ### topic: testing-shelve
-  ### branch: default
+  ### target: default (branch)
   t1@ First commit (current)
 
 unshelve test
@@ -46,5 +48,5 @@ unshelve test
    * testing-shelve
   $ hg stack
   ### topic: testing-shelve
-  ### branch: default
+  ### target: default (branch)
   t1@ First commit (current)

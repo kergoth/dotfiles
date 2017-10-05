@@ -26,17 +26,17 @@ be modified by Mercurial's existing history-editing commands
 (``rebase``, ``histedit``, etc.), and also by the ``evolve``
 extension. Specifically, ``evolve`` adds a number of commands that can
 be used to modify history: ``amend``, ``uncommit``, ``prune``,
-``fold``, and ``evolve``. Generally speaking, changesets remain in
-*draft* phase until they are pushed to another repository, at which
-point they enter *public* phase. ::
+``fold``, and ``evolve``. ::
 
   $ hg commit -m 'implement feature X'
   $ hg phase -r .
   1: draft
 
-(Strictly speaking, changesets only become public when they are pushed
-to a *publishing* repository. But all repositories are publishing by
-default; you have to explicitly configure repositories to be
+Generally speaking, changesets remain in *draft* phase until they are
+pushed to another repository, at which point they enter the *public*
+phase. (Strictly speaking, changesets only become public when they are
+pushed to a *publishing* repository. But all repositories are publishing
+by default; you have to explicitly configure repositories to be
 *non-publishing*. Non-publishing repositories are an advanced topic
 which we'll see when we get to `sharing mutable history`_.)
 
@@ -60,7 +60,8 @@ your mistake and run ::
 to create a new, amended changeset. The drawback of doing this with
 vanilla Mercurial is that your original, flawed, changeset is removed
 from the repository. This is *unsafe* history editing. It's probably
-not too serious if all you did was fix a syntax error, but still.
+not too serious if all you did was fix a syntax error, but for deeper
+changes there can be more serious consequences to unsafe history editing.
 
 .. figure:: figures/figure-ug01.svg
 
@@ -70,8 +71,9 @@ not too serious if all you did was fix a syntax error, but still.
 (Incidentally, Mercurial's traditional history modification mechanism
 isn't *really* unsafe: any changeset(s) removed from the repository
 are kept in a backup directory, so you can manually restore them later
-if you change your mind. But it's awkward and inconvenient compared to
-the features provided by ``evolve`` and changeset obsolescence.)
+if you change your mind. However, this mechanism is very awkward and
+inconvenient compared to the features provided by ``evolve`` and
+changeset obsolescence.)
 
 Life with ``evolve`` (basic usage)
 ----------------------------------
@@ -99,7 +101,7 @@ default, whereas ``hg commit --amend`` runs your editor if you don't
 pass ``-m`` or ``-l``.)
 
 Under the hood, though, things are quite different. Mercurial has
-simply marked the old changeset *obsolete*, replacing it with a new
+simply marked the old changeset as *obsolete*, replacing it with a new
 one. We'll explore what this means in detail later, after working
 through a few more examples.
 
@@ -192,7 +194,7 @@ changesets we just created, from revision 7::
 
 and fold them::
 
-  $ hg fold -m 'fix bug 64' -r 7::
+  $ hg fold -m 'fix bug 64' -r 7:: --exact
   3 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
@@ -214,7 +216,7 @@ understand the more advanced use cases we'll see later.
 When you have the ``evolve`` extension enabled, all history
 modification uses the same underlying mechanism: the original
 changesets are marked *obsolete* and replaced by zero or more
-*successors*. The obsolete changesets are the *precursors* of their
+*successors*. The obsolete changesets are the *predecessors* of their
 successors. This applies equally to built-in commands (``commit
 --amend``), commands added by ``evolve`` (``amend``, ``prune``,
 ``uncommit``, ``fold``), and commands provided by other extensions
@@ -232,7 +234,7 @@ Under the hood: Amend a changeset
 Consider Example 2, amending a changeset with ``evolve``. We saw above
 that you can do this using the exact same command-line syntax as core
 Mercurial, namely ``hg commit --amend``. But the implementation is
-quite different, and Figure 2 shows how.
+quite different, as Figure 2 shows.
 
 .. figure:: figures/figure-ug02.svg
 
@@ -243,8 +245,8 @@ quite different, and Figure 2 shows how.
    versions of Mercurial will not create them.)
 
 In this case, the obsolete changesets are also *hidden*. That is the
-usual end state for obsolete changesets. But many scenarios result in
-obsolete changesets that are still visible, which indicates your
+usual end state for obsolete changesets. However, many scenarios result
+in obsolete changesets that are still visible, which indicates your
 history modification work is not yet done. We'll see examples of that
 later, when we cover advanced usage.
 
@@ -287,7 +289,7 @@ Under the hood: Prune an unwanted changeset
 ``prune`` (example 4 above) is the simplest history modification
 command provided by ``evolve``. All it does is mark the specified
 changeset(s) obsolete, with no successor/precursor relationships
-involved. (If the working directory parent was one of the obsolete
+involved. (If the working directory parent was one of the obsoleted
 changesets, ``prune`` updates back to a suitable ancestor.)
 
 .. figure:: figures/figure-ug03.svg
@@ -299,11 +301,8 @@ Under the hood: Uncommit changes to certain files
 
 In one sense, ``uncommit`` is a simplified version of ``amend``. Like
 ``amend``, it obsoletes one changeset and leaves it with a single
-successor. Unlike ``amend``, there is no ugly "temporary amend commit"
-cluttering up the repository.
-
-In another sense, ``uncommit`` is the inverse of ``amend``: ``amend``
-takes any uncommitted changes in the working dir and “adds”
+successor. In another sense, ``uncommit`` is the inverse of ``amend``:
+``amend`` takes any uncommitted changes in the working dir and “adds”
 them to the working directory's parent changeset. (In reality, of
 course, it creates a successor changeset, marking the original
 obsolete.) In contrast, ``uncommit`` takes some changes in the working
@@ -341,8 +340,9 @@ hidden. We'll see examples of that soon, when we create *unstable*
 changesets.
 
 Note that all hidden changesets are obsolete: hidden is a subset of
-obsolete.
+obsolete. This is explained in more depth in the `concepts`_ section.
 
+.. _`concepts`: concepts.html
 
 Life with ``evolve`` (advanced usage)
 -------------------------------------
@@ -353,12 +353,12 @@ scenarios. All of these scenarios will involve *unstable* changesets,
 which is an unavoidable consequence of obsolescence. What really sets
 ``evolve`` apart from other history modification mechanisms is the
 fact that it recognizes troubles like unstable changesets and provides
-a consistent way for you to get out of trouble.
+a consistent way for you to get back to a stable repository.
 
-(Incidentally, there are two other types of trouble that changesets
-can get into with ``evolve``: they may be *divergent* or *bumped*.
-Both of those states are more likely to occur when `sharing mutable
-history`_, so we won't see them in this user guide.)
+(Incidentally, there are two other types of troubles that changesets
+can get into with ``evolve``: they may be *divergent* or
+*bumped*. Both of those states are more likely to occur when
+`sharing mutable history`_, so we won't cover them in this user guide.)
 
 .. _`sharing mutable history`: sharing.html
 
@@ -366,8 +366,8 @@ history`_, so we won't see them in this user guide.)
 Example 7: Amend an older changeset
 ===================================
 
-Sometimes you don't notice your mistakes until after you have
-committed new changesets on top of them. ::
+Sometimes you don't notice a mistake until after you have committed
+new changesets on top of the changeset with the mistake. ::
 
   $ hg commit -m 'fix bug 17'         # rev 11 (mistake here)
   $ hg commit -m 'cleanup'            # rev 12
@@ -402,10 +402,10 @@ descendants of 11—are in a funny state: they are *unstable*.
    descendants are *unstable*. The temporary amend commit, revision
    14, is hidden because it has no non-obsolete descendants.
 
-All non-obsolete descendants of an obsolete changeset are unstable. An
-interesting consequence of this is that revision 11 is still visible,
-even though it is obsolete. Obsolete changesets with non-obsolete
-descendants are not hidden.
+All non-obsolete descendants of an obsolete changeset are considered
+unstable. An interesting consequence of this is that revision 11 is
+still visible, even though it is obsolete. Obsolete changesets with
+non-obsolete descendants are not hidden.
 
 The fix is to *evolve* history::
 
@@ -415,9 +415,8 @@ This is a separate step, not automatically part of ``hg amend``,
 because there might be conflicts. If your amended changeset modifies a
 file that one of its descendants also modified, Mercurial has to fire
 up your merge tool to resolve the conflict. More importantly, you have
-to switch contexts from "writing code" to "resolving conflicts". That
-can be an expensive context switch, so Mercurial lets you decide when
-to do it.
+to switch from "writing code" to "resolving conflicts". That can be an
+expensive context switch, so Mercurial lets you decide when to do it.
 
 The end state, after ``evolve`` finishes, is that the original
 revisions (11-13) are obsolete and hidden. Their successor revisions
@@ -491,7 +490,7 @@ directory::
   M file2.c
 
 Now your repository has unstable changesets, so you need to evolve it.
-But ``hg evolve`` requires a clean working directory to resolve merge
+However, ``hg evolve`` requires a clean working directory to resolve merge
 conflicts, so you need to decide what to do with ``file2.c``.
 
 In this case, the change to ``file2.c`` was a temporary debugging
@@ -525,12 +524,12 @@ bit more complicated. The setup is nearly identical::
   $ hg commit -u dan -d '12 0' -m 'new feature'   # rev 27 (fine)
 
 As before, we update back to the flawed changeset (this time,
-revision 26) and ``uncommit``, leaving uncommitted changes to
+revision 26) and use ``uncommit``, leaving uncommitted changes to
 ``file2.c`` in the working dir::
 
   $ hg update -q 26
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg uncommit -q file2.c                        # obsoletes rev 26, creates rev 28
+  $ hg uncommit -q file2.c  # obsoletes rev 26, creates rev 28
   1 new unstable changesets
   $ hg status
   M file2.c
@@ -541,8 +540,8 @@ This time, let's save that useful change before evolving::
 
 Figure 11 shows the story so far: ``uncommit`` obsoleted revision 26
 and created revision 28, the successor of 26. Then we committed
-revision 29, a child of 28. We still have to deal with the unstable
-revision 27.
+revision 29, a child of 28. We still have to deal with the revision 27,
+which is an unstable changeset.
 
 .. figure:: figures/figure-ug11.svg
 
@@ -594,7 +593,7 @@ as ``REV``, and will be a successor of ``REV``.
 The current implementation of ``hg touch`` is not ideal, and is likely to
 change in the future. Consider the history in Figure 12, where revision 27
 is obsolete and the child of 26, also obsolete. If we ``hg touch 27``, that
-creates a new revision which is a non-obsolete child of 26—i.e., it is
+creates a new revision which is a non-obsolete child of 26—i.e., it is an
 unstable. It's also *divergent*, another type of trouble that we'll learn
 about in the `next section`_.
 

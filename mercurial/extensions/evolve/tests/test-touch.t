@@ -18,7 +18,7 @@
 Basic usage
 
   $ hg log -G
-  @  0:e93df3427f45 a
+  @  0:[0-9a-f]{12} a (re)
   
   $ hg touch .
   $ hg log -G
@@ -50,16 +50,18 @@ Revive usage
   
   o  3:[0-9a-f]{12} ab (re)
   
-  $ hg prune 3
+  $ hg prune 4
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory now at 000000000000
   1 changesets pruned
 
 Duplicate
 
   $ hg touch --duplicate .
   $ hg log -G
-  @  5:[0-9a-f]{12} a (re)
+  @  5:[0-9a-f]{12} (re)
   
-  o  4:[0-9a-f]{12} a (re)
+  o  3:[0-9a-f]{12} ab (re)
   
 
 Multiple touch
@@ -75,19 +77,19 @@ Multiple touch
   |
   o  6:[0-9a-f]{12} c (re)
   |
-  o  5:[0-9a-f]{12} a (re)
+  o  5:[0-9a-f]{12} (re)
   
-  o  4:[0-9a-f]{12} a (re)
+  o  3:[0-9a-f]{12} ab (re)
   
-  $ hg touch 6:7
+  $ hg touch .^:.
   $ hg log -G
   @  9:[0-9a-f]{12} d (re)
   |
   o  8:[0-9a-f]{12} c (re)
   |
-  o  5:[0-9a-f]{12} a (re)
+  o  5:[0-9a-f]{12} (re)
   
-  o  4:[0-9a-f]{12} a (re)
+  o  3:[0-9a-f]{12} ab (re)
   
 
 check move data kept after rebase on touch:
@@ -107,8 +109,36 @@ check move data kept after rebase on touch:
   $ hg touch
   1 new unstable changesets
 
+  $ hg log -G --hidden
+  | o  10:[0-9a-f]{12} move (re)
+  |
+  | x  9:[0-9a-f]{12} gna1 (re)
+  | |
+  | x  6:[0-9a-f]{12} d (re)
+  |/
+  | x  5:[0-9a-f]{12} c (re)
+  |
+  o  8:[0-9a-f]{12} c (re)
+  |
+  | x  7:[0-9a-f]{12} d (re)
+  | |
+  | x  6:[0-9a-f]{12} c (re)
+  |/
+  o  5:[0-9a-f]{12} (re)
+  
+  x  4:[0-9a-f]{12} a (re)
+  
+  o  3:[0-9a-f]{12} ab (re)
+  
+  x  2:[0-9a-f]{12} temporary amend commit for [0-9a-f]{12} (re)
+  |
+  x  1:[0-9a-f]{12} a (re)
+  
+  x  0:[0-9a-f]{12} a (re)
+  
+
   $ hg rebase -s 11 -d 12
-  rebasing 11:* "move" (glob)
+  rebasing 11:[0-9a-f]{12} "move" (re)
   $ hg st -C --change=tip
   A gna2
     gna1

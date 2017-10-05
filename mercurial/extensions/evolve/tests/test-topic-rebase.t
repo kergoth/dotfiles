@@ -40,10 +40,12 @@ Check that rebase keep the topic in the simple case (1 changeset, no merge confl
 
 Work on myfeature
   $ hg topic myfeature
+  marked working directory as topic: myfeature
   $ mkcommit feature1
+  active topic 'myfeature' grew its first changeset
   $ hg stack
   ### topic: myfeature
-  ### branch: default
+  ### target: default (branch)
   t1@ add feature1 (current)
   t0^ add ROOT (base)
   $ logtopic
@@ -73,7 +75,7 @@ Rebase the commit
   switching to topic myfeature
   $ hg stack
   ### topic: myfeature
-  ### branch: default
+  ### target: default (branch)
   t1@ add feature1 (current)
   t0^ add default (base)
   $ logtopic
@@ -87,7 +89,7 @@ Rebase the commit
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
   ### topic: myfeature
-  ### branch: default
+  ### target: default (branch)
   t1@ add feature1 (current)
   t0^ add default (base)
 
@@ -102,8 +104,10 @@ Create a common base
 
 Update the common file in a topic
   $ hg topic myotherfeature
+  marked working directory as topic: myotherfeature
   $ echo "B" >> file
   $ hg commit -m "myotherfeature1"
+  active topic 'myotherfeature' grew its first changeset
 
 Update the common file in default
   $ hg update --rev default
@@ -149,13 +153,13 @@ Check the the commit has the right topic
      topics:
   $ hg stack
   ### topic: myotherfeature
-  ### branch: default
+  ### target: default (branch)
   t1@ myotherfeature1 (current)
   t0^ default3 (base)
   $ hg update --rev 7
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
   ### topic: myotherfeature
-  ### branch: default
+  ### target: default (branch)
   t1@ myotherfeature1 (current)
   t0^ default3 (base)

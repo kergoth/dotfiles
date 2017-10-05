@@ -28,6 +28,7 @@ Simple linear case
   $ echo babar >> jungle
   $ hg add jungle
   $ hg ci -t elephant -m babar
+  active topic 'elephant' grew its first changeset
 
   $ hg log -G
   @  4 (elephant) babar
@@ -53,6 +54,7 @@ multiple heads with topic
   $ echo zephir >> jungle
   $ hg add jungle
   $ hg ci -t monkey -m zephir
+  active topic 'monkey' grew its first changeset
   $ hg log -G
   @  5 (monkey) zephir
   |
@@ -450,6 +452,7 @@ Testing default destination for topic
   $ hg up 'p1(roots(topic(elephant)))'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg topic elephant
+  marked working directory as topic: elephant
   $ hg up
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg log -G

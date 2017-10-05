@@ -129,7 +129,7 @@ Add another commit
 
 Get a successors of 8 on it
 
-  $ hg grab 8
+  $ hg grab 1cf0aacfd363
   rebasing 8:1cf0aacfd363 "newer a"
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
 
@@ -140,7 +140,7 @@ Add real change to the successors
 
 Make precursors public
 
-  $ hg phase --hidden --public 8
+  $ hg phase --hidden --public 1cf0aacfd363
   1 new bumped changesets
   $ glog
   @  12:(73b15c7566e9|d5c7ef82d003)@default\(draft\) bk:\[\] newer a (re)
@@ -156,20 +156,20 @@ Make precursors public
 
 Stabilize!
 
-  $ hg evolve --any --dry-run --bumped
+  $ hg evolve --any --dry-run --phasedivergent
   recreate:[12] newer a
   atop:[8] newer a
   hg rebase --rev (73b15c7566e9|d5c7ef82d003) --dest 66719795a494; (re)
   hg update 1cf0aacfd363;
   hg revert --all --rev (73b15c7566e9|d5c7ef82d003); (re)
   hg commit --msg "bumped update to %s" (no-eol)
-  $ hg evolve --any --confirm --bumped
+  $ hg evolve --any --confirm --phasedivergent
   recreate:[12] newer a
   atop:[8] newer a
   perform evolve? [Ny] n
   abort: evolve aborted by user
   [255]
-  $ echo y | hg evolve --any --confirm --config ui.interactive=True --bumped
+  $ echo y | hg evolve --any --confirm --config ui.interactive=True --phasedivergent
   recreate:[12] newer a
   atop:[8] newer a
   perform evolve? [Ny] y
@@ -193,7 +193,7 @@ Stabilize divergent changesets with same parent
 ===============================================
 
   $ rm a.orig
-  $ hg up 9
+  $ hg up 7bc2f5967f5e
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cat << EOF >> a
   > flore
@@ -219,7 +219,7 @@ Stabilize divergent changesets with same parent
   
   $ echo 'babar' >> a
   $ hg amend
-  $ hg up --hidden 15
+  $ hg up --hidden 3932c176bbaa
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (3932c176bbaa)
   (use 'hg evolve' to update to its successor: d2f173e25686)
@@ -247,14 +247,14 @@ Stabilize divergent changesets with same parent
 
 Stabilize it
 
-  $ hg evolve -qn --confirm --divergent
+  $ hg evolve -qn --confirm --contentdivergent
   merge:[19] More addition
   with: [17] More addition
   base: [15] More addition
   perform evolve? [Ny] n
   abort: evolve aborted by user
   [255]
-  $ echo y | hg evolve -qn --confirm --config ui.interactive=True --divergent
+  $ echo y | hg evolve -qn --confirm --config ui.interactive=True --contentdivergent
   merge:[19] More addition
   with: [17] More addition
   base: [15] More addition
@@ -265,7 +265,7 @@ Stabilize it
   hg up -C 3932c176bbaa &&
   hg revert --all --rev tip &&
   hg commit -m "`hg log -r eacc9c8240fe --template={desc}`";
-  $ hg evolve -v --divergent
+  $ hg evolve -v --contentdivergent
   merge:[19] More addition
   with: [17] More addition
   base: [15] More addition
@@ -332,7 +332,7 @@ Stabilize it
 Check conflict during divergence resolution
 -------------------------------------------------
 
-  $ hg up --hidden 15
+  $ hg up --hidden 3932c176bbaa
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (3932c176bbaa)
   (use 'hg evolve' to update to its successor: f344982e63c4)
@@ -344,14 +344,14 @@ Check conflict during divergence resolution
   $ hg phase 'divergent()'
   21: draft
   24: draft
-  $ hg evolve -qn --divergent
+  $ hg evolve -qn --contentdivergent
   hg update -c 0b336205a5d0 &&
   hg merge f344982e63c4 &&
   hg commit -m "auto merge resolving conflict between 0b336205a5d0 and f344982e63c4"&&
   hg up -C 3932c176bbaa &&
   hg revert --all --rev tip &&
   hg commit -m "`hg log -r 0b336205a5d0 --template={desc}`";
-  $ hg evolve --divergent
+  $ hg evolve --contentdivergent
   merge:[24] More addition (2)
   with: [21] More addition
   base: [15] More addition

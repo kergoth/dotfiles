@@ -287,7 +287,7 @@ Test --all
   $ hg up -C 3 --hidden
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (5eb72dbe0cb4)
-  (5eb72dbe0cb4 has diverged, use 'hg evolve --list --divergent' to resolve the issue)
+  (5eb72dbe0cb4 has diverged, use 'hg evolve --list --contentdivergent' to resolve the issue)
   $ hg --config extensions.purge= purge
   $ hg uncommit --all -X e
   1 new divergent changesets

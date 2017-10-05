@@ -514,7 +514,7 @@ Figure SG09: multiple heads! divergence! oh my!
   7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
 
 Use evolve to fix the divergence.
-  $ HGMERGE=internal:other hg evolve --divergent
+  $ HGMERGE=internal:other hg evolve --contentdivergent
   merge:[6] fix bug 24 (v2 by bob)
   with: [7] fix bug 24 (v2 by alice)
   base: [4] fix bug 24 (v1)

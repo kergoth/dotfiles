@@ -1,6 +1,6 @@
   $ . "$TESTDIR/testlib/topic_setup.sh"
 
-  $ hg init pinky
+  $ hg init pinky --traceback
   $ cd pinky
   $ cat <<EOF >> .hg/hgrc
   > [phases]
@@ -19,34 +19,46 @@
   see all topics.
   
       Clear topic on existing topiced revisions:
-          'hg topic --rev <related revset> --clear'
+  
+        hg topics --rev <related revset> --clear
   
       Change topic on some revisions:
-          'hg topic <newtopicname> --rev <related revset>'
+  
+        hg topics <newtopicname> --rev <related revset>
   
       Clear current topic:
-          'hg topic --clear'
+  
+        hg topics --clear
   
       Set current topic:
-          'hg topic <topicname>'
+  
+        hg topics <topicname>
   
       List of topics:
-          'hg topics'
   
-      List of topics with their last touched time sorted according to it:
-          'hg topic --age'
+        hg topics
+  
+      List of topics sorted according to their last touched time displaying last
+      touched time and the user who last touched the topic:
+  
+        hg topics --age
   
       The active topic (if any) will be prepended with a "*".
+  
+      The '--current' flag helps to take active topic into account. For example,
+      if you want to set the topic on all the draft changesets to the active
+      topic, you can do: 'hg topics -r "draft()" --current'
   
       The --verbose version of this command display various information on the
       state of each topic.
   
-  options:
+  options ([+] can be repeated):
   
-      --clear   clear active topic if any
-   -r --rev REV revset of existing revisions
-   -l --list    show the stack of changeset in the topic
-      --age     show when you last touched the topics
+      --clear       clear active topic if any
+   -r --rev REV [+] revset of existing revisions
+   -l --list        show the stack of changeset in the topic
+      --age         show when you last touched the topics
+      --current     display the current topic only
   
   (some details hidden, use --verbose to show complete help)
   $ hg topics
@@ -72,6 +84,36 @@ Create some changes:
 
 Still no topics
   $ hg topics
+  $ hg topics --current
+  no active topic
+  [1]
+  $ hg topics --current somerandomtopic
+  abort: cannot use --current when setting a topic
+  [255]
+  $ hg topics --current --clear
+  abort: cannot use --current and --clear
+  [255]
+  $ hg topics --clear somerandomtopic
+  abort: cannot use --clear when setting a topic
+  [255]
+
+Trying some invalid topicnames
+
+  $ hg topic '.'
+  abort: the name '.' is reserved
+  [255]
+  $ hg topic null
+  abort: the name 'null' is reserved
+  [255]
+  $ hg topic tip
+  abort: the name 'tip' is reserved
+  [255]
+  $ hg topic 12345
+  abort: cannot use an integer as a name
+  [255]
+  $ hg topic '   '
+  abort: topic name cannot consist entirely of whitespaces
+  [255]
 
 Test commit flag and help text
 
@@ -93,19 +135,35 @@ Test commit flag and help text
    * topicflag
 
 Make a topic
+
   $ hg topic narf
   $ hg topics
    * narf
+  $ hg topics -v
+   * narf (on branch: default, 0 changesets)
+  $ hg stack
+  ### topic: narf
+  ### target: default (branch)
+  (stack is empty)
+  t0^ Add file delta (base)
+
+Add commits to topic
+
   $ echo topic work >> alpha
   $ hg ci -m 'start on narf'
+  active topic 'narf' grew its first changeset
   $ hg co .^
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg topic fran
+  marked working directory as topic: fran
   $ hg topics
    * fran
      narf
+  $ hg topics --current
+  fran
   $ echo >> fran work >> beta
   $ hg ci -m 'start on fran'
+  active topic 'fran' grew its first changeset
   $ hg co narf
   switching to topic narf
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -260,7 +318,9 @@ Because the change is public, we won't inherit the topic from narf.
   $ hg topic
   $ echo what >> alpha
   $ hg topic query
+  marked working directory as topic: query
   $ hg ci -m 'what is narf, pinky?'
+  active topic 'query' grew its first changeset
   $ hg log -Gl2
   @  changeset:   5:c01515cfc331
   |  tag:         tip
@@ -274,6 +334,7 @@ Because the change is public, we won't inherit the topic from narf.
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     start on narf
   |
+
   $ hg push -f ../pinky -r query
   pushing to ../pinky
   searching for changes
@@ -281,6 +342,7 @@ Because the change is public, we won't inherit the topic from narf.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+
   $ hg -R ../pinky log -Gl 4
   o  changeset:   7:c01515cfc331
   |  tag:         tip
@@ -309,6 +371,7 @@ Because the change is public, we won't inherit the topic from narf.
   |    date:        Thu Jan 01 00:00:00 1970 +0000
   |    summary:     start on narf
   |
+
   $ hg topics
    * query
   $ cd ../pinky
@@ -342,6 +405,7 @@ Because the change is public, we won't inherit the topic from narf.
   query
   tip
   $ hg phase --public narf
+  active topic 'narf' is now empty
 
 POSSIBLE BUG: narf topic stays alive even though we just made all
 narf commits public:
@@ -387,6 +451,7 @@ narf commits public:
   |    date:        Thu Jan 01 00:00:00 1970 +0000
   |    summary:     start on narf
   |
+
   $ cd ../brain
   $ hg topics
    * query
@@ -401,6 +466,7 @@ narf commits public:
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 1 files
+  active topic 'query' is now empty
   (run 'hg update' to get a working copy)
   $ hg topics
    * query
@@ -432,6 +498,7 @@ query is not an open topic, so when we clear the current topic it'll
 disappear:
 
   $ hg topics --clear
+  clearing empty topic "query"
   $ hg topics
      fran
 
@@ -670,7 +737,9 @@ bonus deps in the testsuite.
 Amend a topic
 
   $ hg topic watwat
+  marked working directory as topic: watwat
   $ hg ci --amend
+  active topic 'watwat' grew its first changeset
   $ hg log -Gr 'draft()'
   @  changeset:   16:6c40a4c21bbe
   |  tag:         tip
@@ -725,9 +794,13 @@ Testing issue5441
   |  summary:     start on fran
   |
 
-  $ hg topics --rev '13::19' changewat
-  switching to topic changewat
+Using the current flag
+
+  $ hg topic changewat
+  $ hg topics --rev '13::19' --current
+  active topic 'changewat' grew its 2 first changesets
   changed topic on 2 changes
+
   $ hg log -Gr 'draft()'
   @  changeset:   21:56c83be6105f
   |  tag:         tip
@@ -752,6 +825,7 @@ Case with branching:
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ echo gamma >> gamma
   $ hg ci -m gamma
+
   $ hg log -Gr 'draft()'
   @  changeset:   22:0d3d805542b4
   |  tag:         tip
@@ -774,9 +848,12 @@ Case with branching:
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     start on fran
   |
+
   $ hg topics --rev 't1::' changewut
   switching to topic changewut
+  active topic 'changewat' is now empty
   changed topic on 3 changes
+
   $ hg log -Gr 'draft()'
   @  changeset:   25:729ed5717393
   |  tag:         tip
@@ -805,20 +882,22 @@ Testing for updating to t0
 
   $ hg stack
   ### topic: changewut (2 heads)
-  ### branch: default, 5 behind
+  ### target: default (branch), 5 behind
   t3: fran?
   t1^ start on fran (base)
   t2@ gamma (current)
   t1: start on fran
   t0^ Add file delta (base)
+
   $ hg up t0
   preserving the current topic 'changewut'
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
   $ hg topic
    * changewut
   $ hg stack
   ### topic: changewut (2 heads)
-  ### branch: default, 5 behind
+  ### target: default (branch), 5 behind
   t3: fran?
   t1^ start on fran (base)
   t2: gamma
@@ -826,7 +905,7 @@ Testing for updating to t0
   t0^ Add file delta (base)
 
   $ hg topics --age
-   * changewut (1970-01-01)
+   * changewut (1970-01-01 by test)
 
   $ cd ..
 
@@ -864,50 +943,63 @@ Testing the new config knob to forbid untopiced commit
   date:        Thu Jan 01 00:00:00 1970 +0000
   summary:     added a
   
+Testing the --age flag for `hg topics`
+======================================
+
   $ hg topic topic1970 --rev 0
   switching to topic topic1970
   changed topic on 1 changes
+
   $ hg add b
   $ hg topic topic1990
-  $ hg ci -m "Added b" --config devel.default-date="631152000 0"
+  $ hg ci -m "Added b" --config devel.default-date="631152000 0" --user "foo"
+  active topic 'topic1990' grew its first changeset
   $ hg add c
   $ hg topic topic2010
-  $ hg ci -m "Added c" --config devel.default-date="1262304000 0"
-  $ hg log
-  changeset:   3:9048b194797d
-  tag:         tip
-  topic:       topic2010
-  user:        test
-  date:        Fri Jan 01 00:00:00 2010 +0000
-  summary:     Added c
-  
-  changeset:   2:186d493c7f8d
-  topic:       topic1990
-  user:        test
-  date:        Mon Jan 01 00:00:00 1990 +0000
-  summary:     Added b
-  
-  changeset:   1:e5a30a141954
-  topic:       topic1970
-  parent:      -1:000000000000
-  user:        test
-  date:        Thu Jan 01 00:00:00 1970 +0000
-  summary:     added a
+  $ hg ci -m "Added c" --config devel.default-date="1262304000 0" --user "bar"
+  active topic 'topic2010' grew its first changeset
+
+  $ hg log -G
+  @  changeset:   3:76b16af75125
+  |  tag:         tip
+  |  topic:       topic2010
+  |  user:        bar
+  |  date:        Fri Jan 01 00:00:00 2010 +0000
+  |  summary:     Added c
+  |
+  o  changeset:   2:bba5bde53608
+  |  topic:       topic1990
+  |  user:        foo
+  |  date:        Mon Jan 01 00:00:00 1990 +0000
+  |  summary:     Added b
+  |
+  o  changeset:   1:e5a30a141954
+     topic:       topic1970
+     parent:      -1:000000000000
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     added a
   
   $ hg topics
      topic1970
      topic1990
    * topic2010
+
   $ hg topics --age
-   * topic2010 (2010-01-01)
-     topic1990 (1990-01-01)
-     topic1970 (1970-01-01)
+   * topic2010 (2010-01-01 by bar)
+     topic1990 (1990-01-01 by foo)
+     topic1970 (1970-01-01 by test)
+
   $ hg up topic1970
   switching to topic topic1970
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
-  $ hg topics --age
-     topic2010 (2010-01-01)
-     topic1990 (1990-01-01)
-   * topic1970 (1970-01-01)
 
+  $ hg topics --age
+     topic2010 (2010-01-01 by bar)
+     topic1990 (1990-01-01 by foo)
+   * topic1970 (1970-01-01 by test)
+
+  $ hg topics --age random
+  abort: cannot use --age while setting a topic
+  [255]
   $ cd ..

@@ -23,7 +23,7 @@ Test the instability listing
     unstable: cb9a9f314b8b (obsolete parent)
   
   177f92b77385: c
-    unstable: d2ae7f538514 (unstable parent)
+    orphan: d2ae7f538514 (orphan parent)
   
   $ cd ..
 

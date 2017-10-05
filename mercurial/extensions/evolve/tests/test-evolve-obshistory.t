@@ -61,7 +61,7 @@ Actual test
   @  4ae3a4151de9 (3) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (Thu Jan 01 00:00:00 1970 +0000) as 4ae3a4151de9
+       rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/4ae3a4151de9-changeset-description
          @@ -1,1 +1,3 @@
@@ -78,40 +78,66 @@ Actual test
          +42
   
   
+
+  $ hg obslog --no-graph --patch 4ae3a4151de9
+  4ae3a4151de9 (3) A1
+  471f378eab4c (1) A0
+    rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
+      --- a/471f378eab4c-changeset-description	
+      +++ b/4ae3a4151de9-changeset-description	
+      @@ -1,1 +1,3 @@
+      -A0
+      +A1
+      +
+      +Better commit message
+  
+      diff -r 471f378eab4c -r 4ae3a4151de9 A0
+      --- a/A0	Thu Jan 01 00:00:00 1970 +0000
+      +++ b/A0	Thu Jan 01 00:00:00 1970 +0000
+      @@ -1,1 +1,2 @@
+       A0
+      +42
+  
+
+  $ hg obslog 4ae3a4151de9 --graph -T'{label("log.summary", shortdescription)} {if(markers, join(markers % "at {date|hgdate} by {user|person} ", " also "))}'
+  @  A1
+  |
+  x  A0 at 0 0 by test
+  
   $ hg obslog 4ae3a4151de9 --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "4ae3a4151de9",
-          "debugobshistory.rev": 3,
-          "debugobshistory.shortdescription": "A1"
+          "markers": [],
+          "node": "4ae3a4151de9",
+          "rev": 3,
+          "shortdescription": "A1"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "description",
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "description",
+                      "content"
+                  ],
+                  "succnodes": [
                       "4ae3a4151de9"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
   $ hg obslog --hidden --patch 471f378eab4c
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (*) as 4ae3a4151de9 (glob)
+       rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/4ae3a4151de9-changeset-description
          @@ -1,1 +1,3 @@
@@ -131,26 +157,26 @@ Actual test
   $ hg obslog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      *, (glob)
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      *, (glob)
+                      "content"
+                  ],
+                  "succnodes": [
                       "4ae3a4151de9"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
   $ hg update 471f378eab4c
@@ -224,19 +250,19 @@ Actual test
   $ hg obslog 'desc(B0)' --hidden --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.verb": "pruned"
+                  "user": "test",
+                  "verb": "pruned"
               }
           ],
-          "debugobshistory.node": "0dec01379d3b",
-          "debugobshistory.rev": 2,
-          "debugobshistory.shortdescription": "B0"
+          "node": "0dec01379d3b",
+          "rev": 2,
+          "shortdescription": "B0"
       }
   ]
   $ hg obslog 'desc(A0)' --patch
@@ -245,10 +271,10 @@ Actual test
   $ hg obslog 'desc(A0)' --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "markers": [],
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
   $ hg up 1
@@ -353,33 +379,33 @@ Actual test
 Check that debugobshistory on splitted commit show both targets
   $ hg obslog 471597cad322 --hidden --patch
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
   $ hg obslog 471597cad322 --hidden --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "parent",
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "parent",
+                      "content"
+                  ],
+                  "succnodes": [
                       "337fec4d2edc",
                       "f257fde29c7a"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471597cad322",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471597cad322",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
 Check that debugobshistory on the first successor after split show
@@ -388,7 +414,7 @@ the revision plus the splitted one
   o  337fec4d2edc (2) A0
   |
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
 With the all option, it should show the three changesets
@@ -398,7 +424,7 @@ With the all option, it should show the three changesets
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
 Check that debugobshistory on the second successor after split show
@@ -407,7 +433,7 @@ the revision plus the splitted one
   @  f257fde29c7a (3) A0
   |
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
 With the all option, it should show the three changesets
@@ -417,7 +443,7 @@ With the all option, it should show the three changesets
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
 Obslog with all option all should also works on the splitted commit
@@ -427,7 +453,7 @@ Obslog with all option all should also works on the splitted commit
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
 Check that debugobshistory on both successors after split show
@@ -438,7 +464,7 @@ a coherent graph
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) by test (*) as 337fec4d2edc, f257fde29c7a (glob)
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (2))
   
   $ hg update 471597cad322
@@ -606,7 +632,7 @@ Actual test
 
   $ hg obslog de7290d8b885 --hidden --patch
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (4))
   
   $ hg obslog de7290d8b885 --hidden --all --patch
@@ -619,76 +645,76 @@ Actual test
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (4))
   
   $ hg obslog de7290d8b885 --hidden --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "parent",
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "parent",
+                      "content"
+                  ],
+                  "succnodes": [
                       "1ae8bc733a14",
                       "337fec4d2edc",
                       "c7f044602e9b",
                       "f257fde29c7a"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "de7290d8b885",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "de7290d8b885",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
   $ hg obslog c7f044602e9b --patch
   @  c7f044602e9b (5) A0
   |
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (4))
   
   $ hg obslog c7f044602e9b --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "c7f044602e9b",
-          "debugobshistory.rev": 5,
-          "debugobshistory.shortdescription": "A0"
+          "markers": [],
+          "node": "c7f044602e9b",
+          "rev": 5,
+          "shortdescription": "A0"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "parent",
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "parent",
+                      "content"
+                  ],
+                  "succnodes": [
                       "1ae8bc733a14",
                       "337fec4d2edc",
                       "c7f044602e9b",
                       "f257fde29c7a"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "de7290d8b885",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "de7290d8b885",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
 Check that debugobshistory on all heads show a coherent graph
@@ -702,7 +728,7 @@ Check that debugobshistory on all heads show a coherent graph
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (4))
   
   $ hg obslog 5 --all --patch
@@ -715,7 +741,7 @@ Check that debugobshistory on all heads show a coherent graph
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) by test (*) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a (glob)
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, too many successors (4))
   
   $ hg update de7290d8b885
@@ -790,7 +816,7 @@ Check that debugobshistory on the first folded revision show only
 the revision with the target
   $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -809,11 +835,11 @@ Check that with all option, all changesets are shown
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+   /     rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |        (No patch available yet, changesets rebased)
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -831,7 +857,7 @@ Check that debugobshistory on the second folded revision show only
 the revision with the target
   $ hg obslog --hidden 0dec01379d3b --patch
   x  0dec01379d3b (2) B0
-       rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+       rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, changesets rebased)
   
 Check that with all option, all changesets are shown
@@ -839,11 +865,11 @@ Check that with all option, all changesets are shown
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+   /     rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |        (No patch available yet, changesets rebased)
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -863,11 +889,11 @@ graph
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+   /     rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |        (No patch available yet, changesets rebased)
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -884,55 +910,55 @@ graph
   $ hg obslog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "eb5a0daa2192",
-          "debugobshistory.rev": 3,
-          "debugobshistory.shortdescription": "C0"
+          "markers": [],
+          "node": "eb5a0daa2192",
+          "rev": 3,
+          "shortdescription": "C0"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "description",
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      *, (glob)
+                      "content"
+                  ],
+                  "succnodes": [
                       "eb5a0daa2192"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      0.0,
+                      0 (glob)
+                  ],
+                  "effect": [
                       "description",
                       "parent",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0 (glob)
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "eb5a0daa2192"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "0dec01379d3b",
-          "debugobshistory.rev": 2,
-          "debugobshistory.shortdescription": "B0"
+          "node": "0dec01379d3b",
+          "rev": 2,
+          "shortdescription": "B0"
       }
   ]
   $ hg update 471f378eab4c
@@ -976,7 +1002,7 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as fdf9bde5129a
+  |    obsolete:    reworded as fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1009,8 +1035,8 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as fdf9bde5129a
-  |    obsolete:    rewritten as 65b757b745b9
+  |    obsolete:    reworded as fdf9bde5129a
+  |    obsolete:    reworded as 65b757b745b9
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1024,14 +1050,14 @@ Actual test
 Check that debugobshistory on the divergent revision show both destinations
   $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1047,14 +1073,14 @@ Check that with all option, every changeset is shown
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1065,39 +1091,39 @@ Check that with all option, every changeset is shown
   $ hg obslog --hidden 471f378eab4c --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "description"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "description"
+                  ],
+                  "succnodes": [
                       "65b757b745b9"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               },
               {
-                  "debugobshistory.effect": [
-                      "description"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "description"
+                  ],
+                  "succnodes": [
                       "fdf9bde5129a"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
 Check that debugobshistory on the first diverged revision show the revision
@@ -1106,14 +1132,14 @@ and the diverent one
   o  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1129,14 +1155,14 @@ Check that all option show all of them
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1150,14 +1176,14 @@ and the diverent one
   @  65b757b745b9 (3) A2
   |
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1172,14 +1198,14 @@ Check that all option show all of them
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1195,14 +1221,14 @@ graph
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as 65b757b745b9 (glob)
+       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1213,51 +1239,51 @@ graph
   $ hg obslog '65b757b745b9+fdf9bde5129a' --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "65b757b745b9",
-          "debugobshistory.rev": 3,
-          "debugobshistory.shortdescription": "A2"
+          "markers": [],
+          "node": "65b757b745b9",
+          "rev": 3,
+          "shortdescription": "A2"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "description"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "description"
+                  ],
+                  "succnodes": [
                       "65b757b745b9"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               },
               {
-                  "debugobshistory.effect": [
-                      "description"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "description"
+                  ],
+                  "succnodes": [
                       "fdf9bde5129a"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       },
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "fdf9bde5129a",
-          "debugobshistory.rev": 2,
-          "debugobshistory.shortdescription": "A1"
+          "markers": [],
+          "node": "fdf9bde5129a",
+          "rev": 2,
+          "shortdescription": "A1"
       }
   ]
   $ hg update 471f378eab4c
@@ -1267,7 +1293,7 @@ graph
   $ hg update --hidden 'desc(A0)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
-  (471f378eab4c has diverged, use 'hg evolve --list --divergent' to resolve the issue)
+  (471f378eab4c has diverged, use 'hg evolve --list --contentdivergent' to resolve the issue)
 
 Test output with amended + folded commit
 ========================================
@@ -1292,7 +1318,7 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as b7ea6d14e664
+  |    obsolete:    reworded as b7ea6d14e664
   |    summary:     B0
   |
   o  changeset:   1:471f378eab4c
@@ -1326,7 +1352,7 @@ Test setup
   | | x  changeset:   2:0dec01379d3b
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | |    obsolete:    rewritten as b7ea6d14e664
+  | |    obsolete:    reworded as b7ea6d14e664
   | |    summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
@@ -1348,7 +1374,7 @@ Check that debugobshistory on head show a coherent graph
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
-   /     rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+   /     rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |        --- a/471f378eab4c-changeset-description
   |        +++ b/eb5a0daa2192-changeset-description
   |        @@ -1,1 +1,1 @@
@@ -1363,11 +1389,11 @@ Check that debugobshistory on head show a coherent graph
   |
   |
   x  b7ea6d14e664 (3) B1
-  |    rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |    rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |      (No patch available yet, changesets rebased)
   |
   x  0dec01379d3b (2) B0
-       rewritten(description) by test (*) as b7ea6d14e664 (glob)
+       rewritten(description) as b7ea6d14e664 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/0dec01379d3b-changeset-description
          +++ b/b7ea6d14e664-changeset-description
          @@ -1,1 +1,1 @@
@@ -1380,7 +1406,7 @@ Check that obslog on ROOT with all option show everything
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
-   /     rewritten(description, content) by test (*) as eb5a0daa2192 (glob)
+   /     rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |        --- a/471f378eab4c-changeset-description
   |        +++ b/eb5a0daa2192-changeset-description
   |        @@ -1,1 +1,1 @@
@@ -1395,11 +1421,11 @@ Check that obslog on ROOT with all option show everything
   |
   |
   x  b7ea6d14e664 (3) B1
-  |    rewritten(description, parent, content) by test (*) as eb5a0daa2192 (glob)
+  |    rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
   |      (No patch available yet, changesets rebased)
   |
   x  0dec01379d3b (2) B0
-       rewritten(description) by test (*) as b7ea6d14e664 (glob)
+       rewritten(description) as b7ea6d14e664 by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/0dec01379d3b-changeset-description
          +++ b/b7ea6d14e664-changeset-description
          @@ -1,1 +1,1 @@
@@ -1410,76 +1436,76 @@ Check that obslog on ROOT with all option show everything
   $ hg obslog eb5a0daa2192 --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [],
-          "debugobshistory.node": "eb5a0daa2192",
-          "debugobshistory.rev": 4,
-          "debugobshistory.shortdescription": "C0"
+          "markers": [],
+          "node": "eb5a0daa2192",
+          "rev": 4,
+          "shortdescription": "C0"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      *, (glob)
+                      0 (glob)
+                  ],
+                  "effect": [
                       *, (glob)
                       *, (glob)
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0 (glob)
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "eb5a0daa2192"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "b7ea6d14e664",
-          "debugobshistory.rev": 3,
-          "debugobshistory.shortdescription": "B1"
+          "node": "b7ea6d14e664",
+          "rev": 3,
+          "shortdescription": "B1"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "description"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0 (glob)
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      "description"
+                  ],
+                  "succnodes": [
                       "b7ea6d14e664"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "0dec01379d3b",
-          "debugobshistory.rev": 2,
-          "debugobshistory.shortdescription": "B0"
+          "node": "0dec01379d3b",
+          "rev": 2,
+          "shortdescription": "B0"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      *, (glob)
+                      0 (glob)
+                  ],
+                  "effect": [
                       "description",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0 (glob)
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "eb5a0daa2192"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "471f378eab4c",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A0"
+          "node": "471f378eab4c",
+          "rev": 1,
+          "shortdescription": "A0"
       }
   ]
   $ hg update 471f378eab4c
@@ -1556,13 +1582,13 @@ Test setup
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as 7a230b46bf61
+  |    obsolete:    reworded as 7a230b46bf61
   |    summary:     A1
   |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as fdf9bde5129a
+  |    obsolete:    reworded as fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1577,7 +1603,7 @@ Test setup
   @  7a230b46bf61 (3) A2
   |
   x  fdf9bde5129a (2) A1
-  |    rewritten(description) by test (*) as 7a230b46bf61 (glob)
+  |    rewritten(description) as 7a230b46bf61 by test (Thu Jan 01 00:00:00 1970 +0000)
   |      --- a/fdf9bde5129a-changeset-description
   |      +++ b/7a230b46bf61-changeset-description
   |      @@ -1,1 +1,1 @@
@@ -1586,7 +1612,7 @@ Test setup
   |
   |
   x  471f378eab4c (1) A0
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1613,21 +1639,21 @@ changectx
   o  7a230b46bf61 (2) A2
   |
   x  fdf9bde5129a
-  |    rewritten(description) by test (*) as 7a230b46bf61 (glob)
+  |    rewritten(description) as 7a230b46bf61 by test (Thu Jan 01 00:00:00 1970 +0000)
   |      (No patch available yet, context is not local)
   |
   @  471f378eab4c (1) A0
-       rewritten(description) by test (*) as fdf9bde5129a (glob)
+       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
          (No patch available yet, succ is unknown locally)
   
   $ hg obslog 7a230b46bf61 --color=debug --patch
   o  [evolve.node|7a230b46bf61] [evolve.rev|(2)] [evolve.short_description|A2]
   |
   x  [evolve.node evolve.missing_change_ctx|fdf9bde5129a]
-  |    [evolve.verb|rewritten](description) by [evolve.user|test] [evolve.date|(*)] as [evolve.node|7a230b46bf61] (glob)
+  |    [evolve.verb|rewritten](description) as [evolve.node|7a230b46bf61] by [evolve.user|test] [evolve.date|(Thu Jan 01 00:00:00 1970 +0000)]
   |      (No patch available yet, context is not local)
   |
   @  [evolve.node|471f378eab4c] [evolve.rev|(1)] [evolve.short_description|A0]
-       [evolve.verb|rewritten](description) by [evolve.user|test] [evolve.date|(*)] as [evolve.node|fdf9bde5129a] (glob)
+       [evolve.verb|rewritten](description) as [evolve.node|fdf9bde5129a] by [evolve.user|test] [evolve.date|(Thu Jan 01 00:00:00 1970 +0000)]
          (No patch available yet, succ is unknown locally)
   

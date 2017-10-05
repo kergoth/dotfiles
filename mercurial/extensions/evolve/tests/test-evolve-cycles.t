@@ -89,48 +89,48 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(A)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
   $ hg obslog "desc(B)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
   $ hg obslog "desc(C)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
 Check that all option don't crash on a cycle either
 
   $ hg obslog "desc(C)" --hidden --all
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) by test (*) as 2a34000d3544 (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
 Test with multiple cyles
@@ -252,185 +252,185 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(D)" --hidden
   x  0da815c333f6 (5) E
-  |    rewritten(description, parent, content) by test (*) as d9f908fde1a1 (glob)
+  |    rewritten(description, parent, content) as d9f908fde1a1 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten(description, parent, content) by test (*) as 0da815c333f6 (glob)
+  |\     rewritten(description, parent, content) as 0da815c333f6 by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten(description, parent, content) by test (*) as 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
+  | |      rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten(description, parent, content) by test (*) as 2a34000d3544, 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
+  | |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
 Check that all option don't crash either on a cycle
   $ hg obslog --all --hidden "desc(F)"
   x  0da815c333f6 (5) E
-  |    rewritten(description, parent, content) by test (*) as d9f908fde1a1 (glob)
+  |    rewritten(description, parent, content) as d9f908fde1a1 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten(description, parent, content) by test (*) as 0da815c333f6 (glob)
+  |\     rewritten(description, parent, content) as 0da815c333f6 by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten(description, parent, content) by test (*) as 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten(description, parent, content) by test (*) as c473644ee0e9 (glob)
+  | |      rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten(description, parent, content) by test (*) as 2a34000d3544, 868d2e0eb19c (glob)
+  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten(description, parent, content) by test (*) as a8df460dbbfe (glob)
+  | |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
 Check the json output is valid in this case
 
   $ hg obslog "desc(D)" --hidden --no-graph -Tjson | python -m json.tool
   [
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
-                      "description",
-                      "parent",
-                      "content"
-                  ],
-                  "debugobshistory.marker_date": [
+                  "date": [
                       *, (glob)
                       0
                   ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "effect": [
+                      *, (glob)
+                      "parent",
+                      "content"
+                  ],
+                  "succnodes": [
                       "0da815c333f6"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "868d2e0eb19c",
-          "debugobshistory.rev": 4,
-          "debugobshistory.shortdescription": "D"
+          "node": "868d2e0eb19c",
+          "rev": 4,
+          "shortdescription": "D"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      *, (glob)
+                      0
+                  ],
+                  "effect": [
                       "description",
                       "parent",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "868d2e0eb19c"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "d9f908fde1a1",
-          "debugobshistory.rev": 6,
-          "debugobshistory.shortdescription": "F"
+          "node": "d9f908fde1a1",
+          "rev": 6,
+          "shortdescription": "F"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      *, (glob)
+                      0
+                  ],
+                  "effect": [
                       "description",
                       "parent",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "d9f908fde1a1"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "0da815c333f6",
-          "debugobshistory.rev": 5,
-          "debugobshistory.shortdescription": "E"
+          "node": "0da815c333f6",
+          "rev": 5,
+          "shortdescription": "E"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      *, (glob)
+                      0
+                  ],
+                  "effect": [
                       "description",
                       "parent",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "2a34000d3544",
                       "868d2e0eb19c"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "a8df460dbbfe",
-          "debugobshistory.rev": 3,
-          "debugobshistory.shortdescription": "C"
+          "node": "a8df460dbbfe",
+          "rev": 3,
+          "shortdescription": "C"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      *, (glob)
+                      0
+                  ],
+                  "effect": [
                       "description",
                       "parent",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "a8df460dbbfe"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "c473644ee0e9",
-          "debugobshistory.rev": 2,
-          "debugobshistory.shortdescription": "B"
+          "node": "c473644ee0e9",
+          "rev": 2,
+          "shortdescription": "B"
       },
       {
-          "debugobshistory.markers": [
+          "markers": [
               {
-                  "debugobshistory.effect": [
+                  "date": [
+                      0.0,
+                      0
+                  ],
+                  "effect": [
                       "description",
                       "parent",
                       "content"
                   ],
-                  "debugobshistory.marker_date": [
-                      *, (glob)
-                      0
-                  ],
-                  "debugobshistory.marker_user": "test",
-                  "debugobshistory.succnodes": [
+                  "succnodes": [
                       "c473644ee0e9"
                   ],
-                  "debugobshistory.verb": "rewritten"
+                  "user": "test",
+                  "verb": "rewritten"
               }
           ],
-          "debugobshistory.node": "2a34000d3544",
-          "debugobshistory.rev": 1,
-          "debugobshistory.shortdescription": "A"
+          "node": "2a34000d3544",
+          "rev": 1,
+          "shortdescription": "A"
       }
   ]
 

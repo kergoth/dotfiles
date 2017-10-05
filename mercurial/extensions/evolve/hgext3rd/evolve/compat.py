@@ -7,8 +7,10 @@ Compatibility module
 """
 
 from mercurial import (
+    context,
     hg,
     obsolete,
+    revset,
     util,
 )
 
@@ -45,7 +47,7 @@ if not util.safehasattr(hg, '_copycache'):
         pendingnodes = set(nodes)
         seenmarkers = set()
         seennodes = set(pendingnodes)
-        precursorsmarkers = self.precursors
+        precursorsmarkers = self.predecessors
         succsmarkers = self.successors
         children = self.children
         while pendingnodes:
@@ -71,10 +73,13 @@ def successorssets(*args, **kwargs):
     return func(*args, **kwargs)
 
 # allprecursors set move from mercurial.obsolete to mercurial.obsutil in 4.3
+# allprecursors  was renamed into allpredecessors in 4.4
 def allprecursors(*args, **kwargs):
-    func = getattr(obsutil, 'allprecursors', None)
+    func = getattr(obsutil, 'allpredecessors', None)
     if func is None:
-        func = obsolete.allprecursors
+        func = getattr(obsutil, 'allprecursors', None)
+        if func is None:
+            func = obsolete.allprecursors
     return func(*args, **kwargs)
 
 # compatibility layer for mercurial < 4.3
@@ -90,3 +95,80 @@ def bookmarkapplychanges(repo, tr, changes):
         else:
             bookmarks[name] = node
     bookmarks.recordchange(tr)
+
+# Evolution renaming compat
+
+TROUBLES = {}
+
+if not util.safehasattr(context.basectx, 'orphan'):
+    TROUBLES['ORPHAN'] = 'unstable'
+    context.basectx.orphan = context.basectx.unstable
+else:
+    TROUBLES['ORPHAN'] = 'orphan'
+
+if not util.safehasattr(context.basectx, 'contentdivergent'):
+    TROUBLES['CONTENTDIVERGENT'] = 'divergent'
+    context.basectx.contentdivergent = context.basectx.divergent
+else:
+    TROUBLES['CONTENTDIVERGENT'] = 'content-divergent'
+
+if not util.safehasattr(context.basectx, 'phasedivergent'):
+    TROUBLES['PHASEDIVERGENT'] = 'bumped'
+    context.basectx.phasedivergent = context.basectx.bumped
+else:
+    TROUBLES['PHASEDIVERGENT'] = 'phase-divergent'
+
+if not util.safehasattr(context.basectx, 'isunstable'):
+    context.basectx.isunstable = context.basectx.troubled
+
+if not util.safehasattr(revset, 'orphan'):
+    @eh.revset('orphan')
+    def oprhanrevset(*args, **kwargs):
+        return revset.unstable(*args, **kwargs)
+
+if not util.safehasattr(revset, 'contentdivergent'):
+    @eh.revset('contentdivergent')
+    def contentdivergentrevset(*args, **kwargs):
+        return revset.divergent(*args, **kwargs)
+
+if not util.safehasattr(revset, 'phasedivergent'):
+    @eh.revset('phasedivergent')
+    def phasedivergentrevset(*args, **kwargs):
+        return revset.bumped(*args, **kwargs)
+
+if not util.safehasattr(context.basectx, 'instabilities'):
+    def instabilities(self):
+        """return the list of instabilities affecting this changeset.
+
+        Instabilities are returned as strings. possible values are:
+         - orphan,
+         - phase-divergent,
+         - content-divergent.
+         """
+        instabilities = []
+        if self.orphan():
+            instabilities.append('orphan')
+        if self.phasedivergent():
+            instabilities.append('phase-divergent')
+        if self.contentdivergent():
+            instabilities.append('content-divergent')
+        return instabilities
+
+    context.basectx.instabilities = instabilities
+
+# XXX: Better detection of property cache
+if 'predecessors' not in dir(obsolete.obsstore):
+    @property
+    def predecessors(self):
+        return self.precursors
+
+    obsolete.obsstore.predecessors = predecessors
+
+if not util.safehasattr(obsolete, '_computeorphanset'):
+    obsolete._computeorphanset = obsolete.cachefor('orphan')(obsolete._computeunstableset)
+
+if not util.safehasattr(obsolete, '_computecontentdivergentset'):
+    obsolete._computecontentdivergentset = obsolete.cachefor('contentdivergent')(obsolete._computedivergentset)
+
+if not util.safehasattr(obsolete, '_computephasedivergentset'):
+    obsolete._computephasedivergentset = obsolete.cachefor('phasedivergent')(obsolete._computebumpedset)

@@ -45,8 +45,8 @@ those half-baked changesets between repositories to try things out on
 your test server before anything is carved in stone.
 
 A less common scenario is multiple developers sharing mutable history,
-typically for code review. We'll cover this scenario later. But first,
-single-user sharing.
+typically for code review. We'll cover this scenario later. First, we
+will cover single-user sharing.
 
 Sharing with a single developer
 -------------------------------
@@ -55,10 +55,10 @@ Publishing and non-publishing repositories
 ==========================================
 
 The key to shared mutable history is to keep your changesets in
-*draft* phase as you pass them around. Recall that by default, ``hg
-push`` promotes changesets from *draft* to *public*, and public
+*draft* phase as you pass them around. Recall that by default,
+``hg push`` promotes changesets from *draft* to *public*, and public
 changesets are immutable. You can change this behaviour by
-reconfiguring the *target* repository so that it is non-publishing.
+reconfiguring the *remote* repository so that it is non-publishing.
 (Short version: set ``phases.publish`` to ``false``. Long version
 follows.)
 
@@ -90,7 +90,7 @@ there, and push to ``public``.
 
 The key to shared mutable history is to make the target repository, in
 this case ``test-repo``, non-publishing. And, of course, we have to
-enable ``evolve`` in both ``test-repo`` and ``dev-repo``.
+enable the ``evolve`` extension in both ``test-repo`` and ``dev-repo``.
 
 First, edit the configuration for ``test-repo``::
 
@@ -102,7 +102,7 @@ and add ::
   publish = false
 
   [extensions]
-  evolve = /path/to/evolve-main/hgext3rd/evolve/
+  evolve =
 
 Then edit the configuration for ``dev-repo``::
 
@@ -111,7 +111,7 @@ Then edit the configuration for ``dev-repo``::
 and add ::
 
   [extensions]
-  evolve = /path/to/evolve-main/hgext3rd/evolve/
+  evolve =
 
 Keep in mind that in real life, these repositories would probably be
 on separate computers, so you'd have to login to each one to configure
@@ -203,7 +203,7 @@ Let's resynchronize::
 As seen in figure 3, this transfers the new changeset *and* the
 obsolescence marker for revision 1. However, it does *not* transfer
 the temporary amend commit, because it is hidden. Push and pull
-transfer obsolesence markers between repositories, but they do not
+transfer obsolescence markers between repositories, but they do not
 transfer hidden changesets.
 
   [figure SG03: dev-repo grows new rev 2:60ff, marks 1:f649 obsolete]
@@ -251,7 +251,7 @@ hidden changesets on push and pull.
 .. _`concept guide`: concepts.html
 
 So the picture in ``public`` is much simpler than in either
-``dev-repo`` or ``test-repo``. Neither our missteps nor our amendments
+``dev-repo`` or ``test-repo``. Neither of our missteps nor our amendments
 are publicly visible, just the final, beautifully polished changeset:
 
   [figure SG05: public repo with rev 0:0dc9, 1:de61, both public]
@@ -331,7 +331,7 @@ We need to configure Alice's and Bob's working repositories to enable
 and add ::
 
   [extensions]
-  evolve = /path/to/evolve-main/hgext3rd/evolve/
+  evolve =
 
 Then edit Bob's repository configuration::
 
@@ -508,13 +508,13 @@ can have consequences. (You can cut yourself badly with a sharp knife,
 but every competent chef keeps several around. Ever try to chop onions
 with a spoon?)
 
-In the user guide, we saw examples of *unstable* changesets, which are
+In the user guide, we saw examples of *unstbale* changesets, which are
 the most common type of troubled changeset. (Recall that a
-non-obsolete changeset with obsolete ancestors is unstable.)
+non-obsolete changeset with obsolete ancestors is an orphan.)
 
-Two other types of trouble can happen: *divergent* and *bumped*
-changesets. Both are more likely with shared mutable history,
-especially mutable history shared by multiple developers.
+Two other types of troubles can happen: *divergent* and
+*bumped* changesets. Both are more likely with shared mutable
+history, especially mutable history shared by multiple developers.
 
 Setting up
 ==========
@@ -545,7 +545,7 @@ and add ::
 
   [extensions]
   rebase =
-  evolve = /path/to/evolve-main/hgext3rd/evolve/
+  evolve =
 
   [phases]
   publish = false
@@ -560,8 +560,8 @@ Example 6: Divergent changesets
 ===============================
 
 When an obsolete changeset has two successors, those successors are
-*divergent*. One way to get into such a situation is by failing to
-communicate with your teammates. Let's see how that might happen.
+*divergent*. One way to get into such a situation is by failing
+to communicate with your teammates. Let's see how that might happen.
 
 First, we'll have Bob commit a bug fix that could still be improved::
 
@@ -621,22 +621,18 @@ might wonder why Bob wouldn't prefer his own changes by using
 ``internal:local``. He's avoiding a `bug`_ in ``evolve`` that occurs
 when evolving divergent changesets using ``internal:local``.)
 
+# XXX this link does not work
 .. _`bug`: https://bitbucket.org/marmoute/mutable-history/issue/48/
 
 ** STOP HERE: WORK IN PROGRESS **
 
-Bumped changesets: only one gets on the plane
-=============================================
+Phase-divergence: when a rewritten changeset is made public
+===========================================================
 
-If two people show up at the airport with tickets for the same seat on
-the same plane, only one of them gets on the plane. The would-be
-traveller left behind in the airport terminal is said to have been
-*bumped*.
-
-Similarly, if Alice and Bob are collaborating on some mutable
+If Alice and Bob are collaborating on some mutable
 changesets, it's possible to get into a situation where an otherwise
 worthwhile changeset cannot be pushed to the public repository; it is
-bumped by an alternative changeset that happened to get there first.
+*phase-divergent* with another changeset that was made public first.
 Let's demonstrate one way this could happen.
 
 It starts with Alice committing a bug fix. Right now, we don't yet
@@ -676,21 +672,21 @@ publish. ::
 
 This introduces a contradiction: in Bob's repository, changeset 2:e011
 (his copy of Alice's fix) is obsolete, since Bob amended it. But in
-Alice's repository (and ``public``), that changeset is public: it is
-immutable, carved in stone for all eternity. No changeset can be both
-obsolete and public, so Bob is in for a surprise the next time he
-pulls from ``public``::
+Alice's repository (and the ``public`` repository), that changeset is
+public: it is immutable, carved in stone for all eternity. No changeset
+can be both obsolete and public, so Bob is in for a surprise the next
+time he pulls from ``public``::
 
   $ cd ../bob
   $ hg pull -q -u
-  1 new bumped changesets
+  1 new phase-divergent changesets
 
 Figure 7 shows what just happened to Bob's repository: changeset
 2:e011 is now public, so it can't be obsolete. When that changeset was
 obsolete, it made perfect sense for it to have a successor, namely
 Bob's amendment of Alice's fix (changeset 4:fe88). But it's illogical
-for a public changeset to have a successor, so 4:fe88 is in trouble:
-it has been *bumped*.
+for a public changeset to have a successor, so 4:fe88 is troubled:
+it has become *bumped*.
 
   [figure SG07: 2:e011 now public not obsolete, 4:fe88 now bumped]
 
@@ -699,7 +695,7 @@ evolve it::
 
   $ hg evolve --all
 
-Figure 8 illustrate's Bob's repository after evolving away the bumped
+Figure 8 illustrates Bob's repository after evolving away the bumped
 changeset. Ignoring the obsolete changesets, Bob now has a nice,
 clean, simple history. His amendment of Alice's bug fix lives on, as
 changeset 5:227d—albeit with a software-generated commit message. (Bob
@@ -718,8 +714,8 @@ dull knife (never mind a rusty spoon). At the same time, an
 inattentive or careless user can do harm to himself or others.
 Mercurial with ``evolve`` goes to great lengths to limit the harm you
 can do by trying to handle all possible types of “troubled”
-changesets. But having a first-aid kit nearby does not excuse you from
-being careful with sharp knives.
+changesets. Nevertheless, having a first-aid kit nearby does not mean
+you should stop being careful with sharp knives.
 
 Mutable history shared across multiple repositories by a single
 developer is a natural extension of this model. Once you are used to

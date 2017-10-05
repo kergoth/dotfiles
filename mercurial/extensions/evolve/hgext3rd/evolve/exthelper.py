@@ -93,10 +93,17 @@ class exthelper(object):
         - Register revset functions
         """
         knownexts = {}
+
+        revsetpredicate = registrar.revsetpredicate()
         for name, symbol in self._revsetsymbols:
-            revset.symbols[name] = symbol
+            revsetpredicate(name)(symbol)
+        revset.loadpredicate(ui, 'evolve', revsetpredicate)
+
+        templatekeyword = registrar.templatekeyword()
         for name, kw in self._templatekws:
-            templatekw.keywords[name] = kw
+            templatekeyword(name)(kw)
+        templatekw.loadkeyword(ui, 'evolve', templatekeyword)
+
         for ext, command, wrapper, opts in self._extcommandwrappers:
             if ext not in knownexts:
                 try:

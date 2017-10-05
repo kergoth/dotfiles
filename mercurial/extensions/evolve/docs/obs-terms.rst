@@ -145,7 +145,7 @@ columns are about sub-categories.
 |                     |                          | conflict)                   |
 |                     |                          |                             |
 |                     |                          | (possible alternative names:|
-|                     |                          | clashing, rival, concurent, |
+|                     |                          | clashing, rival, concurrent,|
 |                     |                          | conflicting)                |
 |                     |                          |                             |
 |                     +--------------------------+-----------------------------+
@@ -231,7 +231,7 @@ Automatically resolve *troublesome* changesets
 This is an important name as hg pull/push will suggest it the same way it
 suggest merging when you add heads.
 
-alternative names:
+Alternative names:
 
 - solve (too generic ?)
 - stabilize

@@ -106,9 +106,14 @@ def modsetup(ui):
         rebase = extensions.find('rebase')
     except KeyError:
         rebase = None
+
+    # Mercurial 4.4 rename _definesets into _definedestmap
+    rebasebefore38 = not util.safehasattr(rebase, '_definesets')
+    rebasebefore44 = not util.safehasattr(rebase, '_definedestmap')
+
     if (util.safehasattr(rebase, '_destrebase')
             # logic not shared with merge yet < hg-3.8
-            and not util.safehasattr(rebase, '_definesets')):
+            and rebasebefore38 and rebasebefore44):
         extensions.wrapfunction(rebase, '_destrebase', _destmergebranch)
     if util.safehasattr(destutil, 'destupdatesteps'):
         bridx = destutil.destupdatesteps.index('branch')

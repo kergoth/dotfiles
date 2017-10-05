@@ -111,21 +111,26 @@ def obsstorewithcache(orig, repo):
 
     return obsstore
 
-# XXX copied as is from Mercurial 4.2 and added the "offset" parameters
-@util.nogc
-def _readmarkers(data, offset=None):
-    """Read and enumerate markers from raw data"""
-    off = 0
-    diskversion = struct.unpack('>B', data[off:off + 1])[0]
-    if offset is None:
-        off += 1
-    else:
-        assert 1 <= offset
-        off = offset
-    if diskversion not in obsolete.formats:
-        raise error.Abort(_('parsing obsolete marker: unknown version %r')
-                          % diskversion)
-    return diskversion, obsolete.formats[diskversion][0](data, off)
+if obsolete._readmarkers.__code__.co_argcount > 1:
+    # hg-4.3+ has the "offset" parameter, and _fm?readmarkers also have an
+    # extra "stop" parameter
+    _readmarkers = obsolete._readmarkers
+else:
+    # XXX copied as is from Mercurial 4.2 and added the "offset" parameters
+    @util.nogc
+    def _readmarkers(data, offset=None):
+        """Read and enumerate markers from raw data"""
+        off = 0
+        diskversion = struct.unpack('>B', data[off:off + 1])[0]
+        if offset is None:
+            off += 1
+        else:
+            assert 1 <= offset
+            off = offset
+        if diskversion not in obsolete.formats:
+            raise error.Abort(_('parsing obsolete marker: unknown version %r')
+                              % diskversion)
+        return diskversion, obsolete.formats[diskversion][0](data, off)
 
 def markersfrom(obsstore, byteoffset, firstmarker):
     if not firstmarker:

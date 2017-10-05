@@ -159,6 +159,7 @@ check public revision got cleared
   o  0:54ccbc537fc2 add cA
   
   $ hg phase --public 7
+  1 new bumped changesets
   $ hg strip 9
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at cf5c4f4554ce
@@ -848,7 +849,7 @@ revision on the destination and everything visible.
   created new head
   $ mkcommit Dp
   $ mkcommit Do
-  $ hg log -G -r "25::"
+  $ hg log -G -r "71eb4f100663::"
   @  30:b517facce1ef add Do
   |
   o  29:c5a47ab27c2e add Dp
@@ -860,14 +861,14 @@ revision on the destination and everything visible.
   o  25:71eb4f100663 add pk
   |
   ~
-  $ hg prune 28 -s 27
+  $ hg prune 8c1c2edbaf1b -s 1192fa9fbc68
   1 changesets pruned
-  $ hg up 25
+  $ hg up 71eb4f100663
   0 files updated, 0 files merged, 3 files removed, 0 files unresolved
-  $ hg rebase -r "28 + 29" --keep -d 27 --config experimental.rebaseskipobsolete=True
+  $ hg rebase -r "8c1c2edbaf1b + c5a47ab27c2e" --keep -d 1192fa9fbc68 --config experimental.rebaseskipobsolete=True
   note: not rebasing 28:8c1c2edbaf1b "add Dl", already in destination as 27:1192fa9fbc68 "add Dk"
   rebasing 29:c5a47ab27c2e "add Dp"
-  $ hg log -G  -r "25::"
+  $ hg log -G  -r "71eb4f100663::"
   o  31:7d8affb1f604 add Dp
   |
   | o  30:b517facce1ef add Do
@@ -885,11 +886,11 @@ revision on the destination and everything visible.
 Rebase the same stack in full on the destination, we expect it to disappear
 and only see the top revision added to destination. We don\'t expect 29 to be
 skipped as we used --keep before.
-  $ hg rebase -s 28 -d 27 --config experimental.rebaseskipobsolete=True
+  $ hg rebase -s 8c1c2edbaf1b -d 1192fa9fbc68 --config experimental.rebaseskipobsolete=True
   note: not rebasing 28:8c1c2edbaf1b "add Dl", already in destination as 27:1192fa9fbc68 "add Dk"
   rebasing 29:c5a47ab27c2e "add Dp"
   rebasing 30:b517facce1ef "add Do"
-  $ hg log -G  -r "25::"
+  $ hg log -G  -r "71eb4f100663::"
   o  32:1d43fff9e26f add Do
   |
   o  31:7d8affb1f604 add Dp

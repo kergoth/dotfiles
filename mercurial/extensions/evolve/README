@@ -121,6 +121,31 @@ expected test change only, no code change should happen there.
 Changelog
 =========
 
+6.7.1 - in progress
+-------------------
+
+  * stack: fix evolution previous for simple split
+
+6.7.0 -- 2017-09-27
+-------------------
+
+  * compatibility with change in future 4.4 at this release date,
+  * documentation: improvement to content, wording and graphs,
+  * obslog: improved templatability,
+  * obslog/log: improve verb used to describe and evolution,
+  * pstatus/pdiff: update to full command. They now appears in the help,
+  * uncommit: add a --interactive option (4.3+ only).
+
+  * push: add a --topic option to mirror --bookmark and --branch,
+  * stack: improve display of interleaved topic,
+  * stack: improve display of merge commit,
+  * topic: add a new 'debugconvertbookmark' commands (4.3+ only),
+    It helps migrating from bookmark feature branch to topic feature branch,
+  * topic: --age flag also shows the user who last touched the topic,
+  * topic: be more informative about topic activation and deactivation,
+  * topic: gain a --current flag,
+  * topic: small clarification and cleanup on various output.
+
 6.6.0 -- 2017-07-25
 -------------------
 

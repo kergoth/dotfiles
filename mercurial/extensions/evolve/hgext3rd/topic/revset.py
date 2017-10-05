@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from mercurial import (
+    registrar,
     revset,
     util,
 )
@@ -16,10 +17,11 @@ try:
 except AttributeError:
     mkmatcher = util.stringmatcher
 
+revsetpredicate = registrar.revsetpredicate()
 
+@revsetpredicate('topic([topic])')
 def topicset(repo, subset, x):
-    """`topic([topic])`
-    Specified topic or all changes with any topic specified.
+    """Specified topic or all changes with any topic specified.
 
     If `topic` starts with `re:` the remainder of the name is treated
     as a regular expression.
@@ -48,10 +50,9 @@ def topicset(repo, subset, x):
         return matcher(topic)
     return (subset & mutable).filter(matchtopic)
 
+@revsetpredicate('ngtip([branch])')
 def ngtipset(repo, subset, x):
-    """`ngtip([branch])`
-
-    The untopiced tip.
+    """The untopiced tip.
 
     Name is horrible so that people change it.
     """
@@ -62,9 +63,9 @@ def ngtipset(repo, subset, x):
         branch = repo['.'].branch()
     return subset & revset.baseset(destination.ngtip(repo, branch))
 
+@revsetpredicate('stack()')
 def stackset(repo, subset, x):
-    """`stack()`
-    All relevant changes in the current topic,
+    """All relevant changes in the current topic,
 
     This is roughly equivalent to 'topic(.) - obsolete' with a sorting moving
     unstable changeset after there future parent (as if evolve where already
@@ -78,10 +79,4 @@ def stackset(repo, subset, x):
         topic = repo.currenttopic
     if not topic:
         branch = repo[None].branch()
-    return revset.baseset(stack.getstack(repo, branch=branch, topic=topic)[1:]) & subset
-
-
-def modsetup(ui):
-    revset.symbols.update({'topic': topicset})
-    revset.symbols.update({'ngtip': ngtipset})
-    revset.symbols.update({'stack': stackset})
+    return revset.baseset(stack.stack(repo, branch=branch, topic=topic)[1:]) & subset

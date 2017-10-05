@@ -74,11 +74,8 @@ def cmdobshistory(ui, repo, *revs, **opts):
     if opts['graph']:
         return _debugobshistorygraph(ui, repo, revs, opts)
 
-    fm = ui.formatter('debugobshistory', opts)
     revs.reverse()
-    _debugobshistoryrevs(fm, repo, revs, opts)
-
-    fm.end()
+    _debugobshistoryrevs(ui, repo, revs, opts)
 
 class obsmarker_printer(cmdutil.changeset_printer):
     """show (available) information about a node
@@ -92,20 +89,23 @@ class obsmarker_printer(cmdutil.changeset_printer):
 
             changenode = ctx.node()
 
-            fm = self.ui.formatter('debugobshistory', props)
+            _props = self.diffopts.copy()
+            _props.update(props)
+            fm = self.ui.formatter('debugobshistory', _props)
             _debugobshistorydisplaynode(fm, self.repo, changenode)
 
             # Succs markers
             succs = self.repo.obsstore.successors.get(changenode, ())
             succs = sorted(succs)
 
-            markerfm = fm.nested("debugobshistory.markers")
+            markerfm = fm.nested("markers")
             for successor in succs:
                 _debugobshistorydisplaymarker(markerfm, successor,
                                               ctx.node(), self.repo, self.diffopts)
             markerfm.end()
 
             markerfm.plain('\n')
+            fm.end()
             self.hunk[ctx.node()] = self.ui.popbuffer()
         else:
             ### graph output is buffered only
@@ -301,7 +301,7 @@ def _obshistorywalker_links(repo, revs, walksuccessors=False):
     - The dictionnary of each node successors, values are a set
     - The dictionnary of each node precursors, values are a list
     """
-    precursors = repo.obsstore.precursors
+    precursors = repo.obsstore.predecessors
     successors = repo.obsstore.successors
     nodec = repo.changelog.node
 
@@ -355,10 +355,11 @@ def _debugobshistorygraph(ui, repo, revs, opts):
     walker = _obshistorywalker(repo.unfiltered(), revs, opts.get('all', False))
     cmdutil.displaygraph(ui, repo, walker, displayer, edges)
 
-def _debugobshistoryrevs(fm, repo, revs, opts):
+def _debugobshistoryrevs(ui, repo, revs, opts):
     """ Display the obsolescence history for revset
     """
-    precursors = repo.obsstore.precursors
+    fm = ui.formatter('debugobshistory', opts)
+    precursors = repo.obsstore.predecessors
     successors = repo.obsstore.successors
     nodec = repo.changelog.node
     unfi = repo.unfiltered()
@@ -373,9 +374,9 @@ def _debugobshistoryrevs(fm, repo, revs, opts):
 
         succs = successors.get(ctxnode, ())
 
-        markerfm = fm.nested("debugobshistory.markers")
+        markerfm = fm.nested("markers")
         for successor in sorted(succs):
-            _debugobshistorydisplaymarker(markerfm, successor, ctxnode, repo, opts)
+            _debugobshistorydisplaymarker(markerfm, successor, ctxnode, unfi, opts)
         markerfm.end()
 
         precs = precursors.get(ctxnode, ())
@@ -384,6 +385,7 @@ def _debugobshistoryrevs(fm, repo, revs, opts):
             if p[0] not in seen:
                 seen.add(p[0])
                 nodes.append(p[0])
+    fm.end()
 
 def _debugobshistorydisplaynode(fm, repo, node):
     if node in repo:
@@ -395,22 +397,22 @@ def _debugobshistorydisplayctx(fm, ctx):
     shortdescription = ctx.description().splitlines()[0]
 
     fm.startitem()
-    fm.write('debugobshistory.node', '%s', str(ctx),
+    fm.write('node', '%s', str(ctx),
              label="evolve.node")
     fm.plain(' ')
 
-    fm.write('debugobshistory.rev', '(%d)', int(ctx),
+    fm.write('rev', '(%d)', int(ctx),
              label="evolve.rev")
     fm.plain(' ')
 
-    fm.write('debugobshistory.shortdescription', '%s', shortdescription,
+    fm.write('shortdescription', '%s', shortdescription,
              label="evolve.short_description")
     fm.plain('\n')
 
 def _debugobshistorydisplaymissingctx(fm, nodewithoutctx):
     hexnode = nodemod.short(nodewithoutctx)
     fm.startitem()
-    fm.write('debugobshistory.node', '%s', hexnode,
+    fm.write('node', '%s', hexnode,
              label="evolve.node evolve.missing_change_ctx")
     fm.plain('\n')
 
@@ -428,7 +430,7 @@ def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
     else:
         verb = 'rewritten'
 
-    fm.write('debugobshistory.verb', '%s', verb,
+    fm.write('verb', '%s', verb,
              label="evolve.verb")
 
     effectflag = metadata.get('ef1')
@@ -457,25 +459,25 @@ def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
             effect.append('content')
 
         if effect:
-            fmteffect = fm.formatlist(effect, 'debugobshistory.effect', sep=', ')
-            fm.write('debugobshistory.effect', '(%s)', fmteffect)
-
-    fm.plain(' by ')
-
-    fm.write('debugobshistory.marker_user', '%s', metadata['user'],
-             label="evolve.user")
-    fm.plain(' ')
-
-    fm.write('debugobshistory.marker_date', '(%s)', fm.formatdate(date),
-             label="evolve.date")
+            fmteffect = fm.formatlist(effect, 'effect', sep=', ')
+            fm.write('effect', '(%s)', fmteffect)
 
     if len(succnodes) > 0:
         fm.plain(' as ')
 
         shortsnodes = (nodemod.short(succnode) for succnode in sorted(succnodes))
-        nodes = fm.formatlist(shortsnodes, 'debugobshistory.succnodes', sep=', ')
-        fm.write('debugobshistory.succnodes', '%s', nodes,
+        nodes = fm.formatlist(shortsnodes, 'succnodes', sep=', ')
+        fm.write('succnodes', '%s', nodes,
                  label="evolve.node")
+
+    fm.plain(' by ')
+
+    fm.write('user', '%s', metadata['user'],
+             label="evolve.user")
+    fm.plain(' ')
+
+    fm.write('date', '(%s)', fm.formatdate(date),
+             label="evolve.date")
 
     # Patch display
     if opts.get('patch'):
@@ -726,13 +728,39 @@ def _successorsetusers(successorset, markers):
 
     return {'users': sorted(users)}
 
+VERBMAPPING = {
+    DESCCHANGED: "reworded",
+    METACHANGED: "meta-changed",
+    USERCHANGED: "reauthored",
+    DATECHANGED: "date-changed",
+    BRANCHCHANGED: "branch-changed",
+    PARENTCHANGED: "rebased",
+    DIFFCHANGED: "amended"
+}
+
 def _successorsetverb(successorset, markers):
     """ Return the verb summarizing the successorset
     """
+    verb = None
     if not successorset:
         verb = 'pruned'
     elif len(successorset) == 1:
-        verb = 'rewritten'
+        # Check for effect flag
+
+        metadata = [dict(marker[3]) for marker in markers]
+        ef1 = [data.get('ef1') for data in metadata]
+
+        if all(ef1):
+            combined = 0
+            for ef in ef1:
+                combined |= int(ef)
+
+            # Combined will be in VERBMAPPING only of one bit is set
+            if combined in VERBMAPPING:
+                verb = VERBMAPPING[combined]
+
+        if verb is None:
+            verb = 'rewritten'
     else:
         verb = 'split'
     return {'verb': verb}

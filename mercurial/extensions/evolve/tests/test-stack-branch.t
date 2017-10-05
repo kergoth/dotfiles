@@ -55,7 +55,7 @@ Check that topic without any parent does not crash --list
   $ hg up other
   0 files updated, 0 files merged, 4 files removed, 0 files unresolved
   $ hg stack
-  ### branch: other
+  ### target: other (branch)
   b2@ c_b (current)
   b1: c_a
   $ hg phase --public 'branch("other")'
@@ -70,14 +70,14 @@ Simple test
   $ hg branch
   foo
   $ hg stack
-  ### branch: foo
+  ### target: foo (branch)
   b4@ c_f (current)
   b3: c_e
   b2: c_d
   b1: c_c
   b0^ c_b (base)
   $ hg stack -v
-  ### branch: foo
+  ### target: foo (branch)
   b4(913c298d8b0a)@ c_f (current)
   b3(4f2a69f6d380): c_e
   b2(f61adbacd17a): c_d
@@ -125,7 +125,7 @@ Case with some of the branch unstable
   o  0 other {} public c_a
   
   $ hg stack
-  ### branch: foo
+  ### target: foo (branch)
   b4$ c_f (unstable)
   b3$ c_e (unstable)
   b2@ c_d (current)
@@ -134,7 +134,7 @@ Case with some of the branch unstable
   $ hg up b3
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
-  ### branch: foo
+  ### target: foo (branch)
   b4$ c_f (unstable)
   b3$ c_e (current unstable)
   b2: c_d
@@ -205,7 +205,7 @@ Create the second branch
 Test output
 
   $ hg stack
-  ### branch: foo (2 heads)
+  ### target: foo (branch) (2 heads)
   b6: c_f
   b5: c_e
   b2^ c_d (base)
@@ -248,7 +248,7 @@ We amend the message to make sure the display base pick the right changeset
   
 
   $ hg stack
-  ### branch: foo (2 heads)
+  ### target: foo (branch) (2 heads)
   b6$ c_f (unstable)
   b5$ c_e (unstable)
   b2^ c_D (base)
@@ -261,8 +261,28 @@ We amend the message to make sure the display base pick the right changeset
 Check that stack doesn't show draft changesets on a branch
 ----------------------------------------------------------
 
+  $ hg log --graph
+  o  15 foo {} draft c_h
+  |
+  o  14 foo {} draft c_g
+  |
+  @  13 foo {} draft c_D
+  |
+  | o  9 foo {} draft c_f
+  | |
+  | o  8 foo {} draft c_e
+  | |
+  | x  7 foo {} draft c_d
+  |/
+  o  2 foo {} draft c_c
+  |
+  o  1 other {} public c_b
+  |
+  o  0 other {} public c_a
+  
+
   $ hg stack
-  ### branch: foo (2 heads)
+  ### target: foo (branch) (2 heads)
   b6$ c_f (unstable)
   b5$ c_e (unstable)
   b2^ c_D (base)
@@ -273,7 +293,7 @@ Check that stack doesn't show draft changesets on a branch
   b0^ c_b (base)
   $ hg phase --public b1
   $ hg stack
-  ### branch: foo (2 heads)
+  ### target: foo (branch) (2 heads)
   b5$ c_f (unstable)
   b4$ c_e (unstable)
   b1^ c_D (base)
@@ -288,7 +308,7 @@ Check that stack doesn't show changeset with a topic
   $ hg topic --rev b4::b5 sometopic
   changed topic on 2 changes
   $ hg stack
-  ### branch: foo
+  ### target: foo (branch)
   b3: c_h
   b2: c_g
   b1@ c_D (current)

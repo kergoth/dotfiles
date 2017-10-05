@@ -301,7 +301,7 @@ example 10: uncommit files from an older changeset (keep changes)
   $ hg status
   M file2.c
   $ hg commit -m 'useful tweak'
-  $ hg --hidden shortlog -G -r 25::
+  $ hg --hidden shortlog -G -r 0d972d6888e6::
   @  29:51e0d8c0a922  draft  useful tweak
   |
   o  28:2594e98553a9  draft  fix a bug
@@ -317,7 +317,7 @@ example 10: uncommit files from an older changeset (keep changes)
   move:[27] new feature
   atop:[28] fix a bug
   working directory is now at 166c1c368ab6
-  $ hg --hidden shortlog -G -r 25::
+  $ hg --hidden shortlog -G -r 0d972d6888e6::
   @  30:166c1c368ab6  draft  new feature
   |
   | o  29:51e0d8c0a922  draft  useful tweak
