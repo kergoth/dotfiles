@@ -26,7 +26,7 @@ has A and B, neither A or C should be in outgoing.
   $ hg phase --secret --force .
   $ hg prune 0 1
   2 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
   $ glog --hidden
   @  2:244232c2222a@default(secret) C
   |
@@ -56,6 +56,7 @@ Test options to prevent implicite publishing of changesets
   adding file changes
   added 1 changesets with 1 changes to 1 files
   2 new obsolescence markers
+  new changesets 1994f17a630e
   updating to branch default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd strict-publish-client

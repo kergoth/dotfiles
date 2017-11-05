@@ -14,24 +14,18 @@ except ImportError:
     import io
     StringIO = io.StringIO
 
-import errno
-import socket
-
 from mercurial import (
     bundle2,
     error,
     exchange,
     extensions,
-    httppeer,
-    localrepo,
     lock as lockmod,
     node,
     obsolete,
+    pushkey,
     util,
     wireproto,
 )
-from mercurial.hgweb import hgweb_mod
-from mercurial.i18n import _
 
 from . import (
     exthelper,
@@ -44,6 +38,7 @@ eh.merge(obsdiscovery.eh)
 obsexcmsg = utility.obsexcmsg
 obsexcprg = utility.obsexcprg
 
+eh.configitem('experimental', 'verbose-obsolescence-exchange')
 
 _bestformat = max(obsolete.formats.keys())
 
@@ -181,17 +176,6 @@ def _getobsmarkersstream(repo, heads=None, common=None):
     obsdata.seek(0)
     return obsdata
 
-# The wireproto.streamres API changed, handling chunking and compression
-# directly. Handle either case.
-if util.safehasattr(wireproto.abstractserverproto, 'groupchunks'):
-    # We need to handle chunking and compression directly
-    def streamres(d, proto):
-        return wireproto.streamres(proto.groupchunks(d))
-else:
-    # Leave chunking and compression to streamres
-    def streamres(d, proto):
-        return wireproto.streamres(reader=d, v1compressible=True)
-
 def srv_pullobsmarkers(repo, proto, others):
     """serves a binary stream of markers.
 
@@ -208,245 +192,15 @@ def srv_pullobsmarkers(repo, proto, others):
     finaldata.write('%20i' % len(obsdata))
     finaldata.write(obsdata)
     finaldata.seek(0)
-    return streamres(finaldata, proto)
+    return wireproto.streamres(reader=finaldata, v1compressible=True)
 
-###############################################
-### Support for old legacy exchange methods ###
-###############################################
+abortmsg = "won't exchange obsmarkers through pushkey"
+hint = "upgrade your client or server to use the bundle2 protocol"
 
-class pushobsmarkerStringIO(StringIO):
-    """hacky string io for progress"""
+def forbidpushkey(repo=None, key=None, old=None, new=None):
+    """prevent exchange through pushkey"""
+    raise error.Abort(abortmsg, hint=hint)
 
-    @util.propertycache
-    def length(self):
-        return len(self.getvalue())
-
-    def read(self, size=None):
-        obsexcprg(self.ui, self.tell(), unit=_("bytes"), total=self.length)
-        return StringIO.read(self, size)
-
-    def __iter__(self):
-        d = self.read(4096)
-        while d:
-            yield d
-            d = self.read(4096)
-
-# compat-code: _pushobsolete
-#
-# the _pushobsolete function is a core function used to exchange
-# obsmarker with repository that does not support bundle2
-
-@eh.wrapfunction(exchange, '_pushobsolete')
-def _pushobsolete(orig, pushop):
-    """utility function to push obsolete markers to a remote"""
-    if not obsolete.isenabled(pushop.repo, obsolete.exchangeopt):
-        return
-    if 'obsmarkers' in pushop.stepsdone:
-        return
-    pushop.stepsdone.add('obsmarkers')
-    if pushop.cgresult == 0:
-        return
-    pushop.ui.debug('try to push obsolete markers to remote\n')
-    repo = pushop.repo
-    remote = pushop.remote
-    if (repo.obsstore and 'obsolete' in remote.listkeys('namespaces')):
-        markers = pushop.outobsmarkers
-        if not markers:
-            obsexcmsg(repo.ui, "no marker to push\n")
-        elif remote.capable('_evoext_pushobsmarkers_0'):
-            msg = ('the remote repository use years old versions of Mercurial'
-                   ' and evolve\npushing obsmarker using legacy method\n')
-            repo.ui.warn(msg)
-            repo.ui.warn('(please upgrade your server)\n')
-            obsdata = pushobsmarkerStringIO()
-            for chunk in obsolete.encodemarkers(markers, True):
-                obsdata.write(chunk)
-            obsdata.seek(0)
-            obsdata.ui = repo.ui
-            obsexcmsg(repo.ui, "pushing %i obsolescence markers (%i bytes)\n"
-                               % (len(markers), len(obsdata.getvalue())),
-                      True)
-            remote.evoext_pushobsmarkers_0(obsdata)
-            obsexcprg(repo.ui, None)
-
-        else:
-            # XXX core could be able do the same things but without the debug
-            # and progress output.
-            msg = ('the remote repository usea years old version of Mercurial'
-                   ' and not evolve extension\n')
-            repo.ui.warn(msg)
-            msg = 'pushing obsmarker using and extremely slow legacy method\n'
-            repo.ui.warn(msg)
-            repo.ui.warn('(please upgrade your server and enable evolve.serveronly on it)\n')
-            rslts = []
-            remotedata = obsolete._pushkeyescape(markers).items()
-            totalbytes = sum(len(d) for k, d in remotedata)
-            sentbytes = 0
-            obsexcmsg(repo.ui, "pushing %i obsolescence markers in %i "
-                               "pushkey payload (%i bytes)\n"
-                               % (len(markers), len(remotedata), totalbytes),
-                      True)
-            for key, data in remotedata:
-                obsexcprg(repo.ui, sentbytes, item=key, unit=_("bytes"),
-                          total=totalbytes)
-                rslts.append(remote.pushkey('obsolete', key, '', data))
-                sentbytes += len(data)
-                obsexcprg(repo.ui, sentbytes, item=key, unit=_("bytes"),
-                          total=totalbytes)
-            obsexcprg(repo.ui, None)
-            if [r for r in rslts if not r]:
-                msg = _('failed to push some obsolete markers!\n')
-                repo.ui.warn(msg)
-        obsexcmsg(repo.ui, "DONE\n")
-
-# Supporting legacy way to push obsmarker so that old client can still push
-# them somewhat efficiently
-
-@eh.addattr(wireproto.wirepeer, 'evoext_pushobsmarkers_0')
-def client_pushobsmarkers(self, obsfile):
-    """wireprotocol peer method"""
-    self.requirecap('_evoext_pushobsmarkers_0',
-                    _('push obsolete markers faster'))
-    ret, output = self._callpush('evoext_pushobsmarkers_0', obsfile)
-    for l in output.splitlines(True):
-        self.ui.status(_('remote: '), l)
-    return ret
-
-@eh.addattr(httppeer.httppeer, 'evoext_pushobsmarkers_0')
-def httpclient_pushobsmarkers(self, obsfile):
-    """httpprotocol peer method
-    (Cannot simply use _callpush as http is doing some special handling)"""
-    self.requirecap('_evoext_pushobsmarkers_0',
-                    _('push obsolete markers faster'))
-    try:
-        r = self._call('evoext_pushobsmarkers_0', data=obsfile)
-        vals = r.split('\n', 1)
-        if len(vals) < 2:
-            raise error.ResponseError(_("unexpected response:"), r)
-
-        for l in vals[1].splitlines(True):
-            if l.strip():
-                self.ui.status(_('remote: '), l)
-        return vals[0]
-    except socket.error as err:
-        if err.args[0] in (errno.ECONNRESET, errno.EPIPE):
-            raise error.Abort(_('push failed: %s') % err.args[1])
-        raise error.Abort(err.args[1])
-
-@eh.wrapfunction(localrepo.localrepository, '_restrictcapabilities')
-def local_pushobsmarker_capabilities(orig, repo, caps):
-    caps = orig(repo, caps)
-    caps.add('_evoext_pushobsmarkers_0')
-    return caps
-
-@eh.addattr(localrepo.localpeer, 'evoext_pushobsmarkers_0')
-def local_pushobsmarkers(peer, obsfile):
-    data = obsfile.read()
-    _pushobsmarkers(peer._repo, data)
-
-# compat-code: _pullobsolete
-#
-# the _pullobsolete function is a core function used to exchange
-# obsmarker with repository that does not support bundle2
-
-@eh.wrapfunction(exchange, '_pullobsolete')
-def _pullobsolete(orig, pullop):
-    if not obsolete.isenabled(pullop.repo, obsolete.exchangeopt):
-        return None
-    if 'obsmarkers' in pullop.stepsdone:
-        return None
-    wirepull = pullop.remote.capable('_evoext_pullobsmarkers_0')
-    if 'obsolete' not in pullop.remote.listkeys('namespaces'):
-        return None # remote opted out of obsolescence marker exchange
-    if not wirepull:
-        return orig(pullop)
-    tr = None
-    ui = pullop.repo.ui
-    boundaries = obsdiscovery.buildpullobsmarkersboundaries(pullop, bundle2=False)
-    if 'missing' in boundaries and not boundaries['missing']:
-        obsexcmsg(ui, "nothing to pull\n")
-        return None
-    elif not set(boundaries['heads']) - set(boundaries['common']):
-        obsexcmsg(ui, "nothing to pull\n")
-        return None
-
-    obsexcmsg(ui, "pull obsolescence markers\n", True)
-    new = 0
-
-    msg = ('the remote repository use years old versions of Mercurial and evolve\n'
-           'pulling obsmarker using legacy method\n')
-    ui.warn(msg)
-    ui.warn('(please upgrade your server)\n')
-
-    obsdata = pullop.remote.evoext_pullobsmarkers_0(**boundaries)
-    obsdata = obsdata.read()
-    if len(obsdata) > 5:
-        msg = "merging obsolescence markers (%i bytes)\n" % len(obsdata)
-        obsexcmsg(ui, msg)
-        tr = pullop.gettransaction()
-        old = len(pullop.repo.obsstore._all)
-        pullop.repo.obsstore.mergemarkers(tr, obsdata)
-        new = len(pullop.repo.obsstore._all) - old
-        obsexcmsg(ui, "%i obsolescence markers added\n" % new, True)
-    else:
-        obsexcmsg(ui, "no unknown remote markers\n")
-    obsexcmsg(ui, "DONE\n")
-    if new:
-        pullop.repo.invalidatevolatilesets()
-    return tr
-
-@eh.addattr(wireproto.wirepeer, 'evoext_pullobsmarkers_0')
-def client_pullobsmarkers(self, heads=None, common=None):
-    self.requirecap('_evoext_pullobsmarkers_0', _('look up remote obsmarkers'))
-    opts = {}
-    if heads is not None:
-        opts['heads'] = wireproto.encodelist(heads)
-    if common is not None:
-        opts['common'] = wireproto.encodelist(common)
-    f = self._callcompressable("evoext_pullobsmarkers_0", **opts)
-    length = int(f.read(20))
-    chunk = 4096
-    current = 0
-    data = StringIO()
-    ui = self.ui
-    obsexcprg(ui, current, unit=_("bytes"), total=length)
-    while current < length:
-        readsize = min(length - current, chunk)
-        data.write(f.read(readsize))
-        current += readsize
-        obsexcprg(ui, current, unit=_("bytes"), total=length)
-    obsexcprg(ui, None)
-    data.seek(0)
-    return data
-
-@eh.addattr(localrepo.localpeer, 'evoext_pullobsmarkers_0')
-def local_pullobsmarkers(self, heads=None, common=None):
-    return _getobsmarkersstream(self._repo, heads=heads,
-                                common=common)
-
-def _legacypush_capabilities(orig, repo, proto):
-    """wrapper to advertise new capability"""
-    caps = orig(repo, proto)
-    if obsolete.isenabled(repo, obsolete.exchangeopt):
-        caps = caps.split()
-        caps.append('_evoext_pushobsmarkers_0')
-        caps.append('_evoext_pullobsmarkers_0')
-        caps.sort()
-        caps = ' '.join(caps)
-    return caps
-
-@eh.extsetup
-def extsetup(ui):
-    # legacy standalone method
-    hgweb_mod.perms['evoext_pushobsmarkers_0'] = 'push'
-    hgweb_mod.perms['evoext_pullobsmarkers_0'] = 'pull'
-    wireproto.commands['evoext_pushobsmarkers_0'] = (srv_pushobsmarkers, '')
-    wireproto.commands['evoext_pullobsmarkers_0'] = (srv_pullobsmarkers, '*')
-
-    extensions.wrapfunction(wireproto, 'capabilities', _legacypush_capabilities)
-    # wrap command content
-    oldcap, args = wireproto.commands['capabilities']
-
-    def newcap(repo, proto):
-        return _legacypush_capabilities(oldcap, repo, proto)
-    wireproto.commands['capabilities'] = (newcap, args)
+@eh.uisetup
+def setuppushkeyforbidding(ui):
+    pushkey._namespaces['obsolete'] = (forbidpushkey, forbidpushkey)

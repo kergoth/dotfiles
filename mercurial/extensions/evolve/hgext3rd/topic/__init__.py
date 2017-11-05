@@ -48,10 +48,60 @@ next' and 'hg prev' will stick to the current topic.
 
 Be aware that this extension is still an experiment, commands and other features
 are likely to be change/adjusted/dropped over time as we refine the concept.
+
+topic-mode
+==========
+
+The topic extension can be configured to ensure the user do not forget to add
+a topic when committing a new topic::
+
+    [experimental]
+    # behavior when commit is made without an active topic
+    topic-mode = ignore # do nothing special (default)
+    topic-mode = warning # print a warning
+    topic-mode = enforce # abort the commit (except for merge)
+    topic-mode = enforce-all # abort the commit (even for merge)
+    topic-mode = random # use a randomized generated topic (except for merge)
+    topic-mode = random-all # use a randomized generated topic (even for merge)
+
+Single head enforcing
+=====================
+
+The extensions come with an option to enforce that there is only one heads for
+each name in the repository at any time.
+
+    [experimental]
+    enforce-single-head = yes
+
+Publishing behavior
+===================
+
+Topic vanish when changeset move to the public phases. Moving to the public
+phase usually happens on push, but it is possible ot update that behavior. The
+server needs to have specific config for this.
+
+    # everything pushed become public (the default)
+    [phase]
+    publish = yes
+
+    # nothing push turned public
+    [phase]
+    publish = no
+
+    # topic branches are not published, changeset without topic are
+    [phase]
+    publish = no
+    [experimental]
+    topic.publish-bare-branch = yes
+
+In addition, the topic extension adds a ``--publish`` flag on :hg:`push`. When
+used, the pushed revisions are published if the push succeeds. It also applies
+to common revisions selected by the push.
 """
 
 from __future__ import absolute_import
 
+import functools
 import re
 import time
 import weakref
@@ -83,11 +133,13 @@ from mercurial import (
 from . import (
     compat,
     constants,
+    flow,
     revset as topicrevset,
     destination,
     stack,
     topicmap,
     discovery,
+    randomname
 )
 
 if util.safehasattr(registrar, 'command'):
@@ -122,10 +174,49 @@ colortable = {'topic.active': 'green',
               'topic.active': 'green',
              }
 
-__version__ = '0.3.1.dev'
-testedwith = '4.0.2 4.1.3 4.2.3 4.3.3'
-minimumhgversion = '4.0'
+__version__ = '0.5.1.dev'
+
+testedwith = '4.1.3 4.2.3 4.3.3 4.4'
+minimumhgversion = '4.1'
 buglink = 'https://bz.mercurial-scm.org/'
+
+if util.safehasattr(registrar, 'configitem'):
+    configtable = {}
+    configitem = registrar.configitem(configtable)
+
+    configitem('experimental', 'enforce-topic',
+               default=False,
+    )
+    configitem('experimental', 'enforce-single-head',
+               default=False,
+    )
+    configitem('experimental', 'topic-mode',
+               default=None,
+    )
+    configitem('experimental', 'topic.publish-bare-branch',
+               default=False,
+    )
+    configitem('_internal', 'keep-topic',
+               default=False,
+    )
+
+    def extsetup(ui):
+        # register config that strickly belong to other code (thg, core, etc)
+        #
+        # To ensure all config items we used are registerd, we register them if
+        # nobody else did so far.
+        from mercurial import configitems
+        extraitem = functools.partial(configitems._register, ui._knownconfig)
+        if ('experimental' not in ui._knownconfig
+                or not ui._knownconfig['experimental'].get('thg.displaynames')):
+            extraitem('experimental', 'thg.displaynames',
+                      default=None,
+            )
+        if ('devel' not in ui._knownconfig
+                or not ui._knownconfig['devel'].get('random')):
+            extraitem('devel', 'randomseed',
+                      default=None,
+            )
 
 def _contexttopic(self, force=False):
     if not (force or self.mutable()):
@@ -195,6 +286,8 @@ def uisetup(ui):
 
     extensions.afterloaded('rebase', _fixrebase)
 
+    flow.installpushflag(ui)
+
     entry = extensions.wrapcommand(commands.table, 'commit', commitwrap)
     entry[1].append(('t', 'topic', '',
                      _("use specified topic"), _('TOPIC')))
@@ -232,7 +325,7 @@ def reposetup(ui, repo):
 
     repo = repo.unfiltered()
 
-    if repo.ui.config('experimental', 'thg.displaynames', None) is None:
+    if repo.ui.config('experimental', 'thg.displaynames') is None:
         repo.ui.setconfig('experimental', 'thg.displaynames', 'topics',
                           source='topic-extension')
 
@@ -318,18 +411,42 @@ def reposetup(ui, repo):
             if desc in ('strip', 'repair') or ctr is not None:
                 return tr
 
+            reporef = weakref.ref(self)
+            if repo.ui.configbool('experimental', 'enforce-single-head'):
+                origvalidator = tr.validator
+
+                def validator(tr2):
+                    repo = reporef()
+                    flow.enforcesinglehead(repo, tr2)
+                    origvalidator(tr2)
+                tr.validator = validator
+
+            if (repo.ui.configbool('experimental', 'topic.publish-bare-branch')
+                    and (desc.startswith('push')
+                         or desc.startswith('serve'))
+                    ):
+                origclose = tr.close
+                trref = weakref.ref(tr)
+
+                def close():
+                    repo = reporef()
+                    tr2 = trref()
+                    flow.publishbarebranch(repo, tr2)
+                    origclose()
+                tr.close = close
+
             # real transaction start
             ct = self.currenttopic
             if not ct:
                 return tr
-            ctwasempty = stack.stackdata(self, topic=ct)['changesetcount'] == 0
+            ctwasempty = stack.stack(self, topic=ct).changesetcount == 0
 
             reporef = weakref.ref(self)
 
             def currenttopicempty(tr):
                 # check active topic emptyness
                 repo = reporef()
-                csetcount = stack.stackdata(repo, topic=ct)['changesetcount']
+                csetcount = stack.stack(repo, topic=ct).changesetcount
                 empty = csetcount == 0
                 if empty and not ctwasempty:
                     ui.status('active topic %r is now empty\n' % ct)
@@ -445,6 +562,8 @@ def topics(ui, repo, topic=None, **opts):
         # Have some restrictions on the topic name just like bookmark name
         scmutil.checknewlabel(repo, topic, 'topic')
 
+    compat.startpager(ui, 'topics')
+
     if list:
         if clear or rev:
             raise error.Abort(_("cannot use --clear or --rev with --list"))
@@ -465,22 +584,22 @@ def topics(ui, repo, topic=None, **opts):
             raise error.Abort('changing topic requires a topic name or --clear')
         if repo.revs('%ld and public()', touchedrevs):
             raise error.Abort("can't change topic of a public change")
-        wl = l = txn = None
+        wl = lock = txn = None
         try:
             wl = repo.wlock()
-            l = repo.lock()
+            lock = repo.lock()
             txn = repo.transaction('rewrite-topics')
             rewrote = _changetopics(ui, repo, touchedrevs, topic)
             txn.close()
             ui.status('changed topic on %d changes\n' % rewrote)
         finally:
-            lockmod.release(txn, l, wl)
+            lockmod.release(txn, lock, wl)
             repo.invalidate()
         return
 
     ct = repo.currenttopic
     if clear:
-        empty = stack.stackdata(repo, topic=ct)['changesetcount'] == 0
+        empty = stack.stack(repo, topic=ct).changesetcount == 0
         if empty:
             if ct:
                 ui.status(_('clearing empty topic "%s"\n') % ct)
@@ -524,6 +643,7 @@ def cmdstack(ui, repo, topic='', **opts):
         topic = repo.currenttopic
     if topic is None:
         branch = repo[None].branch()
+    compat.startpager(ui, 'stack')
     return stack.showstack(ui, repo, branch=branch, topic=topic, opts=opts)
 
 @command('debugcb|debugconvertbookmark', [
@@ -702,25 +822,40 @@ def _changetopics(ui, repo, revs, newtopic):
         p1 = c.p1().node()
         p2 = c.p2().node()
         if p1 in successors:
-            p1 = successors[p1]
+            p1 = successors[p1][0]
         if p2 in successors:
-            p2 = successors[p2]
-        mc = context.memctx(
-            repo, (p1, p2), c.description(),
-            c.files(), filectxfn,
-            user=c.user(), date=c.date(), extra=fixedextra)
-        newnode = repo.commitctx(mc)
-        successors[c.node()] = newnode
+            p2 = successors[p2][0]
+        mc = context.memctx(repo,
+                            (p1, p2),
+                            c.description(),
+                            c.files(),
+                            filectxfn,
+                            user=c.user(),
+                            date=c.date(),
+                            extra=fixedextra)
+
+        # phase handling
+        commitphase = c.phase()
+        overrides = {('phases', 'new-commit'): commitphase}
+        with repo.ui.configoverride(overrides, 'changetopic'):
+            newnode = repo.commitctx(mc)
+
+        successors[c.node()] = (newnode,)
         ui.debug('new node id is %s\n' % node.hex(newnode))
-        obsolete.createmarkers(repo, [(c, (repo[newnode],))])
         rewrote += 1
+
+    # create obsmarkers and move bookmarks
+    # XXX we should be creating marker as we go instead of only at the end,
+    # this makes the operations more modulars
+    compat.cleanupnodes(repo, successors, 'changetopics')
+
     # move the working copy too
     wctx = repo[None]
     # in-progress merge is a bit too complex for now.
     if len(wctx.parents()) == 1:
         newid = successors.get(wctx.p1().node())
         if newid is not None:
-            hg.update(repo, newid, quietempty=True)
+            hg.update(repo, newid[0], quietempty=True)
     return rewrote
 
 def _listtopics(ui, repo, opts):
@@ -732,7 +867,7 @@ def _listtopics(ui, repo, opts):
         return _showlasttouched(repo, fm, opts)
     activetopic = repo.currenttopic
     namemask = '%s'
-    if repo.topics and ui.verbose:
+    if repo.topics:
         maxwidth = max(len(t) for t in repo.topics)
         namemask = '%%-%is' % maxwidth
     for topic in sorted(repo.topics):
@@ -748,38 +883,46 @@ def _listtopics(ui, repo, opts):
             fm.plain(' %s ' % marker, label=label)
         fm.write('topic', namemask, topic, label=label)
         fm.data(active=active)
+
+        data = stack.stack(repo, topic=topic)
+        fm.plain(' (')
+        if ui.verbose:
+            fm.write('branches+', 'on branch: %s',
+                     '+'.join(data.branches), # XXX use list directly after 4.0 is released
+                     label='topic.list.branches')
+
+            fm.plain(', ')
+        fm.write('changesetcount', '%d changesets', data.changesetcount,
+                 label='topic.list.changesetcount')
+
+        if data.troubledcount:
+            fm.plain(', ')
+            fm.write('troubledcount', '%d troubled',
+                     data.troubledcount,
+                     label='topic.list.troubledcount')
+
+        headcount = len(data.heads)
+        if 1 < headcount:
+            fm.plain(', ')
+            fm.write('headcount', '%d heads',
+                     headcount,
+                     label='topic.list.headcount.multiple')
+
         if ui.verbose:
             # XXX we should include the data even when not verbose
-            data = stack.stackdata(repo, topic=topic)
-            fm.plain(' (')
-            fm.write('branches+', 'on branch: %s',
-                     '+'.join(data['branches']), # XXX use list directly after 4.0 is released
-                     label='topic.list.branches')
-            fm.plain(', ')
-            fm.write('changesetcount', '%d changesets', data['changesetcount'],
-                     label='topic.list.changesetcount')
-            if data['troubledcount']:
-                fm.plain(', ')
-                fm.write('troubledcount', '%d troubled',
-                         data['troubledcount'],
-                         label='topic.list.troubledcount')
-            if 1 < data['headcount']:
-                fm.plain(', ')
-                fm.write('headcount', '%d heads',
-                         data['headcount'],
-                         label='topic.list.headcount.multiple')
-            if 0 < data['behindcount']:
+
+            behindcount = data.behindcount
+            if 0 < behindcount:
                 fm.plain(', ')
                 fm.write('behindcount', '%d behind',
-                         data['behindcount'],
+                         behindcount,
                          label='topic.list.behindcount')
-            elif -1 == data['behindcount']:
+            elif -1 == behindcount:
                 fm.plain(', ')
                 fm.write('behinderror', '%s',
-                         _('ambiguous destination: %s') % data['behinderror'],
+                         _('ambiguous destination: %s') % data.behinderror,
                          label='topic.list.behinderror')
-            fm.plain(')')
-        fm.plain('\n')
+        fm.plain(')\n')
     fm.end()
 
 def _showlasttouched(repo, fm, opts):
@@ -875,18 +1018,68 @@ def summaryhook(ui, repo):
     # i18n: column positioning for "hg summary"
     ui.write(_("topic:  %s\n") % ui.label(t, 'topic.active'))
 
+_validmode = [
+    'ignore',
+    'warning',
+    'enforce',
+    'enforce-all',
+    'random',
+    'random-all',
+]
+
+def _configtopicmode(ui):
+    """ Parse the config to get the topicmode
+    """
+    topicmode = ui.config('experimental', 'topic-mode')
+
+    # Fallback to read enforce-topic
+    if topicmode is None:
+        enforcetopic = ui.configbool('experimental', 'enforce-topic')
+        if enforcetopic:
+            topicmode = "enforce"
+    if topicmode not in _validmode:
+        topicmode = _validmode[0]
+
+    return topicmode
+
 def commitwrap(orig, ui, repo, *args, **opts):
     with repo.wlock():
-        enforcetopic = ui.configbool('experimental', 'enforce-topic')
+        topicmode = _configtopicmode(ui)
+        ismergecommit = len(repo[None].parents()) == 2
+
+        notopic = not repo.currenttopic
+        mayabort = (topicmode == "enforce" and not ismergecommit)
+        maywarn = (topicmode == "warning"
+                   or (topicmode == "enforce" and ismergecommit))
+
+        mayrandom = False
+        if topicmode == "random":
+            mayrandom = not ismergecommit
+        elif topicmode == "random-all":
+            mayrandom = True
+
+        if topicmode == 'enforce-all':
+            ismergecommit = False
+            mayabort = True
+            maywarn = False
+
+        hint = _("see 'hg help -e topic.topic-mode' for details")
         if opts.get('topic'):
             t = opts['topic']
             with repo.vfs.open('topic', 'w') as f:
                 f.write(t)
-        elif not repo.currenttopic and enforcetopic:
+        elif opts.get('amend'):
+            pass
+        elif notopic and mayabort:
             msg = _("no active topic")
-            hint = _("set a current topic or use '--config " +
-                     "experimental.enforce-topic=no' to commit without a topic")
             raise error.Abort(msg, hint=hint)
+        elif notopic and maywarn:
+            ui.warn(_("warning: new draft commit without topic\n"))
+            if not ui.quiet:
+                ui.warn(("(%s)\n") % hint)
+        elif notopic and mayrandom:
+            with repo.vfs.open('topic', 'w') as f:
+                f.write(randomname.randomtopicname(ui))
         return orig(ui, repo, *args, **opts)
 
 def committextwrap(orig, repo, ctx, subs, extramsg):
@@ -917,7 +1110,7 @@ def mergeupdatewrap(orig, repo, node, branchmerge, force, *args, **kwargs):
         # rebased commit. We have explicitly stored in config if rebase is
         # running.
         ot = repo.currenttopic
-        empty = stack.stackdata(repo, topic=ot)['changesetcount'] == 0
+        empty = stack.stack(repo, topic=ot).changesetcount == 0
         if repo.ui.hasconfig('experimental', 'topicrebase'):
             isrebase = True
         if repo.ui.configbool('_internal', 'keep-topic'):

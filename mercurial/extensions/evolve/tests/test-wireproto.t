@@ -53,6 +53,7 @@ Smoke testing
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 2 files
+  new changesets 8685c6d34325:4957bfdac07e
   (run 'hg update' to get a working copy)
   $ hg push -R ../other
   pushing to ssh://user@dummy/server
@@ -72,8 +73,8 @@ Push
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 151 bytes received
-  remote: 2 new obsolescence markers
+  remote: obsmarker-exchange: 92 bytes received
+  remote: 1 new obsolescence markers
   remote: obsoleted 1 changesets
   $ hg push
   pushing to ssh://user@dummy/server
@@ -91,9 +92,10 @@ Pull
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
-  obsmarker-exchange: 151 bytes received
-  2 new obsolescence markers
+  obsmarker-exchange: 92 bytes received
+  1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets 9d1c114e7797
   (run 'hg heads' to see heads)
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
@@ -115,8 +117,8 @@ Test some markers discovery
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files
-  remote: obsmarker-exchange: 151 bytes received
-  remote: 2 new obsolescence markers
+  remote: obsmarker-exchange: 92 bytes received
+  remote: 1 new obsolescence markers
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server
   searching for changes
@@ -124,8 +126,9 @@ Test some markers discovery
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  obsmarker-exchange: 151 bytes received
-  2 new obsolescence markers
+  obsmarker-exchange: 92 bytes received
+  1 new obsolescence markers
+  new changesets a5687ec59dd4
   (run 'hg update' to get a working copy)
 
 some common hidden
@@ -138,7 +141,7 @@ some common hidden
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 0 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 226 bytes received
+  remote: obsmarker-exchange: 167 bytes received
   remote: 1 new obsolescence markers
   remote: obsoleted 1 changesets
   $ hg -R ../other pull
@@ -148,9 +151,10 @@ some common hidden
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 1 files (+1 heads)
-  obsmarker-exchange: 226 bytes received
+  obsmarker-exchange: 167 bytes received
   1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets * (glob)
   (run 'hg heads' to see heads)
 
 test discovery avoid exchanging known markers
@@ -173,7 +177,7 @@ test discovery can be disabled
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
   no changes found
-  remote: obsmarker-exchange: 376 bytes received
+  remote: obsmarker-exchange: 258 bytes received
   [1]
   $ hg -R ../other pull --config experimental.evolution.obsdiscovery=no
   pulling from ssh://user@dummy/server
@@ -181,6 +185,6 @@ test discovery can be disabled
   no changes found
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
-  obsmarker-exchange: 376 bytes received
+  obsmarker-exchange: 258 bytes received
 
   $ cd ..

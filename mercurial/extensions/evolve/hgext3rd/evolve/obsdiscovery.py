@@ -72,6 +72,13 @@ eh = exthelper.exthelper()
 eh.merge(stablerange.eh)
 obsexcmsg = utility.obsexcmsg
 
+# Config
+eh.configitem('experimental', 'evolution.obsdiscovery')
+eh.configitem('experimental', 'obshashrange')
+eh.configitem('experimental', 'obshashrange.warm-cache')
+eh.configitem('experimental', 'obshashrange.max-revs')
+eh.configitem('experimental', 'obshashrange.lru-size')
+
 ##################################
 ###  Code performing discovery ###
 ##################################
@@ -550,15 +557,7 @@ def _addmarkers(orig, obsstore, *args, **kwargs):
     obsstore.rangeobshashcache.clear()
     return orig(obsstore, *args, **kwargs)
 
-try:
-    obsstorefilecache = localrepo.localrepository.obsstore
-except AttributeError:
-    # XXX hg-3.8 compat
-    #
-    # mercurial 3.8 has issue with accessing file cache property from their
-    # cache. This is fix by 36fbd72c2f39fef8ad52d7c559906c2bc388760c in core
-    # and shipped in 3.9
-    obsstorefilecache = localrepo.localrepository.__dict__['obsstore']
+obsstorefilecache = localrepo.localrepository.obsstore
 
 
 # obsstore is a filecache so we have do to some spacial dancing

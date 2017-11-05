@@ -49,6 +49,7 @@
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  new changesets 4d1169d82e47
   (run 'hg update' to get a working copy)
   $ hg log -r 'draft()'
   1:4d1169d82e47@default(draft) modify a
@@ -67,9 +68,9 @@
   pulling from ../public
   searching for changes
   no changes found
-  1 new bumped changesets
+  1 new phase-divergent changesets
 
-  $ hg evolve -a -A --phasedivergent
+  $ hg evolve -a -A --phase-divergent
   recreate:[2] tweak a
   atop:[1] modify a
   computing new diff
@@ -105,7 +106,7 @@ product of a merge, we add a test for it.
   $ hg commit -m "merge"
   $ hg commit --amend -m "New message"
   $ hg phase --public 551127da2a8a --hidden
-  1 new bumped changesets
+  1 new phase-divergent changesets
   $ hg log -G
   @    7:b28e84916d8c@default(draft) New message
   |\
@@ -121,5 +122,5 @@ product of a merge, we add a test for it.
   |
   o  0:d3873e73d99e@default(public) init
   
-  $ hg evolve --all --phasedivergent
+  $ hg evolve --all --phase-divergent
   skipping b28e84916d8c : we do not handle merge yet

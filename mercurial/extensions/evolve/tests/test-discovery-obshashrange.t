@@ -31,6 +31,7 @@ test for range based discovery
   $ cd server
   $ hg debugbuilddag '.+7'
   $ hg blackbox
+  * @0000000000000000000000000000000000000000 (*)> init server exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugbuilddag .+7 (glob)
@@ -136,6 +137,7 @@ testing simple pull
   adding file changes
   added 5 changesets with 0 changes to 0 files
   3 new obsolescence markers
+  new changesets 1ea73414a91b:bebd167eb94d
   (run 'hg update' to get a working copy)
   $ hg -R ../server blackbox
   * @0000000000000000000000000000000000000000 (*)> debugobshashrange --subranges --rev tip (glob)
@@ -151,6 +153,7 @@ testing simple pull
   cccccccccccccccccccccccccccccccccccccccc bebd167eb94d257ace0e814aeb98e6972ed2970d 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
   $ rm ../server/.hg/blackbox.log
   $ hg blackbox
+  * @0000000000000000000000000000000000000000 (*)> clone 'ssh://user@dummy/server' client exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> pull --rev 4 (glob)
   * @0000000000000000000000000000000000000000 (*)> updated stablerange cache in *.???? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (5r, 3o) (glob)
@@ -180,8 +183,8 @@ testing simple push
   running python "*/dummyssh" 'user@dummy' 'hg -R server serve --stdio' (glob)
   sending hello command
   sending between command
-  remote: 516
-  remote: capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_obshashrange_v0 _evoext_pullobsmarkers_0 _evoext_pushobsmarkers_0 batch branchmap bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Aerror%3Dabort%2Cunsupportedcontent%2Cpushraced%2Cpushkey%0Ahgtagsfnodes%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps changegroupsubset getbundle known lookup pushkey streamreqs=generaldelta,revlogv1 unbundle=HG10GZ,HG10BZ,HG10UN unbundlehash
+  remote: 483
+  remote: capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_obshashrange_v0 batch * (glob)
   remote: 1
   preparing listkeys for "phases"
   sending listkeys command
@@ -215,9 +218,9 @@ testing simple push
   45f8b879de922f6a6e620ba04205730335b6fc7e
   sending unbundle command
   bundle2-output-bundle: "HG20", 4 parts total
-  bundle2-output-part: "replycaps" 172 bytes payload
+  bundle2-output-part: "replycaps" 185 bytes payload
   bundle2-output-part: "changegroup" (params: 1 mandatory) streamed payload
-  bundle2-output-part: "pushkey" (params: 4 mandatory) empty payload
+  bundle2-output-part: "phase-heads" 24 bytes payload
   bundle2-output-part: "obsmarkers" streamed payload
   remote: adding changesets
   remote: adding manifests
@@ -226,9 +229,8 @@ testing simple push
   remote: 1 new obsolescence markers
   bundle2-input-bundle: no-transaction
   bundle2-input-part: "reply:changegroup" (advisory) (params: 0 advisory) supported
-  bundle2-input-part: "reply:pushkey" (params: 0 advisory) supported
   bundle2-input-part: "reply:obsmarkers" (params: 0 advisory) supported
-  bundle2-input-bundle: 2 parts total
+  bundle2-input-bundle: 1 parts total
   preparing listkeys for "phases"
   sending listkeys command
   received listkey for "phases": 58 bytes
@@ -369,6 +371,7 @@ testing pull with extra remote markers
   adding file changes
   added 2 changesets with 0 changes to 0 files (+1 heads)
   3 new obsolescence markers
+  new changesets c8d03c1b5e94:f69452c5b1af
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg -R ../server blackbox
@@ -546,6 +549,7 @@ Recover after rollback
   adding file changes
   added 1 changesets with 0 changes to 0 files
   1 new obsolescence markers
+  new changesets 4de32a90b66c
   (run 'hg update' to get a working copy)
   $ hg rollback
   repository tip rolled back to revision 7 (undo pull)
@@ -596,6 +600,7 @@ Recover after rollback
   adding file changes
   added 1 changesets with 0 changes to 0 files
   1 new obsolescence markers
+  new changesets 4de32a90b66c
   (run 'hg update' to get a working copy)
   $ hg blackbox
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobshashrange --subranges --rev 'heads(all())' (glob)
@@ -687,6 +692,7 @@ revision are reapplied after the target is stripped.
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   2 new obsolescence markers
+  new changesets 45f8b879de92
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg log -G
   o  8 45f8b879de92 foo tip

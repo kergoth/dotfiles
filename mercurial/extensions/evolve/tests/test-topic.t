@@ -1,6 +1,6 @@
   $ . "$TESTDIR/testlib/topic_setup.sh"
 
-  $ hg init pinky --traceback
+  $ hg init pinky
   $ cd pinky
   $ cat <<EOF >> .hg/hgrc
   > [phases]
@@ -132,20 +132,20 @@ Test commit flag and help text
   [255]
   $ hg revert alpha
   $ hg topic
-   * topicflag
+   * topicflag (0 changesets)
 
 Make a topic
 
   $ hg topic narf
   $ hg topics
-   * narf
+   * narf (0 changesets)
   $ hg topics -v
    * narf (on branch: default, 0 changesets)
   $ hg stack
   ### topic: narf
   ### target: default (branch)
   (stack is empty)
-  t0^ Add file delta (base)
+  t0^ Add file delta (base current)
 
 Add commits to topic
 
@@ -157,8 +157,8 @@ Add commits to topic
   $ hg topic fran
   marked working directory as topic: fran
   $ hg topics
-   * fran
-     narf
+   * fran (0 changesets)
+     narf (1 changesets)
   $ hg topics --current
   fran
   $ echo >> fran work >> beta
@@ -168,8 +168,8 @@ Add commits to topic
   switching to topic narf
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg topic
-     fran
-   * narf
+     fran (1 changesets)
+   * narf (1 changesets)
   $ hg log -r . -T '{topics}\n'
   narf
   $ echo 'narf!!!' >> alpha
@@ -373,7 +373,7 @@ Because the change is public, we won't inherit the topic from narf.
   |
 
   $ hg topics
-   * query
+   * query (1 changesets)
   $ cd ../pinky
   $ hg co query
   switching to topic query
@@ -392,9 +392,9 @@ Because the change is public, we won't inherit the topic from narf.
   $ hg topic narf
   $ hg ci -m 'Finish narf'
   $ hg topics
-     fran
-   * narf
-     query
+     fran  (1 changesets)
+   * narf  (2 changesets)
+     query (2 changesets)
   $ hg debugnamecomplete # branch:topic here is a buggy side effect
   default
   default:fran
@@ -411,8 +411,8 @@ POSSIBLE BUG: narf topic stays alive even though we just made all
 narf commits public:
 
   $ hg topics
-     fran
-   * narf
+     fran (1 changesets)
+   * narf (0 changesets)
   $ hg log -Gl 6
   @    changeset:   9:ae074045b7a7
   |\   tag:         tip
@@ -454,7 +454,7 @@ narf commits public:
 
   $ cd ../brain
   $ hg topics
-   * query
+   * query (1 changesets)
   $ hg pull ../pinky -r narf
   pulling from ../pinky
   abort: unknown revision 'narf'!
@@ -466,10 +466,11 @@ narf commits public:
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 1 files
+  new changesets 7c34953036d6:ae074045b7a7
   active topic 'query' is now empty
   (run 'hg update' to get a working copy)
   $ hg topics
-   * query
+   * query (0 changesets)
 
 We can pull in the draft-phase change and we get the new topic
 
@@ -480,10 +481,11 @@ We can pull in the draft-phase change and we get the new topic
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+  new changesets 0469d521db49
   (run 'hg heads' to see heads)
   $ hg topics
-     fran
-   * query
+     fran  (1 changesets)
+   * query (0 changesets)
   $ hg log -Gr 'draft()'
   o  changeset:   9:0469d521db49
   |  tag:         tip
@@ -500,11 +502,7 @@ disappear:
   $ hg topics --clear
   clearing empty topic "query"
   $ hg topics
-     fran
-
---clear when we don't have an active topic isn't an error:
-
-  $ hg topics --clear
+     fran (1 changesets)
 
 Topic revset
   $ hg log -r 'topic()' -G
@@ -591,7 +589,7 @@ Exact match on fran:
 
 Match current topic:
   $ hg topic
-     fran
+     fran (1 changesets)
   $ hg log -r 'topic(.)'
 (no output is expected)
   $ hg co fran
@@ -609,7 +607,7 @@ Match current topic:
 
 Deactivate the topic.
   $ hg topics
-   * fran
+   * fran (1 changesets)
   $ hg topics --clear
   $ echo fran? >> beta
   $ hg ci -m 'fran?'
@@ -628,284 +626,36 @@ Deactivate the topic.
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     start on fran
   |
+
   $ hg topics
-     fran
-Changing topic fails if we don't give a topic
-  $ hg topic --rev 9
-  abort: changing topic requires a topic name or --clear
-  [255]
-
-Can't change topic of a public change
-  $ hg topic --rev 1:: --clear
-  abort: can't change topic of a public change
-  [255]
-
-Can clear topics
-  $ hg topic --rev 9 --clear
-  changed topic on 1 changes
-  $ hg log -Gr 'draft() and not obsolete()'
-  o  changeset:   11:0beca5ab56c3
-  |  tag:         tip
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-  | @  changeset:   10:4073470c35e1
-  | |  user:        test
-  | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     unstable
-  | |  summary:     fran?
-  | |
-
-Normally you'd do this with evolve, but we'll use rebase to avoid
-bonus deps in the testsuite.
-
-  $ hg rebase -d tip -s .
-  rebasing 10:4073470c35e1 "fran?"
-
-Can add a topic to an existing change
-  $ hg topic
-  $ hg sum
-  parent: 12:18b70b8de1f0 tip
-   fran?
-  branch: default
-  commit: (clean)
-  update: 5 new changesets, 2 branch heads (merge)
-  phases: 2 draft
-  $ hg topic --rev 11 wat
-  changed topic on 1 changes
-  $ hg log -r .
-  changeset:   12:18b70b8de1f0
-  user:        test
-  date:        Thu Jan 01 00:00:00 1970 +0000
-  trouble:     unstable
-  summary:     fran?
-  
-  $ hg sum
-  parent: 12:18b70b8de1f0  (unstable)
-   fran?
-  branch: default
-  commit: (clean)
-  update: 5 new changesets, 2 branch heads (merge)
-  phases: 3 draft
-  unstable: 1 changesets
-  $ hg topic
-     wat
-  $ hg log -Gr 'draft() and not obsolete()'
-  o  changeset:   13:686a642006db
-  |  tag:         tip
-  |  topic:       wat
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-  | @  changeset:   12:18b70b8de1f0
-  | |  user:        test
-  | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     unstable
-  | |  summary:     fran?
-  | |
-
-Normally you'd do this with evolve, but we'll use rebase to avoid
-bonus deps in the testsuite.
-
-  $ hg topic
-     wat
-  $ hg rebase -d tip -s .
-  rebasing 12:18b70b8de1f0 "fran?"
-  switching to topic wat
-  $ hg topic
-     wat
-
-  $ hg log -Gr 'draft()'
-  @  changeset:   14:45358f7a5892
-  |  tag:         tip
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     fran?
-  |
-  o  changeset:   13:686a642006db
-  |  topic:       wat
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-
-Amend a topic
-
-  $ hg topic watwat
-  marked working directory as topic: watwat
-  $ hg ci --amend
-  active topic 'watwat' grew its first changeset
-  $ hg log -Gr 'draft()'
-  @  changeset:   16:6c40a4c21bbe
-  |  tag:         tip
-  |  topic:       watwat
-  |  parent:      13:686a642006db
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     fran?
-  |
-  o  changeset:   13:686a642006db
-  |  topic:       wat
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-
-Clear and amend:
-
-  $ hg topic --clear
-  $ hg ci --amend
-  $ hg log -r .
-  changeset:   18:0f9cd5070654
-  tag:         tip
-  parent:      13:686a642006db
-  user:        test
-  date:        Thu Jan 01 00:00:00 1970 +0000
-  summary:     fran?
-  
-Reading the same topic with topic --rev should work:
-  $ hg topic --rev . watwat
-  switching to topic watwat
-  changed topic on 1 changes
-
-Testing issue5441
-  $ hg co 19
-  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg log -Gr 'draft()'
-  @  changeset:   19:980a0f608481
-  |  tag:         tip
-  |  topic:       watwat
-  |  parent:      13:686a642006db
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     fran?
-  |
-  o  changeset:   13:686a642006db
-  |  topic:       wat
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-
-Using the current flag
-
-  $ hg topic changewat
-  $ hg topics --rev '13::19' --current
-  active topic 'changewat' grew its 2 first changesets
-  changed topic on 2 changes
-
-  $ hg log -Gr 'draft()'
-  @  changeset:   21:56c83be6105f
-  |  tag:         tip
-  |  topic:       changewat
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     fran?
-  |
-  o  changeset:   20:ceba5be9d56f
-  |  topic:       changewat
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-
-Case with branching:
-
-  $ hg up changewat
-  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ hg up t1
-  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ echo gamma >> gamma
-  $ hg ci -m gamma
-
-  $ hg log -Gr 'draft()'
-  @  changeset:   22:0d3d805542b4
-  |  tag:         tip
-  |  topic:       changewat
-  |  parent:      20:ceba5be9d56f
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     gamma
-  |
-  | o  changeset:   21:56c83be6105f
-  |/   topic:       changewat
-  |    user:        test
-  |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    summary:     fran?
-  |
-  o  changeset:   20:ceba5be9d56f
-  |  topic:       changewat
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
-
-  $ hg topics --rev 't1::' changewut
-  switching to topic changewut
-  active topic 'changewat' is now empty
-  changed topic on 3 changes
-
-  $ hg log -Gr 'draft()'
-  @  changeset:   25:729ed5717393
-  |  tag:         tip
-  |  topic:       changewut
-  |  parent:      23:62e49f09f883
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     gamma
-  |
-  | o  changeset:   24:369c6e2e5474
-  |/   topic:       changewut
-  |    user:        test
-  |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    summary:     fran?
-  |
-  o  changeset:   23:62e49f09f883
-  |  topic:       changewut
-  |  parent:      3:a53952faf762
-  |  user:        test
-  |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  summary:     start on fran
-  |
+     fran (1 changesets)
 
 Testing for updating to t0
 ==========================
 
+  $ hg up fran
+  switching to topic fran
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
-  ### topic: changewut (2 heads)
-  ### target: default (branch), 5 behind
-  t3: fran?
-  t1^ start on fran (base)
-  t2@ gamma (current)
-  t1: start on fran
+  ### topic: fran
+  ### target: default (branch), ambigious rebase destination - branch 'default' has 2 heads
+  t1@ start on fran (current)
   t0^ Add file delta (base)
 
   $ hg up t0
-  preserving the current topic 'changewut'
-  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  preserving the current topic 'fran'
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg topic
-   * changewut
+   * fran (1 changesets)
   $ hg stack
-  ### topic: changewut (2 heads)
-  ### target: default (branch), 5 behind
-  t3: fran?
-  t1^ start on fran (base)
-  t2: gamma
+  ### topic: fran
+  ### target: default (branch), ambigious rebase destination - branch 'default' has 2 heads
   t1: start on fran
-  t0^ Add file delta (base)
+  t0^ Add file delta (base current)
 
   $ hg topics --age
-   * changewut (1970-01-01 by test)
+   * fran (1970-01-01 by test)
 
   $ cd ..
 
@@ -920,22 +670,22 @@ Testing the new config knob to forbid untopiced commit
   > EOF
   $ cat <<EOF >> $HGRCPATH
   > [experimental]
-  > enforce-topic = yes
+  > topic-mode = enforce
   > EOF
   $ touch a b c d
   $ hg add a
   $ hg ci -m "Added a"
   abort: no active topic
-  (set a current topic or use '--config experimental.enforce-topic=no' to commit without a topic)
+  (see 'hg help -e topic.topic-mode' for details)
   [255]
 
 (same test, checking we abort before the editor)
 
   $ EDITOR=cat hg ci -m "Added a" --edit
   abort: no active topic
-  (set a current topic or use '--config experimental.enforce-topic=no' to commit without a topic)
+  (see 'hg help -e topic.topic-mode' for details)
   [255]
-  $ hg ci -m "added a" --config experimental.enforce-topic=no
+  $ hg ci -m "added a" --config experimental.topic-mode=off
   $ hg log
   changeset:   0:a154386e50d1
   tag:         tip
@@ -943,6 +693,7 @@ Testing the new config knob to forbid untopiced commit
   date:        Thu Jan 01 00:00:00 1970 +0000
   summary:     added a
   
+
 Testing the --age flag for `hg topics`
 ======================================
 
@@ -981,9 +732,9 @@ Testing the --age flag for `hg topics`
      summary:     added a
   
   $ hg topics
-     topic1970
-     topic1990
-   * topic2010
+     topic1970 (1 changesets)
+     topic1990 (1 changesets)
+   * topic2010 (1 changesets)
 
   $ hg topics --age
    * topic2010 (2010-01-01 by bar)

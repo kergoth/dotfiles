@@ -145,6 +145,7 @@ Actual Test for first version (changeset unknown in remote)
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
+  new changesets e5ea8f9c7314
   (run 'hg update' to get a working copy)
   ## post pull state
   # obstore: main
@@ -263,8 +264,9 @@ test obsmarkers exchange.
   added 1 changesets with 1 changes to 1 files (+1 heads)
   1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets e5ea8f9c7314
   (run 'hg heads' to see heads, 'hg merge' to merge)
-  1 new unstable changesets
+  1 new orphan changesets
   ## post pull state
   # obstore: main
   28b51eb45704506b5c603decd6bf7ac5e0f6a52f e5ea8f9c73143125d36658e90ef70c6d2027a5b7 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}

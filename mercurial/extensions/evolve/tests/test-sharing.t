@@ -46,6 +46,7 @@ and pull that into the development repository::
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  new changesets 0dc9c9f6ab91
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
 Let's commit a preliminary change and push it to ``test-repo`` for
@@ -69,10 +70,8 @@ Now let's switch to test-repo to test our change and amend::
 
 Figure SG02
   $ hg shortlog --hidden -G
-  @  3:60ffde5765c5  draft  fix bug 37
+  @  2:60ffde5765c5  draft  fix bug 37
   |
-  | x  2:2a039763c0f4  draft  temporary amend commit for f6490818a721
-  | |
   | x  1:f6490818a721  draft  prelim change
   |/
   o  0:0dc9c9f6ab91  public  create new project
@@ -87,8 +86,9 @@ the new obsolete changeset.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets 60ffde5765c5
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   updated to "60ffde5765c5: fix bug 37"
   1 other heads for branch "default"
@@ -108,10 +108,8 @@ Amend again in dev-repo
 
 Figure SG04 (dev-repo)
   $ hg shortlog --hidden -G
-  @  4:de6151c48e1c  draft  fix bug 37
+  @  3:de6151c48e1c  draft  fix bug 37
   |
-  | x  3:ad19d3570adb  draft  temporary amend commit for 60ffde5765c5
-  | |
   | x  2:60ffde5765c5  draft  fix bug 37
   |/
   | x  1:f6490818a721  draft  prelim change
@@ -125,12 +123,10 @@ Figure SG04 (test-repo)
   updated to "de6151c48e1c: fix bug 37"
   1 other heads for branch "default"
   $ hg shortlog --hidden -G
-  @  4:de6151c48e1c  draft  fix bug 37
+  @  3:de6151c48e1c  draft  fix bug 37
   |
-  | x  3:60ffde5765c5  draft  fix bug 37
+  | x  2:60ffde5765c5  draft  fix bug 37
   |/
-  | x  2:2a039763c0f4  draft  temporary amend commit for f6490818a721
-  | |
   | x  1:f6490818a721  draft  prelim change
   |/
   o  0:0dc9c9f6ab91  public  create new project
@@ -143,7 +139,7 @@ This bug fix is finished. We can push it to the public repository.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  4 new obsolescence markers
+  2 new obsolescence markers
 
 Now that the fix is public, we cannot amend it any more.
   $ hg amend -m 'fix bug 37'
@@ -159,7 +155,7 @@ Figure SG05
   
 Oops, still have draft changesets in dev-repo: push the phase change there.
   $ hg -R ../dev-repo shortlog -r 'draft()'
-  4:de6151c48e1c  draft  fix bug 37
+  3:de6151c48e1c  draft  fix bug 37
   $ hg push ../dev-repo
   pushing to ../dev-repo
   searching for changes
@@ -212,7 +208,7 @@ await second review.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
   obsoleted 1 changesets
   updating bookmark bug15
   $ hg -R ../review bookmarks
@@ -257,7 +253,7 @@ Bob receives first review, amends and pushes.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
   obsoleted 1 changesets
   updating bookmark featureX
 
@@ -272,7 +268,7 @@ this time, he's sure he got it right!
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  4 new obsolescence markers
+  2 new obsolescence markers
   $ hg -R ../public bookmarks
   no bookmarks set
   $ hg push ../review
@@ -283,7 +279,7 @@ this time, he's sure he got it right!
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
   obsoleted 1 changesets
   updating bookmark featureX
   $ hg -R ../review bookmarks
@@ -333,17 +329,15 @@ Meantime, Alice is back from lunch. While she was away, Bob approved
 her change, so now she can publish it.
   $ cd ../alice
   $ hg --hidden shortlog -G -r 1::
-  @  4:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  @  3:cbdfbd5a5db2  draft  fix bug 15 (v2)
   |
-  | x  3:55dd95168a35  draft  temporary amend commit for f91e97234c2b
-  | |
   | x  2:f91e97234c2b  draft  fix bug 15 (v1)
   |/
   o  1:de6151c48e1c  public  fix bug 37
   |
   ~
   $ hg outgoing -q ../public
-  4:cbdfbd5a5db2
+  3:cbdfbd5a5db2
   $ hg push ../public
   pushing to ../public
   searching for changes
@@ -358,22 +352,21 @@ her change, so now she can publish it.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  4 new obsolescence markers
+  2 new obsolescence markers
+  new changesets 540ba8f317e6
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg log -G -q -r 'head()'
-  o  5:540ba8f317e6
+  o  4:540ba8f317e6
   |
   ~
-  @  4:cbdfbd5a5db2
+  @  3:cbdfbd5a5db2
   |
   ~
   $ hg --hidden shortlog -G -r 1::
-  o  5:540ba8f317e6  public  implement feature X (v3)
+  o  4:540ba8f317e6  public  implement feature X (v3)
   |
-  | @  4:cbdfbd5a5db2  draft  fix bug 15 (v2)
+  | @  3:cbdfbd5a5db2  draft  fix bug 15 (v2)
   |/
-  | x  3:55dd95168a35  draft  temporary amend commit for f91e97234c2b
-  | |
   | x  2:f91e97234c2b  draft  fix bug 15 (v1)
   |/
   o  1:de6151c48e1c  public  fix bug 37
@@ -383,7 +376,7 @@ her change, so now she can publish it.
 Alice rebases her draft changeset on top of Bob's public changeset and
 publishes the result.
   $ hg rebase -d 5
-  rebasing 4:cbdfbd5a5db2 "fix bug 15 (v2)" (bug15)
+  rebasing 3:cbdfbd5a5db2 "fix bug 15 (v2)" (bug15)
   $ hg push ../public
   pushing to ../public
   searching for changes
@@ -391,7 +384,7 @@ publishes the result.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  3 new obsolescence markers
+  2 new obsolescence markers
   $ hg push ../review
   pushing to ../review
   searching for changes
@@ -464,6 +457,7 @@ changeset and amends it herself. ::
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  new changesets 2fe6c4bd32d0
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ echo 'better fix (alice)' >> file1
   $ hg amend -u alice -m 'fix bug 24 (v2 by alice)'
@@ -474,10 +468,8 @@ Bob implements a better fix of his own::
   $ echo 'better fix (bob)' >> file1
   $ hg amend -u bob -m 'fix bug 24 (v2 by bob)'
   $ hg --hidden shortlog -G -r 3::
-  @  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  @  5:a360947f6faf  draft  fix bug 24 (v2 by bob)
   |
-  | x  5:3466c7f5a149  draft  temporary amend commit for 2fe6c4bd32d0
-  | |
   | x  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
   |/
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
@@ -492,56 +484,51 @@ Bob discovers the divergence.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
+  new changesets e3f99ce9d9cd
   (run 'hg heads' to see heads, 'hg merge' to merge)
-  2 new divergent changesets
+  2 new content-divergent changesets
 
 Figure SG09: multiple heads! divergence! oh my!
   $ hg --hidden shortlog -G -r 3::
-  o  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+  o  6:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
   |
-  | @  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  | @  5:a360947f6faf  draft  fix bug 24 (v2 by bob)
   |/
-  | x  5:3466c7f5a149  draft  temporary amend commit for 2fe6c4bd32d0
-  | |
   | x  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
   |/
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
   ~
   $ hg --hidden shortlog -r 'successors(2fe6)'
-  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
-  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+  5:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  6:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
 
 Use evolve to fix the divergence.
-  $ HGMERGE=internal:other hg evolve --contentdivergent
-  merge:[6] fix bug 24 (v2 by bob)
-  with: [7] fix bug 24 (v2 by alice)
+  $ HGMERGE=internal:other hg evolve --content-divergent
+  merge:[5] fix bug 24 (v2 by bob)
+  with: [6] fix bug 24 (v2 by alice)
   base: [4] fix bug 24 (v1)
   0 files updated, 1 files merged, 0 files removed, 0 files unresolved
   working directory is now at 5ad6037c046c
-  $ hg log -q -r 'divergent()'
+  $ hg log -q -r 'contentdivergent()'
 
 Figure SG10: Bob's repository after fixing divergence.
   $ hg --hidden shortlog -G -r 3::
-  @  9:5ad6037c046c  draft  fix bug 24 (v2 by bob)
+  @  7:5ad6037c046c  draft  fix bug 24 (v2 by bob)
   |
-  | x  8:bcfc9a755ac3  draft  temporary amend commit for a360947f6faf
-  | |
-  +---x  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
-  | |
-  | x  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  | x  6:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
   |/
-  | x  5:3466c7f5a149  draft  temporary amend commit for 2fe6c4bd32d0
-  | |
+  | x  5:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  |/
   | x  4:2fe6c4bd32d0  draft  fix bug 24 (v1)
   |/
   o  3:a06ec1bf97bd  public  fix bug 15 (v2)
   |
   ~
-  $ hg --hidden shortlog -r 'precursors(9)'
-  6:a360947f6faf  draft  fix bug 24 (v2 by bob)
-  7:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+  $ hg --hidden shortlog -r 'precursors(5ad6037c046c)'
+  5:a360947f6faf  draft  fix bug 24 (v2 by bob)
+  6:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
   $ cat file1
   Do stuff.
   pretty good fix

@@ -31,23 +31,17 @@ Test setup
   > 
   > Better commit message"
   $ hg log --hidden -G
-  @  changeset:   3:4ae3a4151de9
+  @  changeset:   2:4ae3a4151de9
   |  tag:         tip
   |  parent:      0:ea207398892e
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     A1
   |
-  | x  changeset:   2:f137d23bb3e1
-  | |  user:        test
-  | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    pruned
-  | |  summary:     temporary amend commit for 471f378eab4c
-  | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as 4ae3a4151de9
+  |    obsolete:    rewritten using amend as 2:4ae3a4151de9
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -58,10 +52,10 @@ Test setup
 Actual test
 -----------
   $ hg obslog --patch 4ae3a4151de9
-  @  4ae3a4151de9 (3) A1
+  @  4ae3a4151de9 (2) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, content) as 4ae3a4151de9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/4ae3a4151de9-changeset-description
          @@ -1,1 +1,3 @@
@@ -80,7 +74,7 @@ Actual test
   
 
   $ hg obslog --no-graph --patch 4ae3a4151de9
-  4ae3a4151de9 (3) A1
+  4ae3a4151de9 (2) A1
   471f378eab4c (1) A0
     rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
       --- a/471f378eab4c-changeset-description	
@@ -109,7 +103,7 @@ Actual test
       {
           "markers": [],
           "node": "4ae3a4151de9",
-          "rev": 3,
+          "rev": 2,
           "shortdescription": "A1"
       },
       {
@@ -137,7 +131,7 @@ Actual test
   ]
   $ hg obslog --hidden --patch 471f378eab4c
   x  471f378eab4c (1) A0
-       rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, content) as 4ae3a4151de9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/4ae3a4151de9-changeset-description
          @@ -1,1 +1,3 @@
@@ -245,7 +239,7 @@ Actual test
   $ hg obslog 'desc(B0)' --hidden --patch
   x  0dec01379d3b (2) B0
        pruned by test (*) (glob)
-         (No patch available yet, no successors)
+         (No patch available, no successors)
   
   $ hg obslog 'desc(B0)' --hidden --no-graph -Tjson | python -m json.tool
   [
@@ -365,7 +359,7 @@ Test setup
   | x  changeset:   1:471597cad322
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    split as 337fec4d2edc, f257fde29c7a
+  |    obsolete:    split as 2:337fec4d2edc, 3:f257fde29c7a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -379,8 +373,8 @@ Actual test
 Check that debugobshistory on splitted commit show both targets
   $ hg obslog 471597cad322 --hidden --patch
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
   $ hg obslog 471597cad322 --hidden --no-graph -Tjson | python -m json.tool
   [
@@ -414,8 +408,8 @@ the revision plus the splitted one
   o  337fec4d2edc (2) A0
   |
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
 With the all option, it should show the three changesets
   $ hg obslog --all 337fec4d2edc --patch
@@ -424,8 +418,8 @@ With the all option, it should show the three changesets
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
 Check that debugobshistory on the second successor after split show
 the revision plus the splitted one
@@ -433,8 +427,8 @@ the revision plus the splitted one
   @  f257fde29c7a (3) A0
   |
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
 With the all option, it should show the three changesets
   $ hg obslog f257fde29c7a --all --patch
@@ -443,8 +437,8 @@ With the all option, it should show the three changesets
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
 Obslog with all option all should also works on the splitted commit
   $ hg obslog -a 471597cad322 --hidden --patch
@@ -453,8 +447,8 @@ Obslog with all option all should also works on the splitted commit
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
 Check that debugobshistory on both successors after split show
 a coherent graph
@@ -464,8 +458,8 @@ a coherent graph
   | @  f257fde29c7a (3) A0
   |/
   x  471597cad322 (1) A0
-       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (2))
+       rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (2))
   
   $ hg update 471597cad322
   abort: hidden revision '471597cad322'!
@@ -619,7 +613,7 @@ Test setup
   | x  changeset:   1:de7290d8b885
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    split as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a
+  |    obsolete:    split as 2:337fec4d2edc, 3:f257fde29c7a, 4:1ae8bc733a14, 5:c7f044602e9b
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -632,8 +626,8 @@ Actual test
 
   $ hg obslog de7290d8b885 --hidden --patch
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (4))
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (4))
   
   $ hg obslog de7290d8b885 --hidden --all --patch
   o  1ae8bc733a14 (4) A0
@@ -645,8 +639,8 @@ Actual test
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (4))
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (4))
   
   $ hg obslog de7290d8b885 --hidden --no-graph -Tjson | python -m json.tool
   [
@@ -680,8 +674,8 @@ Actual test
   @  c7f044602e9b (5) A0
   |
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (4))
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (4))
   
   $ hg obslog c7f044602e9b --no-graph -Tjson | python -m json.tool
   [
@@ -728,8 +722,8 @@ Check that debugobshistory on all heads show a coherent graph
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (4))
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (4))
   
   $ hg obslog 5 --all --patch
   o  1ae8bc733a14 (4) A0
@@ -741,8 +735,8 @@ Check that debugobshistory on all heads show a coherent graph
   | o  f257fde29c7a (3) A0
   |/
   x  de7290d8b885 (1) A0
-       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, too many successors (4))
+       rewritten(parent, content) as 1ae8bc733a14, 337fec4d2edc, c7f044602e9b, f257fde29c7a by test (*) (glob)
+         (No patch available, too many successors (4))
   
   $ hg update de7290d8b885
   abort: hidden revision 'de7290d8b885'!
@@ -795,13 +789,13 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    rewritten as eb5a0daa2192
+  | |  obsolete:    rewritten as 3:eb5a0daa2192
   | |  summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as eb5a0daa2192
+  |    obsolete:    rewritten as 3:eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -816,7 +810,7 @@ Check that debugobshistory on the first folded revision show only
 the revision with the target
   $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
-       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -835,11 +829,11 @@ Check that with all option, all changesets are shown
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |        (No patch available yet, changesets rebased)
+   /     rewritten(description, parent, content) as eb5a0daa2192 by test (*) (glob)
+  |        (No patch available, changesets rebased)
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -857,19 +851,19 @@ Check that debugobshistory on the second folded revision show only
 the revision with the target
   $ hg obslog --hidden 0dec01379d3b --patch
   x  0dec01379d3b (2) B0
-       rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, changesets rebased)
+       rewritten(description, parent, content) as eb5a0daa2192 by test (*) (glob)
+         (No patch available, changesets rebased)
   
 Check that with all option, all changesets are shown
   $ hg obslog --hidden --all 0dec01379d3b --patch
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |        (No patch available yet, changesets rebased)
+   /     rewritten(description, parent, content) as eb5a0daa2192 by test (*) (glob)
+  |        (No patch available, changesets rebased)
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -889,11 +883,11 @@ graph
   @    eb5a0daa2192 (3) C0
   |\
   x |  0dec01379d3b (2) B0
-   /     rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |        (No patch available yet, changesets rebased)
+   /     rewritten(description, parent, content) as eb5a0daa2192 by test (*) (glob)
+  |        (No patch available, changesets rebased)
   |
   x  471f378eab4c (1) A0
-       rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/eb5a0daa2192-changeset-description
          @@ -1,1 +1,1 @@
@@ -923,7 +917,7 @@ graph
                       0 (glob)
                   ],
                   "effect": [
-                      *, (glob)
+                      "description",
                       "content"
                   ],
                   "succnodes": [
@@ -941,7 +935,7 @@ graph
           "markers": [
               {
                   "date": [
-                      0.0,
+                      *, (glob)
                       0 (glob)
                   ],
                   "effect": [
@@ -1002,7 +996,7 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    reworded as fdf9bde5129a
+  |    obsolete:    reworded using amend as 2:fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1015,28 +1009,28 @@ Test setup
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: fdf9bde5129a)
   $ hg amend -m "A2"
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg log --hidden -G
   @  changeset:   3:65b757b745b9
   |  tag:         tip
   |  parent:      0:ea207398892e
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  trouble:     divergent
+  |  instability: content-divergent
   |  summary:     A2
   |
   | o  changeset:   2:fdf9bde5129a
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    trouble:     divergent
+  |    instability: content-divergent
   |    summary:     A1
   |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    reworded as fdf9bde5129a
-  |    obsolete:    reworded as 65b757b745b9
+  |    obsolete:    reworded using amend as 2:fdf9bde5129a
+  |    obsolete:    reworded using amend as 3:65b757b745b9
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1050,14 +1044,14 @@ Actual test
 Check that debugobshistory on the divergent revision show both destinations
   $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1073,14 +1067,14 @@ Check that with all option, every changeset is shown
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1132,14 +1126,14 @@ and the diverent one
   o  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1155,14 +1149,14 @@ Check that all option show all of them
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1176,14 +1170,14 @@ and the diverent one
   @  65b757b745b9 (3) A2
   |
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1198,14 +1192,14 @@ Check that all option show all of them
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1221,14 +1215,14 @@ graph
   | o  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
-       rewritten(description) as 65b757b745b9 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as 65b757b745b9 by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/65b757b745b9-changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1293,7 +1287,7 @@ graph
   $ hg update --hidden 'desc(A0)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
-  (471f378eab4c has diverged, use 'hg evolve --list --contentdivergent' to resolve the issue)
+  (471f378eab4c has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
 
 Test output with amended + folded commit
 ========================================
@@ -1318,7 +1312,7 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    reworded as b7ea6d14e664
+  |    obsolete:    reworded using amend as 3:b7ea6d14e664
   |    summary:     B0
   |
   o  changeset:   1:471f378eab4c
@@ -1346,19 +1340,19 @@ Test setup
   | |  parent:      1:471f378eab4c
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    rewritten as eb5a0daa2192
+  | |  obsolete:    rewritten as 4:eb5a0daa2192
   | |  summary:     B1
   | |
   | | x  changeset:   2:0dec01379d3b
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | |    obsolete:    reworded as b7ea6d14e664
+  | |    obsolete:    reworded using amend as 3:b7ea6d14e664
   | |    summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as eb5a0daa2192
+  |    obsolete:    rewritten as 4:eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1374,7 +1368,7 @@ Check that debugobshistory on head show a coherent graph
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
-   /     rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
+   /     rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
   |        --- a/471f378eab4c-changeset-description
   |        +++ b/eb5a0daa2192-changeset-description
   |        @@ -1,1 +1,1 @@
@@ -1389,11 +1383,11 @@ Check that debugobshistory on head show a coherent graph
   |
   |
   x  b7ea6d14e664 (3) B1
-  |    rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |      (No patch available yet, changesets rebased)
+  |    rewritten(description, parent, content) as eb5a0daa2192 by test (*) (glob)
+  |      (No patch available, changesets rebased)
   |
   x  0dec01379d3b (2) B0
-       rewritten(description) as b7ea6d14e664 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as b7ea6d14e664 by test (*) (glob)
          --- a/0dec01379d3b-changeset-description
          +++ b/b7ea6d14e664-changeset-description
          @@ -1,1 +1,1 @@
@@ -1406,7 +1400,7 @@ Check that obslog on ROOT with all option show everything
   @    eb5a0daa2192 (4) C0
   |\
   x |  471f378eab4c (1) A0
-   /     rewritten(description, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
+   /     rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
   |        --- a/471f378eab4c-changeset-description
   |        +++ b/eb5a0daa2192-changeset-description
   |        @@ -1,1 +1,1 @@
@@ -1421,11 +1415,11 @@ Check that obslog on ROOT with all option show everything
   |
   |
   x  b7ea6d14e664 (3) B1
-  |    rewritten(description, parent, content) as eb5a0daa2192 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |      (No patch available yet, changesets rebased)
+  |    rewritten(description, parent, content) as eb5a0daa2192 by test (*) (glob)
+  |      (No patch available, changesets rebased)
   |
   x  0dec01379d3b (2) B0
-       rewritten(description) as b7ea6d14e664 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as b7ea6d14e664 by test (*) (glob)
          --- a/0dec01379d3b-changeset-description
          +++ b/b7ea6d14e664-changeset-description
          @@ -1,1 +1,1 @@
@@ -1582,13 +1576,13 @@ Test setup
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    reworded as 7a230b46bf61
+  |    obsolete:    reworded using amend as 3:7a230b46bf61
   |    summary:     A1
   |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    reworded as fdf9bde5129a
+  |    obsolete:    reworded using amend as 2:fdf9bde5129a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -1603,7 +1597,7 @@ Test setup
   @  7a230b46bf61 (3) A2
   |
   x  fdf9bde5129a (2) A1
-  |    rewritten(description) as 7a230b46bf61 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description) as 7a230b46bf61 by test (*) (glob)
   |      --- a/fdf9bde5129a-changeset-description
   |      +++ b/7a230b46bf61-changeset-description
   |      @@ -1,1 +1,1 @@
@@ -1612,7 +1606,7 @@ Test setup
   |
   |
   x  471f378eab4c (1) A0
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
          --- a/471f378eab4c-changeset-description
          +++ b/fdf9bde5129a-changeset-description
          @@ -1,1 +1,1 @@
@@ -1630,6 +1624,7 @@ Test setup
   added 1 changesets with 0 changes to 1 files (+1 heads)
   2 new obsolescence markers
   obsoleted 1 changesets
+  new changesets 7a230b46bf61
   (run 'hg heads' to see heads, 'hg merge' to merge)
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: 7a230b46bf61)
@@ -1639,21 +1634,21 @@ changectx
   o  7a230b46bf61 (2) A2
   |
   x  fdf9bde5129a
-  |    rewritten(description) as 7a230b46bf61 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |      (No patch available yet, context is not local)
+  |    rewritten(description) as 7a230b46bf61 by test (*) (glob)
+  |      (No patch available, context is not local)
   |
   @  471f378eab4c (1) A0
-       rewritten(description) as fdf9bde5129a by test (Thu Jan 01 00:00:00 1970 +0000)
-         (No patch available yet, succ is unknown locally)
+       rewritten(description) as fdf9bde5129a by test (*) (glob)
+         (No patch available, successor is unknown locally)
   
   $ hg obslog 7a230b46bf61 --color=debug --patch
   o  [evolve.node|7a230b46bf61] [evolve.rev|(2)] [evolve.short_description|A2]
   |
   x  [evolve.node evolve.missing_change_ctx|fdf9bde5129a]
-  |    [evolve.verb|rewritten](description) as [evolve.node|7a230b46bf61] by [evolve.user|test] [evolve.date|(Thu Jan 01 00:00:00 1970 +0000)]
-  |      (No patch available yet, context is not local)
+  |    [evolve.verb|rewritten](description) as [evolve.node|7a230b46bf61] by [evolve.user|test] [evolve.date|(*)] (glob)
+  |      (No patch available, context is not local)
   |
   @  [evolve.node|471f378eab4c] [evolve.rev|(1)] [evolve.short_description|A0]
-       [evolve.verb|rewritten](description) as [evolve.node|fdf9bde5129a] by [evolve.user|test] [evolve.date|(Thu Jan 01 00:00:00 1970 +0000)]
-         (No patch available yet, succ is unknown locally)
+       [evolve.verb|rewritten](description) as [evolve.node|fdf9bde5129a] by [evolve.user|test] [evolve.date|(*)] (glob)
+         (No patch available, successor is unknown locally)
   

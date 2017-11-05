@@ -21,13 +21,12 @@ Test that amend captures branches
   $ hg amend -d '0 0'
   $ hg debugobsolete
   07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  b2e32ffb533cbe1d5759638c0cd4e8abc43b2738 0 {07f4944404050f47db2e5c5071e0e84e7a27bba9} (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg branch
   foo
   $ hg branches
-  foo                            2:6a022cbb61d5
+  foo                            1:6a022cbb61d5
   $ glog
-  @  2@foo(draft) adda
+  @  1@foo(draft) adda
   
 Test no-op
 
@@ -35,7 +34,7 @@ Test no-op
   nothing changed
   [1]
   $ glog
-  @  2@foo(draft) adda
+  @  1@foo(draft) adda
   
 
 Test forcing the message to the same value, no intermediate revision.
@@ -44,7 +43,7 @@ Test forcing the message to the same value, no intermediate revision.
   nothing changed
   [1]
   $ glog
-  @  2@foo(draft) adda
+  @  1@foo(draft) adda
   
 
 Test collapsing into an existing revision, no intermediate revision.
@@ -66,20 +65,19 @@ Test collapsing into an existing revision, no intermediate revision.
   $ hg ci -m reseta
   $ hg debugobsolete
   07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  b2e32ffb533cbe1d5759638c0cd4e8abc43b2738 0 {07f4944404050f47db2e5c5071e0e84e7a27bba9} (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg phase 2
   2: draft
   $ glog
-  @  4@foo(draft) reseta
+  @  3@foo(draft) reseta
   |
-  o  3@foo(draft) changea
+  o  2@foo(draft) changea
   |
-  o  2@foo(draft) adda
+  o  1@foo(draft) adda
   
 Specify precise commit date with -d
   $ hg amend -d '2001-02-03 04:05:06 +0700'
   $ hg parents --template '{rev}  {date|date}\n'
-  5  Sat Feb 03 04:05:06 2001 +0700
+  4  Sat Feb 03 04:05:06 2001 +0700
 
 Specify "now" as commit date with -D
   $ before=`date +%s`
@@ -88,13 +86,13 @@ Specify "now" as commit date with -D
   $ after=`date +%s`
   $ (echo $before ; echo $commit; echo $after) | sort -k1 -n -s
   \d+ (re)
-  \d+ 0 rev6 (re)
+  \d+ 0 rev5 (re)
   \d+ (re)
 
 Specify current user as committer with -U
   $ HGUSER=newbie hg amend -U
   $ hg parents --template '{rev}  {author}\n'
-  7  newbie
+  6  newbie
 
 Check that --logfile works
   $ echo "logfile message" > logfile.txt
@@ -109,7 +107,7 @@ Check that --logfile works
   (use 'hg config --edit' to set your username)
   [255]
   $ hg sum
-  parent: 8:* tip (glob)
+  parent: 7:* tip (glob)
    logfile message
   branch: foo
   commit: 1 unknown (clean)

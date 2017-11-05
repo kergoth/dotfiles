@@ -50,6 +50,7 @@ Smoke testing
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 2 files
+  new changesets 8685c6d34325:4957bfdac07e
   (run 'hg update' to get a working copy)
   $ hg push -R ../other
   pushing to ssh://user@dummy/server
@@ -69,7 +70,7 @@ Push
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
-  remote: 2 new obsolescence markers
+  remote: 1 new obsolescence markers
   remote: obsoleted 1 changesets
   $ hg push
   pushing to ssh://user@dummy/server
@@ -87,8 +88,9 @@ Pull
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
-  2 new obsolescence markers
+  1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets 9d1c114e7797
   (run 'hg heads' to see heads)
   $ hg -R ../other pull
   pulling from ssh://user@dummy/server

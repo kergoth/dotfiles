@@ -128,13 +128,13 @@ test obsolete changeset with non-obsolete descendant
   parent:      1:7c3bad9141dc
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
-  obsolete:    rewritten as 725c380fe99b
+  obsolete:    rewritten as 4:725c380fe99b
   summary:     add obsol_c
   
   working directory parent is obsolete! (0d3f46688ccc)
   (use 'hg evolve' to update to its successor: 725c380fe99b)
   $ mkcommit d # 5 (on 3)
-  1 new unstable changesets
+  1 new orphan changesets
   $ qlog -r 'obsolete()'
   3
   - 0d3f46688ccc
@@ -145,7 +145,7 @@ test obsolete changeset with non-obsolete descendant
   $ qlog -r 'suspended()'
   3
   - 0d3f46688ccc
-  $ qlog -r 'unstable()'
+  $ qlog -r "orphan()"
   5
   - a7a6f2b5d8a5
 
@@ -175,7 +175,7 @@ Test communication of obsolete relation with a compatible client
   $ hg push ../other-new
   pushing to ../other-new
   searching for changes
-  abort: push includes unstable changeset: a7a6f2b5d8a5!
+  abort: push includes orphan changeset: a7a6f2b5d8a5!
   (use 'hg evolve' to get a stable history or --force to ignore warnings)
   [255]
   $ hg push -f ../other-new
@@ -210,7 +210,7 @@ Test communication of obsolete relation with a compatible client
   working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit obsol_d # 6
   created new head
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg debugobsolete `getid 5` `getid 6`
   obsoleted 1 changesets
   $ qlog
@@ -230,7 +230,7 @@ Test communication of obsolete relation with a compatible client
   $ hg push ../other-new
   pushing to ../other-new
   searching for changes
-  abort: push includes unstable changeset: 95de7fc6918d!
+  abort: push includes orphan changeset: 95de7fc6918d!
   (use 'hg evolve' to get a stable history or --force to ignore warnings)
   [255]
   $ hg push ../other-new -f # use f because there is unstability
@@ -269,7 +269,7 @@ Pushing again does not advertise extinct changesets
   working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit "obsol_d'" # 7
   created new head
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg debugobsolete `getid 6` `getid 7`
   obsoleted 1 changesets
   $ hg pull -R ../other-new .
@@ -281,6 +281,7 @@ Pushing again does not advertise extinct changesets
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets 909a0fb57e5d
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ qlog -R ../other-new
   6
@@ -359,7 +360,7 @@ Test rollback support
   working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit "obsol_d''"
   created new head
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg debugobsolete `getid 7` `getid 8`
   obsoleted 1 changesets
   $ cd ../other-new
@@ -373,6 +374,7 @@ Test rollback support
   added 1 changesets with 1 changes to [12] files \(\+1 heads\) (re)
   1 new obsolescence markers
   obsoleted 1 changesets
+  new changesets 159dfc9fa5d3
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg up -q 7 # to check rollback update behavior
@@ -397,7 +399,7 @@ Test rollback support
   commit: 1 deleted, 2 unknown (clean)
   update: 2 new changesets, 2 branch heads (merge)
   phases: 4 draft
-  unstable: 1 changesets
+  orphan: 1 changesets
   $ qlog
   6
   - 909a0fb57e5d
@@ -520,8 +522,8 @@ should not rebase extinct changesets
 #excluded 'whole rebase set is extinct and ignored.' message not in core
   $ hg rebase -b '3' -d 4 --traceback --config experimental.rebaseskipobsolete=0
   rebasing 3:0d3f46688ccc "add obsol_c"
-  rebasing 8:159dfc9fa5d3 "add obsol_d''" (tip)
-  2 new divergent changesets
+  rebasing 8:159dfc9fa5d3 "add obsol_d''"
+  2 new content-divergent changesets
   $ hg --hidden log -q -r 'successors(3)'
   4:725c380fe99b
   10:2033b4e49474
@@ -572,7 +574,7 @@ check bumped detection
 
   $ cd local
   $ hg phase --hidden --public 11
-  1 new bumped changesets
+  1 new phase-divergent changesets
   $ hg log -G --template='{rev} - ({phase}) {node|short} {desc}\n'
   @  12 - (draft) 6db5e282cb91 add obsol_d'''
   |
@@ -586,19 +588,19 @@ check bumped detection
   |
   o  0 - (public) 1f0dee641bb7 add a
   
-  $ hg log -r 'bumped()'
+  $ hg log -r 'phasedivergent()'
   changeset:   12:6db5e282cb91
   tag:         tip
   parent:      10:2033b4e49474
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
-  trouble:     bumped
+  instability: phase-divergent
   summary:     add obsol_d'''
   
   $ hg push ../other-new/
   pushing to ../other-new/
   searching for changes
-  abort: push includes bumped changeset: 6db5e282cb91!
+  abort: push includes phase-divergent changeset: 6db5e282cb91!
   (use 'hg evolve' to get a stable history or --force to ignore warnings)
   [255]
 
@@ -611,7 +613,7 @@ Check hg commit --amend compat
   $ echo 42 >> f
   $ hg commit --amend --traceback --quiet
   $ hg log -G
-  @  changeset:   15:705ab2a6b72e
+  @  changeset:   14:705ab2a6b72e
   |  tag:         tip
   |  parent:      10:2033b4e49474
   |  user:        test
@@ -622,7 +624,7 @@ Check hg commit --amend compat
   |/   parent:      10:2033b4e49474
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    trouble:     bumped
+  |    instability: phase-divergent
   |    summary:     add obsol_d'''
   |
   | o  changeset:   11:9468a5f5d8b2
@@ -673,28 +675,28 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit "obsolet_conflicting_d"
   $ hg summary
-  parent: 1[46]:50f11e5e3a63 tip (re)
+  parent: 15:50f11e5e3a63 tip
    add obsolet_conflicting_d
   branch: default
   commit: (clean)
   update: (2|9|11) new changesets, (3|9|10) branch heads \(merge\) (re)
   phases: 3 draft
-  bumped: 1 changesets
+  phase-divergent: 1 changesets
   $ hg debugobsolete `getid a7a6f2b5d8a5` `getid 50f11e5e3a63`
-  $ hg log -r 'divergent()'
+  $ hg log -r 'contentdivergent()'
   changeset:   12:6db5e282cb91
   parent:      10:2033b4e49474
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
-  trouble:     bumped, divergent
+  instability: phase-divergent, content-divergent
   summary:     add obsol_d'''
   
-  changeset:   16:50f11e5e3a63
+  changeset:   15:50f11e5e3a63
   tag:         tip
   parent:      11:9468a5f5d8b2
   user:        test
   date:        Thu Jan 01 00:00:00 1970 +0000
-  trouble:     divergent
+  instability: content-divergent
   summary:     add obsolet_conflicting_d
   
 
@@ -707,11 +709,11 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   [2]
   $ hg olog
   @  0d3f46688ccc (3) add obsol_c
-  |    rewritten(parent) as 2033b4e49474 by test (Thu Jan 01 00:00:00 1970 +0000)
-  |    rewritten as 725c380fe99b by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(parent) as 2033b4e49474 by test (*) (glob)
+  |    rewritten as 725c380fe99b by test (*) (glob)
   |
   x  4538525df7e2 (2) add c
-       rewritten as 0d3f46688ccc by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten as 0d3f46688ccc by test (*) (glob)
   
 
 Check import reports new unstable changeset:
@@ -719,55 +721,49 @@ Check import reports new unstable changeset:
   $ hg up --hidden 2
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (4538525df7e2)
-  (4538525df7e2 has diverged, use 'hg evolve --list --contentdivergent' to resolve the issue)
+  (4538525df7e2 has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
   $ hg export 9468a5f5d8b2 | hg import -
   applying patch from stdin
-  1 new unstable changesets
+  1 new orphan changesets
 
 
 Relevant marker computation
 ==============================
 
   $ hg log -G --hidden
-  @  changeset:   17:a5f7a21fe7bc
+  @  changeset:   16:a5f7a21fe7bc
   |  tag:         tip
   |  parent:      2:4538525df7e2
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  trouble:     unstable
+  |  instability: orphan
   |  summary:     add obsol_d''
   |
-  | o  changeset:   16:50f11e5e3a63
+  | o  changeset:   15:50f11e5e3a63
   | |  parent:      11:9468a5f5d8b2
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     divergent
+  | |  instability: content-divergent
   | |  summary:     add obsolet_conflicting_d
   | |
-  | | o  changeset:   15:705ab2a6b72e
+  | | o  changeset:   14:705ab2a6b72e
   | | |  parent:      10:2033b4e49474
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | | |  summary:     add f
   | | |
-  | | | x  changeset:   14:33d458d86621
-  | | | |  user:        test
-  | | | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | | | |  obsolete:    pruned
-  | | | |  summary:     temporary amend commit for 0b1b6dd009c0
-  | | | |
   | | | x  changeset:   13:0b1b6dd009c0
   | | |/   parent:      10:2033b4e49474
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |    obsolete:    amended as 705ab2a6b72e
+  | | |    obsolete:    amended using amend as 14:705ab2a6b72e
   | | |    summary:     add f
   | | |
   | | | o  changeset:   12:6db5e282cb91
   | | |/   parent:      10:2033b4e49474
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |    trouble:     bumped, divergent
+  | | |    instability: phase-divergent, content-divergent
   | | |    summary:     add obsol_d'''
   | | |
   | o |  changeset:   11:9468a5f5d8b2
@@ -792,29 +788,29 @@ Relevant marker computation
   | | |  parent:      3:0d3f46688ccc
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |  obsolete:    rebased as 9468a5f5d8b2
+  | | |  obsolete:    rebased using rebase as 11:9468a5f5d8b2
   | | |  summary:     add obsol_d''
   | | |
   | | | x  changeset:   7:909a0fb57e5d
   | | |/   parent:      3:0d3f46688ccc
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |    obsolete:    rewritten as 159dfc9fa5d3
+  | | |    obsolete:    rewritten as 8:159dfc9fa5d3
   | | |    summary:     add obsol_d'
   | | |
   | | | x  changeset:   6:95de7fc6918d
   | | |/   parent:      3:0d3f46688ccc
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |    obsolete:    rewritten as 909a0fb57e5d
+  | | |    obsolete:    rewritten as 7:909a0fb57e5d
   | | |    summary:     add obsol_d
   | | |
   | | | x  changeset:   5:a7a6f2b5d8a5
   | | |/   parent:      3:0d3f46688ccc
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |    obsolete:    rewritten as 95de7fc6918d
-  | | |    obsolete:    rewritten as 50f11e5e3a63
+  | | |    obsolete:    rewritten as 6:95de7fc6918d
+  | | |    obsolete:    rewritten as 15:50f11e5e3a63
   | | |    summary:     add d
   | | |
   | o |  changeset:   4:725c380fe99b
@@ -827,14 +823,14 @@ Relevant marker computation
   | |/   parent:      1:7c3bad9141dc
   | |    user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | |    obsolete:    rewritten as 725c380fe99b
-  | |    obsolete:    rebased as 2033b4e49474
+  | |    obsolete:    rewritten as 4:725c380fe99b
+  | |    obsolete:    rebased using rebase as 10:2033b4e49474
   | |    summary:     add obsol_c
   | |
   x |  changeset:   2:4538525df7e2
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as 0d3f46688ccc
+  |    obsolete:    rewritten as 3:0d3f46688ccc
   |    summary:     add c
   |
   o  changeset:   1:7c3bad9141dc
@@ -856,8 +852,7 @@ Simple rewrite
 simple rewrite with a prune attached to it
 
   $ hg debugobsolete --rev 15
-  0b1b6dd009c037985363e2290a0b579819f659db 705ab2a6b72e2cd86edb799ebe15f2695f86143e 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  33d458d86621f3186c40bfccd77652f4a122743e 0 {0b1b6dd009c037985363e2290a0b579819f659db} (*) {'ef1': '*', 'user': 'test'} (glob)
+  a7a6f2b5d8a54b81bc7aa2fba2934ad6d700a79e 50f11e5e3a63806e678c734e525502f522d37e38 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
 
 Transitive rewrite
 

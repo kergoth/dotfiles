@@ -109,11 +109,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 8146d58bb2c77e6b9ff7424ba09508071a3fcf12
+    rev: a33c72e8389b3d984d25fd556d86878777c76571
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: ba4e16334aeb3536c873816935a2cc8ee400e05d
+    rev: de8d9558fc34e67334a73716eec87bc5afbe2e6a
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: f13a8d454a5bc2626d2937d57c3bd173c3cbbf96
+    rev: 372f9b47e9c528e0516652155308d239abc5b727
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -129,7 +129,7 @@ git module zsh-git-escape-magic:
 
 git module zsh-autoenv:
     url: https://github.com/Tarrasch/zsh-autoenv
-    rev: c3afdc151fc7592ca99afd47f37a97750b6a9f5d
+    rev: 9074633a295940d30c56e62e0d3eb4a259fd781d
 
 curl module iterm2-zsh:
     url: https://iterm2.com/misc/zsh_startup.in
@@ -175,7 +175,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 8f60d1d459362771cb68c0097565efdf52e62ec3
+    rev: 7c9b87a3c3ef4b53425aca4a27e11a7359caae9f
 
 # go language support
 git module vim-golang:
@@ -185,12 +185,12 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: 8e53f9a3e5fc4e011ef0ec31fd6f6fbe782e729d
+    rev: 033c276876ec6f3961385a2a31fb18e711a7dc28
 
 # markdown runtime files
 git module vim-markdown:
     url: https://github.com/tpope/vim-markdown.git
-    rev: a7dbc314569aa85db80c106d73b1664e385b6ae7
+    rev: 8cd41796fdafb50977f7f3cd0338716b379f988b
 
 # taskpaper todo file support
 git module taskpaper:
@@ -200,11 +200,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 27acd851a780c563cb4807fc0ea3af9caccbb585
+    rev: a1b7479b547b3ef8a1ce45f0c5bba65a34e1e9c2
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: af3292dbbb6d8abe35d0ad50bd86b6ac6219abb7
+    rev: 26f67b926553555e505ac60e992c97ab5fdfc83f
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -214,7 +214,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary.git
-    rev: be79030b3e8c0ee3c5f45b4333919e4830531e80
+    rev: 89f43af18692d22ed999c3097e449f12fdd8b299
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -239,7 +239,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 6dd4480388e4727dfe5c723484c500e03b429c28
+    rev: be7b194f47bdee6baa4460ccd030b860ada548dd
 
 # continuously updated session files
 git module vim-obsession:
@@ -257,7 +257,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: b24038960e2abd58dfaaa3654e80fd2aec885278
+    rev: 5c6cee878a71ed27b137aafa7993624a357c0b82
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -294,7 +294,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: c2614467cf79dcfaca58da30df70d4e6dc6b3792
+    rev: a6d2ab33609ad20ce107e66d9648d908800fa3ad
 
 curl module rpm2cpio:
     url: https://github.com/rpm-software-management/rpm/releases/download/rpm-4.13.0-release/rpm-4.13.0.tar.bz2
@@ -376,7 +376,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 207a037dc76951d4855c801e92a2b2c2160da22e
+    rev: 44041be8c22ba1d13afe886304fa12fbd507b77e
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -517,7 +517,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: 0884856a4143a7d18dcd09c9bfcb9686806094fa
+    rev: 6ca44f334d47beb93587d47e0d90ae64335d19bf
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -563,15 +563,15 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 153923268f15b2dff12840150fa06528327a2930
+    rev: 8b4faf4a0f280647fb2bf32016c9ea887b0a9814
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: 18e791e7af5907956d17cf2319feda82dd4a2762
+    rev: d2ca2dc81c427a9e03ec0ade8254af9743611972
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: 2d991f14f688a38b7b2bcd397bad5efadd0f80a9
+    rev: 59b2e235e694b4ff750eef177a8be04612d758b2
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -596,7 +596,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: e39364d545326c8b5692ea9b4d27b29c262ede19
+    rev: 5ce945e74713efe782cc10dc2fc08ea0b4fe099d
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -634,7 +634,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 1f0a0446774645ab46487d5fc29cf9ce5bb3c145
+    rev: e7ca960f0c6701acd656426464b9d50d5387a741
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -648,7 +648,7 @@ curl module rustup:
     move:
         rustup-init.sh: rustup
     executable: rustup
-    sha1: 3df37d6516e5876ca90c3b156590b79822e62329
+    sha1: ee3bb08aba9be23597fcbde458dedd1c66942924
 
 git module vim-startuptime:
     url: https://github.com/tweekmonster/startuptime.vim
@@ -656,7 +656,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 25045641fbe92d175f2cd322497c9796d612782a
+    rev: d851f399c054d487232294d9f1c3a6974215f4a8
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

@@ -111,7 +111,7 @@ Summary
   commit: (clean)
   update: 2 new changesets (update)
   phases: 22 draft
-  unstable: 3 changesets
+  orphan: 3 changesets
   topic:  foo
   $ hg log --graph -T '{desc} ({branch}) [{topic}]'
   @  add foo_b (lake) []
@@ -165,18 +165,18 @@ Actual Testing
 basic output
 
   $ hg topic
-     bar
-     baz
-   * foo
-     fuz
+     bar (5 changesets, 1 troubled, 2 heads)
+     baz (2 changesets)
+   * foo (2 changesets)
+     fuz (3 changesets, 2 troubled)
 
 quiet version
 
   $ hg topic --quiet
-  bar
-  baz
-  foo
-  fuz
+  bar (5 changesets, 1 troubled, 2 heads)
+  baz (2 changesets)
+  foo (2 changesets)
+  fuz (3 changesets, 2 troubled)
 
 verbose
 
@@ -192,19 +192,26 @@ json
   [
    {
     "active": false,
-    "topic": "bar"
+    "changesetcount": 5,
+    "headcount": 2,
+    "topic": "bar",
+    "troubledcount": 1
    },
    {
     "active": false,
+    "changesetcount": 2,
     "topic": "baz"
    },
    {
     "active": true,
+    "changesetcount": 2,
     "topic": "foo"
    },
    {
     "active": false,
-    "topic": "fuz"
+    "changesetcount": 3,
+    "topic": "fuz",
+    "troubledcount": 2
    }
   ]
 

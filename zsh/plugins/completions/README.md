@@ -1,4 +1,4 @@
-zsh-completions ![GitHub release](https://img.shields.io/github/release/zsh-users/zsh-completions.svg) ![GitHub contributors](https://img.shields.io/github/contributors/zsh-users/zsh-completions.svg) ![IRC](https://img.shields.io/badge/IRC-%23zsh--completions-yellow.svg)
+zsh-completions ![GitHub release](https://img.shields.io/github/release/zsh-users/zsh-completions.svg) ![GitHub contributors](https://img.shields.io/github/contributors/zsh-users/zsh-completions.svg) [![IRC](https://img.shields.io/badge/IRC-%23zsh--completions-yellow.svg)](irc://irc.freenode.net/#zsh-completions) [![Gitter](https://badges.gitter.im/zsh-users/zsh-completions.svg)](https://gitter.im/zsh-users/zsh-completions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 =============
 
 **Additional completion definitions for [Zsh](http://www.zsh.org).**
@@ -23,6 +23,7 @@ See [issues](https://github.com/zsh-users/zsh-completions/issues) for details on
 | Arch Linux | [zsh-completions](https://www.archlinux.org/packages/zsh-completions), [zsh-completions-git](https://aur.archlinux.org/packages/zsh-completions-git) |
 | Gentoo | [app-shells/zsh-completions](http://packages.gentoo.org/package/app-shells/zsh-completions)  |
 | NixOS | [zsh-completions](https://github.com/NixOS/nixpkgs/blob/master/pkgs/shells/zsh-completions/default.nix) |
+| Void Linux | [zsh-completions](https://github.com/voidlinux/void-packages/tree/master/srcpkgs/zsh-completions) |
 | Mac OS | [homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/zsh-completions.rb)  |
 
 ### Using zsh frameworks
@@ -64,11 +65,12 @@ Contributions are welcome, just make sure you follow the guidelines:
  * Completions are not accepted when already available in their original project.
  * Please do not just copy/paste someone else completion, ask before.
  * Completions only partially implemented are not accepted.
- * Please add a header containing authors, license info, status and origin of the script (example [here](src/_ack)).
+ * Please add a header containing authors, status and origin of the script and license header if you do not wish to use the Zsh license (example [here](src/_ack)).
  * Please try to follow [Zsh completion style guide](https://github.com/zsh-users/zsh/blob/master/Etc/completion-style-guide).
  * Please send one separate pull request per file.
  * Send a pull request or ask for committer access.
 
 
 ## License
-See each file for license details.
+Completions use the Zsh license, unless explicitely mentionned in the file header.
+See [LICENSE](https://github.com/zsh-users/zsh-completions/blob/master/LICENSE) for more information.

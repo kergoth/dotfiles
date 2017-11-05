@@ -311,17 +311,17 @@ A new changeset with the right diff replace the wrong one.
       		width=0.5];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	4	 [fillcolor="#9999FF",
+      	3	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=4,
+      		label=3,
       		pin=true,
-      		pos="1,4!",
+      		pos="1,3!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	1 -> 4	 [arrowhead=none,
+      	1 -> 3	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -366,6 +366,7 @@ I'll get this remote changeset when pulling
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+  new changesets 9ca060c80d74
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
 I now have a new head. Note that this remote head is immutable.
@@ -411,18 +412,6 @@ I now have a new head. Note that this remote head is immutable.
       		width=0.5];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=5,
-      		pin=true,
-      		pos="1,5!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	0 -> 5	 [arrowhead=none,
-      		penwidth=2.0];
       	4	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -430,10 +419,22 @@ I now have a new head. Note that this remote head is immutable.
       		label=4,
       		pin=true,
       		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
+      	3	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=3,
+      		pin=true,
+      		pos="1,3!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	1 -> 4	 [arrowhead=none,
+      	1 -> 3	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -444,7 +445,7 @@ Instead of merging my head with the new one. I'm going to rebase my work
   $ hg rebase --dest 9ca060c80d74 --source 4d5dc8187023
   rebasing 1:4d5dc8187023 "adding condiment"
   merging shopping
-  rebasing 4:9d0363b81950 "adding fruit"
+  rebasing 3:9d0363b81950 "adding fruit"
   merging shopping
 
 
@@ -478,6 +479,18 @@ My local work is now rebased on the remote one.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -485,10 +498,10 @@ My local work is now rebased on the remote one.
       		label=5,
       		pin=true,
       		pos="1,5!",
-      		shape=circle,
+      		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -501,18 +514,6 @@ My local work is now rebased on the remote one.
       		style=filled,
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
-      		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=7,
-      		pin=true,
-      		pos="1,7!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	6 -> 7	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -580,6 +581,18 @@ The silly changeset is gone.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -587,10 +600,10 @@ The silly changeset is gone.
       		label=5,
       		pin=true,
       		pos="1,5!",
-      		shape=circle,
+      		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -603,18 +616,6 @@ The silly changeset is gone.
       		style=filled,
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
-      		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=7,
-      		pin=true,
-      		pos="1,7!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	6 -> 7	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -664,7 +665,7 @@ You can use the 'grab' alias for that.
   $ hg up 'p1(10b8aeaa8cc8)' # going on "bathroom stuff" parent
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg grab fac207dec9f5 # moving "SPAM SPAM" to the working directory parent
-  rebasing 10:fac207dec9f5 "SPAM SPAM" (tip)
+  rebasing 9:fac207dec9f5 "SPAM SPAM" (tip)
   merging shopping
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
   $ hg log -G
@@ -700,6 +701,18 @@ You can use the 'grab' alias for that.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -707,10 +720,10 @@ You can use the 'grab' alias for that.
       		label=5,
       		pin=true,
       		pos="1,5!",
-      		shape=circle,
+      		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -724,41 +737,29 @@ You can use the 'grab' alias for that.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	8	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=8,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,8!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 8	 [arrowhead=none,
       		penwidth=2.0];
-      	9	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=9,
+      		label=10,
       		pin=true,
-      		pos="1,9!",
+      		pos="1,10!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	7 -> 9	 [arrowhead=none,
-      		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=11,
-      		pin=true,
-      		pos="1,11!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	7 -> 11	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -802,12 +803,12 @@ we can now push our change:
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 1 files
-  6 new obsolescence markers
+  5 new obsolescence markers
 
 for simplicity sake we get the bathroom change in line again
 
   $ hg grab 10b8aeaa8cc8
-  rebasing 9:10b8aeaa8cc8 "bathroom stuff"
+  rebasing 8:10b8aeaa8cc8 "bathroom stuff"
   merging shopping
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
   $ hg phase --draft .
@@ -844,6 +845,18 @@ for simplicity sake we get the bathroom change in line again
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -854,7 +867,7 @@ for simplicity sake we get the bathroom change in line again
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -868,17 +881,17 @@ for simplicity sake we get the bathroom change in line again
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
       	11	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -887,22 +900,10 @@ for simplicity sake we get the bathroom change in line again
       		label=11,
       		pin=true,
       		pos="1,11!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	7 -> 11	 [arrowhead=none,
-      		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=12,
-      		pin=true,
-      		pos="1,12!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	11 -> 12	 [arrowhead=none,
+      	10 -> 11	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -1012,6 +1013,7 @@ is ``true`` by default.
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
+  new changesets 75954b8cd933
   (run 'hg update' to get a working copy)
   $ hg log -G
   o  75954b8cd933 (public): bathroom stuff
@@ -1067,6 +1069,7 @@ I can now exchange mutable changeset between "remote" and "local" repository.
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
+  new changesets 75954b8cd933
   (run 'hg update' to get a working copy)
   $ hg log -G
   o  75954b8cd933 (draft): bathroom stuff
@@ -1135,6 +1138,18 @@ But at the same time, locally, this same "bathroom changeset" was updated.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -1145,7 +1160,7 @@ But at the same time, locally, this same "bathroom changeset" was updated.
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1159,41 +1174,29 @@ But at the same time, locally, this same "bathroom changeset" was updated.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=11,
+      		label=12,
       		pin=true,
-      		pos="1,11!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	7 -> 11	 [arrowhead=none,
-      		penwidth=2.0];
-      	14	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=14,
-      		pin=true,
-      		pos="1,14!",
+      		pos="1,12!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	11 -> 14	 [arrowhead=none,
+      	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -1206,9 +1209,10 @@ When we pull from remote again we get an unstable state!
   adding changesets
   adding manifests
   adding file changes
-  added 1 changesets with 1 changes to 1 files (+1 heads)
-  (run 'hg heads' to see heads, 'hg merge' to merge)
-  1 new unstable changesets
+  added 1 changesets with 1 changes to 1 files
+  new changesets bf1b0d202029
+  (run 'hg update' to get a working copy)
+  1 new orphan changesets
 
 
 The new changeset "animal" is based on an old changeset of "bathroom". You can
@@ -1251,6 +1255,18 @@ see both version showing up in the log.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -1261,7 +1277,7 @@ see both version showing up in the log.
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1275,69 +1291,57 @@ see both version showing up in the log.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	11	 [fillcolor="#DFDFFF",
       		fixedsize=true,
-      		group=default,
+      		group=default_alt,
       		height=0.5,
       		label=11,
       		pin=true,
-      		pos="1,11!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	7 -> 11	 [arrowhead=none,
-      		penwidth=2.0];
-      	12	 [fillcolor="#DFDFFF",
-      		fixedsize=true,
-      		group=default_alt,
-      		height=0.5,
-      		label=12,
-      		pin=true,
-      		pos="2,12!",
+      		pos="2,11!",
       		shape=pentagon,
       		style="dotted, filled",
       		width=0.5];
-      	11 -> 12	 [arrowhead=none,
+      	10 -> 11	 [arrowhead=none,
       		penwidth=2.0];
-      	14	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=14,
+      		label=12,
       		pin=true,
-      		pos="1,14!",
+      		pos="1,12!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	11 -> 14	 [arrowhead=none,
+      	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	12 -> 14	 [arrowhead=none,
+      	11 -> 12	 [arrowhead=none,
       		minlen=0,
       		penwidth=2.0,
       		style=dashed];
-      	15	 [fillcolor="#FF4F4F",
+      	13	 [fillcolor="#FF4F4F",
       		fixedsize=true,
       		group=default_alt,
       		height=0.5,
-      		label=15,
+      		label=13,
       		pin=true,
-      		pos="2,15!",
+      		pos="2,13!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	12 -> 15	 [arrowhead=none,
+      	11 -> 13	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -1353,7 +1357,7 @@ share it with the outside:
   $ hg push other
   pushing to $TESTTMP/other (glob)
   searching for changes
-  abort: push includes unstable changeset: bf1b0d202029!
+  abort: push includes orphan changeset: bf1b0d202029!
   (use 'hg evolve' to get a stable history or --force to ignore warnings)
   [255]
  
@@ -1364,15 +1368,15 @@ a44c85f957d3. The `hg evolve` command will do this for you.
 It has a --dry-run option to only suggest the next move.
 
   $ hg evolve --dry-run
-  move:[15] animals
-  atop:[14] bathroom stuff
+  move:[13] animals
+  atop:[12] bathroom stuff
   hg rebase -r bf1b0d202029 -d a44c85f957d3
 
 Let's do it
 
   $ hg evolve
-  move:[15] animals
-  atop:[14] bathroom stuff
+  move:[13] animals
+  atop:[12] bathroom stuff
   merging shopping
   working directory is now at ee942144f952
 
@@ -1413,6 +1417,18 @@ The old version of bathroom is hidden again.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -1423,7 +1439,7 @@ The old version of bathroom is hidden again.
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1437,29 +1453,29 @@ The old version of bathroom is hidden again.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=11,
+      		label=12,
       		pin=true,
-      		pos="1,11!",
-      		shape=circle,
+      		pos="1,12!",
+      		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	7 -> 11	 [arrowhead=none,
+      	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
       	14	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1471,19 +1487,7 @@ The old version of bathroom is hidden again.
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	11 -> 14	 [arrowhead=none,
-      		penwidth=2.0];
-      	16	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=16,
-      		pin=true,
-      		pos="1,16!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	14 -> 16	 [arrowhead=none,
+      	12 -> 14	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -1497,7 +1501,7 @@ We can push this evolution to remote.
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 1 files (+1 heads)
-  3 new obsolescence markers
+  2 new obsolescence markers
   obsoleted 2 changesets
 
 Remote get a warning that current working directory is based on an obsolete
@@ -1540,6 +1544,7 @@ I'm pulling its work locally.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  new changesets 99f039c5ec9e
   (run 'hg update' to get a working copy)
   $ hg log -G
   o  99f039c5ec9e (draft): SPAM SPAM SPAM
@@ -1578,6 +1583,18 @@ I'm pulling its work locally.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -1588,7 +1605,7 @@ I'm pulling its work locally.
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1602,29 +1619,29 @@ I'm pulling its work locally.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=11,
+      		label=12,
       		pin=true,
-      		pos="1,11!",
-      		shape=circle,
+      		pos="1,12!",
+      		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	7 -> 11	 [arrowhead=none,
+      	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
       	14	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1636,31 +1653,19 @@ I'm pulling its work locally.
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	11 -> 14	 [arrowhead=none,
+      	12 -> 14	 [arrowhead=none,
       		penwidth=2.0];
-      	16	 [fillcolor="#9999FF",
+      	15	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=16,
+      		label=15,
       		pin=true,
-      		pos="1,16!",
+      		pos="1,15!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	14 -> 16	 [arrowhead=none,
-      		penwidth=2.0];
-      	17	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=17,
-      		pin=true,
-      		pos="1,17!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	16 -> 17	 [arrowhead=none,
+      	14 -> 15	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
@@ -1671,7 +1676,7 @@ In the mean time I noticed you can't buy animals in a super market and I prune t
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory now at a44c85f957d3
   1 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
 
 
 The animals changeset is still displayed because the "SPAM SPAM SPAM" changeset
@@ -1714,6 +1719,18 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -1724,7 +1741,7 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1738,74 +1755,62 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=11,
+      		label=12,
       		pin=true,
-      		pos="1,11!",
-      		shape=circle,
+      		pos="1,12!",
+      		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	7 -> 11	 [arrowhead=none,
+      	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	14	 [fillcolor="#9999FF",
+      	14	 [fillcolor="#DFDFFF",
       		fixedsize=true,
-      		group=default,
+      		group=default_alt,
       		height=0.5,
       		label=14,
       		pin=true,
-      		pos="1,14!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	11 -> 14	 [arrowhead=none,
-      		penwidth=2.0];
-      	16	 [fillcolor="#DFDFFF",
-      		fixedsize=true,
-      		group=default_alt,
-      		height=0.5,
-      		label=16,
-      		pin=true,
-      		pos="2,16!",
+      		pos="2,14!",
       		shape=pentagon,
       		style="dotted, filled",
       		width=0.5];
-      	14 -> 16	 [arrowhead=none,
+      	12 -> 14	 [arrowhead=none,
       		penwidth=2.0];
-      	17	 [fillcolor="#FF4F4F",
+      	15	 [fillcolor="#FF4F4F",
       		fixedsize=true,
       		group=default_alt,
       		height=0.5,
-      		label=17,
+      		label=15,
       		pin=true,
-      		pos="2,17!",
+      		pos="2,15!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	16 -> 17	 [arrowhead=none,
+      	14 -> 15	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
 
-  $ hg log -r "unstable()"
+  $ hg log -r "orphan()"
   99f039c5ec9e (draft): SPAM SPAM SPAM
 
 #if docgraph-ext
-  $ hg docgraph -r "unstable()" --sphinx-directive --rankdir LR #rest-ignore
+  $ hg docgraph -r "orphan()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
       strict digraph  {
@@ -1813,13 +1818,13 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		splines=polyline
       	];
       	node [label="\N"];
-      	17	 [fillcolor="#FF4F4F",
+      	15	 [fillcolor="#FF4F4F",
       		fixedsize=true,
       		group=default_alt,
       		height=0.5,
-      		label=17,
+      		label=15,
       		pin=true,
-      		pos="1,17!",
+      		pos="1,15!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
@@ -1827,8 +1832,8 @@ is neither dead or obsolete. My repository is in an unstable state again.
 #endif
 
   $ hg evolve
-  move:[17] SPAM SPAM SPAM
-  atop:[14] bathroom stuff
+  move:[15] SPAM SPAM SPAM
+  atop:[12] bathroom stuff
   merging shopping
   working directory is now at 40aa40daeefb
 
@@ -1867,6 +1872,18 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		shape=circle,
       		style=filled,
       		width=0.5];
+      	4	 [fillcolor="#9999FF",
+      		fixedsize=true,
+      		group=default,
+      		height=0.5,
+      		label=4,
+      		pin=true,
+      		pos="1,4!",
+      		shape=circle,
+      		style=filled,
+      		width=0.5];
+      	0 -> 4	 [arrowhead=none,
+      		penwidth=2.0];
       	5	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
@@ -1877,7 +1894,7 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	0 -> 5	 [arrowhead=none,
+      	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       	6	 [fillcolor="#9999FF",
       		fixedsize=true,
@@ -1891,53 +1908,41 @@ is neither dead or obsolete. My repository is in an unstable state again.
       		width=0.5];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=7,
+      		label=10,
       		pin=true,
-      		pos="1,7!",
+      		pos="1,10!",
       		shape=circle,
       		style=filled,
       		width=0.5];
-      	6 -> 7	 [arrowhead=none,
+      	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=11,
+      		label=12,
       		pin=true,
-      		pos="1,11!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	7 -> 11	 [arrowhead=none,
-      		penwidth=2.0];
-      	14	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=14,
-      		pin=true,
-      		pos="1,14!",
+      		pos="1,12!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	11 -> 14	 [arrowhead=none,
+      	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	18	 [fillcolor="#9999FF",
+      	16	 [fillcolor="#9999FF",
       		fixedsize=true,
       		group=default,
       		height=0.5,
-      		label=18,
+      		label=16,
       		pin=true,
-      		pos="1,18!",
+      		pos="1,16!",
       		shape=pentagon,
       		style=filled,
       		width=0.5];
-      	14 -> 18	 [arrowhead=none,
+      	12 -> 16	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif

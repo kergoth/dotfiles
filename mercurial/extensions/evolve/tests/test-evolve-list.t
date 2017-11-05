@@ -17,7 +17,7 @@ Test the instability listing
   $ hg up 0
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ echo a >> a && hg ci --amend -m a
-  2 new unstable changesets
+  2 new orphan changesets
   $ hg evolve --list
   d2ae7f538514: b
     unstable: cb9a9f314b8b (obsolete parent)
@@ -34,7 +34,7 @@ Test the bumpedness listing
   adding a
   $ echo b > b && hg ci --amend -m ab
   $ hg phase --public --rev 0 --hidden
-  1 new bumped changesets
+  1 new phase-divergent changesets
   $ hg evolve --list
   88cc282e27fc: ab
     bumped: cb9a9f314b8b (immutable precursor)
@@ -64,7 +64,7 @@ Test the divergence listing
   rebasing 1:d2ae7f538514 "b"
   $ hg rebase -s 1 -d 3 --hidden --config experimental.allowdivergence=True
   rebasing 1:d2ae7f538514 "b"
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg evolve --list
   c882616e9d84: b
     divergent: a922b3733e98 (draft) (precursor d2ae7f538514)

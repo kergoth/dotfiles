@@ -13,6 +13,8 @@ from __future__ import absolute_import
 import sys
 import os
 
+from mercurial import obsolete
+
 try:
     from . import (
         compat,
@@ -47,6 +49,7 @@ uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
 reposetup = eh.final_reposetup
 cmdtable = eh.cmdtable
+configtable = eh.configtable
 
 @eh.reposetup
 def default2evolution(ui, repo):
@@ -54,3 +57,5 @@ def default2evolution(ui, repo):
     if not evolveopts:
         evolveopts = 'all'
         ui.setconfig('experimental', 'evolution', evolveopts)
+    if obsolete.isenabled(repo, 'exchange'):
+        repo.ui.setconfig('server', 'bundle1', False)

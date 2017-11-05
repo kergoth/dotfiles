@@ -86,7 +86,7 @@ def cmddebugconvertobsolete(ui, repo):
     """import markers from an .hg/obsolete-relations file"""
     cnt = 0
     err = 0
-    l = repo.lock()
+    lock = repo.lock()
     some = False
     try:
         unlink = []
@@ -129,16 +129,16 @@ def cmddebugconvertobsolete(ui, repo):
                     del oldmark['reason']  # unused until then
                     oldobject = str(oldmark.pop('object'))
                     oldsubjects = [str(s) for s in oldmark.pop('subjects', [])]
-                    LOOKUP_ERRORS = (error.RepoLookupError, error.LookupError)
+                    lookup_errors = (error.RepoLookupError, error.LookupError)
                     if len(oldobject) != 40:
                         try:
                             oldobject = repo[oldobject].node()
-                        except LOOKUP_ERRORS:
+                        except lookup_errors:
                             pass
                     if any(len(s) != 40 for s in oldsubjects):
                         try:
                             oldsubjects = [repo[s].node() for s in oldsubjects]
-                        except LOOKUP_ERRORS:
+                        except lookup_errors:
                             pass
 
                     oldmark['date'] = '%i %i' % tuple(oldmark['date'])
@@ -163,7 +163,7 @@ def cmddebugconvertobsolete(ui, repo):
             tr.release()
     finally:
         del repo._importoldobsolete
-        l.release()
+        lock.release()
     if not some:
         ui.warn(_('nothing to do\n'))
     ui.status('%i obsolete marker converted\n' % cnt)

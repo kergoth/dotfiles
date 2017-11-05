@@ -80,11 +80,11 @@ Test
 ----
 
   $ hg log -G
-  @  8	: F - test
+  @  7	: F - test
   |
-  o  7	: E - test
+  o  6	: E - test
   |
-  | o  6	: D2 - test
+  | o  5	: D2 - test
   |/
   o  3	: C - test
   |
@@ -124,13 +124,10 @@ check that metaedit respects allowunstable
   $ hg metaedit --user foobar
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg log --template '{rev}: {author}\n' -r 'desc(F):' --hidden
-  5: test
-  6: test
   7: test
-  8: test
-  9: foobar
+  8: foobar
   $ hg log --template '{rev}: {author}\n' -r .
-  9: foobar
+  8: foobar
 
 TODO: support this
   $ hg metaedit '.^::.'
@@ -139,11 +136,11 @@ TODO: support this
 
   $ HGEDITOR=cat hg metaedit '.^::.' --fold
   HG: This is a fold of 2 changesets.
-  HG: Commit message of changeset 7.
+  HG: Commit message of changeset 6.
   
   E
   
-  HG: Commit message of changeset 9.
+  HG: Commit message of changeset 8.
   
   F
   
@@ -160,7 +157,7 @@ TODO: support this
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ glog -r .
-  @  10:a08d35fd7d9d@default(draft) E
+  @  9:a08d35fd7d9d@default(draft) E
   |
   ~
 
@@ -182,7 +179,7 @@ no new commit is created here because the date is the same
   nothing changed
 
   $ glog -r '.^::.'
-  @  10:a08d35fd7d9d@default(draft) E
+  @  9:a08d35fd7d9d@default(draft) E
   |
   o  3:3260958f1169@default(draft) C
   |
@@ -196,20 +193,20 @@ but highlight the bug)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg log -r '.^::.' --template '{rev}: {desc|firstline}\n'
   3: C
-  11: E
+  10: E
 
   $ hg up .^
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ hg metaedit --user foobar2 tip
   $ hg log --template '{rev}: {author}\n' -r "user(foobar):" --hidden
-  9: foobar
+  8: foobar
+  9: test
   10: test
-  11: test
-  12: foobar2
+  11: foobar2
   $ hg diff -r "10" -r "11" --hidden
 
 'fold' one commit
   $ HGUSER=foobar3 hg metaedit "desc(D2)" --fold -U --config
   1 changesets folded
   $ hg log -r "tip" --template '{rev}: {author}\n'
-  13: foobar3
+  12: foobar3

@@ -44,7 +44,7 @@ Create a split commit
   $ hg commit -m "_pp"
   $ hg prune --succ "desc(_oo) + desc(_pp)" -r "desc('oo+pp')" --split
   1 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg log -G
   @  4:d0dcf24cddd3@default(draft) _pp
   |

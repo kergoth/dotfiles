@@ -608,6 +608,7 @@ Test stability of this mess
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd crisscross_random

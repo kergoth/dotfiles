@@ -89,7 +89,7 @@ Pushing a new branch
   $ hg outgoing -G
   comparing with $TESTTMP/main (glob)
   searching for changes
-  @  4 mountain  draft CC
+  @  3 mountain  draft CC
   
   $ hg push 
   pushing to $TESTTMP/main (glob)
@@ -104,7 +104,7 @@ Pushing a new branch
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
 
 Including on non-publishing
 
@@ -115,7 +115,7 @@ Including on non-publishing
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 3 files (+1 heads)
-  2 new obsolescence markers
+  1 new obsolescence markers
 
 Testing topic behavior
 ======================
@@ -132,9 +132,9 @@ Local peer tests
   $ hg commit -m 'CD'
   active topic 'babar' grew its first changeset
   $ hg log -G # keep track of phase because I saw some strange bug during developement
-  @  5 default babar draft CD
+  @  4 default babar draft CD
   |
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -151,9 +151,9 @@ Pushing a new topic to a non publishing server should not be seen as a new head
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   $ hg log -G
-  @  5 default babar draft CD
+  @  4 default babar draft CD
   |
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -178,13 +178,13 @@ push --topic
   $ echo bbb >> bbb
   $ hg commit -m "C'B"
   $ hg log -G
-  @  7 default  draft C'B
+  @  6 default  draft C'B
   |
-  | o  6 default babar draft C'A
+  | o  5 default babar draft C'A
   | |
-  | o  5 default babar draft CD
+  | o  4 default babar draft CD
   | |
-  | | o  4 mountain  public CC
+  | | o  3 mountain  public CC
   | |/
   o |  1 default  public CB
   |/
@@ -193,7 +193,7 @@ push --topic
   $ hg outgoing draft --topic babar
   comparing with $TESTTMP/draft
   searching for changes
-  6 default babar draft C'A
+  5 default babar draft C'A
   $ hg push draft --topic babar
   pushing to $TESTTMP/draft
   searching for changes
@@ -212,8 +212,8 @@ push --topic
   |/
   o  0 default  public CA
   
-  $ hg strip --hidden --config extensions.strip= --no-backup -r 6: --quiet
-  $ hg strip --hidden --config extensions.strip= -R $TESTTMP/draft --no-backup -r 4: --quiet
+  $ hg strip --config extensions.strip= --no-backup -r 7a9e34dbf547: --quiet
+  $ hg strip --config extensions.strip= -R $TESTTMP/draft --no-backup -r 7a9e34dbf547: --quiet
 
 Pushing a new topic to a publishing server should be seen as a new head
 
@@ -224,9 +224,9 @@ Pushing a new topic to a publishing server should be seen as a new head
   (merge or see 'hg help push' for details about pushing new heads)
   [255]
   $ hg log -G
-  @  5 default babar draft CD
+  @  4 default babar draft CD
   |
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -245,11 +245,11 @@ wireprotocol tests
   $ hg commit -m 'CE'
   active topic 'celeste' grew its first changeset
   $ hg log -G # keep track of phase because I saw some strange bug during developement
-  @  6 default celeste draft CE
+  @  5 default celeste draft CE
   |
-  | o  5 default babar draft CD
+  | o  4 default babar draft CD
   |/
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -269,11 +269,11 @@ Pushing a new topic to a non publishing server without topic -> new head
   (merge or see 'hg help push' for details about pushing new heads)
   [255]
   $ hg log -G
-  @  6 default celeste draft CE
+  @  5 default celeste draft CE
   |
-  | o  5 default babar draft CD
+  | o  4 default babar draft CD
   |/
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -292,11 +292,11 @@ Pushing a new topic to a non publishing server should not be seen as a new head
   remote: adding file changes
   remote: added 1 changesets with 1 changes to 1 files (+1 heads)
   $ hg log -G
-  @  6 default celeste draft CE
+  @  5 default celeste draft CE
   |
-  | o  5 default babar draft CD
+  | o  4 default babar draft CD
   |/
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -312,11 +312,11 @@ Pushing a new topic to a publishing server should be seen as a new head
   (merge or see 'hg help push' for details about pushing new heads)
   [255]
   $ hg log -G
-  @  6 default celeste draft CE
+  @  5 default celeste draft CE
   |
-  | o  5 default babar draft CD
+  | o  4 default babar draft CD
   |/
-  | o  4 mountain  public CC
+  | o  3 mountain  public CC
   |/
   | o  1 default  public CB
   |/
@@ -334,13 +334,13 @@ Check that we reject multiple head on the same topic
   $ hg add fff
   $ hg commit -m 'CF'
   $ hg log -G
-  @  7 default babar draft CF
+  @  6 default babar draft CF
   |
-  | o  6 default celeste draft CE
+  | o  5 default celeste draft CE
   | |
-  | | o  5 default babar draft CD
+  | | o  4 default babar draft CD
   | |/
-  | | o  4 mountain  public CC
+  | | o  3 mountain  public CC
   | |/
   o |  1 default  public CB
   |/
@@ -372,17 +372,17 @@ Multiple head on a branch merged in a topic changesets
   (branch merge, don't forget to commit)
   $ hg commit -m 'CM'
   $ hg log -G
-  @    9 default babar draft CM
+  @    8 default babar draft CM
   |\
-  | o  8 default  draft CG
+  | o  7 default  draft CG
   | |
-  o |  7 default babar draft CF
+  o |  6 default babar draft CF
   | |
-  | | o  6 default celeste draft CE
+  | | o  5 default celeste draft CE
   | |/
-  | | o  5 default babar draft CD
+  | | o  4 default babar draft CD
   | |/
-  | | o  4 mountain  public CC
+  | | o  3 mountain  public CC
   | |/
   o |  1 default  public CB
   |/

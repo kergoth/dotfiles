@@ -16,6 +16,8 @@ from . import exthelper
 
 eh = exthelper.exthelper()
 
+eh.configitem('experimental', 'auto-publish')
+
 @eh.reposetup
 def setuppublishprevention(ui, repo):
 

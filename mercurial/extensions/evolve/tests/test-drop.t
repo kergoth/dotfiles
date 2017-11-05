@@ -178,7 +178,7 @@ Try to drop a changeset with rewrite
   $ hg commit --amend
   $ summary
   ============ graph ==============
-  @  changeset:   4:a2c06c884bfe
+  @  changeset:   3:a2c06c884bfe
   |  tag:         tip
   |  parent:      1:19509a42b0d0
   |  user:        test
@@ -196,23 +196,17 @@ Try to drop a changeset with rewrite
      summary:     add base
   
   ============ hidden =============
-  @  changeset:   4:a2c06c884bfe
+  @  changeset:   3:a2c06c884bfe
   |  tag:         tip
   |  parent:      1:19509a42b0d0
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     add child
   |
-  | x  changeset:   3:87ea30a976fd
-  | |  user:        test
-  | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    pruned
-  | |  summary:     temporary amend commit for 34b6c051bf1f
-  | |
   | x  changeset:   2:34b6c051bf1f
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    amended as a2c06c884bfe
+  |    obsolete:    amended using amend as 3:a2c06c884bfe
   |    summary:     add child
   |
   o  changeset:   1:19509a42b0d0
@@ -227,7 +221,6 @@ Try to drop a changeset with rewrite
   
   ============ obsmark ============
   34b6c051bf1f78db6aef400776de5cb964470207 a2c06c884bfe53d3840026248bd8a7eafa152df8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  87ea30a976fdf235bf096f04899cb02a903873e2 0 {34b6c051bf1f78db6aef400776de5cb964470207} (*) {'ef1': '*', 'user': 'test'} (glob)
   $ hg drop .
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 19509a42b0d0

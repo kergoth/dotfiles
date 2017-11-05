@@ -244,7 +244,7 @@ Test phase is preserved, no local changes
   (use 'hg evolve' to update to its successor: e8db4aa611f6)
   $ hg --config extensions.purge= purge
   $ hg uncommit -I 'set:added() and e'
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg st --copies
   A e
   $ hg st --copies --change .
@@ -287,10 +287,10 @@ Test --all
   $ hg up -C 3 --hidden
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (5eb72dbe0cb4)
-  (5eb72dbe0cb4 has diverged, use 'hg evolve --list --contentdivergent' to resolve the issue)
+  (5eb72dbe0cb4 has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
   $ hg --config extensions.purge= purge
   $ hg uncommit --all -X e
-  1 new divergent changesets
+  1 new content-divergent changesets
   $ hg st --copies
   M b
   M d
@@ -337,7 +337,7 @@ Test instability warning
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [8] touncommit
   $ hg uncommit aa
-  1 new unstable changesets
+  1 new orphan changesets
 
 Test uncommiting agains a different base
 

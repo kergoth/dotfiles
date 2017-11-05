@@ -101,7 +101,7 @@ Much like a named branch, our topic is active but it does not contain any
 changeset yet:
 
   $ hg topics
-   * food
+   * food (0 changesets)
 
   $ hg summary
   parent: 0:38da43f0a2ea tip
@@ -259,7 +259,7 @@ The topic deactivates when we update away from it:
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg topics
-     food
+     food (2 changesets)
 
 Note that ``default`` (name of the branch) now refers to the tipmost
 changeset of default without a topic:
@@ -336,7 +336,7 @@ And updating back to the topic reactivates it:
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg topics
-   * food
+   * food (2 changesets)
 
 Updating to any changeset that is part of a topic activates the topic
 regardless of how the revision was specified:
@@ -349,7 +349,7 @@ regardless of how the revision was specified:
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg topics
-   * food
+   * food (2 changesets)
 
 .. Server side activity:
 
@@ -380,6 +380,7 @@ the latest update from the main server:
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+  new changesets 6104862e8b84
   (run 'hg heads' to see heads)
 
   $ hg log -G
@@ -483,10 +484,10 @@ But the topic will see that branch head as a valid destination:
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg rebase
-  rebasing 1:13900241408b "adding condiments"
+  rebasing 1:13900241408b "adding condiments" (food)
   merging shopping
   switching to topic food
-  rebasing 2:287de11b401f "adding fruits"
+  rebasing 2:287de11b401f "adding fruits" (food)
   merging shopping
 
   $ hg log --graph
@@ -575,7 +576,7 @@ But the topic will see that branch head as a valid destination:
 The topic information will disappear when we publish the changesets:
 
   $ hg topics
-   * food
+   * food (2 changesets)
 
   $ hg push
   pushing to $TESTTMP/server (glob)
@@ -588,7 +589,7 @@ The topic information will disappear when we publish the changesets:
   active topic 'food' is now empty
 
   $ hg topics
-   * food
+   * food (0 changesets)
 
 The topic still exists, and any new commit will be in the topic. But
 note that it is now devoid of any commit.
@@ -597,7 +598,7 @@ note that it is now devoid of any commit.
   ### topic: food
   ### target: default (branch)
   (stack is empty)
-  t0^ adding fruits (base)
+  t0^ adding fruits (base current)
 
   $ hg log --graph
   @  changeset:   5:2d50db8b5b4c
@@ -703,7 +704,7 @@ For this tutorial, we'll add the config at the repository level:
 
   $ cat << EOF >> .hg/hgrc
   > [experimental]
-  > enforce-topic = yes
+  > topic-mode = enforce
   > EOF
 
 You can also use `hg config --edit` to update your mercurial configuration.
@@ -714,7 +715,7 @@ Once enforcement is turned on. New local commit will be denied if no topic is ac
   $ echo sickle >> shopping
   $ hg commit -m 'Adding sickle'
   abort: no active topic
-  (set a current topic or use '--config experimental.enforce-topic=no' to commit without a topic)
+  (see 'hg help -e topic.topic-mode' for details)
   [255]
 
 Ok, let's clean this up and delve into multiple topics.
@@ -764,8 +765,8 @@ default branch and start a new topic:
 We now have two topics:
 
   $ hg topics
-   * drinks
-     tools
+   * drinks (2 changesets)
+     tools  (3 changesets)
 
 The information displayed by ``hg stack`` adapts to the active topic:
 
@@ -821,6 +822,7 @@ Let's discover what other people did contribute:
   adding manifests
   adding file changes
   added 2 changesets with 2 changes to 1 files (+1 heads)
+  new changesets f2d6cacc6115:fbff9bc37a43
   (run 'hg heads' to see heads)
 
 There are new changes! We can simply use ``hg rebase`` to update our
@@ -1034,12 +1036,12 @@ changeset on top of the latest:
 #endif
 
   $ hg rebase
-  rebasing 6:183984ef46d1 "Adding hammer"
+  rebasing 6:183984ef46d1 "Adding hammer" (tools)
   merging shopping
   switching to topic tools
-  rebasing 7:cffff85af537 "Adding saw"
+  rebasing 7:cffff85af537 "Adding saw" (tools)
   merging shopping
-  rebasing 8:34255b455dac "Adding drill"
+  rebasing 8:34255b455dac "Adding drill" (tools)
   merging shopping
 
 But what about the other topic? You can use 'hg topics --verbose' to see
@@ -1066,10 +1068,10 @@ them to the default branch, and then mercurial would complain about the
 multiple *public* heads it would create on that branch:
 
   $ hg rebase -b drinks
-  rebasing 9:8dfa45bd5e0c "Adding apple juice"
+  rebasing 9:8dfa45bd5e0c "Adding apple juice" (drinks)
   merging shopping
   switching to topic drinks
-  rebasing 10:70dfa201ed73 "Adding orange juice"
+  rebasing 10:70dfa201ed73 "Adding orange juice" (drinks)
   merging shopping
   switching to topic tools
 
@@ -1182,7 +1184,7 @@ It's easy to edit your work inside your stack:
   t0^ add a pair of shoes (base)
 
   $ hg amend -m "Adding hammer to the shopping list"
-  2 new unstable changesets
+  2 new orphan changesets
 
 Understanding the current situation with hg log is not so easy, because
 it shows too many things:
@@ -1211,21 +1213,21 @@ it shows too many things:
   | |  topic:       tools
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     unstable
+  | |  instability: orphan
   | |  summary:     Adding drill
   | |
   | o  changeset:   14:d4f97f32f8a1
   | |  topic:       tools
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     unstable
+  | |  instability: orphan
   | |  summary:     Adding saw
   | |
   | x  changeset:   13:a8ab3599d53d
   |/   topic:       tools
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    reworded as b7509bd417f8
+  |    obsolete:    reworded using amend as 18:b7509bd417f8
   |    summary:     Adding hammer
   |
   o  changeset:   12:fbff9bc37a43
@@ -1754,9 +1756,9 @@ completely linear history so it's what we will do.
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
   $ hg rebase
-  rebasing 19:d5c51ee5762a "Adding saw"
+  rebasing 19:d5c51ee5762a "Adding saw" (tools)
   merging shopping
-  rebasing 20:bae3758e46bf "Adding drill"
+  rebasing 20:bae3758e46bf "Adding drill" (tools)
   merging shopping
 
   $ hg stack
@@ -1824,6 +1826,7 @@ From another client, we will get them with their topic:
   adding file changes
   added 4 changesets with 4 changes to 1 files (+1 heads)
   8 new obsolescence markers
+  new changesets b7509bd417f8:2d084ac00115
   (run 'hg heads' to see heads)
 
   $ hg topics --verbose
@@ -1867,6 +1870,7 @@ And retrieve them on the first client:
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  new changesets 0d409663a1fd
   (run 'hg update' to get a working copy)
 
   $ hg update

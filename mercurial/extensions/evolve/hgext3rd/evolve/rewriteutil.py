@@ -24,7 +24,6 @@ from mercurial import (
     phases,
     repair,
     revset,
-    util,
 )
 
 from mercurial.i18n import _
@@ -47,10 +46,7 @@ def _formatrevs(repo, revs, maxrevs=4):
         shorts = [node.short(tonode(r)) for r in revs]
         summary = ', '.join(shorts)
     else:
-        if util.safehasattr(revs, 'first'):
-            first = revs.first()
-        else:
-            first = revs[0]
+        first = revs.first()
         summary = _('%s and %d others')
         summary %= (node.short(tonode(first)), numrevs - 1)
     return summary

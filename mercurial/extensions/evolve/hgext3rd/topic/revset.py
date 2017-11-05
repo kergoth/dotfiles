@@ -72,11 +72,10 @@ def stackset(repo, subset, x):
     run)."""
     err = 'stack() takes no argument, it works on current topic'
     revset.getargs(x, 0, 0, err)
-    topic = repo.currenttopic
     topic = None
     branch = None
-    if not topic and repo.currenttopic:
+    if repo.currenttopic:
         topic = repo.currenttopic
-    if not topic:
+    else:
         branch = repo[None].branch()
     return revset.baseset(stack.stack(repo, branch=branch, topic=topic)[1:]) & subset

@@ -169,7 +169,7 @@ no children of any kind
 some aspiring children
 
   $ hg amend -m 'added b (2)'
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg next
   no children
   (1 unstable changesets to be evolved here, do you want --evolve?)
@@ -209,7 +209,7 @@ next with ambiguity
 next with ambiguity in aspiring children
 
   $ hg am -m 'added b (3)'
-  2 new unstable changesets
+  2 new orphan changesets
   $ hg next
   no children
   (2 unstable changesets to be evolved here, do you want --evolve?)
@@ -251,7 +251,7 @@ prev and next should lock properly against other commands
   $ sleep 1
   $ hg next --evolve
   waiting for lock on working directory of $TESTTMP/repo held by process '*' on host '*' (glob)
-  1 new unstable changesets
+  1 new orphan changesets
   got lock after [4-6] seconds (re)
   move:[2] two
   atop:[3] one

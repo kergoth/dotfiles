@@ -109,7 +109,7 @@ rebase on branch ngtip
   switching to topic elephant
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg rebase
-  rebasing 4:cb7ae72f4a80 "babar"
+  rebasing 4:cb7ae72f4a80 "babar" (elephant)
   switching to topic elephant
   $ hg log -G
   @  7 (elephant) babar
@@ -130,7 +130,7 @@ rebase on branch ngtip
   switching to topic monkey
   1 files updated, 0 files merged, 3 files removed, 0 files unresolved
   $ hg rebase
-  rebasing 5:d832ddc604ec "zephir"
+  rebasing 5:d832ddc604ec "zephir" (monkey)
   switching to topic monkey
   $ hg log -G
   @  8 (monkey) zephir
@@ -173,7 +173,7 @@ Rebase on other topic heads if any
   o  0 () c_alpha
   
   $ hg rebase
-  rebasing 9:d79a104e2902 "Huc" (tip)
+  rebasing 9:d79a104e2902 "Huc" (tip monkey)
   $ hg log -G
   @  10 (monkey) Huc
   |
@@ -225,7 +225,7 @@ merge destination
   switching to topic elephant
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg rebase -d 'desc(c_zeta)' # make sure tip is elsewhere
-  rebasing 7:8d0b77140b05 "babar"
+  rebasing 7:8d0b77140b05 "babar" (elephant)
   switching to topic elephant
   $ hg up monkey
   switching to topic monkey
@@ -234,12 +234,12 @@ merge destination
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   (branch merge, don't forget to commit)
   $ hg topic
-     elephant
-   * monkey
+     elephant (1 changesets)
+   * monkey   (2 changesets)
   $ hg ci -m 'merge with default'
   $ hg topic
-     elephant
-   * monkey
+     elephant (1 changesets)
+   * monkey   (3 changesets)
   $ hg log -G
   @    13 (monkey) merge with default
   |\
@@ -274,6 +274,7 @@ Check pull --rebase
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 3 files
+  new changesets 13ec05df14e1:6482f08916a5
   updating to branch default
   3 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd other
@@ -287,6 +288,7 @@ Check pull --rebase
   adding manifests
   adding file changes
   added 3 changesets with 3 changes to 3 files (+1 heads)
+  new changesets 6f5edd7450bb:c9c03b99196b
   rebasing 3:dbc48dd9e743 "c_other"
   $ hg log -G
   @  7 () c_other

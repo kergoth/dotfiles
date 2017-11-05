@@ -58,7 +58,7 @@ Initial
   $ mkcommit A
   $ mkcommit B
   $ hg prune -qd '0 0' '.~1'
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg prune -qd '0 0' .
   $ hg log -G --hidden
   x  f6fbb35d8ac9 (draft): B

@@ -7,6 +7,7 @@ Compatibility module
 """
 
 from mercurial import (
+    copies,
     context,
     hg,
     obsolete,
@@ -172,3 +173,17 @@ if not util.safehasattr(obsolete, '_computecontentdivergentset'):
 
 if not util.safehasattr(obsolete, '_computephasedivergentset'):
     obsolete._computephasedivergentset = obsolete.cachefor('phasedivergent')(obsolete._computebumpedset)
+
+def startpager(ui, cmd):
+    """function to start a pager in case ui.pager() exists"""
+    if util.safehasattr(ui, 'pager'):
+        ui.pager(cmd)
+
+def duplicatecopies(repo, wctx, rev, fromrev, skiprev=None):
+    # cannot use anything else until 4.3 support is dropped.
+    assert wctx.rev() is None
+    if copies.duplicatecopies.__code__.co_argcount < 5:
+        # pre 4.4 duplicatecopies compat
+        copies.duplicatecopies(repo, rev, fromrev, skiprev=skiprev)
+    else:
+        copies.duplicatecopies(repo, wctx, rev, fromrev, skiprev=skiprev)

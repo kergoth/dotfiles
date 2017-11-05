@@ -66,13 +66,13 @@ Check that topic without any parent does not crash --list
 After changing the phase of all the changesets in "other" to public, the topic should still be active, but is empty. We should be better at informating the user about it and displaying good data in this case.
 
   $ hg topic
-     foo
-   * other
+     foo   (4 changesets)
+   * other (0 changesets)
   $ hg stack
   ### topic: other
   ### target: default (branch)
   (stack is empty)
-  t0^ c_b (base)
+  t0^ c_b (base current)
 
   $ hg up foo
   switching to topic foo
@@ -84,7 +84,7 @@ Simple test
 'hg stack' list all changeset in the topic
 
   $ hg topic
-   * foo
+   * foo (4 changesets)
   $ hg stack
   ### topic: foo
   ### target: default (branch)
@@ -206,7 +206,7 @@ Simple test
 check that topics and stack are available even if ui.strict=true
 
   $ hg topics
-   * foo
+   * foo (4 changesets)
   $ hg stack
   ### topic: foo
   ### target: default (branch)
@@ -216,7 +216,7 @@ check that topics and stack are available even if ui.strict=true
   t1: c_c
   t0^ c_b (base)
   $ hg topics --config ui.strict=true
-   * foo
+   * foo (4 changesets)
   $ hg stack --config ui.strict=true
   ### topic: foo
   ### target: default (branch)
@@ -232,7 +232,7 @@ error case, nothing to list
   $ hg stack
   ### target: default (branch)
   (stack is empty)
-  b0^ c_f (base)
+  b0^ c_f (base current)
 
 Test "t#" reference
 -------------------
@@ -263,7 +263,7 @@ Case with some of the topic unstable
   $ echo bbb > ddd
   $ hg commit --amend
   $ hg log -G
-  @  7 default {foo} draft c_d
+  @  6 default {foo} draft c_d
   |
   | o  5 default {foo} draft c_f
   | |
@@ -310,7 +310,7 @@ Also test the revset:
 
   $ hg log -r 'stack()'
   2 default {foo} draft c_c
-  7 default {foo} draft c_d
+  6 default {foo} draft c_d
   4 default {foo} draft c_e
   5 default {foo} draft c_f
 
@@ -328,14 +328,14 @@ Case with multiple heads on the topic
 Make things linear again
 
   $ hg rebase -s 'desc(c_e)' -d 'desc(c_d) - obsolete()'
-  rebasing 4:0f9ac936c87d "c_e"
-  rebasing 5:6559e6d93aea "c_f"
+  rebasing 4:0f9ac936c87d "c_e" (foo)
+  rebasing 5:6559e6d93aea "c_f" (foo)
   $ hg log -G
-  o  9 default {foo} draft c_f
+  o  8 default {foo} draft c_f
   |
-  o  8 default {foo} draft c_e
+  o  7 default {foo} draft c_e
   |
-  @  7 default {foo} draft c_d
+  @  6 default {foo} draft c_d
   |
   o  2 default {foo} draft c_c
   |
@@ -356,15 +356,15 @@ Create the second branch
   $ hg add hhh
   $ hg commit -m c_h
   $ hg log -G
-  @  11 default {foo} draft c_h
+  @  10 default {foo} draft c_h
   |
-  o  10 default {foo} draft c_g
+  o  9 default {foo} draft c_g
   |
-  | o  9 default {foo} draft c_f
+  | o  8 default {foo} draft c_f
   | |
-  | o  8 default {foo} draft c_e
+  | o  7 default {foo} draft c_e
   |/
-  o  7 default {foo} draft c_d
+  o  6 default {foo} draft c_d
   |
   o  2 default {foo} draft c_c
   |
@@ -378,11 +378,11 @@ Test output
   $ hg top -l
   ### topic: foo (2 heads)
   ### target: default (branch)
-  t6: c_f
-  t5: c_e
+  t6@ c_h (current)
+  t5: c_g
   t2^ c_d (base)
-  t4@ c_h (current)
-  t3: c_g
+  t4: c_f
+  t3: c_e
   t2: c_d
   t1: c_c
   t0^ c_b (base)
@@ -397,20 +397,20 @@ We amend the message to make sure the display base pick the right changeset
   $ echo ccc > ddd
   $ hg commit --amend -m 'c_D' 
   $ hg rebase -d . -s 'desc(c_g)'
-  rebasing 10:81264ae8a36a "c_g"
-  rebasing 11:fde5f5941642 "c_h"
+  rebasing 9:81264ae8a36a "c_g" (foo)
+  rebasing 10:fde5f5941642 "c_h" (foo)
   $ hg log -G
-  o  15 default {foo} draft c_h
+  o  13 default {foo} draft c_h
   |
-  o  14 default {foo} draft c_g
+  o  12 default {foo} draft c_g
   |
-  @  13 default {foo} draft c_D
+  @  11 default {foo} draft c_D
   |
-  | o  9 default {foo} draft c_f
+  | o  8 default {foo} draft c_f
   | |
-  | o  8 default {foo} draft c_e
+  | o  7 default {foo} draft c_e
   | |
-  | x  7 default {foo} draft c_d
+  | x  6 default {foo} draft c_d
   |/
   o  2 default {foo} draft c_c
   |
@@ -422,11 +422,11 @@ We amend the message to make sure the display base pick the right changeset
   $ hg topic --list
   ### topic: foo (2 heads)
   ### target: default (branch)
-  t6$ c_f (unstable)
-  t5$ c_e (unstable)
-  t2^ c_D (base)
-  t4: c_h
-  t3: c_g
+  t6: c_h
+  t5: c_g
+  t2^ c_D (base current)
+  t4$ c_f (unstable)
+  t3$ c_e (unstable)
   t2@ c_D (current)
   t1: c_c
   t0^ c_b (base)
@@ -443,17 +443,17 @@ Complex cases where commits with same topic are not consecutive but are linear
 ==============================================================================
 
   $ hg log --graph
-  o  15 default {foo} draft c_h
+  o  13 default {foo} draft c_h
   |
-  o  14 default {foo} draft c_g
+  o  12 default {foo} draft c_g
   |
-  @  13 default {foo} draft c_D
+  @  11 default {foo} draft c_D
   |
-  | o  9 default {foo} draft c_f
+  | o  8 default {foo} draft c_f
   | |
-  | o  8 default {foo} draft c_e
+  | o  7 default {foo} draft c_e
   | |
-  | x  7 default {foo} draft c_d
+  | x  6 default {foo} draft c_d
   |/
   o  2 default {foo} draft c_c
   |
@@ -463,19 +463,19 @@ Complex cases where commits with same topic are not consecutive but are linear
   
 Converting into a linear chain
   $ hg rebase -s 'desc("c_e") - obsolete()' -d 'desc("c_h") - obsolete()'
-  rebasing 8:215bc359096a "c_e"
-  rebasing 9:ec9267b3f33f "c_f"
+  rebasing 7:215bc359096a "c_e" (foo)
+  rebasing 8:ec9267b3f33f "c_f" (foo)
 
   $ hg log -G
-  o  17 default {foo} draft c_f
+  o  15 default {foo} draft c_f
   |
-  o  16 default {foo} draft c_e
+  o  14 default {foo} draft c_e
   |
-  o  15 default {foo} draft c_h
+  o  13 default {foo} draft c_h
   |
-  o  14 default {foo} draft c_g
+  o  12 default {foo} draft c_g
   |
-  @  13 default {foo} draft c_D
+  @  11 default {foo} draft c_D
   |
   o  2 default {foo} draft c_c
   |
@@ -488,19 +488,19 @@ Changing topics on some commits in between
   switching to topic foobar
   changed topic on 2 changes
   $ hg log -G
-  @  19 default {foobar} draft c_D
+  @  17 default {foobar} draft c_D
   |
-  | o  18 default {foobar} draft c_e
+  | o  16 default {foobar} draft c_e
   | |
-  | | o  17 default {foo} draft c_f
+  | | o  15 default {foo} draft c_f
   | | |
-  | | x  16 default {foo} draft c_e
+  | | x  14 default {foo} draft c_e
   | |/
-  | o  15 default {foo} draft c_h
+  | o  13 default {foo} draft c_h
   | |
-  | o  14 default {foo} draft c_g
+  | o  12 default {foo} draft c_g
   | |
-  | x  13 default {foo} draft c_D
+  | x  11 default {foo} draft c_D
   |/
   o  2 default {foo} draft c_c
   |
@@ -509,30 +509,30 @@ Changing topics on some commits in between
   o  0 default {} public c_a
   
   $ hg rebase -s 'desc("c_f") - obsolete()' -d 'desc("c_e") - obsolete()'
-  rebasing 17:77082e55de88 "c_f"
+  rebasing 15:77082e55de88 "c_f" (foo)
   switching to topic foo
   switching to topic foobar
   $ hg rebase -s 'desc("c_g") - obsolete()' -d 'desc("c_D") - obsolete()'
-  rebasing 14:0c3e8aed985d "c_g"
+  rebasing 12:0c3e8aed985d "c_g" (foo)
   switching to topic foo
-  rebasing 15:b9e4f3709bc5 "c_h"
-  rebasing 18:4bc813530301 "c_e"
+  rebasing 13:b9e4f3709bc5 "c_h" (foo)
+  rebasing 16:4bc813530301 "c_e" (foobar)
   switching to topic foobar
-  rebasing 20:4406ea4be852 "c_f" (tip)
+  rebasing 18:4406ea4be852 "c_f" (tip foo)
   switching to topic foo
   switching to topic foobar
   $ hg up
   3 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg log --graph
-  o  24 default {foo} draft c_f
+  o  22 default {foo} draft c_f
   |
-  @  23 default {foobar} draft c_e
+  @  21 default {foobar} draft c_e
   |
-  o  22 default {foo} draft c_h
+  o  20 default {foo} draft c_h
   |
-  o  21 default {foo} draft c_g
+  o  19 default {foo} draft c_g
   |
-  o  19 default {foobar} draft c_D
+  o  17 default {foobar} draft c_D
   |
   o  2 default {foo} draft c_c
   |
@@ -716,7 +716,7 @@ should stabilize this eventuelly)
   t2$ c_G (unstable)
     ^ c_F
   t1$ c_D (current unstable)
-  t0^ c_C (base)
+  t0^ c_C (base unstable)
 
 more obsolescence
 
@@ -790,7 +790,7 @@ more obsolescence
   t2$ c_G (unstable)
     ^ c_F
   t1$ c_D (current unstable)
-  t0^ c_C (base)
+  t0^ c_C (base unstable)
 
 Test stack behavior with a split
 --------------------------------
@@ -798,12 +798,12 @@ Test stack behavior with a split
 get things linear again
 
   $ hg rebase -r t1 -d default
-  rebasing 16:1d84ec948370 "c_D" (tip)
+  rebasing 16:1d84ec948370 "c_D" (tip blue)
   switching to topic blue
   $ hg rebase -r t2 -d t1
-  rebasing 13:3ab2eedae500 "c_G"
+  rebasing 13:3ab2eedae500 "c_G" (blue)
   $ hg rebase -r t3 -d t2
-  rebasing 8:3bfe800e0486 "c_I"
+  rebasing 8:3bfe800e0486 "c_I" (blue)
   $ hg stack
   ### topic: blue
   ### target: default (branch)
@@ -856,11 +856,11 @@ making a split
   Done splitting? [yN] y
 
   $ hg --config extensions.evolve= obslog --all
-  o  dde94df880e9 (22) c_G
+  o  dde94df880e9 (21) c_G
   |
-  | @  e7ea874afbd5 (23) c_G
+  | @  e7ea874afbd5 (22) c_G
   |/
-  x  b24bab30ac12 (21) c_G
+  x  b24bab30ac12 (20) c_G
   |    rewritten(parent, content) as dde94df880e9, e7ea874afbd5 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  907f7d3c2333 (18) c_G

@@ -49,15 +49,7 @@ try:
 except ImportError:
     from mercurial import scmutil as vfsmod
 
-try:
-    obsstorefilecache = localrepo.localrepository.obsstore
-except AttributeError:
-    # XXX hg-3.8 compat
-    #
-    # mercurial 3.8 has issue with accessing file cache property from their
-    # cache. This is fix by 36fbd72c2f39fef8ad52d7c559906c2bc388760c in core
-    # and shipped in 3.9
-    obsstorefilecache = localrepo.localrepository.__dict__['obsstore']
+obsstorefilecache = localrepo.localrepository.obsstore
 
 # obsstore is a filecache so we have do to some spacial dancing
 @eh.wrapfunction(obsstorefilecache, 'func')
@@ -111,9 +103,12 @@ def obsstorewithcache(orig, repo):
 
     return obsstore
 
-if obsolete._readmarkers.__code__.co_argcount > 1:
+if obsolete._fm0readmarkers.__code__.co_argcount > 1:
     # hg-4.3+ has the "offset" parameter, and _fm?readmarkers also have an
     # extra "stop" parameter
+    # Note that _readmarkers is wrapped by @util.nogc, so its co_argcount is
+    # misleadingly 0. So we check _fm0readmarkers instead, which increased its
+    # argument count in the same changeset (5d3ba439).
     _readmarkers = obsolete._readmarkers
 else:
     # XXX copied as is from Mercurial 4.2 and added the "offset" parameters

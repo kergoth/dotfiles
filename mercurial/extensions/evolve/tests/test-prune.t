@@ -63,7 +63,7 @@ prune leaving instability behind
 
   $ hg prune 1
   1 changesets pruned
-  2 new unstable changesets
+  2 new orphan changesets
   $ hg book -i BABAR
   $ hg debugobsolete
   9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)

@@ -18,9 +18,10 @@ include docs/tutorials/*.t
 include hgext3rd/__init__.py
 include hgext3rd/evolve/*.py
 include hgext3rd/topic/*.py
+include hgext3rd/topic/README
 include MANIFEST.in
 include README
-include README-topic
+include CHANGELOG
 include setup.py
 include tests/*.py
 include tests/*.sh

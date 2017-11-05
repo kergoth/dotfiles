@@ -395,13 +395,7 @@ class stablerange(object):
             # data about the merge. But I'm not sure this function will be even
             # call for the general case.
 
-            # Lrudict.get in hg-3.9 returns the lrunode instead of the
-            # value, use __getitem__ instead and catch the exception directly
-            try:
-                allrevs = self._stablesortcache[headrev]
-            except KeyError:
-                allrevs = None
-
+            allrevs = self._stablesortcache.get(headrev)
             if allrevs is None:
                 allrevs = self._getrevsfrommerge(repo, headrev)
                 if allrevs is None:
@@ -450,11 +444,8 @@ class stablerange(object):
             self._stablesortprepared[merge] = (sortedrevs, len(sortedrevs))
 
     def _getrevsfrommerge(self, repo, merge):
-        # Lrudict.get in hg-3.9 returns the lrunode instead of the
-        # value, use __getitem__ instead and catch the exception directly
-        try:
-            prepared = self._stablesortprepared[merge]
-        except KeyError:
+        prepared = self._stablesortprepared.get(merge)
+        if prepared is None:
             return None
 
         mergedepth = self.depthrev(repo, merge)

@@ -18,7 +18,7 @@ CONTENTS                                           *airline-theme-contents*
 INTRODUCTION                                         *airline-themes-intro*
 
 This is a plugin for vim-airline and provides several themes to be used in
-conjuction with |vim-airline|
+conjunction with |vim-airline|
 
 ==============================================================================
 FEATURES                                              *airline-themes-list*
@@ -27,6 +27,7 @@ Currently this repository contains the following themes:
 
     * alduin
     * angr
+    * atomic
     * aurora
     * badcat
     * badwolf
@@ -74,6 +75,7 @@ Currently this repository contains the following themes:
     * base16_twilight
     * base16color
     * behelit
+    * biogoo
     * bubblegum
     * cobalt2
     * cool
@@ -107,6 +109,7 @@ Currently this repository contains the following themes:
     * sierra
     * silver
     * simple
+    * soda
     * sol
     * solarized (|airline-theme-solarized|)
     * term

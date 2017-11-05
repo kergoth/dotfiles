@@ -45,7 +45,7 @@ With --all --any we dedupe the divergent and solve the divergence once
   1 changesets pruned
   $ hg prune -s "desc(bdivergent2)" "desc(_b)" --hidden
   1 changesets pruned
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg log -G
   @  3:e708fd28d5cf@default(draft) add bdivergent2 [content-divergent]
   |
@@ -53,7 +53,7 @@ With --all --any we dedupe the divergent and solve the divergence once
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   
-  $ hg evolve --all --any --contentdivergent
+  $ hg evolve --all --any --content-divergent
   merge:[2] add bdivergent1
   with: [3] add bdivergent2
   base: [1] add _b
@@ -62,7 +62,7 @@ With --all --any we dedupe the divergent and solve the divergence once
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory is now at c26f1d3baed2
   $ hg log -G
-  @  5:c26f1d3baed2@default(draft) add bdivergent1 []
+  @  4:c26f1d3baed2@default(draft) add bdivergent1 []
   |
   o  0:135f39f4bd78@default(draft) add _a []
   
@@ -88,24 +88,25 @@ versions of the revision _c
   1 changesets pruned
   $ hg prune -s "desc(cdivergent2)" "desc(_c)" --hidden
   1 changesets pruned
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg log -G
-  @  8:0a768ef678d9@default(draft) cdivergent2 [content-divergent]
+  @  7:0a768ef678d9@default(draft) cdivergent2 [content-divergent]
   |
-  | o  7:26c7705fee96@default(draft) add cdivergent1 [content-divergent]
+  | o  6:26c7705fee96@default(draft) add cdivergent1 [content-divergent]
   |/
-  | o  5:c26f1d3baed2@default(draft) add bdivergent1 []
+  | o  4:c26f1d3baed2@default(draft) add bdivergent1 []
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   
-  $ hg evolve --all --any --contentdivergent
-  merge:[7] add cdivergent1
-  with: [8] cdivergent2
-  base: [6] add _c
+  $ hg evolve --all --any --content-divergent
+  merge:[6] add cdivergent1
+  with: [7] cdivergent2
+  base: [5] add _c
   updating to "local" conflict
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory is now at 6602ff5a79dc
+  nothing changed
+  working directory is now at 26c7705fee96
 
 Test None docstring issue of evolve divergent, which caused hg crush
 
@@ -124,7 +125,7 @@ Test None docstring issue of evolve divergent, which caused hg crush
   1 changesets pruned
   $ hg prune -s "desc(bdivergent2)" "desc(_b)" --hidden
   1 changesets pruned
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg log -G
   @  3:e708fd28d5cf@default(draft) add bdivergent2 [content-divergent]
   |
@@ -145,9 +146,9 @@ Test None docstring issue of evolve divergent, which caused hg crush
   > EOF
   $ hg evolve --all
   nothing to evolve on current working copy parent
-  (do you want to use --contentdivergent)
+  (do you want to use --content-divergent)
   [2]
-  $ hg evolve --contentdivergent
+  $ hg evolve --content-divergent
   merge:[3] add bdivergent2
   with: [2] add bdivergent1
   base: [1] add _b

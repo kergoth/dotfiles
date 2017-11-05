@@ -6,7 +6,6 @@ from mercurial import (
     destutil,
     error,
     extensions,
-    util,
 )
 from . import topicmap
 from .evolvebits import builddependencies
@@ -54,12 +53,7 @@ def _destmergebranch(orig, repo, action='merge', sourceset=None,
             msg = _("topic '%s' has %d heads "
                     "- please merge with an explicit rev") % (top, len(heads))
             raise error.ManyMergeDestAbort(msg)
-    if len(getattr(orig, 'func_defaults', ())) == 3: # version hg-3.7
-        return orig(repo, action, sourceset, onheadcheck)
-    if 3 < len(getattr(orig, 'func_defaults', ())): # version hg-3.8 and above
-        return orig(repo, action, sourceset, onheadcheck, destspace=destspace)
-    else:
-        return orig(repo)
+    return orig(repo, action, sourceset, onheadcheck, destspace=destspace)
 
 def _destupdatetopic(repo, clean, check=None):
     """decide on an update destination from current topic"""
@@ -100,24 +94,8 @@ def ngtip(repo, branch, all=False):
 
 def modsetup(ui):
     """run a uisetup time to install all destinations wrapping"""
-    if util.safehasattr(destutil, '_destmergebranch'):
-        extensions.wrapfunction(destutil, '_destmergebranch', _destmergebranch)
-    try:
-        rebase = extensions.find('rebase')
-    except KeyError:
-        rebase = None
-
-    # Mercurial 4.4 rename _definesets into _definedestmap
-    rebasebefore38 = not util.safehasattr(rebase, '_definesets')
-    rebasebefore44 = not util.safehasattr(rebase, '_definedestmap')
-
-    if (util.safehasattr(rebase, '_destrebase')
-            # logic not shared with merge yet < hg-3.8
-            and rebasebefore38 and rebasebefore44):
-        extensions.wrapfunction(rebase, '_destrebase', _destmergebranch)
-    if util.safehasattr(destutil, 'destupdatesteps'):
-        bridx = destutil.destupdatesteps.index('branch')
-        destutil.destupdatesteps.insert(bridx, 'topic')
-        destutil.destupdatestepmap['topic'] = _destupdatetopic
-    if util.safehasattr(destutil, 'desthistedit'):
-        extensions.wrapfunction(destutil, 'desthistedit', desthistedit)
+    extensions.wrapfunction(destutil, '_destmergebranch', _destmergebranch)
+    bridx = destutil.destupdatesteps.index('branch')
+    destutil.destupdatesteps.insert(bridx, 'topic')
+    destutil.destupdatestepmap['topic'] = _destupdatetopic
+    extensions.wrapfunction(destutil, 'desthistedit', desthistedit)

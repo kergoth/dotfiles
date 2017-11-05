@@ -42,7 +42,7 @@ is obsolete with one successor
   $ hg up "desc(_b)"
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg amend -m "bprime"
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg log -G
   @  3:36050226a9b9@default(draft) bprime
   |
@@ -86,7 +86,7 @@ Not supported yet
   $ hg up "desc(_a)"
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg amend -m "aprime"
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg log -G
   @  4:47127ea62e5f@default(draft) aprime
   |
@@ -134,7 +134,7 @@ Not supported yet
   $ hg up "desc(_a)"
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg amend -m "aprime"
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg up "desc(_c)"
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg amend -m "cprime"
@@ -185,7 +185,7 @@ is obsolete with multiple successors all in one chain (simple split)
   created new head
   $ hg prune "desc(_b)" -s "desc(bprimesplit1) + desc(bprimesplit2)" --split
   1 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg log -G
   @  4:2a4ccc0bb20c@default(draft) add bprimesplit2
   |
@@ -230,14 +230,14 @@ order (cross-split).
   created new head
   $ hg prune "desc(_b)" -s "desc(bprimesplit1) + desc(bprimesplit2)" --split
   1 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg up "desc(_a)"
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ mkcommits bsecondsplit1 bsecondsplit2
   created new head
   $ hg prune "desc(bprimesplit1)" -s "desc(bsecondsplit2)"
   1 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg prune "desc(bprimesplit2)" -s "desc(bsecondsplit1)"
   1 changesets pruned
   $ hg log -G
@@ -288,7 +288,7 @@ Not supported yet
   created new head
   $ hg prune "desc(_b)" -s "desc(bprimesplit1) + desc(bprimesplit2)" --split
   1 changesets pruned
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg log -G
   @  4:3c69ea6aa93e@default(draft) add bprimesplit2
   |

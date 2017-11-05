@@ -71,7 +71,7 @@ Rebase the commit
   switching to topic myfeature
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg rebase
-  rebasing 1:39e7a938055e "add feature1"
+  rebasing 1:39e7a938055e "add feature1" (myfeature)
   switching to topic myfeature
   $ hg stack
   ### topic: myfeature
@@ -120,7 +120,7 @@ Rebase the topic
   switching to topic myotherfeature
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg rebase
-  rebasing 5:81f854012ec5 "myotherfeature1"
+  rebasing 5:81f854012ec5 "myotherfeature1" (myotherfeature)
   merging file
   warning: conflicts while merging file! (edit, then use 'hg resolve --mark')
   switching to topic myotherfeature
@@ -134,7 +134,7 @@ Resolve the conflict
   (no more unresolved files)
   continue: hg rebase --continue
   $ hg rebase --continue
-  rebasing 5:81f854012ec5 "myotherfeature1"
+  rebasing 5:81f854012ec5 "myotherfeature1" (myotherfeature)
 
 Check the the commit has the right topic
 

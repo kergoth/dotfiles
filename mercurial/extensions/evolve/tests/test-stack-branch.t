@@ -110,7 +110,7 @@ Case with some of the branch unstable
   $ echo bbb > ddd
   $ hg commit --amend
   $ hg log -G
-  @  7 foo {} draft c_d
+  @  6 foo {} draft c_d
   |
   | o  5 foo {} draft c_f
   | |
@@ -147,7 +147,7 @@ Also test the revset:
 
   $ hg log -r 'stack()'
   2 foo {} draft c_c
-  7 foo {} draft c_d
+  6 foo {} draft c_d
   4 foo {} draft c_e
   5 foo {} draft c_f
 
@@ -160,11 +160,11 @@ Make things linear again
   rebasing 4:4f2a69f6d380 "c_e"
   rebasing 5:913c298d8b0a "c_f"
   $ hg log -G
-  o  9 foo {} draft c_f
+  o  8 foo {} draft c_f
   |
-  o  8 foo {} draft c_e
+  o  7 foo {} draft c_e
   |
-  @  7 foo {} draft c_d
+  @  6 foo {} draft c_d
   |
   o  2 foo {} draft c_c
   |
@@ -185,15 +185,15 @@ Create the second branch
   $ hg add hhh
   $ hg commit -m c_h
   $ hg log -G
-  @  11 foo {} draft c_h
+  @  10 foo {} draft c_h
   |
-  o  10 foo {} draft c_g
+  o  9 foo {} draft c_g
   |
-  | o  9 foo {} draft c_f
+  | o  8 foo {} draft c_f
   | |
-  | o  8 foo {} draft c_e
+  | o  7 foo {} draft c_e
   |/
-  o  7 foo {} draft c_d
+  o  6 foo {} draft c_d
   |
   o  2 foo {} draft c_c
   |
@@ -206,11 +206,11 @@ Test output
 
   $ hg stack
   ### target: foo (branch) (2 heads)
-  b6: c_f
-  b5: c_e
+  b6@ c_h (current)
+  b5: c_g
   b2^ c_d (base)
-  b4@ c_h (current)
-  b3: c_g
+  b4: c_f
+  b3: c_e
   b2: c_d
   b1: c_c
   b0^ c_b (base)
@@ -225,20 +225,20 @@ We amend the message to make sure the display base pick the right changeset
   $ echo ccc > ddd
   $ hg commit --amend -m 'c_D' 
   $ hg rebase -d . -s 'desc(c_g)'
-  rebasing 10:2ebb6e48ab8a "c_g"
-  rebasing 11:634f38e27a1d "c_h"
+  rebasing 9:2ebb6e48ab8a "c_g"
+  rebasing 10:634f38e27a1d "c_h"
   $ hg log -G
-  o  15 foo {} draft c_h
+  o  13 foo {} draft c_h
   |
-  o  14 foo {} draft c_g
+  o  12 foo {} draft c_g
   |
-  @  13 foo {} draft c_D
+  @  11 foo {} draft c_D
   |
-  | o  9 foo {} draft c_f
+  | o  8 foo {} draft c_f
   | |
-  | o  8 foo {} draft c_e
+  | o  7 foo {} draft c_e
   | |
-  | x  7 foo {} draft c_d
+  | x  6 foo {} draft c_d
   |/
   o  2 foo {} draft c_c
   |
@@ -249,11 +249,11 @@ We amend the message to make sure the display base pick the right changeset
 
   $ hg stack
   ### target: foo (branch) (2 heads)
-  b6$ c_f (unstable)
-  b5$ c_e (unstable)
-  b2^ c_D (base)
-  b4: c_h
-  b3: c_g
+  b6: c_h
+  b5: c_g
+  b2^ c_D (base current)
+  b4$ c_f (unstable)
+  b3$ c_e (unstable)
   b2@ c_D (current)
   b1: c_c
   b0^ c_b (base)
@@ -262,17 +262,17 @@ Check that stack doesn't show draft changesets on a branch
 ----------------------------------------------------------
 
   $ hg log --graph
-  o  15 foo {} draft c_h
+  o  13 foo {} draft c_h
   |
-  o  14 foo {} draft c_g
+  o  12 foo {} draft c_g
   |
-  @  13 foo {} draft c_D
+  @  11 foo {} draft c_D
   |
-  | o  9 foo {} draft c_f
+  | o  8 foo {} draft c_f
   | |
-  | o  8 foo {} draft c_e
+  | o  7 foo {} draft c_e
   | |
-  | x  7 foo {} draft c_d
+  | x  6 foo {} draft c_d
   |/
   o  2 foo {} draft c_c
   |
@@ -283,22 +283,22 @@ Check that stack doesn't show draft changesets on a branch
 
   $ hg stack
   ### target: foo (branch) (2 heads)
-  b6$ c_f (unstable)
-  b5$ c_e (unstable)
-  b2^ c_D (base)
-  b4: c_h
-  b3: c_g
+  b6: c_h
+  b5: c_g
+  b2^ c_D (base current)
+  b4$ c_f (unstable)
+  b3$ c_e (unstable)
   b2@ c_D (current)
   b1: c_c
   b0^ c_b (base)
   $ hg phase --public b1
   $ hg stack
   ### target: foo (branch) (2 heads)
-  b5$ c_f (unstable)
-  b4$ c_e (unstable)
-  b1^ c_D (base)
-  b3: c_h
-  b2: c_g
+  b5: c_h
+  b4: c_g
+  b1^ c_D (base current)
+  b3$ c_f (unstable)
+  b2$ c_e (unstable)
   b1@ c_D (current)
   b0^ c_c (base)
 
@@ -309,7 +309,7 @@ Check that stack doesn't show changeset with a topic
   changed topic on 2 changes
   $ hg stack
   ### target: foo (branch)
-  b3: c_h
-  b2: c_g
+  b3$ c_f (unstable)
+  b2$ c_e (unstable)
   b1@ c_D (current)
   b0^ c_c (base)

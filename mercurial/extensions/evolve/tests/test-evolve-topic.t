@@ -87,16 +87,16 @@ make a mess
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ echo ddd >> ddd
   $ hg amend
-  6 new unstable changesets
+  6 new orphan changesets
   $ hg up 'desc(fff)'
   3 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ echo fff >> fff
   $ hg amend
 
   $ hg log -G
-  @  13 - {foo} e104f49bab28 add fff (draft)
+  @  11 - {foo} e104f49bab28 add fff (draft)
   |
-  | o  11 - {foo} d9cacd156ffc add ddd (draft)
+  | o  10 - {foo} d9cacd156ffc add ddd (draft)
   | |
   | | o  9 - {bar} 1d964213b023 add jjj (draft)
   | | |
@@ -123,16 +123,16 @@ Run evolve --all
 
   $ hg evolve --all
   move:[4] add eee
-  atop:[11] add ddd
-  move:[13] add fff
-  atop:[14] add eee
+  atop:[10] add ddd
+  move:[11] add fff
+  atop:[12] add eee
   working directory is now at 070c5573d8f9
   $ hg log -G
-  @  15 - {foo} 070c5573d8f9 add fff (draft)
+  @  13 - {foo} 070c5573d8f9 add fff (draft)
   |
-  o  14 - {foo} 42b49017ff90 add eee (draft)
+  o  12 - {foo} 42b49017ff90 add eee (draft)
   |
-  o  11 - {foo} d9cacd156ffc add ddd (draft)
+  o  10 - {foo} d9cacd156ffc add ddd (draft)
   |
   | o  9 - {bar} 1d964213b023 add jjj (draft)
   | |
@@ -160,28 +160,28 @@ Test that evolve does not loose topic information
 
   $ hg evolve --rev 'topic(bar)'
   move:[6] add ggg
-  atop:[15] add fff
+  atop:[13] add fff
   move:[7] add hhh
-  atop:[16] add ggg
+  atop:[14] add ggg
   move:[8] add iii
-  atop:[17] add hhh
+  atop:[15] add hhh
   move:[9] add jjj
-  atop:[18] add iii
+  atop:[16] add iii
   working directory is now at 9bf430c106b7
   $ hg log -G
-  @  19 - {bar} 9bf430c106b7 add jjj (draft)
+  @  17 - {bar} 9bf430c106b7 add jjj (draft)
   |
-  o  18 - {bar} d2dc89c57700 add iii (draft)
+  o  16 - {bar} d2dc89c57700 add iii (draft)
   |
-  o  17 - {bar} 20bc4d02aa62 add hhh (draft)
+  o  15 - {bar} 20bc4d02aa62 add hhh (draft)
   |
-  o  16 - {bar} 16d6f664b17c add ggg (draft)
+  o  14 - {bar} 16d6f664b17c add ggg (draft)
   |
-  o  15 - {foo} 070c5573d8f9 add fff (draft)
+  o  13 - {foo} 070c5573d8f9 add fff (draft)
   |
-  o  14 - {foo} 42b49017ff90 add eee (draft)
+  o  12 - {foo} 42b49017ff90 add eee (draft)
   |
-  o  11 - {foo} d9cacd156ffc add ddd (draft)
+  o  10 - {foo} d9cacd156ffc add ddd (draft)
   |
   o  2 - {foo} cced9bac76e3 add ccc (draft)
   |
@@ -200,10 +200,10 @@ Basic move are restricted to the current topic
   0 files updated, 0 files merged, 4 files removed, 0 files unresolved
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  [14] add eee
+  [12] add eee
   $ hg next
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  [15] add fff
+  [13] add fff
   $ hg next
   no children on topic "foo"
   do you want --no-topic
@@ -211,11 +211,11 @@ Basic move are restricted to the current topic
   $ hg next --no-topic
   switching to topic bar
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  [16] add ggg
+  [14] add ggg
   $ hg prev
   preserving the current topic 'bar'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  [15] add fff
+  [13] add fff
   $ hg prev
   no parent in topic "bar"
   (do you want --no-topic)
@@ -223,4 +223,4 @@ Basic move are restricted to the current topic
   $ hg prev --no-topic
   switching to topic foo
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
-  [14] add eee
+  [12] add eee

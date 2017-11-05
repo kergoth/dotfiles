@@ -50,7 +50,7 @@ Test setup
 Create a cycle
   $ hg prune -s "desc(B)" "desc(A)"
   1 changesets pruned
-  2 new unstable changesets
+  2 new orphan changesets
   $ hg prune -s "desc(C)" "desc(B)"
   1 changesets pruned
   $ hg prune -s "desc(A)" "desc(C)"
@@ -62,19 +62,19 @@ Create a cycle
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 2a34000d3544
+  |  obsolete:    rewritten as 1:2a34000d3544
   |  summary:     C
   |
   x  changeset:   2:c473644ee0e9
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as a8df460dbbfe
+  |  obsolete:    rewritten as 3:a8df460dbbfe
   |  summary:     B
   |
   @  changeset:   1:2a34000d3544
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as c473644ee0e9
+  |  obsolete:    rewritten as 2:c473644ee0e9
   |  summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -89,48 +89,48 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(A)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
   |
 
   $ hg obslog "desc(B)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
   |
 
   $ hg obslog "desc(C)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
   |
 
 Check that all option don't crash on a cycle either
 
   $ hg obslog "desc(C)" --hidden --all
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
   |
 
 Test with multiple cyles
@@ -188,7 +188,7 @@ Test setup
 Create a first cycle
   $ hg prune -s "desc(B)" "desc(A)"
   1 changesets pruned
-  5 new unstable changesets
+  5 new orphan changesets
   $ hg prune -s "desc(C)" "desc(B)"
   1 changesets pruned
   $ hg prune --split -s "desc(A)" -s "desc(D)" "desc(C)"
@@ -207,37 +207,37 @@ And create a second one
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 868d2e0eb19c
+  |  obsolete:    rewritten as 4:868d2e0eb19c
   |  summary:     F
   |
   x  changeset:   5:0da815c333f6
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as d9f908fde1a1
+  |  obsolete:    rewritten as 6:d9f908fde1a1
   |  summary:     E
   |
   @  changeset:   4:868d2e0eb19c
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 0da815c333f6
+  |  obsolete:    rewritten as 5:0da815c333f6
   |  summary:     D
   |
   x  changeset:   3:a8df460dbbfe
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    split as 2a34000d3544, 868d2e0eb19c
+  |  obsolete:    split as 1:2a34000d3544, 4:868d2e0eb19c
   |  summary:     C
   |
   x  changeset:   2:c473644ee0e9
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as a8df460dbbfe
+  |  obsolete:    rewritten as 3:a8df460dbbfe
   |  summary:     B
   |
   x  changeset:   1:2a34000d3544
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as c473644ee0e9
+  |  obsolete:    rewritten as 2:c473644ee0e9
   |  summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -252,42 +252,42 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(D)" --hidden
   x  0da815c333f6 (5) E
-  |    rewritten(description, parent, content) as d9f908fde1a1 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as d9f908fde1a1 by test (*) (glob)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten(description, parent, content) as 0da815c333f6 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |\     rewritten(description, parent, content) as 0da815c333f6 by test (*) (glob)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (*) (glob)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |      rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (*) (glob)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
   | |
 Check that all option don't crash either on a cycle
   $ hg obslog --all --hidden "desc(F)"
   x  0da815c333f6 (5) E
-  |    rewritten(description, parent, content) as d9f908fde1a1 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(description, parent, content) as d9f908fde1a1 by test (*) (glob)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten(description, parent, content) as 0da815c333f6 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |\     rewritten(description, parent, content) as 0da815c333f6 by test (*) (glob)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (*) (glob)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten(description, parent, content) as c473644ee0e9 by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |      rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (*) (glob)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten(description, parent, content) as a8df460dbbfe by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
   | |
 Check the json output is valid in this case
 
@@ -301,7 +301,7 @@ Check the json output is valid in this case
                       0
                   ],
                   "effect": [
-                      *, (glob)
+                      "description",
                       "parent",
                       "content"
                   ],
@@ -413,7 +413,7 @@ Check the json output is valid in this case
           "markers": [
               {
                   "date": [
-                      0.0,
+                      *, (glob)
                       0
                   ],
                   "effect": [

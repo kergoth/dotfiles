@@ -19,7 +19,14 @@ from mercurial import (
     obsolete,
     node as nodemod,
     scmutil,
+    util,
 )
+
+try:
+    from mercurial import obsutil
+    obsutil.marker
+except ImportError:
+    obsutil = None
 
 from mercurial.i18n import _
 
@@ -29,6 +36,18 @@ from . import (
 )
 
 eh = exthelper.exthelper()
+
+# Config
+efd = {'default': True} # pass a default value unless the config is registered
+
+@eh.extsetup
+def enableeffectflags(ui):
+    item = (getattr(ui, '_knownconfig', {})
+            .get('experimental', {})
+            .get('evolution.effect-flags'))
+    if item is not None:
+        item.default = True
+        efd.clear()
 
 @eh.command(
     'obslog|olog',
@@ -66,6 +85,7 @@ def cmdobshistory(ui, repo, *revs, **opts):
 
     Returns 0 on success.
     """
+    compat.startpager(ui, 'obslog')
     revs = list(revs) + opts['rev']
     if not revs:
         revs = ['.']
@@ -132,7 +152,7 @@ def patchavailable(node, repo, marker):
     succ = successors[0]
 
     if succ not in repo:
-        return False, "succ is unknown locally"
+        return False, "successor is unknown locally"
 
     # Check that both node and succ have the same parents
     nodep1, nodep2 = repo[node].p1(), repo[node].p2()
@@ -498,7 +518,7 @@ def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
                 fm.plain("\n")
                 fm.plain(contentpatch)
         else:
-            patch = "    (No patch available yet, %s)" % _patchavailable[1]
+            patch = "    (No patch available, %s)" % _patchavailable[1]
             fm.plain("\n")
             # TODO: should be in json too
             fm.plain(patch)
@@ -616,46 +636,48 @@ def _cmpdiff(leftctx, rightctx):
             return False
     return True
 
-@eh.wrapfunction(obsolete, 'createmarkers')
-def createmarkerswithbits(orig, repo, relations, flag=0, date=None,
-                          metadata=None, **kwargs):
-    """compute 'effect-flag' and augment the created markers
+# Wrap pre Mercurial 4.4 createmarkers that didn't included effect-flag
+if not util.safehasattr(obsutil, 'geteffectflag'):
+    @eh.wrapfunction(obsolete, 'createmarkers')
+    def createmarkerswithbits(orig, repo, relations, flag=0, date=None,
+                              metadata=None, **kwargs):
+        """compute 'effect-flag' and augment the created markers
 
-    Wrap obsolete.createmarker in order to compute the effect of each
-    relationship and store them as flag in the metadata.
+        Wrap obsolete.createmarker in order to compute the effect of each
+        relationship and store them as flag in the metadata.
 
-    While we experiment, we store flag in a metadata field. This field is
-    "versionned" to easilly allow moving to other meaning for flags.
+        While we experiment, we store flag in a metadata field. This field is
+        "versionned" to easilly allow moving to other meaning for flags.
 
-    The comparison of description or other infos just before creating the obs
-    marker might induce overhead in some cases. However it is a good place to
-    start since it automatically makes all markers creation recording more
-    meaningful data. In the future, we can introduce way for commands to
-    provide precomputed effect to avoid the overhead.
-    """
-    if not repo.ui.configbool('experimental', 'evolution.effect-flags', True):
-        return orig(repo, relations, flag, date, metadata, **kwargs)
-    if metadata is None:
-        metadata = {}
-    tr = repo.transaction('add-obsolescence-marker')
-    try:
-        for r in relations:
-            # Compute the effect flag for each obsmarker
-            effect = geteffectflag(r)
+        The comparison of description or other infos just before creating the obs
+        marker might induce overhead in some cases. However it is a good place to
+        start since it automatically makes all markers creation recording more
+        meaningful data. In the future, we can introduce way for commands to
+        provide precomputed effect to avoid the overhead.
+        """
+        if not repo.ui.configbool('experimental', 'evolution.effect-flags', **efd):
+            return orig(repo, relations, flag, date, metadata, **kwargs)
+        if metadata is None:
+            metadata = {}
+        tr = repo.transaction('add-obsolescence-marker')
+        try:
+            for r in relations:
+                # Compute the effect flag for each obsmarker
+                effect = geteffectflag(r)
 
-            # Copy the metadata in order to add them, we copy because the
-            # effect flag might be different per relation
-            m = metadata.copy()
-            # we store the effect even if "0". This disctinct markers created
-            # without the feature with markers recording a no-op.
-            m['ef1'] = "%d" % effect
+                # Copy the metadata in order to add them, we copy because the
+                # effect flag might be different per relation
+                m = metadata.copy()
+                # we store the effect even if "0". This disctinct markers created
+                # without the feature with markers recording a no-op.
+                m['ef1'] = "%d" % effect
 
-            # And call obsolete.createmarkers for creating the obsmarker for real
-            orig(repo, [r], flag, date, m, **kwargs)
+                # And call obsolete.createmarkers for creating the obsmarker for real
+                orig(repo, [r], flag, date, m, **kwargs)
 
-        tr.close()
-    finally:
-        tr.release()
+            tr.close()
+        finally:
+            tr.release()
 
 def _getobsfate(successorssets):
     """ Compute a changeset obsolescence fate based on his successorssets.
@@ -764,6 +786,34 @@ def _successorsetverb(successorset, markers):
     else:
         verb = 'split'
     return {'verb': verb}
+
+# Hijack callers of successorsetverb
+if util.safehasattr(obsutil, 'obsfateprinter'):
+
+    @eh.wrapfunction(obsutil, 'obsfateprinter')
+    def obsfateprinter(orig, successors, markers, ui):
+
+        def closure(successors):
+            return _successorsetverb(successors, markers)['verb']
+
+        if not util.safehasattr(obsutil, 'successorsetverb'):
+            return orig(successors, markers, ui)
+
+        # Save the old value
+        old = obsutil.successorsetverb
+
+        try:
+            # Replace by own
+            obsutil.successorsetverb = closure
+
+            # Call the orig
+            result = orig(successors, markers, ui)
+
+            # And return result
+            return result
+        finally:
+            # Replace the old one
+            obsutil.successorsetverb = old
 
 FORMATSSETSFUNCTIONS = [
     _successorsetdates,

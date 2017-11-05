@@ -36,7 +36,7 @@ Revive usage
   working directory parent is obsolete! (*) (glob)
   (use 'hg evolve' to update to its successor: *) (glob)
   $ hg log -G
-  o  3:[0-9a-f]{12} ab (re)
+  o  2:[0-9a-f]{12} ab (re)
   
   @  1:[0-9a-f]{12} a (re)
   
@@ -44,13 +44,13 @@ Revive usage
   [1] a
   reviving this changeset will create divergence unless you make a duplicate.
   (a)llow divergence or (d)uplicate the changeset?  a
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ hg log -G
-  @  4:[0-9a-f]{12} a (re)
+  @  3:[0-9a-f]{12} a (re)
   
-  o  3:[0-9a-f]{12} ab (re)
+  o  2:[0-9a-f]{12} ab (re)
   
-  $ hg prune 4
+  $ hg prune 3
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 000000000000
   1 changesets pruned
@@ -59,9 +59,9 @@ Duplicate
 
   $ hg touch --duplicate .
   $ hg log -G
-  @  5:[0-9a-f]{12} (re)
+  @  4:[0-9a-f]{12} (re)
   
-  o  3:[0-9a-f]{12} ab (re)
+  o  2:[0-9a-f]{12} ab (re)
   
 
 Multiple touch
@@ -73,23 +73,23 @@ Multiple touch
   $ hg add d
   $ hg commit -m d
   $ hg log -G
-  @  7:[0-9a-f]{12} d (re)
+  @  6:[0-9a-f]{12} d (re)
   |
-  o  6:[0-9a-f]{12} c (re)
+  o  5:[0-9a-f]{12} c (re)
   |
-  o  5:[0-9a-f]{12} (re)
+  o  4:[0-9a-f]{12} (re)
   
-  o  3:[0-9a-f]{12} ab (re)
+  o  2:[0-9a-f]{12} ab (re)
   
   $ hg touch .^:.
   $ hg log -G
-  @  9:[0-9a-f]{12} d (re)
+  @  8:[0-9a-f]{12} d (re)
   |
-  o  8:[0-9a-f]{12} c (re)
+  o  7:[0-9a-f]{12} c (re)
   |
-  o  5:[0-9a-f]{12} (re)
+  o  4:[0-9a-f]{12} (re)
   
-  o  3:[0-9a-f]{12} ab (re)
+  o  2:[0-9a-f]{12} ab (re)
   
 
 check move data kept after rebase on touch:
@@ -107,38 +107,36 @@ check move data kept after rebase on touch:
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
 
   $ hg touch
-  1 new unstable changesets
+  1 new orphan changesets
 
   $ hg log -G --hidden
+  @  11:[0-9a-f]{12} gna1 (re)
+  |
   | o  10:[0-9a-f]{12} move (re)
-  |
+  | |
   | x  9:[0-9a-f]{12} gna1 (re)
-  | |
+  |/
+  o  8:[0-9a-f]{12} d (re)
+  |
+  o  7:[0-9a-f]{12} c (re)
+  |
   | x  6:[0-9a-f]{12} d (re)
-  |/
-  | x  5:[0-9a-f]{12} c (re)
-  |
-  o  8:[0-9a-f]{12} c (re)
-  |
-  | x  7:[0-9a-f]{12} d (re)
   | |
-  | x  6:[0-9a-f]{12} c (re)
+  | x  5:[0-9a-f]{12} c (re)
   |/
-  o  5:[0-9a-f]{12} (re)
+  o  4:[0-9a-f]{12} (re)
   
-  x  4:[0-9a-f]{12} a (re)
+  x  3:[0-9a-f]{12} a (re)
   
-  o  3:[0-9a-f]{12} ab (re)
+  o  2:[0-9a-f]{12} ab (re)
   
-  x  2:[0-9a-f]{12} temporary amend commit for [0-9a-f]{12} (re)
-  |
   x  1:[0-9a-f]{12} a (re)
   
   x  0:[0-9a-f]{12} a (re)
   
 
-  $ hg rebase -s 11 -d 12
-  rebasing 11:[0-9a-f]{12} "move" (re)
+  $ hg rebase -s 10 -d 11
+  rebasing 10:[0-9a-f]{12} "move" (re)
   $ hg st -C --change=tip
   A gna2
     gna1
@@ -146,12 +144,12 @@ check move data kept after rebase on touch:
 
 check that the --duplicate option does not create divergence
 
-  $ hg touch --duplicate 11 --hidden
-  1 new unstable changesets
+  $ hg touch --duplicate 10 --hidden
+  1 new orphan changesets
 
 check that reviving a changeset with no successor does not show the prompt
 
-  $ hg prune 14
+  $ hg prune 13
   1 changesets pruned
-  $ hg touch 14 --hidden
-  1 new unstable changesets
+  $ hg touch 13 --hidden
+  1 new orphan changesets

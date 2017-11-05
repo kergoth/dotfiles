@@ -47,69 +47,78 @@ def showtroubles(**args):
         return templatekw.showlist('trouble', ctx.instabilities(), plural='troubles',
                                    **args)
 
-def closestprecursors(repo, nodeid):
-    """ Yield the list of next precursors pointing on visible changectx nodes
-    """
+if util.safehasattr(templatekw, 'showpredecessors'):
+    eh.templatekw("precursors")(templatekw.showpredecessors)
+else:
+    # for version <= hg4.3
+    def closestprecursors(repo, nodeid):
+        """ Yield the list of next precursors pointing on visible changectx nodes
+        """
 
-    precursors = repo.obsstore.predecessors
-    stack = [nodeid]
+        precursors = repo.obsstore.predecessors
+        stack = [nodeid]
 
-    while stack:
-        current = stack.pop()
-        currentpreccs = precursors.get(current, ())
+        while stack:
+            current = stack.pop()
+            currentpreccs = precursors.get(current, ())
 
-        for prec in currentpreccs:
-            precnodeid = prec[0]
+            for prec in currentpreccs:
+                precnodeid = prec[0]
 
-            if precnodeid in repo:
-                yield precnodeid
-            else:
-                stack.append(precnodeid)
+                if precnodeid in repo:
+                    yield precnodeid
+                else:
+                    stack.append(precnodeid)
 
-@eh.templatekw("precursors")
-def shownextvisibleprecursors(repo, ctx, **args):
-    """Returns a string containing the list of the closest precursors
-    """
-    precursors = sorted(closestprecursors(repo, ctx.node()))
-    precursors = [node.hex(p) for p in precursors]
+    @eh.templatekw("precursors")
+    def shownextvisibleprecursors(repo, ctx, **args):
+        """Returns a string containing the list of the closest precursors
+        """
+        precursors = sorted(closestprecursors(repo, ctx.node()))
+        precursors = [node.hex(p) for p in precursors]
 
-    # <= hg-4.1 requires an explicite gen.
-    # we can use None once the support is dropped
-    #
-    # They also requires an iterator instead of an iterable.
-    gen = iter(" ".join(p[:12] for p in precursors))
-    return templatekw._hybrid(gen.__iter__(), precursors, lambda x: {'precursor': x},
-                              lambda d: d['precursor'][:12])
+        # <= hg-4.1 requires an explicite gen.
+        # we can use None once the support is dropped
+        #
+        # They also requires an iterator instead of an iterable.
+        gen = iter(" ".join(p[:12] for p in precursors))
+        return templatekw._hybrid(gen.__iter__(), precursors, lambda x: {'precursor': x},
+                                  lambda d: d['precursor'][:12])
 
 def closestsuccessors(repo, nodeid):
     """ returns the closest visible successors sets instead.
     """
     return directsuccessorssets(repo, nodeid)
 
-@eh.templatekw("successors")
-def shownextvisiblesuccessors(repo, ctx, templ, **args):
-    """Returns a string of sets of successors for a changectx
+if util.safehasattr(templatekw, 'showsuccessorssets'):
+    eh.templatekw("successors")(templatekw.showsuccessorssets)
+else:
+    # for version <= hg4.3
 
-    Format used is: [ctx1, ctx2], [ctx3] if ctx has been splitted into ctx1 and
-    ctx2 while also diverged into ctx3"""
-    if not ctx.obsolete():
-        return ''
+    @eh.templatekw("successors")
+    def shownextvisiblesuccessors(repo, ctx, templ, **args):
+        """Returns a string of sets of successors for a changectx
 
-    ssets, _ = closestsuccessors(repo, ctx.node())
-    ssets = [[node.hex(n) for n in ss] for ss in ssets]
+        Format used is: [ctx1, ctx2], [ctx3] if ctx has been splitted into ctx1 and
+        ctx2 while also diverged into ctx3"""
+        if not ctx.obsolete():
+            return ''
 
-    data = []
-    gen = []
-    for ss in ssets:
-        subgen = '[%s]' % ', '.join(n[:12] for n in ss)
-        gen.append(subgen)
-        h = templatekw._hybrid(iter(subgen), ss, lambda x: {'successor': x},
-                               lambda d: "%s" % d["successor"])
-        data.append(h)
+        ssets, _ = closestsuccessors(repo, ctx.node())
+        ssets = [[node.hex(n) for n in ss] for ss in ssets]
 
-    gen = ', '.join(gen)
-    return templatekw._hybrid(iter(gen), data, lambda x: {'successorset': x},
-                              lambda d: d["successorset"])
+        data = []
+        gen = []
+        for ss in ssets:
+            subgen = '[%s]' % ', '.join(n[:12] for n in ss)
+            gen.append(subgen)
+            h = templatekw._hybrid(iter(subgen), ss, lambda x: {'successor': x},
+                                   lambda d: "%s" % d["successor"])
+            data.append(h)
+
+        gen = ', '.join(gen)
+        return templatekw._hybrid(iter(gen), data, lambda x: {'successorset': x},
+                                  lambda d: d["successorset"])
 
 def _getusername(ui):
     """the default username in the config or None"""
@@ -191,23 +200,26 @@ def obsfatelineprinter(obsfateline, ui):
     # Verb
     line.append(obsfateline['verb'])
 
-    # Users
-    if (verbose or normal) and 'users' in obsfateline:
-        users = obsfateline['users']
-
-        if normal:
-            username = _getusername(ui)
-            users = [user for user in users if user != username]
-
-        if users:
-            line.append(" by %s" % ",".join(users))
-
     # Successors
     successors = obsfateline["successors"]
 
     if successors:
         fmtsuccessors = map(lambda s: s[:12], successors)
         line.append(" as %s" % ", ".join(fmtsuccessors))
+
+    # Users
+    if (verbose or normal) and 'users' in obsfateline:
+        users = obsfateline['users']
+
+        if not verbose:
+            # If current user is the only user, do not show anything if not in
+            # verbose mode
+            username = _getusername(ui)
+            if len(users) == 1 and users[0] == username:
+                users = None
+
+        if users:
+            line.append(" by %s" % ", ".join(users))
 
     # Date
     if verbose:
@@ -234,13 +246,13 @@ def obsfateprinter(obsfate, ui, prefix=""):
 
     return "\n".join(lines)
 
-@eh.templatekw("obsfate")
-def showobsfate(repo, ctx, **args):
+@eh.templatekw("obsfatedata")
+def showobsfatedata(repo, ctx, **args):
     # Get the needed obsfate data
     values = obsfatedata(repo, ctx)
 
     if values is None:
-        return ''
+        return templatekw.showlist("obsfatedata", [], args)
 
     # Format each successorset successors list
     for raw in values:
@@ -291,8 +303,16 @@ def showobsfate(repo, ctx, **args):
 
     return templatekw._hybrid(gen, values, lambda x: {name: x}, fmt)
 
-# Check if we can hook directly on the changeset_printer
-if util.safehasattr(cmdutil.changeset_printer, '_exthook'):
+# rely on core mercurial starting from 4.4 for the obsfate template
+if not util.safehasattr(templatekw, 'showobsfate'):
+
+    @eh.templatekw("obsfate")
+    def showobsfate(*args, **kwargs):
+        return showobsfatedata(*args, **kwargs)
+
+if util.safehasattr(cmdutil.changeset_printer, '_showobsfate'):
+    pass # already included by default
+elif util.safehasattr(cmdutil.changeset_printer, '_exthook'):
     @eh.wrapfunction(cmdutil.changeset_printer, '_exthook')
     def exthook(original, self, ctx):
         # Call potential other extensions

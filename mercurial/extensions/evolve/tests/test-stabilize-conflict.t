@@ -65,7 +65,7 @@ proper behavior without conflict
   $ safesed 's/huit/eight/' babar
   $ hg diff
   diff -r 9d5daf8bd956 babar
-  --- a/babar	Thu Jan 01 00:00:00 1970 +0000
+  --- a/babar	* (glob)
   +++ b/babar	* (glob)
   @@ -5,6 +5,6 @@
    cinq
@@ -76,21 +76,21 @@ proper behavior without conflict
    neuf
    dix
   $ hg amend
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg evolve
   move:[2] babar count up to fifteen
-  atop:[4] babar count up to ten
+  atop:[3] babar count up to ten
   merging babar
   working directory is now at 71c18f70c34f
   $ hg resolve -l
   $ hg log -G
-  @  changeset:   5:71c18f70c34f
+  @  changeset:   4:71c18f70c34f
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     babar count up to fifteen
   |
-  o  changeset:   4:5977072d13c5
+  o  changeset:   3:5977072d13c5
   |  parent:      0:29ec1554cfaf
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -109,12 +109,12 @@ proper behavior with conflict using internal:merge
   $ hg gdown
   gdown have been deprecated in favor of previous
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  [4] babar count up to ten
+  [3] babar count up to ten
   $ safesed 's/dix/ten/' babar
   $ hg diff
   diff -r 5977072d13c5 babar
   --- a/babar	Thu Jan 01 00:00:00 1970 +0000
-  +++ b/babar	* (glob)
+  +++ b/babar	Thu Jan 01 00:00:00 1970 +0000
   @@ -7,4 +7,4 @@
    sept
    eight
@@ -122,10 +122,10 @@ proper behavior with conflict using internal:merge
   -dix
   +ten
   $ hg amend
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg evolve
-  move:[5] babar count up to fifteen
-  atop:[7] babar count up to ten
+  move:[4] babar count up to fifteen
+  atop:[5] babar count up to ten
   merging babar
   warning: conflicts while merging babar! (edit, then use 'hg resolve --mark')
   evolve failed!
@@ -135,24 +135,24 @@ proper behavior with conflict using internal:merge
   $ hg resolve -l
   U babar
   $ hg log -G
-  @  changeset:   7:e04690b09bc6
+  @  changeset:   5:e04690b09bc6
   |  tag:         tip
   |  parent:      0:29ec1554cfaf
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     babar count up to ten
   |
-  | o  changeset:   5:71c18f70c34f
+  | o  changeset:   4:71c18f70c34f
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     unstable
+  | |  instability: orphan
   | |  summary:     babar count up to fifteen
   | |
-  | x  changeset:   4:5977072d13c5
+  | x  changeset:   3:5977072d13c5
   |/   parent:      0:29ec1554cfaf
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    amended as e04690b09bc6
+  |    obsolete:    amended using amend as 5:e04690b09bc6
   |    summary:     babar count up to ten
   |
   o  changeset:   0:29ec1554cfaf
@@ -168,16 +168,16 @@ proper behavior with conflict using internal:merge
   $ hg resolve --all -m
   (no more unresolved files)
   $ hg evolve --continue
-  grafting 5:71c18f70c34f "babar count up to fifteen"
+  grafting 4:71c18f70c34f "babar count up to fifteen"
   $ hg resolve -l
   $ hg log -G
-  @  changeset:   8:1836b91c6c1d
+  @  changeset:   6:1836b91c6c1d
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     babar count up to fifteen
   |
-  o  changeset:   7:e04690b09bc6
+  o  changeset:   5:e04690b09bc6
   |  parent:      0:29ec1554cfaf
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -196,12 +196,12 @@ proper behavior with conflict using an external merge tool
   $ hg gdown
   gdown have been deprecated in favor of previous
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  [7] babar count up to ten
+  [5] babar count up to ten
   $ safesed 's/ten/zehn/' babar
   $ hg diff
   diff -r e04690b09bc6 babar
   --- a/babar	Thu Jan 01 00:00:00 1970 +0000
-  +++ b/babar	* (glob)
+  +++ b/babar	Thu Jan 01 00:00:00 1970 +0000
   @@ -7,4 +7,4 @@
    sept
    eight
@@ -209,13 +209,13 @@ proper behavior with conflict using an external merge tool
   -ten
   +zehn
   $ hg amend
-  1 new unstable changesets
+  1 new orphan changesets
   $ safesed 's/interactive=.*/interactive=true/' $HGRCPATH
   $ hg evolve --tool touch <<EOF
   > n
   > EOF
-  move:[8] babar count up to fifteen
-  atop:[10] babar count up to ten
+  move:[6] babar count up to fifteen
+  atop:[7] babar count up to ten
   merging babar
    output file babar appears unchanged
   was merge successful (yn)? n
@@ -227,24 +227,24 @@ proper behavior with conflict using an external merge tool
   $ hg resolve -l
   U babar
   $ hg log -G
-  @  changeset:   10:b20d08eea373
+  @  changeset:   7:b20d08eea373
   |  tag:         tip
   |  parent:      0:29ec1554cfaf
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     babar count up to ten
   |
-  | o  changeset:   8:1836b91c6c1d
+  | o  changeset:   6:1836b91c6c1d
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  trouble:     unstable
+  | |  instability: orphan
   | |  summary:     babar count up to fifteen
   | |
-  | x  changeset:   7:e04690b09bc6
+  | x  changeset:   5:e04690b09bc6
   |/   parent:      0:29ec1554cfaf
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    amended as b20d08eea373
+  |    obsolete:    amended using amend as 7:b20d08eea373
   |    summary:     babar count up to ten
   |
   o  changeset:   0:29ec1554cfaf

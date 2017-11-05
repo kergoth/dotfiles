@@ -17,6 +17,13 @@ else: # compat with hg < 4.3
     from mercurial import cmdutil
     command = cmdutil.command
 
+configitem = None
+dynamicdefault = None
+if util.safehasattr(registrar, 'configitem'):
+    configitem = registrar.configitem
+    from mercurial import configitems
+    dynamicdefault = configitems.dynamicdefault
+
 class exthelper(object):
     """Helper for modular extension setup
 
@@ -39,6 +46,22 @@ class exthelper(object):
         self.cmdtable = {}
         self.command = command(self.cmdtable)
 
+        self.configtable = {}
+        self._configitem = None
+        if configitem is not None:
+            self._configitem = configitem(self.configtable)
+
+    def configitem(self, section, config):
+        """For Mercurial 4.4 and above, register a config item
+
+        For now constraint to 'dynamicdefault' until we only support version with the feature.
+        Older version would otherwise not use the declare default.
+
+        For older version no-op fallback for old Mercurial versions
+        """
+        if self._configitem is not None:
+            self._configitem(section, config, default=dynamicdefault)
+
     def merge(self, other):
         self._uicallables.extend(other._uicallables)
         self._extcallables.extend(other._extcallables)
@@ -50,6 +73,11 @@ class exthelper(object):
         self._functionwrappers.extend(other._functionwrappers)
         self._duckpunchers.extend(other._duckpunchers)
         self.cmdtable.update(other.cmdtable)
+        for section, items in other.configtable.iteritems():
+            if section in self.configtable:
+                self.configtable[section].update(items)
+            else:
+                self.configtable[section] = items
 
     def final_uisetup(self, ui):
         """Method to be used as the extension uisetup

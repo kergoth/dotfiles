@@ -145,6 +145,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 4 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b:f0f3ef9a6cd5
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg -R repo_B pull --rev 13
@@ -154,6 +155,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 4 changesets with 0 changes to 0 files (+1 heads)
+  new changesets 66f7d451a68b:b4594d867745
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg -R repo_B pull --rev 14
   pulling from $TESTTMP/repo_A (glob)
@@ -162,6 +164,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 0 files (+1 heads)
+  new changesets 43227190fef8
   (run 'hg heads .' to see heads, 'hg merge' to merge)
   $ hg -R repo_B pull
   pulling from $TESTTMP/repo_A (glob)
@@ -170,6 +173,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 7 changesets with 0 changes to 0 files (+3 heads)
+  new changesets 2702dd0c91e7:1d8d22637c2d
   (run 'hg heads .' to see heads, 'hg merge' to merge)
   $ hg -R repo_B log -G
   o    15 1d8d22637c2d r15 tip
@@ -211,6 +215,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 7 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b:ff43616e5d0f
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg -R repo_C pull --rev 12
@@ -220,6 +225,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 2 changesets with 0 changes to 0 files (+1 heads)
+  new changesets bab5d5bf48bd:e46a4836065c
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg -R repo_C pull --rev 15
   pulling from $TESTTMP/repo_A (glob)
@@ -228,6 +234,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 4 changesets with 0 changes to 0 files (+1 heads)
+  new changesets 4c748ffd1a46:1d8d22637c2d
   (run 'hg heads .' to see heads, 'hg merge' to merge)
   $ hg -R repo_C pull
   pulling from $TESTTMP/repo_A (glob)
@@ -236,6 +243,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 3 changesets with 0 changes to 0 files (+3 heads)
+  new changesets 2702dd0c91e7:b4594d867745
   (run 'hg heads .' to see heads, 'hg merge' to merge)
   $ hg -R repo_C log -G
   o  15 b4594d867745 r13 tip
@@ -277,6 +285,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 2 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b:fa942426a6fd
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg -R repo_D pull --rev 10
@@ -286,6 +295,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 5 changesets with 0 changes to 0 files
+  new changesets 66f7d451a68b:ff43616e5d0f
   (run 'hg update' to get a working copy)
   $ hg -R repo_D pull --rev 15
   pulling from $TESTTMP/repo_A (glob)
@@ -294,6 +304,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 4 changesets with 0 changes to 0 files (+1 heads)
+  new changesets 4c748ffd1a46:1d8d22637c2d
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg -R repo_D pull
   pulling from $TESTTMP/repo_A (glob)
@@ -302,6 +313,7 @@ have repo with changesets in orders
   adding manifests
   adding file changes
   added 5 changesets with 0 changes to 0 files (+4 heads)
+  new changesets 2702dd0c91e7:b4594d867745
   (run 'hg heads .' to see heads, 'hg merge' to merge)
   $ hg -R repo_D log -G
   o  15 b4594d867745 r13 tip
@@ -411,6 +423,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 5 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b:43227190fef8
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg -R repo_E pull --rev e7d9710d9fc6
@@ -420,6 +433,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 0 files (+1 heads)
+  new changesets e7d9710d9fc6
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg clone repo_A repo_F --rev "1d8d22637c2d"
@@ -427,6 +441,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 8 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b:1d8d22637c2d
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg -R repo_F pull --rev d62d843c9a01
@@ -436,6 +451,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 2 changesets with 0 changes to 0 files (+1 heads)
+  new changesets e7d9710d9fc6:d62d843c9a01
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg clone repo_A repo_G --rev "e7d9710d9fc6"
@@ -443,6 +459,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 5 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b:e7d9710d9fc6
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg -R repo_G pull --rev 43227190fef8
@@ -452,6 +469,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 0 files (+1 heads)
+  new changesets 43227190fef8
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg -R repo_G pull --rev 2702dd0c91e7
   pulling from $TESTTMP/repo_A (glob)
@@ -460,6 +478,7 @@ Check with different subset
   adding manifests
   adding file changes
   added 3 changesets with 0 changes to 0 files (+1 heads)
+  new changesets 4c748ffd1a46:2702dd0c91e7
   (run 'hg heads .' to see heads, 'hg merge' to merge)
 
   $ for x in E F G; do
@@ -588,6 +607,7 @@ Multiple recursions
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 0 files
+  new changesets 1ea73414a91b
   updating to branch default
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd recursion_random

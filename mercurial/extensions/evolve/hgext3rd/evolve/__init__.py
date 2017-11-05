@@ -32,7 +32,7 @@ Some improvement and bug fixes available in newer version of Mercurial are also
 backported to older version of Mercurial by this extension. Some older
 experimental protocol are also supported for a longer time in the extensions to
 help people transitioning. (The extensions is currently compatible down to
-Mercurial version 3.8).
+Mercurial version 4.1).
 
 New Config::
 
@@ -374,6 +374,16 @@ uisetup = eh.final_uisetup
 extsetup = eh.final_extsetup
 reposetup = eh.final_reposetup
 cmdtable = eh.cmdtable
+configtable = eh.configtable
+
+# Configuration
+eh.configitem('experimental', 'evolutioncommands')
+eh.configitem('experimental', 'evolution.allnewcommands')
+eh.configitem('experimental', 'prunestrip')
+
+# hack around because we need an actual default there
+if configtable:
+    configtable['experimental']['evolution.allnewcommands'].default = None
 
 # pre hg 4.0 compat
 
@@ -410,6 +420,8 @@ def _configureoptions(ui, repo):
     if not evolveopts:
         evolveopts = ['all']
         ui.setconfig('experimental', 'evolution', evolveopts, 'evolve')
+    if obsolete.isenabled(repo, 'exchange'):
+        repo.ui.setconfig('server', 'bundle1', False)
 
 @eh.uisetup
 def _configurecmdoptions(ui):
@@ -418,7 +430,7 @@ def _configurecmdoptions(ui):
     # This must be in the same function as the option configuration above to
     # guarantee it happens after the above configuration, but before the
     # extsetup functions.
-    evolvecommands = ui.configlist('experimental', 'evolutioncommands')
+    evolvecommands = ui.configlist('experimental', 'evolutioncommands', [])
     evolveopts = ui.configlist('experimental', 'evolution')
     if evolveopts and (commandopt not in evolveopts and
                        'all' not in evolveopts):
@@ -492,11 +504,11 @@ def setupparentcommand(ui):
 
 @eh.uisetup
 def _installalias(ui):
-    if ui.config('alias', 'odiff', None) is None:
+    if ui.config('alias', 'odiff') is None:
         ui.setconfig('alias', 'odiff',
                      "diff --hidden --rev 'limit(precursors(.),1)' --rev .",
                      'evolve')
-    if ui.config('alias', 'grab', None) is None:
+    if ui.config('alias', 'grab') is None:
         if os.name == 'nt':
             hgexe = ('"%s"' % util.hgexecutable())
             ui.setconfig('alias', 'grab', "! " + hgexe
@@ -693,7 +705,7 @@ def _warnobsoletewc(ui, repo):
     if reason == 'pruned':
         solvemsg = _("use 'hg evolve' to update to its parent successor")
     elif reason == 'diverged':
-        debugcommand = "hg evolve --list --contentdivergent"
+        debugcommand = "hg evolve --list --content-divergent"
         basemsg = _("%s has diverged, use '%s' to resolve the issue")
         solvemsg = basemsg % (shortnode, debugcommand)
     elif reason == 'superseed':
@@ -924,7 +936,7 @@ def relocate(repo, orig, dest, pctx=None, keepbranch=False):
             repo.setparents(repo['.'].node(), nullid)
             repo.dirstate.write(tr)
             # fix up dirstate for copies and renames
-            copies.duplicatecopies(repo, dest.rev(), orig.p1().rev())
+            compat.duplicatecopies(repo, repo[None], dest.rev(), orig.p1().rev())
 
         class LocalMergeFailure(MergeFailure, exc.__class__):
             pass
@@ -1048,28 +1060,28 @@ def _handlenotrouble(ui, repo, allopt, revopt, anyopt, targetcat):
     }
 
     hintmap = {
-        'phasedivergent': _("do you want to use --phasedivergent"),
+        'phasedivergent': _("do you want to use --phase-divergent"),
         'phasedivergent+contentdivergent': _("do you want to use "
-                                             "--phasedivergent or"
-                                             " --contentdivergent"),
-        'phasedivergent+orphan': _("do you want to use --phasedivergent"
+                                             "--phase-divergent or"
+                                             " --content-divergent"),
+        'phasedivergent+orphan': _("do you want to use --phase-divergent"
                                    " or --orphan"),
-        'contentdivergent': _("do you want to use --contentdivergent"),
-        'contentdivergent+orphan': _("do you want to use --contentdivergent"
+        'contentdivergent': _("do you want to use --content-divergent"),
+        'contentdivergent+orphan': _("do you want to use --content-divergent"
                                      " or --orphan"),
         'orphan': _("do you want to use --orphan"),
         'any+phasedivergent': _("do you want to use --any (or --rev) and"
-                                " --phasedivergent"),
+                                " --phase-divergent"),
         'any+phasedivergent+contentdivergent': _("do you want to use --any"
                                                  " (or --rev) and"
-                                                 " --phasedivergent or"
-                                                 " --contentdivergent"),
+                                                 " --phase-divergent or"
+                                                 " --content-divergent"),
         'any+phasedivergent+orphan': _("do you want to use --any (or --rev)"
-                                       " and --phasedivergent or --orphan"),
+                                       " and --phase-divergent or --orphan"),
         'any+contentdivergent': _("do you want to use --any (or --rev) and"
-                                  " --contentdivergent"),
+                                  " --content-divergent"),
         'any+contentdivergent+orphan': _("do you want to use --any (or --rev)"
-                                         " and --contentdivergent or "
+                                         " and --content-divergent or "
                                          "--orphan"),
         'any+orphan': _("do you want to use --any (or --rev)"
                         "and --orphan"),
@@ -1112,10 +1124,10 @@ def _handlenotrouble(ui, repo, allopt, revopt, anyopt, targetcat):
         if othertroubles:
             hint = hintmap['+'.join(othertroubles)]
         else:
-            l = len(troubled[targetcat])
-            if l:
+            length = len(troubled[targetcat])
+            if length:
                 hint = _("%d other %s in the repository, do you want --any "
-                         "or --rev") % (l, targetcat)
+                         "or --rev") % (length, targetcat)
             else:
                 othertroubles = []
                 for cat in unselectedcategories:
@@ -1406,9 +1418,9 @@ def listtroubles(ui, repo, troublecategories, **opts):
         'directory')),
      ('r', 'rev', [], _('solves troubles of these revisions')),
      ('', 'bumped', False, _('solves only bumped changesets')),
-     ('', 'phasedivergent', False, _('solves only phase-divergent changesets')),
+     ('', 'phase-divergent', False, _('solves only phase-divergent changesets')),
      ('', 'divergent', False, _('solves only divergent changesets')),
-     ('', 'contentdivergent', False, _('solves only content-divergent changesets')),
+     ('', 'content-divergent', False, _('solves only content-divergent changesets')),
      ('', 'unstable', False, _('solves only unstable changesets')),
      ('', 'orphan', False, _('solves only orphan changesets (default)')),
      ('a', 'all', False, _('evolve all troubled changesets related to the '
@@ -1508,21 +1520,24 @@ def evolve(ui, repo, **opts):
 
     if opts['divergent']:
         msg = ("'evolve --divergent' is deprecated, "
-               "use 'evolve --contentdivergent'")
+               "use 'evolve --content-divergent'")
         repo.ui.deprecwarn(msg, '4.4')
 
-        opts['contentdivergent'] = opts['divergent']
+        opts['content_divergent'] = opts['divergent']
 
     if opts['bumped']:
         msg = ("'evolve --bumped' is deprecated, "
-               "use 'evolve --phasedivergent'")
+               "use 'evolve --phase-divergent'")
         repo.ui.deprecwarn(msg, '4.4')
 
-        opts['phasedivergent'] = opts['bumped']
+        opts['phase_divergent'] = opts['bumped']
 
-    troublecategories = ['phasedivergent', 'contentdivergent', 'orphan']
-    specifiedcategories = [t for t in troublecategories if opts[t]]
+    troublecategories = ['phase_divergent', 'content_divergent', 'orphan']
+    specifiedcategories = [t.replace('_', '')
+                           for t in troublecategories
+                           if opts[t]]
     if listopt:
+        compat.startpager(ui, 'evolve')
         listtroubles(ui, repo, specifiedcategories, **opts)
         return
 
@@ -2246,7 +2261,7 @@ def commitwrapper(orig, ui, repo, *arg, **kwargs):
                            "backup bundle")),
     ])
 def stripwrapper(orig, ui, repo, *revs, **kwargs):
-    if (not ui.configbool('experimental', 'prunestrip') or
+    if (not ui.configbool('experimental', 'prunestrip', False) or
         kwargs.get('bundle', False)):
         return orig(ui, repo, *revs, **kwargs)
 

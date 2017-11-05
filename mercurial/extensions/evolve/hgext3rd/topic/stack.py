@@ -9,6 +9,7 @@ from mercurial import (
     error,
     node,
     phases,
+    obsolete,
     util,
 )
 from .evolvebits import builddependencies, _singlesuccessor
@@ -23,6 +24,25 @@ if not util.safehasattr(context.basectx, 'orphan'):
 if not util.safehasattr(context.basectx, 'isunstable'):
     context.basectx.isunstable = context.basectx.troubled
 
+def _stackcandidates(repo):
+    """build the smaller set of revs that might be part of a stack.
+
+    The intend is to build something more efficient than what revsets do in
+    this area.
+    """
+    phasecache = repo._phasecache
+    if not phasecache._phasesets:
+        return repo.revs('(not public()) - obsolete()')
+    if any(s is None for s in phasecache._phasesets):
+        return repo.revs('(not public()) - obsolete()')
+
+    result = set()
+    for s in phasecache._phasesets[phases.draft:]:
+        result |= s
+
+    result -= obsolete.getrevs(repo, 'obsolete')
+    return result
+
 class stack(object):
     """object represent a stack and common logic associated to it."""
 
@@ -31,12 +51,15 @@ class stack(object):
         self.branch = branch
         self.topic = topic
         self.behinderror = None
+
+        subset = _stackcandidates(repo)
+
         if topic is not None and branch is not None:
             raise error.ProgrammingError('both branch and topic specified (not defined yet)')
         elif topic is not None:
-            trevs = repo.revs("topic(%s) - obsolete()", topic)
+            trevs = repo.revs("%ld and topic(%s)", subset, topic)
         elif branch is not None:
-            trevs = repo.revs("branch(%s) - public() - obsolete() - topic()", branch)
+            trevs = repo.revs("%ld and branch(%s) - topic()", subset, branch)
         else:
             raise error.ProgrammingError('neither branch and topic specified (not defined yet)')
         self._revs = trevs
@@ -275,28 +298,30 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
     # super crude initial version
     for idx, isentry, ctx in entries[::-1]:
 
+        symbol = None
         states = []
         iscurrentrevision = repo.revs('%d and parents()', ctx.rev())
+
+        if iscurrentrevision:
+            states.append('current')
+            symbol = '@'
+
+        if ctx.orphan():
+            symbol = '$'
+            states.append('unstable')
 
         if not isentry:
             symbol = '^'
             # "base" is kind of a "ghost" entry
-            # skip other label for them (no current, no unstable)
-            states = ['base']
-        elif ctx.orphan():
-            # current revision can be unstable also, so in that case show both
-            # the states and the symbol '@' (issue5553)
-            if iscurrentrevision:
-                states.append('current')
-                symbol = '@'
-            symbol = '$'
-            states.append('unstable')
-        elif iscurrentrevision:
-            states.append('current')
-            symbol = '@'
-        else:
+            states.append('base')
+
+        # none of the above if statments get executed
+        if not symbol:
             symbol = ':'
             states.append('clean')
+
+        states.sort()
+
         fm.startitem()
         fm.data(isentry=isentry)
 

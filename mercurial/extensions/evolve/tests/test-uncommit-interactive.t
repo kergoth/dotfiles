@@ -302,7 +302,7 @@ Push the changes back to the commit and more commits for more testing
 
   $ hg amend
   $ glog
-  @  7:905eb2a23ea2@default(draft) another one
+  @  6:905eb2a23ea2@default(draft) another one
   |
   o  0:7733902a8d94@default(draft) The base commit
   
@@ -445,9 +445,9 @@ to uncommit" message which is a bug in interactive selection.
   undeleting a
 
   $ glog
-  @  12:42cc15efbec2@default(draft) Added foo
+  @  10:42cc15efbec2@default(draft) Added foo
   |
-  o  7:905eb2a23ea2@default(draft) another one
+  o  6:905eb2a23ea2@default(draft) another one
   |
   o  0:7733902a8d94@default(draft) The base commit
   
@@ -517,15 +517,15 @@ Testing between the stack and with dirty working copy
 =====================================================
 
   $ glog
-  @  18:25a080d13cb2@default(draft) Added x
+  @  16:25a080d13cb2@default(draft) Added x
   |
-  o  12:42cc15efbec2@default(draft) Added foo
+  o  10:42cc15efbec2@default(draft) Added foo
   |
-  o  7:905eb2a23ea2@default(draft) another one
+  o  6:905eb2a23ea2@default(draft) another one
   |
   o  0:7733902a8d94@default(draft) The base commit
   
-  $ hg up 7
+  $ hg up 905eb2a23ea2
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
 
   $ touch bar
@@ -597,7 +597,7 @@ Testing between the stack and with dirty working copy
   
   patching file a
   Hunk #1 succeeded at 1 with fuzz 1 (offset -1 lines).
-  2 new unstable changesets
+  2 new orphan changesets
 
   $ hg diff
   diff -r 676366511f95 a

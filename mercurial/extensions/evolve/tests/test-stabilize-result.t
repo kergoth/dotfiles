@@ -27,33 +27,30 @@ Test evolve removing the changeset being evolved
   (leaving bookmark changea)
   $ echo a >> a
   $ hg amend -m changea
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg evolve -v --confirm
   move:[2] changea
-  atop:[4] changea
+  atop:[3] changea
   perform evolve? [Ny] n
   abort: evolve aborted by user
   [255]
   $ echo y | hg evolve -v --confirm --config ui.interactive=True
   move:[2] changea
-  atop:[4] changea
+  atop:[3] changea
   perform evolve? [Ny] y
   hg rebase -r cce2c55b8965 -d fb9d051ec0a4
   resolving manifests
   $ glog --hidden
-  @  4:fb9d051ec0a4@default(draft) bk:[changea] changea
+  @  3:fb9d051ec0a4@default(draft) bk:[changea] changea
   |
-  | x  3:c5727dbded3c@default(draft) bk:[] temporary amend commit for 102a90ea7b4a
+  | x  2:cce2c55b8965@default(draft) bk:[] changea
   | |
-  | | x  2:cce2c55b8965@default(draft) bk:[] changea
-  | |/
   | x  1:102a90ea7b4a@default(draft) bk:[] addb
   |/
   o  0:07f494440405@default(draft) bk:[] adda
   
   $ hg debugobsolete
   102a90ea7b4a3361e4082ed620918c261189a36a fb9d051ec0a450a4aa2ffc8c324979832ef88065 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  c5727dbded3c3a6877cf60d6bb552a76812cb844 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'ef1': '*', 'user': 'test'} (glob)
   cce2c55b896511e0b6e04173c9450ba822ebc740 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'ef1': '*', 'user': 'test'} (glob)
 
 Test evolve with conflict
@@ -73,20 +70,20 @@ Test evolve with conflict
   $ hg gdown
   gdown have been deprecated in favor of previous
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  [4] changea
+  [3] changea
   $ echo 'a' > a
   $ hg amend
-  1 new unstable changesets
+  1 new orphan changesets
   $ hg evolve
-  move:[5] newer a
-  atop:[7] changea
+  move:[4] newer a
+  atop:[5] changea
   merging a
   warning: conflicts while merging a! (edit, then use 'hg resolve --mark')
   evolve failed!
   fix conflict and run 'hg evolve --continue' or use 'hg update -C .' to abort
   abort: unresolved merge conflicts (see hg help resolve)
   [255]
-  $ hg revert -r 'unstable()' a
+  $ hg revert -r "orphan()" a
   $ hg diff
   diff -r 66719795a494 a
   --- a/a	* (glob)
@@ -96,13 +93,13 @@ Test evolve with conflict
   +a
   +newer a
   $ hg evolve --continue
-  grafting 5:3655f0f50885 "newer a"
+  grafting 4:3655f0f50885 "newer a"
   abort: unresolved merge conflicts (see 'hg help resolve')
   [255]
   $ hg resolve -m a
   (no more unresolved files)
   $ hg evolve --continue
-  grafting 5:3655f0f50885 "newer a"
+  grafting 4:3655f0f50885 "newer a"
 
 Stabilize latecomer with different parent
 =========================================
@@ -110,9 +107,9 @@ Stabilize latecomer with different parent
 (the same-parent case is handled in test-evolve.t)
 
   $ glog
-  @  8:1cf0aacfd363@default(draft) bk:[] newer a
+  @  6:1cf0aacfd363@default(draft) bk:[] newer a
   |
-  o  7:66719795a494@default(draft) bk:[changea] changea
+  o  5:66719795a494@default(draft) bk:[changea] changea
   |
   o  0:07f494440405@default(draft) bk:[] adda
   
@@ -121,7 +118,7 @@ Add another commit
   $ hg gdown
   gdown have been deprecated in favor of previous
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  [7] changea
+  [5] changea
   $ echo 'c' > c
   $ hg add c
   $ hg commit -m 'add c'
@@ -130,7 +127,7 @@ Add another commit
 Get a successors of 8 on it
 
   $ hg grab 1cf0aacfd363
-  rebasing 8:1cf0aacfd363 "newer a"
+  rebasing 6:1cf0aacfd363 "newer a"
   ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
 
 Add real change to the successors
@@ -141,50 +138,50 @@ Add real change to the successors
 Make precursors public
 
   $ hg phase --hidden --public 1cf0aacfd363
-  1 new bumped changesets
+  1 new phase-divergent changesets
   $ glog
-  @  12:(73b15c7566e9|d5c7ef82d003)@default\(draft\) bk:\[\] newer a (re)
+  @  9:(73b15c7566e9|d5c7ef82d003)@default\(draft\) bk:\[\] newer a (re)
   |
-  o  9:7bc2f5967f5e@default(draft) bk:[] add c
+  o  7:7bc2f5967f5e@default(draft) bk:[] add c
   |
-  | o  8:1cf0aacfd363@default(public) bk:[] newer a
+  | o  6:1cf0aacfd363@default(public) bk:[] newer a
   |/
-  o  7:66719795a494@default(public) bk:[changea] changea
+  o  5:66719795a494@default(public) bk:[changea] changea
   |
   o  0:07f494440405@default(public) bk:[] adda
   
 
 Stabilize!
 
-  $ hg evolve --any --dry-run --phasedivergent
-  recreate:[12] newer a
-  atop:[8] newer a
-  hg rebase --rev (73b15c7566e9|d5c7ef82d003) --dest 66719795a494; (re)
+  $ hg evolve --any --dry-run --phase-divergent
+  recreate:[9] newer a
+  atop:[6] newer a
+  hg rebase --rev d5c7ef82d003 --dest 66719795a494;
   hg update 1cf0aacfd363;
-  hg revert --all --rev (73b15c7566e9|d5c7ef82d003); (re)
+  hg revert --all --rev d5c7ef82d003;
   hg commit --msg "bumped update to %s" (no-eol)
-  $ hg evolve --any --confirm --phasedivergent
-  recreate:[12] newer a
-  atop:[8] newer a
+  $ hg evolve --any --confirm --phase-divergent
+  recreate:[9] newer a
+  atop:[6] newer a
   perform evolve? [Ny] n
   abort: evolve aborted by user
   [255]
-  $ echo y | hg evolve --any --confirm --config ui.interactive=True --phasedivergent
-  recreate:[12] newer a
-  atop:[8] newer a
+  $ echo y | hg evolve --any --confirm --config ui.interactive=True --phase-divergent
+  recreate:[9] newer a
+  atop:[6] newer a
   perform evolve? [Ny] y
   rebasing to destination parent: 66719795a494
   computing new diff
   committed as c2c1151aa854
   working directory is now at c2c1151aa854
   $ glog
-  @  14:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
+  @  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
   |
-  | o  9:7bc2f5967f5e@default(draft) bk:[] add c
+  | o  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
-  o |  8:1cf0aacfd363@default(public) bk:[] newer a
+  o |  6:1cf0aacfd363@default(public) bk:[] newer a
   |/
-  o  7:66719795a494@default(public) bk:[changea] changea
+  o  5:66719795a494@default(public) bk:[changea] changea
   |
   o  0:07f494440405@default(public) bk:[] adda
   
@@ -205,15 +202,15 @@ Stabilize divergent changesets with same parent
   > EOF
   $ hg ci -m 'More addition'
   $ glog
-  @  15:3932c176bbaa@default(draft) bk:[] More addition
+  @  12:3932c176bbaa@default(draft) bk:[] More addition
   |
-  | o  14:(a7cabd7bd9c2|671b9d7eeaec)@default\(draft\) bk:\[\] bumped update to 1cf0aacfd363: (re)
+  | o  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
   | |
-  o |  9:7bc2f5967f5e@default(draft) bk:[] add c
+  o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
-  | o  8:1cf0aacfd363@default(public) bk:[] newer a
+  | o  6:1cf0aacfd363@default(public) bk:[] newer a
   |/
-  o  7:66719795a494@default(public) bk:[changea] changea
+  o  5:66719795a494@default(public) bk:[changea] changea
   |
   o  0:07f494440405@default(public) bk:[] adda
   
@@ -228,36 +225,36 @@ Stabilize divergent changesets with same parent
   $ cat a.old >> a
   $ rm a.old
   $ hg amend
-  2 new divergent changesets
+  2 new content-divergent changesets
   $ glog
-  @  19:eacc9c8240fe@default(draft) bk:[] More addition
+  @  14:eacc9c8240fe@default(draft) bk:[] More addition
   |
-  | o  17:d2f173e25686@default(draft) bk:[] More addition
+  | o  13:d2f173e25686@default(draft) bk:[] More addition
   |/
-  | o  14:(a7cabd7bd9c2|671b9d7eeaec)@default\(draft\) bk:\[\] bumped update to 1cf0aacfd363: (re)
+  | o  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
   | |
-  o |  9:7bc2f5967f5e@default(draft) bk:[] add c
+  o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
-  | o  8:1cf0aacfd363@default(public) bk:[] newer a
+  | o  6:1cf0aacfd363@default(public) bk:[] newer a
   |/
-  o  7:66719795a494@default(public) bk:[changea] changea
+  o  5:66719795a494@default(public) bk:[changea] changea
   |
   o  0:07f494440405@default(public) bk:[] adda
   
 
 Stabilize it
 
-  $ hg evolve -qn --confirm --contentdivergent
-  merge:[19] More addition
-  with: [17] More addition
-  base: [15] More addition
+  $ hg evolve -qn --confirm --content-divergent
+  merge:[14] More addition
+  with: [13] More addition
+  base: [12] More addition
   perform evolve? [Ny] n
   abort: evolve aborted by user
   [255]
-  $ echo y | hg evolve -qn --confirm --config ui.interactive=True --contentdivergent
-  merge:[19] More addition
-  with: [17] More addition
-  base: [15] More addition
+  $ echo y | hg evolve -qn --confirm --config ui.interactive=True --content-divergent
+  merge:[14] More addition
+  with: [13] More addition
+  base: [12] More addition
   perform evolve? [Ny] y
   hg update -c eacc9c8240fe &&
   hg merge d2f173e25686 &&
@@ -265,10 +262,10 @@ Stabilize it
   hg up -C 3932c176bbaa &&
   hg revert --all --rev tip &&
   hg commit -m "`hg log -r eacc9c8240fe --template={desc}`";
-  $ hg evolve -v --contentdivergent
-  merge:[19] More addition
-  with: [17] More addition
-  base: [15] More addition
+  $ hg evolve -v --content-divergent
+  merge:[14] More addition
+  with: [13] More addition
+  base: [12] More addition
   merging divergent changeset
   resolving manifests
   merging a
@@ -278,29 +275,24 @@ Stabilize it
   a
   committing manifest
   committing changelog
-  copying changeset 283ccd10e2b8 to 7bc2f5967f5e
-  committing files:
-  a
-  committing manifest
-  committing changelog
-  committed changeset 21:f344982e63c4
+  committed changeset 15:f344982e63c4
   working directory is now at f344982e63c4
   $ hg st
   $ glog
-  @  21:f344982e63c4@default(draft) bk:[] More addition
+  @  15:f344982e63c4@default(draft) bk:[] More addition
   |
-  | o  14:(a7cabd7bd9c2|671b9d7eeaec)@default\(draft\) bk:\[\] bumped update to 1cf0aacfd363: (re)
+  | o  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
   | |
-  o |  9:7bc2f5967f5e@default(draft) bk:[] add c
+  o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
-  | o  8:1cf0aacfd363@default(public) bk:[] newer a
+  | o  6:1cf0aacfd363@default(public) bk:[] newer a
   |/
-  o  7:66719795a494@default(public) bk:[changea] changea
+  o  5:66719795a494@default(public) bk:[changea] changea
   |
   o  0:07f494440405@default(public) bk:[] adda
   
   $ hg summary
-  parent: 21:f344982e63c4 tip
+  parent: 15:f344982e63c4 tip
    More addition
   branch: default
   commit: (clean)
@@ -338,23 +330,23 @@ Check conflict during divergence resolution
   (use 'hg evolve' to update to its successor: f344982e63c4)
   $ echo 'gotta break' >> a
   $ hg amend
-  2 new divergent changesets
+  2 new content-divergent changesets
 # reamend so that the case is not the first precursor.
   $ hg amend -m "More addition (2)"
-  $ hg phase 'divergent()'
-  21: draft
-  24: draft
-  $ hg evolve -qn --contentdivergent
+  $ hg phase 'contentdivergent()'
+  15: draft
+  17: draft
+  $ hg evolve -qn --content-divergent
   hg update -c 0b336205a5d0 &&
   hg merge f344982e63c4 &&
   hg commit -m "auto merge resolving conflict between 0b336205a5d0 and f344982e63c4"&&
   hg up -C 3932c176bbaa &&
   hg revert --all --rev tip &&
   hg commit -m "`hg log -r 0b336205a5d0 --template={desc}`";
-  $ hg evolve --contentdivergent
-  merge:[24] More addition (2)
-  with: [21] More addition
-  base: [15] More addition
+  $ hg evolve --content-divergent
+  merge:[17] More addition (2)
+  with: [15] More addition
+  base: [12] More addition
   merging a
   warning: conflicts while merging a! (edit, then use 'hg resolve --mark')
   0 files updated, 0 files merged, 0 files removed, 1 files unresolved
