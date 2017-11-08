@@ -3,6 +3,8 @@
 set -eu
 trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
+unset CARGO_HOME
+
 # We clear out any old packages/apps here, since we only want to run installers
 # that we just installed, not old ones. If the installer reboots the system
 # before it exits, the clean up won't happen after it installs, so we need it
