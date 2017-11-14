@@ -3,7 +3,7 @@
 set -eu
 trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
-unset CARGO_HOME
+unset CARGO_HOME HOMEBREW_AUTO_UPDATE
 
 # We clear out any old packages/apps here, since we only want to run installers
 # that we just installed, not old ones. If the installer reboots the system
