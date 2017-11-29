@@ -2,4 +2,4 @@
 
 url="$1"
 shift
-curl -sL "$url" | pup-links "$url" "$@"
+http --check-status --ignore-stdin "$url" | pup-links "$url" "$@"
