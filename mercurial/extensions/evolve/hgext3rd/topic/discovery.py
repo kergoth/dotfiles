@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import collections
 import weakref
 
 from mercurial.i18n import _
@@ -15,6 +16,7 @@ from mercurial import (
 
 def _headssummary(orig, *args):
     # In mercurial < 4.2, we receive repo, remote and outgoing as arguments
+    pushop = None
     if len(args) == 3:
         pushoparg = False
         repo, remote, outgoing = args
@@ -31,17 +33,51 @@ def _headssummary(orig, *args):
 
     publishing = ('phases' not in remote.listkeys('namespaces')
                   or bool(remote.listkeys('phases').get('publishing', False)))
-    if publishing or not remote.capable('topics'):
+    if ((publishing or not remote.capable('topics'))
+            and not getattr(pushop, 'publish', False)):
         return orig(*args)
+
+    publishedset = ()
+    remotebranchmap = None
+    origremotebranchmap = remote.branchmap
+    # < hg-4.4 do not have a --publish flag anyway
+    if pushoparg and util.safehasattr(pushop, 'remotephases'):
+        publishednode = [c.node() for c in pushop.outdatedphases]
+        publishedset = repo.revs('ancestors(%ln + %ln)',
+                                 publishednode,
+                                 pushop.remotephases.publicheads)
+
+        rev = repo.unfiltered().changelog.nodemap.get
+
+        def remotebranchmap():
+            # drop topic information from changeset about to be published
+            result = collections.defaultdict(list)
+            for branch, heads in origremotebranchmap().iteritems():
+                if ':' not in branch:
+                    result[branch].extend(heads)
+                else:
+                    namedbranch = branch.split(':', 1)[0]
+                    for h in heads:
+                        r = rev(h)
+                        if r is not None and r in publishedset:
+                            result[namedbranch].append(h)
+                        else:
+                            result[branch].append(h)
+            for heads in result.itervalues():
+                heads.sort()
+            return result
 
     class repocls(repo.__class__):
         # awful hack to see branch as "branch:topic"
         def __getitem__(self, key):
             ctx = super(repocls, self).__getitem__(key)
             oldbranch = ctx.branch
+            rev = ctx.rev()
 
             def branch():
                 branch = oldbranch()
+                if rev in publishedset:
+                    return branch
                 topic = ctx.topic()
                 if topic:
                     branch = "%s:%s" % (branch, topic)
@@ -56,6 +92,8 @@ def _headssummary(orig, *args):
 
             def branchinfo(rev):
                 branch, close = changelog.branchinfo(rev)
+                if rev in publishedset:
+                    return branch, close
                 topic = repo[rev].topic()
                 if topic:
                     branch = "%s:%s" % (branch, topic)
@@ -67,6 +105,8 @@ def _headssummary(orig, *args):
     oldrepocls = repo.__class__
     try:
         repo.__class__ = repocls
+        if remotebranchmap is not None:
+            remote.branchmap = remotebranchmap
         unxx = repo.filtered('unfiltered-topic')
         repo.unfiltered = lambda: unxx
         if pushoparg:
@@ -83,6 +123,8 @@ def _headssummary(orig, *args):
         if 'unfiltered' in vars(repo):
             del repo.unfiltered
         repo.__class__ = oldrepocls
+        if remotebranchmap is not None:
+            remote.branchmap = origremotebranchmap
 
 def wireprotobranchmap(orig, repo, proto):
     oldrepo = repo.__class__

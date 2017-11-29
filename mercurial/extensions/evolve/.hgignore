@@ -6,7 +6,7 @@ syntax: re
 \.swp$
 \.orig$
 \.rej$
-\.err$
+^tests/.*\.err$
 ^tests/easy_run.sh$
 ^build/
 ^dist/

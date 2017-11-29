@@ -820,7 +820,8 @@ def srv_obshash1(repo, proto, nodes):
 def _obshash_capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
     caps = orig(repo, proto)
-    if obsolete.isenabled(repo, obsolete.exchangeopt):
+    if (obsolete.isenabled(repo, obsolete.exchangeopt)
+        and repo.ui.configbool('experimental', 'evolution.obsdiscovery', True)):
         caps = caps.split()
         caps.append('_evoext_obshash_0')
         caps.append('_evoext_obshash_1')

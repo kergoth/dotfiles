@@ -45,7 +45,7 @@ Execute(ale#lsp#message#DidOpen() should return correct messages):
   \         'uri': ale#path#ToURI(g:dir . '/foo/bar.ts'),
   \         'languageId': 'typescript',
   \         'version': 12,
-  \         'text': "foo()\nbar()\nbaz()",
+  \         'text': "foo()\nbar()\nbaz()\n",
   \     },
   \   }
   \ ],
@@ -63,7 +63,7 @@ Execute(ale#lsp#message#DidChange() should return correct messages):
   \         'uri': ale#path#ToURI(g:dir . '/foo/bar.ts'),
   \         'version': 34,
   \     },
-  \     'contentChanges': [{'text': "foo()\nbar()\nbaz()"}],
+  \     'contentChanges': [{'text': "foo()\nbar()\nbaz()\n"}],
   \   }
   \ ],
   \ ale#lsp#message#DidChange(bufnr(''))
@@ -101,6 +101,49 @@ Execute(ale#lsp#message#DidClose() should return correct messages):
   \ ],
   \ ale#lsp#message#DidClose(bufnr(''))
 
+Execute(ale#lsp#message#Completion() should return correct messages):
+  AssertEqual
+  \ [
+  \   0,
+  \   'textDocument/completion',
+  \   {
+  \     'textDocument': {
+  \         'uri': ale#path#ToURI(g:dir . '/foo/bar.ts'),
+  \     },
+  \     'position': {'line': 11, 'character': 34},
+  \   }
+  \ ],
+  \ ale#lsp#message#Completion(bufnr(''), 12, 34, '')
+
+Execute(ale#lsp#message#Completion() should return correct messages with a trigger charaacter):
+  AssertEqual
+  \ [
+  \   0,
+  \   'textDocument/completion',
+  \   {
+  \     'textDocument': {
+  \         'uri': ale#path#ToURI(g:dir . '/foo/bar.ts'),
+  \     },
+  \     'position': {'line': 11, 'character': 34},
+  \     'context': {'triggerKind': 2, 'triggerCharacter': '.'},
+  \   }
+  \ ],
+  \ ale#lsp#message#Completion(bufnr(''), 12, 34, '.')
+  \
+Execute(ale#lsp#message#Definition() should return correct messages):
+  AssertEqual
+  \ [
+  \   0,
+  \   'textDocument/definition',
+  \   {
+  \     'textDocument': {
+  \         'uri': ale#path#ToURI(g:dir . '/foo/bar.ts'),
+  \     },
+  \     'position': {'line': 11, 'character': 34},
+  \   }
+  \ ],
+  \ ale#lsp#message#Definition(bufnr(''), 12, 34)
+
 Execute(ale#lsp#tsserver_message#Open() should return correct messages):
   AssertEqual
   \ [
@@ -134,7 +177,7 @@ Execute(ale#lsp#tsserver_message#Change() should return correct messages):
   \     'offset': 1,
   \     'endLine': 1073741824,
   \     'endOffset': 1,
-  \     'insertString': "foo()\nbar()\nbaz()",
+  \     'insertString': "foo()\nbar()\nbaz()\n",
   \   }
   \ ],
   \ ale#lsp#tsserver_message#Change(bufnr(''))
@@ -177,3 +220,16 @@ Execute(ale#lsp#tsserver_message#CompletionEntryDetails() should return correct 
   \   }
   \ ],
   \ ale#lsp#tsserver_message#CompletionEntryDetails(bufnr(''), 347, 12, ['foo', 'bar'])
+
+Execute(ale#lsp#tsserver_message#Definition() should return correct messages):
+  AssertEqual
+  \ [
+  \   0,
+  \   'ts@definition',
+  \   {
+  \     'file': ale#path#Winify(g:dir . '/foo/bar.ts'),
+  \     'line': 347,
+  \     'offset': 12,
+  \   }
+  \ ],
+  \ ale#lsp#tsserver_message#Definition(bufnr(''), 347, 12)

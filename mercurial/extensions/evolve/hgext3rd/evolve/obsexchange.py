@@ -27,6 +27,8 @@ from mercurial import (
     wireproto,
 )
 
+from mercurial.hgweb import common as hgwebcommon
+
 from . import (
     exthelper,
     utility,
@@ -197,10 +199,25 @@ def srv_pullobsmarkers(repo, proto, others):
 abortmsg = "won't exchange obsmarkers through pushkey"
 hint = "upgrade your client or server to use the bundle2 protocol"
 
+class HTTPCompatibleAbort(hgwebcommon.ErrorResponse, error.Abort):
+    def __init__(self, message, code, hint=None):
+        # initialisation of each class is a bit messy.
+        # We explicitly do the dispatch
+        hgwebcommon.ErrorResponse.__init__(self, 410, message)
+        error.Abort.__init__(self, message, hint=hint)
+
 def forbidpushkey(repo=None, key=None, old=None, new=None):
     """prevent exchange through pushkey"""
-    raise error.Abort(abortmsg, hint=hint)
+    err = HTTPCompatibleAbort(abortmsg, 410, hint=hint)
+    raise err
+
+def forbidlistkey(repo=None, key=None, old=None, new=None):
+    """prevent exchange through pushkey"""
+    if obsolete.isenabled(repo, obsolete.exchangeopt):
+        err = HTTPCompatibleAbort(abortmsg, 410, hint=hint)
+        raise err
+    return {}
 
 @eh.uisetup
 def setuppushkeyforbidding(ui):
-    pushkey._namespaces['obsolete'] = (forbidpushkey, forbidpushkey)
+    pushkey._namespaces['obsolete'] = (forbidpushkey, forbidlistkey)

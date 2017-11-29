@@ -4,21 +4,6 @@
 let s:cursor_timer = -1
 let s:last_pos = [0, 0, 0]
 
-" Return a formatted message according to g:ale_echo_msg_format variable
-function! s:GetMessage(linter, type, text) abort
-    let l:msg = g:ale_echo_msg_format
-    let l:type = a:type is# 'E'
-    \   ? g:ale_echo_msg_error_str
-    \   : g:ale_echo_msg_warning_str
-
-    " Replace handlers if they exist
-    for [l:k, l:v] in items({'linter': a:linter, 'severity': l:type})
-        let l:msg = substitute(l:msg, '\V%' . l:k . '%', l:v, '')
-    endfor
-
-    return printf(l:msg, a:text)
-endfunction
-
 function! s:EchoWithShortMess(setting, message) abort
     " We need to remember the setting for shormess and reset it again.
     let l:shortmess_options = getbufvar('%', '&shortmess')
@@ -33,7 +18,7 @@ function! s:EchoWithShortMess(setting, message) abort
         elseif a:setting is# 'off'
             setlocal shortmess-=T
             " Regular echo is needed for printing newline characters.
-            echo a:message
+            execute 'echo a:message'
         else
             throw 'Invalid setting: ' . string(a:setting)
         endif
@@ -84,16 +69,18 @@ function! s:EchoImpl() abort
         return
     endif
 
+    let l:buffer = bufnr('')
     let [l:info, l:loc] = s:FindItemAtCursor()
 
     if !empty(l:loc)
-        let l:msg = s:GetMessage(l:loc.linter_name, l:loc.type, l:loc.text)
+        let l:format = ale#Var(l:buffer, 'echo_msg_format')
+        let l:msg = ale#GetLocItemMessage(l:loc, l:format)
         call ale#cursor#TruncatedEcho(l:msg)
         let l:info.echoed = 1
     elseif get(l:info, 'echoed')
         " We'll only clear the echoed message when moving off errors once,
         " so we don't continually clear the echo line.
-        echo
+        execute 'echo'
         let l:info.echoed = 0
     endif
 endfunction
@@ -140,9 +127,7 @@ function! ale#cursor#ShowCursorDetail() abort
     if !empty(l:loc)
         let l:message = get(l:loc, 'detail', l:loc.text)
 
-        call s:EchoWithShortMess('off', l:message)
-
-        " Set the echo marker, so we can clear it by moving the cursor.
-        let l:info.echoed = 1
+        call ale#preview#Show(split(l:message, "\n"))
+        execute 'echo'
     endif
 endfunction

@@ -416,10 +416,10 @@ if not util.safehasattr(dirstate.dirstate, 'parentchange'):
 def _configureoptions(ui, repo):
     # If no capabilities are specified, enable everything.
     # This is so existing evolve users don't need to change their config.
-    evolveopts = ui.configlist('experimental', 'evolution')
+    evolveopts = repo.ui.configlist('experimental', 'evolution')
     if not evolveopts:
         evolveopts = ['all']
-        ui.setconfig('experimental', 'evolution', evolveopts, 'evolve')
+        repo.ui.setconfig('experimental', 'evolution', evolveopts, 'evolve')
     if obsolete.isenabled(repo, 'exchange'):
         repo.ui.setconfig('server', 'bundle1', False)
 

@@ -27,6 +27,11 @@ endfunction
 " Check if files are executable, and if they are, remember that they are
 " for subsequent calls. We'll keep checking until programs can be executed.
 function! ale#engine#IsExecutable(buffer, executable) abort
+    if empty(a:executable)
+        " Don't log the executable check if the executable string is empty.
+        return 0
+    endif
+
     if has_key(s:executable_cache_map, a:executable)
         return 1
     endif
@@ -251,10 +256,10 @@ function! s:HandleTSServerDiagnostics(response, error_type) abort
 endfunction
 
 function! s:HandleLSPErrorMessage(error_message) abort
-    echoerr 'Error from LSP:'
+    execute 'echoerr ''Error from LSP:'''
 
     for l:line in split(a:error_message, "\n")
-        echoerr l:line
+        execute 'echoerr l:line'
     endfor
 endfunction
 
@@ -312,7 +317,7 @@ function! ale#engine#SetResults(buffer, loclist) abort
         call ale#engine#RemoveManagedFiles(a:buffer)
 
         " Call user autocommands. This allows users to hook into ALE's lint cycle.
-        silent doautocmd User ALELint
+        silent doautocmd <nomodeline> User ALELint
     endif
 endfunction
 
@@ -373,6 +378,10 @@ function! ale#engine#FixLocList(buffer, linter_name, loclist) abort
         \   'nr': get(l:old_item, 'nr', -1),
         \   'linter_name': a:linter_name,
         \}
+
+        if has_key(l:old_item, 'code')
+            let l:item.code = l:old_item.code
+        endif
 
         if has_key(l:old_item, 'filename')
         \&& !ale#path#IsTempName(l:old_item.filename)

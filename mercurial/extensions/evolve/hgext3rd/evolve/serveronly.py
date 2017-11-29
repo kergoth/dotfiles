@@ -53,9 +53,9 @@ configtable = eh.configtable
 
 @eh.reposetup
 def default2evolution(ui, repo):
-    evolveopts = ui.configlist('experimental', 'evolution')
+    evolveopts = repo.ui.configlist('experimental', 'evolution')
     if not evolveopts:
         evolveopts = 'all'
-        ui.setconfig('experimental', 'evolution', evolveopts)
+        repo.ui.setconfig('experimental', 'evolution', evolveopts)
     if obsolete.isenabled(repo, 'exchange'):
         repo.ui.setconfig('server', 'bundle1', False)

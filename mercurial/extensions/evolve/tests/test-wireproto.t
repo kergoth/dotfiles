@@ -188,3 +188,65 @@ test discovery can be disabled
   obsmarker-exchange: 258 bytes received
 
   $ cd ..
+
+And disable it server side too:
+
+  $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log  --config experimental.evolution.obsdiscovery=no
+  $ cat hg.pid >> $DAEMON_PIDS
+
+  $ curl -s http://localhost:$HGPORT/?cmd=capabilities
+  _evoext_getbundle_obscommon batch branchmap bundle2=HG20%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Aerror%3Dabort%2Cunsupportedcontent%2Cpushraced%2Cpushkey%0Ahgtagsfnodes%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Aphases%3Dheads%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps changegroupsubset compression=zstd,zlib getbundle httpheader=1024 httpmediatype=0.1rx,0.1tx,0.2tx known lookup pushkey streamreqs=generaldelta,revlogv1 unbundle=HG10GZ,HG10BZ,HG10UN unbundlehash (no-eol)
+
+Check we cannot use pushkey for marker exchange anymore
+
+  $ hg debugpushkey http://localhost:$HGPORT/ obsolete
+  abort: HTTP Error 410: won't exchange obsmarkers through pushkey
+  [255]
+  $ hg debugpushkey ssh://user@dummy/server obsolete
+  remote: abort: won't exchange obsmarkers through pushkey
+  remote: (upgrade your client or server to use the bundle2 protocol)
+  abort: unexpected response: empty string
+  [255]
+
+(do some extra pulling to be sure)
+
+  $ hg -R client pull http://localhost:$HGPORT/
+  pulling from http://localhost:$HGPORT/
+  searching for changes
+  no changes found
+  obsmarker-exchange: 258 bytes received
+
+  $ hg -R client pull http://localhost:$HGPORT/ --config experimental.evolution=createmarkers
+  pulling from http://localhost:$HGPORT/
+  searching for changes
+  no changes found
+
+  $ hg -R client pull http://localhost:$HGPORT/ --config experimental.evolution=createmarkers --config extensions.evolve='!'
+  pulling from http://localhost:$HGPORT/
+  searching for changes
+  no changes found
+
+But we do let it goes fine on repository with exchange disabled:
+
+  $ $RUNTESTDIR/killdaemons.py $DAEMON_PIDS
+  $ hg serve -R server -n test -p $HGPORT -d --pid-file=hg.pid -A access.log -E errors.log  --config experimental.evolution='!'
+  $ hg debugpushkey http://localhost:$HGPORT/ obsolete
+
+(do some extra pulling to be sure)
+
+  $ hg -R client pull http://localhost:$HGPORT/
+  pulling from http://localhost:$HGPORT/
+  searching for changes
+  no changes found
+
+  $ hg -R client pull http://localhost:$HGPORT/ --config experimental.evolution=createmarkers
+  pulling from http://localhost:$HGPORT/
+  searching for changes
+  no changes found
+
+  $ hg -R client pull http://localhost:$HGPORT/ --config experimental.evolution=createmarkers --config extensions.evolve='!'
+  pulling from http://localhost:$HGPORT/
+  searching for changes
+  no changes found
+
+  $ $RUNTESTDIR/killdaemons.py $DAEMON_PIDS

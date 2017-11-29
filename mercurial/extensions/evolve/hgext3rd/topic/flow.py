@@ -41,11 +41,10 @@ def wrappush(orig, repo, remote, *args, **kwargs):
         newargs['opargs']['publish'] = True
     return orig(repo, remote, *args, **newargs)
 
-def extendpushoperation(orig, *args, **kwargs):
+def extendpushoperation(orig, self, *args, **kwargs):
     publish = kwargs.pop('publish', False)
-    op = orig(*args, **kwargs)
-    op.publish = publish
-    return op
+    orig(self, *args, **kwargs)
+    self.publish = publish
 
 def wrapphasediscovery(orig, pushop):
     orig(pushop)
@@ -64,6 +63,7 @@ def installpushflag(ui):
     entry = extensions.wrapcommand(commands.table, 'push', wrappush)
     entry[1].append(('', 'publish', False,
                     _('push the changeset as public')))
-    extensions.wrapfunction(exchange, 'pushoperation', extendpushoperation)
+    extensions.wrapfunction(exchange.pushoperation, '__init__',
+                            extendpushoperation)
     extensions.wrapfunction(exchange, '_pushdiscoveryphase', wrapphasediscovery)
     exchange.pushdiscoverymapping['phase'] = exchange._pushdiscoveryphase

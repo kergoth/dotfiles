@@ -21,6 +21,8 @@ let s:default_ale_linter_aliases = {
 "
 " Only cargo is enabled for Rust by default.
 " rpmlint is disabled by default because it can result in code execution.
+"
+" NOTE: Update the g:ale_linters documentation when modifying this.
 let s:default_ale_linters = {
 \   'csh': ['shell'],
 \   'go': ['gofmt', 'golint', 'go vet'],
@@ -261,12 +263,19 @@ function! ale#linter#GetAll(filetypes) abort
 endfunction
 
 function! s:GetAliasedFiletype(original_filetype) abort
+    let l:buffer_aliases = get(b:, 'ale_linter_aliases', {})
+
+    " b:ale_linter_aliases can be set to a List.
+    if type(l:buffer_aliases) is type([])
+        return l:buffer_aliases
+    endif
+
     " Check for aliased filetypes first in a buffer variable,
     " then the global variable,
     " then in the default mapping,
     " otherwise use the original filetype.
     for l:dict in [
-    \   get(b:, 'ale_linter_aliases', {}),
+    \   l:buffer_aliases,
     \   g:ale_linter_aliases,
     \   s:default_ale_linter_aliases,
     \]
@@ -289,15 +298,38 @@ function! ale#linter#ResolveFiletype(original_filetype) abort
 endfunction
 
 function! s:GetLinterNames(original_filetype) abort
-    for l:dict in [
-    \   get(b:, 'ale_linters', {}),
-    \   g:ale_linters,
-    \   s:default_ale_linters,
-    \]
-        if has_key(l:dict, a:original_filetype)
-            return l:dict[a:original_filetype]
-        endif
-    endfor
+    let l:buffer_ale_linters = get(b:, 'ale_linters', {})
+
+    " b:ale_linters can be set to 'all'
+    if l:buffer_ale_linters is# 'all'
+        return 'all'
+    endif
+
+    " b:ale_linters can be set to a List.
+    if type(l:buffer_ale_linters) is type([])
+        return l:buffer_ale_linters
+    endif
+
+    " Try to get a buffer-local setting for the filetype
+    if has_key(l:buffer_ale_linters, a:original_filetype)
+        return l:buffer_ale_linters[a:original_filetype]
+    endif
+
+    " Try to get a global setting for the filetype
+    if has_key(g:ale_linters, a:original_filetype)
+        return g:ale_linters[a:original_filetype]
+    endif
+
+    " If the user has configured ALE to only enable linters explicitly, then
+    " don't enable any linters by default.
+    if g:ale_linters_explicit
+        return []
+    endif
+
+    " Try to get a default setting for the filetype
+    if has_key(s:default_ale_linters, a:original_filetype)
+        return s:default_ale_linters[a:original_filetype]
+    endif
 
     return 'all'
 endfunction

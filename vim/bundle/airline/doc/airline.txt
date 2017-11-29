@@ -32,9 +32,8 @@ INTRODUCTION                                                 *airline-intro*
 vim-airline is a fast and lightweight alternative to powerline, written
 in 100% vimscript with no outside dependencies.
 
-When the plugin is correctly loaded, and Vim is configured for drawing a
-'statusline' (set 'laststatus' to 2, to always display the airline
-statusline) Vim will draw a nice statusline at the bottom of each window.
+When the plugin is correctly loaded, Vim will draw a nice statusline at the
+bottom of each window.
 
 That line consists of several sections, each one displaying some piece of
 information. By default (without configuration) this line will look like this: >
@@ -741,7 +740,7 @@ with the middle mouse button to delete that buffer.
   let g:airline#extensions#tabline#formatter = 'foo'
 <
 
-  Note: the following variables are only used by the 'default' formatter.
+  Note: the following variables are used by the 'default' formatter.
   When no disambiguation is needed, both 'unique_tail_improved' and
   'unique_tail' delegate formatting to 'default', so these variables also
   control rendering of unique filenames when using these formatters.
@@ -765,6 +764,12 @@ with the middle mouse button to delete that buffer.
   " there is another file of the same name, in which it will display it along
   " with the containing parent directory.
   let g:airline#extensions#tabline#formatter = 'unique_tail'
+
+      " The following variables are also used by `unique_tail` formatter.
+      " the meanings are the same as the ones in default formatter.
+
+      let g:airline#extensions#tabline#fnamemod = ':p:.'
+      let g:airline#extensions#tabline#fnamecollapse = 1
 
   " The `unique_tail_improved` - another algorithm, that will smartly uniquify
   " buffers names with similar filename, suppressing common parts of paths.
@@ -794,7 +799,7 @@ with the middle mouse button to delete that buffer.
   let g:airline#extensions#tabline#close_symbol = 'X'
 
 * configure pattern to be ignored on BufAdd autocommand >
-  " fixes unneccessary redraw, when e.g. opening Gundo window
+  " fixes unnecessary redraw, when e.g. opening Gundo window
   let airline#extensions#tabline#ignore_bufadd_pat =
             \ '\c\vgundo|undotree|vimfiler|tagbar|nerd_tree'
 
@@ -981,6 +986,12 @@ ale <https://github.com/w0rp/ale>
 <
 * ale warning >
   let airline#extensions#ale#warning_symbol = 'W:'
+<
+* ale open_lnum_symbol >
+  let airline#extensions#ale#open_lnum_symbol = '(L'
+<
+* ale close_lnum_symbol >
+  let airline#extensions#ale#close_lnum_symbol = ')'
 <
 -------------------------------------                    *airline-neomake*
 neomake <https://github.com/neomake/neomake>

@@ -24,17 +24,25 @@ function! ale_linters#typescript#tslint#Handle(buffer, lines) abort
     let l:output = []
 
     for l:error in ale#util#FuzzyJSONDecode(a:lines, [])
-        call add(l:output, {
+        if get(l:error, 'ruleName', '') is# 'no-implicit-dependencies'
+            continue
+        endif
+
+        let l:item = {
         \   'filename': ale#path#GetAbsPath(l:dir, l:error.name),
         \   'type': (get(l:error, 'ruleSeverity', '') is# 'WARNING' ? 'W' : 'E'),
-        \   'text': has_key(l:error, 'ruleName')
-        \       ? l:error.ruleName . ': ' . l:error.failure
-        \       : l:error.failure,
+        \   'text': l:error.failure,
         \   'lnum': l:error.startPosition.line + 1,
         \   'col': l:error.startPosition.character + 1,
         \   'end_lnum': l:error.endPosition.line + 1,
         \   'end_col': l:error.endPosition.character + 1,
-        \})
+        \}
+
+        if has_key(l:error, 'ruleName')
+            let l:item.code = l:error.ruleName
+        endif
+
+        call add(l:output, l:item)
     endfor
 
     return l:output

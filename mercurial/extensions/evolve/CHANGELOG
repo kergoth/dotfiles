@@ -1,7 +1,21 @@
 Changelog
 =========
 
-7.0.0 -- 2017-10-23
+7.0.1 -- 2017-11-14
+-------------------
+
+  * obsdiscovery: allow the config option to disable discovery server side
+    (it was previously only honored on the client side)
+
+  * server: avoid exposing 'abort' to evolution enabled client talking
+            to server with the extension bu obsolescence marker exchange
+            disabled.
+
+topic (0.5.1)
+
+  * fix new-heads check when pushing new topic with --publish.
+
+7.0.0 -- 2017-11-02
 -------------------
 
   * drop compatibility with Mercurial 3.8, 3.9 and 4.0,
