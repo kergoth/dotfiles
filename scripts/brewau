@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# These always seem to think they're outdated
+excluded_casks="whatsyoursign|oversight"
+
 set -eu
 trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
@@ -14,6 +17,8 @@ brew clean-cask-pkgs || :
 
 brew update || :
 brew upgrade --fetch-HEAD
-brew cask outdated | xargs brew cask reinstall
+brew cask outdated | \
+    if [ -n "$excluded_casks" ]; then grep -Ev "$excluded_casks"; else cat; fi | \
+        xargs brew cask reinstall
 brew cask cleanup
 find "$(brew --prefix)/Caskroom" -iname \*.pkg -o -iname \*.app -prune | grep -iv uninstall | nlxargs -t -n 1 open -W
