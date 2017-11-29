@@ -2,4 +2,7 @@
 
 url="$1"
 shift
-pup "$@" a 'attr{href}' | tr '\n' '\0' | xargs -0 urljoin "$url"
+if [ $# -eq 0 ]; then
+    set -- a
+fi
+pup "$@" 'attr{href}' | tr '\n' '\0' | xargs -0 urljoin "$url"
