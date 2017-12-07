@@ -112,17 +112,17 @@ check move data kept after rebase on touch:
   $ hg log -G --hidden
   @  11:[0-9a-f]{12} gna1 (re)
   |
-  | o  10:[0-9a-f]{12} move (re)
+  . o  10:[0-9a-f]{12} move (re)
   | |
-  | x  9:[0-9a-f]{12} gna1 (re)
+  . x  9:[0-9a-f]{12} gna1 (re)
   |/
   o  8:[0-9a-f]{12} d (re)
   |
   o  7:[0-9a-f]{12} c (re)
   |
-  | x  6:[0-9a-f]{12} d (re)
+  . x  6:[0-9a-f]{12} d (re)
   | |
-  | x  5:[0-9a-f]{12} c (re)
+  . x  5:[0-9a-f]{12} c (re)
   |/
   o  4:[0-9a-f]{12} (re)
   

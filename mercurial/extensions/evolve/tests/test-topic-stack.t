@@ -553,7 +553,7 @@ XXX: The behind count is weird, because the topic are interleaved.
 
   $ hg stack foo
   ### topic: foo
-  ### target: default (branch), ambigious rebase destination - topic 'foo' has 3 heads
+  ### target: default (branch), ambiguous rebase destination - topic 'foo' has 3 heads
   t4: c_f
     ^ c_e
   t3: c_h
@@ -645,7 +645,7 @@ case involving a merge
   t0^ c_A (base)
   $ hg stack blue
   ### topic: blue
-  ### target: default (branch), ambigious rebase destination - topic 'blue' has 3 heads
+  ### target: default (branch), ambiguous rebase destination - topic 'blue' has 3 heads
   t3@ c_I (current)
     ^ c_H
   t2: c_D
@@ -698,7 +698,7 @@ should stabilize this eventuelly)
 
   $ hg stack red
   ### topic: red
-  ### target: default (branch), ambigious rebase destination - topic 'red' has 3 heads
+  ### target: default (branch), ambiguous rebase destination - topic 'red' has 3 heads
   t5$ c_H (unstable)
     ^ c_G
     ^ c_D
@@ -710,7 +710,7 @@ should stabilize this eventuelly)
   t0^ c_A (base)
   $ hg stack blue
   ### topic: blue
-  ### target: default (branch), ambigious rebase destination - topic 'blue' has 3 heads
+  ### target: default (branch), ambiguous rebase destination - topic 'blue' has 3 heads
   t3$ c_I (unstable)
     ^ c_H
   t2$ c_G (unstable)
@@ -772,7 +772,7 @@ more obsolescence
 
   $ hg stack red
   ### topic: red
-  ### target: default (branch), ambigious rebase destination - topic 'red' has 3 heads
+  ### target: default (branch), ambiguous rebase destination - topic 'red' has 3 heads
   t5$ c_H (unstable)
     ^ c_G
     ^ c_D
@@ -784,7 +784,7 @@ more obsolescence
   t0^ c_A (base)
   $ hg stack blue
   ### topic: blue
-  ### target: default (branch), ambigious rebase destination - topic 'blue' has 3 heads
+  ### target: default (branch), ambiguous rebase destination - topic 'blue' has 3 heads
   t3$ c_I (unstable)
     ^ c_H
   t2$ c_G (unstable)

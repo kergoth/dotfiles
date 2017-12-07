@@ -1,6 +1,13 @@
 Changelog
 =========
 
+7.0.2 - in progress
+-------------------
+
+Topic (0.5.2)
+
+  * makes code more resilient to partiel initialization
+
 7.0.1 -- 2017-11-14
 -------------------
 

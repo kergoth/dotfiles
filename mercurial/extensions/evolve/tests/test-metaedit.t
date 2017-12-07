@@ -206,7 +206,7 @@ but highlight the bug)
   $ hg diff -r "10" -r "11" --hidden
 
 'fold' one commit
-  $ HGUSER=foobar3 hg metaedit "desc(D2)" --fold -U --config
+  $ HGUSER=foobar3 hg metaedit "desc(D2)" --fold -U
   1 changesets folded
   $ hg log -r "tip" --template '{rev}: {author}\n'
   12: foobar3

@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 918aa3eb88b57c05e9ac280f76a7b9bd838ecc2b
+    rev: fb948f5331202a55f333d6190d071f2d670846ea
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -175,7 +175,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: de6c05720cdf74c0218218d7207f700232a5b6dc
+    rev: 5032d9ee72361dc3cfaae1a9b3353211203e443f
 
 # go language support
 git module vim-golang:
@@ -257,7 +257,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: d0042b9dee7a5cb1482ddcd910d26cf0ceec601d
+    rev: 11b7fb91e152258c59b0bb0526c3fb04469cf38c
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -294,7 +294,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 1e5bd55672e92088504b0323669e9c120678d3c5
+    rev: 5c34ab6692b2aa555fde7ce1399f4155b6f0438a
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -332,7 +332,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 78ac43e6aba174468ca5033d5732a6d380baa53e
+    rev: 5694ae578147fb47caa43aa9578e7e061a2a8d30
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -517,7 +517,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: a342c454ccf3c69732eae122ccdda19e0fecc4b7
+    rev: 996dabc4224b5d97b35987af7c9ab717949b61ec
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -563,7 +563,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 84e1f37b6c85d7ee871d7ba5bc9b5212452e555d
+    rev: 5909187d8628773d5e08f7e32da52a8426410470
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -626,7 +626,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: dda220f140bd071bc7ff0576f9129744ca02c16c
+    rev: c7d4a85031c101ef9bce0018096622087894dd09
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -656,7 +656,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 6503b85d3d0f01d8fa74f8024fda8d6fe0d62274
+    rev: e2a8f759d870ed7a1f0ee4698a73b65e9f36e54d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

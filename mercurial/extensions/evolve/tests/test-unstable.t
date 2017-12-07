@@ -302,7 +302,7 @@ Not supported yet
   
 
   $ hg evo --all --any --orphan
-  cannot solve split accross two branches
+  cannot solve split across two branches
   $ hg log -G
   @  4:3c69ea6aa93e@default(draft) add bprimesplit2
   |

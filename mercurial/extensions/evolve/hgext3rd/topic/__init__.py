@@ -9,12 +9,12 @@ finalized (move to the public phase).
 
 Compared to bookmark, topic is reference carried by each changesets of the
 series instead of just the single head revision.  Topic are quite similar to
-the way named branch work, except they eventualy fade away when the changeset
+the way named branch work, except they eventually fade away when the changeset
 becomes part of the immutable history. Changeset can belong to both a topic and
 a named branch, but as long as it is mutable, its topic identity will prevail.
 As a result, default destination for 'update', 'merge', etc...  will take topic
 into account. When a topic is active these operations will only consider other
-changesets on that topic (and, in some occurence, bare changeset on same
+changesets on that topic (and, in some occurrence, bare changeset on same
 branch).  When no topic is active, changeset with topic will be ignored and
 only bare one on the same branch will be taken in account.
 
@@ -77,7 +77,7 @@ Publishing behavior
 ===================
 
 Topic vanish when changeset move to the public phases. Moving to the public
-phase usually happens on push, but it is possible ot update that behavior. The
+phase usually happens on push, but it is possible to update that behavior. The
 server needs to have specific config for this.
 
     # everything pushed become public (the default)
@@ -201,9 +201,9 @@ if util.safehasattr(registrar, 'configitem'):
     )
 
     def extsetup(ui):
-        # register config that strickly belong to other code (thg, core, etc)
+        # register config that strictly belong to other code (thg, core, etc)
         #
-        # To ensure all config items we used are registerd, we register them if
+        # To ensure all config items we used are registered, we register them if
         # nobody else did so far.
         from mercurial import configitems
         extraitem = functools.partial(configitems._register, ui._knownconfig)
@@ -444,7 +444,7 @@ def reposetup(ui, repo):
             reporef = weakref.ref(self)
 
             def currenttopicempty(tr):
-                # check active topic emptyness
+                # check active topic emptiness
                 repo = reporef()
                 csetcount = stack.stack(repo, topic=ct).changesetcount
                 empty = csetcount == 0
@@ -474,7 +474,7 @@ def reposetup(ui, repo):
 
 def wrapinit(orig, self, repo, *args, **kwargs):
     orig(self, repo, *args, **kwargs)
-    if repo.currenttopic:
+    if getattr(repo, 'currenttopic', ''):
         self._extra[constants.extrakey] = repo.currenttopic
     else:
         # Empty key will be dropped from extra by another hack at the changegroup level
@@ -741,14 +741,14 @@ not public() and (
 """
 
 def _findconvertbmarktopic(repo, bmark):
-    """find revisions unambigiously defined by a bookmark
+    """find revisions unambiguously defined by a bookmark
 
     find all changesets under the bookmark and under that bookmark only.
     """
     return repo.revs(CONVERTBOOKREVSET, bmark, bmark, bmark, bmark, bmark)
 
 def _applyconvertbmarktopic(ui, repo, revs, old, bmark, tr):
-    """apply bookmark convertion to topic
+    """apply bookmark conversion to topic
 
     Sets a topic as same as bname to all the changesets under the bookmark
     and delete the bookmark, if topic is set to any changeset
@@ -1012,7 +1012,7 @@ def _getlasttouched(repo, topics):
     return topicstime
 
 def summaryhook(ui, repo):
-    t = repo.currenttopic
+    t = getattr(repo, 'currenttopic', '')
     if not t:
         return
     # i18n: column positioning for "hg summary"

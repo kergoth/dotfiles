@@ -32,7 +32,7 @@ test for range based discovery
   $ hg debugbuilddag '.+7'
   $ hg blackbox
   * @0000000000000000000000000000000000000000 (*)> init server exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugbuilddag .+7 (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (8r, 0o) (glob)
@@ -82,7 +82,7 @@ test for range based discovery
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 66f7d451a68b85ed82ff5fcc254daf50c74144bd exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 01241442b3c2bf3211e593b549c655ea65b295e3 (glob)
+  * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 01241442b3c2bf3211e593b549c655ea65b295e3 --config 'experimental.obshashrange.max-revs=1' (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 01241442b3c2bf3211e593b549c655ea65b295e3 --config 'experimental.obshashrange.max-revs=1' exited 0 after *.?? seconds (glob)
@@ -92,7 +92,7 @@ test for range based discovery
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 2o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete cccccccccccccccccccccccccccccccccccccccc bebd167eb94d257ace0e814aeb98e6972ed2970d exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 (glob)
+  * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 --config 'experimental.obshashrange.warm-cache=0' (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobsolete dddddddddddddddddddddddddddddddddddddddd c8d03c1b5e94af74b772900c58259d2e08917735 --config 'experimental.obshashrange.warm-cache=0' exited 0 after *.?? seconds (glob)
@@ -143,9 +143,9 @@ testing simple pull
   * @0000000000000000000000000000000000000000 (*)> debugobshashrange --subranges --rev tip (glob)
   * @0000000000000000000000000000000000000000 (*)> updated stablerange cache in *.???? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> debugobshashrange --subranges --rev tip exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> blackbox (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server blackbox (glob)
   $ rm ../server/.hg/blackbox.log
   $ hg -R ../server/ debugobsolete --rev ::4 | sort
   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 66f7d451a68b85ed82ff5fcc254daf50c74144bd 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
@@ -235,7 +235,7 @@ testing simple push
   sending listkeys command
   received listkey for "phases": 58 bytes
   $ hg -R ../server blackbox
-  * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> updated stablerange cache in *.???? seconds (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (1r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> obscache is out of date, falling back to slower obsstore version (glob)
@@ -244,7 +244,7 @@ testing simple push
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (1r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> 1 incoming changes - new heads: 45f8b879de92 (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> blackbox (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server blackbox (glob)
   $ rm ../server/.hg/blackbox.log
 
 testing push with extra local markers
@@ -275,12 +275,12 @@ testing push with extra local markers
   remote: 2 new obsolescence markers
   [1]
   $ hg -R ../server blackbox
-  * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 2o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 2o) (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> blackbox (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server blackbox (glob)
   $ rm ../server/.hg/blackbox.log
   $ hg -R ../server/ debugobsolete --rev ::tip | sort
   111111111111111aaaaaaaaa1111111111111111 66f7d451a68b85ed82ff5fcc254daf50c74144bd 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
@@ -375,25 +375,25 @@ testing pull with extra remote markers
   (run 'hg heads' to see heads, 'hg merge' to merge)
 
   $ hg -R ../server blackbox
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete --rev '::tip' (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server/ debugobsolete --rev '::tip' (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> writing .hg/cache/tags2-visible with 0 tags (glob)
   * @0000000000000000000000000000000000000000 (*)> -R ../server/ debugobsolete --rev '::tip' exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete aaaaaaa11111111aaaaaaaaa1111111111111111 66f7d451a68b85ed82ff5fcc254daf50c74144bd (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server debugobsolete aaaaaaa11111111aaaaaaaaa1111111111111111 66f7d451a68b85ed82ff5fcc254daf50c74144bd (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> -R ../server debugobsolete aaaaaaa11111111aaaaaaaaa1111111111111111 66f7d451a68b85ed82ff5fcc254daf50c74144bd exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> debugobsolete bbbbbbb2222222222bbbbbbbbbbbbb2222222222 bebd167eb94d257ace0e814aeb98e6972ed2970d (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server debugobsolete bbbbbbb2222222222bbbbbbbbbbbbb2222222222 bebd167eb94d257ace0e814aeb98e6972ed2970d (glob)
   * @0000000000000000000000000000000000000000 (*)> alias 'debugobsolete' expands to 'debugobsolete -d '0 0'' (glob)
   * @0000000000000000000000000000000000000000 (*)> obshashcache reset - new markers affect cached ranges (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obshashrange in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @0000000000000000000000000000000000000000 (*)> -R ../server debugobsolete bbbbbbb2222222222bbbbbbbbbbbbb2222222222 bebd167eb94d257ace0e814aeb98e6972ed2970d exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> serve --stdio (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio (glob)
   * @0000000000000000000000000000000000000000 (*)> -R server serve --stdio exited 0 after *.?? seconds (glob)
-  * @0000000000000000000000000000000000000000 (*)> blackbox (glob)
+  * @0000000000000000000000000000000000000000 (*)> -R ../server blackbox (glob)
   $ rm ../server/.hg/blackbox.log
   $ hg -R ../server/ debugobsolete --rev '::6' | sort
   111111111111111aaaaaaaaa1111111111111111 66f7d451a68b85ed82ff5fcc254daf50c74144bd 0 (Thu Jan 01 00:00:00 1970 +0000) {'user': 'test'}
@@ -719,7 +719,7 @@ revision are reapplied after the target is stripped.
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobshashrange --subranges --rev 'heads(all())' exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> log -G (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> log -G exited 0 after *.?? seconds (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> strip -r 'desc("foo")' (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> --config 'extensions.strip=' strip -r 'desc("foo")' (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> saved backup bundle to $TESTTMP/client/.hg/strip-backup/45f8b879de92-94c82517-backup.hg (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> strip detected, evo-ext-obshashrange cache reset (glob)
   * @bebd167eb94d257ace0e814aeb98e6972ed2970d (*)> updated evo-ext-obshashrange in *.???? seconds (5r, 11o) (glob)

@@ -71,7 +71,7 @@ commitopts3 = [
 interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
 
 @eh.command(
-    'amend|refresh',
+    '^amend|refresh',
     [('A', 'addremove', None,
       _('mark new/missing files as added/removed before committing')),
      ('a', 'all', False, _("match all files")),
@@ -284,7 +284,7 @@ def _uncommitdirstate(repo, oldctx, match, interactive):
         ds.copy(src, dst)
 
 @eh.command(
-    '^uncommit',
+    'uncommit',
     [('a', 'all', None, _('uncommit all changes when no arguments given')),
      ('i', 'interactive', False, _('interactive mode to uncommit (EXPERIMENTAL)')),
      ('r', 'rev', '', _('revert commit content to REV instead')),
@@ -590,7 +590,7 @@ def fold(ui, repo, *revs, **opts):
         lockmod.release(lock, wlock)
 
 @eh.command(
-    '^metaedit',
+    'metaedit',
     [('r', 'rev', [], _("revision to edit")),
      ('', 'fold', None, _("also fold specified revisions into one")),
     ] + commitopts + commitopts2 + commitopts3,
@@ -990,7 +990,7 @@ def cmdsplit(ui, repo, *revs, **opts):
         lockmod.release(tr, lock, wlock)
 
 @eh.command(
-    '^touch',
+    'touch',
     [('r', 'rev', [], 'revision to update'),
      ('D', 'duplicate', False,
       'do not mark the new revision as successor of the old one'),
@@ -1000,8 +1000,9 @@ def cmdsplit(ui, repo, *revs, **opts):
     # allow to choose the seed ?
     _('[-r] revs'))
 def touch(ui, repo, *revs, **opts):
-    """create successors that are identical to their predecessors except
-    for the changeset ID
+    # Do not split this next line to fit into 80 cols, it is displayed when
+    # running `hg` with no arguments!
+    """create successors that are identical to their predecessors except for the changeset ID
 
     This is used to "resurrect" changesets
     """

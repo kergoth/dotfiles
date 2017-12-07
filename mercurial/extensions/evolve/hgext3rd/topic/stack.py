@@ -262,7 +262,7 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
     else:
         if data['behindcount'] == -1:
             fm.plain(', ')
-            fm.plain('ambigious rebase destination - %s' % data['behinderror'],
+            fm.plain('ambiguous rebase destination - %s' % data['behinderror'],
                      label='topic.stack.summary.behinderror')
         elif data['behindcount']:
             fm.plain(', ')

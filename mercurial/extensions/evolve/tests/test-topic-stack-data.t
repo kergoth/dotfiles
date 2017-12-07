@@ -282,7 +282,7 @@ Also test this situation with 'hg stack'
   t0^ add base_c (base)
   $ hg stack foo
   ### topic: foo
-  ### target: lake (branch), ambigious rebase destination - branch 'lake' has 2 heads
+  ### target: lake (branch), ambiguous rebase destination - branch 'lake' has 2 heads
   t2@ add foo_b (current)
   t1: add foo_a
   t0^ add lake_a (base)

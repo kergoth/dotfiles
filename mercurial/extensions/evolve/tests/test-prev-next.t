@@ -200,7 +200,7 @@ next with ambiguity
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [3] added b (2)
   $ hg next
-  ambigious next changeset:
+  ambiguous next changeset:
   [4] added c
   [5] added d
   explicitly update to one of them
@@ -215,7 +215,7 @@ next with ambiguity in aspiring children
   (2 unstable changesets to be evolved here, do you want --evolve?)
   [1]
   $ hg next --evolve
-  ambigious next (unstable) changeset:
+  ambiguous next (unstable) changeset:
   [4] added c
   [5] added d
   (run 'hg evolve --rev REV' on one of them)

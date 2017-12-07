@@ -638,7 +638,7 @@ Testing for updating to t0
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg stack
   ### topic: fran
-  ### target: default (branch), ambigious rebase destination - branch 'default' has 2 heads
+  ### target: default (branch), ambiguous rebase destination - branch 'default' has 2 heads
   t1@ start on fran (current)
   t0^ Add file delta (base)
 
@@ -650,7 +650,7 @@ Testing for updating to t0
    * fran (1 changesets)
   $ hg stack
   ### topic: fran
-  ### target: default (branch), ambigious rebase destination - branch 'default' has 2 heads
+  ### target: default (branch), ambiguous rebase destination - branch 'default' has 2 heads
   t1: start on fran
   t0^ Add file delta (base current)
 

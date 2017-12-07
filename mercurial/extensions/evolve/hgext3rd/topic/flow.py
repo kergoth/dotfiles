@@ -48,7 +48,7 @@ def extendpushoperation(orig, self, *args, **kwargs):
 
 def wrapphasediscovery(orig, pushop):
     orig(pushop)
-    if pushop.publish:
+    if getattr(pushop, 'publish', False):
         if not util.safehasattr(pushop, 'remotephases'):
             msg = _('--publish flag only supported from Mercurial 4.4 and higher')
             raise error.Abort(msg)

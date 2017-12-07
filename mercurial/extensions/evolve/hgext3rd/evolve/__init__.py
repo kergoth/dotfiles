@@ -58,10 +58,10 @@ local and remote repositories. This experiment is still at an early stage but
 is already raising better results than the previous version (when usable).
 
 "Large" repositories (hundreds of thousand) are currently unsupported. Some key
-algorithm has a naive implementation with too agressive caching, creating
+algorithm has a naive implementation with too aggressive caching, creating
 memory consumption issue (this will get fixed).
 
-Medium sized repositories works fine, but be prepared for a noticable initial
+Medium sized repositories works fine, but be prepared for a noticeable initial
 cache filling. for the Mercurial repository, this is around 20 seconds
 
 The following config control the experiment::
@@ -97,7 +97,7 @@ implementation of some of the algorithms::
 
     # automatically disable obshashrange related computation and capabilities
     # if the repository has more than N revisions.  This is meant to help large
-    # server deployement to enable the feature on smaller repositories while
+    # server deployment to enable the feature on smaller repositories while
     # ensuring no large repository will get affected.
     obshashrange.max-revs = 100000 # default is None
 
@@ -159,12 +159,12 @@ about your obs history:
 
   - precursors, for each obsolete changeset show the closest visible
     precursors.
-  - successors, for each obsolete changeset show the closests visible
+  - successors, for each obsolete changeset show the closest visible
     successors. It is useful when your working directory is obsolete to see
     what are its successors. This information can also be retrieved with the
     obslog command and the --all option.
   - obsfate, for each obsolete changeset display a line summarizing what
-    changed between the changeset and its successors. Dependending on the
+    changed between the changeset and its successors. Depending on the
     verbosity level (-q and -v) it display the changeset successors, the users
     that created the obsmarkers and the date range of these changes.
 
@@ -1459,8 +1459,8 @@ def evolve(ui, repo, **opts):
     Automatic mode only handles common use cases. For example, it avoids taking
     action in the case of ambiguity, and it ignores unstable changesets that
     are not related to your working copy.
-    It also refuses to solve bumped or divergent changesets unless you explicity
-    request such behavior (see below).
+    It also refuses to solve bumped or divergent changesets unless you
+    explicitly request such behavior (see below).
 
     Eliminating all instability around your working copy may require multiple
     invocations of :hg:`evolve`. Alternately, use ``--all`` to recursively
@@ -1726,7 +1726,7 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         roots = repo.revs('roots(%ld)', targetrevs)
         heads = repo.revs('heads(%ld)', targetrevs)
         if len(roots) > 1 or len(heads) > 1:
-            msg = "cannot solve split accross two branches\n"
+            msg = "cannot solve split across two branches\n"
             ui.write_err(msg)
             return 2
         target = repo[heads.first()]
@@ -1876,7 +1876,7 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
     base, others = divergentdata(divergent)
     if len(others) > 1:
         othersstr = "[%s]" % (','.join([str(i) for i in others]))
-        msg = _("skipping %d:divergent with a changeset that got splitted"
+        msg = _("skipping %d:divergent with a changeset that got split"
                 " into multiple ones:\n"
                 "|[%s]\n"
                 "| This is not handled by automatic evolution yet\n"
@@ -2177,7 +2177,7 @@ def cmdnext(ui, repo, **opts):
             displayer.show(c)
             result = 0
         elif children:
-            ui.warn(_("ambigious next changeset:\n"))
+            ui.warn(_("ambiguous next changeset:\n"))
             for c in children:
                 displayer.show(c)
             ui.warn(_('explicitly update to one of them\n'))
@@ -2201,7 +2201,7 @@ def cmdnext(ui, repo, **opts):
                     ui.warn(msg % len(aspchildren))
                 result = 1
             elif 1 < len(aspchildren):
-                ui.warn(_("ambigious next (unstable) changeset:\n"))
+                ui.warn(_("ambiguous next (unstable) changeset:\n"))
                 for c in aspchildren:
                     displayer.show(repo[c])
                 ui.warn(_("(run 'hg evolve --rev REV' on one of them)\n"))
@@ -2467,7 +2467,7 @@ def _evolvestateread(repo):
     try:
         versionblob = f.read(4)
         if len(versionblob) < 4:
-            repo.ui.debug('ignoring corrupted evolvestte (file contains %i bits)'
+            repo.ui.debug('ignoring corrupted evolvestate (file contains %i bits)'
                           % len(versionblob))
             return None
         version = _unpack('>I', versionblob)[0]

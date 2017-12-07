@@ -70,6 +70,7 @@ CONTENTS                                                         *ale-contents*
       fusion-lint.........................|ale-fuse-fusionlint|
     glsl..................................|ale-glsl-options|
       glslang.............................|ale-glsl-glslang|
+      glslls..............................|ale-glsl-glslls|
     go....................................|ale-go-options|
       gofmt...............................|ale-go-gofmt|
       gometalinter........................|ale-go-gometalinter|
@@ -94,6 +95,7 @@ CONTENTS                                                         *ale-contents*
     javascript............................|ale-javascript-options|
       eslint..............................|ale-javascript-eslint|
       flow................................|ale-javascript-flow|
+      importjs............................|ale-javascript-importjs|
       jscs................................|ale-javascript-jscs|
       jshint..............................|ale-javascript-jshint|
       prettier............................|ale-javascript-prettier|
@@ -153,6 +155,7 @@ CONTENTS                                                         *ale-contents*
       flake8..............................|ale-python-flake8|
       isort...............................|ale-python-isort|
       mypy................................|ale-python-mypy|
+      prospector..........................|ale-python-prospector|
       pycodestyle.........................|ale-python-pycodestyle|
       pylint..............................|ale-python-pylint|
       pyls................................|ale-python-pyls|
@@ -294,7 +297,7 @@ Notes:
 * Erlang: `erlc`, `SyntaxErl`
 * Fortran: `gcc`
 * FusionScript: `fusion-lint`
-* GLSL: glslang
+* GLSL: glslang, `glslls`
 * Go: `gofmt`, `goimports`, `go vet`, `golint`, `gometalinter`!!, `go build`!!, `gosimple`!!, `staticcheck`!!
 * GraphQL: `eslint`, `gqlint`
 * Haml: `haml-lint`
@@ -326,7 +329,7 @@ Notes:
 * proto: `protoc-gen-lint`
 * Pug: `pug-lint`
 * Puppet: `puppet`, `puppet-lint`
-* Python: `autopep8`, `flake8`, `isort`, `mypy`, `pycodestyle`, `pyls`, `pylint`!!, `yapf`
+* Python: `autopep8`, `flake8`, `isort`, `mypy`, `prospector`, `pycodestyle`, `pyls`, `pylint`!!, `yapf`
 * R: `lintr`
 * ReasonML: `merlin`, `ols`, `refmt`
 * reStructuredText: `proselint`, `rstcheck`, `write-good`, `redpen`
@@ -603,6 +606,19 @@ g:airline#extensions#ale#enabled             *g:airline#extensions#ale#enabled*
   warnings and errors in the status line, prefixed by
   |airline#extensions#ale#error_symbol| and
   |airline#extensions#ale#warning_symbol|.
+
+
+g:ale_cache_executable_check_failures   *g:ale_cache_executable_check_failures*
+
+  Type: |Number|
+  Default: `0`
+
+  When set to `1`, ALE will cache failing executable checks for linters. By
+  default, only executable checks which succeed will be cached.
+
+  When this option is set to `1`, Vim will have to be restarted after new
+  executables are installed for ALE to be able to run linters for those
+  executables.
 
 
 g:ale_change_sign_column_color                 *g:ale_change_sign_column_color*
@@ -1016,6 +1032,7 @@ g:ale_linters                                                   *g:ale_linters*
   \   'csh': ['shell'],
   \   'go': ['gofmt', 'golint', 'go vet'],
   \   'help': [],
+  \   'perl': ['perlcritic'],
   \   'python': ['flake8', 'mypy', 'pylint'],
   \   'rust': ['cargo'],
   \   'spec': [],
