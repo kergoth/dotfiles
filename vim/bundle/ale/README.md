@@ -105,7 +105,7 @@ formatting.
 | GraphQL | [eslint](http://eslint.org/), [gqlint](https://github.com/happylinks/gqlint) |
 | Haml | [haml-lint](https://github.com/brigade/haml-lint) |
 | Handlebars | [ember-template-lint](https://github.com/rwjblue/ember-template-lint) |
-| Haskell | [ghc](https://www.haskell.org/ghc/), [stack-ghc](https://haskellstack.org/), [stack-build](https://haskellstack.org/) !!, [ghc-mod](https://github.com/DanielG/ghc-mod), [stack-ghc-mod](https://github.com/DanielG/ghc-mod), [hlint](https://hackage.haskell.org/package/hlint), [hdevtools](https://hackage.haskell.org/package/hdevtools), [hfmt](https://github.com/danstiner/hfmt) |
+| Haskell | [brittany](https://github.com/lspitzner/brittany), [ghc](https://www.haskell.org/ghc/), [stack-ghc](https://haskellstack.org/), [stack-build](https://haskellstack.org/) !!, [ghc-mod](https://github.com/DanielG/ghc-mod), [stack-ghc-mod](https://github.com/DanielG/ghc-mod), [hlint](https://hackage.haskell.org/package/hlint), [hdevtools](https://hackage.haskell.org/package/hdevtools), [hfmt](https://github.com/danstiner/hfmt) |
 | HTML | [HTMLHint](http://htmlhint.com/), [proselint](http://proselint.com/), [tidy](http://www.html-tidy.org/), [write-good](https://github.com/btford/write-good) |
 | Idris | [idris](http://www.idris-lang.org/) |
 | Java | [checkstyle](http://checkstyle.sourceforge.net), [javac](http://www.oracle.com/technetwork/java/javase/downloads/index.html) |
@@ -145,7 +145,7 @@ formatting.
 | Scala | [scalac](http://scala-lang.org), [scalastyle](http://www.scalastyle.org) |
 | Slim | [slim-lint](https://github.com/sds/slim-lint) |
 | SML | [smlnj](http://www.smlnj.org/) |
-| Solidity | [solium](https://github.com/duaraghav8/Solium) |
+| Solidity | [solhint](https://github.com/protofire/solhint), [solium](https://github.com/duaraghav8/Solium) |
 | Stylus | [stylelint](https://github.com/stylelint/stylelint) |
 | SQL | [sqlint](https://github.com/purcell/sqlint) |
 | Swift | [swiftlint](https://github.com/realm/SwiftLint), [swiftformat](https://github.com/nicklockwood/SwiftFormat) |

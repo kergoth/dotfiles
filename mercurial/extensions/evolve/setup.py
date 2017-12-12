@@ -19,6 +19,7 @@ def min_hg_version():
     return get_metadata()['minimumhgversion']
 
 py_modules = [
+    'hgext3rd.serverminitopic',
 ]
 py_packages = [
     'hgext3rd',

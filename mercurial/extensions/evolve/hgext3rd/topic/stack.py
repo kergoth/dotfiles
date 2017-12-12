@@ -12,7 +12,11 @@ from mercurial import (
     obsolete,
     util,
 )
-from .evolvebits import builddependencies, _singlesuccessor
+from .evolvebits import (
+    _singlesuccessor,
+    MultipleSuccessorsError,
+    builddependencies,
+)
 
 short = node.short
 
@@ -285,7 +289,15 @@ def showstack(ui, repo, branch=None, topic=None, opts=None):
         p1 = ctx.p1()
         p2 = ctx.p2()
         if p1.obsolete():
-            p1 = repo[_singlesuccessor(repo, p1)]
+            try:
+                p1 = repo[_singlesuccessor(repo, p1)]
+            except MultipleSuccessorsError as e:
+                successors = e.successorssets
+                if len(successors) > 1:
+                    # case of divergence which we don't handle yet
+                    raise
+                p1 = repo[successors[0][-1]]
+
         if p2.node() != node.nullid:
             entries.append((idxmap.get(p1.rev()), False, p1))
             entries.append((idxmap.get(p2.rev()), False, p2))

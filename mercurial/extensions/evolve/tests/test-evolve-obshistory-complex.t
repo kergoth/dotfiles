@@ -71,9 +71,20 @@ Split commits two by two
   4 new orphan changesets
   $ hg fold --exact -r 3 -r 4 --date "0 0" -m "fold1"
   2 changesets folded
-  $ hg fold --exact -r 5 -r 6 --date "0 0" -m "fold2"
+  $ hg fold --exact -r 5 -r 6 --date "0 0" -m "fold2" -n "folding changesets to test"
   2 changesets folded
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg obslog -r .
+  @    100cc25b765f (9) fold2
+  |\
+  x |  0da815c333f6 (5) E
+   /     rewritten(description, content) as 100cc25b765f by test (Thu Jan 01 00:00:00 1970 +0000)
+  |        note: folding changesets to test
+  |
+  x  d9f908fde1a1 (6) F
+       rewritten(description, parent, content) as 100cc25b765f by test (Thu Jan 01 00:00:00 1970 +0000)
+         note: folding changesets to test
+  
   $ hg log -G 
   @  changeset:   9:100cc25b765f
   |  tag:         tip
@@ -305,7 +316,7 @@ Connect them all
 
   $ hg prune -s 12 -r 11
   1 changesets pruned
-  $ hg prune -s 14 -r 13
+  $ hg prune -s 14 -r 13 -n "this is a note stored in obsmarker in prune"
   1 changesets pruned
   $ hg log -G
   @  changeset:   15:d4a000f63ee9
@@ -410,12 +421,14 @@ While with all option, we should see 15 changesets
   | | | | | |
   | +-------x  d0f33db50670 (13) fold1
   | | | | |      rewritten(description, parent, content) as ec31316faa9d by test (*) (glob)
+  | | | | |        note: this is a note stored in obsmarker in prune
   | | | | |
   +---x | |  e036916b63ea (11) fold0
   | |  / /     rewritten(description, parent, content) as 7b3290f6e0a0 by test (*) (glob)
   | | | |
   | | x |  0da815c333f6 (5) E
   | |  /     rewritten(description, content) as 100cc25b765f by test (*) (glob)
+  | | |        note: folding changesets to test
   | | |
   x | |    b868bc49b0a4 (7) fold0
   |\ \ \     rewritten(parent, content) as 19e14c8397fc, e036916b63ea by test (*) (glob)
@@ -425,6 +438,7 @@ While with all option, we should see 15 changesets
   | | | | |
   | | | | x  d9f908fde1a1 (6) F
   | | | |      rewritten(description, parent, content) as 100cc25b765f by test (*) (glob)
+  | | | |        note: folding changesets to test
   | | | |
   x | | |  2a34000d3544 (1) A
    / / /     rewritten(description, content) as b868bc49b0a4 by test (*) (glob)

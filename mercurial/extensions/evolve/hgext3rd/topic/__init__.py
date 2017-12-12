@@ -174,9 +174,9 @@ colortable = {'topic.active': 'green',
               'topic.active': 'green',
              }
 
-__version__ = '0.5.2.dev'
+__version__ = '0.6.1.dev'
 
-testedwith = '4.1.3 4.2.3 4.3.3 4.4.1'
+testedwith = '4.1.3 4.2.3 4.3.3 4.4.2'
 minimumhgversion = '4.1'
 buglink = 'https://bz.mercurial-scm.org/'
 
@@ -198,6 +198,9 @@ if util.safehasattr(registrar, 'configitem'):
     )
     configitem('_internal', 'keep-topic',
                default=False,
+    )
+    configitem('experimental', 'topic-mode.server',
+               default=configitem.dynamicdefault,
     )
 
     def extsetup(ui):
@@ -223,6 +226,7 @@ def _contexttopic(self, force=False):
         return ''
     return self.extra().get(constants.extrakey, '')
 context.basectx.topic = _contexttopic
+
 def _contexttopicidx(self):
     topic = self.topic()
     if not topic:
@@ -318,6 +322,10 @@ def uisetup(ui):
 
     cmdutil.summaryhooks.add('topic', summaryhook)
 
+    # Wrap workingctx extra to return the topic name
+    extensions.wrapfunction(context.workingctx, '__init__', wrapinit)
+    # Wrap changelog.add to drop empty topic
+    extensions.wrapfunction(changelog.changelog, 'add', wrapadd)
 
 def reposetup(ui, repo):
     if not isinstance(repo, localrepo.localrepository):
@@ -421,7 +429,19 @@ def reposetup(ui, repo):
                     origvalidator(tr2)
                 tr.validator = validator
 
-            if (repo.ui.configbool('experimental', 'topic.publish-bare-branch')
+            topicmodeserver = repo.ui.config('experimental',
+                                             'topic-mode.server', 'ignore')
+            ispush = (desc.startswith('push') or desc.startswith('serve'))
+            if (topicmodeserver != 'ignore' and ispush):
+                origvalidator = tr.validator
+
+                def validator(tr2):
+                    repo = reporef()
+                    flow.rejectuntopicedchangeset(repo, tr2)
+                    return origvalidator(tr2)
+                tr.validator = validator
+
+            elif (repo.ui.configbool('experimental', 'topic.publish-bare-branch')
                     and (desc.startswith('push')
                          or desc.startswith('serve'))
                     ):
@@ -467,10 +487,6 @@ def reposetup(ui, repo):
         repo.names.addnamespace(namespaces.namespace(
             'topics', 'topic', namemap=_namemap, nodemap=_nodemap,
             listnames=lambda repo: repo.topics))
-    # Wrap workingctx extra to return the topic name
-    extensions.wrapfunction(context.workingctx, '__init__', wrapinit)
-    # Wrap changelog.add to drop empty topic
-    extensions.wrapfunction(changelog.changelog, 'add', wrapadd)
 
 def wrapinit(orig, self, repo, *args, **kwargs):
     orig(self, repo, *args, **kwargs)

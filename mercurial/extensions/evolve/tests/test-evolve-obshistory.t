@@ -308,7 +308,7 @@ Test setup
      date:        Thu Jan 01 00:00:00 1970 +0000
      summary:     ROOT
   
-  $ hg split -r 'desc(A0)' -d "0 0" << EOF
+  $ hg split -r 'desc(A0)' -n "testing split" -d "0 0" << EOF
   > y
   > y
   > n
@@ -374,6 +374,7 @@ Check that debugobshistory on splitted commit show both targets
   $ hg obslog 471597cad322 --hidden --patch
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
   $ hg obslog 471597cad322 --hidden --no-graph -Tjson | python -m json.tool
@@ -389,6 +390,7 @@ Check that debugobshistory on splitted commit show both targets
                       "parent",
                       "content"
                   ],
+                  "note": "testing split",
                   "succnodes": [
                       "337fec4d2edc",
                       "f257fde29c7a"
@@ -409,6 +411,7 @@ the revision plus the splitted one
   |
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
 With the all option, it should show the three changesets
@@ -419,6 +422,7 @@ With the all option, it should show the three changesets
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
 Check that debugobshistory on the second successor after split show
@@ -428,6 +432,7 @@ the revision plus the splitted one
   |
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
 With the all option, it should show the three changesets
@@ -438,6 +443,7 @@ With the all option, it should show the three changesets
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
 Obslog with all option all should also works on the splitted commit
@@ -448,6 +454,7 @@ Obslog with all option all should also works on the splitted commit
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
 Check that debugobshistory on both successors after split show
@@ -459,6 +466,7 @@ a coherent graph
   |/
   x  471597cad322 (1) A0
        rewritten(parent, content) as 337fec4d2edc, f257fde29c7a by test (*) (glob)
+         note: testing split
          (No patch available, too many successors (2))
   
   $ hg update 471597cad322

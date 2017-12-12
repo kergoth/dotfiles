@@ -499,6 +499,11 @@ def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
     fm.write('date', '(%s)', fm.formatdate(date),
              label="evolve.date")
 
+    # initial support for showing note
+    if metadata.get('note'):
+        fm.plain('\n    note: ')
+        fm.write('note', "%s", metadata['note'], label="evolve.note")
+
     # Patch display
     if opts.get('patch'):
         _patchavailable = patchavailable(node, repo, marker)
@@ -787,8 +792,15 @@ def _successorsetverb(successorset, markers):
         verb = 'split'
     return {'verb': verb}
 
+# Use a more advanced version of obsfateverb that uses effect-flag
+if util.safehasattr(obsutil, 'obsfateverb'):
+
+    @eh.wrapfunction(obsutil, 'obsfateverb')
+    def obsfateverb(orig, *args, **kwargs):
+        return _successorsetverb(*args, **kwargs)['verb']
+
 # Hijack callers of successorsetverb
-if util.safehasattr(obsutil, 'obsfateprinter'):
+elif util.safehasattr(obsutil, 'obsfateprinter'):
 
     @eh.wrapfunction(obsutil, 'obsfateprinter')
     def obsfateprinter(orig, successors, markers, ui):

@@ -1,12 +1,25 @@
 Changelog
 =========
 
-7.0.2 - in progress
+7.1.0 -- 2017-12-12
 -------------------
 
-Topic (0.5.2)
+  * verbosity: respect --quiet for prev, next and summary
+  * note: add a `-n/--note` flag to all history rewritting commands
+  * obslog: shows the obsmarkers notes
+  * obsdiscover: Improved stable range slice for the experimental obshashrange
+                 (client and server need to upgrade to this version)
+  * split: preserve the branch of the source changeset
 
+topic (0.6.0)
+
+  * add a new 'serverminitopic' extension for minimal server support
+    (see `hg help -e serverminitopic` for details)
+  * add a new config option `experimental.topic-mode.server` using which a
+    server can reject draft changesets without topic
+  * fix behavior of `hg stack` in cases of split
   * makes code more resilient to partiel initialization
+  * avoid over wrapping inside of long living process
 
 7.0.1 -- 2017-11-14
 -------------------

@@ -97,6 +97,14 @@ def bookmarkapplychanges(repo, tr, changes):
             bookmarks[name] = node
     bookmarks.recordchange(tr)
 
+def isobsnotesupported():
+    # hack to know obsnote is supported. The patches for obsnote support was
+    # pushed before the obsfateprinter patches, so this will serve as a good
+    # check
+    if not obsutil:
+        return False
+    return util.safehasattr(obsutil, 'obsfateprinter')
+
 # Evolution renaming compat
 
 TROUBLES = {}

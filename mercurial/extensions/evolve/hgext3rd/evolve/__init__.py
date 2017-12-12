@@ -831,17 +831,10 @@ def push(orig, repo, *args, **opts):
         raise
 
 def summaryhook(ui, repo):
-    def write(fmt, count):
-        s = fmt % count
-        if count:
-            ui.write(s)
-        else:
-            ui.note(s)
-
     state = _evolvestateread(repo)
     if state is not None:
         # i18n: column positioning for "hg summary"
-        ui.write(_('evolve: (evolve --continue)\n'))
+        ui.status(_('evolve: (evolve --continue)\n'))
 
 @eh.extsetup
 def obssummarysetup(ui):
@@ -2031,7 +2024,8 @@ def _prevupdate(repo, displayer, target, bookmark, dryrun):
             finally:
                 lockmod.release(tr, lock)
 
-    displayer.show(target)
+    if not repo.ui.quiet:
+        displayer.show(target)
 
 def _findprevtarget(repo, displayer, movebookmark=False, topic=True):
     target = bookmark = None
@@ -2174,7 +2168,8 @@ def cmdnext(ui, repo, **opts):
                         tr.close()
                     finally:
                         lockmod.release(tr, lock)
-            displayer.show(c)
+            if not ui.quiet:
+                displayer.show(c)
             result = 0
         elif children:
             ui.warn(_("ambiguous next changeset:\n"))

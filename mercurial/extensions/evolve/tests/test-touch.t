@@ -151,5 +151,11 @@ check that reviving a changeset with no successor does not show the prompt
 
   $ hg prune 13
   1 changesets pruned
-  $ hg touch 13 --hidden
+  $ hg touch 13 --hidden --note "testing with no successor"
   1 new orphan changesets
+  $ hg obslog -r 13 --hidden
+  x  [0-9a-f]{12} (.*) move (re)
+       pruned by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(.*) as [0-9a-f]{12} by test (.*) (re)
+         note: testing with no successor
+  

@@ -273,7 +273,7 @@ def debugobshashrange(ui, repo, **opts):
     rangelength = repo.stablerange.rangelength
     depthrev = repo.stablerange.depthrev
     if opts['subranges']:
-        ranges = stablerange.subrangesclosure(repo, revs)
+        ranges = stablerange.subrangesclosure(repo, repo.stablerange, revs)
     else:
         ranges = [(r, 0) for r in revs]
     headers = ('rev', 'node', 'index', 'size', 'depth', 'obshash')
@@ -451,6 +451,7 @@ class _obshashcache(obscache.dualsourcecache):
             newrevs.extend(revs)
             revs = newrevs
 
+        repo.depthcache.update(repo)
         # warm the cache for the new revs
         for r in revs:
             _obshashrange(repo, (r, 0))

@@ -486,3 +486,168 @@ Check that the topic is still here
   
   $ hg topic
    * mytopic (2 changesets)
+
+Test split the first commit on a branch
+
+  $ touch SPLIT1 SPLIT2
+  $ hg add SPLIT1 SPLIT2
+  $ hg branch another-branch
+  marked working directory as branch another-branch
+  $ hg commit -m "To be splitted"
+  $ hg log -G -l 3
+  @  changeset:   21:8dad923bdb9b
+  |  branch:      another-branch
+  |  tag:         tip
+  |  topic:       mytopic
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     To be splitted
+  |
+  o  changeset:   20:2532b288af61
+  |  branch:      new-branch
+  |  topic:       mytopic
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     split8
+  |
+  o  changeset:   19:addcf498f19e
+  |  branch:      new-branch
+  ~  topic:       mytopic
+     parent:      17:fdb403258632
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     split7
+  
+  $ hg export .
+  # HG changeset patch
+  # User test
+  # Date 0 0
+  #      Thu Jan 01 00:00:00 1970 +0000
+  # Branch another-branch
+  # Node ID 8dad923bdb9bb3b99291caa5baeb03bbc30dfd33
+  # Parent  2532b288af61bd19239a95ae2a3ecb9b0ad4b8e1
+  # EXP-Topic mytopic
+  To be splitted
+  
+  diff --git a/SPLIT1 b/SPLIT1
+  new file mode 100644
+  diff --git a/SPLIT2 b/SPLIT2
+  new file mode 100644
+
+  $ hg split -r . << EOF
+  > Y
+  > N
+  > N
+  > Y
+  > EOF
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  adding SPLIT1
+  adding SPLIT2
+  diff --git a/SPLIT1 b/SPLIT1
+  new file mode 100644
+  examine changes to 'SPLIT1'? [Ynesfdaq?] Y
+  
+  diff --git a/SPLIT2 b/SPLIT2
+  new file mode 100644
+  examine changes to 'SPLIT2'? [Ynesfdaq?] N
+  
+  Done splitting? [yN] N
+  diff --git a/SPLIT2 b/SPLIT2
+  new file mode 100644
+  examine changes to 'SPLIT2'? [Ynesfdaq?] Y
+  
+  no more change to split
+
+The splitted changesets should be on the 'another-branch'
+  $ hg log -G -l 3
+  @  changeset:   23:56a59faa8af7
+  |  branch:      another-branch
+  |  tag:         tip
+  |  topic:       mytopic
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     split10
+  |
+  o  changeset:   22:75695e3e2300
+  |  branch:      another-branch
+  |  topic:       mytopic
+  |  parent:      20:2532b288af61
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     split9
+  |
+  o  changeset:   20:2532b288af61
+  |  branch:      new-branch
+  ~  topic:       mytopic
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     split8
+  
+
+Try splitting the first changeset of a branch then cancel
+
+  $ hg branch yet-another-branch
+  marked working directory as branch yet-another-branch
+  $ touch SPLIT3 SPLIT4
+  $ hg add SPLIT3 SPLIT4
+  $ hg commit -m "To be splitted again"
+
+  $ hg up "tip~1"
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+
+  $ hg log -G -l 2
+  o  changeset:   24:b1020d17c364
+  |  branch:      yet-another-branch
+  |  tag:         tip
+  |  topic:       mytopic
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     To be splitted again
+  |
+  @  changeset:   23:56a59faa8af7
+  |  branch:      another-branch
+  ~  topic:       mytopic
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     split10
+  
+  $ hg branch
+  another-branch
+
+  $ hg split -r tip << EOF
+  > Y
+  > q
+  > EOF
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  adding SPLIT3
+  adding SPLIT4
+  diff --git a/SPLIT3 b/SPLIT3
+  new file mode 100644
+  examine changes to 'SPLIT3'? [Ynesfdaq?] Y
+  
+  diff --git a/SPLIT4 b/SPLIT4
+  new file mode 100644
+  examine changes to 'SPLIT4'? [Ynesfdaq?] q
+  
+  abort: user quit
+  [255]
+
+  $ hg branch
+  another-branch
+
+  $ hg log -G -l 2
+  o  changeset:   24:b1020d17c364
+  |  branch:      yet-another-branch
+  |  tag:         tip
+  |  topic:       mytopic
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     To be splitted again
+  |
+  @  changeset:   23:56a59faa8af7
+  |  branch:      another-branch
+  ~  topic:       mytopic
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     split10
+  

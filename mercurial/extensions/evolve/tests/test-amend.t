@@ -18,9 +18,16 @@ Test that amend captures branches
   $ hg branch foo
   marked working directory as branch foo
   (branches are permanent and global, did you want a bookmark?)
-  $ hg amend -d '0 0'
+  $ hg amend -d '0 0' -n "this a note on the obsmarker and supported for hg>=4.4"
   $ hg debugobsolete
   07f4944404050f47db2e5c5071e0e84e7a27bba9 6a022cbb61d5ba0f03f98ff2d36319dfea1034ae 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  $ hg obslog
+  @  6a022cbb61d5 (1) adda
+  |
+  x  07f494440405 (0) adda
+       rewritten(branch) as 6a022cbb61d5 by test (Thu Jan 01 00:00:00 1970 +0000)
+         note: this a note on the obsmarker and supported for hg>=4.4
+  
   $ hg branch
   foo
   $ hg branches
@@ -145,6 +152,7 @@ Check the help
       --close-branch        mark a branch as closed, hiding it from the branch
                             list
    -s --secret              use the secret phase for committing
+   -n --note VALUE          store a note on amend
    -I --include PATTERN [+] include names matching the given patterns
    -X --exclude PATTERN [+] exclude names matching the given patterns
    -m --message TEXT        use text as commit message

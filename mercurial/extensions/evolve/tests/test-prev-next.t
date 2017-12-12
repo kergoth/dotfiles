@@ -3,7 +3,7 @@
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
 
-hg prev -B should move active bookmark
+hg prev & next move to parent/child
   $ hg init test-repo
   $ cd test-repo
   $ touch a
@@ -12,6 +12,18 @@ hg prev -B should move active bookmark
   $ touch b
   $ hg add b
   $ hg commit -m 'added b'
+  $ hg prev
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [0] added a
+  $ hg next
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  [1] added b
+
+hg prev & next respect --quiet
+  $ hg prev -q
+  $ hg next -q
+
+hg prev -B should move active bookmark
   $ hg bookmark mark
   $ hg bookmarks
    * mark                      1:6e742c9127b3

@@ -8,6 +8,8 @@ Test for stable ordering capabilities
   > hgext3rd.evolve =
   > [ui]
   > logtemplate = "{rev} {node|short} {desc} {tags}\n"
+  > [defaults]
+  > debugstablerange = --method mergepoint
   > EOF
 
 Simple linear test
@@ -16,6 +18,14 @@ Simple linear test
   $ hg init repo_linear
   $ cd repo_linear
   $ hg debugbuilddag '.+6'
+  $ hg debugdepth -r 'all()'
+  1ea73414a91b 1
+  66f7d451a68b 2
+  01241442b3c2 3
+  2dc09a01254d 4
+  bebd167eb94d 5
+  c8d03c1b5e94 6
+  f69452c5b1af 7
   $ hg debugstablerange --verify --verbose --subranges --rev 1
   66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
   1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -156,6 +166,17 @@ Simple case: branching is on a boundary
   |/
   o  0 1ea73414a91b r0 base
   
+  $ hg debugdepth -r 'all()'
+  1ea73414a91b 1
+  66f7d451a68b 2
+  01241442b3c2 3
+  2dc09a01254d 4
+  e7bd5218ca15 2
+  3a367db1fabc 3
+  a2f58e9c1e56 4
+  5f18015f9110 8
+  71b32fcf3f71 9
+  0338daf18215 10
 
 Each of the linear branch reuse range internally
 
@@ -327,6 +348,20 @@ slice create multiple heads
   |/
   o  0 1ea73414a91b r0 base
   
+  $ hg debugdepth -r 'all()'
+  1ea73414a91b 1
+  66f7d451a68b 2
+  01241442b3c2 3
+  2dc09a01254d 4
+  bebd167eb94d 5
+  de561312eff4 2
+  b9bc20507e0b 3
+  42b07e8da27d 4
+  857477a9aebb 5
+  f4b7da68b467 6
+  8aca7f8c9bd2 11
+  485383494a89 12
+  e6b8d5b46647 13
 
 Each of the linear branch reuse range internally
 
@@ -414,15 +449,14 @@ So we'll create more than 1 subrange out of it.
 We are still able to reuse one of the branch however
 
   $ hg debugstablerange --verify --verbose --subranges --rev merge
-  8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-0 (7, 4, 4), 8aca7f8c9bd2-8 (10, 11, 3)
+  8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
   bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
   2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
   8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
   2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
   42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
   66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
-  de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
   01241442b3c2-2 (2, 3, 1) [leaf] - 
   1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -439,16 +473,15 @@ We are still able to reuse one of the branch however
   $ diff -u left.range merge.range
   --- left.range	* (glob)
   +++ merge.range	* (glob)
-  @@ -1,9 +1,21 @@
-  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-0 (7, 4, 4), 8aca7f8c9bd2-8 (10, 11, 3)
+  @@ -1,9 +1,20 @@
+  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
    bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
    2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  +42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  +42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
   +8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
    2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
   +42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
    66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
-  +de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   +f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
    01241442b3c2-2 (2, 3, 1) [leaf] - 
    1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -465,17 +498,18 @@ We are still able to reuse one of the branch however
   $ diff -u right.range merge.range
   --- right.range	* (glob)
   +++ merge.range	* (glob)
-  @@ -1,11 +1,21 @@
+  @@ -1,11 +1,20 @@
   -f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
-  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-0 (7, 4, 4), 8aca7f8c9bd2-8 (10, 11, 3)
+  -42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
   +bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
   +2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-   42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  +42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
   +8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
   +2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
    42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
+  -de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   +66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
-   de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
    f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
   +01241442b3c2-2 (2, 3, 1) [leaf] - 
    1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -493,17 +527,16 @@ We are still able to reuse one of the branch however
 Range above the merge, reuse subrange from the merge
 
   $ hg debugstablerange --verify --verbose --subranges --rev tip
-  e6b8d5b46647-0 (12, 13, 13) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-0 (7, 4, 4), e6b8d5b46647-8 (12, 13, 5)
+  e6b8d5b46647-0 (12, 13, 13) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), e6b8d5b46647-8 (12, 13, 5)
   bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
   e6b8d5b46647-8 (12, 13, 5) [complete] - 485383494a89-8 (11, 12, 4), e6b8d5b46647-12 (12, 13, 1)
   2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
   485383494a89-8 (11, 12, 4) [complete] - f4b7da68b467-4 (9, 6, 2), 485383494a89-10 (11, 12, 2)
+  42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
   2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
   42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
   485383494a89-10 (11, 12, 2) [complete] - 8aca7f8c9bd2-10 (10, 11, 1), 485383494a89-11 (11, 12, 1)
   66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
-  de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
   01241442b3c2-2 (2, 3, 1) [leaf] - 
   1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -522,22 +555,21 @@ Range above the merge, reuse subrange from the merge
   $ diff -u merge.range tip.range
   --- merge.range	* (glob)
   +++ tip.range	* (glob)
-  @@ -1,10 +1,12 @@
-  -8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-0 (7, 4, 4), 8aca7f8c9bd2-8 (10, 11, 3)
-  +e6b8d5b46647-0 (12, 13, 13) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-0 (7, 4, 4), e6b8d5b46647-8 (12, 13, 5)
+  @@ -1,20 +1,24 @@
+  -8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
+  +e6b8d5b46647-0 (12, 13, 13) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), e6b8d5b46647-8 (12, 13, 5)
    bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
   +e6b8d5b46647-8 (12, 13, 5) [complete] - 485383494a89-8 (11, 12, 4), e6b8d5b46647-12 (12, 13, 1)
    2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-   42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
-  -8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
   +485383494a89-8 (11, 12, 4) [complete] - f4b7da68b467-4 (9, 6, 2), 485383494a89-10 (11, 12, 2)
+   42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
+  -8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
    2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
    42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
   +485383494a89-10 (11, 12, 2) [complete] - 8aca7f8c9bd2-10 (10, 11, 1), 485383494a89-11 (11, 12, 1)
    66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
-   de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
    f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
-  @@ -12,10 +14,12 @@
+   01241442b3c2-2 (2, 3, 1) [leaf] - 
    1ea73414a91b-0 (0, 1, 1) [leaf] - 
    2dc09a01254d-3 (3, 4, 1) [leaf] - 
    42b07e8da27d-3 (7, 4, 1) [leaf] - 
@@ -605,6 +637,23 @@ Tests range with criss cross merge in the graph
   |/
   o  0 1ea73414a91b r0
   
+  $ hg debugdepth -r 'all()'
+  1ea73414a91b 1
+  66f7d451a68b 2
+  fa942426a6fd 2
+  2b6d669947cd 4
+  4c748ffd1a46 3
+  f0f3ef9a6cd5 4
+  2702dd0c91e7 5
+  e7d9710d9fc6 5
+  d62d843c9a01 6
+  dcbb326fdec2 7
+  ff43616e5d0f 7
+  bab5d5bf48bd 5
+  e46a4836065c 6
+  b4594d867745 6
+  43227190fef8 5
+  1d8d22637c2d 8
   $ hg debugstablerange --verify --verbose --subranges --rev 'head()'
   1d8d22637c2d-0 (15, 8, 8) [complete] - 2b6d669947cd-0 (3, 4, 4), 1d8d22637c2d-4 (15, 8, 4)
   dcbb326fdec2-0 (9, 7, 7) [complete] - 2b6d669947cd-0 (3, 4, 4), dcbb326fdec2-4 (9, 7, 3)
@@ -612,7 +661,7 @@ Tests range with criss cross merge in the graph
   b4594d867745-0 (13, 6, 6) [complete] - 2b6d669947cd-0 (3, 4, 4), b4594d867745-4 (13, 6, 2)
   e46a4836065c-0 (12, 6, 6) [complete] - 2b6d669947cd-0 (3, 4, 4), e46a4836065c-4 (12, 6, 2)
   2702dd0c91e7-0 (6, 5, 5) [complete] - f0f3ef9a6cd5-0 (5, 4, 4), 2702dd0c91e7-4 (6, 5, 1)
-  1d8d22637c2d-4 (15, 8, 4) [complete] - 4c748ffd1a46-2 (4, 3, 1), 43227190fef8-4 (14, 5, 1), 1d8d22637c2d-6 (15, 8, 2)
+  1d8d22637c2d-4 (15, 8, 4) [complete] - 43227190fef8-4 (14, 5, 1), 4c748ffd1a46-2 (4, 3, 1), 1d8d22637c2d-6 (15, 8, 2)
   2b6d669947cd-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2b6d669947cd-2 (3, 4, 2)
   f0f3ef9a6cd5-0 (5, 4, 4) [complete] - fa942426a6fd-0 (2, 2, 2), f0f3ef9a6cd5-2 (5, 4, 2)
   dcbb326fdec2-4 (9, 7, 3) [complete] - d62d843c9a01-4 (8, 6, 2), dcbb326fdec2-6 (9, 7, 1)
@@ -664,10 +713,15 @@ Tests range where a toprange is rooted on a merge
   |/
   o  0 1ea73414a91b r0
   
+  $ hg debugdepth -r 'all()'
+  1ea73414a91b 1
+  66f7d451a68b 2
+  fa942426a6fd 2
+  36315563e2fa 3
+  f37e476fba9a 5
   $ hg debugstablerange --verify --verbose --subranges --rev 'head()'
-  f37e476fba9a-0 (4, 5, 5) [complete] - 66f7d451a68b-0 (1, 2, 2), 36315563e2fa-0 (3, 3, 3), f37e476fba9a-4 (4, 5, 1)
+  f37e476fba9a-0 (4, 5, 5) [complete] - 36315563e2fa-0 (3, 3, 3), 66f7d451a68b-1 (1, 2, 1), f37e476fba9a-4 (4, 5, 1)
   36315563e2fa-0 (3, 3, 3) [complete] - fa942426a6fd-0 (2, 2, 2), 36315563e2fa-2 (3, 3, 1)
-  66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
   fa942426a6fd-0 (2, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), fa942426a6fd-1 (2, 2, 1)
   1ea73414a91b-0 (0, 1, 1) [leaf] - 
   36315563e2fa-2 (3, 3, 1) [leaf] - 

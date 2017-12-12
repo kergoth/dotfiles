@@ -937,6 +937,7 @@ of the `uncommit` command to splitting a change.
   
    -a --all                 uncommit all changes when no arguments given
    -r --rev VALUE           revert commit content to REV instead
+   -n --note VALUE          store a note on uncommit
    -I --include PATTERN [+] include names matching the given patterns
    -X --exclude PATTERN [+] exclude names matching the given patterns
    -m --message TEXT        use text as commit message
@@ -976,6 +977,7 @@ The tutorial part is not written yet but can use `hg fold`:
    -r --rev VALUE [+] revision to fold
       --exact         only fold specified revisions
       --from          fold revisions linearly to working copy parent
+   -n --note VALUE    store a note on fold
    -m --message TEXT  use text as commit message
    -l --logfile FILE  read commit message from file
    -d --date DATE     record the specified date as commit date

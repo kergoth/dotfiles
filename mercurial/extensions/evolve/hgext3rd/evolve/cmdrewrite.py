@@ -49,6 +49,21 @@ stringio = util.stringio
 
 # option added by evolve
 
+def _checknotesize(ui, opts):
+    """ make sure note is of valid format """
+
+    note = opts.get('note')
+    if not note:
+        return
+
+    if not compat.isobsnotesupported():
+        ui.warn(_("current hg version does not support storing"
+                  " note in obsmarker\n"))
+    if len(note) > 255:
+        raise error.Abort(_("cannot store a note of more than 255 bytes"))
+    if '\n' in note:
+        raise error.Abort(_("note cannot contain a newline"))
+
 def _resolveoptions(ui, opts):
     """modify commit options dict to handle related options
 
@@ -80,6 +95,7 @@ interactiveopt = [['i', 'interactive', None, _('use interactive mode')]]
      ('', 'close-branch', None,
       _('mark a branch as closed, hiding it from the branch list')),
      ('s', 'secret', None, _('use the secret phase for committing')),
+     ('n', 'note', '', _('store a note on amend')),
     ] + walkopts + commitopts + commitopts2 + commitopts3 + interactiveopt,
     _('[OPTION]... [FILE]...'))
 def amend(ui, repo, *pats, **opts):
@@ -98,6 +114,7 @@ def amend(ui, repo, *pats, **opts):
 
     Returns 0 on success, 1 if nothing changed.
     """
+    _checknotesize(ui, opts)
     opts = opts.copy()
     if opts.get('extract'):
         return uncommit(ui, repo, *pats, **opts)
@@ -288,6 +305,7 @@ def _uncommitdirstate(repo, oldctx, match, interactive):
     [('a', 'all', None, _('uncommit all changes when no arguments given')),
      ('i', 'interactive', False, _('interactive mode to uncommit (EXPERIMENTAL)')),
      ('r', 'rev', '', _('revert commit content to REV instead')),
+     ('n', 'note', '', _('store a note on uncommit')),
      ] + commands.walkopts + commitopts + commitopts2 + commitopts3,
     _('[OPTION]... [NAME]'))
 def uncommit(ui, repo, *pats, **opts):
@@ -313,6 +331,7 @@ def uncommit(ui, repo, *pats, **opts):
     Return 0 if changed files are uncommitted.
     """
 
+    _checknotesize(ui, opts)
     _resolveoptions(ui, opts) # process commitopts3
     interactive = opts.get('interactive')
     wlock = lock = tr = None
@@ -365,7 +384,12 @@ def uncommit(ui, repo, *pats, **opts):
                 raise error.Abort(_('nothing to uncommit'),
                                   hint=_("use --all to uncommit all files"))
 
-        obsolete.createmarkers(repo, [(old, (repo[newid],))])
+        # metadata to be stored in obsmarker
+        metadata = {}
+        if opts.get('note'):
+            metadata['note'] = opts['note']
+
+        obsolete.createmarkers(repo, [(old, (repo[newid],))], metadata=metadata)
         phases.retractboundary(repo, tr, oldphase, [newid])
         with repo.dirstate.parentchange():
             repo.dirstate.setparents(newid, node.nullid)
@@ -477,7 +501,8 @@ def _patchtocommit(ui, repo, old, fp, message=None, extras=None):
     '^fold|squash',
     [('r', 'rev', [], _("revision to fold")),
      ('', 'exact', None, _("only fold specified revisions")),
-     ('', 'from', None, _("fold revisions linearly to working copy parent"))
+     ('', 'from', None, _("fold revisions linearly to working copy parent")),
+     ('n', 'note', '', _('store a note on fold')),
     ] + commitopts + commitopts2 + commitopts3,
     _('hg fold [OPTION]... [-r] REV'))
 def fold(ui, repo, *revs, **opts):
@@ -517,6 +542,7 @@ def fold(ui, repo, *revs, **opts):
 
          hg fold foo::@ --exact
     """
+    _checknotesize(ui, opts)
     _resolveoptions(ui, opts)
     revs = list(revs)
     revs.extend(opts['rev'])
@@ -572,6 +598,10 @@ def fold(ui, repo, *revs, **opts):
                 commitopts['message'] = "\n".join(msgs)
                 commitopts['edit'] = True
 
+            metadata = {}
+            if opts.get('note'):
+                metadata['note'] = opts['note']
+
             newid, unusedvariable = rewriteutil.rewrite(repo, root, allctx,
                                                         head,
                                                         [root.p1().node(),
@@ -579,7 +609,7 @@ def fold(ui, repo, *revs, **opts):
                                                         commitopts=commitopts)
             phases.retractboundary(repo, tr, targetphase, [newid])
             obsolete.createmarkers(repo, [(ctx, (repo[newid],))
-                                   for ctx in allctx])
+                                   for ctx in allctx], metadata=metadata)
             tr.close()
         finally:
             tr.release()
@@ -593,6 +623,7 @@ def fold(ui, repo, *revs, **opts):
     'metaedit',
     [('r', 'rev', [], _("revision to edit")),
      ('', 'fold', None, _("also fold specified revisions into one")),
+     ('n', 'note', '', _('store a note on metaedit')),
     ] + commitopts + commitopts2 + commitopts3,
     _('hg metaedit [OPTION]... [-r] [REV]'))
 def metaedit(ui, repo, *revs, **opts):
@@ -624,6 +655,7 @@ def metaedit(ui, repo, *revs, **opts):
        See :hg:`help phases` for more about draft revisions, and
        :hg:`help revsets` for more about the `draft()` and `only()` keywords.
     """
+    _checknotesize(ui, opts)
     _resolveoptions(ui, opts)
     revs = list(revs)
     revs.extend(opts['rev'])
@@ -697,9 +729,15 @@ def metaedit(ui, repo, *revs, **opts):
             if created:
                 if p1.rev() in revs:
                     newp1 = newid
+                # metadata to be stored on obsmarker
+                metadata = {}
+                if opts.get('note'):
+                    metadata['note'] = opts['note']
+
                 phases.retractboundary(repo, tr, targetphase, [newid])
                 obsolete.createmarkers(repo, [(ctx, (repo[newid],))
-                                              for ctx in allctx])
+                                              for ctx in allctx],
+                                       metadata=metadata)
             else:
                 ui.status(_("nothing changed\n"))
             tr.close()
@@ -736,6 +774,7 @@ def _getmetadata(**opts):
      ('s', 'succ', [], _("successor changeset")),
      ('r', 'rev', [], _("revisions to prune")),
      ('k', 'keep', None, _("does not modify working copy during prune")),
+     ('n', 'note', '', _('store a note on prune')),
      ('', 'biject', False, _("do a 1-1 map between rev and successor ranges")),
      ('', 'fold', False,
       _("record a fold (multiple precursors, one successors)")),
@@ -769,6 +808,7 @@ def cmdprune(ui, repo, *revs, **opts):
     must acknowledge it by passing ``--split``. Similarly, when you prune multiple
     changesets with a single successor, you must pass the ``--fold`` option.
     """
+    _checknotesize(ui, opts)
     revs = scmutil.revrange(repo, list(revs) + opts.get('rev'))
     succs = opts['new'] + opts['succ']
     bookmarks = set(opts.get('bookmark'))
@@ -884,6 +924,10 @@ def cmdprune(ui, repo, *revs, **opts):
         if bookmarks:
             rewriteutil.deletebookmark(repo, repomarks, bookmarks)
 
+        # store note in metadata
+        if opts.get('note'):
+            metadata['note'] = opts['note']
+
         # create markers
         obsolete.createmarkers(repo, relations, metadata=metadata)
 
@@ -913,6 +957,7 @@ def cmdprune(ui, repo, *revs, **opts):
 @eh.command(
     '^split',
     [('r', 'rev', [], _("revision to split")),
+     ('n', 'note', '', _("store a note on split")),
     ] + commitopts + commitopts2 + commitopts3,
     _('hg split [OPTION]... [-r] REV'))
 def cmdsplit(ui, repo, *revs, **opts):
@@ -923,6 +968,7 @@ def cmdsplit(ui, repo, *revs, **opts):
 
     Use --rev to split a given changeset instead.
     """
+    _checknotesize(ui, opts)
     _resolveoptions(ui, opts)
     tr = wlock = lock = None
     newcommits = []
@@ -932,6 +978,9 @@ def cmdsplit(ui, repo, *revs, **opts):
         msg = _("more than one revset is given")
         hnt = _("use either `hg split <rs>` or `hg split --rev <rs>`, not both")
         raise error.Abort(msg, hint=hnt)
+
+    # Save the current branch to restore it in the end
+    savedbranch = repo.dirstate.branch()
 
     try:
         wlock = repo.wlock()
@@ -964,6 +1013,11 @@ def cmdsplit(ui, repo, *revs, **opts):
         opts['edit'] = True
         if not opts['user']:
             opts['user'] = ctx.user()
+
+        # Set the right branch
+        # XXX-TODO: Find a way to set the branch without altering the dirstate
+        repo.dirstate.setbranch(ctx.branch())
+
         while haschanges():
             pats = ()
             cmdutil.dorecord(ui, repo, commands.commit, 'commit', False,
@@ -984,14 +1038,22 @@ def cmdsplit(ui, repo, *revs, **opts):
             bmupdate(tip.node())
             if bookactive is not None:
                 bookmarksmod.activate(repo, bookactive)
-            obsolete.createmarkers(repo, [(repo[rev], newcommits)])
+            metadata = {}
+            if opts.get('note'):
+                metadata['note'] = opts['note']
+            obsolete.createmarkers(repo, [(repo[rev], newcommits)],
+                                   metadata=metadata)
         tr.close()
     finally:
+        # Restore the old branch
+        repo.dirstate.setbranch(savedbranch)
+
         lockmod.release(tr, lock, wlock)
 
 @eh.command(
     'touch',
     [('r', 'rev', [], 'revision to update'),
+     ('n', 'note', '', _('store a note on touch')),
      ('D', 'duplicate', False,
       'do not mark the new revision as successor of the old one'),
      ('A', 'allowdivergence', False,
@@ -1000,12 +1062,11 @@ def cmdsplit(ui, repo, *revs, **opts):
     # allow to choose the seed ?
     _('[-r] revs'))
 def touch(ui, repo, *revs, **opts):
-    # Do not split this next line to fit into 80 cols, it is displayed when
-    # running `hg` with no arguments!
-    """create successors that are identical to their predecessors except for the changeset ID
+    """create successors identical to their predecessors but the changeset ID
 
     This is used to "resurrect" changesets
     """
+    _checknotesize(ui, opts)
     duplicate = opts['duplicate']
     allowdivergence = opts['allowdivergence']
     revs = list(revs)
@@ -1069,7 +1130,11 @@ def touch(ui, repo, *revs, **opts):
             newmapping[ctx.node()] = new
 
             if not duplicate:
-                obsolete.createmarkers(repo, [(ctx, (repo[new],))])
+                metadata = {}
+                if opts.get('note'):
+                    metadata['note'] = opts['note']
+                obsolete.createmarkers(repo, [(ctx, (repo[new],))],
+                                       metadata=metadata)
             phases.retractboundary(repo, tr, ctx.phase(), [new])
             if ctx in repo[None].parents():
                 with repo.dirstate.parentchange():

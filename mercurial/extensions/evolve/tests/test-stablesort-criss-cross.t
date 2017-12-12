@@ -9,7 +9,7 @@ Test for stable ordering capabilities
   > [ui]
   > logtemplate = "{rev} {node|short} {desc} {tags}\n"
   > [alias]
-  > showsort = debugstablesort --template="{node|short}\n"
+  > showsort = debugstablesort --template="{node|short}\n" --method headcached
   > EOF
 
   $ checktopo () {
@@ -293,6 +293,102 @@ Check criss cross merge
   |
   o  0 1ea73414a91b r0
   
+  $ hg debugdepth -r 'all()'
+  1ea73414a91b 1
+  66f7d451a68b 2
+  01241442b3c2 3
+  2dc09a01254d 4
+  bebd167eb94d 5
+  c8d03c1b5e94 6
+  0c1445abb33d 4
+  65eb34ffc3a8 5
+  c81423bf5a24 9
+  07c648efceeb 9
+  5ba9a53052ed 11
+  3e2da24aee59 12
+  26f59ee8b1d7 13
+  f7c6e7bfbcd0 13
+  39bab1cb1cbe 15
+  55bf3fdb634f 15
+  3e1560705803 17
+  4f5078f7da8a 18
+  9729470d9329 18
+  884936b34999 19
+  b115c694654e 18
+  17b6e6bac221 18
+  5ce588c2b7c5 19
+  f2bdd828a3aa 20
+  a457569c5306 21
+  ad46a4a0fc10 22
+  de05b9c29ec7 18
+  2bd677d0f13a 21
+  3bdb00d5c818 22
+  b9c3aa92fba5 23
+  f3441cd3e664 24
+  0c3f2ba59eb7 25
+  2ea3fbf151b5 26
+  47c836a1f13e 27
+  722d1b8b8942 28
+  1f4a19f83a29 20
+  01e29e20ea3f 24
+  32b41ca704e1 25
+  e3e6738c56ce 20
+  88714f4125cb 21
+  d928b4e8a515 22
+  88eace5ce682 23
+  43fc0b77ff07 21
+  4b39f229a0ce 25
+  d94da36be176 26
+  40553f55397e 21
+  bfcfd9a61e84 20
+  d6c9e2d27f14 21
+  8ecb28746ec4 21
+  673f5499c8c2 24
+  900dd066a072 25
+  97ac964e34b7 26
+  0d153e3ad632 27
+  c37e7cd9f2bd 28
+  9a67238ad1c4 29
+  76151e8066e1 20
+  c7c1497fc270 21
+  e7135b665740 22
+  29141354a762 24
+  0484d39906c8 25
+  5eec91b12a58 26
+  c84da74cf586 27
+  3871506da61e 28
+  bf6593f7e073 24
+  b33fd5ad4c0c 24
+  c713eae2d31f 20
+  d99e0f7dad5b 21
+  e4cfd6264623 22
+  fac9e582edd1 23
+  d917f77a6439 20
+  c3c7fa726f88 21
+  4f3b41956174 24
+  eed373b0090d 36
+  31d7b43cc321 24
+  698970a2480b 31
+  790cdfecd168 24
+  37ad3ab0cddf 29
+  97d19fc5236f 25
+  89a0fe204177 36
+  82238c0bc950 25
+  cd345198cf12 27
+  0bab31f71a21 31
+  1da228afcf06 31
+  b3cf98c3d587 49
+  dbde319d43a3 31
+  28be96b80dc1 36
+  469c700e9ed8 37
+  c7d3029bf731 38
+  2472d042ec95 43
+  041e1188f5f1 55
+  8b79544bb56d 48
+  8ae32c3ed670 48
+  721ba7c5f4ff 77
+  84d6ec6a8e21 65
+  01f771406cab 95
 
 Basic check
 -----------
@@ -420,21 +516,15 @@ many branches criss cross
   39bab1cb1cbe
   55bf3fdb634f
   3e1560705803
-  17b6e6bac221
-  5ce588c2b7c5
-  f2bdd828a3aa
-  a457569c5306
-  ad46a4a0fc10
-  4f5078f7da8a
-  01e29e20ea3f
-  32b41ca704e1
-  29141354a762
   9729470d9329
   884936b34999
-  0484d39906c8
-  5eec91b12a58
-  c84da74cf586
-  3871506da61e
+  b115c694654e
+  8ecb28746ec4
+  de05b9c29ec7
+  d917f77a6439
+  c3c7fa726f88
+  97d19fc5236f
+  4f5078f7da8a
   2bd677d0f13a
   3bdb00d5c818
   b9c3aa92fba5
@@ -443,55 +533,61 @@ many branches criss cross
   2ea3fbf151b5
   47c836a1f13e
   722d1b8b8942
+  17b6e6bac221
+  5ce588c2b7c5
+  f2bdd828a3aa
+  a457569c5306
+  ad46a4a0fc10
   4b39f229a0ce
   d94da36be176
   eed373b0090d
-  88714f4125cb
-  d928b4e8a515
-  88eace5ce682
-  698970a2480b
-  b115c694654e
-  1f4a19f83a29
-  43fc0b77ff07
-  31d7b43cc321
+  2472d042ec95
   673f5499c8c2
   900dd066a072
   97ac964e34b7
   0d153e3ad632
   c37e7cd9f2bd
   9a67238ad1c4
-  8ecb28746ec4
-  bf6593f7e073
-  0bab31f71a21
-  1da228afcf06
-  bfcfd9a61e84
-  d6c9e2d27f14
-  de05b9c29ec7
-  40553f55397e
-  4f3b41956174
-  37ad3ab0cddf
-  c7d3029bf731
-  76151e8066e1
-  c7c1497fc270
-  e7135b665740
-  b33fd5ad4c0c
-  cd345198cf12
-  28be96b80dc1
-  c713eae2d31f
-  82238c0bc950
-  dbde319d43a3
-  8b79544bb56d
-  d917f77a6439
-  c3c7fa726f88
-  97d19fc5236f
-  2472d042ec95
   d99e0f7dad5b
   e4cfd6264623
   fac9e582edd1
   89a0fe204177
   b3cf98c3d587
   041e1188f5f1
+  0484d39906c8
+  5eec91b12a58
+  c84da74cf586
+  3871506da61e
+  bf6593f7e073
+  1da228afcf06
+  4f3b41956174
+  bfcfd9a61e84
+  d6c9e2d27f14
+  37ad3ab0cddf
+  c7d3029bf731
+  1f4a19f83a29
+  43fc0b77ff07
+  31d7b43cc321
+  c713eae2d31f
+  76151e8066e1
+  c7c1497fc270
+  e7135b665740
+  82238c0bc950
+  dbde319d43a3
+  8b79544bb56d
   721ba7c5f4ff
+  01e29e20ea3f
+  32b41ca704e1
+  88714f4125cb
+  d928b4e8a515
+  88eace5ce682
+  698970a2480b
+  29141354a762
+  b33fd5ad4c0c
+  cd345198cf12
+  28be96b80dc1
+  0bab31f71a21
+  40553f55397e
   e3e6738c56ce
   790cdfecd168
   469c700e9ed8
@@ -516,21 +612,15 @@ many branches criss cross
   === checking 39bab1cb1cbe ===
   === checking 55bf3fdb634f ===
   === checking 3e1560705803 ===
-  === checking 17b6e6bac221 ===
-  === checking 5ce588c2b7c5 ===
-  === checking f2bdd828a3aa ===
-  === checking a457569c5306 ===
-  === checking ad46a4a0fc10 ===
-  === checking 4f5078f7da8a ===
-  === checking 01e29e20ea3f ===
-  === checking 32b41ca704e1 ===
-  === checking 29141354a762 ===
   === checking 9729470d9329 ===
   === checking 884936b34999 ===
-  === checking 0484d39906c8 ===
-  === checking 5eec91b12a58 ===
-  === checking c84da74cf586 ===
-  === checking 3871506da61e ===
+  === checking b115c694654e ===
+  === checking 8ecb28746ec4 ===
+  === checking de05b9c29ec7 ===
+  === checking d917f77a6439 ===
+  === checking c3c7fa726f88 ===
+  === checking 97d19fc5236f ===
+  === checking 4f5078f7da8a ===
   === checking 2bd677d0f13a ===
   === checking 3bdb00d5c818 ===
   === checking b9c3aa92fba5 ===
@@ -539,61 +629,179 @@ many branches criss cross
   === checking 2ea3fbf151b5 ===
   === checking 47c836a1f13e ===
   === checking 722d1b8b8942 ===
+  === checking 17b6e6bac221 ===
+  === checking 5ce588c2b7c5 ===
+  === checking f2bdd828a3aa ===
+  === checking a457569c5306 ===
+  === checking ad46a4a0fc10 ===
   === checking 4b39f229a0ce ===
   === checking d94da36be176 ===
   === checking eed373b0090d ===
-  === checking 88714f4125cb ===
-  === checking d928b4e8a515 ===
-  === checking 88eace5ce682 ===
-  === checking 698970a2480b ===
-  === checking b115c694654e ===
-  === checking 1f4a19f83a29 ===
-  === checking 43fc0b77ff07 ===
-  === checking 31d7b43cc321 ===
+  === checking 2472d042ec95 ===
   === checking 673f5499c8c2 ===
   === checking 900dd066a072 ===
   === checking 97ac964e34b7 ===
   === checking 0d153e3ad632 ===
   === checking c37e7cd9f2bd ===
   === checking 9a67238ad1c4 ===
-  === checking 8ecb28746ec4 ===
-  === checking bf6593f7e073 ===
-  === checking 0bab31f71a21 ===
-  === checking 1da228afcf06 ===
-  === checking bfcfd9a61e84 ===
-  === checking d6c9e2d27f14 ===
-  === checking de05b9c29ec7 ===
-  === checking 40553f55397e ===
-  === checking 4f3b41956174 ===
-  === checking 37ad3ab0cddf ===
-  === checking c7d3029bf731 ===
-  === checking 76151e8066e1 ===
-  === checking c7c1497fc270 ===
-  === checking e7135b665740 ===
-  === checking b33fd5ad4c0c ===
-  === checking cd345198cf12 ===
-  === checking 28be96b80dc1 ===
-  === checking c713eae2d31f ===
-  === checking 82238c0bc950 ===
-  === checking dbde319d43a3 ===
-  === checking 8b79544bb56d ===
-  === checking d917f77a6439 ===
-  === checking c3c7fa726f88 ===
-  === checking 97d19fc5236f ===
-  === checking 2472d042ec95 ===
   === checking d99e0f7dad5b ===
   === checking e4cfd6264623 ===
   === checking fac9e582edd1 ===
   === checking 89a0fe204177 ===
   === checking b3cf98c3d587 ===
   === checking 041e1188f5f1 ===
+  === checking 0484d39906c8 ===
+  === checking 5eec91b12a58 ===
+  === checking c84da74cf586 ===
+  === checking 3871506da61e ===
+  === checking bf6593f7e073 ===
+  === checking 1da228afcf06 ===
+  === checking 4f3b41956174 ===
+  === checking bfcfd9a61e84 ===
+  === checking d6c9e2d27f14 ===
+  === checking 37ad3ab0cddf ===
+  === checking c7d3029bf731 ===
+  === checking 1f4a19f83a29 ===
+  === checking 43fc0b77ff07 ===
+  === checking 31d7b43cc321 ===
+  === checking c713eae2d31f ===
+  === checking 76151e8066e1 ===
+  === checking c7c1497fc270 ===
+  === checking e7135b665740 ===
+  === checking 82238c0bc950 ===
+  === checking dbde319d43a3 ===
+  === checking 8b79544bb56d ===
   === checking 721ba7c5f4ff ===
+  === checking 01e29e20ea3f ===
+  === checking 32b41ca704e1 ===
+  === checking 88714f4125cb ===
+  === checking d928b4e8a515 ===
+  === checking 88eace5ce682 ===
+  === checking 698970a2480b ===
+  === checking 29141354a762 ===
+  === checking b33fd5ad4c0c ===
+  === checking cd345198cf12 ===
+  === checking 28be96b80dc1 ===
+  === checking 0bab31f71a21 ===
+  === checking 40553f55397e ===
   === checking e3e6738c56ce ===
   === checking 790cdfecd168 ===
   === checking 469c700e9ed8 ===
   === checking 8ae32c3ed670 ===
   === checking 84d6ec6a8e21 ===
   === checking 01f771406cab ===
+  $ hg showsort --rev 'Cfinal' --limit 72
+  c3c7fa726f88
+  97d19fc5236f
+  4f5078f7da8a
+  2bd677d0f13a
+  3bdb00d5c818
+  b9c3aa92fba5
+  f3441cd3e664
+  0c3f2ba59eb7
+  2ea3fbf151b5
+  47c836a1f13e
+  722d1b8b8942
+  17b6e6bac221
+  5ce588c2b7c5
+  f2bdd828a3aa
+  a457569c5306
+  ad46a4a0fc10
+  4b39f229a0ce
+  d94da36be176
+  eed373b0090d
+  2472d042ec95
+  673f5499c8c2
+  900dd066a072
+  97ac964e34b7
+  0d153e3ad632
+  c37e7cd9f2bd
+  9a67238ad1c4
+  d99e0f7dad5b
+  e4cfd6264623
+  fac9e582edd1
+  89a0fe204177
+  b3cf98c3d587
+  041e1188f5f1
+  0484d39906c8
+  5eec91b12a58
+  c84da74cf586
+  3871506da61e
+  bf6593f7e073
+  1da228afcf06
+  4f3b41956174
+  bfcfd9a61e84
+  d6c9e2d27f14
+  37ad3ab0cddf
+  c7d3029bf731
+  1f4a19f83a29
+  43fc0b77ff07
+  31d7b43cc321
+  c713eae2d31f
+  76151e8066e1
+  c7c1497fc270
+  e7135b665740
+  82238c0bc950
+  dbde319d43a3
+  8b79544bb56d
+  721ba7c5f4ff
+  01e29e20ea3f
+  32b41ca704e1
+  88714f4125cb
+  d928b4e8a515
+  88eace5ce682
+  698970a2480b
+  29141354a762
+  b33fd5ad4c0c
+  cd345198cf12
+  28be96b80dc1
+  0bab31f71a21
+  40553f55397e
+  e3e6738c56ce
+  790cdfecd168
+  469c700e9ed8
+  8ae32c3ed670
+  84d6ec6a8e21
+  01f771406cab
+  $ hg showsort --rev 'Cfinal' --limit 33
+  bfcfd9a61e84
+  d6c9e2d27f14
+  37ad3ab0cddf
+  c7d3029bf731
+  1f4a19f83a29
+  43fc0b77ff07
+  31d7b43cc321
+  c713eae2d31f
+  76151e8066e1
+  c7c1497fc270
+  e7135b665740
+  82238c0bc950
+  dbde319d43a3
+  8b79544bb56d
+  721ba7c5f4ff
+  01e29e20ea3f
+  32b41ca704e1
+  88714f4125cb
+  d928b4e8a515
+  88eace5ce682
+  698970a2480b
+  29141354a762
+  b33fd5ad4c0c
+  cd345198cf12
+  28be96b80dc1
+  0bab31f71a21
+  40553f55397e
+  e3e6738c56ce
+  790cdfecd168
+  469c700e9ed8
+  8ae32c3ed670
+  84d6ec6a8e21
+  01f771406cab
+  $ hg showsort --rev 'Cfinal' --limit 4
+  469c700e9ed8
+  8ae32c3ed670
+  84d6ec6a8e21
+  01f771406cab
 
 Test stability of this mess
 ---------------------------
@@ -620,8 +828,8 @@ Test stability of this mess
 
   $ hg showsort --rev 'all()' > ../crisscross.random.order
   $ python "$RUNTESTDIR/md5sum.py" ../crisscross.*.order
-  d9aab0d1907d5cf64d205a8b9036e959  ../crisscross.random.order
-  d9aab0d1907d5cf64d205a8b9036e959  ../crisscross.source.order
+  56271e05099a227fc7c0d6a434c24f0e  ../crisscross.random.order
+  56271e05099a227fc7c0d6a434c24f0e  ../crisscross.source.order
   $ diff -u ../crisscross.*.order
   $ hg showsort --rev 'all()'
   1ea73414a91b
@@ -641,21 +849,15 @@ Test stability of this mess
   39bab1cb1cbe
   55bf3fdb634f
   3e1560705803
-  17b6e6bac221
-  5ce588c2b7c5
-  f2bdd828a3aa
-  a457569c5306
-  ad46a4a0fc10
-  4f5078f7da8a
-  01e29e20ea3f
-  32b41ca704e1
-  29141354a762
   9729470d9329
   884936b34999
-  0484d39906c8
-  5eec91b12a58
-  c84da74cf586
-  3871506da61e
+  b115c694654e
+  8ecb28746ec4
+  de05b9c29ec7
+  d917f77a6439
+  c3c7fa726f88
+  97d19fc5236f
+  4f5078f7da8a
   2bd677d0f13a
   3bdb00d5c818
   b9c3aa92fba5
@@ -664,55 +866,61 @@ Test stability of this mess
   2ea3fbf151b5
   47c836a1f13e
   722d1b8b8942
+  17b6e6bac221
+  5ce588c2b7c5
+  f2bdd828a3aa
+  a457569c5306
+  ad46a4a0fc10
   4b39f229a0ce
   d94da36be176
   eed373b0090d
-  88714f4125cb
-  d928b4e8a515
-  88eace5ce682
-  698970a2480b
-  b115c694654e
-  1f4a19f83a29
-  43fc0b77ff07
-  31d7b43cc321
+  2472d042ec95
   673f5499c8c2
   900dd066a072
   97ac964e34b7
   0d153e3ad632
   c37e7cd9f2bd
   9a67238ad1c4
-  8ecb28746ec4
-  bf6593f7e073
-  0bab31f71a21
-  1da228afcf06
-  bfcfd9a61e84
-  d6c9e2d27f14
-  de05b9c29ec7
-  40553f55397e
-  4f3b41956174
-  37ad3ab0cddf
-  c7d3029bf731
-  76151e8066e1
-  c7c1497fc270
-  e7135b665740
-  b33fd5ad4c0c
-  cd345198cf12
-  28be96b80dc1
-  c713eae2d31f
-  82238c0bc950
-  dbde319d43a3
-  8b79544bb56d
-  d917f77a6439
-  c3c7fa726f88
-  97d19fc5236f
-  2472d042ec95
   d99e0f7dad5b
   e4cfd6264623
   fac9e582edd1
   89a0fe204177
   b3cf98c3d587
   041e1188f5f1
+  0484d39906c8
+  5eec91b12a58
+  c84da74cf586
+  3871506da61e
+  bf6593f7e073
+  1da228afcf06
+  4f3b41956174
+  bfcfd9a61e84
+  d6c9e2d27f14
+  37ad3ab0cddf
+  c7d3029bf731
+  1f4a19f83a29
+  43fc0b77ff07
+  31d7b43cc321
+  c713eae2d31f
+  76151e8066e1
+  c7c1497fc270
+  e7135b665740
+  82238c0bc950
+  dbde319d43a3
+  8b79544bb56d
   721ba7c5f4ff
+  01e29e20ea3f
+  32b41ca704e1
+  88714f4125cb
+  d928b4e8a515
+  88eace5ce682
+  698970a2480b
+  29141354a762
+  b33fd5ad4c0c
+  cd345198cf12
+  28be96b80dc1
+  0bab31f71a21
+  40553f55397e
   e3e6738c56ce
   790cdfecd168
   469c700e9ed8

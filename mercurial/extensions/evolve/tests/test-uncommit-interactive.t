@@ -128,7 +128,7 @@ Not selecting anything to uncommit
 Uncommit a chunk
 ================
 
-  $ hg amend --extract -i<<EOF
+  $ hg amend --extract -n "note on amend --extract" -i<<EOF
   > y
   > y
   > n
@@ -162,6 +162,14 @@ Uncommit a chunk
    5
   +babar
   discard change 3/3 to 'a'? [Ynesfdaq?] n
+  
+
+  $ hg obslog
+  @  678a59e5ff90 (3) another one
+  |
+  x  f70fb463d5bf (1) another one
+       rewritten(content) as 678a59e5ff90 by test (Thu Jan 01 00:00:00 1970 +0000)
+         note: note on amend --extract
   
 The unselected part should be in the diff
 -----------------------------------------
@@ -220,7 +228,7 @@ Uncommiting on dirty working directory
    2
    3
 
-  $ hg uncommit -i<<EOF
+  $ hg uncommit -n "testing uncommit on dirty wdir" -i<<EOF
   > y
   > n
   > y
@@ -293,9 +301,11 @@ Checking the obsolescence history
   |
   x  678a59e5ff90 (3) another one
   |    rewritten(content) as 46e35360be47 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |      note: testing uncommit on dirty wdir
   |
   x  f70fb463d5bf (1) another one
        rewritten(content) as 678a59e5ff90 by test (Thu Jan 01 00:00:00 1970 +0000)
+         note: note on amend --extract
   
 
 Push the changes back to the commit and more commits for more testing
