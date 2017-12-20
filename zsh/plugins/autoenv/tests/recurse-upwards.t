@@ -71,7 +71,7 @@ Move sub/.autoenv.zsh away, now the root .autoenv.zsh file should get sourced.
 Prepend call to autoenv_source_parent to sub/.autoenv.zsh file.
 
   $ cd ..
-  $ sed -i -e "1s/^/echo autoenv_source_parent_from_sub:\nautoenv_source_parent\n/" .autoenv.zsh
+  $ echo -e "echo autoenv_source_parent_from_sub:\nautoenv_source_parent\n$(cat .autoenv.zsh)" >| .autoenv.zsh
   $ echo "echo done_sub" >> .autoenv.zsh
   $ touch -t 201401010103 .autoenv.zsh
   $ test_autoenv_auth_env_files
@@ -115,7 +115,7 @@ First, let's answer "no".
   $ cd sub
   autoenv_source_parent_from_sub:
   Attempting to load unauthorized env file!
-  -* /tmp/cramtests-*/recurse-upwards.t/.autoenv.zsh (glob)
+  -* /*/cramtests-*/recurse-upwards.t/.autoenv.zsh (glob)
   
   **********************************************
   
@@ -140,7 +140,7 @@ Touching the .autoenv.zsh file will now source the parent env file.
   $ cd .
   autoenv_source_parent_from_sub:
   Attempting to load unauthorized env file!
-  -* /tmp/cramtests-*/recurse-upwards.t/.autoenv.zsh (glob)
+  -* /*/cramtests-*/recurse-upwards.t/.autoenv.zsh (glob)
   
   **********************************************
   

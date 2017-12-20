@@ -11,16 +11,14 @@
 
 export AUTOENV_AUTH_FILE="$CRAMTMP/autoenv/.autoenv_auth"
 
-if [[ $AUTOENV_AUTH_FILE[0,4] != '/tmp' ]]; then
-  echo "AUTOENV_AUTH_FILE is not in /tmp. Aborting."
-  return 1
-fi
-
 # Abort this setup script on any error.
 _save_errexit=${options[errexit]}
 set -e
 
-# Defined in .zshenv, e.g. tests/ZDOTDIR/.zshenv.
+# Can be defined in .zshenv, e.g. tests/ZDOTDIR.loadviafunction/.zshenv.
+if [[ -z $TEST_SOURCE_AUTOENV ]]; then
+  TEST_SOURCE_AUTOENV=(source $TESTDIR/../autoenv.plugin.zsh)
+fi
 $TEST_SOURCE_AUTOENV
 
 # Reset any authentication.
@@ -30,8 +28,13 @@ fi
 
 # Add file ($1), version ($2), and optional hash ($3) to authentication file.
 test_autoenv_add_to_env() {
+  emulate -L zsh
   [[ -d ${AUTOENV_AUTH_FILE:h} ]] || mkdir -p ${AUTOENV_AUTH_FILE:h}
-  _autoenv_hash_pair $1 1 ${2:-} >>| $AUTOENV_AUTH_FILE
+  _autoenv_deauthorize $1
+  {
+    local ret_pair
+    _autoenv_hash_pair $1 2 ${2:-} && echo $ret_pair
+  } >>| $AUTOENV_AUTH_FILE
 }
 
 # Add enter and leave env files to authentication file.

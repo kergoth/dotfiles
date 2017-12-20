@@ -181,6 +181,9 @@ minimumhgversion = '4.1'
 buglink = 'https://bz.mercurial-scm.org/'
 
 if util.safehasattr(registrar, 'configitem'):
+
+    from mercurial import configitems
+
     configtable = {}
     configitem = registrar.configitem(configtable)
 
@@ -200,7 +203,7 @@ if util.safehasattr(registrar, 'configitem'):
                default=False,
     )
     configitem('experimental', 'topic-mode.server',
-               default=configitem.dynamicdefault,
+               default=configitems.dynamicdefault,
     )
 
     def extsetup(ui):

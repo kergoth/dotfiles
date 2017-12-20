@@ -13,7 +13,7 @@ package main;
 
 use strict;
 use warnings;
-our $VERSION = '2.20'; # Check https://beyondgrep.com/ for updates
+our $VERSION = '2.21_01'; # Check https://beyondgrep.com/ for updates
 
 use 5.008008;
 use Getopt::Long 2.38 ();
@@ -2391,7 +2391,7 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = '2.20';
+    $VERSION = '2.21_01';
     $COPYRIGHT = 'Copyright 2005-2017 Andy Lester.';
 }
 
@@ -2981,9 +2981,15 @@ sub clone {
 sub firstliney {
     my ( $self ) = @_;
 
-    my $fh = $self->open();
-
     if ( !exists $self->{firstliney} ) {
+        my $fh = $self->open();
+        if ( !$fh ) {
+            if ( $App::Ack::report_bad_filenames ) {
+                App::Ack::warn( $self->name . ': ' . $! );
+            }
+            return '';
+        }
+
         my $buffer = '';
         my $rc     = sysread( $fh, $buffer, 250 );
         unless($rc) { # XXX handle this better?
@@ -2992,9 +2998,9 @@ sub firstliney {
         $buffer =~ s/[\r\n].*//s;
         $self->{firstliney} = $buffer;
         $self->reset;
-    }
 
-    $self->close;
+        $self->close;
+    }
 
     return $self->{firstliney};
 }
@@ -3402,6 +3408,10 @@ sub _options_block {
 # JSON
 # http://www.json.org/
 --type-add=json:ext:json
+
+# Kotlin
+# https://kotlinlang.org/
+--type-add=kotlin:ext:kt,kts
 
 # Less
 # http://www.lesscss.org/

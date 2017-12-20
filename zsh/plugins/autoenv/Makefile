@@ -1,27 +1,23 @@
-# Default, can be overridden using "make test ZDOTDIR=...".
-ZDOTDIR:=${CURDIR}/tests/ZDOTDIR
-
-# Export it, and make it absolute.
-override export ZDOTDIR:=$(abspath $(ZDOTDIR))
+# Empty by default, can be overridden using "make test ZDOTDIR=…".
+ZDOTDIR:=
+# Make it absolute.
+override ZDOTDIR:=$(abspath $(ZDOTDIR))
 
 TEST_SHELL:=zsh
 
 test:
-	cram --shell=$(TEST_SHELL) -v tests
+	ZDOTDIR=$(ZDOTDIR) cram --shell=$(TEST_SHELL) -v tests
 
 itest:
-	cram -i --shell=$(TEST_SHELL) tests
+	ZDOTDIR=$(ZDOTDIR) cram -i --shell=$(TEST_SHELL) tests
 
 # Run tests with all ZDOTDIRs.
 test_full:
-	for zsh in zsh /opt/zsh-4.3.9/bin/zsh; do \
-		command -v $$zsh || { echo "Skipping non-existing shell: $$zsh"; continue; }; \
-		ret=0; \
-		for i in $(wildcard tests/ZDOTDIR*); do \
-			echo "zsh=$zsh ZDOTDIR=$$i"; \
-			SHELL=$$zsh ZDOTDIR=${CURDIR}/$$i cram --shell=$$zsh -v tests || ret=$$?; \
-			echo; \
-		done; \
+	@ret=0; \
+	for i in $(wildcard tests/ZDOTDIR*); do \
+	  echo "TEST_SHELL=$(TEST_SHELL) ZDOTDIR=$$i"; \
+	  ZDOTDIR=${CURDIR}/$$i cram --shell=$(TEST_SHELL) -v tests || ret=$$?; \
+	  echo; \
 	done; \
 	exit $$ret
 

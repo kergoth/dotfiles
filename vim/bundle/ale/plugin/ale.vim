@@ -209,6 +209,9 @@ call ale#Set('completion_enabled', 0)
 call ale#Set('completion_delay', 100)
 call ale#Set('completion_max_suggestions', 50)
 
+" A setting for wrapping commands.
+call ale#Set('command_wrapper', '')
+
 if g:ale_set_balloons
     call ale#balloon#Enable()
 endif
@@ -285,7 +288,7 @@ call ale#toggle#InitAuGroups()
 augroup ALECleanupGroup
     autocmd!
     " Clean up buffers automatically when they are unloaded.
-    autocmd BufUnload * call ale#engine#Cleanup(str2nr(expand('<abuf>')))
+    autocmd BufDelete * call ale#engine#Cleanup(str2nr(expand('<abuf>')))
     autocmd QuitPre * call ale#events#QuitEvent(str2nr(expand('<abuf>')))
 augroup END
 

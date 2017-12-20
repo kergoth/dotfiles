@@ -136,7 +136,7 @@ Check the help
   
       If you don't specify -m, the parent's message will be reused.
   
-      If --extra is specified, the behavior of 'hg amend' is reversed: Changes
+      If --extract is specified, the behavior of 'hg amend' is reversed: Changes
       to selected files in the checked out revision appear again as uncommitted
       changed in the working directory.
   

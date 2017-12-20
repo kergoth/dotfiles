@@ -117,8 +117,9 @@ _autoenv_stack_entered_contains() {
     # Entry is in stack.
     f=$env_file
   else
+    local env_file_abs=${env_file:A}
     for i in $_autoenv_stack_entered; do
-      if [[ ${i:A} == ${env_file:A} ]]; then
+      if [[ ${i:A} == ${env_file_abs} ]]; then
         # Entry is in stack (compared with resolved symlinks).
         f=$i
         break
@@ -172,56 +173,73 @@ _autoenv_hash_pair() {
   local env_file=${1:A}
   local cksum_version=${2:-2}
   local env_cksum=${3:-}
+  ret_pair=
   if [[ -z $env_cksum ]]; then
     if ! [[ -e $env_file ]]; then
       echo "Missing file argument for _autoenv_hash_pair!" >&2
       return 1
     fi
-    if [ $cksum_version = 2 ]; then
+    if [[ $cksum_version = 2 ]]; then
       # Get the output from `cksum` and join the first two words with a dot.
       env_cksum=${(j:.:)${:-$(cksum "$env_file")}[1,2]}
-    elif [ $cksum_version = 1 ]; then
-      env_cksum=$(shasum $env_file | cut -d' ' -f1)
+    elif [[ $cksum_version = 1 ]]; then
+      env_cksum=$(sha1sum $env_file | cut -d' ' -f1)
     else
       echo "Invalid version argument (${cksum_version}) for _autoenv_hash_pair!" >&2
       return 1
     fi
   fi
-  echo ":${env_file}:${env_cksum}:${cksum_version}"
+  ret_pair=":${env_file}:${env_cksum}:${cksum_version}"
 }
 
 
-# Checks for the existence of a hash signature in the auth file
-_autoenv_authorized_pair() {
-  local pair=$1
-  test -f $AUTOENV_AUTH_FILE \
-    && \grep -qF $pair $AUTOENV_AUTH_FILE
-}
-
-
+# Check if a given env_file is authorized.
 _autoenv_authorized_env_file() {
   local env_file=$1
-  local pair
-  pair=$(_autoenv_hash_pair $env_file)
-  _autoenv_debug "v2 pair: ${pair}"
-  if ! _autoenv_authorized_pair $pair; then
+  local env_file_abs=${env_file:A}
+  local ret_pair
+
+  local -a lines
+  if [[ -f $AUTOENV_AUTH_FILE ]]; then
+    lines=( ${(M)"${(f@)"$(< $AUTOENV_AUTH_FILE)"}":#:$env_file_abs:*} )
+  fi
+  if [[ -z $lines ]]; then
+    return 1
+  fi
+
+  if (( $#lines != 1 )); then
+    echo "zsh-autoenv: found unexpected number ($#lines) of auth entries for $env_file in $AUTOENV_AUTH_FILE." >&2
+    echo $lines
+  fi
+  line=${lines[-1]}
+
+  if [[ $line == *:2 ]]; then
+    _autoenv_hash_pair $env_file
+    _autoenv_debug "Checking v2 pair: ${ret_pair}"
+    if [[ $line == $ret_pair ]]; then
+      return
+    fi
+  elif [[ $line == *:1 ]]; then
     # Fallback for v1 (SHA-1) pairs
-    pair=$(_autoenv_hash_pair $env_file 1)
-    _autoenv_debug "v1 pair: ${pair}"
-    if _autoenv_authorized_pair $pair; then
+    _autoenv_debug "Checking v1 pair: ${ret_pair}"
+    _autoenv_hash_pair $env_file 1
+    if [[ $line == $ret_pair ]]; then
       # Upgrade v1 entries to v2
       _autoenv_authorize $env_file
-    else
-      return 1
+      return
     fi
   fi
+  return 1
 }
 
 _autoenv_authorize() {
   local env_file=${1:A}
   _autoenv_deauthorize $env_file
   [[ -d ${AUTOENV_AUTH_FILE:h} ]] || mkdir -p ${AUTOENV_AUTH_FILE:h}
-  _autoenv_hash_pair $env_file >>| $AUTOENV_AUTH_FILE
+  {
+    local ret_pair
+    _autoenv_hash_pair $env_file && echo "$ret_pair"
+  } >>| $AUTOENV_AUTH_FILE
 }
 
 # Deauthorize a given filename, by removing it from the auth file.
@@ -293,12 +311,10 @@ _autoenv_source() {
     if \grep -qE '\b(autostash|autounstash|stash|unstash)\b' $autoenv_env_file; then
       source ${${funcsourcetrace[1]%:*}:h}/lib/varstash
     fi
-    # NOTE: Varstash uses $PWD as default for varstash_dir, we might set it to
-    # ${autoenv_env_file:h}.
   fi
 
   # Source the env file.
-  _autoenv_debug "== SOURCE: ${bold_color:-}$autoenv_env_file${reset_color:-}\n      PWD: $PWD"
+  _autoenv_debug "== SOURCE: $autoenv_event: ${bold_color:-}$autoenv_env_file${reset_color:-} (in $PWD)"
   (( ++_autoenv_debug_indent ))
 
   local restore_xtrace
@@ -306,7 +322,8 @@ _autoenv_source() {
     restore_xtrace=1
     setopt localoptions xtrace
   fi
-  source $autoenv_env_file
+
+  varstash_dir=${autoenv_env_file:h} source $autoenv_env_file
   if (( restore_xtrace )); then
     setopt noxtrace
   fi
@@ -347,12 +364,13 @@ _autoenv_get_file_upwards() {
     if [[ $abs_parent_dir == $look_until ]]; then
       break
     fi
-    last=$parent_dir
+    last=$abs_parent_dir
     parent_dir="${parent_dir}/.."
   done
 }
 
 autoenv-edit() {
+  emulate -L zsh
   local env_file
   local -a files
   local -A check
@@ -385,6 +403,7 @@ autoenv-edit() {
 }
 
 _autoenv_chpwd_handler() {
+  emulate -L zsh
   _autoenv_debug "Calling chpwd handler: PWD=$PWD"
 
   if (( $AUTOENV_DISABLED )); then
@@ -402,6 +421,7 @@ _autoenv_chpwd_handler() {
       prev_dir=${prev_file:h}
       if ! [[ ${PWD}/ == ${prev_dir}/* ]]; then
         local env_file_leave=$prev_dir/$AUTOENV_FILE_LEAVE
+        _autoenv_debug "Handling leave event: $env_file_leave"
         if _autoenv_check_authorized_env_file $env_file_leave; then
           varstash_dir=$prev_dir _autoenv_source $env_file_leave leave $prev_dir
         fi
@@ -439,8 +459,6 @@ _autoenv_chpwd_handler() {
   # Source the enter env file.
   _autoenv_debug "Sourcing from chpwd handler: $env_file"
   _autoenv_source $env_file enter
-
-  (( ++_autoenv_debug_indent ))
 }
 # }}}
 

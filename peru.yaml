@@ -109,7 +109,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 2411195c2092d64917cff3d8f904d63b78b195bf
+    rev: ab1013ae0d8c94a38141d4b75f5ff88ea59bc80e
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -129,7 +129,7 @@ git module zsh-git-escape-magic:
 
 git module zsh-autoenv:
     url: https://github.com/Tarrasch/zsh-autoenv
-    rev: 9074633a295940d30c56e62e0d3eb4a259fd781d
+    rev: 2c8cfbcea8e7286649840d7ec98d7e9d5e1d45a0
 
 curl module iterm2-zsh:
     url: https://iterm2.com/misc/zsh_startup.in
@@ -175,7 +175,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 5032d9ee72361dc3cfaae1a9b3353211203e443f
+    rev: f3ccb0c12ee4985b8808f83059830a24cc92821c
 
 # go language support
 git module vim-golang:
@@ -185,7 +185,7 @@ git module vim-golang:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
-    rev: 033c276876ec6f3961385a2a31fb18e711a7dc28
+    rev: e1c321872ba9a51410f600b95ed24ecd1d1abbdd
 
 # markdown runtime files
 git module vim-markdown:
@@ -204,7 +204,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 52dfa2b6c0dc2fd7a0e92954030893de3d173105
+    rev: d53d70b1fd39e221000296c783b6d1b7b98e86ac
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -239,7 +239,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: be7b194f47bdee6baa4460ccd030b860ada548dd
+    rev: c5b1bbe1662d76c0aa9f6d325c3fb1b8db62ba02
 
 # continuously updated session files
 git module vim-obsession:
@@ -359,7 +359,7 @@ git module planter:
 
 git module z:
     url: https://github.com/rupa/z
-    rev: 0a47c9ceca790604df5c9a4a2bc74aba63005c21
+    rev: 2ebe419ae18316c5597dd5fb84b5d8595ff1dde9
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
@@ -517,7 +517,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: d7dc6633bba1e751d7de0752b6d4a3ebe3f8a8af
+    rev: b834cb64f77987ba20ae7ccfb5d1d68da1113534
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -571,7 +571,7 @@ git module base16-shell:
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: ac7a8f3601331548cea025e20d2c8c6520139ffa
+    rev: bc76580f01d6f4f9559056882e887c13b1837674
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -634,7 +634,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 17fce79d3cd50bc7257e091ec84f4d5456189d5d
+    rev: c2efbc889d51f51b288f50965f8d4d4a09ae5f46
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -656,7 +656,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 7a88a3605c9bc270bcbc00fbf11aaf2a825d7bae
+    rev: e43e7065da17f45e4cce127a319ceee0a0311883
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

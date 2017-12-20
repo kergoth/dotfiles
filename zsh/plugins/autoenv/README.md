@@ -8,6 +8,10 @@ typically used in project root directories.
 It handles "enter" and leave" events, nesting, and stashing of
 variables (overwriting and restoring).
 
+## Requirements
+
+- Zsh version 4.3.10 or later.
+
 ## Features
 
 - Support for enter and leave events, which can use the same file.
@@ -17,7 +21,7 @@ variables (overwriting and restoring).
   unknown `.autoenv.zsh` file, and remembers whitelisted files by their
   hashed content.
 - Test suite.
-- Written in Zsh.
+- Written in/for Zsh.
 
 ### Variable stashing
 
@@ -119,13 +123,13 @@ event was handled?
 
 Default: `1`
 
-### AUTOENV\_DISABLED
+### AUTOENV_DISABLED
 
 (Temporarily) disable zsh-autoenv. This gets looked at in the chpwd handler.
 
 Default: 0
 
-### AUTOENV\_DEBUG
+### AUTOENV_DEBUG
 
 Set debug level. If enabled (> 0) it will print information to stderr.
 
