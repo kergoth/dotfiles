@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+url="$(git config remote.origin.url)"
+if [ -z "$url" ]; then
+    echo >&2 "Error: no origin remote, or no url"
+    exit 1
+fi
+
+repo="$(echo "$url" | python -c 'import re,sys; print("/".join(re.split(r"[:/]", sys.stdin.read().rstrip())[-2:]))' | sed 's,/$,,; s,\.git$,,')"
+if [ -z "$repo" ] || [ "$repo" = "$url" ]; then
+    echo >&2 "Unrecognized url: $url"
+    exit 1
+fi
+
+http --check-status --ignore-stdin "https://api.github.com/repos/$repo/forks" | \
+    jq -r '.[] | .owner.login + "\t" + .clone_url'

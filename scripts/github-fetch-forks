@@ -1,0 +1,7 @@
+#!/bin/sh
+
+github-list-forks | while read -r remote url; do
+    git remote add "$remote" "$url" || :
+    git remote set-url "$remote" "$url"
+    git fetch "$remote"
+done
