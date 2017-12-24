@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 usage () {
     echo >&2 "${0##*/} [-r REMOTE] [-R] [UPSTREAM_BRANCH]"
@@ -11,6 +11,8 @@ usage () {
     echo >&2 "                      changes are merged, defaults to origin/master."
     echo >&2 "  -r REMOTE   Prune branches of the specified remote, not local."
     echo >&2 "  -R          Prune the branches in the repo repo, not just the tracking branches."
+    echo >&2 "  -c CORRESPONDING_REMOTE  Delete branches which have been merged to the branch of"
+    echo >&2 "                           the same name in CORRESPONDING_REMOTE, not to UPSTREAM_BRANCH."
     echo >&2 "  -n          Dry-run"
     exit 2
 }
@@ -18,7 +20,8 @@ usage () {
 ref_prefix=refs/heads
 prune_remote_repo=0
 dry_run=0
-while getopts r:Rnh opt; do
+corresponding=
+while getopts r:Rc:nh opt; do
     case "$opt" in
         r)
             ref_prefix="refs/remotes/$OPTARG"
@@ -28,6 +31,9 @@ while getopts r:Rnh opt; do
             ;;
         n)
             dry_run=1
+            ;;
+        c)
+            corresponding="$OPTARG"
             ;;
         \?|h)
             usage
@@ -40,14 +46,30 @@ if [ $dry_run -eq 1 ]; then
     alias git="echo git"
 fi
 
-command git for-each-ref "--merged=${1:-origin/master}" --format='%(refname)' "$ref_prefix" | \
+if [ -n "$corresponding" ] && [ $# -gt 0 ]; then
+    echo >&2 "Error: -c and UPSTREAM_BRANCH arguments conflict"
+    exit 1
+fi
+
+upstream_branch="${1:-origin/master}"
+
+command git for-each-ref "${corresponding:---merged=$upstream_branch}" --format='%(refname)' "$ref_prefix" | \
     while read -r ref; do
         ref="${ref#$ref_prefix/}"
-        case "$ref" in
-            master|HEAD)
+
+        if [ -n "$corresponding" ]; then
+            upstream_ref="$corresponding/$ref"
+            if ! git rev-parse --quiet --verify "refs/remotes/$upstream_ref" >/dev/null; then
+                # No corresponding branch upstream
                 continue
-                ;;
-        esac
+            else
+                resolved="$(git rev-parse "$ref_prefix/$ref")"
+                if [ "$(git merge-base "refs/remotes/$upstream_ref" "$ref_prefix/$ref")" != "$resolved" ]; then
+                    # Not merged into corresponding branch upstream
+                    continue
+                fi
+            fi
+        fi
 
         case "$ref_prefix" in
             refs/heads)
