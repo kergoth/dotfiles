@@ -2,7 +2,9 @@
 
 git fetch origin
 github-list-forks | while read -r remote url; do
-    git remote add "$remote" "$url" || :
+    if ! git config "remote.$remote.url"; then
+        git remote add "$remote" "$url"
+    fi
     git remote set-url "$remote" "$url"
     git fetch "$remote"
 
