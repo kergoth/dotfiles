@@ -9,14 +9,7 @@ github-list-forks | while read -r remote url; do
     git fetch "$remote"
 
     # Prune matching tracking branches
-    git for-each-ref --format='%(refname)' refs/remotes/$remote/ | \
-        sed "s,^refs/remotes/$remote/,," | while read branch; do
-            if git rev-parse --verify "refs/remotes/origin/$branch" &>/dev/null; then
-                if [ -z "$(git rev-list refs/remotes/origin/${branch}..refs/remotes/$remote/$branch)" ]; then
-                    git branch -v -d -r $remote/$branch
-                fi
-            fi
-        done
+    git prune-merged -r "$remote" -c origin
 
     # Prune merged topic branches
     git prune-merged -r "$remote"
