@@ -109,11 +109,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: ab1013ae0d8c94a38141d4b75f5ff88ea59bc80e
+    rev: 8652a8f4e4c1a2d8fd36b4ee46515b42ad09c97f
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: f2408e1f58f701cd12595df87b06f69bbf7a45cb
+    rev: 8a48973aeb956b6820b2eaab4c8e92ade65e5217
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -200,7 +200,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 6c8d0f5e6af878db71b2dc44ccf1d1417381d6a0
+    rev: bc985301dba497c4c91e237139448d46d552b053
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -376,7 +376,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 44041be8c22ba1d13afe886304fa12fbd507b77e
+    rev: 031573c6f8a9eb7c57939948fcdf8e152ca25b96
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -563,7 +563,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 5909187d8628773d5e08f7e32da52a8426410470
+    rev: cbc8521534974f11a2e2badb5d19f1ef4c9a7ecb
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -656,7 +656,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: e43e7065da17f45e4cce127a319ceee0a0311883
+    rev: c165c7c5d11eb827a3be6bab691f20eeb6f6e487
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

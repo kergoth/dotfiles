@@ -13,7 +13,7 @@ package main;
 
 use strict;
 use warnings;
-our $VERSION = '2.21_01'; # Check https://beyondgrep.com/ for updates
+our $VERSION = '2.22'; # Check https://beyondgrep.com/ for updates
 
 use 5.008008;
 use Getopt::Long 2.38 ();
@@ -2391,7 +2391,7 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = '2.21_01';
+    $VERSION = '2.22';
     $COPYRIGHT = 'Copyright 2005-2017 Andy Lester.';
 }
 

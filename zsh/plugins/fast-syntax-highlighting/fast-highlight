@@ -541,9 +541,23 @@ typeset -ga ZLAST_COMMANDS
         '-'*)    style=single-hyphen-option;;
         "'"*)    style=single-quoted-argument;;
         '"'*)
-                 # ADD
                  (( start=start_pos-${#PREBUFFER}, end=end_pos-${#PREBUFFER}, start >= 0 )) && reply+=("$start $end ${FAST_HIGHLIGHT_STYLES[double-quoted-argument]}")
                  -fast-highlight-string
+                 already_added=1
+                 ;;
+        [^\"\\]##([\\][\\])#\"*)
+                 # ADD
+                 local ctmp="\""
+                 integer itmp=${arg[(i)$ctmp]}-1
+                 (( start=start_pos-${#PREBUFFER}+itmp, end=end_pos-${#PREBUFFER}, start >= 0 )) && reply+=("$start $end ${FAST_HIGHLIGHT_STYLES[double-quoted-argument]}")
+                 -fast-highlight-string
+                 already_added=1
+                 ;;
+        [^\'\\]##([\\][\\])#\'*)
+                 # ADD
+                 local ctmp="'"
+                 integer itmp=${arg[(i)$ctmp]}-1
+                 (( start=start_pos-${#PREBUFFER}+itmp, end=end_pos-${#PREBUFFER}, start >= 0 )) && reply+=("$start $end ${FAST_HIGHLIGHT_STYLES[double-quoted-argument]}")
                  already_added=1
                  ;;
         \$\'*)
