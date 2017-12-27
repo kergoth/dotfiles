@@ -47,7 +47,7 @@ else:
 for key, value in pairs(args.values):
     key = key.split(".")
     prefix, final_key = key[:-1], key[len(key)-1]
-    lookup(obj, prefix)[final_key] = toml._load_value(value)[0]
+    lookup(obj, prefix)[final_key] = toml._load_value(value, _dict=dict)[0]
 
 if not args.file or args.file == '-':
     f = sys.stdout
