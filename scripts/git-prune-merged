@@ -42,18 +42,15 @@ while getopts r:Rc:nh opt; do
 done
 shift $((OPTIND - 1))
 
-if [ $dry_run -eq 1 ]; then
-    alias git="echo git"
-fi
-
 if [ -n "$corresponding" ] && [ $# -gt 0 ]; then
     echo >&2 "Error: -c and UPSTREAM_BRANCH arguments conflict"
     exit 1
 fi
 
 upstream_branch="${1:-origin/master}"
-
-command git for-each-ref "${corresponding:---merged=$upstream_branch}" --format='%(refname)' "$ref_prefix" | \
+to_delete=
+to_push=
+git for-each-ref "${corresponding:---merged=$upstream_branch}" --format='%(refname)' "$ref_prefix" | (
     while read -r ref; do
         ref="${ref#$ref_prefix/}"
 
@@ -74,18 +71,40 @@ command git for-each-ref "${corresponding:---merged=$upstream_branch}" --format=
         case "$ref_prefix" in
             refs/heads)
                 remote="$(git config "branch.$ref.pushremote" 2>/dev/null || git config "branch.$ref.remote")"
-                git branch -d "$ref"
+                to_delete="$ref $to_delete"
                 if [ $prune_remote_repo -eq 1 ] && git rev-parse --quiet --verify "refs/remotes/$remote/$ref"; then
-                    git push "$remote" ":$ref"
+                    to_push=":$ref $to_push"
                 fi
                 ;;
             refs/remotes/*)
                 remote="${ref_prefix#refs/remotes/}"
                 if [ $prune_remote_repo -eq 1 ]; then
-                    git push "$remote" ":$ref"
+                    to_push=":$ref $to_push"
                 else
-                    git branch -r -d "${ref_prefix#refs/remotes/}/$ref"
+                    to_delete="${ref_prefix#refs/remotes/}/$ref $to_delete"
                 fi
                 ;;
         esac
     done
+
+    if [ $dry_run -eq 1 ]; then
+        git () {
+            echo git "$@"
+        }
+    fi
+
+    if [ -n "$to_delete" ]; then
+        case "$ref_prefix" in
+            refs/heads)
+                git branch -d $to_delete
+                ;;
+            refs/remotes/*)
+                git branch -r -d $to_delete
+                ;;
+        esac
+    fi
+
+    if [ -n "$to_push" ]; then
+        git push "$remote" $to_push
+    fi
+)
