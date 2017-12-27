@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git fetch origin
-github-list-forks | while read -r remote url; do
+github-list-forks "$@" | while read -r remote url; do
     if ! git config "remote.$remote.url"; then
         git remote add "$remote" "$url"
     fi
