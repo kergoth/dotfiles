@@ -1,6 +1,20 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
+set -eu
+
+all=0
+while getopts ah opt; do
+    case "$opt" in
+        a)
+            all=1
+            ;;
+        \?|h)
+            echo >&2 "${0##*/} [-r]"
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
 
 url="$(git config remote.origin.url)"
 if [ -z "$url" ]; then
@@ -14,5 +28,77 @@ if [ -z "$repo" ] || [ "$repo" = "$url" ]; then
     exit 1
 fi
 
-http --check-status --ignore-stdin "https://api.github.com/repos/$repo/forks" | \
-    jq -r '.[] | .owner.login + "\t" + .clone_url'
+api_repos="https://api.github.com/repos"
+script="${0##*/}"
+tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
+tempdir="$PWD/test"
+mkdir -p "$tempdir"
+
+repo_json () {
+    tempfile="$tempdir/repo_info.json"
+    id="$(toml-get -f "$tempdir/$script.toml" ids.$1 2>/dev/null)" || :
+    if [ -z "$id" ] || [ ! -e "$tempdir/$id.json" ]; then
+        http --check-status --ignore-stdin "$api_repos/$1" >"$tempfile" || return $?
+        if [ -z "$id" ]; then
+            id="$(jq -r .id <"$tempfile")"
+            toml-set -f "$tempdir/$script.toml" "ids.$1" "$id"
+        fi
+        mv "$tempfile" "$tempdir/$id.json"
+    fi
+    cat "$tempdir/$id.json"
+}
+
+repo_forks () {
+    tempfile="$tempdir/repo_forks.json"
+    id="$(toml-get -f "$tempdir/$script.toml" ids.$1)"
+    if [ ! -e "$tempdir/$id-forks.json" ]; then
+        http --check-status --ignore-stdin "$api_repos/$1/forks" >"$tempdir/$id-forks.json"
+    fi
+    cat "$tempdir/$id-forks.json"
+}
+
+repo_jq () {
+    jq -r '[.id,.fork,.forks,.full_name,.source.full_name] | map(tostring) | join("\t")'
+}
+
+repo_info () {
+    repo_json "$1" | repo_jq
+}
+
+get_forks_rec () {
+    fork_info="$(repo_json "$1" | jq -r '[.forks,.clone_url] | map(tostring) | join("\t")')"
+    num_forks="$(echo "$fork_info" | cut -f1)"
+    if [ "$orig_repo" != "$1" ]; then
+        clone_url="$(echo "$fork_info" | cut -f2)"
+        printf '%s\t%s\n' "${1%/*}" "$clone_url"
+    fi
+    if [ $num_forks -gt 0 ]; then
+        get_forks "$1" | while read -r id is_fork num_forks name source_name; do
+            get_forks_rec "$name"
+        done
+    fi
+}
+
+get_forks () {
+    repo_forks "$1" | jq -r '.[] | [.id, .full_name] | map(tostring) | join("\t")' | while read -r fork_id fork_name; do
+        if ! [ -e "$tempdir/$fork_id.json" ]; then
+            repo_forks "$1" | jq -r ".[] | select(.id == $fork_id)" >"$tempdir/$fork_id.json"
+        fi
+        repo_info "$fork_name" || continue
+    done
+}
+
+
+touch "$tempdir/$script.toml"
+
+orig_repo="$repo"
+if [ $all -eq 1 ]; then
+    info="$(repo_info "$repo")"
+    is_fork="$(echo "$info" | cut -d"	" -f2)"
+    while [ $is_fork = true ]; do
+        repo="$(echo "$info" | cut -d"	" -f5)"
+        info="$(repo_info "$repo")"
+        is_fork="$(echo "$info" | cut -d"	" -f2)"
+    done
+fi
+get_forks_rec "$repo"
