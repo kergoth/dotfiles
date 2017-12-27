@@ -31,7 +31,6 @@ fi
 api_repos="https://api.github.com/repos"
 script="${0##*/}"
 tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
-tempdir="$PWD/test"
 mkdir -p "$tempdir"
 
 repo_json () {
