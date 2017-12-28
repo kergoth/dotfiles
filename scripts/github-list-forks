@@ -9,7 +9,7 @@ while getopts ah opt; do
             all=1
             ;;
         \?|h)
-            echo >&2 "${0##*/} [-r]"
+            echo >&2 "${0##*/} [-a]"
             exit 1
             ;;
     esac
