@@ -109,11 +109,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 8652a8f4e4c1a2d8fd36b4ee46515b42ad09c97f
+    rev: 2181247ae1889a0b3f50fc42cf71651b732e7282
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 8a48973aeb956b6820b2eaab4c8e92ade65e5217
+    rev: 38a9881a588ab383b95bcb0e79ac45d2b6be0836
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -200,11 +200,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: bc985301dba497c4c91e237139448d46d552b053
+    rev: c386332570d8abf29b7f02597001dccf38fd4824
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: d53d70b1fd39e221000296c783b6d1b7b98e86ac
+    rev: a7fcf5335e28748337ee23e33dc40360d7b707c3
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -249,7 +249,7 @@ git module vim-obsession:
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: c795cb739347cbddeeb288c3c35da9f140a513c9
+    rev: 44bc76a6abf6aeafa4d0808288bb4fcc9a2e98f8
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
@@ -257,7 +257,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 009c58b4815dd8a17a1460b5a0c417ef6fde69d7
+    rev: 7e92b73d03cd008e248ad261208475b45bc2f128
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -348,7 +348,7 @@ curl module cpanm:
 git module cwdiff:
     url: https://github.com/junghans/cwdiff
     pick: cwdiff
-    rev: 20e59f4db32b95dd7294a477813dc2f841734ac5
+    rev: de56a73f37eb72edfb78ea610798a5744b8dcf10
 
 git module planter:
     url: https://gist.github.com/3767188.git
@@ -364,7 +364,7 @@ git module z:
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
     pick: ssh-copy-rsub
-    rev: 4ef1ab1fd8756afc77dcc12de1fedcd5e33c598b
+    rev: beb2810827dc7da0695584d3556d7693ec2e74f3
 
 git module pom:
     url: https://github.com/tobym/pom
@@ -563,7 +563,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: cbc8521534974f11a2e2badb5d19f1ef4c9a7ecb
+    rev: ce052f7962e4d2f1d1ac92f10faf2fca892007d6
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -656,7 +656,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: c165c7c5d11eb827a3be6bab691f20eeb6f6e487
+    rev: 5285b0b332f067f56a6ac13a316db64acbac0c6b
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
