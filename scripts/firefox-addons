@@ -7,4 +7,4 @@ default_profile="$(python3 -c "import configparser, sys; c = configparser.RawCon
 jq -rnc \
     --slurpfile addons "$ff_profileroot/$default_profile/addons.json" \
     --slurpfile extensions "$ff_profileroot/$default_profile/extensions.json" "-L$scriptdir/jq" \
-    'import "join" as join; join::hashJoin($addons[0].addons; $extensions[0].addons; .id)[] | select(.userDisabled == false) | [.defaultLocale.name, .homepageURL, .sourceURI] | join("\t")' | sort -f
+    'import "join" as join; join::hashJoin($addons[0].addons; $extensions[0].addons; .id)[] | [.defaultLocale.name, .userDisabled, .homepageURL, .sourceURI] | map(tostring) | join("\t")' | sed -e '/	true	/s/^/ZZZZZ/' | sort -f | sed -e 's/	true	/ [Disabled]	/; s/	false	/	/; s/^ZZZZZ//'
