@@ -224,3 +224,46 @@ Basic move are restricted to the current topic
   switching to topic foo
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [12] add eee
+
+Testing when instability is involved
+
+  $ hg log -G
+  o  17 - {bar} 9bf430c106b7 add jjj (draft)
+  |
+  o  16 - {bar} d2dc89c57700 add iii (draft)
+  |
+  o  15 - {bar} 20bc4d02aa62 add hhh (draft)
+  |
+  o  14 - {bar} 16d6f664b17c add ggg (draft)
+  |
+  o  13 - {foo} 070c5573d8f9 add fff (draft)
+  |
+  @  12 - {foo} 42b49017ff90 add eee (draft)
+  |
+  o  10 - {foo} d9cacd156ffc add ddd (draft)
+  |
+  o  2 - {foo} cced9bac76e3 add ccc (draft)
+  |
+  o  1 - {} a4dbed0837ea add bbb (draft)
+  |
+  o  0 - {} 199cc73e9a0b add aaa (draft)
+  
+  $ hg topic -r 13 bar
+  changed topic on 1 changes
+  $ hg up 14
+  switching to topic bar
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+  $ hg stack
+  ### topic: bar
+  ### target: default (branch)
+  t5$ add jjj (unstable)
+  t4$ add iii (unstable)
+  t3$ add hhh (unstable)
+  t2$ add ggg (current unstable)
+  t1: add fff
+  t0^ add eee (base)
+
+  $ hg prev
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [18] add fff

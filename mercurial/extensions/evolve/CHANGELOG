@@ -4,6 +4,9 @@ Changelog
 7.1.1 - in progress
 -------------------
 
+  * fix `hg prev` behavior on obsolete changesets
+  * no longer issue "obsolete working copy" message during no-op
+
 topic (0.6.1)
 
   * fix compatibility with Mercurial-4.3

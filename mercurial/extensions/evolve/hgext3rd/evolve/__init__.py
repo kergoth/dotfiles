@@ -684,12 +684,14 @@ def revsetallsuccessors(repo, subset, x):
 
 # This section take care of issue warning to the user when troubles appear
 
-def _warnobsoletewc(ui, repo):
+def _warnobsoletewc(ui, repo, prevnode=None, wasobs=None):
     rev = repo['.']
 
     if not rev.obsolete():
         return
 
+    if rev.node() == prevnode and wasobs:
+        return
     msg = _("working directory parent is obsolete! (%s)\n")
     shortnode = node.short(rev.node())
 
@@ -763,8 +765,12 @@ if util.safehasattr(context, '_filterederror'):
 @eh.wrapcommand("pull")
 def wrapmayobsoletewc(origfn, ui, repo, *args, **opts):
     """Warn that the working directory parent is an obsolete changeset"""
+    ctx = repo['.']
+    node = ctx.node()
+    isobs = ctx.obsolete()
+
     def warnobsolete():
-        _warnobsoletewc(ui, repo)
+        _warnobsoletewc(ui, repo, node, isobs)
     wlock = None
     try:
         wlock = repo.wlock()
@@ -2036,6 +2042,8 @@ def _findprevtarget(repo, displayer, movebookmark=False, topic=True):
 
     # we do not filter in the 1 case to allow prev to t0
     if currenttopic and topic and _gettopicidx(p1) != 1:
+        parents = [repo[_singlesuccessor(repo, ctx)] if ctx.mutable() else ctx
+                   for ctx in parents]
         parents = [ctx for ctx in parents if ctx.topic() == currenttopic]
 
     # issue message for the various case

@@ -1514,8 +1514,6 @@ changeset.
   pulling from $TESTTMP/local (glob)
   searching for changes
   no changes found
-  working directory parent is obsolete! (bf1b0d202029)
-  (use 'hg evolve' to update to its successor: ee942144f952)
 
 Now let's see where we are, and update to the successor.
 

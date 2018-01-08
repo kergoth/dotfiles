@@ -972,8 +972,6 @@ graph
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
   $ hg update 0dec01379d3b
-  working directory parent is obsolete! (471f378eab4c)
-  (use 'hg evolve' to update to its successor: eb5a0daa2192)
   abort: hidden revision '0dec01379d3b'!
   (use --hidden to access hidden revisions; successor: eb5a0daa2192)
   [255]
@@ -1524,12 +1522,8 @@ Check that obslog on ROOT with all option show everything
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
   $ hg update 0dec01379d3b
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory parent is obsolete! (0dec01379d3b)
-  (use 'hg evolve' to update to its successor: eb5a0daa2192)
   $ hg update --hidden 'desc(B0)'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory parent is obsolete! (0dec01379d3b)
-  (use 'hg evolve' to update to its successor: eb5a0daa2192)
 
 Test output with pushed and pulled obs markers
 ==============================================

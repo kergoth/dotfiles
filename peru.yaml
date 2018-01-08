@@ -109,11 +109,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 2181247ae1889a0b3f50fc42cf71651b732e7282
+    rev: d17417ec1bd37ace6222175810878c97a47a2b91
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 38a9881a588ab383b95bcb0e79ac45d2b6be0836
+    rev: c087169e66b38d989d068d00e49ce09a897af8dd
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -200,11 +200,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: c386332570d8abf29b7f02597001dccf38fd4824
+    rev: 9a2ed35ff9f7d38dc7e37b6ddefa2ca4eb02139e
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: a7fcf5335e28748337ee23e33dc40360d7b707c3
+    rev: 4b7f77e770a2165726072a2b6f109f2457783080
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -257,7 +257,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 7e92b73d03cd008e248ad261208475b45bc2f128
+    rev: c0a5fee7071ed89602b9b59fb67e83d6cd23addc
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -294,7 +294,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 93aeae198511af76dc5b311601266bcaef36ba80
+    rev: 202872c2dc0cec5216466d6fc9f5c7346a932973
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -517,7 +517,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: b834cb64f77987ba20ae7ccfb5d1d68da1113534
+    rev: 380fa6e8baf24bd6b5449c7e947bbe7464c3920a
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -563,15 +563,15 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: ce052f7962e4d2f1d1ac92f10faf2fca892007d6
+    rev: 9c4a0a935b1b6061b5d5f24d9e7913e3d82afe38
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: e2b695b0432a600ff6d023ed4c9b9f3516673c7f
+    rev: 911459645f76c7fb977520beddec2d552117e7b2
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: bc76580f01d6f4f9559056882e887c13b1837674
+    rev: 97f2feb554471760f72cb6e4f872fde0f825b4b3
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -656,7 +656,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 5285b0b332f067f56a6ac13a316db64acbac0c6b
+    rev: f1747901cc00abb7becb64c02bfccad46b66ed21
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
