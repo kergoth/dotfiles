@@ -53,13 +53,6 @@ pipv httpie
 go get -u github.com/EricChiang/pup # or brew install pup
 pip_install hg-git
 pipv git-remote-dropbox
-# Dropblame, constructs git history for individual files in dropbox, using
-# dropbox's revision history.
-XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
-pipv dropblame &&
-    mv "$WORKON_HOME/dropblame/bin/drop" "$WORKON_HOME/dropblame/bin/dropb" && \
-    mv "$XDG_DATA_HOME/../bin/drop" "$XDG_DATA_HOME/../bin/dropb"
 
 ## For dotfiles
 pipv3 peru
@@ -69,6 +62,7 @@ pip_install SOAPpy # lmwsaction
 pip_install dropbox # git-remote-dropbox
 pip_install titlecase # variety of scripts, and zsh alias
 pip_install toml # toml-set/toml-get, used by the game scripts
+pip3_install toml # toml-set/toml-get, used by the game scripts
 pip_install sh # various scripts
 pip_install hungarian # git-tbdiff
 pipv json2yaml # pcposts zsh function
@@ -126,7 +120,7 @@ go get -u github.com/shurcooL/markdownfmt
 #pip_install pipdeptree
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
-#go get -u github.com/asciinema/asciinema # or brew install asciinema
+#pipv3 asciinema
 
 ### Elixir Development
 # erlang is specifically listed to ensure its binaries are symlinked as well
@@ -143,3 +137,11 @@ go get -u github.com/shurcooL/markdownfmt
 
 ### Video Downloading
 #pipv3 youtube-dl
+
+# Dropblame, constructs git history for individual files in dropbox, using
+# dropbox's revision history.
+#XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+#WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
+#pipv dropblame &&
+#    mv "$WORKON_HOME/dropblame/bin/drop" "$WORKON_HOME/dropblame/bin/dropb" && \
+#    mv "$XDG_DATA_HOME/../bin/drop" "$XDG_DATA_HOME/../bin/dropb"
