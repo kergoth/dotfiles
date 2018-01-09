@@ -51,7 +51,7 @@ mkdir -p "$XDG_DATA_HOME/../bin"
 for script in "$venv_dir/bin/"*; do
     filename="${script##*/}"
     case "$filename" in
-        python|python[0-9]*|pydoc*|python-config*|virtualenv*|pip|pip3|pip3.*|pip-2*|pip-3*|easy_install*|activate*|wheel):
+        python|python[0-9]*|pydoc*|python-config*|virtualenv*|pip|pip2|pip2.*|pip-2*|pip3|pip3.*|pip-3*|easy_install*|activate*|wheel):
             continue
             ;;
     esac
