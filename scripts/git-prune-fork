@@ -10,5 +10,8 @@ else
 fi
 
 git fetch -p "$fork"
-git prune-merged -R -r "$fork" -c origin
-git prune-merged -R -r "$fork"
+
+ret=0
+git prune-merged -R -r "$fork" || ret=1
+git prune-merged -R -r "$fork" -c origin || ret=1
+exit "$ret"
