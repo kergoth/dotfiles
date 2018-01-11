@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -gt 0 ]; then
+    remote="$1"
+else
+    remote="$USER"
+fi
+
+git fetch -p "$remote"
+
+ret=0
+git prune-merged -R -r "$remote" || ret=1
+git prune-merged -R -r "$remote" -c origin || ret=1
+exit "$ret"
