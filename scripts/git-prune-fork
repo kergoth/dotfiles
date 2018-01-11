@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -gt 0 ]; then
+    fork="$1"
+else
+    fork="$USER"
+    hub fork
+fi
+
+git fetch -p "$fork"
+git prune-merged -R -r "$fork" -c origin
+git prune-merged -R -r "$fork"
