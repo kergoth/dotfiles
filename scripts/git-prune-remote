@@ -9,15 +9,26 @@ usage () {
     echo >&2
     echo >&2 "  REMOTE              Prune refs of the specified remote, defaults to $USER"
     echo >&2 "  -o ORIGIN_REMOTE    Prune branches relative to the specified remote, not origin."
+    echo >&2 "  -u UPSTREAM_BRANCHES  Specify the base upstream branches where the changes are merged,"
+    echo >&2 "                        defaults to master. Comma-separated."
+    echo >&2 "  -n                  Dry-run"
     exit 2
 }
 
 process_arguments () {
     origin=origin
-    while getopts o:h opt; do
+    dry_run=0
+    upstream_branches=master
+    while getopts o:u:nh opt; do
         case "$opt" in
             o)
                 origin="$OPTARG"
+                ;;
+            u)
+                upstream_branches="$OPTARG"
+                ;;
+            n)
+                dry_run=1
                 ;;
             \?|h)
                 usage
@@ -45,7 +56,18 @@ if ! git config remote."$origin".url >/dev/null; then
 fi
 git fetch "$origin"
 
+if [ $dry_run -eq 1 ]; then
+    set -- -n
+else
+    set --
+fi
+
 ret=0
-git prune-merged -R -r "$remote" || ret=1
-git prune-merged -R -r "$remote" -c "$origin" || ret=1
+echo >&2 "Pruning matching tracking branches for $remote"
+git prune-merged -R -r "$remote" -c "$origin" "$@" || ret=1
+
+echo "$upstream_branches" | tr , '\n' | while read -r upstream_branch; do
+    echo >&2 "Pruning topic branches merged to $origin/$upstream_branch for $remote"
+    git prune-merged -R -r "$remote" "$@" "$origin/$upstream_branch" || ret=1
+done
 exit "$ret"
