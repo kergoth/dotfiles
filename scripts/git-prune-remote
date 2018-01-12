@@ -1,14 +1,49 @@
 #!/bin/sh
 
+usage () {
+    echo >&2 "${0##*/} [-o ORIGIN_REMOTE] [REMOTE]"
+    echo >&2
+    echo >&2 "Prune branches of the specified remote, relative to the origin."
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2
+    echo >&2 "  REMOTE              Prune refs of the specified remote, defaults to $USER"
+    echo >&2 "  -o ORIGIN_REMOTE    Prune branches relative to the specified remote, not origin."
+    exit 2
+}
+
+process_arguments () {
+    origin=origin
+    while getopts o:h opt; do
+        case "$opt" in
+            o)
+                origin="$OPTARG"
+                ;;
+            \?|h)
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    remote="${1:-$USER}"
+}
+
 set -eu
 
-if [ $# -gt 0 ]; then
-    remote="$1"
-else
-    remote="$USER"
-fi
+process_arguments "$@"
 
+if ! git config remote."$remote".url >/dev/null; then
+    echo >&2 "Error: invalid remote: $remote"
+    return 1
+fi
 git fetch -p "$remote"
+
+if ! git config remote."$origin".url >/dev/null; then
+    echo >&2 "Error: invalid origin remote: $origin"
+    return 1
+fi
+git fetch "$origin"
 
 ret=0
 git prune-merged -R -r "$remote" || ret=1
