@@ -47,5 +47,5 @@ git fetch "$origin"
 
 ret=0
 git prune-merged -R -r "$remote" || ret=1
-git prune-merged -R -r "$remote" -c origin || ret=1
+git prune-merged -R -r "$remote" -c "$origin" || ret=1
 exit "$ret"
