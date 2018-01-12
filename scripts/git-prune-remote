@@ -35,13 +35,13 @@ process_arguments "$@"
 
 if ! git config remote."$remote".url >/dev/null; then
     echo >&2 "Error: invalid remote: $remote"
-    return 1
+    exit 1
 fi
 git fetch -p "$remote"
 
 if ! git config remote."$origin".url >/dev/null; then
     echo >&2 "Error: invalid origin remote: $origin"
-    return 1
+    exit 1
 fi
 git fetch "$origin"
 
