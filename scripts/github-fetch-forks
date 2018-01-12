@@ -6,11 +6,5 @@ github-list-forks "$@" | while read -r remote url; do
         git remote add "$remote" "$url"
     fi
     git remote set-url "$remote" "$url"
-    git fetch "$remote"
-
-    echo >&2 Pruning matching tracking branches for $remote
-    git prune-merged -r "$remote" -c origin
-
-    echo >&2 Pruning topic branches merged to master for $remote
-    git prune-merged -r "$remote"
+    git prune-remote -L "$remote"
 done
