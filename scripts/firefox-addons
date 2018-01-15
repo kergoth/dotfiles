@@ -4,7 +4,10 @@ scriptdir="$(dirname "$0")"
 ff_profileroot="$HOME/Library/Application Support/Firefox"
 default_profile="$(python3 -c "import configparser, sys; c = configparser.RawConfigParser(); c.read_file(sys.stdin); print(list(c[s].get('path') for s in c if dict(c[s]).get('default'))[0])" <"$ff_profileroot/profiles.ini")"
 
-jq -rnc \
-    --slurpfile addons "$ff_profileroot/$default_profile/addons.json" \
-    --slurpfile extensions "$ff_profileroot/$default_profile/extensions.json" "-L$scriptdir/jq" \
-    'import "join" as join; join::hashJoin($addons[0].addons; $extensions[0].addons; .id)[] | [.defaultLocale.name, .userDisabled, .homepageURL, .sourceURI] | map(tostring) | join("\t")' | sed -e '/	true	/s/^/ZZZZZ/' | sort -f | sed -e 's/	true	/ [Disabled]	/; s/	false	/	/; s/^ZZZZZ//'
+cat "$ff_profileroot/$default_profile/extensions.json" | \
+    jq -r \
+        "-L$scriptdir/jq" \
+        '.addons[] | select(.location == "app-profile") | [.defaultLocale.name, .userDisabled, .defaultLocale.homepageURL, .sourceURI] | map(tostring) | join("\t")' | \
+    sed -e '/	true	/s/^/ZZZZZ/' | \
+    sort -f | \
+    sed -e 's/	true	/ [Disabled]	/; s/	false	/	/; s/null//g; s/^ZZZZZ//'
