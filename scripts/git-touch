@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for file; do
+    touch "./$file" && git add -A -- "./$file"
+done
