@@ -2,102 +2,182 @@
 
 set -eu
 
-all=0
-while getopts ah opt; do
-    case "$opt" in
-        a)
-            all=1
-            ;;
-        \?|h)
-            echo >&2 "${0##*/} [-a]"
-            exit 1
-            ;;
-    esac
-done
-shift $((OPTIND - 1))
+usage () {
+    echo >&2 "${0##*/} [-a] [URL]"
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2 "  -a    Include all forks of our parent, not just our children."
+    echo >&2 "  URL   Github repo URL. If unspecified, the url of the 'origin' git remote is used."
+}
 
-url="$(git config remote.origin.url)"
-if [ -z "$url" ]; then
-    echo >&2 "Error: no origin remote, or no url"
-    exit 1
-fi
+process_arguments () {
+    all=0
+    while getopts ah opt; do
+        case "$opt" in
+            a)
+                all=1
+                ;;
+            \?|h)
+                usage
+                return 1
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
 
-repo="$(echo "$url" | python -c 'import re,sys; print("/".join(re.split(r"[:/]", sys.stdin.read().rstrip())[-2:]))' | sed 's,/$,,; s,\.git$,,')"
-if [ -z "$repo" ] || [ "$repo" = "$url" ]; then
-    echo >&2 "Unrecognized url: $url"
-    exit 1
-fi
-
-api_repos="https://api.github.com/repos"
-script="${0##*/}"
-tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
-mkdir -p "$tempdir"
+    url="${1:-$(git config remote.origin.url)}"
+    if [ -z "$url" ]; then
+        echo >&2 "Error: no origin remote, or no url"
+        return 1
+    fi
+}
 
 repo_json () {
     tempfile="$tempdir/repo_info.json"
-    id="$(toml-get -f "$tempdir/$script.toml" ids.$1 2>/dev/null)" || :
+    touch "$tempdir/$script.toml"
+
+    id="${2:-$(toml-get -f "$tempdir/$script.toml" "ids.$1" 2>/dev/null)}"
     if [ -z "$id" ] || [ ! -e "$tempdir/$id.json" ]; then
+        # Cache the json, in case we need to look it up multiple times while
+        # traversing the forks.
         http --check-status --ignore-stdin "$api_repos/$1" >"$tempfile" || return $?
         if [ -z "$id" ]; then
             id="$(jq -r .id <"$tempfile")"
-            toml-set -f "$tempdir/$script.toml" "ids.$1" "$id"
+            toml-set -f "$tempdir/$script.toml" "ids.$1" "\"$id\""
         fi
         mv "$tempfile" "$tempdir/$id.json"
     fi
     cat "$tempdir/$id.json"
 }
 
-repo_forks () {
+gist_get_forks () {
+    if [ "$1" != "$2" ]; then
+        info="$(repo_json "$1" "$1" | jq -r '.owner.login, .git_pull_url' | tr '\n' '\t')"
+        name="$(echo "$info" | cut -d"	" -f1)"
+        url="$(echo "$info" | cut -d"	" -f2)"
+        printf '%s\t%s\n' "$name" "$url"
+    fi
+    for id in $(repo_json "$1" "$1" | jq -r '.forks[]?.id'); do
+        gist_get_forks "$id" "$2"
+    done
+}
+
+gist_get_root_repo () {
+    fork_of="$(repo_json "$1" | jq -r '.fork_of?')"
+    while :; do
+        new_fork_of="$(echo "$fork_of" | jq -r '.fork_of?')"
+        if [ "$new_fork_of" = null ]; then
+            break
+        fi
+        fork_of="$new_fork_of"
+    done
+    if [ -n "$fork_of" ]; then
+        top_fork_id="$(echo "$fork_of" | jq -r .id)"
+        echo "$top_fork_id"
+    fi
+    return 1
+}
+
+github_get_forks_raw () {
     tempfile="$tempdir/repo_forks.json"
-    id="$(toml-get -f "$tempdir/$script.toml" ids.$1)"
+    id="$(toml-get -f "$tempdir/$script.toml" "ids.$1")"
     if [ ! -e "$tempdir/$id-forks.json" ]; then
         http --check-status --ignore-stdin "$api_repos/$1/forks" >"$tempdir/$id-forks.json"
     fi
     cat "$tempdir/$id-forks.json"
 }
 
-repo_jq () {
-    jq -r '[.id,.fork,.forks,.full_name,.source.full_name] | map(tostring) | join("\t")'
-}
-
-repo_info () {
-    repo_json "$1" | repo_jq
-}
-
-get_forks_rec () {
+github_get_forks () {
     fork_info="$(repo_json "$1" | jq -r '[.forks,.clone_url] | map(tostring) | join("\t")')"
     num_forks="$(echo "$fork_info" | cut -f1)"
     if [ "$orig_repo" != "$1" ]; then
         clone_url="$(echo "$fork_info" | cut -f2)"
         printf '%s\t%s\n' "${1%/*}" "$clone_url"
     fi
-    if [ $num_forks -gt 0 ]; then
-        get_forks "$1" | while read -r id is_fork num_forks name source_name; do
-            get_forks_rec "$name"
+    if [ "$num_forks" -gt 0 ]; then
+        github_get_forks_one "$1" | while read -r id _ num_forks name _; do
+            github_get_forks "$name"
         done
     fi
 }
 
-get_forks () {
-    repo_forks "$1" | jq -r '.[] | [.id, .full_name] | map(tostring) | join("\t")' | while read -r fork_id fork_name; do
+github_get_forks_one () {
+    github_get_forks_raw "$1" | jq -r '.[] | [.id, .full_name] | map(tostring) | join("\t")' | while read -r fork_id fork_name; do
         if ! [ -e "$tempdir/$fork_id.json" ]; then
-            repo_forks "$1" | jq -r ".[] | select(.id == $fork_id)" >"$tempdir/$fork_id.json"
+            github_get_forks_raw "$1" | jq -r ".[] | select(.id == $fork_id)" >"$tempdir/$fork_id.json"
         fi
-        repo_info "$fork_name" || continue
+
+        github_repo_info "$fork_name" || continue
     done
 }
 
+github_repo_info () {
+    (
+        set -o pipefail
+        repo_json "$1" | jq -r '[.id,.fork,.forks,.full_name,.source.full_name] | map(tostring) | join("\t")' || return 1
+    )
+}
 
-touch "$tempdir/$script.toml"
-
-orig_repo="$repo"
-if [ $all -eq 1 ]; then
-    info="$(repo_info "$repo")"
+github_get_root_repo () {
+    info="$(github_repo_info "$1")"
     is_fork="$(echo "$info" | cut -d"	" -f2)"
-    while [ $is_fork = true ]; do
+    while [ "$is_fork" = true ]; do
         repo="$(echo "$info" | cut -d"	" -f5)"
-        info="$(repo_info "$repo")"
+        info="$(github_repo_info "$repo")"
         is_fork="$(echo "$info" | cut -d"	" -f2)"
     done
+    if [ "$repo" != "$1" ]; then
+        echo "$repo"
+    else
+        return 1
+    fi
+}
+
+process_arguments "$@" || exit 1
+
+case "$url" in
+    *gist.github.com*)
+        gist=1
+        repo="$(basename "${url%/}" | sed 's,\.git$,,')"
+        api_repos="https://api.github.com/gists"
+        ;;
+    *github.com*)
+        gist=0
+        repo="$(echo "$url" | python -c 'import re,sys; print("/".join(re.split(r"[:/]", sys.stdin.read().rstrip())[-2:]))' | sed 's,/$,,; s,\.git$,,')"
+        api_repos="https://api.github.com/repos"
+        ;;
+    *)
+        echo >&2 "Unrecognized url: $url"
+        exit 1
+        ;;
+esac
+
+if [ -z "$repo" ] || [ "$repo" = "$url" ]; then
+    echo >&2 "Unrecognized url: $url"
+    exit 1
 fi
-get_forks_rec "$repo"
+
+script="${0##*/}"
+tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -rf "$tempdir"' EXIT INT TERM
+
+orig_repo="$repo"
+if [ $gist -eq 1 ]; then
+    if [ $all -eq 1 ]; then
+        root_repo="$(gist_get_root_repo "$repo")" || :
+        if [ -n "$root_repo" ]; then
+            repo="$root_repo"
+        fi
+    fi
+
+    gist_get_forks "$repo" "$orig_repo"
+else
+    if [ $all -eq 1 ]; then
+        root_repo="$(github_get_root_repo "$repo")" || :
+        if [ -n "$root_repo" ]; then
+            repo="$root_repo"
+        fi
+    fi
+
+    github_get_forks "$repo" "$orig_repo"
+fi
