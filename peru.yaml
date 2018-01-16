@@ -41,6 +41,7 @@ imports:
     icdiff: scripts
     iln: scripts
     lesspipe: scripts
+    md-inline2ref: scripts
     moreutils: scripts
     osx-wificleaner: scripts
     planter: scripts
@@ -664,3 +665,10 @@ git module osx-wificleaner:
     move:
         osx_wificleaner.py: osx-wificleaner
     rev: a49340d8dc9b4d81a7d8a4e2ca1932df7aa2cc1a
+
+git module md-inline2ref:
+    url: https://gist.github.com/gruber/1207378
+    move:
+        inline2ref.rb: markdown-inline-to-ref
+    executable: markdown-inline-to-ref
+    rev: a6ab0dcf2cf5491077ab7f37cc2adbabd67f8b91
