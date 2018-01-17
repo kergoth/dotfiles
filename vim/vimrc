@@ -557,7 +557,7 @@ nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 " Delete trailing whitespace
 nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 
-" Search for the word under the cursor
+" Search & replace the word under the cursor globally
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 
 " Edit the vimrc
