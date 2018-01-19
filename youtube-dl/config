@@ -1,0 +1,7 @@
+# Grab and embed subtitles if available
+--write-sub
+--write-auto-sub
+--embed-subs
+
+# Prefer the best combined format by default, rather than bestvideo+bestaudio
+-f best
