@@ -78,6 +78,7 @@ Check that fold dismis the topic if not all revisions have the topic
   $ hg topic --clear
   $ mkcommit feature3
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg topic myotherfeature
   marked working directory as topic: myotherfeature
   $ mkcommit feature4

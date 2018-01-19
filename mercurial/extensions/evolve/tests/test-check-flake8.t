@@ -14,5 +14,7 @@ Copied from Mercurial core (60ee2593a270)
 
 run flake8 if it exists; if it doesn't, then just skip
 
-  $ hg files -0 'set:(**.py or grep("^#!.*python")) - removed()' 2>/dev/null \
+  $ hg files -0 'set:(**.py or grep("^#!.*python")) - removed()' \
+  > -X hgext3rd/evolve/thirdparty \
+  > 2>/dev/null \
   > | xargs -0 flake8

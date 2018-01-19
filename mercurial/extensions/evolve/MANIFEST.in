@@ -7,6 +7,7 @@ exclude Makefile
 exclude tests/test-drop.t
 exclude tests/test-inhibit.t
 exclude tests/test-oldconvert.t
+exclude docs/tutorial/.netlify
 include COPYING
 include docs/figures/hgview-example.png
 include docs/makefile
@@ -17,6 +18,7 @@ include docs/static/*.svg
 include docs/tutorials/*.t
 include hgext3rd/__init__.py
 include hgext3rd/evolve/*.py
+include hgext3rd/evolve/thirdparty/*.py
 include hgext3rd/topic/*.py
 include hgext3rd/topic/README
 include MANIFEST.in
@@ -27,5 +29,13 @@ include tests/*.py
 include tests/*.sh
 include tests/testlib/*.sh
 include tests/*.t
+recursive-include docs/tutorial *.rst
+recursive-include docs/tutorial *.css
+include docs/tutorial/standalone.html
+recursive-include docs/tutorial *.js
+recursive-include docs/tutorial *.md
+recursive-include docs/tutorial *.py
+recursive-include docs/tutorial *.sh
+recursive-include docs/tutorial *.t
 prune debian
 recursive-include docs/figures *.svg

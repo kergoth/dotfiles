@@ -7,22 +7,32 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
+import array
 import collections
+import struct
+import weakref
 
 from mercurial import (
     commands,
     cmdutil,
+    localrepo,
     error,
     node as nodemod,
     scmutil,
+    util,
 )
 
 from mercurial.i18n import _
 
 from . import (
+    compat,
     depthcache,
     exthelper,
+    utility,
+    genericcaches,
 )
+
+filterparents = utility.filterparents
 
 eh = exthelper.exthelper()
 eh.merge(depthcache.eh)
@@ -38,7 +48,12 @@ def _mergepoint_tie_breaker(repo):
         * number of jump points.
         * <insert-your-idea>
     """
-    return repo.changelog.node
+    node = repo.changelog.node
+    depth = repo.depthcache.get
+
+    def key(rev):
+        return (-depth(rev), node(rev))
+    return key
 
 @eh.command(
     'debugstablesort',
@@ -97,10 +112,11 @@ def stablesort_branchpoint(repo, revs, mergecallback=None):
     # * we need to detect branching
     children = collections.defaultdict(list)
     for r in cl.ancestors(revs, inclusive=True):
-        p1, p2 = parents(r)
-        children[p1].append(r)
-        if p2 != nullrev:
-            children[p2].append(r)
+        ps = filterparents(parents(r))
+        if not ps:
+            children[nullrev].append(r)
+        for p in ps:
+            children[p].append(r)
     # step two: walk back up
     # * pick lowest node in case of branching
     # * stack disregarded part of the branching
@@ -108,7 +124,7 @@ def stablesort_branchpoint(repo, revs, mergecallback=None):
 
     # track what changeset has been
     seen = [0] * (max(revs) + 2)
-    seen[-1] = True # nullrev is known
+    seen[nullrev] = True # nullrev is known
     # starts from repository roots
     # reuse the list form the mapping as we won't need it again anyway
     stack = children[nullrev]
@@ -128,8 +144,8 @@ def stablesort_branchpoint(repo, revs, mergecallback=None):
             if seen[current]:
                 current = None
                 continue
-        p1, p2 = parents(current)
-        if not (seen[p1] and seen[p2]):
+        ps = filterparents(parents(current))
+        if not all(seen[p] for p in ps):
             # we can't iterate on this merge yet because other child is not
             # yielded yet (and we are topo sorting) we can discard it for now
             # because it will be reached from the other child.
@@ -138,7 +154,7 @@ def stablesort_branchpoint(repo, revs, mergecallback=None):
         assert not seen[current]
         seen[current] = True
         result.append(current) # could be yield, cf earlier comment
-        if mergecallback is not None and p2 != nullrev:
+        if mergecallback is not None and 2 <= len(ps):
             mergecallback(result, current)
         cs = children[current]
         if not cs:
@@ -199,15 +215,14 @@ def stablesort_mergepoint_bounded(repo, head, revs):
     children = collections.defaultdict(set)
     parentmap = {}
     for r in revs:
-        p1, p2 = parents(r)
-        children[p1].add(r)
-        if p2 != nullrev:
-            children[p2].add(r)
-            parentmap[r] = tuple(sorted((p1, p2), key=tiebreaker))
-        elif p1 != nullrev:
-            parentmap[r] = (p1,)
-        else:
-            parentmap[r] = ()
+        ps = filterparents(parents(r))
+        if 2 <= len(ps):
+            ps = tuple(sorted(ps, key=tiebreaker))
+        parentmap[r] = ps
+        for p in ps:
+            children[p].add(r)
+        if not ps:
+            children[nullrev].add(r)
     # step two: walk again,
     stack = [head]
     resultset = set()
@@ -272,13 +287,13 @@ def stablesort_mergepoint_head(repo, head):
     mid = []
     bottom = []
 
-    ps = [p for p in parents(head) if p is not nodemod.nullrev]
+    ps = filterparents(parents(head))
     while len(ps) == 1:
         top.append(ps[0])
-        ps = [p for p in parents(ps[0]) if p is not nodemod.nullrev]
+        ps = filterparents(parents(ps[0]))
     top.reverse()
     if len(ps) == 2:
-        ps.sort(key=tiebreaker)
+        ps = sorted(ps, key=tiebreaker)
 
         # get the part from the highest parent. This is the part that changes
         mid_revs = repo.revs('only(%d, %d)', ps[1], ps[0])
@@ -286,8 +301,7 @@ def stablesort_mergepoint_head(repo, head):
             mid = stablesort_mergepoint_bounded(repo, ps[1], mid_revs)
 
         # And follow up with part othe parent we can inherit from
-        bottom_revs = cl.ancestors([ps[0]], inclusive=True)
-        bottom = stablesort_mergepoint_bounded(repo, ps[0], bottom_revs)
+        bottom = stablesort_mergepoint_head(repo, ps[0])
 
     return bottom + mid + top
 
@@ -300,34 +314,96 @@ def stablesort_mergepoint_head_cached(repo, revs, limit=None):
                           % len(heads))
     head = heads.first()
     cache = stablesortcache()
-    return cache.get(repo, head, limit=limit)
+    first = list(cache.get(repo, head, limit=limit))
+    second = list(cache.get(repo, head, limit=limit))
+    if first != second:
+        repo.ui.warn('stablesort-cache: initial run different from re-run:\n'
+                     '    %s\n'
+                     '    %s\n' % (first, second))
+    return second
 
 class stablesortcache(object):
 
+    def __init__(self):
+        self._jumps = {}
+        super(stablesortcache, self).__init__()
+
     def get(self, repo, rev, limit=None):
         result = []
-        for r in self._revsfrom(repo, rev):
+        for r in self.walkfrom(repo, rev):
             result.append(r)
             if limit is not None and limit <= len(result):
                 break
         result.reverse()
         return result
 
-    def _revsfrom(self, repo, head):
+    def getjumps(self, repo, rev):
+        if not self._hasjumpsdata(rev):
+            parents = filterparents(repo.changelog.parentrevs(rev))
+            if len(parents) <= 1:
+                self._setjumps(rev, None)
+            else:
+                # merge ! warn the cache
+                tiebreaker = _mergepoint_tie_breaker(repo)
+                minparent = sorted(parents, key=tiebreaker)[0]
+                for r in self.walkfrom(repo, rev):
+                    if r == minparent:
+                        break
+        return self._getjumps(rev)
+
+    def _hasjumpsdata(self, rev):
+        return rev in self._jumps
+
+    def _getjumps(self, rev):
+        return self._jumps.get(rev)
+
+    def _setjumps(self, rev, jumps):
+        self._jumps[rev] = jumps
+
+    def walkfrom(self, repo, head):
         tiebreaker = _mergepoint_tie_breaker(repo)
         cl = repo.changelog
         parentsfunc = cl.parentrevs
 
         def parents(rev):
-            return [p for p in parentsfunc(rev) if p is not nodemod.nullrev]
+            return filterparents(parentsfunc(rev))
+
+        def oneparent(rev):
+            ps = parents(rev)
+            if not ps:
+                return None
+            if len(ps) == 1:
+                return ps[0]
+            return max(ps, key=tiebreaker)
 
         current = head
-        previous_current = None
+        previous_current_1 = object()
+        previous_current_2 = object()
 
         while current is not None:
-            assert current is not previous_current
+            previous_current_2 = previous_current_1
+            previous_current_1 = current
+            assert previous_current_1 is not previous_current_2
+
+            jumps = self._getjumps(current)
+            if jumps is not None:
+                # we have enough cached information to directly iterate over
+                # the exclusive size.
+                for j in jumps:
+                    jump_point = j[0]
+                    jump_dest = j[1]
+                    if current == jump_point:
+                        yield current
+                    else:
+                        while current != jump_point:
+                            yield current
+                            current = oneparent(current)
+                            assert current is not None
+                        yield current
+                    current = jump_dest
+                continue
+
             yield current
-            previous_current = current
 
             ps = parents(current)
             if not ps:
@@ -337,54 +413,290 @@ class stablesortcache(object):
             elif len(ps) == 2:
                 lower_parent, higher_parent = sorted(ps, key=tiebreaker)
 
-                for rev in self._process_exclusive_side(lower_parent,
-                                                        higher_parent,
-                                                        cl.findmissingrevs,
-                                                        parents,
-                                                        tiebreaker):
+                rev = current
+                jumps = []
+
+                def recordjump(source, destination, size):
+                    jump = (source, destination, size)
+                    jumps.append(jump)
+                process = self._process_exclusive_side
+                for rev in process(lower_parent, higher_parent, cl, parents,
+                                   tiebreaker, recordjump):
                     yield rev
+
+                if rev == current:
+                    recordjump(rev, lower_parent, 1)
+
+                self._setjumps(current, jumps)
 
                 current = lower_parent
 
-    def _process_exclusive_side(self, lower, higher, findmissingrevs, parents, tiebreaker):
+    def _process_exclusive_side(self, lower, higher, cl, parents, tiebreaker,
+                                recordjump):
 
-        exclusive = findmissingrevs(common=[lower],
-                                    heads=[higher])
+        exclusive = cl.findmissingrevs(common=[lower], heads=[higher])
 
-        stack = []
+        def popready(stack):
+            """pop the top most ready item in the list"""
+            for idx in xrange(len(stack) - 1, -1, -1):
+                if children[stack[idx]].issubset(seen):
+                    return stack.pop(idx)
+            return None
+
+        hardstack = []
+        previous = None
         seen = set()
+        current = higher
         children = collections.defaultdict(set)
-        if not exclusive:
-            current = None
-        else:
-            current = higher
-            bound = set(exclusive)
+        bound = set(exclusive)
+        if exclusive:
             for r in exclusive:
                 for p in parents(r):
                     children[p].add(r)
 
-        previous_current = None
-        while current is not None:
-            assert current is not previous_current
-            yield current
-            seen.add(current)
-            previous_current = current
+            hardstack.append(higher)
+        nextjump = False
+        size = 1 # take the merge point into account
+        while hardstack:
+            current = popready(hardstack)
+            if current in seen:
+                continue
+            softstack = []
+            while current in bound and current not in seen:
+                if nextjump:
+                    recordjump(previous, current, size)
+                    nextjump = False
+                    size = 0
+                yield current
+                size += 1
+                previous = current
+                seen.add(current)
 
-            ps = parents(current)
+                all_parents = parents(current)
 
-            usable_parents = [p for p in ps
-                              if (p in bound and children[p].issubset(seen))]
-            if not usable_parents:
-                if stack:
-                    current = stack.pop()
-                else:
-                    current = None
-            elif len(usable_parents) == 1:
-                    current = usable_parents[0]
+                # search or next parent to walk through
+                fallback, next = None, None
+                if 1 == len(all_parents):
+                    next = all_parents[0]
+                elif 2 <= len(all_parents):
+                    fallback, next = sorted(all_parents, key=tiebreaker)
+
+                # filter parent not ready (children not emitted)
+                while next is not None and not children[next].issubset(seen):
+                    nextjump = True
+                    next = fallback
+                    fallback = None
+
+                # stack management
+                if next is None:
+                    next = popready(softstack)
+                    if next is not None:
+                        nextjump = True
+                elif fallback is not None:
+                    softstack.append(fallback)
+
+                # get ready for next iteration
+                current = next
+
+            # any in processed head has to go in the hard stack
+            nextjump = True
+            hardstack.extend(softstack)
+
+        if previous is not None:
+            recordjump(previous, lower, size)
+
+def stablesort_mergepoint_head_ondisk(repo, revs, limit=None):
+    heads = repo.revs('heads(%ld)', revs)
+    if not heads:
+        return []
+    elif 2 < len(heads):
+        raise error.Abort('cannot use head based merging, %d heads found'
+                          % len(heads))
+    head = heads.first()
+    unfi = repo.unfiltered()
+    cache = unfi.stablesort
+    cache.save(unfi)
+    return cache.get(repo, head, limit=limit)
+
+S_INDEXSIZE = struct.Struct('>I')
+
+class ondiskstablesortcache(stablesortcache, genericcaches.changelogsourcebase):
+
+    _filepath = 'evoext-stablesortcache-00'
+    _cachename = 'evo-ext-stablesort'
+
+    def __init__(self):
+        super(ondiskstablesortcache, self).__init__()
+        self._index = array.array('l')
+        self._data = array.array('l')
+        del self._jumps
+
+    def getjumps(self, repo, rev):
+        if len(self._index) < rev:
+            msg = 'stablesortcache must be warmed before use (%d < %d)'
+            msg %= (len(self._index), rev)
+            raise error.ProgrammingError(msg)
+        return self._getjumps(rev)
+
+    def _getjumps(self, rev):
+        # very first revision
+        if rev == 0:
+            return None
+        # no data yet
+        if len(self._index) <= rev:
+            return None
+        index = self._index
+        # non merge revision
+        if index[rev] == index[rev - 1]:
+            return None
+        data = self._data
+        # merge revision
+
+        def jumps():
+            for idx in xrange(index[rev - 1], index[rev]):
+                i = idx * 3
+                yield tuple(data[i:i + 3])
+        return jumps()
+
+    def _setjumps(self, rev, jumps):
+        assert len(self._index) == rev, (len(self._index), rev)
+        if rev == 0:
+            self._index.append(0)
+            return
+        end = self._index[rev - 1]
+        if jumps is None:
+            self._index.append(end)
+            return
+        assert len(self._data) == end * 3, (len(self._data), end)
+        for j in jumps:
+            self._data.append(j[0])
+            self._data.append(j[1])
+            self._data.append(j[2])
+            end += 1
+        self._index.append(end)
+
+    def _updatefrom(self, repo, data):
+        repo = repo.unfiltered()
+
+        total = len(data)
+
+        def progress(pos, rev):
+            repo.ui.progress('updating stablesort cache',
+                             pos, 'rev %s' % rev, unit='revision', total=total)
+
+        progress(0, '')
+        for idx, rev in enumerate(data):
+            parents = filterparents(repo.changelog.parentrevs(rev))
+            if len(parents) <= 1:
+                self._setjumps(rev, None)
             else:
-                lower_parent, higher_parent = sorted(usable_parents, key=tiebreaker)
-                stack.append(lower_parent)
-                current = higher_parent
+                # merge! warn the cache
+                tiebreaker = _mergepoint_tie_breaker(repo)
+                minparent = sorted(parents, key=tiebreaker)[0]
+                for r in self.walkfrom(repo, rev):
+                    if r == minparent:
+                        break
+            if not (idx % 1000): # progress as a too high performance impact
+                progress(idx, rev)
+        progress(None, '')
+
+    def clear(self, reset=False):
+        super(ondiskstablesortcache, self).clear()
+        self._index = array.array('l')
+        self._data = array.array('l')
+
+    def load(self, repo):
+        """load data from disk
+
+        (crude version, read everything all the time)
+        """
+        assert repo.filtername is None
+
+        cachevfs = compat.getcachevfs(repo)
+        data = cachevfs.tryread(self._filepath)
+        self._index = array.array('l')
+        self._data = array.array('l')
+        if not data:
+            self._cachekey = self.emptykey
+        else:
+            headerdata = data[:self._cachekeysize]
+            self._cachekey = self._deserializecachekey(headerdata)
+            offset = self._cachekeysize
+            indexsizedata = data[offset:offset + S_INDEXSIZE.size]
+            indexsize = S_INDEXSIZE.unpack(indexsizedata)[0]
+            offset += S_INDEXSIZE.size
+            self._index.fromstring(data[offset:offset + indexsize])
+            offset += indexsize
+            self._data.fromstring(data[offset:])
+        self._ondiskkey = self._cachekey
+        pass
+
+    def save(self, repo):
+        """save the data to disk
+
+        (crude version, rewrite everything all the time)
+        """
+        if self._cachekey is None or self._cachekey == self._ondiskkey:
+            return
+        cachevfs = compat.getcachevfs(repo)
+        cachefile = cachevfs(self._filepath, 'w', atomictemp=True)
+
+        # data to write
+        headerdata = self._serializecachekey()
+        indexdata = self._index.tostring()
+        data = self._data.tostring()
+        indexsize = S_INDEXSIZE.pack(len(indexdata))
+
+        # writing
+        cachefile.write(headerdata)
+        cachefile.write(indexsize)
+        cachefile.write(indexdata)
+        cachefile.write(data)
+        cachefile.close()
+
+@eh.reposetup
+def setupcache(ui, repo):
+
+    class stablesortrepo(repo.__class__):
+
+        @localrepo.unfilteredpropertycache
+        def stablesort(self):
+            cache = ondiskstablesortcache()
+            cache.update(self)
+            return cache
+
+        @localrepo.unfilteredmethod
+        def destroyed(self):
+            if 'stablesort' in vars(self):
+                self.stablesort.clear()
+            super(stablesortrepo, self).destroyed()
+
+        if util.safehasattr(repo, 'updatecaches'):
+            @localrepo.unfilteredmethod
+            def updatecaches(self, tr=None):
+                if utility.shouldwarmcache(self, tr):
+                    self.stablesort.update(self)
+                    self.stablesort.save(self)
+                super(stablesortrepo, self).updatecaches(tr)
+
+        else:
+            def transaction(self, *args, **kwargs):
+                tr = super(stablesortrepo, self).transaction(*args, **kwargs)
+                reporef = weakref.ref(self)
+
+                def _warmcache(tr):
+                    repo = reporef()
+                    if repo is None:
+                        return
+                    repo = repo.unfiltered()
+                    repo.stablesort.update(repo)
+                    repo.stablesort.save(repo)
+
+                if utility.shouldwarmcache(self, tr):
+                    tr.addpostclose('warmcache-02stablesort', _warmcache)
+                return tr
+
+    repo.__class__ = stablesortrepo
 
 _methodmap = {
     'branchpoint': stablesort_branchpoint,
@@ -392,4 +704,5 @@ _methodmap = {
     'basic-headstart': stablesort_mergepoint_head_basic,
     'headstart': stablesort_mergepoint_head_debug,
     'headcached': stablesort_mergepoint_head_cached,
+    'headondisk': stablesort_mergepoint_head_ondisk,
 }

@@ -15,6 +15,13 @@ from mercurial import (
     util,
 )
 
+# hg < 4.2 compat
+try:
+    from mercurial import vfs as vfsmod
+    vfsmod.vfs
+except ImportError:
+    from mercurial import scmutil as vfsmod
+
 try:
     from mercurial import obsutil
     obsutil.closestpredecessors
@@ -195,3 +202,27 @@ def duplicatecopies(repo, wctx, rev, fromrev, skiprev=None):
         copies.duplicatecopies(repo, rev, fromrev, skiprev=skiprev)
     else:
         copies.duplicatecopies(repo, wctx, rev, fromrev, skiprev=skiprev)
+
+def memfilectx(repo, ctx, fctx, flags, copied, path):
+    # XXX Would it be better at the module level?
+    varnames = context.memfilectx.__init__.__code__.co_varnames
+    ctxmandatory = varnames[2] == "changectx"
+
+    if ctxmandatory:
+        mctx = context.memfilectx(repo, ctx, fctx.path(), fctx.data(),
+                                  islink='l' in flags,
+                                  isexec='x' in flags,
+                                  copied=copied.get(path))
+    else:
+        mctx = context.memfilectx(repo, fctx.path(), fctx.data(),
+                                  islink='l' in flags,
+                                  isexec='x' in flags,
+                                  copied=copied.get(path))
+    return mctx
+
+def getcachevfs(repo):
+    cachevfs = getattr(repo, 'cachevfs', None)
+    if cachevfs is None:
+        cachevfs = vfsmod.vfs(repo.vfs.join('cache'))
+        cachevfs.createmode = repo.store.createmode
+    return cachevfs

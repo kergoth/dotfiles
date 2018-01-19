@@ -53,8 +53,10 @@ Topic branches are lightweight branches which disappear when changes are
 finalized (moved to the public phase). They can help users to organize and share
 their unfinished work.
 
-In this tutorial, we explain how to use topics for local development. In the first part,
-there is a central *publishing* server. Anything pushed to the central server will become public and immutable This means no unfinished work should escapes the local repository.
+In this tutorial, we explain how to use topics for local development. In the
+first part, there is a central *publishing* server. Anything pushed to the
+central server will become public and immutable. This means no unfinished work
+should escape the local repository.
 
 
 Topic Basics
@@ -73,21 +75,21 @@ Let's say we use Mercurial to manage our shopping list:
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       }
 #endif
 
@@ -123,21 +125,21 @@ changeset yet:
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       }
 #endif
 
@@ -166,21 +168,21 @@ Our next commit will be part of the active topic:
   $ hg docgraph -r "topic("food")" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	1	 [fillcolor="#9999FF",
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       }
 #endif
 
@@ -213,31 +215,31 @@ And future commits will be part of that topic too:
   $ hg docgraph -r "topic("food")" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	1	 [fillcolor="#9999FF",
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
-      	2	 [fillcolor="#9999FF",
+      		width=1];
+      	2	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=2,
       		pin=true,
       		pos="1,2!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 2	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -288,43 +290,43 @@ changeset of default without a topic:
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	1	 [fillcolor="#9999FF",
+      		width=1];
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	2	 [fillcolor="#9999FF",
+      	2	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=2,
       		pin=true,
       		pos="1,2!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 2	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -412,55 +414,55 @@ the latest update from the main server:
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	1	 [fillcolor="#9999FF",
+      		width=1];
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	3	 [fillcolor="#9999FF",
+      	3	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=3,
       		pin=true,
       		pos="1,3!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 3	 [arrowhead=none,
       		penwidth=2.0];
-      	2	 [fillcolor="#9999FF",
+      	2	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=2,
       		pin=true,
       		pos="1,2!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 2	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -519,59 +521,71 @@ But the topic will see that branch head as a valid destination:
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	3	 [fillcolor="#9999FF",
+      		width=1];
+      	3	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=3,
       		pin=true,
       		pos="1,3!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 3	 [arrowhead=none,
       		penwidth=2.0];
-      	4	 [fillcolor="#9999FF",
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	3 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       }
 #endif
+
+There exists a template keyword named "topic" which can be used
+
+  $ hg log -GT "{rev}:{node|short} {topic}\n {desc}"
+  @  5:2d50db8b5b4c food
+  |   adding fruits
+  o  4:4011b46eeb33 food
+  |   adding condiments
+  o  3:6104862e8b84
+  |   Adding clothes
+  o  0:38da43f0a2ea
+      Shopping list
 
 The topic information will disappear when we publish the changesets:
 
@@ -627,55 +641,55 @@ note that it is now devoid of any commit.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	3	 [fillcolor="#9999FF",
+      		width=1];
+      	3	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=3,
       		pin=true,
       		pos="1,3!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 3	 [arrowhead=none,
       		penwidth=2.0];
-      	4	 [fillcolor="#9999FF",
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	3 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -696,8 +710,8 @@ From there, the topic has been completely forgotten.
 Keep working within topics
 ==========================
 
-Making sure all your new local commit are made within a topic will help your
-organise your work. It is possible to ensure this through the Mercurial
+Making sure all your new local commit are made within a topic will help you
+organize your work. It is possible to ensure this through the Mercurial
 configuration.
 
 For this tutorial, we'll add the config at the repository level:
@@ -727,7 +741,7 @@ Ok, let's clean this up and delve into multiple topics.
 Working with Multiple Topics
 ============================
 
-In the above example, topics do not bring much benefits since you only have one
+In the above example, topics do not bring many benefits since you only have one
 line of development. Topics start to be more useful when you have to work on
 multiple features at the same time.
 
@@ -897,141 +911,141 @@ changeset on top of the latest:
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
-      	graph [rankdir=LR,
-      		splines=polyline
-      	];
-      	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=0,
-      		pin=true,
-      		pos="1,0!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	3	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=3,
-      		pin=true,
-      		pos="1,3!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	0 -> 3	 [arrowhead=none,
-      		penwidth=2.0];
-      	4	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=4,
-      		pin=true,
-      		pos="1,4!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	3 -> 4	 [arrowhead=none,
-      		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=5,
-      		pin=true,
-      		pos="1,5!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	4 -> 5	 [arrowhead=none,
-      		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=6,
-      		pin=true,
-      		pos="1,6!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	5 -> 6	 [arrowhead=none,
-      		penwidth=2.0];
-      	9	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=9,
-      		pin=true,
-      		pos="1,9!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	5 -> 9	 [arrowhead=none,
-      		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=11,
-      		pin=true,
-      		pos="1,11!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	5 -> 11	 [arrowhead=none,
-      		penwidth=2.0];
-      	7	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=7,
-      		pin=true,
-      		pos="1,7!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	6 -> 7	 [arrowhead=none,
-      		penwidth=2.0];
-      	8	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=8,
-      		pin=true,
-      		pos="1,8!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	7 -> 8	 [arrowhead=none,
-      		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=10,
-      		pin=true,
-      		pos="1,10!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	9 -> 10	 [arrowhead=none,
-      		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=12,
-      		pin=true,
-      		pos="1,12!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	11 -> 12	 [arrowhead=none,
-      		penwidth=2.0];
+      strict digraph "Mercurial graph" {
+          graph [rankdir=LR,
+              splines=polyline
+          ];
+          node [label="\N"];
+          0     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=0,
+              pin=true,
+              pos="1,0!",
+              shape=circle,
+              style=filled,
+              width=1];
+          3     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=3,
+              pin=true,
+              pos="1,3!",
+              shape=circle,
+              style=filled,
+              width=1];
+          0 -> 3     [arrowhead=none,
+              penwidth=2.0];
+          4     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=4,
+              pin=true,
+              pos="1,4!",
+              shape=circle,
+              style=filled,
+              width=1];
+          3 -> 4     [arrowhead=none,
+              penwidth=2.0];
+          5     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=5,
+              pin=true,
+              pos="1,5!",
+              shape=circle,
+              style=filled,
+              width=1];
+          4 -> 5     [arrowhead=none,
+              penwidth=2.0];
+          6     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=6,
+              pin=true,
+              pos="1,6!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          5 -> 6     [arrowhead=none,
+              penwidth=2.0];
+          9     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=9,
+              pin=true,
+              pos="1,9!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          5 -> 9     [arrowhead=none,
+              penwidth=2.0];
+          11     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=11,
+              pin=true,
+              pos="1,11!",
+              shape=circle,
+              style=filled,
+              width=1];
+          5 -> 11     [arrowhead=none,
+              penwidth=2.0];
+          7     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=7,
+              pin=true,
+              pos="1,7!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          6 -> 7     [arrowhead=none,
+              penwidth=2.0];
+          8     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=8,
+              pin=true,
+              pos="1,8!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          7 -> 8     [arrowhead=none,
+              penwidth=2.0];
+          10     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=10,
+              pin=true,
+              pos="1,10!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          9 -> 10     [arrowhead=none,
+              penwidth=2.0];
+          12     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=12,
+              pin=true,
+              pos="1,12!",
+              shape=circle,
+              style=filled,
+              width=1];
+          11 -> 12     [arrowhead=none,
+              penwidth=2.0];
       }
 #endif
 
@@ -1240,97 +1254,98 @@ it shows too many things:
   $ hg docgraph -r "t0::" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
-      	graph [rankdir=LR,
-      		splines=polyline
-      	];
-      	node [label="\N"];
-      	12	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=12,
-      		pin=true,
-      		pos="1,12!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	13	 [fillcolor="#DFDFFF",
-      		fixedsize=true,
-      		group=default_alt,
-      		height=0.5,
-      		label=13,
-      		pin=true,
-      		pos="2,13!",
-      		shape=pentagon,
-      		style="dotted, filled",
-      		width=0.5];
-      	12 -> 13	 [arrowhead=none,
-      		penwidth=2.0];
-      	18	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=18,
-      		pin=true,
-      		pos="1,18!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	12 -> 18	 [arrowhead=none,
-      		penwidth=2.0];
-      	16	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=16,
-      		pin=true,
-      		pos="1,16!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	12 -> 16	 [arrowhead=none,
-      		penwidth=2.0];
-      	13 -> 18	 [arrowhead=none,
-      		minlen=0,
-      		penwidth=2.0,
-      		style=dashed];
-      	14	 [fillcolor="#FF4F4F",
-      		fixedsize=true,
-      		group=default_alt,
-      		height=0.5,
-      		label=14,
-      		pin=true,
-      		pos="2,14!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	13 -> 14	 [arrowhead=none,
-      		penwidth=2.0];
-      	15	 [fillcolor="#FF4F4F",
-      		fixedsize=true,
-      		group=default_alt,
-      		height=0.5,
-      		label=15,
-      		pin=true,
-      		pos="2,15!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	14 -> 15	 [arrowhead=none,
-      		penwidth=2.0];
-      	17	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=17,
-      		pin=true,
-      		pos="1,17!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	16 -> 17	 [arrowhead=none,
-      		penwidth=2.0];
+      strict digraph "Mercurial graph" {
+          graph [rankdir=LR,
+              splines=polyline
+          ];
+          node [label="\N"];
+          12     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=12,
+              pin=true,
+              pos="1,12!",
+              shape=circle,
+              style=filled,
+              width=1];
+          13     [fillcolor="#DFDFFF",
+              fixedsize=true,
+              group=default_alt,
+              height=1,
+              label=13,
+              pin=true,
+              pos="2,13!",
+              shape=pentagon,
+              style="dotted, filled",
+              width=1];
+          12 -> 13     [arrowhead=none,
+              penwidth=2.0];
+          18     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=18,
+              pin=true,
+              pos="1,18!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          12 -> 18     [arrowhead=none,
+              penwidth=2.0];
+          16     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=16,
+              pin=true,
+              pos="1,16!",
+              shape=circle,
+              style=filled,
+              width=1];
+          12 -> 16     [arrowhead=none,
+              penwidth=2.0];
+          13 -> 18     [arrowtail=none,
+              dir=back,
+              minlen=0,
+              penwidth=2.0,
+              style=dashed];
+          14     [fillcolor="#FF4F4F",
+              fixedsize=true,
+              group=default_alt,
+              height=1,
+              label=14,
+              pin=true,
+              pos="2,14!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          13 -> 14     [arrowhead=none,
+              penwidth=2.0];
+          15     [fillcolor="#FF4F4F",
+              fixedsize=true,
+              group=default_alt,
+              height=1,
+              label=15,
+              pin=true,
+              pos="2,15!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          14 -> 15     [arrowhead=none,
+              penwidth=2.0];
+          17     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=17,
+              pin=true,
+              pos="1,17!",
+              shape=circle,
+              style=filled,
+              width=1];
+          16 -> 17     [arrowhead=none,
+              penwidth=2.0];
       }
 #endif
 
@@ -1420,81 +1435,81 @@ Let's take a look at `hg log` once again:
   $ hg docgraph -r "t0::" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
-      	graph [rankdir=LR,
-      		splines=polyline
-      	];
-      	node [label="\N"];
-      	12	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=12,
-      		pin=true,
-      		pos="1,12!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	16	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=16,
-      		pin=true,
-      		pos="1,16!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	12 -> 16	 [arrowhead=none,
-      		penwidth=2.0];
-      	18	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=18,
-      		pin=true,
-      		pos="1,18!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	12 -> 18	 [arrowhead=none,
-      		penwidth=2.0];
-      	17	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=17,
-      		pin=true,
-      		pos="1,17!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	16 -> 17	 [arrowhead=none,
-      		penwidth=2.0];
-      	19	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=19,
-      		pin=true,
-      		pos="1,19!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	18 -> 19	 [arrowhead=none,
-      		penwidth=2.0];
-      	20	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=20,
-      		pin=true,
-      		pos="1,20!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	19 -> 20	 [arrowhead=none,
-      		penwidth=2.0];
+      strict digraph "Mercurial graph" {
+          graph [rankdir=LR,
+              splines=polyline
+          ];
+          node [label="\N"];
+          12     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=12,
+              pin=true,
+              pos="1,12!",
+              shape=circle,
+              style=filled,
+              width=1];
+          16     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=16,
+              pin=true,
+              pos="1,16!",
+              shape=circle,
+              style=filled,
+              width=1];
+          12 -> 16     [arrowhead=none,
+              penwidth=2.0];
+          18     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=18,
+              pin=true,
+              pos="1,18!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          12 -> 18     [arrowhead=none,
+              penwidth=2.0];
+          17     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=17,
+              pin=true,
+              pos="1,17!",
+              shape=circle,
+              style=filled,
+              width=1];
+          16 -> 17     [arrowhead=none,
+              penwidth=2.0];
+          19     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=19,
+              pin=true,
+              pos="1,19!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          18 -> 19     [arrowhead=none,
+              penwidth=2.0];
+          20     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=20,
+              pin=true,
+              pos="1,20!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          19 -> 20     [arrowhead=none,
+              penwidth=2.0];
       }
 #endif
 Multi-headed stack
@@ -1602,153 +1617,153 @@ completely linear history so it's what we will do.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
-      	graph [rankdir=LR,
-      		splines=polyline
-      	];
-      	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=0,
-      		pin=true,
-      		pos="1,0!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	3	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=3,
-      		pin=true,
-      		pos="1,3!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	0 -> 3	 [arrowhead=none,
-      		penwidth=2.0];
-      	4	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=4,
-      		pin=true,
-      		pos="1,4!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	3 -> 4	 [arrowhead=none,
-      		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=5,
-      		pin=true,
-      		pos="1,5!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	4 -> 5	 [arrowhead=none,
-      		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=11,
-      		pin=true,
-      		pos="1,11!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	5 -> 11	 [arrowhead=none,
-      		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=12,
-      		pin=true,
-      		pos="1,12!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	11 -> 12	 [arrowhead=none,
-      		penwidth=2.0];
-      	16	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=16,
-      		pin=true,
-      		pos="1,16!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	12 -> 16	 [arrowhead=none,
-      		penwidth=2.0];
-      	18	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=18,
-      		pin=true,
-      		pos="1,18!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	12 -> 18	 [arrowhead=none,
-      		penwidth=2.0];
-      	17	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=17,
-      		pin=true,
-      		pos="1,17!",
-      		shape=circle,
-      		style=filled,
-      		width=0.5];
-      	16 -> 17	 [arrowhead=none,
-      		penwidth=2.0];
-      	19	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=19,
-      		pin=true,
-      		pos="1,19!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	18 -> 19	 [arrowhead=none,
-      		penwidth=2.0];
-      	21	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=21,
-      		pin=true,
-      		pos="1,21!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	18 -> 21	 [arrowhead=none,
-      		penwidth=2.0];
-      	20	 [fillcolor="#9999FF",
-      		fixedsize=true,
-      		group=default,
-      		height=0.5,
-      		label=20,
-      		pin=true,
-      		pos="1,20!",
-      		shape=pentagon,
-      		style=filled,
-      		width=0.5];
-      	19 -> 20	 [arrowhead=none,
-      		penwidth=2.0];
+      strict digraph "Mercurial graph" {
+          graph [rankdir=LR,
+              splines=polyline
+          ];
+          node [label="\N"];
+          0     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=0,
+              pin=true,
+              pos="1,0!",
+              shape=circle,
+              style=filled,
+              width=1];
+          3     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=3,
+              pin=true,
+              pos="1,3!",
+              shape=circle,
+              style=filled,
+              width=1];
+          0 -> 3     [arrowhead=none,
+              penwidth=2.0];
+          4     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=4,
+              pin=true,
+              pos="1,4!",
+              shape=circle,
+              style=filled,
+              width=1];
+          3 -> 4     [arrowhead=none,
+              penwidth=2.0];
+          5     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=5,
+              pin=true,
+              pos="1,5!",
+              shape=circle,
+              style=filled,
+              width=1];
+          4 -> 5     [arrowhead=none,
+              penwidth=2.0];
+          11     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=11,
+              pin=true,
+              pos="1,11!",
+              shape=circle,
+              style=filled,
+              width=1];
+          5 -> 11     [arrowhead=none,
+              penwidth=2.0];
+          12     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=12,
+              pin=true,
+              pos="1,12!",
+              shape=circle,
+              style=filled,
+              width=1];
+          11 -> 12     [arrowhead=none,
+              penwidth=2.0];
+          16     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=16,
+              pin=true,
+              pos="1,16!",
+              shape=circle,
+              style=filled,
+              width=1];
+          12 -> 16     [arrowhead=none,
+              penwidth=2.0];
+          18     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=18,
+              pin=true,
+              pos="1,18!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          12 -> 18     [arrowhead=none,
+              penwidth=2.0];
+          17     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=17,
+              pin=true,
+              pos="1,17!",
+              shape=circle,
+              style=filled,
+              width=1];
+          16 -> 17     [arrowhead=none,
+              penwidth=2.0];
+          19     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=19,
+              pin=true,
+              pos="1,19!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          18 -> 19     [arrowhead=none,
+              penwidth=2.0];
+          21     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=21,
+              pin=true,
+              pos="1,21!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          18 -> 21     [arrowhead=none,
+              penwidth=2.0];
+          20     [fillcolor="#7F7FFF",
+              fixedsize=true,
+              group=default,
+              height=1,
+              label=20,
+              pin=true,
+              pos="1,20!",
+              shape=pentagon,
+              style=filled,
+              width=1];
+          19 -> 20     [arrowhead=none,
+              penwidth=2.0];
       }
 #endif
 
@@ -1810,7 +1825,7 @@ We can now share these draft changesets:
   added 4 changesets with 4 changes to 1 files (+1 heads)
   8 new obsolescence markers
 
-Pushing the new topic branch to a non publishing server did not require
+Pushing the new topic branch to a non-publishing server did not require
 --force. As long as new heads are on their own topic, Mercurial will not
 complain about them.
 
@@ -1859,7 +1874,7 @@ We can also add new changesets and share them:
   adding file changes
   added 1 changesets with 1 changes to 1 files
 
-And retrieve them on the first client:
+And retrieve them from the first client:
 
   $ cd ../client
 

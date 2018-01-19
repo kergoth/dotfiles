@@ -181,6 +181,7 @@ Create the second branch
   $ hg add ggg
   $ hg commit -m c_g
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ echo aaa > hhh
   $ hg add hhh
   $ hg commit -m c_h

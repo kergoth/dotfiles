@@ -28,7 +28,7 @@ test of the rebase command
   >    hg ci -m "add $1" $2 $3
   > }
   $ logtopic() {
-  >    hg log -G -T "{rev}:{node}\ntopics: {topics}" 
+  >    hg log -G -T "{rev}:{node}\ntopics: {topic}" 
   > }
 
 Check that rebase keep the topic in the simple case (1 changeset, no merge conflict)
@@ -101,6 +101,7 @@ Create a common base
   $ echo "A" > file
   $ hg commit -A -m "default2" file
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
 
 Update the common file in a topic
   $ hg topic myotherfeature

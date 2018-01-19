@@ -28,6 +28,23 @@ if not util.safehasattr(context.basectx, 'orphan'):
 if not util.safehasattr(context.basectx, 'isunstable'):
     context.basectx.isunstable = context.basectx.troubled
 
+def parseusername(user):
+    """parses the ctx user and returns the username without email ID if
+    possible, otherwise returns the mail address from that"""
+    username = None
+    if user:
+        # user is of form "abc <abc@xyz.com>"
+        username = user.split('<')[0]
+        if not username:
+            # assuming user is of form "<abc@xyz.com>"
+            if len(user) > 1:
+                username = user[1:-1]
+            else:
+                username = user
+        username = username.strip()
+
+    return username
+
 def _stackcandidates(repo):
     """build the smaller set of revs that might be part of a stack.
 

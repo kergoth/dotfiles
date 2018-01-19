@@ -133,43 +133,43 @@ This history is very linear
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	1	 [fillcolor="#9999FF",
+      		width=1];
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	2	 [fillcolor="#9999FF",
+      	2	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=2,
       		pin=true,
       		pos="1,2!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 2	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -212,43 +212,43 @@ the outside. The first one has been exchanged and is "public" (immutable).
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	1	 [fillcolor="#9999FF",
+      		width=1];
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	2	 [fillcolor="#9999FF",
+      	2	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=2,
       		pin=true,
       		pos="1,2!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 2	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -284,43 +284,43 @@ A new changeset with the right diff replace the wrong one.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	1	 [fillcolor="#9999FF",
+      		width=1];
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	3	 [fillcolor="#9999FF",
+      	3	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=3,
       		pin=true,
       		pos="1,3!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 3	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -385,55 +385,55 @@ I now have a new head. Note that this remote head is immutable.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	1	 [fillcolor="#9999FF",
+      		width=1];
+      	1	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=1,
       		pin=true,
       		pos="1,1!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 1	 [arrowhead=none,
       		penwidth=2.0];
-      	4	 [fillcolor="#9999FF",
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	3	 [fillcolor="#9999FF",
+      	3	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=3,
       		pin=true,
       		pos="1,3!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	1 -> 3	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -464,55 +464,55 @@ My local work is now rebased on the remote one.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -566,55 +566,55 @@ The silly changeset is gone.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -686,79 +686,79 @@ You can use the 'grab' alias for that.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	8	 [fillcolor="#9999FF",
+      	8	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=8,
       		pin=true,
       		pos="1,8!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 8	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -830,79 +830,79 @@ for simplicity sake we get the bathroom change in line again
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	11	 [fillcolor="#9999FF",
+      	11	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=11,
       		pin=true,
       		pos="1,11!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 11	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -937,6 +937,7 @@ of the `uncommit` command to splitting a change.
   
    -a --all                 uncommit all changes when no arguments given
    -r --rev VALUE           revert commit content to REV instead
+      --revert              discard working directory changes after uncommit
    -n --note VALUE          store a note on uncommit
    -I --include PATTERN [+] include names matching the given patterns
    -X --exclude PATTERN [+] exclude names matching the given patterns
@@ -1125,79 +1126,79 @@ But at the same time, locally, this same "bathroom changeset" was updated.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=12,
       		pin=true,
       		pos="1,12!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -1242,107 +1243,108 @@ see both version showing up in the log.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
       	11	 [fillcolor="#DFDFFF",
       		fixedsize=true,
       		group=default_alt,
-      		height=0.5,
+      		height=1,
       		label=11,
       		pin=true,
       		pos="2,11!",
       		shape=pentagon,
       		style="dotted, filled",
-      		width=0.5];
+      		width=1];
       	10 -> 11	 [arrowhead=none,
       		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=12,
       		pin=true,
       		pos="1,12!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	11 -> 12	 [arrowhead=none,
+      	11 -> 12	 [arrowtail=none,
+      		dir=back,
       		minlen=0,
       		penwidth=2.0,
       		style=dashed];
       	13	 [fillcolor="#FF4F4F",
       		fixedsize=true,
       		group=default_alt,
-      		height=0.5,
+      		height=1,
       		label=13,
       		pin=true,
       		pos="2,13!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	11 -> 13	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -1404,91 +1406,91 @@ The old version of bathroom is hidden again.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=12,
       		pin=true,
       		pos="1,12!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	14	 [fillcolor="#9999FF",
+      	14	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=14,
       		pin=true,
       		pos="1,14!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	12 -> 14	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -1568,103 +1570,103 @@ I'm pulling its work locally.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=12,
       		pin=true,
       		pos="1,12!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	14	 [fillcolor="#9999FF",
+      	14	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=14,
       		pin=true,
       		pos="1,14!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	12 -> 14	 [arrowhead=none,
       		penwidth=2.0];
-      	15	 [fillcolor="#9999FF",
+      	15	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=15,
       		pin=true,
       		pos="1,15!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	14 -> 15	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -1704,103 +1706,103 @@ is neither dead or obsolete. My repository is in an unstable state again.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=12,
       		pin=true,
       		pos="1,12!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
       	14	 [fillcolor="#DFDFFF",
       		fixedsize=true,
       		group=default_alt,
-      		height=0.5,
+      		height=1,
       		label=14,
       		pin=true,
       		pos="2,14!",
       		shape=pentagon,
       		style="dotted, filled",
-      		width=0.5];
+      		width=1];
       	12 -> 14	 [arrowhead=none,
       		penwidth=2.0];
       	15	 [fillcolor="#FF4F4F",
       		fixedsize=true,
       		group=default_alt,
-      		height=0.5,
+      		height=1,
       		label=15,
       		pin=true,
       		pos="2,15!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	14 -> 15	 [arrowhead=none,
       		penwidth=2.0];
       }
@@ -1813,7 +1815,7 @@ is neither dead or obsolete. My repository is in an unstable state again.
   $ hg docgraph -r "orphan()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
@@ -1821,13 +1823,13 @@ is neither dead or obsolete. My repository is in an unstable state again.
       	15	 [fillcolor="#FF4F4F",
       		fixedsize=true,
       		group=default_alt,
-      		height=0.5,
+      		height=1,
       		label=15,
       		pin=true,
       		pos="1,15!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       }
 #endif
 
@@ -1857,91 +1859,91 @@ is neither dead or obsolete. My repository is in an unstable state again.
   $ hg docgraph -r "all()" --sphinx-directive --rankdir LR #rest-ignore
   .. graphviz::
   
-      strict digraph  {
+      strict digraph "Mercurial graph" {
       	graph [rankdir=LR,
       		splines=polyline
       	];
       	node [label="\N"];
-      	0	 [fillcolor="#9999FF",
+      	0	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=0,
       		pin=true,
       		pos="1,0!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
-      	4	 [fillcolor="#9999FF",
+      		width=1];
+      	4	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=4,
       		pin=true,
       		pos="1,4!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	0 -> 4	 [arrowhead=none,
       		penwidth=2.0];
-      	5	 [fillcolor="#9999FF",
+      	5	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=5,
       		pin=true,
       		pos="1,5!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	4 -> 5	 [arrowhead=none,
       		penwidth=2.0];
-      	6	 [fillcolor="#9999FF",
+      	6	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=6,
       		pin=true,
       		pos="1,6!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	5 -> 6	 [arrowhead=none,
       		penwidth=2.0];
-      	10	 [fillcolor="#9999FF",
+      	10	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=10,
       		pin=true,
       		pos="1,10!",
       		shape=circle,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	6 -> 10	 [arrowhead=none,
       		penwidth=2.0];
-      	12	 [fillcolor="#9999FF",
+      	12	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=12,
       		pin=true,
       		pos="1,12!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	10 -> 12	 [arrowhead=none,
       		penwidth=2.0];
-      	16	 [fillcolor="#9999FF",
+      	16	 [fillcolor="#7F7FFF",
       		fixedsize=true,
       		group=default,
-      		height=0.5,
+      		height=1,
       		label=16,
       		pin=true,
       		pos="1,16!",
       		shape=pentagon,
       		style=filled,
-      		width=0.5];
+      		width=1];
       	12 -> 16	 [arrowhead=none,
       		penwidth=2.0];
       }

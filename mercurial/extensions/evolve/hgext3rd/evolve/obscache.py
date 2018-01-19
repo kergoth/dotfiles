@@ -27,6 +27,7 @@ from mercurial import (
 from mercurial.i18n import _
 
 from . import (
+    compat,
     exthelper,
 )
 
@@ -42,12 +43,6 @@ elif getattr(pycompat, 'osname', os.name) == 'nt':
 else:
     timer = time.time
 
-# hg < 4.2 compat
-try:
-    from mercurial import vfs as vfsmod
-    vfsmod.vfs
-except ImportError:
-    from mercurial import scmutil as vfsmod
 
 obsstorefilecache = localrepo.localrepository.obsstore
 
@@ -103,7 +98,7 @@ def obsstorewithcache(orig, repo):
 
     return obsstore
 
-if obsolete._fm0readmarkers.__code__.co_argcount > 1:
+if obsolete._fm0readmarkers.__code__.co_argcount > 2:
     # hg-4.3+ has the "offset" parameter, and _fm?readmarkers also have an
     # extra "stop" parameter
     # Note that _readmarkers is wrapped by @util.nogc, so its co_argcount is
@@ -326,13 +321,6 @@ class dualsourcecache(object):
 
         return reset, revs, markers, (obssize, obskey)
 
-def getcachevfs(repo):
-    cachevfs = getattr(repo, 'cachevfs', None)
-    if cachevfs is None:
-        cachevfs = vfsmod.vfs(repo.vfs.join('cache'))
-        cachevfs.createmode = repo.store.createmode
-    return cachevfs
-
 class obscache(dualsourcecache):
     """cache the "does a rev" is the precursors of some obsmarkers data
 
@@ -375,7 +363,7 @@ class obscache(dualsourcecache):
     def __init__(self, repo):
         super(obscache, self).__init__()
         self._ondiskkey = None
-        self._vfs = getcachevfs(repo)
+        self._vfs = compat.getcachevfs(repo)
 
     @util.propertycache
     def get(self):

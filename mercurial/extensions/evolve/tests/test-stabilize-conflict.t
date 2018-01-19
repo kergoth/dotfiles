@@ -168,7 +168,7 @@ proper behavior with conflict using internal:merge
   $ hg resolve --all -m
   (no more unresolved files)
   $ hg evolve --continue
-  grafting 4:71c18f70c34f "babar count up to fifteen"
+  evolving 4:71c18f70c34f "babar count up to fifteen"
   $ hg resolve -l
   $ hg log -G
   @  changeset:   6:1836b91c6c1d

@@ -44,6 +44,7 @@ Add another branch with two heads
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit lake_c
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
 
 
 Add some topics
@@ -114,33 +115,33 @@ Summary
   orphan: 3 changesets
   topic:  foo
   $ hg log --graph -T '{desc} ({branch}) [{topic}]'
-  @  add foo_b (lake) []
+  @  add foo_b (lake) [foo]
   |
-  o  add foo_a (lake) []
+  o  add foo_a (lake) [foo]
   |
-  | o  bar1_d (default) []
+  | o  bar1_d (default) [bar]
   | |
-  | | o  add bar_e (default) []
+  | | o  add bar_e (default) [bar]
   | | |
-  | | x  add bar_d (default) []
+  | | x  add bar_d (default) [bar]
   | |/
-  | | o  add bar_c (default) []
+  | | o  add bar_c (default) [bar]
   | |/
-  | o  add bar_b (default) []
+  | o  add bar_b (default) [bar]
   | |
-  | o  add bar_a (default) []
+  | o  add bar_a (default) [bar]
   | |
-  | | o  fuz1_a (default) []
+  | | o  fuz1_a (default) [fuz]
   | | |
-  | | | o  add fuz_c (default) []
+  | | | o  add fuz_c (default) [fuz]
   | | | |
-  | | | o  add fuz_b (default) []
+  | | | o  add fuz_b (default) [fuz]
   | | | |
-  | | | x  add fuz_a (default) []
+  | | | x  add fuz_a (default) [fuz]
   | | |/
-  | | | o  add baz_b (default) []
+  | | | o  add baz_b (default) [baz]
   | | | |
-  | | | o  add baz_a (default) []
+  | | | o  add baz_a (default) [baz]
   | | | |
   +-------o  add lake_c (lake) []
   | | | |
@@ -173,10 +174,10 @@ basic output
 quiet version
 
   $ hg topic --quiet
-  bar (5 changesets, 1 troubled, 2 heads)
-  baz (2 changesets)
-  foo (2 changesets)
-  fuz (3 changesets, 2 troubled)
+  bar
+  baz
+  foo
+  fuz
 
 verbose
 

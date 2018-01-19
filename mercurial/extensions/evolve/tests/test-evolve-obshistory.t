@@ -56,8 +56,9 @@ Actual test
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) as 4ae3a4151de9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/4ae3a4151de9-changeset-description
+         diff -r 471f378eab4c -r 4ae3a4151de9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,3 @@
          -A0
          +A1
@@ -72,13 +73,36 @@ Actual test
          +42
   
   
+  $ hg obslog --patch --color debug
+  @  [evolve.node|4ae3a4151de9] [evolve.rev|(2)] [evolve.short_description|A1]
+  |
+  x  [evolve.node|471f378eab4c] [evolve.rev|(1)] [evolve.short_description|A0]
+       [evolve.verb|rewritten](description, content) as [evolve.node|4ae3a4151de9] by [evolve.user|test] [evolve.date|(Thu Jan 01 00:00:00 1970 +0000)]
+         [diff.diffline|diff -r 471f378eab4c -r 4ae3a4151de9 changeset-description]
+         [diff.file_a|--- a/changeset-description]
+         [diff.file_b|+++ b/changeset-description]
+         [diff.hunk|@@ -1,1 +1,3 @@]
+         [diff.deleted|-A0]
+         [diff.inserted|+A1]
+         [diff.inserted|+]
+         [diff.inserted|+Better commit message]
+  
+         [diff.diffline|diff -r 471f378eab4c -r 4ae3a4151de9 A0]
+         [diff.file_a|--- a/A0	Thu Jan 01 00:00:00 1970 +0000]
+         [diff.file_b|+++ b/A0	Thu Jan 01 00:00:00 1970 +0000]
+         [diff.hunk|@@ -1,1 +1,2 @@]
+          A0
+         [diff.inserted|+42]
+  
+  
 
   $ hg obslog --no-graph --patch 4ae3a4151de9
   4ae3a4151de9 (2) A1
   471f378eab4c (1) A0
     rewritten(description, content) as 4ae3a4151de9 by test (Thu Jan 01 00:00:00 1970 +0000)
-      --- a/471f378eab4c-changeset-description	
-      +++ b/4ae3a4151de9-changeset-description	
+      diff -r 471f378eab4c -r 4ae3a4151de9 changeset-description
+      --- a/changeset-description
+      +++ b/changeset-description
       @@ -1,1 +1,3 @@
       -A0
       +A1
@@ -132,8 +156,9 @@ Actual test
   $ hg obslog --hidden --patch 471f378eab4c
   x  471f378eab4c (1) A0
        rewritten(description, content) as 4ae3a4151de9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/4ae3a4151de9-changeset-description
+         diff -r 471f378eab4c -r 4ae3a4151de9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,3 @@
          -A0
          +A1
@@ -819,8 +844,9 @@ the revision with the target
   $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
        rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/eb5a0daa2192-changeset-description
+         diff -r 471f378eab4c -r eb5a0daa2192 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +C0
@@ -842,8 +868,9 @@ Check that with all option, all changesets are shown
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/eb5a0daa2192-changeset-description
+         diff -r 471f378eab4c -r eb5a0daa2192 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +C0
@@ -872,8 +899,9 @@ Check that with all option, all changesets are shown
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/eb5a0daa2192-changeset-description
+         diff -r 471f378eab4c -r eb5a0daa2192 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +C0
@@ -896,8 +924,9 @@ graph
   |
   x  471f378eab4c (1) A0
        rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/eb5a0daa2192-changeset-description
+         diff -r 471f378eab4c -r eb5a0daa2192 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +C0
@@ -1051,15 +1080,17 @@ Check that debugobshistory on the divergent revision show both destinations
   $ hg obslog --hidden 471f378eab4c --patch
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1074,15 +1105,17 @@ Check that with all option, every changeset is shown
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1133,15 +1166,17 @@ and the diverent one
   |
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1156,15 +1191,17 @@ Check that all option show all of them
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1177,15 +1214,17 @@ and the diverent one
   |
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1199,15 +1238,17 @@ Check that all option show all of them
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1222,15 +1263,17 @@ graph
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/65b757b745b9-changeset-description
+         diff -r 471f378eab4c -r 65b757b745b9 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A2
   
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1
@@ -1375,8 +1418,9 @@ Check that debugobshistory on head show a coherent graph
   |\
   x |  471f378eab4c (1) A0
    /     rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
-  |        --- a/471f378eab4c-changeset-description
-  |        +++ b/eb5a0daa2192-changeset-description
+  |        diff -r 471f378eab4c -r eb5a0daa2192 changeset-description
+  |        --- a/changeset-description
+  |        +++ b/changeset-description
   |        @@ -1,1 +1,1 @@
   |        -A0
   |        +C0
@@ -1394,8 +1438,9 @@ Check that debugobshistory on head show a coherent graph
   |
   x  0dec01379d3b (2) B0
        rewritten(description) as b7ea6d14e664 by test (*) (glob)
-         --- a/0dec01379d3b-changeset-description
-         +++ b/b7ea6d14e664-changeset-description
+         diff -r 0dec01379d3b -r b7ea6d14e664 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -B0
          +B1
@@ -1407,8 +1452,9 @@ Check that obslog on ROOT with all option show everything
   |\
   x |  471f378eab4c (1) A0
    /     rewritten(description, content) as eb5a0daa2192 by test (*) (glob)
-  |        --- a/471f378eab4c-changeset-description
-  |        +++ b/eb5a0daa2192-changeset-description
+  |        diff -r 471f378eab4c -r eb5a0daa2192 changeset-description
+  |        --- a/changeset-description
+  |        +++ b/changeset-description
   |        @@ -1,1 +1,1 @@
   |        -A0
   |        +C0
@@ -1426,8 +1472,9 @@ Check that obslog on ROOT with all option show everything
   |
   x  0dec01379d3b (2) B0
        rewritten(description) as b7ea6d14e664 by test (*) (glob)
-         --- a/0dec01379d3b-changeset-description
-         +++ b/b7ea6d14e664-changeset-description
+         diff -r 0dec01379d3b -r b7ea6d14e664 changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -B0
          +B1
@@ -1600,8 +1647,9 @@ Test setup
   |
   x  fdf9bde5129a (2) A1
   |    rewritten(description) as 7a230b46bf61 by test (*) (glob)
-  |      --- a/fdf9bde5129a-changeset-description
-  |      +++ b/7a230b46bf61-changeset-description
+  |      diff -r fdf9bde5129a -r 7a230b46bf61 changeset-description
+  |      --- a/changeset-description
+  |      +++ b/changeset-description
   |      @@ -1,1 +1,1 @@
   |      -A1
   |      +A2
@@ -1609,8 +1657,9 @@ Test setup
   |
   x  471f378eab4c (1) A0
        rewritten(description) as fdf9bde5129a by test (*) (glob)
-         --- a/471f378eab4c-changeset-description
-         +++ b/fdf9bde5129a-changeset-description
+         diff -r 471f378eab4c -r fdf9bde5129a changeset-description
+         --- a/changeset-description
+         +++ b/changeset-description
          @@ -1,1 +1,1 @@
          -A0
          +A1

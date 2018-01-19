@@ -20,7 +20,7 @@ Test the instability listing
   2 new orphan changesets
   $ hg evolve --list
   d2ae7f538514: b
-    unstable: cb9a9f314b8b (obsolete parent)
+    orphan: cb9a9f314b8b (obsolete parent)
   
   177f92b77385: c
     orphan: d2ae7f538514 (orphan parent)
@@ -37,7 +37,7 @@ Test the bumpedness listing
   1 new phase-divergent changesets
   $ hg evolve --list
   88cc282e27fc: ab
-    bumped: cb9a9f314b8b (immutable precursor)
+    phase-divergent: cb9a9f314b8b (immutable precursor)
   
   $ cd ..
 
@@ -67,18 +67,18 @@ Test the divergence listing
   2 new content-divergent changesets
   $ hg evolve --list
   c882616e9d84: b
-    divergent: a922b3733e98 (draft) (precursor d2ae7f538514)
+    content-divergent: a922b3733e98 (draft) (precursor d2ae7f538514)
   
   a922b3733e98: b
-    divergent: c882616e9d84 (draft) (precursor d2ae7f538514)
+    content-divergent: c882616e9d84 (draft) (precursor d2ae7f538514)
   
   $ hg evolve --list --rev c882616e9d84
   c882616e9d84: b
-    divergent: a922b3733e98 (draft) (precursor d2ae7f538514)
+    content-divergent: a922b3733e98 (draft) (precursor d2ae7f538514)
   
   $ hg phase -p a922b3733e98
   $ hg evolve --list
   c882616e9d84: b
-    divergent: a922b3733e98 (public) (precursor d2ae7f538514)
+    content-divergent: a922b3733e98 (public) (precursor d2ae7f538514)
   
   $ cd ..

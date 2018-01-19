@@ -10,7 +10,7 @@ Test for stable ordering capabilities
   > logtemplate = "{rev} {node|short} {desc} {tags}\n"
   > [alias]
   > showsort = debugstablesort --template="{node|short}\n" --method basic-mergepoint
-  > showsorthead = debugstablesort --template="{node|short}\n" --method headcached
+  > showsorthead = debugstablesort --template="{node|short}\n" --method headondisk
   > EOF
 
 
@@ -117,14 +117,14 @@ Starts with a "simple case"
   4c748ffd1a46
   f0f3ef9a6cd5
   1d8d22637c2d
-  2702dd0c91e7
-  bab5d5bf48bd
-  b4594d867745
   e7d9710d9fc6
   d62d843c9a01
   dcbb326fdec2
-  e46a4836065c
   ff43616e5d0f
+  bab5d5bf48bd
+  b4594d867745
+  e46a4836065c
+  2702dd0c91e7
   $ hg showsorthead --rev 1d8d22637c2d
   1ea73414a91b
   66f7d451a68b
@@ -214,14 +214,14 @@ output of log should be empty
   === checking 4c748ffd1a46 ===
   === checking f0f3ef9a6cd5 ===
   === checking 1d8d22637c2d ===
-  === checking 2702dd0c91e7 ===
-  === checking bab5d5bf48bd ===
-  === checking b4594d867745 ===
   === checking e7d9710d9fc6 ===
   === checking d62d843c9a01 ===
   === checking dcbb326fdec2 ===
-  === checking e46a4836065c ===
   === checking ff43616e5d0f ===
+  === checking bab5d5bf48bd ===
+  === checking b4594d867745 ===
+  === checking e46a4836065c ===
+  === checking 2702dd0c91e7 ===
 
 Check stability
 ===============
@@ -482,10 +482,10 @@ for 'all()'
   D
 
   $ python "$RUNTESTDIR/md5sum.py" *.all.order
-  4f54f623da142833149055fb83022a7e  A.all.order
-  4f54f623da142833149055fb83022a7e  B.all.order
-  4f54f623da142833149055fb83022a7e  C.all.order
-  4f54f623da142833149055fb83022a7e  D.all.order
+  25e89e555b56ed9e7b51827d58073b77  A.all.order
+  25e89e555b56ed9e7b51827d58073b77  B.all.order
+  25e89e555b56ed9e7b51827d58073b77  C.all.order
+  25e89e555b56ed9e7b51827d58073b77  D.all.order
 
 one specific head
 
@@ -716,17 +716,17 @@ Multiple recursions
   66f7d451a68b
   01241442b3c2
   2dc09a01254d
-  abf57d94268b
-  529dfc5bb875
   e7bd5218ca15
-  6ee532b68cfa
-  001194dd78d5
   3a367db1fabc
   a2f58e9c1e56
   5f18015f9110
   9fff0871d230
   4dbf739dd63f
   d64d500024d1
+  abf57d94268b
+  529dfc5bb875
+  6ee532b68cfa
+  001194dd78d5
   0496f0a6a143
   1c645e73dbc6
   160a7a0adbf4
@@ -738,25 +738,25 @@ Multiple recursions
   66f7d451a68b
   01241442b3c2
   2dc09a01254d
-  abf57d94268b
-  529dfc5bb875
   e7bd5218ca15
-  6ee532b68cfa
-  001194dd78d5
   3a367db1fabc
   a2f58e9c1e56
   5f18015f9110
   9fff0871d230
   4dbf739dd63f
   d64d500024d1
+  abf57d94268b
+  529dfc5bb875
+  6ee532b68cfa
+  001194dd78d5
   0496f0a6a143
   1c645e73dbc6
   160a7a0adbf4
   $ hg showsorthead --rev '160a7a0adbf4' --limit 7
-  5f18015f9110
-  9fff0871d230
-  4dbf739dd63f
-  d64d500024d1
+  abf57d94268b
+  529dfc5bb875
+  6ee532b68cfa
+  001194dd78d5
   0496f0a6a143
   1c645e73dbc6
   160a7a0adbf4
@@ -789,17 +789,17 @@ Multiple recursions
   === checking 66f7d451a68b ===
   === checking 01241442b3c2 ===
   === checking 2dc09a01254d ===
-  === checking abf57d94268b ===
-  === checking 529dfc5bb875 ===
   === checking e7bd5218ca15 ===
-  === checking 6ee532b68cfa ===
-  === checking 001194dd78d5 ===
   === checking 3a367db1fabc ===
   === checking a2f58e9c1e56 ===
   === checking 5f18015f9110 ===
   === checking 9fff0871d230 ===
   === checking 4dbf739dd63f ===
   === checking d64d500024d1 ===
+  === checking abf57d94268b ===
+  === checking 529dfc5bb875 ===
+  === checking 6ee532b68cfa ===
+  === checking 001194dd78d5 ===
   === checking 0496f0a6a143 ===
   === checking 1c645e73dbc6 ===
   === checking 160a7a0adbf4 ===
@@ -831,11 +831,11 @@ Multiple recursions
   $ hg showsorthead --rev '160a7a0adbf4' > ../160a7a0adbf4.random.orderhead
   $ hg showsorthead --rev '4bbfc6078919' > ../4bbfc6078919.random.orderhead
   $ python "$RUNTESTDIR/md5sum.py" ../multiple.*.order
-  a6547220a9f004c975e365d9561639dd  ../multiple.random.order
-  a6547220a9f004c975e365d9561639dd  ../multiple.source.order
+  19b28a58af0311b99159f60944a57213  ../multiple.random.order
+  19b28a58af0311b99159f60944a57213  ../multiple.source.order
   $ python "$RUNTESTDIR/md5sum.py" ../160a7a0adbf4.*.orderhead
-  48d8911f53869b32e29da26c56e95119  ../160a7a0adbf4.random.orderhead
-  48d8911f53869b32e29da26c56e95119  ../160a7a0adbf4.source.orderhead
+  905b0bab9155f65ed2e220382b94e9b9  ../160a7a0adbf4.random.orderhead
+  905b0bab9155f65ed2e220382b94e9b9  ../160a7a0adbf4.source.orderhead
   $ python "$RUNTESTDIR/md5sum.py" ../4bbfc6078919.*.orderhead
   3732305a333d59ec50b91db0f5ab696e  ../4bbfc6078919.random.orderhead
   3732305a333d59ec50b91db0f5ab696e  ../4bbfc6078919.source.orderhead
@@ -844,17 +844,17 @@ Multiple recursions
   66f7d451a68b
   01241442b3c2
   2dc09a01254d
-  abf57d94268b
-  529dfc5bb875
   e7bd5218ca15
-  6ee532b68cfa
-  001194dd78d5
   3a367db1fabc
   a2f58e9c1e56
   5f18015f9110
   9fff0871d230
   4dbf739dd63f
   d64d500024d1
+  abf57d94268b
+  529dfc5bb875
+  6ee532b68cfa
+  001194dd78d5
   0496f0a6a143
   1c645e73dbc6
   160a7a0adbf4
@@ -866,17 +866,17 @@ Multiple recursions
   66f7d451a68b
   01241442b3c2
   2dc09a01254d
-  abf57d94268b
-  529dfc5bb875
   e7bd5218ca15
-  6ee532b68cfa
-  001194dd78d5
   3a367db1fabc
   a2f58e9c1e56
   5f18015f9110
   9fff0871d230
   4dbf739dd63f
   d64d500024d1
+  abf57d94268b
+  529dfc5bb875
+  6ee532b68cfa
+  001194dd78d5
   0496f0a6a143
   1c645e73dbc6
   160a7a0adbf4
@@ -1044,15 +1044,6 @@ Merge two branches with their own independant internal merge.
   56526aefbff4 23
   $ hg showsort --rev 'tip'
   1ea73414a91b
-  66f7d451a68b
-  01241442b3c2
-  2dc09a01254d
-  c2c595bcd4c6
-  e2317cea05f7
-  588f0bc87ecd
-  bebd167eb94d
-  c8d03c1b5e94
-  9f6c364a3574
   7cc044fdf4a7
   e5c0d969abc4
   ee222cc71ce6
@@ -1065,18 +1056,18 @@ Merge two branches with their own independant internal merge.
   5648bbf0e38b
   6a97ef856f90
   d4422659bc40
+  66f7d451a68b
+  01241442b3c2
+  2dc09a01254d
+  c2c595bcd4c6
+  e2317cea05f7
+  588f0bc87ecd
+  bebd167eb94d
+  c8d03c1b5e94
+  9f6c364a3574
   56526aefbff4
   $ hg showsorthead --rev 'tip'
   1ea73414a91b
-  66f7d451a68b
-  01241442b3c2
-  2dc09a01254d
-  c2c595bcd4c6
-  e2317cea05f7
-  588f0bc87ecd
-  bebd167eb94d
-  c8d03c1b5e94
-  9f6c364a3574
   7cc044fdf4a7
   e5c0d969abc4
   ee222cc71ce6
@@ -1089,30 +1080,39 @@ Merge two branches with their own independant internal merge.
   5648bbf0e38b
   6a97ef856f90
   d4422659bc40
+  66f7d451a68b
+  01241442b3c2
+  2dc09a01254d
+  c2c595bcd4c6
+  e2317cea05f7
+  588f0bc87ecd
+  bebd167eb94d
+  c8d03c1b5e94
+  9f6c364a3574
   56526aefbff4
   $ hg showsorthead --rev 'tip' --limit 12
-  e5c0d969abc4
-  ee222cc71ce6
-  448a7ac3ab1f
-  5cb8e6902ff3
-  191bac7bf37c
-  5188cf52b7b7
-  65e683dd6db4
-  4442c125b80d
-  5648bbf0e38b
   6a97ef856f90
   d4422659bc40
+  66f7d451a68b
+  01241442b3c2
+  2dc09a01254d
+  c2c595bcd4c6
+  e2317cea05f7
+  588f0bc87ecd
+  bebd167eb94d
+  c8d03c1b5e94
+  9f6c364a3574
   56526aefbff4
   $ hg showsorthead --rev 'tip' --limit 7
-  5188cf52b7b7
-  65e683dd6db4
-  4442c125b80d
-  5648bbf0e38b
-  6a97ef856f90
-  d4422659bc40
+  c2c595bcd4c6
+  e2317cea05f7
+  588f0bc87ecd
+  bebd167eb94d
+  c8d03c1b5e94
+  9f6c364a3574
   56526aefbff4
   $ hg showsorthead --rev 'tip' --limit 3
-  6a97ef856f90
-  d4422659bc40
+  c8d03c1b5e94
+  9f6c364a3574
   56526aefbff4
   $ cd ..

@@ -110,7 +110,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: d17417ec1bd37ace6222175810878c97a47a2b91
+    rev: a65a07fae4e916f49b84afd8f6d9b2ef258b52fb
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: f615a1b518f40d2e6e5a76e0e97198a746d46c76
+    rev: 70a7a5cdee168b6cb9400cccbe48427906b6ca28
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -201,7 +201,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 9a2ed35ff9f7d38dc7e37b6ddefa2ca4eb02139e
+    rev: e02176aca15905e80dbb38de2a53416cf6460cfe
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -282,7 +282,7 @@ hg module dtrx:
 hg module t:
     url: https://bitbucket.org/sjl/t
     pick: t.py
-    rev: 655800c5080d713175847fd33ed37d85517bdfcb
+    rev: b183c1d51530d9e85d4d830831babaf3c5a08c03
 
 git module fzf:
     url: https://github.com/junegunn/fzf
@@ -295,7 +295,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 202872c2dc0cec5216466d6fc9f5c7346a932973
+    rev: 7f0caf06833130727b238a2afeb58f3b5096a34c
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -333,7 +333,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 5694ae578147fb47caa43aa9578e7e061a2a8d30
+    rev: 1c01d5c921f2e570946d7b682f792fc00d5ae27f
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -518,7 +518,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: 380fa6e8baf24bd6b5449c7e947bbe7464c3920a
+    rev: efac9aad096315abcca08046e531c3d4bdac3f21
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -564,7 +564,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 9c4a0a935b1b6061b5d5f24d9e7913e3d82afe38
+    rev: 14834f252f7ba0fc464c7871af68127e6bd49f01
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -597,7 +597,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 55dec7d39266648eaa7a43f68b770833f53cff5f
+    rev: 0ebd0fca83efeccc0d34069eb9f1a602b807b410
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -657,7 +657,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: f1747901cc00abb7becb64c02bfccad46b66ed21
+    rev: eddda2f8b599a52e92c99795f42c0c4ba8e15f7c
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

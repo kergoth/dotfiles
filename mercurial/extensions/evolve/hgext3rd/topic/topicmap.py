@@ -1,6 +1,7 @@
 import contextlib
 import hashlib
 
+from mercurial.i18n import _
 from mercurial.node import nullid
 from mercurial import (
     branchmap,
@@ -94,7 +95,23 @@ def commitstatus(orig, repo, node, branch, bheads=None, opts=None):
     if ctx.topic() and ctx.branch() == branch:
         subbranch = "%s:%s" % (branch, ctx.topic())
         bheads = repo.branchheads("%s:%s" % (subbranch, ctx.topic()))
-    return orig(repo, node, branch, bheads=bheads, opts=opts)
+
+    ret = orig(repo, node, branch, bheads=bheads, opts=opts)
+
+    # logic copy-pasted from cmdutil.commitstatus()
+    if opts is None:
+        opts = {}
+    ctx = repo[node]
+    if ctx.topic():
+        return ret
+    parents = ctx.parents()
+
+    if (not opts.get('amend') and bheads and node not in bheads and not
+        [x for x in parents if x.node() in bheads and x.branch() == branch]):
+        repo.ui.status(_("(consider using topic for lightweight branches."
+                         " See 'hg help topic')\n"))
+
+    return ret
 
 def _wrapbmcache(ui):
     class topiccache(_topiccache, branchmap.branchcache):

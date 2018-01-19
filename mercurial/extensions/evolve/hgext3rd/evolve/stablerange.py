@@ -8,16 +8,14 @@
 # GNU General Public License version 2 or any later version.
 
 import abc
+import functools
 import heapq
 import math
 import os
-import sqlite3
 import time
-import weakref
 
 from mercurial import (
     error,
-    localrepo,
     node as nodemod,
     pycompat,
     scmutil,
@@ -27,12 +25,17 @@ from mercurial import (
 from mercurial.i18n import _
 
 from . import (
-    stablesort,
     exthelper,
+    firstmergecache,
+    stablesort,
+    utility,
 )
+
+filterparents = utility.filterparents
 
 eh = exthelper.exthelper()
 eh.merge(stablesort.eh)
+eh.merge(firstmergecache.eh)
 
 # prior to hg-4.2 there are not util.timer
 if util.safehasattr(util, 'timer'):
@@ -74,7 +77,8 @@ def subrangesclosure(repo, stablerange, heads):
     return ranges
 
 _stablerangemethodmap = {
-    'branchpoint': lambda repo: repo.stablerange,
+    'branchpoint': lambda repo: stablerange(),
+    'default': lambda repo: repo.stablerange,
     'basic-branchpoint': lambda repo: stablerangebasic(),
     'basic-mergepoint': lambda repo: stablerangedummy_mergepoint(),
     'mergepoint': lambda repo: stablerange_mergepoint(),
@@ -298,6 +302,11 @@ class stablerangecached(abstractstablerange):
 
     __metaclass__ = abc.ABCMeta
 
+    def __init__(self):
+        # cache the standard stable subranges or a range
+        self._subrangescache = {}
+        super(stablerangecached, self).__init__()
+
     def depthrev(self, repo, rev):
         return repo.depthcache.get(rev)
 
@@ -306,16 +315,37 @@ class stablerangecached(abstractstablerange):
         headrev, index = rangeid[0], rangeid[1]
         return self.depthrev(repo, headrev) - index
 
-class stablerange_mergepoint(stablerangecached, stablerangebasic):
+    def subranges(self, repo, rangeid):
+        assert 0 <= rangeid[1] <= rangeid[0], rangeid
+        cached = self._getsub(rangeid)
+        if cached is not None:
+            return cached
+        value = self._subranges(repo, rangeid)
+        self._setsub(rangeid, value)
+        return value
+
+    def _getsub(self, rev):
+        """utility function used to access the subranges cache
+
+        This mostly exist to help the on disk persistence"""
+        return self._subrangescache.get(rev)
+
+    def _setsub(self, rev, value):
+        """utility function used to set the subranges cache
+
+        This mostly exist to help the on disk persistence."""
+        self._subrangescache[rev] = value
+
+class stablerange_mergepoint(stablerangecached):
     """Stablerange implementation using 'mergepoint' based sorting
     """
 
     def __init__(self):
-        self._sortcache = stablesort.stablesortcache()
         super(stablerange_mergepoint, self).__init__()
 
-    def _sortfunction(self, repo, headrev):
-        return self._sortcache.get(repo, headrev)
+    def warmup(self, repo, upto=None):
+        # no cache to warm for basic implementation
+        pass
 
     def revsfromrange(self, repo, rangeid):
         """return revision contained in a range
@@ -324,7 +354,208 @@ class stablerange_mergepoint(stablerangecached, stablerangebasic):
         <head>, skipping the <index>th lower revisions.
         """
         limit = self.rangelength(repo, rangeid)
-        return self._sortcache.get(repo, rangeid[0], limit=limit)
+        return repo.stablesort.get(repo, rangeid[0], limit=limit)
+
+    def _stableparent(self, repo, headrev):
+        """The parent of the changeset with reusable subrange
+
+        For non-merge it is simple, there is a single parent. For Mercurial we
+        have to find the right one. Since the stable sort use merge-point, we
+        know that one of REV parents stable sort is a subset of REV stable
+        sort. In other word:
+
+            sort(::REV) = sort(::min(parents(REV))
+                          + sort(only(max(parents(REV)), min(parents(REV)))
+                          + [REV]
+
+        We are looking for that `min(parents(REV))`. Since the subrange are
+        based on the sort, we can reuse its subrange as well.
+        """
+        ps = filterparents(repo.changelog.parentrevs(headrev))
+        if not ps:
+            return nodemod.nullrev
+        elif len(ps) == 1:
+            return ps[0]
+        else:
+            tiebreaker = stablesort._mergepoint_tie_breaker(repo)
+            return min(ps, key=tiebreaker)
+
+    def _parentrange(self, repo, rangeid):
+        stable_parent = self._stableparent(repo, rangeid[0])
+        stable_parent_depth = self.depthrev(repo, stable_parent)
+        stable_parent_range = (stable_parent, rangeid[1])
+        return stable_parent_depth, stable_parent_range
+
+    def _warmcachefor(self, repo, rangeid, slicepoint):
+        """warm cache with all the element necessary"""
+        stack = []
+        depth, current = self._parentrange(repo, rangeid)
+        while current not in self._subrangescache and slicepoint < depth:
+            stack.append(current)
+            depth, current = self._parentrange(repo, current)
+        while stack:
+            current = stack.pop()
+            self.subranges(repo, current)
+
+    def _subranges(self, repo, rangeid):
+        headrev, initial_index = rangeid
+        # size 1 range can't be sliced
+        if self.rangelength(repo, rangeid) == 1:
+            return []
+        # find were we need to slice
+        slicepoint = self._slicepoint(repo, rangeid)
+
+        self._warmcachefor(repo, rangeid, slicepoint)
+
+        stable_parent_data = self._parentrange(repo, rangeid)
+        stable_parent_depth, stable_parent_range = stable_parent_data
+
+        # top range is always the same, so we can build it early for all
+        top_range = (headrev, slicepoint)
+
+        # now find out about the lower range, if we are lucky there is only
+        # one, otherwise we need to issue multiple one to cover every revision
+        # on the lower set. (and cover them only once).
+        if slicepoint == stable_parent_depth:
+            # luckly shot, the parent is actually the head of the lower range
+            subranges = [
+                stable_parent_range,
+                top_range,
+            ]
+        elif slicepoint < stable_parent_depth:
+            # The parent is above the slice point,
+            # it's lower subrange will be the same so we just get them,
+            # (and the top range is always the same)
+            subranges = self.subranges(repo, stable_parent_range)[:-1]
+            subranges.append(top_range)
+        elif initial_index < stable_parent_depth < slicepoint:
+            # the parent is below the range we are considering, we need to
+            # compute these uniques subranges
+            subranges = [stable_parent_range]
+            subranges.extend(self._unique_subranges(repo, headrev,
+                                                    stable_parent_depth,
+                                                    slicepoint))
+            subranges.append(top_range)
+        else:
+            # we cannot reuse the parent range at all
+            subranges = list(self._unique_subranges(repo, headrev,
+                                                    initial_index,
+                                                    slicepoint))
+            subranges.append(top_range)
+
+        return subranges
+
+    def _unique_subranges(self, repo, headrev, initial_index, slicepoint):
+        """Compute subrange unique to the exclusive part of merge"""
+        result = []
+        depth = repo.depthcache.get
+        nextmerge = repo.firstmergecache.get
+        walkfrom = functools.partial(repo.stablesort.walkfrom, repo)
+        getjumps = functools.partial(repo.stablesort.getjumps, repo)
+        skips = depth(headrev) - slicepoint
+        tomap = slicepoint - initial_index
+
+        jumps = getjumps(headrev)
+        # this function is only caled if headrev is a merge
+        # and initial_index is above its lower parents
+        assert jumps is not None
+        jumps = iter(jumps)
+        assert 0 < skips, skips
+        assert 0 < tomap, (tomap, (headrev, initial_index), slicepoint)
+
+        # utility function to find the next changeset with jump information
+        # (and the distance to it)
+        def nextmergedata(startrev):
+            merge = nextmerge(startrev)
+            depthrev = depth(startrev)
+            if merge == startrev:
+                return 0, startrev
+            elif merge == nodemod.nullrev:
+                return depthrev, None
+            depthmerge = depth(merge)
+            return depthrev - depthmerge, merge
+
+        # skip over all necesary data
+        mainjump = None
+        jumpdest = headrev
+        while 0 < skips:
+            jumphead = jumpdest
+            currentjump = next(jumps)
+            skipped = size = currentjump[2]
+            jumpdest = currentjump[1]
+            if size == skips:
+                jumphead = jumpdest
+                mainjump = next(jumps)
+                mainsize = mainjump[2]
+            elif skips < size:
+                revs = walkfrom(jumphead)
+                next(revs)
+                for i in xrange(skips):
+                    jumphead = next(revs)
+                    assert jumphead is not None
+                skipped = skips
+                size -= skips
+                mainjump = currentjump
+                mainsize = size
+            skips -= skipped
+        assert skips == 0, skips
+
+        # exiting from the previous block we should have:
+        # jumphead: first non-skipped revision (head of the high subrange)
+        # mainjump: next jump coming jump on main iteration
+        # mainsize: len(mainjump[0]::jumphead)
+
+        # Now we need to compare walk on the main iteration with walk from the
+        # current subrange head. Instead of doing a full walk, we just skim
+        # over the jumps for each iteration.
+        rangehead = jumphead
+        refjumps = None
+        size = 0
+        while size < tomap:
+            assert mainjump is not None
+            if refjumps is None:
+                dist2merge, merge = nextmergedata(jumphead)
+                if (mainsize <= dist2merge) or merge is None:
+                    refjumps = iter(())
+                    ref = None
+                else:
+                    # advance counters
+                    size += dist2merge
+                    mainsize -= dist2merge
+                    jumphead = merge
+                    refjumps = iter(getjumps(merge))
+                    ref = next(refjumps, None)
+            elif ref is not None and mainjump[0:2] == ref[0:2]:
+                # both follow the same path
+                size += mainsize
+                jumphead = mainjump[1]
+                mainjump = next(jumps, None)
+                mainsize = mainjump[2]
+                ref = next(refjumps, None)
+                if ref is None:
+                    # we are doing with section specific to the last merge
+                    # reset `refjumps` to trigger the logic that search for the
+                    # next merge
+                    refjumps = None
+            else:
+                size += mainsize
+                if size < tomap:
+                    subrange = (rangehead, depth(rangehead) - size)
+                    assert subrange[1] < depth(subrange[0])
+                    result.append(subrange)
+                    tomap -= size
+                    size = 0
+                    jumphead = rangehead = mainjump[1]
+                    mainjump = next(jumps, None)
+                    mainsize = mainjump[2]
+                    refjumps = None
+
+        if tomap:
+            subrange = (rangehead, depth(rangehead) - tomap)
+            assert subrange[1] < depth(subrange[0]), (rangehead, depth(rangehead), tomap)
+            result.append(subrange)
+        result.reverse()
+        return result
 
 class stablerange(stablerangecached):
 
@@ -332,8 +563,6 @@ class stablerange(stablerangecached):
         # The point up to which we have data in cache
         self._tiprev = None
         self._tipnode = None
-        # cache the standard stable subranges or a range
-        self._subrangescache = {}
         # To slices merge, we need to walk their descendant in reverse stable
         # sort order. For now we perform a full stable sort their descendant
         # and then use the relevant top most part. This order is going to be
@@ -350,6 +579,7 @@ class stablerange(stablerangecached):
         # computed from that point to compute some of the subranges from the
         # merge.
         self._inheritancecache = {}
+        super(stablerange, self).__init__()
 
     def warmup(self, repo, upto=None):
         """warm the cache up"""
@@ -560,10 +790,12 @@ class stablerange(stablerangecached):
 
         This function also have the important task to update the revscache of
         the parent rev s if possible and needed"""
-        p1, p2 = self._parents(rangeid[0], repo.changelog.parentrevs)
-        if p2 == nodemod.nullrev:
+        ps = filterparents(self._parents(rangeid[0], repo.changelog.parentrevs))
+        if not ps:
+            return None
+        elif len(ps) == 1:
             # regular changesets, we pick the parent
-            reusablerev = p1
+            reusablerev = ps[0]
         else:
             # merge, we try the inheritance point
             # if it is too low, it will be ditched by the depth check anyway
@@ -583,9 +815,9 @@ class stablerange(stablerangecached):
         return reurange
 
     def _slicesrangeat(self, repo, rangeid, globalindex):
-        p1, p2 = self._parents(rangeid[0], repo.changelog.parentrevs)
-        if p2 == nodemod.nullrev:
-            reuserev = p1
+        ps = self._parents(rangeid[0], repo.changelog.parentrevs)
+        if len(ps) == 1:
+            reuserev = ps[0]
         else:
             index, reuserev = self._inheritancepoint(repo, rangeid[0])
             if index < globalindex:
@@ -642,225 +874,3 @@ class stablerange(stablerangecached):
         top = (rangeid[0], globalindex)
         result.append(top)
         return result
-
-#############################
-### simple sqlite caching ###
-#############################
-
-_sqliteschema = [
-    """CREATE TABLE meta(schemaversion INTEGER NOT NULL,
-                         tiprev        INTEGER NOT NULL,
-                         tipnode       BLOB    NOT NULL
-                        );""",
-    """CREATE TABLE range(rev INTEGER  NOT NULL,
-                          idx INTEGER NOT NULL,
-                          PRIMARY KEY(rev, idx));""",
-    """CREATE TABLE subranges(listidx INTEGER NOT NULL,
-                              suprev  INTEGER NOT NULL,
-                              supidx  INTEGER NOT NULL,
-                              subrev  INTEGER NOT NULL,
-                              subidx  INTEGER NOT NULL,
-                              PRIMARY KEY(listidx, suprev, supidx),
-                              FOREIGN KEY (suprev, supidx) REFERENCES range(rev, idx),
-                              FOREIGN KEY (subrev, subidx) REFERENCES range(rev, idx)
-    );""",
-    "CREATE INDEX subranges_index ON subranges (suprev, supidx);",
-    "CREATE INDEX range_index ON range (rev, idx);",
-]
-_newmeta = "INSERT INTO meta (schemaversion, tiprev, tipnode) VALUES (?,?,?);"
-_updatemeta = "UPDATE meta SET tiprev = ?, tipnode = ?;"
-_updaterange = "INSERT INTO range(rev, idx) VALUES (?,?);"
-_updatesubranges = """INSERT
-                       INTO subranges(listidx, suprev, supidx, subrev, subidx)
-                       VALUES (?,?,?,?,?);"""
-_queryexist = "SELECT name FROM sqlite_master WHERE type='table' AND name='meta';"
-_querymeta = "SELECT schemaversion, tiprev, tipnode FROM meta;"
-_queryrange = "SELECT * FROM range WHERE (rev = ? AND idx = ?);"
-_querysubranges = """SELECT subrev, subidx
-                     FROM subranges
-                     WHERE (suprev = ? AND supidx = ?)
-                     ORDER BY listidx;"""
-
-class sqlstablerange(stablerange):
-
-    _schemaversion = 1
-
-    def __init__(self, repo):
-        lrusize = repo.ui.configint('experimental', 'obshashrange.lru-size',
-                                    2000)
-        super(sqlstablerange, self).__init__(lrusize=lrusize)
-        self._vfs = repo.vfs
-        self._path = repo.vfs.join('cache/evoext_stablerange_v1.sqlite')
-        self._cl = repo.unfiltered().changelog # (okay to keep an old one)
-        self._ondisktiprev = None
-        self._ondisktipnode = None
-        self._unsavedsubranges = {}
-
-    def warmup(self, repo, upto=None):
-        self._con # make sure the data base is loaded
-        try:
-            # samelessly lock the repo to ensure nobody will update the repo
-            # concurently. This should not be too much of an issue if we warm
-            # at the end of the transaction.
-            #
-            # XXX However, we lock even if we are up to date so we should check
-            # before locking
-            with repo.lock():
-                super(sqlstablerange, self).warmup(repo, upto)
-                self._save(repo)
-        except error.LockError:
-            # Exceptionnally we are noisy about it since performance impact is
-            # large We should address that before using this more widely.
-            repo.ui.warn('stable-range cache: unable to lock repo while warming\n')
-            repo.ui.warn('(cache will not be saved)\n')
-            super(sqlstablerange, self).warmup(repo, upto)
-
-    def _getsub(self, rangeid):
-        cache = self._subrangescache
-        if rangeid not in cache and rangeid[0] <= self._ondisktiprev and self._con is not None:
-            value = None
-            result = self._con.execute(_queryrange, rangeid).fetchone()
-            if result is not None: # database know about this node (skip in the future?)
-                value = self._con.execute(_querysubranges, rangeid).fetchall()
-            # in memory caching of the value
-            cache[rangeid] = value
-        return cache.get(rangeid)
-
-    def _setsub(self, rangeid, value):
-        assert rangeid not in self._unsavedsubranges
-        self._unsavedsubranges[rangeid] = value
-        super(sqlstablerange, self)._setsub(rangeid, value)
-
-    def _db(self):
-        try:
-            util.makedirs(self._vfs.dirname(self._path))
-        except OSError:
-            return None
-        con = sqlite3.connect(self._path)
-        con.text_factory = str
-        return con
-
-    @util.propertycache
-    def _con(self):
-        con = self._db()
-        if con is None:
-            return None
-        cur = con.execute(_queryexist)
-        if cur.fetchone() is None:
-            return None
-        meta = con.execute(_querymeta).fetchone()
-        if meta is None:
-            return None
-        if meta[0] != self._schemaversion:
-            return None
-        if len(self._cl) <= meta[1]:
-            return None
-        if self._cl.node(meta[1]) != meta[2]:
-            return None
-        self._ondisktiprev = meta[1]
-        self._ondisktipnode = meta[2]
-        if self._tiprev < self._ondisktiprev:
-            self._tiprev = self._ondisktiprev
-            self._tipnode = self._ondisktipnode
-        return con
-
-    def _save(self, repo):
-        repo = repo.unfiltered()
-        repo.depthcache.save(repo)
-        if not self._unsavedsubranges:
-            return # no new data
-
-        if self._con is None:
-            util.unlinkpath(self._path, ignoremissing=True)
-            if '_con' in vars(self):
-                del self._con
-
-            con = self._db()
-            if con is None:
-                return
-            with con:
-                for req in _sqliteschema:
-                    con.execute(req)
-
-                meta = [self._schemaversion,
-                        self._tiprev,
-                        self._tipnode,
-                ]
-                con.execute(_newmeta, meta)
-        else:
-            con = self._con
-            meta = con.execute(_querymeta).fetchone()
-            if meta[2] != self._ondisktipnode or meta[1] != self._ondisktiprev:
-                # drifting is currently an issue because this means another
-                # process might have already added the cache line we are about
-                # to add. This will confuse sqlite
-                msg = _('stable-range cache: skipping write, '
-                        'database drifted under my feet\n')
-                hint = _('(disk: %s-%s vs mem: %s%s)\n')
-                data = (meta[2], meta[1], self._ondisktiprev, self._ondisktipnode)
-                repo.ui.warn(msg)
-                repo.ui.warn(hint % data)
-                return
-            meta = [self._tiprev,
-                    self._tipnode,
-            ]
-            con.execute(_updatemeta, meta)
-
-        self._saverange(con, repo)
-        con.commit()
-        self._ondisktiprev = self._tiprev
-        self._ondisktipnode = self._tipnode
-        self._unsavedsubranges.clear()
-
-    def _saverange(self, con, repo):
-        repo = repo.unfiltered()
-        data = []
-        allranges = set()
-        for key, value in self._unsavedsubranges.items():
-            allranges.add(key)
-            for idx, sub in enumerate(value):
-                data.append((idx, key[0], key[1], sub[0], sub[1]))
-
-        con.executemany(_updaterange, allranges)
-        con.executemany(_updatesubranges, data)
-
-
-@eh.reposetup
-def setupcache(ui, repo):
-
-    class stablerangerepo(repo.__class__):
-
-        @localrepo.unfilteredpropertycache
-        def stablerange(self):
-            return sqlstablerange(repo)
-
-        @localrepo.unfilteredmethod
-        def destroyed(self):
-            if 'stablerange' in vars(self):
-                del self.stablerange
-            super(stablerangerepo, self).destroyed()
-
-        def transaction(self, *args, **kwargs):
-            tr = super(stablerangerepo, self).transaction(*args, **kwargs)
-            if not repo.ui.configbool('experimental', 'obshashrange', False):
-                return tr
-            if not repo.ui.configbool('experimental', 'obshashrange.warm-cache',
-                                      True):
-                return tr
-            maxrevs = self.ui.configint('experimental', 'obshashrange.max-revs', None)
-            if maxrevs is not None and maxrevs < len(self.unfiltered()):
-                return tr
-            reporef = weakref.ref(self)
-
-            def _warmcache(tr):
-                repo = reporef()
-                if repo is None:
-                    return
-                if 'node' in tr.hookargs:
-                    # new nodes !
-                    repo.stablerange.warmup(repo)
-
-            tr.addpostclose('warmcache-10-stablerange', _warmcache)
-            return tr
-
-    repo.__class__ = stablerangerepo

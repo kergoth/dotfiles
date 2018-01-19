@@ -81,6 +81,7 @@ Pushing new head
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit c_C0
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg push enabled
   pushing to http://localhost:$HGPORT/
   searching for changes

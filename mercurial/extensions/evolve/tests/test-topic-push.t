@@ -54,6 +54,7 @@ Pushing two heads
   $ hg add ccc
   $ hg commit -m 'CC'
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg outgoing -G
   comparing with $TESTTMP/main (glob)
   searching for changes
@@ -364,6 +365,7 @@ Multiple head on a branch merged in a topic changesets
   $ hg add ggg
   $ hg commit -m 'CG'
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg up 'desc(CF)'
   switching to topic babar
   2 files updated, 0 files merged, 1 files removed, 0 files unresolved

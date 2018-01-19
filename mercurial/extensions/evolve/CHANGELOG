@@ -1,15 +1,33 @@
 Changelog
 =========
 
-7.1.1 - in progress
+7.2.0 -- 2018-01-15
 -------------------
 
+  * evolve: changes to the on disk format for interrupted evolve
+  * evolve: --continue now propertly preserve phase information (issue5720)
+  * evolve: --continue now properly reports merges as evolve
+  * commit: suggest using topic on new heads
+  * uncommit: `--revert` flag added to clean the wdir after uncommit
+  * obslog: add color support to content-diff output with --patch
   * fix `hg prev` behavior on obsolete changesets
-  * no longer issue "obsolete working copy" message during no-op
+  * no longer issues "obsolete working copy" message during no-op
 
-topic (0.6.1)
+  * use the new instabilities names from mercurial 4.4+
+    (in `hg evolve --list` and other messages)
+
+  * new algorithm for obshashrange discovery:
+
+    The new algorithm is faster, simpler to cache and with better complexity. It
+    is able to handle repository of any size (naive python implementation is a
+    bit slow). Support for the previous experimental approach have been
+    dropped, please update both clients and servers. The new approach is still
+    hidden behind and experimental flag for now.
+
+topic (0.7.0)
 
   * fix compatibility with Mercurial-4.3
+  * new template keyword `topic` to get changesets topic
 
 7.1.0 -- 2017-12-12
 -------------------

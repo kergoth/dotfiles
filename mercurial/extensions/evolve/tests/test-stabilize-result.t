@@ -93,13 +93,13 @@ Test evolve with conflict
   +a
   +newer a
   $ hg evolve --continue
-  grafting 4:3655f0f50885 "newer a"
+  evolving 4:3655f0f50885 "newer a"
   abort: unresolved merge conflicts (see 'hg help resolve')
   [255]
   $ hg resolve -m a
   (no more unresolved files)
   $ hg evolve --continue
-  grafting 4:3655f0f50885 "newer a"
+  evolving 4:3655f0f50885 "newer a"
 
 Stabilize latecomer with different parent
 =========================================
@@ -159,7 +159,7 @@ Stabilize!
   hg rebase --rev d5c7ef82d003 --dest 66719795a494;
   hg update 1cf0aacfd363;
   hg revert --all --rev d5c7ef82d003;
-  hg commit --msg "bumped update to %s" (no-eol)
+  hg commit --msg "phase-divergent update to d5c7ef82d003"
   $ hg evolve --any --confirm --phase-divergent
   recreate:[9] newer a
   atop:[6] newer a
@@ -172,10 +172,10 @@ Stabilize!
   perform evolve? [Ny] y
   rebasing to destination parent: 66719795a494
   computing new diff
-  committed as c2c1151aa854
-  working directory is now at c2c1151aa854
+  committed as 8c986e77913c
+  working directory is now at 8c986e77913c
   $ glog
-  @  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
+  @  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   |
   | o  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
@@ -204,7 +204,7 @@ Stabilize divergent changesets with same parent
   $ glog
   @  12:3932c176bbaa@default(draft) bk:[] More addition
   |
-  | o  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
+  | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
   o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
@@ -231,7 +231,7 @@ Stabilize divergent changesets with same parent
   |
   | o  13:d2f173e25686@default(draft) bk:[] More addition
   |/
-  | o  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
+  | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
   o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
@@ -266,7 +266,7 @@ Stabilize it
   merge:[14] More addition
   with: [13] More addition
   base: [12] More addition
-  merging divergent changeset
+  merging content-divergent changeset
   resolving manifests
   merging a
   0 files updated, 1 files merged, 0 files removed, 0 files unresolved
@@ -281,7 +281,7 @@ Stabilize it
   $ glog
   @  15:f344982e63c4@default(draft) bk:[] More addition
   |
-  | o  11:c2c1151aa854@default(draft) bk:[] bumped update to 1cf0aacfd363:
+  | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
   o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |

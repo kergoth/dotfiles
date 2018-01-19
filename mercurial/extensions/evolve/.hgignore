@@ -14,3 +14,11 @@ syntax: re
 ^docs/tutorials/.*\.rst$
 \.ico$
 tests/\.testtimes
+
+^docs/training/graphs/
+^docs/training/html/
+^docs/training/index.html
+^docs/training/graphviz-images/
+^docs/training/img/
+^docs/training/output/
+^docs/training/pandocfilters/

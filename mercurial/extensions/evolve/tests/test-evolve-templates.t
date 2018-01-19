@@ -1122,7 +1122,453 @@ Check templates
   |/
   o  ea207398892e []
   
+ 
+Test template with obsmarkers cycle
+===================================
 
+Test setup
+----------
+
+  $ hg init $TESTTMP/templates-local-cycle
+  $ cd $TESTTMP/templates-local-cycle
+  $ mkcommit ROOT
+  $ mkcommit A0
+  $ mkcommit B0
+  $ hg up -r 0
+  0 files updated, 0 files merged, 2 files removed, 0 files unresolved
+  $ mkcommit C0
+  created new head
+
+Create the cycle
+
+  $ hg debugobsolete `getid "desc(A0)"` `getid "desc(B0)"`
+  obsoleted 1 changesets
+  $ hg debugobsolete `getid "desc(B0)"` `getid "desc(C0)"`
+  obsoleted 1 changesets
+  $ hg debugobsolete `getid "desc(B0)"` `getid "desc(A0)"`
+
+Check templates
+---------------
+
+  $ hg tlog
+  @  f897c6137566
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  @  f897c6137566
+  |
+  o  ea207398892e
+  
+  $ hg up -r "desc(B0)" --hidden
+  2 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory parent is obsolete! (0dec01379d3b)
+  (use 'hg evolve' to update to its parent successor)
+  $ hg tlog
+  o  f897c6137566
+  |    Precursors: 2:0dec01379d3b
+  |    semi-colon: 2:0dec01379d3b
+  | @  0dec01379d3b
+  | |    Precursors: 1:471f378eab4c
+  | |    semi-colon: 1:471f378eab4c
+  | |    Successors: 3:f897c6137566; 1:471f378eab4c
+  | |    semi-colon: 3:f897c6137566; 1:471f378eab4c
+  | |    Fate: rewritten as 3:f897c6137566
+  | |    Fate: rewritten as 1:471f378eab4c
+  | |
+  | x  471f378eab4c
+  |/     Precursors: 2:0dec01379d3b
+  |      semi-colon: 2:0dec01379d3b
+  |      Successors: 2:0dec01379d3b
+  |      semi-colon: 2:0dec01379d3b
+  |      Fate: rewritten as 2:0dec01379d3b
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  o  f897c6137566
+  |
+  | @  0dec01379d3b
+  | |    Obsfate: rewritten as 3:f897c6137566; rewritten as 1:471f378eab4c
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as 2:0dec01379d3b
+  |
+  o  ea207398892e
+  
+  $ hg up -r "desc(A0)" --hidden
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory parent is obsolete! (471f378eab4c)
+  (use 'hg evolve' to update to its parent successor)
+  $ hg tlog
+  o  f897c6137566
+  |    Precursors: 1:471f378eab4c
+  |    semi-colon: 1:471f378eab4c
+  | @  471f378eab4c
+  |/     Fate: pruned
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  o  f897c6137566
+  |
+  | @  471f378eab4c
+  |/     Obsfate: pruned
+  |
+  o  ea207398892e
+  
+
+  $ hg up -r "desc(ROOT)" --hidden
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ hg tlog
+  o  f897c6137566
+  |
+  @  ea207398892e
+  
+  $ hg fatelog
+  o  f897c6137566
+  |
+  @  ea207398892e
+  
+  $ hg tlog --hidden
+  o  f897c6137566
+  |    Precursors: 2:0dec01379d3b
+  |    semi-colon: 2:0dec01379d3b
+  | x  0dec01379d3b
+  | |    Precursors: 1:471f378eab4c
+  | |    semi-colon: 1:471f378eab4c
+  | |    Successors: 3:f897c6137566; 1:471f378eab4c
+  | |    semi-colon: 3:f897c6137566; 1:471f378eab4c
+  | |    Fate: rewritten as 3:f897c6137566
+  | |    Fate: rewritten as 1:471f378eab4c
+  | |
+  | x  471f378eab4c
+  |/     Precursors: 2:0dec01379d3b
+  |      semi-colon: 2:0dec01379d3b
+  |      Successors: 2:0dec01379d3b
+  |      semi-colon: 2:0dec01379d3b
+  |      Fate: rewritten as 2:0dec01379d3b
+  |
+  @  ea207398892e
+  
+Test template with split + divergence with cycles
+=================================================
+
+  $ hg log -G
+  o  changeset:   3:f897c6137566
+  |  tag:         tip
+  |  parent:      0:ea207398892e
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     C0
+  |
+  @  changeset:   0:ea207398892e
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     ROOT
+  
+  $ hg up
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+Create a commit with three files
+  $ touch A B C
+  $ hg commit -A -m "Add A,B,C" A B C
+
+Split it
+  $ hg up 3
+  0 files updated, 0 files merged, 3 files removed, 0 files unresolved
+  $ touch A
+  $ hg commit -A -m "Add A,B,C" A
+  created new head
+
+  $ touch B
+  $ hg commit -A -m "Add A,B,C" B
+
+  $ touch C
+  $ hg commit -A -m "Add A,B,C" C
+
+  $ hg log -G
+  @  changeset:   7:ba2ed02b0c9a
+  |  tag:         tip
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     Add A,B,C
+  |
+  o  changeset:   6:4a004186e638
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     Add A,B,C
+  |
+  o  changeset:   5:dd800401bd8c
+  |  parent:      3:f897c6137566
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     Add A,B,C
+  |
+  | o  changeset:   4:9bd10a0775e4
+  |/   user:        test
+  |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    summary:     Add A,B,C
+  |
+  o  changeset:   3:f897c6137566
+  |  parent:      0:ea207398892e
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     C0
+  |
+  o  changeset:   0:ea207398892e
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     ROOT
+  
+  $ hg debugobsolete `getid "4"` `getid "5"` `getid "6"` `getid "7"`
+  obsoleted 1 changesets
+  $ hg log -G
+  @  changeset:   7:ba2ed02b0c9a
+  |  tag:         tip
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     Add A,B,C
+  |
+  o  changeset:   6:4a004186e638
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     Add A,B,C
+  |
+  o  changeset:   5:dd800401bd8c
+  |  parent:      3:f897c6137566
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     Add A,B,C
+  |
+  o  changeset:   3:f897c6137566
+  |  parent:      0:ea207398892e
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     C0
+  |
+  o  changeset:   0:ea207398892e
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     ROOT
+  
+Diverge one of the splitted commit
+
+  $ hg up 6
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  $ hg commit --amend -m "Add only B"
+  1 new orphan changesets
+
+  $ hg up 6 --hidden
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  working directory parent is obsolete! (4a004186e638)
+  (use 'hg evolve' to update to its successor: b18bc8331526)
+  $ hg commit --amend -m "Add B only"
+  4 new content-divergent changesets
+
+  $ hg log -G
+  @  changeset:   9:0b997eb7ceee
+  |  tag:         tip
+  |  parent:      5:dd800401bd8c
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  instability: content-divergent
+  |  summary:     Add B only
+  |
+  | o  changeset:   8:b18bc8331526
+  |/   parent:      5:dd800401bd8c
+  |    user:        test
+  |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    instability: content-divergent
+  |    summary:     Add only B
+  |
+  | o  changeset:   7:ba2ed02b0c9a
+  | |  user:        test
+  | |  date:        Thu Jan 01 00:00:00 1970 +0000
+  | |  instability: orphan, content-divergent
+  | |  summary:     Add A,B,C
+  | |
+  | x  changeset:   6:4a004186e638
+  |/   user:        test
+  |    date:        Thu Jan 01 00:00:00 1970 +0000
+  |    obsolete:    reworded using amend as 8:b18bc8331526
+  |    obsolete:    reworded using amend as 9:0b997eb7ceee
+  |    summary:     Add A,B,C
+  |
+  o  changeset:   5:dd800401bd8c
+  |  parent:      3:f897c6137566
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  instability: content-divergent
+  |  summary:     Add A,B,C
+  |
+  o  changeset:   3:f897c6137566
+  |  parent:      0:ea207398892e
+  |  user:        test
+  |  date:        Thu Jan 01 00:00:00 1970 +0000
+  |  summary:     C0
+  |
+  o  changeset:   0:ea207398892e
+     user:        test
+     date:        Thu Jan 01 00:00:00 1970 +0000
+     summary:     ROOT
+  
+Check templates
+---------------
+
+  $ hg tlog
+  @  0b997eb7ceee
+  |    Precursors: 6:4a004186e638
+  |    semi-colon: 6:4a004186e638
+  | o  b18bc8331526
+  |/     Precursors: 6:4a004186e638
+  |      semi-colon: 6:4a004186e638
+  | o  ba2ed02b0c9a
+  | |
+  | x  4a004186e638
+  |/     Successors: 8:b18bc8331526; 9:0b997eb7ceee
+  |      semi-colon: 8:b18bc8331526; 9:0b997eb7ceee
+  |      Fate: reworded using amend as 8:b18bc8331526
+  |      Fate: reworded using amend as 9:0b997eb7ceee
+  |
+  o  dd800401bd8c
+  |
+  o  f897c6137566
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  @  0b997eb7ceee
+  |
+  | o  b18bc8331526
+  |/
+  | o  ba2ed02b0c9a
+  | |
+  | x  4a004186e638
+  |/     Obsfate: reworded using amend as 8:b18bc8331526; reworded using amend as 9:0b997eb7ceee
+  |
+  o  dd800401bd8c
+  |
+  o  f897c6137566
+  |
+  o  ea207398892e
+  
+  $ hg tlog --hidden
+  @  0b997eb7ceee
+  |    Precursors: 6:4a004186e638
+  |    semi-colon: 6:4a004186e638
+  | o  b18bc8331526
+  |/     Precursors: 6:4a004186e638
+  |      semi-colon: 6:4a004186e638
+  | o  ba2ed02b0c9a
+  | |    Precursors: 4:9bd10a0775e4
+  | |    semi-colon: 4:9bd10a0775e4
+  | x  4a004186e638
+  |/     Precursors: 4:9bd10a0775e4
+  |      semi-colon: 4:9bd10a0775e4
+  |      Successors: 8:b18bc8331526; 9:0b997eb7ceee
+  |      semi-colon: 8:b18bc8331526; 9:0b997eb7ceee
+  |      Fate: reworded using amend as 8:b18bc8331526
+  |      Fate: reworded using amend as 9:0b997eb7ceee
+  |
+  o  dd800401bd8c
+  |    Precursors: 4:9bd10a0775e4
+  |    semi-colon: 4:9bd10a0775e4
+  | x  9bd10a0775e4
+  |/     Successors: 5:dd800401bd8c 6:4a004186e638 7:ba2ed02b0c9a
+  |      semi-colon: 5:dd800401bd8c 6:4a004186e638 7:ba2ed02b0c9a
+  |      Fate: split as 5:dd800401bd8c, 6:4a004186e638, 7:ba2ed02b0c9a
+  |
+  o  f897c6137566
+  |    Precursors: 2:0dec01379d3b
+  |    semi-colon: 2:0dec01379d3b
+  | x  0dec01379d3b
+  | |    Precursors: 1:471f378eab4c
+  | |    semi-colon: 1:471f378eab4c
+  | |    Successors: 3:f897c6137566; 1:471f378eab4c
+  | |    semi-colon: 3:f897c6137566; 1:471f378eab4c
+  | |    Fate: rewritten as 3:f897c6137566
+  | |    Fate: rewritten as 1:471f378eab4c
+  | |
+  | x  471f378eab4c
+  |/     Precursors: 2:0dec01379d3b
+  |      semi-colon: 2:0dec01379d3b
+  |      Successors: 2:0dec01379d3b
+  |      semi-colon: 2:0dec01379d3b
+  |      Fate: rewritten as 2:0dec01379d3b
+  |
+  o  ea207398892e
+  
+  $ hg fatelog --hidden
+  @  0b997eb7ceee
+  |
+  | o  b18bc8331526
+  |/
+  | o  ba2ed02b0c9a
+  | |
+  | x  4a004186e638
+  |/     Obsfate: reworded using amend as 8:b18bc8331526; reworded using amend as 9:0b997eb7ceee
+  |
+  o  dd800401bd8c
+  |
+  | x  9bd10a0775e4
+  |/     Obsfate: split as 5:dd800401bd8c, 6:4a004186e638, 7:ba2ed02b0c9a
+  |
+  o  f897c6137566
+  |
+  | x  0dec01379d3b
+  | |    Obsfate: rewritten as 3:f897c6137566; rewritten as 1:471f378eab4c
+  | |
+  | x  471f378eab4c
+  |/     Obsfate: rewritten as 2:0dec01379d3b
+  |
+  o  ea207398892e
+  
+  $ hg up --hidden 4
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  working directory parent is obsolete! (9bd10a0775e4)
+  (9bd10a0775e4 has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
+  $ hg rebase -r 7 -d 8 --config extensions.rebase=
+  rebasing 7:ba2ed02b0c9a "Add A,B,C"
+  $ hg tlog
+  o  eceed8f98ffc
+  |    Precursors: 4:9bd10a0775e4
+  |    semi-colon: 4:9bd10a0775e4
+  | o  0b997eb7ceee
+  | |    Precursors: 4:9bd10a0775e4
+  | |    semi-colon: 4:9bd10a0775e4
+  o |  b18bc8331526
+  |/     Precursors: 4:9bd10a0775e4
+  |      semi-colon: 4:9bd10a0775e4
+  o  dd800401bd8c
+  |    Precursors: 4:9bd10a0775e4
+  |    semi-colon: 4:9bd10a0775e4
+  | @  9bd10a0775e4
+  |/     Successors: 5:dd800401bd8c 9:0b997eb7ceee 10:eceed8f98ffc; 5:dd800401bd8c 8:b18bc8331526 10:eceed8f98ffc
+  |      semi-colon: 5:dd800401bd8c 9:0b997eb7ceee 10:eceed8f98ffc; 5:dd800401bd8c 8:b18bc8331526 10:eceed8f98ffc
+  |      Fate: split using amend, rebase as 5:dd800401bd8c, 9:0b997eb7ceee, 10:eceed8f98ffc
+  |      Fate: split using amend, rebase as 5:dd800401bd8c, 8:b18bc8331526, 10:eceed8f98ffc
+  |
+  o  f897c6137566
+  |
+  o  ea207398892e
+  
+  $ hg fatelog
+  o  eceed8f98ffc
+  |
+  | o  0b997eb7ceee
+  | |
+  o |  b18bc8331526
+  |/
+  o  dd800401bd8c
+  |
+  | @  9bd10a0775e4
+  |/     Obsfate: split using amend, rebase as 5:dd800401bd8c, 9:0b997eb7ceee, 10:eceed8f98ffc; split using amend, rebase as 5:dd800401bd8c, 8:b18bc8331526, 10:eceed8f98ffc
+  |
+  o  f897c6137566
+  |
+  o  ea207398892e
+  
 Test templates with pruned commits
 ==================================
 

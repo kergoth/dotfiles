@@ -10,7 +10,7 @@ Tests for changing and clearing topics
   > [phases]
   > publish=false
   > [alias]
-  > glog = log -G -T "{rev}:{node|short} \{{topics}}\n{desc}  ({bookmarks})\n\n"
+  > glog = log -G -T "{rev}:{node|short} \{{topic}}\n{desc}  ({bookmarks})\n\n"
   > EOF
 
 About the glog output: {} contains the topic name and () will contain the bookmark

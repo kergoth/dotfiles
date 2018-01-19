@@ -248,9 +248,9 @@ Testing when instability is involved
   |
   o  0 - {} 199cc73e9a0b add aaa (draft)
   
-  $ hg topic -r 13 bar
+  $ hg topic -r 070c5573d8f9 bar
   changed topic on 1 changes
-  $ hg up 14
+  $ hg up 16d6f664b17c
   switching to topic bar
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
 

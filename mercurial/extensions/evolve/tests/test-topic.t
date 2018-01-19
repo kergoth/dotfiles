@@ -612,6 +612,7 @@ Deactivate the topic.
   $ echo fran? >> beta
   $ hg ci -m 'fran?'
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg log -Gr 'draft()'
   @  changeset:   10:4073470c35e1
   |  tag:         tip

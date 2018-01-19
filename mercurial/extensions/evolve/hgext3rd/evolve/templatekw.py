@@ -57,6 +57,7 @@ else:
 
         precursors = repo.obsstore.predecessors
         stack = [nodeid]
+        seen = set(stack)
 
         while stack:
             current = stack.pop()
@@ -64,6 +65,11 @@ else:
 
             for prec in currentpreccs:
                 precnodeid = prec[0]
+
+                # Basic cycle protection
+                if precnodeid in seen:
+                    continue
+                seen.add(precnodeid)
 
                 if precnodeid in repo:
                     yield precnodeid

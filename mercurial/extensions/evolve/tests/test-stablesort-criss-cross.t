@@ -9,7 +9,7 @@ Test for stable ordering capabilities
   > [ui]
   > logtemplate = "{rev} {node|short} {desc} {tags}\n"
   > [alias]
-  > showsort = debugstablesort --template="{node|short}\n" --method headcached
+  > showsort = debugstablesort --template="{node|short}\n" --method headondisk
   > EOF
 
   $ checktopo () {
@@ -397,11 +397,11 @@ Basic check
   1ea73414a91b
   66f7d451a68b
   01241442b3c2
-  0c1445abb33d
-  65eb34ffc3a8
   2dc09a01254d
   bebd167eb94d
   c8d03c1b5e94
+  0c1445abb33d
+  65eb34ffc3a8
   07c648efceeb
   c81423bf5a24
   5ba9a53052ed
@@ -409,11 +409,11 @@ Basic check
   === checking 1ea73414a91b ===
   === checking 66f7d451a68b ===
   === checking 01241442b3c2 ===
-  === checking 0c1445abb33d ===
-  === checking 65eb34ffc3a8 ===
   === checking 2dc09a01254d ===
   === checking bebd167eb94d ===
   === checking c8d03c1b5e94 ===
+  === checking 0c1445abb33d ===
+  === checking 65eb34ffc3a8 ===
   === checking 07c648efceeb ===
   === checking c81423bf5a24 ===
   === checking 5ba9a53052ed ===
@@ -421,41 +421,41 @@ Basic check
   1ea73414a91b
   66f7d451a68b
   01241442b3c2
-  0c1445abb33d
-  65eb34ffc3a8
   2dc09a01254d
   bebd167eb94d
   c8d03c1b5e94
+  0c1445abb33d
+  65eb34ffc3a8
   c81423bf5a24
   $ checktopo AmergeA
   === checking 1ea73414a91b ===
   === checking 66f7d451a68b ===
   === checking 01241442b3c2 ===
-  === checking 0c1445abb33d ===
-  === checking 65eb34ffc3a8 ===
   === checking 2dc09a01254d ===
   === checking bebd167eb94d ===
   === checking c8d03c1b5e94 ===
+  === checking 0c1445abb33d ===
+  === checking 65eb34ffc3a8 ===
   === checking c81423bf5a24 ===
   $ hg showsort --rev 'AmergeB'
   1ea73414a91b
   66f7d451a68b
   01241442b3c2
-  0c1445abb33d
-  65eb34ffc3a8
   2dc09a01254d
   bebd167eb94d
   c8d03c1b5e94
+  0c1445abb33d
+  65eb34ffc3a8
   07c648efceeb
   $ checktopo AmergeB
   === checking 1ea73414a91b ===
   === checking 66f7d451a68b ===
   === checking 01241442b3c2 ===
-  === checking 0c1445abb33d ===
-  === checking 65eb34ffc3a8 ===
   === checking 2dc09a01254d ===
   === checking bebd167eb94d ===
   === checking c8d03c1b5e94 ===
+  === checking 0c1445abb33d ===
+  === checking 65eb34ffc3a8 ===
   === checking 07c648efceeb ===
 
 close criss cross
@@ -463,11 +463,11 @@ close criss cross
   1ea73414a91b
   66f7d451a68b
   01241442b3c2
-  0c1445abb33d
-  65eb34ffc3a8
   2dc09a01254d
   bebd167eb94d
   c8d03c1b5e94
+  0c1445abb33d
+  65eb34ffc3a8
   07c648efceeb
   c81423bf5a24
   5ba9a53052ed
@@ -481,11 +481,11 @@ close criss cross
   === checking 1ea73414a91b ===
   === checking 66f7d451a68b ===
   === checking 01241442b3c2 ===
-  === checking 0c1445abb33d ===
-  === checking 65eb34ffc3a8 ===
   === checking 2dc09a01254d ===
   === checking bebd167eb94d ===
   === checking c8d03c1b5e94 ===
+  === checking 0c1445abb33d ===
+  === checking 65eb34ffc3a8 ===
   === checking 07c648efceeb ===
   === checking c81423bf5a24 ===
   === checking 5ba9a53052ed ===
@@ -502,11 +502,11 @@ many branches criss cross
   1ea73414a91b
   66f7d451a68b
   01241442b3c2
-  0c1445abb33d
-  65eb34ffc3a8
   2dc09a01254d
   bebd167eb94d
   c8d03c1b5e94
+  0c1445abb33d
+  65eb34ffc3a8
   07c648efceeb
   c81423bf5a24
   5ba9a53052ed
@@ -516,14 +516,25 @@ many branches criss cross
   39bab1cb1cbe
   55bf3fdb634f
   3e1560705803
+  17b6e6bac221
+  5ce588c2b7c5
+  f2bdd828a3aa
+  a457569c5306
+  ad46a4a0fc10
+  b115c694654e
+  673f5499c8c2
+  900dd066a072
+  97ac964e34b7
+  0d153e3ad632
+  c37e7cd9f2bd
+  9a67238ad1c4
   9729470d9329
   884936b34999
-  b115c694654e
-  8ecb28746ec4
   de05b9c29ec7
-  d917f77a6439
-  c3c7fa726f88
-  97d19fc5236f
+  d99e0f7dad5b
+  e4cfd6264623
+  fac9e582edd1
+  89a0fe204177
   4f5078f7da8a
   2bd677d0f13a
   3bdb00d5c818
@@ -533,26 +544,15 @@ many branches criss cross
   2ea3fbf151b5
   47c836a1f13e
   722d1b8b8942
-  17b6e6bac221
-  5ce588c2b7c5
-  f2bdd828a3aa
-  a457569c5306
-  ad46a4a0fc10
   4b39f229a0ce
   d94da36be176
   eed373b0090d
-  2472d042ec95
-  673f5499c8c2
-  900dd066a072
-  97ac964e34b7
-  0d153e3ad632
-  c37e7cd9f2bd
-  9a67238ad1c4
-  d99e0f7dad5b
-  e4cfd6264623
-  fac9e582edd1
-  89a0fe204177
   b3cf98c3d587
+  8ecb28746ec4
+  d917f77a6439
+  c3c7fa726f88
+  97d19fc5236f
+  2472d042ec95
   041e1188f5f1
   0484d39906c8
   5eec91b12a58
@@ -565,17 +565,22 @@ many branches criss cross
   d6c9e2d27f14
   37ad3ab0cddf
   c7d3029bf731
-  1f4a19f83a29
-  43fc0b77ff07
-  31d7b43cc321
-  c713eae2d31f
   76151e8066e1
   c7c1497fc270
   e7135b665740
+  c713eae2d31f
   82238c0bc950
+  43fc0b77ff07
+  1f4a19f83a29
+  31d7b43cc321
   dbde319d43a3
   8b79544bb56d
   721ba7c5f4ff
+  0bab31f71a21
+  40553f55397e
+  e3e6738c56ce
+  790cdfecd168
+  469c700e9ed8
   01e29e20ea3f
   32b41ca704e1
   88714f4125cb
@@ -586,11 +591,6 @@ many branches criss cross
   b33fd5ad4c0c
   cd345198cf12
   28be96b80dc1
-  0bab31f71a21
-  40553f55397e
-  e3e6738c56ce
-  790cdfecd168
-  469c700e9ed8
   8ae32c3ed670
   84d6ec6a8e21
   01f771406cab
@@ -598,11 +598,11 @@ many branches criss cross
   === checking 1ea73414a91b ===
   === checking 66f7d451a68b ===
   === checking 01241442b3c2 ===
-  === checking 0c1445abb33d ===
-  === checking 65eb34ffc3a8 ===
   === checking 2dc09a01254d ===
   === checking bebd167eb94d ===
   === checking c8d03c1b5e94 ===
+  === checking 0c1445abb33d ===
+  === checking 65eb34ffc3a8 ===
   === checking 07c648efceeb ===
   === checking c81423bf5a24 ===
   === checking 5ba9a53052ed ===
@@ -612,14 +612,25 @@ many branches criss cross
   === checking 39bab1cb1cbe ===
   === checking 55bf3fdb634f ===
   === checking 3e1560705803 ===
+  === checking 17b6e6bac221 ===
+  === checking 5ce588c2b7c5 ===
+  === checking f2bdd828a3aa ===
+  === checking a457569c5306 ===
+  === checking ad46a4a0fc10 ===
+  === checking b115c694654e ===
+  === checking 673f5499c8c2 ===
+  === checking 900dd066a072 ===
+  === checking 97ac964e34b7 ===
+  === checking 0d153e3ad632 ===
+  === checking c37e7cd9f2bd ===
+  === checking 9a67238ad1c4 ===
   === checking 9729470d9329 ===
   === checking 884936b34999 ===
-  === checking b115c694654e ===
-  === checking 8ecb28746ec4 ===
   === checking de05b9c29ec7 ===
-  === checking d917f77a6439 ===
-  === checking c3c7fa726f88 ===
-  === checking 97d19fc5236f ===
+  === checking d99e0f7dad5b ===
+  === checking e4cfd6264623 ===
+  === checking fac9e582edd1 ===
+  === checking 89a0fe204177 ===
   === checking 4f5078f7da8a ===
   === checking 2bd677d0f13a ===
   === checking 3bdb00d5c818 ===
@@ -629,26 +640,15 @@ many branches criss cross
   === checking 2ea3fbf151b5 ===
   === checking 47c836a1f13e ===
   === checking 722d1b8b8942 ===
-  === checking 17b6e6bac221 ===
-  === checking 5ce588c2b7c5 ===
-  === checking f2bdd828a3aa ===
-  === checking a457569c5306 ===
-  === checking ad46a4a0fc10 ===
   === checking 4b39f229a0ce ===
   === checking d94da36be176 ===
   === checking eed373b0090d ===
-  === checking 2472d042ec95 ===
-  === checking 673f5499c8c2 ===
-  === checking 900dd066a072 ===
-  === checking 97ac964e34b7 ===
-  === checking 0d153e3ad632 ===
-  === checking c37e7cd9f2bd ===
-  === checking 9a67238ad1c4 ===
-  === checking d99e0f7dad5b ===
-  === checking e4cfd6264623 ===
-  === checking fac9e582edd1 ===
-  === checking 89a0fe204177 ===
   === checking b3cf98c3d587 ===
+  === checking 8ecb28746ec4 ===
+  === checking d917f77a6439 ===
+  === checking c3c7fa726f88 ===
+  === checking 97d19fc5236f ===
+  === checking 2472d042ec95 ===
   === checking 041e1188f5f1 ===
   === checking 0484d39906c8 ===
   === checking 5eec91b12a58 ===
@@ -661,17 +661,22 @@ many branches criss cross
   === checking d6c9e2d27f14 ===
   === checking 37ad3ab0cddf ===
   === checking c7d3029bf731 ===
-  === checking 1f4a19f83a29 ===
-  === checking 43fc0b77ff07 ===
-  === checking 31d7b43cc321 ===
-  === checking c713eae2d31f ===
   === checking 76151e8066e1 ===
   === checking c7c1497fc270 ===
   === checking e7135b665740 ===
+  === checking c713eae2d31f ===
   === checking 82238c0bc950 ===
+  === checking 43fc0b77ff07 ===
+  === checking 1f4a19f83a29 ===
+  === checking 31d7b43cc321 ===
   === checking dbde319d43a3 ===
   === checking 8b79544bb56d ===
   === checking 721ba7c5f4ff ===
+  === checking 0bab31f71a21 ===
+  === checking 40553f55397e ===
+  === checking e3e6738c56ce ===
+  === checking 790cdfecd168 ===
+  === checking 469c700e9ed8 ===
   === checking 01e29e20ea3f ===
   === checking 32b41ca704e1 ===
   === checking 88714f4125cb ===
@@ -682,17 +687,23 @@ many branches criss cross
   === checking b33fd5ad4c0c ===
   === checking cd345198cf12 ===
   === checking 28be96b80dc1 ===
-  === checking 0bab31f71a21 ===
-  === checking 40553f55397e ===
-  === checking e3e6738c56ce ===
-  === checking 790cdfecd168 ===
-  === checking 469c700e9ed8 ===
   === checking 8ae32c3ed670 ===
   === checking 84d6ec6a8e21 ===
   === checking 01f771406cab ===
   $ hg showsort --rev 'Cfinal' --limit 72
-  c3c7fa726f88
-  97d19fc5236f
+  673f5499c8c2
+  900dd066a072
+  97ac964e34b7
+  0d153e3ad632
+  c37e7cd9f2bd
+  9a67238ad1c4
+  9729470d9329
+  884936b34999
+  de05b9c29ec7
+  d99e0f7dad5b
+  e4cfd6264623
+  fac9e582edd1
+  89a0fe204177
   4f5078f7da8a
   2bd677d0f13a
   3bdb00d5c818
@@ -702,26 +713,15 @@ many branches criss cross
   2ea3fbf151b5
   47c836a1f13e
   722d1b8b8942
-  17b6e6bac221
-  5ce588c2b7c5
-  f2bdd828a3aa
-  a457569c5306
-  ad46a4a0fc10
   4b39f229a0ce
   d94da36be176
   eed373b0090d
-  2472d042ec95
-  673f5499c8c2
-  900dd066a072
-  97ac964e34b7
-  0d153e3ad632
-  c37e7cd9f2bd
-  9a67238ad1c4
-  d99e0f7dad5b
-  e4cfd6264623
-  fac9e582edd1
-  89a0fe204177
   b3cf98c3d587
+  8ecb28746ec4
+  d917f77a6439
+  c3c7fa726f88
+  97d19fc5236f
+  2472d042ec95
   041e1188f5f1
   0484d39906c8
   5eec91b12a58
@@ -734,17 +734,22 @@ many branches criss cross
   d6c9e2d27f14
   37ad3ab0cddf
   c7d3029bf731
-  1f4a19f83a29
-  43fc0b77ff07
-  31d7b43cc321
-  c713eae2d31f
   76151e8066e1
   c7c1497fc270
   e7135b665740
+  c713eae2d31f
   82238c0bc950
+  43fc0b77ff07
+  1f4a19f83a29
+  31d7b43cc321
   dbde319d43a3
   8b79544bb56d
   721ba7c5f4ff
+  0bab31f71a21
+  40553f55397e
+  e3e6738c56ce
+  790cdfecd168
+  469c700e9ed8
   01e29e20ea3f
   32b41ca704e1
   88714f4125cb
@@ -755,11 +760,6 @@ many branches criss cross
   b33fd5ad4c0c
   cd345198cf12
   28be96b80dc1
-  0bab31f71a21
-  40553f55397e
-  e3e6738c56ce
-  790cdfecd168
-  469c700e9ed8
   8ae32c3ed670
   84d6ec6a8e21
   01f771406cab
@@ -768,17 +768,22 @@ many branches criss cross
   d6c9e2d27f14
   37ad3ab0cddf
   c7d3029bf731
-  1f4a19f83a29
-  43fc0b77ff07
-  31d7b43cc321
-  c713eae2d31f
   76151e8066e1
   c7c1497fc270
   e7135b665740
+  c713eae2d31f
   82238c0bc950
+  43fc0b77ff07
+  1f4a19f83a29
+  31d7b43cc321
   dbde319d43a3
   8b79544bb56d
   721ba7c5f4ff
+  0bab31f71a21
+  40553f55397e
+  e3e6738c56ce
+  790cdfecd168
+  469c700e9ed8
   01e29e20ea3f
   32b41ca704e1
   88714f4125cb
@@ -789,16 +794,11 @@ many branches criss cross
   b33fd5ad4c0c
   cd345198cf12
   28be96b80dc1
-  0bab31f71a21
-  40553f55397e
-  e3e6738c56ce
-  790cdfecd168
-  469c700e9ed8
   8ae32c3ed670
   84d6ec6a8e21
   01f771406cab
   $ hg showsort --rev 'Cfinal' --limit 4
-  469c700e9ed8
+  28be96b80dc1
   8ae32c3ed670
   84d6ec6a8e21
   01f771406cab
@@ -828,18 +828,18 @@ Test stability of this mess
 
   $ hg showsort --rev 'all()' > ../crisscross.random.order
   $ python "$RUNTESTDIR/md5sum.py" ../crisscross.*.order
-  56271e05099a227fc7c0d6a434c24f0e  ../crisscross.random.order
-  56271e05099a227fc7c0d6a434c24f0e  ../crisscross.source.order
+  0ace2b2a63ec70b3b63b661aaee69878  ../crisscross.random.order
+  0ace2b2a63ec70b3b63b661aaee69878  ../crisscross.source.order
   $ diff -u ../crisscross.*.order
   $ hg showsort --rev 'all()'
   1ea73414a91b
   66f7d451a68b
   01241442b3c2
-  0c1445abb33d
-  65eb34ffc3a8
   2dc09a01254d
   bebd167eb94d
   c8d03c1b5e94
+  0c1445abb33d
+  65eb34ffc3a8
   07c648efceeb
   c81423bf5a24
   5ba9a53052ed
@@ -849,14 +849,25 @@ Test stability of this mess
   39bab1cb1cbe
   55bf3fdb634f
   3e1560705803
+  17b6e6bac221
+  5ce588c2b7c5
+  f2bdd828a3aa
+  a457569c5306
+  ad46a4a0fc10
+  b115c694654e
+  673f5499c8c2
+  900dd066a072
+  97ac964e34b7
+  0d153e3ad632
+  c37e7cd9f2bd
+  9a67238ad1c4
   9729470d9329
   884936b34999
-  b115c694654e
-  8ecb28746ec4
   de05b9c29ec7
-  d917f77a6439
-  c3c7fa726f88
-  97d19fc5236f
+  d99e0f7dad5b
+  e4cfd6264623
+  fac9e582edd1
+  89a0fe204177
   4f5078f7da8a
   2bd677d0f13a
   3bdb00d5c818
@@ -866,26 +877,15 @@ Test stability of this mess
   2ea3fbf151b5
   47c836a1f13e
   722d1b8b8942
-  17b6e6bac221
-  5ce588c2b7c5
-  f2bdd828a3aa
-  a457569c5306
-  ad46a4a0fc10
   4b39f229a0ce
   d94da36be176
   eed373b0090d
-  2472d042ec95
-  673f5499c8c2
-  900dd066a072
-  97ac964e34b7
-  0d153e3ad632
-  c37e7cd9f2bd
-  9a67238ad1c4
-  d99e0f7dad5b
-  e4cfd6264623
-  fac9e582edd1
-  89a0fe204177
   b3cf98c3d587
+  8ecb28746ec4
+  d917f77a6439
+  c3c7fa726f88
+  97d19fc5236f
+  2472d042ec95
   041e1188f5f1
   0484d39906c8
   5eec91b12a58
@@ -898,17 +898,22 @@ Test stability of this mess
   d6c9e2d27f14
   37ad3ab0cddf
   c7d3029bf731
-  1f4a19f83a29
-  43fc0b77ff07
-  31d7b43cc321
-  c713eae2d31f
   76151e8066e1
   c7c1497fc270
   e7135b665740
+  c713eae2d31f
   82238c0bc950
+  43fc0b77ff07
+  1f4a19f83a29
+  31d7b43cc321
   dbde319d43a3
   8b79544bb56d
   721ba7c5f4ff
+  0bab31f71a21
+  40553f55397e
+  e3e6738c56ce
+  790cdfecd168
+  469c700e9ed8
   01e29e20ea3f
   32b41ca704e1
   88714f4125cb
@@ -919,11 +924,6 @@ Test stability of this mess
   b33fd5ad4c0c
   cd345198cf12
   28be96b80dc1
-  0bab31f71a21
-  40553f55397e
-  e3e6738c56ce
-  790cdfecd168
-  469c700e9ed8
   8ae32c3ed670
   84d6ec6a8e21
   01f771406cab

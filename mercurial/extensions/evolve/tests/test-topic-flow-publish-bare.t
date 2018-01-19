@@ -52,10 +52,12 @@ pushing two heads at the same time
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit c_dC0
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg update 'desc("c_dA0")'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit c_dD0
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg push -f
   pushing to $TESTTMP/bare-branch-server
   searching for changes

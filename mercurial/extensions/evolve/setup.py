@@ -24,6 +24,7 @@ py_modules = [
 py_packages = [
     'hgext3rd',
     'hgext3rd.evolve',
+    'hgext3rd.evolve.thirdparty',
     'hgext3rd.topic',
 ]
 

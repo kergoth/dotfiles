@@ -52,6 +52,7 @@ from . import (
     obscache,
     utility,
     stablerange,
+    stablerangecache,
 )
 
 # prior to hg-4.2 there are not util.timer
@@ -69,7 +70,7 @@ _unpack = struct.unpack
 _calcsize = struct.calcsize
 
 eh = exthelper.exthelper()
-eh.merge(stablerange.eh)
+eh.merge(stablerangecache.eh)
 obsexcmsg = utility.obsexcmsg
 
 # Config
@@ -244,7 +245,7 @@ def _queryrange(ui, repo, remote, allentries):
     #  question are asked with node
     n = repo.changelog.node
     noderanges = [(n(entry[0]), entry[1]) for entry in allentries]
-    replies = remote.evoext_obshashrange_v0(noderanges)
+    replies = remote.evoext_obshashrange_v1(noderanges)
     result = []
     for idx, entry in enumerate(allentries):
         result.append((entry, replies[idx]))
@@ -352,17 +353,19 @@ _querymeta = "SELECT schemaversion, tiprev, tipnode, nbobsmarker, obssize, obske
 _queryobshash = "SELECT obshash FROM obshashrange WHERE (rev = ? AND idx = ?);"
 
 _reset = "DELETE FROM obshashrange;"
+_delete = "DELETE FROM obshashrange WHERE (rev = ? AND idx = ?);"
 
 class _obshashcache(obscache.dualsourcecache):
 
     _schemaversion = 2
 
     _cachename = 'evo-ext-obshashrange' # used for error message
+    _filename = 'cache/evoext_obshashrange_v2.sqlite'
 
     def __init__(self, repo):
         super(_obshashcache, self).__init__()
         self._vfs = repo.vfs
-        self._path = repo.vfs.join('cache/evoext_obshashrange_v1.sqlite')
+        self._path = repo.vfs.join(self._filename)
         self._new = set()
         self._valid = True
         self._repo = weakref.ref(repo.unfiltered())
@@ -433,12 +436,18 @@ class _obshashcache(obscache.dualsourcecache):
                         affected.add(r)
 
         if affected:
-            repo.ui.log('evoext-cache', 'obshashcache reset - '
-                        'new markers affect cached ranges\n')
+            repo.ui.log('evoext-cache', 'obshashcache clean - '
+                        'new markers affect %d changeset and cached ranges\n'
+                        % len(affected))
             # XXX the current reset is too strong we could just drop the affected range
             con = self._con
             if con is not None:
                 con.execute(_reset)
+
+            ranges = repo.stablerange.contains(repo, affected)
+
+            con.executemany(_delete, ranges)
+
             # rewarm key revisions
             #
             # (The current invalidation is too wide, but rewarming every single
@@ -446,15 +455,23 @@ class _obshashcache(obscache.dualsourcecache):
             newrevs = []
             stop = self._cachekey[0] # tiprev
             for h in repo.filtered('immutable').changelog.headrevs():
-                if h <= stop:
+                if h <= stop and h in affected:
                     newrevs.append(h)
             newrevs.extend(revs)
             revs = newrevs
 
         repo.depthcache.update(repo)
+        total = len(revs)
+
+        def progress(pos, rev):
+            repo.ui.progress('updating obshashrange cache',
+                             pos, 'rev %s' % rev, unit='revision', total=total)
         # warm the cache for the new revs
-        for r in revs:
+        progress(0, '')
+        for idx, r in enumerate(revs):
             _obshashrange(repo, (r, 0))
+            progress(idx, r)
+        progress(None, '')
 
         del self._updating
 
@@ -578,30 +595,30 @@ def setupcache(ui, repo):
                 self.obsstore.rangeobshashcache.clear()
             super(obshashrepo, self).destroyed()
 
-        def transaction(self, *args, **kwargs):
-            tr = super(obshashrepo, self).transaction(*args, **kwargs)
-            reporef = weakref.ref(self)
+        if util.safehasattr(repo, 'updatecaches'):
+            @localrepo.unfilteredmethod
+            def updatecaches(self, tr=None):
+                if utility.shouldwarmcache(self, tr):
+                    self.obsstore.rangeobshashcache.update(self)
+                    self.obsstore.rangeobshashcache.save(self)
+                super(obshashrepo, self).updatecaches(tr)
 
-            def _warmcache(tr):
-                repo = reporef()
-                if repo is None:
-                    return
-                hasobshashrange = _useobshashrange(repo)
-                hascachewarm = repo.ui.configbool('experimental',
-                                                  'obshashrange.warm-cache',
-                                                  True)
-                if not (hasobshashrange and hascachewarm):
-                    return
-                repo = repo.unfiltered()
-                # As pointed in 'obscache.update', we could have the changelog
-                # and the obsstore in charge of updating the cache when new
-                # items goes it. The tranaction logic would then only be
-                # involved for the 'pending' and final writing on disk.
-                self.obsstore.rangeobshashcache.update(repo)
-                self.obsstore.rangeobshashcache.save(repo)
+        else:
+            def transaction(self, *args, **kwargs):
+                tr = super(obshashrepo, self).transaction(*args, **kwargs)
+                reporef = weakref.ref(self)
 
-            tr.addpostclose('warmcache-20-obscacherange', _warmcache)
-            return tr
+                def _warmcache(tr):
+                    repo = reporef()
+                    if repo is None:
+                        return
+                    repo = repo.unfiltered()
+                    repo.obsstore.rangeobshashcache.update(repo)
+                    repo.obsstore.rangeobshashcache.save(repo)
+
+                if utility.shouldwarmcache(self, tr):
+                    tr.addpostclose('warmcache-20obshashrange', _warmcache)
+                return tr
 
     repo.__class__ = obshashrepo
 
@@ -629,7 +646,7 @@ def _obshashrange_v0(repo, ranges):
     repo.obsstore.rangeobshashcache.save(repo)
     return result
 
-@eh.addattr(localrepo.localpeer, 'evoext_obshashrange_v0')
+@eh.addattr(localrepo.localpeer, 'evoext_obshashrange_v1')
 def local_obshashrange_v0(peer, ranges):
     return _obshashrange_v0(peer._repo, ranges)
 
@@ -648,17 +665,17 @@ def _decrange(data):
     index = _unpack(_indexformat, data[-_indexsize:])[0]
     return (headnode, index)
 
-@eh.addattr(wireproto.wirepeer, 'evoext_obshashrange_v0')
+@eh.addattr(wireproto.wirepeer, 'evoext_obshashrange_v1')
 def peer_obshashrange_v0(self, ranges):
     binranges = [_encrange(r) for r in ranges]
     encranges = wireproto.encodelist(binranges)
-    d = self._call("evoext_obshashrange_v0", ranges=encranges)
+    d = self._call("evoext_obshashrange_v1", ranges=encranges)
     try:
         return wireproto.decodelist(d)
     except ValueError:
         self._abort(error.ResponseError(_("unexpected response:"), d))
 
-def srv_obshashrange_v0(repo, proto, ranges):
+def srv_obshashrange_v1(repo, proto, ranges):
     ranges = wireproto.decodelist(ranges)
     ranges = [_decrange(r) for r in ranges]
     hashes = _obshashrange_v0(repo, ranges)
@@ -674,7 +691,7 @@ def _useobshashrange(repo):
 
 def _canobshashrange(local, remote):
     return (_useobshashrange(local)
-            and remote.capable('_evoext_obshashrange_v0'))
+            and remote.capable('_evoext_obshashrange_v1'))
 
 def _obshashrange_capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
@@ -682,16 +699,16 @@ def _obshashrange_capabilities(orig, repo, proto):
     enabled = _useobshashrange(repo)
     if obsolete.isenabled(repo, obsolete.exchangeopt) and enabled:
         caps = caps.split()
-        caps.append('_evoext_obshashrange_v0')
+        caps.append('_evoext_obshashrange_v1')
         caps.sort()
         caps = ' '.join(caps)
     return caps
 
 @eh.extsetup
 def obshashrange_extsetup(ui):
-    hgweb_mod.perms['evoext_obshashrange_v0'] = 'pull'
+    hgweb_mod.perms['evoext_obshashrange_v1'] = 'pull'
 
-    wireproto.commands['evoext_obshashrange_v0'] = (srv_obshashrange_v0, 'ranges')
+    wireproto.commands['evoext_obshashrange_v1'] = (srv_obshashrange_v1, 'ranges')
     ###
     extensions.wrapfunction(wireproto, 'capabilities', _obshashrange_capabilities)
     # wrap command content

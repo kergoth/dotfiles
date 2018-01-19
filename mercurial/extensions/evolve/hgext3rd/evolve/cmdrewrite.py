@@ -179,10 +179,7 @@ def _commitfiltered(repo, ctx, match, target=None, message=None, user=None,
             return None
         fctx = contentctx[path]
         flags = fctx.flags()
-        mctx = context.memfilectx(repo, fctx.path(), fctx.data(),
-                                  islink='l' in flags,
-                                  isexec='x' in flags,
-                                  copied=copied.get(path))
+        mctx = compat.memfilectx(repo, memctx, fctx, flags, copied, path)
         return mctx
 
     if message is None:
@@ -305,6 +302,7 @@ def _uncommitdirstate(repo, oldctx, match, interactive):
     [('a', 'all', None, _('uncommit all changes when no arguments given')),
      ('i', 'interactive', False, _('interactive mode to uncommit (EXPERIMENTAL)')),
      ('r', 'rev', '', _('revert commit content to REV instead')),
+     ('', 'revert', False, _('discard working directory changes after uncommit')),
      ('n', 'note', '', _('store a note on uncommit')),
      ] + commands.walkopts + commitopts + commitopts2 + commitopts3,
     _('[OPTION]... [NAME]'))
@@ -391,9 +389,12 @@ def uncommit(ui, repo, *pats, **opts):
 
         obsolete.createmarkers(repo, [(old, (repo[newid],))], metadata=metadata)
         phases.retractboundary(repo, tr, oldphase, [newid])
-        with repo.dirstate.parentchange():
-            repo.dirstate.setparents(newid, node.nullid)
-            _uncommitdirstate(repo, old, match, interactive)
+        if opts.get('revert'):
+            hg.updaterepo(repo, newid, True)
+        else:
+            with repo.dirstate.parentchange():
+                repo.dirstate.setparents(newid, node.nullid)
+                _uncommitdirstate(repo, old, match, interactive)
         updatebookmarks(newid)
         if not repo[newid].files():
             ui.warn(_("new changeset is empty\n"))

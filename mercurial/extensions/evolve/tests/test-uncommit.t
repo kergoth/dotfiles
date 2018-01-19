@@ -459,3 +459,54 @@ test the `hg amend --extract` entry point
   R g
   R m
   R n
+
+Testing the --revert flag of `hg uncommit`
+
+When working directory before uncommit is clean
+
+  $ hg amend
+  $ hg status
+  ? b
+
+  $ hg diff -c . --stat
+   aa |  1 +
+   b  |  1 -
+   c  |  1 -
+   d  |  1 +
+   e  |  1 +
+   f  |  1 -
+   ff |  1 +
+   g  |  1 -
+   h  |  1 +
+   j  |  1 +
+   k  |  1 +
+   l  |  1 +
+   m  |  1 -
+   n  |  1 -
+   o  |  1 +
+   15 files changed, 9 insertions(+), 6 deletions(-)
+  $ hg uncommit --revert --all
+  new changeset is empty
+  (use 'hg prune .' to remove it)
+  $ hg status
+
+When working directory is dirty before uncommit
+
+  $ echo foo > a
+  $ echo foo > b
+  $ echo foo > c
+  $ hg status
+  M a
+  M b
+  M c
+  $ hg amend
+  $ echo foo > foo
+  $ hg add foo
+  $ hg status
+  A foo
+
+  $ hg uncommit --revert --all
+  new changeset is empty
+  (use 'hg prune .' to remove it)
+  $ hg status
+  ? foo

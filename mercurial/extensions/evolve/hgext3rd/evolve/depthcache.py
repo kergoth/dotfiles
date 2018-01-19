@@ -1,3 +1,12 @@
+# Code dedicated to the caching of changeset depth
+#
+# These stable ranges are use for obsolescence markers discovery
+#
+# Copyright 2017 Pierre-Yves David <pierre-yves.david@ens-lyon.org>
+#
+# This software may be used and distributed according to the terms of the
+# GNU General Public License version 2 or any later version.
+
 from __future__ import absolute_import
 
 import array
@@ -5,18 +14,21 @@ import weakref
 
 from mercurial import (
     localrepo,
-    node as nodemod,
     util,
     scmutil,
 )
 
 from . import (
+    compat,
     error,
     exthelper,
     genericcaches,
+    utility,
 )
 
 from mercurial.i18n import _
+
+filterparents = utility.filterparents
 
 eh = exthelper.exthelper()
 
@@ -36,7 +48,7 @@ def debugdepth(ui, repo, **opts):
     """
     revs = scmutil.revrange(repo, opts['rev'])
     method = opts['method']
-    if method == 'cached':
+    if method in ('cached', 'compare'):
         cache = repo.depthcache
         cache.save(repo)
     for r in revs:
@@ -51,6 +63,7 @@ def debugdepth(ui, repo, **opts):
             if simple != cached:
                 raise error.Abort('depth differ for revision %s: %d != %d'
                                   % (ctx, simple, cached))
+            depth = simple
         else:
             raise error.Abort('unknown method "%s"' % method)
         ui.write('%s %d\n' % (ctx, depth))
@@ -68,20 +81,16 @@ def setupcache(ui, repo):
 
         @localrepo.unfilteredmethod
         def destroyed(self):
-            if 'obsstore' in vars(self):
+            if 'depthcache' in vars(self):
                 self.depthcache.clear()
             super(depthcacherepo, self).destroyed()
 
         if util.safehasattr(repo, 'updatecaches'):
             @localrepo.unfilteredmethod
             def updatecaches(self, tr=None):
-                if (repo.ui.configbool('experimental', 'obshashrange',
-                                       False)
-                        and repo.ui.configbool('experimental',
-                                               'obshashrange.warm-cache',
-                                               True)):
-                    self.depthcache.update(repo)
-                    self.depthcache.save(repo)
+                if utility.shouldwarmcache(self, tr):
+                    self.depthcache.update(self)
+                    self.depthcache.save(self)
                 super(depthcacherepo, self).updatecaches(tr)
 
         else:
@@ -94,19 +103,11 @@ def setupcache(ui, repo):
                     if repo is None:
                         return
                     repo = repo.unfiltered()
-                    # As pointed in 'obscache.update', we could have the changelog
-                    # and the obsstore in charge of updating the cache when new
-                    # items goes it. The tranaction logic would then only be
-                    # involved for the 'pending' and final writing on disk.
-                    self.obsstore.obscache.update(repo)
-                    self.obsstore.obscache.save(repo)
+                    repo.depthcache.update(repo)
+                    repo.depthcache.save(repo)
 
-                if (repo.ui.configbool('experimental', 'obshashrange',
-                                       False)
-                        and repo.ui.configbool('experimental',
-                                               'obshashrange.warm-cache',
-                                               True)):
-                    tr.addpostclose('warmcache-depthcache', _warmcache)
+                if utility.shouldwarmcache(self, tr):
+                    tr.addpostclose('warmcache-00depthcache', _warmcache)
                 return tr
 
     repo.__class__ = depthcacherepo
@@ -144,14 +145,15 @@ class depthcache(genericcaches.changelogsourcebase):
 
     def _depth(self, changelog, rev):
         cl = changelog
-        p1, p2 = cl.parentrevs(rev)
-        if p1 == nodemod.nullrev:
+        ps = filterparents(cl.parentrevs(rev))
+        if not ps:
             # root case
             return 1
-        elif p2 == nodemod.nullrev:
+        elif len(ps) == 1:
             # linear commit case
-            return self.get(p1) + 1
+            return self.get(ps[0]) + 1
         # merge case, must find the amount of exclusive content
+        p1, p2 = ps
         depth_p1 = self.get(p1)
         depth_p2 = self.get(p2)
         # computing depth of a merge
@@ -196,10 +198,8 @@ class depthcache(genericcaches.changelogsourcebase):
         """load data from disk"""
         assert repo.filtername is None
 
-        if util.safehasattr(repo, 'cachevfs'):
-            data = repo.cachevfs.tryread(self._filepath)
-        else:
-            data = repo.vfs.tryread('cache/' + self._filepath)
+        cachevfs = compat.getcachevfs(repo)
+        data = cachevfs.tryread(self._filepath)
         self._data = array.array('l')
         if not data:
             self._cachekey = self.emptykey
@@ -218,10 +218,8 @@ class depthcache(genericcaches.changelogsourcebase):
         if self._cachekey is None or self._cachekey == self._ondiskkey:
             return
 
-        if util.safehasattr(repo, 'cachevfs'):
-            cachefile = repo.cachevfs(self._filepath, 'w', atomictemp=True)
-        else:
-            cachefile = repo.vfs('cache/' + self._filepath, 'w', atomictemp=True)
+        cachevfs = compat.getcachevfs(repo)
+        cachefile = cachevfs(self._filepath, 'w', atomictemp=True)
         headerdata = self._serializecachekey()
         cachefile.write(headerdata)
         cachefile.write(self._data.tostring())

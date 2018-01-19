@@ -72,15 +72,17 @@ The following config control the experiment::
   # (needed on both client and server)
   obshashrange = yes
 
-  # avoid cache warming after transaction
-  # (recommended 'off' for developer repositories)
-  # (recommended 'yes' for server (default))
-  obshashrange.warm-cache = no
+  # control cache warming at the end of transaction
+  #   yes:  warm all caches at the end of each transaction,
+  #   off:  warm no caches at the end of transaction,
+  #   auto: warm cache at the end of server side transaction (default).
+  obshashrange.warm-cache = 'auto'
 
-The initial cache warming is currently a bit slow. To make sure it is build you
-can run the following commands in your repository::
+The initial cache warming might be a bit slow. To make sure it is build you
+can run one of the following commands in your repository::
 
-    $ hg debugobshashrange --rev 'head()
+    $ hg debugupdatecache # mercurial 4.3 and above
+    $ hg debugobshashrange --rev 'head() # mercurial 4.2 and below
 
 It is recommended to enable the blackbox extension. It gathers useful data about
 the experiment. It is shipped with Mercurial so no extra install is needed::
@@ -255,7 +257,6 @@ import os
 import sys
 import re
 import collections
-import errno
 import struct
 
 try:
@@ -311,6 +312,7 @@ from . import (
     compat,
     debugcmd,
     cmdrewrite,
+    evolvestate,
     exthelper,
     metadata,
     obscache,
@@ -322,6 +324,7 @@ from . import (
     utility,
 )
 
+TROUBLES = compat.TROUBLES
 __version__ = metadata.__version__
 testedwith = metadata.testedwith
 minimumhgversion = metadata.minimumhgversion
@@ -422,6 +425,15 @@ def _configureoptions(ui, repo):
         repo.ui.setconfig('experimental', 'evolution', evolveopts, 'evolve')
     if obsolete.isenabled(repo, 'exchange'):
         repo.ui.setconfig('server', 'bundle1', False)
+
+    class trdescrepo(repo.__class__):
+
+        def transaction(self, desc, *args, **kwargs):
+            tr = super(trdescrepo, self).transaction(desc, *args, **kwargs)
+            tr.desc = desc
+            return tr
+
+    repo.__class__ = trdescrepo
 
 @eh.uisetup
 def _configurecmdoptions(ui):
@@ -837,8 +849,8 @@ def push(orig, repo, *args, **opts):
         raise
 
 def summaryhook(ui, repo):
-    state = _evolvestateread(repo)
-    if state is not None:
+    state = evolvestate.evolvestate(repo)
+    if state:
         # i18n: column positioning for "hg summary"
         ui.status(_('evolve: (evolve --continue)\n'))
 
@@ -1365,15 +1377,19 @@ def listtroubles(ui, repo, troublecategories, **opts):
         fm.data(node=ctx.hex(), rev=ctx.rev(), desc=desc, phase=ctx.phasestr())
 
         for unpar in unpars if showunstable else []:
-            fm.plain('  orphan: %s (orphan parent)\n' % unpar[:hashlen])
+            fm.plain('  %s: %s (%s parent)\n' % (TROUBLES['ORPHAN'],
+                                                 unpar[:hashlen],
+                                                 TROUBLES['ORPHAN']))
         for obspar in obspars if showunstable else []:
-            fm.plain('  unstable: %s (obsolete parent)\n' % obspar[:hashlen])
+            fm.plain('  %s: %s (obsolete parent)\n' % (TROUBLES['ORPHAN'],
+                                                       obspar[:hashlen]))
         for imprec in imprecs if showbumped else []:
-            fm.plain('  bumped: %s (immutable precursor)\n' % imprec[:hashlen])
+            fm.plain('  %s: %s (immutable precursor)\n' %
+                     (TROUBLES['PHASEDIVERGENT'], imprec[:hashlen]))
 
         if dsets and showdivergent:
             for dset in dsets:
-                fm.plain('  divergent: ')
+                fm.plain('  %s: ' % TROUBLES['CONTENTDIVERGENT'])
                 first = True
                 for n in dset['divergentnodes']:
                     t = "%s (%s)" if first else " %s (%s)"
@@ -1387,19 +1403,21 @@ def listtroubles(ui, repo, troublecategories, **opts):
         _formatctx(fm, ctx)
         troubles = []
         for unpar in unpars:
-            troubles.append({'troubletype': 'unstable', 'sourcenode': unpar,
-                             'sourcetype': 'unstableparent'})
+            troubles.append({'troubletype': TROUBLES['ORPHAN'],
+                             'sourcenode': unpar, 'sourcetype': 'orphanparent'})
         for obspar in obspars:
-            troubles.append({'troubletype': 'unstable', 'sourcenode': obspar,
+            troubles.append({'troubletype': TROUBLES['ORPHAN'],
+                             'sourcenode': obspar,
                              'sourcetype': 'obsoleteparent'})
         for imprec in imprecs:
-            troubles.append({'troubletype': 'bumped', 'sourcenode': imprec,
+            troubles.append({'troubletype': TROUBLES['PHASEDIVERGENT'],
+                             'sourcenode': imprec,
                              'sourcetype': 'immutableprecursor'})
         for dset in dsets:
             divnodes = [{'node': node.hex(n),
                          'phase': repo[n].phasestr(),
                         } for n in dset['divergentnodes']]
-            troubles.append({'troubletype': 'divergent',
+            troubles.append({'troubletype': TROUBLES['CONTENTDIVERGENT'],
                              'commonprecursor': node.hex(dset['commonprecursor']),
                              'divergentnodes': divnodes})
         fm.data(troubles=troubles)
@@ -1499,8 +1517,8 @@ def evolve(ui, repo, **opts):
     categories of troubles with the --unstable, --divergent or --bumped flags.
     """
 
+    opts = _checkevolveopts(repo, opts)
     # Options
-    listopt = opts['list']
     contopt = opts['continue']
     anyopt = opts['any']
     allopt = opts['all']
@@ -1509,33 +1527,11 @@ def evolve(ui, repo, **opts):
     confirmopt = opts['confirm']
     revopt = opts['rev']
 
-    # Backward compatibility
-    if opts['unstable']:
-        msg = ("'evolve --unstable' is deprecated, "
-               "use 'evolve --orphan'")
-        repo.ui.deprecwarn(msg, '4.4')
-
-        opts['orphan'] = opts['divergent']
-
-    if opts['divergent']:
-        msg = ("'evolve --divergent' is deprecated, "
-               "use 'evolve --content-divergent'")
-        repo.ui.deprecwarn(msg, '4.4')
-
-        opts['content_divergent'] = opts['divergent']
-
-    if opts['bumped']:
-        msg = ("'evolve --bumped' is deprecated, "
-               "use 'evolve --phase-divergent'")
-        repo.ui.deprecwarn(msg, '4.4')
-
-        opts['phase_divergent'] = opts['bumped']
-
     troublecategories = ['phase_divergent', 'content_divergent', 'orphan']
     specifiedcategories = [t.replace('_', '')
                            for t in troublecategories
                            if opts[t]]
-    if listopt:
+    if opts['list']:
         compat.startpager(ui, 'evolve')
         listtroubles(ui, repo, specifiedcategories, **opts)
         return
@@ -1584,33 +1580,37 @@ def evolve(ui, repo, **opts):
 
     # Continuation handling
     if contopt:
-        if anyopt:
-            raise error.Abort('cannot specify both "--any" and "--continue"')
-        if allopt:
-            raise error.Abort('cannot specify both "--all" and "--continue"')
-        state = _evolvestateread(repo)
-        if state is None:
+        state = evolvestate.evolvestate(repo)
+        if not state:
             raise error.Abort('no evolve to continue')
+        state.load()
         orig = repo[state['current']]
-        # XXX This is a terrible terrible hack, please get rid of it.
-        lock = repo.wlock()
-        try:
-            repo.vfs.write('graftstate', orig.hex() + '\n')
-            try:
-                graftcmd = commands.table['graft'][0]
-                ret = graftcmd(ui, repo, old_obsolete=True, **{'continue': True})
-                _evolvestatedelete(repo)
-                return ret
-            finally:
-                util.unlinkpath(repo.vfs.join('graftstate'), ignoremissing=True)
-        finally:
-            lock.release()
-    cmdutil.bailifchanged(repo)
+        with repo.wlock(), repo.lock():
+            ctx = orig
+            source = ctx.extra().get('source')
+            extra = {}
+            if source:
+                extra['source'] = source
+                extra['intermediate-source'] = ctx.hex()
+            else:
+                extra['source'] = ctx.hex()
+            user = ctx.user()
+            date = ctx.date()
+            message = ctx.description()
+            ui.status(_('evolving %d:%s "%s"\n') % (ctx.rev(), ctx,
+                                                    message.split('\n', 1)[0]))
+            targetphase = max(ctx.phase(), phases.draft)
+            overrides = {('phases', 'new-commit'): targetphase}
 
-    if revopt and allopt:
-        raise error.Abort('cannot specify both "--rev" and "--all"')
-    if revopt and anyopt:
-        raise error.Abort('cannot specify both "--rev" and "--any"')
+            with repo.ui.configoverride(overrides, 'evolve-continue'):
+                node = repo.commit(text=message, user=user,
+                                   date=date, extra=extra)
+
+            obsolete.createmarkers(repo, [(ctx, (repo[node],))])
+            state.delete()
+            return
+
+    cmdutil.bailifchanged(repo)
 
     revs = _selectrevs(repo, allopt, revopt, anyopt, targetcat)
 
@@ -1629,6 +1629,46 @@ def evolve(ui, repo, **opts):
         seen += 1
     progresscb()
     _cleanup(ui, repo, startnode, showprogress)
+
+def _checkevolveopts(repo, opts):
+    """ check the options passed to `hg evolve` and warn for deprecation warning
+    if any """
+
+    if opts['continue']:
+        if opts['any']:
+            raise error.Abort('cannot specify both "--any" and "--continue"')
+        if opts['all']:
+            raise error.Abort('cannot specify both "--all" and "--continue"')
+
+    if opts['rev']:
+        if opts['any']:
+            raise error.Abort('cannot specify both "--rev" and "--any"')
+        if opts['all']:
+            raise error.Abort('cannot specify both "--rev" and "--all"')
+
+    # Backward compatibility
+    if opts['unstable']:
+        msg = ("'evolve --unstable' is deprecated, "
+               "use 'evolve --orphan'")
+        repo.ui.deprecwarn(msg, '4.4')
+
+        opts['orphan'] = opts['divergent']
+
+    if opts['divergent']:
+        msg = ("'evolve --divergent' is deprecated, "
+               "use 'evolve --content-divergent'")
+        repo.ui.deprecwarn(msg, '4.4')
+
+        opts['content_divergent'] = opts['divergent']
+
+    if opts['bumped']:
+        msg = ("'evolve --bumped' is deprecated, "
+               "use 'evolve --phase-divergent'")
+        repo.ui.deprecwarn(msg, '4.4')
+
+        opts['phase_divergent'] = opts['bumped']
+
+    return opts
 
 def _possibledestination(repo, rev):
     """return all changesets that may be a new parent for REV"""
@@ -1752,7 +1792,9 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         try:
             relocate(repo, orig, target, pctx, keepbranch)
         except MergeFailure:
-            _evolvestatewrite(repo, {'current': orig.node()})
+            ops = {'current': orig.node()}
+            state = evolvestate.evolvestate(repo, opts=ops)
+            state.save()
             repo.ui.write_err(_('evolve failed!\n'))
             repo.ui.write_err(
                 _("fix conflict and run 'hg evolve --continue'"
@@ -1790,7 +1832,8 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
         repo.ui.write(todo)
         repo.ui.write(('hg update %s;\n' % prec))
         repo.ui.write(('hg revert --all --rev %s;\n' % bumped))
-        repo.ui.write(('hg commit --msg "bumped update to %s"'))
+        repo.ui.write(('hg commit --msg "%s update to %s"\n' %
+                       (TROUBLES['PHASEDIVERGENT'], bumped)))
         return 0
     if progresscb:
         progresscb()
@@ -1836,13 +1879,10 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
             if path in bumped:
                 fctx = bumped[path]
                 flags = fctx.flags()
-                mctx = context.memfilectx(repo, fctx.path(), fctx.data(),
-                                          islink='l' in flags,
-                                          isexec='x' in flags,
-                                          copied=copied.get(path))
+                mctx = compat.memfilectx(repo, ctx, fctx, flags, copied, path)
                 return mctx
             return None
-        text = 'bumped update to %s:\n\n' % prec
+        text = '%s update to %s:\n\n' % (TROUBLES['PHASEDIVERGENT'], prec)
         text += bumped.description()
 
         new = context.memctx(repo,
@@ -1875,7 +1915,7 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
     base, others = divergentdata(divergent)
     if len(others) > 1:
         othersstr = "[%s]" % (','.join([str(i) for i in others]))
-        msg = _("skipping %d:divergent with a changeset that got split"
+        msg = _("skipping %d:%s with a changeset that got split"
                 " into multiple ones:\n"
                 "|[%s]\n"
                 "| This is not handled by automatic evolution yet\n"
@@ -1885,13 +1925,13 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
                 "| - hg prune\n"
                 "| \n"
                 "| You should contact your local evolution Guru for help.\n"
-                ) % (divergent, othersstr)
+                ) % (divergent, TROUBLES['CONTENTDIVERGENT'], othersstr)
         ui.write_err(msg)
         return 2
     other = others[0]
     if len(other.parents()) > 1:
-        msg = _("skipping %s: divergent changeset can't be "
-                "a merge (yet)\n") % divergent
+        msg = _("skipping %s: %s changeset can't be "
+                "a merge (yet)\n") % (divergent, TROUBLES['CONTENTDIVERGENT'])
         ui.write_err(msg)
         hint = _("You have to fallback to solving this by hand...\n"
                  "| This probably means redoing the merge and using \n"
@@ -1936,7 +1976,7 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
     if divergent not in repo[None].parents():
         repo.ui.status(_('updating to "local" conflict\n'))
         hg.update(repo, divergent.rev())
-    repo.ui.note(_('merging divergent changeset\n'))
+    repo.ui.note(_('merging %s changeset\n') % TROUBLES['CONTENTDIVERGENT'])
     if progresscb:
         progresscb()
     stats = merge.update(repo,
@@ -2443,70 +2483,6 @@ def clean(orig, repo, *args, **kwargs):
     util.unlinkpath(repo.vfs.join('evolvestate'), ignoremissing=True)
     return ret
 
-def _evolvestatewrite(repo, state):
-    # [version]
-    # [type][length][content]
-    #
-    # `version` is a 4 bytes integer (handled at higher level)
-    # `type` is a single character, `length` is a 4 byte integer, and
-    # `content` is an arbitrary byte sequence of length `length`.
-    f = repo.vfs('evolvestate', 'w')
-    try:
-        f.write(_pack('>I', evolvestateversion))
-        current = state['current']
-        key = 'C' # as in 'current'
-        format = '>sI%is' % len(current)
-        f.write(_pack(format, key, len(current), current))
-    finally:
-        f.close()
-
-def _evolvestateread(repo):
-    try:
-        f = repo.vfs('evolvestate')
-    except IOError as err:
-        if err.errno != errno.ENOENT:
-            raise
-        return None
-    try:
-        versionblob = f.read(4)
-        if len(versionblob) < 4:
-            repo.ui.debug('ignoring corrupted evolvestate (file contains %i bits)'
-                          % len(versionblob))
-            return None
-        version = _unpack('>I', versionblob)[0]
-        if version != evolvestateversion:
-            msg = _('unknown evolvestate version %i') % version
-            raise error.Abort(msg, hint=_('upgrade your evolve'))
-        records = []
-        data = f.read()
-        off = 0
-        end = len(data)
-        while off < end:
-            rtype = data[off]
-            off += 1
-            length = _unpack('>I', data[off:(off + 4)])[0]
-            off += 4
-            record = data[off:(off + length)]
-            off += length
-            if rtype == 't':
-                rtype, record = record[0], record[1:]
-            records.append((rtype, record))
-        state = {}
-        for rtype, rdata in records:
-            if rtype == 'C':
-                state['current'] = rdata
-            elif rtype.lower():
-                repo.ui.debug('ignore evolve state record type %s' % rtype)
-            else:
-                raise error.Abort(_('unknown evolvestate field type %r')
-                                  % rtype, hint=_('upgrade your evolve'))
-        return state
-    finally:
-        f.close()
-
-def _evolvestatedelete(repo):
-    util.unlinkpath(repo.vfs.join('evolvestate'), ignoremissing=True)
-
 def _evolvemerge(repo, orig, dest, pctx, keepbranch):
     """Used by the evolve function to merge dest on top of pctx.
     return the same tuple as merge.graft"""
@@ -2529,4 +2505,4 @@ def _evolvemerge(repo, orig, dest, pctx, keepbranch):
             with repo.vfs.open('topic', 'w') as f:
                 f.write(orig.topic())
 
-    return merge.graft(repo, orig, pctx, ['local', 'graft'], True)
+    return merge.graft(repo, orig, pctx, ['destination', 'evolving'], True)

@@ -63,6 +63,7 @@ Create a new head on the default branch
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit c_dD0
   created new head
+  (consider using topic for lightweight branches. See 'hg help topic')
   $ hg push -f
   pushing to $TESTTMP/single-head-server
   searching for changes

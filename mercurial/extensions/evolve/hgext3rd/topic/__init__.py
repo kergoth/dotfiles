@@ -127,6 +127,7 @@ from mercurial import (
     registrar,
     scmutil,
     templatefilters,
+    templatekw,
     util,
 )
 
@@ -174,7 +175,7 @@ colortable = {'topic.active': 'green',
               'topic.active': 'green',
              }
 
-__version__ = '0.6.1.dev'
+__version__ = '0.7.1.dev'
 
 testedwith = '4.1.3 4.2.3 4.3.3 4.4.2'
 minimumhgversion = '4.1'
@@ -325,6 +326,7 @@ def uisetup(ui):
 
     cmdutil.summaryhooks.add('topic', summaryhook)
 
+    templatekw.keywords['topic'] = topickw
     # Wrap workingctx extra to return the topic name
     extensions.wrapfunction(context.workingctx, '__init__', wrapinit)
     # Wrap changelog.add to drop empty topic
@@ -490,6 +492,10 @@ def reposetup(ui, repo):
         repo.names.addnamespace(namespaces.namespace(
             'topics', 'topic', namemap=_namemap, nodemap=_nodemap,
             listnames=lambda repo: repo.topics))
+
+def topickw(**args):
+    """:topic: String. The topic of the changeset"""
+    return args['ctx'].topic()
 
 def wrapinit(orig, self, repo, *args, **kwargs):
     orig(self, repo, *args, **kwargs)
@@ -903,6 +909,9 @@ def _listtopics(ui, repo, opts):
         fm.write('topic', namemask, topic, label=label)
         fm.data(active=active)
 
+        if ui.quiet:
+            fm.plain('\n')
+            continue
         data = stack.stack(repo, topic=topic)
         fm.plain(' (')
         if ui.verbose:
@@ -1009,16 +1018,7 @@ def _getlasttouched(repo, topics):
                     user = marker.metadata().get('user', user)
                     maxtime = rt
 
-        # Making the username more better
-        username = None
-        if user:
-            # user is of form "abc <abc@xyz.com>"
-            username = user.split('<')[0]
-            if not username:
-                # user is of form "<abc@xyz.com>"
-                username = user[1:-1]
-            username = username.strip()
-
+        username = stack.parseusername(user)
         topicuser = (t, username)
 
         if trevs:

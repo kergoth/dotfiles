@@ -9,7 +9,7 @@ Test for stable ordering capabilities
   > [ui]
   > logtemplate = "{rev} {node|short} {desc} {tags}\n"
   > [defaults]
-  > debugstablerange = --method mergepoint
+  > debugstablerange = --method default
   > EOF
 
 Simple linear test
@@ -449,14 +449,14 @@ So we'll create more than 1 subrange out of it.
 We are still able to reuse one of the branch however
 
   $ hg debugstablerange --verify --verbose --subranges --rev merge
-  8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
-  bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
-  2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
-  8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
-  2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
+  8aca7f8c9bd2-0 (10, 11, 11) [complete] - f4b7da68b467-0 (9, 6, 6), 01241442b3c2-1 (2, 3, 2), 8aca7f8c9bd2-8 (10, 11, 3)
+  f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
+  42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  8aca7f8c9bd2-8 (10, 11, 3) [complete] - bebd167eb94d-3 (4, 5, 2), 8aca7f8c9bd2-10 (10, 11, 1)
+  01241442b3c2-1 (2, 3, 2) [complete] - 66f7d451a68b-1 (1, 2, 1), 01241442b3c2-2 (2, 3, 1)
   42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
-  66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
+  bebd167eb94d-3 (4, 5, 2) [complete] - 2dc09a01254d-3 (3, 4, 1), bebd167eb94d-4 (4, 5, 1)
+  de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
   01241442b3c2-2 (2, 3, 1) [leaf] - 
   1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -474,14 +474,18 @@ We are still able to reuse one of the branch however
   --- left.range	* (glob)
   +++ merge.range	* (glob)
   @@ -1,9 +1,20 @@
-  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
-   bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
-   2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  +42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
-  +8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
-   2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
+  -bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
+  -2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
+  -2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
+  -66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
+  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - f4b7da68b467-0 (9, 6, 6), 01241442b3c2-1 (2, 3, 2), 8aca7f8c9bd2-8 (10, 11, 3)
+  +f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
+  +42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  +8aca7f8c9bd2-8 (10, 11, 3) [complete] - bebd167eb94d-3 (4, 5, 2), 8aca7f8c9bd2-10 (10, 11, 1)
+  +01241442b3c2-1 (2, 3, 2) [complete] - 66f7d451a68b-1 (1, 2, 1), 01241442b3c2-2 (2, 3, 1)
   +42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
-   66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
+  +bebd167eb94d-3 (4, 5, 2) [complete] - 2dc09a01254d-3 (3, 4, 1), bebd167eb94d-4 (4, 5, 1)
+  +de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   +f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
    01241442b3c2-2 (2, 3, 1) [leaf] - 
    1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -499,17 +503,14 @@ We are still able to reuse one of the branch however
   --- right.range	* (glob)
   +++ merge.range	* (glob)
   @@ -1,11 +1,20 @@
-  -f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
-  -42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
-  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
-  +bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
-  +2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  +42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
-  +8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
-  +2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
+  +8aca7f8c9bd2-0 (10, 11, 11) [complete] - f4b7da68b467-0 (9, 6, 6), 01241442b3c2-1 (2, 3, 2), 8aca7f8c9bd2-8 (10, 11, 3)
+   f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
+   42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  +8aca7f8c9bd2-8 (10, 11, 3) [complete] - bebd167eb94d-3 (4, 5, 2), 8aca7f8c9bd2-10 (10, 11, 1)
+  +01241442b3c2-1 (2, 3, 2) [complete] - 66f7d451a68b-1 (1, 2, 1), 01241442b3c2-2 (2, 3, 1)
    42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
-  -de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
-  +66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
+  +bebd167eb94d-3 (4, 5, 2) [complete] - 2dc09a01254d-3 (3, 4, 1), bebd167eb94d-4 (4, 5, 1)
+   de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
    f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
   +01241442b3c2-2 (2, 3, 1) [leaf] - 
    1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -527,16 +528,16 @@ We are still able to reuse one of the branch however
 Range above the merge, reuse subrange from the merge
 
   $ hg debugstablerange --verify --verbose --subranges --rev tip
-  e6b8d5b46647-0 (12, 13, 13) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), e6b8d5b46647-8 (12, 13, 5)
-  bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
+  e6b8d5b46647-0 (12, 13, 13) [complete] - f4b7da68b467-0 (9, 6, 6), 01241442b3c2-1 (2, 3, 2), e6b8d5b46647-8 (12, 13, 5)
+  f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
   e6b8d5b46647-8 (12, 13, 5) [complete] - 485383494a89-8 (11, 12, 4), e6b8d5b46647-12 (12, 13, 1)
-  2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  485383494a89-8 (11, 12, 4) [complete] - f4b7da68b467-4 (9, 6, 2), 485383494a89-10 (11, 12, 2)
-  42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
-  2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
+  42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  485383494a89-8 (11, 12, 4) [complete] - bebd167eb94d-3 (4, 5, 2), 485383494a89-10 (11, 12, 2)
+  01241442b3c2-1 (2, 3, 2) [complete] - 66f7d451a68b-1 (1, 2, 1), 01241442b3c2-2 (2, 3, 1)
   42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
   485383494a89-10 (11, 12, 2) [complete] - 8aca7f8c9bd2-10 (10, 11, 1), 485383494a89-11 (11, 12, 1)
-  66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
+  bebd167eb94d-3 (4, 5, 2) [complete] - 2dc09a01254d-3 (3, 4, 1), bebd167eb94d-4 (4, 5, 1)
+  de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
   f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
   01241442b3c2-2 (2, 3, 1) [leaf] - 
   1ea73414a91b-0 (0, 1, 1) [leaf] - 
@@ -555,21 +556,21 @@ Range above the merge, reuse subrange from the merge
   $ diff -u merge.range tip.range
   --- merge.range	* (glob)
   +++ tip.range	* (glob)
-  @@ -1,20 +1,24 @@
-  -8aca7f8c9bd2-0 (10, 11, 11) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), 8aca7f8c9bd2-8 (10, 11, 3)
-  +e6b8d5b46647-0 (12, 13, 13) [complete] - bebd167eb94d-0 (4, 5, 5), 42b07e8da27d-1 (7, 4, 3), e6b8d5b46647-8 (12, 13, 5)
-   bebd167eb94d-0 (4, 5, 5) [complete] - 2dc09a01254d-0 (3, 4, 4), bebd167eb94d-4 (4, 5, 1)
+  @@ -1,9 +1,11 @@
+  -8aca7f8c9bd2-0 (10, 11, 11) [complete] - f4b7da68b467-0 (9, 6, 6), 01241442b3c2-1 (2, 3, 2), 8aca7f8c9bd2-8 (10, 11, 3)
+  +e6b8d5b46647-0 (12, 13, 13) [complete] - f4b7da68b467-0 (9, 6, 6), 01241442b3c2-1 (2, 3, 2), e6b8d5b46647-8 (12, 13, 5)
+   f4b7da68b467-0 (9, 6, 6) [complete] - 42b07e8da27d-0 (7, 4, 4), f4b7da68b467-4 (9, 6, 2)
   +e6b8d5b46647-8 (12, 13, 5) [complete] - 485383494a89-8 (11, 12, 4), e6b8d5b46647-12 (12, 13, 1)
-   2dc09a01254d-0 (3, 4, 4) [complete] - 66f7d451a68b-0 (1, 2, 2), 2dc09a01254d-2 (3, 4, 2)
-  +485383494a89-8 (11, 12, 4) [complete] - f4b7da68b467-4 (9, 6, 2), 485383494a89-10 (11, 12, 2)
-   42b07e8da27d-1 (7, 4, 3) [complete] - de561312eff4-1 (5, 2, 1), 42b07e8da27d-2 (7, 4, 2)
-  -8aca7f8c9bd2-8 (10, 11, 3) [complete] - f4b7da68b467-4 (9, 6, 2), 8aca7f8c9bd2-10 (10, 11, 1)
-   2dc09a01254d-2 (3, 4, 2) [complete] - 01241442b3c2-2 (2, 3, 1), 2dc09a01254d-3 (3, 4, 1)
+   42b07e8da27d-0 (7, 4, 4) [complete] - de561312eff4-0 (5, 2, 2), 42b07e8da27d-2 (7, 4, 2)
+  -8aca7f8c9bd2-8 (10, 11, 3) [complete] - bebd167eb94d-3 (4, 5, 2), 8aca7f8c9bd2-10 (10, 11, 1)
+  +485383494a89-8 (11, 12, 4) [complete] - bebd167eb94d-3 (4, 5, 2), 485383494a89-10 (11, 12, 2)
+   01241442b3c2-1 (2, 3, 2) [complete] - 66f7d451a68b-1 (1, 2, 1), 01241442b3c2-2 (2, 3, 1)
    42b07e8da27d-2 (7, 4, 2) [complete] - b9bc20507e0b-2 (6, 3, 1), 42b07e8da27d-3 (7, 4, 1)
   +485383494a89-10 (11, 12, 2) [complete] - 8aca7f8c9bd2-10 (10, 11, 1), 485383494a89-11 (11, 12, 1)
-   66f7d451a68b-0 (1, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), 66f7d451a68b-1 (1, 2, 1)
+   bebd167eb94d-3 (4, 5, 2) [complete] - 2dc09a01254d-3 (3, 4, 1), bebd167eb94d-4 (4, 5, 1)
+   de561312eff4-0 (5, 2, 2) [complete] - 1ea73414a91b-0 (0, 1, 1), de561312eff4-1 (5, 2, 1)
    f4b7da68b467-4 (9, 6, 2) [complete] - 857477a9aebb-4 (8, 5, 1), f4b7da68b467-5 (9, 6, 1)
-   01241442b3c2-2 (2, 3, 1) [leaf] - 
+  @@ -11,10 +13,12 @@
    1ea73414a91b-0 (0, 1, 1) [leaf] - 
    2dc09a01254d-3 (3, 4, 1) [leaf] - 
    42b07e8da27d-3 (7, 4, 1) [leaf] - 

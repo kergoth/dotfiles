@@ -163,33 +163,15 @@ def patchavailable(node, repo, marker):
 
     return True, succ
 
-def _indent(content, indent=4):
-    extra = ' ' * indent
-    return "".join(extra + line for line in content.splitlines(True))
-
-def getmarkercontentpatch(repo, node, succ):
-    # Todo get the ops from the cmd
-    diffopts = patch.diffallopts(repo.ui, {})
-    matchfn = scmutil.matchall(repo)
-
-    repo.ui.pushbuffer()
-    cmdutil.diffordiffstat(repo.ui, repo, diffopts, node, succ,
-                           match=matchfn, stat=False)
-    buffer = repo.ui.popbuffer()
-
-    return _indent(buffer)
-
-def getmarkerdescriptionpatch(repo, base, succ):
-    basectx = repo[base]
-    succctx = repo[succ]
+def getmarkerdescriptionpatch(repo, basedesc, succdesc):
     # description are stored without final new line,
     # add one to avoid ugly diff
-    basedesc = basectx.description() + '\n'
-    succdesc = succctx.description() + '\n'
+    basedesc += '\n'
+    succdesc += '\n'
 
     # fake file name
-    basename = "%s-changeset-description" % basectx
-    succname = "%s-changeset-description" % succctx
+    basename = "changeset-description"
+    succname = "changeset-description"
 
     d = mdiff.unidiff(basedesc, '', succdesc, '', basename, succname)
     # mercurial 4.1 and before return the patch directly
@@ -201,7 +183,8 @@ def getmarkerdescriptionpatch(repo, base, succ):
         # Copied from patch.diff
         text = ''.join(sum((list(hlines) for hrange, hlines in hunks), []))
         patch = "\n".join(uheaders + [text])
-    return _indent(patch)
+
+    return patch
 
 class missingchangectx(object):
     ''' a minimal object mimicking changectx for change contexts
@@ -511,22 +494,48 @@ def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
         if _patchavailable[0] is True:
             succ = _patchavailable[1]
 
+            basectx = repo[node]
+            succctx = repo[succ]
             # Description patch
-            descriptionpatch = getmarkerdescriptionpatch(repo, node, succ)
+            descriptionpatch = getmarkerdescriptionpatch(repo,
+                                                         basectx.description(),
+                                                         succctx.description())
+
             if descriptionpatch:
+                # add the diffheader
+                diffheader = "diff -r %s -r %s changeset-description\n" % \
+                             (basectx, succctx)
+                descriptionpatch = diffheader + descriptionpatch
+
+                def tolist(text):
+                    return [text]
+
                 fm.plain("\n")
-                fm.plain(descriptionpatch)
+
+                for chunk, label in patch.difflabel(tolist, descriptionpatch):
+                    chunk = chunk.strip('\t')
+                    if chunk and chunk != '\n':
+                        fm.plain('    ')
+                    fm.write('desc-diff', '%s', chunk, label=label)
 
             # Content patch
-            contentpatch = getmarkercontentpatch(repo, node, succ)
-            if contentpatch:
-                fm.plain("\n")
-                fm.plain(contentpatch)
+            diffopts = patch.diffallopts(repo.ui, {})
+            matchfn = scmutil.matchall(repo)
+            firstline = True
+            for chunk, label in patch.diffui(repo, node, succ, matchfn,
+                                             changes=None, opts=diffopts,
+                                             prefix='', relroot=''):
+                if firstline:
+                    fm.plain('\n')
+                    firstline = False
+                if chunk and chunk != '\n':
+                    fm.plain('    ')
+                fm.write('patch', '%s', chunk, label=label)
         else:
-            patch = "    (No patch available, %s)" % _patchavailable[1]
+            nopatch = "    (No patch available, %s)" % _patchavailable[1]
             fm.plain("\n")
             # TODO: should be in json too
-            fm.plain(patch)
+            fm.plain(nopatch)
 
     fm.plain("\n")
 
