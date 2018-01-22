@@ -22,9 +22,8 @@ if ! which peru >/dev/null 2>&1; then
 fi
 PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 
-alias peru='$dotfilesdir/peru'
-peru reup -f || echo >&2 "peru reup failed"
-peru sync -f || die "peru sync failed"
+"$dotfilesdir/peru" reup -f || echo >&2 "peru reup failed"
+"$dotfilesdir/peru" sync -f || die "peru sync failed"
 
 cd "$tmpdir" || exit 1
 git clone https://github.com/petdance/ack2 && \
