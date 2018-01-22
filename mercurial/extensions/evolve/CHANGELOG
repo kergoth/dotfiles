@@ -1,6 +1,13 @@
 Changelog
 =========
 
+7.2.1 --2018-01-20
+-------------------
+
+  * compatibility with future Mercurial 4.5
+  * fix a packaging issue affect `hg evolve --continue`
+  * fix "automatic" cache warming mode for push (client side)
+
 7.2.0 -- 2018-01-15
 -------------------
 

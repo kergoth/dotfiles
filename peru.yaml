@@ -110,7 +110,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: a65a07fae4e916f49b84afd8f6d9b2ef258b52fb
+    rev: 03692831ad465b79447e56bc20e2294558944479
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -201,7 +201,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: e02176aca15905e80dbb38de2a53416cf6460cfe
+    rev: c2ffb8b3ec114301795036f7bf22995746d2acaf
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -258,7 +258,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: c0a5fee7071ed89602b9b59fb67e83d6cd23addc
+    rev: 17d24ae31d119f8bdd88a5149a831ca35baf726c
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -518,7 +518,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: efac9aad096315abcca08046e531c3d4bdac3f21
+    rev: 80894dbf98996ebc4499ef9eca2bd6dfd2578fa0
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -597,7 +597,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 0ebd0fca83efeccc0d34069eb9f1a602b807b410
+    rev: 96a68cf1dcbc171a2be32662479ff48ab59c7c75
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -605,7 +605,7 @@ git module vim-abolish:
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
-    rev: 070ee903245999b2b79f7386631ffd29ce9b8e9f
+    rev: 1b82cad74cd5d5caf3c4092365cda54dc1fb853e
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -657,7 +657,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: eddda2f8b599a52e92c99795f42c0c4ba8e15f7c
+    rev: 038789f0ed42cfffbd442a6a399cb2395591821d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

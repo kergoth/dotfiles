@@ -42,7 +42,14 @@ def shouldwarmcache(repo, tr):
     config = repo.ui.config
     desc = getattr(tr, 'desc', '')
 
-    autocase = tr is None or desc.startswith('push') or desc.startswith('serve')
+    autocase = False
+    if tr is None:
+        autocase = True
+    elif desc.startswith('serve'):
+        autocase = True
+    elif desc.startswith('push') and not desc.startswith('push-response'):
+        autocase = True
+
     autocache = config('experimental', 'obshashrange.warm-cache',
                        'auto') == 'auto'
     if autocache:

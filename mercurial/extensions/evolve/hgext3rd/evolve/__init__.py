@@ -809,6 +809,10 @@ def wrapparents(origfn, ui, repo, *args, **opts):
 @eh.wrapcommand("unbundle")
 def warnobserrors(orig, ui, repo, *args, **kwargs):
     """display warning is the command resulted in more instable changeset"""
+    # hg < 4.4 does not have the feature built in. bail out otherwise.
+    if util.safehasattr(scmutil, '_reportstroubledchangesets'):
+        return orig(ui, repo, *args, **kwargs)
+
     # part of the troubled stuff may be filtered (stash ?)
     # This needs a better implementation but will probably wait for core.
     filtered = repo.changelog.filteredrevs
