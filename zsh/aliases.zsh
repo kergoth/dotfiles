@@ -36,9 +36,6 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
-if (( $+commands[hub] )); then
-    alias git=hub
-fi
 alias gitcolor='git -c color.ui=always'
 alias gitnofancy='git -c "core.pager=diff-highlight | less --tabs=4 -RFX"'
 
