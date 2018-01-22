@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# Expects to process Your_Social_Security_Statement_Data.xml
+
+xml2 <"$1" | grep MedicareEarnings | sed 's,.*=,,' | grep -Ev '^(0|-1)$' | tr '\n' '+' | sed 's,+$,,' | bc
