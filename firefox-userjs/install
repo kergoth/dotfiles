@@ -1,0 +1,5 @@
+Profile=$USER
+if [ "$(uname -s)" = "Darwin" ]; then
+    FIREFOX="$HOME/Library/Application Support/Firefox/Profiles/$Profile"
+    link ./user-overrides.js "$FIREFOX/user-overrides.js"
+fi
