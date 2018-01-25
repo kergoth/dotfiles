@@ -27,6 +27,10 @@
 	ri = rebase -i
 	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
 
+	# Hub
+	fork = !hub fork
+	pull-request = !hub pull-request
+
 	# Update without merge commits
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
 
