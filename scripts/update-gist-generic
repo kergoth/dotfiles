@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ueo pipefail
+
 usage () {
     echo >&2 "Usage: ${0##*/} [-n] GIST_URL [FILENAME]"
     echo >&2
@@ -31,12 +33,34 @@ filename="${2:--}"
 raw_url="$(echo "$gist_url" | sed "s,github\.com,githubusercontent.com,")/raw/$filename"
 
 tmpfile="$(mktemp -t "$filename.XXXXXX")"
-trap "rm -f \"$tmpfile\"" EXIT INT TERM
+trap 'rm -f "$tmpfile"' EXIT INT TERM
 
 cat >>"$tmpfile"
-curl -s "$raw_url" | diff -urNd - "$tmpfile"
 
-if [ $? -ne 0 ] && [ $dry_run -ne 1 ]; then
+diff_pipeline="cat"
+if [ -n "$LESSCOLORIZER" ]; then
+    diff_pipeline="$diff_pipeline | $LESSCOLORIZER -l diff"
+fi
+if which diff-so-fancy &>/dev/null; then
+    diff_pipeline="$diff_pipeline | diff-so-fancy"
+elif which diff-highlight &>/dev/null; then
+    diff_pipeline="$diff_pipeline | diff-highlight"
+fi
+if [ -t 1 ]; then
+    if [ -n "$PAGER" ]; then
+        diff_pipeline="$diff_pipeline | less"
+    elif which less &>/dev/null; then
+        diff_pipeline="$diff_pipeline | less"
+    elif which more &>/dev/null; then
+        diff_pipeline="$diff_pipeline | more"
+    fi
+fi
+export LESS="${LESS--R}"
+
+ret=0
+curl -s "$raw_url" | diff -urNd - "$tmpfile" | eval "$diff_pipeline" || ret=$?
+
+if [ $ret -ne 0 ] && [ $dry_run -ne 1 ]; then
     if [ -t 1 ]; then
         while true; do
             read -r -n 1 -p 'Continue [Y/n]? ' i </dev/tty
