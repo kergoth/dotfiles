@@ -4,18 +4,56 @@
 # tree in a form which is pleasant to edit in a text editor, e.g. for
 # reviewing/auditing a directory tree, file by file.
 
-if [ $# -gt 0 ]; then
-    path="$1"
-    shift
-else
-    path=.
-fi
+set -eu
+
+usage () {
+    echo >&2 "${0##*/} [-s]"
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2 "  -s    Sort lexicographicsorty"
+}
+
+process_arguments () {
+    sort=0
+    while getopts sh opt; do
+        case "$opt" in
+            s)
+                sort=1
+                ;;
+            \?|h)
+                usage
+                return 1
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+    argnum=$((OPTIND - 1))
+
+    if [ $# -gt 0 ]; then
+        path="$1"
+        argnum=$((argnum + 1))
+        shift
+    else
+        path=.
+    fi
+}
 
 if which gfind >/dev/null 2>&1; then
     alias find=gfind
 fi
 
-find "$path" \( -name .git -o -name .hg -o -name .svn \) -printf '%p %y\n' -prune -o \( -not -name .DS_Store \) "$@" -printf '%p %y\n' | \
+pipeline () {
+    if [ $sort -eq 1 ]; then
+        sort -f
+    else
+        cat
+    fi
+}
+
+process_arguments "$@"
+shift $argnum
+
+find "$path" \( -name .git -o -name .hg -o -name .svn \) -printf '%p %y\n' -prune -o \( -not -name .DS_Store \) "$@" -printf '%p %y\n' | pipeline | \
     sed -e 's,/\( .\)$,\1,; s, [^d]$,,; s;[^/]*/;|___;g;s;___|*;    ;g;' \
         -e 's,^|,,; s, d$,/,' | \
     ${PAGER:-less}
