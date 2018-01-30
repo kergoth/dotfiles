@@ -26,6 +26,7 @@ TERM con80x60
 TERM console
 TERM cygwin
 TERM dtterm
+TERM dvtm-256color
 TERM gnome
 TERM konsole
 TERM kterm
