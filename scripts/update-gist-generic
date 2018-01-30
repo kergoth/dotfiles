@@ -48,7 +48,7 @@ elif which diff-highlight &>/dev/null; then
 fi
 if [ -t 1 ]; then
     if [ -n "$PAGER" ]; then
-        diff_pipeline="$diff_pipeline | less"
+        diff_pipeline="$diff_pipeline | $PAGER"
     elif which less &>/dev/null; then
         diff_pipeline="$diff_pipeline | less"
     elif which more &>/dev/null; then
