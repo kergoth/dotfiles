@@ -62,7 +62,7 @@ TERM xterm-debian
 # Background color codes:
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
 NORMAL                  00;37   # global default, although everything should be something.
-FILE                    01;34   # normal file
+FILE                    00;37   # normal file
 RESET                   00;37   # reset to "normal" color
 DIR                     00;34   # directory
 LINK                    00;36   # symbolic link.  (If you set this to 'target' instead of a
