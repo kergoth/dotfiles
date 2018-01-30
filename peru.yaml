@@ -26,6 +26,7 @@ imports:
     dtrx: scripts
     dustin-bindir: scripts
     flu: scripts
+    gnu2bsd: scripts
     git-cherry-tree: scripts
     git-extras: scripts
     git-imerge: scripts
@@ -667,3 +668,11 @@ git module md-inline2ref:
         inline2ref.rb: markdown-inline-to-ref
     executable: markdown-inline-to-ref
     rev: a6ab0dcf2cf5491077ab7f37cc2adbabd67f8b91
+
+git module gnu2bsd:
+    url: https://github.com/lucas-flowers/gnu2bsd
+    move:
+        gnu2bsd.py: gnu2bsd-lscolors
+    pick: gnu2bsd-lscolors
+    executable: gnu2bsd-lscolors
+    rev: 1cd2e3c0a7730bb3b86161b1ab50a408da823edf
