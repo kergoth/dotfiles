@@ -382,7 +382,7 @@ else
     colorscheme base16-tomorrow-night
     let g:airline_theme = 'base16_tomorrow'
   catch
-    colorscheme desert
+    colorscheme baycomb
   endtry
 endif
 " }}}
