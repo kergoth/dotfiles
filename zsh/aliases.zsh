@@ -1,16 +1,6 @@
 alias reload!='. ${ZDOTDIR:-$HOME}/.zshrc'
 alias import-global-history='fc -RI'
 
-if [[ $OSTYPE =~ darwin ]]; then
-    alias ls='ls -G'
-else
-    alias ls='ls --color=auto'
-fi
-alias lr='ls -thl'
-alias ll='ls -hl'
-alias la='ls -Ah'
-alias l='ls -1h'
-
 alias which=which-command
 alias which-command='whence -avf'
 alias tmux='tmux -u2 -f ~/.config/tmux/config'
