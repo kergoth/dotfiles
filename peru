@@ -19,4 +19,4 @@ if [ ! -e "$state_dir" ]; then
     done
 fi
 
-peru --state-dir="$state_dir" "$@"
+peru --state-dir="$state_dir" -j 4 -v "$@"
