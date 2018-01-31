@@ -46,7 +46,7 @@
 
 	# revert a file or files to the version in the index
 	revert-file = checkout --
-	rf = revert-file
+	rf = checkout --
 
 	# Amend the current commit, but don't prompt to edit the commit message
 	amend = commit --amend -C HEAD
