@@ -1213,16 +1213,16 @@ When we pull from remote again we get an unstable state!
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  1 new orphan changesets
   new changesets bf1b0d202029
   (run 'hg update' to get a working copy)
-  1 new orphan changesets
 
 
 The new changeset "animal" is based on an old changeset of "bathroom". You can
 see both version showing up in the log.
 
   $ hg log -G
-  o  bf1b0d202029 (draft): animals
+  *  bf1b0d202029 (draft): animals
   |
   | @  a44c85f957d3 (draft): bathroom stuff
   | |
@@ -1685,7 +1685,7 @@ The animals changeset is still displayed because the "SPAM SPAM SPAM" changeset
 is neither dead or obsolete. My repository is in an unstable state again.
 
   $ hg log -G
-  o  99f039c5ec9e (draft): SPAM SPAM SPAM
+  *  99f039c5ec9e (draft): SPAM SPAM SPAM
   |
   x  ee942144f952 (draft): animals
   |

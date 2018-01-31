@@ -64,6 +64,8 @@ Test setup
 Check templates
 ---------------
   $ hg up 'desc(A0)' --hidden
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: d004c8f274b9)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: d004c8f274b9)
@@ -155,6 +157,8 @@ Precursors template should show current revision as it is the working copy
   
 
   $ hg up 'desc(A1)' --hidden
+  updating to a hidden changeset a468dc9b3633
+  (hidden revision 'a468dc9b3633' was rewritten as: d004c8f274b9)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (a468dc9b3633)
   (use 'hg evolve' to update to its successor: d004c8f274b9)
@@ -339,6 +343,8 @@ Check templates
 ---------------
 
   $ hg up 'obsolete()' --hidden
+  updating to a hidden changeset 471597cad322
+  (hidden revision '471597cad322' was split as: 337fec4d2edc, f257fde29c7a)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471597cad322)
   (use 'hg evolve' to update to its tipmost successor: 337fec4d2edc, f257fde29c7a)
@@ -478,6 +484,8 @@ Check templates
 ---------------
 
   $ hg up 'desc(A0)' --hidden
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: eb5a0daa2192)
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -503,6 +511,8 @@ Precursors template should show current revision as it is the working copy
   o  ea207398892e
   
   $ hg up 'desc(B0)' --hidden
+  updating to a hidden changeset 0dec01379d3b
+  (hidden revision '0dec01379d3b' was rewritten as: eb5a0daa2192)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (0dec01379d3b)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -618,6 +628,8 @@ Test setup
      summary:     ROOT
   
   $ hg update --hidden 'desc(A0)'
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: fdf9bde5129a)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: fdf9bde5129a)
@@ -632,7 +644,7 @@ Test setup
   |  instability: content-divergent
   |  summary:     A2
   |
-  | o  changeset:   2:fdf9bde5129a
+  | *  changeset:   2:fdf9bde5129a
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
@@ -657,16 +669,18 @@ Check templates
 ---------------
 
   $ hg up 'desc(A0)' --hidden
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' has diverged)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (471f378eab4c has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
 
 Precursors template should show current revision as it is the working copy
   $ hg tlog
-  o  019fadeab383
+  *  019fadeab383
   |    Precursors: 1:471f378eab4c
   |    semi-colon: 1:471f378eab4c
-  | o  fdf9bde5129a
+  | *  fdf9bde5129a
   |/     Precursors: 1:471f378eab4c
   |      semi-colon: 1:471f378eab4c
   | @  471f378eab4c
@@ -678,9 +692,9 @@ Precursors template should show current revision as it is the working copy
   o  ea207398892e
   
   $ hg fatelog
-  o  019fadeab383
+  *  019fadeab383
   |
-  | o  fdf9bde5129a
+  | *  fdf9bde5129a
   |/
   | @  471f378eab4c
   |/     Obsfate: reworded using amend as 2:fdf9bde5129a; reworded using amend as 4:019fadeab383
@@ -693,7 +707,7 @@ Precursors template should show current revision as it is the working copy
 Precursors template should not show precursors as it's not displayed in the
 log
   $ hg tlog
-  o  019fadeab383
+  *  019fadeab383
   |
   | @  fdf9bde5129a
   |/
@@ -701,7 +715,7 @@ log
   
 
   $ hg fatelog
-  o  019fadeab383
+  *  019fadeab383
   |
   | @  fdf9bde5129a
   |/
@@ -709,7 +723,7 @@ log
   
 Precursors template should a precursor as we force its display with --hidden
   $ hg tlog --hidden
-  o  019fadeab383
+  *  019fadeab383
   |    Precursors: 3:65b757b745b9
   |    semi-colon: 3:65b757b745b9
   | x  65b757b745b9
@@ -731,7 +745,7 @@ Precursors template should a precursor as we force its display with --hidden
   o  ea207398892e
   
   $ hg fatelog --hidden
-  o  019fadeab383
+  *  019fadeab383
   |
   | x  65b757b745b9
   |/     Obsfate: reworded using amend as 4:019fadeab383
@@ -745,7 +759,7 @@ Precursors template should a precursor as we force its display with --hidden
   
 
   $ hg fatelogjson --hidden
-  o  019fadeab383 []
+  *  019fadeab383 []
   |
   | x  65b757b745b9 [{"markers": [["65b757b745b935093c87a2bccd877521cccffcbd", ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], 0, [["ef1", "1"], ["operation", "amend"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["019fadeab383f6699fa83ad7bdb4d82ed2c0e5ab"], "users": ["test"], "verb": "reworded"}]
   |/
@@ -831,6 +845,8 @@ Check templates
 ---------------
 
   $ hg up 'desc(A0)' --hidden
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: eb5a0daa2192)
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -854,6 +870,8 @@ Check templates
   o  ea207398892e
   
   $ hg up 'desc(B0)' --hidden
+  updating to a hidden changeset 0dec01379d3b
+  (hidden revision '0dec01379d3b' was rewritten as: eb5a0daa2192)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (0dec01379d3b)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -886,6 +904,8 @@ Check templates
   
 
   $ hg up 'desc(B1)' --hidden
+  updating to a hidden changeset b7ea6d14e664
+  (hidden revision 'b7ea6d14e664' was rewritten as: eb5a0daa2192)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (b7ea6d14e664)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -1143,6 +1163,7 @@ Create the cycle
 
   $ hg debugobsolete `getid "desc(A0)"` `getid "desc(B0)"`
   obsoleted 1 changesets
+  1 new orphan changesets
   $ hg debugobsolete `getid "desc(B0)"` `getid "desc(C0)"`
   obsoleted 1 changesets
   $ hg debugobsolete `getid "desc(B0)"` `getid "desc(A0)"`
@@ -1161,6 +1182,8 @@ Check templates
   o  ea207398892e
   
   $ hg up -r "desc(B0)" --hidden
+  updating to a hidden changeset 0dec01379d3b
+  (hidden revision '0dec01379d3b' is pruned)
   2 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (0dec01379d3b)
   (use 'hg evolve' to update to its parent successor)
@@ -1375,14 +1398,14 @@ Diverge one of the splitted commit
   |  instability: content-divergent
   |  summary:     Add B only
   |
-  | o  changeset:   8:b18bc8331526
+  | *  changeset:   8:b18bc8331526
   |/   parent:      5:dd800401bd8c
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
   |    instability: content-divergent
   |    summary:     Add only B
   |
-  | o  changeset:   7:ba2ed02b0c9a
+  | *  changeset:   7:ba2ed02b0c9a
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  instability: orphan, content-divergent
@@ -1395,7 +1418,7 @@ Diverge one of the splitted commit
   |    obsolete:    reworded using amend as 9:0b997eb7ceee
   |    summary:     Add A,B,C
   |
-  o  changeset:   5:dd800401bd8c
+  *  changeset:   5:dd800401bd8c
   |  parent:      3:f897c6137566
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -1420,10 +1443,10 @@ Check templates
   @  0b997eb7ceee
   |    Precursors: 6:4a004186e638
   |    semi-colon: 6:4a004186e638
-  | o  b18bc8331526
+  | *  b18bc8331526
   |/     Precursors: 6:4a004186e638
   |      semi-colon: 6:4a004186e638
-  | o  ba2ed02b0c9a
+  | *  ba2ed02b0c9a
   | |
   | x  4a004186e638
   |/     Successors: 8:b18bc8331526; 9:0b997eb7ceee
@@ -1431,7 +1454,7 @@ Check templates
   |      Fate: reworded using amend as 8:b18bc8331526
   |      Fate: reworded using amend as 9:0b997eb7ceee
   |
-  o  dd800401bd8c
+  *  dd800401bd8c
   |
   o  f897c6137566
   |
@@ -1440,14 +1463,14 @@ Check templates
   $ hg fatelog
   @  0b997eb7ceee
   |
-  | o  b18bc8331526
+  | *  b18bc8331526
   |/
-  | o  ba2ed02b0c9a
+  | *  ba2ed02b0c9a
   | |
   | x  4a004186e638
   |/     Obsfate: reworded using amend as 8:b18bc8331526; reworded using amend as 9:0b997eb7ceee
   |
-  o  dd800401bd8c
+  *  dd800401bd8c
   |
   o  f897c6137566
   |
@@ -1457,10 +1480,10 @@ Check templates
   @  0b997eb7ceee
   |    Precursors: 6:4a004186e638
   |    semi-colon: 6:4a004186e638
-  | o  b18bc8331526
+  | *  b18bc8331526
   |/     Precursors: 6:4a004186e638
   |      semi-colon: 6:4a004186e638
-  | o  ba2ed02b0c9a
+  | *  ba2ed02b0c9a
   | |    Precursors: 4:9bd10a0775e4
   | |    semi-colon: 4:9bd10a0775e4
   | x  4a004186e638
@@ -1471,7 +1494,7 @@ Check templates
   |      Fate: reworded using amend as 8:b18bc8331526
   |      Fate: reworded using amend as 9:0b997eb7ceee
   |
-  o  dd800401bd8c
+  *  dd800401bd8c
   |    Precursors: 4:9bd10a0775e4
   |    semi-colon: 4:9bd10a0775e4
   | x  9bd10a0775e4
@@ -1502,14 +1525,14 @@ Check templates
   $ hg fatelog --hidden
   @  0b997eb7ceee
   |
-  | o  b18bc8331526
+  | *  b18bc8331526
   |/
-  | o  ba2ed02b0c9a
+  | *  ba2ed02b0c9a
   | |
   | x  4a004186e638
   |/     Obsfate: reworded using amend as 8:b18bc8331526; reworded using amend as 9:0b997eb7ceee
   |
-  o  dd800401bd8c
+  *  dd800401bd8c
   |
   | x  9bd10a0775e4
   |/     Obsfate: split as 5:dd800401bd8c, 6:4a004186e638, 7:ba2ed02b0c9a
@@ -1525,22 +1548,24 @@ Check templates
   o  ea207398892e
   
   $ hg up --hidden 4
+  updating to a hidden changeset 9bd10a0775e4
+  (hidden revision '9bd10a0775e4' has diverged)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (9bd10a0775e4)
   (9bd10a0775e4 has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
   $ hg rebase -r 7 -d 8 --config extensions.rebase=
   rebasing 7:ba2ed02b0c9a "Add A,B,C"
   $ hg tlog
-  o  eceed8f98ffc
+  *  eceed8f98ffc
   |    Precursors: 4:9bd10a0775e4
   |    semi-colon: 4:9bd10a0775e4
-  | o  0b997eb7ceee
+  | *  0b997eb7ceee
   | |    Precursors: 4:9bd10a0775e4
   | |    semi-colon: 4:9bd10a0775e4
-  o |  b18bc8331526
+  * |  b18bc8331526
   |/     Precursors: 4:9bd10a0775e4
   |      semi-colon: 4:9bd10a0775e4
-  o  dd800401bd8c
+  *  dd800401bd8c
   |    Precursors: 4:9bd10a0775e4
   |    semi-colon: 4:9bd10a0775e4
   | @  9bd10a0775e4
@@ -1554,13 +1579,13 @@ Check templates
   o  ea207398892e
   
   $ hg fatelog
-  o  eceed8f98ffc
+  *  eceed8f98ffc
   |
-  | o  0b997eb7ceee
+  | *  0b997eb7ceee
   | |
-  o |  b18bc8331526
+  * |  b18bc8331526
   |/
-  o  dd800401bd8c
+  *  dd800401bd8c
   |
   | @  9bd10a0775e4
   |/     Obsfate: split using amend, rebase as 5:dd800401bd8c, 9:0b997eb7ceee, 10:eceed8f98ffc; split using amend, rebase as 5:dd800401bd8c, 8:b18bc8331526, 10:eceed8f98ffc
@@ -1588,6 +1613,8 @@ Check output
 ------------
 
   $ hg up "desc(A0)" --hidden
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' is pruned)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its parent successor)

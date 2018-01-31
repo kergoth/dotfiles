@@ -50,7 +50,7 @@ Create a split commit
   |
   o  3:a7fdfda64c08@default(draft) _oo
   |
-  | o  2:f52200b086ca@default(draft) add uu
+  | *  2:f52200b086ca@default(draft) add uu
   | |
   | x  1:d55647aaa0c6@default(draft) oo+pp
   |/

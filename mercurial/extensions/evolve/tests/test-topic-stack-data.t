@@ -73,6 +73,7 @@ A simple topic with unstability
   $ hg up 'desc(fuz_a)'
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ hg commit --amend --message 'fuz1_a'
+  2 new orphan changesets
 
 A topic with multiple heads
 
@@ -91,6 +92,7 @@ A topic with multiple heads
   $ hg up 'desc(bar_d)'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ hg commit --amend --message 'bar1_d'
+  1 new orphan changesets
 
 topic 'foo' on the multi headed branch
 
@@ -121,7 +123,7 @@ Summary
   |
   | o  bar1_d (default) [bar]
   | |
-  | | o  add bar_e (default) [bar]
+  | | *  add bar_e (default) [bar]
   | | |
   | | x  add bar_d (default) [bar]
   | |/
@@ -133,9 +135,9 @@ Summary
   | |
   | | o  fuz1_a (default) [fuz]
   | | |
-  | | | o  add fuz_c (default) [fuz]
+  | | | *  add fuz_c (default) [fuz]
   | | | |
-  | | | o  add fuz_b (default) [fuz]
+  | | | *  add fuz_b (default) [fuz]
   | | | |
   | | | x  add fuz_a (default) [fuz]
   | | |/

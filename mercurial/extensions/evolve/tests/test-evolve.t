@@ -354,7 +354,7 @@ changeset plus the updating changeset are hidden from view by default::
   $ glog --hidden
   o  4:ba0ec09b1bab@default(draft) a nifty feature
   |
-  | o  3:6992c59c6b06@default(draft) another feature (child of 568a468b60fc)
+  | *  3:6992c59c6b06@default(draft) another feature (child of 568a468b60fc)
   | |
   | | x  2:73296a82292a@default(draft) another feature (child of 568a468b60fc)
   | |/
@@ -447,9 +447,9 @@ test evolve --all
   $ hg log -G --template '{rev} {troubles}\n'
   @  10
   |
-  | o  9 orphan
+  | *  9 orphan
   | |
-  | o  8 orphan
+  | *  8 orphan
   | |
   | x  7
   |/
@@ -957,7 +957,7 @@ Evolve from the middle of a stack pick the right changesets.
   $ hg log -G --template '{rev} [{branch}] {desc|firstline}\n'
   o  9 [default] a1__
   |
-  | o  8 [mybranch] a3
+  | *  8 [mybranch] a3
   | |
   | @  7 [mybranch] a2
   | |
@@ -991,7 +991,7 @@ Evolve disables active bookmarks.
   |
   o  9:9f8b83c2e7f3@default(draft) a1__
   |
-  | o  8:777c26ca5e78@mybranch(draft) a3
+  | *  8:777c26ca5e78@mybranch(draft) a3
   | |
   | x  7:eb07e22a0e63@mybranch(draft) a2
   | |
@@ -1011,7 +1011,7 @@ divergent
   |
   @  9 [default] a1__
   |
-  | o  8 [mybranch] a3
+  | *  8 [mybranch] a3
   | |
   | x  7 [mybranch] a2
   | |
@@ -1031,7 +1031,7 @@ divergent
   |/
   o  9	testbookmark: a1__ - test
   |
-  | o  8	: a3 - test
+  | *  8	: a3 - test
   | |
   | x  7	: a2 - test
   | |
@@ -1050,7 +1050,7 @@ normally the unstable changeset would be solve first
   |/
   o  9	testbookmark: a1__ - test
   |
-  | o  8	: a3 - test
+  | *  8	: a3 - test
   | |
   | x  7	: a2 - test
   | |
@@ -1111,9 +1111,9 @@ Check that we can resolve troubles in a revset with more than one commit
   $ glog
   @  16:0cf3707e8971@default(draft) a3
   |
-  | o  15:daa1ff1c7fbd@default(draft) add gh
+  | *  15:daa1ff1c7fbd@default(draft) add gh
   | |
-  | | o  14:484fb3cfa7f2@default(draft) add gg
+  | | *  14:484fb3cfa7f2@default(draft) add gg
   | |/
   | x  13:b88539ad24d7@default(draft) a3
   |/
@@ -1250,6 +1250,24 @@ Enabling commands selectively, only fold enabled, next is still unknown
   (use 'hg help' for the full list of commands or 'hg -v' for details)
   [255]
 
+Shows "use 'hg evolve' to..." hints iff the evolve command is enabled
+
+  $ hg --hidden up 14
+  updating to a hidden changeset 484fb3cfa7f2
+  (hidden revision '484fb3cfa7f2' was rewritten as: 98e171e2f272)
+  2 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory parent is obsolete! (484fb3cfa7f2)
+  $ cat >> $HGRCPATH <<EOF
+  > [experimental]
+  > evolutioncommands=evolve
+  > EOF
+  $ hg --hidden up 15
+  updating to a hidden changeset daa1ff1c7fbd
+  (hidden revision 'daa1ff1c7fbd' was rewritten as: 0c049e4e5422)
+  1 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory parent is obsolete! (daa1ff1c7fbd)
+  (use 'hg evolve' to update to its successor: 0c049e4e5422)
+
 Restore all of the evolution features
 
   $ cat >> $HGRCPATH <<EOF
@@ -1259,7 +1277,7 @@ Restore all of the evolution features
 
 Check hg evolve --rev on singled out commit
   $ hg up 98e171e2f272 -C
-  1 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  2 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ mkcommit j1
   $ mkcommit j2
   $ mkcommit j3
@@ -1272,9 +1290,9 @@ Check hg evolve --rev on singled out commit
   $ glog -r "0cf3707e8971::"
   @  22:274b6cd0c101@default(draft) add j1
   |
-  | o  21:89e4f7e8feb5@default(draft) add j3
+  | *  21:89e4f7e8feb5@default(draft) add j3
   | |
-  | o  20:4cd61236beca@default(draft) add j2
+  | *  20:4cd61236beca@default(draft) add j2
   | |
   | x  19:0fd8bfb02de4@default(draft) add j1
   |/
@@ -1312,9 +1330,9 @@ With only createmarkers we can only uncommit on a head
   $ glog -r "0cf3707e8971::"
   @  23:0ef9ff75f8e2@default(draft) add j1
   |
-  | o  21:89e4f7e8feb5@default(draft) add j3
+  | *  21:89e4f7e8feb5@default(draft) add j3
   | |
-  | o  20:4cd61236beca@default(draft) add j2
+  | *  20:4cd61236beca@default(draft) add j2
   | |
   | x  19:0fd8bfb02de4@default(draft) add j1
   |/
@@ -1446,7 +1464,7 @@ Create a split commit
   |
   o  31:2b5a32114b3d@default(draft) _oo
   |
-  | o  30:4d122571f3b6@default(draft) add uu
+  | *  30:4d122571f3b6@default(draft) add uu
   | |
   | x  29:7da3e73df8a5@default(draft) oo+pp
   |/
@@ -1526,7 +1544,7 @@ Check that dirstate changes are kept at failure for conflicts (issue4966)
   |
   o  37:df89d30f23e2@default(draft) amended
   |
-  | o  36:59c37c5bebd1@default(draft) will cause conflict at evolve
+  | *  36:59c37c5bebd1@default(draft) will cause conflict at evolve
   | |
   | x  35:7cc12c6c7862@default(draft) will be evolved safely
   | |

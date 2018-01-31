@@ -65,10 +65,11 @@ initial
   $ hg debugobsolete aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa `getid 'desc(A0)'`
   $ hg debugobsolete `getid 'desc(A0)'` `getid 'desc(A1)'`
   obsoleted 1 changesets
+  1 new orphan changesets
   $ hg log -G --hidden
   @  e5ea8f9c7314 (draft): A1
   |
-  | o  06055a7959d4 (draft): B
+  | *  06055a7959d4 (draft): B
   | |
   | x  28b51eb45704 (draft): A0
   |/

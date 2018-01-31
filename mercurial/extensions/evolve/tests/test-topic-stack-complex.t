@@ -81,6 +81,7 @@ Testing in case of split within the topic
   examine changes to 'd'? [Ynesfdaq?] n
   
   Done splitting? [yN] y
+  1 new orphan changesets
 
   $ hg stack
   ### topic: foo
@@ -94,7 +95,7 @@ Testing in case of split within the topic
   $ hg show work
   @  5cce (foo) split2
   o  f26c (foo) split1
-  | o  f1d3 (foo) Added e and f
+  | *  f1d3 (foo) Added e and f
   | x  8e82 (foo) Added c and d
   |/
   o  002b (foo) Added a and b
@@ -116,10 +117,10 @@ Testing in case of split within the topic
   1 new orphan changesets
   $ hg show work
   @  7d94 (foo) split1
-  | o  5cce (foo) split2
+  | *  5cce (foo) split2
   | x  f26c (foo) split1
   |/
-  | o  f1d3 (foo) Added e and f
+  | *  f1d3 (foo) Added e and f
   | x  8e82 (foo) Added c and d
   |/
   o  002b (foo) Added a and b

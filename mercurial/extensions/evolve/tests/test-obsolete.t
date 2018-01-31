@@ -121,6 +121,8 @@ test obsolete changeset with non-obsolete descendant
   4
   - 725c380fe99b
   $ hg up --hidden 3 -q
+  updating to a hidden changeset 0d3f46688ccc
+  (hidden revision '0d3f46688ccc' was rewritten as: 725c380fe99b)
   working directory parent is obsolete! (0d3f46688ccc)
 (reported by parents too)
   $ hg parents
@@ -186,6 +188,7 @@ Test communication of obsolete relation with a compatible client
   adding file changes
   added 5 changesets with 5 changes to 5 files (+1 heads)
   2 new obsolescence markers
+  1 new orphan changesets
   $ hg -R ../other-new verify
   checking changesets
   checking manifests
@@ -209,8 +212,8 @@ Test communication of obsolete relation with a compatible client
   $ hg up --hidden 3 -q
   working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit obsol_d # 6
-  created new head
   1 new orphan changesets
+  created new head
   $ hg debugobsolete `getid 5` `getid 6`
   obsoleted 1 changesets
   $ qlog
@@ -268,8 +271,8 @@ Pushing again does not advertise extinct changesets
   $ hg up --hidden -q .^ # 3
   working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit "obsol_d'" # 7
-  created new head
   1 new orphan changesets
+  created new head
   $ hg debugobsolete `getid 6` `getid 7`
   obsoleted 1 changesets
   $ hg pull -R ../other-new .
@@ -359,8 +362,8 @@ Test rollback support
   $ hg up --hidden .^ -q # 3
   working directory parent is obsolete! (0d3f46688ccc)
   $ mkcommit "obsol_d''"
-  created new head
   1 new orphan changesets
+  created new head
   $ hg debugobsolete `getid 7` `getid 8`
   obsoleted 1 changesets
   $ cd ../other-new
@@ -425,6 +428,7 @@ obsolete public changeset
   $ hg id -n
   9
   $ hg debugobsolete `getid 0` `getid 9`
+  1 new phase-divergent changesets
 83b5778897ad try to obsolete immutable changeset 1f0dee641bb7
 # at core level the warning is not issued
 # this is now a big issue now that we have bumped warning
@@ -484,7 +488,7 @@ Check that named update does too
 check rebase compat
 
   $ hg log -G  --template='{rev} - {node|short} {desc}\n'
-  o  8 - 159dfc9fa5d3 add obsol_d''
+  *  8 - 159dfc9fa5d3 add obsol_d''
   |
   | o  4 - 725c380fe99b add obsol_c'
   | |
@@ -498,7 +502,7 @@ check rebase compat
   $ hg log -G  --template='{rev} - {node|short} {desc}\n' --hidden
   x  9 - 83b5778897ad add toto
   
-  o  8 - 159dfc9fa5d3 add obsol_d''
+  *  8 - 159dfc9fa5d3 add obsol_d''
   |
   | x  7 - 909a0fb57e5d add obsol_d'
   |/
@@ -532,9 +536,9 @@ should not rebase extinct changesets
   $ hg log -G --template='{rev} - {node|short} {desc}\n'
   @  11 - 9468a5f5d8b2 add obsol_d''
   |
-  o  10 - 2033b4e49474 add obsol_c
+  *  10 - 2033b4e49474 add obsol_c
   |
-  o  4 - 725c380fe99b add obsol_c'
+  *  4 - 725c380fe99b add obsol_c'
   |
   o  1 - 7c3bad9141dc add b
   |
@@ -553,6 +557,7 @@ Does not complain about new head if you obsolete the old one
   added 2 changesets with 1 changes to [12] files (re)
   3 new obsolescence markers
   obsoleted 1 changesets
+  2 new content-divergent changesets
   $ hg up -q 10
   $ mkcommit "obsol_d'''"
   created new head
@@ -620,7 +625,7 @@ Check hg commit --amend compat
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     add f
   |
-  | o  changeset:   12:6db5e282cb91
+  | *  changeset:   12:6db5e282cb91
   |/   parent:      10:2033b4e49474
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
@@ -683,6 +688,7 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   phases: 3 draft
   phase-divergent: 1 changesets
   $ hg debugobsolete `getid a7a6f2b5d8a5` `getid 50f11e5e3a63`
+  2 new content-divergent changesets
   $ hg log -r 'contentdivergent()'
   changeset:   12:6db5e282cb91
   parent:      10:2033b4e49474
@@ -701,6 +707,8 @@ Check divergence detection (note: multiple successors is sorted by changeset has
   
 
   $ hg up --hidden 3 -q
+  updating to a hidden changeset 0d3f46688ccc
+  (hidden revision '0d3f46688ccc' has diverged)
   working directory parent is obsolete! (0d3f46688ccc)
   $ hg evolve
   parent is obsolete with multiple successors:
@@ -719,6 +727,8 @@ Check divergence detection (note: multiple successors is sorted by changeset has
 Check import reports new unstable changeset:
 
   $ hg up --hidden 2
+  updating to a hidden changeset 4538525df7e2
+  (hidden revision '4538525df7e2' has diverged)
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (4538525df7e2)
   (4538525df7e2 has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
@@ -739,7 +749,7 @@ Relevant marker computation
   |  instability: orphan
   |  summary:     add obsol_d''
   |
-  | o  changeset:   15:50f11e5e3a63
+  | *  changeset:   15:50f11e5e3a63
   | |  parent:      11:9468a5f5d8b2
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -759,7 +769,7 @@ Relevant marker computation
   | | |    obsolete:    amended using amend as 14:705ab2a6b72e
   | | |    summary:     add f
   | | |
-  | | | o  changeset:   12:6db5e282cb91
+  | | | *  changeset:   12:6db5e282cb91
   | | |/   parent:      10:2033b4e49474
   | | |    user:        test
   | | |    date:        Thu Jan 01 00:00:00 1970 +0000

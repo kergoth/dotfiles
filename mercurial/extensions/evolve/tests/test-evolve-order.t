@@ -48,9 +48,9 @@ Initial setup
   $ hg log -G
   @  4:12d519679175@default(draft) add _a
   |
-  | o  3:4d156641b718@default(draft) add _c
+  | *  3:4d156641b718@default(draft) add _c
   | |
-  | o  2:4d7242ebb004@default(draft) add _b
+  | *  2:4d7242ebb004@default(draft) add _b
   | |
   | x  1:2d73fcd7f07d@default(draft) add _a
   |/
@@ -88,13 +88,13 @@ accross three stacks in growing rev numbers.
   $ hg log -G
   @  11:9a584314f3f3@default(draft) asecond
   |
-  | o  10:a59c79776f7c@default(draft) bprime
+  | *  10:a59c79776f7c@default(draft) bprime
   | |
   | x  8:81a687b96d4d@default(draft) aprime
   |/
-  | o  7:464731bc0ed0@default(draft) add _d
+  | *  7:464731bc0ed0@default(draft) add _d
   | |
-  | o  6:52b8f9b04f83@default(draft) add _c
+  | *  6:52b8f9b04f83@default(draft) add _c
   | |
   | x  5:59476c3836ef@default(draft) add _b
   | |
@@ -140,13 +140,13 @@ First set of stack:
   $ hg log -G -r "desc(_d)::"
   @  21:dcf786e878fd@default(draft) add c1second
   |
-  | o  20:507d52d715f6@default(draft) add c2prime
+  | *  20:507d52d715f6@default(draft) add c2prime
   | |
   | x  19:c995cb124ddc@default(draft) add c1prime
   |/
-  | o  18:d096a2437fd0@default(draft) add c4_
+  | *  18:d096a2437fd0@default(draft) add c4_
   | |
-  | o  17:cde95c6cba7a@default(draft) add c3_
+  | *  17:cde95c6cba7a@default(draft) add c3_
   | |
   | x  16:e0d9f7a099fe@default(draft) add c2_
   | |
@@ -172,7 +172,7 @@ Second set of stack with no successor for b2_:
   |
   o  26:4acf61f11dfb@default(draft) add b1prime
   |
-  | o  25:594e1fbbd61f@default(draft) add b4_
+  | *  25:594e1fbbd61f@default(draft) add b4_
   | |
   | x  24:be27500cfc76@default(draft) add b3_
   | |
@@ -182,13 +182,13 @@ Second set of stack with no successor for b2_:
   |/
   | o  21:dcf786e878fd@default(draft) add c1second
   |/
-  | o  20:507d52d715f6@default(draft) add c2prime
+  | *  20:507d52d715f6@default(draft) add c2prime
   | |
   | x  19:c995cb124ddc@default(draft) add c1prime
   |/
-  | o  18:d096a2437fd0@default(draft) add c4_
+  | *  18:d096a2437fd0@default(draft) add c4_
   | |
-  | o  17:cde95c6cba7a@default(draft) add c3_
+  | *  17:cde95c6cba7a@default(draft) add c3_
   | |
   | x  16:e0d9f7a099fe@default(draft) add c2_
   | |

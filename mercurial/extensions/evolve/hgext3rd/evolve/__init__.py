@@ -710,7 +710,8 @@ def _warnobsoletewc(ui, repo, prevnode=None, wasobs=None):
     ui.warn(msg % shortnode)
 
     # Check that evolve is activated for performance reasons
-    if ui.quiet or not obsolete.isenabled(repo, commandopt):
+    evolvecommandenabled = any('evolve' in e for e in cmdtable)
+    if ui.quiet or not evolvecommandenabled:
         return
 
     # Show a warning for helping the user to solve the issue

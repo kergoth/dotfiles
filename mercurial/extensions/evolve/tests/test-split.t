@@ -203,6 +203,7 @@ Split a revision specified with -r
   
   created new head
   Done splitting? [yN] y
+  2 new orphan changesets
 
 Stop before splitting the commit completely creates a commit with all the
 remaining changes

@@ -67,8 +67,8 @@ Split commits two by two
 ------------------------
 
   $ hg fold --exact -r 1 -r 2 --date "0 0" -m "fold0"
-  2 changesets folded
   4 new orphan changesets
+  2 changesets folded
   $ hg fold --exact -r 3 -r 4 --date "0 0" -m "fold1"
   2 changesets folded
   $ hg fold --exact -r 5 -r 6 --date "0 0" -m "fold2" -n "folding changesets to test"
@@ -94,7 +94,7 @@ Split commits two by two
   |  instability: orphan
   |  summary:     fold2
   |
-  | o  changeset:   8:d15d0ffc75f6
+  | *  changeset:   8:d15d0ffc75f6
   | |  parent:      2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -208,6 +208,7 @@ Then split
   record this change to 'D'? [Ynesfdaq?] Y
   
   no more change to split
+  1 new orphan changesets
   $ hg split "desc(fold2)" -d "0 0" << EOF
   > Y
   > Y
@@ -242,6 +243,7 @@ Then split
   record this change to 'F'? [Ynesfdaq?] Y
   
   no more change to split
+  1 new orphan changesets
   $ hg log -G
   @  changeset:   15:d4a000f63ee9
   |  tag:         tip
@@ -250,20 +252,20 @@ Then split
   |  instability: orphan
   |  summary:     fold2
   |
-  o  changeset:   14:ec31316faa9d
+  *  changeset:   14:ec31316faa9d
   |  parent:      4:868d2e0eb19c
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  instability: orphan
   |  summary:     fold2
   |
-  | o  changeset:   13:d0f33db50670
+  | *  changeset:   13:d0f33db50670
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  instability: orphan
   | |  summary:     fold1
   | |
-  | o  changeset:   12:7b3290f6e0a0
+  | *  changeset:   12:7b3290f6e0a0
   | |  parent:      2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -326,14 +328,14 @@ Connect them all
   |  instability: orphan
   |  summary:     fold2
   |
-  o  changeset:   14:ec31316faa9d
+  *  changeset:   14:ec31316faa9d
   |  parent:      4:868d2e0eb19c
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  instability: orphan
   |  summary:     fold2
   |
-  | o  changeset:   12:7b3290f6e0a0
+  | *  changeset:   12:7b3290f6e0a0
   | |  parent:      2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
@@ -382,7 +384,7 @@ Obslog should show a subset of the obs history, this test check that the
 walking algorithm works no matter the level of successors + precursors
 
   $ hg obslog 12
-  o    7b3290f6e0a0 (12) fold1
+  *    7b3290f6e0a0 (12) fold1
   |\
   x |    d15d0ffc75f6 (8) fold1
   |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 by test (*) (glob)
@@ -410,11 +412,11 @@ While with all option, we should see 15 changesets
   $ hg obslog --all 15
   o  19e14c8397fc (10) fold0
   |
-  | o    7b3290f6e0a0 (12) fold1
+  | *    7b3290f6e0a0 (12) fold1
   | |\
   | | | @  d4a000f63ee9 (15) fold2
   | | | |
-  | | | | o  ec31316faa9d (14) fold2
+  | | | | *  ec31316faa9d (14) fold2
   | | | |/|
   | | | x |    100cc25b765f (9) fold2
   | | | |\ \     rewritten(parent, content) as d4a000f63ee9, ec31316faa9d by test (*) (glob)

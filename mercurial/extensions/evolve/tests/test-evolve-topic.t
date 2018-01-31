@@ -98,17 +98,17 @@ make a mess
   |
   | o  10 - {foo} d9cacd156ffc add ddd (draft)
   | |
-  | | o  9 - {bar} 1d964213b023 add jjj (draft)
+  | | *  9 - {bar} 1d964213b023 add jjj (draft)
   | | |
-  | | o  8 - {bar} fcab990f3261 add iii (draft)
+  | | *  8 - {bar} fcab990f3261 add iii (draft)
   | | |
-  | | o  7 - {bar} b0c2554835ac add hhh (draft)
+  | | *  7 - {bar} b0c2554835ac add hhh (draft)
   | | |
-  | | o  6 - {bar} c748293f1c1a add ggg (draft)
+  | | *  6 - {bar} c748293f1c1a add ggg (draft)
   | | |
   +---x  5 - {foo} 6a6b7365c751 add fff (draft)
   | |
-  o |  4 - {foo} 3969ab847d9c add eee (draft)
+  * |  4 - {foo} 3969ab847d9c add eee (draft)
   | |
   x |  3 - {foo} 4e3a154f38c7 add ddd (draft)
   |/
@@ -134,13 +134,13 @@ Run evolve --all
   |
   o  10 - {foo} d9cacd156ffc add ddd (draft)
   |
-  | o  9 - {bar} 1d964213b023 add jjj (draft)
+  | *  9 - {bar} 1d964213b023 add jjj (draft)
   | |
-  | o  8 - {bar} fcab990f3261 add iii (draft)
+  | *  8 - {bar} fcab990f3261 add iii (draft)
   | |
-  | o  7 - {bar} b0c2554835ac add hhh (draft)
+  | *  7 - {bar} b0c2554835ac add hhh (draft)
   | |
-  | o  6 - {bar} c748293f1c1a add ggg (draft)
+  | *  6 - {bar} c748293f1c1a add ggg (draft)
   | |
   | x  5 - {foo} 6a6b7365c751 add fff (draft)
   | |
@@ -249,6 +249,7 @@ Testing when instability is involved
   o  0 - {} 199cc73e9a0b add aaa (draft)
   
   $ hg topic -r 070c5573d8f9 bar
+  4 new orphan changesets
   changed topic on 1 changes
   $ hg up 16d6f664b17c
   switching to topic bar

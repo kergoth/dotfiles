@@ -142,7 +142,7 @@ proper behavior with conflict using internal:merge
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     babar count up to ten
   |
-  | o  changeset:   4:71c18f70c34f
+  | *  changeset:   4:71c18f70c34f
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  instability: orphan
@@ -234,7 +234,7 @@ proper behavior with conflict using an external merge tool
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     babar count up to ten
   |
-  | o  changeset:   6:1836b91c6c1d
+  | *  changeset:   6:1836b91c6c1d
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  instability: orphan

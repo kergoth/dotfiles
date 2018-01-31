@@ -126,13 +126,13 @@ def amend(ui, repo, *pats, **opts):
         edit = opts.pop('edit', False)
         log = opts.get('logfile')
         opts['amend'] = True
-        if not (edit or opts['message'] or log):
-            opts['message'] = repo['.'].description()
         _resolveoptions(ui, opts)
         _alias, commitcmd = cmdutil.findcmd('commit', commands.table)
         try:
             wlock = repo.wlock()
             lock = repo.lock()
+            if not (edit or opts['message'] or log):
+                opts['message'] = repo['.'].description()
             rewriteutil.precheck(repo, [repo['.'].rev()], action='amend')
             return commitcmd[0](ui, repo, *pats, **opts)
         finally:
@@ -611,6 +611,11 @@ def fold(ui, repo, *revs, **opts):
             phases.retractboundary(repo, tr, targetphase, [newid])
             obsolete.createmarkers(repo, [(ctx, (repo[newid],))
                                    for ctx in allctx], metadata=metadata)
+            # move bookmarks from old nodes to the new one
+            # XXX: we should make rewriteutil.rewrite() handle such cases
+            for ctx in allctx:
+                bmupdater = rewriteutil.bookmarksupdater(repo, ctx.node(), tr)
+                bmupdater(newid)
             tr.close()
         finally:
             tr.release()

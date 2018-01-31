@@ -46,7 +46,7 @@ is obsolete with one successor
   $ hg log -G
   @  3:36050226a9b9@default(draft) bprime
   |
-  | o  2:102002290587@default(draft) add _c
+  | *  2:102002290587@default(draft) add _c
   | |
   | x  1:37445b16603b@default(draft) add _b
   |/
@@ -90,7 +90,7 @@ Not supported yet
   $ hg log -G
   @  4:47127ea62e5f@default(draft) aprime
   |
-  | o    3:6b4280e33286@default(draft) merge
+  | *    3:6b4280e33286@default(draft) merge
   | |\
   +---o  2:474da87dd33b@default(draft) add _c
   | |
@@ -143,7 +143,7 @@ Not supported yet
   |
   | o  4:47127ea62e5f@default(draft) aprime
   |/
-  | o    3:6b4280e33286@default(draft) merge
+  | *    3:6b4280e33286@default(draft) merge
   | |\
   +---x  2:474da87dd33b@default(draft) add _c
   | |
@@ -160,7 +160,7 @@ Not supported yet
   |
   | o  4:47127ea62e5f@default(draft) aprime
   |/
-  | o    3:6b4280e33286@default(draft) merge
+  | *    3:6b4280e33286@default(draft) merge
   | |\
   +---x  2:474da87dd33b@default(draft) add _c
   | |
@@ -191,7 +191,7 @@ is obsolete with multiple successors all in one chain (simple split)
   |
   o  3:8b87864bd0f4@default(draft) add bprimesplit1
   |
-  | o  2:102002290587@default(draft) add _c
+  | *  2:102002290587@default(draft) add _c
   | |
   | x  1:37445b16603b@default(draft) add _b
   |/
@@ -245,7 +245,7 @@ order (cross-split).
   |
   o  5:8ffdae67d696@default(draft) add bsecondsplit1
   |
-  | o  2:102002290587@default(draft) add _c
+  | *  2:102002290587@default(draft) add _c
   | |
   | x  1:37445b16603b@default(draft) add _b
   |/
@@ -294,7 +294,7 @@ Not supported yet
   |
   | o  3:8b87864bd0f4@default(draft) add bprimesplit1
   |/
-  | o  2:102002290587@default(draft) add _c
+  | *  2:102002290587@default(draft) add _c
   | |
   | x  1:37445b16603b@default(draft) add _b
   |/
@@ -308,7 +308,7 @@ Not supported yet
   |
   | o  3:8b87864bd0f4@default(draft) add bprimesplit1
   |/
-  | o  2:102002290587@default(draft) add _c
+  | *  2:102002290587@default(draft) add _c
   | |
   | x  1:37445b16603b@default(draft) add _b
   |/

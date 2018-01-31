@@ -384,7 +384,7 @@ Because the change is public, we won't inherit the topic from narf.
   merging alpha
   warning: conflicts while merging alpha! (edit, then use 'hg resolve --mark')
   0 files updated, 0 files merged, 0 files removed, 1 files unresolved
-  use 'hg resolve' to retry unresolved file merges or 'hg update -C .' to abandon
+  use 'hg resolve' to retry unresolved file merges or 'hg merge --abort' to abandon
   [1]
   $ hg revert -r narf alpha
   $ hg resolve -m alpha

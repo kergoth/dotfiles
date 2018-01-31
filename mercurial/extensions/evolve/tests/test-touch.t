@@ -32,6 +32,8 @@ Revive usage
   $ hg add b
   $ hg commit -m ab --amend
   $ hg up --hidden 1
+  updating to a hidden changeset [0-9a-f]{12} (re)
+  (hidden revision '*' was rewritten as: *) (glob)
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (*) (glob)
   (use 'hg evolve' to update to its successor: *) (glob)
@@ -48,7 +50,7 @@ Revive usage
   $ hg log -G
   @  3:[0-9a-f]{12} a (re)
   
-  o  2:[0-9a-f]{12} ab (re)
+  \*  2:[0-9a-f]{12} ab (re)
   
   $ hg prune 3
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
@@ -112,7 +114,7 @@ check move data kept after rebase on touch:
   $ hg log -G --hidden
   @  11:[0-9a-f]{12} gna1 (re)
   |
-  . o  10:[0-9a-f]{12} move (re)
+  . \*  10:[0-9a-f]{12} move (re)
   | |
   . x  9:[0-9a-f]{12} gna1 (re)
   |/

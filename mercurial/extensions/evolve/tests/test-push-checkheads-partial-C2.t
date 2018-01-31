@@ -61,10 +61,11 @@ Test setup
   created new head
   $ hg debugobsolete `getid "desc(A0)" ` `getid "desc(A1)"`
   obsoleted 1 changesets
+  1 new orphan changesets
   $ hg log -G --hidden
   @  f6082bc4ffef (draft): A1
   |
-  | o  d73caddc5533 (draft): B0
+  | *  d73caddc5533 (draft): B0
   | |
   | x  8aaa48160adc (draft): A0
   |/

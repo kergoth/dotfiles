@@ -485,13 +485,13 @@ Bob discovers the divergence.
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
   1 new obsolescence markers
+  2 new content-divergent changesets
   new changesets e3f99ce9d9cd
   (run 'hg heads' to see heads, 'hg merge' to merge)
-  2 new content-divergent changesets
 
 Figure SG09: multiple heads! divergence! oh my!
   $ hg --hidden shortlog -G -r 3::
-  o  6:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
+  *  6:e3f99ce9d9cd  draft  fix bug 24 (v2 by alice)
   |
   | @  5:a360947f6faf  draft  fix bug 24 (v2 by bob)
   |/

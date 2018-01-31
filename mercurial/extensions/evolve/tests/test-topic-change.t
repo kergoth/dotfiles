@@ -147,6 +147,7 @@ Changing topic using --current flag
 Changing topic in between the stack
 
   $ hg topic -r 9::10 --current
+  5 new orphan changesets
   changed topic on 2 changes
   $ hg glog
   o  22:1b88140feefe {foobar}
@@ -158,16 +159,16 @@ Changing topic in between the stack
   | @  20:c2d6b7df5dcf {foobar}
   | |  Added h  ()
   | |
-  | o  18:e7b418d79a05 {bar}
+  | *  18:e7b418d79a05 {bar}
   | |  Added g  ()
   | |
-  | o  17:82e0b14f4d9e {bar}
+  | *  17:82e0b14f4d9e {bar}
   | |  Added f  ()
   | |
-  | o  16:edc4a6b9ea60 {bar}
+  | *  16:edc4a6b9ea60 {bar}
   | |  Added e  ()
   | |
-  | o  11:1315a3808ed0 {foo}
+  | *  11:1315a3808ed0 {foo}
   | |  Added d  ()
   | |
   | x  10:1fa891977a22 {foo}
@@ -371,13 +372,14 @@ Changing topic on secret changesets
 
   $ hg topic -r . watwat
   switching to topic watwat
+  1 new orphan changesets
   changed topic on 1 changes
 
   $ hg glog
   @  33:894983f69e69 {watwat}
   |  Added g  ()
   |
-  | o  32:1b83d11095b9 {movebook}
+  | *  32:1b83d11095b9 {movebook}
   | |  Added h  (book bookboo)
   | |
   | x  26:7c76c271395f {bar}

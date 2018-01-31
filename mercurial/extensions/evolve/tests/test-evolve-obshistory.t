@@ -203,6 +203,8 @@ Actual test
   (use --hidden to access hidden revisions; successor: 4ae3a4151de9)
   [255]
   $ hg update --hidden "desc(A0)"
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: 4ae3a4151de9)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: 4ae3a4151de9)
@@ -303,6 +305,8 @@ Actual test
   (use --hidden to access hidden revisions; pruned)
   [255]
   $ hg up --hidden -r 'desc(B0)'
+  updating to a hidden changeset 0dec01379d3b
+  (hidden revision '0dec01379d3b' is pruned)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (0dec01379d3b)
   (use 'hg evolve' to update to its parent successor)
@@ -499,6 +503,8 @@ a coherent graph
   (use --hidden to access hidden revisions; successors: 337fec4d2edc, f257fde29c7a)
   [255]
   $ hg update --hidden 'min(desc(A0))'
+  updating to a hidden changeset 471597cad322
+  (hidden revision '471597cad322' was split as: 337fec4d2edc, f257fde29c7a)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471597cad322)
   (use 'hg evolve' to update to its tipmost successor: 337fec4d2edc, f257fde29c7a)
@@ -776,6 +782,8 @@ Check that debugobshistory on all heads show a coherent graph
   (use --hidden to access hidden revisions; successors: 337fec4d2edc, f257fde29c7a and 2 more)
   [255]
   $ hg update --hidden 'min(desc(A0))'
+  updating to a hidden changeset de7290d8b885
+  (hidden revision 'de7290d8b885' was split as: 337fec4d2edc, f257fde29c7a and 2 more)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (de7290d8b885)
   (use 'hg evolve' to update to its tipmost successor: 337fec4d2edc, f257fde29c7a and 2 more)
@@ -997,6 +1005,8 @@ graph
   (use --hidden to access hidden revisions; successor: eb5a0daa2192)
   [255]
   $ hg update --hidden 'desc(A0)'
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: eb5a0daa2192)
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -1005,6 +1015,8 @@ graph
   (use --hidden to access hidden revisions; successor: eb5a0daa2192)
   [255]
   $ hg update --hidden 'desc(B0)'
+  updating to a hidden changeset 0dec01379d3b
+  (hidden revision '0dec01379d3b' was rewritten as: eb5a0daa2192)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (0dec01379d3b)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
@@ -1040,6 +1052,8 @@ Test setup
      summary:     ROOT
   
   $ hg update --hidden 'desc(A0)'
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: fdf9bde5129a)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: fdf9bde5129a)
@@ -1054,7 +1068,7 @@ Test setup
   |  instability: content-divergent
   |  summary:     A2
   |
-  | o  changeset:   2:fdf9bde5129a
+  | *  changeset:   2:fdf9bde5129a
   |/   parent:      0:ea207398892e
   |    user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
@@ -1101,7 +1115,7 @@ Check that with all option, every changeset is shown
   $ hg obslog --hidden --all 471f378eab4c --patch
   @  65b757b745b9 (3) A2
   |
-  | o  fdf9bde5129a (2) A1
+  | *  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
@@ -1162,7 +1176,7 @@ Check that with all option, every changeset is shown
 Check that debugobshistory on the first diverged revision show the revision
 and the diverent one
   $ hg obslog fdf9bde5129a --patch
-  o  fdf9bde5129a (2) A1
+  *  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
@@ -1187,7 +1201,7 @@ Check that all option show all of them
   $ hg obslog fdf9bde5129a -a --patch
   @  65b757b745b9 (3) A2
   |
-  | o  fdf9bde5129a (2) A1
+  | *  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
@@ -1234,7 +1248,7 @@ Check that all option show all of them
   $ hg obslog 65b757b745b9 -a --patch
   @  65b757b745b9 (3) A2
   |
-  | o  fdf9bde5129a (2) A1
+  | *  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
@@ -1259,7 +1273,7 @@ graph
   $ hg obslog '65b757b745b9+fdf9bde5129a' --patch
   @  65b757b745b9 (3) A2
   |
-  | o  fdf9bde5129a (2) A1
+  | *  fdf9bde5129a (2) A1
   |/
   x  471f378eab4c (1) A0
        rewritten(description) as 65b757b745b9 by test (*) (glob)
@@ -1334,6 +1348,8 @@ graph
   (use --hidden to access hidden revisions; diverged)
   [255]
   $ hg update --hidden 'desc(A0)'
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' has diverged)
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (471f378eab4c has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)
@@ -1560,10 +1576,14 @@ Check that obslog on ROOT with all option show everything
   (use --hidden to access hidden revisions; successor: eb5a0daa2192)
   [255]
   $ hg update --hidden 'desc(A0)'
+  updating to a hidden changeset 471f378eab4c
+  (hidden revision '471f378eab4c' was rewritten as: eb5a0daa2192)
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory parent is obsolete! (471f378eab4c)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)
   $ hg update --hidden 0dec01379d3b
+  updating to a hidden changeset 0dec01379d3b
+  (hidden revision '0dec01379d3b' was rewritten as: eb5a0daa2192)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (0dec01379d3b)
   (use 'hg evolve' to update to its successor: eb5a0daa2192)

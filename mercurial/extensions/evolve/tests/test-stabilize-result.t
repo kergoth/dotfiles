@@ -217,6 +217,8 @@ Stabilize divergent changesets with same parent
   $ echo 'babar' >> a
   $ hg amend
   $ hg up --hidden 3932c176bbaa
+  updating to a hidden changeset 3932c176bbaa
+  (hidden revision '3932c176bbaa' was rewritten as: d2f173e25686)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (3932c176bbaa)
   (use 'hg evolve' to update to its successor: d2f173e25686)
@@ -229,7 +231,7 @@ Stabilize divergent changesets with same parent
   $ glog
   @  14:eacc9c8240fe@default(draft) bk:[] More addition
   |
-  | o  13:d2f173e25686@default(draft) bk:[] More addition
+  | *  13:d2f173e25686@default(draft) bk:[] More addition
   |/
   | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
@@ -325,6 +327,8 @@ Check conflict during divergence resolution
 -------------------------------------------------
 
   $ hg up --hidden 3932c176bbaa
+  updating to a hidden changeset 3932c176bbaa
+  (hidden revision '3932c176bbaa' was rewritten as: f344982e63c4)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (3932c176bbaa)
   (use 'hg evolve' to update to its successor: f344982e63c4)

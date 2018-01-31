@@ -170,9 +170,9 @@ example 7: amend an older changeset (figures 6, 7)
   $ hg --hidden shortlog -G -r 171c6a79a27b::
   @  13:395cbeda3a06  draft  fix bug 17
   |
-  | o  12:dadcbba2d606  draft  feature 23
+  | *  12:dadcbba2d606  draft  feature 23
   | |
-  | o  11:debd46bb29dc  draft  cleanup
+  | *  11:debd46bb29dc  draft  cleanup
   | |
   | x  10:3e1cb8f70c02  draft  fix bug 17
   |/
@@ -298,7 +298,7 @@ example 10: uncommit files from an older changeset (keep changes)
   |
   o  26:2594e98553a9  draft  fix a bug
   |
-  | o  25:fbb3c6d50427  draft  new feature
+  | *  25:fbb3c6d50427  draft  new feature
   | |
   | x  24:5b31a1239ab9  draft  fix a bug
   |/

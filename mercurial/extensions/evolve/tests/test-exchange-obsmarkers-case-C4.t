@@ -67,6 +67,7 @@ Implemented as the non-split version
   $ hg debugobsolete --hidden `getid 'desc(A)'` `getid 'desc(B)'`
   obsoleted 1 changesets
   $ hg debugobsolete --hidden `getid 'desc(A)'` `getid 'desc(C)'`
+  2 new content-divergent changesets
   $ hg prune -qd '0 0' .
   $ hg log -G --hidden
   x  7f7f229b13a6 (draft): C

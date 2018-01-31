@@ -8,7 +8,7 @@ setup
   > [extensions]
   > evolve=
   > [ui]
-  > logtemplate = '{rev} - {node|short} {desc|firstline} [{author}] ({phase})\n'
+  > logtemplate = '{rev} - {node|short} {desc|firstline} [{author}] ({phase}) {bookmarks}\n'
   > EOF
 
   $ hg init fold-tests
@@ -16,6 +16,7 @@ setup
   $ hg debugbuilddag .+3:branchpoint+4*branchpoint+2
   $ hg up 'desc("r7")'
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg bookmark bm1
   $ hg log -G
   o  10 - a8407f9a3dc1 r10 [debugbuilddag] (draft)
   |
@@ -23,7 +24,7 @@ setup
   |
   o  8 - abf57d94268b r8 [debugbuilddag] (draft)
   |
-  | @  7 - 4de32a90b66c r7 [debugbuilddag] (draft)
+  | @  7 - 4de32a90b66c r7 [debugbuilddag] (draft) bm1
   | |
   | o  6 - f69452c5b1af r6 [debugbuilddag] (draft)
   | |
@@ -87,6 +88,27 @@ Test actual folding
   3 changesets folded
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
+Checking whether the bookmarks are moved or not
+
+  $ hg log -G
+  @  11 - 198b5c405d01 r5 [debugbuilddag] (draft) bm1
+  |
+  | o  10 - a8407f9a3dc1 r10 [debugbuilddag] (draft)
+  | |
+  | o  9 - 529dfc5bb875 r9 [debugbuilddag] (draft)
+  | |
+  | o  8 - abf57d94268b r8 [debugbuilddag] (draft)
+  | |
+  o |  4 - bebd167eb94d r4 [debugbuilddag] (draft)
+  |/
+  o  3 - 2dc09a01254d r3 [debugbuilddag] (draft)
+  |
+  o  2 - 01241442b3c2 r2 [debugbuilddag] (draft)
+  |
+  o  1 - 66f7d451a68b r1 [debugbuilddag] (draft)
+  |
+  o  0 - 1ea73414a91b r0 [debugbuilddag] (public)
+  
 (test inherited from test-evolve.t)
 
   $ hg fold --from 6 # want to run hg fold 6
@@ -95,7 +117,7 @@ Test actual folding
   [255]
 
   $ hg log -G
-  @  11 - 198b5c405d01 r5 [debugbuilddag] (draft)
+  @  11 - 198b5c405d01 r5 [debugbuilddag] (draft) bm1
   |
   | o  10 - a8407f9a3dc1 r10 [debugbuilddag] (draft)
   | |
@@ -124,7 +146,7 @@ test fold --exact
   $ hg log -G
   o  12 - b568edbee6e0 r8 [debugbuilddag] (draft)
   |
-  | @  11 - 198b5c405d01 r5 [debugbuilddag] (draft)
+  | @  11 - 198b5c405d01 r5 [debugbuilddag] (draft) bm1
   | |
   | o  4 - bebd167eb94d r4 [debugbuilddag] (draft)
   |/
@@ -144,8 +166,9 @@ Test allow unstable
   $ hg commit '-m r11'
   $ hg up '.^'
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  (leaving bookmark bm1)
   $ hg log -G
-  o  13 - 14d0e0da8e91 r11 [test] (draft)
+  o  13 - 14d0e0da8e91 r11 [test] (draft) bm1
   |
   | o  12 - b568edbee6e0 r8 [debugbuilddag] (draft)
   | |
@@ -190,7 +213,7 @@ test --user variant
   2 changesets folded
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg log -G
-  @  14 - 29b470a33594 r5 [Victor Rataxes <victor@rhino.savannah>] (draft)
+  @  14 - 29b470a33594 r5 [Victor Rataxes <victor@rhino.savannah>] (draft) bm1
   |
   | o  12 - b568edbee6e0 r8 [debugbuilddag] (draft)
   | |
@@ -209,7 +232,7 @@ test --user variant
   2 changesets folded
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg log -G
-  @  15 - 91880abed0f2 r4 [test] (draft)
+  @  15 - 91880abed0f2 r4 [test] (draft) bm1
   |
   | o  12 - b568edbee6e0 r8 [debugbuilddag] (draft)
   |/

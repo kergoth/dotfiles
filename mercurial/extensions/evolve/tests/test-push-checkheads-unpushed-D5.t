@@ -73,6 +73,7 @@ Test setup
   created new head
   $ hg debugobsolete `getid "desc(A0)" ` `getid "desc(A1)"`
   obsoleted 1 changesets
+  1 new orphan changesets
   $ hg debugobsolete `getid "desc(B0)" ` `getid "desc(B1)"`
   obsoleted 1 changesets
   $ hg log -G --hidden
@@ -107,5 +108,6 @@ Actual testing
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
   obsoleted 1 changesets
+  1 new orphan changesets
 
   $ cd ../..

@@ -1223,14 +1223,14 @@ it shows too many things:
   |    date:        Thu Jan 01 00:00:00 1970 +0000
   |    summary:     Adding apple juice
   |
-  | o  changeset:   15:bb1e6254f532
+  | *  changeset:   15:bb1e6254f532
   | |  topic:       tools
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  instability: orphan
   | |  summary:     Adding drill
   | |
-  | o  changeset:   14:d4f97f32f8a1
+  | *  changeset:   14:d4f97f32f8a1
   | |  topic:       tools
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000

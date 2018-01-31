@@ -255,11 +255,12 @@ XXX: this should  avoid create orphan changesets.
   changed topic to "bar" on 2 revisions
   switching to topic foo
   changed topic to "foo" on 2 revisions
+  2 new orphan changesets
 
   $ hg log -G
   @  [9:b14d13efcfa7] E
   |    topic: foo
-  o  [8:c89ca6e70978] D
+  *  [8:c89ca6e70978] D
   |    topic: foo
   | o  [7:a3ea0dfe6a10] C
   | |    topic: bar

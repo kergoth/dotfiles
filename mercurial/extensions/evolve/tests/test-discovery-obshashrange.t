@@ -178,7 +178,7 @@ testing simple push
   running python "*/dummyssh" 'user@dummy' 'hg -R server serve --stdio' (glob)
   sending hello command
   sending between command
-  remote: 483
+  remote: 495
   remote: capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_obshashrange_v1 batch * (glob)
   remote: 1
   preparing listkeys for "phases"
@@ -213,7 +213,7 @@ testing simple push
   45f8b879de922f6a6e620ba04205730335b6fc7e
   sending unbundle command
   bundle2-output-bundle: "HG20", 4 parts total
-  bundle2-output-part: "replycaps" 185 bytes payload
+  bundle2-output-part: "replycaps" 205 bytes payload
   bundle2-output-part: "changegroup" (params: 1 mandatory) streamed payload
   bundle2-output-part: "phase-heads" 24 bytes payload
   bundle2-output-part: "obsmarkers" streamed payload
@@ -312,13 +312,57 @@ testing push with extra local markers
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obscache in *.???? seconds (0r, 1o) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> debugobsolete ffffffffffffffffffffffffffffffffffffffff 45f8b879de922f6a6e620ba04205730335b6fc7e exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push -f --debug (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> running python "*/dummyssh" 'user@dummy' 'hg -R server serve --stdio' (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending hello command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending between command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: 495 (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_obshashrange_v1 batch branchmap bundle2=HG20%0Abookmarks%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Aerror%3Dabort%2Cunsupportedcontent%2Cpushraced%2Cpushkey%0Ahgtagsfnodes%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Aphases%3Dheads%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps changegroupsubset getbundle known lookup pushkey streamreqs=generaldelta,revlogv1 unbundle=HG10GZ,HG10BZ,HG10UN unbundlehash (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: 1 (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> preparing listkeys for "phases" (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending listkeys command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> received listkey for "phases": 58 bytes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> query 1; heads (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending batch command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> taking quick initial sample (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> query 2; still undecided: 5, sample size is: 5 (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending known command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> 2 total queries in *.????s (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> found 1 common and 1 unknown server heads, 2 roundtrips in *.????s (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> preparing listkeys for "phases" (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending listkeys command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> received listkey for "phases": 58 bytes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> preparing listkeys for "namespaces" (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending listkeys command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> received listkey for "namespaces": 40 bytes (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> strip detected, evo-ext-stablerange-mergepoint cache reset (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> strip detected, evo-ext-depthcache cache reset (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-depthcache in *.???? seconds (6r) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-stablerange-mergepoint in *.???? seconds (6r) (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> updated evo-ext-obshashrange in *.???? seconds (6r, 4o) (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> query 0; add more sample (target 100, current 1) (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> query 0; sample size is 9, largest range 5 (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending evoext_obshashrange_v1 command (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 0/5 mismatch - 1 obshashrange queries in *.???? seconds (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> obsdiscovery, 0/5 mismatch - 1 obshashrange queries in *.???? seconds (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> checking for updated bookmarks (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> preparing listkeys for "bookmarks" (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending listkeys command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> received listkey for "bookmarks": 0 bytes (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> list of changesets: (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> 45f8b879de922f6a6e620ba04205730335b6fc7e (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending unbundle command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-bundle: "HG20", 4 parts total (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "replycaps" 205 bytes payload (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "changegroup" (params: 1 mandatory) streamed payload (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "phase-heads" 24 bytes payload (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "obsmarkers" streamed payload (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-input-bundle: no-transaction (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-input-part: "reply:changegroup" (advisory) (params: 0 advisory) supported (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-input-part: "reply:obsmarkers" (params: 0 advisory) supported (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-input-bundle: 1 parts total (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> preparing listkeys for "phases" (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending listkeys command (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> received listkey for "phases": 58 bytes (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> push -f --debug exited 0 after *.?? seconds (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> log -G (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> writing .hg/cache/tags2-visible with 0 tags (glob)

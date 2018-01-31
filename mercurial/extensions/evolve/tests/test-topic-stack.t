@@ -262,12 +262,13 @@ Case with some of the topic unstable
 
   $ echo bbb > ddd
   $ hg commit --amend
+  2 new orphan changesets
   $ hg log -G
   @  6 default {foo} draft c_d
   |
-  | o  5 default {foo} draft c_f
+  | *  5 default {foo} draft c_f
   | |
-  | o  4 default {foo} draft c_e
+  | *  4 default {foo} draft c_e
   | |
   | x  3 default {foo} draft c_d
   |/
@@ -396,6 +397,7 @@ We amend the message to make sure the display base pick the right changeset
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ echo ccc > ddd
   $ hg commit --amend -m 'c_D' 
+  4 new orphan changesets
   $ hg rebase -d . -s 'desc(c_g)'
   rebasing 9:81264ae8a36a "c_g" (foo)
   rebasing 10:fde5f5941642 "c_h" (foo)
@@ -406,9 +408,9 @@ We amend the message to make sure the display base pick the right changeset
   |
   @  11 default {foo} draft c_D
   |
-  | o  8 default {foo} draft c_f
+  | *  8 default {foo} draft c_f
   | |
-  | o  7 default {foo} draft c_e
+  | *  7 default {foo} draft c_e
   | |
   | x  6 default {foo} draft c_d
   |/
@@ -449,9 +451,9 @@ Complex cases where commits with same topic are not consecutive but are linear
   |
   @  11 default {foo} draft c_D
   |
-  | o  8 default {foo} draft c_f
+  | *  8 default {foo} draft c_f
   | |
-  | o  7 default {foo} draft c_e
+  | *  7 default {foo} draft c_e
   | |
   | x  6 default {foo} draft c_d
   |/
@@ -486,19 +488,20 @@ Converting into a linear chain
 Changing topics on some commits in between
   $ hg topic foobar -r 'desc(c_e) + desc(c_D)'
   switching to topic foobar
+  4 new orphan changesets
   changed topic on 2 changes
   $ hg log -G
   @  17 default {foobar} draft c_D
   |
-  | o  16 default {foobar} draft c_e
+  | *  16 default {foobar} draft c_e
   | |
-  | | o  15 default {foo} draft c_f
+  | | *  15 default {foo} draft c_f
   | | |
   | | x  14 default {foo} draft c_e
   | |/
-  | o  13 default {foo} draft c_h
+  | *  13 default {foo} draft c_h
   | |
-  | o  12 default {foo} draft c_g
+  | *  12 default {foo} draft c_g
   | |
   | x  11 default {foo} draft c_D
   |/
@@ -511,6 +514,7 @@ Changing topics on some commits in between
   $ hg rebase -s 'desc("c_f") - obsolete()' -d 'desc("c_e") - obsolete()'
   rebasing 15:77082e55de88 "c_f" (foo)
   switching to topic foo
+  1 new orphan changesets
   switching to topic foobar
   $ hg rebase -s 'desc("c_g") - obsolete()' -d 'desc("c_D") - obsolete()'
   rebasing 12:0c3e8aed985d "c_g" (foo)
@@ -662,6 +666,7 @@ should stabilize this eventuelly)
   switching to topic red
   0 files updated, 0 files merged, 6 files removed, 0 files unresolved
   $ hg commit --amend --user test2
+  7 new orphan changesets
   $ hg up 'desc("c_C")'
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg commit --amend --user test2
@@ -673,21 +678,21 @@ should stabilize this eventuelly)
   $ hg log -G --rev 'sort(all(), "topo")'
   @  11 default {blue} draft c_D
   |
-  | o  8 default {blue} draft c_I
+  | *  8 default {blue} draft c_I
   | |
-  | o    7 default {red} draft c_H
+  | *    7 default {red} draft c_H
   | |\
-  | | o  6 default {blue} draft c_G
+  | | *  6 default {blue} draft c_G
   | | |
-  | | o  5 default {red} draft c_F
+  | | *  5 default {red} draft c_F
   | | |
-  | | o  4 default {red} draft c_E
+  | | *  4 default {red} draft c_E
   | | |
   | x |  3 default {blue} draft c_D
   |/ /
   x /  2 default {red} draft c_C
   |/
-  | o  10 default {red} draft c_C
+  | *  10 default {red} draft c_C
   |/
   x  1 default {red} draft c_B
   |
@@ -743,25 +748,25 @@ more obsolescence
   $ hg log -G --rev 'sort(all(), "topo")'
   @  16 default {blue} draft c_D
   |
-  | o  13 default {blue} draft c_G
+  | *  13 default {blue} draft c_G
   | |
-  | | o    12 default {red} draft c_H
+  | | *    12 default {red} draft c_H
   | | |\
-  | | | | o  8 default {blue} draft c_I
+  | | | | *  8 default {blue} draft c_I
   | | | | |
   | | +---x  7 default {red} draft c_H
   | | | |/
   | +---x  6 default {blue} draft c_G
   | | |
-  | o |  5 default {red} draft c_F
+  | * |  5 default {red} draft c_F
   | | |
-  | o |  4 default {red} draft c_E
+  | * |  4 default {red} draft c_E
   | | |
   +---x  3 default {blue} draft c_D
   | |
   x |  2 default {red} draft c_C
   |/
-  | o  15 default {red} draft c_C
+  | *  15 default {red} draft c_C
   |/
   x  1 default {red} draft c_B
   |
@@ -822,6 +827,7 @@ making a split
   $ echo zzz > Z
   $ hg add Z
   $ hg commit --amend
+  1 new orphan changesets
   $ hg status --change .
   A Z
   A ggg
@@ -864,13 +870,13 @@ making a split
   |    rewritten(parent, content) as dde94df880e9, e7ea874afbd5 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  907f7d3c2333 (18) c_G
-  |    rewritten as b24bab30ac12 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(content) as b24bab30ac12 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  3ab2eedae500 (13) c_G
-  |    rewritten as 907f7d3c2333 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(parent) as 907f7d3c2333 by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c7d60a180d05 (6) c_G
-       rewritten as 3ab2eedae500 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(user) as 3ab2eedae500 by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg export .
   # HG changeset patch

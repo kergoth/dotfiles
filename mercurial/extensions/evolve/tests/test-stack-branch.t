@@ -109,12 +109,13 @@ Case with some of the branch unstable
 
   $ echo bbb > ddd
   $ hg commit --amend
+  2 new orphan changesets
   $ hg log -G
   @  6 foo {} draft c_d
   |
-  | o  5 foo {} draft c_f
+  | *  5 foo {} draft c_f
   | |
-  | o  4 foo {} draft c_e
+  | *  4 foo {} draft c_e
   | |
   | x  3 foo {} draft c_d
   |/
@@ -225,6 +226,7 @@ We amend the message to make sure the display base pick the right changeset
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ echo ccc > ddd
   $ hg commit --amend -m 'c_D' 
+  4 new orphan changesets
   $ hg rebase -d . -s 'desc(c_g)'
   rebasing 9:2ebb6e48ab8a "c_g"
   rebasing 10:634f38e27a1d "c_h"
@@ -235,9 +237,9 @@ We amend the message to make sure the display base pick the right changeset
   |
   @  11 foo {} draft c_D
   |
-  | o  8 foo {} draft c_f
+  | *  8 foo {} draft c_f
   | |
-  | o  7 foo {} draft c_e
+  | *  7 foo {} draft c_e
   | |
   | x  6 foo {} draft c_d
   |/
@@ -269,9 +271,9 @@ Check that stack doesn't show draft changesets on a branch
   |
   @  11 foo {} draft c_D
   |
-  | o  8 foo {} draft c_f
+  | *  8 foo {} draft c_f
   | |
-  | o  7 foo {} draft c_e
+  | *  7 foo {} draft c_e
   | |
   | x  6 foo {} draft c_d
   |/

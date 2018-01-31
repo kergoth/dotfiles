@@ -49,7 +49,7 @@ With --all --any we dedupe the divergent and solve the divergence once
   $ hg log -G
   @  3:e708fd28d5cf@default(draft) add bdivergent2 [content-divergent]
   |
-  | o  2:c2f698071cba@default(draft) add bdivergent1 [content-divergent]
+  | *  2:c2f698071cba@default(draft) add bdivergent1 [content-divergent]
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   
@@ -92,7 +92,7 @@ versions of the revision _c
   $ hg log -G
   @  7:0a768ef678d9@default(draft) cdivergent2 [content-divergent]
   |
-  | o  6:26c7705fee96@default(draft) add cdivergent1 [content-divergent]
+  | *  6:26c7705fee96@default(draft) add cdivergent1 [content-divergent]
   |/
   | o  4:c26f1d3baed2@default(draft) add bdivergent1 []
   |/
@@ -129,7 +129,7 @@ Test None docstring issue of evolve divergent, which caused hg crush
   $ hg log -G
   @  3:e708fd28d5cf@default(draft) add bdivergent2 [content-divergent]
   |
-  | o  2:c2f698071cba@default(draft) add bdivergent1 [content-divergent]
+  | *  2:c2f698071cba@default(draft) add bdivergent1 [content-divergent]
   |/
   o  0:135f39f4bd78@default(draft) add _a []
   

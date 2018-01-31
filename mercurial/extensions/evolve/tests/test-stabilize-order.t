@@ -49,9 +49,9 @@
   $ glog
   @  5:005fe5914f78@default(draft) adda
   |
-  | o  4:22619daeed78@default(draft) addb
+  | *  4:22619daeed78@default(draft) addb
   | |
-  | | o  3:7a7552255fb5@default(draft) addc
+  | | *  3:7a7552255fb5@default(draft) addc
   | | |
   | | x  2:ef23d6ef94d6@default(draft) addb
   | |/
@@ -78,7 +78,7 @@ Test stabilizing a predecessor child
   |
   o  5:005fe5914f78@default(draft) adda
   |
-  | o  3:7a7552255fb5@default(draft) addc
+  | *  3:7a7552255fb5@default(draft) addc
   | |
   | x  2:ef23d6ef94d6@default(draft) addb
   | |
@@ -141,7 +141,7 @@ Test behavior with --any
   $ glog
   @  8:7a68bc4596ea@default(draft) addb
   |
-  | o  7:0f691739f917@default(draft) addc
+  | *  7:0f691739f917@default(draft) addc
   | |
   | x  6:81b8bbcd5892@default(draft) addb
   |/
@@ -204,14 +204,14 @@ Ambiguous evolution
   |  date:        Thu Jan 01 00:00:00 1970 +0000
   |  summary:     newmessage
   |
-  | o  changeset:   11:fa68011f392e
+  | *  changeset:   11:fa68011f392e
   | |  parent:      9:2256dae6521f
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
   | |  instability: orphan
   | |  summary:     secondambiguous
   | |
-  | | o  changeset:   10:bdc003b6eec2
+  | | *  changeset:   10:bdc003b6eec2
   | |/   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
   | |    instability: orphan

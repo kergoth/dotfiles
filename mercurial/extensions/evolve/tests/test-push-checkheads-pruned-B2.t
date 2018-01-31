@@ -61,6 +61,7 @@ Test setup
   created new head
   $ hg debugobsolete `getid "desc(A0)" ` `getid "desc(A1)"`
   obsoleted 1 changesets
+  1 new orphan changesets
   $ hg debugobsolete --record-parents `getid "desc(B0)"`
   obsoleted 1 changesets
   $ hg log -G --hidden

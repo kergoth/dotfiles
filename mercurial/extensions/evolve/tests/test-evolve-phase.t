@@ -75,7 +75,7 @@ Testing case when there are conflicts (bug 5720)
   $ hg glog
   @  3 - 87495ea7c9ec b (draft)
   |
-  | o  2 - 13833940840c c (secret)
+  | *  2 - 13833940840c c (secret)
   | |
   | x  1 - 1e6c11564562 b (draft)
   |/
@@ -105,7 +105,7 @@ Testing case when there are conflicts (bug 5720)
   $ hg glog
   @  3 - 87495ea7c9ec b (draft)
   |
-  | o  2 - 13833940840c c (secret)
+  | *  2 - 13833940840c c (secret)
   | |
   | x  1 - 1e6c11564562 b (draft)
   |/

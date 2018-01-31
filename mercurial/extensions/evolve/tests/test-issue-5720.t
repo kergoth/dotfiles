@@ -49,7 +49,7 @@ Amend the second draft with new content
   $ hg log -G -T "{rev}: {phase}"
   @  3: draft
   |
-  | o  2: secret
+  | *  2: secret
   | |
   | x  1: draft
   |/

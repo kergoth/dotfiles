@@ -238,6 +238,8 @@ Enjoy uncommit
 Test phase is preserved, no local changes
 
   $ hg up -C 3 --hidden
+  updating to a hidden changeset 5eb72dbe0cb4
+  (hidden revision '5eb72dbe0cb4' was rewritten as: e8db4aa611f6)
   8 files updated, 0 files merged, 1 files removed, 0 files unresolved
   (leaving bookmark touncommit-bm)
   working directory parent is obsolete! (5eb72dbe0cb4)
@@ -268,7 +270,7 @@ Test phase is preserved, no local changes
   $ glog --hidden
   @  5:a1d4c1ad76cc@bar(draft) touncommit
   |
-  | o  4:e8db4aa611f6@bar(draft) touncommit
+  | *  4:e8db4aa611f6@bar(draft) touncommit
   |/
   | x  3:5eb72dbe0cb4@bar(obsolete/draft) touncommit
   |/
@@ -285,6 +287,8 @@ Test phase is preserved, no local changes
 Test --all
 
   $ hg up -C 3 --hidden
+  updating to a hidden changeset 5eb72dbe0cb4
+  (hidden revision '5eb72dbe0cb4' has diverged)
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   working directory parent is obsolete! (5eb72dbe0cb4)
   (5eb72dbe0cb4 has diverged, use 'hg evolve --list --content-divergent' to resolve the issue)

@@ -71,6 +71,7 @@ initial
   $ mkcommit B1
   $ hg debugobsolete --hidden `getid 'desc(A0)'` `getid 'desc(A1)'`
   obsoleted 1 changesets
+  2 new orphan changesets
   $ hg debugobsolete --hidden aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa `getid 'desc(B0)'`
   $ hg debugobsolete --hidden `getid 'desc(B0)'` `getid 'desc(B1)'`
   obsoleted 1 changesets
@@ -80,7 +81,7 @@ initial
   |
   @  e5ea8f9c7314 (draft): A1
   |
-  | o  1d0f3cd25300 (draft): C
+  | *  1d0f3cd25300 (draft): C
   | |
   | x  6e72f0a95b5e (draft): B0
   | |
