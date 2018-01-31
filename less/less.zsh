@@ -7,7 +7,7 @@ export LESSOPEN="|mylesspipe.sh %s"
 if (( $+commands[pygmentize] )); then
     # If we have pygmentize, prefer it over code2color
     export LESSCOLORIZER=mypygmentize
-    export PYGMENTIZE_FORMATTER=terminal256
+    export PYGMENTIZE_FORMATTER=terminal
     # TODO: cache this, to avoid zsh load time increase
     if pygmentize -S base16-tomorrow-night -f $PYGMENTIZE_FORMATTER >/dev/null; then
         export PYGMENTIZE_STYLE=base16-tomorrow-night
