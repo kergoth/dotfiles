@@ -59,10 +59,15 @@ END
     chmod +x "$link_name"
 done
 
-for man in "$gemenv_dir/gems/"*/man/*.[0-9]; do
-    if [ -e "$man" ]; then
-        mandestdir="$XDG_DATA_HOME/man/man${man##*.}"
-        mkdir -p "$mandestdir"
-        ln -sfv "$man" "$mandestdir/"
+gem list -l | tr -d '()' | while read -r name version; do
+    mandir="$gemenv_dir/gems/$name-$version/man"
+    if [ -e "$mandir" ]; then
+        for man in "$mandir"/*.[0-9]; do
+            if [ -e "$man" ]; then
+                mandestdir="$XDG_DATA_HOME/man/man${man##*.}"
+                mkdir -p "$mandestdir"
+                ln -sfv "$man" "$mandestdir/"
+            fi
+        done
     fi
 done
