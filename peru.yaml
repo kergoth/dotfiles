@@ -11,6 +11,7 @@ imports:
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
     hub-completion: git/functions
     iterm2-zsh: zsh/plugins/iterm2
+    base16-shell: base16
 
     # Multiple components (shell+vim)
     fzf: .
@@ -566,6 +567,10 @@ git module checkbashisms:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
     rev: 363144086f16db9a9f944ee71012efd09a737126
+
+git module base16-shell:
+    url: https://github.com/chriskempson/base16-shell
+    rev: 911459645f76c7fb977520beddec2d552117e7b2
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
