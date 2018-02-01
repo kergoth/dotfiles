@@ -2,8 +2,6 @@
 
     - [ ] If possible, get man pages available for software installed with `go
       get -u`.
-    - [ ] Create a script to do a one-time ronn->man for any env man pages which
-      haven't yet been generated?
 
 - Move to the XDG paths
     - .wget-hsts
@@ -20,7 +18,3 @@
 - vim:
 
     - Consider resurrection of the vim-kergoth repo
-
-- zsh:
-
-    - Fix terminal title setting
