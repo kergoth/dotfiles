@@ -381,6 +381,10 @@ if &term ==# 'rxvt-unicode'
   set t_Co=256
 endif
 
+if $TERM_PROGRAM != 'Apple_Terminal'
+  let base16colorspace=256
+endif
+
 set background=dark
 if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
