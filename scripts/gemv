@@ -58,3 +58,11 @@ exec "$gemenv_dir/bin/\${0##*/}" "\$@"
 END
     chmod +x "$link_name"
 done
+
+for man in "$gemenv_dir/gems/"*/man/*.[0-9]; do
+    if [ -e "$man" ]; then
+        mandestdir="$XDG_DATA_HOME/man/man${man##*.}"
+        mkdir -p "$mandestdir"
+        ln -sfv "$man" "$mandestdir/"
+    fi
+done
