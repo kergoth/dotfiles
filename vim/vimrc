@@ -6,7 +6,7 @@ else
   " The default vimrc file.
   "
   " Maintainer:	Bram Moolenaar <Bram@vim.org>
-  " Last change:	2017 Mar 08
+  " Last change:	2017 Jun 13
   "
   " This is loaded if no vimrc file was found.
   " Except when Vim is run with "-u NONE" or "-C".
@@ -30,6 +30,12 @@ else
   if &compatible
     set nocompatible
   endif
+
+  " When the +eval feature is missing, the set command above will be skipped.
+  " Use a trick to reset compatible only when the +eval feature is missing.
+  silent! while 0
+    set nocompatible
+  silent! endwhile
 
   " Allow backspacing over everything in insert mode.
   set backspace=indent,eol,start
@@ -108,12 +114,13 @@ else
       au!
 
       " When editing a file, always jump to the last known cursor position.
-      " Don't do it when the position is invalid or when inside an event handler
-      " (happens when dropping a file on gvim).
+      " Don't do it when the position is invalid, when inside an event handler
+      " (happens when dropping a file on gvim) and for a commit message (it's
+      " likely a different one than last time).
       autocmd BufReadPost *
-        \ if line("'\"") >= 1 && line("'\"") <= line("$") |
-        \   exe "normal! g`\"" |
-        \ endif
+        \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+        \ |   exe "normal! g`\""
+        \ | endif
 
     augroup END
 
