@@ -62,7 +62,7 @@ TERM xterm-debian
 # Background color codes:
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
 NORMAL                  00;37   # global default, although everything should be something.
-FILE                    00;37   # normal file
+FILE                    00;38;5;20   # normal file
 RESET                   00;37   # reset to "normal" color
 DIR                     00;34   # directory
 LINK                    00;36   # symbolic link.  (If you set this to 'target' instead of a
@@ -84,11 +84,11 @@ STICKY                  37;44   # dir with the sticky bit set (+t) and not other
 EXEC                    00;32   # This is for files with execute permission:
 
 # If you use DOS-style suffixes, you may want to uncomment the following:
-.cmd 00;33 # executables (bright green)
-.exe 00;33
-.com 00;33
-.btm 00;33
-.bat 00;33
+.cmd 00;32 # executables (green)
+.exe 00;32
+.com 00;32
+.btm 00;32
+.bat 00;32
 
 ## Archives or compressed (red)
 .tar    01;31
@@ -153,81 +153,81 @@ EXEC                    00;32   # This is for files with execute permission:
 .CR2    00;35
 .ico    00;35
 
-## Document files (green)
-.pdf    00;32
-.ps     00;32
-.txt    00;32
-.html   00;32
-.css    00;32
-.rst    00;32
-.md     00;32
-.patch  00;32
-.diff   00;32
-.tex    00;32
-.xls    00;32
-.xlsx   00;32
-.doc    00;32
-.docx   00;32
-.ppt    00;32
-.pptx   00;32
-.key    00;32 # Keynote presentation
-.ods    00;32 # OpenDocument spreadsheet
-.odt    00;32 # OpenDocument text document
+## Document files (yellow)
+.pdf    00;33
+.ps     00;33
+.txt    00;33
+.html   00;33
+.css    00;33
+.rst    00;33
+.md     00;33
+.patch  00;33
+.diff   00;33
+.tex    00;33
+.xls    00;33
+.xlsx   00;33
+.doc    00;33
+.docx   00;33
+.ppt    00;33
+.pptx   00;33
+.key    00;33 # Keynote presentation
+.ods    00;33 # OpenDocument spreadsheet
+.odt    00;33 # OpenDocument text document
 
-## Template files (bright green)
-.pt     01;32 # Zope page template
-.tmpl   01;32
-.in     01;32
-.ots    01;32 # OpenDocument spreadsheet template
-.ott    01;32 # OpenDocument text document template
+## Template files (dark red)
+.pt     38;5;17 # Zope page template
+.tmpl   38;5;17
+.in     38;5;17
+.ots    38;5;17 # OpenDocument spreadsheet template
+.ott    38;5;17 # OpenDocument text document template
 
-## Audio formats (bright red)
-.aac    01;36
-.au     01;36
-.flac   01;36
-.mid    01;36
-.midi   01;36
-.mka    01;36
-.mp3    01;36
-.mpc    01;36
-.ogg    01;36
-.ra     01;36
-.wav    01;36
-.m4a    01;36
-.axa    01;36
-.oga    01;36
-.spx    01;36
-.xspf   01;36
+## Audio formats (orange)
+.aac    38;5;16
+.au     38;5;16
+.flac   38;5;16
+.mid    38;5;16
+.midi   38;5;16
+.mka    38;5;16
+.mp3    38;5;16
+.mpc    38;5;16
+.ogg    38;5;16
+.ra     38;5;16
+.wav    38;5;16
+.m4a    38;5;16
+.axa    38;5;16
+.oga    38;5;16
+.spx    38;5;16
+.xspf   38;5;16
 
 ## Video formats (as audio + bold)
-.mov    01;36
-.mpg    01;36
-.mpeg   01;36
-.m2v    01;36
-.mkv    01;36
-.ogm    01;36
-.mp4    01;36
-.m4v    01;36
-.mp4v   01;36
-.vob    01;36
-.qt     01;36
-.nuv    01;36
-.wmv    01;36
-.asf    01;36
-.rm     01;36
-.rmvb   01;36
-.flc    01;36
-.avi    01;36
-.fli    01;36
-.flv    01;36
-.gl     01;36
-.m2ts   01;36
-.divx   01;36
-.webm   01;36
-.axv    01;36
-.anx    01;36
-.ogv    01;36
-.ogx    01;36
+.mov    38;5;16
+.mpg    38;5;16
+.mpeg   38;5;16
+.m2v    38;5;16
+.mkv    38;5;16
+.ogm    38;5;16
+.mp4    38;5;16
+.m4v    38;5;16
+.mp4v   38;5;16
+.vob    38;5;16
+.qt     38;5;16
+.nuv    38;5;16
+.wmv    38;5;16
+.asf    38;5;16
+.rm     38;5;16
+.rmvb   38;5;16
+.flc    38;5;16
+.avi    38;5;16
+.fli    38;5;16
+.flv    38;5;16
+.gl     38;5;16
+.m2ts   38;5;16
+.divx   38;5;16
+.webm   38;5;16
+.axv    38;5;16
+.anx    38;5;16
+.ogv    38;5;16
+.ogx    38;5;16
 
 ## Config files (cyan)
 .conf       00;36
@@ -268,7 +268,7 @@ EXEC                    00;32   # This is for files with execute permission:
 .plist  00;32 # OSX properties
 .xml    00;32
 
-## Files of special interest (base1 + bold)
+## Files of special interest (bright white)
 .tex                01;37
 .rdf                01;37
 .owl                01;37
@@ -291,28 +291,28 @@ EXEC                    00;32   # This is for files with execute permission:
 .cc                 01;37
 
 ## Machine generated files / non-important (bright black)
-.log        01;30
-.bak        01;30
-.aux        01;30
-.lof        01;30
-.lol        01;30
-.lot        01;30
-.out        01;30
-.toc        01;30
-.bbl        01;30
-.blg        01;30
-*~          01;30
-*#          01;30
-.part       01;30
-.incomplete 01;30
-.swp        01;30
-.tmp        01;30
-.temp       01;30
-.o          01;30
-.obj        01;30
-.pyc        01;30
-.pyo        01;30
-.class      01;30
-.cache      01;30
-.egg-info   01;30
+.log        38;5;19
+.bak        38;5;19
+.aux        38;5;19
+.lof        38;5;19
+.lol        38;5;19
+.lot        38;5;19
+.out        38;5;19
+.toc        38;5;19
+.bbl        38;5;19
+.blg        38;5;19
+*~          38;5;19
+*#          38;5;19
+.part       38;5;19
+.incomplete 38;5;19
+.swp        38;5;19
+.tmp        38;5;19
+.temp       38;5;19
+.o          38;5;19
+.obj        38;5;19
+.pyc        38;5;19
+.pyo        38;5;19
+.class      38;5;19
+.cache      38;5;19
+.egg-info   38;5;19
 
