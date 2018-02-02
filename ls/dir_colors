@@ -237,13 +237,17 @@ EXEC                    00;32   # This is for files with execute permission:
 .ini        00;36
 .properties 00;36
 .yaml       00;36
+.sublime-settings 00;36
+.sublime-keymap   00;36
 .vcl        00;36 # Varnish
 
 ## Source code files (yellow)
 .c              00;33
 .cpp            00;33
 .py             00;33
-.coffesscript   00;33
+.coffeescript   00;33
+.coffee         00;33
+.less           00;33
 .js             00;33
 .rb             00;33
 .sh             00;33
@@ -265,6 +269,7 @@ EXEC                    00;32   # This is for files with execute permission:
 .db     00;32
 .sql    00;32
 .json   00;32
+.cson   00;32
 .plist  00;32 # OSX properties
 .xml    00;32
 
