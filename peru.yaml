@@ -93,9 +93,8 @@ imports:
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: vim/bundle/fzf-extra
-    vim-golang: vim/bundle/golang
-    vim-markdown: vim/bundle/markdown
     vim-obsession: vim/bundle/obsession
+    vim-polyglot: vim/bundle/polyglot
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
     vim-startuptime: vim/bundle/startuptime
@@ -180,20 +179,10 @@ git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
     rev: b82abd5bd583cfb90be63ae12adc36a84577bd45
 
-# go language support
-git module vim-golang:
-    url: https://github.com/jnwhiteh/vim-golang.git
-    rev: e6d0c6a72a66af2674b96233c4747661e0f47a8c
-
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake.git
     rev: e1c321872ba9a51410f600b95ed24ecd1d1abbdd
-
-# markdown runtime files
-git module vim-markdown:
-    url: https://github.com/tpope/vim-markdown.git
-    rev: 8cd41796fdafb50977f7f3cd0338716b379f988b
 
 # taskpaper todo file support
 git module taskpaper:
@@ -689,3 +678,7 @@ git module git-blame-colored:
         git-blame-colored.py: git-blame-colored
     executable: git-blame-colored
     rev: fd6b15d3bb44965dd06f37ee0790fd29c10a5d11
+
+git module vim-polyglot:
+    url: https://github.com/sheerun/vim-polyglot
+    rev: 96c5c20e418fa95b7137b6ef418946f25de91b1b
