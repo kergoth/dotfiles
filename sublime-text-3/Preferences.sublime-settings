@@ -26,8 +26,7 @@
 		".svn",
 		"CVS"
 	],
-	"font_face": "Input Mono Narrow",
-	"font_options": "lighter",
+	"font_face": "InputMonoNarrow-Thin",
 	"font_size": 14.0,
 	"ignored_packages":
 	[
