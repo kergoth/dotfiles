@@ -748,6 +748,7 @@ let g:vimsyn_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+let g:sleuth_automatic = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:vundle_default_git_proto = 'git'
 " let g:EasyMotion_leader_key = '<Leader>'
