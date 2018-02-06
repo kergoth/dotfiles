@@ -20,7 +20,7 @@ module.exports = {
 
     "editor.fontSize": "14px",
     //"editor.fontFamily": "Input Mono Narrow",
-    "editor.fontFamily": "InputMono-Thin",
+    "editor.fontFamily": "InputMonoNarrow-Thin",
 
     "environment.additionalPaths": [
         "/Users/kergoth/Dropbox/dotfiles/scripts",
