@@ -172,6 +172,9 @@ endif
 " Backups and swap files
 set directory=$XDG_DATA_HOME/vim/swap,/tmp,/var/tmp,$TEMP
 set backupdir=$XDG_DATA_HOME/vim/backup,/tmp,/var/tmp,$TEMP
+if has('persistent_undo')
+  set undodir=$XDG_DATA_HOME/vim/undo,/tmp,/var/tmp,$TEMP
+endif
 
 " Ensure we cover all temp files for backup file creation
 if $OSTYPE =~? 'darwin'
@@ -326,7 +329,6 @@ set sidescrolloff=5
 " Persistent undo
 if has('persistent_undo')
   set undofile
-  let &undodir = &backupdir
 endif
 
 " Use ack if available
