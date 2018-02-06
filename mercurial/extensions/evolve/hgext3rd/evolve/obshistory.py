@@ -10,7 +10,6 @@
 import re
 
 from mercurial import (
-    cmdutil,
     commands,
     error,
     graphmod,
@@ -97,7 +96,7 @@ def cmdobshistory(ui, repo, *revs, **opts):
     revs.reverse()
     _debugobshistoryrevs(ui, repo, revs, opts)
 
-class obsmarker_printer(cmdutil.changeset_printer):
+class obsmarker_printer(compat.changesetprinter):
     """show (available) information about a node
 
     We display the node, description (if available) and various information
@@ -356,7 +355,7 @@ def _debugobshistorygraph(ui, repo, revs, opts):
     displayer = obsmarker_printer(ui, repo.unfiltered(), matchfn, opts, buffered=True)
     edges = graphmod.asciiedges
     walker = _obshistorywalker(repo.unfiltered(), revs, opts.get('all', False))
-    cmdutil.displaygraph(ui, repo, walker, displayer, edges)
+    compat.displaygraph(ui, repo, walker, displayer, edges)
 
 def _debugobshistoryrevs(ui, repo, revs, opts):
     """ Display the obsolescence history for revset

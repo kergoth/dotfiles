@@ -1086,7 +1086,7 @@ def touch(ui, repo, *revs, **opts):
     if not duplicate:
         rewriteutil.precheck(repo, revs, touch)
     tmpl = utility.shorttemplate
-    displayer = cmdutil.show_changeset(ui, repo, {'template': tmpl})
+    displayer = compat.changesetdisplayer(ui, repo, {'template': tmpl})
     wlock = lock = tr = None
     try:
         wlock = repo.wlock()

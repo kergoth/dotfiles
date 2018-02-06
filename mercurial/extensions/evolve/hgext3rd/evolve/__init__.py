@@ -1548,8 +1548,8 @@ def evolve(ui, repo, **opts):
     elif len(specifiedcategories) == 1:
         targetcat = specifiedcategories[0]
     elif repo['.'].obsolete():
-        displayer = cmdutil.show_changeset(ui, repo,
-                                           {'template': shorttemplate})
+        displayer = compat.changesetdisplayer(ui, repo,
+                                              {'template': shorttemplate})
         # no args and parent is obsolete, update to successors
         try:
             ctx = repo[_singlesuccessor(repo, repo['.'])]
@@ -1776,7 +1776,7 @@ def _solveunstable(ui, repo, orig, dryrun=False, confirm=False,
         target = repo[heads.first()]
     else:
         target = targets[0]
-    displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+    displayer = compat.changesetdisplayer(ui, repo, {'template': shorttemplate})
     target = repo[target]
     if not ui.quiet or confirm:
         repo.ui.write(_('move:'))
@@ -1824,7 +1824,7 @@ def _solvebumped(ui, repo, bumped, dryrun=False, confirm=False,
         ui.write_err(msg)
         return 2
 
-    displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+    displayer = compat.changesetdisplayer(ui, repo, {'template': shorttemplate})
     if not ui.quiet or confirm:
         repo.ui.write(_('recreate:'))
         displayer.show(bumped)
@@ -1958,7 +1958,7 @@ def _solvedivergent(ui, repo, divergent, dryrun=False, confirm=False,
         ui.write_err(hint)
         return 2
 
-    displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+    displayer = compat.changesetdisplayer(ui, repo, {'template': shorttemplate})
     if not ui.quiet or confirm:
         ui.write(_('merge:'))
         displayer.show(divergent)
@@ -2137,7 +2137,8 @@ def cmdprevious(ui, repo, **opts):
                 exc.hint = _('do you want --merge?')
                 raise
 
-        displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+        displayer = compat.changesetdisplayer(ui, repo,
+                                              {'template': shorttemplate})
         topic = not opts.get("no_topic", False)
 
         target, bookmark = _findprevtarget(repo, displayer,
@@ -2197,7 +2198,8 @@ def cmdnext(ui, repo, **opts):
             filtered = [ctx for ctx in children if ctx.topic() != topic]
             # XXX N-square membership on children
             children = [ctx for ctx in children if ctx not in filtered]
-        displayer = cmdutil.show_changeset(ui, repo, {'template': shorttemplate})
+        displayer = compat.changesetdisplayer(ui, repo,
+                                              {'template': shorttemplate})
         if len(children) == 1:
             c = children[0]
             bm = repo._activebookmark

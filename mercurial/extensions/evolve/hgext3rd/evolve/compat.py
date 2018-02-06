@@ -28,6 +28,18 @@ try:
 except ImportError:
     obsutil = None
 
+# hg < 4.6 compat (c8e2d6ed1f9e)
+try:
+    from mercurial import logcmdutil
+    changesetdisplayer = logcmdutil.changesetdisplayer
+    changesetprinter = logcmdutil.changesetprinter
+    displaygraph = logcmdutil.displaygraph
+except (AttributeError, ImportError):
+    from mercurial import cmdutil
+    changesetdisplayer = cmdutil.show_changeset
+    changesetprinter = cmdutil.changeset_printer
+    displaygraph = cmdutil.displaygraph
+
 from . import (
     exthelper,
 )

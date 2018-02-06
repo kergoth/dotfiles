@@ -14,7 +14,6 @@ import weakref
 
 from mercurial import (
     commands,
-    cmdutil,
     localrepo,
     error,
     node as nodemod,
@@ -76,7 +75,7 @@ def debugstablesort(ui, repo, **opts):
         raise error.Abort('unknown sorting method: "%s"' % method,
                           hint='pick one of: %s' % valid_method)
 
-    displayer = cmdutil.show_changeset(ui, repo, opts, buffered=True)
+    displayer = compat.changesetdisplayer(ui, repo, opts, buffered=True)
     kwargs = {}
     if opts['limit']:
         kwargs['limit'] = int(opts['limit'])

@@ -233,7 +233,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: c5b1bbe1662d76c0aa9f6d325c3fb1b8db62ba02
+    rev: 65c24010de70bb53248a12e2d07b4188b7f47ee0
 
 # continuously updated session files
 git module vim-obsession:
@@ -511,7 +511,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: f7ecb11d71bb2cafcc0f137d1a07125d7a475bd1
+    rev: bee9fee8f36b3b1ef042d3f67ed7254164b974e6
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -557,7 +557,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 363144086f16db9a9f944ee71012efd09a737126
+    rev: 52b2db9ad08c74fd0b733611da4472cfe3b85594
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -628,7 +628,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: db2d0456ac3c9e38766b459fd4f21d754c1090fe
+    rev: 8216e6bbbce5cfd18b5366a7e70674baab735db3
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -650,7 +650,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 52fe924a139b8ae3d087cba0d9a5199054ae0595
+    rev: a3329ef3fc44a04a2617941eb46deef6c184f4af
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

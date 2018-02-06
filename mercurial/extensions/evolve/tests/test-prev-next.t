@@ -243,7 +243,7 @@ prev and next should lock properly against other commands
 
   $ hg init repo
   $ cd repo
-  $ HGEDITOR=${TESTDIR}/fake-editor.sh
+  $ HGEDITOR="sh ${TESTDIR}/fake-editor.sh"
   $ echo hi > foo
   $ hg ci -Am 'one'
   adding foo

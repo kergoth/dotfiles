@@ -9,13 +9,13 @@
 """
 
 from . import (
+    compat,
     error,
     exthelper,
     obshistory
 )
 
 from mercurial import (
-    cmdutil,
     templatekw,
     node,
     util
@@ -316,10 +316,10 @@ if not util.safehasattr(templatekw, 'showobsfate'):
     def showobsfate(*args, **kwargs):
         return showobsfatedata(*args, **kwargs)
 
-if util.safehasattr(cmdutil.changeset_printer, '_showobsfate'):
+if util.safehasattr(compat.changesetprinter, '_showobsfate'):
     pass # already included by default
-elif util.safehasattr(cmdutil.changeset_printer, '_exthook'):
-    @eh.wrapfunction(cmdutil.changeset_printer, '_exthook')
+elif util.safehasattr(compat.changesetprinter, '_exthook'):
+    @eh.wrapfunction(compat.changesetprinter, '_exthook')
     def exthook(original, self, ctx):
         # Call potential other extensions
         original(self, ctx)

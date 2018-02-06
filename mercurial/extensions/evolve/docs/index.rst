@@ -157,6 +157,8 @@ features will only be enabled by default at the point where users who do not use
 or care about the new features added by evolution won't be negatively impacted
 by the new default.
 
+You can find the `evolution roadmap in the wiki`_.
+
 .. # .. _`this query`: https://bz.mercurial-scm.org/buglist.cgi?component=evolution&bug_status=UNCONFIRMED&bug_status=CONFIRMED&bug_status=NEED_EXAMPLE
 
 Resources
@@ -173,3 +175,4 @@ Resources
 .. _`sharing mutable history`: sharing.html
 .. _`concepts`: concepts.html
 .. _`MQ migration guide`: from-mq.html
+.. _`evolution roadmap in the wiki`: https://www.mercurial-scm.org/wiki/CEDRoadMap
