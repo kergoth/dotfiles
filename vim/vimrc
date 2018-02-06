@@ -657,6 +657,9 @@ if has('gui_running')
   set guioptions-=T
   set guioptions-=m
 
+  " Disable gui tab line in favor of the text one
+  set guioptions-=e
+
   " use console dialogs instead of popup
   " dialogs for simple choices
   set guioptions+=c
