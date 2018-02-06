@@ -804,7 +804,7 @@ augroup end
 if has('macunix')
   " Dash.app integration
   let g:dash_map = {
-        \ 'python'     : 'python2',
+        \ 'python'     : 'python3',
         \ 'lua'        : 'lua',
         \ 'sh'         : 'man',
         \ }
