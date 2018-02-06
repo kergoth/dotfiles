@@ -102,6 +102,7 @@ imports:
     vim-surround: vim/bundle/surround
     vim-ale: vim/bundle/ale
     vim-vinegar: vim/bundle/vinegar
+    vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
 
     # Mercurial
@@ -687,3 +688,7 @@ git module vim-polyglot:
 git module vim-sleuth:
     url: https://github.com/tpope/vim-sleuth
     rev: d56a4302358359ddf9845252addf637a5e6bd6d5
+
+git module vim-vitality:
+    url: https://github.com/sjl/vitality.vim
+    rev: 0f693bff572689ad52b781c012dad4926cd924f6
