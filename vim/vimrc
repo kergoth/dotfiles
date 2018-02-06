@@ -63,6 +63,11 @@ else
     set incsearch
   endif
 
+  " Enable live substitution previews
+  if has("nvim")
+    set inccommand=nosplit
+  endif
+
   " Do not recognize octal numbers for Ctrl-A and Ctrl-X, most users find it
   " confusing.
   set nrformats-=octal
