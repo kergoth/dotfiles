@@ -1,7 +1,6 @@
 // Place your settings in this file to overwrite the default settings
 {
-    "editor.fontFamily": "Input Mono Narrow",
-    "editor.fontWeight": "300",
+    "editor.fontFamily": "InputMonoNarrow-Thin",
     "editor.fontSize": 14,
     "editor.scrollBeyondLastLine": false,
     "telemetry.enableTelemetry": false,
