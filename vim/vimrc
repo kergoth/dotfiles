@@ -1,5 +1,5 @@
 " Defaults {{{
-if v:version >= 800
+if v:version >= 800 && !has("nvim")
   unlet! skip_defaults_vim
   source $VIMRUNTIME/defaults.vim
 else
