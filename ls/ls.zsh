@@ -5,13 +5,12 @@ if [[ $OSTYPE =~ darwin ]]; then
     else
         alias ls='ls -G'
     fi
+    if [[ -n "$LS_COLORS" ]]; then
+        export LSCOLORS="$(gnu2bsd-lscolors)"
+    fi
 else
     alias ls='ls --color=auto'
     eval "$(dircolors -b $DOTFILESDIR/ls/dir_colors)"
-fi
-
-if [[ -n "$LS_COLORS" ]]; then
-    export LSCOLORS="$(gnu2bsd-lscolors)"
 fi
 
 alias lr='ls -thl'
