@@ -798,6 +798,10 @@ if has('multi_byte') | let g:netrw_xstrlen = 0 | endif
 " Place .netrwhist and .netrwbook in XDG_DATA_HOME, not $VIMDOTDIR
 let g:netrw_home = $XDG_DATA_HOME . '/vim'
 
+if exists('$SSH_CONNECTION')
+  let g:vitality_always_assume_iterm = 1
+endif
+
 augroup vimrc_plugins
   au!
 
