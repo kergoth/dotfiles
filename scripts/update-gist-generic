@@ -33,7 +33,8 @@ filename="${2:--}"
 raw_url="$(echo "$gist_url" | sed "s,github\.com,githubusercontent.com,")/raw/$filename"
 
 tmpfile="$(mktemp -t "$filename.XXXXXX")"
-trap 'rm -f "$tmpfile"' EXIT INT TERM
+tmpfile2="$(mktemp -t "$filename.XXXXXX")"
+trap 'rm -f "$tmpfile" "$tmpfile2"' EXIT INT TERM
 
 cat >>"$tmpfile"
 
@@ -58,7 +59,9 @@ fi
 export LESS="${LESS--R}"
 
 ret=0
-curl -s "$raw_url" | diff -urNd - "$tmpfile" | eval "$diff_pipeline" || ret=$?
+if curl -fsSL "$raw_url" >"$tmpfile2" 2>/dev/null; then
+    cat "$tmpfile2"
+fi | diff -urNd - "$tmpfile" | eval "$diff_pipeline" || ret=$?
 
 if [ $ret -ne 0 ] && [ $dry_run -ne 1 ]; then
     if [ -t 1 ]; then
