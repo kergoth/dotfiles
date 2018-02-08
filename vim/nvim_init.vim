@@ -1,5 +1,5 @@
-if !exists('$XDG_DATA_HOME')
-  let $XDG_DATA_HOME = $HOME . '/.config'
+if !exists('$XDG_CONFIG_HOME')
+  let $XDG_CONFIG_HOME = $HOME . '/.config'
 endif
 set runtimepath^=~/.vim runtimepath+=~/.vim/after runtimepath+=$XDG_CONFIG_HOME/vim
 let &packpath = &runtimepath
