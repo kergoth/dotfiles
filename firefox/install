@@ -1,6 +1,6 @@
 PROFILE="$HOME/Library/Application Support/Firefox/Profiles/$USER"
 if [ -d "$PROFILE" ]; then
-    link ./user-overrides.js "$PROFILE/user-overrides.js"
+    link user-overrides.js "$PROFILE/user-overrides.js"
     if ! [ -e "$PROFILE/updater.sh" ]; then
         curl -fsSL https://github.com/ghacksuserjs/ghacks-user.js/raw/master/updater.sh -o "$PROFILE/updater.sh"
     fi
@@ -8,3 +8,5 @@ if [ -d "$PROFILE" ]; then
         ( cd "$PROFILE" && ./updater.sh -merge -updatebatch; )
     fi
 fi
+
+link addons-script-config.toml $XDG_CONFIG_HOME/firefox-addons/config.toml
