@@ -1,0 +1,37 @@
+#!/bin/sh
+
+quote () {
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+$1
+EOF
+}
+
+save () {
+    case "$1" in
+    # when a string contains a "'" we have to escape it
+    *\'*)
+        saved="$saved $(quote "$1")"
+        ;;
+    # otherwise just quote the variable
+    *)
+        saved="$saved '$1'"
+        ;;
+    esac
+}
+
+saved=
+for arg; do
+    case "$arg" in
+        https://getpocket.com/a/read/*)
+            id="${arg#https://getpocket.com/a/read/}"
+            url="$(pocket-search -s all | grep "$id" | awk '{print $2}')"
+            if [ -n "$url" ]; then
+                arg="$url"
+            fi
+            ;;
+    esac
+    save "$arg"
+done
+eval set -- "$saved"
+
+youtube-dl "$@"
