@@ -18,6 +18,7 @@ alias parallel='parallel --bibtex'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
 alias diff='diff -urNd'
+alias bc='bc -ql'
 
 what () {
     tldr "$1" || cheat "$1" || man "$1"
