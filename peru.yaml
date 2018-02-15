@@ -113,7 +113,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 1f1e629290773bd6f9673f364303219d6da11129
+    rev: 90b09f88eee44b18751e23dc27c5f615ced54ac9
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -194,7 +194,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: c2ffb8b3ec114301795036f7bf22995746d2acaf
+    rev: 55a9721c22370a47e076e85449897ded6f45386d
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -288,7 +288,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: eb3afc03b57a20d1062880efe8e000abceeba3ee
+    rev: 417bca03dfa9a15a37d64678b5a4a175db6eb0a1
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -326,7 +326,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 52465bef4b8d584a14cbad50d5ccf21952131b76
+    rev: 9352ecf77d35caecf1dbbc28acb4b31267f2ddc0
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -557,7 +557,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 52b2db9ad08c74fd0b733611da4472cfe3b85594
+    rev: 67a69bd611538c56177234a3a64d832eeb7c3fe8
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -628,7 +628,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 8216e6bbbce5cfd18b5366a7e70674baab735db3
+    rev: f5d99bcac94b6dc14bd96e15c37773b3ff1719db
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -650,7 +650,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: a3329ef3fc44a04a2617941eb46deef6c184f4af
+    rev: fcb7932d7d61cda142da7597c9df4da4847f0ca8
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
