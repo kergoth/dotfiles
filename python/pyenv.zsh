@@ -6,5 +6,11 @@ fi
 
 if (( $+commands[pyenv] )); then
     eval "$(pyenv init -)"
-    compctl -K _pyenv pyenv
+
+    for i in $(pyenv root)/completions/pyenv.zsh \
+             ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/pyenv/share/zsh/site-functions/pyenv.zsh; do
+        if [[ -f $i ]]; then
+            . $i
+        fi
+    done
 fi
