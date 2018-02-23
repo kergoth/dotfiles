@@ -1,15 +1,10 @@
 # Load pyenv on demand, to speed up shell startup
+if [[ -d ~/.pyenv ]]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+
 if (( $+commands[pyenv] )); then
-    export PATH="$HOME/.pyenv/shims:$PATH"
-
-    pyenv () {
-        eval "$(command pyenv init -)"
-        pyenv "$@"
-    }
-
+    eval "$(pyenv init -)"
     compctl -K _pyenv pyenv
-    _pyenv () {
-        eval "$(command pyenv init -)"
-        _pyenv "$@"
-    }
 fi
