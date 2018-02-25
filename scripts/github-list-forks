@@ -2,7 +2,7 @@
 
 set -eu
 
-usage () {
+usage() {
     echo >&2 "${0##*/} [-a] [URL]"
     echo >&2
     echo >&2 "Options:"
@@ -10,14 +10,14 @@ usage () {
     echo >&2 "  URL   Github repo URL. If unspecified, the url of the 'origin' git remote is used."
 }
 
-process_arguments () {
+process_arguments() {
     all=0
     while getopts ah opt; do
         case "$opt" in
             a)
                 all=1
                 ;;
-            \?|h)
+            \? | h)
                 usage
                 return 1
                 ;;
@@ -32,7 +32,7 @@ process_arguments () {
     fi
 }
 
-repo_json () {
+repo_json() {
     tempfile="$tempdir/repo_info.json"
     touch "$tempdir/$script.toml"
 
@@ -50,7 +50,7 @@ repo_json () {
     cat "$tempdir/$id.json"
 }
 
-gist_get_forks () {
+gist_get_forks() {
     if [ "$1" != "$2" ]; then
         info="$(repo_json "$1" "$1" | jq -r '.owner.login, .git_pull_url' | tr '\n' '\t')"
         name="$(echo "$info" | cut -d"	" -f1)"
@@ -62,7 +62,7 @@ gist_get_forks () {
     done
 }
 
-gist_get_root_repo () {
+gist_get_root_repo() {
     fork_of="$(repo_json "$1" | jq -r '.fork_of?')"
     while :; do
         new_fork_of="$(echo "$fork_of" | jq -r '.fork_of?')"
@@ -78,7 +78,7 @@ gist_get_root_repo () {
     return 1
 }
 
-github_get_forks_raw () {
+github_get_forks_raw() {
     tempfile="$tempdir/repo_forks.json"
     id="$(toml-get -f "$tempdir/$script.toml" "ids.$1")"
     if [ ! -e "$tempdir/$id-forks.json" ]; then
@@ -87,7 +87,7 @@ github_get_forks_raw () {
     cat "$tempdir/$id-forks.json"
 }
 
-github_get_forks () {
+github_get_forks() {
     fork_info="$(repo_json "$1" | jq -r '[.forks,.clone_url] | map(tostring) | join("\t")')"
     num_forks="$(echo "$fork_info" | cut -f1)"
     if [ "$orig_repo" != "$1" ]; then
@@ -101,7 +101,7 @@ github_get_forks () {
     fi
 }
 
-github_get_forks_one () {
+github_get_forks_one() {
     github_get_forks_raw "$1" | jq -r '.[] | [.id, .full_name] | map(tostring) | join("\t")' | while read -r fork_id fork_name; do
         if ! [ -e "$tempdir/$fork_id.json" ]; then
             github_get_forks_raw "$1" | jq -r ".[] | select(.id == $fork_id)" >"$tempdir/$fork_id.json"
@@ -111,14 +111,14 @@ github_get_forks_one () {
     done
 }
 
-github_repo_info () {
+github_repo_info() {
     (
         set -o pipefail
         repo_json "$1" | jq -r '[.id,.fork,.forks,.full_name,.source.full_name] | map(tostring) | join("\t")' || return 1
     )
 }
 
-github_get_root_repo () {
+github_get_root_repo() {
     info="$(github_repo_info "$1")"
     is_fork="$(echo "$info" | cut -d"	" -f2)"
     while [ "$is_fork" = true ]; do
