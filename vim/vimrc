@@ -758,6 +758,8 @@ let g:vimsyn_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+let g:shfmt_extra_args = '-i 4 -ci -bn -d'
+let g:shfmt_fmt_on_save = 1
 let g:sleuth_automatic = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:vundle_default_git_proto = 'git'
