@@ -86,6 +86,7 @@ imports:
     vim-abolish: vim/bundle/abolish
     vim-airline: vim/bundle/airline
     vim-airline-themes: vim/bundle/airline-themes
+    vim-ale: vim/bundle/ale
     vim-bitbake: vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
@@ -97,10 +98,10 @@ imports:
     vim-polyglot: vim/bundle/polyglot
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
+    vim-shfmt: vim/bundle/shfmt
     vim-sleuth: vim/bundle/sleuth
     vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
-    vim-ale: vim/bundle/ale
     vim-vinegar: vim/bundle/vinegar
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
@@ -692,3 +693,7 @@ git module vim-sleuth:
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
     rev: 0f693bff572689ad52b781c012dad4926cd924f6
+
+git module vim-shfmt:
+    url: https://github.com/z0mbix/vim-shfmt
+    rev: 59f51f24d0ca00570ba0eb69b8e9797a3c8f7c13
