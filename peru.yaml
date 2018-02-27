@@ -111,6 +111,9 @@ imports:
     hg-extension-shelve: mercurial/extensions/shelve
     hg-extension-evolve: mercurial/extensions/evolve
 
+    # Textual
+    textual-succinct: textual/styles/Succinct
+    textual-succinctlight: textual/styles/Succinct Light
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -697,3 +700,11 @@ git module vim-vitality:
 git module vim-shfmt:
     url: https://github.com/z0mbix/vim-shfmt
     rev: 59f51f24d0ca00570ba0eb69b8e9797a3c8f7c13
+
+git module textual-succinctlight:
+    url: https://github.com/TempSpas/SuccinctLight
+    rev: 513237b205a7bc7f4680921da14f3287f868e0f0
+
+git module textual-succinct:
+    url: https://github.com/TempSpas/textual-succinct
+    rev: 1bb7701001441f3bcd477c33384a59fa11bb2738
