@@ -45,7 +45,7 @@ go get -u github.com/monochromegane/the_platinum_searcher/... # or brew install 
 go get -u github.com/junegunn/fzf/... # or brew install fzf
 go get -u github.com/edi9999/path-extractor/path-extractor
 gemv mdless # Markdown syntax-highlighting pager
-npmv tldr # or go get -u github.com/pranavraja/tldr
+go get -u 4d63.com/tldr
 gemv boom
 
 pipv pythonpy
