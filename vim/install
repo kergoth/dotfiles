@@ -9,4 +9,4 @@ fi
 
 link nvim_init.vim $XDG_CONFIG_HOME/nvim/init.vim
 
-set_launchd VIMINIT 'let $MYVIMRC = "~/.config/vim/vimrc" | source $MYVIMRC'
+link vimrc.redir ~/.vimrc
