@@ -79,6 +79,12 @@ export LESSHISTFILE=$XDG_DATA_HOME/less/lesshist
 export _FASD_DATA=$XDG_DATA_HOME/fasd/data
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export PERU_CACHE_DIR=$XDG_CACHE_HOME/peru
+export HTTPIE_CONFIG_DIR=$XDG_CONFIG_HOME/httpie
+export PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass
+export RLWRAP_HOME=$XDG_DATA_HOME/rlwrap
+export TMUX_TMPDIR=$XDG_RUNTIME_DIR
+export XAUTHORITY=$XDG_RUNTIME_DIR/Xauthority
+export RANDFILE=$XDG_DATA_HOME/rng
 
 for env in $DOTFILESDIR/*/env.zsh(N); do
     . "$env"
