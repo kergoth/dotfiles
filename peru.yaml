@@ -48,6 +48,7 @@ imports:
     osx-wificleaner: scripts
     planter: scripts
     pom: scripts
+    pyenv-installer: scripts
     dev-goodies: scripts
     repo: scripts
     rpm2cpio: scripts
@@ -708,3 +709,10 @@ git module textual-succinctlight:
 git module textual-succinct:
     url: https://github.com/TempSpas/textual-succinct
     rev: 1bb7701001441f3bcd477c33384a59fa11bb2738
+
+git module pyenv-installer:
+    url: https://github.com/pyenv/pyenv-installer
+    rev: 50829ed10f8fc4b977aec09bbe35ee7c87e1f3fd
+    move:
+        bin/pyenv-installer: pyenv-installer
+    pick: pyenv-installer
