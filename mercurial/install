@@ -7,12 +7,17 @@ if which hg >/dev/null 2>&1; then
 
     hg_version=$(hg --version 2>/dev/null | sed -n 's/.*(version \([0-9.]*\))$/\1/p')
     if [ "$(newest_version 3.3 $hg_version)" = 3.3 ]; then
+        # Older than 3.3
         sed '/^evolve =/d' hgrc >hgrc.new && mv hgrc.new hgrc
     fi
     if [ "$(newest_version 2.3 $hg_version)" = 2.3 ]; then
+        # Older than 2.3
         sed 's#^histedit =.*#histedit = ~/.config/hg/extensions/histedit/hg_histedit.py#' hgrc >hgrc.new && mv hgrc.new hgrc
     fi
 
-    link hgrc.redir ~/.hgrc
+    if [ "$(newest_version 4.2 $hg_version)" = 4.2 ]; then
+        # Older than 4.2
+        link hgrc.redir ~/.hgrc
+    fi
     link . ~/.config/hg
 fi
