@@ -18,3 +18,7 @@
 - vim:
 
     - Consider resurrection of the vim-kergoth repo
+
+## Reference
+
+- [XDG Base Directory support](https://wiki.archlinux.org/index.php/XDG_Base_Directory_support)
