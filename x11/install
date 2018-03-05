@@ -1,1 +1,2 @@
-link Xresources
+mkdir -p $XDG_CONFIG_HOME/X11
+link Xresources $XDG_CONFIG_HOME/X11/Xresources
