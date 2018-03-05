@@ -3,6 +3,7 @@ alias import-global-history='fc -RI'
 
 alias which=which-command
 alias which-command='whence -avf'
+alias gdb='gdb -nh -x "$XDG_CONFIG_HOME"/gdb/init'
 alias tmux='tmux -u2 -f ~/.config/tmux/config'
 alias bback='ack --type=bitbake'
 alias chrome='google-chrome'
