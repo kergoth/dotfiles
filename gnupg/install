@@ -1,0 +1,1 @@
+set_launchd GNUPGHOME "$XDG_CONFIG_HOME/gnupg"
