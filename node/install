@@ -4,3 +4,8 @@ if which npm >/dev/null 2>&1; then
     mkdir -p "$NPM_PACKAGES"
     npm config set prefix "$NPM_PACKAGES"
 fi
+mkdir -p $XDG_CONFIG_HOME/npm
+if [ -L $XDG_CONFIG_HOME/npm/npmrc ]; then
+    rm -f $XDG_CONFIG_HOME/npm/npmrc
+fi
+cp -f npmrc $XDG_CONFIG_HOME/npm/npmrc
