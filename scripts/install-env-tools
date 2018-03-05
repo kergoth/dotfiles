@@ -54,8 +54,12 @@ go get -u github.com/EricChiang/pup # or brew install pup
 pip_install hg-git
 pipv git-remote-dropbox
 
+# Very handy for screencasts
+pipv3 asciinema
+
 ## For dotfiles
 pipv3 peru
+pip3_install pygments_base16
 
 ## Script dependencies
 pip_install SOAPpy # lmwsaction
@@ -69,7 +73,7 @@ pipv json2yaml # pcposts zsh function
 pip_install gitpython # buildhistory-diff
 
 ## Pinboard client
-npmv pin-cushion
+#npmv pin-cushion
 
 ## Development Tools
 go get -u github.com/github/hub
@@ -121,7 +125,6 @@ go get -u github.com/shurcooL/markdownfmt
 #pip_install pipdeptree
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
-#pipv3 asciinema
 
 ### Elixir Development
 # erlang is specifically listed to ensure its binaries are symlinked as well
