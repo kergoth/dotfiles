@@ -3,7 +3,7 @@
 if [ $# -ne 0 ]; then
     HOMEBREW_PATH="$(cd "$1" && pwd)"
 else
-    HOMEBREW_PATH="${HOMEBREW_PATH:-/opt/homebrew}"
+    HOMEBREW_PATH="${HOMEBREW_PATH:-/Users/Shared/homebrew}"
 fi
 PATH="$HOMEBREW_PATH/bin:$PATH"
 

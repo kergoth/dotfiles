@@ -25,7 +25,7 @@ module.exports = {
     "environment.additionalPaths": [
         "/Users/kergoth/Dropbox/dotfiles/scripts",
         "/Users/kergoth/.local/bin",
-        "/opt/homebrew/bin",
+        "/Users/Shared/homebrew/bin",
         "/usr/local/bin",
         "/usr/bin"
     ],

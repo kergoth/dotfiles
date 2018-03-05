@@ -73,7 +73,8 @@ npmv pin-cushion
 
 ## Development Tools
 go get -u github.com/github/hub
-OPENSSL_DIR=/opt/homebrew/opt/openssl cargov git-series
+/Users/Shared/homebrew/bin/brew install openssl
+OPENSSL_DIR=/Users/Shared/homebrew/opt/openssl cargov git-series
 # pprintpp + pp-ez?
 # twine?
 # wheel?
