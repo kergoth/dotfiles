@@ -558,7 +558,7 @@ git module vitag:
     rev: 56366c0709978da4d12ae8e11ff3bcf032265406
 
 git module checkbashisms:
-    url: https://anonscm.debian.org/git/collab-maint/devscripts.git
+    url: https://github.com/Debian/devscripts
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
