@@ -32,6 +32,11 @@ if !s:has_features
     finish
 endif
 
+if has('nvim') && !has('nvim-0.2.0') && !get(g:, 'ale_use_deprecated_neovim')
+    execute 'echom ''ALE support for NeoVim versions below 0.2.0 is deprecated.'''
+    execute 'echom ''Use `let g:ale_use_deprecated_neovim = 1` to silence this warning for now.'''
+endif
+
 " This flag can be set to 0 to disable emitting conflict warnings.
 let g:ale_emit_conflict_warnings = get(g:, 'ale_emit_conflict_warnings', 1)
 
@@ -117,6 +122,9 @@ let g:ale_open_list = get(g:, 'ale_open_list', 0)
 
 " This flag dictates if ale keeps open loclist even if there is no error in loclist
 let g:ale_keep_list_window_open = get(g:, 'ale_keep_list_window_open', 0)
+
+" This flag dictates that quickfix windows should be opened vertically
+let g:ale_list_vertical = get(g:, 'ale_list_vertical', 0)
 
 " The window size to set for the quickfix and loclist windows
 call ale#Set('list_window_size', 10)
@@ -241,6 +249,8 @@ command! -bar ALEToggleBuffer :call ale#toggle#ToggleBuffer(bufnr(''))
 command! -bar ALEEnableBuffer :call ale#toggle#EnableBuffer(bufnr(''))
 command! -bar ALEDisableBuffer :call ale#toggle#DisableBuffer(bufnr(''))
 command! -bar ALEResetBuffer :call ale#toggle#ResetBuffer(bufnr(''))
+" A command to stop all LSP-like clients, including tsserver.
+command! -bar ALEStopAllLSPs :call ale#lsp#reset#StopAllLSPs()
 
 " A command for linting manually.
 command! -bar ALELint :call ale#Queue(0, 'lint_file')
@@ -295,9 +305,19 @@ augroup END
 " Backwards Compatibility
 
 function! ALELint(delay) abort
+    if !get(g:, 'ale_deprecation_ale_lint', 0)
+        execute 'echom ''ALELint() is deprecated, use ale#Queue() instead.'''
+        let g:ale_deprecation_ale_lint = 1
+    endif
+
     call ale#Queue(a:delay)
 endfunction
 
 function! ALEGetStatusLine() abort
+    if !get(g:, 'ale_deprecation_ale_get_status_line', 0)
+        execute 'echom ''ALEGetStatusLine() is deprecated.'''
+        let g:ale_deprecation_ale_get_status_line = 1
+    endif
+
     return ale#statusline#Status()
 endfunction

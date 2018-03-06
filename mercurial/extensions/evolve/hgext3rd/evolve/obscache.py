@@ -225,6 +225,8 @@ class dualsourcecache(object):
             self.clear(reset=True)
 
         starttime = timer()
+        revs = list(revs)
+        obsmarkers = list(obsmarkers)
         self._updatefrom(repo, revs, obsmarkers)
         duration = timer() - starttime
         repo.ui.log('evoext-cache', 'updated %s in %.4f seconds (%sr, %so)\n',

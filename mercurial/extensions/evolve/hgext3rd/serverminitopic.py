@@ -68,7 +68,7 @@ class revbranchcacheoverlay(object):
     def branchinfo(self, rev):
         """return branch name and close flag for rev, using and updating
         persistent cache."""
-        phase = self._repo._phasecache.phase(self, rev)
+        phase = self._repo._phasecache.phase(self._repo, rev)
         if phase:
             ctx = self._repo[rev]
             return ctx.branch(), ctx.closesbranch()

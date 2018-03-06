@@ -76,6 +76,13 @@ function! ale#engine#InitBufferInfo(buffer) abort
     return 0
 endfunction
 
+" Clear LSP linter data for the linting engine.
+function! ale#engine#ClearLSPData() abort
+    let s:lsp_linter_map = {}
+endfunction
+
+" This function is documented and part of the public API.
+"
 " Return 1 if ALE is busy checking a given buffer
 function! ale#engine#IsCheckingBuffer(buffer) abort
     let l:info = get(g:ale_buffer_info, a:buffer, {})
@@ -142,36 +149,40 @@ function! s:GatherOutput(job_id, line) abort
     endif
 endfunction
 
-function! s:HandleLoclist(linter_name, buffer, loclist) abort
-    let l:buffer_info = get(g:ale_buffer_info, a:buffer, {})
+function! ale#engine#HandleLoclist(linter_name, buffer, loclist) abort
+    let l:info = get(g:ale_buffer_info, a:buffer, {})
 
-    if empty(l:buffer_info)
+    if empty(l:info)
         return
     endif
 
     " Remove this linter from the list of active linters.
     " This may have already been done when the job exits.
-    call filter(l:buffer_info.active_linter_list, 'v:val isnot# a:linter_name')
+    call filter(l:info.active_linter_list, 'v:val isnot# a:linter_name')
 
     " Make some adjustments to the loclists to fix common problems, and also
     " to set default values for loclist items.
     let l:linter_loclist = ale#engine#FixLocList(a:buffer, a:linter_name, a:loclist)
 
     " Remove previous items for this linter.
-    call filter(g:ale_buffer_info[a:buffer].loclist, 'v:val.linter_name isnot# a:linter_name')
-    " Add the new items.
-    call extend(g:ale_buffer_info[a:buffer].loclist, l:linter_loclist)
+    call filter(l:info.loclist, 'v:val.linter_name isnot# a:linter_name')
 
-    " Sort the loclist again.
-    " We need a sorted list so we can run a binary search against it
-    " for efficient lookup of the messages in the cursor handler.
-    call sort(g:ale_buffer_info[a:buffer].loclist, 'ale#util#LocItemCompare')
+    " We don't need to add items or sort the list when this list is empty.
+    if !empty(l:linter_loclist)
+        " Add the new items.
+        call extend(l:info.loclist, l:linter_loclist)
+
+        " Sort the loclist again.
+        " We need a sorted list so we can run a binary search against it
+        " for efficient lookup of the messages in the cursor handler.
+        call sort(l:info.loclist, 'ale#util#LocItemCompare')
+    endif
 
     if ale#ShouldDoNothing(a:buffer)
         return
     endif
 
-    call ale#engine#SetResults(a:buffer, g:ale_buffer_info[a:buffer].loclist)
+    call ale#engine#SetResults(a:buffer, l:info.loclist)
 endfunction
 
 function! s:HandleExit(job_id, exit_code) abort
@@ -217,7 +228,7 @@ function! s:HandleExit(job_id, exit_code) abort
 
     let l:loclist = ale#util#GetFunction(l:linter.callback)(l:buffer, l:output)
 
-    call s:HandleLoclist(l:linter.name, l:buffer, l:loclist)
+    call ale#engine#HandleLoclist(l:linter.name, l:buffer, l:loclist)
 endfunction
 
 function! s:HandleLSPDiagnostics(conn_id, response) abort
@@ -231,7 +242,7 @@ function! s:HandleLSPDiagnostics(conn_id, response) abort
 
     let l:loclist = ale#lsp#response#ReadDiagnostics(a:response)
 
-    call s:HandleLoclist(l:linter_name, l:buffer, l:loclist)
+    call ale#engine#HandleLoclist(l:linter_name, l:buffer, l:loclist)
 endfunction
 
 function! s:HandleTSServerDiagnostics(response, error_type) abort
@@ -256,7 +267,7 @@ function! s:HandleTSServerDiagnostics(response, error_type) abort
     let l:loclist = get(l:info, 'semantic_loclist', [])
     \   + get(l:info, 'syntax_loclist', [])
 
-    call s:HandleLoclist('tsserver', l:buffer, l:loclist)
+    call ale#engine#HandleLoclist('tsserver', l:buffer, l:loclist)
 endfunction
 
 function! s:HandleLSPErrorMessage(error_message) abort
@@ -315,6 +326,12 @@ function! ale#engine#SetResults(buffer, loclist) abort
 
         " Reset the save event marker, used for opening windows, etc.
         call setbufvar(a:buffer, 'ale_save_event_fired', 0)
+        " Set a marker showing how many times a buffer has been checked.
+        call setbufvar(
+        \   a:buffer,
+        \   'ale_linted',
+        \   getbufvar(a:buffer, 'ale_linted', 0) + 1
+        \)
 
         " Automatically remove all managed temporary files and directories
         " now that all jobs have completed.

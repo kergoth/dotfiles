@@ -88,7 +88,7 @@ def dorecord(ui, repo, commitfunc, *pats, **opts):
         # 2. backup changed files, so we can restore them in the end
         backups = {}
         newly_added_backups = {}
-        backupdir = repo.join('record-backups')
+        backupdir = repo.wjoin('record-backups')
         try:
             os.mkdir(backupdir)
         except OSError, err:

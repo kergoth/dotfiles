@@ -58,4 +58,6 @@ def default2evolution(ui, repo):
         evolveopts = 'all'
         repo.ui.setconfig('experimental', 'evolution', evolveopts)
     if obsolete.isenabled(repo, 'exchange'):
-        repo.ui.setconfig('server', 'bundle1', False)
+        # if no config explicitly set, disable bundle1
+        if not isinstance(repo.ui.config('server', 'bundle1'), str):
+            repo.ui.setconfig('server', 'bundle1', False)

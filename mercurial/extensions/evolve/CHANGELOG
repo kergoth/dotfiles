@@ -6,6 +6,7 @@ Changelog
 
   * fold: fix issue related to bookmarks movement (issue5772)
   * amend: take lock before parsing the commit description (issue5266)
+  * legacy: respect 'server.bundle1' config if any is set
 
 7.2.1 --2018-01-20
 -------------------
