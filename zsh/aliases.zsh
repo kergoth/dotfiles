@@ -64,6 +64,7 @@ elif (( $+commands[ack] )); then
     alias bbag=bback
     alias bbs=bbag
 fi
+alias bbfd="fd -e bb -e inc -e conf -e bbclass -e bbappend"
 
 if (( $+commands[fzf] )); then
     _z_fzf () {
