@@ -49,7 +49,7 @@ go get -u 4d63.com/tldr
 gemv boom
 
 pipv pythonpy
-pipv httpie
+pipv3 httpie
 go get -u github.com/EricChiang/pup # or brew install pup
 pip_install hg-git
 pipv git-remote-dropbox
@@ -77,8 +77,9 @@ pip_install gitpython # buildhistory-diff
 
 ## Development Tools
 go get -u github.com/github/hub
-/Users/Shared/homebrew/bin/brew install openssl
-OPENSSL_DIR=/Users/Shared/homebrew/opt/openssl cargov git-series
+: ${HOMEBREW_PREFIX:=/opt/homebrew}
+$HOMEBREW_PREFIX/bin/brew install openssl
+OPENSSL_DIR=$HOMEBREW_PREFIX/opt/openssl cargov git-series
 # pprintpp + pp-ez?
 # twine?
 # wheel?
