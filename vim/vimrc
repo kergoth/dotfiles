@@ -724,8 +724,8 @@ augroup vimrc_filetypes
   au Filetype rst nnoremap <buffer> <localleader>2 yypVr-
   au Filetype rst nnoremap <buffer> <localleader>3 yypVr~
   au Filetype rst nnoremap <buffer> <localleader>4 yypVr`
-  au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=
-  au Filetype markdown nnoremap <buffer> <localleader>2 yypVr-
+  au Filetype markdown nnoremap <buffer> <localleader>1 I# <esc>
+  au Filetype markdown nnoremap <buffer> <localleader>2 I## <esc>
   au Filetype markdown nnoremap <buffer> <localleader>3 I### <esc>
 
   " Use man.vim for K in types we know don't override keywordprg
