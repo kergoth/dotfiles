@@ -10,7 +10,7 @@ path=(
   $XDG_DATA_HOME/../bin(N:A)
   $DOTFILESDIR/scripts(:A)
   $DOTFILESDIR/*/scripts(N:A)
-  /Users/Shared/homebrew/bin
+  $HOMEBREW_PREFIX/bin
   /opt/homebrew/bin
   /usr/local/{bin,sbin}
   $path
@@ -32,7 +32,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     path=(
         $HOME/Library/Perl/*/bin(N)
         $HOME/Library/Python/*/bin(N)
-        /Users/Shared/homebrew/opt/ccache/libexec
+        $HOMEBREW_PREFIX/opt/ccache/libexec
         $path
     )
 fi
@@ -40,4 +40,4 @@ fi
 path=( ${(u)^path:A}(N-/) )
 
 # add plugins & topic directories to fpath
-fpath=($ZSH/plugins/completions/src $ZSH/plugins/*/(N) $DOTFILESDIR/*/functions(N) $XDG_DATA_HOME/homebrews/*/share/zsh/site-functions(N) /Users/Shared/homebrew/share/zsh/site-functions /Users/Shared/homebrew/opt/*/share/zsh/site-functions(N) $fpath)
+fpath=($ZSH/plugins/completions/src $ZSH/plugins/*/(N) $DOTFILESDIR/*/functions(N) $XDG_DATA_HOME/homebrews/*/share/zsh/site-functions(N) $HOMEBREW_PREFIX/share/zsh/site-functions $HOMEBREW_PREFIX/opt/*/share/zsh/site-functions(N) $fpath)

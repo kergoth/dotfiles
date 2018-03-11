@@ -6,7 +6,7 @@ if (( $+commands[pyenv] )); then
     eval "$(pyenv virtualenv-init - 2>/dev/null)"
 
     for i in $(pyenv root)/completions/pyenv.zsh \
-             ${HOMEBREW_PREFIX:-/Users/Shared/homebrew}/opt/pyenv/share/zsh/site-functions/pyenv.zsh; do
+             ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/pyenv/share/zsh/site-functions/pyenv.zsh; do
         if [[ -f $i ]]; then
             . $i
         fi

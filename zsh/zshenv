@@ -62,7 +62,7 @@ if [[ -e $DOTFILESDIR/zsh/zshenv.local ]]; then
     . "$DOTFILESDIR/zsh/zshenv.local"
 fi
 
-for dir in $HOME/.terminfo $XDG_CONFIG_HOME/ncurses/terminfo /Users/Shared/homebrew/share/terminfo /usr/local/share/terminfo /usr/share/terminfo; do
+for dir in $HOME/.terminfo $XDG_CONFIG_HOME/ncurses/terminfo /Users/Shared/homebrew/share/terminfo /opt/homebrew/share/terminfo /usr/local/share/terminfo /usr/share/terminfo; do
     if [[ -d $dir ]]; then
         TERMINFO_DIRS="$TERMINFO_DIRS:$dir"
     fi
