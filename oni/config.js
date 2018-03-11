@@ -26,6 +26,7 @@ module.exports = {
         "/Users/kergoth/Dropbox/dotfiles/scripts",
         "/Users/kergoth/.local/bin",
         "/Users/Shared/homebrew/bin",
+        "/opt/homebrew/bin",
         "/usr/local/bin",
         "/usr/bin"
     ],
