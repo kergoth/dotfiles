@@ -47,6 +47,13 @@ if [ -n "$corresponding" ] && [ $# -gt 0 ]; then
     exit 1
 fi
 
+if [ "$ref_prefix" != "refs/heads" ] && [ $prune_remote_repo -eq 1 ]; then
+    # Exclude the default branch for the remote
+    default_branch_for_remote="$(git ls-remote --symref "${ref_prefix#refs/remotes/}" | sed -n -e 's#^ref: refs/heads/\([^	]*\)	HEAD$#\1#p')"
+else
+    default_branch_for_remote=
+fi
+
 upstream_branch="${1:-origin/master}"
 to_delete=
 to_push=
@@ -79,7 +86,9 @@ git for-each-ref "${corresponding:---merged=$upstream_branch}" --format='%(refna
             refs/remotes/*)
                 remote="${ref_prefix#refs/remotes/}"
                 if [ $prune_remote_repo -eq 1 ]; then
-                    to_push=":$ref $to_push"
+                    if [ "$ref" != "$default_branch_for_remote" ]; then
+                        to_push=":$ref $to_push"
+                    fi
                 else
                     to_delete="${ref_prefix#refs/remotes/}/$ref $to_delete"
                 fi
