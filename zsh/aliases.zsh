@@ -73,7 +73,7 @@ fd () {
     fi
 }
 
-alias fdf="fd ''"
+alias fdf="fd -t f ''"
 alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
 alias bbfdf="bbfd ''"
 
