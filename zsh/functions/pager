@@ -1,5 +1,5 @@
 pager () {
-    if [ -t 0 ] && [ -t 1 ]; then
+    if [[ -t 1 ]]; then
         ${PAGER:-less} "$@"
     else
         command cat "$@"
