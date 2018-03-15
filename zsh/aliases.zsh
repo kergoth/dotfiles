@@ -64,7 +64,18 @@ elif (( $+commands[ack] )); then
     alias bbag=bback
     alias bbs=bbag
 fi
-alias bbfd="fd -e bb -e inc -e conf -e bbclass -e bbappend"
+
+fd () {
+    if [[ -t 1 ]]; then
+        command fd -c always "$@" | pager
+    else
+        command fd "$@"
+    fi
+}
+
+alias fdf="fd ''"
+alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
+alias bbfdf="bbfd ''"
 
 if (( $+commands[fzf] )); then
     _z_fzf () {
