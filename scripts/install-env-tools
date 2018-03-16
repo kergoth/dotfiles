@@ -108,7 +108,7 @@ pipv flake8 flake8 pep8-naming flake8-docstrings
 # go get github.com/BurntSushi/toml/cmd/tomlv # for toml, but it's out of date. it only supports 0.1.0
 
 ## Formatters
-pipv yapf
+pipv3 yapf
 # autopep8 - format code per pep8
 # https://pypi.python.org/pypi/docformatter - format docstrings per pep257
 go get -u github.com/shurcooL/markdownfmt
