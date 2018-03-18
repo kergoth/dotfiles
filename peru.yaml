@@ -36,9 +36,7 @@ imports:
     git-remote-hg: scripts
     git-tbdiff: scripts
     git-wtf: scripts
-    git|git-jump: scripts
-    git|git-subtree: scripts
-    git|diff-highlight: scripts
+    git: scripts
     gitvoodoo: scripts
     icdiff: scripts
     iln: scripts
@@ -393,26 +391,19 @@ git module git-wtf:
     pick: git-wtf
     rev: e707548e3c144e2b6ecaba8e7851b5f51bdd517f
 
-curl module git:
-    url: https://www.kernel.org/pub/software/scm/git/git-2.2.0.tar.xz
-    unpack: tar
-    export: git-2.2.0
-    sha1: 6221b8303dc6887cbce986563f9ece78a3b2ad6a
-
-rule git-jump:
+git module git:
+    url: https://github.com/git/git
+    reup: v2.16.2
     move:
         contrib/git-jump/git-jump: git-jump
-    pick: git-jump
-
-rule git-subtree:
-    move:
         contrib/subtree/git-subtree.sh: git-subtree
-    pick: git-subtree
-
-rule diff-highlight:
-    move:
-        contrib/diff-highlight/diff-highlight: diff-highlight
-    pick: diff-highlight
+        contrib/diff-highlight/diff-highlight.perl: diff-highlight.perl
+        contrib/diff-highlight/DiffHighlight.pm: DiffHighlight.pm
+    pick:
+        - git-jump
+        - git-subtree
+        - diff-highlight.perl
+        - DiffHighlight.pm
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
