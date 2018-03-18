@@ -1,5 +1,7 @@
-" vinegar.vim - combine with netrw to create a delicious salad dressing
+" Location:     plugin/vinegar.vim
 " Maintainer:   Tim Pope <http://tpo.pe/>
+" Version:      1.0
+" GetLatestVimScripts: 5671 1 :AutoInstall: vinegar.vim
 
 if exists("g:loaded_vinegar") || v:version < 700 || &cp
   finish

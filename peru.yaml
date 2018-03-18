@@ -248,7 +248,7 @@ git module vim-obsession:
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: 44bc76a6abf6aeafa4d0808288bb4fcc9a2e98f8
+    rev: ca222fb9425fc49aae7d2a185917b00de7980667
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
