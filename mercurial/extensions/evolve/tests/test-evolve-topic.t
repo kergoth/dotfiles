@@ -268,3 +268,109 @@ Testing when instability is involved
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [18] add fff
+
+Testing issue 5708 when we are on obsolete changeset and there is active topic
+------------------------------------------------------------------------------
+
+  $ hg log --graph
+  @  18 - {bar} 793eb6370b2d add fff (draft)
+  |
+  | *  17 - {bar} 9bf430c106b7 add jjj (draft)
+  | |
+  | *  16 - {bar} d2dc89c57700 add iii (draft)
+  | |
+  | *  15 - {bar} 20bc4d02aa62 add hhh (draft)
+  | |
+  | *  14 - {bar} 16d6f664b17c add ggg (draft)
+  | |
+  | x  13 - {foo} 070c5573d8f9 add fff (draft)
+  |/
+  o  12 - {foo} 42b49017ff90 add eee (draft)
+  |
+  o  10 - {foo} d9cacd156ffc add ddd (draft)
+  |
+  o  2 - {foo} cced9bac76e3 add ccc (draft)
+  |
+  o  1 - {} a4dbed0837ea add bbb (draft)
+  |
+  o  0 - {} 199cc73e9a0b add aaa (draft)
+  
+
+  $ hg topic
+   * bar (5 changesets, 4 troubled)
+     foo (3 changesets)
+
+When the current topic, obsoleted changesets topic and successor topic are same
+
+  $ hg up 20bc4d02aa62
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ echo foobar >> hhh
+  $ hg amend
+  $ hg up 20bc4d02aa62
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  working directory parent is obsolete! (20bc4d02aa62)
+  (use 'hg evolve' to update to its successor: d834582d9ee3)
+  $ hg log -Gr 14::
+  *  19 - {bar} d834582d9ee3 add hhh (draft)
+  |
+  | *  17 - {bar} 9bf430c106b7 add jjj (draft)
+  | |
+  | *  16 - {bar} d2dc89c57700 add iii (draft)
+  | |
+  | @  15 - {bar} 20bc4d02aa62 add hhh (draft)
+  |/
+  *  14 - {bar} 16d6f664b17c add ggg (draft)
+  |
+  ~
+
+  $ hg prev
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [14] add ggg
+
+When the current topic and successors topic are same, but obsolete cset has
+different topic
+
+  $ hg rebase -s d2dc89c57700 -d d834582d9ee3 --config extensions.rebase=
+  rebasing 16:d2dc89c57700 "add iii" (bar)
+  1 new orphan changesets
+  rebasing 17:9bf430c106b7 "add jjj" (bar)
+  1 new orphan changesets
+  $ hg log -Gr 12::
+  *  21 - {bar} 7542e76aba2c add jjj (draft)
+  |
+  *  20 - {bar} 7858bd7e9906 add iii (draft)
+  |
+  *  19 - {bar} d834582d9ee3 add hhh (draft)
+  |
+  | o  18 - {bar} 793eb6370b2d add fff (draft)
+  | |
+  @ |  14 - {bar} 16d6f664b17c add ggg (draft)
+  | |
+  x |  13 - {foo} 070c5573d8f9 add fff (draft)
+  |/
+  o  12 - {foo} 42b49017ff90 add eee (draft)
+  |
+  ~
+
+  $ hg up 070c5573d8f9
+  switching to topic foo
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  working directory parent is obsolete! (070c5573d8f9)
+  (use 'hg evolve' to update to its successor: 793eb6370b2d)
+
+  $ hg topic bar
+
+  $ hg prev
+  no parent in topic "bar"
+  (do you want --no-topic)
+  [1]
+
+When current topic and obsolete cset topic are same but successor has different
+one
+
+  $ hg up 070c5573d8f9
+  switching to topic foo
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg prev
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [12] add eee

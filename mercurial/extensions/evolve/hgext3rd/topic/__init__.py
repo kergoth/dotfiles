@@ -134,13 +134,14 @@ from mercurial import (
 from . import (
     compat,
     constants,
-    flow,
-    revset as topicrevset,
     destination,
+    discovery,
+    evolvebits,
+    flow,
+    randomname,
+    revset as topicrevset,
     stack,
     topicmap,
-    discovery,
-    randomname
 )
 
 if util.safehasattr(registrar, 'command'):
@@ -240,6 +241,12 @@ def _contexttopicidx(self):
     revlist = stack.stack(self._repo, topic=topic)
     try:
         return revlist.index(self.rev())
+    except ValueError:
+        if self.obsolete():
+            succ = evolvebits._singlesuccessor(self._repo, self)
+            if succ not in revlist:
+                return None
+            return revlist.index(succ)
     except IndexError:
         # Lets move to the last ctx of the current topic
         return None
