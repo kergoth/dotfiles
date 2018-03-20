@@ -70,6 +70,7 @@
 	# Stash
 	ss = stash save
 	sl = stash list --pretty=format:'%C(yellow)%gd%Creset: %Cgreen%cr%Creset - %s'
+	sln = "!f(){ git -c color.ui=always stash list --pretty=format:'%C(yellow)%gd%Creset: %Cgreen%cr%Creset - %s' \"$@\" | grep -Ev 'WIP|Reset from'; }; f"
 	sa = stash apply
 	sd = stash drop
 	sp = stash pop
