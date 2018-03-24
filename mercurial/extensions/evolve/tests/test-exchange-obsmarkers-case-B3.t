@@ -72,19 +72,19 @@ initial
   $ inspect_obsmarkers
   obsstore content
   ================
-  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (*) {'ef1': '*', 'user': 'test'} (glob)
+  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   obshashtree
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
   f5bc6836db60e308a17ba08bf050154ba9c4fad7 0000000000000000000000000000000000000000
-  35b1839966785d5703a01607229eea932db42f87 d6033d6b3eb3451694dde5b6dd2356ae57eff23b
-  e56289ab6378dc752fd7965f8bf66b58bda740bd f4bc7329023b9b1f7db3b7989fd7f80a2ca7a008
+  35b1839966785d5703a01607229eea932db42f87 3bb8cd8ac8f52487f2ef21e0bdf795a5cd293351
+  e56289ab6378dc752fd7965f8bf66b58bda740bd b62eedd8d9194225136e5908c492ab03569079da
   obshashrange
   ============
            rev         node        index         size        depth      obshash
-             2 35b183996678            0            2            2 d6033d6b3eb3
+             2 35b183996678            0            2            2 3bb8cd8ac8f5
              1 f5bc6836db60            0            2            2 000000000000
-             2 35b183996678            1            1            2 d6033d6b3eb3
+             2 35b183996678            1            1            2 3bb8cd8ac8f5
              0 a9bdc8b26820            0            1            1 000000000000
              1 f5bc6836db60            1            1            2 000000000000
   $ cd ..
@@ -98,7 +98,7 @@ Actual Test
   # testing echange of "A" (f5bc6836db60)
   ## initial state
   # obstore: main
-  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (*) {'ef1': '*', 'user': 'test'} (glob)
+  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
   ## pushing "A" from main to pushdest
@@ -110,7 +110,7 @@ Actual Test
   remote: added 1 changesets with 1 changes to 1 files
   ## post push state
   # obstore: main
-  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (*) {'ef1': '*', 'user': 'test'} (glob)
+  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
   ## pulling "f5bc6836db60" from main into pulldest
@@ -124,7 +124,7 @@ Actual Test
   (run 'hg update' to get a working copy)
   ## post pull state
   # obstore: main
-  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (*) {'ef1': '*', 'user': 'test'} (glob)
+  e56289ab6378dc752fd7965f8bf66b58bda740bd 0 {35b1839966785d5703a01607229eea932db42f87} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
 

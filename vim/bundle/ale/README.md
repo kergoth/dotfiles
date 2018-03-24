@@ -48,6 +48,7 @@ formatting tools, and some Language Server Protocol and `tsserver` features.
     13. [Will this plugin eat all of my laptop battery power?](#faq-my-battery-is-sad)
     14. [How can I configure my C or C++ project?](#faq-c-configuration)
     15. [How can I configure ALE differently for different buffers?](#faq-buffer-configuration)
+    16. [How can I configure the height of the list in which ALE displays errors?](#faq-list-window-height)
 
 <a name="supported-languages"></a>
 
@@ -104,7 +105,7 @@ formatting.
 | FusionScript | [fusion-lint](https://github.com/RyanSquared/fusionscript) |
 | Git Commit Messages | [gitlint](https://github.com/jorisroovers/gitlint) |
 | GLSL | [glslang](https://github.com/KhronosGroup/glslang), [glslls](https://github.com/svenstaro/glsl-language-server) |
-| Go | [gofmt](https://golang.org/cmd/gofmt/), [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports), [go vet](https://golang.org/cmd/vet/) !!, [golint](https://godoc.org/github.com/golang/lint), [gotype](https://godoc.org/golang.org/x/tools/cmd/gotype), [gometalinter](https://github.com/alecthomas/gometalinter) !!, [go build](https://golang.org/cmd/go/) !!, [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple) !!, [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) !! |
+| Go | [gofmt](https://golang.org/cmd/gofmt/), [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports), [go vet](https://golang.org/cmd/vet/) !!, [golint](https://godoc.org/github.com/golang/lint), [gotype](https://godoc.org/golang.org/x/tools/cmd/gotype) !!, [gometalinter](https://github.com/alecthomas/gometalinter) !!, [go build](https://golang.org/cmd/go/) !!, [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple) !!, [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) !! |
 | GraphQL | [eslint](http://eslint.org/), [gqlint](https://github.com/happylinks/gqlint), [prettier](https://github.com/prettier/prettier) |
 | Haml | [haml-lint](https://github.com/brigade/haml-lint) |
 | Handlebars | [ember-template-lint](https://github.com/rwjblue/ember-template-lint) |
@@ -121,7 +122,7 @@ formatting.
 | Lua | [luac](https://www.lua.org/manual/5.1/luac.html), [luacheck](https://github.com/mpeterv/luacheck) |
 | Mail | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [vale](https://github.com/ValeLint/vale) |
 | Make | [checkmake](https://github.com/mrtazz/checkmake) |
-| Markdown | [alex](https://github.com/wooorm/alex) !!, [mdl](https://github.com/mivok/markdownlint), [prettier](https://github.com/prettier/prettier), [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [remark-lint](https://github.com/wooorm/remark-lint) !!, [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good) |
+| Markdown | [alex](https://github.com/wooorm/alex) !!, [markdownlint](https://github.com/DavidAnson/markdownlint) !!, [mdl](https://github.com/mivok/markdownlint), [prettier](https://github.com/prettier/prettier), [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [remark-lint](https://github.com/wooorm/remark-lint) !!, [textlint](https://textlint.github.io/), [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good) |
 | MATLAB | [mlint](https://www.mathworks.com/help/matlab/ref/mlint.html) |
 | Nim | [nim check](https://nim-lang.org/docs/nimc.html) !! |
 | nix | [nix-instantiate](http://nixos.org/nix/manual/#sec-nix-instantiate) |
@@ -143,7 +144,7 @@ formatting.
 | reStructuredText | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [rstcheck](https://github.com/myint/rstcheck), [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good) |
 | Re:VIEW | [redpen](http://redpen.cc/) |
 | RPM spec | [rpmlint](https://github.com/rpm-software-management/rpmlint) (disabled by default; see `:help ale-integration-spec`) |
-| Ruby | [brakeman](http://brakemanscanner.org/) !!, [rails_best_practices](https://github.com/flyerhzm/rails_best_practices) !!, [reek](https://github.com/troessner/reek), [rubocop](https://github.com/bbatsov/rubocop), [ruby](https://www.ruby-lang.org) |
+| Ruby | [brakeman](http://brakemanscanner.org/) !!, [rails_best_practices](https://github.com/flyerhzm/rails_best_practices) !!, [reek](https://github.com/troessner/reek), [rubocop](https://github.com/bbatsov/rubocop), [ruby](https://www.ruby-lang.org), [rufo](https://github.com/ruby-formatter/rufo) |
 | Rust |  cargo !! (see `:help ale-integration-rust` for configuration instructions), [rls](https://github.com/rust-lang-nursery/rls), [rustc](https://www.rust-lang.org/), [rustfmt](https://github.com/rust-lang-nursery/rustfmt) |
 | SASS | [sass-lint](https://www.npmjs.com/package/sass-lint), [stylelint](https://github.com/stylelint/stylelint) |
 | SCSS | [prettier](https://github.com/prettier/prettier), [sass-lint](https://www.npmjs.com/package/sass-lint), [scss-lint](https://github.com/brigade/scss-lint), [stylelint](https://github.com/stylelint/stylelint) |
@@ -157,7 +158,7 @@ formatting.
 | Tcl | [nagelfar](http://nagelfar.sourceforge.net) !! |
 | Terraform | [tflint](https://github.com/wata727/tflint) |
 | Texinfo | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good)|
-| Text^ | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good), [redpen](http://redpen.cc/) |
+| Text^ | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [textlint](https://textlint.github.io/), [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good) |
 | Thrift | [thrift](http://thrift.apache.org/) |
 | TypeScript | [eslint](http://eslint.org/), [prettier](https://github.com/prettier/prettier), [tslint](https://github.com/palantir/tslint), tsserver, typecheck |
 | Verilog | [iverilog](https://github.com/steveicarus/iverilog), [verilator](http://www.veripool.org/projects/verilator/wiki/Intro) |
@@ -502,15 +503,17 @@ Will give you:
 ### 5.viii. How can I execute some code when ALE starts or stops linting?
 
 ALE runs its own [autocmd](http://vimdoc.sourceforge.net/htmldoc/autocmd.html)
-events whenever has a linter is started and has been successfully executed and
-processed. These events can be used to call arbitrary functions before and after
-ALE stops linting.
+events when a lint or fix cycle are started and stopped. These events can be
+used to call arbitrary functions before and after ALE stops linting.
 
 ```vim
 augroup YourGroup
     autocmd!
     autocmd User ALELintPre  call YourFunction()
     autocmd User ALELintPost call YourFunction()
+
+    autocmd User ALEFixPre   call YourFunction()
+    autocmd User ALEFixPost  call YourFunction()
 augroup END
 ```
 
@@ -698,3 +701,14 @@ let g:ale_pattern_options_enabled = 1
 ```
 
 Buffer-local variables for settings always override the global settings.
+
+<a name="faq-list-window-height"></a>
+
+### 5.xvi. How can I configure the height of the list in which ALE displays errors?
+
+To set a default height for the error list, use the `g:ale_list_window_size` variable.
+
+```vim
+" Show 5 lines of errors (default: 10)
+let g:ale_list_window_size = 5
+```

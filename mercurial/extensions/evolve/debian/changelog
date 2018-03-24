@@ -1,3 +1,9 @@
+mercurial-evolve (7.3.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Pierre-Yves David <pierre-yves.david@ens-lyon.org>  Wed, 21 Mar 2018 15:34:15 +0100
+
 mercurial-evolve (7.2.1-1) unstable; urgency=medium
 
   * new upstream release

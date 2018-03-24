@@ -525,8 +525,8 @@ def setupcache(ui, repo):
 
         if util.safehasattr(repo, 'updatecaches'):
             @localrepo.unfilteredmethod
-            def updatecaches(self, tr=None):
-                super(obscacherepo, self).updatecaches(tr)
+            def updatecaches(self, tr=None, **kwargs):
+                super(obscacherepo, self).updatecaches(tr, **kwargs)
                 self.obsstore.obscache.update(repo)
                 self.obsstore.obscache.save(repo)
 

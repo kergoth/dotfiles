@@ -98,7 +98,7 @@ Clearing the active topic using --clear
      foo (8 changesets)
 Changing topics on some revisions (also testing issue 5441)
 
-  $ hg topic -r 12:: bar
+  $ hg topic -r abcedffeae90:: bar
   switching to topic bar
   changed topic on 4 changes
   $ hg glog

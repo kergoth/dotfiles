@@ -70,18 +70,18 @@ create prune marker
   $ inspect_obsmarkers
   obsstore content
   ================
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   obshashtree
   ===========
   a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 0000000000000000000000000000000000000000
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 8408066feeb4e37fa26d01fe5c93bea92e450608
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 535b0c799a3a273fee10934abcb9e8eb9924b4bf
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 26563406db05b110410fcfb692bd66c212f15c7a
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 8dff6be5bc7194357b78e44acc79f138eedc075a
   obshashrange
   ============
            rev         node        index         size        depth      obshash
-             1 f5bc6836db60            0            2            2 8408066feeb4
+             1 f5bc6836db60            0            2            2 26563406db05
              0 a9bdc8b26820            0            1            1 000000000000
-             1 f5bc6836db60            1            1            2 8408066feeb4
+             1 f5bc6836db60            1            1            2 26563406db05
   $ cd ..
   $ cd ..
 
@@ -93,7 +93,7 @@ Actual Test
   # testing echange of "O" (a9bdc8b26820)
   ## initial state
   # obstore: main
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
   ## pushing "O" from main to pushdest
@@ -102,7 +102,7 @@ Actual Test
   no changes found
   ## post push state
   # obstore: main
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
   ## pulling "a9bdc8b26820" from main into pulldest
@@ -110,6 +110,6 @@ Actual Test
   no changes found
   ## post pull state
   # obstore: main
-  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f6fbb35d8ac958bbe70035e4c789c18471cdc0af 0 {f5bc6836db60e308a17ba08bf050154ba9c4fad7} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest

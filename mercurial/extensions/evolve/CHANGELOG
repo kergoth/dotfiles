@@ -1,8 +1,15 @@
 Changelog
 =========
 
-7.2.2 -- (in-progress)
-----------------------
+7.3.0 -- 2018-03-21
+---------------------
+
+  * grab: new command to grab a changeset, put in on wdir parent
+          and update to it
+  * resolve: shows how to continue evolve after resolving all conflicts
+  * evolve: `--continue` flag now continue evolving all the remaining revisions
+  * prev and next now prompts user to choose a changeset in case of ambiguity
+  * evolve: a new `--stop` flag which can be used to stop interrupted evolution
 
   * fold: fix issue related to bookmarks movement (issue5772)
   * amend: take lock before parsing the commit description (issue5266)

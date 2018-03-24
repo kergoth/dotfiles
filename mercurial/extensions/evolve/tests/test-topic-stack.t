@@ -867,16 +867,16 @@ making a split
   | @  e7ea874afbd5 (22) c_G
   |/
   x  b24bab30ac12 (20) c_G
-  |    rewritten(parent, content) as dde94df880e9, e7ea874afbd5 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(parent, content) as dde94df880e9, e7ea874afbd5 using split by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  907f7d3c2333 (18) c_G
-  |    rewritten(content) as b24bab30ac12 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(content) as b24bab30ac12 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  3ab2eedae500 (13) c_G
-  |    rewritten(parent) as 907f7d3c2333 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(parent) as 907f7d3c2333 using rebase by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c7d60a180d05 (6) c_G
-       rewritten(user) as 3ab2eedae500 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(user) as 3ab2eedae500 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg export .
   # HG changeset patch

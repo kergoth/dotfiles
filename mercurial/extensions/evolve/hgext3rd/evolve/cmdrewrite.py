@@ -22,6 +22,7 @@ from mercurial import (
     error,
     hg,
     lock as lockmod,
+    merge,
     node,
     obsolete,
     patch,
@@ -34,6 +35,7 @@ from mercurial.i18n import _
 
 from . import (
     compat,
+    state,
     exthelper,
     rewriteutil,
     utility,
@@ -72,7 +74,7 @@ def _resolveoptions(ui, opts):
     """
     # N.B. this is extremely similar to setupheaderopts() in mq.py
     if not opts.get('date') and opts.get('current_date'):
-        opts['date'] = '%d %d' % util.makedate()
+        opts['date'] = '%d %d' % compat.makedate()
     if not opts.get('user') and opts.get('current_user'):
         opts['user'] = ui.username()
 
@@ -387,7 +389,8 @@ def uncommit(ui, repo, *pats, **opts):
         if opts.get('note'):
             metadata['note'] = opts['note']
 
-        obsolete.createmarkers(repo, [(old, (repo[newid],))], metadata=metadata)
+        compat.createmarkers(repo, [(old, (repo[newid],))], metadata=metadata,
+                             operation="uncommit")
         phases.retractboundary(repo, tr, oldphase, [newid])
         if opts.get('revert'):
             hg.updaterepo(repo, newid, True)
@@ -425,7 +428,7 @@ def _interactiveuncommit(ui, repo, old, match):
     fp.seek(0)
     newnode = _patchtocommit(ui, repo, old, fp)
     # creating obs marker temp -> ()
-    obsolete.createmarkers(repo, [(repo[tempnode], ())])
+    compat.createmarkers(repo, [(repo[tempnode], ())], operation="uncommit")
     return newnode
 
 def _createtempcommit(ui, repo, old, match):
@@ -609,8 +612,9 @@ def fold(ui, repo, *revs, **opts):
                                                          root.p2().node()],
                                                         commitopts=commitopts)
             phases.retractboundary(repo, tr, targetphase, [newid])
-            obsolete.createmarkers(repo, [(ctx, (repo[newid],))
-                                   for ctx in allctx], metadata=metadata)
+            compat.createmarkers(repo, [(ctx, (repo[newid],))
+                                 for ctx in allctx], metadata=metadata,
+                                 operation="fold")
             # move bookmarks from old nodes to the new one
             # XXX: we should make rewriteutil.rewrite() handle such cases
             for ctx in allctx:
@@ -741,9 +745,9 @@ def metaedit(ui, repo, *revs, **opts):
                     metadata['note'] = opts['note']
 
                 phases.retractboundary(repo, tr, targetphase, [newid])
-                obsolete.createmarkers(repo, [(ctx, (repo[newid],))
-                                              for ctx in allctx],
-                                       metadata=metadata)
+                compat.createmarkers(repo, [(ctx, (repo[newid],))
+                                            for ctx in allctx],
+                                     metadata=metadata, operation="metaedit")
             else:
                 ui.status(_("nothing changed\n"))
             tr.close()
@@ -769,7 +773,7 @@ def _getmetadata(**opts):
     date = opts.get('date')
     user = opts.get('user')
     if date:
-        metadata['date'] = '%i %i' % util.parsedate(date)
+        metadata['date'] = '%i %i' % compat.parsedate(date)
     if user:
         metadata['user'] = user
     return metadata
@@ -935,12 +939,14 @@ def cmdprune(ui, repo, *revs, **opts):
             metadata['note'] = opts['note']
 
         # create markers
-        obsolete.createmarkers(repo, relations, metadata=metadata)
+        compat.createmarkers(repo, relations, metadata=metadata,
+                             operation="prune")
 
         # informs that changeset have been pruned
         ui.status(_('%i changesets pruned\n') % len(precs))
 
-        for ctx in repo.unfiltered().set('bookmark() and %ld', precs):
+        precrevs = (precursor.rev() for precursor in precs)
+        for ctx in repo.unfiltered().set('bookmark() and %ld', precrevs):
             # used to be:
             #
             #   ldest = list(repo.set('max((::%d) - obsolete())', ctx))
@@ -991,11 +997,11 @@ def cmdsplit(ui, repo, *revs, **opts):
     try:
         wlock = repo.wlock()
         lock = repo.lock()
-        rev = scmutil.revsingle(repo, revarg[0])
+        ctx = scmutil.revsingle(repo, revarg[0])
+        rev = ctx.rev()
         cmdutil.bailifchanged(repo)
         rewriteutil.precheck(repo, [rev], action='split')
         tr = repo.transaction('split')
-        ctx = repo[rev]
 
         if len(ctx.parents()) > 1:
             raise error.Abort(_("cannot split merge commits"))
@@ -1047,8 +1053,8 @@ def cmdsplit(ui, repo, *revs, **opts):
             metadata = {}
             if opts.get('note'):
                 metadata['note'] = opts['note']
-            obsolete.createmarkers(repo, [(repo[rev], newcommits)],
-                                   metadata=metadata)
+            compat.createmarkers(repo, [(repo[rev], newcommits)],
+                                 metadata=metadata, operation="split")
         tr.close()
     finally:
         # Restore the old branch
@@ -1139,8 +1145,8 @@ def touch(ui, repo, *revs, **opts):
                 metadata = {}
                 if opts.get('note'):
                     metadata['note'] = opts['note']
-                obsolete.createmarkers(repo, [(ctx, (repo[new],))],
-                                       metadata=metadata)
+                compat.createmarkers(repo, [(ctx, (repo[new],))],
+                                     metadata=metadata, operation="touch")
             phases.retractboundary(repo, tr, ctx.phase(), [new])
             if ctx in repo[None].parents():
                 with repo.dirstate.parentchange():
@@ -1148,3 +1154,94 @@ def touch(ui, repo, *revs, **opts):
         tr.close()
     finally:
         lockmod.release(tr, lock, wlock)
+
+@eh.command(
+    'grab',
+    [('r', 'rev', '', 'revision to grab'),
+     ('c', 'continue', False, 'continue interrupted grab'),
+     ('a', 'abort', False, 'abort interrupted grab'),
+    ],
+    _('[-r] rev'))
+def grab(ui, repo, *revs, **opts):
+    """grabs a commit, move it on the top of working directory parent and
+    updates to it."""
+
+    cont = opts.get('continue')
+    abort = opts.get('abort')
+
+    if cont and abort:
+        raise error.Abort(_("cannot specify both --continue and --abort"))
+
+    revs = list(revs)
+    if opts.get('rev'):
+        revs.append(opts['rev'])
+
+    with repo.wlock(), repo.lock(), repo.transaction('grab'):
+        grabstate = state.cmdstate(repo, path='grabstate')
+        pctx = repo['.']
+
+        if not cont and not abort:
+            cmdutil.bailifchanged(repo)
+            revs = scmutil.revrange(repo, revs)
+            if len(revs) > 1:
+                raise error.Abort(_("specify just one revision"))
+            elif not revs:
+                raise error.Abort(_("empty revision set"))
+
+            origctx = repo[revs.first()]
+
+            if origctx in pctx.ancestors() or origctx.node() == pctx.node():
+                raise error.Abort(_("cannot grab an ancestor revision"))
+
+            rewriteutil.precheck(repo, [origctx.rev()], 'grab')
+
+            ui.status(_('grabbing %d:%s "%s"\n') %
+                      (origctx.rev(), origctx,
+                       origctx.description().split("\n", 1)[0]))
+            stats = merge.graft(repo, origctx, origctx.p1(), ['local',
+                                                              'destination'])
+            if stats[3]:
+                grabstate.addopts({'orignode': origctx.node(),
+                                   'oldpctx': pctx.node()})
+                grabstate.save()
+                raise error.InterventionRequired(_("unresolved merge conflicts"
+                                                   " (see hg help resolve)"))
+
+        elif abort:
+            if not grabstate:
+                raise error.Abort(_("no interrupted grab state exists"))
+            grabstate.load()
+            pctxnode = grabstate['oldpctx']
+            ui.status(_("aborting grab, updating to %s\n") %
+                      node.hex(pctxnode)[:12])
+            hg.updaterepo(repo, pctxnode, True)
+            return 0
+
+        else:
+            if revs:
+                raise error.Abort(_("cannot specify both --continue and "
+                                    "revision"))
+            if not grabstate:
+                raise error.Abort(_("no interrupted grab state exists"))
+
+            grabstate.load()
+            orignode = grabstate['orignode']
+            origctx = repo[orignode]
+
+        overrides = {('phases', 'new-commit'): origctx.phase()}
+        with repo.ui.configoverride(overrides, 'grab'):
+            newnode = repo.commit(text=origctx.description(),
+                                  user=origctx.user(),
+                                  date=origctx.date(), extra=origctx.extra())
+
+        if grabstate:
+            grabstate.delete()
+        newctx = repo[newnode] if newnode else pctx
+        compat.createmarkers(repo, [(origctx, (newctx,))], operation="grab")
+
+        if newnode is None:
+            ui.warn(_("note: grab of %d:%s created no changes to commit\n") %
+                    (origctx.rev(), origctx))
+            return 0
+
+        return 0

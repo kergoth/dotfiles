@@ -59,6 +59,7 @@ CONTENTS                                                         *ale-contents*
       hadolint............................|ale-dockerfile-hadolint|
     elixir................................|ale-elixir-options|
       mix.................................|ale-elixir-mix|
+      mix_format..........................|ale-elixir-mix-format|
       dialyxir............................|ale-elixir-dialyxir|
     elm...................................|ale-elm-options|
       elm-format..........................|ale-elm-elm-format|
@@ -138,6 +139,7 @@ CONTENTS                                                         *ale-contents*
     markdown..............................|ale-markdown-options|
       mdl.................................|ale-markdown-mdl|
       prettier............................|ale-markdown-prettier|
+      textlint............................|ale-markdown-textlint|
       write-good..........................|ale-markdown-write-good|
     nroff.................................|ale-nroff-options|
       write-good..........................|ale-nroff-write-good|
@@ -197,6 +199,7 @@ CONTENTS                                                         *ale-contents*
       reek................................|ale-ruby-reek|
       rubocop.............................|ale-ruby-rubocop|
       ruby................................|ale-ruby-ruby|
+      rufo................................|ale-ruby-rufo|
     rust..................................|ale-rust-options|
       cargo...............................|ale-rust-cargo|
       rls.................................|ale-rust-rls|
@@ -232,6 +235,7 @@ CONTENTS                                                         *ale-contents*
     texinfo...............................|ale-texinfo-options|
       write-good..........................|ale-texinfo-write-good|
     text..................................|ale-text-options|
+      textlint............................|ale-text-textlint|
       write-good..........................|ale-text-write-good|
     thrift................................|ale-thrift-options|
       thrift..............................|ale-thrift-thrift|
@@ -267,7 +271,7 @@ CONTENTS                                                         *ale-contents*
 ALE provides the means to run linters asynchronously in Vim in a variety of
 languages and tools. ALE sends the contents of buffers to linter programs
 using the |job-control| features available in Vim 8 and NeoVim. For Vim 8,
-Vim must be compiled with the |job| and |channel| and |timer| features
+Vim must be compiled with the |job| and |channel| and |timers| features
 as a minimum.
 
 ALE supports the following key features for linting:
@@ -327,7 +331,7 @@ Notes:
 * FusionScript: `fusion-lint`
 * Git Commit Messages: `gitlint`
 * GLSL: glslang, `glslls`
-* Go: `gofmt`, `goimports`, `go vet`!!, `golint`, `gotype`, `gometalinter`!!, `go build`!!, `gosimple`!!, `staticcheck`!!
+* Go: `gofmt`, `goimports`, `go vet`!!, `golint`, `gotype`!!, `gometalinter`!!, `go build`!!, `gosimple`!!, `staticcheck`!!
 * GraphQL: `eslint`, `gqlint`, `prettier`
 * Haml: `haml-lint`
 * Handlebars: `ember-template-lint`
@@ -344,7 +348,7 @@ Notes:
 * Lua: `luac`, `luacheck`
 * Mail: `alex`!!, `proselint`, `vale`
 * Make: `checkmake`
-* Markdown: `alex`!!, `mdl`, `prettier`, `proselint`, `redpen`, `remark-lint`, `vale`, `write-good`
+* Markdown: `alex`!!, `markdownlint`!!, `mdl`, `prettier`, `proselint`, `redpen`, `remark-lint`, `textlint`, `vale`, `write-good`
 * MATLAB: `mlint`
 * Nim: `nim check`!!
 * nix: `nix-instantiate`
@@ -366,7 +370,7 @@ Notes:
 * reStructuredText: `alex`!!, `proselint`, `redpen`, `rstcheck`, `vale`, `write-good`
 * Re:VIEW: `redpen`
 * RPM spec: `rpmlint`
-* Ruby: `brakeman`, `rails_best_practices`!!, `reek`, `rubocop`, `ruby`
+* Ruby: `brakeman`, `rails_best_practices`!!, `reek`, `rubocop`, `ruby`, `rufo`
 * Rust: `cargo`!!, `rls`, `rustc` (see |ale-integration-rust|), `rustfmt`
 * SASS: `sass-lint`, `stylelint`
 * SCSS: `prettier`, `sass-lint`, `scss-lint`, `stylelint`
@@ -380,7 +384,7 @@ Notes:
 * Tcl: `nagelfar`!!
 * Terraform: `tflint`
 * Texinfo: `alex`!!, `proselint`, `write-good`
-* Text^: `alex`!!, `proselint`, `vale`, `write-good`, `redpen`
+* Text^: `alex`!!, `proselint`, `redpen`, `textlint`, `vale`, `write-good`
 * Thrift: `thrift`
 * TypeScript: `eslint`, `prettier`, `tslint`, `tsserver`, `typecheck`
 * Verilog: `iverilog`, `verilator`
@@ -2304,9 +2308,11 @@ b:ale_linted                                                     *b:ale_linted*
 
 ALELintPre                                                 *ALELintPre-autocmd*
 ALELintPost                                               *ALELintPost-autocmd*
+ALEFixPre                                                   *ALEFixPre-autocmd*
+ALEFixPost                                                 *ALEFixPost-autocmd*
 
-  These |User| autocommands are triggered before and after every lint cycle.
-  They can be used to update statuslines, send notifications, etc.
+  These |User| autocommands are triggered before and after every lint or fix
+  cycle. They can be used to update statuslines, send notifications, etc.
   The autocmd commands are run with |:silent|, so |:unsilent| is required for
   echoing messges.
 

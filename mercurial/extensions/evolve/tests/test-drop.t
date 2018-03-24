@@ -220,7 +220,7 @@ Try to drop a changeset with rewrite
      summary:     add base
   
   ============ obsmark ============
-  34b6c051bf1f78db6aef400776de5cb964470207 a2c06c884bfe53d3840026248bd8a7eafa152df8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  34b6c051bf1f78db6aef400776de5cb964470207 a2c06c884bfe53d3840026248bd8a7eafa152df8 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '8', 'operation': 'amend', 'user': 'test'}
   $ hg drop .
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 19509a42b0d0

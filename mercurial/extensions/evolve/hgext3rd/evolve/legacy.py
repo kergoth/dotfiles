@@ -30,6 +30,12 @@ from mercurial.node import bin, nullid
 from mercurial import registrar
 from mercurial import util
 
+try:
+    from mercurial.utils.dateutil import makedate
+except ImportError as e:
+    # compat with hg < 4.6
+    from mercurial.util import makedate
+
 if util.safehasattr(registrar, 'command'):
     commandfunc = registrar.command
 else: # compat with hg < 4.3
@@ -105,7 +111,7 @@ def cmddebugconvertobsolete(ui, repo):
                         prec = bin(objhex)
                         sucs = (suc == nullid) and [] or [suc]
                         meta = {
-                            'date': '%i %i' % util.makedate(),
+                            'date': '%i %i' % makedate(),
                             'user': ui.username(),
                             }
                         try:

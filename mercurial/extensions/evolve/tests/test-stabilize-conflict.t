@@ -65,8 +65,8 @@ proper behavior without conflict
   $ safesed 's/huit/eight/' babar
   $ hg diff
   diff -r 9d5daf8bd956 babar
-  --- a/babar	* (glob)
-  +++ b/babar	* (glob)
+  --- a/babar	Thu Jan 01 00:00:00 1970 +0000
+  +++ b/babar	Thu Jan 01 00:00:00 1970 +0000
   @@ -5,6 +5,6 @@
    cinq
    six
@@ -167,8 +167,10 @@ proper behavior with conflict using internal:merge
   $ safesed 's/dix/ten/' babar
   $ hg resolve --all -m
   (no more unresolved files)
+  continue: hg evolve --continue
   $ hg evolve --continue
   evolving 4:71c18f70c34f "babar count up to fifteen"
+  working directory is now at 1836b91c6c1d
   $ hg resolve -l
   $ hg log -G
   @  changeset:   6:1836b91c6c1d

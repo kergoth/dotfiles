@@ -44,10 +44,10 @@ from mercurial import (
     util,
     wireproto,
 )
-from mercurial.hgweb import hgweb_mod
 from mercurial.i18n import _
 
 from . import (
+    compat,
     exthelper,
     obscache,
     utility,
@@ -95,7 +95,8 @@ def findcommonobsmarkers(ui, local, remote, probeset,
     common = set()
     undecided = set(probeset)
     totalnb = len(undecided)
-    ui.progress(_("comparing with other"), 0, total=totalnb)
+    ui.progress(_("comparing with other"), 0, total=totalnb,
+                unit=_("changesets"))
     _takefullsample = setdiscovery._takefullsample
     if remote.capable('_evoext_obshash_1'):
         getremotehash = remote.evoext_obshash1
@@ -114,7 +115,7 @@ def findcommonobsmarkers(ui, local, remote, probeset,
 
         roundtrips += 1
         ui.progress(_("comparing with other"), totalnb - len(undecided),
-                    total=totalnb)
+                    total=totalnb, unit=_("changesets"))
         ui.debug("query %i; still undecided: %i, sample size is: %i\n"
                  % (roundtrips, len(undecided), len(sample)))
         # indices between sample and externalized version must match
@@ -175,7 +176,8 @@ def findmissingrange(ui, local, remote, probeset,
 
     local.obsstore.rangeobshashcache.update(local)
     querycount = 0
-    ui.progress(_("comparing obsmarker with other"), querycount)
+    ui.progress(_("comparing obsmarker with other"), querycount,
+                unit=_("queries"))
     overflow = []
     while sample or overflow:
         if overflow:
@@ -230,7 +232,8 @@ def findmissingrange(ui, local, remote, probeset,
                     addentry(new)
         assert nbsample == nbreplies
         querycount += 1
-        ui.progress(_("comparing obsmarker with other"), querycount)
+        ui.progress(_("comparing obsmarker with other"), querycount,
+                    unit=_("queries"))
     ui.progress(_("comparing obsmarker with other"), None)
     local.obsstore.rangeobshashcache.save(local)
     duration = timer() - starttime
@@ -597,11 +600,11 @@ def setupcache(ui, repo):
 
         if util.safehasattr(repo, 'updatecaches'):
             @localrepo.unfilteredmethod
-            def updatecaches(self, tr=None):
+            def updatecaches(self, tr=None, **kwargs):
                 if utility.shouldwarmcache(self, tr):
                     self.obsstore.rangeobshashcache.update(self)
                     self.obsstore.rangeobshashcache.save(self)
-                super(obshashrepo, self).updatecaches(tr)
+                super(obshashrepo, self).updatecaches(tr, **kwargs)
 
         else:
             def transaction(self, *args, **kwargs):
@@ -675,6 +678,7 @@ def peer_obshashrange_v0(self, ranges):
     except ValueError:
         self._abort(error.ResponseError(_("unexpected response:"), d))
 
+@compat.wireprotocommand(eh, 'evoext_obshashrange_v1', 'ranges')
 def srv_obshashrange_v1(repo, proto, ranges):
     ranges = wireproto.decodelist(ranges)
     ranges = [_decrange(r) for r in ranges]
@@ -698,17 +702,26 @@ def _obshashrange_capabilities(orig, repo, proto):
     caps = orig(repo, proto)
     enabled = _useobshashrange(repo)
     if obsolete.isenabled(repo, obsolete.exchangeopt) and enabled:
+
+        # Compat hg 4.6+ (2f7290555c96)
+        bytesresponse = False
+        if util.safehasattr(caps, 'data'):
+            bytesresponse = True
+            caps = caps.data
+
         caps = caps.split()
-        caps.append('_evoext_obshashrange_v1')
+        caps.append(b'_evoext_obshashrange_v1')
         caps.sort()
-        caps = ' '.join(caps)
+        caps = b' '.join(caps)
+
+        # Compat hg 4.6+ (2f7290555c96)
+        if bytesresponse:
+            from mercurial import wireprototypes
+            caps = wireprototypes.bytesresponse(caps)
     return caps
 
 @eh.extsetup
 def obshashrange_extsetup(ui):
-    hgweb_mod.perms['evoext_obshashrange_v1'] = 'pull'
-
-    wireproto.commands['evoext_obshashrange_v1'] = (srv_obshashrange_v1, 'ranges')
     ###
     extensions.wrapfunction(wireproto, 'capabilities', _obshashrange_capabilities)
     # wrap command content
@@ -759,7 +772,8 @@ def _obsrelsethashtree(repo, encodeonemarker):
     cache = []
     unfi = repo.unfiltered()
     markercache = {}
-    repo.ui.progress(_("preparing locally"), 0, total=len(unfi))
+    repo.ui.progress(_("preparing locally"), 0, total=len(unfi),
+                     unit=_("changesets"))
     for i in unfi:
         ctx = unfi[i]
         entry = 0
@@ -789,7 +803,8 @@ def _obsrelsethashtree(repo, encodeonemarker):
             cache.append((ctx.node(), sha.digest()))
         else:
             cache.append((ctx.node(), node.nullid))
-        repo.ui.progress(_("preparing locally"), i, total=len(unfi))
+        repo.ui.progress(_("preparing locally"), i, total=len(unfi),
+                         unit=_("changesets"))
     repo.ui.progress(_("preparing locally"), None)
     return cache
 
@@ -828,9 +843,11 @@ def peer_obshash1(self, nodes):
     except ValueError:
         self._abort(error.ResponseError(_("unexpected response:"), d))
 
+@compat.wireprotocommand(eh, 'evoext_obshash', 'nodes')
 def srv_obshash(repo, proto, nodes):
     return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes)))
 
+@compat.wireprotocommand(eh, 'evoext_obshash1', 'nodes')
 def srv_obshash1(repo, proto, nodes):
     return wireproto.encodelist(_obshash(repo, wireproto.decodelist(nodes),
                                 version=1))
@@ -840,20 +857,27 @@ def _obshash_capabilities(orig, repo, proto):
     caps = orig(repo, proto)
     if (obsolete.isenabled(repo, obsolete.exchangeopt)
         and repo.ui.configbool('experimental', 'evolution.obsdiscovery', True)):
+
+        # Compat hg 4.6+ (2f7290555c96)
+        bytesresponse = False
+        if util.safehasattr(caps, 'data'):
+            bytesresponse = True
+            caps = caps.data
+
         caps = caps.split()
-        caps.append('_evoext_obshash_0')
-        caps.append('_evoext_obshash_1')
+        caps.append(b'_evoext_obshash_0')
+        caps.append(b'_evoext_obshash_1')
         caps.sort()
-        caps = ' '.join(caps)
+        caps = b' '.join(caps)
+
+        # Compat hg 4.6+ (2f7290555c96)
+        if bytesresponse:
+            from mercurial import wireprototypes
+            caps = wireprototypes.bytesresponse(caps)
     return caps
 
 @eh.extsetup
 def obshash_extsetup(ui):
-    hgweb_mod.perms['evoext_obshash'] = 'pull'
-    hgweb_mod.perms['evoext_obshash1'] = 'pull'
-
-    wireproto.commands['evoext_obshash'] = (srv_obshash, 'nodes')
-    wireproto.commands['evoext_obshash1'] = (srv_obshash1, 'nodes')
     extensions.wrapfunction(wireproto, 'capabilities', _obshash_capabilities)
     # wrap command content
     oldcap, args = wireproto.commands['capabilities']

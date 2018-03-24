@@ -176,9 +176,9 @@ colortable = {'topic.active': 'green',
               'topic.active': 'green',
              }
 
-__version__ = '0.7.1.dev'
+__version__ = '0.8.1.dev'
 
-testedwith = '4.1.3 4.2.3 4.3.3 4.4.2'
+testedwith = '4.1.3 4.2.3 4.3.3 4.4.2 4.5.2'
 minimumhgversion = '4.1'
 buglink = 'https://bz.mercurial-scm.org/'
 

@@ -1,4 +1,6 @@
   $ cat >> $HGRCPATH <<EOF
+  > [ui]
+  > interactive = True
   > [extensions]
   > EOF
   $ echo "evolve=$(echo $(dirname $TESTDIR))/hgext3rd/evolve/" >> $HGRCPATH
@@ -35,8 +37,8 @@ hg prev -B should move active bookmark
 
 hg next -B should move active bookmark
   $ hg next -B --dry-run
-  hg update 1;
-  hg bookmark mark -r 1;
+  hg update 6e742c9127b3;
+  hg bookmark mark -r 6e742c9127b3;
   [1] added b
   $ hg next -B
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -46,7 +48,7 @@ hg next -B should move active bookmark
 
 hg prev should unset active bookmark
   $ hg prev --dry-run
-  hg update 0;
+  hg update a154386e50d1;
   [0] added a
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
@@ -60,7 +62,7 @@ hg next should move active bookmark
      mark                      1:6e742c9127b3
    * mark2                     0:a154386e50d1
   $ hg next --dry-run --color=debug
-  hg update 1;
+  hg update 6e742c9127b3;
   [[evolve.rev|1]] added b
   $ hg next
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
@@ -172,7 +174,7 @@ no children of any kind
   no children
   [1]
   $ hg prev --dry-run --color=debug
-  hg update 1;
+  hg update 6e742c9127b3;
   [[evolve.rev|1]] added b
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
@@ -190,12 +192,11 @@ some aspiring children
   move:[2] added c
   atop:[3] added b (2)
   hg rebase -r 4e26ef31f919 -d 9ad178109a19
-  working directory now at 9ad178109a19
 
 (add color output for smoke testing)
 
   $ hg next --evolve --color debug
-  move:[[evolve.rev|2]] added c
+  [evolve.operation|move:][[evolve.rev|2]] added c
   atop:[[evolve.rev|3]] added b (2)
   [ ui.status|working directory now at [evolve.node|e3b6d5df389b]]
 
@@ -211,12 +212,20 @@ next with ambiguity
   $ hg prev
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   [3] added b (2)
-  $ hg next
-  ambiguous next changeset:
-  [4] added c
+  $ hg next <<EOF
+  > 1
+  > EOF
+  ambiguous next changeset, choose one to update:
+  0: [e3b6d5df389b] added c
+  1: [9df671ccd2c7] added d
+  q: quit the prompt
+  enter the index of the revision you want to select: 1
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   [5] added d
-  explicitly update to one of them
-  [1]
+
+  $ hg prev
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [3] added b (2)
 
 next with ambiguity in aspiring children
 
@@ -226,16 +235,92 @@ next with ambiguity in aspiring children
   no children
   (2 unstable changesets to be evolved here, do you want --evolve?)
   [1]
-  $ hg next --evolve
-  ambiguous next (unstable) changeset:
-  [4] added c
-  [5] added d
-  (run 'hg evolve --rev REV' on one of them)
-  [1]
+  $ hg next --evolve <<EOF
+  > 0
+  > EOF
+  ambiguous next (unstable) changeset, choose one to evolve and update:
+  0: [e3b6d5df389b] added c
+  1: [9df671ccd2c7] added d
+  q: quit the prompt
+  enter the index of the revision you want to select: 0
+  move:[4] added c
+  atop:[6] added b (3)
+  working directory now at 5ce67c2407b0
+
+  $ hg log -GT "{rev}:{node|short} {desc}\n"
+  @  7:5ce67c2407b0 added c
+  |
+  o  6:d7f119adc759 added b (3)
+  |
+  | *  5:9df671ccd2c7 added d
+  | |
+  | x  3:9ad178109a19 added b (2)
+  |/
+  o  0:a154386e50d1 added a
+  
+
   $ hg evolve -r 5
   move:[5] added d
   atop:[6] added b (3)
   working directory is now at 47ea25be8aea
+
+prev with multiple parents
+
+  $ hg log -GT "{rev}:{node|short} {desc}\n"
+  @  8:47ea25be8aea added d
+  |
+  | o  7:5ce67c2407b0 added c
+  |/
+  o  6:d7f119adc759 added b (3)
+  |
+  o  0:a154386e50d1 added a
+  
+  $ hg merge -r 5ce67c2407b0
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  (branch merge, don't forget to commit)
+  $ hg ci -m "merge commit"
+
+  $ hg prev <<EOF
+  > q
+  > EOF
+  multiple parents, choose one to update:
+  0: [47ea25be8aea] added d
+  1: [5ce67c2407b0] added c
+  q: quit the prompt
+  enter the index of the revision you want to select: q
+  [8] added d
+  [7] added c
+  multiple parents, explicitly update to one
+  [1]
+
+  $ hg prev --config ui.interactive=False
+  [8] added d
+  [7] added c
+  multiple parents, explicitly update to one
+  [1]
+
+  $ hg prev <<EOF
+  > 1
+  > EOF
+  multiple parents, choose one to update:
+  0: [47ea25be8aea] added d
+  1: [5ce67c2407b0] added c
+  q: quit the prompt
+  enter the index of the revision you want to select: 1
+  0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  [7] added c
+
+  $ hg log -GT "{rev}:{node|short} {desc}\n"
+  o    9:a4b8c25a87d3 merge commit
+  |\
+  | o  8:47ea25be8aea added d
+  | |
+  @ |  7:5ce67c2407b0 added c
+  |/
+  o  6:d7f119adc759 added b (3)
+  |
+  o  0:a154386e50d1 added a
+  
 
   $ cd ..
 

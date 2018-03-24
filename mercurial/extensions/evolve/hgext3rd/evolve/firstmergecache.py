@@ -49,11 +49,11 @@ def setupcache(ui, repo):
 
         if util.safehasattr(repo, 'updatecaches'):
             @localrepo.unfilteredmethod
-            def updatecaches(self, tr=None):
+            def updatecaches(self, tr=None, **kwargs):
                 if utility.shouldwarmcache(self, tr):
                     self.firstmergecache.update(self)
                     self.firstmergecache.save(self)
-                super(firstmergecacherepo, self).updatecaches(tr)
+                super(firstmergecacherepo, self).updatecaches(tr, **kwargs)
 
         else:
             def transaction(self, *args, **kwargs):

@@ -168,7 +168,7 @@ Uncommit a chunk
   @  678a59e5ff90 (3) another one
   |
   x  f70fb463d5bf (1) another one
-       rewritten(content) as 678a59e5ff90 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(content) as 678a59e5ff90 using uncommit by test (Thu Jan 01 00:00:00 1970 +0000)
          note: note on amend --extract
   
 The unselected part should be in the diff
@@ -300,11 +300,11 @@ Checking the obsolescence history
   @  46e35360be47 (5) another one
   |
   x  678a59e5ff90 (3) another one
-  |    rewritten(content) as 46e35360be47 by test (Thu Jan 01 00:00:00 1970 +0000)
+  |    rewritten(content) as 46e35360be47 using uncommit by test (Thu Jan 01 00:00:00 1970 +0000)
   |      note: testing uncommit on dirty wdir
   |
   x  f70fb463d5bf (1) another one
-       rewritten(content) as 678a59e5ff90 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(content) as 678a59e5ff90 using uncommit by test (Thu Jan 01 00:00:00 1970 +0000)
          note: note on amend --extract
   
 

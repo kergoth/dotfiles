@@ -50,8 +50,8 @@ Test evolve removing the changeset being evolved
   o  0:07f494440405@default(draft) bk:[] adda
   
   $ hg debugobsolete
-  102a90ea7b4a3361e4082ed620918c261189a36a fb9d051ec0a450a4aa2ffc8c324979832ef88065 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  cce2c55b896511e0b6e04173c9450ba822ebc740 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (*) {'ef1': '*', 'user': 'test'} (glob)
+  102a90ea7b4a3361e4082ed620918c261189a36a fb9d051ec0a450a4aa2ffc8c324979832ef88065 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '9', 'operation': 'amend', 'user': 'test'}
+  cce2c55b896511e0b6e04173c9450ba822ebc740 0 {102a90ea7b4a3361e4082ed620918c261189a36a} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'evolve', 'user': 'test'}
 
 Test evolve with conflict
 
@@ -60,8 +60,8 @@ Test evolve with conflict
   b
   $ hg pdiff a
   diff -r 07f494440405 a
-  --- a/a	* (glob)
-  +++ b/a	* (glob)
+  --- a/a	Thu Jan 01 00:00:00 1970 +0000
+  +++ b/a	Thu Jan 01 00:00:00 1970 +0000
   @@ -1,1 +1,2 @@
    a
   +a
@@ -86,8 +86,8 @@ Test evolve with conflict
   $ hg revert -r "orphan()" a
   $ hg diff
   diff -r 66719795a494 a
-  --- a/a	* (glob)
-  +++ b/a	* (glob)
+  --- a/a	Thu Jan 01 00:00:00 1970 +0000
+  +++ b/a	Thu Jan 01 00:00:00 1970 +0000
   @@ -1,1 +1,3 @@
    a
   +a
@@ -98,8 +98,10 @@ Test evolve with conflict
   [255]
   $ hg resolve -m a
   (no more unresolved files)
+  continue: hg evolve --continue
   $ hg evolve --continue
   evolving 4:3655f0f50885 "newer a"
+  working directory is now at 1cf0aacfd363
 
 Stabilize latecomer with different parent
 =========================================
@@ -127,8 +129,7 @@ Add another commit
 Get a successors of 8 on it
 
   $ hg grab 1cf0aacfd363
-  rebasing 6:1cf0aacfd363 "newer a"
-  ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
+  grabbing 6:1cf0aacfd363 "newer a"
 
 Add real change to the successors
 
@@ -140,7 +141,7 @@ Make precursors public
   $ hg phase --hidden --public 1cf0aacfd363
   1 new phase-divergent changesets
   $ glog
-  @  9:(73b15c7566e9|d5c7ef82d003)@default\(draft\) bk:\[\] newer a (re)
+  @  9:99c21c89bcef@default(draft) bk:[] newer a
   |
   o  7:7bc2f5967f5e@default(draft) bk:[] add c
   |
@@ -156,10 +157,10 @@ Stabilize!
   $ hg evolve --any --dry-run --phase-divergent
   recreate:[9] newer a
   atop:[6] newer a
-  hg rebase --rev d5c7ef82d003 --dest 66719795a494;
+  hg rebase --rev 99c21c89bcef --dest 66719795a494;
   hg update 1cf0aacfd363;
-  hg revert --all --rev d5c7ef82d003;
-  hg commit --msg "phase-divergent update to d5c7ef82d003"
+  hg revert --all --rev 99c21c89bcef;
+  hg commit --msg "phase-divergent update to 99c21c89bcef"
   $ hg evolve --any --confirm --phase-divergent
   recreate:[9] newer a
   atop:[6] newer a
@@ -172,10 +173,10 @@ Stabilize!
   perform evolve? [Ny] y
   rebasing to destination parent: 66719795a494
   computing new diff
-  committed as 8c986e77913c
-  working directory is now at 8c986e77913c
+  committed as 3d968e0b3097
+  working directory is now at 3d968e0b3097
   $ glog
-  @  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
+  @  11:3d968e0b3097@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   |
   | o  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
@@ -204,7 +205,7 @@ Stabilize divergent changesets with same parent
   $ glog
   @  12:3932c176bbaa@default(draft) bk:[] More addition
   |
-  | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
+  | o  11:3d968e0b3097@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
   o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
@@ -233,7 +234,7 @@ Stabilize divergent changesets with same parent
   |
   | *  13:d2f173e25686@default(draft) bk:[] More addition
   |/
-  | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
+  | o  11:3d968e0b3097@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
   o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |
@@ -283,7 +284,7 @@ Stabilize it
   $ glog
   @  15:f344982e63c4@default(draft) bk:[] More addition
   |
-  | o  11:8c986e77913c@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
+  | o  11:3d968e0b3097@default(draft) bk:[] phase-divergent update to 1cf0aacfd363:
   | |
   o |  7:7bc2f5967f5e@default(draft) bk:[] add c
   | |

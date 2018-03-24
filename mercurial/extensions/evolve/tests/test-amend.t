@@ -25,7 +25,7 @@ Test that amend captures branches
   @  6a022cbb61d5 (1) adda
   |
   x  07f494440405 (0) adda
-       rewritten(branch) as 6a022cbb61d5 by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(branch) as 6a022cbb61d5 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
          note: this a note on the obsmarker and supported for hg>=4.4
   
   $ hg branch

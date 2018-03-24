@@ -24,6 +24,7 @@ from mercurial import (
     phases,
     repair,
     revset,
+    util,
 )
 
 from mercurial.i18n import _
@@ -60,6 +61,10 @@ def precheck(repo, revs, action='rewrite'):
         msg = _("cannot %s the null revision") % (action)
         hint = _("no changeset checked out")
         raise error.Abort(msg, hint=hint)
+    if any(util.safehasattr(r, 'rev') for r in revs):
+        msg = "rewriteutil.precheck called with ctx not revs"
+        repo.ui.develwarn(msg)
+        revs = (r.rev() for r in revs)
     publicrevs = repo.revs('%ld and public()', revs)
     if publicrevs:
         summary = _formatrevs(repo, publicrevs)

@@ -78,11 +78,11 @@ Split commits two by two
   @    100cc25b765f (9) fold2
   |\
   x |  0da815c333f6 (5) E
-   /     rewritten(description, content) as 100cc25b765f by test (Thu Jan 01 00:00:00 1970 +0000)
+   /     rewritten(description, content) as 100cc25b765f using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   |        note: folding changesets to test
   |
   x  d9f908fde1a1 (6) F
-       rewritten(description, parent, content) as 100cc25b765f by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(description, parent, content) as 100cc25b765f using fold by test (Thu Jan 01 00:00:00 1970 +0000)
          note: folding changesets to test
   
   $ hg log -G 
@@ -110,25 +110,25 @@ Split commits two by two
   x | |  changeset:   4:868d2e0eb19c
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |  obsolete:    rewritten as 8:d15d0ffc75f6
+  | | |  obsolete:    rewritten using fold as 8:d15d0ffc75f6
   | | |  summary:     D
   | | |
   x | |  changeset:   3:a8df460dbbfe
   |/ /   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | |    obsolete:    rewritten as 8:d15d0ffc75f6
+  | |    obsolete:    rewritten using fold as 8:d15d0ffc75f6
   | |    summary:     C
   | |
   x |  changeset:   2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    rewritten as 7:b868bc49b0a4
+  | |  obsolete:    rewritten using fold as 7:b868bc49b0a4
   | |  summary:     B
   | |
   x |  changeset:   1:2a34000d3544
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as 7:b868bc49b0a4
+  |    obsolete:    rewritten using fold as 7:b868bc49b0a4
   |    summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -286,25 +286,25 @@ Then split
   x | |  changeset:   4:868d2e0eb19c
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |  obsolete:    split as 12:7b3290f6e0a0, 13:d0f33db50670
+  | | |  obsolete:    split using fold, split as 12:7b3290f6e0a0, 13:d0f33db50670
   | | |  summary:     D
   | | |
   x | |  changeset:   3:a8df460dbbfe
   |/ /   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | |    obsolete:    split as 12:7b3290f6e0a0, 13:d0f33db50670
+  | |    obsolete:    split using fold, split as 12:7b3290f6e0a0, 13:d0f33db50670
   | |    summary:     C
   | |
   x |  changeset:   2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    split as 10:19e14c8397fc, 11:e036916b63ea
+  | |  obsolete:    split using fold, split as 10:19e14c8397fc, 11:e036916b63ea
   | |  summary:     B
   | |
   x |  changeset:   1:2a34000d3544
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    split as 10:19e14c8397fc, 11:e036916b63ea
+  |    obsolete:    split using fold, split as 10:19e14c8397fc, 11:e036916b63ea
   |    summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -351,25 +351,25 @@ Connect them all
   x | |  changeset:   4:868d2e0eb19c
   | | |  user:        test
   | | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | | |  obsolete:    split as 12:7b3290f6e0a0, 14:ec31316faa9d
+  | | |  obsolete:    split using fold, prune, split as 12:7b3290f6e0a0, 14:ec31316faa9d
   | | |  summary:     D
   | | |
   x | |  changeset:   3:a8df460dbbfe
   |/ /   user:        test
   | |    date:        Thu Jan 01 00:00:00 1970 +0000
-  | |    obsolete:    split as 12:7b3290f6e0a0, 14:ec31316faa9d
+  | |    obsolete:    split using fold, prune, split as 12:7b3290f6e0a0, 14:ec31316faa9d
   | |    summary:     C
   | |
   x |  changeset:   2:c473644ee0e9
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    split as 10:19e14c8397fc, 12:7b3290f6e0a0
+  | |  obsolete:    split using fold, prune, split as 10:19e14c8397fc, 12:7b3290f6e0a0
   | |  summary:     B
   | |
   x |  changeset:   1:2a34000d3544
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    split as 10:19e14c8397fc, 12:7b3290f6e0a0
+  |    obsolete:    split using fold, prune, split as 10:19e14c8397fc, 12:7b3290f6e0a0
   |    summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -387,25 +387,25 @@ walking algorithm works no matter the level of successors + precursors
   *    7b3290f6e0a0 (12) fold1
   |\
   x |    d15d0ffc75f6 (8) fold1
-  |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 by test (*) (glob)
+  |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 using split by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   | | x  e036916b63ea (11) fold0
-  | | |    rewritten(description, parent, content) as 7b3290f6e0a0 by test (*) (glob)
+  | | |    rewritten(description, parent, content) as 7b3290f6e0a0 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   x | |  868d2e0eb19c (4) D
-   / /     rewritten(description, parent, content) as d15d0ffc75f6 by test (*) (glob)
+   / /     rewritten(description, parent, content) as d15d0ffc75f6 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  a8df460dbbfe (3) C
-   /     rewritten(description, content) as d15d0ffc75f6 by test (*) (glob)
+   /     rewritten(description, content) as d15d0ffc75f6 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x    b868bc49b0a4 (7) fold0
-  |\     rewritten(parent, content) as 19e14c8397fc, e036916b63ea by test (*) (glob)
+  |\     rewritten(parent, content) as 19e14c8397fc, e036916b63ea using split by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  2a34000d3544 (1) A
-   /     rewritten(description, content) as b868bc49b0a4 by test (*) (glob)
+   /     rewritten(description, content) as b868bc49b0a4 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-       rewritten(description, parent, content) as b868bc49b0a4 by test (*) (glob)
+       rewritten(description, parent, content) as b868bc49b0a4 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   
 While with all option, we should see 15 changesets
 
@@ -419,38 +419,38 @@ While with all option, we should see 15 changesets
   | | | | *  ec31316faa9d (14) fold2
   | | | |/|
   | | | x |    100cc25b765f (9) fold2
-  | | | |\ \     rewritten(parent, content) as d4a000f63ee9, ec31316faa9d by test (*) (glob)
+  | | | |\ \     rewritten(parent, content) as d4a000f63ee9, ec31316faa9d using split by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | | | |
   | +-------x  d0f33db50670 (13) fold1
-  | | | | |      rewritten(description, parent, content) as ec31316faa9d by test (*) (glob)
+  | | | | |      rewritten(description, parent, content) as ec31316faa9d using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | | |        note: this is a note stored in obsmarker in prune
   | | | | |
   +---x | |  e036916b63ea (11) fold0
-  | |  / /     rewritten(description, parent, content) as 7b3290f6e0a0 by test (*) (glob)
+  | |  / /     rewritten(description, parent, content) as 7b3290f6e0a0 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | |
   | | x |  0da815c333f6 (5) E
-  | |  /     rewritten(description, content) as 100cc25b765f by test (*) (glob)
+  | |  /     rewritten(description, content) as 100cc25b765f using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |        note: folding changesets to test
   | | |
   x | |    b868bc49b0a4 (7) fold0
-  |\ \ \     rewritten(parent, content) as 19e14c8397fc, e036916b63ea by test (*) (glob)
+  |\ \ \     rewritten(parent, content) as 19e14c8397fc, e036916b63ea using split by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | |
   | | x |    d15d0ffc75f6 (8) fold1
-  | | |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 by test (*) (glob)
+  | | |\ \     rewritten(parent, content) as 7b3290f6e0a0, d0f33db50670 using split by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | | |
   | | | | x  d9f908fde1a1 (6) F
-  | | | |      rewritten(description, parent, content) as 100cc25b765f by test (*) (glob)
+  | | | |      rewritten(description, parent, content) as 100cc25b765f using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | | | |        note: folding changesets to test
   | | | |
   x | | |  2a34000d3544 (1) A
-   / / /     rewritten(description, content) as b868bc49b0a4 by test (*) (glob)
+   / / /     rewritten(description, content) as b868bc49b0a4 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   | x |  868d2e0eb19c (4) D
-  |  /     rewritten(description, parent, content) as d15d0ffc75f6 by test (*) (glob)
+  |  /     rewritten(description, parent, content) as d15d0ffc75f6 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   | x  a8df460dbbfe (3) C
-  |      rewritten(description, content) as d15d0ffc75f6 by test (*) (glob)
+  |      rewritten(description, content) as d15d0ffc75f6 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-       rewritten(description, parent, content) as b868bc49b0a4 by test (*) (glob)
+       rewritten(description, parent, content) as b868bc49b0a4 using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   

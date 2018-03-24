@@ -6,14 +6,21 @@
 Compatibility module
 """
 
+import inspect
+
+import functools
+
 from mercurial import (
     copies,
     context,
     hg,
+    mdiff,
     obsolete,
     revset,
     util,
+    wireproto,
 )
+from mercurial.hgweb import hgweb_mod
 
 # hg < 4.2 compat
 try:
@@ -45,6 +52,19 @@ from . import (
 )
 
 eh = exthelper.exthelper()
+
+# Wrap obsolete.creatmarkers and make it accept but ignore "operation" argument
+# for hg < 4.3
+originalcreatemarkers = obsolete.createmarkers
+while isinstance(originalcreatemarkers, functools.partial):
+    originalcreatemarkers = originalcreatemarkers.func
+if originalcreatemarkers.__code__.co_argcount < 6:
+    def createmarkers(repo, relations, flag=0, date=None, metadata=None,
+                      operation=None):
+        return obsolete.createmarkers(repo, relations, flag, date, metadata)
+else:
+    def createmarkers(*args, **kwargs):
+        return obsolete.createmarkers(*args, **kwargs)
 
 if not util.safehasattr(hg, '_copycache'):
     # exact copy of relevantmarkers as in Mercurial-176d1a0ce385
@@ -238,3 +258,40 @@ def getcachevfs(repo):
         cachevfs = vfsmod.vfs(repo.vfs.join('cache'))
         cachevfs.createmode = repo.store.createmode
     return cachevfs
+
+def strdiff(a, b, fn1, fn2):
+    """ A version of mdiff.unidiff for comparing two strings
+    """
+    args = [a, '', b, '', fn1, fn2]
+
+    # hg < 4.6 compat 8b6dd3922f70
+    argspec = inspect.getargspec(mdiff.unidiff)
+
+    if 'binary' in argspec.args:
+        args.append(False)
+
+    return mdiff.unidiff(*args)
+
+# date related
+
+try:
+    import mercurial.utils.dateutil
+    makedate = mercurial.utils.dateutil.makedate
+    parsedate = mercurial.utils.dateutil.parsedate
+except ImportError as e:
+    import mercurial.util
+    makedate = mercurial.util.makedate
+    parsedate = mercurial.util.parsedate
+
+def wireprotocommand(exthelper, name, args='', permission='pull'):
+    if 3 <= len(wireproto.wireprotocommand.func_defaults):
+        return wireproto.wireprotocommand(name, args, permission=permission)
+
+    else:
+        # <= hg-4.5 permission must be registered in dictionnary
+        def decorator(func):
+            @eh.extsetup
+            def install(ui):
+                hgweb_mod.perms[name] = permission
+                wireproto.commands[name] = (func, args)
+        return decorator

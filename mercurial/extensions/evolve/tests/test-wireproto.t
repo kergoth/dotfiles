@@ -141,7 +141,7 @@ some common hidden
   remote: adding manifests
   remote: adding file changes
   remote: added 1 changesets with 0 changes to 1 files (+1 heads)
-  remote: obsmarker-exchange: 167 bytes received
+  remote: obsmarker-exchange: 183 bytes received
   remote: 1 new obsolescence markers
   remote: obsoleted 1 changesets
   $ hg -R ../other pull
@@ -151,7 +151,7 @@ some common hidden
   adding manifests
   adding file changes
   added 1 changesets with 0 changes to 1 files (+1 heads)
-  obsmarker-exchange: 167 bytes received
+  obsmarker-exchange: 183 bytes received
   1 new obsolescence markers
   obsoleted 1 changesets
   new changesets * (glob)
@@ -177,7 +177,7 @@ test discovery can be disabled
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
   no changes found
-  remote: obsmarker-exchange: 258 bytes received
+  remote: obsmarker-exchange: 274 bytes received
   [1]
   $ hg -R ../other pull --config experimental.evolution.obsdiscovery=no
   pulling from ssh://user@dummy/server
@@ -185,7 +185,7 @@ test discovery can be disabled
   no changes found
   (skipping discovery of obsolescence markers, will exchange everything)
   (controled by 'experimental.evolution.obsdiscovery' configuration)
-  obsmarker-exchange: 258 bytes received
+  obsmarker-exchange: 274 bytes received
 
   $ cd ..
 
@@ -202,6 +202,7 @@ Check we cannot use pushkey for marker exchange anymore
   $ hg debugpushkey http://localhost:$HGPORT/ obsolete
   abort: HTTP Error 410: won't exchange obsmarkers through pushkey
   [255]
+  $ cat errors.log
   $ hg debugpushkey ssh://user@dummy/server obsolete
   remote: abort: won't exchange obsmarkers through pushkey
   remote: (upgrade your client or server to use the bundle2 protocol)
@@ -214,7 +215,7 @@ Check we cannot use pushkey for marker exchange anymore
   pulling from http://localhost:$HGPORT/
   searching for changes
   no changes found
-  obsmarker-exchange: 258 bytes received
+  obsmarker-exchange: 274 bytes received
 
   $ hg -R client pull http://localhost:$HGPORT/ --config experimental.evolution=createmarkers
   pulling from http://localhost:$HGPORT/

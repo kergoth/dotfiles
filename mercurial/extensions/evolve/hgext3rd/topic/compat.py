@@ -7,6 +7,8 @@ Compatibility module
 """
 from __future__ import absolute_import
 
+import functools
+
 from mercurial import (
     obsolete,
     scmutil,
@@ -27,6 +29,19 @@ if getmarkers is None:
 if successorssets is None:
     successorssets = obsolete.successorssets
 
+# Wrap obsolete.creatmarkers and make it accept but ignore "operation" argument
+# for hg < 4.3
+originalcreatemarkers = obsolete.createmarkers
+while isinstance(originalcreatemarkers, functools.partial):
+    originalcreatemarkers = originalcreatemarkers.func
+if originalcreatemarkers.__code__.co_argcount < 6:
+    def createmarkers(repo, relations, flag=0, date=None, metadata=None,
+                      operation=None):
+        return obsolete.createmarkers(repo, relations, flag, date, metadata)
+else:
+    def createmarkers(*args, **kwargs):
+        return obsolete.createmarkers(*args, **kwargs)
+
 def startpager(ui, cmd):
     """function to start a pager in case ui.pager() exists"""
     try:
@@ -44,4 +59,4 @@ def cleanupnodes(repo, replacements, operation, moves=None):
     else:
         relations = [(repo[o], tuple(repo[n] for n in new))
                      for (o, new) in replacements.iteritems()]
-        obsolete.createmarkers(repo, relations)
+        createmarkers(repo, relations, operation=operation)

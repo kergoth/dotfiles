@@ -92,7 +92,7 @@ To create commits with the number of split
 
   $ hg debugobsolete
   1334a80b33c3f9873edab728fbbcf500eab61d2e d2fe56e71366c2c5376c89960c281395062c0619 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '8', 'operation': 'amend', 'user': 'test'}
-  d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (*) {'ef1': '13', 'user': 'test'} (glob)
+  d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'split', 'user': 'test'}
   $ hg log -G
   @  changeset:   6:033b3f5ae73d
   |  tag:         tip
@@ -210,11 +210,11 @@ remaining changes
 
   $ hg debugobsolete
   1334a80b33c3f9873edab728fbbcf500eab61d2e d2fe56e71366c2c5376c89960c281395062c0619 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '8', 'operation': 'amend', 'user': 'test'}
-  d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (*) {'ef1': '13', 'user': 'test'} (glob)
+  d2fe56e71366c2c5376c89960c281395062c0619 2d8abdb827cdf71ca477ef6985d7ceb257c53c1b 033b3f5ae73db67c10de938fb6f26b949aaef172 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'split', 'user': 'test'}
   52149352b372d39b19127d5bd2d488b1b63f9f85 b434287e665ce757ee5463a965cb3d119ca9e893 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '9', 'operation': 'amend', 'user': 'test'}
-  2d8abdb827cdf71ca477ef6985d7ceb257c53c1b e2b4afde39803bd42bb1374b230fca1b1e8cc868 0 (*) {'ef1': '4', 'user': 'test'} (glob)
-  033b3f5ae73db67c10de938fb6f26b949aaef172 bb5e4f6020c74e7961a51fda635ea9df9b04dda8 0 (*) {'ef1': '4', 'user': 'test'} (glob)
-  b434287e665ce757ee5463a965cb3d119ca9e893 ead2066d1dbf14833fe1069df1b735e4e9468c40 1188c4216eba37f18a1de6558564601d00ff2143 0 (*) {'ef1': '13', 'user': 'test'} (glob)
+  2d8abdb827cdf71ca477ef6985d7ceb257c53c1b e2b4afde39803bd42bb1374b230fca1b1e8cc868 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '4', 'operation': 'evolve', 'user': 'test'}
+  033b3f5ae73db67c10de938fb6f26b949aaef172 bb5e4f6020c74e7961a51fda635ea9df9b04dda8 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '4', 'operation': 'evolve', 'user': 'test'}
+  b434287e665ce757ee5463a965cb3d119ca9e893 ead2066d1dbf14833fe1069df1b735e4e9468c40 1188c4216eba37f18a1de6558564601d00ff2143 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'split', 'user': 'test'}
   $ hg evolve --all
   move:[8] split1
   atop:[11] split4

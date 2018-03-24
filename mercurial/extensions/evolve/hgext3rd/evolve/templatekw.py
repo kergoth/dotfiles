@@ -34,21 +34,29 @@ def obsoletekw(repo, ctx, templ, **args):
         return 'obsolete'
     return ''
 
-@eh.templatekw('troubles')
-def showtroubles(**args):
-    """List of strings. Evolution troubles affecting the changeset
-    (zero or more of "unstable", "divergent" or "bumped")."""
-    ctx = args['ctx']
-    try:
-        # specify plural= explicitly to trigger TypeError on hg < 4.2
-        return templatekw.showlist('trouble', ctx.instabilities(), args,
-                                   plural='troubles')
-    except TypeError:
-        return templatekw.showlist('trouble', ctx.instabilities(), plural='troubles',
-                                   **args)
+if util.safehasattr(templatekw, 'compatlist'):
+    @eh.templatekw('troubles', requires=set(['ctx', 'templ']))
+    def showtroubles(context, mapping):
+        ctx = context.resource(mapping, 'ctx')
+        return templatekw.compatlist(context, mapping, 'trouble',
+                                     ctx.instabilities(), plural='troubles')
+else:
+    # older template API in hg < 4.6
+    @eh.templatekw('troubles')
+    def showtroubles(**args):
+        """List of strings. Evolution troubles affecting the changeset
+        (zero or more of "unstable", "divergent" or "bumped")."""
+        ctx = args['ctx']
+        try:
+            # specify plural= explicitly to trigger TypeError on hg < 4.2
+            return templatekw.showlist('trouble', ctx.instabilities(), args,
+                                       plural='troubles')
+        except TypeError:
+            return templatekw.showlist('trouble', ctx.instabilities(), plural='troubles',
+                                       **args)
 
 if util.safehasattr(templatekw, 'showpredecessors'):
-    eh.templatekw("precursors")(templatekw.showpredecessors)
+    templatekw.keywords["precursors"] = templatekw.showpredecessors
 else:
     # for version <= hg4.3
     def closestprecursors(repo, nodeid):
@@ -97,7 +105,7 @@ def closestsuccessors(repo, nodeid):
     return directsuccessorssets(repo, nodeid)
 
 if util.safehasattr(templatekw, 'showsuccessorssets'):
-    eh.templatekw("successors")(templatekw.showsuccessorssets)
+    templatekw.keywords["successors"] = templatekw.showsuccessorssets
 else:
     # for version <= hg4.3
 
@@ -252,13 +260,33 @@ def obsfateprinter(obsfate, ui, prefix=""):
 
     return "\n".join(lines)
 
-@eh.templatekw("obsfatedata")
-def showobsfatedata(repo, ctx, **args):
-    # Get the needed obsfate data
-    values = obsfatedata(repo, ctx)
 
-    if values is None:
-        return templatekw.showlist("obsfatedata", [], args)
+if util.safehasattr(templatekw, 'compatlist'):
+    @eh.templatekw('obsfatedata', requires=set(['ctx', 'templ']))
+    def showobsfatedata(context, mapping):
+        ctx = context.resource(mapping, 'ctx')
+        repo = ctx.repo()
+        values = obsfatedata(repo, ctx)
+
+        if values is None:
+            return templatekw.compatlist(context, mapping, "obsfatedata", [])
+        args = mapping.copy()
+        args.pop('ctx')
+        args['templ'] = context.resource(mapping, 'templ')
+        return _showobsfatedata(repo, ctx, values, **args)
+else:
+    # pre hg-4.6
+    @eh.templatekw("obsfatedata")
+    def showobsfatedata(repo, ctx, **args):
+        # Get the needed obsfate data
+        values = obsfatedata(repo, ctx)
+
+        if values is None:
+            return templatekw.showlist("obsfatedata", [], args)
+
+        return _showobsfatedata(repo, ctx, values, **args)
+
+def _showobsfatedata(repo, ctx, values, **args):
 
     # Format each successorset successors list
     for raw in values:

@@ -163,7 +163,7 @@ class _topiccache(branchmap.branchcache): # combine me with branchmap.branchcach
         valid = super(_topiccache, self).validfor(repo)
         if not valid:
             return False
-        elif not mighttopic(repo) and self.phaseshash is None:
+        elif self.phaseshash is None:
             # phasehash at None means this is a branchmap
             # coming from a public only set
             return True

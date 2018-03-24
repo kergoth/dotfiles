@@ -366,11 +366,11 @@ def setupcache(ui, repo):
 
         if util.safehasattr(repo, 'updatecaches'):
             @localrepo.unfilteredmethod
-            def updatecaches(self, tr=None):
+            def updatecaches(self, tr=None, **kwargs):
                 if utility.shouldwarmcache(self, tr):
                     self.stablerange.update(self)
                     self.stablerange.save(self)
-                super(stablerangerepo, self).updatecaches(tr)
+                super(stablerangerepo, self).updatecaches(tr, **kwargs)
 
         else:
             def transaction(self, *args, **kwargs):

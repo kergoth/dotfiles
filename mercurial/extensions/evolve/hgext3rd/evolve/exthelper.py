@@ -128,8 +128,11 @@ class exthelper(object):
         revset.loadpredicate(ui, 'evolve', revsetpredicate)
 
         templatekeyword = registrar.templatekeyword()
-        for name, kw in self._templatekws:
-            templatekeyword(name)(kw)
+        for name, kw, requires in self._templatekws:
+            if requires is not None:
+                templatekeyword(name, requires=requires)(kw)
+            else:
+                templatekeyword(name)(kw)
         templatekw.loadkeyword(ui, 'evolve', templatekeyword)
 
         for ext, command, wrapper, opts in self._extcommandwrappers:
@@ -215,7 +218,7 @@ class exthelper(object):
             return symbol
         return dec
 
-    def templatekw(self, keywordname):
+    def templatekw(self, keywordname, requires=None):
         """Decorated function is a template keyword
 
         The name of the keyword must be given as the decorator argument.
@@ -228,7 +231,7 @@ class exthelper(object):
                 return 'babar'
         """
         def dec(keyword):
-            self._templatekws.append((keywordname, keyword))
+            self._templatekws.append((keywordname, keyword, requires))
             return keyword
         return dec
 

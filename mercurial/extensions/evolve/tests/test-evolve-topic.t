@@ -335,7 +335,7 @@ different topic
   1 new orphan changesets
   rebasing 17:9bf430c106b7 "add jjj" (bar)
   1 new orphan changesets
-  $ hg log -Gr 12::
+  $ hg log -Gr 42b49017ff90::
   *  21 - {bar} 7542e76aba2c add jjj (draft)
   |
   *  20 - {bar} 7858bd7e9906 add iii (draft)

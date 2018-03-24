@@ -87,11 +87,11 @@ def setupcache(ui, repo):
 
         if util.safehasattr(repo, 'updatecaches'):
             @localrepo.unfilteredmethod
-            def updatecaches(self, tr=None):
+            def updatecaches(self, tr=None, **kwargs):
                 if utility.shouldwarmcache(self, tr):
                     self.depthcache.update(self)
                     self.depthcache.save(self)
-                super(depthcacherepo, self).updatecaches(tr)
+                super(depthcacherepo, self).updatecaches(tr, **kwargs)
 
         else:
             def transaction(self, *args, **kwargs):

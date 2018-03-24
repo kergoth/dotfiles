@@ -62,19 +62,19 @@ Create a cycle
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 1:2a34000d3544
+  |  obsolete:    rewritten using prune as 1:2a34000d3544
   |  summary:     C
   |
   x  changeset:   2:c473644ee0e9
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 3:a8df460dbbfe
+  |  obsolete:    rewritten using prune as 3:a8df460dbbfe
   |  summary:     B
   |
   @  changeset:   1:2a34000d3544
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 2:c473644ee0e9
+  |  obsolete:    rewritten using prune as 2:c473644ee0e9
   |  summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -89,48 +89,48 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(A)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
   $ hg obslog "desc(B)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
   $ hg obslog "desc(C)" --hidden
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
 Check that all option don't crash on a cycle either
 
   $ hg obslog "desc(C)" --hidden --all
   @  2a34000d3544 (1) A
-  |    rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
+  |    rewritten(description, parent, content) as c473644ee0e9 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  a8df460dbbfe (3) C
-  |    rewritten(description, parent, content) as 2a34000d3544 by test (*) (glob)
+  |    rewritten(description, parent, content) as 2a34000d3544 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   x  c473644ee0e9 (2) B
-  |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
+  |    rewritten(description, parent, content) as a8df460dbbfe using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
 
 Test with multiple cyles
@@ -207,37 +207,37 @@ And create a second one
   |  tag:         tip
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 4:868d2e0eb19c
+  |  obsolete:    rewritten using prune as 4:868d2e0eb19c
   |  summary:     F
   |
   x  changeset:   5:0da815c333f6
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 6:d9f908fde1a1
+  |  obsolete:    rewritten using prune as 6:d9f908fde1a1
   |  summary:     E
   |
   @  changeset:   4:868d2e0eb19c
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 5:0da815c333f6
+  |  obsolete:    rewritten using prune as 5:0da815c333f6
   |  summary:     D
   |
   x  changeset:   3:a8df460dbbfe
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    split as 1:2a34000d3544, 4:868d2e0eb19c
+  |  obsolete:    split using prune as 1:2a34000d3544, 4:868d2e0eb19c
   |  summary:     C
   |
   x  changeset:   2:c473644ee0e9
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 3:a8df460dbbfe
+  |  obsolete:    rewritten using prune as 3:a8df460dbbfe
   |  summary:     B
   |
   x  changeset:   1:2a34000d3544
   |  user:        test
   |  date:        Thu Jan 01 00:00:00 1970 +0000
-  |  obsolete:    rewritten as 2:c473644ee0e9
+  |  obsolete:    rewritten using prune as 2:c473644ee0e9
   |  summary:     A
   |
   o  changeset:   0:ea207398892e
@@ -252,42 +252,42 @@ Check that debugobshistory never crash on a cycle
 
   $ hg obslog "desc(D)" --hidden
   x  0da815c333f6 (5) E
-  |    rewritten(description, parent, content) as d9f908fde1a1 by test (*) (glob)
+  |    rewritten(description, parent, content) as d9f908fde1a1 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten(description, parent, content) as 0da815c333f6 by test (*) (glob)
+  |\     rewritten(description, parent, content) as 0da815c333f6 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (*) (glob)
+  | |    rewritten(description, parent, content) as 868d2e0eb19c using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
+  | |      rewritten(description, parent, content) as c473644ee0e9 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (*) (glob)
+  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
+  | |    rewritten(description, parent, content) as a8df460dbbfe using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
 Check that all option don't crash either on a cycle
   $ hg obslog --all --hidden "desc(F)"
   x  0da815c333f6 (5) E
-  |    rewritten(description, parent, content) as d9f908fde1a1 by test (*) (glob)
+  |    rewritten(description, parent, content) as d9f908fde1a1 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   |
   @    868d2e0eb19c (4) D
-  |\     rewritten(description, parent, content) as 0da815c333f6 by test (*) (glob)
+  |\     rewritten(description, parent, content) as 0da815c333f6 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   | x  d9f908fde1a1 (6) F
-  | |    rewritten(description, parent, content) as 868d2e0eb19c by test (*) (glob)
+  | |    rewritten(description, parent, content) as 868d2e0eb19c using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   +---x  2a34000d3544 (1) A
-  | |      rewritten(description, parent, content) as c473644ee0e9 by test (*) (glob)
+  | |      rewritten(description, parent, content) as c473644ee0e9 using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  a8df460dbbfe (3) C
-  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c by test (*) (glob)
+  | |    rewritten(description, parent, content) as 2a34000d3544, 868d2e0eb19c using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
   x |  c473644ee0e9 (2) B
-  | |    rewritten(description, parent, content) as a8df460dbbfe by test (*) (glob)
+  | |    rewritten(description, parent, content) as a8df460dbbfe using prune by test (Thu Jan 01 00:00:00 1970 +0000)
   | |
 Check the json output is valid in this case
 
@@ -305,6 +305,7 @@ Check the json output is valid in this case
                       "parent",
                       "content"
                   ],
+                  "operation": "prune",
                   "succnodes": [
                       "0da815c333f6"
                   ],
@@ -328,6 +329,7 @@ Check the json output is valid in this case
                       "parent",
                       "content"
                   ],
+                  "operation": "prune",
                   "succnodes": [
                       "868d2e0eb19c"
                   ],
@@ -351,6 +353,7 @@ Check the json output is valid in this case
                       "parent",
                       "content"
                   ],
+                  "operation": "prune",
                   "succnodes": [
                       "d9f908fde1a1"
                   ],
@@ -374,6 +377,7 @@ Check the json output is valid in this case
                       "parent",
                       "content"
                   ],
+                  "operation": "prune",
                   "succnodes": [
                       "2a34000d3544",
                       "868d2e0eb19c"
@@ -398,6 +402,7 @@ Check the json output is valid in this case
                       "parent",
                       "content"
                   ],
+                  "operation": "prune",
                   "succnodes": [
                       "a8df460dbbfe"
                   ],
@@ -421,6 +426,7 @@ Check the json output is valid in this case
                       "parent",
                       "content"
                   ],
+                  "operation": "prune",
                   "succnodes": [
                       "c473644ee0e9"
                   ],

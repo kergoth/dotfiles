@@ -57,7 +57,7 @@ prune current and tip changeset
   $ hg bookmark
    * BABAR                     3:47d2a3944de8
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
 
 prune leaving instability behind
 
@@ -66,8 +66,8 @@ prune leaving instability behind
   2 new orphan changesets
   $ hg book -i BABAR
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
 
 pruning multiple changeset at once
 
@@ -78,10 +78,10 @@ pruning multiple changeset at once
   [ ui.status|working directory now at [evolve.node|1f0dee641bb7]]
   [ ui.status|2 changesets pruned]
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
 
 cannot prune public changesets
 
@@ -90,10 +90,10 @@ cannot prune public changesets
   (see 'hg help phases' for details)
   [255]
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
 
 Check successors addition
 ----------------------------
@@ -139,11 +139,11 @@ one old, one new
   working directory now at 6e8148413dd5
   1 changesets pruned
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
-  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
   $ hg log -G
   @  12:6e8148413dd5[] (draft) add nE
   |
@@ -170,12 +170,12 @@ one old, two new
   $ hg prune 'desc("add dd")' -s 'desc("add nD")' -s 'desc("add nC")' --split
   1 changesets pruned
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
-  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
   $ hg log -G
   @  12:6e8148413dd5[] (draft) add nE
   |
@@ -199,12 +199,12 @@ two old, two new (should be denied)
   (use --biject to mark a series as a replacement for another)
   [255]
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
-  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
 
 two old, one new:
 
@@ -214,14 +214,14 @@ two old, one new:
   $ hg prune 'desc("add cc")' 'desc("add bb")' -s 'desc("add nB")' --fold
   2 changesets pruned
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
-  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  814c38b95e72dfe2cbf675b1649ea9d780c89a80 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  354011cd103f58bbbd9091a3cee6d6a6bd0dddf7 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  814c38b95e72dfe2cbf675b1649ea9d780c89a80 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '9', 'operation': 'prune', 'user': 'test'}
+  354011cd103f58bbbd9091a3cee6d6a6bd0dddf7 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
 
 two old, two new with --biject
 
@@ -236,16 +236,16 @@ two old, two new with --biject
   working directory now at 1f0dee641bb7
   2 changesets pruned
   $ hg debugobsolete
-  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '*', 'user': 'blah'} (glob)
-  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (*) {'ef1': '*', 'user': 'test'} (glob)
-  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (*) {'ef1': '*', 'user': 'test'} (glob)
-  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (*) {'ef1': '*', 'user': 'test'} (glob)
-  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  814c38b95e72dfe2cbf675b1649ea9d780c89a80 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  354011cd103f58bbbd9091a3cee6d6a6bd0dddf7 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  cb7f8f706a6532967b98cf8583a81baab79a0fa7 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (*) {'ef1': '*', 'user': 'test'} (glob)
-  21b6f2f1cece8c10326e575dd38239189d467190 6e8148413dd541855b72a920a90c06fca127c7e7 0 (*) {'ef1': '*', 'user': 'test'} (glob)
+  9d206ffc875e1bc304590549be293be36821e66c 0 {47d2a3944de8b013de3be9578e8e344ea2e6c097} (Sat Dec 15 00:00:00 1979 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'blah'}
+  7c3bad9141dcb46ff89abf5f61856facd56e476c 0 {1f0dee641bb7258c56bd60e93edfa2405381c41e} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  4538525df7e2b9f09423636c61ef63a4cb872a2d 0 {7c3bad9141dcb46ff89abf5f61856facd56e476c} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  47d2a3944de8b013de3be9578e8e344ea2e6c097 0 {4538525df7e2b9f09423636c61ef63a4cb872a2d} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
+  bb5e90a7ea1f3b4b38b23150a4a597b6146d70ef 6e8148413dd541855b72a920a90c06fca127c7e7 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  00ded550b1e28bba454bd34cec1269d22cf3ef25 aa96dc3f04c2c2341fe6880aeb6dc9fbffff9ef9 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  814c38b95e72dfe2cbf675b1649ea9d780c89a80 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '9', 'operation': 'prune', 'user': 'test'}
+  354011cd103f58bbbd9091a3cee6d6a6bd0dddf7 6f6f25e4f748d8f7571777e6e168aedf50350ce8 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  cb7f8f706a6532967b98cf8583a81baab79a0fa7 8ee176ff1d4b2034ce51e3efc579c2de346b631d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
+  21b6f2f1cece8c10326e575dd38239189d467190 6e8148413dd541855b72a920a90c06fca127c7e7 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'prune', 'user': 'test'}
 
 test hg strip replacement
 
@@ -354,13 +354,14 @@ yoinked from test-mq-strip.t
       more than 2 successors:         0
       available  keys:
                   ef1:                7
+            operation:                7
                  user:                7
   marker size:
       format v1:
-          smallest length:           75
-          longer length:             75
-          median length:             75
-          mean length:               75
+          smallest length:           91
+          longer length:             91
+          median length:             91
+          mean length:               91
       format v0:
           smallest length:          * (glob)
           longer length:            * (glob)

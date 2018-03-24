@@ -61,15 +61,15 @@ Initial
   $ inspect_obsmarkers
   obsstore content
   ================
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   obshashtree
   ===========
-  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 62d86865fd15a1e1b0ef16ebb9cb851689032dd8
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 6e3ba325674c3b035b63ec3db449ad2853a18372
+  a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04 74ed8e6f50691484f77e001e3b4d47bfb19e71ca
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 7ffbaf08d0e1af78bf45faaaba500e25993ee5cc
   obshashrange
   ============
            rev         node        index         size        depth      obshash
-             0 a9bdc8b26820            0            1            1 62d86865fd15
+             0 a9bdc8b26820            0            1            1 74ed8e6f5069
   $ cd ..
   $ cd ..
 
@@ -84,7 +84,7 @@ Actual Test (explicit push version)
   # testing echange of "O" (a9bdc8b26820)
   ## initial state
   # obstore: main
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
   ## pushing "O" from main to pushdest
@@ -94,9 +94,9 @@ Actual Test (explicit push version)
   remote: 1 new obsolescence markers
   ## post push state
   # obstore: main
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pulldest
   ## pulling "a9bdc8b26820" from main into pulldest
   pulling from main
@@ -104,11 +104,11 @@ Actual Test (explicit push version)
   1 new obsolescence markers
   ## post pull state
   # obstore: main
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pulldest
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
 
 Actual Test (bare push version)
 -----------------------------------
@@ -117,7 +117,7 @@ Actual Test (bare push version)
   ## Running testcase B.2.b
   ## initial state
   # obstore: main
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
   # obstore: pulldest
   ## pushing from main to pushdest
@@ -127,9 +127,9 @@ Actual Test (bare push version)
   remote: 1 new obsolescence markers
   ## post push state
   # obstore: main
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pulldest
   ## pulling from main into pulldest
   pulling from main
@@ -138,8 +138,8 @@ Actual Test (bare push version)
   1 new obsolescence markers
   ## post pull state
   # obstore: main
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pushdest
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}
   # obstore: pulldest
-  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (*) {'ef1': '*', 'user': 'test'} (glob)
+  f5bc6836db60e308a17ba08bf050154ba9c4fad7 0 {a9bdc8b26820b1b87d585b82eb0ceb4a2ecdbc04} (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '0', 'operation': 'prune', 'user': 'test'}

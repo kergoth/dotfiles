@@ -169,15 +169,15 @@ TODO: support this
   @    a08d35fd7d9d (9) E
   |\
   x |  212b2a2b87cd (8) F
-  | |    rewritten(description, user, parent, content) as a08d35fd7d9d by test (Thu Jan 01 00:00:00 1970 +0000)
+  | |    rewritten(description, user, parent, content) as a08d35fd7d9d using metaedit by test (Thu Jan 01 00:00:00 1970 +0000)
   | |      note: folding changesets using metaedit
   | |
   | x  c2bd843aa246 (6) E
-  |      rewritten(description, content) as a08d35fd7d9d by test (Thu Jan 01 00:00:00 1970 +0000)
+  |      rewritten(description, content) as a08d35fd7d9d using metaedit by test (Thu Jan 01 00:00:00 1970 +0000)
   |        note: folding changesets using metaedit
   |
   x  587528abfffe (7) F
-       rewritten(user) as 212b2a2b87cd by test (Thu Jan 01 00:00:00 1970 +0000)
+       rewritten(user) as 212b2a2b87cd using metaedit by test (Thu Jan 01 00:00:00 1970 +0000)
   
 
 no new commit is created here because the date is the same

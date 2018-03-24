@@ -70,10 +70,12 @@ Fix the conflict
   $ echo c2 > a
   $ hg resolve -m
   (no more unresolved files)
+  continue: hg evolve --continue
 
 Continue the evolution
   $ hg evolve --continue
   evolving 2:13833940840c "c"
+  working directory is now at 3d2080c198e5
 
 Tip should stay in secret phase
   $ hg log -G -T "{rev}: {phase}"

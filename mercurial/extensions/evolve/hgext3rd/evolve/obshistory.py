@@ -13,7 +13,6 @@ from mercurial import (
     commands,
     error,
     graphmod,
-    mdiff,
     patch,
     obsolete,
     node as nodemod,
@@ -57,7 +56,7 @@ def enableeffectflags(ui):
     ] + commands.formatteropts,
     _('hg olog [OPTION]... [REV]'))
 def cmdobshistory(ui, repo, *revs, **opts):
-    """show the obsolescence history of the specified revisions.
+    """show the obsolescence history of the specified revisions
 
     If no revision range is specified, we display the log for the current
     working copy parent.
@@ -172,7 +171,7 @@ def getmarkerdescriptionpatch(repo, basedesc, succdesc):
     basename = "changeset-description"
     succname = "changeset-description"
 
-    d = mdiff.unidiff(basedesc, '', succdesc, '', basename, succname)
+    d = compat.strdiff(basedesc, succdesc, basename, succname)
     # mercurial 4.1 and before return the patch directly
     if not isinstance(d, tuple):
         patch = d
@@ -403,7 +402,7 @@ def _debugobshistorydisplayctx(fm, ctx):
              label="evolve.node")
     fm.plain(' ')
 
-    fm.write('rev', '(%d)', int(ctx),
+    fm.write('rev', '(%d)', ctx.rev(),
              label="evolve.rev")
     fm.plain(' ')
 
@@ -471,6 +470,11 @@ def _debugobshistorydisplaymarker(fm, marker, node, repo, opts):
         nodes = fm.formatlist(shortsnodes, 'succnodes', sep=', ')
         fm.write('succnodes', '%s', nodes,
                  label="evolve.node")
+
+    operation = metadata.get('operation')
+    if operation:
+        fm.plain(' using ')
+        fm.write('operation', '%s', operation, label="evolve.operation")
 
     fm.plain(' by ')
 

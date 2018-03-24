@@ -115,8 +115,10 @@ Testing case when there are conflicts (bug 5720)
   $ echo c2 > a
   $ hg resolve -m
   (no more unresolved files)
+  continue: hg evolve --continue
   $ hg evolve -c
   evolving 2:13833940840c "c"
+  working directory is now at 3d2080c198e5
 
   $ hg glog
   @  4 - 3d2080c198e5 c (secret)

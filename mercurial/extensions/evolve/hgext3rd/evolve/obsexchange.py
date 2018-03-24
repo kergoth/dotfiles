@@ -27,6 +27,12 @@ from mercurial import (
     wireproto,
 )
 
+try:
+    from mercurial import wireprotoserver
+    wireprotoserver.handlewsgirequest
+except (ImportError, AttributeError):
+    wireprotoserver = None
+
 from mercurial.hgweb import common as hgwebcommon
 
 from . import (
@@ -106,10 +112,22 @@ def _obscommon_capabilities(orig, repo, proto):
     """wrapper to advertise new capability"""
     caps = orig(repo, proto)
     if obsolete.isenabled(repo, obsolete.exchangeopt):
+
+        # Compat hg 4.6+ (2f7290555c96)
+        bytesresponse = False
+        if util.safehasattr(caps, 'data'):
+            bytesresponse = True
+            caps = caps.data
+
         caps = caps.split()
-        caps.append('_evoext_getbundle_obscommon')
+        caps.append(b'_evoext_getbundle_obscommon')
         caps.sort()
-        caps = ' '.join(caps)
+        caps = b' '.join(caps)
+
+        # Compat hg 4.6+ (2f7290555c96)
+        if bytesresponse:
+            from mercurial import wireprototypes
+            caps = wireprototypes.bytesresponse(caps)
     return caps
 
 @eh.extsetup

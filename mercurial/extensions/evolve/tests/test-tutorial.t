@@ -665,11 +665,10 @@ You can use the 'grab' alias for that.
   $ hg up 'p1(10b8aeaa8cc8)' # going on "bathroom stuff" parent
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg grab fac207dec9f5 # moving "SPAM SPAM" to the working directory parent
-  rebasing 9:fac207dec9f5 "SPAM SPAM" (tip)
+  grabbing 9:fac207dec9f5 "SPAM SPAM"
   merging shopping
-  ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
   $ hg log -G
-  @  a224f2a4fb9f (draft): SPAM SPAM
+  @  57e9caedbcb8 (draft): SPAM SPAM
   |
   | o  10b8aeaa8cc8 (draft): bathroom stuff
   |/
@@ -775,7 +774,7 @@ We have a new SPAM SPAM version without the bathroom stuff
   # User test
   # Date 0 0
   #      Thu Jan 01 00:00:00 1970 +0000
-  # Node ID a224f2a4fb9f9f828f608959912229d7b38b26de
+  # Node ID 57e9caedbcb8575a01c128db9d1bcbd624ef2115
   # Parent  41aff6a42b7578ec7ec3cb2041633f1ca43cca96
   SPAM SPAM
   
@@ -808,14 +807,13 @@ we can now push our change:
 for simplicity sake we get the bathroom change in line again
 
   $ hg grab 10b8aeaa8cc8
-  rebasing 8:10b8aeaa8cc8 "bathroom stuff"
+  grabbing 8:10b8aeaa8cc8 "bathroom stuff"
   merging shopping
-  ? files updated, 0 files merged, 0 files removed, 0 files unresolved (glob)
   $ hg phase --draft .
   $ hg log -G
-  @  75954b8cd933 (draft): bathroom stuff
+  @  4710c0968793 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1016,12 +1014,12 @@ is ``true`` by default.
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
-  new changesets 75954b8cd933
+  new changesets 4710c0968793
   (run 'hg update' to get a working copy)
   $ hg log -G
-  o  75954b8cd933 (public): bathroom stuff
+  o  4710c0968793 (public): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1039,7 +1037,7 @@ We do not want to publish the "bathroom changeset". Let's rollback the last tran
   $ hg rollback
   repository tip rolled back to revision 4 (undo pull)
   $ hg log -G
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1072,12 +1070,12 @@ I can now exchange mutable changeset between "remote" and "local" repository.
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new obsolescence markers
-  new changesets 75954b8cd933
+  new changesets 4710c0968793
   (run 'hg update' to get a working copy)
   $ hg log -G
-  o  75954b8cd933 (draft): bathroom stuff
+  o  4710c0968793 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1093,7 +1091,7 @@ Rebasing unstable change after pull
 
 Remotely someone add a new changeset on top of the mutable "bathroom" on.
 
-  $ hg up 75954b8cd933 -q
+  $ hg up 4710c0968793 -q
   $ cat >> shopping << EOF
   > Giraffe
   > Rhino
@@ -1105,13 +1103,13 @@ Remotely someone add a new changeset on top of the mutable "bathroom" on.
 But at the same time, locally, this same "bathroom changeset" was updated.
 
   $ cd ../local
-  $ hg up 75954b8cd933 -q
+  $ hg up 4710c0968793 -q
   $ sed -i'' -e 's/... More bathroom stuff to come/Bath Robe/' shopping
   $ hg commit --amend
   $ hg log -G
-  @  a44c85f957d3 (draft): bathroom stuff
+  @  682004e81e71 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1214,21 +1212,20 @@ When we pull from remote again we get an unstable state!
   adding file changes
   added 1 changesets with 1 changes to 1 files
   1 new orphan changesets
-  new changesets bf1b0d202029
+  new changesets e4e4fa805d92
   (run 'hg update' to get a working copy)
-
 
 The new changeset "animal" is based on an old changeset of "bathroom". You can
 see both version showing up in the log.
 
   $ hg log -G
-  *  bf1b0d202029 (draft): animals
+  *  e4e4fa805d92 (draft): animals
   |
-  | @  a44c85f957d3 (draft): bathroom stuff
+  | @  682004e81e71 (draft): bathroom stuff
   | |
-  x |  75954b8cd933 (draft): bathroom stuff
+  x |  4710c0968793 (draft): bathroom stuff
   |/
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1361,7 +1358,7 @@ share it with the outside:
   $ hg push other
   pushing to $TESTTMP/other (glob)
   searching for changes
-  abort: push includes orphan changeset: bf1b0d202029!
+  abort: push includes orphan changeset: e4e4fa805d92!
   (use 'hg evolve' to get a stable history or --force to ignore warnings)
   [255]
  
@@ -1374,7 +1371,7 @@ It has a --dry-run option to only suggest the next move.
   $ hg evolve --dry-run
   move:[13] animals
   atop:[12] bathroom stuff
-  hg rebase -r bf1b0d202029 -d a44c85f957d3
+  hg rebase -r e4e4fa805d92 -d 682004e81e71
 
 Let's do it
 
@@ -1382,16 +1379,16 @@ Let's do it
   move:[13] animals
   atop:[12] bathroom stuff
   merging shopping
-  working directory is now at ee942144f952
+  working directory is now at 2a2b36e14660
 
 The old version of bathroom is hidden again.
 
   $ hg log -G
-  @  ee942144f952 (draft): animals
+  @  2a2b36e14660 (draft): animals
   |
-  o  a44c85f957d3 (draft): bathroom stuff
+  o  682004e81e71 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1520,13 +1517,13 @@ changeset.
 Now let's see where we are, and update to the successor.
 
   $ hg parents
-  bf1b0d202029 (draft): animals
-  working directory parent is obsolete! (bf1b0d202029)
-  (use 'hg evolve' to update to its successor: ee942144f952)
+  e4e4fa805d92 (draft): animals
+  working directory parent is obsolete! (e4e4fa805d92)
+  (use 'hg evolve' to update to its successor: 2a2b36e14660)
   $ hg evolve
   update:[8] animals
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory is now at ee942144f952
+  working directory is now at 2a2b36e14660
 
 Relocating unstable change after prune
 ----------------------------------------------
@@ -1546,16 +1543,16 @@ I'm pulling its work locally.
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
-  new changesets 99f039c5ec9e
+  new changesets fc41faf45288
   (run 'hg update' to get a working copy)
   $ hg log -G
-  o  99f039c5ec9e (draft): SPAM SPAM SPAM
+  o  fc41faf45288 (draft): SPAM SPAM SPAM
   |
-  @  ee942144f952 (draft): animals
+  @  2a2b36e14660 (draft): animals
   |
-  o  a44c85f957d3 (draft): bathroom stuff
+  o  682004e81e71 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1674,9 +1671,9 @@ I'm pulling its work locally.
 
 In the mean time I noticed you can't buy animals in a super market and I prune the animal changeset:
 
-  $ hg prune ee942144f952
+  $ hg prune 2a2b36e14660
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  working directory now at a44c85f957d3
+  working directory now at 682004e81e71
   1 changesets pruned
   1 new orphan changesets
 
@@ -1685,13 +1682,13 @@ The animals changeset is still displayed because the "SPAM SPAM SPAM" changeset
 is neither dead or obsolete. My repository is in an unstable state again.
 
   $ hg log -G
-  *  99f039c5ec9e (draft): SPAM SPAM SPAM
+  *  fc41faf45288 (draft): SPAM SPAM SPAM
   |
-  x  ee942144f952 (draft): animals
+  x  2a2b36e14660 (draft): animals
   |
-  @  a44c85f957d3 (draft): bathroom stuff
+  @  682004e81e71 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |
@@ -1809,7 +1806,7 @@ is neither dead or obsolete. My repository is in an unstable state again.
 #endif
 
   $ hg log -r "orphan()"
-  99f039c5ec9e (draft): SPAM SPAM SPAM
+  fc41faf45288 (draft): SPAM SPAM SPAM
 
 #if docgraph-ext
   $ hg docgraph -r "orphan()" --sphinx-directive --rankdir LR #rest-ignore
@@ -1837,14 +1834,14 @@ is neither dead or obsolete. My repository is in an unstable state again.
   move:[15] SPAM SPAM SPAM
   atop:[12] bathroom stuff
   merging shopping
-  working directory is now at 40aa40daeefb
+  working directory is now at e6cfcb672150
 
   $ hg log -G
-  @  40aa40daeefb (draft): SPAM SPAM SPAM
+  @  e6cfcb672150 (draft): SPAM SPAM SPAM
   |
-  o  a44c85f957d3 (draft): bathroom stuff
+  o  682004e81e71 (draft): bathroom stuff
   |
-  o  a224f2a4fb9f (public): SPAM SPAM
+  o  57e9caedbcb8 (public): SPAM SPAM
   |
   o  41aff6a42b75 (public): adding fruit
   |

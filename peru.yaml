@@ -128,7 +128,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 70a7a5cdee168b6cb9400cccbe48427906b6ca28
+    rev: b1b095cb1635124cc4ec8b67f491630ff6f7fac0
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -197,11 +197,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 700c9b9740a8db365f0e5d7b5638f330ae1d5d8f
+    rev: b9f55455fb50234b3f2ac86f5d70607efade31bd
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 4b7f77e770a2165726072a2b6f109f2457783080
+    rev: 74122500f01b74465f9a5d0d60920d67905d067d
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -236,7 +236,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 195a641a23fdb50cacc21d41455986aa6d63ae68
+    rev: 4104901e9d6a304a5022b780f8e20d3becc7da93
 
 # continuously updated session files
 git module vim-obsession:
@@ -246,7 +246,7 @@ git module vim-obsession:
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: ca222fb9425fc49aae7d2a185917b00de7980667
+    rev: f54d96c6bb110bc119ddc81968c2b280ed98acfe
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
@@ -508,7 +508,7 @@ hg module hg-extension-shelve:
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve
     reup: stable
-    rev: cd4db75413a26b3d12b4b0481b8f9f01a324e71e
+    rev: c912eaf29eecdb50613e91cf9d87fe99217e1392
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
@@ -562,7 +562,7 @@ git module base16-shell:
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: 97f2feb554471760f72cb6e4f872fde0f825b4b3
+    rev: 7959654e57c05511134e55bda20e9a6bcb8fcfb0
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -587,7 +587,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 944f3c74306999b09cb5758f25a51cae69843d0d
+    rev: 80955f42f4de5f5a73b7e3c88ab267e6a18c8c3b
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -625,7 +625,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 420c67852659eed7a986a6ed20d4728b71b1ed8c
+    rev: 6add6488d7cab05b8b8f923f7f6dedd652fb7318
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -647,7 +647,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 92e6e4d1ba482a4d2d89d850f660c67ccf8a28eb
+    rev: d14558da32dd3d776c298fea6456c92870b46d5d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

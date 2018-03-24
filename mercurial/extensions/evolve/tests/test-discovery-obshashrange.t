@@ -180,7 +180,7 @@ testing simple push
   running python "*/dummyssh" *user@dummy* *hg -R server serve --stdio* (glob)
   sending hello command
   sending between command
-  remote: 495
+  remote: * (glob)
   remote: capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_obshashrange_v1 batch * (glob)
   remote: 1
   preparing listkeys for "phases"
@@ -215,7 +215,7 @@ testing simple push
   45f8b879de922f6a6e620ba04205730335b6fc7e
   sending unbundle command
   bundle2-output-bundle: "HG20", 4 parts total
-  bundle2-output-part: "replycaps" 205 bytes payload
+  bundle2-output-part: "replycaps" * bytes payload (glob)
   bundle2-output-part: "changegroup" (params: 1 mandatory) streamed payload
   bundle2-output-part: "phase-heads" 24 bytes payload
   bundle2-output-part: "obsmarkers" streamed payload
@@ -317,7 +317,7 @@ testing push with extra local markers
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> running python "*/dummyssh" *user@dummy* *hg -R server serve --stdio* (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending hello command (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending between command (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: 495 (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: * (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: capabilities: _evoext_getbundle_obscommon _evoext_obshash_0 _evoext_obshash_1 _evoext_obshashrange_v1 batch branchmap bundle2=HG20%0Abookmarks%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Aerror%3Dabort%2Cunsupportedcontent%2Cpushraced%2Cpushkey%0Ahgtagsfnodes%0Alistkeys%0Aobsmarkers%3DV0%2CV1%0Aphases%3Dheads%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps changegroupsubset getbundle known lookup pushkey streamreqs=generaldelta,revlogv1 unbundle=HG10GZ,HG10BZ,HG10UN unbundlehash (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> remote: 1 (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> preparing listkeys for "phases" (glob)
@@ -354,7 +354,7 @@ testing push with extra local markers
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> 45f8b879de922f6a6e620ba04205730335b6fc7e (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> sending unbundle command (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-bundle: "HG20", 4 parts total (glob)
-  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "replycaps" 205 bytes payload (glob)
+  * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "replycaps" * bytes payload (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "changegroup" (params: 1 mandatory) streamed payload (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "phase-heads" 24 bytes payload (glob)
   * @45f8b879de922f6a6e620ba04205730335b6fc7e (*)> bundle2-output-part: "obsmarkers" streamed payload (glob)

@@ -282,8 +282,10 @@ endfunction
 
 function! dispatch#start_command(bang, command) abort
   let command = a:command
-  if empty(command) && type(get(b:, 'start', [])) == type('')
+  if empty(command) && type(get(b:, 'start')) == type('')
     let command = b:start
+  elseif empty(command) && type(get(b:, 'Start')) == type('')
+    let command = b:Start
   endif
   let command = s:expand_lnum(command)
   let [command, opts] = s:extract_opts(command)
@@ -509,6 +511,13 @@ function! dispatch#command_complete(A, L, P) abort
     let as = {'dir': 'directory'}
     let results = filter(['-compiler=', '-dir='],
           \ '!has_key(opts, get(as, v:val[1:-2], v:val[1:-2]))')
+  elseif a:A =~# '^:' && exists('*getcompletion')
+    let matches = matchlist(a:A, '^:\([.$]\|\d\+\)\=\(\a.*\)')
+    if len(matches)
+      let results = map(getcompletion(matches[2], 'command'), '":".matches[1].v:val')
+    else
+      let results = []
+    endif
   elseif a:A =~# '^\%(\w:\|\.\)\=[\/]'
     let results = s:file_complete(a:A)
   else
@@ -543,8 +552,10 @@ function! dispatch#compile_command(bang, args, count) abort
   else
     let args = '_'
     for vars in a:count < 0 ? [b:, g:, t:, w:] : [b:]
-      if has_key(vars, 'dispatch') && type(vars.dispatch) == type('')
+      if type(get(vars, 'dispatch')) == type('')
         let args = vars.dispatch
+      elseif type(get(vars, 'Dispatch')) == type('')
+        let args = vars.Dispatch
       endif
     endfor
   endif

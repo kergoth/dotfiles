@@ -75,10 +75,10 @@ Precursors template should show current revision as it is the working copy
   o  d004c8f274b9 (3) A2
   |
   x  a468dc9b3633 (2) A1
-  |    rewritten(description) as d004c8f274b9 by test2 (Thu Apr 19 04:25:21 2001 +0000)
+  |    rewritten(description) as d004c8f274b9 using amend by test2 (Thu Apr 19 04:25:21 2001 +0000)
   |
   @  471f378eab4c (1) A0
-       rewritten(description, content) as a468dc9b3633 by test (Fri Feb 13 23:31:30 2009 +0000)
+       rewritten(description, content) as a468dc9b3633 using amend by test (Fri Feb 13 23:31:30 2009 +0000)
   
   $ hg tlog
   o  d004c8f274b9
@@ -330,7 +330,7 @@ Test templates with splitted commit
   | x  changeset:   1:471597cad322
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    split as 2:337fec4d2edc, 3:f257fde29c7a
+  |    obsolete:    split using split as 2:337fec4d2edc, 3:f257fde29c7a
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -360,7 +360,7 @@ Precursors template should show current revision as it is the working copy
   | @  471597cad322
   |/     Successors: 2:337fec4d2edc 3:f257fde29c7a
   |      semi-colon: 2:337fec4d2edc 3:f257fde29c7a
-  |      Fate: split as 2:337fec4d2edc, 3:f257fde29c7a
+  |      Fate: split using split as 2:337fec4d2edc, 3:f257fde29c7a
   |
   o  ea207398892e
   
@@ -370,7 +370,7 @@ Precursors template should show current revision as it is the working copy
   o  337fec4d2edc
   |
   | @  471597cad322
-  |/     Obsfate: split as 2:337fec4d2edc, 3:f257fde29c7a
+  |/     Obsfate: split using split as 2:337fec4d2edc, 3:f257fde29c7a
   |
   o  ea207398892e
   
@@ -399,7 +399,7 @@ Precursors template should show the precursor as we force its display with
   | x  471597cad322
   |/     Successors: 2:337fec4d2edc 3:f257fde29c7a
   |      semi-colon: 2:337fec4d2edc 3:f257fde29c7a
-  |      Fate: split as 2:337fec4d2edc, 3:f257fde29c7a
+  |      Fate: split using split as 2:337fec4d2edc, 3:f257fde29c7a
   |
   o  ea207398892e
   
@@ -409,7 +409,7 @@ Precursors template should show the precursor as we force its display with
   o  337fec4d2edc
   |
   | x  471597cad322
-  |/     Obsfate: split as 2:337fec4d2edc, 3:f257fde29c7a
+  |/     Obsfate: split using split as 2:337fec4d2edc, 3:f257fde29c7a
   |
   o  ea207398892e
   
@@ -419,7 +419,7 @@ Precursors template should show the precursor as we force its display with
   |
   o  337fec4d2edc []
   |
-  | x  471597cad322 [{"markers": [["471597cad322d1f659bb169751be9133dad92ef3", ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], 0, [["ef1", "12"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], "users": ["test"], "verb": "split"}]
+  | x  471597cad322 [{"markers": [["471597cad322d1f659bb169751be9133dad92ef3", ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], 0, [["ef1", "12"], ["operation", "split"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["337fec4d2edcf0e7a467e35f818234bc620068b5", "f257fde29c7a847c9b607f6e958656d0df0fb15c"], "users": ["test"], "verb": "split"}]
   |/
   o  ea207398892e []
   
@@ -466,13 +466,13 @@ Test setup
   | x  changeset:   2:0dec01379d3b
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    rewritten as 3:eb5a0daa2192
+  | |  obsolete:    rewritten using fold as 3:eb5a0daa2192
   | |  summary:     B0
   | |
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as 3:eb5a0daa2192
+  |    obsolete:    rewritten using fold as 3:eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -498,7 +498,7 @@ Precursors template should show current revision as it is the working copy
   | @  471f378eab4c
   |/     Successors: 3:eb5a0daa2192
   |      semi-colon: 3:eb5a0daa2192
-  |      Fate: rewritten as 3:eb5a0daa2192
+  |      Fate: rewritten using fold as 3:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -506,7 +506,7 @@ Precursors template should show current revision as it is the working copy
   o  eb5a0daa2192
   |
   | @  471f378eab4c
-  |/     Obsfate: rewritten as 3:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 3:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -526,12 +526,12 @@ displayed
   | @  0dec01379d3b
   | |    Successors: 3:eb5a0daa2192
   | |    semi-colon: 3:eb5a0daa2192
-  | |    Fate: rewritten as 3:eb5a0daa2192
+  | |    Fate: rewritten using fold as 3:eb5a0daa2192
   | |
   | x  471f378eab4c
   |/     Successors: 3:eb5a0daa2192
   |      semi-colon: 3:eb5a0daa2192
-  |      Fate: rewritten as 3:eb5a0daa2192
+  |      Fate: rewritten using fold as 3:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -539,10 +539,10 @@ displayed
   o  eb5a0daa2192
   |
   | @  0dec01379d3b
-  | |    Obsfate: rewritten as 3:eb5a0daa2192
+  | |    Obsfate: rewritten using fold as 3:eb5a0daa2192
   | |
   | x  471f378eab4c
-  |/     Obsfate: rewritten as 3:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 3:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -566,12 +566,12 @@ Precursors template should show both precursors as we force its display with
   | x  0dec01379d3b
   | |    Successors: 3:eb5a0daa2192
   | |    semi-colon: 3:eb5a0daa2192
-  | |    Fate: rewritten as 3:eb5a0daa2192
+  | |    Fate: rewritten using fold as 3:eb5a0daa2192
   | |
   | x  471f378eab4c
   |/     Successors: 3:eb5a0daa2192
   |      semi-colon: 3:eb5a0daa2192
-  |      Fate: rewritten as 3:eb5a0daa2192
+  |      Fate: rewritten using fold as 3:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -579,10 +579,10 @@ Precursors template should show both precursors as we force its display with
   @  eb5a0daa2192
   |
   | x  0dec01379d3b
-  | |    Obsfate: rewritten as 3:eb5a0daa2192
+  | |    Obsfate: rewritten using fold as 3:eb5a0daa2192
   | |
   | x  471f378eab4c
-  |/     Obsfate: rewritten as 3:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 3:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -590,9 +590,9 @@ Precursors template should show both precursors as we force its display with
   $ hg fatelogjson --hidden
   @  eb5a0daa2192 []
   |
-  | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
+  | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["operation", "fold"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   | |
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["operation", "fold"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   |/
   o  ea207398892e []
   
@@ -821,7 +821,7 @@ Test setup
   | |  parent:      1:471f378eab4c
   | |  user:        test
   | |  date:        Thu Jan 01 00:00:00 1970 +0000
-  | |  obsolete:    rewritten as 4:eb5a0daa2192
+  | |  obsolete:    rewritten using fold as 4:eb5a0daa2192
   | |  summary:     B1
   | |
   | | x  changeset:   2:0dec01379d3b
@@ -833,7 +833,7 @@ Test setup
   | x  changeset:   1:471f378eab4c
   |/   user:        test
   |    date:        Thu Jan 01 00:00:00 1970 +0000
-  |    obsolete:    rewritten as 4:eb5a0daa2192
+  |    obsolete:    rewritten using fold as 4:eb5a0daa2192
   |    summary:     A0
   |
   o  changeset:   0:ea207398892e
@@ -857,7 +857,7 @@ Check templates
   | @  471f378eab4c
   |/     Successors: 4:eb5a0daa2192
   |      semi-colon: 4:eb5a0daa2192
-  |      Fate: rewritten as 4:eb5a0daa2192
+  |      Fate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -865,7 +865,7 @@ Check templates
   o  eb5a0daa2192
   |
   | @  471f378eab4c
-  |/     Obsfate: rewritten as 4:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -882,12 +882,12 @@ Check templates
   | @  0dec01379d3b
   | |    Successors: 4:eb5a0daa2192
   | |    semi-colon: 4:eb5a0daa2192
-  | |    Fate: rewritten using amend as 4:eb5a0daa2192
+  | |    Fate: rewritten using amend, fold as 4:eb5a0daa2192
   | |
   | x  471f378eab4c
   |/     Successors: 4:eb5a0daa2192
   |      semi-colon: 4:eb5a0daa2192
-  |      Fate: rewritten as 4:eb5a0daa2192
+  |      Fate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -895,10 +895,10 @@ Check templates
   o  eb5a0daa2192
   |
   | @  0dec01379d3b
-  | |    Obsfate: rewritten using amend as 4:eb5a0daa2192
+  | |    Obsfate: rewritten using amend, fold as 4:eb5a0daa2192
   | |
   | x  471f378eab4c
-  |/     Obsfate: rewritten as 4:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -916,12 +916,12 @@ Check templates
   | @  b7ea6d14e664
   | |    Successors: 4:eb5a0daa2192
   | |    semi-colon: 4:eb5a0daa2192
-  | |    Fate: rewritten as 4:eb5a0daa2192
+  | |    Fate: rewritten using fold as 4:eb5a0daa2192
   | |
   | x  471f378eab4c
   |/     Successors: 4:eb5a0daa2192
   |      semi-colon: 4:eb5a0daa2192
-  |      Fate: rewritten as 4:eb5a0daa2192
+  |      Fate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -929,10 +929,10 @@ Check templates
   o  eb5a0daa2192
   |
   | @  b7ea6d14e664
-  | |    Obsfate: rewritten as 4:eb5a0daa2192
+  | |    Obsfate: rewritten using fold as 4:eb5a0daa2192
   | |
   | x  471f378eab4c
-  |/     Obsfate: rewritten as 4:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -953,7 +953,7 @@ Check templates
   | |    semi-colon: 2:0dec01379d3b
   | |    Successors: 4:eb5a0daa2192
   | |    semi-colon: 4:eb5a0daa2192
-  | |    Fate: rewritten as 4:eb5a0daa2192
+  | |    Fate: rewritten using fold as 4:eb5a0daa2192
   | |
   | | x  0dec01379d3b
   | |/     Successors: 3:b7ea6d14e664
@@ -963,7 +963,7 @@ Check templates
   | x  471f378eab4c
   |/     Successors: 4:eb5a0daa2192
   |      semi-colon: 4:eb5a0daa2192
-  |      Fate: rewritten as 4:eb5a0daa2192
+  |      Fate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
@@ -971,24 +971,24 @@ Check templates
   @  eb5a0daa2192
   |
   | x  b7ea6d14e664
-  | |    Obsfate: rewritten as 4:eb5a0daa2192
+  | |    Obsfate: rewritten using fold as 4:eb5a0daa2192
   | |
   | | x  0dec01379d3b
   | |/     Obsfate: reworded using amend as 3:b7ea6d14e664
   | |
   | x  471f378eab4c
-  |/     Obsfate: rewritten as 4:eb5a0daa2192
+  |/     Obsfate: rewritten using fold as 4:eb5a0daa2192
   |
   o  ea207398892e
   
   $ hg fatelogjson --hidden
   @  eb5a0daa2192 []
   |
-  | x  b7ea6d14e664 [{"markers": [["b7ea6d14e664bdc8922221f7992631b50da3fb07", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
+  | x  b7ea6d14e664 [{"markers": [["b7ea6d14e664bdc8922221f7992631b50da3fb07", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "13"], ["operation", "fold"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   | |
   | | x  0dec01379d3b [{"markers": [["0dec01379d3be6318c470ead31b1fe7ae7cb53d5", ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], 0, [["ef1", "1"], ["operation", "amend"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["b7ea6d14e664bdc8922221f7992631b50da3fb07"], "users": ["test"], "verb": "reworded"}]
   | |/
-  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
+  | x  471f378eab4c [{"markers": [["471f378eab4c5e25f6c77f785b27c936efb22874", ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], 0, [["ef1", "9"], ["operation", "fold"], ["user", "test"]], [0.0, 0], null]], "max_date": [0.0, 0], "min_date": [0.0, 0], "successors": ["eb5a0daa21923bbf8caeb2c42085b9e463861fd0"], "users": ["test"], "verb": "rewritten"}]
   |/
   o  ea207398892e []
   
@@ -1620,13 +1620,13 @@ Check output
   (use 'hg evolve' to update to its parent successor)
   $ hg tlog
   @  471f378eab4c
-  |    Fate: pruned
+  |    Fate: pruned using prune
   |
   o  ea207398892e
   
   $ hg fatelog -v
   @  471f378eab4c
-  |    Obsfate: pruned by test (at 1970-01-01 00:00 +0000)
+  |    Obsfate: pruned using prune by test (at 1970-01-01 00:00 +0000)
   |
   o  ea207398892e
   

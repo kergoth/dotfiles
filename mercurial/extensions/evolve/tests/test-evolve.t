@@ -616,8 +616,8 @@ Test graft --obsolete/--old-obsolete
   o  0:8685c6d34325@default(draft) add 0
   
   $ hg debugobsolete
-  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (*) {'ef1': '4', 'user': 'test'} (glob)
-  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (*) {'ef1': '13', 'user': 'test'} (glob)
+  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '4', 'operation': 'amend', 'user': 'test'}
+  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'amend', 'user': 'test'}
 
 Test graft --continue
 
@@ -661,9 +661,9 @@ Test graft --continue
   o  0:8685c6d34325@default(draft) add 0
   
   $ hg debugobsolete
-  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (*) {'ef1': '4', 'user': 'test'} (glob)
-  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (*) {'ef1': '13', 'user': 'test'} (glob)
-  a5bfd90a2f29c7ccb8f917ff4e5013a9053d0a04 920e58bb443b73eea9d6d65570b4241051ea3229 0 (*) {'ef1': '12', 'user': 'test'} (glob)
+  0e84df4912da4c7cad22a3b4fcfd58ddfb7c8ae9 0b9e50c35132ff548ec0065caea6a87e1ebcef32 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '4', 'operation': 'amend', 'user': 'test'}
+  db038628b9e56f51a454c0da0c508df247b41748 acb28cd497b7f8767e01ef70f68697a959573c2d 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '13', 'operation': 'amend', 'user': 'test'}
+  a5bfd90a2f29c7ccb8f917ff4e5013a9053d0a04 920e58bb443b73eea9d6d65570b4241051ea3229 0 (Thu Jan 01 00:00:00 1970 +0000) {'ef1': '12', 'operation': 'amend', 'user': 'test'}
 
 Test touch
 
@@ -766,12 +766,12 @@ Test olog
   @    d26d339c513f (12) add 4
   |\
   x |    af636757ce3b (11) add 3
-  |\ \     rewritten(description, user, parent, content) as d26d339c513f by test (*) (glob)
+  |\ \     rewritten(description, user, parent, content) as d26d339c513f using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
   | \ \
   | |\ \
   | | | x  ce341209337f (4) add 4
-  | | |      rewritten(description, user, content) as d26d339c513f by test (*) (glob)
+  | | |      rewritten(description, user, content) as d26d339c513f using fold by test (Thu Jan 01 00:00:00 1970 +0000)
   | | |
 
 Test obsstore stat
@@ -786,13 +786,14 @@ Test obsstore stat
       more than 2 successors:         0
       available  keys:
                   ef1:               10
+            operation:               10
                  user:               10
   marker size:
       format v1:
-          smallest length:           75
-          longer length:             76
-          median length:             76
-          mean length:               75
+          smallest length:           90
+          longer length:             92
+          median length:             91
+          mean length:               91
       format v0:
           smallest length:           * (glob)
           longer length:             * (glob)

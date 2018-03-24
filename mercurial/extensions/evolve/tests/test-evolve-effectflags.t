@@ -34,7 +34,7 @@ check result
   @  fdf9bde5129a (2) A1
   |
   x  471f378eab4c (1) A0
-       rewritten(description) as fdf9bde5129a by test (*) (glob)
+       rewritten(description) as fdf9bde5129a using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "desc(A0)"
   changeset:   1:471f378eab4c
@@ -58,7 +58,7 @@ check result
   @  5485c92d3433 (4) B0
   |
   x  ef4a313b1e0a (3) B0
-       rewritten(user) as 5485c92d3433 by test (*) (glob)
+       rewritten(user) as 5485c92d3433 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "ef4a313b1e0a"
   changeset:   3:ef4a313b1e0a
@@ -82,7 +82,7 @@ check result
   @  4dd84345082e (6) B1
   |
   x  2ef0680ff450 (5) B1
-       rewritten(date) as 4dd84345082e by test (*) (glob)
+       rewritten(date) as 4dd84345082e using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "2ef0680ff450"
   changeset:   5:2ef0680ff450
@@ -109,7 +109,7 @@ check result
   @  14a01456e057 (8) B2
   |
   x  bd3db8264cee (7) B2
-       rewritten(branch) as 14a01456e057 by test (*) (glob)
+       rewritten(branch) as 14a01456e057 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "bd3db8264cee"
   changeset:   7:bd3db8264cee
@@ -138,7 +138,7 @@ check result
   @  da86aa2f19a3 (11) D0
   |
   x  c85eff83a034 (10) D0
-       rewritten(parent) as da86aa2f19a3 by test (*) (glob)
+       rewritten(parent) as da86aa2f19a3 using rebase by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "c85eff83a034"
   changeset:   10:c85eff83a034
@@ -163,7 +163,7 @@ check result
   @  75781fdbdbf5 (13) E0
   |
   x  ebfe0333e0d9 (12) E0
-       rewritten(content) as 75781fdbdbf5 by test (*) (glob)
+       rewritten(content) as 75781fdbdbf5 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "ebfe0333e0d9"
   changeset:   12:ebfe0333e0d9
@@ -189,7 +189,7 @@ check result
   @  a94e0fd5f1c8 (15) F1
   |
   x  fad47e5bd78e (14) F0
-       rewritten(description, user, date, branch) as a94e0fd5f1c8 by test (*) (glob)
+       rewritten(description, user, date, branch) as a94e0fd5f1c8 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "fad47e5bd78e"
   changeset:   14:fad47e5bd78e
@@ -244,7 +244,7 @@ rebase not touching the diff
   o  e509e2eb3df5 (19) H1
   |
   x  b57fed8d8322 (17) H1
-       rewritten(parent) as e509e2eb3df5 by test (*) (glob)
+       rewritten(parent) as e509e2eb3df5 using rebase by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "b57fed8d8322"
   changeset:   17:b57fed8d8322
@@ -269,7 +269,7 @@ check result
   @  12c6238b5e37 (22) I0
   |
   x  2f599e54c1c6 (21) I0
-       rewritten(meta) as 12c6238b5e37 by test (*) (glob)
+       rewritten(meta) as 12c6238b5e37 using amend by test (Thu Jan 01 00:00:00 1970 +0000)
   
   $ hg log --hidden -r "2f599e54c1c6"
   changeset:   21:2f599e54c1c6
