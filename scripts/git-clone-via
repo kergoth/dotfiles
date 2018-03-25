@@ -144,6 +144,10 @@ clone () {
         git init
     fi
 
+    if [ -e "$source_git_dir/shallow" ]; then
+       cp -f "$source_git_dir/shallow" "$GIT_DIR/shallow"
+    fi
+
     # Use the source repo for objects
     if [ $shared -eq 1 ]; then
         mkdir -p $GIT_DIR/objects/info
