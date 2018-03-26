@@ -3,22 +3,27 @@
 set -eu
 
 usage () {
-    echo >&2 "${0##*/} [-h|-s] INSTALL_PATH"
+    echo >&2 "${0##*/} [-h|-s|-r INSTALL_REPO_PATH] INSTALL_PATH"
     echo >&2
     echo >&2 "Install homebrew to the specified INSTALL_PATH"
     echo >&2
     echo >&2 "Options:"
     echo >&2
+    echo >&2 "  -r INSTALL_REPO_PATH Destination of the homebrew repo when using -s. Default: INSTALL_PATH/homebrew"
     echo >&2 "  -s          Separate the prefix and repo."
     echo >&2 "  -h          Show this help."
     exit 2
 }
 
+HOMEBREW_REPO=
 separate_prefix=0
-while getopts sh opt; do
+while getopts sr:h opt; do
     case "$opt" in
         s)
             separate_prefix=1
+            ;;
+        r)
+            HOMEBREW_REPO="$OPTARG"
             ;;
         \?|h)
             usage
@@ -36,9 +41,9 @@ HOMEBREW_PREFIX="$(cd "$1" && pwd -P)"
 PATH="$HOMEBREW_PREFIX/bin:$PATH"
 
 if [ $separate_prefix -eq 1 ]; then
-    HOMEBREW_REPO="$HOMEBREW_PREFIX/homebrew"
-    mkdir -p "$HOMEBREW_PREFIX/bin"
-    ln -sf ../homebrew/bin/brew "$HOMEBREW_PREFIX/bin/brew"
+    if [ -z "$HOMEBREW_REPO" ]; then
+        HOMEBREW_REPO="$HOMEBREW_PREFIX/homebrew"
+    fi
 else
     HOMEBREW_REPO="$HOMEBREW_PREFIX"
 fi
@@ -46,6 +51,12 @@ fi
 mkdir -p "$HOMEBREW_REPO" && \
     curl -sSfL https://github.com/Homebrew/homebrew/tarball/master | \
         tar xz --strip 1 -C "$HOMEBREW_REPO"
+
+if [ $separate_prefix -eq 1 ]; then
+    HOMEBREW_REPO="$(cd "$HOMEBREW_REPO" && pwd -P)"
+    mkdir -p "$HOMEBREW_PREFIX/bin"
+    ln -sf "$HOMEBREW_REPO/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
+fi
 
 if [ "$(brew --prefix)" != "$HOMEBREW_PREFIX" ]; then
     printf >&2 "Error: brew prefix %s does not match the specified %s" "$(brew --prefix)" "$HOMEBREW_PREFIX"
@@ -60,5 +71,6 @@ fi
 if [ -d "$HOMEBREW_PREFIX/share/doc/homebrew" ]; then
     rm -rf "$HOMEBREW_PREFIX/share/doc/homebrew"
 fi
-brew analytics off || exit 3
 brew update || exit 2
+
+git config -f "$(brew --repo)/.git/config" homebrew.analyticsdisabled true
