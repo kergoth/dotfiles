@@ -4,23 +4,11 @@ pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
 PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 
 pipv () {
-    env="$1"
-    shift
-    if [ $# -gt 0 ]; then
-        command pipv "$env" -U "$@"
-    else
-        pipsi install "$env"
-    fi
+    kpipsi install "$@"
 }
 
 pipv3 () {
-    env="$1"
-    shift
-    if [ $# -gt 0 ]; then
-        command pipv3 "$env" -U "$@"
-    else
-        pipsi install --python python3 "$env"
-    fi
+    kpipsi -3 install "$@"
 }
 
 pip_install () {
