@@ -1,0 +1,13 @@
+#!/bin/sh
+
+tmp="$(mktemp -d "${0##*/}.XXXXXX")"
+trap 'rm -rf "$tmp"' EXIT INT TERM
+cd "$tmp" || exit 1
+
+: "${XDG_DATA_HOME:=~/.local/share}"
+export PYENV_ROOT="$XDG_DATA_HOME/pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+eval "$(pyenv init -)"
+pyenv local system
+curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
