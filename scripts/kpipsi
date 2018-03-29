@@ -1,0 +1,76 @@
+#!/bin/sh
+# Pipsi wrapper with two small conveniences:
+# - -3 as the first argument will pass --python=python3 to the install
+# - Additional arguments to the install command will also be installed into
+#   the virtualenv with pip
+
+quote(){
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+$1
+EOF
+}
+
+save () {
+    case "$1" in
+    # when a string contains a "'" we have to escape it
+    *\'*)
+        saved="$saved $(quote "$1")"
+        ;;
+    # otherwise just quote the variable
+    *)
+        saved="$saved '$1'"
+        ;;
+    esac
+}
+
+if [ "$1" = "-3" ]; then
+    shift
+    python3=1
+else
+    python3=0
+fi
+
+# Save arguments up to install
+saved=
+while [ $# -ne 0 ]; do
+    arg="$1"
+    save "$arg"
+    shift
+    if [ "$arg" = install ]; then
+        install=1
+        break
+    fi
+done
+
+if [ "$install" -eq 0 ]; then
+    eval set -- "$saved"
+    exec pipsi "$@"
+fi
+
+# Skip any option args to install command
+while [ $# -ne 0 ]; do
+    arg="$1"
+    case "$arg" in
+        -*)
+            save "$arg"
+            shift
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+env="$1"
+save "$1"
+shift
+extras="$*"
+
+eval set -- "$saved"
+pipsi "$@" || exit $?
+
+if [ -n "$extras" ]; then
+    pipsi_env="${PIPSI_HOME:-${XDG_DATA_HOME:-~/.local/share}/../venvs}/$env"
+    . "$pipsi_env/bin/activate" || exit 1
+    pip install $extras
+fi
