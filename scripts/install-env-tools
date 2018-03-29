@@ -1,14 +1,26 @@
 #!/bin/sh
 
 pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
-PATH="$pythonuserdir/bin:$PATH"
+PATH="$pythonuserdir/bin:$(dirname "$0"):$PATH"
 
 pipv () {
-    command pipv "$1" -U "$@"
+    env="$1"
+    shift
+    if [ $# -gt 0 ]; then
+        command pipv "$env" -U "$@"
+    else
+        pipsi install "$env"
+    fi
 }
 
 pipv3 () {
-    command pipv3 "$1" -U "$@"
+    env="$1"
+    shift
+    if [ $# -gt 0 ]; then
+        command pipv3 "$env" -U "$@"
+    else
+        pipsi install --python python3 "$env"
+    fi
 }
 
 pip_install () {
@@ -32,6 +44,9 @@ setup_pip () {
 
 
 setup_pip
+
+## Pipsi
+install-pipsi
 
 ## Interactive mode python tools
 pip_install see
