@@ -14,7 +14,6 @@ alias dtrx='dtrx --one=here'
 alias mosh='mosh --forward-agent'
 #alias mosh="perl -E 'print \'\e[?1005h\e[?1002h\''; mosh"
 alias smem='smem -k'
-alias pipsi='pipsi --home="$WORKON_HOME"'
 alias parallel='parallel --bibtex'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
