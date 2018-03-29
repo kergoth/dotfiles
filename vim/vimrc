@@ -351,9 +351,6 @@ if &encoding ==# 'utf-8'
 
   " Simple display, no unnecessary fills
   set fillchars=
-
-  " Make soft word wrapping obvious
-  let &showbreak = '↳ '
 endif
 
 " Do soft word wrapping at chars in breakat
@@ -718,7 +715,6 @@ augroup vimrc_filetypes
   " Adjust the match to exclude the first column.
   au Syntax diff match RedundantWhitespace /\%>1c\(\s\+$\| \+\ze\t\)/
 
-
   " Add headings with <localleader> + numbers
   au Filetype rst nnoremap <buffer> <localleader>1 yypVr=
   au Filetype rst nnoremap <buffer> <localleader>2 yypVr-
@@ -733,7 +729,6 @@ augroup vimrc_filetypes
 
   " Use :help for K in vim files
   au FileType vim,help nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
-
 
   " Show diff when editing git commit messages
   au FileType gitcommit DiffGitCached
