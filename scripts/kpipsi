@@ -39,6 +39,10 @@ while [ $# -ne 0 ]; do
     shift
     if [ "$arg" = install ]; then
         install=1
+        if [ "$python3" -eq 1 ]; then
+            save --python
+            save python3
+        fi
         break
     fi
 done
