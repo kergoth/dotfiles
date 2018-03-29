@@ -32,6 +32,7 @@ fi
 
 # Save arguments up to install
 saved=
+install=0
 while [ $# -ne 0 ]; do
     arg="$1"
     save "$arg"
