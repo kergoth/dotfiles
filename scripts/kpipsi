@@ -1,9 +1,10 @@
 #!/bin/sh
-# Pipsi wrapper with two small conveniences:
+# Pipsi wrapper with some small conveniences:
 # - -3 as the first argument will pass --python=python3 to the install
 # - Additional arguments to the install command will also be installed into
 #   the virtualenv with pip
 # - Accept multiple packages/environments for the upgrade command
+# - Add -s/--short to the list command
 
 quote(){
     sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
@@ -33,28 +34,48 @@ fi
 
 # Save arguments up to install
 saved=
-install=0
-upgrade=0
+cmd=
 while [ $# -ne 0 ]; do
     arg="$1"
     save "$arg"
     shift
     if [ "$arg" = install ]; then
-        install=1
+        cmd=install
         if [ "$python3" -eq 1 ]; then
             save --python
             save python3
         fi
         break
     elif [ "$arg" = upgrade ]; then
-        upgrade=1
+        cmd=upgrade
+        break
+    elif [ "$arg" = list ]; then
+        cmd=list
         break
     fi
 done
 
-if [ "$install" -eq 0 ] && [ "$upgrade" -eq 0 ]; then
+if [ -z "$cmd" ]; then
     eval set -- "$saved"
     exec pipsi "$@"
+elif [ "$cmd" = list ]; then
+    short=0
+    if [ $# -ne 0 ]; then
+        case "$1" in
+            -s|--short)
+                short=1
+                shift
+                ;;
+        esac
+    fi
+    eval set -- "$saved" "$@"
+    if [ "$short" -eq 1 ]; then
+        pipsi "$@" | sed -n -e 's/  Package "\(.*\)".*/\1/p'
+        exit $?
+    else
+        pipsi "$@"
+        exit $?
+    fi
 fi
 
 # Skip args leading up to the package name
@@ -83,14 +104,14 @@ extras="$*"
 
 eval set -- "$saved"
 
-if [ "$install" -eq 1 ]; then
+if [ "$cmd" = install ]; then
     pipsi "$@" "$env" || exit $?
     if [ -n "$extras" ]; then
         pipsi_env="${PIPSI_HOME:-${XDG_DATA_HOME:-~/.local/share}/../venvs}/$env"
         . "$pipsi_env/bin/activate" || exit 1
         pip install $extras
     fi
-elif [ "$upgrade" -eq 1 ]; then
+elif [ "$cmd" = upgrade ]; then
     for e in "$env" $extras; do
         pipsi "$@" "$e"
     done
