@@ -1,13 +1,14 @@
 #!/bin/sh
 
-tmp="$(mktemp -d -t "${0##*/}.XXXXXX")"
-trap 'rm -rf "$tmp"' EXIT INT TERM
-cd "$tmp" || exit 1
+PATH=/usr/bin:/bin
 
-: "${XDG_DATA_HOME:=~/.local/share}"
-export PYENV_ROOT="$XDG_DATA_HOME/pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
+PATH="$pythonuserdir/bin:$PATH"
 
-eval "$(pyenv init -)"
-pyenv local system
+curl https://bootstrap.pypa.io/get-pip.py | python - --user
+if [ "$(which pip)" != "$pythonuserdir/bin/pip" ]; then
+    echo >&2 "Error in pip installation"
+    exit 1
+fi
+pip install --user --ignore-installed virtualenv
 curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
