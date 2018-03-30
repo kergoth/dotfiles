@@ -1,0 +1,4 @@
+#!/bin/sh
+
+PATH="$(dirname "$0"):$PATH"
+kpipsi list | sed -n -e 's/  Package "\(.*\)".*/\1/p' | xargs kpipsi upgrade
