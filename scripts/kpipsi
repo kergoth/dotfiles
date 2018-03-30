@@ -57,10 +57,16 @@ if [ "$install" -eq 0 ] && [ "$upgrade" -eq 0 ]; then
     exec pipsi "$@"
 fi
 
-# Skip any option args to install command
+# Skip args leading up to the package name
 while [ $# -ne 0 ]; do
     arg="$1"
     case "$arg" in
+        --python)
+            save "$arg"
+            shift
+            save "$1"
+            shift
+            ;;
         -*)
             save "$arg"
             shift
