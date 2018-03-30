@@ -1,6 +1,6 @@
 #!/bin/sh
 
-tmp="$(mktemp -d "${0##*/}.XXXXXX")"
+tmp="$(mktemp -d -t "${0##*/}.XXXXXX")"
 trap 'rm -rf "$tmp"' EXIT INT TERM
 cd "$tmp" || exit 1
 
