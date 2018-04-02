@@ -1,0 +1,1 @@
+export BOOMFILE=$XDG_DATA_HOME/boom

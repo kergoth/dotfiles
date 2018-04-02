@@ -1,0 +1,142 @@
+{
+  "lists": [
+    {
+      "gitrepos": [
+        {
+          "dash": "git://git.kernel.org/pub/scm/utils/dash/dash.git"
+        },
+        {
+          "uzbl": "https://github.com/Dieterbe/uzbl"
+        },
+        {
+          "macvim": "https://github.com/b4winckler/macvim"
+        },
+        {
+          "guard": "https://github.com/guard/guard"
+        },
+        {
+          "slogger": "https://github.com/ttscoff/Slogger"
+        },
+        {
+          "boom": "https://github.com/holman/boom"
+        },
+        {
+          "kergoth/dotfiles": "https://github.com/kergoth/dotfiles"
+        },
+        {
+          "holman/dotfiles": "https://github.com/holman/dotfiles"
+        },
+        {
+          "gcc": "git://sourceware.org/git/gcc.git"
+        },
+        {
+          "buildroot": "git://git.buildroot.net/buildroot"
+        },
+        {
+          "ccache": "git://git.samba.org/ccache.git"
+        },
+        {
+          "systemd": "git://anongit.freedesktop.org/systemd/systemd"
+        },
+        {
+          "qemu": "git://git.qemu-project.org/qemu.git"
+        },
+        {
+          "pristine-tar": "git://git.kitenet.net/pristine-tar"
+        },
+        {
+          "musl": "git://git.musl-libc.org/musl"
+        },
+        {
+          "zsh": "git://git.code.sf.net/p/zsh/code"
+        },
+        {
+          "ranger": "git://git.sv.gnu.org/ranger.git"
+        },
+        {
+          "crosstool-ng": "git://crosstool-ng.org/crosstool-ng"
+        },
+        {
+          "wine": "git://source.winehq.org/git/wine.git"
+        },
+        {
+          "stats": "https://github.com/rustyrussell/stats"
+        },
+        {
+          "gist": "https://github.com/defunkt/gist"
+        }
+      ]
+    },
+    {
+      "software": [
+        {
+          "jq": "sed for JSON data - http://stedolan.github.com/jq/"
+        },
+        {
+          "ngrep": "network grep - http://ngrep.sourceforge.net/"
+        },
+        {
+          "starch linux": "statically-linked arch linux fork (musl) - http://starchlinux.org/"
+        },
+        {
+          "mksh": "free ksh implementation - https://www.mirbsd.org/mksh.htm"
+        },
+        {
+          "dash": "a POSIX-compliant implementation of /bin/sh - http://gondor.apana.org.au/~herbert/dash/"
+        },
+        {
+          "yocto": "a tiny pico clone - https://github.com/akrennmair/yocto"
+        },
+        {
+          "buildroot": "http://buildroot.net/"
+        },
+        {
+          "ranger": "a free console file manager - https://savannah.nongnu.org/projects/ranger/"
+        }
+      ]
+    },
+    {
+      "hgrepos": [
+        {
+          "bpython": "https://bitbucket.org/bobf/bpython/"
+        },
+        {
+          "toybox": "https://www.landley.net/hg/toybox"
+        },
+        {
+          "aboriginal": "https://www.landley.net/hg/aboriginal"
+        }
+      ]
+    },
+    {
+      "cvsrepos": [
+        {
+          "mksh": "_anoncvs@anoncvs.mirbsd.org:/cvs mksh"
+        },
+        {
+          "openbsd": "anoncvs@anoncvs.ca.openbsd.org:/cvs src"
+        }
+      ]
+    },
+    {
+      "cvsync": [
+        {
+          "allbsd": "cvsync.allbsd.org"
+        },
+        {
+          "openbsd": "anoncvs.usa.openbsd.org"
+        }
+      ]
+    },
+    {
+      "shell": [
+        {
+          "plist-to-json": "plutil -convert json -o - filename.plist"
+        },
+        {
+          "json-to-plist": "plutil -convert xml1 -r -o - -- filename.json"
+        }
+      ]
+    }
+  ]
+}

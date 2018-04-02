@@ -6,7 +6,6 @@
 - Move to the XDG paths
     - .wget-hsts
     - .httpie
-    - .boom
     - .gist
     - .git-remote-dropbox.json
     - .mitmproxy
