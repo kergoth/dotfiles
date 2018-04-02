@@ -13,6 +13,9 @@
 		"Origami",
 		"Package Control",
 		"rsub",
+		"SublimeLinter",
+		"SublimeLinter-flake8",
+		"SublimeLinter-shellcheck",
 		"Vintageous"
 	]
 }
