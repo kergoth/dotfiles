@@ -7,22 +7,22 @@
 # - Accept multiple packages/environments for the upgrade command
 # - Add -s/--short to the list command
 
-quote(){
-    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+quote() {
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" <<EOF
 $1
 EOF
 }
 
-save () {
+save() {
     case "$1" in
-    # when a string contains a "'" we have to escape it
-    *\'*)
-        saved="$saved $(quote "$1")"
-        ;;
-    # otherwise just quote the variable
-    *)
-        saved="$saved '$1'"
-        ;;
+        # when a string contains a "'" we have to escape it
+        *\'*)
+            saved="$saved $(quote "$1")"
+            ;;
+        # otherwise just quote the variable
+        *)
+            saved="$saved '$1'"
+            ;;
     esac
 }
 
@@ -75,7 +75,7 @@ elif [ "$cmd" = list ]; then
     short=0
     if [ $# -ne 0 ]; then
         case "$1" in
-            -s|--short)
+            -s | --short)
                 short=1
                 shift
                 ;;
