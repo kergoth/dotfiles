@@ -1,6 +1,7 @@
 #!/bin/sh
 # Pipsi wrapper with some small conveniences:
 # - -3 as the first argument will pass --python=python3 to the install
+# - -2 as the first argument will pass --python=python2, if python2 is available
 # - Additional arguments to the install command will also be installed into
 #   the virtualenv with pip
 # - Accept multiple packages/environments for the upgrade command
