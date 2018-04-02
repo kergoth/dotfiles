@@ -4,10 +4,7 @@
       get -u`.
 
 - Move to the XDG paths
-    - .wget-hsts
-    - .httpie
-    - .gist
-    - .git-remote-dropbox.json
+    - .gist - [Pending](https://github.com/defunkt/gist/pull/189)
     - .mitmproxy
 
 - Simplify the install scripts
