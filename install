@@ -17,7 +17,7 @@ osname="$(uname -s)"
 HOSTNAME=$(hostname -s)
 prefixes="%include %include%${osname} %include%${HOSTNAME}"
 force=0
-exclude="sublime-text-2"
+exclude=""
 include=
 
 set_launchd () {
