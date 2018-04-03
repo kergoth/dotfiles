@@ -30,6 +30,7 @@
 	# Hub
 	fork = !hub fork
 	pull-request = !hub pull-request
+	browse = !hub browse
 
 	# Update without merge commits
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
