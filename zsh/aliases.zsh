@@ -23,7 +23,11 @@ alias bc='bc -ql'
 alias wget='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
 alias xz='xz --threads=0'
 alias rezsh='exec zsh --login'
-alias relogin='su - $USER'
+if [[ $OSTYPE =~ darwin ]]; then
+    alias relogin='login -f $USER'
+else
+    alias relogin='su - $USER'
+fi
 
 what () {
     tldr "$1" || cheat "$1" || man "$1"
