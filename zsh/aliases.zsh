@@ -24,9 +24,9 @@ alias wget='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
 alias xz='xz --threads=0'
 alias rezsh='exec zsh --login'
 if [[ $OSTYPE =~ darwin ]]; then
-    alias relogin='login -f $USER'
+    alias relogin='exec login -f $USER'
 else
-    alias relogin='su - $USER'
+    alias relogin='exec su - $USER'
 fi
 
 what () {
