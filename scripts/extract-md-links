@@ -1,13 +1,8 @@
 #!/bin/sh
 # Extract the links from markdown
 
-if ! which cmark.py >/dev/null 2>&1; then
-    if [ ! -e "${WORKON_HOME:-~/.virtualenvs}/commonmark" ]; then
-        pipv commonmark
-    fi
-    if [ -e "${WORKON_HOME:-~/.virtualenvs}/commonmark" ]; then
-        . "${WORKON_HOME:-~/.virtualenvs}/commonmark/bin/activate"
-    fi
+if ! which cmark >/dev/null 2>&1; then
+    pipsi install --python python3 commonmark
 fi
 
 verbose=0
