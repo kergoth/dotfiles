@@ -15,6 +15,7 @@ alias mosh='mosh --forward-agent'
 #alias mosh="perl -E 'print \'\e[?1005h\e[?1002h\''; mosh"
 alias smem='smem -k'
 alias parallel='parallel --bibtex'
+alias shfmt='shfmt -i 4 -ci -bn -s'
 alias mr='mr -d "$(find_up .mrconfig || echo .)"'
 alias sshnew='ssh -o "ControlPath none"'
 alias diff='diff -urNd'
