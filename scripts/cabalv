@@ -22,6 +22,17 @@ fi
 cabal_sandbox_name="$1"
 shift
 
+if ! which ghc >/dev/null 2>&1; then
+    if which stack >/dev/null 2>&1; then
+        eval "$(stack exec env | grep '^PATH=')"
+    fi
+fi
+
+if ! which cabal >/dev/null 2>&1; then
+    echo >&2 "Error: cabal-install must be installed"
+    exit 1
+fi
+
 cabal_sandbox_dir="$CABALS_HOME/$cabal_sandbox_name"
 if [ ! -e "$cabal_sandbox_dir" ]; then
     mkdir -p "$cabal_sandbox_dir"
