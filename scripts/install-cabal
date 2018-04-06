@@ -11,6 +11,7 @@ if ! which ghc >/dev/null 2>&1 || ! which cabal >/dev/null 2>&1; then
 fi
 
 if which stack >/dev/null 2>&1; then
+    stack update
     stack setup
     GHC="$(stack exec which ghc)"
     if [ -n "$GHC" ]; then
