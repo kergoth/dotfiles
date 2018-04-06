@@ -2,16 +2,21 @@
 
 set -eu
 
+PATH="$HOME/.local/bin:$PATH"
+
 if ! which ghc >/dev/null 2>&1 || ! which cabal >/dev/null 2>&1; then
-    PATH="$HOME/.local/bin:$PATH"
     if ! which stack >/dev/null 2>&1; then
         curl -sSL https://get.haskellstack.org/ | sh -s - -d ~/.local/bin
     fi
+fi
+
+if which stack >/dev/null 2>&1; then
     stack setup
     GHC="$(stack exec which ghc)"
     if [ -n "$GHC" ]; then
         ln -sfv "$GHC" ~/.local/bin/
     fi
     stack install cabal-install
-    which cabal
 fi
+
+which cabal
