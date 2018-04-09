@@ -102,7 +102,7 @@ gemv ronn
 npmv doctoc
 
 ## Linting / Static Analysis
-brew install shellcheck # or cabalv shellcheck or cabal install shellcheck
+install-cabal && cabalv shellcheck
 pipv flake8 flake8 pep8-naming flake8-docstrings
 #pipv prospector
 #pipv vim-vint
