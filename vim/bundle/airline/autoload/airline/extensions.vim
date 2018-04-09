@@ -22,7 +22,7 @@ endfunction
 let s:script_path = tolower(resolve(expand('<sfile>:p:h')))
 
 let s:filetype_overrides = {
-      \ 'nerdtree': [ 'NERD', '' ],
+      \ 'nerdtree': [ get(g:, 'NERDTreeStatusline', 'NERD'), '' ],
       \ 'gundo': [ 'Gundo', '' ],
       \ 'vimfiler': [ 'vimfiler', '%{vimfiler#get_status_string()}' ],
       \ 'minibufexpl': [ 'MiniBufExplorer', '' ],
@@ -170,6 +170,11 @@ function! airline#extensions#load()
   if get(g:, 'loaded_ctrlp', 0)
     call airline#extensions#ctrlp#init(s:ext)
     call add(loaded_ext, 'ctrlp')
+  endif
+
+  if get(g:, 'loaded_localsearch', 0)
+    call airline#extensions#localsearch#init(s:ext)
+    call add(loaded_ext, 'localsearch')
   endif
 
   if get(g:, 'CtrlSpaceLoaded', 0)

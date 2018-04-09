@@ -168,7 +168,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen.git
     export: autoload/
-    rev: f4fd6044e37a4e255f2ea934e9e1ebc7bfe70f70
+    rev: 06da921608b971fb47603671bcafdb2843992eb3
 
 # secure alternative to vim modelines
 git module securemodelines:
@@ -182,7 +182,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 3e0bd86b99c50691f830d9e25a4bbe2a88078f8f
+    rev: b680699450805e01960184b60a2cf0d3a71088cf
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -197,7 +197,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 2ba64a88fd20c35f65a3c85882fe40444208d858
+    rev: 0df2c9b12e804bf36b3af2283cf167c3237fb798
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -211,7 +211,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary.git
-    rev: 89f43af18692d22ed999c3097e449f12fdd8b299
+    rev: 296d99b353261191adb7a356ee3fefbce8e6096b
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -236,7 +236,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 40819ad46ed01072d201c12656fbe8dfdf66d55b
+    rev: b80fd418082471e5b1150a97e8cab53035ffe502
 
 # continuously updated session files
 git module vim-obsession:
@@ -246,7 +246,7 @@ git module vim-obsession:
 # netrw improvements
 git module vim-vinegar:
     url: https://github.com/tpope/vim-vinegar.git
-    rev: f54d96c6bb110bc119ddc81968c2b280ed98acfe
+    rev: 97f3fbc9596f3997ebf8e30bfdd00ebb34597722
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
@@ -291,7 +291,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 43345fb642399c43f25ccae94cec0bef773bf437
+    rev: 851fa382519edc10a887d893abf54af3588c8de2
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -373,7 +373,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 031573c6f8a9eb7c57939948fcdf8e152ca25b96
+    rev: 408a1b94da46921710f145209250b33c190a912e
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -587,7 +587,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 80955f42f4de5f5a73b7e3c88ab267e6a18c8c3b
+    rev: 1e5bb959dcc11f515d8865ece27c5fc9dd3b2d39
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -647,7 +647,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 95ec9bb780198d0ebc0f175debc286b43dd5fc27
+    rev: 2f2dcb84444f440ceb4b35010b861738216525f6
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -680,7 +680,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 96c5c20e418fa95b7137b6ef418946f25de91b1b
+    rev: cab6866e21341cab7419cdb4ae1fd18437d31bb0
 
 git module vim-sleuth:
     url: https://github.com/tpope/vim-sleuth
