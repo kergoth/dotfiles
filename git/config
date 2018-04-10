@@ -99,6 +99,9 @@
 	pushInsteadOf = http://github.com/
 	pushInsteadOf = git://github.com/
 
+[url "git@push.yoctoproject.org:"]
+	pushInsteadOf = git://git.yoctoproject.org/
+
 [url "ssh://git@"]
 	pushInsteadOf = git://
 
