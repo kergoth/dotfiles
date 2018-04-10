@@ -1,6 +1,6 @@
 # TODO
 
-- Consider importing pyenv/npm/etc with peru rather than having the install
+- Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
 - Move to XDG paths where possible
 
