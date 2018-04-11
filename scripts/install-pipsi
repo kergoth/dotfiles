@@ -2,13 +2,20 @@
 
 PATH=/usr/bin:/bin
 
-pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
-PATH="$pythonuserdir/bin:$PATH"
+if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
+    pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
+    PATH="$pythonuserdir/bin:$PATH"
 
-curl https://bootstrap.pypa.io/get-pip.py | python - --user
-if [ "$(which pip)" != "$pythonuserdir/bin/pip" ]; then
-    echo >&2 "Error in pip installation"
-    exit 1
+    if ! which pip >/dev/null 2>&1; then
+        curl https://bootstrap.pypa.io/get-pip.py | python - --user
+    fi
+    if [ "$(which pip)" != "$pythonuserdir/bin/pip" ]; then
+        echo >&2 "Error in pip installation"
+        exit 1
+    fi
+    pip install --user --ignore-installed virtualenv
+    curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
+else
+    . "$PIPSI_HOME/pipsi/bin/activate"
+    pip install -U pip pipsi
 fi
-pip install --user --ignore-installed virtualenv
-curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
