@@ -116,7 +116,7 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: e4fffa4de566c9552f9284fd75e689edb3a1083d
+    rev: 02a37dd919dc48e0821186e5f20e78bd0215f86a
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -182,7 +182,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: b680699450805e01960184b60a2cf0d3a71088cf
+    rev: 3bdac8b60383c0326991ba08bfd57d4e70925f3a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -197,7 +197,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 0df2c9b12e804bf36b3af2283cf167c3237fb798
+    rev: d9acbc53b028d9245cc349cac5581d37bc147ba9
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -254,7 +254,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: a362bc58f1fbbfbbbef749851006e46155979c7d
+    rev: dcf49751e934c3e28ba591df7c8ae7ca0499ebc2
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -291,7 +291,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 851fa382519edc10a887d893abf54af3588c8de2
+    rev: f57920ad903105381b02502580be2bb11e4e6714
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -647,7 +647,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 2f2dcb84444f440ceb4b35010b861738216525f6
+    rev: a0aa9aa9b721a73e81dd0091f37826d5e8a336d2
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
