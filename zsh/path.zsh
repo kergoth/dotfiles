@@ -18,7 +18,7 @@ path=(
 )
 
 if [[ -n $commands[manpath] ]]; then
-  MANPATH=$(manpath)
+  MANPATH=$(MANPATH= manpath)
 else
   MANPATH=/usr/local/man:/usr/local/share/man:/usr/man:/usr/share/man
 fi
