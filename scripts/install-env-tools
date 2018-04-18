@@ -67,7 +67,7 @@ pipv3 asciinema
 
 ## For dotfiles
 pipv3 peru
-pip3_install pygments_base16
+pipv3 pygments pygments_base16
 
 ## Script dependencies
 pip_install SOAPpy # lmwsaction
