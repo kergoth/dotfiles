@@ -20,10 +20,12 @@ pip3_install () {
 }
 
 setup_pip () {
-    python -m ensurepip --user
-    python -m pip install --user --upgrade pip
-    python -m pip install --user --upgrade virtualenv
-    if which python3 >/dev/null 2>&1; then
+    if ! which pip >/dev/null 2>&1; then
+        python -m ensurepip --user
+        python -m pip install --user --upgrade pip
+        python -m pip install --user --upgrade virtualenv
+    fi
+    if which python3 >/dev/null 2>&1 && ! which pip3 >/dev/null 2>&1; then
         python3 -m ensurepip --user
         python3 -m pip install --user --upgrade pip
         python3 -m pip install --user --upgrade virtualenv
