@@ -85,9 +85,13 @@ pip_install gitpython # buildhistory-diff
 
 ## Development Tools
 go get -u github.com/github/hub
-: ${HOMEBREW_PREFIX:=/opt/homebrew}
-$HOMEBREW_PREFIX/bin/brew install openssl
-OPENSSL_DIR=$HOMEBREW_PREFIX/opt/openssl cargov git-series
+if which brew >/dev/null 2>&1; then
+    : ${HOMEBREW_PREFIX:=/opt/homebrew}
+    $HOMEBREW_PREFIX/bin/brew install openssl
+    OPENSSL_DIR=$HOMEBREW_PREFIX/opt/openssl cargov git-series
+else
+    cargov git-series
+fi
 # pprintpp + pp-ez?
 # twine?
 # wheel?
