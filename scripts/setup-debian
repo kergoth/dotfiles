@@ -1,0 +1,29 @@
+#!/bin/sh
+
+PATH="$HOME/.local/bin:$PATH"
+
+sudo apt -y install vim zsh dtach dvtm silversearcher-ag
+sudo apt -y install golang ruby ruby-dev
+
+# for git-tbdiff
+sudo apt -y install libssl-dev cmake
+
+install-cabal
+install-node
+# FIXME: run the initial rustup install non-interactively
+rustup update || rustup
+
+# Install python's deps so all the modules get built
+sudo apt -y install libssl-dev libbz2-dev libsqlite3-dev libssl-dev
+install-python || exit $?
+eval "$(pyenv init -)"
+install-pipsi
+
+# FIXME: hungarian needs numpy, do I need hungarian?
+# FIXME: deal with brew install failures
+install-env-tools
+# FIXME: uninstall ruby-dev if it wasn't already installed to begin with
+
+# Clean up
+# FIXME: only remove the ones we installed, not the ones the user did
+sudo apt -y remove libssl-dev libbz2-dev libsqlite3-dev libssl-dev
