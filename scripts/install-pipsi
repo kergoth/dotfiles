@@ -1,6 +1,10 @@
 #!/bin/sh
 
-PATH=/usr/bin:/bin
+case $OSTYPE in
+    Darwin*)
+        PATH=/usr/bin:/bin
+        ;;
+esac
 
 if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
     pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
