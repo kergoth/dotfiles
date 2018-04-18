@@ -69,6 +69,9 @@ pipv3 asciinema
 pipv3 peru
 pipv3 pygments pygments_base16
 
+## Handy
+go get -u github.com/direnv/direnv
+
 ## Script dependencies
 pip_install SOAPpy # lmwsaction
 pip_install dropbox # git-remote-dropbox
