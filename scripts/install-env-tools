@@ -4,11 +4,11 @@ pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
 PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 
 pipv () {
-    kpipsi install "$@" || { echo >&2 Error installing $@; return 1; }
+    kpipsi upgrade "$@" || kpipsi install "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
 pipv3 () {
-    kpipsi -3 install "$@" || { echo >&2 Error installing $@; return 1; }
+    kpipsi -3 upgrade "$@" || kpipsi -3 install "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
 pip_install () {
