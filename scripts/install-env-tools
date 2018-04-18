@@ -95,7 +95,7 @@ fi
 # pprintpp + pp-ez?
 # twine?
 # wheel?
-pip_install ptpython
+#pip_install ptpython
 pip_install pathlib2
 pip_install click
 pip_install e
