@@ -12,14 +12,16 @@ if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
 
     if ! which pip >/dev/null 2>&1; then
         curl https://bootstrap.pypa.io/get-pip.py | python - --user
+        if [ "$(which pip)" != "$pythonuserdir/bin/pip" ]; then
+            echo >&2 "Error in pip installation"
+            exit 1
+        fi
     fi
-    if [ "$(which pip)" != "$pythonuserdir/bin/pip" ]; then
-        echo >&2 "Error in pip installation"
-        exit 1
+    if ! which virtualenv >/dev/null 2>&1; then
+        pip install --user --ignore-installed virtualenv
     fi
-    pip install --user --ignore-installed virtualenv
     curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
 else
     . "$PIPSI_HOME/pipsi/bin/activate"
-    pip install -U pip pipsi
+    pip install -U pipsi
 fi
