@@ -4,8 +4,8 @@
   scripts clone them to other locations
 - Move to XDG paths where possible
 
-    - .gist - [Pending](https://github.com/defunkt/gist/pull/189)
-    - .mitmproxy
+  - .gist - [Pending](https://github.com/defunkt/gist/pull/189)
+  - .mitmproxy
 
 ## Reference
 
