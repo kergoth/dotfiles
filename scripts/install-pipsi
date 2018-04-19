@@ -7,6 +7,9 @@ case $OSTYPE in
 esac
 
 if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
+    if which pyenv >/dev/null 2>&1; then
+        eval "$(pyenv init -)"
+    fi
     pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
     PATH="$pythonuserdir/bin:$PATH"
 
