@@ -10,6 +10,13 @@ case "$OSTYPE" in
         ;;
     *)
         : ${XDG_CACHE_HOME:=~/.cache}
+        if [ "$OSTYPE" = linux-gnu ]; then
+            case "$(uname -r)" in
+                *-Microsoft)
+                    OSTYPE=WSL
+                    ;;
+            esac
+        fi
         ;;
 esac
 
