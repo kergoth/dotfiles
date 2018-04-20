@@ -2,6 +2,9 @@ case "$OSTYPE" in
     darwin*)
         ff_profileroot="$HOME/Library/Application Support/Firefox"
         ;;
+    WSL)
+        ff_profileroot="$HOME/AppData/Roaming/Mozilla/Firefox"
+        ;;
     *)
         ff_profileroot=
         ;;
@@ -17,12 +20,16 @@ else
 fi
 
 if [ -d "$PROFILE" ]; then
-    link user-overrides.js "$PROFILE/user-overrides.js"
+    if [ "$OSTYPE" = WSL ]; then
+        cp -fv user-overrides.js "$PROFILE/user-overrides.js"
+    else
+        link user-overrides.js "$PROFILE/user-overrides.js"
+    fi
     if ! [ -e "$PROFILE/updater.sh" ]; then
         curl -fsSL https://github.com/ghacksuserjs/ghacks-user.js/raw/master/updater.sh -o "$PROFILE/updater.sh"
     fi
     if ! [ -e "$PROFILE/user.js" ]; then
-        ( cd "$PROFILE" && ./updater.sh -merge -updatebatch; )
+        ( cd "$PROFILE" && bash ./updater.sh -merge -updatebatch; )
     fi
 fi
 
