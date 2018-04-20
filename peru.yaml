@@ -337,10 +337,10 @@ git module atach:
     rev: 754af1492654460e5abccb238b038d42f02ec1e1
 
 curl module cpanm:
-    # url: https://cpanmin.us/
-    url: https://raw.githubusercontent.com/miyagawa/cpanminus/master/cpanm
+    url: https://cpanmin.us/
+    filename: cpanm
     executable: cpanm
-    sha1: 6ed7931a60cab4458f62ac06b59deadb8ce3b7c0
+    sha1: 09c682a9c6d7c47967bba91909378072921c12d0
 
 git module cwdiff:
     url: https://github.com/junghans/cwdiff
