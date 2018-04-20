@@ -1,4 +1,21 @@
-PROFILE="$HOME/Library/Application Support/Firefox/Profiles/$USER"
+case "$OSTYPE" in
+    darwin*)
+        ff_profileroot="$HOME/Library/Application Support/Firefox"
+        ;;
+    *)
+        ff_profileroot=
+        ;;
+esac
+
+if [ -d "$ff_profileroot" ]; then
+    PROFILE="$(python3 -c "import configparser, sys; c = configparser.RawConfigParser(); c.read_file(sys.stdin); print(list(c[s].get('path') for s in c if dict(c[s]).get('default'))[0])" <"$ff_profileroot/profiles.ini")"
+    if [ -n "$PROFILE" ]; then
+        PROFILE="$ff_profileroot/$PROFILE"
+    fi
+else
+    PROFILE=
+fi
+
 if [ -d "$PROFILE" ]; then
     link user-overrides.js "$PROFILE/user-overrides.js"
     if ! [ -e "$PROFILE/updater.sh" ]; then
