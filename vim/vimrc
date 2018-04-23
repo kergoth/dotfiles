@@ -423,6 +423,10 @@ set preserveindent
 set textwidth=78
 " }}}
 " Syntax and highlighting {{{
+
+" Only highlight the first 200 characters of a line
+set synmaxcol=200
+
 " Colors red both trailing whitespace:
 "  foo   
 "  bar	
