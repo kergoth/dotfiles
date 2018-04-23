@@ -7,13 +7,19 @@ git mstash
 ret="$?"
 
 git ls-files -o | sort -u >"$untracked"
-"$(dirname "$0")/scripts/dotfiles-external-update" "$@" || exit 2
+"$(dirname "$0")/scripts/dotfiles-external-update" "$@"
+dtret="$?"
 git ls-files -o | sort -u >"$untracked.new"
 
 comm -13 "$untracked" "$untracked.new" | tr '\n' '\0' | xargs -0 git add
 git add -u
-git commit -n -s -m "Update externals"
+if [ $dtret -ne 0 ]; then
+    git drop
+else
+    git commit -n -s -m "Update externals"
+fi
 
 if [ "$ret" -eq 0 ]; then
     git stash apply
 fi
+exit "$dtret"
