@@ -56,6 +56,8 @@ gemv mdless # Markdown syntax-highlighting pager
 go get -u 4d63.com/tldr
 gemv boom
 
+pipv mercurial gitifyhg hg-git hg-evolve
+
 pipv pythonpy
 pipv3 httpie
 go get -u github.com/EricChiang/pup # or brew install pup
