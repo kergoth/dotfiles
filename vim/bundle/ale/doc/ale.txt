@@ -13,6 +13,7 @@ CONTENTS                                                         *ale-contents*
   5. Language Server Protocol Support.....|ale-lsp|
     5.1 Completion........................|ale-completion|
     5.2 Go To Definition..................|ale-go-to-definition|
+    5.3 Find References...................|ale-find-references|
   6. Global Options.......................|ale-options|
     6.1 Highlights........................|ale-highlights|
     6.2 Options for write-good Linter.....|ale-write-good-options|
@@ -156,6 +157,7 @@ CONTENTS                                                         *ale-contents*
     perl..................................|ale-perl-options|
       perl................................|ale-perl-perl|
       perlcritic..........................|ale-perl-perlcritic|
+      perltidy............................|ale-perl-perltidy|
     php...................................|ale-php-options|
       hack................................|ale-php-hack|
       hackfmt.............................|ale-php-hackfmt|
@@ -322,6 +324,7 @@ Notes:
 * CoffeeScript: `coffee`, `coffeelint`
 * Crystal: `crystal`!!
 * CSS: `csslint`, `prettier`, `stylelint`
+* Cucumber: `cucumber`
 * Cython (pyrex filetype): `cython`
 * D: `dmd`
 * Dafny: `dafny`!!
@@ -363,7 +366,7 @@ Notes:
 * Objective-C: `clang`
 * Objective-C++: `clang`
 * OCaml: `merlin` (see |ale-ocaml-merlin|), `ols`
-* Perl: `perl -c`, `perl-critic`
+* Perl: `perl -c`, `perl-critic`, `perltidy`
 * PHP: `hack`, `hackfmt`, `langserver`, `phan`, `php -l`, `phpcs`, `phpmd`, `phpstan`, `phpcbf`, `php-cs-fixer`
 * PO: `alex`!!, `msgfmt`, `proselint`, `write-good`
 * Pod: `alex`!!, `proselint`, `write-good`
@@ -473,10 +476,12 @@ ftplugin files for different filetypes.
 ===============================================================================
 4. Fixing Problems                                                    *ale-fix*
 
-ALE can fix problems with files with the |ALEFix| command. When |ALEFix| is
-run, the variable |g:ale_fixers| will be read for getting a |List| of commands
-for filetypes, split on `.`, and the functions named in |g:ale_fixers| will be
-executed for fixing the errors.
+ALE can fix problems with files with the |ALEFix| command. |ALEFix|
+accepts names of fixers to be applied as arguments. Alternatively,
+when no arguments are provided, the variable |g:ale_fixers| will be
+read for getting a |List| of commands for filetypes, split on `.`, and
+the functions named in |g:ale_fixers| will be executed for fixing the
+errors.
 
 The |ALEFixSuggest| command can be used to suggest tools that be used to
 fix problems for the current buffer.
@@ -636,6 +641,17 @@ information returned by LSP servers. The following commands are supported:
 
 |ALEGoToDefinition|      - Open the definition of the symbol under the cursor.
 |ALEGoToDefinitionInTab| - The same, but for opening the file in a new tab.
+
+
+-------------------------------------------------------------------------------
+5.3 Find References                                       *ale-find-references*
+
+ALE supports finding references for symbols though any enabled LSP linters.
+ALE will display a preview window showing the places where a symbol is
+referenced in a codebase when a command is run. The following commands are
+supported:
+
+|ALEFindReferences| - Find references for the word under the cursor.
 
 
 ===============================================================================
@@ -1742,6 +1758,21 @@ ALE will use to search for Python executables.
 ===============================================================================
 8. Commands/Keybinds                                             *ale-commands*
 
+ALEFindReferences                                           *ALEFindReferences*
+
+  Find references in the codebase for the symbol under the cursor using the
+  enabled LSP linters for the buffer. ALE will display a preview window
+  containing the results if some references are found.
+
+  The window can be navigated using the usual Vim navigation commands. The
+  Enter key (`<CR>`) can be used to jump to a referencing location, or the `t`
+  key can be used to jump to the location in a new tab.
+
+  You can jump back to the position you were at before going to a reference of
+  something with jump motions like CTRL-O. See |jump-motions|.
+
+  A plug mapping `<Plug>(ale_find_references)` is defined for this command.
+
 ALEFix                                                                 *ALEFix*
 
   Fix problems with the current buffer. See |ale-fix| for more information.
@@ -1761,6 +1792,9 @@ ALEGoToDefinition                                           *ALEGoToDefinition*
   Jump to the definition of a symbol under the cursor using the enabled LSP
   linters for the buffer. ALE will jump to a definition if an LSP server
   provides a location to jump to. Otherwise, ALE will do nothing.
+
+  You can jump back to the position you were at before going to the definition
+  of something with jump motions like CTRL-O. See |jump-motions|.
 
   A plug mapping `<Plug>(ale_go_to_definition)` is defined for this command.
 

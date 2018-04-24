@@ -182,7 +182,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 3bdac8b60383c0326991ba08bfd57d4e70925f3a
+    rev: 40d78f07dee2ffab68abb9d6d1a9e27843df0fe0
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -197,11 +197,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: d9acbc53b028d9245cc349cac5581d37bc147ba9
+    rev: c4a4a20b8d0f0e2b5965593207bb331e1ac19541
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: b0fca80555b8249f3c62271b7635542a7de22363
+    rev: a334b5f551fa2472dbb32509a66337d8736d18cc
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -211,7 +211,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary.git
-    rev: 296d99b353261191adb7a356ee3fefbce8e6096b
+    rev: 54e5676988e6eeaa05b41730b6b056026ad0ef13
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -236,7 +236,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: b80fd418082471e5b1150a97e8cab53035ffe502
+    rev: ca88fd7bd3d58620c7bfd604e3ebfa71b9c5001d
 
 # continuously updated session files
 git module vim-obsession:
@@ -254,7 +254,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: dcf49751e934c3e28ba591df7c8ae7ca0499ebc2
+    rev: dc5f9437fcaed9f6896235830246871fdf9c9ba8
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -329,7 +329,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: f7fc464520ba9060b0b8533105ac7fc4f0c102c8
+    rev: 7a4d23eba781142cda8bdba160310f147ba2bc08
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -554,7 +554,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 20dd8647a3d82bdce8eb3af6158fc8b512aae2ba
+    rev: 51007a62487d432669dfe3cd78185ecbcd1c8549
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
@@ -617,7 +617,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: c7d4a85031c101ef9bce0018096622087894dd09
+    rev: 67a364bc1766fb775010cd00dda1967210013410
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -647,7 +647,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: a0aa9aa9b721a73e81dd0091f37826d5e8a336d2
+    rev: 93a046a78f0ab20af54812f28784d555fda2d38d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

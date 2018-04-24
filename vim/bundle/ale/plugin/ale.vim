@@ -263,13 +263,19 @@ command! -bar ALEInfoToClipboard :call ale#debugging#InfoToClipboard()
 command! -bar -nargs=1 ALEInfoToFile :call ale#debugging#InfoToFile(<f-args>)
 
 " Fix problems in files.
-command! -bar ALEFix :call ale#fix#Fix()
+command! -bar -nargs=* -complete=customlist,ale#fix#registry#CompleteFixers ALEFix :call ale#fix#Fix(bufnr(''), '', <f-args>)
 " Suggest registered functions to use for fixing problems.
 command! -bar ALEFixSuggest :call ale#fix#registry#Suggest(&filetype)
 
 " Go to definition for tsserver and LSP
 command! -bar ALEGoToDefinition :call ale#definition#GoTo({})
 command! -bar ALEGoToDefinitionInTab :call ale#definition#GoTo({'open_in_tab': 1})
+
+" Find references for tsserver and LSP
+command! -bar ALEFindReferences :call ale#references#Find()
+
+" Get information for the cursor.
+command! -bar ALEHover :call ale#hover#Show()
 
 " <Plug> mappings for commands
 nnoremap <silent> <Plug>(ale_previous) :ALEPrevious<Return>
@@ -291,9 +297,11 @@ nnoremap <silent> <Plug>(ale_detail) :ALEDetail<Return>
 nnoremap <silent> <Plug>(ale_fix) :ALEFix<Return>
 nnoremap <silent> <Plug>(ale_go_to_definition) :ALEGoToDefinition<Return>
 nnoremap <silent> <Plug>(ale_go_to_definition_in_tab) :ALEGoToDefinitionInTab<Return>
+nnoremap <silent> <Plug>(ale_find_references) :ALEFindReferences<Return>
+nnoremap <silent> <Plug>(ale_hover) :ALEHover<Return>
 
 " Set up autocmd groups now.
-call ale#toggle#InitAuGroups()
+call ale#autocmd#InitAuGroups()
 
 " Housekeeping
 

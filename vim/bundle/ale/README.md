@@ -27,6 +27,7 @@ formatting tools, and some Language Server Protocol and `tsserver` features.
     2. [Fixing](#usage-fixing)
     3. [Completion](#usage-completion)
     4. [Go To Definition](#usage-go-to-definition)
+    5. [Find References](#usage-find-references)
 3. [Installation](#installation)
     1. [Installation with Vim package management](#standard-installation)
     2. [Installation with Pathogen](#installation-with-pathogen)
@@ -90,6 +91,7 @@ formatting.
 | CoffeeScript | [coffee](http://coffeescript.org/), [coffeelint](https://www.npmjs.com/package/coffeelint) |
 | Crystal | [crystal](https://crystal-lang.org/) !! |
 | CSS | [csslint](http://csslint.net/), [prettier](https://github.com/prettier/prettier), [stylelint](https://github.com/stylelint/stylelint) |
+| Cucumber | [cucumber](https://cucumber.io/) |
 | Cython (pyrex filetype) | [cython](http://cython.org/) |
 | D | [dmd](https://dlang.org/dmd-linux.html) |
 | Dafny | [dafny](https://rise4fun.com/Dafny) !! |
@@ -131,7 +133,7 @@ formatting.
 | Objective-C | [clang](http://clang.llvm.org/) |
 | Objective-C++ | [clang](http://clang.llvm.org/) |
 | OCaml | [merlin](https://github.com/the-lambda-church/merlin) see `:help ale-ocaml-merlin` for configuration instructions, [ols](https://github.com/freebroccolo/ocaml-language-server) |
-| Perl | [perl -c](https://perl.org/), [perl-critic](https://metacpan.org/pod/Perl::Critic) |
+| Perl | [perl -c](https://perl.org/), [perl-critic](https://metacpan.org/pod/Perl::Critic), [perltidy](https://metacpan.org/pod/distribution/Perl-Tidy/bin/perltidy) |
 | PHP | [hack](http://hacklang.org/), [hackfmt](https://github.com/facebook/flow/tree/master/hack/hackfmt), [langserver](https://github.com/felixfbecker/php-language-server), [phan](https://github.com/phan/phan) see `:help ale-php-phan` to instructions, [php -l](https://secure.php.net/), [phpcs](https://github.com/squizlabs/PHP_CodeSniffer), [phpmd](https://phpmd.org), [phpstan](https://github.com/phpstan/phpstan), [phpcbf](https://github.com/squizlabs/PHP_CodeSniffer), [php-cs-fixer](http://cs.sensiolabs.org/) |
 | PO | [alex](https://github.com/wooorm/alex) !!, [msgfmt](https://www.gnu.org/software/gettext/manual/html_node/msgfmt-Invocation.html), [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good) |
 | Pod | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good) |
@@ -221,9 +223,7 @@ too. See `:help ale-fix` for detailed information.
 
 ALE offers some support for completion via hijacking of omnicompletion while you
 type. All of ALE's completion information must come from Language Server
-Protocol linters, or similar protocols. At the moment, completion is only
-supported for TypeScript code with `tsserver`, when `tsserver` is enabled. You
-can enable completion like so:
+Protocol linters, or from `tsserver` for TypeSript.
 
 ```vim
 " Enable completion where available.
@@ -240,6 +240,15 @@ ALE supports jumping to the definition of words under your cursor with the
 `:ALEGoToDefinition` command using any enabled LSP linters and `tsserver`.
 
 See `:help ale-go-to-definition` for more information.
+
+<a name="usage-find-references"></a>
+
+### 2.v Find References
+
+ALE supports finding references for words under your cursor with the
+`:ALEFindReferences` command using any enabled LSP linters and `tsserver`.
+
+See `:help ale-find-references` for more information.
 
 <a name="installation"></a>
 
