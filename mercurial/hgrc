@@ -2,6 +2,7 @@
 ignore = ~/.config/hg/exclude
 username = Christopher Larson <kergoth@gmail.com>
 commitsubrepos = False
+interface = curses
 
 [merge-tools]
 vimdiff.executable = vim
@@ -37,7 +38,6 @@ purge =
 record =
 schemes =
 
-crecord = ~/.config/hg/extensions/crecord/crecord
 shelve = ~/.config/hg/extensions/shelve/hgshelve.py
 evolve = ~/.config/hg/extensions/evolve/hgext3rd
 

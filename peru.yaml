@@ -106,7 +106,6 @@ imports:
     damian-conway-vim: vim/bundle/damian-conway
 
     # Mercurial
-    hg-extension-crecord: mercurial/extensions/crecord
     hg-extension-shelve: mercurial/extensions/shelve
     hg-extension-evolve: mercurial/extensions/evolve
 
@@ -496,10 +495,6 @@ git module git-pull-requests:
         git-pull-request: git-pull-requests
     pick: git-pull-requests
     rev: 09f76c0c4613cb30425e51b39576c35a50fe4ae1
-
-hg module hg-extension-crecord:
-    url: https://bitbucket.org/edgimar/crecord
-    rev: 02d63ec2e77e55362ad93982cb641ee6d2b5ef81
 
 hg module hg-extension-shelve:
     url: https://bitbucket.org/astiob/hgshelve
