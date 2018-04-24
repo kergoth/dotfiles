@@ -106,7 +106,6 @@ imports:
     damian-conway-vim: vim/bundle/damian-conway
 
     # Mercurial
-    hg-extension-shelve: mercurial/extensions/shelve
     hg-extension-evolve: mercurial/extensions/evolve
 
     # Textual
@@ -495,10 +494,6 @@ git module git-pull-requests:
         git-pull-request: git-pull-requests
     pick: git-pull-requests
     rev: 09f76c0c4613cb30425e51b39576c35a50fe4ae1
-
-hg module hg-extension-shelve:
-    url: https://bitbucket.org/astiob/hgshelve
-    rev: 963742647a2d914fb275828e24e30cb84a51aa4d
 
 hg module hg-extension-evolve:
     url: https://www.mercurial-scm.org/repo/evolve

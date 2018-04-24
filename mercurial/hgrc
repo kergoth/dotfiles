@@ -37,8 +37,8 @@ patchbomb =
 purge =
 record =
 schemes =
+shelve =
 
-shelve = ~/.config/hg/extensions/shelve/hgshelve.py
 evolve = ~/.config/hg/extensions/evolve/hgext3rd
 
 [mq]

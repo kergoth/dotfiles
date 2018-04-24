@@ -1,5 +1,0 @@
-include LICENSE
-include COPYRIGHT
-include README
-include test-shelve.t
-include test-shelve-color.t
