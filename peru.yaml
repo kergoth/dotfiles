@@ -105,9 +105,6 @@ imports:
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
 
-    # Mercurial
-    hg-extension-evolve: mercurial/extensions/evolve
-
     # Textual
     textual-succinct: textual/styles/Succinct
     textual-succinctlight: textual/styles/Succinct Light
@@ -494,11 +491,6 @@ git module git-pull-requests:
         git-pull-request: git-pull-requests
     pick: git-pull-requests
     rev: 09f76c0c4613cb30425e51b39576c35a50fe4ae1
-
-hg module hg-extension-evolve:
-    url: https://www.mercurial-scm.org/repo/evolve
-    reup: stable
-    rev: c912eaf29eecdb50613e91cf9d87fe99217e1392
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd

@@ -22,24 +22,20 @@ status.unknown = blue
 status.ignored = yellow
 
 [extensions]
-color =
-pager =
-progress =
 bookmarks =
-rebase =
-
+color =
+evolve =
 extdiff =
 gpg =
-# Note: log supports -G without graphlog extension in mercurial 2.3+
-graphlog =
 histedit =
+pager =
 patchbomb =
+progress =
 purge =
+rebase =
 record =
 schemes =
 shelve =
-
-evolve = ~/.config/hg/extensions/evolve/hgext3rd
 
 [mq]
 secret = True
