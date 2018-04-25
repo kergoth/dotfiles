@@ -1,0 +1,6 @@
+if [[ $OSTYPE = WSL ]]; then
+    cp -f dir_colors $XDG_CONFIG_HOME/dir_colors
+    sed -i -e '/^OTHER_WRITABLE/s/04\;/00\;/' $XDG_CONFIG_HOME/dir_colors
+else
+    link dir_colors $XDG_CONFIG_HOME/dir_colors
+fi
