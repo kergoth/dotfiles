@@ -20,6 +20,8 @@ case "$OSTYPE" in
         ;;
 esac
 
+mkdir -p $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_CACHE_HOME
+
 osname="$(uname -s)"
 HOSTNAME=$(hostname -s)
 prefixes="%include %include%${osname} %include%${HOSTNAME}"
