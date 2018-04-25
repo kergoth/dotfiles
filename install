@@ -112,13 +112,18 @@ link () {
     if [ "$destdir" != "$dotfile_dest" ]; then
         mkdir -p "$destdir"
     fi
-    dotfile_relpath="$(relpath "$dotfile" "$destdir")"
+    if which python >/dev/null 2>&1; then
+        dotfile_relpath="$(relpath "$dotfile" "$destdir")"
 
-    # Sanity check
-    dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
-    if [ ! -e "$dotfile_resolved" ]; then
-        echo >&2 "Error: $dotfile_resolved does not exist"
-        return 1
+        # Sanity check
+        dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
+        if [ ! -e "$dotfile_resolved" ]; then
+            echo >&2 "Error: $dotfile_resolved does not exist"
+            return 1
+        fi
+    else
+        dotfile_relpath="$dotfile"
+        dotfile_resolved="$dotfile"
     fi
 
     if [ -L "$dotfile_dest" ] || [ -e "$dotfile_dest" ]; then
