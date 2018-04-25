@@ -25,3 +25,4 @@ URxvt.urlLauncher: firefox
 URxvt.termName: rxvt-unicode
 URxvt*font: xft:Input Mono Narrow:size=14:style=Thin
 URxvt*boldFont: xft:Input Mono Narrow:size=14:style=Medium
+URxvt.visualBell: true
