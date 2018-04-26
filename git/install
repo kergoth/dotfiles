@@ -2,7 +2,7 @@ if [ -h ~/.config/git ]; then
     rm -f ~/.config/git
 fi
 mkdir -p ~/.config/git
-for i in ignore config*; do
+for i in ignore config* git-remote-dropbox.json; do
     link $i ~/.config/git/$i
 done
 
