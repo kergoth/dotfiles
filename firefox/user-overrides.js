@@ -2,11 +2,6 @@
 user_pref("app.update.auto", true);
 /* 0302b: enable auto update installing for extensions (after the check in 0301b) */
 user_pref("extensions.update.autoUpdateDefault", true);
-/* 0510: enable Pocket (FF39+)
- * Pocket is a third party (now owned by Mozilla) "save for later" cloud service
- * [1] https://en.wikipedia.org/wiki/Pocket_(application)
- * [2] https://www.gnu.gl/blog/Posts/multiple-vulnerabilities-in-pocket/ ***/
-user_pref("extensions.pocket.enabled", true);
 /* 0801: enable location bar using search */
 user_pref("keyword.enabled", true);
 /* 0850a: enable location bar autocomplete and suggestion types */
