@@ -20,7 +20,7 @@ user_pref("browser.urlbar.oneOffSearches", false);
 user_pref("browser.urlbar.maxHistoricalSearchSuggestions", 10); // max. number of search suggestions
 /* 0901: disable saving passwords */
 user_pref("signon.rememberSignons", false);
-/* 1020: enable the Session Restore service completely */
+/* 1020: enable the Session Restore service */
 user_pref("browser.sessionstore.max_tabs_undo", 10);
 user_pref("browser.sessionstore.max_windows_undo", 10);
 /* 1021: enable storing extra session data on unencrypted sites */
@@ -59,6 +59,11 @@ user_pref("dom.serviceWorkers.enabled", false);
 user_pref("layers.acceleration.disabled", false);
 /* 2701: disable cookies for 3rd party */
 user_pref("network.cookie.cookieBehavior", 1);
+user_pref("network.cookie.thirdparty.sessionOnly", false);
+user_pref("network.cookie.thirdparty.nonsecureSessionOnly", false); // (FF58+)
+/* 2703: set cookie lifetime policy
+ * 0=until they expire (default), 2=until you close Firefox, 3=for n days (see next pref) */
+user_pref("network.cookie.lifetimePolicy", 3);
 /* 2730: enable offline cache ***/
 //user_pref("browser.cache.offline.enable", true);
 /* 2802: disable Firefox to clear history items on shutdown */
