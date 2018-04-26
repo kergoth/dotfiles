@@ -1,12 +1,16 @@
-link . ~/.config/git
+if [ -h ~/.config/git ]; then
+    rm -f ~/.config/git
+fi
+mkdir -p ~/.config/git
+for i in ignore config*; do
+    link $i ~/.config/git/$i
+done
 
-touch config.local config.local.$HOSTNAME
-git config -f config.local --replace-all include.path "config.local.$HOSTNAME" "config\.local\."
-git config -f config.local.$HOSTNAME --unset-all http.sslCAInfo
+touch ~/.config/git/config.local
 
 case "$OSTYPE" in
     darwin*)
-        git config -f config.local.$HOSTNAME --replace-all credential.helper osxkeychain
+        git config -f ~/.config/git/config.local --replace-all credential.helper osxkeychain
         ;;
 esac
 
