@@ -1,4 +1,4 @@
 #!/bin/sh
 export DISPLAY="${DISPLAY:-:0.0}"
-xrdb -load ${XDG_CONFIG_HOME:-~/.config}/X11/Xresources
+xrdb -merge ${XDG_CONFIG_HOME:-~/.config}/X11/Xresources
 exec i3
