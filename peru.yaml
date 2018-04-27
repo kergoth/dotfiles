@@ -17,6 +17,7 @@ imports:
     fzf: .
 
     # Scripts
+    git-fixup: git-fixup
     appify: scripts
     atach: scripts
     cheat: scripts
@@ -690,3 +691,14 @@ git module pyenv-installer:
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer
+
+git module git-fixup:
+    url: https://github.com/keis/git-fixup
+    move:
+        git-fixup: scripts/git-fixup
+        completion.zsh: functions/_git-fixup
+    pick:
+        - scripts/git-fixup
+        - functions/_git-fixup
+    executable: scripts/git-fixup
+    rev: 418f2070c4d0d79996ca60dc328780aca96f8dd7

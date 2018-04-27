@@ -1,0 +1,86 @@
+#!/bin/bash
+# git-fixup (https://github.com/keis/git-fixup)
+
+SUBDIRECTORY_OK=yes
+. "$(git --exec-path)/git-sh-setup"
+
+# Define a sed program that turns `git diff` output into a stream of filenames
+# and sections within those files.
+grok_diff='/^--- .*/p ;
+           s/^@@ -\([0-9]*\),\([0-9]*\).*/\1 \2/p'
+
+# Produce suggestion of commits by finding the sections of files with changes
+# staged (U1 to diff is used to give some context for when adding items to
+# lists etc) and looking up the previous commits touching those sections.
+function fixup_candidates_lines () {
+    git diff --cached -U1 --no-prefix | sed -n "$grok_diff" | (
+        file=''
+        while read offs len; do
+            if test "$offs" == '---'; then
+                file="$len"
+            else
+                if test "$len" != '0'; then
+                    if test "$file" != '/dev/null'; then
+                        git blame -sl -L "$offs,+$len" $rev_range -- "$file"
+                    fi
+                fi
+            fi
+        done
+    ) | grep -v "^^" | cut -d' ' -f 1 | sed 's/^/L /g'
+}
+
+# Produce suggestion of commits by taking the latest commit to each file with
+# staged changes
+function fixup_candidates_files () {
+    git diff --cached --name-only | (
+        while read file; do
+            git rev-list $rev_range -- $file \
+                | grep -v -f <(git rev-list -E --grep='^(fixup|squash)' $rev_range -- $file) \
+                | head -n1
+        done
+    ) | sed 's/^/F /g'
+}
+
+# Pretty print details of a commit
+function print_sha () {
+    local sha=$1
+    local type=$2
+
+    git --no-pager log --format="%H [$type] %s <%ae>" -n 1 "$sha"
+}
+
+op="fixup"
+case "$1" in
+    -s|--squash)
+        op="squash"
+        shift
+        ;;
+esac
+
+if test $# -eq 1; then
+    git commit --$op=$1
+    exit
+fi
+
+if git diff --cached --quiet; then
+    echo 'No staged changes. Use git add -p to add them.' >&2
+    exit 1
+fi
+
+cd_to_toplevel
+upstream=`git rev-parse @{upstream} 2>/dev/null`
+head=`git rev-parse HEAD 2>/dev/null`
+if test -z "$upstream" -o "$upstream" = "$head"; then
+    rev_range="HEAD"
+else
+    rev_range="@{upstream}..HEAD"
+fi
+
+(
+    fixup_candidates_lines
+    fixup_candidates_files
+) | sort -uk2 |  while read type sha; do
+    if test "$sha" != ""; then
+        print_sha "$sha" "$type"
+    fi
+done
