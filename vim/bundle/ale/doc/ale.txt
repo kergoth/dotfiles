@@ -654,6 +654,15 @@ supported:
 |ALEFindReferences| - Find references for the word under the cursor.
 
 
+-------------------------------------------------------------------------------
+5.4 Hovering                                                        *ale-hover*
+
+ALE supports "hover" information for printing brief information about symbols
+at the cursor taken from LSP linters. The following commands are supported:
+
+|ALEHover| - Print information about the symbol at the cursor.
+
+
 ===============================================================================
 6. Global Options                                                 *ale-options*
 
@@ -1806,6 +1815,19 @@ ALEGoToDefinitionInTab                                 *ALEGoToDefinitionInTab*
   A plug mapping `<Plug>(ale_go_to_definition_in_tab)` is defined for this
   command.
 
+
+ALEHover                                                             *ALEHover*
+
+  Print brief information about the symbol under the cursor, taken from any
+  available LSP linters. There may be a small non-blocking delay before
+  information is printed.
+
+  NOTE: In Vim 8, long messages will be shown in a preview window, as Vim 8
+  does not support showing a prompt to press enter to continue for long
+  messages from asynchronous callbacks.
+
+  A plug mapping `<Plug>(ale_hover)` is defined for this command.
+
                                                                      *:ALELint*
 ALELint                                                               *ALELint*
 
@@ -2250,9 +2272,9 @@ ale#linter#Define(filetype, linter)                       *ale#linter#Define()*
                          process for a language server runnning, and
                          communicates with it directly via a |channel|.
 
-                         When this argument is not empty, then the
-                         `project_callback` and `language_callback` arguments
-                         must also be defined.
+                         When this argument is not empty, `project_callback`
+                         must be defined, and only one of either `language` or
+                         `language_callback` must be defined.
 
                          LSP linters handle diagnostics automatically, so
                          the `callback` argument must not be defined.
@@ -2267,13 +2289,20 @@ ale#linter#Define(filetype, linter)                       *ale#linter#Define()*
                          This argument must only be set if the `lsp` argument
                          is also set to a non-empty string.
 
+  `language`               A |String| representing the name of the language
+                         being checked. This string will be sent to the LSP to
+                         tell it what type of language is being checked.
+
+                         This argument must only be set if the `lsp` argument
+                         is also set to a non-empty string.
+
   `language_callback`      A |String| or |Funcref| for a callback function
                          accepting a buffer number. A |String| should be
                          returned representing the name of the language being
                          checked.
 
-                         This argument must only be set if the `lsp` argument
-                         is also set to a non-empty string.
+                         This option can be used instead of `language` if a
+                         linter can check multiple languages.
 
   `aliases`                A |List| of aliases for the linter name.
 
@@ -2325,6 +2354,7 @@ ale#linter#Define(filetype, linter)                       *ale#linter#Define()*
   is not desired, the |ale#engine#EscapeCommandPart()| function can be used to
   replace those characters to avoid formatting issues.
 
+                                                  *ale-linter-loading-behavior*
                                                  *ale-linter-loading-behaviour*
 
   Linters for ALE will be loaded by searching |runtimepath| in the following
@@ -2337,6 +2367,21 @@ ale#linter#Define(filetype, linter)                       *ale#linter#Define()*
   containing `.` characters will be split into individual parts, and files
   will be loaded for each filetype between the `.` characters.
 
+  Linters can be defined from vimrc and other files as long as this function
+  is loaded first. For example, the following code will define a Hello World
+  linter in vimrc in Vim 8: >
+
+  " Plugins have to be loaded first.
+  " If you are using a plugin manager, run that first.
+  packloadall
+
+  call ale#linter#Define('vim', {
+  \   'name': 'echo-test',
+  \   'executable': 'echo',
+  \   'command': 'echo hello world',
+  \   'callback': {buffer, lines -> map(lines, '{"text": v:val, "lnum": 1}')},
+  \})
+<
 
 ale#linter#Get(filetype)                                     *ale#linter#Get()*
 
@@ -2350,6 +2395,13 @@ ale#linter#Get(filetype)                                     *ale#linter#Get()*
   Aliases may be defined in as described in |g:ale_linter_aliases|. Aliases
   are applied after dot-separated filetypes are broken up into their
   components.
+
+
+ale#linter#PreventLoading(filetype)               *ale#linter#PreventLoading()*
+
+  Given a `filetype`, prevent any more linters from being loaded from
+  |runtimepath| for that filetype. This function can be called from vimrc or
+  similar to prevent ALE from loading linters.
 
 
 ale#statusline#Count(buffer)                           *ale#statusline#Count()*

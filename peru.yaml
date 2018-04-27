@@ -116,7 +116,7 @@ git module zsh-syntax-highlighting:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: c087169e66b38d989d068d00e49ce09a897af8dd
+    rev: 4e3588273032dd78e427f45038dfde6ae1342c56
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -193,11 +193,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: c4a4a20b8d0f0e2b5965593207bb331e1ac19541
+    rev: 33310c5b24f1cb28c255141ca8d4cd00b9ccc18d
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: a334b5f551fa2472dbb32509a66337d8736d18cc
+    rev: d60b344fd04d322749354e96660735a23df461ba
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -227,7 +227,7 @@ git module vim-surround:
 # readline style insertion
 git module vim-rsi:
     url: https://github.com/tpope/vim-rsi.git
-    rev: c19aeb88592555d277af56d453ea8b43dc8266de
+    rev: 24dfc44639166f910ef9e3ca3902e02df77a342a
 
 # asynchronous build and test dispatcher
 git module vim-dispatch:
@@ -287,7 +287,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: f57920ad903105381b02502580be2bb11e4e6714
+    rev: 6eac4af7db54b2b736a2ede928b14456c0496711
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -630,7 +630,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 93a046a78f0ab20af54812f28784d555fda2d38d
+    rev: 6ab3fdc4d0566c09e9456c3bf1b7aa92747fd0aa
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -667,7 +667,7 @@ git module vim-polyglot:
 
 git module vim-sleuth:
     url: https://github.com/tpope/vim-sleuth
-    rev: 3b9df28c39f93c5ec8179d958900be1d0100b536
+    rev: e4e1ed403a8de5eb23369169f0f1d88e8d31fd8d
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
