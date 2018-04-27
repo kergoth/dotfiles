@@ -17,7 +17,6 @@ imports:
     fzf: .
 
     # Scripts
-    git-fixup: git-fixup
     appify: scripts
     atach: scripts
     cheat: scripts
@@ -32,6 +31,7 @@ imports:
     git-blame-colored: scripts
     git-cherry-tree: scripts
     git-extras: scripts
+    git-fixup: git
     git-imerge: scripts
     git-pull-requests: scripts
     git-remote-hg: scripts
