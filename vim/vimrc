@@ -207,9 +207,6 @@ set printencoding=latin1
 " }}}
 " Bundle setup {{{
 call pathogen#infect()
-
-" monokai-like colorscheme from Steve Losh
-let g:badwolf_darkgutter = 1
 " }}}
 " General settings {{{
 " Enable backup files
