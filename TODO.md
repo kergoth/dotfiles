@@ -7,6 +7,11 @@
   - .gist - [Pending](https://github.com/defunkt/gist/pull/189)
   - .mitmproxy
 
+## System Setup Scripts
+
+- In addition to install-{cabal,node,python,pipsi} and rustup, there's also
+  authentication for asciinema, gist, and hub to do on a new system
+
 ## Reference
 
 - [XDG Base Directory support](https://wiki.archlinux.org/index.php/XDG_Base_Directory_support)
