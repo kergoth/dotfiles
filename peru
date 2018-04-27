@@ -7,7 +7,7 @@ else
 fi
 
 if [ ! -e "$state_dir" ]; then
-    for dir in _override/*; do
+    for dir in _override/* */_override/*; do
         if [ -d "$dir" ]; then
             case "$dir" in
                 *.old)
