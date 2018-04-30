@@ -107,3 +107,6 @@ if [[ -n $SSH_CLIENT ]]; then
     zstyle ':prezto:module:terminal:window-title' format "$USER@$HOST:%s"
     zstyle ':prezto:module:terminal:tab-title' format "$HOST:%s"
 fi
+
+# Additional zbell exclusions
+zbell_ignore=($EDITOR $PAGER vim less more most ssh)
