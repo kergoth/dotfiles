@@ -5,6 +5,8 @@ Xft.hinting: 1
 Xft.antialias: 1
 Xft.rgba: rgb
 
+XTerm*bellIsUrgent: true
+
 Rxvt.scrollBar: false
 Rxvt.scrollTtyOutput: false
 Rxvt.scrollKey: false
@@ -26,4 +28,5 @@ URxvt.termName: rxvt-unicode
 URxvt*font: xft:Input Mono Narrow:size=14:style=Thin
 URxvt*boldFont: xft:Input Mono Narrow:size=14:style=Medium
 URxvt.visualBell: true
+URxvt.urgentOnBell: true
 URxvt.modifier: mod5
