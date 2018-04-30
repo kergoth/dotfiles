@@ -3,7 +3,9 @@ if [ -h ~/.config/git ]; then
 fi
 mkdir -p ~/.config/git
 for i in ignore config* git-remote-dropbox.json; do
-    link $i ~/.config/git/$i
+    if [ -e $i ]; then
+        link $i ~/.config/git/$i
+    fi
 done
 
 touch ~/.config/git/config.local
