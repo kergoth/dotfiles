@@ -1,4 +1,13 @@
 #!/bin/sh
+
 export DISPLAY="${DISPLAY:-:0.0}"
 xrdb -merge ${XDG_CONFIG_HOME:-~/.config}/X11/Xresources
+pkill -f i3-urgent-notify-wsl
+(
+    # Python script, ensure we can use pyenv python
+    export PYENV_ROOT="${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}"
+    PATH="$(dirname "$0"):$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
+    eval "$(pyenv init -)"
+    i3-urgent-notify-wsl >/dev/null 2>&1 <&1 &
+)
 exec ssh-agent i3
