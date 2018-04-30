@@ -2,10 +2,6 @@
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
-- Move to XDG paths where possible
-
-  - .gist - [Pending](https://github.com/defunkt/gist/pull/189)
-  - .mitmproxy
 
 ## System Setup Scripts
 
