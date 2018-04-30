@@ -12,6 +12,7 @@ imports:
     hub-completion: git/functions
     iterm2-zsh: zsh/plugins/iterm2
     base16-shell: base16
+    zsh-zbell: zsh/plugins/zbell
 
     # Multiple components (shell+vim)
     fzf: .
@@ -702,3 +703,9 @@ git module git-fixup:
         - functions/_git-fixup
     executable: scripts/git-fixup
     rev: 418f2070c4d0d79996ca60dc328780aca96f8dd7
+
+git module zsh-zbell:
+    url: https://gist.github.com/jpouellet/5278239
+    move:
+        zbell.sh: zbell.plugin.zsh
+    rev: e0b06247f3ecd6ca3de341c54ba8d85de7ef6566
