@@ -40,6 +40,7 @@ imports:
     git-wtf: scripts
     git: scripts
     gitvoodoo: scripts
+    i3-urgent-notify: scripts
     icdiff: scripts
     iln: scripts
     lesspipe: scripts
@@ -709,3 +710,10 @@ git module zsh-zbell:
     move:
         zbell.sh: zbell.plugin.zsh
     rev: e0b06247f3ecd6ca3de341c54ba8d85de7ef6566
+
+git module i3-urgent-notify:
+    url: https://gist.github.com/4206d6098b5c698bdf5462efff23e55c
+    move:
+        i3-urgent-notify.py: i3-urgent-notify
+    executable: i3-urgent-notify
+    rev: c880c690a023fe28ab1e74b801db5641dde8cb2f
