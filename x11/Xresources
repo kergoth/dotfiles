@@ -24,7 +24,7 @@ URxvt.depth: 32
 URxvt.background: rgba:0000/0000/0000/eddd
 URxvt.perl-ext: default,matcher
 URxvt.urlLauncher: firefox
-URxvt.termName: rxvt-unicode
+URxvt.termName: rxvt-unicode-256color
 URxvt*font: xft:Input Mono Narrow:size=14:style=Thin
 URxvt*boldFont: xft:Input Mono Narrow:size=14:style=Medium
 URxvt.visualBell: true
