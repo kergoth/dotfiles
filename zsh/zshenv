@@ -5,9 +5,6 @@ if [[ "$OSTYPE" == darwin* ]]; then
 else
     export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
 fi
-# Not ideal, but better than nothing on systems lacking proper handling of the
-# runtime dir, i.e. on WSL
-export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-$(mktemp -d /tmp/xdg-$USER.XXXXXX)}"
 
 if [[ "${PROFILE_STARTUP:-false}" == true ]]; then
     # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
