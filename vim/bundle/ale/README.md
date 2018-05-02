@@ -16,8 +16,18 @@ back to a filesystem.
 
 In other words, this plugin allows you to lint while you type.
 
-In addition to linting support, ALE offers some support for fixing code with
-formatting tools, and some Language Server Protocol and `tsserver` features.
+ALE offers support for fixing code with command line tools in a non-blocking
+manner with the `:ALEFix` feature, supporting tools in many languages, like
+`prettier`, `eslint`, `autopep8`, and more.
+
+ALE acts as a "language client" to support a variety of Language Server Protocol
+features, including:
+
+* Diagnostics (via Language Server Protocol linters)
+* Go To Definition (`:ALEGoToDefinition`)
+* Completion (`let g:ale_completion_enabled = 1`)
+* Finding references (`:ALEFindReferences`)
+* Hover information (`:ALEHover`)
 
 ## Table of Contents
 
@@ -238,7 +248,8 @@ See `:help ale-completion` for more information.
 ### 2.iv Go To Definition
 
 ALE supports jumping to the definition of words under your cursor with the
-`:ALEGoToDefinition` command using any enabled LSP linters and `tsserver`.
+`:ALEGoToDefinition` command using any enabled Language Server Protocol linters
+and `tsserver`.
 
 See `:help ale-go-to-definition` for more information.
 
@@ -247,7 +258,8 @@ See `:help ale-go-to-definition` for more information.
 ### 2.v Find References
 
 ALE supports finding references for words under your cursor with the
-`:ALEFindReferences` command using any enabled LSP linters and `tsserver`.
+`:ALEFindReferences` command using any enabled Language Server Protocol linters
+and `tsserver`.
 
 See `:help ale-find-references` for more information.
 
@@ -255,8 +267,9 @@ See `:help ale-find-references` for more information.
 
 ### 2.vi Hovering
 
-ALE supports "hover" information for printing brief information about symbols
-at the cursor taken from LSP linters with the `ALEHover` command.
+ALE supports "hover" information for printing brief information about symbols at
+the cursor taken from Language Server Protocol linters and `tsserver` with the
+`ALEHover` command.
 
 See `:help ale-hover` for more information.
 
@@ -524,17 +537,21 @@ Will give you:
 ### 5.viii. How can I execute some code when ALE starts or stops linting?
 
 ALE runs its own [autocmd](http://vimdoc.sourceforge.net/htmldoc/autocmd.html)
-events when a lint or fix cycle are started and stopped. These events can be
-used to call arbitrary functions before and after ALE stops linting.
+events when a lint or fix cycle are started and stopped. There is also an event
+that runs when a linter job has been successfully started. These events can be
+used to call arbitrary functions during these respective parts of the ALE's
+operation.
 
 ```vim
 augroup YourGroup
     autocmd!
-    autocmd User ALELintPre  call YourFunction()
-    autocmd User ALELintPost call YourFunction()
+    autocmd User ALELintPre    call YourFunction()
+    autocmd User ALELintPost   call YourFunction()
 
-    autocmd User ALEFixPre   call YourFunction()
-    autocmd User ALEFixPost  call YourFunction()
+    autocmd User ALEJobStarted call YourFunction()
+
+    autocmd User ALEFixPre     call YourFunction()
+    autocmd User ALEFixPost    call YourFunction()
 augroup END
 ```
 

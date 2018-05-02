@@ -195,7 +195,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 33310c5b24f1cb28c255141ca8d4cd00b9ccc18d
+    rev: 5a065e8b822fd127e90bb9c8217cb17f1aad2095
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -252,7 +252,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: dc5f9437fcaed9f6896235830246871fdf9c9ba8
+    rev: 88595ebbaa33485cd1a4474701bd0e5809643520
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -289,7 +289,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 6eac4af7db54b2b736a2ede928b14456c0496711
+    rev: 87504a528ee9ba8b26cbc0f496494f4418e848b9
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -632,7 +632,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 6ab3fdc4d0566c09e9456c3bf1b7aa92747fd0aa
+    rev: e59cd6b7c0ba91c6dcfac5a6ce411e23af7a6252
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -665,7 +665,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: cab6866e21341cab7419cdb4ae1fd18437d31bb0
+    rev: cdd0ef41a65bcc1db02caf34e5f2c93f576fb3c9
 
 git module vim-sleuth:
     url: https://github.com/tpope/vim-sleuth

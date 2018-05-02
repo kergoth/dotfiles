@@ -1,4 +1,4 @@
-# vim-polyglot [![Build Status][travis-img-url]][travis-url] [![Maintenance](https://img.shields.io/maintenance/yes/2017.svg?maxAge=2592000)]()
+# vim-polyglot [![Build Status][travis-img-url]][travis-url] [![Maintenance](https://img.shields.io/maintenance/yes/2018.svg?maxAge=2592000)]()
 
 [travis-img-url]: https://travis-ci.org/sheerun/vim-polyglot.svg
 [travis-url]: https://travis-ci.org/sheerun/vim-polyglot
@@ -78,6 +78,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [groovy](https://github.com/vim-scripts/groovy.vim) (syntax)
 - [haml](https://github.com/sheerun/vim-haml) (syntax, indent, compiler, ftplugin)
 - [handlebars](https://github.com/mustache/vim-mustache-handlebars) (syntax, indent, ftplugin)
+- [haproxy](https://github.com/CH-DanReif/haproxy.vim) (syntax)
 - [haskell](https://github.com/neovimhaskell/haskell-vim) (syntax, indent, ftplugin)
 - [haxe](https://github.com/yaymukund/vim-haxe) (syntax)
 - [html5](https://github.com/othree/html5.vim) (syntax, indent, autoload, ftplugin)
@@ -135,7 +136,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [stylus](https://github.com/wavded/vim-stylus) (syntax, indent, ftplugin)
 - [swift](https://github.com/keith/swift.vim) (syntax, indent, ftplugin)
 - [sxhkd](https://github.com/baskerville/vim-sxhkdrc) (syntax)
-- [systemd](https://github.com/kurayama/systemd-vim-syntax) (syntax)
+- [systemd](https://github.com/wgwoods/vim-systemd-syntax) (syntax)
 - [terraform](https://github.com/hashivim/vim-terraform) (syntax, indent, ftplugin)
 - [textile](https://github.com/timcharper/textile.vim) (syntax, ftplugin)
 - [thrift](https://github.com/solarnz/thrift.vim) (syntax)
@@ -169,13 +170,18 @@ Individual language packs can be disabled by setting `g:polyglot_disabled` as fo
 let g:polyglot_disabled = ['css']
 ```
 
-Note that disabiling languages won't make in general your vim startup any faster / slower (only for specific file type). Vim-polyglot is selection of language plugins that are loaded only on demand.
+Note that disabling languages won't make in general your vim startup any faster / slower (only for specific file type). Vim-polyglot is selection of language plugins that are loaded only on demand.
 
 ## Contributing
 
 Language packs are periodically updated using automated `build` script.
 
-Feel free to add your language, and send pull-request.
+Feel free to add your language, and send pull-request.  In your pull request, please include:
+1. How you chose the particular repo from which to pull support for this language.
+2. An updated https://github.com/sheerun/vim-polyglot/blob/master/build .
+3. If at all possible, absolutely nothing else (in particular, please don't run `build` and include that in your PR).
+
+The easier it is to validate that the new language won't do anything wacky, the faster it'll be merged.  In particular, languages that utilize global plugins (loaded for every filetype), or plugins with dangerous features (like `call` based on the contents of a file being edited), will never be merged, as they will be slow or dangerous, respectively.
 
 ## License
 
