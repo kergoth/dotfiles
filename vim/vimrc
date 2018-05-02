@@ -286,8 +286,8 @@ set shortmess=atIWo
 set cmdheight=2
 
 if has('folding')
-  " Start with most folds closed
-  set foldlevelstart=1
+  " Default with all folds open
+  set foldlevelstart=99
 
   " Default to indent based folding rather than manual
   set foldmethod=indent
