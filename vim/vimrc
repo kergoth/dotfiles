@@ -762,7 +762,7 @@ let g:vundle_default_git_proto = 'git'
 
 nmap <leader>G :GundoToggle<CR>
 
-let g:Modeliner_format = 'fenc= sts= sw= ts= et'
+let g:Modeliner_format = 'fenc= sts= sw= et'
 nmap <leader>m :Modeliner<CR>
 
 " Fzf binds
