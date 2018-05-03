@@ -707,7 +707,6 @@ augroup vimrc_filetypes
   " Set up folding
   au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
   au FileType man set fdl=99 fdm=manual
-  au FileType markdown set fdl=1
   au FileType taskpaper call taskpaper#fold_projects()
   au FileType gitcommit set fdm=syntax
 
