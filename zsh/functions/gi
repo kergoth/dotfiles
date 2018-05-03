@@ -1,0 +1,7 @@
+gi () {
+    arg1="$1"
+    shift >/dev/null 2>&1
+    git "${arg1#t}" "$@"
+}
+
+gi "$@"
