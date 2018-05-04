@@ -4,7 +4,6 @@
 
   - Swipe recent useful bits from some other folks tmux.conf
   - Handle xclip vs pbpaste/pbcopy, likely via wrapper script(s)
-  - Investigate issue with terminal title setting on unnamed tmux panes/windows
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations

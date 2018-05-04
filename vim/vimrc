@@ -619,11 +619,15 @@ set title
 " I hate 'Thanks for flying VIM'
 set titleold=
 
-" Allow setting window title for screen
+" Allow setting window title for screen/tmux
 if &term =~# '^screen'
   set t_ts=k
   set t_fs=\
   set notitle
+  if exists('$TMUX')
+    au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+    au VimLeave * call system('tmux set-window automatic-rename on')
+  endif
 endif
 
 " Nice window title
