@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$OSTYPE" in
+    darwin*)
+        exec /usr/bin/pbpaste "$@"
+        ;;
+    *)
+        if which xsel >/dev/null 2>&1; then
+            exec xsel --clipboard --output "$@"
+        else
+            exec xclip -selection clipboard -o "$@"
+        fi
+        ;;
+esac

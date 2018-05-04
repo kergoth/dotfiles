@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$OSTYPE" in
+    darwin*)
+        exec /usr/bin/pbcopy "$@"
+        ;;
+    *)
+        if which xsel >/dev/null 2>&1; then
+            exec xsel --clipboard --input "$@"
+        else
+            exec xclip -selection clipboard "$@"
+        fi
+        ;;
+esac
