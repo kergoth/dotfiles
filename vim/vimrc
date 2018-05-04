@@ -507,6 +507,7 @@ noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
+noremap <C-\>  <C-w>p
 
 " Easy indentation in normal/visual mode
 nnoremap <Tab> >>
