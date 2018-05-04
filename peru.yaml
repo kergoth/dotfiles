@@ -104,6 +104,7 @@ imports:
     vim-sleuth: vim/bundle/sleuth
     vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
+    vim-tmuxline: vim/bundle/tmuxline
     vim-vinegar: vim/bundle/vinegar
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
@@ -717,3 +718,7 @@ git module i3-urgent-notify:
         i3-urgent-notify.py: i3-urgent-notify
     executable: i3-urgent-notify
     rev: c880c690a023fe28ab1e74b801db5641dde8cb2f
+
+git module vim-tmuxline:
+    url: https://github.com/edkolev/tmuxline.vim
+    rev: 92c6688f075dcbba899c824387ae6620006b4609

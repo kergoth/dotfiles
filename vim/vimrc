@@ -753,6 +753,7 @@ let g:vimsyn_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+let g:tmuxline_powerline_separators = 0
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:airline#extensions#tabline#enabled = 1
