@@ -1,11 +1,10 @@
 # TODO
 
-- Switch back from dvtm+dtach to tmux
+- tmux
 
   - Swipe recent useful bits from some other folks tmux.conf
-  - Consider using a top tab bar, like the vim buffers display I'm using
-  - Switch the colors to align with base16-tomorrow-night
   - Handle xclip vs pbpaste/pbcopy, likely via wrapper script(s)
+  - Investigate issue with terminal title setting on unnamed tmux panes/windows
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
