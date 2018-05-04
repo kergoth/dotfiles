@@ -105,6 +105,7 @@ imports:
     vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
     vim-tmuxline: vim/bundle/tmuxline
+    vim-tmux-navigator: vim/bundle/tmux-navigator
     vim-vinegar: vim/bundle/vinegar
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
@@ -722,3 +723,7 @@ git module i3-urgent-notify:
 git module vim-tmuxline:
     url: https://github.com/edkolev/tmuxline.vim
     rev: 92c6688f075dcbba899c824387ae6620006b4609
+
+git module vim-tmux-navigator:
+    url: https://github.com/christoomey/vim-tmux-navigator
+    rev: d724094e7128acd7375cc758008f1e1688130877
