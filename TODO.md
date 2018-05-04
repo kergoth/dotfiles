@@ -8,7 +8,6 @@
     common case, possibly rebinding jk.
   - tmx: fix to switch to the currently selected window when spawning the new
     session bound to the base session
-  - Investigate vim/tmux integration bits, particularly window navigation
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
