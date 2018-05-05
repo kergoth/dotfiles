@@ -1,0 +1,13 @@
+#compdef tmx
+
+_tmx() {
+  local -a sessions
+  tmux_sessions=($(tmux ls -F '#{session_name}'))
+  _arguments '*:sessions:($tmux_sessions)'
+
+  return 0
+}
+
+_tmx
+
+# vim: ft=zsh sw=2 ts=2 et
