@@ -106,6 +106,7 @@ imports:
     vim-surround: vim/bundle/surround
     vim-tmuxline: vim/bundle/tmuxline
     vim-tmux-navigator: vim/bundle/tmux-navigator
+    vim-tmux-focus-events: vim/bundle/tmux-focus-events
     vim-vinegar: vim/bundle/vinegar
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
@@ -727,3 +728,7 @@ git module vim-tmuxline:
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
     rev: d724094e7128acd7375cc758008f1e1688130877
+
+git module vim-tmux-focus-events:
+    url: https://github.com/tmux-plugins/vim-tmux-focus-events
+    rev: 48595bdef7d25087111c86cd3c6ca34bc60909c7
