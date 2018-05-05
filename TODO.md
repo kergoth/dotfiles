@@ -5,8 +5,6 @@
   - Swipe recent useful bits from some other folks tmux.conf
   - Check into next/previous pane bindings rather than directional for the
     common case, possibly rebinding jk.
-  - tmx: fix to switch to the currently selected window when spawning the new
-    session bound to the base session
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations

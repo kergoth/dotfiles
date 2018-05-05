@@ -74,8 +74,26 @@ else
         # Create a new session (without attaching it) and link to base session
         # to share windows
         tmux new-session -d -t $base_session -s $session_id
+
+        # Update the current window of the new session to match the base
+        current_window="$(tmux list-windows -t $base_session | sed -n -e 's/\(.*\): [^(]*\* (.*/\1/p')"
+        if [ -n "$current_window" ]; then
+            tmux select-window -t "$session_id:$current_window"
+        fi
+
         # Attach to the new session
         tmux attach-session -t $session_id
+
+        # Update the current window of the base session, only if no other
+        # sessions exist
+        old_sessions=$(tmux ls 2>/dev/null | grep -v "^$session_id" | egrep "^$base_session-[0-9a-z]{4}:" | cut -f 1 -d:)
+        if [ -z "$old_sessions" ]; then
+            current_window="$(tmux list-windows -t $session_id 2>/dev/null | sed -n -e 's/\(.*\): [^(]*\* (.*/\1/p')"
+            if [ -n "$current_window" ]; then
+                tmux select-window -t "$base_session:$current_window" 2>/dev/null
+            fi
+        fi
+
         # When we detach from it, kill the session
         tmux kill-session -t $session_id
     fi
