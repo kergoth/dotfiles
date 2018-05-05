@@ -1,9 +1,5 @@
 # TODO
 
-- tmux
-
-  - Swipe recent useful bits from some other folks tmux.conf
-
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
 
