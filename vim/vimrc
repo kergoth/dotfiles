@@ -662,9 +662,9 @@ endif
 " GUI settings {{{
 if has('gui_running')
   if has('gui_macvim')
-    set guifont=InputMonoNarrow\ ExLight:h14
+    set guifont=InputMonoNarrow\ Thin:h14
   else
-    set guifont=InputMonoNarrow\ ExLight\ 14
+    set guifont=InputMonoNarrow\ Thin\ 14
   endif
 
   " Turn off toolbar and menu
