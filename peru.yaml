@@ -14,9 +14,6 @@ imports:
     base16-shell: base16
     zsh-zbell: zsh/plugins/zbell
 
-    # Multiple components (shell+vim)
-    fzf: .
-
     # Scripts
     appify: scripts
     atach: scripts
@@ -52,6 +49,7 @@ imports:
     pyenv-installer: scripts
     dev-goodies: scripts
     repo: scripts
+    rofi-tools: scripts
     rpm2cpio: scripts
     rustup: rust/scripts
     smem: scripts
@@ -114,6 +112,10 @@ imports:
     # Textual
     textual-succinct: textual/styles/Succinct
     textual-succinctlight: textual/styles/Succinct Light
+
+    # Other
+    fzf: .
+    base16-rofi: i3
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -732,3 +734,14 @@ git module vim-tmux-navigator:
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events
     rev: 48595bdef7d25087111c86cd3c6ca34bc60909c7
+
+git module rofi-tools:
+    url: https://github.com/okraits/rofi-tools
+    pick:
+        - rofi-power
+    rev: bdcd7d2ea685cdccacbfa2581a84023f0cfc5e83
+
+git module base16-rofi:
+    url: https://github.com/0xdec/base16-rofi
+    pick: themes
+    rev: edfd5063bee6bcd18ddd6e9d1c1f2a629d719508
