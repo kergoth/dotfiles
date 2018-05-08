@@ -51,6 +51,7 @@ if [[ -z "$LANG" ]]; then
 fi
 
 export ACKRC=.ackrc
+export GREP_COLORS='ms=30;43:mc=30;43:sl=:cx=:fn=1;34:ln=1;33:bn=32:se=36'
 
 export EMAIL='kergoth@gmail.com'
 export FULLNAME='Christopher Larson'
