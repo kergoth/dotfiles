@@ -336,11 +336,20 @@ if has('persistent_undo')
   set undofile
 endif
 
-" Use ack if available
-if executable('ack')
+" Search tools
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ $*
+  command! -bang -nargs=* Find
+    \ call fzf#vim#grep('rg --vimgrep --color=always ' . shellescape(<q-args>), 1, <bang>0)
+elseif executable('ag')
+  set grepprg=ag\ -H\ --nocolor\ --nogroup\ --column\ $*
+  command! -bang -nargs=* Find call fzf#vim#ag(<q-args>, 1, <bang>0)
+elseif executable('ack')
   set grepprg=ack\ -H\ --nocolor\ --nogroup\ --column\ $*
-  set grepformat=%f:%l:%c:%m
+  command! -bang -nargs=* Find
+    \ call fzf#vim#grep('ack -H --nocolor --nogroup --column ' . shellescape(<q-args>), 1, <bang>0)
 endif
+set grepformat=%f:%l:%c:%m
 
 " Ignore binary files matched with grep by default
 set grepformat+=%-OBinary\ file%.%#
@@ -471,12 +480,6 @@ runtime! ftplugin/man.vim
 " Change the current directory to the location of the
 " file being edited.
 command! -nargs=0 -complete=command Bcd lcd %:p:h
-
-autocmd VimEnter * command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                 <bang>0)
 " }}}
 " Abbreviations {{{
 iabbrev adn and
