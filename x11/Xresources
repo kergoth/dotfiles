@@ -25,8 +25,15 @@ URxvt.background: rgba:0000/0000/0000/eddd
 URxvt.perl-ext: default,matcher
 URxvt.urlLauncher: firefox
 URxvt.termName: rxvt-unicode-256color
-URxvt*font: xft:Input Mono Narrow:size=14:style=Thin
-URxvt*boldFont: xft:Input Mono Narrow:size=14:style=Medium
 URxvt.visualBell: true
 URxvt.urgentOnBell: true
 URxvt.modifier: mod5
+
+URxvt.font: xft:Input Mono Narrow:size=14:style=Thin, \
+            xft:DejaVu Sans Mono:size=14, \
+            xft:PowerlineSymbols:size=14, \
+            xft:Icons:size=14
+URxvt.boldFont: xft:Input Mono Narrow:bold:size=14:style=Medium, \
+                xft:DejaVu Sans:bold:size=14, \
+                xft:PowerlineSymbols:size=14, \
+                xft:Icons:size=14
