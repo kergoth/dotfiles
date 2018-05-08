@@ -29,11 +29,11 @@ URxvt.visualBell: true
 URxvt.urgentOnBell: true
 URxvt.modifier: mod5
 
-URxvt.font: xft:Input Mono Narrow:size=14:style=Thin, \
-            xft:DejaVu Sans Mono:size=14, \
-            xft:PowerlineSymbols:size=14, \
-            xft:Icons:size=14
-URxvt.boldFont: xft:Input Mono Narrow:bold:size=14:style=Medium, \
-                xft:DejaVu Sans:bold:size=14, \
-                xft:PowerlineSymbols:size=14, \
-                xft:Icons:size=14
+URxvt.font: xft:Input Mono Narrow:size=13:style=Thin:minspace=False, \
+            xft:DejaVu Sans Mono:size=13, \
+            xft:PowerlineSymbols:size=13, \
+            xft:Icons:size=13
+URxvt.boldFont: xft:Input Mono Narrow:bold:size=13:style=Medium:minspace=False, \
+                xft:DejaVu Sans:bold:size=13, \
+                xft:PowerlineSymbols:size=13, \
+                xft:Icons:size=13
