@@ -809,6 +809,7 @@ if exists('$SSH_CONNECTION')
 endif
 
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#whitespace#enabled = 0
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
