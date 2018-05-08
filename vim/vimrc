@@ -508,6 +508,7 @@ noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
 noremap <C-\>  <C-w>p
+nnoremap <silent> <C-S-\> :TmuxNavigatePrevious<cr>
 
 " Easy indentation in normal/visual mode
 nnoremap <Tab> >>
