@@ -81,6 +81,14 @@ fd () {
     fi
 }
 
+rg () {
+    if [[ -t 1 ]]; then
+        command rg -p "$@" | pager
+    else
+        command rg "$@"
+    fi
+}
+
 alias fdf="fd -t f ''"
 alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
 alias bbfdf="bbfd ''"

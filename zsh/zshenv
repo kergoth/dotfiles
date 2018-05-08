@@ -85,6 +85,7 @@ export RLWRAP_HOME=$XDG_DATA_HOME/rlwrap
 export TMUX_TMPDIR=$XDG_RUNTIME_DIR
 export XAUTHORITY=$XDG_RUNTIME_DIR/Xauthority
 export RANDFILE=$XDG_DATA_HOME/rng
+export RIPGREP_CONFIG_PATH=$XDG_CONFIG_HOME/ripgrep/rc
 
 for env in $DOTFILESDIR/*/env.zsh(N); do
     . "$env"
