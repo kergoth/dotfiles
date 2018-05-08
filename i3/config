@@ -22,10 +22,8 @@ bindsym $mod+Shift+q kill
 # start
 bindsym $mod+d exec rofi -modi window#ssh#drun#combi -combi-modi window#ssh#drun -show combi
 
-# There also is the (new) i3-dmenu-desktop which only displays applications
-# shipping a .desktop file. It is a wrapper around dmenu, so you need that
-# installed.
-bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
+# start .desktop applications
+bindsym $mod+Shift+d exec rofi -modi drun -show drun
 
 # focus the next urgent window
 bindsym $mod+u [urgent=latest] focus
