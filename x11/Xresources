@@ -37,3 +37,5 @@ URxvt.boldFont: xft:Input Mono Narrow:bold:size=13:style=Medium:minspace=False, 
                 xft:DejaVu Sans:bold:size=13, \
                 xft:PowerlineSymbols:size=13, \
                 xft:Icons:size=13
+
+st.font: Input Mono Narrow:size=13:style=Thin:size=13,DejaVu Sans Mono:size=13,PowerlineSymbols:size=13,Icons:size=13
