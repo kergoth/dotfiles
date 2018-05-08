@@ -49,8 +49,9 @@ pip3_install see
 brew install the_silver_searcher
 brew install gnu-sed
 brew install jq
-go get -u github.com/monochromegane/the_platinum_searcher/... # or brew install pt
 go get -u github.com/junegunn/fzf/... # or brew install fzf
+cargov fd-find
+cargov ripgrep
 go get -u github.com/edi9999/path-extractor/path-extractor
 gemv mdless # Markdown syntax-highlighting pager
 go get -u 4d63.com/tldr
