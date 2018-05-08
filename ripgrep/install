@@ -1,0 +1,1 @@
+link ripgrep.rc $XDG_CONFIG_HOME/ripgrep/rc
