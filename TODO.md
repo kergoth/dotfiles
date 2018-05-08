@@ -22,6 +22,7 @@
       $ i3-style ./base16-tomorrow.yaml -o ~/.config/i3/config -r
       ```
     - Alter i3/rofi.config to use the appropriate rofi theme
+    - `PYGMENTIZE_FORMATTER` for less syntax highlighting in `less/less.zsh`
 
 ## System Setup Scripts
 
