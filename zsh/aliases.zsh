@@ -49,7 +49,7 @@ else
     alias ack='ack --smart-case --pager=${PAGER:-less}'
 fi
 
-alias ag='ag -S --pager=${PAGER:-less}'
+alias ag='ag -S --pager=${PAGER:-less} --color-path "1;34" --color-line-number "1;33" --color-match "30;43"'
 
 pt () {
     if [[ -t 1 ]]; then
