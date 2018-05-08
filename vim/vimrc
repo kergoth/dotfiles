@@ -766,7 +766,6 @@ let g:bb_create_on_empty = 0
 let g:tmuxline_powerline_separators = 0
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
-let g:airline#extensions#tabline#enabled = 1
 let g:vundle_default_git_proto = 'git'
 " let g:EasyMotion_leader_key = '<Leader>'
 
@@ -808,6 +807,21 @@ let g:netrw_home = $XDG_DATA_HOME . '/vim'
 if exists('$SSH_CONNECTION')
   let g:vitality_always_assume_iterm = 1
 endif
+
+let g:airline#extensions#tabline#enabled = 1
+
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
 
 augroup vimrc_plugins
   au!
