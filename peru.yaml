@@ -115,6 +115,7 @@ imports:
 
     # Other
     fzf: .
+    base16-fzf: fzf
     base16-rofi: i3
 
 git module zsh-syntax-highlighting:
@@ -745,3 +746,10 @@ git module base16-rofi:
     url: https://github.com/0xdec/base16-rofi
     pick: themes
     rev: edfd5063bee6bcd18ddd6e9d1c1f2a629d719508
+
+git module base16-fzf:
+    url: https://github.com/nicodebo/base16-fzf
+    move:
+        bash: themes
+    pick: themes
+    rev: 043500fb949bcd2c5ab6ded5d93f94647e041cef
