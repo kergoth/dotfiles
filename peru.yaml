@@ -117,7 +117,7 @@ imports:
     fzf: .
     base16-fzf: fzf
     base16-rofi: i3
-    bat-syntax-bitbake: bat/syntax/Packages/BitBake
+    bat-syntax-bitbake: bat/syntax/BitBake
     bat-themes-base16: bat/themes
 
 git module zsh-syntax-highlighting:
