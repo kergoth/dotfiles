@@ -804,6 +804,8 @@ let g:tmuxline_powerline_separators = 0
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
 " let g:EasyMotion_leader_key = '<Leader>'
 
 nmap <leader>G :GundoToggle<CR>
