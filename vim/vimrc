@@ -156,6 +156,10 @@ let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
 let &runtimepath = $VIMDOTDIR . ',' . &runtimepath . ',' . $VIMDOTDIR . '/after'
 
+" Also include $DOTFILESDIR/*/vim/
+let g:dtvim = glob(expand('<sfile>:p:h:h') . '/*/vim/', 0, 1)
+let &runtimepath = $VIMDOTDIR . ',' . join(g:dtvim, ',') . ',' . &runtimepath . ',' . $VIMDOTDIR . '/after'
+
 if !exists('$XDG_DATA_HOME')
   let $XDG_DATA_HOME = $HOME . '/.local/share'
 endif
