@@ -418,6 +418,37 @@ else
   endtry
 endif
 " }}}
+" Vim language interfaces {{{
+
+" Let vim's python support load the pyenv python libraries
+if executable('pyenv')
+  try
+    let b:python2 = system('pyenv which python2.7')
+    if !empty(b:python2)
+      let &pythonhome = fnamemodify(substitute(b:python2, '\n', '', ''), ':h:h')
+      if has('macunix')
+        let &pythondll = &pythonhome . '/lib/libpython2.7.dylib'
+      else
+        let &pythondll = &pythonhome . '/lib/libpython2.7.so.1.0'
+      endif
+    endif
+  catch
+  endtry
+
+  try
+    let b:python3 = system('pyenv which python3.6')
+    if !empty(b:python3)
+      let &pythonthreehome = fnamemodify(substitute(b:python3, '\n', '', ''), ':h:h')
+      if has('macunix')
+        let &pythonthreedll = &pythonthreehome . '/lib/libpython3.6m.dylib'
+      else
+        let &pythonthreedll = &pythonthreehome . '/lib/libpython3.6m.so.1.0'
+      endif
+    endif
+  catch
+  endtry
+endif
+" }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1
 set formatoptions-=t
