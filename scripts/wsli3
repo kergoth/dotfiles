@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export TERMINAL=st
 export DISPLAY="${DISPLAY:-:0.0}"
 xrdb -merge ${XDG_CONFIG_HOME:-~/.config}/X11/Xresources
 pkill -f i3-urgent-notify-wsl
