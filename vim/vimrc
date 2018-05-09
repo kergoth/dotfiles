@@ -897,4 +897,4 @@ if !exists('$HOSTNAME') && executable('hostname')
 endif
 runtime vimrc.$HOSTNAME
 
-" vim:set sts=2 sw=2 et fdm=marker fdl=0:
+" vim: set sts=2 sw=2 et fdm=marker fdl=0:
