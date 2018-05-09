@@ -1,2 +1,10 @@
-link . ~/Library/Preferences/bat
+case "$OSTYPE" in
+    darwin*)
+        cfgpath=~/Library/Preferences
+        ;;
+    *)
+        cfgpath=$XDG_CONFIG_HOME
+        ;;
+esac
+link . $cfgpath/bat
 ln -sf base16-tomorrow-night.tmTheme themes/Default.tmTheme
