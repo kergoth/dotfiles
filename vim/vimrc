@@ -267,7 +267,7 @@ augroup vimrc
   endif
 
   " Expand the fold where the cursor lives
-  autocmd BufWinEnter * exe "normal! zO"
+  autocmd BufWinEnter * silent! exe "normal! zO"
 augroup END
 
 " Allow hiding buffers with modifications
