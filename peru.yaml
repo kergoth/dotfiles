@@ -117,6 +117,8 @@ imports:
     fzf: .
     base16-fzf: fzf
     base16-rofi: i3
+    bat-syntax-bitbake: bat/syntax/Packages/BitBake
+    bat-themes-base16: bat/themes
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -753,3 +755,13 @@ git module base16-fzf:
         bash: themes
     pick: themes
     rev: 043500fb949bcd2c5ab6ded5d93f94647e041cef
+
+git module bat-themes-base16:
+    url: https://github.com/chriskempson/base16-textmate
+    export: Themes
+    pick: 'Themes/*.tmTheme'
+    rev: 40c89a02c3ca54aba596ecf2d536950c78481458
+
+git module bat-syntax-bitbake:
+    url: https://github.com/Driim/bitbake-syntax
+    rev: 4eccb5417d33464505bb6276567e8c48491108c4

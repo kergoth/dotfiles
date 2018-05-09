@@ -1,0 +1,2 @@
+link . ~/Library/Preferences/bat
+ln -sf base16-tomorrow-night.tmTheme themes/Default.tmTheme
