@@ -14,7 +14,7 @@ fi
 mkdir -p $cfgpath/bat/syntax
 for i in syntax/*; do
     if [ -e "$i" ]; then
-        link $i $cfgpath/bat/$i
+        ln -sf $PWD/$i/*.sublime-syntax $cfgpath/bat/syntax/
     fi
 done
 
