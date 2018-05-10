@@ -11,4 +11,7 @@ if (( $+commands[pyenv] )); then
             . $i
         fi
     done
+
+    # The python shared libraries are needed by vim for its python support
+    export PYTHON_CONFIGURE_OPTS="--enable-shared"
 fi
