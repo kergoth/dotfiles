@@ -18,11 +18,14 @@ bindsym $mod+Return exec i3-sensible-terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 
-# start
-bindsym $mod+d exec rofi -modi window#ssh#drun#combi -combi-modi window#ssh#drun -show combi
+# launcher
+bindsym $mod+d exec rofi -modi ssh#drun#combi -combi-modi ssh#drun -show combi
 
-# start .desktop applications
-bindsym $mod+Shift+d exec rofi -modi drun -show drun
+# switch windows
+bindsym $mod+Shift+d exec rofi -modi window -show window
+
+# dmenu-run style launcher
+bindsym $mod+Control+d exec rofi -modi run -show run
 
 # focus the next urgent window
 bindsym $mod+u [urgent=latest] focus
