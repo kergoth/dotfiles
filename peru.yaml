@@ -90,6 +90,7 @@ imports:
     vim-bitbake: vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
+    vim-editorconfig: vim/bundle/editorconfig
     vim-dash: vim/bundle/dash
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
@@ -765,3 +766,7 @@ git module bat-themes-base16:
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
     rev: 4eccb5417d33464505bb6276567e8c48491108c4
+
+git module vim-editorconfig:
+    url: https://github.com/sgur/vim-editorconfig
+    rev: 46f506fd2c31331aada4969c50c2b140c990f003

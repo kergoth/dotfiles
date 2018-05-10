@@ -811,6 +811,7 @@ let g:vundle_default_git_proto = 'git'
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_smart_case = 1
 " let g:EasyMotion_leader_key = '<Leader>'
+let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
 nmap <leader>G :GundoToggle<CR>
 
