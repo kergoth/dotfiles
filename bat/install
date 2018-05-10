@@ -6,5 +6,30 @@ case "$OSTYPE" in
         cfgpath=$XDG_CONFIG_HOME
         ;;
 esac
-link . $cfgpath/bat
-ln -sf base16-tomorrow-night.tmTheme themes/Default.tmTheme
+
+if [ -h $cfgpath/bat ]; then
+    rm -f $cfgpath/bat
+fi
+
+mkdir -p $cfgpath/bat/syntax
+for i in syntax/*; do
+    if [ -e "$i" ]; then
+        link $i $cfgpath/bat/$i
+    fi
+done
+
+mkdir -p $cfgpath/bat/themes
+for i in themes/*.tmTheme; do
+    if [ -e "$i" ]; then
+        ln -sf $PWD/$i $cfgpath/bat/$i
+    fi
+done
+ln -sf base16-tomorrow-night.tmTheme $cfgpath/bat/themes/Default.tmTheme
+
+if [ ! -e $cfgpath/bat/syntax/Packages ]; then
+    git clone https://github.com/sublimehq/Packages $cfgpath/bat/syntax/Packages
+fi
+
+if which bat >/dev/null 2>&1; then
+    bat cache -i
+fi
