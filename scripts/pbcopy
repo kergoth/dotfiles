@@ -2,7 +2,11 @@
 
 case "$OSTYPE" in
     darwin*)
-        exec /usr/bin/pbcopy "$@"
+        if which reattach-to-user-namespace >/dev/null 2>&1; then
+            exec reattach-to-user-namespace /usr/bin/pbcopy "$@"
+        else
+            exec /usr/bin/pbcopy "$@"
+        fi
         ;;
     *)
         if which xsel >/dev/null 2>&1; then
