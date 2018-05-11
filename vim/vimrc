@@ -789,6 +789,10 @@ augroup vimrc_filetypes
 
   " Run gofmt against go files on write
   au BufWritePost *.go :silent Fmt
+
+  " Kill mostly pointless line number column when in dvtm copymode
+  au BufReadPost /tmp/dvtm-editor.* set nonumber
+  au BufReadPost /tmp/dvtm-editor.* hi def link RedundantWhitespace NONE
 augroup END
 
 " Highlight GNU gcc specific items
