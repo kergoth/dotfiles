@@ -629,6 +629,9 @@ nmap <leader>ve :e $MYVIMRC<CR>
 " Reload the vimrc
 nmap <leader>vr :so $MYVIMRC<CR>
 
+" Replace file contents with the selection
+vnoremap <leader>F "qy<CR>:<C-U>exe "normal! ggdG\"qP"<CR>
+
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
 function! s:MapNextFamily(map,cmd)
