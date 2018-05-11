@@ -1,3 +1,12 @@
-tmux_update_env() {
-    eval $(tmux-env)
+tmux_sessions () {
+    for s in $(tmux list-sessions -F '#{session_name}' 2>/dev/null); do
+        tmux list-panes -F '#{pane_tty} #{session_name}' -t "$s"
+    done | grep "$tty" | awk '{print $2}'
 }
+
+for session_name in $(tmux_sessions); do
+    eval "$(tmux-env -t "$session_name")"
+    if [ -e "$SSH_AUTH_SOCK" ]; then
+        break
+    fi
+done
