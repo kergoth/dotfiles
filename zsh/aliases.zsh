@@ -1,7 +1,11 @@
 alias import-global-history='fc -RI'
 
 - () {
-    cd -
+    if [[ -o auto_pushd ]]; then
+        popd
+    else
+        cd -
+    fi
 }
 
 alias which=which-command
