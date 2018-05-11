@@ -9,10 +9,22 @@ case "$OSTYPE" in
         fi
         ;;
     *)
-        if which xsel >/dev/null 2>&1; then
+        if which win32yank >/dev/null 2>&1; then
+            # WSL
+            exec win32yank -i
+        elif which clip.exe >/dev/null 2>&1; then
+            # WSL
+            exec clip.exe
+        elif which xsel >/dev/null 2>&1; then
             exec xsel --clipboard --input "$@"
-        else
+        elif which xclip >/dev/null 2>&1; then
             exec xclip -selection clipboard "$@"
+        elif which putclip >/dev/null 2>&1; then
+            # cygwin
+            exec putclip "$@"
+        else
+            echo >&2 "Error: no supported clipboard copy command available"
+            exit 1
         fi
         ;;
 esac
