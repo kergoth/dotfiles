@@ -901,5 +901,6 @@ if !exists('$HOSTNAME') && executable('hostname')
   let $HOSTNAME = substitute(system('hostname -s'), '\n', '', '')
 endif
 runtime vimrc.$HOSTNAME
+runtime vimrc.local
 
 " vim: set sts=2 sw=2 et fdm=marker fdl=0:
