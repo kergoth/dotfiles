@@ -58,6 +58,7 @@ imports:
     tagbak: scripts
     vitag: scripts
     wget-finder: scripts
+    wsl-open: scripts
 
     chneukirchen-tools: scripts
     1t: scripts
@@ -770,3 +771,10 @@ git module bat-syntax-bitbake:
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig
     rev: 46f506fd2c31331aada4969c50c2b140c990f003
+
+git module wsl-open:
+    url: https://github.com/4U6U57/wsl-open
+    move:
+        wsl-open.sh: wsl-open
+    pick: wsl-open
+    rev: 022e78db92f044cf5f129236d6240796f1aee6b1
