@@ -1,5 +1,9 @@
 alias import-global-history='fc -RI'
 
+- () {
+    cd -
+}
+
 alias which=which-command
 alias which-command='whence -avf'
 alias gdb='gdb -nh -x "$XDG_CONFIG_HOME"/gdb/init'
