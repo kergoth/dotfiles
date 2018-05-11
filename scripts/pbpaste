@@ -9,7 +9,13 @@ case "$OSTYPE" in
         fi
         ;;
     *)
-        if which xsel >/dev/null 2>&1; then
+        if which win32yank >/dev/null 2>&1; then
+            # WSL
+            exec win32yank -o
+        elif which paste.exe >/dev/null 2>&1; then
+            # WSL
+            exec paste.exe
+        elif which xsel >/dev/null 2>&1; then
             exec xsel --clipboard --output "$@"
         else
             exec xclip -selection clipboard -o "$@"
