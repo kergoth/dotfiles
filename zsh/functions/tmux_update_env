@@ -1,4 +1,5 @@
 tmux_sessions () {
+    local tty="$(tty)"
     for s in $(tmux list-sessions -F '#{session_name}' 2>/dev/null); do
         tmux list-panes -F '#{pane_tty} #{session_name}' -t "$s"
     done | grep "$tty" | awk '{print $2}'
@@ -6,7 +7,7 @@ tmux_sessions () {
 
 for session_name in $(tmux_sessions); do
     eval "$(tmux-env -t "$session_name")"
-    if [ -e "$SSH_AUTH_SOCK" ]; then
+    if [[ -e "$SSH_AUTH_SOCK" ]]; then
         break
     fi
 done
