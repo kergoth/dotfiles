@@ -1,4 +1,3 @@
-alias reload!='. ${ZDOTDIR:-$HOME}/.zshrc'
 alias import-global-history='fc -RI'
 
 alias which=which-command
