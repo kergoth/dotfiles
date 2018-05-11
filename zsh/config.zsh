@@ -1,4 +1,3 @@
-export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
 
 autoload -U $ZSH/functions/*(N:t)
