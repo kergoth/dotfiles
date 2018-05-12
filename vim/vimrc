@@ -790,10 +790,16 @@ augroup vimrc_filetypes
   " Run gofmt against go files on write
   au BufWritePost *.go :silent Fmt
 
-  " Kill mostly pointless line number column when in dvtm copymode
+  " Kill unnecessary bits when acting as dvtm copymode
   au BufReadPost /tmp/dvtm-editor.* set nonumber
   au BufReadPost /tmp/dvtm-editor.* hi def link RedundantWhitespace NONE
 augroup END
+
+" Kill unnecessary bits when acting as a pager
+function! LessInitFunc()
+  set nonumber
+  hi def link RedundantWhitespace NONE
+endfunction
 
 " Highlight GNU gcc specific items
 let g:c_gnu = 1
@@ -811,6 +817,7 @@ let g:vimsyn_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+
 let g:tmuxline_powerline_separators = 0
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
