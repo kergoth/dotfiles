@@ -39,14 +39,12 @@ if [[ "$1" == "ls" ]]; then
 fi
 
 gen_session_id() {
-    datetime=`date +%Y%m%d%H%M%S`
     if which shasum >/dev/null 2>&1; then
-        echo $datetime | shasum - | cut -c1-4
+        date +%Y%m%d%H%M%S | shasum - | cut -c1-4
     elif which sha1sum >/dev/null 2>&1; then
-        echo $datetime | sha1sum - | cut -c1-4
+        date +%Y%m%d%H%M%S | sha1sum - | cut -c1-4
     else
-        echo >&2 "No checksum tool found, aborting"
-        exit 3
+        date +%s | tail -c5
     fi
 }
 
