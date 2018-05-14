@@ -1,5 +1,8 @@
 # TODO
 
+- Switch the dvtm colors to align with base16-tomorrow-night
+- Consider aligning the dvtm statusline with airline/tmux
+
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
 
