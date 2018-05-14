@@ -13,6 +13,13 @@ tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")"
 trap 'rm -rfv "$tempdir"' EXIT INT TERM
 
 cd "$tempdir"
-git clone "https://aur.archlinux.org/$pkg.git"
-cd "$pkg"
+case "$pkg" in
+    *://*)
+        git clone "$pkg" && cd "$(basename "${pkg%.git}")"
+        ;;
+    *)
+        git clone "https://aur.archlinux.org/$pkg.git"
+        cd "$pkg"
+        ;;
+esac
 makepkg -sci
