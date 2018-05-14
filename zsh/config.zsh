@@ -12,6 +12,9 @@ REPORTTIME=5
 # Reduce mode change delay
 KEYTIMEOUT=1
 
+# Remove the hardcoded space after the right prompt
+ZLE_RPROMPT_INDENT=0
+
 setopt NO_BG_NICE # don't nice background tasks
 setopt NO_HUP
 setopt NO_LIST_BEEP
