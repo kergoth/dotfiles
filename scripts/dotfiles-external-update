@@ -48,4 +48,12 @@ git clone https://github.com/defunkt/gist && \
     rake standalone && \
     cp -f build/gist "$dotfilesdir/scripts/gist"
 
+if [ -e zsh/promptline.zsh ]; then
+    vim -c "PromptlineSnapshot! $PWD/zsh/promptline.zsh airline" -c quit >/dev/null 2>&1
+fi
+
+if [ -e tmux/tmuxline.conf ]; then
+    vim -c "TmuxlineSnapshot! $PWD/tmux/tmuxline.conf" -c quit >/dev/null 2>&1
+fi
+
 true
