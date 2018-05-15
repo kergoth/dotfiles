@@ -144,6 +144,8 @@
 	ru = rebase-upstream
 
 	# Run a topic branch interdiff between HEAD and upstream
+	tbdiff-out = tbdiff @{push}...HEAD
+	tbdiff-in = tbdiff @{u}...HEAD
 	tbdiff-upstream = tbdiff @{u}...HEAD
 	tbdiff-old-head = tbdiff HEAD@{1}...HEAD
 
