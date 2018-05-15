@@ -88,6 +88,12 @@ COMMANDS                                        *dispatch-commands*
 :FocusDispatch          Show the task that would run when calling |:Dispatch|
                         with no arguments.
 
+                                                *dispatch-:AbortDispatch*
+:AbortDispatch          Abort the most recent build.
+
+:AbortDispatch {command}
+                        Abort the most recent build of {command}.
+
                                                 *dispatch-:Start*
 :Start [options] {command}
                         Start a process in a new, focused window.  If
@@ -118,14 +124,14 @@ COMMANDS                                        *dispatch-commands*
 
 MAPS                                            *dispatch-maps*
 
-                                                *dispatch-d<CR>*
-d<CR>                   Equivalent to |:Dispatch|<CR>.
+                                                *dispatch-`<CR>*
+`<CR>                   Equivalent to |:Dispatch|<CR>.
 
-                                                *dispatch-d<Space>*
-d<Space>                Equivalent to |:Dispatch|<Space>.
+                                                *dispatch-`<Space>*
+`<Space>                Equivalent to |:Dispatch|<Space>.
 
-                                                *dispatch-d!*
-d!                      Equivalent to |:Dispatch!|.
+                                                *dispatch-`!*
+`!                      Equivalent to |:Dispatch!|.
 
                                                 *dispatch-m<CR>*
 m<CR>                   Equivalent to |:Make|<CR>.

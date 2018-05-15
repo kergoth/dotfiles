@@ -108,6 +108,30 @@ function! s:recall() abort
   return rev
 endfunction
 
+function! s:map(mode, lhs, rhs, ...) abort
+  let flags = (a:0 ? a:1 : '') . (a:rhs =~# '^<Plug>' ? '' : '<script>')
+  let head = a:lhs
+  let tail = ''
+  let keys = get(g:, a:mode.'remap', {})
+  if type(keys) != type({})
+    return
+  endif
+  while !empty(head)
+    if has_key(keys, head)
+      let head = keys[head]
+      if empty(head)
+        return
+      endif
+      break
+    endif
+    let tail = matchstr(head, '<[^<>]*>$\|.$') . tail
+    let head = substitute(head, '<[^<>]*>$\|.$', '', '')
+  endwhile
+  if flags !~# '<unique>' || empty(mapcheck(head.tail, a:mode))
+    exe a:mode.'map <buffer>' flags head.tail a:rhs
+  endif
+endfunction
+
 function! s:add_methods(namespace, method_names) abort
   for name in a:method_names
     let s:{a:namespace}_prototype[name] = s:function('s:'.a:namespace.'_'.name)
@@ -212,8 +236,8 @@ function! fugitive#detect(path) abort
       endtry
     endif
     if !exists('g:fugitive_no_maps')
-      cnoremap <buffer> <expr> <C-R><C-G> fnameescape(<SID>recall())
-      nnoremap <buffer> <silent> y<C-G> :call setreg(v:register, <SID>recall())<CR>
+      call s:map('c', '<C-R><C-G>', 'fnameescape(<SID>recall())', '<expr>')
+      call s:map('n', 'y<C-G>', ':call setreg(v:register, <SID>recall())<CR>', '<silent>')
     endif
     let buffer = fugitive#buffer()
     if expand('%:p') =~# '://'
@@ -1883,9 +1907,11 @@ endfunction
 
 " Section: Gmove, Gremove
 
-function! s:Move(force,destination) abort
+function! s:Move(force, rename, destination) abort
   if a:destination =~# '^/'
     let destination = a:destination[1:-1]
+  elseif a:rename
+    let destination = fnamemodify(s:buffer().path(), ':h') . '/' . a:destination
   else
     let destination = s:shellslash(fnamemodify(s:sub(a:destination,'[%#]%(:\w)*','\=expand(submatch(0))'),':p'))
     if destination[0:strlen(s:repo().tree())] ==# s:repo().tree('')
@@ -1906,7 +1932,7 @@ function! s:Move(force,destination) abort
     let destination = fnamemodify(s:sub(destination,'/$','').'/'.expand('%:t'),':.')
   endif
   call fugitive#reload_status()
-  if s:buffer().commit() == ''
+  if empty(s:buffer().commit())
     if isdirectory(destination)
       return 'keepalt edit '.s:fnameescape(destination)
     else
@@ -1918,12 +1944,21 @@ function! s:Move(force,destination) abort
 endfunction
 
 function! s:MoveComplete(A,L,P) abort
-  if a:A =~ '^/'
+  if a:A =~# '^/'
     return s:repo().superglob(a:A)
   else
     let matches = split(glob(a:A.'*'),"\n")
-    call map(matches,'v:val !~ "/$" && isdirectory(v:val) ? v:val."/" : v:val')
+    call map(matches,'v:val !~# "/$" && isdirectory(v:val) ? v:val."/" : v:val')
     return matches
+  endif
+endfunction
+
+function! s:RenameComplete(A,L,P) abort
+  if a:A =~# '^/'
+    return s:repo().superglob(a:A)
+  else
+    let pre = '/'. fnamemodify(s:buffer().path(), ':h') . '/'
+    return map(s:repo().superglob(pre.a:A), 'strpart(v:val, len(pre))')
   endif
 endfunction
 
@@ -1952,7 +1987,8 @@ endfunction
 augroup fugitive_remove
   autocmd!
   autocmd User Fugitive if s:buffer().commit() =~# '^0\=$' |
-        \ exe "command! -buffer -bar -bang -nargs=1 -complete=customlist,s:MoveComplete Gmove :execute s:Move(<bang>0,<q-args>)" |
+        \ exe "command! -buffer -bar -bang -nargs=1 -complete=customlist,s:MoveComplete Gmove :execute s:Move(<bang>0,0,<q-args>)" |
+        \ exe "command! -buffer -bar -bang -nargs=1 -complete=customlist,s:RenameComplete Grename :execute s:Move(<bang>0,1,<q-args>)" |
         \ exe "command! -buffer -bar -bang Gremove :execute s:Remove('edit',<bang>0)" |
         \ exe "command! -buffer -bar -bang Gdelete :execute s:Remove('bdelete',<bang>0)" |
         \ endif
@@ -2576,12 +2612,14 @@ function! s:BufReadIndex() abort
     xnoremap <buffer> <silent> - :<C-U>silent execute <SID>StageToggle(line("'<"),line("'>"))<CR>
     nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += 1<Bar>exe <SID>BufReadIndex()<CR>
     nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= 1<Bar>exe <SID>BufReadIndex()<CR>
-    nnoremap <buffer> <silent> C :<C-U>Gcommit<CR>
+    nnoremap <buffer> <silent> C :<C-U>echoerr 'Use cc instead'<CR>
     nnoremap <buffer> <silent> cA :<C-U>Gcommit --amend --reuse-message=HEAD<CR>
     nnoremap <buffer> <silent> ca :<C-U>Gcommit --amend<CR>
     nnoremap <buffer> <silent> cc :<C-U>Gcommit<CR>
-    nnoremap <buffer> <silent> cva :<C-U>Gcommit --amend --verbose<CR>
-    nnoremap <buffer> <silent> cvc :<C-U>Gcommit --verbose<CR>
+    nnoremap <buffer> <silent> ce :<C-U>Gcommit --amend --no-edit<CR>
+    nnoremap <buffer> <silent> cw :<C-U>Gcommit --amend --only<CR>
+    nnoremap <buffer> <silent> cva :<C-U>Gcommit -v --amend<CR>
+    nnoremap <buffer> <silent> cvc :<C-U>Gcommit -v<CR>
     nnoremap <buffer> <silent> D :<C-U>execute <SID>StageDiff('Gdiff')<CR>
     nnoremap <buffer> <silent> dd :<C-U>execute <SID>StageDiff('Gdiff')<CR>
     nnoremap <buffer> <silent> dh :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
@@ -2722,7 +2760,7 @@ function! s:BufReadObject() abort
           if getline('.') ==# 'parent '
             silent keepjumps delete_
           else
-            silent keepjumps s/\%(^parent\)\@<! /\rparent /ge
+            silent exe 'keepjumps s/\m\C\%(^parent\)\@<! /\rparent /e' . (&gdefault ? '' : 'g')
           endif
           keepjumps let lnum = search('^encoding \%(<unknown>\)\=$','W',line('.')+3)
           if lnum
@@ -2806,11 +2844,12 @@ augroup END
 nnoremap <SID>: :<C-U><C-R>=v:count ? v:count : ''<CR>
 function! s:GFInit(...) abort
   cnoremap <buffer> <expr> <Plug><cfile> fugitive#cfile()
-  if !exists('g:fugitive_no_maps') && empty(mapcheck('gf', 'n'))
-    nmap <buffer> <silent> gf          <SID>:find <Plug><cfile><CR>
-    nmap <buffer> <silent> <C-W>f     <SID>:sfind <Plug><cfile><CR>
-    nmap <buffer> <silent> <C-W><C-F> <SID>:sfind <Plug><cfile><CR>
-    nmap <buffer> <silent> <C-W>gf  <SID>:tabfind <Plug><cfile><CR>
+  if !exists('g:fugitive_no_maps')
+    call s:map('n', 'gf',          '<SID>:find <Plug><cfile><CR>', '<silent><unique>')
+    call s:map('n', '<C-W>f',     '<SID>:sfind <Plug><cfile><CR>', '<silent><unique>')
+    call s:map('n', '<C-W><C-F>', '<SID>:sfind <Plug><cfile><CR>', '<silent><unique>')
+    call s:map('n', '<C-W>gf',  '<SID>:tabfind <Plug><cfile><CR>', '<silent><unique>')
+    call s:map('c', '<C-R><C-F>', '<Plug><cfile>', '<silent><unique>')
   endif
 endfunction
 

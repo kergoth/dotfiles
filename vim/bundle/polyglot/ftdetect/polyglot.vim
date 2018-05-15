@@ -69,12 +69,36 @@ augroup filetypedetect
   autocmd BufNewFile,BufRead *.swift set filetype=swift
 augroup END
 
+" Fix for https://github.com/sheerun/vim-polyglot/issues/236#issuecomment-387984954
+if (!exists('g:graphql_javascript_tags'))
+  let g:graphql_javascript_tags = ['gql', 'graphql', 'Relay.QL']
+endif
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'apiblueprint') == -1
   augroup filetypedetect
   " apiblueprint, from apiblueprint.vim in sheerun/apiblueprint.vim
 autocmd BufReadPost,BufNewFile *.apib set filetype=apiblueprint
 autocmd FileType apiblueprint set syntax=apiblueprint
 autocmd FileType apiblueprint set makeprg=drafter\ -l\ %
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'applescript') == -1
+  augroup filetypedetect
+  " applescript, from applescript.vim in mityu/vim-applescript:_SYNTAX
+"Plugin Name: AppleScript
+"Author: mityu
+"Last Change: 04-Mar-2017.
+
+let s:cpo_save=&cpo
+set cpo&vim
+
+au BufNewFile,BufRead *.scpt setf applescript
+au BufNewFile,BufRead *.applescript setf applescript
+
+let &cpo=s:cpo_save
+unlet s:cpo_save
+
+" vim: foldmethod=marker
   augroup end
 endif
 
@@ -339,6 +363,13 @@ au BufReadPost *.s call s:gofiletype_post()
 au BufRead,BufNewFile *.tmpl set filetype=gohtmltmpl
 
 " vim: sw=2 ts=2 et
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'graphql') == -1
+  augroup filetypedetect
+  " graphql, from graphql.vim in jparise/vim-graphql
+au BufRead,BufNewFile *.graphql,*.graphqls,*.gql setfiletype graphql
   augroup end
 endif
 

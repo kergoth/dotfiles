@@ -44,7 +44,7 @@ If you need full functionality of any plugin, please use it directly with your p
 
 - [ansible](https://github.com/pearofducks/ansible-vim) (syntax, indent, ftplugin)
 - [apiblueprint](https://github.com/sheerun/apiblueprint.vim) (syntax)
-- [applescript](https://github.com/vim-scripts/applescript.vim) (syntax)
+- [applescript](https://github.com/mityu/vim-applescript) (syntax, indent)
 - [arduino](https://github.com/sudar/vim-arduino-syntax) (syntax, indent)
 - [asciidoc](https://github.com/asciidoc/vim-asciidoc) (syntax)
 - [autohotkey](https://github.com/hnamikaw/vim-autohotkey) (indent)
@@ -75,6 +75,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [gmpl](https://github.com/maelvalais/gmpl.vim) (syntax)
 - [gnuplot](https://github.com/vim-scripts/gnuplot-syntax-highlighting) (syntax)
 - [go](https://github.com/fatih/vim-go) (syntax, compiler, indent)
+- [graphql](https://github.com/jparise/vim-graphql) (syntax, indent, ftplugin)
 - [groovy](https://github.com/vim-scripts/groovy.vim) (syntax)
 - [haml](https://github.com/sheerun/vim-haml) (syntax, indent, compiler, ftplugin)
 - [handlebars](https://github.com/mustache/vim-mustache-handlebars) (syntax, indent, ftplugin)
