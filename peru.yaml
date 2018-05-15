@@ -98,6 +98,7 @@ imports:
     vim-fzf-extra: vim/bundle/fzf-extra
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
+    vim-promptline: vim/bundle/promptline
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
     vim-shfmt: vim/bundle/shfmt
@@ -778,3 +779,7 @@ git module wsl-open:
         wsl-open.sh: wsl-open
     pick: wsl-open
     rev: 022e78db92f044cf5f129236d6240796f1aee6b1
+
+git module vim-promptline:
+    url: https://github.com/edkolev/promptline.vim
+    rev: bcce033792fb1d5745f42fe65b963754c5353847
