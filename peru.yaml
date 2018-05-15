@@ -709,10 +709,10 @@ git module git-fixup:
     url: https://github.com/keis/git-fixup
     move:
         git-fixup: scripts/git-fixup
-        completion.zsh: functions/_git-fixup
+        completion.zsh: zsh-functions/_git-fixup
     pick:
         - scripts/git-fixup
-        - functions/_git-fixup
+        - zsh-functions/_git-fixup
     executable: scripts/git-fixup
     rev: 418f2070c4d0d79996ca60dc328780aca96f8dd7
 
