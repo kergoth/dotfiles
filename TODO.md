@@ -1,5 +1,8 @@
 # TODO
 
+- Add git push/pull status to promptline. The full git status slows thinngs
+  down too much, but I'd at least like to see if I'm ahead/behind upstream at
+  a glance.
 - Switch the dvtm colors to align with base16-tomorrow-night
 - Consider aligning the dvtm statusline with airline/tmux
 
