@@ -1,5 +1,7 @@
 # TODO
 
+- tmux: change the active window style to highlight with light blue the way i3
+  does, if possible, as improved emphasis
 - Add git push/pull status to promptline. The full git status slows thinngs
   down too much, but I'd at least like to see if I'm ahead/behind upstream at
   a glance.
