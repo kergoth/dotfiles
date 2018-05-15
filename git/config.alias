@@ -137,7 +137,7 @@
 	tracking-ref = rev-parse --symbolic-full-name @{u}
 	remote-ref = rev-parse --symbolic-full-name @{u}
 	in = !git fetch && git lg \"..@{u}\"
-	out = !git fetch && git lg \"@{u}..\"
+	out = !git fetch && git lg \"@{push}..\"
 
 	# Rebase the current branch on its upstream
 	rebase-upstream = rebase -i @{u}
