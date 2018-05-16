@@ -1,9 +1,18 @@
-if [ "$(uname -s)" = "Darwin" ]; then
-    SUBLIME_TEXT_3="$HOME/Library/Application Support/Sublime Text 3"
-else
-    SUBLIME_TEXT_3="$HOME/.config/sublime-text-3"
-fi
+case "$OSTYPE" in
+    darwin*)
+        SUBLIME_TEXT_3="$HOME/Library/Application Support/Sublime Text 3"
+        ;;
+    WSL)
+        SUBLIME_TEXT_3="$HOME/AppData/Roaming/Sublime Text 3"
+        ;;
+    *)
+        SUBLIME_TEXT_3="$HOME/.config/sublime-text-3"
+        ;;
+esac
 
-#link Preferences.sublime-settings "$SUBLIME_TEXT_3/Packages/User/Preferences.sublime-settings"
-#link Package\ Control.sublime-settings "$SUBLIME_TEXT_3/Packages/User/Package\ Control.sublime-settings"
-link . "$SUBLIME_TEXT_3/Packages/User"
+if [ "$OSTYPE" = WSL ]; then
+    echo "$PWD -> $SUBLIME_TEXT_3/Packages/User"
+    cp -a ./ "$SUBLIME_TEXT_3/Packages/User/"
+else
+    link . "$SUBLIME_TEXT_3/Packages/User"
+fi
