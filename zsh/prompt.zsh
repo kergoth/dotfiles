@@ -4,12 +4,12 @@
 promptline_lastcmd=
 
 promptline_begin() {
-	promptline_lastcmd=$1
+    promptline_lastcmd=$1
 }
 add-zsh-hook preexec promptline_begin
 
 promptline_last_code_fixup() {
-    if [ -z "$promptline_lastcmd" ]; then
+    if [[ -z "$promptline_lastcmd" ]]; then
         PROMPTLINE_LAST_EXIT_CODE=0
     else
         PROMPTLINE_LAST_EXIT_CODE=
