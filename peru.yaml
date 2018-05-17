@@ -191,7 +191,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: b14434bae0357dd47b33f940c3a02510c44fbbe2
+    rev: a5a75aca924a1f3a424709aadfa96ab56e300fa4
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -225,7 +225,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch.git
-    rev: 0971b4cb5c0865d3dd0316f725cd4236ff75b828
+    rev: e45a2409f1eaf272653817a2ebc09ba3462e7c7a
 
 # graph your Vim undo tree in style
 git module gundo:
@@ -338,7 +338,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 6388b89353a511d9e33a960ef36b28a1b11f8676
+    rev: 596f5a1d902e8a165203ed95aa49ff0d26ce1ad0
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -621,7 +621,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 3802e83e79c60dff97c2ca0db8ac8be9f26c2ccd
+    rev: d34b6ae0bce565ccb5dabeb29969017ab4907187
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -643,7 +643,7 @@ git module vim-startuptime:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 38c66d33fe8022803497c49239b06112ccbd0a83
+    rev: d8d13ef264340113b74a3310a203416f2916b2f5
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

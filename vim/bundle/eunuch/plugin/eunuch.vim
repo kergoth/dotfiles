@@ -129,6 +129,7 @@ function! s:SilentSudoCmd(editor) abort
     return ['silent', cmd . ' -A']
   else
     return [local_nvim ? 'silent' : '', cmd]
+  endif
 endfunction
 
 function! s:SudoSetup(file) abort
@@ -243,7 +244,7 @@ augroup eunuch
   autocmd BufWritePost * unlet! b:brand_new_file
   autocmd BufWritePre *
         \ if exists('b:brand_new_file') |
-        \   if getline(1) =~ '^#!' |
+        \   if getline(1) =~ '^#!/' |
         \     let b:chmod_post = '+x' |
         \   endif |
         \ endif

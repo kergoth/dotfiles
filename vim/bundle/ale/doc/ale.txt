@@ -1350,7 +1350,8 @@ g:ale_set_balloons                                         *g:ale_set_balloons*
                                                            *b:ale_set_balloons*
 
   Type: |Number|
-  Default: `has('balloon_eval')`
+  Default: `has('balloon_eval') && has('gui_running') ||`
+           `has('balloon_eval_term') && !has('gui_running')`
 
   When this option is set to `1`, balloon messages will be displayed for
   problems. Problems nearest to the cursor on the line the cursor is over will
@@ -1360,6 +1361,21 @@ g:ale_set_balloons                                         *g:ale_set_balloons*
   `b:ale_set_balloons` can be set to `0` to disable balloons for a buffer.
   Balloons cannot be enabled for a specific buffer when not initially enabled
   globally.
+
+
+g:ale_set_balloons_legacy_echo                 *g:ale_set_balloons_legacy_echo*
+                                               *b:ale_set_balloons_legacy_echo*
+  Type: |Number|
+  Default: undefined
+
+  If set to `1`, moving your mouse over documents in Vim will make ALE ask
+  `tsserver` or `LSP` servers for information about the symbol where the mouse
+  cursor is, and print that information into Vim's echo line. This is an
+  option for supporting older versions of Vim which do not properly support
+  balloons in an asynchronous manner.
+
+  If your version of Vim supports the |balloon_show| function, then this
+  option does nothing meaningful.
 
 
 g:ale_set_highlights                                     *g:ale_set_highlights*

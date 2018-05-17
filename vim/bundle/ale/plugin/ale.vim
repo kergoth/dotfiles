@@ -174,7 +174,10 @@ let g:ale_echo_cursor = get(g:, 'ale_echo_cursor', 1)
 let g:ale_echo_delay = get(g:, 'ale_echo_delay', 10)
 
 " This flag can be set to 0 to disable balloon support.
-call ale#Set('set_balloons', has('balloon_eval'))
+call ale#Set('set_balloons',
+\   has('balloon_eval') && has('gui_running') ||
+\   has('balloon_eval_term') && !has('gui_running')
+\)
 
 " A deprecated setting for ale#statusline#Status()
 " See :help ale#statusline#Count() for getting status reports.
@@ -275,7 +278,8 @@ command! -bar ALEGoToDefinitionInTab :call ale#definition#GoTo({'open_in_tab': 1
 command! -bar ALEFindReferences :call ale#references#Find()
 
 " Get information for the cursor.
-command! -bar ALEHover :call ale#hover#Show()
+command! -bar ALEHover :call ale#hover#Show(bufnr(''), getcurpos()[1],
+                                            \ getcurpos()[2], {})
 
 " <Plug> mappings for commands
 nnoremap <silent> <Plug>(ale_previous) :ALEPrevious<Return>
