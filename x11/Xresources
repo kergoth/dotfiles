@@ -39,3 +39,4 @@ URxvt.boldFont: xft:Input Mono Narrow:bold:size=13:style=Medium:minspace=False, 
                 xft:Icons:size=13
 
 st.font: Input Mono Narrow:size=13:style=Thin
+st.bellvolume: 0
