@@ -2,11 +2,13 @@
 
 - tmux: change the active window style to highlight with light blue the way i3
   does, if possible, as improved emphasis
-- Add git push/pull status to promptline. The full git status slows thinngs
+- zsh: alter promptline prompt to show user/host when SSH_CLIENT is set
+- zsh: add git push/pull status to promptline. The full git status slows things
   down too much, but I'd at least like to see if I'm ahead/behind upstream at
   a glance.
-- Switch the dvtm colors to align with base16-tomorrow-night
-- Consider aligning the dvtm statusline with airline/tmux
+- dvtm: switch the colors to align with base16-tomorrow-night
+- dvtm: align the dvtm statusline with airline/tmux, if possible. currently it
+  seems ansi color codes sent over the pipe don't get displayed
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
