@@ -262,6 +262,9 @@ augroup vimrc
   endfun
   au BufEnter * call <SID>QuickFixClose()
 
+  " Close preview window when the completion menu closes
+  autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
   " Unset paste on InsertLeave
   au InsertLeave * silent! set nopaste
 
