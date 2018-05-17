@@ -819,6 +819,22 @@ let g:bb_create_on_empty = 0
 " Plugin configuration {{{
 
 let g:tmuxline_powerline_separators = 0
+let g:promptline_powerline_symbols = 1
+
+" Align with the behaavior of tmuxline without powerline separators enabled
+let g:promptline_symbols = {
+    \ 'left'           : '',
+    \ 'right'          : '',
+    \ 'left_alt'       : '|',
+    \ 'right_alt'      : '|',
+    \ 'dir_sep'        : '/'}
+
+let g:promptline_preset = {
+        \'b' : [ promptline#slices#vcs_branch() ],
+        \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
+        \'y' : [ promptline#slices#jobs() ],
+        \'z' : [ promptline#slices#python_virtualenv() ],
+        \'warn' : [ promptline#slices#last_exit_code() ]}
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
