@@ -164,6 +164,7 @@ bindsym $mod+r mode "resize"
 bar {
   status_command i3status
   mode hide
+  modifier $mod
   colors {
     separator #969896
     background #1d1f21
