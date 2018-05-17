@@ -810,11 +810,19 @@ let g:c_gnu = 1
 " Allow posix elements like $() in /bin/sh scripts
 let g:is_posix = 1
 
-" Fold shell functions
-let g:sh_fold_enabled = 1
-
-" Enable syntax folding for vimL
-let g:vimsyn_folding = 1
+" Enable syntax folding
+let g:javaScript_fold = 1
+let g:markdown_folding = 1
+let g:perl_fold = 1
+let g:perl_fold_blocks = 1
+let g:php_folding = 1
+let g:r_syntax_folding = 1
+let g:ruby_fold = 1
+let g:rust_fold = 1
+let g:sh_fold_enabled = 7
+let g:tex_fold_enabled = 1
+let g:vimsyn_folding = 'af'
+let g:xml_syntax_folding = 1
 
 " Disable new bitbake file template
 let g:bb_create_on_empty = 0
