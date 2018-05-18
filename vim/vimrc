@@ -853,10 +853,12 @@ let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
 let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_smart_case = 1
-" Disable the candidates in Comment/String syntaxes.
 try
+  " Disable the candidates in Comment/String syntaxes.
   call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
+  call deoplete#custom#option({
+        \ 'auto_complete_delay': 200,
+        \ })
 catch
 endtry
 " let g:EasyMotion_leader_key = '<Leader>'
