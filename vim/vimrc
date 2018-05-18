@@ -457,7 +457,7 @@ if executable('pyenv')
 endif
 " }}}
 " Indentation and formatting {{{
-set formatoptions+=rn1
+set formatoptions+=rn1j
 set formatoptions-=t
 
 " 4 space indentation by default
