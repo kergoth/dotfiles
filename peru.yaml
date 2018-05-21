@@ -191,7 +191,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: a5a75aca924a1f3a424709aadfa96ab56e300fa4
+    rev: 2a4714335fa34f5a03c2918f172b1077b36daa79
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -206,7 +206,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline.git
-    rev: 02ffdfe0e55fa02a1b7c9528ac8846e365221482
+    rev: 315cf0deec5fd3f299444ae596f01e11175dccaf
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
@@ -245,7 +245,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: e052da08c84f34d105fb57d7e0ade203dee7278c
+    rev: 08ca562591388b929e1079534321d9baa40d9b0a
 
 # continuously updated session files
 git module vim-obsession:
@@ -583,7 +583,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 1e5bb959dcc11f515d8865ece27c5fc9dd3b2d39
+    rev: 865b3f34f8a45adb902b53298f3053514bacd243
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -621,7 +621,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: d34b6ae0bce565ccb5dabeb29969017ab4907187
+    rev: a4f85ae6ff4a70586b33cca2d9ebc2105f49e74e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -735,7 +735,7 @@ git module vim-tmuxline:
 
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
-    rev: d724094e7128acd7375cc758008f1e1688130877
+    rev: d030f75e2932605cfc1417ca2ebb3fd5192c2a8e
 
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events

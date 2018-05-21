@@ -201,7 +201,7 @@ function! dispatch#prepare_start(request, ...) abort
   let status = dispatch#status_var()
   let exec = 'echo $$ > ' . a:request.file . '.pid; '
   if executable('perl')
-    let exec .= 'perl -e "select(undef,undef,undef,0.1)" 2>/dev/null; '
+    let exec .= 'sync; perl -e "select(undef,undef,undef,0.1)" 2>/dev/null; '
   else
     let exec .= 'sleep 1; '
   endif
@@ -869,7 +869,7 @@ function! s:request(request) abort
     let i = len(s:makes)
     while i
       let i -= 1
-      if s:makes[i].handler . '/' . dispatch#pid(s:makes[i]) ==# a:request
+      if get(s:makes[i], 'handler') . '/' . dispatch#pid(s:makes[i]) ==# a:request
         return s:makes[i]
       endif
     endwhile
@@ -1068,7 +1068,7 @@ endfunction
 
 function! dispatch#quickfix_init() abort
   let request = s:request(w:quickfix_title)
-  if !has_key(request, 'handler')
+  if empty(request)
     return
   endif
   let w:quickfix_title = ':Dispatch ' . escape(request.expanded, '%#') .
