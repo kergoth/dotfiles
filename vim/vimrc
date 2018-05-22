@@ -852,7 +852,9 @@ let g:promptline_preset = {
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
-let g:deoplete#enable_at_startup = 1
+if v:version >= 800
+  let g:deoplete#enable_at_startup = 1
+endif
 try
   " Disable the candidates in Comment/String syntaxes.
   call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
