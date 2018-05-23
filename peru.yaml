@@ -128,7 +128,7 @@ git module zsh-syntax-highlighting:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 4e3588273032dd78e427f45038dfde6ae1342c56
+    rev: 35dd3b9ec4250cff9a72569c4765d792ab3da237
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -186,7 +186,7 @@ git module tabular:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
-    rev: 2a4714335fa34f5a03c2918f172b1077b36daa79
+    rev: 614e20bb6530890f5850e9eb0c8b27a5e7178fc6
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -205,7 +205,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes.git
-    rev: 4a9595d91eab89f919907b38ef9ae19344029a93
+    rev: 01d52d7dd8124c7079e9b09bdae403025ccb3cea
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -240,7 +240,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch.git
-    rev: 08ca562591388b929e1079534321d9baa40d9b0a
+    rev: 1846292dca6d07ef3700dc2d91a0d8634c580ea4
 
 # continuously updated session files
 git module vim-obsession:
@@ -254,7 +254,7 @@ git module vim-vinegar:
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste.git
-    rev: 90051e40ccc0f12f871ebc5a8305ba428c93027b
+    rev: c4c639f3cacd1b874ed6f5f196fac772e089c932
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
@@ -333,7 +333,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 596f5a1d902e8a165203ed95aa49ff0d26ce1ad0
+    rev: a0102da23a2bd97e0d18b868cf9841c2fe39fe9e
 
 git module atach:
     url: https://github.com/sorin-ionescu/atach
@@ -598,7 +598,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: b2b9bf3b8c72e83feec3c52be0bc06bd4ffa3c56
+    rev: d7c796719e6352666f7a9c94da9ddaed10f3217d
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -742,7 +742,7 @@ git module base16-fzf:
     move:
         bash: themes
     pick: themes
-    rev: 043500fb949bcd2c5ab6ded5d93f94647e041cef
+    rev: 044466b2529a71c7e55b2f7c057ef256f0e0f9ed
 
 git module bat-themes-base16:
     url: https://github.com/chriskempson/base16-textmate

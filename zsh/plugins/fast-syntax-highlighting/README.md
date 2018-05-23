@@ -31,6 +31,28 @@ Performance differencies can be observed at Asciinema recording, where `10 kB` f
 [![asciicast](https://asciinema.org/a/112367.png)](https://asciinema.org/a/112367)
 
 # Updates (2018)
+**2018-05-23**
+
+Assign colorizing now spans to variables defined by `typeset`, `export`, `local`, etc.:
+
+![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/typeset.png)
+
+**2018-05-22**
+
+Array assignments were still boring, so I throwed in bracked colorizing:
+
+![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/array-assign.png)
+
+**2018-05-22**
+
+Assignments are no more one-colour default-white. When used in assignment, highlighted are:
+
+- variables (outside strings),
+- strings (double-quoted and single-quoted),
+- math-mode (`val=$(( ... ))`).
+
+![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/assign.png)
+
 **2018-01-06**
 
 Math mode is highlighted – expressions `(( ... ))` and `$(( ... ))`. Empty variables are colorized as red.
