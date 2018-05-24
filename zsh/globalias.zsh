@@ -1,3 +1,6 @@
+# Automatically expand global aliases (all caps by convention) on space, which
+# eases usability with regard to building upon the commandline further
+
 globalias() {
    if [[ $LBUFFER =~ ' [A-Z0-9]+$' ]]; then
      zle _expand_alias
