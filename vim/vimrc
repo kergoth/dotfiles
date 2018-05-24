@@ -843,12 +843,15 @@ let g:promptline_symbols = {
     \ 'right_alt'      : '|',
     \ 'dir_sep'        : '/'}
 
-let g:promptline_preset = {
-        \'b' : [ promptline#slices#vcs_branch() ],
-        \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
-        \'y' : [ promptline#slices#jobs() ],
-        \'z' : [ promptline#slices#python_virtualenv() ],
-        \'warn' : [ promptline#slices#last_exit_code() ]}
+try
+  let g:promptline_preset = {
+          \'b' : [ promptline#slices#vcs_branch() ],
+          \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
+          \'y' : [ promptline#slices#jobs() ],
+          \'z' : [ promptline#slices#python_virtualenv() ],
+          \'warn' : [ promptline#slices#last_exit_code() ]}
+catch
+endtry
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
