@@ -1,0 +1,222 @@
+*dirvish.txt*	directory viewer
+
+==============================================================================
+OVERVIEW                                                             *dirvish*
+
+Dirvish is a minimalist directory viewer. It basically dumps a list of paths
+into a Vim buffer and provides some sugar to work with those paths. It works
+with built-in Vim mechanisms instead of inventing peripheral imitations.
+
+Because each Dirvish buffer-name is the literal directory path, you can |:cd|
+to the directory, >
+  :cd %
+create a new file, >
+  :edit %/foo.txt
+|expand()| the directory path, >
+  :let &titlestring = expand('%', 1)
+and use complementary plugin commands like |]f|/|[f| (unimpaired.vim).
+
+Because each dirvish buffer is just a list of paths, you can use normal Vim
+commands to |y|ank, |:read|, |gf|, etc. The built-in CTRL-W mappings also work
+as expected.
+
+It's totally fine to slice, dice, and smash any Dirvish buffer: it will never
+modify the filesystem. If you edit the buffer, Dirvish automatically disables
+|conceal| so you can see the full text.
+
+Dirvish is designed to work with built-in Vim concepts where possible. Tim
+Pope's plugins demonstrate this theme; more plugins should too. Re-use of
+concepts multiplies the utility of those concepts; conversely if a plugin does
+not reuse a concept, both that concept and the new one are made mutually less
+valuable--the sum is less than the parts--because the user must learn or
+choose from two slightly different things instead of one augmented system.
+
+==============================================================================
+MAPPINGS                                                    *dirvish-mappings*
+
+Global ~
+    <Plug>(dirvish_up)
+    -               Opens the current file directory or the [count]th parent.
+
+Buffer-local (filetype=dirvish) ~
+    g?              Shows this help.
+    [count]R        Reloads the current directory. (|:edit| works too.)
+                    Sets |g:dirvish_mode| to [count], if given.
+                    Mnemonic: higher [count] => more files.
+    <Plug>(dirvish_quit)
+    q               Quits; returns to the original file.
+    <Plug>(dirvish_up)
+    -               Opens the [count]th parent directory.
+    <Plug>(dirvish_split_up)
+                    Opens the [count]th parent in a split.
+    <Plug>(dirvish_vsplit_up)
+                    Opens the [count]th parent in a vertical split.
+    <2-LeftMouse>
+    i
+    <CR>            Opens file at cursor.
+    {Visual}I
+    {Visual}<CR>    Opens selected files.
+    o               Opens in horizontal split.
+    {Visual}O       Opens selected files in horizontal splits.
+    a               Opens in vertical split.
+    {Visual}A       Opens selected files in vertical splits.
+    K               Shows file info.
+    {Visual}K       Shows info about selected files.
+    p               Previews file at cursor.
+    CTRL-N          Previews the next file.
+    CTRL-P          Previews the previous file.
+    <Plug>(dirvish_arg)
+    x               Adds file to the local |arglist|.
+    {Visual}x       Adds selected files to the local |arglist|.
+    dax             Starts a new empty local |arglist|.
+    X               Inserts "|:Shdo|  {}" into the command-line.
+    !X              Inserts "|:Shdo|!  {}" into the command-line.
+    !.              New |:Shdo| window at the current Dirvish directory.
+
+Buffer-local (:Shdo) ~
+                                                    *Z!* *dirvish-Z!*
+    Z!              Saves and executes a |:Shdo| shell-script. Closes the
+                    window if the script succeeded.
+
+==============================================================================
+COMMANDS                                                    *dirvish-commands*
+
+:Dirvish                                                    *dirvish-:Dirvish*
+    Opens the |current-directory|.
+
+:Dirvish {path}
+    Opens the directory at {path}, or its parent if {path} is a file.
+    To open the directory of the current file: >
+        :Dirvish %
+<
+:[range]Shdo[!] {cmd}                               *:Shdo* *dirvish-:Shdo*
+    Generates a shell script with {cmd} applied to [range] and the respective
+    filepath inserted wherever {} appears in {cmd}. The window-local directory
+    is initialized to the current Dirvish directory. If bang ! is given the
+    |arglist| is used instead of [range].
+
+    For example, to rename a list of visual-selected files: >
+        :'<,'>Shdo mv {} {}-copy.txt
+<    Run the script with |Z!| or ":!%".
+
+==============================================================================
+FUNCTIONS                                                  *dirvish-functions*
+
+[range]dirvish#open({cmd}, {bg})
+    Performs {cmd} ("edit", "vsplit", "split", "tabedit") on the files in
+    [range]. {bg} must be 0 (open files in current window) or 1 (open files in
+    the "background").
+
+==============================================================================
+OPTIONS                                                      *dirvish-options*
+
+g:dirvish_mode = 1                                  *g:dirvish_mode*
+    Controls which files are listed and how they are presented.
+    1:        'suffixes' and 'wildignore' determine sorting and visibility.
+    2:        Shows all files, in the order returned by |glob()|.
+    ":{cmd}": Ex-command |:execute|d after listing files.
+
+    Mnemonic: higher number => more files.
+
+g:dirvish_relative_paths = 0                        *g:dirvish_relative_paths*
+    0:        List full (absolute) paths in the Dirvish buffer.
+    1:        List paths relative to the |current-directory|.
+              (Recommended for Vim 7.3 because it lacks |conceal|).
+
+|BufNew| fires the first time a directory is opened (and not yet loaded).
+Note: Use expand("<afile>") to get the new buffer name (not "%").
+
+|FileType| fires after Dirvish has loaded: all mappings, options, and content
+can be overridden by handling that event. Example: >
+
+    augroup dirvish_config
+      autocmd!
+
+      " Map `t` to open in new tab.
+      autocmd FileType dirvish
+        \  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+        \ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+
+      " Map `gr` to reload.
+      autocmd FileType dirvish nnoremap <silent><buffer>
+        \ gr :<C-U>Dirvish %<CR>
+
+      " Map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+      autocmd FileType dirvish nnoremap <silent><buffer>
+        \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>
+    augroup END
+<
+
+==============================================================================
+FAQ                                                              *dirvish-faq*
+
+How do I control where Dirvish opens splits? ~
+Set the Vim options 'splitbelow' and 'splitright'.
+
+How do I group (sort) directories/folders? ~
+Sort folders at the top: >
+    :sort ,^.*[\/],
+Sort folders at the bottom: >
+    :sort ,^.*[^\/],
+To make this automatic, set |g:dirvish_mode|: >
+    let g:dirvish_mode = ':sort ,^.*[\/],'
+
+How do I filter? ~
+Use |:global| to delete lines matching any filter: >
+    :g/foo/d
+To make this automatic, set |g:dirvish_mode|: >
+    let g:dirvish_mode = ':silent keeppatterns g/foo/d _'
+
+How do I hide "hidden" (dot-prefixed) files? ~
+Use |:global| to delete the paths with dot-prefixed files: >
+    :g@\v/\.[^\/]+/?$@d
+To "toggle", just reload.
+To make this automatic, set |g:dirvish_mode|: >
+    let g:dirvish_mode = ':silent keeppatterns g@\v/\.[^\/]+/?$@d _'
+You could also use a FileType autocmd: >
+    autocmd FileType dirvish silent keeppatterns g@\v/\.[^\/]+/?$@d _
+To un-hide, just undo. To hide again, reload.
+
+How do I disable a Dirvish mapping? ~
+As noted in |dirvish-options|, the way to customize Dirvish is to handle its
+FileType event. For example if you have a global <C-p> mapping and you don't
+want Dirvish to "shadow" it, :unmap the Dirvish buffer-local mapping: >
+
+    augroup dirvish_config
+      autocmd!
+      autocmd FileType dirvish silent! unmap <buffer> <C-p>
+    augroup END
+
+You could use ":mapclear <buffer>" to delete ALL of the mappings.
+
+Why does the "swap file" dialog appear if another Vim is viewing the same ~
+directory? ~
+To avoid this, |:noswapfile| is required (Vim 7.4.213).
+https://github.com/vim/vim/tree/v7.4.213
+
+How can I delete files, rename files, or perform other commands?~
+Since ":'<,'>call delete(getline('.'))" is a bit much to type, Dirvish
+provides the ":Shdo" command. |dirvish-:Shdo|
+
+Just for fun, here's the old-school way: >
+    qqq
+    :g/^/let @Q='echo '.shellescape(getline('.')).' '.shellescape(getline('.'))."\n"
+    :exe 'e' tempname().'.sh'
+    :put q|w|!%
+<
+Why does Dirvish report "invalid directory" for a path that contains unusual ~
+characters (e.g. brackets "[]")? ~
+Check your 'isfname' setting. On Windows (where filepaths may contain
+backslashes "\") |fnamemodify()| may produce nonsense if 'isfname' does not
+contain the aforementioned unusual characters.
+
+How to override the netrw :Explore, :Sexplore, :Vexplore commands? ~
+Put this in your vimrc: >
+
+    let g:loaded_netrwPlugin = 1
+    command! -nargs=? -complete=dir Explore Dirvish <args>
+    command! -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
+    command! -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
+
+==============================================================================
+ vim:tw=78:ts=4:et:ft=help:norl:

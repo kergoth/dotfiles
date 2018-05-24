@@ -107,7 +107,7 @@ imports:
     vim-tmuxline: vim/bundle/tmuxline
     vim-tmux-navigator: vim/bundle/tmux-navigator
     vim-tmux-focus-events: vim/bundle/tmux-focus-events
-    vim-vinegar: vim/bundle/vinegar
+    vim-dirvish: vim/bundle/dirvish
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
 
@@ -246,10 +246,9 @@ git module vim-obsession:
     url: https://github.com/tpope/vim-obsession
     rev: d2f78ce466186839b1838c7e85115f96d051c7a5
 
-# netrw improvements
-git module vim-vinegar:
-    url: https://github.com/tpope/vim-vinegar
-    rev: b06c3df86bf581e12dab39ac94ddd5ad976b16ca
+git module vim-dirvish:
+    url: https://github.com/justinmk/vim-dirvish
+    rev: f63732839230cb9c27ef52dcc31e009137314bf2
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
