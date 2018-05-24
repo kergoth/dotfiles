@@ -92,17 +92,6 @@ alias fdf="fd -t f ''"
 alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
 alias bbfdf="bbfd ''"
 
-if (( $+commands[fzf] )); then
-    _z_fzf () {
-        if [[ $# -eq 0 ]]; then
-            cd "$(_z -l 2>&1 | fzf +s --tac | sed 's/^[0-9,.]* *//')"
-        else
-            _z "$@"
-        fi
-    }
-    alias z=_z_fzf
-fi
-
 if (( $+commands[vim] )); then
     alias vi=vim
 fi

@@ -1,6 +1,5 @@
 imports:
     # Zsh
-    z: zsh/plugins/z
     zsh-autosuggestions: zsh/plugins/autosuggestions
     zsh-bd: zsh/plugins/bd
     zsh-completions: zsh/plugins/completions
@@ -23,6 +22,7 @@ imports:
     diff-so-fancy: scripts
     dtrx: scripts
     dustin-bindir: scripts
+    fasd: scripts
     flu: scripts
     gnu2bsd: scripts
     git-blame-colored: scripts
@@ -358,9 +358,10 @@ git module planter:
     executable: planter
     rev: 9b39c1bff8a4e2b49bb62889d7d51f1cb45f0b9d
 
-git module z:
-    url: https://github.com/rupa/z
-    rev: ea5ec7834398ee2244de26953b3d1ef785d3f942
+git module fasd:
+    url: https://github.com/clvv/fasd
+    pick: fasd
+    rev: 90b531a5daaa545c74c7d98974b54cbdb92659fc
 
 git module ssh-copy-rsub:
     url: https://github.com/henrikpersson/rsub
