@@ -770,6 +770,12 @@ augroup vimrc_filetypes
   au FileType taskpaper call taskpaper#fold_projects()
   au FileType gitcommit set fdm=syntax
 
+  " Default omnifunc to syntaxcomplete
+  autocmd FileType *
+        \ if &omnifunc == "" |
+        \   setlocal omnifunc=syntaxcomplete#Complete |
+        \ endif
+
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
   " Adjust the match to exclude the first column.
