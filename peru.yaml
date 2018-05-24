@@ -81,7 +81,6 @@ imports:
     fugitive: vim/bundle/fugitive
     gundo: vim/bundle/gundo
     securemodelines: vim/bundle/securemodelines
-    tabular: vim/bundle/tabular
     taskpaper: vim/bundle/taskpaper
     vim-abolish: vim/bundle/abolish
     vim-airline: vim/bundle/airline
@@ -95,6 +94,7 @@ imports:
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: vim/bundle/fzf-extra
+    vim-lion: vim/bundle/lion
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
     vim-promptline: vim/bundle/promptline
@@ -179,10 +179,9 @@ git module securemodelines:
     url: https://github.com/ciaranm/securemodelines.git
     rev: 9751f29699186a47743ff6c06e689f483058d77a
 
-# text filtering and alignment
-git module tabular:
-    url: https://github.com/godlygeek/tabular.git
-    rev: 00e1e7fcdbc6d753e0bc8043e0d2546fa81bf367
+git module vim-lion:
+    url: https://github.com/tommcdo/vim-lion
+    rev: 75306ac1922952ca1a401aee43ddbb304029926d
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive.git
