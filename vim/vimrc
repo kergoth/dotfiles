@@ -471,9 +471,6 @@ set autoindent
 " Copy structure of existing line's indent when adding a new line
 set copyindent
 
-" When changing a line's indent, preserve as much of the structure as possible
-set preserveindent
-
 " Wrap at column 78
 set textwidth=78
 " }}}
