@@ -738,8 +738,6 @@ end
 " File type detection {{{
 augroup vimrc_filetype_detect
   au!
-  au BufNewFile,BufRead *.taskpaper setf taskpaper
-  au BufNewFile,BufRead *.md set ft=markdown
   au BufNewFile,BufRead TODO,BUGS,README set ft=text
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
   au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
