@@ -1,6 +1,7 @@
 export CLICOLOR=true
 
 autoload -U $ZSH/functions/*(N:t)
+autoload -U $DOTFILESDIR/*/zsh-functions/*(N:t)
 
 HISTFILE=$XDG_DATA_HOME/zsh/history
 HISTSIZE=10000
