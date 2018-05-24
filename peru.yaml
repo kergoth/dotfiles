@@ -103,9 +103,6 @@ imports:
     vim-sleuth: vim/bundle/sleuth
     vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
-    vim-tmuxline: vim/bundle/tmuxline
-    vim-tmux-navigator: vim/bundle/tmux-navigator
-    vim-tmux-focus-events: vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
@@ -519,11 +516,6 @@ git module git-remote-hg:
     pick: git-remote-hg
     rev: 628d26c1a50502fcb23bc0695327b65aa979e96d
 
-git module tmx:
-    url: https://github.com/brandur/tmux-extra
-    pick: tmx
-    rev: 77dda64f3de581d0545213fd7994af0578428e89
-
 git module vitag:
     url: https://github.com/ttscoff/vitag
     pick: vitag
@@ -712,18 +704,6 @@ git module i3-urgent-notify:
         i3-urgent-notify.py: i3-urgent-notify
     executable: i3-urgent-notify
     rev: c880c690a023fe28ab1e74b801db5641dde8cb2f
-
-git module vim-tmuxline:
-    url: https://github.com/edkolev/tmuxline.vim
-    rev: 92c6688f075dcbba899c824387ae6620006b4609
-
-git module vim-tmux-navigator:
-    url: https://github.com/christoomey/vim-tmux-navigator
-    rev: d030f75e2932605cfc1417ca2ebb3fd5192c2a8e
-
-git module vim-tmux-focus-events:
-    url: https://github.com/tmux-plugins/vim-tmux-focus-events
-    rev: 48595bdef7d25087111c86cd3c6ca34bc60909c7
 
 git module rofi-tools:
     url: https://github.com/okraits/rofi-tools

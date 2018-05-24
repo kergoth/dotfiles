@@ -1,2 +1,0 @@
-link tmux.conf ${XDG_CONFIG_HOME:-~/.config}/tmux/config
-link tmuxline.conf ${XDG_CONFIG_HOME:-~/.config}/tmux/tmuxline.conf

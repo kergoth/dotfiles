@@ -549,7 +549,6 @@ noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
 noremap <C-\>  <C-w>p
-nnoremap <silent> <C-S-\> :TmuxNavigatePrevious<cr>
 
 " Easy indentation in normal/visual mode
 nnoremap <Tab> >>
@@ -833,8 +832,6 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
-
-let g:tmuxline_powerline_separators = 0
 let g:promptline_powerline_symbols = 1
 
 " Align with the behaavior of tmuxline without powerline separators enabled
