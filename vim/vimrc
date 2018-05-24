@@ -767,7 +767,8 @@ augroup vimrc_filetypes
   au FileType taskpaper call taskpaper#fold_projects()
   au FileType gitcommit set fdm=syntax
 
-  " Default omnifunc to syntaxcomplete
+  " Set up completion
+  autocmd FileType vim let b:vcm_tab_complete = 'vim'
   autocmd FileType *
         \ if &omnifunc == "" |
         \   setlocal omnifunc=syntaxcomplete#Complete |
@@ -858,18 +859,6 @@ endtry
 let g:shfmt_extra_args = '-i 4 -ci -bn -d'
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
-if v:version >= 800
-  let g:deoplete#enable_at_startup = 1
-endif
-try
-  " Disable the candidates in Comment/String syntaxes.
-  call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
-  call deoplete#custom#option({
-        \ 'auto_complete_delay': 200,
-        \ })
-catch
-endtry
-" let g:EasyMotion_leader_key = '<Leader>'
 let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
 nmap <leader>G :GundoToggle<CR>

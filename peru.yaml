@@ -108,6 +108,7 @@ imports:
     vim-tmux-navigator: vim/bundle/tmux-navigator
     vim-tmux-focus-events: vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
+    vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
     damian-conway-vim: vim/bundle/damian-conway
 
@@ -767,3 +768,7 @@ git module wsl-open:
 git module vim-promptline:
     url: https://github.com/edkolev/promptline.vim
     rev: bcce033792fb1d5745f42fe65b963754c5353847
+
+git module vim-VimCompletesMe:
+    url: https://github.com/ajh17/VimCompletesMe
+    rev: 5e63ad2045aba7e20a13482b3230cbccd978e277
