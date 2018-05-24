@@ -1,0 +1,10 @@
+#!/bin/bash
+# Interactively select file search results to edit
+#   Uses rg to search, fzf to select, vim to edit
+
+set -euo pipefail
+
+PATH="$(dirname "$0"):$PATH"
+FZF_RG_OPTS="$FZF_DEFAULT_OPTS ${FZF_RG_OPTS:-"-m --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"}"
+
+rg --vimgrep --color always "$@" | eval fzf --ansi $FZF_RG_OPTS | vimerrors
