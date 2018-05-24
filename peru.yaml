@@ -79,7 +79,6 @@ imports:
     base16-vim: vim/bundle/base16
     Modeliner: vim/bundle/Modeliner
     fugitive: vim/bundle/fugitive
-    gundo: vim/bundle/gundo
     securemodelines: vim/bundle/securemodelines
     taskpaper: vim/bundle/taskpaper
     vim-abolish: vim/bundle/abolish
@@ -110,6 +109,7 @@ imports:
     vim-dirvish: vim/bundle/dirvish
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
+    vim-undotree: vim/bundle/undotree
     damian-conway-vim: vim/bundle/damian-conway
 
     # Textual
@@ -222,10 +222,9 @@ git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
     rev: e45a2409f1eaf272653817a2ebc09ba3462e7c7a
 
-# graph your Vim undo tree in style
-git module gundo:
-    url: https://github.com/sjl/gundo.vim
-    rev: 46c443ee9d5854320eb965a1fdee781ba83a070e
+git module vim-undotree:
+    url: https://github.com/mbbill/undotree
+    rev: cdbb9022b8972d3e156b8d60af33bf795625b058
 
 # quoting/parenthesizing made simple
 git module vim-surround:

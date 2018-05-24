@@ -861,7 +861,8 @@ let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
 let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
-nmap <leader>G :GundoToggle<CR>
+let g:undotree_WindowLayout = 2
+nmap <leader>u :UndotreeToggle<CR>
 
 let g:Modeliner_format = 'fenc= sts= sw= et'
 nmap <leader>m :Modeliner<CR>
