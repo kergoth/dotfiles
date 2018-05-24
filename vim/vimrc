@@ -349,14 +349,14 @@ endif
 " Search tools
 if executable('rg')
   set grepprg=rg\ --vimgrep\ $*
-  command! -bang -nargs=* Find
+  command! -bang -nargs=* Search
     \ call fzf#vim#grep('rg --vimgrep --color=always ' . shellescape(<q-args>), 1, <bang>0)
 elseif executable('ag')
   set grepprg=ag\ -H\ --nocolor\ --nogroup\ --column\ $*
-  command! -bang -nargs=* Find call fzf#vim#ag(<q-args>, 1, <bang>0)
+  command! -bang -nargs=* Search call fzf#vim#ag(<q-args>, 1, <bang>0)
 elseif executable('ack')
   set grepprg=ack\ -H\ --nocolor\ --nogroup\ --column\ $*
-  command! -bang -nargs=* Find
+  command! -bang -nargs=* Search
     \ call fzf#vim#grep('ack -H --nocolor --nogroup --column ' . shellescape(<q-args>), 1, <bang>0)
 endif
 set grepformat=%f:%l:%c:%m
