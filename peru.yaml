@@ -527,10 +527,12 @@ git module checkbashisms:
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
     rev: 911459645f76c7fb977520beddec2d552117e7b2
+    pick: scripts/base16-tomorrow-night.sh
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
     rev: 7959654e57c05511134e55bda20e9a6bcb8fcfb0
+    pick: colors/base16-tomorrow-night.vim
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -693,20 +695,22 @@ git module rofi-tools:
 
 git module base16-rofi:
     url: https://github.com/0xdec/base16-rofi
-    pick: themes
+    pick:
+        - themes/base16-tomorrow-night.config
+        - themes/base16-tomorrow-night.rasi
     rev: edfd5063bee6bcd18ddd6e9d1c1f2a629d719508
 
 git module base16-fzf:
     url: https://github.com/nicodebo/base16-fzf
     move:
         bash: themes
-    pick: themes
+    pick: themes/base16-tomorrow-night.config
     rev: 044466b2529a71c7e55b2f7c057ef256f0e0f9ed
 
 git module bat-themes-base16:
     url: https://github.com/chriskempson/base16-textmate
     export: Themes
-    pick: 'Themes/*.tmTheme'
+    pick: Themes/base16-tomorrow-night.tmTheme
     rev: 40c89a02c3ca54aba596ecf2d536950c78481458
 
 git module bat-syntax-bitbake:
