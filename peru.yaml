@@ -90,7 +90,6 @@ imports:
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
     vim-editorconfig: vim/bundle/editorconfig
-    vim-dash: vim/bundle/dash
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: vim/bundle/fzf-extra
@@ -572,10 +571,6 @@ git module tagbak:
         - tagbak
         - bookmark
     rev: 86144aaece6086a39da4c226c6b9b3c8867a4a8f
-
-git module vim-dash:
-    url: https://github.com/rizzatti/dash.vim
-    rev: 25b17d9488454a1fcdbb2cbe829a23226f95e3c2
 
 git module git-tbdiff:
     url: https://github.com/trast/tbdiff
