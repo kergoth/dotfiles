@@ -96,6 +96,10 @@ if (( $+commands[vim] )); then
     alias vi=vim
 fi
 
+if [[ -n $VIM_SERVER ]]; then
+    alias vim="vim --servername $VIM_SERVER --remote"
+fi
+
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if (( $+commands[dfc] )); then
