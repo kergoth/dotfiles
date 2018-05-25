@@ -3,9 +3,9 @@
 
 set -u
 
-get_sdcard_device () {
-    diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' | \
-        grep -v '/dev/disk0$' | while read -r disk; do
+get_sdcard_device() {
+    diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' \
+        | grep -v '/dev/disk0$' | while read -r disk; do
             if [ "$(diskutil info "$disk" | sed -n 's# *Device / Media Name: *##p')" = "SD Card Reader" ]; then
                 echo "$disk"
                 return 0
@@ -14,7 +14,7 @@ get_sdcard_device () {
     return 1
 }
 
-should_continue () {
+should_continue() {
     while true; do
         printf '%s [Yn]? ' "${1:-Continue}"
         read -r input
