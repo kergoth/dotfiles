@@ -869,25 +869,6 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
-let g:promptline_powerline_symbols = 1
-
-" Align with the behaavior of tmuxline without powerline separators enabled
-let g:promptline_symbols = {
-    \ 'left'           : '',
-    \ 'right'          : '',
-    \ 'left_alt'       : '|',
-    \ 'right_alt'      : '|',
-    \ 'dir_sep'        : '/'}
-
-try
-  let g:promptline_preset = {
-          \'b' : [ promptline#slices#vcs_branch() ],
-          \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
-          \'y' : [ promptline#slices#jobs() ],
-          \'z' : [ promptline#slices#python_virtualenv() ],
-          \'warn' : [ promptline#slices#last_exit_code() ]}
-catch
-endtry
 let g:autoformat_on_save = 0
 let g:formatdef_shfmt = '"shfmt -ci -bn -i ".(&expandtab ? shiftwidth() : "0")'
 " I prefer to use these on an as-needed basis
