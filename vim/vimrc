@@ -869,6 +869,8 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+let g:sneak#label = 1
+let g:sneak#use_ic_scs = 1
 let g:autoformat_on_save = 0
 let g:formatdef_shfmt = '"shfmt -ci -bn -i ".(&expandtab ? shiftwidth() : "0")'
 " I prefer to use these on an as-needed basis

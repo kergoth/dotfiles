@@ -98,6 +98,7 @@ imports:
     vim-polyglot: vim/bundle/polyglot
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
+    vim-sneak: vim/bundle/sneak
     vim-surround: vim/bundle/surround
     vim-dirvish: vim/bundle/dirvish
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
@@ -735,3 +736,7 @@ git module vim-VimCompletesMe:
 git module vim-autoformat:
     url: https://github.com/Chiel92/vim-autoformat
     rev: 7d199cd124ce3f7c26f0edbe89ffa32449e2efb4
+
+git module vim-sneak:
+    url: https://github.com/justinmk/vim-sneak
+    rev: 943e08445de3179fbb53e1b951df34998501be28
