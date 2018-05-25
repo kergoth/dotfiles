@@ -99,7 +99,6 @@ imports:
     vim-polyglot: vim/bundle/polyglot
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
-    vim-shfmt: vim/bundle/shfmt
     vim-surround: vim/bundle/surround
     vim-dirvish: vim/bundle/dirvish
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
@@ -651,10 +650,6 @@ git module vim-polyglot:
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
     rev: 0f693bff572689ad52b781c012dad4926cd924f6
-
-git module vim-shfmt:
-    url: https://github.com/z0mbix/vim-shfmt
-    rev: 59f51f24d0ca00570ba0eb69b8e9797a3c8f7c13
 
 git module textual-succinctlight:
     url: https://github.com/TempSpas/SuccinctLight
