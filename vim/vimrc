@@ -885,6 +885,26 @@ let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
 
+let g:promptline_powerline_symbols = 1
+
+" Align with the behavior of tmuxline without powerline separators enabled
+let g:promptline_symbols = {
+    \ 'left'           : '',
+    \ 'right'          : '',
+    \ 'left_alt'       : '|',
+    \ 'right_alt'      : '|',
+    \ 'dir_sep'        : '/'}
+
+try
+  let g:promptline_preset = {
+          \'b' : [ promptline#slices#vcs_branch() ],
+          \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
+          \'y' : [ promptline#slices#jobs() ],
+          \'z' : [ promptline#slices#python_virtualenv() ],
+          \'warn' : [ promptline#slices#last_exit_code() ]}
+catch
+endtry
+
 let g:Modeliner_format = 'fenc= sts= sw= et'
 nmap <leader>m :Modeliner<CR>
 
