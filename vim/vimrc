@@ -941,26 +941,6 @@ augroup vimrc_plugins
   " When airline is showing our mode, we don't need vim to do so
   au VimEnter * if exists('g:loaded_airline') | set noshowmode | endif
 augroup end
-
-if has('macunix')
-  " Dash.app integration
-  let g:dash_map = {
-        \ 'python'     : 'python3',
-        \ 'lua'        : 'lua',
-        \ 'sh'         : 'man',
-        \ }
-
-  " Map K to look up the current word in dash for supported filetypes
-  augroup DashMap
-    au!
-    for key in keys(g:dash_map)
-      exe 'au FileType ' . key . ' nnoremap <buffer> K :Dash<cr>'
-    endfor
-  augroup END
-
-  " Disable python-mode's pydoc integration, since we're using Dash
-  let g:pymode_doc = 0
-endif
 " }}}
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
