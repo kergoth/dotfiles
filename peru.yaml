@@ -122,7 +122,7 @@ git module zsh-syntax-highlighting:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 35dd3b9ec4250cff9a72569c4765d792ab3da237
+    rev: a1224b869aa6290b4d395ade2887e82c08a9329f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -526,12 +526,12 @@ git module checkbashisms:
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: 911459645f76c7fb977520beddec2d552117e7b2
+    rev: 67b2286b261e9b72590add2c7b3c36ce28675687
     pick: scripts/base16-tomorrow-night.sh
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: 7959654e57c05511134e55bda20e9a6bcb8fcfb0
+    rev: fcce6bce6a2f4b14eea7ea388031c0aa65e4b67d
     pick: colors/base16-tomorrow-night.vim
 
 git module gitvoodoo:
@@ -711,7 +711,7 @@ git module bat-themes-base16:
     url: https://github.com/chriskempson/base16-textmate
     export: Themes
     pick: Themes/base16-tomorrow-night.tmTheme
-    rev: 40c89a02c3ca54aba596ecf2d536950c78481458
+    rev: cab66929126a14acafe37cf9c24c9e700716cd5a
 
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
