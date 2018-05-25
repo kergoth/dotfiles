@@ -101,7 +101,6 @@ imports:
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
     vim-shfmt: vim/bundle/shfmt
-    vim-sleuth: vim/bundle/sleuth
     vim-startuptime: vim/bundle/startuptime
     vim-surround: vim/bundle/surround
     vim-dirvish: vim/bundle/dirvish
@@ -654,10 +653,6 @@ git module git-blame-colored:
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
     rev: a26134de3c09f9725667e14e7073a701bcff4e19
-
-git module vim-sleuth:
-    url: https://github.com/tpope/vim-sleuth
-    rev: e4e1ed403a8de5eb23369169f0f1d88e8d31fd8d
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
