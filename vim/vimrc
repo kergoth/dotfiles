@@ -682,6 +682,18 @@ if &term =~# '^screen'
   set notitle
 endif
 
+" Adjust cursor in insert mode (bar) and replace mode (underline)
+let &t_SI = "\e[6 q"
+let &t_SR = "\e[4 q"
+let &t_EI = "\e[2 q"
+
+augroup vimrc_cursor
+au!
+  " Reset cursor on start and exit
+  autocmd VimEnter * silent !printf "\e[0 q"
+  autocmd VimLeave * silent !printf "\e[0 q"
+augroup END
+
 " Nice window title
 if has('gui_running') || &title
   set titlestring=%f    " Path.
