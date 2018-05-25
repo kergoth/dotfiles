@@ -85,6 +85,7 @@ imports:
     vim-airline: vim/bundle/airline
     vim-airline-themes: vim/bundle/airline-themes
     vim-ale: vim/bundle/ale
+    vim-autoformat: vim/bundle/autoformat
     vim-bitbake: vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
@@ -751,3 +752,7 @@ git module vim-promptline:
 git module vim-VimCompletesMe:
     url: https://github.com/ajh17/VimCompletesMe
     rev: 5e63ad2045aba7e20a13482b3230cbccd978e277
+
+git module vim-autoformat:
+    url: https://github.com/Chiel92/vim-autoformat
+    rev: 7d199cd124ce3f7c26f0edbe89ffa32449e2efb4

@@ -771,6 +771,9 @@ augroup vimrc_filetypes
         \   setlocal omnifunc=syntaxcomplete#Complete |
         \ endif
 
+  " Auto-format on save for appropriate types
+  au BufWrite go,sh :Autoformat
+
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
   " Adjust the match to exclude the first column.
@@ -851,7 +854,12 @@ try
           \'warn' : [ promptline#slices#last_exit_code() ]}
 catch
 endtry
-let g:shfmt_extra_args = '-i 4 -ci -bn -d'
+" I prefer to use these on an as-needed basis
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+let g:formatdef_shfmt = '"shfmt -ci -bn -i ".(&expandtab ? shiftwidth() : "0")'
+
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
 let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
