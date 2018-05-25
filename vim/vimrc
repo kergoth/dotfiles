@@ -694,6 +694,27 @@ au!
   autocmd VimLeave * silent !printf "\e[0 q"
 augroup END
 
+" Gui Cursor: {{{
+set gcr=a:block
+
+" mode aware cursors
+set gcr+=o:hor50-Cursor
+set gcr+=n:Cursor
+set gcr+=i-ci-sm:InsertCursor-ver25
+set gcr+=r-cr:ReplaceCursor-hor20
+set gcr+=c:CommandCursor
+set gcr+=v-ve:VisualCursor
+
+set gcr+=a:blinkon0
+
+" Cursor Colors: {{{3
+call Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
+call Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
+call Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
+call Base16hi("CommandCursor", g:base16_gui02, g:base16_gui0D, g:base16_cterm02, g:base16_cterm0D, "", "")
+" }}}
+" }}}
+
 " Nice window title
 if has('gui_running') || &title
   set titlestring=%f    " Path.
