@@ -772,7 +772,12 @@ augroup vimrc_filetypes
         \ endif
 
   " Auto-format on save for appropriate types
-  au BufWrite go,sh :Autoformat
+  let g:autoformat_on_save=0
+  au FileType go,sh let g:autoformat_on_save=1
+  au BufWrite *
+        \ if g:autoformat_on_save == 1 |
+        \   Autoformat |
+        \ endif
 
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
