@@ -772,7 +772,6 @@ augroup vimrc_filetypes
         \ endif
 
   " Auto-format on save for appropriate types
-  let g:autoformat_on_save=0
   au FileType go,sh let g:autoformat_on_save=1
   au BufWrite *
         \ if g:autoformat_on_save == 1 |
@@ -801,9 +800,6 @@ augroup vimrc_filetypes
 
   " Show diff when editing git commit messages
   au FileType gitcommit DiffGitCached
-
-  " Run gofmt against go files on write
-  au BufWritePost *.go :silent Fmt
 
   " Kill unnecessary bits when acting as dvtm copymode
   au BufReadPost /tmp/dvtm-editor.* set nonumber
@@ -859,11 +855,12 @@ try
           \'warn' : [ promptline#slices#last_exit_code() ]}
 catch
 endtry
+let g:autoformat_on_save = 0
+let g:formatdef_shfmt = '"shfmt -ci -bn -i ".(&expandtab ? shiftwidth() : "0")'
 " I prefer to use these on an as-needed basis
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
-let g:formatdef_shfmt = '"shfmt -ci -bn -i ".(&expandtab ? shiftwidth() : "0")'
 
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
