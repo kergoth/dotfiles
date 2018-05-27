@@ -11,7 +11,7 @@ while getopts vh opt; do
         v)
             verbose=1
             ;;
-        \?|h)
+        \? | h)
             echo >&2 "${0##*/} [-v] [PATH..]"
             exit 2
             ;;
