@@ -684,7 +684,10 @@ endif
 
 " Adjust cursor in insert mode (bar) and replace mode (underline)
 let &t_SI = "\e[6 q"
-let &t_SR = "\e[4 q"
+try
+  let &t_SR = "\e[4 q"
+catch
+endtry
 let &t_EI = "\e[2 q"
 
 augroup vimrc_cursor
@@ -708,10 +711,10 @@ set gcr+=v-ve:VisualCursor
 set gcr+=a:blinkon0
 
 " Cursor Colors: {{{3
-call Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
-call Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
-call Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
-call Base16hi("CommandCursor", g:base16_gui02, g:base16_gui0D, g:base16_cterm02, g:base16_cterm0D, "", "")
+call g:Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
+call g:Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
+call g:Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
+call g:Base16hi("CommandCursor", g:base16_gui02, g:base16_gui0D, g:base16_cterm02, g:base16_cterm0D, "", "")
 " }}}
 " }}}
 
