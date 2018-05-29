@@ -95,10 +95,18 @@
 # Pushing over https is a pain due to password prompts, unless you set up a
 # .netrc, which is a security issue.
 [url "git@github.com:"]
-	insteadOf = https://github.com/
 	pushInsteadOf = https://github.com/
 	pushInsteadOf = http://github.com/
 	pushInsteadOf = git://github.com/
+
+[url "https://github.com/MentorEmbedded/meta-mentor"]
+	insteadOf = https://github.com/MentorEmbedded/meta-mentor
+
+[url "https://github.com/MentorEmbedded/meta-sourcery"]
+	insteadOf = https://github.com/MentorEmbedded/meta-sourcery
+
+[url "git@github.com:MentorEmbedded/"]
+	insteadOf = https://github.com/MentorEmbedded/
 
 [url "git@push.yoctoproject.org:"]
 	pushInsteadOf = git://git.yoctoproject.org/
