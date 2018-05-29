@@ -3,20 +3,15 @@
 #   - Exit if there's no match (--exit-0)
 #   - CTRL-O to open with `open` command,
 #   - CTRL-E or Enter key to open with the $EDITOR
-fo() {
-  local out file key
-  out=$(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e)
-  key=$(head -1 <<< "$out")
-  file=$(head -2 <<< "$out" | tail -1)
-  if [[ -n "$file" ]]; then
-    if [[ "$key" = ctrl-o ]]; then
-        print -s open "$file"
-        open "$file"
-    else
-        print -s ${EDITOR:-vim} "$file"
-        ${EDITOR:-vim} "$file"
-    fi
-  fi
-}
 
-fo "$@"
+local out key files
+out=$(fzf-tmux --select-1 --no-sort --multi --query="$*" --exit-0 --expect=ctrl-o,ctrl-e) || return $?
+key=$(head -1 <<< "$out")
+files=("${(@f)out}")
+if [[ "$key" = ctrl-o ]]; then
+    print -s open $files
+    open $files
+else
+    print -s ${EDITOR:-vim} $files
+    ${EDITOR:-vim} $files
+fi
