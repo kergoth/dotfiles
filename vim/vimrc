@@ -290,6 +290,9 @@ set autoread
 noremap j gj
 noremap k gk
 
+" Keep cursor in the same column when possible
+set nostartofline
+
 " Don't insert 2 spaces after the end of a sentence
 set nojoinspaces
 
