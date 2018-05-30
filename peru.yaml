@@ -37,6 +37,7 @@ imports:
     git: scripts
     gitvoodoo: scripts
     i3-urgent-notify: scripts
+    i3-alternating-layout: scripts
     icdiff: scripts
     iln: scripts
     lesspipe: scripts
@@ -740,3 +741,12 @@ git module vim-autoformat:
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
     rev: 943e08445de3179fbb53e1b951df34998501be28
+
+git module i3-alternating-layout:
+    url: https://github.com/olemartinorg/i3-alternating-layout
+    move:
+        alternating_layouts.py: i3-alternating-layout
+    pick: i3-alternating-layout
+    rev: 507c84aef62af3ac5113b6dced216027c96aa285
+
+#  vim: set sw=4 :
