@@ -1,13 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 
-set -eo pipefail
-
-. "$(git --exec-path)/git-sh-setup"
-
-if [ -t 1 ]; then
-    set -- --color=always "$@"
-fi
-
-git rev-list --max-parents=0 --all \
-    | nlxargs -0 -n 1 git diff-tree -v -s --stdin --root "$@" \
-    | git_pager
+git rev-list --max-parents=0 --all | git log --stdin "$@"
