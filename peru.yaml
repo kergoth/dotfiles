@@ -529,7 +529,9 @@ git module checkbashisms:
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
     rev: 67b2286b261e9b72590add2c7b3c36ce28675687
-    pick: scripts/base16-tomorrow-night.sh
+    pick:
+        - scripts/base16-tomorrow-night.sh
+        - colortest
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
