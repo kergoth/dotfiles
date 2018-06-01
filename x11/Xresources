@@ -22,7 +22,7 @@ Rxvt.saveLines: 3000
 
 URxvt.depth: 32
 URxvt.background: rgba:0000/0000/0000/eddd
-URxvt.perl-ext: default,matcher
+URxvt.perl-ext: default,matcher,confirm-paste
 URxvt.urlLauncher: firefox
 URxvt.termName: rxvt-unicode-256color
 URxvt.visualBell: true
