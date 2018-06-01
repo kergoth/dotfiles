@@ -697,7 +697,8 @@ let &t_EI = "\e[2 q"
 augroup vimrc_cursor
 au!
   " Reset cursor on start and exit
-  autocmd VimEnter * silent !printf "\e[2 q" | :redraw
+  autocmd VimEnter * silent !printf "\e[2 q"
+  autocmd VimEnter * silent redraw
   autocmd VimLeave * silent !printf "\e[0 q"
 augroup END
 
