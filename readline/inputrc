@@ -21,6 +21,9 @@ set completion-ignore-case On
 # Don't complete hidden files unless specified as such
 set match-hidden-files Off
 
+# Enable bracketed paste handling
+set enable-bracketed-paste on
+
 # Vi-like movement/editing
 # set editing-mode vi
 
