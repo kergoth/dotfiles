@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Spawn a new unique session, linked to the supplied base
+# session, and clean up the new session on exit
+
+base="$1"
+if ! which sha1sum >/dev/null 2>&1; then
+    alias sha1sum=shasum
+fi
+session="$base-$(date +%Y%m%d%H%M%S|sha1sum|cut -c1-4)"
+
+tmux new -d -s $session -t "$base"
+if [ "$2" = "newwindow" ]; then
+    cur="$(tmux lsw -t default|cut -d: -f1|tail -n 1)"
+    tmux neww -a -t $session:$cur
+fi
+tmux att -t $session
+ret=$?
+tmux kill-session -t $session
+exit $ret

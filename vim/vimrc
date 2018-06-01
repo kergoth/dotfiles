@@ -552,6 +552,7 @@ noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
 noremap <C-l>  <C-w>l
 noremap <C-\>  <C-w>p
+nnoremap <silent> <C-S-\> :TmuxNavigatePrevious<cr>
 
 " Easy indentation in normal/visual mode
 nnoremap <Tab> >>
@@ -891,6 +892,7 @@ let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
 
+let g:tmuxline_powerline_separators = 0
 let g:promptline_powerline_symbols = 1
 
 " Align with the behavior of tmuxline without powerline separators enabled
