@@ -2,7 +2,8 @@ if (( $+commands[fasd] )); then
     fasd_cache="$XDG_DATA_HOME/fasd/env.zsh"
     if [[ ! -e $fasd_cache ]]; then
         mkdir -p $XDG_DATA_HOME/fasd
-        fasd --init auto | sed 's,$,;,' >$fasd_cache
+        fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install \
+                    zsh-wcomp zsh-wcomp-install >$fasd_cache
     fi
     source $fasd_cache
     unset fasd_cache
