@@ -1,4 +1,2 @@
-pyenv () {
-    eval "$(command pyenv init -)"
-    pyenv "$@"
-}
+eval "$(command pyenv init -)"
+pyenv "$@"
