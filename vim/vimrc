@@ -269,8 +269,15 @@ augroup vimrc
   au InsertLeave * silent! set nopaste
 
   if exists('$TMUX')
-    au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
-    au VimLeave * call system('tmux set-window automatic-rename on')
+    function! s:TmuxRename() abort
+      if !exists('g:tmux_automatic_rename')
+        let g:tmux_automatic_rename = trim(system('tmux show-window-options automatic-rename'))
+      endif
+      return g:tmux_automatic_rename == 'automatic-rename on'
+    endfunction
+
+    au BufEnter * if s:TmuxRename() && empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+    au VimLeave * if s:TmuxRename() | call system('tmux set-window automatic-rename on') | endif
   endif
 
   " Expand the fold where the cursor lives
