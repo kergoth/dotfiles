@@ -2,6 +2,9 @@
 " Description: Backend execution and job management
 "   Executes linters in the background, using NeoVim or Vim 8 jobs
 
+" Remapping of linter problems.
+let g:ale_type_map = get(g:, 'ale_type_map', {})
+
 " Stores information for each job including:
 "
 " linter: The linter dictionary for the job.
@@ -44,7 +47,7 @@ function! ale#engine#IsExecutable(buffer, executable) abort
 
     " Cache the executable check if we found it, or if the option to cache
     " failing checks is on.
-    if l:result || g:ale_cache_executable_check_failures
+    if l:result || get(g:, 'ale_cache_executable_check_failures', 0)
         let s:executable_cache_map[a:executable] = l:result
     endif
 
@@ -81,6 +84,11 @@ function! ale#engine#ClearLSPData() abort
     let s:lsp_linter_map = {}
 endfunction
 
+" Just for tests.
+function! ale#engine#SetLSPLinterMap(replacement_map) abort
+    let s:lsp_linter_map = a:replacement_map
+endfunction
+
 " This function is documented and part of the public API.
 "
 " Return 1 if ALE is busy checking a given buffer
@@ -93,11 +101,13 @@ endfunction
 " Register a temporary file to be managed with the ALE engine for
 " a current job run.
 function! ale#engine#ManageFile(buffer, filename) abort
+    call ale#engine#InitBufferInfo(a:buffer)
     call add(g:ale_buffer_info[a:buffer].temporary_file_list, a:filename)
 endfunction
 
 " Same as the above, but manage an entire directory.
 function! ale#engine#ManageDirectory(buffer, directory) abort
+    call ale#engine#InitBufferInfo(a:buffer)
     call add(g:ale_buffer_info[a:buffer].temporary_directory_list, a:directory)
 endfunction
 
@@ -270,20 +280,38 @@ function! s:HandleTSServerDiagnostics(response, error_type) abort
     call ale#engine#HandleLoclist('tsserver', l:buffer, l:loclist)
 endfunction
 
-function! s:HandleLSPErrorMessage(error_message) abort
-    execute 'echoerr ''Error from LSP:'''
+function! s:HandleLSPErrorMessage(linter_name, response) abort
+    if !g:ale_history_enabled || !g:ale_history_log_output
+        return
+    endif
 
-    for l:line in split(a:error_message, "\n")
-        execute 'echoerr l:line'
-    endfor
+    if empty(a:linter_name)
+        return
+    endif
+
+    let l:message = ale#lsp#response#GetErrorMessage(a:response)
+
+    if empty(l:message)
+        return
+    endif
+
+    " This global variable is set here so we don't load the debugging.vim file
+    " until someone uses :ALEInfo.
+    let g:ale_lsp_error_messages = get(g:, 'ale_lsp_error_messages', {})
+
+    if !has_key(g:ale_lsp_error_messages, a:linter_name)
+        let g:ale_lsp_error_messages[a:linter_name] = []
+    endif
+
+    call add(g:ale_lsp_error_messages[a:linter_name], l:message)
 endfunction
 
 function! ale#engine#HandleLSPResponse(conn_id, response) abort
     let l:method = get(a:response, 'method', '')
+    let l:linter_name = get(s:lsp_linter_map, a:conn_id, '')
 
     if get(a:response, 'jsonrpc', '') is# '2.0' && has_key(a:response, 'error')
-        " Uncomment this line to print LSP error messages.
-        " call s:HandleLSPErrorMessage(a:response.error.message)
+        call s:HandleLSPErrorMessage(l:linter_name, a:response)
     elseif l:method is# 'textDocument/publishDiagnostics'
         call s:HandleLSPDiagnostics(a:conn_id, a:response)
     elseif get(a:response, 'type', '') is# 'event'
@@ -339,6 +367,7 @@ function! ale#engine#SetResults(buffer, loclist) abort
 
         " Call user autocommands. This allows users to hook into ALE's lint cycle.
         silent doautocmd <nomodeline> User ALELintPost
+        " remove in 2.0
         " Old DEPRECATED name; call it for backwards compatibility.
         silent doautocmd <nomodeline> User ALELint
     endif

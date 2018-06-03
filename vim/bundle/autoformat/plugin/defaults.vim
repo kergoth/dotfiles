@@ -159,9 +159,11 @@ if !exists('g:formatdef_standard_javascript')
     let g:formatdef_standard_javascript = '"standard --fix --stdin"'
 endif
 
-if !exists('g:formatdef_prettier_javascript')
-    let g:formatdef_prettier_javascript = '"prettier"'
+
+if !exists('g:formatdef_prettier')
+    let g:formatdef_prettier = '"prettier --stdin --stdin-filepath ".expand("%:p").(&textwidth ? " --print-width ".&textwidth : "")." --tab-width=".shiftwidth()'
 endif
+
 
 " This is an xo formatter (inspired by the above eslint formatter)
 " To support ignore and overrides options, we need to use a tmp file
@@ -252,7 +254,7 @@ if !exists('g:formatters_javascript')
                 \ 'jsbeautify_javascript',
                 \ 'jscs',
                 \ 'standard_javascript',
-                \ 'prettier_javascript',
+                \ 'prettier',
                 \ 'xo_javascript',
                 \ ]
 endif
@@ -272,11 +274,11 @@ if !exists('g:formatdef_fixjson')
     let g:formatdef_fixjson =  '"fixjson"'
 endif
 
-
 if !exists('g:formatters_json')
     let g:formatters_json = [
                 \ 'jsbeautify_json',
                 \ 'fixjson',
+                \ 'prettier',
                 \ ]
 endif
 
@@ -341,9 +343,8 @@ if !exists('g:formatdef_cssbeautify')
 endif
 
 if !exists('g:formatters_css')
-    let g:formatters_css = ['cssbeautify']
+    let g:formatters_css = ['cssbeautify', 'prettier']
 endif
-
 
 " SCSS
 if !exists('g:formatdef_sassconvert')
@@ -351,9 +352,13 @@ if !exists('g:formatdef_sassconvert')
 endif
 
 if !exists('g:formatters_scss')
-    let g:formatters_scss = ['sassconvert']
+    let g:formatters_scss = ['sassconvert', 'prettier']
 endif
 
+" Less
+if !exists('g:formatters_less')
+    let g:formatters_less = ['prettier']
+endif
 
 " Typescript
 if !exists('g:formatdef_tsfmt')
@@ -361,7 +366,7 @@ if !exists('g:formatdef_tsfmt')
 endif
 
 if !exists('g:formatters_typescript')
-    let g:formatters_typescript = ['tsfmt']
+    let g:formatters_typescript = ['tsfmt', 'prettier']
 endif
 
 
@@ -437,7 +442,12 @@ if !exists('g:formatdef_remark_markdown')
 endif
 
 if !exists('g:formatters_markdown')
-    let g:formatters_markdown = ['remark_markdown']
+    let g:formatters_markdown = ['remark_markdown', 'prettier']
+endif
+
+" Graphql
+if !exists('g:formatters_graphql')
+    let g:formatters_graphql = ['prettier']
 endif
 
 " Fortran

@@ -172,13 +172,42 @@ function! dispatch#vim_executable() abort
   return s:vim
 endfunction
 
+function! dispatch#has_callback() abort
+  if has('clientserver') && !empty(v:servername)
+    return 1
+  elseif !exists('*job_start') && !exists('*jobstart')
+    return 0
+  endif
+  if !exists('s:has_temp_fifo')
+    let fifo = tempname()
+    call system('mkfifo ' . dispatch#shellescape(fifo))
+    let s:has_temp_fifo = (getftype(fifo) ==# 'fifo')
+    call delete(fifo)
+  endif
+  return s:has_temp_fifo
+endfunction
+
 function! dispatch#callback(request) abort
-  if has('clientserver') && !empty(v:servername) && has_key(s:request(a:request), 'id')
+  let request = s:request(a:request)
+  if !has_key(request, 'id') || !dispatch#has_callback()
+    return ''
+  endif
+  if has('clientserver') && !empty(v:servername)
     return dispatch#shellescape(dispatch#vim_executable()) .
           \ ' --servername ' . dispatch#shellescape(v:servername) .
-          \ ' --remote-expr "' . 'DispatchComplete(' . s:request(a:request).id . ')' . '"'
+          \ ' --remote-expr "' . 'DispatchComplete(' . request.id . ')' . '"'
   endif
-  return ''
+  call system('mkfifo ' . dispatch#shellescape(request.file . '.callback'))
+  let cmd = ['head', '-1', request.file . '.callback']
+  let Cb = { ... -> dispatch#complete(request.id) }
+  if exists('*job_start')
+    call job_start(cmd, {'exit_cb': Cb})
+  elseif exists('*jobstart')
+    call jobstart(cmd, {'on_exit': Cb})
+  else
+    return ''
+  endif
+  return 'echo > ' . request.file . '.callback'
 endfunction
 
 function! dispatch#autowrite() abort
@@ -350,6 +379,9 @@ function! dispatch#spawn(command, ...) abort
         \ 'expanded': dispatch#expand(command),
         \ 'title': '',
         \ }, a:0 ? a:1 : {})
+  if empty(a:command)
+    call extend(request, {'wait': 'never'}, 'keep')
+  endif
   let g:dispatch_last_start = request
   if empty(request.title)
     let request.title = substitute(fnamemodify(matchstr(request.command, '\%(\\.\|\S\)\+'), ':t:r'), '\\\(\s\)', '\1', 'g')
@@ -612,7 +644,7 @@ function! dispatch#compile_command(bang, args, count) abort
 
   if args =~# '^:\S'
     call dispatch#autowrite()
-    if a:count
+    if a:count > 0
       let args = substitute(args, '^:[%0]\=\ze\a', ':' . a:count, '')
     endif
     return s:wrapcd(get(request, 'directory', getcwd()),
@@ -1059,6 +1091,9 @@ endfunction
 function! s:cwindow(request, all, copen) abort
   call s:cgetfile(a:request, a:all)
   let height = get(g:, 'dispatch_quickfix_height', 10)
+  if height <= 0
+    return
+  endif
   let was_qf = s:is_quickfix()
   execute 'botright' (a:copen ? 'copen' : 'cwindow') height
   if !was_qf && s:is_quickfix() && a:copen !=# -2

@@ -26,11 +26,59 @@ functions with `zed`/`vared` (optimizations done in
 
 6. Paths from `$CDPATH` aren't colorized unless the command is `cd`
 
+7. Five 256-color themes, switched with `fast-theme {theme-name}` (also try `-t` option to obtain the below snippet):
+
+    ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/theme.png)
+
+8. Correct highlighting of descriptor-variables passed to `exec`:
+
+    ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/execfd_cmp.png)
+
+9. Recursive `eval` and `$( )` highlighting, with secondary theme (two themes active at the same time!):
+
+    ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/eval_cmp.png)
+
 Performance differencies can be observed at Asciinema recording, where `10 kB` function is being edited:
 
 [![asciicast](https://asciinema.org/a/112367.png)](https://asciinema.org/a/112367)
 
 # Updates (2018)
+**2018-06-01**
+
+Highlighting of command substitution (i.e. `$(...)`) with alternate theme – two themes at once! It was just white before:
+
+![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/cmdsubst.png)
+
+To select which theme to use for `$(...)` set the key `secondary=` in [theme ini file](https://github.com/zdharma/fast-syntax-highlighting/blob/master/themes/free.ini#L7).
+All shipped themes have this key set (only the `default` theme doesn't use second theme).
+
+Also added correct highlighting of descriptor-variables passed to `exec`:
+
+![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/execfd.png)
+
+**2018-05-30**
+
+For-loop is highlighted, it has separate settings in [theme file](https://github.com/zdharma/fast-syntax-highlighting/blob/master/themes/free.ini).
+
+![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/for-loop.png)
+
+**2018-05-27**
+
+Added support for 256-color themes. There are six themes shipped with FSH. The command to
+switch theme is `fast-theme {theme-name}`, it has a completion which lists available themes
+and options. Checkout [asciinema recording](https://asciinema.org/a/183814) that presents
+the themes.
+
+**2018-05-25**
+
+Hash holding paths that shouldn't be grepped (globbed) – blacklist for slow disks, mounts, etc.:
+
+```zsh
+typeset -gA FAST_BLIST_PATTERNS
+FAST_BLIST_PATTERNS[/mount/nfs1/*]=1
+FAST_BLIST_PATTERNS[/mount/disk2/*]=1
+```
+
 **2018-05-23**
 
 Assign colorizing now spans to variables defined by `typeset`, `export`, `local`, etc.:
@@ -48,7 +96,7 @@ Array assignments were still boring, so I throwed in bracked colorizing:
 
 ![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/array-assign.png)
 
-**2018-05-22**
+**2018-05-22**<a name="assign-update"></a>
 
 Assignments are no more one-colour default-white. When used in assignment, highlighted are:
 

@@ -4,7 +4,7 @@
 ![ALE Logo by Mark Grealish - https://www.bhalash.com/](img/logo.jpg?raw=true)
 
 ALE (Asynchronous Lint Engine) is a plugin for providing linting in NeoVim
-and Vim 8 while you edit your text files.
+0.2.0+ and Vim 8 while you edit your text files.
 
 ![linting example](img/example.gif?raw=true)
 
@@ -164,7 +164,7 @@ formatting.
 | Rust |  cargo !! (see `:help ale-integration-rust` for configuration instructions), [rls](https://github.com/rust-lang-nursery/rls), [rustc](https://www.rust-lang.org/), [rustfmt](https://github.com/rust-lang-nursery/rustfmt) |
 | SASS | [sass-lint](https://www.npmjs.com/package/sass-lint), [stylelint](https://github.com/stylelint/stylelint) |
 | SCSS | [prettier](https://github.com/prettier/prettier), [sass-lint](https://www.npmjs.com/package/sass-lint), [scss-lint](https://github.com/brigade/scss-lint), [stylelint](https://github.com/stylelint/stylelint) |
-| Scala | [fsc](https://www.scala-lang.org/old/sites/default/files/linuxsoft_archives/docu/files/tools/fsc.html), [scalac](http://scala-lang.org), [scalastyle](http://www.scalastyle.org) |
+| Scala | [fsc](https://www.scala-lang.org/old/sites/default/files/linuxsoft_archives/docu/files/tools/fsc.html), [scalac](http://scala-lang.org), [scalafmt](https://scalameta.org/scalafmt/), [scalastyle](http://www.scalastyle.org) |
 | Slim | [slim-lint](https://github.com/sds/slim-lint) |
 | SML | [smlnj](http://www.smlnj.org/) |
 | Solidity | [solhint](https://github.com/protofire/solhint), [solium](https://github.com/duaraghav8/Solium) |
@@ -210,24 +210,42 @@ ale-linter-options` for options specified to particular linters.
 ### 2.ii Fixing
 
 ALE can fix files with the `ALEFix` command. Functions need to be configured
-for different filetypes with the `g:ale_fixers` variable. For example, the
-following code can be used to fix JavaScript code with ESLint:
+either in each buffer with a `b:ale_fixers`, or globally with `g:ale_fixers`.
+
+The recommended way to configure fixers is to define a List in an ftplugin file.
 
 ```vim
-" Put this in vimrc or a plugin file of your own.
-" After this is configured, :ALEFix will try and fix your JS code with ESLint.
+" In ~/.vim/ftplugin/javascript.vim, or somewhere similar.
+
+" Fix files with prettier, and then ESLint.
+let b:ale_fixers = ['prettier', 'eslint']
+" Equivalent to the above.
+let b:ale_fixers = {'javascript': ['prettier', 'eslint']}
+```
+
+You can also configure your fixers from vimrc using `g:ale_fixers`, before
+or after ALE has been loaded.
+
+```vim
+" In ~/.vim/vimrc, or somewhere similar.
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
 \}
+```
 
-" Set this setting in vimrc if you want to fix files automatically on save.
-" This is off by default.
+If you want to automatically fix files when you save them, you need to turn
+a setting on in vimrc.
+
+```vim
+" Set this variable to 1 to fix files when you save them.
 let g:ale_fix_on_save = 1
 ```
 
-The `:ALEFixSuggest` command will suggest some supported tools for fixing code,
-but fixers can be also implemented with functions, including lambda functions
-too. See `:help ale-fix` for detailed information.
+The `:ALEFixSuggest` command will suggest some supported tools for fixing code.
+Both `g:ale_fixers` and `b:ale_fixers` can also accept functions, including
+lambda functions, as fixers, for fixing files with custom tools.
+
+See `:help ale-fix` for complete information on how to fix files with ALE.
 
 <a name="usage-completion"></a>
 
@@ -271,6 +289,9 @@ See `:help ale-find-references` for more information.
 ALE supports "hover" information for printing brief information about symbols at
 the cursor taken from Language Server Protocol linters and `tsserver` with the
 `ALEHover` command.
+
+On vim/gvim with `balloon` support you can see the information in a tooltip
+that appears under the mouse when you mouseover a symbol.
 
 See `:help ale-hover` for more information.
 
@@ -382,12 +403,28 @@ on Freenode. Web chat is available [here](https://webchat.freenode.net/?channels
 
 ### 5.i. How do I disable particular linters?
 
-By default, all available tools for all supported languages will be run.
-If you want to only select a subset of the tools, simply create a
-`g:ale_linters` dictionary in your vimrc file mapping filetypes
-to lists of linters to run.
+By default, all available tools for all supported languages will be run. If you
+want to only select a subset of the tools, you can define `b:ale_linters` for a
+single buffer, or `g:ale_linters` globally.
+
+The recommended way to configure linters is to define a List in an ftplugin
+file.
 
 ```vim
+" In ~/.vim/ftplugin/javascript.vim, or somewhere similar.
+
+" Enable ESLint only for JavaScript.
+let b:ale_linters = ['eslint']
+
+" Equivalent to the above.
+let b:ale_linters = {'javascript': ['eslint']}
+```
+
+You can also declare which linters you want to run in your vimrc file, before or
+after ALE has been loaded.
+
+```vim
+" In ~/.vim/vimrc, or somewhere similar.
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \}
@@ -397,6 +434,14 @@ For all languages unspecified in the dictionary, all possible linters will
 be run for those languages, just as when the dictionary is not defined.
 Running many linters should not typically obstruct editing in Vim,
 as they will all be executed in separate processes simultaneously.
+
+If you don't want ALE to run anything other than what you've explicitly asked
+for, you can set `g:ale_linters_explicit` to `1`.
+
+```vim
+" Only run linters named in ale_linters settings.
+let g:ale_linters_explicit = 1
+```
 
 This plugin will look for linters in the [`ale_linters`](ale_linters) directory.
 Each directory within corresponds to a particular filetype in Vim, and each file
@@ -647,9 +692,18 @@ augroup END
 ```
 
 Supposing the filetype has been set correctly, you can set the following
-options in your vimrc file:
+options in a jsx.vim ftplugin file.
 
 ```vim
+" In ~/.vim/ftplugin/jsx.vim, or somewhere similar.
+let b:ale_linters = ['stylelint', 'eslint']
+let b:ale_linter_aliases = ['css']
+```
+
+Or if you want, you can configure the linters from your vimrc file.
+
+```vim
+" In ~/.vim/vimrc, or somewhere similar.
 let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
 let g:ale_linter_aliases = {'jsx': 'css'}
 ```

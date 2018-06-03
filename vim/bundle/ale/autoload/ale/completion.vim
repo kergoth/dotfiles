@@ -1,7 +1,9 @@
 " Author: w0rp <devw0rp@gmail.com>
 " Description: Completion support for LSP linters
 
-call ale#Set('completion_excluded_words', [])
+let g:ale_completion_delay = get(g:, 'ale_completion_delay', 100)
+let g:ale_completion_excluded_words = get(g:, 'ale_completion_excluded_words', [])
+let g:ale_completion_max_suggestions = get(g:, 'ale_completion_max_suggestions', 50)
 
 let s:timer_id = -1
 let s:last_done_pos = []
@@ -30,6 +32,7 @@ let s:LSP_COMPLETION_REFERENCE_KIND = 18
 " the insert cursor is. If one of these matches, we'll check for completions.
 let s:should_complete_map = {
 \   '<default>': '\v[a-zA-Z$_][a-zA-Z$_0-9]*$|\.$',
+\   'typescript': '\v[a-zA-Z$_][a-zA-Z$_0-9]*$|\.$|''$|"$',
 \   'rust': '\v[a-zA-Z$_][a-zA-Z$_0-9]*$|\.$|::$',
 \}
 
@@ -41,6 +44,7 @@ let s:omni_start_map = {
 " A map of exact characters for triggering LSP completions.
 let s:trigger_character_map = {
 \   '<default>': ['.'],
+\   'typescript': ['.', '''', '"'],
 \   'rust': ['.', '::'],
 \}
 
@@ -198,7 +202,9 @@ function! ale#completion#ParseTSServerCompletions(response) abort
 endfunction
 
 function! ale#completion#ParseTSServerCompletionEntryDetails(response) abort
+    let l:buffer = bufnr('')
     let l:results = []
+    let l:names_with_details = []
 
     for l:suggestion in a:response.body
         let l:displayParts = []
@@ -231,6 +237,26 @@ function! ale#completion#ParseTSServerCompletionEntryDetails(response) abort
         \   'info': join(l:documentationParts, ''),
         \})
     endfor
+
+    let l:names = getbufvar(l:buffer, 'ale_tsserver_completion_names', [])
+
+    if !empty(l:names) && len(l:names) != len(l:results)
+        let l:names_with_details = map(copy(l:results), 'v:val.word')
+        let l:missing_names = filter(
+        \   copy(l:names),
+        \   'index(l:names_with_details, v:val) < 0',
+        \)
+
+        for l:name in l:missing_names
+            call add(l:results, {
+            \   'word': l:name,
+            \   'kind': 'v',
+            \   'icase': 1,
+            \   'menu': '',
+            \   'info': '',
+            \})
+        endfor
+    endif
 
     return l:results
 endfunction
@@ -296,6 +322,10 @@ function! ale#completion#ParseLSPCompletions(response) abort
         \})
     endfor
 
+    if has_key(l:info, 'prefix')
+        return ale#completion#Filter(l:buffer, l:results, l:info.prefix)
+    endif
+
     return l:results
 endfunction
 
@@ -317,6 +347,10 @@ function! ale#completion#HandleTSServerResponse(conn_id, response) abort
         \   ale#completion#ParseTSServerCompletions(a:response),
         \   b:ale_completion_info.prefix,
         \)[: g:ale_completion_max_suggestions - 1]
+
+        " We need to remember some names for tsserver, as it doesn't send
+        " details back for everything we send.
+        call setbufvar(l:buffer, 'ale_tsserver_completion_names', l:names)
 
         if !empty(l:names)
             let b:ale_completion_info.request_id = ale#lsp#Send(

@@ -95,6 +95,11 @@ let s:default_registry = {
 \       'suggested_filetypes': ['ruby'],
 \       'description': 'Fix ruby files with rufo',
 \   },
+\   'scalafmt': {
+\       'function': 'ale#fixers#scalafmt#Fix',
+\       'suggested_filetypes': ['scala'],
+\       'description': 'Fix Scala files using scalafmt',
+\   },
 \   'standard': {
 \       'function': 'ale#fixers#standard#Fix',
 \       'suggested_filetypes': ['javascript'],
@@ -332,7 +337,7 @@ endfunction
 
 " Function that returns autocomplete candidates for ALEFix command
 function! ale#fix#registry#CompleteFixers(ArgLead, CmdLine, CursorPos) abort
-    return ale#fix#registry#GetApplicableFixers(&filetype)
+    return filter(ale#fix#registry#GetApplicableFixers(&filetype), 'v:val =~? a:ArgLead')
 endfunction
 
 " Suggest functions to use from the registry.

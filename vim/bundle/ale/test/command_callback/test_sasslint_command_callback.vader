@@ -1,0 +1,12 @@
+Before:
+  call ale#test#SetDirectory('/testplugin/test/command_callback')
+  call ale#test#SetFilename('test.sass')
+
+After:
+  call ale#test#RestoreDirectory()
+
+Execute(The default sasslint command should be correct):
+  AssertEqual
+  \ 'cd ' . ale#Escape(expand('%:p:h')) . ' && '
+  \   . ale#Escape('sass-lint') . ' -v -q -f compact %t',
+  \ ale#handlers#sasslint#GetCommand(bufnr(''))

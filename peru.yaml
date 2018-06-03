@@ -123,11 +123,11 @@ imports:
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 5b539663c0d740a0c00169d5ecbd58e47ff16252
+    rev: db6cac391bee957c20ff3175b2f03c4817253e60
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: a1224b869aa6290b4d395ade2887e82c08a9329f
+    rev: cd82637966c6fe734fd730e4e02f0cb4af4632d3
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -184,7 +184,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 614e20bb6530890f5850e9eb0c8b27a5e7178fc6
+    rev: 5c2095be39ed181af93a4b7bddd923a2a0e84932
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -199,7 +199,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 315cf0deec5fd3f299444ae596f01e11175dccaf
+    rev: 08570b6dcb496f09be842c1746ff818224bcc9df
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -213,12 +213,12 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary
-    rev: 54e5676988e6eeaa05b41730b6b056026ad0ef13
+    rev: 7f2127b1dfc57811112785985b46ff2289d72334
 
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: e45a2409f1eaf272653817a2ebc09ba3462e7c7a
+    rev: e57666aa8d3a87b42c5ec429490bbf4a54f4c31d
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -227,7 +227,7 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: e49d6c2459e0f5569ff2d533b4df995dd7f98313
+    rev: 643a42454bc8c2b2735de14f309523ce733a5358
 
 # readline style insertion
 git module vim-rsi:
@@ -237,7 +237,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 1846292dca6d07ef3700dc2d91a0d8634c580ea4
+    rev: 47729b7831421f20fa40a7d5b3e9b928faf18e75
 
 # continuously updated session files
 git module vim-obsession:
@@ -254,7 +254,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 88595ebbaa33485cd1a4474701bd0e5809643520
+    rev: ce82e10630830bc37a50f706cc3b7216d24e5009
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -291,7 +291,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 62f062ecfa6ae55e3d677e19c2fda60b7cf7c301
+    rev: 2b19c0bc685fc2f726b977d161e6ce720a4d04a8
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -536,7 +536,7 @@ git module checkbashisms:
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: 67b2286b261e9b72590add2c7b3c36ce28675687
+    rev: efa06ce77a7fa46cca2bfc07932db21971de010b
     pick:
         - scripts/base16-tomorrow-night.sh
         - colortest
@@ -569,7 +569,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 865b3f34f8a45adb902b53298f3053514bacd243
+    rev: cd988bc491f97008377fadfeae549fc7b7dd5d25
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -603,7 +603,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: a4f85ae6ff4a70586b33cca2d9ebc2105f49e74e
+    rev: d681b972ccc148356d81f452b0e7bfe2aeb0cbbe
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -621,7 +621,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: d8d13ef264340113b74a3310a203416f2916b2f5
+    rev: 4ec661b305bb168891624eb89466c1a2558fe63b
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -758,7 +758,7 @@ git module vim-VimCompletesMe:
 
 git module vim-autoformat:
     url: https://github.com/Chiel92/vim-autoformat
-    rev: 7d199cd124ce3f7c26f0edbe89ffa32449e2efb4
+    rev: 3c50ddb50635f7899b4339a64bc02333cdd24a4b
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
