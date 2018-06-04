@@ -38,7 +38,7 @@ else
 fi
 
 what () {
-    tldr "$1" || cheat "$1" || man "$1"
+    tldr "$1" || cheat "$1" || man "$1" || eval '$1 --help' || eval '$1 -h'
 }
 
 # Convenience when pasting shell snippets
