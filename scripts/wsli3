@@ -13,6 +13,7 @@ xrdb -merge ${XDG_CONFIG_HOME:-~/.config}/X11/Xresources
 
 if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
     echo >&2 "Starting dbus"
+    pkill -f dbus-daemon
     export $(dbus-launch)
 fi
 
