@@ -5,7 +5,7 @@
 #   - CTRL-E or Enter key to open with the $EDITOR
 
 local out key files
-out=$(fzf-tmux --select-1 --no-sort --multi --query="$*" --exit-0 --expect=ctrl-o,ctrl-e) || return $?
+out=$(fzf-tmux --select-1 --multi --query="$*" --exit-0 --expect=ctrl-o,ctrl-e) || return $?
 key=$(head -1 <<< "$out")
 files=("${(@f)out}")
 if [[ "$key" = ctrl-o ]]; then
