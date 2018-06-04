@@ -289,6 +289,7 @@ key_bindings:
   - { key: V,        mods: Command, action: Paste                        }
   - { key: C,        mods: Command, action: Copy                         }
   - { key: Q,        mods: Command, action: Quit                         }
+  - { key: H,        mods: Command, command: { program: "osacript", args: ["-e", "tell application \"Finder\" to set visible of process \"Alacritty\" to false"]}
   - { key: N,        mods: Command, command: { program: "open", args: ["-nb", "io.alacritty", "--args", "-e", "zsh", "--login"] } }
   - { key: Home,                    chars: "\x1bOH",   mode: AppCursor   }
   - { key: Home,                    chars: "\x1b[H",   mode: ~AppCursor  }
