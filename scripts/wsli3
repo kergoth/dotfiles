@@ -11,9 +11,9 @@ eval "$(pyenv init -)"
 
 xrdb -merge ${XDG_CONFIG_HOME:-~/.config}/X11/Xresources
 
-if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
-     echo >&2 "Starting dbus"
-     export $(dbus-launch)
+if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+    echo >&2 "Starting dbus"
+    export $(dbus-launch)
 fi
 
 pkill -f i3-urgent-notify-wsl
@@ -24,5 +24,7 @@ i3-urgent-notify-wsl &
 pkill -f notify-burnt-toast
 echo >&2 "Starting notify-burnt-toast"
 notify-burnt-toast &
+
+cd
 
 exec ssh-agent i3
