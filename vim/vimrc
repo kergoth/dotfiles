@@ -271,9 +271,12 @@ augroup vimrc
   if exists('$TMUX')
     function! s:TmuxRename() abort
       if !exists('g:tmux_automatic_rename')
-        let g:tmux_automatic_rename = trim(system('tmux show-window-options automatic-rename'))
+        let g:tmux_automatic_rename = trim(system('tmux show-window-options -v automatic-rename'))
+        if g:tmux_automatic_rename == ''
+          let g:tmux_automatic_rename = trim(system('tmux show-window-options -gv automatic-rename'))
+        endif
       endif
-      return g:tmux_automatic_rename == 'automatic-rename on'
+      return g:tmux_automatic_rename == 'on'
     endfunction
 
     au BufEnter * if s:TmuxRename() && empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
