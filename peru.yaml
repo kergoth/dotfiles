@@ -15,7 +15,6 @@ imports:
     # Scripts
     appify: scripts
     atach: scripts
-    cheat: scripts
     checkbashisms: scripts
     cpanm: scripts
     cwdiff: scripts
@@ -152,11 +151,6 @@ git module git-imerge:
     url: https://github.com/mhagger/git-imerge
     rev: 269969ec973deb3585445ed86d2fd8082ff59212
     pick: git-imerge
-
-git module cheat:
-    url: https://github.com/kergoth/cheat
-    rev: f57ef96b7edf1a416d72e4f498be5d2580909564
-    pick: cheat
 
 git module git-cherry-tree:
     url: https://github.com/kergoth/git-cherry-tree
