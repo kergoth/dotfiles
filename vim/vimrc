@@ -285,6 +285,17 @@ augroup vimrc
 
   " Expand the fold where the cursor lives
   autocmd BufWinEnter * silent! exe "normal! zO"
+
+  " Automatically create missing directory
+  function! s:MkNonExDir(file, buf) abort
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+      let dir=fnamemodify(a:file, ':h')
+      if !isdirectory(dir)
+        call mkdir(dir, 'p')
+      endif
+    endif
+  endfunction
+  autocmd BufWritePre,FileWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 
 " Allow hiding buffers with modifications
