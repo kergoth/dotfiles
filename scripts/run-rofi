@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if which xdpyinfo >/dev/null 2>&1; then
+    dpi="$(xdpyinfo | sed -ne 's/^ *resolution: *\([0-9]*\).*/\1/p')"
+    if [ -n "$dpi" ]; then
+        set -- -dpi "$dpi" "$@"
+    fi
+fi
+exec rofi "$@"
