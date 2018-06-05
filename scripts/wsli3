@@ -2,7 +2,9 @@
 
 export TERMINAL=st
 export DISPLAY="${DISPLAY:-:0.0}"
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
 export GDK_SCALE=2
+export GDK_DPI_SCALE=0.5
 export XDG_DATA_DIRS="${XDG_DATA_DIRS:-${XDG_DATA_HOME:-$HOME/.local/share}}"
 PATH="$(dirname "$0"):$HOME/.local/bin:$PATH"
 
