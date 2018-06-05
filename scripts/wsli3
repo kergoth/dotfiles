@@ -2,6 +2,8 @@
 
 export TERMINAL=st
 export DISPLAY="${DISPLAY:-:0.0}"
+export GDK_SCALE=2
+export XDG_DATA_DIRS="${XDG_DATA_DIRS:-${XDG_DATA_HOME:-$HOME/.local/share}}"
 PATH="$(dirname "$0"):$HOME/.local/bin:$PATH"
 
 # Ensure we can use pyenv python
