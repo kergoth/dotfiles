@@ -12,6 +12,6 @@ if [[ "$key" = ctrl-o ]]; then
     print -s open $files
     open $files
 else
-    print -s ${EDITOR:-vim} $files
-    ${EDITOR:-vim} $files
+    print -s ${=EDITOR:-vim} $files
+    ${=EDITOR:-vim} $files
 fi
