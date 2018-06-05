@@ -9,24 +9,19 @@ if [[ -z "$XDG_RUNTIME_DIR" ]]; then
     # This should be provided by pam_systemd/pam_rundir/elogind, but we need
     # a fallback for other operating systems and environments
     UID="$(id -u)"
-    if [[ -d /run/user/$UID ]]; then
-        export XDG_RUNTIME_DIR="/run/user/$UID"
-    else
-        # Manual. Note that this violates the spec which states that it needs
-        # to be removed at session logout, but keeping track of the login
-        # count is more trouble than its worth at this point.
-        export XDG_RUNTIME_DIR="${TMPDIR:-/tmp}/runtime-$UID"
-        if [[ -d "$XDG_RUNTIME_DIR" ]]; then
-            if [[ $(stat -t --format=%a\ %u "$XDG_RUNTIME_DIR") != "700 $USER" ]]; then
-                echo >&2 "Error: XDG_RUNTIME_DIR $XDG_RUNTIME_DIR has incorrect eermissions/ownership, unsetting"
-                unset XDG_RUNTIME_DIR
-            fi
-        else
-            mkdir -p "$XDG_RUNTIME_DIR"
-            chmod 0700 "$XDG_RUNTIME_DIR"
+    # Note that this violates the spec which states that it needs
+    # to be removed at session logout, but keeping track of the login
+    # count is more trouble than its worth at this point.
+    export XDG_RUNTIME_DIR="${TMPDIR:-/tmp}/runtime-$UID"
+    if [[ -d "$XDG_RUNTIME_DIR" ]]; then
+        if [[ $(stat -t --format=%a\ %u "$XDG_RUNTIME_DIR") != "700 $UID" ]]; then
+            echo >&2 "Error: XDG_RUNTIME_DIR $XDG_RUNTIME_DIR has incorrect permissions/ownership, unsetting"
+            unset XDG_RUNTIME_DIR
         fi
+    else
+        mkdir -p "$XDG_RUNTIME_DIR"
+        chmod 0700 "$XDG_RUNTIME_DIR"
     fi
-
 fi
 
 if [[ "${PROFILE_STARTUP:-false}" == true ]]; then
