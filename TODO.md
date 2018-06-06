@@ -4,7 +4,7 @@
 - zsh: add git push/pull status to promptline. The full git status slows things
   down too much, but I'd at least like to see if I'm ahead/behind upstream at
   a glance.
-- zsh: also `fo` and `fv` functions to accept base path as `$2`. Be conscious
+- zsh: alter `fo` and `fv` functions to accept base path as `$2`. Be conscious
   of the fact that the paths may be returned as relative
 
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
