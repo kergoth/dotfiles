@@ -126,7 +126,7 @@ git module zsh-syntax-highlighting:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: cd82637966c6fe734fd730e4e02f0cb4af4632d3
+    rev: 4b9598ee1f843a60c5adcf2f5799a53571be1277
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 5c2095be39ed181af93a4b7bddd923a2a0e84932
+    rev: b571bff9ec146685947ab91a2f11dd73d0d7ae44
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -193,11 +193,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 08570b6dcb496f09be842c1746ff818224bcc9df
+    rev: 6a05b927161ab3cdcf841fdd281719e18858025a
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: 01d52d7dd8124c7079e9b09bdae403025ccb3cea
+    rev: f7f2818f1a174f86fc9cf6d4d71729cc96b98626
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -563,7 +563,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: cd988bc491f97008377fadfeae549fc7b7dd5d25
+    rev: 28104af950dc01f76458c99b6d1083bde0dd9a0c
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -615,7 +615,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 4ec661b305bb168891624eb89466c1a2558fe63b
+    rev: 10a9177b6b211173660e09ffdbc476532640f398
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -648,7 +648,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: a26134de3c09f9725667e14e7073a701bcff4e19
+    rev: 33f610feb73ce782cf41a7d9a377541991c692b5
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -733,7 +733,7 @@ git module bat-themes-base16:
 
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
-    rev: 4eccb5417d33464505bb6276567e8c48491108c4
+    rev: 0bbf7c5ff39033b7f9046cb7ad6bccfa306868e4
 
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig

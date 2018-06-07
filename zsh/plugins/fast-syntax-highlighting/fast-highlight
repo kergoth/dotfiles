@@ -1,3 +1,4 @@
+# -*- mode: sh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
 # -------------------------------------------------------------------------------------------------
 # Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
 # Copyright (c) 2016-2018 Sebastian Gniazdowski (modifications)
@@ -137,6 +138,14 @@ __FAST_HIGHLIGHT_TOKEN_TYPES=(
 # A hash instead of multiple globals
 typeset -gA FAST_HIGHLIGHT
 
+FAST_HIGHLIGHT+=(
+  chroma-git     chroma/-git.ch
+  chroma-example chroma/-example.ch
+  chroma-grep    chroma/-grep.ch
+  chroma-egrep    chroma/-grep.ch
+  chroma-fgrep    chroma/-grep.ch
+)
+
 # Assignments seen, to know if math parameter exists
 typeset -gA FAST_ASSIGNS_SEEN
 
@@ -238,7 +247,7 @@ typeset -ga ZLAST_COMMANDS
   # in_array_assignment true between 'a=(' and the matching ')'
   # braces_stack: "R" for round, "Q" for square, "Y" for curly
   # _mybuf, cdpath_dir are used in sub-functions
-  local _start_pos="$3" _end_pos __start __end highlight_glob=1 __arg __style in_array_assignment=0 MATCH expanded_path braces_stack __buf="$1$2" _mybuf cdpath_dir cur_cmd alias_target _was_double_hyphen=0 __nul=$'\0'
+  local _start_pos="$3" _end_pos __start __end highlight_glob=1 __arg __style in_array_assignment=0 MATCH expanded_path braces_stack __buf="$1$2" _mybuf cdpath_dir active_command alias_target _was_double_hyphen=0 __nul=$'\0'
   # arg_type can be 0, 1, 2 or 3, i.e. precommand, control flow, command separator
   # __idx and _end_idx are used in sub-functions
   # for this_word and next_word look below at commented integers and at state machine description
@@ -249,6 +258,7 @@ typeset -ga ZLAST_COMMANDS
   # BIT_for - word after reserved-word-recognized `for'
   # BIT_afpcmd - word after a precommand that can take options, like `command' and `exec'
   # integer BIT_start=1 BIT_regular=2 BIT_sudo_opt=4 BIT_sudo_arg=8 BIT_always=16 BIT_for=32 BIT_afpcmd=64
+  # integer BIT_chroma=8192
 
   integer BIT_case_preamble=512 BIT_case_item=1024 BIT_case_nempty_item=2048 BIT_case_code=4096
 
@@ -310,7 +320,7 @@ typeset -ga ZLAST_COMMANDS
     # Initialize $next_word to its default value?
     (( in_redirection = in_redirection > 0 ? in_redirection - 1 : in_redirection ));
     (( next_word = (in_redirection == 0) ? 2 : next_word )) # else Stall $next_word.
-    (( next_word = next_word | (this_word & BIT_case_code) ))
+    (( next_word = next_word | (this_word & (BIT_case_code|8192)) ))
 
     #
     #   $already_added       (see next paragraph)
@@ -414,7 +424,7 @@ typeset -ga ZLAST_COMMANDS
           # Flag that requires an argument
           '-'[Cgprtu])
                        (( this_word = this_word & ~1 ))
-                       (( next_word = 8 ))
+                       (( next_word = 8 | (this_word & BIT_case_code) ))
                        ;;
           # This prevents misbehavior with sudo -u -otherargument
           '-'*)
@@ -428,9 +438,9 @@ typeset -ga ZLAST_COMMANDS
         (( next_word = next_word | 4 ))
         (( next_word = next_word | 1 ))
       elif (( this_word & 64 )); then
-        [[ "$__arg" = -[pvV-]## && "$cur_cmd" = "command" ]] && (( this_word = (this_word & ~1) | 2, next_word = (next_word | 65) & ~2 ))
-        [[ "$__arg" = -[cla-]## && "$cur_cmd" = "exec" ]] && (( this_word = (this_word & ~1) | 2, next_word = (next_word | 65) & ~2 ))
-        [[ "$__arg" = \{[a-zA-Z][a-zA-Z0-9]#\} && "$cur_cmd" = "exec" ]] && {
+        [[ "$__arg" = -[pvV-]## && "$active_command" = "command" ]] && (( this_word = (this_word & ~1) | 2, next_word = (next_word | 65) & ~2 ))
+        [[ "$__arg" = -[cla-]## && "$active_command" = "exec" ]] && (( this_word = (this_word & ~1) | 2, next_word = (next_word | 65) & ~2 ))
+        [[ "$__arg" = \{[a-zA-Z][a-zA-Z0-9]#\} && "$active_command" = "exec" ]] && {
           # Highlight {descriptor} passed to exec
           (( this_word = (this_word & ~1) | 2, next_word = (next_word | 65) & ~2 ))
           (( __start=_start_pos-${#PREBUFFER}, __end=_end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}exec-descriptor]}")
@@ -439,15 +449,25 @@ typeset -ga ZLAST_COMMANDS
       fi
    fi
 
+   (( this_word & 1 )) && {
+     active_command="$__arg"
+     [[ -n ${FAST_HIGHLIGHT[chroma-$active_command]} ]] && {
+       (( next_word = next_word | 8192 ))  # lasting state
+       ${FAST_HIGHLIGHT[chroma-$active_command]} 1 "$__arg" "$_start_pos" "$_end_pos" && continue
+     } || (( 1 ))
+   } || {
+     (( this_word & 8192 )) && ${FAST_HIGHLIGHT[chroma-$active_command]} 0 "$__arg" "$_start_pos" "$_end_pos" && continue
+   }
+
    expanded_path=""
 
    # The Great Fork: is this a command word?  Is this a non-command word?
    if (( this_word & 16 )) && [[ $__arg == 'always' ]]; then
      # try-always construct
      __style=${FAST_THEME_NAME}reserved-word # de facto a reserved word, although not de jure
-     (( next_word = 1 ))
+     (( next_word = 1 | (this_word & BIT_case_code) ))
    elif (( this_word & 1 )) && (( in_redirection == 0 )) || [[ "${braces_stack[1]}" = 'T' ]]; then
-     cur_cmd="$__arg"
+     active_command="$__arg"
      if (( arg_type == 1 )); then
       __style=${FAST_THEME_NAME}precommand
       [[ "$__arg" = "command" || "$__arg" = "exec" ]] && (( next_word = next_word | 64 ))
@@ -853,7 +873,7 @@ typeset -ga ZLAST_COMMANDS
   # Do we have whole buffer? I.e. start at zero
   [[ "$3" != 0 ]] && return 0
 
-  __inputs=( ${(0)${(S)__buf[1,110]//(#b)*\$\((?#)([^\\\"]\)|(#e))/${mbegin[1]};${match[1]}${match[2]%\)}${__nul}}%$__nul*} )
+  __inputs=( ${(0)${(S)__buf[1,110]//(#b)*\$\(([^\(]?#)([^\\\"]\)|(#e))/${mbegin[1]};${match[1]}${match[2]%\)}${__nul}}%$__nul*} )
   if [[ "${__inputs[1]}" != "${__buf[1,110]}" ]]; then
     if [[ -n "${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}secondary]}" ]]; then
       __idx=1
@@ -880,13 +900,13 @@ typeset -ga ZLAST_COMMANDS
 -fast-highlight-check-path()
 {
   : ${expanded_path:=${(Q)~__arg}}
-  [[ -n "${FAST_BLIST_PATTERNS[(k)$expanded_path]}" ]] && return 1
+  [[ -n "${FAST_BLIST_PATTERNS[(k)${${(M)expanded_path:#/*}:-$PWD/$expanded_path}]}" ]] && return 1
 
   [[ -z $expanded_path ]] && return 1
   [[ -e $expanded_path ]] && return 0
 
   # Search the path in CDPATH, only for CD command
-  [[ "$cur_cmd" = "cd" ]] && for cdpath_dir in $cdpath ; do
+  [[ "$active_command" = "cd" ]] && for cdpath_dir in $cdpath ; do
     [[ -e "$cdpath_dir/$expanded_path" ]] && return 0
   done
 
@@ -946,7 +966,7 @@ typeset -ga ZLAST_COMMANDS
   __idx=_start_pos
 
   #                                                                                                                                                                                                                       7
-  while [[ "$_mybuf" = (#b)[^\$a-zA-Z0-9]#((\$(#B)(+|)(#B)([a-zA-Z_:][a-zA-Z0-9_:]#|[0-9]##)(#b)(\[[^\]]#\])(#c0,1))|(\$[{](#B)(+|)(#b)(\([a-zA-Z0-9_:@%#]##\))(#c0,1)[a-zA-Z0-9_:#]##(\[[^\]]#\])(#c0,1)[}])|\$|[a-zA-Z_][a-zA-Z0-9_]#|[0-9]##)(*) ]]; do
+  while [[ "$_mybuf" = (#b)[^\$_a-zA-Z0-9]#((\$(#B)(+|)(#B)([a-zA-Z_:][a-zA-Z0-9_:]#|[0-9]##)(#b)(\[[^\]]#\])(#c0,1))|(\$[{](#B)(+|)(#b)(\([a-zA-Z0-9_:@%#]##\))(#c0,1)[a-zA-Z0-9_:#]##(\[[^\]]#\])(#c0,1)[}])|\$|[a-zA-Z_][a-zA-Z0-9_]#|[0-9]##)(*) ]]; do
     __idx+=${mbegin[1]}-1
     _end_idx=__idx+${mend[1]}-${mbegin[1]}+1
     _mybuf="${match[7]}"
@@ -1019,4 +1039,3 @@ typeset -ga ZLAST_COMMANDS
 }
 
 # vim:ft=zsh:sw=2:sts=2
-# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-

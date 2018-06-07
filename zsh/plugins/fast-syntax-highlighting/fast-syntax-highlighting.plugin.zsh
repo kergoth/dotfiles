@@ -33,6 +33,10 @@
 typeset -g ZERO=${(%):-%N}
 typeset -g FAST_BASE_DIR="${ZERO:h}"
 
+if [[ -z "$ZPLG_CUR_PLUGIN" && "${fpath[(r)$FAST_BASE_DIR]}" != $FAST_BASE_DIR ]]; then
+    fpath+=( "$FAST_BASE_DIR" )
+fi
+
 # Invokes each highlighter that needs updating.
 # This function is supposed to be called whenever the ZLE state changes.
 _zsh_highlight()
@@ -268,7 +272,8 @@ ZSH_HIGHLIGHT_MAXLENGTH=10000
 # Load zsh/parameter module if available
 zmodload zsh/parameter 2>/dev/null
 
-autoload -Uz is-at-least fast-theme fast-read-ini-file
+autoload -Uz -- is-at-least fast-theme fast-read-ini-file -fast-run-git-command
+autoload -Uz -- chroma/-git.ch chroma/-example.ch chroma/-grep.ch
 source "${ZERO:h}/fast-highlight"
 
 local __fsyh_theme

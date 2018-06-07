@@ -37,13 +37,13 @@ contexts:
         pop: true
 
   function_defnitions:
-    - match: '^\s*(python)\s+(\w*)\s*\(\)\s*{'
+    - match: '^\s*(def|python)\s+(\w*)\s*\([a-zA-Z0-9,_ =]*\)\s*[{:]'
       captures:
         1: storage.type.bitbake
         2: entity.name.function.bitbake
       set: Packages/Python/Python.sublime-syntax
       with_prototype:
-      - match: '}'
+      - match: '^(?=\w)|^}\s*$'
         pop: true
 
     - match: '^\s*(\w+)\s*\(\)\s*{'
@@ -55,7 +55,7 @@ contexts:
         pop: true
 
   variable_assignments:
-    - match: '^\s*(?:(export)\s+)?([\w\-]+(?:\${[\w\-]+})?)(\[\w+\])?(\-\w+)?(?=\s*{{operators_assignment}})'
+    - match: '^\s*(?:(export)\s+)?([\w\-\/]+(?:\${[\w\-]+})?)(\[\w+\])?(\-\w+)?(?=\s*{{operators_assignment}})'
       captures:
         1: storage.modifier.bitbake
         2: variable.other.bitbake
