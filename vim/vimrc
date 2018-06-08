@@ -154,7 +154,7 @@ set history=1000
 " Filesystem paths {{{
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
-let &runtimepath = $VIMDOTDIR . ',' . &runtimepath . ',' . $VIMDOTDIR . '/after'
+set runtimepath^=$VIMDOTDIR runtimepath+=$VIMDOTDIR/after
 
 " Also include $DOTFILESDIR/*/vim/
 let g:dtvim = glob(expand('<sfile>:p:h:h') . '/*/vim/', 0, 1)
