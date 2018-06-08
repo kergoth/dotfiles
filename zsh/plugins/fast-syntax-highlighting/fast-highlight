@@ -142,8 +142,14 @@ FAST_HIGHLIGHT+=(
   chroma-git     chroma/-git.ch
   chroma-example chroma/-example.ch
   chroma-grep    chroma/-grep.ch
-  chroma-egrep    chroma/-grep.ch
-  chroma-fgrep    chroma/-grep.ch
+  chroma-egrep   chroma/-grep.ch
+  chroma-fgrep   chroma/-grep.ch
+  chroma-perl    chroma/-perl.ch
+  chroma-make    chroma/-make.ch
+  chroma-awk     chroma/-awk.ch
+  chroma-gawk    chroma/-awk.ch
+  chroma-mawk    chroma/-awk.ch
+  chroma-vim     chroma/-vim.ch
 )
 
 # Assignments seen, to know if math parameter exists
@@ -248,10 +254,10 @@ typeset -ga ZLAST_COMMANDS
   # braces_stack: "R" for round, "Q" for square, "Y" for curly
   # _mybuf, cdpath_dir are used in sub-functions
   local _start_pos="$3" _end_pos __start __end highlight_glob=1 __arg __style in_array_assignment=0 MATCH expanded_path braces_stack __buf="$1$2" _mybuf cdpath_dir active_command alias_target _was_double_hyphen=0 __nul=$'\0'
-  # arg_type can be 0, 1, 2 or 3, i.e. precommand, control flow, command separator
+  # __arg_type can be 0, 1, 2 or 3, i.e. precommand, control flow, command separator
   # __idx and _end_idx are used in sub-functions
   # for this_word and next_word look below at commented integers and at state machine description
-  integer arg_type=0 MBEGIN MEND in_redirection __len=${#__buf} already_added offset __idx _end_idx this_word=1 next_word=0 insane_alias __pos  __asize
+  integer __arg_type=0 MBEGIN MEND in_redirection __len=${#__buf} already_added offset __idx _end_idx this_word=1 next_word=0 insane_alias __pos  __asize
   local -a match mbegin mend __inputs
 
   # This comment explains the numbers:
@@ -373,7 +379,7 @@ typeset -ga ZLAST_COMMANDS
         continue
       fi
 
-      arg_type=3
+      __arg_type=3
     else
       offset=0
       if [[ "$proc_buf" = (#b)(#s)(([[:space:]]|\\[[:space:]])##)* ]]; then
@@ -384,7 +390,7 @@ typeset -ga ZLAST_COMMANDS
       ((_end_pos=_start_pos+__asize))
 
       # No-hit will result in value 0
-      arg_type=${__FAST_HIGHLIGHT_TOKEN_TYPES[$__arg]}
+      __arg_type=${__FAST_HIGHLIGHT_TOKEN_TYPES[$__arg]}
     fi
 
     (( this_word & 1 )) && ZLAST_COMMANDS+=( "$__arg" );
@@ -468,7 +474,7 @@ typeset -ga ZLAST_COMMANDS
      (( next_word = 1 | (this_word & BIT_case_code) ))
    elif (( this_word & 1 )) && (( in_redirection == 0 )) || [[ "${braces_stack[1]}" = 'T' ]]; then
      active_command="$__arg"
-     if (( arg_type == 1 )); then
+     if (( __arg_type == 1 )); then
       __style=${FAST_THEME_NAME}precommand
       [[ "$__arg" = "command" || "$__arg" = "exec" ]] && (( next_word = next_word | 64 ))
      elif [[ "$__arg" = "sudo" ]]; then
@@ -532,7 +538,7 @@ typeset -ga ZLAST_COMMANDS
                           else
                             __style=${FAST_THEME_NAME}alias
                             zmodload -e zsh/parameter && alias_target=${aliases[$__arg]} || alias_target="${"$(alias -- $__arg)"#*=}"
-                            [[ ${__FAST_HIGHLIGHT_TOKEN_TYPES[$alias_target]} = "1" && "$arg_type" != "1" ]] && __FAST_HIGHLIGHT_TOKEN_TYPES[$__arg]="1"
+                            [[ ${__FAST_HIGHLIGHT_TOKEN_TYPES[$alias_target]} = "1" && "$__arg_type" != "1" ]] && __FAST_HIGHLIGHT_TOKEN_TYPES[$__arg]="1"
                           fi
                         ;;
         builtin)        __style=${FAST_THEME_NAME}builtin
@@ -582,7 +588,7 @@ typeset -ga ZLAST_COMMANDS
                           __style=${FAST_THEME_NAME}history-expansion
                         elif [[ $__arg[1] == $histchars[2] ]]; then
                           __style=${FAST_THEME_NAME}history-expansion
-                        elif (( arg_type == 3 )); then
+                        elif (( __arg_type == 3 )); then
                           # This highlights empty commands (semicolon follows nothing) as an error.
                           # Zsh accepts them, though.
                           (( this_word & 2 )) && __style=${FAST_THEME_NAME}commandseparator
@@ -786,7 +792,7 @@ typeset -ga ZLAST_COMMANDS
                    __style=${FAST_THEME_NAME}default
                  elif [[ $__arg[1] = $histchars[1] && -n "${__arg[2]}" ]]; then
                    __style=${FAST_THEME_NAME}history-expansion
-                 elif (( arg_type == 3 )); then
+                 elif (( __arg_type == 3 )); then
                    __style=${FAST_THEME_NAME}commandseparator
                  elif (( in_redirection == 2 )); then
                    __style=${FAST_THEME_NAME}redirection
@@ -841,7 +847,7 @@ typeset -ga ZLAST_COMMANDS
     # ADD
     (( already_added == 0 )) && [[ "${FAST_HIGHLIGHT_STYLES[$__style]}" != "none" ]] && (( __start=_start_pos-${#PREBUFFER}, __end=_end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[$__style]}")
 
-    if (( arg_type == 3 && this_word & (BIT_case_preamble|BIT_case_item) == 0 )); then
+    if (( __arg_type == 3 && this_word & (BIT_case_preamble|BIT_case_item) == 0 )); then
       if [[ $__arg == ';' ]] && (( in_array_assignment )); then
         # literal newline inside an array assignment
         (( next_word = 2 | (next_word & BIT_case_code) ))
@@ -851,7 +857,7 @@ typeset -ga ZLAST_COMMANDS
         (( next_word = 1 | (next_word & BIT_case_code) ))
         highlight_glob=1
       fi
-    elif (( (arg_type & 3) * (this_word & 1) )); then # (( arg_type == 1 || arg_type == 2 )) && (( this_word & 1 ))
+    elif (( (__arg_type & 3) * (this_word & 1) )); then # (( __arg_type == 1 || __arg_type == 2 )) && (( this_word & 1 ))
         (( next_word = 1 | (next_word & (64 | BIT_case_code)) ))
     elif [[ $__arg == "repeat" ]] && (( this_word & 1 )); then
       # skip the repeat-count word
@@ -873,8 +879,8 @@ typeset -ga ZLAST_COMMANDS
   # Do we have whole buffer? I.e. start at zero
   [[ "$3" != 0 ]] && return 0
 
-  __inputs=( ${(0)${(S)__buf[1,110]//(#b)*\$\(([^\(]?#)([^\\\"]\)|(#e))/${mbegin[1]};${match[1]}${match[2]%\)}${__nul}}%$__nul*} )
-  if [[ "${__inputs[1]}" != "${__buf[1,110]}" ]]; then
+  __inputs=( ${(0)${(S)__buf[1,250]//(#b)*\$\(([^\(]?#)([^\\\"]\)|(#e))/${mbegin[1]};${match[1]}${match[2]%\)}${__nul}}%$__nul*} )
+  if [[ "${__inputs[1]}" != "${__buf[1,250]}" ]]; then
     if [[ -n "${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}secondary]}" ]]; then
       __idx=1
       __buf="$FAST_THEME_NAME"
@@ -1037,5 +1043,17 @@ typeset -ga ZLAST_COMMANDS
 -fast-highlight-init() {
   __fast_highlight_main__command_type_cache=()
 }
+
+# -------------------------------------------------------------------------------------------------
+# Other
+# -------------------------------------------------------------------------------------------------
+
+
+typeset -ga FSH_LIST
+-fsh_sy_h_shappend() {
+    FSH_LIST+=( "$(( $1 - 1 ));;$(( $2 ))" )
+}
+
+functions -M fsh_sy_h_append 2 2 -fsh_sy_h_shappend
 
 # vim:ft=zsh:sw=2:sts=2

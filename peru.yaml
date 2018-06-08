@@ -126,7 +126,7 @@ git module zsh-syntax-highlighting:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 4b9598ee1f843a60c5adcf2f5799a53571be1277
+    rev: 6c6943720f70f9ee614cbe561266bca2fd467b25
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -285,7 +285,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: 2b19c0bc685fc2f726b977d161e6ce720a4d04a8
+    rev: af87650bc42ec8b821a3502857ca28692d6525d4
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -563,7 +563,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 28104af950dc01f76458c99b6d1083bde0dd9a0c
+    rev: e8a7d7968161f70f3cbd9b7c07a021ca01b54c3f
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -756,7 +756,7 @@ git module vim-autoformat:
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
-    rev: 943e08445de3179fbb53e1b951df34998501be28
+    rev: 5d81dcceee9894f433ab16b766db32dcbffef7af
 
 git module i3-alternating-layout:
     url: https://github.com/olemartinorg/i3-alternating-layout
