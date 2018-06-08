@@ -54,6 +54,8 @@ autoload -U select-word-style
 select-word-style normal
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
+source $ZSH/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
+
 # history-substring-search must be loaded after syntax-highlighting
 source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
 
