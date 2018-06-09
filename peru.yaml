@@ -6,7 +6,7 @@ imports:
     zsh-git-escape-magic: zsh/plugins/git-escape-magic
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
-    zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
+    zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
     hub-completion: git/zsh-functions
     iterm2-zsh: zsh/plugins/iterm2
     base16-shell: base16
@@ -120,9 +120,9 @@ imports:
     bat-syntax-bitbake: bat/syntax/BitBake
     bat-themes-base16: bat/themes
 
-git module zsh-syntax-highlighting:
-    url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: db6cac391bee957c20ff3175b2f03c4817253e60
+git module zsh-fast-syntax-highlighting:
+    url: https://github.com/zdharma/fast-syntax-highlighting
+    rev: 232903c42aed2c9d8c0e2896023c290114adc9f9
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
