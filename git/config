@@ -34,6 +34,7 @@
 	mnemonicprefix = true
 	ignoreSubmodules = dirty
 	compactionHeuristic = true
+	algorithm = patience
 
 [merge]
 	tool = fugitive
