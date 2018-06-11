@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: ca2e18bbc9e27b9264206c257d2ab68838162c70
+    rev: 5b8004f3851fb198145512ea4660362a268be557
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 7d871137bea68d43b5207d76863295be16ed1eb0
+    rev: 4f95970228a83fb494386a51091aec176525ccc9
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -611,7 +611,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 10a9177b6b211173660e09ffdbc476532640f398
+    rev: 22a9dcd03e3585851c48717c70c7ae7363b6e70c
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
