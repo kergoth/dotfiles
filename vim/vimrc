@@ -802,6 +802,7 @@ augroup vimrc_filetype_detect
   au BufNewFile,BufRead TODO,BUGS,README set ft=text
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
   au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
+  au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
 augroup END
 " }}}
 " File type settings {{{
@@ -864,8 +865,8 @@ augroup vimrc_filetypes
   au FileType gitcommit DiffGitCached
 
   " Kill unnecessary bits when acting as dvtm copymode
-  au BufReadPost /tmp/dvtm-editor.* set nonumber
-  au BufReadPost /tmp/dvtm-editor.* hi def link RedundantWhitespace NONE
+  au FileType dvtm-editor set nonumber
+  au FileType dvtm-editor hi def link RedundantWhitespace NONE
 augroup END
 
 " Kill unnecessary bits when acting as a pager
