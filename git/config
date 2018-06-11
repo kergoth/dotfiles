@@ -100,6 +100,9 @@
 	pushInsteadOf = http://github.com/
 	pushInsteadOf = git://github.com/
 
+[url "git@github.com:MentorEmbedded/meta-mentor-"]
+	insteadOf = https://github.com/MentorEmbedded/meta-mentor-
+
 [url "https://github.com/MentorEmbedded/meta-mentor"]
 	insteadOf = https://github.com/MentorEmbedded/meta-mentor
 
