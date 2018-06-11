@@ -139,17 +139,30 @@ __FAST_HIGHLIGHT_TOKEN_TYPES=(
 typeset -gA FAST_HIGHLIGHT
 
 FAST_HIGHLIGHT+=(
-  chroma-git     chroma/-git.ch
-  chroma-example chroma/-example.ch
-  chroma-grep    chroma/-grep.ch
+  chroma-grep    chroma/-grep.ch   # Triple
   chroma-egrep   chroma/-grep.ch
   chroma-fgrep   chroma/-grep.ch
-  chroma-perl    chroma/-perl.ch
-  chroma-make    chroma/-make.ch
-  chroma-awk     chroma/-awk.ch
+  chroma-awk     chroma/-awk.ch    # Triple
   chroma-gawk    chroma/-awk.ch
   chroma-mawk    chroma/-awk.ch
+  chroma-source  chroma/-source.ch # Double
+  chroma-.       chroma/-source.ch
+  chroma-sh      chroma/-sh.ch     # Five targets
+  chroma-zsh     chroma/-sh.ch
+  chroma-bash    chroma/-sh.ch
+  chroma-fish    chroma/-sh.ch
+  chroma-tmux    chroma/-sh.ch
   chroma-vim     chroma/-vim.ch
+  chroma-make    chroma/-make.ch
+  chroma-perl    chroma/-perl.ch
+  chroma-git     chroma/-git.ch
+  chroma-example chroma/-example.ch
+  chroma-docker  chroma/-docker.ch
+  chroma-autoload chroma/-autoload.ch
+  chroma-ssh     chroma/-ssh.ch
+  chroma-scp     chroma/-scp.ch
+  chroma-which   chroma/-which.ch
+  chroma-printf  chroma/-printf.ch
 )
 
 # Assignments seen, to know if math parameter exists
@@ -323,6 +336,7 @@ typeset -ga ZLAST_COMMANDS
   local proc_buf="$__buf" needle
   for __arg in ${interactive_comments-${(z)__buf}} \
              ${interactive_comments+${(zZ+c+)__buf}}; do
+
     # Initialize $next_word to its default value?
     (( in_redirection = in_redirection > 0 ? in_redirection - 1 : in_redirection ));
     (( next_word = (in_redirection == 0) ? 2 : next_word )) # else Stall $next_word.
@@ -797,17 +811,18 @@ typeset -ga ZLAST_COMMANDS
                  elif (( in_redirection == 2 )); then
                    __style=${FAST_THEME_NAME}redirection
                  else
-                   if [[ -z "${FAST_HIGHLIGHT[no_check_paths]}" ]] && -fast-highlight-check-path; then
-                     # ADD
-                     (( __start=_start_pos-${#PREBUFFER}, __end=_end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}")
-                     already_added=1
-
-                     [[ -n "$FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]" && "$FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]" != "$FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]" ]] && {
-                       for (( __pos = _start_pos; __pos <= _end_pos; __pos++ )) ; do
-                         # ADD
-                         [[ ${__buf[__pos]} == "/" ]] && (( __start=__pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$(( __start - 1 )) $__start ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}")
-                       done
-                     }
+                   if [[ -z "${FAST_HIGHLIGHT[no_check_paths]}" ]]; then
+                     if [[ -z "${FAST_HIGHLIGHT[cache-path-${__arg}-${_start_pos}]}" || $(( EPOCHSECONDS - FAST_HIGHLIGHT[cache-path-${__arg}-${_start_pos}-born-at] )) -gt 8 ]]; then
+                       exec {PCFD}< <(-fast-highlight-check-path)
+                       FAST_HIGHLIGHT[path-queue]+=";$_start_pos $_end_pos;"
+                       zle -F -w "$PCFD" fast-highlight-check-path-handler
+                       already_added=1
+                     elif [[ "${FAST_HIGHLIGHT[cache-path-${__arg}-${_start_pos}]}" -eq 1 ]]; then
+                       (( __start=_start_pos-${#PREBUFFER}, __end=_end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}")
+                       already_added=1
+                     else
+                       __style=${FAST_THEME_NAME}default
+                     fi
                    else
                      __style=${FAST_THEME_NAME}default
                    fi
@@ -879,7 +894,13 @@ typeset -ga ZLAST_COMMANDS
   # Do we have whole buffer? I.e. start at zero
   [[ "$3" != 0 ]] && return 0
 
-  _mybuf="${__buf[1,250]}" __workbuf="$_mybuf" __idx=0 __pos=0
+  # The loop overwrites ")" with "x", except those from $( ) substitution
+  #
+  # __pos: current nest level, starts from 0
+  # __workbuf: copy of __buf, with limit on 250 characters
+  # __idx: index in whole command line buffer
+  # __list: list of coordinates of ) which shouldn't be ovewritten
+  _mybuf="${__buf[1,250]}" __workbuf="$_mybuf" __idx=0 __pos=0 __list=()
 
   while [[ "$__workbuf" = (#b)[^\(\)]#([\(\)])(*) ]]; do
     if [[ "${match[1]}" == \( ]]; then
@@ -922,20 +943,54 @@ typeset -ga ZLAST_COMMANDS
 # Else, return non-zero (and the contents of $REPLY is undefined).
 -fast-highlight-check-path()
 {
-  : ${expanded_path:=${(Q)~__arg}}
-  [[ -n "${FAST_BLIST_PATTERNS[(k)${${(M)expanded_path:#/*}:-$PWD/$expanded_path}]}" ]] && return 1
+  # This is to fill cache
+  print -r -- "$__arg"
 
-  [[ -z $expanded_path ]] && return 1
-  [[ -e $expanded_path ]] && return 0
+  : ${expanded_path:=${(Q)~__arg}}
+  [[ -n "${FAST_BLIST_PATTERNS[(k)${${(M)expanded_path:#/*}:-$PWD/$expanded_path}]}" ]] && { print -r -- "- $_start_pos $_end_pos"; return 1; }
+
+  [[ -z $expanded_path ]] && { print -r -- "- $_start_pos $_end_pos"; return 1; }
+  [[ -e $expanded_path ]] && { print -r -- "$_start_pos $_end_pos"; return 0; }
 
   # Search the path in CDPATH, only for CD command
   [[ "$active_command" = "cd" ]] && for cdpath_dir in $cdpath ; do
-    [[ -e "$cdpath_dir/$expanded_path" ]] && return 0
+    [[ -e "$cdpath_dir/$expanded_path" ]] && { print -r -- "$_start_pos $_end_pos"; return 0; }
   done
 
   # It's not a path.
+  print -r -- "- $_start_pos $_end_pos"
   return 1
 }
+
+-fast-highlight-check-path-handler() {
+  local IFS=$'\n' PCFD="$1" line stripped val
+  integer idx
+
+  if read -r -u "$PCFD" val; then
+    if read -r -u "$PCFD" line; then
+      stripped="${line#- }"
+      FAST_HIGHLIGHT[cache-path-${val}-${stripped%% *}-born-at]="$EPOCHSECONDS"
+      idx="${${FAST_HIGHLIGHT[path-queue]}[(I)$stripped]}"
+      (( idx > 0 )) && {
+        if [[ "$line" != -* ]]; then
+          FAST_HIGHLIGHT[cache-path-${val}-${stripped%% *}]=1
+          region_highlight+=("${line%% *} ${line##* } ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}")
+          zle .redisplay
+        else
+          FAST_HIGHLIGHT[cache-path-${val}-${stripped%% *}]=0
+        fi
+        val="${FAST_HIGHLIGHT[path-queue]}"
+        val[idx-1,idx+${#stripped}]=""
+        FAST_HIGHLIGHT[path-queue]="$val"
+      }
+    fi
+  fi
+
+  zle -F ${PCFD}
+  exec {PCFD}<&-
+}
+
+zle -N -- fast-highlight-check-path-handler -fast-highlight-check-path-handler
 
 # Highlight special blocks inside double-quoted strings
 #

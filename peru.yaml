@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 232903c42aed2c9d8c0e2896023c290114adc9f9
+    rev: ca2e18bbc9e27b9264206c257d2ab68838162c70
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 6a05b927161ab3cdcf841fdd281719e18858025a
+    rev: 7d871137bea68d43b5207d76863295be16ed1eb0
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -281,7 +281,7 @@ git module fzf:
         - vim/bundle/fzf
         - zsh/plugins/fzf
         - scripts/fzf-tmux
-    rev: af87650bc42ec8b821a3502857ca28692d6525d4
+    rev: f0fe79dd3bb4b782ad6040c970b4bfc818729f05
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -559,7 +559,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: e8a7d7968161f70f3cbd9b7c07a021ca01b54c3f
+    rev: 98f153f3a639ceb871e5e2e61d3b294e58da430f
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish

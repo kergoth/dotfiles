@@ -1,5 +1,14 @@
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D6XDCHDSBDSDG)
 
+```
+ _____         _       ____              _                  _   _ _       _     _ _       _     _   _
+|  ___|_ _ ___| |_    / ___| _   _ _ __ | |_ __ ___  __    | | | (_) __ _| |__ | (_) __ _| |__ | |_(_)_ __   __ _
+| |_ / _` / __| __|___\___ \| | | | '_ \| __/ _` \ \/ /____| |_| | |/ _` | '_ \| | |/ _` | '_ \| __| | '_ \ / _` |
+|  _| (_| \__ \ ||_____|__) | |_| | | | | || (_| |>  <_____|  _  | | (_| | | | | | | (_| | | | | |_| | | | | (_| |
+|_|  \__,_|___/\__|   |____/ \__, |_| |_|\__\__,_/_/\_\    |_| |_|_|\__, |_| |_|_|_|\__, |_| |_|\__|_|_| |_|\__, |
+                             |___/                                  |___/           |___/                   |___/
+```
+
 # Zshell Fast Syntax Highlighting
 
 60 commits that optimized standard `zsh-syntax-highlighting` to the point that it can edit `10 kB`
@@ -49,6 +58,12 @@ Performance differencies can be observed at Asciinema recording, where `10 kB` f
 [![asciicast](https://asciinema.org/a/112367.png)](https://asciinema.org/a/112367)
 
 # Updates (2018)
+**2018-06-09**
+
+New chroma functions: `awk`, `make`, `perl`, `vim`. Checkout the [video](https://asciinema.org/a/186234),
+it shows functionality of `awk` – compiling of code and NOT running it. Perl can do this too:
+[video](https://asciinema.org/a/186098).
+
 **2018-06-06**
 
 FSH gained a new architecture – "chroma functions". They are similar to "completion functions", i.e. they

@@ -1,7 +1,7 @@
 # -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 # Copyright (c) 2018 Sebastian Gniazdowski
 #
-# Chroma function for command `make'.
+# Chroma function for `sh' shell. It colorizes string passed with -c option.
 #
 # $1 - 0 or 1, denoting if it's first call to the chroma, or following one
 # $2 - the current token, also accessible by $__arg from the above scope -
@@ -20,48 +20,40 @@ integer __idx1 __idx2
 local -a __lines_list
 
 (( __first_call )) && {
-    # Called for the first time - new command.
-    # FAST_HIGHLIGHT is used because it survives between calls, and
-    # allows to use a single global hash only, instead of multiple
-    # global variables.
-    FAST_HIGHLIGHT[chroma-make-counter]=0
+    # Called for the first time - new command
+    FAST_HIGHLIGHT[chrome-git-got-c]=0
     __style=${FAST_THEME_NAME}command
 } || {
-    # Following call, i.e. not the first one.
+    # Following call, i.e. not the first one
 
     # Check if chroma should end – test if token is of type
     # "starts new command", if so pass-through – chroma ends
     [[ "$__arg_type" = 3 ]] && return 2
 
-    if [[ "$__wrd" = -* ]]; then
+    __wrd="${${${(Q)__wrd}#[\"\']}%[\"\']}"
+    if [[ "$__wrd" = -* && "$__wrd" != -*c* ]]; then
         __style=${FAST_THEME_NAME}${${${__wrd:#--*}:+single-hyphen-option}:-double-hyphen-option}
     else
-        (( FAST_HIGHLIGHT[chroma-make-counter] += 1, __idx1 = FAST_HIGHLIGHT[chroma-make-counter] ))
+        if (( FAST_HIGHLIGHT[chrome-git-got-c] == 1 )); then
+            for (( __idx1 = 1, __idx2 = 1; __idx2 <= __asize; ++ __idx1 )); do
+                [[ "${__arg[__idx2]}" = "${__wrd[__idx1]}" ]] && break
+                while [[ "${__arg[__idx2]}" != "${__wrd[__idx1]}" ]]; do
+                    (( ++ __idx2 ))
+                    (( __idx2 > __asize )) && { __idx2=0; break; }
+                done
+                (( __idx2 == 0 )) && break
+                [[ "${__arg[__idx2]}" = "${__wrd[__idx1]}" ]] && break
+            done
 
-
-        if (( FAST_HIGHLIGHT[chroma-make-counter] == 1 )); then
-            __wrd="${__wrd//\`/x}"
-            __wrd="${(Q)__wrd}"
-
-            if [[ -f Makefile ]] && -fast-make-targets < Makefile; then
-                if [[ "${reply[(r)$__wrd]}" ]]; then
-                    (( __start=__start_pos-${#PREBUFFER}, __end=__end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}correct-subtle]}")
-                else
-                    (( __start=__start_pos-${#PREBUFFER}, __end=__end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]}")
-                fi
-            fi
-        else
-            # Pass-through to the big-loop outside
-            return 1
+            FAST_HIGHLIGHT[chrome-git-got-c]=0
+            -fast-highlight-process "$PREBUFFER" "${__wrd}" "$(( __start_pos + __idx2 - 1 ))"
+        elif [[ "$__wrd" = -*c* ]]; then
+            FAST_HIGHLIGHT[chrome-git-got-c]=1
         fi
     fi
 }
 
 # Add region_highlight entry (via `reply' array)
-#
-# This is a common place of adding such entry, but any above
-# code can do it itself (and it does) and skip setting __style
-# to disable this code.
 [[ -n "$__style" ]] && (( __start=__start_pos-${#PREBUFFER}, __end=__end_pos-${#PREBUFFER}, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[$__style]}")
 
 # We aren't passing-through, do obligatory things ourselves
