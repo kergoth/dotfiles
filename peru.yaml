@@ -13,7 +13,7 @@ imports:
     zsh-zbell: zsh/plugins/zbell
 
     # Scripts
-    appify: scripts
+    appify: osx/scripts
     checkbashisms: scripts
     cpanm: perl/scripts
     cwdiff: scripts
