@@ -8,7 +8,7 @@ imports:
     zsh-manydots-magic: zsh/functions
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
     hub-completion: git/zsh-functions
-    iterm2-zsh: zsh/plugins/iterm2
+    iterm2-zsh: iterm2
     base16-shell: base16
     zsh-zbell: zsh/plugins/zbell
 
