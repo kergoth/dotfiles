@@ -44,7 +44,7 @@ imports:
     osx-wificleaner: scripts
     planter: scripts
     pom: scripts
-    pyenv-installer: scripts
+    pyenv-installer: system-setup/scripts
     dev-goodies: git/scripts
     repo: git/scripts
     rofi-tools: i3/scripts
