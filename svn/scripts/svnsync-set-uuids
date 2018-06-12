@@ -1,8 +1,0 @@
-#!/bin/sh
-
-for repo; do
-    repourl="file://$PWD/$repo"
-    url="$(svn propget --revprop -r 0 svn:sync-from-url $repourl)"
-    uuid="$(svn info $url|sed -n -e's/^Repository UUID: \(.*\)$/\1/p')"
-    svnadmin setuuid $repo $uuid
-done

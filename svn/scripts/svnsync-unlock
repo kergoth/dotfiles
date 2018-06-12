@@ -1,2 +1,0 @@
-#!/bin/sh
-exec svn pdel --revprop -r 0 svn:sync-lock file://$PWD/$1
