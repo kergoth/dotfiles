@@ -21,7 +21,7 @@ imports:
     dtrx: scripts
     dustin-bindir: git/scripts
     fasd: fasd/scripts
-    flu: scripts
+    flu: osx/scripts
     gnu2bsd: ls/scripts
     git-blame-colored: git/scripts
     git-cherry-tree: git/scripts
@@ -41,7 +41,7 @@ imports:
     lesspipe: less/scripts
     md-inline2ref: scripts
     moreutils: scripts
-    osx-wificleaner: scripts
+    osx-wificleaner: osx/scripts
     planter: scripts
     pom: scripts
     pyenv-installer: system-setup/scripts
@@ -53,8 +53,8 @@ imports:
     smem: scripts
     ssh-copy-rsub: scripts
     t: scripts
-    tagbak: scripts
-    vitag: scripts
+    tagbak: osx/scripts
+    vitag: osx/scripts
     wget-finder: scripts
     wsl-open: scripts
 
