@@ -28,15 +28,6 @@ if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
 fi
 
-export PAGER='less'
-if [[ -n $commands[mvim] ]]; then
-    export EDITOR="mvim -v"
-elif [[ -n $commands[vim] ]]; then
-    export EDITOR=vim
-else
-    export EDITOR=vi
-fi
-export VISUAL=$EDITOR
 # Reduce the ncurses escape wait time (ms)
 export ESCDELAY=25
 export NCURSES_NO_UTF8_ACS=1
@@ -71,15 +62,10 @@ if [[ -n "$TERMINFO_DIRS" ]]; then
 fi
 export TERMINFO_DIRS
 
-export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
-export CURL_HOME=$XDG_CONFIG_HOME/curl
-export LESSHISTFILE=$XDG_DATA_HOME/less/lesshist
-export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export PERU_CACHE_DIR=$XDG_CACHE_HOME/peru
 export HTTPIE_CONFIG_DIR=$XDG_CONFIG_HOME/httpie
 export PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass
 export RLWRAP_HOME=$XDG_DATA_HOME/rlwrap
-export TMUX_TMPDIR=$XDG_RUNTIME_DIR
 export XAUTHORITY=$XDG_RUNTIME_DIR/Xauthority
 export RANDFILE=$XDG_DATA_HOME/rng
 
