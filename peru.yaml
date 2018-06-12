@@ -22,7 +22,7 @@ imports:
     dustin-bindir: git/scripts
     fasd: fasd/scripts
     flu: scripts
-    gnu2bsd: scripts
+    gnu2bsd: ls/scripts
     git-blame-colored: git/scripts
     git-cherry-tree: git/scripts
     git-extras: git/scripts
