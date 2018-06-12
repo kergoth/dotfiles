@@ -58,7 +58,7 @@ imports:
     wget-finder: scripts
     wsl-open: scripts
 
-    chneukirchen-tools: scripts
+    chneukirchen-tools: .
     1t: scripts
     f: scripts
     frep: scripts
@@ -67,7 +67,7 @@ imports:
     git-neck: git/scripts
     git-trail: git/scripts
     lsort: scripts
-    pacsrc: scripts
+    pacsrc: arch/scripts
     stee: scripts
     tlog: scripts
     utter: scripts
@@ -407,11 +407,16 @@ git module moreutils:
 
 git module chneukirchen-tools:
     url: https://github.com/kergoth/chneukirchen-tools
+    move:
+        base: scripts/base
+        spongegrep: scripts/spongegrep
+        swaptop: scripts/swaptop
+        pacverify: arch/scripts/pacverify
     pick:
-        - base
-        - pacverify
-        - spongegrep
-        - swaptop
+        - scripts/base
+        - scripts/spongegrep
+        - scripts/swaptop
+        - arch/scripts/pacverify
     rev: db08c7e7dc8c6e819fc03daba8ab7ca52a9c1ac5
 
 curl module git-neck:

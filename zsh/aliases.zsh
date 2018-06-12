@@ -43,10 +43,6 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
-if (( $+commands[pacman-color] )); then
-    alias pacman='pacman-color'
-fi
-
 if (( $+commands[ack-grep] )); then
     alias ack='ack-grep --smart-case --pager=${PAGER:-less}'
 else
