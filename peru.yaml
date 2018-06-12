@@ -276,11 +276,10 @@ git module fzf:
         plugin/fzf.vim: vim/bundle/fzf/plugin/fzf.vim
         shell/key-bindings.zsh: fzf/key-bindings.zsh
         shell/completion.zsh: fzf/completion.zsh
-        bin/fzf-tmux: scripts/fzf-tmux
+        bin/fzf-tmux: fzf/scripts/fzf-tmux
     pick:
         - vim/bundle/fzf
-        - zsh/plugins/fzf
-        - scripts/fzf-tmux
+        - fzf
     rev: f0fe79dd3bb4b782ad6040c970b4bfc818729f05
 
 curl module rpm2cpio:
