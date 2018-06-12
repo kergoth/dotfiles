@@ -1,0 +1,7 @@
+att-env | while IFS== read var value; do
+    if [[ $var = -* ]]; then
+        unset ${var/-}
+    else
+        eval "export $var=\"$value\""
+    fi
+done
