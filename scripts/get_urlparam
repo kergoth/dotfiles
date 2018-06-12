@@ -1,3 +1,0 @@
-#!/bin/sh
-
-python3 -c 'import sys; import urllib.parse as p; q = p.urlparse(sys.argv[1]); qd = p.parse_qs(q.query); print(qd["url"][0])' "$1"
