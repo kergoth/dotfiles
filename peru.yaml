@@ -75,9 +75,9 @@ imports:
 
     # Vim
     pathogen: vim/autoload
-    base16-vim: vim/bundle/base16
+    base16-vim: base16/vim
     Modeliner: vim/bundle/Modeliner
-    fugitive: vim/bundle/fugitive
+    fugitive: git/vim/bundle/fugitive
     securemodelines: vim/bundle/securemodelines
     taskpaper: vim/bundle/taskpaper
     vim-abolish: vim/bundle/abolish
@@ -91,7 +91,7 @@ imports:
     vim-editorconfig: vim/bundle/editorconfig
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
-    vim-fzf-extra: vim/bundle/fzf-extra
+    vim-fzf-extra: fzf/vim/bundle/fzf-extra
     vim-lion: vim/bundle/lion
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
@@ -99,9 +99,9 @@ imports:
     vim-rsi: vim/bundle/rsi
     vim-sneak: vim/bundle/sneak
     vim-surround: vim/bundle/surround
-    vim-tmuxline: vim/bundle/tmuxline
-    vim-tmux-navigator: vim/bundle/tmux-navigator
-    vim-tmux-focus-events: vim/bundle/tmux-focus-events
+    vim-tmuxline: tmux/vim/bundle/tmuxline
+    vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
+    vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
@@ -113,7 +113,7 @@ imports:
     textual-succinctlight: textual/styles/Succinct Light
 
     # Other
-    fzf: .
+    fzf: fzf
     base16-fzf: fzf
     base16-rofi: i3
     bat-syntax-bitbake: bat/syntax/BitBake
@@ -273,13 +273,15 @@ hg module t:
 git module fzf:
     url: https://github.com/junegunn/fzf
     move:
-        plugin/fzf.vim: vim/bundle/fzf/plugin/fzf.vim
-        shell/key-bindings.zsh: fzf/key-bindings.zsh
-        shell/completion.zsh: fzf/completion.zsh
-        bin/fzf-tmux: fzf/scripts/fzf-tmux
+        plugin: vim/plugin
+        bin: scripts
+        shell/key-bindings.zsh: key-bindings.zsh
+        shell/completion.zsh: completion.zsh
     pick:
-        - vim/bundle/fzf
-        - fzf
+        - vim
+        - key-bindings.zsh
+        - completion.zsh
+        - scripts
     rev: f0fe79dd3bb4b782ad6040c970b4bfc818729f05
 
 curl module rpm2cpio:

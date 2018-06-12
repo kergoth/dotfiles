@@ -89,14 +89,6 @@ alias fdf="fd -t f ''"
 alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
 alias bbfdf="bbfd ''"
 
-if (( $+commands[vim] )); then
-    alias vi=vim
-fi
-
-if [[ -n $VIM_SERVER ]] && vim --version 2>/dev/null | grep -qw '+clientserver'; then
-    alias vim="vim --servername $VIM_SERVER --remote"
-fi
-
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if (( $+commands[dfc] )); then
@@ -106,9 +98,6 @@ if [[ $OSTYPE =~ darwin ]]; then
         alias df='df -P -h -T nodevfs,autofs,mtmfs'
     fi
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
-    if (( $+commands[mvim] )); then
-        alias vim='mvim -v'
-    fi
     if (( $+commands[grm] )); then
         alias rm='grm --one-file-system -I'
     fi
