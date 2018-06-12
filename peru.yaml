@@ -274,8 +274,8 @@ git module fzf:
     url: https://github.com/junegunn/fzf
     move:
         plugin/fzf.vim: vim/bundle/fzf/plugin/fzf.vim
-        shell/key-bindings.zsh: zsh/plugins/fzf/key-bindings.zsh
-        shell/completion.zsh: zsh/plugins/fzf/completion.zsh
+        shell/key-bindings.zsh: fzf/key-bindings.zsh
+        shell/completion.zsh: fzf/completion.zsh
         bin/fzf-tmux: scripts/fzf-tmux
     pick:
         - vim/bundle/fzf

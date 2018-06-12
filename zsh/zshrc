@@ -66,8 +66,6 @@ unset config_files
 
 # Load manually loaded "plugins"
 . $ZSH/plugins/bd/bd.zsh
-. $ZSH/plugins/fzf/key-bindings.zsh
-. $ZSH/plugins/fzf/completion.zsh
 if [[ $OSTYPE =~ darwin ]]; then
     iterm2_hostname=$HOST
     . $ZSH/plugins/iterm2/iterm2.zsh
