@@ -38,7 +38,7 @@ imports:
     i3-alternating-layout: scripts
     icdiff: .
     iln: scripts
-    lesspipe: scripts
+    lesspipe: less/scripts
     md-inline2ref: scripts
     moreutils: scripts
     osx-wificleaner: scripts
