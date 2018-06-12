@@ -3,7 +3,7 @@ imports:
     zsh-autosuggestions: zsh/plugins/autosuggestions
     zsh-bd: zsh/plugins/bd
     zsh-completions: zsh/plugins/completions
-    zsh-git-escape-magic: zsh/plugins/git-escape-magic
+    zsh-git-escape-magic: git/zsh-plugins/git-escape-magic
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/plugins/manydots-magic
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
