@@ -14,7 +14,6 @@ imports:
 
     # Scripts
     appify: scripts
-    atach: scripts
     checkbashisms: scripts
     cpanm: scripts
     cwdiff: scripts
@@ -320,11 +319,6 @@ git module wget-finder:
     export: sh/tools
     pick: sh/tools/wget-finder
     rev: a0102da23a2bd97e0d18b868cf9841c2fe39fe9e
-
-git module atach:
-    url: https://github.com/sorin-ionescu/atach
-    pick: atach
-    rev: 754af1492654460e5abccb238b038d42f02ec1e1
 
 curl module cpanm:
     url: https://cpanmin.us/
