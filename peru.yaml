@@ -400,12 +400,10 @@ git module moreutils:
 git module chneukirchen-tools:
     url: https://github.com/kergoth/chneukirchen-tools
     move:
-        base: scripts/base
         spongegrep: scripts/spongegrep
         swaptop: scripts/swaptop
         pacverify: arch/scripts/pacverify
     pick:
-        - scripts/base
         - scripts/spongegrep
         - scripts/swaptop
         - arch/scripts/pacverify
