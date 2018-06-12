@@ -120,11 +120,6 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias daisydisk="open -b com.daisydiskapp.DaisyDiskStandAlone"
     alias ddisk=daisydisk
     alias marked="open -b com.brettterpstra.marked2"
-
-    alacritty() {
-        local app=$(locate_app_by_id io.alacritty | head -n 1)
-        "$app/Contents/MacOS/alacritty" --working-directory "$PWD" "$@"
-    }
 else
     alias ps='ps fux'
     if (( $+commands[dfc] )); then
@@ -135,7 +130,6 @@ else
     fi
     alias rm='rm --one-file-system -I'
     alias open=xdg-open
-    alias alacritty='alacritty --working-directory "$PWD"'
 fi
 alias wildcard_to_re='python -c "import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))"'
 alias fnmatch='python -c "import fnmatch,sys; sys.exit(not fnmatch.fnmatch(*sys.argv[1:3]))"'
