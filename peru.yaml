@@ -5,7 +5,7 @@ imports:
     zsh-completions: zsh/plugins/completions
     zsh-git-escape-magic: git/zsh-plugins/git-escape-magic
     zsh-history-substring-search: zsh/plugins/history-substring-search
-    zsh-manydots-magic: zsh/plugins/manydots-magic
+    zsh-manydots-magic: zsh/functions
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
     hub-completion: git/zsh-functions
     iterm2-zsh: zsh/plugins/iterm2
@@ -495,6 +495,7 @@ git module zsh-bd:
 git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
     rev: 4372de0718714046f0c7ef87b43fc0a598896af6
+    pick: manydots-magic
 
 # From Damian Conway's vim setup. Note: review more of the plugins there
 git module damian-conway-vim:
