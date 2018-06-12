@@ -1,6 +1,6 @@
 #!/bin/sh
 
-die () {
+die() {
     ret=$?
     echo >&2 "$@"
     exit $ret
@@ -34,19 +34,19 @@ if [ -e scripts/diff-highlight.perl ]; then
 fi
 
 cd "$tmpdir" || exit 1
-git clone https://github.com/petdance/ack2 && \
-    cd ack2 && \
-    "$dotfilesdir/scripts/cpanmv" ack2 File::Next && \
-    eval "$("$dotfilesdir/scripts/cpanmv-use" ack2)" && \
-    perl Makefile.PL && \
-    make ack-standalone && \
-    cp -f ack-standalone "$dotfilesdir/scripts/ack"
+git clone https://github.com/petdance/ack2 \
+    && cd ack2 \
+    && "$dotfilesdir/perl/scripts/cpanmv" ack2 File::Next \
+    && eval "$("$dotfilesdir/perl/scripts/cpanmv-use" ack2)" \
+    && perl Makefile.PL \
+    && make ack-standalone \
+    && cp -f ack-standalone "$dotfilesdir/scripts/ack"
 
 cd "$tmpdir" || exit 1
-git clone https://github.com/defunkt/gist && \
-    cd gist && \
-    rake standalone && \
-    cp -f build/gist "$dotfilesdir/scripts/gist"
+git clone https://github.com/defunkt/gist \
+    && cd gist \
+    && rake standalone \
+    && cp -f build/gist "$dotfilesdir/scripts/gist"
 
 if [ -e zsh/promptline.zsh ]; then
     vim -c "PromptlineSnapshot! $PWD/zsh/promptline.zsh airline" -c quit >/dev/null 2>&1
