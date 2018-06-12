@@ -3,27 +3,27 @@
 # git-mvd - Move or rename a file, a directory, or a symlink, creating
 #           any missing leading directories in the destination.
 
-usage () {
+usage() {
     git mv -h
     exit 2
 }
 
-quote(){
-    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+quote() {
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" <<EOF
 $1
 EOF
 }
 
-save () {
+save() {
     case "$1" in
-    # when a string contains a "'" we have to escape it
-    *\'*)
-        saved="$saved $(quote "$1")"
-        ;;
-    # otherwise just quote the variable
-    *)
-        saved="$saved '$1'"
-        ;;
+        # when a string contains a "'" we have to escape it
+        *\'*)
+            saved="$saved $(quote "$1")"
+            ;;
+        # otherwise just quote the variable
+        *)
+            saved="$saved '$1'"
+            ;;
     esac
 }
 
@@ -34,7 +34,7 @@ while getopts vnfkh opt; do
         n)
             dry_run=1
             ;;
-        \?|h)
+        \? | h)
             usage
             ;;
     esac
@@ -46,12 +46,12 @@ if [ $# -lt 2 ]; then
     usage
 fi
 
-destination="$(eval printf '%s' "\$$#")"
+destination="$(eval printf '%s' "\${$#}")"
 destdir="$destination"
 if [ $# -eq 2 ]; then
     case "$destination" in
-        */)
-            ;;
+        */) ;;
+
         *)
             if [ ! -d "$destination" ]; then
                 destdir="$(dirname "$destdir")"
