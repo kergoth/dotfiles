@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 5b8004f3851fb198145512ea4660362a268be557
+    rev: e027c405c04e823689993701b73159b2f9758cbf
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -558,7 +558,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 98f153f3a639ceb871e5e2e61d3b294e58da430f
+    rev: bec14411334c6e790aed34881e3c10978764e75c
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -610,7 +610,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 22a9dcd03e3585851c48717c70c7ae7363b6e70c
+    rev: f1b72218c36cadd544f4363d726e8ee131a593a5
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
