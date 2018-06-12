@@ -34,8 +34,8 @@ imports:
     git-wtf: git/scripts
     git: git/scripts
     gitvoodoo: git/scripts
-    i3-urgent-notify: scripts
-    i3-alternating-layout: scripts
+    i3-urgent-notify: i3/scripts
+    i3-alternating-layout: i3/scripts
     icdiff: .
     iln: scripts
     lesspipe: less/scripts
@@ -47,7 +47,7 @@ imports:
     pyenv-installer: scripts
     dev-goodies: git/scripts
     repo: git/scripts
-    rofi-tools: scripts
+    rofi-tools: i3/scripts
     rpm2cpio: scripts
     rustup: rust/scripts
     smem: scripts
