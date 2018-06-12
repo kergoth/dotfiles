@@ -15,7 +15,7 @@ imports:
     # Scripts
     appify: scripts
     checkbashisms: scripts
-    cpanm: scripts
+    cpanm: perl/scripts
     cwdiff: scripts
     diff-so-fancy: scripts
     dtrx: scripts
