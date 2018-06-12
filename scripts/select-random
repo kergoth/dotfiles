@@ -1,15 +1,18 @@
 #!/bin/bash
 
+set -eo pipefail
+
 content="$(mktemp -t "${0##*/}.XXXX")"
 cat "$@" >"$content"
-count="$(wc -l <$content)"
+count="$(wc -l <"$content")"
 
-if [ $count -eq 0 ]; then
+if [ "$count" -eq 0 ]; then
     echo >&2 "Error: nothing to select"
     exit 1
 fi
 
-selection="$(sed -n $(echo $RANDOM % $count + 1 | bc)p "$content")"
+lineno="$(echo "$RANDOM % $count + 1" | bc)"
+selection="$(sed -n "${lineno}p" "$content")"
 if [ -z "$selection" ]; then
     sed -n 1p "$content"
 else
