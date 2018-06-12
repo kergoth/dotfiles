@@ -13,7 +13,6 @@ alias which-command='whence -avf'
 alias gdb='gdb -nh -x "$XDG_CONFIG_HOME"/gdb/init'
 alias grep='grep --color=auto'
 alias tmux='tmux -u2 -f ~/.config/tmux/config'
-alias bback='ack --type=bitbake'
 alias chrome='google-chrome'
 alias t.py='command t.py --task-dir ~/Dropbox/Documents'
 alias t='t.py --list tasks.txt'
@@ -64,17 +63,8 @@ pt () {
     fi
 }
 
-if (( $+commands[pt] )); then
-    alias bbag="pt -G '\.(bb|bbappend|inc|conf)$'"
-    alias bbs=bbag
-elif (( $+commands[ag] )); then
-    alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
-    alias bbs=bbag
-elif (( $+commands[ack] )); then
+if ! (( $+commands[ag] )) && (( $+commands[ack] )); then
     alias ag=ack
-    alias bback='ack --type=bitbake'
-    alias bbag=bback
-    alias bbs=bbag
 fi
 
 fd () {
@@ -86,8 +76,6 @@ fd () {
 }
 
 alias fdf="fd -t f ''"
-alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
-alias bbfdf="bbfd ''"
 
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
