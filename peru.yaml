@@ -598,10 +598,10 @@ git module git-extras:
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
-    pick: flu
     rev: d43d811a9989eef6ce736e5720328dd351efd246
     move:
-        flu.sh: flu
+        flu.sh: osx-flush-dns-cache
+    pick: osx-flush-dns-cache
 
 curl module rustup:
     url: https://sh.rustup.rs
