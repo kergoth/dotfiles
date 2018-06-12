@@ -506,11 +506,6 @@ git module git-remote-hg:
     pick: git-remote-hg
     rev: 628d26c1a50502fcb23bc0695327b65aa979e96d
 
-git module tmx:
-    url: https://github.com/brandur/tmux-extra
-    pick: tmx
-    rev: 77dda64f3de581d0545213fd7994af0578428e89
-
 git module vitag:
     url: https://github.com/ttscoff/vitag
     pick: vitag
