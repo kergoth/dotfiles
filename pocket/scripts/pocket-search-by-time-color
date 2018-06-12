@@ -1,3 +1,0 @@
-#!/bin/sh
-
-pocket-search-by-time "$@" | while IFS=$'\t' read -r id url title tags time; do printf '\e[0;31m%s\t\e[0;32m%s\t\e[0;33m%s %s\t\e[0;35m%s\e[0m\n' "$id" "$url" "$time" "$tags" "$title"; done

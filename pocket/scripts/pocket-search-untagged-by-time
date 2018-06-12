@@ -1,3 +1,0 @@
-#!/bin/sh
-
-pocket-search-untagged "$@" | pocket-cli-join-entries | sort -nk3

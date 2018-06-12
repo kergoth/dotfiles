@@ -1,7 +1,0 @@
-#!/bin/sh
-
-tag="$1"
-shift
-for id; do
-    pocket-add-tags "$id" "$tag"
-done

@@ -1,5 +1,0 @@
-#!/bin/sh
-
-for article_id; do
-    pocket-cli archive "$article_id"
-done

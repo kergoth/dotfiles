@@ -1,3 +1,0 @@
-#!/bin/sh
-
-pocket-search -s unread "$@" | sort -nk5 -t"$(printf '\t')"

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -euo pipefail
-
-youtube-dl --username "$EMAIL" -iv --get-id --mark-watched ":ytwatchlater" | \
-    tee ~/Library/Logs/ytwatchlater.log | \
-    sed 's,^,https://www.youtube.com/watch?v=,' | \
-    nlxargs -t -n 1 pocket-cli add -g watch -u

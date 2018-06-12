@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ $# -eq 0 ]; then
-    set -- ''
-fi
-
-pocket-cli search -s unread "$@" | pocket-cli-join-entries | select-random
