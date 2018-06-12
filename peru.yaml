@@ -404,7 +404,6 @@ git module chneukirchen-tools:
     url: https://github.com/kergoth/chneukirchen-tools
     pick:
         - base
-        - fls
         - pacverify
         - spongegrep
         - swaptop

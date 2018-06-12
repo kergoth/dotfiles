@@ -158,20 +158,6 @@ alias funced="_funced "
 # Git
 alias wgit='git clone --recursive'
 
-# fls
-fls () {
-    if [ $# -eq 0 ]; then
-        set -- *
-    fi
-    command fls -f %n%F "$@"
-}
-fll () {
-    if [ $# -eq 0 ]; then
-        set -- *
-    fi
-    command fls "$@"
-}
-
 # Startup time profiling
 alias zsh-profile-startup="PROFILE_STARTUP=true zsh -i -c exit"
 zsh-profile-startup-stats () {
