@@ -1,0 +1,1 @@
+mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"

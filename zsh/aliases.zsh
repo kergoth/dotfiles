@@ -117,14 +117,6 @@ if [[ $OSTYPE =~ darwin ]]; then
     fi
 
     alias locate='mdfind -name'
-    locate_app_by_id () {
-        mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"
-    }
-
-    locate_app() {
-        mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemDisplayName == '${*%.app}'cd"
-    }
-
     alias daisydisk="open -b com.daisydiskapp.DaisyDiskStandAlone"
     alias ddisk=daisydisk
     alias marked="open -b com.brettterpstra.marked2"
