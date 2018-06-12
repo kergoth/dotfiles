@@ -3,7 +3,7 @@ imports:
     zsh-autosuggestions: zsh/plugins/autosuggestions
     zsh-bd: zsh/plugins/bd
     zsh-completions: zsh/plugins/completions
-    zsh-git-escape-magic: git/zsh-plugins/git-escape-magic
+    zsh-git-escape-magic: git/zsh-functions
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/functions
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
@@ -19,24 +19,24 @@ imports:
     cwdiff: scripts
     diff-so-fancy: scripts
     dtrx: scripts
-    dustin-bindir: scripts
+    dustin-bindir: git/scripts
     fasd: fasd/scripts
     flu: scripts
     gnu2bsd: scripts
-    git-blame-colored: scripts
-    git-cherry-tree: scripts
-    git-extras: scripts
+    git-blame-colored: git/scripts
+    git-cherry-tree: git/scripts
+    git-extras: git/scripts
     git-fixup: git
-    git-imerge: scripts
-    git-pull-requests: scripts
-    git-remote-hg: scripts
-    git-tbdiff: scripts
-    git-wtf: scripts
-    git: scripts
-    gitvoodoo: scripts
+    git-imerge: git/scripts
+    git-pull-requests: git/scripts
+    git-remote-hg: git/scripts
+    git-tbdiff: git/scripts
+    git-wtf: git/scripts
+    git: git/scripts
+    gitvoodoo: git/scripts
     i3-urgent-notify: scripts
     i3-alternating-layout: scripts
-    icdiff: scripts
+    icdiff: .
     iln: scripts
     lesspipe: scripts
     md-inline2ref: scripts
@@ -45,8 +45,8 @@ imports:
     planter: scripts
     pom: scripts
     pyenv-installer: scripts
-    dev-goodies: scripts
-    repo: scripts
+    dev-goodies: git/scripts
+    repo: git/scripts
     rofi-tools: scripts
     rpm2cpio: scripts
     rustup: rust/scripts
@@ -62,10 +62,10 @@ imports:
     1t: scripts
     f: scripts
     frep: scripts
-    git-attic: scripts
-    git-ltr: scripts
-    git-neck: scripts
-    git-trail: scripts
+    git-attic: git/scripts
+    git-ltr: git/scripts
+    git-neck: git/scripts
+    git-trail: git/scripts
     lsort: scripts
     pacsrc: scripts
     stee: scripts
@@ -134,6 +134,7 @@ git module zsh-completions:
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
     rev: 62af4f6a66601a517e168039614e5b528741a844
+    pick: git-escape-magic
 
 curl module iterm2-zsh:
     url: https://iterm2.com/misc/zsh_startup.in
@@ -355,9 +356,12 @@ git module pom:
 
 git module icdiff:
     url: https://github.com/jeffkaufman/icdiff
+    move:
+        icdiff: scripts/icdiff
+        git-icdiff: git/scripts/git-icdiff
     pick:
-        - icdiff
-        - git-icdiff
+        - scripts/icdiff
+        - git/scripts/git-icdiff
     rev: 408a1b94da46921710f145209250b33c190a912e
 
 git module dustin-bindir:

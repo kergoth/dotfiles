@@ -44,9 +44,6 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
-alias gitcolor='git -c color.ui=always'
-alias gitnofancy='git -c "core.pager=diff-highlight | less --tabs=4 -RFX"'
-
 if (( $+commands[pacman-color] )); then
     alias pacman='pacman-color'
 fi

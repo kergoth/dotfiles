@@ -85,10 +85,6 @@ if autoload -Uz manydots-magic; then
     manydots-magic
 fi
 
-if autoload -Uz git-escape-magic; then
-    git-escape-magic
-fi
-
 # Keybinds
 autoload edit-command-line
 zle -N edit-command-line
