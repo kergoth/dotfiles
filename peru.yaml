@@ -42,7 +42,6 @@ imports:
     md-inline2ref: scripts
     moreutils: scripts
     osx-wificleaner: osx/scripts
-    planter: scripts
     pom: scripts
     pyenv-installer: system-setup/scripts
     dev-goodies: git/scripts
@@ -332,13 +331,6 @@ git module cwdiff:
     url: https://github.com/junghans/cwdiff
     pick: cwdiff
     rev: de56a73f37eb72edfb78ea610798a5744b8dcf10
-
-git module planter:
-    url: https://gist.github.com/3767188
-    move:
-        planter.rb: planter
-    executable: planter
-    rev: 9b39c1bff8a4e2b49bb62889d7d51f1cb45f0b9d
 
 git module fasd:
     url: https://github.com/clvv/fasd
