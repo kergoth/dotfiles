@@ -20,7 +20,7 @@ imports:
     diff-so-fancy: scripts
     dtrx: scripts
     dustin-bindir: scripts
-    fasd: scripts
+    fasd: fasd/scripts
     flu: scripts
     gnu2bsd: scripts
     git-blame-colored: scripts
