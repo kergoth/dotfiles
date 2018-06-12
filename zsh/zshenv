@@ -41,9 +41,6 @@ export VISUAL=$EDITOR
 export ESCDELAY=25
 export NCURSES_NO_UTF8_ACS=1
 
-export CVS_RSH=ssh
-export CVSREAD=yes
-
 if [[ -z "$LANG" ]]; then
   if [[ -n $commands[locale] ]]; then
     eval "$(locale)"
