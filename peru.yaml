@@ -128,7 +128,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: e0290834aca5f15152d3d384547c7a0b62af4475
+    rev: 18b82d97bb7786a9db2f153e88351462db49e47a
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -188,7 +188,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 4f95970228a83fb494386a51091aec176525ccc9
+    rev: 45c9621157b5bc851804bfed57b8a504d55757b0
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -235,7 +235,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: f63732839230cb9c27ef52dcc31e009137314bf2
+    rev: 3913e813dd82fb625adbdfdc6877eb283b513b11
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -718,7 +718,7 @@ git module bat-themes-base16:
 
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
-    rev: 0bbf7c5ff39033b7f9046cb7ad6bccfa306868e4
+    rev: 722e29dafb1e5f099acbb6f896e22e8679c70fbf
 
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig
