@@ -76,9 +76,6 @@
           "ngrep": "network grep - http://ngrep.sourceforge.net/"
         },
         {
-          "starch linux": "statically-linked arch linux fork (musl) - http://starchlinux.org/"
-        },
-        {
           "mksh": "free ksh implementation - https://www.mirbsd.org/mksh.htm"
         },
         {
