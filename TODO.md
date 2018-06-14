@@ -12,6 +12,7 @@
 
 ## Candidates for removal
 
+- boom (Never use it, tend to forget it exists)
 - path-extractor (Never use it)
 - oni (I use sublime and vim at the moment)
 - top (Rarely used, tend to use htop instead)
