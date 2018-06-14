@@ -53,6 +53,7 @@ imports:
     ssh-copy-rsub: scripts
     t: scripts
     tagbak: osx/scripts
+    vim-profiler: vim/scripts
     vitag: osx/scripts
     wget-finder: scripts
     wsl-open: scripts
@@ -749,5 +750,12 @@ git module i3-alternating-layout:
         alternating_layouts.py: i3-alternating-layout
     pick: i3-alternating-layout
     rev: 507c84aef62af3ac5113b6dced216027c96aa285
+
+git module vim-profiler:
+    url: https://github.com/bchretien/vim-profiler
+    move:
+        vim-profiler.py: vim-profiler
+    pick: vim-profiler
+    rev: d4fda79830528ffb6cce895448ac10b502f9f756
 
 #  vim: set sw=4 :
