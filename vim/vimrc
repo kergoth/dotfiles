@@ -426,9 +426,6 @@ endif
 set splitbelow
 set splitright
 
-" More useful % matching
-runtime macros/matchit.vim
-
 if &term ==# 'rxvt-unicode'
   set t_Co=256
 endif
@@ -904,6 +901,7 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+let g:loaded_matchit = 1
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 let g:sneak#label = 1
