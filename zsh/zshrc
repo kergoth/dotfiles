@@ -83,7 +83,7 @@ if [[ "$PROFILE_STARTUP" == true ]]; then
     rm -f $XDG_DATA_HOME/zsh/start.log
     ln -sf $XDG_DATA_HOME/zsh/start-$$.log $XDG_DATA_HOME/zsh/start.log
     if [[ "${PROFILE_STARTUP_PARSE:-true}" == true ]]; then
-        $DOTFILESDIR/scripts/parse_zsh_startup $XDG_DATA_HOME/zsh/start.log | sort -nrk2 | less -RSXFE
+        $ZSH/scripts/parse_zsh_startup $XDG_DATA_HOME/zsh/start.log | sort -nrk2 | less -RSXFE
         exit
     fi
 fi
