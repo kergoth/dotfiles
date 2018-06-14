@@ -917,9 +917,9 @@ let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
 let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
+let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
-
 let g:tmuxline_powerline_separators = 0
 let g:promptline_powerline_symbols = 1
 
