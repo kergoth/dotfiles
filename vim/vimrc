@@ -904,6 +904,8 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:autoformat_on_save = 0
@@ -966,12 +968,6 @@ let g:secure_modelines_allowed_items = [
             \ 'spell', 'nospell',
             \ 'spelllang'
             \ ]
-
-" Vim's strlen works fine while netrw's Strlen is broken
-if has('multi_byte') | let g:netrw_xstrlen = 0 | endif
-
-" Place .netrwhist and .netrwbook in XDG_DATA_HOME, not $VIMDOTDIR
-let g:netrw_home = $XDG_DATA_HOME . '/vim'
 
 if exists('$SSH_CONNECTION')
   let g:vitality_always_assume_iterm = 1
