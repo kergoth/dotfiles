@@ -10,6 +10,14 @@
 - Consider importing pyenv/nvm/stack/etc with peru rather than having the install
   scripts clone them to other locations
 
+## Candidates for removal
+
+- path-extractor (Never use it)
+- oni (I use sublime and vim at the moment)
+- top (Rarely used, tend to use htop instead)
+- vscode (I use sublime and vim at the moment)
+- system-setup (I may move this to its own repo)
+
 ## colors
 
 - git: consider altering the particular colors used in git log to use colors
