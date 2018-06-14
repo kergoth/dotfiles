@@ -24,8 +24,13 @@ done
 
 # pre-load plugin configuration
 AUTOENV_AUTH_FILE=$XDG_DATA_HOME/autoenv_authorized
-if [[ $OSTYPE =~ darwin ]]; then
-    iterm2_hostname=$HOST
+if [[ -n $ITERM_PROFILE ]]; then
+    if [[ $OSTYPE =~ darwin ]]; then
+        iterm2_hostname=$HOST
+    fi
+else
+    # Skip iterm2.zsh setup on non-iterm terminals
+    ITERM_SHELL_INTEGRATION_INSTALLED=No
 fi
 
 # Load "plugins"
