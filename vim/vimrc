@@ -536,8 +536,13 @@ endif
 set cursorline
 " }}}
 " Commands {{{
-" Make the 'Man' command available
-runtime! ftplugin/man.vim
+" Make the 'Man' command available, loading on demand
+function! s:Man(...)
+  delcommand Man
+  runtime ftplugin/man.vim
+  execute 'Man' join(a:000, ' ')
+endfunction
+command! -nargs=+ -complete=shellcmd Man call s:Man(<f-args>)
 
 " Change the current directory to the location of the
 " file being edited.
