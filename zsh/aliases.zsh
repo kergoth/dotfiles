@@ -124,8 +124,9 @@ alias wgit='git clone --recursive'
 
 # Startup time profiling
 alias zsh-profile-startup="PROFILE_STARTUP=true zsh -i -c exit"
+alias zsh-profile-startup-lines="PROFILE_STARTUP_LINES=true zsh -i -c exit"
 zsh-profile-startup-stats () {
-    for i in $(seq 1 10); do zsh-profile-startup; done | sed 's,^[^ ]* ,,' | \
+    for i in $(seq 1 10); do zsh-profile-startup-lines; done | sed 's,^[^ ]* ,,' | \
         sort -nrk2 | uniq -f 1 | stats --trim-outliers | less -RSXFE
 }
 
