@@ -839,7 +839,7 @@ augroup vimrc_filetypes
         \ endif
 
   " Auto-format on save for appropriate types
-  au FileType go,sh let g:autoformat_on_save=1
+  au FileType go let g:autoformat_on_save=1
   au BufWrite *
         \ if g:autoformat_on_save == 1 |
         \   Autoformat |
