@@ -817,6 +817,9 @@ augroup vimrc_filetypes
   au FileType c,cpp,go,taskpaper set ts=4 sw=4 sts=0 noet
   au FileType gitconfig set sts=0 sw=8 ts=8 noet
 
+  " Search Path
+  au FileType vim let &l:path = &path . ',' . &runtimepath
+
   " Comment string
   au FileType fish set cms=#%s
   au FileType gitconfig set cms=#%s
