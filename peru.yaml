@@ -75,7 +75,7 @@ imports:
 
     # Vim
     pathogen: vim/autoload
-    base16-vim: base16/vim
+    base16-vim: base16/vim/bundle/base16
     Modeliner: vim/bundle/Modeliner
     fugitive: git/vim/bundle/fugitive
     securemodelines: vim/bundle/securemodelines
@@ -85,7 +85,7 @@ imports:
     vim-airline-themes: vim/bundle/airline-themes
     vim-ale: vim/bundle/ale
     vim-autoformat: vim/bundle/autoformat
-    vim-bitbake: bitbake/vim
+    vim-bitbake: bitbake/vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
     vim-editorconfig: vim/bundle/editorconfig
@@ -273,7 +273,7 @@ hg module t:
 git module fzf:
     url: https://github.com/junegunn/fzf
     move:
-        plugin: vim/plugin
+        plugin: vim/bundle/fzf
         bin: scripts
         shell/key-bindings.zsh: key-bindings.zsh
         shell/completion.zsh: completion.zsh
