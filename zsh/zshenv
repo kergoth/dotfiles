@@ -14,16 +14,7 @@ if [[ "${PROFILE_STARTUP:-false}" == true ]]; then
     setopt xtrace prompt_subst
 fi
 
-if [[ -h $ZDOTDIR/.zshrc ]]; then
-    DOTFILESDIR=$(dirname $(readlink $ZDOTDIR/.zshrc))/..
-    if [[ ${DOTFILESDIR#/} = $DOTFILESDIR ]]; then
-        DOTFILESDIR=$ZDOTDIR/$DOTFILESDIR
-    fi
-else
-    DOTFILESDIR=$ZDOTDIR/..
-fi
-DOTFILESDIR=${DOTFILESDIR:A}
-
+DOTFILESDIR="${0:A:h:h}"
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
 fi
