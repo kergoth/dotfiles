@@ -84,6 +84,7 @@ imports:
     vim-airline: vim/bundle/airline
     vim-airline-themes: vim/bundle/airline-themes
     vim-ale: vim/bundle/ale
+    vim-apathy: vim/bundle/apathy
     vim-autoformat: vim/bundle/autoformat
     vim-bitbake: bitbake/vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
@@ -752,5 +753,9 @@ git module vim-profiler:
         vim-profiler.py: vim-profiler
     pick: vim-profiler
     rev: d4fda79830528ffb6cce895448ac10b502f9f756
+
+git module vim-apathy:
+    url: https://github.com/tpope/vim-apathy
+    rev: 791bc929c78f2d7e3b923ccec78cfc98aab1b786
 
 #  vim: set sw=4 :
