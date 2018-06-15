@@ -99,7 +99,6 @@ imports:
     vim-rsi: vim/bundle/rsi
     vim-sneak: vim/bundle/sneak
     vim-surround: vim/bundle/surround
-    vim-tmuxline: tmux/vim/bundle/tmuxline
     vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
     vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
@@ -678,10 +677,6 @@ git module i3-urgent-notify:
         i3-urgent-notify.py: i3-urgent-notify
     executable: i3-urgent-notify
     rev: c880c690a023fe28ab1e74b801db5641dde8cb2f
-
-git module vim-tmuxline:
-    url: https://github.com/edkolev/tmuxline.vim
-    rev: 92c6688f075dcbba899c824387ae6620006b4609
 
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
