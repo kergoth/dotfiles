@@ -11,6 +11,7 @@ imports:
     iterm2-zsh: iterm2
     base16-shell: base16
     zsh-zbell: zsh/plugins/zbell
+    zsh-sort-timings: zsh/scripts
 
     # Scripts
     appify: osx/scripts
@@ -757,5 +758,12 @@ git module vim-profiler:
 git module vim-apathy:
     url: https://github.com/tpope/vim-apathy
     rev: 791bc929c78f2d7e3b923ccec78cfc98aab1b786
+
+git module zsh-sort-timings:
+    url: https://gist.github.com/bdesham/2d7ef99f93b226be29e01cadcad37405
+    rev: 353e5178686df9e3aea6e0802d4a217420938c28
+    move:
+        sort_timings.zsh: zsh_sort_timings
+    executable: zsh_sort_timings
 
 #  vim: set sw=4 :

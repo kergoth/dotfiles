@@ -8,7 +8,7 @@ fi
 
 if [[ "${PROFILE_STARTUP:-false}" == true ]]; then
     # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
-    PS4=$'%D{%M%S%.} %N:%i> '
+    PS4='+$EPOCHREALTIME %N:%i> '
     mkdir -p $XDG_DATA_HOME/zsh
     exec 3>&2 2>$XDG_DATA_HOME/zsh/start-$$.log
     setopt xtrace prompt_subst

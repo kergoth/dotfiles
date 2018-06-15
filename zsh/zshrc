@@ -80,10 +80,9 @@ unset config_files
 if [[ "$PROFILE_STARTUP" == true ]]; then
     unsetopt xtrace
     exec 2>&3 3>&-
-    rm -f $XDG_DATA_HOME/zsh/start.log
     ln -sf $XDG_DATA_HOME/zsh/start-$$.log $XDG_DATA_HOME/zsh/start.log
     if [[ "${PROFILE_STARTUP_PARSE:-true}" == true ]]; then
-        $ZSH/scripts/parse_zsh_startup $XDG_DATA_HOME/zsh/start.log | sort -nrk2 | less -RSXFE
+        zsh_sort_timings $XDG_DATA_HOME/zsh/start.log | head -n 20
         exit
     fi
 fi
