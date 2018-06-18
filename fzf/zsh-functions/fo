@@ -6,6 +6,9 @@
 
 local out key files
 out=$(cd "${2:-$PWD}" && fzf-tmux --select-1 --multi --query="$1" --exit-0 --expect=ctrl-o,ctrl-e | grep -v '^$' | sed "s#^#${2:-$PWD}/#") || return $?
+if [[ -z $out ]]; then
+    return 1
+fi
 key=$(head -1 <<< "$out")
 files=("${(@f)out}")
 if [[ "$key" = ctrl-o ]]; then
