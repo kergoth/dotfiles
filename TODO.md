@@ -1,5 +1,8 @@
 # TODO
 
+- Consider new variables, i.e. `RIPGREP_OPTIONS`, analagous to `GREP_OPTIONS`,
+  to ensure the same default arguments are used in my zsh aliases/functions
+  as are used in vim, for any commands where such makes sense.
 - zsh: alter promptline prompt to show user/host when SSH_CLIENT is set
 - zsh: add git push/pull status to promptline. The full git status slows things
   down too much, but I'd at least like to see if I'm ahead/behind upstream at
