@@ -221,14 +221,14 @@ nnoremap <silent> <Plug>(ale_find_references) :ALEFindReferences<Return>
 nnoremap <silent> <Plug>(ale_hover) :ALEHover<Return>
 
 " Set up autocmd groups now.
-call ale#autocmd#InitAuGroups()
+call ale#events#Init()
 
 " Housekeeping
 
 augroup ALECleanupGroup
     autocmd!
     " Clean up buffers automatically when they are unloaded.
-    autocmd BufDelete * call ale#engine#Cleanup(str2nr(expand('<abuf>')))
+    autocmd BufDelete * if exists('*ale#engine#Cleanup') | call ale#engine#Cleanup(str2nr(expand('<abuf>'))) | endif
     autocmd QuitPre * call ale#events#QuitEvent(str2nr(expand('<abuf>')))
 augroup END
 

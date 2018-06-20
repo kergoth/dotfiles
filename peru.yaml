@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: e027c405c04e823689993701b73159b2f9758cbf
+    rev: fffda6a66506be1027002a2480537acf5c0774c7
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -130,7 +130,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 18b82d97bb7786a9db2f153e88351462db49e47a
+    rev: d3a273cedf788181db9a05726dcd4d930da9e248
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -175,12 +175,12 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: b571bff9ec146685947ab91a2f11dd73d0d7ae44
+    rev: 13f39967f474eb48d612c33c4b18ddca6050716f
 
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake
-    rev: e1c321872ba9a51410f600b95ed24ecd1d1abbdd
+    rev: 4532d107bb14ab86f235ad534dd2bd2d4806d1b1
 
 # taskpaper todo file support
 git module taskpaper:
@@ -190,11 +190,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 45c9621157b5bc851804bfed57b8a504d55757b0
+    rev: b790fd212088c0c882f16416f07cbd6035882028
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: f7f2818f1a174f86fc9cf6d4d71729cc96b98626
+    rev: b35f952a6ae6768ae2c6a9f4febc7945cc311f74
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -209,7 +209,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: e57666aa8d3a87b42c5ec429490bbf4a54f4c31d
+    rev: f3a42ea0536001ce36ff8476186ea41f81316624
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -218,7 +218,7 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: 643a42454bc8c2b2735de14f309523ce733a5358
+    rev: aa1f120ad3a29c27cc41d581cda3751c59343cce
 
 # readline style insertion
 git module vim-rsi:
@@ -245,7 +245,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: ce82e10630830bc37a50f706cc3b7216d24e5009
+    rev: 34881b707bf722e338240e61b39946d86e4b8c4a
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -550,7 +550,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: bec14411334c6e790aed34881e3c10978764e75c
+    rev: 4c6d4dfd7d2294d146ea1870d85129018ec23017
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -584,7 +584,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: d681b972ccc148356d81f452b0e7bfe2aeb0cbbe
+    rev: e4aaf9f697b91f31bcea4539101b3e99c01ecd1a
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -602,7 +602,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: f1b72218c36cadd544f4363d726e8ee131a593a5
+    rev: 0e1528ec34dbd025712f46a6e556b430c45c8173
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -720,7 +720,7 @@ git module bat-syntax-bitbake:
 
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig
-    rev: 46f506fd2c31331aada4969c50c2b140c990f003
+    rev: efc613f02a7499fd1c2348cf208f10c43a9c57bc
 
 git module wsl-open:
     url: https://github.com/4U6U57/wsl-open
@@ -746,7 +746,7 @@ git module i3-alternating-layout:
     move:
         alternating_layouts.py: i3-alternating-layout
     pick: i3-alternating-layout
-    rev: 507c84aef62af3ac5113b6dced216027c96aa285
+    rev: 5fa7b187cb1f878784f00e93643adfe480bd3f1e
 
 git module vim-profiler:
     url: https://github.com/bchretien/vim-profiler

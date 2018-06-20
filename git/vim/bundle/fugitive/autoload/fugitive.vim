@@ -66,6 +66,14 @@ function! s:shellslash(path) abort
   endif
 endfunction
 
+function! s:PlatformSlash(path) abort
+  if exists('+shellslash') && !&shellslash
+    return tr(a:path, '/', '\')
+  else
+    return a:path
+  endif
+endfunction
+
 let s:executables = {}
 
 function! s:executable(binary) abort
@@ -267,23 +275,13 @@ function! s:repo_translate(spec) dict abort
     return 'fugitive://'.self.dir().'//'.ref
   elseif a:spec =~# '^:'
     return 'fugitive://'.self.dir().'//0/'.a:spec[1:-1]
-  elseif a:spec ==# '@'
-    return self.dir('HEAD')
   elseif a:spec =~# 'HEAD\|^refs/' && a:spec !~ ':' && filereadable(refs . '../' . a:spec)
     return simplify(refs . '../' . a:spec)
   elseif filereadable(refs.a:spec)
     return refs.a:spec
-  elseif filereadable(refs.'tags/'.a:spec)
-    return refs.'tags/'.a:spec
-  elseif filereadable(refs.'heads/'.a:spec)
-    return refs.'heads/'.a:spec
-  elseif filereadable(refs.'remotes/'.a:spec)
-    return refs.'remotes/'.a:spec
-  elseif filereadable(refs.'remotes/'.a:spec.'/HEAD')
-    return refs.'remotes/'.a:spec.'/HEAD'
   else
     try
-      let ref = self.rev_parse(matchstr(a:spec,'[^:]*'))
+      let ref = self.rev_parse(s:sub(matchstr(a:spec,'[^:]*'), '^\@%($|[^~])@=', 'HEAD'))
       let path = s:sub(matchstr(a:spec,':.*'),'^:','/')
       return 'fugitive://'.self.dir().'//'.ref.path
     catch /^fugitive:/
@@ -429,6 +427,25 @@ call s:add_methods('repo',['keywordprg'])
 
 " Section: Buffer
 
+function! s:UrlSplit(path) abort
+  let vals = matchlist(s:shellslash(a:path), '\c^fugitive:\%(//\)\=\(.\{-\}\)\%(//\|::\)\(\w\+\)\(/.*\)\=$')
+  if empty(vals)
+    return ['', '', '']
+  endif
+  return [vals[1], (vals[2] =~# '^.$' ? ':' : '') . vals[2], vals[3]]
+endfunction
+
+function! fugitive#Filename(url) abort
+  let [dir, rev, file] = s:UrlSplit(a:url)
+  if len(dir)
+    return s:PlatformSlash(FugitiveTreeForGitDir(dir) . file)
+  elseif a:url =~# '^[\\/]\|^\a:[\\/]'
+    return s:PlatformSlash(a:url)
+  else
+    return ''
+  endif
+endfunction
+
 let s:buffer_prototype = {}
 
 function! s:buffer(...) abort
@@ -510,7 +527,7 @@ function! s:buffer_name() dict abort
 endfunction
 
 function! s:buffer_commit() dict abort
-  return matchstr(self.spec(),'^fugitive://.\{-\}//\zs\w*')
+  return matchstr(self.spec(),'^fugitive:\%(//\)\=.\{-\}\%(//\|::\)\zs\w*')
 endfunction
 
 function! s:cpath(path) abort
@@ -522,7 +539,7 @@ function! s:cpath(path) abort
 endfunction
 
 function! s:buffer_path(...) dict abort
-  let rev = matchstr(self.spec(),'^fugitive://.\{-\}//\zs.*')
+  let rev = matchstr(self.spec(),'^fugitive:\%(//\)\=.\{-\}\%(//\|::\)\zs.*')
   if rev != ''
     let rev = s:sub(rev,'\w*','')
   elseif s:cpath(self.spec()[0 : len(self.repo().dir())]) ==#
@@ -537,7 +554,7 @@ function! s:buffer_path(...) dict abort
 endfunction
 
 function! s:buffer_rev() dict abort
-  let rev = matchstr(self.spec(),'^fugitive://.\{-\}//\zs.*')
+  let rev = matchstr(self.spec(),'^fugitive:\%(//\)\=.\{-\}\%(//\|::\)\zs.*')
   if rev =~ '^\x/'
     return ':'.rev[0].':'.rev[2:-1]
   elseif rev =~ '.'
@@ -552,7 +569,7 @@ function! s:buffer_rev() dict abort
 endfunction
 
 function! s:buffer_sha1() dict abort
-  if self.spec() =~ '^fugitive://' || self.spec() =~ '\.git/refs/\|\.git/.*HEAD$'
+  if self.spec() =~? '^fugitive:' || self.spec() =~ '\.git/refs/\|\.git/.*HEAD$'
     return self.repo().rev_parse(self.rev())
   else
     return ''
@@ -1783,7 +1800,7 @@ function! s:Diff(vert,keepfocus,...) abort
   endif
   try
     let spec = s:repo().translate(file)
-    let commit = matchstr(spec,'\C[^:/]//\zs\x\+')
+    let commit = matchstr(spec,'\C[^:/]\%(//\|::\)\zs\x\+')
     let restore = s:diff_restore()
     if exists('+cursorbind')
       setlocal cursorbind
@@ -1903,7 +1920,6 @@ augroup END
 
 augroup fugitive_blame
   autocmd!
-  autocmd BufReadPost *.fugitiveblame setfiletype fugitiveblame
   autocmd FileType fugitiveblame setlocal nomodeline | if exists('b:git_dir') | let &l:keywordprg = s:repo().keywordprg() | endif
   autocmd Syntax fugitiveblame call s:BlameSyntax()
   autocmd User Fugitive if s:buffer().type('file', 'blob') | exe "command! -buffer -bar -bang -range=0 -nargs=* Gblame :execute s:Blame(<bang>0,<line1>,<line2>,<count>,[<f-args>])" | endif
@@ -2203,9 +2219,9 @@ function! s:Browse(bang,line1,count,...) abort
     endif
     let full = s:repo().translate(expanded)
     let commit = ''
-    if full =~# '^fugitive://'
-      let commit = matchstr(full,'://.*//\zs\w\w\+')
-      let path = matchstr(full,'://.*//\w\+\zs/.*')
+    if full =~? '^fugitive:'
+      let commit = matchstr(full,':\%(//\)\=.*\%(//\|::\)\zs\w\w\+')
+      let path = matchstr(full,':\%(//\)\=.*\%(//\|::\)\w\+\zs/.*')
       if commit =~ '..'
         let type = s:repo().git_chomp('cat-file','-t',commit.s:sub(path,'^/',':'))
         let branch = matchstr(expanded, '^[^:]*')
@@ -2551,7 +2567,7 @@ endfunction
 function! fugitive#FileRead() abort
   try
     let repo = s:repo(FugitiveExtractGitDir(expand('<amatch>')))
-    let path = s:sub(s:sub(matchstr(expand('<amatch>'),'fugitive://.\{-\}//\zs.*'),'/',':'),'^\d:',':&')
+    let path = s:sub(s:sub(matchstr(expand('<amatch>'),'fugitive:\%(//\)\=.\{-\}\%(//\|::\)\zs.*'),'/',':'),'^\d:',':&')
     let hash = repo.rev_parse(path)
     if path =~ '^:'
       let type = 'blob'
@@ -2866,11 +2882,11 @@ function! s:cfile() abort
       elseif getline('.') =~# '^[+-]\{3\} [abciow12]\=/'
         let ref = getline('.')[4:]
 
-      elseif getline('.') =~# '^[+-]' && search('^@@ -\d\+,\d\+ +\d\+,','bnW')
+      elseif getline('.') =~# '^[+-]' && search('^@@ -\d\+\%(,\d\+\)\= +\d\+','bnW')
         let type = getline('.')[0]
         let lnum = line('.') - 1
         let offset = 0
-        while getline(lnum) !~# '^@@ -\d\+,\d\+ +\d\+,'
+        while getline(lnum) !~# '^@@ -\d\+\%(,\d\+\)\= +\d\+'
           if getline(lnum) =~# '^[ '.type.']'
             let offset += 1
           endif
@@ -2885,7 +2901,7 @@ function! s:cfile() abort
       elseif getline('.') =~# '^rename to '
         let ref = 'b/'.getline('.')[10:]
 
-      elseif getline('.') =~# '^@@ -\d\+,\d\+ +\d\+,'
+      elseif getline('.') =~# '^@@ -\d\+\%(,\d\+\)\= +\d\+'
         let diff = getline(search('^diff --git \%([abciow12]/.*\|/dev/null\) \%([abciow12]/.*\|/dev/null\)', 'bcnW'))
         let offset = matchstr(getline('.'), '+\zs\d\+')
 

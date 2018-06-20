@@ -13,7 +13,7 @@ package main;
 
 use strict;
 use warnings;
-our $VERSION = '2.23_02'; # Check https://beyondgrep.com/ for updates
+our $VERSION = '2.23_03'; # Check https://beyondgrep.com/ for updates
 
 use 5.008008;
 use Getopt::Long 2.38 ();
@@ -942,7 +942,7 @@ sub main {
     set_up_line_context();
 
 RESOURCES:
-    while ( my $resource = $resources->next ) {
+    while ( defined(my $resource = $resources->next) ) {
         if ($is_tracking_context) {
             set_up_line_context_for_file();
         }
@@ -2400,7 +2400,7 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = '2.23_02';
+    $VERSION = '2.23_03';
     $COPYRIGHT = 'Copyright 2005-2018 Andy Lester.';
 }
 
@@ -3122,7 +3122,9 @@ sub from_stdin {
 sub next {
     my $self = shift;
 
-    my $file = $self->{iter}->() or return;
+    my $file = $self->{iter}->();
+
+    return unless defined($file);
 
     return App::Ack::Resource->new( $file );
 }
