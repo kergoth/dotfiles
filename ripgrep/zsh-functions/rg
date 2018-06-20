@@ -1,5 +1,5 @@
 if [[ -t 1 ]]; then
-    command rg -p "$@" | pager
+    command rg -S -p "$@" | pager
 else
-    command rg "$@"
+    command rg -S "$@"
 fi

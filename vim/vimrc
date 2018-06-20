@@ -372,9 +372,9 @@ endif
 
 " Search tools
 if executable('rg')
-  set grepprg=rg\ --vimgrep\ $*
+  set grepprg=rg\ --smart-case\ --vimgrep\ $*
   command! -bang -nargs=* Search
-    \ call fzf#vim#grep('rg --vimgrep --color=always ' . shellescape(<q-args>), 1, <bang>0)
+    \ call fzf#vim#grep('rg --vimgrep --smart-case --color=always ' . shellescape(<q-args>), 1, <bang>0)
 elseif executable('ag')
   set grepprg=ag\ -H\ --nocolor\ --nogroup\ --column\ $*
   command! -bang -nargs=* Search call fzf#vim#ag(<q-args>, 1, <bang>0)
