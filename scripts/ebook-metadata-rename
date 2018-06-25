@@ -127,6 +127,7 @@ terms = (
     "PragPub",
 
     "BS",
+    "U.S.",
 )
 
 def mangle_title(title):
