@@ -181,7 +181,8 @@ def book_rename(filename, new_filename):
             print("Skipping %s: %s already exists" % (filename, new_filename))
         else:
             print("%s -> %s" % (filename, new_filename))
-            shutil.move(filename, new_filename)
+            shutil.move(filename, new_filename + ".new")
+            shutil.move(new_filename + ".new", new_filename)
 
 
 if __name__ == '__main__':
