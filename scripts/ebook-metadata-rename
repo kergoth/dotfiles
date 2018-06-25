@@ -74,7 +74,10 @@ def sanitize_filename(name):
     for (fromval, toval) in filename_replacements:
         name = re.sub(fromval, toval, name)
 
-    name = string.translate(name, fixchars)
+    try:
+        name = string.translate(name, fixchars)
+    except UnicodeDecodeError:
+        pass
     return name
 
 title_replacements = (
