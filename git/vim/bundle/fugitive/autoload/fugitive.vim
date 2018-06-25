@@ -115,7 +115,7 @@ function! s:recall() abort
 endfunction
 
 function! s:map(mode, lhs, rhs, ...) abort
-  let flags = (a:0 ? a:1 : '') . (a:rhs =~# '^<Plug>' ? '' : '<script>')
+  let flags = (a:0 ? a:1 : '') . (a:rhs =~# '<Plug>' ? '' : '<script>')
   let head = a:lhs
   let tail = ''
   let keys = get(g:, a:mode.'remap', {})
@@ -2526,15 +2526,15 @@ function! fugitive#BufReadStatus() abort
     if &bufhidden ==# ''
       setlocal bufhidden=delete
     endif
-    call s:JumpInit()
+    call fugitive#MapJumps()
     nunmap   <buffer>          P
     nunmap   <buffer>          ~
     nnoremap <buffer> <silent> <C-N> :<C-U>execute <SID>StageNext(v:count1)<CR>
     nnoremap <buffer> <silent> <C-P> :<C-U>execute <SID>StagePrevious(v:count1)<CR>
     nnoremap <buffer> <silent> - :<C-U>silent execute <SID>StageToggle(line('.'),line('.')+v:count1-1)<CR>
     xnoremap <buffer> <silent> - :<C-U>silent execute <SID>StageToggle(line("'<"),line("'>"))<CR>
-    nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += 1<Bar>exe <SID>BufReadIndex()<CR>
-    nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= 1<Bar>exe <SID>BufReadIndex()<CR>
+    nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += 1<Bar>exe fugitive#BufReadIndex()<CR>
+    nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= 1<Bar>exe fugitive#BufReadIndex()<CR>
     nnoremap <buffer> <silent> C :<C-U>Gcommit<CR>:echohl WarningMsg<Bar>echo ':Gstatus C is deprecated in favor of cc'<Bar>echohl NONE<CR>
     nnoremap <buffer> <silent> cA :<C-U>Gcommit --amend --reuse-message=HEAD<CR>:echohl WarningMsg<Bar>echo ':Gstatus cA is deprecated in favor of ce'<CR>
     nnoremap <buffer> <silent> ca :<C-U>Gcommit --amend<CR>
@@ -2704,10 +2704,10 @@ function! fugitive#BufReadObject() abort
       endif
       if b:fugitive_type !=# 'blob'
         setlocal filetype=git foldmethod=syntax
-        nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += v:count1<Bar>exe <SID>BufReadObject()<CR>
-        nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= v:count1<Bar>exe <SID>BufReadObject()<CR>
+        nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += v:count1<Bar>exe fugitive#BufReadObject()<CR>
+        nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= v:count1<Bar>exe fugitive#BufReadObject()<CR>
       else
-        call s:JumpInit()
+        call fugitive#MapJumps()
       endif
     endtry
 
@@ -2721,14 +2721,6 @@ endfunction
 
 augroup fugitive_files
   autocmd!
-  autocmd FileType git
-        \ if exists('b:git_dir') |
-        \  call s:JumpInit() |
-        \ endif
-  autocmd FileType git,gitcommit,gitrebase
-        \ if exists('b:git_dir') |
-        \   call s:GFInit() |
-        \ endif
 augroup END
 
 " Section: Temp files
@@ -2753,7 +2745,7 @@ augroup END
 " Section: Go to file
 
 nnoremap <SID>: :<C-U><C-R>=v:count ? v:count : ''<CR>
-function! s:GFInit(...) abort
+function! fugitive#MapCfile(...) abort
   cnoremap <buffer> <expr> <Plug><cfile> fugitive#Cfile()
   if !exists('g:fugitive_no_maps')
     call s:map('n', 'gf',          '<SID>:find <Plug><cfile><CR>', '<silent><unique>')
@@ -2764,7 +2756,7 @@ function! s:GFInit(...) abort
   endif
 endfunction
 
-function! s:JumpInit(...) abort
+function! fugitive#MapJumps(...) abort
   nnoremap <buffer> <silent> <CR>    :<C-U>exe <SID>GF("edit")<CR>
   if !&modifiable
     nnoremap <buffer> <silent> o     :<C-U>exe <SID>GF("split")<CR>

@@ -94,7 +94,7 @@ formatting.
 | API Blueprint | [drafter](https://github.com/apiaryio/drafter) |
 | AsciiDoc | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [write-good](https://github.com/btford/write-good) |
 | Awk | [gawk](https://www.gnu.org/software/gawk/)|
-| Bash | shell [-n flag](https://www.gnu.org/software/bash/manual/bash.html#index-set), [shellcheck](https://www.shellcheck.net/), [shfmt](https://github.com/mvdan/sh) |
+| Bash | [language-server](https://github.com/mads-hartmann/bash-language-server), shell [-n flag](https://www.gnu.org/software/bash/manual/bash.html#index-set), [shellcheck](https://www.shellcheck.net/), [shfmt](https://github.com/mvdan/sh) |
 | Bourne Shell | shell [-n flag](http://linux.die.net/man/1/sh), [shellcheck](https://www.shellcheck.net/), [shfmt](https://github.com/mvdan/sh) |
 | C | [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint), [clang](http://clang.llvm.org/), [clangtidy](http://clang.llvm.org/extra/clang-tidy/) !!, [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [flawfinder](https://www.dwheeler.com/flawfinder/), [gcc](https://gcc.gnu.org/) |
 | C++ (filetype cpp) | [clang](http://clang.llvm.org/), [clangcheck](http://clang.llvm.org/docs/ClangCheck.html) !!, [clangtidy](http://clang.llvm.org/extra/clang-tidy/) !!, [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint) !!, [cquery](https://github.com/cquery-project/cquery), [flawfinder](https://www.dwheeler.com/flawfinder/), [gcc](https://gcc.gnu.org/) |
@@ -113,7 +113,7 @@ formatting.
 | Dafny | [dafny](https://rise4fun.com/Dafny) !! |
 | Dart | [dartanalyzer](https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli) !!, [language_server](https://github.com/natebosch/dart_language_server) |
 | Dockerfile | [hadolint](https://github.com/hadolint/hadolint) |
-| Elixir | [credo](https://github.com/rrrene/credo), [dialyxir](https://github.com/jeremyjh/dialyxir), [dogma](https://github.com/lpil/dogma) !!|
+| Elixir | [credo](https://github.com/rrrene/credo), [dialyxir](https://github.com/jeremyjh/dialyxir), [dogma](https://github.com/lpil/dogma), [mix](https://hexdocs.pm/mix/Mix.html) !!|
 | Elm | [elm-format](https://github.com/avh4/elm-format), [elm-make](https://github.com/elm-lang/elm-make) |
 | Erb | [erb](https://apidock.com/ruby/ERB), [erubi](https://github.com/jeremyevans/erubi), [erubis](https://github.com/kwatch/erubis) |
 | Erlang | [erlc](http://erlang.org/doc/man/erlc.html), [SyntaxErl](https://github.com/ten0s/syntaxerl) |

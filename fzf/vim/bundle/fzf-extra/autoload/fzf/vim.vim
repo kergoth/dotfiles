@@ -446,12 +446,15 @@ function! s:history_source(type)
 endfunction
 
 nnoremap <plug>(-fzf-vim-do) :execute g:__fzf_command<cr>
+nnoremap <plug>(-fzf-/) /
+nnoremap <plug>(-fzf-:) :
 
 function! s:history_sink(type, lines)
   if len(a:lines) < 2
     return
   endif
 
+  let prefix = "\<plug>(-fzf-".a:type.')'
   let key  = a:lines[0]
   let item = matchstr(a:lines[1], ' *[0-9]\+ *\zs.*')
   if key == 'ctrl-e'
@@ -459,7 +462,10 @@ function! s:history_sink(type, lines)
     redraw
     call feedkeys(a:type."\<up>")
   else
-    let g:__fzf_command = "normal ".a:type.item."\<cr>"
+    if a:type == ':'
+      call histadd(a:type, item)
+    endif
+    let g:__fzf_command = "normal ".prefix.item."\<cr>"
     call feedkeys("\<plug>(-fzf-vim-do)")
   endif
 endfunction

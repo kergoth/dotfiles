@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: fffda6a66506be1027002a2480537acf5c0774c7
+    rev: 3361bb62d66540eda6dfa23f3df34125c27d420f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 13f39967f474eb48d612c33c4b18ddca6050716f
+    rev: 8fa5cad8d7502be2f3438d02f353ab62264d358e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -237,7 +237,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 3913e813dd82fb625adbdfdc6877eb283b513b11
+    rev: c273c462d774ed2db5f6d382265cf5897e554de0
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -245,7 +245,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 34881b707bf722e338240e61b39946d86e4b8c4a
+    rev: 033033daa391cb9c98840c29324de167697ada5d
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -283,7 +283,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: f0fe79dd3bb4b782ad6040c970b4bfc818729f05
+    rev: 0edbcbdf1909a6d3c56ae264362f11bc2bf9f65d
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -550,7 +550,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 4c6d4dfd7d2294d146ea1870d85129018ec23017
+    rev: 2c14e7816a8866e442ce9294646f05ce60f2e806
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -602,7 +602,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 0e1528ec34dbd025712f46a6e556b430c45c8173
+    rev: 66820ed452839a9e09eb18bbaad538d3a25d33f8
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
