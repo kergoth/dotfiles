@@ -994,6 +994,14 @@ augroup vimrc_plugins
 
   " When airline is showing our mode, we don't need vim to do so
   au VimEnter * if exists('g:loaded_airline') | set noshowmode | endif
+
+  " dirvish: map `gr` to reload.
+  autocmd FileType dirvish nnoremap <silent><buffer>
+    \ gr :<C-U>Dirvish %<CR>
+
+  " dirvish: map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+  autocmd FileType dirvish nnoremap <silent><buffer>
+    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
 augroup end
 " }}}
 
