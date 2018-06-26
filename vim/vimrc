@@ -154,10 +154,11 @@ set history=1000
 " Filesystem paths {{{
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
+let $DOTFILESDIR = expand('<sfile>:p:h:h')
 set runtimepath^=$VIMDOTDIR runtimepath+=$VIMDOTDIR/after
 
 " Also include $DOTFILESDIR/*/vim/
-let g:dtvim = glob(expand('<sfile>:p:h:h') . '/*/vim/', 0, 1)
+let g:dtvim = glob($DOTFILESDIR . '/*/vim/', 0, 1)
 let &runtimepath = $VIMDOTDIR . ',' . join(g:dtvim, ',') . ',' . &runtimepath . ',' . join(g:dtvim, '/after,') . '/after'
 
 if !exists('$XDG_DATA_HOME')
@@ -1004,6 +1005,10 @@ augroup vimrc_plugins
     \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
 augroup end
 " }}}
+
+" Load topic-specific vim settings from dotfiles, shortcut method rather than
+" creating some_topic/vim/plugin/some_topic.vim
+source $DOTFILESDIR/*/topic.vim
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
 if !exists('$HOSTNAME') && executable('hostname')
