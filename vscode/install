@@ -1,9 +1,26 @@
-VSCODE_HOME="$HOME/Library/Application Support/Code/User"
+case "$OSTYPE" in
+    darwin*)
+        VSCODE_HOME="$HOME/Library/Application Support/Code/User"
+        ;;
+    WSL)
+        VSCODE_HOME="$USERPROFILE/AppData/Roaming/Code/User"
+        ;;
+    *)
+        VSCODE_HOME=
+        ;;
+esac
 
-link settings.json "$VSCODE_HOME/settings.json"
-link keybindings.json "$VSCODE_HOME/keybindings.json"
-if [ -d snippets ]; then
-    link snippets "$VSCODE_HOME/snippets"
+if [ -d "$VSCODE_HOME" ]; then
+    if [ $OSTYPE = WSL ]; then
+        set -- -c
+    else
+        set --
+    fi
+    link "$@" settings.json "$VSCODE_HOME/settings.json"
+    link "$@" keybindings.json "$VSCODE_HOME/keybindings.json"
+    if [ -d snippets ]; then
+        link "$@" snippets/. "$VSCODE_HOME/snippets/"
+    fi
 fi
 
 # vim: set ft=sh :
