@@ -14,7 +14,7 @@ if [ -d "$VSCODE_HOME" ]; then
     link settings.json "$VSCODE_HOME/settings.json"
     link keybindings.json "$VSCODE_HOME/keybindings.json"
     if [ -d snippets ]; then
-        link snippets/. "$VSCODE_HOME/snippets/"
+        link snippets "$VSCODE_HOME/snippets"
     fi
 fi
 

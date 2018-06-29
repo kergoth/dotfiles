@@ -150,41 +150,38 @@ link () {
 
     if [ -L "$dotfile_dest" ] || [ -e "$dotfile_dest" ]; then
         if [ $force -eq 0 ] && [ "$(readlink "$dotfile_dest")" != "$dotfile_relpath" ]; then
-            echo >&2 "Warning: $dotfile_dest already exists and does not link to $dotfile_relpath"
+            echo >&2 "Warning: $dotfile_dest already exists"
             read -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
             printf "\n"
             case "$will_continue" in
                 [yY]|"")
-                    rm -rf "$dotfile_dest.old"
-                    mv "$dotfile_dest" "$dotfile_dest.old"
-                    echo >&2 "Removed $dotfile_dest (backed up as $dotfile_dest.old)"
-                    ;;
-                [nN])
-                    rm -rf "$dotfile_dest.new"
-                    if [ $copy -eq 1 ]; then
-                        cp -R "$dotfile_relpath" "$dotfile_dest.new"
-                        echo >&2 "Copied $dotfile_dest.new"
-                    else
-                        ln -s "$dotfile_relpath" "$dotfile_dest.new"
-                        echo >&2 "Linked $dotfile_dest.new"
-                    fi
-                    return 1
+                    old="${dotfile_dest%/}.old"
+                    rm -rf "$old"
+                    mv "$dotfile_dest" "$old"
+                    echo >&2 "Removed $dotfile_dest (backed up as $old)"
                     ;;
                 *)
-                    echo >&2 "Invalid input '$will_continue', not replacing"
-                    rm -rf "$dotfile_dest.new"
+                    case "$will_continue" in
+                        [nN])
+                            ;;
+                        *)
+                            echo >&2 "Invalid input '$will_continue', not replacing"
+                            ;;
+                    esac
+                    new="${dotfile_dest%/}.new"
+                    rm -rf "$new"
                     if [ $copy -eq 1 ]; then
-                        cp -R "$dotfile_relpath" "$dotfile_dest.new"
-                        echo >&2 "Copied $dotfile_dest.new"
+                        cp -R "$dotfile_relpath" "$new"
+                        echo >&2 "Copied $new"
                     else
-                        ln -s "$dotfile_relpath" "$dotfile_dest.new"
-                        echo >&2 "Linked $dotfile_dest.new"
+                        ln -s "$dotfile_relpath" "$new"
+                        echo >&2 "Linked $new"
                     fi
                     return 1
                     ;;
             esac
         else
-            rm -f "$dotfile_dest"
+            rm -rf "$dotfile_dest"
         fi
     fi
     if [ $copy -eq 1 ]; then
