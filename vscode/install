@@ -11,15 +11,10 @@ case "$OSTYPE" in
 esac
 
 if [ -d "$VSCODE_HOME" ]; then
-    if [ $OSTYPE = WSL ]; then
-        set -- -c
-    else
-        set --
-    fi
-    link "$@" settings.json "$VSCODE_HOME/settings.json"
-    link "$@" keybindings.json "$VSCODE_HOME/keybindings.json"
+    link settings.json "$VSCODE_HOME/settings.json"
+    link keybindings.json "$VSCODE_HOME/keybindings.json"
     if [ -d snippets ]; then
-        link "$@" snippets/. "$VSCODE_HOME/snippets/"
+        link snippets/. "$VSCODE_HOME/snippets/"
     fi
 fi
 

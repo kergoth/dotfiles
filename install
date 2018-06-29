@@ -125,6 +125,15 @@ link () {
     if [ "$destdir" != "$dotfile_dest" ]; then
         mkdir -p "$destdir"
     fi
+
+    if [ $OSTYPE = WSL ] && [ $copy -eq 0 ]; then
+        case "$destdir" in
+            $USERPROFILE/*)
+                copy=1
+                ;;
+        esac
+    fi
+
     if which python >/dev/null 2>&1; then
         dotfile_relpath="$(relpath "$dotfile" "$destdir" 2>/dev/null)"
 

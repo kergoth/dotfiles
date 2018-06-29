@@ -20,11 +20,7 @@ else
 fi
 
 if [ -d "$PROFILE" ]; then
-    if [ "$OSTYPE" = WSL ]; then
-        link -c user-overrides.js "$PROFILE/user-overrides.js"
-    else
-        link user-overrides.js "$PROFILE/user-overrides.js"
-    fi
+    link user-overrides.js "$PROFILE/user-overrides.js"
     if ! [ -e "$PROFILE/updater.sh" ]; then
         curl -fsSL https://github.com/ghacksuserjs/ghacks-user.js/raw/master/updater.sh -o "$PROFILE/updater.sh"
     fi
