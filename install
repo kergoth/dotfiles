@@ -90,6 +90,10 @@ should_replace () {
     fi
 }
 
+copy () {
+    link -c "$@"
+}
+
 link () {
     # Link a file to a destination using a relative path, with particular
     # convenience handling for dotfiles. ex.:
@@ -97,6 +101,12 @@ link () {
     # link zsh/.zshenv.redir ~/.zshenv.redir
     # link zshrc       # links to ~/.zshrc (relatively)
     # link config/curl # links to ~/.config/curl (relatively)
+    if [ "$1" = "-c" ]; then
+        copy=1
+        shift
+    else
+        copy=0
+    fi
     dotfile="$(abspath "$1")"
     if [ $# -gt 1 ]; then
         dotfile_dest="$(abspath "$2")"
@@ -116,7 +126,7 @@ link () {
         mkdir -p "$destdir"
     fi
     if which python >/dev/null 2>&1; then
-        dotfile_relpath="$(relpath "$dotfile" "$destdir")"
+        dotfile_relpath="$(relpath "$dotfile" "$destdir" 2>/dev/null)"
 
         # Sanity check
         dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
@@ -142,15 +152,25 @@ link () {
                     ;;
                 [nN])
                     rm -rf "$dotfile_dest.new"
-                    ln -s "$dotfile_relpath" "$dotfile_dest.new"
-                    echo >&2 "Linked $dotfile_dest.new"
+                    if [ $copy -eq 1 ]; then
+                        cp -R "$dotfile_relpath" "$dotfile_dest.new"
+                        echo >&2 "Copied $dotfile_dest.new"
+                    else
+                        ln -s "$dotfile_relpath" "$dotfile_dest.new"
+                        echo >&2 "Linked $dotfile_dest.new"
+                    fi
                     return 1
                     ;;
                 *)
                     echo >&2 "Invalid input '$will_continue', not replacing"
                     rm -rf "$dotfile_dest.new"
-                    ln -s "$dotfile_relpath" "$dotfile_dest.new"
-                    echo >&2 "Linked $dotfile_dest.new"
+                    if [ $copy -eq 1 ]; then
+                        cp -R "$dotfile_relpath" "$dotfile_dest.new"
+                        echo >&2 "Copied $dotfile_dest.new"
+                    else
+                        ln -s "$dotfile_relpath" "$dotfile_dest.new"
+                        echo >&2 "Linked $dotfile_dest.new"
+                    fi
                     return 1
                     ;;
             esac
@@ -158,8 +178,13 @@ link () {
             rm -f "$dotfile_dest"
         fi
     fi
-    ln -s "$dotfile_relpath" "$dotfile_dest"
-    echo >&2 "Linked $dotfile_dest"
+    if [ $copy -eq 1 ]; then
+        cp -R "$dotfile_relpath" "$dotfile_dest"
+        echo >&2 "Copied $dotfile_dest"
+    else
+        ln -s "$dotfile_relpath" "$dotfile_dest"
+        echo >&2 "Linked $dotfile_dest"
+    fi
 }
 
 abspath () {

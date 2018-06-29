@@ -21,7 +21,7 @@ fi
 
 if [ -d "$PROFILE" ]; then
     if [ "$OSTYPE" = WSL ]; then
-        cp -fv user-overrides.js "$PROFILE/user-overrides.js"
+        link -c user-overrides.js "$PROFILE/user-overrides.js"
     else
         link user-overrides.js "$PROFILE/user-overrides.js"
     fi
@@ -34,3 +34,5 @@ if [ -d "$PROFILE" ]; then
 fi
 
 link addons-script-config.toml $XDG_CONFIG_HOME/firefox-addons/config.toml
+
+# vim: set ft=sh :
