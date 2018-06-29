@@ -12,5 +12,5 @@ if [ -z "$(docker images -q local/nativefier)" ]; then
     docker build -t local/nativefier "$tempdir/Nativefier"
 fi
 
-docker run -v "$(wslpath -am "$tempdir")":/target local/nativefier -p windows "$@" /target/
+docker run -v "$(wslpath -am "$PWD"):$PWD" -v "$(wslpath -am "$tempdir")":/target local/nativefier -p windows "$@" /target/
 mv -v "$tempdir/"* .
