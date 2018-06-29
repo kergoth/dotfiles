@@ -3,16 +3,11 @@ case "$OSTYPE" in
         SUBLIME_TEXT_3="$HOME/Library/Application Support/Sublime Text 3"
         ;;
     WSL)
-        SUBLIME_TEXT_3="$HOME/AppData/Roaming/Sublime Text 3"
+        SUBLIME_TEXT_3="$USERPROFILE/AppData/Roaming/Sublime Text 3"
         ;;
     *)
         SUBLIME_TEXT_3="$HOME/.config/sublime-text-3"
         ;;
 esac
 
-if [ "$OSTYPE" = WSL ]; then
-    echo "$PWD -> $SUBLIME_TEXT_3/Packages/User"
-    cp -a ./ "$SUBLIME_TEXT_3/Packages/User/"
-else
-    link . "$SUBLIME_TEXT_3/Packages/User"
-fi
+link . "$SUBLIME_TEXT_3/Packages/User"
