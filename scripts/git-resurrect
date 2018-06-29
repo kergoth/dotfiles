@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+for file; do
+    git co "${file%%:*}" -- "${file#*:}"
+done
