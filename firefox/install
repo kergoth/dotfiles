@@ -3,7 +3,7 @@ case "$OSTYPE" in
         ff_profileroot="$HOME/Library/Application Support/Firefox"
         ;;
     WSL)
-        ff_profileroot="$HOME/AppData/Roaming/Mozilla/Firefox"
+        ff_profileroot="$USERPROFILE/AppData/Roaming/Mozilla/Firefox"
         ;;
     *)
         ff_profileroot=
