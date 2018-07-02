@@ -20,9 +20,7 @@ if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
             exit 1
         fi
     fi
-    if ! which virtualenv >/dev/null 2>&1; then
-        pip install --user --ignore-installed virtualenv
-    fi
+    pip install --user --ignore-installed virtualenv
     curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
 else
     . "$PIPSI_HOME/pipsi/bin/activate"
