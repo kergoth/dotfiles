@@ -11,4 +11,5 @@
     "files.autoSave": "afterDelay",
     "workbench.colorTheme": "Base16 Tomorrow Night",
     "editor.cursorBlinking": "solid",
+    "search.smartCase": true,
 }
