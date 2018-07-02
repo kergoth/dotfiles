@@ -12,4 +12,5 @@
     "workbench.colorTheme": "Base16 Tomorrow Night",
     "editor.cursorBlinking": "solid",
     "search.smartCase": true,
+    "search.useRipgrep": true,
 }
