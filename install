@@ -2,8 +2,11 @@
 
 set -u
 
+osname="$(uname -s)"
+
 : ${XDG_CONFIG_HOME:=~/.config}
 : ${XDG_DATA_HOME:=~/.local/share}
+
 case "$OSTYPE" in
     darwin*)
         : ${XDG_CACHE_HOME:=~/Library/Caches}
@@ -14,6 +17,7 @@ case "$OSTYPE" in
             case "$(uname -r)" in
                 *-Microsoft)
                     OSTYPE=WSL
+                    osname=Wsl
                     USERPROFILE="$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")"
                     ;;
             esac
@@ -23,9 +27,11 @@ esac
 
 mkdir -p $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_CACHE_HOME
 
-osname="$(uname -s)"
 HOSTNAME=$(hostname -s)
 prefixes="%include %include%${osname} %include%${HOSTNAME}"
+if [ "$osname" = Wsl ]; then
+    prefixes="%include%Linux $prefixes"
+fi
 force=0
 exclude=""
 include=
