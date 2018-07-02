@@ -20,15 +20,15 @@ brew update || :
 
 brew outdated --fetch-HEAD --quiet |
 	if [ -n "$excluded" ]; then grep -Ev "$excluded"; else cat; fi |
-	xargs brew upgrade --fetch-HEAD
+	xargs -n 1 brew upgrade --fetch-HEAD
 if [ -n "$ignored_depends" ]; then
 	brew outdated --fetch-HEAD --quiet | grep -E "$excluded_ignored" |
-		xargs brew upgrade --force --ignore-dependencies --force-bottle -v --env=std
+		xargs -n 1 brew upgrade --force --ignore-dependencies --force-bottle -v --env=std
 fi
 
 brew cask outdated --quiet |
 	if [ -n "$excluded_casks" ]; then grep -Ev "$excluded_casks"; else cat; fi |
-	xargs brew cask upgrade
+	xargs -n 1 brew cask upgrade
 brew cask cleanup
 
 brew wipe-cache
