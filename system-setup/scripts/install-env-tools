@@ -52,10 +52,9 @@ brew install jq
 go get -u github.com/junegunn/fzf/... # or brew install fzf
 cargov fd-find
 cargov ripgrep
+cargov bat
+cargov tldr
 go get -u github.com/edi9999/path-extractor/path-extractor
-gemv mdless # Markdown syntax-highlighting pager
-go get -u 4d63.com/tldr
-gemv boom
 
 pipv mercurial gitifyhg hg-git hg-evolve
 
