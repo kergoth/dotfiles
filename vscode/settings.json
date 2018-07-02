@@ -13,4 +13,7 @@
     "editor.cursorBlinking": "solid",
     "search.smartCase": true,
     "search.useRipgrep": true,
+    "todo.symbols.box": "-", // Box symbol
+    "todo.symbols.done": "-", // Done symbol
+    "todo.symbols.cancelled": "-",
 }
