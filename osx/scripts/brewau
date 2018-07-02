@@ -23,7 +23,7 @@ brew outdated --fetch-HEAD --quiet |
 	xargs brew upgrade --fetch-HEAD
 if [ -n "$ignored_depends" ]; then
 	brew outdated --fetch-HEAD --quiet | grep -E "$excluded_ignored" |
-		xargs brew install --ignore-dependencies --force-bottle -v --env=std
+		xargs brew upgrade --force --ignore-dependencies --force-bottle -v --env=std
 fi
 
 brew cask outdated --quiet |
