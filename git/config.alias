@@ -25,6 +25,7 @@
 	fetchall = fetch --all
 	b = branch -v
 	ri = rebase -i
+	rc = rebase --continue
 	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
 
 	# Hub
