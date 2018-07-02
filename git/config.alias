@@ -40,6 +40,7 @@
 	# Update with rebase, re-applying merges
 	upr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
 	purr = !git upr
+	sync = !git purr && git push && git lc
 
 	# Push with lease
 	please = push --force-with-lease
