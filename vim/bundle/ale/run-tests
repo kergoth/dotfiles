@@ -5,12 +5,9 @@ set -u
 
 # Author: w0rp <devw0rp@gmail.com>
 #
-# This script runs tests for the ALE project. The following options are
-# accepted:
+# This script runs tests for the ALE project. Run `./run-tests --help` for
+# options, or read the output below.
 #
-#            -v  Enable verbose output
-# --neovim-only  Run tests only for NeoVim
-#    --vim-only  Run tests only for Vim
 
 image=w0rp/ale
 current_image_id=13b990377be9
@@ -27,8 +24,7 @@ quiet_flag=''
 run_neovim_02_tests=1
 run_neovim_03_tests=1
 run_vim_tests=1
-run_vint=1
-run_custom_checks=1
+run_linters=1
 
 while [ $# -ne 0 ]; do
     case $1 in
@@ -42,52 +38,50 @@ while [ $# -ne 0 ]; do
     ;;
     --neovim-only)
         run_vim_tests=0
-        run_vint=0
-        run_custom_checks=0
+        run_linters=0
         shift
     ;;
     --neovim-02-only)
         run_neovim_03_tests=0
         run_vim_tests=0
-        run_vint=0
-        run_custom_checks=0
+        run_linters=0
         shift
     ;;
     --neovim-03-only)
         run_neovim_02_tests=0
         run_vim_tests=0
-        run_vint=0
-        run_custom_checks=0
+        run_linters=0
         shift
     ;;
     --vim-only)
         run_neovim_02_tests=0
         run_neovim_03_tests=0
-        run_vint=0
-        run_custom_checks=0
+        run_linters=0
         shift
     ;;
-    --no-vint)
-        run_vint=0
-        shift
-    ;;
-    --vint-only)
+    --linters-only)
         run_vim_tests=0
         run_neovim_02_tests=0
         run_neovim_03_tests=0
-        run_custom_checks=0
         shift
     ;;
-    --no-custom-checks)
-        run_custom_checks=0
-        shift
-    ;;
-    --custom-checks-only)
-        run_vim_tests=0
-        run_neovim_02_tests=0
-        run_neovim_03_tests=0
-        run_vint=0
-        shift
+    --help)
+        echo 'Usage: ./run-tests [OPTION]... [FILE]...'
+        echo
+        echo 'Filenames can be given as arguments to run a subset of tests.'
+        echo 'For example: ./run-tests test/test_ale_var.vader'
+        echo
+        echo 'Options:'
+        echo '  -v                Enable verbose output'
+        echo '  -q                Hide output for successful tests'
+        echo '  --neovim-only     Run tests only for NeoVim 0.2 and 0.3'
+        echo '  --neovim-02-only  Run tests only for NeoVim 0.2'
+        echo '  --neovim-03-only  Run tests only for NeoVim 0.3'
+        echo '  --vim-only        Run tests only for Vim'
+        echo '  --linters-only    Run only Vint and custom checks'
+        echo '  --help            Show this help text'
+        echo '  --                Stop parsing options after this'
+        exit 0
     ;;
     --)
         shift
@@ -110,8 +104,7 @@ if [ $# -ne 0 ]; then
     tests="$*"
 
     # Don't run other tools when targeting tests.
-    run_custom_checks=0
-    run_vint=0
+    run_linters=0
 fi
 
 # Delete .swp files in the test directory, which cause Vim 8 to hang.
@@ -138,14 +131,12 @@ for vim in $(docker run --rm "$DOCKER_RUN_IMAGE" ls /vim-build/bin | grep '^neov
     fi
 done
 
-if ((run_vint)); then
+if ((run_linters)); then
     echo "Starting Vint..."
     file_number=$((file_number+1))
     test/script/run-vint > "$output_dir/$file_number" 2>&1 &
     pid_list="$pid_list $!"
-fi
 
-if ((run_custom_checks)); then
     echo "Starting Custom checks..."
     file_number=$((file_number+1))
     test/script/custom-checks &> "$output_dir/$file_number" 2>&1 &
