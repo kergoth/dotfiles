@@ -39,15 +39,15 @@ trap 'rm -f "$tmpfile" "$tmpfile2"' EXIT INT TERM
 cat >>"$tmpfile"
 
 diff_pipeline="cat"
-if [ -n "$LESSCOLORIZER" ]; then
-    diff_pipeline="$diff_pipeline | $LESSCOLORIZER -l diff"
-fi
-if which diff-so-fancy &>/dev/null; then
-    diff_pipeline="$diff_pipeline | diff-so-fancy"
-elif which diff-highlight &>/dev/null; then
-    diff_pipeline="$diff_pipeline | diff-highlight"
-fi
 if [ -t 1 ]; then
+    if [ -n "$LESSCOLORIZER" ]; then
+        diff_pipeline="$diff_pipeline | $LESSCOLORIZER -l diff"
+    fi
+    if which diff-so-fancy &>/dev/null; then
+        diff_pipeline="$diff_pipeline | diff-so-fancy"
+    elif which diff-highlight &>/dev/null; then
+        diff_pipeline="$diff_pipeline | diff-highlight"
+    fi
     if [ -n "$PAGER" ]; then
         diff_pipeline="$diff_pipeline | $PAGER"
     elif which less &>/dev/null; then
