@@ -10,7 +10,6 @@ ignored_depends="geckodriver"
 excluded_ignored="$(echo "$ignored_depends" | tr " " "|")"
 excluded="$excluded_ignored"
 
-set -eu
 trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
 export HOMEBREW_UPGRADE_CLEANUP=1
