@@ -4,8 +4,9 @@
     "editor.fontSize": 14,
     "editor.fontWeight": "300",
     "editor.scrollBeyondLastLine": false,
-    "telemetry.enableTelemetry": false,
+    "editor.wordWrap": "bounded",
     "editor.formatOnSave": true,
+    "telemetry.enableTelemetry": false,
     // Controls auto save of dirty files. Accepted values:  "off", "afterDelay", "onFocusChange". If set to "afterDelay" you can configure the delay in "files.autoSaveDelay".
     "files.autoSave": "afterDelay",
     "workbench.colorTheme": "Base16 Tomorrow Night",
