@@ -13,13 +13,8 @@ excluded="$excluded_ignored"
 set -eu
 trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
+export HOMEBREW_UPGRADE_CLEANUP=1
 unset HOMEBREW_AUTO_UPDATE
-
-# We clear out any old packages/apps here, since we only want to run installers
-# that we just installed, not old ones. If the installer reboots the system
-# before it exits, the clean up won't happen after it installs, so we need it
-# to run up front for that as well.
-brew clean || :
 
 brew update || :
 
@@ -31,9 +26,9 @@ if [ -n "$ignored_depends" ]; then
 		xargs brew install --ignore-dependencies --force-bottle -v --env=std
 fi
 
-brew clean-cask-pkgs || :
-brew cask outdated |
+brew cask outdated --quiet |
 	if [ -n "$excluded_casks" ]; then grep -Ev "$excluded_casks"; else cat; fi |
 	xargs brew cask upgrade
 brew cask cleanup
-find "$(brew --prefix)/Caskroom" -iname \*.pkg -o -iname \*.app -prune | grep -iv uninstall | nlxargs -t -n 1 open -W
+
+brew wipe-cache
