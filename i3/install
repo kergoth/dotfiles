@@ -2,3 +2,8 @@ link config $XDG_CONFIG_HOME/i3/config
 link rofi.config $XDG_CONFIG_HOME/rofi/config
 mkdir -p $XDG_DATA_HOME/rofi/themes
 ln -sf $PWD/themes/*.rasi $XDG_DATA_HOME/rofi/themes/
+if [ $OSTYPE = WSL ]; then
+    ln -sf $PWD/wslinit ~/.wslinit
+else
+    rm -f ~/.wslinit
+fi
