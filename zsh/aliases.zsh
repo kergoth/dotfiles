@@ -99,7 +99,9 @@ else
         alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none'
     fi
     alias rm='rm --one-file-system -I'
-    alias open=xdg-open
+    if ! (( $+aliases[open] )); then
+        alias open=xdg-open
+    fi
 fi
 alias wildcard_to_re='python -c "import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))"'
 alias fnmatch='python -c "import fnmatch,sys; sys.exit(not fnmatch.fnmatch(*sys.argv[1:3]))"'
