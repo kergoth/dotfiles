@@ -16,7 +16,7 @@
 # Variables
 Exe=$(basename "$0" .sh)
 WslOpenExe=${WslOpenExe:-"powershell.exe Start"}
-WslDisks=${WslDisks:-/mnt}
+WslDisks=${WslDisks-/mnt}
 EnableWslCheck=${EnableWslCheck:-true}
 DryRun=${DryRun:-false}
 DefaultsFile=${DefaultsFile:-~/.mailcap}

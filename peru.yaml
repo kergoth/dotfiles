@@ -723,11 +723,11 @@ git module vim-editorconfig:
     rev: efc613f02a7499fd1c2348cf208f10c43a9c57bc
 
 git module wsl-open:
-    url: https://github.com/4U6U57/wsl-open
+    url: https://github.com/kergoth/wsl-open
     move:
         wsl-open.sh: wsl-open
     pick: wsl-open
-    rev: 022e78db92f044cf5f129236d6240796f1aee6b1
+    rev: 3543d674ed20dab232377ad38e638a93539d9a80
 
 git module vim-VimCompletesMe:
     url: https://github.com/ajh17/VimCompletesMe
