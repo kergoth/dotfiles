@@ -1008,7 +1008,9 @@ augroup end
 
 " Load topic-specific vim settings from dotfiles, shortcut method rather than
 " creating some_topic/vim/plugin/some_topic.vim
-source $DOTFILESDIR/*/topic.vim
+for f in glob('$DOTFILESDIR/*/topic.vim', 0, 1)
+    exe 'source ' . f
+endfor
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
 if !exists('$HOSTNAME') && executable('hostname')
