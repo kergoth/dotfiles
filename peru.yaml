@@ -612,7 +612,7 @@ git module osx-wificleaner:
     rev: a49340d8dc9b4d81a7d8a4e2ca1932df7aa2cc1a
 
 git module md-inline2ref:
-    url: https://gist.github.com/gruber/1207378
+    url: https://gist.github.com/1207378
     move:
         inline2ref.rb: markdown-inline-to-ref
     executable: markdown-inline-to-ref
@@ -627,7 +627,7 @@ git module gnu2bsd:
     rev: 1cd2e3c0a7730bb3b86161b1ab50a408da823edf
 
 git module git-blame-colored:
-    url: https://gist.github.com/mplewis/11dfac41bad93aeaa2ec
+    url: https://gist.github.com/11dfac41bad93aeaa2ec
     move:
         git-blame-colored.py: git-blame-colored
     executable: git-blame-colored
@@ -668,7 +668,7 @@ git module git-fixup:
     rev: 418f2070c4d0d79996ca60dc328780aca96f8dd7
 
 git module zsh-zbell:
-    url: https://gist.github.com/jpouellet/5278239
+    url: https://gist.github.com/5278239
     move:
         zbell.sh: zbell.plugin.zsh
     rev: e0b06247f3ecd6ca3de341c54ba8d85de7ef6566
@@ -760,7 +760,7 @@ git module vim-apathy:
     rev: 791bc929c78f2d7e3b923ccec78cfc98aab1b786
 
 git module zsh-sort-timings:
-    url: https://gist.github.com/bdesham/2d7ef99f93b226be29e01cadcad37405
+    url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
     rev: 353e5178686df9e3aea6e0802d4a217420938c28
     move:
         sort_timings.zsh: zsh_sort_timings
