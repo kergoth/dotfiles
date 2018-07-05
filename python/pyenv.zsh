@@ -1,4 +1,4 @@
-export PYENV_ROOT="${PYENV_ROOT:-XDG_DATA_HOME/pyenv}"
+export PYENV_ROOT="${PYENV_ROOT:-$XDG_DATA_HOME/pyenv}"
 export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
 
 if (( $+commands[pyenv] )); then
