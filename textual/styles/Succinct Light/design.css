@@ -482,6 +482,13 @@ div.line.selectedUser[data-highlight="false"]:hover .time {
     /*background-color: #68271d;*/
 }
 
+div.line.selectedUser[data-highlight="false"] +
+#mark {
+    border-top: 1px solid #b58900;
+    border-bottom: 1px dotted #b58900;
+    margin: 1px 0;
+    -webkit-transition: 0.2s linear;
+}
 
 /* Mark made with Command-L. */
 #mark {
@@ -526,8 +533,8 @@ body div#loadingScreen {
     top: 0;
     z-index: 2;
 
-    /* Uncomment this and lines 595-598 for */
-    /* a topic bar that only shows the whole */
+    /* Uncomment this and lines in #topicBar:hover */
+    /* for a topic bar that only shows the whole */
     /* topic when hovering. */
     overflow: hidden;
     white-space: nowrap;

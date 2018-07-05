@@ -3,7 +3,7 @@
 
 " A List of connections, used for tracking servers which have been connected
 " to, and programs which are run.
-let s:connections = []
+let s:connections = get(s:, 'connections', [])
 let g:ale_lsp_next_message_id = 1
 
 " Exposed only so tests can get at it.
@@ -36,7 +36,7 @@ endfunction
 
 function! s:FindConnection(key, value) abort
     for l:conn in s:connections
-        if has_key(l:conn, a:key) && get(l:conn, a:key) == a:value
+        if has_key(l:conn, a:key) && get(l:conn, a:key) is# a:value
             return l:conn
         endif
     endfor
@@ -241,9 +241,8 @@ function! ale#lsp#HandleMessage(conn, message) abort
     endfor
 endfunction
 
-function! s:HandleChannelMessage(channel, message) abort
-    let l:info = ch_info(a:channel)
-    let l:address = l:info.hostname . l:info.address
+function! s:HandleChannelMessage(channel_id, message) abort
+    let l:address = ale#socket#GetAddress(a:channel_id)
     let l:conn = s:FindConnection('id', l:address)
 
     call ale#lsp#HandleMessage(l:conn, a:message)
@@ -319,16 +318,14 @@ function! ale#lsp#ConnectToAddress(address, project_root, callback, initializati
     " Get the current connection or a new one.
     let l:conn = !empty(l:conn) ? l:conn : ale#lsp#NewConnection(a:initialization_options)
 
-    if !has_key(l:conn, 'channel') || ch_status(l:conn.channel) isnot# 'open'
-        let l:conn.channnel = ch_open(a:address, {
-        \   'mode': 'raw',
-        \   'waittime': 0,
+    if !has_key(l:conn, 'channel_id') || !ale#socket#IsOpen(l:conn.channel_id)
+        let l:conn.channel_id = ale#socket#Open(a:address, {
         \   'callback': function('s:HandleChannelMessage'),
         \})
     endif
 
-    if ch_status(l:conn.channnel) is# 'fail'
-        return 0
+    if l:conn.channel_id < 0
+        return ''
     endif
 
     let l:conn.id = a:address
@@ -336,15 +333,15 @@ function! ale#lsp#ConnectToAddress(address, project_root, callback, initializati
     call uniq(sort(add(l:conn.callback_list, a:callback)))
     call ale#lsp#RegisterProject(l:conn, a:project_root)
 
-    return 1
+    return a:address
 endfunction
 
 " Stop all LSP connections, closing all jobs and channels, and removing any
 " queued messages.
 function! ale#lsp#StopAll() abort
     for l:conn in s:connections
-        if has_key(l:conn, 'channel')
-            call ch_close(l:conn.channel)
+        if has_key(l:conn, 'channel_id')
+            call ale#socket#Close(l:conn.channel_id)
         else
             call ale#job#Stop(l:conn.id)
         endif
@@ -356,9 +353,9 @@ endfunction
 function! s:SendMessageData(conn, data) abort
     if has_key(a:conn, 'executable')
         call ale#job#SendRaw(a:conn.id, a:data)
-    elseif has_key(a:conn, 'channel') && ch_status(a:conn.channnel) is# 'open'
+    elseif has_key(a:conn, 'channel_id') && ale#socket#IsOpen(a:conn.channel_id)
         " Send the message to the server
-        call ch_sendraw(a:conn.channel, a:data)
+        call ale#socket#Send(a:conn.channel_id, a:data)
     else
         return 0
     endif

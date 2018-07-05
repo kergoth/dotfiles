@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 37bf4029eb6c848a2f1f08135f8a05b93856eb51
+    rev: 45005836233c7193daf524d9c314c0787a709821
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -209,11 +209,11 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: f3a42ea0536001ce36ff8476186ea41f81316624
+    rev: be3b411617bb5d759e0e9b9523e4e134e69c40ba
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
-    rev: cdbb9022b8972d3e156b8d60af33bf795625b058
+    rev: a80159c9f5c238575b63984b8bc610bc5de6b233
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: e009487bdc27320b0c96fa2db649d558add1583f
+    rev: 916b8d5dbffca021d0e9c3476f0d1992e7491e32
 
 # continuously updated session files
 git module vim-obsession:
@@ -485,7 +485,7 @@ git module git-pull-requests:
 
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
-    rev: 6853a136fc13ea9aa6af09c147b5a2a66d4aa620
+    rev: d4a55e661b4c9ef6ae4568c6abeff48bdf1b1af7
 
 git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
@@ -558,7 +558,7 @@ git module vim-abolish:
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
-    rev: 8106e142dfdc278ff3eaaadd7b362ad7949d4357
+    rev: 43d2678fa59d068c815d8298331c195e850ff5a7
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -576,7 +576,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: d7c796719e6352666f7a9c94da9ddaed10f3217d
+    rev: ebaf409002be498a681267a75f5efcaf45cd0ccc
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -602,7 +602,7 @@ curl module rustup:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: b637b35ea89a5a756477b9e2545a2f36299ac5fa
+    rev: d49daeb816217014a50bdab9d61b22535e55b179
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -643,7 +643,7 @@ git module vim-vitality:
 
 git module textual-succinctlight:
     url: https://github.com/TempSpas/SuccinctLight
-    rev: 513237b205a7bc7f4680921da14f3287f868e0f0
+    rev: 8ae36b5f64c2a799d9aad090ed666f76554fdef7
 
 git module textual-succinct:
     url: https://github.com/TempSpas/textual-succinct
