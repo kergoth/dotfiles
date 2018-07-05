@@ -274,7 +274,7 @@ hg module t:
 git module fzf:
     url: https://github.com/junegunn/fzf
     move:
-        plugin: vim/bundle/fzf
+        plugin: vim/bundle/fzf/plugin
         bin: scripts
         shell/key-bindings.zsh: key-bindings.zsh
         shell/completion.zsh: completion.zsh
