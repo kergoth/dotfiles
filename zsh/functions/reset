@@ -1,0 +1,3 @@
+command reset
+stty -ixon
+. $DOTFILESDIR/base16/base16.zsh
