@@ -29,7 +29,6 @@ imports:
     git-extras: git/scripts
     git-fixup: git
     git-imerge: git/scripts
-    git-pull-requests: git/scripts
     git-remote-hg: git/scripts
     git-tbdiff: git/scripts
     git-wtf: git/scripts
