@@ -1,5 +1,6 @@
 export CLICOLOR=true
 
+autoload -Uz is-at-least
 autoload -U $ZSH/functions/*(N:t)
 autoload -U $DOTFILESDIR/*/zsh-functions/*(N:t)
 
@@ -74,7 +75,7 @@ if autoload -Uz bracketed-paste-magic; then
     zle -N bracketed-paste bracketed-paste-magic
 fi
 
-if autoload -Uz bracketed-paste-url-magic; then
+if is-at-least 5.2 && autoload -Uz bracketed-paste-url-magic; then
     zle -N bracketed-paste bracketed-paste-url-magic
 elif autoload -U url-quote-magic; then
     zle -N self-insert url-quote-magic
