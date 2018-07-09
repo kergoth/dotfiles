@@ -476,13 +476,6 @@ curl module 1t:
     executable: 1t
     sha1: 55259d24da04f735f95ec7b32c120b33a9f2d4cb
 
-git module git-pull-requests:
-    url: https://github.com/splitbrain/git-pull-request
-    move:
-        git-pull-request: git-pull-requests
-    pick: git-pull-requests
-    rev: 09f76c0c4613cb30425e51b39576c35a50fe4ae1
-
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
     rev: d4a55e661b4c9ef6ae4568c6abeff48bdf1b1af7
