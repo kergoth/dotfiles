@@ -32,7 +32,7 @@
 	fork = !hub fork
 	pull-request = !hub pull-request
 	pr = !hub pr
-	pull-requests = !hub pr
+	pull-requests = !hub pr list
 	browse = !hub browse
 	create = !hub create
 
