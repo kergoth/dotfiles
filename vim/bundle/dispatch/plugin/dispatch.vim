@@ -17,7 +17,7 @@ command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#command_complete
       \   <count> < 0 || <line1> == <line2> ? <count> : 0)
 
 command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#make_complete Make
-      \ execute dispatch#compile_command(<bang>0, '_ ' . <q-args>,
+      \ execute dispatch#compile_command(<bang>0, '-- ' . <q-args>,
       \   <count> < 0 || <line1> == <line2> ? <count> : 0)
 
 command! -bang -nargs=* -complete=customlist,dispatch#command_complete Spawn
@@ -58,7 +58,7 @@ nmap <script> <SID>:.    :<C-R>=getcmdline() =~ ',' ? "\0250" : ""<CR>
 call s:map('n', 'm<CR>',      '<SID>:.Make<CR>')
 call s:map('n', 'm<Space>',   '<SID>:.Make<Space>')
 call s:map('n', 'm!',         '<SID>:.Make!')
-call s:map('n', 'm?',         ':<C-U>echo ":Dispatch" &makeprg<CR>')
+call s:map('n', 'm?',         ':<C-U>echo ":Dispatch" dispatch#make_focus(v:count > 1 ? 0 : v:count ? line(".") : -1)<CR>')
 call s:map('n', 'g<CR>',      '<SID>:.Dispatch<CR>')
 call s:map('n', 'g<Space>',   '<SID>:.Dispatch<Space>')
 call s:map('n', 'g!',         '<SID>:.Dispatch!')

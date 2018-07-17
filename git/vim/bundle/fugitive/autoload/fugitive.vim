@@ -46,6 +46,14 @@ function! s:fnameescape(file) abort
   endif
 endfunction
 
+function! s:tempname() abort
+  let temp = resolve(tempname())
+  if has('win32')
+    let temp = fnamemodify(fnamemodify(temp, ':h'), ':p').fnamemodify(temp, ':t')
+  endif
+  return temp
+endfunction
+
 function! s:throw(string) abort
   let v:errmsg = 'fugitive: '.a:string
   throw v:errmsg
@@ -433,7 +441,12 @@ function! s:DirCommitFile(path) abort
   if empty(vals)
     return ['', '', '']
   endif
-  return [vals[1], (vals[2] =~# '^.$' ? ':' : '') . vals[2], vals[3]]
+  return vals[1:3]
+endfunction
+
+function! s:DirRev(url) abort
+  let [dir, commit, file] = s:DirCommitFile(a:url)
+  return [dir, (commit =~# '^.$' ? ':' : '') . commit . substitute(file, '^/', ':', '')]
 endfunction
 
 function! fugitive#Path(url) abort
@@ -572,9 +585,9 @@ function! fugitive#readfile(url, ...) abort
   if entry[2] !=# 'blob'
     return []
   endif
-  let [dir, commit, file] = s:DirCommitFile(a:url)
+  let [dir, rev] = s:DirRev(a:url)
   let cmd = g:fugitive_git_executable . ' --git-dir=' . s:shellesc(dir) .
-        \ ' cat-file blob ' . s:shellesc(commit . ':' . file[1:-1])
+        \ ' cat-file blob ' . s:shellesc(rev)
   if max > 0 && s:executable('head')
     let cmd .= '|head -' . max
   endif
@@ -634,7 +647,7 @@ function! s:buffer(...) abort
   if buffer.getvar('git_dir') !=# ''
     return buffer
   endif
-  call s:throw('not a git repository: '.expand('%:p'))
+  call s:throw('not a git repository: '.bufname(buffer['#']))
 endfunction
 
 function! fugitive#buffer(...) abort
@@ -660,7 +673,7 @@ endfunction
 function! s:buffer_type(...) dict abort
   if self.getvar('fugitive_type') != ''
     let type = self.getvar('fugitive_type')
-  elseif fnamemodify(self.spec(),':p') =~# '.\git/refs/\|\.git/\w*HEAD$'
+  elseif fnamemodify(self.spec(),':p') =~# '\.git/refs/\|\.git/\w*HEAD$'
     let type = 'head'
   elseif self.getline(1) =~ '^tree \x\{40\}$' && self.getline(2) == ''
     let type = 'tree'
@@ -843,9 +856,9 @@ function! s:Git(bang, mods, args) abort
     let git .= ' --no-pager'
   endif
   let args = matchstr(a:args,'\v\C.{-}%($|\\@<!%(\\\\)*\|)@=')
-  if exists(':terminal') && has('nvim')
+  if exists(':terminal') && has('nvim') && !get(g:, 'fugitive_force_bang_command')
     let dir = s:repo().tree()
-    if expand('%') != ''
+    if len(@%)
       -tabedit %
     else
       -tabnew
@@ -1239,7 +1252,14 @@ function! s:Commit(mods, args, ...) abort
         let args = a:args
         let args = s:gsub(args,'%(%(^| )-- )@<!%(^| )@<=%(-[esp]|--edit|--interactive|--patch|--signoff)%($| )','')
         let args = s:gsub(args,'%(%(^| )-- )@<!%(^| )@<=%(-c|--reedit-message|--reuse-message|-F|--file|-m|--message)%(\s+|\=)%(''[^'']*''|"%(\\.|[^"])*"|\\.|\S)*','')
-        let args = s:gsub(args,'%(^| )@<=[%#]%(:\w)*','\=expand(submatch(0))')
+        let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+        let cwd = getcwd()
+        try
+          exe cd s:fnameescape(repo.tree())
+          let args = s:gsub(args,'\\@<!(\%|##=|#\<=\d+)(:\w)*','\=fnamemodify(FugitivePath(expand(submatch(1))),":." . submatch(2))')
+        finally
+          exe cd cwd
+        endtry
         let args = s:sub(args, '\ze -- |$', ' --no-edit --no-interactive --no-signoff')
         let args = '-F '.s:shellesc(msgfile).' '.args
         if args !~# '\%(^\| \)--cleanup\>'
@@ -1560,10 +1580,7 @@ function! s:Edit(cmd, bang, mods, ...) abort
       diffupdate
       return 'redraw|echo '.string(':!'.git.' '.args)
     else
-      let temp = resolve(tempname())
-      if has('win32')
-        let temp = fnamemodify(fnamemodify(temp, ':h'), ':p').fnamemodify(temp, ':t')
-      endif
+      let temp = s:tempname()
       let s:temp_files[s:cpath(temp)] = { 'dir': buffer.repo().dir(), 'args': arglist }
       silent execute mods a:cmd temp
       if a:cmd =~# 'pedit'
@@ -2157,7 +2174,7 @@ function! s:Blame(bang,line1,line2,count,args) abort
       if a:count
         execute 'write !'.substitute(basecmd,' blame ',' blame -L '.a:line1.','.a:line2.' ','g')
       else
-        let error = resolve(tempname())
+        let error = s:tempname()
         let temp = error.'.fugitiveblame'
         if &shell =~# 'csh'
           silent! execute '%write !('.basecmd.' > '.temp.') >& '.error
@@ -2197,9 +2214,6 @@ function! s:Blame(bang,line1,line2,count,args) abort
         endif
         let top = line('w0') + &scrolloff
         let current = line('.')
-        if has('win32')
-          let temp = fnamemodify(fnamemodify(temp, ':h'), ':p').fnamemodify(temp, ':t')
-        endif
         let s:temp_files[s:cpath(temp)] = { 'dir': s:repo().dir(), 'args': cmd }
         exe 'keepalt leftabove vsplit '.temp
         let b:fugitive_blamed_bufnr = bufnr
@@ -2633,12 +2647,10 @@ call extend(g:fugitive_browse_handlers,
 
 " Section: File access
 
-function! s:ReplaceCmd(cmd,...) abort
-  let fn = expand('%:p')
-  let tmp = tempname()
+function! s:WriteCmd(out, cmd, ...) abort
   let prefix = ''
   try
-    if a:0 && a:1 != ''
+    if a:0 && len(a:1)
       if s:winshell()
         let old_index = $GIT_INDEX_FILE
         let $GIT_INDEX_FILE = a:1
@@ -2646,23 +2658,29 @@ function! s:ReplaceCmd(cmd,...) abort
         let prefix = 'env GIT_INDEX_FILE='.s:shellesc(a:1).' '
       endif
     endif
-    let redir = ' > '.tmp
-    if &shellpipe =~ '2>&1'
-      let redir .= ' 2>&1'
-    endif
+    let redir = ' > '.a:out
     if s:winshell()
       let cmd_escape_char = &shellxquote == '(' ?  '^' : '^^^'
-      call system('cmd /c "'.prefix.s:gsub(a:cmd,'[<>]', cmd_escape_char.'&').redir.'"')
+      return system('cmd /c "'.prefix.s:gsub(a:cmd,'[<>]', cmd_escape_char.'&').redir.'"')
     elseif &shell =~# 'fish'
-      call system(' begin;'.prefix.a:cmd.redir.';end ')
+      return system(' begin;'.prefix.a:cmd.redir.';end ')
     else
-      call system(' ('.prefix.a:cmd.redir.') ')
+      return system(' ('.prefix.a:cmd.redir.') ')
     endif
   finally
     if exists('old_index')
       let $GIT_INDEX_FILE = old_index
     endif
   endtry
+endfunction
+
+function! s:ReplaceCmd(cmd, ...) abort
+  let tmp = tempname()
+  let err = s:WriteCmd(tmp, a:cmd, a:0 ? a:1 : '')
+  if v:shell_error
+    throw 'fugitive: ' . (len(err) ? err : filereadable(tmp) ? join(readfile(tmp), ' | ') : 'unknown error running ' . a:cmd)
+  endif
+  let fn = expand('%:p')
   silent exe 'doau BufReadPre '.s:fnameescape(fn)
   silent exe 'keepalt file '.tmp
   try

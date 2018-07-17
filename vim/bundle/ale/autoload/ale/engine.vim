@@ -96,9 +96,26 @@ function! ale#engine#ManageDirectory(buffer, directory) abort
     call add(g:ale_buffer_info[a:buffer].temporary_directory_list, a:directory)
 endfunction
 
+function! ale#engine#CreateFile(buffer) abort
+    " This variable can be set to 1 in tests to stub this out.
+    if get(g:, 'ale_create_dummy_temporary_file')
+        return 'TEMP'
+    endif
+
+    let l:temporary_file = ale#util#Tempname()
+    call ale#engine#ManageFile(a:buffer, l:temporary_file)
+
+    return l:temporary_file
+endfunction
+
 " Create a new temporary directory and manage it in one go.
 function! ale#engine#CreateDirectory(buffer) abort
-    let l:temporary_directory = tempname()
+    " This variable can be set to 1 in tests to stub this out.
+    if get(g:, 'ale_create_dummy_temporary_file')
+        return 'TEMP_DIR'
+    endif
+
+    let l:temporary_directory = ale#util#Tempname()
     " Create the temporary directory for the file, unreadable by 'other'
     " users.
     call mkdir(l:temporary_directory, '', 0750)
@@ -222,7 +239,12 @@ function! s:HandleExit(job_id, exit_code) abort
         call ale#history#RememberOutput(l:buffer, a:job_id, l:output[:])
     endif
 
-    let l:loclist = ale#util#GetFunction(l:linter.callback)(l:buffer, l:output)
+    try
+        let l:loclist = ale#util#GetFunction(l:linter.callback)(l:buffer, l:output)
+    " Handle the function being unknown, or being deleted.
+    catch /E700/
+        let l:loclist = []
+    endtry
 
     call ale#engine#HandleLoclist(l:linter.name, l:buffer, l:loclist)
 endfunction
