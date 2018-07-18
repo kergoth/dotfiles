@@ -16,6 +16,7 @@ imports:
     # Scripts
     appify: osx/scripts
     checkbashisms: scripts
+    cht: cht/scripts
     cpanm: perl/scripts
     cwdiff: scripts
     diff-so-fancy: scripts
@@ -591,6 +592,13 @@ curl module rustup:
         rustup-init.sh: rustup
     executable: rustup
     sha1: 10c9efe777ba84a126a42757651c7530b1cb97c4
+
+curl module cht:
+    url: https://cht.sh/:cht.sh
+    move:
+        :cht.sh: cht.sh
+    executable: cht.sh
+    sha1: 80f4b5636f81a522aba7ff0652605246a2587b3c
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
