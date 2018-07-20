@@ -3,6 +3,9 @@
 export PYENV_ROOT="${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}"
 PATH="$(dirname "$0"):$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
 
+export CFLAGS="${CFLAGS--O2 -fomit-frame-pointer}"
+export CONFIGURE_OPTS="${CONFIGURE_OPTS---with-lto --enable-optimizations}"
+
 pyenv-installer
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
