@@ -32,9 +32,9 @@ alias xz='xz --threads=0'
 alias wfp=wait-for-process
 alias rezsh='exec zsh --login'
 if [[ $OSTYPE =~ darwin ]]; then
-    alias relogin='exec login -f $USER'
+    alias relogin='login -f $USER'
 else
-    alias relogin='exec su - $USER'
+    alias relogin='su - $USER'
 fi
 
 what () {
