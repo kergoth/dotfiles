@@ -70,7 +70,7 @@ COMMANDS                                        *dispatch-commands*
                         This is equivalent to |:Make| but accepts options.
 
                                                 *b:dispatch*
-:Dispatch[!]            Invoke |:Dispatch| with the options, program, and
+:Dispatch[!] [options]  Invoke |:Dispatch| with the options, program, and
                         arguments found in b:dispatch.  In the quickfix
                         window, this reruns the shown dispatch.  When no other
                         default is found, equivalent to |:Make|.
@@ -90,6 +90,9 @@ COMMANDS                                        *dispatch-commands*
 
 :FocusDispatch          Show the task that would run when calling |:Dispatch|
                         with no arguments.
+
+:0Dispatch[!] [options] Provida a range to |:Dispatch| skips any focused task
+                        and forces |b:dispatch|.
 
                                                 *dispatch-:AbortDispatch*
 :AbortDispatch          Abort the most recent build.
@@ -115,7 +118,7 @@ COMMANDS                                        *dispatch-commands*
                         previous :Start invocation, do nothing.
 
                                                 *b:start*
-:Start[!]               With no arguments, |:Start| the options and command
+:Start[!] [options]     With no arguments, |:Start| the options and command
                         given by |b:start|.  If not set, falls back to
                         'shell'.
 
@@ -124,6 +127,10 @@ COMMANDS                                        *dispatch-commands*
                         Like |:Start|, but always spawn a new process rather
                         than focusing an existing one.  The default is always
                         to spawn a new 'shell'.
+
+:0Spawn! [options]
+                        Provide a range to |:Spawn| to spawn |b:dispatch|.
+                        Handy for using an interactive debugger.
 
 MAPS                                            *dispatch-maps*
 

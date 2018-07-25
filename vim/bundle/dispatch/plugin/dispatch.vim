@@ -20,8 +20,9 @@ command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#make_complete Ma
       \ execute dispatch#compile_command(<bang>0, '-- ' . <q-args>,
       \   <count> < 0 || <line1> == <line2> ? <count> : 0)
 
-command! -bang -nargs=* -complete=customlist,dispatch#command_complete Spawn
-      \ execute dispatch#spawn_command(<bang>0, <q-args>)
+command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#command_complete Spawn
+      \ execute dispatch#spawn_command(<bang>0, <q-args>,
+      \   <count> < 0 || <line1> == <line2> ? <count> : 0)
 
 command! -bang -nargs=* -complete=customlist,dispatch#command_complete Start
       \ execute dispatch#start_command(<bang>0, <q-args>)
@@ -59,9 +60,6 @@ call s:map('n', 'm<CR>',      '<SID>:.Make<CR>')
 call s:map('n', 'm<Space>',   '<SID>:.Make<Space>')
 call s:map('n', 'm!',         '<SID>:.Make!')
 call s:map('n', 'm?',         ':<C-U>echo ":Dispatch" dispatch#make_focus(v:count > 1 ? 0 : v:count ? line(".") : -1)<CR>')
-call s:map('n', 'g<CR>',      '<SID>:.Dispatch<CR>')
-call s:map('n', 'g<Space>',   '<SID>:.Dispatch<Space>')
-call s:map('n', 'g!',         '<SID>:.Dispatch!')
 call s:map('n', '`<CR>',      '<SID>:.Dispatch<CR>')
 call s:map('n', '`<Space>',   '<SID>:.Dispatch<Space>')
 call s:map('n', '`!',         '<SID>:.Dispatch!')

@@ -25,8 +25,8 @@ endfunction
 
 let s:worktree_for_dir = {}
 let s:dir_for_worktree = {}
-function! FugitiveTreeForGitDir(git_dir) abort
-  let dir = substitute(s:shellslash(a:git_dir), '/$', '', '')
+function! FugitiveTreeForGitDir(...) abort
+  let dir = substitute(s:shellslash(a:0 ? a:1 : get(b:, 'git_dir', '')), '/$', '', '')
   if dir =~# '/\.git$'
     return len(dir) ==# 5 ? '/' : dir[0:-6]
   endif
@@ -110,7 +110,7 @@ function! FugitiveExtractGitDir(path) abort
 endfunction
 
 function! FugitiveDetect(path) abort
-  if exists('b:git_dir') && (b:git_dir ==# '' || b:git_dir =~# '/$')
+  if exists('b:git_dir') && b:git_dir =~# '^$\|/$\|^fugitive:'
     unlet b:git_dir
   endif
   if !exists('b:git_dir')
@@ -132,23 +132,40 @@ function! FugitiveStatusline(...) abort
 endfunction
 
 function! FugitiveHead(...) abort
-  if !exists('b:git_dir')
+  let dir = a:0 > 1 ? a:2 : get(b:, 'git_dir', '')
+  if empty(dir)
     return ''
   endif
-  return fugitive#repo().head(a:0 ? a:1 : 0)
-endfunction
-
-function! FugitivePath(...) abort
-  let file = fnamemodify(a:0 ? a:1 : @%, ':p')
-  if file =~? '^fugitive:'
-    return fugitive#Path(file)
-  else
-    return file
-  endif
+  return fugitive#repo(dir).head(a:0 ? a:1 : 0)
 endfunction
 
 function! FugitiveReal(...) abort
-  return call('FugitivePath', a:000)
+  let file = a:0 ? a:1 : @%
+  if file =~? '^fugitive:' || a:0 > 1
+    return call('fugitive#Real', [file] + a:000[1:-1])
+  elseif file =~# '^/\|^\a\+:'
+    return file
+  else
+    return fnamemodify(file, ':p' . (file =~# '[\/]$' ? '' : ':s?[\/]$??'))
+  endif
+endfunction
+
+function! FugitivePath(...) abort
+  return call(a:0 > 1 ? 'fugitive#Path' : 'FugitiveReal', a:000)
+endfunction
+
+function! FugitiveGenerate(...) abort
+  return fugitive#repo(a:0 > 1 ? a:2 : get(b:, 'git_dir', '')).translate(a:0 ? a:1 : '', 1)
+endfunction
+
+function! FugitiveParse(...) abort
+  let path = s:shellslash(a:0 ? a:1 : @%)
+  let vals = matchlist(path, '\c^fugitive:\%(//\)\=\(.\{-\}\)\%(//\|::\)\(\x\{40\}\|[0-3]\)\(/.*\)\=$')
+  if len(vals)
+    return [(vals[2] =~# '^.$' ? ':' : '') . vals[2] . substitute(vals[3], '^/', ':', ''), vals[1]]
+  endif
+  let v:errmsg = 'fugitive: invalid Fugitive URL ' . path
+  throw v:errmsg
 endfunction
 
 augroup fugitive
@@ -160,7 +177,7 @@ augroup fugitive
         \ if exists('b:NERDTree.root.path.str') |
         \   call FugitiveDetect(b:NERDTree.root.path.str()) |
         \ endif
-  autocmd VimEnter * if expand('<amatch>')==''|call FugitiveDetect(getcwd())|endif
+  autocmd VimEnter * if empty(expand('<amatch>'))|call FugitiveDetect(getcwd())|endif
   autocmd CmdWinEnter * call FugitiveDetect(expand('#:p'))
 
   autocmd FileType git
@@ -172,18 +189,19 @@ augroup fugitive
         \   call fugitive#MapCfile() |
         \ endif
 
-  autocmd BufReadCmd  index{,.lock}
+  autocmd BufReadCmd index{,.lock}
         \ if FugitiveIsGitDir(expand('<amatch>:p:h')) |
+        \   let b:git_dir = s:shellslash(expand('<amatch>:p:h')) |
         \   exe fugitive#BufReadStatus() |
         \ elseif filereadable(expand('<amatch>')) |
         \   read <amatch> |
-        \   1delete |
+        \   1delete_ |
         \ endif
-  autocmd FileReadCmd fugitive://**//[0-3]/**          exe fugitive#FileRead()
-  autocmd BufReadCmd  fugitive://**//[0-3]/**          exe fugitive#BufReadIndex()
-  autocmd BufWriteCmd fugitive://**//[0-3]/**          exe fugitive#BufWriteIndex()
-  autocmd BufReadCmd  fugitive://**//[0-9a-f][0-9a-f]* exe fugitive#BufReadObject()
-  autocmd FileReadCmd fugitive://**//[0-9a-f][0-9a-f]* exe fugitive#FileRead()
+  autocmd BufReadCmd    fugitive://*//*             exe fugitive#BufReadCmd()
+  autocmd BufWriteCmd   fugitive://*//[0-3]/*       exe fugitive#BufWriteCmd()
+  autocmd FileReadCmd   fugitive://*//*             exe fugitive#FileReadCmd()
+  autocmd FileWriteCmd  fugitive://*//[0-3]/*       exe fugitive#FileWriteCmd()
+  autocmd SourceCmd     fugitive://*//*      nested exe fugitive#SourceCmd()
 
   autocmd User Flags call Hoist('buffer', function('FugitiveStatusline'))
 augroup END

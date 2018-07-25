@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: edf7ac5c1e61c505201385846361fe3c2b69b31b
+    rev: 4cdb69a94e1241373fe8fd4c42f6c36f1d8dcf8b
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 8df073165a40d5299ca24f0c2fccf6401dff46fd
+    rev: 73c39195aee0c80f9ef3cd433ee315d72931864e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 4cc255a3849c15484f7da5b5039d73f1a567a7e2
+    rev: 59f3669a42728406da6d1b948608cae120d1453f
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -218,7 +218,7 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: aa1f120ad3a29c27cc41d581cda3751c59343cce
+    rev: 597068870b8f093a8b2d11536c62ff31222ee8d0
 
 # readline style insertion
 git module vim-rsi:
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: b460520473212a7b332a93a32ae7bbf9614dfa7e
+    rev: dbb9320d000caa56dfada5f99fe0b5209ef0590b
 
 # continuously updated session files
 git module vim-obsession:
@@ -245,7 +245,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 8d56bdd6ade7899f0b0a10cfc219804b4ccbc109
+    rev: 6ce58caad320be3cf9ff5d275191f88524edf326
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -321,7 +321,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 1e020d13aca5112602af8d68f859cef7df240f5e
+    rev: 054060512ac2d3b5367cee37321060e18be0a562
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -602,7 +602,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: a01fab2ee6dd827d555792f69fc30443a64dac5f
+    rev: 4ed35f7247b41ebd09f403257da54e059007851b
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
