@@ -35,7 +35,7 @@ brewenv="$1"
 shift
 brewenv_dir="$HOMEBREWS_HOME/$brewenv"
 if [ ! -e "$brewenv_dir/bin/brew" ]; then
-    "$(dirname "$0")/install-brew" -s "$brewenv_dir"
+    install-brew -s "$brewenv_dir"
 fi
 
 PATH="$brewenv_dir/bin:$PATH"
