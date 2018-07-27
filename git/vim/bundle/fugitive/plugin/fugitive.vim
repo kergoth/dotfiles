@@ -168,6 +168,14 @@ function! FugitiveParse(...) abort
   throw v:errmsg
 endfunction
 
+function! FugitiveConfig(...) abort
+  return call('fugitive#Config', a:000)
+endfunction
+
+function! FugitiveRemoteUrl(...) abort
+  return call('fugitive#RemoteUrl', a:000)
+endfunction
+
 augroup fugitive
   autocmd!
 
@@ -183,11 +191,19 @@ augroup fugitive
   autocmd FileType git
         \ if exists('b:git_dir') |
         \  call fugitive#MapJumps() |
-        \ endif
-  autocmd FileType git,gitcommit,gitrebase
-        \ if exists('b:git_dir') |
         \   call fugitive#MapCfile() |
         \ endif
+  autocmd FileType gitcommit
+        \ if exists('b:git_dir') |
+        \   call fugitive#MapCfile('fugitive#StatusCfile()') |
+        \ endif
+  autocmd FileType gitrebase
+        \ let &l:include = '^\%(pick\|squash\|edit\|reword\|fixup\|drop\|[pserfd]\)\>' |
+        \ if exists('b:git_dir') |
+        \   let &l:includeexpr = 'v:fname =~# ''^\x\{4,40\}$'' ? FugitiveGenerate(v:fname) : ' .
+        \   (len(&l:includeexpr) ? &l:includeexpr : 'v:fname') |
+        \ endif |
+        \ let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe') . '|setl inex= inc='
 
   autocmd BufReadCmd index{,.lock}
         \ if FugitiveIsGitDir(expand('<amatch>:p:h')) |
@@ -201,7 +217,9 @@ augroup fugitive
   autocmd BufWriteCmd   fugitive://*//[0-3]/*       exe fugitive#BufWriteCmd()
   autocmd FileReadCmd   fugitive://*//*             exe fugitive#FileReadCmd()
   autocmd FileWriteCmd  fugitive://*//[0-3]/*       exe fugitive#FileWriteCmd()
-  autocmd SourceCmd     fugitive://*//*      nested exe fugitive#SourceCmd()
+  if exists('##SourceCmd')
+    autocmd SourceCmd     fugitive://*//*    nested exe fugitive#SourceCmd()
+  endif
 
   autocmd User Flags call Hoist('buffer', function('FugitiveStatusline'))
 augroup END

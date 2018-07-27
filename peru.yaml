@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 4cdb69a94e1241373fe8fd4c42f6c36f1d8dcf8b
+    rev: edaef2bb62bda854657ada0a008f81aa657ce692
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 73c39195aee0c80f9ef3cd433ee315d72931864e
+    rev: cec05fac01917215f5dcc1be5046a860dc1e955e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 59f3669a42728406da6d1b948608cae120d1453f
+    rev: c7fb175d3565159699885653767214a6aa583ea4
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -204,12 +204,12 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary
-    rev: 8295187ea1210138c0b171d8e3ec3569936f4c1a
+    rev: 141d9d32a9fb58fe474fcc89cd7221eb2dd57b3a
 
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: e5f4f955d53e07192fb330ff272604c1b8290532
+    rev: 95917c03207efe71eda600090a386109cf31fe70
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: dbb9320d000caa56dfada5f99fe0b5209ef0590b
+    rev: ea57d9c757ebc7a94730197dbea3429f8588bbbe
 
 # continuously updated session files
 git module vim-obsession:
@@ -602,7 +602,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 4ed35f7247b41ebd09f403257da54e059007851b
+    rev: a7b8cb4fe32b43dbeeadc8cb94f378b4e2112723
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -720,7 +720,7 @@ git module bat-syntax-bitbake:
 
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig
-    rev: efc613f02a7499fd1c2348cf208f10c43a9c57bc
+    rev: a03cbf9c7b2d09615834ba802ef1e3eeeace2102
 
 git module wsl-open:
     url: https://github.com/kergoth/wsl-open

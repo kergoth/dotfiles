@@ -214,8 +214,10 @@ function! ale#completion#Show(response, completion_parser) abort
     " function, and then start omni-completion.
     let b:ale_completion_response = a:response
     let b:ale_completion_parser = a:completion_parser
+    " Replace completion options shortly before opening the menu.
     call s:ReplaceCompletionOptions()
-    call ale#util#FeedKeys("\<Plug>(ale_show_completion_menu)")
+
+    call timer_start(0, {-> ale#util#FeedKeys("\<Plug>(ale_show_completion_menu)")})
 endfunction
 
 function! s:CompletionStillValid(request_id) abort
