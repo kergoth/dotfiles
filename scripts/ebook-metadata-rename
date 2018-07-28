@@ -39,9 +39,9 @@ def get_sane_metadata(filename):
 
     # Titlecase and sanitize title for metadata
     title = data['Title']
-    new_title = mangle_title(title)
-    if title != new_title:
-        data['Title'] = title = new_title
+    # new_title = mangle_title(title)
+    # if title != new_title:
+    #     data['Title'] = title = new_title
 
     # Remove author sort portion of Author field
     author = data['Author(s)']
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         if not data.get('Title'):
             sys.exit("Error: title is not set")
 
-        author, title = data['Author(s)'], data['Title']
+        # author, title = data['Author(s)'], data['Title']
 
         for field in data:
             data[field] = sanitize_filename(data[field])
@@ -205,6 +205,6 @@ if __name__ == '__main__':
 
         # Re-set author and title metadata, resulting in ebook-meta also
         # setting the author sort and title sort.
-        subprocess.call(['ebook-meta', '-a', author, '-t', title, filename])
+        # subprocess.call(['ebook-meta', '-a', author, '-t', title, filename])
 
         book_rename(filename, new_filename)
