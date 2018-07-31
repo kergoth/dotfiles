@@ -66,7 +66,7 @@ function! dispatch#bang(string) abort
   return '!' . substitute(a:string, '!\|' . s:var, '\\&', 'g')
 endfunction
 
-function! s:expand(expr) abort
+function! s:expand(expr, dispatch_opts) abort
   if a:expr =~# '^\\\+`[-+]\=='
     return a:expr[1:-1]
   elseif a:expr =~# '^`='
@@ -75,6 +75,7 @@ function! s:expand(expr) abort
   elseif a:expr =~# '^`[-+]='
     return ''
   endif
+  call extend(l:, a:dispatch_opts)
   sandbox let v = expand(substitute(a:expr, ':S$', '', ''))
   if a:expr =~# ':S$'
     let v = shellescape(v)
@@ -89,10 +90,15 @@ endfunction
 let s:flags = '<\=\%(:[p8~.htre]\|:g\=s\(.\).\{-\}\1.\{-\}\1\)*\%(:S\)\='
 let s:expandable = '\\*\%(`[+-]\==[^`]*`\|' . s:var . s:flags . '\)'
 function! dispatch#expand(string, ...) abort
+  let opts = {}
+  if a:0 && a:1 > 0
+    let opts['l#'] = a:1
+    let opts._l = a:1
+  endif
   let lnum = v:lnum
   try
-    let v:lnum = a:0 && a:1 > 0 ? a:1 : 0
-    let string = substitute(a:string, s:expandable, '\=s:expand(submatch(0))', 'g')
+    let v:lnum = get(opts, 'l#', 0)
+    let string = substitute(a:string, s:expandable, '\=s:expand(submatch(0), opts)', 'g')
   finally
     let v:lnum = lnum
   endtry
@@ -128,8 +134,15 @@ function! s:efm_query(key, efm) abort
   endwhile
 endfunction
 
-function! s:efm_literal(key, ...) abort
-  return substitute(get(s:efm_query(a:key, a:0 ? a:1 : &errorformat), 0, ''), '%[%f]', '%', 'g')
+function! s:efm_literal(key, format, ...) abort
+  let subs = {'%': '%'}
+  for raw in s:efm_query(a:key, a:format)
+    let value = substitute(raw, '%\(.\)', '\=get(subs,submatch(1),"\030")', 'g')
+    if len(value) && value !~# "\030"
+      return value
+    endif
+  endfor
+  return ''
 endfunction
 
 function! s:efm_to_regexp(pattern) abort
@@ -369,22 +382,26 @@ endfunction
 function! s:make_focus(count) abort
   let task = ''
   if a:count >= 0
-    let task = s:efm_literal('buffer')
+    let task = s:efm_literal('buffer', &errorformat, a:count)
   endif
   if empty(task)
-    let task = s:efm_literal('default')
+    let task = s:efm_literal('default', &errorformat, a:count)
   endif
   return s:build_make(&makeprg, task)
+endfunction
+
+function! s:focus(count) abort
+  if type(get(b:, 'dispatch')) == type('')
+    return b:dispatch
+  else
+    return s:make_focus(a:count)
+  endif
 endfunction
 
 function! dispatch#spawn_command(bang, command, count, ...) abort
   let [command, opts] = s:extract_opts(a:command)
   if empty(command) && a:count >= 0
-    if type(get(b:, 'dispatch')) == type('')
-      let command = b:dispatch
-    else
-      let command = s:make_focus(a:count)
-    endif
+    let command = s:focus(a:count)
     call extend(opts, {'wait': 'always'}, 'keep')
     let [command, opts] = s:extract_opts(command, opts)
   endif
@@ -393,8 +410,13 @@ function! dispatch#spawn_command(bang, command, count, ...) abort
   return ''
 endfunction
 
-function! dispatch#start_command(bang, command, ...) abort
+function! dispatch#start_command(bang, command, count, ...) abort
   let [command, opts] = s:extract_opts(a:command)
+  if empty(command) && a:count >= 0
+    let command = s:focus(a:count)
+    call extend(opts, {'wait': 'always'}, 'keep')
+    let [command, opts] = s:extract_opts(command, opts)
+  endif
   if empty(command) && type(get(b:, 'start')) == type('')
     let command = b:start
     let [command, opts] = s:extract_opts(command, opts)
@@ -730,13 +752,13 @@ function! dispatch#compile_command(bang, args, count, ...) abort
     endif
     let request.args = matchstr(args, '\s\+\zs.*')
     if a:count >= 0 || exists('default_dispatch')
-      let prefix = s:efm_literal('buffer', request.format)
+      let prefix = s:efm_literal('buffer', request.format, a:count)
       if len(prefix)
         let request.args = prefix . substitute(request.args, '^\ze.', ' ', '')
       endif
     endif
     if empty(request.args)
-      let request.args = s:efm_literal('default', request.format)
+      let request.args = s:efm_literal('default', request.format, a:count)
     endif
     let request.command = s:build_make(request.program, request.args)
   else
@@ -860,9 +882,9 @@ function! dispatch#focus(...) abort
   if haslnum
     let [compiler, opts] = s:extract_opts(compiler)
     if compiler ==# '--'
-      let task = s:efm_literal('buffer')
+      let task = s:efm_literal('buffer', &errorformat, a:1)
       if empty(task)
-        let task = s:efm_literal('default')
+        let task = s:efm_literal('default', &errorformat, a:1)
       endif
       if len(task)
         let compiler .= ' ' . task
@@ -882,9 +904,9 @@ function! dispatch#focus(...) abort
             \ ' ' . compiler
     endif
   elseif compiler ==# '--'
-    let task = s:efm_literal('buffer')
+    let task = s:efm_literal('buffer', &errorformat)
     if empty(task)
-      let task = s:efm_literal('default')
+      let task = s:efm_literal('default', &errorformat)
     endif
     if len(task)
       let compiler .= ' ' . task
@@ -913,7 +935,7 @@ function! dispatch#focus_command(bang, args, count, ...) abort
   elseif args =~# '^--\S\@!' && !has_key(opts, 'compiler')
     let args = matchstr(args, '\s\+\zs.*')
     if empty(args)
-      let args = s:efm_literal('default')
+      let args = s:efm_literal('default', &errorformat, -1)
     endif
     let args = s:build_make(&makeprg, args)
     let args = dispatch#expand(args, 0)
@@ -953,7 +975,12 @@ function! dispatch#focus_command(bang, args, count, ...) abort
 endfunction
 
 function! dispatch#make_focus(count) abort
-  return dispatch#expand(s:make_focus(a:count), a:count)
+  let cmd = s:make_focus(a:count)
+  if a:count >= 0
+    return dispatch#expand(cmd, a:count)
+  else
+    return cmd
+  endif
 endfunction
 
 " Section: Requests

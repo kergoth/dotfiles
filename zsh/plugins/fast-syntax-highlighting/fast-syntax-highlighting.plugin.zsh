@@ -32,6 +32,10 @@
 # Set $ZERO to the expected value, regardless of functionargzero.
 typeset -g ZERO=${(%):-%N}
 typeset -g FAST_BASE_DIR="${ZERO:h}"
+typeset -ga _FAST_MAIN_CACHE
+# Holds list of indices pointing at brackets that
+# are complex, i.e. e.g. part of "[[" in [[ ... ]]
+typeset -ga _FAST_COMPLEX_BRACKETS
 
 if [[ -z "$ZPLG_CUR_PLUGIN" && "${fpath[(r)$FAST_BASE_DIR]}" != $FAST_BASE_DIR ]]; then
     fpath+=( "$FAST_BASE_DIR" )
@@ -66,7 +70,22 @@ _zsh_highlight()
   # may need to remove path_prefix highlighting when the line ends
   if [[ $WIDGET == zle-line-finish ]] || _zsh_highlight_buffer_modified; then
       -fast-highlight-init
-      -fast-highlight-process "$PREBUFFER" "$BUFFER" 0 && region_highlight=( $reply ) || region_highlight=()
+      -fast-highlight-process "$PREBUFFER" "$BUFFER" 0
+      (( FAST_HIGHLIGHT[use_brackets] )) && {
+          _FAST_MAIN_CACHE=( $reply )
+          -fast-highlight-string-process "$PREBUFFER" "$BUFFER"
+      }
+      region_highlight=( $reply )
+  else
+      local char="${BUFFER[CURSOR+1]}"
+      if [[ "$char" = ["{([])}"] || "${FAST_HIGHLIGHT[prev_char]}" = ["{([])}"] ]]; then
+          FAST_HIGHLIGHT[prev_char]="$char"
+          (( FAST_HIGHLIGHT[use_brackets] )) && {
+              reply=( $_FAST_MAIN_CACHE )
+              -fast-highlight-string-process "$PREBUFFER" "$BUFFER"
+              region_highlight=( $reply )
+          }
+      fi
   fi
 
   {
@@ -260,6 +279,7 @@ _zsh_highlight_preexec_hook()
 {
   typeset -g _ZSH_HIGHLIGHT_PRIOR_BUFFER=
   typeset -gi _ZSH_HIGHLIGHT_PRIOR_CURSOR=0
+  typeset -ga _FAST_MAIN_CACHE=()
 }
 
 autoload -Uz add-zsh-hook
@@ -280,6 +300,7 @@ autoload -Uz -- chroma/-git.ch chroma/-example.ch chroma/-grep.ch chroma/-perl.c
                 chroma/-autoload.ch chroma/-ssh.ch chroma/-scp.ch chroma/-which.ch chroma/-printf.ch \
                 chroma/-ruby.ch
 source "${ZERO:h}/fast-highlight"
+source "${ZERO:h}/fast-string-highlight"
 
 local __fsyh_theme
 zstyle -s :plugin:fast-syntax-highlighting theme __fsyh_theme

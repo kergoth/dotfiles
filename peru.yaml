@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: edaef2bb62bda854657ada0a008f81aa657ce692
+    rev: 0281aa0ba367a54d10cad54f817224b1f6d6a447
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -130,7 +130,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: d3a273cedf788181db9a05726dcd4d930da9e248
+    rev: 0aa0a2d22277f89b069f4701e49860d425be8500
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: cec05fac01917215f5dcc1be5046a860dc1e955e
+    rev: fc8f9eda9dbbcd711300f67b9040eb1bf32d8ac4
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -194,7 +194,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: b35f952a6ae6768ae2c6a9f4febc7945cc311f74
+    rev: 6e798f9030d0853d484078043ddbb41e611ab7a6
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -209,7 +209,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: 95917c03207efe71eda600090a386109cf31fe70
+    rev: 7d1223bfac6009eb26f042e2acf042510ae435bf
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: ea57d9c757ebc7a94730197dbea3429f8588bbbe
+    rev: 1e9bd0cdbe6975916fa444ae727663afcea36fb5
 
 # continuously updated session files
 git module vim-obsession:
@@ -245,7 +245,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 6ce58caad320be3cf9ff5d275191f88524edf326
+    rev: f39c92b7ce58669e3b598479131d27093347f4c3
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -602,7 +602,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: a7b8cb4fe32b43dbeeadc8cb94f378b4e2112723
+    rev: 16d0c52d24e8948b8bd8030e3fd112e0b6361c06
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -720,7 +720,7 @@ git module bat-syntax-bitbake:
 
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig
-    rev: a03cbf9c7b2d09615834ba802ef1e3eeeace2102
+    rev: f7b12bfda058b019a254bd78afb0cafdcd961c9c
 
 git module wsl-open:
     url: https://github.com/kergoth/wsl-open
