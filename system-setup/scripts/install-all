@@ -6,7 +6,7 @@ sudo pacman -Sy --needed vim zsh dtach cmake go ruby
 sudo apt -y install vim zsh dtach cmake golang ruby ruby-dev
 
 # Install python's deps so all the modules get built
-pacman -Sy --needed openssl bzip2 sqlite
+sudo pacman -Sy --needed openssl bzip2 sqlite
 sudo apt -y install libssl-dev libbz2-dev libsqlite3-dev
 
 install-python || exit $?
