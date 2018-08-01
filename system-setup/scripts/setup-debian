@@ -2,7 +2,7 @@
 
 PATH="$HOME/.local/bin:$PATH"
 
-sudo apt -y install vim zsh dtach dvtm cmake
+sudo apt -y install vim zsh dtach cmake
 sudo apt -y install golang ruby ruby-dev
 
 # Install python's deps so all the modules get built
