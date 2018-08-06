@@ -41,7 +41,7 @@ function! s:fcall(fn, path, ...) abort
   return call(s:ffn(a:fn, a:path), [a:path] + a:000)
 endfunction
 
-function! s:rename(src, dst) abort
+function! EunuchRename(src, dst) abort
   if a:src !~# '^\a\a\+:' && a:dst !~# '^\a\a\+:'
     return rename(a:src, a:dst)
   endif
@@ -103,7 +103,7 @@ command! -bar -nargs=1 -bang -complete=file Move
       \ let s:dst = substitute(s:fcall('simplify', s:dst), '^\.\'.s:separator(), '', '') |
       \ if <bang>1 && s:fcall('filereadable', s:dst) |
       \   exe 'keepalt saveas '.s:fnameescape(s:dst) |
-      \ elseif s:rename(s:src, s:dst) |
+      \ elseif EunuchRename(s:src, s:dst) |
       \   echoerr 'Failed to rename "'.s:src.'" to "'.s:dst.'"' |
       \ else |
       \   setlocal modified |
@@ -155,7 +155,7 @@ command! -bar -bang -nargs=+ Chmod
       \ exe s:Chmod(<bang>0, <f-args>) |
 
 command! -bar -bang -nargs=? -complete=dir Mkdir
-      \ call mkdir(empty(<q-args>) ? expand('%:h') : <q-args>, <bang>0 ? 'p' : '') |
+      \ call call(<bang>0 ? 's:mkdir_p' : 'mkdir', [empty(<q-args>) ? expand('%:h') : <q-args>]) |
       \ if empty(<q-args>) |
       \  silent keepalt execute 'file' s:fnameescape(expand('%')) |
       \ endif

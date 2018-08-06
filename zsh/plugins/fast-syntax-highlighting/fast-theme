@@ -6,11 +6,13 @@
 
 zmodload zsh/zutil 2>/dev/null
 
-setopt localoptions extendedglob
+emulate -LR zsh
+setopt extendedglob typesetsilent warncreateglobal
 
-local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_RESET OPT_LIST OPT_TEST OPT_SECONDARY
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_RESET OPT_LIST OPT_TEST OPT_SECONDARY OPT_SHOW OPT_COPY OPT_OV_RESET
 local -A opthash
-zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test -secondary || { echo "Improper options given, see help (-h/--help)"; return 1; }
+zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test -secondary \
+            s -show -copy-shipped-theme: R -ov-reset || { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))    && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} )) && OPT_VERBOSE="-v"
@@ -18,9 +20,29 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
 (( ${+opthash[-r]} + ${+opthash[--reset]} ))   && OPT_RESET="-r"
 (( ${+opthash[-l]} + ${+opthash[--list]} ))    && OPT_LIST="-l"
 (( ${+opthash[-t]} + ${+opthash[--test]} ))    && OPT_TEST="-t"
-(( ${+opthash[--secondary]} )) && OPT_SECONDARY="--secondary"
+(( ${+opthash[--secondary]} ))                 && OPT_SECONDARY="--secondary"
+(( ${+opthash[-s]} + ${+opthash[--show]} ))    && OPT_SHOW="-s"
+(( ${+opthash[--copy-shipped-theme]} ))        && OPT_COPY="${opthash[--copy-shipped-theme]}"
+(( ${+opthash[-R]} + ${+opthash[--ov-reset]} )) && OPT_OV_RESET="-R"
 
-[[ -n "$OPT_RESET" ]] && { command rm -f "$FAST_BASE_DIR"/{current_theme.zsh,secondary_theme.zsh}; [[ -z "$OPT_QUIET" ]] && print "Reset done (no theme is now set)"; return 0; }
+[[ -n "$OPT_SHOW" ]] && {
+    ( source "$FAST_BASE_DIR"/current_theme.zsh 2>/dev/null && print "Current theme: $FAST_THEME_NAME" || print "No theme is set"; )
+    return 0
+}
+
+[[ -n "$OPT_COPY" ]] && {
+    [[ ! -f "$FAST_BASE_DIR"/themes/"${OPT_COPY%.ini}.ini" ]] && { print "Theme \`$OPT_COPY' doesn't exist in FSH plugin dir ($FAST_BASE_DIR/themes)"; return 1; }
+    [[ ! -r "$FAST_BASE_DIR"/themes/"${OPT_COPY%.ini}.ini" ]] && { print "Theme \`$OPT_COPY' isn't readable in FSH plugin dir ($FAST_BASE_DIR/themes)"; return 1; }
+    [[ -n "$1" ]] && {
+        [[ ! -e "$1" && ! -e ${1:h} ]] && { print "Destination path doesn't exist, aborting"; return 1; }
+    }
+    command cp -vf "$FAST_BASE_DIR"/themes/"${OPT_COPY%.ini}.ini" "${${1:-.}%.ini}.ini" || return 1
+    return 0
+}
+
+[[ -n "$OPT_RESET" ]] && { command rm -f "$FAST_BASE_DIR"/{current_theme.zsh,secondary_theme.zsh}; [[ -z "$OPT_QUIET" ]] && print "Reset done (no theme is now set, restart is required)"; return 0; }
+
+[[ -n "$OPT_OV_RESET" ]] && { command rm -f "$FAST_BASE_DIR"/theme_overlay.zsh; [[ -z "$OPT_QUIET" ]] && print "Overlay-reset done, it is inactive (restart is required)"; return 0; }
 
 [[ -n "$OPT_LIST" ]] && {
     [[ -z "$OPT_QUIET" ]] && print -r -- "Available themes:"
@@ -29,21 +51,36 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
 }
 
 [[ -n "$OPT_HELP" ]] && {
-    print -r -- "Usage: fast-theme [-h/--help] [-v/--verbose] [-q/--quiet] [-t/--test] <theme-name>"
-    print -r -- "       fast-theme [-r/--reset] [-l/--list]"
+    print -r -- "Usage: fast-theme [-h/--help] [-v/--verbose] [-q/--quiet] [-t/--test] <theme-name|theme-path>"
+    print -r -- "       fast-theme [-r/--reset] [-l/--list] [-s/--show]"
+    print -r -- "       fast-theme --copy-shipped-theme {theme-name} [destination-path]"
     print -r -- ""
-    print -r -- "Default action (after providing <theme-name>) is to switch current session"
-    print -r -- "and any future sessions to the new theme."
+    print -r -- "Default action (after providing <theme-name> or <theme-path>) is to switch current session"
+    print -r -- "and any future sessions to the new theme. Using <theme-path>, i.e. a path to an ini file"
+    print -r -- "means using custom, own theme. The path can use an \"XDG:\" shorthand (e.g. \"XDG:mytheme\")"
+    print -r -- "that will point to ~/.config/fsh/<theme>.ini (or \$XDG_CONFIG_HOME/fsh/<theme>.ini in general"
+    print -r -- "if the variable is set in the environment). If the INI file pointed in the path is \"overlay\","
+    print -r -- "then it is not a full theme, but an additional theme-snippet that overwrites only selected"
+    print -r -- "styles of the main theme."
+    print -r -- ""
+    print -r -- "Other path-shorthands:"
+    print -r -- "LOCAL: = /usr/local/share/fsh/"
+    print -r -- "HOME: = $HOME/.fsh/"
+    print -r -- "OPT: = /opt/local/share/fsh/"
     print -r -- ""
     print -r -- "-r/--reset     - unset any theme, use default highlighting (requires restart)"
+    print -r -- "-R/--ov-reset  - unset overlay, use styles only from main-theme (requires restart)"
     print -r -- "-l/--list      - list names of available themes"
     print -r -- "-t/--test      - show test block of code after switching theme"
+    print -r -- "-s/--show      - get and display the theme currently being set"
+    print -r -- ""
+    print -r -- "The option --copy-shipped-theme allows easy copying of one of the 6 shipped themes into given"
+    print -r -- "destination path. Normal use means changing directory to e.g. ~/.config/fsh, and then issuing"
+    print -r -- "e.g. \`fast-theme --copy-shipped-theme clean mytheme', to obtain a template for own new theme."
     return 0
 }
 
-[[ -z "$1" ]] && { print -u2 "Provide a theme (its name) to switch to, aborting (see -h/--help)"; return 1; }
-[[ ! -f "$FAST_BASE_DIR/themes/$1.ini" ]] && { print -u2 "No such theme \`$1', aborting"; return 1; }
-[[ ! -r "$FAST_BASE_DIR/themes/$1.ini" ]] && { print -u2 "Theme \`$1' unreadable, aborting"; return 1; }
+[[ -z "$1" ]] && { print -u2 "Provide a theme (its name or path to its file) to switch to, aborting (see -h/--help)"; return 1; }
 
 # FAST_HIGHLIGHT_STYLES key onto ini-file key
 local -A map
@@ -98,6 +135,7 @@ map=(
     bracket-level-1             -
     bracket-level-2             -
     bracket-level-3             -
+    global-alias                -
 )
 
 # In which order to generate entries
@@ -112,6 +150,7 @@ order=(
     for-loop-separator exec-descriptor here-string-tri here-string-word secondary
     case-input case-parentheses case-condition correct-subtle incorrect-subtle subtle-bg
     path-to-dir paired-bracket bracket-level-1 bracket-level-2 bracket-level-3
+    global-alias
 )
 
 [[ -n "$OPT_VERBOSE" ]] && print "Number of styles available for customization: ${#order}"
@@ -125,24 +164,46 @@ color=( red green blue yellow cyan magenta black white )
 #
 
 local -A out
-fast-read-ini-file "$FAST_BASE_DIR/themes/$1.ini" out ""
+local THEME_NAME
+if [[ "$1" = */* || "$1" = (XDG|LOCAL|HOME|OPT):* ]]; then
+    1="${${1/(#s)XDG:/${${XDG_CONFIG_HOME:-$HOME/.config}%/}/fsh/}%.ini}.ini"
+    1="${${1/(#s)LOCAL://usr/local/share/fsh/}%.ini}.ini"
+    1="${${1/(#s)HOME:/$HOME/.fsh/}%.ini}.ini"
+    1="${${1/(#s)OPT://opt/local/share/fsh/}%.ini}.ini"
+    1=${~1} # allow user to quote ~
 
-[[ -z "$OPT_SECONDARY" ]] && local outfile="current_theme.zsh" || local outfile="secondary_theme.zsh"
+    [[ ! -f "$1" ]] && { print -u2 "No such theme \`$1', aborting"; return 1; }
+    [[ ! -r "$1" ]] && { print -u2 "Theme \`$1' unreadable, aborting"; return 1; }
+
+    THEME_NAME="${1:t:r}"
+    fast-read-ini-file "$1" out ""
+else
+    [[ ! -f "$FAST_BASE_DIR/themes/$1.ini" ]] && { print -u2 "No such theme \`$1', aborting"; return 1; }
+    [[ ! -r "$FAST_BASE_DIR/themes/$1.ini" ]] && { print -u2 "Theme \`$1' unreadable, aborting"; return 1; }
+
+    THEME_NAME="$1"
+    fast-read-ini-file "$FAST_BASE_DIR/themes/$1.ini" out ""
+fi
+
+[[ -z "$OPT_SECONDARY" ]] && { [[ "$THEME_NAME" = "overlay" ]] && local outfile="theme_overlay.zsh" || local outfile="current_theme.zsh"; } || local outfile="secondary_theme.zsh"
 command rm -f "$FAST_BASE_DIR"/"$outfile"
 
 # Set a zstyle and a parameter to carry theme name
 if [[ -z "$OPT_SECONDARY" ]]; then
-    print -r -- 'zstyle :plugin:fast-syntax-highlighting theme "'"$1"'"' >>! "$FAST_BASE_DIR"/"$outfile"
-    print -r -- 'typeset -g FAST_THEME_NAME="'"$1"'"' >>! "$FAST_BASE_DIR"/"$outfile"
-    zstyle :plugin:fast-syntax-highlighting theme "$1"
-    FAST_THEME_NAME="$1"
+    [[ "$THEME_NAME" != "overlay" ]] && {
+        print -r -- 'zstyle :plugin:fast-syntax-highlighting theme "'"$THEME_NAME"'"' >>! "$FAST_BASE_DIR"/"$outfile"
+        print -r -- 'typeset -g FAST_THEME_NAME="'"$THEME_NAME"'"' >>! "$FAST_BASE_DIR"/"$outfile"
+        zstyle :plugin:fast-syntax-highlighting theme "$THEME_NAME"
+        typeset -g FAST_THEME_NAME="$THEME_NAME"
+    }
 else
-    local FAST_THEME_NAME="$1"
+    local FAST_THEME_NAME="$THEME_NAME"
 fi
 
 # Generate current_theme.zsh or secondary_theme.zsh, traversing ini-file associative array
 local k kk
 local inikey inival result
+integer ov_counter=0
 for k in "${order[@]}"; do
     [[ "${map[$k]}" = "-" ]] && kk="$k" || kk="${map[$k]}"
     inikey="${out[(i)<*>_${kk}]}"
@@ -160,11 +221,29 @@ for k in "${order[@]}"; do
         fi
     fi
 
-    print -r -- ': ${FAST_HIGHLIGHT_STYLES['"${FAST_THEME_NAME}$k"']:='"$result"'}' >>! "$FAST_BASE_DIR"/"$outfile"
-    FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}$k]="$result"
+    if [[ "$THEME_NAME" = "overlay" ]]; then
+        [[ -n "$result" ]] && {
+            (( ++ ov_counter ))
+            print -r -- ': ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}'"$k"']::='"$result"'}' >>! "$FAST_BASE_DIR"/"$outfile"
+            FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}$k]="$result"
+        }
+    else
+        print -r -- ': ${FAST_HIGHLIGHT_STYLES['"${FAST_THEME_NAME}$k"']:='"$result"'}' >>! "$FAST_BASE_DIR"/"$outfile"
+        FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}$k]="$result"
+    fi
 done
 
-[[ -z "$OPT_QUIET" ]] && print "Switched to theme \`$1' (current session, and future sessions)"
+# This can overwrite some of *_STYLES fields
+# Re-apply overlay on top of the theme we switched to
+[[ "$THEME_NAME" != "overlay" ]] && [[ -r "$FAST_BASE_DIR"/theme_overlay.zsh ]] && source "$FAST_BASE_DIR"/theme_overlay.zsh
+
+[[ -z "$OPT_QUIET" ]] && {
+    if [[ "$THEME_NAME" != "overlay" ]]; then
+        print "Switched to theme \`$THEME_NAME' (current session, and future sessions)" || \
+    else
+        print "Processed the overlay ($ov_counter keys found), it is now active (for current session, and future sessions)"
+    fi
+}
 
 [[ -n "$OPT_TEST" ]] && {
     print -zr '
@@ -176,9 +255,9 @@ math=$(( 10 + HISTSIZ + HISTSIZE + $SAVEHIST )) size=$(( 0 ))
 for (( ii = 1; ii <= size; ++ ii )); do
     if [[ "${cmds[ii]} string" = "| string" ]]
     then
-        sidx=${buffer[(in:ii:)\$\(?#[^\\\\]\)]} # find opening $(
+        sidx=${buffer[(in:ii:)\$\(?#[^\\\\]\)]} # find opening cmd-subst
         (( sidx <= len )) && {
-            eidx=${buffer[(b:sidx:ii)[^\\\\]\)]} # find closing )
+            eidx=${buffer[(b:sidx:ii)[^\\\\]\)]} # find closing cmd-subst
         }
     fi
 done

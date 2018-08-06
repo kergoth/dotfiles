@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 0281aa0ba367a54d10cad54f817224b1f6d6a447
+    rev: 4a3f22b805cda8e81a3f200a8425af7d12a48810
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: fc8f9eda9dbbcd711300f67b9040eb1bf32d8ac4
+    rev: 4bf7f2fd697e6404a2353eabc534eef6e9579755
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -209,7 +209,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: 7d1223bfac6009eb26f042e2acf042510ae435bf
+    rev: 89d7542ed57cec2f487a1daee677d96aff00e90a
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 1e9bd0cdbe6975916fa444ae727663afcea36fb5
+    rev: da5562f12795c9a8eaf346573af2876300048ca4
 
 # continuously updated session files
 git module vim-obsession:
@@ -547,7 +547,7 @@ git module hub-completion:
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
-    rev: b6a8b49e2173ba5a1b34d00e68e0ed8addac3ebd
+    rev: 40e8b973971beb5da279a499231464ae1d959c8b
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
@@ -602,7 +602,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 16d0c52d24e8948b8bd8030e3fd112e0b6361c06
+    rev: 03973c0d0998dae638c26ed5be0cea6256ee38d6
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
