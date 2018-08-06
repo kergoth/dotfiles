@@ -2,6 +2,15 @@
 user_pref("app.update.auto", true);
 /* 0302b: enable auto update installing for extensions (after the check in 0301b) */
 user_pref("extensions.update.autoUpdateDefault", true);
+/* 0707: disable (or setup) DNS-over-HTTPS (DoH) (FF60+)
+ * TRR = Trusted Recursive Resolver
+ * .mode: 0=off, 1=race, 2=TRR first, 3=TRR only, 4=race for stats, but always use native result
+ * [WARNING] DoH bypasses hosts and gives info to yet another party (e.g. Cloudflare)
+ * [1] https://www.ghacks.net/2018/04/02/configure-dns-over-https-in-firefox/
+ * [2] https://hacks.mozilla.org/2018/05/a-cartoon-intro-to-dns-over-https/ ***/
+user_pref("network.trr.mode", 0);
+user_pref("network.trr.bootstrapAddress", "");
+user_pref("network.trr.uri", "");
 /* 0801: enable location bar using search */
 user_pref("keyword.enabled", true);
 /* 0850a: enable location bar autocomplete and suggestion types */
