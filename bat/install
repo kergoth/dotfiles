@@ -7,14 +7,18 @@ case "$OSTYPE" in
         ;;
 esac
 
+if [ -e $cfgpath/bat/syntax ] && [ ! -e $cfgpath/bat/syntaxes ]; then
+    mv $cfgpath/bat/syntax $cfgpath/bat/syntaxes
+fi
+
 if [ -h $cfgpath/bat ]; then
     rm -f $cfgpath/bat
 fi
 
-mkdir -p $cfgpath/bat/syntax
+mkdir -p $cfgpath/bat/syntaxes
 for i in syntax/*; do
     if [ -e "$i" ]; then
-        ln -sf $PWD/$i/*.sublime-syntax $cfgpath/bat/syntax/
+        ln -sf $PWD/$i/*.sublime-syntax $cfgpath/bat/syntaxes/
     fi
 done
 
@@ -27,7 +31,7 @@ done
 ln -sf base16-tomorrow-night.tmTheme $cfgpath/bat/themes/Default.tmTheme
 
 if [ ! -e $cfgpath/bat/syntax/Packages ]; then
-    git clone https://github.com/sublimehq/Packages $cfgpath/bat/syntax/Packages
+    git clone https://github.com/sublimehq/Packages $cfgpath/bat/syntaxes/Packages
 fi
 
 if which bat >/dev/null 2>&1; then
