@@ -69,7 +69,6 @@ pipv3 asciinema
 
 ## For dotfiles
 pipv3 peru
-pipv3 pygments pygments_base16
 
 ## Handy
 go get -u github.com/direnv/direnv
