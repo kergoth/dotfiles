@@ -2,6 +2,7 @@
 
 import argparse
 import functools
+import os
 import sys
 import toml
 
@@ -13,8 +14,11 @@ args = parser.parse_args()
 if not args.file or args.file == '-':
     obj = toml.load(sys.stdin)
 else:
-    with open(args.file, 'r') as f:
-        obj = toml.load(f)
+    if os.path.exists(args.file):
+        with open(args.file, 'r') as f:
+            obj = toml.load(f)
+    else:
+        obj = {}
 
 err = 0
 if not args.keys:
