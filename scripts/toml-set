@@ -3,6 +3,7 @@
 import argparse
 import functools
 import itertools
+import os
 import sys
 import toml
 
@@ -41,8 +42,11 @@ else:
     if not args.file or args.file == '-':
         obj = toml.load(sys.stdin)
     else:
-        with open(args.file, 'r') as f:
-            obj = toml.load(f)
+        if os.path.exists(args.file):
+            with open(args.file, 'r') as f:
+                obj = toml.load(f)
+        else:
+            obj = {}
 
 for key, value in pairs(args.values):
     key = key.split(".")
