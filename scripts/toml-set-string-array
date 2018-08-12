@@ -19,7 +19,7 @@ parser.add_argument('-f', '--file', help='Input path rather than stdin')
 parser.add_argument('-o', '--output', help='Output path. If --file is specified, defaults to that, otherwise stdout')
 parser.add_argument('-n', '--new', help='Create a new file from the arguments, do not read input', action='store_true')
 parser.add_argument('key')
-parser.add_argument('elements', metavar='ELEMENT', nargs='+')
+parser.add_argument('elements', metavar='ELEMENT', nargs='*')
 
 args = parser.parse_args()
 
