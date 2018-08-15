@@ -30,11 +30,11 @@ for i in themes/*.tmTheme; do
 done
 ln -sf base16-tomorrow-night.tmTheme $cfgpath/bat/themes/Default.tmTheme
 
-if [ ! -e $cfgpath/bat/syntax/Packages ]; then
+if [ ! -e $cfgpath/bat/syntaxes/Packages ]; then
     git clone https://github.com/sublimehq/Packages $cfgpath/bat/syntaxes/Packages
 fi
 
-if [ ! -e $cfgpath/bat/syntax/Elixir ]; then
+if [ ! -e $cfgpath/bat/syntaxes/Elixir ]; then
     git clone https://github.com/princemaple/elixir-sublime-syntax $cfgpath/bat/syntaxes/Elixir
 fi
 
