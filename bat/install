@@ -34,6 +34,10 @@ if [ ! -e $cfgpath/bat/syntax/Packages ]; then
     git clone https://github.com/sublimehq/Packages $cfgpath/bat/syntaxes/Packages
 fi
 
+if [ ! -e $cfgpath/bat/syntax/Elixir ]; then
+    git clone https://github.com/princemaple/elixir-sublime-syntax $cfgpath/bat/syntaxes/Elixir
+fi
+
 if which bat >/dev/null 2>&1; then
     bat cache -i
 fi
