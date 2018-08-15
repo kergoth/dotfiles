@@ -74,6 +74,7 @@ pipv3 peru
 go get -u github.com/direnv/direnv
 
 ## Script dependencies
+go get -u github.com/tomnomnom/unfurl
 pip_install SOAPpy # lmwsaction
 pip_install dropbox # git-remote-dropbox
 pip_install titlecase # variety of scripts, and zsh alias
