@@ -28,6 +28,8 @@ local -a __results
     FAST_HIGHLIGHT[chroma-autoload-counter]=0
     FAST_HIGHLIGHT[chroma-autoload-counter-all]=1
     FAST_HIGHLIGHT[chroma-autoload-message]=""
+    #FAST_HIGHLIGHT[chroma-autoload-message-shown]=""
+    [[ -z ${FAST_HIGHLIGHT[chroma-autoload-message-shown-at]} ]] && FAST_HIGHLIGHT[chroma-autoload-message-shown-at]=0
     __style=${FAST_THEME_NAME}command
 
 } || {
@@ -47,7 +49,7 @@ local -a __results
         # Count non-option tokens.
         (( FAST_HIGHLIGHT[chroma-autoload-counter] += 1, __idx1 = FAST_HIGHLIGHT[chroma-autoload-counter] ))
 
-        if [[ "$__wrd" != \$* && "$__wrd" != \"\$* ]]; then
+        if [[ $__wrd != (\$|\"\$)* && $__wrd != (/|\"/|\'/)* && $__wrd != \`* ]]; then
             __results=( ${^fpath}/$__wrd(N) )
             [[ "${#__results}" -gt 0 ]] && __style=${FAST_THEME_NAME}correct-subtle || __style=${FAST_THEME_NAME}incorrect-subtle
         fi
@@ -57,8 +59,16 @@ local -a __results
         fi
     fi
 
-    if (( ${#${(z)BUFFER}} <= FAST_HIGHLIGHT[chroma-autoload-counter-all] )); then
-        zle -M "${FAST_HIGHLIGHT[chroma-autoload-message]}"
+    # Display only when processing last autoload argument
+    if (( ${#${(z)BUFFER}} == FAST_HIGHLIGHT[chroma-autoload-counter-all] )); then
+        # Display only if already shown message differs or when it timeouts
+        if [[ ${FAST_HIGHLIGHT[chroma-autoload-message]} != ${FAST_HIGHLIGHT[chroma-autoload-message-shown]} ||
+                $(( EPOCHSECONDS - FAST_HIGHLIGHT[chroma-autoload-message-shown-at] )) -gt 7
+        ]]; then
+            FAST_HIGHLIGHT[chroma-autoload-message-shown]=${FAST_HIGHLIGHT[chroma-autoload-message]}
+            FAST_HIGHLIGHT[chroma-autoload-message-shown-at]=$EPOCHSECONDS
+            zle -M "${FAST_HIGHLIGHT[chroma-autoload-message]}"
+        fi
     fi
 }
 

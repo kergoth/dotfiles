@@ -1,6 +1,6 @@
 " eunuch.vim - Helpers for UNIX
 " Maintainer:   Tim Pope <http://tpo.pe/>
-" Version:      1.1
+" Version:      1.2
 
 if exists('g:loaded_eunuch') || &cp || v:version < 700
   finish
@@ -78,11 +78,7 @@ command! -bar -bang Unlink
       \   edit! |
       \ endif
 
-command! -bar -bang Remove
-      \ silent Unlink<bang> |
-      \ echohl WarningMsg |
-      \ echo "File deleted. Use :Delete instead of :Remove to delete the buffer too." |
-      \ echohl NONE
+command! -bar -bang Remove Unlink<bang>
 
 command! -bar -bang Delete
       \ let s:file = fnamemodify(bufname(<q-args>),':p') |

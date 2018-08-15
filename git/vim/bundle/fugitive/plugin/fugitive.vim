@@ -34,13 +34,17 @@ endfunction
 
 function! FugitiveReal(...) abort
   let file = a:0 ? a:1 : @%
-  if file =~? '^fugitive:' || a:0 > 1
+  if file =~# '^\a\a\+:' || a:0 > 1
     return call('fugitive#Real', [file] + a:000[1:-1])
-  elseif file =~# '^/\|^\a\+:\|^$'
+  elseif file =~# '^/\|^\a:\|^$'
     return file
   else
     return fnamemodify(file, ':p' . (file =~# '[\/]$' ? '' : ':s?[\/]$??'))
   endif
+endfunction
+
+function! FugitiveRoute(...) abort
+  return fugitive#Route(a:0 ? a:1 : '', FugitiveGitDir(a:0 > 1 ? a:2 : -1))
 endfunction
 
 function! FugitivePath(...) abort
@@ -49,17 +53,6 @@ function! FugitivePath(...) abort
   else
     return FugitiveReal(a:0 ? a:1 : @%)
   endif
-endfunction
-
-function! FugitiveGenerate(...) abort
-  if a:0 && s:Slash(a:1) =~# '^\%(\a\a\+:\)\=\%(a:\)\=/\|^[~$]'
-    return a:1
-  endif
-  return fugitive#repo(FugitiveGitDir(a:0 > 1 ? a:2 : -1)).translate(a:0 ? a:1 : '', 1)
-endfunction
-
-function! FugitiveRoute(...) abort
-  return call('FugitiveGenerate', a:000)
 endfunction
 
 function! FugitiveParse(...) abort
@@ -85,7 +78,7 @@ function! FugitiveHead(...) abort
   if empty(dir)
     return ''
   endif
-  return fugitive#repo(dir).head(a:0 ? a:1 : 0)
+  return fugitive#Head(a:0 ? a:1 : 0, dir)
 endfunction
 
 function! FugitiveStatusline(...) abort
@@ -207,6 +200,10 @@ function! FugitiveDetect(path) abort
   endif
 endfunction
 
+function! FugitiveGenerate(...) abort
+  return call('FugitiveRoute', a:000)
+endfunction
+
 function! s:Slash(path) abort
   if &shell =~? 'cmd' || exists('+shellslash') && !&shellslash
     return tr(a:path, '\', '/')
@@ -239,7 +236,7 @@ augroup fugitive
   autocmd FileType gitrebase
         \ let &l:include = '^\%(pick\|squash\|edit\|reword\|fixup\|drop\|[pserfd]\)\>' |
         \ if exists('b:git_dir') |
-        \   let &l:includeexpr = 'v:fname =~# ''^\x\{4,40\}$'' ? FugitiveGenerate(v:fname) : ' .
+        \   let &l:includeexpr = 'v:fname =~# ''^\x\{4,40\}$'' ? FugitiveRoute(v:fname) : ' .
         \   (len(&l:includeexpr) ? &l:includeexpr : 'v:fname') |
         \ endif |
         \ let b:undo_ftplugin = get(b:, 'undo_ftplugin', 'exe') . '|setl inex= inc='

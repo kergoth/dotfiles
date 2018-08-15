@@ -22,6 +22,7 @@
     - [Zgen](#zgen)
 - [Customization](#customization)
   - [Secondary Theme](#secondary-theme)
+  - [Custom Working Directory](#custom-working-directory)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -65,7 +66,7 @@ Other extensions:
 6. Paths from `$CDPATH` aren't colorized unless the command is `cd`
 
 7. Five 256-color themes, switched with `fast-theme {theme-name}` (also try `-t` option to obtain the below snippet).
-   also note the ideal brackets highlighting in the `sidx=...`, `eidx=...` lines:
+   also note the ideal brackets highlighting in the `sidx=...`, `eidx=...` lines, and math-mode highlighting in `$(( ))`:
 
     ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/theme.png)
 
@@ -78,10 +79,13 @@ Other extensions:
     ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/eval_cmp.png)
 
 10. New architecture – **chroma functions** – highlighting that is **specific** for given command. There
-    are two chromas currently, for `git` (verifies correct remote & branch, also see below)  and `grep`
-    (highlights regular expression):
+    are chromas for `git` (verifies correct remote & branch, also see below), `grep` (highlights regular
+    expression):
 
     ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/git_chroma.png)
+
+    Also for `awk`, `make`, `perl`, `printf`, `ruby`, `sh`, `source` and more. The chromas can be considered
+    "plugins" for specific commands.
 
 11. Ideal highlighting of brackets (pairing, etc.) – no quoting can disturb the result:
 
@@ -93,11 +97,24 @@ Other extensions:
 
     ![image](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/herestring.png)
 
+13. Highlighting of for-loop, also with support for the *alternate syntax* (i.e. braces instead of do...done):
+
+    ![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/for-loop-cmp.png)
+
+14. Ideal string highlighting – no quoting can disturb highlighting of `"`-quoted (and `'`-quoted) text:
+
+    ![sshot](https://raw.githubusercontent.com/zdharma/fast-syntax-highlighting/master/images/ideal-string.png)
+
 Performance differencies can be observed at Asciinema recording, where `10 kB` function is being edited:
 
 [![asciicast](https://asciinema.org/a/112367.png)](https://asciinema.org/a/112367)
 
 # Updates (2018)
+**2018-08-09**
+
+Added ideal string highlighting – FSH now handles any legal quoting and combination of `"`,`'` and `\` when
+highlighting program arguments. See the introduction for an example (item #14).
+
 **2018-08-02**
 
 Global aliases are now supported:
@@ -121,7 +138,8 @@ set_fast_theme() {
 ```
 
 If you have set theme before an update of styles (e.g. recent addition of bracket highlighting)
-then please repeat `fast-theme {theme}` call to regenerate theme files.
+then please repeat `fast-theme {theme}` call to regenerate theme files. (**2018-08-09**: FSH
+now has full user-theme support, refer to [appropriate section of README](#customization)).
 
 **2018-07-30**
 
@@ -344,3 +362,14 @@ code. Example for `eval`:
 
 First line doesn't use recursive highlighting, highlights `eval` argument as regular string.
 Second line switches theme to `zdharma` and does full recursive highlighting of eval argument.
+
+## Custom Working Directory
+
+Set `$FAST_WORK_DIR` before loading the plugin to have e.g. processed theme files (ready to
+load, in Zsh format, not INI) kept under specified location. This is handy if e.g. you install
+Fast-Syntax-Highlighting system-wide (e.g. from AUR on ArchLinux) and want to have per-user
+theme setup.
+
+You can use "~" in the path, e.g. `FAST_WORK_DIR=~/.fsh` and also the `XDG:`, `LOCAL:`, `OPT:`,
+etc. short-hands, so e.g. `FAST_WORK_DIR=XDG` or `FAST_WORK_DIR=XDG:` is allowed (in this case
+it will be changed to `$HOME/.config/fsh` by default by fast-syntax-highlighting loader).

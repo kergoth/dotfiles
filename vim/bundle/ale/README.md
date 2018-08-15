@@ -7,7 +7,7 @@ ALE (Asynchronous Lint Engine) is a plugin for providing linting in NeoVim
 0.2.0+ and Vim 8 while you edit your text files, and acts as a Vim
 [Language Server Protocol](https://langserver.org/) client.
 
-![linting example](img/example.gif?raw=true)
+<img src="img/example.gif?raw=true" alt="A linting example with the darkspectrum color scheme in GVim." title="A linting example with the darkspectrum color scheme in GVim.">
 
 ALE makes use of NeoVim and Vim 8 job control functions and timers to
 run linters on the contents of text buffers and return errors as
@@ -190,7 +190,7 @@ formatting.
 | Vue | [prettier](https://github.com/prettier/prettier), [vls](https://github.com/vuejs/vetur/tree/master/server) |
 | XHTML | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good) |
 | XML | [xmllint](http://xmlsoft.org/xmllint.html) |
-| YAML | [swaglint](https://github.com/byCedric/swaglint), [yamllint](https://yamllint.readthedocs.io/) |
+| YAML | [prettier](https://github.com/prettier/prettier), [swaglint](https://github.com/byCedric/swaglint), [yamllint](https://yamllint.readthedocs.io/) |
 | YANG | [yang-lsp](https://github.com/theia-ide/yang-lsp) |
 
 <a name="usage"></a>
@@ -231,12 +231,18 @@ let b:ale_fixers = ['prettier', 'eslint']
 let b:ale_fixers = {'javascript': ['prettier', 'eslint']}
 ```
 
-You can also configure your fixers from vimrc using `g:ale_fixers`, before
-or after ALE has been loaded.
+You can also configure your fixers from vimrc using `g:ale_fixers`, before or
+after ALE has been loaded.
+
+A `*` in place of the filetype will apply a List of fixers to all files which
+do not match some filetype in the Dictionary.
+
+Note that using a plain List for `g:ale_fixers` is not supported.
 
 ```vim
 " In ~/.vim/vimrc, or somewhere similar.
 let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'javascript': ['eslint'],
 \}
 ```

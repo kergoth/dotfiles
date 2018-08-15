@@ -9,10 +9,25 @@ zmodload zsh/zutil 2>/dev/null
 emulate -LR zsh
 setopt extendedglob typesetsilent warncreateglobal
 
+typeset -g FAST_WORK_DIR
+: ${FAST_WORK_DIR:=$FAST_BASE_DIR}
+FAST_WORK_DIR=${~FAST_WORK_DIR}
+
+local -A map
+map=( "XDG:"    "${XDG_CONFIG_HOME:-$HOME/.config}/fsh/"
+      "LOCAL:"  "/usr/local/share/fsh/"
+      "HOME:"   "$HOME/.fsh/"
+      "OPT:"    "/opt/local/share/fsh/"
+)
+
+FAST_WORK_DIR=${${FAST_WORK_DIR/(#m)(#s)(XDG|LOCAL|HOME|OPT):(#c0,1)/${map[${MATCH%:}:]}}%/}
+
 local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_RESET OPT_LIST OPT_TEST OPT_SECONDARY OPT_SHOW OPT_COPY OPT_OV_RESET
+local OPT_PALETTE OPT_CDWD
 local -A opthash
 zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test -secondary \
-            s -show -copy-shipped-theme: R -ov-reset || { echo "Improper options given, see help (-h/--help)"; return 1; }
+            s -show -copy-shipped-theme: R -ov-reset p -palette w -workdir || \
+                { echo "Improper options given, see help (-h/--help)"; return 1; }
 
 (( ${+opthash[-h]} + ${+opthash[--help]} ))    && OPT_HELP="-h"
 (( ${+opthash[-v]} + ${+opthash[--verbose]} )) && OPT_VERBOSE="-v"
@@ -24,9 +39,27 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
 (( ${+opthash[-s]} + ${+opthash[--show]} ))    && OPT_SHOW="-s"
 (( ${+opthash[--copy-shipped-theme]} ))        && OPT_COPY="${opthash[--copy-shipped-theme]}"
 (( ${+opthash[-R]} + ${+opthash[--ov-reset]} )) && OPT_OV_RESET="-R"
+(( ${+opthash[-p]} + ${+opthash[--palette]} )) && OPT_PALETTE="-p"
+(( ${+opthash[-w]} + ${+opthash[--workdir]} )) && OPT_CDWD="-w"
+
+[[ -n "$OPT_CDWD" ]] && {
+    builtin cd $FAST_WORK_DIR
+    return 0
+}
+
+[[ -n "$OPT_PALETTE" ]] && {
+    local n
+    local -a __colors
+    for n in {000..255}
+    do
+        __colors+=("%F{$n}$n%f")
+    done
+    print -cP $__colors
+    return
+}
 
 [[ -n "$OPT_SHOW" ]] && {
-    ( source "$FAST_BASE_DIR"/current_theme.zsh 2>/dev/null && print "Current theme: $FAST_THEME_NAME" || print "No theme is set"; )
+    ( source "$FAST_WORK_DIR"/current_theme.zsh 2>/dev/null && print "Current theme: $FAST_THEME_NAME" || print "No theme is set"; )
     return 0
 }
 
@@ -40,9 +73,9 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
     return 0
 }
 
-[[ -n "$OPT_RESET" ]] && { command rm -f "$FAST_BASE_DIR"/{current_theme.zsh,secondary_theme.zsh}; [[ -z "$OPT_QUIET" ]] && print "Reset done (no theme is now set, restart is required)"; return 0; }
+[[ -n "$OPT_RESET" ]] && { command rm -f "$FAST_WORK_DIR"/{current_theme.zsh,secondary_theme.zsh}; [[ -z "$OPT_QUIET" ]] && print "Reset done (no theme is now set, restart is required)"; return 0; }
 
-[[ -n "$OPT_OV_RESET" ]] && { command rm -f "$FAST_BASE_DIR"/theme_overlay.zsh; [[ -z "$OPT_QUIET" ]] && print "Overlay-reset done, it is inactive (restart is required)"; return 0; }
+[[ -n "$OPT_OV_RESET" ]] && { command rm -f "$FAST_WORK_DIR"/theme_overlay.zsh; [[ -z "$OPT_QUIET" ]] && print "Overlay-reset done, it is inactive (restart is required)"; return 0; }
 
 [[ -n "$OPT_LIST" ]] && {
     [[ -z "$OPT_QUIET" ]] && print -r -- "Available themes:"
@@ -52,7 +85,7 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
 
 [[ -n "$OPT_HELP" ]] && {
     print -r -- "Usage: fast-theme [-h/--help] [-v/--verbose] [-q/--quiet] [-t/--test] <theme-name|theme-path>"
-    print -r -- "       fast-theme [-r/--reset] [-l/--list] [-s/--show]"
+    print -r -- "       fast-theme [-r/--reset] [-l/--list] [-s/--show] [-p/--palette] [-w/--workdir]"
     print -r -- "       fast-theme --copy-shipped-theme {theme-name} [destination-path]"
     print -r -- ""
     print -r -- "Default action (after providing <theme-name> or <theme-path>) is to switch current session"
@@ -73,6 +106,8 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
     print -r -- "-l/--list      - list names of available themes"
     print -r -- "-t/--test      - show test block of code after switching theme"
     print -r -- "-s/--show      - get and display the theme currently being set"
+    print -r -- "-p/--palette   - just print all 256 colors and exit (useful when creating a theme)"
+    print -r -- "-w/--workdir   - cd into \$FAST_WORK_DIR (if not set, then into the plugin directory)"
     print -r -- ""
     print -r -- "The option --copy-shipped-theme allows easy copying of one of the 6 shipped themes into given"
     print -r -- "destination path. Normal use means changing directory to e.g. ~/.config/fsh, and then issuing"
@@ -83,59 +118,58 @@ zparseopts -E -D -A opthash h -help v -verbose q -quiet r -reset l -list t -test
 [[ -z "$1" ]] && { print -u2 "Provide a theme (its name or path to its file) to switch to, aborting (see -h/--help)"; return 1; }
 
 # FAST_HIGHLIGHT_STYLES key onto ini-file key
-local -A map
 map=(
-    default                     -
-    unknown-token               -
-    reserved-word               -
-    alias                       -
-    suffix-alias                -
-    builtin                     -
-    function                    -
-    command                     -
-    precommand                  -
-    commandseparator            -
-    hashed-command              -
-    path                        -
-    path_pathseparator          pathseparator
-    globbing                    -
-    history-expansion           -
-    single-hyphen-option        -
-    double-hyphen-option        -
-    back-quoted-argument        -
-    single-quoted-argument      -
-    double-quoted-argument      -
-    dollar-quoted-argument      -
-    back-or-dollar-double-quoted-argument   -
-    back-dollar-quoted-argument             -
-    assign                      -
-    redirection                 -
-    comment                     -
-    variable                    -
-    mathvar                     -
-    mathnum                     -
-    matherr                     -
-    assign-array-bracket        -
-    for-loop-variable           forvar
-    for-loop-number             fornum
-    for-loop-operator           foroper
-    for-loop-separator          forsep
-    exec-descriptor             -
-    here-string-tri             -
-    here-string-word            -
-    secondary                   -
-    case-input                  -
-    case-parentheses            -
-    case-condition              -
-    correct-subtle              -
-    incorrect-subtle            -
-    subtle-bg                   -
-    path-to-dir                 -
-    paired-bracket              -
-    bracket-level-1             -
-    bracket-level-2             -
-    bracket-level-3             -
-    global-alias                -
+    default                     "-"
+    unknown-token               "-"
+    reserved-word               "-"
+    alias                       "- command builtin"
+    suffix-alias                "- alias command builtin"
+    builtin                     "-"
+    function                    "- builtin command"
+    command                     "-"
+    precommand                  "- command"
+    commandseparator            "-"
+    hashed-command              "- command"
+    path                        "-"
+    path_pathseparator          "pathseparator"
+    globbing                    "-"
+    history-expansion           "-"
+    single-hyphen-option        "- single-quoted-argument"
+    double-hyphen-option        "- double-quoted-argument"
+    back-quoted-argument        "-"
+    single-quoted-argument      "-"
+    double-quoted-argument      "-"
+    dollar-quoted-argument      "-"
+    back-or-dollar-double-quoted-argument   "- back-dollar-quoted-argument"
+    back-dollar-quoted-argument             "- back-or-dollar-double-quoted-argument"
+    assign                      "- reserved-word"
+    redirection                 "- reserved-word"
+    comment                     "-"
+    variable                    "-"
+    mathvar                     "- forvar variable"
+    mathnum                     "- fornum"
+    matherr                     "- incorrect-subtle"
+    assign-array-bracket        "-"
+    for-loop-variable           "forvar mathvar variable"
+    for-loop-number             "fornum mathnum"
+    for-loop-operator           "foroper reserved-word"
+    for-loop-separator          "forsep commandseparator"
+    exec-descriptor             "- reserved-word"
+    here-string-tri             "-"
+    here-string-word            "- correct-subtle"
+    secondary                   "-"
+    case-input                  "- variable"
+    case-parentheses            "- reserved-word"
+    case-condition              "- correct-subtle"
+    correct-subtle              "-"
+    incorrect-subtle            "-"
+    subtle-bg                   "- correct-subtle"
+    path-to-dir                 "- path"
+    paired-bracket              "- subtle-bg correct-subtle"
+    bracket-level-1             "-"
+    bracket-level-2             "-"
+    bracket-level-3             "-"
+    global-alias                "- alias suffix-alias"
 )
 
 # In which order to generate entries
@@ -186,13 +220,13 @@ else
 fi
 
 [[ -z "$OPT_SECONDARY" ]] && { [[ "$THEME_NAME" = "overlay" ]] && local outfile="theme_overlay.zsh" || local outfile="current_theme.zsh"; } || local outfile="secondary_theme.zsh"
-command rm -f "$FAST_BASE_DIR"/"$outfile"
+command rm -f "$FAST_WORK_DIR"/"$outfile"
 
 # Set a zstyle and a parameter to carry theme name
 if [[ -z "$OPT_SECONDARY" ]]; then
     [[ "$THEME_NAME" != "overlay" ]] && {
-        print -r -- 'zstyle :plugin:fast-syntax-highlighting theme "'"$THEME_NAME"'"' >>! "$FAST_BASE_DIR"/"$outfile"
-        print -r -- 'typeset -g FAST_THEME_NAME="'"$THEME_NAME"'"' >>! "$FAST_BASE_DIR"/"$outfile"
+        print -r -- 'zstyle :plugin:fast-syntax-highlighting theme "'"$THEME_NAME"'"' >>! "$FAST_WORK_DIR"/"$outfile"
+        print -r -- 'typeset -g FAST_THEME_NAME="'"$THEME_NAME"'"' >>! "$FAST_WORK_DIR"/"$outfile"
         zstyle :plugin:fast-syntax-highlighting theme "$THEME_NAME"
         typeset -g FAST_THEME_NAME="$THEME_NAME"
     }
@@ -202,11 +236,27 @@ fi
 
 # Generate current_theme.zsh or secondary_theme.zsh, traversing ini-file associative array
 local k kk
-local inikey inival result
-integer ov_counter=0
+local inikey inival result first_val
+integer ov_counter=0 first
 for k in "${order[@]}"; do
-    [[ "${map[$k]}" = "-" ]] && kk="$k" || kk="${map[$k]}"
-    inikey="${out[(i)<*>_${kk}]}"
+    first=1
+    for kk in ${(s. .)map[$k]} default; do
+        [[ "$kk" = "-" ]] && kk="$k"
+        (( first )) && first_val="$kk"
+        inikey="${out[(i)<*>_${kk}]}"
+        [[ -n "$inikey" ]] && {
+            (( !first )) && [[ -z "$OPT_QUIET" ]] && {
+                [[ $kk = default ]] && {
+                    [[ "$THEME_NAME" != "overlay" ]] && print "Missing style: $first_val"
+                } || print "For style $first_val, went for fallback style $kk"
+            }
+            break
+        }
+        first=0
+        [[ "$THEME_NAME" = "overlay" ]] && break
+    done
+    [[ -z "$inikey" ]] && { [[ -z "$OPT_QUIET" && "$THEME_NAME" != "overlay" ]] && print "Missing style $first_val"; continue; }
+
     inival="${out[$inikey]}"
     if [[ "$k" = "secondary" && -z "$OPT_SECONDARY" && -n "$inival" ]]; then
         fast-theme -q --secondary "$inival"
@@ -222,20 +272,20 @@ for k in "${order[@]}"; do
     fi
 
     if [[ "$THEME_NAME" = "overlay" ]]; then
-        [[ -n "$result" ]] && {
-            (( ++ ov_counter ))
-            print -r -- ': ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}'"$k"']::='"$result"'}' >>! "$FAST_BASE_DIR"/"$outfile"
-            FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}$k]="$result"
-        }
+        (( ++ ov_counter ))
+        print -r -- ': ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}'"$k"']::='"$result"'}' >>! "$FAST_WORK_DIR"/"$outfile"
+        FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}$k]="$result"
     else
-        print -r -- ': ${FAST_HIGHLIGHT_STYLES['"${FAST_THEME_NAME}$k"']:='"$result"'}' >>! "$FAST_BASE_DIR"/"$outfile"
+        print -r -- ': ${FAST_HIGHLIGHT_STYLES['"${FAST_THEME_NAME}$k"']:='"$result"'}' >>! "$FAST_WORK_DIR"/"$outfile"
         FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}$k]="$result"
     fi
 done
 
 # This can overwrite some of *_STYLES fields
 # Re-apply overlay on top of the theme we switched to
-[[ "$THEME_NAME" != "overlay" ]] && [[ -r "$FAST_BASE_DIR"/theme_overlay.zsh ]] && source "$FAST_BASE_DIR"/theme_overlay.zsh
+[[ "$THEME_NAME" != "overlay" ]] && [[ -r "$FAST_WORK_DIR"/theme_overlay.zsh ]] && source "$FAST_WORK_DIR"/theme_overlay.zsh
+
+zcompile $FAST_WORK_DIR/$outfile
 
 [[ -z "$OPT_QUIET" ]] && {
     if [[ "$THEME_NAME" != "overlay" ]]; then
