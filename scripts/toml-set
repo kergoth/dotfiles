@@ -51,7 +51,11 @@ else:
 for key, value in pairs(args.values):
     key = key.split(".")
     prefix, final_key = key[:-1], key[len(key)-1]
-    lookup(obj, prefix)[final_key] = toml._load_value(value, _dict=dict)[0]
+    try:
+        tvalue = toml._load_value(value, _dict=dict)[0]
+    except toml.TomlDecodeError as exc:
+        sys.exit("Invalid value %s for key %s" % (repr(value), repr(key)))
+    lookup(obj, prefix)[final_key] = tvalue
 
 if not args.file or args.file == '-':
     f = sys.stdout
