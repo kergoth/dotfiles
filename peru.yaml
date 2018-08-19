@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: c599449ea46bd23b2095b43fca76f6d3443449bc
+    rev: de3fa43caecddeb6110a4bb34e87fbf81991efd7
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 45c21fc38411da91f25978ce6473a9592a8b05dc
+    rev: 662b501eee87eec5413eecea337f121c8e7f42df
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -227,7 +227,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: f708ce535d9e65ca0a31626bcff290a5fc23d881
+    rev: 7ea180d0032039342d59256a49076894aecb5a44
 
 # continuously updated session files
 git module vim-obsession:
@@ -311,7 +311,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 58a63c895f92517f67812d6e585e1db35db95b31
+    rev: 6ff4a2a9815d88b56dfa6644dc274bff0cce3ee5
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -588,11 +588,11 @@ curl module cht:
     move:
         :cht.sh: cht.sh
     executable: cht.sh
-    sha1: 0f517a34ac26ecac8099387db17c867ca59368c3
+    sha1: 7433d3e763fdc11256a7a19ccfba9b21ecfee456
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 9cdd8b67b2f52a2dd348ffb13a7fc1b2dcf84416
+    rev: 61a071683752b2824a222c484aa0243c05aa85b2
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

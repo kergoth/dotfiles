@@ -40,7 +40,7 @@ function! s:Uniq(list) abort
 endfunction
 
 function! s:winshell() abort
-  return &shell =~? 'cmd' || exists('+shellslash') && !&shellslash
+  return has('win32') && &shellcmdflag !~# '^-'
 endfunction
 
 function! s:shellesc(arg) abort
@@ -61,14 +61,6 @@ function! s:fnameescape(file) abort
   endif
 endfunction
 
-function! s:tempname() abort
-  let temp = resolve(tempname())
-  if has('win32')
-    let temp = fnamemodify(fnamemodify(temp, ':h'), ':p').fnamemodify(temp, ':t')
-  endif
-  return temp
-endfunction
-
 function! s:throw(string) abort
   let v:errmsg = 'fugitive: '.a:string
   throw v:errmsg
@@ -82,7 +74,7 @@ function! s:warn(str) abort
 endfunction
 
 function! s:Slash(path) abort
-  if s:winshell()
+  if exists('+shellslash')
     return tr(a:path, '\', '/')
   else
     return a:path
@@ -95,6 +87,14 @@ function! s:PlatformSlash(path) abort
   else
     return a:path
   endif
+endfunction
+
+function! s:Resolve(path) abort
+  let path = resolve(a:path)
+  if has('win32')
+    let path = s:PlatformSlash(fnamemodify(fnamemodify(path, ':h'), ':p') . fnamemodify(path, ':t'))
+  endif
+  return path
 endfunction
 
 function! s:cpath(path, ...) abort
@@ -510,11 +510,11 @@ function! fugitive#Route(object, ...) abort
     return s:PlatformSlash((len(owner) ? owner : prefix) . strpart(a:object, len(prefix)))
   elseif s:Slash(a:object) =~# '^/\|^\%(\a\a\+:\).*\%(//\|::\)' || (has('win32') ? '^\a:/' : '')
     return s:PlatformSlash(a:object)
+  elseif s:Slash(a:object) =~# '^\.\.\=\%(/\|$\)'
+    return s:PlatformSlash(simplify(getcwd() . '/' . a:object))
   endif
   let dir = a:0 ? a:1 : get(b:, 'git_dir', '')
-  if empty(dir) && a:object =~# '^\.\.\=\%(/\|$\)'
-    return s:PlatformSlash(simplify(getcwd() . '/' . a:object[1:-1]))
-  elseif empty(dir)
+  if empty(dir)
     let file = matchstr(a:object, '^\%(:\d:\|[^:]*:\)\zs.*', '', '')
     let dir = FugitiveExtractGitDir(file)
     if empty(dir)
@@ -858,9 +858,9 @@ function! s:BlobTemp(url) abort
     return ''
   endif
   if !has_key(s:blobdirs, dir)
-    let s:blobdirs[dir] = s:tempname()
+    let s:blobdirs[dir] = tempname()
   endif
-  let tempfile = s:PlatformSlash(s:blobdirs[dir] . '/' . commit . file)
+  let tempfile = s:blobdirs[dir] . '/' . commit . file
   let tempparent = fnamemodify(tempfile, ':h')
   if !isdirectory(tempparent)
     call mkdir(tempparent, 'p')
@@ -874,7 +874,7 @@ function! s:BlobTemp(url) abort
       return ''
     endif
   endif
-  return tempfile
+  return s:Resolve(tempfile)
 endfunction
 
 function! fugitive#readfile(url, ...) abort
@@ -894,7 +894,7 @@ function! fugitive#writefile(lines, url, ...) abort
   let [dir, commit, file] = s:DirCommitFile(url)
   let entry = s:PathInfo(url)
   if commit =~# '^\d$' && entry[2] !=# 'tree'
-    let temp = s:tempname()
+    let temp = tempname()
     if a:0 && a:1 =~# 'a' && entry[2] ==# 'blob'
       call writefile(fugitive#readfile(url, 'b'), temp, 'b')
     endif
@@ -1079,9 +1079,9 @@ endfunction
 
 function! fugitive#PathComplete(base, ...) abort
   let dir = a:0 == 1 ? a:1 : get(b:, 'git_dir', '')
-  let tree = FugitiveTreeForGitDir(dir) . '/'
-  let strip = '^\%(:/:\=\|:(top)\|:(top,literal)\|:(literal,top)\|:(literal)\)\%(\./\)\='
-  let base = substitute((a:base =~# '^/' ? '.' : '') . a:base, strip, '', '')
+  let tree = s:Tree(dir) . '/'
+  let strip = '^\%(:/:\=\|:(top)\|:(top,literal)\|:(literal,top)\|:(literal)\)'
+  let base = substitute(a:base, strip, '', '')
   if base =~# '^\.git/'
     let pattern = s:gsub(base[5:-1], '/', '*&').'*'
     let matches = s:GlobComplete(dir . '/', pattern)
@@ -1093,13 +1093,12 @@ function! fugitive#PathComplete(base, ...) abort
     call map(matches, "'.git/' . v:val")
   elseif base =~# '^\~/'
     let matches = map(s:GlobComplete(expand('~/'), base[2:-1] . '*'), '"~/" . v:val')
+  elseif a:base =~# '^/\|^\a\+:\|^\.\.\=/\|^:(literal)'
+    let matches = s:GlobComplete('', base . '*')
   elseif len(tree) > 1
     let matches = s:GlobComplete(tree, s:gsub(base, '/', '*&').'*')
   else
     let matches = []
-  endif
-  if empty(matches) && a:base =~# '^/\|^\a\+:'
-    let matches = s:GlobComplete('', a:base . '*')
   endif
   call map(matches, 's:fnameescape(s:Slash(matchstr(a:base, strip) . v:val))')
   return matches
@@ -1159,14 +1158,15 @@ endfunction
 " Section: Buffer auto-commands
 
 function! s:ReplaceCmd(cmd) abort
-  let tmp = tempname()
-  let err = s:TempCmd(tmp, a:cmd)
+  let temp = tempname()
+  let err = s:TempCmd(temp, a:cmd)
   if v:shell_error
-    call s:throw((len(err) ? err : filereadable(tmp) ? join(readfile(tmp), ' ') : 'unknown error running ' . a:cmd))
+    call s:throw((len(err) ? err : filereadable(temp) ? join(readfile(temp), ' ') : 'unknown error running ' . a:cmd))
   endif
+  let temp = s:Resolve(temp)
   let fn = expand('%:p')
   silent exe 'doau BufReadPre '.s:fnameescape(fn)
-  silent exe 'keepalt file '.tmp
+  silent exe 'keepalt file '.temp
   try
     silent noautocmd edit!
   finally
@@ -1174,8 +1174,8 @@ function! s:ReplaceCmd(cmd) abort
       silent exe 'keepalt file '.s:fnameescape(fn)
     catch /^Vim\%((\a\+)\)\=:E302:/
     endtry
-    call delete(tmp)
-    if fnamemodify(bufname('$'), ':p') ==# tmp
+    call delete(temp)
+    if s:cpath(fnamemodify(bufname('$'), ':p'), temp)
       silent execute 'bwipeout '.bufnr('$')
     endif
     silent exe 'doau BufReadPost '.s:fnameescape(fn)
@@ -1573,7 +1573,7 @@ endfunction
 
 function! s:DirArg(path) abort
   let path = substitute(a:path, '^:/:\=\|^:(\%(top\|top,literal\|literal,top\|literal\))', '', '')
-  if path =~# '^/\|^\a\+:'
+  if path =~# '^/\|^\a\+:\|^\.\.\=\%(/\|$\)'
     return path
   else
     return (empty(s:Tree()) ? b:git_dir : s:Tree()) . '/' . path
@@ -2239,9 +2239,9 @@ function! s:EditParse(args) abort
   elseif empty(expand('%'))
     let file = ':'
   elseif empty(s:DirCommitFile(@%)[1]) && s:Relative('./') !~# '^\./\.git\>'
-    let file = s:Relative(':0:')
+    let file = ':0:%'
   else
-    let file = s:Relative('./')
+    let file = '%'
   endif
   return [s:Expand(file), join(pre)]
 endfunction
@@ -2277,7 +2277,7 @@ function! s:Edit(cmd, bang, mods, args, ...) abort
   let mods = a:mods ==# '<mods>' ? '' : a:mods
 
   if a:bang
-    let temp = s:tempname()
+    let temp = tempname()
     let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
     let cwd = getcwd()
     try
@@ -2289,6 +2289,7 @@ function! s:Edit(cmd, bang, mods, args, ...) abort
     finally
       execute cd s:fnameescape(cwd)
     endtry
+    let temp = s:Resolve(temp)
     let s:temp_files[s:cpath(temp)] = { 'dir': b:git_dir, 'filetype': 'git' }
     if a:cmd ==# 'edit'
       call s:BlurStatus()
@@ -2760,18 +2761,22 @@ endfunction
 " Section: :Gmove, :Gremove
 
 function! s:Move(force, rename, destination) abort
-  if a:destination =~# '^\./.'
-    let destination = a:destination[2:-1]
-  elseif a:destination =~# '^:/:\='
-    let destination = substitute(a:destination, '^:/:\=', '', '')
-  elseif a:destination =~# '^:(\%(top\|top,literal\|literal,top\|literal\))'
-    let destination = matchstr(a:destination, ')\zs.*')
-  elseif a:rename && a:destination !~# '^\a\+:\|^/'
-    let destination = fnamemodify(s:Relative(''), ':h') . '/' . a:destination
-  else
+  if a:destination =~# '^\.\.\=\%(/\|$\)'
+    let destination = simplify(getcwd() . '/' . a:destination)
+  elseif a:destination =~# '^\a\+:\|^/'
     let destination = a:destination
+  elseif a:destination =~# '^:/:\='
+    let destination = s:Tree() . substitute(a:destination, '^:/:\=', '', '')
+  elseif a:destination =~# '^:(\%(top\|top,literal\|literal,top\))'
+    let destination = s:Tree() . matchstr(a:destination, ')\zs.*')
+  elseif a:destination =~# '^:(literal)'
+    let destination = simplify(getcwd() . '/' . matchstr(a:destination, ')\zs.*'))
+  elseif a:rename
+    let destination = expand('%:p:s?[\/]$??:h') . '/' . a:destination
+  else
+    let destination = s:Tree() . '/' . a:destination
   endif
-  let destination = s:Tree() . '/' . destination
+  let destination = s:Slash(destination)
   if isdirectory(@%)
     setlocal noswapfile
   endif
@@ -2900,7 +2905,7 @@ function! s:Blame(bang, line1, line2, count, mods, args) abort
         let cwd = getcwd()
         execute cd s:fnameescape(tree)
       endif
-      let error = s:tempname()
+      let error = tempname()
       let temp = error.'.fugitiveblame'
       if &shell =~# 'csh'
         silent! execute '%write !('.basecmd.' > '.temp.') >& '.error
@@ -2944,6 +2949,7 @@ function! s:Blame(bang, line1, line2, count, mods, args) abort
         endif
         let top = line('w0') + &scrolloff
         let current = line('.')
+        let temp = s:Resolve(temp)
         let s:temp_files[s:cpath(temp)] = { 'dir': b:git_dir, 'filetype': 'fugitiveblame', 'args': cmd, 'bufnr': bufnr }
         exe 'keepalt leftabove vsplit '.temp
         let b:fugitive_blamed_bufnr = bufnr
@@ -3255,9 +3261,9 @@ function! s:Browse(bang,line1,count,...) abort
           let remotehead = cdir . '/refs/remotes/' . remote . '/' . merge
           let commit = filereadable(remotehead) ? get(readfile(remotehead), 0, '') : ''
           if a:count && !a:0 && commit =~# '^\x\{40\}$'
-            let blame_list = s:tempname()
+            let blame_list = tempname()
             call writefile([commit, ''], blame_list, 'b')
-            let blame_in = s:tempname()
+            let blame_in = tempname()
             silent exe '%write' blame_in
             let blame = split(s:TreeChomp('blame', '--contents', blame_in, '-L', a:line1.','.a:count, '-S', blame_list, '-s', '--show-number', './' . path), "\n")
             if !v:shell_error

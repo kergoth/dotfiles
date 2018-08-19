@@ -1115,8 +1115,7 @@ function! dispatch#abort_command(bang, query, ...) abort
   let i = len(s:makes) - 1
   while i >= 0
     let request = s:makes[i]
-    if strpart(request.command, 0, len(a:query)) ==# a:query &&
-          \ !dispatch#completed(request)
+    if strpart(request.command, 0, len(a:query)) ==# a:query
       break
     endif
     let i -= 1
@@ -1130,11 +1129,11 @@ function! dispatch#abort_command(bang, query, ...) abort
     return 'echoerr '.string('No pid file')
   endif
   if exists('*dispatch#'.get(request, 'handler').'#kill')
-    return dispatch#{request.handler}#kill(pid)
+    return dispatch#{request.handler}#kill(pid, a:bang)
   elseif has('win32')
-    call system('taskkill /PID '.pid)
+    call system('taskkill /PID ' . (a:bang ? '/F ' : '') . pid)
   else
-    call system('kill -HUP '.pid)
+    call system('kill -' . (a:bang ? 'KILL' : 'HUP') . ' ' . pid)
   endif
   return 'call dispatch#complete('.request.id.')'
 endfunction
