@@ -95,6 +95,9 @@
 
 # Pushing over https is a pain due to password prompts, unless you set up a
 # .netrc, which is a security issue.
+[url "git@gist.github.com:"]
+	pushInsteadOf = https://gist.github.com/kergoth/
+
 [url "git@github.com:"]
 	pushInsteadOf = https://github.com/
 	pushInsteadOf = http://github.com/
