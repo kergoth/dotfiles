@@ -30,9 +30,9 @@ fi
 
 pyenv-installer
 eval "$(pyenv init -)"
-pyenv install 2.7.15
+pyenv install -v 2.7.15
 pyenv global 2.7.15
-pyenv install 3.6.6
+pyenv install -v 3.6.6
 pyenv global 2.7.15 3.6.6
 
 # At this point python is python2, and python2 and python3 work as expected,
