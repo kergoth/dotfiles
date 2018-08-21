@@ -11,21 +11,11 @@ export CFLAGS="${CFLAGS--O2}"
 if [ -z "$CONFIGURE_OPTS" ] && [ -z "$PYTHON_CONFIGURE_OPTS" ]; then
     export PYTHON_CONFIGURE_OPTS="\
         --enable-shared \
-        --with-threads \
-        \
         --with-system-expat \
         --with-system-zlib \
-        --with-system-ffi \
-        --with-system-libmpdec \
-        --with-dbmliborder=gdbm:ndbm \
-        \
         --enable-optimizations \
         --with-lto \
-        \
-        --enable-ipv6 \
-        --enable-unicode=ucs4 \
         --enable-loadable-sqlite-extensions \
-        --with-computed-gotos \
     "
 fi
 
