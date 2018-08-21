@@ -8,11 +8,4 @@ if (( $+commands[pyenv] )); then
             . $i
         fi
     done
-
-    # The python shared libraries are needed by vim for its python support
-    if [[ $OSTYPE =~ darwin* ]]; then
-        export PYTHON_CONFIGURE_OPTS="--enable-system-expat --enable-shared"
-    else
-        export PYTHON_CONFIGURE_OPTS="--enable-shared"
-    fi
 fi
