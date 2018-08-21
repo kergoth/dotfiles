@@ -1,6 +1,7 @@
 #!/bin/sh
 
-set -e
+PY2_VERSION=2.7.15
+PY3_VERSION=3.6.6
 
 export PYENV_ROOT="${1:-${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}}"
 PATH="$(dirname "$0"):$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
@@ -30,13 +31,15 @@ fi
 
 pyenv-installer
 eval "$(pyenv init -)"
-pyenv install -v 2.7.15
-pyenv global 2.7.15
-pyenv install -v 3.6.6
-pyenv global 2.7.15 3.6.6
+pyenv install -v $PY2_VERSION
+pyenv global $PY2_VERSION
+pyenv install -v $PY3_VERSION
+pyenv global $PY2_VERSION $PY3_VERSION
 
 # At this point python is python2, and python2 and python3 work as expected,
 # but python tools run with these pythons will have that python install first
 # in the PATH. In the case of python3, this means in that process, 'python'
 # will now correspond to python3, which will not do (see bitbake).
-rm -f "$(dirname "$(pyenv which python3)")"/python
+if [ -e "$PYENV_ROOT/versions/$PY3_VERSION" ]; then
+    rm -f "$PYENV_ROOT/versions/$PY3_VERSION/bin/python"
+fi
