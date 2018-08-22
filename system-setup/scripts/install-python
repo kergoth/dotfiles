@@ -21,6 +21,13 @@ fi
 
 pyenv-installer
 eval "$(pyenv init -)"
+
+case "$OSTYPE" in
+    darwin*)
+        eval "$(brew environment --shell=auto)"
+        ;;
+esac
+
 pyenv install -v $PY2_VERSION
 pyenv global $PY2_VERSION
 pyenv install -v $PY3_VERSION
