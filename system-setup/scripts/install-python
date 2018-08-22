@@ -3,6 +3,12 @@
 PY2_VERSION=2.7.15
 PY3_VERSION=3.6.6
 
+case "$OSTYPE" in
+    darwin*)
+        eval "$(brew environment --shell=auto)"
+        ;;
+esac
+
 export PYENV_ROOT="${1:-${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}}"
 PATH="$(dirname "$0"):$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
 
@@ -21,12 +27,6 @@ fi
 
 pyenv-installer
 eval "$(pyenv init -)"
-
-case "$OSTYPE" in
-    darwin*)
-        eval "$(brew environment --shell=auto)"
-        ;;
-esac
 
 pyenv install -v $PY2_VERSION
 pyenv global $PY2_VERSION
