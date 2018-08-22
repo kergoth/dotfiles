@@ -19,10 +19,21 @@ if [ -z "$CONFIGURE_OPTS" ] && [ -z "$PYTHON_CONFIGURE_OPTS" ]; then
         --enable-shared \
         --with-system-expat \
         --with-system-zlib \
-        --enable-optimizations \
         --with-lto \
         --enable-loadable-sqlite-extensions \
     "
+    no_pgo=0
+    if [ "$OSTYPE" = linux-gnu ]; then
+        case "$(uname -r)" in
+            *-Microsoft)
+                # WSL. test_ssl keeps hanging indefinitely
+                no_pgo=1
+                ;;
+        esac
+    fi
+    if [ $no_pgo -eq 0 ]; then
+        PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --enable-optimizations"
+    fi
 fi
 
 pyenv-installer
