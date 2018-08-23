@@ -6,8 +6,8 @@ sudo pacman -Sy --needed vim zsh dtach cmake go ruby
 sudo apt-get -y install vim zsh dtach cmake golang ruby ruby-dev
 
 # Install python's deps so all the modules get built
-sudo pacman -Sy --needed openssl bzip2 sqlite
-sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev
+sudo pacman -Sy --needed openssl bzip2 sqlite ncurses
+sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev
 
 install-python || exit $?
 eval "$(pyenv init -)"
@@ -22,4 +22,4 @@ install-env-tools
 
 # Clean up
 # FIXME: only remove the ones we installed, not the ones the user did
-sudo apt-get -y remove libssl-dev libbz2-dev libsqlite3-dev libssl-dev
+sudo apt-get -y remove libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev
