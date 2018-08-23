@@ -30,6 +30,8 @@ user_pref("browser.urlbar.maxHistoricalSearchSuggestions", 10); // max. number o
 /* 0901: disable saving passwords */
 user_pref("signon.rememberSignons", false);
 /* 1020: enable the Session Restore service */
+user_pref("browser.startup.page", 3);
+user_pref("browser.sessionstore.resume_session", true);
 user_pref("browser.sessionstore.max_tabs_undo", 10);
 user_pref("browser.sessionstore.max_windows_undo", 10);
 /* 1021: enable storing extra session data on unencrypted sites */
