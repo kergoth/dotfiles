@@ -40,6 +40,16 @@ user_pref("browser.sessionstore.privacy_level", 1);
 user_pref("browser.sessionstore.resume_from_crash", true);
 /* 1202: drop the min from 1.2 to 1.0, as bugzilla.yoctoproject.org sucks */
 user_pref("security.tls.version.min", 1);
+/* 1212: set OCSP fetch failures (non-stapled, see 1211) to hard-fail
+ * When a CA cannot be reached to validate a cert, Firefox just continues the connection (=soft-fail)
+ * Setting this pref to true tells Firefox to instead terminate the connection (=hard-fail)
+ * It is pointless to soft-fail when an OCSP fetch fails: you cannot confirm a cert is still valid (it
+ * could have been revoked) and/or you could be under attack (e.g. malicious blocking of OCSP servers)
+ * [1] https://blog.mozilla.org/security/2013/07/29/ocsp-stapling-in-firefox/
+ * [2] https://www.imperialviolet.org/2014/04/19/revchecking.html ***/
+/* Reverted to soft-fail to work around Mentor's blocking of the google ocsp
+ * service */
+user_pref("security.OCSP.require", false);
 /* 1401: enable websites choosing fonts (0=block, 1=allow)
  * If you disallow fonts, this drastically limits/reduces font
  * enumeration (by JS) which is a high entropy fingerprinting vector.
