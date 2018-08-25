@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for icns; do
+    sips -s format png "$icns" --out "${icns%.*}.png"
+done
