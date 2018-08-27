@@ -89,6 +89,9 @@ github_get_forks_raw() {
 
 github_get_forks() {
     fork_info="$(repo_json "$1" | jq -r '[.forks,.clone_url] | map(tostring) | join("\t")')"
+    if [ -z "$fork_info" ]; then
+        return 1
+    fi
     num_forks="$(echo "$fork_info" | cut -f1)"
     if [ "$orig_repo" != "$1" ]; then
         clone_url="$(echo "$fork_info" | cut -f2)"
@@ -96,7 +99,7 @@ github_get_forks() {
     fi
     if [ "$num_forks" -gt 0 ]; then
         github_get_forks_one "$1" | while read -r id _ num_forks name _; do
-            github_get_forks "$name"
+            github_get_forks "$name" || return $?
         done
     fi
 }
