@@ -135,6 +135,7 @@ github_get_root_repo() {
 
 process_arguments "$@" || exit 1
 
+url="${url%/}"
 case "$url" in
     *gist.github.com*)
         gist=1
