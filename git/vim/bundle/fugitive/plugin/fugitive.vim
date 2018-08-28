@@ -44,7 +44,7 @@ function! FugitiveReal(...) abort
 endfunction
 
 function! FugitiveRoute(...) abort
-  return fugitive#Route(a:0 ? a:1 : '', FugitiveGitDir(a:0 > 1 ? a:2 : -1))
+  return fugitive#Route(a:0 ? a:1 : bufnr(''), FugitiveGitDir(a:0 > 1 ? a:2 : -1))
 endfunction
 
 function! FugitivePath(...) abort
@@ -200,6 +200,10 @@ function! FugitiveDetect(path) abort
   endif
 endfunction
 
+function! FugitiveFind(...) abort
+  return call('FugitiveRoute', a:000)
+endfunction
+
 function! FugitiveGenerate(...) abort
   return call('FugitiveRoute', a:000)
 endfunction
@@ -209,6 +213,18 @@ function! s:Slash(path) abort
     return tr(a:path, '\', '/')
   else
     return a:path
+  endif
+endfunction
+
+function! s:ProjectionistDetect() abort
+  let file = s:Slash(get(g:, 'projectionist_file', ''))
+  let dir = FugitiveExtractGitDir(file)
+  let base = matchstr(file, '^fugitive://.\{-\}//\x\+')
+  if empty(base)
+    let base = FugitiveTreeForGitDir(dir)
+  endif
+  if len(base)
+    call projectionist#append(base, FugitiveCommonDir(dir) . '/info/projections.json')
   endif
 endfunction
 
@@ -258,4 +274,6 @@ augroup fugitive
   endif
 
   autocmd User Flags call Hoist('buffer', function('FugitiveStatusline'))
+
+  autocmd User ProjectionistDetect call s:ProjectionistDetect()
 augroup END

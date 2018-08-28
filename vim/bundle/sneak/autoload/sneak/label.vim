@@ -143,8 +143,8 @@ func! s:before() abort
 
   setlocal concealcursor=ncv conceallevel=2
 
-  " highlight the cursor location (else the cursor is not visible during getchar())
-  let s:sneak_cursor_hl = matchadd("Cursor", '\%#', 11, -1)
+  " Highlight the cursor location (because cursor is hidden during getchar()).
+  let s:sneak_cursor_hl = matchadd("SneakScope", '\%#', 11, -1)
 
   if s:clear_syntax
     setlocal nospell
@@ -160,8 +160,8 @@ func! s:before() abort
     call s:disable_conceal_in_other_windows()
   endif
 
-  let s:orig_hl_conceal = sneak#hl#links_to('Conceal')
-  let s:orig_hl_sneak   = sneak#hl#links_to('Sneak')
+  let s:orig_hl_conceal = sneak#util#links_to('Conceal')
+  let s:orig_hl_sneak   = sneak#util#links_to('Sneak')
   "set temporary link to our custom 'conceal' highlight
   hi! link Conceal SneakLabel
   "set temporary link to hide the sneak search targets
