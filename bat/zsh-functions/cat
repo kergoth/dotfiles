@@ -1,0 +1,5 @@
+if [[ -t 1 ]]; then
+    bat "$@"
+else
+    command cat "$@"
+fi
