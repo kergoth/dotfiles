@@ -36,7 +36,11 @@ tmpfile="$(mktemp -t "$filename.XXXXXX")"
 tmpfile2="$(mktemp -t "$filename.XXXXXX")"
 trap 'rm -f "$tmpfile" "$tmpfile2"' EXIT INT TERM
 
-cat >>"$tmpfile"
+if [ -e "$filename" ]; then
+    cp "$filename" "$tmpfile"
+else
+    cat >>"$tmpfile"
+fi
 
 diff_pipeline="cat"
 if [ -t 1 ]; then
@@ -61,8 +65,15 @@ fi
 export LESS="${LESS--R}"
 
 ret=0
-if curl -fsSL "$raw_url" >"$tmpfile2" 2>/dev/null; then
-    cat "$tmpfile2"
+if curl -fsSL "$raw_url" >"$tmpfile2"; then
+    if [ -s "$tmpfile" ]; then
+        cat "$tmpfile2"
+    else
+        echo >&2 "Error: curl fetched nothing"
+        exit 1
+    fi
+else
+    exit 1
 fi | diff -urNd - "$tmpfile" | eval "$diff_pipeline" || ret=$?
 
 if [ $ret -ne 0 ] && [ $dry_run -ne 1 ]; then
