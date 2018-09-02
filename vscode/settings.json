@@ -22,5 +22,6 @@
     "python.linting.flake8Path": "~/.local/bin/flake8",
     "python.formatting.autopep8Path": "~/.local/bin/autopep8",
     "python.formatting.yapfPath": "~/.local/bin/yapf",
-    "shellformat.flag": "-i 4 -ci -bn -s"
+    "shellformat.flag": "-i 4 -ci -bn -s",
+    "breadcrumbs.enabled": true
 }
