@@ -1,6 +1,6 @@
 #!/bin/sh
 
-usage () {
+usage() {
     echo >&2 "${0##*/} [-r RELATIVETO] PATH [PATH..]"
     exit 2
 }
@@ -10,7 +10,7 @@ while getopts r:h opt; do
         r)
             relativeto="$OPTARG"
             ;;
-        \?|h)
+        \? | h)
             usage
             ;;
     esac
@@ -26,6 +26,6 @@ if [ -z "$relativeto" ]; then
 fi
 
 for arg; do
-    testabs=${arg##[!/]*}
-    echo ${testabs:-$relativeto/$arg}
+    testabs="${arg##[!/]*}"
+    echo "${testabs:-$relativeto/$arg}"
 done
