@@ -6,5 +6,10 @@ export NVM_DIR="$XDG_DATA_HOME/nvm" && (
     cd "$NVM_DIR"
     git checkout "$(git describe --abbrev=0 --tags --match "v[0-9]*" origin)"
 ) && \. "$NVM_DIR/nvm.sh"
-nvm install --lts
-nvm alias default node
+nvm install ${NODE_VERSION:---lts}
+if [ -n "$NODE_VERSION" ]; then
+    nvm use --delete-prefix $NODE_VERSION --silent
+    nvm alias default $NODE_VERSION
+else
+    nvm alias default node
+fi
