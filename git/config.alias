@@ -27,6 +27,7 @@
 	ri = rebase -i
 	rc = rebase --continue
 	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
+	fetch-noprompt = "!f() { GIT_SSH_COMMAND=\"ssh -oBatchMode=yes\" GIT_TERMINAL_PROMPT=0 git fetch \"$@\"; }; f"
 
 	# Hub
 	fork = !hub fork
