@@ -53,13 +53,11 @@ if ! git config remote."$remote".url >/dev/null; then
     echo >&2 "Error: invalid remote: $remote"
     exit 1
 fi
-git fetch -p "$remote"
 
 if ! git config remote."$origin".url >/dev/null; then
     echo >&2 "Error: invalid origin remote: $origin"
     exit 1
 fi
-git fetch "$origin"
 
 if [ $dry_run -eq 1 ]; then
     set -- -n
