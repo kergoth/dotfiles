@@ -48,6 +48,8 @@ process_arguments () {
         exit 1
     fi
 
+    upstreams="$(echo "$upstream_branches" | tr ' ' '\n' | sed -e "s#^#$origin/#g")"
+
     if [ $dry_run -eq 1 ]; then
         prune_args=-n
     else
@@ -81,7 +83,7 @@ for remote; do
     fi
 
     echo >&2 "Pruning topic branches merged to upstream branches for $remote"
-    if ! echo "$upstream_branches" | tr , '\0' | xargs -0 git prune-merged -r "$remote" $prune_args "$origin/{}"; then
+    if ! git prune-merged -r "$remote" $prune_args $upstreams; then
         ret=1
     fi
 done
