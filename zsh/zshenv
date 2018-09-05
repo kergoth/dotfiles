@@ -62,6 +62,7 @@ export RLWRAP_HOME=$XDG_DATA_HOME/rlwrap
 export XAUTHORITY=$XDG_RUNTIME_DIR/Xauthority
 export RANDFILE=$XDG_DATA_HOME/rng
 export CFLAGS=-O2
+export XZ_DEFAULTS=--threads=0
 
 for env in $DOTFILESDIR/*/env.zsh(N); do
     . "$env"
