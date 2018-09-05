@@ -1,13 +1,13 @@
 #!/bin/bash
 
 usage () {
-    echo >&2 "${0##*/} [-r REMOTE] [-R] [UPSTREAM_BRANCH]"
+    echo >&2 "${0##*/} [-r REMOTE] [-R] [UPSTREAM_BRANCH..]"
     echo >&2
     echo >&2 "Delete branches which have been fully merged."
     echo >&2
     echo >&2 "Options:"
     echo >&2
-    echo >&2 "  UPSTREAM_BRANCH     Specify the base upstream branch where the"
+    echo >&2 "  UPSTREAM_BRANCH     Specify the base upstream branches where the"
     echo >&2 "                      changes are merged, defaults to origin/master."
     echo >&2 "  -r REMOTE   Prune branches of the specified remote, not local."
     echo >&2 "  -R          Prune the branches in the repo repo, not just the tracking branches."
@@ -42,9 +42,16 @@ while getopts r:Rc:nh opt; do
 done
 shift $((OPTIND - 1))
 
-if [ -n "$corresponding" ] && [ $# -gt 0 ]; then
-    echo >&2 "Error: -c and UPSTREAM_BRANCH arguments conflict"
-    exit 1
+if [ -n "$corresponding" ]; then
+    if [ $# -gt 0 ]; then
+        echo >&2 "Error: -c and UPSTREAM_BRANCH arguments conflict"
+        exit 1
+    fi
+    set -- $corresponding
+elif [ $# -gt 0 ]; then
+    set -- $(echo "$@" | tr ' ' '\n' | sed 's/^/--merged=/')
+else
+    set -- --merged=origin/master
 fi
 
 if [ "$ref_prefix" != "refs/heads" ] && [ $prune_remote_repo -eq 1 ]; then
@@ -54,10 +61,9 @@ else
     default_branch_for_remote=
 fi
 
-upstream_branch="${1:-origin/master}"
 to_delete=
 to_push=
-git for-each-ref "${corresponding:---merged=$upstream_branch}" --format='%(refname)' "$ref_prefix" | (
+git for-each-ref "$@" --format='%(refname)' "$ref_prefix" | (
     while read -r ref; do
         ref="${ref#$ref_prefix/}"
 
