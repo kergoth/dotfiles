@@ -1,9 +1,10 @@
 #!/bin/sh
 
 usage () {
-    echo >&2 "${0##*/} [-o ORIGIN_REMOTE] [REMOTE]"
+    echo >&2 "${0##*/} [options] [REMOTE..]"
     echo >&2
-    echo >&2 "Prune branches of the specified remote, relative to the origin."
+    echo >&2 "Prune branches of the specified remote(s), relative to the origin."
+    echo >&2 "Defaults to all remotes but ORIGIN_REMOTE if no remotes are specified."
     echo >&2
     echo >&2 "Options:"
     echo >&2
@@ -42,39 +43,46 @@ process_arguments () {
     done
     shift $((OPTIND - 1))
 
-    remote="${1:-$USER}"
+    if ! git config remote."$origin".url >/dev/null; then
+        echo >&2 "Error: invalid origin remote: $origin"
+        exit 1
+    fi
+
+    if [ $dry_run -eq 1 ]; then
+        prune_args=-n
+    else
+        prune_args=
+    fi
+
+    if [ $local_only -eq 0 ]; then
+        prune_args="$prune_args -R"
+    fi
 }
 
-set -eu
+set -u
 
 process_arguments "$@"
+shift $((OPTIND - 1))
 
-if ! git config remote."$remote".url >/dev/null; then
-    echo >&2 "Error: invalid remote: $remote"
-    exit 1
-fi
-
-if ! git config remote."$origin".url >/dev/null; then
-    echo >&2 "Error: invalid origin remote: $origin"
-    exit 1
-fi
-
-if [ $dry_run -eq 1 ]; then
-    set -- -n
-else
-    set --
-fi
-
-if [ $local_only -eq 0 ]; then
-    set -- "$@" -R
+if [ $# -eq 0 ]; then
+    set -- $(git remote | grep -vx "$origin")
 fi
 
 ret=0
-echo >&2 "Pruning matching tracking branches for $remote"
-git prune-merged -r "$remote" -c "$origin" "$@" || ret=1
+for remote; do
+    if ! git config remote."$remote".url >/dev/null; then
+        echo >&2 "Error: invalid remote: $remote"
+        exit 1
+    fi
 
-echo "$upstream_branches" | tr , '\n' | while read -r upstream_branch; do
-    echo >&2 "Pruning topic branches merged to $origin/$upstream_branch for $remote"
-    git prune-merged -r "$remote" "$@" "$origin/$upstream_branch" || ret=1
+    echo >&2 "Pruning matching tracking branches for $remote"
+    if ! git prune-merged -r "$remote" -c "$origin" $prune_args; then
+        ret=1
+    fi
+
+    echo >&2 "Pruning topic branches merged to upstream branches for $remote"
+    if ! echo "$upstream_branches" | tr , '\0' | xargs -0 git prune-merged -r "$remote" $prune_args "$origin/{}"; then
+        ret=1
+    fi
 done
 exit "$ret"
