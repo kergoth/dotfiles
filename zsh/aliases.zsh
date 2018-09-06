@@ -73,6 +73,16 @@ fd () {
 
 alias fdf="fd -t f ''"
 
+if (( $+commands[prettyping] )); then
+    ping () {
+        if [[ -t 1 ]]; then
+            prettyping --nolegend "$@"
+        else
+            command ping "$@"
+        fi
+    }
+fi
+
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if (( $+commands[dfc] )); then
