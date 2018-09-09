@@ -1,0 +1,6 @@
+/* Set italics and comments to the script font */
+.mtki, .mtk5 {
+    font-family: "Script12 BT";
+    font-size: 1.2em;
+    font-style: normal;
+}
