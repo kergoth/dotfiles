@@ -195,6 +195,11 @@ let s:default_registry = {
 \       'suggested_filetypes': ['sh'],
 \       'description': 'Fix sh files with shfmt.',
 \   },
+\   'sqlfmt': {
+\       'function': 'ale#fixers#sqlfmt#Fix',
+\       'suggested_filetypes': ['sql'],
+\       'description': 'Fix SQL files with sqlfmt.',
+\   },
 \   'google_java_format': {
 \       'function': 'ale#fixers#google_java_format#Fix',
 \       'suggested_filetypes': ['java'],
@@ -234,6 +239,11 @@ let s:default_registry = {
 \       'function': 'ale#fixers#xmllint#Fix',
 \       'suggested_filetypes': ['xml'],
 \       'description': 'Fix XML files with xmllint.',
+\   },
+\   'uncrustify': {
+\       'function': 'ale#fixers#uncrustify#Fix',
+\       'suggested_filetypes': ['c', 'cpp', 'cs', 'objc', 'objcpp', 'd', 'java', 'p', 'vala' ],
+\       'description': 'Fix C, C++, C#, ObjectiveC, ObjectiveC++, D, Java, Pawn, and VALA files with uncrustify.',
 \   },
 \}
 

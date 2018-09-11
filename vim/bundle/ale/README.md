@@ -97,10 +97,10 @@ formatting.
 | Awk | [gawk](https://www.gnu.org/software/gawk/)|
 | Bash | [language-server](https://github.com/mads-hartmann/bash-language-server), shell [-n flag](https://www.gnu.org/software/bash/manual/bash.html#index-set), [shellcheck](https://www.shellcheck.net/), [shfmt](https://github.com/mvdan/sh) |
 | Bourne Shell | shell [-n flag](http://linux.die.net/man/1/sh), [shellcheck](https://www.shellcheck.net/), [shfmt](https://github.com/mvdan/sh) |
-| C | [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint), [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html), [clangtidy](http://clang.llvm.org/extra/clang-tidy/) !!, [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [cquery](https://github.com/cquery-project/cquery), [flawfinder](https://www.dwheeler.com/flawfinder/), [gcc](https://gcc.gnu.org/) |
-| C++ (filetype cpp) | [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html), [clangcheck](http://clang.llvm.org/docs/ClangCheck.html) !!, [clangtidy](http://clang.llvm.org/extra/clang-tidy/) !!, [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [clazy](https://github.com/KDE/clazy) !!, [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint) !!, [cquery](https://github.com/cquery-project/cquery), [flawfinder](https://www.dwheeler.com/flawfinder/), [gcc](https://gcc.gnu.org/) |
+| C | [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint), [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html), [clangtidy](http://clang.llvm.org/extra/clang-tidy/) !!, [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [cquery](https://github.com/cquery-project/cquery), [flawfinder](https://www.dwheeler.com/flawfinder/), [gcc](https://gcc.gnu.org/), [uncrustify](https://github.com/uncrustify/uncrustify) |
+| C++ (filetype cpp) | [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html), [clangcheck](http://clang.llvm.org/docs/ClangCheck.html) !!, [clangtidy](http://clang.llvm.org/extra/clang-tidy/) !!, [clang-format](https://clang.llvm.org/docs/ClangFormat.html), [clazy](https://github.com/KDE/clazy) !!, [cppcheck](http://cppcheck.sourceforge.net), [cpplint](https://github.com/google/styleguide/tree/gh-pages/cpplint) !!, [cquery](https://github.com/cquery-project/cquery), [flawfinder](https://www.dwheeler.com/flawfinder/), [gcc](https://gcc.gnu.org/), [uncrustify](https://github.com/uncrustify/uncrustify) |
 | CUDA | [nvcc](http://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html) |
-| C# | [mcs](http://www.mono-project.com/docs/about-mono/languages/csharp/) see:`help ale-cs-mcs` for details, [mcsc](http://www.mono-project.com/docs/about-mono/languages/csharp/) !! see:`help ale-cs-mcsc` for details and configuration|
+| C# | [mcs](http://www.mono-project.com/docs/about-mono/languages/csharp/) see:`help ale-cs-mcs` for details, [mcsc](http://www.mono-project.com/docs/about-mono/languages/csharp/) !! see:`help ale-cs-mcsc` for details and configuration, [uncrustify](https://github.com/uncrustify/uncrustify) |
 | Chef | [foodcritic](http://www.foodcritic.io/) |
 | Clojure | [joker](https://github.com/candid82/joker) |
 | CloudFormation | [cfn-python-lint](https://github.com/awslabs/cfn-python-lint) |
@@ -110,7 +110,7 @@ formatting.
 | CSS | [csslint](http://csslint.net/), [prettier](https://github.com/prettier/prettier), [stylelint](https://github.com/stylelint/stylelint) |
 | Cucumber | [cucumber](https://cucumber.io/) |
 | Cython (pyrex filetype) | [cython](http://cython.org/) |
-| D | [dmd](https://dlang.org/dmd-linux.html) |
+| D | [dmd](https://dlang.org/dmd-linux.html), [uncrustify](https://github.com/uncrustify/uncrustify) |
 | Dafny | [dafny](https://rise4fun.com/Dafny) !! |
 | Dart | [dartanalyzer](https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli) !!, [language_server](https://github.com/natebosch/dart_language_server), [dartfmt](https://github.com/dart-lang/sdk/tree/master/utils/dartfmt) |
 | Dockerfile | [hadolint](https://github.com/hadolint/hadolint) |
@@ -124,7 +124,7 @@ formatting.
 | FusionScript | [fusion-lint](https://github.com/RyanSquared/fusionscript) |
 | Git Commit Messages | [gitlint](https://github.com/jorisroovers/gitlint) |
 | GLSL | [glslang](https://github.com/KhronosGroup/glslang), [glslls](https://github.com/svenstaro/glsl-language-server) |
-| Go | [gofmt](https://golang.org/cmd/gofmt/), [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports), [go vet](https://golang.org/cmd/vet/) !!, [golint](https://godoc.org/github.com/golang/lint), [gotype](https://godoc.org/golang.org/x/tools/cmd/gotype) !!, [gometalinter](https://github.com/alecthomas/gometalinter) !!, [go build](https://golang.org/cmd/go/) !!, [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple) !!, [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) !! |
+| Go | [gofmt](https://golang.org/cmd/gofmt/), [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports), [go vet](https://golang.org/cmd/vet/) !!, [golint](https://godoc.org/github.com/golang/lint), [gotype](https://godoc.org/golang.org/x/tools/cmd/gotype) !!, [gometalinter](https://github.com/alecthomas/gometalinter) !!, [go build](https://golang.org/cmd/go/) !!, [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple) !!, [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) !!, [golangserver](https://github.com/sourcegraph/go-langserver), [golangci-lint](https://github.com/golangci/golangci-lint) !! |
 | GraphQL | [eslint](http://eslint.org/), [gqlint](https://github.com/happylinks/gqlint), [prettier](https://github.com/prettier/prettier) |
 | Hack | [hack](http://hacklang.org/), [hackfmt](https://github.com/facebook/hhvm/tree/master/hphp/hack/hackfmt), [hhast](https://github.com/hhvm/hhast) (disabled by default; see `:help ale-integration-hack`) |
 | Haml | [haml-lint](https://github.com/brigade/haml-lint) |
@@ -132,9 +132,10 @@ formatting.
 | Haskell | [brittany](https://github.com/lspitzner/brittany), [ghc](https://www.haskell.org/ghc/), [cabal-ghc](https://www.haskell.org/cabal/), [stylish-haskell](https://github.com/jaspervdj/stylish-haskell), [stack-ghc](https://haskellstack.org/), [stack-build](https://haskellstack.org/) !!, [ghc-mod](https://github.com/DanielG/ghc-mod), [stack-ghc-mod](https://github.com/DanielG/ghc-mod), [hlint](https://hackage.haskell.org/package/hlint), [hdevtools](https://hackage.haskell.org/package/hdevtools), [hfmt](https://github.com/danstiner/hfmt), [hie](https://github.com/haskell/haskell-ide-engine) |
 | HTML | [alex](https://github.com/wooorm/alex) !!, [HTMLHint](http://htmlhint.com/), [proselint](http://proselint.com/), [tidy](http://www.html-tidy.org/), [write-good](https://github.com/btford/write-good) |
 | Idris | [idris](http://www.idris-lang.org/) |
-| Java | [checkstyle](http://checkstyle.sourceforge.net), [javac](http://www.oracle.com/technetwork/java/javase/downloads/index.html), [google-java-format](https://github.com/google/google-java-format), [PMD](https://pmd.github.io/), [javalsp](https://github.com/georgewfraser/vscode-javac) |
+| Java | [checkstyle](http://checkstyle.sourceforge.net), [javac](http://www.oracle.com/technetwork/java/javase/downloads/index.html), [google-java-format](https://github.com/google/google-java-format), [PMD](https://pmd.github.io/), [javalsp](https://github.com/georgewfraser/vscode-javac), [uncrustify](https://github.com/uncrustify/uncrustify) |
 | JavaScript | [eslint](http://eslint.org/), [flow](https://flowtype.org/), [jscs](http://jscs.info/), [jshint](http://jshint.com/), [prettier](https://github.com/prettier/prettier), [prettier-eslint](https://github.com/prettier/prettier-eslint-cli), [prettier-standard](https://github.com/sheerun/prettier-standard), [standard](http://standardjs.com/), [xo](https://github.com/sindresorhus/xo)
 | JSON | [fixjson](https://github.com/rhysd/fixjson), [jsonlint](http://zaa.ch/jsonlint/), [jq](https://stedolan.github.io/jq/), [prettier](https://github.com/prettier/prettier) |
+| Julia | [languageserver](https://github.com/JuliaEditorSupport/LanguageServer.jl) |
 | Kotlin | [kotlinc](https://kotlinlang.org) !!, [ktlint](https://ktlint.github.io) !!, [languageserver](https://github.com/fwcd/KotlinLanguageServer) see `:help ale-integration-kotlin` for configuration instructions |
 | LaTeX | [alex](https://github.com/wooorm/alex) !!, [chktex](http://www.nongnu.org/chktex/), [lacheck](https://www.ctan.org/pkg/lacheck), [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good) |
 | Less | [lessc](https://www.npmjs.com/package/less), [prettier](https://github.com/prettier/prettier), [stylelint](https://github.com/stylelint/stylelint) |
@@ -149,9 +150,10 @@ formatting.
 | Nim | [nim check](https://nim-lang.org/docs/nimc.html) !! |
 | nix | [nix-instantiate](http://nixos.org/nix/manual/#sec-nix-instantiate) |
 | nroff | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good)|
-| Objective-C | [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html) |
-| Objective-C++ | [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html) |
+| Objective-C | [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html), [uncrustify](https://github.com/uncrustify/uncrustify) |
+| Objective-C++ | [clang](http://clang.llvm.org/), [clangd](https://clang.llvm.org/extra/clangd.html), [uncrustify](https://github.com/uncrustify/uncrustify) |
 | OCaml | [merlin](https://github.com/the-lambda-church/merlin) see `:help ale-ocaml-merlin` for configuration instructions, [ols](https://github.com/freebroccolo/ocaml-language-server), [ocamlformat](https://github.com/ocaml-ppx/ocamlformat) |
+| Pawn | [uncrustify](https://github.com/uncrustify/uncrustify) |
 | Perl | [perl -c](https://perl.org/), [perl-critic](https://metacpan.org/pod/Perl::Critic), [perltidy](https://metacpan.org/pod/distribution/Perl-Tidy/bin/perltidy) |
 | PHP | [langserver](https://github.com/felixfbecker/php-language-server), [phan](https://github.com/phan/phan) see `:help ale-php-phan` to instructions, [php -l](https://secure.php.net/), [phpcs](https://github.com/squizlabs/PHP_CodeSniffer), [phpmd](https://phpmd.org), [phpstan](https://github.com/phpstan/phpstan), [phpcbf](https://github.com/squizlabs/PHP_CodeSniffer), [php-cs-fixer](http://cs.sensiolabs.org/) |
 | PO | [alex](https://github.com/wooorm/alex) !!, [msgfmt](https://www.gnu.org/software/gettext/manual/html_node/msgfmt-Invocation.html), [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good) |
@@ -171,12 +173,12 @@ formatting.
 | Rust |  cargo !! (see `:help ale-integration-rust` for configuration instructions), [rls](https://github.com/rust-lang-nursery/rls), [rustc](https://www.rust-lang.org/), [rustfmt](https://github.com/rust-lang-nursery/rustfmt) |
 | SASS | [sass-lint](https://www.npmjs.com/package/sass-lint), [stylelint](https://github.com/stylelint/stylelint) |
 | SCSS | [prettier](https://github.com/prettier/prettier), [sass-lint](https://www.npmjs.com/package/sass-lint), [scss-lint](https://github.com/brigade/scss-lint), [stylelint](https://github.com/stylelint/stylelint) |
-| Scala | [fsc](https://www.scala-lang.org/old/sites/default/files/linuxsoft_archives/docu/files/tools/fsc.html), [scalac](http://scala-lang.org), [scalafmt](https://scalameta.org/scalafmt/), [scalastyle](http://www.scalastyle.org) |
+| Scala | [fsc](https://www.scala-lang.org/old/sites/default/files/linuxsoft_archives/docu/files/tools/fsc.html), [sbtserver](https://www.scala-sbt.org/1.x/docs/sbt-server.html), [scalac](http://scala-lang.org), [scalafmt](https://scalameta.org/scalafmt/), [scalastyle](http://www.scalastyle.org)|
 | Slim | [slim-lint](https://github.com/sds/slim-lint) |
 | SML | [smlnj](http://www.smlnj.org/) |
 | Solidity | [solhint](https://github.com/protofire/solhint), [solium](https://github.com/duaraghav8/Solium) |
 | Stylus | [stylelint](https://github.com/stylelint/stylelint) |
-| SQL | [sqlint](https://github.com/purcell/sqlint) |
+| SQL | [sqlint](https://github.com/purcell/sqlint), [sqlfmt](https://github.com/jackc/sqlfmt) |
 | Swift | [swiftlint](https://github.com/realm/SwiftLint), [swiftformat](https://github.com/nicklockwood/SwiftFormat) |
 | Tcl | [nagelfar](http://nagelfar.sourceforge.net) !! |
 | Terraform | [tflint](https://github.com/wata727/tflint) |
@@ -184,6 +186,7 @@ formatting.
 | Text^ | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [redpen](http://redpen.cc/), [textlint](https://textlint.github.io/), [vale](https://github.com/ValeLint/vale), [write-good](https://github.com/btford/write-good) |
 | Thrift | [thrift](http://thrift.apache.org/) |
 | TypeScript | [eslint](http://eslint.org/), [prettier](https://github.com/prettier/prettier), [tslint](https://github.com/palantir/tslint), tsserver, typecheck |
+| VALA | [uncrustify](https://github.com/uncrustify/uncrustify) |
 | Verilog | [iverilog](https://github.com/steveicarus/iverilog), [verilator](http://www.veripool.org/projects/verilator/wiki/Intro) |
 | Vim | [vint](https://github.com/Kuniwak/vint) |
 | Vim help^ | [alex](https://github.com/wooorm/alex) !!, [proselint](http://proselint.com/), [write-good](https://github.com/btford/write-good) |
