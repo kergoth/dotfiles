@@ -3,5 +3,9 @@
 --write-auto-sub
 --embed-subs
 
+# Metadata
+--add-metadata
+--xattrs
+
 # Prefer the best combined format by default, rather than bestvideo+bestaudio
 -f best
