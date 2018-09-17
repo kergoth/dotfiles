@@ -465,15 +465,17 @@ if executable('pyenv')
   endtry
 
   try
-    let b:python3 = system('pyenv which python3.6')
-    if !empty(b:python3)
-      let &pythonthreehome = fnamemodify(substitute(b:python3, '\n', '', ''), ':h:h')
-      if has('macunix')
-        let &pythonthreedll = &pythonthreehome . '/lib/libpython3.6m.dylib'
-      else
-        let &pythonthreedll = &pythonthreehome . '/lib/libpython3.6m.so.1.0'
+    for pyver in ['3.6', '3.7']
+      let b:python3 = system('pyenv which python' . pyver)
+      if !empty(b:python3)
+        let &pythonthreehome = fnamemodify(substitute(b:python3, '\n', '', ''), ':h:h')
+        if has('macunix')
+          let &pythonthreedll = &pythonthreehome . '/lib/libpython' . pyver . 'm.dylib'
+        else
+          let &pythonthreedll = &pythonthreehome . '/lib/libpython' . pyver . 'm.so.1.0'
+        endif
       endif
-    endif
+    endfor
   catch
   endtry
 endif
