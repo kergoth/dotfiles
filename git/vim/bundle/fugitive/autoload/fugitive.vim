@@ -645,7 +645,7 @@ function! fugitive#Route(object, ...) abort
       endif
     endif
     if !exists('f')
-      let commit = substitute(matchstr(rev, '^[^:]\+\|^:.*'), '^@\%($|[^~]\)\@=', 'HEAD', '')
+      let commit = substitute(matchstr(rev, '^[^:]\+\|^:.*'), '^@\%($\|[~^]\|@{\)\@=', 'HEAD', '')
       let file = substitute(matchstr(rev, '^[^:]\+\zs:.*'), '^:', '/', '')
       if file =~# '^/\.\.\=\%(/\|$\)\|^//\|^/\a\+:'
         let file = file =~# '^/\.' ? simplify(getcwd() . file) : file[1:-1]
@@ -885,7 +885,7 @@ function! fugitive#getfsize(url) abort
   let entry = s:PathInfo(a:url)
   if entry[4] == -2 && entry[2] ==# 'blob' && len(entry[3])
     let dir = s:DirCommitFile(a:url)[0]
-    let size = +system(s:Prepare(dir, 'cat-file', '-s', entry[3], '--'))
+    let size = +system(s:Prepare(dir, 'cat-file', '-s', entry[3]))
     let entry[4] = v:shell_error ? -1 : size
   endif
   return entry[4]
@@ -977,7 +977,7 @@ function! s:BlobTemp(url) abort
   endif
   if commit =~# '^\d$' || !filereadable(tempfile)
     let rev = s:DirRev(a:url)[1]
-    let command = s:Prepare(dir, 'cat-file', 'blob', rev, '--')
+    let command = s:Prepare(dir, 'cat-file', 'blob', rev)
     call s:TempCmd(tempfile, command)
     if v:shell_error
       call delete(tempfile)
@@ -1384,7 +1384,7 @@ function! fugitive#FileReadCmd(...) abort
   if rev !~# ':'
     let cmd = s:Prepare(dir, 'log', '--pretty=format:%B', '-1', rev, '--')
   else
-    let cmd = s:Prepare(dir, 'cat-file', '-p', rev, '--')
+    let cmd = s:Prepare(dir, 'cat-file', '-p', rev)
   endif
   return line . 'read !' . escape(cmd, '!#%')
 endfunction
@@ -1434,19 +1434,20 @@ function! fugitive#BufReadCmd(...) abort
     if rev =~# '^:\d$'
       let b:fugitive_type = 'stage'
     else
-      let b:fugitive_type = system(s:Prepare(dir, 'cat-file', '-t', rev, '--'))[0:-2]
+      let b:fugitive_type = system(s:Prepare(dir, 'cat-file', '-t', rev))[0:-2]
       if v:shell_error && rev =~# '^:0'
         let sha = system(s:Prepare(dir, 'write-tree', '--prefix=' . rev[3:-1]))[0:-2]
         let b:fugitive_type = 'tree'
       endif
       if v:shell_error
+        let error = b:fugitive_type
         unlet b:fugitive_type
         if rev =~# '^:\d:'
           let &readonly = !filewritable(dir . '/index')
           return 'silent doautocmd BufNewFile '.s:fnameescape(amatch)
         else
           setlocal readonly nomodifiable
-          return ''
+          return 'echo ' . string(error)
         endif
       elseif b:fugitive_type !~# '^\%(tag\|commit\|tree\|blob\)$'
         return "echoerr ".string("fugitive: unrecognized git type '".b:fugitive_type."'")
@@ -1493,13 +1494,13 @@ function! fugitive#BufReadCmd(...) abort
           if getline('.') ==# 'parent '
             silent keepjumps delete_
           else
-            silent exe 'keepjumps s/\m\C\%(^parent\)\@<! /\rparent /e' . (&gdefault ? '' : 'g')
+            silent exe (exists(':keeppatterns') ? 'keeppatterns' : '') 'keepjumps s/\m\C\%(^parent\)\@<! /\rparent /e' . (&gdefault ? '' : 'g')
           endif
           keepjumps let lnum = search('^encoding \%(<unknown>\)\=$','W',line('.')+3)
           if lnum
             silent keepjumps delete_
           end
-          silent keepjumps 1,/^diff --git\|\%$/g/\r$/s///
+          silent exe (exists(':keeppatterns') ? 'keeppatterns' : '') 'keepjumps 1,/^diff --git\|\%$/g/\r$/s///'
           keepjumps 1
         endif
       elseif b:fugitive_type ==# 'stage'
@@ -3405,6 +3406,7 @@ function! s:Browse(bang,line1,count,...) abort
           \ 'line1': line1,
           \ 'line2': line2}
 
+    let url = ''
     for Handler in get(g:, 'fugitive_browse_handlers', [])
       let url = call(Handler, [copy(opts)])
       if !empty(url)

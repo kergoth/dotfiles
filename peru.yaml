@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 79ecce89f0e6a8ef36b582e41c8ade5a3e959f11
+    rev: b9aa55a7ed856daf18a4e3af46609d110cb3fc85
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: d4fb2a2f5c2023f477beae6aef47cf0457351e6e
+    rev: fb5531997342be62efbbb98bda4b90ee88b2ac00
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: da8035d8a83c85197d27a258465d8373ec6d5cd4
+    rev: a1c112cafd51e7eba02161e56a8ae6a34debe8ea
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -227,12 +227,12 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 4566b8892715361f9952fa4c29c05035fdede09d
+    rev: fe48d002ce5d473b2057641666d643c66ede6230
 
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession
-    rev: 523b2c60eb956aba6014e18be75aa7bde5280c33
+    rev: 95a576210dc4408a4804a0a62a9eae90d701026b
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
@@ -244,7 +244,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 8fa84e0fdf97842d94caee8d50584836edf5b509
+    rev: c3954d294a0f6c4fb5a46a1839cd42ec26767dea
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -311,7 +311,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 276f3e48bcea44e5456973d094507b62e5d34c0f
+    rev: d9c937004a750005b85bf39d0082feefc4e20672
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -567,7 +567,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 2590998ee04f508be154d776288f02667cf4ba32
+    rev: 8b992cc9bc46331bbe56627400d85074abb1bf6b
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -592,7 +592,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 99e9417ef901824200040c6a2d3e84f2e0ff4b8e
+    rev: ddb3e6d57acfc9081f8c6846d896542014e3024b
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -747,7 +747,7 @@ git module vim-profiler:
 
 git module vim-apathy:
     url: https://github.com/tpope/vim-apathy
-    rev: baabe1f1dc9501716ad2bb7da9d1351ae2b75039
+    rev: 3a78d61bdaac4b107a6f0bb0e82760aacfb8a1f6
 
 git module zsh-sort-timings:
     url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405

@@ -68,6 +68,7 @@ zstyle :plugin:fast-syntax-highlighting theme default
 : ${FAST_HIGHLIGHT_STYLES[path-to-dir]:=fg=magenta,underline}
 : ${FAST_HIGHLIGHT_STYLES[path_pathseparator]:=}
 : ${FAST_HIGHLIGHT_STYLES[globbing]:=fg=blue,bold}
+: ${FAST_HIGHLIGHT_STYLES[globbing-ext]:=fg=blue,bold}
 : ${FAST_HIGHLIGHT_STYLES[history-expansion]:=fg=blue,bold}
 : ${FAST_HIGHLIGHT_STYLES[single-hyphen-option]:=fg=cyan}
 : ${FAST_HIGHLIGHT_STYLES[double-hyphen-option]:=fg=cyan}
@@ -90,7 +91,8 @@ zstyle :plugin:fast-syntax-highlighting theme default
 : ${FAST_HIGHLIGHT_STYLES[for-loop-number]:=fg=magenta}
 : ${FAST_HIGHLIGHT_STYLES[for-loop-separator]:=fg=yellow,bold}
 : ${FAST_HIGHLIGHT_STYLES[here-string-tri]:=fg=yellow}
-: ${FAST_HIGHLIGHT_STYLES[here-string-word]:=bg=blue}
+: ${FAST_HIGHLIGHT_STYLES[here-string-text]:=bg=blue}
+: ${FAST_HIGHLIGHT_STYLES[here-string-var]:=fg=cyan,bg=blue}
 : ${FAST_HIGHLIGHT_STYLES[case-input]:=fg=green}
 : ${FAST_HIGHLIGHT_STYLES[case-parentheses]:=fg=yellow}
 : ${FAST_HIGHLIGHT_STYLES[case-condition]:=bg=blue}
@@ -98,6 +100,9 @@ zstyle :plugin:fast-syntax-highlighting theme default
 : ${FAST_HIGHLIGHT_STYLES[bracket-level-1]:=fg=green,bold}
 : ${FAST_HIGHLIGHT_STYLES[bracket-level-2]:=fg=yellow,bold}
 : ${FAST_HIGHLIGHT_STYLES[bracket-level-3]:=fg=cyan,bold}
+: ${FAST_HIGHLIGHT_STYLES[single-sq-bracket]:=fg=green}
+: ${FAST_HIGHLIGHT_STYLES[double-sq-bracket]:=fg=green}
+: ${FAST_HIGHLIGHT_STYLES[double-paren]:=fg=yellow}
 fi
 
 # This can overwrite some of *_STYLES fields
@@ -163,6 +168,7 @@ FAST_HIGHLIGHT+=(
   chroma-example    chroma/-example.ch
   chroma-make       chroma/-make.ch
   chroma-nmcli      chroma/-nmcli.ch
+  chroma-node       chroma/-node.ch
   chroma-perl       chroma/-perl.ch
   chroma-printf     chroma/-printf.ch
   chroma-ruby       chroma/-ruby.ch
@@ -569,7 +575,7 @@ typeset -ga ZLAST_COMMANDS
 
       case $REPLY in
         reserved)       # reserved word
-                        [[ $__arg = "[[" ]] && __style=${FAST_THEME_NAME}builtin || __style=${FAST_THEME_NAME}reserved-word
+                        [[ $__arg = "[[" ]] && __style=${FAST_THEME_NAME}double-sq-bracket || __style=${FAST_THEME_NAME}reserved-word
                         if [[ $__arg == $'\x7b' ]]; then # '{'
                           braces_stack='Y'$braces_stack
                         elif [[ $__arg == $'\x7d' && $braces_stack = Y* ]]; then # '}'
@@ -602,7 +608,10 @@ typeset -ga ZLAST_COMMANDS
                             [[ ${__FAST_HIGHLIGHT_TOKEN_TYPES[$alias_target]} = "1" && $__arg_type != "1" ]] && __FAST_HIGHLIGHT_TOKEN_TYPES[$__arg]="1"
                           fi
                         ;;
-        builtin)        __style=${FAST_THEME_NAME}builtin
+        builtin)        [[ $__arg = "[" ]] && {
+                          __style=${FAST_THEME_NAME}single-sq-bracket
+                          _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) )
+                        } || __style=${FAST_THEME_NAME}builtin
                         # T - typeset, etc. mode
                         [[ $__arg = (typeset|declare|local|float|integer|export|readonly) ]] && braces_stack='T'$braces_stack
                         [[ $__arg = eval ]] && (( next_word = next_word | 256 ))
@@ -645,11 +654,11 @@ typeset -ga ZLAST_COMMANDS
                             {
                                 itmp=${__arg[(i)=]}; __arg=${__arg[itmp,__asize]}; (( _start_pos += itmp - 1 ));
                                 [[ ${__arg[2,4]} = '$((' ]] && { -fast-highlight-math-string;
-                                   (( __start=_start_pos-__PBUFLEN+2, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]}")
+                                   (( __start=_start_pos-__PBUFLEN+2, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-paren]}")
                                    # Counting complex brackets (for brackets-highlighter): 4. $(( in assign argument
                                    _FAST_COMPLEX_BRACKETS+=( $__start $(( __start + 1 )) )
                                    (( jtmp = ${__arg[(I)\)\)]}-1, jtmp > 0 )) && {
-                                     (( __start=_start_pos-__PBUFLEN+jtmp, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]}")
+                                     (( __start=_start_pos-__PBUFLEN+jtmp, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-paren]}")
                                      # Counting complex brackets (for brackets-highlighter): 5. )) in assign argument
                                      _FAST_COMPLEX_BRACKETS+=( $__start $(( __start + 1 )) )
                                    }
@@ -676,7 +685,7 @@ typeset -ga ZLAST_COMMANDS
                           # is how [[ ... ]] is highlighted, too.
 
                           # ADD
-                          (( __start=_start_pos-__PBUFLEN, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]}")
+                          (( __start=_start_pos-__PBUFLEN, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-paren]}")
                           already_added=1
 
                           # Counting complex brackets (for brackets-highlighter): 6. (( as command
@@ -686,13 +695,14 @@ typeset -ga ZLAST_COMMANDS
 
                           # ADD
                           [[ $__arg[-2,-1] == '))' ]] && {
-                            (( __start=_end_pos-__PBUFLEN-2, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]}")
+                            (( __start=_end_pos-__PBUFLEN-2, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-paren]}")
                             (( __delimited = __delimited ? 2 : __delimited ))
 
                             # Counting complex brackets (for brackets-highlighter): 7. )) for as-command ((
                             _FAST_COMPLEX_BRACKETS+=( $__start $(( __start + 1 )) )
                           }
                         elif [[ $__arg == '()' ]]; then
+                          _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) $(( _start_pos-__PBUFLEN + 1 )) )
                           # anonymous function
                           __style=${FAST_THEME_NAME}reserved-word
                         elif [[ $__arg == $'\x28' ]]; then
@@ -725,7 +735,7 @@ typeset -ga ZLAST_COMMANDS
         ']]')
                  # A - [[
                  [[ $braces_stack = A* ]] && {
-                   __style=${FAST_THEME_NAME}builtin
+                   __style=${FAST_THEME_NAME}double-sq-bracket
                    (( __delimited = __delimited ? 2 : __delimited ))
                    # Counting complex brackets (for brackets-highlighter): 8a. ]] for as-command [[
                    _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) $(( _start_pos-__PBUFLEN+1 )) )
@@ -739,7 +749,8 @@ typeset -ga ZLAST_COMMANDS
                  braces_stack=${braces_stack#A}
                  ;;
         ']')
-                 __style=${FAST_THEME_NAME}builtin
+                 __style=${FAST_THEME_NAME}single-sq-bracket
+                 _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) )
                  ;;
         $'\x28')
                  # '(' inside [[
@@ -768,11 +779,17 @@ typeset -ga ZLAST_COMMANDS
                  # || false # TODO: or if the previous word was a command word
                  (( FAST_HIGHLIGHT[multi_func_def] )) && (( next_word = next_word | 1 ))
                  __style=${FAST_THEME_NAME}reserved-word
+                 _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) $(( _start_pos-__PBUFLEN + 1 )) )
                  # Remove possible annoying unknown-token __style, or misleading function __style
                  reply[-1]=()
                  ;;
         '--'*)   [[ $__arg == "--" ]] && { _was_double_hyphen=1; __style=${FAST_THEME_NAME}double-hyphen-option; } || { (( !_was_double_hyphen )) && __style=${FAST_THEME_NAME}double-hyphen-option || __style=${FAST_THEME_NAME}default; };;
         '-'*)    (( !_was_double_hyphen )) && __style=${FAST_THEME_NAME}single-hyphen-option || __style=${FAST_THEME_NAME}default;;
+        \$\'*)
+                 (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}dollar-quoted-argument]}")
+                 -fast-highlight-dollar-string
+                 already_added=1
+                 ;;
         [\"\']*|[^\"\\]##([\\][\\])#\"*|[^\'\\]##([\\][\\])#\'*)
                  if (( this_word & 256 )) && [[ $__arg = [\'\"]* ]]; then
                    if [[ -n ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}secondary]} ]]; then
@@ -787,6 +804,9 @@ typeset -ga ZLAST_COMMANDS
                    (( __idx )) && FAST_THEME_NAME=$_mybuf
                    already_added=1
                  else
+                   [[ $__arg = *([^\\][\#][\#]|"(#b)"|"(#B)"|"(#m)"|"(#c")* && $highlight_glob -ne 0 ]] && \
+                     (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && \
+                       reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}globbing-ext]}")
                    # Reusing existing vars, treat this code like C++ STL
                    # header, full of underscores and unhelpful var names
                    itmp=0 __workbuf=$__arg __tmp="" cdpath_dir=$__arg
@@ -835,21 +855,15 @@ typeset -ga ZLAST_COMMANDS
                    }
                  fi
                  ;;
-        \$\'*)
-                 # ADD
-                 (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}dollar-quoted-argument]}")
-                 -fast-highlight-dollar-string
-                 already_added=1
-                 ;;
         \$\(\(*)
                  already_added=1
                  -fast-highlight-math-string
                  # ADD
-                 (( __start=_start_pos-__PBUFLEN+1, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]}")
+                 (( __start=_start_pos-__PBUFLEN+1, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-paren]}")
                  # Counting complex brackets (for brackets-highlighter): 9. $(( as argument
                  _FAST_COMPLEX_BRACKETS+=( $__start $(( __start + 1 )) )
                  # ADD
-                 [[ $__arg[-2,-1] == '))' ]] && (( __start=_end_pos-__PBUFLEN-2, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]}")
+                 [[ $__arg[-2,-1] == '))' ]] && (( __start=_end_pos-__PBUFLEN-2, __end=__start+2, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-paren]}")
                  # Counting complex brackets (for brackets-highlighter): 10. )) for as-argument $((
                  _FAST_COMPLEX_BRACKETS+=( $__start $(( __start + 1 )) )
                  ;;
@@ -857,7 +871,7 @@ typeset -ga ZLAST_COMMANDS
         '((')    # 'F' - (( after for
                  (( this_word & 32 )) && {
                    braces_stack='F'$braces_stack
-                   __style=${FAST_THEME_NAME}builtin && \
+                   __style=${FAST_THEME_NAME}double-paren
                    # Counting complex brackets (for brackets-highlighter): 11. (( as for-syntax
                    _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) $(( _start_pos-__PBUFLEN+1 )) )
                    # This is set after __arg_type == 2, and also here,
@@ -868,7 +882,7 @@ typeset -ga ZLAST_COMMANDS
         '))')    # 'F' - (( after for
                  [[ $braces_stack = F* ]] && {
                    braces_stack=${braces_stack#F}
-                   __style=${FAST_THEME_NAME}builtin
+                   __style=${FAST_THEME_NAME}double-paren
                    # Counting complex brackets (for brackets-highlighter): 12. )) as for-syntax
                    _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) $(( _start_pos-__PBUFLEN+1 )) )
                    (( __delimited = __delimited ? 2 : __delimited ))
@@ -915,7 +929,9 @@ typeset -ga ZLAST_COMMANDS
                    fi
 
                    already_added=1
-                 elif [[ $__arg = ([*?]*|*[^\\][*?]*|*[\#][\#]*) ]]; then
+                 elif [[ $__arg = *([^\\][\#][\#]|"(#b)"|"(#B)"|"(#m)"|"(#c")* ]]; then
+                   (( highlight_glob )) && __style=${FAST_THEME_NAME}globbing-ext || __style=${FAST_THEME_NAME}default
+                 elif [[ $__arg = ([*?]*|*[^\\][*?]*) ]]; then
                    (( highlight_glob )) && __style=${FAST_THEME_NAME}globbing || __style=${FAST_THEME_NAME}default
                  elif [[ $__arg = \$* ]]; then
                    __style=${FAST_THEME_NAME}variable
@@ -985,8 +1001,8 @@ typeset -ga ZLAST_COMMANDS
     elif (( this_word & 128 ))
     then
       (( next_word = (next_word | 2) & ~129 ))
-      [[ ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-word]} != "none" ]] && (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-word]}")
-      -fast-highlight-string ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-word]:#none}
+      [[ ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-text]} != "none" ]] && (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-text]}")
+      -fast-highlight-string ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-var]:#none}
       already_added=1
     elif (( this_word & (BIT_case_preamble + BIT_case_item) ))
     then
@@ -1192,7 +1208,7 @@ zle -N -- fast-highlight-check-path-handler -fast-highlight-check-path-handler
       _mybuf=${match[8]}
 
       # ADD
-      (( __start=__idx-__PBUFLEN, __end=_end_idx-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}back-or-dollar-double-quoted-argument]}${1:+,$1}")
+      (( __start=__idx-__PBUFLEN, __end=_end_idx-__PBUFLEN, __start >= 0 )) && reply+=("$__start $__end ${${1:+$1}:-${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}back-or-dollar-double-quoted-argument]}}")
 
       __idx=_end_idx
     }
