@@ -719,12 +719,16 @@ catch
 endtry
 let &t_EI = "\e[2 q"
 
+if !exists('$CURSORCODE')
+  let $CURSORCODE = "\e[0 q"
+endif
+
 augroup vimrc_cursor
 au!
   " Reset cursor on start and exit
   autocmd VimEnter * silent !printf "\e[2 q"
   autocmd VimEnter * silent redraw
-  autocmd VimLeave * silent !printf "\e[0 q"
+  autocmd VimLeave * silent !printf "$CURSORCODE"
 augroup END
 
 " Gui Cursor: {{{
