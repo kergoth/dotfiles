@@ -1,0 +1,13 @@
+#!/bin/sh
+
+osascript -e '
+tell application id "com.apple.systemevents"
+    tell appearance preferences
+        if dark mode is false then
+            set dark mode to true
+        else if dark mode is true then
+            set dark mode to false
+        end if
+    end tell
+end tell
+'
