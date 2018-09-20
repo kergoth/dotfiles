@@ -1,6 +1,7 @@
-/* Set italics and comments to the script font */
+/* Set italics and comments to a script font */
 .mtki, .mtk5 {
-    font-family: "Script12 BT";
-    font-size: 1.2em;
+    font-family: "Script12 BT"; /* Other options: Pacifico, FlottFlott */
+    font-size: 1.2em;           /* 1.1em is also decent */
     font-style: normal;
+    /* letter-spacing: .1em; Fix alignment issue, but disrupt the script */
 }
