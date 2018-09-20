@@ -70,19 +70,19 @@ draw_bold_text_with_bright_colors: true
 # Font configuration (changes require restart)
 font:
   normal:
-    family: Input Mono Narrow
-    style: Extra Light
+    family: Fira Code
+    style: Retina
 
   bold:
-    family: Input Mono Narrow
-    style: Regular
+    family: Fira Code
+    style: Retina
 
   italic:
-    family: Input Mono Narrow
-    style: Italic
+    family: Script12 BT
+    style: Regular
 
   # Point size of the font
-  size: 14.0
+  size: 13.0
 
   # Offset is the extra space around each character. offset.y can be thought of
   # as modifying the linespacing, and offset.x as modifying the letter spacing.
@@ -234,7 +234,7 @@ hide_cursor_when_typing: true
 # - Block
 # - Underline
 # - Beam
-cursor_style: Block
+cursor_style: Beam
 
 # Live config reload (changes require restart)
 live_config_reload: true
