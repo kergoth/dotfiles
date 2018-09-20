@@ -1,4 +1,4 @@
-if [[ -t 1 ]]; then
+if [[ -t 1 ]] && [[ -t 0 ]]; then
     bat ${BAT_THEME+--theme=$BAT_THEME} "$@"
 else
     command cat "$@"
