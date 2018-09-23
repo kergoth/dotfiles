@@ -148,7 +148,9 @@ function! airline#check_mode(winnr)
 
   if get(w:, 'airline_active', 1)
     let l:m = mode(1)
-    if l:m[0] ==# "i"
+    if l:m ==# "i"
+      let l:mode = ['insert']
+    elseif l:m[0] ==# "i"
       let l:mode = ['insert']
     elseif l:m ==# "Rv"
       let l:mode =['replace']
@@ -160,8 +162,16 @@ function! airline#check_mode(winnr)
       let l:mode = ['terminal']
     elseif l:m[0] ==# "c"
       let l:mode = ['commandline']
+    elseif l:m ==# "no"   " does not work, most likely, Vim does not refresh the statusline in OP mode
+      let l:mode = ['normal']
+    elseif l:m[0:1] ==# 'ni'
+      let l:mode = ['normal']
+      let l:m = 'ni'
     else
       let l:mode = ['normal']
+    endif
+    if index(['Rv', 'no', 'ni', 'ix', 'ic'], l:m) == -1
+      let l:m = l:m[0]
     endif
     let w:airline_current_mode = get(g:airline_mode_map, l:m, l:m)
   else
@@ -193,6 +203,7 @@ function! airline#check_mode(winnr)
   if get(w:, 'airline_lastmode', '') != mode_string
     call airline#highlighter#highlight_modified_inactive(context.bufnr)
     call airline#highlighter#highlight(l:mode, context.bufnr)
+    silent doautocmd User AirlineModeChanged
     let w:airline_lastmode = mode_string
   endif
 

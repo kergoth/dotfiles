@@ -53,12 +53,23 @@ else
             FAST_HIGHLIGHT[chroma-git-subcommand]="$__wrd"
             if (( __start_pos >= 0 )); then
                 # if subcommand exists
-                if git help -a | grep "^  [a-z]" | tr ' ' '\n' | grep -x "$__wrd" > /dev/null || git config "alias.$__wrd" > /dev/null; then
+                -fast-run-command "git help -a" chroma-git-subcmd-list "" 10
+                # (s: :) will split on every space, but because the expression
+                # isn't double-quoted, the empty elements will be eradicated
+                # Some further knowledge-base: s-flag is special, it skips
+                # empty elements and creates an array (not a concatenated
+                # string) even when double-quoted. The normally needed @-flag
+                # that breaks the concaetnated string back into array in case
+                # of double-quoting has additional effect for s-flag: it
+                # finally blocks empty-elements eradication.
+                __lines_list=( ${(M)${(s: :)${(M)__lines_list:#  [a-z]*}}:#$__wrd} )
+                if (( ${#__lines_list} > 0 )) || git config "alias.$__wrd" > /dev/null; then
                     __style=${FAST_THEME_NAME}subcommand
                 else
                     __style=${FAST_THEME_NAME}incorrect-subtle
                 fi
             fi
+            # The counter includes the subcommand itself
             (( FAST_HIGHLIGHT[chroma-git-counter] += 1 ))
         else
             __wrd="${__wrd//\`/x}"
@@ -81,8 +92,12 @@ else
                     if [[ -n ${__lines_list[(r)$__wrd]} ]]; then
                         (( __start=__start_pos-${#PREBUFFER}, __end=__start_pos+${#__wrd}-${#PREBUFFER}, __start >= 0 )) && \
                             reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}correct-subtle]}")
-                    # if ref dose not exist and subcommand is push
+                    # if ref (__idx1 == 3) does not exist and subcommand is push
                     elif (( __idx1 != 2 )) && [[ "${FAST_HIGHLIGHT[chroma-git-subcommand]}" = "push" ]]; then
+                        (( __start=__start_pos-${#PREBUFFER}, __end=__start_pos+${#__wrd}-${#PREBUFFER}, __start >= 0 )) && \
+                            reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]}")
+                    # if not existing remote name, because not an URL (i.e. no colon)
+                    elif [[ $__idx1 -eq 2 && $__wrd != *:* ]]; then
                         (( __start=__start_pos-${#PREBUFFER}, __end=__start_pos+${#__wrd}-${#PREBUFFER}, __start >= 0 )) && \
                             reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]}")
                     fi

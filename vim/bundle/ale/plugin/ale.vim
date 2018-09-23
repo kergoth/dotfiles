@@ -133,6 +133,9 @@ let g:ale_history_log_output = get(g:, 'ale_history_log_output', 1)
 " Enable automatic completion with LSP servers and tsserver
 let g:ale_completion_enabled = get(g:, 'ale_completion_enabled', 0)
 
+" Enable automatic detection of pipenv for Python linters.
+let g:ale_python_auto_pipenv = get(g:, 'ale_python_auto_pipenv', 0)
+
 if g:ale_set_balloons
     call ale#balloon#Enable()
 endif
@@ -224,4 +227,8 @@ augroup ALECleanupGroup
     " Clean up buffers automatically when they are unloaded.
     autocmd BufDelete * if exists('*ale#engine#Cleanup') | call ale#engine#Cleanup(str2nr(expand('<abuf>'))) | endif
     autocmd QuitPre * call ale#events#QuitEvent(str2nr(expand('<abuf>')))
+
+    if exists('##VimSuspend')
+      autocmd VimSuspend * if exists('*ale#engine#CleanupEveryBuffer') | call ale#engine#CleanupEveryBuffer() | endif
+    endif
 augroup END
