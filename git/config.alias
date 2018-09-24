@@ -72,7 +72,7 @@
 
 	# Log of all dangling commits
 	dangling = !git fsck | sed -n 's/^dangling commit //p' | git log --stdin --no-walk -g --first-parent -m -p
-	lgd = dangling
+	lgd = !git dangling
 
 	# Trimmed log with stat
 	logstat = log --compact-summary --stat=,,20
