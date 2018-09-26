@@ -521,12 +521,10 @@ git module gitvoodoo:
         - bin/git-xclean
     rev: 518f710546d5f110822f6f84a801c66f6dd0982e
 
-git module diff-so-fancy:
-    url: https://github.com/so-fancy/diff-so-fancy
-    pick:
-        - diff-so-fancy
-    rev: aaca0a38a8ed51b565573fb5b4c10733d0d36c0a
-    reup: aaca0a38a8ed51b565573fb5b4c10733d0d36c0a
+curl module diff-so-fancy:
+    url: https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
+    executable: diff-so-fancy
+    sha1: 65a1043362a449e4d863fb7f50df4fca32604293
 
 git module hub-completion:
     url: https://github.com/github/hub
