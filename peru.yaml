@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 9d0dcbe600911a7488480e7772957083179927e5
+    rev: 444a43be631eacb5cf842e1dc4866f25a207e5f2
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 9fec8aadc54372cbea6ac3c9cf6909054140b573
+    rev: a9100fafb8c6deb187ee1cfaa37a4a02018d6c9a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 57bbe050c7f4613755076b0bc70ad7c723a0e512
+    rev: a0298263b7fd55827839862ffd3a8d5b2a787a5c
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -244,7 +244,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: c3954d294a0f6c4fb5a46a1839cd42ec26767dea
+    rev: c6275ee1080de4d94bb3f3cfd6e7cc0ccecd9e64
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -282,7 +282,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 8540902a35361dba217cc3ad86ff2215ae51918e
+    rev: 0e06e298d4d11bad051b614808305ec7486d81aa
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -531,7 +531,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: de684cb613c47572cc9ec90d4fd73eef80aef09c
+    rev: 3c8b674faa63584b23e75f0b0c05bb949f293013
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -590,7 +590,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: aa5c82b1718f44d04f6dd11bc63f6eeed2089d9d
+    rev: 04ed87c8829015ff3653a35fb4f6d7a71668d736
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -639,7 +639,7 @@ git module textual-succinct:
 
 git module pyenv-installer:
     url: https://github.com/pyenv/pyenv-installer
-    rev: 7dfde63776e85125b52abb3ea37d6cd16db0ceeb
+    rev: 97ff0be6caac6e141d2d45c37471fc3dc778c68a
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer
@@ -687,7 +687,7 @@ git module base16-rofi:
     pick:
         - themes/base16-tomorrow-night.config
         - themes/base16-tomorrow-night.rasi
-    rev: edfd5063bee6bcd18ddd6e9d1c1f2a629d719508
+    rev: c56ac76ea80daa2883d91afe580121591473504f
 
 git module base16-fzf:
     url: https://github.com/nicodebo/base16-fzf
