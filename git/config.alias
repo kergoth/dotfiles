@@ -152,7 +152,7 @@
 
 	# Rebase the current branch on its upstream
 	rebase-upstream = rebase -i @{u}
-	ru = rebase-upstream
+	ru = !git rebase-upstream
 
 	# Run a topic branch interdiff between HEAD and upstream
 	tbdiff-out = tbdiff @{push}...HEAD
