@@ -11,5 +11,6 @@ if [ -n "$NODE_VERSION" ]; then
     nvm use --delete-prefix $NODE_VERSION --silent
     nvm alias default $NODE_VERSION
 else
+    nvm use --delete-prefix node --silent
     nvm alias default node
 fi
