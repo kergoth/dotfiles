@@ -113,7 +113,7 @@ gemv ronn
 #npmv doctoc
 
 ## Linting / Static Analysis
-cabalv shellcheck
+cabalv shellcheck ShellCheck
 pipv flake8 flake8 pep8-naming flake8-docstrings
 #pipv prospector
 #pipv vim-vint
