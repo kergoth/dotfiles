@@ -189,7 +189,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: a0298263b7fd55827839862ffd3a8d5b2a787a5c
+    rev: f045452743736d53c7471bfb4698fd48569dc1e0
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -227,7 +227,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 72a08f297e71f25e569f66a825ce2878b038e045
+    rev: ab7470d4b03bae9880bf2b5cef60fc0fb51b1101
 
 # continuously updated session files
 git module vim-obsession:
@@ -590,7 +590,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 04ed87c8829015ff3653a35fb4f6d7a71668d736
+    rev: e984497ec9dc8a465c2873d64c51629c9a559111
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
