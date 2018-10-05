@@ -1,7 +1,3 @@
 #!/bin/sh
 
-clean_caskroom () {
-    find "$(brew --prefix)/Caskroom" -iname \*.dmg -o -iname \*.pkg -o -iname \*.app -prune | grep -iv uninstall | nlxargs trash
-}
-
-brew cleanup && brew wipe-cache && clean_caskroom
+brew cleanup && brew wipe-cache
