@@ -28,6 +28,3 @@ fi
 brew cask outdated --quiet |
 	if [ -n "$excluded_casks" ]; then grep -Ev "$excluded_casks"; else cat; fi |
 	xargs -n 1 brew cask upgrade
-brew cask cleanup
-
-brew wipe-cache
