@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 444a43be631eacb5cf842e1dc4866f25a207e5f2
+    rev: d04fbe58d36cc8ecd7264d79d4afe86df6b2b5bf
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -282,7 +282,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0e06e298d4d11bad051b614808305ec7486d81aa
+    rev: b46227dcb6f1718d66ad828443d9f03a4bd58c4c
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -311,7 +311,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: d9c937004a750005b85bf39d0082feefc4e20672
+    rev: bf3571407d72463d91d32f6295109770f5858048
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -500,14 +500,14 @@ git module checkbashisms:
 
 git module base16-shell:
     url: https://github.com/chriskempson/base16-shell
-    rev: efa06ce77a7fa46cca2bfc07932db21971de010b
+    rev: cd19a7bc5c57e5dccc95f1493a2a0ff3b15f4499
     pick:
         - scripts/base16-tomorrow-night.sh
         - colortest
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: fcce6bce6a2f4b14eea7ea388031c0aa65e4b67d
+    rev: 7e9af12d680d81cc1277c07ef5acee8c83828f3f
     pick: colors/base16-tomorrow-night.vim
 
 git module gitvoodoo:
@@ -590,7 +590,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: e984497ec9dc8a465c2873d64c51629c9a559111
+    rev: ea49cc759f7254c03a3515371ffad23e6b326d07
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -623,7 +623,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 055f7710b65dfa2df52fc0b5be2486ae36ac5751
+    rev: fd74d8b2b170b540680a9bbf6c64990f8ebafd08
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -700,7 +700,7 @@ git module bat-themes-base16:
     url: https://github.com/chriskempson/base16-textmate
     export: Themes
     pick: Themes/base16-tomorrow-night.tmTheme
-    rev: cab66929126a14acafe37cf9c24c9e700716cd5a
+    rev: 1d9e52afb74e03f5a2fdc53d9327428fe00c70c7
 
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
