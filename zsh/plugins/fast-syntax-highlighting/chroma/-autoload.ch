@@ -21,7 +21,7 @@
 local __first_call="$1" __wrd="$2" __start_pos="$3" __end_pos="$4"
 local __style __chars
 integer __idx1 __idx2
-local -a __results
+local -a __results __deserialized __noshsplit
 
 # First call, i.e. command starts, i.e. "grep" token etc.
 (( __first_call )) && {
@@ -30,6 +30,7 @@ local -a __results
     FAST_HIGHLIGHT[chroma-autoload-message]=""
     #FAST_HIGHLIGHT[chroma-autoload-message-shown]=""
     [[ -z ${FAST_HIGHLIGHT[chroma-autoload-message-shown-at]} ]] && FAST_HIGHLIGHT[chroma-autoload-message-shown-at]=0
+    FAST_HIGHLIGHT[chroma-autoload-elements]=""
     __style=${FAST_THEME_NAME}command
 
 } || {
@@ -51,7 +52,20 @@ local -a __results
 
         if [[ $__wrd != (\$|\"\$)* && $__wrd != (/|\"/|\'/)* && $__wrd != \`* ]]; then
             __results=( ${^fpath}/$__wrd(N) )
-            [[ "${#__results}" -gt 0 ]] && __style=${FAST_THEME_NAME}correct-subtle || __style=${FAST_THEME_NAME}incorrect-subtle
+            __deserialized=( "${(Q@)${(z@)FAST_HIGHLIGHT[chroma-fpath_peq-elements]}}" )
+            __results+=( ${^__deserialized}/$__wrd(N) )
+            [[ "${#__results}" -gt 0 ]] && {
+                __style=${FAST_THEME_NAME}correct-subtle
+                __deserialized=( "${(Q@)${(z@)FAST_HIGHLIGHT[chroma-autoload-elements]}}" )
+                [[ -z "${__deserialized[1]}" && ${#__deserialized} -eq 1 ]] && __deserialized=()
+                # Cannot use ${abc:+"$abc"} trick with ${~...}, so handle most
+                # cases of the possible shwordsplit through an additional array
+                __noshsplit=( ${~__wrd} )
+                __deserialized+=( "${(j: :)__noshsplit}" )
+                FAST_HIGHLIGHT[chroma-autoload-elements]="${(j: :)${(q@)__deserialized}}"
+                # Make the function defined for big-loop's *main-type mechanism
+                __fast_highlight_main__command_type_cache[${(j: :)__noshsplit}]="function"
+            } || __style=${FAST_THEME_NAME}incorrect-subtle
         fi
 
         if (( ${+functions[${(Q)__wrd}]} )); then

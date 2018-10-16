@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: d04fbe58d36cc8ecd7264d79d4afe86df6b2b5bf
+    rev: ea8235451f6263d2bec07f1aec9fbadc03099479
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -129,7 +129,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 09ab969e206b4c8984cacd588b18676f7f5109aa
+    rev: 84a820a7988833263545437f0bee8d5f5b10310d
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -189,11 +189,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: f045452743736d53c7471bfb4698fd48569dc1e0
+    rev: 2e99805dbfa5b64931be3e4fcd9797671fa30c45
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: 725789c110fbab52f8c18021f9d043839d7e31ed
+    rev: d67794b28c8dc088ee56caaa2288fc26a69034cc
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -212,7 +212,7 @@ git module vim-eunuch:
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
-    rev: c15a0409d9d5a7eacf18d3061a8a37d114532765
+    rev: 9172c17f6d07405f14707ff273e3ca9f35aa9e42
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -311,7 +311,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: bf3571407d72463d91d32f6295109770f5858048
+    rev: 7c55e3c3eda37dc7f8b73a4c5443b19fcbc75cbd
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -531,7 +531,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 3c8b674faa63584b23e75f0b0c05bb949f293013
+    rev: 1b0be12b0dde1d5dd8d7c45ff5af2cd88a97748b
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -565,7 +565,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 8b992cc9bc46331bbe56627400d85074abb1bf6b
+    rev: 6e7766f5a4078767e6ead347601944e4220336e9
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -590,7 +590,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: ea49cc759f7254c03a3515371ffad23e6b326d07
+    rev: d999eb1f3564cb2933059ae2bc1e7d5edda2a8d2
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -623,7 +623,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: fd74d8b2b170b540680a9bbf6c64990f8ebafd08
+    rev: ec1c94306953b678bb36572897bd218fe6c76506
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -639,7 +639,7 @@ git module textual-succinct:
 
 git module pyenv-installer:
     url: https://github.com/pyenv/pyenv-installer
-    rev: 97ff0be6caac6e141d2d45c37471fc3dc778c68a
+    rev: d7e097b6d53ab3edf04def03265bf43e67f2bac6
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer
@@ -723,7 +723,7 @@ git module vim-VimCompletesMe:
 
 git module vim-autoformat:
     url: https://github.com/Chiel92/vim-autoformat
-    rev: 98233b8f353fa5d237e89859a8f1b91c14c21397
+    rev: 3c09aec8530eea1359a63531bd5934c4f96c3620
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak

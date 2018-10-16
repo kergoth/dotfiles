@@ -117,7 +117,7 @@ formatting.
 | Dafny | [dafny](https://rise4fun.com/Dafny) !! |
 | Dart | [dartanalyzer](https://github.com/dart-lang/sdk/tree/master/pkg/analyzer_cli) !!, [language_server](https://github.com/natebosch/dart_language_server), [dartfmt](https://github.com/dart-lang/sdk/tree/master/utils/dartfmt) |
 | Dockerfile | [hadolint](https://github.com/hadolint/hadolint) |
-| Elixir | [credo](https://github.com/rrrene/credo), [dialyxir](https://github.com/jeremyjh/dialyxir), [dogma](https://github.com/lpil/dogma), [mix](https://hexdocs.pm/mix/Mix.html) !!|
+| Elixir | [credo](https://github.com/rrrene/credo), [dialyxir](https://github.com/jeremyjh/dialyxir), [dogma](https://github.com/lpil/dogma), [mix](https://hexdocs.pm/mix/Mix.html) !!, [elixir-ls](https://github.com/JakeBecker/elixir-ls) |
 | Elm | [elm-format](https://github.com/avh4/elm-format), [elm-make](https://github.com/elm-lang/elm-make) |
 | Erb | [erb](https://apidock.com/ruby/ERB), [erubi](https://github.com/jeremyevans/erubi), [erubis](https://github.com/kwatch/erubis) |
 | Erlang | [erlc](http://erlang.org/doc/man/erlc.html), [SyntaxErl](https://github.com/ten0s/syntaxerl) |
@@ -310,8 +310,9 @@ ALE supports "hover" information for printing brief information about symbols at
 the cursor taken from Language Server Protocol linters and `tsserver` with the
 `ALEHover` command.
 
-On vim/gvim with `balloon` support you can see the information in a tooltip
-that appears under the mouse when you mouseover a symbol.
+The information can be displayed in a `balloon` tooltip in Vim or GVim by
+hovering your mouse over symbols. Mouse hovering is enabled by default in GVim,
+and needs to be configured for Vim 8.1+ in terminals.
 
 See `:help ale-hover` for more information.
 
