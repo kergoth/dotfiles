@@ -1,0 +1,3 @@
+for scanpath; do
+    open -b com.daisydiskapp.DaisyDiskStandAlone "$scanpath"
+done
