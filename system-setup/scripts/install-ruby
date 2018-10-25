@@ -1,0 +1,40 @@
+#!/bin/sh
+
+RUBY_VERSION=2.5.3
+
+export CFLAGS="${CFLAGS--O2}"
+export LDFLAGS
+
+case "$OSTYPE" in
+    darwin*)
+        if which brew >/dev/null 2>&1; then
+            eval "$(brew environment --shell=auto | grep -vw PATH)"
+            CFLAGS="$CFLAGS -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
+            LDFLAGS="$LDFLAGS -L$(brew --prefix openssl)/lib"
+        fi
+        ;;
+esac
+
+export RBENV_ROOT="${1:-${RBENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/rbenv}}"
+PATH="$(dirname "$0"):$RBENV_ROOT/bin:$HOME/.local/bin:$PATH"
+
+# if [ -z "$CONFIGURE_OPTS" ] && [ -z "$RUBY_CONFIGURE_OPTS" ]; then
+#     export RUBY_CONFIGURE_OPTS="\
+#         --enable-shared \
+#         "--with-readline-dir=/usr/lib" \
+#         "--with-openssl-dir=/usr/lib" \
+#     "
+# fi
+
+if [ ! -d "$RBENV_ROOT/.git" ]; then
+    git clone https://github.com/rbenv/rbenv "$RBENV_ROOT"
+fi
+if [ ! -d "$RBENV_ROOT/plugins/ruby-build/.git" ]; then
+    git clone https://github.com/rbenv/ruby-build "$RBENV_ROOT/plugins/ruby-build"
+fi
+
+if [ "$2" = "-f" ]; then
+    rm -rf "$RBENV_ROOT/versions/$RUBY_VERSION"
+fi
+rbenv install -v $RUBY_VERSION && \
+rbenv global $RUBY_VERSION
