@@ -376,7 +376,7 @@ function! fugitive#repo(...) abort
     endif
     return extend(repo, s:repo_prototype, 'keep')
   endif
-  call s:throw('not a git repository: '.expand('%:p'))
+  call s:throw('not a Git repository: ' . string(dir))
 endfunction
 
 function! s:repo_dir(...) dict abort
@@ -1098,7 +1098,7 @@ function! fugitive#buffer(...) abort
   if buffer.getvar('git_dir') !=# ''
     return buffer
   endif
-  call s:throw('not a git repository: '.bufname(buffer['#']))
+  call s:throw('not a Fugitive buffer: ' . string(bufname(buffer['#'])))
 endfunction
 
 function! s:buffer_getvar(var) dict abort
@@ -1516,7 +1516,7 @@ function! fugitive#BufReadCmd(...) abort
           if lnum
             silent keepjumps delete_
           end
-          silent exe (exists(':keeppatterns') ? 'keeppatterns' : '') 'keepjumps 1,/^diff --git\|\%$/g/\r$/s///'
+          silent exe (exists(':keeppatterns') ? 'keeppatterns' : '') 'keepjumps 1,/^diff --git\|\%$/s/\r$//e'
           keepjumps 1
         endif
       elseif b:fugitive_type ==# 'stage'

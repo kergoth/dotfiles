@@ -75,6 +75,7 @@ CONTENTS                                                         *ale-contents*
       dartanalyzer........................|ale-dart-dartanalyzer|
       dartfmt.............................|ale-dart-dartfmt|
     dockerfile............................|ale-dockerfile-options|
+      dockerfile_lint.....................|ale-dockerfile-dockerfile_lint|
       hadolint............................|ale-dockerfile-hadolint|
     elixir................................|ale-elixir-options|
       mix.................................|ale-elixir-mix|
@@ -129,6 +130,8 @@ CONTENTS                                                         *ale-contents*
       stack-build.........................|ale-haskell-stack-build|
       stylish-haskell.....................|ale-haskell-stylish-haskell|
       hie.................................|ale-haskell-hie|
+    hcl...................................|ale-hcl-options|
+      terraform-fmt.......................|ale-hcl-terraform-fmt|
     html..................................|ale-html-options|
       htmlhint............................|ale-html-htmlhint|
       tidy................................|ale-html-tidy|
@@ -207,6 +210,8 @@ CONTENTS                                                         *ale-contents*
       perl................................|ale-perl-perl|
       perlcritic..........................|ale-perl-perlcritic|
       perltidy............................|ale-perl-perltidy|
+    perl6.................................|ale-perl6-options|
+      perl6...............................|ale-perl6-perl6|
     php...................................|ale-php-options|
       langserver..........................|ale-php-langserver|
       phan................................|ale-php-phan|
@@ -222,6 +227,8 @@ CONTENTS                                                         *ale-contents*
       write-good..........................|ale-pod-write-good|
     pony..................................|ale-pony-options|
       ponyc...............................|ale-pony-ponyc|
+    prolog................................|ale-prolog-options|
+      swipl...............................|ale-prolog-swipl|
     proto.................................|ale-proto-options|
       protoc-gen-lint.....................|ale-proto-protoc-gen-lint|
     pug...................................|ale-pug-options|
@@ -297,6 +304,7 @@ CONTENTS                                                         *ale-contents*
     tcl...................................|ale-tcl-options|
       nagelfar............................|ale-tcl-nagelfar|
     terraform.............................|ale-terraform-options|
+      fmt.................................|ale-terraform-fmt|
       tflint..............................|ale-terraform-tflint|
     tex...................................|ale-tex-options|
       chktex..............................|ale-tex-chktex|
@@ -400,7 +408,7 @@ Notes:
 * D: `dls`, `dmd`, `uncrustify`
 * Dafny: `dafny`!!
 * Dart: `dartanalyzer`!!, `language_server`, dartfmt!!
-* Dockerfile: `hadolint`
+* Dockerfile: `dockerfile_lint`, `hadolint`
 * Elixir: `credo`, `dialyxir`, `dogma`, `mix`!!, `elixir-ls`
 * Elm: `elm-format, elm-make`
 * Erb: `erb`, `erubi`, `erubis`
@@ -417,6 +425,7 @@ Notes:
 * Haml: `haml-lint`
 * Handlebars: `ember-template-lint`
 * Haskell: `brittany`, `ghc`, `cabal-ghc`, `stylish-haskell`, `stack-ghc`, `stack-build`!!, `ghc-mod`, `hlint`, `hdevtools`, `hfmt`, `hie`
+* HCL: `terraform-fmt`
 * HTML: `alex`!!, `HTMLHint`, `proselint`, `tidy`, `write-good`
 * Idris: `idris`
 * Java: `checkstyle`, `javac`, `google-java-format`, `PMD`, `javalsp`, `uncrustify`
@@ -442,10 +451,12 @@ Notes:
 * OCaml: `merlin` (see |ale-ocaml-merlin|), `ols`, `ocamlformat`
 * Pawn: `uncrustify`
 * Perl: `perl -c`, `perl-critic`, `perltidy`
+* Perl6: `perl6 -c`
 * PHP: `langserver`, `phan`, `php -l`, `phpcs`, `phpmd`, `phpstan`, `phpcbf`, `php-cs-fixer`, `psalm`!!
 * PO: `alex`!!, `msgfmt`, `proselint`, `write-good`
 * Pod: `alex`!!, `proselint`, `write-good`
 * Pony: `ponyc`
+* Prolog: `swipl`
 * proto: `protoc-gen-lint`
 * Pug: `pug-lint`
 * Puppet: `languageserver`, `puppet`, `puppet-lint`
@@ -468,7 +479,7 @@ Notes:
 * SQL: `sqlint`, `sqlfmt`
 * Swift: `swiftlint`, `swiftformat`
 * Tcl: `nagelfar`!!
-* Terraform: `tflint`
+* Terraform: `fmt`, `tflint`
 * Texinfo: `alex`!!, `proselint`, `write-good`
 * Text^: `alex`!!, `proselint`, `redpen`, `textlint`, `vale`, `write-good`
 * Thrift: `thrift`
@@ -1303,10 +1314,12 @@ g:ale_linter_aliases                                     *g:ale_linter_aliases*
   ALE will first look for aliases for filetypes in the `b:ale_linter_aliases`
   variable, then `g:ale_linter_aliases`, and then a default Dictionary.
 
-  `b:ale_linter_aliases` can be set to a |List|, to tell ALE to load the
-  linters for specific filetypes for a given buffer. >
+  `b:ale_linter_aliases` can be set to a |List| or a |String|, to tell ALE to
+  load the linters for specific filetypes for a given buffer. >
 
   let b:ale_linter_aliases = ['html', 'javascript', 'css']
+  " OR, Alias a filetype to only a single filetype with a String.
+  let b:ale_linter_aliases = 'javascript'
 <
   No linters will be loaded when the buffer's filetype is empty.
 
@@ -1327,6 +1340,7 @@ g:ale_linters                                                   *g:ale_linters*
   \   'hack': ['hack'],
   \   'help': [],
   \   'perl': ['perlcritic'],
+  \   'perl6': [],
   \   'python': ['flake8', 'mypy', 'pylint'],
   \   'rust': ['cargo'],
   \   'spec': [],

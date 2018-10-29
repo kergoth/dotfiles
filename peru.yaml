@@ -121,7 +121,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: d28c22e3e73c93196b5d53f10b288a46207e9bd4
+    rev: d23faf72ba763f2d00acae6d431815eb250a6dd6
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -129,7 +129,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 84a820a7988833263545437f0bee8d5f5b10310d
+    rev: 938469170284079c8d1f7d4c99d4a52320e810ef
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 0fd64f8fbfa7eda26a7dcc7d3102843edbe2324d
+    rev: 6d497b0e63173f89cfabe12ea27a7a5a8b29ac8a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -193,7 +193,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: cdbe8d0d619f9b5e98d379d9cf414b20a49174f2
+    rev: 65217b41da31f05d305b819f2a42a803dd0db434
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -311,7 +311,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 1a249f617b43188f4d91d564948eeab17286bf7a
+    rev: b60944e9c78417f2f60cc4e70ecdbc8e162bd60a
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -531,11 +531,11 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 1b0be12b0dde1d5dd8d7c45ff5af2cd88a97748b
+    rev: 22fabff19c1c3e8ffe44dc501b3db9ff58765a25
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
-    rev: 9a0e96d359bfa23a4b410e65e2fa3b708d5e1724
+    rev: 56a76a8c10ca91f3e8f0a2cd9afa2be32d262e24
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
@@ -590,7 +590,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 2000436dfd7a25a8e9f66788c94bfb4512adda98
+    rev: 2846e862178e9a16e078799c28aa9d9d4a2ea505
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
