@@ -24,9 +24,10 @@ fi
 
 format_issues () {
     if [ $color -eq 1 ]; then
-        while IFS="$(printf '\t')" read -r key assignee summary; do
-            printf "${RED}%-8s ${BRIGHT}${BLUE}%-10s ${NORMAL}%s %s\n" "$key" "$assignee" "$summary"
-        done
+        sed -e 's/		/	 	/g' | \
+            while IFS="$(printf '\t')" read -r key assignee summary; do
+                printf "${RED}%-8s ${BRIGHT}${BLUE}%-10s ${NORMAL}%s %s\n" "$key" "$assignee" "$summary"
+            done
     else
         cat
     fi
