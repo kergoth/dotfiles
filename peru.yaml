@@ -35,6 +35,7 @@ imports:
     git-wtf: git/scripts
     git: git/scripts
     gitvoodoo: git/scripts
+    hardlinkpy: scripts
     i3-urgent-notify: i3/scripts
     i3-alternating-layout: i3/scripts
     icdiff: .
@@ -753,5 +754,13 @@ git module zsh-sort-timings:
     move:
         sort_timings.zsh: zsh_sort_timings
     executable: zsh_sort_timings
+
+git module hardlinkpy:
+    url: https://github.com/akaihola/hardlinkpy
+    pick: hardlink
+    move:
+        hardlink.py: hardlink
+    executable: hardlink
+    rev: 4e95daf7969d36f6f09722c9240c00690ea43329
 
 #  vim: set sw=4 :
