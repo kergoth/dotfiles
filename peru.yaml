@@ -130,7 +130,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 938469170284079c8d1f7d4c99d4a52320e810ef
+    rev: c614accc905b57d30797bba0fc4a1b0e946654cb
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 08e9aa5386eecfd6a6cbde1eff240619cd81beed
+    rev: 776f7aa9486b13f9fa42b77b8be3d054a22ceab7
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: ab7470d4b03bae9880bf2b5cef60fc0fb51b1101
+    rev: d4b8940fd1cd77fc6d300f003b18745a584295b2
 
 # continuously updated session files
 git module vim-obsession:
@@ -237,7 +237,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: c273c462d774ed2db5f6d382265cf5897e554de0
+    rev: dddce1153cf42bf2141b07499b31a2943923334e
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 22fabff19c1c3e8ffe44dc501b3db9ff58765a25
+    rev: b3b3ebb8e517acd269489b9bd163de2f8fd309fc
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -566,7 +566,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 6e7766f5a4078767e6ead347601944e4220336e9
+    rev: 7e105545067ce12e56cf54e291e24f934f6ad01e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -587,11 +587,11 @@ curl module cht:
     move:
         :cht.sh: cht.sh
     executable: cht.sh
-    sha1: 2cf13a0f6a8f619fc51f469ead16c03004a7cd26
+    sha1: e4b380d41ef920282dc6e6819cb77481c8baf96b
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 2846e862178e9a16e078799c28aa9d9d4a2ea505
+    rev: acdc99b94daf0f14a8a71d1de5656e9f612a0139
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -640,7 +640,7 @@ git module textual-succinct:
 
 git module pyenv-installer:
     url: https://github.com/pyenv/pyenv-installer
-    rev: d7e097b6d53ab3edf04def03265bf43e67f2bac6
+    rev: 106c5e81b910e4b12334bec28e42b99400ad7b3a
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer
@@ -671,7 +671,7 @@ git module i3-urgent-notify:
 
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
-    rev: 7eb75a10e3ab0504673a0e7eb32af6e5521b80ec
+    rev: 9f7d1588b04644d8a1671d2325fefbb4f772e466
 
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events
