@@ -185,6 +185,7 @@ command! -bang Colors
 " Augmenting Ag command using fzf#vim#with_preview function
 "   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
 "     * For syntax-highlighting, Ruby and any of the following tools are required:
+"       - Bat: https://github.com/sharkdp/bat
 "       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
 "       - CodeRay: http://coderay.rubychan.de/
 "       - Rouge: https://github.com/jneen/rouge

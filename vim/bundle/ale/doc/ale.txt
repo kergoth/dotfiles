@@ -108,6 +108,7 @@ CONTENTS                                                         *ale-contents*
     go....................................|ale-go-options|
       gobuild.............................|ale-go-gobuild|
       gofmt...............................|ale-go-gofmt|
+      golint..............................|ale-go-golint|
       govet...............................|ale-go-govet|
       gometalinter........................|ale-go-gometalinter|
       staticcheck.........................|ale-go-staticcheck|
@@ -139,6 +140,7 @@ CONTENTS                                                         *ale-contents*
     html..................................|ale-html-options|
       htmlhint............................|ale-html-htmlhint|
       tidy................................|ale-html-tidy|
+      prettier............................|ale-html-prettier|
       stylelint...........................|ale-html-stylelint|
       write-good..........................|ale-html-write-good|
     idris.................................|ale-idris-options|
@@ -431,7 +433,7 @@ Notes:
 * Handlebars: `ember-template-lint`
 * Haskell: `brittany`, `ghc`, `cabal-ghc`, `stylish-haskell`, `stack-ghc`, `stack-build`!!, `ghc-mod`, `hlint`, `hdevtools`, `hfmt`, `hie`
 * HCL: `terraform-fmt`
-* HTML: `alex`!!, `HTMLHint`, `proselint`, `tidy`, `write-good`
+* HTML: `alex`!!, `HTMLHint`, `proselint`, `tidy`, `prettier`, `write-good`
 * Idris: `idris`
 * Java: `checkstyle`, `javac`, `google-java-format`, `PMD`, `javalsp`, `uncrustify`
 * JavaScript: `eslint`, `flow`, `jscs`, `jshint`, `prettier`, `prettier-eslint`, `prettier-standard`, `standard`, `xo`
@@ -557,6 +559,7 @@ their relevant options.
 * By setting error highlights.                     - |g:ale_set_highlights|
 * By creating signs in the sign column.            - |g:ale_set_signs|
 * By echoing messages based on your cursor.        - |g:ale_echo_cursor|
+* By inline text based on your cursor.             - |g:ale_virtualtext_cursor|
 * By displaying the preview based on your cursor.  - |g:ale_cursor_detail|
 * By showing balloons for your mouse cursor        - |g:ale_set_balloons|
 
@@ -1186,6 +1189,9 @@ b:ale_fix_on_save                                           *b:ale_fix_on_save*
   after files are fixed, only when the buffer is open, or re-opened. Changes
   to the file will be saved to the file on disk.
 
+  Files will not be fixed on `:wq`, so you should check your code before
+  closing a buffer.
+
   Fixing files can be disabled or enabled for individual buffers by setting
   `b:ale_fix_on_save` to `0` or `1`.
 
@@ -1364,6 +1370,7 @@ g:ale_linter_aliases                                     *g:ale_linter_aliases*
   \   'systemverilog': 'verilog',
   \   'verilog_systemverilog': ['verilog_systemverilog', 'verilog'],
   \   'vimwiki': 'markdown',
+  \   'vue': ['vue', 'javascript'],
   \   'zsh': 'sh',
   \}
 <
@@ -1421,6 +1428,7 @@ g:ale_linters                                                   *g:ale_linters*
   \   'rust': ['cargo'],
   \   'spec': [],
   \   'text': [],
+  \   'vue': ['eslint', 'vls'],
   \   'zsh': ['shell'],
   \}
 <
@@ -1867,6 +1875,41 @@ g:ale_use_global_executables                     *g:ale_use_global_executables*
   See |ale-integrations-local-executables| for more information on those
   options.
 
+
+g:ale_virtualtext_cursor                                           *g:ale_virtualtext_cursor*
+
+  Type: |Number|
+  Default: `0`
+
+  When this option is set to `1`, a message will be shown when a cursor is
+  near a warning or error. ALE will attempt to find the warning or error at a
+  column nearest to the cursor when the cursor is resting on a line which
+  contains a warning or error. This option can be set to `0` to disable this
+  behavior.
+
+  Messages are only displayed after a short delay. See |g:ale_virtualtext_delay|.
+
+  Messages can be prefixed prefixed with a string. See |g:ale_virtualtext_prefix|.
+
+
+g:ale_virtualtext_delay                                             *g:ale_virtualtext_delay*
+                                                             *b:ale_virtualtext_delay*
+  Type: |Number|
+  Default: `10`
+
+  Given any integer, this option controls the number of milliseconds before
+  ALE will show a message for a problem near the cursor.
+
+  The value can be increased to decrease the amount of processing ALE will do
+  for files displaying a large number of problems.
+
+
+g:ale_virtualtext_prefix                                           *g:ale_virtualtext_prefix*
+
+  Type: |String|
+  Default: `'> '`
+
+  Prefix to be used with |g:ale_virtualtext_cursor|.
 
 g:ale_virtualenv_dir_names                         *g:ale_virtualenv_dir_names*
 b:ale_virtualenv_dir_names                         *b:ale_virtualenv_dir_names*

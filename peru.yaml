@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: d23faf72ba763f2d00acae6d431815eb250a6dd6
+    rev: efee0e2560e2b8c40c278acbb5f8cc67985cef84
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -130,7 +130,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: c614accc905b57d30797bba0fc4a1b0e946654cb
+    rev: 5fdcec1bef68b8fb1ad528111f7892b6e7d5586b
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -190,11 +190,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 776f7aa9486b13f9fa42b77b8be3d054a22ceab7
+    rev: 6c6c6c104fd0addbeec59f7e2745845ac8a420c9
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: 65217b41da31f05d305b819f2a42a803dd0db434
+    rev: 01196044f75bfd04ce28ffde4bc254e11af8cf8f
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -245,7 +245,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 50707b089b1c61fcdb300ec1ecbc4249ead4af11
+    rev: 741d7caabf229ec183364413f8b6d077a9939838
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -283,7 +283,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: b46227dcb6f1718d66ad828443d9f03a4bd58c4c
+    rev: d4ed955aee08a1c2ceb64e562ab4a88bdc9af8f0
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: b3b3ebb8e517acd269489b9bd163de2f8fd309fc
+    rev: abda01dfab699630a5ac37fb49e00fe0476742b0
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -558,7 +558,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: ebaf409002be498a681267a75f5efcaf45cd0ccc
+    rev: affe7c687e329f881ae92e95670979b0f728e613
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -566,7 +566,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 7e105545067ce12e56cf54e291e24f934f6ad01e
+    rev: eb27b24b73177249ae417e13cf53f7a931f9071e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: acdc99b94daf0f14a8a71d1de5656e9f612a0139
+    rev: d30da203b91345b472e5d83f048bd42a6ca13804
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -695,7 +695,7 @@ git module base16-fzf:
     move:
         bash: themes
     pick: themes/base16-tomorrow-night.config
-    rev: 044466b2529a71c7e55b2f7c057ef256f0e0f9ed
+    rev: 6d40da6cc12265911c688b48d986dda0f9bded93
 
 git module bat-themes-base16:
     url: https://github.com/chriskempson/base16-textmate
