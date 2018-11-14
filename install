@@ -348,7 +348,9 @@ for installscript in "$dotfilesdir/"*/install; do
 done
 
 for includepath in $include; do
-    do_install $include/install
+    if [ -e "$include/install" ]; then
+        do_install $include/install
+    fi
 done
 
 if [ -e "/local/install" ]; then
