@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+ELIXIR_VERSION=1.5.0-otp-20
+
+. $(dirname "$0")/install-erlang
+
+if [ ! -e $ASDF_DIR/installs/elixir/$ELIXIR_VERSION ]; then
+    unset CFLAGS LDFLAGS
+
+    if [ -e $ASDF_DIR/plugins/elixir ]; then
+        asdf plugin-update elixir
+    else
+        asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+    fi
+    asdf install elixir $ELIXIR_VERSION
+fi
+asdf global elixir $ELIXIR_VERSION
