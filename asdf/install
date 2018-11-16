@@ -1,0 +1,2 @@
+ASDF_CONFIG_FILE="${ASDF_CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/asdfrc}"
+link asdfrc $ASDF_CONFIG_FILE
