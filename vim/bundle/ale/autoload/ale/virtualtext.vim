@@ -8,6 +8,26 @@ let g:ale_virtualtext_delay = get(g:, 'ale_virtualtext_delay', 10)
 let s:cursor_timer = -1
 let s:last_pos = [0, 0, 0]
 
+if !hlexists('ALEVirtualTextError')
+    highlight link ALEVirtualTextError ALEError
+endif
+
+if !hlexists('ALEVirtualTextStyleError')
+    highlight link ALEVirtualTextStyleError ALEVirtualTextError
+endif
+
+if !hlexists('ALEVirtualTextWarning')
+    highlight link ALEVirtualTextWarning ALEWarning
+endif
+
+if !hlexists('ALEVirtualTextStyleWarning')
+    highlight link ALEVirtualTextStyleWarning ALEVirtualTextWarning
+endif
+
+if !hlexists('ALEVirtualTextInfo')
+    highlight link ALEVirtualTextInfo ALEVirtualTextWarning
+endif
+
 function! ale#virtualtext#Clear() abort
     if !has('nvim-0.3.2')
         return
@@ -59,13 +79,21 @@ function! ale#virtualtext#ShowCursorWarning(...) abort
 
     if !empty(l:loc)
         let l:msg = get(l:loc, 'detail', l:loc.text)
-        let l:hl_group = 'ALEInfo'
+        let l:hl_group = 'ALEVirtualTextInfo'
         let l:type = get(l:loc, 'type', 'E')
 
         if l:type is# 'E'
-            let l:hl_group = 'ALEError'
+            if get(l:loc, 'sub_type', '') is# 'style'
+                let l:hl_group = 'ALEVirtualTextStyleError'
+            else
+                let l:hl_group = 'ALEVirtualTextError'
+            endif
         elseif l:type is# 'W'
-            let l:hl_group = 'ALEWarning'
+            if get(l:loc, 'sub_type', '') is# 'style'
+                let l:hl_group = 'ALEVirtualTextStyleWarning'
+            else
+                let l:hl_group = 'ALEVirtualTextWarning'
+            endif
         endif
 
         call ale#virtualtext#ShowMessage(l:msg, l:hl_group)
