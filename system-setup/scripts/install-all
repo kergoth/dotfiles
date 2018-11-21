@@ -12,10 +12,12 @@ sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev
 install-python || exit $?
 eval "$(pyenv init -)"
 install-pipsi
+install-ruby
 
 install-cabal
 install-node
 rustup update || rustup -y --no-modify-path
+install-elixir
 
 # FIXME: deal with brew install failures
 install-env-tools
