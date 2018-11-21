@@ -8,6 +8,5 @@ if [ ! -e $ASDF_DATA_DIR ]; then
     git clone https://github.com/asdf-vm/asdf.git $ASDF_DATA_DIR --branch v$ASDF_VERSION
 fi
 
-# PATH="$(dirname "$0"):$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$HOME/.local/bin:$PATH"
-. $ASDF_DATA_DIR/asdf.sh
+PATH="$(dirname "$0"):$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$HOME/.local/bin:$PATH"
 asdf update
