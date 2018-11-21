@@ -4,7 +4,12 @@ set -e
 
 ERLANG_VERSION=21.1.1
 
-KERL_CONFIGURE_OPTIONS="--disable-debug --disable-silent-rules --without-javac --enable-shared-zlib --enable-dynamic-ssl-lib --enable-shared-zlib --enable-hipe --enable-sctp --enable-smp-support --enable-threads --enable-kernel-poll --enable-wx --enable-darwin-64bit --with-ssl=$(brew --prefix openssl)"
+KERL_CONFIGURE_OPTIONS="--disable-debug --disable-silent-rules --without-javac --enable-shared-zlib --enable-dynamic-ssl-lib --enable-shared-zlib --enable-hipe --enable-sctp --enable-smp-support --enable-threads --enable-kernel-poll --enable-wx"
+case "$OSTYPE" in
+    darwin*)
+        KERL_CONFIGURE_OPTIONS="$KERL_CONFIGURE_OPTIONS --with-ssl=$(brew --prefix openssl) --enable-darwin-64bit"
+        ;;
+esac
 #export KERL_BUILD_DOCS=yes
 
 . $(dirname "$0")/install-asdf
