@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 132a85e104f75c6553871820c23b9b7fb92edbf3
+    rev: 60d96273b6192c61adb663884fa83528f1b8033f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -130,7 +130,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 570a0dfb73ed28db10bde9cc75ee1ca3e9f784ed
+    rev: 6215de5d9c589c7b34a9af7ac81eaf77306be9f3
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: e48cf2dadd7dd02db710dc35d22caec72e41ac05
+    rev: 2564c37d0a2ade327d6381fef42d84d9fad1d057
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: bc63a60b0fa51aa2192052c14bfb121e23aa47a8
+    rev: bd468dacfe874fd669ec69522b550d3e1371cf56
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -348,7 +348,7 @@ git module icdiff:
     pick:
         - scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 2816d81358a1693b86a76a82f29af6df35fab9f0
+    rev: 0fca02ee5de290af319f2be6d0d3c889cb2e5320
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -536,7 +536,7 @@ git module hub-completion:
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
-    rev: 33bac1b68cd2db269454dee8d98f7a855abe348e
+    rev: b95463a1cffd8fc9aff2a1ff0ae9327944948699
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
@@ -558,7 +558,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: be6b22b8640fd208138f9ccff51cf1b977467dd5
+    rev: a7f0106b31c2538a36cab30428e6ca65d9a2ae60
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -566,7 +566,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: eb27b24b73177249ae417e13cf53f7a931f9071e
+    rev: a815bb0fbdd9bf346ae614d8d41542ddb7099499
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: a05a16b1092e0af13942e40f62c5d89fbfc9fd0c
+    rev: 7e28a61fac79f7360b53fce0d3c108e700346a21
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
