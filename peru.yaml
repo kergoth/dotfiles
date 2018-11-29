@@ -245,7 +245,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: ad1833ecbc9153b6e34a4292dc089a58c4bcb8dc
+    rev: 95f025ef2dbc8fedf124521904a80c1879acd359
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: abda01dfab699630a5ac37fb49e00fe0476742b0
+    rev: f4252d55ecfa76aa4db50458faab4a269dada014
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -580,7 +580,7 @@ curl module rustup:
     move:
         rustup-init.sh: rustup
     executable: rustup
-    sha1: 10c9efe777ba84a126a42757651c7530b1cb97c4
+    sha1: c881cdc0e39ef1af9fe5c2c24299b4f95d50bb96
 
 curl module cht:
     url: https://cht.sh/:cht.sh
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 7e28a61fac79f7360b53fce0d3c108e700346a21
+    rev: 0a384a49d371838903d8401c5358ec60f3f4266d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -709,7 +709,7 @@ git module bat-syntax-bitbake:
 
 git module vim-editorconfig:
     url: https://github.com/sgur/vim-editorconfig
-    rev: 6b8b5a4cd77159eca30166b00097266f1d8e1faa
+    rev: f1b81d4c6b6cf1bf91cf5ce33148b2f6bb566a63
 
 git module wsl-open:
     url: https://github.com/kergoth/wsl-open
