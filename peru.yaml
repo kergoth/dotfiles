@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 60d96273b6192c61adb663884fa83528f1b8033f
+    rev: 55ff33b0716fa94a4e5174647d972488a63e65c3
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: bd468dacfe874fd669ec69522b550d3e1371cf56
+    rev: 3d9071e6b618280000a021a2517e28cb4b497be4
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -508,7 +508,7 @@ git module base16-shell:
 
 git module base16-vim:
     url: https://github.com/chriskempson/base16-vim
-    rev: 7e9af12d680d81cc1277c07ef5acee8c83828f3f
+    rev: 2073e2dd9fa0172ccdba92b3f0df25642a69f7db
     pick: colors/base16-tomorrow-night.vim
 
 git module gitvoodoo:
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 0a384a49d371838903d8401c5358ec60f3f4266d
+    rev: 9eda079e021a97d790fa7caef458888ce4a86196
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -688,7 +688,7 @@ git module base16-rofi:
     pick:
         - themes/base16-tomorrow-night.config
         - themes/base16-tomorrow-night.rasi
-    rev: c56ac76ea80daa2883d91afe580121591473504f
+    rev: 75231228bfd8f8ab2cff49954e0d16a91c8f14cd
 
 git module base16-fzf:
     url: https://github.com/nicodebo/base16-fzf
