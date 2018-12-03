@@ -16,7 +16,8 @@ git add -u
 if [ $dtret -ne 0 ]; then
     git drop
 else
-    git commit -n -s -m "Update externals"
+    git commit -n -s -m "Update externals" && \
+        git log --stat -1
 fi
 
 if [ "$ret" -eq 0 ]; then
