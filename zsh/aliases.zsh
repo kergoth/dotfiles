@@ -112,7 +112,9 @@ else
     else
         alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none'
     fi
-    alias rm='rm --one-file-system -I'
+    if ! [[ $OSTYPE =~ freebsd* ]]; then
+        alias rm='rm --one-file-system -I'
+    fi
     if ! (( $+aliases[open] )); then
         alias open=xdg-open
     fi
