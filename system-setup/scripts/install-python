@@ -3,6 +3,13 @@
 PY2_VERSION=2.7.15
 PY3_VERSION=3.7.1
 
+# Ensure we can run llvm-profdata on FreeBSD
+for llvmdir in /usr/local/llvm*/bin; do
+    if [ -d "$llvmdir" ]; then
+        PATH="$PATH:$llvmdir"
+    fi
+done
+
 export PYTHONNOUSERSITE=1
 export CFLAGS="${CFLAGS--O2}"
 export LDFLAGS
