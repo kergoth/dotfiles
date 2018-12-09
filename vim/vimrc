@@ -1024,8 +1024,8 @@ for f in glob('$DOTFILESDIR/*/topic.vim', 0, 1)
 endfor
 
 " Load a site specific vimrc if one exists (useful for things like font sizes)
-if !exists('$HOSTNAME') && executable('hostname')
-  let $HOSTNAME = substitute(system('hostname -s'), '\n', '', '')
+if !exists('$HOSTNAME')
+  let $HOSTNAME = hostname()
 endif
 runtime vimrc.$HOSTNAME
 runtime vimrc.local
