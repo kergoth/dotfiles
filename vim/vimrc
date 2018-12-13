@@ -879,10 +879,16 @@ augroup vimrc_filetypes
 
   " Show diff when editing git commit messages
   au FileType gitcommit DiffGitCached
+  " Don't restore position in a git commit message
+  au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
   " Kill unnecessary bits when acting as dvtm copymode
   au FileType dvtm-editor set nonumber
   au FileType dvtm-editor hi def link RedundantWhitespace NONE
+  autocmd BufReadPost *
+         \ if @% =~ '/tmp/dvtm-editor\..*' |
+         \   call setpos('.', [0, line('$'), 1, 0])
+         \ endif
 augroup END
 
 " Kill unnecessary bits when acting as a pager
