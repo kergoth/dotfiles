@@ -14,7 +14,7 @@ elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     fi
     export LSCOLORS="$(cat $DOTFILESDIR/ls/bsd_colors)"
     alias la='ls -A'
-    alias lr='ls -lt'
+    alias lr='ls -ltr'
     alias ll='ls -l'
 else
     if (( $+commands[dircolors] )); then
@@ -22,7 +22,7 @@ else
     fi
     alias ls='ls --color=auto -h'
     alias la='ls -A'
-    alias lr='ls -lt'
+    alias lr='ls -ltr'
     alias ll='ls -l'
 fi
 
