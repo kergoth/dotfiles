@@ -1,5 +1,9 @@
-if [[ -t 1 ]]; then
-    command rg -S -p "$@" | pager
+if (( $+commands[rg] )); then
+    if [[ -t 1 ]]; then
+        command rg -S -p "$@" | pager
+    else
+        command rg -S "$@"
+    fi
 else
-    command rg -S "$@"
+    ag "$@"
 fi
