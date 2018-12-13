@@ -64,13 +64,19 @@ if ! (( $+commands[ag] )) && (( $+commands[ack] )); then
     alias ag=ack
 fi
 
-fd () {
-    if [[ -t 1 ]]; then
-        command fd -c always "$@" | pager
-    else
-        command fd "$@"
-    fi
-}
+if (( $+commands[fd] )); then
+    fd () {
+        if [[ -t 1 ]]; then
+            command fd -c always "$@" | pager
+        else
+            command fd "$@"
+        fi
+    }
+else
+    fd () {
+        ag -g "$@"
+    }
+fi
 
 alias fdf="fd -t f ''"
 
