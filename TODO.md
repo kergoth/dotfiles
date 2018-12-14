@@ -17,9 +17,7 @@
 
 - boom (Never use it, tend to forget it exists)
 - path-extractor (Never use it)
-- oni (I use sublime and vim at the moment)
 - top (Rarely used, tend to use htop instead)
-- vscode (I use sublime and vim at the moment)
 - system-setup (I may move this to its own repo)
 
 ## colors
