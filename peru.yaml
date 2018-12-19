@@ -130,7 +130,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 840272c0b957d0ae6839c0a42fa64b8a7848f272
+    rev: cf565254e26bb7ce03f51889e9a29953b955b1fb
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -162,7 +162,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen
     export: autoload/
-    rev: 06da921608b971fb47603671bcafdb2843992eb3
+    rev: e9fb0914dba5bdfe2feaa364dda2e9495c5620a2
 
 # secure alternative to vim modelines
 git module securemodelines:
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: e3cfd3643b0f4c9650d5eb23912fef12d88e7a60
+    rev: 72888d87ea57761f21c9f67cd0c0faa5904795eb
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -283,7 +283,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 61feee690c25487aab7613771cd75166d404273a
+    rev: 63c42b14f24c7b82515cf13d6372dd302f5d11a5
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: d89b5c6fe4180ebab8c12f9c7d663ce7621164c8
+    rev: ca320f401eda7881fe0cb438dd6fac5382faf286
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -558,7 +558,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: a7f0106b31c2538a36cab30428e6ca65d9a2ae60
+    rev: 70f36c007db30a5fe1edf2b63664088b502a729c
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 2cfa09e02d65cd06649fb1ae5f988b7a110a124d
+    rev: f1ed654ca5318de5a24b37d882e55e04e4e566c8
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -746,7 +746,7 @@ git module vim-profiler:
 
 git module vim-apathy:
     url: https://github.com/tpope/vim-apathy
-    rev: 3a78d61bdaac4b107a6f0bb0e82760aacfb8a1f6
+    rev: 6117c8ecd6053e12c449b2e3f9e159233ff94202
 
 git module zsh-sort-timings:
     url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
