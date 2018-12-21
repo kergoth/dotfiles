@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: ff7c1f7d34c201d6bd7b2fbb7886b97c9654557a
+    rev: 67dbb4e90ee3559c3c7b3da0691e9e22f0ce59f2
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 2564c37d0a2ade327d6381fef42d84d9fad1d057
+    rev: d3468dd09be59ac726c112b7a52ce80a27005e69
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -283,7 +283,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 63c42b14f24c7b82515cf13d6372dd302f5d11a5
+    rev: 5d16b288698ecec96080a5d576521d92550e78fd
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -312,7 +312,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: dfb5a7d332e962dffdd1b93e756fef76ff3db51d
+    rev: 87de37d773a62d709f69d6725b07636a038634be
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: ca320f401eda7881fe0cb438dd6fac5382faf286
+    rev: cc38879bd6f9ad38c947f84e0ffd1ae82ed4ee7d
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: f1ed654ca5318de5a24b37d882e55e04e4e566c8
+    rev: 73ca1e71918a0b50b7bbcbed91857c3618ad93cc
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -724,7 +724,7 @@ git module vim-VimCompletesMe:
 
 git module vim-autoformat:
     url: https://github.com/Chiel92/vim-autoformat
-    rev: c203080645936e73b2124040bc963386eeb44f5e
+    rev: 4f993fad63f98b844a5bd728c5a963c0da404e1a
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
@@ -746,7 +746,7 @@ git module vim-profiler:
 
 git module vim-apathy:
     url: https://github.com/tpope/vim-apathy
-    rev: 6117c8ecd6053e12c449b2e3f9e159233ff94202
+    rev: 0d616c574541c31a7bade8ae52d958f167fb1bf5
 
 git module zsh-sort-timings:
     url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
