@@ -1,3 +1,5 @@
+user_pref("browser.tabs.multiselect", true);
+
 /* 0302a: enable auto update installing for Firefox (after the check in 0301a) */
 user_pref("app.update.auto", true);
 /* 0302b: enable auto update installing for extensions (after the check in 0301b) */
