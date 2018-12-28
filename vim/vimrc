@@ -951,9 +951,14 @@ let g:promptline_symbols = {
     \ 'right_alt'      : '|',
     \ 'dir_sep'        : '/'}
 
+fun! __promptline_git_ahead_behind(...)
+  return { 'function_name': '__promptline_git_ahead_behind',
+          \'function_body': readfile(globpath(&rtp, "autoload/promptline/slices/git_ahead_behind.sh", 0, 1)[0])}
+endfun
+
 try
   let g:promptline_preset = {
-          \'b' : [ promptline#slices#vcs_branch() ],
+          \'b' : [ promptline#slices#vcs_branch(), __promptline_git_ahead_behind() ],
           \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
           \'y' : [ promptline#slices#jobs() ],
           \'z' : [ promptline#slices#python_virtualenv() ],
