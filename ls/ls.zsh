@@ -4,6 +4,7 @@ if (( $+commands[exa] )); then
     alias ls=exa
     alias la='ls -a'
     alias lr='ll -s modified'
+    alias lrc='lr -s created'
 elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     if (( $+commands[gls] )); then
         alias ls='gls --color=auto -h'
@@ -14,6 +15,7 @@ elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     export LSCOLORS="$(cat $DOTFILESDIR/ls/bsd_colors)"
     alias la='ls -A'
     alias lr='ll -tr'
+    alias lrc='lr -U'
 else
     if (( $+commands[dircolors] )); then
         eval "$(dircolors -b $DIRCOLORS)"
@@ -21,6 +23,7 @@ else
     alias ls='ls --color=auto -h'
     alias la='ls -A'
     alias lr='ll -tr'
+    alias lrc='lr -c'
 fi
 
 alias ll='ls -l'
