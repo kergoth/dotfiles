@@ -960,8 +960,9 @@ try
   let g:promptline_preset = {
           \'b' : [ promptline#slices#vcs_branch(), __promptline_git_ahead_behind() ],
           \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
-          \'y' : [ promptline#slices#jobs() ],
-          \'z' : [ promptline#slices#python_virtualenv() ],
+          \'x' : [ promptline#slices#jobs() ],
+          \'y' : [ promptline#slices#python_virtualenv() ],
+          \'z' : [ promptline#slices#user(), promptline#slices#host({'only_if_ssh': 1}) ],
           \'warn' : [ promptline#slices#last_exit_code() ]}
 catch
 endtry
