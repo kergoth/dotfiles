@@ -1150,97 +1150,43 @@ let s:buffer_prototype = {}
 function! fugitive#buffer(...) abort
   let buffer = {'#': bufnr(a:0 ? a:1 : '%')}
   call extend(buffer, s:buffer_prototype, 'keep')
-  if buffer.getvar('git_dir') !=# ''
-    return buffer
-  endif
-  call s:throw('not a Fugitive buffer: ' . string(bufname(buffer['#'])))
+  return buffer
 endfunction
 
 function! s:buffer_getvar(var) dict abort
-  return getbufvar(self['#'],a:var)
+  throw 'fugitive: Removed in favor of getbufvar()'
 endfunction
 
 function! s:buffer_getline(lnum) dict abort
-  return get(getbufline(self['#'], a:lnum), 0, '')
+  throw 'fugitive: Removed in favor of getbufline()'
 endfunction
 
 function! s:buffer_repo() dict abort
-  return fugitive#repo(self.getvar('git_dir'))
+  throw 'fugitive: Removed in favor of fugitive#repo()'
 endfunction
 
 function! s:buffer_type(...) dict abort
-  if !empty(self.getvar('fugitive_type'))
-    let type = self.getvar('fugitive_type')
-  elseif fnamemodify(self.spec(),':p') =~# '\.git/refs/\|\.git/\w*HEAD$'
-    let type = 'head'
-  elseif self.getline(1) =~ '^tree \x\{40\}$' && self.getline(2) == ''
-    let type = 'tree'
-  elseif self.getline(1) =~ '^\d\{6\} \w\{4\} \x\{40\}\>\t'
-    let type = 'tree'
-  elseif self.getline(1) =~ '^\d\{6\} \x\{40\}\> \d\t'
-    let type = 'index'
-  elseif isdirectory(self.spec())
-    let type = 'directory'
-  elseif self.spec() == ''
-    let type = 'null'
-  else
-    let type = 'file'
-  endif
-  if a:0
-    return !empty(filter(copy(a:000),'v:val ==# type'))
-  else
-    return type
-  endif
+  throw 'fugitive: Removed in favor of b:fugitive_type (or ideally avoid entirely)'
 endfunction
 
-if has('win32')
-
-  function! s:buffer_spec() dict abort
-    let bufname = bufname(self['#'])
-    let retval = ''
-    for i in split(bufname,'[^:]\zs\\')
-      let retval = fnamemodify((retval==''?'':retval.'\').i,':.')
-    endfor
-    return s:Slash(fnamemodify(retval,':p'))
-  endfunction
-
-else
-
-  function! s:buffer_spec() dict abort
-    let bufname = bufname(self['#'])
-    return s:Slash(bufname == '' ? '' : fnamemodify(bufname,':p'))
-  endfunction
-
-endif
+function! s:buffer_spec() dict abort
+  throw "fugitive: Removed in favor of bufname(), expand('%:p'), etc."
+endfunction
 
 function! s:buffer_name() dict abort
-  return self.spec()
+  throw "fugitive: Removed in favor of bufname(), expand('%:p'), etc."
 endfunction
 
 function! s:buffer_commit() dict abort
-  return matchstr(self.spec(),'^fugitive:\%(//\)\=.\{-\}\%(//\|::\)\zs\w*')
+  throw 'fugitive: Removed in favor of FugitiveParse()'
 endfunction
 
 function! s:buffer_relative(...) dict abort
-  let rev = matchstr(self.spec(),'^fugitive:\%(//\)\=.\{-\}\%(//\|::\)\zs.*')
-  if rev != ''
-    let rev = s:sub(rev,'\w*','')
-  elseif s:cpath(self.spec()[0 : len(self.repo().dir())]) ==#
-        \ s:cpath(self.repo().dir() . '/')
-    let rev = '/.git'.self.spec()[strlen(self.repo().dir()) : -1]
-  elseif !self.repo().bare() &&
-        \ s:cpath(self.spec()[0 : len(self.repo().tree())]) ==#
-        \ s:cpath(self.repo().tree() . '/')
-    let rev = self.spec()[strlen(self.repo().tree()) : -1]
-  endif
-  return s:sub(s:sub(rev,'.\zs/$',''),'^/',a:0 ? a:1 : '')
+  throw 'fugitive: Removed in favor of FugitivePath(bufname, ' . string(a:0 ? a:1 : '') . ')'
 endfunction
 
 function! s:buffer_path(...) dict abort
-  if a:0
-    return self.relative(a:1)
-  endif
-  return self.relative()
+  throw 'fugitive: Removed in favor of FugitivePath(bufname, ' . string(a:0 ? a:1 : '') . ')'
 endfunction
 
 call s:add_methods('buffer',['getvar','getline','repo','type','spec','name','commit','path','relative'])
@@ -1443,7 +1389,7 @@ function! fugitive#BufReadStatus() abort
       let branch = head
     endif
 
-    let [staged, unstaged, untracked] = [[], [], []]
+    let [staged, unstaged] = [[], []]
     let i = 0
     while i < len(output)
       let line = output[i]
@@ -1454,20 +1400,17 @@ function! fugitive#BufReadStatus() abort
         let files = output[i] . ' -> ' . file
         let i += 1
       endif
-      if line[0] ==# '?'
-        call add(untracked, {'type': 'File', 'status': '?', 'filename': file})
-        continue
-      endif
       if line[0] !~# '[ ?!#]'
         call add(staged, {'type': 'File', 'status': line[0], 'filename': (line[0] =~# '[RC]' ? files : file)})
       endif
-      if line[1] !~# '[ ?!#]'
+      if line[1] !~# '[ !#]'
         call add(unstaged, {'type': 'File', 'status': line[1], 'filename': (line[1] =~# '[RC]' ? files : file)})
       endif
     endwhile
 
     let config = fugitive#Config()
 
+    let pull_type = 'Pull'
     if len(pull)
       let rebase = fugitive#Config('branch.' . branch . '.rebase', config)
       if empty(rebase)
@@ -1477,8 +1420,6 @@ function! fugitive#BufReadStatus() abort
         let pull_type = 'Rebase'
       elseif rebase =~# '^\%(false\|no|off\|0\|\)$'
         let pull_type = 'Merge'
-      else
-        let pull_type = 'Upstream'
       endif
     endif
 
@@ -1509,7 +1450,6 @@ function! fugitive#BufReadStatus() abort
     if push !=# pull
       call s:AddHeader('Push', push)
     endif
-    call s:AddSection('Untracked', untracked)
     call s:AddSection('Unstaged', unstaged)
     call s:AddSection('Staged', staged)
     call s:AddSection('Unpushed to ' . push, unpushed)
@@ -1523,6 +1463,7 @@ function! fugitive#BufReadStatus() abort
     if &bufhidden ==# ''
       setlocal bufhidden=delete
     endif
+    let b:dispatch = ':Gfetch --all'
     call fugitive#MapJumps()
     let nowait = v:version >= 704 ? '<nowait>' : ''
     nunmap   <buffer>          P
@@ -1868,7 +1809,7 @@ augroup fugitive_status
   autocmd!
   if !has('win32')
     autocmd FocusGained,ShellCmdPost * call fugitive#ReloadStatus()
-    autocmd QuickFixCmdPost *-*make* call fugitive#ReloadStatus()
+    autocmd QuickFixCmdPost c*file call fugitive#ReloadStatus()
     autocmd BufDelete term://* call fugitive#ReloadStatus()
   endif
 augroup END
@@ -1922,7 +1863,7 @@ endfunction
 
 function! s:StageInfo(...) abort
   let lnum = a:0 ? a:1 : line('.')
-  let slnum = lnum
+  let slnum = lnum + 1
   let section = ''
   while len(getline(slnum - 1)) && empty(section)
     let slnum -= 1
@@ -1993,7 +1934,7 @@ function! s:StageUndo() abort
   if !empty(hash)
     if info.status ==# 'U'
       call s:TreeChomp('rm', './' . info.filename)
-    elseif info.section ==# 'Untracked'
+    elseif info.status ==# '?'
       call s:TreeChomp('clean', '-f', './' . info.filename)
     elseif info.section ==# 'Unstaged'
       call s:TreeChomp('checkout', './' . info.filename)
@@ -2027,17 +1968,18 @@ function! s:StageDiff(diff) abort
 endfunction
 
 function! s:StageDiffEdit() abort
+  let info = s:StageInfo(line('.'))
   let [filename, section] = s:StageFileSection(line('.'))
-  let arg = (filename ==# '' ? '.' : filename)
-  if section ==# 'Staged'
+  let arg = (empty(info.filename) ? '.' : info.filename)
+  if info.section ==# 'Staged'
     return 'Git! diff --no-ext-diff --cached '.s:shellesc(arg)
-  elseif section ==# 'Untracked'
+  elseif info.status ==# '?'
     call s:TreeChomp('add', '--intent-to-add', './' . arg)
     if arg ==# '.'
       silent! edit!
       1
       if !search('^Unstaged','W')
-        call search(':$','W')
+        call search('^Staged','W')
       endif
     else
       call s:StageReloadSeek([filename, 'Staged'], line('.'), line('.'))
@@ -2061,17 +2003,13 @@ function! s:StageToggle(lnum1,lnum2) abort
           call s:TreeChomp('reset','-q')
           silent! edit!
           1
-          if !search('^Untracked','W')
-            call search('^Unstaged','W')
-          endif
+          call search('^Unstaged','W')
           return ''
-        elseif info.section ==# 'Unstaged'
-          call s:TreeChomp('add','-u')
+        elseif info.status ==# 'Unstaged'
+          call s:TreeChomp('add','.')
           silent! edit!
           1
-          if !search('^Untracked','W')
-            call search('^Staged','W')
-          endif
+          call search('^Staged','W')
           return ''
         elseif info.section ==# 'Unpushed' && len(info.commit)
           let remote = matchstr(info.heading, 'to \zs[^/]\+\ze/')
@@ -2083,12 +2021,6 @@ function! s:StageToggle(lnum1,lnum2) abort
           return ''
         elseif info.section ==# 'Unpulled'
           call feedkeys(':Grebase ' . info.commit)
-          return ''
-        elseif info.section ==# 'Untracked'
-          call s:TreeChomp('add', '.')
-          silent! edit!
-          1
-          call search('^Unstaged\|^Staged','W')
           return ''
         endif
       endif
@@ -2133,8 +2065,6 @@ function! s:StagePatch(lnum1,lnum2) abort
       return 'Git reset --patch'
     elseif empty(filename) && section ==# 'Unstaged'
       return 'Git add --patch'
-    elseif empty(filename) && section ==# 'Untracked'
-      return 'Git add -N .'
     elseif filename ==# ''
       continue
     endif
@@ -2234,10 +2164,6 @@ function! s:Commit(mods, args, ...) abort
           execute mods 'keepalt edit' s:fnameescape(msgfile)
         elseif a:args =~# '\%(^\| \)-\w*v' || mods =~# '\<tab\>'
           execute mods 'keepalt -tabedit' s:fnameescape(msgfile)
-        elseif get(b:, 'fugitive_type', '') ==# 'index'
-          execute mods 'keepalt edit' s:fnameescape(msgfile)
-          execute (search('^#','n')+1).'wincmd+'
-          setlocal nopreviewwindow
         else
           execute mods 'keepalt split' s:fnameescape(msgfile)
         endif
@@ -2290,11 +2216,11 @@ endfunction
 " Section: :Gmerge, :Grebase, :Gpull
 
 call s:command("-nargs=? -bang -complete=custom,s:RevisionComplete Gmerge " .
-      \ "execute s:Merge('merge', <bang>0, <q-args>)")
+      \ "execute s:Merge('merge', <bang>0, '<mods>', <q-args>)")
 call s:command("-nargs=? -bang -complete=custom,s:RevisionComplete Grebase " .
-      \ "execute s:Merge('rebase', <bang>0, <q-args>)")
+      \ "execute s:Merge('rebase', <bang>0, '<mods>', <q-args>)")
 call s:command("-nargs=? -bang -complete=custom,s:RemoteComplete Gpull " .
-      \ "execute s:Merge('pull --progress', <bang>0, <q-args>)")
+      \ "execute s:Merge('pull --progress', <bang>0, '<mods>', <q-args>)")
 
 function! s:RevisionComplete(A, L, P) abort
   return s:TreeChomp('rev-parse', '--symbolic', '--branches', '--tags', '--remotes')
@@ -2311,6 +2237,13 @@ function! s:RemoteComplete(A, L, P) abort
     let matches = split(s:TreeChomp('remote'), "\n")
   endif
   return join(matches, "\n")
+endfunction
+
+function! s:HasRebaseCommitCmd() abort
+  if !filereadable(b:git_dir . '/rebase-merge/amend') || !filereadable(b:git_dir . '/rebase-merge/done')
+    return 0
+  endif
+  return get(readfile(b:git_dir . '/rebase-merge/done'), -1, '') =~# '^[^e]'
 endfunction
 
 function! fugitive#Cwindow() abort
@@ -2332,8 +2265,9 @@ let s:common_efm = ''
       \ . '%-G%.%#%\e[K%.%#,'
       \ . '%-G%.%#%\r%.%\+'
 
-function! s:Merge(cmd, bang, args) abort
-  if a:cmd =~# '^rebase' && ' '.a:args =~# ' -i\| --interactive\| --edit-todo'
+function! s:Merge(cmd, bang, mods, args) abort
+  let mods = substitute(a:mods, '\C<mods>', '', '') . ' '
+  if a:cmd =~# '^rebase' && ' '.a:args =~# ' -i\| --interactive'
     return 'echoerr "git rebase --interactive not supported"'
   endif
   let [mp, efm] = [&l:mp, &l:efm]
@@ -2349,6 +2283,7 @@ function! s:Merge(cmd, bang, args) abort
           \ . '%+ECannot %.%#: Your index contains uncommitted changes.,'
           \ . '%+EThere is no tracking information for the current branch.,'
           \ . '%+EYou are not currently on a branch. Please specify which,'
+          \ . '%+I%.%#git rebase --continue,'
           \ . 'CONFLICT (%m): %f deleted in %.%#,'
           \ . 'CONFLICT (%m): Merge conflict in %f,'
           \ . 'CONFLICT (%m): Rename \"%f\"->%.%#,'
@@ -2387,10 +2322,15 @@ function! s:Merge(cmd, bang, args) abort
     execute cdback
   endtry
   call fugitive#ReloadStatus()
-  if empty(filter(getqflist(),'v:val.valid'))
+  if empty(filter(getqflist(),'v:val.valid && v:val.type !=# "I"'))
     if !had_merge_msg && filereadable(b:git_dir . '/MERGE_MSG')
       cclose
-      return 'Gcommit --no-status -n -t '.s:shellesc(b:git_dir . '/MERGE_MSG')
+      return mods . 'Gcommit --no-status -n -t '.s:shellesc(b:git_dir . '/MERGE_MSG')
+    elseif a:cmd =~# '^rebase' && ' '.a:args =~# ' --continue' && s:HasRebaseCommitCmd()
+      cclose
+      return mods . 'Gcommit --amend'
+    elseif a:cmd =~# '^rebase' && ' '.a:args =~# ' --edit-todo'
+      return mods . 'Gsplit ' . s:fnameescape(b:git_dir . '/rebase-merge/git-rebase-todo') . ' | setlocal bufhidden=wipe nobuflisted'
     endif
   endif
   let qflist = getqflist()
@@ -3696,12 +3636,14 @@ function! fugitive#MapJumps(...) abort
     let nowait = v:version >= 704 ? '<nowait>' : ''
     if get(b:, 'fugitive_type', '') ==# 'blob'
       nnoremap <buffer> <silent> o     :<C-U>.,.+1Gblame<CR>
-      nnoremap <buffer> <silent> S     :<C-U>vertical .,.+1Gblame<CR>
+      nnoremap <buffer> <silent> S     :<C-U>echoerr 'Use gO'<CR>
+      nnoremap <buffer> <silent> gO    :<C-U>vertical .,.+1Gblame<CR>
       nnoremap <buffer> <silent> O     :<C-U>tab .,.+1Gblame<CR>
       nnoremap <buffer> <silent> p     :<C-U>.,.+2Gblame<CR>
     else
       nnoremap <buffer> <silent> o     :<C-U>exe <SID>GF("split")<CR>
-      nnoremap <buffer> <silent> S     :<C-U>exe <SID>GF("vsplit")<CR>
+      nnoremap <buffer> <silent> S     :<C-U>echoerr 'Use gO'<CR>
+      nnoremap <buffer> <silent> gO    :<C-U>exe <SID>GF("vsplit")<CR>
       nnoremap <buffer> <silent> O     :<C-U>exe <SID>GF("tabedit")<CR>
       nnoremap <buffer> <silent> p     :<C-U>exe <SID>GF("pedit")<CR>
     endif
@@ -3711,7 +3653,8 @@ function! fugitive#MapJumps(...) abort
     nnoremap <buffer> <silent> C     :<C-U>exe 'Gedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
     nnoremap <buffer> <silent> cc    :<C-U>exe 'Gedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
     nnoremap <buffer> <silent> co    :<C-U>exe 'Gsplit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
-    nnoremap <buffer> <silent> cS    :<C-U>exe 'Gvsplit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
+    nnoremap <buffer> <silent> cS    :<C-U>echoerr 'Use cgO'<CR>
+    nnoremap <buffer> <silent> cgO   :<C-U>exe 'Gvsplit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
     nnoremap <buffer> <silent> cO    :<C-U>exe 'Gtabedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
     nnoremap <buffer> <silent> cp    :<C-U>exe 'Gpedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
     nnoremap <buffer>          cf    :<C-U>Gcommit --fixup=<C-R>=<SID>SquashArgument()<CR>

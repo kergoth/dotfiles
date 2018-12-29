@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 67dbb4e90ee3559c3c7b3da0691e9e22f0ce59f2
+    rev: 73a12607307e9700bd49bf63d7f14f405a1fe40d
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: d3468dd09be59ac726c112b7a52ce80a27005e69
+    rev: 682b2acdac89dccbb3f4a449ac2d20283eb7c26a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -312,7 +312,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 87de37d773a62d709f69d6725b07636a038634be
+    rev: d51593650b291e43037b675caf1080d3c2b97706
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: cc38879bd6f9ad38c947f84e0ffd1ae82ed4ee7d
+    rev: ee7cdc4e2368c79341599b9f3b3c362115a38db5
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -624,7 +624,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: ec1c94306953b678bb36572897bd218fe6c76506
+    rev: c161994e9607399a7b365ab274592bfc4f100306
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
