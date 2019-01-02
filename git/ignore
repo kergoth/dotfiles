@@ -31,3 +31,12 @@ Temporary Items
 
 # NFS
 .nfs*
+
+# IDE / Editor projects
+.vscode
+
+# Bittorrent Sync
+/.sync
+
+# Synology NAS clutter
+@eaDir
