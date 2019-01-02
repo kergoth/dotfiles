@@ -1325,6 +1325,10 @@ function! s:FormatLog(dict) abort
   return a:dict.commit . ' ' . a:dict.subject
 endfunction
 
+function! s:FormatRebase(dict) abort
+  return a:dict.status . ' ' . a:dict.commit . ' ' . a:dict.subject
+endfunction
+
 function! s:FormatFile(dict) abort
   return a:dict.status . ' ' . a:dict.filename
 endfunction
@@ -1443,6 +1447,40 @@ function! fugitive#BufReadStatus() abort
       let unpushed = []
     endif
 
+    if isdirectory(fugitive#Find('.git/rebase-merge/'))
+      let rebasing_dir = fugitive#Find('.git/rebase-merge/')
+    elseif isdirectory(fugitive#Find('.git/rebase-apply/'))
+      let rebasing_dir = fugitive#Find('.git/rebase-apply/')
+    endif
+
+    let rebasing = []
+    let rebasing_head = 'detached HEAD'
+    if exists('rebasing_dir') && filereadable(rebasing_dir . 'git-rebase-todo')
+      let rebasing_head = substitute(readfile(rebasing_dir . 'head-name')[0], '\C^refs/heads/', '', '')
+      let len = 11
+      let lines = readfile(rebasing_dir . 'git-rebase-todo')
+      for line in lines
+        let hash = matchstr(line, '^[^a-z].*\s\zs[0-9a-f]\{4,\}\ze\.\.')
+        if len(hash)
+          let len = len(hash)
+          break
+        endif
+      endfor
+      if getfsize(rebasing_dir . 'done') > 0
+        let done = readfile(rebasing_dir . 'done')
+        call map(done, 'substitute(v:val, ''^\l\+\>'', "done", "")')
+        let done[-1] = substitute(done[-1], '^\l\+\>', 'stop', '')
+        let lines = done + lines
+      endif
+      call reverse(lines)
+      for line in lines
+        let match = matchlist(line, '^\(\l\+\)\s\+\(\x\{4,\}\)\s\+\(.*\)')
+        if len(match) && match[1] !~# 'exec\|merge\|label'
+          call add(rebasing, {'type': 'Rebase', 'status': get(s:rebase_abbrevs, match[1], match[1]), 'commit': strpart(match[2], 0, len), 'subject': match[3]})
+        endif
+      endfor
+    endif
+
     silent keepjumps %delete_
 
     call s:AddHeader('Head', head)
@@ -1450,6 +1488,7 @@ function! fugitive#BufReadStatus() abort
     if push !=# pull
       call s:AddHeader('Push', push)
     endif
+    call s:AddSection('Rebasing ' . rebasing_head, rebasing)
     call s:AddSection('Unstaged', unstaged)
     call s:AddSection('Staged', staged)
     call s:AddSection('Unpushed to ' . push, unpushed)
@@ -1489,8 +1528,8 @@ function! fugitive#BufReadStatus() abort
     nnoremap <buffer> <silent> ds :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
     nnoremap <buffer> <silent> dp :<C-U>execute <SID>StageDiffEdit()<CR>
     nnoremap <buffer> <silent> dv :<C-U>execute <SID>StageDiff('Gvdiff')<CR>
-    nnoremap <buffer> <silent> p :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
-    xnoremap <buffer> <silent> p :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
+    nnoremap <buffer> <silent> p :<C-U>echoerr 'Use P'<CR>
+    xnoremap <buffer> <silent> p :<C-U>echoerr 'Use P'<CR>
     nnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
     xnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
     nnoremap <buffer> <silent> q :<C-U>if bufnr('$') == 1<Bar>quit<Bar>else<Bar>bdelete<Bar>endif<CR>
@@ -1655,6 +1694,7 @@ function! fugitive#BufReadCmd(...) abort
         nnoremap <buffer> <silent> a :<C-U>let b:fugitive_display_format += v:count1<Bar>exe fugitive#BufReadCmd(@%)<CR>
         nnoremap <buffer> <silent> i :<C-U>let b:fugitive_display_format -= v:count1<Bar>exe fugitive#BufReadCmd(@%)<CR>
       else
+        let &modifiable = modifiable
         call fugitive#MapJumps()
       endif
     endtry
@@ -1805,6 +1845,7 @@ call s:command("-bar -bang -nargs=? -complete=customlist,s:DirComplete Glcd :exe
 " Section: :Gstatus
 
 call s:command("-bar -bang -range=-1 Gstatus :execute s:Status(<bang>0, <count>, '<mods>')")
+call s:command("-bar -bang -range=-1 G       :execute s:Status(<bang>0, <count>, '<mods>')")
 augroup fugitive_status
   autocmd!
   if !has('win32')
@@ -1849,6 +1890,7 @@ function! fugitive#ReloadStatus(...) abort
             endif
           finally
             if exists('restorewinnr')
+              unlet restorewinnr
               wincmd p
             endif
             execute 'tabnext '.mytab
@@ -1872,8 +1914,8 @@ function! s:StageInfo(...) abort
   return {'section': section,
         \ 'heading': getline(slnum),
         \ 'filename': matchstr(getline(lnum), '^[A-Z?] \zs.*'),
-        \ 'commit': matchstr(getline(lnum), '^[0-9a-f]\{4,\}\ze '),
-        \ 'status': matchstr(getline(lnum), '^[A-Z?]\ze '),
+        \ 'commit': matchstr(getline(lnum), '^\%(\%(\x\x\x\)\@!\l\+\s\+\)\=\zs[0-9a-f]\{4,\}\ze '),
+        \ 'status': matchstr(getline(lnum), '^[A-Z?]\ze \|^\%(\x\x\x\)\@!\l\+\ze [0-9a-f]'),
         \ 'index': lnum - slnum}
 endfunction
 
@@ -2205,10 +2247,15 @@ function! s:CommitComplete(A,L,P) abort
 endfunction
 
 function! s:FinishCommit() abort
-  let args = getbufvar(+expand('<abuf>'),'fugitive_commit_arguments')
+  let buf = +expand('<abuf>')
+  let args = getbufvar(buf, 'fugitive_commit_arguments')
   if !empty(args)
-    call setbufvar(+expand('<abuf>'),'fugitive_commit_arguments','')
-    return s:Commit('', args, getbufvar(+expand('<abuf>'),'git_dir'))
+    call setbufvar(buf, 'fugitive_commit_arguments', '')
+    if getbufvar(buf, 'fugitive_commit_rebase')
+      call setbufvar(buf, 'fugitive_commit_rebase', 0)
+      let s:rebase_continue = getbufvar(buf, 'git_dir')
+    endif
+    return s:Commit('', args, getbufvar(buf, 'git_dir'))
   endif
   return ''
 endfunction
@@ -2239,11 +2286,17 @@ function! s:RemoteComplete(A, L, P) abort
   return join(matches, "\n")
 endfunction
 
-function! s:HasRebaseCommitCmd() abort
-  if !filereadable(b:git_dir . '/rebase-merge/amend') || !filereadable(b:git_dir . '/rebase-merge/done')
-    return 0
+function! s:RebaseSequenceAborter() abort
+  if !exists('s:rebase_sequence_aborter')
+    let temp = tempname() . '.sh'
+    call writefile(
+          \ ['#!/bin/sh',
+          \ 'echo exec false | cat - "$1" > "$1.fugitive"',
+          \ 'mv "$1.fugitive" "$1"'],
+          \ temp)
+    let s:rebase_sequence_aborter = temp
   endif
-  return get(readfile(b:git_dir . '/rebase-merge/done'), -1, '') =~# '^[^e]'
+  return s:rebase_sequence_aborter
 endfunction
 
 function! fugitive#Cwindow() abort
@@ -2265,15 +2318,49 @@ let s:common_efm = ''
       \ . '%-G%.%#%\e[K%.%#,'
       \ . '%-G%.%#%\r%.%\+'
 
-function! s:Merge(cmd, bang, mods, args) abort
+let s:rebase_abbrevs = {
+      \ 'p': 'pick',
+      \ 'r': 'reword',
+      \ 'e': 'edit',
+      \ 's': 'squash',
+      \ 'f': 'fixup',
+      \ 'x': 'exec',
+      \ 'd': 'drop',
+      \ 'l': 'label',
+      \ 't': 'reset',
+      \ 'm': 'merge',
+      \ 'b': 'break',
+      \ }
+
+function! s:RebaseEdit(cmd, dir) abort
+  return a:cmd . ' +setlocal\ bufhidden=wipe ' . s:fnameescape(a:dir . '/rebase-merge/git-rebase-todo')
+endfunction
+
+function! s:Merge(cmd, bang, mods, args, ...) abort
+  let dir = a:0 ? a:1 : b:git_dir
   let mods = substitute(a:mods, '\C<mods>', '', '') . ' '
   if a:cmd =~# '^rebase' && ' '.a:args =~# ' -i\| --interactive'
-    return 'echoerr "git rebase --interactive not supported"'
+    let cmd = fugitive#Prepare(dir, '-c', 'sequence.editor=sh ' . s:RebaseSequenceAborter(), 'rebase') . ' ' . a:args
+    let out = system(cmd)[0:-2]
+    for file in ['end', 'msgnum']
+      let file = fugitive#Find('.git/rebase-merge/' . file, dir)
+      if !filereadable(file)
+        return 'echoerr ' . string("fugitive: " . out)
+      endif
+      call writefile([readfile(file)[0] - 1], file)
+    endfor
+    call writefile([], fugitive#Find('.git/rebase-merge/done', dir))
+    if a:bang
+      return ''
+    endif
+    return s:RebaseEdit(mods . 'split', dir)
+  elseif a:cmd =~# '^rebase' && ' '.a:args =~# ' --edit-todo' && filereadable(dir . '/rebase-merge/git-rebase-todo')
+    return s:RebaseEdit(mods . 'split', dir)
   endif
   let [mp, efm] = [&l:mp, &l:efm]
-  let had_merge_msg = filereadable(b:git_dir . '/MERGE_MSG')
+  let had_merge_msg = filereadable(dir . '/MERGE_MSG')
   try
-    let cdback = s:Cd(s:Tree())
+    let cdback = s:Cd(s:Tree(dir))
     let &l:errorformat = ''
           \ . '%-Gerror:%.%#false''.,'
           \ . '%-G%.%# ''git commit'' %.%#,'
@@ -2283,7 +2370,7 @@ function! s:Merge(cmd, bang, mods, args) abort
           \ . '%+ECannot %.%#: Your index contains uncommitted changes.,'
           \ . '%+EThere is no tracking information for the current branch.,'
           \ . '%+EYou are not currently on a branch. Please specify which,'
-          \ . '%+I%.%#git rebase --continue,'
+          \ . '%+I %#git rebase --continue,'
           \ . 'CONFLICT (%m): %f deleted in %.%#,'
           \ . 'CONFLICT (%m): Merge conflict in %f,'
           \ . 'CONFLICT (%m): Rename \"%f\"->%.%#,'
@@ -2296,19 +2383,26 @@ function! s:Merge(cmd, bang, mods, args) abort
           \ . "%+E\u51b2\u7a81 %.%#,"
           \ . 'U%\t%f'
     if a:cmd =~# '^merge' && empty(a:args) &&
-          \ (had_merge_msg || isdirectory(b:git_dir . '/rebase-apply') ||
-          \  !empty(s:TreeChomp('diff-files', '--diff-filter=U')))
+          \ (had_merge_msg || isdirectory(dir . '/rebase-apply') ||
+          \  !empty(s:TreeChomp(dir, 'diff-files', '--diff-filter=U')))
       let &l:makeprg = g:fugitive_git_executable.' diff-files --name-status --diff-filter=U'
     else
       let &l:makeprg = s:sub(s:UserCommand() . ' ' . a:cmd .
-            \ (a:args =~# ' \%(--no-edit\|--abort\|-m\)\>' || a:cmd =~# '^rebase' ? '' : ' --edit') .
+            \ (' ' . a:args =~# ' \%(--no-edit\|--abort\|-m\)\>' || a:cmd =~# '^rebase' ? '' : ' --edit') .
+            \ (' ' . a:args =~# ' --autosquash\>' && a:cmd =~# '^rebase' ? ' --interactive' : '') .
             \ ' ' . a:args, ' *$', '')
+    endif
+    if !empty($GIT_SEQUENCE_EDITOR) || has('win32')
+      let old_sequence_editor = $GIT_SEQUENCE_EDITOR
+      let $GIT_SEQUENCE_EDITOR = 'true'
+    else
+      let &l:makeprg = 'env GIT_SEQUENCE_EDITOR=true ' . &l:makeprg
     endif
     if !empty($GIT_EDITOR) || has('win32')
       let old_editor = $GIT_EDITOR
       let $GIT_EDITOR = 'false'
     else
-      let &l:makeprg = 'env GIT_EDITOR=false ' . &l:makeprg
+      let &l:makeprg = 'env GIT_EDITOR=false ' . substitute(&l:makeprg, '^env ', '', '')
     endif
     silent noautocmd make!
   catch /^Vim\%((\a\+)\)\=:E211/
@@ -2319,18 +2413,22 @@ function! s:Merge(cmd, bang, mods, args) abort
     if exists('old_editor')
       let $GIT_EDITOR = old_editor
     endif
+    if exists('old_sequence_editor')
+      let $GIT_SEQUENCE_EDITOR = old_editor
+    endif
     execute cdback
   endtry
   call fugitive#ReloadStatus()
   if empty(filter(getqflist(),'v:val.valid && v:val.type !=# "I"'))
-    if !had_merge_msg && filereadable(b:git_dir . '/MERGE_MSG')
+    if a:cmd =~# '^rebase' &&
+          \ filereadable(dir . '/rebase-merge/amend') &&
+          \ filereadable(dir . '/rebase-merge/done') &&
+          \ get(readfile(dir . '/rebase-merge/done'), -1, '') =~# '^[^e]'
       cclose
-      return mods . 'Gcommit --no-status -n -t '.s:shellesc(b:git_dir . '/MERGE_MSG')
-    elseif a:cmd =~# '^rebase' && ' '.a:args =~# ' --continue' && s:HasRebaseCommitCmd()
+      return 'exe ' . string(mods . 'Gcommit --amend -n -F ' . s:shellesc(dir . '/rebase-merge/message') . ' -e') . '|let b:fugitive_commit_rebase = 1'
+    elseif !had_merge_msg && filereadable(dir . '/MERGE_MSG')
       cclose
-      return mods . 'Gcommit --amend'
-    elseif a:cmd =~# '^rebase' && ' '.a:args =~# ' --edit-todo'
-      return mods . 'Gsplit ' . s:fnameescape(b:git_dir . '/rebase-merge/git-rebase-todo') . ' | setlocal bufhidden=wipe nobuflisted'
+      return mods . 'Gcommit --no-status -n -t '.s:shellesc(dir . '/MERGE_MSG')
     endif
   endif
   let qflist = getqflist()
@@ -2350,6 +2448,36 @@ function! s:Merge(cmd, bang, mods, args) abort
   endif
   return exists('err') ? 'echoerr '.string(err) : ''
 endfunction
+
+function! s:RebaseClean(file) abort
+  if !filereadable(a:file)
+    return ''
+  endif
+  let old = readfile(a:file)
+  let new = copy(old)
+  for i in range(len(new))
+    let new[i] = substitute(new[i], '^\l\>', '\=get(s:rebase_abbrevs,submatch(0),submatch(0))', '')
+  endfor
+  if new !=# old
+    call writefile(new, a:file)
+  endif
+  return ''
+endfunction
+
+augroup fugitive_merge
+  autocmd!
+  autocmd VimLeavePre,BufDelete git-rebase-todo
+        \ if getbufvar(+expand('<abuf>'), '&bufhidden') ==# 'wipe' |
+        \   call s:RebaseClean(expand('<afile>')) |
+        \   if getfsize(FugitiveFind('.git/rebase-merge/done', +expand('<abuf>'))) == 0 |
+        \     let s:rebase_continue = FugitiveGitDir(+expand('<abuf>')) |
+        \   endif |
+        \ endif
+  autocmd BufEnter *
+        \ if exists('s:rebase_continue') |
+        \   exe s:Merge('rebase', 0, '', getfsize(fugitive#Find('.git/rebase-merge/git-rebase-todo', s:rebase_continue)) > 0 ? '--continue' : '--abort', remove(s:, 'rebase_continue')) |
+        \ endif
+augroup END
 
 " Section: :Ggrep, :Glog
 
@@ -2449,6 +2577,7 @@ endfunction
 
 function! s:UsableWin(nr) abort
   return a:nr && !getwinvar(a:nr, '&previewwindow') &&
+        \ index(['gitrebase', 'gitcommit'], getbufvar(winbufnr(a:nr), '&filetype')) < 0 &&
         \ index(['nofile','help','quickfix'], getbufvar(winbufnr(a:nr), '&buftype')) < 0
 endfunction
 
@@ -3600,7 +3729,7 @@ endfunction
 
 function! s:SquashArgument() abort
   if &filetype == 'fugitive'
-    return matchstr(getline('.'), '^[0-9a-f]\{4,\}\ze ')
+    return matchstr(getline('.'), '^\%(\%(\x\x\x\)\@!\l\+\s\+\)\=\zs[0-9a-f]\{4,\}\ze ')
   else
     return s:Owner(@%)
   endif
@@ -3651,12 +3780,12 @@ function! fugitive#MapJumps(...) abort
     nnoremap <buffer> <silent> P     :<C-U>exe 'Gedit ' . <SID>fnameescape(<SID>ContainingCommit().'^'.v:count1.<SID>Relative(':'))<CR>
     nnoremap <buffer> <silent> ~     :<C-U>exe 'Gedit ' . <SID>fnameescape(<SID>ContainingCommit().'~'.v:count1.<SID>Relative(':'))<CR>
     nnoremap <buffer> <silent> C     :<C-U>exe 'Gedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
-    nnoremap <buffer> <silent> cc    :<C-U>exe 'Gedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
-    nnoremap <buffer> <silent> co    :<C-U>exe 'Gsplit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
-    nnoremap <buffer> <silent> cS    :<C-U>echoerr 'Use cgO'<CR>
-    nnoremap <buffer> <silent> cgO   :<C-U>exe 'Gvsplit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
-    nnoremap <buffer> <silent> cO    :<C-U>exe 'Gtabedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
-    nnoremap <buffer> <silent> cp    :<C-U>exe 'Gpedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
+    nnoremap <buffer> <silent> cc    :<C-U>echoerr 'Use C'<CR>
+    nnoremap <buffer> <silent> co    :<C-U>echoerr 'Use CTRL-W C'<CR>
+    nnoremap <buffer> <silent> <C-W>C :<C-U>exe 'Gsplit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
+    nnoremap <buffer> <silent> cp    :<C-U>echoerr 'Use gC'<CR>
+    nnoremap <buffer> <silent> gC    :<C-U>exe 'Gpedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
+    nnoremap <buffer> <silent> gc    :<C-U>exe 'Gpedit ' . <SID>fnameescape(<SID>ContainingCommit())<CR>
     nnoremap <buffer>          cf    :<C-U>Gcommit --fixup=<C-R>=<SID>SquashArgument()<CR>
     nnoremap <buffer>          cs    :<C-U>Gcommit --squash=<C-R>=<SID>SquashArgument()<CR>
     nnoremap <buffer>          cA    :<C-U>Gcommit --edit --squash=<C-R>=<SID>SquashArgument()<CR>
@@ -3672,6 +3801,8 @@ function! s:StatusCfile(...) abort
     return lead . line[2:-1]
   elseif line =~# '^[0-9a-f]\{4,\}\s'
     return matchstr(line, '^\S\+')
+  elseif line =~# '^\l\+\s\+[0-9a-f]\{4,\}\s'
+    return matchstr(line, '^\l\+\s\+\zs\S\+')
   elseif line =~# '^\%(Head\|Merge\|Rebase\|Upstream\|Pull\|Push\): '
     return matchstr(line, ' \zs.*')
   else
@@ -3867,7 +3998,7 @@ endfunction
 
 function! s:GF(mode) abort
   try
-    let results = &filetype ==# 'fugitive' ? [s:StatusCfile()] : &filetype ==# 'gitcommit' ? s:MessageCfile() : s:cfile()
+    let results = &filetype ==# 'fugitive' ? [s:StatusCfile()] : &filetype ==# 'gitcommit' ? [s:MessageCfile()] : s:cfile()
   catch /^fugitive:/
     return 'echoerr v:errmsg'
   endtry
@@ -3875,7 +4006,7 @@ function! s:GF(mode) abort
     return 'G' . a:mode .
           \ ' +' . escape(join(results[1:-1], '|'), '| ') . ' ' .
           \ s:fnameescape(results[0])
-  elseif len(results)
+  elseif len(results) && len(results[0])
     return 'G' . a:mode . ' ' . s:fnameescape(results[0])
   else
     return ''
