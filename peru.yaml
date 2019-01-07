@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 054ac509758f18992b8357159e80c4d03daf1505
+    rev: 441074f88139d39c8fd05bb56cbac78a7cbad81c
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -228,7 +228,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: d4b8940fd1cd77fc6d300f003b18745a584295b2
+    rev: 9abd7cf09a5b00b3194a71f84e2911b280f30b1e
 
 # continuously updated session files
 git module vim-obsession:
@@ -312,7 +312,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: d51593650b291e43037b675caf1080d3c2b97706
+    rev: 97f87f704ba5ecafc372cbe61aaa9ec50f1f36fd
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: f56701cdc9b73824948bc0ee509185b0ccc84d9e
+    rev: 757e68e631e6f64498338ce7a588ea82a9266488
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 73ca1e71918a0b50b7bbcbed91857c3618ad93cc
+    rev: 5bbe77101db18968fde65210956e54750d7ff4f5
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

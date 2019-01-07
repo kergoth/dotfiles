@@ -11,7 +11,7 @@ Vim's diff handling capabilities to stage a subset of the file's
 changes.
 
 Bring up the output of `git status` with `:Gstatus`.  Press `-` to
-`add`/`reset` a file's changes, or `p` to `add`/`reset` `--patch`.  Use
+`add`/`reset` a file's changes, or `P` to `add`/`reset` `--patch`.  Use
 `:Gcommit %` to commit the current file, editing the commit message inside
 the currently running Vim.
 
@@ -70,10 +70,6 @@ and paste:
     cd ~/.vim/bundle
     git clone https://github.com/tpope/vim-fugitive.git
     vim -u NONE -c "helptags vim-fugitive/doc" -c q
-
-If your Vim version is below 7.2, I recommend also installing
-[vim-git](https://github.com/tpope/vim-git) for syntax highlighting and
-other Git niceties.
 
 ## FAQ
 
