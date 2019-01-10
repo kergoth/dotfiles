@@ -1,2 +1,6 @@
 export HOMEBREW_AUTO_UPDATE=1
-export HOMEBREW_PREFIX=/opt/homebrew
+if [[ "$OSTYPE" == darwin* ]]; then
+    export HOMEBREW_PREFIX=/opt/homebrew
+else
+    export HOMEBREW_PREFIX=~/.brew
+fi
