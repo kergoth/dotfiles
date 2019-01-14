@@ -1,0 +1,76 @@
+#!/bin/sh
+#
+# git-cp - Copy and add a file, a directory, or a symlink, creating any
+# missing leading directories in the destination.
+
+usage () {
+    cp -h
+    exit 2
+}
+
+quote(){
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+$1
+EOF
+}
+
+save () {
+    case "$1" in
+    # when a string contains a "'" we have to escape it
+    *\'*)
+        saved="$saved $(quote "$1")"
+        ;;
+    # otherwise just quote the variable
+    *)
+        saved="$saved '$1'"
+        ;;
+    esac
+}
+
+saved=
+dry_run=0
+while getopts vnfkh opt; do
+    case "$opt" in
+        n)
+            dry_run=1
+            ;;
+        \?|h)
+            usage
+            ;;
+    esac
+    save "-$opt"
+done
+shift $((OPTIND - 1))
+
+if [ $# -lt 2 ]; then
+    usage
+fi
+
+destination="$(eval printf '%s' "\$$#")"
+destdir="$destination"
+if [ $# -eq 2 ]; then
+    case "$destination" in
+        */)
+            ;;
+        *)
+            if [ ! -d "$destination" ]; then
+                destdir="$(dirname "$destdir")"
+            fi
+            ;;
+    esac
+fi
+
+for arg; do
+    save "$arg"
+done
+eval set -- "$saved"
+
+if [ $dry_run -eq 1 ]; then
+    printf >&2 'mkdir: would create directory ‘%s‘\n' "$destdir"
+    echo >&2 cp -pPR "$@"
+    printf "add '%s'\n" "$destination"
+else
+    mkdir -pv "$destdir"
+    cp -pPR "$@"
+    git add "$destination"
+fi
