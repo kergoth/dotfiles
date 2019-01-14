@@ -28,4 +28,4 @@ install-env-tools
 
 # Clean up
 # FIXME: only remove the ones we installed, not the ones the user did
-sudo apt-get -y remove libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev
+# sudo apt-get -y remove libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev
