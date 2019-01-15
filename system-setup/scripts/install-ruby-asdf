@@ -31,7 +31,7 @@ if [ ! -e "$ASDF_DIR/installs/ruby/$RUBY_VERSION" ]; then
     if [ -e "$ASDF_DIR/plugins/ruby" ]; then
         asdf plugin-update ruby
     else
-        asdf plugin-list-all | grep '^ruby ' | while read -r name url; do asdf plugin-add "$name" "$url"; done
+        asdf plugin-list-all | grep '^ruby ' | sed -e 's/\*//' | while read -r name url; do asdf plugin-add "$name" "$url"; done
     fi
 
     asdf install ruby "$RUBY_VERSION"

@@ -28,10 +28,15 @@ if [ -z "$CONFIGURE_OPTS" ] && [ -z "$PYTHON_CONFIGURE_OPTS" ]; then
         --enable-shared \
         --with-system-expat \
         --with-system-zlib \
-        --with-lto \
         --enable-loadable-sqlite-extensions \
+        --with-pydebug \
     "
     no_pgo=0
+    case "$OSTYPE" in
+        darwin*)
+            PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --with-openssl=$(brew --prefix openssl)"
+            ;;
+    esac
     if [ "$OSTYPE" = linux-gnu ]; then
         case "$(uname -r)" in
             *-Microsoft)
@@ -58,7 +63,7 @@ fi
 if [ -e "$ASDF_DIR/plugins/python" ]; then
     asdf plugin-update python
 else
-    asdf plugin-list-all | grep '^python ' | while read -r name url; do asdf plugin-add "$name" "$url"; done
+    asdf plugin-list-all | grep '^python ' | sed -e 's/\*//' | while read -r name url; do asdf plugin-add "$name" "$url"; done
 fi
 
 PY3_VERSION="${PY3_VERSION:-$(asdf list-all python | grep '^3' | grep -Ev '\-p|rc|dev' | sort -rn | head -n 1)}"
