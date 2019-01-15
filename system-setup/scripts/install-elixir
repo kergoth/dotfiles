@@ -2,9 +2,9 @@
 
 set -e
 
-ELIXIR_VERSION=1.7.4
-
 . $(dirname "$0")/install-erlang
+
+ELIXIR_VERSION="${ELIXIR_VERSION:-$(asdf list-all elixir | grep -v rc | sort -nr | head -n 1)}" || exit $?
 
 if [ ! -e $ASDF_DIR/installs/elixir/$ELIXIR_VERSION ]; then
     unset CFLAGS LDFLAGS
