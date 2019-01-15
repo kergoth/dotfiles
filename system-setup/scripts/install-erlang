@@ -2,8 +2,6 @@
 
 set -e
 
-ERLANG_VERSION=21.1.1
-
 KERL_CONFIGURE_OPTIONS="--disable-debug --disable-silent-rules --without-javac --enable-shared-zlib --enable-dynamic-ssl-lib --enable-shared-zlib --enable-hipe --enable-sctp --enable-smp-support --enable-threads --enable-kernel-poll --enable-wx"
 case "$OSTYPE" in
     darwin*)
@@ -13,6 +11,8 @@ esac
 #export KERL_BUILD_DOCS=yes
 
 . $(dirname "$0")/install-asdf
+
+ERLANG_VERSION="${ERLANG_VERSION:-$(asdf list-all erlang | grep -v rc | sort -nr | head -n 1)}" || exit $?
 
 if [ ! -e $ASDF_DIR/installs/erlang/$ERLANG_VERSION ]; then
     unset CFLAGS LDFLAGS
