@@ -1,0 +1,7 @@
+#!/bin/sh
+
+tag="$1"
+shift
+for id; do
+    pocket-remove-tags "$id" "$tag"
+done
