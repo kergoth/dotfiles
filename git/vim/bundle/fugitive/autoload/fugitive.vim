@@ -183,7 +183,21 @@ function! fugitive#GitVersion(...) abort
   if !has_key(s:git_versions, g:fugitive_git_executable)
     let s:git_versions[g:fugitive_git_executable] = matchstr(system(g:fugitive_git_executable.' --version'), "\\S\\+\\ze\n")
   endif
-  return s:git_versions[g:fugitive_git_executable]
+  if !a:0
+    return s:git_versions[g:fugitive_git_executable]
+  endif
+  let components = split(s:git_versions[g:fugitive_git_executable], '\D\+')
+  if empty(components)
+    return -1
+  endif
+  for i in range(len(a:000))
+    if a:000[i] > +get(components, i)
+      return 0
+    elseif a:000[i] < +get(components, i)
+      return 1
+    endif
+  endfor
+  return a:000[i] ==# get(components, i)
 endfunction
 
 let s:commondirs = {}
@@ -213,7 +227,7 @@ function! s:Tree(...) abort
 endfunction
 
 function! s:PreparePathArgs(cmd, dir, literal) abort
-  let literal_supported = fugitive#GitVersion() !~# '^0\|^1\.[1-8]\.'
+  let literal_supported = fugitive#GitVersion(1, 9)
   if a:literal && literal_supported
     call insert(a:cmd, '--literal-pathspecs')
   endif
@@ -265,17 +279,17 @@ function! fugitive#Prepare(...) abort
           let pre = (len(pre) ? pre : 'env ') . var . '=' . s:shellesc(val) . ' '
         endif
       endif
-      if fugitive#GitVersion() =~# '^0\|^1\.[1-7]\.' || cmd[i+1] !~# '\.'
-        call remove(cmd, i, i + 1)
-      else
+      if fugitive#GitVersion(1, 8) && cmd[i+1] =~# '\.'
         let i += 2
+      else
+        call remove(cmd, i, i + 1)
       endif
     elseif cmd[i] =~# '^--.*pathspecs$'
       let explicit_pathspec_option = 1
-      if fugitive#GitVersion() =~# '^0\|^1\.[1-8]\.'
-        call remove(cmd, i)
-      else
+      if fugitive#GitVersion(1, 9)
         let i += 1
+      else
+        call remove(cmd, i)
       endif
     elseif cmd[i] !~# '^-'
       break
@@ -291,10 +305,10 @@ function! fugitive#Prepare(...) abort
   let args = join(map(copy(cmd), 's:shellesc(v:val)'))
   if empty(tree) || index(cmd, '--') == len(cmd) - 1
     let args = s:shellesc('--git-dir=' . dir) . ' ' . args
-  elseif fugitive#GitVersion() =~# '^0\|^1\.[1-8]\.'
-    let pre = 'cd ' . s:shellesc(tree) . (s:winshell() ? ' & ' : '; ') . pre
-  else
+  elseif fugitive#GitVersion(1, 9)
     let args = '-C ' . s:shellesc(tree) . ' ' . args
+  else
+    let pre = 'cd ' . s:shellesc(tree) . (s:winshell() ? ' & ' : '; ') . pre
   endif
   return pre . g:fugitive_git_executable . ' ' . args
 endfunction
@@ -392,7 +406,7 @@ endfunction
 function! fugitive#RemoteUrl(...) abort
   let dir = a:0 > 1 ? a:2 : get(b:, 'git_dir', '')
   let remote = !a:0 || a:1 =~# '^\.\=$' ? s:Remote(dir) : a:1
-  if fugitive#GitVersion() =~# '^[01]\.\|^2\.[0-6]\.'
+  if !fugitive#GitVersion(2, 7)
     return fugitive#Config('remote.' . remote . '.url')
   endif
   let cmd = s:Prepare(dir, 'remote', 'get-url', remote, '--')
@@ -1154,39 +1168,39 @@ function! fugitive#buffer(...) abort
 endfunction
 
 function! s:buffer_getvar(var) dict abort
-  throw 'fugitive: Removed in favor of getbufvar()'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().getvar() which has been removed. Replace it with the local variable or getbufvar()"
 endfunction
 
 function! s:buffer_getline(lnum) dict abort
-  throw 'fugitive: Removed in favor of getbufline()'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().getline() which has been removed. Replace it with getline() or getbufline()"
 endfunction
 
 function! s:buffer_repo() dict abort
-  throw 'fugitive: Removed in favor of fugitive#repo()'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().repo() which has been removed. Replace it with fugitive#repo()"
 endfunction
 
 function! s:buffer_type(...) dict abort
-  throw 'fugitive: Removed in favor of b:fugitive_type (or ideally avoid entirely)'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().type() which has been removed. Replace it with get(b:, 'fugitive_type', '')"
 endfunction
 
 function! s:buffer_spec() dict abort
-  throw "fugitive: Removed in favor of bufname(), expand('%:p'), etc."
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().spec() which has been removed. Replace it with bufname(), expand('%:p'), etc"
 endfunction
 
 function! s:buffer_name() dict abort
-  throw "fugitive: Removed in favor of bufname(), expand('%:p'), etc."
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().name() which has been removed. Replace it with bufname(), expand('%:p'), etc"
 endfunction
 
 function! s:buffer_commit() dict abort
-  throw 'fugitive: Removed in favor of FugitiveParse()'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().commit() which has been removed. Replace it with matchstr(FugitiveParse()[0], '^\x\+')"
 endfunction
 
 function! s:buffer_relative(...) dict abort
-  throw 'fugitive: Removed in favor of FugitivePath(bufname, ' . string(a:0 ? a:1 : '') . ')'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().relative() which has been removed. Replace it with FugitivePath(@%, " . string(a:0 ? a:1 : '') . ")"
 endfunction
 
 function! s:buffer_path(...) dict abort
-  throw 'fugitive: Removed in favor of FugitivePath(bufname, ' . string(a:0 ? a:1 : '') . ')'
+  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().path() which has been removed. Replace it with FugitivePath(@%, " . string(a:0 ? a:1 : '') . ")"
 endfunction
 
 call s:add_methods('buffer',['getvar','getline','repo','type','spec','name','commit','path','relative'])
@@ -1400,6 +1414,9 @@ function! fugitive#BufReadStatus() abort
       let file = line[3:-1]
       let files = file
       let i += 1
+      if line[2] !=# ' '
+        continue
+      endif
       if line[0:1] =~# '[RC]'
         let files = output[i] . ' -> ' . file
         let i += 1
@@ -1882,37 +1899,36 @@ call s:command("-bar -bang -range=-1 G       :execute s:Status(<bang>0, <count>,
 augroup fugitive_status
   autocmd!
   if !has('win32')
-    autocmd FocusGained,ShellCmdPost * call fugitive#ReloadStatus()
-    autocmd QuickFixCmdPost c*file call fugitive#ReloadStatus()
-    autocmd BufDelete term://* call fugitive#ReloadStatus()
+    autocmd ShellCmdPost        * call fugitive#ReloadStatus()
+    autocmd QuickFixCmdPost c*ile call fugitive#ReloadStatus()
+    autocmd FocusGained         * call fugitive#ReloadStatus()
+    autocmd BufDelete    term://* call fugitive#ReloadStatus()
   endif
 augroup END
 
 function! s:Status(bang, count, mods) abort
   try
-    let dir = b:git_dir
-    let mods = a:mods ==# '<mods>' || empty(a:mods) ? 'leftabove' : a:mods
+    let mods = a:mods ==# '<mods>' || empty(a:mods) ? '' : a:mods . ' '
+    if mods !~# 'aboveleft\|belowright\|leftabove\|rightbelow\|topleft\|botright'
+      let mods = 'topleft ' . mods
+    endif
     let file = fugitive#Find(':')
+    let arg = ' +setl\ foldmethod=syntax\ foldlevel=1\|let\ w:fugitive_status=FugitiveGitDir() ' .
+          \ s:fnameescape(file)
     for winnr in range(1, winnr('$'))
       if s:cpath(file, fnamemodify(bufname(winbufnr(winnr)), ':p'))
         exe winnr . 'wincmd w'
-        let w:fugitive_status = dir
+        let w:fugitive_status = FugitiveGitDir()
         return s:ReloadStatus()
       endif
     endfor
-    let wide = winwidth(0) >= 160
     if a:count ==# 0
-      exe mods 'Gedit :'
+      return mods . 'edit' . (a:bang ? '!' : '') . arg
     elseif a:bang
-      exe mods (a:count ==# -1 && wide ? 'vert' : '') 'Gpedit :'
-      wincmd P
-    elseif a:count ==# -1 && wide
-      exe mods 'Gvsplit :'
+      return mods . 'pedit' . arg . '|wincmd P'
     else
-      exe mods a:count > 0 ? a:count : '' 'Gsplit :'
+      return mods . (a:count > 0 ? a:count : '') . 'split' . arg
     endif
-    let w:fugitive_status = dir
-    setlocal foldmethod=syntax foldlevel=1
   catch /^fugitive:/
     return 'echoerr v:errmsg'
   endtry
@@ -2778,7 +2794,10 @@ function! s:Grep(cmd,bang,arg) abort
   try
     let cdback = s:Cd(s:Tree())
     let &grepprg = s:UserCommand() . ' --no-pager grep -n --no-color'
-    let &grepformat = '%f:%l:%m,%m %f match%ts,%f'
+    let &grepformat = '%f:%l:%c:%m,%f:%l:%m,%m %f match%ts,%f'
+    if fugitive#GitVersion(2, 19)
+      let &grepprg .= ' --column'
+    endif
     exe a:cmd.'! '.escape(s:ShellExpand(matchstr(a:arg, '\v\C.{-}%($|[''" ]\@=\|)@=')), '|#%')
     let list = a:cmd =~# '^l' ? getloclist(0) : getqflist()
     for entry in list
@@ -2858,7 +2877,7 @@ endfunction
 
 function! s:UsableWin(nr) abort
   return a:nr && !getwinvar(a:nr, '&previewwindow') &&
-        \ empty(getwinvar(a:nr, 'fugitive_status')) &&
+        \ (empty(getwinvar(a:nr, 'fugitive_status')) || getwinvar(a:nr, 'fugitive_type') !=# 'index') &&
         \ index(['gitrebase', 'gitcommit'], getbufvar(winbufnr(a:nr), '&filetype')) < 0 &&
         \ index(['nofile','help','quickfix'], getbufvar(winbufnr(a:nr), '&buftype')) < 0
 endfunction
@@ -2887,8 +2906,7 @@ function! s:BlurStatus() abort
     if len(winnrs)
       exe winnrs[0].'wincmd w'
     else
-      let wide = winwidth(0) >= 160
-      exe 'rightbelow' (winwidth(0) >= 160 ? 'vert' : '') 'new'
+      belowright new
     endif
     if &diff
       let mywinnr = winnr()
@@ -2977,6 +2995,9 @@ function! s:Read(count, line1, line2, range, bang, mods, args, ...) abort
   endtry
   if file =~# '^fugitive:' && after is# 0
     return 'exe ' .string(mods . ' ' . fugitive#FileReadCmd(file, 0, pre)) . '|diffupdate'
+  endif
+  if foldlevel(after)
+    exe after . 'foldopen!'
   endif
   return mods . ' ' . after . 'read' . pre . ' ' . s:fnameescape(file) . '|' . delete . 'diffupdate' . (a:count < 0 ? '|' . line('.') : '')
 endfunction
@@ -3174,11 +3195,11 @@ function! s:Dispatch(bang, args)
     let &l:errorformat = s:common_efm
     let &l:makeprg = substitute(s:UserCommand() . ' ' . a:args, '\s\+$', '', '')
     if exists(':Make') == 2
-      noautocmd Make
+      Make
     else
       silent noautocmd make!
       redraw!
-      return 'call fugitive#Cwindow()'
+      return 'call fugitive#Cwindow()|call fugitive#ReloadStatus()'
     endif
     return ''
   finally
@@ -3680,8 +3701,10 @@ endfunction
 
 function! s:BlameJump(suffix) abort
   let commit = matchstr(getline('.'),'^\^\=\zs\x\+')
+  let suffix = a:suffix
   if commit =~# '^0\+$'
     let commit = ':0'
+    let suffix = ''
   endif
   let lnum = matchstr(getline('.'),' \zs\d\+\ze\s\+[([:digit:]]')
   let path = matchstr(getline('.'),'^\^\=\x\+\s\+\zs.\{-\}\ze\s*\d\+ ')
@@ -3695,7 +3718,7 @@ function! s:BlameJump(suffix) abort
   if winnr > 0
     exe winnr.'wincmd w'
   endif
-  execute 'Gedit' s:fnameescape(commit . a:suffix . ':' . path)
+  execute 'Gedit' s:fnameescape(commit . suffix . ':' . path)
   execute lnum
   if winnr > 0
     exe bufnr.'bdelete'
