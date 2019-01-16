@@ -106,6 +106,19 @@
       ]
     },
     {
+      "shell": [
+        {
+          "plist-to-json": "plutil -convert json -o - filename.plist"
+        },
+        {
+          "json-to-plist": "plutil -convert xml1 -r -o - -- filename.json"
+        },
+        {
+          "json-pretty-print": "python -m json.tool"
+        }
+      ]
+    },
+    {
       "cvsrepos": [
         {
           "mksh": "_anoncvs@anoncvs.mirbsd.org:/cvs mksh"
@@ -122,16 +135,6 @@
         },
         {
           "openbsd": "anoncvs.usa.openbsd.org"
-        }
-      ]
-    },
-    {
-      "shell": [
-        {
-          "plist-to-json": "plutil -convert json -o - filename.plist"
-        },
-        {
-          "json-to-plist": "plutil -convert xml1 -r -o - -- filename.json"
         }
       ]
     }
