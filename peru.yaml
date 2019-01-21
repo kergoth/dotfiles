@@ -122,7 +122,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 6e73221070cec47a60657740c1e975b6da2f1b15
+    rev: 133c78f2f17151bc287f517cb20cd21a91b70cc6
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: fa5910eb148fd0702083bf4854d5811188c87774
+    rev: e0bde5dea4f1698e2f047d697035952b16690a87
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -312,7 +312,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 1374d291570f5556334c2331026e60bc72b90349
+    rev: 29c2058aeffbcb0aefb59b619cafb5046ba84971
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -525,14 +525,14 @@ git module gitvoodoo:
 curl module diff-so-fancy:
     url: https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
     executable: diff-so-fancy
-    sha1: 65a1043362a449e4d863fb7f50df4fca32604293
+    sha1: e95bffe83ab8642643bcc77b5af1d5a6878d1a9b
 
 git module hub-completion:
     url: https://github.com/github/hub
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: ddf0d825100e1b5b218888ade2fa554336002cae
+    rev: fba26b09faca9818cfd88e2eac63aca8a5573344
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -566,7 +566,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 44dc1b9dba7c9bca24b2a3aa05251fa7a0276aa1
+    rev: 088ea058d958c31f717d965fea86a351b47eeb42
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: d1fc084b2d3af6dd9807a01a6ca7822af6c2a78f
+    rev: bffb26cb72017c33be08d5ee74ec56b982bdf736
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -688,7 +688,7 @@ git module base16-rofi:
     pick:
         - themes/base16-tomorrow-night.config
         - themes/base16-tomorrow-night.rasi
-    rev: 75231228bfd8f8ab2cff49954e0d16a91c8f14cd
+    rev: 0f5c4818b82af38f201f014eb59443be54c844ce
 
 git module base16-fzf:
     url: https://github.com/nicodebo/base16-fzf
@@ -720,7 +720,7 @@ git module wsl-open:
 
 git module vim-VimCompletesMe:
     url: https://github.com/ajh17/VimCompletesMe
-    rev: 5e63ad2045aba7e20a13482b3230cbccd978e277
+    rev: cc1eab38cca26fd1e387df5ce78e6f1e51aed8f4
 
 git module vim-autoformat:
     url: https://github.com/Chiel92/vim-autoformat

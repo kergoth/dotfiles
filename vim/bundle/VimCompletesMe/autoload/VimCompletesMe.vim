@@ -26,7 +26,7 @@ function! VimCompletesMe#vim_completes_me(shift_tab)
 
   let omni_pattern = get(b:, 'vcm_omni_pattern', get(g:, 'vcm_omni_pattern'))
   let file_pattern = (has('win32') || has('win64')) ? '\\\|\/' : '\/'
-  let return_exp = "\<C-p>\<C-p>"
+  let return_exp = &completeopt =~ 'noselect' ? "\<C-p>" : "\<C-p>\<C-p>"
 
   if !empty(&omnifunc) && match(substr, omni_pattern) != -1
     " Check position so that we can fallback if at the same pos.
