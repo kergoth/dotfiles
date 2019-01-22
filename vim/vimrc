@@ -785,6 +785,8 @@ endif
 if has('gui_running')
   if has('gui_macvim')
     set guifont=InputMonoNarrow\ Thin:h14
+    set macligatures
+    set macthinstrokes
   else
     set guifont=InputMonoNarrow\ Thin\ 14
   endif
