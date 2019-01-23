@@ -213,7 +213,7 @@ git module vim-eunuch:
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
-    rev: 9172c17f6d07405f14707ff273e3ca9f35aa9e42
+    rev: 63734df2a33eb809a985657662e3a7c671480177
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: fba26b09faca9818cfd88e2eac63aca8a5573344
+    rev: 90523e4da6b5a007bce78f5ca321bedeedb312ee
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: bffb26cb72017c33be08d5ee74ec56b982bdf736
+    rev: f12d312aa4aa49c4698056933030cd5adb60b489
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -675,7 +675,7 @@ git module vim-tmux-navigator:
 
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events
-    rev: 48595bdef7d25087111c86cd3c6ca34bc60909c7
+    rev: 32723c5d778905a2a2e40030990c80c17f456649
 
 git module rofi-tools:
     url: https://github.com/okraits/rofi-tools
