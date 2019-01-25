@@ -55,7 +55,11 @@ mkdir -p "$HOMEBREW_REPO" && \
 if [ $separate_prefix -eq 1 ]; then
     HOMEBREW_REPO="$(cd "$HOMEBREW_REPO" && pwd -P)"
     mkdir -p "$HOMEBREW_PREFIX/bin"
-    ln -sf "$HOMEBREW_REPO/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
+    if command -v lnr >/dev/null 2>&1; then
+        lnr "$HOMEBREW_REPO/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
+    else
+        ln -sf "$HOMEBREW_REPO/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
+    fi
 fi
 
 if [ "$(brew --prefix)" != "$HOMEBREW_PREFIX" ]; then
