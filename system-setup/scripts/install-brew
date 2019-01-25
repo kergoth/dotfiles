@@ -49,7 +49,7 @@ else
 fi
 
 mkdir -p "$HOMEBREW_REPO" && \
-    curl -sSfL https://github.com/Homebrew/homebrew/tarball/master | \
+    curl -sSfL https://github.com/Homebrew/brew/tarball/master | \
         tar xz --strip 1 -C "$HOMEBREW_REPO"
 
 if [ $separate_prefix -eq 1 ]; then
