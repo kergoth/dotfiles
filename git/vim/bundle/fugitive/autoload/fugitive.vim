@@ -1521,7 +1521,6 @@ function! fugitive#BufReadStatus() abort
 
     set nomodified readonly noswapfile
     silent doautocmd BufReadPost
-    set foldtext=fugitive#Foldtext()
     set filetype=fugitive
     setlocal nomodifiable
     if &bufhidden ==# ''
@@ -1661,7 +1660,7 @@ function! fugitive#BufReadCmd(...) abort
         let error = b:fugitive_type
         unlet b:fugitive_type
         if rev =~# '^:\d:'
-          let &readonly = !filewritable(dir . '/index')
+          let &l:readonly = !filewritable(dir . '/index')
           return 'silent doautocmd BufNewFile'
         else
           setlocal readonly nomodifiable
@@ -1731,7 +1730,7 @@ function! fugitive#BufReadCmd(...) abort
       keepjumps call setpos('.',pos)
       setlocal nomodified noswapfile
       let modifiable = rev =~# '^:.:' && b:fugitive_type !=# 'tree'
-      let &readonly = !modifiable || !filewritable(dir . '/index')
+      let &l:readonly = !modifiable || !filewritable(dir . '/index')
       if &bufhidden ==# ''
         setlocal bufhidden=delete
       endif
@@ -1910,7 +1909,7 @@ function! s:Status(bang, count, mods) abort
   try
     let mods = a:mods ==# '<mods>' || empty(a:mods) ? '' : a:mods . ' '
     if mods !~# 'aboveleft\|belowright\|leftabove\|rightbelow\|topleft\|botright'
-      let mods = 'topleft ' . mods
+      let mods = (&splitbelow ? 'botright ' : 'topleft ') . mods
     endif
     let file = fugitive#Find(':')
     let arg = ' +setl\ foldmethod=syntax\ foldlevel=1\|let\ w:fugitive_status=FugitiveGitDir() ' .
@@ -3550,13 +3549,7 @@ function! s:Blame(bang, line1, line2, count, mods, args) abort
     let cmd += ['--', expand('%:p')]
     let basecmd = escape(fugitive#Prepare(cmd), '!#%')
     try
-      let cd = s:Cd()
-      let tree = s:Tree()
-      let cdback = s:Cd(tree)
-      if len(tree) && s:cpath(tree) !=# s:cpath(getcwd())
-        let cwd = getcwd()
-        execute cd s:fnameescape(tree)
-      endif
+      let cdback = s:Cd(s:Tree())
       let error = tempname()
       let temp = error.'.fugitiveblame'
       if &shell =~# 'csh'
@@ -3564,10 +3557,10 @@ function! s:Blame(bang, line1, line2, count, mods, args) abort
       else
         silent! execute '%write !'.basecmd.' > '.temp.' 2> '.error
       endif
-      if exists('l:cwd')
-        execute cd s:fnameescape(cwd)
-        unlet cwd
-      endif
+    finally
+      execute cdback
+    endtry
+    try
       if v:shell_error
         call s:throw(join(readfile(error),"\n"))
       endif
@@ -3639,10 +3632,6 @@ function! s:Blame(bang, line1, line2, count, mods, args) abort
         nnoremap <buffer> <silent> D    :<C-u>exe "vertical resize ".(<SID>linechars('.\{-\}\ze\d\ze\s\+\d\+)')+1-v:count)<CR>
         redraw
         syncbind
-      endif
-    finally
-      if exists('l:cwd')
-        execute cd s:fnameescape(cwd)
       endif
     endtry
     return ''

@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 552baf98b31c5f07eefdab5a67a20767c5b94547
+    rev: d27dbc40d4264525b1c812482bf0efecfed53f28
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -190,7 +190,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: e0bde5dea4f1698e2f047d697035952b16690a87
+    rev: 98bc6abde3860600e599c7ad17fdfb80809c04af
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -312,7 +312,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 29c2058aeffbcb0aefb59b619cafb5046ba84971
+    rev: 20e3e9cd7b2544e45b5731d58fd3478e653664f6
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -532,7 +532,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 90523e4da6b5a007bce78f5ca321bedeedb312ee
+    rev: e8edc7ee5a4c6f50cc505b933c8d1b06685cc3c6
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -591,7 +591,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: f12d312aa4aa49c4698056933030cd5adb60b489
+    rev: 067601e9db7e0c2ab6c8394c9be74769463c6da9
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -640,7 +640,7 @@ git module textual-succinct:
 
 git module pyenv-installer:
     url: https://github.com/pyenv/pyenv-installer
-    rev: 06203e57680b4ca7fc9b09941fed38f6299a5579
+    rev: b646a0105b6612ff5781b064c9e644795edfa06f
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer

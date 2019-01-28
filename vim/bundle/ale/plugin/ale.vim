@@ -87,6 +87,9 @@ let g:ale_lint_on_save = get(g:, 'ale_lint_on_save', 1)
 " This flag can be set to 1 to enable linting when the filetype is changed.
 let g:ale_lint_on_filetype_changed = get(g:, 'ale_lint_on_filetype_changed', 1)
 
+" This Dictionary configures the default LSP roots for various linters.
+let g:ale_lsp_root = get(g:, 'ale_lsp_root', {})
+
 " This flag can be set to 1 to enable automatically fixing files on save.
 let g:ale_fix_on_save = get(g:, 'ale_fix_on_save', 0)
 
@@ -199,7 +202,7 @@ command! -bar ALEGoToTypeDefinitionInSplit :call ale#definition#GoToType({'open_
 command! -bar ALEGoToTypeDefinitionInVSplit :call ale#definition#GoToType({'open_in': 'vertical-split'})
 
 " Find references for tsserver and LSP
-command! -bar ALEFindReferences :call ale#references#Find()
+command! -bar -nargs=* ALEFindReferences :call ale#references#Find(<f-args>)
 
 " Show summary information for the cursor.
 command! -bar ALEHover :call ale#hover#ShowAtCursor()
