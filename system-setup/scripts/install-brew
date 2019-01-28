@@ -32,12 +32,17 @@ while getopts sr:h opt; do
 done
 shift $((OPTIND - 1))
 
-if [ $# -ne 1 ]; then
+if [ $# -gt 1 ]; then
     usage
 fi
 
-mkdir -p "$1"
-HOMEBREW_PREFIX="$(cd "$1" && pwd -P)"
+HOMEBREW_PREFIX="${1:-$HOMEBREW_PREFIX}"
+if [ -z "$HOMEBREW_PREFIX" ]; then
+    usage
+fi
+
+mkdir -p "$HOMEBREW_PREFIX"
+HOMEBREW_PREFIX="$(cd "$HOMEBREW_PREFIX" && pwd -P)"
 PATH="$HOMEBREW_PREFIX/bin:$PATH"
 
 if [ $separate_prefix -eq 1 ]; then
