@@ -74,6 +74,9 @@ imports:
     utter: scripts
     zombies: scripts
 
+    # Tmux
+    tmux-float: tmux/plugins/float
+
     # Vim
     pathogen: vim/autoload
     base16-vim: base16/vim/bundle/base16
@@ -762,5 +765,9 @@ git module hardlinkpy:
         hardlink.py: hardlink
     executable: hardlink
     rev: 4e95daf7969d36f6f09722c9240c00690ea43329
+
+git module tmux-float:
+    url: https://gitlab.com/Jrahme/tmux-float
+    rev: fe653746335d259c952e504280fe51f3c6cdff7a
 
 #  vim: set sw=4 :

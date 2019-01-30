@@ -1,0 +1,15 @@
+#!/bin/sh
+
+float=$(dirname "$0")/../plugins/float
+. "$float/scripts/helpers.sh"
+WINDOW_NAME="$(format_window_name "$1")"
+WINDOW_EXISTS=$(window_exists "$1")
+if [ "1" == "$WINDOW_EXISTS" ]; then
+    if [ "$2" = default ]; then
+        "$float/scripts/show_pane.sh" "$1"
+    else
+        tmux join-pane -vs floating:$WINDOW_NAME
+    fi
+else
+    "$float/scripts/hide_pane.sh" "$1"
+fi
