@@ -923,7 +923,12 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
-let g:loaded_matchit = 1
+if v:version >= 800 || has("nvim")
+  packadd! matchit
+else
+  runtime macros/matchit.vim
+endif
+
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 let g:sneak#label = 1
