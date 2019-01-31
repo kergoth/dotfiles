@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: d27dbc40d4264525b1c812482bf0efecfed53f28
+    rev: 3304c14c639ca314f2e1d0c6b9fc275f2473e72a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -216,7 +216,7 @@ git module vim-eunuch:
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
-    rev: 63734df2a33eb809a985657662e3a7c671480177
+    rev: db0223fc6857c160b2394489094355feb20318f2
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -286,7 +286,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 5d16b288698ecec96080a5d576521d92550e78fd
+    rev: 315e568de006e80138f79c77d5508c7e4853e6b2
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -535,7 +535,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: e8edc7ee5a4c6f50cc505b933c8d1b06685cc3c6
+    rev: 08004b921836a3fa8ae6054ab273cdbf6da39f8c
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -674,7 +674,7 @@ git module i3-urgent-notify:
 
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
-    rev: 9f7d1588b04644d8a1671d2325fefbb4f772e466
+    rev: 4e1a877f51a17a961b8c2a285ee80aebf05ccf42
 
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events
@@ -691,7 +691,7 @@ git module base16-rofi:
     pick:
         - themes/base16-tomorrow-night.config
         - themes/base16-tomorrow-night.rasi
-    rev: 0f5c4818b82af38f201f014eb59443be54c844ce
+    rev: 0efb1185eb530c4ee7a33755b399d16b527af706
 
 git module base16-fzf:
     url: https://github.com/nicodebo/base16-fzf
