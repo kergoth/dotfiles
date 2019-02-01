@@ -132,3 +132,11 @@
 
 [git-j]
 	alias = m=master
+
+[ghq]
+    root = $GHQ_ROOT
+    root = $GOPATH/src
+
+# Invoke as `ghq import starred motemen`
+[ghq "import"]
+    starred = github-list-starred

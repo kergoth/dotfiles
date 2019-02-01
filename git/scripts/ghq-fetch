@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -e
+
+if [ $# -eq 0 ] || [ "$1" = "--all" ]; then
+    num_remotes=$(git remote | wc -l)
+    if [ $num_remotes -eq 0 ]; then
+        exit 0
+    elif [ $num_remotes -lt 2 ] && which parallel >/dev/null 2>&1; then
+        case "$OSTYPE" in
+            darwin*)
+                PROCS="$(sysctl -n hw.ncpu)"
+                ;;
+            *)
+                PROCS="$(grep -c processor /proc/cpuinfo)"
+                ;;
+        esac
+        git remote | parallel -t -P "${PROCS:-1}" -n 1 ghq-fetch
+    else
+        git remote | xargs -t -n 1 ghq-fetch
+    fi
+fi
+
+export GIT_TERMINAL_PROMPT=0
+for remote; do
+    url="$(git config remote."$remote".url)"
+    url="${url%.git}"
+    ghq get "$url"
+    ghq_repo="$(ghq-repo-path "$url")"
+    git fetch --no-tags "$ghq_repo" refs/remotes/origin/\*:refs/remotes/"$remote"/\*
+done
