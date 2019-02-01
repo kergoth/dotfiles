@@ -12,7 +12,6 @@ excluded="$excluded_ignored"
 
 trap 'brew clean; brew clean-cask-pkgs' EXIT INT TERM
 
-export HOMEBREW_UPGRADE_CLEANUP=1
 unset HOMEBREW_AUTO_UPDATE
 
 brew update || :
