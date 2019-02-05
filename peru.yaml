@@ -125,7 +125,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 133c78f2f17151bc287f517cb20cd21a91b70cc6
+    rev: 82f59a0e1ed9198e618af9f3f2d0bcf186ce4171
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 3304c14c639ca314f2e1d0c6b9fc275f2473e72a
+    rev: ed07f9a503e53ec3ca4d5e255acb078675f2ff0e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -193,7 +193,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 98bc6abde3860600e599c7ad17fdfb80809c04af
+    rev: 767c1efd100dfb189e5719893ffb6c1329490357
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -351,7 +351,7 @@ git module icdiff:
     pick:
         - scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 0fca02ee5de290af319f2be6d0d3c889cb2e5320
+    rev: 065a1e5aebc5cd2174403bb849c5558159c7abd8
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -594,7 +594,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 067601e9db7e0c2ab6c8394c9be74769463c6da9
+    rev: 4d426bf2873c6e1cd2c71e478c756903307628d3
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

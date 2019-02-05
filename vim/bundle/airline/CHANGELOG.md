@@ -6,6 +6,9 @@ This is the Changelog for the vim-airline project.
 - New features
   - Extensions:
     - [Defx](https://github.com/Shougo/defx.nvim) support
+  - Improvements
+    - The statusline can be configured to be shown on top (in the tabline)
+      Set the `g:airline_statusline_ontop` to enable this experimental feature.
 
 ## [0.10] - 2018-12-15
 - New features
@@ -182,7 +185,7 @@ This is the Changelog for the vim-airline project.
   - integration with other plugins: netrw, unite, nerdtree, undotree, gundo, tagbar, minibufexplr, ctrlp
   - support for themes: 8 included
 
-[Unreleased]: https://github.com/vim-airline/vim-airline/compare/v0.9...HEAD
+[Unreleased]: https://github.com/vim-airline/vim-airline/compare/v0.10...HEAD
 [0.9]: https://github.com/vim-airline/vim-airline/compare/v0.8...v0.9
 [0.8]: https://github.com/vim-airline/vim-airline/compare/v0.7...v0.8
 [0.7]: https://github.com/vim-airline/vim-airline/compare/v0.6...v0.7
