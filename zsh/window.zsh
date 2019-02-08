@@ -64,6 +64,15 @@ function _terminal-set-titles-with-command {
   fi
 }
 
+set-title () {
+    local title="$1"
+    local truncated_title="${title/(#m)?(#c15,)/${MATCH[1,12]}...}"
+    unset MATCH
+
+    set-window-title "$title"
+    set-tab-title "$truncated_title"
+}
+
 # Sets the tab and window titles with a given path.
 function _terminal-set-titles-with-path {
   emulate -L zsh
