@@ -99,7 +99,8 @@ function! s:VimCloseCallback(channel) abort
     if job_status(l:job) is# 'dead'
         try
             if !empty(l:info) && has_key(l:info, 'exit_cb')
-                call ale#util#GetFunction(l:info.exit_cb)(l:job_id, get(l:info, 'exit_code', 1))
+                " We have to remove the callback, so we don't call it twice.
+                call ale#util#GetFunction(remove(l:info, 'exit_cb'))(l:job_id, get(l:info, 'exit_code', 1))
             endif
         finally
             " Automatically forget about the job after it's done.
@@ -124,7 +125,8 @@ function! s:VimExitCallback(job, exit_code) abort
     if ch_status(job_getchannel(a:job)) is# 'closed'
         try
             if !empty(l:info) && has_key(l:info, 'exit_cb')
-                call ale#util#GetFunction(l:info.exit_cb)(l:job_id, a:exit_code)
+                " We have to remove the callback, so we don't call it twice.
+                call ale#util#GetFunction(remove(l:info, 'exit_cb'))(l:job_id, a:exit_code)
             endif
         finally
             " Automatically forget about the job after it's done.
@@ -270,6 +272,24 @@ function! ale#job#Start(command, options) abort
         " Store the job in the map for later only if we can get the ID.
         let s:job_map[l:job_id] = l:job_info
     endif
+
+    return l:job_id
+endfunction
+
+" Force running commands in a Windows CMD command line.
+" This means the same command syntax works everywhere.
+function! ale#job#StartWithCmd(command, options) abort
+    let l:shell = &l:shell
+    let l:shellcmdflag = &l:shellcmdflag
+    let &l:shell = 'cmd'
+    let &l:shellcmdflag = '/c'
+
+    try
+        let l:job_id = ale#job#Start(a:command, a:options)
+    finally
+        let &l:shell = l:shell
+        let &l:shellcmdflag = l:shellcmdflag
+    endtry
 
     return l:job_id
 endfunction

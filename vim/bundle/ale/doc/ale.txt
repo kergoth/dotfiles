@@ -20,7 +20,8 @@ CONTENTS                                                         *ale-contents*
     5.6 Symbol Search.....................|ale-symbol-search|
   6. Global Options.......................|ale-options|
     6.1 Highlights........................|ale-highlights|
-    6.2 Options for write-good Linter.....|ale-write-good-options|
+    6.2 Options for alex Linter...........|ale-alex-options|
+    6.3 Options for write-good Linter.....|ale-write-good-options|
   7. Integration Documentation............|ale-integrations|
     ada...................................|ale-ada-options|
       gcc.................................|ale-ada-gcc|
@@ -269,6 +270,7 @@ CONTENTS                                                         *ale-contents*
       pycodestyle.........................|ale-python-pycodestyle|
       pydocstyle..........................|ale-python-pydocstyle|
       pyflakes............................|ale-python-pyflakes|
+      pylama..............................|ale-python-pylama|
       pylint..............................|ale-python-pylint|
       pyls................................|ale-python-pyls|
       pyre................................|ale-python-pyre|
@@ -439,6 +441,7 @@ Notes:
 * Crystal: `ameba`!!, `crystal`!!
 * CSS: `csslint`, `prettier`, `stylelint`
 * Cucumber: `cucumber`
+* Cypher: `cypher-lint`
 * Cython (pyrex filetype): `cython`
 * D: `dls`, `dmd`, `uncrustify`
 * Dafny: `dafny`!!
@@ -890,6 +893,8 @@ supported:
 
 |ALEFindReferences| - Find references for the word under the cursor.
 
+Options:
+  `-relative`       Show file paths in the results relative to the working dir
 
 -------------------------------------------------------------------------------
 5.5 Hovering                                                        *ale-hover*
@@ -930,6 +935,8 @@ commands are supported:
 
 |ALESymbolSearch| - Search for symbols in the workspace.
 
+Options:
+  `-relative`     Show file paths in the results relative to the working dir
 
 ===============================================================================
 6. Global Options                                                 *ale-options*
@@ -2219,7 +2226,29 @@ ALEWarningSign                                                 *ALEWarningSign*
 
 
 -------------------------------------------------------------------------------
-6.2. Options for write-good                            *ale-write-good-options*
+6.2. Options for alex                                        *ale-alex-options*
+
+The options for the alex linter are global because it does not make sense to
+have them specified on a per-language basis.
+
+g:ale_alex_executable                                   *g:ale_alex_executable*
+                                                        *b:ale_alex_executable*
+  Type: |String|
+  Default: `'alex'`
+
+  See |ale-integrations-local-executables|
+
+
+g:ale_alex_use_global                                   *g:ale_alex_use_global*
+                                                        *b:ale_alex_use_global*
+  Type: |Number|
+  Default: `get(g:, 'ale_use_global_executables', 0)`
+
+  See |ale-integrations-local-executables|
+
+
+-------------------------------------------------------------------------------
+6.3. Options for write-good                            *ale-write-good-options*
 
 The options for the write-good linter are global because it does not make
 sense to have them specified on a per-language basis.
@@ -2461,14 +2490,36 @@ ALELast                                                               *ALELast*
   `ALEPreviousWrap` and `ALENextWrap` will wrap around the file to find
   the last or first warning or error in the file, respectively.
 
+  `ALEPrevious` and `ALENext` take optional flags arguments to custom their
+  behaviour :
+  `-wrap` enable wrapping around the file
+  `-error`, `-warning` and `-info` enable jumping to errors, warnings or infos
+    respectively, ignoring anything else. They are mutually exclusive and if
+    several are provided the priority is the following: error > warning > info.
+  `-style` and `-nostyle` allow you to jump respectively to style error or
+    warning and to not style error or warning. They also are mutually
+    exclusive and nostyle has priority over style.
+  
+  Flags can be combined to create create custom jumping. Thus you can use
+  ":ALENext -wrap -error -nosyle" to jump to the next error which is not a
+  style error while going back to the begining of the file if needed.
+
   `ALEFirst` goes to the first error or warning in the buffer, while `ALELast`
   goes to the last one.
 
   The following |<Plug>| mappings are defined for the commands: >
   <Plug>(ale_previous) - ALEPrevious
   <Plug>(ale_previous_wrap) - ALEPreviousWrap
+  <Plug>(ale_previous_error) - ALEPrevious -error
+  <Plug>(ale_previous_wrap_error) - ALEPrevious -wrap -error
+  <Plug>(ale_previous_warning) - ALEPrevious -warning
+  <Plug>(ale_previous_wrap_warning) - ALEPrevious -wrap -warning
   <Plug>(ale_next) - ALENext
   <Plug>(ale_next_wrap) - ALENextWrap
+  <Plug>(ale_next_error) - ALENext -error
+  <Plug>(ale_next_wrap_error) - ALENext -wrap -error
+  <Plug>(ale_next_warning) - ALENext -warning
+  <Plug>(ale_next_wrap_warning) - ALENext -wrap -warning
   <Plug>(ale_first) - ALEFirst
   <Plug>(ale_last) - ALELast
 <
@@ -2669,9 +2720,9 @@ ale#command#ManageDirectory(buffer, directory)  *ale#command#ManageDirectory()*
 
 ale#command#ManageFile(buffer, filename)             *ale#command#ManageFile()*
 
-  Given a buffer number for a buffer currently running some linting tasks
-  and a filename, register a filename with ALE for automatic deletion after
-  linting is complete, or when Vim exits.
+  Given a buffer number for a buffer currently running some linting or fixing
+  tasks and a filename, register a filename with ALE for automatic deletion
+  after linting or fixing is complete, or when Vim exits.
 
   If Vim exits suddenly, ALE will try its best to remove temporary files, but
   ALE cannot guarantee with absolute certainty that the files will be removed.
@@ -2682,7 +2733,7 @@ ale#command#ManageFile(buffer, filename)             *ale#command#ManageFile()*
   files and symlinks given to this function. This is to prevent entire
   directories from being accidentally deleted, say in cases of writing
   `dir . '/' . filename` where `filename` is actually `''`, etc. ALE instead
-  manages directories separetly with the |ale#command#ManageDirectory| function.
+  manages directories separately with the |ale#command#ManageDirectory| function.
 
 
 ale#engine#GetLoclist(buffer)                         *ale#engine#GetLoclist()*

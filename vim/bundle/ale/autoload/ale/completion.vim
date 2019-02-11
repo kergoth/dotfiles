@@ -316,7 +316,7 @@ function! ale#completion#ParseTSServerCompletionEntryDetails(response) abort
 endfunction
 
 function! ale#completion#NullFilter(buffer, item) abort
-   return 1
+    return 1
 endfunction
 
 function! ale#completion#ParseLSPCompletions(response) abort
@@ -480,8 +480,8 @@ function! s:OnReady(linter, lsp_details, ...) abort
         \   b:ale_completion_info.line,
         \   min([
         \       b:ale_completion_info.line_length,
-        \       b:ale_completion_info.column + 1,
-        \   ]),
+        \       b:ale_completion_info.column,
+        \   ]) + 1,
         \   ale#completion#GetTriggerCharacter(&filetype, b:ale_completion_info.prefix),
         \)
     endif

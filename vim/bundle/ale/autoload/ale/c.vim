@@ -86,8 +86,8 @@ function! ale#c#ParseCFlags(path_prefix, cflag_line) abort
         let l:next_option_index = l:option_index + 1
 
         " Join space-separated option
-        while l:next_option_index < len(l:split_lines) &&
-            \ stridx(l:split_lines[l:next_option_index], '-') != 0
+        while l:next_option_index < len(l:split_lines)
+        \&& stridx(l:split_lines[l:next_option_index], '-') != 0
             let l:next_option_index += 1
         endwhile
 
@@ -96,9 +96,9 @@ function! ale#c#ParseCFlags(path_prefix, cflag_line) abort
         call insert(l:split_lines, l:option, l:option_index)
 
         " Ignore invalid or conflicting options
-        if stridx(l:option, '-') != 0 ||
-            \ stridx(l:option, '-o') == 0 ||
-            \ stridx(l:option, '-c') == 0
+        if stridx(l:option, '-') != 0
+        \|| stridx(l:option, '-o') == 0
+        \|| stridx(l:option, '-c') == 0
             call remove(l:split_lines, l:option_index)
             let l:option_index = l:option_index - 1
         " Fix relative path
@@ -202,7 +202,7 @@ function! s:GetLookupFromCompileCommandsFile(compile_commands_file) abort
         let l:file_lookup[l:basename] = get(l:file_lookup, l:basename, []) + [l:entry]
 
         let l:dirbasename = tolower(fnamemodify(l:entry.directory, ':p:h:t'))
-        let l:dir_lookup[l:dirbasename] = get(l:dir_lookup, l:basename, []) + [l:entry]
+        let l:dir_lookup[l:dirbasename] = get(l:dir_lookup, l:dirbasename, []) + [l:entry]
     endfor
 
     if !empty(l:file_lookup) && !empty(l:dir_lookup)

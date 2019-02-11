@@ -181,7 +181,7 @@ endfunction
 let s:git_versions = {}
 function! fugitive#GitVersion(...) abort
   if !has_key(s:git_versions, g:fugitive_git_executable)
-    let s:git_versions[g:fugitive_git_executable] = matchstr(system(g:fugitive_git_executable.' --version'), "\\S\\+\\ze\n")
+    let s:git_versions[g:fugitive_git_executable] = matchstr(system(g:fugitive_git_executable.' --version'), '\d\S\+')
   endif
   if !a:0
     return s:git_versions[g:fugitive_git_executable]
@@ -2041,9 +2041,9 @@ endfunction
 
 function! s:StageInfo(...) abort
   let lnum = a:0 ? a:1 : line('.')
-  let sigil = matchstr(getline('.'), '^[ @\+-]')
+  let sigil = matchstr(getline(lnum), '^[ @\+-]')
   let offset = -1
-  if getline(lnum) =~# '^[ @\+-]'
+  if len(sigil)
     let type = sigil ==# '-' ? '-' : '+'
     while lnum > 0 && getline(lnum) !~# '^@'
       if getline(lnum) =~# '^[ '.type.']'
@@ -2107,11 +2107,6 @@ function! s:StagePrevious(count) abort
     call s:StageReveal()
     return '.'
   endif
-endfunction
-
-function! s:StageReloadSeek(target,lnum1,lnum2) abort
-  exe s:ReloadStatus(a:lnum1)
-  return ''
 endfunction
 
 function! s:StageInline(mode, ...) abort
@@ -2221,16 +2216,7 @@ function! s:StageDiffEdit() abort
     return 'Git! diff --no-ext-diff --cached '.s:shellesc(arg)
   elseif info.status ==# '?'
     call s:TreeChomp('add', '--intent-to-add', './' . arg)
-    if arg ==# '.'
-      silent! edit!
-      1
-      if !search('^Unstaged','W')
-        call search('^Staged','W')
-      endif
-    else
-      call s:StageReloadSeek([info.filename, 'Staged'], line('.'), line('.'))
-    endif
-    return ''
+    return s:ReloadStatus()
   else
     return 'Git! diff --no-ext-diff '.s:shellesc(arg)
   endif
@@ -3015,8 +3001,8 @@ endfunction
 call s:command("-bar -bang -nargs=*           -complete=customlist,fugitive#Complete Ge       execute s:Edit('edit<bang>', 0, '<mods>', <q-args>, <f-args>)")
 call s:command("-bar -bang -nargs=*           -complete=customlist,fugitive#Complete Gedit    execute s:Edit('edit<bang>', 0, '<mods>', <q-args>, <f-args>)")
 call s:command("-bar -bang -nargs=*           -complete=customlist,s:EditRunComplete Gpedit   execute s:Edit('pedit', <bang>0, '<mods>', <q-args>, <f-args>)")
-call s:command("-bar -bang -nargs=* -range=0  -complete=customlist,s:EditRunComplete Gsplit   execute s:Edit((<count> ? <count> : '').'split', <bang>0, '<mods>', <q-args>, <f-args>)")
-call s:command("-bar -bang -nargs=* -range=0  -complete=customlist,s:EditRunComplete Gvsplit  execute s:Edit((<count> ? <count> : '').'vsplit', <bang>0, '<mods>', <q-args>, <f-args>)")
+call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:EditRunComplete Gsplit   execute s:Edit((<count> > 0 ? <count> : '').(<count> ? 'split' : 'edit'), <bang>0, '<mods>', <q-args>, <f-args>)")
+call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:EditRunComplete Gvsplit  execute s:Edit((<count> > 0 ? <count> : '').(<count> ? 'vsplit' : 'edit!'), <bang>0, '<mods>', <q-args>, <f-args>)")
 call s:command("-bar -bang -nargs=* -range=0  -complete=customlist,s:EditRunComplete" . (has('patch-7.4.542') ? ' -addr=tabs' : '') . " Gtabedit execute s:Edit((<count> ? <count> : '').'tabedit', <bang>0, '<mods>', <q-args>, <f-args>)")
 call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:EditRunComplete Gread execute s:Read(<count>, <line1>, <line2>, +'<range>', <bang>0, '<mods>', <q-args>, <f-args>)")
 

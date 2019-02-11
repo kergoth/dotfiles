@@ -125,7 +125,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 82f59a0e1ed9198e618af9f3f2d0bcf186ce4171
+    rev: ee4f7c76362f40d905f9c45a59b365abebb213ae
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: ed07f9a503e53ec3ca4d5e255acb078675f2ff0e
+    rev: ce8ddf37fc28dc705559edadb1c783c565fac0b6
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -193,7 +193,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 767c1efd100dfb189e5719893ffb6c1329490357
+    rev: 1471330825a51fef66c5c36051d4ef8deb53c4b8
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -535,7 +535,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 08004b921836a3fa8ae6054ab273cdbf6da39f8c
+    rev: 349df6f777f635fbc46f787e4d7db0bcc95a4343
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -569,7 +569,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 088ea058d958c31f717d965fea86a351b47eeb42
+    rev: 39df4dfa64c683baa6cfff64af165d04a4df41d0
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -594,7 +594,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 4d426bf2873c6e1cd2c71e478c756903307628d3
+    rev: 6ebe24b5ffcd8536c613a4f12d07ccadbfb07cd8
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
