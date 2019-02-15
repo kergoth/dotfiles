@@ -120,7 +120,7 @@ imports:
     fzf: fzf
     base16-fzf: fzf
     base16-rofi: i3
-    bat-syntax-bitbake: bat/syntax/BitBake
+    bat-syntax-bitbake: bat/syntaxes/BitBake
     bat-themes-base16: bat/themes
 
 git module zsh-fast-syntax-highlighting:

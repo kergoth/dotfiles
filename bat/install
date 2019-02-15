@@ -1,43 +1,34 @@
-case "$OSTYPE" in
-    darwin*)
-        cfgpath=~/Library/Preferences
-        ;;
-    *)
-        cfgpath=$XDG_CONFIG_HOME
-        ;;
-esac
+if which bat >/dev/null 2>&1; then
+    cfgpath=$(bat --config-dir)
+else
+    cfgpath=$XDG_CONFIG_HOME/bat
+fi
+mkdir -p $cfgpath
 
-if [ -e $cfgpath/bat/syntax ] && [ ! -e $cfgpath/bat/syntaxes ]; then
-    mv $cfgpath/bat/syntax $cfgpath/bat/syntaxes
+if [ -e $cfgpath/syntax ] && [ ! -e $cfgpath/syntaxes ]; then
+    mv $cfgpath/syntax $cfgpath/syntaxes
 fi
 
-if [ -h $cfgpath/bat ]; then
-    rm -f $cfgpath/bat
+if [ -h $cfgpath ]; then
+    rm -f $cfgpath
 fi
 
-mkdir -p $cfgpath/bat/syntaxes
-for i in syntax/*; do
-    if [ -e "$i" ]; then
-        ln -sf $PWD/$i/*.sublime-syntax $cfgpath/bat/syntaxes/
-    fi
-done
+mkdir -p $cfgpath/syntaxes
+find $PWD/syntaxes/ -name \*.sublime-syntax | xargs -I"{}" ln -sf "{}" $cfgpath/syntaxes/
 
-mkdir -p $cfgpath/bat/themes
-for i in themes/*.tmTheme; do
-    if [ -e "$i" ]; then
-        ln -sf $PWD/$i $cfgpath/bat/$i
-    fi
-done
-ln -sf base16-tomorrow-night.tmTheme $cfgpath/bat/themes/Default.tmTheme
+mkdir -p $cfgpath/themes
+find $PWD/themes/ -name \*.tmTheme | xargs -I"{}" ln -sf "{}" $cfgpath/themes/
 
-if [ ! -e $cfgpath/bat/syntaxes/Packages ]; then
-    git clone https://github.com/sublimehq/Packages $cfgpath/bat/syntaxes/Packages
-fi
+#if [ ! -e $cfgpath/syntaxes/Packages ]; then
+#    git clone https://github.com/sublimehq/Packages $cfgpath/syntaxes/Packages
+#fi
 
-if [ ! -e $cfgpath/bat/syntaxes/Elixir ]; then
-    git clone https://github.com/princemaple/elixir-sublime-syntax $cfgpath/bat/syntaxes/Elixir
+if [ ! -e $cfgpath/syntaxes/Elixir ]; then
+    git clone https://github.com/princemaple/elixir-sublime-syntax $cfgpath/syntaxes/Elixir
 fi
 
 if which bat >/dev/null 2>&1; then
-    bat cache -i
+    bat cache --build
 fi
+
+link bat.conf $XDG_CONFIG_HOME/bat/config

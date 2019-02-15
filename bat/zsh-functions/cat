@@ -1,5 +1,5 @@
 if [[ -t 1 ]] && [[ -t 0 ]] && (( $+commands[bat] )); then
-    bat ${BAT_THEME+--theme=$BAT_THEME} "$@"
+    bat "$@"
 else
     command cat "$@"
 fi
