@@ -125,7 +125,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: ee4f7c76362f40d905f9c45a59b365abebb213ae
+    rev: d7e4be7bf8d9d24b84964b9f4d6b9e6810ea8389
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: ce8ddf37fc28dc705559edadb1c783c565fac0b6
+    rev: a489c6e1d3fc265242fabfd171021b0ea02dacf8
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -193,7 +193,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 1471330825a51fef66c5c36051d4ef8deb53c4b8
+    rev: 448aa43ec4bb49dfb3f75c3e52aad41eec9ee2ce
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -254,7 +254,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: ac9d646f6d699f6822a6bc787d3e7338ae7ab6ed
+    sha1: 49fb1e2ee8964f5e4f9840042c037b622e027ce3
 
 hg module smem:
     url: https://selenic.com/repo/smem
@@ -535,7 +535,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 349df6f777f635fbc46f787e4d7db0bcc95a4343
+    rev: 2b67d8c3b35497918f4fc9701d714cc80dd2a50f
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -594,7 +594,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 6ebe24b5ffcd8536c613a4f12d07ccadbfb07cd8
+    rev: fefc093e707716da755ca2c326f852495f1b56fb
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
