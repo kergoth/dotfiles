@@ -514,7 +514,7 @@ set synmaxcol=200
 " And spaces before tabs:
 "  foo 	bar
 hi def link RedundantWhitespace Error
-match RedundantWhitespace /\s\+$\| \+\ze\t/
+match RedundantWhitespace /\S\zs\s\+$\| \+\ze\t/
 
 " We care quite a lot about the length of the git commit summary line
 hi def link gitcommitOverflow Error
