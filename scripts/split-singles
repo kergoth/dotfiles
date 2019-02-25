@@ -12,6 +12,10 @@ if [ $# -eq 0 ]; then
 fi
 
 for source_dir; do
+    if [ "$(cd "$source_dir" && pwd -P)" = "$(pwd -P)" ]; then
+        # Don't recurse into ourselves
+        continue
+    fi
     for dir in "$source_dir"/*/*/; do
         dir="${dir%/}"
         count=$(find "$dir/" -type f -o -type l | grep -v '^\.' | wc -l)
