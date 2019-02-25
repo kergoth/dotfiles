@@ -27,7 +27,16 @@ for source_dir; do
         if [ $count -lt 1 ]; then
             continue
         fi
-        total="$(find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | head -n 1 | tr '\n' '\0' | xargs -0 ffprobe 2>&1 | sed -n -e 's# *track *:##p' | grep / | cut -d/ -f2)"
+        first="$(find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | head -n 1)"
+        total="$(exiftool -p '$Tracktotal' "$first" 2>/dev/null)"
+        if [ -z "$total" ]; then
+            track="$(exiftool -p '$Track' "$first" 2>/dev/null)"
+            case "$track" in
+                */*)
+                    total="${track#*/}"
+                    ;;
+            esac
+        fi
         if [ -z "$total" ]; then
             if [ $count -gt 1 ]; then
                 d="./_Complete Albums"
