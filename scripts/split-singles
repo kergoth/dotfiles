@@ -7,40 +7,44 @@ if which gln >/dev/null 2>&1; then
     alias ln=gln
 fi
 
-for dir in "${1:-.}"/*/*/; do
-# for dir in Flor**/*/; do
-# for dir in Various*/*99*Dark*; do
-    dir="${dir%/}"
-    count=$(find "$dir/" -type f -o -type l | grep -v '^\.' | wc -l)
-    # count=$(find "$dir" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | wc -l)
-    if [ $count -lt 1 ]; then
-        continue
-    fi
-    total="$(find "$dir/" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | head -n 1 | tr '\n' '\0' | xargs -0 ffprobe 2>&1 | sed -n -e 's# *track *:##p' | grep / | cut -d/ -f2)"
-    if [ -z "$total" ]; then
-        if [ $count -gt 1 ]; then
-            d="$destdir/_Complete Albums"
-        else
+if [ $# -eq 0 ]; then
+    set -- .
+fi
+
+for source_dir; do
+    for dir in "$source_dir"/*/*/; do
+        dir="${dir%/}"
+        count=$(find "$dir/" -type f -o -type l | grep -v '^\.' | wc -l)
+        # count=$(find "$dir" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | wc -l)
+        if [ $count -lt 1 ]; then
+            continue
+        fi
+        total="$(find "$dir/" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | head -n 1 | tr '\n' '\0' | xargs -0 ffprobe 2>&1 | sed -n -e 's# *track *:##p' | grep / | cut -d/ -f2)"
+        if [ -z "$total" ]; then
+            if [ $count -gt 1 ]; then
+                d="$destdir/_Complete Albums"
+            else
+                d="$destdir/_Single-Track"
+            fi
+        elif [ $count -ge $total ]; then
+            if [ $total -le 2 ]; then
+                d="$destdir/_Complete Singles"
+            else
+                d="$destdir/_Complete Albums"
+            fi
+        elif [ $total -eq 1 ]; then
             d="$destdir/_Single-Track"
-        fi
-    elif [ $count -ge $total ]; then
-        if [ $total -le 2 ]; then
-            d="$destdir/_Complete Singles"
         else
-            d="$destdir/_Complete Albums"
+            if [ $count -gt "$investigate_threshold" ]; then
+                # Possibly screwed up, or an incomplete album
+                d="$destdir/_Incomplete Albums"
+            else
+                d="$destdir/_Single-Track"
+            fi
         fi
-    elif [ $total -eq 1 ]; then
-        d="$destdir/_Single-Track"
-    else
-        if [ $count -gt "$investigate_threshold" ]; then
-            # Possibly screwed up, or an incomplete album
-            d="$destdir/_Incomplete Albums"
-        else
-            d="$destdir/_Single-Track"
-        fi
-    fi
-    echo "$dir: $count / $total"
-    mkdir -p "$d/$(dirname "$dir")"
-    rm -f "$d/$dir"
-    ln -rsfv "$dir" "$d/$dir"
+        echo "$dir: $count / $total"
+        mkdir -p "$d/$(dirname "$dir")"
+        rm -f "$d/$dir"
+        ln -rsfv "$dir" "$d/$dir"
+    done
 done
