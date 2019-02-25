@@ -21,12 +21,12 @@ for source_dir; do
             continue
         fi
         dir="${dir%/}"
-        count=$(find "$dir/" -type f -o -type l | grep -v '^\.' | wc -l)
+        count=$(find "$dir/" -not -name ._\* \( -type f -o -type l \) | wc -l)
         # count=$(find "$dir" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | wc -l)
         if [ $count -lt 1 ]; then
             continue
         fi
-        total="$(find "$dir/" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | head -n 1 | tr '\n' '\0' | xargs -0 ffprobe 2>&1 | sed -n -e 's# *track *:##p' | grep / | cut -d/ -f2)"
+        total="$(find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | head -n 1 | tr '\n' '\0' | xargs -0 ffprobe 2>&1 | sed -n -e 's# *track *:##p' | grep / | cut -d/ -f2)"
         if [ -z "$total" ]; then
             if [ $count -gt 1 ]; then
                 d="$destdir/_Complete Albums"
