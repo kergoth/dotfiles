@@ -17,6 +17,9 @@ for source_dir; do
         continue
     fi
     for dir in "$source_dir"/*/*/; do
+        if [ ! -e "$dir" ]; then
+            continue
+        fi
         dir="${dir%/}"
         count=$(find "$dir/" -type f -o -type l | grep -v '^\.' | wc -l)
         # count=$(find "$dir" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | wc -l)
