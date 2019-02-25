@@ -54,6 +54,15 @@ for source_dir; do
                 d="./_Single-Track"
             fi
         fi
+        if [ "$d" = "./_Single-Track" ]; then
+            mkdir -p "$d"
+            find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) \
+                | while read -r fn; do
+                    ext="${fn##*.}"
+                    ln -rsfv "$fn" "$d/$(exiftool -p '$Artist - $Title' "$fn").$ext"
+                done
+            continue
+        fi
 
         rel="$(relpath "$dir" "$source_dir")"
         dest="$d/$rel"
