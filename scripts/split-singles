@@ -1,0 +1,161 @@
+#!/bin/sh
+
+investigate_threshold=1
+destdir=.
+# The games have data tracks, the cake album has a video, tron legacy has
+# a digital booklet that counts as track 24
+incomplete_blacklist="Descent|Shadow Warrior|Fantasy General|Stargunner Original Soundtrack|King's Quest VI Heir Today, Gone Tomorrow|Command & Conquer Red Alert Counterstrike|Command & Conquer Tiberian Dawn Covert Operations|Warcraft II Tides of Darkness|Total Annihilation|Moto Racer|Return to Zork|Quake|Prolonging The Magic \\(Deluxe Version\\) \\[Explicit\\] \\[\\+video\\]|Tron Legacy \\(Amazon MP3 Exclusive Version\\) \\[\\+digital booklet\\]|Music In Progress, Vol II \\[\\+digital booklet\\]"
+
+if which gln >/dev/null 2>&1; then
+    alias ln=gln
+fi
+
+if [ $# -eq 0 ]; then
+    set -- .
+fi
+
+exiftool_field () {
+    exiftool -qm -"$1" -p "\$$1" "$2" 2>/dev/null
+}
+
+get_track_total () {
+    _total="$(exiftool_field Tracktotal "$1")"
+    if [ -z "$_total" ]; then
+        _track="$(exiftool_field Track "$1")"
+        if [ -n "$_track" ]; then
+            case "$_track" in
+                */*)
+                    _total="${_track#*/}"
+                    ;;
+            esac
+        else
+            _track="$(exiftool_field TrackNumber "$1")"
+            case "$_track" in
+                *\ of\ *)
+                    _total="${_track##* }"
+                    ;;
+            esac
+        fi
+    fi
+    if [ -n "$_total" ]; then
+        echo "$_total"
+    else
+        return 1
+    fi
+}
+
+# We need to get the total tracks for all discs to get a true total
+get_album_track_total () {
+    file_count=$(find "$1/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | wc -l)
+    find "$1/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) \
+        | (
+            total=0
+            while read -r fn; do
+                discnumber="$(exiftool_field Discnumber "$fn")"
+                if [ -z "$discnumber" ]; then
+                    partofset="$(exiftool_field PartOfSet "$fn")"
+                    if [ -n "$partofset" ]; then
+                        discnumber="${partofset%/*}"
+                    fi
+                    if [ -z "$discnumber" ]; then
+                        discnumber=1
+                    fi
+                fi
+                existing_total="$(eval "printf '%s' \"\${total$discnumber}\"")"
+                if [ -z "$existing_total" ]; then
+                    disctotal="$(get_track_total "$fn")"
+                    if [ -n "$disctotal" ]; then
+                        eval "total$discnumber=$disctotal"
+                        total=$((total+disctotal))
+                    else
+                        return 0
+                    fi
+                fi
+                if [ $total -ge $file_count ]; then
+                    break
+                fi
+            done
+            if [ $total -gt 0 ]; then
+                echo "$total"
+            fi
+        )
+}
+
+for source_dir; do
+    if [ "$(cd "$source_dir" && pwd -P)" = "$(pwd -P)" ]; then
+        # Don't recurse into ourselves
+        continue
+    fi
+    for dir in "$source_dir"/*/*/; do
+        if [ ! -e "$dir" ]; then
+            continue
+        fi
+        dir="${dir%/}"
+        count="$(find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | wc -l)"
+        if [ $count -lt 1 ]; then
+            continue
+        fi
+        first="$(find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | head -n 1)"
+        total="$(get_album_track_total "$dir/")"
+        if [ -z "$total" ]; then
+            if [ $count -gt 1 ]; then
+                d="./_Albums"
+            else
+                d="./_Single-Tracks"
+            fi
+        elif [ $count -eq $total ]; then
+            if [ $total -eq 1 ] || basename "$dir" | grep -q Single; then
+                d="./_Singles"
+            else
+                d="./_Albums"
+            fi
+        elif [ $count -gt $total ]; then
+            # The most common case is multiple discs
+            # find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \)
+            d="./_Albums-With-Extra-Tracks"
+        elif [ $total -eq 1 ]; then
+            d="./_Single-Tracks"
+        else
+            if [ $count -gt "$investigate_threshold" ]; then
+                if basename "$dir" | grep -qEx "$incomplete_blacklist"; then
+                    d="./_Albums"
+                else
+                    # Possibly screwed up, or an incomplete album
+                    d="./_Incomplete Albums"
+                fi
+            else
+                d="./_Single-Tracks"
+            fi
+        fi
+        if [ "$d" = "./_Single-Tracks" ]; then
+            mkdir -p "$d"
+            find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) \
+                | while read -r fn; do
+                    ext="${fn##*.}"
+                    ln -rsfv "$fn" "$d/$(exiftool -qm -Artist -Title -p '$Artist - $Title' "$fn" 2>/dev/null).$ext"
+                done
+            continue
+        fi
+
+        rel="$(relpath "$dir" "$source_dir")"
+        dest="$d/$rel"
+        destdir="$(dirname "$dest")"
+
+        echo "$rel: $count / $total"
+        mkdir -p "$destdir"
+        if [ -h "$dest" ]; then
+            if [ -d "$dest" ]; then
+                olddest="$(cd "$dest" && pwd -P)"
+            else
+                olddest="$(cd "$destdir" && abspath "$(readlink "$(basename "$rel")")")"
+            fi
+            absdir="$(cd "$dir" && pwd -P)"
+            if [ "$olddest" != "$absdir" ]; then
+                echo >&2 "Error: $dest exists but points to $olddest, not $absdir"
+                continue
+            fi
+        fi
+        rm -f "$dest"
+        ln -rsfv "$dir" "$dest"
+    done
+done
