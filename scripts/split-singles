@@ -1,13 +1,13 @@
 #!/bin/sh
 
 investigate_threshold=1
-destdir="${1:-..}"
+destdir=.
 
 if which gln >/dev/null 2>&1; then
     alias ln=gln
 fi
 
-for dir in */*/; do
+for dir in "${1:-.}"/*/*/; do
 # for dir in Flor**/*/; do
 # for dir in Various*/*99*Dark*; do
     dir="${dir%/}"
@@ -39,7 +39,7 @@ for dir in */*/; do
             d="$destdir/_Single-Track"
         fi
     fi
-    echo $dir: $count / $total
+    echo "$dir: $count / $total"
     mkdir -p "$d/$(dirname "$dir")"
     rm -f "$d/$dir"
     ln -rsfv "$dir" "$d/$dir"
