@@ -2,6 +2,7 @@
 
 investigate_threshold=1
 destdir=.
+incomplete_blacklist="Descent|Fantasy General|Stargunner Original Soundtrack"
 
 if which gln >/dev/null 2>&1; then
     alias ln=gln
@@ -43,7 +44,12 @@ for source_dir; do
             d="./_Single-Track"
         else
             if [ $count -gt "$investigate_threshold" ]; then
-                d="./_Incomplete Albums"
+                if basename "$dir" | grep -qEx "$incomplete_blacklist"; then
+                    d="./_Complete Albums"
+                else
+                    # Possibly screwed up, or an incomplete album
+                    d="./_Incomplete Albums"
+                fi
             else
                 d="./_Single-Track"
             fi
