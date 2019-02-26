@@ -4,7 +4,7 @@ investigate_threshold=1
 destdir=.
 # The games have data tracks, the cake album has a video, tron legacy has
 # a digital booklet that counts as track 24
-incomplete_blacklist="Descent|Fantasy General|Stargunner Original Soundtrack|Prolonging The Magic \\(Deluxe Version\\) \\[Explicit\\] \\[\\+video\\]|Tron Legacy \\(Amazon MP3 Exclusive Version\\) \\[\\+digital booklet\\]|Music In Progress, Vol II \\[\\+digital booklet\\]"
+incomplete_blacklist="Descent|Shadow Warrior|Fantasy General|Stargunner Original Soundtrack|Prolonging The Magic \\(Deluxe Version\\) \\[Explicit\\] \\[\\+video\\]|Tron Legacy \\(Amazon MP3 Exclusive Version\\) \\[\\+digital booklet\\]|Music In Progress, Vol II \\[\\+digital booklet\\]"
 
 if which gln >/dev/null 2>&1; then
     alias ln=gln
