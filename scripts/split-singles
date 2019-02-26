@@ -24,8 +24,7 @@ for source_dir; do
             continue
         fi
         dir="${dir%/}"
-        count=$(find "$dir/" -not -name ._\* \( -type f -o -type l \) | wc -l)
-        # count=$(find "$dir" -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg | wc -l)
+        count="$(find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) | wc -l)"
         if [ $count -lt 1 ]; then
             continue
         fi
