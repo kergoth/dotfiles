@@ -31,11 +31,20 @@ for source_dir; do
         total="$(exiftool -p '$Tracktotal' "$first" 2>/dev/null)"
         if [ -z "$total" ]; then
             track="$(exiftool -p '$Track' "$first" 2>/dev/null)"
-            case "$track" in
-                */*)
-                    total="${track#*/}"
-                    ;;
-            esac
+            if [ -n "$track" ]; then
+                case "$track" in
+                    */*)
+                        total="${track#*/}"
+                        ;;
+                esac
+            else
+                track="$(exiftool -p '$TrackNumber' "$first" 2>/dev/null)"
+                case "$track" in
+                    *\ of\ *)
+                        total="${track##* }"
+                        ;;
+                esac
+            fi
         fi
         if [ -z "$total" ]; then
             if [ $count -gt 1 ]; then
