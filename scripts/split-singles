@@ -52,7 +52,7 @@ for source_dir; do
             if [ $count -gt 1 ]; then
                 d="./_Complete Albums"
             else
-                d="./_Single-Track"
+                d="./_Single-Tracks"
             fi
         elif [ $count -ge $total ]; then
             if [ $total -le 2 ]; then
@@ -61,7 +61,7 @@ for source_dir; do
                 d="./_Complete Albums"
             fi
         elif [ $total -eq 1 ]; then
-            d="./_Single-Track"
+            d="./_Single-Tracks"
         else
             if [ $count -gt "$investigate_threshold" ]; then
                 if basename "$dir" | grep -qEx "$incomplete_blacklist"; then
@@ -71,10 +71,10 @@ for source_dir; do
                     d="./_Incomplete Albums"
                 fi
             else
-                d="./_Single-Track"
+                d="./_Single-Tracks"
             fi
         fi
-        if [ "$d" = "./_Single-Track" ]; then
+        if [ "$d" = "./_Single-Tracks" ]; then
             mkdir -p "$d"
             find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) \
                 | while read -r fn; do
