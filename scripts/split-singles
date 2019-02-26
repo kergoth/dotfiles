@@ -54,8 +54,8 @@ for source_dir; do
             else
                 d="./_Single-Tracks"
             fi
-        elif [ $count -ge $total ]; then
-            if [ $total -le 2 ]; then
+        elif [ $count -eq $total ]; then
+            if [ $total -eq 1 ] || basename "$dir" | grep -q Single; then
                 d="./_Singles"
             else
                 d="./_Albums"
