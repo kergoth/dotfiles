@@ -4,7 +4,7 @@ investigate_threshold=1
 destdir=.
 # The games have data tracks, the cake album has a video, tron legacy has
 # a digital booklet that counts as track 24
-incomplete_blacklist="Descent|Shadow Warrior|Fantasy General|Stargunner Original Soundtrack|King's Quest VI Heir Today, Gone Tomorrow|Command & Conquer Red Alert Counterstrike|Command & Conquer Tiberian Dawn Covert Operations|Warcraft II Tides of Darkness|Total Annihilation|Moto Racer|Return to Zork|Quake|Prolonging The Magic \\(Deluxe Version\\) \\[Explicit\\] \\[\\+video\\]|Tron Legacy \\(Amazon MP3 Exclusive Version\\) \\[\\+digital booklet\\]|Music In Progress, Vol II \\[\\+digital booklet\\]"
+incomplete_blacklist="Descent|Shadow Warrior|Fantasy General|Stargunner Original Soundtrack|King's Quest VI Heir Today, Gone Tomorrow|Command & Conquer Red Alert Counterstrike|Command & Conquer Tiberian Dawn Covert Operations|Warcraft II Tides of Darkness|Total Annihilation|Moto Racer|Return to Zork|Quake|Prolonging The Magic \\(Deluxe Version\\) \\[Explicit\\] \\[\\+video\\]|Tron Legacy \\(Amazon MP3 Exclusive Version\\) \\[\\+digital booklet\\]|Music In Progress, Vol II \\[\\+digital booklet\\]|Ceremonials \\(Deluxe Edition\\) \\[\\+Digital Booklet\\]"
 
 if which gln >/dev/null 2>&1; then
     alias ln=gln
