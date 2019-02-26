@@ -105,6 +105,10 @@ for source_dir; do
             else
                 d="./_Albums"
             fi
+        elif [ $count -gt $total ]; then
+            # The most common case is multiple discs
+            # find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \)
+            d="./_Albums-With-Extra-Tracks"
         elif [ $total -eq 1 ]; then
             d="./_Single-Tracks"
         else
