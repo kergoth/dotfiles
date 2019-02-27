@@ -12,16 +12,6 @@ get_cd_device () {
         done
     return 1
 }
-get_sdcard_device () {
-    diskutil list | sed -n '/^\/dev\/disk/s/ (internal, physical)://p' | \
-        grep -v '/dev/disk0$' | while read -r disk; do
-            if [ "$(diskutil info "$disk" | sed -n 's# *Device / Media Name: *##p')" = "SD Card Reader" ]; then
-                echo "$disk"
-                return 0
-            fi
-        done
-    return 1
-}
 
 tocfile="$(mktemp -t "$(basename "$0").XXXXXX")"
 trap 'rm -f "$tocfile"' EXIT
