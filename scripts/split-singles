@@ -144,28 +144,27 @@ for source_dir; do
                     ext="${fn##*.}"
                     link "$fn" "$d/$(exiftool -qm -Artist -Title -p '$Artist - $Title' "$fn" 2>/dev/null).$ext"
                 done
-            continue
-        fi
+        else
+            rel="$(relpath "$dir" "$source_dir")"
+            dest="$d/$rel"
+            destdir="$(dirname "$dest")"
 
-        rel="$(relpath "$dir" "$source_dir")"
-        dest="$d/$rel"
-        destdir="$(dirname "$dest")"
-
-        echo "$rel: $count / $total"
-        mkdir -p "$destdir"
-        if [ -h "$dest" ]; then
-            if [ -d "$dest" ]; then
-                olddest="$(cd "$dest" && pwd -P)"
-            else
-                olddest="$(cd "$destdir" && abspath "$(readlink "$(basename "$rel")")")"
+            echo "$rel: $count / $total"
+            mkdir -p "$destdir"
+            if [ -h "$dest" ]; then
+                if [ -d "$dest" ]; then
+                    olddest="$(cd "$dest" && pwd -P)"
+                else
+                    olddest="$(cd "$destdir" && abspath "$(readlink "$(basename "$rel")")")"
+                fi
+                absdir="$(cd "$dir" && pwd -P)"
+                if [ "$olddest" != "$absdir" ]; then
+                    echo >&2 "Error: $dest exists but points to $olddest, not $absdir"
+                    continue
+                fi
             fi
-            absdir="$(cd "$dir" && pwd -P)"
-            if [ "$olddest" != "$absdir" ]; then
-                echo >&2 "Error: $dest exists but points to $olddest, not $absdir"
-                continue
-            fi
+            rm -f "$dest"
+            link "$dir" "$dest"
         fi
-        rm -f "$dest"
-        link "$dir" "$dest"
     done
 done
