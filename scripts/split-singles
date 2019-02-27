@@ -2,12 +2,21 @@
 
 investigate_threshold=1
 destdir=.
-# The games have data tracks, the cake album has a video, tron legacy has
-# a digital booklet that counts as track 24
-incomplete_blacklist="Descent|Shadow Warrior|Fantasy General|Stargunner Original Soundtrack|King's Quest VI Heir Today, Gone Tomorrow|Command & Conquer Red Alert Counterstrike|Command & Conquer Tiberian Dawn Covert Operations|Warcraft II Tides of Darkness|Total Annihilation|Moto Racer|Return to Zork|Quake|Prolonging The Magic \\(Deluxe Version\\) \\[Explicit\\] \\[\\+video\\]|Tron Legacy \\(Amazon MP3 Exclusive Version\\) \\[\\+digital booklet\\]|Music In Progress, Vol II \\[\\+digital booklet\\]|Ceremonials \\(Deluxe Edition\\) \\[\\+Digital Booklet\\]"
+albumsdir=./_Albums
+extrasdir="./_Albums With Extra Tracks"
+incompletedir="./_Incomplete Albums"
+singlesdir=./_Singles
+singletracksdir="./_Single Tracks"
+
+# Games with data tracks and amazon albums whose videos and booklets are
+# counted in the track total. This blacklist only allows one track to be
+# missing at this time.
+incomplete_blacklist="Descent|Shadow Warrior|Fantasy General|Stargunner Original Soundtrack|King's Quest VI Heir Today, Gone Tomorrow|Command & Conquer Red Alert Counterstrike|Command & Conquer Tiberian Dawn Covert Operations|Warcraft II Tides of Darkness|Total Annihilation|Moto Racer|Return to Zork|Quake|.*\\[\\+video\\]|.*\\[\\+Digital Booklet\\]"
 
 if which gln >/dev/null 2>&1; then
-    alias ln=gln
+    alias link='gln -rsfv'
+else
+    alias link='ln -rsfv'
 fi
 
 if [ $# -eq 0 ]; then
@@ -99,40 +108,40 @@ for source_dir; do
         total="$(get_album_track_total "$dir/")"
         if [ -z "$total" ]; then
             if [ $count -gt 1 ]; then
-                d="./_Albums"
+                d="$albumsdir"
             else
-                d="./_Single-Tracks"
+                d="$singletracksdir"
             fi
         elif [ $count -eq $total ]; then
             if [ $total -eq 1 ] || basename "$dir" | grep -q Single; then
-                d="./_Singles"
+                d="$singlesdir"
             else
-                d="./_Albums"
+                d="$albumsdir"
             fi
         elif [ $count -gt $total ]; then
             # The most common case is multiple discs
             # find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \)
-            d="./_Albums-With-Extra-Tracks"
+            d="$extrasdir"
         elif [ $total -eq 1 ]; then
-            d="./_Single-Tracks"
+            d="$singletracksdir"
         else
             if [ $count -gt "$investigate_threshold" ]; then
                 if [ $count -eq $((total - 1)) ] && basename "$dir" | grep -qEx "$incomplete_blacklist"; then
-                    d="./_Albums"
+                    d="$albumsdir"
                 else
                     # Possibly screwed up, or an incomplete album
-                    d="./_Incomplete Albums"
+                    d="$incompletedir"
                 fi
             else
-                d="./_Single-Tracks"
+                d="$singletracksdir"
             fi
         fi
-        if [ "$d" = "./_Single-Tracks" ]; then
+        if [ "$d" = "$singletracksdir" ]; then
             mkdir -p "$d"
             find "$dir/" -not -name ._\* \( -iname \*.flac -o -iname \*mp3 -o -iname \*.m4a -o -iname \*.ogg \) \
                 | while read -r fn; do
                     ext="${fn##*.}"
-                    ln -rsfv "$fn" "$d/$(exiftool -qm -Artist -Title -p '$Artist - $Title' "$fn" 2>/dev/null).$ext"
+                    link "$fn" "$d/$(exiftool -qm -Artist -Title -p '$Artist - $Title' "$fn" 2>/dev/null).$ext"
                 done
             continue
         fi
@@ -156,6 +165,6 @@ for source_dir; do
             fi
         fi
         rm -f "$dest"
-        ln -rsfv "$dir" "$dest"
+        link "$dir" "$dest"
     done
 done
