@@ -117,7 +117,7 @@ for source_dir; do
             d="./_Single-Tracks"
         else
             if [ $count -gt "$investigate_threshold" ]; then
-                if basename "$dir" | grep -qEx "$incomplete_blacklist"; then
+                if [ $count -eq $((total - 1)) ] && basename "$dir" | grep -qEx "$incomplete_blacklist"; then
                     d="./_Albums"
                 else
                     # Possibly screwed up, or an incomplete album
