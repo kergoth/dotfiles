@@ -33,12 +33,16 @@
 	fetch-noprompt = "!f() { GIT_SSH_COMMAND=\"ssh -oBatchMode=yes\" GIT_TERMINAL_PROMPT=0 git fetch \"$@\"; }; f"
 
 	# Hub
-	fork = !hub fork
-	pull-request = !hub pull-request
-	pr = !hub pr
-	pull-requests = !hub pr list
 	browse = !hub browse
+	ci-status = !hub ci-status
 	create = !hub create
+	delete = !hub delete
+	fork = !hub fork
+	issue = !hub issue
+	pr = !hub pr
+	pull-request = !hub pull-request
+	pull-requests = !hub pr list
+	release = !hub release
 
 	# Update without merge commits
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
