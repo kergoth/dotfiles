@@ -23,34 +23,78 @@ if [ $# -eq 0 ]; then
     set -- .
 fi
 
-exiftool_field () {
-    exiftool -qm -"$1" -p "\$$1" "$2" 2>/dev/null
+get_metadata () {
+    ffprobe -loglevel quiet -of compact=p=0 -show_entries format_tags "$1" \
+        | tr '|' '\n' \
+        | sed -e 's/tag://' \
+        | grep -v '\\r' \
+        | while IFS="=" read -r key value; do
+            case "$key" in
+                lyrics*)
+                    continue
+                    ;;
+                *\ *)
+                    key="$(echo "$key" | tr " " _)"
+                    ;;
+            esac
+            key="$(printf '%s\n' "$key" | tr ".:/-#=\`" "_______" | tr "[:upper:]" "[:lower:]" | tr -d '\')"
+            value="$(printf '%s\n' "$value" | sed -e 's/"/\\"/g; s/\\$//; s/`/\\`/g')"
+            printf '%s="%s"\n' "$key" "$value"
+        done
 }
 
-get_track_total () {
-    _total="$(exiftool_field Tracktotal "$1")"
-    if [ -z "$_total" ]; then
-        _track="$(exiftool_field Track "$1")"
-        if [ -n "$_track" ]; then
-            case "$_track" in
-                */*)
-                    _total="${_track#*/}"
-                    ;;
-            esac
-        else
-            _track="$(exiftool_field TrackNumber "$1")"
-            case "$_track" in
-                *\ of\ *)
-                    _total="${_track##* }"
-                    ;;
-            esac
-        fi
-    fi
-    if [ -n "$_total" ]; then
-        echo "$_total"
-    else
+eval_metadata () {
+    eval "$(get_metadata "$@")"
+}
+
+get_tracknumber () {
+    case "$track" in
+        */*)
+            tracknumber="${track%/*}"
+            tracktotal="${track##*/}"
+            ;;
+        '')
+            ;;
+        *)
+            tracknumber="$track"
+            ;;
+    esac
+    if [ -z "$tracknumber" ]; then
         return 1
     fi
+    if [ -z "$tracktotal" ] && [ -n "$totaltracks" ]; then
+        tracktotal="$totaltracks"
+    fi
+    printf "$tracknumber"
+    if [ -n "$tracktotal" ]; then
+        printf "/$tracktotal"
+    fi
+    printf '\n'
+}
+
+get_discnumber () {
+    case "$disc" in
+        */*)
+            discnumber="${disc%/*}"
+            disctotal="${disc##*/}"
+            ;;
+        '')
+            ;;
+        *)
+            discnumber="$disc"
+            ;;
+    esac
+    if [ -z "$discnumber" ]; then
+        discnumber=1
+    fi
+    if [ -z "$disctotal" ] && [ -n "$totaldiscs" ]; then
+        disctotal="$totaldiscs"
+    fi
+    printf "$discnumber"
+    if [ -n "$disctotal" ]; then
+        printf "/$disctotal"
+    fi
+    printf '\n'
 }
 
 # We need to get the total tracks for all discs to get a true total
@@ -60,22 +104,37 @@ get_album_track_total () {
         | (
             total=0
             while read -r fn; do
-                discnumber="$(exiftool_field Discnumber "$fn")"
-                if [ -z "$discnumber" ]; then
-                    partofset="$(exiftool_field PartOfSet "$fn")"
-                    if [ -n "$partofset" ]; then
-                        discnumber="${partofset%/*}"
-                    fi
-                    if [ -z "$discnumber" ]; then
-                        discnumber=1
-                    fi
-                fi
+                eval_metadata "$fn"
+
+                track="$(get_tracknumber)"
+                case "$track" in
+                    */*)
+                        tracknumber="${track%/*}"
+                        tracktotal="${track##*/}"
+                        ;;
+                    *)
+                        tracknumber="$track"
+                        tracktotal=
+                        ;;
+                esac
+
+                disc="$(get_discnumber)"
+                case "$disc" in
+                    */*)
+                        discnumber="${disc%/*}"
+                        disctotal="${disc##*/}"
+                        ;;
+                    *)
+                        discnumber="$disc"
+                        disctotal=
+                        ;;
+                esac
+
                 existing_total="$(eval "printf '%s' \"\${total$discnumber}\"")"
                 if [ -z "$existing_total" ]; then
-                    disctotal="$(get_track_total "$fn")"
-                    if [ -n "$disctotal" ]; then
-                        eval "total$discnumber=$disctotal"
-                        total=$((total+disctotal))
+                    if [ -n "$tracktotal" ]; then
+                        eval "total$discnumber=$tracktotal"
+                        total=$((total+tracktotal))
                     else
                         return 0
                     fi
