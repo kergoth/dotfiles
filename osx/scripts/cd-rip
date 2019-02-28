@@ -1,0 +1,54 @@
+#!/bin/sh
+
+die () {
+    ret="$1"
+    shift
+    fmt="$1"
+    shift
+    printf "Error: $fmt\\n" "$fmt" "$@" >&2
+    exit $ret
+}
+
+get_cd_device () {
+    diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' | \
+        grep -v '/dev/disk0$' | while read -r disk; do
+            if diskutil info "$disk" | grep -Eq ' *Optical Media Type: *CD-ROM$'; then
+                echo "$disk"
+                return 0
+            fi
+        done
+    return 1
+}
+
+tmpdir="$(mktemp -d ".tmp${0##*/}.XXXXXX")" || \
+    die 1 "Failed to create temporary directory"
+
+olddir="$PWD"
+cd "$tmpdir" || die 1 "No tmpdir"
+tmpdir="$PWD"
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+while ! device="$(get_cd_device)"; do
+    if [ -n "$device" ]; then
+        break
+    fi
+done
+
+cue-rip "$@" || die $? "Rip failed"
+if ! grep -qi 'track 02' *.cue; then
+    # Single data track, convert to iso
+    name="$(find . -name \*.bin | head -n 1 | sed -e 's,\.bin$,,')"
+    if [ -z "$name" ]; then
+        die 1 "No .bin found"
+    fi
+    bin2iso "$name" || die 1 "Conversion to iso failed for $name"
+    mv -v "${name}01.iso" "$olddir/$name.iso"
+else
+    mv -v ./*.bin ./*.cue "$olddir/"
+fi
+
+if [ -n "$device" ]; then
+    while ! diskutil eject "$device"; do
+        sleep 1
+    done
+fi
