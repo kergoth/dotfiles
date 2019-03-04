@@ -510,8 +510,8 @@ git module base16-shell:
         - colortest
 
 git module base16-vim:
-    url: https://github.com/chriskempson/base16-vim
-    rev: 2073e2dd9fa0172ccdba92b3f0df25642a69f7db
+    url: https://github.com/danielwe/base16-vim
+    rev: a40a4514ce82619e32028d39966a2fa61ebbf7e4
     pick: colors/base16-tomorrow-night.vim
 
 git module gitvoodoo:
