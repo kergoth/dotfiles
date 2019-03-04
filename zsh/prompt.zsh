@@ -1,14 +1,7 @@
 # Don't show a failure exit code in the prompt when no command was run,
 # for example when I ^C at the prompt
 
-case $TERM_PROGRAM in
-    vscode|Apple_Terminal)
-        . $ZSH/promptline/promptline-nobase16.zsh
-        ;;
-    *)
-        . $ZSH/promptline/promptline.zsh
-        ;;
-esac
+. $ZSH/promptline.zsh
 
 promptline_lastcmd=
 

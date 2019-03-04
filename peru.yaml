@@ -9,7 +9,6 @@ imports:
     zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
     hub-completion: git/zsh-functions
     iterm2-zsh: iterm2
-    base16-shell: base16
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
 
@@ -79,7 +78,6 @@ imports:
 
     # Vim
     pathogen: vim/autoload
-    base16-vim: base16/vim/bundle/base16
     Modeliner: vim/bundle/Modeliner
     fugitive: git/vim/bundle/fugitive
     securemodelines: vim/bundle/securemodelines
@@ -93,6 +91,7 @@ imports:
     vim-bitbake: bitbake/vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
+    vim-dracula: vim/bundle/dracula
     vim-editorconfig: vim/bundle/editorconfig
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
@@ -121,7 +120,7 @@ imports:
     base16-fzf: fzf
     base16-rofi: i3
     bat-syntax-bitbake: bat/syntaxes/BitBake
-    bat-themes-base16: bat/themes
+    bat-theme-dracula: bat/themes/Dracula
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -502,18 +501,6 @@ git module checkbashisms:
     pick: checkbashisms
     rev: 51007a62487d432669dfe3cd78185ecbcd1c8549
 
-git module base16-shell:
-    url: https://github.com/chriskempson/base16-shell
-    rev: cd19a7bc5c57e5dccc95f1493a2a0ff3b15f4499
-    pick:
-        - scripts/base16-tomorrow-night.sh
-        - colortest
-
-git module base16-vim:
-    url: https://github.com/danielwe/base16-vim
-    rev: a40a4514ce82619e32028d39966a2fa61ebbf7e4
-    pick: colors/base16-tomorrow-night.vim
-
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
     export: bin
@@ -700,12 +687,6 @@ git module base16-fzf:
     pick: themes/base16-tomorrow-night.config
     rev: 6d40da6cc12265911c688b48d986dda0f9bded93
 
-git module bat-themes-base16:
-    url: https://github.com/chriskempson/base16-textmate
-    export: Themes
-    pick: Themes/base16-tomorrow-night.tmTheme
-    rev: 1d9e52afb74e03f5a2fdc53d9327428fe00c70c7
-
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
     rev: 722e29dafb1e5f099acbb6f896e22e8679c70fbf
@@ -769,5 +750,13 @@ git module hardlinkpy:
 git module tmux-float:
     url: https://gitlab.com/Jrahme/tmux-float
     rev: fe653746335d259c952e504280fe51f3c6cdff7a
+
+git module vim-dracula:
+    url: https://github.com/dracula/vim
+    rev: bd8baf663ad00d76cab35d1b8d5ecaff840a6b81
+
+git module bat-theme-dracula:
+    url: https://github.com/dracula/sublime
+    rev: b7e8961afa4c11d620ad26abe28d76929c7ff90b
 
 #  vim: set sw=4 :

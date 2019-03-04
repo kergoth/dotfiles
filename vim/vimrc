@@ -445,8 +445,8 @@ if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
 else
   try
-    colorscheme base16-tomorrow-night
-    let g:airline_theme = 'base16_tomorrow'
+    colorscheme dracula
+    let g:airline_theme = 'dracula'
   catch
     colorscheme baycomb
   endtry
