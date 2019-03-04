@@ -750,10 +750,12 @@ set gcr+=v-ve:VisualCursor
 set gcr+=a:blinkon0
 
 " Cursor Colors: {{{3
-call g:Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
-call g:Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
-call g:Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
-call g:Base16hi("CommandCursor", g:base16_gui02, g:base16_gui0D, g:base16_cterm02, g:base16_cterm0D, "", "")
+if g:colors_name == 'base16'
+  call g:Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
+  call g:Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
+  call g:Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
+  call g:Base16hi("CommandCursor", g:base16_gui02, g:base16_gui0D, g:base16_cterm02, g:base16_cterm0D, "", "")
+endif
 " }}}
 " }}}
 
