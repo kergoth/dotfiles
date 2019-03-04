@@ -20,8 +20,11 @@ brew outdated --fetch-HEAD --quiet |
 	if [ -n "$excluded" ]; then grep -Ev "$excluded"; else cat; fi |
 	xargs -n 1 brew upgrade --fetch-HEAD
 if [ -n "$ignored_depends" ]; then
-	brew outdated --fetch-HEAD --quiet | grep -E "$excluded_ignored" |
-		xargs -n 1 brew upgrade --force --ignore-dependencies --force-bottle -v --env=std
+    ignored_outdated="$(brew outdated --fetch-HEAD --quiet | grep -E "$excluded_ignored")"
+    for outdated in $ignored_outdated; do
+        brew uninstall --force "$outdated"
+        brew install --force --ignore-dependencies --force-bottle -v --env=std "$outdated"
+    done
 fi
 
 brew cask outdated --quiet |
