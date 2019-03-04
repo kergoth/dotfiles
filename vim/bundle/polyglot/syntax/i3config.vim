@@ -1,5 +1,7 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'i3') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'i3') != -1
+  finish
+endif
+
 " Vim syntax file
 " Language: i3 config file
 " Maintainer: Mohamed Boughaba <mohamed dot bgb at gmail dot com>
@@ -55,8 +57,12 @@ syn keyword InitializeKeyword set contained
 syn match Initialize /^\s*set\s\+.*$/ contains=Variable,InitializeKeyword,Color,String
 
 " Gaps
-syn keyword GapStyleKeyword inner outer current all set plus minus contained
-syn match GapStyle /^\s*\(gaps\)\s\+\(inner\|outer\)\(\s\+\(current\|all\)\)\?\(\s\+\(set\|plus\|minus\)\)\?\(\s\+\d\+\)$/ contains=GapStyleKeyword,number
+syn keyword GapStyleKeyword inner outer horizontal vertical top right bottom left current all set plus minus toggle contained
+syn match GapStyle /^\s*\(gaps\)\s\+\(inner\|outer\|horizontal\|vertical\|left\|top\|right\|bottom\)\(\s\+\(current\|all\)\)\?\(\s\+\(set\|plus\|minus\|toggle\)\)\?\(\s\+\(\d\+\|\$.*\)\)$/ contains=GapStyleKeyword,number,Variable
+syn keyword SmartGapKeyword on inverse_outer contained
+syn match SmartGap /^\s*smart_gaps\s\+\(on\|inverse_outer\)\s\?$/ contains=SmartGapKeyword
+syn keyword SmartBorderKeyword on no_gaps contained
+syn match SmartBorder /^\s*smart_borders\s\+\(on\|no_gaps\)\s\?$/ contains=SmartBorderKeyword
 
 " Keyboard bindings
 syn keyword Action toggle fullscreen restart key import kill shrink grow contained
@@ -87,8 +93,8 @@ syn keyword BorderStyleKeyword none normal pixel contained
 syn match BorderStyle /^\s*\(new_window\|new_float\|default_border\|default_floating_border\)\s\+\(none\|\(normal\|pixel\)\(\s\+\d\+\)\?\)\s\?$/ contains=BorderStyleKeyword,number
 
 " Hide borders and edges
-syn keyword EdgeKeyword none vertical horizontal both contained
-syn match Edge /^\s*hide_edge_borders\s\+\(none\|vertical\|horizontal\|both\)\s\?$/ contains=EdgeKeyword
+syn keyword EdgeKeyword none vertical horizontal both smart smart_no_gaps contained
+syn match Edge /^\s*hide_edge_borders\s\+\(none\|vertical\|horizontal\|both\|smart\|smart_no_gaps\)\s\?$/ contains=EdgeKeyword
 
 " Arbitrary commands for specific windows (for_window)
 syn keyword CommandKeyword for_window contained
@@ -187,6 +193,8 @@ hi! def link OrientationKeyword Type
 hi! def link MouseWarpingType Type
 hi! def link FocusFollowsMouseType Type
 hi! def link GapStyleKeyword Type
+hi! def link SmartGapKeyword Type
+hi! def link SmartBorderKeyword Type
 hi! def link LayoutKeyword Type
 hi! def link BorderStyleKeyword Type
 hi! def link EdgeKeyword Type
@@ -215,6 +223,8 @@ hi! def link FontKeyword Identifier
 hi! def link BindKeyword Identifier
 hi! def link Orientation Identifier
 hi! def link GapStyle Identifier
+hi! def link SmartGap Identifier
+hi! def link SmartBorder Identifier
 hi! def link Layout Identifier
 hi! def link BorderStyle Identifier
 hi! def link Edge Identifier
@@ -239,8 +249,6 @@ hi! def link FocusOnActivationKeyword Identifier
 hi! def link DrawingMarksKeyword Identifier
 hi! def link BlockKeyword Identifier
 hi! def link Variable Statement
-hi! def link ArbitraryCommand Ignore
+hi! def link ArbitraryCommand Type
 
 let b:current_syntax = "i3config"
-
-endif

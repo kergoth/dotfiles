@@ -1,12 +1,14 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ruby') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'ruby') != -1
+  finish
+endif
+
 " Vim indent file
 " Language:		eRuby
 " Maintainer:		Tim Pope <vimNOSPAM@tpope.org>
 " URL:			https://github.com/vim-ruby/vim-ruby
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
 
-if get(b:, 'did_indent') =~# '\<eruby\>'
+if exists("b:did_indent")
   finish
 endif
 
@@ -14,14 +16,12 @@ runtime! indent/ruby.vim
 unlet! b:did_indent
 setlocal indentexpr=
 
-if &filetype =~# '^eruby\>'
-  if exists("b:eruby_subtype") && b:eruby_subtype != '' && b:eruby_subtype !=# 'eruby'
-    exe "runtime! indent/".b:eruby_subtype.".vim"
-  else
-    runtime! indent/html.vim
-  endif
+if exists("b:eruby_subtype") && b:eruby_subtype != '' && b:eruby_subtype !=# 'eruby'
+  exe "runtime! indent/".b:eruby_subtype.".vim"
+else
+  runtime! indent/html.vim
 endif
-let b:did_indent = get(b:, 'did_indent', 1) . '.eruby'
+unlet! b:did_indent
 
 " Force HTML indent to not keep state.
 let b:html_indent_usestate = 0
@@ -34,6 +34,8 @@ if &l:indentexpr == ''
   endif
 endif
 let b:eruby_subtype_indentexpr = &l:indentexpr
+
+let b:did_indent = 1
 
 setlocal indentexpr=GetErubyIndent()
 setlocal indentkeys=o,O,*<Return>,<>>,{,},0),0],o,O,!^F,=end,=else,=elsif,=rescue,=ensure,=when
@@ -110,5 +112,3 @@ let &cpo = s:cpo_sav
 unlet! s:cpo_sav
 
 " vim:set sw=2 sts=2 ts=8 noet:
-
-endif

@@ -63,12 +63,12 @@ extract() {
 
     output "${subdirs##, })"$'\n'
 
-    if (echo "julia coffee-script elixir fish git plantuml scala swift" | grep -qF "$name"); then
+    if (echo "julia coffee-script elixir fish git plantuml scala swift jinja mdx" | grep -qF "$name"); then
       echo "Skipping ftdetect installation of $name" >&2
       continue
     fi
 
-    [ -d "${dir}/ftdetect" ] && for f in "${dir}/ftdetect/"*; do
+    [ -d "${dir}${subtree:-/}ftdetect" ] && for f in "${dir}${subtree:-/}ftdetect/"*; do
       cat <<EOF >> tmp/polyglot.vim
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, '${pack%%:*}') == -1
   augroup filetypedetect
@@ -151,12 +151,11 @@ update_readme() {
 }
 
 PACKS="
+  ansible:pearofducks/ansible-vim
   apiblueprint:sheerun/apiblueprint.vim
   applescript:mityu/vim-applescript:_SYNTAX
-  asciidoc:asciidoc/vim-asciidoc
-  yaml:stephpy/vim-yaml
-  ansible:pearofducks/ansible-vim
   arduino:sudar/vim-arduino-syntax
+  asciidoc:asciidoc/vim-asciidoc
   autohotkey:hnamikaw/vim-autohotkey
   blade:jwalton512/vim-blade
   c++11:octol/vim-cpp-enhanced-highlight
@@ -167,10 +166,11 @@ PACKS="
   clojure:guns/vim-clojure-static
   cmake:pboettch/vim-cmake-syntax
   coffee-script:kchmck/vim-coffee-script
+  cql:elubow/cql-vim
   cryptol:victoredwardocallaghan/cryptol.vim
   crystal:rhysd/vim-crystal
-  cql:elubow/cql-vim
   cucumber:tpope/vim-cucumber
+  cue:mgrabovsky/vim-cuesheet
   dart:dart-lang/dart-vim-plugin
   dockerfile:ekalinin/Dockerfile.vim
   elixir:elixir-lang/vim-elixir
@@ -180,14 +180,17 @@ PACKS="
   erlang:vim-erlang/vim-erlang-runtime
   ferm:vim-scripts/ferm.vim
   fish:dag/vim-fish
+  flatbuffers:dcharbon/vim-flatbuffers
   fsharp:fsharp/vim-fsharp:_BASIC
   git:tpope/vim-git
-  gmpl:maelvalais/gmpl.vim
   glsl:tikhomirov/vim-glsl
+  gmpl:maelvalais/gmpl.vim
   gnuplot:vim-scripts/gnuplot-syntax-highlighting
   go:fatih/vim-go:_BASIC
+  gradle:tfnico/vim-gradle
   graphql:jparise/vim-graphql
   groovy:vim-scripts/groovy.vim
+  groovy-indent:vim-scripts/groovyindent-unix
   haml:sheerun/vim-haml
   handlebars:mustache/vim-mustache-handlebars
   haproxy:CH-DanReif/haproxy.vim
@@ -195,13 +198,15 @@ PACKS="
   haxe:yaymukund/vim-haxe
   html5:othree/html5.vim
   i3:mboughaba/i3config.vim
+  idris:idris-hackers/idris-vim
   jasmine:glanotte/vim-jasmine
   javascript:pangloss/vim-javascript:_JAVASCRIPT
   jenkins:martinda/Jenkinsfile-vim-syntax
-  json:elzr/vim-json
+  jinja:lepture/vim-jinja
   json5:GutenYe/json5.vim
+  json:elzr/vim-json
   jst:briancollins/vim-jst
-  jsx:mxw/vim-jsx:_ALL
+  jsx:amadeus/vim-jsx
   julia:JuliaEditorSupport/julia-vim
   kotlin:udalov/kotlin-vim
   latex:LaTeX-Box-Team/LaTeX-Box
@@ -212,15 +217,16 @@ PACKS="
   mako:sophacles/vim-bundle-mako
   markdown:plasticboy/vim-markdown:_SYNTAX
   mathematica:rsmenon/vim-mathematica
+  mdx:jxnblk/vim-mdx-js
+  meson:mesonbuild/meson:_ALL:/data/syntax-highlighting/vim/
   moonscript:leafo/moonscript-vim
   nginx:chr4/nginx.vim
   nim:zah/nim.vim:_BASIC
   nix:LnL7/vim-nix
   objc:b4winckler/vim-objc
-  ocaml:jrk/vim-ocaml
+  ocaml:rgrinberg/vim-ocaml
   octave:vim-scripts/octave.vim--
   opencl:petRUShka/vim-opencl
-  org:jceb/vim-orgmode
   perl:vim-perl/vim-perl
   pgsql:exu/pgsql.vim
   php:StanAngeloff/php.vim
@@ -231,18 +237,20 @@ PACKS="
   pug:digitaltoad/vim-pug
   puppet:voxpupuli/vim-puppet
   purescript:purescript-contrib/purescript-vim
-  python:vim-python/python-syntax
   python-compiler:aliev/vim-compiler-python
-  python-ident:Vimjas/vim-python-pep8-indent
+  python-indent:Vimjas/vim-python-pep8-indent
+  python:vim-python/python-syntax
+  qmake:artoj/qmake-syntax-vim
   qml:peterhoeg/vim-qml
   r-lang:vim-scripts/R.vim
   racket:wlangstroth/vim-racket
-  raml:IN3D/vim-raml
   ragel:jneen/ragel.vim
+  raml:IN3D/vim-raml
+  reason:reasonml-editor/vim-reason-plus
   rspec:sheerun/rspec.vim
+  rst:marshallward/vim-restructuredtext
   ruby:vim-ruby/vim-ruby
   rust:rust-lang/rust.vim
-  rst:marshallward/vim-restructuredtext
   sbt:derekwyatt/vim-sbt
   scala:derekwyatt/vim-scala
   scss:cakebaker/scss-syntax.vim
@@ -265,9 +273,11 @@ PACKS="
   vbnet:vim-scripts/vbnet.vim
   vcl:smerrill/vcl-vim-plugin
   vifm:vifm/vifm.vim
-  vue:posva/vim-vue
   vm:lepture/vim-velocity
+  vue:posva/vim-vue
+  xml:amadeus/vim-xml
   xls:vim-scripts/XSLT-syntax
+  yaml:stephpy/vim-yaml
   yard:sheerun/vim-yardoc
 "
 

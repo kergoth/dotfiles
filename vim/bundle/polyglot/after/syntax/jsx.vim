@@ -1,5 +1,7 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'jsx') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'jsx') != -1
+  finish
+endif
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vim syntax file
 "
@@ -60,10 +62,22 @@ syn region jsxRegion
   \ keepend
   \ extend
 
+" Shorthand fragment support
+"
+" Note that since the main jsxRegion contains @XMLSyntax, we cannot simply
+" adjust the regex above since @XMLSyntax will highlight the opening `<` as an
+" XMLError. Instead we create a new group with the same name that does not
+" include @XMLSyntax and instead uses matchgroup to get the same highlighting.
+syn region jsxRegion
+  \ contains=@Spell,jsxRegion,jsxChild,jsBlock,javascriptBlock
+  \ matchgroup=xmlTag
+  \ start=/<>/
+  \ end=/<\/>/
+  \ keepend
+  \ extend
+
 " Add jsxRegion to the lowest-level JS syntax cluster.
 syn cluster jsExpression add=jsxRegion
 
 " Allow jsxRegion to contain reserved words.
 syn cluster javascriptNoReserved add=jsxRegion
-
-endif

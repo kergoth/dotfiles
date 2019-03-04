@@ -125,7 +125,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 9a5f2027a8414568c51a54d3dcaf14a5eea71e52
+    rev: 49d27fb77c455369c49fd61280e4250087042ba2
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: ddd0513071beba6a4b07730f045d7ae825652cd6
+    rev: bd0b87d36ad80e8acd94f22028d15ebb441b1c28
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -231,7 +231,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 75d531db0596630877f1f0575914b39c69ac1448
+    rev: 929e0d0aa1139d483c070e4ee2a05f4a3425b0af
 
 # continuously updated session files
 git module vim-obsession:
@@ -569,7 +569,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 5b0a9d22b673693cd331fb39700fe58cedccddbc
+    rev: 044b06b6cbbadd0942d2802537820746d950a395
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -627,7 +627,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: c161994e9607399a7b365ab274592bfc4f100306
+    rev: 521220f389907255b6d9a87458333b468ffc7ac4
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim

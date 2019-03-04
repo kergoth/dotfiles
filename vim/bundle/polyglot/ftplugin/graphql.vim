@@ -1,5 +1,7 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'graphql') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'graphql') != -1
+  finish
+endif
+
 " Vim filetype plugin
 " Language: GraphQL
 " Maintainer: Jon Parise <jon@indelible.org>
@@ -17,4 +19,4 @@ setlocal softtabstop=2
 setlocal shiftwidth=2
 setlocal expandtab
 
-endif
+let b:undo_ftplugin = 'setlocal com< cms< fo< isk< sts< sw< et<'

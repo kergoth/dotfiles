@@ -1,5 +1,7 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'go') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'go') != -1
+  finish
+endif
+
 " don't spam the user when Vim is started in Vi compatibility mode
 let s:cpo_save = &cpo
 set cpo&vim
@@ -390,8 +392,9 @@ function! go#config#HighlightFunctions() abort
   return get(g:, 'go_highlight_functions', 0)
 endfunction
 
-function! go#config#HighlightFunctionArguments() abort
-  return get(g:, 'go_highlight_function_arguments', 0)
+function! go#config#HighlightFunctionParameters() abort
+  " fallback to highlight_function_arguments for backwards compatibility
+  return get(g:, 'go_highlight_function_parameters', get(g:, 'go_highlight_function_arguments', 0))
 endfunction
 
 function! go#config#HighlightFunctionCalls() abort
@@ -441,6 +444,11 @@ function! go#config#FoldEnable(...) abort
   return get(g:, 'go_fold_enable', ['block', 'import', 'varconst', 'package_comment'])
 endfunction
 
+function! go#config#EchoGoInfo() abort
+  return get(g:, "go_echo_go_info", 1)
+endfunction
+
+
 " Set the default value. A value of "1" is a shortcut for this, for
 " compatibility reasons.
 if exists("g:go_gorename_prefill") && g:go_gorename_prefill == 1
@@ -452,5 +460,3 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
-
-endif

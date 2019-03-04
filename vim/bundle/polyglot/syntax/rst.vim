@@ -1,11 +1,13 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rst') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'rst') != -1
+  finish
+endif
+
 " Vim syntax file
 " Language: reStructuredText documentation format
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
 " Website: https://github.com/marshallward/vim-restructuredtext
-" Latest Revision: 2018-07-23
+" Latest Revision: 2018-12-29
 
 if exists("b:current_syntax")
   finish
@@ -23,7 +25,7 @@ syn cluster rstCruft                contains=rstEmphasis,rstStrongEmphasis,
       \ rstInlineInternalTargets,rstFootnoteReference,rstHyperlinkReference
 
 syn region  rstLiteralBlock         matchgroup=rstDelimiter
-      \ start='::\_s*\n\ze\z(\s\+\)' skip='^$' end='^\z1\@!'
+      \ start='\(^\z(\s*\).*\)\@<=::\n\s*\n' skip='^\s*$' end='^\(\z1\s\+\)\@!'
       \ contains=@NoSpell
 
 syn region  rstQuotedLiteralBlock   matchgroup=rstDelimiter
@@ -278,5 +280,3 @@ let b:current_syntax = "rst"
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
-
-endif

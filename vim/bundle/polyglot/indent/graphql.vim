@@ -1,5 +1,7 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'graphql') == -1
-  
+if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'graphql') != -1
+  finish
+endif
+
 " Vim indent file
 " Language: GraphQL
 " Maintainer: Jon Parise <jon@indelible.org>
@@ -15,7 +17,7 @@ setlocal nolisp
 setlocal nosmartindent
 
 setlocal indentexpr=GetGraphQLIndent()
-setlocal indentkeys=0{,0},0),0[,0],0#,!^F,o,O,e
+setlocal indentkeys=0{,0},0),0[,0],0#,!^F,o,O
 
 " If our indentation function already exists, we have nothing more to do.
 if exists('*GetGraphQLIndent')
@@ -77,5 +79,3 @@ endfunction
 
 let &cpoptions = s:cpo_save
 unlet s:cpo_save
-
-endif

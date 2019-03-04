@@ -1541,7 +1541,7 @@ function! fugitive#BufReadStatus() abort
     call s:AddSection('Unpushed to ' . push, unpushed)
     call s:AddSection('Unpulled from ' . pull, unpulled)
 
-    set nomodified readonly noswapfile
+    setlocal nomodified readonly noswapfile
     silent doautocmd BufReadPost
     setlocal nomodifiable
     if &bufhidden ==# ''
@@ -1580,6 +1580,7 @@ function! fugitive#BufReadStatus() abort
     nnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
     xnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line("'<"),line("'>"))<CR>
     nnoremap <buffer> <silent> q :<C-U>if bufnr('$') == 1<Bar>quit<Bar>else<Bar>bdelete<Bar>endif<CR>
+    nnoremap <buffer> <silent> gq :<C-U>if bufnr('$') == 1<Bar>quit<Bar>else<Bar>bdelete<Bar>endif<CR>
     nnoremap <buffer> <silent> R :<C-U>exe <SID>ReloadStatus()<CR>
     nnoremap <buffer> <silent> U :<C-U>echoerr 'Changed to X'<CR>
     nnoremap <buffer> <silent> g<Bar> :<C-U>execute <SID>StageDelete(line('.'),v:count)<CR>
@@ -1589,7 +1590,7 @@ function! fugitive#BufReadStatus() abort
     nnoremap <buffer>          . :<C-U> <C-R>=<SID>StageArgs(0)<CR><Home>
     xnoremap <buffer>          . :<C-U> <C-R>=<SID>StageArgs(1)<CR><Home>
     nnoremap <buffer> <silent> <F1> :help fugitive-mappings<CR>
-    set filetype=fugitive
+    setlocal filetype=fugitive
 
     for [lnum, section] in [[staged_end, 'Staged'], [unstaged_end, 'Unstaged']]
       while len(getline(lnum))
@@ -2059,7 +2060,6 @@ endfunction
 augroup fugitive_status
   autocmd!
   autocmd ShellCmdPost         * call s:AutoReloadStatus()
-  autocmd QuickFixCmdPost c*file call s:AutoReloadStatus()
   autocmd BufDelete     term://* call s:AutoReloadStatus()
   if !has('win32')
     autocmd FocusGained        * call s:AutoReloadStatus()
@@ -3318,7 +3318,7 @@ function! s:Write(force,...) abort
     return 'echoerr v:errmsg'
   endif
   if s:cpath(fugitive#Real(@%), file) && s:DirCommitFile(@%)[1] =~# '^\d$'
-    set nomodified
+    setlocal nomodified
   endif
 
   let one = s:Generate(':1:'.file)
@@ -3350,7 +3350,7 @@ function! s:Write(force,...) abort
           silent execute '$read '.s:fnameescape(file)
           silent execute '1,'.last.'delete_'
           silent execute lnum
-          set nomodified
+          setlocal nomodified
           diffupdate
         finally
           if exists('restorewinnr')
