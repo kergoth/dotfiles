@@ -26,7 +26,7 @@
 		".svn",
 		"CVS"
 	],
-	"font_face": "Fira Code iScript",
+	"font_face": "InputMonoNarrow-Thin",
 	"font_size": 14.0,
 	"ignored_packages":
 	[
