@@ -20,11 +20,11 @@ makehybrid_arg_map = [
     ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/copyrightFileIdentifier', 'copyright-file'],
     ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/abstractFileIdentifier', 'abstract-file'],
     ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/bibliographyFileIdentifier', 'bibliography-file'],
-    ['image/fileSystems/fileSystem[@TYPE="HFS"]/primaryVolumeDescriptor/volumeIdentifier', 'hfs-volume-name'],
+    ['image/fileSystems/fileSystem[@TYPE="HFS"]/masterDirectoryBlock/volumeName', 'hfs-volume-name'],
 ]
 
 def create_iso(args, isolyzed, tree, filespath, has_joliet=True, has_hfs=False, winfiles=None, hfsfiles=None):
-    cmd = ['hdiutil', 'makehybrid', '-iso', '-o', args.outfile]
+    cmd = ['hdiutil', 'makehybrid', '-iso', '-default-volume-name', args.volume_name, '-o', args.outfile]
     if has_joliet:
         cmd.append('-joliet')
 
@@ -45,11 +45,15 @@ def create_iso(args, isolyzed, tree, filespath, has_joliet=True, has_hfs=False, 
             cmd.append('-only-joliet')
             cmd.append(winglob)
 
+    xpath_args = {}
     for xpath, arg in makehybrid_arg_map:
         element = tree.find(xpath)
-        if element is not None and element.text is not None:
-            cmd.append('-' + arg)
-            cmd.append(element.text)
+        if element is not None and element.text is not None and element.text != 'NOT_SET':
+            xpath_args['-' + arg] = element.text
+
+    for arg, value in xpath_args.items():
+        cmd.append(arg)
+        cmd.append(value)
 
     subprocess.check_call(['chmod', '-R', '+rw', filespath])
     cmd.append(filespath)
@@ -76,15 +80,16 @@ if __name__ == '__main__':
     with tempfile.TemporaryDirectory() as tmpdir:
         tmppath = pathlib.Path(tmpdir)
 
-        volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeSetIdentifier')
+        volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeIdentifier')
         if volume_id is not None:
             volume_name = volume_id.text
         else:
-            volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeIdentifier')
+            volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeSetIdentifier')
             if volume_id is not None:
                 volume_name = volume_id.text
             else:
                 volume_name = args.infile.stem
+        args.volume_name = volume_name
 
         filespath = tmppath / volume_name
         os.makedirs(filespath)
