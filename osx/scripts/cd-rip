@@ -20,6 +20,44 @@ get_cd_device () {
     return 1
 }
 
+usage() {
+    echo >&2 "${0##*/} [-s STARTING_SESSION] [-e] [TITLE]"
+    echo >&2
+    echo >&2 "-E	Do not eject"
+    exit 2
+}
+
+eject=1
+starting_session=1
+while getopts s:Eh opt; do
+    case "$opt" in
+        s)
+            starting_session="$OPTARG"
+            ;;
+        E)
+            eject=0
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+while ! device="$(get_cd_device)"; do
+    if [ -n "$device" ]; then
+        break
+    fi
+done
+
+title="$(diskutil info "${device}s0" | sed -n 's# *Volume Name: *##p')" || :
+if [ $# -ge 1 ]; then
+    title="$1"
+    shift
+elif [ -z "$title" ]; then
+    usage
+fi
+
 tmpdir="$(mktemp -d ".tmp${0##*/}.XXXXXX")" || \
     die 1 "Failed to create temporary directory"
 
@@ -28,26 +66,39 @@ cd "$tmpdir" || die 1 "No tmpdir"
 tmpdir="$PWD"
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
-while ! device="$(get_cd_device)"; do
-    if [ -n "$device" ]; then
-        break
+cd-info --no-cddb --no-device-info --no-disc-mode --no-header >"$title.cd-info"
+cue-rip -s "$starting_session" "$title" || die $? "Rip failed"
+for cue in "$title.cue" "$title "Session*.cue; do
+    if [ ! -e "$cue" ]; then
+        continue
+    fi
+    if ! grep -qi 'track 02' "$cue"; then
+        # Single data track, convert to iso
+        bin2iso "${cue%.cue}" || die 1 "Conversion to iso failed for $cue"
+        mv "${cue%.cue}01.iso" "${cue%.cue}.iso"
+        for iso in "${cue%.cue}"*.iso; do
+            case "$cue" in
+                *\ Session\ [0-9].cue)
+                    cuebase="${cue%.cue}"
+                    session="${cuebase##*Session }"
+                    offset="$(sed -n -e "s/^session #${session} starts at track [0-9]*, LSN: \\([0-9]*\\).*/\\1/p" "$title.cd-info")"
+                    if [ -n "$offset" ]; then
+                        set -- -o "$offset"
+                    else
+                        set --
+                    fi
+                    recreate-iso "$@" "$iso" "${iso%.iso}_nooffset.iso" || die $? "Recreation of $iso without offset failed"
+                    ;;
+            esac
+        done
+        mv -v "${cue%.cue}"*.iso "$olddir/"
+    else
+        mv -v "$cue" "${cue%.cue}.bin" "$olddir/"
     fi
 done
+mv -v "$title.cd-info" "$olddir/"
 
-cue-rip "$@" || die $? "Rip failed"
-if ! grep -qi 'track 02' *.cue; then
-    # Single data track, convert to iso
-    name="$(find . -name \*.bin | head -n 1 | sed -e 's,\.bin$,,')"
-    if [ -z "$name" ]; then
-        die 1 "No .bin found"
-    fi
-    bin2iso "$name" || die 1 "Conversion to iso failed for $name"
-    mv -v "${name}01.iso" "$olddir/$name.iso"
-else
-    mv -v ./*.bin ./*.cue "$olddir/"
-fi
-
-if [ -n "$device" ]; then
+if [ $eject -eq 1 ] && [ -n "$device" ]; then
     while ! diskutil eject "$device"; do
         sleep 1
     done
