@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# TODO: Also handle UDF
+# TODO: Also handle El Torito boot images
 
 import argparse
 import os
