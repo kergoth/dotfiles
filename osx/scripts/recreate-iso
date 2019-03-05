@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import pathlib
+import re
+import subprocess
+import tempfile
+import xml.etree.ElementTree as etree
+
+joliet_line = re.compile(r'Joliet.*found')
+makehybrid_arg_map = [
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeSetIdentifier', 'iso-volume-name'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeSetIdentifier', 'joliet-volume-name'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeIdentifier', 'iso-volume-name'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeIdentifier', 'joliet-volume-name'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/systemIdentifier', 'system-id'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/publisherIdentifier', 'publisher'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/dataPreparerIdentifier', 'preparer'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/copyrightFileIdentifier', 'copyright-file'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/abstractFileIdentifier', 'abstract-file'],
+    ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/bibliographyFileIdentifier', 'bibliography-file'],
+    ['image/fileSystems/fileSystem[@TYPE="HFS"]/primaryVolumeDescriptor/volumeIdentifier', 'hfs-volume-name'],
+]
+
+def create_iso(args, isolyzed, tree, filespath, has_joliet=True, has_hfs=False, winfiles=None, hfsfiles=None):
+    cmd = ['hdiutil', 'makehybrid', '-iso', '-o', args.outfile]
+    if has_joliet:
+        cmd.append('-joliet')
+
+    if has_hfs:
+        cmd.append('-hfs')
+        if hfsfiles:
+            hfsfiles = [str(f.relative_to(filespath)) for f in hfsfiles]
+            hfsglob = f'{filespath}/{{{",".join(hfsfiles)}}}'
+            cmd.append('-only-hfs')
+            cmd.append(hfsglob)
+
+    if winfiles:
+        winfiles = [str(f.relative_to(filespath)) for f in winfiles]
+        winglob = f'{filespath}/{{{",".join(winfiles)}}}'
+        cmd.append('-only-iso')
+        cmd.append(winglob)
+        if has_joliet:
+            cmd.append('-only-joliet')
+            cmd.append(winglob)
+
+    for xpath, arg in makehybrid_arg_map:
+        element = tree.find(xpath)
+        if element is not None and element.text is not None:
+            cmd.append('-' + arg)
+            cmd.append(element.text)
+
+    subprocess.check_call(['chmod', '-R', '+rw', filespath])
+    cmd.append(filespath)
+    try:
+        os.unlink(args.outfile)
+    except FileNotFoundError:
+        pass
+    subprocess.check_call(cmd)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', '--offset')
+    parser.add_argument('infile')
+    parser.add_argument('outfile')
+    args = parser.parse_args()
+    args.infile = pathlib.Path(args.infile).resolve()
+    args.outfile = pathlib.Path(args.outfile).resolve()
+
+    isolyzed = subprocess.check_output(['isolyzer', args.infile])
+
+    tree = etree.fromstring(isolyzed)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmppath = pathlib.Path(tmpdir)
+
+        volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeSetIdentifier')
+        if volume_id is not None:
+            volume_name = volume_id.text
+        else:
+            volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeIdentifier')
+            if volume_id is not None:
+                volume_name = volume_id.text
+            else:
+                volume_name = args.infile.stem
+
+        filespath = tmppath / volume_name
+        os.makedirs(filespath)
+
+        if not args.offset:
+            offset = tree.find('image/tests/sizeDifferenceSectors')
+            if offset is not None:
+                offset = offset.text
+                if offset.startswith('-'):
+                    offset = offset[1:]
+                offset = offset.split('.', 1)[0]
+                args.offset = str(int(offset) + 152)
+
+        infocmd = ['isoinfo']
+        if args.offset is not None:
+            infocmd.append('-N')
+            infocmd.append(args.offset)
+        infocmd.append('-i')
+        infocmd.append(args.infile)
+
+        info_output = subprocess.check_output(infocmd + ['-d']).decode('utf-8')
+        has_joliet = 'NO Joliet present' not in info_output
+
+        if has_joliet:
+            infocmd.append('-J')
+
+        infocmd.append('-X')
+
+        if tree.find('image/fileSystems/fileSystem[@TYPE="HFS"]'):
+            mntpath = tmppath / 'mnt'
+            os.makedirs(mntpath)
+            subprocess.check_call(['hdiutil', 'attach', '-readonly', '-noautoopen', '-mountpoint', mntpath, args.infile])
+            try:
+                subprocess.check_call(['cp', '-a', str(mntpath) + '/.', filespath])
+            finally:
+                subprocess.check_call(['hdiutil', 'detach', mntpath])
+            mntpath.rmdir()
+
+            hfsfiles = list(filespath.iterdir())
+            subprocess.check_call(infocmd, cwd=filespath)
+            allfiles = list(filespath.iterdir())
+            winfiles = set(allfiles) - set(hfsfiles)
+            if not winfiles:
+                raise SystemExit('Error: no iso/joliet files found?')
+            create_iso(args, isolyzed, tree, filespath, has_joliet=has_joliet, has_hfs=True, winfiles=winfiles, hfsfiles=hfsfiles)
+        else:
+            subprocess.check_call(infocmd, cwd=filespath)
+            create_iso(args, isolyzed, tree, filespath, has_joliet=has_joliet)
