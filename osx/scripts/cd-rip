@@ -1,4 +1,7 @@
 #!/bin/sh
+# TODO: handle conversion of all data tracks to iso, not just the single-track
+# case, to grab the iso of the data track both for cd-extra audio cds and data
+# discs with audio tracks
 
 die () {
     ret="$1"
