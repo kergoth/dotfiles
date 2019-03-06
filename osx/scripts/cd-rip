@@ -8,8 +8,9 @@ die () {
     shift
     fmt="$1"
     shift
+    # shellcheck disable=SC2059
     printf "Error: $fmt\\n" "$fmt" "$@" >&2
-    exit $ret
+    exit "$ret"
 }
 
 get_cd_device () {
@@ -24,9 +25,11 @@ get_cd_device () {
 }
 
 usage() {
-    echo >&2 "${0##*/} [-s STARTING_SESSION] [-e] [TITLE]"
-    echo >&2
-    echo >&2 "-E	Do not eject"
+    cat >&2 <<END
+${0##*/} [-s STARTING_SESSION] [-e] [TITLE]
+
+-E	Do not eject
+END
     exit 2
 }
 
