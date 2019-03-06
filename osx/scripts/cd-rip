@@ -3,7 +3,7 @@
 # case, to grab the iso of the data track both for cd-extra audio cds and data
 # discs with audio tracks
 
-die () {
+die() {
     ret="$1"
     shift
     fmt="$1"
@@ -13,9 +13,9 @@ die () {
     exit "$ret"
 }
 
-get_cd_device () {
-    diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' | \
-        grep -v '/dev/disk0$' | while read -r disk; do
+get_cd_device() {
+    diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' \
+        | grep -v '/dev/disk0$' | while read -r disk; do
             if diskutil info "$disk" | grep -Eq ' *Optical Media Type: *CD-ROM$'; then
                 echo "$disk"
                 return 0
@@ -64,8 +64,8 @@ elif [ -z "$title" ]; then
     usage
 fi
 
-tmpdir="$(mktemp -d ".tmp${0##*/}.XXXXXX")" || \
-    die 1 "Failed to create temporary directory"
+tmpdir="$(mktemp -d ".tmp${0##*/}.XXXXXX")" \
+    || die 1 "Failed to create temporary directory"
 
 olddir="$PWD"
 cd "$tmpdir" || die 1 "No tmpdir"
