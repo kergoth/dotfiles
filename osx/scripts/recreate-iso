@@ -105,20 +105,19 @@ if __name__ == '__main__':
                 offset = offset.split('.', 1)[0]
                 args.offset = str(int(offset) + 152)
 
-        infocmd = ['isoinfo']
+        infoargs = []
         if args.offset is not None:
-            infocmd.append('-N')
-            infocmd.append(args.offset)
-        infocmd.append('-i')
-        infocmd.append(args.infile)
+            infoargs.append('-N')
+            infoargs.append(args.offset)
+        infoargs.append('-i')
+        infoargs.append(args.infile)
 
-        info_output = subprocess.check_output(infocmd + ['-d']).decode('utf-8')
+        info_output = subprocess.check_output(['isoinfo'] + infoargs + ['-d']).decode('utf-8')
         has_joliet = 'NO Joliet present' not in info_output
 
         if has_joliet:
-            infocmd.append('-J')
-
-        infocmd.append('-X')
+            infoargs.append('-J')
+        infocmd = ['isoinfo-x'] + infoargs
 
         if tree.find('image/fileSystems/fileSystem[@TYPE="HFS"]'):
             mntpath = tmppath / 'mnt'
