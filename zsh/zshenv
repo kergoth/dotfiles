@@ -25,11 +25,11 @@ fi
 export ESCDELAY=25
 export NCURSES_NO_UTF8_ACS=1
 
-if [[ -z "$LANG" ]]; then
+if [[ -z "$LANG" ]] || [[ -z "$LC_ALL" ]]; then
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
   if [[ -n $commands[locale] ]]; then
     eval "$(locale)"
-  else
-    export LANG=en_US.UTF-8
   fi
 fi
 
