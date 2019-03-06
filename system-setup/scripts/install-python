@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PY2_VERSION=2.7.15
-PY3_VERSION=3.7.1
+PY3_VERSION=3.7.2
 
 # Ensure we can run llvm-profdata on FreeBSD
 for llvmdir in /usr/local/llvm*/bin; do

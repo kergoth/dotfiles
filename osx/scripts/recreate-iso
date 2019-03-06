@@ -10,6 +10,8 @@ import subprocess
 import tempfile
 import xml.etree.ElementTree as etree
 
+from typing import List
+
 joliet_line = re.compile(r'Joliet.*found')
 makehybrid_arg_map = [
     ['image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeSetIdentifier', 'iso-volume-name'],
@@ -35,7 +37,7 @@ def main():
     infoargs.append('-i')
     infoargs.append(str(args.infile))
 
-    info_output = subprocess.check_output(['isoinfo'] + infoargs + ['-d']).decode('utf-8')
+    info_output: str = subprocess.check_output(['isoinfo'] + infoargs + ['-d']).decode('utf-8')
     args.has_joliet = 'NO Joliet present' not in info_output
     if args.has_joliet:
         infoargs.append('-J')
@@ -72,7 +74,7 @@ def parse_args():
     args.infile = pathlib.Path(args.infile).resolve()
     args.outfile = pathlib.Path(args.outfile).resolve()
 
-    isolyzed = subprocess.check_output(['isolyzer', args.infile])
+    isolyzed: bytes = subprocess.check_output(['isolyzer', args.infile])
 
     tree = args.tree = etree.fromstring(isolyzed)
     args.xpath_args = map_xpath_to_cmdline(tree)
@@ -107,7 +109,7 @@ def map_xpath_to_cmdline(tree):
     return xpath_args
 
 
-def xml_get_volume_name(tree):
+def xml_get_volume_name(tree) -> str:
     volume_id = tree.find('image/fileSystems/fileSystem[@TYPE="ISO 9660"]/primaryVolumeDescriptor/volumeIdentifier')
     if volume_id is not None and volume_id.text is not None:
         volume_name = volume_id.text
@@ -136,7 +138,7 @@ def create_iso(args, filespath, winfiles=None, hfsfiles=None):
     subprocess.check_call(cmd)
 
 
-def generate_iso_cmdline(args, filespath, winfiles=None, hfsfiles=None):
+def generate_iso_cmdline(args, filespath, winfiles=None, hfsfiles=None) -> List[str]:
     cmd = ['hdiutil', 'makehybrid', '-iso', '-default-volume-name', args.volume_name, '-o', args.outfile]
     if args.has_joliet:
         cmd.append('-joliet')
