@@ -556,7 +556,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 044b06b6cbbadd0942d2802537820746d950a395
+    rev: a214c93ad4f574e88292192bbd0392b26dc407ce
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -570,7 +570,7 @@ curl module rustup:
     move:
         rustup-init.sh: rustup
     executable: rustup
-    sha1: c881cdc0e39ef1af9fe5c2c24299b4f95d50bb96
+    sha1: 115e00c3cba7cd154a41bfa5cc9325e03db30b4b
 
 curl module cht:
     url: https://cht.sh/:cht.sh
@@ -581,7 +581,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: c4328f2a31a8acac96ca8d7615231812bad700bf
+    rev: 6aef52f026117e49869080698e0e303d95e83a9a
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -614,7 +614,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 521220f389907255b6d9a87458333b468ffc7ac4
+    rev: 86721731c740d0ea07e6b90e601a80770c3d9f36
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim

@@ -667,6 +667,16 @@ au BufNewFile,BufRead */templates/**.liquid,*/layout/**.liquid,*/snippets/**.liq
   augroup end
 endif
 
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'lilypond') == -1
+  augroup filetypedetect
+  " lilypond, from lilypond.vim in anowlcalledjosh/vim-lilypond
+"
+" Installed As:	vim/ftdetect/lilypond.vim
+"
+au! BufNewFile,BufRead *.ly,*.ily		set ft=lilypond
+  augroup end
+endif
+
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'livescript') == -1
   augroup filetypedetect
   " livescript, from ls.vim in gkz/vim-ls
@@ -708,6 +718,19 @@ endif
 " markdown filetype file
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} setfiletype markdown
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}.{des3,des,bf,bfa,aes,idea,cast,rc2,rc4,rc5,desx} setfiletype markdown
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'mdx') == -1
+  augroup filetypedetect
+  " mdx, from mdx.vim in jxnblk/vim-mdx-js
+" Vim ftdetect file
+"
+" Language: MDX
+" Maintainer: Brent Jackson <jxnblk@gmail.com>
+"
+
+autocmd BufNewFile,BufRead *.mdx set filetype=markdown.mdx
   augroup end
 endif
 
