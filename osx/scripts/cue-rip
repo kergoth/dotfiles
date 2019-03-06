@@ -2,9 +2,9 @@
 
 set -e
 
-get_cd_device () {
-    diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' | \
-        grep -v '/dev/disk0$' | while read -r disk; do
+get_cd_device() {
+    diskutil list | sed -n '/^\/dev\/disk/s/ .*, physical)://p' \
+        | grep -v '/dev/disk0$' | while read -r disk; do
             if diskutil info "$disk" | grep -Eq ' *Optical Media Type: *CD-ROM$'; then
                 echo "$disk"
                 return 0
