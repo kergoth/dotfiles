@@ -700,6 +700,9 @@ call s:MapNextFamily('q','c')
 " tags
 call s:MapNextFamily('t','t')
 " }}}
+
+nmap <silent> <leader>hl   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
 " Terminal and display {{{
 " Default to hiding concealed text
 if has('conceal')
