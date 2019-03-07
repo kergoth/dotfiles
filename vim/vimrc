@@ -647,6 +647,15 @@ nmap <leader>cwo :botright copen 5<cr><c-w>p
 " Next error in the quickfix list
 nmap <leader>ccn :cnext<cr>
 
+" Close location list window
+nmap <leader>lwc :lclose<cr>
+
+" Open location list window
+nmap <leader>lwo :botright lopen 5<cr><c-w>p
+
+" Next error in the location list
+nmap <leader>lcn :lnext<cr>
+
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
