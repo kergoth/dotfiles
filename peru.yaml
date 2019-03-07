@@ -87,7 +87,6 @@ imports:
     vim-airline-themes: vim/bundle/airline-themes
     vim-ale: vim/bundle/ale
     vim-apathy: vim/bundle/apathy
-    vim-autoformat: vim/bundle/autoformat
     vim-bitbake: bitbake/vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
@@ -705,10 +704,6 @@ git module wsl-open:
 git module vim-VimCompletesMe:
     url: https://github.com/ajh17/VimCompletesMe
     rev: cc1eab38cca26fd1e387df5ce78e6f1e51aed8f4
-
-git module vim-autoformat:
-    url: https://github.com/Chiel92/vim-autoformat
-    rev: 4f993fad63f98b844a5bd728c5a963c0da404e1a
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak

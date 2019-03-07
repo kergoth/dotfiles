@@ -869,12 +869,8 @@ augroup vimrc_filetypes
         \   setlocal omnifunc=syntaxcomplete#Complete |
         \ endif
 
-  " Auto-format on save for appropriate types
-  au FileType go let g:autoformat_on_save=1
-  au BufWrite *
-        \ if g:autoformat_on_save == 1 |
-        \   Autoformat |
-        \ endif
+  " Run gofmt on save
+  au! FileType go let b:ale_fix_on_save = 1
 
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
@@ -898,6 +894,7 @@ augroup vimrc_filetypes
 
   " Show diff when editing git commit messages
   au FileType gitcommit DiffGitCached
+
   " Don't restore position in a git commit message
   au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
@@ -950,12 +947,6 @@ let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
-let g:autoformat_on_save = 0
-let g:formatdef_shfmt = '"shfmt -ci -bn -i ".(&expandtab ? shiftwidth() : "0")'
-" I prefer to use these on an as-needed basis
-let g:autoformat_autoindent = 0
-let g:autoformat_retab = 0
-let g:autoformat_remove_trailing_spaces = 0
 
 let g:sleuth_automatic = 1
 let g:vundle_default_git_proto = 'git'
@@ -964,6 +955,23 @@ let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'vim': ['remove_trailing_lines'],
+\   'python': ['isort', 'autopep8'],
+\   'sh': ['shfmt'],
+\   'go': ['gofmt'],
+\}
+
+let g:ale_sh_shfmt_options = '-ci -bn -i 4'
+
+" Add Fix/Format commands for ALEFix
+command! -bar -nargs=* -complete=customlist,ale#fix#registry#CompleteFixers Format :call ale#fix#Fix(bufnr(''), '', <f-args>)
+
+" Bind <leader>f to fixing/formatting with ALE
+nmap <leader>f <Plug>(ale_fix)
+
 let g:tmuxline_powerline_separators = 0
 let g:promptline_powerline_symbols = 1
 
