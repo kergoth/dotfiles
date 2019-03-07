@@ -956,6 +956,14 @@ let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
 
+" Show ALE in airline
+let g:airline#extensions#ale#enabled = 1
+
+let g:ale_linters = {
+\   'python': ['flake8', 'mypy'],
+\   'sh': ['shellcheck'],
+\}
+
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'vim': ['remove_trailing_lines'],
