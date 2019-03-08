@@ -97,7 +97,7 @@ def parse_args():
 
 def map_xpath_to_cmdline(tree):
     seen = set()
-    xpath_args = {}
+    xpath_args = []
     for xpath, arg in makehybrid_arg_map:
         if arg in seen:
             continue
