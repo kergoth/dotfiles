@@ -75,6 +75,13 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 cd-info --no-cddb --no-device-info --no-disc-mode --no-header >"$title.cd-info"
 cue-rip -s "$starting_session" "$title" || die $? "Rip failed"
+if [ $eject -eq 1 ] && [ -n "$device" ]; then
+    while ! diskutil eject "$device"; do
+        sleep 1
+    done
+fi
+
+iso_count=$(find . -iname "${title}*.iso" | wc -l)
 for cue in "$title.cue" "$title "Session*.cue; do
     if [ ! -e "$cue" ]; then
         continue
@@ -103,10 +110,7 @@ for cue in "$title.cue" "$title "Session*.cue; do
         mv -v "$cue" "${cue%.cue}.bin" "$olddir/"
     fi
 done
-mv -v "$title.cd-info" "$olddir/"
 
-if [ $eject -eq 1 ] && [ -n "$device" ]; then
-    while ! diskutil eject "$device"; do
-        sleep 1
-    done
+if [ $iso_count -gt 1 ]; then
+    mv -v "$title.cd-info" "$olddir/"
 fi
