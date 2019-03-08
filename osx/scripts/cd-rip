@@ -63,6 +63,7 @@ if [ $# -ge 1 ]; then
 elif [ -z "$title" ]; then
     usage
 fi
+title="$(echo "$title" | tr ':/' '∶／' | sed -e 's/^\.//')"
 
 tmpdir="$(mktemp -d ".tmp${0##*/}.XXXXXX")" \
     || die 1 "Failed to create temporary directory"

@@ -53,6 +53,7 @@ if [ $# -ge 1 ]; then
 elif [ -z "$title" ]; then
     usage
 fi
+title="$(echo "$title" | tr ':/' '∶／' | sed -e 's/^\.//')"
 
 sessions="$(cdrdao disk-info --driver generic-mmc:0x20000 | sed -n -e 's/^Sessions.*: //p')"
 if [ -z "$sessions" ]; then
