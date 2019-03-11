@@ -1,4 +1,6 @@
-# vim-polyglot [![Build Status][travis-img-url]][travis-url] [![Maintenance](https://img.shields.io/maintenance/yes/2019.svg?maxAge=2592000)]()
+![vim-polyglot](https://i.imgur.com/9RxQK6k.png)
+
+[![Build Status][travis-img-url]][travis-url] [![Maintenance](https://img.shields.io/maintenance/yes/2019.svg?maxAge=2592000)]()
 
 [travis-img-url]: https://travis-ci.org/sheerun/vim-polyglot.svg
 [travis-url]: https://travis-ci.org/sheerun/vim-polyglot
@@ -8,7 +10,7 @@ A collection of language packs for Vim.
 > One to rule them all, one to find them, one to bring them all and in the darkness bind them.
 
 - It **won't affect your startup time**, as scripts are loaded only on demand\*.
-- It **installs and updates 100+ times faster** than the <!--Package Count-->129<!--/Package Count--> packages it consists of.
+- It **installs and updates 100+ times faster** than the <!--Package Count-->132<!--/Package Count--> packages it consists of.
 - Solid syntax and indentation support (other features skipped). Only the best language packs.
 - All unnecessary files are ignored (like enormous documentation from php support).
 - No support for esoteric languages, only most popular ones (modern too, like `slim`).
@@ -43,6 +45,7 @@ If you need full functionality of any plugin, please use it directly with your p
 ## Language packs
 
 <!--Language Packs-->
+- [acpiasl](https://github.com/martinlroth/vim-acpi-asl) (syntax)
 - [ansible](https://github.com/pearofducks/ansible-vim) (syntax, indent, ftplugin)
 - [apiblueprint](https://github.com/sheerun/apiblueprint.vim) (syntax)
 - [applescript](https://github.com/mityu/vim-applescript) (syntax, indent)
@@ -57,10 +60,11 @@ If you need full functionality of any plugin, please use it directly with your p
 - [cjsx](https://github.com/mtscout6/vim-cjsx) (syntax, ftplugin)
 - [clojure](https://github.com/guns/vim-clojure-static) (syntax, indent, autoload, ftplugin)
 - [cmake](https://github.com/pboettch/vim-cmake-syntax) (syntax, indent)
-- [coffee-script](https://github.com/kchmck/vim-coffee-script) (syntax, indent, compiler, autoload, ftplugin)
+- [coffee-script](https://github.com/kchmck/vim-coffee-script) (syntax, compiler, indent, autoload, ftplugin)
 - [cql](https://github.com/elubow/cql-vim) (syntax)
 - [cryptol](https://github.com/victoredwardocallaghan/cryptol.vim) (syntax, compiler, ftplugin)
 - [crystal](https://github.com/rhysd/vim-crystal) (syntax, indent, autoload, ftplugin)
+- [csv](https://github.com/chrisbra/csv.vim) (syntax, autoload, ftplugin)
 - [cucumber](https://github.com/tpope/vim-cucumber) (syntax, indent, compiler, ftplugin)
 - [cue](https://github.com/mgrabovsky/vim-cuesheet) (syntax)
 - [dart](https://github.com/dart-lang/dart-vim-plugin) (syntax, indent, autoload, ftplugin)
@@ -149,6 +153,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [scss](https://github.com/cakebaker/scss-syntax.vim) (syntax, autoload, ftplugin)
 - [slim](https://github.com/slim-template/vim-slim) (syntax, indent, ftplugin)
 - [slime](https://github.com/slime-lang/vim-slime-syntax) (syntax, indent)
+- [smt2](https://github.com/bohlender/vim-smt2) (syntax, autoload, ftplugin)
 - [solidity](https://github.com/tomlion/vim-solidity) (syntax, indent, ftplugin)
 - [stylus](https://github.com/wavded/vim-stylus) (syntax, indent, ftplugin)
 - [swift](https://github.com/keith/swift.vim) (syntax, indent, ftplugin)

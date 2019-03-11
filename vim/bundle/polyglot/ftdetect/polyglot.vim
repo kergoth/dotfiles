@@ -3,6 +3,14 @@ if !exists('g:jsx_ext_required')
   let g:jsx_ext_required = 0
 endif
 
+" Make csv loading faster
+if !exists('g:csv_start')
+  let g:csv_start = 1
+endif
+if !exists('g:csv_end')
+  let g:csv_end = 2
+endif
+
 " Disable json concealing by default
 if !exists('g:vim_json_syntax_conceal')
   let g:vim_json_syntax_conceal = 0
@@ -80,6 +88,14 @@ augroup END
 if (!exists('g:graphql_javascript_tags'))
   let g:graphql_javascript_tags = ['gql', 'graphql', 'Relay.QL']
 endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'acpiasl') == -1
+  augroup filetypedetect
+  " acpiasl, from asl.vim in martinlroth/vim-acpi-asl
+au BufRead,BufNewFile *.asl set filetype=asl
+au BufRead,BufNewFile *.dsl set filetype=asl
+  augroup end
+endif
+
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ansible') == -1
   augroup filetypedetect
   " ansible, from ansible.vim in pearofducks/ansible-vim
@@ -241,6 +257,14 @@ autocmd BufNewFile,BufReadPost *.ecr setlocal filetype=eruby
   augroup end
 endif
 
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'csv') == -1
+  augroup filetypedetect
+  " csv, from csv.vim in chrisbra/csv.vim
+" Install Filetype detection for CSV files
+au BufRead,BufNewFile *.csv,*.dat,*.tsv,*.tab set filetype=csv
+  augroup end
+endif
+
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'cucumber') == -1
   augroup filetypedetect
   " cucumber, from cucumber.vim in tpope/vim-cucumber
@@ -365,7 +389,7 @@ endif
 
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'glsl') == -1
   augroup filetypedetect
-  " glsl, from glsl.vim in tikhomirov/vim-glsl
+  " glsl, from glsl.vim in tikhomirov/vim-glsl:_NOAFTER
 " Language: OpenGL Shading Language
 " Maintainer: Sergey Tikhomirov <sergey@tikhomirov.io>
 
@@ -640,7 +664,7 @@ endif
 
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'less') == -1
   augroup filetypedetect
-  " less, from less.vim in groenewege/vim-less
+  " less, from less.vim in groenewege/vim-less:_NOAFTER
 autocmd BufNewFile,BufRead *.less setf less
   augroup end
 endif
@@ -1217,6 +1241,13 @@ if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'slime') == -1
   augroup filetypedetect
   " slime, from slime.vim in slime-lang/vim-slime-syntax
 autocmd BufNewFile,BufRead *.slime set filetype=slime
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'smt2') == -1
+  augroup filetypedetect
+  " smt2, from smt2.vim in bohlender/vim-smt2
+autocmd BufRead,BufNewFile *.smt,*.smt2 set filetype=smt2
   augroup end
 endif
 
