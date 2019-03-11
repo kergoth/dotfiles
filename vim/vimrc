@@ -362,9 +362,6 @@ set nohlsearch
 " Try to match case when using insert mode completion
 set infercase
 
-" We're using the securemodelines plugin, not built in modelines
-set nomodeline
-
 " Fast terminal, bump sidescroll to 1
 set sidescroll=1
 
