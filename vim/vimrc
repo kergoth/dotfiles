@@ -656,6 +656,9 @@ nmap <leader>lcn :lnext<cr>
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
+" Show highlight groups under the cursor
+nmap <silent> <leader>hl   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
 " Delete trailing whitespace
 nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 
@@ -697,9 +700,6 @@ call s:MapNextFamily('q','c')
 " tags
 call s:MapNextFamily('t','t')
 " }}}
-
-nmap <silent> <leader>hl   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
 " Terminal and display {{{
 " Default to hiding concealed text
 if has('conceal')
