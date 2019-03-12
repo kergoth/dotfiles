@@ -882,6 +882,7 @@ augroup vimrc_filetypes
   au Filetype markdown nnoremap <buffer> <localleader>1 I# <esc>
   au Filetype markdown nnoremap <buffer> <localleader>2 I## <esc>
   au Filetype markdown nnoremap <buffer> <localleader>3 I### <esc>
+  au Filetype markdown nnoremap <buffer> <localleader>4 I#### <esc>
 
   " Use man.vim for K in types we know don't override keywordprg
   au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
