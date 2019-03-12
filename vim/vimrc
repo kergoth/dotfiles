@@ -411,7 +411,7 @@ if has('linebreak')
     set breakindent
   catch
   endtry
-  set cpo+=n
+  set cpoptions+=n
 end
 
 if has('unix')
@@ -746,17 +746,17 @@ au!
 augroup END
 
 " Gui Cursor: {{{
-set gcr=a:block
+set guicursor=a:block
 
 " mode aware cursors
-set gcr+=o:hor50-Cursor
-set gcr+=n:Cursor
-set gcr+=i-ci-sm:InsertCursor-ver25
-set gcr+=r-cr:ReplaceCursor-hor20
-set gcr+=c:CommandCursor
-set gcr+=v-ve:VisualCursor
+set guicursor+=o:hor50-Cursor
+set guicursor+=n:Cursor
+set guicursor+=i-ci-sm:InsertCursor-ver25
+set guicursor+=r-cr:ReplaceCursor-hor20
+set guicursor+=c:CommandCursor
+set guicursor+=v-ve:VisualCursor
 
-set gcr+=a:blinkon0
+set guicursor+=a:blinkon0
 
 " Cursor Colors: {{{3
 if g:colors_name == 'base16'
@@ -991,9 +991,9 @@ let g:promptline_symbols = {
     \ 'right_alt'      : '|',
     \ 'dir_sep'        : '/'}
 
-fun! __promptline_git_ahead_behind(...)
-  return { 'function_name': '__promptline_git_ahead_behind',
-          \'function_body': readfile(globpath(&rtp, "autoload/promptline/slices/git_ahead_behind.sh", 0, 1)[0])}
+fun! Promptline_git_ahead_behind(...)
+  return { 'function_name': 'Promptline_git_ahead_behind',
+          \'function_body': readfile(globpath(&runtimepath, "autoload/promptline/slices/git_ahead_behind.sh", 0, 1)[0])}
 endfun
 
 try
