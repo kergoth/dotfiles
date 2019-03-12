@@ -935,10 +935,12 @@ let g:xml_syntax_folding = 1
 let g:bb_create_on_empty = 0
 " }}}
 " Plugin configuration {{{
-if v:version >= 800 || has("nvim")
-  packadd! matchit
-else
-  runtime macros/matchit.vim
+if !has("nvim")
+  if v:version >= 800
+    packadd! matchit
+  else
+    runtime macros/matchit.vim
+  endif
 endif
 
 let g:loaded_netrw = 1
