@@ -1,0 +1,15 @@
+local url=$1
+local GIT_GET_DEFAULT_PREFIX
+
+if ! [[ $url =~ '://' ]]; then
+    if [[ $url =~ '/' ]]; then
+        GIT_GET_DEFAULT_PREFIX=https://github.com/
+    else
+        GIT_GET_DEFAULT_PREFIX=https://github.com/${USER:-${LOGNAME:-$(id -un)}}/
+    fi
+fi
+
+local dir=$(GIT_GET_DEFAULT_PREFIX="$GIT_GET_DEFAULT_PREFIX" git get "$url")
+if [[ -n "$dir" ]]; then
+    cd "$dir"
+fi

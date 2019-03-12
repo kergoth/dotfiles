@@ -28,6 +28,7 @@ imports:
     git-cherry-tree: git/scripts
     git-extras: git/scripts
     git-fixup: git
+    git-get: git/scripts
     git-imerge: git/scripts
     git-remote-hg: git/scripts
     git-tbdiff: git/scripts
@@ -747,5 +748,10 @@ git module vim-dracula:
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
     rev: b7e8961afa4c11d620ad26abe28d76929c7ff90b
+
+git module git-get:
+    url: https://github.com/pietvanzoen/git-get
+    pick: git-get
+    rev: 6c6dc492e2a47f183e87a605242367eb4cb6d74f
 
 #  vim: set sw=4 :
