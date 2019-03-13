@@ -94,6 +94,8 @@ if (( $+commands[htop] )); then
     alias top=htop
 fi
 
+alias hardlink='hardlink -ft'
+
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
     if (( $+commands[dfc] )); then
