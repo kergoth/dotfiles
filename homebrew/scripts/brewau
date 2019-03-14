@@ -18,7 +18,7 @@ brew update || :
 
 brew outdated --fetch-HEAD --quiet |
 	if [ -n "$excluded" ]; then grep -Ev "$excluded"; else cat; fi |
-	xargs -n 1 brew upgrade --fetch-HEAD
+	xargs brew upgrade --fetch-HEAD
 if [ -n "$ignored_depends" ]; then
     ignored_outdated="$(brew outdated --fetch-HEAD --quiet | grep -E "$excluded_ignored")"
     for outdated in $ignored_outdated; do
