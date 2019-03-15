@@ -1,0 +1,210 @@
+#!/bin/bash
+# shellcheck disable=SC2120
+
+scriptname=${0##*/}
+default_exclude_pattern='/(@eaDir|\.git|\.sync|\.svn)/|/\.DS_Store'
+
+usage() {
+    cat >&2 <<END
+$scriptname [options] [FDUPES_OUTFILE]
+
+Select which items from fdupes output should be deleted.
+
+With -k, if at least one of the dupes for a given file lives in KEEP_PATH,
+that one is kept, and all the others are removed. If none are in KEEP_PATH,
+none are deleted, and if multiple are in KEEP_PATH, all of those are kept.
+
+Paths matching the EXCLUDE_PATTERNs are excluded from the dupe list regardless
+of selection method.
+
+This script will filter the fdupes one line output, writing the files to be
+deleted to stdout.
+
+If FDUPES_OUTFILE is unspecified, stdin will be used.
+
+Options:
+  -k KEEP_PATH          Paths under KEEP_PATH will be kept
+  -x EXCLUDE_PATTERN    Specify paths to exclude from processing. This is
+                        passed to grep -E. May be specified multiple times.
+                        If specified at all, the default will not be used.
+                        Default: $exclude_pattern
+  -v  Verbose mode.
+  -h  Show this usage 
+END
+    exit 2
+}
+
+process_args() {
+    fdupes_outfile=-
+    keep_path=
+    exclude_pattern=
+    verbose=0
+    while getopts k:x:vh opt; do
+        case "$opt" in
+            k)
+                if [ ! -d "$OPTARG" ]; then
+                    echo >&2 "KEEP_PATH is not an existing directory: $OPTARG"
+                    usage
+                fi
+                keep_path="$(cd "$OPTARG" && pwd -P)"
+                ;;
+            x)
+                if [ -n "$exclude_pattern" ]; then
+                    exclude_pattern="($exclude_pattern)|($OPTARG)"
+                else
+                    exclude_pattern="$OPTARG"
+                fi
+                ;;
+            v)
+                verbose=1
+                ;;
+            \? | h)
+                usage
+                ;;
+        esac
+    done
+
+    if [ -z "$exclude_pattern" ]; then
+        exclude_pattern="$default_exclude_pattern"
+    fi
+
+    shift $((OPTIND - 1))
+
+    if [ $# -gt 1 ]; then
+        usage
+    elif [ $# -eq 1 ]; then
+        fdupes_outfile=$1
+        if ! [ -f "$fdupes_outfile" ]; then
+            echo >&2 "Error: FDUPES_OUTFILE $fdupes_outfile does not exist"
+            usage
+        fi
+    fi
+
+    if [ "$fdupes_outfile" = "-" ]; then
+        fdupes_outfile=/dev/stdin
+    fi
+}
+
+printargs() {
+    for arg; do
+        printf '%s\n' "$arg"
+    done
+}
+
+_printf() {
+    fmt=$1
+    shift
+    # shellcheck disable=SC2059
+    printf "$scriptname: $fmt" "$@"
+}
+
+die() {
+    ret=${1:-1}
+    if [ $# -gt 1 ]; then
+        fmt=$1
+        shift
+        _printf "Error: $fmt\\n" "$@" >&2
+    fi
+    exit "$ret"
+}
+
+on_error() {
+    local ret=$?
+    echo >&2 on_error
+    if [ $ret -eq 130 ]; then
+        # No shell traceback for SIGINT
+        printf >&2 'Interrupted\n'
+        exit $ret
+    fi
+
+    local i=0
+    local argv_offset=0
+    local FRAMES=${#BASH_SOURCE[@]}
+    local extdebug
+    extdebug=$(
+        shopt -q extdebug
+        echo $?
+    )
+
+    echo >&2 "Traceback (most recent call last):"
+    for ((frame = FRAMES - 2; frame >= 0; frame--)); do
+        local lineno=${BASH_LINENO[frame]}
+
+        printf >&2 '  File "%s", line %d, in %s\n' "${BASH_SOURCE[frame + 1]}" "$lineno" "${FUNCNAME[frame + 1]}"
+        if [[ $extdebug -eq 0 && $i -ne 0 ]]; then
+            # Courtesy http://www.runscripts.com/support/guides/scripting/bash/debugging-bash/stack-trace
+            declare argv=()
+            declare argc
+            declare frame_argc
+
+            for ((frame_argc = ${BASH_ARGC[frame]}, frame_argc--, argc = 0; frame_argc >= 0; argc++, frame_argc--)); do
+                argv[argc]=${BASH_ARGV[argv_offset + frame_argc]}
+                case "${argv[argc]}" in
+                    *[[:space:]]*) argv[argc]="'${argv[argc]}'" ;;
+                esac
+            done
+            argv_offset=$((argv_offset + ${BASH_ARGC[frame]}))
+            echo >&2 "    ${FUNCNAME[i]} ${argv[*]}"
+        else
+            sed >&2 -n "${lineno}s/^[ 	]*/    /p" "${BASH_SOURCE[frame + 1]}"
+        fi
+    done
+    printf >&2 'Exiting with %d\n' "$ret"
+    exit $ret
+}
+
+re_escape() {
+    python3 -c 'import re,sys; print("\n".join(re.escape(i) for i in sys.argv[1:]))' "$@"
+}
+
+main() {
+    set -euo pipefail
+    set -o errtrace
+    if [[ ${BASH_VERSINFO[0]} -ge 3 ]]; then
+        shopt -s extdebug
+    fi
+    trap on_error ERR
+
+    # shellcheck disable=SC2119
+    process_args "$@" || die
+    shift $((OPTIND - 1))
+
+    tmpfile=$(mktemp -t "${0##*/}.XXXX")
+    trap 'rm -f "$tmpfile"' EXIT
+    trap 'rm -f "$tmpfile"; trap - INT; kill -INT 0' INT
+    trap 'rm -f "$tmpfile"; trap - TERM; kill -TERM 0' TERM
+
+    escaped_keep="$(re_escape "$keep_path")"
+
+    # shellcheck disable=SC2162
+    while read -a files; do
+        printargs "${files[@]}" \
+            | if [ -n "$exclude_pattern" ]; then
+                grep -Ev "$exclude_pattern" || :
+            else
+                cat
+            fi >"$tmpfile"
+
+        if [ -s "$tmpfile" ]; then
+            if [ $verbose -eq 1 ]; then
+                echo >&2 "Processing: $(head -n 1 "$tmpfile")"
+            fi
+            if [ -n "$keep_path" ]; then
+                if [ "$verbose" -eq 1 ]; then
+                    keeping="$(grep "^$escaped_keep/" "$tmpfile" || :)"
+                    if [ -n "$keeping" ]; then
+                        echo >&2 "Keep files: $keeping"
+                        echo >&2 "Remove files:"
+                        grep -v "^$escaped_keep/" "$tmpfile" || :
+                    fi
+                else
+                    if grep -q "^$escaped_keep/" "$tmpfile"; then
+                        grep -v "^$escaped_keep/" "$tmpfile" || :
+                    fi
+                fi
+            fi
+        fi
+    done <"$fdupes_outfile"
+}
+
+main "$@"
