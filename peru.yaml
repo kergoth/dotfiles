@@ -123,7 +123,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 49d27fb77c455369c49fd61280e4250087042ba2
+    rev: b44858c41dbc2c62c37537033c4d4f36d575e327
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -209,7 +209,7 @@ git module vim-eunuch:
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
-    rev: db0223fc6857c160b2394489094355feb20318f2
+    rev: be23eacb2a63380bd79e207a738c728214ecc9d3
 
 # quoting/parenthesizing made simple
 git module vim-surround:
@@ -516,7 +516,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: fdea0614f9326e0d0ec5c5c6f72168d0ad77cae8
+    rev: e820f9da1511dc0c254a1c024b555757b2b5f8d6
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -575,7 +575,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 03384a5d6f966b28efa136056e8b7b1b4f1c3d89
+    rev: 80ef7ea2d0b22f0d8de7387a3d5bf6e9e5b72e9d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -608,7 +608,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 2254b83675e3356f42cc011133da67c26512022f
+    rev: 1d45a6d4f094127b113470d7710695b280224933
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
