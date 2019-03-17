@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2120
+# shellcheck disable=SC2120,SC2002
 
 scriptname=${0##*/}
 default_exclude_pattern='/(@eaDir|\.git|\.sync|\.svn)/|/\.DS_Store'
@@ -23,6 +23,8 @@ deleted to stdout.
 If FDUPES_OUTFILE is unspecified, stdin will be used.
 
 Options:
+  -r FDUPES_ROOT        The root path where fdupes was run. This is used to
+                        adjust relative paths in FDUPES_OUTFILE to absolute.
   -k KEEP_PATH          Paths under KEEP_PATH will be kept
   -x EXCLUDE_PATTERN    Specify paths to exclude from processing. This is
                         passed to grep -E. May be specified multiple times.
@@ -36,11 +38,15 @@ END
 
 process_args() {
     fdupes_outfile=-
+    fdupes_root=
     keep_path=
     exclude_pattern=
     verbose=0
-    while getopts k:x:vh opt; do
+    while getopts r:k:x:vh opt; do
         case "$opt" in
+            r)
+                fdupes_root="$(cd "$OPTARG" && pwd -P)"
+                ;;
             k)
                 if [ ! -d "$OPTARG" ]; then
                     echo >&2 "KEEP_PATH is not an existing directory: $OPTARG"
@@ -174,7 +180,11 @@ main() {
     trap 'rm -f "$tmpfile"; trap - INT; kill -INT 0' INT
     trap 'rm -f "$tmpfile"; trap - TERM; kill -TERM 0' TERM
 
-    escaped_keep="$(re_escape "$keep_path")"
+    echo >&2 "Keeping files in $keep_path"
+    if [ -n "$fdupes_root" ]; then
+        escaped_fdupes_root="$(re_escape "$fdupes_root")"
+        echo >&2 "Adjusting fdupes outfile paths from ./ to $fdupes_root/"
+    fi
 
     # shellcheck disable=SC2162
     while read -a files; do
@@ -185,22 +195,24 @@ main() {
                 cat
             fi >"$tmpfile"
 
+        if [ -n "$fdupes_root" ]; then
+            sed -i -e "s#^\\./#$escaped_fdupes_root/#" "$tmpfile"
+        fi
+
         if [ -s "$tmpfile" ]; then
             if [ $verbose -eq 1 ]; then
                 echo >&2 "Processing: $(head -n 1 "$tmpfile")"
             fi
             if [ -n "$keep_path" ]; then
                 if [ "$verbose" -eq 1 ]; then
-                    keeping="$(grep "^$escaped_keep/" "$tmpfile" || :)"
+                    keeping="$(grep "^$keep_path/" "$tmpfile" || :)"
                     if [ -n "$keeping" ]; then
                         echo >&2 "Keep files: $keeping"
                         echo >&2 "Remove files:"
-                        grep -v "^$escaped_keep/" "$tmpfile" || :
+                        grep -v "^$keep_path/" "$tmpfile" || :
                     fi
-                else
-                    if grep -q "^$escaped_keep/" "$tmpfile"; then
-                        grep -v "^$escaped_keep/" "$tmpfile" || :
-                    fi
+                elif grep -q "^$keep_path/" "$tmpfile"; then
+                    grep -v "^$keep_path/" "$tmpfile" || :
                 fi
             fi
         fi
