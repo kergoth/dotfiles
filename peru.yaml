@@ -42,6 +42,7 @@ imports:
     iln: scripts
     md-inline2ref: scripts
     moreutils: scripts
+    myrepos: scripts
     osx-wificleaner: osx/scripts
     pom: scripts
     pyenv-installer: system-setup/scripts
@@ -753,5 +754,10 @@ git module git-get:
     url: https://github.com/pietvanzoen/git-get
     pick: git-get
     rev: 6c6dc492e2a47f183e87a605242367eb4cb6d74f
+
+git module myrepos:
+    url: git://myrepos.branchable.com/
+    pick: mr
+    rev: 3512b73782cc1e980997d77f9979df933042242a
 
 #  vim: set sw=4 :
