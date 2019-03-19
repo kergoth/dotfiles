@@ -13,7 +13,7 @@ package main;
 
 use strict;
 use warnings;
-our $VERSION = '2.24'; # Check https://beyondgrep.com/ for updates
+our $VERSION = '2.28'; # Check https://beyondgrep.com/ for updates
 
 use 5.008008;
 use Getopt::Long 2.38 ();
@@ -1345,10 +1345,11 @@ equivalent to the default behavior found in ack 1.
 
 =item B<--lines=I<NUM>>
 
-Only print line I<NUM> of each file. Multiple lines can be given with multiple
-B<--lines> options or as a comma separated list (B<--lines=3,5,7>). B<--lines=4-7>
-also works. The lines are always output in ascending order, no matter the
-order given on the command line.
+Only print line I<NUM> of each file. Multiple lines can be given with
+multiple B<--lines> options or as a comma separated list (B<--lines=3,5,7>).
+B<--lines=4-7> also works, as well as any combination
+(B<--lines=3,15-20,43>) The lines are always output in ascending order, no
+matter the order given on the command line. No pattern is matched.
 
 =item B<-l>, B<--files-with-matches>
 
@@ -2383,7 +2384,7 @@ Rob Hoelz.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2005-2018 Andy Lester.
+Copyright 2005-2019 Andy Lester.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the Artistic License v2.0.
@@ -2401,8 +2402,8 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = '2.24';
-    $COPYRIGHT = 'Copyright 2005-2018 Andy Lester.';
+    $VERSION = '2.28';
+    $COPYRIGHT = 'Copyright 2005-2019 Andy Lester.';
 }
 
 our $fh;
@@ -2615,7 +2616,7 @@ Searching:
   -Q, --literal                 Quote all metacharacters; PATTERN is literal
 
 Search output:
-  --lines=NUM                   Only print line(s) NUM of each file
+  --lines=NUMS                  Only print line(s) NUMS of each file.
   -l, --files-with-matches      Only print filenames containing matches
   -L, --files-without-matches   Only print filenames with no matches
   --output=expr                 Output the evaluation of expr for each line
@@ -2665,6 +2666,8 @@ File presentation:
   --color-match=COLOR
   --color-lineno=COLOR          Set the color for filenames, matches, and line
                                 numbers.
+  --help-colors                 Show a list of possible color combinations.
+  --help-rgb-colors             Show a list of advanced color specifications.
   --flush                       Flush output immediately, even when ack is used
                                 non-interactively (when output goes to a pipe or
                                 file).
@@ -2715,6 +2718,9 @@ Miscellaneous:
                                 to standard output.
   --help, -?                    This help
   --help-types                  Display all known types
+  --help-types                  Display all known types, and how they're defined.
+  --help-colors                 Show a list of possible color combinations.
+  --help-rgb-colors             Show a list of advanced color specifications.
   --dump                        Dump information on which options are loaded
                                 from which RC files
   --[no]filter                  Force ack to treat standard input as a pipe
@@ -2736,6 +2742,137 @@ END_OF_HELP
 
     return;
  }
+
+
+
+sub show_help_colors {
+    App::Ack::print( <<'END_OF_HELP' );
+ack allows customization of the colors it uses when presenting matches
+onscreen.  See the "ACK COLORS" section of the ack manual (ack --man).
+
+Here is a chart of how various color combinations appear: Each of the eight
+foreground colors, on each of the eight background colors or no background
+color, with and without the bold modifier.
+
+Run ack --help-rgb-colors for a chart of the RGB colors.
+
+END_OF_HELP
+
+    _show_color_grid();
+
+    return;
+}
+
+
+
+sub show_help_rgb {
+    App::Ack::print( <<'END_OF_HELP' );
+ack allows customization of the colors it uses when presenting matches
+onscreen.  See the "ACK COLORS" section of the ack manual (ack --man).
+
+Colors may be specified as "rggNNN" where "NNN" is a triplet of digits
+from 0 to 5 specifying the intensity of red, green and blue, respectively.
+
+Here is a grid of the 216 possible values for NNN.
+
+END_OF_HELP
+
+    _show_rgb_grid();
+
+    App::Ack::say( 'Here are the 216 possible colors with the "reverse" modifier applied.', "\n" );
+
+    _show_rgb_grid( 'reverse' );
+
+   return;
+}
+
+
+sub _show_color_grid {
+    my $cell_width = 7;
+
+    my @fg_colors = qw( black red green yellow blue magenta cyan white );
+    my @bg_colors = map { "on_$_" } @fg_colors;
+
+    App::Ack::say(
+        _color_cell( '' ),
+        map { _color_cell( $_ ) } @fg_colors
+    );
+
+    App::Ack::say(
+        _color_cell( '' ),
+        map { _color_cell( '-' x $cell_width ) } @fg_colors
+    );
+
+    for my $bg ( '', @bg_colors ) {
+        App::Ack::say(
+            _color_cell( '' ),
+            ( map { _color_cell( $_, "$_ $bg" ) } @fg_colors ),
+           $bg
+        );
+
+        App::Ack::say(
+           _color_cell( 'bold' ),
+            ( map { _color_cell( $_, "bold $_ $bg" ) } @fg_colors ),
+            $bg
+        );
+       App::Ack::say();
+    }
+
+   return;
+}
+
+
+sub _color_cell {
+    my $text  = shift;
+    my $color = shift;
+
+    my $cell_width = 7;
+    $text = sprintf( '%-*s', $cell_width, $text );
+
+    return ($color ? Term::ANSIColor::colored( $text, $color ) : $text) . ' ';
+}
+
+
+sub _show_rgb_grid {
+    my $modifier = shift || '';
+
+    my $grid = <<'HERE';
+544 544 544 544 544 554 554 554 554 554 454 454 454 454 454 455 455 455 455 455 445 445 445 445 445 545 545 545 545 545
+533 533 533 543 543 553 553 553 453 453 353 353 353 354 354 355 355 355 345 345 335 335 335 435 435 535 535 535 534 534
+511 521 531 531 541 551 451 451 351 251 151 152 152 153 154 155 145 145 135 125 115 215 215 315 415 515 514 514 513 512
+500 510 520 530 540 550 450 350 250 150 050 051 052 053 054 055 045 035 025 015 005 105 205 305 405 505 504 503 502 501
+400 410 410 420 430 440 340 340 240 140 040 041 041 042 043 044 034 034 024 014 004 104 104 204 304 404 403 403 402 401
+300 300 310 320 320 330 330 230 130 130 030 030 031 032 032 033 033 023 013 013 003 003 103 203 203 303 303 302 301 301
+200 200 200 210 210 220 220 220 120 120 020 020 020 021 021 022 022 022 012 012 002 002 002 102 102 202 202 202 201 201
+100 100 100 100 100 110 110 110 110 110 010 010 010 010 010 011 011 011 011 011 001 001 001 001 001 101 101 101 101 101
+
+522 522 532 542 542 552 552 452 352 352 252 252 253 254 254 255 255 245 235 235 225 225 325 425 425 525 525 524 523 523
+
+411 411 421 431 431 441 441 341 241 241 141 141 142 143 143 144 144 134 124 124 114 114 214 314 314 414 414 413 412 412
+
+422 422 432 432 432 442 442 442 342 342 242 242 242 243 243 244 244 244 234 234 224 224 224 324 324 424 424 424 423 423
+
+311 311 311 321 321 331 331 331 231 231 131 131 131 132 132 133 133 133 123 123 113 113 113 213 213 313 313 313 312 312
+
+433 433 433 433 433 443 443 443 443 443 343 343 343 343 343 344 344 344 344 344 334 334 334 334 334 434 434 434 434 434
+211 211 211 211 211 221 221 221 221 221 121 121 121 121 121 122 122 122 122 122 112 112 112 112 112 212 212 212 212 212
+
+322 322 322 322 322 332 332 332 332 332 232 232 232 232 232 233 233 233 233 233 223 223 223 223 223 323 323 323 323 323
+
+555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555 555
+444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444 444
+333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333 333
+222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222 222
+111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111 111
+000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000
+HERE
+
+    $grid =~ s/(\d\d\d)/Term::ANSIColor::colored( "$1", "$modifier rgb$1" )/eg;
+
+    App::Ack::say( $grid );
+
+    return;
+}
 
 
 
@@ -2819,6 +2956,7 @@ sub get_copyright {
 
 
 sub print                   { print {$fh} @_; return; }
+sub say                     { print {$fh} @_, "\n"; return; }
 sub print_blank_line        { App::Ack::print( "\n" ); return; }
 sub print_filename          { App::Ack::print( $_[0], $_[1] ); return; }
 
@@ -4055,6 +4193,8 @@ EOT
         'version'           => sub { App::Ack::print_version_statement(); exit; },
         'help|?:s'          => sub { shift; App::Ack::show_help(@_); exit; },
         'help-types'        => sub { App::Ack::show_help_types(); exit; },
+        'help-colors'       => sub { App::Ack::show_help_colors(); exit; },
+        'help-rgb-colors'   => sub { App::Ack::show_help_rgb(); exit; },
         'man'               => sub { App::Ack::show_man(); exit; },
         $extra_specs ? %{$extra_specs} : (),
     }; # arg_specs

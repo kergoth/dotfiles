@@ -170,6 +170,7 @@ FAST_HIGHLIGHT+=(
   chroma-autorandr     chroma/-autorandr.ch
   chroma-docker        chroma/-docker.ch
   chroma-example       chroma/-example.ch
+  chroma-ionice        chroma/-ionice.ch
   chroma-make          chroma/-make.ch
   chroma-nmcli         chroma/-nmcli.ch
   chroma-node          chroma/-node.ch
@@ -200,7 +201,6 @@ FAST_HIGHLIGHT+=(
   chroma-bash          chroma/-sh.ch
   chroma-fish          chroma/-sh.ch
   chroma-sh            chroma/-sh.ch
-  chroma-tmux          chroma/-sh.ch
   chroma-zsh           chroma/-sh.ch
 
   chroma-whatis        chroma/-whatis.ch
@@ -216,6 +216,7 @@ FAST_HIGHLIGHT+=(
   chroma-pip2          chroma/-subcommand.ch
   chroma-pip3          chroma/-subcommand.ch
   chroma-gem           chroma/-subcommand.ch
+  chroma-bundle        chroma/-subcommand.ch
   chroma-yard          chroma/-subcommand.ch
   chroma-cabal         chroma/-subcommand.ch
   chroma-npm           chroma/-subcommand.ch
@@ -225,6 +226,10 @@ FAST_HIGHLIGHT+=(
   chroma-port          chroma/-subcommand.ch
   chroma-yum           chroma/-subcommand.ch
   chroma-dnf           chroma/-subcommand.ch
+  chroma-tmux          chroma/-subcommand.ch
+  chroma-pass          chroma/-subcommand.ch
+  chroma-aws           chroma/-subcommand.ch
+  chroma-apt           chroma/-subcommand.ch
   chroma-apt-get       chroma/-subcommand.ch
   chroma-apt-cache     chroma/-subcommand.ch
   chroma-aptitude      chroma/-subcommand.ch
@@ -245,6 +250,7 @@ FAST_HIGHLIGHT+=(
   chroma-subliminal    chroma/-subcommand.ch
   chroma-svnadmin      chroma/-subcommand.ch
   chroma-travis        chroma/-subcommand.ch
+  chroma-udisksctl     chroma/-subcommand.ch
   chroma-xdotool       chroma/-subcommand.ch
   chroma-zmanage       chroma/-subcommand.ch
   chroma-zsystem       chroma/-subcommand.ch
@@ -548,6 +554,11 @@ typeset -ga ZLAST_COMMANDS
       fi
    fi
 
+   (( this_word & 8192 )) && {
+     __list=( ${(z@)${aliases[$active_command]:-${active_command##*/}}##[[:space:]]#(command|builtin|exec|noglob|nocorrect|pkexec)[[:space:]]#} )
+     ${FAST_HIGHLIGHT[chroma-${__list[1]}]} 0 "$__arg" $_start_pos $_end_pos 2>/dev/null && continue
+   }
+
    (( this_word & 1 )) && {
      # !in_redirection needed particularly for exec {A}>b {C}>d
      (( !in_redirection )) && active_command=$__arg
@@ -577,11 +588,6 @@ typeset -ga ZLAST_COMMANDS
          ${FAST_HIGHLIGHT[chroma-$active_command]} 1 "$__arg" $_start_pos $_end_pos 2>/dev/null && continue
        fi
      } || (( 1 ))
-   } || {
-     (( this_word & 8192 )) && {
-       __list=( ${(z@)${aliases[$active_command]:-${active_command##*/}}##[[:space:]]#(command|builtin|exec|noglob|nocorrect|pkexec)[[:space:]]#} )
-       ${FAST_HIGHLIGHT[chroma-${__list[1]}]} 0 "$__arg" $_start_pos $_end_pos 2>/dev/null && continue
-     }
    }
 
    expanded_path=""
