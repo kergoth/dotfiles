@@ -21,6 +21,5 @@ trap 'rm "$tmpfile"' EXIT INT TERM
 tmpfile2="$(mktemp -t "${0##*/}.XXXXXX")"
 trap 'rm "$tmpfile" "$tmpfile2"' EXIT INT TERM
 
-cat >"$tmpfile"
-cat "$tmpfile" | tr '\n' '\0' | xargs -0 "$@" >"$tmpfile2"
+tee "$tmpfile" | tr '\n' '\0' | xargs -0 "$@" >"$tmpfile2"
 paste "$tmpfile" "$tmpfile2"
