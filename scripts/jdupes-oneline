@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+# Given the output of jdupes, adjust to match fdupes oneline output, to use
+# with postprocessing scripts like my own fdupes-select
+
+import sys
+print(sys.stdin.read().replace("\n\n", "\0").replace("\n", "\t").replace(" ", "\\ ").replace("\0", "\n"))
