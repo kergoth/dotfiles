@@ -45,14 +45,20 @@ process_args() {
     while getopts r:k:x:vh opt; do
         case "$opt" in
             r)
-                fdupes_root="$(cd "$OPTARG" && pwd -P)"
+                if [ ! -d "$OPTARG" ]; then
+                    echo >&2 "Warning: FDUPES_ROOT is not an existing directory: $OPTARG"
+                    fdupes_root="$(abspath "$OPTARG")"
+                else
+                    fdupes_root="$(cd "$OPTARG" && pwd -P)"
+                fi
                 ;;
             k)
                 if [ ! -d "$OPTARG" ]; then
-                    echo >&2 "KEEP_PATH is not an existing directory: $OPTARG"
-                    usage
+                    echo >&2 "Warning: KEEP_PATH is not an existing directory: $OPTARG"
+                    keep_path="$(abspath "$OPTARG")"
+                else
+                    keep_path="$(cd "$OPTARG" && pwd -P)"
                 fi
-                keep_path="$(cd "$OPTARG" && pwd -P)"
                 ;;
             x)
                 if [ -n "$exclude_pattern" ]; then
@@ -187,36 +193,37 @@ main() {
     fi
 
     # shellcheck disable=SC2162
-    while read -a files; do
-        printargs "${files[@]}" \
-            | if [ -n "$exclude_pattern" ]; then
-                grep -Ev "$exclude_pattern" || :
-            else
-                cat
-            fi >"$tmpfile"
+    cat "$fdupes_outfile" | grep -v "^$" | \
+        while read -a files; do
+            printargs "${files[@]}" \
+                | if [ -n "$exclude_pattern" ]; then
+                    grep -Ev "$exclude_pattern" || :
+                else
+                    cat
+                fi >"$tmpfile"
 
-        if [ -n "$fdupes_root" ]; then
-            sed -i -e "s#^\\./#$escaped_fdupes_root/#" "$tmpfile"
-        fi
-
-        if [ -s "$tmpfile" ]; then
-            if [ $verbose -eq 1 ]; then
-                echo >&2 "Processing: $(head -n 1 "$tmpfile")"
+            if [ -n "$fdupes_root" ]; then
+                sed -i -e "s#^\\./#$escaped_fdupes_root/#; s#\\([^/]\\)#${escaped_fdupes_root}/\\1#" "$tmpfile"
             fi
-            if [ -n "$keep_path" ]; then
-                if [ "$verbose" -eq 1 ]; then
-                    keeping="$(grep "^$keep_path/" "$tmpfile" || :)"
-                    if [ -n "$keeping" ]; then
-                        echo >&2 "Keep files: $keeping"
-                        echo >&2 "Remove files:"
+
+            if [ -s "$tmpfile" ]; then
+                if [ $verbose -eq 1 ]; then
+                    echo >&2 "Processing: $(head -n 1 "$tmpfile")"
+                fi
+                if [ -n "$keep_path" ]; then
+                    if [ "$verbose" -eq 1 ]; then
+                        keeping="$(grep "^$keep_path/" "$tmpfile" || :)"
+                        if [ -n "$keeping" ]; then
+                            echo >&2 "Keep files: $keeping"
+                            echo >&2 "Remove files:"
+                            grep -v "^$keep_path/" "$tmpfile" || :
+                        fi
+                    elif grep -q "^$keep_path/" "$tmpfile"; then
                         grep -v "^$keep_path/" "$tmpfile" || :
                     fi
-                elif grep -q "^$keep_path/" "$tmpfile"; then
-                    grep -v "^$keep_path/" "$tmpfile" || :
                 fi
             fi
-        fi
-    done <"$fdupes_outfile"
+        done
 }
 
 main "$@"
