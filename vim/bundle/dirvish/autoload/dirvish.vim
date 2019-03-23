@@ -67,9 +67,11 @@ endfunction
 
 function! s:info(paths) abort
   for f in a:paths
+    " Slash decides how getftype() classifies directory symlinks. #138
+    let noslash = substitute(f, escape(s:sep,'\').'$', '', 'g')
     let fname = len(a:paths) < 2 ? '' : printf('%12.12s ',fnamemodify(substitute(f,'[\\/]\+$','',''),':t'))
-    echo (-1 == getfsize(f) ? '?' : (fname.(getftype(f)[0]).' '.getfperm(f)
-          \.' '.strftime('%Y-%m-%d.%H:%M:%S',getftime(f)).' '.getfsize(f)).('link'!=#getftype(f)?'':' -> '.fnamemodify(resolve(f),':~:.')))
+    echo (-1 == getfsize(f) ? '?' : (fname.(getftype(noslash)[0]).' '.getfperm(f)
+          \.' '.strftime('%Y-%m-%d.%H:%M:%S',getftime(f)).' '.printf('%.2f',getfsize(f)/1000.0).'K').('link'!=#getftype(noslash)?'':' -> '.fnamemodify(resolve(f),':~:.')))
   endfor
 endfunction
 
@@ -79,8 +81,12 @@ function! s:set_args(args) abort
   endif
   let normalized_argv = map(argv(), 'fnamemodify(v:val, ":p")')
   for f in a:args
-    if -1 == index(normalized_argv, f)
-      exe '$argadd '.fnameescape(fnamemodify(f, ':p'))
+    let i = index(normalized_argv, f)
+    if -1 == i
+      exe '$argadd '.fnameescape(fnamemodify(f, ':.'))
+    elseif 1 == len(a:args)
+      exe (i+1).'argdelete'
+      syntax clear DirvishArg
     endif
   endfor
   echo 'arglist: '.argc().' files'

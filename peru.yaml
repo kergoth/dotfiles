@@ -124,7 +124,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: f9de0d1b6f63cd0461facdb531e04837c4907099
+    rev: 6fafe6166e84cfaf6322440fcf59d30637f87d3a
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -191,7 +191,7 @@ git module vim-airline:
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: 3bfe1d00d48f7c35b7c0dd7af86229c9e63e14a9
+    rev: 78cc30cb90b50fab024098bf2a55a4441665ff03
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -234,7 +234,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: d33796c460229b2cf0dd09fedf1b272da9d13a42
+    rev: a49d846ff641182e6cfb4bd675ddfc301e7fb378
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -517,7 +517,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: aeda73f0a8c6662298f3bf30ac7b2431d3aa1148
+    rev: 20595d16ec79304737ec69ee8e7e707961b6583e
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -744,7 +744,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: f46e029b4a1cb16c014d8ddbf88e9d361fd2fcf0
+    rev: 25a22bb3338bbe7fec142b9582b2f811f1742f76
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
