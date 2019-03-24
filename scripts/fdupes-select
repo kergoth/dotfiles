@@ -203,7 +203,7 @@ main() {
                 fi >"$tmpfile"
 
             if [ -n "$fdupes_root" ]; then
-                sed -i -e "s#^\\./#$escaped_fdupes_root/#; s#\\([^/]\\)#${escaped_fdupes_root}/\\1#" "$tmpfile"
+                sed -i -e "s#^\\./#$escaped_fdupes_root/#; s#^\\([^/]\\)#${escaped_fdupes_root}/\\1#" "$tmpfile"
             fi
 
             if [ -s "$tmpfile" ]; then
