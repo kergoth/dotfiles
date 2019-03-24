@@ -94,7 +94,7 @@ if (( $+commands[htop] )); then
     alias top=htop
 fi
 
-alias hardlink='hardlink -ft'
+alias hardlink='hardlink -t -x "\\.git/" -x "\\.repo/" -x @ -x .DS_Store -x "\\.app/" -x "\\.sync/" -x "\\.itmf" -x "\\.ite" -x "\\.itc"'
 
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
