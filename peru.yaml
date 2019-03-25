@@ -187,7 +187,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 45205aa4a393ab7eee2656e6e35eb61016ec81c2
+    rev: 1fb184305bbd0da45fb87f8a690ac29599ce1a15
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -234,7 +234,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: a49d846ff641182e6cfb4bd675ddfc301e7fb378
+    rev: 86c6ef4f023d93b9ff24a7a36f963190d4405b8c
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
