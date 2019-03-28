@@ -6,7 +6,9 @@ PY3_VERSION=3.7.2
 export PYENV_ROOT="${1:-${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}}"
 PATH="$(dirname "$0"):$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
 
-pyenv-installer
+if [ ! -e "$PYENV_ROOT/bin" ]; then
+    pyenv-installer || rm -rf "${PYENV_ROOT:?}/bin"
+fi
 
 if [ "$2" = "-f" ]; then
     rm -rf "$PYENV_ROOT/versions/$PY2_VERSION"
