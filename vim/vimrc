@@ -1,3 +1,4 @@
+" vint: -ProhibitUnnecessaryDoubleQuote -ProhibitSetNoCompatible
 " Defaults {{{
 if v:version >= 800 && !has("nvim")
   unlet! skip_defaults_vim
@@ -273,7 +274,7 @@ augroup vimrc
     function! s:TmuxRename() abort
       if !exists('g:tmux_automatic_rename')
         let l:tmux_output = system('tmux show-window-options -v automatic-rename')
-        if l:tmux_output == ''
+        if l:tmux_output ==# ''
           let l:tmux_output = system('tmux show-window-options -gv automatic-rename')
         endif
         try
@@ -282,7 +283,7 @@ augroup vimrc
           let g:tmux_automatic_rename = split(l:tmux_output)[0]
         endtry
       endif
-      return g:tmux_automatic_rename == 'on'
+      return g:tmux_automatic_rename ==# 'on'
     endfunction
 
     au BufEnter * if s:TmuxRename() && empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
@@ -433,7 +434,7 @@ if &term ==# 'rxvt-unicode'
   set t_Co=256
 endif
 
-if $TERM_PROGRAM != 'Apple_Terminal'
+if $TERM_PROGRAM !=# 'Apple_Terminal'
   let base16colorspace=256
 endif
 
@@ -759,7 +760,7 @@ set guicursor+=v-ve:VisualCursor
 set guicursor+=a:blinkon0
 
 " Cursor Colors: {{{3
-if g:colors_name == 'base16'
+if g:colors_name ==# 'base16'
   call g:Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
   call g:Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
   call g:Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
