@@ -123,10 +123,11 @@ formatting.
   * [credo](https://github.com/rrrene/credo)
   * [dialyxir](https://github.com/jeremyjh/dialyxir)
   * [dogma](https://github.com/lpil/dogma)
-  * [elixir-ls](https://github.com/JakeBecker/elixir-ls)
+  * [elixir-ls](https://github.com/JakeBecker/elixir-ls) :warning:
   * [mix](https://hexdocs.pm/mix/Mix.html) :warning: :floppy_disk:
 * Elm
   * [elm-format](https://github.com/avh4/elm-format)
+  * [elm-lsp](https://github.com/antew/elm-lsp)
   * [elm-make](https://github.com/elm-lang/elm-make)
 * Erb
   * [erb](https://apidock.com/ruby/ERB)
@@ -323,6 +324,8 @@ formatting.
   * [write-good](https://github.com/btford/write-good)
 * Pony
   * [ponyc](https://github.com/ponylang/ponyc)
+* PowerShell
+  * [psscriptanalyzer](https://github.com/PowerShell/PSScriptAnalyzer) :floppy_disk
 * Prolog
   * [swipl](https://github.com/SWI-Prolog/swipl-devel)
 * proto

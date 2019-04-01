@@ -187,7 +187,7 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 1fb184305bbd0da45fb87f8a690ac29599ce1a15
+    rev: 86e73cade71651263715f21e58eed87cfed4518e
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
@@ -215,7 +215,7 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: 597068870b8f093a8b2d11536c62ff31222ee8d0
+    rev: ca58a2d886cc18734c90c9665da4775d444b0c04
 
 # readline style insertion
 git module vim-rsi:
@@ -225,7 +225,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 929e0d0aa1139d483c070e4ee2a05f4a3425b0af
+    rev: 178acd05aaf26b14afd0a29f8e1c318ca96637f5
 
 # continuously updated session files
 git module vim-obsession:
@@ -234,7 +234,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 86c6ef4f023d93b9ff24a7a36f963190d4405b8c
+    rev: 6fb15d43078b55f30cce5cb73571e6a8f1634124
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -280,7 +280,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 315e568de006e80138f79c77d5508c7e4853e6b2
+    rev: ff951341c993ed84ad65344e496e122ee3dddf67
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -517,7 +517,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 20595d16ec79304737ec69ee8e7e707961b6583e
+    rev: 94a6cf45588fb7ae3b695731a518924d75e8348c
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -576,7 +576,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 80ef7ea2d0b22f0d8de7387a3d5bf6e9e5b72e9d
+    rev: 89273b65b8de9d3d428e7b1f5c0c347938f5a863
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -609,7 +609,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 1d45a6d4f094127b113470d7710695b280224933
+    rev: a55b6aa3aa797c989a4979a13a5bd2ae11cfd4a5
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -758,6 +758,6 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 3512b73782cc1e980997d77f9979df933042242a
+    rev: 18ec221dacd9654ef1a7720202712f19405723f0
 
 #  vim: set sw=4 :
