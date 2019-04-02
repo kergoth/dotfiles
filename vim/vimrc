@@ -971,6 +971,7 @@ let g:ale_fixers = {
 \   'python': ['isort', 'autopep8'],
 \   'sh': ['shfmt'],
 \   'go': ['gofmt'],
+\   'elixir': ['mix_format'],
 \}
 
 let g:ale_sh_shfmt_options = '-ci -bn -i 4'
