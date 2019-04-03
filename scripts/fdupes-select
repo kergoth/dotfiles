@@ -38,7 +38,7 @@ END
 
 process_args() {
     fdupes_outfile=-
-    fdupes_root=
+    fdupes_root=$PWD
     keep_path=
     exclude_pattern=
     verbose=0
