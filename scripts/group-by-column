@@ -1,0 +1,7 @@
+#!/bin/sh
+# Given sorted columnar input, add a newline between groups
+
+column=${1:-1}
+sep=${2:-$(printf '\t')}
+
+awk -F"$sep" "{if(!a[\$$column]){ a[\$$column]++; print \"\"; }; print}" | tail -n +2
