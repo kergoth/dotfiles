@@ -1,0 +1,27 @@
+#!/bin/sh
+# - Accept file paths on stdin
+# - Accept the identifier command via command-line argument
+# - Output files grouped by the identifier
+#
+# NOTE: Currently assumes the command will output '<id><TAB
+# CHARACTER><filename>' lines
+
+PATH=$(dirname "$0"):$PATH
+TAB=$(printf '\t')
+
+if echo "$*" | grep -q '{}'; then
+    set -- -I"{}" "$@"
+fi
+
+remove_nondupes() {
+     jdupes-oneline | sed -e "s/$TAB*$//" | grep "$TAB" | jdupes-multiline
+}
+
+cat \
+  | tr '\n' '\0' \
+  | xargs -0 "$@" \
+  | grep -v "^ *$TAB" \
+  | sort -t"$TAB" -k1 \
+  | group-by-column 1 "$TAB" \
+  | cut -d"$TAB" -f2- \
+  | remove_nondupes
