@@ -4,6 +4,12 @@
 scriptname=${0##*/}
 default_exclude_pattern='/(@eaDir|\.git|\.sync|\.svn)/|/\.DS_Store'
 
+if command -v greadlink >/dev/null 2>&1; then
+    readlink=greadlink
+else
+    readlink=readlink
+fi
+
 usage() {
     cat >&2 <<END
 $scriptname [options] [FDUPES_OUTFILE]
@@ -200,7 +206,7 @@ main() {
                     grep -Ev "$exclude_pattern" || :
                 else
                     cat
-                fi >"$tmpfile"
+                fi | tr '\n' '\0' | xargs -0 "$readlink" -f >"$tmpfile"
 
             if [ -n "$fdupes_root" ]; then
                 sed -i -e "s#^\\./#$escaped_fdupes_root/#; s#^\\([^/]\\)#${escaped_fdupes_root}/\\1#" "$tmpfile"
