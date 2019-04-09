@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PIPX_HOME="${PIPX_HOME:-${XDG_DATA_HOME:-~/.local/share}/pipx/venvs}"
+python3 -m ensurepip --user --upgrade
+python3 -m pip install --user pipx
