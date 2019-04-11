@@ -535,7 +535,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: cbf0e24b1863c44606bbdd1edcb1c1b40efbcb55
+    rev: 733abd4af0f23f217caa2a303fbef66382d19d6f
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -568,7 +568,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 481316561445a4048a96a2c6bd41e9b623d8919f
+    rev: d7395906ba0f9aca2fb1a6c32df236bfd4ab32f6
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
