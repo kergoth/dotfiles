@@ -611,6 +611,16 @@ g:ale_cursor_detail                                       *g:ale_cursor_detail*
   loaded for messages to be displayed. See |ale-lint-settings-on-startup|.
 
 
+g:ale_disable_lsp                                           *g:ale_disable_lsp*
+                                                            *b:ale_disable_lsp*
+
+  Type: |Number|
+  Default: `0`
+
+  When this option is set to `1`, ALE ignores all linters powered by LSP.
+  Please see also |ale-lsp|.
+
+
 g:ale_echo_cursor                                           *g:ale_echo_cursor*
 
   Type: |Number|
@@ -1854,8 +1864,10 @@ documented in additional help files.
     uncrustify............................|ale-c-uncrustify|
     ccls..................................|ale-c-ccls|
   chef....................................|ale-chef-options|
+    cookstyle.............................|ale-chef-cookstyle|
     foodcritic............................|ale-chef-foodcritic|
   clojure.................................|ale-clojure-options|
+    clj-kondo.............................|ale-clojure-clj-kondo|
     joker.................................|ale-clojure-joker|
   cloudformation..........................|ale-cloudformation-options|
     cfn-python-lint.......................|ale-cloudformation-cfn-python-lint|
@@ -1923,15 +1935,16 @@ documented in additional help files.
     glslang...............................|ale-glsl-glslang|
     glslls................................|ale-glsl-glslls|
   go......................................|ale-go-options|
+    bingo.................................|ale-go-bingo|
     gobuild...............................|ale-go-gobuild|
     gofmt.................................|ale-go-gofmt|
-    golint................................|ale-go-golint|
-    govet.................................|ale-go-govet|
-    gometalinter..........................|ale-go-gometalinter|
-    staticcheck...........................|ale-go-staticcheck|
-    golangserver..........................|ale-go-golangserver|
     golangci-lint.........................|ale-go-golangci-lint|
-    bingo.................................|ale-go-bingo|
+    golangserver..........................|ale-go-golangserver|
+    golint................................|ale-go-golint|
+    gometalinter..........................|ale-go-gometalinter|
+    gopls.................................|ale-go-gopls|
+    govet.................................|ale-go-govet|
+    staticcheck...........................|ale-go-staticcheck|
   graphql.................................|ale-graphql-options|
     eslint................................|ale-graphql-eslint|
     gqlint................................|ale-graphql-gqlint|
@@ -2141,6 +2154,8 @@ documented in additional help files.
     stylelint.............................|ale-stylus-stylelint|
   sugarss.................................|ale-sugarss-options|
     stylelint.............................|ale-sugarss-stylelint|
+  swift...................................|ale-swift-options|
+    sourcekitlsp..........................|ale-swift-sourcekitlsp|
   tcl.....................................|ale-tcl-options|
     nagelfar..............................|ale-tcl-nagelfar|
   terraform...............................|ale-terraform-options|
@@ -2527,6 +2542,14 @@ ale#Env(variable_name, value)                                       *ale#Env()*
     :echo string(ale#Env('VAR', 'some value') . 'command')
     'VAR=''some value'' command'      # On Linux or Mac OSX
     'set VAR="some value" && command' # On Windows
+
+
+ale#Has(feature)                                                    *ale#Has()*
+
+  Return `1` if ALE supports a given feature, like |has()| for Vim features.
+
+  ALE versions can be checked with version strings in the format
+  `ale#Has('ale-x.y.z')`, such as `ale#Has('ale-2.4.0')`.
 
 
 ale#Pad(string)                                                     *ale#Pad()*

@@ -124,7 +124,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 6fafe6166e84cfaf6322440fcf59d30637f87d3a
+    rev: 3601297ebfd67f208f489189e984df665ec9242c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -172,7 +172,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: bd0b87d36ad80e8acd94f22028d15ebb441b1c28
+    rev: 60eac8c97457af5a96eb06ad4b564e4c813d806e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -187,11 +187,11 @@ git module taskpaper:
 # lean & mean statusline for vim that's light as air
 git module vim-airline:
     url: https://github.com/vim-airline/vim-airline
-    rev: 86e73cade71651263715f21e58eed87cfed4518e
+    rev: cbf264ff5f323ab8a8cf02f59f79bf858d496047
 
 git module vim-airline-themes:
     url: https://github.com/vim-airline/vim-airline-themes
-    rev: 78cc30cb90b50fab024098bf2a55a4441665ff03
+    rev: 01b3098642df1bced40473c924c0b6aa37427fe2
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -234,7 +234,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 6fb15d43078b55f30cce5cb73571e6a8f1634124
+    rev: ae60a79106dd32d75d3c5cf4dfe44fd658d634ec
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -517,7 +517,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 94a6cf45588fb7ae3b695731a518924d75e8348c
+    rev: accfda9aa4009597da4362be31cb179b8392b84d
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -543,7 +543,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 70f36c007db30a5fe1edf2b63664088b502a729c
+    rev: cbf0e24b1863c44606bbdd1edcb1c1b40efbcb55
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -576,7 +576,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 89273b65b8de9d3d428e7b1f5c0c347938f5a863
+    rev: 481316561445a4048a96a2c6bd41e9b623d8919f
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -744,7 +744,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: 25a22bb3338bbe7fec142b9582b2f811f1742f76
+    rev: 34efabac145c06cda8084aea11bf46382a3d2254
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
@@ -758,6 +758,6 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 18ec221dacd9654ef1a7720202712f19405723f0
+    rev: 6cf80035ce7560fa83d1b9b4a5f771518c6fd99f
 
 #  vim: set sw=4 :

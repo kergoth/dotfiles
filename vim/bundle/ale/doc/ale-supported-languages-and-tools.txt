@@ -71,8 +71,10 @@ Notes:
   * `gcc`
   * `uncrustify`
 * Chef
+  * `cookstyle`
   * `foodcritic`
 * Clojure
+  * `clj-kondo`
   * `joker`
 * CloudFormation
   * `cfn-python-lint`
@@ -152,6 +154,7 @@ Notes:
   * `golint`
   * `gometalinter`!!
   * `go mod`!!
+  * `gopls`
   * `gosimple`!!
   * `gotype`!!
   * `go vet`!!
@@ -337,6 +340,7 @@ Notes:
   * `prospector`
   * `pycodestyle`
   * `pydocstyle`
+  * `pyflakes`
   * `pylama`!!
   * `pylint`!!
   * `pyls`
@@ -409,6 +413,7 @@ Notes:
 * SugarSS
   * `stylelint`
 * Swift
+  * `sourcekit-lsp`
   * `swiftformat`
   * `swiftlint`
 * Tcl
