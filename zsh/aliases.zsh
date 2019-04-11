@@ -90,6 +90,27 @@ if (( $+commands[prettyping] )); then
     }
 fi
 
+if (( $+commands[unar] )); then
+    # Use unar from the folks behind The Unarchiver if we have it
+    extract() {
+        for i; do
+            unar "$i" || return $?
+        done
+    }
+elif (( $+commands[aunpack] )); then
+    # Or aunpack from atool
+    alias extract='aunpack -e'
+elif (( $+commands[unbox] )); then
+    # Or unbox
+    alias extract=unbox
+else
+    # Fall back to dtrx, which is included in the dotfiles
+    extract () {
+        dtrx --one=here --noninteractive "$@"
+    }
+fi
+alias unpack=extract
+
 if (( $+commands[htop] )); then
     alias top=htop
 fi
