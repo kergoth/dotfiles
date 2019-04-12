@@ -7,7 +7,7 @@ else
   " The default vimrc file.
   "
   " Maintainer:	Bram Moolenaar <Bram@vim.org>
-  " Last change:	2017 Jun 13
+  " Last change:	2019 Feb 18
   "
   " This is loaded if no vimrc file was found.
   " Except when Vim is run with "-u NONE" or "-C".
@@ -41,8 +41,8 @@ else
   " Allow backspacing over everything in insert mode.
   set backspace=indent,eol,start
 
-  set history=200	" keep 200 lines of command line history
-  set noruler		" no need for this with airline
+  set history=200		" keep 200 lines of command line history
+  set ruler		" show the cursor position all the time
   set showcmd		" display incomplete commands
   set wildmenu		" display completion matches in a status line
 
@@ -62,11 +62,6 @@ else
   " Do incremental searching when it's possible to timeout.
   if has('reltime')
     set incsearch
-  endif
-
-  " Enable live substitution previews
-  if has("nvim")
-    set inccommand=nosplit
   endif
 
   " Do not recognize octal numbers for Ctrl-A and Ctrl-X, most users find it
@@ -104,8 +99,8 @@ else
     let c_comment_strings=1
   endif
 
-  " Only do this part when compiled with support for autocommands.
-  if has("autocmd")
+  " Only do this part when Vim was compiled with the +eval feature.
+  if 1
 
     " Enable file type detection.
     " Use the default filetype settings, so that mail gets 'tw' set to 72,
@@ -130,7 +125,7 @@ else
 
     augroup END
 
-  endif " has("autocmd")
+  endif
 
   " Convenient command to see the difference between the current buffer and the
   " file it was loaded from, thus the changes you made.
@@ -138,7 +133,7 @@ else
   " Revert with: ":delcommand DiffOrig".
   if !exists(":DiffOrig")
     command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-		    \ | wincmd p | diffthis
+  		  \ | wincmd p | diffthis
   endif
 
   if has('langmap') && exists('+langremap')
