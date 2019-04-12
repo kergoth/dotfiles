@@ -246,6 +246,8 @@ endif
 augroup vimrc
   au!
 
+  autocmd BufWritePost  $MYVIMRC  source $MYVIMRC
+
   " Resize splits when the window is resized
   au VimResized * exe "normal! \<c-w>="
 
@@ -667,10 +669,8 @@ nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 
 " Edit the vimrc
+nmap <leader>v :e $MYVIMRC<CR>
 nmap <leader>ve :e $MYVIMRC<CR>
-
-" Reload the vimrc
-nmap <leader>vr :so $MYVIMRC<CR>
 
 " Replace file contents with the selection
 vnoremap <leader>F "qy<CR>:<C-U>exe "normal! ggdG\"qP"<CR>
