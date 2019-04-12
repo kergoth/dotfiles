@@ -334,9 +334,6 @@ set cmdheight=1
 if has('folding')
   " Default with all folds open
   set foldlevelstart=99
-
-  " Default to indent based folding rather than manual
-  set foldmethod=indent
 endif
 
 " Make completion list behave more like a shell
@@ -846,6 +843,7 @@ augroup vimrc_filetype_detect
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
   au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
   au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
+  au BufNewFile,BufReadPost * if &ft ==# '' | set ft=text | endif
 augroup END
 " }}}
 " File type settings {{{
@@ -871,16 +869,24 @@ augroup vimrc_filetypes
   au FileType cfg set cms=#%s
 
   " Set up folding
-  au FileType c,cpp,lua,vim,sh,python,go set fdm=syntax
+  au FileType c,cpp,lua,vim,sh,python,go,gitcommit set fdm=syntax
+  au FileType text set fdm=indent
   au FileType man set fdl=99 fdm=manual
   au FileType taskpaper call taskpaper#fold_projects()
-  au FileType gitcommit set fdm=syntax
+
+  " Default to indent based folding rather than manual
+  au FileType *
+        \ if  &filetype == '' |
+        \   set fdm=indent |
+        \ endif
 
   " Use Braceless for indent-sensitive types
   au FileType python,yaml BracelessEnable +indent
 
   " Set up completion
   au FileType vim let b:vcm_tab_complete = 'vim'
+
+  " Default to syntax completion if we have nothing better
   au FileType *
         \ if &omnifunc == "" |
         \   setlocal omnifunc=syntaxcomplete#Complete |
@@ -967,7 +973,6 @@ let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 
 let g:sleuth_automatic = 1
-let g:vundle_default_git_proto = 'git'
 let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
 let g:undotree_SetFocusWhenToggle = 1
