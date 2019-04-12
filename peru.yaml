@@ -509,7 +509,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: accfda9aa4009597da4362be31cb179b8392b84d
+    rev: d2114da6654244ff1a53f4e0f9fc9097b4611ae3
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish

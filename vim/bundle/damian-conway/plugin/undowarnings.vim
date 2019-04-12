@@ -16,42 +16,31 @@ set cpo&vim
 "=====[ INTERFACE ]==================
 
 " Remap the undo key to warn about stepping back into a buffer's pre-history...
-nnoremap <expr> u <SID>verify_undo()
+nnoremap <expr> u  VerifyUndo()
 
 "=====[ IMPLEMENTATION ]==================
 "
 " Track each buffer's starting position in the undo history...
 augroup UndoWarnings
     autocmd!
-    autocmd BufReadPost,BufNewFile  *  call s:rememberundo_start()
+    autocmd BufReadPost,BufNewFile  *   :call Rememberundo_start()
 augroup END
 
-function! s:rememberundo_start ()
+function! Rememberundo_start ()
     let b:undo_start = exists('b:undo_start') ? b:undo_start : undotree().seq_cur
 endfunction
 
-function! s:verify_undo ()
-    if !exists('b:undo_start')
-        return 'u'
-    endif
-
+function! VerifyUndo ()
     " Are we back at the start of this session (but still with undos possible)???
     let undo_now = undotree().seq_cur
 
-    " Open folds that contain the undo point if configured to do so
-    let suffix = &foldopen =~# 'undo' ? 'zv' : ''
-
     " If so, check whether to undo into pre-history...
     if undo_now > 0 && undo_now == b:undo_start
-        if confirm('', "Undo into previous session? (&Yes\n&No)", 1) == 1
-            return "\<C-L>u" . suffix
-        else
-            return "\<C-L>"
-        endif
+        return confirm('',"Undo into previous session? (&Yes\n&No)",1) == 1 ? "\<C-L>u" : "\<C-L>"
 
     " Otherwise, always undo...
     else
-        return 'u' . suffix
+        return 'u'
     endif
 endfunction
 
