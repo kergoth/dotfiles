@@ -31,6 +31,10 @@ function! s:rememberundo_start ()
 endfunction
 
 function! s:verify_undo ()
+    if !exists('b:undo_start')
+        return 'u'
+    endif
+
     " Are we back at the start of this session (but still with undos possible)???
     let undo_now = undotree().seq_cur
 
