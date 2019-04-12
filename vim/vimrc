@@ -704,6 +704,18 @@ call s:MapNextFamily('l','l')
 call s:MapNextFamily('q','c')
 " tags
 call s:MapNextFamily('t','t')
+
+function! SplitShellLine() abort
+    exe '%s/ *; */\r/g'
+    exe '%s/^\(do\|then\) \(.*\)/\1\r\2/g'
+    Format
+endfunction
+
+augroup filetype_mappings
+    au!
+    au FileType sh,zsh nnoremap <buffer> <silent> L :call SplitShellLine()<cr>
+augroup END
+
 " }}}
 " Terminal and display {{{
 " Default to hiding concealed text
