@@ -110,6 +110,7 @@ else
     }
 fi
 alias unpack=extract
+alias extr=extract
 
 if (( $+commands[htop] )); then
     alias top=htop
