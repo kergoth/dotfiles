@@ -1072,7 +1072,7 @@ augroup vimrc_plugins
   " dirvish: map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
   autocmd FileType dirvish nnoremap <silent><buffer>
     \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
-augroup end
+augroup END
 " }}}
 
 " Load topic-specific vim settings from dotfiles, shortcut method rather than
