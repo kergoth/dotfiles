@@ -1,0 +1,237 @@
+# Not all of these are terrible.  More like, unexpected.
+
+Before:
+=======
+  BracelessEnable +indent +fold +highlight
+
+Given python (func sig with colon in string/comment):
+=====================================================
+  class Example(object):
+      def example(arg1, arg2,
+                  # TODO: Break braceless
+                  arg3, arg4="""def lol():
+      print('lol')"""):
+          print('This passes lint tests.  Can you believe it?')
+
+      if True:
+          pass
+
+Do (yank body and replace function with paste):
+===============================================
+  jjviPyvaPp
+
+Expect python (body replacing function):
+========================================
+  class Example(object):
+          print('This passes lint tests.  Can you believe it?')
+
+      if True:
+          pass
+
+Do (change body):
+=================
+  jjciPpass
+
+Expect python (body replaced with proper indent):
+=================================================
+  class Example(object):
+      def example(arg1, arg2,
+                  # TODO: Break braceless
+                  arg3, arg4="""def lol():
+      print('lol')"""):
+          pass
+
+      if True:
+          pass
+
+Given python (block appears to start in docstring):
+===================================================
+  def example():
+      pass
+
+  """
+  if
+  def
+  for
+  try
+  elif
+  else
+  with
+  '''
+  class
+  while
+  except
+  finally
+  """
+
+  pass # Break docstring scan
+
+  """
+  if
+  def
+  for
+  try
+  elif
+  else
+  with
+  '''
+  class
+  while
+  except
+  finally
+  """
+
+  def example():
+      pass
+
+Execute (test block head scan):
+===============================
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! $
+  AssertEqual [36, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! 18G
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'b')
+
+Given python (xzibit's docstring):
+==================================
+  """
+  '''
+  """
+
+  """
+
+  '''
+  '''
+  """
+
+Execute (test docstring scan):
+==============================
+  AssertEqual [1, 9], braceless#docstring(6)
+
+Given python (block starting inside list comprehension):
+========================================================
+  def example():
+      return [example2(x)
+              for x in [y
+                        for y in something]]
+
+  def example2():
+      pass
+
+Execute (test block head scan):
+===============================
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! j
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! 3G13|
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'b')
+
+Given python (block starting inside generator):
+===============================================
+  def example():
+      return (example2(x)
+              for x in (y
+                        for y in something))
+
+  def example2():
+      pass
+
+Execute (test block head scan):
+===============================
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! j
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! 3G13|
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'b')
+
+Given python (block starting inside set comprehension):
+=======================================================
+  def example():
+      return {example2(x)
+              for x in {y
+                        for y in something}}
+
+  def example2():
+      pass
+
+Execute (test block head scan):
+===============================
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! j
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! 3G13|
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'b')
+
+Given python (block starting inside mixed collections):
+=======================================================
+  def example():
+      return {example2(
+              for x in [y
+                        for y in something])}
+
+  def example2():
+      pass
+
+Execute (test block head scan):
+===============================
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! j
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  normal! 3G13|
+  AssertEqual [6, 1], braceless#scan_head(g:py_test_pat, 'c')
+  AssertEqual [1, 1], braceless#scan_head(g:py_test_pat, 'b')
+
+Given python (docstring in function call):
+==========================================
+  def spam(arg1, arg2,
+           # A comment between arguments
+           arg3="""def spam():
+  print('eggs')"""):
+      print("""No one expects...
+  the spammish inquisition""")
+      return True
+
+Do (select function body and replace):
+======================================
+  viPsx
+
+Expect python (function body replaced):
+=======================================
+  def spam(arg1, arg2,
+           # A comment between arguments
+           arg3="""def spam():
+  print('eggs')"""):
+      x
+
+Given python (list comprehension):
+==================================
+
+  def example():
+      test = [x for x in y
+              if x]
+
+      def example():
+          pass
+
+Execute (get block head for line after comprehension):
+======================================================
+  normal! 5G
+  AssertEqual [2, 1], braceless#scan_head(g:py_test_pat, 'b')
+
+Given python (multiline ternary):
+=================================
+
+  def example():
+      test = 1 if True \
+          else 0
+
+      def example():
+          pass
+
+Execute (get block head for line after ternary):
+================================================
+  normal! 5G
+  AssertEqual [2, 1], braceless#scan_head(g:py_test_pat, 'b')

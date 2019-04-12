@@ -1,0 +1,157 @@
+Before:
+=======
+  BracelessEnable +indent +fold +highlight
+
+Given python (multi block script):
+==================================
+  def example():
+      """Doc string
+      """
+      # There is a docstring above
+      if True: pass
+
+      if True \
+              and True:
+          print('so true')
+
+          with something:
+              print('something')
+
+Execute (move to last block, then jump to first):
+=================================================
+  normal ]]
+  AssertCursor 1, 14
+  normal ]]
+  AssertCursor 8, 21
+  normal ]]
+  AssertCursor 11, 23
+  normal 3[[
+  AssertCursor 1, 14
+
+Given python (segmented block gauntlet):
+========================================
+  class Example(object):
+      def __init__(self):
+          print('hello')
+          print('world!')
+
+          if True:
+              pass
+
+          print('hello again')
+          print('hello again')
+
+      def never(self):
+          if True:
+              if True:
+                  print('gonna')
+
+                  print('give')
+              else:
+                  print('you')
+
+      def up(self):
+          if True:
+              print('never')
+              print('gonna')
+          else:
+              print('let')
+
+      def you(self):
+          if True:
+              print('down')
+              print('never')
+          else:
+              print('gonna')
+
+      def run(self):
+          if True:
+              print('around')
+              print('and')
+          else:
+              print('desert')
+
+          print('you')
+
+Execute (move by method and class):
+===================================
+  normal ]m
+  AssertCursor 1, 7
+  normal ]m
+  AssertCursor 2, 9
+  normal ]M
+  AssertCursor 10, 28
+  normal 2]M
+  AssertCursor 26, 24
+  normal [m
+  AssertCursor 21, 9
+  normal 3[m
+  AssertCursor 1, 7
+  normal 38G
+  normal [m
+  AssertCursor 35, 9
+  normal 38G
+  normal ]M
+  AssertCursor 42, 20
+  normal [M
+  AssertCursor 33, 26
+
+Execute (move by block segments):
+=================================
+  normal [j
+  AssertCursor 3, 9
+  normal [j
+  AssertCursor 7, 13
+  normal ]j
+  AssertCursor 7, 16
+  normal ]j
+  AssertCursor 10, 28
+  normal ]j
+  AssertCursor 17, 29
+  normal 3]j
+  AssertCursor 26, 24
+  normal G$[k
+  AssertCursor 42, 9
+  normal [k
+  AssertCursor 40, 13
+  normal ]k
+  AssertCursor 38, 24
+  normal 5]k
+  AssertCursor 19, 28
+  normal 99[j
+  AssertCursor 42, 9
+  normal 99[k
+  AssertCursor 3, 9
+
+Do (visually move around and delete):
+=====================================
+  v3]j[j[j]k]k2]jo[jd
+
+Expect python (visually selected text deleted):
+========================================
+  class Example(object):
+      def __init__(self):
+          
+
+      def up(self):
+          if True:
+              print('never')
+              print('gonna')
+          else:
+              print('let')
+
+      def you(self):
+          if True:
+              print('down')
+              print('never')
+          else:
+              print('gonna')
+
+      def run(self):
+          if True:
+              print('around')
+              print('and')
+          else:
+              print('desert')
+
+          print('you')

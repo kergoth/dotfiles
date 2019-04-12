@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+before_script: |
+  docker pull tweekmonster/ubuntu-vims
+  make test-dirs
+
+script: make test-print

@@ -1,0 +1,45 @@
+source /rtp.vim
+
+filetype plugin indent on
+
+let delimitMate_offByDefault = 1
+
+augroup ssshhhhhh
+  autocmd VimEnter * set visualbell t_vb=
+  autocmd GUIEnter * set visualbell t_vb=
+augroup END
+
+set nocompatible
+syntax on
+set number
+set background=dark
+set colorcolumn=80
+set showcmd
+set lazyredraw
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set backspace=2
+set nofoldenable
+set foldmethod=syntax
+set foldlevelstart=10
+set foldnestmax=10
+set ttimeoutlen=0
+set cmdheight=5
+set textwidth=79
+
+set debug=msg,throw
+
+let mapleader=","
+
+function! s:reload()
+  for file in split(expand('autoload/**/*.vim'), '\n')
+    execute 'silent Runtime' file
+  endfor
+
+  silent Runtime plugin/braceless.vim
+endfunction
+
+command! Rerun :tabclose | :e! test/test.vader | :call s:reload() | :Vader
+nnoremap R :Rerun<cr>

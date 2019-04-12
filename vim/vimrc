@@ -875,9 +875,12 @@ augroup vimrc_filetypes
   au FileType taskpaper call taskpaper#fold_projects()
   au FileType gitcommit set fdm=syntax
 
+  " Use Braceless for indent-sensitive types
+  au FileType python,yaml BracelessEnable +indent
+
   " Set up completion
-  autocmd FileType vim let b:vcm_tab_complete = 'vim'
-  autocmd FileType *
+  au FileType vim let b:vcm_tab_complete = 'vim'
+  au FileType *
         \ if &omnifunc == "" |
         \   setlocal omnifunc=syntaxcomplete#Complete |
         \ endif

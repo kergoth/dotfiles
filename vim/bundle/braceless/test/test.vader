@@ -1,0 +1,49 @@
+Execute (setup):
+================
+  Save &rtp
+
+  set cmdheight=100
+  set rtp+=..
+
+  let g:braceless#key#segment = '\'
+
+  function! AssertCursor(line, ...)
+    if a:0
+      let pos = getpos('.')[1:2]
+      AssertEqual [a:line, a:1], pos, 'Expected cursor at ['.a:line.', '.a:1.'], got '.string(pos)
+    else
+      AssertEqual a:line, line('.'), 'Expected cursor on line '.a:line.', but it''s on line '.line('.')
+    endif
+  endfunction
+
+  function! AssertFold(line, level)
+    let saved = winsaveview()
+    call cursor(a:line, 0)
+    normal zc
+    let level = foldlevel(a:line)
+    call winrestview(saved)
+    AssertEqual a:level, level, 'Expected fold level '.a:level.' on line '.a:line.', got '.level
+  endfunction
+
+  let g:py_test_pat = '^\s*'.braceless#get_pattern('python').start
+  command! -nargs=+ AssertCursor call AssertCursor(<args>)
+  command! -nargs=+ AssertFold call AssertFold(<args>)
+
+Include: autocmd.vader
+Include: indent.vader
+Include: motion.vader
+Include: selection.vader
+Include: terrible.vader
+Include: fold.vader
+Include: string_splitting.vader
+Include: delimitMate.vader
+
+Execute (cleanup):
+==================
+  set cmdheight=1
+  silent! delf AssertCursor
+  silent! unlet g:did_init
+  silent! unlet g:did_enable_python
+  silent! unlet g:did_enable_yaml
+  silent! unlet g:test_pat
+  Restore

@@ -1,0 +1,1412 @@
+Before:
+=======
+  BracelessEnable +indent +fold +highlight
+
+Given python (func sig):
+======================
+  def example():
+
+Execute (verify indentexpr):
+============================
+  AssertEqual 'braceless#indent#expr(v:lnum)', &indentexpr
+
+Do (insert line autoindent):
+============================
+  opass
+
+Expect python (new indented line):
+==================================
+  def example():
+      pass
+
+Given python (print statement):
+==========================
+  print('hello')
+
+Do (add string below):
+==========================
+  $i\<cr>', world!'
+
+Expect python (new string directly below previous string):
+==========================================================
+  print('hello'
+        ', world!')
+
+Do (move argument to next line):
+================================
+  f'i\<cr>
+
+Expect python (argument and end paren indented 1 level below print statement):
+==============================================================================
+  print(
+      'hello')
+
+Given python (dict with nested dicts and tuple):
+================================================
+  thangs = {
+  'foo': 'bar',
+  'baz': 'spam',
+  'eggs': (
+  'fried',
+  'scrambled',
+  'boiled',
+  'over easy',
+  ),
+  'into the hole': {
+  'deeper': {
+  'and': {
+  'deeper': {
+  'we': 'go',
+  },
+  },
+  },
+  },
+  }
+
+Do (autoindent dict):
+=====================
+  ggVG=
+
+Expect python (properly formatted dict):
+========================================
+  thangs = {
+      'foo': 'bar',
+      'baz': 'spam',
+      'eggs': (
+          'fried',
+          'scrambled',
+          'boiled',
+          'over easy',
+      ),
+      'into the hole': {
+          'deeper': {
+              'and': {
+                  'deeper': {
+                      'we': 'go',
+                  },
+              },
+          },
+      },
+  }
+
+Given python (func with no body or following blocks):
+=====================================================
+  def example():
+
+Do (add statement below func sig):
+==================================
+  A\<cr>pass
+
+Expect python (statement indented past func sig):
+=================================================
+  def example():
+      pass
+
+Do (unindent after adding a blank line):
+========================================
+  A\<cr>\<cr>pass
+
+Expect python (statement properly indented):
+============================================
+  def example():
+
+  pass
+
+Do (enter blank lines and retain indent):
+=========================================
+  A\<cr>\<cr>\<tab>\<cr>\<cr>pass
+
+Expect python (overindented pass):
+===========================
+  def example():
+
+      
+
+      pass
+
+Do (insert try+except without bodies):
+======================================
+  A\<cr>try:\<cr>except:
+
+Expect python (except block on same indent level as try):
+=========================================================
+  def example():
+      try:
+      except:
+
+Do (insert try+except with try body):
+=====================================
+  A\<cr>try:\<cr>pass\<cr>except:
+
+Expect python (except block on same indent level as try):
+=========================================================
+  def example():
+      try:
+          pass
+      except:
+
+Do (insert nested try+except):
+==============================
+  A\<cr>try:\<cr>try:\<cr>except:\<cr>except:
+
+Expect python (nested try with two except blocks):
+==================================================
+  def example():
+      try:
+          try:
+          except:
+          except:
+
+Do (insert if statement with two elif):
+=======================================
+  A\<cr>if:\<cr>elif:\<cr>elif:
+
+Expect python (all three lines on same indent level):
+=====================================================
+  def example():
+      if:
+      elif:
+      elif:
+
+Given python (else overindented):
+=================================
+  if True:
+      pass
+      else:
+
+Do (reindent with sibling block):
+=================================
+  jj==
+
+Expect python (else indent match if):
+=====================================
+  if True:
+      pass
+  else:
+
+Do (reindent then insert below):
+================================
+  jj==opass
+
+Expect python (else indent match if with pass below):
+=====================================================
+  if True:
+      pass
+  else:
+      pass
+
+Given python (if with no body):
+=====================================================
+  if True:
+
+Do (insert else statement):
+===========================
+  oelse:
+
+Expect python (else statement with same indent as previous line):
+=================================================================
+  if True:
+  else:
+
+Given python (nested block with block segment below):
+=====================================================
+  def example():
+      if True:
+          if True:
+              pass
+      print('hello')
+
+Do (insert below print):
+========================
+  Gopass
+
+Expect python (pass below print):
+=================================
+  def example():
+      if True:
+          if True:
+              pass
+      print('hello')
+      pass
+
+Given python (function and non-block):
+======================================
+  def example():
+      pass
+
+  test = 'something'
+
+Do (stay indented with function):
+=================================
+  jopass
+
+Expect python (second pass indented with function):
+===================================================
+  def example():
+      pass
+      pass
+
+  test = 'something'
+
+Do (unindent from function):
+============================
+  jo\<cr>pass
+
+Expect python (second pass unindented):
+=======================================
+  def example():
+      pass
+
+  pass
+
+  test = 'something'
+
+Do (insert line below non-block):
+=================================
+  Gopass
+
+Expect python (pass not indented with function):
+=========================================
+  def example():
+      pass
+
+  test = 'something'
+  pass
+
+Do (insert line and retain indent):
+===================================
+  jo\<cr>\<tab>\<cr>\<cr>pass\<esc>
+
+Expect python (second pass retain indent):
+==========================================
+  def example():
+      pass
+
+      
+
+      pass
+
+  test = 'something'
+
+Given python (try block):
+=========================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+
+Do (add except statement):
+==========================
+  Goexcept:
+
+Expect python (except statement indented with try):
+===================================================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+  except:
+
+Do (add more try block statements):
+===============================
+  Goexcept:\<cr>except:\<cr>else:\<cr>finally:
+
+Expect python (additonal blocks indeted with try):
+==================================================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+  except:
+  except:
+  else:
+  finally:
+
+Do (add another try with block statements):
+===========================================
+  Go\<cr>try:\<cr>if True:\<cr>print('yep')\<cr>elif False:
+  \<cr>print('nope')\<cr>else:\<cr>pass\<cr>except:\<cr>pass
+
+Expect python (nested try):
+===========================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+
+      try:
+          if True:
+              print('yep')
+          elif False:
+              print('nope')
+          else:
+              pass
+      except:
+          pass
+
+Do (add else statement):
+==========================
+  Goelse:
+
+Expect python (except statement indented with try):
+===================================================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+  else:
+
+Do (insert nested if statement):
+================================
+  Goif:\<cr>if:\<cr>if:\<cr>pass\<cr>else:\<cr>pass\<cr>\<bs>\<bs>elif:\<cr>pass
+
+Expect python (nested indent statements properly indented):
+===========================================================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+          if:
+              if:
+                  if:
+                      pass
+                  else:
+                      pass
+              elif:
+                  pass
+
+Do (insert nested if statement then reindent):
+==============================================
+  Goif:\<cr>if:\<cr>if:\<cr>pass\<cr>else:\<cr>pass\<cr>\<bs>\<bs>elif:\<cr>pass
+  \<esc>ggVG=
+
+Expect python (nested indent statements properly indented):
+===========================================================
+  try:
+      if True:
+          print('true')
+      else:
+          print('false')
+          if:
+              if:
+                  if:
+                      pass
+                  else:
+                      pass
+              elif:
+                  pass
+
+Given python (nested try and if with an extra else statement):
+==============================================================
+  try:
+      if True:
+          print('true')
+      else:
+      else:
+          print('false')
+          if:
+              if:
+                  if:
+                      pass
+                  else:
+                      pass
+              elif:
+                  pass
+
+Do (reindent entire buffer):
+============================
+  ggVG=
+
+Expect python (reindented block with if statement over indented):
+=================================================================
+  try:
+      if True:
+          print('true')
+      else:
+  else:
+      print('false')
+      if:
+          if:
+              if:
+                  pass
+              else:
+                  pass
+          elif:
+              pass
+
+Given python (nested try and if with extra else statement with bodies):
+=======================================================================
+  try:
+      if True:
+          print('true')
+      else:
+      else:
+          print('false')
+          if:
+              pass
+              if:
+                  pass
+                  if:
+                      pass
+                  else:
+                      pass
+              elif:
+                  pass
+
+Do (reindent entire buffer):
+============================
+  gg=G
+  
+Expect python (properly reindented block):
+==========================================
+  try:
+      if True:
+          print('true')
+      else:
+  else:
+      print('false')
+      if:
+          pass
+          if:
+              pass
+              if:
+                  pass
+              else:
+                  pass
+          elif:
+              pass
+
+Given python (nested if else):
+==============================
+  if:
+      if:
+      else:
+
+Do (insert elif below else):
+============================
+  Goelif:
+
+Expect python (elif indented with first if):
+============================================
+  if:
+      if:
+      else:
+  elif:
+
+Given python (mested if else):
+==============================
+  if True:
+      if True:
+          if True:
+          else:
+      else:
+          else:
+
+Do (reindent dangling else):
+============================
+  G==
+
+Expect python (dangling else indented with first if):
+=====================================================
+  if True:
+      if True:
+          if True:
+          else:
+      else:
+  else:
+
+Given python (overindented func and other bad indent):
+======================================================
+          def example():
+              if True:
+
+                  else:
+              
+              while 1:
+                break
+              else:
+                pass
+
+                if 1:
+                  pass
+
+Do (reindent garbage):
+======================
+  gg=G
+
+Expect python (indent corrected):
+=================================
+  def example():
+      if True:
+
+      else:
+
+          while 1:
+              break
+          else:
+              pass
+
+              if 1:
+                  pass
+
+Given python (blocks that can use else):
+========================================
+       if True:
+        pass
+      else:
+      pass
+
+  while 1:
+      break
+      else:
+      pass
+
+  for x in [1, 2,
+      3, 4]:
+        pass
+    else:
+
+   try:
+  pass
+      except Exception:
+      pass
+
+  finally:
+  if:
+  elif:
+    if:
+  else:
+      pass
+          elif:
+        else:
+
+Do (reindent garbage):
+======================
+  gg=G
+
+Expect python (properly indented garbage):
+==========================================
+  if True:
+      pass
+  else:
+      pass
+
+  while 1:
+      break
+  else:
+      pass
+
+  for x in [1, 2,
+            3, 4]:
+      pass
+  else:
+
+      try:
+          pass
+      except Exception:
+          pass
+
+      finally:
+          if:
+          elif:
+              if:
+              else:
+                  pass
+          elif:
+          else:
+
+Given python (func without arguments):
+======================================
+  def example
+
+Do (add multiline arguments after first argument):
+==================================================
+  A(foo,\<cr>bar,\<cr>baz):
+
+Expect python (func arguments indented with first argument):
+============================================================
+  def example(foo,
+              bar,
+              baz):
+
+Do (add multiline arguments after open paren):
+==============================================
+  A(\<cr>foo,\<cr>bar,\<cr>baz):
+
+Expect python (func arguments indented to level two beneath func):
+==================================================================
+  def example(
+          foo,
+          bar,
+          baz):
+
+
+Given python (PEP8 mangled examples):
+==================================
+  foo = long_function_name(var_one, var_two,
+  var_three, var_four)
+
+  def long_function_name(
+  var_one, var_two, var_three,
+          var_four):
+      print(var_one)
+
+  foo = long_function_name(
+                           var_one, var_two,
+                           var_three, var_four)
+
+  foo = long_function_name(var_one, var_two,
+      var_three, var_four)
+
+  def long_function_name(
+      var_one, var_two, var_three,
+      var_four):
+      print(var_one)
+
+  my_list = [
+      1, 2, 3,
+      4, 5, 6,
+      ]
+
+  result = some_function_that_takes_arguments(
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+      )
+
+Do (reindent PEP8 examples):
+============================
+  =G
+
+
+Expect python (PEP8 examples reindented):
+=========================================
+  foo = long_function_name(var_one, var_two,
+                           var_three, var_four)
+
+  def long_function_name(
+          var_one, var_two, var_three,
+          var_four):
+      print(var_one)
+
+  foo = long_function_name(
+      var_one, var_two,
+      var_three, var_four)
+
+  foo = long_function_name(var_one, var_two,
+                           var_three, var_four)
+
+  def long_function_name(
+          var_one, var_two, var_three,
+          var_four):
+      print(var_one)
+
+  my_list = [
+      1, 2, 3,
+      4, 5, 6,
+  ]
+
+  result = some_function_that_takes_arguments(
+      'a', 'b', 'c',
+      'd', 'e', 'f',
+  )
+
+Given python (long function arguments):
+=======================================
+  foo = long_function_name(var_one, var_two, var_three, var_four, var_five, var_six, var_seven, var_eight)
+
+Do (format long argument line):
+===============================
+  gqq
+
+Expect python (long function arguments broken into two lines):
+==============================================================
+  foo = long_function_name(var_one, var_two, var_three, var_four, var_five,
+                           var_six, var_seven, var_eight)
+
+Given python (blank buffer):
+============================
+
+Do (type long function arguments):
+==================================
+  ifoo = long_function_name(var_one, var_two, var_three, var_four, var_five, var_six, var_seven, var_eight)
+
+Expect python (long function arguments broken into two lines):
+==============================================================
+  foo = long_function_name(var_one, var_two, var_three, var_four, var_five,
+                           var_six, var_seven, var_eight)
+
+Given python (function call with dict argument):
+================================================
+  example({'a': 1,
+           'b': 2,
+           })
+
+Do (insert carriage return after opening brace and reindent):
+=============================================================
+  f'i\<cr>\<esc>=G
+
+Expect python (correct indent for colleciton tail):
+===================================================
+  example({
+      'a': 1,
+      'b': 2,
+  })
+
+Given python (function call with dict argument and added function call):
+========================================================================
+  example({'a': 1,
+           'b': 2,
+           }) + example()
+
+Do (insert carriage return after opening brace and reindent):
+=============================================================
+  f'i\<cr>\<esc>=G
+
+Expect python (correct indent for colleciton tail):
+===================================================
+  example({
+      'a': 1,
+      'b': 2,
+  }) + example()
+
+Given python (double quote doctest):
+====================================
+  def print_bracket():
+      """
+      Prints a bracket.
+
+      Here's an example:
+
+          >>> print_bracket()
+          (
+  
+      """
+      print "("
+
+Do (insert new line):
+=====================
+  Gox
+
+Expect python (x on correct indent level):
+==========================================
+  def print_bracket():
+      """
+      Prints a bracket.
+
+      Here's an example:
+
+          >>> print_bracket()
+          (
+  
+      """
+      print "("
+      x
+
+Given python (single quote doctest):
+====================================
+  def print_bracket():
+      '''
+      Prints a bracket.
+
+      Here's an example:
+
+          >>> print_bracket()
+          (
+  
+      '''
+      print "("
+
+Do (insert new line):
+=====================
+  Gox
+
+Expect python (x on correct indent level):
+==========================================
+  def print_bracket():
+      '''
+      Prints a bracket.
+
+      Here's an example:
+
+          >>> print_bracket()
+          (
+  
+      '''
+      print "("
+      x
+
+Given python (decorated function):
+==================================
+  @decorator
+  def example()
+
+Do (trigger function autoindent):
+=================================
+  GA:
+
+Expect python (decorated function not indented):
+=================================================
+  @decorator
+  def example():
+
+Do (insert arguments):
+======================
+  G$Daarg1,\<cr>arg2):
+
+Expect python (decorated function not indented):
+=================================================
+  @decorator
+  def example(arg1,
+              arg2):
+
+Given python (empty simple block):
+==================================
+  class Example(object):
+      def example():
+          pass
+
+      def example():
+          pass
+
+Do (insert function on first column between class functions):
+=============================================================
+  3Go\<cr>\<bs>def example():
+
+Expect python (empty function on first column):
+===============================================
+  class Example(object):
+      def example():
+          pass
+
+  def example():
+
+      def example():
+          pass
+
+Do (insert function on first column between class functions and reindent):
+==========================================================================
+  3Go\<cr>\<bs>def example():\<esc>==
+
+Expect python (empty function on first column):
+===============================================
+- This should NOT reindent since the block above is not empty, and the blocks
+- below are now children of the inserted block.
+  class Example(object):
+      def example():
+          pass
+
+  def example():
+
+      def example():
+          pass
+
+Do (insert two functions on first column between class functions and reindent to end of file):
+==============================================================================================
+- There is a whitespace after the first example():
+- There appears to be a bug with Vader that's causing \<cr> to eat the previous char.
+- The <cr> mapping was changed to a <expr> map.  So, it's not possible for it to alter the existing text.
+  3Go
+  \<cr>\<bs>def example(): 
+  \<cr>\<bs>def example():
+  \<esc>4G=G
+
+Expect python (both empty blocks adopting the subsequent blocks):
+=================================================================
+  class Example(object):
+      def example():
+          pass
+
+  def example(): 
+      def example():
+
+          def example():
+              pass
+
+Given python (decorated empty blocks):
+======================================
+  class Example(object):
+      @decorator
+      def example():
+          pass
+
+      @decorator
+      def example():
+
+      @decorator
+      def example():
+
+      @decorator
+      def example():
+      pass
+
+
+  @decorator
+  def example():
+
+  @decorator
+  def example():
+
+
+  @decorator
+  def example():
+
+Do (reindent entire buffer):
+============================
+  =G
+
+Expect python (decorated empty blocks reindented):
+==================================================
+  class Example(object):
+      @decorator
+      def example():
+          pass
+
+      @decorator
+      def example():
+
+          @decorator
+          def example():
+
+              @decorator
+              def example():
+                  pass
+
+
+  @decorator
+  def example():
+
+      @decorator
+      def example():
+
+
+          @decorator
+          def example():
+
+Given python (class with non-function attributes):
+==================================================
+  class Example(object):
+      def __init__(self):
+          pass
+
+      attribute = [
+          'abc',
+      ]
+
+Do (reindent entire buffer):
+============================
+  =G
+
+Expect python (unaltered class with non-function attributes):
+=============================================================
+  class Example(object):
+      def __init__(self):
+          pass
+
+      attribute = [
+          'abc',
+      ]
+
+Given python (multiline collection with appendage):
+===================================================
+  [
+      0,
+      1,
+      ] + [2, 3]
+
+Do (reindent last line):
+========================
+  =G
+
+Expect python (properly indented collection tail):
+==================================================
+  [
+      0,
+      1,
+  ] + [2, 3]
+
+Do (assign collection and reindent):
+====================================
+  iexample = \<esc>=G
+
+Expect python (properly indented collection):
+=============================================
+  example = [
+      0,
+      1,
+  ] + [2, 3]
+
+Given python (function with multiline list default value):
+==========================================================
+  def example(arg=['abc',
+  '123']):
+      pass
+
+Do (reindent):
+==============
+  =G
+
+Expect python (second line indented correctly with list):
+=========================================================
+  def example(arg=['abc',
+                   '123']):
+      pass
+
+Given python (underindented backslash line continuation):
+=========================================================
+  if True \
+      and True:
+      pass
+
+Do (reindent):
+==============
+  =G
+
+Expect python (correctly indented backslash line continuation):
+===============================================================
+  if True \
+          and True:
+      pass
+
+Given python (normal block):
+============================
+  if True and True:
+      pass
+
+Do (insert carriage return):
+============================
+  2ea\<cr>
+
+Expect python (correctly indented backslash line continuation):
+===============================================================
+  if True \
+          and True:
+      pass
+
+Do (insert more carriage returns):
+==================================
+  2ea\<cr>\<cr>\<cr>\<cr>
+
+Expect python (correctly indented backslash line continuation):
+===============================================================
+  if True \
+          \
+          \
+          \
+          and True:
+      pass
+
+Do (insert carriage return before block):
+=========================================
+  i\<cr>\<cr>
+
+Expect python (no line continuation return before block):
+=========================================================
+
+
+  if True and True:
+      pass
+
+Do (insert carriage return at the end of block head):
+=====================================================
+  A\<cr>\<cr>x
+
+Expect python (no line continuation after block head):
+======================================================
+  if True and True:
+
+      x
+      pass
+
+Given python (incomplete assignment):
+=====================================
+  test =
+
+Do (add carriage return):
+=========================
+  A\<cr>x
+
+Expect python (line continuation for incomplete assigment):
+===========================================================
+  test = \
+      x
+
+Do (insert text then carraige return):
+======================================
+  A\<space>'test'\<cr>x
+
+Expect python (no line continuation after carriage return):
+===========================================================
+  test = 'test'
+  x
+
+Do (insert carriage return at the beginning of the line):
+=========================================================
+  i\<cr>\<cr>
+
+Expect python (no carriage return before statement):
+====================================================
+
+
+  test =
+
+Given python (complete assigment):
+==================================
+  test = 'test'
+
+Do (insert carriage return after rhs):
+======================================
+  A\<cr>x
+
+Expect python (no line continuation added after rhs):
+=====================================================
+  test = 'test'
+  x
+
+Do (insert carriage return before rhs):
+=======================================
+  f=a\<cr>
+
+Expect python (new line with continuation added before rhs):
+============================================================
+  test = \
+      'test'
+
+Do (insert carriage return before rhs operator):
+================================================
+  f=i\<cr>
+
+Expect python (new line with continuation added before rhs operator):
+=====================================================================
+  test \
+      = 'test'
+
+Given python (lines with a continuation):
+=========================================
+  test = 'test' \
+      'test'
+
+Do (insert carriage return after second line):
+==============================================
+  GA\<cr>x
+  
+Expect python (no line continuation added to second line):
+==========================================================
+  test = 'test' \
+      'test'
+  x
+
+Given python (string):
+======================
+  "test"
+
+Do (insert carraige return before closing quote):
+=================================================
+  $i\<cr>
+
+Expect python (string with without line continuation):
+======================================================
+  "test
+  "
+
+Given python (docstring):
+=========================
+  """This is a test and or"""
+
+Do (insert carriage return):
+============================
+  $bi\<cr>
+
+Expect python (no carriage return):
+===================================
+  """This is a test and or
+  """
+
+Do (insert carriage return):
+============================
+  $2gea\<cr>
+
+Expect python (no carriage return):
+===================================
+  """This is a test and
+  or"""
+
+Given python (multiline docstring):
+===================================
+  """This is a test and or
+  """
+
+Do (insert carriage return):
+============================
+  $a\<cr>
+
+Expect python (no carriage return):
+===================================
+  """This is a test and or
+
+  """
+
+Given python (multiline docstring with trailing space):
+=======================================================
+  """This is a test and or 
+  """
+
+Do (insert carriage return):
+============================
+  $i\<cr>
+
+Expect python (no carriage return):
+===================================
+  """This is a test and or
+
+  """
+
+Given python (comment):
+=======================
+  # test comment
+
+Do (insert carriage return at end of line):
+===========================================
+  A\<cr>x
+
+Expect python (newline without new comment leader):
+===================================================
+  # test comment
+  x
+
+Do (insert newline before second word):
+=======================================
+  $bi\<cr>
+
+Expect python (two comment lines):
+==================================
+- There is a space after the first line
+  # test 
+  # comment
+
+Do (insert newline after first word):
+=====================================
+  ea\<cr>
+
+Expect python (two comment lines):
+==================================
+  # test
+  # comment
+
+Execute (add r to formatoptions):
+=================================
+- Below verifies the results with fo+=r
+  setlocal formatoptions+=r
+
+Do (insert carriage return at end of line fo+r):
+================================================
+  A\<cr>x
+
+Expect python (newline without new comment leader fo+r):
+========================================================
+  # test comment
+  # x
+
+Do (insert newline before second word fo+r):
+============================================
+  $bi\<cr>
+
+Expect python (two comment lines fo+r):
+=======================================
+- There is a space after the first line
+  # test 
+  # comment
+
+Do (insert newline after first word fo+r):
+==========================================
+  ea\<cr>
+
+Expect python (two comment lines fo+r):
+=======================================
+  # test
+  # comment
+
+Execute (reset formatoptions):
+==============================
+  setlocal formatoptions-=r
+
+Given python (overindented lines below closed block):
+=====================================================
+  def example():
+      try:
+          example()
+      except Exception:
+          pass
+
+      stop_block_scan()
+
+          overindented_line()
+          overindented_line()
+
+      return True
+
+Do (reindent buffer):
+=====================
+  =G
+
+Expect python (overindented lines corrected):
+=============================================
+  def example():
+      try:
+          example()
+      except Exception:
+          pass
+
+      stop_block_scan()
+
+      overindented_line()
+      overindented_line()
+
+      return True
+
+Given python (2 ifs 1 elif):
+============================
+  if True:
+      pass
+      if True:
+          pass
+      elif False:
+          pass
+
+Do (reindent):
+==============
+  =G
+
+Expect python (elif retains indent level):
+==========================================
+- Due to either if statements being potential owners of the elif block, the one
+- immediately matching the elif's indent should win
+  if True:
+      pass
+      if True:
+          pass
+      elif False:
+          pass
+
+Given python (nested blocks with parent content after inner block):
+===================================================================
+  def example():
+      if True:
+          pass
+      pass
+
+Do (reindent):
+==============
+  =G
+
+Expect python (parent content after inner block retains indent):
+===============================================================
+  def example():
+      if True:
+          pass
+      pass

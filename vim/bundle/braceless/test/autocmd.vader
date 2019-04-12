@@ -1,0 +1,46 @@
+Execute (setup autocmd):
+  function! s:init()
+    let g:did_init = 1
+  endfunction
+
+  function! s:enabled_python()
+    let g:did_enable_python = 1
+  endfunction
+
+  function! s:enabled_yaml()
+    let g:did_enable_yaml = 1
+  endfunction
+
+  augroup braceless_test
+    autocmd User BracelessInit call <SID>init()
+    autocmd User BracelessEnabled_python call <SID>enabled_python()
+    autocmd User BracelessEnabled_yaml call <SID>enabled_yaml()
+    autocmd FileType python,yaml BracelessEnable
+  augroup END
+
+After (reset global vars):
+  silent! unlet g:did_enable_python
+  silent! unlet g:did_enable_yaml
+
+Execute (autocmd no init without enable):
+  AssertEqual 0, get(g:, 'did_init', 0), 'braceless init before enable'
+
+Execute (enable python):
+  set filetype=python
+  AssertEqual 1, get(g:, 'did_init', 0), 'braceless did not init'
+  AssertEqual 1, get(g:, 'did_enable_python', 0), 'python was not enabled'
+  AssertEqual 0, get(g:, 'did_enable_yaml', 0), 'yaml should not be enabled'
+
+Execute (enable yaml):
+  set filetype=yaml
+  AssertEqual 0, get(g:, 'did_enable_python', 0), 'python should not be enabled'
+  AssertEqual 1, get(g:, 'did_enable_yaml', 0), 'yaml was not enabled'
+
+Execute (cleanup autocmd):
+  silent! delf s:init
+  silent! delf s:enabled_python
+  silent! delf s:enabled_yaml
+  silent! unlet g:did_init
+  silent! unlet g:did_enable_python
+  silent! unlet g:did_enable_yaml
+  autocmd! braceless_test

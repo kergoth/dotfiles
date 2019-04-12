@@ -89,6 +89,7 @@ imports:
     vim-apathy: vim/bundle/apathy
     vim-bitbake: bitbake/vim/bundle/bitbake
     vim-bracketed-paste: vim/bundle/bracketed-paste
+    vim-braceless: vim/bundle/braceless
     vim-commentary: vim/bundle/commentary
     vim-dracula: vim/bundle/dracula
     vim-editorconfig: vim/bundle/editorconfig
@@ -751,5 +752,9 @@ git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
     rev: 6cf80035ce7560fa83d1b9b4a5f771518c6fd99f
+
+git module vim-braceless:
+    url: https://github.com/tweekmonster/braceless.vim
+    rev: 3928fe18fb7c8561beed6a945622fd985a8e638b
 
 #  vim: set sw=4 :
