@@ -957,6 +957,10 @@ let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
 
+" Error and warning signs
+let g:ale_sign_error = '⤫'
+let g:ale_sign_warning = '⚠'
+
 " Show ALE in airline
 let g:airline#extensions#ale#enabled = 1
 
