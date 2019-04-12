@@ -900,10 +900,6 @@ augroup vimrc_filetypes
   " Kill unnecessary bits when acting as dvtm copymode
   au FileType dvtm-editor set nonumber
   au FileType dvtm-editor hi def link RedundantWhitespace NONE
-  autocmd BufReadPost *
-         \ if @% =~ '/tmp/dvtm-editor\..*' |
-         \   call setpos('.', [0, line('$'), 1, 0])
-         \ endif
 augroup END
 
 " Kill unnecessary bits when acting as a pager
