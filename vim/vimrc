@@ -883,6 +883,8 @@ augroup vimrc_filetypes
   au FileType *
         \ if &omnifunc == "" |
         \   setlocal omnifunc=syntaxcomplete#Complete |
+        \ else |
+        \   let b:vcm_tab_complete = 'omni' |
         \ endif
 
   " Run gofmt on save
