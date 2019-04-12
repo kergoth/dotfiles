@@ -630,6 +630,12 @@ nnoremap <expr> <leader><leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
 " Toggle spell checking
 map <leader>ss :set spell!<cr>
 
+" Global search & replace
+nmap <leader>s :%s//g<LEFT><LEFT>
+
+" Global search & replace the word under the cursor
+nmap <leader>S :%s/\<<C-r><C-w>\>//<Left>
+
 " Open a file in the same directory as the current file
 map <leader>ew :e <c-r>=expand("%:p:h") . "/" <cr>
 " Open a file in the same directory as the current file, in a split
@@ -665,9 +671,6 @@ nmap <silent> <leader>hl   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"
 
 " Delete trailing whitespace
 nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
-
-" Search & replace the word under the cursor globally
-nnoremap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 
 " Edit the vimrc
 nmap <leader>v :e $MYVIMRC<CR>
