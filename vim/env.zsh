@@ -1,6 +1,4 @@
-if [[ -n $commands[mvim] ]]; then
-    export EDITOR="mvim -v"
-elif [[ -n $commands[vim] ]]; then
+if [[ -n $commands[vim] ]]; then
     export EDITOR=vim
 else
     export EDITOR=vi
