@@ -868,7 +868,7 @@ augroup vimrc_filetypes
         \ endif
 
   " Run gofmt on save
-  au! FileType go let b:ale_fix_on_save = 1
+  au FileType go let b:ale_fix_on_save = 1
 
   " Diff context begins with a space, so blank lines of context
   " are being inadvertantly flagged as redundant whitespace.
