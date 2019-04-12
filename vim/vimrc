@@ -447,7 +447,7 @@ if &t_Co < 88 && (! has('gui_running'))
 else
   try
     colorscheme dracula
-    let g:airline_theme = 'dracula'
+    let g:lightline_theme = 'dracula'
   catch
     colorscheme baycomb
   endtry
@@ -796,6 +796,12 @@ endif
 " Always show the status line
 set laststatus=2
 
+" No need for ruler with a nice statusline
+set noruler
+
+" No need for a mode indicator when I can rely on the cursor
+set noshowmode
+
 " Assume we have a decent terminal, as vim only recognizes a very small set of
 " $TERM values for the default enable.
 set ttyfast
@@ -973,12 +979,24 @@ let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 2
 nmap <leader>u :UndotreeToggle<CR>
 
+let g:Modeliner_format = 'sts= sw= et fdm'
+nmap <leader>m :Modeliner<CR>
+
+" Surround binds
+nmap ysw ysiW
+
+" Fzf binds
+let g:fzf_command_prefix = 'FZF'
+nnoremap <silent> <c-b> :FZFBuffers<cr>
+nnoremap <silent> <c-p> :FZFFiles<cr>
+
+if exists('$SSH_CONNECTION')
+  let g:vitality_always_assume_iterm = 1
+endif
+
 " Error and warning signs
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
-
-" Show ALE in airline
-let g:airline#extensions#ale#enabled = 1
 
 let g:ale_linters = {
 \   'python': ['flake8', 'mypy'],
@@ -1029,60 +1047,62 @@ try
 catch
 endtry
 
-let g:Modeliner_format = 'fenc= sts= sw= et'
-nmap <leader>m :Modeliner<CR>
+let g:lightline = {
+      \ 'colorscheme': g:lightline_theme,
+      \ 'active': {
+      \   'left': [ [ 'paste' ],
+      \             [ 'readonly', 'filename' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component_function': {
+      \   'fileencoding': 'Statusline_Fileencoding_Hide_Utf8',
+      \   'fileformat': 'Statusline_Fileformat_Hide_Unix',
+      \   'filename': 'Statusline_Filename_Modified',
+      \   'readonly': 'Statusline_Readonly',
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '&readonly',
+      \   'paste': '&paste',
+      \   'fileformat': '&fileformat != "unix"',
+      \   'fileencoding': '&fileencoding != "utf-8"',
+      \ },
+      \ }
 
-" Surround binds
-nmap ysw ysiW
+function! Statusline_Fileformat_Hide_Unix() abort
+  return &fileformat !=# 'unix' ? &fileformat : ''
+endfunction
 
-" Fzf binds
-let g:fzf_command_prefix = 'FZF'
-nnoremap <silent> <c-b> :FZFBuffers<cr>
-nnoremap <silent> <c-p> :FZFFiles<cr>
+function! Statusline_Fileencoding_Hide_Utf8() abort
+  return &fileencoding !=# 'utf-8' ? &fileencoding : ''
+endfunction
 
-" Add foldlevel to allowed items in modelines
-let g:secure_modelines_allowed_items = [
-            \ 'textwidth',   'tw',
-            \ 'softtabstop', 'sts',
-            \ 'tabstop',     'ts',
-            \ 'shiftwidth',  'sw',
-            \ 'expandtab',   'et',   'noexpandtab', 'noet',
-            \ 'filetype',    'ft',
-            \ 'foldmethod',  'fdm',
-            \ 'foldlevel',   'fdl',
-            \ 'readonly',    'ro',   'noreadonly', 'noro',
-            \ 'rightleft',   'rl',   'norightleft', 'norl',
-            \ 'cindent',     'cin',  'nocindent', 'nocin',
-            \ 'autoindent',  'ai',   'noautoindent', 'noai',
-            \ 'spell', 'nospell',
-            \ 'spelllang'
-            \ ]
+function! Statusline_Readonly()
+  return &readonly && &filetype !=# 'help' ? 'RO' : ''
+endfunction
 
-if exists('$SSH_CONNECTION')
-  let g:vitality_always_assume_iterm = 1
+function! Statusline_Filename_Modified()
+  " Avoid the component separator between filename and modified indicator
+  try
+    let filename = pathshorten(fnamemodify(expand("%"), ":~:."))
+  catch
+    let filename = expand('%:t')
+  endtry
+  if filename ==# ''
+    let filename = '[No Name]'
+  endif
+  let modified = &modified ? ' +' : ''
+  return filename . modified
+endfunction
+
+" Fix lightline when vimrc reloads
+if exists('g:loaded_lightline')
+  call lightline#enable()
 endif
-
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#whitespace#enabled = 0
-
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-let g:airline_symbols.crypt = '🔒'
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.spell = 'Ꞩ'
-let g:airline_symbols.notexists = '∄'
-let g:airline_symbols.whitespace = 'Ξ'
 
 augroup vimrc_plugins
   au!
-
-  " When airline is showing our mode, we don't need vim to do so
-  au VimEnter * if exists('g:loaded_airline') | set noshowmode | endif
 
   " dirvish: map `gr` to reload.
   autocmd FileType dirvish nnoremap <silent><buffer>

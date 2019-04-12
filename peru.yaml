@@ -83,8 +83,6 @@ imports:
     fugitive: git/vim/bundle/fugitive
     taskpaper: vim/bundle/taskpaper
     vim-abolish: vim/bundle/abolish
-    vim-airline: vim/bundle/airline
-    vim-airline-themes: vim/bundle/airline-themes
     vim-ale: vim/bundle/ale
     vim-apathy: vim/bundle/apathy
     vim-bitbake: bitbake/vim/bundle/bitbake
@@ -96,6 +94,7 @@ imports:
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: fzf/vim/bundle/fzf-extra
+    vim-lightline: vim/bundle/lightline
     vim-lion: vim/bundle/lion
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
@@ -184,14 +183,9 @@ git module taskpaper:
     url: https://github.com/davidoc/taskpaper.vim
     rev: 2df291f7f40ef049d0a60151c66f11fa21b01e1c
 
-# lean & mean statusline for vim that's light as air
-git module vim-airline:
-    url: https://github.com/vim-airline/vim-airline
-    rev: cbf264ff5f323ab8a8cf02f59f79bf858d496047
-
-git module vim-airline-themes:
-    url: https://github.com/vim-airline/vim-airline-themes
-    rev: 01b3098642df1bced40473c924c0b6aa37427fe2
+git module vim-lightline:
+    url: https://github.com/itchyny/lightline.vim
+    rev: 83ae633be323a7fb5baf77e493232cf3358d02bf
 
 # generates modeline according to the current settings
 git module Modeliner:
