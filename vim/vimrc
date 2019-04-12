@@ -1030,6 +1030,9 @@ endtry
 let g:Modeliner_format = 'fenc= sts= sw= et'
 nmap <leader>m :Modeliner<CR>
 
+" Surround binds
+nmap ysw ysiW
+
 " Fzf binds
 let g:fzf_command_prefix = 'FZF'
 nnoremap <silent> <c-b> :FZFBuffers<cr>
