@@ -374,6 +374,7 @@ set sidescrolloff=5
 " Persistent undo
 if has('persistent_undo')
   set undofile
+  set undolevels=5000
 endif
 
 " Search tools
