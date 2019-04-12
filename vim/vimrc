@@ -741,8 +741,7 @@ endif
 augroup vimrc_cursor
 au!
   " Reset cursor on start and exit
-  autocmd VimEnter * silent !printf "\e[2 q"
-  autocmd VimEnter * silent redraw | echo ''
+  autocmd VimEnter * silent !printf '\e[2 q\n'
   autocmd VimLeave * silent !printf "$CURSORCODE"
 augroup END
 
