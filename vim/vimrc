@@ -639,13 +639,7 @@ nmap <leader>s :%s//g<LEFT><LEFT>
 nmap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 
 " Open a file in the same directory as the current file
-map <leader>ew :e <c-r>=expand("%:p:h") . "/" <cr>
-" Open a file in the same directory as the current file, in a split
-map <leader>es :sp <c-r>=expand("%:p:h") . "/" <cr>
-" Open a file in the same directory as the current file, in a vsplit
-map <leader>ev :vsp <c-r>=expand("%:p:h") . "/" <cr>
-" Open a file in the same directory as the current file, in a tab
-map <leader>et :tabe <c-r>=expand("%:p:h") . "/" <cr>
+map <leader>e :e <c-r>=expand("%:p:h") . "/" <cr>
 
 " Open quickfix window
 nmap <silent> <leader>cwo :botright copen 5<cr><c-w>p
