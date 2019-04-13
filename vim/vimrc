@@ -573,6 +573,10 @@ map Y y$
 nnoremap / /\v
 vnoremap / /\v
 
+" Make jumping to a mark's line+column more convenient with ', not `
+nnoremap ' `
+nnoremap ` '
+
 " Easy buffer navigation
 noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
