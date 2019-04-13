@@ -663,7 +663,7 @@ nmap <silent> <leader>hl   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"
 nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 
 " Edit the vimrc
-nmap <leader>v :e $MYVIMRC<CR>
+nmap <silent> <leader>v :e $MYVIMRC<CR>
 
 " Replace file contents with the selection
 vnoremap <leader>F "qy<CR>:<C-U>exe "normal! ggdG\"qP"<CR>
@@ -698,7 +698,7 @@ call s:MapNextFamily('t','t')
 nnoremap <silent> <leader>C :lclose \| cclose \| helpclose<cr>
 
 " Delete this buffer
-nnoremap <leader>D :bd<cr>
+nnoremap <silent> <leader>D :bd<cr>
 
 function! SplitShellLine() abort
     exe '%s/ *; */\r/g'
