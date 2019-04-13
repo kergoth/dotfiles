@@ -583,6 +583,12 @@ nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
+" Do not lose visual selection while indenting
+nnoremap < <<
+nnoremap > >>
+vnoremap < <gv
+vnoremap > >gv
+
 " Tmux will send xterm-style keys when its xterm-keys option is on
 if &term =~# '^screen'
   execute "set <xUp>=\e[1;*A"
