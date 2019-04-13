@@ -670,6 +670,33 @@ nmap <silent> <leader>v :e $MYVIMRC<CR>
 " Replace file contents with the selection
 vnoremap <leader>F "qy<CR>:<C-U>exe "normal! ggdG\"qP"<CR>
 
+" Close loclist/quickfix/help
+nnoremap <silent> <leader>C :lclose \| cclose \| helpclose<cr>
+
+" Delete this buffer
+nnoremap <silent> <leader>D :bd<cr>
+
+" Easier getting out of terminal mode
+try
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap <M-[> <Esc>
+  tnoremap <C-v><Esc> <Esc>]
+catch
+endtry
+
+" Convert a single line shell script to multiline
+function! SplitShellLine() abort
+    exe '%s/ *; */\r/g'
+    exe '%s/^\(do\|then\) \(.*\)/\1\r\2/g'
+    Format
+endfunction
+
+augroup filetype_mappings
+    au!
+    au FileType sh,zsh nnoremap <buffer> <silent> L :call SplitShellLine()<cr>
+augroup END
+
+" Unimpaired Key Mapping {{{
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
 function! s:MapNextFamily(map,cmd)
@@ -695,24 +722,7 @@ call s:MapNextFamily('l','l')
 call s:MapNextFamily('q','c')
 " tags
 call s:MapNextFamily('t','t')
-
-" Close loclist/quickfix/help
-nnoremap <silent> <leader>C :lclose \| cclose \| helpclose<cr>
-
-" Delete this buffer
-nnoremap <silent> <leader>D :bd<cr>
-
-function! SplitShellLine() abort
-    exe '%s/ *; */\r/g'
-    exe '%s/^\(do\|then\) \(.*\)/\1\r\2/g'
-    Format
-endfunction
-
-augroup filetype_mappings
-    au!
-    au FileType sh,zsh nnoremap <buffer> <silent> L :call SplitShellLine()<cr>
-augroup END
-
+" }}}
 " }}}
 " Terminal and display {{{
 " Default to hiding concealed text
