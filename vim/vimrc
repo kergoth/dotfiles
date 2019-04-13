@@ -1051,16 +1051,18 @@ let g:lightline = {
       \ 'colorscheme': g:lightline_theme,
       \ 'active': {
       \   'left': [ [ 'paste' ],
-      \             [ 'readonly', 'filename' ] ],
+      \             [ 'readonly', 'filename' ],
+      \             [ 'pwd' ] ],
       \   'right': [ [ 'lineinfo' ],
       \              [ 'percent' ],
-      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \              [ 'fileformat', 'fileencoding', 'filetype' ] ],
       \ },
       \ 'component_function': {
       \   'fileencoding': 'Statusline_Fileencoding_Hide_Utf8',
       \   'fileformat': 'Statusline_Fileformat_Hide_Unix',
       \   'filename': 'Statusline_Filename_Modified',
       \   'readonly': 'Statusline_Readonly',
+      \   'pwd': 'Statusline_Pwd',
       \ },
       \ 'component_visible_condition': {
       \   'readonly': '&readonly',
@@ -1095,6 +1097,15 @@ function! Statusline_Filename_Modified()
   endtry
   let modified = &modified ? ' +' : ''
   return filename . modified
+endfunction
+
+function! Statusline_Pwd()
+  let pwd = fnamemodify(getcwd(), ':~')
+  try
+    let pwd = pathshorten(pwd)
+  catch
+  endtry
+  return pwd
 endfunction
 
 " Fix lightline when vimrc reloads
