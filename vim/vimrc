@@ -1084,14 +1084,15 @@ endfunction
 
 function! Statusline_Filename_Modified()
   " Avoid the component separator between filename and modified indicator
-  try
-    let filename = pathshorten(fnamemodify(expand("%"), ":~:."))
-  catch
-    let filename = expand('%:t')
-  endtry
+  let filename = expand('%')
   if filename ==# ''
-    let filename = '[No Name]'
+    return '[No Name]'
   endif
+  try
+    let filename = pathshorten(fnamemodify(filename, ":~:."))
+  catch
+    let filename = fnamemodify(filename, ':t')
+  endtry
   let modified = &modified ? ' +' : ''
   return filename . modified
 endfunction
