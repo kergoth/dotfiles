@@ -970,11 +970,28 @@ if !has("nvim")
   endif
 endif
 
+" Disable built-in plugins
+let g:loaded_getscript = 1
+let g:loaded_getscriptPlugin = 1
+let g:loaded_gzip = 1
+let g:loaded_logiPat = 1
 let g:loaded_netrw = 1
+let g:loaded_netrwFileHandlers = 1
 let g:loaded_netrwPlugin = 1
+let g:loaded_netrwSettings = 1
+let g:loaded_rrhelper = 1
+let g:loaded_spellfile_plugin  =  1
+let g:loaded_tar = 1
+let g:loaded_tarPlugin = 1
+let g:loaded_tohtml = 1
+let g:loaded_tutor = 1
+let g:loaded_vimball = 1
+let g:loaded_vimballPlugin = 1
+let g:loaded_zip = 1
+let g:loaded_zipPlugin = 1
+
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
-
 let g:sleuth_automatic = 1
 let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
