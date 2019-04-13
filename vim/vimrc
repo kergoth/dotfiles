@@ -569,6 +569,10 @@ set virtualedit=block
 " Make Y behave sanely (consistent with C, D, ..)
 map Y y$
 
+" 'Very magic' searches by default, which are more like perl/python than sed
+nnoremap / /\v
+vnoremap / /\v
+
 " Easy buffer navigation
 noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
