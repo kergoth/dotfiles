@@ -637,23 +637,11 @@ map <leader>ev :vsp <c-r>=expand("%:p:h") . "/" <cr>
 " Open a file in the same directory as the current file, in a tab
 map <leader>et :tabe <c-r>=expand("%:p:h") . "/" <cr>
 
-" Close quickfix window
-nmap <leader>cwc :cclose<cr>
-
 " Open quickfix window
-nmap <leader>cwo :botright copen 5<cr><c-w>p
-
-" Next error in the quickfix list
-nmap <leader>ccn :cnext<cr>
-
-" Close location list window
-nmap <leader>lwc :lclose<cr>
+nmap <silent> <leader>cwo :botright copen 5<cr><c-w>p
 
 " Open location list window
-nmap <leader>lwo :botright lopen 5<cr><c-w>p
-
-" Next error in the location list
-nmap <leader>lcn :lnext<cr>
+nmap <silent> <leader>lwo :botright lopen 5<cr><c-w>p
 
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
@@ -666,7 +654,6 @@ nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
 
 " Edit the vimrc
 nmap <leader>v :e $MYVIMRC<CR>
-nmap <leader>ve :e $MYVIMRC<CR>
 
 " Replace file contents with the selection
 vnoremap <leader>F "qy<CR>:<C-U>exe "normal! ggdG\"qP"<CR>
@@ -696,6 +683,12 @@ call s:MapNextFamily('l','l')
 call s:MapNextFamily('q','c')
 " tags
 call s:MapNextFamily('t','t')
+
+" Close loclist/quickfix/help
+nnoremap <silent> <leader>C :lclose \| cclose \| helpclose<cr>
+
+" Delete this buffer
+nnoremap <leader>D :bd<cr>
 
 function! SplitShellLine() abort
     exe '%s/ *; */\r/g'
