@@ -326,7 +326,7 @@ set autowrite
 set autowriteall
 
 " Kill annoying Press ENTER or type command to continue prompts
-set shortmess=atIWo
+set shortmess=atIWocOTF
 
 " Further reduce the Press ENTER prompts
 set cmdheight=1
