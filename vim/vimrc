@@ -589,6 +589,10 @@ nnoremap > >>
 vnoremap < <gv
 vnoremap > >gv
 
+" Walk history with j/k
+cnoremap <c-j> <down>
+cnoremap <c-k> <up>
+
 " Tmux will send xterm-style keys when its xterm-keys option is on
 if &term =~# '^screen'
   execute "set <xUp>=\e[1;*A"
