@@ -50,7 +50,9 @@ process_arguments () {
 
     from="$(abspath "$1")"
     shift
-    from="$(cd "$from" && git rev-parse --show-toplevel)"
+    if [ "$(cd "$from" && git config core.bare)" != true ]; then
+        from="$(cd "$from" && git rev-parse --show-toplevel)"
+    fi
 
     to=$1
     if [ -z "$to" ]; then
