@@ -91,9 +91,11 @@ imports:
     vim-commentary: vim/bundle/commentary
     vim-dracula: vim/bundle/dracula
     vim-editorconfig: vim/bundle/editorconfig
+    vim-endwise: vim/bundle/endwise
     vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: fzf/vim/bundle/fzf-extra
+    vim-highlightedyank: vim/bundle/highlightedyank
     vim-lightline: vim/bundle/lightline
     vim-lion: vim/bundle/lion
     vim-obsession: vim/bundle/obsession
@@ -750,5 +752,13 @@ git module myrepos:
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
     rev: 3928fe18fb7c8561beed6a945622fd985a8e638b
+
+git module vim-endwise:
+    url: https://github.com/tpope/vim-endwise
+    rev: f67d022169bd04d3c000f47b1c03bfcbc4209470
+
+git module vim-highlightedyank:
+    url: https://github.com/machakann/vim-highlightedyank
+    rev: 51e25c9fa3bd2dca500ee0c910a45641d57a57fa
 
 #  vim: set sw=4 :
