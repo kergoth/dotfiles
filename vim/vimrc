@@ -635,7 +635,7 @@ nnoremap <leader>p p`[v`]=
 inoremap jj <Esc>
 
 " Select the just-pasted text
-nnoremap <expr> <leader><leader>p '`[' . strpart(getregtype(), 0, 1) . '`]'
+nnoremap <expr> <leader><leader>` '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Toggle spell checking
 map <leader>ss :set spell!<cr>
