@@ -143,7 +143,7 @@ else
     set nolangremap
   endif
 endif
-" }}} Defaults
+" }}}
 " Filesystem paths {{{
 let $MYVIMRC = expand('<sfile>:p')
 let $VIMDOTDIR = expand('<sfile>:p:h')
@@ -185,7 +185,7 @@ if has('viminfo')
     let $VIMINFO = $XDG_DATA_HOME . '/vim/viminfo'
   endif
 endif
-" }}} Filesystem paths
+" }}}
 " Encoding {{{
 " Termencoding will reflect the current system locale, but internally,
 " we use utf-8, and for files, we use whichever encoding from
@@ -581,7 +581,7 @@ map Y y$
 nnoremap ' `
 nnoremap ` '
 
-" Easy buffer navigation
+" Easy window navigation
 noremap <C-h>  <C-w>h
 noremap <C-j>  <C-w>j
 noremap <C-k>  <C-w>k
@@ -823,7 +823,6 @@ else
     autocmd VimLeave * silent !printf "$CURSORCODE"
   augroup END
 endif
-" }}}
 
 " Nice window title
 if has('gui_running') || &title
