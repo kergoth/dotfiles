@@ -589,6 +589,9 @@ noremap <C-l>  <C-w>l
 noremap <C-\>  <C-w>p
 nnoremap <silent> <C-S-\> :TmuxNavigatePrevious<cr>
 
+" Switch between the last two files
+nnoremap <leader><leader> <c-^>
+
 " Easy indentation in normal/visual mode
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
