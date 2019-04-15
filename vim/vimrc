@@ -962,7 +962,7 @@ augroup vimrc_filetypes
   au FileType vim,help nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
 
   " Show diff when editing git commit messages
-  au FileType gitcommit DiffGitCached
+  au FileType gitcommit DiffGitCached | wincmd p
 
   " Don't restore position in a git commit message
   au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
