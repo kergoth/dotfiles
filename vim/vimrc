@@ -374,6 +374,7 @@ if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
 else
   try
+    let g:dracula_italic = 0
     colorscheme dracula
     let g:lightline_theme = 'dracula'
   catch
