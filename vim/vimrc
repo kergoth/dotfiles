@@ -544,6 +544,9 @@ command! -nargs=+ -complete=shellcmd Man delcommand Man | call s:Man(<f-args>)
 " Change the current directory to the location of the
 " file being edited.
 command! -nargs=0 -complete=command Bcd lcd %:p:h
+
+" Add Fix/Format commands for ALEFix
+command! -bar -nargs=* -complete=customlist,ale#fix#registry#CompleteFixers Format :call ale#fix#Fix(bufnr(''), '', <f-args>)
 " }}}
 " Abbreviations {{{
 iabbrev adn and
@@ -694,9 +697,34 @@ function! SplitShellLine() abort
 endfunction
 
 augroup filetype_mappings
-    au!
-    au FileType sh,zsh nnoremap <buffer> <silent> L :call SplitShellLine()<cr>
+  au!
+
+  au FileType sh,zsh nnoremap <buffer> <silent> L :call SplitShellLine()<cr>
+
+  " dirvish: map `gr` to reload.
+  autocmd FileType dirvish nnoremap <silent><buffer>
+        \ gr :<C-U>Dirvish %<CR>
+
+  " dirvish: map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+  autocmd FileType dirvish nnoremap <silent><buffer>
+        \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
 augroup END
+
+" Plugin Key Mapping {{{
+" Bind <leader>f to fixing/formatting with ALE
+nmap <leader>f <Plug>(ale_fix)
+
+" Fzf binds
+let g:fzf_command_prefix = 'FZF'
+nnoremap <silent> <c-b> :FZFBuffers<cr>
+nnoremap <silent> <c-p> :FZFFiles<cr>
+
+nmap <leader>u :UndotreeToggle<CR>
+nmap <leader>m :Modeliner<CR>
+
+" surround.vim
+nmap ysw ysiW
+" }}}
 
 " Unimpaired Key Mapping {{{
 " Core functionality from https://github.com/tpope/vim-unimpaired
@@ -1008,18 +1036,7 @@ let g:editorconfig_blacklist = {'filetype': ['git.*', 'fugitive']}
 
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 2
-nmap <leader>u :UndotreeToggle<CR>
-
 let g:Modeliner_format = 'sts= sw= et fdm'
-nmap <leader>m :Modeliner<CR>
-
-" Surround binds
-nmap ysw ysiW
-
-" Fzf binds
-let g:fzf_command_prefix = 'FZF'
-nnoremap <silent> <c-b> :FZFBuffers<cr>
-nnoremap <silent> <c-p> :FZFFiles<cr>
 
 if exists('$SSH_CONNECTION')
   let g:vitality_always_assume_iterm = 1
@@ -1044,12 +1061,6 @@ let g:ale_fixers = {
 \}
 
 let g:ale_sh_shfmt_options = '-ci -bn -i 4'
-
-" Add Fix/Format commands for ALEFix
-command! -bar -nargs=* -complete=customlist,ale#fix#registry#CompleteFixers Format :call ale#fix#Fix(bufnr(''), '', <f-args>)
-
-" Bind <leader>f to fixing/formatting with ALE
-nmap <leader>f <Plug>(ale_fix)
 
 let g:tmuxline_powerline_separators = 0
 let g:promptline_powerline_symbols = 1
@@ -1143,20 +1154,8 @@ endfunction
 if exists('g:loaded_lightline')
   call lightline#enable()
 endif
-
-augroup vimrc_plugins
-  au!
-
-  " dirvish: map `gr` to reload.
-  autocmd FileType dirvish nnoremap <silent><buffer>
-    \ gr :<C-U>Dirvish %<CR>
-
-  " dirvish: map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
-  autocmd FileType dirvish nnoremap <silent><buffer>
-    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
-augroup END
 " }}}
-
+" Finale {{{
 " Load topic-specific vim settings from dotfiles, shortcut method rather than
 " creating some_topic/vim/plugin/some_topic.vim
 for f in glob('$DOTFILESDIR/*/topic.vim', 0, 1)
@@ -1169,5 +1168,6 @@ if !exists('$HOSTNAME')
 endif
 runtime vimrc.$HOSTNAME
 runtime vimrc.local
+" }}}
 
 " vim: set sts=2 sw=2 et fdm=marker fdl=0:
