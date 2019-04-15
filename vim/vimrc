@@ -572,6 +572,8 @@ map Y y$
 " 'Very magic' searches by default, which are more like perl/python than sed
 nnoremap / /\v
 vnoremap / /\v
+nnoremap ? ?\v
+vnoremap ? ?\v
 
 " Make jumping to a mark's line+column more convenient with ', not `
 nnoremap ' `
