@@ -777,46 +777,41 @@ if &term =~# '^screen'
   set notitle
 endif
 
-" Adjust cursor in insert mode (bar) and replace mode (underline)
-let &t_SI = "\e[6 q"
-try
-  let &t_SR = "\e[4 q"
-catch
-endtry
-let &t_EI = "\e[2 q"
+if has('gui_running')
+  set guicursor=a:block,a:blinkon0
 
-if !exists('$CURSORCODE')
-  let $CURSORCODE = "\e[0 q"
+  " mode aware cursors
+  set guicursor+=o:hor50-Cursor
+  set guicursor+=n:Cursor
+  set guicursor+=i-ci-sm:InsertCursor-ver25
+  set guicursor+=r-cr:ReplaceCursor-hor20
+  set guicursor+=c:CommandCursor
+  set guicursor+=v-ve:VisualCursor
+
+  hi def link InsertCursor Cursor
+  hi def link ReplaceCursor Cursor
+  hi def link CommandCursor Cursor
+  hi def link VisualCursor Cursor
+else
+  " Adjust cursor in insert mode (bar) and replace mode (underline)
+  let &t_SI = "\e[6 q"
+  try
+    let &t_SR = "\e[4 q"
+  catch
+  endtry
+  let &t_EI = "\e[2 q"
+
+  if !exists('$CURSORCODE')
+    let $CURSORCODE = "\e[0 q"
+  endif
+
+  augroup vimrc_cursor
+    au!
+    " Reset cursor on start and exit
+    autocmd VimEnter * silent !printf '\e[2 q\n'
+    autocmd VimLeave * silent !printf "$CURSORCODE"
+  augroup END
 endif
-
-augroup vimrc_cursor
-au!
-  " Reset cursor on start and exit
-  autocmd VimEnter * silent !printf '\e[2 q\n'
-  autocmd VimLeave * silent !printf "$CURSORCODE"
-augroup END
-
-" Gui Cursor: {{{
-set guicursor=a:block
-
-" mode aware cursors
-set guicursor+=o:hor50-Cursor
-set guicursor+=n:Cursor
-set guicursor+=i-ci-sm:InsertCursor-ver25
-set guicursor+=r-cr:ReplaceCursor-hor20
-set guicursor+=c:CommandCursor
-set guicursor+=v-ve:VisualCursor
-
-set guicursor+=a:blinkon0
-
-" Cursor Colors: {{{3
-if g:colors_name ==# 'base16'
-  call g:Base16hi("InsertCursor", g:base16_gui02, g:base16_gui0C, g:base16_cterm02, g:base16_cterm0C, "", "")
-  call g:Base16hi("VisualCursor", g:base16_gui02, g:base16_gui0E, g:base16_cterm02, g:base16_cterm0E, "", "")
-  call g:Base16hi("ReplaceCursor", g:base16_gui02, g:base16_gui08, g:base16_cterm02, g:base16_cterm08, "", "")
-  call g:Base16hi("CommandCursor", g:base16_gui02, g:base16_gui0D, g:base16_cterm02, g:base16_cterm0D, "", "")
-endif
-" }}}
 " }}}
 
 " Nice window title
