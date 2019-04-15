@@ -650,10 +650,10 @@ nmap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 map <leader>e :e <c-r>=expand("%:p:h") . "/" <cr>
 
 " Open quickfix window
-nmap <silent> <leader>cwo :botright copen 5<cr><c-w>p
+nmap <silent> <leader>c :botright copen 5<cr><c-w>p
 
 " Open location list window
-nmap <silent> <leader>lwo :botright lopen 5<cr><c-w>p
+nmap <silent> <leader>l :botright lopen 5<cr><c-w>p
 
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
