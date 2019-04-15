@@ -854,6 +854,7 @@ if has('gui_running')
     set guifont=InputMonoNarrow\ Thin:h14
     set macligatures
     set macthinstrokes
+    set macmeta
   else
     set guifont=InputMonoNarrow\ Thin\ 14
   endif
