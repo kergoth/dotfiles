@@ -143,9 +143,6 @@ else
     set nolangremap
   endif
 endif
-
-" Longer command/search history
-set history=1000
 " }}} Defaults
 " Filesystem paths {{{
 let $MYVIMRC = expand('<sfile>:p')
@@ -238,70 +235,6 @@ if has('viminfo')
   let &viminfo = "f1,'1000,:1000,/1000,<1000,s100,h,r" . $TEMP . ",n" . $VIMINFO
 endif
 
-augroup vimrc
-  au!
-
-  autocmd BufWritePost  $MYVIMRC  source $MYVIMRC
-
-  " Resize splits when the window is resized
-  au VimResized * exe "normal! \<c-w>="
-
-  " Give us an error window after running make, grep etc, but only if results
-  " are available.
-  au QuickFixCmdPost * botright cwindow 5
-
-  " Close out the quickfix window if it's the only open window
-  fun! <SID>QuickFixClose()
-    if &buftype ==# 'quickfix'
-      " if this window is last on screen, quit
-      if winnr('$') < 2
-        quit
-      endif
-    endif
-  endfun
-  au BufEnter * call <SID>QuickFixClose()
-
-  " Close preview window when the completion menu closes
-  autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-
-  " Unset paste on InsertLeave
-  au InsertLeave * silent! set nopaste
-
-  if exists('$TMUX')
-    function! s:TmuxRename() abort
-      if !exists('g:tmux_automatic_rename')
-        let l:tmux_output = system('tmux show-window-options -v automatic-rename')
-        if l:tmux_output ==# ''
-          let l:tmux_output = system('tmux show-window-options -gv automatic-rename')
-        endif
-        try
-          let g:tmux_automatic_rename = trim(l:tmux_output)
-        catch
-          let g:tmux_automatic_rename = split(l:tmux_output)[0]
-        endtry
-      endif
-      return g:tmux_automatic_rename ==# 'on'
-    endfunction
-
-    au BufEnter * if s:TmuxRename() && empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
-    au VimLeave * if s:TmuxRename() | call system('tmux set-window automatic-rename on') | endif
-  endif
-
-  " Expand the fold where the cursor lives
-  autocmd BufWinEnter * silent! exe "normal! zO"
-
-  " Automatically create missing directory
-  function! s:MkNonExDir(file, buf) abort
-    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-      let dir=fnamemodify(a:file, ':h')
-      if !isdirectory(dir)
-        call mkdir(dir, 'p')
-      endif
-    endif
-  endfunction
-  autocmd BufWritePre,FileWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
-
 " Allow hiding buffers with modifications
 set hidden
 
@@ -330,6 +263,9 @@ set shortmess=atIWocOTF
 
 " Further reduce the Press ENTER prompts
 set cmdheight=1
+
+" Longer command/search history
+set history=1000
 
 if has('folding')
   " Default with all folds open
@@ -444,6 +380,70 @@ else
     colorscheme baycomb
   endtry
 endif
+
+augroup vimrc
+  au!
+
+  autocmd BufWritePost  $MYVIMRC  source $MYVIMRC
+
+  " Resize splits when the window is resized
+  au VimResized * exe "normal! \<c-w>="
+
+  " Give us an error window after running make, grep etc, but only if results
+  " are available.
+  au QuickFixCmdPost * botright cwindow 5
+
+  " Close out the quickfix window if it's the only open window
+  fun! <SID>QuickFixClose()
+    if &buftype ==# 'quickfix'
+      " if this window is last on screen, quit
+      if winnr('$') < 2
+        quit
+      endif
+    endif
+  endfun
+  au BufEnter * call <SID>QuickFixClose()
+
+  " Close preview window when the completion menu closes
+  autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+  " Unset paste on InsertLeave
+  au InsertLeave * silent! set nopaste
+
+  if exists('$TMUX')
+    function! s:TmuxRename() abort
+      if !exists('g:tmux_automatic_rename')
+        let l:tmux_output = system('tmux show-window-options -v automatic-rename')
+        if l:tmux_output ==# ''
+          let l:tmux_output = system('tmux show-window-options -gv automatic-rename')
+        endif
+        try
+          let g:tmux_automatic_rename = trim(l:tmux_output)
+        catch
+          let g:tmux_automatic_rename = split(l:tmux_output)[0]
+        endtry
+      endif
+      return g:tmux_automatic_rename ==# 'on'
+    endfunction
+
+    au BufEnter * if s:TmuxRename() && empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+    au VimLeave * if s:TmuxRename() | call system('tmux set-window automatic-rename on') | endif
+  endif
+
+  " Expand the fold where the cursor lives
+  autocmd BufWinEnter * silent! exe "normal! zO"
+
+  " Automatically create missing directory
+  function! s:MkNonExDir(file, buf) abort
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+      let dir=fnamemodify(a:file, ':h')
+      if !isdirectory(dir)
+        call mkdir(dir, 'p')
+      endif
+    endif
+  endfunction
+  autocmd BufWritePre,FileWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
 " }}}
 " Vim language interfaces {{{
 
