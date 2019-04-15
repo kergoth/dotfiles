@@ -591,7 +591,7 @@ nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-" Do not lose visual selection while indenting
+" Use < and >, not << and >>, and don't lose visual selection while indenting
 nnoremap < <<
 nnoremap > >>
 vnoremap < <gv
