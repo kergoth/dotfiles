@@ -567,6 +567,10 @@ nnoremap zO zCzO
 " Maintain cursor position when joining lines
 nnoremap J mzJ`z
 
+" [S]plit line (sister to [J]oin lines)
+" cc still substitutes the line like S would
+nnoremap S i<CR><Esc>^mwgk:silent! s/\v +$//<CR>:noh<CR>
+
 " Allow selection past the end of the file for block selection
 set virtualedit=block
 
