@@ -730,9 +730,6 @@ call s:MapNextFamily('t','t')
 " Default to hiding concealed text
 if has('conceal')
   set conceallevel=2
-
-  " Also hide text in the cursor line when in normal mode
-  set concealcursor=n
 endif
 
 " Enable line number column
