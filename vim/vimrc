@@ -247,6 +247,8 @@ set autoread
 " Navigate over visual lines
 noremap j gj
 noremap k gk
+noremap gj j
+noremap gk k
 
 " Keep cursor in the same column when possible
 set nostartofline
