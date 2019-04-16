@@ -385,7 +385,8 @@ endif
 augroup vimrc
   au!
 
-  autocmd BufWritePost  $MYVIMRC  source $MYVIMRC
+  " Reload and re-edit vimrc on save. We re-edit to reload the modeline.
+  au BufWritePost  $MYVIMRC  source $MYVIMRC | e $MYVIMRC
 
   " Resize splits when the window is resized
   au VimResized * exe "normal! \<c-w>="
