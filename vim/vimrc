@@ -928,10 +928,16 @@ end
 " File type detection {{{
 augroup vimrc_filetype_detect
   au!
+
   au BufNewFile,BufRead TODO,BUGS,README set ft=text
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
-  au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
   au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
+
+  " Mentor Embedded Linux & OpenEmbedded/Yocto
+  au BufNewFile,BufRead local.conf.append* set ft=bitbake
+  au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
+
+  " Default ft is 'text'
   au BufNewFile,BufReadPost * if &ft ==# '' | set ft=text | endif
 
   " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch.
@@ -1069,7 +1075,7 @@ let g:loaded_netrwFileHandlers = 1
 let g:loaded_netrwPlugin = 1
 let g:loaded_netrwSettings = 1
 let g:loaded_rrhelper = 1
-let g:loaded_spellfile_plugin  =  1
+let g:loaded_spellfile_plugin = 1
 let g:loaded_tar = 1
 let g:loaded_tarPlugin = 1
 let g:loaded_tohtml = 1
