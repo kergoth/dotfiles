@@ -774,6 +774,13 @@ call s:MapNextFamily('q','c')
 call s:MapNextFamily('t','t')
 " }}}
 " }}}
+" Text Objects {{{
+" Fold text-object
+vnoremap af :<C-U>silent! normal! [zV]z<CR>
+omap     af :normal Vaf<CR>
+vnoremap if :<C-U>silent! normal! [zjV]zk<CR>
+omap     if :normal Vif<CR>
+" }}}
 " Terminal and display {{{
 " Default to hiding concealed text
 if has('conceal')
