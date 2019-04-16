@@ -1,3 +1,7 @@
+if (( $+commands[nvim] )); then
+    alias vim=nvim
+fi
+
 if (( $+commands[vim] )); then
     alias vi=vim
 fi
