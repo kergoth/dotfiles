@@ -861,6 +861,9 @@ set noshowmode
 " $TERM values for the default enable.
 set ttyfast
 
+" Avoid unnecessary redraws
+set lazyredraw
+
 if has('mouse_xterm')
   " Assume we're using a terminal that can handle this, as vim's automatic
   " enable only recognizes a limited set of $TERM values
