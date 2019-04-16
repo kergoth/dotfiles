@@ -396,14 +396,14 @@ augroup vimrc
   au QuickFixCmdPost * botright cwindow 5
 
   " Close out the quickfix window if it's the only open window
-  fun! <SID>QuickFixClose()
+  function! <SID>QuickFixClose()
     if &buftype ==# 'quickfix'
       " if this window is last on screen, quit
       if winnr('$') < 2
         quit
       endif
     endif
-  endfun
+  endfunction
   au BufEnter * call <SID>QuickFixClose()
 
   " Close preview window when the completion menu closes
@@ -1081,10 +1081,10 @@ let g:promptline_symbols = {
     \ 'right_alt'      : '|',
     \ 'dir_sep'        : '/'}
 
-fun! Promptline_git_ahead_behind(...)
+function! Promptline_git_ahead_behind(...)
   return { 'function_name': 'Promptline_git_ahead_behind',
           \'function_body': readfile(globpath(&runtimepath, "autoload/promptline/slices/git_ahead_behind.sh", 0, 1)[0])}
-endfun
+endfunction
 
 try
   let g:promptline_preset = {
