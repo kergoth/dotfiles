@@ -108,9 +108,10 @@ imports:
     vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
     vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
+    vim-undotree: vim/bundle/undotree
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
-    vim-undotree: vim/bundle/undotree
+    vim-zoom: vim/bundle/zoom
     damian-conway-vim: vim/bundle/damian-conway
 
     # Textual
@@ -765,5 +766,9 @@ git module vim-highlightedyank:
 git module vim-markdown:
     url: https://github.com/plasticboy/vim-markdown
     rev: f71f25b87df3bd2a5315fdf432f0de3c35434345
+
+git module vim-zoom:
+    url: https://github.com/dhruvasagar/vim-zoom
+    rev: 633856daa611aa65284b1d47f4c8598f3f289c00
 
 #  vim: set sw=4 :
