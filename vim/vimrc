@@ -1152,6 +1152,7 @@ let g:lightline = {
       \ 'component_function': {
       \   'fileencoding': 'Statusline_Fileencoding_Hide_Utf8',
       \   'fileformat': 'Statusline_Fileformat_Hide_Unix',
+      \   'filetype': 'Statusline_Filetype_Hide_Empty',
       \   'filename': 'Statusline_Filename_Modified',
       \   'readonly': 'Statusline_Readonly',
       \   'pwd': 'Statusline_Pwd',
@@ -1161,6 +1162,7 @@ let g:lightline = {
       \   'paste': '&paste',
       \   'fileformat': '&fileformat != "unix"',
       \   'fileencoding': '&fileencoding != "utf-8"',
+      \   'filetype': '&filetype != ""',
       \ },
       \ }
 
@@ -1170,6 +1172,10 @@ endfunction
 
 function! Statusline_Fileencoding_Hide_Utf8() abort
   return &fileencoding !=# 'utf-8' ? &fileencoding : ''
+endfunction
+
+function! Statusline_Filetype_Hide_Empty() abort
+  return &filetype !=# '' ? &filetype : ''
 endfunction
 
 function! Statusline_Readonly()
