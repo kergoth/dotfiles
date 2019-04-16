@@ -930,6 +930,9 @@ augroup vimrc_filetype_detect
   au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
   au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
   au BufNewFile,BufReadPost * if &ft ==# '' | set ft=text | endif
+
+  " Treat buffers from stdin (e.g.: echo foo | vim -) as scratch.
+  au StdinReadPost * :set buftype=nofile
 augroup END
 " }}}
 " File type settings {{{
