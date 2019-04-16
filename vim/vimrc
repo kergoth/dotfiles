@@ -854,6 +854,42 @@ if has('mouse_xterm')
     set ttymouse=xterm2
   endif
 endif
+
+" Folding text function from Gregory Pakosz, with l:end removed
+function! FoldText()
+  let l:lpadding = &foldcolumn
+  redir => l:signs
+  execute 'silent sign place buffer='.bufnr('%')
+  redir End
+  let l:lpadding += l:signs =~# 'id=' ? 2 : 0
+
+  if exists("+relativenumber")
+    if (&number)
+      let l:lpadding += max([&numberwidth, strlen(line('$'))]) + 1
+    elseif (&relativenumber)
+      let l:lpadding += max([&numberwidth, strlen(v:foldstart - line('w0')), strlen(line('w$') - v:foldstart), strlen(v:foldstart)]) + 1
+    endif
+  else
+    if (&number)
+      let l:lpadding += max([&numberwidth, strlen(line('$'))]) + 1
+    endif
+  endif
+
+  " expand tabs
+  let l:start = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
+
+  let l:info = ' (' . (v:foldend - v:foldstart) . ')'
+  let l:infolen = strlen(substitute(l:info, '.', 'x', 'g'))
+  let l:width = winwidth(0) - l:lpadding - l:infolen
+
+  let l:separator = ' … '
+  let l:separatorlen = strlen(substitute(l:separator, '.', 'x', 'g'))
+  let l:start = strpart(l:start , 0, l:width - l:separatorlen)
+  let l:text = l:start . ' … '
+
+  return l:text . repeat(' ', l:width - strlen(substitute(l:text, ".", "x", "g"))) . l:info
+endfunction
+set foldtext=FoldText()
 " }}}
 " GUI settings {{{
 if has('gui_running')
