@@ -452,7 +452,7 @@ augroup END
 " Vim language interfaces {{{
 
 " Let vim's python support load the pyenv python libraries
-if executable('pyenv')
+if !has("nvim") && executable('pyenv')
   try
     let b:python2 = system('pyenv which python2.7')
     if !empty(b:python2)
