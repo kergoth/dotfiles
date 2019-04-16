@@ -557,8 +557,13 @@ iabbrev adn and
 iabbrev teh the
 " }}}
 " Key Mapping {{{
+" , is much more convenient than \, as it's closer to the home row
+let mapleader = ','
+let maplocalleader = mapleader
+
 " Fix command typos
 nmap ; :
+nnoremap <leader>; ;
 
 " :help is the best interface, not F1
 nnoremap <F1> <nop>
@@ -618,10 +623,6 @@ if &term =~# '^screen'
   execute "set <xRight>=\e[1;*C"
   execute "set <xLeft>=\e[1;*D"
 endif
-
-" , is much more convenient than \, as it's closer to the home row
-let mapleader = ','
-let maplocalleader = mapleader
 
 " Toggle display of invisible characters
 nnoremap <leader>i :set list!<cr>
