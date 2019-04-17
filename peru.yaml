@@ -105,6 +105,7 @@ imports:
     vim-rsi: vim/bundle/rsi
     vim-sneak: vim/bundle/sneak
     vim-surround: vim/bundle/surround
+    vim-targets: vim/bundle/targets
     vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
     vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
@@ -770,5 +771,9 @@ git module vim-markdown:
 git module vim-zoom:
     url: https://github.com/dhruvasagar/vim-zoom
     rev: 633856daa611aa65284b1d47f4c8598f3f289c00
+
+git module vim-targets:
+    url: https://github.com/wellle/targets.vim
+    rev: 5915a1a3cef7c60dbea2ff50153417e5f6371952
 
 #  vim: set sw=4 :
