@@ -776,7 +776,7 @@ nmap <leader>m :Modeliner<CR>
 " surround.vim
 nmap ysw ysiW
 " }}}
-" Unimpaired Key Mapping {{{
+" Paired Key Mapping {{{
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
 function! s:MapNextFamily(map, cmd)
@@ -802,6 +802,9 @@ call s:MapNextFamily('l', 'l')
 call s:MapNextFamily('q', 'c')
 " tags
 call s:MapNextFamily('t', 't')
+" undo
+nnoremap [u g-
+nnoremap ]u g+
 " }}}
 " }}}
 " Text Objects {{{
