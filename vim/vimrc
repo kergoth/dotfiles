@@ -666,11 +666,40 @@ nmap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 " Open a file in the same directory as the current file
 map <leader>e :e <c-r>=expand("%:p:h") . "/" <cr>
 
-" Open quickfix window
-nmap <silent> <leader>c :botright copen 5<cr><c-w>p
+function! GetBufferList()
+  redir =>buflist
+  silent! ls!
+  redir END
+  return buflist
+endfunction
 
-" Open location list window
-nmap <silent> <leader>l :botright lopen 5<cr><c-w>p
+function! ToggleList(bufname, pfx)
+  let buflist = GetBufferList()
+  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if bufwinnr(bufnum) != -1
+      exec(a:pfx.'close')
+      return
+    endif
+  endfor
+  if a:pfx ==# 'l' && len(getloclist(0)) == 0
+    echohl ErrorMsg
+    echo a:bufname . " is Empty."
+    return
+  elseif a:pfx ==# 'c' && len(getqflist()) == 0
+    echohl ErrorMsg
+    echo a:bufname . " is Empty."
+    return
+  endif
+  let winnr = winnr()
+  exec(a:pfx.'open')
+  if winnr() != winnr
+    wincmd p
+  endif
+endfunction
+
+" Toggle loclist and quickfix windows
+nmap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
+nmap <silent> <leader>c :call ToggleList("Quickfix List", 'c')<CR>
 
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
