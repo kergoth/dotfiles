@@ -750,7 +750,7 @@ nmap ysw ysiW
 " Unimpaired Key Mapping {{{
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
-function! s:MapNextFamily(map,cmd)
+function! s:MapNextFamily(map, cmd)
   let map = '<Plug>unimpaired'.toupper(a:map)
   let end = ' ".(v:count ? v:count : "")<CR>'
   execute 'nmap <silent> '.map.'Previous :<C-U>exe "'.a:cmd.'previous'.end
@@ -764,15 +764,15 @@ function! s:MapNextFamily(map,cmd)
 endfunction
 
 " files
-call s:MapNextFamily('a','')
+call s:MapNextFamily('a', '')
 " buffers
-call s:MapNextFamily('b','b')
+call s:MapNextFamily('b', 'b')
 " location list
-call s:MapNextFamily('l','l')
+call s:MapNextFamily('l', 'l')
 " quickfix
-call s:MapNextFamily('q','c')
+call s:MapNextFamily('q', 'c')
 " tags
-call s:MapNextFamily('t','t')
+call s:MapNextFamily('t', 't')
 " }}}
 " }}}
 " Text Objects {{{
