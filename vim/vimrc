@@ -404,9 +404,29 @@ augroup vimrc
   " Resize splits when the window is resized
   au VimResized * exe "normal! \<c-w>="
 
-  " Give us an error window after running make, grep etc, but only if results
-  " are available.
-  au QuickFixCmdPost * botright cwindow 5
+  " Automatically open, but do not go to (if there are errors) the quickfix /
+  " location list window, or close it when is has become empty.
+  "
+  " Note: Must allow nesting of autocmds to enable any customizations for quickfix
+  " buffers.
+  autocmd QuickFixCmdPost [^l]* nested cwindow
+  autocmd QuickFixCmdPost    l* nested lwindow
+
+  " Adjust the quickfix window height to avoid unnecessary padding
+  function! AdjustWindowHeight(minheight, maxheight)
+    let l = 1
+    let n_lines = 0
+    let w_width = winwidth(0)
+    while l <= line('$')
+      " number to float for division
+      let l_len = strlen(getline(l)) + 0.0
+      let line_width = l_len/w_width
+      let n_lines += float2nr(ceil(line_width))
+      let l += 1
+    endw
+    exe max([min([n_lines, a:maxheight]), a:minheight]) . "wincmd _"
+  endfunction
+  au FileType qf call AdjustWindowHeight(3, 10)
 
   " Close out the quickfix window if it's the only open window
   function! <SID>QuickFixClose()
