@@ -371,6 +371,11 @@ if $TERM_PROGRAM !=# 'Apple_Terminal'
   let base16colorspace=256
 endif
 
+function! OverrideColors() abort
+  hi! link Error NONE
+  hi! Error ctermbg=darkred guibg=darkred ctermfg=black guifg=black
+endfunction
+
 set background=dark
 if &t_Co < 88 && (! has('gui_running'))
   colorscheme desert
@@ -382,7 +387,13 @@ else
   catch
     colorscheme baycomb
   endtry
+  call OverrideColors()
 endif
+
+augroup colorscheme_override
+  au!
+  au ColorScheme call OverrideColors()
+augroup END
 
 augroup vimrc
   au!
