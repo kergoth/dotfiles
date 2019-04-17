@@ -948,6 +948,9 @@ augroup vimrc_filetype_detect
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
   au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
 
+  " My dotfiles install scripts are shell
+  au BufNewFile,BufRead install setf sh
+
   " Mentor Embedded Linux & OpenEmbedded/Yocto
   au BufNewFile,BufRead local.conf.append* set ft=bitbake
   au BufNewFile,BufRead setup-environment,oe-init-build-env set ft=sh
