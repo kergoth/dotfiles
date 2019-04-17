@@ -572,6 +572,12 @@ nnoremap <F1> <nop>
 " the cursor happens to be.
 nnoremap zO zCzO
 
+" Show the new foldlevel when changing it
+nnoremap <silent> zr zr:<c-u>setlocal foldlevel?<CR>
+nnoremap <silent> zm zm:<c-u>setlocal foldlevel?<CR>
+nnoremap <silent> zR zR:<c-u>setlocal foldlevel?<CR>
+nnoremap <silent> zM zM:<c-u>setlocal foldlevel?<CR>
+
 " Maintain cursor position when joining lines
 nnoremap J mzJ`z
 
