@@ -1,0 +1,4 @@
+command nvim "$@"
+if [[ -n "$CURSORCODE" ]]; then
+    printf "$CURSORCODE"
+fi
