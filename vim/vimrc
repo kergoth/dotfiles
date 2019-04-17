@@ -719,7 +719,16 @@ nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 nmap <silent> <leader>hl   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " Delete trailing whitespace
-nnoremap <leader>dtw :%s/\s\+$//<cr>:let @/=''<cr>
+function! StripTrailingWhitespace()
+  if !&binary && &filetype !=# 'diff'
+    normal! mz
+    normal! Hmy
+    %s/\s\+$//e
+    normal! 'yz<CR>
+    normal! `z
+  endif
+endfunction
+nnoremap <leader>dtw :call StripTrailingWhitespace()<CR>
 
 " Edit the vimrc
 nmap <silent> <leader>v :e $MYVIMRC<CR>
