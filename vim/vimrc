@@ -693,11 +693,11 @@ vnoremap <leader>F "qy<CR>:<C-U>exe "normal! ggdG\"qP"<CR>
 
 " Toggle conceal (i.e. hiding)
 function! ToggleConceal() abort
-   if &conceallevel == 0
-       set conceallevel=1
-   else
-       set conceallevel=0
-   endif
+  if &conceallevel == 0
+    set conceallevel=1
+  else
+    set conceallevel=0
+  endif
 endfunction
 nnoremap <silent> <leader>H :call ToggleConceal()<cr>
 
@@ -751,7 +751,6 @@ nmap <leader>m :Modeliner<CR>
 " surround.vim
 nmap ysw ysiW
 " }}}
-
 " Unimpaired Key Mapping {{{
 " Core functionality from https://github.com/tpope/vim-unimpaired
 " Written by Tim Pope <http://tpo.pe/>
