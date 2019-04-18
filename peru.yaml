@@ -181,7 +181,7 @@ git module fugitive:
 # vim files for the BitBake tool
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake
-    rev: 4532d107bb14ab86f235ad534dd2bd2d4806d1b1
+    rev: 7a589da769635023f848e36d6618d602a20aee3a
 
 # taskpaper todo file support
 git module taskpaper:
@@ -205,7 +205,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: 10da325fb032a1acfa9222d273459f53bad30ba4
+    rev: e066a0999e442d9d96f24ad9d203b1bd030ef72e
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -509,7 +509,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: d2114da6654244ff1a53f4e0f9fc9097b4611ae3
+    rev: dcdf56167c38eacef96ad5ef88575e7f74f9a6f2
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -568,7 +568,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: d7395906ba0f9aca2fb1a6c32df236bfd4ab32f6
+    rev: fcc2c3ba71afa2a7965f3c1e9ec8c03381178180
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -736,7 +736,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: 34efabac145c06cda8084aea11bf46382a3d2254
+    rev: d8ca3b52b07529f4a55da451291fe0ca8e18d02d
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
