@@ -637,12 +637,6 @@ nnoremap <silent> <C-S-\> :TmuxNavigatePrevious<cr>
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
 
-" Easy indentation in normal/visual mode
-nnoremap <Tab> >>
-nnoremap <S-Tab> <<
-vnoremap <Tab> >gv
-vnoremap <S-Tab> <gv
-
 " Use < and >, not << and >>, and don't lose visual selection while indenting
 nnoremap < <<
 nnoremap > >>
