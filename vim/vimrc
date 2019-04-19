@@ -918,9 +918,6 @@ endif
 " Always show the status line
 set laststatus=2
 
-" No need for ruler with a nice statusline
-set noruler
-
 " No need for a mode indicator when I can rely on the cursor
 set noshowmode
 
