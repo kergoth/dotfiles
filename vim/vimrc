@@ -673,9 +673,6 @@ map <Esc>[B <Down>
 " Paste and re-indent
 nnoremap <leader>p p`[v`]=
 
-" Escape alternative from insert-mode
-inoremap jj <Esc>
-
 " Select the just-pasted text
 nnoremap <expr> <leader><leader>` '`[' . strpart(getregtype(), 0, 1) . '`]'
 
