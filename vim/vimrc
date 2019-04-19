@@ -398,8 +398,11 @@ augroup END
 augroup vimrc
   au!
 
-  " Reload and re-edit vimrc on save. We re-edit to reload the modeline.
-  au BufWritePost  $MYVIMRC  source $MYVIMRC | e $MYVIMRC
+  " Reload vimrc on save
+  au BufWritePost  $MYVIMRC  source $MYVIMRC
+
+  " Default to closed marker folds in my vimrc
+  au BufRead $MYVIMRC setl fdm=marker | if &foldlevel == &foldlevelstart | setl foldlevel=0 | endif
 
   " Resize splits when the window is resized
   au VimResized * exe "normal! \<c-w>="
@@ -1029,7 +1032,7 @@ augroup vimrc_filetypes
   " Set filetypes
 
   " File type specific indentation settings
-  au FileType vim set sts=2 sw=2
+  au FileType vim set sts=2 sw=2 et
   au FileType c,cpp,go,taskpaper set ts=4 sw=4 sts=0 noet
   au FileType gitconfig set sts=0 sw=8 ts=8 noet
 
@@ -1309,5 +1312,3 @@ endif
 runtime vimrc.$HOSTNAME
 runtime vimrc.local
 " }}}
-
-" vim: set sts=2 sw=2 et fdm=marker fdl=0:
