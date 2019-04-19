@@ -399,7 +399,7 @@ augroup vimrc
   au!
 
   " Reload vimrc on save
-  au BufWritePost  $MYVIMRC  source $MYVIMRC
+  au BufWritePost $MYVIMRC source $MYVIMRC
 
   " Default to closed marker folds in my vimrc
   au BufRead $MYVIMRC setl fdm=marker | if &foldlevel == &foldlevelstart | setl foldlevel=0 | endif
