@@ -560,7 +560,7 @@ if exists('&colorcolumn')
   augroup KergothColorColumn
     au!
     au InsertEnter * set colorcolumn=+1
-    au InsertLeave * set colorcolumn=""
+    au InsertLeave * set colorcolumn=
   augroup END
 endif
 
