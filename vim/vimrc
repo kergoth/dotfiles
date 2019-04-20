@@ -367,10 +367,6 @@ if &term ==# 'rxvt-unicode'
   set t_Co=256
 endif
 
-if $TERM_PROGRAM !=# 'Apple_Terminal'
-  let base16colorspace=256
-endif
-
 function! OverrideColors() abort
   hi! link Error NONE
   hi! Error ctermbg=darkred guibg=darkred ctermfg=black guifg=black
