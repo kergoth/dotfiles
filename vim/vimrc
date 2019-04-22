@@ -686,7 +686,7 @@ nmap <leader>s :%s//g<LEFT><LEFT>
 nmap <leader>S :%s/\<<C-r><C-w>\>//<Left>
 
 " Open a file in the same directory as the current file
-map <leader>e :e <c-r>=expand("%:p:h") . "/" <cr>
+map <leader>e :e <c-r>=escape(expand('%:p:h'), ' \') . '/' <cr>
 
 function! GetBufferList()
   redir =>buflist
