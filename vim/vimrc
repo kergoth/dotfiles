@@ -664,8 +664,8 @@ nnoremap <leader>n :set number!<cr>
 " Toggle paste mode with ,P
 set pastetoggle=<leader>P
 
-" Resync syntax & redraw the screen, courtesy Steve Losh
-nnoremap <leader>U :syntax sync fromstart<cr>:redraw!<cr>
+" Clear search, refresh diff, sync syntax, redraw the screen
+nnoremap <silent> <leader>U :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr>:redraw!<cr>
 
 " Ensure arrows always work correctly with command-T
 map <Esc>[B <Down>
