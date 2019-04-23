@@ -326,9 +326,9 @@ set grepformat=%f:%l:%c:%m
 " Ignore binary files matched with grep by default
 set grepformat+=%-OBinary\ file%.%#
 
-if &encoding ==# 'utf-8'
+if has('multi_byte') && &encoding ==# 'utf-8'
   " Display of hidden characters
-  set listchars=tab:»·,eol:¬,extends:❯,precedes:❮
+  set listchars=tab:»·,eol:¬,extends:❯,precedes:❮,nbsp:±
 
   " Show trailing whitespace this way if we aren't highlighting it in color
   if &t_Co < 3 && (! has('gui_running'))
