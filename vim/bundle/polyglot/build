@@ -214,14 +214,13 @@ PACKS="
   kotlin:udalov/kotlin-vim
   latex:LaTeX-Box-Team/LaTeX-Box
   less:groenewege/vim-less:_NOAFTER
-  liquid:tpope/vim-liquid
   lilypond:anowlcalledjosh/vim-lilypond
   livescript:gkz/vim-ls
   llvm:rhysd/vim-llvm
   lua:tbastos/vim-lua
   mako:sophacles/vim-bundle-mako
   markdown:plasticboy/vim-markdown:_SYNTAX
-  mathematica:rsmenon/vim-mathematica
+  mathematica:voldikss/vim-mma
   mdx:jxnblk/vim-mdx-js
   meson:mesonbuild/meson:_ALL:/data/syntax-highlighting/vim/
   moonscript:leafo/moonscript-vim
@@ -233,7 +232,7 @@ PACKS="
   octave:vim-scripts/octave.vim--
   opencl:petRUShka/vim-opencl
   perl:vim-perl/vim-perl
-  pgsql:exu/pgsql.vim
+  pgsql:lifepillar/pgsql.vim
   php:StanAngeloff/php.vim
   plantuml:aklt/plantuml-syntax
   pony:jakwings/vim-pony
@@ -264,6 +263,8 @@ PACKS="
   smt2:bohlender/vim-smt2
   solidity:tomlion/vim-solidity
   stylus:wavded/vim-stylus
+  svg-indent:jasonshell/vim-svg-indent
+  svg:vim-scripts/svg.vim
   swift:keith/swift.vim
   sxhkd:baskerville/vim-sxhkdrc
   systemd:wgwoods/vim-systemd-syntax
@@ -281,6 +282,7 @@ PACKS="
   vifm:vifm/vifm.vim
   vm:lepture/vim-velocity
   vue:posva/vim-vue
+  xdc:amal-khailtash/vim-xdc-syntax
   xml:amadeus/vim-xml
   xls:vim-scripts/XSLT-syntax
   yaml:stephpy/vim-yaml

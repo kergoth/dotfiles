@@ -661,28 +661,6 @@ autocmd BufNewFile,BufRead *.less setf less
   augroup end
 endif
 
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'liquid') == -1
-  augroup filetypedetect
-  " liquid, from liquid.vim in tpope/vim-liquid
-" Liquid
-au BufNewFile,BufRead *.liquid					set ft=liquid
-
-au BufNewFile,BufRead */_layouts/*.html,*/_includes/*.html	set ft=liquid
-au BufNewFile,BufRead *.html,*.xml,*.textile
-      \ if getline(1) == '---' | set ft=liquid | endif
-au BufNewFile,BufRead *.markdown,*.mkd,*.mkdn,*.md
-      \ if getline(1) == '---' |
-      \   let b:liquid_subtype = 'markdown' |
-      \   set ft=liquid |
-      \ endif
-
-" Set subtype for Shopify alternate templates
-au BufNewFile,BufRead */templates/**.liquid,*/layout/**.liquid,*/snippets/**.liquid
-      \ let b:liquid_subtype = 'html' |
-      \ set ft=liquid |
-  augroup end
-endif
-
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'lilypond') == -1
   augroup filetypedetect
   " lilypond, from lilypond.vim in anowlcalledjosh/vim-lilypond
@@ -755,6 +733,14 @@ endif
 " markdown filetype file
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} setfiletype markdown
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}.{des3,des,bf,bfa,aes,idea,cast,rc2,rc4,rc5,desx} setfiletype markdown
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'mathematica') == -1
+  augroup filetypedetect
+  " mathematica, from mma.vim in voldikss/vim-mma
+autocmd BufNewFile,BufRead *.wl set filetype=mma
+autocmd BufNewFile,BufRead *.wls set filetype=mma
   augroup end
 endif
 
@@ -940,9 +926,8 @@ endif
 
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'pgsql') == -1
   augroup filetypedetect
-  " pgsql, from pgsql.vim in exu/pgsql.vim
-" postgreSQL
-au BufNewFile,BufRead *.pgsql           setf pgsql
+  " pgsql, from pgsql.vim in lifepillar/pgsql.vim
+au BufNewFile,BufRead *.pgsql let b:sql_type_override='pgsql' | setfiletype sql
   augroup end
 endif
 
@@ -1069,7 +1054,7 @@ endif
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'racket') == -1
   augroup filetypedetect
   " racket, from racket.vim in wlangstroth/vim-racket
-au BufRead,BufNewFile *.rkt,*.rktl  set filetype=racket
+au BufRead,BufNewFile *.rkt,*.rktl setf racket
   augroup end
 endif
 
@@ -1414,6 +1399,14 @@ if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'vue') == -1
   augroup filetypedetect
   " vue, from vue.vim in posva/vim-vue
 au BufNewFile,BufRead *.vue,*.wpy setf vue
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'xdc') == -1
+  augroup filetypedetect
+  " xdc, from xdc.vim in amal-khailtash/vim-xdc-syntax
+" xdc
+autocmd BufNewFile,BufRead *.xdc setfiletype xdc
   augroup end
 endif
 
