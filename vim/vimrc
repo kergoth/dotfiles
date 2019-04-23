@@ -1144,6 +1144,7 @@ if !has("nvim")
 endif
 
 " Disable built-in plugins
+let g:loaded_2html_plugin = 1
 let g:loaded_getscript = 1
 let g:loaded_getscriptPlugin = 1
 let g:loaded_gzip = 1
