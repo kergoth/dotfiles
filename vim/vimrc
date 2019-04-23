@@ -466,7 +466,7 @@ augroup vimrc
   endif
 
   " Expand the fold where the cursor lives
-  autocmd BufWinEnter * silent! exe "normal! zO"
+  autocmd BufWinEnter * silent! exe "normal! zv"
 
   " Automatically create missing directory
   function! s:MkNonExDir(file, buf) abort
