@@ -1065,7 +1065,7 @@ augroup vimrc_filetypes
   " Default to syntax completion if we have nothing better
   au FileType *
         \ if &omnifunc == "" |
-        \   setlocal omnifunc=syntaxcomplete#Complete |
+        \   set omnifunc=syntaxcomplete#Complete |
         \ else |
         \   let b:vcm_tab_complete = 'omni' |
         \ endif
