@@ -429,7 +429,7 @@ augroup vimrc
   au FileType qf call AdjustWindowHeight(3, 10)
 
   " Close out the quickfix window if it's the only open window
-  function! <SID>QuickFixClose()
+  function! s:QuickFixClose()
     if &buftype ==# 'quickfix'
       " if this window is last on screen, quit
       if winnr('$') < 2
