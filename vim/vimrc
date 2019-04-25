@@ -1292,7 +1292,7 @@ function! Statusline_Pwd()
 endfunction
 
 " Fix lightline when vimrc reloads
-if exists('g:loaded_lightline')
+if exists('g:loaded_lightline') && exists('#lightline')
   call lightline#enable()
 endif
 " }}}
