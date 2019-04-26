@@ -773,8 +773,10 @@ endtry
 
 " Convert a single line shell script to multiline
 function! SplitShellLine() abort
-    exe '%s/ *; */\r/g'
-    exe '%s/^\(do\|then\) \(.*\)/\1\r\2/g'
+    silent! exe '%s/ *; */\r/g'
+    silent! exe '%s/ *&& */ \\\r \&\&/g'
+    silent! exe '%s/ *|| */ \\\r ||/g'
+    silent! exe '%s/^\(do\|then\) \(.*\)/\1\r\2/g'
     Format
 endfunction
 
