@@ -11,6 +11,7 @@ path=(
   $DOTFILESDIR/scripts(:A)
   $DOTFILESDIR/*/scripts(N:A)
   $HOMEBREW_PREFIX/bin
+  $HOMEBREW_PREFIX/sbin
   /opt/homebrew/bin
   /usr/local/{bin,sbin}
   $path
