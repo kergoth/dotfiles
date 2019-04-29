@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# A wrapper script for invoking docker-machine.exe as docker-machine
+# Put this script in $PATH
+
+PROGNAME="$(basename $0)"
+EXECUTABLE="docker-machine.exe"
+
+# Helper functions for guards
+error(){
+  error_code=$1
+  echo "ERROR: $2" >&2
+  echo "($PROGNAME wrapper, error code: $error_code )" &>2
+  exit $1
+}
+check_cmd_in_path(){
+  cmd=$1
+  which $cmd > /dev/null 2>&1 || error 1 "$cmd not found!"
+}
+
+
+# Guards (checks for dependencies)
+check_cmd_in_path $EXECUTABLE
+
+# Run the executable
+WSLENV=$WSLENV:DOCKER_HOST/w $EXECUTABLE "$@"
+
