@@ -302,6 +302,9 @@ set sidescroll=1
 " Show columns of context when scrolling horizontally
 set sidescrolloff=5
 
+" Enable modelines
+set modeline
+
 " Persistent undo
 if has('persistent_undo')
   set undofile
