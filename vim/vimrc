@@ -793,6 +793,9 @@ augroup vimrc_mapping
   autocmd FileType dirvish nnoremap <silent><buffer>
         \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
 
+  " Let <leader>C also close the dirvish window, from that window
+  autocmd FileType dirvish nnoremap <silent><buffer> <leader>C <Plug>(dirvish_quit)
+
   " Let <leader>C also close the command-line window
   autocmd CmdWinEnter * nnoremap <silent><buffer> <leader>C <C-c><C-c>
 augroup END
