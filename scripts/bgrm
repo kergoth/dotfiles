@@ -43,15 +43,7 @@ main () {
     process_arguments "$@"
     shift $((OPTIND - 1))
 
-    items="$(mktemp bgrm.XXXXXX)" || exit 1
-    trap 'rm -f "$items"' EXIT INT TERM
-
-    while [ $# -gt 0 ]; do
-        echo "$1" >>"$items"
-        shift
-    done
-
-    while read -r item; do
+    for item; do
         if [ "${item%bgrm.}" != "$item" ]; then
             # Existing bgrm directories can presumably be skipped
             continue
@@ -59,23 +51,14 @@ main () {
         if [ ! -e "$item" ] && [ ! -L "$item" ]; then
             continue
         fi
-
         dir="$(dirname "$item")"
         tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
-
-        mv "$item" "$tmpdir/"
-        if [ $? -eq 0 ]; then
-            set -- "$@" "$tmpdir"
-        else
-            rmdir "$tmpdir"
-        fi
-    done <"$items"
-
-    if [ -n "$delay" ]; then
-        nohup sh -c "sleep \"$delay\" && $rm_cmd \"\$@\"" - "$@" &
-    else
-        nohup $rm_cmd "$@" &
-    fi >/dev/null 2>&1 </dev/null
+        mv "$item" "$tmpdir" || rm -rf "$tmpdir"
+        (
+            cd "$tmpdir" || exit 1
+            nohup sh -c "trap 'rmdir \"$tmpdir\"' EXIT INT TERM; ${delay:+sleep \"$delay\" && }rm -rf \"$tmpdir/${item##*/}\"; rmdir \"$tmpdir\"" >rm.log 2>&1 </dev/null &
+        ) || rm -rf "$tmpdir"
+    done
 }
 
 process_arguments () {
