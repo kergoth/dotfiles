@@ -56,6 +56,9 @@
 [log]
 	decorate = short
 
+[commit]
+	verbose = true
+
 [color]
 	ui = auto
 
@@ -134,9 +137,9 @@
 	alias = m=master
 
 [ghq]
-    root = $GHQ_ROOT
-    root = $GOPATH/src
+	root = $GHQ_ROOT
+	root = $GOPATH/src
 
 # Invoke as `ghq import starred motemen`
 [ghq "import"]
-    starred = github-list-starred
+	starred = github-list-starred
