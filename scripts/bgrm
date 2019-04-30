@@ -75,7 +75,7 @@ main () {
         nohup sh -c "sleep \"$delay\" && $rm_cmd \"\$@\"" - "$@" &
     else
         nohup $rm_cmd "$@" &
-    fi
+    fi >/dev/null 2>&1 </dev/null
 }
 
 process_arguments () {
