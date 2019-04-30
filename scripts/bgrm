@@ -3,7 +3,7 @@
 set -u
 
 # shellcheck disable=SC2039
-case "$OSTYPE" in
+case "${OSTYPE:-}" in
     darwin*)
         if command -v grm >/dev/null 2>&1; then
             rm_cmd_default="grm -rf --one-file-system"
