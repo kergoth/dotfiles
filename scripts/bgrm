@@ -123,7 +123,7 @@ process_arguments () {
     done
     shift $((OPTIND - 1))
 
-    if [ -n "$io_class" ] && which ionice >/dev/null 2>&1; then
+    if [ -n "$io_class" ] && command -v ionice >/dev/null 2>&1; then
         if [ "$io_class" = "2" ]; then
             rm_cmd="ionice -c $io_class -n $io_besteffort_priority $rm_cmd"
         else
