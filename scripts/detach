@@ -6,6 +6,10 @@
 
 TIMEOUT=0.1
 
+if [ $# -eq 0 ]; then
+    exec nohup
+fi
+
 if [ -t 1 ]; then
     rm -f nohup.out
 fi
