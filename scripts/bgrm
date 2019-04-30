@@ -2,6 +2,8 @@
 
 set -u
 
+rm_cmd_default="rm -rf"
+
 usage () {
     cat <<END >&2
 Usage: ${0##*/} [options] PATH [PATH..]
@@ -11,6 +13,7 @@ background.
 
 Options:
 
+  -r RM_CMD         Specify rm command. Default: $rm_cmd_default
   -d DELAY_SECONDS  Specify a delay to control when the actual removal occurs.
 
   -n IONICE_CLASS   Class to specify for ionice to lower the I/O priority of
@@ -67,9 +70,13 @@ process_arguments () {
     delay=
     io_class=3
     io_besteffort_priority=7
+    rm_cmd="$rm_cmd_default"
 
-    while getopts d:n:p:h opt; do
+    while getopts r:d:n:p:h opt; do
         case "$opt" in
+            r)
+                rm_cmd="$OPTARG"
+                ;;
             d)
                 delay="$OPTARG"
                 ;;
@@ -106,12 +113,10 @@ process_arguments () {
 
     if [ -n "$io_class" ] && which ionice >/dev/null 2>&1; then
         if [ "$io_class" = "2" ]; then
-            rm_cmd="ionice -c $io_class -n $io_besteffort_priority rm -rf"
+            rm_cmd="ionice -c $io_class -n $io_besteffort_priority $rm_cmd"
         else
-            rm_cmd="ionice -c $io_class rm -rf"
+            rm_cmd="ionice -c $io_class $rm_cmd"
         fi
-    else
-        rm_cmd="rm -rf"
     fi
 }
 
