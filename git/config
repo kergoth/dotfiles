@@ -1,4 +1,4 @@
-# vim: set noet sts=0 ft=gitconfig
+# vim: set noet sts=0 ft=gitconfig:
 [core]
 	excludesfile = ~/.config/git/ignore
 	attributesfile = ~/.config/git/attributes
