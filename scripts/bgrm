@@ -2,7 +2,7 @@
 
 set -u
 
-rm_cmd_default="rm -rf"
+rm_cmd_default="rm -rf --one-file-system"
 
 usage () {
     cat <<END >&2
