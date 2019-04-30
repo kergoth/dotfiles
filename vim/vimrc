@@ -780,7 +780,7 @@ function! SplitShellLine() abort
     Format
 endfunction
 
-augroup filetype_mappings
+augroup vimrc_mapping
   au!
 
   au FileType sh,zsh nnoremap <buffer> <silent> L :call SplitShellLine()<cr>
@@ -792,6 +792,9 @@ augroup filetype_mappings
   " dirvish: map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
   autocmd FileType dirvish nnoremap <silent><buffer>
         \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
+
+  " Let <leader>C also close the command-line window
+  autocmd CmdWinEnter * nnoremap <silent><buffer> <leader>C <C-c><C-c>
 augroup END
 
 " Plugin Key Mapping {{{
