@@ -2,7 +2,19 @@
 
 set -u
 
-rm_cmd_default="rm -rf --one-file-system"
+# shellcheck disable=SC2039
+case "$OSTYPE" in
+    darwin*)
+        if command -v grm >/dev/null 2>&1; then
+            rm_cmd_default="grm -rf --one-file-system"
+        else
+            rm_cmd_default="rm -rf"
+        fi
+        ;;
+    *)
+        rm_cmd_default="rm -rf --one-file-system"
+        ;;
+esac
 
 usage () {
     cat <<END >&2
