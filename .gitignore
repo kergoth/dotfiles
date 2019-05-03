@@ -1,3 +1,5 @@
+.envrc
+.notags
 .DS_Store
 .flickrExclusion
 __pycache__
