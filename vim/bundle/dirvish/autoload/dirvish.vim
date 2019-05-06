@@ -165,13 +165,15 @@ function! s:buf_init() abort
 endfunction
 
 function! s:on_bufenter() abort
-  " Ensure w:dirvish for window splits, `:b <nr>`, etc.
-  let w:dirvish = extend(get(w:, 'dirvish', {}), b:dirvish, 'keep')
-
-  if empty(getline(1)) && 1 == line('$')
+  if bufname('%') is ''  " Something is very wrong. #136
+    return
+  elseif !exists('b:dirvish') || (empty(getline(1)) && 1 == line('$'))
     Dirvish %
   elseif 3 != &l:conceallevel && !s:buf_modified()
     call s:win_init()
+  else
+    " Ensure w:dirvish for window splits, `:b <nr>`, etc.
+    let w:dirvish = extend(get(w:, 'dirvish', {}), b:dirvish, 'keep')
   endif
 endfunction
 
@@ -249,8 +251,8 @@ function! s:open_selected(splitcmd, bg, line1, line2) abort
       continue
     endif
 
-    if p
-      exe (winnr('$') > 1 ? 'wincmd p' : 'vsplit')
+    if p  " Go to previous window.
+      exe (winnr('$') > 1 ? 'wincmd p|if winnr()=='.winnr().'|wincmd w|endif' : 'vsplit')
     endif
 
     if isdirectory(path)
@@ -407,10 +409,12 @@ function! s:open_dir(d, reload) abort
     endif
   endfor
 
-  if -1 == bnr
-    execute 'silent' s:noswapfile 'edit' fnameescape(d._dir)
-  else
+  if -1 != bnr
     execute 'silent' s:noswapfile 'buffer' bnr
+  elseif bufname('%') is ''
+    execute 'silent' s:noswapfile 'buffer' bufnr(d._dir, 1)
+  else
+    execute 'silent' s:noswapfile 'edit' fnameescape(d._dir)
   endif
 
   " Use :file to force a normalized path.

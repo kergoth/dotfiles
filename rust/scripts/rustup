@@ -12,7 +12,7 @@ RUSTUP_UPDATE_ROOT="${RUSTUP_UPDATE_ROOT:-https://static.rust-lang.org/rustup}"
 #XXX: If you change anything here, please make the same changes in setup_mode.rs
 usage() {
     cat 1>&2 <<EOF
-rustup-init 1.18.0 (bb84b5d85 2019-04-22)
+rustup-init 1.18.2 (acc32be34 2019-05-02)
 The installer for rustup
 
 USAGE:
@@ -280,6 +280,10 @@ get_architecture() {
             _cputype=powerpc64le
             ;;
 
+        s390x)
+            _cputype=s390x
+            ;;
+
         *)
             err "unknown CPU type: $_cputype"
 
@@ -367,12 +371,49 @@ downloader() {
     if [ "$1" = --check ]; then
         need_cmd "$_dld"
     elif [ "$_dld" = curl ]; then
-        curl --proto '=https' --tlsv1.2 --silent --show-error --fail --location "$1" --output "$2"
+        if ! check_help_for curl --proto --tlsv1.2; then
+            echo "Warning: Not forcing TLS v1.2, this is potentially less secure"
+            curl --silent --show-error --fail --location "$1" --output "$2"
+        else
+            curl --proto '=https' --tlsv1.2 --silent --show-error --fail --location "$1" --output "$2"
+        fi
     elif [ "$_dld" = wget ]; then
-        wget --https-only --secure-protocol=TLSv1_2 "$1" -O "$2"
+        if ! check_help_for wget --https-only --secure-protocol; then
+            echo "Warning: Not forcing TLS v1.2, this is potentially less secure"
+            wget "$1" -O "$2"
+        else
+            wget --https-only --secure-protocol=TLSv1_2 "$1" -O "$2"
+        fi
     else
         err "Unknown downloader"   # should not reach here
     fi
+}
+
+check_help_for() {
+    local _cmd
+    local _arg
+    local _ok
+    _cmd="$1"
+    _ok="y"
+    shift
+
+    # If we're running on OS-X, older than 10.13, then we always
+    # fail to find these options to force fallback
+    if check_cmd sw_vers; then
+        if [ "$(sw_vers -productVersion | cut -d. -f2)" -lt 13 ]; then
+            # Older than 10.13
+            echo "Warning: Detected OS X platform older than 10.13"
+            _ok="n"
+        fi
+    fi
+
+    for _arg in "$@"; do
+        if ! "$_cmd" --help | grep -q -- "$_arg"; then
+            _ok="n"
+        fi
+    done
+
+    test "$_ok" = "y"
 }
 
 main "$@" || exit 1

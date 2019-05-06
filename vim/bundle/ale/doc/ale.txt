@@ -1,4 +1,4 @@
-*ale.txt*  For Vim version 8.0.
+*ale.txt*	Plugin to lint and fix files asynchronously
 *ale*
 
 ALE - Asynchronous Lint Engine
@@ -321,40 +321,44 @@ servers. LSP linters can be used in combination with any other linter, and
 will automatically connect to LSP servers when needed. ALE also supports
 `tsserver` for TypeScript, which uses a different but very similar protocol.
 
-ALE supports the following LSP/tsserver features:
-
-1. Diagnostics/linting - Enabled via selecting linters as usual.
-2. Completion
-3. Go to definition
-
 
 -------------------------------------------------------------------------------
 5.1 Completion                                                 *ale-completion*
 
-ALE offers limited support for automatic completion of code while you type.
+ALE offers support for automatic completion of code while you type.
 Completion is only supported while at least one LSP linter is enabled. ALE
 will only suggest symbols provided by the LSP servers.
 
-Suggestions will be made while you type after completion is enabled.
-Completion can be enabled by setting |g:ale_completion_enabled| to `1`.  This
-setting must be set to `1` before ALE is loaded. The delay for completion can
-be configured with |g:ale_completion_delay|. ALE will only suggest so many
-possible matches for completion. The maximum number of items can be controlled
-with |g:ale_completion_max_suggestions|.
+                                                     *ale-deoplete-integration*
+
+ALE integrates with Deoplete for offering automatic completion data. ALE's
+completion source for Deoplete is named `'ale'`, and should enabled
+automatically if Deoplete is enabled and configured correctly. Deoplete
+integration should not be combined with ALE's own implementation.
+
+ALE also offers its own completion implementation, which does not require any
+other plugins. Suggestions will be made while you type after completion is
+enabled.  Completion can be enabled by setting |g:ale_completion_enabled| to
+`1`. This setting must be set to `1` before ALE is loaded. The delay for
+completion can be configured with |g:ale_completion_delay|.
+
+ALE will only suggest so many possible matches for completion. The maximum
+number of items can be controlled with |g:ale_completion_max_suggestions|.
 
 If you don't like some of the suggestions you see, you can filter them out
 with |g:ale_completion_excluded_words| or |b:ale_completion_excluded_words|.
 
 The |ALEComplete| command can be used to show completion suggestions manually,
-even when |g:ale_completion_enabled| is set to `0`.
+even when |g:ale_completion_enabled| is set to `0`. For manually requesting
+completion information with Deoplete, consult Deoplete's documentation.
 
                                                *ale-completion-completeopt-bug*
 
-Automatic completion replaces |completeopt| before opening the omnicomplete
-menu with <C-x><C-o>. In some versions of Vim, the value set for the option
-will not be respected. If you experience issues with Vim automatically
-inserting text while you type, set the following option in vimrc, and your
-issues should go away. >
+ALE Automatic completion implementation replaces |completeopt| before opening
+the omnicomplete menu with <C-x><C-o>. In some versions of Vim, the value set
+for the option will not be respected. If you experience issues with Vim
+automatically inserting text while you type, set the following option in
+vimrc, and your issues should go away. >
 
   set completeopt=menu,menuone,preview,noselect,noinsert
 <
@@ -370,6 +374,9 @@ information returned by LSP servers. The following commands are supported:
 |ALEGoToDefinitionInTab| - The same, but for opening the file in a new tab.
 |ALEGoToDefinitionInSplit| - The same, but in a new split.
 |ALEGoToDefinitionInVSplit| - The same, but in a new vertical split.
+
+ALE will update Vim's |tagstack| automatically unless |g:ale_update_tagstack| is
+set to `0`.
 
 -------------------------------------------------------------------------------
 5.3 Go To Type Definition                           *ale-go-to-type-definition*
@@ -1494,6 +1501,14 @@ g:ale_sign_warning                                         *g:ale_sign_warning*
   The sign for warnings in the sign gutter.
 
 
+g:ale_update_tagstack                                   *g:ale_update_tagstack*
+                                                        *b:ale_update_tagstack*
+ Type: |Number|
+ Default: `1`
+
+ This option can be set to disable updating Vim's |tagstack| automatically.
+
+
 g:ale_type_map                                                 *g:ale_type_map*
                                                                *b:ale_type_map*
   Type: |Dictionary|
@@ -1998,6 +2013,7 @@ documented in additional help files.
     ember-template-lint...................|ale-handlebars-embertemplatelint|
   haskell.................................|ale-haskell-options|
     brittany..............................|ale-haskell-brittany|
+    floskell..............................|ale-haskell-floskell|
     ghc...................................|ale-haskell-ghc|
     ghc-mod...............................|ale-haskell-ghc-mod|
     cabal-ghc.............................|ale-haskell-cabal-ghc|
@@ -2149,6 +2165,7 @@ documented in additional help files.
     qmlfmt................................|ale-qml-qmlfmt|
   r.......................................|ale-r-options|
     lintr.................................|ale-r-lintr|
+    styler................................|ale-r-styler|
   reasonml................................|ale-reasonml-options|
     merlin................................|ale-reasonml-merlin|
     ols...................................|ale-reasonml-ols|

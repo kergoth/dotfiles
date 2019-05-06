@@ -176,7 +176,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 1ac2c707e53b4f598ce6502c7bd9a028f1ec5ce4
+    rev: 2bde1d9de608f7086c8b2eaeb3e295107bce9d92
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -190,7 +190,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 83ae633be323a7fb5baf77e493232cf3358d02bf
+    rev: 78b1cc9e715f509a7e9f157e0d7a0e02b7e5125e
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -233,7 +233,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 8901782b58f5613d6c1b45456c9f130f30df2dc7
+    rev: 5a51bf3d52054990beef3221ec3a03d4ea9188e3
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -241,7 +241,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: b31512e2a2d062ee4b6eb38864594c83f1ad2c2f
+    rev: ac4e7bfb36c88d27799c080218cea3bb833bdbd9
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -272,7 +272,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: ef492f6178ba0349e93d8180006b41bc1dc0afc1
+    rev: 03e8ed4d8813684b1a3dd0831f0eab63b44e1499
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -509,7 +509,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: dcdf56167c38eacef96ad5ef88575e7f74f9a6f2
+    rev: 16ccde1a74ef89455ccacb7f42aded9677d54943
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -517,7 +517,7 @@ git module vim-abolish:
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
-    rev: 43d2678fa59d068c815d8298331c195e850ff5a7
+    rev: 0b9b5e742f67bc81ae4a1f79318549d3afc90b13
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -557,7 +557,7 @@ curl module rustup:
     move:
         rustup-init.sh: rustup
     executable: rustup
-    sha1: 93713eb2835937d0ac4e599c841624648efb515a
+    sha1: 9a4a8620553635541354af681a96701d5dac90a2
 
 curl module cht:
     url: https://cht.sh/:cht.sh
@@ -568,7 +568,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 893ac34cca903df14dabee7bdee7a018675c16d4
+    rev: 7f0954b89ef7c43e5fb7b6490665e9814c8205b2
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -601,7 +601,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 9fd5c11a20f88525088c8635a3bc6a25ec4c05c7
+    rev: e8245dbf1746aa59774124de1c77ffc4d8b5b52f
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -736,7 +736,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: d8ca3b52b07529f4a55da451291fe0ca8e18d02d
+    rev: b68c4fdbd32b7ccf3b4e52e69106021f9bc54878
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
@@ -774,6 +774,6 @@ git module vim-zoom:
 
 git module vim-targets:
     url: https://github.com/wellle/targets.vim
-    rev: 5915a1a3cef7c60dbea2ff50153417e5f6371952
+    rev: 53a5adc5e23b2dcc6a11397fd47b75ff8e0b664a
 
 #  vim: set sw=4 :

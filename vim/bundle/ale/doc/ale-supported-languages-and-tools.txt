@@ -175,6 +175,7 @@ Notes:
 * Haskell
   * `brittany`
   * `cabal-ghc`
+  * `floskell`
   * `ghc`
   * `ghc-mod`
   * `hdevtools`
@@ -357,6 +358,7 @@ Notes:
   * `qmllint`
 * R
   * `lintr`
+  * `styler`
 * Racket
   * `raco`
 * ReasonML
