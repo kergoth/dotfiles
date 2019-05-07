@@ -682,6 +682,9 @@ nnoremap <leader>p p`[v`]=
 " Select the just-pasted text
 nnoremap <expr> <leader><leader>` '`[' . strpart(getregtype(), 0, 1) . '`]'
 
+" Operate on the just changed/pasted text
+onoremap <silent> <expr> ` ':<C-u>norm! `[' . strpart(getregtype(), 0, 1) . '`]<cr>'
+
 " Toggle spell checking
 map <leader>ss :set spell!<cr>
 
