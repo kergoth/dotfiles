@@ -65,7 +65,7 @@ fi
 
 echo >&2 "asdf-install: installing version $version of $1"
 
-asdf install "$plugin" "$2"
+asdf install "$plugin" "$version"
 
 if [ $global -eq 1 ]; then
     asdf global "$1" "$version"
