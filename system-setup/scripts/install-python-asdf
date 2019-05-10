@@ -63,6 +63,8 @@ fi
 # shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf"
 
+unset PYENV_ROOT
+
 if [ -e "$ASDF_DIR/plugins/python" ]; then
     asdf plugin-update python
 else
