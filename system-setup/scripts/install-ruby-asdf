@@ -5,9 +5,10 @@ set -e
 export CFLAGS="${CFLAGS--O2}"
 export LDFLAGS
 
-case "$OSTYPE" in
+# shellcheck disable=SC2039
+case "${OSTYPE:-}" in
     darwin*)
-        if which brew >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
             eval "$(brew environment --shell=auto | grep -vw PATH)"
             CFLAGS="$CFLAGS -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
             LDFLAGS="$LDFLAGS -L$(brew --prefix openssl)/lib"
@@ -23,17 +24,18 @@ esac
 #     "
 # fi
 
+# shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf"
 
 RUBY_VERSION="${RUBY_VERSION:-$(asdf list-all ruby | grep '^[0-9]' | grep -Ev '\-p|rc|dev' | sort -rn | head -n 1)}"
 
-if [ ! -e "$ASDF_DIR/installs/ruby/$RUBY_VERSION" ]; then
-    if [ -e "$ASDF_DIR/plugins/ruby" ]; then
-        asdf plugin-update ruby
-    else
-        asdf plugin-list-all | grep '^ruby ' | sed -e 's/\*//' | while read -r name url; do asdf plugin-add "$name" "$url"; done
-    fi
+if [ -e "$ASDF_DIR/plugins/ruby" ]; then
+    asdf plugin-update ruby
+else
+    asdf plugin-list-all | grep '^ruby ' | sed -e 's/\*//' | while read -r name url; do asdf plugin-add "$name" "$url"; done
+fi
 
+if [ ! -e "$ASDF_DIR/installs/ruby/$RUBY_VERSION" ]; then
     asdf install ruby "$RUBY_VERSION"
 fi
 asdf global ruby "$RUBY_VERSION"

@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2039
 
 set -e
 
@@ -13,30 +14,33 @@ export PYTHONNOUSERSITE=1
 export CFLAGS="${CFLAGS--O2}"
 export LDFLAGS
 
+# Silence spammy warnings on clang builds, as mentioned in the python
+# developer documentation.
+export CPPFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments \
+                 -Wno-parentheses-equality -Wno-nullability-completeness"
+
+no_lto=0
+no_pgo=0
+
 case "$OSTYPE" in
     darwin*)
-        if which brew >/dev/null 2>&1; then
+        if command -v brew >/dev/null 2>&1; then
             eval "$(brew environment --shell=auto | grep -vw PATH)"
             CFLAGS="$CFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
             LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl)/lib"
+            # The python 3 build chokes due to a lack of llvm-ar at the moment
+            no_lto=1
         fi
         ;;
 esac
-
+ 
 if [ -z "$CONFIGURE_OPTS" ] && [ -z "$PYTHON_CONFIGURE_OPTS" ]; then
     export PYTHON_CONFIGURE_OPTS="\
         --enable-shared \
         --with-system-expat \
         --with-system-zlib \
         --enable-loadable-sqlite-extensions \
-        --with-pydebug \
     "
-    no_pgo=0
-    case "$OSTYPE" in
-        darwin*)
-            PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --with-openssl=$(brew --prefix openssl)"
-            ;;
-    esac
     if [ "$OSTYPE" = linux-gnu ]; then
         case "$(uname -r)" in
             *-Microsoft)
@@ -46,18 +50,17 @@ if [ -z "$CONFIGURE_OPTS" ] && [ -z "$PYTHON_CONFIGURE_OPTS" ]; then
         esac
     elif [ "$(uname -s)" = FreeBSD ]; then
         no_pgo=1
-        export PYTHON_CONFIGURE_OPTS="\
-            --enable-shared \
-            --with-system-expat \
-            --with-system-zlib \
-            --enable-loadable-sqlite-extensions \
-        "
+        no_lto=1
     fi
     if [ $no_pgo -eq 0 ]; then
         PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --enable-optimizations"
     fi
+    if [ $no_lto -eq 0 ]; then
+        PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --with-lto"
+    fi
 fi
 
+# shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf"
 
 if [ -e "$ASDF_DIR/plugins/python" ]; then
@@ -78,13 +81,3 @@ if [ ! -e "$ASDF_DIR/installs/python/$PY2_VERSION" ]; then
 fi
 
 asdf global python "$PY2_VERSION" "$PY3_VERSION"
-
-PYENV_ROOT="$ASDF_DIR/plugins/python/pyenv"
-
-# At this point python is python2, and python2 and python3 work as expected,
-# but python tools run with these pythons will have that python install first
-# in the PATH. In the case of python3, this means in that process, 'python'
-# will now correspond to python3, which will not do (see bitbake).
-if [ -e "$PYENV_ROOT/versions/$PY3_VERSION" ]; then
-    rm -f "$PYENV_ROOT/versions/$PY3_VERSION/bin/python"
-fi
