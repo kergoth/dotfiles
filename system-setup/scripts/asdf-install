@@ -7,6 +7,33 @@ export ASDF_DIR="$ASDF_DATA_DIR"
 
 PATH="$(dirname "$0"):$PATH"
 
+usage() {
+    cat >&2 <<END
+    ${0##*/} [options] PLUGIN [VERSION]
+
+    Options:
+
+    -g    Set to the default global version
+END
+exit 2
+}
+
+global=
+while getopts gh opt; do
+    case "$opt" in
+        g)
+            global=1
+            ;;
+        \? | h)
+            usage
+            ;; esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
 if [ $# -eq 0 ]; then
     asdf install
 fi
@@ -22,7 +49,7 @@ else
 fi
 
 if [ $# -lt 2 ]; then
-    asdf-install-latest "$plugin"
+    asdf-install-latest ${global:+-g} "$plugin"
 else
     asdf install "$plugin" "$2"
 fi
