@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -eu
+
+export ASDF_DATA_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
+export ASDF_DIR="$ASDF_DATA_DIR"
+
+PATH="$(dirname "$0"):$PATH"
+
+if [ $# -eq 0 ]; then
+    asdf install
+fi
+
+plugin=$1
+
+asdf update >/dev/null 2>&1
+
+if [ ! -e "$ASDF_DATA_DIR/plugins/$plugin" ]; then
+    asdf-plugin-add "$plugin"
+else
+    asdf plugin-update "$plugin" >/dev/null 2>&1
+fi
+
+if [ $# -lt 2 ]; then
+    asdf-install-latest "$plugin"
+else
+    asdf install "$plugin" "$2"
+fi
