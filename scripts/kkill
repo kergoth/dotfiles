@@ -11,24 +11,37 @@ dsleep () {
     fi
 }
 
-pkill -f "$*"
-if pgrep -f "$*" >/dev/null 2>&1; then
+kkill () {
+    kkill_sig=$1
+    shift
+    pgrep "$@" | grep -vx "$$" | tr '\n' '\0' | xargs --no-run-if-empty -0 kill "-$kkill_sig"
+}
+
+kgrep_if () {
+    test -n "$(pgrep 2>/dev/null "$@" | grep -vx "$$")"
+}
+
+kkill TERM "$@"
+if kgrep_if "$@"; then
     dsleep 1
-    if pgrep -f "$*" >/dev/null 2>&1; then
-        echo >&2 "'$*' process(es) still running, waiting.."
+    if kgrep_if "$@"; then
+        echo >&2 "Process(es) still running, waiting.."
         dsleep 2
-        if pgrep -f "$*" >/dev/null 2>&1; then
-            echo >&2 "'$*' process(es) still running, using pkill -9.."
-            pkill -f "$*" -9
+        if kgrep_if "$@"; then
+            echo >&2 "Process(es) still running, using pkill -9.."
+            kkill KILL "$@"
             dsleep 3
-            pids="$(pgrep -f "$*" 2>/dev/null)" || exit 0
-            echo >&2 "'$*' process(es) still running after pkill, using kill -9.."
+            pids="$(pgrep -f "$*" 2>/dev/null | grep -vx "$$")"
+            if [ -z "$pids" ]; then
+                exit 0
+            fi
+            echo >&2 "Process(es) still running after pkill -9, using kill -9.."
             for pid in $pids; do
                 kill -9 "$pid" || :
             done
             dsleep 4
-            if pgrep -f "$*" >/dev/null 2>&1; then
-                echo >&2 "Error: '$*' process(es) still running after kill -9"
+            if kgrep_if "$@"; then
+                echo >&2 "Error: process(es) still running after kill -9"
                 exit 1
             fi
         fi
