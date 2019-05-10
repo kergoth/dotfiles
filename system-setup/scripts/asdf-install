@@ -15,10 +15,14 @@ usage() {
 
     -g    Set to the default global version
 END
-exit 2
+    exit 2
 }
 
-global=
+version_sort() {
+    python3 -c 'import distutils.version,sys; versions=sys.stdin.readlines(); sversions=sorted(distutils.version.LooseVersion(v.rstrip()) for v in versions); print("\n".join(str(v) for v in sversions))'
+}
+
+global=0
 while getopts gh opt; do
     case "$opt" in
         g)
@@ -26,7 +30,8 @@ while getopts gh opt; do
             ;;
         \? | h)
             usage
-            ;; esac
+            ;;
+    esac
 done
 shift $((OPTIND - 1))
 
@@ -48,8 +53,20 @@ else
     asdf plugin-update "$plugin" >/dev/null 2>&1
 fi
 
-if [ $# -lt 2 ]; then
-    asdf-install-latest ${global:+-g} "$plugin"
+if [ $# -gt 1 ]; then
+    version=$2
 else
-    asdf install "$plugin" "$2"
+    version="$(asdf list-all "$1" | grep -E '^[0-9]*(\.[0-9]*(.[0-9]*)?)?$' | version_sort | tail -n 1)"
+    if [ -z "$version" ]; then
+        echo >&2 "Error locating latest version for $1"
+        exit 1
+    fi
+fi
+
+echo >&2 "asdf-install: installing version $version of $1"
+
+asdf install "$plugin" "$2"
+
+if [ $global -eq 1 ]; then
+    asdf global "$1" "$version"
 fi
