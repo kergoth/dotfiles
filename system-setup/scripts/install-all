@@ -1,31 +1,12 @@
 #!/bin/sh
 
-PATH="$HOME/.local/bin:$PATH"
+set -e
+
+PATH="$(dirname "$0"):$PATH"
+
+install-langs
 
 sudo pacman -Sy --needed vim zsh dtach cmake
 sudo apt-get -y install vim zsh dtach cmake
-
-# Install needed deps
-sudo pacman -Sy --needed openssl bzip2 sqlite ncurses unzip
-sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev unzip
-
-install-python || exit $?
-eval "$(pyenv init -)"
-install-pipsi
-install-ruby
-
-install-golang
-install-cabal
-install-node
-rustup () {
-    bash "$(which rustup)" "$@"
-}
-rustup update || rustup -y --no-modify-path
-install-elixir
-
-# FIXME: deal with brew install failures
+brew install vim zsh dtach cmake
 install-env-tools
-
-# Clean up
-# FIXME: only remove the ones we installed, not the ones the user did
-# sudo apt-get -y remove libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev

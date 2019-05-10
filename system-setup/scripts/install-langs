@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Install needed deps
+sudo pacman -Sy --needed openssl bzip2 sqlite ncurses unzip
+sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev unzip
+brew install openssl bzip2 sqlite3 ncurses unzip
+
+install-python || exit $?
+eval "$(pyenv init -)"
+install-pipsi
+install-ruby
+ 
+install-golang
+install-cabal
+install-node
+rustup () {
+    bash "$(which rustup)" "$@"
+}
+rustup update || rustup -y --no-modify-path
+
+# TODO: remove the packages we installed, but not the ones the user did
