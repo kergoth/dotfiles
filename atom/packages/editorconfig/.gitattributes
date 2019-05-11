@@ -1,5 +1,0 @@
-* text=auto
-*.js text eol=lf
-/.github/ export-ignore
-/yarn.lock export-ignore
-/*.gif export-ignore

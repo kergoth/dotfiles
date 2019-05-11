@@ -1,3 +1,0 @@
-defmodule SpecHandler do
-  
-end

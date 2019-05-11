@@ -1,4 +1,0 @@
-Typer
-=====
-
-** TODO: Add description **

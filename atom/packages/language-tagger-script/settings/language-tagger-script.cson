@@ -1,4 +1,0 @@
-'.source.tagger_script':
-  'editor':
-    'commentStart': '$noop(',
-    'commentEnd': ')'

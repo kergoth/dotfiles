@@ -1,1 +1,0 @@
-ATOM_HOME="$XDG_DATA_HOME/atom"
