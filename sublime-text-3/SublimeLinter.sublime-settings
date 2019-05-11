@@ -1,7 +1,0 @@
-// SublimeLinter Settings - User
-{
-	"paths": {
-		"osx": ["/opt/homebrew/bin", "/Users/kergoth/Sync/dotfiles/scripts", "/Users/kergoth/.local/bin"]
-	}
-
-}

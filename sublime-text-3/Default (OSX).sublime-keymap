@@ -1,9 +1,0 @@
-[
-	{ "keys": ["super+shift+r"],  "command": "reindent" },
-	{ "keys": ["super+v"], "command": "paste_and_indent" },
-	{ "keys": ["super+shift+v"], "command": "paste" },
-	{ "keys": ["home"], "command": "move_to", "args": {"to": "bol"} },
-	{ "keys": ["end"], "command": "move_to", "args": {"to": "eol"} },
-	{ "keys": ["shift+end"], "command": "move_to", "args": {"to": "eol", "extend": true} },
-	{ "keys": ["shift+home"], "command": "move_to", "args": {"to": "bol", "extend": true } }
-]
