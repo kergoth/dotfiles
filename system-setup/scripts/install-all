@@ -1,12 +1,10 @@
 #!/bin/sh
 
-set -e
-
 PATH="$(dirname "$0"):$PATH"
 
 install-langs
 
 sudo pacman -Sy --needed vim zsh dtach cmake
 sudo apt-get -y install vim zsh dtach cmake
-brew install vim zsh dtach cmake
+brew install zsh dtach cmake
 install-env-tools
