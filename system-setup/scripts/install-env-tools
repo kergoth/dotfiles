@@ -12,11 +12,11 @@ pipv3 () {
 }
 
 pip_install () {
-    command pip install --user --disable-pip-version-check -U "$@" || { echo >&2 Error installing $@; return 1; }
+    command pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
 pip3_install () {
-    command pip3 install --user --disable-pip-version-check -U "$@" || { echo >&2 Error installing $@; return 1; }
+    command pip3 install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
 setup_pip () {
