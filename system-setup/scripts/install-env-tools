@@ -54,6 +54,7 @@ cargov fd-find
 cargov ripgrep
 cargov bat
 bat cache --build
+cargov exa
 cargov tldr
 go get -u github.com/edi9999/path-extractor/path-extractor
 
