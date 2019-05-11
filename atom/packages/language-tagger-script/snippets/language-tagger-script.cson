@@ -1,0 +1,459 @@
+'.source.tagger_script':
+  # Functions
+  'Comment':
+    'prefix': 'noop'
+    'body': '$noop($1)$2'
+  '$if(if,then,else)':
+    'prefix': 'if'
+    'body': '$if(${1:if,then,else})$2'
+  '$if2(a1,a2,a3,…)':
+    'prefix': 'if2'
+    'body': '$if2($1)$2'
+  '$lower(text)':
+    'prefix': 'lower'
+    'body': '$lower(${1:text})$2'
+  '$upper(text)':
+    'prefix': 'upper'
+    'body': '$upper(${1:text})$2'
+  '$left(text,num)':
+    'prefix': 'left'
+    'body': '$left(${1:text,num})$2'
+  '$right(text,num)':
+    'prefix': 'right'
+    'body': '$right(${1:text,num})$2'
+  '$matchedtracks()':
+    'prefix': 'matchedtracks'
+    'body': '$matchedtracks()$1'
+  '$is_complete()':
+    'prefix': 'is_complete'
+    'body': '$is_complete()$1'
+  '$num(num,len)':
+    'prefix': 'num'
+    'body': '$num(${1:num},${2:2})$3'
+  '$replace(text,search,replace)':
+    'prefix': 'replace'
+    'body': '$replace(${1:text,search,replace})$2'
+  '$rsearch(text,pattern)':
+    'prefix': 'rsearch'
+    'body': '$rsearch(${1:text,pattern})$2'
+  '$rreplace(text,pattern,replace)':
+    'prefix': 'rreplace'
+    'body': '$rreplace(${1:text,pattern,replace})$2'
+  '$in(x,y)':
+    'prefix': 'in'
+    'body': '$in(${1:x,y})$2'
+  '$inmulti(x,y)':
+    'prefix': 'inmulti'
+    'body': '$inmulti(${1:x,y})$2'
+  '$unset(name)':
+    'prefix': 'unset'
+    'body': '$unset(${1:name})$2'
+  '$set(name,value)':
+    'prefix': 'set'
+    'body': '$set(${1:name,value})$2'
+  '$setmulti(name,value,separator="; ")':
+    'prefix': 'setmulti'
+    'body': '$setmulti(${1:name,value,separator="; "})$2'
+  '$get(name)':
+    'prefix': 'get'
+    'body': '$get(${1:name})$2'
+  '$copy(new,old)':
+    'prefix': 'copy'
+    'body': '$copy(${1:new,old})$2'
+  '$copymerge(new,old)':
+    'prefix': 'copymerge'
+    'body': '$copymerge(${1:new,old})$2'
+  '$pad(text,length,char)':
+    'prefix': 'pad'
+    'body': '$pad(${1:text,length,char})$2'
+  '$strip(text)':
+    'prefix': 'strip'
+    'body': '$strip(${1:text})$2'
+  '$trim(text[,char])':
+    'prefix': 'trim'
+    'body': '$trim(${1:text})$2'
+  '$add(x,y)':
+    'prefix': 'add'
+    'body': '$add(${1:x,y})$2'
+  '$sub(x,y)':
+    'prefix': 'sub'
+    'body': '$sub(${1:x,y})$2'
+  '$div(x,y)':
+    'prefix': 'div'
+    'body': '$div(${1:x,y})$2'
+  '$mod(x,y)':
+    'prefix': 'mod'
+    'body': '$mod(${1:x,y})$2'
+  '$mul(x,y)':
+    'prefix': 'mul'
+    'body': '$mul(${1:x,y})$2'
+  '$or(x,y)':
+    'prefix': 'or'
+    'body': '$or(${1:x,y})$2'
+  '$and(x,y)':
+    'prefix': 'and'
+    'body': '$and(${1:x,y})$2'
+  '$not(x)':
+    'prefix': 'not'
+    'body': '$not(${1:x})$2'
+  '$eq(x,y)':
+    'prefix': 'eq'
+    'body': '$eq(${1:x,y})$2'
+  '$ne(x,y)':
+    'prefix': 'ne'
+    'body': '$ne(${1:x,y})$2'
+  '$lt(x,y)':
+    'prefix': 'lt'
+    'body': '$lt(${1:x,y})$2'
+  '$lte(x,y)':
+    'prefix': 'lte'
+    'body': '$lte(${1:x,y})$2'
+  '$gt(x,y)':
+    'prefix': 'gt'
+    'body': '$gt(${1:x,y})$2'
+  '$gte(x,y)':
+    'prefix': 'gte'
+    'body': '$gte(${1:x,y})$2'
+  '$eq_any(x,a1,a2,…)':
+    'prefix': 'eq_any'
+    'body': '$eq_any(${1:x,a1,a2,…})$2'
+  '$eq_all(x,a1,a2,…)':
+    'prefix': 'eq_all'
+    'body': '$eq_all(${1:x,a1,a2,…})$2'
+  '$ne_any(x,a1,a2,…)':
+    'prefix': 'ne_any'
+    'body': '$ne_any(${1:x,a1,a2,…})$2'
+  '$ne_all(x,a1,a2,…)':
+    'prefix': 'ne_all'
+    'body': '$ne_all(${1:x,a1,a2,…})$2'
+  '$len(text)':
+    'prefix': 'len'
+    'body': '$len(${1:text})$2'
+  '$performer(pattern="",join=", ")':
+    'prefix': 'performer'
+    'body': '$performer()$2'
+  '$firstalphachar(text,nonalpha="#")':
+    'prefix': 'firstalphachar'
+    'body': '$firstalphachar(${1:text,nonalpha="#"})$2'
+  '$initials(text)':
+    'prefix': 'initials'
+    'body': '$initials(${1:text})$2'
+  '$truncate(text,length)':
+    'prefix': 'truncate'
+    'body': '$truncate(${1:text,length})$2'
+  '$firstwords(text,length)':
+    'prefix': 'firstwords'
+    'body': '$firstwords(${1:text,length})$2'
+  '$swapprefix(text,*prefixes="a","the")':
+    'prefix': 'swapprefix'
+    'body': '$swapprefix(${1:text,*prefixes="a","the"})$2'
+  '$delprefix(text,*prefixes="a","the")':
+    'prefix': 'delprefix'
+    'body': '$delprefix(${1:text,*prefixes="a","the"})$2'
+  '$startswith(text,prefix)':
+    'prefix': 'startswith'
+    'body': '$startswith(${1:text,prefix})$2'
+  '$endswith(text,suffix)':
+    'prefix': 'endswith'
+    'body': '$endswith(${1:text,prefix})$2'
+
+  # Metadata variables
+  '%album%':
+    'prefix': 'album'
+    'body': '%album%'
+  '%artist%':
+    'prefix': 'artist'
+    'body': '%artist%'
+  '%title%':
+    'prefix': 'title'
+    'body': '%title%'
+  '%date%':
+    'prefix': 'date'
+    'body': '%date%'
+  '%originaldate%':
+    'prefix': 'originaldate'
+    'body': '%originaldate%'
+  '%originalyear%':
+    'prefix': 'originalyear'
+    'body': '%originalyear%'
+  '%albumartist%':
+    'prefix': 'albumartist'
+    'body': '%albumartist%'
+  '%tracknumber%':
+    'prefix': 'tracknumber'
+    'body': '%tracknumber%'
+  '%totaltracks%':
+    'prefix': 'totaltracks'
+    'body': '%totaltracks%'
+  '%discnumber%':
+    'prefix': 'discnumber'
+    'body': '%discnumber%'
+  '%totaldiscs%':
+    'prefix': 'totaldiscs'
+    'body': '%totaldiscs%'
+  '%albumartistsort%':
+    'prefix': 'albumartistsort'
+    'body': '%albumartistsort%'
+  '%artistsort%':
+    'prefix': 'artistsort'
+    'body': '%artistsort%'
+  '%titlesort%':
+    'prefix': 'titlesort'
+    'body': '%titlesort%'
+  '%albumsort%':
+    'prefix': 'albumsort'
+    'body': '%albumsort%'
+  '%composersort%':
+    'prefix': 'composersort'
+    'body': '%composersort%'
+  '%asin%':
+    'prefix': 'asin'
+    'body': '%asin%'
+  '%grouping%':
+    'prefix': 'grouping'
+    'body': '%grouping%'
+  '%isrc%':
+    'prefix': 'isrc'
+    'body': '%isrc%'
+  '%mood%':
+    'prefix': 'mood'
+    'body': '%mood%'
+  '%bpm%':
+    'prefix': 'bpm'
+    'body': '%bpm%'
+  '%key%':
+    'prefix': 'key'
+    'body': '%key%'
+  '%copyright%':
+    'prefix': 'copyright'
+    'body': '%copyright%'
+  '%license%':
+    'prefix': 'license'
+    'body': '%license%'
+  '%composer%':
+    'prefix': 'composer'
+    'body': '%composer%'
+  '%writer%':
+    'prefix': 'writer'
+    'body': '%writer%'
+  '%conductor%':
+    'prefix': 'conductor'
+    'body': '%conductor%'
+  '%lyricist%':
+    'prefix': 'lyricist'
+    'body': '%lyricist%'
+  '%arranger%':
+    'prefix': 'arranger'
+    'body': '%arranger%'
+  '%producer%':
+    'prefix': 'producer'
+    'body': '%producer%'
+  '%engineer%':
+    'prefix': 'engineer'
+    'body': '%engineer%'
+  '%subtitle%':
+    'prefix': 'subtitle'
+    'body': '%subtitle%'
+  '%discsubtitle%':
+    'prefix': 'discsubtitle'
+    'body': '%discsubtitle%'
+  '%remixer%':
+    'prefix': 'remixer'
+    'body': '%remixer%'
+  '%musicbrainz_recordingid%':
+    'prefix': 'musicbrainz_recordingid'
+    'body': '%musicbrainz_recordingid%'
+  '%musicbrainz_trackid%':
+    'prefix': 'musicbrainz_trackid'
+    'body': '%musicbrainz_trackid%'
+  '%musicbrainz_albumid%':
+    'prefix': 'musicbrainz_albumid'
+    'body': '%musicbrainz_albumid%'
+  '%musicbrainz_artistid%':
+    'prefix': 'musicbrainz_artistid'
+    'body': '%musicbrainz_artistid%'
+  '%musicbrainz_albumartistid%':
+    'prefix': 'musicbrainz_albumartistid'
+    'body': '%musicbrainz_albumartistid%'
+  '%musicbrainz_workid%':
+    'prefix': 'musicbrainz_workid'
+    'body': '%musicbrainz_workid%'
+  '%musicbrainz_releasegroupid%':
+    'prefix': 'musicbrainz_releasegroupid'
+    'body': '%musicbrainz_releasegroupid%'
+  '%musicbrainz_discid%':
+    'prefix': 'musicbrainz_discid'
+    'body': '%musicbrainz_discid%'
+  '%musicip_puid%':
+    'prefix': 'musicip_puid'
+    'body': '%musicip_puid%'
+  '%musicip_fingerprint%':
+    'prefix': 'musicip_fingerprint'
+    'body': '%musicip_fingerprint%'
+  '%acoustid_id%':
+    'prefix': 'acoustid_id'
+    'body': '%acoustid_id%'
+  '%acoustid_fingerprint%':
+    'prefix': 'acoustid_fingerprint'
+    'body': '%acoustid_fingerprint%'
+  '%discid%':
+    'prefix': 'discid'
+    'body': '%discid%'
+  '%website%':
+    'prefix': 'website'
+    'body': '%website%'
+  '%compilation%':
+    'prefix': 'compilation'
+    'body': '%compilation%'
+  '%comment:%':
+    'prefix': 'comment:'
+    'body': '%comment:$1%$2'
+  '%genre%':
+    'prefix': 'genre'
+    'body': '%genre%'
+  '%encodedby%':
+    'prefix': 'encodedby'
+    'body': '%encodedby%'
+  '%encodersettings%':
+    'prefix': 'encodersettings'
+    'body': '%encodersettings%'
+  '%performer:%':
+    'prefix': 'performer:'
+    'body': '%performer:$1%$2'
+  '%releasetype%':
+    'prefix': 'releasetype'
+    'body': '%releasetype%'
+  '%releasestatus%':
+    'prefix': 'releasestatus'
+    'body': '%releasestatus%'
+  '%releasecountry%':
+    'prefix': 'releasecountry'
+    'body': '%releasecountry%'
+  '%label%':
+    'prefix': 'label'
+    'body': '%label%'
+  '%barcode%':
+    'prefix': 'barcode'
+    'body': '%barcode%'
+  '%catalognumber%':
+    'prefix': 'catalognumber'
+    'body': '%catalognumber%'
+  '%djmixer%':
+    'prefix': 'djmixer'
+    'body': '%djmixer%'
+  '%media%':
+    'prefix': 'media'
+    'body': '%media%'
+  '%lyrics%':
+    'prefix': 'lyrics'
+    'body': '%lyrics%'
+  '%mixer%':
+    'prefix': 'mixer'
+    'body': '%mixer%'
+  '%language%':
+    'prefix': 'language'
+    'body': '%language%'
+  '%script%':
+    'prefix': 'script'
+    'body': '%script%'
+  '%artists%':
+    'prefix': 'artists'
+    'body': '%artists%'
+  '%work%':
+    'prefix': 'work'
+    'body': '%work%'
+
+  # Technical variables
+  '%_albumtracknumber%':
+    'prefix': '_albumtracknumber'
+    'body': '%_albumtracknumber%'
+  '%_totalalbumtracks%':
+    'prefix': '_totalalbumtracks'
+    'body': '%_totalalbumtracks%'
+  '%_releasecomment%':
+    'prefix': '_releasecomment'
+    'body': '%_releasecomment%'
+  '%_releaselanguage%':
+    'prefix': '_releaselanguage'
+    'body': '%_releaselanguage%'
+  '%_releasegroup%':
+    'prefix': '_releasegroup'
+    'body': '%_releasegroup%'
+  '%_releasegroupcomment%':
+    'prefix': '_releasegroupcomment'
+    'body': '%_releasegroupcomment%'
+  '%_primaryreleasetype%':
+    'prefix': '_primaryreleasetype'
+    'body': '%_primaryreleasetype%'
+  '%_secondaryreleasetype%':
+    'prefix': '_secondaryreleasetype'
+    'body': '%_secondaryreleasetype%'
+  '%_length%':
+    'prefix': '_length'
+    'body': '%_length%'
+  '%_rating%':
+    'prefix': '_rating'
+    'body': '%_rating%'
+  '%_dirname%':
+    'prefix': '_dirname'
+    'body': '%_dirname%'
+  '%_filename%':
+    'prefix': '_filename'
+    'body': '%_filename%'
+  '%_extension%':
+    'prefix': '_extension'
+    'body': '%_extension%'
+  '%_format%':
+    'prefix': '_format'
+    'body': '%_format%'
+  '%_bitrate%':
+    'prefix': '_bitrate'
+    'body': '%_bitrate%'
+  '%_channels%':
+    'prefix': '_channels'
+    'body': '%_channels%'
+  '%_sample_rate%':
+    'prefix': '_sample_rate'
+    'body': '%_sample_rate%'
+  '%_bits_per_sample%':
+    'prefix': '_bits_per_sample'
+    'body': '%_bits_per_sample%'
+  '%_multiartist%':
+    'prefix': '_multiartist'
+    'body': '%_multiartist%'
+  '%_recordingtitle%':
+    'prefix': '_recordingtitle'
+    'body': '%_recordingtitle%'
+  '%_recordingcomment%':
+    'prefix': '_recordingcomment'
+    'body': '%_recordingcomment%'
+  '%_datatrack%':
+    'prefix': '_datatrack'
+    'body': '%_datatrack%'
+  '%_pregap%':
+    'prefix': '_pregap'
+    'body': '%_pregap%'
+  '%_silence%':
+    'prefix': '_silence'
+    'body': '%_silence%'
+  '%_video%':
+    'prefix': '_video'
+    'body': '%_video%'
+  '%_absolutetracknumber%':
+    'prefix': '_absolutetracknumber'
+    'body': '%_absolutetracknumber%'
+  '%_musicbrainz_tracknumber%':
+    'prefix': '_musicbrainz_tracknumber'
+    'body': '%_musicbrainz_tracknumber%'
+  '%_performance_attributes%':
+    'prefix': '_performance_attributes'
+    'body': '%_performance_attributes%'
+  '%_artists_sort%':
+    'prefix': '_artists_sort'
+    'body': '%_artists_sort%'
+  '%_albumartists%':
+    'prefix': '_albumartists'
+    'body': '%_albumartists%'
+  '%_albumartists_sort%':
+    'prefix': '_albumartists_sort'
+    'body': '%_albumartists_sort%'

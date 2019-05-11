@@ -1,0 +1,46 @@
+{
+  "_from": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball",
+  "_id": "language-tagger-script@0.7.0",
+  "_inBundle": false,
+  "_integrity": "sha512-5K2PvovViQAxhYy99SvPRCrLBVnts+XxiR+m9GHNRukDJ3MfnHOs9wPTTL3P78zMRBPFOJNk+fWCCNtBNQYaNA==",
+  "_location": "/language-tagger-script",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball",
+    "rawSpec": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball",
+    "saveSpec": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball",
+    "fetchSpec": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball",
+  "_shasum": "a9a85c16526645514570647cb843625d330b662f",
+  "_spec": "https://www.atom.io/api/packages/language-tagger-script/versions/0.7.0/tarball",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gp/T/apm-install-dir-119128-95587-6dx5ob.ni6ui",
+  "bugs": {
+    "url": "https://github.com/phw/atom-language-tagger-script/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "MusicBrainz Picard Tagger Script syntax highlighting",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/phw/atom-language-tagger-script#readme",
+  "keywords": [
+    "language",
+    "grammar",
+    "musicbrainz"
+  ],
+  "license": "MIT",
+  "name": "language-tagger-script",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phw/atom-language-tagger-script.git"
+  },
+  "version": "0.7.0"
+}

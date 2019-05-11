@@ -1,0 +1,33 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "tsd.d.ts",
+  "installed": {
+    "q/Q.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "bluebird/bluebird.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "node/node.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "mixto/mixto.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "semver/semver.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    },
+    "jasmine/jasmine.d.ts": {
+      "commit": "f999dcd9543265848a33fa3bb8379bf0393d33c8"
+    }
+  }
+}

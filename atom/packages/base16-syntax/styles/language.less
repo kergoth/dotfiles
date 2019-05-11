@@ -1,0 +1,259 @@
+.syntax--comment {
+  .if (@base16-style, 'dark', color, @base16-color-base03);
+  .if (@base16-style, 'light', color, @base16-color-base04);
+}
+
+.syntax--constant {
+  color: @base16-color-base09;
+
+  &.syntax--character {
+    &.syntax--escape {
+      color: @base16-color-base0C;
+    }
+  }
+
+  &.syntax--numeric {
+    color: @base16-color-base09;
+  }
+
+  &.syntax--other {
+    &.syntax--color {
+      color: @base16-color-base0C;
+    }
+
+    &.syntax--symbol {
+      color: @base16-color-base0B;
+    }
+  }
+}
+
+.syntax--entity {
+  &.syntax--name {
+    &.syntax--class {
+      .if (@base16-style, 'dark', color, @base16-color-base0A);
+      .if (@base16-style, 'light', color, @base16-color-base09);
+    }
+
+    &.syntax--function {
+      color: @base16-color-base0D;
+    }
+
+    &.syntax--section {
+      color: @base16-color-base0D;
+    }
+
+    &.syntax--tag {
+      color: @base16-color-base08;
+    }
+
+    &.syntax--type {
+      &.syntax--class {
+        .if (@base16-style, 'dark', color, @base16-color-base0A);
+        .if (@base16-style, 'light', color, @base16-color-base09);
+      }
+    }
+  }
+
+  &.syntax--other {
+    &.syntax--attribute-name {
+      color: @base16-color-base09;
+
+      &.syntax--id {
+        color: @base16-color-base0D;
+      }
+    }
+
+    &.syntax--inherited-class {
+      color: @base16-color-base0B;
+    }
+  }
+}
+
+.syntax--invalid.syntax--illegal {
+  .if (@base16-style, 'dark', color, @base16-color-base00);
+  .if (@base16-style, 'light', color, @base16-color-base07);
+  background-color: @base16-color-base08;
+}
+
+.syntax--keyword {
+  color: @base16-color-base0E;
+
+  &.syntax--arithmetic {
+    .if (@base16-style, 'dark', color, @base16-color-base05);
+    .if (@base16-style, 'light', color, @base16-color-base02);
+  }
+
+  &.syntax--other {
+    &.syntax--special-method {
+      color: @base16-color-base0D;
+    }
+
+    &.syntax--unit {
+      color: @base16-color-base09;
+    }
+  }
+}
+
+.syntax--markup {
+  &.syntax--bold {
+    font-weight: bold;
+    .if (@base16-style, 'dark', color, @base16-color-base0A);
+    .if (@base16-style, 'light', color, @base16-color-base09);
+  }
+
+  &.syntax--changed {
+    color: @base16-color-base0E;
+  }
+
+  &.syntax--deleted {
+    color: @base16-color-base08;
+  }
+
+  &.syntax--heading {
+    color: @base16-color-base0D;
+  }
+
+  &.syntax--inserted {
+    color: @base16-color-base0B;
+  }
+
+  &.syntax--italic {
+    font-style: italic;
+    color: @base16-color-base0E;
+  }
+
+  &.syntax--list {
+    color: @base16-color-base08;
+  }
+
+  &.syntax--quote {
+    color: @base16-color-base09;
+  }
+
+  &.syntax--raw {
+    &.syntax--inline {
+      color: @base16-color-base0B;
+    }
+  }
+}
+
+.syntax--meta {
+  &.syntax--class {
+    .if (@base16-style, 'dark', color, @base16-color-base07);
+    .if (@base16-style, 'light', color, @base16-color-base01);
+  }
+
+  &.syntax--link {
+    color: @base16-color-base09;
+  }
+
+  &.syntax--require {
+    color: @base16-color-base0D;
+  }
+
+  &.syntax--selector {
+    color: @base16-color-base0E;
+  }
+
+  &.syntax--separator {
+    .if (@base16-style, 'dark', color, @base16-color-base05);
+    .if (@base16-style, 'light', color, @base16-color-base02);
+    .if (@base16-style, 'dark', background-color, @base16-color-base02);
+    .if (@base16-style, 'light', background-color, @base16-color-base06);
+  }
+}
+
+.syntax--none {
+  .if (@base16-style, 'dark', color, @base16-color-base05);
+  .if (@base16-style, 'light', color, @base16-color-base02);
+}
+
+.syntax--punctuation {
+  &.syntax--definition {
+    &.syntax--array,
+    &.syntax--parameters,
+    &.syntax--string,
+    &.syntax--variable {
+      .if (@base16-style, 'dark', color, @base16-color-base05);
+      .if (@base16-style, 'light', color, @base16-color-base02);
+    }
+
+    &.syntax--bold {
+      font-weight: bold;
+      .if (@base16-style, 'dark', color, @base16-color-base0A);
+      .if (@base16-style, 'light', color, @base16-color-base09);
+    }
+
+    &.syntax--comment {
+      .if (@base16-style, 'dark', color, @base16-color-base03);
+      .if (@base16-style, 'light', color, @base16-color-base04);
+    }
+
+    &.syntax--entity {
+      color: @base16-color-base0D;
+    }
+
+    &.syntax--italic {
+      font-style: italic;
+      color: @base16-color-base0E;
+    }
+  }
+
+  &.syntax--section {
+    &.syntax--embedded {
+      color: @base16-color-base0F;
+    }
+  }
+}
+
+.syntax--storage {
+  color: @base16-color-base0E;
+}
+
+.syntax--string {
+  color: @base16-color-base0B;
+
+  &.syntax--other {
+    &.syntax--link {
+      color: @base16-color-base08;
+    }
+  }
+
+  &.syntax--regexp {
+    color: @base16-color-base0C;
+  }
+}
+
+.syntax--support {
+  &.syntax--class {
+    .if (@base16-style, 'dark', color, @base16-color-base0A);
+    .if (@base16-style, 'light', color, @base16-color-base09);
+  }
+  
+  &.syntax--type {
+    color: @base16-color-base0C;
+  }
+
+  &.syntax--function {
+    color: @base16-color-base0C;
+
+    &.syntax--any-method {
+      color: @base16-color-base0D;
+    }
+  }
+}
+
+.syntax--variable {
+  color: @base16-color-base08;
+
+  &.syntax--interpolation {
+    color: @base16-color-base0F;
+  }
+
+  &.syntax--parameter {
+    &.syntax--function {
+      .if (@base16-style, 'dark', color, @base16-color-base05);
+      .if (@base16-style, 'light', color, @base16-color-base02);
+    }
+  }
+}

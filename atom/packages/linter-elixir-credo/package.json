@@ -1,0 +1,71 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-10633-stkq1c.9chsnvobt9"
+    ]
+  ],
+  "_from": "../d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+  "_id": "linter-elixir-credo@1.1.0",
+  "_inCache": true,
+  "_location": "/linter-elixir-credo",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+  "_shasum": "c0d8f93e3bd95f5c7acb903019d4b8ee04b159e5",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-10633-1aia57j.98ofvwjyvi/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-10633-stkq1c.9chsnvobt9",
+  "bugs": {
+    "url": "https://github.com/smeevil/linter-elixir-credo/issues"
+  },
+  "dependencies": {
+    "atom-linter": "^5.0.1"
+  },
+  "description": "Lint `Elixir` on the fly, using Credo",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/smeevil/linter-elixir-credo#readme",
+  "license": "MIT",
+  "linter-package": true,
+  "name": "linter-elixir-credo",
+  "optionalDependencies": {},
+  "package-deps": [
+    "linter"
+  ],
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "1.1.0": "provideLinter"
+      }
+    }
+  },
+  "readme": "# linter-elixir-credo\n\nThis linter plugin for [Linter][linter] provides an interface to mix [Credo][credo].\nIt will be used with files that have the \"source.elixir\" syntax\n(ie. `*.ex; *.exs`).\n\n## Installation\n\nPlugin requires Linter package and it should install it by itself.\nIf it did not, please follow Linter instructions [here][linter].\n\n### Method 1: In console\n\n```ShellSession\n$ apm install linter-elixir-credo\n```\n\n### Method 2: In Atom\n\n1.  Edit > Preferences (Ctrl+,)\n2.  Install > Search \"linter-elixir-credo\" > Install\n\n[linter]: https://github.com/AtomLinter/Linter \"Linter\"\n[credo]: https://github.com/rrrene/credo \"Credo\"\n\n## Configuration\nYou can add other flags (like `--strict`) to the `mix credo` command in the settings.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smeevil/linter-elixir-credo.git"
+  },
+  "version": "1.1.0"
+}

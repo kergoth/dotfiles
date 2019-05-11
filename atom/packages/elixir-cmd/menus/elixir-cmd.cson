@@ -1,0 +1,20 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  'atom-text-editor, .overlayer': [
+    {label: 'Elixir Build', command: 'elixir-cmd:build'}
+    {label: 'Elixir Test', command: 'elixir-cmd:test'}
+  ]
+
+'menu': [
+  {
+    label: 'Packages'
+    'submenu': [
+      label: 'elixir-cmd'
+      'submenu': [
+        {label: 'Build', command: 'elixir-cmd:build'}
+        {label: 'Test', command: 'elixir-cmd:test'}
+        {label: 'Close', command: 'elixir-cmd:close-view'}
+      ]
+    ]
+  }
+]

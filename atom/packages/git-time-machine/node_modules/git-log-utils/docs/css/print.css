@@ -1,0 +1,29 @@
+
+.no-print {
+  display: none;
+}
+
+
+body {
+ overflow: visible;
+}
+
+body > header em {
+    position: absolute;
+    top: 50px;
+    left: 76px;
+    width: 100%;
+}
+
+.main-content {
+  overflow: visible;
+  height: 50%;
+  width: 100%;
+}
+
+.doc-content {
+  position: absolute;
+  left: 30px;
+  width: 100%;
+  overflow: visible;
+}

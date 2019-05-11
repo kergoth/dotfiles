@@ -1,0 +1,166 @@
+
+html, body {
+  height: 99%;
+}
+
+body {
+  overflow: auto;
+}
+
+h3 button {
+  margin-left: 50px;
+  margin-top: -6px;
+}
+
+label {
+  font-size: 12px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.45);
+}
+    
+.code-pane {
+  width: 90%;
+  overflow: auto;
+  margin: 9px 18px;
+}
+
+.demo-pane {
+  vertical-align: top;
+  margin: 9px 18px;
+}
+
+#demo {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 4px 5px;
+}
+
+.syntaxhighlighter {
+  width: 1000px;
+}
+
+.wide-input input {
+  width: 340px;
+}
+
+.form-buttons {
+  margin-top: 20px;
+}
+.kitten-card .datum.lazy-image img{
+  min-height: 160px;
+  overflow: hidden;
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
+.more {
+  display: none;
+  position: absolute;
+  left: 40%;
+  margin-top: 10px;
+  z-index: 2;
+}
+
+.large-placeholder {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 25%;
+  font-size: 22px;
+  color: lightgrey;
+}
+
+button {
+  margin-right: 5px;
+
+}
+
+h3 {
+  margin: 0px;
+  line-height: 40px;
+}
+
+body.example .main-content {
+  height: 100%;
+  top: 0px;
+}
+
+body.examples-index {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+
+body.examples-index .main-content {
+  margin-left: 0px;
+  overflow: hidden;
+}
+
+
+#examplesView {
+  height: 100%;
+}
+
+body.examplesView_jsx .tile,
+#examplesView .tile {
+  text-align: left;
+  margin-bottom: 14px;
+  margin-left: -5px;
+}
+
+body.examplesView_jsx .tile h4,
+#examplesView .tile h4{
+  text-align: center;
+}
+
+
+body.examplesView_jsx iframe ,
+#examplesView iframe {
+  height: 100%;
+  width: 100%;
+}
+
+body.examplesView_jsx .tilegrid-react,
+#examplesView .tilegrid-react {
+  text-align: left;
+  width: 380px;
+  display: inline-block;
+  height: 100%;
+  padding-left: 5px;
+}
+
+body.examplesView_jsx .tilegrid,
+#examplesView .tilegrid {
+  height: calc(100% - 25px);
+  padding: 13px;
+}
+
+body.examplesView_jsx .tile img,
+#examplesView .tile img {
+  float: left;
+  height: 100px;
+  margin-right: 7px;
+}
+
+body.examplesView_jsx .content-pane,
+#examplesView .content-pane {
+  display: inline-block;
+  width: calc(100% - 400px);
+  vertical-align: top;
+  height: calc(100% - 11px);
+  position: relative;
+  margin-top: 10px;
+  background-color: white;
+}
+
+body.examplesView_jsx .content-pane {
+  height: 1000px;
+}
+

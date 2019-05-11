@@ -1,0 +1,29 @@
+// The ui-variables file is provided by base themes provided by Atom.
+//
+// See https://github.com/atom/atom-dark-ui/blob/master/stylesheets/ui-variables.less
+// for a full listing of what's available.
+@import "ui-variables";
+
+.iex {
+  .terminal {
+    padding: 0;
+
+    > div {
+      white-space: pre;
+      > span {
+        display: inline-block;
+        line-height: inherit;
+        height: inherit;
+        font-weight: normal !important;
+      }
+    }
+
+    .terminal-cursor {
+      background-color: #fff;
+    }
+
+    span {
+      white-space: pre;
+    }
+  }
+}

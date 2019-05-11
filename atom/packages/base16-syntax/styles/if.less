@@ -1,0 +1,4 @@
+// Conditional mixin.
+.if (@guard; @guard-value; @property; @property-value) when (@guard = @guard-value) {
+  @{property}: @property-value;
+}

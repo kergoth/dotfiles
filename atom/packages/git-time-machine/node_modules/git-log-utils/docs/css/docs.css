@@ -1,0 +1,167 @@
+html {
+  height: 99%;
+  overflow: hidden;
+} 
+
+body {
+  height: 99%;
+}
+
+
+body > header {
+  background-color: #B7BED0;
+  height: 78px;
+  padding-top: 4px;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+body > header h1 {
+  margin-top: 1px;
+  margin-left: 19px;
+}
+
+body > header img {
+  float: left;
+}
+
+body > header em {
+  position: absolute;
+  top: 19px;
+  right: 20px;
+}
+
+body > header .main-menu {
+  position: absolute;
+  bottom: -9px;
+  left: 22%;
+  min-width: 710px;
+}
+
+body > header .main-menu-item {
+  padding: 5px;
+  background-color: lightgrey;
+  border-radius: 5px 5px 0 0;
+  border: 1px solid lightgrey;
+  float: none;
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 18px;
+  color: grey;
+}
+
+body > header .github-link {
+  position: absolute;
+  top: 34px;
+  right: 20px;
+}
+
+body > header .main-menu-item.selected {
+  color: #555555;
+  cursor: default;
+  background-color: white;
+  border: 1px solid white;
+  text-decoration: none;
+  
+}
+
+body > header .main-menu-item:hover {
+  background-color: whitesmoke;
+  border: 1px solid grey;
+  border-bottom-color: white;
+  color: #0099ff;
+}
+
+.syntaxhighlighter .gutter .line {
+    border-right: 3px solid #d4d0c8 !important;
+    margin-right: 17px;
+}
+
+.main-content {
+  height: calc(100% - 88px);
+  padding: 0px;
+  position: relative;
+  top: 88px;
+  margin-top: 0px;
+  margin-left: 12px;
+  overflow: auto;
+}
+
+.inline-demo {
+  border: 1px solid black;
+  border-radius: 3px;
+  width: 375px;
+  padding: 7px 15px;
+}
+
+.toc {
+  height: calc(100% - 100px);
+  width: 220px;
+  position: fixed;
+  top: 94px;
+  background-color: whitesmoke;
+  overflow: auto;
+}
+
+.toc ul li ul,
+.toc ul ul li  {
+  margin-left: 12px;
+}
+
+.doc-content {
+  position: relative;
+  left: 235px;
+  width: calc(100% - 235px);
+  max-width: 900px;
+  overflow: auto;
+}
+
+.doc-content h2 {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.component-doc h3 {
+  background: linear-gradient(to right, #B7BED0, white);
+  padding-left: 7px;
+}
+
+h5.method-name {
+    margin-bottom: -12px;
+}
+
+.classvar-reference {
+  margin-bottom: 10px;
+}
+
+.component-doc .signature {
+  float: right;
+  margin-top: 4px;
+  margin-right: 35px;
+}
+
+.component-doc .content {
+  margin-right: 20px;
+}
+
+.component-doc .method .markdown {
+  margin-left: 22px;
+}
+
+
+.no-gutter .syntaxhighlighter .gutter {
+  display: none;
+}
+
+.no-gutter .syntaxhighlighter .code {
+  padding-left: 18px;
+}
+
+.no-gutter .syntaxhighlighter code.plain {
+  color: #2a00ff !important;
+}
+

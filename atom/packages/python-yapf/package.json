@@ -1,0 +1,78 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-1iqlp6g.5279j2a9k9"
+    ]
+  ],
+  "_from": "../d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+  "_id": "python-yapf@0.14.0",
+  "_inCache": true,
+  "_location": "/python-yapf",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+  "_shasum": "b31809e6b5fe49ddea30db7b8371863dd537180a",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-38pw2e.t6ilyxpqfr/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-1iqlp6g.5279j2a9k9",
+  "bugs": {
+    "url": "https://github.com/blacktop/atom-python-yapf/issues"
+  },
+  "consumedServices": {
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
+  },
+  "dependencies": {
+    "atom-space-pen-views": "^2.2.0",
+    "fs-plus": "^2.8.1",
+    "hasbin": "^1",
+    "jquery": "^3"
+  },
+  "description": "Format Python files using Google's YAPF",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=0.185.0 <2.0.0"
+  },
+  "homepage": "https://github.com/blacktop/atom-python-yapf#readme",
+  "keywords": [
+    "python",
+    "style",
+    "yapf",
+    "formatting",
+    "productivity"
+  ],
+  "license": "MIT",
+  "main": "./lib/index",
+  "name": "python-yapf",
+  "optionalDependencies": {},
+  "readme": "atom-python-yapf\n================\n\n[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)\n[![Version](https://img.shields.io/apm/v/python-yapf.svg)](https://atom.io/packages/python-yapf)\n[![Downloads](https://img.shields.io/apm/dm/python-yapf.svg)](https://atom.io/packages/python-yapf)\n\nAtom.io plugin to format Python files using Google's [YAPF](https://github.com/google/yapf)\n\n![Screenshot](https://raw.githubusercontent.com/blacktop/atom-python-yapf/master/example_formatting.gif)\n\n### Install\n\nAtom Package: https://atom.io/packages/python-yapf\n\n```bash\napm install python-yapf\n```\n\nOr Settings/Preferences ➔ Packages ➔ Search for `python-yapf`\n\n> Make sure you have `YAPF` installed and the correct path to binary was set in the package config.\n\n### Documentation\n\n#### Settings\n\n![settings](https://raw.githubusercontent.com/blacktop/atom-python-yapf/master/settings.png)\n\n#### Keymap\n\nCurrently, there are two commands:\n\n-\t`python-yapf:formatCode` - for formatting python code\n-\t`python-yapf:checkCode` - for checking format of python code\n\n### Issues\n\nFind a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/blacktop/atom-python-yapf/issues/new)\n\n### Credits\n\n> Heavily influenced by Benjamin Hedrich's [atom-python-isort](https://github.com/bh/atom-python-isort).\n\n### CHANGELOG\n\nSee [`CHANGELOG.md`](https://github.com/blacktop/atom-python-yapf/blob/master/CHANGELOG.md)\n\n### Contributing\n\n[See all contributors on GitHub](https://github.com/blacktop/atom-python-yapf/graphs/contributors).\n\nPlease update the [CHANGELOG.md](https://github.com/blacktop/atom-python-yapf/blob/master/CHANGELOG.md), add yourself as a contributor to the [package.json](https://github.com/blacktop/atom-python-yapf/blob/master/package.json), and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).\n\n### License\n\nMIT Copyright (c) 2014-2016 **blacktop**\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blacktop/atom-python-yapf.git"
+  },
+  "version": "0.14.0"
+}

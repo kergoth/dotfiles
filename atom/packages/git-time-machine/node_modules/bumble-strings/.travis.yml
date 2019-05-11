@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - 5.0
+before_script:
+  ./node_modules/.bin/grunt build
+before_install:
+  - npm install coffee-script
+  - npm install grunt-cli
+  - npm install -g webpack
+  

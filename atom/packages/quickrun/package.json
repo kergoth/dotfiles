@@ -1,0 +1,115 @@
+{
+  "name": "quickrun",
+  "main": "./lib/quickrun",
+  "version": "0.4.1",
+  "description": "Execute code on current buffer.",
+  "activationCommands": {
+    "atom-text-editor": [
+      "quickrun:execute",
+      "quickrun:select"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sixeight/atom-quickrun.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "temp": "~0.7.0",
+    "node.extend": "~1.0.10"
+  },
+  "readme": "# Quickrun package\n\nExecute whole/part of editing file.\nInspired by [vim-quickrun](https://github.com/thinca/vim-quickrun).\n\n## Installation\n\nFind from Settings pane or run `apm install quickrun`.\n\n## Usage\n\nWrite code and `Ctrl-Cmd-r` then show result on another pane.\n\n![usage](http://s1.directupload.net/images/140414/iavncl4p.gif)\n\n## Commands\n\n| name | description | key binding | selector |\n|:----:|:-----------:|:-----------:|:--------:|\n| quickrun:execute | execute whole of editing file | ctrl-cmd-r |.editor:not(.mini)|\n| quickrun:select | execute selected text | -|-|\n\n## Supported Languages\n\n* Ruby\n* Perl\n* Python\n\n## TODO\n\n* Configuration, especially custom Languages.\n* More flexible Language spec format. (file name, and so on).\n* Test, test, test!\n\n## Contributing\n1. Fork it ( http://github.com/Sixeight/atom-quickrun/fork )\n2. Create your feature branch (git checkout -b my-new-feature)\n3. Commit your changes (git commit -am 'Add some feature')\n4. nPush to the branch (git push origin my-new-feature)\n5. Create new Pull Request\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/Sixeight/atom-quickrun/issues"
+  },
+  "homepage": "https://github.com/Sixeight/atom-quickrun#readme",
+  "_id": "quickrun@0.4.1",
+  "_shasum": "db051c2ae61bac2e434334aa78edf37ea706a0a5",
+  "_resolved": "file:../d-115828-2177-ee9da8/package.tgz",
+  "_from": "../d-115828-2177-ee9da8/package.tgz",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [
+      {
+        "name": "node.extend",
+        "version": "1.0.10",
+        "path": "node_modules/node.extend/index.js"
+      },
+      {
+        "name": "is",
+        "version": "0.3.0",
+        "path": "node_modules/node.extend/node_modules/is/index.js"
+      },
+      {
+        "name": "temp",
+        "version": "0.7.0",
+        "path": "node_modules/temp/lib/temp.js"
+      },
+      {
+        "name": "rimraf",
+        "version": "2.2.8",
+        "path": "node_modules/temp/node_modules/rimraf/rimraf.js"
+      }
+    ],
+    "extensions": {
+      ".coffee": [
+        "lib/quickrun.coffee"
+      ],
+      ".js": [
+        "node_modules/node.extend/index.js",
+        "node_modules/node.extend/lib/extend.js",
+        "node_modules/node.extend/node_modules/is/index.js",
+        "node_modules/temp/examples/grepcount.js",
+        "node_modules/temp/examples/pdfcreator.js",
+        "node_modules/temp/lib/temp.js",
+        "node_modules/temp/node_modules/rimraf/bin.js",
+        "node_modules/temp/node_modules/rimraf/rimraf.js"
+      ],
+      ".json": [
+        "node_modules/node.extend/node_modules/is/component.json",
+        "node_modules/node.extend/node_modules/is/package.json",
+        "node_modules/node.extend/package.json",
+        "node_modules/temp/node_modules/rimraf/package.json",
+        "node_modules/temp/package.json",
+        "package.json"
+      ]
+    },
+    "folders": [
+      {
+        "paths": [
+          "lib",
+          "",
+          "spec"
+        ],
+        "dependencies": {
+          "temp": "~0.7.0",
+          "node.extend": "~1.0.10"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/node.extend",
+          "node_modules/node.extend/lib"
+        ],
+        "dependencies": {
+          "is": "~0.3.0"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/temp/examples",
+          "node_modules/temp/lib",
+          "node_modules/temp",
+          "node_modules/temp/test"
+        ],
+        "dependencies": {
+          "rimraf": "~2.2.6"
+        }
+      }
+    ]
+  }
+}

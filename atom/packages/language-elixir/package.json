@@ -1,0 +1,58 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-189b2j6.tj2obqehfr"
+    ]
+  ],
+  "_from": "../d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+  "_id": "language-elixir@0.22.0",
+  "_inCache": true,
+  "_location": "/language-elixir",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+  "_shasum": "d44363dc39fb726ce1586b507e960bfb94ca9e3b",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1wg3abs.u6l9wfjemi/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-189b2j6.tj2obqehfr",
+  "bugs": {
+    "url": "https://github.com/elixir-lang/language-elixir/issues"
+  },
+  "dependencies": {},
+  "description": "Elixir language support for Atom.",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">= 0.189.0"
+  },
+  "homepage": "https://github.com/elixir-lang/language-elixir#readme",
+  "license": "Apache 2.0",
+  "name": "language-elixir",
+  "optionalDependencies": {},
+  "readme": "# language-elixir package\n\n[![Build Status](https://travis-ci.org/elixir-lang/language-elixir.svg?branch=master)](https://travis-ci.org/elixir-lang/language-elixir)\n\nElixir language support for Atom.\n\nAdds syntax highlighting and snippets to Elixir files in Atom.\n\nCopyright (c) 2014 [Plataformatec](http://plataformatec.com.br).\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elixir-lang/language-elixir.git"
+  },
+  "version": "0.22.0"
+}

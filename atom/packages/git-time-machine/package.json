@@ -1,0 +1,78 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-78ebll.ooly3tbj4i"
+    ]
+  ],
+  "_from": "../d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+  "_id": "git-time-machine@1.5.9",
+  "_inCache": true,
+  "_location": "/git-time-machine",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+  "_shasum": "9ed9fa205ab5efc37e2c8298d46e7be7c792863b",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-139e3rn.iykqjgu8fr/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-78ebll.ooly3tbj4i",
+  "activationCommands": {
+    "atom-workspace": "git-time-machine:toggle"
+  },
+  "bugs": {
+    "url": "https://github.com/littlebee/git-time-machine/issues"
+  },
+  "dependencies": {
+    "atom-space-pen-views": "^2.0.3",
+    "bumble-strings": "0.4.1",
+    "d3": "3.5.6",
+    "git-log-utils": "0.2.3",
+    "moment": "2.10.6",
+    "split-diff": "https://github.com/mupchrch/split-diff/archive/v1.3.0.tar.gz",
+    "underscore-plus": "1.x"
+  },
+  "description": "Visually interact with git commit history for a file",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "homepage": "https://github.com/littlebee/git-time-machine#readme",
+  "keywords": [
+    "git",
+    "git-history",
+    "history",
+    "time",
+    "d3",
+    "atom"
+  ],
+  "license": "MIT",
+  "main": "./lib/git-time-machine",
+  "name": "git-time-machine",
+  "optionalDependencies": {},
+  "readme": "# git-time-machine package\n\ngit-time-machine is a package for [Atom](https://atom.io/) that allows you to travel back in time!  It shows visual plot of commits to the current file over time and you can click on it on the timeplot or hover over the plot and see all of the commits for a time range.\n\n![Gratuitous animated screenshot](https://raw.githubusercontent.com/littlebee/git-time-machine/master/resources/timemachine.gif)\n\nTo open the timeplot, just use the keyboard shortcut <kbd>alt</kbd>+<kbd>t</kbd>.\n\n\n## Troubleshooting\n\nUnfortunately, git-time-machine, like the other Atom `git log` services,  needs to shell out to the command line git executable and parse its stdout.  We are working on getting this information another way, but that may take some time.  As you might imagine, this is problematic.\n\nSome things to check:\n- git command line utility needs to be in your path\n- can you install and use git-log Atom package?\n- it's been brought to my attention that some versions of git command line utilities (speculation: the version of git installed by github windows client) is not fully compatible with the official git client and doesn't support the pretty format needed to get the data to render the timeplot.  \n- Windows users: make sure the 'git/bin' directory is in your PATH\n\nSome users have reported seeing \"Error: Command failed: git log --pretty=...\"  on mac when xcode license agreement is needed.  Running `sudo xcodebuild -license` and accepting the agreement fixed the issued.\n\nRecommend installing the official Git client from here: https://git-scm.com/downloads and make sure its binary is the one in your path.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/littlebee/git-time-machine.git"
+  },
+  "version": "1.5.9"
+}

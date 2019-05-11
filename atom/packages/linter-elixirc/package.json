@@ -1,0 +1,125 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-1jkk1y0.zaxajor"
+    ]
+  ],
+  "_from": "../d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+  "_id": "linter-elixirc@1.7.0",
+  "_inCache": true,
+  "_location": "/linter-elixirc",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+  "_shasum": "e7e03caa8bb297ae4f923da5ecd8fbc6684cf7b2",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zuewqt.vb5weo2yb9/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-1jkk1y0.zaxajor",
+  "bugs": {
+    "url": "https://github.com/AtomLinter/linter-elixirc/issues"
+  },
+  "configSchema": {
+    "elixircPath": {
+      "type": "string",
+      "title": "Elixirc path",
+      "default": "elixirc"
+    },
+    "mixPath": {
+      "type": "string",
+      "title": "Mix path",
+      "default": "mix"
+    },
+    "forceElixirc": {
+      "type": "boolean",
+      "title": "Always use elixirc",
+      "description": "Activating this will force the plugin to never use `mix compile` and always use `elixirc`.",
+      "default": false
+    },
+    "mixEnv": {
+      "type": "string",
+      "title": "Mix environment to use for linting",
+      "description": "Setting the Mix environment can avoid collisions between linter compiles and IEx sessions.",
+      "default": "dev"
+    }
+  },
+  "dependencies": {
+    "atom-linter": "^10.0.0",
+    "atom-package-deps": "^4.5.0",
+    "tmp": "^0.0.31"
+  },
+  "description": "Bare Minimum Elixir lint package",
+  "devDependencies": {
+    "eslint": "^3.13.0",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "fs-extra": "^4.0.0"
+  },
+  "engines": {
+    "atom": ">=1.4.0 <2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "rules": {
+      "global-require": "off",
+      "import/no-unresolved": [
+        "error",
+        {
+          "ignore": [
+            "atom"
+          ]
+        }
+      ]
+    },
+    "globals": {
+      "atom": true
+    },
+    "env": {
+      "node": true,
+      "browser": true
+    }
+  },
+  "homepage": "https://github.com/AtomLinter/linter-elixirc#readme",
+  "license": "MIT",
+  "linter-package": true,
+  "main": "./lib/init",
+  "name": "linter-elixirc",
+  "optionalDependencies": {},
+  "package-deps": [
+    "linter:2.0.0",
+    "language-elixir"
+  ],
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "2.0.0": "provideLinter"
+      }
+    }
+  },
+  "readme": "# linter-elixirc\n\nThis linter plugin for [Linter][linter] provides an interface to elixirc/mix.\nIt will be used with files that have the \"source.elixir\" syntax\n(ie. `*.ex; *.exs`).\n\nThere are limitations with Elixirc that:\n\n-   In case of compilation error, it will only show first error\n-   It does not work with buffers, so linting on fly is disabled\n\n## Installation\n\nPlugin requires Linter package and it should install it by itself.\nIf it did not, please follow Linter instructions [here][linter].\n\n### Method 1: In console\n\n```ShellSession\n$ apm install linter-elixirc\n```\n\n### Method 2: In Atom\n\n1.  Edit > Preferences (Ctrl+, or Cmd+,)\n2.  Install > Search \"linter-elixirc\" > Install\n\n## Settings\n\nPlugin should work with default settings. If not:\n\n1.  Edit > Preferences (Ctrl+, or Cmd+,)\n\n2.  Packages > Search \"linter-elixirc\" > Settings\n\n3.  `elixirc path` option - use `which elixirc` to find path. ie.\n    `/usr/local/bin/elixirc`\n\n4.  `mix path` option - use `which mix` to find path. ie. `/usr/local/bin/mix`\n\n5.  `always use elixirc` option - leave it disabled, unless `mix compile` is too slow.\n\n6.  `mix env` option - Allows changing the Mix environment for lint runs. If using IEx at the same time as Atom this can be changed to allow IEx to pick up code changes.\n\n## Usage\n\nThe operation of the linter is dependent on the type of Elixir files you are working with:\n\n### Mix Projects\n\nIf you open a folder containing a Mix project (i.e. the file `mix.exs` exists\nin the root folder of the project), the linter will use `mix compile` to\ninclude all dependencies, unless you enable \"Always use elixirc\" setting.\n\n### Single .ex Files\n\nIf you open a single `.ex` file, the linter will use `elixirc`. This will try\nto find dependency build artifacts in the location where Mix projects normally\noutput to (`\\_build/dev/lib/\\*/ebin`). If your build output path is different,\nthen every external dependency will trigger a compile error.\n\n### Elixir Scripts\n\nSince `.exs` files are not compiled by `mix compile`, they are always linted\nusing `elixirc`, even if they appear within a Mix project.\n\n### ExUnit Test files\n\nExUnit tests are always organised within `.exs` files, so they will also be\nlinted using `elixirc`. Test files can have extra dependencies that will not\nbe found within the normal dev build artifact directory. Instead, test files\nare linted using the test build artifact directory (`\\_build/test/lib/\\*/ebin`).\n\n## Why Do I Still See Dependency Errors?\n\nWhether you're using the Mix or `elixirc` options for linting, it is still\npossible to encounter false positive errors in your lint output, particularly\nrelating to dependencies. It can help to perform a `mix compile` from a\nterminal to keep the project build output directory fresh, and a `mix test`\nwill help if you are seeing particular problems with errors in ExUnit test\nfiles.\n\nSometimes Mix can get confused when files are renamed, so it can also help\nto perform the occasional `mix do clean, compile`.\n\n[linter]: https://github.com/AtomLinter/Linter \"Linter\"\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AtomLinter/linter-elixirc.git"
+  },
+  "version": "1.7.0"
+}

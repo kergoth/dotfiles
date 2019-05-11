@@ -1,0 +1,48 @@
+### Project specific config ###
+matrix:
+  include:
+    - os: linux
+      language: python
+      python: "2.7"
+
+    - os: linux
+      language: python
+      python: "3.6"
+      env: ATOM_CHANNEL=beta
+
+install:
+  - pip install flake8
+
+before_script:
+  - flake8 --version
+
+### Generic setup follows ###
+script:
+  - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
+  - chmod u+x build-package.sh
+  - ./build-package.sh
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
+branches:
+  only:
+    - master
+    - /^greenkeeper/.*$/
+
+git:
+  depth: 10
+
+sudo: false
+
+dist: trusty
+
+addons:
+  apt:
+    packages:
+    - build-essential
+    - git
+    - libgnome-keyring-dev
+    - fakeroot

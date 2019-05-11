@@ -1,0 +1,22 @@
+version: "{build}"
+
+platform: x64
+
+environment:
+  GOPATH: c:\gopath
+  GOVERSION: 1.5.3
+
+install:
+  - appveyor DownloadFile https://atom.io/download/windows?channel=beta -FileName AtomSetup.exe
+  - AtomSetup.exe --silent
+  - set PATH=%LOCALAPPDATA%\atom\bin;%PATH%
+
+build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - SET PATH=%LOCALAPPDATA%\atom\bin;%PATH%
+  - apm clean
+  - apm install
+  - atom --test spec
+
+test: off
+deploy: off

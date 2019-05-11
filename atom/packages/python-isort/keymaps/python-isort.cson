@@ -1,0 +1,4 @@
+# For more detailed documentation see
+# https://atom.io/docs/latest/advanced/keymaps
+'atom-text-editor[data-grammar="source python"]':
+  'ctrl-alt-s': 'python-isort:sortImports'

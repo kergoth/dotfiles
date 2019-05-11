@@ -1,0 +1,29 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  '.iex': [
+    {'label': 'Copy', 'command': 'iex:copy'}
+    {'label': 'Paste', 'command': 'iex:paste'}
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'iex'
+      'submenu': [
+
+        {'label': 'Open IEx session in New Tab', 'command': 'iex:open'}
+        {'label': 'Open IEx session in Bottom Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Open IEx session in Top Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Open IEx session in Right Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Open IEx session in Left Pane', 'command': 'iex:open-split-down'}
+        {'label': 'Jump to definition', 'command': 'iex:gotoDefinition'}
+        {'label': 'Print help for function', 'command': 'iex:help'}
+        {'label': 'Run all tests', 'command': 'iex:run-all-tests'}
+        {'label': 'Run all tests in pane', 'command': 'iex:run-tests'}
+        {'label': 'Run test', 'command': 'iex:run-test'}
+        {'label': 'Reset', 'command': 'iex:reset'}
+        {'label': 'Execute selected in IEx', 'command': 'iex:pipe'}
+      ]
+    ]
+  }
+]

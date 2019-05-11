@@ -1,0 +1,20 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      {
+        'label': 'Python YAPF'
+        'submenu': [
+          {
+            'label': 'Format Python Code'
+            'command': 'python-yapf:formatCode'
+          }
+          {
+            'label': 'Check Python Code'
+            'command': 'python-yapf:checkCode'
+          }
+        ]
+      }
+    ]
+  }
+]

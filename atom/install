@@ -1,0 +1,29 @@
+ATOM_HOME="$XDG_DATA_HOME/atom"
+set_launchd ATOM_HOME "$ATOM_HOME"
+
+if [ -d ~/.atom ] && [ ! -e "$ATOM_HOME" ]; then
+    mv ~/.atom "$ATOM_HOME"
+fi
+mkdir -p "$ATOM_HOME"
+
+for f in *; do
+    case "$f" in
+        install|*.zsh)
+            continue
+            ;;
+    esac
+    if [ -e "$f" ]; then
+        link "$f" "$ATOM_HOME/$f"
+    fi
+done
+
+ATOM_CACHE="$XDG_CACHE_HOME/atom"
+mkdir -p "$ATOM_CACHE"
+for dir in .apm compile-cache; do
+    if [ ! -e "$ATOM_CACHE/$dir" ] && [ ! -e "$ATOM_HOME/$dir" ]; then
+        mkdir -p "$ATOM_CACHE/$dir"
+    fi
+    link "$ATOM_CACHE/$dir" "$ATOM_HOME/$dir"
+done
+
+# vim: set ft=sh :

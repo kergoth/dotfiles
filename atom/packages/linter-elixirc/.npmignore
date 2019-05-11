@@ -1,0 +1,5 @@
+.DS_Store
+npm-debug.log
+node_modules
+.github_changelog_generator
+spec/fixtures/proj/_build

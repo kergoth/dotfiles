@@ -1,0 +1,62 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-7a2m5v.tj2zjdzpvi"
+    ]
+  ],
+  "_from": "../d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+  "_id": "language-bb@0.2.4",
+  "_inCache": true,
+  "_location": "/language-bb",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+  "_shasum": "a1881cdd1f2a37443602f0c4a525109c7b382b64",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-19fo1ra.92pvz33di/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-7a2m5v.tj2zjdzpvi",
+  "author": {
+    "name": "Richard Leitner",
+    "email": "richard.leitner@skidata.com"
+  },
+  "bugs": {
+    "url": "https://github.com/g0hl1n/language-bb/issues"
+  },
+  "dependencies": {},
+  "description": "OpenEmbedded/Bitbake recipes language support in Atom",
+  "devDependencies": {},
+  "engines": {
+    "atom": ">=1.0"
+  },
+  "homepage": "https://github.com/g0hl1n/language-bb#readme",
+  "license": "MIT",
+  "name": "language-bb",
+  "optionalDependencies": {},
+  "readme": "# BitBake recipe language support in Atom\n\nAdds syntax highlighting to OpenEmbedded/Bitbake recipes in Atom.\n\nBased on [language-make](https://github.com/atom/language-make) and [language-perl](https://github.com/atom/language-perl).\n\n## Features\nFollowing code types are being highlighted:\n * Comments\n * Variable assignments\n * Variables\n * Function definitions\n * Syntax (python & shell) inside functions\n\n## Bugs\nPlease report bugs or feature requests using [GitHub Issues](https://github.com/g0hl1n/language-bb/issues)\n\n## Contributing\n\nContributions are greatly appreciated.\nPlease fork this repository and open a pull request for changes.\n(Don't forget to add your name to the AUTHORS.md file)\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g0hl1n/language-bb.git"
+  },
+  "version": "0.2.4"
+}

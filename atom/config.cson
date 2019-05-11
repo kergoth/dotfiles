@@ -1,0 +1,38 @@
+"*":
+  "autocomplete-elixir": {}
+  core:
+    audioBeep: false
+    disabledPackages: [
+      "autocomplete-elixir"
+      "iex"
+      "git-blame-plus"
+      "quickrun"
+      "formatter"
+      "python-yapf"
+    ]
+    projectHome: "~/Dropbox/Projects"
+    telemetryConsent: "no"
+    themes: [
+      "one-dark-ui"
+      "base16-tomorrow-dark-theme"
+    ]
+  editor:
+    fontFamily: "InputMonoNarrow-Thin"
+    invisibles: {}
+    softWrap: true
+    tabLength: 4
+  "exception-reporting":
+    userId: "4281e93a-2537-47cc-abe5-8e26a79e60ff"
+  "git-plus": {}
+  linter: {}
+  "markdown-preview":
+    useGitHubStyle: true
+  minimap: {}
+  "split-diff":
+    diffWords: true
+    ignoreWhitespace: true
+    leftEditorColor: "red"
+    rightEditorColor: "green"
+    scrollSyncType: "Vertical + Horizontal"
+  welcome:
+    showOnStartup: false

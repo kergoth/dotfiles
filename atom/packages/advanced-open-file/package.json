@@ -1,0 +1,103 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-zzyut0.h4xekx1or"
+    ]
+  ],
+  "_from": "../d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+  "_id": "advanced-open-file@0.16.8",
+  "_inCache": true,
+  "_location": "/advanced-open-file",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+  "_shasum": "6a7fe4baad56eca96c79909d017ababfba0de984",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-1x3jfi1.5380mdvx6r/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-zzyut0.h4xekx1or",
+  "activationCommands": {
+    "atom-workspace": [
+      "advanced-open-file:toggle"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/Osmose/advanced-open-file/issues"
+  },
+  "consumedServices": {
+    "file-icons.element-icons": {
+      "versions": {
+        "1.0.0": "consumeElementIcons"
+      }
+    }
+  },
+  "dependencies": {
+    "event-kit": "^1.3.0",
+    "fuzzaldrin-plus": "^0.3.1",
+    "minimatch": "^3.0.4",
+    "mkdirp": "^0.5.1",
+    "osenv": "^0.1.3",
+    "stringmap": "~0.2.2",
+    "touch": "^1.0.0"
+  },
+  "description": "Open and create files and directories easily. Type in a path (with autocomplete) and view directory contents.",
+  "devDependencies": {
+    "babel": "^5.8.35",
+    "babel-eslint": "^5.0.0",
+    "eslint": "^1.10.3",
+    "jquery": "^3.3.1",
+    "temp": "^0.8.3"
+  },
+  "engines": {
+    "atom": ">=1.0.8"
+  },
+  "homepage": "https://github.com/Osmose/advanced-open-file#readme",
+  "keywords": [
+    "atom",
+    "open",
+    "file",
+    "create",
+    "new"
+  ],
+  "license": "MIT",
+  "main": "./lib/advanced-open-file",
+  "name": "advanced-open-file",
+  "optionalDependencies": {},
+  "providedServices": {
+    "advanced-open-file-events": {
+      "description": "Listen to events triggered when users open or create paths using advanced-open-file.",
+      "versions": {
+        "0.1.0": "provideEventService"
+      }
+    }
+  },
+  "readme": "# Advanced Open File\n\n[![TravisCI Build Status](https://travis-ci.org/Osmose/advanced-open-file.svg)](https://travis-ci.org/Osmose/advanced-open-file)\n\nAdvanced Open File is a package for helping Atom users to open files and folders\neasily. It can also create new files and folders if they don't exist.\n\n![Screenshot of plugin](http://osmose.github.io/advanced-open-file/screenshot.png)\n\nAdvanced Open File is fork of\n[Advanced New File](https://github.com/Trudko/advanced-new-file), itself a fork\nof [Fancy New File](https://github.com/rev087/fancy-new-file). Thanks to both\nrev087 and Trudko for their work.\n\n## Usage\n\nHit `Cmd-Alt-O`/`Ctrl-Alt-O` to open the file list to the directory of the\ncurrent file. As you edit the path the file list will automatically show\nmatching files and directories. Hit `Tab` to autocomplete the path.\n\nRelative paths are considered relative to the current project's first root\nfolder.\n\nHit `Enter` to open the file at the given path. If the file doesn't exist, a tab\nwill be opened that will save to that file. Any directories in the path that\ndon't exist will be created immediately upon hitting `Enter`.\n\nYou can also click on any entry in the file list to add it to the current path\n(in the case of a directory) or to open it immediately (in the case of a file).\nYou can also use the `Up` and `Down` arrow keys to scroll through the list,\n`Page Up` and `Page Down` to move to the top and bottom of the list, and `Enter`\nto select the currently-highlighted item.\n\nIf a directory has a plus symbol on the right side of its entry, clicking the\nsymbol will add it as a project directory. You can also add a highlighted\ndirectory as a project directory using `Shift-Cmd-O`/`Ctrl-Alt-O`.\n\n`Cmd-Z`/`Ctrl-Z` will undo changes made to the current path, such as\nautocompletion or directory shortcuts.\n\nYou can use the keybindings for splitting panes (`Cmd-k <Arrow Key>` by default)\nto open the selected path in a new split pane in the desired direction.\n\n## Keybindings\n\nAvailable commands for binding:\n\n<dl>\n  <dt><code>advanced-open-file:toggle</code></dt>\n  <dd>Toggles the Advanced Open File dialog.</dd>\n\n  <dt><code>core:confirm</code></dt>\n  <dd>\n    If a path has been selected with the cursor, open it. If no path is\n    selected, open the current path in the input.\n  </dd>\n\n  <dt><code>advanced-open-file:confirm-selected-or-first</code></dt>\n  <dd>\n    Similar to <code>core:confirm</code>. If nothing is selected, select the\n    first item in the list.\n  </dd>\n\n  <dt><code>core:cancel</code></dt>\n  <dd>Close the Advanced Open File dialog.</dd>\n\n  <dt>\n    <code>pane:split-left</code>, <code>pane:split-right</code>,\n    <code>pane:split-up</code>, and <code>pane:split-down</code>\n  </dt>\n  <dd>\n    Open the selected path (or current path in input) in a new pane split from\n    the current pane.\n  </dd>\n\n  <dt><code>application:add-project-folder</code></dt>\n  <dd>\n    If either a folder path has been selected with the cursor, or the current\n    path is a folder, add that path as a project directory.\n  </dd>\n\n  <dt><code>advanced-open-file:autocomplete</code></dt>\n  <dd>Attempts to autocomplete the current input.</dd>\n\n  <dt><code>advanced-open-file:undo</code></dt>\n  <dd>Undo changes to the current path.</dd>\n\n  <dt><code>advanced-open-file:move-cursor-up</code></dt>\n  <dd>Move the cursor/highlight for the currently selected file up.</dd>\n\n  <dt><code>advanced-open-file:move-cursor-down</code></dt>\n  <dd>Move the cursor/highlight for the currently selected file down.</dd>\n\n  <dt><code>advanced-open-file:move-cursor-top</code></dt>\n  <dd>\n    Move the cursor/highlight for the currently selected file to the top of the\n    list.\n  </dd>\n\n  <dt><code>advanced-open-file:move-cursor-bottom</code></dt>\n  <dd>\n    Move the cursor/highlight for the currently selected file to the bottom of\n    the list.\n  </dd>\n\n  <dt><code>advanced-open-file:delete-path-component</code></dt>\n  <dd>\n    A more powerful version of <code>alt-backspace</code> that erases the a\n    directory component in the miniEditor including the slash ('/').\n  </dd>\n</dl>\n\nThe following extra keybindings are included by default:\n\nAction                                     | Extra Keys\n------------------------------------------ | ------------------\n`advanced-open-file:move-cursor-up`        | `Ctrl-p`, `Ctrl-i`\n`advanced-open-file:move-cursor-down`      | `Ctrl-n`, `Ctrl-k`\n`advanced-open-file:delete-path-component` | `Ctrl-l`\n\nYou can of course remap the keys however you wish. For example, add the\nfollowing to your keymap to map `Ctrl-x Ctrl-f` to toggle the dialog and\n`Ctrl-j` to move the cursor down:\n\n```cson\n'atom-workspace':\n  'ctrl-x ctrl-f': 'advanced-open-file:toggle'\n\n'.advanced-open-file atom-text-editor':\n  'ctrl-j': 'advanced-open-file:move-cursor-down'\n```\n\n## Settings\n\n<dl>\n  <dt>Create directories</dt>\n  <dd>\n    Normally, when you attempt to open a path pointing to a directory that\n    doesn't exist, an error beep sounds and nothing happens. When this setting\n    is enabled, opening a non-existent directory will create it and show a\n    notification confirming the creation.\n  </dd>\n\n  <dt>Create files instantly</dt>\n  <dd>\n    If checked, files are created immediately instead of on save if they don't\n    exist.\n  </dd>\n\n  <dt>Default input value</dt>\n  <dd>\n    Determines what the default value in the path input is when the dialog is\n    opened. Possible choices are nothing, the current project's root directory,\n    or the directory of the currently-active file.\n  </dd>\n\n  <dt>Use fuzzy matching for matching filenames</dt>\n  <dd>\n    Changes the method for matching filenames while typing to use a fuzzy match\n    algorithm instead of a prefix match one. When enabled, matches are sorted by\n    their match weight instead of by name and type, and autocomplete\n    automatically chooses the closest result instead of the common prefix among\n    matching filenames.\n  </dd>\n\n  <dt>Shortcuts for fast directory switching</dt>\n  <dd>\n    <p>\n      When enabled, allows for quick directory switching when appending certain\n      strings to a path that ends in a slash:\n    </p>\n    <ul>\n      <li>\n        Adding an extra slash (e.g. <code>/</code>) will switch to the\n        filesystem root.\n      </li>\n      <li>\n        Adding a tilde and a slash (e.g. <code>~/</code>) will switch to the\n        current user's home directory.\n      </li>\n      <li>\n        Adding a colon and a slash (e.g. <code>:/</code>) will switch to the\n        current project's root directory.\n      </li>\n    </ul>\n  </dd>\n\n  <dt>Ignore patterns</dt>\n  <dd>\n    A list of glob patterns. Any files that match the patterns will be hidden\n    from the file listing.\n  </dd>\n</dl>\n\n## Event Service\n\nOther packages can subscribe to events to get notified when certain actions\nhappen in advanced-open-file. To do so, you'll need to consume the\n`advanced-open-file-events` service:\n\n### `package.json`\n\n```json\n\"consumedServices\": {\n  \"advanced-open-file-events\": {\n    \"versions\": {\n      \"0.1.0\": \"consumeEventService\"\n    }\n  }\n}\n```\n\n### Main Module\n\n```coffeescript\n{Disposable} = require 'atom'\n\n\nmodule.exports =\n  consumeEventService: (service) ->\n    openDisposable = service.onDidOpenPath (path) ->\n      console.log \"Open: #{path}\"\n\n    createDisposable = service.onDidCreatePath (path) ->\n      console.log \"Create: #{path}\"\n\n    return new Disposable ->\n      openDisposable.dispose()\n      createDisposable.dispose()\n```\n\n### `onDidOpenPath`\n\nTriggered when a file is opened via advanced-open-file.\n\n```coffeescript\nservice.onDidOpenPath (path) ->\n  console.log \"Open: #{path}\"\n```\n\n### `onDidCreatePath`\n\nTriggered when a file is created via advanced-open-file. Note that this is only\ntriggered when the \"Create files instantly\" preference is enabled. It does not\ntrigger when the preference is disabled and a new file is opened and then\nsubsequently saved.\n\n```coffeescript\nservice.onDidCreatePath (path) ->\n  console.log \"Create: #{path}\"\n```\n\n## Contributing\n\nFirst, if you're interested in contributing, thank you! It's awesome that you\nwant to help!\n\nThe easiest way to contribute is to [file an issue][] with the bug you've found\nor the new feature you want added. If you're interested in implementing the fix\nfor your request yourself, or fixing an issue submitted by someone else, read\non.\n\n[file an issue]: https://github.com/Osmose/advanced-open-file/issues/new\n\n### Developer Setup\n\nSetting up a development install is easy with [apm][]:\n\n```sh\n$ apm develop advanced-open-file /path/to/checkout\n```\n\nThe command above will use Git to clone Advanced Open File to the\n`/path/to/checkout` directory, download the dependencies, and create a symlink\nin your `.atom` profile for the package.\n\nNow, if you launch Atom with the `-d` flag, Atom will load the development\ncheckout of Advanced Open File (instead of the released version, if you have it\ninstalled). Any changes you make to the code will be reflected if you use the\n`Window: Reload` command in the [Command Palette][] to reload the editor.\n\nThat should be all you need to get started. Create a branch, write your changes,\nand submit the branch as a pull request, and you should hear back shortly!\n\n[apm]: https://github.com/atom/apm\n[Command Palette]: https://atom.io/docs/latest/getting-started-atom-basics#command-palette\n\n## License\n\nLicensed under the MIT License. See `LICENSE` for details.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Osmose/advanced-open-file.git"
+  },
+  "scripts": {
+    "shell": "babel-node -r 0"
+  },
+  "version": "0.16.8"
+}

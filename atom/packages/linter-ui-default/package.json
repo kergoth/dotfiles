@@ -1,0 +1,238 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-9211-vthhna.x0qcsxajor"
+    ]
+  ],
+  "_from": "../d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+  "_id": "linter-ui-default@1.7.1",
+  "_inCache": true,
+  "_location": "/linter-ui-default",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+  "_shasum": "f83559dc90262f6c6a1d451d063366c6df546d18",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-9211-59yd8w.gs3zugnwmi/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-9211-vthhna.x0qcsxajor",
+  "bugs": {
+    "url": "https://github.com/steelbrain/linter-ui-default/issues"
+  },
+  "configSchema": {
+    "showPanel": {
+      "type": "boolean",
+      "description": "Show panel at the bottom of screen",
+      "default": false,
+      "order": 1
+    },
+    "showTooltip": {
+      "description": "Show inline issue tooltips",
+      "type": "boolean",
+      "default": true,
+      "order": 1
+    },
+    "showStatusBar": {
+      "description": "Show status bar with error / warning / info count at the bottom",
+      "type": "boolean",
+      "default": true,
+      "order": 1
+    },
+    "showDecorations": {
+      "description": "Underline editor text and highlight gutter of issues",
+      "type": "boolean",
+      "default": true,
+      "order": 1
+    },
+    "showProviderName": {
+      "type": "boolean",
+      "description": "Show provider name in tooltip (Hint: It's always shown in the panel)",
+      "default": false,
+      "order": 1
+    },
+    "useBusySignal": {
+      "description": "Whether to integrate with the `busy-signal` package",
+      "type": "boolean",
+      "default": true,
+      "order": 1
+    },
+    "hidePanelWhenEmpty": {
+      "description": "Hide panel when there are no issues to display",
+      "type": "boolean",
+      "default": true,
+      "order": 1
+    },
+    "alwaysTakeMinimumSpace": {
+      "description": "Auto resizes Linter panel when there are less issues to show",
+      "type": "boolean",
+      "default": false,
+      "order": 1
+    },
+    "decorateOnTreeView": {
+      "type": "string",
+      "description": "Underline the selected type in TreeView to indicate issues",
+      "default": "Files",
+      "enum": [
+        "Files and Directories",
+        "Files",
+        "None"
+      ],
+      "order": 2
+    },
+    "panelRepresents": {
+      "type": "string",
+      "enum": [
+        "Entire Project",
+        "Current File",
+        "Current Line"
+      ],
+      "default": "Current File",
+      "order": 2
+    },
+    "statusBarPosition": {
+      "title": "Statusbar Position",
+      "type": "string",
+      "enum": [
+        "Left",
+        "Right"
+      ],
+      "default": "Left",
+      "order": 2
+    },
+    "statusBarRepresents": {
+      "title": "Statusbar Represents",
+      "type": "string",
+      "enum": [
+        "Entire Project",
+        "Current File"
+      ],
+      "default": "Entire Project",
+      "order": 2
+    },
+    "statusBarClickBehavior": {
+      "title": "Statusbar Click Behavior",
+      "type": "string",
+      "enum": [
+        "Toggle Panel",
+        "Toggle Status Bar Scope",
+        "Jump to next issue"
+      ],
+      "default": "Toggle Panel",
+      "order": 2
+    },
+    "tooltipFollows": {
+      "type": "string",
+      "description": "Choose whether tooltips show on mouseover, or follow the keyboard cursor",
+      "enum": [
+        "Both",
+        "Mouse",
+        "Keyboard"
+      ],
+      "default": "Both",
+      "order": 2
+    },
+    "gutterPosition": {
+      "title": "Gutter Highlights Position",
+      "description": "Relative to the line numbers",
+      "type": "string",
+      "enum": [
+        "Left",
+        "Right"
+      ],
+      "default": "Right",
+      "order": 2
+    },
+    "panelHeight": {
+      "title": "Panel Height",
+      "description": "in px",
+      "type": "number",
+      "default": 100,
+      "order": 3
+    }
+  },
+  "consumedServices": {
+    "busy-signal": {
+      "versions": {
+        "1.0.0": "consumeSignal"
+      }
+    },
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
+  },
+  "dependencies": {
+    "atom-package-deps": "^4.3.1",
+    "disposable-event": "^1.0.3",
+    "marked": "^0.3.9",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "sb-debounce": "^1.0.1",
+    "sb-react-table": "^1.0.2"
+  },
+  "description": "Default UI for the Linter package",
+  "devDependencies": {
+    "eslint-config-steelbrain": "^5.0.0",
+    "flow-bin": "^0.66.0",
+    "jasmine-fix": "^1.0.1",
+    "rimraf": "^2.5.4"
+  },
+  "engines": {
+    "atom": ">=1.19.0 <2.0.0"
+  },
+  "homepage": "https://github.com/steelbrain/linter-ui-default#readme",
+  "keywords": [
+    "linter-ui",
+    "linter-ui-default"
+  ],
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "name": "linter-ui-default",
+  "optionalDependencies": {},
+  "package-deps": [
+    "intentions",
+    "linter"
+  ],
+  "providedServices": {
+    "linter-ui": {
+      "versions": {
+        "1.0.0": "provideUI"
+      }
+    },
+    "intentions:list": {
+      "versions": {
+        "1.0.0": "provideIntentions"
+      }
+    }
+  },
+  "readme": "Linter-UI-Default\n================\n\n[![Greenkeeper badge](https://badges.greenkeeper.io/steelbrain/linter-ui-default.svg)](https://greenkeeper.io/)\n\n[![Slack Badge](https://img.shields.io/badge/chat-atom.io%20slack-blue.svg?style=flat-square)](http://atom-slack.herokuapp.com/)\n[![Build Status](https://img.shields.io/circleci/project/steelbrain/linter-ui-default.svg?style=flat-square)](https://circleci.com/gh/steelbrain/linter-ui-default)\n[![Plugin installs!](https://img.shields.io/apm/dm/linter-ui-default.svg?style=flat-square)](https://atom.io/packages/linter-ui-default)\n[![Package version!](https://img.shields.io/apm/v/linter-ui-default.svg?style=flat-square)](https://atom.io/packages/linter-ui-default)\n[![Dependencies!](https://img.shields.io/david/steelbrain/linter-ui-default.svg?style=flat-square)](https://david-dm.org/steelbrain/linter-ui-default)\n\nThe default UI for linter.\n\n![Preview](https://cloud.githubusercontent.com/assets/4278113/23879933/1ab17e2a-0872-11e7-803d-3fe0ccfc6790.gif)\n\n### Installation\n\nYou can install it from the CLI\n\n```\napm install linter-ui-default\n```\n\nOr you can install from Settings view by searching for `linter-ui-default`.\n\n### License\n\nThis Project is licensed under the terms of MIT License, check the license file for more info.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steelbrain/linter-ui-default.git"
+  },
+  "scripts": {
+    "test": "(apm test) && (flow check) && (eslint . ) && (prettier --list-different lib/*.js)"
+  },
+  "version": "1.7.1"
+}

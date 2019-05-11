@@ -1,0 +1,432 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+        "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+        "type": "local"
+      },
+      "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-1f9x98g.6byet57b9"
+    ]
+  ],
+  "_from": "../d-118310-7184-zww4n8.fql877gb9/package.tgz",
+  "_id": "script@3.17.3",
+  "_inCache": true,
+  "_location": "/script",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+    "scope": null,
+    "escapedName": null,
+    "name": null,
+    "rawSpec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+    "spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+    "type": "local"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "file:../d-118310-7184-zww4n8.fql877gb9/package.tgz",
+  "_shasum": "8cf9c1e160755be34f441dbe5b25fe2ea4efdd1f",
+  "_shrinkwrap": null,
+  "_spec": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/d-118310-7184-zww4n8.fql877gb9/package.tgz",
+  "_where": "/private/var/folders/dc/08bztltx53v8vk2hf180zqxw0000gn/T/apm-install-dir-118310-7184-1f9x98g.6byet57b9",
+  "activationCommands": {
+    "atom-text-editor": [
+      "script:run",
+      "script:run-by-line-number",
+      "script:run-options",
+      "script:run-with-profile"
+    ]
+  },
+  "author": {
+    "name": "Kyle Kelley",
+    "email": "rgbkrk@gmail.com"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/rgbkrk/atom-script/issues"
+  },
+  "contributors": [
+    {
+      "name": "Kyle Kelley",
+      "email": "rgbkrk@gmail.com"
+    },
+    {
+      "name": "GeneLocklin",
+      "email": "gene.locklin@gmail.com"
+    },
+    {
+      "name": "Robin Bolton",
+      "email": "robin@robinbolton.com"
+    },
+    {
+      "name": "rpavlick",
+      "email": "ryan.pavlick@gmail.com"
+    },
+    {
+      "name": "Idean Labib",
+      "email": "idean1.labib@gmail.com"
+    },
+    {
+      "name": "Christopher Armstrong",
+      "email": "radix@twistedmatrix.com"
+    },
+    {
+      "name": "Victor",
+      "email": "foo-bar-baz-qux@users.noreply.github.com"
+    },
+    {
+      "name": "Calyhre",
+      "email": "calyhre@gmail.com"
+    },
+    {
+      "name": "Kevin Busby",
+      "email": "kevinb@earthrid.com"
+    },
+    {
+      "name": "Ahmad M. Zawawi",
+      "email": "ahmad.zawawi@gmail.com"
+    },
+    {
+      "name": "Maxime Loliée",
+      "email": "maxime@siliadev.com"
+    },
+    {
+      "name": "Jonathan Channon",
+      "email": "jonathan.channon@gmail.com"
+    },
+    {
+      "name": "kami",
+      "email": "kami30k@gmail.com"
+    },
+    {
+      "name": "Erran Carey",
+      "email": "me@errancarey.com"
+    },
+    {
+      "name": "Florian Lefèvre",
+      "email": "zedentox@gmail.com"
+    },
+    {
+      "name": "Dustin Blackman",
+      "email": "dustinblackman@users.noreply.github.com"
+    },
+    {
+      "name": "elclanrs",
+      "email": "cedric.ruiz@spacirdesigns.com"
+    },
+    {
+      "name": "cdingpeng",
+      "email": "cdingpeng@glitchsoft.com"
+    },
+    {
+      "name": "gerane",
+      "email": "gerane@gmail.com"
+    },
+    {
+      "name": "Jake Sankey",
+      "email": "jakesankey@icloud.com"
+    },
+    {
+      "name": "Daniel Bayley",
+      "email": "daniel.bayley@me.com"
+    },
+    {
+      "name": "rgbkrk",
+      "email": "rgbkrk@gmail.com"
+    },
+    {
+      "name": "Otto Robba",
+      "email": "OttoRobba@users.noreply.github.com"
+    },
+    {
+      "name": "Hikaru Ojima",
+      "email": "hikaru.ojima@mixi.co.jp"
+    },
+    {
+      "name": "Rafael Belvederese",
+      "email": "rafael@blvz.im"
+    },
+    {
+      "name": "Will Sahatdjian",
+      "email": "ws@kindwave.com"
+    },
+    {
+      "name": "Lance Batson",
+      "email": "lbatson@my.apsu.edu"
+    },
+    {
+      "name": "Ash Wilson",
+      "email": "smashwilson@gmail.com"
+    },
+    {
+      "name": "Pedro Rodriguez",
+      "email": "ski.rodriguez@gmail.com"
+    },
+    {
+      "name": "Hans Rødtang",
+      "email": "hansrodtang@gmail.com"
+    },
+    {
+      "name": "Yeonghoon Park",
+      "email": "sola92@gmail.com"
+    },
+    {
+      "name": "Johan Bruning",
+      "email": "johan@taquito.nl"
+    },
+    {
+      "name": "Andy Hayden",
+      "email": "andyhayden1@gmail.com"
+    },
+    {
+      "name": "Alexey Slaykovsky",
+      "email": "alexey@macbook.dlink"
+    },
+    {
+      "name": "Christian Kjaer Laustsen",
+      "email": "christianlaustsen@gmail.com"
+    },
+    {
+      "name": "cormullion",
+      "email": "cormullion@mac.com"
+    },
+    {
+      "name": "jbtule",
+      "email": "jay+code@tuley.name"
+    },
+    {
+      "name": "Ivan Storck",
+      "email": "ivanoats@gmail.com"
+    },
+    {
+      "name": "Ciaran Downey",
+      "email": "me@ciarand.me"
+    },
+    {
+      "name": "bryanweatherly",
+      "email": "bryanweatherly@gmail.com"
+    },
+    {
+      "name": "Rnhmjoj",
+      "email": "micheleguerinirocco@me.com"
+    },
+    {
+      "name": "Calvin Bottoms",
+      "email": "calvin.bottoms@gmail.com"
+    },
+    {
+      "name": "Marek Piechut",
+      "email": "marek.piechut@gmail.com"
+    },
+    {
+      "name": "Rodolfo Carvalho",
+      "email": "rhcarvalho@gmail.com"
+    },
+    {
+      "name": "Sergey Koshelev",
+      "email": "xih@yandex.ru"
+    },
+    {
+      "name": "Tomasz Grodzki",
+      "email": "dev@plain.pl"
+    },
+    {
+      "name": "fazo96",
+      "email": "fazius2009@gmail.com"
+    },
+    {
+      "name": "morinmorin",
+      "email": "mimomorin@gmail.com"
+    },
+    {
+      "name": "Mirek Rusin",
+      "email": "mirek@me.com"
+    },
+    {
+      "name": "ThiconZ",
+      "email": "ThiconZ@users.noreply.github.com"
+    },
+    {
+      "name": "Daniel Chatfield",
+      "email": "chatfielddaniel@gmail.com"
+    },
+    {
+      "name": "Lucas Magno",
+      "email": "lmagno94@gmail.com"
+    },
+    {
+      "name": "benjamin",
+      "email": "benjamin.nave@gmail.com"
+    },
+    {
+      "name": "liamdawson",
+      "email": "dawmail333@gmail.com"
+    },
+    {
+      "name": "Liam Dawson",
+      "email": "liam@liamdawson.me"
+    },
+    {
+      "name": "Ilya Palkin",
+      "email": "ilya1984@ukr.net"
+    },
+    {
+      "name": "Sagi",
+      "email": "saginedunkanal@users.noreply.github.com"
+    },
+    {
+      "name": "Michael Pardo",
+      "email": "kensuke155@gmail.com"
+    },
+    {
+      "name": "Samuel Marks",
+      "email": "samuelmarks@gmail.com"
+    },
+    {
+      "name": "aki",
+      "email": "lala.akira@gmail.com"
+    },
+    {
+      "name": "Marc Harter",
+      "email": "wavded@gmail.com"
+    },
+    {
+      "name": "wflaschka",
+      "email": "wflaschka@gmail.com"
+    },
+    {
+      "name": "Jarmo Kivekas",
+      "email": "jarmo.kivekas@nixu.com"
+    },
+    {
+      "name": "Jan T. Sott",
+      "email": "git@idleberg.com"
+    },
+    {
+      "name": "Vladimir Shvets",
+      "email": "stormherz@gmail.com"
+    },
+    {
+      "name": "Nikita Gryzlov",
+      "email": "nixel2007@gmail.com"
+    },
+    {
+      "name": "A Manning",
+      "email": "449a6a9b@opayq.com"
+    },
+    {
+      "name": "Bruno Durán",
+      "email": "bruno.duran.rey@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "ansi-to-html": "^0.4.2",
+    "atom-message-panel": "1.2.7",
+    "atom-space-pen-views": "^2.0.3",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "coffeescript": "^2",
+    "strip-ansi": "^3.0.0",
+    "underscore": "^1.8.3",
+    "uuid": "^3.0.1"
+  },
+  "description": "Run code in Atom!",
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0"
+  },
+  "engines": {
+    "atom": ">=0.174.0"
+  },
+  "homepage": "https://github.com/rgbkrk/atom-script#readme",
+  "keywords": [
+    "script",
+    "runner",
+    "Bash",
+    "Behat Feature",
+    "Clojure",
+    "Coffeescript",
+    "CoffeeScript (Literate)",
+    "Cucumber (Gherkin)",
+    "Elixir",
+    "Erlang",
+    "F#",
+    "FSharp",
+    "F*",
+    "FStar",
+    "Go",
+    "Groovy",
+    "Haskell",
+    "Javascript",
+    "Julia",
+    "LaTeX",
+    "Lua",
+    "mongoDB",
+    "newLISP",
+    "Perl",
+    "PHP",
+    "PowerShell",
+    "Python",
+    "RSpec",
+    "Ruby",
+    "Ruby on Rails",
+    "Scala",
+    "Swift",
+    "run",
+    "Applescript",
+    "code",
+    "LAMMPS"
+  ],
+  "license": "Apache-2.0",
+  "main": "./lib/script",
+  "name": "script",
+  "optionalDependencies": {
+    "babel-cli": "^6.26.0",
+    "coffeescript": "^2"
+  },
+  "private": false,
+  "providedServices": {
+    "default-script-runtime": {
+      "description": "Provides default runtime that's configurable through Atom editor",
+      "versions": {
+        "0.1.0": "provideDefaultRuntime"
+      }
+    },
+    "provide-blank-runtime": {
+      "description": "Provides a Runtime instance that's intended to be more programatically configurable",
+      "versions": {
+        "0.1.0": "provideBlankRuntime"
+      }
+    }
+  },
+  "readme": "# Script\n\n[![Build Status](http://img.shields.io/travis/rgbkrk/atom-script.svg?style=flat)](https://travis-ci.org/rgbkrk/atom-script)\n\n**Run code in Atom!**\n\nRun scripts based on file name, a selection of code, or by line number.\n\n![](https://cloud.githubusercontent.com/assets/1694055/3226201/c458acbc-f067-11e3-84a0-da27fe334f5e.gif)\n\nCurrently supported grammars are:\n\n| Grammar                             | File Based | Selection Based | Required Package              | Required in [`PATH`]      | Notes                                                                                                                                                                                                                                                           |\n|:------------------------------------|:-----------|:----------------|:------------------------------|:--------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| 1C (BSL)                            | Yes        |                 | [language-1c-bsl]             | [`oscript`]               |                                                                                                                                                                                                                                                                 |\n| [Ansible]                           | Yes        |                 | [language-ansible]            | `ansible-playbook`        |                                                                                                                                                                                                                                                                 |\n| [AutoHotKey]                        | Yes        | Yes             | [language-autohotkey]         | `AutoHotKey.exe`          |                                                                                                                                                                                                                                                                 |\n| [AppleScript]                       | Yes        | Yes             | [language-applescript]        | `osascript`               |                                                                                                                                                                                                                                                                 |\n| [Babel] [ES6] JS                    | Yes        | Yes             | [language-babel]              | `node`                    |                                                                                                                                                                                                                                                                 |\n| Bash                                | Yes        | Yes             |                               |                           | Runs if your `SHELL` or `#!` line is `bash`.                                                                                                                                                                                                                    |\n| [Bats] (Bash Automated Test System) | Yes        | Yes             | [language-bats]               | `bats`                    |                                                                                                                                                                                                                                                                 |\n| Windows [Batch] (`cmd.exe`)         | Yes        |                 | [language-batch]/[file]       |                           |                                                                                                                                                                                                                                                                 |\n| [Behat]                             | Yes        |                 | [behat-atom]                  | `behat`                   |                                                                                                                                                                                                                                                                 |\n| [BuckleScript]                      | Yes        | Yes             | [bs-platform]                 | `bsc`                     |                                                                                                                                                                                                                                                                 |\n| C                                   | Yes        | Yes             |                               | `xcrun clang`/`cc`        | Available only on macOS and Linux.                                                                                                                                                                                                                              |\n| C#                                  | Yes        | Yes             |                               | `csc.exe`                 |                                                                                                                                                                                                                                                                 |\n| [C# Script]                         | Yes        | Yes             |                               | [`scriptcs`]              |                                                                                                                                                                                                                                                                 |\n| C++                                 | Yes        | Yes             |                               | `xcrun clang++`/`g++`     | Available only on macOS and Linux. Run with `-std=c++14`.                                                                                                                                                                                                       |\n| [Clojure]                           | Yes        | Yes             |                               | `lein exec`               | Requires [Leiningen] with the [lein-exec] plugin.                                                                                                                                                                                                               |\n| [CoffeeScript] ([Literate])         | Yes        | Yes             |                               | `coffee`                  |                                                                                                                                                                                                                                                                 |\n| [Crystal]                           | Yes        | Yes             | [language-crystal-actual]     | `crystal`                 |                                                                                                                                                                                                                                                                 |\n| [Cucumber] ([Gherkin])              | Yes        |                 | [language-gherkin]            | `cucumber`                |                                                                                                                                                                                                                                                                 |\n| [D]                                 | Yes        | Yes             | [language-d]                  | `rdmd`                    |                                                                                                                                                                                                                                                                 |\n| [Dart]                              | Yes        | Yes             | [dartlang]                    | `dart`                    |                                                                                                                                                                                                                                                                 |\n| [DOT] ([Graphviz])                  | Yes        | Yes             | [language-dot]                | `dot`                     |                                                                                                                                                                                                                                                                 |\n| [Elixir]                            | Yes        | Yes             | [language-elixir]             | `elixir`                  |                                                                                                                                                                                                                                                                 |\n| [Erlang]                            |            | Yes             | [language-erlang]             | `erl`                     | Limited selection based runs only (see [#70]).                                                                                                                                                                                                                  |\n| [F*]                                | Yes        |                 | [atom-fstar]                  | `fstar`                   |                                                                                                                                                                                                                                                                 |\n| [F#]                                | Yes        |                 | [language-fsharp]             | `fsharpi`/`fsi.exe`       |                                                                                                                                                                                                                                                                 |\n| [Fish]                              | Yes        | Yes             | [language-fish-shell]         | `fish`                    |                                                                                                                                                                                                                                                                 |\n| [Forth]                             | Yes        |                 | [language-forth]              | `gforth`                  |                                                                                                                                                                                                                                                                 |\n| [Fortran]                           | Yes        |                 | [language-fortran]            | [`gfortran`]              |                                                                                                                                                                                                                                                                 |\n| [Gnuplot]                           | Yes        |                 | [language-gnuplot-atom]       | `gnuplot`                 |                                                                                                                                                                                                                                                                 |\n| [Go]                                | Yes        |                 |                               | `go`                      |                                                                                                                                                                                                                                                                 |\n| [Groovy]                            | Yes        | Yes             | [language-groovy]             | `groovy`                  |                                                                                                                                                                                                                                                                 |\n| [Haskell] ([Literate][lit-hskl])    | Yes        | Yes             | [language-haskell]            | `runhaskell`/[`ghc`]      |                                                                                                                                                                                                                                                                 |\n| HTML                                | Yes        |                 |                               |                           | Opens the current HTML file in your default browser.                                                                                                                                                                                                            |\n| [Hy]                                | Yes        | Yes             | [language-hy]                 | `hy.exe`                  |                                                                                                                                                                                                                                                                 |\n| [IcedCoffeeScript]                  | Yes        | Yes             | [language-iced-coffee-script] | `iced`                    |                                                                                                                                                                                                                                                                 |\n| [Inno Setup]                        | Yes        |                 | [language-innosetup]          | `ISCC.exe`                |                                                                                                                                                                                                                                                                 |\n| [Idris]                             | Yes        |                 | [language-idris]              | `idris`                   |                                                                                                                                                                                                                                                                 |\n| [io]                                | Yes        | Yes             | [atom-language-io]            | `io`                      |                                                                                                                                                                                                                                                                 |\n| Java                                | Yes        |                 |                               | `*\\jdk1.x.x_xx\\bin`       | Project directory should be the source directory; subfolders imply packaging.                                                                                                                                                                                   |\n| Javascript                          | Yes        | Yes             |                               | `node`                    |                                                                                                                                                                                                                                                                 |\n| JavaScript for Automation ([JXA])   | Yes        | Yes             | [language-javascript-jxa]     | `osascript -l JavaScript` | Available on macOS only.                                                                                                                                                                                                                                        |\n| [Jolie]                             | Yes        |                 | [language-jolie]              | `jolie`                   |                                                                                                                                                                                                                                                                 |\n| [Julia]                             | Yes        | Yes             | [language-julia]              | `julia`                   |                                                                                                                                                                                                                                                                 |\n| [Kotlin]                            | Yes        | Yes             | [language-kotlin]             | `kotlinc`                 |                                                                                                                                                                                                                                                                 |\n| [LAMMPS]                            | Yes        |                 | [language-lammps]             | `lammps`                  | Available only on macOS and Linux.                                                                                                                                                                                                                              |\n| [LaTeX]                             | Yes        |                 | [language-latex]              | [`latexmk`]               |                                                                                                                                                                                                                                                                 |\n| [LilyPond]                          | Yes        |                 | [atlilypond]                  | `lilypond`                |                                                                                                                                                                                                                                                                 |\n| [Lisp]                              | Yes        | Yes             | [language-lisp]               | [`sbcl`]                  | Selection based runs are limited to a single line.                                                                                                                                                                                                              |\n| [LiveScript]                        | Yes        | Yes             | [language-livescript]         | `lsc`                     |                                                                                                                                                                                                                                                                 |\n| [Lua]                               | Yes        | Yes             | [language-lua]\\[[-wow]\\]      | `lua`                     |                                                                                                                                                                                                                                                                 |\n| [Make]file                          | Yes        | Yes             |                               |                           |                                                                                                                                                                                                                                                                 |\n| [MATLAB]                            | Yes        | Yes             | [language-matlab]             | `matlab`                  |                                                                                                                                                                                                                                                                 |\n| [MIPS]                              | Yes        |                 | [language-mips]               | [`spim`]                  |                                                                                                                                                                                                                                                                 |\n| [MongoDB]                           | Yes        | Yes             | [language-mongodb]            | `mongo`                   |                                                                                                                                                                                                                                                                 |\n| [MoonScript]                        | Yes        | Yes             | [language-moonscript]         | `moon`                    |                                                                                                                                                                                                                                                                 |\n| [NCL]                               | Yes        | Yes             | [language-ncl]                | `ncl`                     | Scripts must end with an `exit` command for file based runs.                                                                                                                                                                                                    |\n| [newLISP]                           | Yes        | Yes             | [language-newlisp]            | `newlisp`                 |                                                                                                                                                                                                                                                                 |\n| [Nim]\\[[Script][nimscript]\\]        | Yes        |                 | [language-nim]                | `nim`                     |                                                                                                                                                                                                                                                                 |\n| [NSIS]                              | Yes        | Yes             | [language-nsis]               | `makensis`                |                                                                                                                                                                                                                                                                 |\n| Objective-C[++]                     | Yes        |                 |                               | `xcrun clang`[`++`]       | Available on macOS only.                                                                                                                                                                                                                                        |\n| [OCaml]                             | Yes        |                 | [language-ocaml]              | `ocaml`                   |                                                                                                                                                                                                                                                                 |\n| [Octave]                            | Yes        | Yes             | [language-matlab]             | `octave`                  |                                                                                                                                                                                                                                                                 |\n| [Oz]                                | Yes        | Yes             | [language-oz]                 | `ozc`                     |                                                                                                                                                                                                                                                                 |\n| [Pandoc] Markdown                   | Yes        |                 | [language-pfm]                | [`panzer`]                |                                                                                                                                                                                                                                                                 |\n| [Pascal]                            | Yes        | Yes             | [language-pascal]             | `fsc`                     |                                                                                                                                                                                                                                                                 |\n| Perl                                | Yes        | Yes             |                               |                           |                                                                                                                                                                                                                                                                 |\n| [Perl 6]                            | Yes        | Yes             |                               | `perl6`                   |                                                                                                                                                                                                                                                                 |\n| PHP                                 | Yes        | Yes             |                               |                           |                                                                                                                                                                                                                                                                 |\n| [PostgreSQL]                        | Yes        | Yes             | [language-pgsql]              | [`psql`]                  | Connects as user `PGUSER` to database `PGDATABASE`. Both default to your operating system's `USERNAME`, but can be set in the process environment or in Atom's [`init` file]: `process.env.PGUSER = {user name}` and `process.env.PGDATABASE = {database name}` |\n| [PowerShell]                        | Yes        | Yes             | [language-powershell]         | `powershell`              |                                                                                                                                                                                                                                                                 |\n| [Processing]                        | Yes        |                 | [processing-language]         | `processing-java`         |                                                                                                                                                                                                                                                                 |\n| [Prolog]                            | Yes        |                 | [language-prolog]             | `swipl`                   | Scripts must contain a rule with the head `main` (e.g.`main:- parent(X,lucas),writeln(X).`). The script is executed with the goal `main` and exits after the first result is found. The output is produced by the `writeln/1` predicates.                       |\n| [PureScript]                        | Yes        |                 | [language-purescript]         | `pulp`                    |                                                                                                                                                                                                                                                                 |\n| Python                              | Yes        | Yes             |                               |                           |                                                                                                                                                                                                                                                                 |\n| [R]                                 | Yes        | Yes             | [language-r]                  | `Rscript`                 |                                                                                                                                                                                                                                                                 |\n| [Racket]                            | Yes        | Yes             | [language-racket]             | `racket`                  |                                                                                                                                                                                                                                                                 |\n| [Reason]                            | Yes        | Yes             | [language-reason]             | `rebuild`                 |                                                                                                                                                                                                                                                                 |\n| [Ren'Py]                            | Yes        | No              | [language-renpy]              | `renpy`                   | Runs your project at the root of the current file.                                                                                                                                                                                                              |\n| [Robot Framework]                   | Yes        | No              | [language-robot-framework]    | `robot`                   | The output location depends on the `CWD` behaviour which can be altered in settings.                                                                                                                                                                            |\n| [RSpec]                             | Yes        | Yes             | [language-rspec]              | `rspec`                   |                                                                                                                                                                                                                                                                 |\n| Ruby                                | Yes        | Yes             |                               |                           |                                                                                                                                                                                                                                                                 |\n| Ruby on [Rails]                     | Yes        | Yes             |                               |                           |                                                                                                                                                                                                                                                                 |\n| [Rust]                              | Yes        |                 | [language-rust]               | `rustc`                   |                                                                                                                                                                                                                                                                 |\n| [Sage]                              | Yes        | Yes             | [language-sage]               | `sage`                    |                                                                                                                                                                                                                                                                 |\n| [Sass]/SCSS                         | Yes        |                 |                               | `sass`                    |                                                                                                                                                                                                                                                                 |\n| [Scala]                             | Yes        | Yes             | [language-scala]              | `scala`                   |                                                                                                                                                                                                                                                                 |\n| [Scheme]                            | Yes        | Yes             | [langauge-scheme]             | [`guile`]                 |                                                                                                                                                                                                                                                                 |\n| Shell Script                        | Yes        | Yes             |                               | `SHELL`                   | Runs according to your default `SHELL`, or `#!` line.                                                                                                                                                                                                           |\n| [Standard ML]                       | Yes        |                 | [language-sml]                | `sml`                     |                                                                                                                                                                                                                                                                 |\n| [Stata]                             | Yes        | Yes             | [language-stata]              | `stata`                   |                                                                                                                                                                                                                                                                 |\n| [Swift]                             | Yes        |                 | [language-swift]              | `swift`                   |                                                                                                                                                                                                                                                                 |\n| [Tcl]                               | Yes        | Yes             | [language-tcltk]              | `tclsh`                   |                                                                                                                                                                                                                                                                 |\n| [TypeScript]                        | Yes        | Yes             |                               | [`ts-node`]               |                                                                                                                                                                                                                                                                 |\n| [VBScript]                          | Yes        | Yes             | [language-vbscript]           | `cscript`                 |                                                                                                                                                                                                                                                                 |\n| [Zsh]                               | Yes        | Yes             |                               |                           | Runs if your `SHELL` or `#!` line is `zsh`.                                                                                                                                                                                                                     |\n\n[-wow]:                         https://atom.io/packages/language-lua-wow\n[#70]:                          https://github.com/rgbkrk/atom-script/pull/70\n[`gfortran`]:                   https://gcc.gnu.org/wiki/GFortran\n[`ghc`]:                        https://haskell.org/ghc\n[`guile`]:                      https://gnu.org/software/guile\n[`init` file]:                  http://flight-manual.atom.io/hacking-atom/sections/the-init-file\n[`latexmk`]:                    https://ctan.org/pkg/latexmk\n[`oscript`]:                    http://oscript.io\n[`panzer`]:                     https://github.com/msprev/panzer#readme\n[`PATH`]:                       https://en.wikipedia.org/wiki/PATH_(variable)\n[`psql`]:                       https://postgresql.org/docs/current/static/app-psql.html\n[`pulp`]:                       https://github.com/purescript-contrib/pulp#readme\n[`sbcl`]:                       http://sbcl.org\n[`scriptcs`]:                   http://scriptcs.net\n[`spim`]:                       http://spimsimulator.sourceforge.net\n[`ts-node`]:                    https://github.com/TypeStrong/ts-node#readme\n[Ansible]:                      https://ansible.com\n[AppleScript]:                  https://developer.apple.com/library/content/documentation/AppleScript/Conceptual/AppleScriptX/Concepts/ScriptingOnOSX.html#//apple_ref/doc/uid/20000032-BABEBGCF\n[atlilypond]:                   https://atom.io/packages/atlilypond\n[atom-fstar]:                   https://github.com/FStarLang/atom-fstar#readme\n[atom-language-io]:             https://atom.io/packages/atom-language-io\n[AutoHotKey]:                   https://autohotkey.com\n[babel]:                        https://babeljs.io\n[batch]:                        https://ss64.com/nt\n[bats]:                         https://github.com/sstephenson/bats#bats-bash-automated-testing-system#readme\n[behat-atom]:                   https://atom.io/packages/behat-atom\n[behat]:                        http://docs.behat.org/en/v2.5/guides/6.cli.html\n[bs-platform]:                  https://npm.im/package/bs-platform\n[bucklescript]:                 https://bucklescript.github.io/bucklescript\n[C# Script]:                    http://csscript.net\n[clojure]:                      https://clojure.org\n[coffeescript]:                 http://coffeescript.org\n[crystal]:                      https://crystal-lang.org\n[cucumber]:                     https://cucumber.io\n[D]:                            https://dlang.org\n[dart]:                         https://dartlang.org\n[dartlang]:                     https://atom.io/packages/dartlang\n[dot]:                          http://graphviz.org/content/dot-language\n[elixir]:                       https://elixir-lang.org\n[erlang]:                       https://erlang.org\n[ES6]:                          https://babeljs.io/learn-es2015\n[F*]:                           https://fstar-lang.org\n[F#]:                           http://fsharp.org\n[file]:                         https://atom.io/packages/language-batchfile\n[fish]:                         https://fishshell.com\n[forth]:                        https://gnu.org/software/gforth\n[fortran]:                      http://fortranwiki.org/fortran/show/Fortran\n[gherkin]:                      https://cucumber.io/docs/reference#gherkin\n[gnuplot]:                      http://gnuplot.info\n[go]:                           https://golang.org\n[graphviz]:                     http://graphviz.org\n[groovy]:                       http://groovy-lang.org\n[haskell]:                      https://haskell.org\n[hy]:                           http://hylang.org\n[icedcoffeescript]:             http://maxtaco.github.io/coffee-script\n[idris]:                        https://idris-lang.org\n[inno setup]:                   http://jrsoftware.org/isinfo.php\n[io]:                           http://iolanguage.org\n[jolie]:                        http://jolie-lang.org\n[julia]:                        https://julialang.org\n[jxa]:                          https://developer.apple.com/library/mac/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/Articles/Introduction.html\n[kotlin]:                       https://kotlinlang.org\n[LAMMPS]:                       http://lammps.sandia.gov\n[langauge-scheme]:              https://atom.io/packages/language-scheme\n[language-1c-bsl]:              https://atom.io/packages/language-1c-bsl\n[language-ansible]:             https://atom.io/packages/language-ansible\n[language-applescript]:         https://atom.io/packages/language-applescript\n[language-autohotkey]:          https://atom.io/packages/language-autohotkey\n[language-babel]:               https://atom.io/packages/language-babel\n[language-batch]:               https://atom.io/packages/language-batch\n[language-bats]:                https://atom.io/packages/language-bats\n[language-crystal-actual]:      https://atom.io/packages/language-crystal-actual\n[language-d]:                   https://atom.io/packages/language-d\n[language-dot]:                 https://atom.io/packages/language-dot\n[language-elixir]:              https://atom.io/packages/language-elixir\n[language-erlang]:              https://atom.io/packages/language-erlang\n[language-fish-shell]:          https://atom.io/packages/language-fish-shell\n[language-forth]:               https://atom.io/packages/language-forth\n[language-fortran]:             https://atom.io/packages/language-fortran\n[language-fsharp]:              https://atom.io/packages/language-fsharp\n[language-gherkin]:             https://atom.io/packages/language-gherkin\n[language-gnuplot-atom]:        https://atom.io/packages/language-gnuplot-atom\n[language-groovy]:              https://atom.io/packages/language-groovy\n[language-haskell]:             https://atom.io/packages/language-haskell\n[language-hy]:                  https://atom.io/packages/language-hy\n[language-iced-coffee-script]:  https://atom.io/packages/language-iced-coffee-script\n[language-idris]:               https://atom.io/packages/language-idris\n[language-innosetup]:           https://atom.io/packages/language-innosetup\n[language-javascript-jxa]:      https://atom.io/packages/language-javascript-jxa\n[language-jolie]:               https://atom.io/packages/language-jolie\n[language-julia]:               https://atom.io/packages/language-julia\n[language-kotlin]:              https://atom.io/packages/language-kotlin\n[language-lammps]:              https://atom.io/packages/language-lammps\n[language-latex]:               https://atom.io/packages/language-latex\n[language-lisp]:                https://atom.io/packages/language-lisp\n[language-livescript]:          https://atom.io/packages/language-livescript\n[language-lua]:                 https://atom.io/packages/language-lua\n[language-matlab]:              https://atom.io/packages/language-matlab\n[language-mips]:                https://atom.io/packages/language-mips\n[language-mongodb]:             https://atom.io/packages/language-mongodb\n[language-moonscript]:          https://atom.io/packages/language-moonscript\n[language-ncl]:                 https://atom.io/packages/language-ncl\n[language-newlisp]:             https://atom.io/packages/language-newlisp\n[language-nim]:                 https://atom.io/packages/language-nim\n[language-nsis]:                https://atom.io/packages/language-nsis\n[language-ocaml]:               https://atom.io/packages/language-ocaml\n[language-oz]:                  https://atom.io/packages/language-oz\n[language-pascal]:              https://atom.io/packages/language-pascal\n[language-pfm]:                 https://atom.io/packages/language-pfm\n[language-pgsql]:               https://atom.io/packages/language-pgsql\n[language-powershell]:          https://atom.io/packages/language-powershell\n[language-prolog]:              https://atom.io/packages/language-prolog\n[language-purescript]:          https://atom.io/packages/language-purescript\n[language-r]:                   https://atom.io/packages/language-r\n[language-racket]:              https://atom.io/packages/language-racket\n[language-reason]:              https://atom.io/packages/language-reason\n[language-renpy]:               https://atom.io/packages/language-renpy\n[language-robot-framework]:     https://atom.io/packages/language-robot-framework\n[language-rspec]:               https://atom.io/packages/language-rspec\n[language-rust]:                https://atom.io/packages/language-rust\n[language-sage]:                https://atom.io/packages/language-sage\n[language-scala]:               https://atom.io/packages/language-scala\n[language-sml]:                 https://atom.io/packages/language-sml\n[language-stata]:               https://atom.io/packages/language-stata\n[language-swift]:               https://atom.io/packages/language-swift\n[language-tcltk]:               https://atom.io/packages/language-tcltk\n[language-vbscript]:            https://atom.io/packages/language-vbscript\n[latex]:                        https://latex-project.org\n[lein-exec]:                    https://github.com/kumarshantanu/lein-exec#readme\n[leiningen]:                    https://leiningen.org\n[lilypond]:                     http://lilypond.org\n[lisp]:                         http://lisp-lang.org\n[lit-hskl]:                     https://wiki.haskell.org/Literate_programming#Haskell_and_literate_programming\n[literate]:                     http://coffeescript.org/#literate\n[livescript]:                   http://livescript.net\n[lua]:                          https://lua.org\n[make]:                         https://gnu.org/software/make/manual/make\n[MATLAB]:                       https://mathworks.com/products/matlab\n[mips]:                         https://imgtec.com/mips\n[mongodb]:                      https://mongodb.com\n[moonscript]:                   https://moonscript.org\n[NCL]:                          https://ncl.ucar.edu\n[newlisp]:                      http://newlisp.org\n[nim]:                          https://nim-lang.org\n[nimscript]:                    https://nim-lang.org/0.11.3/nims.html\n[NSIS]:                         http://nsis.sourceforge.net\n[ocaml]:                        https://ocaml.org\n[octave]:                       https://gnu.org/software/octave\n[oz]:                           https://mozart.github.io\n[pandoc]:                       https://pandoc.org\n[perl 6]:                       https://perl6.org\n[pascal]:                       https://freepascal.org\n[PostgreSQL]:                   https://postgresql.org\n[powershell]:                   https://docs.microsoft.com/powershell\n[processing-language]:          https://atom.io/packages/processing-language\n[processing]:                   https://processing.org\n[prolog]:                       http://swi-prolog.org\n[purescript]:                   http://purescript.org\n[R]:                            https://r-project.org\n[racket]:                       https://racket-lang.org\n[rails]:                        http://rubyonrails.org\n[reason]:                       https://reasonml.github.io\n[Ren'Py]:                       https://renpy.org\n[robot framework]:              http://robotframework.org\n[rspec]:                        http://rspec.info\n[rust]:                         https://rust-lang.org\n[sage]:                         https://sagemath.org\n[sass]:                         http://sass-lang.com\n[scala]:                        https://scala-lang.org\n[scheme]:                       http://scheme-reports.org\n[Standard ML]:                  http://sml-family.org\n[stata]:                        https://stata.com\n[swift]:                        https://swift.org\n[tcl]:                          https://tcl.tk\n[typescript]:                   https://typescriptlang.org\n[VBScript]:                     https://msdn.microsoft.com/library/t0aew7h6.aspx\n[zsh]:                          http://zsh.org\n\n**NOTE**: Some grammars may require you to install [a custom language package](https://atom.io/search?utf8=✓&q=language).\n\nYou only have to add a few lines in a PR to support another.\n\n## Installation\n\n`apm install script`\n\nor\n\nSearch for `script` within package search in the Settings View.\n\n## Atom can't find node | ruby | python | my socks\n\nMake sure to launch Atom from the console/terminal. This gives atom all your useful environment variables. Additionally, make sure to run it with the project path you need. For example, use\n\n```\natom .\n```\n\nto get it to run with the *current* directory as the default place to run scripts from.\n\nIf you *really* wish to open atom from a launcher/icon, see [this issue for a variety of workarounds that have been suggested](https://github.com/rgbkrk/atom-script/issues/61#issuecomment-37337827).\n\n## Usage\n\nMake sure to run `atom` from the command line to get full access to your environment variables. Running Atom from the icon will launch using launchctl's environment.\n\n**Script: Run** will perform a \"File Based\" run when no text is selected (default).\n\n**Script: Run** while text is selected will perform a \"Selection Based\" run executing just the highlighted code.\n\n**Script: Run by Line Number** to run using the specified line number. **Note** that if you select an entire line this number could be off by one due to the way Atom detects numbers while text is selected.\n\n**Script: Configure Script** should be used to configure command options, program arguments, and environment variables overrides. Environment variables may be input into the options view in the form `VARIABLE_NAME_ONE=value;VARIABLE_NAME_TWO=\"other value\";VARIABLE_NAME_3='test'`.\n\nAlso, in this dialog you can save options as a profile for future use. For example, you can add two profiles, one for `python2.7` and another for `python3` and run scripts with a specified profile, which will be more convinient than entering options every time you want to switch python versions.\n\n**Script: Run with profile** allows you to run scripts with saved profiles. Profiles can be added in **Script: Run Options** dialog.\n\n**Script: Kill Process** will kill the process but leaves the pane open.\n\n**Script: Close View** closes the pane and kills the process.\n\nTo kill everything, click the close icon in the upper right and just go back to\ncoding.\n\n**Script: Copy Run Results** copies everything written to the output pane to the\nclipboard, allowing you to paste it into the editor.\n\n### Command and shortcut reference\n\n| Command                    | macOS                               | Linux/Windows               | Notes                                                                         |\n|:---------------------------|:------------------------------------|:----------------------------|:------------------------------------------------------------------------------|\n| Script: Run                | <kbd>cmd-i</kbd>                    | <kbd>shift-ctrl-b</kbd>     | If text is selected a \"Selection Based\" is used instead of a \"File Based\" run |\n| Script: Run by Line Number | <kbd>shift-cmd-j</kbd>              | <kbd>shift-ctrl-j</kbd>     | If text is selected the line number will be the last                          |\n| Script: Run Options        | <kbd>shift-cmd-i</kbd>              | <kbd>shift-ctrl-alt-o</kbd> | Runs the selection or whole file with the given options                       |\n| Script: Run with profile   | <kbd>shift-cmd-k</kbd>              | <kbd>shift-ctrl-alt-b</kbd> | Runs the selection or whole file with the specified profile                   |\n| Script: Close View         | <kbd>esc</kbd> or <kbd>ctrl-w</kbd> | <kbd>esc</kbd>              | Closes the script view window                                                 |\n| Script: Kill Process       | <kbd>ctrl-c</kbd>                   | <kbd>ctrl-q</kbd>           | Kills the current script process                                              |\n\n### Replacements\n\nThe following parameters will be replaced in any entry in `args` (command and program arguments). They should all be enclosed in curly brackets `{}`\n\n  * `{FILE_ACTIVE}` - Full path to the currently active file in Atom. E.g. `/home/rgbkrk/atom-script/lib/script.coffee`\n  * `{FILE_ACTIVE_PATH}` - Full path to the folder where the currently active file is. E.g. `/home/rgbkrk/atom-script/lib`\n  * `{FILE_ACTIVE_NAME}` - Full name and extension of active file. E.g., `script.coffee`\n  * `{FILE_ACTIVE_NAME_BASE}` - Name of active file WITHOUT extension. E.g., `script`\n  * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/rgbkrk/atom-script`\n\nParameters are compatible with `atom-build` package.\n\n## Development\n\nThis is an [Open Open Source Project](http://openopensource.org/), which means:\n\n> Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit.\n\nAs for coding and contributing, rely on the atom [contributing guidelines](https://atom.io/docs/latest/contributing).\nThey're pretty sane.\n\n#### Quick and dirty setup\n\n`apm develop script`\n\nThis will clone the `script` repository to `~/github` unless you set the\n`ATOM_REPOS_HOME` environment variable.\n\n#### I already cloned it!\n\nIf you cloned it somewhere else, you'll want to use `apm link --dev` within the\npackage directory, followed by `apm install` to get dependencies.\n\n### Workflow\n\nAfter pulling upstream changes, make sure to run `apm update`.\n\nTo start hacking, make sure to run `atom --dev` from the package directory.\nCut a branch while you're working then either submit a Pull Request when done\nor when you want some feedback!\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rgbkrk/atom-script.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "version": "3.17.3"
+}

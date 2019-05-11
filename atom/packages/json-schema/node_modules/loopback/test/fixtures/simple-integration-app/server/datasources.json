@@ -1,0 +1,8 @@
+{
+  "db": {
+    "connector": "memory"
+  },
+  "mail": {
+    "connector": "mail"
+  }
+}

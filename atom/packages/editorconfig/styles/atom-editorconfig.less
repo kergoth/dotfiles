@@ -1,0 +1,25 @@
+@import "ui-variables";
+@import "syntax-variables";
+
+#aec-status-bar-tile {
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+@font-face {
+	font-family: 'Editorconfig';
+	src: url('atom://editorconfig/fonts/AtomEditorconfig-Regular.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class*='aec-icon'],
+[class*='aec-icon']:before {
+	font-family: 'Editorconfig';
+	font-style: normal;
+	font-weight: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.aec-icon-mouse:before { content:'\0041'; }
