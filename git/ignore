@@ -34,6 +34,7 @@ Temporary Items
 
 # IDE / Editor projects
 .vscode
+.tags
 
 # Bittorrent Sync
 /.sync
