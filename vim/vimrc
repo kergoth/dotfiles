@@ -236,7 +236,7 @@ if has('viminfo')
   " <   max # of lines for each register to be saved
   " s   max # of Kb for each register to be saved
   " h   don't restore hlsearch behavior
-  set viminfo=f1,'1000,:1000,/1000,<1000,s100,h,r$TEMP,n$VIMINFO
+  let &viminfo="f1,'1000,:1000,/1000,<1000,s100,h,r" . $TEMP . ",n" . $VIMINFO
 endif
 
 " Allow hiding buffers with modifications
