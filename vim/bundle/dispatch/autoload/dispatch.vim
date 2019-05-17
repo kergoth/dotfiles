@@ -165,9 +165,12 @@ function! dispatch#dir_opt(...) abort
   return '-dir=' . s:escape_path(dir) . ' '
 endfunction
 
+function! s:cd_command() abort
+  return exists('*haslocaldir') && haslocaldir() ? 'lcd' : exists(':tcd') && haslocaldir(-1) ? 'tcd' : 'cd'
+endfunction
+
 function! dispatch#cd_helper(dir) abort
-  let back = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
-  let back .= ' ' . dispatch#fnameescape(getcwd())
+  let back = s:cd_command() . ' ' . dispatch#fnameescape(getcwd())
   return 'let g:dispatch_back = '.string(back).'|lcd '.dispatch#fnameescape(a:dir)
 endfunction
 
@@ -419,7 +422,7 @@ function! dispatch#spawn_command(bang, command, count, ...) abort
   return ''
 endfunction
 
-function! dispatch#start_command(bang, command, count, ...) abort
+function! s:parse_start(command, count) abort
   let [command, opts] = s:extract_opts(a:command)
   if empty(command) && a:count >= 0
     let command = s:focus(a:count)
@@ -430,7 +433,12 @@ function! dispatch#start_command(bang, command, count, ...) abort
     let command = b:start
     let [command, opts] = s:extract_opts(command, opts)
   endif
-  let opts.background = a:bang
+  return [command, opts]
+endfunction
+
+function! dispatch#start_command(bang, command, count, ...) abort
+  let [command, opts] = s:parse_start(a:command, a:count)
+  let opts.background = get(opts, 'background') || a:bang
   if command =~# '^:\S'
     unlet! g:dispatch_last_start
     return s:wrapcd(get(opts, 'directory', getcwd()),
@@ -465,7 +473,7 @@ function! dispatch#spawn(command, ...) abort
   if empty(request.title)
     let request.title = substitute(fnamemodify(matchstr(request.command, '\%(\\.\|\S\)\+'), ':t:r'), '\\\(\s\)', '\1', 'g')
   endif
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+  let cd = s:cd_command()
   try
     if request.directory !=# getcwd()
       let cwd = getcwd()
@@ -648,7 +656,7 @@ function! dispatch#command_complete(A, L, P) abort
   let P = a:P + len(cmd) - len(L)
   let len = matchend(cmd, '\S\+\s')
   if len >= 0 && P >= 0
-    let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+    let cd = s:cd_command()
     try
       if get(opts, 'directory', getcwd()) !=# getcwd()
         let cwd = getcwd()
@@ -813,7 +821,7 @@ function! dispatch#compile_command(bang, args, count, ...) abort
   let compiler = get(b:, 'current_compiler', '')
   let modelines = &modelines
   let after = ''
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+  let cd = s:cd_command()
   try
     let &modelines = 0
     call s:set_current_compiler(get(request, 'compiler', ''))
@@ -992,6 +1000,36 @@ function! dispatch#make_focus(count) abort
   endif
 endfunction
 
+function! dispatch#spawn_focus(count) abort
+  if a:count < 0
+    return &shell
+  else
+    return dispatch#expand(s:focus(a:count), a:count)
+  endif
+endfunction
+
+function! dispatch#start_focus(count) abort
+  let [command, opts] = s:parse_start('', a:count)
+  if a:count >= 0
+    let command = dispatch#expand(command, a:count)
+  endif
+  if empty(command)
+    let command = &shell
+  endif
+  if get(opts, 'wait', 'error') !=# 'error'
+    let command = '-wait=' . escape(opts.wait, '\ ') . ' ' . command
+  endif
+  if has_key(opts, 'title')
+    let command = '-title=' . escape(opts.title, '\ ') . ' ' . command
+  endif
+  if has_key(opts, 'directory') && opts.directory != getcwd()
+    let command = '-dir=' .
+            \ s:escape_path(fnamemodify(opts.directory, ':~:.')) . ' ' .
+            \ command
+  endif
+  return command
+endfunction
+
 " Section: Requests
 
 function! s:file(request) abort
@@ -1165,7 +1203,7 @@ function! s:cgetfile(request, ...) abort
   let efm = &l:efm
   let makeprg = &l:makeprg
   let compiler = get(b:, 'current_compiler', '')
-  let cd = exists('*haslocaldir') && haslocaldir() ? 'lcd' : 'cd'
+  let cd = s:cd_command()
   let dir = getcwd()
   let modelines = &modelines
   try

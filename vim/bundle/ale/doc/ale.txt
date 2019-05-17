@@ -142,6 +142,8 @@ ALE offers several options for controlling which linters are run.
 * Selecting linters to run.            - |g:ale_linters|
 * Aliasing filetypes for linters       - |g:ale_linter_aliases|
 * Only running linters you asked for.  - |g:ale_linters_explicit|
+* Disabling only a subset of linters.  - |g:ale_linters_ignore|
+* Disabling LSP linters and `tsserver`.  - |g:ale_disable_lsp|
 
 
 -------------------------------------------------------------------------------
@@ -321,6 +323,9 @@ servers. LSP linters can be used in combination with any other linter, and
 will automatically connect to LSP servers when needed. ALE also supports
 `tsserver` for TypeScript, which uses a different but very similar protocol.
 
+If you want to use another plugin for LSP features and tsserver, you can use
+the |g:ale_disable_lsp| setting to disable ALE's own LSP integrations, or
+ignore particular linters with |g:ale_linters_ignore|.
 
 -------------------------------------------------------------------------------
 5.1 Completion                                                 *ale-completion*
@@ -329,19 +334,20 @@ ALE offers support for automatic completion of code while you type.
 Completion is only supported while at least one LSP linter is enabled. ALE
 will only suggest symbols provided by the LSP servers.
 
-                                                     *ale-deoplete-integration*
-
-ALE integrates with Deoplete for offering automatic completion data. ALE's
-completion source for Deoplete is named `'ale'`, and should enabled
-automatically if Deoplete is enabled and configured correctly. Deoplete
-integration should not be combined with ALE's own implementation.
-
-ALE also offers its own completion implementation, which does not require any
+ALE offers its own completion implementation, which does not require any
 other plugins. Suggestions will be made while you type after completion is
-enabled.  Completion can be enabled by setting |g:ale_completion_enabled| to
-`1`. This setting must be set to `1` before ALE is loaded. The delay for
-completion can be configured with |g:ale_completion_delay|.
+enabled. ALE's own completion implementation can be enabled by setting
+|g:ale_completion_enabled| to `1`. This setting must be set to `1` before ALE
+is loaded. The delay for completion can be configured with
+|g:ale_completion_delay|. This setting should not be enabled if you wish to
+use ALE as a completion source for other plugins.
 
+ALE provides an 'omnifunc' function |ale#completion#OmniFunc| for triggering
+completion manually with CTRL-X CTRL-O. |i_CTRL-X_CTRL-O| >
+
+  " Use ALE's function for omnicompletion.
+  set omnifunc=ale#completion#OmniFunc
+<
 ALE will only suggest so many possible matches for completion. The maximum
 number of items can be controlled with |g:ale_completion_max_suggestions|.
 
@@ -349,8 +355,7 @@ If you don't like some of the suggestions you see, you can filter them out
 with |g:ale_completion_excluded_words| or |b:ale_completion_excluded_words|.
 
 The |ALEComplete| command can be used to show completion suggestions manually,
-even when |g:ale_completion_enabled| is set to `0`. For manually requesting
-completion information with Deoplete, consult Deoplete's documentation.
+even when |g:ale_completion_enabled| is set to `0`.
 
                                                *ale-completion-completeopt-bug*
 
@@ -553,6 +558,7 @@ g:ale_completion_delay                                 *g:ale_completion_delay*
 
 
 g:ale_completion_enabled                             *g:ale_completion_enabled*
+b:ale_completion_enabled                             *b:ale_completion_enabled*
 
   Type: |Number|
   Default: `0`
@@ -561,6 +567,13 @@ g:ale_completion_enabled                             *g:ale_completion_enabled*
 
   This setting must be set to `1` before ALE is loaded for this behavior
   to be enabled.
+
+  This setting should not be enabled if you wish to use ALE as a completion
+  source for other completion plugins.
+
+  A buffer-local version of this setting `b:ale_completion_enabled` can be set
+  to `0` to disable ALE's automatic completion support for a single buffer.
+  ALE's completion support must be enabled globally to be enabled locally.
 
   See |ale-completion|
 
@@ -627,7 +640,9 @@ g:ale_disable_lsp                                           *g:ale_disable_lsp*
   Type: |Number|
   Default: `0`
 
-  When this option is set to `1`, ALE ignores all linters powered by LSP.
+  When this option is set to `1`, ALE ignores all linters powered by LSP,
+  and also `tsserver`.
+
   Please see also |ale-lsp|.
 
 
@@ -682,7 +697,7 @@ b:ale_echo_msg_format                                   *b:ale_echo_msg_format*
     `%s`           - replaced with the text for the problem
     `%...code...% `- replaced with the error code
     `%linter%`     - replaced with the name of the linter
-    `%severity%`   - replaced withe severity of the problem
+    `%severity%`   - replaced with the severity of the problem
 
   The strings for `%severity%` can be configured with the following options.
 
@@ -699,7 +714,7 @@ b:ale_echo_msg_format                                   *b:ale_echo_msg_format*
   |g:ale_echo_cursor| needs to be set to 1 for messages to be displayed.
 
   The echo message format can also be configured separately for each buffer,
-  so different formats can be used for differnt languages. (Say in ftplugin
+  so different formats can be used for different languages. (Say in ftplugin
   files.)
 
 
@@ -2105,6 +2120,7 @@ documented in additional help files.
     merlin................................|ale-ocaml-merlin|
     ols...................................|ale-ocaml-ols|
     ocamlformat...........................|ale-ocaml-ocamlformat|
+    ocp-indent............................|ale-ocaml-ocp-indent|
   pawn....................................|ale-pawn-options|
     uncrustify............................|ale-pawn-uncrustify|
   perl....................................|ale-perl-options|
@@ -2227,6 +2243,7 @@ documented in additional help files.
     chktex................................|ale-tex-chktex|
     lacheck...............................|ale-tex-lacheck|
     latexindent...........................|ale-tex-latexindent|
+    texlab................................|ale-tex-texlab|
   texinfo.................................|ale-texinfo-options|
     write-good............................|ale-texinfo-write-good|
   text....................................|ale-text-options|
@@ -2458,7 +2475,7 @@ ALELast                                                               *ALELast*
 
   Flags can be combined to create create custom jumping. Thus you can use
   ":ALENext -wrap -error -nosyle" to jump to the next error which is not a
-  style error while going back to the begining of the file if needed.
+  style error while going back to the beginning of the file if needed.
 
   `ALEFirst` goes to the first error or warning in the buffer, while `ALELast`
   goes to the last one.
@@ -2777,6 +2794,13 @@ ale#command#ManageFile(buffer, filename)             *ale#command#ManageFile()*
   directories from being accidentally deleted, say in cases of writing
   `dir . '/' . filename` where `filename` is actually `''`, etc. ALE instead
   manages directories separately with the |ale#command#ManageDirectory| function.
+
+
+ale#completion#OmniFunc(findstart, base)            *ale#completion#OmniFunc()*
+
+  A completion function to use with 'omnifunc'.
+
+  See |ale-completion|.
 
 
 ale#engine#GetLoclist(buffer)                         *ale#engine#GetLoclist()*
@@ -3193,7 +3217,7 @@ ale#statusline#Count(buffer)                           *ale#statusline#Count()*
 ale#statusline#FirstProblem(buffer, type)       *ale#statusline#FirstProblem()*
 
   Returns a copy of the first entry in the `loclist` that matches the supplied
-  buffer number and problem type. If there is no such enty, an empty dictionary
+  buffer number and problem type. If there is no such entry, an empty dictionary
   is returned.
   Problem type should be one of the strings listed below:
 

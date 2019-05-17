@@ -236,6 +236,7 @@ Notes:
   * `lacheck`
   * `proselint`
   * `redpen`
+  * `texlab`
   * `textlint`
   * `vale`
   * `write-good`
@@ -293,6 +294,7 @@ Notes:
 * OCaml
   * `merlin` (see |ale-ocaml-merlin|)
   * `ocamlformat`
+  * `ocp-indent`
   * `ols`
 * Pawn
   * `uncrustify`
