@@ -1,15 +1,3 @@
-#!/usr/bin/env python3
+#!/bin/sh
 
-import itertools
-import os
-import sys
-
-if __name__ == '__main__':
-    uniq_seen = os.path.join(os.path.dirname(sys.argv[0]), 'uniq-seen')
-    l = {'__name__': 'uniq-seen'}
-    with open(uniq_seen, 'rU') as f:
-        exec(f.read(), globals(), l)
-
-    unique_everseen = l['unique_everseen']
-    lines = reversed(list(unique_everseen(reversed(sys.stdin.readlines()))))
-    sys.stdout.writelines(lines)
+tac | awk '!visited[$0]++' "$@" | tac
