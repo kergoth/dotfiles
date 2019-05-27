@@ -136,7 +136,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: cf565254e26bb7ce03f51889e9a29953b955b1fb
+    rev: 4f939ade9a1a3fc663b74c739ce638800f6c60ce
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -272,7 +272,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0e3e6ac44201b2f051ff1987a63ee6b649070d46
+    rev: 0030d184481686384676537857614977e1fd2f94
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -543,7 +543,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 6d1982d6cf6a42c66a03f6af98997e9f959d458c
+    rev: 4b09e948539fb9810a7ab13be79f4ebed7ec2b4a
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -557,7 +557,7 @@ curl module rustup:
     move:
         rustup-init.sh: rustup
     executable: rustup
-    sha1: 9a4a8620553635541354af681a96701d5dac90a2
+    sha1: b7c1eb5a1a5d1004f6f849218756610dd6de0c20
 
 curl module cht:
     url: https://cht.sh/:cht.sh
@@ -568,7 +568,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 67d49c75a819aa4e7ded97785a1014ba18f06e5d
+    rev: bb08b81bf719d4c55669c583c65fbe4bbd795501
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -713,7 +713,7 @@ git module vim-profiler:
 
 git module vim-apathy:
     url: https://github.com/tpope/vim-apathy
-    rev: b1fefe1d91071bad6b5d2860366d7faf0308353f
+    rev: be0ccd75c28977d97fa983007844623031437637
 
 git module zsh-sort-timings:
     url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
@@ -736,7 +736,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: 9ab9d12521191e548be2caa6b606d0866ffdf5c5
+    rev: cd18ffb1fb2f796fd769c7c00d775500f4fdac31
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
