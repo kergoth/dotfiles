@@ -128,7 +128,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 3601297ebfd67f208f489189e984df665ec9242c
+    rev: daa93b3eb3097a6ea0ca4680ee1d7391fcd2789b
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -486,7 +486,7 @@ git module checkbashisms:
     move:
         scripts/checkbashisms.pl: checkbashisms
     pick: checkbashisms
-    rev: 51007a62487d432669dfe3cd78185ecbcd1c8549
+    rev: a5c813bb256d84db19f4a96be6c348f4ef1caa18
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
@@ -568,7 +568,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: bb08b81bf719d4c55669c583c65fbe4bbd795501
+    rev: bc0abc3b9628103d3a75596bfabf8ba3a1a61c6d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
