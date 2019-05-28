@@ -2,7 +2,7 @@
 
 usage () {
     cat >&2 <<END
-Usage: comm-files [-123] DIR1 DIR2 [find arguments..]
+Usage: comm-files [-0123nh] DIR1 DIR2 [find arguments..]
 
 Compare the files within two directories, but not the contents of those files.
 
@@ -12,6 +12,8 @@ Options (default: -3. To specify multiple, use a single argument, e.g. -23):
      -1      Suppress printing of column 1.
      -2      Suppress printing of column 2.
      -3      Suppress printing of column 3.
+     -n      Normalize case
+     -h      Show this usage
 
 find arguments default to: -type f -o -type l
 END
@@ -35,6 +37,7 @@ exclude () {
 
 
 comm_arg=-3
+normalize_case=0
 case "$1" in
     -[123]*)
         comm_arg="$1"
@@ -42,6 +45,10 @@ case "$1" in
         ;;
     -0)
         comm_arg=
+        shift
+        ;;
+    -n)
+        normalize_case=1
         shift
         ;;
     -h)
@@ -87,11 +94,19 @@ fromfiles="$(mktemp -t "${0##*/}.XXXXXX")"
 tofiles="$(mktemp -t "${0##*/}.XXXXXX")"
 trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
+normalize_case_filter () {
+    if [ $normalize_case -eq 1 ]; then
+        tr '[:upper:]' '[:lower:]'
+    else
+        cat
+    fi
+}
+
 cd "$from" || exit 2
-find . "$@" | sort >"$fromfiles"
+find . "$@" | normalize_case_filter | sort -f >"$fromfiles"
 cd - >/dev/null
 cd "$to" || exit 2
-find . "$@" | sort >"$tofiles"
+find . "$@" | normalize_case_filter | sort -f >"$tofiles"
 
 echo >&2 "Comparing the list of files from $from to $to"
 comm "$fromfiles" "$tofiles" | \
