@@ -14,7 +14,6 @@ imports:
 
     # Scripts
     appify: osx/scripts
-    checkbashisms: scripts
     cht: cht/scripts
     cpanm: perl/scripts
     cwdiff: scripts
@@ -480,13 +479,6 @@ git module vitag:
     url: https://github.com/ttscoff/vitag
     pick: vitag
     rev: 56366c0709978da4d12ae8e11ff3bcf032265406
-
-git module checkbashisms:
-    url: https://github.com/Debian/devscripts
-    move:
-        scripts/checkbashisms.pl: checkbashisms
-    pick: checkbashisms
-    rev: a5c813bb256d84db19f4a96be6c348f4ef1caa18
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo
