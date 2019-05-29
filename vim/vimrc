@@ -1074,7 +1074,8 @@ augroup vimrc_filetypes
         \ endif
 
   " Use Braceless for indent-sensitive types
-  au FileType python,yaml BracelessEnable +indent
+  au FileType python BracelessEnable +indent
+  au FileType yaml BracelessEnable
 
   " Set up completion
   au FileType vim let b:vcm_tab_complete = 'vim'
