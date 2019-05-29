@@ -101,6 +101,8 @@ cd "$to" || exit 2
 find . "$@" | sort -f >"$tofiles"
 
 echo >&2 "Comparing the list of files from $from to $to"
-comm ${normalize_case:+-i} "$fromfiles" "$tofiles" | \
-    sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" | exclude | \
-        sort | ${PAGER:-more}
+comm ${normalize_case:+-i} "$fromfiles" "$tofiles" \
+    | sort -b \
+    | sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" \
+    | exclude \
+    | ${PAGER:-more}
