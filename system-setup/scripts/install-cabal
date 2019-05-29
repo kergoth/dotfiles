@@ -21,4 +21,8 @@ if which stack >/dev/null 2>&1; then
     fi
 fi
 
+if which asdf >/dev/null 2>&1; then
+    asdf reshim haskell || :
+fi
+
 which cabal
