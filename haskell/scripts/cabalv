@@ -1,58 +1,23 @@
 #!/bin/sh
-# Install packages into a fresh cabal sandbox, then symlink its
-# binaries/scripts into $XDG_DATA_HOME/../bin
 
 set -e
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-CABALS_HOME="${CABALS_HOME:-$XDG_DATA_HOME/cabal-sandboxes}"
 
-if [ $# -eq 0 ]; then
-    echo >&2 "Usage: ${0##*/} SANDBOX_NAME [INSTALL_ARGS..]"
-    echo >&2
-    echo >&2 "Existing cabal sandboxes:"
-    for dir in "$CABALS_HOME"/*/; do
-        if [ -e "$dir" ]; then
-            printf >&2 '  %s\n' "$(basename "${dir%/}")"
-        fi
-    done
-    exit 2
-fi
-
-cabal_sandbox_name="$1"
-shift
-
-if ! which ghc >/dev/null 2>&1; then
-    if which stack >/dev/null 2>&1; then
+if ! command -v ghc >/dev/null 2>&1; then
+    if command -v stack >/dev/null 2>&1; then
         eval "$(stack exec env | grep '^PATH=')"
     fi
 fi
 
-if ! which cabal >/dev/null 2>&1; then
+if ! command -v cabal >/dev/null 2>&1; then
     echo >&2 "Error: cabal-install must be installed"
     exit 1
 fi
 
-cabal_sandbox_dir="$CABALS_HOME/$cabal_sandbox_name"
-if [ ! -e "$cabal_sandbox_dir" ]; then
-    mkdir -p "$cabal_sandbox_dir"
-fi
-cd "$cabal_sandbox_dir" || exit 1
-
-if [ ! -e cabal.sandbox.config ]; then
-    cabal sandbox --sandbox=. init
+if [ $# -gt 1 ]; then
+    shift
 fi
 
-PATH="$cabal_sandbox_dir/bin:$PATH"
-
-if [ $# -eq 0 ]; then
-    set -- "$cabal_sandbox_name"
-fi
-cabal update
-cabal install "$@"
-
-mkdir -p "$XDG_DATA_HOME/../bin"
-for script in "$cabal_sandbox_dir/bin/"*; do
-    filename="${script##*/}"
-    ln -sfv "$script" "$XDG_DATA_HOME/../bin/$filename"
-done
+cabal new-update
+cabal new-install --symlink-bindir="${XDG_DATA_HOME%/*}/bin" "$@"
