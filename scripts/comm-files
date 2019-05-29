@@ -37,7 +37,7 @@ exclude () {
 
 
 comm_arg=-3
-normalize_case=0
+normalize_case=
 case "$1" in
     -[123]*)
         comm_arg="$1"
@@ -94,21 +94,13 @@ fromfiles="$(mktemp -t "${0##*/}.XXXXXX")"
 tofiles="$(mktemp -t "${0##*/}.XXXXXX")"
 trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
-normalize_case_filter () {
-    if [ $normalize_case -eq 1 ]; then
-        tr '[:upper:]' '[:lower:]'
-    else
-        cat
-    fi
-}
-
 cd "$from" || exit 2
-find . "$@" | normalize_case_filter | sort -f >"$fromfiles"
+find . "$@" | sort -f >"$fromfiles"
 cd - >/dev/null
 cd "$to" || exit 2
-find . "$@" | normalize_case_filter | sort -f >"$tofiles"
+find . "$@" | sort -f >"$tofiles"
 
 echo >&2 "Comparing the list of files from $from to $to"
-comm "$fromfiles" "$tofiles" | \
+comm ${normalize_case:+-i} "$fromfiles" "$tofiles" | \
     sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" | exclude | \
         sort | ${PAGER:-more}
