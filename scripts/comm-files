@@ -1,6 +1,6 @@
 #!/bin/sh
 
-usage () {
+usage() {
     cat >&2 <<END
 Usage: comm-files [-0123nh] DIR1 DIR2 [find arguments..]
 
@@ -20,21 +20,20 @@ END
     exit 1
 }
 
-abspath () {
+abspath() {
     for arg; do
         testabs=${arg##[!/]*}
         echo ${testabs:-$PWD/$arg}
     done
 }
 
-exclude () {
+exclude() {
     if [ -n "$exclusion" ]; then
         grep -Ev "^$exclusion"
     else
         cat
     fi
 }
-
 
 comm_arg=-3
 normalize_case=
@@ -94,14 +93,33 @@ fromfiles="$(mktemp -t "${0##*/}.XXXXXX")"
 tofiles="$(mktemp -t "${0##*/}.XXXXXX")"
 trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
+case "$OSTYPE" in
+    darwin*)
+        normalize_case_filter() {
+            cat
+        }
+        comm_i_arg="${normalize_case:+-i}"
+        ;;
+    *)
+        normalize_case_filter() {
+            if [ -n "$normalize_case" ]; then
+                tr '[:upper:]' '[:lower:]'
+            else
+                cat
+            fi
+        }
+        comm_i_arg=
+        ;;
+esac
+
 cd "$from" || exit 2
-find . "$@" | sort -f >"$fromfiles"
+find . "$@" | normalize_case_filter | sort -f >"$fromfiles"
 cd - >/dev/null
 cd "$to" || exit 2
-find . "$@" | sort -f >"$tofiles"
+find . "$@" | normalize_case_filter | sort -f >"$tofiles"
 
 echo >&2 "Comparing the list of files from $from to $to"
-comm ${normalize_case:+-i} "$fromfiles" "$tofiles" \
+comm $comm_i_arg "$fromfiles" "$tofiles" \
     | sort -b \
     | sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" \
     | exclude \
