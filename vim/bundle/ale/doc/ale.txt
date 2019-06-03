@@ -2236,6 +2236,7 @@ documented in additional help files.
   spec....................................|ale-spec-options|
     rpmlint...............................|ale-spec-rpmlint|
   sql.....................................|ale-sql-options|
+    pgformatter...........................|ale-sql-pgformatter|
     sqlfmt................................|ale-sql-sqlfmt|
   stylus..................................|ale-stylus-options|
     stylelint.............................|ale-stylus-stylelint|
@@ -2246,7 +2247,8 @@ documented in additional help files.
   tcl.....................................|ale-tcl-options|
     nagelfar..............................|ale-tcl-nagelfar|
   terraform...............................|ale-terraform-options|
-    fmt...................................|ale-terraform-fmt|
+    terraform-fmt-fixer...................|ale-terraform-fmt-fixer|
+    terraform.............................|ale-terraform-terraform|
     tflint................................|ale-terraform-tflint|
   tex.....................................|ale-tex-options|
     chktex................................|ale-tex-chktex|
@@ -3188,6 +3190,33 @@ ale#linter#PreventLoading(filetype)               *ale#linter#PreventLoading()*
   Given a `filetype`, prevent any more linters from being loaded from
   |runtimepath| for that filetype. This function can be called from vimrc or
   similar to prevent ALE from loading linters.
+
+
+ale#lsp_linter#SendRequest(buffer, linter_name, message, [Handler])
+                                                 *ale#lsp_linter#SendRequest()*
+
+  Send a custom request to an LSP linter. The arguments are defined as
+  follows:
+
+  `buffer`       A valid buffer number.
+
+  `linter_name`  A |String| identifying an LSP linter that is available and
+                 enabled for the |filetype| of `buffer`.
+
+  `message`      A |List| in the form `[is_notification, method, parameters]`,
+                 containing three elements:
+                 `is_notification` - an |Integer| that has value 1 if the
+                   request is a notification, 0 otherwise;
+                 `methdod` - a |String|, identifying an LSP method supported
+                   by `linter`;
+                 `parameters` - a |dictionary| of LSP parameters that are
+                   applicable to `method`.
+
+  `Handler`      Optional argument, meaningful only when `message[0]` is 0.
+                 A |Funcref| that is called when a response to the request is
+                 received, and takes as unique argument a dictionary
+                 representing the response obtained from the server.
+
 
 ale#other_source#ShowResults(buffer, linter_name, loclist)
                                                *ale#other_source#ShowResults()*
