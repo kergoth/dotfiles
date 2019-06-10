@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: a135d1096740e6a4c133be195fd14948128e8d77
+    rev: 6d42c7df44aa20252e5dac747c3ac9fa7450b21b
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -223,7 +223,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: d8bf968958f4bdc838321cceace52299f28ad750
+    rev: 597b338f3579ca6929c47465397974d366f4eccc
 
 # continuously updated session files
 git module vim-obsession:
@@ -240,7 +240,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 5c87ab86c0e7b0ec8a5edd39a4ce5500bb9e9333
+    rev: 91ed5f4b39b6e4a2ca50be1c8cec7e1148145fab
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -271,7 +271,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 12ce76b56a769a7a9845ba98bf019a0a0e811ba1
+    rev: 951746297e26159cd45501030c56eca4bea4e277
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -501,7 +501,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 58c4843d9ac6d44056e052d881cdce593a6ba29e
+    rev: 2c83c152fa49aff8dcd9ca129199c7b9cb20325b
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -556,11 +556,11 @@ curl module cht:
     move:
         :cht.sh: cht.sh
     executable: cht.sh
-    sha1: f8450607ba9f9289d071de153e897089f33e96e5
+    sha1: 2589be56fafea67d4d10c68ee1a658d133185a25
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: a730a6d5d5a434f3ec93b77a4e003272a9e22925
+    rev: fea666bd27a0e2eb41868f30ae23121c72f4fe65
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -593,7 +593,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: aebef2c2e76b88384b1121c237c965e8cf8b3bcb
+    rev: 2edc785a5e21cf41960223b09bba8efc9276e777
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -758,7 +758,7 @@ git module vim-highlightedyank:
 
 git module vim-markdown:
     url: https://github.com/plasticboy/vim-markdown
-    rev: fa52c903ec03002a1f9003ba41572bfe75d29fee
+    rev: 0e43b4c5b06466cb54540b7452db6c6b22e33539
 
 git module vim-zoom:
     url: https://github.com/dhruvasagar/vim-zoom

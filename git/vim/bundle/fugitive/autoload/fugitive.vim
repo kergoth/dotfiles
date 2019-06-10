@@ -942,7 +942,7 @@ function! s:PathInfo(url) abort
   let path = substitute(file[1:-1], '/*$', '', '')
   let [tree, ftime] = s:TreeInfo(dir, commit)
   let entry = empty(path) ? [ftime, '040000', 'tree', '', -1] : get(tree, path, [])
-  if empty(entry) || file =~# '/$' && entry[1] !=# 'tree'
+  if empty(entry) || file =~# '/$' && entry[2] !=# 'tree'
     return [-1, '000000', '', '', -1]
   else
     return entry
@@ -1688,12 +1688,16 @@ function! fugitive#BufReadCmd(...) abort
       if v:shell_error
         let error = b:fugitive_type
         unlet b:fugitive_type
+        setlocal noswapfile
+        if empty(&bufhidden)
+          setlocal bufhidden=delete
+        endif
         if rev =~# '^:\d:'
           let &l:readonly = !filewritable(fugitive#Find('.git/index', dir))
           return 'silent doautocmd BufNewFile'
         else
           setlocal readonly nomodifiable
-          return 'echo ' . string(error)
+          return 'silent doautocmd BufNewFile|echo ' . string(error)
         endif
       elseif b:fugitive_type !~# '^\%(tag\|commit\|tree\|blob\)$'
         return "echoerr ".string("fugitive: unrecognized git type '".b:fugitive_type."'")
@@ -1760,7 +1764,7 @@ function! fugitive#BufReadCmd(...) abort
       setlocal nomodified noswapfile
       let modifiable = rev =~# '^:.:' && b:fugitive_type !=# 'tree'
       let &l:readonly = !modifiable || !filewritable(fugitive#Find('.git/index', dir))
-      if &bufhidden ==# ''
+      if empty(&bufhidden)
         setlocal bufhidden=delete
       endif
       let &l:modifiable = modifiable
@@ -1833,7 +1837,7 @@ augroup END
 
 " Section: :Git
 
-call s:command("-bang -nargs=? -complete=customlist,fugitive#CompleteGit Git", "Git")
+call s:command("-bang -nargs=? -range=-1 -complete=customlist,fugitive#CompleteGit Git", "Git")
 
 function! s:GitCommand(line1, line2, range, count, bang, mods, reg, arg, args) abort
   if a:bang

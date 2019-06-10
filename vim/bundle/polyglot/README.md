@@ -10,7 +10,7 @@ A collection of language packs for Vim.
 > One to rule them all, one to find them, one to bring them all and in the darkness bind them.
 
 - It **won't affect your startup time**, as scripts are loaded only on demand\*.
-- It **installs and updates 120+ times faster** than the <!--Package Count-->134<!--/Package Count--> packages it consists of.
+- It **installs and updates 120+ times faster** than the <!--Package Count-->143<!--/Package Count--> packages it consists of.
 - Solid syntax and indentation support (other features skipped). Only the best language packs.
 - All unnecessary files are ignored (like enormous documentation from php support).
 - No support for esoteric languages, only most popular ones (modern too, like `slim`).
@@ -68,6 +68,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [cucumber](https://github.com/tpope/vim-cucumber) (syntax, indent, compiler, ftplugin)
 - [cue](https://github.com/mgrabovsky/vim-cuesheet) (syntax)
 - [dart](https://github.com/dart-lang/dart-vim-plugin) (syntax, indent, autoload, ftplugin)
+- [dlang](https://github.com/JesseKPhillips/d.vim) (syntax, indent)
 - [dockerfile](https://github.com/ekalinin/Dockerfile.vim) (syntax, indent, ftplugin)
 - [elixir](https://github.com/elixir-lang/vim-elixir) (syntax, indent, compiler, autoload, ftplugin)
 - [elm](https://github.com/ElmCast/elm-vim) (syntax, indent, autoload, ftplugin)
@@ -91,9 +92,12 @@ If you need full functionality of any plugin, please use it directly with your p
 - [haproxy](https://github.com/CH-DanReif/haproxy.vim) (syntax)
 - [haskell](https://github.com/neovimhaskell/haskell-vim) (syntax, indent, ftplugin)
 - [haxe](https://github.com/yaymukund/vim-haxe) (syntax)
+- [hcl](https://github.com/b4b4r07/vim-hcl) (syntax, indent, ftplugin)
+- [hive](https://github.com/zebradil/hive.vim) (syntax, ftplugin)
 - [html5](https://github.com/othree/html5.vim) (syntax, indent, autoload, ftplugin)
 - [i3](https://github.com/mboughaba/i3config.vim) (syntax, ftplugin)
 - [idris](https://github.com/idris-hackers/idris-vim) (syntax, indent, ftplugin)
+- [ion](https://github.com/vmchale/ion-vim) (syntax, ftplugin)
 - [jasmine](https://github.com/glanotte/vim-jasmine) (syntax)
 - [javascript](https://github.com/pangloss/vim-javascript) (syntax, indent, compiler, ftplugin, extras)
 - [jenkins](https://github.com/martinda/Jenkinsfile-vim-syntax) (syntax, indent)
@@ -101,7 +105,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [json5](https://github.com/GutenYe/json5.vim) (syntax)
 - [json](https://github.com/elzr/vim-json) (syntax, indent, ftplugin)
 - [jst](https://github.com/briancollins/vim-jst) (syntax, indent)
-- [jsx](https://github.com/amadeus/vim-jsx) (syntax, indent, ftplugin)
+- [jsx](https://github.com/MaxMEllon/vim-jsx-pretty) (autoload, syntax, indent, ftplugin)
 - [julia](https://github.com/JuliaEditorSupport/julia-vim) (syntax, indent, autoload, ftplugin)
 - [kotlin](https://github.com/udalov/kotlin-vim) (syntax, indent, ftplugin)
 - [latex](https://github.com/LaTeX-Box-Team/LaTeX-Box) (syntax, indent, ftplugin)
@@ -109,10 +113,11 @@ If you need full functionality of any plugin, please use it directly with your p
 - [lilypond](https://github.com/anowlcalledjosh/vim-lilypond) (syntax, indent, compiler, ftplugin)
 - [livescript](https://github.com/gkz/vim-ls) (syntax, indent, compiler, ftplugin)
 - [llvm](https://github.com/rhysd/vim-llvm) (syntax, indent, ftplugin)
+- [log](https://github.com/MTDL9/vim-log-highlighting) (syntax)
 - [lua](https://github.com/tbastos/vim-lua) (syntax, indent)
 - [mako](https://github.com/sophacles/vim-bundle-mako) (syntax, indent, ftplugin)
 - [markdown](https://github.com/plasticboy/vim-markdown) (syntax, indent)
-- [mathematica](https://github.com/voldikss/vim-mma) (syntax, autoload, ftplugin)
+- [mathematica](https://github.com/voldikss/vim-mma) (syntax, ftplugin)
 - [mdx](https://github.com/jxnblk/vim-mdx-js) (syntax)
 - [meson](https://github.com/mesonbuild/meson) (syntax, indent, ftplugin)
 - [moonscript](https://github.com/leafo/moonscript-vim) (syntax, indent, ftplugin)
@@ -143,6 +148,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [ragel](https://github.com/jneen/ragel.vim) (syntax)
 - [raml](https://github.com/IN3D/vim-raml) (syntax, ftplugin)
 - [reason](https://github.com/reasonml-editor/vim-reason-plus) (syntax, indent)
+- [rego](https://github.com/tsandall/vim-rego) (syntax)
 - [rspec](https://github.com/sheerun/rspec.vim) (syntax)
 - [rst](https://github.com/marshallward/vim-restructuredtext) (syntax, autoload, ftplugin)
 - [ruby](https://github.com/vim-ruby/vim-ruby) (syntax, indent, compiler, autoload, ftplugin)
@@ -154,18 +160,20 @@ If you need full functionality of any plugin, please use it directly with your p
 - [slime](https://github.com/slime-lang/vim-slime-syntax) (syntax, indent)
 - [smt2](https://github.com/bohlender/vim-smt2) (syntax, autoload, ftplugin)
 - [solidity](https://github.com/tomlion/vim-solidity) (syntax, indent, ftplugin)
+- [styled-components](https://github.com/styled-components/vim-styled-components#main) (syntax, indent, ftplugin)
 - [stylus](https://github.com/wavded/vim-stylus) (syntax, indent, ftplugin)
 - [svg-indent](https://github.com/jasonshell/vim-svg-indent) (indent)
 - [svg](https://github.com/vim-scripts/svg.vim) (syntax)
 - [swift](https://github.com/keith/swift.vim) (syntax, indent, ftplugin)
 - [sxhkd](https://github.com/baskerville/vim-sxhkdrc) (syntax)
 - [systemd](https://github.com/wgwoods/vim-systemd-syntax) (syntax)
-- [terraform](https://github.com/hashivim/vim-terraform) (syntax, indent, ftplugin)
+- [terraform](https://github.com/hashivim/vim-terraform) (syntax, indent, autoload, ftplugin)
 - [textile](https://github.com/timcharper/textile.vim) (syntax, ftplugin)
 - [thrift](https://github.com/solarnz/thrift.vim) (syntax)
-- [tmux](https://github.com/keith/tmux.vim) (syntax, ftplugin)
+- [tmux](https://github.com/ericpruitt/tmux.vim) ()
 - [tomdoc](https://github.com/wellbredgrapefruit/tomdoc.vim) (syntax)
 - [toml](https://github.com/cespare/vim-toml) (syntax, ftplugin)
+- [tptp](https://github.com/c-cube/vim-tptp) (syntax)
 - [twig](https://github.com/lumiliet/vim-twig) (syntax, indent, ftplugin)
 - [typescript](https://github.com/leafgarland/typescript-vim) (syntax, indent, compiler, ftplugin)
 - [vala](https://github.com/arrufat/vala.vim) (syntax, indent)
@@ -179,6 +187,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [xml](https://github.com/amadeus/vim-xml) (syntax)
 - [yaml](https://github.com/stephpy/vim-yaml) (syntax, ftplugin)
 - [yard](https://github.com/sheerun/vim-yardoc) (syntax)
+- [zig](https://github.com/ziglang/zig.vim) (syntax, autoload, ftplugin)
 <!--/Language Packs-->
 
 ## Updating

@@ -1,6 +1,6 @@
 " Location:     plugin/dispatch.vim
 " Maintainer:   Tim Pope <http://tpo.pe/>
-" Version:      1.7
+" Version:      1.8
 " GetLatestVimScripts: 4504 1 :AutoInstall: dispatch.vim
 
 if exists("g:loaded_dispatch") || v:version < 700 || &compatible
@@ -10,25 +10,25 @@ let g:loaded_dispatch = 1
 
 command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#command_complete Dispatch
       \ execute dispatch#compile_command(<bang>0, <q-args>,
-      \   <count> < 0 || <line1> == <line2> ? <count> : 0)
+      \   <count> < 0 || <line1> == <line2> ? <count> : 0, '<mods>')
 
 command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#command_complete FocusDispatch
       \ execute dispatch#focus_command(<bang>0, <q-args>,
-      \   <count> < 0 || <line1> == <line2> ? <count> : 0)
+      \   <count> < 0 || <line1> == <line2> ? <count> : 0, '<mods>')
 
 command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#make_complete Make
       \ execute dispatch#compile_command(<bang>0, '-- ' . <q-args>,
-      \   <count> < 0 || <line1> == <line2> ? <count> : 0)
+      \   <count> < 0 || <line1> == <line2> ? <count> : 0, '<mods>')
 
 command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#command_complete Spawn
       \ execute dispatch#spawn_command(<bang>0, <q-args>,
-      \   <count> < 0 || <line1> == <line2> ? <count> : 0)
+      \   <count> < 0 || <line1> == <line2> ? <count> : 0, '<mods>')
 
 command! -bang -nargs=* -range=-1 -complete=customlist,dispatch#command_complete Start
       \ execute dispatch#start_command(<bang>0, <q-args>,
-      \   <count> < 0 || <line1> == <line2> ? <count> : 0)
+      \   <count> < 0 || <line1> == <line2> ? <count> : 0, '<mods>')
 
-command! -bang -bar Copen call dispatch#copen(<bang>0)
+command! -bang -bar Copen call dispatch#copen(<bang>0, '<mods>')
 
 command! -bang -bar -nargs=* AbortDispatch
       \ execute dispatch#abort_command(<bang>0, <q-args>)
@@ -87,6 +87,7 @@ endfunction
 if !exists('g:dispatch_handlers')
   let g:dispatch_handlers = [
         \ 'tmux',
+        \ 'job',
         \ 'screen',
         \ 'windows',
         \ 'iterm',

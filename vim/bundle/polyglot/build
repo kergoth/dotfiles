@@ -25,8 +25,10 @@ download() {
   for pack in $1; do
     path="$(cut -d ':' -f 2 <<<"$pack")"
     dir="tmp/$(cut -d '/' -f 2 <<<"$path")"
+    repo="$(awk -F\# '{print $1}' <<<"$path")"
+    branch="$(awk -F\# '{print $2}' <<<"$path")"
     rm -rf "$dir"
-    (mkdir -p "$dir" && curl --silent -L "https://codeload.github.com/$path/tar.gz/master" | tar -zx -C "$dir" --strip 1 && printf '.') &
+    (mkdir -p "$dir" && curl --silent -L "https://codeload.github.com/$repo/tar.gz/${branch:-master}" | tar -zx -C "$dir" --strip 1 && printf '.') &
   done
 
   wait
@@ -176,6 +178,7 @@ PACKS="
   cucumber:tpope/vim-cucumber
   cue:mgrabovsky/vim-cuesheet
   dart:dart-lang/dart-vim-plugin
+  dlang:JesseKPhillips/d.vim
   dockerfile:ekalinin/Dockerfile.vim
   elixir:elixir-lang/vim-elixir
   elm:ElmCast/elm-vim
@@ -199,9 +202,12 @@ PACKS="
   haproxy:CH-DanReif/haproxy.vim
   haskell:neovimhaskell/haskell-vim
   haxe:yaymukund/vim-haxe
+  hcl:b4b4r07/vim-hcl
+  hive:zebradil/hive.vim
   html5:othree/html5.vim
   i3:mboughaba/i3config.vim
   idris:idris-hackers/idris-vim
+  ion:vmchale/ion-vim
   jasmine:glanotte/vim-jasmine
   javascript:pangloss/vim-javascript:_JAVASCRIPT
   jenkins:martinda/Jenkinsfile-vim-syntax
@@ -209,7 +215,7 @@ PACKS="
   json5:GutenYe/json5.vim
   json:elzr/vim-json
   jst:briancollins/vim-jst
-  jsx:amadeus/vim-jsx
+  jsx:MaxMEllon/vim-jsx-pretty
   julia:JuliaEditorSupport/julia-vim
   kotlin:udalov/kotlin-vim
   latex:LaTeX-Box-Team/LaTeX-Box
@@ -217,6 +223,7 @@ PACKS="
   lilypond:anowlcalledjosh/vim-lilypond
   livescript:gkz/vim-ls
   llvm:rhysd/vim-llvm
+  log:MTDL9/vim-log-highlighting
   lua:tbastos/vim-lua
   mako:sophacles/vim-bundle-mako
   markdown:plasticboy/vim-markdown:_SYNTAX
@@ -251,6 +258,7 @@ PACKS="
   ragel:jneen/ragel.vim
   raml:IN3D/vim-raml
   reason:reasonml-editor/vim-reason-plus
+  rego:tsandall/vim-rego
   rspec:sheerun/rspec.vim
   rst:marshallward/vim-restructuredtext
   ruby:vim-ruby/vim-ruby
@@ -262,6 +270,7 @@ PACKS="
   slime:slime-lang/vim-slime-syntax
   smt2:bohlender/vim-smt2
   solidity:tomlion/vim-solidity
+  styled-components:styled-components/vim-styled-components#main
   stylus:wavded/vim-stylus
   svg-indent:jasonshell/vim-svg-indent
   svg:vim-scripts/svg.vim
@@ -271,9 +280,10 @@ PACKS="
   terraform:hashivim/vim-terraform
   textile:timcharper/textile.vim
   thrift:solarnz/thrift.vim
-  tmux:keith/tmux.vim
+  tmux:ericpruitt/tmux.vim
   tomdoc:wellbredgrapefruit/tomdoc.vim
   toml:cespare/vim-toml
+  tptp:c-cube/vim-tptp
   twig:lumiliet/vim-twig
   typescript:leafgarland/typescript-vim
   vala:arrufat/vala.vim
@@ -287,6 +297,7 @@ PACKS="
   xls:vim-scripts/XSLT-syntax
   yaml:stephpy/vim-yaml
   yard:sheerun/vim-yardoc
+  zig:ziglang/zig.vim
 "
 
 rm -rf tmp
