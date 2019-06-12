@@ -48,7 +48,7 @@
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
 
 	# Update with rebase, re-applying merges
-	upr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
+	upr = !git fetch "$(git tracking-remote)" && git rebase -r "@{u}"
 	purr = !git upr
 	sync = !git purr && git push && git lc
 
