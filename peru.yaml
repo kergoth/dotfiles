@@ -189,7 +189,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 3b7c7b83d2ef5f559158c84c5afb0f51656ccade
+    rev: 80c242c3c5394fd5143b5d7e2741989ba04ae46a
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -223,7 +223,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 597b338f3579ca6929c47465397974d366f4eccc
+    rev: 2c5b28387ab50f6e6c6034a5b362b24be63734a3
 
 # continuously updated session files
 git module vim-obsession:
@@ -560,7 +560,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: fea666bd27a0e2eb41868f30ae23121c72f4fe65
+    rev: 6e28eec243c4df3cf3b67bac9f87fdd30c846cbd
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -728,7 +728,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: a4f6b0abe6cad85330867a54893864e0d5c59359
+    rev: 42a51ef8d9656b7d126ce8ad554045da16fe37da
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
