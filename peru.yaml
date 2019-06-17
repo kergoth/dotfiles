@@ -127,7 +127,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 25f81d78a7cf4f03eaa7d9b36051ebb0d25f2817
+    rev: 21f52d89caf509ca24b1372a611d16678789f0d3
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -300,7 +300,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: b685b92b3f0ac96aa96de9dad381ff651d448053
+    rev: 14c7529691ad4fadab04d3dbdb063639881f6b79
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -501,7 +501,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 2c83c152fa49aff8dcd9ca129199c7b9cb20325b
+    rev: 936f704c62f0b4ea8b2f42b1bff066d04dd2c824
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -527,7 +527,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 733abd4af0f23f217caa2a303fbef66382d19d6f
+    rev: b3b34eab49b8e44f2df93d746640329a45722c0b
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -560,7 +560,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 6e28eec243c4df3cf3b67bac9f87fdd30c846cbd
+    rev: 1c71da5624fc46107cda4852add08fe34385dfd9
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -593,7 +593,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 2edc785a5e21cf41960223b09bba8efc9276e777
+    rev: d52700284984ada048ce325404dfa25237271ba1
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim

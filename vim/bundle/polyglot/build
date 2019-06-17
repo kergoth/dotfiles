@@ -272,6 +272,7 @@ PACKS="
   solidity:tomlion/vim-solidity
   styled-components:styled-components/vim-styled-components#main
   stylus:wavded/vim-stylus
+  svelte:evanleck/vim-svelte
   svg-indent:jasonshell/vim-svg-indent
   svg:vim-scripts/svg.vim
   swift:keith/swift.vim
@@ -297,6 +298,7 @@ PACKS="
   xls:vim-scripts/XSLT-syntax
   yaml:stephpy/vim-yaml
   yard:sheerun/vim-yardoc
+  zephir:xwsoul/vim-zephir
   zig:ziglang/zig.vim
 "
 

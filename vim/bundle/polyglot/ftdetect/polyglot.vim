@@ -1313,6 +1313,13 @@ autocmd BufNewFile,BufReadPost *.stylus set filetype=stylus
   augroup end
 endif
 
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'svelte') == -1
+  augroup filetypedetect
+  " svelte, from svelte.vim in evanleck/vim-svelte
+au BufRead,BufNewFile *.svelte setfiletype svelte
+  augroup end
+endif
+
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'sxhkd') == -1
   augroup filetypedetect
   " sxhkd, from sxhkdrc.vim in baskerville/vim-sxhkdrc
@@ -1461,6 +1468,13 @@ if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'xdc') == -1
   " xdc, from xdc.vim in amal-khailtash/vim-xdc-syntax
 " xdc
 autocmd BufNewFile,BufRead *.xdc setfiletype xdc
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'zephir') == -1
+  augroup filetypedetect
+  " zephir, from zephir.vim in xwsoul/vim-zephir
+autocmd BufNewFile,BufReadPost *.zep set filetype=zephir
   augroup end
 endif
 

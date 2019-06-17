@@ -131,7 +131,7 @@ formatting.
 * Elm
   * [elm-format](https://github.com/avh4/elm-format)
   * [elm-lsp](https://github.com/antew/elm-lsp)
-  * [elm-make](https://github.com/elm-lang/elm-make)
+  * [elm-make](https://github.com/elm/compiler)
 * Erb
   * [erb](https://apidock.com/ruby/ERB)
   * [erubi](https://github.com/jeremyevans/erubi)
@@ -347,6 +347,8 @@ formatting.
   * [languageserver](https://github.com/lingua-pupuli/puppet-editor-services)
   * [puppet](https://puppet.com)
   * [puppet-lint](https://puppet-lint.com)
+* PureScript
+  * [purescript-language-server](https://github.com/nwolverson/purescript-language-server)
 * Python
   * [autopep8](https://github.com/hhatto/autopep8)
   * [bandit](https://github.com/PyCQA/bandit) :warning:
