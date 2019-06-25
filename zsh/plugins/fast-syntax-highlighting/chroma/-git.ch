@@ -314,7 +314,7 @@ fsh__git__chroma__def=(
                 (-b|-B|--orphan)
                         <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
              || (-b|-B|--orphan):del
-                        <<>> FILE_OR_BRANCH_OR_COMMIT_1_arg // FILE_#_arg
+                        <<>> COMMIT_1_arg // FILE_#_arg // FILE_#_arg
              || (-b|-B|--orphan):add
                         <<>> NEW_BRANCH_1_arg // COMMIT_2_arg // NO_MATCH_#_arg"
 
@@ -492,7 +492,75 @@ fsh__git__chroma__def=(
     LOG_1_arg "NO-OP // ::chroma/-git-verify-rev-range-or-file"
 
     ##
-    #3 All remaining subcommands
+    ## TAG
+    ##
+
+    subcmd:tag "TAG_D_0_opt^ // TAG_L_0_opt^ // TAG_V_0_opt^ // TAG_0_opt^"
+
+    "TAG_0_opt^" "
+                (-u|--local-user=|--cleanup=)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-ARG-action
+             || -m
+                            <<>> NO-OP // ::chroma/-git-commit-msg-opt-action
+                            <<>> NO-OP // ::chroma/-git-commit-msg-opt-ARG-action
+             || (-F|--file)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+                            <<>> NO-OP // ::chroma/-git-verify-file
+             || (-a|--annotate|-s|--sign|-f|-e|--edit)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+             || (-u|--local-user=|--cleanup=|-m|-F|--file|-a|--annotate|-s|--sign|
+                 -f|-e|--edit):add
+                            <<>> TAG_NEW_1_arg // COMMIT_2_arg // NO_MATCH_#_arg //
+                            NO_MATCH_#_opt"
+
+    TAG_NEW_1_arg "NO-OP // ::chroma/-git-verify-correct-branch-name"
+
+    TAG_1_arg "NO-OP // ::chroma/-git-verify-tag-name"
+
+    "TAG_D_0_opt^" "
+                (-d)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+             || -d:add
+                            <<>> TAG_#_arg // NO_MATCH_#_opt
+             || -d:del
+                            <<>> TAG_0_opt // TAG_NEW_1_arg // COMMIT_2_arg"
+
+    "TAG_#_arg" "NO-OP // ::chroma/-git-verify-tag-name"
+
+    "TAG_L_0_opt^" "
+                (-l)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+             || -l:add
+                            <<>> TAG_L_0_opt // TAG_PAT_#_arg // NO_MATCH_#_opt
+             || -l:del
+                            <<>> TAG_0_opt // TAG_NEW_1_arg // COMMIT_2_arg"
+
+    "TAG_L_0_opt" "
+                (-n|--contains|--no-contains|--points-at|--column=|--sort=|--format=|
+                 --color=)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-ARG-action
+             || (--column|--no-column|--create-reflog|--merged|--no-merged|--color|-i)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action"
+
+    "TAG_PAT_#_arg" "NO-OP // ::chroma/main-chroma-std-verify-pattern"
+
+    "TAG_V_0_opt^" "
+                (-v)
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+             || -v:add
+                            <<>> TAG_V_0_opt // TAG_#_arg // NO_MATCH_#_opt
+             || -v:del
+                            <<>> TAG_0_opt // TAG_NEW_1_arg // COMMIT_2_arg"
+
+    "TAG_V_0_opt" "
+                --format=
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-action
+                            <<>> NO-OP // ::chroma/main-chroma-std-aopt-ARG-action"
+
+    ##
+    ## All remaining subcommands
     ##
     ## {{{
 
@@ -543,7 +611,7 @@ chroma/-git-get-subcommands() {
     if [[ "${__lines_list[1]}" = See* ]]; then
         # (**)
         # git >= v2.20, the aliases in the `git help -a' command
-        __lines_list=( ${${${${(M)__lines_list[@]:#([[:space:]][[:space:]]#[a-z]*|Command aliases)}##[[:space:]]##}//Command\ aliases/Command_aliases}} )
+        __lines_list=( ${${${${(M)__lines_list[@]:#([[:space:]](#c3,3)[a-zA-Z0-9_]*|Command aliases)}##[[:space:]]##}//(#s)Command\ aliases(#e)/Command_aliases}} )
         __svalue="+${__lines_list[(I)Command_aliases]}"
         __lines_list[1,__svalue-1]=( ${(@)__lines_list[1,__svalue-1]%%[[:space:]]##*} )
     else
@@ -634,6 +702,9 @@ chroma/-git-file-or-ubranch-or-commit-verify() {
 # A generic handler
 chroma/-git-verify-correct-branch-name() {
     local _wrd="$4"
+    chroma/-git-verify-commit "$@" && \
+        { __style=${FAST_THEME_NAME}incorrect-subtle; return 0; }
+
     chroma/-git-verify-remote "$@" && \
         { __style=${FAST_THEME_NAME}incorrect-subtle; return 0; }
 
@@ -688,6 +759,14 @@ chroma/-git-verify-rev-range-or-file() {
     return 1
 }
 
+chroma/-git-verify-tag-name() {
+    local _wrd="$4"
+    -fast-run-git-command "git tag" "chroma-git-tags-$PWD" "" $(( 2*60 ))
+    [[ -n ${__lines_list[(r)$_wrd]} ]] && \
+        __style=${FAST_THEME_NAME}correct-subtle || \
+        __style=${FAST_THEME_NAME}incorrect-subtle
+}
+
 # A handler for the commit's -m/--message options.Currently
 # does the same what chroma/main-chroma-std-aopt-action does
 chroma/-git-commit-msg-opt-action() {
@@ -706,6 +785,9 @@ chroma/-git-commit-msg-opt-ARG-action() {
         _wrd="${(Q)${match[2]//\`/x}}"
         # highlight --message=>>something<<
         reply+=("$(( __start+10 )) $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-quoted-argument]}")
+    elif [[ "$_wrd" != --message ]]; then
+        # highlight the message's body
+        reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-quoted-argument]}")
     fi
 
     if (( ${#_wrd} > 50 )); then

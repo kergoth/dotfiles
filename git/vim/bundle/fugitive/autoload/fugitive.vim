@@ -863,9 +863,8 @@ function! s:Expand(rev) abort
     let file = 'HEAD^{}' . a:rev[1:-1] . s:Relative(':')
   elseif a:rev =~# '^@{'
     let file = 'HEAD' . a:rev. s:Relative(':')
-  elseif a:rev =~# '^\^[0-9~^{]\|^\~[0-9~^]'
-    let commit = substitute(s:DirCommitFile(@%)[1], '^\d\=$', 'HEAD', '')
-    let file = commit . a:rev . s:Relative(':')
+  elseif a:rev =~# '^\^[0-9~^{]\|^\~[0-9~^]\|^\^$'
+    call s:throw('Use ' . string('!' . a:rev . ':%') . ' instead of ' . string(a:rev))
   else
     let file = a:rev
   endif
@@ -3203,8 +3202,8 @@ function! s:Open(cmd, bang, mods, arg, args) abort
     return 'echo ' . string(':!' . git . ' ' . args)
   endif
 
-  let [file, pre] = s:OpenParse(a:args)
   try
+    let [file, pre] = s:OpenParse(a:args)
     let file = s:Generate(file)
   catch /^fugitive:/
     return 'echoerr v:errmsg'
@@ -3242,8 +3241,8 @@ function! s:ReadCommand(line1, line2, range, count, bang, mods, reg, arg, args) 
     call fugitive#ReloadStatus()
     return 'redraw|echo '.string(':!'.git.' '.args)
   endif
-  let [file, pre] = s:OpenParse(a:args)
   try
+    let [file, pre] = s:OpenParse(a:args)
     let file = s:Generate(file)
   catch /^fugitive:/
     return 'echoerr v:errmsg'
@@ -4306,13 +4305,13 @@ function! s:NavigateUp(count) abort
 endfunction
 
 function! fugitive#MapJumps(...) abort
-  if get(b:, 'fugitive_type', '') ==# 'blob'
-    nnoremap <buffer> <silent> <CR>    :<C-U>.Gblame<CR>
-  else
-    nnoremap <buffer> <silent> <CR>    :<C-U>exe <SID>GF("edit")<CR>
-  endif
   if !&modifiable
     let nowait = v:version >= 704 ? '<nowait>' : ''
+    if get(b:, 'fugitive_type', '') ==# 'blob'
+      nnoremap <buffer> <silent> <CR>    :<C-U>.Gblame<CR>
+    else
+      nnoremap <buffer> <silent> <CR>    :<C-U>exe <SID>GF("edit")<CR>
+    endif
     if get(b:, 'fugitive_type', '') ==# 'blob'
       nnoremap <buffer> <silent> o     :<C-U>.,.+1Gblame<CR>
       nnoremap <buffer> <silent> S     :<C-U>echoerr 'Use gO'<CR>

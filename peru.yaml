@@ -127,7 +127,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 21f52d89caf509ca24b1372a611d16678789f0d3
+    rev: cf67edef842130879c11813d0f6752611812ea05
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -135,7 +135,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 4f939ade9a1a3fc663b74c739ce638800f6c60ce
+    rev: b512d57b6d0d2b85368a8068ec1a13288a93d267
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 6d42c7df44aa20252e5dac747c3ac9fa7450b21b
+    rev: aff3359699559231faee7d645678f71190700ec6
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -223,7 +223,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 2c5b28387ab50f6e6c6034a5b362b24be63734a3
+    rev: 219df23e822206a25e7c40bf4329774aa19f7732
 
 # continuously updated session files
 git module vim-obsession:
@@ -527,7 +527,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: b3b34eab49b8e44f2df93d746640329a45722c0b
+    rev: 146020d9b28c70a5edd93d19bbef9c5cb05d4b62
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -535,7 +535,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 1712db21466f689e428ae9e1ddc91170f61cede3
+    rev: 0b49719ae4587806fc54e210b4035ec37d7cdd1b
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -560,7 +560,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: 1c71da5624fc46107cda4852add08fe34385dfd9
+    rev: 65ba4b85ec3011cccb9ea7135183e7fc8d7a0d69
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
