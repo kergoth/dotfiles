@@ -857,14 +857,18 @@ function! s:ExpandVar(other, var, flags, esc) abort
 endfunction
 
 function! s:Expand(rev) abort
-  if a:rev =~# '^:[0-3]$'
-    let file = a:rev . s:Relative(':')
-  elseif a:rev =~# '^-'
-    let file = 'HEAD^{}' . a:rev[1:-1] . s:Relative(':')
-  elseif a:rev =~# '^@{'
-    let file = 'HEAD' . a:rev. s:Relative(':')
-  elseif a:rev =~# '^\^[0-9~^{]\|^\~[0-9~^]\|^\^$'
+  if a:rev =~# '^:0$'
+    call s:throw('Use ' . string(':%') . ' instead of ' . string(a:rev))
+  elseif a:rev =~# '^:[1-3]$'
+    call s:throw('Use ' . string(a:rev . ':%') . ' instead of ' . string(a:rev))
+  elseif a:rev =~# '^@{' || a:rev =~# '^\^[0-9~^{]\|^\~[0-9~^]\|^\^$'
     call s:throw('Use ' . string('!' . a:rev . ':%') . ' instead of ' . string(a:rev))
+  elseif a:rev =~# '^-'
+    call s:throw('Use ' . string('!' . a:rev[1:-1] . ':%') . ' instead of ' . string(a:rev))
+  elseif a:rev =~# '^>[~^]\|^>@{\|^>:\d$'
+    let file = 'HEAD' . a:rev[1:-1] . s:Relative(':')
+  elseif a:rev =~# '^>[^> ]'
+    let file = a:rev[1:-1] . s:Relative(':')
   else
     let file = a:rev
   endif
@@ -2941,8 +2945,19 @@ function! s:Merge(cmd, bang, mods, args, ...) abort
     else
       let &l:makeprg = 'env GIT_EDITOR=false ' . substitute(&l:makeprg, '^env ', '', '')
     endif
-    silent noautocmd make!
-  catch /^Vim\%((\a\+)\)\=:E211/
+    try
+      if !has('patch-8.1.0334') && &autowrite
+        let autowrite_was_set = 1
+        set noautowrite
+        wall
+      endif
+      silent noautocmd make!
+    finally
+      if exists('autowrite_was_set')
+        set autowrite
+      endif
+    endtry
+    catch /^Vim\%((\a\+)\)\=:E211/
     let err = v:exception
   finally
     redraw!
@@ -3451,7 +3466,18 @@ function! s:Dispatch(bang, args)
     if exists(':Make') == 2
       Make
     else
-      silent noautocmd make!
+      try
+        if !has('patch-8.1.0334') && &autowrite
+          let autowrite_was_set = 1
+          set noautowrite
+          wall
+        endif
+        silent noautocmd make!
+      finally
+        if exists('autowrite_was_set')
+          set autowrite
+        endif
+      endtry
       redraw!
       return 'call fugitive#Cwindow()|call fugitive#ReloadStatus()'
     endif
