@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 77d86594cc748734e6367d4a9b7a0604971e02e2
+    rev: cf5b43443fb46dc795ee16fb35dc618636716044
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -501,7 +501,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 12083a59317dc879f26e2464974f175d4fd0a85b
+    rev: 2e002395b6a23fd2f51b9ed46e7d7581acd9dbd1
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -527,7 +527,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 146020d9b28c70a5edd93d19bbef9c5cb05d4b62
+    rev: ac4f0b241853565d8033dbd2d1661e179dc47e3f
 
 git module git-extras:
     url: https://github.com/tj/git-extras
