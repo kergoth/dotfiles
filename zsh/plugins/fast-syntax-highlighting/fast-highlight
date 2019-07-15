@@ -610,14 +610,11 @@ typeset -ga ZLAST_COMMANDS
       (( next_word = (next_word & ~2) | 4 | 1 ))
      else
        _mybuf=${${(Q)__arg}#\"}
-       if (( ${+parameters} )) && \
-         [[ $_mybuf = (#b)\$([a-zA-Z_][a-zA-Z0-9_]#|[0-9]##)(*) || \
-             $_mybuf = (#b)\$\{([a-zA-Z_][a-zA-Z0-9_]#|[0-9]##)\}(*) || \
-             $_mybuf = (#b)(*)(*)\$([a-zA-Z_][a-zA-Z0-9_]#|[0-9]##)(*) ]] && \
-         (( ${+parameters[${match[1]}]} || ${+parameters[${match[3]}]} )); then
-         [[ -n "${match[3]}" ]] && \
-           -fast-highlight-main-type ${match[1]}${match[2]}${(P)match[3]}${match[4]} || \
-           -fast-highlight-main-type ${(P)match[1]}${match[2]}
+       if [[ $_mybuf = (#b)(*)(*)\$([a-zA-Z_][a-zA-Z0-9_]#|[0-9]##)(*) || \
+             $_mybuf = (#b)(*)(*)\$\{([a-zA-Z_][a-zA-Z0-9_:-]#|[0-9]##)(*) ]] && \
+         [[ -v ${match[3]%%:-*} ]]
+       then
+         -fast-highlight-main-type ${match[1]}${match[2]}${(P)match[3]%%:-*}${match[4]#\}}
        elif [[ $braces_stack = T* ]]; then # T - typedef, etc.
          REPLY=none
        else
@@ -675,7 +672,7 @@ typeset -ga ZLAST_COMMANDS
         none)           # Assign?
                         if [[ $__arg == [a-zA-Z_][a-zA-Z0-9_]#(|\[[^\]]#\])(|[^\]]#\])(|[+])=* || $__arg == [0-9]##(|[+])=* || ( $braces_stack = T* && ${__arg_type} != 3 ) ]]; then
                           __style=${FAST_THEME_NAME}assign
-                          [[ $__arg = ?*[=]* ]] && FAST_ASSIGNS_SEEN[${__arg%%=*}]=1
+                          FAST_ASSIGNS_SEEN[${__arg%%=*}]=1
 
                           # Handle array assignment
                           [[ $__arg = (#b)*=(\()*(\))* || $__arg = (#b)*=(\()* ]] && {
@@ -855,6 +852,7 @@ typeset -ga ZLAST_COMMANDS
                  already_added=1
                  ;;
         [\"\']*|[^\"\\]##([\\][\\])#\"*|[^\'\\]##([\\][\\])#\'*)
+                 # 256 is eval-mode
                  if (( this_word & 256 )) && [[ $__arg = [\'\"]* ]]; then
                    (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && \
                      reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}recursive-base]}")
@@ -866,7 +864,8 @@ typeset -ga ZLAST_COMMANDS
                    else
                      __idx=0
                    fi
-                   -fast-highlight-process "$PREBUFFER" ${${__arg%[\'\"]}#[\'\"]} $(( _start_pos + 1 ))
+                   (( _start_pos-__PBUFLEN >= 0 )) && \
+                     -fast-highlight-process "$PREBUFFER" "${${__arg%[\'\"]}#[\'\"]}" $(( _start_pos + 1 ))
                    (( __idx )) && FAST_THEME_NAME=$_mybuf
                    already_added=1
                  else
@@ -933,7 +932,22 @@ typeset -ga ZLAST_COMMANDS
                  # Counting complex brackets (for brackets-highlighter): 10. )) for as-argument $((
                  _FAST_COMPLEX_BRACKETS+=( $__start $(( __start + 1 )) )
                  ;;
-        '`'*)    __style=${FAST_THEME_NAME}back-quoted-argument;;
+        '`'*)
+                 (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && \
+                   reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}back-quoted-argument]}")
+                 if [[ -n ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}secondary]} ]]; then
+                   __idx=1
+                   _mybuf=$FAST_THEME_NAME
+                   FAST_THEME_NAME=${${${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}secondary]}:t:r}#(XDG|LOCAL|HOME|OPT):}
+                   (( ${+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}default]} )) || source $FAST_WORK_DIR/secondary_theme.zsh
+                 else
+                   __idx=0
+                 fi
+                 (( _start_pos-__PBUFLEN >= 0 )) && \
+                   -fast-highlight-process "$PREBUFFER" "${${__arg%[\`]}#[\`]}" $(( _start_pos + 1 ))
+                 (( __idx )) && FAST_THEME_NAME=$_mybuf
+                 already_added=1
+          ;;
         '((')    # 'F' - (( after for
                  (( this_word & 32 )) && {
                    braces_stack='F'$braces_stack
@@ -1084,10 +1098,19 @@ typeset -ga ZLAST_COMMANDS
         if (( this_word & BIT_case_nempty_item == 0 )) && [[ $__arg = "esac" ]]; then
           (( next_word = 1 ))
           __style=${FAST_THEME_NAME}reserved-word
-        elif [[ $__arg = [\)\(] ]]; then
-          __style=${FAST_THEME_NAME}case-parentheses
-          [[ $__arg = \) ]] && (( next_word = BIT_case_code | 1 )) || (( next_word = BIT_case_item | BIT_case_nempty_item ))
+        elif [[ $__arg = (\(*\)|\)|\() ]]; then
+          [[ $__arg = *\) ]] && (( next_word = BIT_case_code | 1 )) || (( next_word = BIT_case_item | BIT_case_nempty_item ))
           _FAST_COMPLEX_BRACKETS+=( $(( _start_pos-__PBUFLEN )) )
+          (( ${#__arg} > 1 )) && {
+            _FAST_COMPLEX_BRACKETS+=( $(( _start_pos+${#__arg}-1-__PBUFLEN )) )
+            (( __start=_start_pos-__PBUFLEN, __end=_end_pos-__PBUFLEN, __start >= 0 )) && \
+              reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}case-parentheses]}")
+            (( __start=_start_pos+1-__PBUFLEN, __end=_end_pos-1-__PBUFLEN, __start >= 0 )) && \
+              reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}case-condition]}")
+            already_added=1
+          } || {
+            __style=${FAST_THEME_NAME}case-parentheses
+          }
         else
           (( next_word = BIT_case_item | BIT_case_nempty_item ))
           __style=${FAST_THEME_NAME}case-condition
@@ -1163,8 +1186,16 @@ typeset -ga ZLAST_COMMANDS
   done
 
   # Run on fake buffer with replaced parentheses: ")" into "x"
-  __inputs=( ${(0)${(S)_mybuf//(#b)*\$\(([^\)]#)(\)|(#e))/${mbegin[1]};${mend[1]}${__nul}}%$__nul*} )
-  if [[ ${__inputs[1]} != $_mybuf ]]; then
+  if [[ "$_mybuf" = *$__nul* ]]; then
+    # Try to avoid conflict with the \0, however
+    # we have to split at *some* character - \7
+    # is ^G, so one cannot have null and ^G at
+    # the same time on the command line
+    __nul=$'\7'
+  fi
+
+  __inputs=( ${(ps:$__nul:)${(S)_mybuf//(#b)*\$\(([^\)]#)(\)|(#e))/${mbegin[1]};${mend[1]}${__nul}}%$__nul*} )
+  if [[ "${__inputs[1]}" != "$_mybuf" && -n "${__inputs[1]}" ]]; then
     if [[ -n ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}secondary]} ]]; then
       __idx=1
       __tmp=$FAST_THEME_NAME
@@ -1188,6 +1219,8 @@ typeset -ga ZLAST_COMMANDS
 
 -fast-highlight-check-path()
 {
+  (( _start_pos-__PBUFLEN >= 0 )) || \
+    { [[ $1 != "noasync" ]] && print -r -- "- $_start_pos $_end_pos"; return 1; }
   [[ $1 != "noasync" ]] && {
     print -r -- ${sysparams[pid]}
     # This is to fill cache
@@ -1260,6 +1293,7 @@ zle -N -- fast-highlight-check-path-handler -fast-highlight-check-path-handler
 # $1 - additional style to glue-in to added style
 -fast-highlight-string()
 {
+  (( _start_pos-__PBUFLEN >= 0 )) || return 0
   _mybuf=$__arg
   __idx=_start_pos
 
@@ -1295,6 +1329,7 @@ zle -N -- fast-highlight-check-path-handler -fast-highlight-check-path-handler
 # Parameters used: _mybuf, __idx, _end_idx, __style
 -fast-highlight-math-string()
 {
+  (( _start_pos-__PBUFLEN >= 0 )) || return 0
   _mybuf=$__arg
   __idx=_start_pos
 
@@ -1306,7 +1341,9 @@ zle -N -- fast-highlight-check-path-handler -fast-highlight-check-path-handler
 
     [[ ${match[1]} = [0-9]* ]] && __style=${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}mathnum]} || {
       [[ ${match[1]} = [a-zA-Z_]* ]] && {
-        [[ -n ${(P)match[1]} || ${FAST_ASSIGNS_SEEN[${match[1]}]} = 1 ]] && __style=${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}mathvar]} || __style=${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}matherr]}
+        [[ -v ${match[1]} || ${FAST_ASSIGNS_SEEN[${match[1]}]} = 1 ]] && \
+            __style=${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}mathvar]} || \
+            __style=${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}matherr]}
       } || {
         [[ ${match[1]} = "$"* ]] && {
           match[1]=${match[1]//[\{\}+]/}
@@ -1330,6 +1367,7 @@ zle -N -- fast-highlight-check-path-handler -fast-highlight-check-path-handler
 # Highlight special chars inside dollar-quoted strings
 -fast-highlight-dollar-string()
 {
+  (( _start_pos-__PBUFLEN >= 0 )) || return 0
   local i j k __style
   local AA
   integer c
