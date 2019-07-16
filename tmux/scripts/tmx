@@ -72,6 +72,6 @@ if [ $# -gt 0 ] && [ $existing -eq 0 ]; then
         tmux split-window -f -t "$session" "$cmd"
     done
     tmux kill-pane -t "$session:1.1"
-    tmux-resize-adaptable -t "$session" -p 60 -l main-vertical
+    tmux-resize-adaptable -t "$session" -p 50 -l main-vertical
 fi
 exec tmux attach-session -t "$session"
