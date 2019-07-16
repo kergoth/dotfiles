@@ -1,0 +1,2 @@
+#!/bin/sh
+tmux ls -F '#{?session_grouped,#{session_group},}' 2>/dev/null | sort -u

@@ -1,0 +1,3 @@
+#!/bin/sh
+group="$1"
+tmux ls -F '#{?session_grouped,#{session_group}:#{session_name},}' 2>/dev/null | grep "^$group:" | cut -d: -f2
