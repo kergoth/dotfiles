@@ -53,6 +53,7 @@ imports:
     ssh-copy-rsub: scripts
     t: scripts
     tagbak: osx/scripts
+    tony-tmux-config: tmux/scripts
     vim-profiler: vim/scripts
     vitag: osx/scripts
     wget-finder: scripts
@@ -767,5 +768,13 @@ git module vim-zoom:
 git module vim-targets:
     url: https://github.com/wellle/targets.vim
     rev: a79447f261e4b8b4327557aa03726f3849334b84
+
+git module tony-tmux-config:
+    url: https://github.com/tony/tmux-config
+    pick: tmux-resize-adaptable
+    move:
+        scripts/resize-adaptable.sh: tmux-resize-adaptable
+    executable: tmux-resize-adaptable
+    rev: 094df60a6701a6dbd5b099e175e26c71bf4eadea
 
 #  vim: set sw=4 :
