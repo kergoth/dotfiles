@@ -1,9 +1,9 @@
 #compdef tmx
 
 _tmx() {
-  local -a sessions
-  tmux_sessions=($(tmux ls -F '#{session_name}'))
-  _arguments '*:sessions:($tmux_sessions)'
+  local -a groups
+  tmux_groups=($(tmux ls -F '#{?session_grouped,#{session_group},}' 2>/dev/null | sort -u))
+  _arguments '*:groups:($tmux_groups)'
 
   return 0
 }
