@@ -2,9 +2,12 @@
 
 usage () {
     cat >&2 <<END
-Usage: ${0##*/} GROUP_NAME [COMMAND [COMMAND..]
+Usage: ${0##*/} [OPTIONS] GROUP_NAME [COMMAND [COMMAND..]
 
 Creates a new session for the specified group.
+
+Options:
+  -l  List existing groups rather than creating a session
 END
     # shellcheck disable=SC2046
     if [ $(list_groups | wc -l) -gt 0 ]; then
@@ -36,8 +39,12 @@ tmux() {
 }
 
 
-while getopts h opt; do
+while getopts lh opt; do
     case "$opt" in
+        l)
+            list_groups
+            exit 0
+            ;;
         \? | h)
             usage
             ;;

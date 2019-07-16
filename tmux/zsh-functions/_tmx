@@ -2,7 +2,7 @@
 
 _tmx() {
   local -a groups
-  tmux_groups=($(tmux ls -F '#{?session_grouped,#{session_group},}' 2>/dev/null | sort -u))
+  tmux_groups=($(tmx -l))
   _arguments '*:groups:($tmux_groups)'
 
   return 0
