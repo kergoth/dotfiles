@@ -1,0 +1,1 @@
+man tmux 2>/dev/null | less -p '^(   *'"$1"'( \[.*)?|  *\(alias: '"$1"'\))$'
