@@ -14,11 +14,6 @@ export PYTHONNOUSERSITE=1
 export CFLAGS="${CFLAGS--O2}"
 export LDFLAGS
 
-# Silence spammy warnings on clang builds, as mentioned in the python
-# developer documentation.
-export CPPFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments \
-                 -Wno-parentheses-equality -Wno-nullability-completeness"
-
 no_lto=0
 no_pgo=0
 
@@ -31,6 +26,10 @@ case "$OSTYPE" in
             # The python 3 build chokes due to a lack of llvm-ar at the moment
             no_lto=1
         fi
+        # Silence spammy warnings on clang builds, as mentioned in the python
+        # developer documentation.
+        export CPPFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments \
+                         -Wno-parentheses-equality -Wno-nullability-completeness"
         ;;
 esac
  
