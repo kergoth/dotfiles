@@ -1,5 +1,24 @@
 #!/bin/sh
 
+export CFLAGS="${CFLAGS--O2}"
+export LDFLAGS
+
+case "$OSTYPE" in
+    darwin*)
+        if command -v brew >/dev/null 2>&1; then
+            eval "$(brew environment --shell=auto | grep -vw PATH)"
+            CFLAGS="$CFLAGS -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
+            LDFLAGS="$LDFLAGS -L$(brew --prefix openssl)/lib"
+        fi
+        ;;
+    *)
+        if [ -e /etc/arch-release ]; then
+            CFLAGS="$CFLAGS -I/usr/include/openssl-1.0"
+            LDFLAGS="$LDFLAGS -L/usr/lib/openssl-1.0"
+        fi
+        ;;
+esac
+
 pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
 PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 
