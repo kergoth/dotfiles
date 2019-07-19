@@ -31,6 +31,12 @@ case "$OSTYPE" in
         export CPPFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments \
                          -Wno-parentheses-equality -Wno-nullability-completeness"
         ;;
+    *)
+        if [ -e /etc/arch-release ]; then
+            CFLAGS="$CFLAGS -I/usr/include/openssl-1.0"
+            LDFLAGS="$LDFLAGS -L/usr/lib/openssl-1.0"
+        fi
+        ;;
 esac
  
 if [ -z "$CONFIGURE_OPTS" ] && [ -z "$PYTHON_CONFIGURE_OPTS" ]; then
