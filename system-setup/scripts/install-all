@@ -4,7 +4,11 @@ PATH="$(dirname "$0"):$PATH"
 
 install-langs
 
-sudo pacman -Sy --needed vim zsh dtach cmake
-sudo apt-get -y install vim zsh dtach cmake
-brew install zsh dtach cmake
+if command -v pacman >/dev/null 2>&1; then
+    sudo pacman -Sy --needed vim zsh dtach cmake
+elif command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get -y install vim zsh dtach cmake
+elif command -v brew >/dev/null 2>&1; then
+    brew install zsh dtach cmake
+fi
 install-env-tools
