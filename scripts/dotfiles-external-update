@@ -18,7 +18,7 @@ tmpdir="$(cd "$(mktemp -dt "${0##*/}.XXXXXX")" && pwd)"
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 if ! which peru >/dev/null 2>&1; then
-    "$dotfilesdir/scripts/pipv3" peru || die "peru install failed"
+    "$dotfilesdir/python/scripts/pipv3" peru || die "peru install failed"
 fi
 PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 
