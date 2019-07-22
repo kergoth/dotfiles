@@ -1,0 +1,3 @@
+#!/bin/sh
+# I don't trust the python link to be sane
+exec python2 "$@"

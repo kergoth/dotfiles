@@ -1,0 +1,3 @@
+#!/bin/sh
+# I don't trust the pip symlink to be sane
+exec python3 -m pip "$@"
