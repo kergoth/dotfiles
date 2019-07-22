@@ -27,38 +27,20 @@ pipv () {
 }
 
 pipv3 () {
-    kpipsi -3 upgrade "$@" || kpipsi -3 install "$@" || { echo >&2 Error installing $@; return 1; }
+    pipx upgrade "$@" || pipx install "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
 pip_install () {
-    command pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
+    command python2 -m pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
 pip3_install () {
-    command pip3 install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
+    command python3 -m pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
-setup_pip () {
-    if ! which pip >/dev/null 2>&1; then
-        python -m ensurepip --user
-        python -m pip install --user --upgrade pip
-        python -m pip install --user --upgrade virtualenv
-    fi
-    if which python3 >/dev/null 2>&1 && ! which pip3 >/dev/null 2>&1; then
-        python3 -m ensurepip --user
-        python3 -m pip install --user --upgrade pip
-        python3 -m pip install --user --upgrade virtualenv
-    fi
-}
-
-if which pyenv >/dev/null 2>&1; then
-    eval "$(pyenv init -)"
-fi
-
-setup_pip
-
-## Pipsi
+## Pipsi, pipx
 install-pipsi
+install-pipx
 
 ## Interactive mode python tools
 pip_install see
