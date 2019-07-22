@@ -14,8 +14,9 @@ fi
 for i in golang ruby nodejs rust haskell; do
     asdf-install -g "$i"
 done
-install-python-asdf
 install-cabal
+install-python-asdf
 install-pipsi
+install-pipx
 
 # TODO: remove the packages we installed, but not the ones the user did
