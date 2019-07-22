@@ -8,22 +8,8 @@ esac
 
 PIPSI_HOME="${PIPSI_HOME:-${XDG_DATA_HOME:-~/.local/share}/pipsi}"
 if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
-    if which pyenv >/dev/null 2>&1; then
-        eval "$(pyenv init -)"
-    fi
-    pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
-    PATH="$pythonuserdir/bin:$PATH"
-
-    if ! which pip >/dev/null 2>&1; then
-        curl https://bootstrap.pypa.io/get-pip.py | python - --user
-        if [ "$(which pip)" != "$pythonuserdir/bin/pip" ]; then
-            echo >&2 "Error in pip installation"
-            exit 1
-        fi
-    fi
-    pip install --user --ignore-installed virtualenv
-    curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
+    curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python3
 else
     . "$PIPSI_HOME/pipsi/bin/activate"
-    pip install -U pipsi
+    pip3 install -U pipsi
 fi
