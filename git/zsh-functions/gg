@@ -1,5 +1,5 @@
 if [[ $# -eq 0 ]]; then
-    find "$GIT_PATH" -type d -mindepth 3 -maxdepth 3 -not -name .git \
+    find "$GIT_PATH" -mindepth 3 -maxdepth 3 -not -name .git -type d \
         | sort \
         | sed -e "s#^$GIT_PATH/##; s#github.com/##"
     return 0
