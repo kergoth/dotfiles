@@ -3,7 +3,14 @@ local GIT_GET_DEFAULT_PREFIX
 
 if ! [[ $url =~ '://' ]]; then
     if [[ $url =~ '/' ]]; then
-        GIT_GET_DEFAULT_PREFIX=https://github.com/
+        case "$url" in
+            */*/*)
+                GIT_GET_DEFAULT_PREFIX=${GIT_GET_DEFAULT_PREFIX:-https://}
+                ;;
+            *)
+                GIT_GET_DEFAULT_PREFIX=https://github.com/
+                ;;
+        esac
     else
         GIT_GET_DEFAULT_PREFIX=https://github.com/${USER:-${LOGNAME:-$(id -un)}}/
     fi
