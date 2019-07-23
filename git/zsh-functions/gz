@@ -3,7 +3,7 @@ if [[ $# -eq 0 ]]; then
 else
     local query="'$*"
 fi
-local repo="$(gg | fzf-tmux --select-1 --exit-0 -q "$query")" || return $?
+local repo="$(gg | fzf-tmux --exit-0 ${query:+--select-1 -q "$query"})" || return $?
 if [[ -z "$repo" ]]; then
     return 1
 fi
