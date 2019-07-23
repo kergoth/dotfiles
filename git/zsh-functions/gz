@@ -1,0 +1,10 @@
+if [[ $# -eq 0 ]]; then
+    local query=
+else
+    local query="'$*"
+fi
+local repo="$(gg | fzf-tmux --select-1 --exit-0 -q "$query")" || return $?
+if [[ -z "$repo" ]]; then
+    return 1
+fi
+gg "$repo"
