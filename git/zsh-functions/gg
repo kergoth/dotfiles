@@ -1,3 +1,10 @@
+if [[ $# -eq 0 ]]; then
+    find "$GIT_PATH" -type d -mindepth 3 -maxdepth 3 \
+        | sort \
+        | sed -e "s#^$GIT_PATH/##; s#github.com/##"
+    return 0
+fi
+
 local url=$1
 local GIT_GET_DEFAULT_PREFIX
 
