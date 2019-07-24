@@ -1,9 +1,7 @@
-if [[ $# -eq 0 ]]; then
-    local query=
-else
-    local query="'$*"
+if [[ $# -ne 0 ]]; then
+    set -- --select-1 -q "$*"
 fi
-local repo="$((z -ldR|sed -ne "s#^\($HOME/Repos/[^/]*/[^/]*/[^/]*\$\)#\1#p" | sed -e "s#^$GIT_PATH/##; s#github.com/##"; gg) | uniq-seen | fzf-tmux --exit-0 ${query:+--select-1 -q "$query"})" || return $?
+local repo="$((z -ldR|sed -ne "s#^\($HOME/Repos/[^/]*/[^/]*/[^/]*\$\)#\1#p" | sed -e "s#^$GIT_PATH/##; s#github.com/##"; gg) | uniq-seen | fzf-tmux --exit-0 "$@")" || return $?
 if [[ -z "$repo" ]]; then
     return 1
 fi
