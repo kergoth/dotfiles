@@ -3,7 +3,7 @@ if [[ $# -eq 0 ]]; then
 else
     local query="'$*"
 fi
-local repo="$(gg | fzf-tmux --exit-0 ${query:+--select-1 -q "$query"})" || return $?
+local repo="$((z -ldR|sed -ne "s#^\($HOME/Repos/[^/]*/[^/]*/[^/]*\$\)#\1#p" | sed -e "s#^$GIT_PATH/##; s#github.com/##"; gg) | uniq-seen | fzf-tmux --exit-0 ${query:+--select-1 -q "$query"})" || return $?
 if [[ -z "$repo" ]]; then
     return 1
 fi
