@@ -128,7 +128,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 45b6516fad95c8bc35aea44eb7edc8ccbf642007
+    rev: 465a5b177693aa263b77bd3a28980775f6d4336c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -176,7 +176,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 4da9fb8f43869125f6e1bb1ff8dd27f315623835
+    rev: b92de0138d66c54be818f87138750fe5b680355a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -190,7 +190,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 80c242c3c5394fd5143b5d7e2741989ba04ae46a
+    rev: bc82a1c7b6d8517d4e9224a254968e0f0b334fdf
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -214,7 +214,7 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: ca58a2d886cc18734c90c9665da4775d444b0c04
+    rev: fab8621670f71637e9960003af28365129b1dfd0
 
 # readline style insertion
 git module vim-rsi:
@@ -224,7 +224,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 5b58b6dc290ece1c37e806e46ee117f5722a535a
+    rev: 0722f74ec551b0526c9f136f3aeae8db9726db6a
 
 # continuously updated session files
 git module vim-obsession:
@@ -233,7 +233,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 5a51bf3d52054990beef3221ec3a03d4ea9188e3
+    rev: eba64ed111a3aab8121a0e5b6df62c6f19e05322
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -272,7 +272,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: e7097a9d25e0a64cdc9d199f243526b85c42d888
+    rev: 65773882505b06970c47285b4ace6208ac5e6145
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -337,7 +337,7 @@ git module icdiff:
     pick:
         - scripts/icdiff
         - git/scripts/git-icdiff
-    rev: e2906d3fcd545e1f778af7cf31ff78686aef9478
+    rev: 581e60a20f60f949e6780d68879d7cb8f9677e23
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -502,7 +502,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 64771fb59293a0cc1130dfe854c9b4e22b36aee6
+    rev: 2cf4d7b5b0067f3aa89ddf9880ab4746cf923236
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -528,7 +528,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 3baf9468c24ca18f4a7673f21f32709c61711deb
+    rev: 43f3bc4010b2c697d2252fdd8b36a577ea125881
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -536,7 +536,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 500ea2b11981b43742b26f85ba4c43633230ff63
+    rev: f2587339cf2b25a32aca761017eddb098fea2686
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -610,7 +610,7 @@ git module textual-succinct:
 
 git module pyenv-installer:
     url: https://github.com/pyenv/pyenv-installer
-    rev: 9aac07fad9eabe78ff63632e95bd33eda33b0a12
+    rev: f961277afdec8aafa9a2adc8a011ec456013f332
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer
