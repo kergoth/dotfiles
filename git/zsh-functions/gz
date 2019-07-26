@@ -1,5 +1,5 @@
 if [[ $# -ne 0 ]]; then
-    set -- --select-1 -q "$*"
+    set -- --select-1 -q "'$*"
 fi
 local repo="$((z -ldR | sed -n -e "s#^$GIT_PATH/\([^/]*/[^/]*/[^/]*\$\)#\1#p" | sed -e "s#^github.com/##"; gg) | uniq-seen | fzf-tmux --exit-0 "$@")" || return $?
 if [[ -z "$repo" ]]; then
