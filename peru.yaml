@@ -48,7 +48,6 @@ imports:
     repo: git/scripts
     rofi-tools: i3/scripts
     rpm2cpio: scripts
-    rustup: rust/scripts
     smem: scripts
     ssh-copy-rsub: scripts
     t: scripts
@@ -544,13 +543,6 @@ git module flu:
     move:
         flu.sh: osx-flush-dns-cache
     pick: osx-flush-dns-cache
-
-curl module rustup:
-    url: https://sh.rustup.rs
-    move:
-        rustup-init.sh: rustup
-    executable: rustup
-    sha1: b7c1eb5a1a5d1004f6f849218756610dd6de0c20
 
 curl module cht:
     url: https://cht.sh/:cht.sh

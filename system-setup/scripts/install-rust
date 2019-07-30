@@ -1,4 +1,0 @@
-#!/bin/sh
-
-rustup update stable || rustup
-rustup default stable
