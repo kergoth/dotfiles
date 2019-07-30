@@ -1,16 +1,15 @@
 #!/bin/sh
 
-: "${XDG_DATA_HOME:=$HOME/.local/share}"
-export NVM_DIR="$XDG_DATA_HOME/nvm" && (
-    git clone https://github.com/creationix/nvm.git "$NVM_DIR"
-    cd "$NVM_DIR"
-    git checkout "$(git describe --abbrev=0 --tags --match "v[0-9]*" origin)"
-) && \. "$NVM_DIR/nvm.sh"
-nvm install ${NODE_VERSION:---lts}
-if [ -n "$NODE_VERSION" ]; then
-    nvm use --delete-prefix $NODE_VERSION --silent
-    nvm alias default $NODE_VERSION
+set -e
+
+# shellcheck source=./install-asdf
+. "$(dirname "$0")/install-asdf"
+
+if [ ! -e "$ASDF_DATA_DIR/plugins/nodejs" ]; then
+    asdf-plugin-add "nodejs"
 else
-    nvm use --delete-prefix node --silent
-    nvm alias default node
+    asdf plugin-update "nodejs" >/dev/null 2>&1
 fi
+
+bash "$ASDF_DIR/plugins/nodejs/bin/import-release-team-keyring"
+asdf-install nodejs

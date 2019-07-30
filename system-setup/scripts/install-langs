@@ -35,13 +35,14 @@ fi
 # shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf" || exit 1
 
-for i in golang ruby nodejs rust haskell; do
+for i in golang ruby rust haskell; do
     _install "$i" asdf-install -g "$i"
 done
-_install cabal install-cabal
+_install haskell-cabal install-cabal
+_install node install-node
 _install python install-python-asdf
-_install python-pipsi install-pipsi
 _install python-pipx install-pipx
+_install python-pipsi install-pipsi
 
 # TODO: remove the packages we installed, but not the ones the user did
 exit "$ret"
