@@ -11,12 +11,6 @@ case "$OSTYPE" in
             LDFLAGS="$LDFLAGS -L$(brew --prefix openssl)/lib"
         fi
         ;;
-    *)
-        if [ -e /etc/arch-release ]; then
-            CFLAGS="$CFLAGS -I/usr/include/openssl-1.0"
-            LDFLAGS="$LDFLAGS -L/usr/lib/openssl-1.0"
-        fi
-        ;;
 esac
 
 pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
