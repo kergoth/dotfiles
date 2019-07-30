@@ -1,5 +1,22 @@
 #!/bin/sh
 
+_install () {
+    lang="$1"
+    shift
+    echo >&2 "Installing $lang.."
+    command "$@" >"$log" 2>&1
+    if [ $? -ne 0 ]; then
+        echo >&2 "Error: $lang installation failed:"
+        tail "$log"
+        ret=1
+    fi
+}
+
+log="$(mktemp -t "${0##*/}.XXXXXX")" || exit $?
+trap 'rm -f "$log"' EXIT INT TERM
+ret=0
+
+echo >&2 "Installing prerequisites"
 # Install needed deps
 if command -v pacman >/dev/null 2>&1; then
     sudo pacman -Sy --needed openssl openssl-1.0 bzip2 sqlite ncurses unzip
@@ -7,16 +24,24 @@ elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev unzip
 elif command -v brew >/dev/null 2>&1; then
     brew install openssl bzip2 sqlite3 ncurses unzip
+fi >"$log" 2>&1
+
+if [ $? -ne 0 ]; then
+    echo >&2 "Error: prerequisites installation failed:"
+    tail "$log"
+    exit 1
 fi
 
 # shellcheck source=./install-asdf
-. "$(dirname "$0")/install-asdf"
+. "$(dirname "$0")/install-asdf" || exit 1
+
 for i in golang ruby nodejs rust haskell; do
-    asdf-install -g "$i"
+    _install "$i" asdf-install -g "$i"
 done
-install-cabal
-install-python-asdf
-install-pipsi
-install-pipx
+_install cabal install-cabal
+_install python install-python-asdf
+_install python-pipsi install-pipsi
+_install python-pipx install-pipx
 
 # TODO: remove the packages we installed, but not the ones the user did
+exit "$ret"
