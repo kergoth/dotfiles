@@ -38,6 +38,13 @@ pip3_install () {
     command python3 -m pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
 }
 
+# cargo-update
+export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
+if ! [ -e "$CARGO_INSTALL_ROOT/bin/cargo-install-update" ]; then
+    cargo install "$@" cargo-update
+fi
+cargo install-update -i fd-find ripgrep bat exa tldr git-series
+
 ## Pipsi, pipx
 install-pipsi
 install-pipx
@@ -51,12 +58,8 @@ brew install the_silver_searcher
 brew install gnu-sed
 brew install jq
 go get -u github.com/junegunn/fzf/... # or brew install fzf
-cargov fd-find
-cargov ripgrep
-cargov bat
 bat cache --build
-cargov exa
-cargov tldr
+cargo install-update -i fd-find ripgrep bat exa tldr
 go get -u github.com/edi9999/path-extractor/path-extractor
 
 pipv mercurial gitifyhg hg-git hg-evolve
@@ -96,10 +99,9 @@ go get -u github.com/github/hub
 if which brew >/dev/null 2>&1; then
     : ${HOMEBREW_PREFIX:=/opt/homebrew}
     $HOMEBREW_PREFIX/bin/brew install openssl
-    OPENSSL_DIR=$HOMEBREW_PREFIX/opt/openssl cargov git-series
-else
-    cargov git-series
+    export OPENSSL_DIR=$HOMEBREW_PREFIX/opt/openssl
 fi
+cargo-install git-series
 # pprintpp + pp-ez?
 # twine?
 # wheel?
