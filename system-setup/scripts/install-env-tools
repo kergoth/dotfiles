@@ -79,11 +79,7 @@ go get -u github.com/direnv/direnv
 
 ## Script dependencies
 go get -u github.com/tomnomnom/unfurl
-pip_install SOAPpy # lmwsaction
-pip_install dropbox # git-remote-dropbox
 pip_install titlecase # variety of scripts, and zsh alias
-pip_install toml # toml-set/toml-get, used by the game scripts
-pip3_install toml # toml-set/toml-get, used by the game scripts
 pip_install sh # various scripts
 pip_install hungarian # git-tbdiff
 pipv json2yaml # pcposts zsh function
