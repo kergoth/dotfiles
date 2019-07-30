@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+# Very light wrapper around cargo-update for convenience
+export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
+if ! [ -e "$CARGO_INSTALL_ROOT/bin/cargo-install-update" ]; then
+    cargo install "$@" cargo-update
+fi
+cargo install-update -i "$@"
