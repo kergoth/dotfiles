@@ -62,7 +62,7 @@ bat cache --build
 cargo install-update -i fd-find ripgrep bat exa tldr
 go get -u github.com/edi9999/path-extractor/path-extractor
 
-pipv mercurial gitifyhg hg-git hg-evolve
+kpipsi install mercurial gitifyhg hg-git hg-evolve
 
 pipv pythonpy
 pipv3 httpie
