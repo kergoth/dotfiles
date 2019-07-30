@@ -8,8 +8,11 @@ esac
 
 PIPSI_HOME="${PIPSI_HOME:-${XDG_DATA_HOME:-~/.local/share}/pipsi}"
 if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
-    curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python3
-else
-    . "$PIPSI_HOME/pipsi/bin/activate"
-    pip3 install -U pipsi
+    python2 -m pip install --user virtualenv
+    virtualenv "$PIPSI_HOME/pipsi" || exit 1
 fi
+. "$PIPSI_HOME/pipsi/bin/activate"
+python2 -m pip install -U pipsi
+XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
+mkdir -p "$XDG_DATA_HOME/../bin"
+ln -sf "$PIPSI_HOME/pipsi/bin/pipsi" "$XDG_DATA_HOME/../bin/pipsi"
