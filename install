@@ -134,7 +134,7 @@ link () {
 
     if [ $OSTYPE = WSL ] && [ $copy -eq 0 ]; then
         case "$destdir" in
-            $USERPROFILE/*)
+            ${USERPROFILE:-/invalid}/*)
                 copy=1
                 ;;
         esac
