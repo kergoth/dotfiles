@@ -81,7 +81,7 @@ go get -u github.com/direnv/direnv
 go get -u github.com/tomnomnom/unfurl
 pip_install titlecase # variety of scripts, and zsh alias
 pip_install sh # various scripts
-pip_install hungarian # git-tbdiff
+pip_install numpy hungarian # git-tbdiff
 pipv json2yaml # pcposts zsh function
 pip_install gitpython # buildhistory-diff
 
