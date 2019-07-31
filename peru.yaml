@@ -127,7 +127,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 465a5b177693aa263b77bd3a28980775f6d4336c
+    rev: 37c9f9fac68fe7e0c0a6775498de361501171b81
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: b92de0138d66c54be818f87138750fe5b680355a
+    rev: 44ade58ed509f7b21608ae061223d4ffef1e19d8
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -189,7 +189,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: bc82a1c7b6d8517d4e9224a254968e0f0b334fdf
+    rev: 1afe1e9bd5726550014d78ee244499d65beeb686
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -223,7 +223,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 0722f74ec551b0526c9f136f3aeae8db9726db6a
+    rev: 8e046e365fb74309f2504e9a3bcb2234e17a371b
 
 # continuously updated session files
 git module vim-obsession:
@@ -509,7 +509,7 @@ git module vim-abolish:
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
-    rev: 0b9b5e742f67bc81ae4a1f79318549d3afc90b13
+    rev: ae361bea990e27d5beade3a8d9fa22e25cec3100
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -535,7 +535,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: f2587339cf2b25a32aca761017eddb098fea2686
+    rev: fa5017a4a529ccae5d98ae9c13c17fe8fcca86fc
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -553,7 +553,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/w0rp/ale
-    rev: aae6d30b1ec135e37ec3bea1885d161c6174572b
+    rev: 3ae01ba24967a37e5a41626673422be53e188026
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
