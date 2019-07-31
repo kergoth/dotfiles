@@ -48,12 +48,11 @@ pip_install see
 pip3_install see
 
 ## General Tools & Utilities
-brew install the_silver_searcher
 brew install gnu-sed
 brew install jq
 go get -u github.com/junegunn/fzf/... # or brew install fzf
-bat cache --build
 cargo install-update -i fd-find ripgrep bat exa tldr
+bat cache --build
 go get -u github.com/edi9999/path-extractor/path-extractor
 
 kpipsi install mercurial gitifyhg hg-git hg-evolve
