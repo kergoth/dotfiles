@@ -14,8 +14,5 @@ case "$(uname -r)" in
         USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
 
         export BROWSER="cmd.exe /C START"
-        if [[ -z "$DOCKER_HOST" ]]; then
-            export DOCKER_HOST=tcp://0.0.0.0:2375
-        fi
         ;;
 esac
