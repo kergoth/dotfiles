@@ -552,7 +552,7 @@ curl module cht:
     sha1: 2589be56fafea67d4d10c68ee1a658d133185a25
 
 git module vim-ale:
-    url: https://github.com/w0rp/ale
+    url: https://github.com/dense-analysis/ale
     rev: 3ae01ba24967a37e5a41626673422be53e188026
 
 git module osx-wificleaner:
