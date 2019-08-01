@@ -19,5 +19,5 @@ if [ $# -gt 1 ]; then
     shift
 fi
 
-cabal new-update
-cabal new-install --symlink-bindir="${XDG_DATA_HOME%/*}/bin" "$@"
+cabal v2-update
+cabal v2-install --symlink-bindir="${XDG_DATA_HOME%/*}/bin" "$@"
