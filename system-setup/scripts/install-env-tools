@@ -53,7 +53,6 @@ brew install jq
 go get -u github.com/junegunn/fzf/... # or brew install fzf
 cargo install-update -i fd-find ripgrep bat exa tldr
 bat cache --build
-go get -u github.com/edi9999/path-extractor/path-extractor
 
 kpipsi install mercurial gitifyhg hg-git hg-evolve
 
