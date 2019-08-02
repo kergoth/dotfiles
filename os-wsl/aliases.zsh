@@ -1,6 +1,9 @@
 if [[ $OSTYPE = WSL ]]; then
     alias cdw='cd "$USERPROFILE"'
-    alias start="cmd.exe /C START"
+    alias start="cmd.exe /c start"
+    winver () {
+        ( cd "$USERPROFILE" && cmd.exe /c ver )
+    }
 
     if ! (( $+commands[xdg-open] )); then
         alias open=wsl-open
