@@ -1,11 +1,4 @@
-##!/bin/sh
-# Rename/move the specified paths out of the way, then remove them in the
-# background.
-#
-# TODO: consider reducing the # of spawned background processes. Reducing to
-# a single monitor process with SIGCHLD should be viable, as long as I map pid
-# to tmpdir, perhaps by changing the tmpdir to include it. Reducing the number
-# of removal processes would be a bit more of a pain, though still viable.
+#!/bin/sh
 
 set -u
 
@@ -23,7 +16,7 @@ case "${OSTYPE:-}" in
         ;;
 esac
 
-usage() {
+usage () {
     cat <<END >&2
 Usage: ${0##*/} [options] PATH [PATH..]
 
@@ -46,12 +39,19 @@ END
     exit 1
 }
 
-main() {
+main () {
     process_arguments "$@"
     shift $((OPTIND - 1))
-    trap '' HUP
 
-    for item; do
+    items="$(mktemp bgrm.XXXXXX)" || exit 1
+    trap 'rm -f "$items"' EXIT INT TERM
+
+    while [ $# -gt 0 ]; do
+        echo "$1" >>"$items"
+        shift
+    done
+
+    while read -r item; do
         if [ "${item%bgrm.}" != "$item" ]; then
             # Existing bgrm directories can presumably be skipped
             continue
@@ -59,26 +59,26 @@ main() {
         if [ ! -e "$item" ] && [ ! -L "$item" ]; then
             continue
         fi
+
         dir="$(dirname "$item")"
         tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
-        mv "$item" "$tmpdir" || continue
-        (
-            cd "$tmpdir" || exit 1
-            nohup sh -c "trap 'rmdir \"$tmpdir\"' EXIT INT TERM; ${delay:+sleep \"$delay\" && }rm -rf \"$tmpdir/${item##*/}\" && rm -f \"$tmpdir/rm.log\"" >rm.log 2>&1 </dev/null &
-            pid=$!
-            wait "$pid"
-            if [ -e "$tmpdir" ]; then
-                printf >&2 'bgrm: error removing "%s", see "%s"' "$item" "$tmpdir"
-                if [ -s rm.log ]; then
-                    echo >&2 :
-                    cat >&2 rm.log
-                fi
-            fi
-        ) &
-    done
+
+        mv "$item" "$tmpdir/"
+        if [ $? -eq 0 ]; then
+            set -- "$@" "$tmpdir"
+        else
+            rmdir "$tmpdir"
+        fi
+    done <"$items"
+
+    if [ -n "$delay" ]; then
+        nohup sh -c "sleep \"$delay\" && $rm_cmd \"\$@\"" - "$@" &
+    else
+        nohup $rm_cmd "$@" &
+    fi >/dev/null 2>&1 </dev/null
 }
 
-process_arguments() {
+process_arguments () {
     delay=
     io_class=3
     io_besteffort_priority=7
@@ -95,8 +95,8 @@ process_arguments() {
             n)
                 io_class="$OPTARG"
                 case "$io_class" in
-                    [0123]) ;;
-
+                    [0123])
+                        ;;
                     *)
                         echo >&2 "Invalid I/O scheduling class: $io_class, please specify 0, 1, 2, or 3."
                         echo >&2 "See 'man ionice' for details."
@@ -107,8 +107,8 @@ process_arguments() {
             p)
                 io_besteffort_priority="$OPTARG"
                 case "$io_besteffort_priority" in
-                    [01234567]) ;;
-
+                    [01234567])
+                        ;;
                     *)
                         echo >&2 "Invalid Best-Effort priority: $io_besteffort_priority, please specify 0-7."
                         echo >&2 "See 'man ionice' for details."
@@ -116,7 +116,7 @@ process_arguments() {
                         ;;
                 esac
                 ;;
-            h | \?)
+            h|\?)
                 usage
                 ;;
         esac
