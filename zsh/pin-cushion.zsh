@@ -1,5 +1,5 @@
 pcless () {
-    pin-cushion "$1" --format json | jq -C . | ${PAGER:-less}
+    pin-cushion "$1" --format json | jq -C . | pager
 }
 
 pc () {
@@ -16,7 +16,7 @@ _pcposts () {
 
 pcposts () {
     if [ -t 1 ]; then
-        _pcposts "$@" | $LESSCOLORIZER -l yaml | ${PAGER:-less}
+        _pcposts "$@" | eval $LESSCOLORIZER -l yaml | pager
     else
         _pcposts "$@"
     fi
