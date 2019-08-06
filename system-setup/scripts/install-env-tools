@@ -112,7 +112,7 @@ gemv ronn
 
 ## Linting / Static Analysis
 cabalv shellcheck ShellCheck
-pipv flake8 flake8 pep8-naming flake8-docstrings
+pipv3 flake8 pep8-naming flake8-docstrings
 #pipv prospector
 #pipv vim-vint
 #luav luacheck
