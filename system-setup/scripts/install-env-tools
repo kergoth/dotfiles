@@ -30,7 +30,7 @@ pipv () {
 }
 
 pipv3 () {
-    pipx upgrade "$@" || pipx install "$@" || { echo >&2 Error installing $@; return 1; }
+    pipx upgrade --pip-args "$*" "$1" || pipx install --pip-args "$*" "$1" || { echo >&2 Error installing $@; return 1; }
 }
 
 pip_install () {
