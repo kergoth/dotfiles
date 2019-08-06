@@ -16,4 +16,10 @@ case "$OSTYPE" in
         ;;
 esac
 
+if [ ! -e "$XDG_DATA_HOME/git-cinnabar" ]; then
+    git clone -b release https://github.com/glandium/git-cinnabar "$XDG_DATA_HOME/git-cinnabar"
+else
+    ( cd "$XDG_DATA_HOME/git-cinnabar" && git pull )
+fi
+
 # vim: set ft=sh sts=4 sw=4 et :
