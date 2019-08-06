@@ -64,10 +64,8 @@ cargo install-update -i fd-find ripgrep bat exa tldr
 bat cache --build
 
 pip_install mercurial hg-git hg-evolve
-
 pipv3 httpie
 go get -u github.com/EricChiang/pup # or brew install pup
-pip_install hg-git
 
 # Very handy for screencasts
 pipv3 asciinema
