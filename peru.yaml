@@ -28,7 +28,6 @@ imports:
     git-fixup: git
     git-get: git/scripts
     git-imerge: git/scripts
-    git-remote-hg: git/scripts
     git-tbdiff: git/scripts
     git-wtf: git/scripts
     git: git/scripts
@@ -469,11 +468,6 @@ git module damian-conway-vim:
     url: https://github.com/kergoth/Damian-Conway-s-Vim-Setup
     rev: 0dec44631fa82ee8e299ff8e403372dee64bd3de
     pick: plugin/undowarnings.vim
-
-git module git-remote-hg:
-    url: https://github.com/fingolfin/git-remote-hg
-    pick: git-remote-hg
-    rev: 628d26c1a50502fcb23bc0695327b65aa979e96d
 
 git module vitag:
     url: https://github.com/ttscoff/vitag
