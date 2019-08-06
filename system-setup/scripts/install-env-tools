@@ -54,7 +54,7 @@ go get -u github.com/junegunn/fzf/... # or brew install fzf
 cargo install-update -i fd-find ripgrep bat exa tldr
 bat cache --build
 
-kpipsi install mercurial gitifyhg hg-git hg-evolve
+pip_install mercurial hg-git hg-evolve
 
 pipv3 httpie
 go get -u github.com/EricChiang/pup # or brew install pup
