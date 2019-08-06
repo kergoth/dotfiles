@@ -60,7 +60,6 @@ pip3_install see
 brew install gnu-sed
 brew install jq
 go get -u github.com/junegunn/fzf/... # or brew install fzf
-cargo install-update -i fd-find ripgrep bat exa tldr
 bat cache --build
 
 pip_install mercurial hg-git hg-evolve
