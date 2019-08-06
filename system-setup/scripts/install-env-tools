@@ -81,11 +81,11 @@ go get -u github.com/tomnomnom/unfurl
 pip_install titlecase # variety of scripts, and zsh alias
 pip_install sh # various scripts
 pip_install 'numpy<1.17' && pip_install hungarian # git-tbdiff
-pipv json2yaml # pcposts zsh function
 pip_install gitpython # buildhistory-diff
 
 ## Pinboard client
 #npmv pin-cushion
+#pipv3 python-json2yaml # pcposts zsh function
 
 ## Development Tools
 go get -u github.com/github/hub
