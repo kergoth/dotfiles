@@ -16,8 +16,17 @@ esac
 pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
 PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 
+
+pipv_installed () {
+    pipsi list | sed -n -e 's/^  *Package "\([^"]*\)":$/\1/p' | grep -qx "$1"
+}
+
 pipv () {
-    kpipsi upgrade "$@" || kpipsi install "$@" || { echo >&2 Error installing $@; return 1; }
+    if pipv_installed "$1"; then
+        kpipsi upgrade "$@"
+    else
+        kpipsi install "$@"
+    fi || { echo >&2 "Error installing $@"; return 1; }
 }
 
 pipv3 () {
