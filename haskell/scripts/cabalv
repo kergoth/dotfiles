@@ -4,12 +4,6 @@ set -e
 
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-if ! command -v ghc >/dev/null 2>&1; then
-    if command -v stack >/dev/null 2>&1; then
-        eval "$(stack exec env | grep '^PATH=')"
-    fi
-fi
-
 if ! command -v cabal >/dev/null 2>&1; then
     echo >&2 "Error: cabal-install must be installed"
     exit 1
@@ -19,5 +13,5 @@ if [ $# -gt 1 ]; then
     shift
 fi
 
-cabal v2-update
-cabal v2-install --symlink-bindir="${XDG_DATA_HOME%/*}/bin" "$@"
+cabal new-update
+cabal new-install --symlink-bindir="${XDG_DATA_HOME%/*}/bin" "$@"
