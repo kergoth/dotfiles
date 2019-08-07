@@ -47,6 +47,8 @@ pip3_install () {
     command python3 -m pip -q install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
 }
 
+mkdir -p "${XDG_DATA_HOME:-~/.local/share}"
+
 # cargo-update
 export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
 if ! [ -e "$CARGO_INSTALL_ROOT/bin/cargo-install-update" ]; then
