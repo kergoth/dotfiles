@@ -9,8 +9,9 @@ if ! command -v cabal >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ $# -gt 1 ]; then
-    shift
+if [ $# -eq 0 ]; then
+    cabal new-install --help
+    exit $?
 fi
 
 cabal new-update
