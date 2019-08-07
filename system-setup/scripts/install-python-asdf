@@ -3,6 +3,16 @@
 
 set -e
 
+version_sort() {
+    if command -v python3; then
+        python3 -c 'import distutils.version,sys; versions=sys.stdin.readlines(); sversions=sorted(distutils.version.LooseVersion(v.rstrip()) for v in versions); print("\n".join(str(v) for v in sversions))'
+    elif command -v gsort; then
+        gsort -V
+    else
+        sort -V
+    fi
+}
+
 # Ensure we can run llvm-profdata on FreeBSD
 for llvmdir in /usr/local/llvm*/bin; do
     if [ -d "$llvmdir" ]; then
@@ -76,13 +86,13 @@ else
     asdf plugin-list-all | grep '^python ' | sed -e 's/\*//' | while read -r name url; do asdf plugin-add "$name" "$url"; done
 fi
 
-PY3_VERSION="${PY3_VERSION:-$(asdf list-all python | grep '^3' | grep -Ev '\-p|rc|dev' | sort -rn | head -n 1)}"
+PY3_VERSION="$(asdf list-all python | grep -E '^3\.[0-9]*(.[0-9]*)?$' | version_sort | tail -n 1)"
 if [ ! -e "$ASDF_DIR/installs/python/$PY3_VERSION" ]; then
     asdf install python "$PY3_VERSION"
 fi
 asdf global python "$PY3_VERSION"
 
-PY2_VERSION="${PY2_VERSION:-$(asdf list-all python | grep '^2' | grep -Ev '\-p|rc|dev' | sort -rn | head -n 1)}"
+PY2_VERSION="$(asdf list-all python | grep -E '^2\.[0-9]*(.[0-9]*)?$' | version_sort | tail -n 1)"
 if [ ! -e "$ASDF_DIR/installs/python/$PY2_VERSION" ]; then
     asdf install python "$PY2_VERSION"
 fi
