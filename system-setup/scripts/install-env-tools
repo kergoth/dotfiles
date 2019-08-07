@@ -3,12 +3,18 @@
 export CFLAGS="${CFLAGS--O2}"
 export LDFLAGS
 
+# Shut up 2.7 deprecation warning
+export PYTHONWARNINGS=ignore:DEPRECATION
+
+# shellcheck disable=SC2039
 case "$OSTYPE" in
     darwin*)
         if command -v brew >/dev/null 2>&1; then
             eval "$(brew environment --shell=auto | grep -vw PATH)"
             CFLAGS="$CFLAGS -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
             LDFLAGS="$LDFLAGS -L$(brew --prefix openssl)/lib"
+            : "${HOMEBREW_PREFIX:=/opt/homebrew}"
+            export OPENSSL_DIR="$HOMEBREW_PREFIX/opt/openssl"
         fi
         ;;
 esac
@@ -26,19 +32,19 @@ pipv () {
         kpipsi upgrade "$@"
     else
         kpipsi install "$@"
-    fi || { echo >&2 "Error installing $@"; return 1; }
+    fi || { echo >&2 "Error installing $*"; return 1; }
 }
 
 pipv3 () {
-    pipx upgrade --pip-args "$*" "$1" || pipx install --pip-args "$*" "$1" || { echo >&2 Error installing $@; return 1; }
+    pipx upgrade --pip-args "$*" "$1" || pipx install --pip-args "$*" "$1" || { echo >&2 "Error installing $*"; return 1; }
 }
 
 pip_install () {
-    command python2 -m pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
+    command python2 -m pip -q --disable-pip-version-check install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
 }
 
 pip3_install () {
-    command python3 -m pip install --user -U "$@" || { echo >&2 Error installing $@; return 1; }
+    command python3 -m pip -q install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
 }
 
 # cargo-update
@@ -48,23 +54,19 @@ if ! [ -e "$CARGO_INSTALL_ROOT/bin/cargo-install-update" ]; then
 fi
 cargo install-update -i fd-find ripgrep bat exa git-series
 
-## Pipsi, pipx
-install-pipsi
-install-pipx
+# Upgrade pip
+pip_install pip==18.1
+pip3_install pip
 
 ## Interactive mode python tools
 pip_install see
 pip3_install see
 
 ## General Tools & Utilities
-brew install gnu-sed
-brew install jq
-go get -u github.com/junegunn/fzf/... # or brew install fzf
-bat cache --build
-
+go get -u github.com/junegunn/fzf/...
 pip_install mercurial hg-git hg-evolve
 pipv3 httpie
-go get -u github.com/EricChiang/pup # or brew install pup
+go get -u github.com/EricChiang/pup
 
 # Very handy for screencasts
 pipv3 asciinema
@@ -77,8 +79,7 @@ go get -u github.com/direnv/direnv
 
 ## Script dependencies
 go get -u github.com/tomnomnom/unfurl
-pip_install titlecase # variety of scripts, and zsh alias
-pip_install sh # various scripts
+pip_install titlecase sh # various scripts, zsh alias
 pip_install 'numpy<1.17' && pip_install hungarian # git-tbdiff
 pip_install gitpython # buildhistory-diff
 
@@ -88,25 +89,16 @@ pip_install gitpython # buildhistory-diff
 
 ## Development Tools
 go get -u github.com/github/hub
-if which brew >/dev/null 2>&1; then
-    : ${HOMEBREW_PREFIX:=/opt/homebrew}
-    $HOMEBREW_PREFIX/bin/brew install openssl
-    export OPENSSL_DIR=$HOMEBREW_PREFIX/opt/openssl
-fi
 cargo-install git-series
 # pprintpp + pp-ez?
 # twine?
 # wheel?
 #pip_install ptpython
-pip_install pathlib2
-pip_install click
-pip_install e
-pip3_install e
-pip_install better-exceptions-hook
-pip3_install better-exceptions-hook
+pip_install pathlib2 click e better-exceptions-hook
+pip3_install e better-exceptions-hook
 
 ## Documentation
-gemv ronn
+#gemv ronn
 #npmv doctoc
 
 ## Linting / Static Analysis
@@ -141,13 +133,7 @@ go get -u github.com/shurcooL/markdownfmt
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
 
-### Elixir Development
-# erlang is specifically listed to ensure its binaries are symlinked as well
-# as the elixir binaries, so erl is available
-#brewv elixir elixir erlang
-
 ### Lua Development
-# luvi?
 #luav moonscript
 #luav busted
 
