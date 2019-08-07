@@ -126,7 +126,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 37c9f9fac68fe7e0c0a6775498de361501171b81
+    rev: 89fa57b49a2b6475bd4b5a814198554eb0da7a2c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 44ade58ed509f7b21608ae061223d4ffef1e19d8
+    rev: d7172882b758ef58e2e8e2000541bb38d88d3707
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -188,7 +188,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 1afe1e9bd5726550014d78ee244499d65beeb686
+    rev: f5039419d87b76accee7000319b394ce25a0dbfb
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -222,7 +222,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 8e046e365fb74309f2504e9a3bcb2234e17a371b
+    rev: c58708e820252d594541a86e31fbc95ec8d37e3e
 
 # continuously updated session files
 git module vim-obsession:
@@ -231,7 +231,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: eba64ed111a3aab8121a0e5b6df62c6f19e05322
+    rev: 3020cce00581054e9177297ee5461737a35de7de
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -270,7 +270,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 65773882505b06970c47285b4ace6208ac5e6145
+    rev: 4800e5d2ae6bac335dbc9fb1aae493761f4d70ee
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -299,7 +299,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 14c7529691ad4fadab04d3dbdb063639881f6b79
+    rev: bba14621426048b187d90c261f03517e6fbe8130
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -335,7 +335,7 @@ git module icdiff:
     pick:
         - scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 581e60a20f60f949e6780d68879d7cb8f9677e23
+    rev: cad37ad3479c68bb99de7c0aa67f74386243b612
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -407,7 +407,7 @@ curl module git-ltr:
 curl module git-attic:
     url: http://chneukirchen.org/dotfiles/bin/git-attic
     executable: git-attic
-    sha1: 61c92f88d24f94d2feda931455c5cdf697ec8e56
+    sha1: 8fc72715ab65be453d8385d563505f7dbf6a63e0
 
 curl module zombies:
     url: http://chneukirchen.org/dotfiles/bin/zombies
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 3ae01ba24967a37e5a41626673422be53e188026
+    rev: dd1e1025b8a9b13cb7966bf2baa3e6b42a862857
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
