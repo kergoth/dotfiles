@@ -14,5 +14,9 @@ if [ $# -eq 0 ]; then
     exit $?
 fi
 
+if [ $# -gt 1 ]; then
+    shift
+fi
+
 cabal new-update
 cabal new-install --symlink-bindir="${XDG_DATA_HOME%/*}/bin" "$@"
