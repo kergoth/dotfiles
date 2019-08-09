@@ -1,0 +1,8 @@
+#!/bin/sh
+
+group="$1"
+tmux ls -F '#{session_group} #S' \
+    | grep "^$group " \
+    | cut -d" " -f2 \
+    | tr '\n' '\0' \
+    | xargs -0 -n 1 tmux kill-session -t
