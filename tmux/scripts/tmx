@@ -69,7 +69,7 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-group="$1"
+group="$(echo "$1" | tr . _)"
 shift
 
 if [ $kill -eq 1 ]; then
