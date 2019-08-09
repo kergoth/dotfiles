@@ -8,6 +8,7 @@ Creates a new session for the specified group.
 
 Options:
   -l  List existing groups rather than creating a session
+  -k  Kill specified session group rather than creating a session
 END
     # shellcheck disable=SC2046
     if [ $(list_groups | wc -l) -gt 0 ]; then
@@ -38,12 +39,24 @@ tmux() {
     command tmux -u2 "$@"
 }
 
+kill_group() {
+    tmux ls -F '#{session_group} #S' \
+        | grep "^$1 " \
+        | cut -d" " -f2 \
+        | tr '\n' '\0' \
+        | xargs -0 -n 1 tmux kill-session -t
+}
 
-while getopts lh opt; do
+
+kill=0
+while getopts lkh opt; do
     case "$opt" in
         l)
             list_groups
             exit 0
+            ;;
+        k)
+            kill=1
             ;;
         \? | h)
             usage
@@ -58,6 +71,11 @@ fi
 
 group="$1"
 shift
+
+if [ $kill -eq 1 ]; then
+    kill_group "$group"
+    exit $?
+fi
 
 
 if list_groups | grep -Fx "$group"; then
