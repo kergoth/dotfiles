@@ -65,8 +65,8 @@ while getopts lkh opt; do
 done
 shift $((OPTIND - 1))
 
-if [ -n "$TMUX" ] && [ $kill -eq 1 ] && [ $# -eq 0 ]; then
-    group="$(tmux display-message -p '#{session_group}')"
+if [ -n "$TMUX_PANE" ] && [ $kill -eq 1 ] && [ $# -eq 0 ]; then
+    group="$(tmux list-panes -t "$TMUX_PANE" -F '#{session_group}' | head -n 1)"
     if [ -n "$group" ]; then
         kill_group "$group"
         exit $?
