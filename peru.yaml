@@ -126,7 +126,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 89fa57b49a2b6475bd4b5a814198554eb0da7a2c
+    rev: 581e75761c6bea46f2233dbc422d37566ce43f5e
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: d7172882b758ef58e2e8e2000541bb38d88d3707
+    rev: 4460aeffdd8c8d6cad85c7c134c0b7f01c353110
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -222,7 +222,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: c58708e820252d594541a86e31fbc95ec8d37e3e
+    rev: a76bec9196fe27e195d167a5c2ee1da763d31b96
 
 # continuously updated session files
 git module vim-obsession:
@@ -270,7 +270,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 4800e5d2ae6bac335dbc9fb1aae493761f4d70ee
+    rev: 5c7dcaffe892dad764d0130ee49198646cd8fd73
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2

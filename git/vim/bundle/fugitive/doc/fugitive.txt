@@ -193,19 +193,17 @@ that are part of Git repositories).
 :Gremove                Like :Gdelete, but keep the (now empty) buffer around.
 
                                                 *fugitive-:Gblame*
-:Gblame [flags]         Run git-blame on the file and open the results in a
-                        scroll-bound vertical split.  You can give any of
-                        -ltsewMC as flags, and they will be passed along to
-                        git-blame.  The following maps, which work on the
-                        cursor line commit where sensible, are provided:
+:Gblame [flags]         Run git-blame [flags] on the current file and open the
+                        results in a scroll-bound vertical split.  The
+                        following maps, which work on the cursor line commit
+                        where sensible, are provided:
 
                         g?    show this help
                         A     resize to end of author column
                         C     resize to end of commit column
                         D     resize to end of date/time column
-                        q     close blame and return to blamed window
-                        gq    q, then |:Gedit| to return to work tree version
-                        <CR>  q, then open commit
+                        gq    close blame, then |:Gedit| to return to work tree version
+                        <CR>  close blame, then open commit
                         o     open commit in horizontal split
                         O     open commit in new tab
                         p     open commit in preview window
