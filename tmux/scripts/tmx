@@ -65,6 +65,14 @@ while getopts lkh opt; do
 done
 shift $((OPTIND - 1))
 
+if [ -n "$TMUX" ] && [ $kill -eq 1 ] && [ $# -eq 0 ]; then
+    group="$(tmux display-message -p '#{session_group}')"
+    if [ -n "$group" ]; then
+        kill_group "$group"
+        exit $?
+    fi
+fi
+
 if [ $# -eq 0 ]; then
     usage
 fi
