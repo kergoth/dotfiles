@@ -94,11 +94,8 @@ fi
 
 session="$(tmux new-session -d -t "$group" -P | cut -d: -f1)" || exit $?
 if [ $# -gt 0 ] && [ $existing -eq 0 ]; then
-    for cmd; do
-        tmux split-window -f -t "$session" "$cmd; printf >&2 '%s ended with %d. Press a key.\\n' \"$cmd\" \"$?\"; read"
-    done
-    tmux kill-pane -t "$session:1.1"
-    tmux select-pane -t "$session:1.1"
+    tmux-run-cmds -t "$session" -k "$@"
+else
     tmux-resize-adaptable -t "$session" -p 50 -l main-vertical
 fi
 exec tmux attach-session -t "$session"
