@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 4460aeffdd8c8d6cad85c7c134c0b7f01c353110
+    rev: 442d56e23cd75a336b28cf5e46bf0def8c65dff5
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -188,7 +188,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: f5039419d87b76accee7000319b394ce25a0dbfb
+    rev: 09c61dc3f650eccd2c165c36db8330496321aa50
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -529,7 +529,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: fa5017a4a529ccae5d98ae9c13c17fe8fcca86fc
+    rev: ebdebadd3b8f8080197e27374ef3985ad33bd50e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: dd1e1025b8a9b13cb7966bf2baa3e6b42a862857
+    rev: 28c93ab1854ef41a46855401cc4addbaf7dfb9d4
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

@@ -31,9 +31,6 @@ that are part of Git repositories).
 :Git -P {args}          |:edit| the temp file instead.  A temp file is always
                         used for diff and log commands.
 
-:Git --paginate {args}  Like |:Git|, but use |:terminal| if it is available.
-:Git -p {args}
-
                                                 *fugitive-:Gcd*
 :Gcd [directory]        |:cd| relative to the repository.
 
@@ -81,19 +78,19 @@ that are part of Git repositories).
                                                 *fugitive-:Glgrep*
 :Glgrep[!] [args]       |:lgrep|[!] with git-grep as 'grepprg'.
 
-                                        *fugitive-:Glog* *fugitive-:Gclog*
-:Glog[!] [args]         Use git-log [args] to load the commit history into the
-                        |quickfix| list.  Jump to the first commit unless [!]
+                                        *fugitive-:Gclog* *fugitive-:Glog*
+:Gclog[!] [args]        Use git-log [args] to load the commit history into the
+:Glog[!] [args]         |quickfix| list.  Jump to the first commit unless [!]
                         is given.
 
-:{range}Glog[!] [args]  Use git-log -L to load previous revisions of the given
+:{range}Gclog[!] [args] Use git-log -L to load previous revisions of the given
                         range of the current file into the |quickfix| list.
                         The cursor is positioned on the first line of the
-                        first diff hunk for each commit.  Use :0Glog to target
-                        the entire file.
+                        first diff hunk for each commit.  Use :0Gclog to
+                        target the entire file.
 
                                                 *fugitive-:Gllog*
-:Gllog [args]           Like |:Glog|, but use the location list instead of the
+:Gllog [args]           Like |:Gclog|, but use the location list instead of the
                         |quickfix| list.
 
                                         *fugitive-:Gedit* *fugitive-:Ge*
@@ -162,12 +159,15 @@ that are part of Git repositories).
                         Vim's |do| and |dp| to stage and unstage changes.
 
                                                 *fugitive-:Gdiffsplit!*
-:Gdiffsplit! [object]   During a merge conflict, do a three-way diff against
-                        both ancestors.  Additional d2o and d3o maps are
+:Gdiffsplit!            Diff against any and all direct ancestors, retaining
+                        focus on the current window.  During a merge conflict,
+                        this is a three-way diff against the "ours" and
+                        "theirs" ancestors.  Additional d2o and d3o maps are
                         provided to to obtain the hunk from the "ours" or
-                        "theirs" ancestor, respectively.  If the file is not
-                        conflicted, behaves the same as if no bang was given,
-                        but keeps focus in the original window.
+                        "theirs" ancestor, respectively.
+
+:Gdiffsplit! {object}   Like |:Gdiffsplit|, but retain focus on the current
+                        window.
 
                                                 *fugitive-:Gvdiffsplit*
 :Gvdiffsplit [object]   Like |:Gdiffsplit|, but always split vertically.
@@ -202,14 +202,21 @@ that are part of Git repositories).
                         A     resize to end of author column
                         C     resize to end of commit column
                         D     resize to end of date/time column
-                        gq    close blame, then |:Gedit| to return to work tree version
-                        <CR>  close blame, then open commit
-                        o     open commit in horizontal split
-                        O     open commit in new tab
-                        p     open commit in preview window
+                        gq    close blame, then |:Gedit| to return to work
+                              tree version
+                        <CR>  close blame, and jump to patch that added line
+                              (or directly to blob for boundary commit)
+                        o     jump to patch or blob in horizontal split
+                        O     jump to patch or blob in new tab
+                        p     jump to patch or blob in preview window
                         -     reblame at commit
                         ~     reblame at [count]th first grandparent
                         P     reblame at [count]th parent (like HEAD^[count])
+
+:[range]Gblame [flags]  If a range is given, just that part of the file will
+:Gblame [flags] {file}  be blamed, and a horizontal split without
+                        scrollbinding is used.  You can also give an arbitrary
+                        filename.
 
                                                 *fugitive-:Gbrowse*
 :Gbrowse                Open the current file, blob, tree, commit, or tag
@@ -310,6 +317,11 @@ Navigation mappings ~
 
                                                 *fugitive_<CR>*
 <CR>                    Open the file or |fugitive-object| under the cursor.
+                        in a blob, this and similar maps jump to the patch
+                        from the diff where this was added, or where it was
+                        removed if a count was given.  If the line is still in
+                        the work tree version, passing a count takes you to
+                        it.
 
                                                 *fugitive_o*
 o                       Open the file or |fugitive-object| under the cursor in
@@ -322,6 +334,11 @@ gO                      Open the file or |fugitive-object| under the cursor in
                                                 *fugitive_O*
 O                       Open the file or |fugitive-object| under the cursor in
                         a new tab.
+
+                                                *fugitive_p*
+p                       Open the file or |fugitive-object| under the cursor in
+                        a preview window.  In the status buffer, 1p is
+                        required to bypass the legacy usage instructions.
 
                                                 *fugitive_~*
 ~                       Open the current file in the [count]th first ancestor.
@@ -586,6 +603,6 @@ ABOUT                                           *fugitive-about*
 
 Grab the latest version or report a bug on GitHub:
 
-http://github.com/tpope/vim-fugitive
+https://github.com/tpope/vim-fugitive
 
  vim:tw=78:et:ft=help:norl:
