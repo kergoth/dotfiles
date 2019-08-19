@@ -39,12 +39,17 @@ tmux() {
     command tmux -u2 "$@"
 }
 
-kill_group() {
-    tmux ls -F '#{session_group} #S' \
+get_group () {
+    tmux ls -F '#{session_group} #S' 2>/dev/null \
         | grep "^$1 " \
-        | cut -d" " -f2 \
-        | tr '\n' '\0' \
-        | xargs -0 -n 1 tmux kill-session -t
+        | cut -d" " -f2
+}
+
+kill_group() {
+    kill_session="$(get_group "$1")"
+    if [ -n "$kill_session" ]; then
+        tmux kill-session -t "$kill_session"
+    fi
 }
 
 
@@ -86,7 +91,7 @@ if [ $kill -eq 1 ]; then
 fi
 
 
-if list_groups | grep -Fx "$group"; then
+if list_groups | grep -qFx "$group"; then
     existing=1
 else
     existing=0
