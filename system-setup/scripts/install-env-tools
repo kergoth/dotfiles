@@ -24,7 +24,11 @@ PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 
 
 pipv_installed () {
-    pipsi list | sed -n -e 's/^  *Package "\([^"]*\)":$/\1/p' | grep -qx "$1"
+    pipsi list | sed -n -e 's/^  *Package "\([^"]*\)":$/\1/p' | grep -Fqx "$1"
+}
+
+pipx_installed () {
+    pipx list | sed -n -e 's/^   *package \([^ ]*\).*/\1/p' | grep -Fqx "$1"
 }
 
 pipv () {
@@ -36,7 +40,12 @@ pipv () {
 }
 
 pipv3 () {
-    pipx upgrade --pip-args "$*" "$1" || pipx install --pip-args "$*" "$1" || { echo >&2 "Error installing $*"; return 1; }
+    if pipx_installed "$1"; then
+        pipx upgrade "$1"
+    else
+        pipx install "$1"
+    fi
+    pipx runpip install -U "$@"
 }
 
 pip_install () {
