@@ -10,7 +10,7 @@ if [ $# -gt 0 ]; then
 fi
 
 tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")"
-trap 'rm -rfv "$tempdir"' EXIT INT TERM
+trap 'rm -rf "$tempdir"' EXIT INT TERM
 
 cd "$tempdir"
 case "$pkg" in
