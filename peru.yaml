@@ -126,7 +126,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 581e75761c6bea46f2233dbc422d37566ce43f5e
+    rev: c75ee580031a7f71bb60ee85ed2b07d26efaa157
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 442d56e23cd75a336b28cf5e46bf0def8c65dff5
+    rev: b97a9abe29c39c4e1a45ae199dbb470df362f538
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -188,7 +188,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 09c61dc3f650eccd2c165c36db8330496321aa50
+    rev: 8b3aa1632c08784928458b2b85faf5c89feefccf
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -495,7 +495,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 2cf4d7b5b0067f3aa89ddf9880ab4746cf923236
+    rev: 7dbb5db1fc5d957bac776453cdf484dec3b6e844
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -529,7 +529,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: ebdebadd3b8f8080197e27374ef3985ad33bd50e
+    rev: 5bffcb4c89e8acb9274deaf73cacccfa645290a6
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 28c93ab1854ef41a46855401cc4addbaf7dfb9d4
+    rev: 73812c3e41c1c7fcf1705811f35ac4c9ccec003e
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -674,7 +674,7 @@ git module vim-VimCompletesMe:
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
-    rev: 5b670df36291ca75f5ded5cd7608948d58ff6325
+    rev: 27cc3ce0fd19f0414024a81ee1eee6b17f155122
 
 git module i3-alternating-layout:
     url: https://github.com/olemartinorg/i3-alternating-layout
@@ -749,7 +749,7 @@ git module vim-markdown:
 
 git module vim-zoom:
     url: https://github.com/dhruvasagar/vim-zoom
-    rev: 931a53cc1376633d30f66f638e76151e95cd080a
+    rev: 4a6d6f15b8ea94fd8760e9d85d1ea562b3379c07
 
 git module vim-targets:
     url: https://github.com/wellle/targets.vim

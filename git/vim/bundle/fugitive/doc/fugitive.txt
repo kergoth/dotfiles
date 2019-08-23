@@ -308,6 +308,9 @@ dv                      Perform a |:Gvdiffsplit| on the file under the cursor.
                                                 *fugitive_ds* *fugitive_dh*
 ds                      Perform a |:Ghdiffsplit| on the file under the cursor.
 dh
+                                                *fugitive_dq*
+dq                      Close all but one diff buffer, and |:diffoff|! the
+                        last one.
 
                                                 *fugitive_d?*
 d?                      Show this help.
@@ -391,6 +394,14 @@ i                       Jump to the next file or hunk, expanding inline diffs
                                                 *fugitive_][*
 ][                      Jump [count] section ends forward.
 
+                                                *fugitive_star*
+*                       One the first column of a + or - diff line, search for
+                        the corresponding - or + line.  Otherwise, defer to
+                        built-in |star|.
+
+                                                *fugitive_#*
+#                       Same as "*", but search backward.
+
                                                 *fugitive_gu*
 gu                      Jump to file [count] in the "Untracked" or "Unstaged"
                         section.
@@ -444,7 +455,7 @@ cS                      Create a `squash!` commit for the commit under the
 cA                      Create a `squash!` commit for the commit under the
                         cursor and edit the message.
 
-c<Space>                Populate command line with ":Gcommit ".
+c<Space>                Populate command line with ":Git commit ".
 
                                                 *fugitive_cr*
 crc                     Revert the commit under the cursor.
@@ -452,10 +463,10 @@ crc                     Revert the commit under the cursor.
 crn                     Revert the commit under the cursor in the index and
                         work tree, but do not actually commit the changes.
 
-cr<Space>               Populate command line with ":Grevert ".
+cr<Space>               Populate command line with ":Git revert ".
 
                                                 *fugitive_cm*
-cm<Space>               Populate command line with ":Gmerge ".
+cm<Space>               Populate command line with ":Git merge ".
 
 c?                      Show this help.
 
@@ -465,9 +476,9 @@ Checkout/branch mappings ~
 
 coo                     Check out the commit under the cursor.
 
-cb<Space>               Populate command line with ":G branch ".
+cb<Space>               Populate command line with ":Git branch ".
 
-co<Space>               Populate command line with ":G checkout ".
+co<Space>               Populate command line with ":Git checkout ".
 
 cb?                     Show this help.
 co?
@@ -491,7 +502,7 @@ czP                     Pop topmost stash, or stash@{count}.
 czp                     Pop topmost stash, or stash@{count}, preserving the
                         index.
 
-cz<Space>               Populate command line with ":G stash ".
+cz<Space>               Populate command line with ":Git stash ".
 
 cz?                     Show this help.
 
@@ -527,7 +538,7 @@ rm                      Perform an interactive rebase with the commit under
 rd                      Perform an interactive rebase with the commit under
                         the cursor set to `drop`.
 
-r<Space>                Populate command line with ":Grebase ".
+r<Space>                Populate command line with ":Git rebase ".
 
 r?                      Show this help.
 
@@ -564,12 +575,13 @@ optional object, the default is the file in the index for work tree files and
 the work tree file for everything else.  Example objects follow.
 
 Object          Meaning ~
-HEAD            .git/HEAD
-refs/heads/x    .git/refs/heads/x (in "common dir" if present)
 @               The commit referenced by @ aka HEAD
+master          The commit referenced by master
 master^         The parent of the commit referenced by master
+master...other  The merge base of master and other
 master:         The tree referenced by master
 ./master        The file named master in the working directory
+:(top)master    The file named master in the the work tree
 Makefile        The file named Makefile in the work tree
 @^:Makefile     The file named Makefile in the parent of HEAD
 :Makefile       The file named Makefile in the index (writable)
