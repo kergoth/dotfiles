@@ -231,7 +231,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 3020cce00581054e9177297ee5461737a35de7de
+    rev: cfc66aa4486c911f4e6f802e0636c94d013952c7
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -495,7 +495,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 7dbb5db1fc5d957bac776453cdf484dec3b6e844
+    rev: 2fa955aed2a1132bfadaf871e86265a21d88408e
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
