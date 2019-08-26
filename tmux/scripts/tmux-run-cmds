@@ -35,12 +35,12 @@ shift $((OPTIND - 1))
 
 if [ $# -gt 0 ]; then
     for cmd; do
-        tmux split-window -f ${session+-t "$session"} "$cmd; printf >&2 '%s ended with %d. Press a key.\\n' \"$cmd\" \"$?\"; read"
+        tmux split-window -f ${session:+-t "$session"} "$cmd; printf >&2 '%s ended with %d. Press a key.\\n' \"$cmd\" \"$?\"; read"
     done
     if [ $kill_first -eq 1 ]; then
-        tmux kill-pane -t "${session+$session:}1.1"
-        tmux select-pane -t "${session+$session:}1.1"
+        tmux kill-pane -t "${session:+$session:}1.1"
+        tmux select-pane -t "${session:+$session:}1.1"
     fi
 fi
 # shellcheck disable=SC2086
-tmux-resize-adaptable ${session+-t "$session"} $adaptable_args
+tmux-resize-adaptable ${session:+-t "$session"} $adaptable_args
