@@ -4,8 +4,8 @@
 set -e
 
 version_sort() {
-    if command -v python3; then
-        python3 -c 'import distutils.version,sys; versions=sys.stdin.readlines(); sversions=sorted(distutils.version.LooseVersion(v.rstrip()) for v in versions); print("\n".join(str(v) for v in sversions))'
+    if [ -e /usr/bin/python3 ]; then
+        /usr/bin/python3 -c 'import distutils.version,sys; versions=sys.stdin.readlines(); sversions=sorted(distutils.version.LooseVersion(v.rstrip()) for v in versions); print("\n".join(str(v) for v in sversions))'
     elif command -v gsort; then
         gsort -V
     else
