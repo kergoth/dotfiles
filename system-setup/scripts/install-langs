@@ -35,10 +35,10 @@ fi
 # shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf" || exit 1
 
-for i in golang ruby rust haskell; do
+for i in golang ruby rust; do
     _install "$i" asdf-install -g "$i"
 done
-_install haskell-cabal install-cabal
+_install haskell install-haskell
 _install node install-node
 _install python install-python-asdf
 _install python-pipx install-pipx
