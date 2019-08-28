@@ -24,7 +24,7 @@
 	r = remote -v
 	fetchall = fetch --all
 	b = branch -v
-	ri = rebase -i
+	ri = revise -i
 	rc = rebase --continue
 	tree = show-tree
 	tree-since-head = "!git show-tree --since=\"$(git diff-tree --pretty=format:%cd HEAD)\""
