@@ -65,5 +65,12 @@ fi
 
 if [ $# -gt 0 ]; then
     echo >&2 "Installing/upgrading additional packages: $*"
-    pipx runpip "$package" install --quiet --upgrade "$@"
+    for extra_package; do
+        if [ -e "$extra_package/setup.py" ]; then
+            editable=1
+        else
+            editable=
+        fi
+        pipx runpip "$package" install --quiet --upgrade ${editable:+--editable} "$extra_package"
+    done
 fi
