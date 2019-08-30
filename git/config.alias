@@ -26,6 +26,7 @@
 	b = branch -v
 	ri = revise -i
 	rc = rebase --continue
+	redate = rebase -f --ignore-date
 	tree = show-tree
 	tree-since-head = "!git show-tree --since=\"$(git diff-tree --pretty=format:%cd HEAD)\""
 	recent-tree = show-tree --since=last\\ week
