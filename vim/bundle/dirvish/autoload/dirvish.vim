@@ -343,7 +343,7 @@ function! s:buf_render(dir, lastpath) abort
   endif
 
   if !isnew
-    call s:bufwin_do('let w:dirvish = get(w:,"dirvish",{}) | let w:dirvish["_view"] = winsaveview()', bname)
+    call s:bufwin_do('let w:dirvish["_view"] = winsaveview()', bname)
   endif
 
   if v:version > 704 || v:version == 704 && has("patch73")
@@ -409,12 +409,10 @@ function! s:open_dir(d, reload) abort
     endif
   endfor
 
-  if -1 != bnr
-    execute 'silent' s:noswapfile 'buffer' bnr
-  elseif bufname('%') is ''
-    execute 'silent' s:noswapfile 'buffer' bufnr(d._dir, 1)
-  else
+  if -1 == bnr
     execute 'silent' s:noswapfile 'edit' fnameescape(d._dir)
+  else
+    execute 'silent' s:noswapfile 'buffer' bnr
   endif
 
   " Use :file to force a normalized path.

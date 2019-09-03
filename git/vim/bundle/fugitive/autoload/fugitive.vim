@@ -1038,8 +1038,10 @@ endfunction
 function! s:Expand(rev, ...) abort
   if a:rev =~# '^:[0-3]$'
     let file = a:rev . ':%'
-  elseif a:rev =~# '^>[~^]\|^>@{\|^>$'
-    let file = 'HEAD' . a:rev[1:-1] . ':%'
+  elseif a:rev ==# '>'
+    let file = '%'
+  elseif a:rev =~# '^>[~^]'
+    let file = '!' . a:rev[1:-1] . ':%'
   elseif a:rev =~# '^>[> ]\@!'
     let file = a:rev[1:-1] . ':%'
   else
@@ -1385,43 +1387,15 @@ function! fugitive#buffer(...) abort
   return buffer
 endfunction
 
-function! s:buffer_getvar(var) dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().getvar() which has been removed. Replace it with the local variable or getbufvar()"
-endfunction
-
-function! s:buffer_getline(lnum) dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().getline() which has been removed. Replace it with getline() or getbufline()"
-endfunction
-
 function! s:buffer_repo() dict abort
   return fugitive#repo(self['#'])
 endfunction
 
 function! s:buffer_type(...) dict abort
-  return getbufvar(self['#'], 'fugitive_type')
+  return 'see b:fugitive_type'
 endfunction
 
-function! s:buffer_spec() dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().spec() which has been removed. Replace it with bufname(), expand('%:p'), etc"
-endfunction
-
-function! s:buffer_name() dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().name() which has been removed. Replace it with bufname(), expand('%:p'), etc"
-endfunction
-
-function! s:buffer_commit() dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().commit() which has been removed. Replace it with matchstr(FugitiveParse()[0], '^\x\+')"
-endfunction
-
-function! s:buffer_relative(...) dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().relative() which has been removed. Replace it with FugitivePath(@%, " . string(a:0 ? a:1 : '') . ")"
-endfunction
-
-function! s:buffer_path(...) dict abort
-  throw "fugitive: A third-party plugin or vimrc is calling fugitive#buffer().path() which has been removed. Replace it with FugitivePath(@%, " . string(a:0 ? a:1 : '') . ")"
-endfunction
-
-call s:add_methods('buffer',['getvar','getline','repo','type','spec','name','commit','path','relative'])
+call s:add_methods('buffer', ['repo', 'type'])
 
 " Section: Completion
 
@@ -4071,6 +4045,7 @@ call s:command("-bar -bang -nargs=*           -complete=customlist,s:ReadComplet
 call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:ReadComplete Gsplit   execute s:Open((<count> > 0 ? <count> : '').(<count> ? 'split' : 'edit'), <bang>0, '<mods>', <q-args>, [<f-args>])")
 call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:ReadComplete Gvsplit  execute s:Open((<count> > 0 ? <count> : '').(<count> ? 'vsplit' : 'edit!'), <bang>0, '<mods>', <q-args>, [<f-args>])")
 call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:ReadComplete -addr=tabs Gtabedit execute s:Open((<count> >= 0 ? <count> : '').'tabedit', <bang>0, '<mods>', <q-args>, [<f-args>])")
+call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:ReadComplete Gr", "Read")
 call s:command("-bar -bang -nargs=* -range=-1 -complete=customlist,s:ReadComplete Gread", "Read")
 
 " Section: :Gwrite, :Gwq
@@ -4670,7 +4645,7 @@ function! s:BlameCommitFileLnum(...) abort
     let commit = get(s:LinesError('rev-list', '--ancestry-path', '--reverse', commit . '..' . state.blame_reverse_end)[0], 0, '')
   endif
   let lnum = +matchstr(line, ' \zs\d\+\ze \%((\| *\d\+)\)')
-  let path = matchstr(line, '^\^\=\x* \+\%(\d\+ \+\d\+ \+\)\=\zs.\{-\}\ze\s\+\%(\%( \d\+ \)\@<!([^()]*\w \d\+)\|\d\+ \)')
+  let path = matchstr(line, '^\^\=[?*]*\x* \+\%(\d\+ \+\d\+ \+\)\=\zs.\{-\}\ze\s\+\%(\%( \d\+ \)\@<!([^()]*\w \d\+)\|\d\+ \)')
   if empty(path) && lnum
     let path = get(state, 'blame_file', '')
   endif
@@ -4735,7 +4710,7 @@ function! s:BlameSubcommand(line1, count, range, bang, mods, args) abort
     elseif arg =~# '^-L.'
       call add(ranges, remove(flags, i))
       continue
-    elseif arg =~# '^-[GLS]$\|^--\%(date\|encoding\|contents\)$'
+    elseif arg =~# '^-[GLS]$\|^--\%(date\|encoding\|contents\|ignore-rev\|ignore-revs-file\)$'
       let i += 1
       if i == len(flags)
         echohl ErrorMsg
@@ -5022,10 +4997,10 @@ function! fugitive#BlameSyntax() abort
   let config = fugitive#Config()
   let flags = get(s:TempState(), 'blame_flags', [])
   syn match FugitiveblameBlank                      "^\s\+\s\@=" nextgroup=FugitiveblameAnnotation,FugitiveblameScoreDebug,FugitiveblameOriginalFile,FugitiveblameOriginalLineNumber skipwhite
-  syn match FugitiveblameHash       "\%(^\^\=\)\@<=\<\x\{7,\}\>" nextgroup=FugitiveblameAnnotation,FugitiveblameScoreDebug,FugitiveblameOriginalLineNumber,FugitiveblameOriginalFile skipwhite
+  syn match FugitiveblameHash       "\%(^\^\=[?*]*\)\@<=\<\x\{7,\}\>" nextgroup=FugitiveblameAnnotation,FugitiveblameScoreDebug,FugitiveblameOriginalLineNumber,FugitiveblameOriginalFile skipwhite
   syn match FugitiveblameUncommitted "\%(^\^\=\)\@<=\<0\{7,\}\>" nextgroup=FugitiveblameAnnotation,FugitiveblameScoreDebug,FugitiveblameOriginalLineNumber,FugitiveblameOriginalFile skipwhite
   if get(get(config, 'blame.blankboundary', ['x']), 0, 'x') =~# '^$\|^true$' || s:HasOpt(flags, '-b')
-    syn match FugitiveblameBoundaryIgnore "^\^\x\{7,\}\>" nextgroup=FugitiveblameAnnotation,FugitiveblameScoreDebug,FugitiveblameOriginalLineNumber,FugitiveblameOriginalFile skipwhite
+    syn match FugitiveblameBoundaryIgnore "^\^[*?]*\x\{7,\}\>" nextgroup=FugitiveblameAnnotation,FugitiveblameScoreDebug,FugitiveblameOriginalLineNumber,FugitiveblameOriginalFile skipwhite
   else
     syn match FugitiveblameBoundary "^\^"
   endif
@@ -5182,10 +5157,10 @@ function! s:BrowseCommand(line1, line2, range, count, bang, mods, reg, arg, args
       let path = '.git/' . full[strlen(dir)+1:-1]
       let type = ''
     else
-      let path = full[strlen(s:Tree(dir))+1:-1]
+      let path = fugitive#Path(full, '/')[1:-1]
       if path =~# '^\.git/'
         let type = ''
-      elseif isdirectory(full)
+      elseif isdirectory(full) || empty(path)
         let type = 'tree'
       else
         let type = 'blob'

@@ -126,7 +126,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: c75ee580031a7f71bb60ee85ed2b07d26efaa157
+    rev: 57fbac0462dcccd69c776681d4ba9de097979e1f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: b97a9abe29c39c4e1a45ae199dbb470df362f538
+    rev: a45e2c6d577ca3ec6c10ed82465aa9650316f70c
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -231,7 +231,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: cfc66aa4486c911f4e6f802e0636c94d013952c7
+    rev: e8a213d9d0a21f03fc03319fa7560521b6cd6928
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -529,7 +529,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 5bffcb4c89e8acb9274deaf73cacccfa645290a6
+    rev: 883199093c438b9873a261be3446eaba929ec503
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 73812c3e41c1c7fcf1705811f35ac4c9ccec003e
+    rev: 6e18c03d80c323e740f87103fc05955b5c61b54e
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -729,7 +729,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 6cf80035ce7560fa83d1b9b4a5f771518c6fd99f
+    rev: 5572ae8a4b0e099cb1f3f1fc16b0e096baa1fa37
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
