@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 63a05a6935ec4a45551bf141089c13d5671202a1
+    rev: 2d0df5842a43898af54e9ab884202b12dd702de0
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -250,6 +250,7 @@ curl module repo:
 git module smem:
     url: https://github.com/kwkroeger/smem
     pick: smem
+    rev: f05f42113ce6f7511f6598add487152e844ff254
 
 hg module t:
     url: https://bitbucket.org/sjl/t
