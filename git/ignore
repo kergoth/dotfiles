@@ -41,3 +41,7 @@ Temporary Items
 
 # Synology NAS clutter
 @eaDir
+
+# Python
+__pycache__
+.mypy_cache
