@@ -12,4 +12,4 @@ else
 fi
 
 bash "$ASDF_DIR/plugins/nodejs/bin/import-release-team-keyring"
-asdf-install nodejs
+asdf-install -g nodejs
