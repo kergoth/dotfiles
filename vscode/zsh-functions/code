@@ -1,4 +1,9 @@
 (
+    if [[ -n "$TMUX" ]]; then
+        tmux_update_env
+    elif [[ -n "$ATT_SESSION" ]]; then
+        att-update-env
+    fi
     if [[ -n "$VSCODE_SERVER_DIR" ]]; then
         PATH="$VSCODE_SERVER_DIR/bin:$PATH"
     fi
