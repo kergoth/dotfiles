@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'objc') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'objc') == -1
 
 " Vim indent file
 " Language:	Objective-C
@@ -95,3 +93,5 @@ endfunction
 " Restore 'cpo' options
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
+endif

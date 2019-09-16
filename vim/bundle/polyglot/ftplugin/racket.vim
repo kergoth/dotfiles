@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'racket') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'racket') == -1
 
 " Language:     Racket
 " Maintainer:   Will Langstroth <will@langstroth.com>
@@ -61,3 +59,5 @@ nnoremap <buffer> <f9> :!racket -t %<cr>
 
 "setl commentstring=;;%s
 setl commentstring=#\|\ %s\ \|#
+
+endif

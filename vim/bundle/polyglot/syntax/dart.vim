@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'dart') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'dart') == -1
 
 " Vim syntax file " Language: Dart
 " Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
@@ -136,4 +134,6 @@ let b:spell_options = "contained"
 
 if g:main_syntax is# 'dart'
   unlet g:main_syntax
+endif
+
 endif

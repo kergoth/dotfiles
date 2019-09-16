@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'rust') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
 
 " Author: Stephen Sugden <stephen@stephensugden.com>
 "
@@ -264,3 +262,5 @@ endfunction
 
 
 " vim: set et sw=4 sts=4 ts=8:
+
+endif

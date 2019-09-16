@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'ocaml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
 
 if exists("b:current_syntax")
   finish
@@ -33,3 +31,5 @@ hi link opamInterpolate Identifier
 let b:current_syntax = "opam"
 
 " vim: ts=2 sw=2
+
+endif

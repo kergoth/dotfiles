@@ -1,3 +1,8 @@
+" Enable jsx syntax by default
+if !exists('g:jsx_ext_required')
+  let g:jsx_ext_required = 0
+endif
+
 " Make csv loading faster
 if !exists('g:csv_start')
   let g:csv_start = 1
@@ -72,18 +77,8 @@ augroup filetypedetect
   " swift
   autocmd BufNewFile,BufRead *.swift set filetype=swift
 
-
   "jinja
   autocmd BufNewFile,BufRead *.jinja2,*.j2,*.jinja,*.nunjucks,*.nunjs,*.njk set ft=jinja
-augroup END
-
-" Fix for https://github.com/sheerun/vim-polyglot/issues/236#issuecomment-387984954
-if (!exists('g:graphql_javascript_tags'))
-  let g:graphql_javascript_tags = ['gql', 'graphql', 'Relay.QL']
-endif
-
-augroup filetypedetect
-  autocmd BufNewFile,BufReadPost *.tsx setlocal filetype=typescript.tsx
 augroup END
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'acpiasl') == -1
   augroup filetypedetect
@@ -1385,6 +1380,18 @@ au BufNewFile,BufRead *.thrift setlocal filetype=thrift
   augroup end
 endif
 
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'tmux') == -1
+  augroup filetypedetect
+  " tmux, from tmux.vim in ericpruitt/tmux.vim:_ALL:/vim/
+" Language: tmux(1) configuration file
+" URL: https://github.com/ericpruitt/tmux.vim/
+" Maintainer: Eric Pruitt <eric.pruitt@gmail.com>
+" Last Changed: 2017 Mar 10
+
+autocmd BufNewFile,BufRead {.,}tmux.conf setfiletype tmux
+  augroup end
+endif
+
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'toml') == -1
   augroup filetypedetect
   " toml, from toml.vim in cespare/vim-toml
@@ -1420,11 +1427,15 @@ endif
 
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
   augroup filetypedetect
-  " typescript, from typescript.vim in leafgarland/typescript-vim
-" use `set filetype` to override default filetype=xml for *.ts files
-autocmd BufNewFile,BufRead *.ts  set filetype=typescript
-" use `setfiletype` to not override any other plugins like ianks/vim-tsx
-autocmd BufNewFile,BufRead *.tsx setfiletype typescript
+  " typescript, from tsx.vim in HerringtonDarkholme/yats.vim
+autocmd BufNewFile,BufRead *.tsx setlocal filetype=typescript.tsx
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+  augroup filetypedetect
+  " typescript, from typescript.vim in HerringtonDarkholme/yats.vim
+autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
   augroup end
 endif
 

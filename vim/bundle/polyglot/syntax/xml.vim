@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'xml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'xml') == -1
 
 " Vim syntax file
 " Language:	XML
@@ -350,3 +348,5 @@ let &cpo = s:xml_cpo_save
 unlet s:xml_cpo_save
 
 " vim: ts=8
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'crystal') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'crystal') == -1
 
 let s:plugin_name = expand('<sfile>:t:r')
 let s:vital_base_dir = expand('<sfile>:h')
@@ -329,4 +327,6 @@ else
     endwhile
     return a:list
   endfunction
+endif
+
 endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'javascript') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'javascript') == -1
 
 " Vim indent file
 " Language: Javascript
@@ -479,3 +477,5 @@ endfunction
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
+
+endif

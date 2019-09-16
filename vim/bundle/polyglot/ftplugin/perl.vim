@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'perl') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'perl') == -1
 
 " Vim filetype plugin file
 " Language:      Perl
@@ -91,3 +89,5 @@ let b:match_words = '\<if\>:\<elsif\>:\<else\>'
 " Restore the saved compatibility options.
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
+endif

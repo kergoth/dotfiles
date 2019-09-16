@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'systemd') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'systemd') == -1
 
 " Filename:     systemd.vim
 " Purpose:      Vim syntax file
@@ -328,3 +326,5 @@ hi def link sdCapFlags          Identifier
 
 let b:current_syntax = "systemd"
 " vim: fdm=marker
+
+endif

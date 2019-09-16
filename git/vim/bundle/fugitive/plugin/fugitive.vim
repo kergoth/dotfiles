@@ -11,8 +11,7 @@ let g:loaded_fugitive = 1
 function! FugitiveGitDir(...) abort
   if !a:0 || type(a:1) == type(0) && a:1 < 0
     let dir = get(b:, 'git_dir', '')
-    if empty(dir) && get(g:, 'fugitive_blank_buffer_2019_alpha') && strftime('%Y') == 2019 &&
-          \ (empty(bufname('')) || &buftype =~# '^\%(nofile\|acwrite\|quickfix\|prompt\)$')
+    if empty(dir) && (empty(bufname('')) || &buftype =~# '^\%(nofile\|acwrite\|quickfix\|prompt\)$')
       return FugitiveExtractGitDir(getcwd())
     endif
     return dir
@@ -305,12 +304,6 @@ augroup fugitive
 
   autocmd BufNewFile,BufReadPost * call FugitiveDetect(expand('<amatch>:p'))
   autocmd FileType           netrw call FugitiveDetect(fnamemodify(get(b:, 'netrw_curdir', expand('<amatch>')), ':p'))
-  autocmd User NERDTreeInit,NERDTreeNewRoot
-        \ if exists('b:NERDTree.root.path.str') |
-        \   call FugitiveDetect(b:NERDTree.root.path.str()) |
-        \ endif
-  autocmd VimEnter * if empty(expand('<amatch>'))|call FugitiveDetect(getcwd())|endif
-  autocmd CmdWinEnter * call FugitiveDetect(expand('#:p'))
 
   autocmd FileType git
         \ if len(FugitiveGitDir()) |

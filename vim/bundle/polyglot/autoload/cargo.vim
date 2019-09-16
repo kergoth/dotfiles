@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'rust') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
 
 function! cargo#Load() 
     " Utility call to get this script loaded, for debugging
@@ -117,3 +115,5 @@ function! cargo#runtarget(args)
 endfunction
 
 " vim: set et sw=4 sts=4 ts=8:
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'flatbuffers') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'flatbuffers') == -1
 
 if exists("b:current_syntax")
   finish
@@ -54,3 +52,5 @@ if version >= 508 || !exists("did_proto_syn_inits")
 endif
 
 let b:current_syntax = "fbs"
+
+endif

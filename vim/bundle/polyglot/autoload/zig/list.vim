@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'zig') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'zig') == -1
 
 " Adapted from fatih/vim-go: autoload/go/list.vim
 "
@@ -160,3 +158,5 @@ function! zig#list#Type(for) abort
 endfunction
 
 " vim: sw=2 ts=2 et
+
+endif

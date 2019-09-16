@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'nim') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'nim') == -1
 
 " Only load this indent file when no other was loaded.
 if exists("b:did_indent")
@@ -144,3 +142,5 @@ endfunction
 
 " vim:sw=2
 
+
+endif

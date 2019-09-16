@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'elm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elm') == -1
 
 " indentation for Elm (http://elm-lang.org/)
 
@@ -113,3 +111,5 @@ function! GetElmIndent()
 
 	return l:ind
 endfunc
+
+endif

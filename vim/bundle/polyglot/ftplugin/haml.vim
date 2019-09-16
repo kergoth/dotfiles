@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'haml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'haml') == -1
 
 " Vim filetype plugin
 " Language:	Haml
@@ -73,3 +71,5 @@ let &cpo = s:save_cpo
 unlet s:save_cpo
 
 " vim:set sw=2:
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'log') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'log') == -1
 
 " Vim syntax file
 " Language:         Generic log file
@@ -161,3 +159,5 @@ let b:current_syntax = 'log'
 let &cpoptions = s:cpo_save
 unlet s:cpo_save
 
+
+endif

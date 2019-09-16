@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'idris') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'idris') == -1
 
 " syntax highlighting for idris (idris-lang.org)
 "
@@ -91,3 +89,5 @@ highlight def link idrisChar String
 highlight def link idrisBacktick Operator
 
 let b:current_syntax = "idris"
+
+endif

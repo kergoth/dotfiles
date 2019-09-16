@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'fish') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'fish') == -1
 
 setlocal comments=:#
 setlocal commentstring=#%s
@@ -41,3 +39,5 @@ let b:match_words =
 let b:endwise_addition = 'end'
 let b:endwise_words = 'begin,function,if,switch,while,for'
 let b:endwise_syngroups = 'fishKeyword,fishConditional,fishRepeat'
+
+endif

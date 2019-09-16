@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'swift') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'swift') == -1
 
 " File: swift.vim
 " Author: Keith Smiley
@@ -296,3 +294,5 @@ endfunction
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'yaml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'yaml') == -1
 
 " To make this file do stuff, add something like the following (without the
 " leading ") to your ~/.vimrc:
@@ -63,3 +61,5 @@ hi link yamlInline	Operator
 hi link yamlBlock	Operator
 hi link yamlString	String
 hi link yamlEscape	Special
+
+endif

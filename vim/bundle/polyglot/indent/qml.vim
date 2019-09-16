@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'qml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'qml') == -1
 
 " Vim indent file
 " Language:     QML
@@ -61,3 +59,5 @@ function! GetJsIndent()
 
   return ind
 endfunction
+
+endif

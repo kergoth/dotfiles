@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'thrift') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'thrift') == -1
 
 " Vim syntax file
 " Language: Thrift
@@ -100,3 +98,5 @@ endif
 
 let b:current_syntax = "thrift"
 
+
+endif

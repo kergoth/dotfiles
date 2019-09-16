@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'llvm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'llvm') == -1
 
 " Vim indent file
 " Language:   llvm
@@ -74,3 +72,5 @@ function! GetLLVMIndent()
 
   return ind
 endfunction
+
+endif

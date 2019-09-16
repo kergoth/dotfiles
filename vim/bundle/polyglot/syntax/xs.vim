@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'perl') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'perl') == -1
 
 " Vim syntax file
 " Language:    XS (Perl extension interface language)
@@ -3679,3 +3677,5 @@ hi def link xsMacro      Macro
 let b:current_syntax = "xs"
 
 " vim: ts=8
+
+endif

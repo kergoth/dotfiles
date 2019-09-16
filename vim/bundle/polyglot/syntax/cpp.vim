@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'c/c++') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'c/c++') == -1
 
 " Vim syntax file
 " Language:	C++
@@ -78,3 +76,5 @@ hi def link cppNumber		Number
 let b:current_syntax = "cpp"
 
 " vim: ts=8
+
+endif

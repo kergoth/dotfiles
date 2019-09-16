@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'puppet') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'puppet') == -1
 
 " Vim indent file
 " Language: Puppet
@@ -138,3 +136,5 @@ function! GetPuppetIndent(...)
 
     return ind
 endfunction
+
+endif

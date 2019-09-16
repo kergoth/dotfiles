@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'clojure') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'clojure') == -1
 
 " Vim filetype plugin file
 " Language:     Clojure
@@ -97,3 +95,5 @@ let &cpo = s:cpo_save
 unlet! s:cpo_save s:setting s:dir
 
 " vim:sts=8:sw=8:ts=8:noet
+
+endif

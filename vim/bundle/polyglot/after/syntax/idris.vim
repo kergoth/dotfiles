@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'idris') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'idris') == -1
 
 " This script allows for unicode concealing of certain characters
 " For instance -> goes to →
@@ -80,3 +78,5 @@ hi link idrNiceOperator Operator
 hi! link Conceal Operator
 setlocal conceallevel=2
 
+
+endif

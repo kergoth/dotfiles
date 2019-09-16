@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'purescript') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'purescript') == -1
 
 setlocal comments=s1fl:{-,mb:\ \ ,ex:-},:--\ \|,:--
 setlocal include=^import
@@ -40,3 +38,5 @@ fun! InitPureScript()
   call add(s:PS, [dir, &l:path])
 endfun
 call InitPureScript()
+
+endif

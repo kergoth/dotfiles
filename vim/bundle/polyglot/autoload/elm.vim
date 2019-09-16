@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'elm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elm') == -1
 
 let s:errors = []
 
@@ -383,3 +381,5 @@ function! s:ExecuteInRoot(cmd) abort
 
 	return l:out
 endfunction
+
+endif

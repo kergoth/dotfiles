@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'emberscript') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'emberscript') == -1
 
 " Language:    ember-script
 " Maintainer:  Yulij Andreevich Lesov <yalesov@gmail.com>>
@@ -23,3 +21,5 @@ else
 endif
 setlocal comments=:#
 setlocal commentstring=#\ %s
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'elixir') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elixir') == -1
 
 if exists("b:did_indent")
   finish
@@ -74,3 +72,5 @@ endfunction
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
+
+endif

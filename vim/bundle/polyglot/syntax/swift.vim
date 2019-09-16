@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'swift') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'swift') == -1
 
 " File: swift.vim
 " Author: Keith Smiley
@@ -306,3 +304,5 @@ highlight default link swiftLineDirective PreProc
 syn sync minlines=100
 
 let b:current_syntax = "swift"
+
+endif

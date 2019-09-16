@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'qml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'qml') == -1
 
 " Vim filetype plugin file
 " Language: qml
@@ -39,3 +37,5 @@ setlocal formatoptions+=croql
 
 let &cpoptions = s:cpoptions_save
 unlet s:cpoptions_save
+
+endif

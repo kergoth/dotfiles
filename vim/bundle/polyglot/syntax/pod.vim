@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'perl') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'perl') == -1
 
 " Vim syntax file
 " Language:      Perl POD format
@@ -177,3 +175,5 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 " vim: ts=8
+
+endif

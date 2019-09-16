@@ -222,7 +222,7 @@ PACKS="
   json5:GutenYe/json5.vim
   json:elzr/vim-json
   jst:briancollins/vim-jst
-  jsx:MaxMEllon/vim-jsx-pretty
+  jsx:MaxMEllon/vim-jsx-pretty:_ALL
   julia:JuliaEditorSupport/julia-vim
   kotlin:udalov/kotlin-vim
   latex:LaTeX-Box-Team/LaTeX-Box
@@ -276,7 +276,6 @@ PACKS="
   slime:slime-lang/vim-slime-syntax
   smt2:bohlender/vim-smt2
   solidity:tomlion/vim-solidity
-  styled-components:styled-components/vim-styled-components#main:_ALL
   stylus:wavded/vim-stylus
   svelte:evanleck/vim-svelte
   svg-indent:jasonshell/vim-svg-indent
@@ -287,12 +286,12 @@ PACKS="
   terraform:hashivim/vim-terraform
   textile:timcharper/textile.vim
   thrift:solarnz/thrift.vim
-  tmux:ericpruitt/tmux.vim
+  tmux:ericpruitt/tmux.vim:_ALL:/vim/
   tomdoc:wellbredgrapefruit/tomdoc.vim
   toml:cespare/vim-toml
   tptp:c-cube/vim-tptp
   twig:lumiliet/vim-twig
-  typescript:leafgarland/typescript-vim
+  typescript:HerringtonDarkholme/yats.vim
   vala:arrufat/vala.vim
   vbnet:vim-scripts/vbnet.vim
   vcl:smerrill/vcl-vim-plugin

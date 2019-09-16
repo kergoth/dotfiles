@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'cmake') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'cmake') == -1
 
 " Vim indent file
 " Language:     CMake (ft=cmake)
@@ -91,3 +89,5 @@ endfun
 
 let &cpo = s:keepcpo
 unlet s:keepcpo
+
+endif

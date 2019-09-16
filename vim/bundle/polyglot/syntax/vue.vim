@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'vue') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'vue') == -1
 
 " Vim syntax file
 " Language: Vue.js
@@ -80,3 +78,5 @@ syn match   htmlArg "[@v:][-:.0-9_a-z]*\>" contained
 syntax sync fromstart
 
 let b:current_syntax = "vue"
+
+endif

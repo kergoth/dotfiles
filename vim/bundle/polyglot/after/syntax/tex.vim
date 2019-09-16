@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'latex') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'latex') == -1
 
 " adds support for cleverref package
 " \Cref, \cref, \cpageref, \labelcref, \labelcpageref
@@ -11,3 +9,5 @@ syn region texRefZone		matchgroup=texStatement start="\\\(label\|\)c\(page\|\)re
 syn region texZone start="\\begin{lstlisting}" end="\\end{lstlisting}\|%stopzone\>"
 syn match texInputFile  "\\lstinputlisting\s*\(\[.*\]\)\={.\{-}}" contains=texStatement,texInputCurlies,texInputFileOpt
 syn match texZone "\\lstinline\s*\(\[.*\]\)\={.\{-}}"
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'pgsql') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'pgsql') == -1
 
 " Vim syntax file
 " Language:     SQL (PostgreSQL dialect), PL/pgSQL, PL/…, PostGIS, …
@@ -1996,3 +1994,5 @@ hi def link sqlCreateTextSearchKeyword sqlKeyword
 
 let b:current_syntax = "sql"
 
+
+endif

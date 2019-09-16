@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'sxhkd') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'sxhkd') == -1
 
 if exists("b:current_syntax")
     finish
@@ -28,3 +26,5 @@ hi def link sxHotkeySep Delimiter
 hi def link sxSequenceSep Delimiter
 
 let b:current_syntax = "sxhkdrc"
+
+endif

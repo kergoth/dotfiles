@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'crystal') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'crystal') == -1
 
 if exists('b:did_ftplugin')
   finish
@@ -82,3 +80,5 @@ let &cpo = s:save_cpo
 unlet s:save_cpo
 
 " vim: nowrap sw=2 sts=2 ts=8:
+
+endif

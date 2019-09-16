@@ -1,6 +1,6 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'hive') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'hive') == -1
 
 setlocal comments=:--
 setlocal commentstring=--\ %s
+
+endif

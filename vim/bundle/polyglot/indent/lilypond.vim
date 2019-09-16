@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'lilypond') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'lilypond') == -1
 
 " LilyPond indent file
 " Language:     LilyPond
@@ -62,3 +60,5 @@ endfunction
 "
 "
 "
+
+endif

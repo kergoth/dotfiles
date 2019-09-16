@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'acpiasl') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'acpiasl') == -1
 
 " Vim syntax file
 " Language: ACPI ASL files
@@ -110,3 +108,5 @@ hi def link aslNumber            Number
 let b:current_syntax = "asl"
 syn sync minlines=200
 
+
+endif

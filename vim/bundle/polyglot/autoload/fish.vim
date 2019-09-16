@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'fish') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'fish') == -1
 
 function! fish#Indent()
     let l:shiftwidth = shiftwidth()
@@ -69,3 +67,5 @@ endfunction
 function! fish#errorformat()
     return '%Afish: %m,%-G%*\\ ^,%-Z%f (line %l):%s'
 endfunction
+
+endif

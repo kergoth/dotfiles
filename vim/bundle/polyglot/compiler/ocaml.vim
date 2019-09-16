@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'ocaml') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
 
 " Vim Compiler File
 " Compiler:    ocaml
@@ -57,3 +55,5 @@ CompilerSet errorformat =
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
+
+endif

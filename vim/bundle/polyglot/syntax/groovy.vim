@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'groovy') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'groovy') == -1
 
 " Vim syntax file
 " Language:	Groovy
@@ -452,3 +450,5 @@ endif
 let b:spell_options="contained"
 
 " vim: ts=8
+
+endif

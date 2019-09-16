@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'less') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'less') == -1
 
 " Vim filetype plugin
 " Language:	    LessCSS
@@ -28,3 +26,5 @@ setlocal fo=croql
 let &l:include = '^\s*@import\s\+\%(url(\)\=["'']\='
 
 " vim:set sw=2:
+
+endif

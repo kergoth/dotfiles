@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'haproxy') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'haproxy') == -1
 
 " Vim syntax file
 " Language:    HAproxy
@@ -358,3 +356,5 @@ delcommand HiLink
 
 let b:current_syntax = "haproxy"
 " vim: ts=8
+
+endif

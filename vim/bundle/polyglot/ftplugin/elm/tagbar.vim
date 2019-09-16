@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'elm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elm') == -1
 
 if !executable('ctags')
     finish
@@ -22,3 +20,5 @@ function! s:SetTagbar()
 endfunction
 
 call s:SetTagbar()
+
+endif

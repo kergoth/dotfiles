@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'elixir') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elixir') == -1
 
 function! elixir#util#get_filename(word) abort
   let word = a:word
@@ -26,3 +24,5 @@ function! elixir#util#get_filename(word) abort
 
   return word
 endfunction
+
+endif

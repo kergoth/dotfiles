@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'pony') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'pony') == -1
 
 " Vim syntax file
 " Language:     Pony
@@ -229,3 +227,5 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 let b:current_syntax = 'pony'
+
+endif

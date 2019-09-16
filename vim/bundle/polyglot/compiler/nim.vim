@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'nim') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'nim') == -1
 
 if exists("current_compiler")
   finish
@@ -27,3 +25,5 @@ unlet s:cpo_save
 
 let g:syntastic_nim_checkers = ['nim']
 
+
+endif

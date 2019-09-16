@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'svelte') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'svelte') == -1
 
 " Vim syntax file
 " Language:   Svelte 3 (HTML/JavaScript)
@@ -62,3 +60,5 @@ highlight def link svelteKeyword Keyword
 highlight def link svelteRepeat Repeat
 
 let b:current_syntax = "svelte"
+
+endif

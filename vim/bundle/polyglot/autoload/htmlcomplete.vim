@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'html5') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'html5') == -1
 
 " Vim completion script
 " Language:     HTML and XHTML
@@ -843,3 +841,5 @@ function! htmlcomplete#CheckDoctype() " {{{
 endfunction
 " }}}
 " vim:set foldmethod=marker:
+
+endif

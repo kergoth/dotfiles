@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'llvm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'llvm') == -1
 
 " Vim filetype plugin file
 " Language: LLVM TableGen
@@ -14,3 +12,5 @@ let b:did_ftplugin = 1
 setlocal matchpairs+=<:>
 setlocal softtabstop=2 shiftwidth=2
 setlocal expandtab
+
+endif

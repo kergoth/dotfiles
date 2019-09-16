@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'sbt') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'sbt') == -1
 
 " Vim syntax file
 " Language:     sbt
@@ -35,3 +33,5 @@ hi link sbtSpecial Special
 hi link sbtComment Comment
 hi link sbtLineComment Comment
 hi link sbtDocComment Comment
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'lua') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'lua') == -1
 
 " Vim indent file
 " Language: Lua
@@ -118,3 +116,5 @@ function GetLuaIndent()
   return indent(prev_line) + (shiftwidth() * i)
 
 endfunction
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'haxe') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'haxe') == -1
 
 " Vim syntax file
 " Language:     haxe
@@ -429,3 +427,5 @@ if main_syntax == 'haxe'
   unlet main_syntax
 endif
 let b:spell_options="contained"
+
+endif

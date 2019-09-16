@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'apiblueprint') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'apiblueprint') == -1
 
 runtime! syntax/markdown.vim
 unlet! b:current_syntax
@@ -36,3 +34,5 @@ highlight default link apibActionRelationKey Identifier
 
 let b:current_syntax = 'apiblueprint'
 
+
+endif

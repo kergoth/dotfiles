@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'cucumber') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'cucumber') == -1
 
 " Vim syntax file
 " Language:     Cucumber
@@ -144,3 +142,5 @@ let &cpo = s:keepcpo
 unlet s:keepcpo
 
 " vim:set sts=2 sw=2:
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'livescript') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'livescript') == -1
 
 " Language:    LiveScript
 " Maintainer:  George Zahariev
@@ -76,3 +74,5 @@ augroup LiveScriptUpdateMakePrg
     autocmd BufFilePost,BufWritePost          call s:UpdateMakePrg()
   endif
 augroup END
+
+endif

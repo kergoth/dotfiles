@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'perl') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'perl') == -1
 
 " Language:      TT2 embedded with HTML
 " Maintainer:    vim-perl <vim-perl@googlegroups.com>
@@ -15,3 +13,5 @@ endif
 
 " Just use the HTML plugin for now.
 runtime! ftplugin/html.vim ftplugin/html_*.vim ftplugin/html/*.vim
+
+endif

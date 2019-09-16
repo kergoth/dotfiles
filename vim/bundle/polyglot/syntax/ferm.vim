@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'ferm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ferm') == -1
 
 "============================================================================
 " ferm syntax highlighter
@@ -205,3 +203,5 @@ endif
 " Autoconfigure vim indentation settings
 " vim:ts=4:sw=4:sts=4:fdm=marker:iskeyword+=-
 
+
+endif

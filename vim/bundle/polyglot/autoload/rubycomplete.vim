@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'ruby') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ruby') == -1
 
 " Vim completion script
 " Language:		Ruby
@@ -878,3 +876,5 @@ call s:DefRuby()
 "}}} ruby-side code
 
 " vim:tw=78:sw=4:ts=8:et:fdm=marker:ft=vim:norl:
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'git') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'git') == -1
 
 " Vim filetype plugin
 " Language:	git config file
@@ -17,3 +15,5 @@ setlocal formatoptions-=t formatoptions+=croql
 setlocal comments=:#,:; commentstring=;\ %s
 
 let b:undo_ftplugin = "setl fo< com< cms<"
+
+endif

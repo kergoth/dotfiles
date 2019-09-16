@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'gmpl') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'gmpl') == -1
 
 " Vim syntax file
 " Language: GMPL
@@ -120,3 +118,5 @@ hi def link gmplType Type
 hi def link gmplLabel Keyword
 hi def link gmplString String
 hi def link gmplStringToken Special 
+
+endif

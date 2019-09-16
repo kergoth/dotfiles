@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'jinja') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'jinja') == -1
 
 " jinja syntax file
 " Language: Jinja HTML template
@@ -88,3 +86,5 @@ hi def link jinjaComBlock Comment
 hi def link jinjaTodo Todo
 
 let b:current_syntax = "jinja"
+
+endif

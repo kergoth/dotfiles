@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'mako') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'mako') == -1
 
 " Vim syntax file
 " Language:     Mako
@@ -105,3 +103,5 @@ if version >= 508 || !exists("did_mako_syn_inits")
 endif
 
 let b:current_syntax = b:mako_outer_lang
+
+endif

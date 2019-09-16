@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'idris') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'idris') == -1
 
 " Vim syntax file
 " Language:    Literate Idris
@@ -24,3 +22,5 @@ syntax match  lidrisBirdTrack "^>" contained
 hi def link   lidrisBirdTrack Comment
 
 let b:current_syntax = "lidris"
+
+endif

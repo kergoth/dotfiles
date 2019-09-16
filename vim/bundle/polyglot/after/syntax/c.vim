@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'c++11') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'c++11') == -1
 
 " Vim syntax file
 " Language: C Additions
@@ -306,3 +304,5 @@ hi def link cBoolean Boolean
 "hi def link cDelimiter Delimiter
 " foldmethod=syntax fix, courtesy of Ivan Freitas
 "hi def link cBraces Delimiter
+
+endif

@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'textile') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'textile') == -1
 
 " textile.vim
 "
@@ -61,3 +59,5 @@ function! TextileRenderBufferToTab()
   set syntax=html
 endfunction
 
+
+endif

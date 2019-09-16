@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'dhall') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'dhall') == -1
 
 scriptencoding utf-8
 
@@ -64,3 +62,5 @@ highlight link dhallComment Comment
 highlight link dhallMultilineComment Comment
 
 let b:current_syntax = 'dhall'
+
+endif

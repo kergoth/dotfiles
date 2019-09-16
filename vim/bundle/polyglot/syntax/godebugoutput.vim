@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'go') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'go') == -1
 
 if exists("b:current_syntax")
   finish
@@ -15,3 +13,5 @@ hi def link godebugOutputErr Comment
 hi def link godebugOutputOut Normal
 
 " vim: sw=2 ts=2 et
+
+endif

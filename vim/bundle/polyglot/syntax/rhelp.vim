@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'r-lang') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'r-lang') == -1
 
 " Vim syntax file
 " Language:    R Help File
@@ -157,3 +155,5 @@ endif
 
 let   b:current_syntax = "rhelp"
 " vim: foldmethod=marker:
+
+endif

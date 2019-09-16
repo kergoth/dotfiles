@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'elixir') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elixir') == -1
 
 if exists("b:did_indent")
   finish
@@ -17,3 +15,5 @@ setlocal indentkeys+=*<Return>,=->,=\|>,=<>,0},0],0)
 function! elixir#indent(lnum)
   return elixir#indent#indent(a:lnum)
 endfunction
+
+endif

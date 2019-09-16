@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'svg-indent') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'svg-indent') == -1
 
 " Vim indent file
 "
@@ -107,3 +105,5 @@ endfun
 
 let &cpo = s:keepcpo
 unlet s:keepcpo
+
+endif

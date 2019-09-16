@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'llvm') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'llvm') == -1
 
 " Copyright (c) 2018 rhysd
 "
@@ -24,3 +22,5 @@ endif
 
 syn keyword llvmKeyword attributes
 syn match llvmNoName /#\d\+\>/
+
+endif

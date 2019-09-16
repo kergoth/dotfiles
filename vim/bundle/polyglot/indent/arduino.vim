@@ -1,6 +1,4 @@
-if exists('g:polyglot_disabled') && index(g:polyglot_disabled, 'arduino') != -1
-  finish
-endif
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'arduino') == -1
 
 " Vim indent file
 " Language:	Arduino
@@ -17,3 +15,5 @@ let b:did_indent = 1
 setlocal cindent
 
 let b:undo_indent = "setl cin<"
+
+endif
