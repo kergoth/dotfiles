@@ -62,6 +62,13 @@ pip3_install () {
 
 mkdir -p "${XDG_DATA_HOME:-~/.local/share}"
 
+# Clang and llvm are needed to build `bat`
+if command -v pacman >/dev/null 2>&1; then
+    sudo pacman -Sy --needed llvm clang
+elif command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get -y llvm clang
+fi
+
 # cargo-update
 export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
 if ! [ -e "$CARGO_INSTALL_ROOT/bin/cargo-install-update" ]; then
