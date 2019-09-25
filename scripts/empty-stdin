@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+# Exit zero if stdin is empty
+
+import sys
+d = sys.stdin.read(1)
+if d:
+    sys.stdout.write(d)
+    sys.stdout.write(sys.stdin.read())
+sys.exit(bool(d))
