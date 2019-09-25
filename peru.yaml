@@ -134,7 +134,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: b512d57b6d0d2b85368a8068ec1a13288a93d267
+    rev: a3fab81aeca8a566d4447ff50f33ec0b6973775b
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 26f6037de68254376cd062286aeeaa7db804a973
+    rev: 417b3bb818f86d2a92dbb0ee3857af7de1ade8c8
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -222,7 +222,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: a76bec9196fe27e195d167a5c2ee1da763d31b96
+    rev: 1f39fa150fc9275ff264e1f8807fc6fcbbdae012
 
 # continuously updated session files
 git module vim-obsession:
@@ -494,7 +494,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 7496b3dab3b0a82338474ccd5549cee79d3478a0
+    rev: f9c2a63c1a121a60e78996c4664af1d479b793f2
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -528,7 +528,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: ff0b1cfb0bc2fe5eff47b8bc2bace379a0085b9f
+    rev: bba1f964b88e07f7536fd7cd337739611ec1b12d
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -546,7 +546,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 61cfb3fefb0ebd8654be452046bd2ba24025311f
+    rev: 6746eaeaa0a02fbd101c7ae367aaa2fb62378368
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner

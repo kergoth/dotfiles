@@ -210,6 +210,8 @@ formatting.
   * [write-good](https://github.com/btford/write-good)
 * Idris
   * [idris](http://www.idris-lang.org/)
+* Ink
+  * [ink-language-server](https://github.com/ephread/ink-language-server)
 * ISPC
   * [ispc](https://ispc.github.io/) :floppy_disk:
 * Java
@@ -249,7 +251,7 @@ formatting.
   * [lacheck](https://www.ctan.org/pkg/lacheck)
   * [proselint](http://proselint.com/)
   * [redpen](http://redpen.cc/)
-  * [texlab](https://texlab.netlify.com) ([Rust rewrite](https://github.com/latex-lsp/texlab/tree/rust))
+  * [texlab](https://texlab.netlify.com)
   * [textlint](https://textlint.github.io/)
   * [vale](https://github.com/ValeLint/vale)
   * [write-good](https://github.com/btford/write-good)
@@ -430,6 +432,7 @@ formatting.
 * SML
   * [smlnj](http://www.smlnj.org/)
 * Solidity
+  * [solc](https://solidity.readthedocs.io/)
   * [solhint](https://github.com/protofire/solhint)
   * [solium](https://github.com/duaraghav8/Solium)
 * SQL

@@ -201,6 +201,8 @@ Notes:
   * `write-good`
 * Idris
   * `idris`
+* Ink
+  * `ink-language-server`
 * ISPC
   * `ispc`!!
 * Java
@@ -421,6 +423,7 @@ Notes:
 * SML
   * `smlnj`
 * Solidity
+  * `solc`
   * `solhint`
   * `solium`
 * SQL
