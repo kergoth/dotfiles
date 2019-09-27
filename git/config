@@ -26,6 +26,9 @@
 	autosquash = true
 	autostash = true
 
+[revise]
+	autoSquash = true
+
 [status]
 	submodulesummary = true
 
