@@ -203,7 +203,7 @@ elif [ -e "$to" ]; then
 fi
 
 
-source_git_dir=$(cd $from && abspath $(git rev-parse --git-dir))
+source_git_dir=$(cd "$from" && abspath $(git rev-parse --git-dir))
 
 if [ -z "$source_remote" ]; then
     if [ $(GIT_DIR="$source_git_dir" git remote | wc -l) = 1 ]; then
