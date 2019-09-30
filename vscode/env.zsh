@@ -6,5 +6,5 @@ if [[ -n "$SSH_AUTH_SOCK" ]] && (( $+commands[code] )); then
             VSCODE_SERVER_DIR="$(dirname "$code_dir")"
             ;;
     esac
-    export VISUAL=code EDITOR=code
+    export VISUAL='code -w' 'EDITOR=code -w'
 fi
