@@ -1,4 +1,4 @@
-if [[ -n "$SSH_AUTH_SOCK" ]] && (( $+commands[code] )); then
+if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
     code_dir="$(dirname "$(command -v code)")"
     export VSCODE_SERVER_DIR=
     case "$code_dir" in
@@ -7,4 +7,5 @@ if [[ -n "$SSH_AUTH_SOCK" ]] && (( $+commands[code] )); then
             ;;
     esac
     export VISUAL='code -w' 'EDITOR=code -w'
+    export VSCODE_IPC_HOOK_CLI
 fi
