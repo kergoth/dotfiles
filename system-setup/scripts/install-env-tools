@@ -110,7 +110,6 @@ pip_install gitpython # buildhistory-diff
 ## Development Tools
 go get -u github.com/github/hub
 pipv3 git-revise
-cargo-install git-series
 # pprintpp + pp-ez?
 # twine?
 # wheel?
