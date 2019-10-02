@@ -318,6 +318,7 @@ PATH="$dotfilesdir/scripts:$PATH"
 
 do_install () {
     installscript="$1"
+    echo >&2 install "${installscript%/*}"
     cd "${installscript%/*}"
     . "./${installscript##*/}"
     cd - >/dev/null
