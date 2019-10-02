@@ -1,0 +1,78 @@
+#!/bin/sh
+
+usage() {
+    echo >&2 "${0##*/} [options] [REMOTE..]"
+    echo >&2
+    echo >&2 "Prune branches of the specified remote(s), relative to the origin."
+    echo >&2 "Defaults to all remotes but ORIGIN_REMOTE if no remotes are specified."
+    echo >&2 "Removes tracking branches, not upstream branches."
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2
+    echo >&2 "  REMOTE                Prune refs of the specified remote, defaults to $USER."
+    echo >&2 "  -o ORIGIN_REMOTE      Prune branches relative to the specified remote, not origin."
+    echo >&2 "  -u UPSTREAM_BRANCHES  Specify the base upstream branches where the changes are merged,"
+    echo >&2 "                        defaults to master. Comma-separated."
+    echo >&2 "  -n                    Dry-run"
+    exit 2
+}
+
+process_arguments() {
+    origin=origin
+    dry_run=0
+    upstream_branches=master
+    while getopts o:u:nh opt; do
+        case "$opt" in
+            o)
+                origin="$OPTARG"
+                ;;
+            u)
+                upstream_branches="$OPTARG"
+                ;;
+            n)
+                dry_run=1
+                ;;
+            \? | h)
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if ! git config remote."$origin".url >/dev/null; then
+        echo >&2 "Error: invalid origin remote: $origin"
+        exit 1
+    fi
+
+    upstreams="$(echo "$upstream_branches" | tr ' ' '\n' | sed -e "s#^#$origin/#g")"
+
+    if [ $dry_run -eq 1 ]; then
+        prune_args=-n
+    else
+        prune_args=
+    fi
+
+    prune_args="$prune_args -R"
+}
+
+set -u
+
+process_arguments "$@"
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    set -- $(git remote | grep -vx "$origin")
+fi
+
+for remote; do
+    if ! git config remote."$remote".url >/dev/null; then
+        echo >&2 "Error: invalid remote: $remote"
+        exit 1
+    fi
+    git prune-merged -n -r "$remote" -c "$origin" $prune_args
+    git prune-merged -n -r "$remote" $prune_args $upstreams
+done \
+    | sed -n -e 's/git branch -r -d //p' \
+    | tr ' ' '\n' \
+    | sort -u \
+    | xargs -t git branch -r -d
