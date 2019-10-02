@@ -21,7 +21,7 @@ echo >&2 "Installing prerequisites"
 if command -v pacman >/dev/null 2>&1; then
     sudo pacman -Sy --needed openssl openssl-1.0 bzip2 sqlite ncurses unzip
 elif command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get -y install libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev unzip
+    sudo apt-get -y install --no-upgrade libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev unzip
 elif command -v brew >/dev/null 2>&1; then
     brew install openssl bzip2 sqlite3 ncurses unzip
 fi >"$log" 2>&1
