@@ -129,6 +129,7 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
     if (( $+commands[grm] )); then
         alias rm='grm --one-file-system -I'
+        alias srm='sudo =grm --one-file-system -I'
     fi
 
     alias locate='mdfind -name'
@@ -144,11 +145,14 @@ else
     fi
     if ! [[ $OSTYPE =~ freebsd* ]]; then
         alias rm='rm --one-file-system -I'
+        alias srm='sudo rm --one-file-system -I'
     fi
     if ! (( $+aliases[open] )); then
         alias open=xdg-open
     fi
 fi
+alias sbgrm='sudo =bgrm'
+
 alias wildcard_to_re='python -c "import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))"'
 alias fnmatch='python -c "import fnmatch,sys; sys.exit(not fnmatch.fnmatch(*sys.argv[1:3]))"'
 alias relpath='python -c "import os,sys; print(os.path.relpath(*sys.argv[1:]))"'
