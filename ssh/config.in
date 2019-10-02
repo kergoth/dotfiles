@@ -13,12 +13,3 @@ ControlPath ~/.ssh/socket.%r@%h:%p
 
 %include config.d/*
 %include ../*/ssh-config.d/*
-
-# Github needs diffie-hellman-group-exchange-sha1 some of the time but not always.
-Host github.com gist.github.com
-    KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1
-
-Host *
-    Ciphers chacha20-poly1305@openssh.com,aes256-ctr,aes256-gcm@openssh.com,aes192-ctr,aes128-gcm@openssh.com,aes128-ctr
-    KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
-    MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
