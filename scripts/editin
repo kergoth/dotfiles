@@ -1,0 +1,18 @@
+#!/bin/sh
+# Use $VISUAL/$EDITOR to edit the files listed on stdin, newline separated
+
+VISUAL="${VISUAL:-${EDITOR:-vim}}"
+case "$VISUAL" in
+    vim)
+        if command -v mvim >/dev/null 2>&1; then
+            VISUAL="mvim -v"
+        fi
+        ;;
+esac
+
+files="$(mktemp -t "${0##*/}.XXXXXX")" || exit $?
+trap 'rm -f "$files"' EXIT INT TERM
+cat >"$files"
+if [ -s "$files" ]; then
+    tr <"$files" '\n' '\0' | xargs -0 sh -c "$VISUAL </dev/tty \"\$@\"" -
+fi
