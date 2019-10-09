@@ -146,6 +146,3 @@
 # Invoke as `ghq import starred motemen`
 [ghq "import"]
 	starred = github-list-starred
-[cinnabar]
-	version-check = 1565059644
-	helper = /Users/kergoth/.local/share/git-cinnabar/git-cinnabar-helper
