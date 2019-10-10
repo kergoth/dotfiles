@@ -15,7 +15,7 @@ endif
 " Section: Utility
 
 function! s:function(name) abort
-  return function(substitute(a:name,'^s:',matchstr(expand('<sfile>'), '<SNR>\d\+_'),''))
+  return function(substitute(a:name,'^s:',matchstr(expand('<sfile>'), '.*\zs<SNR>\d\+_'),''))
 endfunction
 
 function! s:sub(str,pat,rep) abort
@@ -42,7 +42,7 @@ function! s:Uniq(list) abort
 endfunction
 
 function! s:winshell() abort
-  return has('win32') && &shellcmdflag !~# '^-'
+  return has('win32') && &shellcmdflag =~# '^/\|^-Command$'
 endfunction
 
 function! s:shellesc(arg) abort
@@ -589,39 +589,6 @@ endfunction
 function! s:add_methods(namespace, method_names) abort
   for name in a:method_names
     let s:{a:namespace}_prototype[name] = s:function('s:'.a:namespace.'_'.name)
-  endfor
-endfunction
-
-function! s:Command(command, line1, line2, range, bang, mods, arg, args) abort
-  try
-    if a:command =~# '^\l[[:alnum:]-]\+$'
-      return fugitive#Command(a:line1, a:line2, a:range, a:bang, s:Mods(a:mods), a:command . ' ' . a:arg)
-    endif
-    return s:{a:command}Command(a:line1, a:line2, a:range, a:line2, a:bang, s:Mods(a:mods), '', a:arg, a:args)
-  catch /^fugitive:/
-    return 'echoerr ' . string(v:exception)
-  endtry
-endfunction
-
-let s:commands = []
-function! s:command(definition, ...) abort
-  let def = a:definition
-  if !has('patch-7.4.542')
-    let def = substitute(def, '-addr=\S\+ ', '', '')
-  endif
-  if !has('patch-8.1.560')
-    let def = substitute(def, '-addr=other ', '', '')
-  endif
-  if a:0
-    call add(s:commands, def . ' execute s:Command(' . string(a:1) . ", <line1>, <count>, +'<range>', <bang>0, '<mods>', <q-args>, [<f-args>])")
-  else
-    call add(s:commands, def)
-  endif
-endfunction
-
-function! s:define_commands() abort
-  for command in s:commands
-    exe 'command! -buffer '.command
   endfor
 endfunction
 
@@ -1650,48 +1617,95 @@ function! fugitive#BufReadStatus() abort
     if s:cpath(fnamemodify($GIT_INDEX_FILE !=# '' ? $GIT_INDEX_FILE : fugitive#Find('.git/index'), ':p')) !=# s:cpath(amatch)
       let cmd += ['-c', 'GIT_INDEX_FILE=' . amatch]
     endif
-    let cmd += ['status', '--porcelain', '-bz']
-    let [output, message, exec_error] = s:NullError(cmd)
-    if exec_error
-      throw 'fugitive: ' . message
-    endif
-
-    let head = matchstr(output[0], '^## \zs\S\+\ze\%($\| \[\)')
-    let pull = ''
-    if head =~# '\.\.\.'
-      let [head, pull] = split(head, '\.\.\.')
-      let branch = head
-    elseif head ==# 'HEAD' || empty(head)
-      let head = FugitiveHead(11)
-      let branch = ''
-    else
-      let branch = head
-    endif
 
     let b:fugitive_files = {'Staged': {}, 'Unstaged': {}}
     let [staged, unstaged, untracked] = [[], [], []]
-    let i = 0
-    while i < len(output)
-      let line = output[i]
-      let file = line[3:-1]
-      let files = file
-      let i += 1
-      if line[2] !=# ' '
-        continue
+
+    if fugitive#GitVersion(2, 11)
+      let cmd += ['status', '--porcelain=v2', '-bz']
+      let [output, message, exec_error] = s:NullError(cmd)
+      if exec_error
+        throw 'fugitive: ' . message
       endif
-      if line[0:1] =~# '[RC]'
-        let files = output[i] . ' -> ' . file
+
+      let i = match(output, '^[^#]')
+      let head = matchlist(output[:i], '^# branch\.head \zs.*$')[0]
+      let pull = get(matchlist(output[:i], '^# branch\.upstream \zs.*$'), 0, '')
+      if len(pull)
+        let branch = head
+      elseif head ==# '(detached)'
+        let head = matchlist(output[:i], '^# branch\.oid \zs.*$')[0][:10]
+        let branch = ''
+      else
+        let branch = head
+      endif
+
+      while i < len(output)
+        let line = output[i]
+        if line[0] ==# '?'
+          call add(untracked, {'type': 'File', 'status': line[0], 'filename': line[2:-1]})
+        elseif line[0] !=# '#'
+          if line[0] ==# 'u'
+            let file = matchstr(line, '^.\{37\} \x\{40,\} \x\{40,\} \x\{40,\} \zs.*$')
+          else
+            let file = matchstr(line, '^.\{30\} \x\{40,\} \x\{40,\} \zs.*$')
+          endif
+          if line[0] ==# '2'
+            let i += 1
+            let file = output[i] . ' -> ' . matchstr(file, ' \zs.*')
+          endif
+          let sub = matchstr(line, '^[12u] .. \zs....')
+          if line[2] !=# '.'
+            call add(staged, {'type': 'File', 'status': line[2], 'filename': file, 'sub': sub})
+          endif
+          if line[3] !=# '.'
+            call add(unstaged, {'type': 'File', 'status': get({'C':'M','M':'?','U':'?'}, matchstr(sub, 'S\.*\zs[CMU]'), line[3]), 'filename': file, 'sub': sub})
+          endif
+        endif
         let i += 1
+      endwhile
+    else " git < 2.11
+      let cmd += ['status', '--porcelain', '-bz']
+      let [output, message, exec_error] = s:NullError(cmd)
+      if exec_error
+        throw 'fugitive: ' . message
       endif
-      if line[0] !~# '[ ?!#]'
-        call add(staged, {'type': 'File', 'status': line[0], 'filename': files})
+
+      let head = matchstr(output[0], '^## \zs\S\+\ze\%($\| \[\)')
+      let pull = ''
+      if head =~# '\.\.\.'
+        let [head, pull] = split(head, '\.\.\.')
+        let branch = head
+      elseif head ==# 'HEAD' || empty(head)
+        let head = FugitiveHead(11)
+        let branch = ''
+      else
+        let branch = head
       endif
-      if line[0:1] ==# '??'
-        call add(untracked, {'type': 'File', 'status': line[1], 'filename': files})
-      elseif line[1] !~# '[ !#]'
-        call add(unstaged, {'type': 'File', 'status': line[1], 'filename': files})
-      endif
-    endwhile
+
+      let i = 0
+      while i < len(output)
+        let line = output[i]
+        let file = line[3:-1]
+        let files = file
+        let i += 1
+        if line[2] !=# ' '
+          continue
+        endif
+        if line[0:1] =~# '[RC]'
+          let files = output[i] . ' -> ' . file
+          let i += 1
+        endif
+        if line[0] !~# '[ ?!#]'
+          call add(staged, {'type': 'File', 'status': line[0], 'filename': files, 'sub': ''})
+        endif
+        if line[0:1] ==# '??'
+          call add(untracked, {'type': 'File', 'status': line[1], 'filename': files})
+        elseif line[1] !~# '[ !#]'
+          call add(unstaged, {'type': 'File', 'status': line[1], 'filename': files, 'sub': ''})
+        endif
+      endwhile
+    endif
 
     for dict in staged
       let b:fugitive_files['Staged'][dict.filename] = dict
@@ -2216,8 +2230,6 @@ endfunction
 
 " Section: :Gstatus
 
-call s:command("-bar -bang -range=-1 -addr=other Gstatus", "Status")
-
 function! s:StatusCommand(line1, line2, range, count, bang, mods, reg, arg, args, ...) abort
   let dir = a:0 ? a:1 : s:Dir()
   exe s:DirCheck(dir)
@@ -2519,6 +2531,7 @@ function! s:StageInfo(...) abort
         \ 'paths': map(reverse(split(text, ' -> ')), 's:Tree() . "/" . v:val'),
         \ 'commit': matchstr(getline(lnum), '^\%(\%(\x\x\x\)\@!\l\+\s\+\)\=\zs[0-9a-f]\{4,\}\ze '),
         \ 'status': matchstr(getline(lnum), '^[A-Z?]\ze \|^\%(\x\x\x\)\@!\l\+\ze [0-9a-f]'),
+        \ 'sub': get(get(get(b:fugitive_files, section, {}), text, {}), 'sub', ''),
         \ 'index': index}
 endfunction
 
@@ -2968,7 +2981,15 @@ function! s:StageDiff(diff) abort
   let lnum = line('.')
   let info = s:StageInfo(lnum)
   let prefix = info.offset > 0 ? '+' . info.offset : ''
-  if empty(info.paths) && info.section ==# 'Staged'
+  if info.sub =~# '^S'
+    if info.section ==# 'Staged'
+      return 'Git! diff --no-ext-diff --submodule=log --cached -- ' . info.paths[0]
+    elseif info.sub =~# '^SC'
+      return 'Git! diff --no-ext-diff --submodule=log -- ' . info.paths[0]
+    else
+      return 'Git! diff --no-ext-diff --submodule=diff -- ' . info.paths[0]
+    endif
+  elseif empty(info.paths) && info.section ==# 'Staged'
     return 'Git! diff --no-ext-diff --cached'
   elseif empty(info.paths)
     return 'Git! diff --no-ext-diff'
@@ -3062,8 +3083,25 @@ function! s:StageDelete(lnum1, lnum2, count) abort
       if empty(info.paths)
         continue
       endif
+      let sub = get(get(get(b:fugitive_files, info.section, {}), info.filename, {}), 'sub')
+      if sub =~# '^S'
+        if info.status ==# 'A'
+          continue
+        endif
+        if info.section ==# 'Staged'
+          call s:TreeChomp('reset', '--', info.paths[0])
+        endif
+        if info.status =~# '[MD]'
+          call s:TreeChomp('submodule', 'update', '--', info.paths[0])
+          call add(restore, ':Git -C ' . info.relative[0] . ' checkout -')
+        endif
+        continue
+      endif
       if info.status ==# 'D'
         let undo = 'Gremove'
+      elseif info.paths[0] =~# '/$'
+        let err .= '|echoerr ' . string('fugitive: will not delete directory ' . string(info.relative[0]))
+        break
       else
         let undo = 'Gread ' . s:TreeChomp('hash-object', '-w', '--', info.paths[0])[0:10]
       endif
@@ -3090,14 +3128,18 @@ function! s:StageDelete(lnum1, lnum2, count) abort
       call add(restore, ':Gsplit ' . s:fnameescape(info.relative[0]) . '|' . undo)
     endfor
   catch /^fugitive:/
-    let err = '|echoerr ' . string(v:exception)
+    let err .= '|echoerr ' . string(v:exception)
   endtry
   if empty(restore)
     return err[1:-1]
   endif
   exe s:ReloadStatus()
   call s:StageReveal()
-  return 'checktime|redraw|echomsg ' . string('To restore, ' . join(restore, '|')) . err
+  if len(restore)
+    return 'checktime|redraw|echomsg ' . string('To restore, ' . join(restore, '|')) . err
+  else
+    return 'checktime|redraw' . err
+  endif
 endfunction
 
 function! s:StageIgnore(lnum1, lnum2, count) abort
@@ -3432,9 +3474,6 @@ function! s:FinishCommit() abort
   return ''
 endfunction
 
-call s:command("-nargs=? -range=-1 -complete=customlist,fugitive#CommitComplete Gcommit", "commit")
-call s:command("-nargs=? -range=-1 -complete=customlist,fugitive#RevertComplete Grevert", "revert")
-
 " Section: :Gmerge, :Grebase, :Gpull
 
 function! fugitive#MergeComplete(A, L, P) abort
@@ -3711,10 +3750,6 @@ augroup fugitive_merge
         \   exe s:MergeRebase('rebase', 0, '', [getfsize(fugitive#Find('.git/rebase-merge/git-rebase-todo', s:rebase_continue)) > 0 ? '--continue' : '--abort'], remove(s:, 'rebase_continue')) |
         \ endif
 augroup END
-
-call s:command("-nargs=? -bang -complete=customlist,fugitive#MergeComplete Gmerge", "merge")
-call s:command("-nargs=? -bang -complete=customlist,fugitive#RebaseComplete Grebase", "rebase")
-call s:command("-nargs=? -bang -complete=customlist,fugitive#PullComplete Gpull", "pull")
 
 " Section: :Ggrep, :Glog
 
@@ -4376,9 +4411,6 @@ function! s:FetchSubcommand(line1, line2, range, bang, mods, args) abort
   return s:Dispatch(a:bang ? '!' : '', 'fetch', a:args)
 endfunction
 
-call s:command("-nargs=? -bang -complete=customlist,fugitive#PushComplete Gpush", "push")
-call s:command("-nargs=? -bang -complete=customlist,fugitive#FetchComplete Gfetch", "fetch")
-
 " Section: :Gdiff
 
 augroup fugitive_diff
@@ -4750,7 +4782,7 @@ function! s:BlameCommitFileLnum(...) abort
   let commit = matchstr(line, '^\^\=\zs\x\+')
   if commit =~# '^0\+$'
     let commit = ''
-  elseif line !~# '^\^' && has_key(state, 'blame_reverse_end')
+  elseif has_key(state, 'blame_reverse_end')
     let commit = get(s:LinesError('rev-list', '--ancestry-path', '--reverse', commit . '..' . state.blame_reverse_end)[0], 0, '')
   endif
   let lnum = +matchstr(line, ' \zs\d\+\ze \%((\| *\d\+)\)')
@@ -5208,8 +5240,6 @@ augroup fugitive_blame
   autocmd ColorScheme,GUIEnter * call s:BlameRehighlight()
   autocmd BufWinLeave * execute getwinvar(+bufwinnr(+expand('<abuf>')), 'fugitive_leave')
 augroup END
-
-call s:command('-buffer -bang -range=-1 -nargs=? -complete=customlist,fugitive#BlameComplete Gblame', 'blame')
 
 " Section: :Gbrowse
 
@@ -5970,7 +6000,6 @@ function! fugitive#Init() abort
       echohl NONE
     endif
   endif
-  call s:define_commands()
   exe s:DoAutocmd('User Fugitive')
 endfunction
 

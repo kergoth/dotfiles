@@ -126,7 +126,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 10d5f36865fccbf1a1a489e253bb63a2b437bd5b
+    rev: 26dc787ad623b09986f103acda8e5f44da8dd64f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -134,7 +134,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 922eee0706acb111e9678ac62ee77801941d6df2
+    rev: 8def5f15835f294ec6a1bf220fb330efddbe2575
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -174,7 +174,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 5eeb7625df75a0da931d81a84e8730aca8b8c8a1
+    rev: ea818f1fabce967bc754dfbeb7782d6322064538
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -269,7 +269,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: ab11b74be4b0c9fac88d95f0f563d0dc0cb06ed3
+    rev: 3089880f18b2a0b5663554876468de6c8f17eb8c
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -494,7 +494,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: fb5386f0da80f2ac273b42be17f7e33710878547
+    rev: afdd78510c0a39389c9c5fecd9823d7438cd032b
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -546,7 +546,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 41ff80dc9ec2cc834cc8c4aaa753e308223d48b8
+    rev: 3fe2223a48465c58c48a5a6a30ecf13ab92f7b97
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -669,7 +669,7 @@ git module wsl-open:
 
 git module vim-VimCompletesMe:
     url: https://github.com/ajh17/VimCompletesMe
-    rev: cc1eab38cca26fd1e387df5ce78e6f1e51aed8f4
+    rev: 15156a8939d7eae0bfb2b80ff06999aecb48c124
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
@@ -714,7 +714,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: 86712dc2de083e91a78bddddbb7fe7defe818c79
+    rev: f6dd7c17f71d2b6a1fad1e84e6cb28861af0e978
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime

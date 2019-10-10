@@ -32,7 +32,7 @@ function! VimCompletesMe#vim_completes_me(shift_tab)
     " Check position so that we can fallback if at the same pos.
     if get(b:, 'tab_complete_pos', []) == pos && b:completion_tried
       echo "Falling back to keyword"
-      let exp = "\<C-x>" . dirs[dir]
+      let exp = "\<C-x>" . dirs[!dir]
     else
       echo "Looking for members..."
       if !empty(&completefunc) && map ==? "user"
