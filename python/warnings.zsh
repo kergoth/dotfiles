@@ -1,0 +1,1 @@
+export PYTHONWARNINGS=ignore:DEPRECATION
