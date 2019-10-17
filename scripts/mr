@@ -710,7 +710,7 @@ sub runsh {
 	# optimisation: avoid running the shell for true and false
 	if ($command =~ /^\s*true\s*$/) {
 		$?=0;
-	       	return 0;
+		return 0;
 	}
 	elsif ($command =~ /^\s*false\s*$/) {
 		$?=0;
@@ -865,7 +865,10 @@ sub terminal_friendly_spawn {
 			}
 		}
 		else {
-			while (my $data = $pty->read()) {
+			while (1) {
+				my $data = $pty->read();
+				next if !defined $data; # interrupted by a signal
+				last if $data eq '';    # EOF
 				print $output_cache $data if defined $output_cache;
 				$output .= $data;
 			}
@@ -1291,13 +1294,13 @@ sub mrs {
 						$fhs[$i][$channel] = undef;
 						if (! defined $fhs[$i][0] &&
 						    ! defined $fhs[$i][1]) {
-						    	waitpid($active[$i][0], 0);
+							waitpid($active[$i][0], 0);
 							print STDOUT $out[$i][0] if defined $out[$i][0];
 							print STDERR $out[$i][1] if defined $out[$i][1];
 							record($active[$i][1], $? >> 8, $out[$i][0] || $out[$i][1]);
-						    	splice(@fhs, $i, 1);
-						    	splice(@active, $i, 1);
-						    	splice(@out, $i, 1);
+							splice(@fhs, $i, 1);
+							splice(@active, $i, 1);
+							splice(@out, $i, 1);
 							$running--;
 						}
 					}

@@ -127,7 +127,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 26dc787ad623b09986f103acda8e5f44da8dd64f
+    rev: 704cee14df03aaad7cd0406273180f68a77dbf52
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: ea818f1fabce967bc754dfbeb7782d6322064538
+    rev: 06e34204af04643d96d30132de6ba9066368de15
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -270,7 +270,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 3089880f18b2a0b5663554876468de6c8f17eb8c
+    rev: f1520bdde6c268cf3c77a70574b35019de3bcdd0
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -495,7 +495,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: afdd78510c0a39389c9c5fecd9823d7438cd032b
+    rev: c319e3c057dff78517eee35ff8359e1bb44d24cd
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -521,7 +521,7 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: 4016ff795bb184461996c5539327befc8da2af6f
+    rev: d43c309f888153d6c46d8b6a3a0186f4148680fd
 
 git module git-extras:
     url: https://github.com/tj/git-extras
@@ -529,7 +529,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: fd36fc0ea27a2257f9f328f8bc7905c5cfc07528
+    rev: 7bdfb1f55f247b4f876b97405ba88432ebc68446
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 3fe2223a48465c58c48a5a6a30ecf13ab92f7b97
+    rev: b24fd13423656e14fa266405e1f238f0ec65cfb3
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -580,7 +580,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: f95026252c5a31242903a98c741887696dfbb11f
+    rev: 31c55b85a03d96252bba14d64911cc78a20369a1
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -596,7 +596,7 @@ git module textual-succinct:
 
 git module pyenv-installer:
     url: https://github.com/pyenv/pyenv-installer
-    rev: f961277afdec8aafa9a2adc8a011ec456013f332
+    rev: dd3f7d0914c5b4a416ca71ffabdf2954f2021596
     move:
         bin/pyenv-installer: pyenv-installer
     pick: pyenv-installer
@@ -729,7 +729,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 5572ae8a4b0e099cb1f3f1fc16b0e096baa1fa37
+    rev: 0d8dc60c227cf5868e568c7fa30ebec1f770d521
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
@@ -737,7 +737,7 @@ git module vim-braceless:
 
 git module vim-endwise:
     url: https://github.com/tpope/vim-endwise
-    rev: f67d022169bd04d3c000f47b1c03bfcbc4209470
+    rev: 9b04cdca8c1ae4ac5a0874b934af94d033102247
 
 git module vim-highlightedyank:
     url: https://github.com/machakann/vim-highlightedyank

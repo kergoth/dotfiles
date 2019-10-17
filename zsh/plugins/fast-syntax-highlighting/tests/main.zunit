@@ -16,14 +16,14 @@ reply=()
     assert "$reply[3]" same_as ""
 }
 
-@test 'ls /bin/ls' {
+@test 'ls /bin/df' {
     reply=()
     PREBUFFER=""
-    BUFFER="ls /usr/bin/ls"
+    BUFFER="ls /bin/df"
     evl -fast-highlight-process "$PREBUFFER" "$BUFFER" 0
 
     assert "$reply[1]" same_as "0 2 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]}"
-    assert "$reply[2]" same_as "3 14 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}"
+    assert "$reply[2]" same_as "3 10 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}"
     assert "$reply[3]" same_as ""
 }
 
@@ -31,14 +31,14 @@ reply=()
 @test 'ls /bin/ls\\n # a comment\\nls /usr/bin' {
     reply=()
     PREBUFFER=""
-    BUFFER=$'ls /usr/bin/ls\n # a comment\nls /usr/bin'
+    BUFFER=$'ls /bin/df\n # a comment\nls /usr/bin'
     evl -fast-highlight-process "$PREBUFFER" "$BUFFER" 0
 
     assert "$reply[1]" same_as "0 2 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]}"
-    assert "$reply[2]" same_as "3 14 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}"
-    assert "$reply[3]" same_as "16 27 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}comment]}"
-    assert "$reply[4]" same_as "28 30 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]}"
-    assert "$reply[5]" same_as "31 39 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path-to-dir]}"
+    assert "$reply[2]" same_as "3 10 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]}"
+    assert "$reply[3]" same_as "12 23 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}comment]}"
+    assert "$reply[4]" same_as "24 26 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]}"
+    assert "$reply[5]" same_as "27 35 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path-to-dir]}"
     assert "$reply[6]" same_as ""
 }
 
@@ -85,6 +85,21 @@ reply=()
     assert "$reply[3]" same_as "25 35 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}back-or-dollar-double-quoted-argument]}"
     assert "$reply[4]" same_as "37 46 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}double-quoted-argument]}"
     assert "$reply[5]" same_as "38 45 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}back-or-dollar-double-quoted-argument]}"
+    assert "$reply[6]" same_as ""
+}
+
+@test 'tr : \\\\n <<<$PATH' {
+    reply=()
+    PREBUFFER=""
+    BUFFER='command tr : \\n <<<test$PATH'
+    evl -fast-highlight-process "\$PREBUFFER" "\$BUFFER" 0
+
+    assert "$reply[1]" same_as "0 7 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}precommand]}"
+    assert "$reply[2]" same_as "8 10 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]}"
+    assert "$reply[3]" same_as "16 19 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-tri]}"
+    # BUG?: the text spans over non-text (i.e. var) part
+    assert "$reply[4]" same_as "19 28 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-text]}"
+    assert "$reply[5]" same_as "23 28 ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-var]}"
     assert "$reply[6]" same_as ""
 }
 
