@@ -1,5 +1,6 @@
 imports:
     # Zsh
+    zsh: zsh
     zsh-autosuggestions: zsh/plugins/autosuggestions
     zsh-bd: zsh/plugins/bd
     zsh-completions: zsh/plugins/completions
@@ -761,5 +762,12 @@ git module tony-tmux-config:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
     executable: tmux-resize-adaptable
     rev: 094df60a6701a6dbd5b099e175e26c71bf4eadea
+
+git module zsh:
+    url: https://github.com/zsh-users/zsh
+    move:
+        Completion/Unix/Command/_git: functions/_git
+    pick: functions/_git
+    rev: 59901e61cb3e7c8c36bb77c722102e2b9504dc5c
 
 #  vim: set sw=4 :
