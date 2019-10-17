@@ -354,7 +354,7 @@ git module git-wtf:
 
 git module git:
     url: https://github.com/git/git
-    reup: v2.16.2
+    reup: maint
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
@@ -365,7 +365,7 @@ git module git:
         - git-subtree
         - diff-highlight.perl
         - DiffHighlight.pm
-    rev: 86aabcca24951ccfb9392014c8a379992434a7df
+    rev: 5fa0f5238b0cd46cfe7f6fa76c3f526ea98148d9
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
