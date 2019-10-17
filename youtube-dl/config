@@ -7,5 +7,8 @@
 --add-metadata
 --xattrs
 
+# Thumbnails
+--embed-thumbnail
+
 # Prefer the best combined format by default, rather than bestvideo+bestaudio
 -f best
