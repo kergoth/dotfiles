@@ -1,0 +1,53 @@
+#!/bin/sh
+
+url="$1"
+if [ -z "$url" ]; then
+    echo >&2 "Error: no url specified"
+    exit 1
+fi
+
+http () {
+    command http --check-status --ignore-stdin --timeout=2.5 --follow "$@"
+}
+
+get_speaker() {
+    http "$1" \
+        | pup '#mainInfo #speakerName span text{}' \
+        | sed -e 's/^[	 ]*//' \
+        | grep -v '^$' \
+        | head -n 1
+}
+
+linksfile="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$linksfile"' EXIT INT TERM
+
+case "$url" in
+    https://www.webofstories.com/play/*/*)
+        url="${url%/*}"
+        ;;
+    https://www.webofstories.com/play/*)
+        ;;
+    *)
+        echo >&2 "Error: unhandled url for $url"
+        exit 1
+        ;;
+esac
+
+speaker="$(get_speaker "$url/1")"
+if [ -z "$speaker" ]; then
+    echo >&2 "Error: failed to determine speaker for $url"
+    exit 1
+fi
+mkdir -p "$speaker"
+cd "$speaker" || exit 1
+
+for i in $(seq 1 10 999); do
+    http "$url/$i" >"$linksfile" 2>/dev/null || break
+    pup-links "$url/$i" <"$linksfile"
+done \
+    | grep '/play/[0-9]' \
+    | nl -p \
+    | sed -e 's/^ *//' \
+    | while IFS="$(printf '\t')" read -r num url; do
+        youtube-dl -o "$num - "'%(title)s.%(ext)s' "$url" || exit 1
+    done
