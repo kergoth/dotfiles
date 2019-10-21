@@ -53,20 +53,24 @@ else
     asdf plugin-update "$plugin" >/dev/null 2>&1
 fi
 
+if [ "$plugin" = "nodejs" ]; then
+    bash "$ASDF_DATA_DIR/plugins/nodejs/bin/import-release-team-keyring"
+fi
+
 if [ $# -gt 1 ]; then
     version=$2
 else
-    version="$(asdf list-all "$1" | grep -E '^[0-9]*(\.[0-9]*(.[0-9]*)?)?$' | version_sort | tail -n 1)"
+    version="$(asdf list-all "$plugin" | grep -E '^[0-9]*(\.[0-9]*(.[0-9]*)?)?$' | version_sort | tail -n 1)"
     if [ -z "$version" ]; then
-        echo >&2 "Error locating latest version for $1"
+        echo >&2 "Error locating latest version for $plugin"
         exit 1
     fi
 fi
 
-echo >&2 "asdf-install: installing version $version of $1"
+echo >&2 "asdf-install: installing version $version of $plugin"
 
 asdf install "$plugin" "$version"
 
 if [ $global -eq 1 ]; then
-    asdf global "$1" "$version"
+    asdf global "$plugin" "$version"
 fi
