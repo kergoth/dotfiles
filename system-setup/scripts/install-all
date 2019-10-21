@@ -2,7 +2,7 @@
 
 PATH="$(dirname "$0"):$PATH"
 
-install-langs
+install-langs "$@"
 
 if command -v pacman >/dev/null 2>&1; then
     sudo pacman -Sy --needed vim zsh cmake
