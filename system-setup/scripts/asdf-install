@@ -54,7 +54,7 @@ else
 fi
 
 if [ "$plugin" = "nodejs" ]; then
-    bash "$ASDF_DATA_DIR/plugins/nodejs/bin/import-release-team-keyring" >/dev/null
+    bash "$ASDF_DATA_DIR/plugins/nodejs/bin/import-release-team-keyring" >/dev/null 2>&1
 fi
 
 if [ $# -gt 1 ]; then
