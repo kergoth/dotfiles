@@ -1620,6 +1620,7 @@ function! fugitive#BufReadStatus() abort
 
     let b:fugitive_files = {'Staged': {}, 'Unstaged': {}}
     let [staged, unstaged, untracked] = [[], [], []]
+    let props = {}
 
     if fugitive#GitVersion(2, 11)
       let cmd += ['status', '--porcelain=v2', '-bz']
@@ -1628,21 +1629,13 @@ function! fugitive#BufReadStatus() abort
         throw 'fugitive: ' . message
       endif
 
-      let i = match(output, '^[^#]')
-      let head = matchlist(output[:i], '^# branch\.head \zs.*$')[0]
-      let pull = get(matchlist(output[:i], '^# branch\.upstream \zs.*$'), 0, '')
-      if len(pull)
-        let branch = head
-      elseif head ==# '(detached)'
-        let head = matchlist(output[:i], '^# branch\.oid \zs.*$')[0][:10]
-        let branch = ''
-      else
-        let branch = head
-      endif
-
+      let i = 0
       while i < len(output)
         let line = output[i]
-        if line[0] ==# '?'
+        let prop = matchlist(line, '# \(\S\+\) \(.*\)')
+        if len(prop)
+          let props[prop[1]] = prop[2]
+        elseif line[0] ==# '?'
           call add(untracked, {'type': 'File', 'status': line[0], 'filename': line[2:-1]})
         elseif line[0] !=# '#'
           if line[0] ==# 'u'
@@ -1664,6 +1657,15 @@ function! fugitive#BufReadStatus() abort
         endif
         let i += 1
       endwhile
+      let branch = substitute(get(props, 'branch.head', '(unknown)'), '\C^(\%(detached\|unknown\))$', '', '')
+      if len(branch)
+        let head = branch
+      elseif has_key(props, 'branch.oid')
+        let head = props['branch.oid'][0:10]
+      else
+        let head = FugitiveHead(11)
+      endif
+      let pull = get(props, 'branch.upstream', '')
     else " git < 2.11
       let cmd += ['status', '--porcelain', '-bz']
       let [output, message, exec_error] = s:NullError(cmd)
@@ -1671,6 +1673,9 @@ function! fugitive#BufReadStatus() abort
         throw 'fugitive: ' . message
       endif
 
+      while get(output, 0, '') =~# '^\l\+:'
+        call remove(output, 0)
+      endwhile
       let head = matchstr(output[0], '^## \zs\S\+\ze\%($\| \[\)')
       let pull = ''
       if head =~# '\.\.\.'
@@ -1738,12 +1743,12 @@ function! fugitive#BufReadStatus() abort
       let push = pull
     endif
 
-    if len(pull)
+    if len(pull) && get(props, 'branch.ab') !~# ' -0$'
       let unpulled = s:QueryLog(head . '..' . pull)
     else
       let unpulled = []
     endif
-    if len(push)
+    if len(push) && !(push ==# pull && get(props, 'branch.ab') =~# '^+0 ')
       let unpushed = s:QueryLog(push . '..' . head)
     else
       let unpushed = []
@@ -5012,6 +5017,9 @@ function! s:BlameSubcommand(line1, count, range, bang, mods, args) abort
         if exists('+relativenumber')
           setlocal norelativenumber
         endif
+        if exists('+signcolumn')
+          setlocal signcolumn=no
+        endif
         execute "vertical resize ".(s:linechars('.\{-\}\ze\s\+\d\+)')+1)
         call s:Map('n', 'A', ":<C-u>exe 'vertical resize '.(<SID>linechars('.\\{-\\}\\ze [0-9:/+-][0-9:/+ -]* \\d\\+)')+1+v:count)<CR>", '<silent>')
         call s:Map('n', 'C', ":<C-u>exe 'vertical resize '.(<SID>linechars('^\\S\\+')+1+v:count)<CR>", '<silent>')
@@ -5606,8 +5614,8 @@ function! fugitive#MapJumps(...) abort
     nnoremap <buffer> <silent> cRw   :<C-U>Gcommit --reset-author --amend --only<CR>
     nnoremap <buffer>          cf    :<C-U>Gcommit --fixup=<C-R>=<SID>SquashArgument()<CR>
     nnoremap <buffer>          cF    :<C-U><Bar>Grebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Gcommit --fixup=<C-R>=<SID>SquashArgument()<CR>
-    nnoremap <buffer>          cs    :<C-U>Gcommit --squash=<C-R>=<SID>SquashArgument()<CR>
-    nnoremap <buffer>          cS    :<C-U><Bar>Grebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Gcommit --squash=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cs    :<C-U>Gcommit --no-edit --squash=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cS    :<C-U><Bar>Grebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Gcommit --no-edit --squash=<C-R>=<SID>SquashArgument()<CR>
     nnoremap <buffer>          cA    :<C-U>Gcommit --edit --squash=<C-R>=<SID>SquashArgument()<CR>
     nnoremap <buffer> <silent> c?    :<C-U>help fugitive_c<CR>
 

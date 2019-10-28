@@ -169,7 +169,6 @@ EOF
   rmdir "$installdir"
   git clone "$url" "$installdir" || fatal Could not clone "$url" with git into "$installdir"
   cd "$installdir" || fatal "Cannot cd into $installdir"
-  git checkout offline_usage
 
   # after the repository cloned, we may have the log directory
   # and we can write our installation log into it
@@ -575,7 +574,7 @@ stealth - stealth mode (automatic queries for selected text)
 update  - self update (only if the scriptfile is writeable)
 version - show current cht.sh version
 /:help  - service help
-QUERY   - space ceparated query staring (examples are below)
+QUERY   - space separated query staring (examples are below)
               cht.sh> python zip list
               cht.sh/python> zip list
               cht.sh/go> /python zip list
