@@ -127,7 +127,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 3666efb871cfb3ec6ddca2873cabc3912bef600e
+    rev: d8e5bbe3dade87216d1a0dddb59a1c148b206e24
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -189,7 +189,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: d7fd8d7a7465194e8eb67ce759c9fe392035f939
+    rev: 53bd3279da783cd5c1b1fafb4ff31077e81b6333
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -240,7 +240,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 359a80e3a34aacbd5257713b6a88aa085337166f
+    rev: bce6588d2422df75ca0091edac48aa9f87f163e5
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -270,7 +270,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 391669a451c4eedd74dd6e1794601d2ca793340c
+    rev: b911af200c4ed4085a76d3e0a12458ccba2d3b3f
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -495,7 +495,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 03533a167e09c53323b892c38e3257bdfdb47a6d
+    rev: e17ffae9cb980123c27ea9f54aa1255628414fa7
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -529,7 +529,7 @@ git module git-extras:
     pick:
         - bin/git-alias
         - bin/git-show-tree
-    rev: 7bdfb1f55f247b4f876b97405ba88432ebc68446
+    rev: f2934bd0bd809b279b6b9e53843f90e091c7be18
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 67d0ccc398ca7650bb2c774a94d098bee3049169
+    rev: 2d9380d75c5c27a3241925d24ab3be8977a43207
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -768,6 +768,6 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 9b69e84729a0fc9758b6c6e8750a0b6d2f814161
+    rev: 2c94b597bd218c2a0b9c111fcdd1588e8611f7a9
 
 #  vim: set sw=4 :
