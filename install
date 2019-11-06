@@ -336,6 +336,7 @@ fi
 if [ -n "$include" ]; then
     echo >&2 "Additional directories to install: $include"
 fi
+mkdir -p "$XDG_DATA_HOME/../bin"
 
 HOME="$DOTFILE_HOME"
 for installscript in "$dotfilesdir/"*/install; do
