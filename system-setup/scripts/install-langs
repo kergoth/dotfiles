@@ -4,7 +4,7 @@ _install () {
     lang="$1"
     shift
     echo >&2 "Installing $lang.."
-    command "$@" ${tolog:+>"$log" 2>&1}
+    command "$@" | sh -c "cat ${tolog:+>"$log" 2>&1}"
     if [ $? -ne 0 ]; then
         echo >&2 "Error: $lang installation failed:"
         ${tolog:+tail "$log"}
