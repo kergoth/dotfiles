@@ -1,1 +1,3 @@
+mkdir -p "$XDG_CONFIG_HOME/gnupg"
+chmod 0700 "$XDG_CONFIG_HOME/gnupg"
 set_launchd GNUPGHOME "$XDG_CONFIG_HOME/gnupg"
