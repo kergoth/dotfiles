@@ -96,6 +96,10 @@ should_replace () {
     fi
 }
 
+relpath () {
+    python -c "import os,sys; print(os.path.relpath(*sys.argv[1:]))" "$@"
+}
+
 copy () {
     link -c "$@"
 }
