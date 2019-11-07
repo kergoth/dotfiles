@@ -101,7 +101,6 @@ imports:
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: fzf/vim/bundle/fzf-extra
     vim-highlightedyank: vim/bundle/highlightedyank
-    vim-lightline: vim/bundle/lightline
     vim-lion: vim/bundle/lion
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
@@ -214,10 +213,6 @@ git module vim-bitbake:
 git module taskpaper:
     url: https://github.com/davidoc/taskpaper.vim
     rev: 2df291f7f40ef049d0a60151c66f11fa21b01e1c
-
-git module vim-lightline:
-    url: https://github.com/itchyny/lightline.vim
-    rev: 377e62d8010ae3a65ee19b88328e4f3a5e54eca5
 
 # generates modeline according to the current settings
 git module Modeliner:

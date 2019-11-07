@@ -386,7 +386,6 @@ else
   try
     let g:dracula_italic = 0
     colorscheme dracula
-    let g:lightline_theme = 'dracula'
   catch
     colorscheme baycomb
   endtry
@@ -935,6 +934,9 @@ set laststatus=2
 " No need for a mode indicator when I can rely on the cursor
 set noshowmode
 
+" Set up statusline
+runtime! statusline.vim
+
 " Assume we have a decent terminal, as vim only recognizes a very small set of
 " $TERM values for the default enable.
 set ttyfast
@@ -1211,107 +1213,6 @@ let g:ale_fixers = {
 \}
 
 let g:ale_sh_shfmt_options = '-ci -bn -i 4'
-
-let g:tmuxline_powerline_separators = 0
-let g:promptline_powerline_symbols = 1
-
-" Align with the behavior of tmuxline without powerline separators enabled
-let g:promptline_symbols = {
-    \ 'left'           : '',
-    \ 'right'          : '',
-    \ 'left_alt'       : '|',
-    \ 'right_alt'      : '|',
-    \ 'dir_sep'        : '/'}
-
-function! Promptline_git_ahead_behind(...)
-  return { 'function_name': 'Promptline_git_ahead_behind',
-          \'function_body': readfile(globpath(&runtimepath, "autoload/promptline/slices/git_ahead_behind.sh", 0, 1)[0])}
-endfunction
-
-try
-  let g:promptline_preset = {
-          \'b' : [ promptline#slices#vcs_branch(), __promptline_git_ahead_behind() ],
-          \'c' : [ '$(disambiguate -k $PWD; echo $REPLY)' ],
-          \'x' : [ promptline#slices#jobs() ],
-          \'y' : [ promptline#slices#python_virtualenv() ],
-          \'z' : [ promptline#slices#user(), promptline#slices#host({'only_if_ssh': 1}) ],
-          \'warn' : [ promptline#slices#last_exit_code() ]}
-catch
-endtry
-
-if &t_Co > 88 || has('gui_running')
-  let g:lightline = {
-        \ 'colorscheme': g:lightline_theme,
-        \ 'active': {
-        \   'left': [ [ 'paste' ],
-        \             [ 'readonly', 'filename' ],
-        \             [ 'pwd' ] ],
-        \   'right': [ [ 'lineinfo' ],
-        \              [ 'percent' ],
-        \              [ 'fileformat', 'fileencoding', 'filetype' ] ],
-        \ },
-        \ 'component_function': {
-        \   'fileencoding': 'Statusline_Fileencoding_Hide_Utf8',
-        \   'fileformat': 'Statusline_Fileformat_Hide_Unix',
-        \   'filetype': 'Statusline_Filetype_Hide_Empty',
-        \   'filename': 'Statusline_Filename_Modified',
-        \   'readonly': 'Statusline_Readonly',
-        \   'pwd': 'Statusline_Pwd',
-        \ },
-        \ 'component_visible_condition': {
-        \   'readonly': '&readonly',
-        \   'paste': '&paste',
-        \   'fileformat': '&fileformat != "unix"',
-        \   'fileencoding': '&fileencoding != "utf-8"',
-        \   'filetype': '&filetype != ""',
-        \ },
-        \ }
-endif
-
-function! Statusline_Fileformat_Hide_Unix() abort
-  return &fileformat !=# 'unix' ? &fileformat : ''
-endfunction
-
-function! Statusline_Fileencoding_Hide_Utf8() abort
-  return &fileencoding !=# 'utf-8' ? &fileencoding : ''
-endfunction
-
-function! Statusline_Filetype_Hide_Empty() abort
-  return &filetype !=# '' ? &filetype : ''
-endfunction
-
-function! Statusline_Readonly()
-  return &readonly && &filetype !=# 'help' ? 'RO' : ''
-endfunction
-
-function! Statusline_Filename_Modified()
-  " Avoid the component separator between filename and modified indicator
-  let filename = expand('%')
-  if filename ==# ''
-    return '[No Name]'
-  endif
-  try
-    let filename = pathshorten(fnamemodify(filename, ":~:."))
-  catch
-    let filename = fnamemodify(filename, ':t')
-  endtry
-  let modified = &modified ? ' +' : ''
-  return filename . modified
-endfunction
-
-function! Statusline_Pwd()
-  let pwd = fnamemodify(getcwd(), ':~')
-  try
-    let pwd = pathshorten(pwd)
-  catch
-  endtry
-  return pwd
-endfunction
-
-" Fix lightline when vimrc reloads
-if exists('g:loaded_lightline') && exists('#lightline')
-  call lightline#enable()
-endif
 " }}}
 " Finale {{{
 " Load topic-specific vim settings from dotfiles, shortcut method rather than
