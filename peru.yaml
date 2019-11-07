@@ -233,7 +233,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 79ffe5c6cf0a56d693659b6b98e92a82daf105f4
+    rev: fec6464f187aa2db8e90e0f32a81df781acea249
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -271,7 +271,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: b911af200c4ed4085a76d3e0a12458ccba2d3b3f
+    rev: b4cccf23d43fc1f8cffbc7cb73b68ef307b151ee
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -496,7 +496,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: e17ffae9cb980123c27ea9f54aa1255628414fa7
+    rev: d2f7211a4998543a331e4b9277e6f4cce2d2d98a
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -529,8 +529,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-        - bin/git-show-tree
-    rev: f2934bd0bd809b279b6b9e53843f90e091c7be18
+    rev: a6a17540938971685cab13e55a996b39a689d135
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -548,14 +547,14 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 2d9380d75c5c27a3241925d24ab3be8977a43207
+    rev: db6b1b5ecc17558f87f55b159f90ebf36677b6b3
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
     pick: osx-wificleaner
     move:
         osx_wificleaner.py: osx-wificleaner
-    rev: a49340d8dc9b4d81a7d8a4e2ca1932df7aa2cc1a
+    rev: 57184db03fa5ae920725e6d4712c7a3e6a81138d
 
 git module md-inline2ref:
     url: https://gist.github.com/1207378
@@ -581,7 +580,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 31c55b85a03d96252bba14d64911cc78a20369a1
+    rev: 4e95df7c7e12cb76e781f2dacf1c07f8984cce58
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -675,7 +674,7 @@ git module vim-VimCompletesMe:
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
-    rev: 27cc3ce0fd19f0414024a81ee1eee6b17f155122
+    rev: 24e6c3f4cd6004e2b44e4022dee0260aba6132aa
 
 git module i3-alternating-layout:
     url: https://github.com/olemartinorg/i3-alternating-layout
@@ -769,7 +768,7 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 2c94b597bd218c2a0b9c111fcdd1588e8611f7a9
+    rev: ed26bf92d62c5679c49a842fa85c72ef8317635f
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
