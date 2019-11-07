@@ -12,6 +12,7 @@ imports:
     iterm2-zsh: iterm2
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
+    alacritty: alacritty/zsh-functions
 
     # Scripts
     appify: osx/scripts
@@ -769,5 +770,12 @@ git module zsh:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
     rev: 2c94b597bd218c2a0b9c111fcdd1588e8611f7a9
+
+git module alacritty:
+    url: https://github.com/jwilm/alacritty
+    move:
+        extra/completions/_alacritty: _alacritty
+    pick: _alacritty
+    rev: 679e67d045f60d528c695a1ee8a6c0f3d6feeda1
 
 #  vim: set sw=4 :
