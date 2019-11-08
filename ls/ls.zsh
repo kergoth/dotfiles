@@ -19,8 +19,8 @@ elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
         alias ls='gls --color=auto -h'
     else
         alias ls='ls -G -h'
+        export LSCOLORS="$(cat $DOTFILESDIR/ls/bsd_colors)"
     fi
-    export LSCOLORS="$(cat $DOTFILESDIR/ls/bsd_colors)"
     alias la='ls -A'
     alias lr='ll -tr'
     alias lrc='lr -U'
