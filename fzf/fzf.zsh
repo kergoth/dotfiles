@@ -1,4 +1,8 @@
-. $DOTFILESDIR/fzf/themes/base16-tomorrow-night.config
+# Dracula colors via https://gist.github.com/umayr/8875b44740702b340430b610b52cd182
+export FZF_DEFAULT_OPTS='
+  --color fg:255,bg:236,hl:84,fg+:255,bg+:236,hl+:215
+  --color info:141,prompt:84,spinner:212,pointer:212,marker:212
+'
 
 if (( $+commands[fd] )); then
     export FZF_DEFAULT_COMMAND='fd -c always -t f ""'
