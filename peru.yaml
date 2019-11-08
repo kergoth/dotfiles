@@ -13,6 +13,7 @@ imports:
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     alacritty: alacritty/zsh-functions
+    exa: ls/zsh-functions
 
     # Scripts
     appify: osx/scripts
@@ -776,5 +777,12 @@ git module alacritty:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
     rev: 679e67d045f60d528c695a1ee8a6c0f3d6feeda1
+
+git module exa:
+    url: https://github.com/ogham/exa
+    move:
+        contrib/completions.zsh: _exa
+    pick: _exa
+    rev: 89c861f24d18650fc3cef50900e3341b5b038ccf
 
 #  vim: set sw=4 :
