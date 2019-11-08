@@ -124,6 +124,7 @@ imports:
     fzf: fzf
     base16-fzf: fzf
     base16-rofi: i3
+    bat-extras: bat/extras
     bat-syntax-bitbake: bat/syntaxes/BitBake
     bat-theme-dracula: bat/themes/Dracula
 
@@ -785,4 +786,11 @@ git module exa:
     pick: _exa
     rev: 89c861f24d18650fc3cef50900e3341b5b038ccf
 
+git module bat-extras:
+    url: https://github.com/eth-p/bat-extras
+    pick:
+        - lib
+        - src
+
 #  vim: set sw=4 :
+    rev: 83393541898990b5817a15f8b4e7d374ac5e7b5e
