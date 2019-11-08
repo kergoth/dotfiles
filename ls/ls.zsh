@@ -1,4 +1,13 @@
 DIRCOLORS=$XDG_CONFIG_HOME/dir_colors
+if [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
+    if (( $+commands[gdircolors] )); then
+        eval "$(gdircolors -b $DIRCOLORS)"
+    fi
+fi
+if (( $+commands[dircolors] )); then
+    eval "$(dircolors -b $DIRCOLORS)"
+fi
+
 if (( $+commands[exa] )); then
     alias exa='exa --colour-scale'
     alias ls=exa
@@ -8,7 +17,6 @@ if (( $+commands[exa] )); then
 elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     if (( $+commands[gls] )); then
         alias ls='gls --color=auto -h'
-        eval "$(gdircolors -b $DIRCOLORS)"
     else
         alias ls='ls -G -h'
     fi
@@ -17,9 +25,6 @@ elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     alias lr='ll -tr'
     alias lrc='lr -U'
 else
-    if (( $+commands[dircolors] )); then
-        eval "$(dircolors -b $DIRCOLORS)"
-    fi
     alias ls='ls --color=auto -h'
     alias la='ls -A'
     alias lr='ll -tr'
