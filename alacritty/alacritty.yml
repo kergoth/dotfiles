@@ -57,15 +57,13 @@ draw_bold_text_with_bright_colors: true
 # Font configuration (changes require restart)
 font:
   normal:
-    family: Input Mono Narrow
-    style: Thin
+    family: Fira Code
 
   bold:
-    family: Input Mono Narrow
-    style: Regular
+    family: Fira Code
 
   italic:
-    family: Input Mono Narrow
+    family: Fira Code
     style: Italic
 
   # Point size of the font
