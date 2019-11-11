@@ -1,6 +1,6 @@
 DNTW_DIR="${DNTW_DIR:-${XDG_DATA_HOME:-~/.local/share}/dntw}"
 
-if (( $+commands[nvim] )) && [[ -e "$DNTW_DIR" ]]; then
+if (( $+commands[nvim] )) && (( $+commands[nvr] )) && [[ -e "$DNTW_DIR" ]]; then
     . "$DNTW_DIR/dntw.sh"
 
     # Invoke `dntw_edit` with an explicit `$DNTW_NVIM_CMD` since this function's
