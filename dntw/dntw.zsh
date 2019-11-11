@@ -8,7 +8,7 @@ if (( $+commands[nvim] )) && [[ -e "$DNTW_DIR" ]]; then
     DNTW_NVIM_CMD="$(/usr/bin/env command -v nvim)"
 
     nvim () {
-        if [ "$TERM_PROGRAM" = "vscode" ]; then
+        if [[ "$TERM_PROGRAM" = "vscode" ]] || [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
             # If we typed "nvim" while inside the integrated Visual Studio Code terminal,
             # open the file in Code instead.
             code "$@"
