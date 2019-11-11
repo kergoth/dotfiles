@@ -5,7 +5,7 @@ if (( $+commands[nvim] )) && (( $+commands[nvr] )) && [[ -e "$DNTW_DIR" ]]; then
 
     # Invoke `dntw_edit` with an explicit `$DNTW_NVIM_CMD` since this function's
     # name conflicts with the real `nvim`.
-    DNTW_NVIM_CMD="$(/usr/bin/env command -v nvim)"
+    DNTW_NVIM_CMD="$(/usr/bin/env command -v nvim 2>/dev/null || command -v nvim)"
 
     nvim () {
         if [[ "$TERM_PROGRAM" = "vscode" ]] || [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
