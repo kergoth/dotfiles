@@ -122,8 +122,6 @@ imports:
 
     # Other
     fzf: fzf
-    base16-fzf: fzf
-    base16-rofi: i3
     bat-extras: bat/extras
     bat-syntax-bitbake: bat/syntaxes/BitBake
     bat-theme-dracula: bat/themes/Dracula
@@ -170,7 +168,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen
     export: autoload/
-    rev: e9fb0914dba5bdfe2feaa364dda2e9495c5620a2
+    rev: a553410f1bdb9000fbc764069f3a5ec3454a02bc
 
 git module vim-lion:
     url: https://github.com/tommcdo/vim-lion
@@ -178,7 +176,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: f6acae50ea4d8ec1bb1497cb886d80298b54831b
+    rev: 1e57d678bad1ffb7468e7dccc45401d1b096249a
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -192,7 +190,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 53bd3279da783cd5c1b1fafb4ff31077e81b6333
+    rev: e6f282f5e9ae931f0b404dd15aab2e5e249ae092
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -202,12 +200,12 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary
-    rev: 62b68aecec2de531bc3978bfb9c07d3b6759ce0e
+    rev: 3e5d04ddbc156288fd4c114f4a802da117fd0f26
 
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: a35d8ffe59e1ff7408bce67ce3301d3b04c7f7b6
+    rev: 75efe06ccc63b7cd50b193b99cce83e3ad3e60cb
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -216,22 +214,22 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: fab8621670f71637e9960003af28365129b1dfd0
+    rev: e4c4cc0f816515fbb7e87076a988604b2d163daa
 
 # readline style insertion
 git module vim-rsi:
     url: https://github.com/tpope/vim-rsi
-    rev: 8b7abe2d470b7fffac6562818468e14594735564
+    rev: 5e1453274011d2280f4ae357259b69eb9cba0b9f
 
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 4bd1ecd7f38206ef26c37d7d142df58c4237d9dc
+    rev: 1206e1474fc613caeb1ba56d36b71d7f9f7760ac
 
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession
-    rev: 60f0ef80fd74b8c58fd0cc7a55b81846e06c04f3
+    rev: a794bba99644b959c47fe46f82d0b9e676386b2f
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
@@ -273,7 +271,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: b4cccf23d43fc1f8cffbc7cb73b68ef307b151ee
+    rev: 16fc6862a89eef0f02d32ab8b365887522719da8
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -498,15 +496,15 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: d2f7211a4998543a331e4b9277e6f4cce2d2d98a
+    rev: 342ac775b1f6e517ac6c7e9d92d41c950ab2e223
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
-    rev: 3c7f939bbc99a30d1c5013bc9fa0fe967398c9ac
+    rev: 7e4da6e78002344d499af9b6d8d5d6fcd7c92125
 
 git module vim-repeat:
     url: https://github.com/tpope/vim-repeat
-    rev: ae361bea990e27d5beade3a8d9fa22e25cec3100
+    rev: c947ad2b6a16983724a0153bdf7f66d7a80a32ca
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -582,7 +580,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 4e95df7c7e12cb76e781f2dacf1c07f8984cce58
+    rev: 0c79dd3e73e8e09b73d4a5d20bf470a3f6f715f2
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -641,20 +639,6 @@ git module rofi-tools:
         - rofi-power
     rev: bdcd7d2ea685cdccacbfa2581a84023f0cfc5e83
 
-git module base16-rofi:
-    url: https://github.com/0xdec/base16-rofi
-    pick:
-        - themes/base16-tomorrow-night.config
-        - themes/base16-tomorrow-night.rasi
-    rev: 0efb1185eb530c4ee7a33755b399d16b527af706
-
-git module base16-fzf:
-    url: https://github.com/nicodebo/base16-fzf
-    move:
-        bash: themes
-    pick: themes/base16-tomorrow-night.config
-    rev: 6d40da6cc12265911c688b48d986dda0f9bded93
-
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
     rev: 722e29dafb1e5f099acbb6f896e22e8679c70fbf
@@ -694,7 +678,7 @@ git module vim-profiler:
 
 git module vim-apathy:
     url: https://github.com/tpope/vim-apathy
-    rev: b1cdae687ed19bfb964daacf11c53f41244f1793
+    rev: ca90185a497088bbb62d933bb500cb2911c7be64
 
 git module zsh-sort-timings:
     url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
@@ -731,7 +715,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 06287c398cc3f06d8dbb72bbe8605abfe8d44afe
+    rev: 8ba347f5536e1d920d32606042a23a4c3424b93d
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
@@ -739,7 +723,7 @@ git module vim-braceless:
 
 git module vim-endwise:
     url: https://github.com/tpope/vim-endwise
-    rev: 996f6bdba06bdd497306df042637d5b3e352d08b
+    rev: bf90d8be447de667f4532b934d1a70881be56dd8
 
 git module vim-highlightedyank:
     url: https://github.com/machakann/vim-highlightedyank
@@ -770,14 +754,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: ed26bf92d62c5679c49a842fa85c72ef8317635f
+    rev: a8b0d399e5ccb4becb3699fad7e553a39963ebda
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 679e67d045f60d528c695a1ee8a6c0f3d6feeda1
+    rev: d707e064a97532b36c68088ba44cd8a10f6f71dc
 
 git module exa:
     url: https://github.com/ogham/exa

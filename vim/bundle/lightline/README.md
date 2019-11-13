@@ -41,12 +41,8 @@ https://github.com/itchyny/lightline.vim
 
 landscape is my colorscheme, which is a high-contrast cterm-supported colorscheme, available at https://github.com/itchyny/landscape.vim
 
-### simpleblack
 
-![lightline.vim - simpleblack](https://user-images.githubusercontent.com/2293178/67733484-da28ca00-f9d4-11e9-904f-1636b6b38d81.png)
-
-Based on a colorscheme called [simpleblack](https://github.com/lucasprag/simpleblack)
-
+For screenshots of all available colorshemes, see [this file](colorscheme.md).
 
 ## Why yet another clone of powerline?
 + [vim-powerline](https://github.com/Lokaltog/vim-powerline) is a nice plugin, but deprecated.

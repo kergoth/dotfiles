@@ -1834,8 +1834,9 @@ sub modifyconfig {
 	my $formatfield=sub {
 		my $field=shift;
 		my @value=split(/\n/, shift);
+		my $first_line=shift(@value) // '';
 
-		return "$field = ".shift(@value)."\n".
+		return "$field = $first_line\n".
 			join("", map { "\t$_\n" } @value);
 	};
 	my $addfields=sub {
@@ -1872,6 +1873,7 @@ sub modifyconfig {
 		elsif (/^(\w+)\s*=\s(.*)/) {
 			my $parameter=$1;
 			my $value=$2;
+			my $remove=0;
 
 			# continued value
 			while (@lines && $lines[0]=~/^\s(.+)/) {
@@ -1884,12 +1886,16 @@ sub modifyconfig {
 				if (exists $changefields{$parameter}) {
 					if (length $changefields{$parameter}) {
 						$value=$changefields{$parameter};
+					} else {
+						$remove = 1;
 					}
 					delete $changefields{$parameter};
 				}
 			}
 
-			push @out, $formatfield->($parameter, $value);
+			unless ($remove) {
+				push @out, $formatfield->($parameter, $value);
+			}
 		}
 	}
 
