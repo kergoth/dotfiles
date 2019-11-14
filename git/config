@@ -106,6 +106,7 @@
 # .netrc, which is a security issue.
 [url "git@gist.github.com:"]
 	pushInsteadOf = https://gist.github.com/kergoth/
+	pushInsteadOf = https://gist.github.com/
 
 [url "git@github.com:"]
 	pushInsteadOf = https://github.com/
