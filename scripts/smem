@@ -17,8 +17,6 @@ import pwd
 import re
 import sys
 
-warned = False
-
 
 class UIDCache(object):
     """Class for a simple ID Cache"""
@@ -39,9 +37,12 @@ class UIDCache(object):
 
 class Proc(object):
     """Helper class to handle /proc/ filesystem data"""
-
     def __init__(self):
-            pass
+        pass
+
+    @staticmethod
+    def listdir():
+        return os.listdir("/proc")
 
     @staticmethod
     def read(filename):
@@ -51,6 +52,10 @@ class Proc(object):
     def readlines(self, filename):
         """Return the file as an list of lines"""
         return self.read(filename).splitlines(True)
+
+    def version(self):
+        """Return Linux version data"""
+        return self.readlines('version')[0]
 
 
 class MemData(Proc):
@@ -70,32 +75,29 @@ class MemData(Proc):
 
 
 class ProcessData(Proc):
+    """Helper class to handle /proc/<pid> filesystem data"""
     def __init__(self):
         self._uidcache = UIDCache()
 
-    @staticmethod
-    def _iskernel(pid):
-        return src.pidcmd(pid) == ""
+    def _iskernel(self, pid):
+        """Check if it's a kernel pid"""
+        return self.pidcmd(pid) == ""
 
     @staticmethod
-    def _list():
-        return os.listdir("/proc")
-
-    @staticmethod
-    def _stat(f):
-        return os.stat("/proc/" + f)
+    def _stat(pid):
+        """Stat result for the pid"""
+        return os.stat("/proc/" + pid)
 
     def pids(self):
-        '''get a list of processes'''
-        return [int(e) for e in self._list() if e.isdigit() and not self._iskernel(e)]
+        """Get a list of PID's"""
+        return [int(e) for e in self.listdir() if e.isdigit() and not self._iskernel(e)]
 
     def mapdata(self, pid):
+        """Return PID smaps data"""
         return self.readlines('%s/smaps' % pid)
 
-    def version(self):
-        return self.readlines('version')[0]
-
     def pidcmd(self, pid):
+        """Return PID cmdline data"""
         try:
             c = self.read('%s/cmdline' % pid)[:-1]
             return c.replace('\0', ' ')
@@ -103,74 +105,35 @@ class ProcessData(Proc):
             return '?'
 
     def piduser(self, pid):
+        """Return PID user data"""
         try:
             return self._stat('%d' % pid).st_uid
         except:
             return -1
 
     def username(self, uid):
+        """Return username from UID cache"""
         return '?' if uid == -1 else self._uidcache(uid)
 
-
-_totalmem = 0
+    def pidusername(self, pid):
+        """Return PID username"""
+        return self.username(self.piduser(pid))
 
 
 def totalmem():
-    global _totalmem
-    if not _totalmem:
-        if options.realmem:
-            _totalmem = fromunits(options.realmem) / 1024
-        else:
-            memdata = MemData()
-            _totalmem = memdata('memtotal')
-    return _totalmem
-
-
-def widthstr(field, width, default):
-    if width == 0:
-        return '%s'
-    if width < 0:
-        size = default
+    if options.realmem:
+        return fromunits(options.realmem) / 1024
     else:
-        size = width
-        ignore_autosize.add(field)
-    return '%-{size}.{size}s'.format(size=size)
-
-
-_kernelsize = 0
-
-
-def kernelsize():
-    global _kernelsize
-    if not _kernelsize and options.kernel:
-        try:
-            d = os.popen("size %s" % options.kernel).readlines()[1]
-            _kernelsize = int(d.split()[3]) / 1024
-        except:
-            try:
-                # try some heuristic to find gzipped part in kernel image
-                packedkernel = open(options.kernel).read()
-                pos = packedkernel.find('\x1F\x8B')
-                if pos >= 0 and pos < 25000:
-                    sys.stderr.write(
-                        "Maybe uncompressed kernel can be extracted by the command:\n"
-                        "  dd if=%s bs=1 skip=%d | gzip -d >%s.unpacked\n\n" %
-                        (options.kernel, pos, options.kernel))
-            except:
-                pass
-            sys.stderr.write(
-                "Parameter '%s' should be an original uncompressed compiled kernel file.\n\n"
-                % options.kernel)
-    return _kernelsize
+        memdata = MemData()
+        return memdata('memtotal')
 
 
 def pidmaps(pid):
-    global warned
     maps = {}
     start = None
     seen = False
     empty = True
-    for l in src.mapdata(pid):
+    for l in proc.mapdata(pid):
         empty = False
         f = l.split()
         if f[-1] == 'kB':
@@ -192,9 +155,7 @@ def pidmaps(pid):
                 name=name)
 
     if not empty and not seen and not warned:
-        sys.stderr.write(
-            'warning: kernel does not appear to support PSS measurement\n')
-        warned = True
+        print("Warning: Kernel does not appear to support PSS measurement")
         if not options.sort:
             options.sort = 'rss'
 
@@ -205,8 +166,104 @@ def pidmaps(pid):
                     filters(options.mapfilter, m, lambda x: maps[x]['name'])):
                 f[m] = maps[m]
         return f
-
     return maps
+
+def maptotals(pids):
+    totals = {}
+    for pid in pids:
+        if (filters(options.processfilter, pid, proc.pidcmd)
+                or filters(options.userfilter, pid, proc.pidusername)):
+            continue
+        try:
+            maps = pidmaps(pid)
+            seen = {}
+            for m in list(maps.keys()):
+                name = maps[m]['name']
+                if name not in totals:
+                    t = dict(
+                        size=0,
+                        rss=0,
+                        pss=0,
+                        shared_clean=0,
+                        shared_dirty=0,
+                        private_clean=0,
+                        count=0,
+                        private_dirty=0,
+                        referenced=0,
+                        swap=0,
+                        pids=0)
+                else:
+                    t = totals[name]
+
+                for k in t:
+                    t[k] += maps[m].get(k, 0)
+                t['count'] += 1
+                if name not in seen:
+                    t['pids'] += 1
+                    seen[name] = 1
+                totals[name] = t
+        except EnvironmentError:
+            continue
+    return totals
+
+
+def pidtotals(pid):
+    maps = pidmaps(pid)
+    t = dict(
+        size=0,
+        rss=0,
+        pss=0,
+        shared_clean=0,
+        shared_dirty=0,
+        private_clean=0,
+        private_dirty=0,
+        referenced=0,
+        swap=0)
+    for m in list(maps.keys()):
+        for k in t:
+            t[k] += maps[m].get(k, 0)
+
+    t['uss'] = t['private_clean'] + t['private_dirty']
+    t['maps'] = len(maps)
+
+    return t
+
+
+def usertotals(pids):
+    totals = {}
+    for pid in pids:
+        if (filters(options.processfilter, pid, proc.pidcmd)
+                or filters(options.userfilter, pid, proc.pidusername)):
+            continue
+        try:
+            maps = pidmaps(pid)
+            if len(maps) == 0:
+                continue
+        except EnvironmentError:
+            continue
+        user = proc.piduser(pid)
+        if user not in totals:
+            t = dict(
+                size=0,
+                rss=0,
+                pss=0,
+                shared_clean=0,
+                shared_dirty=0,
+                private_clean=0,
+                count=0,
+                private_dirty=0,
+                referenced=0,
+                swap=0)
+        else:
+            t = totals[user]
+
+        for m in list(maps.keys()):
+            for k in t:
+                t[k] += maps[m].get(k, 0)
+
+        t['count'] += 1
+        totals[user] = t
+    return totals
 
 
 def sortmaps(totals, key):
@@ -247,10 +304,6 @@ def fromunits(x):
     sys.exit(-1)
 
 
-def pidusername(pid):
-    return src.username(src.piduser(pid))
-
-
 def showamount(a, total):
     if options.abbreviate:
         return units(a * 1024)
@@ -271,33 +324,11 @@ def filters(opt, arg, *sources):
     return True
 
 
-def pidtotals(pid):
-    maps = pidmaps(pid)
-    t = dict(
-        size=0,
-        rss=0,
-        pss=0,
-        shared_clean=0,
-        shared_dirty=0,
-        private_clean=0,
-        private_dirty=0,
-        referenced=0,
-        swap=0)
-    for m in list(maps.keys()):
-        for k in t:
-            t[k] += maps[m].get(k, 0)
-
-    t['uss'] = t['private_clean'] + t['private_dirty']
-    t['maps'] = len(maps)
-
-    return t
-
-
 def processtotals(pids):
     totals = {}
     for pid in pids:
-        if (filters(options.processfilter, pid, src.pidcmd)
-                or filters(options.userfilter, pid, pidusername)):
+        if (filters(options.processfilter, pid, proc.pidcmd)
+                or filters(options.userfilter, pid, proc.pidusername)):
             continue
         try:
             p = pidtotals(pid)
@@ -308,20 +339,31 @@ def processtotals(pids):
     return totals
 
 
+def widthstr(field, width, default):
+    if width == 0:
+        return '%s'
+    if width < 0:
+        size = default
+    else:
+        size = width
+        ignore_autosize.add(field)
+    return '%-{size}.{size}s'.format(size=size)
+
+
 def showpids():
-    p = src.pids()
+    p = proc.pids()
     pt = processtotals(p)
 
     def showuser(p):
         if options.numeric:
-            return src.piduser(p)
-        return pidusername(p)
+            return proc.piduser(p)
+        return proc.pidusername(p)
 
     fields = dict(
         pid=('PID', lambda n: n, '% 5s', lambda x: len(pt), 'process ID'),
         user=('User', showuser, widthstr('user', options.user_width, 8),
               lambda x: len(dict.fromkeys(x)), 'owner of process'),
-        command=('Command', src.pidcmd,
+        command=('Command', proc.pidcmd,
                  widthstr('command', options.cmd_width, 27), None,
                  'process command line'),
         maps=('Maps', lambda n: pt[n]['maps'], '% 5s', sum,
@@ -340,48 +382,8 @@ def showpids():
 
     showtable(list(pt.keys()), fields, columns.split(), options.sort or 'pss')
 
-
-def maptotals(pids):
-    totals = {}
-    for pid in pids:
-        if (filters(options.processfilter, pid, src.pidcmd)
-                or filters(options.userfilter, pid, pidusername)):
-            continue
-        try:
-            maps = pidmaps(pid)
-            seen = {}
-            for m in list(maps.keys()):
-                name = maps[m]['name']
-                if name not in totals:
-                    t = dict(
-                        size=0,
-                        rss=0,
-                        pss=0,
-                        shared_clean=0,
-                        shared_dirty=0,
-                        private_clean=0,
-                        count=0,
-                        private_dirty=0,
-                        referenced=0,
-                        swap=0,
-                        pids=0)
-                else:
-                    t = totals[name]
-
-                for k in t:
-                    t[k] += maps[m].get(k, 0)
-                t['count'] += 1
-                if name not in seen:
-                    t['pids'] += 1
-                    seen[name] = 1
-                totals[name] = t
-        except EnvironmentError:
-            continue
-    return totals
-
-
 def showmaps():
-    p = src.pids()
+    p = proc.pids()
     pt = maptotals(p)
 
     fields = dict(
@@ -413,51 +415,14 @@ def showmaps():
     showtable(list(pt.keys()), fields, columns.split(), options.sort or 'pss')
 
 
-def usertotals(pids):
-    totals = {}
-    for pid in pids:
-        if (filters(options.processfilter, pid, src.pidcmd)
-                or filters(options.userfilter, pid, pidusername)):
-            continue
-        try:
-            maps = pidmaps(pid)
-            if len(maps) == 0:
-                continue
-        except EnvironmentError:
-            continue
-        user = src.piduser(pid)
-        if user not in totals:
-            t = dict(
-                size=0,
-                rss=0,
-                pss=0,
-                shared_clean=0,
-                shared_dirty=0,
-                private_clean=0,
-                count=0,
-                private_dirty=0,
-                referenced=0,
-                swap=0)
-        else:
-            t = totals[user]
-
-        for m in list(maps.keys()):
-            for k in t:
-                t[k] += maps[m].get(k, 0)
-
-        t['count'] += 1
-        totals[user] = t
-    return totals
-
-
 def showusers():
-    p = src.pids()
+    p = proc.pids()
     pt = usertotals(p)
 
     def showuser(u):
         if options.numeric:
             return u
-        return src.username(u)
+        return proc.username(u)
 
     fields = dict(
         user=('User', showuser, widthstr('user', options.user_width, 8), None,
@@ -478,6 +443,30 @@ def showusers():
     columns = options.columns or 'user count swap uss pss rss'
 
     showtable(list(pt.keys()), fields, columns.split(), options.sort or 'pss')
+
+
+def kernelsize():
+    kernelsize = 0
+    if not kernelsize and options.kernel:
+        try:
+            d = os.popen("size %s" % options.kernel).readlines()[1]
+            kernelsize = int(d.split()[3]) / 1024
+        except:
+            try:
+                # try some heuristic to find gzipped part in kernel image
+                packedkernel = open(options.kernel).read()
+                pos = packedkernel.find('\x1F\x8B')
+                if pos >= 0 and pos < 25000:
+                    sys.stderr.write(
+                        "Maybe uncompressed kernel can be extracted by the command:\n"
+                        "  dd if=%s bs=1 skip=%d | gzip -d >%s.unpacked\n\n" %
+                        (options.kernel, pos, options.kernel))
+            except:
+                pass
+            sys.stderr.write(
+                "Parameter '%s' should be an original uncompressed compiled kernel file.\n\n"
+                % options.kernel)
+    return kernelsize
 
 
 def showsystem():
@@ -756,12 +745,12 @@ def main():
     # TODO Remove the necessity of globals, this is a temporary workaround until functions have been updated
     global ignore_autosize
     global options
-    global src
+    global proc
 
     options = parse_arguments(sys.argv)
     ignore_autosize = set()
 
-    src = ProcessData()
+    proc = ProcessData()
 
     try:
         if options.mappings:

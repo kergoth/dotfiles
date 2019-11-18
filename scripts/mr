@@ -134,6 +134,53 @@ C<mr -m grep foo> and not get output in non-matching repositories.
 
 Runs the specified command in each repository.
 
+The command is run exactly as provided to mr,
+without any interpretation by the shell
+other than the one that mr is run from.
+
+If you would like to access C<$MR_REPO> or
+any of the other special environment variables,
+you can access them by running a shell command:
+
+  mr run sh -c 'ls "$MR_REPO"'
+
+If you would like more permanent flexibility
+then you can define commands in your config
+to evaluate the command as shell
+or run the command in a subshell.
+Please note that using these options
+could make it hard to do quoting correctly.
+
+For example you can define eval/sh/bash commands:
+
+  mr config DEFAULT 'eval=eval "$*"'
+  mr config DEFAULT 'sh=sh -c "$*"'
+  mr config DEFAULT 'bash=bash -c "$*"'
+
+You can run those commands like this:
+
+  mr eval 'ls "$MR_REPO"'
+  mr sh 'ls "$MR_REPO"'
+  mr bash 'ls "$MR_REPO"'
+
+You can of course override the run command
+rather than defining any new commands.
+
+  mr config DEFAULT 'run=eval "$*"'
+  mr config DEFAULT 'run=sh -c "$*"'
+  mr config DEFAULT 'run=bash -c "$*"'
+
+If you would like to run other mr commands for each repo
+a better option is to define a new command that does that.
+
+For example you might want to configure multiple repos:
+
+  mr config DEFAULT 'configure=mr config "$MR_REPO" "$@"'
+
+You can run that command like this:
+
+  mr configure foo=bar bar=baz
+
 =back
 
 These commands are also available:
@@ -194,6 +241,9 @@ Adds, modifies, removes, or prints a value from a mrconfig file. The next
 parameter is the name of the section the value is in. To add or modify
 values, use one or more instances of "setting=value". Use "setting=" to
 remove a setting. Use just "setting" to get the value of a that setting.
+When the section is not provided and only one setting is provided the section
+will default to the repository corresponding to the current directory if
+it is already registered in the configuration.
 
 For example, to add (or edit) a repository in src/foo:
 
@@ -206,6 +256,15 @@ To show the command that mr uses to update the repository in src/foo:
 To see the built-in library of shell functions contained in mr:
 
   mr config DEFAULT lib
+
+To operate on one setting for the current repository:
+
+  mr config setting
+  mr config setting=
+  mr config setting=value
+
+Do not pass more than one setting when omitting the repository section,
+otherwise the first setting will be used as the section instead.
 
 The mrconfig file that is used is chosen by either the -c option, or by
 looking for the closest known one at or in a parent of the current directory.
@@ -1402,6 +1461,24 @@ sub absrepodir {
 	return (defined $absret ? $absret : $ret);
 }
 
+sub find_repo_for {
+	my $directory = shift;
+	foreach my $repo (reverse repolist()) {
+		my $topdir=$repo->{topdir};
+		my $subdir=$repo->{subdir};
+
+		next if $subdir eq 'DEFAULT';
+		my $dir=absrepodir($repo);
+		my $d=$directory;
+		$dir.="/" unless $dir=~/\/$/;
+		$d.="/" unless $d=~/\/$/;
+		if ($d=~/^\Q$dir\E/) {
+			return ($dir, $topdir, $subdir);
+		}
+	}
+	return ();
+}
+
 # Figure out which repos to act on.  Returns a list of array refs
 # in the format:
 #
@@ -1428,20 +1505,8 @@ sub selectrepos {
 	}
 	if (! @repos) {
 		# fallback to find a leaf repo
-		foreach my $repo (reverse repolist()) {
-			my $topdir=$repo->{topdir};
-			my $subdir=$repo->{subdir};
-
-			next if $subdir eq 'DEFAULT';
-			my $dir=absrepodir($repo);
-			my $d=$directory;
-			$dir.="/" unless $dir=~/\/$/;
-			$d.="/" unless $d=~/\/$/;
-			if ($d=~/^\Q$dir\E/) {
-				push @repos, [$dir, $topdir, $subdir];
-				last;
-			}
-		}
+		my @current_repo = find_repo_for($directory);
+		push @repos, [@current_repo] if @current_repo;
 		$no_chdir=1;
 	}
 	return @repos;
@@ -1452,7 +1517,7 @@ sub expandenv {
 
 
 	if ($val=~/\$/) {
-		$val=`echo "$val"`;
+		$val=`printf '%s' "$val"`;
 		chomp $val;
 	}
 
@@ -1957,7 +2022,13 @@ sub help {
 
 sub config {
 	if (@_ < 2) {
-		die "mr config: not enough parameters\n";
+		my ($dir) = find_repo_for($directory);
+		if (defined $dir && @_ == 1) {
+			$dir=~s{/$}{};
+			unshift @_, $dir;
+		} else {
+			die "mr config: not enough parameters\n";
+		}
 	}
 	my $section=shift;
 	if ($section=~/^\//) {

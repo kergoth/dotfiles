@@ -128,7 +128,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: d8e5bbe3dade87216d1a0dddb59a1c148b206e24
+    rev: c39c4675a679c0c1761b9bc908e49348fa76d837
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -176,7 +176,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 1e57d678bad1ffb7468e7dccc45401d1b096249a
+    rev: 13fdeb5fa7f464266163f405f42322e6fb0d3067
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -200,7 +200,7 @@ git module Modeliner:
 # comment stuff out
 git module vim-commentary:
     url: https://github.com/tpope/vim-commentary
-    rev: 3e5d04ddbc156288fd4c114f4a802da117fd0f26
+    rev: f8238d70f873969fb41bf6a6b07ca63a4c0b82b1
 
 # helpers for UNIX
 git module vim-eunuch:
@@ -219,7 +219,7 @@ git module vim-surround:
 # readline style insertion
 git module vim-rsi:
     url: https://github.com/tpope/vim-rsi
-    rev: 5e1453274011d2280f4ae357259b69eb9cba0b9f
+    rev: ad8ba6beae8e82339479104b914214a868c9f1fe
 
 # asynchronous build and test dispatcher
 git module vim-dispatch:
@@ -229,11 +229,11 @@ git module vim-dispatch:
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession
-    rev: a794bba99644b959c47fe46f82d0b9e676386b2f
+    rev: c44d3c432243d39469046f4e25d38a690e49c755
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: fec6464f187aa2db8e90e0f32a81df781acea249
+    rev: 4d7b4d4e2db72e95ea03c6ef757b01cbc128179e
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -241,18 +241,18 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: bce6588d2422df75ca0091edac48aa9f87f163e5
+    rev: 98cf39949b617b9f3a47d2e092af573060022301
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: 49fb1e2ee8964f5e4f9840042c037b622e027ce3
+    sha1: f850bc53a0626863b1f8bc9fcc26cec44c00863c
 
 git module smem:
     url: https://github.com/kwkroeger/smem
     pick: smem
-    rev: f05f42113ce6f7511f6598add487152e844ff254
+    rev: abb695bbf51be5bd35877b438feb281a2aa4fffa
 
 hg module t:
     url: https://bitbucket.org/sjl/t
@@ -271,7 +271,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 16fc6862a89eef0f02d32ab8b365887522719da8
+    rev: c03c058bd52f14f6eba57e83864ad5a78c5e57b9
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -496,7 +496,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 342ac775b1f6e517ac6c7e9d92d41c950ab2e223
+    rev: ec93940647a88a6389cf3afbd4d8e6c5601fe9a6
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: db6b1b5ecc17558f87f55b159f90ebf36677b6b3
+    rev: b91d82bfaa395bb86b3ea51f63cc8cef05e90f98
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -580,7 +580,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 0c79dd3e73e8e09b73d4a5d20bf470a3f6f715f2
+    rev: d15651463ab5c3dd6609e548527a8ea18ab80c98
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -715,7 +715,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 8ba347f5536e1d920d32606042a23a4c3424b93d
+    rev: 5f101a303f01ffcd781764419901204dac92a1f1
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
@@ -754,14 +754,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: a8b0d399e5ccb4becb3699fad7e553a39963ebda
+    rev: 88d14451b093cf2f07049ebb264a29eefc790825
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: d707e064a97532b36c68088ba44cd8a10f6f71dc
+    rev: bcdc605436ebe137173c531844a739eda6ee41ae
 
 git module exa:
     url: https://github.com/ogham/exa
