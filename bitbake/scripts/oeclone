@@ -1,0 +1,22 @@
+#!/bin/bash
+# Clone an oe/yocto layer repo using the layer index.
+
+set -euo pipefail
+
+query="$1"
+case "$query" in
+    oe-core)
+        query=openembedded-core
+        ;;
+    meta-oe)
+        query=meta-openembedded
+        ;;
+esac
+
+http 'http://layers.openembedded.org/layerindex/branch/master/layers/' \
+    | pup .showRollie 'text{}' \
+    | grep :// \
+    | sed -e 's/ *//; s#/$##g; s/\.git$//g;' \
+    | sort -u \
+    | fzf-tmux --select-1 --multi --query="$1" --exit-0 \
+    | xargs --no-run-if-empty -I"{}" -n 1 git clone "{}"
