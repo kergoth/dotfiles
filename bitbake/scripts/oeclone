@@ -19,4 +19,6 @@ http 'http://layers.openembedded.org/layerindex/branch/master/layers/' \
     | sed -e 's/ *//; s#/$##g; s/\.git$//g;' \
     | sort -u \
     | fzf-tmux --select-1 --multi --query="$1" --exit-0 \
-    | xargs --no-run-if-empty -I"{}" -n 1 git clone "{}"
+    | while read -r url; do
+        git clone "$url" || exit $?
+    done
