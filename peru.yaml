@@ -128,7 +128,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: c39c4675a679c0c1761b9bc908e49348fa76d837
+    rev: 7209cb0c337ece41880892827e1a5b6c5c9aa024
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -754,14 +754,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 88d14451b093cf2f07049ebb264a29eefc790825
+    rev: 87db974a84ceccad7bda724db89fbe12539e84fb
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: bcdc605436ebe137173c531844a739eda6ee41ae
+    rev: 5ea4fb6034fe52bd87a402d1208f58be74486c7a
 
 git module exa:
     url: https://github.com/ogham/exa
