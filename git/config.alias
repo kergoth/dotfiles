@@ -66,6 +66,9 @@
 	# Amend the current commit, but don't prompt to edit the commit message
 	amend = commit --amend -C HEAD
 
+	# Reword the current commit
+	reword = revise -i -e --no-index
+
 	# Clean out the ignored files (i.e. to rebuild)
 	iclean = xclean -Xf
 
