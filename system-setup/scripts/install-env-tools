@@ -153,6 +153,18 @@ go get -u github.com/shurcooL/markdownfmt
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
 
+# cha(rs) is a commandline tool to display information about unicode characters
+#   https://github.com/antifuchs/chars
+#cargo-install chars
+
+# A more intuitive version of du in rust
+#   https://github.com/bootandy/dust
+#cargo-install du-dust
+
+# a calculator REPL, similar to bc(1)
+#   https://github.com/NerdyPepper/eva
+#cargo-install eva
+
 ### Lua Development
 #luav moonscript
 #luav busted
