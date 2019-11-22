@@ -14,10 +14,10 @@ if [ -h $cfgpath ]; then
 fi
 
 mkdir -p $cfgpath/syntaxes
-find $PWD/syntaxes/ -name \*.sublime-syntax | xargs -I"{}" ln -sf "{}" $cfgpath/syntaxes/
+find $PWD/syntaxes/ -name \*.sublime-syntax -prune | xargs -I"{}" ln -sf "{}" $cfgpath/syntaxes/
 
 mkdir -p $cfgpath/themes
-find $PWD/themes/ -name \*.tmTheme | xargs -I"{}" ln -sf "{}" $cfgpath/themes/
+find $PWD/themes/ -name \*.tmTheme -prune | xargs -I"{}" ln -sf "{}" $cfgpath/themes/
 
 #if [ ! -e $cfgpath/syntaxes/Packages ]; then
 #    git clone https://github.com/sublimehq/Packages $cfgpath/syntaxes/Packages
