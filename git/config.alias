@@ -67,7 +67,7 @@
 	amend = commit --amend -C HEAD
 
 	# Reword the current commit
-	reword = revise -i -e --no-index
+	reword = revise -i -e --no-index HEAD~1
 
 	# Clean out the ignored files (i.e. to rebuild)
 	iclean = xclean -Xf
