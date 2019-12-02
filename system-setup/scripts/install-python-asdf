@@ -31,8 +31,8 @@ case "$OSTYPE" in
     darwin*)
         if command -v brew >/dev/null 2>&1; then
             eval "$(brew environment --shell=auto | grep -vw PATH)"
-            CFLAGS="$CFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl)/include -I$(xcrun --show-sdk-path)/usr/include"
-            LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl)/lib"
+            CFLAGS="$CFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl@1.1)/include -I$(xcrun --show-sdk-path)/usr/include"
+            LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl@1.1)/lib"
             # The python 3 build chokes due to a lack of llvm-ar at the moment
             no_lto=1
         fi

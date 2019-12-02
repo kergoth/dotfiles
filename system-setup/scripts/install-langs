@@ -50,7 +50,7 @@ if command -v pacman >/dev/null 2>&1; then
 elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get -y install --no-upgrade libssl-dev libbz2-dev libsqlite3-dev libncurses5-dev unzip
 elif command -v brew >/dev/null 2>&1; then
-    brew install openssl bzip2 sqlite3 ncurses unzip
+    brew install openssl@1.1 bzip2 sqlite3 ncurses unzip
 fi | sh -c "cat ${tolog:+>"$log" 2>&1}"
 
 if [ $? -ne 0 ]; then
