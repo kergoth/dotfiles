@@ -1,0 +1,3 @@
+#!/bin/sh
+
+brew info --json=v1 --installed | jq -r "map(select(.keg_only == false and .linked_keg == null) | .name) | .[]" | grep -v '^$'
