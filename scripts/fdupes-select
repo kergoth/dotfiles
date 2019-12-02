@@ -128,7 +128,6 @@ die() {
 
 on_error() {
     local ret=$?
-    echo >&2 on_error
     if [ $ret -eq 130 ]; then
         # No shell traceback for SIGINT
         printf >&2 'Interrupted\n'
