@@ -1,6 +1,6 @@
 #!/bin/sh
 # I don't trust the python link to be sane
-if command -v python2 >/dev/null >&2; then
+if command -v python2 >/dev/null 2>&1; then
     exec python2 "$@"
 else
     exec python3 "$@"
