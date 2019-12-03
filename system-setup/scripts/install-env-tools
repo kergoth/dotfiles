@@ -60,6 +60,8 @@ pip3_install () {
     command python3 -m pip -q install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
 }
 
+export PIP_REQUIRE_VIRTUALENV=
+
 mkdir -p "${XDG_DATA_HOME:-~/.local/share}"
 
 # Clang and llvm are needed to build `bat`
