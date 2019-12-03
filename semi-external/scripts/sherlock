@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+cd "$(git-get https://github.com/sherlock-project/sherlock 2>/dev/null)"
+if [ ! -e Pipfile.lock ]; then
+    pipenv install -r requirements.txt
+fi
+pipenv run ./sherlock.py "$@"
