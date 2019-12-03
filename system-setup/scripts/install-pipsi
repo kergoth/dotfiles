@@ -1,15 +1,16 @@
 #!/bin/sh
 
 case $OSTYPE in
-    Darwin*)
+    darwin*)
         PATH=/usr/bin:/bin
+        alias python2=python
         ;;
 esac
 
 PIPSI_HOME="${PIPSI_HOME:-${XDG_DATA_HOME:-~/.local/share}/pipsi}"
 if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
     python2 -m pip install --user virtualenv
-    virtualenv "$PIPSI_HOME/pipsi" || exit 1
+    python2 -m virtualenv "$PIPSI_HOME/pipsi" || exit 1
 fi
 . "$PIPSI_HOME/pipsi/bin/activate"
 python2 -m pip install -U pipsi
