@@ -5,7 +5,7 @@ set -eu
 # Very light wrapper around cargo-update for convenience
 export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
 if ! [ -e "$CARGO_INSTALL_ROOT/bin/cargo-install-update" ]; then
-    cargo install "$@" cargo-update
+    cargo install --force "$@" cargo-update
 else
     cargo install-update -i cargo-update
 fi
