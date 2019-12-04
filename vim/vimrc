@@ -1239,32 +1239,34 @@ try
 catch
 endtry
 
-let g:lightline = {
-      \ 'colorscheme': g:lightline_theme,
-      \ 'active': {
-      \   'left': [ [ 'paste' ],
-      \             [ 'readonly', 'filename' ],
-      \             [ 'pwd' ] ],
-      \   'right': [ [ 'lineinfo' ],
-      \              [ 'percent' ],
-      \              [ 'fileformat', 'fileencoding', 'filetype' ] ],
-      \ },
-      \ 'component_function': {
-      \   'fileencoding': 'Statusline_Fileencoding_Hide_Utf8',
-      \   'fileformat': 'Statusline_Fileformat_Hide_Unix',
-      \   'filetype': 'Statusline_Filetype_Hide_Empty',
-      \   'filename': 'Statusline_Filename_Modified',
-      \   'readonly': 'Statusline_Readonly',
-      \   'pwd': 'Statusline_Pwd',
-      \ },
-      \ 'component_visible_condition': {
-      \   'readonly': '&readonly',
-      \   'paste': '&paste',
-      \   'fileformat': '&fileformat != "unix"',
-      \   'fileencoding': '&fileencoding != "utf-8"',
-      \   'filetype': '&filetype != ""',
-      \ },
-      \ }
+if &t_Co > 88 || has('gui_running')
+  let g:lightline = {
+        \ 'colorscheme': g:lightline_theme,
+        \ 'active': {
+        \   'left': [ [ 'paste' ],
+        \             [ 'readonly', 'filename' ],
+        \             [ 'pwd' ] ],
+        \   'right': [ [ 'lineinfo' ],
+        \              [ 'percent' ],
+        \              [ 'fileformat', 'fileencoding', 'filetype' ] ],
+        \ },
+        \ 'component_function': {
+        \   'fileencoding': 'Statusline_Fileencoding_Hide_Utf8',
+        \   'fileformat': 'Statusline_Fileformat_Hide_Unix',
+        \   'filetype': 'Statusline_Filetype_Hide_Empty',
+        \   'filename': 'Statusline_Filename_Modified',
+        \   'readonly': 'Statusline_Readonly',
+        \   'pwd': 'Statusline_Pwd',
+        \ },
+        \ 'component_visible_condition': {
+        \   'readonly': '&readonly',
+        \   'paste': '&paste',
+        \   'fileformat': '&fileformat != "unix"',
+        \   'fileencoding': '&fileencoding != "utf-8"',
+        \   'filetype': '&filetype != ""',
+        \ },
+        \ }
+endif
 
 function! Statusline_Fileformat_Hide_Unix() abort
   return &fileformat !=# 'unix' ? &fileformat : ''
