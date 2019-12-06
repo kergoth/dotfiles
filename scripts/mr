@@ -181,6 +181,10 @@ You can run that command like this:
 
   mr configure foo=bar bar=baz
 
+You can also just use the recursive option instead:
+
+  mr -r config foo=bar bar=baz
+
 =back
 
 These commands are also available:
@@ -265,6 +269,18 @@ To operate on one setting for the current repository:
 
 Do not pass more than one setting when omitting the repository section,
 otherwise the first setting will be used as the section instead.
+
+To operate on all the registered repositories under the current directory
+you can use the -r/--recurse mr option. When in recursive mode the output
+will be similar to normal commands and the quiet and minimal output options
+will also have their normal effect on the output. When in recursive mode
+attempting to display an value that does not exist will print failure
+messages for quiet mode but not print anything for minimal mode and the
+failures will not prevent mr from operating on later repositories.
+
+  mr -r config setting
+  mr -r config setting=
+  mr -r config setting=value
 
 The mrconfig file that is used is chosen by either the -c option, or by
 looking for the closest known one at or in a parent of the current directory.
@@ -385,6 +401,23 @@ directory, do not recurse into deeper repositories.
 If a number is specified, will recurse into repositories at most that many
 subdirectories deep. For example, with -n 2 it would recurse into ./src/foo,
 but not ./src/packages/bar.
+
+=item -r [number]
+
+=item --recurse [number]
+
+Normal commands recurse normally and commands that usually only operate on
+the repository for the current directory will instead recursively operate
+on all repositories under the current directory.
+
+If no number if specified or the number is 0 then the whole directory tree
+under the current directory will be recursed.
+
+If a number greater than 0 is specified, will recurse into repositories at
+most that many subdirectories deep. For example, with -r 2 it would recurse
+into ./src/foo, but not ./src/packages/bar.
+
+The "config" command has a recursive mode.
 
 =item -j [number]
 
@@ -725,6 +758,7 @@ my $max_depth;
 my $no_chdir=0;
 my $chdir_top=0;
 my $jobs=1;
+my $jobs_cmdline=0;
 my $trust_all=0;
 our $save_cache=0;
 our $print_cache=0;
@@ -1025,6 +1059,23 @@ sub cache_print {
 	return print_results($actionmsg, $quiet, $minimal, $output, $continuous_output, $ret);
 }
 
+sub actionmsg {
+	my $action = shift;
+	my $fulldir = shift;
+	my $actionmsg = "";
+	if (! $no_chdir) {
+		$actionmsg .= "mr $action: " if $print_action;
+		$actionmsg .= $fulldir if $print_dir;
+	}
+	else {
+		my $s=$directory;
+		$s=~s/^\Q$fulldir\E\/?//;
+		$actionmsg .= "mr $action: " if $print_action;
+		$actionmsg .= $fulldir if $print_dir;
+		$actionmsg .= " (in subdir $s)" if $print_subdir;
+	}
+}
+
 sub action {
 	my ($action, $dir, $topdir, $subdir, $force_checkout) = @_;
 	my $fulldir=fulldir($topdir, $subdir);
@@ -1127,17 +1178,7 @@ sub action {
 			$print_cache = 0;
 		}
 
-		my $actionmsg = "";
-		if (! $no_chdir) {
-			$actionmsg .= "mr $action: " if $print_action;
-			$actionmsg .= $fulldir if $print_dir;
-		}
-		else {
-			my $s=$directory;
-			$s=~s/^\Q$fulldir\E\/?//;
-			$actionmsg .= "mr $action: " if $print_action;
-			$actionmsg .= $fulldir if $print_dir;
-			$actionmsg .= " (in subdir $s)" if $print_subdir;
+		if ($no_chdir){
 			if ($chdir_top) { chdir($fulldir); }
 			else {
 				# Avoid contaminating the cache with results for
@@ -1148,6 +1189,8 @@ sub action {
 				$print_cache = 0;
 			}
 		}
+
+		my $actionmsg = actionmsg($action, $fulldir);
 		print "$actionmsg\n" unless !$jobs || $jobs > 1 || $quiet || $minimal || $save_cache || $print_cache;
 
 		my ($hookret, $hook_out)=hook("pre_$action", $topdir, $subdir);
@@ -1808,7 +1851,7 @@ sub loadconfig {
 					print "mr: error: --jobs must be numeric\n";
 					exit 2
 				}
-				$jobs=$value;
+				$jobs=$value unless $jobs_cmdline;
 				next;
 			}
 
@@ -1985,9 +2028,21 @@ sub modifyconfig {
 sub dispatch {
 	my $action=shift;
 
-	# actions that do not operate on all repos
+	# actions that do not operate on all repos by default
 	if ($action eq 'config') {
-		config(@ARGV);
+		if (defined $max_depth) {
+			foreach my $repo (selectrepos()) {
+				my $dir = @$repo[0] =~ s{/$}{}r;
+				my $actionmsg = actionmsg('config', $dir);
+				print "$actionmsg\n" unless $quiet || $minimal;
+				record($repo, config($quiet, $minimal, $actionmsg, $dir, @ARGV));
+			}
+			showstats("config");
+			exitstats();
+		} else {
+			my ($ret, undef) = config(0, 0, '', @ARGV);
+			exit ($ret == OK ? 0 : 255);
+		}
 	}
 	elsif ($action eq 'register') {
 		register(@ARGV);
@@ -2021,6 +2076,11 @@ sub help {
 }
 
 sub config {
+	my $quiet = shift;
+	my $minimal = shift;
+	my $actionmsg = shift;
+	my $output = '';
+	my $ret = OK;
 	if (@_ < 2) {
 		my ($dir) = find_repo_for($directory);
 		if (defined $dir && @_ == 1) {
@@ -2050,18 +2110,40 @@ sub config {
 			foreach my $topdir (sort keys %config) {
 				if (exists $config{$topdir}{$section} &&
 				    exists $config{$topdir}{$section}{$_}) {
-					print $config{$topdir}{$section}{$_}."\n";
+					if ($minimal && !$output) {
+						print "$actionmsg\n";
+					}
+					my $value = $config{$topdir}{$section}{$_}."\n";
+					if ($quiet) {
+						$output .= $value;
+					} else {
+						print $value;
+						$output = 1;
+					}
 					$found=1;
 					last if $section eq 'DEFAULT';
 				}
 			}
 			if (! $found) {
-				die "mr config: $section $_ not set\n";
+				my $value = "mr config: $section $_ not set\n";
+				if ($quiet) {
+					$output .= $value;
+				} elsif (!$minimal) {
+					print $value;
+					$output = 1;
+				}
+				if (!$minimal) {
+					$ret = FAILED;
+				}
 			}
 		}
 	}
 	modifyconfig($ENV{MR_CONFIG}, $section, %changefields) if %changefields;
-	exit 0;
+	if ($quiet && $ret == FAILED) {
+		print "$actionmsg\n";
+		print STDERR $output;
+	}
+	return ($ret, $output);
 }
 
 sub register {
@@ -2243,7 +2325,8 @@ sub getopts {
 		"k|insecure" => \$insecure,
 		"i|interactive" => \$interactive,
 		"n|no-recurse:i" => \$max_depth,
-		"j|jobs:i" => \$jobs,
+		"r|recurse:i" => sub { $max_depth = $_[1] ? $_[1] : ~0; },
+		"j|jobs:i" => sub { $jobs = $_[1]; $jobs_cmdline=1; },
 		"t|trust-all" => \$trust_all,
 	);
 	if (! $result || @ARGV < 1) {

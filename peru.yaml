@@ -128,7 +128,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 7209cb0c337ece41880892827e1a5b6c5c9aa024
+    rev: 634ab246365ef6b465b4cdf7c6f0727ec04759a9
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -176,7 +176,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 13fdeb5fa7f464266163f405f42322e6fb0d3067
+    rev: b48a572475488572b738bf9c49726d63f7fa5e34
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -214,7 +214,7 @@ git module vim-undotree:
 # quoting/parenthesizing made simple
 git module vim-surround:
     url: https://github.com/tpope/vim-surround
-    rev: e4c4cc0f816515fbb7e87076a988604b2d163daa
+    rev: f51a26d3710629d031806305b6c8727189cd1935
 
 # readline style insertion
 git module vim-rsi:
@@ -241,7 +241,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 98cf39949b617b9f3a47d2e092af573060022301
+    rev: 65edb6ad99b51514aaf29afc25e35ce5f05281ba
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -271,7 +271,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: c03c058bd52f14f6eba57e83864ad5a78c5e57b9
+    rev: 86e3994e87b264f874ea1620fc31f42e3744aad0
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -300,7 +300,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: bba14621426048b187d90c261f03517e6fbe8130
+    rev: 25c88a8c2b7a61af5ba3700de4a89f9955730137
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -367,7 +367,7 @@ git module git:
         - git-subtree
         - diff-highlight.perl
         - DiffHighlight.pm
-    rev: 5fa0f5238b0cd46cfe7f6fa76c3f526ea98148d9
+    rev: da72936f544fec5a335e66432610e4cef4430991
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
@@ -496,7 +496,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: ec93940647a88a6389cf3afbd4d8e6c5601fe9a6
+    rev: abe06789dbcd626796074a3cb2526120aa010bcf
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -529,7 +529,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: a6a17540938971685cab13e55a996b39a689d135
+    rev: 29f6d0e0e02b1171172fc7f744f36980ad74854a
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -547,7 +547,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: b91d82bfaa395bb86b3ea51f63cc8cef05e90f98
+    rev: 5f84325cd811ec179b7f3642652438c6a45b174d
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -580,7 +580,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: d15651463ab5c3dd6609e548527a8ea18ab80c98
+    rev: 15aeea662e0b08088ac7b6e3ee661c834e69106a
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -627,7 +627,7 @@ git module i3-urgent-notify:
 
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
-    rev: 4e1a877f51a17a961b8c2a285ee80aebf05ccf42
+    rev: b5ae5805db294a72380f77ee82592cd99246272b
 
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events
@@ -701,7 +701,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: c8c0a9325407c487fd702eca39d987d67123c98b
+    rev: 2a1f03757eff82d07f64d45dad4af1a805492a67
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
@@ -715,7 +715,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 5f101a303f01ffcd781764419901204dac92a1f1
+    rev: 6a1df1a7c54458eb14480e1cc4f83c704ef9fb8d
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
@@ -754,14 +754,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 87db974a84ceccad7bda724db89fbe12539e84fb
+    rev: 06e27e940aa876dbcb5b9e0ded487bed2e282447
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 5ea4fb6034fe52bd87a402d1208f58be74486c7a
+    rev: 6301775d3f60cccee5076ba33fec825ee42d794d
 
 git module exa:
     url: https://github.com/ogham/exa

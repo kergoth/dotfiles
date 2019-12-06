@@ -302,6 +302,28 @@ fsh__git__chroma__def=(
     ## }}}
 
     ##
+    ## ADD
+    ##
+    ## {{{
+
+    subcmd:add "ADD_0_opt // FILE_OR_DIR_#_arg // NO_MATCH_#_opt"
+
+    ADD_0_opt "
+                --chmod=
+                        <<>> NO-OP // :::chroma/main-chroma-std-aopt-action
+                        <<>> NO-OP // :::chroma/main-chroma-std-aopt-ARG-action
+             || (-v|--verbose|-f|--force|-i|--interactive|-n|--dry-run|
+                 -p|--patch|-e|--edit|--all|--no-all|-A|--all|--no-all|
+                 --ignore-removal|--no-ignore-removal|-u|--update|-N|
+                 --intent-to-add|--refresh|--ignore-errors|--ignore-missing|
+                 --renormalize|--no-warn-embedded-repo)
+                        <<>> NO-OP // :::chroma/main-chroma-std-aopt-action"
+
+    FILE_OR_DIR_#_arg "NO-OP // :::chroma/-git-verify-file-or-dir"
+
+    ## }}}
+
+    ##
     ## CHECKOUT
     ##
     ## {{{
@@ -666,18 +688,73 @@ fsh__git__chroma__def=(
 
 # A generic handler - checks whether the file exists
 :chroma/-git-verify-file() {
-    local _wrd="$4"
+    integer _start="$2" _end="$3" __pos __start __end
+    local _wrd="$4" bg
 
-    [[ -f "$_wrd" ]] && { __style=${FAST_THEME_NAME}correct-subtle; return 0; } || \
-        { __style=${FAST_THEME_NAME}incorrect-subtle; return 1; }
+    [[ -f $_wrd ]] && {
+        (( __start=_start, __end=_end, __start >= 0 )) && \
+            reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}correct-subtle]}")
+        bg=${(M)FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}correct-subtle]%bg=*}
+        ((1))
+    } || {
+        (( __start=_start, __end=_end, __start >= 0 )) && \
+            reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]}")
+        bg=${(M)FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]%bg=*}
+    }
+
+    [[ -n ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]} && \
+        ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]} != \
+        ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}
+    ]] && \
+        for (( __pos = 1; __pos <= (_end-_start); __pos++ )) {
+            [[ ${_wrd[__pos]} == "/" ]] && {
+                [[ ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]} = *bg=* ]] && {
+                    (( __start=_start+__pos-__PBUFLEN, __start >= 0 )) && \
+                    reply+=("$(( __start - 1 )) $__start ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}")
+                    ((1))
+                } || {
+                    (( __start=_start+__pos-__PBUFLEN, __start >= 0 )) && \
+                    reply+=("$(( __start - 1 )) $__start ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}${bg:+,$bg}")
+                }
+            }
+        }
 }
 
 # A generic handler - checks whether the file exists
 :chroma/-git-verify-file-or-dir() {
-    local _wrd="$4"
+    integer _start="$2" _end="$3" __pos __start __end retval
+    local _wrd="$4" bg
 
-    [[ -f "$_wrd" || -d "$_wrd" ]] && { __style=${FAST_THEME_NAME}correct-subtle; return 0; } || \
-        { __style=${FAST_THEME_NAME}incorrect-subtle; return 1; }
+    __style=
+    [[ -f $_wrd || -d $_wrd ]] && {
+        (( __start=_start, __end=_end, __start >= 0 )) && \
+            reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}correct-subtle]}")
+        bg=${(M)FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}correct-subtle]%bg=*}
+        ((1))
+    } || {
+        (( __start=_start, __end=_end, __start >= 0 )) && \
+            reply+=("$__start $__end ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]}")
+        bg=${(M)FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}incorrect-subtle]%bg=*}
+        retval=1
+    }
+
+    [[ -n ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]} && \
+        ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path]} != \
+        ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}
+    ]] && \
+        for (( __pos = 1; __pos <= (_end-_start); __pos++ )) {
+            [[ ${_wrd[__pos]} == "/" ]] && {
+                [[ ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]} = *bg=* ]] && {
+                    (( __start=_start+__pos-__PBUFLEN, __start >= 0 )) && \
+                    reply+=("$(( __start - 1 )) $__start ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}")
+                    ((1))
+                } || {
+                    (( __start=_start+__pos-__PBUFLEN, __start >= 0 )) && \
+                    reply+=("$(( __start - 1 )) $__start ${FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}path_pathseparator]}${bg:+,$bg}")
+                }
+            }
+        }
+    return $retval
 }
 
 :chroma/-git-verify-branch() {

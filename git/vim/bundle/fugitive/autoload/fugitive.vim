@@ -2429,12 +2429,6 @@ function! s:ExpireStatus(bufnr) abort
   return ''
 endfunction
 
-function! FugitiveReloadCheck() abort
-  let t = b:fugitive_reltime
-  return [t, reltimestr(reltime(s:last_time, t)),
-        \ reltimestr(reltime(get(s:last_times, s:cpath(s:Dir()), t), t))]
-endfunction
-
 function! s:ReloadWinStatus(...) abort
   if get(b:, 'fugitive_type', '') !=# 'index' || &modified
     return
@@ -2913,9 +2907,9 @@ function! s:PatchSearchExpr(reverse) abort
       let pattern = '^[+-]\s*' . escape(substitute(strpart(line, 1), '^\s*\|\s*$', '', ''), '^$.*[]~\') . '\s*$'
     endif
     if a:reverse
-      return '?' . escape(pattern, '/') . "\<CR>"
+      return '?' . escape(pattern, '/?') . "\<CR>"
     else
-      return '/' . escape(pattern, '/?') . "\<CR>"
+      return '/' . escape(pattern, '/') . "\<CR>"
     endif
   endif
   return a:reverse ? '#' : '*'
@@ -3495,7 +3489,7 @@ function! s:FinishCommit() abort
     call setbufvar(buf, 'fugitive_commit_arguments', [])
     if getbufvar(buf, 'fugitive_commit_rebase')
       call setbufvar(buf, 'fugitive_commit_rebase', 0)
-      let s:rebase_continue = s:Dir(buf)
+      let s:rebase_continue = [s:Dir(buf), 0]
     endif
     return s:CommitSubcommand(-1, -1, 0, 0, '', args, s:Dir(buf))
   endif
@@ -3702,11 +3696,11 @@ function! s:MergeRebase(cmd, bang, mods, args, ...) abort
   call fugitive#ReloadStatus(dir, 1)
   if empty(filter(getqflist(),'v:val.valid && v:val.type !=# "I"'))
     if a:cmd =~# '^rebase' &&
-          \ filereadable(fugitive#Find('.git/rebase-merge/amend', dir)) &&
           \ filereadable(fugitive#Find('.git/rebase-merge/done', dir)) &&
-          \ get(readfile(fugitive#Find('.git/rebase-merge/done', dir)), -1, '') =~# '^[^e]'
+          \ get(readfile(fugitive#Find('.git/rebase-merge/done', dir)), -1, '') =~# '^[^bep]'
       cclose
-      return 'exe ' . string(mods . 'Gcommit --amend -n -F ' . s:fnameescape(fugitive#Find('.git/rebase-merge/message', dir)) . ' -e') . '|let b:fugitive_commit_rebase = 1'
+      let amend = filereadable(fugitive#Find('.git/rebase-merge/amend', dir)) ? '--amend ' : ''
+      return 'exe ' . string(mods . 'Gcommit ' . amend . '-n -F ' . s:fnameescape(fugitive#Find('.git/rebase-merge/message', dir)) . ' -e') . '|let b:fugitive_commit_rebase = 1'
     elseif !had_merge_msg && filereadable(fugitive#Find('.git/MERGE_MSG', dir))
       cclose
       return mods . 'Gcommit --no-status -n -t '.s:fnameescape(fugitive#Find('.git/MERGE_MSG', dir))
@@ -3764,18 +3758,27 @@ function! s:PullSubcommand(line1, line2, range, bang, mods, args) abort
   return s:MergeRebase('pull', a:bang, a:mods, a:args)
 endfunction
 
+function! s:RebaseContinue(arg) abort
+  let [dir, edit_todo] = a:arg
+  exe s:MergeRebase('rebase', 0, '', [edit_todo && getfsize(fugitive#Find('.git/rebase-merge/git-rebase-todo', dir)) <= 0 ? '--abort' : '--continue'], dir)
+endfunction
+
 augroup fugitive_merge
   autocmd!
   autocmd VimLeavePre,BufDelete git-rebase-todo
         \ if getbufvar(+expand('<abuf>'), '&bufhidden') ==# 'wipe' |
         \   call s:RebaseClean(expand('<afile>')) |
         \   if getfsize(FugitiveFind('.git/rebase-merge/done', +expand('<abuf>'))) == 0 |
-        \     let s:rebase_continue = FugitiveGitDir(+expand('<abuf>')) |
+        \     let s:rebase_continue = [FugitiveGitDir(+expand('<abuf>')), 1] |
         \   endif |
         \ endif
   autocmd BufEnter * nested
         \ if exists('s:rebase_continue') |
-        \   exe s:MergeRebase('rebase', 0, '', [getfsize(fugitive#Find('.git/rebase-merge/git-rebase-todo', s:rebase_continue)) > 0 ? '--continue' : '--abort'], remove(s:, 'rebase_continue')) |
+        \   if has('timer') |
+        \      call timer_start(0, function('s:RebaseContinue', [remove(s:, 'rebase_continue')])) |
+        \   else |
+        \      call s:RebaseContinue(remove(s:, 'rebase_continue')) |
+        \   endif |
         \ endif
 augroup END
 
@@ -4399,7 +4402,7 @@ endfunction
 
 function! s:AskPassArgs(dir) abort
   if (len($DISPLAY) || len($TERM_PROGRAM) || has('gui_running')) && fugitive#GitVersion(1, 8) &&
-        \ empty($GIT_ASKPASS) && empty($SSH_ASKPASS) && empty(fugitive#Config('core.askPass', a:dir))
+        \ empty($GIT_ASKPASS) && empty($SSH_ASKPASS) && empty(get(fugitive#Config(a:dir), 'core.askpass', []))
     if s:executable(s:ExecPath() . '/git-gui--askpass')
       return ['-c', 'core.askPass=' . s:ExecPath() . '/git-gui--askpass']
     elseif s:executable('ssh-askpass')
@@ -4525,14 +4528,11 @@ endfunction
 function! s:diffoff_all(dir) abort
   let curwin = winnr()
   for nr in range(1,winnr('$'))
-    if getwinvar(nr,'&diff')
+    if getwinvar(nr, '&diff') && !empty(getwinvar(nr, 'fugitive_diff_restore'))
       if nr != winnr()
         execute nr.'wincmd w'
-        let restorewinnr = 1
       endif
-      if s:Dir() ==# a:dir
-        call s:diffoff()
-      endif
+      call s:diffoff()
     endif
   endfor
   execute curwin.'wincmd w'
@@ -4633,6 +4633,8 @@ function! fugitive#Diffsplit(autodir, keepfocus, mods, arg, args) abort
       elseif arg =~# '^:\d$'
         exe s:DirCheck()
         let file = s:Relative(arg . ':')
+      elseif arg =~# '^[~^]\d*$'
+        return 'echoerr ' . string('fugitive: change ' . arg . ' to !' . arg . ' to diff against ancestor')
       else
         try
           let file = arg =~# '^:/.' ? fugitive#RevParse(arg) . s:Relative(':') : s:Expand(arg)
@@ -4822,7 +4824,7 @@ function! s:BlameCommitFileLnum(...) abort
     let commit = get(s:LinesError('rev-list', '--ancestry-path', '--reverse', commit . '..' . state.blame_reverse_end)[0], 0, '')
   endif
   let lnum = +matchstr(line, ' \zs\d\+\ze \%((\| *\d\+)\)')
-  let path = matchstr(line, '^\^\=[?*]*\x* \+\%(\d\+ \+\d\+ \+\)\=\zs.\{-\}\ze\s\+\%(\%( \d\+ \)\@<!([^()]*\w \d\+)\|\d\+ \)')
+  let path = matchstr(line, '^\^\=[?*]*\x* \+\%(\d\+ \+\d\+ \+\)\=\zs.\{-\}\ze\s*\d\+ \%((\| *\d\+)\)')
   if empty(path) && lnum
     let path = get(state, 'blame_file', '')
   endif
