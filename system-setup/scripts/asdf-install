@@ -19,7 +19,7 @@ END
 }
 
 version_sort() {
-    python3 -c 'import distutils.version,sys; versions=sys.stdin.readlines(); sversions=sorted(distutils.version.LooseVersion(v.rstrip()) for v in versions); print("\n".join(str(v) for v in sversions))'
+    sort -V
 }
 
 global=0
