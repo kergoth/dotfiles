@@ -14,5 +14,8 @@ case "$(uname -r)" in
         USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
 
         export BROWSER="cmd.exe /C START"
+        if [[ -z "$SSH_AUTH_SOCK" ]] && [[ -n "$WSL_AUTH_SOCK" ]]; then
+            export SSH_AUTH_SOCK=$WSL_AUTH_SOCK
+        fi
         ;;
 esac
