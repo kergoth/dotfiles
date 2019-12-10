@@ -11,6 +11,14 @@ if [[ $OSTYPE = WSL ]]; then
 
     alias cmd=cmd.exe
     alias wsl=wsl.exe
-    alias choco=choco.exe
     alias adb=adb.exe
+
+    psrunas () {
+        local cmd args
+        cmd="$1"
+        shift
+        args="$(quote-args "$@"|sed -e "s/'/\\'/g; s/\"/'/g")"
+        powershell.exe -c start "$cmd" -Verb runAs -argumentlist "\"$args\""
+    }
+    alias choco="psrunas choco"
 fi
