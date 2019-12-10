@@ -66,9 +66,9 @@ mkdir -p "${XDG_DATA_HOME:-~/.local/share}"
 
 # Clang and llvm are needed to build `bat`
 if command -v pacman >/dev/null 2>&1; then
-    sudo pacman -Sy --needed llvm clang
+    sudo pacman -Sy --needed llvm clang cmake
 elif command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get -y install --no-upgrade llvm clang
+    sudo apt-get -y install --no-upgrade llvm clang cmake
 fi
 
 # cargo-update
