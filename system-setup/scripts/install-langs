@@ -59,6 +59,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
+
 # shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf" || exit 1
 
