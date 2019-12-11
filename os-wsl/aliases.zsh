@@ -18,7 +18,7 @@ if [[ $OSTYPE = WSL ]]; then
         cmd="$1"
         shift
         args="$(quote-args "$@"|sed -e "s/'/\\'/g; s/\"/'/g")"
-        powershell.exe -c start "$cmd" -Verb runAs -argumentlist "\"$args\""
+        powershell.exe -c start "$cmd" -Verb runAs ${args:+-argumentlist "\"$args\""}
     }
     alias choco="psrunas choco"
 fi
