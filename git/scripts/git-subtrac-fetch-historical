@@ -8,11 +8,17 @@ export GIT_TERMINAL_PROMPT=0
 git config gc.auto 0
 
 canonical_url () {
-    sed -e 's#^git://github#https://github#' \
+    sed \
+        -e 's#meta-oe#meta-openembedded#' \
+        -e 's#.*/meta-micro.*#git://git.openembedded.org/meta-micro#' \
+        -e 's#git://git.angstrom-distribution.org/#https://github.com/Angstrom-distribution/#' \
+        -e 's#^git://git.openembedded.org/bitbake.*#https://github.com/openembedded/bitbake#' \
+        -e 's#^git://git.openembedded.org/meta-openembedded.*#https://github.com/openembedded/meta-openembedded#' \
+        -e 's#^git://git.openembedded.org/openembedded-core.*#https://github.com/openembedded/openembedded-core#' \
+        -e 's#^git://git.yoctoproject.org/meta-mentor#https://github.com/MentorEmbedded/meta-mentor#' \
+        -e 's#^git://github#https://github#' \
         -e 's#^http://github#https://github#' \
-        -e '/github/s#\.git$##' \
-        -e 's#^git://git.openembedded.org/#https://github.com/openembedded/#' \
-        -e 's#^git://git.yoctoproject.org/meta-mentor#https://github.com/MentorEmbedded/meta-mentor#'
+        -e '/github/s#\.git$##'
 }
 
 git submodule init
