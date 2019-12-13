@@ -70,6 +70,7 @@ done
 _install haskell install-haskell
 _install node install-node
 _install python install-python-asdf
+export PIP_REQUIRE_VIRTUALENV=
 _install python-pipx install-pipx
 _install python-pipsi install-pipsi
 

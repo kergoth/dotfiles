@@ -7,6 +7,7 @@ case $OSTYPE in
         ;;
 esac
 
+export PIP_REQUIRE_VIRTUALENV=
 PIPSI_HOME="${PIPSI_HOME:-${XDG_DATA_HOME:-~/.local/share}/pipsi}"
 if ! [ -e "$PIPSI_HOME/pipsi/bin/pipsi" ]; then
     python2 -m pip install --user virtualenv
