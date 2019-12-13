@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+
+PATH="$(dirname "$0"):$PATH"
+
+git submodule init
+git submodule update --recursive
+git subtrac-fetch-historical || :
+git subtrac "$@" update
+
+# Move urls to .gitmodules_upstream
+git config -f .gitmodules --get-regexp 'submodule\..*\.url$' | grep -v ' \.$' | while read -r key value; do
+    git config -f .gitmodules_upstream --replace-all "$key" "$value" \
+        && git config -f .gitmodules --replace-all "$key" .
+done
+
+git add .gitmodules .gitmodules_upstream
+git commit -m "Redirect gitmodules to the parent repo using subtrac" .gitmodules .gitmodules_upstream
+
+# Re-init
+git submodule deinit --all -f
+rm -rf .git/modules
+git submodule init
+git submodule update --recursive

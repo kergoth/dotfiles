@@ -1,0 +1,55 @@
+#!/bin/sh
+
+if [ "$1" = "--all" ]; then
+    all=1
+else
+    all=0
+fi
+
+if ! [ -e .gitmodules ] || ! [ -e .gitmodules_upstream ]; then
+    echo >&2 "Error: both .gitmodules and .gitmodules_upstream must exist to run this script"
+    exit 1
+fi
+
+topdir="$PWD"
+git config -f .gitmodules --get-regexp 'submodule\..*\.url$' \
+    | cut -d. -f2 \
+    | while read -r name; do
+        url="$(git config -f .gitmodules_upstream --get "submodule.${name}.url")"
+        if [ -z "$url" ]; then
+            continue
+        fi
+        path="$(git config -f ./.gitmodules --get submodule."$name".path 2>/dev/null)"
+        branch="$(git config -f ./.gitmodules --get submodule."$name".branch 2>/dev/null || echo master)"
+        (
+            cd .git/modules/"$name" || exit 1
+            if ! git remote | grep -qxF upstream; then
+                git remote add upstream "$url"
+            else
+                git remote set-url upstream "$url"
+            fi
+            if [ $all -eq 1 ]; then
+                git fetch -p upstream
+            else
+                git fetch -p --no-tags upstream "+refs/heads/$branch:refs/remotes/upstream/$branch"
+            fi
+            parent_rev="$(cd "$topdir" && git rev-parse --verify "$branch" 2>/dev/null)"
+            if [ -n "$parent_rev" ] && [ "$(git rev-parse --verify "$branch" 2>/dev/null)" = "$parent_rev" ]; then
+                git branch -D "$branch"
+            fi
+        )
+        (
+            cd "$path" || exit 1
+            if [ ! -e .git ]; then
+                echo >&2 "Error: no .git for $path, skipping. Did you forget to 'submodule update'?"
+                exit 0
+            fi
+            if ! git rev-parse --verify "$branch" >/dev/null 2>&1; then
+                git checkout -b "$branch"
+            else
+                git checkout "$branch"
+            fi
+            git rev-parse --verify upstream/"$branch" >/dev/null 2>&1 \
+                && git branch --set-upstream-to "upstream/$branch" "$branch"
+        )
+    done
