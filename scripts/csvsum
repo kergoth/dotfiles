@@ -1,0 +1,3 @@
+#!/bin/sh
+
+csvcut ${*:+-c1} | sed 1d | awk '{s+=$1}END{print s}'
