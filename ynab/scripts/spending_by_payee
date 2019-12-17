@@ -1,0 +1,153 @@
+#!/bin/sh
+# shellcheck disable=SC2016,SC2034,SC2059
+
+categories='allowance future_bills furniture entertainment gas pets dining gifts'
+
+# Handle items miscategorized as Spending Money
+filter_allowance='iTunes'
+filter_future_bills='Parallels'
+
+# Specify rules to split up my current Spending Money category for further
+# analysis.
+filter_gifts='Great Wolf' # Matthew's birthday
+filter_furniture='Ikea|Tuft|Sleep Number|Whimsie'
+filter_entertainment="Fair|Ticketmaster|Fantasy Photo Booth|Museum|Party Jungle|Comerica|Krazy Air|Mccormick Stillman|Macdonald's Ranch|Chuck.*Cheese|Ready Set Play"
+filter_gas="Holiday|Circle K|Costco.*Gas|Fry's Fuel|QuikTrip|Motley BP"
+filter_pets='Petco|PetSmart|Petsmart'
+filter_dining="Chipotle|Khazana|Sweet Tomatoes|Schlotzsky|Popeye|Cheese Love|Dairy Queen|Wendy|Arby|Jack in the Box|Taco Bell|Blazin Barbeque|Sprinkles|Queso Good|Village Coffee|Culver|Chick-fil-A|Famous 48|Cracker Barrel|Snack Bar|Johnny Rockets|Krispy Kreme|Sweet Tomatoes|Starbucks|Applebee|Red Robin|Chili's|Butters|Gonutz|Barrio Queen|Khazana|Red Fire Cookery|Chipotle|Papa Murphy|Chick-Fil-A|Spoonz|Reef's Kitchen|Outback|Papa John|Buffalo Wild Wings|Caribou Coffee|Auntie Anne|Burger King|Hot Dogs|Raising Cane|KFC|TGI Friday|IHOP|Daily Dose Cafe|McDonald|Spaghetti Factory"
+
+spending_payees_by_category () {
+    cat "$@" \
+        | sanitize \
+        | gather_totals \
+        | by_category
+}
+
+sanitize() {
+    strip-emoji \
+        | csvgrep -c 1 -r 'Amex|Checking|Discover|MasterCard|Visa' \
+        | csvcut -c Category,Outflow,Payee \
+        | csvgrep -c Category -r 'Spending Money' \
+        | csvgrep -i -c Payee -r 'Starting Balance|Balance Adjustment|Transfer : ' \
+        | csvgrep -i -c Outflow -r'^\$0.00$' \
+        | sed -e "s/Fry's Marketplace/Fry's/g; s/Fry's Food/Fry's/g;"
+}
+
+gather_totals() {
+    cat \
+        | csvsql --query "SELECT ROUND(SUM(Outflow)/12,2) AS Total, Payee FROM stdin GROUP BY Payee ORDER BY Total" \
+        | csvcut -cTotal,Payee
+}
+
+by_category() {
+    cat \
+        | filter_category allowance \
+        | filter_category future_bills \
+        | filter_category gifts \
+        | filter_category furniture \
+        | filter_category entertainment \
+        | filter_category gas \
+        | filter_category pets \
+        | filter_category dining
+}
+
+filter_category() {
+    if [ "$category" = "$1" ]; then
+        ignore=
+    else
+        ignore=-i
+    fi
+    evalf 'csvgrep -c Payee -r "${filter_%s}" %s' "$1" "$ignore"
+}
+
+evalf() {
+    fmt="$1"
+    shift
+    # printf >&2 "evalf: $fmt\n" "$@"
+    # eval echo >&2 "evalf: $(printf "$fmt" "$@")"
+    eval "$(printf "$fmt" "$@")"
+}
+
+# These two functions are for the sanity check
+get_unsplit_total() {
+    cat "$@" \
+        | sanitize \
+        | gather_totals \
+        | csvsum
+}
+
+get_split_totals () {
+    for scat in $categories spending; do
+        scatsum="$(category="$scat" spending_payees_by_category "$@" | csvsum)"
+        echo "$scatsum"
+    done
+}
+
+usage() {
+    cat >&2 <<END
+    ${0##*/} [options] CSV_FILE
+
+    Options:
+      -c CATEGORY
+      -a          Show totals for each category / all categories
+      -s          Implement a sanity check on the rules
+END
+    exit 2
+}
+
+check_sanity=0
+all_categories=0
+category=spending
+while getopts sac:h opt; do
+    case "$opt" in
+        s)
+            check_sanity=1
+            ;;
+        a)
+            all_categories=1
+            ;;
+        c)
+            category="$OPTARG"
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+if [ $check_sanity -eq 1 ]; then
+    unsplit_total="$(get_unsplit_total "$@")"
+    # echo >&2 "Unsplit total: $unsplit_total"
+    split_total="$(get_split_totals "$@" | sum)"
+    # echo >&2 "Split total: $split_total"
+    if [ "$split_total" != "$unsplit_total" ]; then
+        echo >&2 "Error: split total and unsplit total don't align, this likely means a pattern is matching multiple entries"
+        exit 1
+    else
+        exit 0
+    fi
+elif [ $all_categories -eq 1 ]; then
+    (
+        for scat in $categories; do
+            total="$(cat "$@" | sanitize | gather_totals | category="$scat" filter_category "$scat" | csvsum)"
+            if [ -n "$total" ] && [ "$total" != "0" ]; then
+                echo "$total $scat"
+            fi
+        done
+
+        # Other
+        echo "$(category=spending spending_payees_by_category "$@" | csvsum) spending"
+    ) | sort -nr
+else
+    spending_payees_by_category "$@" \
+        | if [ -t 1 ]; then
+            csvlook -I
+        else
+            cat
+        fi
+fi
