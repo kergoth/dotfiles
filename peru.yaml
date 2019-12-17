@@ -99,7 +99,6 @@ imports:
     vim-highlightedyank: vim/bundle/highlightedyank
     vim-lightline: vim/bundle/lightline
     vim-lion: vim/bundle/lion
-    vim-markdown: vim/bundle/markdown
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
     vim-repeat: vim/bundle/repeat
@@ -728,10 +727,6 @@ git module vim-endwise:
 git module vim-highlightedyank:
     url: https://github.com/machakann/vim-highlightedyank
     rev: 51e25c9fa3bd2dca500ee0c910a45641d57a57fa
-
-git module vim-markdown:
-    url: https://github.com/plasticboy/vim-markdown
-    rev: da5a7ac96f517e0fd6f886bc3fbe27156ca1f946
 
 git module vim-zoom:
     url: https://github.com/dhruvasagar/vim-zoom
