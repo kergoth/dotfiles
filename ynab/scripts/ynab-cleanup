@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+    tmpfile="$(mktemp -t "${0##*/}.XXXX")"
+    trap 'rm -f "$tmpfile"' EXIT INT TERM
+    cat >"$tmpfile"
+    set -- "$tmpfile"
+fi
+
+first_column="$(csvcut -n "$@" | head -n 1 | awk '{print $2}')"
+{
+    head -n 1 "$@" | sed -e "s/^[^,]*,/\"$first_column\",/"
+    tail +2 "$@"
+} \
+    | csvcut -C 'Category Group,Category Group/Category' \
+    | strip-emoji \
+    | sed -e 's/[▪️]//g'

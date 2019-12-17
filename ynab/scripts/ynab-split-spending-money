@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Handle items miscategorized as Spending Money
+filter_allowance='iTunes'
+filter_future_bills='Parallels'
+
+# Specify rules to split up my current Spending Money category for further
+# analysis.
+filter_dining="Chipotle|Khazana|Sweet Tomatoes|Schlotzsky|Popeye|Cheese Love|Dairy Queen|Wendy|Arby|Jack in the Box|Taco Bell|Blazin Barbeque|Sprinkles|Queso Good|Village Coffee|Culver|Chick-fil-A|Famous 48|Cracker Barrel|Snack Bar|Johnny Rockets|Krispy Kreme|Sweet Tomatoes|Starbucks|Applebee|Red Robin|Chili's|Butters|Gonutz|Barrio Queen|Khazana|Red Fire Cookery|Chipotle|Papa Murphy|Chick-Fil-A|Spoonz|Reef's Kitchen|Outback|Papa John|Buffalo Wild Wings|Caribou Coffee|Auntie Anne|Burger King|Hot Dogs|Raising Cane|KFC|TGI Friday|IHOP|Daily Dose Cafe|McDonald|Spaghetti Factory"
+filter_entertainment="Fair|Ticketmaster|Fantasy Photo Booth|Museum|Party Jungle|Comerica|Krazy Air|Mccormick Stillman|Macdonald's Ranch|Chuck.*Cheese|Ready Set Play"
+filter_furniture='Ikea|Tuft|Sleep Number|Whimsie'
+filter_gas="Holiday|Circle K|Costco.*Gas|Fry's Fuel|QuikTrip|Motley BP"
+filter_gifts='Great Wolf' # Matthew's birthday
+filter_pets='Petco|PetSmart|Petsmart'
+
+adjust_category_by_payee () {
+    python3 -c 'import csv,re,sys; reader=csv.DictReader(sys.stdin); writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames); writer.writeheader(); writer.writerows(eval(sys.argv[1], None, {"row": row}) for row in reader)' "dict(row.update({'Category': sys.argv[3] if re.search(sys.argv[2], row['Payee']) else row['Category'].strip()}) or row)" "$@"
+}
+
+cat "$@" \
+    | adjust_category_by_payee "$filter_allowance" Allowance \
+    | adjust_category_by_payee "$filter_future_bills" 'Future Bills' \
+    \
+    | adjust_category_by_payee "$filter_dining" Dining \
+    | adjust_category_by_payee "$filter_entertainment" Entertainment \
+    | adjust_category_by_payee "$filter_furniture" Furniture \
+    | adjust_category_by_payee "$filter_gas" Gas \
+    | adjust_category_by_payee "$filter_gifts" Gifts \
+    | adjust_category_by_payee "$filter_pets" Pets

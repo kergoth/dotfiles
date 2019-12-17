@@ -1,0 +1,72 @@
+#!/bin/sh
+
+usage() {
+    cat >&2 <<END
+    ${0##*/} [options] CSV_FILE
+
+    Options:
+      -c CATEGORY
+      -a          Show totals for each category / all categories
+END
+    exit 2
+}
+
+main() {
+    reverse_sort=
+    category_totals=0
+    category=
+    while getopts rac:h opt; do
+        case "$opt" in
+            r)
+                reverse_sort=1
+                ;;
+            a)
+                category_totals=1
+                ;;
+            c)
+                category="$OPTARG"
+                ;;
+            \? | h)
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage
+    fi
+
+    cat "$@" \
+        | ynab-cleanup \
+        | csvgrep -i -c Payee -r 'Starting Balance|Balance Adjustment|Transfer : ' \
+        | ynab-split-spending-money \
+        | adjust_payees \
+        | gather_totals \
+        | csvsort -c Total ${reverse_sort:+-r} \
+        | if [ -t 1 ]; then
+            csvlook -I
+        else
+            cat
+        fi
+}
+
+adjust_payees() {
+    sed -e "s/Fry's Marketplace/Fry's/g; s/Fry's Food/Fry's/g;"
+}
+
+gather_totals() {
+    csvgrep -i -c Category -r '^$' \
+        | if [ $category_totals -eq 1 ]; then
+            csvsql --query "SELECT Category, ROUND(SUM(Outflow)/12,2) AS Total FROM stdin GROUP BY Category ORDER BY Total"
+        elif [ -n "$category" ]; then
+            csvgrep -c Category -r "$category" \
+                | csvsql --query "SELECT Payee, ROUND(SUM(Outflow)/12,2) AS Total FROM stdin GROUP BY Payee ORDER BY Total"
+        else
+            csvsql --query "SELECT Payee, ROUND(SUM(Outflow)/12,2) AS Total, Category FROM stdin GROUP BY Payee ORDER BY Total"
+        fi \
+        | csvgrep -i -c Total -r'^\$0.00$' \
+        | sed -e 's/^[ ️️]*//'
+}
+
+main "$@"
