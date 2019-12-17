@@ -49,18 +49,18 @@ if s:is_win
 
   " Use utf-8 for fzf.vim commands
   " Return array of shell commands for cmd.exe
+  let s:codepage = libcallnr('kernel32.dll', 'GetACP', 0)
+  function! s:enc_to_cp(str)
+    return iconv(a:str, &encoding, 'cp'.s:codepage)
+  endfunction
   function! s:wrap_cmds(cmds)
-    let use_chcp = executable('sed')
     return map([
       \ '@echo off',
       \ 'setlocal enabledelayedexpansion']
-    \ + (use_chcp ? [
-      \ 'for /f "usebackq" %%a in (`chcp ^| sed "s/[^0-9]//gp"`) do set origchcp=%%a',
-      \ 'chcp 65001 > nul'] : [])
+    \ + (has('gui_running') ? ['set TERM= > nul'] : [])
     \ + (type(a:cmds) == type([]) ? a:cmds : [a:cmds])
-    \ + (use_chcp ? ['chcp !origchcp! > nul'] : [])
     \ + ['endlocal'],
-    \ 'v:val."\r"')
+    \ '<SID>enc_to_cp(v:val."\r")')
   endfunction
 else
   let s:term_marker = ";#FZF"
@@ -71,6 +71,10 @@ else
 
   function! s:wrap_cmds(cmds)
     return a:cmds
+  endfunction
+
+  function! s:enc_to_cp(str)
+    return a:str
   endfunction
 endif
 
@@ -83,7 +87,7 @@ function! s:shellesc_cmd(arg)
 endfunction
 
 function! fzf#shellescape(arg, ...)
-  let shell = get(a:000, 0, &shell)
+  let shell = get(a:000, 0, s:is_win ? 'cmd.exe' : 'sh')
   if shell =~# 'cmd.exe$'
     return s:shellesc_cmd(a:arg)
   endif
@@ -247,7 +251,7 @@ function! s:common_sink(action, lines) abort
 endfunction
 
 function! s:get_color(attr, ...)
-  let gui = has('termguicolors') && &termguicolors
+  let gui = !s:is_win && !has('win32unix') && has('termguicolors') && &termguicolors
   let fam = gui ? 'gui' : 'cterm'
   let pat = gui ? '^#[a-f0-9]\+' : '^[0-9]\+$'
   for group in a:000
@@ -342,19 +346,21 @@ function! fzf#wrap(...)
 endfunction
 
 function! s:use_sh()
-  let [shell, shellslash] = [&shell, &shellslash]
+  let [shell, shellslash, shellcmdflag, shellxquote] = [&shell, &shellslash, &shellcmdflag, &shellxquote]
   if s:is_win
     set shell=cmd.exe
     set noshellslash
+    let &shellcmdflag = has('nvim') ? '/s /c' : '/c'
+    let &shellxquote = has('nvim') ? '"' : '('
   else
     set shell=sh
   endif
-  return [shell, shellslash]
+  return [shell, shellslash, shellcmdflag, shellxquote]
 endfunction
 
 function! fzf#run(...) abort
 try
-  let [shell, shellslash] = s:use_sh()
+  let [shell, shellslash, shellcmdflag, shellxquote] = s:use_sh()
 
   let dict   = exists('a:1') ? s:upgrade(a:1) : {}
   let temps  = { 'result': s:fzf_tempname() }
@@ -385,7 +391,7 @@ try
       let prefix = '( '.source.' )|'
     elseif type == 3
       let temps.input = s:fzf_tempname()
-      call writefile(source, temps.input)
+      call writefile(map(source, '<SID>enc_to_cp(v:val)'), temps.input)
       let prefix = (s:is_win ? 'type ' : 'cat ').fzf#shellescape(temps.input).'|'
     else
       throw 'Invalid source type'
@@ -424,7 +430,7 @@ try
   call s:callback(dict, lines)
   return lines
 finally
-  let [&shell, &shellslash] = [shell, shellslash]
+  let [&shell, &shellslash, &shellcmdflag, &shellxquote] = [shell, shellslash, shellcmdflag, shellxquote]
 endtry
 endfunction
 

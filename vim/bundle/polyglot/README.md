@@ -10,7 +10,7 @@ A collection of language packs for Vim.
 > One to rule them all, one to find them, one to bring them all and in the darkness bind them.
 
 - It **won't affect your startup time**, as scripts are loaded only on demand\*.
-- It **installs and updates 120+ times faster** than the <!--Package Count-->146<!--/Package Count--> packages it consists of.
+- It **installs and updates 120+ times faster** than the <!--Package Count-->147<!--/Package Count--> packages it consists of.
 - Solid syntax and indentation support (other features skipped). Only the best language packs.
 - All unnecessary files are ignored (like enormous documentation from php support).
 - No support for esoteric languages, only most popular ones (modern too, like `slim`).
@@ -119,7 +119,7 @@ If you need full functionality of any plugin, please use it directly with your p
 - [log](https://github.com/MTDL9/vim-log-highlighting) (syntax)
 - [lua](https://github.com/tbastos/vim-lua) (syntax, indent)
 - [mako](https://github.com/sophacles/vim-bundle-mako) (syntax, indent, ftplugin)
-- [markdown](https://github.com/plasticboy/vim-markdown) (syntax, indent)
+- [markdown](https://github.com/gabrielelana/vim-markdown) (syntax, autoload, ftplugin)
 - [mathematica](https://github.com/voldikss/vim-mma) (syntax, ftplugin)
 - [mdx](https://github.com/jxnblk/vim-mdx-js) (syntax)
 - [meson](https://github.com/mesonbuild/meson) (syntax, indent, ftplugin)
@@ -178,7 +178,8 @@ If you need full functionality of any plugin, please use it directly with your p
 - [tptp](https://github.com/c-cube/vim-tptp) (syntax)
 - [twig](https://github.com/lumiliet/vim-twig) (syntax, indent, ftplugin)
 - [typescript](https://github.com/HerringtonDarkholme/yats.vim) (syntax, indent, compiler, ftplugin)
-- [vala](https://github.com/arrufat/vala.vim) (syntax, indent)
+- [v](https://github.com/ollykel/v-vim) (syntax, indent, ftplugin)
+- [vala](https://github.com/arrufat/vala.vim) (syntax, indent, ftplugin)
 - [vbnet](https://github.com/vim-scripts/vbnet.vim) (syntax)
 - [vcl](https://github.com/smerrill/vcl-vim-plugin) (syntax)
 - [vifm](https://github.com/vifm/vifm.vim) (syntax, autoload, ftplugin)

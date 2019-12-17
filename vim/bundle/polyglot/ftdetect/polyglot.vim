@@ -1,3 +1,15 @@
+if !exists('g:markdown_enable_spell_checking')
+  let g:markdown_enable_spell_checking = 0
+end
+
+if !exists('g:markdown_enable_input_abbreviations')
+  let g:markdown_enable_input_abbreviations = 0
+end
+
+if !exists('g:markdown_enable_mappings')
+  let g:markdown_enable_mappings = 0
+end
+
 " Enable jsx syntax by default
 if !exists('g:jsx_ext_required')
   let g:jsx_ext_required = 0
@@ -781,15 +793,8 @@ endif
 
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'markdown') == -1
   augroup filetypedetect
-  " markdown, from markdown.vim in plasticboy/vim-markdown:_SYNTAX
-if !has('patch-7.4.480')
-    " Before this patch, vim used modula2 for .md.
-    au! filetypedetect BufRead,BufNewFile *.md
-endif
-
-" markdown filetype file
-au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} setfiletype markdown
-au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}.{des3,des,bf,bfa,aes,idea,cast,rc2,rc4,rc5,desx} setfiletype markdown
+  " markdown, from markdown.vim in gabrielelana/vim-markdown
+au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} set filetype=markdown
   augroup end
 endif
 
@@ -1473,10 +1478,17 @@ autocmd BufNewFile,BufRead *.tsx setlocal filetype=typescriptreact
   augroup end
 endif
 
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'v') == -1
+  augroup filetypedetect
+  " v, from vlang.vim in ollykel/v-vim
+au BufNewFile,BufRead *.v set filetype=vlang
+au BufNewFile,BufRead *.v set syntax=vlang
+  augroup end
+endif
+
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'vala') == -1
   augroup filetypedetect
   " vala, from vala.vim in arrufat/vala.vim
-autocmd BufRead *.vala,*.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
 au BufRead,BufNewFile *.vala,*.vapi,*.valadoc setfiletype vala
   augroup end
 endif

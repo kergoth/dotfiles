@@ -353,7 +353,7 @@ function! go#config#FmtCommand() abort
 endfunction
 
 function! go#config#FmtOptions() abort
-  return get(g:, "go_fmt_options", {})
+  return get(b:, "go_fmt_options", get(g:, "go_fmt_options", {}))
 endfunction
 
 function! go#config#FmtFailSilently() abort
@@ -368,9 +368,9 @@ function! go#config#PlayOpenBrowser() abort
   return get(g:, "go_play_open_browser", 1)
 endfunction
 
-function! go#config#GorenameCommand() abort
+function! go#config#RenameCommand() abort
   " delegate to go#config#GorenameBin for backwards compatability.
-  return get(g:, "go_gorename_command", go#config#GorenameBin())
+  return get(g:, "go_rename_command", go#config#GorenameBin())
 endfunction
 
 function! go#config#GorenameBin() abort
@@ -518,6 +518,10 @@ endfunction
 
 function! go#config#GoplsUsePlaceholders() abort
   return get(g:, 'go_gopls_use_placeholders', 0)
+endfunction
+
+function! go#config#GoplsEnabled() abort
+  return get(g:, 'go_gopls_enabled', 1)
 endfunction
 
 " Set the default value. A value of "1" is a shortcut for this, for
