@@ -7,6 +7,7 @@ usage() {
     Options:
       -c CATEGORY
       -a          Show totals for each category / all categories
+      -r          Reverse sort
 END
     exit 2
 }
