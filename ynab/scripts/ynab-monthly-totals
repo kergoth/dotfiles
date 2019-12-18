@@ -76,7 +76,7 @@ gather_totals() {
             csvgrep -c Category -r "$category" \
                 | csvsql --query "SELECT Payee, ROUND(SUM($flowcolumn)/12,2) AS Total FROM stdin GROUP BY Payee ORDER BY Total"
         else
-            csvsql --query "SELECT Payee, ROUND(SUM($flowcolumn)/12,2) AS Total, Category FROM stdin GROUP BY Payee ORDER BY Total"
+            csvsql --query "SELECT Payee, ROUND(SUM($flowcolumn)/12,2) AS Total, Category FROM stdin GROUP BY Payee, Category ORDER BY Total"
         fi \
         | sed -e 's/^[ ️️]*//'
 }
