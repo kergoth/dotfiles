@@ -18,7 +18,7 @@ case "$OSTYPE" in
                 *-Microsoft)
                     OSTYPE=WSL
                     osname=Wsl
-                    USERPROFILE="$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")"
+                    USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
                     ;;
             esac
         fi
