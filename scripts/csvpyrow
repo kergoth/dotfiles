@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+import click
+import kcompile
+import csv
+import itertools
+import re
+import sys
+import traceback
+
+
+@click.command()
+@click.argument('pythonstring', required=False)
+@click.argument('args', nargs=-1)
+def filter_rows(pythonstring, args):
+    """CSV Row filter using python."""
+    if not pythonstring:
+        sys.stdout.write(sys.stdin.read())
+        sys.exit(0)
+
+    try:
+        function = kcompile.compile_func(pythonstring, name='pythonstring', argspec='_, lineno, args, re, itertools')
+    except SyntaxError:
+        traceback.print_exc(limit=0, file=sys.stderr)
+        sys.exit(1)
+
+    reader = csv.DictReader(sys.stdin)
+    writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
+    writer.writeheader()
+    for lineno, row in enumerate(reader):
+        nrow = function(row, lineno+1, args, re, itertools)
+        if nrow is not None:
+            row = nrow
+        writer.writerow(row)
+
+
+if __name__ == '__main__':
+    filter_rows()
