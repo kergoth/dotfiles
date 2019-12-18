@@ -14,16 +14,25 @@ filter_gifts='Great Wolf' # Matthew's birthday
 filter_pets='Petco|PetSmart|Petsmart'
 
 adjust_category_by_payee () {
-    python3 -c 'import csv,re,sys; reader=csv.DictReader(sys.stdin); writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames); writer.writeheader(); writer.writerows(eval(sys.argv[1], None, {"row": row}) for row in reader)' "dict(row.update({'Category': sys.argv[3] if re.search(sys.argv[2], row['Payee']) else row['Category'].strip()}) or row)" "$@"
+    python3 -c 'import csv,re,sys; reader=csv.DictReader(sys.stdin); writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames); writer.writeheader(); writer.writerows(eval(sys.argv[1], None, {"row": row}) for row in reader)' "dict(row.update({'Category': sys.argv[3] if re.search(sys.argv[2], row['Payee']) and (len(sys.argv) < 5 or re.search(sys.argv[4], row['Category'])) else row['Category'].strip()}) or row)" "$@"
 }
 
 cat "$@" \
     | adjust_category_by_payee "$filter_allowance" Allowance \
     | adjust_category_by_payee "$filter_future_bills" 'Future Bills' \
     \
+    | adjust_category_by_payee "M&T Mortgage" 'Rental Property: Townhouse Bills' \
+    | adjust_category_by_payee "Maplebrook Estates" 'Rental Property: Townhouse Bills' \
+    | adjust_category_by_payee "Legalzoom" 'Rental Property: Townhouse Future Bills' \
+    | adjust_category_by_payee "Anthony Meyers" 'Rental Property: Townhouse Income' "To be Budgeted|Bills" \
+    \
+    | adjust_category_by_payee "Sunrise" 'Rental Property: Trailer Bills' \
+    | adjust_category_by_payee "Berkeley Electric" 'Rental Property: Trailer Bills' \
+    | adjust_category_by_payee "Berkeley County" 'Rental Property: Trailer Future Bills' \
+    \
     | adjust_category_by_payee "$filter_dining" Dining \
     | adjust_category_by_payee "$filter_entertainment" Entertainment \
-    | adjust_category_by_payee "$filter_furniture" Furniture \
+    | adjust_category_by_payee "$filter_furniture" Furnishings \
     | adjust_category_by_payee "$filter_gas" Gas \
     | adjust_category_by_payee "$filter_gifts" Gifts \
     | adjust_category_by_payee "$filter_pets" Pets

@@ -52,7 +52,7 @@ main() {
     cat "$@" \
         | ynab-cleanup \
         | csvgrep -i -c Payee -r 'Starting Balance|Balance Adjustment|Transfer : ' \
-        | ynab-split-spending-money \
+        | ynab-adjust-categories \
         | adjust_payees \
         | gather_totals \
         | csvsort -c Total ${reverse_sort:+-r} \
