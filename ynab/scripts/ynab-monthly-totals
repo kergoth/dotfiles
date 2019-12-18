@@ -51,7 +51,7 @@ main() {
 
     cat "$@" \
         | ynab-cleanup \
-        | csvgrep -i -c Payee -r 'Starting Balance|Balance Adjustment|Transfer : ' \
+        | csvgrep -i -c Payee -r 'Starting Balance|Balance Adjustment' \
         | ynab-adjust-categories \
         | adjust_payees \
         | gather_totals \
