@@ -7,6 +7,7 @@ usage() {
     Options:
       -c CATEGORY
       -a          Show totals for each category / all categories
+      -i          Show income rather than expenses
       -r          Reverse sort
 END
     exit 2
@@ -16,16 +17,20 @@ main() {
     reverse_sort=
     category_totals=0
     category=
-    while getopts rac:h opt; do
+    income=0
+    while getopts c:airh opt; do
         case "$opt" in
-            r)
-                reverse_sort=1
+            c)
+                category="$OPTARG"
                 ;;
             a)
                 category_totals=1
                 ;;
-            c)
-                category="$OPTARG"
+            i)
+                income=1
+                ;;
+            r)
+                reverse_sort=1
                 ;;
             \? | h)
                 usage
@@ -36,6 +41,12 @@ main() {
 
     if [ $# -eq 0 ]; then
         usage
+    fi
+
+    if [ $income -eq 1 ]; then
+        flowcolumn=Inflow
+    else
+        flowcolumn=Outflow
     fi
 
     cat "$@" \
@@ -58,15 +69,15 @@ adjust_payees() {
 
 gather_totals() {
     csvgrep -i -c Category -r '^$' \
+        | csvgrep -i -c "$flowcolumn" -r '^\$*0.0*$' \
         | if [ $category_totals -eq 1 ]; then
-            csvsql --query "SELECT Category, ROUND(SUM(Outflow)/12,2) AS Total FROM stdin GROUP BY Category ORDER BY Total"
+            csvsql --query "SELECT Category, ROUND(SUM($flowcolumn)/12,2) AS Total FROM stdin GROUP BY Category ORDER BY Total"
         elif [ -n "$category" ]; then
             csvgrep -c Category -r "$category" \
-                | csvsql --query "SELECT Payee, ROUND(SUM(Outflow)/12,2) AS Total FROM stdin GROUP BY Payee ORDER BY Total"
+                | csvsql --query "SELECT Payee, ROUND(SUM($flowcolumn)/12,2) AS Total FROM stdin GROUP BY Payee ORDER BY Total"
         else
-            csvsql --query "SELECT Payee, ROUND(SUM(Outflow)/12,2) AS Total, Category FROM stdin GROUP BY Payee ORDER BY Total"
+            csvsql --query "SELECT Payee, ROUND(SUM($flowcolumn)/12,2) AS Total, Category FROM stdin GROUP BY Payee ORDER BY Total"
         fi \
-        | csvgrep -i -c Total -r'^\$0.00$' \
         | sed -e 's/^[ ️️]*//'
 }
 
