@@ -1,3 +1,27 @@
 #!/bin/sh
 
-csvsort -c Total | csvcurrencyformat Total | if [ -t 1 ]; then csvlook -I; else cat; fi
+usage() {
+    cat <<END >&2
+${0##*/} [options..] "
+
+Options:
+  -r   Reverse sort
+  -h   Show usage
+END
+    exit 2
+}
+
+reverse=
+while getopts rh opt; do
+    case "$opt" in
+        r)
+            reverse=1
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+csvsort -c Total ${reverse:+-r} | csvcurrencyformat Total | if [ -t 1 ]; then csvlook -I; else cat; fi
