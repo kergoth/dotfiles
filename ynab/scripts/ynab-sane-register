@@ -4,4 +4,7 @@ if [ $# -eq 0 ]; then
     set -- *Register.csv
 fi
 
-ynab-cleanup "$@" | ynab-combine-flows | ynab-adjust-categories
+ynab-cleanup "$@" \
+    | ynab-combine-flows \
+    | ynab-adjust-categories \
+    | csvgrep -i -c Category -r '^$'
