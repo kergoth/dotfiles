@@ -67,7 +67,7 @@ main() {
         | gather_totals \
         | csvgrep -i -c Total -r '^0\.0$' \
         | if [ -n "$limit" ]; then csvsql --query "select * from stdin order by Total ${reverse_sort:+DESC} limit $limit"; else csvsort -c Total ${reverse_sort:+-r}; fi \
-        | csvpyrow "import locale; locale.setlocale(locale.LC_ALL, ''); _['Total'] = locale.currency(float(_['Total']))" \
+        | csvcurrencyformat Total \
         | if [ -t 1 ]; then
             csvlook -I
         else
