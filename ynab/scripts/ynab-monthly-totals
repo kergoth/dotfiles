@@ -2,15 +2,15 @@
 
 usage() {
     cat >&2 <<END
-    ${0##*/} [options] CSV_FILE
+${0##*/} [options] CSV_FILE
 
-    Options:
-      -c CATEGORY Filter output by category
-      -l LIMIT    Limit the number of entries shown to LIMIT
-      -a          Show totals for each category / all categories
-      -i          Show income only
-      -e          Show expenses only
-      -r          Reverse sort
+Options:
+  -c CATEGORY Filter output by category
+  -l LIMIT    Limit the number of entries shown to LIMIT
+  -a          Show totals for each category / all categories
+  -i          Show income only
+  -e          Show expenses only
+  -r          Reverse sort
 END
     exit 2
 }
