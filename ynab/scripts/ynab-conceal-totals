@@ -1,0 +1,8 @@
+#!/bin/sh
+
+csvpyrow "import re; _['Total'] = re.sub(r'[0-9]', '*', _['Total'])" \
+    | if [ -t 1 ]; then
+        csvlook -I
+    else
+        cat
+    fi
