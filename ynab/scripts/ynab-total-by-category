@@ -1,0 +1,2 @@
+#!/bin/sh
+csvsql --query "select Category,round(sum(Amount),2) as Total from stdin group by Category"

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+csvsql --query "select Payee,Category,round(sum(Amount),2) as Total from stdin group by Payee,Category"
