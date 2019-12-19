@@ -75,7 +75,7 @@ main() {
 }
 
 adjust_payees() {
-    sed -e "s/Fry's Marketplace/Fry's/g; s/Fry's Food/Fry's/g;"
+    sed -e "s/Wal-Mart/Walmart/g; s/Fry's Marketplace/Fry's/g; s/Fry's Food/Fry's/g;"
 }
 
 gather_totals() {
