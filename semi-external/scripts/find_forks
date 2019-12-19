@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+
+export WORKON_HOME=${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}
+
+repo=frost-nzcr4/find_forks
+if ! [ -e "$GIT_PATH/github.com/$repo" ]; then
+    src="$(git-get "https://github.com/$repo")"
+else
+    src="$(git-get "https://github.com/$repo" 2>/dev/null)"
+fi
+venv="$WORKON_HOME/${0##*/}"
+if ! [ -e "$venv/bin/activate" ]; then
+    rm -rf "$venv"
+    python3 -m venv "$venv"
+fi
+. "$venv/bin/activate"
+
+pip install -q --disable-pip-version-check -r "$src/requirements-prod.txt"
+PYTHONPATH="${src%/*}" python3 -m find_forks "$@"
