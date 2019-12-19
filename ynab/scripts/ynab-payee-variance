@@ -1,0 +1,4 @@
+#!/bin/sh
+
+csvsql --query 'select payee,category,AVG(Amount*Amount) - AVG(Amount)*AVG(Amount) as StdDev from stdin group by payee, category' \
+    | csvpyrow "import math; _['StdDev'] = math.sqrt(float(_['StdDev']))"
