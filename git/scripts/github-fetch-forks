@@ -63,10 +63,12 @@ if [ -n "$url" ]; then
 fi
 
 git fetch "$origin"
-github-list-forks "$@" | while read -r remote url; do
+github-list-forks "$@" | while read -r repo; do
+    remote="${repo%/*}"
+    url="https://github.com/$repo"
     if ! git config "remote.$remote.url" >/dev/null; then
         git remote add "$remote" "$url"
     fi
     git remote set-url "$remote" "$url"
-    git prune-remote -L -o "$origin" -u "$upstream_branches" "$remote"
 done
+git parallel-fetch
