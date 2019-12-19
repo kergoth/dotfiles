@@ -5,7 +5,8 @@ usage() {
     ${0##*/} [options] CSV_FILE
 
     Options:
-      -c CATEGORY
+      -c CATEGORY Filter output by category
+      -l LIMIT    Limit the number of entries shown to LIMIT
       -a          Show totals for each category / all categories
       -i          Show income only
       -e          Show expenses only
@@ -20,7 +21,8 @@ main() {
     category=
     income=0
     expense=0
-    while getopts c:aierh opt; do
+    limit=
+    while getopts c:aierl:h opt; do
         case "$opt" in
             c)
                 category="$OPTARG"
@@ -38,6 +40,9 @@ main() {
                 ;;
             r)
                 reverse_sort=1
+                ;;
+            l)
+                limit="$OPTARG"
                 ;;
             \? | h)
                 usage
@@ -60,7 +65,8 @@ main() {
         | ynab-combine-flows \
         | csvgrep -i -c Amount -r '^0\.0$' \
         | gather_totals \
-        | csvsort -c Total ${reverse_sort:+-r} \
+        | csvgrep -i -c Total -r '^0\.0$' \
+        | if [ -n "$limit" ]; then csvsql --query "select * from stdin order by Total ${reverse_sort:+DESC} limit $limit"; else csvsort -c Total ${reverse_sort:+-r}; fi \
         | if [ -t 1 ]; then
             csvlook -I
         else
