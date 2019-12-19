@@ -1,3 +1,3 @@
 #!/bin/sh
 
-csvsort -c Total | csvcurrencyformat Total | csvlook -I
+csvsort -c Total | csvcurrencyformat Total | if [ -t 1 ]; then csvlook -I; else cat; fi
