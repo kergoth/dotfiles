@@ -1,0 +1,3 @@
+#!/bin/sh
+
+csvsql --query 'select payee,category,sum(amount)/count(amount) as Average from stdin group by payee,category' | csvcurrencyformat Average | csvlook -I
