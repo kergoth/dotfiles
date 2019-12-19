@@ -57,15 +57,12 @@ main() {
 
     cat "$@" \
         | ynab-cleanup \
-        | csvgrep -i -c Payee -r 'Starting Balance|Balance Adjustment' \
         | ynab-adjust-categories \
         | csvgrep -i -c Category -r '^$' \
         | adjust_payees \
         | if [ $income -eq 1 ]; then csvgrep -c Inflow -i -r '^\$0.00'; elif [ $expense -eq 1 ]; then csvgrep -c Outflow -i -r '^\$0.00'; else cat; fi \
         | ynab-combine-flows \
-        | csvgrep -i -c Amount -r '^0\.0$' \
         | gather_totals \
-        | csvgrep -i -c Total -r '^0\.0$' \
         | if [ -n "$limit" ]; then csvsql --query "select * from stdin order by Total ${reverse_sort:+DESC} limit $limit"; else csvsort -c Total ${reverse_sort:+-r}; fi \
         | csvcurrencyformat Total \
         | if [ -t 1 ]; then
