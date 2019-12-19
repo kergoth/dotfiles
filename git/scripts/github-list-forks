@@ -4,19 +4,13 @@ set -euo pipefail
 
 usage() {
     cat <<END >&2
-${0##*/} [options..] REPO
+${0##*/} [options..] [REPO|URL..]
 
 Options:
   -a   Show all forks, including the parents if REPO is a fork
   -h   Show usage
 END
     exit 2
-}
-
-info() {
-    if [ "$verbose" -eq 1 ]; then
-        echo >&2 "$@"
-    fi
 }
 
 repo_info() {
@@ -49,15 +43,14 @@ _repo_forks() {
         done
 }
 
-verbose=0
+cache_dir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -rf "$cache_dir"' EXIT INT TERM
+
 all_forks=0
-while getopts avh opt; do
+while getopts ah opt; do
     case "$opt" in
         a)
             all_forks=1
-            ;;
-        v)
-            verbose=1
             ;;
         \? | h)
             usage
@@ -67,32 +60,37 @@ done
 shift $((OPTIND - 1))
 
 if [ $# -eq 0 ]; then
-    usage
+    remote_url="$(git config remote.origin.url)"
+    if [ -z "$remote_url" ]; then
+        echo >&2 "Error: no url for the origin git remote"
+        usage
+    else
+        set -- "$remote_url"
+    fi
 fi
 
-repo="$1"
-case "$repo" in
-    *://github.com/*)
-        repo="${repo#*://github.com/}"
-        ;;
-    *://*)
-        echo >&2 "Unrecognized url: $repo"
-        exit 1
-        ;;
-esac
+for repo; do
+    repo="${repo%/}"
+    case "$repo" in
+        *://github.com/*)
+            repo="${repo#*://github.com/}"
+            repo="${repo%/.git}"
+            ;;
+        *://*)
+            echo >&2 "Unrecognized url: $repo"
+            exit 1
+            ;;
+    esac
 
-cache_dir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
-# mkdir -p "$cache_dir"
-trap 'rm -rf "$cache_dir"' EXIT INT TERM
-
-if [ $all_forks -eq 1 ]; then
-    # Walk up fork parents, recursively
-    while true; do
-        is_fork="$(repo_info "$repo" | jq -r .fork)"
-        if [ "$is_fork" != "true" ]; then
-            break
-        fi
-        repo="$(repo_info "$repo" | jq -r .parent.full_name)"
-    done
-fi
-repo_forks "$repo"
+    if [ $all_forks -eq 1 ]; then
+        # Walk up fork parents, recursively
+        while true; do
+            is_fork="$(repo_info "$repo" | jq -r .fork)"
+            if [ "$is_fork" != "true" ]; then
+                break
+            fi
+            repo="$(repo_info "$repo" | jq -r .parent.full_name)"
+        done
+    fi
+    repo_forks "$repo"
+done | awk '!visited[$0]++'
