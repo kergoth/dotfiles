@@ -46,10 +46,7 @@ get_group () {
 }
 
 kill_group() {
-    kill_session="$(get_group "$1")"
-    if [ -n "$kill_session" ]; then
-        tmux kill-session -t "$kill_session"
-    fi
+    get_group "$1" | xargs -I"{}" tmux kill-session -t "{}"
 }
 
 
