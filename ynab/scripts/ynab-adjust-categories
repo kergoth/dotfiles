@@ -25,6 +25,8 @@ cat "$@" \
     | adjust_category_by_payee "Maplebrook Estates" 'Rental Property: Townhouse Bills' \
     | adjust_category_by_payee "Legalzoom" 'Rental Property: Townhouse Future Bills' \
     | adjust_category_by_payee "Anthony Meyers" 'Rental Property: Townhouse Income' "To be Budgeted|Bills" \
+    | adjust_category_by_payee "Anthony Meyers" 'Rental Property: Townhouse Maintenance' 'Rental Property Expenses' \
+    | adjust_category_by_payee "Tom’s Custom Window" 'Rental Property: Townhouse Maintenance' \
     \
     | adjust_category_by_payee "Sunrise" 'Rental Property: Trailer Bills' \
     | adjust_category_by_payee "Berkeley Electric" 'Rental Property: Trailer Bills' \
