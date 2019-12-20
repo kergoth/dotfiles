@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+
+import argparse
+import csv
+import itertools
+import re
+import sys
+
+
+def filter_rows(args):
+    """Set a CSV column with python code."""
+    parser = argparse.ArgumentParser(description='Set a CSV column with python code.')
+    parser.add_argument('pythonstring', nargs='?', help='Python code to eval')
+    parser.add_argument('args', metavar='ARG', nargs='*', help='Args to pass along to the python code')
+    parser.add_argument('--column', '-c', help='Column to set')
+    args = parser.parse_args(args)
+
+    if not args.pythonstring:
+        sys.stdout.write(sys.stdin.read())
+        sys.exit(0)
+    elif not args.column:
+        parser.error('--column is required when pythonstring is passed')
+
+    reader = csv.DictReader(sys.stdin)
+    if args.column not in reader.fieldnames:
+        raise parser.error(f'column `{args.column}` not in columns: {", ".join(reader.fieldnames)}')
+
+    writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
+    writer.writeheader()
+    for lineno, row in enumerate(reader):
+        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools}
+        env.update(row)
+        nval = eval(args.pythonstring, env)
+        row[args.column] = nval
+        writer.writerow(row)
+
+
+if __name__ == '__main__':
+    filter_rows(sys.argv[1:])
