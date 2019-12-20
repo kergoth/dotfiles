@@ -6,6 +6,8 @@ usage() {
     cat <<END >&2
 ${0##*/} [options..] [REPO|URL..]
 
+If no REPO/URLs are specified, the url of the ORIGIN_REMOTE is used by default.
+
 Options:
   -a   Show all forks, including the parents if REPO is a fork
   -h   Show usage
