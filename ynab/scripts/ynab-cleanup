@@ -10,4 +10,4 @@ fi
 sed '1s/^\xEF\xBB\xBF//' "$@" \
     | csvcut -C 'Category Group,Category Group/Category' \
     | strip-emoji \
-    | sed -e 's/[▪️]//g'
+    | sed -e 's/[▪️]//g; s/, */,/g;'
