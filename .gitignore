@@ -8,3 +8,4 @@ __pycache__
 # peru
 .peru
 .mypy_cache/
+local/
