@@ -1,11 +1,11 @@
 #!/bin/sh
 
 set_by_payee () {
-    csvpycol -c Category 'next((category for pattern, category in zip(args[:-1], args[1:]) if re.search(pattern, Payee)), Category)' "$@"
+    csvpycol -c Category 'next((category for pattern, category in zip(itertools.islice(args, 0, None, 2), itertools.islice(args, 1, None, 2)) if re.search(pattern, Payee)), Category)' "$@"
 }
 
 set_by_payee_and_category () {
-    csvpycol -c Category 'next((category for pattern, catpattern, category in zip(args[:-2], args[1:-1], args[2:]) if re.search(pattern, Payee) and re.search(catpattern, Category)), Category)' "$@"
+    csvpycol -c Category 'next((category for pattern, catpattern, category in zip(itertools.islice(args, 0, None, 3), itertools.islice(args, 1, None, 3), itertools.islice(args, 2, None, 3)) if re.search(pattern, Payee) and re.search(catpattern, Category)), Category)' "$@"
 }
 
 # Specify rules to split up my current Spending Money category for further
