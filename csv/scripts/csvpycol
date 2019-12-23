@@ -13,6 +13,7 @@ def filter_rows(args):
     parser.add_argument('pythonstring', nargs='?', help='Python code to eval')
     parser.add_argument('args', metavar='ARG', nargs='*', help='Args to pass along to the python code')
     parser.add_argument('--column', '-c', help='Column to set')
+    parser.add_argument('--filter', '-f', action='store_true', help='Filter mode. The result is used to determine if the row is kept.')
     args = parser.parse_args(args)
 
     if not args.pythonstring:
@@ -31,7 +32,11 @@ def filter_rows(args):
         env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools}
         env.update(row)
         nval = eval(args.pythonstring, env)
-        row[args.column] = nval
+        if args.filter:
+            if not nval:
+                continue
+        elif nval is not None:
+            row[args.column] = nval
         writer.writerow(row)
 
 
