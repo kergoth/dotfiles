@@ -3,9 +3,9 @@
 import argparse
 import csv
 import itertools
+import locale
 import re
 import sys
-
 
 def filter_rows(args):
     """Set a CSV column with python code."""
@@ -22,6 +22,8 @@ def filter_rows(args):
     elif not args.column:
         parser.error('--column is required when pythonstring is passed')
 
+    locale.setlocale(locale.LC_ALL, '')
+
     reader = csv.DictReader(sys.stdin)
     if args.column not in reader.fieldnames:
         raise parser.error(f'column `{args.column}` not in columns: {", ".join(reader.fieldnames)}')
@@ -29,7 +31,7 @@ def filter_rows(args):
     writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
     writer.writeheader()
     for lineno, row in enumerate(reader):
-        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools}
+        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools, 'currency': locale.currency}
         env.update(row)
         nval = eval(args.pythonstring, env)
         if args.filter:
