@@ -1,4 +1,5 @@
 #!/bin/sh
 
 sed -e '1s/Outflow/Amount/g' \
-    | csvpyrow "inflow = float(_['Inflow'].replace('$', '')); del _['Inflow']; outflow = float(_['Amount'].replace('$', '')); _['Amount'] = inflow if inflow and not outflow else (-outflow if outflow else 0.0)"
+    | csvpyrow "inflow = float(_['Inflow'].replace('$', '')); outflow = float(_['Amount'].replace('$', '')); _['Amount'] = inflow if inflow and not outflow else (-outflow if outflow else 0.0)"
+    | csvdelcol Inflow \

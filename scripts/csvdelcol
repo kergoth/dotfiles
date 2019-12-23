@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+
+import csv
+import sys
+
+reader = csv.DictReader(sys.stdin)
+fieldnames = reader.fieldnames
+rows = list(reader)
+
+for column in sys.argv[1:]:
+    fieldnames.remove(column)
+    for row in rows:
+        del row[column]
+
+writer = csv.DictWriter(sys.stdout, fieldnames)
+writer.writeheader()
+writer.writerows(rows)
