@@ -1,6 +1,10 @@
 if (( $+commands[rg] )); then
     if [[ -t 1 ]]; then
-        command rg -S -p "$@" | pager
+        if (( $+commands[bat] )); then
+            command batgrep -S "$@"
+        else
+            command rg -S -p "$@" | pager
+        fi
     else
         command rg -S "$@"
     fi
