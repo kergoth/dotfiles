@@ -189,7 +189,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: ef6df46efe5ac5289f084045e57c492205bd08b5
+    rev: 6daec38c1da2cbfae43d4d0d67f6a4fa7680c2b5
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -232,7 +232,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 4d7b4d4e2db72e95ea03c6ef757b01cbc128179e
+    rev: 9c12328df924ddb875ee1e5c9fc0f939b62d6a6c
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -240,7 +240,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 65edb6ad99b51514aaf29afc25e35ce5f05281ba
+    rev: 76669c3c1d675833f9d89f6496f16a7accc0f40e
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -256,7 +256,7 @@ git module smem:
 hg module t:
     url: https://bitbucket.org/sjl/t
     pick: t.py
-    rev: b183c1d51530d9e85d4d830831babaf3c5a08c03
+    rev: d655cbfbd107b03605537e3a81ab9175df5092cc
 
 git module fzf:
     url: https://github.com/junegunn/fzf
@@ -270,7 +270,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 212de25409636388a2a23befa847b2fa5a5d23ee
+    rev: d4ad4a25db5fd314de355c1a2a8ee9dd209d54c0
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -495,7 +495,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: a5fbf29be61a36b86c7f0ff9e9fd21090304c01f
+    rev: 3344f0cec5672ed262ec65e5efa4d91e4a6b26db
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -528,7 +528,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 69e96cba954fd3ea2b278882a451c8f80d14cf32
+    rev: 6438dee914172218f35684e0d275be51e5ec2f7d
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -700,11 +700,11 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: 2a1f03757eff82d07f64d45dad4af1a805492a67
+    rev: df624b570ff296b551e9c0125ffa7db2ae5844e2
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
-    rev: b7e8961afa4c11d620ad26abe28d76929c7ff90b
+    rev: c31934f43f3d0c3d62665c00e8587cc97d764ec1
 
 git module git-get:
     url: https://github.com/pietvanzoen/git-get
@@ -749,14 +749,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 06c2a625b33b85aff0c7699e12f0eaf1fcc97ba6
+    rev: 3834c423ab293761471d57d2813528d3079cf051
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 8a833406614b503dcd647015d3cfd239faf5cb0c
+    rev: 9da0c042d4d4ef72b4488424df5c20d14d4e9585
 
 git module exa:
     url: https://github.com/ogham/exa
@@ -772,4 +772,4 @@ git module bat-extras:
         - src
 
 #  vim: set sw=4 :
-    rev: 83393541898990b5817a15f8b4e7d374ac5e7b5e
+    rev: eca97339e0362ac9c543ffd2f278572e5464c84a
