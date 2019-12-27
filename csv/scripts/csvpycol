@@ -2,7 +2,6 @@
 
 import argparse
 import csv
-import collections
 import itertools
 import locale
 import re
@@ -13,10 +12,9 @@ def filter_rows(args):
     parser = argparse.ArgumentParser(description='Set a CSV column with python code.')
     parser.add_argument('pythonstring', nargs='?', help='Python code to eval')
     parser.add_argument('args', metavar='ARG', nargs='*', help='Args to pass along to the python code')
-    parser.add_argument('--column', '-c', help='Column(s) to set')
-    parser.add_argument('--filter', '-f', action='store_true', help='Filter mode. The result is used to determine if the row is kept. When filtering multiple columns, only rows where all the columns match are shown.')
+    parser.add_argument('--column', '-c', help='Column to set')
+    parser.add_argument('--filter', '-f', action='store_true', help='Filter mode. The result is used to determine if the row is kept.')
     args = parser.parse_args(args)
-    columns = args.column.split(',')
 
     if not args.pythonstring:
         sys.stdout.write(sys.stdin.read())
@@ -27,25 +25,21 @@ def filter_rows(args):
     locale.setlocale(locale.LC_ALL, '')
 
     reader = csv.DictReader(sys.stdin)
-    for column in columns:
-        if column not in reader.fieldnames:
-            raise parser.error(f'column `{column}` not in columns: {", ".join(reader.fieldnames)}')
+    if args.column not in reader.fieldnames:
+        raise parser.error(f'column `{args.column}` not in columns: {", ".join(reader.fieldnames)}')
 
-    globalenv = {'args': args.args, 're': re, 'itertools': itertools, 'currency': locale.currency}
     writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
     writer.writeheader()
     for lineno, row in enumerate(reader):
-        rowenv = collections.ChainMap({'row': row, 'lineno': lineno+1}, row)
-        for column in columns:
-            colenv = collections.ChainMap({'_': row[column]}, rowenv)
-            nval = eval(args.pythonstring, globalenv, colenv)
-            if args.filter:
-                if not nval:
-                    break
-            elif nval is not None:
-                row[column] = nval
-        else:
-            writer.writerow(row)
+        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools, 'currency': locale.currency}
+        env.update(row)
+        nval = eval(args.pythonstring, env)
+        if args.filter:
+            if not nval:
+                continue
+        elif nval is not None:
+            row[args.column] = nval
+        writer.writerow(row)
 
 
 if __name__ == '__main__':
