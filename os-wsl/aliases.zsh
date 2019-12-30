@@ -11,9 +11,9 @@ if [[ $OSTYPE = WSL ]]; then
 
     alias cmd=cmd.exe
     alias wsl=wsl.exe
-    alias adminwsl='psrunas wsl.exe'
+    alias adminwsl='psadmin wsl.exe'
     alias wt=wt.exe
-    alias adminwt='psrunas cmd.exe /c start wt.exe'
+    alias adminwt='psadmin cmd.exe /c start wt.exe'
     alias adb=adb.exe
 
     if [[ -z "$WSL_IS_ADMIN" ]]; then
