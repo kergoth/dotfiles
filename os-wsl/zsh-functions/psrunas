@@ -1,0 +1,5 @@
+local cmd args
+cmd="$1"
+shift
+args="$(quote-args "$@"|sed -e "s/'/\\'/g; s/\"/'/g")"
+powershell.exe -c start "$cmd" -Verb runAs ${args:+-argumentlist "\"$args\""}

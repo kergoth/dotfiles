@@ -22,3 +22,10 @@ promptline_last_code_fixup() {
 if [[ ! ${precmd_functions[(r)promptline_last_code_fixup]} == promptline_last_code_fixup ]]; then
     precmd_functions=(promptline_last_code_fixup $precmd_functions)
 fi
+
+if [[ $OSTYPE = WSL ]] && [[ $WSL_IS_ADMIN = 1 ]]; then
+    add_wsl_admin() {
+        RPROMPT="$RPROMPT [wsladmin]"
+    }
+    add-zsh-hook precmd add_wsl_admin
+fi

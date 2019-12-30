@@ -11,14 +11,14 @@ if [[ $OSTYPE = WSL ]]; then
 
     alias cmd=cmd.exe
     alias wsl=wsl.exe
+    alias adminwsl='psrunas wsl.exe'
     alias adb=adb.exe
 
-    psrunas () {
-        local cmd args
-        cmd="$1"
-        shift
-        args="$(quote-args "$@"|sed -e "s/'/\\'/g; s/\"/'/g")"
-        powershell.exe -c start "$cmd" -Verb runAs ${args:+-argumentlist "\"$args\""}
-    }
-    alias choco="psrunas choco"
+    if [[ -z "$WSL_IS_ADMIN" ]]; then
+        if net.exe session >/dev/null 2>&1; then
+            export WSL_IS_ADMIN=1
+        else
+            export WSL_IS_ADMIN=0
+        fi
+    fi
 fi

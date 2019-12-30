@@ -1,0 +1,5 @@
+if [[ $WSL_IS_ADMIN = 1 ]]; then
+    choco.exe "$@"
+else
+    psrunas choco.exe "$@"
+fi
