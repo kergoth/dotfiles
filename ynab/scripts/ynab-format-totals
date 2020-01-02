@@ -24,4 +24,4 @@ while getopts rh opt; do
 done
 shift $((OPTIND - 1))
 
-csvsort -c Total ${reverse:+-r} | csvcurrencyformat Total | if [ -t 1 ]; then csvlook -I; else cat; fi
+csvsort -c Total ${reverse:+-r} | csvpycol -c Total 'currency(float(Total) / 100)' | if [ -t 1 ]; then csvlook -I; else cat; fi

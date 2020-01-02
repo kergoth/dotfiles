@@ -3,4 +3,4 @@
 sed -e '1s/Outflow/Amount/g' \
     | csvpyrow "inflow = float(_['Inflow'].replace('$', '')); outflow = float(_['Amount'].replace('$', '')); _['Amount'] = inflow if inflow and not outflow else (-outflow if outflow else 0.0)" \
     | csvdelcol Inflow \
-    | csvcurrencyformat Amount
+    | csvpycol -c Amount 'sum((i * 100 if n == 0 else i) for n, i in enumerate(int(i) for i in re.sub(r"[$,]", "", Amount).split(".")))'
