@@ -67,7 +67,7 @@ main() {
         | if [ -n "$limit" ]; then csvsql --query "select * from stdin order by Total ${reverse_sort:+DESC} limit $limit"; else csvsort -c Total ${reverse_sort:+-r}; fi \
         | csvcurrencyformat Total \
         | if [ -t 1 ]; then
-            csvlook -I
+            csvaddrow -c 1,Total '"Total"' 'currency(sum(float(r["Total"].replace("$", "").replace(",", "")) for r in rows))' | csvlook -I
         else
             cat
         fi
