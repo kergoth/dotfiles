@@ -8,6 +8,10 @@ set_by_payee_and_category () {
     csvpycol -c Category 'next((category for pattern, catpattern, category in zip(itertools.islice(args, 0, None, 3), itertools.islice(args, 1, None, 3), itertools.islice(args, 2, None, 3)) if re.search(pattern, Payee) and re.search(catpattern, Category)), Category)' "$@"
 }
 
+rename_category () {
+    csvpycol -c Category 'next((category for pattern, category in zip(itertools.islice(args, 0, None, 2), itertools.islice(args, 1, None, 2)) if re.search(pattern, Category)), Category)' "$@"
+}
+
 # Specify rules to split up my current Spending Money category for further
 # analysis.
 filter_dining="Chipotle|Khazana|Sweet Tomatoes|Schlotzsky|Popeye|Cheese Love|Dairy Queen|Wendy|Arby|Jack in the Box|Taco Bell|Blazin Barbeque|Sprinkles|Queso Good|Village Coffee|Culver|Chick-fil-A|Famous 48|Cracker Barrel|Snack Bar|Johnny Rockets|Krispy Kreme|Sweet Tomatoes|Starbucks|Applebee|Red Robin|Chili's|Butters|Gonutz|Barrio Queen|Khazana|Red Fire Cookery|Chipotle|Papa Murphy|Chick-Fil-A|Spoonz|Reef's Kitchen|Outback|Papa John|Buffalo Wild Wings|Caribou Coffee|Auntie Anne|Burger King|Hot Dogs|Raising Cane|KFC|TGI Friday|IHOP|Daily Dose Cafe|McDonald|Spaghetti Factory"
@@ -17,6 +21,8 @@ filter_gas="Holiday|Circle K|Costco.*Gas|Fry's Fuel|QuikTrip|Motley BP"
 filter_pets='Petco|PetSmart|Petsmart'
 
 cat "$@" \
+    | rename_category \
+        "^Bras$" "Spending Money" \
     | set_by_payee \
         "$filter_dining" Dining \
         "$filter_entertainment" Entertainment \
