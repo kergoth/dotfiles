@@ -7,6 +7,11 @@ import locale
 import re
 import sys
 
+
+def tocents(value):
+    return sum((i * 100 if n == 0 else i) for n, i in enumerate(int(i) for i in re.sub(r"[$,]", "", value).split(".")))
+
+
 def filter_rows(args):
     """Set a CSV column with python code."""
     parser = argparse.ArgumentParser(description='Set a CSV column with python code.')
@@ -31,7 +36,7 @@ def filter_rows(args):
     writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
     writer.writeheader()
     for lineno, row in enumerate(reader):
-        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools, 'currency': locale.currency}
+        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools, 'currency': locale.currency, 'tocents': tocents}
         env.update(row)
         nval = eval(args.pythonstring, env)
         if args.filter:
