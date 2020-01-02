@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+
+import argparse
+import csv
+import itertools
+import locale
+import re
+import sys
+
+
+def add_row(args):
+    """Add a CSV row, defining the values with python code."""
+    parser = argparse.ArgumentParser(description='Add a CSV row, defining the values with python code.')
+    parser.add_argument('args', metavar='ARG', nargs='*', help='Python code for each column, in order.')
+    parser.add_argument('--columns', '-c', help='Columns to set. Comma-separated, by name or number.')
+    args = parser.parse_args(args)
+
+    if not args.args:
+        sys.stdout.write(sys.stdin.read())
+        sys.exit(0)
+
+    locale.setlocale(locale.LC_ALL, '')
+
+    reader = csv.DictReader(sys.stdin)
+
+    all_columns = reader.fieldnames
+    if args.columns is None:
+        columns = all_columns
+    else:
+        columns = args.columns.split(',')
+        for index, column in enumerate(columns):
+            if column not in reader.fieldnames:
+                try:
+                    ival = int(column)
+                except KeyError:
+                    pass
+                else:
+                    if ival > 0 and ival <= len(columns):
+                        columns[index] = all_columns[ival - 1]
+                        continue
+                raise parser.error(f'column `{column}` not in columns: {", ".join(all_columns)}')
+
+    if len(columns) != len(args.args):
+        raise parser.error('ARG must be specified for each column')
+
+    globalenv = {'re': re, 'itertools': itertools, 'currency': locale.currency}
+    rows = list(reader)
+    env = {'columns': columns, 'rows': rows}
+    row = {}
+    for index, column in enumerate(all_columns, 1):
+        if column not in columns:
+            value = ''
+        else:
+            code = args.args[columns.index(column)]
+            value = eval(code, globalenv, env) or ''
+        row[column] = value
+
+    writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
+    writer.writeheader()
+    writer.writerows(rows)
+    writer.writerow(row)
+
+
+if __name__ == '__main__':
+    add_row(sys.argv[1:])
