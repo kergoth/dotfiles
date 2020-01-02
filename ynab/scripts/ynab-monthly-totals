@@ -59,6 +59,7 @@ main() {
         | ynab-cleanup \
         | ynab-adjust-categories \
         | csvgrep -i -c Category -r '^$' \
+        | csvgrep -i -c Payee -m 'Starting Balance' \
         | adjust_payees \
         | if [ $income -eq 1 ]; then csvgrep -c Inflow -i -r '^\$0.00'; elif [ $expense -eq 1 ]; then csvgrep -c Outflow -i -r '^\$0.00'; else cat; fi \
         | ynab-combine-flows \
