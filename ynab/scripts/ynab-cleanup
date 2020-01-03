@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
     set -- "$tmpfile"
 fi
 
-sed '1s/^\xEF\xBB\xBF//' "$@" \
+sed '1s/^\xEF\xBB\xBF//; 1s/^[^,]*,/Account,/' "$@" \
     | csvcut -C 'Category Group,Category Group/Category' \
     | strip-emoji \
     | sed -e 's/[▪️]//g; s/, */,/g;'
