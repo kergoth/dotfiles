@@ -22,27 +22,32 @@ filter_pets='Petco|PetSmart|Petsmart'
 
 cat "$@" \
     | rename_category \
-        "^Bras$" "Spending Money" \
+        "Hidden Categories: Bras$" "Spending: Spending Money" \
+        "Spending: Bills" "Immediate Obligations: Bills" \
+        "Hidden Categories: Veterinary" "Contingencies: Veterinary" \
+        "Hidden Categories: Medical & Dental" "Contingencies: Medical & Dental" \
+        "Spending: Allowance" "Immediate Obligations: Allowance" \
+        "Spending: Savings Allowance Investments" "Immediate Obligations: Savings Allowance Investments" \
     | set_by_payee \
-        "$filter_dining" Dining \
-        "$filter_entertainment" Entertainment \
-        "$filter_furniture" Furnishings \
-        "$filter_gas" Gas \
-        "$filter_pets" Pets \
-        "Great Wolf" Gifts \
+        "$filter_dining" "Spending: Dining" \
+        "$filter_entertainment" "Spending: Entertainment" \
+        "$filter_furniture" "Spending: Furnishings" \
+        "$filter_gas" "Spending: Gas" \
+        "$filter_pets" "Spending: Pets" \
+        "Great Wolf" "Future: Gifts" \
         \
-        "iTunes" Allowance \
-        "Parallels" "Future Bills" \
+        "iTunes" "Immediate Obligations: Allowance" \
+        "Parallels" "Future: Future Bills" \
         \
-        "M&T Mortgage" "Rental Property: Townhouse Bills" \
-        "Maplebrook Estates" "Rental Property: Townhouse Bills" \
-        "Legalzoom" "Rental Property: Townhouse Future Bills" \
-        "Tom’s Custom Window" "Rental Property: Townhouse Maintenance" \
-        "Sunrise" "Rental Property: Trailer Bills" \
-        "Berkeley Electric" "Rental Property: Trailer Bills" \
-        "Berkeley County" "Rental Property: Trailer Future Bills" \
+        "M&T Mortgage" "Rental Property: Townhouse: Rental Bills" \
+        "Maplebrook Estates" "Rental Property: Townhouse: Rental Bills" \
+        "Legalzoom" "Rental Property: Townhouse: Rental Future Bills" \
+        "Tom’s Custom Window" "Rental Property: Townhouse: Rental Maintenance" \
+        "Sunrise" "Rental Property: Trailer: Rental Bills" \
+        "Berkeley Electric" "Rental Property: Trailer: Rental Bills" \
+        "Berkeley County" "Rental Property: Trailer: Rental Future Bills" \
     \
     | set_by_payee_and_category \
-        "Anthony Meyers" "To be Budgeted|Bills" "Rental Property: Townhouse Income" \
-        "Anthony Meyers" "Rental Property Expenses" "Rental Property: Townhouse Maintenance" \
+        "Anthony Meyers" "To be Budgeted|Bills" "Rental Property: Townhouse: Rental Income" \
+        "Anthony Meyers" "Rental Property Expenses" "Rental Property: Townhouse: Rental Maintenance" \
     | cat
