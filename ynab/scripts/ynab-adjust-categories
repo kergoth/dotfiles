@@ -46,8 +46,10 @@ cat "$@" \
         "Sunrise" "Rental Property: Trailer: Rental Bills" \
         "Berkeley Electric" "Rental Property: Trailer: Rental Bills" \
         "Berkeley County" "Rental Property: Trailer: Rental Future Bills" \
+        "Picture People" "Future: Future Bills" \
     \
     | set_by_payee_and_category \
         "Anthony Meyers" "To be Budgeted|Bills" "Rental Property: Townhouse: Rental Income" \
         "Anthony Meyers" "Rental Property Expenses" "Rental Property: Townhouse: Rental Maintenance" \
+        "Shutterfly" "Future: Christmas Gifts" "Future: Future Bills" \
     | cat
