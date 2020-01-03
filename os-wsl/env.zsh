@@ -15,9 +15,7 @@ case "$(uname -r)" in
 
         export BROWSER="cmd.exe /C START"
         if [[ -z "$SSH_AUTH_SOCK" ]] && [[ -n "$WSL_AUTH_SOCK" ]]; then
-            if SSH_AUTH_SOCK=$WSL_AUTH_SOCK ssh-add -l >/dev/null 2>&1; then
-                export SSH_AUTH_SOCK=$WSL_AUTH_SOCK
-            fi
+            export SSH_AUTH_SOCK=$WSL_AUTH_SOCK
         fi
         ;;
 esac
