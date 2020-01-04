@@ -1,3 +1,5 @@
+#  vim: set sw=4 :
+
 imports:
     # Zsh
     zsh: zsh
@@ -54,6 +56,7 @@ imports:
     ssh-copy-rsub: scripts
     t: scripts
     tagbak: osx/scripts
+    titlecase-perl: scripts
     tony-tmux-config: tmux/scripts
     vim-profiler: vim/scripts
     vitag: osx/scripts
@@ -770,6 +773,11 @@ git module bat-extras:
     pick:
         - lib
         - src
-
-#  vim: set sw=4 :
     rev: eca97339e0362ac9c543ffd2f278572e5464c84a
+
+git module titlecase-perl:
+    url: https://gist.github.com/9f9e8650d68b13ce4d78.git
+    move:
+        TitleCase.pl: titlecase
+    executable: titlecase
+    rev: d7d64ccbc6e1c86b0aae5cb368ea1f6f7f3738c5

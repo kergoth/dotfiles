@@ -101,7 +101,6 @@ go get -u github.com/direnv/direnv
 ## Script dependencies
 go get -u github.com/tomnomnom/unfurl
 pip_install sh
-cargo-install titlecase
 pip_install 'numpy<1.17' && pip_install hungarian # git-tbdiff
 pip_install gitpython # buildhistory-diff
 
