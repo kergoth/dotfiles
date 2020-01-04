@@ -30,6 +30,8 @@ def filter_rows(args):
     locale.setlocale(locale.LC_ALL, '')
 
     reader = csv.DictReader(sys.stdin)
+    if not reader.fieldnames:
+        return
     if args.column not in reader.fieldnames:
         raise parser.error(f'column `{args.column}` not in columns: {", ".join(reader.fieldnames)}')
 
