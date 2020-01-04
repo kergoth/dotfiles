@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ $# -gt 0 ]; then
-    exec python -c 'import titlecase; import sys; print(titlecase.titlecase(" ".join(sys.argv[1:])))' "$@"
-else
-    exec python -c 'import titlecase; import sys; print(titlecase.titlecase(sys.stdin.read().rstrip()))'
-fi

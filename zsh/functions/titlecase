@@ -1,0 +1,9 @@
+if (( $+commands[titlecase] )); then
+    if [[ $# -gt 0 ]]; then
+        echo "$@" | titlecase
+    else
+        titlecase
+    fi
+else
+    pytitlecase "$@"
+fi

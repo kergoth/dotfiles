@@ -157,7 +157,6 @@ alias fnmatch='python -c "import fnmatch,sys; sys.exit(not fnmatch.fnmatch(*sys.
 alias relpath='python -c "import os,sys; print(os.path.relpath(*sys.argv[1:]))"'
 alias htmldecode='python -c "import HTMLParser,sys; print(HTMLParser.HTMLParser().unescape(sys.argv[1]))"'
 alias common_prefix='python -c "import os,sys; print(os.path.commonprefix(sys.argv[1:]))"'
-alias titlecase='python -c "import titlecase,sys; print(titlecase.titlecase(" ".join(sys.argv[1:])))"'
 alias ddi=ddimage-sd
 alias pg=pager
 
