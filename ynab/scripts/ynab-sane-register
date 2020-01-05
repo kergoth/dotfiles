@@ -7,4 +7,5 @@ fi
 ynab-cleanup "$@" \
     | ynab-combine-flows \
     | ynab-adjust-categories \
+    | csvgrep -c Cleared -r 'Cleared|Reconciled' \
     | csvgrep -i -c Category -r '^$'
