@@ -130,7 +130,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 634ab246365ef6b465b4cdf7c6f0727ec04759a9
+    rev: f3caac45069ccbb260a605d557cce9c10d0b719f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: b68b6d4329d9bee58a521e0ff8c6adbbc53915b4
+    rev: ddd64fc4c5c5365d56478f100f19898375244890
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -192,7 +192,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: 6daec38c1da2cbfae43d4d0d67f6a4fa7680c2b5
+    rev: f4fa096a67afbe593bd53cf618850c32512b5d47
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -273,7 +273,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: d4ad4a25db5fd314de355c1a2a8ee9dd209d54c0
+    rev: 577024f1e9bfc98f48e7c5bead445bc9d7dfc3c5
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -302,7 +302,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 25c88a8c2b7a61af5ba3700de4a89f9955730137
+    rev: 2b60d4395ddfd8df0354f714974b9a002cce3df1
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -498,7 +498,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 3344f0cec5672ed262ec65e5efa4d91e4a6b26db
+    rev: b7b4a3df1de5ec4a21de769bdb77d57c32b53523
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -549,7 +549,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 5f84325cd811ec179b7f3642652438c6a45b174d
+    rev: 4afbf2f25dc0ce86b118261b0cfb904c80ae6ba0
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -582,7 +582,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: cea0d08a062478503814e51aa21c6486a0dd1b21
+    rev: e8454d66ab8376cf9c7e42f09749d5bd17d98f89
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -662,7 +662,7 @@ git module vim-VimCompletesMe:
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
-    rev: 24e6c3f4cd6004e2b44e4022dee0260aba6132aa
+    rev: 7afd63b4552b0827622ae27ff4c9eca056dd3521
 
 git module i3-alternating-layout:
     url: https://github.com/olemartinorg/i3-alternating-layout
@@ -703,7 +703,7 @@ git module tmux-float:
 
 git module vim-dracula:
     url: https://github.com/dracula/vim
-    rev: df624b570ff296b551e9c0125ffa7db2ae5844e2
+    rev: 5a633625615c79f87786d74ea925790ccdd82aba
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
@@ -752,14 +752,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 3834c423ab293761471d57d2813528d3079cf051
+    rev: 7542732df6b7aee0a77ef6e6097e71055cd2a257
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 9da0c042d4d4ef72b4488424df5c20d14d4e9585
+    rev: 7fd17ab0dd30d9b14318578e4ca7d8da9c6c91d0
 
 git module exa:
     url: https://github.com/ogham/exa
