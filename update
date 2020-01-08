@@ -11,8 +11,8 @@ git ls-files -o | sort -u >"$untracked"
 dtret="$?"
 git ls-files -o | sort -u >"$untracked.new"
 
-comm -13 "$untracked" "$untracked.new" | tr '\n' '\0' | xargs -0 git add
-git add -u
+comm -13 "$untracked" "$untracked.new" | tr '\n' '\0' | xargs -r0 git add -f
+git ls-files -zm | xargs -r0 git add
 if [ $dtret -ne 0 ]; then
     git drop
 else
