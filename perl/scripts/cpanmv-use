@@ -20,7 +20,7 @@ shift
 env_dir="$CPANM_HOME/$env"
 
 if [ ! -e "$env_dir/lib/perl5/local/lib.pm" ]; then
-    cpanm -l "$env_dir" local::lib
+    cpanm -l "$env_dir" local::lib >/dev/null 2>&1
 fi
 
 perl -I "$env_dir/lib/perl5" "-Mlocal::lib=$env_dir"
