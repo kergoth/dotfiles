@@ -1,0 +1,86 @@
+#!/bin/bash
+
+split_lines=2000
+
+main() {
+    mkdir -p Instapaper
+
+    cat "$@" \
+        | csvcut -c Folder \
+        | tail -n +2 \
+        | sort -u \
+        | while read -r folder; do
+            write_chunked_html "$folder" "$@"
+        done
+}
+
+sane_csv() {
+    cat "$@" \
+        | strip-emoji
+}
+
+write_chunked_html() {
+    local folder="$1"
+    shift
+    sane_csv "$@" \
+        | csvgrep -c Folder -r "^$folder$" \
+        | csvcut -cURL,Title \
+        | tail -n +2 \
+        | (cd "$tmpdir" && split -l "$split_lines" - "$folder-")
+
+    # shellcheck disable=SC2046
+    if [ $(find "$tmpdir" -type f -name "$folder"-\* | wc -l) -eq 1 ]; then
+        sane_csv "$@" \
+            | csvgrep -c Folder -r "^$folder$" \
+            | csvcut -cURL,Title \
+            | gen_html "$folder" >Instapaper/"$folder.html"
+    else
+        find "$tmpdir" -type f -name "$folder"-\* \
+            | while read -r fn; do
+                ( echo "$header"; cat "$fn"; ) | gen_html "$folder" >Instapaper/"${fn##*/}.html"
+            done
+    fi
+}
+
+gen_html() {
+    local folder="$1"
+    shift
+    header
+    echo "<h1>$folder</h1>"
+    echo "<ol>"
+    cat "$@" \
+        | csvpyrow 'from html import escape; _["URL"] = escape(_["URL"]); _["Title"] = escape(_["Title"])' \
+        | csvformat -D $'\t' \
+        | tail -n +2 \
+        | while IFS=$'\t' read -r url title; do
+            printf '<li><a href="%s">%s</a>\n' "$url" "$title"
+        done
+    echo "</ol>"
+    footer
+}
+
+header() {
+    cat <<END
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Instapaper: Export</title>
+</head>
+<body>
+END
+}
+
+footer() {
+    cat <<END
+</body>
+</html>
+END
+}
+
+
+tmpdir=$(mktemp -d -t "${0##*/}.XXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+header="$(cat "$@" | head -n 1)"
+main "$@"
