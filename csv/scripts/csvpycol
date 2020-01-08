@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
+import collections
 import csv
 import itertools
 import locale
 import re
 import sys
+import textwrap
+
+IMPORTS = ['re', 'itertools', 'textwrap']
 
 
 def tocents(value):
@@ -35,12 +39,14 @@ def filter_rows(args):
     if args.column not in reader.fieldnames:
         raise parser.error(f'column `{args.column}` not in columns: {", ".join(reader.fieldnames)}')
 
+    _G = globals()
+    imports = {name: _G[name] for name in IMPORTS}
+    imports.update({'currency': locale.currency, 'tocents': tocents})
     writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
     writer.writeheader()
     for lineno, row in enumerate(reader):
-        env = {'_': row, 'lineno': lineno+1, 'args': args.args, 're': re, 'itertools': itertools, 'currency': locale.currency, 'tocents': tocents}
-        env.update(row)
-        nval = eval(args.pythonstring, env)
+        env = collections.ChainMap(row, {'_': row, 'lineno': lineno + 1, 'args': args.args})
+        nval = eval(args.pythonstring, imports, env)
         if args.filter:
             if not nval:
                 continue
