@@ -178,7 +178,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: ddd64fc4c5c5365d56478f100f19898375244890
+    rev: 4074727343e2a906f4bc1472685f59739f8346f0
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -273,7 +273,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 577024f1e9bfc98f48e7c5bead445bc9d7dfc3c5
+    rev: 82bf8c138daaabf28faf7819b2f5a2b03af37d43
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -524,14 +524,14 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: d43c309f888153d6c46d8b6a3a0186f4148680fd
+    rev: ae315ded4dba10685dbbafbfa2ff3c1aefeb490d
 
 git module git-extras:
     url: https://github.com/tj/git-extras
     export: bin
     pick:
         - bin/git-alias
-    rev: 6438dee914172218f35684e0d275be51e5ec2f7d
+    rev: 265b03e4007777d27a8383ca12a872b407e2da87
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -752,14 +752,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 7542732df6b7aee0a77ef6e6097e71055cd2a257
+    rev: 379d7088d691bf6413d6c75d44ba922c6185ecb4
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 7fd17ab0dd30d9b14318578e4ca7d8da9c6c91d0
+    rev: fc86d7620e960f3e30adef55b6af755a3c5b6c13
 
 git module exa:
     url: https://github.com/ogham/exa
