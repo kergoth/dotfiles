@@ -1,6 +1,6 @@
 #!/bin/bash
 
-split_lines=2000
+split_lines=1800
 
 main() {
     mkdir -p Instapaper
