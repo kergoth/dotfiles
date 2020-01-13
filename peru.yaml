@@ -131,7 +131,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: f3caac45069ccbb260a605d557cce9c10d0b719f
+    rev: 1daabc228279be7b397f0dab7c13e22e204ff8d5
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -179,7 +179,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 4074727343e2a906f4bc1472685f59739f8346f0
+    rev: 6bc345f6f16aee0dcc361f2f3bf80e4964f461af
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -244,7 +244,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 76669c3c1d675833f9d89f6496f16a7accc0f40e
+    rev: 8a6894d6a560497bd35947f55ece381bf4f2d9ed
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -753,14 +753,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 379d7088d691bf6413d6c75d44ba922c6185ecb4
+    rev: 0681be600c45f6dfa66be9bc2f3fc3de7113cb1d
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: fc86d7620e960f3e30adef55b6af755a3c5b6c13
+    rev: 12e211d82a1bdef4ffe70c74ee62bc56edfa7590
 
 git module exa:
     url: https://github.com/ogham/exa

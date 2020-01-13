@@ -202,7 +202,7 @@ command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
 ```
 
-You can just omit the spec argument if you only want the previwer.
+You can just omit the spec argument if you only want the previewer.
 
 ```vim
 command! -bang -nargs=? -complete=dir Files
@@ -366,8 +366,7 @@ may want to customize the statusline of the containing buffer.
 ### Hide statusline
 
 ```vim
-autocmd! FileType fzf
-autocmd  FileType fzf set laststatus=0 noshowmode noruler
+autocmd! FileType fzf set laststatus=0 noshowmode noruler
   \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 ```
 
