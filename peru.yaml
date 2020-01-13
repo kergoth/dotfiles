@@ -26,6 +26,7 @@ imports:
     dustin-bindir: git/scripts
     fasd: fasd/scripts
     flu: osx/scripts
+    fumiyas-home-commands: scripts
     gnu2bsd: ls/scripts
     git-blame-colored: git/scripts
     git-cherry-tree: git/scripts
@@ -781,3 +782,8 @@ git module titlecase-perl:
         TitleCase.pl: titlecase
     executable: titlecase
     rev: d7d64ccbc6e1c86b0aae5cb368ea1f6f7f3738c5
+
+git module fumiyas-home-commands:
+    url: https://github.com/fumiyas/home-commands
+    pick: ifne
+    rev: d3cb20612b30d453c4385c933000167120e44723
