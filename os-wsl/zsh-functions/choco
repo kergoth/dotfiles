@@ -1,4 +1,4 @@
-if [[ $WSL_IS_ADMIN = 1 ]] || [[ "$1" = search ]]; then
+if [[ $WSL_IS_ADMIN = 1 ]] || [[ "$1" =~ "search|info" ]]; then
     choco.exe "$@"
 else
     psadmin choco.exe "$@"
