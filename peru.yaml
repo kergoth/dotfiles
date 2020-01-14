@@ -131,7 +131,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 1daabc228279be7b397f0dab7c13e22e204ff8d5
+    rev: ad43154542cd43c563a6751e2fdb31a90bea66af
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -244,7 +244,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 8a6894d6a560497bd35947f55ece381bf4f2d9ed
+    rev: 6eeeab64a8692471f9bb5931c235e87ebd4b13fc
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -753,7 +753,7 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 0681be600c45f6dfa66be9bc2f3fc3de7113cb1d
+    rev: 62a1e37cccb858587d9c7a5861e9fc22c1b541cd
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
