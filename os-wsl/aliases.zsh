@@ -1,6 +1,4 @@
 if [[ $OSTYPE = WSL ]]; then
-    alias cdw='cd "$USERPROFILE"'
-    alias start="cmd.exe /c start"
     winver () {
         ( cd "$USERPROFILE" && cmd.exe /c ver )
     }
@@ -9,9 +7,12 @@ if [[ $OSTYPE = WSL ]]; then
         alias open=wsl-open
     fi
 
+    alias cdw='cd "$USERPROFILE"'
+    alias start="cmd.exe /c start"
+    alias mklink="cmd.exe /c mklink"
     alias cmd=cmd.exe
     alias wsl=wsl.exe
-    alias adminwsl='psadmin wsl.exe'
+    alias adminwsl="psadmin wsl.exe"
     alias wt=wt.exe
     alias adminwt="psadmin 'shell:appsFolder\Microsoft.WindowsTerminal_8wekyb3d8bbwe!App'"
     alias adb=adb.exe
