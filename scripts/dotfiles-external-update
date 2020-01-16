@@ -25,12 +25,12 @@ PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 "$dotfilesdir/peru" reup -f || echo >&2 "peru reup failed"
 "$dotfilesdir/peru" sync -f || die "peru sync failed"
 
-if [ -e scripts/diff-highlight.perl ]; then
+if [ -e git/scripts/diff-highlight.perl ]; then
     echo '#!/usr/bin/env perl' >scripts/diff-highlight
-    cat scripts/DiffHighlight.pm >>scripts/diff-highlight
-    cat scripts/diff-highlight.perl >>scripts/diff-highlight
-    rm -f scripts/DiffHighlight.pm scripts/diff-highlight.perl
-    chmod +x scripts/diff-highlight
+    cat git/scripts/DiffHighlight.pm >>scripts/diff-highlight
+    cat git/scripts/diff-highlight.perl >>scripts/diff-highlight
+    rm -f git/scripts/DiffHighlight.pm git/scripts/diff-highlight.perl
+    chmod +x git/scripts/diff-highlight
 fi
 
 cd "$tmpdir" || exit 1
