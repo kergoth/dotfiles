@@ -414,9 +414,7 @@ function! fugitive#PrepareDirEnvArgv(...) abort
   return [dir, env, cmd]
 endfunction
 
-function! s:BuildShell(dir, env, args) abort
-  let cmd = copy(a:args)
-  let tree = s:Tree(a:dir)
+function! s:BuildEnvPrefix(env) abort
   let pre = ''
   for [var, val] in items(a:env)
     if s:winshell()
@@ -425,6 +423,13 @@ function! s:BuildShell(dir, env, args) abort
       let pre = (len(pre) ? pre : 'env ') . var . '=' . s:shellesc(val) . ' '
     endif
   endfor
+  return pre
+endfunction
+
+function! s:BuildShell(dir, env, args) abort
+  let cmd = copy(a:args)
+  let tree = s:Tree(a:dir)
+  let pre = s:BuildEnvPrefix(a:env)
   if empty(tree) || index(cmd, '--') == len(cmd) - 1
     call insert(cmd, '--git-dir=' . FugitiveGitPath(a:dir))
   elseif fugitive#GitVersion(1, 8, 5)
@@ -1555,24 +1560,9 @@ function! s:ReplaceCmd(cmd) abort
   if exec_error
     call s:throw((len(err) ? err : filereadable(temp) ? join(readfile(temp), ' ') : 'unknown error running ' . a:cmd))
   endif
-  let temp = s:Resolve(temp)
-  let fn = expand('%:p')
-  silent exe 'keepalt file '.temp
-  let modelines = &modelines
-  try
-    set modelines=0
-    silent keepjumps noautocmd edit!
-  finally
-    let &modelines = modelines
-    try
-      silent exe 'keepalt file '.s:fnameescape(fn)
-    catch /^Vim\%((\a\+)\)\=:E302:/
-    endtry
-    call delete(temp)
-    if s:cpath(fnamemodify(bufname('$'), ':p'), temp)
-      silent! execute 'bwipeout '.bufnr('$')
-    endif
-  endtry
+  silent exe '$read ++edit' s:fnameescape(temp)
+  silent keepjumps 1delete _
+  call delete(temp)
 endfunction
 
 function! s:QueryLog(refspec) abort
@@ -2192,6 +2182,10 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
         \ (args[0] ==# 'help' || get(args, 1, '') ==# '--help') && !s:HasOpt(args, '--web')
     return s:OpenExec((a:line2 > 0 ? a:line2 : '') . (a:line2 ? 'split' : 'edit'), a:mods, args, dir) . after
   endif
+  if index(['--paginate', '-p'], args[0]) >= 0
+    let paginate_warning = 'fugitive: --paginate support is deprecated. Use :terminal directly'
+    let after = '|echohl WarningMsg|echo ' . string(paginate_warning) . '|echohl NONE' . after
+  endif
   if s:HasOpt(args, ['add', 'checkout', 'commit', 'stage', 'stash', 'reset'], '-p', '--patch') ||
         \ s:HasOpt(args, ['add', 'clean', 'stage'], '-i', '--interactive') ||
         \ index(['--paginate', '-p'], args[0]) >= 0
@@ -2205,13 +2199,14 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
       return 'exe ' . string(mods . 'terminal ' . (a:line2 ? '' : '++curwin ') . join(map(s:UserCommandList(dir) + args, 's:fnameescape(v:val)'))) . assign . after
     endif
   endif
+  let env = get(opts, 'env', {})
   if has('gui_running') && !has('win32')
     call insert(args, '--no-pager')
   endif
-  let pre = ''
-  if has('nvim') && executable('env')
-    let pre .= 'env GIT_TERMINAL_PROMPT=0 '
+  if has('nvim')
+    let env.GIT_TERMINAL_PROMPT = '0'
   endif
+  let pre = s:BuildEnvPrefix(env)
   return 'exe ' . string('noautocmd !' . escape(pre . s:UserCommand(dir, args), '!#%')) .
         \ '|call fugitive#ReloadStatus(' . string(dir) . ', 1)' .
         \ after
@@ -3673,14 +3668,7 @@ function! s:MergeRebase(cmd, bang, mods, args, ...) abort
           \ . "%+EXUNG \u0110\u1ed8T %.%#,"
           \ . "%+E\u51b2\u7a81 %.%#,"
           \ . 'U%\t%f'
-    if a:cmd =~# '^merge' && empty(args) &&
-          \ (had_merge_msg || isdirectory(fugitive#Find('.git/rebase-apply', dir)) ||
-          \  !empty(s:TreeChomp(dir, 'diff-files', '--diff-filter=U')))
-      return 'echohl WarningMsg|echo ":Git merge for loading conflicts is deprecated in favor of :Git mergetool"|echohl NONE|silent Git' . (a:bang ? '!' : '') . ' mergetool'
-      let cmd = g:fugitive_git_executable.' diff-files --name-status --diff-filter=U'
-    else
-      let cmd = s:UserCommand(dir, argv)
-    endif
+    let cmd = s:UserCommand(dir, argv)
     if !empty($GIT_SEQUENCE_EDITOR) || has('win32')
       let old_sequence_editor = $GIT_SEQUENCE_EDITOR
       let $GIT_SEQUENCE_EDITOR = 'true'
@@ -3770,6 +3758,13 @@ function! s:RebaseClean(file) abort
 endfunction
 
 function! s:MergeSubcommand(line1, line2, range, bang, mods, args) abort
+  let dir = s:Dir()
+  if empty(args) && (
+        \ filereadable(fugitive#Find('.git/MERGE_MSG', dir)) ||
+        \ isdirectory(fugitive#Find('.git/rebase-apply', dir)) ||
+        \  !empty(s:TreeChomp(dir, 'diff-files', '--diff-filter=U')))
+    return 'echohl WarningMsg|echo ":Git merge for loading conflicts is deprecated in favor of :Git mergetool"|echohl NONE|silent Git' . (a:bang ? '!' : '') . ' mergetool'
+  endif
   return s:MergeRebase('merge', a:bang, a:mods, a:args)
 endfunction
 
@@ -3789,7 +3784,7 @@ endfunction
 augroup fugitive_merge
   autocmd!
   autocmd VimLeavePre,BufDelete git-rebase-todo
-        \ if getbufvar(+expand('<abuf>'), '&bufhidden') ==# 'wipe' |
+        \ if type(getbufvar(+expand('<abuf>'), 'fugitive_rebase_shas')) == type({}) && getbufvar(+expand('<abuf>'), '&bufhidden') ==# 'wipe' |
         \   call s:RebaseClean(expand('<afile>')) |
         \   if getfsize(FugitiveFind('.git/rebase-merge/done', +expand('<abuf>'))) == 0 |
         \     let s:rebase_continue = [FugitiveGitDir(+expand('<abuf>')), 1] |
@@ -3861,6 +3856,9 @@ function! s:ToolParse(state, line) abort
       let offsets = split(matchstr(a:line, '^@\+ \zs[-+0-9, ]\+\ze @'), ' ')
       return s:ToolItems(a:state, a:state.from, a:state.to, offsets, matchstr(a:line, ' @@\+ \zs.*'))
     endif
+  elseif a:line =~# '^\* Unmerged path .'
+    let file = a:line[16:-1]
+    return s:ToolItems(a:state, file, file, [], '')
   elseif a:line =~# '^[A-Z]\d*\t.\|^:.*\t.'
     " --raw, --name-status
     let [status; files] = split(a:line, "\t")

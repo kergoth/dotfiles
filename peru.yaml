@@ -131,7 +131,7 @@ imports:
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: ad43154542cd43c563a6751e2fdb31a90bea66af
+    rev: b7b0f61188f9120383b6a5bd27ac4d3c2d8b6b4f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -179,7 +179,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 6bc345f6f16aee0dcc361f2f3bf80e4964f461af
+    rev: c83355d5c52002f94d08267f1d14ca6d1a2763e9
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -208,7 +208,7 @@ git module vim-commentary:
 # helpers for UNIX
 git module vim-eunuch:
     url: https://github.com/tpope/vim-eunuch
-    rev: 75efe06ccc63b7cd50b193b99cce83e3ad3e60cb
+    rev: 33e875b31c8b811a0a47908884a5e2339106bbe8
 
 git module vim-undotree:
     url: https://github.com/mbbill/undotree
@@ -244,7 +244,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 6eeeab64a8692471f9bb5931c235e87ebd4b13fc
+    rev: dc4c4c22715c060a2babd5a5187004bdecbcdea7
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -274,7 +274,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 82bf8c138daaabf28faf7819b2f5a2b03af37d43
+    rev: 6e3af646b2e39c510a70c26f7a77c87e691e577c
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -532,7 +532,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 265b03e4007777d27a8383ca12a872b407e2da87
+    rev: b708a8a4d39644e1d305c223d5063c07dd4bcc37
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -753,14 +753,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 62a1e37cccb858587d9c7a5861e9fc22c1b541cd
+    rev: 28e11ac60b91aea5ab4b47c3cc2bf33f00ba53e4
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 12e211d82a1bdef4ffe70c74ee62bc56edfa7590
+    rev: f54aabfe9295902b6bbe0db115186ca26f1956b0
 
 git module exa:
     url: https://github.com/ogham/exa
