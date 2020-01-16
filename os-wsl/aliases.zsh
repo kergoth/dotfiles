@@ -13,7 +13,7 @@ if [[ $OSTYPE = WSL ]]; then
     alias wsl=wsl.exe
     alias adminwsl='psadmin wsl.exe'
     alias wt=wt.exe
-    alias adminwt='psadmin cmd.exe /c start wt.exe'
+    alias adminwt="psadmin 'shell:appsFolder\Microsoft.WindowsTerminal_8wekyb3d8bbwe!App'"
     alias adb=adb.exe
 
     if [[ -z "$WSL_IS_ADMIN" ]]; then
