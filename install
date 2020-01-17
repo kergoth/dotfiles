@@ -178,16 +178,9 @@ link () {
                             echo >&2 "Invalid input '$will_continue', not replacing"
                             ;;
                     esac
-                    new="${dotfile_dest%/}.new"
-                    rm -rf "$new"
-                    if [ $copy -eq 1 ]; then
-                        cp -R "$dotfile_relpath" "$new"
-                        echo >&2 "Copied $new"
-                    else
-                        ln -s "$dotfile_relpath" "$new"
-                        echo >&2 "Linked $new"
-                    fi
-                    return 1
+                    dotfile_dest="${dotfile_dest%/}.new"
+                    rm -rf "$dotfile_dest"
+                    # Fall through to the default logic
                     ;;
             esac
         else
