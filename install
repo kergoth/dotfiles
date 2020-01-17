@@ -136,7 +136,7 @@ link () {
         mkdir -p "$destdir"
     fi
 
-    if which python >/dev/null 2>&1; then
+    if command -v python >/dev/null 2>&1; then
         dotfile_relpath="$(relpath "$dotfile" "$destdir" 2>/dev/null)"
 
         case "$dotfile_relpath" in
