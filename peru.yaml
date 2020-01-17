@@ -128,6 +128,29 @@ imports:
     bat-extras: bat/extras
     bat-syntax-bitbake: bat/syntaxes/BitBake
     bat-theme-dracula: bat/themes/Dracula
+    windows-terminal: windows-terminal/files
+    archlinux-icons: windows-terminal/files
+
+curl module archlinux-icons:
+    url: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
+    unpack: tar
+    move:
+        archlinux-artwork-1.6/icons/archlinux-icon-crystal-32.svg: archlinux-icon-crystal.svg
+    pick: archlinux-icon-crystal.svg
+    sha1: 7aaa48bd25df5f88f1f4eccefa0f9bd29b710c7f
+
+git module windows-terminal:
+    url: https://github.com/microsoft/terminal
+    move:
+        src/cascadia/CascadiaPackage/ProfileIcons: ProfileIcons
+    pick:
+        - ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.scale-100.png
+        - ProfileIcons/{550ce7b8-d500-50ad-8a1a-c400c3262db3}.scale-100.png
+        - ProfileIcons/{574e775e-4f2a-5b96-ac1e-a2962a402336}.scale-100.png
+        - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
+        - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
+        - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
+    rev: 2fec1787a038e8fe11fb4ce249451c13891532e1
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting

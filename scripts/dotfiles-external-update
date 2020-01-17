@@ -33,6 +33,10 @@ if [ -e git/scripts/diff-highlight.perl ]; then
     chmod +x git/scripts/diff-highlight
 fi
 
+if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && command -v convert >/dev/null 2>&1; then
+    convert windows-terminal/files/archlinux-icon-crystal.svg -resize 32x32 windows-terminal/files/archlinux-icon-crystal.png
+fi
+
 cd "$tmpdir" || exit 1
 git clone https://github.com/petdance/ack2 \
     && cd ack2 \
