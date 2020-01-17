@@ -97,7 +97,7 @@ should_replace () {
 }
 
 relpath () {
-    python -c "import os,sys; print(os.path.relpath(*sys.argv[1:]))" "$@"
+    python -c "import os,sys; print(os.path.relpath(*sys.argv[1:]) if os.path.commonprefix(sys.argv[1:]) != '/' else sys.argv[1])" "$@"
 }
 
 copy () {
@@ -139,12 +139,18 @@ link () {
     if which python >/dev/null 2>&1; then
         dotfile_relpath="$(relpath "$dotfile" "$destdir" 2>/dev/null)"
 
-        # Sanity check
-        dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
-        if [ ! -e "$dotfile_resolved" ]; then
-            echo >&2 "Error: $dotfile_resolved does not exist"
-            return 1
-        fi
+        case "$dotfile_relpath" in
+            /*)
+                ;;
+            *)
+                # Sanity check
+                dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
+                if [ ! -e "$dotfile_resolved" ]; then
+                    echo >&2 "Error: $dotfile_resolved does not exist"
+                    return 1
+                fi
+                ;;
+        esac
     else
         dotfile_relpath="$dotfile"
         dotfile_resolved="$dotfile"
