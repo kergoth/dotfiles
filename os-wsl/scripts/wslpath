@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+    ### https://github.com/Microsoft/WSL/issues/2715
+    cat << '__EOF__'
+Usage: wslpath [-a] [-u|-w|-m] path
+    -a    output absolute path
+    -u    translate from a Windows path to a WSL path (default)
+    -w    translate from a WSL path to a Windows path
+    -m    translate from a WSL path to a mixed Windows path using slashes
+__EOF__
+    exit 0
+fi
+exec /bin/wslpath "$@"
