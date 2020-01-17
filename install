@@ -156,8 +156,25 @@ link () {
         dotfile_resolved="$dotfile"
     fi
 
+    wsl_winpath=0
+    if [ $OSTYPE = WSL ]; then
+        win_dotfile_dest="$(wslpath -w "$dotfile_dest")"
+        case "$win_dotfile_dest" in
+            \\\\*)
+                ;;
+            *)
+                wsl_winpath=1
+                ;;
+        esac
+    fi
+
     if [ -L "$dotfile_dest" ]; then
         rm -f "$dotfile_dest"
+    elif [ $wsl_winpath -eq 1 ]; then
+        existing_dest="$(powershell.exe -c "(Get-Item $win_dotfile_dest).Target")"
+        if [ -n "$existing_dest" ]; then
+            rm -f "$dotfile_dest"
+        fi
     fi
 
     if [ -e "$dotfile_dest" ]; then
@@ -197,27 +214,22 @@ link () {
     if [ $copy -eq 1 ]; then
         cp -R "$dotfile" "$dotfile_dest"
         echo >&2 "Copied $dotfile_dest"
-    elif [ $OSTYPE = WSL ]; then
-        case "$destdir" in
-            ${USERPROFILE:-/invalid}/*)
-                win_dotfile="$(wslpath -w "$dotfile")"
-                case "$win_dotfile" in
-                    //*)
-                        echo >&2 "Warning: $dotfile resides in a WSL path, copying rather than linking"
-                        echo >&2 "         Consider placing the dotfiles in a windows path."
-                        cp -R "$dotfile" "$dotfile_dest"
-                        echo >&2 "Copied $dotfile_dest"
-                        ;;
-                    *)
-                        win_dotfile_dest="$(wslpath -w "$dotfile_dest")"
-                        if [ -d "$dotfile" ]; then
-                            cmd.exe /c mklink /d "$win_dotfile_dest" "$win_dotfile"
-                        else
-                            cmd.exe /c mklink /f "$win_dotfile_dest" "$win_dotfile"
-                        fi
-                        echo >&2 "Linked $win_dotfile_dest"
-                        ;;
-                esac
+    elif [ $wsl_winpath -eq 1 ]; then
+        win_dotfile="$(wslpath -w "$dotfile")"
+        case "$win_dotfile" in
+            \\\\*)
+                echo >&2 "Warning: $dotfile resides in a WSL path, copying rather than linking"
+                echo >&2 "         Consider placing the dotfiles in a windows path."
+                cp -R "$dotfile" "$dotfile_dest"
+                echo >&2 "Copied $dotfile_dest"
+                ;;
+            *)
+                if [ -d "$dotfile" ]; then
+                    cmd.exe /c mklink /d "$win_dotfile_dest" "$win_dotfile"
+                else
+                    cmd.exe /c mklink "$win_dotfile_dest" "$win_dotfile"
+                fi
+                echo >&2 "Linked $win_dotfile_dest"
                 ;;
         esac
     else
