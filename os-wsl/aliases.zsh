@@ -17,6 +17,8 @@ if [[ $OSTYPE = WSL ]]; then
     alias adminwt="psadmin 'shell:appsFolder\Microsoft.WindowsTerminal_8wekyb3d8bbwe!App'"
     alias adb=adb.exe
 
+    alias trash=recycle
+
     if [[ -z "$WSL_IS_ADMIN" ]]; then
         if net.exe session >/dev/null 2>&1; then
             export WSL_IS_ADMIN=1

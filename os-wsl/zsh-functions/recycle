@@ -1,0 +1,3 @@
+for arg; do
+    pwsh.exe -c "Import-Module Recycle; Remove-ItemSafely $(wslpath -wa "$arg")"
+done
