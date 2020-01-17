@@ -1,0 +1,5 @@
+if [ "$OSTYPE" = WSL ] && [ -n "$USERPROFILE" ]; then
+    WIN_TERM_DIR="$USERPROFILE/AppData/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe"
+    link profiles.ini "$WIN_TERM_DIR/LocalState/profiles.ini"
+    link files "$WIN_TERM_DIR/RoamingState"
+fi
