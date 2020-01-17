@@ -136,14 +136,6 @@ link () {
         mkdir -p "$destdir"
     fi
 
-    if [ $OSTYPE = WSL ] && [ $copy -eq 0 ]; then
-        case "$destdir" in
-            ${USERPROFILE:-/invalid}/*)
-                copy=1
-                ;;
-        esac
-    fi
-
     if which python >/dev/null 2>&1; then
         dotfile_relpath="$(relpath "$dotfile" "$destdir" 2>/dev/null)"
 
@@ -187,9 +179,33 @@ link () {
             rm -rf "$dotfile_dest"
         fi
     fi
+
     if [ $copy -eq 1 ]; then
-        cp -R "$dotfile_relpath" "$dotfile_dest"
+        cp -R "$dotfile" "$dotfile_dest"
         echo >&2 "Copied $dotfile_dest"
+    elif [ $OSTYPE = WSL ]; then
+        case "$destdir" in
+            ${USERPROFILE:-/invalid}/*)
+                win_dotfile="$(wslpath -w "$dotfile")"
+                case "$win_dotfile" in
+                    //*)
+                        echo >&2 "Warning: $dotfile resides in a WSL path, copying rather than linking"
+                        echo >&2 "         Consider placing the dotfiles in a windows path."
+                        cp -R "$dotfile" "$dotfile_dest"
+                        echo >&2 "Copied $dotfile_dest"
+                        ;;
+                    *)
+                        win_dotfile_dest="$(wslpath -w "$dotfile_dest")"
+                        if [ -d "$dotfile" ]; then
+                            cmd.exe /c mklink /d "$win_dotfile_dest" "$win_dotfile"
+                        else
+                            cmd.exe /c mklink /f "$win_dotfile_dest" "$win_dotfile"
+                        fi
+                        echo >&2 "Linked $win_dotfile_dest"
+                        ;;
+                esac
+                ;;
+        esac
     else
         ln -s "$dotfile_relpath" "$dotfile_dest"
         echo >&2 "Linked $dotfile_dest"
