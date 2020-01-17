@@ -11,7 +11,7 @@ case "$OSTYPE" in
 esac
 
 if [ -d "$ff_profileroot" ]; then
-    PROFILE="$(python3 -c "import configparser, sys; c = configparser.RawConfigParser(); c.read_file(sys.stdin); print(list(c[s].get('path') for s in c if dict(c[s]).get('default'))[0])" <"$ff_profileroot/profiles.ini")"
+    PROFILE="$(python3 -c "import configparser, sys; c = configparser.RawConfigParser(); c.read_file(sys.stdin); default = list(filter(lambda s: s.get('default') and s.get('path'), c.values()))[0]; print(default.get('path'));" <"$ff_profileroot/profiles.ini")"
     if [ -n "$PROFILE" ]; then
         PROFILE="$ff_profileroot/$PROFILE"
     fi
