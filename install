@@ -153,7 +153,6 @@ link () {
         esac
     else
         dotfile_relpath="$dotfile"
-        dotfile_resolved="$dotfile"
     fi
 
     wsl_winpath=0
@@ -242,7 +241,7 @@ abspath () {
     # Return an absolute path for the specified argument
     _path="$1"
     if [ -n "${_path##/*}" ]; then
-        _path="$PWD/$1"
+        _path="$(pwd -P)/$1"
     fi
     echo "$_path"
 }
