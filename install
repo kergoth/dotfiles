@@ -156,8 +156,18 @@ link () {
         dotfile_resolved="$dotfile"
     fi
 
-    if [ -L "$dotfile_dest" ] || [ -e "$dotfile_dest" ]; then
-        if [ $force -eq 0 ] && [ "$(readlink "$dotfile_dest")" != "$dotfile_relpath" ]; then
+    if [ -L "$dotfile_dest" ]; then
+        rm -f "$dotfile_dest"
+    fi
+
+    if [ -e "$dotfile_dest" ]; then
+        if [ $force -eq 1 ]; then
+            if command -v trash >/dev/null 2>&1; then
+                trash "$dotfile_dest"
+            else
+                rm -rf "$dotfile_dest"
+            fi
+        else
             echo >&2 "Warning: $dotfile_dest already exists"
             read -r -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
             printf "\n"
@@ -181,8 +191,6 @@ link () {
                     # Fall through to the default logic
                     ;;
             esac
-        else
-            rm -rf "$dotfile_dest"
         fi
     fi
 
