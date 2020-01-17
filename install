@@ -159,7 +159,7 @@ link () {
     if [ -L "$dotfile_dest" ] || [ -e "$dotfile_dest" ]; then
         if [ $force -eq 0 ] && [ "$(readlink "$dotfile_dest")" != "$dotfile_relpath" ]; then
             echo >&2 "Warning: $dotfile_dest already exists"
-            read -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
+            read -r -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
             printf "\n"
             case "$will_continue" in
                 [yY]|"")
