@@ -228,13 +228,17 @@ link () {
                 else
                     cmd.exe /c mklink "$win_dotfile_dest" "$win_dotfile"
                 fi
-                echo >&2 "Linked $win_dotfile_dest"
+                echo >&2 "Linked $(homepath "$win_dotfile_dest")"
                 ;;
         esac
     else
         ln -s "$dotfile_relpath" "$dotfile_dest"
-        echo >&2 "Linked $dotfile_dest"
+        echo >&2 "Linked $(homepath "$dotfile_dest")"
     fi
+}
+
+homepath () {
+    echo "$@" | sed -e "s#^$HOME/#~/#"
 }
 
 abspath () {
