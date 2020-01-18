@@ -356,7 +356,8 @@ PATH="$dotfilesdir/scripts:$PATH"
 
 do_install () {
     installscript="$1"
-    echo >&2 install "$(cd "$(dirname "$installscript")" && pwd)"
+    installscriptdir="$(cd "$(dirname "$installscript")" && pwd)"
+    echo >&2 "Install $(relpath "$installscriptdir" "$dotfilesdir")"
     cd "${installscript%/*}"
     . "./${installscript##*/}"
     cd - >/dev/null
