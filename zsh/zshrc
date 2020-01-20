@@ -67,6 +67,10 @@ else
   compinit -C -d $ZSH_COMPDUMP
 fi
 
+# This is set here rather than config.zsh due to LS_COLORS being defined in
+# ls/ls.zsh
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
 # load every completion after autocomplete loads
 for file in ${(M)config_files:#*/completion.zsh}; do
     source $file
