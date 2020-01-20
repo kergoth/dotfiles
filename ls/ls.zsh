@@ -1,11 +1,14 @@
-DIRCOLORS=$XDG_CONFIG_HOME/dir_colors
+if [[ -e "$DOTFILESDIR/ls/dir_colors" ]]; then
+    DIRCOLORS=$XDG_CONFIG_HOME/dir_colors
+fi
+
 if [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     if (( $+commands[gdircolors] )); then
-        eval "$(gdircolors -b $DIRCOLORS)"
+        eval "$(gdircolors -b ${=DIRCOLORS:+-b "$DIRCOLORS"})"
     fi
 fi
 if (( $+commands[dircolors] )); then
-    eval "$(dircolors -b $DIRCOLORS)"
+    eval "$(dircolors -b ${=DIRCOLORS:+-b "$DIRCOLORS"})"
 fi
 
 if (( $+commands[exa] )); then
@@ -19,7 +22,9 @@ elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
         alias ls='gls --color=auto -h'
     else
         alias ls='ls -G -h'
-        export LSCOLORS="$(cat $DOTFILESDIR/ls/bsd_colors)"
+        if [[ -e "$DOTFILESDIR/ls/bsd_colors" ]]; then
+            export LSCOLORS="$(cat $DOTFILESDIR/ls/bsd_colors)"
+        fi
     fi
     alias la='ls -A'
     alias lr='ll -tr'
