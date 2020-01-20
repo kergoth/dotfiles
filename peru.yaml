@@ -150,7 +150,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 2fec1787a038e8fe11fb4ce249451c13891532e1
+    rev: 62765f152e1fc9732a2ff212c9b98c1d0dbb9665
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -162,7 +162,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 8def5f15835f294ec6a1bf220fb330efddbe2575
+    rev: a6e641b977373740e9744182e6fad9af9ff39bc5
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -194,7 +194,7 @@ git module iln:
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen
     export: autoload/
-    rev: a553410f1bdb9000fbc764069f3a5ec3454a02bc
+    rev: c6bc42404597c718e4a032a98e21e63321cbb05a
 
 git module vim-lion:
     url: https://github.com/tommcdo/vim-lion
@@ -202,7 +202,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: c83355d5c52002f94d08267f1d14ca6d1a2763e9
+    rev: 2ebdeef9e0a7bb45499935db691bb50bf1045304
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -255,7 +255,7 @@ git module vim-dispatch:
 # continuously updated session files
 git module vim-obsession:
     url: https://github.com/tpope/vim-obsession
-    rev: c44d3c432243d39469046f4e25d38a690e49c755
+    rev: 96a3f837c112cb64e0a9857b69f6d6a71041155e
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
@@ -283,7 +283,7 @@ git module smem:
 hg module t:
     url: https://bitbucket.org/sjl/t
     pick: t.py
-    rev: d655cbfbd107b03605537e3a81ab9175df5092cc
+    rev: 6d234cde2bed5d21646c3b483c74b27d47aeb7cd
 
 git module fzf:
     url: https://github.com/junegunn/fzf
@@ -297,7 +297,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 6e3af646b2e39c510a70c26f7a77c87e691e577c
+    rev: e01266ffcbd6e12de655924e63fcbe1ceb75adbf
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -393,7 +393,7 @@ git module git:
         - git-subtree
         - diff-highlight.perl
         - DiffHighlight.pm
-    rev: 53a06cf39b756eddfe4a2a34da93e3d04eb7b728
+    rev: b6d4d82bd5a49197d5d2f4f81c08da0d461cfcf1
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
@@ -522,7 +522,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: b7b4a3df1de5ec4a21de769bdb77d57c32b53523
+    rev: 4c8a27c11c505a06bc494839453e99eb8bfa6a40
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -741,7 +741,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 6a1df1a7c54458eb14480e1cc4f83c704ef9fb8d
+    rev: 44821f8e867b4d0d8471398e97a4ef42f3cd0ec2
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
@@ -776,14 +776,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 28e11ac60b91aea5ab4b47c3cc2bf33f00ba53e4
+    rev: e626f57613ad2dacd7fe7244f6a33de5c8f03f9e
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: f54aabfe9295902b6bbe0db115186ca26f1956b0
+    rev: fb1d3bef3f45e64a06e5db16f5b21cfa2aacb4df
 
 git module exa:
     url: https://github.com/ogham/exa
@@ -797,7 +797,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: eca97339e0362ac9c543ffd2f278572e5464c84a
+    rev: 4c1ebac719e73a2a125de4a831279d12dc474653
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git

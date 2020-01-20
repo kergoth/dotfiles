@@ -86,6 +86,8 @@ function! s:persist() abort
       call writefile(body, g:this_obsession)
       let g:this_session = g:this_obsession
       exe s:doautocmd_user('Obsession')
+    catch /^Vim(mksession):E11:/
+      return ''
     catch
       unlet g:this_obsession
       let &l:readonly = &l:readonly
