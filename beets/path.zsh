@@ -1,3 +1,3 @@
 if [[ -n $BEETSDIR ]]; then
-    path=("${BEETSDIR%/*}/scripts" $path)
+    path=("$BEETSDIR/scripts" $path)
 fi
