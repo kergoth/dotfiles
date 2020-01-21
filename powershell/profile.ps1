@@ -29,3 +29,6 @@ Set-PSReadLineKeyHandler -Key Alt+b -Function ShellBackwardWord
 Set-PSReadLineKeyHandler -Key Alt+f -Function ShellForwardWord
 Set-PSReadLineKeyHandler -Key Alt+B -Function SelectShellBackwardWord
 Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
+
+# Disable the annoying beep
+Set-PSReadlineOption -BellStyle None
