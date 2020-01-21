@@ -1,7 +1,7 @@
 if [ "$OSTYPE" = WSL ] && [ -n "$USERPROFILE" ]; then
-    modulesdir="$USERPROFILE/Documents/WindowsPowerShell/Modules"
+    modulesdir="$USERPROFILE/Documents/PowerShell/Modules"
 
-    link profile.ps1 "$USERPROFILE/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+    link profile.ps1 "$USERPROFILE/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
 else
     modulesdir="$XDG_DATA_HOME/powershell/Modules"
 
