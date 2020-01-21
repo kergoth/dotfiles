@@ -1,0 +1,8 @@
+link profile.ps1 "$XDG_CONFIG_HOME/powershell/Microsoft.PowerShell_profile.ps1"
+if ! [ -e "$XDG_DATA_HOME/powershell/Modules/DirColors" ]; then
+    tmpdir=$(mktemp -d -t "${0##*/}.XXXX")
+    trap 'rm -rf "$tmpdir"' EXIT INT TERM
+    git clone -b v1.1.2 https://github.com/DHowett/DirColors "$tmpdir/git"
+    mkdir -p "$XDG_DATA_HOME/powershell/Modules/DirColors"
+    mv "$tmpdir/git/src" "$XDG_DATA_HOME/powershell/Modules/DirColors/1.1.2"
+fi
