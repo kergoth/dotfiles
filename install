@@ -170,7 +170,7 @@ link () {
     if [ -L "$dotfile_dest" ]; then
         rm -f "$dotfile_dest"
     elif [ $wsl_winpath -eq 1 ]; then
-        existing_dest="$(powershell.exe -c "(Get-Item $win_dotfile_dest).Target")"
+        existing_dest="$(powershell.exe -c "(Get-Item $win_dotfile_dest).Target" 2>/dev/null)"
         if [ -n "$existing_dest" ]; then
             rm -f "$dotfile_dest"
         fi
