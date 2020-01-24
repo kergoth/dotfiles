@@ -488,8 +488,9 @@ Here is an example F<.mrconfig> file:
   chain = true
 
   [src/linux-2.6]
-  checkout = git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git &&
-  	cd linux-2.6 &&
+  checkout = 
+        git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+  	cd linux-2.6
   	git checkout -b mybranch origin/master
 
 The F<.mrconfig> file uses a variant of the INI file format. Lines
@@ -518,6 +519,10 @@ specify the command to run in order to create a checkout of the repository.
 The command will be run in the parent directory, and must create the
 repository's directory. So use C<git clone>, C<svn checkout>, C<bzr branch>
 or C<bzr checkout> (for a bound branch), etc.
+
+The command may be a simple command, or an arbitrarily complicated shell
+script. When there are multiple indented lines, the shell is passed
+the script with line breaks preserved.
 
 Note that these shell commands are run in a C<set -e> shell
 environment, where any additional parameters you pass are available in

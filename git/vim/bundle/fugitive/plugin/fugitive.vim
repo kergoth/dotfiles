@@ -1,6 +1,6 @@
 " fugitive.vim - A Git wrapper so awesome, it should be illegal
 " Maintainer:   Tim Pope <http://tpo.pe/>
-" Version:      3.1
+" Version:      3.2
 " GetLatestVimScripts: 2975 1 :AutoInstall: fugitive.vim
 
 if exists('g:loaded_fugitive')
@@ -67,7 +67,7 @@ endfunction
 
 " FugitiveParse() takes a fugitive:// URL and returns a 2 element list
 " containing an object name ("commit:file") and the Git dir.  It's effectively
-" then inverse of FugitiveFind().
+" the inverse of FugitiveFind().
 function! FugitiveParse(...) abort
   let path = s:Slash(a:0 ? a:1 : @%)
   if path !~# '^fugitive:'
@@ -101,6 +101,24 @@ function! FugitiveConfig(...) abort
   else
     return call('fugitive#Config', a:000)
   endif
+endfunction
+
+" Retrieve a Git configuration value.  An optional second argument provides
+" the Git dir as with FugitiveFind().  Pass a blank string to limit to the
+" global config.
+function! FugitiveConfigGet(name, ...) abort
+  return call('FugitiveConfig', [a:name] + a:000)
+endfunction
+
+" Like FugitiveConfigGet(), but return a list of all values.
+function! FugitiveConfigGetAll(name, ...) abort
+  if a:0 && type(a:1) ==# type({})
+    let config = a:1
+  else
+    let config = fugitive#Config(FugitiveGitDir(a:0 ? a:1 : -1))
+  endif
+  let name = substitute(a:name, '^[^.]\+\|[^.]\+$', '\L&', 'g')
+  return copy(get(config, name, []))
 endfunction
 
 function! FugitiveRemoteUrl(...) abort
@@ -338,6 +356,10 @@ augroup fugitive
   autocmd FileType gitcommit
         \ if len(FugitiveGitDir()) |
         \   call fugitive#MapCfile('fugitive#MessageCfile()') |
+        \ endif
+  autocmd FileType git,gitcommit
+        \ if len(FugitiveGitDir()) && &foldtext ==# 'foldtext()' |
+        \    setlocal foldtext=fugitive#Foldtext() |
         \ endif
   autocmd FileType fugitive
         \ if len(FugitiveGitDir()) |

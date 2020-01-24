@@ -150,7 +150,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 62765f152e1fc9732a2ff212c9b98c1d0dbb9665
+    rev: 82f302b7142e116c52f5c143761febb76b34a9b1
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -202,7 +202,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 2ebdeef9e0a7bb45499935db691bb50bf1045304
+    rev: 22255613f798fe0ab0ecbe347079874e39863e9e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -297,7 +297,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: e01266ffcbd6e12de655924e63fcbe1ceb75adbf
+    rev: 4ec403347c803beccffcf7e9f12bacafcb5d24a2
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -393,7 +393,7 @@ git module git:
         - git-subtree
         - diff-highlight.perl
         - DiffHighlight.pm
-    rev: b6d4d82bd5a49197d5d2f4f81c08da0d461cfcf1
+    rev: 232378479ee6c66206d47a9be175e3a39682aea6
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
@@ -522,7 +522,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 4c8a27c11c505a06bc494839453e99eb8bfa6a40
+    rev: 373d387eba9d7ef7780e54d2c828b0c0a8db28c4
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -741,7 +741,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 44821f8e867b4d0d8471398e97a4ef42f3cd0ec2
+    rev: 465479bffda390614c32994393aabea15f9f547e
 
 git module vim-braceless:
     url: https://github.com/tweekmonster/braceless.vim
@@ -783,7 +783,7 @@ git module alacritty:
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: fb1d3bef3f45e64a06e5db16f5b21cfa2aacb4df
+    rev: cc33bec7309a6071e3b89ea8d61907db294c2cc9
 
 git module exa:
     url: https://github.com/ogham/exa
