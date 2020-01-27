@@ -150,11 +150,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 82f302b7142e116c52f5c143761febb76b34a9b1
+    rev: 830c22b73e3299cde552208597ddebffbeb0a898
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: b7b0f61188f9120383b6a5bd27ac4d3c2d8b6b4f
+    rev: 6bedf876607f5a5a17d5468f9b13b67966d619a8
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -202,7 +202,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 22255613f798fe0ab0ecbe347079874e39863e9e
+    rev: 268a9c1b8f80480b105c60ff52e7a752ef22d385
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -216,7 +216,7 @@ git module taskpaper:
 
 git module vim-lightline:
     url: https://github.com/itchyny/lightline.vim
-    rev: f4fa096a67afbe593bd53cf618850c32512b5d47
+    rev: 604ffb2b0f0d0d93a051ec989de89dc90a297384
 
 # generates modeline according to the current settings
 git module Modeliner:
@@ -259,7 +259,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 9c12328df924ddb875ee1e5c9fc0f939b62d6a6c
+    rev: 5d84cb9ce7fdf7d3fd729a9d3f59060ca5ab3a6e
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -297,7 +297,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 4ec403347c803beccffcf7e9f12bacafcb5d24a2
+    rev: 3918c45ceda5e7c57d6832cdeedbfeb8f7a6444e
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -522,7 +522,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 373d387eba9d7ef7780e54d2c828b0c0a8db28c4
+    rev: d92a3108f729646234ad79f7c4fde3614828f129
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -606,7 +606,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: e8454d66ab8376cf9c7e42f09749d5bd17d98f89
+    rev: 35ea4d2b9072594b6c0ccf87bde7978ed9f94755
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -776,28 +776,28 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: e626f57613ad2dacd7fe7244f6a33de5c8f03f9e
+    rev: 35111697316f1b2d48144c58e0e345770bb3fb71
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: cc33bec7309a6071e3b89ea8d61907db294c2cc9
+    rev: 6b327b6f8f0f308ff8f46cdf551ce0d0f3eda60b
 
 git module exa:
     url: https://github.com/ogham/exa
     move:
         contrib/completions.zsh: _exa
     pick: _exa
-    rev: 89c861f24d18650fc3cef50900e3341b5b038ccf
+    rev: 78ba0b8973cbfbb48b85b8beae6f7de412064d11
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
         - src
-    rev: 4c1ebac719e73a2a125de4a831279d12dc474653
+    rev: 765658c23d399827724cdf1e113b30aee401cfb7
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git

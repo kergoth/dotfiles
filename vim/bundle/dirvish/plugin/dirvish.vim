@@ -11,7 +11,7 @@ function! s:isdir(dir)
     \ (!empty($SYSTEMDRIVE) && isdirectory('/'.tolower($SYSTEMDRIVE[0]).a:dir)))
 endfunction
 
-augroup dirvish_ftdetect
+augroup dirvish
   autocmd!
   " Remove netrw and NERDTree directory handlers.
   autocmd VimEnter * if exists('#FileExplorer') | exe 'au! FileExplorer *' | endif
@@ -19,7 +19,8 @@ augroup dirvish_ftdetect
   autocmd BufEnter * if !exists('b:dirvish') && <SID>isdir(expand('%'))
     \ | exe 'Dirvish %'
     \ | elseif exists('b:dirvish') && &buflisted && bufnr('$') > 1 | setlocal nobuflisted | endif
-  autocmd FileType dirvish if exists('#fugitive') | call fugitive#detect(@%) | endif
+  autocmd FileType dirvish if exists('#fugitive') | call FugitiveDetect(@%) | endif
+  autocmd ShellCmdPost * if exists('b:dirvish') | exe 'Dirvish %' | endif
 augroup END
 
 nnoremap <silent> <Plug>(dirvish_up) :<C-U>exe 'Dirvish %:p'.repeat(':h',v:count1)<CR>
