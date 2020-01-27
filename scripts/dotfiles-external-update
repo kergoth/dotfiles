@@ -30,7 +30,7 @@ if [ -e git/scripts/diff-highlight.perl ]; then
     cat git/scripts/DiffHighlight.pm >>scripts/diff-highlight
     cat git/scripts/diff-highlight.perl >>scripts/diff-highlight
     rm -f git/scripts/DiffHighlight.pm git/scripts/diff-highlight.perl
-    chmod +x git/scripts/diff-highlight
+    chmod +x scripts/diff-highlight
 fi
 
 if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && command -v convert >/dev/null 2>&1; then
