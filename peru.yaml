@@ -484,6 +484,7 @@ curl module 1t:
 git module zsh-bd:
     url: https://github.com/Tarrasch/zsh-bd
     rev: d4a55e661b4c9ef6ae4568c6abeff48bdf1b1af7
+    drop: bd.plugin.zsh
 
 git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
