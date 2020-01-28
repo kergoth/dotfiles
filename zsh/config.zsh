@@ -68,11 +68,8 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 # Move prioritize-cwd-history into xdg path
 ZSH_PRIORITIZE_CWD_HISTORY_DIR=$XDG_DATA_HOME/zsh/prioritize-cwd-history
 
-# Kill most fast-syntax-highlighting chroma funcs
-FAST_HIGHLIGHT=(
-  chroma-git           :chroma/main-chroma.ch%git
-  chroma-hub           :chroma/-hub.ch
-)
+# Kill fast-syntax-highlighting chroma funcs
+FAST_HIGHLIGHT=()
 
 if autoload -Uz bracketed-paste-magic; then
     zle -N bracketed-paste bracketed-paste-magic

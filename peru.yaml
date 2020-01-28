@@ -155,6 +155,7 @@ git module windows-terminal:
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
     rev: 6bedf876607f5a5a17d5468f9b13b67966d619a8
+    drop: ':chroma/*'
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
