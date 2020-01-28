@@ -102,29 +102,6 @@
 [help]
 	autocorrect = 1
 
-# Pushing over https is a pain due to password prompts, unless you set up a
-# .netrc, which is a security issue.
-[url "git@gist.github.com:"]
-	pushInsteadOf = https://gist.github.com/kergoth/
-	pushInsteadOf = https://gist.github.com/
-
-[url "git@github.com:"]
-	pushInsteadOf = https://github.com/
-	pushInsteadOf = http://github.com/
-	pushInsteadOf = git://github.com/
-
-[url "git@github.com:MentorEmbedded/meta-mentor-"]
-	insteadOf = https://github.com/MentorEmbedded/meta-mentor-
-
-[url "https://github.com/MentorEmbedded/meta-mentor"]
-	insteadOf = https://github.com/MentorEmbedded/meta-mentor
-
-[url "https://github.com/MentorEmbedded/meta-sourcery"]
-	insteadOf = https://github.com/MentorEmbedded/meta-sourcery
-
-[url "git@github.com:MentorEmbedded/"]
-	insteadOf = https://github.com/MentorEmbedded/
-
 [url "git@push.yoctoproject.org:"]
 	pushInsteadOf = git://git.yoctoproject.org/
 
@@ -134,6 +111,12 @@
 [include]
 	path = config.alias
 	path = config.local
+
+[includeIf "gitdir:/"]
+	path = config.linux
+
+[includeIf "gitdir/i:C:/"]
+	path = config.windows
 
 [filter "lfs"]
 	clean = git-lfs clean %f

@@ -1,12 +1,28 @@
-if [ -h ~/.config/git ]; then
-    rm -f ~/.config/git
-fi
-mkdir -p ~/.config/git
-for i in ignore config* git-remote-dropbox.json; do
-    if [ -e $i ]; then
-        link $i ~/.config/git/$i
+link_git() {
+    if [ -h "$1" ]; then
+        rm -f "$1"
     fi
-done
+    mkdir -p "$1"
+    for i in ignore config* git-remote-dropbox.json; do
+        if [ -e "$i" ]; then
+            link "$i" "$1/$i"
+        fi
+    done
+}
+
+link_git ~/.config/git
+if [ "$OSTYPE" = WSL ] && [ -n "$USERPROFILE" ]; then
+    link_git "$USERPROFILE/.config/git"
+
+    touch "$USERPROFILE/.config/git/config.local"
+    git config -f "$USERPROFILE/.config/git/config.local" hub.protocol https
+fi
+
+if [ ! -e "$XDG_DATA_HOME/git-cinnabar" ]; then
+    git clone -b release https://github.com/glandium/git-cinnabar "$XDG_DATA_HOME/git-cinnabar"
+else
+    ( cd "$XDG_DATA_HOME/git-cinnabar" && git pull )
+fi
 
 touch ~/.config/git/config.local
 
@@ -15,11 +31,5 @@ case "$OSTYPE" in
         git config -f ~/.config/git/config.local --replace-all credential.helper osxkeychain
         ;;
 esac
-
-if [ ! -e "$XDG_DATA_HOME/git-cinnabar" ]; then
-    git clone -b release https://github.com/glandium/git-cinnabar "$XDG_DATA_HOME/git-cinnabar"
-else
-    ( cd "$XDG_DATA_HOME/git-cinnabar" && git pull )
-fi
 
 # vim: set ft=sh sts=4 sw=4 et :
