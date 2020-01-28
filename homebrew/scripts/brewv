@@ -105,9 +105,12 @@ fi
 
 tmpdir=$(mktemp -d -t "${0##*/}.XXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
-
 # Link any existing deps from master homebrew install
-if [ $use_from_master -eq 1 ] && command -v brew >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+if [ $use_from_master -eq 1 ]; then
+    if ! command -v jq >/dev/null 2>&1; then
+        echo >&2 "Error: jq is required to use -e"
+        exit 3
+    fi
     brew info --json --installed >"$tmpdir/json"
     brew_prefix="$(brew --prefix)"
     dependencies="$(brew_deps "$brewenv" | xargs)"
