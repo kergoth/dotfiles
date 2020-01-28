@@ -32,3 +32,5 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 
 # Disable the annoying beep
 Set-PSReadlineOption -BellStyle None
+
+New-Alias which get-command
