@@ -1,2 +1,6 @@
 [core]
 	pager = less
+
+[credential]
+	helper = manager
+	

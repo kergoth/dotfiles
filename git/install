@@ -30,6 +30,19 @@ case "$OSTYPE" in
     darwin*)
         git config -f ~/.config/git/config.local --replace-all credential.helper osxkeychain
         ;;
+    WSL)
+        if "$dotfilesdir/git/scripts/git-credential-manager" config >/dev/null 2>&1; then
+            git config -f ~/.config/git/config.local --replace-all credential.helper manager
+            git config -f ~/.config/git/config.local --unset include.path config.githubssh
+        else
+            echo >&2 "Note: no git-credential-manager installed, using ssh"
+            git config -f ~/.config/git/config.local --unset credential.helper manager
+            git config -f ~/.config/git/config.local include.path config.githubssh
+        fi
+        ;;
+    *)
+        git config -f ~/.config/git/config.local include.path config.githubssh
+        ;;
 esac
 
 # vim: set ft=sh sts=4 sw=4 et :
