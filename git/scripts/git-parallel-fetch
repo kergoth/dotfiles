@@ -1,4 +1,22 @@
 #!/bin/sh
 
+if command -v parallel >/dev/null 2>&1; then
+    if parallel -V 2>&1 | grep -q 'invalid option'; then
+        # moreutils parallel accepts input as arguments, not stdin
+        fetch() {
+            xargs -t parallel git fetch "$@" --
+        }
+    else
+        # GNU parallel
+        fetch() {
+            parallel -t git fetch "$@"
+        }
+    fi
+else
+    fetch() {
+        xargs -t git fetch
+    }
+fi
+
 export GIT_TERMINAL_PROMPT=0
-git remote | parallel -I"{}" git fetch "$@" "{}"
+git remote | fetch "$@"
