@@ -74,15 +74,19 @@ fi
 for repo; do
     repo="${repo%/}"
     case "$repo" in
+        *github.com:*)
+            repo="${repo#*github.com:}"
+            ;;
         *://github.com/*)
             repo="${repo#*://github.com/}"
-            repo="${repo%/.git}"
             ;;
         *://*)
             echo >&2 "Unrecognized url: $repo"
             exit 1
             ;;
     esac
+    repo="${repo%/.git}"
+    repo="${repo%.git}"
 
     if [ $all_forks -eq 1 ]; then
         # Walk up fork parents, recursively
