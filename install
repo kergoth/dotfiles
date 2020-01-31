@@ -203,6 +203,7 @@ link () {
                             ;;
                     esac
                     dotfile_dest="${dotfile_dest%/}.new"
+                    win_dotfile_dest="${win_dotfile_dest%/}.new"
                     rm -rf "$dotfile_dest"
                     # Fall through to the default logic
                     ;;
