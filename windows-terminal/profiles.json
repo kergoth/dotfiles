@@ -1,6 +1,7 @@
 {
     "$schema": "https://aka.ms/terminal-profiles-schema",
     "defaultProfile": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
+    "launchMode": "maximized",
     "profiles": {
         "defaults": {
             "colorScheme": "Dracula",
