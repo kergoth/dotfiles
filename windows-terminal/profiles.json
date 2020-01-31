@@ -138,167 +138,32 @@
         }
     ],
     "keybindings": [
-        {
-            "keys": [
-                "ctrl+shift+w"
-            ],
-            "command": "closeTab"
-        },
-        {
-            "keys": [
-                "ctrl+t"
-            ],
-            "command": "newTab"
-        },
-        {
-            "keys": [
-                "ctrl+shift+1"
-            ],
-            "command": "newTabProfile0"
-        },
-        {
-            "keys": [
-                "ctrl+shift+2"
-            ],
-            "command": "newTabProfile1"
-        },
-        {
-            "keys": [
-                "ctrl+shift+3"
-            ],
-            "command": "newTabProfile2"
-        },
-        {
-            "keys": [
-                "ctrl+shift+4"
-            ],
-            "command": "newTabProfile3"
-        },
-        {
-            "keys": [
-                "ctrl+shift+5"
-            ],
-            "command": "newTabProfile4"
-        },
-        {
-            "keys": [
-                "ctrl+shift+6"
-            ],
-            "command": "newTabProfile5"
-        },
-        {
-            "keys": [
-                "ctrl+shift+7"
-            ],
-            "command": "newTabProfile6"
-        },
-        {
-            "keys": [
-                "ctrl+shift+8"
-            ],
-            "command": "newTabProfile7"
-        },
-        {
-            "keys": [
-                "ctrl+shift+9"
-            ],
-            "command": "newTabProfile8"
-        },
-        {
-            "keys": [
-                "ctrl+tab"
-            ],
-            "command": "nextTab"
-        },
-        {
-            "keys": [
-                "ctrl+,"
-            ],
-            "command": "openSettings"
-        },
-        {
-            "keys": [
-                "ctrl+shift+tab"
-            ],
-            "command": "prevTab"
-        },
-        {
-            "keys": [
-                "ctrl+shift+down"
-            ],
-            "command": "scrollDown"
-        },
-        {
-            "keys": [
-                "ctrl+shift+pgdn"
-            ],
-            "command": "scrollDownPage"
-        },
-        {
-            "keys": [
-                "ctrl+shift+up"
-            ],
-            "command": "scrollUp"
-        },
-        {
-            "keys": [
-                "ctrl+shift+pgup"
-            ],
-            "command": "scrollUpPage"
-        },
-        {
-            "keys": [
-                "alt+1"
-            ],
-            "command": "switchToTab0"
-        },
-        {
-            "keys": [
-                "alt+2"
-            ],
-            "command": "switchToTab1"
-        },
-        {
-            "keys": [
-                "alt+3"
-            ],
-            "command": "switchToTab2"
-        },
-        {
-            "keys": [
-                "alt+4"
-            ],
-            "command": "switchToTab3"
-        },
-        {
-            "keys": [
-                "alt+5"
-            ],
-            "command": "switchToTab4"
-        },
-        {
-            "keys": [
-                "alt+6"
-            ],
-            "command": "switchToTab5"
-        },
-        {
-            "keys": [
-                "alt+7"
-            ],
-            "command": "switchToTab6"
-        },
-        {
-            "keys": [
-                "alt+8"
-            ],
-            "command": "switchToTab7"
-        },
-        {
-            "keys": [
-                "alt+9"
-            ],
-            "command": "switchToTab8"
-        }
+        { "keys": [ "ctrl+shift+w" ], "command": "closeTab" },
+        { "keys": [ "ctrl+t" ], "command": "newTab" },
+        { "keys": [ "ctrl+shift+1" ], "command": "newTabProfile0" },
+        { "keys": [ "ctrl+shift+2" ], "command": "newTabProfile1" },
+        { "keys": [ "ctrl+shift+3" ], "command": "newTabProfile2" },
+        { "keys": [ "ctrl+shift+4" ], "command": "newTabProfile3" },
+        { "keys": [ "ctrl+shift+5" ], "command": "newTabProfile4" },
+        { "keys": [ "ctrl+shift+6" ], "command": "newTabProfile5" },
+        { "keys": [ "ctrl+shift+7" ], "command": "newTabProfile6" },
+        { "keys": [ "ctrl+shift+8" ], "command": "newTabProfile7" },
+        { "keys": [ "ctrl+shift+9" ], "command": "newTabProfile8" },
+        { "keys": [ "ctrl+tab" ], "command": "nextTab" },
+        { "keys": [ "ctrl+," ], "command": "openSettings" },
+        { "keys": [ "ctrl+shift+tab" ], "command": "prevTab" },
+        { "keys": [ "ctrl+shift+down" ], "command": "scrollDown" },
+        { "keys": [ "ctrl+shift+pgdn" ], "command": "scrollDownPage" },
+        { "keys": [ "ctrl+shift+up" ], "command": "scrollUp" },
+        { "keys": [ "ctrl+shift+pgup" ], "command": "scrollUpPage" },
+        { "keys": [ "alt+1" ], "command": "switchToTab0" },
+        { "keys": [ "alt+2" ], "command": "switchToTab1" },
+        { "keys": [ "alt+3" ], "command": "switchToTab2" },
+        { "keys": [ "alt+4" ], "command": "switchToTab3" },
+        { "keys": [ "alt+5" ], "command": "switchToTab4" },
+        { "keys": [ "alt+6" ], "command": "switchToTab5" },
+        { "keys": [ "alt+7" ], "command": "switchToTab6" },
+        { "keys": [ "alt+8" ], "command": "switchToTab7" },
+        { "keys": [ "alt+9" ], "command": "switchToTab8" }
     ]
 }
