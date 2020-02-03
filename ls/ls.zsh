@@ -1,14 +1,18 @@
-if [[ -e "$DOTFILESDIR/ls/dir_colors" ]]; then
-    DIRCOLORS=$XDG_CONFIG_HOME/dir_colors
-fi
-
-if [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
-    if (( $+commands[gdircolors] )); then
-        eval "$(gdircolors -b ${=DIRCOLORS:+-b "$DIRCOLORS"})"
+if [[ -e "$DOTFILESDIR/ls/ls_colors" ]]; then
+    export LS_COLORS="$(cat "$DOTFILESDIR/ls/ls_colors")"
+else
+    if [[ -e "$DOTFILESDIR/ls/dir_colors" ]]; then
+        DIRCOLORS=$XDG_CONFIG_HOME/dir_colors
     fi
-fi
-if (( $+commands[dircolors] )); then
-    eval "$(dircolors -b ${=DIRCOLORS:+-b "$DIRCOLORS"})"
+
+    if [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
+        if (( $+commands[gdircolors] )); then
+            eval "$(gdircolors -b ${=DIRCOLORS:+-b "$DIRCOLORS"})"
+        fi
+    fi
+    if (( $+commands[dircolors] )); then
+        eval "$(dircolors -b ${=DIRCOLORS:+-b "$DIRCOLORS"})"
+    fi
 fi
 
 if (( $+commands[exa] )); then
