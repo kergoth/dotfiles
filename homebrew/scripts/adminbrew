@@ -1,13 +1,16 @@
+#!/bin/sh
+
+set -eu
+
 # Deal with macos non-admin user setups by using an admin user to perform brew
 # operations which require it, such as casks. Attempting to do all brew
 # operations as an admin user while working as a non-admin user causes
 # problems if you use brew to install zsh, due to the differing ownership of
 # the paths in `fpath`.
-local _args _brew
-local OSX_ADMIN_LOGNAME="${OSX_ADMIN_LOGNAME-archet}"
-if [[ -n $OSX_ADMIN_LOGNAME ]]; then
-    if [[ "$LOGNAME" = "$OSX_ADMIN_LOGNAME" ]]; then
-        command brew "$@"
+OSX_ADMIN_LOGNAME="${OSX_ADMIN_LOGNAME-archet}"
+if [ -n "$OSX_ADMIN_LOGNAME" ]; then
+    if [ "$LOGNAME" = "$OSX_ADMIN_LOGNAME" ]; then
+        brew "$@"
     else
         _brew="${ADMIN_HOMEBREW_PREFIX:-${HOMEBREW_PREFIX:-$(command brew --prefix)}}/bin/brew"
         _args="$(quote-args "$@")"
