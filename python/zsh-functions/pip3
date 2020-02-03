@@ -1,8 +1,0 @@
-case "$*" in
-    *--user*)
-        PIP_REQUIRE_VIRTUALENV= command pip3 "$@"
-        ;;
-    *)
-        command pip3 "$@"
-        ;;
-esac
