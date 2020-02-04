@@ -11,7 +11,7 @@ from pocket import Pocket
 def load_pocket_config():
     config = ConfigParser()
     with open(os.path.expanduser('~/.pocket-config')) as f:
-        config.readfp(f)
+        config.read_file(f)
     return config['pocket']
 
 
