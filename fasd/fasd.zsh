@@ -8,6 +8,9 @@ if (( $+commands[fasd] )); then
     source $fasd_cache
     unset fasd_cache
 
+    alias ff="fasd -f"
+    unalias f
+
     if [[ $OSTYPE =~ darwin* ]]; then
         alias o="a -e open"
     else
@@ -25,10 +28,10 @@ if (( $+commands[fasd] )); then
 
         _v_fzf () {
             local file
-            file="$(f -t -l -b viminfo "$1" | fzf -1 -0 --no-sort --tac +m)" && vim "${file}" || return 1
+            file="$(ff -t -l -b viminfo "$1" | fzf -1 -0 --no-sort --tac +m)" && vim "${file}" || return 1
         }
         alias v=_v_fzf
     else
-        alias v='f -t -e vim -b viminfo'
+        alias v='ff -t -e vim -b viminfo'
     fi
 fi
