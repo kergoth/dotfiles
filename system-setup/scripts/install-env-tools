@@ -40,16 +40,7 @@ pipv () {
 }
 
 pipv3 () {
-    pipv3_venv="$1"
-    shift
-    if pipx_installed "$pipv3_venv"; then
-        pipx upgrade "$pipv3_venv" || { echo >&2 "Error upgrading $pipv3_venv with pipx"; return 1; }
-    else
-        pipx install "$pipv3_venv" || { echo >&2 "Error installing $pipv3_venv with pipx"; return 1; }
-    fi
-    if [ $# -gt 0 ]; then
-        pipx runpip "$pipv3_venv" -q --disable-pip-version-check install --user -U "$@" || { echo >&2 "Error installing $* into $pipv3_venv with pipx"; return 1; }
-    fi
+    pipx-install "$@"
 }
 
 pip_install () {
