@@ -11,19 +11,21 @@ pcyamlpager () {
 }
 
 pcless () {
-    pin-cushion "$1" --format json | jq -C . | pager
+    pin-cushion "$@" --format json | jq -C . | pager
 }
 
 pc () {
     if [ -t 1 ]; then
-        pcless "$1"
+        pcless "$@"
     else
-        pin-cushion "$1" --format json | jq .
+        pin-cushion "$@" --format json | jq .
     fi
 }
 
 _pcposts () {
-    pc "posts/${1:-recent}" | jq '.posts | map({href, description, extended, tags, time})' | json2yaml
+    local posts=${1:-recent}
+    shift
+    pc "posts/$posts" "$@" | jq '.posts | map({href, description, extended, tags, time})' | json2yaml
 }
 
 pcposts () {
