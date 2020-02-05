@@ -1,0 +1,87 @@
+#!/bin/sh
+# shellcheck disable=SC2002
+
+set -eu
+
+usage() {
+    cat <<END >&2
+${0##*/} [options..] URL [URL..]"
+
+Options:
+  -t TAGS         Add specified tags
+  -r              Add recommended tags
+  -d DESCRIPTION  Manually specify description
+  -T TITLE        Manually specify title
+  -h              Show usage
+END
+    exit 2
+}
+
+tags=
+title=
+description=
+add_recommended_tags=0
+while getopts t:T:d:rh opt; do
+    case "$opt" in
+        t)
+            tags="$OPTARG"
+            ;;
+        T)
+            title="$OPTARG"
+            ;;
+        d)
+            description="$OPTARG"
+            ;;
+        r)
+            add_recommended_tags=1
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+
+tmpfile=$(mktemp -t "${0##*/}.XXXX")
+trap 'rm -f "$tmpfile"' EXIT INT TERM
+
+for url; do
+    http --check-status --ignore-stdin --timeout=2.5 --follow "$url" >"$tmpfile"
+
+    if [ -z "$title" ]; then
+        url_title="$(cat "$tmpfile" | pup title 'text{}' | tr -d '\n')"
+        if [ -z "$url_title" ]; then
+            url_title="$url"
+        fi
+    else
+        url_title="$title"
+    fi
+
+    if [ -z "$description" ]; then
+        url_description="$(cat "$tmpfile" | pup 'meta[name="description"]' 'attr{content}')"
+        if [ -z "$url_description" ]; then
+            url_description="$(cat "$tmpfile" | pup 'meta[property="og:description"]' 'attr{content}')"
+        fi
+    else
+        url_description="$description"
+    fi
+
+    if [ $add_recommended_tags -eq 1 ]; then
+        recommended_tags="$(pin-cushion --format json posts/suggest --url "$url" | jq -r '.[0].recommended')"
+        if [ "$recommended_tags" != null ]; then
+            if [ -n "$tags" ]; then
+                tags="$tags $recommended_tags"
+            else
+                tags="$recommended_tags"
+            fi
+        fi
+    fi
+
+    echo >&2 pin-cushion posts/add --url "$url" --replace no --tags "$tags" --description "$url_title" --extended "$url_description"
+    pin-cushion posts/add --url "$url" --replace no --tags "$tags" --description "$url_title" --extended "$url_description"
+done

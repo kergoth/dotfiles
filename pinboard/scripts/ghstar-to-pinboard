@@ -1,0 +1,3 @@
+#!/bin/sh
+
+hub api --paginate user/starred | jq -r '.[] | .html_url' | xargs "$(dirname "$0")/pinboard-add" -r -t github:starred
