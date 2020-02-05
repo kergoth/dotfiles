@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 # shellcheck disable=SC2002
 
-set -eu
+set -euo pipefail
 
 usage() {
     cat <<END >&2
@@ -50,38 +50,43 @@ fi
 tmpfile=$(mktemp -t "${0##*/}.XXXX")
 trap 'rm -f "$tmpfile"' EXIT INT TERM
 
+ret=0
 for url; do
-    http --check-status --ignore-stdin --timeout=2.5 --follow "$url" >"$tmpfile"
+    http --check-status --ignore-stdin --timeout=2.5 --follow "$url" >"$tmpfile" || :
 
-    if [ -z "$title" ]; then
-        url_title="$(cat "$tmpfile" | pup title 'text{}' | tr -d '\n')"
+    url_title="$title"
+    url_description="$description"
+    if [ -s "$tmpfile" ]; then
         if [ -z "$url_title" ]; then
-            url_title="$url"
+            url_title="$(cat "$tmpfile" | pup title 'text{}' | tr -d '\n')"
+            if [ -z "$url_title" ]; then
+                url_title="$url"
+            fi
         fi
-    else
-        url_title="$title"
-    fi
 
-    if [ -z "$description" ]; then
-        url_description="$(cat "$tmpfile" | pup 'meta[name="description"]' 'attr{content}')"
         if [ -z "$url_description" ]; then
-            url_description="$(cat "$tmpfile" | pup 'meta[property="og:description"]' 'attr{content}')"
+            url_description="$(cat "$tmpfile" | pup 'meta[name="description"]' 'attr{content}')"
+            if [ -z "$url_description" ]; then
+                url_description="$(cat "$tmpfile" | pup 'meta[property="og:description"]' 'attr{content}')"
+            fi
         fi
-    else
-        url_description="$description"
+    elif [ -z "$url_title" ]; then
+        url_title="$url"
     fi
 
+    url_tags="$tags"
     if [ $add_recommended_tags -eq 1 ]; then
-        recommended_tags="$(pin-cushion --format json posts/suggest --url "$url" | jq -r '.[0].recommended')"
+        recommended_tags="$(pin-cushion --format json posts/suggest --url "$url" | jq -r '.[0].recommended')" || :
         if [ "$recommended_tags" != null ]; then
-            if [ -n "$tags" ]; then
-                tags="$tags $recommended_tags"
+            if [ -n "$url_tags" ]; then
+                url_tags="$url_tags $recommended_tags"
             else
-                tags="$recommended_tags"
+                url_tags="$recommended_tags"
             fi
         fi
     fi
 
-    echo >&2 pin-cushion posts/add --url "$url" --replace no --tags "$tags" --description "$url_title" --extended "$url_description"
-    pin-cushion posts/add --url "$url" --replace no --tags "$tags" --description "$url_title" --extended "$url_description"
+    echo >&2 pin-cushion posts/add --url "$url" --replace no --tags "$url_tags" --description "$url_title" --extended "$url_description"
+    pin-cushion posts/add --url "$url" --replace no --tags "$url_tags" --description "$url_title" --extended "$url_description" || ret=$?
 done
+exit $ret
