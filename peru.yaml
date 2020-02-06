@@ -680,7 +680,7 @@ git module wsl-open:
     move:
         wsl-open.sh: wsl-open
     pick: wsl-open
-    rev: 3543d674ed20dab232377ad38e638a93539d9a80
+    rev: 0763788ab295e2cffa71cc8cb7fde39651b5d3ef
 
 git module vim-VimCompletesMe:
     url: https://github.com/ajh17/VimCompletesMe
