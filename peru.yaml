@@ -62,7 +62,7 @@ imports:
     vim-profiler: vim/scripts
     vitag: osx/scripts
     wget-finder: scripts
-    wsl-open: scripts
+    wsl-open: os-wsl/scripts
 
     chneukirchen-tools: .
     1t: scripts
