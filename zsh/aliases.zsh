@@ -180,3 +180,5 @@ zsh-profile-startup-stats () {
 # Global
 alias -g G='| grep'
 alias -g L='| less'
+alias -g X='| nlxargs'
+alias -g W='| while read -r '
