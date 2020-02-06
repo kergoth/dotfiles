@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if command -v pwsh.exe; then
+    alias powershell=pwsh.exe
+else
+    alias powershell=powershell.exe
+fi
+
+for arg; do
+    powershell -c "Import-Module Recycle; Remove-ItemSafely '$(wslpath -wa "$arg")'"
+done
