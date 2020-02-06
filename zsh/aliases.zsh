@@ -169,9 +169,6 @@ alias mmv="noglob zmv -W"
 # Suffixed for alias expansion
 alias funced="_funced "
 
-# Git
-alias wgit='git clone --recursive'
-
 # Startup time profiling
 alias zsh-profile-startup="PROFILE_STARTUP=true zsh -i -c exit"
 alias zsh-profile-startup-lines="PROFILE_STARTUP_LINES=true zsh -i -c exit"
