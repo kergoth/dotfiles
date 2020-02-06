@@ -150,7 +150,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: d375461a66f631d543da7750f38feb1c294bcffe
+    rev: 4a3ed3eb51c9a66e971a8c8e70887f7d2c429d26
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -203,7 +203,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 083f3c23ccad22b5d2bdabcbb8a076e8c695686b
+    rev: 460664018a8eaecd89fb2b095fad59c0e16f5f06
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -268,7 +268,7 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: dc4c4c22715c060a2babd5a5187004bdecbcdea7
+    rev: 467c3277884240f7b5430f8f4d600e3415c38f3b
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
@@ -298,7 +298,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: f5cf4fc8fbfbe6e02cb1ee700c035c073db4a5cb
+    rev: 0896036266dc951ac03c451f1097171a996eb412
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -733,7 +733,7 @@ git module vim-dracula:
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
-    rev: c31934f43f3d0c3d62665c00e8587cc97d764ec1
+    rev: 811a634420a0cb9023bb7afd1c8968a5aaf6a753
 
 git module git-get:
     url: https://github.com/pietvanzoen/git-get
@@ -785,7 +785,7 @@ git module alacritty:
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: 74039bde1249ad77fe8d2d85ec6eb1f363f5c511
+    rev: cbec5e415b721e5d5a8359ebed247ac39eb99721
 
 git module exa:
     url: https://github.com/ogham/exa
