@@ -38,10 +38,10 @@ if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && command -v conver
 fi
 
 cd "$tmpdir" || exit 1
-git clone https://github.com/petdance/ack2 \
-    && cd ack2 \
-    && "$dotfilesdir/perl/scripts/cpanmv" ack2 File::Next \
-    && eval "$("$dotfilesdir/perl/scripts/cpanmv-use" ack2)" \
+git clone https://github.com/petdance/ack3 \
+    && cd ack3 \
+    && "$dotfilesdir/perl/scripts/cpanmv" ack3 File::Next \
+    && eval "$("$dotfilesdir/perl/scripts/cpanmv-use" ack3)" \
     && perl Makefile.PL \
     && make ack-standalone \
     && cp -f ack-standalone "$dotfilesdir/scripts/ack"
