@@ -1,12 +1,19 @@
 #!/bin/sh
 
-if which trash >/dev/null 2>&1; then
-    alias remove="trash -v"
-else
-    alias remove=bgrm
-fi
+case "$(uname -r)" in
+    *-Microsoft)
+        alias remove=recycle
+        ;;
+    *)
+        if command -v trash >/dev/null 2>&1; then
+            alias remove="trash -v"
+        else
+            alias remove=bgrm
+        fi
+        ;;
+esac
 
-if which drop-external >/dev/null 2>&1; then
+if command -v drop-external >/dev/null 2>&1; then
     drop_external () {
         drop-external "$@"
     }
