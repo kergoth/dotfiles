@@ -35,3 +35,8 @@ Set-PSReadlineOption -BellStyle None
 
 New-Alias which get-command
 New-Alias recycle Remove-ItemSafely
+
+Remove-Alias rm
+Remove-Alias rmdir
+New-Alias rm Remove-ItemSafely
+New-Alias rmdir Remove-ItemSafely
