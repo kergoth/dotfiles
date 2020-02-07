@@ -1,6 +1,6 @@
 Import-Module DirColors
-
 Import-Module PSReadLine
+Import-Module Recycle
 
 # I prefer emacs readline behavior
 Set-PSReadLineOption -EditMode Emacs
@@ -34,3 +34,4 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 Set-PSReadlineOption -BellStyle None
 
 New-Alias which get-command
+New-Alias recycle Remove-ItemSafely
