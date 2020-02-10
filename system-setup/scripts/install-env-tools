@@ -127,9 +127,10 @@ pipv3 flake8 pep8-naming flake8-docstrings
 
 ## Formatters
 pipv3 yapf
+GO111MODULE=on go get -u mvdan.cc/sh/v3/cmd/shfmt
+go get -u github.com/shurcooL/markdownfmt
 # autopep8 - format code per pep8
 # https://pypi.python.org/pypi/docformatter - format docstrings per pep257
-go get -u github.com/shurcooL/markdownfmt
 #npmv pretty-js
 #luav formatter
 
