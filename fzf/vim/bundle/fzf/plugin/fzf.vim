@@ -119,11 +119,41 @@ let s:default_layout = { 'down': '~40%' }
 let s:layout_keys = ['window', 'up', 'down', 'left', 'right']
 let s:fzf_go = s:base_dir.'/bin/fzf'
 let s:fzf_tmux = s:base_dir.'/bin/fzf-tmux'
-let s:install = s:base_dir.'/install'
 let s:installed = 0
 
 let s:cpo_save = &cpo
 set cpo&vim
+
+function! s:download_bin()
+  if s:installed
+    return 0
+  endif
+
+  if s:is_win && !has('win32unix')
+    let script = s:base_dir.'/install.ps1'
+    if !filereadable(script)
+      return 0
+    endif
+    let script = 'powershell -ExecutionPolicy Bypass -file ' . script
+  else
+    let script = s:base_dir.'/install'
+    if !executable(script)
+      return 0
+    endif
+    let script .= ' --bin'
+  endif
+
+  if input('fzf executable not found. Download binary? (y/n) ') !~? '^y'
+    return 0
+  end
+
+  redraw
+  echo
+  call s:warn('Downloading fzf binary. Please wait ...')
+  let s:installed = 1
+  call system(script)
+  return v:shell_error == 0
+endfunction
 
 function! s:fzf_exec()
   if !exists('s:exec')
@@ -131,18 +161,7 @@ function! s:fzf_exec()
       let s:exec = s:fzf_go
     elseif executable('fzf')
       let s:exec = 'fzf'
-    elseif s:is_win && !has('win32unix')
-      call s:warn('fzf executable not found.')
-      call s:warn('Download fzf binary for Windows from https://github.com/junegunn/fzf-bin/releases/')
-      call s:warn('and place it as '.s:base_dir.'\bin\fzf.exe')
-      throw 'fzf executable not found'
-    elseif !s:installed && executable(s:install) &&
-          \ input('fzf executable not found. Download binary? (y/n) ') =~? '^y'
-      redraw
-      echo
-      call s:warn('Downloading fzf binary. Please wait ...')
-      let s:installed = 1
-      call system(s:install.' --bin')
+    elseif s:download_bin()
       return s:fzf_exec()
     else
       redraw
@@ -842,26 +861,49 @@ else
 endif
 
 function! s:popup(opts) abort
-  " Size and position
-  let width = float2nr(&columns * a:opts.width)
-  let height = float2nr(&lines * a:opts.height)
-  let row = float2nr((&lines - height) / 2)
-  let col = float2nr((&columns - width) / 2)
+  " Support ambiwidth == 'double'
+  let ambidouble = &ambiwidth == 'double' ? 2 : 1
 
-  " Border
-  let edges = get(a:opts, 'rounded', 1) ? ['╭', '╮', '╰', '╯'] : ['┌', '┐', '└', '┘']
-  let bar = repeat('─', width - 2)
-  let top = edges[0] .. bar .. edges[1]
-  let mid = '│' .. repeat(' ', width - 2) .. '│'
-  let bot = edges[2] .. bar .. edges[3]
-  let border = [top] + repeat([mid], height - 2) + [bot]
+  " Size and position
+  let width = min([max([0, float2nr(&columns * a:opts.width)]), &columns])
+  let width += width % ambidouble
+  let height = min([max([0, float2nr(&lines * a:opts.height)]), &lines - has('nvim')])
+  let row = float2nr(get(a:opts, 'yoffset', 0.5) * (&lines - height))
+  let col = float2nr(get(a:opts, 'xoffset', 0.5) * (&columns - width))
+
+  " Managing the differences
+  let row = min([max([0, row]), &lines - has('nvim') - height])
+  let col = min([max([0, col]), &columns - width])
+  let row += !has('nvim')
+  let col += !has('nvim')
+
+  " Border style
+  let style = get(a:opts, 'border', 'rounded')
+  if !has_key(a:opts, 'border') && !get(a:opts, 'rounded', 1)
+    let style = 'sharp'
+  endif
+
+  if style == 'horizontal'
+    let hor = repeat('─', width / ambidouble)
+    let mid = repeat(' ', width)
+    let border = [hor] + repeat([mid], height - 2) + [hor]
+    let margin = 0
+  else
+    let edges = style == 'sharp' ? ['┌', '┐', '└', '┘'] : ['╭', '╮', '╰', '╯']
+    let bar = repeat('─', width / ambidouble - 2)
+    let top = edges[0] .. bar .. edges[1]
+    let mid = '│' .. repeat(' ', width - 2 * ambidouble) .. '│'
+    let bot = edges[2] .. bar .. edges[3]
+    let border = [top] + repeat([mid], height - 2) + [bot]
+    let margin = 2
+  endif
 
   let highlight = get(a:opts, 'highlight', 'Comment')
   let frame = s:create_popup(highlight, {
     \ 'row': row, 'col': col, 'width': width, 'height': height, 'border': border
   \ })
   call s:create_popup('Normal', {
-    \ 'row': row + 1, 'col': col + 2, 'width': width - 4, 'height': height - 2
+    \ 'row': row + 1, 'col': col + margin, 'width': width - margin * 2, 'height': height - 2
   \ })
   if has('nvim')
     execute 'autocmd BufWipeout <buffer> bwipeout '..frame

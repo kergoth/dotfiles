@@ -150,11 +150,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 4a3ed3eb51c9a66e971a8c8e70887f7d2c429d26
+    rev: 9385a83811f6d99ccb4a339e7491f05ea5129eea
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 6358641181b0402a08b2ee7d3ebd8d564b537be8
+    rev: 94b6b5b8e58aeecd7587a973dbe110a352d7314d
     drop: ':chroma/*'
 
 git module zsh-history-substring-search:
@@ -251,7 +251,7 @@ git module vim-rsi:
 # asynchronous build and test dispatcher
 git module vim-dispatch:
     url: https://github.com/tpope/vim-dispatch
-    rev: 1206e1474fc613caeb1ba56d36b71d7f9f7760ac
+    rev: 3757ddad87073a6ded8c34dfabb28c325acf6c02
 
 # continuously updated session files
 git module vim-obsession:
@@ -298,7 +298,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0896036266dc951ac03c451f1097171a996eb412
+    rev: 9d7480ae3c109358ea0979626c6c9f68c79111c8
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -575,7 +575,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: 4afbf2f25dc0ce86b118261b0cfb904c80ae6ba0
+    rev: d6d2a0c77010db6a75a8942e2af9606971738c23
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -778,14 +778,14 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 3bcf9641eb2a8d39deda166579294ef515172d85
+    rev: 8037462895b4de98528a6b56c2f35d606150d3f3
 
 git module alacritty:
     url: https://github.com/jwilm/alacritty
     move:
         extra/completions/_alacritty: _alacritty
     pick: _alacritty
-    rev: cbec5e415b721e5d5a8359ebed247ac39eb99721
+    rev: 7ecf93ec7061869713ebaa07384ad7a935c4a4d5
 
 git module exa:
     url: https://github.com/ogham/exa
