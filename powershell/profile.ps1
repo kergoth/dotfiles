@@ -84,7 +84,7 @@ if (Get-Module -Listavailable -Name posh-alias)
     Add-Alias Reload-Profile '& $profile'
 }
 
-# Add pyenv-win to the Path if we have it. Note: can use setx to set it in the registry instead.
+$env:Path += ";$env:USERPROFILE/.cargo/bin"
 if (Test-Path "$env:USERPROFILE/.pyenv")
 {
     $env:PYENV = "$env:USERPROFILE/.pyenv/pyenv-win"
