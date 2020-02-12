@@ -11,7 +11,7 @@ if [ "$OSTYPE" = linux-gnu ]; then
     esac
 fi
 
-modules="PowerShellGet PSReadLine Recycle BurntToast"
+modules="PowerShellGet PSReadLine Recycle BurntToast ZLocation"
 cmds="powershell pwsh"
 if [ "$OSTYPE" = WSL ]; then
     cmds="$cmds powershell.exe pwsh.exe"
