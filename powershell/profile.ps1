@@ -1,5 +1,6 @@
 Import-Module PSReadLine
 Import-Module Recycle
+Import-Module posh-alias
 
 # Dracula Prompt configuration
 if (Get-Module -Listavailable -Name posh-git)
@@ -78,11 +79,7 @@ New-Alias rmdir Remove-ItemSafely -Force
 
 # Convenience
 New-Alias recycle Remove-ItemSafely -Force
-
-if (Get-Module -Listavailable -Name posh-alias)
-{
-    Add-Alias Reload-Profile '& $profile'
-}
+Add-Alias Reload-Profile '& $profile'
 
 $env:Path += ";$env:USERPROFILE/.cargo/bin"
 if (Test-Path "$env:USERPROFILE/.pyenv")
