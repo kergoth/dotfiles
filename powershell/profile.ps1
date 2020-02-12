@@ -34,11 +34,8 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 # Disable the annoying beep
 Set-PSReadlineOption -BellStyle None
 
-New-Alias which Get-Command
-New-Alias recycle Remove-ItemSafely
-New-Alias grep Select-String
-
-Remove-Alias rm
-Remove-Alias rmdir
-New-Alias rm Remove-ItemSafely
-New-Alias rmdir Remove-ItemSafely
+New-Alias which Get-Command -Force
+New-Alias grep Select-String -Force
+New-Alias recycle Remove-ItemSafely -Force
+New-Alias rm Remove-ItemSafely -Force
+New-Alias rmdir Remove-ItemSafely -Force
