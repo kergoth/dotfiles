@@ -1,6 +1,7 @@
 Import-Module DirColors
 Import-Module PSReadLine
 Import-Module Recycle
+Import-Module ZLocation
 
 # I prefer emacs readline behavior
 Set-PSReadLineOption -EditMode Emacs
