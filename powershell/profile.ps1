@@ -77,6 +77,15 @@ New-Alias grep Select-String -Force
 New-Alias rm Remove-ItemSafely -Force
 New-Alias rmdir Remove-ItemSafely -Force
 
+if (Get-Command bat)
+{
+    if (Test-Path alias:cat)
+    {
+        Remove-Alias cat
+    }
+    Add-Alias cat bat
+}
+
 # Convenience
 New-Alias recycle Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
