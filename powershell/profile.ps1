@@ -34,8 +34,17 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 # Disable the annoying beep
 Set-PSReadlineOption -BellStyle None
 
+# Linux/Mac command muscle memory
+New-Alias ls Get-ChildItem -Force
 New-Alias which Get-Command -Force
 New-Alias grep Select-String -Force
-New-Alias recycle Remove-ItemSafely -Force
 New-Alias rm Remove-ItemSafely -Force
 New-Alias rmdir Remove-ItemSafely -Force
+
+# Convenience
+New-Alias recycle Remove-ItemSafely -Force
+
+if (Get-Module -Listavailable -Name posh-alias)
+{
+    Add-Alias Reload-Profile '& $profile'
+}
