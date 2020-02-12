@@ -274,7 +274,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: f850bc53a0626863b1f8bc9fcc26cec44c00863c
+    sha1: df16155eba2b43e8b7ba0b370aeccdfbb5b74c60
 
 git module smem:
     url: https://github.com/kwkroeger/smem
