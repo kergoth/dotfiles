@@ -1,7 +1,25 @@
-Import-Module DirColors
 Import-Module PSReadLine
 Import-Module Recycle
 Import-Module ZLocation
+
+# Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
+Set-PSReadlineOption -Color @{
+    "Command" = [ConsoleColor]::Green
+    "Parameter" = [ConsoleColor]::Gray
+    "Operator" = [ConsoleColor]::Magenta
+    "Variable" = [ConsoleColor]::White
+    "String" = [ConsoleColor]::Yellow
+    "Number" = [ConsoleColor]::Blue
+    "Type" = [ConsoleColor]::Cyan
+    "Comment" = [ConsoleColor]::DarkCyan
+}
+
+# DirColors configuration
+if (Test-Path "$env:USERPROFILE/dotfiles/ls/ls_colors")
+{
+    $env:LS_COLORS = Get-Content "$env:USERPROFILE/dotfiles/ls/ls_colors"
+    Import-Module DirColors
+}
 
 # I prefer emacs readline behavior
 Set-PSReadLineOption -EditMode Emacs
