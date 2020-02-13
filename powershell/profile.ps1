@@ -32,12 +32,25 @@ Set-PSReadlineOption -Color @{
     "Comment" = [ConsoleColor]::DarkCyan
 }
 
-# DirColors configuration
-if (Test-Path "$env:USERPROFILE/dotfiles/ls/ls_colors")
+if (-Not $env:DOTFILESDIR)
 {
-    $env:LS_COLORS = Get-Content "$env:USERPROFILE/dotfiles/ls/ls_colors"
-    Import-Module DirColors
+    if (Test-Path "$env:USERPROFILE/dotfiles")
+    {
+        $env:DOTFILESDIR = "$env:USERPROFILE/dotfiles"
+    }
+
+    if (Test-Path "$env:HOME/.dotfiles")
+    {
+        $env:DOTFILESDIR = "$env:HOME/.dotfiles"
+    }
 }
+
+# DirColors configuration
+if (Test-Path "$env:DOTFILESDIR/ls/ls_colors")
+{
+    $env:LS_COLORS = Get-Content "$env:DOTFILESDIR/ls/ls_colors"
+}
+Import-Module DirColors
 
 # I prefer emacs readline behavior
 Set-PSReadLineOption -EditMode Emacs
