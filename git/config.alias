@@ -79,9 +79,11 @@
 	# remove changes to a file from the index
 	unstage = reset HEAD --
 
-	# revert a file or files to the version in the index
+	# revert a file or files to the version in the index/HEAD
 	revert-file = checkout --
-	rf = checkout --
+	rf = revert-file
+	revert-file-commit = checkout HEAD --
+	rfc = revert-file-commit
 
 	# Amend the current commit, but don't prompt to edit the commit message
 	amend = commit --amend -C HEAD
