@@ -18,10 +18,10 @@ if [ "$OSTYPE" = WSL ]; then
 fi
 for cmd in $cmds; do
     if command -v "$cmd" >/dev/null 2>&1; then
-        command "$cmd" -Command "Install-PackageProvider -Name NuGet -Scope CurrentUser" >/dev/null 2>&1 || :
+        "$cmd" -NoProfile -Command "Install-PackageProvider -Name NuGet -Scope CurrentUser" >/dev/null 2>&1 || :
         for module in $modules; do
-            if ! command "$cmd" -Command "Import-Module '$module'" >/dev/null 2>&1; then
-                if ! command "$cmd" -Command "Install-Module -Name '$module' -Confirm -Scope CurrentUser"; then
+            if ! "$cmd" -NoProfile -Command "Import-Module '$module'" >/dev/null 2>&1; then
+                if ! "$cmd" -NoProfile -Command "Install-Module -Name '$module' -Scope CurrentUser -Confirm"; then
                     echo >&2 "Error installing powershell module $module for $cmd"
                 fi
             fi
