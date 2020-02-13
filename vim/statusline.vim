@@ -88,19 +88,6 @@ function! Statusline_Filename_Modified()
   return filename . modified
 endfunction
 
-function! Statusline_Pwd()
-  if &filetype ==# 'dirvish'
-    return ''
-  endif
-
-  let pwd = fnamemodify(getcwd(), ':~')
-  try
-    let pwd = pathshorten(pwd)
-  catch
-  endtry
-  return pwd
-endfunction
-
 function! Statusline_Readonly()
   return &readonly && &filetype !=# 'help' ? 'RO' : ''
 endfunction
