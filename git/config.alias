@@ -27,12 +27,29 @@
 	ri = revise -i
 	rc = rebase --continue
 	redate = rebase -f --ignore-date
-	tree = show-tree
 	source = remote get-url origin
-	tree-since-head = "!git show-tree --since=\"$(git diff-tree --pretty=format:%cd HEAD)\""
-	recent-tree = show-tree --since=last\\ week
 	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
 	fetch-noprompt = "!f() { GIT_SSH_COMMAND=\"ssh -oBatchMode=yes\" GIT_TERMINAL_PROMPT=0 git fetch \"$@\"; }; f"
+
+	# Pretty one line logs
+	lg = log --graph --pretty=lg --date=short
+	lgo = !git lga ^HEAD
+	lga = !git lg --all
+	l = !git lg -n25
+	ejlg = "!f(){ GIT_PAGER=\"emojify | $(git config core.pager || echo less -RFX)\" git lg \"$@\"; }; f"
+
+	# Log of all dangling commits
+	dangling = !git fsck | sed -n 's/^dangling commit //p' | git log --stdin --no-walk -g --first-parent -m -p
+	lgd = !git dangling
+
+	# Trimmed log with stat
+	logstat = log --compact-summary --stat=,,20
+
+	# History tree
+	show-tree = lg --all --decorate --simplify-by-decoration
+	tree = show-tree
+	tree-since-head = "!git show-tree --since=\"$(git diff-tree --pretty=format:%cd HEAD)\""
+	recent-tree = show-tree --since=last\\ week
 
 	# Hub
 	browse = !hub browse
@@ -72,21 +89,6 @@
 
 	# Clean out the ignored files (i.e. to rebuild)
 	iclean = xclean -Xf
-
-	# Pretty one line logs
-	lg = log --graph --pretty=lg --date=short
-	show-tree = lg --all --decorate --simplify-by-decoration
-	lgo = !git lga ^HEAD
-	lga = !git lg --all
-	l = !git lg -n25
-	ejlg = "!f(){ GIT_PAGER=\"emojify | $(git config core.pager || echo less -RFX)\" git lg \"$@\"; }; f"
-
-	# Log of all dangling commits
-	dangling = !git fsck | sed -n 's/^dangling commit //p' | git log --stdin --no-walk -g --first-parent -m -p
-	lgd = !git dangling
-
-	# Trimmed log with stat
-	logstat = log --compact-summary --stat=,,20
 
 	# Remove existing files from the index
 	forget = update-index --force-remove
