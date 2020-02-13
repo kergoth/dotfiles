@@ -19,6 +19,9 @@
 	singlekey = true
 	diffFilter = diff-highlight
 
+[pretty]
+	lg = format:%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset
+
 [pull]
 	ff = only
 
