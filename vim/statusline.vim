@@ -22,7 +22,9 @@ endfunction
 
 function! GetHighlightInfo(group) abort
   let ExistingHighlight = GetHighlightLine(a:group)
-  let output = execute('hi ' . a:group)
+  redir => output
+  exe 'silent hi ' . a:group
+  redir END
   let list = split(output, '\s\+')
   let dict = {}
   for item in list
