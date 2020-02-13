@@ -15,13 +15,13 @@
 	id = rev-parse
 	ls = ls-files --exclude-standard
 	lsi = ls-files --exclude-standard --directory -oi
+	ignored = lsi
 	llr = "!f() { cd \"$GIT_PREFIX\" && git ls-files -z --exclude-standard \"$@\" | xargs -0 -n1 -I{} -- git log -1 --format=\"%ai {}\" -- \"{}\" | sort; }; f"
 	ll = "!f() { cd \"$GIT_PREFIX\" && git ls-tree -z --name-only HEAD \"$@\" | xargs -0 -n1 -I{} -- git log -1 --format=\"%ai {}\" -- \"{}\" | sort; }; f"
 	lsl = ll
 	d = diff
 	dc = diff --cached
 	staged = diff --cached
-	ignored = lsi
 	r = remote -v
 	fetchall = fetch --all
 	b = branch -v
@@ -58,11 +58,13 @@
 	create = !hub create
 	delete = !hub delete
 	fork = !hub fork
-	issue = !hub issue
-	pr = !hub pr
 	pull-request = !hub pull-request
-	pull-requests = !hub pr list
 	release = !hub release
+
+	# Github CLI
+	issue = !gh issue
+	pr = !gh pr
+	pull-requests = pr list
 
 	# Update without merge commits
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
