@@ -120,9 +120,6 @@
 	# Pretty one line log showing commits in the last hour/day/week/month/etc
 	last = "!f(){ if [ $# -gt 0 ]; then since="$1"; shift; else since="week"; fi; git lg --since=\"last $since\" "$@"; }; f"
 
-	# example: git subdo pull
-	subdo = submodule foreach git
-
 	# Merge the contents of the previous HEAD ref (via reflog)
 	merge-old-head = merge --ff HEAD@{1}
 
@@ -185,6 +182,9 @@
 
 	# For each submodule
 	subs = submodule foreach --recursive
+
+	# example: git subdo pull
+	subdo = submodule foreach --recursive git
 
 	# Update submodules
 	update-subs = submodule foreach --recursive "git fetch && git checkout `git remote-ref`"
