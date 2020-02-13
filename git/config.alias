@@ -72,7 +72,7 @@
 	# Update with rebase, re-applying merges
 	upr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
 	purr = !git upr
-	sync = !git purr && git push && git --no-pager lc
+	sync = "!f(){ orig_rev=\"$(git rev-parse HEAD)\"; git purr && git push && git --no-pager log \"${orig_rev:-ORIG_HEAD}..\" --stat --no-merges \"$@\"; }; f"
 
 	# Push with lease
 	please = push --force-with-lease
