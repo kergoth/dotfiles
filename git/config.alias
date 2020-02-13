@@ -15,7 +15,8 @@
 	id = rev-parse
 	ls = ls-files --exclude-standard
 	lsi = ls-files --exclude-standard --directory -oi
-	ll = "!f() { cd \"$GIT_PREFIX\" && git ls-files -z --exclude-standard \"$@\" | xargs -0 -n1 -I{} -- git log -1 --format=\"%ai {}\" -- \"{}\" | sort; }; f"
+	llr = "!f() { cd \"$GIT_PREFIX\" && git ls-files -z --exclude-standard \"$@\" | xargs -0 -n1 -I{} -- git log -1 --format=\"%ai {}\" -- \"{}\" | sort; }; f"
+	ll = "!f() { cd \"$GIT_PREFIX\" && git ls-tree -z --name-only HEAD \"$@\" | xargs -0 -n1 -I{} -- git log -1 --format=\"%ai {}\" -- \"{}\" | sort; }; f"
 	lsl = ll
 	d = diff
 	dc = diff --cached
