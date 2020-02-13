@@ -149,7 +149,7 @@
 	empty-branch = "!sh -e -c 'git symbolic-ref HEAD \"refs/heads/$1\"; rm -f $(git rev-parse --git-dir)/index; git clean -fdx' \"$@\""
 
 	# Edit the unmerged files
-	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; $EDITOR `f`"
+	edit-unmerged = jump merge
 
 	# Compare two commits with interdiff (used to compare two commits which implement the same feature, for example)
 	intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
