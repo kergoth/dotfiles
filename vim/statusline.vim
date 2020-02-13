@@ -50,25 +50,24 @@ function! CopyItems(from, to, ...) abort
   endfor
 endfunction
 
-let s:statusline = GetHighlightInfo('StatusLine')
 function! NewStatuslineGroup() abort
   let new_highlight_group = {}
   call CopyItems(s:statusline, new_highlight_group, 'ctermbg', 'guibg')
   return new_highlight_group
 endfunction
 
-" Use Comment and Number fg as bg, with legible text
-exe 'hi User1 ' . GetHighlightLine('Comment') . ' gui=reverse cterm=reverse guibg=white ctermbg=white'
-exe 'hi User2 ' . GetHighlightLine('Number') . ' gui=reverse cterm=reverse guibg=black ctermbg=black'
+function! SetStatuslineColors() abort
+  let s:statusline = GetHighlightInfo('StatusLine')
 
-" Use Identifier's fg on Statusline's bg
-let user3 = NewStatuslineGroup()
-let identifier = GetHighlightInfo('Identifier')
-call CopyItems(identifier, user3, 'ctermfg', 'guifg')
-exe 'hi User3 ' . ToHighlight(user3)
+  " Use Comment and Number fg as bg, with legible text
+  exe 'hi User1 ' . GetHighlightLine('Comment') . ' gui=reverse cterm=reverse guibg=white ctermbg=white'
+  exe 'hi User2 ' . GetHighlightLine('Number') . ' gui=reverse cterm=reverse guibg=black ctermbg=black'
 
-function! Statusline_Readonly()
-  return &readonly && &filetype !=# 'help' ? 'RO' : ''
+  " Use Identifier's fg on Statusline's bg
+  let user3 = NewStatuslineGroup()
+  let identifier = GetHighlightInfo('Identifier')
+  call CopyItems(identifier, user3, 'ctermfg', 'guifg')
+  exe 'hi User3 ' . ToHighlight(user3)
 endfunction
 
 function! Statusline_Filename_Modified()
@@ -102,6 +101,11 @@ function! Statusline_Pwd()
   return pwd
 endfunction
 
+function! Statusline_Readonly()
+  return &readonly && &filetype !=# 'help' ? 'RO' : ''
+endfunction
+
+
 set statusline=
 set statusline+=%2*%(\ %{&paste?'PASTE':''}\ %)%*
 set statusline+=%3*
@@ -121,8 +125,12 @@ set statusline+=%(\ %{&fileencoding!=#'utf-8'?&fileencoding:''}\ %)   " file enc
 
 let g:statusline_quickfix = "%t%{exists('w:quickfix_title')?' '.w:quickfix_title:''}"
 
-" Remove the position info from the quickfix statusline
 augroup vimrc_statusline
   au!
+  " Remove the position info from the quickfix statusline
   au BufWinEnter quickfix if exists('g:statusline_quickfix') | let &l:statusline = g:statusline_quickfix | endif
+  " Set User colors based on the color scheme
+  au ColorScheme call SetStatuslineColors()
 augroup END
+
+call SetStatuslineColors()
