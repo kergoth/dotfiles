@@ -52,15 +52,16 @@ main () {
     done
 
     while read -r item; do
-        if [ "${item%bgrm.}" != "$item" ]; then
-            # Existing bgrm directories can presumably be skipped
-            continue
+        base="$(basename "$item")"
+        if [ "${base#bgrm.}" == "$item" ]; then
+            tmpdir="$item"
+        else
+            dir="$(dirname "$item")"
+            tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
+            mv "$item" "$tmpdir/"
         fi
 
-        dir="$(dirname "$item")"
-        tmpdir="$(mktemp -d "$dir/bgrm.XXXXXX")" || exit 1
-
-        if mv "$item" "$tmpdir/"; then
+        if [ $? -eq 0 ]; then
             touch "$tmpdir/errors.log"
             tail -f "$tmpdir/errors.log" >&2 &
             nohup sh -c "if [ -n \"$delay\" ]; then sleep \"$delay\"; fi && $rm_cmd \"$tmpdir\" 2>>\"$tmpdir/errors.log\"; kill \"$!\"" >/dev/null 2>&1 </dev/null &
