@@ -28,6 +28,7 @@
 	rc = rebase --continue
 	redate = rebase -f --ignore-date
 	tree = show-tree
+	source = remote get-url origin
 	tree-since-head = "!git show-tree --since=\"$(git diff-tree --pretty=format:%cd HEAD)\""
 	recent-tree = show-tree --since=last\\ week
 	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
