@@ -127,10 +127,6 @@
 	# Show repo root
 	root = rev-parse --show-toplevel
 
-	# Repo local task lists
-	bug = !t.py -t $(git root) -l BUGS
-	todo = !t.py -t $(git root) -l TODO
-
 	# show list of contributors in descending order by number of commits
 	authors = shortlog -sne --no-merges
 
