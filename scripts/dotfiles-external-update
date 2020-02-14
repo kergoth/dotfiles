@@ -22,8 +22,8 @@ if ! which peru >/dev/null 2>&1; then
 fi
 PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 
-"$dotfilesdir/peru" reup -f || echo >&2 "peru reup failed"
-"$dotfilesdir/peru" sync -f || die "peru sync failed"
+"$dotfilesdir/script/peru" reup -f || echo >&2 "peru reup failed"
+"$dotfilesdir/script/peru" sync -f || die "peru sync failed"
 
 if [ -e git/scripts/diff-highlight.perl ]; then
     echo '#!/usr/bin/env perl' >scripts/diff-highlight

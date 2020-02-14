@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH="$(dirname "$0")/scripts:$PATH"
+PATH="$(dirname "$(dirname "$0")")/scripts:$PATH"
 
 untracked="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
 trap 'rm -f "$untracked"' EXIT INT TERM
