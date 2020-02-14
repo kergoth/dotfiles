@@ -146,11 +146,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9385a83811f6d99ccb4a339e7491f05ea5129eea
+    rev: 081493e5f1426e4dac6c90acbdbf35dc41abaf6d
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 94b6b5b8e58aeecd7587a973dbe110a352d7314d
+    rev: df3144002c73d241bd89f993efddf2afd65b75c6
     drop: ':chroma/*'
 
 git module zsh-history-substring-search:
@@ -186,7 +186,7 @@ git module git-cherry-tree:
 git module iln:
     url: https://github.com/kergoth/iln
     pick: iln
-    rev: 154070411ec9a059e58d0dec8b00a36769cecae7
+    rev: 7a0712f318b0395a0711be09d6058efe625cf303
 
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen
@@ -266,7 +266,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: df16155eba2b43e8b7ba0b370aeccdfbb5b74c60
+    sha1: 7402a63e2f50498ab9aaa80f20b1e13f6d3e6b61
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -290,7 +290,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 9d7480ae3c109358ea0979626c6c9f68c79111c8
+    rev: 5b99f19dac5dfcdf1cbb322a73406e1edeb9ae23
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -630,7 +630,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: 36cf91934e7be4cb9d5a6ad9d47915668a8d4e66
+    rev: b6ab6e39d34ebc968b09f4ad96c7c8bd19f59f55
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -750,7 +750,7 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: 8037462895b4de98528a6b56c2f35d606150d3f3
+    rev: dd523255cc67780f2e073136d7f44978f96534a7
 
 git module exa:
     url: https://github.com/ogham/exa
