@@ -15,9 +15,7 @@ if [ -d "$ff_profileroot" ]; then
         profiledir="${places%/*}"
         if [ -d "$profiledir" ]; then
             link user-overrides.js "$profiledir/user-overrides.js"
-            if ! [ -e "$profiledir/updater.sh" ]; then
-                curl -fsSL https://github.com/ghacksuserjs/ghacks-user.js/raw/master/updater.sh -o "$profiledir/updater.sh"
-            fi
+            link updater.sh "$profiledir/updater.sh"
             if ! [ -e "$profiledir/user.js" ]; then
                 ( cd "$profiledir" && bash ./updater.sh; )
             fi

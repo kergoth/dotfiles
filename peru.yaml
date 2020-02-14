@@ -129,6 +129,7 @@ imports:
     bat-theme-dracula: bat/themes/Dracula
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
+    ghacksuserjs: firefox
 
 curl module archlinux-icons:
     url: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
@@ -807,3 +808,9 @@ git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
     rev: d3cb20612b30d453c4385c933000167120e44723
+
+git module ghacksuserjs:
+    url: https://github.com/ghacksuserjs/ghacks-user.js
+    pick: updater.sh
+    executable: updater.sh
+    rev: 5f3e3b2691d0348cbd9ab7f33172fe6d05657ca1
