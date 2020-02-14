@@ -75,7 +75,7 @@ for topic; do
     esac
     if [ -e "$topic/install" ]; then
         install_force="$force" do_install "$topic/install" || ret=$?
-    else
+    elif ! [ -e "$topic" ]; then
         echo >&2 "Topic $topic does not exist"
         ret=1
     fi
