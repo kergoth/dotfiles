@@ -33,7 +33,7 @@ if [ -e git/scripts/diff-highlight.perl ]; then
     chmod +x scripts/diff-highlight
 fi
 
-if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && command -v convert >/dev/null 2>&1; then
+if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && ! [ -e windows-terminal/files/archlinux-icon-crystal.png ] && command -v convert >/dev/null 2>&1; then
     convert windows-terminal/files/archlinux-icon-crystal.svg -resize 32x32 windows-terminal/files/archlinux-icon-crystal.png
 fi
 
