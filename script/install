@@ -10,8 +10,9 @@ usage() {
 ${0##*/} [options..] [TOPIC..]"
 
 Options:
-  -f   Force install, overwriting any existing files.
-  -h   Show usage
+  -f                 Force install, overwriting any existing files.
+  -x EXCLUDED_TOPIC  Topic to exclude. Cumulative.
+  -h                 Show usage
 END
     exit 2
 }
@@ -34,10 +35,14 @@ list_topics () {
 }
 
 force=0
-while getopts fh opt; do
+exclude=
+while getopts fx:h opt; do
     case "$opt" in
         f)
             force=1
+            ;;
+        x)
+            exclude="$exclude $OPTARG "
             ;;
         \? | h)
             usage
@@ -59,9 +64,15 @@ mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME/.
 
 ret=0
 for topic; do
-    if [ "$(basename "$topic")" = local ]; then
+    base="$(basename "$topic")"
+    if [ "$base" = local ]; then
         continue
     fi
+    case "$exclude" in
+        *\ $topic\ *)
+            continue
+            ;;
+    esac
     if [ -e "$topic/install" ]; then
         install_force="$force" do_install "$topic/install" || ret=$?
     fi
