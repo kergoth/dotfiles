@@ -1,7 +1,4 @@
 link_git() {
-    if [ -h "$1" ]; then
-        rm -f "$1"
-    fi
     mkdir -p "$1"
     for i in ignore config* git-remote-dropbox.json; do
         if [ -e "$i" ]; then
@@ -11,21 +8,20 @@ link_git() {
 }
 
 link_git ~/.config/git
-if [ "$OSTYPE" = WSL ] && [ -n "$USERPROFILE" ]; then
-    link_git "$USERPROFILE/.config/git"
-
-    touch "$USERPROFILE/.config/git/config.local"
-    git config -f "$USERPROFILE/.config/git/config.local" hub.protocol https
-fi
 
 touch ~/.config/git/config.local
-
 case "$OSTYPE" in
     darwin*)
         git config -f ~/.config/git/config.local --replace-all credential.helper osxkeychain
         ;;
     WSL)
-        if "$dotfilesdir/git/scripts/git-credential-manager" config >/dev/null 2>&1; then
+        if [ -n "$USERPROFILE" ]; then
+            link_git "$USERPROFILE/.config/git"
+
+            touch "$USERPROFILE/.config/git/config.local"
+            git config -f "$USERPROFILE/.config/git/config.local" hub.protocol https
+        fi
+        if ../git/scripts/git-credential-manager config >/dev/null 2>&1; then
             git config -f ~/.config/git/config.local --replace-all credential.helper manager
             git config -f ~/.config/git/config.local --unset include.path config.githubssh
         else
