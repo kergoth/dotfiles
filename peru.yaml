@@ -14,7 +14,6 @@ imports:
     iterm2-zsh: iterm2
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
-    alacritty: alacritty/zsh-functions
     exa: ls/zsh-functions
 
     # Scripts
@@ -39,8 +38,6 @@ imports:
     git: git/scripts
     gitvoodoo: git/scripts
     hardlinkpy: scripts
-    i3-urgent-notify: i3/scripts
-    i3-alternating-layout: i3/scripts
     icdiff: .
     iln: scripts
     md-inline2ref: scripts
@@ -51,7 +48,6 @@ imports:
     pyenv-installer: system-setup/scripts
     dev-goodies: git/scripts
     repo: git/scripts
-    rofi-tools: i3/scripts
     rpm2cpio: scripts
     smem: scripts
     ssh-copy-rsub: scripts
@@ -642,13 +638,6 @@ git module zsh-zbell:
         zbell.sh: zbell.plugin.zsh
     rev: e0b06247f3ecd6ca3de341c54ba8d85de7ef6566
 
-git module i3-urgent-notify:
-    url: https://gist.github.com/4206d6098b5c698bdf5462efff23e55c
-    move:
-        i3-urgent-notify.py: i3-urgent-notify
-    executable: i3-urgent-notify
-    rev: c880c690a023fe28ab1e74b801db5641dde8cb2f
-
 git module vim-tmux-navigator:
     url: https://github.com/christoomey/vim-tmux-navigator
     rev: 8fdf78292bb3aed1c9de880be7e03efdbf23d306
@@ -656,12 +645,6 @@ git module vim-tmux-navigator:
 git module vim-tmux-focus-events:
     url: https://github.com/tmux-plugins/vim-tmux-focus-events
     rev: e80960715c09aef8ab9204848ed1683805a93a33
-
-git module rofi-tools:
-    url: https://github.com/okraits/rofi-tools
-    pick:
-        - rofi-power
-    rev: bdcd7d2ea685cdccacbfa2581a84023f0cfc5e83
 
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
@@ -685,13 +668,6 @@ git module vim-VimCompletesMe:
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
     rev: 7afd63b4552b0827622ae27ff4c9eca056dd3521
-
-git module i3-alternating-layout:
-    url: https://github.com/olemartinorg/i3-alternating-layout
-    move:
-        alternating_layouts.py: i3-alternating-layout
-    pick: i3-alternating-layout
-    rev: 5fa7b187cb1f878784f00e93643adfe480bd3f1e
 
 git module vim-profiler:
     url: https://github.com/bchretien/vim-profiler
@@ -775,13 +751,6 @@ git module zsh:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
     rev: 8037462895b4de98528a6b56c2f35d606150d3f3
-
-git module alacritty:
-    url: https://github.com/jwilm/alacritty
-    move:
-        extra/completions/_alacritty: _alacritty
-    pick: _alacritty
-    rev: 7ecf93ec7061869713ebaa07384ad7a935c4a4d5
 
 git module exa:
     url: https://github.com/ogham/exa
