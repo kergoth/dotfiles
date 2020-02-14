@@ -18,10 +18,6 @@ if [ "$OSTYPE" = WSL ] && [ -n "$USERPROFILE" ]; then
     git config -f "$USERPROFILE/.config/git/config.local" hub.protocol https
 fi
 
-if [ ! -e "$XDG_DATA_HOME/git-cinnabar" ]; then
-    git clone -b release https://github.com/glandium/git-cinnabar "$XDG_DATA_HOME/git-cinnabar"
-fi
-
 touch ~/.config/git/config.local
 
 case "$OSTYPE" in
