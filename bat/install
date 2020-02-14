@@ -28,7 +28,7 @@ if [ ! -e $cfgpath/syntaxes/Elixir ]; then
 fi
 
 if which bat >/dev/null 2>&1; then
-    bat cache --build
+    bat cache --build >/dev/null &
 fi
 
 link bat.conf $XDG_CONFIG_HOME/bat/config
