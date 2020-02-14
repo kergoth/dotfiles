@@ -239,7 +239,7 @@ link () {
 }
 
 homepath () {
-    echo "$@" | sed -e "s#^$HOME/#~/#"
+    echo "$@" | sed -e "s#^$HOME/#~/#" | if [ -n "$USERPROFILE" ]; then sed -e "s#^$USERPROFILE/#\$USERPROFILE/#"; else cat; fi
 }
 
 abspath () {
