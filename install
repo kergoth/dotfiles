@@ -367,7 +367,7 @@ PATH="$(dirname "$0"):$ASDF_DATA_DIR/shims:$PYENV_ROOT/bin:$PYENV_ROOT/shims:$HO
 do_install () {
     installscript="$1"
     installscriptdir="$(cd "$(dirname "$installscript")" && pwd)"
-    echo >&2 "Install $(relpath "$installscriptdir" "$dotfilesdir")"
+    echo >&2 "Install $(dirname "$installscript")"
     cd "${installscript%/*}"
     . "./${installscript##*/}"
     cd - >/dev/null
@@ -384,17 +384,12 @@ fi
 mkdir -p "$XDG_DATA_HOME/../bin"
 
 HOME="$DOTFILE_HOME"
-for installscript in "$dotfilesdir/"*/install; do
+cd "$dotfilesdir" || exit 1
+for installscript in */install; do
     installdir="${installscript%/*}"
     if echo "$exclude" | grep -qw "${installdir##*/}"; then
         continue
     fi
-    case "" in
-        "/local")
-            continue
-            ;;
-    esac
-
     do_install "$installscript"
 done
 
