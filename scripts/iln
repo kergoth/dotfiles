@@ -213,13 +213,18 @@ ln () {
         target="$(abspath "$target")"
         targetdir="${target%/*}"
         source="$(relpath "$targetdir" "$source")"
-
-        # Sanity check
-        resolved_path="$(normalize_path "$targetdir/$source")"
-        if [ ! -e "$resolved_path" ]; then
-            echo >&2 "Error: $resolved_path does not exist"
-            return 1
-        fi
+        case "$source" in
+            /*)
+                ;;
+            *)
+                # Sanity check
+                resolved_path="$(normalize_path "$targetdir/$source")"
+                if [ ! -e "$resolved_path" ]; then
+                    echo >&2 "Error: $resolved_path does not exist"
+                    return 1
+                fi
+                ;;
+        esac
     fi
 
     if [ $create_leading_dirs -eq 1 ]; then
