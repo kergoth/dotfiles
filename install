@@ -70,40 +70,6 @@ set_launchd () {
     fi
 }
 
-should_replace () {
-    if ! [ -e "$1" ] && ! [ -L "$1" ]; then
-        return 0
-    fi
-
-    if [ $force -eq 0 ]; then
-        while true; do
-            read -n 1 -p "Replace existing $1? [Y|n] " will_continue
-            printf "\n"
-            case "$will_continue" in
-                [yY]|"")
-                    return 0
-                    ;;
-                [nN])
-                    return 1
-                    ;;
-                *)
-                    echo >&2 "Invalid input '$will_continue'"
-                    ;;
-            esac
-        done
-    else
-        return 1
-    fi
-}
-
-relpath () {
-    python -c "import os,sys; print(os.path.relpath(*sys.argv[1:]) if os.path.commonprefix(sys.argv[1:]) != '/' else sys.argv[1])" "$@"
-}
-
-copy () {
-    link -c "$@"
-}
-
 link () {
     # Link a file to a destination using a relative path, with particular
     # convenience handling for dotfiles. ex.:
@@ -111,12 +77,6 @@ link () {
     # link zsh/.zshenv.redir ~/.zshenv.redir
     # link zshrc       # links to ~/.zshrc (relatively)
     # link config/curl # links to ~/.config/curl (relatively)
-    if [ "$1" = "-c" ]; then
-        copy=1
-        shift
-    else
-        copy=0
-    fi
     dotfile="$(abspath "$1")"
     if [ $# -gt 1 ]; then
         dotfile_dest="$(abspath "$2")"
@@ -132,110 +92,26 @@ link () {
         esac
     fi
     destdir="${dotfile_dest%/*}"
-    if [ "$destdir" != "$dotfile_dest" ]; then
-        mkdir -p "$destdir"
-    fi
-
-    if command -v python >/dev/null 2>&1; then
-        dotfile_relpath="$(relpath "$dotfile" "$destdir" 2>/dev/null)"
-
-        case "$dotfile_relpath" in
+    if [ $force -eq 1 ]; then
+        rm -f "$dotfile_dest"
+    elif [ -h "$dotfile_dest" ]; then
+        existing_dest="$(readlink "$dotfile_dest")"
+        case "$existing_dest" in
             /*)
                 ;;
             *)
-                # Sanity check
-                dotfile_resolved="$(normalize_path "${dotfile_dest%/*}/$dotfile_relpath")"
-                if [ ! -e "$dotfile_resolved" ]; then
-                    echo >&2 "Error: $dotfile_resolved does not exist"
-                    return 1
-                fi
+                existing_dest="$(normalize_path "$destdir/$existing_dest")"
                 ;;
         esac
-    else
-        dotfile_relpath="$dotfile"
-    fi
-
-    wsl_winpath=0
-    if [ $OSTYPE = WSL ]; then
-        win_dotfile_dest="$(wslpath -w "$dotfile_dest")"
-        case "$win_dotfile_dest" in
-            \\\\*)
-                ;;
-            *)
-                wsl_winpath=1
-                ;;
-        esac
-    fi
-
-    if [ -L "$dotfile_dest" ]; then
-        rm -f "$dotfile_dest"
-    elif [ $wsl_winpath -eq 1 ]; then
-        existing_dest="$(powershell.exe -c "(Get-Item $win_dotfile_dest).Target" 2>/dev/null)"
-        if [ -n "$existing_dest" ]; then
+        if [ "$existing_dest" != "$dotfile" ]; then
             rm -f "$dotfile_dest"
-        fi
-    fi
-
-    if [ -e "$dotfile_dest" ]; then
-        if [ $force -eq 1 ]; then
-            if command -v trash >/dev/null 2>&1; then
-                trash "$dotfile_dest"
-            else
-                rm -rf "$dotfile_dest"
-            fi
         else
-            echo >&2 "Warning: $dotfile_dest already exists"
-            read -r -n 1 -p "Replace $dotfile_dest? [Y|n] " will_continue
-            printf "\n"
-            case "$will_continue" in
-                [yY]|"")
-                    old="${dotfile_dest%/}.old"
-                    rm -rf "$old"
-                    mv "$dotfile_dest" "$old"
-                    echo >&2 "Removed $dotfile_dest (backed up as $old)"
-                    ;;
-                *)
-                    case "$will_continue" in
-                        [nN])
-                            ;;
-                        *)
-                            echo >&2 "Invalid input '$will_continue', not replacing"
-                            ;;
-                    esac
-                    dotfile_dest="${dotfile_dest%/}.new"
-                    win_dotfile_dest="${win_dotfile_dest%/}.new"
-                    rm -rf "$dotfile_dest"
-                    # Fall through to the default logic
-                    ;;
-            esac
+            return
         fi
     fi
-
-    if [ $copy -eq 1 ]; then
-        cp -R "$dotfile" "$dotfile_dest"
-        echo >&2 "Copied $dotfile_dest"
-    elif [ $wsl_winpath -eq 1 ]; then
-        win_dotfile="$(wslpath -w "$dotfile")"
-        case "$win_dotfile" in
-            \\\\*)
-                echo >&2 "Warning: $dotfile resides in a WSL path, copying rather than linking"
-                echo >&2 "         Consider placing the dotfiles in a windows path."
-                cp -R "$dotfile" "$dotfile_dest"
-                echo >&2 "Copied $dotfile_dest"
-                ;;
-            *)
-                if [ -d "$dotfile" ]; then
-                    cmd.exe /c mklink /d "$win_dotfile_dest" "$win_dotfile"
-                else
-                    cmd.exe /c mklink "$win_dotfile_dest" "$win_dotfile"
-                fi
-                echo >&2 "Linked $(homepath "$win_dotfile_dest")"
-                ;;
-        esac
-    else
-        ln -s "$dotfile_relpath" "$dotfile_dest"
-        echo >&2 "Linked $(homepath "$dotfile_dest")"
-    fi
+    mkdir -p "$destdir"
+    iln -srib "$dotfile" "$dotfile_dest"
+    echo >&2 "Linked $(homepath "$dotfile_dest")"
 }
 
 homepath () {
