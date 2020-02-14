@@ -15,7 +15,9 @@ if [ -d "$ff_profileroot" ]; then
         profiledir="${places%/*}"
         if [ -d "$profiledir" ]; then
             link user-overrides.js "$profiledir/user-overrides.js"
-            link updater.sh "$profiledir/updater.sh"
+            if ! [ -e "$profiledir/updater.sh" ]; then
+                cp -f updater.sh "$profiledir/updater.sh"
+            fi
             if ! [ -e "$profiledir/user.js" ]; then
                 ( cd "$profiledir" && bash ./updater.sh; )
             fi
