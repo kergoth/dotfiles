@@ -1027,6 +1027,8 @@ augroup vimrc_filetype_detect
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
   au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
 
+  au BufNewFile,BufRead git-revise-todo setf gitrebase
+
   " My dotfiles install scripts are shell
   au BufNewFile,BufRead install setf sh
 
