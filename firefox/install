@@ -1,34 +1,30 @@
 case "$OSTYPE" in
     darwin*)
-        ff_profileroot="$HOME/Library/Application Support/Firefox"
+        ff_profileroot="$HOME/Library/Application Support/Firefox/Profiles"
         ;;
     WSL)
-        ff_profileroot="$USERPROFILE/AppData/Roaming/Mozilla/Firefox"
+        ff_profileroot="$USERPROFILE/AppData/Roaming/Mozilla/Firefox/Profiles"
         ;;
     *)
-        ff_profileroot=
+        ff_profileroot="$HOME/.mozilla/firefox"
         ;;
 esac
 
 if [ -d "$ff_profileroot" ]; then
-    PROFILE="$(python3 -c "import configparser, sys; c = configparser.RawConfigParser(); c.read_file(sys.stdin); default = list(filter(lambda s: s.get('default') and s.get('path'), c.values()))[0]; print(default.get('path'));" <"$ff_profileroot/profiles.ini")"
-    if [ -n "$PROFILE" ]; then
-        PROFILE="$ff_profileroot/$PROFILE"
-    fi
-else
-    PROFILE=
+    for places in "$ff_profileroot/"*/places.sqlite; do
+        profiledir="${places%/*}"
+        if [ -d "$profiledir" ]; then
+            link user-overrides.js "$profiledir/user-overrides.js"
+            if ! [ -e "$profiledir/updater.sh" ]; then
+                curl -fsSL https://github.com/ghacksuserjs/ghacks-user.js/raw/master/updater.sh -o "$profiledir/updater.sh"
+            fi
+            if ! [ -e "$profiledir/user.js" ]; then
+                ( cd "$profiledir" && bash ./updater.sh; )
+            fi
+        fi
+    done
 fi
 
-if [ -d "$PROFILE" ]; then
-    link user-overrides.js "$PROFILE/user-overrides.js"
-    if ! [ -e "$PROFILE/updater.sh" ]; then
-        curl -fsSL https://github.com/ghacksuserjs/ghacks-user.js/raw/master/updater.sh -o "$PROFILE/updater.sh"
-    fi
-    if ! [ -e "$PROFILE/user.js" ]; then
-        ( cd "$PROFILE" && bash ./updater.sh; )
-    fi
-fi
-
-link addons-script-config.toml $XDG_CONFIG_HOME/firefox-addons/config.toml
+link addons-script-config.toml "$XDG_CONFIG_HOME/firefox-addons/config.toml"
 
 # vim: set ft=sh :
