@@ -6,7 +6,7 @@ tmux_sessions () {
 }
 
 for session_name in $(tmux_sessions); do
-    eval "$(tmux-env -t "$session_name")"
+    eval "$(tmux showenv -s -t "$session_name")"
     if [[ -e "$SSH_AUTH_SOCK" ]]; then
         break
     fi
