@@ -1,7 +1,7 @@
 TEXTUAL_DIR="$HOME/Library/Group Containers/8482Q6EPL6.com.codeux.irc.textual/Library/Application Support/Textual"
 if [ -d "$TEXTUAL_DIR/Styles" ]; then
     for style in styles/*/ base16/styles/*/; do
-        if [ -d "$style" ]; then
+        if [ -d "$style" ] && ! [ -d "$TEXTUAL_DIR/Styles/$name" ]; then
             name="$(basename "${style%/}")"
             cp -a "$style/." "$TEXTUAL_DIR/Styles/$name/"
         fi
