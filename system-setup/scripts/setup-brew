@@ -26,7 +26,7 @@ brew tap monochromegane/pt
 
 brew install zsh
 brew install the_silver_searcher
-brew install mercurial git
+brew install git
 brew install wget
 brew install trash
 brew install tag
