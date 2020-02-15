@@ -76,7 +76,7 @@ pip3_install see
 
 ## General Tools & Utilities
 go get -u github.com/junegunn/fzf/...
-pip_install mercurial hg-git hg-evolve
+pipv3 mercurial hg-git
 pipv3 httpie
 go get -u github.com/EricChiang/pup
 
