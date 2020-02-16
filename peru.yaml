@@ -146,11 +146,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 081493e5f1426e4dac6c90acbdbf35dc41abaf6d
+    rev: 941a44a46491e1a018419eb24c9d92d3b2640e55
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: df3144002c73d241bd89f993efddf2afd65b75c6
+    rev: 04a4b247a2e0939fdc04d46392a58da4051d0b25
     drop: ':chroma/*'
 
 git module zsh-history-substring-search:
@@ -199,7 +199,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 460664018a8eaecd89fb2b095fad59c0e16f5f06
+    rev: 98f67310aa3ae324d725a3b6b68a63e5a48372f4
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -290,7 +290,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 5b99f19dac5dfcdf1cbb322a73406e1edeb9ae23
+    rev: d61ac32d7b5f1ba0c98c5fff3ec33f76c865e96e
 
 curl module rpm2cpio:
     url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
@@ -386,7 +386,7 @@ git module git:
         - git-subtree
         - diff-highlight.perl
         - DiffHighlight.pm
-    rev: 0ad714499976290d9a0229230cbe4efae930b8dc
+    rev: 6141e0cc00d556a0dd5a2b84c4d92508bfe4ed3b
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
@@ -750,7 +750,7 @@ git module zsh:
     move:
         Completion/Unix/Command/_git: functions/_git
     pick: functions/_git
-    rev: dd523255cc67780f2e073136d7f44978f96534a7
+    rev: 459e2be810b7b01e79c832ee05d7ca7333c7c5fe
 
 git module exa:
     url: https://github.com/ogham/exa
@@ -764,7 +764,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 765658c23d399827724cdf1e113b30aee401cfb7
+    rev: 5cbbbb6ebca5c45fb463fb8737b191a3bc712fff
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -776,10 +776,10 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: d3cb20612b30d453c4385c933000167120e44723
+    rev: 26ee964697d3a4877bf4ed6e51fd04891d498a18
 
 git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 5f3e3b2691d0348cbd9ab7f33172fe6d05657ca1
+    rev: 64f34f147179b5ade799149a55bde8626af3058b
