@@ -80,7 +80,7 @@
 
 	# Update with rebase, re-applying merges
 	purr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
-	sync = "!f(){ orig_rev=\"$(git rev-parse HEAD)\"; git purr && git push && git --no-pager log \"${orig_rev:-ORIG_HEAD}..\" --stat --no-merges \"$@\"; }; f"
+	sync = "!f(){ orig_rev=\"$(git rev-parse HEAD)\"; git purr && git push && git --no-pager log \"${orig_rev:-ORIG_HEAD}...@{u}\" --stat --no-merges \"$@\"; }; f"
 
 	# Rebase the current branch on its upstream
 	rebase-upstream = rebase -i @{u}
