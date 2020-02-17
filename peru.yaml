@@ -107,6 +107,7 @@ imports:
     vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
     vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
     vim-dirvish: vim/bundle/dirvish
+    vim-sh-indent: vim/bundle/sh-indent
     vim-undotree: vim/bundle/undotree
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
@@ -777,3 +778,9 @@ git module ghacksuserjs:
     pick: updater.sh
     executable: updater.sh
     rev: 64f34f147179b5ade799149a55bde8626af3058b
+
+git module vim-sh-indent:
+    url: https://github.com/kergoth/vim-sh-indent
+    pick: indent/sh.vim
+    reup: indent-pipe-while
+    rev: 35a5947d5b205b3c9025d621c71cb5554bc296a4
