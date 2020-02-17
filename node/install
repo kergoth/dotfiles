@@ -1,7 +1,2 @@
-NPM_PACKAGES="$XDG_DATA_HOME/npm"
-if command -v npm >/dev/null 2>&1 && ! grep -q "^prefix=$NPM_PACKAGES$" ~/.npmrc 2>/dev/null; then
-    mkdir -p "$NPM_PACKAGES"
-    npm config set prefix "$NPM_PACKAGES"
-fi
-mkdir -p "$XDG_CONFIG_HOME/npm"
+mkdir -p "$XDG_CONFIG_HOME/npm" "$XDG_DATA_HOME/npm"
 cp -f npmrc "$XDG_CONFIG_HOME/npm/npmrc"
