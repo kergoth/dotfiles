@@ -17,6 +17,7 @@ imports:
     exa: ls/zsh-functions
 
     # Scripts
+    simpler-color-test: scripts
     appify: os-macos/scripts
     cht: cht/scripts
     cpanm: perl/scripts
@@ -784,3 +785,11 @@ git module vim-sh-indent:
     pick: indent/sh.vim
     reup: indent-pipe-while
     rev: 35a5947d5b205b3c9025d621c71cb5554bc296a4
+
+git module simpler-color-test:
+    url: https://gist.github.com/4173926.git
+    move:
+        simpler: 4bitcolortest
+    pick: 4bitcolortest
+    executable: 4bitcolortest
+    rev: ff6e81c979bdfb3791bfa5428e9e6f3a67d3016c
