@@ -1,0 +1,5 @@
+if [[ -t 1 ]] && [[ -t 0 ]] && (( $+commands[bat] )); then
+    command cmdfu "$@" | bat -p -l sh
+else
+    command cmdfu "$@"
+fi
