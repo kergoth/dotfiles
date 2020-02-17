@@ -37,7 +37,8 @@ imports:
     git-imerge: git/scripts
     git-tbdiff: git/scripts
     git-wtf: git/scripts
-    git: git/scripts
+    git|diff-highlight: external/scripts
+    git|git-scripts: git/scripts
     gitvoodoo: git/scripts
     hardlinkpy: external/scripts
     icdiff: .
@@ -373,17 +374,23 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
+    rev: 6141e0cc00d556a0dd5a2b84c4d92508bfe4ed3b
+
+rule git-scripts:
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
-        contrib/diff-highlight/diff-highlight.perl: diff-highlight.perl
-        contrib/diff-highlight/DiffHighlight.pm: DiffHighlight.pm
     pick:
         - git-jump
         - git-subtree
+
+rule diff-highlight:
+    move:
+        contrib/diff-highlight/diff-highlight.perl: diff-highlight.perl
+        contrib/diff-highlight/DiffHighlight.pm: DiffHighlight.pm
+    pick:
         - diff-highlight.perl
         - DiffHighlight.pm
-    rev: 6141e0cc00d556a0dd5a2b84c4d92508bfe4ed3b
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
