@@ -26,11 +26,11 @@ PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 "$dotfilesdir/script/peru" sync -f || die "peru sync failed"
 
 if [ -e git/scripts/diff-highlight.perl ]; then
-    echo '#!/usr/bin/env perl' >scripts/diff-highlight
-    cat git/scripts/DiffHighlight.pm >>scripts/diff-highlight
-    cat git/scripts/diff-highlight.perl >>scripts/diff-highlight
+    echo '#!/usr/bin/env perl' >external/scripts/diff-highlight
+    cat git/scripts/DiffHighlight.pm >>external/scripts/diff-highlight
+    cat git/scripts/diff-highlight.perl >>external/scripts/diff-highlight
     rm -f git/scripts/DiffHighlight.pm git/scripts/diff-highlight.perl
-    chmod +x scripts/diff-highlight
+    chmod +x external/scripts/diff-highlight
 fi
 
 if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && ! [ -e windows-terminal/files/archlinux-icon-crystal.png ] && command -v convert >/dev/null 2>&1; then
@@ -44,7 +44,7 @@ git clone https://github.com/petdance/ack3 \
     && eval "$("$dotfilesdir/perl/scripts/cpanmv-use" ack3)" \
     && perl Makefile.PL \
     && make ack-standalone \
-    && cp -f ack-standalone "$dotfilesdir/scripts/ack"
+    && cp -f ack-standalone "$dotfilesdir/external/scripts/ack"
 
 cd "$tmpdir" || exit 1
 git clone https://github.com/defunkt/gist \

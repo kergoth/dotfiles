@@ -17,16 +17,16 @@ imports:
     exa: ls/zsh-functions
 
     # Scripts
-    simpler-color-test: scripts
+    simpler-color-test: external/scripts
     appify: os-macos/scripts
     cht: cht/scripts
     cpanm: perl/scripts
-    cwdiff: scripts
-    diff-so-fancy: scripts
+    cwdiff: external/scripts
+    diff-so-fancy: external/scripts
     dustin-bindir: git/scripts
     fasd: fasd/scripts
     flu: os-macos/scripts
-    fumiyas-home-commands: scripts
+    fumiyas-home-commands: external/scripts
     gnu2bsd: ls/scripts
     git-blame-colored: git/scripts
     git-cherry-tree: git/scripts
@@ -38,43 +38,43 @@ imports:
     git-wtf: git/scripts
     git: git/scripts
     gitvoodoo: git/scripts
-    hardlinkpy: scripts
+    hardlinkpy: external/scripts
     icdiff: .
-    iln: scripts
-    md-inline2ref: scripts
-    moreutils: scripts
-    myrepos: scripts
+    iln: external/scripts
+    md-inline2ref: external/scripts
+    moreutils: external/scripts
+    myrepos: external/scripts
     osx-wificleaner: os-macos/scripts
-    pom: scripts
+    pom: external/scripts
     pyenv-installer: system-setup/scripts
     dev-goodies: git/scripts
     repo: git/scripts
-    rpm2cpio: scripts
-    smem: scripts
-    ssh-copy-rsub: scripts
-    t: scripts
+    rpm2cpio: external/scripts
+    smem: external/scripts
+    ssh-copy-rsub: external/scripts
+    t: external/scripts
     tagbak: os-macos/scripts
-    titlecase-perl: scripts
+    titlecase-perl: external/scripts
     tony-tmux-config: tmux/scripts
     vim-profiler: vim/scripts
     vitag: os-macos/scripts
-    wget-finder: scripts
+    wget-finder: external/scripts
     wsl-open: os-wsl/scripts
 
     chneukirchen-tools: .
-    1t: scripts
-    f: scripts
-    frep: scripts
+    1t: external/scripts
+    f: external/scripts
+    frep: external/scripts
     git-attic: git/scripts
     git-ltr: git/scripts
     git-neck: git/scripts
     git-trail: git/scripts
-    lsort: scripts
+    lsort: external/scripts
     pacsrc: os-linux-arch/scripts
-    stee: scripts
-    tlog: scripts
-    utter: scripts
-    zombies: scripts
+    stee: external/scripts
+    tlog: external/scripts
+    utter: external/scripts
+    zombies: external/scripts
 
     # Tmux
     tmux-float: tmux/plugins/float
@@ -346,10 +346,10 @@ git module pom:
 git module icdiff:
     url: https://github.com/jeffkaufman/icdiff
     move:
-        icdiff: scripts/icdiff
+        icdiff: external/scripts/icdiff
         git-icdiff: git/scripts/git-icdiff
     pick:
-        - scripts/icdiff
+        - external/scripts/icdiff
         - git/scripts/git-icdiff
     rev: cad37ad3479c68bb99de7c0aa67f74386243b612
 
@@ -396,12 +396,12 @@ git module moreutils:
 git module chneukirchen-tools:
     url: https://github.com/kergoth/chneukirchen-tools
     move:
-        spongegrep: scripts/spongegrep
-        swaptop: scripts/swaptop
+        spongegrep: external/scripts/spongegrep
+        swaptop: external/scripts/swaptop
         pacverify: os-linux-arch/scripts/pacverify
     pick:
-        - scripts/spongegrep
-        - scripts/swaptop
+        - external/scripts/spongegrep
+        - external/scripts/swaptop
         - os-linux-arch/scripts/pacverify
     rev: db08c7e7dc8c6e819fc03daba8ab7ca52a9c1ac5
 
