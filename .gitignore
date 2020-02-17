@@ -9,3 +9,6 @@ __pycache__
 .peru
 .mypy_cache/
 local/
+# vim doctags
+tags
+tags-ja
