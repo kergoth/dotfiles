@@ -46,12 +46,6 @@ git clone https://github.com/petdance/ack3 \
     && make ack-standalone \
     && cp -f ack-standalone "$dotfilesdir/external/scripts/ack"
 
-cd "$tmpdir" || exit 1
-git clone https://github.com/defunkt/gist \
-    && cd gist \
-    && rake standalone \
-    && cp -f build/gist "$dotfilesdir/scripts/gist"
-
 if [ -e zsh/promptline.zsh ]; then
     vim -c "PromptlineSnapshot! $PWD/zsh/promptline.zsh airline" -c quit >/dev/null 2>&1
 fi
