@@ -1,7 +1,5 @@
 #!/bin/sh
 
-PATH="$(dirname "$(dirname "$0")")/scripts:$PATH"
-
 untracked="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
 trap 'rm -f "$untracked"' EXIT INT TERM
 
@@ -9,7 +7,7 @@ git mstash
 ret="$?"
 
 git ls-files -o | sort -u >"$untracked"
-dotfiles-external-update "$@"
+"$(dirname "$0")"/dotfiles-external-update "$@"
 dtret="$?"
 git ls-files -o | sort -u >"$untracked.new"
 
