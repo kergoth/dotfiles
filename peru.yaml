@@ -290,12 +290,12 @@ git module fzf:
     rev: d61ac32d7b5f1ba0c98c5fff3ec33f76c865e96e
 
 curl module rpm2cpio:
-    url: http://ftp.rpm.org/releases/rpm-4.14.x/rpm-4.14.0.tar.bz2
-    sha1: b15344d67b1bf4b15498efa3667f2ad5de40623f
-    unpack: tar
+    url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
     move:
-        rpm-4.14.0/scripts/rpm2cpio.sh: rpm2cpio
+        rpm2cpio.sh: rpm2cpio
     pick: rpm2cpio
+    executable: rpm2cpio
+    sha1: c16d6a81e26c4b3ac4219f31454535894d0869ef
 
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
