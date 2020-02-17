@@ -1,8 +1,0 @@
-#!/bin/sh
-
-python3 -m pip install --user titlecase >/dev/null 2>&1
-if [ $# -gt 0 ]; then
-    exec python3 -c 'import titlecase; import sys; print(titlecase.titlecase(" ".join(sys.argv[1:])))' "$@"
-else
-    exec python3 -c 'import titlecase; import sys; print(titlecase.titlecase(sys.stdin.read().rstrip()))'
-fi
