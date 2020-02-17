@@ -82,7 +82,6 @@ imports:
     pathogen: vim/autoload
     Modeliner: vim/bundle/Modeliner
     fugitive: git/vim/bundle/fugitive
-    taskpaper: vim/bundle/taskpaper
     vim-abolish: vim/bundle/abolish
     vim-ale: vim/bundle/ale
     vim-apathy: vim/bundle/apathy
@@ -205,11 +204,6 @@ git module fugitive:
 git module vim-bitbake:
     url: https://github.com/kergoth/vim-bitbake
     rev: 674031f0134317664d9f16ba004463b885f79cfd
-
-# taskpaper todo file support
-git module taskpaper:
-    url: https://github.com/davidoc/taskpaper.vim
-    rev: 2df291f7f40ef049d0a60151c66f11fa21b01e1c
 
 # generates modeline according to the current settings
 git module Modeliner:
