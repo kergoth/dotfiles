@@ -17,6 +17,7 @@ imports:
     exa: ls/zsh-functions
 
     # Scripts
+    ddimage: external/scripts
     simpler-color-test: external/scripts
     appify: os-macos/scripts
     cht: cht/scripts
@@ -793,3 +794,8 @@ git module simpler-color-test:
     pick: 4bitcolortest
     executable: 4bitcolortest
     rev: ff6e81c979bdfb3791bfa5428e9e6f3a67d3016c
+
+curl module ddimage:
+    url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
+    executable: ddimage
+    sha1: a8d4d6d710ae053a5dae7a0773fed6b441861bf9
