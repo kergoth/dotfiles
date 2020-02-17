@@ -189,7 +189,7 @@ git module git-cherry-tree:
 git module iln:
     url: https://github.com/kergoth/iln
     pick: iln
-    rev: 7a0712f318b0395a0711be09d6058efe625cf303
+    rev: ec29051b06418773d066d8a9bcb4bc8021555c0b
 
 git module pathogen:
     url: https://github.com/tpope/vim-pathogen
@@ -202,7 +202,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 98f67310aa3ae324d725a3b6b68a63e5a48372f4
+    rev: 9bbbb65888293f6d6a4da55bc8b0d8907ba779d4
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -288,7 +288,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: d61ac32d7b5f1ba0c98c5fff3ec33f76c865e96e
+    rev: 567c8303bf708bcb5822d8126a4d8654952cbfe3
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -374,7 +374,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 6141e0cc00d556a0dd5a2b84c4d92508bfe4ed3b
+    rev: c522f061d551c9bb8684a7c3859b2ece4499b56b
 
 rule git-scripts:
     move:

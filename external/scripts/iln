@@ -92,7 +92,7 @@ prompt_bool () {
 
 get_backup_path () {
     if [ -e "${1}.${2}" ] || [ -h "${1}.${2}" ]; then
-        last_num="$(ls "${1}.${2}"* | sed "s,^${1}.${2},," | sort -n | tail -n 1)"
+        last_num="$(ls -1d "${1}.${2}"* | sed "s|^${1}.${2}||" | sort -n | tail -n 1)"
         if [ -z "$last_num" ]; then
             last_num=0
         fi
