@@ -44,4 +44,4 @@ while getopts F:n:h opt; do
 done
 shift $((OPTIND - 1))
 
-awk ${separator:+"-F$separator"} -v "field=$field_number" -v "prefix=$*" '{ if(field == 0) { string=$0 } else { string=$field }; if (index(string, prefix) == 1) { printf("%s\n", $0) } }'
+awk ${separator:+"-F$separator"} -v "field=$field_number" -v "prefix=$*" '{ if (index($field, prefix) == 1) { printf("%s\n", $0) } }'
