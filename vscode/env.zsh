@@ -6,6 +6,6 @@ if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
             VSCODE_SERVER_DIR="$(dirname "$code_dir")"
             ;;
     esac
-    export VISUAL='code -w' 'EDITOR=code -w'
+    export VISUAL=codewait EDITOR=codewait
     export VSCODE_IPC_HOOK_CLI
 fi
