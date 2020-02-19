@@ -1,11 +1,11 @@
 if (( $+commands[nvim] )); then
     alias vim=nvim
+    export EDITOR=nvim
+elif (( $+commands[vim] )); then
+    export EDITOR=vim
+else
+    export EDITOR=vi
 fi
 
-if (( $+commands[vim] )); then
-    alias vi=vim
-fi
-
-if [[ -n $VIM_SERVER ]] && vim --version 2>/dev/null | grep -qw '+clientserver'; then
-    alias vim="vim --servername $VIM_SERVER --remote"
-fi
+alias vi=vim
+export VISUAL=$EDITOR
