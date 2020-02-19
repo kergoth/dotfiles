@@ -6,5 +6,5 @@
 # 34: steady underline
 # 35: blinking bar
 # 36: steady bar
-export CURSORCODE="\x1b[\x30 q"
+export CURSORCODE="\x1b[\x31 q"
 printf "$CURSORCODE"
