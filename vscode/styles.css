@@ -5,3 +5,14 @@
     font-style: normal;
     /* letter-spacing: .1em; Fix alignment issue, but disrupt the script */
 }
+
+/* Fade the terminal when inactive, highlight when active */
+.terminal {
+    border-left: 1px solid #00ffaa;
+    padding-left: 1em;
+    opacity: 1;
+}
+.terminal:not(.focus) {
+    border-color: transparent;
+    opacity: 0.5;
+}
