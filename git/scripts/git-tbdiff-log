@@ -9,7 +9,8 @@ branch's reflog. TOPIC_BRANCH defaults to HEAD if a commit is checked out, or
 the branch HEAD points to otherwise.
 
 Options:
-  -h   Show usage
+  -a ARGS  Pass additional arguments to underlying range-diff or tbdiff
+  -h       Show usage
 END
     exit 2
 }
@@ -24,8 +25,12 @@ pager() {
     eval "$PAGER" '"$@"'
 }
 
-while getopts h opt; do
+extra_diff_args=
+while getopts a:h opt; do
     case "$opt" in
+        a)
+            extra_diff_args="$OPTARG"
+            ;;
         \? | h)
             usage
             ;;
@@ -83,7 +88,7 @@ else
         diff_args="--color=always"
     fi
 fi
-
+diff_args="$diff_args $extra_diff_args"
 if [ -n "$upstream" ]; then
     diff_args="$diff_args $upstream..\$2 $upstream..\$1"
 else
