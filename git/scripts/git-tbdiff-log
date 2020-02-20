@@ -78,7 +78,7 @@ if ! [ -t 1 ]; then
     diff_args="--no-color"
 else
     if [ $tbdiff -eq 1 ]; then
-        diff_args="--color"
+        diff_args="--dual-color"
     else
         diff_args="--color=always"
     fi
