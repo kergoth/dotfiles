@@ -60,6 +60,12 @@ else
     tbdiff_args="\$2...\$1"
 fi
 
+if ! [ -t 1 ]; then
+    tbdiff_args="--no-color $tbdiff_args"
+else
+    tbdiff_args="--color $tbdiff_args"
+fi
+
 cat "$revs" \
     | python3 -c 'import itertools,sys; i=(l.rstrip("\n\r") for l in sys.stdin.readlines()); a, b = itertools.tee(i); next(b, None); sys.stdout.writelines("{} {}\n".format(*j) for j in zip(a, b))' \
     | xargs -n 2 sh -c "if [ \$1 != \$2 ]; then echo \"\$1...\$2:\"; git tbdiff $tbdiff_args; fi" - \
