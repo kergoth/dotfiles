@@ -1,0 +1,68 @@
+#!/bin/sh
+
+usage() {
+    cat <<END >&2
+${0##*/} [options..] TOPIC_BRANCH [UPSTREAM_BRANCH]"
+
+Show a history of topic branch changes by comparing entries in the topic
+branch's reflog.
+
+Options:
+  -h   Show usage
+END
+    exit 2
+}
+
+# shellcheck source=/usr/lib/git-core/git-sh-setup
+. "$(git --exec-path)/git-sh-setup"
+
+while getopts h opt; do
+    case "$opt" in
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+branch="$1"
+shift
+upstream="${1:-}"
+if [ $# -gt 1 ]; then
+    shift
+fi
+if [ "$upstream" = "--" ]; then
+    upstream=
+fi
+
+test -n "$branch" || usage
+
+if ! git rev-parse --verify --quiet --symbolic-full-name "$branch"^0; then
+    die "fatal: Not a valid ref: $branch"
+fi
+
+revs="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+if ! git reflog --pretty=format:%h "$branch" "$@" >>"$revs"; then
+    die "fatal: reflog of $branch failed"
+fi
+if ! [ -s "$revs" ]; then
+    die "fatal: empty reflog for $branch"
+fi
+# shellcheck disable=SC2046
+if [ $(wc -l <"$revs") -lt 2 ]; then
+    die "fatal: reflog for $branch has fewer than 2 entries"
+fi
+
+if [ -n "$upstream" ]; then
+    tbdiff_args="$upstream..\$2 $upstream..\$1"
+else
+    tbdiff_args="\$2...\$1"
+fi
+
+cat "$revs" \
+    | python3 -c 'import itertools,sys; i=(l.rstrip("\n\r") for l in sys.stdin.readlines()); a, b = itertools.tee(i); next(b, None); sys.stdout.writelines("{} {}\n".format(*j) for j in zip(a, b))' \
+    | xargs -n 2 sh -c "if [ \$1 != \$2 ]; then echo \"\$1...\$2:\"; git tbdiff $tbdiff_args; fi" -
