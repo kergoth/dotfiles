@@ -2,7 +2,7 @@
 
 usage() {
     cat <<END >&2
-${0##*/} [options..] TOPIC_BRANCH [UPSTREAM_BRANCH]"
+${0##*/} [options..] [TOPIC_BRANCH [UPSTREAM_BRANCH]]"
 
 Show a history of topic branch changes by comparing entries in the topic
 branch's reflog.
@@ -25,25 +25,21 @@ while getopts h opt; do
 done
 shift $((OPTIND - 1))
 
-if [ $# -eq 0 ]; then
-    usage
-fi
-
-branch="$1"
-shift
-upstream="${1:-}"
+branch="${1:-HEAD}"
 if [ $# -gt 1 ]; then
     shift
+    upstream="${1:-}"
+    if [ $# -gt 1 ]; then
+        shift
+    fi
 fi
+
 if [ "$upstream" = "--" ]; then
     upstream=
 fi
 
 test -n "$branch" || usage
-
-if ! git rev-parse --verify --quiet --symbolic-full-name "$branch"^0; then
-    die "fatal: Not a valid ref: $branch"
-fi
+branch="$(git rev-parse --verify --quiet --symbolic-full-name "$branch")" || die "fatal: Not a valid ref: $branch"
 
 revs="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
 if ! git reflog --pretty=format:%h "$branch" "$@" >>"$revs"; then
