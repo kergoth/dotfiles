@@ -14,6 +14,16 @@ END
     exit 2
 }
 
+pager() {
+    if [ -t 1 ]; then
+        PAGER="${PAGER:-less}"
+        export LESS="${LESS:-FRX}"
+    else
+        PAGER=cat
+    fi
+    eval "$PAGER" '"$@"'
+}
+
 # shellcheck source=/usr/lib/git-core/git-sh-setup
 . "$(git --exec-path)/git-sh-setup"
 
@@ -69,4 +79,4 @@ fi
 cat "$revs" \
     | python3 -c 'import itertools,sys; i=(l.rstrip("\n\r") for l in sys.stdin.readlines()); a, b = itertools.tee(i); next(b, None); sys.stdout.writelines("{} {}\n".format(*j) for j in zip(a, b))' \
     | xargs -n 2 sh -c "if [ \$1 != \$2 ]; then echo \"\$1...\$2:\"; git tbdiff $tbdiff_args; fi" - \
-    | git_pager
+    | pager
