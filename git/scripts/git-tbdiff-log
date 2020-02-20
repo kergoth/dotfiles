@@ -5,7 +5,8 @@ usage() {
 ${0##*/} [options..] [TOPIC_BRANCH [UPSTREAM_BRANCH]]"
 
 Show a history of topic branch changes by comparing entries in the topic
-branch's reflog.
+branch's reflog. TOPIC_BRANCH defaults to HEAD if a commit is checked out, or
+the branch HEAD points to otherwise.
 
 Options:
   -h   Show usage
