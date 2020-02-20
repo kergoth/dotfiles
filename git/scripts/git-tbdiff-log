@@ -24,9 +24,6 @@ pager() {
     eval "$PAGER" '"$@"'
 }
 
-# shellcheck source=/usr/lib/git-core/git-sh-setup
-. "$(git --exec-path)/git-sh-setup"
-
 while getopts h opt; do
     case "$opt" in
         \? | h)
@@ -49,8 +46,21 @@ if [ "$upstream" = "--" ]; then
     upstream=
 fi
 
+GIT_EXEC_PATH="$(git --exec-path)"
+
+# shellcheck source=/usr/lib/git-core/git-sh-setup
+. "$GIT_EXEC_PATH/git-sh-setup"
+
 test -n "$branch" || usage
 branch="$(git rev-parse --verify --quiet --symbolic-full-name "$branch")" || die "fatal: Not a valid ref: $branch"
+
+if [ -e "$GIT_EXEC_PATH/git-range-diff" ]; then
+    tbdiff=0
+    diff_cmd=range-diff
+else
+    tbdiff=1
+    diff_cmd=tbdiff
+fi
 
 revs="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
 if ! git reflog --pretty=format:%h "$branch" "$@" >>"$revs"; then
@@ -64,19 +74,23 @@ if [ $(wc -l <"$revs") -lt 2 ]; then
     die "fatal: reflog for $branch has fewer than 2 entries"
 fi
 
-if [ -n "$upstream" ]; then
-    tbdiff_args="$upstream..\$2 $upstream..\$1"
+if ! [ -t 1 ]; then
+    diff_args="--no-color"
 else
-    tbdiff_args="\$2...\$1"
+    if [ $tbdiff -eq 1 ]; then
+        diff_args="--color"
+    else
+        diff_args="--color=always"
+    fi
 fi
 
-if ! [ -t 1 ]; then
-    tbdiff_args="--no-color $tbdiff_args"
+if [ -n "$upstream" ]; then
+    diff_args="$diff_args $upstream..\$2 $upstream..\$1"
 else
-    tbdiff_args="--color $tbdiff_args"
+    diff_args="$diff_args \$2...\$1"
 fi
 
 cat "$revs" \
     | python3 -c 'import itertools,sys; i=(l.rstrip("\n\r") for l in sys.stdin.readlines()); a, b = itertools.tee(i); next(b, None); sys.stdout.writelines("{} {}\n".format(*j) for j in zip(a, b))' \
-    | xargs -n 2 sh -c "if [ \$1 != \$2 ]; then echo \"\$1...\$2:\"; git tbdiff $tbdiff_args; fi" - \
+    | xargs -n 2 sh -c "if [ \$1 != \$2 ]; then echo \"\$1...\$2:\"; git $diff_cmd $diff_args; fi" - \
     | pager
