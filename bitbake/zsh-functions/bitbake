@@ -1,2 +1,6 @@
 update_env
-command bitbake "$@"
+if (( $+commands[dbitbake] )); then
+    command dbitbake "$@"
+else
+    command bitbake "$@"
+fi
