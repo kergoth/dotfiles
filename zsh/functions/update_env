@@ -3,4 +3,3 @@ if [ -n "$TMUX" ]; then
 elif [ -n "$ATT_SESSION" ]; then
     att-update-env
 fi
-command ssh "$@"
