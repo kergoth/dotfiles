@@ -38,7 +38,12 @@ while getopts a:h opt; do
 done
 shift $((OPTIND - 1))
 
-branch="${1:-HEAD}"
+if [ $# -eq 0 ]; then
+    branch="$(git rev-parse --verify --quiet --symbolic-full-name HEAD)" || die "fatal: Not a valid ref: HEAD"
+else
+    branch="${1:-HEAD}"
+fi
+
 if [ $# -gt 1 ]; then
     shift
     upstream="${1:-}"
@@ -57,7 +62,7 @@ GIT_EXEC_PATH="$(git --exec-path)"
 . "$GIT_EXEC_PATH/git-sh-setup"
 
 test -n "$branch" || usage
-branch="$(git rev-parse --verify --quiet --symbolic-full-name "$branch")" || die "fatal: Not a valid ref: $branch"
+git rev-parse --verify --quiet "$branch" || die "fatal: Not a valid ref: $branch"
 
 if [ -e "$GIT_EXEC_PATH/git-range-diff" ]; then
     tbdiff=0
