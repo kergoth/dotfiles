@@ -53,7 +53,7 @@ main () {
 
     while read -r item; do
         base="$(basename "$item")"
-        if [ "${base#bgrm.}" == "$item" ]; then
+        if [ "${base#bgrm.}" = "$item" ]; then
             tmpdir="$item"
         else
             dir="$(dirname "$item")"
