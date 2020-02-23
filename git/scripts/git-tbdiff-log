@@ -67,7 +67,7 @@ GIT_EXEC_PATH="$(git --exec-path)"
 . "$GIT_EXEC_PATH/git-sh-setup"
 
 test -n "$branch" || usage
-git rev-parse --verify --quiet "$branch" || die "fatal: Not a valid ref: $branch"
+git rev-parse --verify --quiet "$branch" >/dev/null 2>&1 || die "fatal: Not a valid ref: $branch"
 
 if [ -e "$GIT_EXEC_PATH/git-range-diff" ]; then
     tbdiff=0
