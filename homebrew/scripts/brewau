@@ -27,6 +27,8 @@ if [ -n "$ignored_depends" ]; then
     done
 fi
 
-brew cask outdated --quiet |
-	if [ -n "$excluded_casks" ]; then grep -Ev "$excluded_casks"; else cat; fi |
-	xargs -n 1 brew cask upgrade
+if brew tap | grep -qxF homebrew/cask; then
+    brew cask outdated --quiet |
+            if [ -n "$excluded_casks" ]; then grep -Ev "$excluded_casks"; else cat; fi |
+            xargs -n 1 brew cask upgrade
+fi
