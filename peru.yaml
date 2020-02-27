@@ -149,11 +149,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 941a44a46491e1a018419eb24c9d92d3b2640e55
+    rev: 1de07aa3aba4e857db2c32427760413488816166
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 04a4b247a2e0939fdc04d46392a58da4051d0b25
+    rev: 4c0e992f16c3d91adecc42ac5c36356480781e6f
     drop: ':chroma/*'
 
 git module zsh-history-substring-search:
@@ -202,7 +202,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: 9bbbb65888293f6d6a4da55bc8b0d8907ba779d4
+    rev: c452181975761f8b055b88eb1c98f736323510fd
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -250,7 +250,7 @@ git module vim-obsession:
 
 git module vim-dirvish:
     url: https://github.com/justinmk/vim-dirvish
-    rev: 5d84cb9ce7fdf7d3fd729a9d3f59060ca5ab3a6e
+    rev: 0a53fadc22ab6df6aed9cc580c9e498715870522
 
 git module vim-bracketed-paste:
     url: https://github.com/ConradIrwin/vim-bracketed-paste
@@ -258,13 +258,13 @@ git module vim-bracketed-paste:
 
 git module vim-fzf-extra:
     url: https://github.com/junegunn/fzf.vim
-    rev: 467c3277884240f7b5430f8f4d600e3415c38f3b
+    rev: 48a2d80a24d19bfaafd91005786653bc49303c62
 
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: 7402a63e2f50498ab9aaa80f20b1e13f6d3e6b61
+    sha1: 1198596830e81653db1d17ccad6f6e2c5d21f7e0
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -288,7 +288,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 567c8303bf708bcb5822d8126a4d8654952cbfe3
+    rev: d8cb5c1cf5d11f4fd00bb6cc22f604cd1e38c245
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -520,7 +520,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: f3deae359320c10038382ef1f5b7186c48a9da1c
+    rev: badc983ab52b7fece3e4dcf5d4363b1b41ad08d5
 
 git module vim-abolish:
     url: https://github.com/tpope/vim-abolish
@@ -553,7 +553,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: b708a8a4d39644e1d305c223d5063c07dd4bcc37
+    rev: be50c2f3f510c6677e88d4f41d74ac3b64c74b36
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -571,7 +571,7 @@ curl module cht:
 
 git module vim-ale:
     url: https://github.com/dense-analysis/ale
-    rev: d6d2a0c77010db6a75a8942e2af9606971738c23
+    rev: 634c81fd465269f59e3db878fe8405828e6d2da9
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -765,7 +765,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 5cbbbb6ebca5c45fb463fb8737b191a3bc712fff
+    rev: 6b57f3ff3c6c94f89181c97b64f53b0295f84bb6
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -783,7 +783,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 64f34f147179b5ade799149a55bde8626af3058b
+    rev: a542701ba5b6c2341ef3028c4a28d8ea08a3f9ed
 
 git module vim-sh-indent:
     url: https://github.com/kergoth/vim-sh-indent

@@ -117,8 +117,13 @@ function! s:Resolve(path) abort
   return path
 endfunction
 
+function! s:FileIgnoreCase(for_completion) abort
+  return (exists('+fileignorecase') && &fileignorecase)
+        \ || (a:for_completion && exists('+wildignorecase') && &wildignorecase)
+endfunction
+
 function! s:cpath(path, ...) abort
-  if exists('+fileignorecase') && &fileignorecase
+  if s:FileIgnoreCase(0)
     let path = FugitiveVimPath(tolower(a:path))
   else
     let path = FugitiveVimPath(a:path)
@@ -639,7 +644,11 @@ function! fugitive#Config(...) abort
       if !has_key(dict, key)
         let dict[key] = []
       endif
-      call add(dict[key], strpart(line, len(key) + 1))
+      if len(key) ==# len(line)
+        call add(dict[key], 1)
+      else
+        call add(dict[key], strpart(line, len(key) + 1))
+      endif
     endfor
     let s:config[dir] = [s:ConfigTimestamps(dir, dict), dict]
     lockvar! dict
@@ -1469,7 +1478,8 @@ function! s:FilterEscape(items, ...) abort
   let items = copy(a:items)
   call map(items, 's:fnameescape(v:val)')
   if a:0 && type(a:1) == type('')
-    call filter(items, 'strpart(v:val, 0, strlen(a:1)) ==# a:1')
+    let cmp = s:FileIgnoreCase(1) ? '==?' : '==#'
+    call filter(items, 'strpart(v:val, 0, strlen(a:1)) ' . cmp . ' a:1')
   endif
   return items
 endfunction
@@ -2201,7 +2211,7 @@ function! s:TempReadPre(file) abort
   if has_key(s:temp_files, s:cpath(a:file))
     let dict = s:temp_files[s:cpath(a:file)]
     setlocal nomodeline
-    setlocal bufhidden=delete nobuflisted
+    setlocal bufhidden=delete
     setlocal buftype=nowrite
     setlocal nomodifiable
     if len(dict.dir)
@@ -2214,6 +2224,7 @@ endfunction
 function! s:TempReadPost(file) abort
   if has_key(s:temp_files, s:cpath(a:file))
     let dict = s:temp_files[s:cpath(a:file)]
+    setlocal nobuflisted
     if has_key(dict, 'filetype') && dict.filetype !=# &l:filetype
       let &l:filetype = dict.filetype
     endif
@@ -2351,6 +2362,37 @@ augroup fugitive_job
         \ endfor
 augroup END
 
+function! fugitive#PagerFor(argv, ...) abort
+  let args = a:argv
+  if empty(args)
+    return 0
+  elseif (args[0] ==# 'help' || get(args, 1, '') ==# '--help') && !s:HasOpt(args, '--web')
+    return 1
+  endif
+  if args[0] ==# 'config' && (s:HasOpt(args, '-e', '--edit') ||
+        \   !s:HasOpt(args, '--list', '--get-all', '--get-regexp', '--get-urlmatch')) ||
+        \ args[0] =~# '^\%(tag\|branch\)$' && (s:HasOpt(args, '--edit-description', '--unset-upstream') ||
+        \   len(filter(args[1:-1], 'v:val =~# "^[^-]\|^--set-upstream-to="')) &&
+        \   !s:HasOpt(args, '--contains', '--no-contains', '--merged', '--no-merged', '--points-at'))
+    return 0
+  endif
+  let config = a:0 ? a:1 : fugitive#Config()
+  let value = get(FugitiveConfigGetAll('pager.' . args[0], config), 0, -1)
+  if value =~# '^\%(true\|yes\|on\|1\)$'
+    return 1
+  elseif value =~# '^\%(false\|no|off\|0\|\)$'
+    return 0
+  elseif type(value) == type('')
+    return value
+  elseif args[0] =~# 'diff\%(tool\)\@!\|log\|^show$\|^config$\|^branch$\|^tag$' ||
+        \ (args[0] ==# 'stash' && get(args, 1, '') ==# 'show') ||
+        \ (args[0] ==# 'am' && s:HasOpt(args, '--show-current-patch'))
+    return 1
+  else
+    return 0
+  endif
+endfunction
+
 let s:disable_colors = []
 for s:colortype in ['advice', 'branch', 'diff', 'grep', 'interactive', 'pager', 'push', 'remote', 'showBranch', 'status', 'transport', 'ui']
   call extend(s:disable_colors, ['-c', 'color.' . s:colortype . '=false'])
@@ -2358,6 +2400,7 @@ endfor
 unlet s:colortype
 function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
   let dir = s:Dir()
+  let config = copy(fugitive#Config(dir))
   let [args, after] = s:SplitExpandChain(a:arg, s:Tree(dir))
   let flags = []
   while len(args) > 1
@@ -2398,23 +2441,43 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
   while i < len(flags) - 1
     if flags[i] ==# '-c'
       let i += 1
-      let config_name = matchstr(flags[i], '^[^=]\+\ze=')
-      if has_key(s:prepare_env, config_name)
+      let config_name = tolower(matchstr(flags[i], '^[^=]\+'))
+      if has_key(s:prepare_env, config_name) && flags[i] =~# '=.'
         let env[s:prepare_env[config_name]] = matchstr(flags[i], '=\zs.*')
+      endif
+      if flags[i] =~# '='
+        let config[config_name] = [matchstr(flags[i], '=\zs.*')]
+      else
+        let config[config_name] = [1]
       endif
     endif
     let i += 1
   endwhile
-  if a:bang || args[0] =~# '^-p$\|^--paginate$\|diff\%(tool\)\@!\|log\|^show$' ||
-        \ (args[0] ==# 'stash' && get(args, 1, '') ==# 'show') ||
-        \ (args[0] ==# 'help' || get(args, 1, '') ==# '--help') && !s:HasOpt(args, '--web')
-    if args[0] =~# '^-p$\|^--paginate$'
-      call remove(args, 0)
+  let editcmd = (a:line2 > 0 ? a:line2 : '') . (a:line2 ? 'split' : 'edit')
+  if args[0] =~# '^-p$\|^--paginate$'
+    call remove(args, 0)
+    let pager = 1
+    if a:bang && a:line2 >= 0
+      let editcmd = 'read'
+    elseif a:bang
+      let editcmd = 'pedit'
     endif
-    return s:OpenExec((a:line2 > 0 ? a:line2 : '') . (a:line2 ? 'split' : 'edit'), a:mods, env, flags + args, dir) . after
+  else
+    let pager = fugitive#PagerFor(args, config)
+    if a:bang && pager isnot# 1
+      return 'echoerr ' .  string('fugitive: :Git! for temp buffer output has been replaced by :Git --paginate')
+    endif
+  endif
+  if pager is# 1
+    if editcmd ==# 'read'
+      return s:ReadExec(a:line1, a:line2, a:range, a:mods, env, args, options) . after
+    else
+      return s:OpenExec(editcmd, a:mods, env, args, options) . after
+    endif
   endif
   if s:HasOpt(args, ['add', 'checkout', 'commit', 'stage', 'stash', 'reset'], '-p', '--patch') ||
-        \ s:HasOpt(args, ['add', 'clean', 'stage'], '-i', '--interactive')
+        \ s:HasOpt(args, ['add', 'clean', 'stage'], '-i', '--interactive') ||
+        \ type(pager) == type('')
     let mods = substitute(s:Mods(a:mods), '\<tab\>', '-tab', 'g')
     let assign = len(dir) ? '|let b:git_dir = ' . string(dir) : ''
     if has('nvim')
@@ -2471,13 +2534,11 @@ function! fugitive#Command(line1, line2, range, bang, mods, arg) abort
     let state.job = job
     call s:RunWait(state, job)
     return 'silent checktime' . after
+  elseif has('win32')
+    return 'echoerr ' . string('fugitive: Vim 8 with job support required to use :Git on Windows')
+  elseif has('gui_running')
+    return 'echoerr ' . string('fugitive: Vim 8 with job support required to use :Git in GVim')
   else
-    if has('gui_running') && !has('win32')
-      call insert(args, '--no-pager')
-    endif
-    if has('nvim')
-      let env.GIT_TERMINAL_PROMPT = '0'
-    endif
     let pre = s:BuildEnvPrefix(env)
     return 'exe ' . string('noautocmd !' . escape(pre . s:UserCommand(options, args), '!#%')) .
           \ '|call fugitive#ReloadStatus(' . string(dir) . ', 1)' .
@@ -2570,7 +2631,7 @@ function! s:StatusCommand(line1, line2, range, count, bang, mods, reg, arg, args
     elseif a:bang
       return mods . 'pedit' . arg . '|wincmd P'
     else
-      return mods . (a:count > 0 ? a:count : '') . 'keepalt split' . arg
+      return mods . 'keepalt ' . (a:count > 0 ? a:count : '') . 'split' . arg
     endif
   catch /^fugitive:/
     return 'echoerr ' . string(v:exception)
@@ -3295,16 +3356,16 @@ function! s:StageDiff(diff) abort
   let prefix = info.offset > 0 ? '+' . info.offset : ''
   if info.sub =~# '^S'
     if info.section ==# 'Staged'
-      return 'Git! diff --no-ext-diff --submodule=log --cached -- ' . info.paths[0]
+      return 'Git --paginate diff --no-ext-diff --submodule=log --cached -- ' . info.paths[0]
     elseif info.sub =~# '^SC'
-      return 'Git! diff --no-ext-diff --submodule=log -- ' . info.paths[0]
+      return 'Git --paginate diff --no-ext-diff --submodule=log -- ' . info.paths[0]
     else
-      return 'Git! diff --no-ext-diff --submodule=diff -- ' . info.paths[0]
+      return 'Git --paginate diff --no-ext-diff --submodule=diff -- ' . info.paths[0]
     endif
   elseif empty(info.paths) && info.section ==# 'Staged'
-    return 'Git! diff --no-ext-diff --cached'
+    return 'Git --paginate diff --no-ext-diff --cached'
   elseif empty(info.paths)
-    return 'Git! diff --no-ext-diff'
+    return 'Git --paginate diff --no-ext-diff'
   elseif len(info.paths) > 1
     execute 'Gedit' . prefix s:fnameescape(':0:' . info.paths[0])
     return a:diff . '! HEAD:'.s:fnameescape(info.paths[1])
@@ -3327,12 +3388,12 @@ function! s:StageDiffEdit() abort
   let info = s:StageInfo(line('.'))
   let arg = (empty(info.paths) ? s:Tree() : info.paths[0])
   if info.section ==# 'Staged'
-    return 'Git! diff --no-ext-diff --cached '.s:fnameescape(arg)
+    return 'Git --paginate diff --no-ext-diff --cached '.s:fnameescape(arg)
   elseif info.status ==# '?'
     call s:TreeChomp('add', '--intent-to-add', '--', arg)
     return s:ReloadStatus()
   else
-    return 'Git! diff --no-ext-diff '.s:fnameescape(arg)
+    return 'Git --paginate diff --no-ext-diff '.s:fnameescape(arg)
   endif
 endfunction
 
@@ -3474,6 +3535,19 @@ endfunction
 function! s:DoToggleHeadHeader(value) abort
   exe 'edit' s:fnameescape(s:Dir())
   call search('\C^index$', 'wc')
+endfunction
+
+function! s:DoStagePushHeader(value) abort
+  let remote = matchstr(a:value, '\zs[^/]\+\ze/')
+  if empty(remote)
+    let remote = '.'
+  endif
+  let branch = matchstr(a:value, '\%([^/]\+/\)\=\zs\S\+')
+  call feedkeys(':Git push ' . remote . ' ' . branch)
+endfunction
+
+function! s:DoTogglePushHeader(value) abort
+  return s:DoStagePushHeader(a:value)
 endfunction
 
 function! s:DoStageUnpushedHeading(heading) abort
@@ -4338,11 +4412,11 @@ function! s:BlurStatus() abort
 endfunction
 
 function! s:OpenExec(cmd, mods, env, args, ...) abort
-  let dir = a:0 ? s:Dir(a:1) : s:Dir()
+  let options = a:0 ? a:1 : {'dir': s:Dir()}
   let temp = tempname()
   let columns = get(g:, 'fugitive_columns', 80)
   let env = s:BuildEnvPrefix(extend({'COLUMNS': columns}, a:env))
-  silent! execute '!' . escape(env . s:UserCommand(dir, ['--no-pager'] + a:args), '!#%') .
+  silent! execute '!' . escape(env . s:UserCommand(options, ['--no-pager'] + a:args), '!#%') .
         \ (&shell =~# 'csh' ? ' >& ' . temp : ' > ' . temp . ' 2>&1')
   redraw!
   let temp = s:Resolve(temp)
@@ -4352,13 +4426,13 @@ function! s:OpenExec(cmd, mods, env, args, ...) abort
   else
     let filetype = 'git'
   endif
-  let s:temp_files[s:cpath(temp)] = { 'dir': dir, 'filetype': filetype }
+  let s:temp_files[s:cpath(temp)] = { 'dir': options.dir, 'filetype': filetype }
   if a:cmd ==# 'edit'
     call s:BlurStatus()
   endif
   silent execute s:Mods(a:mods) . a:cmd temp
-  call fugitive#ReloadStatus(dir, 1)
-  return 'echo ' . string(':!' . s:UserCommand(dir, a:args))
+  call fugitive#ReloadStatus(options.dir, 1)
+  return 'echo ' . string(':!' . s:UserCommand(options, a:args))
 endfunction
 
 function! fugitive#Open(cmd, bang, mods, arg, args) abort
@@ -4381,7 +4455,7 @@ function! fugitive#Open(cmd, bang, mods, arg, args) abort
   return mods . a:cmd . pre . ' ' . s:fnameescape(file)
 endfunction
 
-function! fugitive#ReadCommand(line1, count, range, bang, mods, arg, args) abort
+function! s:ReadPrepare(line1, count, range, mods) abort
   let mods = s:Mods(a:mods)
   let after = a:count
   if a:count < 0
@@ -4392,26 +4466,39 @@ function! fugitive#ReadCommand(line1, count, range, bang, mods, arg, args) abort
   else
     let delete = ''
   endif
+  if foldlevel(after)
+    let pre = after . 'foldopen!|'
+  else
+    let pre = ''
+  endif
+  return [pre . mods . after . 'read', delete . '|diffupdate' . (a:count < 0 ? '|' . line('.') : '')]
+endfunction
+
+function! s:ReadExec(line1, count, range, mods, env, args, options) abort
+  let [read, post] = s:ReadPrepare(a:line1, a:count, a:range, a:mods)
+  let env = s:BuildEnvPrefix(extend({'COLUMNS': &tw ? &tw : 80}, a:env))
+  silent execute read . '!' escape(env . s:UserCommand(a:options, ['--no-pager'] + a:args), '!#%')
+  execute post
+  call fugitive#ReloadStatus(a:options.dir, 1)
+  return 'redraw|echo '.string(':!'.s:UserCommand(a:options, a:args))
+endfunction
+
+function! fugitive#ReadCommand(line1, count, range, bang, mods, arg, args) abort
   if a:bang
     let dir = s:Dir()
     let args = s:SplitExpand(a:arg, s:Tree(dir))
-    silent execute mods . after . 'read!' escape(s:UserCommand(dir, ['--no-pager'] + args), '!#%')
-    execute delete . 'diffupdate'
-    call fugitive#ReloadStatus(dir, 1)
-    return 'redraw|echo '.string(':!'.s:UserCommand(dir, args))
+    return s:ReadExec(a:line1, a:count, a:range, a:mods, {}, args, {'dir': dir})
   endif
+  let [read, post] = s:ReadPrepare(a:line1, a:count, a:range, a:mods)
   try
     let [file, pre] = s:OpenParse(a:args, 0)
   catch /^fugitive:/
     return 'echoerr ' . string(v:exception)
   endtry
-  if file =~# '^fugitive:' && after is# 0
-    return 'exe ' .string(mods . fugitive#FileReadCmd(file, 0, pre)) . '|diffupdate'
+  if file =~# '^fugitive:' && a:count is# 0
+    return 'exe ' .string(s:Mods(a:mods) . fugitive#FileReadCmd(file, 0, pre)) . '|diffupdate'
   endif
-  if foldlevel(after)
-    exe after . 'foldopen!'
-  endif
-  return mods . after . 'read' . pre . ' ' . s:fnameescape(file) . '|' . delete . 'diffupdate' . (a:count < 0 ? '|' . line('.') : '')
+  return read . ' ' . pre . ' ' . s:fnameescape(file) . '|' . post
 endfunction
 
 function! fugitive#EditComplete(A, L, P) abort
@@ -5845,11 +5932,11 @@ function! fugitive#MapJumps(...) abort
     nnoremap <buffer> <silent> cRa   :<C-U>Gcommit --reset-author --amend<CR>
     nnoremap <buffer> <silent> cRe   :<C-U>Gcommit --reset-author --amend --no-edit<CR>
     nnoremap <buffer> <silent> cRw   :<C-U>Gcommit --reset-author --amend --only<CR>
-    nnoremap <buffer>          cf    :<C-U>Gcommit --fixup=<C-R>=<SID>SquashArgument()<CR>
-    nnoremap <buffer>          cF    :<C-U><Bar>Grebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Gcommit --fixup=<C-R>=<SID>SquashArgument()<CR>
-    nnoremap <buffer>          cs    :<C-U>Gcommit --no-edit --squash=<C-R>=<SID>SquashArgument()<CR>
-    nnoremap <buffer>          cS    :<C-U><Bar>Grebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Gcommit --no-edit --squash=<C-R>=<SID>SquashArgument()<CR>
-    nnoremap <buffer>          cA    :<C-U>Gcommit --edit --squash=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cf    :<C-U>Git commit --fixup=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cF    :<C-U><Bar>Git rebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Git commit --fixup=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cs    :<C-U>Git commit --no-edit --squash=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cS    :<C-U><Bar>Git rebase --autosquash<C-R>=<SID>RebaseArgument()<CR><Home>Git commit --no-edit --squash=<C-R>=<SID>SquashArgument()<CR>
+    nnoremap <buffer>          cA    :<C-U>Git commit --edit --squash=<C-R>=<SID>SquashArgument()<CR>
     nnoremap <buffer> <silent> c?    :<C-U>help fugitive_c<CR>
 
     nnoremap <buffer>      cr<Space> :Git revert<Space>
