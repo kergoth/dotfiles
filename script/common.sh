@@ -6,7 +6,9 @@ export ASDF_DATA_DIR="${ASDF_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/asdf
 export ASDF_CONFIG_FILE="${ASDF_CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/asdfrc}"
 export PYENV_ROOT="${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}"
 
-PATH="$ASDF_DATA_DIR/shims:$PYENV_ROOT/bin:$PYENV_ROOT/shims:$HOME/.local/bin:$PATH"
+DOTFILESDIR="${DOTFILESDIR:-$(cd "$(dirname "$(dirname "$0")")" && pwd -P)}"
+
+PATH="$ASDF_DATA_DIR/shims:$PYENV_ROOT/bin:$PYENV_ROOT/shims:$HOME/.local/bin:$DOTFILESDIR/external/scripts:$PATH"
 
 HOSTNAME=$(hostname -s)
 osname="$(uname -s)"
