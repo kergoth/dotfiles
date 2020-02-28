@@ -55,12 +55,12 @@ fi
 
 if pipx_installed "$package" && [ -z "$force" ]; then
     if [ -z "$editable" ]; then
-        pipx upgrade --spec "$spec" "$package"
+        pipx upgrade "$spec"
     else
         echo >&2 "Skipping upgrade of local $spec"
     fi
 else
-    pipx install ${force:+--force} ${editable:+--editable} --spec "$spec" "$package"
+    pipx install ${force:+--force} ${editable:+--editable} "$spec"
 fi
 
 if [ $# -gt 0 ]; then
