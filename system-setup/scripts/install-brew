@@ -80,6 +80,10 @@ fi
 if [ -d "$HOMEBREW_PREFIX/share/doc/homebrew" ]; then
     rm -rf "$HOMEBREW_PREFIX/share/doc/homebrew"
 fi
+for dir in etc include lib opt sbin share var/homebrew/linked Cellar; do
+    mkdir -p "$HOMEBREW_PREFIX/$dir"
+    chown -R $(whoami) "$HOMEBREW_PREFIX/$dir"
+done
 brew update || exit 2
 
 git config -f "$(brew --repo)/.git/config" homebrew.analyticsdisabled true
