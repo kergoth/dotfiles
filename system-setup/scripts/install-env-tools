@@ -17,6 +17,12 @@ case "$OSTYPE" in
             export OPENSSL_DIR="$HOMEBREW_PREFIX/opt/openssl"
         fi
         ;;
+    *)
+
+        if command -v brew >/dev/null 2>&1; then
+            brew unlink pkg-config >/dev/null 2>&1 || :
+        fi
+        ;;
 esac
 
 pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
@@ -57,9 +63,9 @@ mkdir -p "${XDG_DATA_HOME:-~/.local/share}"
 
 # Clang and llvm are needed to build `bat`
 if command -v pacman >/dev/null 2>&1; then
-    sudo pacman -S --needed llvm clang cmake
+    sudo pacman -S --needed llvm clang cmake pkg-config
 elif command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get -y install --no-upgrade llvm clang cmake
+    sudo apt-get -y install --no-upgrade llvm clang cmake pkg-config
 fi
 
 # cargo-update
