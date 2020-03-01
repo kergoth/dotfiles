@@ -58,6 +58,10 @@ while getopts fi:x:h opt; do
 done
 shift $((OPTIND - 1))
 
+if [ -n "$exclude" ]; then
+    echo >&2 "Excluded: $exclude"
+fi
+
 dotfilesdir="$(abspath "$(dirname "$(dirname "$0")")")"
 PATH="$dotfilesdir/scripts:$PATH"
 
