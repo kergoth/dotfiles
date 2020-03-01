@@ -175,7 +175,10 @@ if has('persistent_undo')
 endif
 
 " Double slash does not actually work for backupdir, here's a fix
-au BufWritePre * let &backupext='@'.substitute(substitute(substitute(expand('%:p:h'), '/', '%', 'g'), '\', '%', 'g'), ':', '', 'g')
+augroup vimrc_backupdir
+  au!
+  au BufWritePre * let &backupext='@'.substitute(substitute(substitute(expand('%:p:h'), '/', '%', 'g'), '\', '%', 'g'), ':', '', 'g')
+augroup END
 
 " Ensure we cover all temp files for backup file creation
 if $OSTYPE =~? 'darwin'
