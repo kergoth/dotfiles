@@ -488,39 +488,6 @@ augroup vimrc
   autocmd BufWritePre,FileWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 " }}}
-" Vim language interfaces {{{
-
-" Let vim's python support load the pyenv python libraries
-if !has("nvim") && executable('pyenv')
-  try
-    let b:python2 = system('pyenv which python2.7')
-    if !empty(b:python2)
-      let &pythonhome = fnamemodify(substitute(b:python2, '\n', '', ''), ':h:h')
-      if has('macunix')
-        let &pythondll = &pythonhome . '/lib/libpython2.7.dylib'
-      else
-        let &pythondll = &pythonhome . '/lib/libpython2.7.so.1.0'
-      endif
-    endif
-  catch
-  endtry
-
-  try
-    for pyver in ['3.6', '3.7']
-      let b:python3 = system('pyenv which python' . pyver)
-      if !empty(b:python3)
-        let &pythonthreehome = fnamemodify(substitute(b:python3, '\n', '', ''), ':h:h')
-        if has('macunix')
-          let &pythonthreedll = &pythonthreehome . '/lib/libpython' . pyver . 'm.dylib'
-        else
-          let &pythonthreedll = &pythonthreehome . '/lib/libpython' . pyver . 'm.so.1.0'
-        endif
-      endif
-    endfor
-  catch
-  endtry
-endif
-" }}}
 " Indentation and formatting {{{
 set formatoptions+=rn1j
 set formatoptions-=t
