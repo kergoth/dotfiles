@@ -544,6 +544,21 @@ endif
 set cursorline
 " }}}
 " Commands {{{
+" Grep asynchronously with Dispatch
+function! s:Grep(...)
+  let l:errorformat = &errorformat
+  let l:makeprg = &makeprg
+  let &makeprg = &grepprg
+  let &errorformat = &grepformat
+  try
+    execute 'Make' join(a:000, ' ')
+  finally
+    let &errorformat = l:errorformat
+    let &makeprg = l:makeprg
+  endtry
+endfunction
+command! -nargs=+ Grep call s:Grep(<f-args>)
+
 " Make the 'Man' command available, loading on demand
 function! s:Man(...)
   runtime ftplugin/man.vim
