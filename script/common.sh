@@ -25,6 +25,18 @@ case "$OSTYPE" in
                 OSTYPE=WSL
                 USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
                 prefixes="%include%Wsl $prefixes"
+
+                if [ -z "$WslDisks" ]; then
+                    export WslDisks=/mnt
+                    if [ -e /etc/wsl.conf ]; then
+                        WslDisks="$(sed -n -e 's/^root = //p' /etc/wsl.conf)"
+                        if [ -n $WslDisks ]; then
+                            export WslDisks="${WslDisks%/}"
+                        else
+                            WslDisks=/mnt
+                        fi
+                    fi
+                fi
                 ;;
         esac
         ;;
@@ -86,26 +98,97 @@ link () {
         esac
     fi
     destdir="${dotfile_dest%/*}"
-    if [ $install_force -eq 1 ]; then
+
+    wsl_winpath=0
+    if [ $OSTYPE = WSL ]; then
+        case "$(pwd -P)" in
+            "$WslDisks"/*)
+                ;;
+            *)
+                case "$dotfile_dest" in
+                    "$WslDisks"/*)
+                        wsl_winpath=1
+                        ;;
+                esac
+                ;;
+        esac
+    fi
+
+    if [ "$install_force" -eq 1 ]; then
         rm -f "$dotfile_dest"
     elif [ -h "$dotfile_dest" ]; then
-        existing_dest="$(readlink "$dotfile_dest")"
-        case "$existing_dest" in
+        existing_target="$(readlink "$dotfile_dest")"
+        case "$existing_target" in
             /*)
                 ;;
             *)
-                existing_dest="$(normalize_path "$destdir/$existing_dest")"
+                existing_target="$(normalize_path "$destdir/$existing_target")"
                 ;;
         esac
-        if [ "$existing_dest" != "$dotfile" ]; then
+        if [ "$existing_target" != "$dotfile" ]; then
             rm -f "$dotfile_dest"
         else
             return
         fi
+    elif [ $wsl_winpath -eq 1 ] && [ -e "$dotfile_dest" ]; then
+        # Not using iln, so prompt to handle existing
+        if prompt_bool "Replace $dotfile_dest?"; then
+            mv "$dotfile_dest" "$dotfile_dest.old"
+        else
+            dotfile_dest="$dotfile_dest.new"
+        fi
     fi
+
     mkdir -p "$destdir"
-    iln -srib "$dotfile" "$dotfile_dest"
+    if [ $wsl_winpath -eq 1 ]; then
+        if [ -d "$dotfile" ]; then
+            cmd.exe /c mklink /d "$(wslpath -wa "$dotfile_dest")" "$(wslpath -wa "$dotfile")"
+        else
+            cmd.exe /c mklink "$(wslpath -wa "$dotfile_dest")" "$(wslpath -wa "$dotfile")"
+        fi
+    else
+        iln -srib "$dotfile" "$dotfile_dest"
+    fi
     echo >&2 "Linked $(homepath "$dotfile_dest")"
+}
+
+prompt_bool () {
+    if [[ $# -gt 1 ]]; then
+        default="$2"
+    else
+        default="y"
+    fi
+    case $default in
+        [yY])
+            y_side="Y"
+            n_side="n"
+            default_code=0
+            ;;
+        [nN])
+            n_side="N"
+            y_side="y"
+            default_code=1
+            ;;
+    esac
+
+    while true; do
+        read -r -n 1 -p "$1 [$y_side|$n_side] " result </dev/tty
+        printf "\n"
+        case "$result" in
+            [yY])
+                return 0
+                ;;
+            [nN])
+                return 1
+                ;;
+            "")
+                return $default_code
+                ;;
+            *)
+                echo >&2 "Invalid input '$result'"
+                ;;
+        esac
+    done
 }
 
 homepath () {
