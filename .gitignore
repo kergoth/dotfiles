@@ -12,3 +12,6 @@ local/
 # vim doctags
 tags
 tags-ja
+
+DiffHighlight.pm
+diff-highlight.perl
