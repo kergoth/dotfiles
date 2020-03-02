@@ -86,37 +86,41 @@ imports:
     pathogen: vim/autoload
     Modeliner: vim/bundle/Modeliner
     fugitive: git/vim/bundle/fugitive
+    damian-conway-vim: vim/bundle/damian-conway
     vim-abolish: vim/bundle/abolish
     vim-ale: vim/bundle/ale
     vim-apathy: vim/bundle/apathy
     vim-bitbake: bitbake/vim/bundle/bitbake
-    vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-braceless: vim/bundle/braceless
+    vim-bracketed-paste: vim/bundle/bracketed-paste
     vim-commentary: vim/bundle/commentary
+    vim-dirvish: vim/bundle/dirvish
+    vim-dispatch: vim/bundle/dispatch
     vim-dracula: vim/bundle/dracula
     vim-editorconfig: vim/bundle/editorconfig
     vim-endwise: vim/bundle/endwise
-    vim-dispatch: vim/bundle/dispatch
     vim-eunuch: vim/bundle/eunuch
     vim-fzf-extra: fzf/vim/bundle/fzf-extra
     vim-highlightedyank: vim/bundle/highlightedyank
     vim-lion: vim/bundle/lion
+    vim-neosnippet-hug-neovim-rpc: vim/bundle/vim-hug-neovim-rpc
+    vim-neosnippet-nvim-yarp: vim/bundle/nvim-yarp
+    vim-neosnippet-snippets: vim/bundle/neosnippet-snippets
+    vim-neosnippet: vim/bundle/neosnippet
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
+    vim-sh-indent: vim/bundle/sh-indent
     vim-sneak: vim/bundle/sneak
     vim-surround: vim/bundle/surround
     vim-targets: vim/bundle/targets
-    vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
     vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
-    vim-dirvish: vim/bundle/dirvish
-    vim-sh-indent: vim/bundle/sh-indent
+    vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
     vim-undotree: vim/bundle/undotree
     vim-VimCompletesMe: vim/bundle/VimCompletesMe
     vim-vitality: vim/bundle/vitality
     vim-zoom: vim/bundle/zoom
-    damian-conway-vim: vim/bundle/damian-conway
 
     # Textual
     textual-succinct: textual/styles/Succinct
@@ -809,3 +813,19 @@ git module fzy-scripts:
     url: https://github.com/jhawthorn/fzy
     export: contrib
     rev: c2d816d9e31cf9e2ebaf2b51b346ab2a992d7457
+
+git module vim-neosnippet:
+    url: https://github.com/Shougo/neosnippet.vim
+    rev: caa9b82220237865a2fbb846b0fa63f4a6a9eb7a
+
+git module vim-neosnippet-snippets:
+    url: https://github.com/Shougo/neosnippet-snippets
+    rev: aed6074642363d0c97da5cd86e1b23027479df84
+
+git module vim-neosnippet-nvim-yarp:
+    url: https://github.com/roxma/nvim-yarp.git
+    rev: 83c6f4e61aa73e2a53796ea6690fb7e5e64db50a
+
+git module vim-neosnippet-hug-neovim-rpc:
+    url: https://github.com/roxma/vim-hug-neovim-rpc.git
+    rev: 701ecbb0a1f904c0b44c6beaafef35e1de998a94
