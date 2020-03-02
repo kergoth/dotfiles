@@ -109,6 +109,7 @@ imports:
     vim-neosnippet: vim/bundle/neosnippet
     vim-obsession: vim/bundle/obsession
     vim-polyglot: vim/bundle/polyglot
+    vim-qlist: vim/bundle/qlist
     vim-repeat: vim/bundle/repeat
     vim-rsi: vim/bundle/rsi
     vim-sh-indent: vim/bundle/sh-indent
@@ -829,3 +830,7 @@ git module vim-neosnippet-nvim-yarp:
 git module vim-neosnippet-hug-neovim-rpc:
     url: https://github.com/roxma/vim-hug-neovim-rpc.git
     rev: 701ecbb0a1f904c0b44c6beaafef35e1de998a94
+
+git module vim-qlist:
+    url: https://github.com/romainl/vim-qlist
+    rev: be8fba124bf13314435b1faab8f628436d4cffb1
