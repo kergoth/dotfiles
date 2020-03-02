@@ -118,6 +118,18 @@ link () {
         rm -f "$dotfile_dest"
     elif [ -h "$dotfile_dest" ]; then
         existing_target="$(readlink "$dotfile_dest")"
+        if [ -z "$existing_target" ] && [ $wsl_winpath -eq 1 ]; then
+            existing_target="$(powershell.exe -c "(Get-Item '$(wslpath -wa "$dotfile_dest")').Target" 2>/dev/null | tr -d '\r')" || :
+            if [ -n "$existing_target" ]; then
+                existing_target="$(wslpath -u "$existing_target")"
+                case "$existing_target" in
+                    UNC/wsl\$/*)
+                        existing_target="/$(echo "$existing_target" | cut -d/ -f4-)"
+                        ;;
+                esac
+            fi
+        fi
+
         case "$existing_target" in
             /*)
                 ;;
@@ -125,31 +137,40 @@ link () {
                 existing_target="$(normalize_path "$destdir/$existing_target")"
                 ;;
         esac
+
         if [ "$existing_target" != "$dotfile" ]; then
             rm -f "$dotfile_dest"
         else
             return
         fi
-    elif [ $wsl_winpath -eq 1 ] && [ -e "$dotfile_dest" ]; then
-        # Not using iln, so prompt to handle existing
-        if prompt_bool "Replace $dotfile_dest?"; then
-            mv "$dotfile_dest" "$dotfile_dest.old"
-        else
-            dotfile_dest="$dotfile_dest.new"
-        fi
     fi
 
     mkdir -p "$destdir"
     if [ $wsl_winpath -eq 1 ]; then
-        if [ -d "$dotfile" ]; then
-            cmd.exe /c mklink /d "$(wslpath -wa "$dotfile_dest")" "$(wslpath -wa "$dotfile")"
-        else
-            cmd.exe /c mklink "$(wslpath -wa "$dotfile_dest")" "$(wslpath -wa "$dotfile")"
+        if [ -e "$dotfile_dest" ]; then
+            # Not using iln, so prompt to handle existing
+            if prompt_bool "Replace $dotfile_dest?"; then
+                mv "$dotfile_dest" "$dotfile_dest.old"
+            else
+                dotfile_dest="$dotfile_dest.new"
+            fi
         fi
+        mklink "$dotfile_dest" "$dotfile"
     else
         iln -srib "$dotfile" "$dotfile_dest"
     fi
     echo >&2 "Linked $(homepath "$dotfile_dest")"
+}
+
+mklink () {
+    (
+        cd "$WslDisks/c" || exit 1
+        if [ -d "$2" ]; then
+            cmd.exe /c mklink /d "$(wslpath -wa "$1")" "$(wslpath -wa "$2")"
+        else
+            cmd.exe /c mklink "$(wslpath -wa "$1")" "$(wslpath -wa "$2")"
+        fi
+    )
 }
 
 prompt_bool () {
