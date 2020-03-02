@@ -91,6 +91,9 @@ augroup filetypedetect
 
   "jinja
   autocmd BufNewFile,BufRead *.jinja2,*.j2,*.jinja,*.nunjucks,*.nunjs,*.njk set ft=jinja
+
+  "jsx
+  au BufNewFile,BufRead *.jsx     setf javascriptreact
 augroup END
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'acpiasl') == -1
   augroup filetypedetect
@@ -558,8 +561,7 @@ endif
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'haml') == -1
   augroup filetypedetect
   " haml, from haml.vim in sheerun/vim-haml
-autocmd BufNewFile,BufRead *.sass setf sass
-autocmd BufNewFile,BufRead *.scss setf scss
+autocmd BufNewFile,BufRead *.haml,*.hamlbars,*.hamlc setf haml
   augroup end
 endif
 
@@ -657,13 +659,6 @@ autocmd BufNewFile,BufRead,StdinReadPost *
     \ if getline(1) =~ '^#!.*\Wion\s*$' |
     \   set ft=ion |
     \ endif
-  augroup end
-endif
-
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'jasmine') == -1
-  augroup filetypedetect
-  " jasmine, from jasmine.vim in glanotte/vim-jasmine
-autocmd BufNewFile,BufRead *Spec.js,*_spec.js set filetype=jasmine.javascript syntax=jasmine
   augroup end
 endif
 
@@ -831,8 +826,10 @@ endif
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'mathematica') == -1
   augroup filetypedetect
   " mathematica, from mma.vim in voldikss/vim-mma
-autocmd BufNewFile,BufRead *.wl set filetype=mma
-autocmd BufNewFile,BufRead *.wls set filetype=mma
+autocmd BufNewFile,BufRead *.wl  setfiletype mma
+autocmd BufNewFile,BufRead *.wls setfiletype mma
+autocmd BufNewFile,BufRead *.nb  setfiletype mma
+autocmd BufNewFile,BufRead *.m   setfiletype mma
   augroup end
 endif
 
@@ -913,7 +910,7 @@ endif
 if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
   augroup filetypedetect
   " ocaml, from dune.vim in rgrinberg/vim-ocaml
-au BufRead,BufNewFile jbuild,dune,dune-project set ft=dune
+au BufRead,BufNewFile jbuild,dune,dune-project,dune-workspace set ft=dune
   augroup end
 endif
 
@@ -1173,6 +1170,13 @@ if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'raml') == -1
   augroup filetypedetect
   " raml, from raml.vim in IN3D/vim-raml
 au BufRead,BufNewFile *.raml set ft=raml
+  augroup end
+endif
+
+if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'razor') == -1
+  augroup filetypedetect
+  " razor, from razor.vim in adamclerk/vim-razor
+autocmd BufNewFile,BufRead *.cshtml setf razor
   augroup end
 endif
 

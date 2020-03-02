@@ -2,11 +2,11 @@
 
 set -E
 
-DIRS="syntax indent compiler autoload ftplugin after/syntax after/indent after/ftplugin"
+DIRS="syntax indent compiler autoload ftplugin ctags after/syntax after/indent after/ftplugin"
 # shellcheck disable=SC2034
 DIRS_BASIC="syntax compiler indent after/syntax after/indent"
 # shellcheck disable=SC2034
-DIRS_ALL="syntax indent compiler autoload ftplugin after extras"
+DIRS_ALL="syntax indent compiler autoload ftplugin after extras ctags"
 # shellcheck disable=SC2034
 DIRS_SYNTAX="syntax indent after/syntax after/indent"
 # shellcheck disable=SC2034
@@ -105,7 +105,7 @@ EOF
 }
 
 copy_dir() {
-  find "$1/$2" \( -name '*.vim' -o -name '*.vital' \) -print0 | while read -r -d $'\0' file; do
+  find "$1/$2" \( -name '*.vim' -o -name '*.vital' -o -name '*.ctags' \) -print0 | while read -r -d $'\0' file; do
     copy_file "$1" "$file" "$3"
   done
 }
@@ -205,8 +205,6 @@ PACKS="
   go:fatih/vim-go:_BASIC
   graphql:jparise/vim-graphql:_ALL
   gradle:tfnico/vim-gradle
-  groovy:vim-scripts/groovy.vim
-  groovy-indent:vim-scripts/groovyindent-unix
   haml:sheerun/vim-haml
   handlebars:mustache/vim-mustache-handlebars
   haproxy:CH-DanReif/haproxy.vim
@@ -219,7 +217,6 @@ PACKS="
   i3:mboughaba/i3config.vim
   idris:idris-hackers/idris-vim
   ion:vmchale/ion-vim
-  jasmine:glanotte/vim-jasmine
   javascript:pangloss/vim-javascript:_JAVASCRIPT
   jenkins:martinda/Jenkinsfile-vim-syntax
   jinja:lepture/vim-jinja
@@ -268,8 +265,9 @@ PACKS="
   racket:wlangstroth/vim-racket
   ragel:jneen/ragel.vim
   raml:IN3D/vim-raml
+  razor:adamclerk/vim-razor
   reason:reasonml-editor/vim-reason-plus
-  rspec:sheerun/rspec.vim
+  rspec:keith/rspec.vim
   rst:marshallward/vim-restructuredtext
   ruby:vim-ruby/vim-ruby
   rust:rust-lang/rust.vim
@@ -310,6 +308,7 @@ PACKS="
   yard:sheerun/vim-yardoc
   zephir:xwsoul/vim-zephir
   zig:ziglang/zig.vim
+  zinit:zinit-zsh/zplugin-vim-syntax
 "
 
 rm -rf tmp

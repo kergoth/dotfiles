@@ -155,7 +155,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 1de07aa3aba4e857db2c32427760413488816166
+    rev: a3eb427d8b35440511ee4bfbdbf692e5f4edde25
 
 git module zsh-fast-syntax-highlighting:
     url: https://github.com/zdharma/fast-syntax-highlighting
@@ -208,7 +208,7 @@ git module vim-lion:
 
 git module fugitive:
     url: https://github.com/tpope/vim-fugitive
-    rev: c452181975761f8b055b88eb1c98f736323510fd
+    rev: d102dd92fd9afeb23806ee92c3ab5b64d71fac2e
 
 # vim files for the BitBake tool
 git module vim-bitbake:
@@ -294,7 +294,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: d8cb5c1cf5d11f4fd00bb6cc22f604cd1e38c245
+    rev: 6db15e86937029b4a4565b2ae73a3c6bae5ef4ba
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -610,7 +610,7 @@ git module git-blame-colored:
 
 git module vim-polyglot:
     url: https://github.com/sheerun/vim-polyglot
-    rev: 35ea4d2b9072594b6c0ccf87bde7978ed9f94755
+    rev: 45ab4d80dd52f6ea40d8e9b7fa5cedd31d9ad9ec
 
 git module vim-vitality:
     url: https://github.com/sjl/vitality.vim
@@ -677,7 +677,7 @@ git module vim-VimCompletesMe:
 
 git module vim-sneak:
     url: https://github.com/justinmk/vim-sneak
-    rev: 7afd63b4552b0827622ae27ff4c9eca056dd3521
+    rev: 98a5c946d6dc76528b9d9b044059b5ef1fab5a48
 
 git module vim-profiler:
     url: https://github.com/bchretien/vim-profiler

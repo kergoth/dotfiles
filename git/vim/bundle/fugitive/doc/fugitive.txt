@@ -25,6 +25,7 @@ that are part of Git repositories).
                         resume running the command.  A few Git subcommands
                         have different behavior; these are documented below.
 
+                                                *:Git_--paginate* *:Git_-p*
 :Git --paginate {args}  Run an arbitrary git command, capture output to a temp
 :Git -p {args}          file, and |:split| that temp file.  Use :0Git to
 :G --paginate {args}    |:edit| the temp file instead.  A temp file is always
@@ -37,7 +38,7 @@ that are part of Git repositories).
 :G                      akin to git-status.  Press g? or see |fugitive-maps|
                         for usage.
 
-                                                *:Git-blame*
+                                                *:Git_blame*
 :Git blame [flags]      Run git-blame [flags] on the current file and open the
                         results in a scroll-bound vertical split.  The
                         following maps, which work on the cursor line commit
@@ -63,15 +64,7 @@ that are part of Git repositories).
                         scrollbinding is used.  You can also give an arbitrary
                         filename.
 
-                                                *:Ggrep* *:Gcgrep* *:Git-grep*
-:Ggrep[!] [args]        |:grep|[!] with git-grep as 'grepprg'.
-:Git[!] grep [args]
-
-                                                *:Glgrep*
-:Glgrep[!] [args]       |:lgrep|[!] with git-grep as 'grepprg'.
-:0Git[!] grep [args]
-
-                                                *:Git-difftool*
+                                                *:Git_difftool*
 :Git[!] difftool [args] Invoke `git diff [args]` and load the changes into the
                         quickfix list.  Each changed hunk gets a separate
                         quickfix entry unless you pass an option like
@@ -79,20 +72,28 @@ that are part of Git repositories).
                         change unless [!] is given.
 
 :Git difftool -y [args] Invoke `git diff [args]`, open each changed file in a
-                        new tab, and invoke `:Gdiffsplit!` against the
+                        new tab, and invoke |:Gdiffsplit!| against the
                         appropriate commit.
 
-                                                *:Git-mergetool*
-:Git mergetool [args]   Like |:Git-difftool|, but target merge conflicts.
+                                                *:Git_mergetool*
+:Git mergetool [args]   Like |:Git_difftool|, but target merge conflicts.
 
-                                                *:Git-push*
+                                                *:Git_push*
 :Git push [args]        Invoke git-push, load the results into the |quickfix|
                         list, and invoke |:cwindow| to reveal any errors.
                         |:Dispatch| is used if available for asynchronous
                         invocation.
 
-                                                *:Git-fetch*
-:Git fetch [args]       Like |:Git-push|, but for git-fetch.
+                                                *:Git_fetch*
+:Git fetch [args]       Like |:Git_push|, but for git-fetch.
+
+                                                *:Ggrep* *:Gcgrep* *:Git_grep*
+:Ggrep[!] [args]        |:grep|[!] with git-grep as 'grepprg'.
+:Git[!] grep [args]
+
+                                                *:Glgrep*
+:Glgrep[!] [args]       |:lgrep|[!] with git-grep as 'grepprg'.
+:0Git[!] grep [args]
 
                                                  *:Gclog*
 :Gclog[!] [args]        Use git-log [args] to load the commit history into the
@@ -195,7 +196,7 @@ that are part of Git repositories).
                         afterward.  Add a ! to pass -f.
 
                                                 *:GRename*
-:GRename {destination}  Like |:Gmove| but operates relative to the parent
+:GRename {destination}  Like |:GMove| but operates relative to the parent
                         directory of the current file.
 
                                                 *:GDelete*
@@ -205,7 +206,7 @@ that are part of Git repositories).
                         buffer.
 
                                                 *:GRemove*
-:GRemove                Like :Gdelete, but keep the (now empty) buffer around.
+:GRemove                Like |:GDelete|, but keep the (now empty) buffer around.
 
                                                 *:GBrowse*
 :GBrowse                Open the current file, blob, tree, commit, or tag
@@ -218,7 +219,7 @@ that are part of Git repositories).
                         supported by installing rhubarb.vim, available at
                         <https://github.com/tpope/vim-rhubarb>.
 
-:GBrowse {object}       Like :Gbrowse, but for a given |fugitive-object|.
+:GBrowse {object}       Like :GBrowse, but for a given |fugitive-object|.
 
 :GBrowse [...]@{remote} Force using the given remote rather than the remote
                         for the current branch.  The remote is used to
@@ -230,7 +231,7 @@ that are part of Git repositories).
                         if the file changes.  You can give a range of "0" to
                         force this behavior without including an anchor.
 
-:[range]GBrowse! [args] Like :Gbrowse, but put the URL on the clipboard rather
+:[range]GBrowse! [args] Like :GBrowse, but put the URL on the clipboard rather
                         than opening it.
 
 MAPS                                            *fugitive-maps*
@@ -384,7 +385,7 @@ i                       Jump to the next file or hunk, expanding inline diffs
 ][                      Jump [count] section ends forward.
 
                                                 *fugitive_star*
-*                       One the first column of a + or - diff line, search for
+*                       On the first column of a + or - diff line, search for
                         the corresponding - or + line.  Otherwise, defer to
                         built-in |star|.
 
@@ -619,23 +620,23 @@ just one space character longer than the legacy version.
 *:Gmove*        Superseded by |:GMove|.
 *:Grename*      Superseded by |:GRename|.
 *:Gbrowse*      Superseded by |:GBrowse|.
-*:Gcommit*      Superseded by |:Git| commit.
 *:Gdiff*        Superseded by |:Gdiffsplit|
 *:Gsdiff*       Superseded by |:Ghdiffsplit|
 *:Gvdiff*       Superseded by |:Gvdiffsplit| or |:vert| |:Gdiffsplit|.
-*:Gblame*       Superseded by |:Git-blame|.
-*:Gmerge*       Superseded by |:Git| merge and |:Git-mergetool|.
+*:Gblame*       Superseded by |:Git_blame|.
+*:Gcommit*      Superseded by |:Git| commit.
+*:Gmerge*       Superseded by |:Git| merge and |:Git_mergetool|.
 *:Gpull*        Superseded by |:Git| pull.
 *:Grebase*      Superseded by |:Git| rebase.
 *:Grevert*      Superseded by |:Git| revert.
-*:Gpush*        Superseded by |:Git-push|.
-*:Gfetch*       Superseded by |:Git-fetch|.
+*:Gpush*        Superseded by |:Git_push|.
+*:Gfetch*       Superseded by |:Git_fetch|.
 *:Glog*         Superseded by |:Gclog|.
 *:Gstatus*      Superseded by |:Git| (with no arguments).
-*:Git!*         Superseded by |:Git| --paginate.
-*:Gsplit!*      Superseded by |:Git| --paginate.
-*:Gvsplit!*     Superseded by |:vert| |:Git| --paginate.
-*:Gtabsplit!*   Superseded by |:tab| |:Git| --paginate.
+*:Git!*         Superseded by |:Git_--paginate|.
+*:Gsplit!*      Superseded by |:Git_--paginate|.
+*:Gvsplit!*     Superseded by :vert Git --paginate.
+*:Gtabsplit!*   Superseded by :tab Git --paginate.
 *:Gpedit!*      Superseded by :Git! --paginate.
 
 ABOUT                                           *fugitive-about*
