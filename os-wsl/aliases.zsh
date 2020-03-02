@@ -9,7 +9,6 @@ if [[ $OSTYPE = WSL ]]; then
 
     alias cdw='cd "$USERPROFILE"'
     alias start="cmd.exe /c start"
-    alias mklink="cmd.exe /c mklink"
     alias cmd=cmd.exe
     alias wsl=wsl.exe
     alias adminwsl="psadmin wsl.exe"
