@@ -155,7 +155,7 @@ link () {
                 dotfile_dest="$dotfile_dest.new"
             fi
         fi
-        mklink "$dotfile_dest" "$dotfile"
+        mklink "$dotfile_dest" "$dotfile" >/dev/null
     else
         iln -srib "$dotfile" "$dotfile_dest"
     fi
