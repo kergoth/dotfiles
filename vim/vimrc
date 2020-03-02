@@ -1204,6 +1204,8 @@ let g:ale_fixers = {
 
 let g:ale_sh_shfmt_options = '-ci -bn -i 4'
 
+" Apathy
+let g:python_executable = 'python3'
 " Snippets {{{
 " Replace the default ycm maps with neosnippet-aware ones
 let g:vcm_default_maps = 0
