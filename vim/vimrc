@@ -562,12 +562,14 @@ function! s:Grep(...)
 endfunction
 command! -nargs=+ Grep call s:Grep(<f-args>)
 
-" Make the 'Man' command available, loading on demand
-function! s:Man(...)
-  runtime ftplugin/man.vim
-  execute 'Man' join(a:000, ' ')
-endfunction
-command! -nargs=+ -complete=shellcmd Man delcommand Man | call s:Man(<f-args>)
+if !has('nvim')
+  " Make the 'Man' command available, loading on demand
+  function! s:Man(...)
+    runtime ftplugin/man.vim
+    execute 'Man' join(a:000, ' ')
+  endfunction
+  command! -nargs=+ -complete=shellcmd Man delcommand Man | call s:Man(<f-args>)
+endif
 
 " Change the current directory to the location of the
 " file being edited.
