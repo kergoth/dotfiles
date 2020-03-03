@@ -231,7 +231,7 @@ endtry
 set backupcopy=auto
 
 " Viminfo file behavior
-if has('viminfo')
+if has('viminfo') || has('shada')
   " f1  store file marks
   " '   # of previously edited files to remember marks for
   " :   # of lines of command history
