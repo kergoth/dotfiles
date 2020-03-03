@@ -115,7 +115,7 @@ link () {
     fi
 
     if [ "$install_force" -eq 1 ]; then
-        rm -f "$dotfile_dest"
+        rm -rf "$dotfile_dest"
     elif [ -h "$dotfile_dest" ]; then
         existing_target="$(readlink "$dotfile_dest")"
         if [ -z "$existing_target" ] && [ $wsl_winpath -eq 1 ]; then
