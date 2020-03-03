@@ -1042,7 +1042,7 @@ augroup vimrc_filetypes
 
   " File type specific indentation settings
   au FileType vim set sts=2 sw=2 et
-  au FileType c,cpp,go,taskpaper set ts=4 sw=4 sts=0 noet
+  au FileType c,cpp,go set ts=4 sw=4 sts=0 noet
   au FileType gitconfig set sts=0 sw=8 ts=8 noet
 
   " Matchit
@@ -1057,7 +1057,6 @@ augroup vimrc_filetypes
   au FileType c,cpp,lua,vim,sh,python,go,gitcommit set fdm=syntax
   au FileType text set fdm=indent
   au FileType man set fdl=99 fdm=manual
-  au FileType taskpaper call taskpaper#fold_projects()
 
   " Default to indent based folding rather than manual
   au FileType *
