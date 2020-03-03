@@ -1048,9 +1048,6 @@ augroup vimrc_filetypes
   " Matchit
   au FileType make let b:match_words='\<ifndef\>\|\<ifdef\>\|\<ifeq\>\|\<ifneq\>:\<else\>:\<endif\>'
 
-  " Search Path
-  au FileType vim let &l:path = &path . ',' . &runtimepath
-
   " Comment string
   au FileType fish set cms=#%s
   au FileType gitconfig set cms=#%s
