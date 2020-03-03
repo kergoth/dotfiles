@@ -1098,11 +1098,8 @@ augroup vimrc_filetypes
   au Filetype markdown nnoremap <buffer> <localleader>3 I### 
   au Filetype markdown nnoremap <buffer> <localleader>4 I#### 
 
-  " Use man.vim for K in types we know don't override keywordprg
-  au FileType sh,c,cpp nnoremap <buffer> <silent> K :exe 'Man ' . expand('<cword>')<cr>
-
-  " Use :help for K in vim files
-  au FileType vim,help nnoremap <buffer> <silent> K :exe 'help ' . expand('<cword>')<cr>
+  " Look up man pages in appropriate types
+  au FileType sh,c,cpp setl keywordprg=:Man
 
   " Don't restore position in a git commit message
   au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
