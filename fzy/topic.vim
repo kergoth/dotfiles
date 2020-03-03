@@ -28,7 +28,7 @@ if executable('fzy')
     startinsert
   endfunction
 
-  nnoremap <C-p> :call FzyCommand("fd -c always -t f ''", ":e")<cr>
+  nnoremap <silent> <C-p> :call FzyCommand("fd -c always -t f ''", ":e")<cr>
 endif
 
 " nnoremap <C-p> :call FzyCommand("rg . --silent -l -g ''", ":e")<cr>
