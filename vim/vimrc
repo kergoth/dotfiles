@@ -1017,7 +1017,6 @@ augroup vimrc_filetype_detect
 
   au BufNewFile,BufRead TODO,BUGS,README set ft=text
   au BufNewFile,BufRead ~/.config/git/config set ft=gitconfig
-  au BufNewFile,BufRead /tmp/dvtm-editor.* set ft=dvtm-editor
 
   au BufNewFile,BufRead git-revise-todo setf gitrebase
 
@@ -1104,10 +1103,6 @@ augroup vimrc_filetypes
 
   " Don't restore position in a git commit message
   au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
-
-  " Kill unnecessary bits when acting as dvtm copymode
-  au FileType dvtm-editor set nonumber
-  au FileType dvtm-editor hi def link RedundantWhitespace NONE
 augroup END
 
 " Kill unnecessary bits when acting as a pager
