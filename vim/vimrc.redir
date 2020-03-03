@@ -1,5 +1,0 @@
-if empty($XDG_CONFIG_HOME)
-  let $XDG_CONFIG_HOME = $HOME . '/.config'
-endif
-let $MYVIMRC = '$XDG_CONFIG_HOME/vim/vimrc'
-source $MYVIMRC

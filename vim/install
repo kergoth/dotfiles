@@ -1,12 +1,6 @@
-mkdir -p $XDG_DATA_HOME/vim{,/backup,/swap,/undo}
+mkdir -p "$XDG_DATA_HOME"/vim{,/backup,/swap,/undo}
+mkdir -p "$XDG_DATA_HOME"/nvim{,/backup,/swap,/undo}
 
 link . ~/.config/vim
-
-if [ -e ~/.viminfo ] && [ ! -e ~/.config/vim/viminfo ]; then
-    # Copy existing data to new location
-    cp ~/.viminfo ~/.config/vim/viminfo
-fi
-
-link nvim_init.vim $XDG_CONFIG_HOME/nvim/init.vim
-
-link vimrc.redir ~/.vimrc
+link . ~/.config/nvim
+link init.vim ~/.vimrc

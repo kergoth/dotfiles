@@ -154,24 +154,23 @@ set runtimepath^=$VIMDOTDIR runtimepath+=$VIMDOTDIR/after
 let g:dtvim = glob($DOTFILESDIR . '/*/vim/', 0, 1)
 let &runtimepath = $VIMDOTDIR . ',' . join(g:dtvim, ',') . ',' . &runtimepath . ',' . join(g:dtvim, '/after,') . '/after'
 
-if empty($XDG_DATA_HOME)
-  let $XDG_DATA_HOME = $HOME . '/.local/share'
-endif
+" Use XDG paths
+if !has('nvim')
+  if empty($XDG_DATA_HOME)
+    let $XDG_DATA_HOME = $HOME . '/.local/share'
+  endif
 
-if !isdirectory($XDG_DATA_HOME . '/vim')
-  call mkdir($XDG_DATA_HOME . '/vim', 'p')
-endif
+  if has('viminfo') && empty($VIMINFO)
+    let $VIMINFO = $XDG_DATA_HOME . '/vim/viminfo'
+  endif
 
-" System temporary files
-if empty($TEMP)
-  let $TEMP = '/tmp'
-endif
-
-" Backups and swap files
-set directory=$XDG_DATA_HOME/vim/swap//,/tmp//,/var/tmp//,$TEMP//
-set backupdir=$XDG_DATA_HOME/vim/backup//,/tmp//,/var/tmp//,$TEMP//
-if has('persistent_undo')
-  set undodir=$XDG_DATA_HOME/vim/undo,/tmp,/var/tmp,$TEMP
+  set directory=$XDG_DATA_HOME/vim/swap//
+  set backupdir=$XDG_DATA_HOME/vim/backup
+  if has('persistent_undo')
+    set undodir=$XDG_DATA_HOME/vim/undo
+  endif
+else
+  set backupdir-=.
 endif
 
 " Double slash does not actually work for backupdir, here's a fix
@@ -183,13 +182,6 @@ augroup END
 " Ensure we cover all temp files for backup file creation
 if $OSTYPE =~? 'darwin'
   set backupskip+=/private/tmp/*
-endif
-
-" Appropriate path for viminfo
-if has('viminfo')
-  if empty('$VIMINFO')
-    let $VIMINFO = $XDG_DATA_HOME . '/vim/viminfo'
-  endif
 endif
 " }}}
 " Encoding {{{
@@ -239,7 +231,10 @@ if has('viminfo') || has('shada')
   " <   max # of lines for each register to be saved
   " s   max # of Kb for each register to be saved
   " h   don't restore hlsearch behavior
-  let &viminfo="f1,'1000,:1000,/1000,<1000,s100,h,r" . $TEMP . ",n" . $VIMINFO
+  set viminfo=f1,'1000,:1000,/1000,<1000,s100,h,r/tmp
+  if !has('nvim')
+    let &viminfo .= ',n' . $VIMINFO
+  endif
 endif
 
 " Allow hiding buffers with modifications
@@ -307,6 +302,11 @@ set sidescroll=1
 
 " Show columns of context when scrolling horizontally
 set sidescrolloff=5
+
+if has('nvim')
+  " Enable live substitution
+  set inccommand=nosplit
+endif
 
 " Enable modelines
 set modeline
