@@ -569,6 +569,8 @@ if !has('nvim')
     execute 'Man' join(a:000, ' ')
   endfunction
   command! -nargs=+ -complete=shellcmd Man delcommand Man | call s:Man(<f-args>)
+
+  set keywordprg=:Man
 endif
 
 " Change the current directory to the location of the
@@ -1099,9 +1101,6 @@ augroup vimrc_filetypes
   au Filetype markdown nnoremap <buffer> <localleader>2 I## 
   au Filetype markdown nnoremap <buffer> <localleader>3 I### 
   au Filetype markdown nnoremap <buffer> <localleader>4 I#### 
-
-  " Look up man pages in appropriate types
-  au FileType sh,c,cpp setl keywordprg=:Man
 
   " Don't restore position in a git commit message
   au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
