@@ -1101,12 +1101,6 @@ augroup vimrc_filetypes
   au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 augroup END
 
-" Kill unnecessary bits when acting as a pager
-function! LessInitFunc()
-  set nonumber
-  hi def link RedundantWhitespace NONE
-endfunction
-
 " Highlight GNU gcc specific items
 let g:c_gnu = 1
 
