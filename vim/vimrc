@@ -1054,7 +1054,7 @@ augroup vimrc_filetypes
   au FileType cfg set cms=#%s
 
   " Set up folding
-  au FileType c,cpp,lua,vim,sh,python,go,gitcommit set fdm=syntax
+  au FileType c,cpp,lua,vim,sh,go,gitcommit set fdm=syntax
   au FileType text set fdm=indent
   au FileType man set fdl=99 fdm=manual
 
@@ -1065,8 +1065,8 @@ augroup vimrc_filetypes
         \ endif
 
   " Use Braceless for indent-sensitive types
-  au FileType python BracelessEnable +indent
-  au FileType yaml BracelessEnable
+  au FileType python BracelessEnable +indent +fold
+  au FileType yaml BracelessEnable +indent +fold
 
   " Set up completion
   au FileType vim let b:vcm_tab_complete = 'vim'
