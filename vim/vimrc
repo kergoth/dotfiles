@@ -1068,6 +1068,10 @@ augroup vimrc_filetypes
   au FileType python BracelessEnable +indent +fold
   au FileType yaml BracelessEnable +indent +fold
 
+  " Adjust the space mapping to trigger Braceless' fold creation
+  autocmd FileType python nmap <buffer> <silent> <expr> <Space> foldlevel('.') ? "za" : "zc"
+  autocmd FileType yaml nmap <buffer> <silent> <expr> <Space> foldlevel('.') ? "za" : "zc"
+
   " Set up completion
   au FileType vim let b:vcm_tab_complete = 'vim'
 
