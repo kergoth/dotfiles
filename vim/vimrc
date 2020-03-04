@@ -397,7 +397,7 @@ endif
 
 augroup colorscheme_override
   au!
-  au ColorScheme call OverrideColors()
+  au ColorScheme * call OverrideColors()
 augroup END
 
 augroup vimrc
@@ -939,7 +939,7 @@ augroup vimrc_statusline
   au BufWinEnter quickfix if exists('g:statusline_quickfix') | let &l:statusline = g:statusline_quickfix | endif
 
   " Set User colors based on the color scheme
-  au ColorScheme call statusline#set_statusline_colors()
+  au ColorScheme * call statusline#set_statusline_colors()
 augroup END
 
 call statusline#set_statusline_colors()
