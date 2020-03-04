@@ -946,7 +946,7 @@ call statusline#set_statusline_colors()
 
 " Align titlestring with statusline
 if has('gui_running') || &title
-  set titlestring=%(%{&filetype==#'fzf'?'>\ fzf':statusline#Filename_Modified()}\ %)
+  set titlestring=%(%{&bt!=#''?&bt:statusline#Filename_Modified()}\ %)
   set titlestring+=%{statusline#Readonly()}
 endif
 
