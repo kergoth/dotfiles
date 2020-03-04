@@ -915,12 +915,39 @@ set laststatus=2
 set noshowmode
 
 " Set up statusline
-runtime! statusline.vim
+set statusline=
+set statusline+=%2*%(\ %{&paste?'PASTE':''}\ %)%*
+set statusline+=%3*
+set statusline+=%(\ %{statusline#Filename_Modified()}\ %)
+set statusline+=%*
+set statusline+=%(%{statusline#Readonly()}\ %)
 
+set statusline+=%=
+
+set statusline+=%(%{&ft}\ %)
+set statusline+=%*%1*
+set statusline+=%6(\ %p%%\ %)
+set statusline+=%#warningmsg#
+set statusline+=%(\ %{&fileformat!=#'unix'?&fileformat:''}\ %)
+set statusline+=%(\ %{&fileencoding!=#'utf-8'?&fileencoding:''}\ %)
+
+let g:statusline_quickfix = "%t%{exists('w:quickfix_title')?' '.w:quickfix_title:''}"
+
+augroup vimrc_statusline
+  au!
+  " Remove the position info from the quickfix statusline
+  au BufWinEnter quickfix if exists('g:statusline_quickfix') | let &l:statusline = g:statusline_quickfix | endif
+
+  " Set User colors based on the color scheme
+  au ColorScheme call statusline#set_statusline_colors()
+augroup END
+
+call statusline#set_statusline_colors()
+
+" Align titlestring with statusline
 if has('gui_running') || &title
-  " Align title with statusline
-  set titlestring=%(%{&filetype==#'fzf'?'>\ fzf':Statusline_Filename_Modified()}\ %)
-  set titlestring+=%{Statusline_Readonly()}
+  set titlestring=%(%{&filetype==#'fzf'?'>\ fzf':statusline#Filename_Modified()}\ %)
+  set titlestring+=%{statusline#Readonly()}
 endif
 
 " Assume we have a decent terminal, as vim only recognizes a very small set of
