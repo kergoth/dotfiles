@@ -612,6 +612,10 @@ set virtualedit=block
 " Make Y behave sanely (consistent with C, D, ..)
 map Y y$
 
+" Make & default to keeping the flags
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
+
 " Make jumping to a mark's line+column more convenient with ', not `
 nnoremap ' `
 nnoremap ` '
