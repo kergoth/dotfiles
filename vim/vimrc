@@ -908,13 +908,6 @@ else
   augroup END
 endif
 
-" Nice window title
-if has('gui_running') || &title
-  set titlestring=%f    " Path.
-  set titlestring+=%m   " Modified flag.
-  set titlestring+=%r   " Readonly flag.
-endif
-
 " Always show the status line
 set laststatus=2
 
@@ -923,6 +916,12 @@ set noshowmode
 
 " Set up statusline
 runtime! statusline.vim
+
+if has('gui_running') || &title
+  " Align title with statusline
+  set titlestring=%(%{&filetype==#'fzf'?'>\ fzf':Statusline_Filename_Modified()}\ %)
+  set titlestring+=%{Statusline_Readonly()}
+endif
 
 " Assume we have a decent terminal, as vim only recognizes a very small set of
 " $TERM values for the default enable.
