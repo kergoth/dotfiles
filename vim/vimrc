@@ -913,8 +913,6 @@ if has('gui_running') || &title
   set titlestring=%f    " Path.
   set titlestring+=%m   " Modified flag.
   set titlestring+=%r   " Readonly flag.
-  set titlestring+=%w   " Preview window flag.
-  set titlestring+=\ -\ %{v:progname}  " Program name
 endif
 
 " Always show the status line
