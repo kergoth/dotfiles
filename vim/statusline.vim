@@ -72,20 +72,34 @@ function! SetStatuslineColors() abort
   exe 'hi User3 ' . ToHighlight(user3)
 endfunction
 
+if exists('*pathshorten')
+  function! s:shorten(path)
+    return pathshorten(fnamemodify(a:path, ':~:.'))
+  endfunction
+else
+  function! s:shorten(path)
+    return fnamemodify(a:path, ':t')
+  endfunction
+endif
+
 function! Statusline_Filename_Modified()
   " Avoid the component separator between filename and modified indicator
   let filename = expand('%')
+  let basename = fnamemodify(filename, ':t')
+
   if filename ==# ''
     return '[No Name]'
   elseif &filetype ==# 'help'
-    return fnamemodify(filename, ':t')
+    return basename
   endif
 
-  try
-    let filename = pathshorten(fnamemodify(filename, ':~:.'))
-  catch
-    let filename = fnamemodify(filename, ':t')
-  endtry
+  if basename ==# ''
+    " Shorten without the trailing / for directories
+    let pathsep = has('win32') ? '\' : '/'
+    let filename = s:shorten(fnamemodify(filename, ':h')) . pathsep
+  else
+    let filename = s:shorten(filename)
+  endif
   let modified = &modified ? '+' : ''
   return filename . modified
 endfunction
