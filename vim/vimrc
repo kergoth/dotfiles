@@ -198,9 +198,6 @@ if has('multi_byte')
   set fileencoding=utf-8
   scriptencoding utf-8
 endif
-
-" Most printers are Latin1, inform Vim so it can convert.
-set printencoding=latin1
 " }}}
 " Bundle setup {{{
 call pathogen#infect()
