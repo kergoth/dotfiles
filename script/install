@@ -23,6 +23,7 @@ do_install () {
     echo >&2 "Install $(dirname "$installscript")"
     (
         cd "${installscript%/*}"
+        cd "$(pwd -P)"
         # shellcheck disable=SC1090
         . "./${installscript##*/}"
     )
