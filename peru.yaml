@@ -1,5 +1,3 @@
-#  vim: set sw=4 :
-
 imports:
     # Zsh
     zsh-git-completion: zsh/functions
@@ -59,7 +57,7 @@ imports:
     tagbak: os-macos/scripts
     titlecase-perl: external/scripts
     tony-tmux-config: tmux/scripts
-    vim-profiler: vim/scripts
+    vim-profiler: scripts
     vitag: os-macos/scripts
     wget-finder: external/scripts
     wsl-open: os-wsl/scripts
@@ -81,47 +79,6 @@ imports:
 
     # Tmux
     tmux-float: tmux/plugins/float
-
-    # Vim
-    pathogen: vim/autoload
-    Modeliner: vim/bundle/Modeliner
-    fugitive: git/vim/bundle/fugitive
-    damian-conway-vim: vim/bundle/damian-conway
-    vim-abolish: vim/bundle/abolish
-    vim-ale: vim/bundle/ale
-    vim-apathy: vim/bundle/apathy
-    vim-bitbake: bitbake/vim/bundle/bitbake
-    vim-braceless: vim/bundle/braceless
-    vim-bracketed-paste: vim/bundle/bracketed-paste
-    vim-commentary: vim/bundle/commentary
-    vim-dirvish: vim/bundle/dirvish
-    vim-dispatch: vim/bundle/dispatch
-    vim-dracula: vim/bundle/dracula
-    vim-editorconfig: vim/bundle/editorconfig
-    vim-endwise: vim/bundle/endwise
-    vim-eunuch: vim/bundle/eunuch
-    vim-fzf-extra: fzf/vim/bundle/fzf-extra
-    vim-highlightedyank: vim/bundle/highlightedyank
-    vim-lion: vim/bundle/lion
-    vim-neosnippet-hug-neovim-rpc: vim/bundle/vim-hug-neovim-rpc
-    vim-neosnippet-nvim-yarp: vim/bundle/nvim-yarp
-    vim-neosnippet-snippets: vim/bundle/neosnippet-snippets
-    vim-neosnippet: vim/bundle/neosnippet
-    vim-obsession: vim/bundle/obsession
-    vim-polyglot: vim/bundle/polyglot
-    vim-qlist: vim/bundle/qlist
-    vim-repeat: vim/bundle/repeat
-    vim-rsi: vim/bundle/rsi
-    vim-sh-indent: vim/bundle/sh-indent
-    vim-sneak: vim/bundle/sneak
-    vim-surround: vim/bundle/surround
-    vim-targets: vim/bundle/targets
-    vim-tmux-focus-events: tmux/vim/bundle/tmux-focus-events
-    vim-tmux-navigator: tmux/vim/bundle/tmux-navigator
-    vim-undotree: vim/bundle/undotree
-    vim-VimCompletesMe: vim/bundle/VimCompletesMe
-    vim-vitality: vim/bundle/vitality
-    vim-zoom: vim/bundle/zoom
 
     # Textual
     textual-succinct: textual/styles/Succinct
@@ -197,75 +154,6 @@ git module iln:
     pick: iln
     rev: ec29051b06418773d066d8a9bcb4bc8021555c0b
 
-git module pathogen:
-    url: https://github.com/tpope/vim-pathogen
-    export: autoload/
-    rev: c6bc42404597c718e4a032a98e21e63321cbb05a
-
-git module vim-lion:
-    url: https://github.com/tommcdo/vim-lion
-    rev: 75306ac1922952ca1a401aee43ddbb304029926d
-
-git module fugitive:
-    url: https://github.com/tpope/vim-fugitive
-    rev: d102dd92fd9afeb23806ee92c3ab5b64d71fac2e
-
-# vim files for the BitBake tool
-git module vim-bitbake:
-    url: https://github.com/kergoth/vim-bitbake
-    rev: 674031f0134317664d9f16ba004463b885f79cfd
-
-# generates modeline according to the current settings
-git module Modeliner:
-    url: https://github.com/vim-scripts/Modeliner
-    rev: 0c3b58ce05c4df17c67316b6a0f956eb226e77e8
-
-# comment stuff out
-git module vim-commentary:
-    url: https://github.com/tpope/vim-commentary
-    rev: f8238d70f873969fb41bf6a6b07ca63a4c0b82b1
-
-# helpers for UNIX
-git module vim-eunuch:
-    url: https://github.com/tpope/vim-eunuch
-    rev: 33e875b31c8b811a0a47908884a5e2339106bbe8
-
-git module vim-undotree:
-    url: https://github.com/mbbill/undotree
-    rev: be23eacb2a63380bd79e207a738c728214ecc9d3
-
-# quoting/parenthesizing made simple
-git module vim-surround:
-    url: https://github.com/tpope/vim-surround
-    rev: f51a26d3710629d031806305b6c8727189cd1935
-
-# readline style insertion
-git module vim-rsi:
-    url: https://github.com/tpope/vim-rsi
-    rev: ad8ba6beae8e82339479104b914214a868c9f1fe
-
-# asynchronous build and test dispatcher
-git module vim-dispatch:
-    url: https://github.com/tpope/vim-dispatch
-    rev: 3757ddad87073a6ded8c34dfabb28c325acf6c02
-
-# continuously updated session files
-git module vim-obsession:
-    url: https://github.com/tpope/vim-obsession
-    rev: 96a3f837c112cb64e0a9857b69f6d6a71041155e
-
-git module vim-dirvish:
-    url: https://github.com/justinmk/vim-dirvish
-    rev: 0a53fadc22ab6df6aed9cc580c9e498715870522
-
-git module vim-bracketed-paste:
-    url: https://github.com/ConradIrwin/vim-bracketed-paste
-    rev: c4c639f3cacd1b874ed6f5f196fac772e089c932
-
-git module vim-fzf-extra:
-    url: https://github.com/junegunn/fzf.vim
-    rev: 48a2d80a24d19bfaafd91005786653bc49303c62
-
 curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
@@ -285,12 +173,10 @@ hg module t:
 git module fzf:
     url: https://github.com/junegunn/fzf
     move:
-        plugin: vim/bundle/fzf/plugin
         bin: scripts
         shell/key-bindings.zsh: key-bindings.zsh
         shell/completion.zsh: completion.zsh
     pick:
-        - vim
         - key-bindings.zsh
         - completion.zsh
         - scripts
@@ -494,12 +380,6 @@ git module zsh-manydots-magic:
     rev: 4372de0718714046f0c7ef87b43fc0a598896af6
     pick: manydots-magic
 
-# From Damian Conway's vim setup. Note: review more of the plugins there
-git module damian-conway-vim:
-    url: https://github.com/kergoth/Damian-Conway-s-Vim-Setup
-    rev: 0dec44631fa82ee8e299ff8e403372dee64bd3de
-    pick: plugin/undowarnings.vim
-
 git module vitag:
     url: https://github.com/ttscoff/vitag
     pick: vitag
@@ -527,14 +407,6 @@ git module hub-completion:
         etc/hub.zsh_completion: _hub
     pick: _hub
     rev: badc983ab52b7fece3e4dcf5d4363b1b41ad08d5
-
-git module vim-abolish:
-    url: https://github.com/tpope/vim-abolish
-    rev: 7e4da6e78002344d499af9b6d8d5d6fcd7c92125
-
-git module vim-repeat:
-    url: https://github.com/tpope/vim-repeat
-    rev: c947ad2b6a16983724a0153bdf7f66d7a80a32ca
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -575,10 +447,6 @@ curl module cht:
     executable: cht.sh
     sha1: c99289c55aed178f3ae06720b3e8c2cab501b6f0
 
-git module vim-ale:
-    url: https://github.com/dense-analysis/ale
-    rev: 634c81fd465269f59e3db878fe8405828e6d2da9
-
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
     pick: osx-wificleaner
@@ -607,14 +475,6 @@ git module git-blame-colored:
         git-blame-colored.py: git-blame-colored
     executable: git-blame-colored
     rev: fd6b15d3bb44965dd06f37ee0790fd29c10a5d11
-
-git module vim-polyglot:
-    url: https://github.com/sheerun/vim-polyglot
-    rev: 45ab4d80dd52f6ea40d8e9b7fa5cedd31d9ad9ec
-
-git module vim-vitality:
-    url: https://github.com/sjl/vitality.vim
-    rev: 0f693bff572689ad52b781c012dad4926cd924f6
 
 git module textual-succinctlight:
     url: https://github.com/TempSpas/SuccinctLight
@@ -648,21 +508,9 @@ git module zsh-zbell:
         zbell.sh: zbell.plugin.zsh
     rev: e0b06247f3ecd6ca3de341c54ba8d85de7ef6566
 
-git module vim-tmux-navigator:
-    url: https://github.com/christoomey/vim-tmux-navigator
-    rev: 8fdf78292bb3aed1c9de880be7e03efdbf23d306
-
-git module vim-tmux-focus-events:
-    url: https://github.com/tmux-plugins/vim-tmux-focus-events
-    rev: e80960715c09aef8ab9204848ed1683805a93a33
-
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
     rev: 722e29dafb1e5f099acbb6f896e22e8679c70fbf
-
-git module vim-editorconfig:
-    url: https://github.com/sgur/vim-editorconfig
-    rev: 6b50f575752605f7e0a0e99e88be4129b2f99311
 
 git module wsl-open:
     url: https://github.com/kergoth/wsl-open
@@ -671,24 +519,12 @@ git module wsl-open:
     pick: wsl-open
     rev: 0763788ab295e2cffa71cc8cb7fde39651b5d3ef
 
-git module vim-VimCompletesMe:
-    url: https://github.com/ajh17/VimCompletesMe
-    rev: 15156a8939d7eae0bfb2b80ff06999aecb48c124
-
-git module vim-sneak:
-    url: https://github.com/justinmk/vim-sneak
-    rev: 98a5c946d6dc76528b9d9b044059b5ef1fab5a48
-
 git module vim-profiler:
     url: https://github.com/bchretien/vim-profiler
     move:
         vim-profiler.py: vim-profiler
     pick: vim-profiler
     rev: d4fda79830528ffb6cce895448ac10b502f9f756
-
-git module vim-apathy:
-    url: https://github.com/tpope/vim-apathy
-    rev: ca90185a497088bbb62d933bb500cb2911c7be64
 
 git module zsh-sort-timings:
     url: https://gist.github.com/2d7ef99f93b226be29e01cadcad37405
@@ -709,10 +545,6 @@ git module tmux-float:
     url: https://gitlab.com/Jrahme/tmux-float
     rev: fe653746335d259c952e504280fe51f3c6cdff7a
 
-git module vim-dracula:
-    url: https://github.com/dracula/vim
-    rev: 5a633625615c79f87786d74ea925790ccdd82aba
-
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
     rev: 811a634420a0cb9023bb7afd1c8968a5aaf6a753
@@ -726,26 +558,6 @@ git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
     rev: 465479bffda390614c32994393aabea15f9f547e
-
-git module vim-braceless:
-    url: https://github.com/tweekmonster/braceless.vim
-    rev: 3928fe18fb7c8561beed6a945622fd985a8e638b
-
-git module vim-endwise:
-    url: https://github.com/tpope/vim-endwise
-    rev: bf90d8be447de667f4532b934d1a70881be56dd8
-
-git module vim-highlightedyank:
-    url: https://github.com/machakann/vim-highlightedyank
-    rev: 3871624ec89c9e8257b20044fd48a1836c05cbfc
-
-git module vim-zoom:
-    url: https://github.com/dhruvasagar/vim-zoom
-    rev: ec4a736775c3720087501ebaaa11041256858fdd
-
-git module vim-targets:
-    url: https://github.com/wellle/targets.vim
-    rev: 8d6ff2984cdfaebe5b7a6eee8f226a6dd1226f2d
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -791,12 +603,6 @@ git module ghacksuserjs:
     executable: updater.sh
     rev: a542701ba5b6c2341ef3028c4a28d8ea08a3f9ed
 
-git module vim-sh-indent:
-    url: https://github.com/kergoth/vim-sh-indent
-    pick: indent/sh.vim
-    reup: indent-pipe-while
-    rev: 35a5947d5b205b3c9025d621c71cb5554bc296a4
-
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
     move:
@@ -814,23 +620,3 @@ git module fzy-scripts:
     url: https://github.com/jhawthorn/fzy
     export: contrib
     rev: c2d816d9e31cf9e2ebaf2b51b346ab2a992d7457
-
-git module vim-neosnippet:
-    url: https://github.com/Shougo/neosnippet.vim
-    rev: caa9b82220237865a2fbb846b0fa63f4a6a9eb7a
-
-git module vim-neosnippet-snippets:
-    url: https://github.com/Shougo/neosnippet-snippets
-    rev: aed6074642363d0c97da5cd86e1b23027479df84
-
-git module vim-neosnippet-nvim-yarp:
-    url: https://github.com/roxma/nvim-yarp.git
-    rev: 83c6f4e61aa73e2a53796ea6690fb7e5e64db50a
-
-git module vim-neosnippet-hug-neovim-rpc:
-    url: https://github.com/roxma/vim-hug-neovim-rpc.git
-    rev: 701ecbb0a1f904c0b44c6beaafef35e1de998a94
-
-git module vim-qlist:
-    url: https://github.com/romainl/vim-qlist
-    rev: be8fba124bf13314435b1faab8f628436d4cffb1
