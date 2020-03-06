@@ -1,6 +1,0 @@
-mkdir -p "$XDG_DATA_HOME"/vim{,/backup,/swap,/undo}
-mkdir -p "$XDG_DATA_HOME"/nvim{,/backup,/swap,/undo}
-
-link . ~/.config/vim
-link . ~/.config/nvim
-link init.vim ~/.vimrc
