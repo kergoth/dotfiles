@@ -7,7 +7,7 @@ imports:
     zsh-git-escape-magic: git/zsh-functions
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/functions
-    zsh-fast-syntax-highlighting: zsh/plugins/fast-syntax-highlighting
+    zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
     hub-completion: git/zsh-functions
     iterm2-zsh: iterm2
     zsh-zbell: zsh/plugins/zbell
@@ -114,10 +114,9 @@ git module windows-terminal:
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
     rev: a3eb427d8b35440511ee4bfbdbf692e5f4edde25
 
-git module zsh-fast-syntax-highlighting:
-    url: https://github.com/zdharma/fast-syntax-highlighting
-    rev: 4c0e992f16c3d91adecc42ac5c36356480781e6f
-    drop: ':chroma/*'
+git module zsh-syntax-highlighting:
+    url: https://github.com/zsh-users/zsh-syntax-highlighting
+    rev: 1a752da1c2f58bd96e1e09a83f53556060674f3f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
