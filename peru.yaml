@@ -13,7 +13,6 @@ imports:
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     exa: ls/zsh-functions
-    fzy-scripts: fzy/scripts
 
     # Scripts
     ddimage: external/scripts
@@ -614,8 +613,3 @@ curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
     executable: ddimage
     sha1: a8d4d6d710ae053a5dae7a0773fed6b441861bf9
-
-git module fzy-scripts:
-    url: https://github.com/jhawthorn/fzy
-    export: contrib
-    rev: c2d816d9e31cf9e2ebaf2b51b346ab2a992d7457
