@@ -1,0 +1,15 @@
+#!/bin/sh
+# Use vim to edit the files listed on stdin, newline separated
+
+if which mvim >/dev/null 2>&1; then
+    vim="mvim -v"
+else
+    vim=vim
+fi
+
+files="$(mktemp -t "${0##*/}.XXXXXX")" || exit $?
+trap 'rm -f "$files"' EXIT INT TERM
+cat >"$files"
+if [ -s "$files" ]; then
+    tr <"$files" '\n' '\0' | xargs -0 sh -c "$vim </dev/tty \"\$@\"" -
+fi

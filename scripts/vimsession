@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cmd="vim"
+if [ "$VISUAL" = nvim ] || [ "$EDITOR" = nvim ]; then
+    cmd=nvim
+fi
+
+if [ -e Session.vim ]; then
+    exec "$cmd" -S Session.vim "$@"
+else
+    touch Session.vim
+    "$cmd" -c silent\ Obsession "$@"
+    if ! [ -s Session.vim ]; then
+        rm -f Session.vim
+    fi
+fi
