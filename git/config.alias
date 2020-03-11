@@ -67,6 +67,7 @@
 	issue = !gh issue
 	pr = !gh pr
 	pull-requests = pr list
+	issues = issue list
 
 	# Upstream
 	tracking-remote = "!f() { git rev-parse --symbolic-full-name '@{u}' | sed -n 's,refs/remotes/\\([^/][^/]*\\)/.*,\\1,p'; }; f"
