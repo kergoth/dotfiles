@@ -111,7 +111,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: a3eb427d8b35440511ee4bfbdbf692e5f4edde25
+    rev: a5297fac3eb0bc93e4b312db9b8710c39010255d
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -178,7 +178,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 6db15e86937029b4a4565b2ae73a3c6bae5ef4ba
+    rev: 7085e5b629dcc6eaef4205802f07979f535c8d5f
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -404,7 +404,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: badc983ab52b7fece3e4dcf5d4363b1b41ad08d5
+    rev: 8d91904208171b013f9a9d1175f4ab39068db047
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -567,7 +567,7 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 0a0a44d1489e9da83a67ff1a6b0be7e6efaae6d3
+    sha1: 9ac25fb201f6b61e12172bee1d29195864d17381
 
 git module exa:
     url: https://github.com/ogham/exa
