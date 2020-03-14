@@ -616,7 +616,7 @@ curl module ddimage:
     sha1: a8d4d6d710ae053a5dae7a0773fed6b441861bf9
 
 git module dtrx:
-    url: https://github.com/brettcs/dtrx
+    url: https://github.com/verhovsky/dtrx
     export: scripts
     executable: scripts/dtrx
-    rev: 671ccf7d1b7ea90a6e6e6cc44234ef14874d59bf
+    rev: 830399cfb75784edf1bc4b1d708439446079a831
