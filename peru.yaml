@@ -22,6 +22,7 @@ imports:
     cpanm: perl/scripts
     cwdiff: external/scripts
     diff-so-fancy: external/scripts
+    dtrx: external/scripts
     dustin-bindir: git/scripts
     fasd: fasd/scripts
     flu: os-macos/scripts
@@ -613,3 +614,9 @@ curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
     executable: ddimage
     sha1: a8d4d6d710ae053a5dae7a0773fed6b441861bf9
+
+git module dtrx:
+    url: https://github.com/brettcs/dtrx
+    export: scripts
+    executable: scripts/dtrx
+    rev: 671ccf7d1b7ea90a6e6e6cc44234ef14874d59bf
