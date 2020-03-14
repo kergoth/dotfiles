@@ -111,11 +111,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: a5297fac3eb0bc93e4b312db9b8710c39010255d
+    rev: 57a80aa5314d8cbd090ebfafb855378ddfe77c6d
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 1a752da1c2f58bd96e1e09a83f53556060674f3f
+    rev: a3c1757e479fdb96ddfdd09a258b33638f3d5474
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -178,7 +178,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 7085e5b629dcc6eaef4205802f07979f535c8d5f
+    rev: 14f90502a49b868b6c9fed4a86d413427052fb81
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -404,7 +404,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 8d91904208171b013f9a9d1175f4ab39068db047
+    rev: eeb9255d8e1e055ea8fd585f07a40683cb9f2042
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -567,7 +567,7 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 9ac25fb201f6b61e12172bee1d29195864d17381
+    sha1: 9915ab7d860ced62bf59232ef2d57bf338356218
 
 git module exa:
     url: https://github.com/ogham/exa
@@ -599,7 +599,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: a542701ba5b6c2341ef3028c4a28d8ea08a3f9ed
+    rev: b6e2a3f64f030fa3586984f294931d3d0334cfbd
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
