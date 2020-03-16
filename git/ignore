@@ -46,3 +46,6 @@ Temporary Items
 __pycache__
 .mypy_cache
 .pytest_cache
+
+# Vim
+Session.vim
