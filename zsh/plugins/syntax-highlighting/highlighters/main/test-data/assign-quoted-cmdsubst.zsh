@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2016 zsh-syntax-highlighting contributors
+# Copyright (c) 2018 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,12 +28,18 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-# see alias-comment1.zsh
-setopt interactivecomments
-BUFFER=$'# foo\ntrue'
+BUFFER=$'x="$(ls x y z)"'
 
 expected_region_highlight=(
-  '1 5 comment' # # foo
-  '6 6 commandseparator' # \n
-  '7 10 builtin' # true
+  '1 15 assign' # x="$(ls x y z)"
+  '3 15 default' # "$(ls x y z)"
+  '3 3 double-quoted-argument' # "
+  '15 15 double-quoted-argument' # "
+  '4 14 command-substitution-quoted' # $(ls x y z)
+  '4 5 command-substitution-delimiter-quoted' # $(
+  '6 7 command' # ls
+  '9 9 default' # x
+  '11 11 default' # y
+  '13 13 default' # z
+  '14 14 command-substitution-delimiter-quoted' # )
 )

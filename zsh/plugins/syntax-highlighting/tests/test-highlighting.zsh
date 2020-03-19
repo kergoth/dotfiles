@@ -105,7 +105,7 @@ typeset_p() {
 # Escape # as ♯ and newline as ↵ they are illegal in the 'description' part of TAP output
 # The string to escape is «"$@"»; the result is returned in $REPLY.
 tap_escape() {
-  local s="$@"
+  local s="${(j. .)@}"
   REPLY="${${s//'#'/♯}//$'\n'/↵}"
 }
 
@@ -118,24 +118,41 @@ run_test_internal() {
   builtin cd -q -- "$tests_tempdir" || { echo >&2 "Bail out! On ${(qq)1}: cd failed: $?"; return 1 }
 
   # Load the data and prepare checking it.
-  local BUFFER CURSOR MARK PENDING PREBUFFER REGION_ACTIVE WIDGET REPLY skip_test unsorted=0
+  local BUFFER CURSOR MARK PENDING PREBUFFER REGION_ACTIVE WIDGET REPLY skip_test fail_test unsorted=0
   local expected_mismatch
+  local skip_mismatch
   local -a expected_region_highlight region_highlight
 
-  . "$srcdir"/"$1"
+  local ARG="$1"
+  local RETURN=""
+  () {
+    setopt localoptions
 
-  (( $#skip_test )) && { print -r -- "1..0 # SKIP $skip_test"; return; }
+    # WARNING: The remainder of this anonymous function will run with the test's options in effect
+    if { ! . "$srcdir"/"$ARG" } || (( $#fail_test )); then
+      print -r -- "1..1"
+      print -r -- "## ${ARG:t:r}"
+      tap_escape $fail_test; fail_test=$REPLY
+      print -r -- "not ok 1 - failed setup: $fail_test"
+      return ${RETURN:=0}
+    fi
 
-  # Check the data declares $PREBUFFER or $BUFFER.
-  [[ -z $PREBUFFER && -z $BUFFER ]] && { echo >&2 "Bail out! On ${(qq)1}: Either 'PREBUFFER' or 'BUFFER' must be declared and non-blank"; return 1; }
-  # Check the data declares $expected_region_highlight.
-  (( $+expected_region_highlight == 0 )) && { echo >&2 "Bail out! On ${(qq)1}: 'expected_region_highlight' is not declared."; return 1; }
+    (( $#skip_test )) && {
+      print -r -- "1..0 # SKIP $skip_test"
+      print -r -- "## ${ARG:t:r}"
+      return ${RETURN:=0}
+    }
 
-  # Set sane defaults for ZLE variables
-  : ${CURSOR=$#BUFFER} ${PENDING=0} ${WIDGET=z-sy-h-test-harness-test-widget}
+    # Check the data declares $PREBUFFER or $BUFFER.
+    [[ -z $PREBUFFER && -z $BUFFER ]] && { echo >&2 "Bail out! On ${(qq)1}: Either 'PREBUFFER' or 'BUFFER' must be declared and non-blank"; return ${RETURN:=1}; }
 
-  # Process the data.
-  _zsh_highlight
+    # Set sane defaults for ZLE variables
+    : ${CURSOR=$#BUFFER} ${PENDING=0} ${WIDGET=z-sy-h-test-harness-test-widget}
+
+    # Process the data.
+    _zsh_highlight
+  }; [[ -z $RETURN ]] || return $RETURN
+  unset ARG
 
   if (( unsorted )); then
     region_highlight=("${(@n)region_highlight}")
@@ -144,7 +161,7 @@ run_test_internal() {
 
   # Print the plan line, and some comments for human readers
   echo "1..$(( $#expected_region_highlight + 1))"
-  echo "## ${1:t:r}"
+  echo "## ${1:t:r}" # note: tests/edit-failed-tests looks for the "##" emitted by this line
   [[ -n $PREBUFFER ]] && printf '# %s\n' "$(typeset_p PREBUFFER)"
   [[ -n $BUFFER ]] && printf '# %s\n' "$(typeset_p BUFFER)"
 
@@ -153,10 +170,13 @@ run_test_internal() {
     local -a expected_highlight_zone; expected_highlight_zone=( ${(z)expected_region_highlight[i]} )
     integer exp_start=$expected_highlight_zone[1] exp_end=$expected_highlight_zone[2]
     local todo=
-    (( $+expected_highlight_zone[4] )) && todo="# TODO $expected_highlight_zone[4]"
+    if (( $+expected_highlight_zone[4] )); then
+      todo="# TODO $expected_highlight_zone[4]"
+      skip_mismatch="cardinality check disabled whilst regular test points are expected to fail"
+    fi
     if ! (( $+region_highlight[i] )); then
       print -r -- "not ok $i - unmatched expectation ($exp_start $exp_end $expected_highlight_zone[3])" \
-         "${expected_mismatch:+"# TODO ${(qqq)expected_mismatch}"}"
+         "${skip_mismatch:+"# TODO ${(qqq)skip_mismatch}"}"
       continue
     fi
     local -a highlight_zone; highlight_zone=( ${(z)region_highlight[i]} )
@@ -180,14 +200,40 @@ run_test_internal() {
     unset desc
   done
 
-  if (( $#expected_region_highlight == $#region_highlight )); then
-    print -r -- "ok $i - cardinality check" "${expected_mismatch:+"# TODO ${(qqq)expected_mismatch}"}"
+  # If both $skip_mismatch and $expected_mismatch are set, that means the test
+  # has some XFail test points, _and_ explicitly sets $expected_mismatch as
+  # well.  Explicit settings should have priority, so we ignore $skip_mismatch
+  # if $expected_mismatch is set.
+  if [[ -n $skip_mismatch && -z $expected_mismatch ]]; then
+    tap_escape $skip_mismatch; skip_mismatch=$REPLY
+    print "ok $i - cardinality check" "# SKIP $skip_mismatch"
   else
-    local details
-    details+="have $#expected_region_highlight expectations and $#region_highlight region_highlight entries: "
-    details+="«$(typeset_p expected_region_highlight)» «$(typeset_p region_highlight)»"
-    tap_escape $details; details=$REPLY
-    print -r -- "not ok $i - $details" "${expected_mismatch:+"# TODO ${(qqq)expected_mismatch}"}"
+    local todo
+    if [[ -n $expected_mismatch ]]; then
+      tap_escape $expected_mismatch; expected_mismatch=$REPLY
+      todo="# TODO $expected_mismatch"
+    fi
+    if (( $#expected_region_highlight == $#region_highlight )); then
+      print -r -- "ok $i - cardinality check${todo:+ - }$todo"
+    else
+      local details
+      details+="have $#expected_region_highlight expectations and $#region_highlight region_highlight entries: "
+      details+="«$(typeset_p expected_region_highlight)» «$(typeset_p region_highlight)»"
+      tap_escape $details; details=$REPLY
+      print -r -- "not ok $i - cardinality check - $details${todo:+ - }$todo"
+
+      () {
+        local -a left_column right_column
+        left_column=( "expected_region_highlight" "${(qq)expected_region_highlight[@]}" )
+        right_column=( "region_highlight" "${(qq)region_highlight[@]}" )
+        integer difference=$(( $#right_column - $#left_column ))
+        if (( difference > 0 )); then
+          left_column+=( ${(r:2*difference::. :):-} )
+        fi
+        print -rC2 -- "${left_column[@]}" "${right_column[@]}" \
+          | sed 's/^/# /'
+      }
+    fi
   fi
 }
 

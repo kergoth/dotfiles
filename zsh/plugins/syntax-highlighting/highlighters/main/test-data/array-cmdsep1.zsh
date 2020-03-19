@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2016 zsh-syntax-highlighting contributors
+# Copyright (c) 2019 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,12 +28,17 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-# see alias-comment1.zsh
-setopt interactivecomments
-BUFFER=$'# foo\ntrue'
+BUFFER=$'a=( foo | bar )'
+bar(){}
 
 expected_region_highlight=(
-  '1 5 comment' # # foo
-  '6 6 commandseparator' # \n
-  '7 10 builtin' # true
+  '1 3 assign' # a=(
+  '5 7 default' # foo
+  '9 9 unknown-token' # |
+  # zsh reports a parse error at this point.  Nevertheless, we test how we
+  # highlight the remainder of $BUFFER.  Currently we recover by treating the pipe
+  # as a command separator.  That's not the only reasonable behaviour, though; if
+  # we change the behaviour, we should adjust the following expectations accordingly.
+  '11 13 function' # bar
+  '15 15 unknown-token' # )
 )

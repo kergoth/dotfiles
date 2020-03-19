@@ -9,6 +9,57 @@
 - Don't error out when `KSH_ARRAYS` is set in the calling scope
   [#622, #689]
 
+- Literal semicolons in array assignments (`foo=( bar ; baz )`) are now
+  highlighted as errors.
+  [3ca93f864fb6]
+
+- Command separators in array assignments (`foo=( bar | baz )`) are now
+  highlighted as errors.
+  [#651, 81267ca3130c]
+
+- Support parameter elision in command position (e.g., `$foo ls` where `$foo` is unset or empty)
+  [#667]
+
+- Don't consider the filename in `sudo -e /path/to/file` to be a command position
+  [#678]
+
+- Don't look up absolute directory names in $cdpath
+  [2cc2583f8f12, part of #669]
+
+- Fix `exec 2>&1;` being highlighted as an error.
+  [#676]
+
+- Fix `: $(<*)` being highlighted as globbing.
+  [#582]
+
+- Fix `cat < *` being highlighting as globbing when the `MULTIOS` option is unset.
+  [#583]
+
+- Fix `echo >&2` highlighting the `2` as a filename if a file by that name happened to exist
+  [#694, part of #645]
+
+- Fix `echo >&-` highlighting the `-` as a filename if a file by that name happened to exist
+  [part of #645]
+
+- Fix `echo >&p` highlighting the `p` as a filename if a file by that name happened to exist
+  [part of #645]
+
+- Fix `: $((42))` being highlighted as a subshell.
+  [part of #607]
+
+- Regress highlighting of `: $((ls); (ls))`: is a subshell, but will now be
+  incorrectly highlighted as an arithmetic expansion.
+  [#704]
+
+- Fix wrong highlighting of unquoted parameter expansions under zsh 5.2 and older
+  [e165f18c758e]
+
+- Highlight global aliases
+  [#700]
+
+- Highlight `: =nosuchcommand' as an error (when the `EQUALS` option hasn't been unset).
+  [#430]
+
 # Changes in version 0.7.1
 
 - Remove out-of-date information from the 0.7.0 changelog.
@@ -45,7 +96,7 @@ This is a stable bugfix and feature release.  Major new features and changes inc
 
 - Highlight numeric globs (e.g., `echo /lib<->`)
 
-- Assorted improvement to aliases highlighting
+- Assorted improvements to aliases highlighting
   (e.g.,
    `alias sudo_u='sudo -u'; sudo_u jrandom ls`,
    `alias x=y y=z z=nosuchcommand; x`,

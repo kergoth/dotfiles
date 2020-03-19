@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2016 zsh-syntax-highlighting contributors
+# Copyright (c) 2020 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,12 +28,22 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-# see alias-comment1.zsh
-setopt interactivecomments
-BUFFER=$'# foo\ntrue'
+BUFFER=$': $(kill -9 $$) ${:-$(kill -9 $$)}'
 
 expected_region_highlight=(
-  '1 5 comment' # # foo
-  '6 6 commandseparator' # \n
-  '7 10 builtin' # true
+  '1 1 builtin' # :
+  '3 15 default' # $(kill -9 $$)
+  '3 15 command-substitution-unquoted' # $(kill -9 $$)
+  '3 4 command-substitution-delimiter-unquoted' # $(
+  '5 8 builtin' # kill
+  '10 11 single-hyphen-option' # -9
+  '13 14 default' # $$
+  '15 15 command-substitution-delimiter-unquoted' # )
+  '17 34 default' # ${:-$(kill -9 $$)}
+  '21 33 command-substitution-unquoted' # $(kill -9 $$)
+  '21 22 command-substitution-delimiter-unquoted' # $(
+  '23 26 builtin' # kill
+  '28 29 single-hyphen-option' # -9
+  '31 32 default' # $$
+  '33 33 command-substitution-delimiter-unquoted' # )
 )
