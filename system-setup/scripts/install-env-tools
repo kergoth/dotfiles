@@ -27,6 +27,7 @@ esac
 
 pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
 PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
+cd /
 
 
 pipv_installed () {
