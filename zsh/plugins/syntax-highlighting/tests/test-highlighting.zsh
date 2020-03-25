@@ -227,10 +227,11 @@ run_test_internal() {
         left_column=( "expected_region_highlight" "${(qq)expected_region_highlight[@]}" )
         right_column=( "region_highlight" "${(qq)region_highlight[@]}" )
         integer difference=$(( $#right_column - $#left_column ))
-        if (( difference > 0 )); then
-          left_column+=( ${(r:2*difference::. :):-} )
-        fi
-        print -rC2 -- "${left_column[@]}" "${right_column[@]}" \
+        repeat $difference do left_column+=(.); done
+        paste \
+          =(print -rC1 -- $left_column) \
+          =(print -rC1 -- $right_column) \
+          | if type column >/dev/null; then column -t -s $'\t'; else cat; fi \
           | sed 's/^/# /'
       }
     fi

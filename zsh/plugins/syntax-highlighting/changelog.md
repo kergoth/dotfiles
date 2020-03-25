@@ -63,6 +63,16 @@
 - Highlight reserved word after assignments as errors (e.g., `foo=bar (ls;)`)
   [#461]
 
+- Correctly highlight `[[ foo && bar || baz ]]`.
+
+- Highlight non-executable files in command position correctly (e.g., `% /etc/passwd`)
+  [#202, #669]
+
+- Highlight directories in command position correctly, including `AUTO_CD` support
+  [#669]
+
+- Recognize `env` as a precommand (e.g., `env FOO=bar ls`)
+
 # Changes in version 0.7.1
 
 - Remove out-of-date information from the 0.7.0 changelog.

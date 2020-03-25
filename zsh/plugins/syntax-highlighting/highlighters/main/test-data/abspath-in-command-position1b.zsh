@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # -------------------------------------------------------------------------------------------------
-# Copyright (c) 2016 zsh-syntax-highlighting contributors
+# Copyright (c) 2020 zsh-syntax-highlighting contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -28,12 +28,9 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER=$'foo=(\nbar) env'
+setopt autocd
+BUFFER=$'/'
 
 expected_region_highlight=(
-  '1 5 assign' # foo=(
-  '6 6 commandseparator' # \n
-  '7 9 default' # bar
-  '10 10 assign' # )
-  '12 14 precommand' # env
+  '1 1 autodirectory' # /
 )
