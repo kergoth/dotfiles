@@ -89,6 +89,8 @@ pager() {
 }
 
 run() {
+    # shellcheck disable=SC2046
+    set -- $(eval 'echo "$G_'"$1"'_ARGS"') "$@"
     if [ $verbose -eq 1 ]; then
         echo >&2 "RUN $*"
     fi
