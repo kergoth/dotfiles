@@ -118,5 +118,8 @@ elif has ack; then
     fi
     run ack ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
 else
+    if [ $# -eq 1 ]; then
+        set -- "$@" .
+    fi
     run grep ${paged:+--color=always} --line-number --recursive ${smart_case:+--ignore-case} -I "$@" | pager
 fi
