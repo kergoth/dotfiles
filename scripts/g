@@ -113,6 +113,9 @@ elif has pt; then
 elif has ag; then
     run ag ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${no_smart_case:+--case-sensitive} ${paged:+--color --group} "$@" | pager
 elif has ack; then
+    if command -v ack-grep; then
+        alias ack=ack-grep
+    fi
     run ack ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
 else
     run grep ${paged:+--color=always} --line-number --recursive ${smart_case:+--ignore-case} -I "$@" | pager
