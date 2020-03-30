@@ -2,11 +2,72 @@
 # Run a smart recursive grep if such a tool is available.
 # Prefers, in this order: rg, pt, ag, ack, grep -r
 
-has () {
+usage() {
+    cat <<END >&2
+${0##*/} [options..] PATTERN [PATH ...]
+
+Options:
+  -S   Case sensitive, no smart-case
+  -i   Case insensitive
+  -u   Unrestricted. Do not respect ignore files
+  -l   Only print the paths with at least one match
+  -v   Verbose. Show the search command to be run
+  -h   Show usage
+END
+    exit 2
+}
+
+parse_args() {
+    smart_case=1
+    no_smart_case=
+    ignore_case=
+    unrestricted=
+    files_with_matches=
+    verbose=0
+    while getopts Siulvh opt; do
+        case "$opt" in
+            S)
+                smart_case=
+                no_smart_case=1
+                ignore_case=
+                ;;
+            i)
+                smart_case=
+                no_smart_case=
+                ignore_case=1
+                ;;
+            u)
+                unrestricted=1
+                ;;
+            l)
+                files_with_matches=1
+                ;;
+            v)
+                verbose=1
+                ;;
+            \? | h)
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage
+    fi
+
+    if [ -t 1 ]; then
+        paged=1
+    else
+        paged=
+    fi
+}
+
+has() {
     command -v "$1" >/dev/null 2>&1
 }
 
-pager () {
+pager() {
     if [ -n "$paged" ]; then
         if [ -n "$PAGER" ]; then
             case "$PAGER" in
@@ -27,24 +88,30 @@ pager () {
     fi
 }
 
-if [ -t 1 ]; then
-    paged=1
-else
-    paged=
-fi
+run() {
+    if [ $verbose -eq 1 ]; then
+        echo >&2 "RUN $*"
+    fi
+    command "$@"
+}
+
+parse_args "$@"
+shift $((OPTIND - 1))
+
+set -- ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
 
 if has rg; then
-    if [ -n "$paged" ] && has bat && has batgrep; then
-        batgrep -S "$@"
+    if [ -n "$paged" ] && [ -z "$files_with_matches" ] && has bat && has batgrep; then
+        run batgrep ${unrestricted:+--rg:unrestricted} ${smart_case:+--smart-case} "$@"
     else
-        rg --smart-case ${paged:+--pretty} "$@" | pager
+        run rg ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} "$@" | pager
     fi
 elif has pt; then
-    pt --smart-case ${paged:+--color --group} "$@" | pager
+    run pt ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
 elif has ag; then
-    ag --smart-case ${paged:+--color --group} "$@" | pager
+    run ag ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${no_smart_case:+--case-sensitive} ${paged:+--color --group} "$@" | pager
 elif has ack; then
-    ack --smart-case ${paged:+--color --group} "$@" | pager
+    run ack ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
 else
-    grep ${paged:+--color=always} --line-number --recursive --ignore-case -I "$@" | pager
+    run grep ${paged:+--color=always} --line-number --recursive ${smart_case:+--ignore-case} -I "$@" | pager
 fi
