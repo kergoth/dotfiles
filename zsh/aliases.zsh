@@ -43,25 +43,10 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
-if (( $+commands[ack-grep] )); then
-    alias ack='ack-grep --smart-case --pager=${PAGER:-less}'
-else
-    alias ack='ack --smart-case --pager=${PAGER:-less}'
-fi
-
-alias ag='ag -S --pager=${PAGER:-less} --color-path "1;34" --color-line-number "1;33" --color-match "30;43"'
-
-pt () {
-    if [[ -t 1 ]]; then
-        command pt -S --color --group "$@" | ${PAGER:-less}
-    else
-        command pt -S "$@"
-    fi
-}
-
-if ! (( $+commands[ag] )) && (( $+commands[ack] )); then
-    alias ag=ack
-fi
+alias rg=g
+alias pt=g
+alias ag=g
+alias ack=g
 
 if (( $+commands[fd] )); then
     fd () {
@@ -73,7 +58,11 @@ if (( $+commands[fd] )); then
     }
 else
     fd () {
-        ag -g "$@"
+        if (( $+commands[ag] )); then
+            command ag -g "$@"
+        else
+            command ack -g "$@"
+        fi
     }
 fi
 
