@@ -11,6 +11,7 @@ Options:
   -i   Case insensitive
   -u   Unrestricted. Do not respect ignore files
   -l   Only print the paths with at least one match
+  -w   Only match whole words
   -v   Verbose. Show the search command to be run
   -h   Show usage
 END
@@ -23,8 +24,9 @@ parse_args() {
     ignore_case=
     unrestricted=
     files_with_matches=
+    word_regexp=
     verbose=0
-    while getopts Siulvh opt; do
+    while getopts Siulwvh opt; do
         case "$opt" in
             S)
                 smart_case=
@@ -41,6 +43,9 @@ parse_args() {
                 ;;
             l)
                 files_with_matches=1
+                ;;
+            w)
+                word_regexp=1
                 ;;
             v)
                 verbose=1
@@ -100,7 +105,7 @@ run() {
 parse_args "$@"
 shift $((OPTIND - 1))
 
-set -- ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
+set -- ${word_regexp:+--word-regexp} ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
 
 if has rg; then
     if [ -n "$paged" ] && [ -z "$files_with_matches" ] && has bat && has batgrep; then
