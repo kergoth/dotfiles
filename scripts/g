@@ -1,0 +1,50 @@
+#!/bin/sh
+# Run a smart recursive grep if such a tool is available.
+# Prefers, in this order: rg, pt, ag, ack, grep -r
+
+has () {
+    command -v "$1" >/dev/null 2>&1
+}
+
+pager () {
+    if [ -n "$paged" ]; then
+        if [ -n "$PAGER" ]; then
+            case "$PAGER" in
+                less*)
+                    $PAGER -R
+                    ;;
+                *)
+                    $PAGER
+                    ;;
+            esac
+        elif has less; then
+            less -R
+        else
+            more
+        fi
+    else
+        cat
+    fi
+}
+
+if [ -t 1 ]; then
+    paged=1
+else
+    paged=
+fi
+
+if has rg; then
+    if [ -n "$paged" ] && has bat && has batgrep; then
+        batgrep -S "$@"
+    else
+        rg --smart-case ${paged:+--pretty} "$@" | pager
+    fi
+elif has pt; then
+    pt --smart-case ${paged:+--color --group} "$@" | pager
+elif has ag; then
+    ag --smart-case ${paged:+--color --group} "$@" | pager
+elif has ack; then
+    ack --smart-case ${paged:+--color --group} "$@" | pager
+else
+    grep ${paged:+--color=always} --line-number --recursive --ignore-case -I "$@" | pager
+fi
