@@ -111,7 +111,7 @@ if has rg; then
     if [ -n "$paged" ] && [ -z "$files_with_matches" ] && has bat && has batgrep; then
         run batgrep ${unrestricted:+--rg:unrestricted} ${smart_case:+--smart-case} "$@"
     else
-        run rg ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} "$@" | pager
+        run rg ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} --line-number "$@" | pager
     fi
 elif has pt; then
     run pt ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
