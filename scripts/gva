@@ -1,0 +1,4 @@
+#!/bin/sh
+# shellcheck disable=SC2153
+
+g -V "$@" | vimerrors
