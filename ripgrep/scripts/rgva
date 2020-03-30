@@ -1,7 +1,0 @@
-#!/bin/bash
-# Run a file search and load the results into vim's quickfix buffer, jumping
-# to the first entry. Uses rg to search.
-
-set -euo pipefail
-
-rg --vimgrep "$@" | vimerrors

@@ -43,6 +43,8 @@ what () {
 # Convenience when pasting shell snippets
 alias '$='
 
+alias rgv=gv
+alias rgva=gva
 alias rg=g
 alias pt=g
 alias ag=g
