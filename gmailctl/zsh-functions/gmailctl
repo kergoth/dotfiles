@@ -1,0 +1,1 @@
+command gmailctl --config "${GMAILCTL_HOME:-~/.gmailctl}" "$@"
