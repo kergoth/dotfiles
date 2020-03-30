@@ -1,1 +1,11 @@
-rg -u "$@"
+if (( $+commands[rg] )); then
+    if [[ -t 1 ]]; then
+        rg -u "$@" | pager
+    else
+        rg -u "$@"
+    fi
+elif (( $+commands[ag] )); then
+    ag -a "$@"
+else
+    ack "$@"
+fi
