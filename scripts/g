@@ -12,6 +12,7 @@ Options:
   -u   Unrestricted. Do not respect ignore files
   -l   Only print the paths with at least one match
   -w   Only match whole words
+  -V   Vim-style
   -v   Verbose. Show the search command to be run
   -h   Show usage
 END
@@ -25,8 +26,9 @@ parse_args() {
     unrestricted=
     files_with_matches=
     word_regexp=
+    vimgrep=
     verbose=0
-    while getopts Siulwvh opt; do
+    while getopts SiulwVvh opt; do
         case "$opt" in
             S)
                 smart_case=
@@ -46,6 +48,9 @@ parse_args() {
                 ;;
             w)
                 word_regexp=1
+                ;;
+            V)
+                vimgrep=1
                 ;;
             v)
                 verbose=1
@@ -108,20 +113,20 @@ shift $((OPTIND - 1))
 set -- ${word_regexp:+--word-regexp} ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
 
 if has rg; then
-    if [ -n "$paged" ] && [ -z "$files_with_matches" ] && has bat && has batgrep; then
+    if [ -n "$paged" ] && [ -z "$files_with_matches" ] && [ -z "$vimgrep" ] && has bat && has batgrep; then
         run batgrep ${unrestricted:+--rg:unrestricted} ${smart_case:+--smart-case} "$@"
     else
-        run rg ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} --line-number "$@" | pager
+        run rg ${vimgrep:+--vimgrep} ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} --line-number "$@" | pager
     fi
 elif has pt; then
-    run pt ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
+    run pt ${vimgrep:+--column} ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
 elif has ag; then
-    run ag ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${no_smart_case:+--case-sensitive} ${paged:+--color --group} "$@" | pager
+    run ag ${vimgrep:+--vimgrep} ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${no_smart_case:+--case-sensitive} ${paged:+--color --group} "$@" | pager
 elif has ack; then
     if command -v ack-grep; then
         alias ack=ack-grep
     fi
-    run ack ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
+    run ack ${vimgrep:+--column} ${smart_case:+--smart-case} ${paged:+--color --group} "$@" | pager
 else
     if [ $# -eq 1 ]; then
         set -- "$@" .
