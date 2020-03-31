@@ -112,7 +112,7 @@ parse_args() {
         fi
     elif [ -z "$tool" ]; then
         if has rg; then
-            if [ -n "$paged" ] && [ -z "$files_with_matches" ] && [ -z "$vimgrep" ] && has bat && has batgrep; then
+            if [ -t 1 ] && [ -z "$files_with_matches" ] && [ -z "$vimgrep" ] && has bat && has batgrep; then
                 tool=batgrep
             else
                 tool=rg
