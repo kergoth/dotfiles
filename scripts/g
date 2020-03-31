@@ -6,6 +6,7 @@ ${0##*/} [options..] PATTERN [PATH ...]
 
 Run a smart recursive grep if such a tool is available.
 Prefers, in this order: batgrep, rg, pt, ag, ack, grep -r
+Color defaults to auto.
 
 Options:
   -c WHEN When to show color. Options: auto|always|never
