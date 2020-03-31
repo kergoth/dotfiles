@@ -46,9 +46,6 @@ alias '$='
 alias rgv=gv
 alias rgva=gva
 alias rg=g
-alias pt=g
-alias ag=g
-alias ack=g
 
 if (( $+commands[fd] )); then
     fd () {
