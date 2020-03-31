@@ -69,17 +69,16 @@ PATH="$dotfilesdir/scripts:$PATH"
 cd "$dotfilesdir"
 if [ $# -eq 0 ]; then
     # shellcheck disable=SC2046
-    set -- $( ( list_topics; echo "$include" | tr ' ' '\n'; ) | sort -u | xargs)
+    set -- $( ( list_topics; echo "$include" | tr ' ' '\n'; ) | grep -vxF local | sort -u | xargs)
+    if [ -d local ]; then
+        set -- "$@" local
+    fi
 fi
 
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME/../bin"
 
 ret=0
 for topic; do
-    base="$(basename "$topic")"
-    if [ "$base" = local ]; then
-        continue
-    fi
     case "$exclude" in
         *\ $topic\ *)
             continue
@@ -90,12 +89,6 @@ for topic; do
     elif ! [ -e "$topic" ]; then
         echo >&2 "Topic $topic does not exist"
         ret=1
-    fi
-done
-
-for topic; do
-    if [ "$(basename "$topic")" = local ] && [ -e "$topic/install" ]; then
-        install_force="$force" do_install "$topic/install" || ret=$?
     fi
 done
 exit "$ret"
