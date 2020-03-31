@@ -112,11 +112,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 680577f55c6927ae4f1a63ae396aff6b9b0fae66
+    rev: 8585bc6bde39e7506cae0297717dbf295f2aada8
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: d1802e388e94aca25380a3a9aeb4a2b7ba661b41
+    rev: 90fec4d65862da6d1ed5dfe2447f680a1387e57c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: bf24777aa1ed2fe72145545924fb305a81480664
+    rev: 72b1b8f8c1bc60e638d983a4e9e0f12413f450a0
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -179,7 +179,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 079046863c0a9f5bc37d629bab02dccffcf329bc
+    rev: 0f5c6e8f040833ca632bb5ff345542879769225c
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -244,7 +244,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: cad37ad3479c68bb99de7c0aa67f74386243b612
+    rev: 7b9adcf39eec17709357f1432a4d21fa2ff587a6
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -265,7 +265,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 0822e66b5d49d0de1aa767b38785e42de05eaf40
+    rev: 274b9cc25322d9ee79aa8e6d4e86f0ffe5ced925
 
 rule git-scripts:
     move:
@@ -568,7 +568,7 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 9915ab7d860ced62bf59232ef2d57bf338356218
+    sha1: bc213458d5b2f23e0258a37a11f25091fd5ef1f0
 
 git module exa:
     url: https://github.com/ogham/exa
@@ -600,7 +600,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 187692af660838c3650c96d0f7f57a4e5cc84ec7
+    rev: 55ae994972c6b27fb40b121b07aeed6c2e781e4d
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git

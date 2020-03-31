@@ -318,7 +318,7 @@ _zsh_highlight_highlighter_main_paint()
   # that wouldn't be followed by a colon in a getopts specification.
   local flags_sans_argument
   # $flags_solo is a set of letters, corresponding to option letters that, if
-  # present, mean the precommand will now be acting as a precommand, i.e., will
+  # present, mean the precommand will not be acting as a precommand, i.e., will
   # not be followed by a :start: word.
   local flags_solo
   # $precommand_options maps precommand name to values of $flags_with_argument,
@@ -348,6 +348,7 @@ _zsh_highlight_highlighter_main_paint()
     'nohup' ''
     'setsid' :wc
     'env' u:i
+    'ionice' cn:t:pPu # util-linux 2.33.1-0.1
 
     # As of OpenSSH 8.1p1
     'ssh-agent' aEPt:csDd:k
@@ -418,6 +419,59 @@ _zsh_highlight_highlighter_main_paint()
     _zsh_highlight_main_calculate_fallback $style
     _zsh_highlight_add_highlight $start $end_ $reply
   done
+}
+
+# Try to expand $1, if it's possible to do so safely.
+# 
+# Uses two parameters from the caller: $parameter_name_pattern and $res.
+#
+# If expansion was done, set $reply to the expansion and return true.
+# Otherwise, return false.
+_zsh_highlight_main_highlighter__try_expand_parameter()
+{
+  local arg="$1"
+  unset reply
+  {
+    # ### For now, expand just '$foo' or '${foo}', possibly with braces, but with
+    # ### no other features of the parameter expansion syntax.  (No ${(x)foo},
+    # ### no ${foo[x]}, no ${foo:-x}.)
+    {
+      local -a match mbegin mend
+      local MATCH; integer MBEGIN MEND
+      local parameter_name
+      local -a words
+      if [[ $arg[1] != '$' ]]; then
+        return 1
+      fi
+      if [[ ${arg[2]} == '{' ]] && [[ ${arg[-1]} == '}' ]]; then
+        parameter_name=${${arg:2}%?}
+      else
+        parameter_name=${arg:1}
+      fi
+      if [[ $res == none ]] && zmodload -e zsh/parameter &&
+         [[ ${parameter_name} =~ ^${~parameter_name_pattern}$ ]] &&
+         [[ ${parameters[(e)$MATCH]} != *special* ]]
+      then
+        # Set $arg and update $res.
+        case ${(tP)MATCH} in
+          (*array*|*assoc*)
+            words=( ${(P)MATCH} )
+            ;;
+          ("")
+            # not set
+            words=( )
+            ;;
+          (*)
+            # scalar, presumably
+            words=( ${(P)MATCH} )
+            ;;
+        esac
+        reply=( "${words[@]}" )
+      else
+        return 1
+      fi
+    }
+  }
 }
 
 # $1 is the offset of $4 from the parent buffer. Added to the returned highlights.
@@ -676,42 +730,13 @@ _zsh_highlight_main_highlighter_highlight_list()
     fi
 
     # Expand parameters.
-    #
-    # ### For now, expand just '$foo' or '${foo}', possibly with braces, but with
-    # ### no other features of the parameter expansion syntax.  (No ${(x)foo},
-    # ### no ${foo[x]}, no ${foo:-x}.)
-    () {
+    if _zsh_highlight_main_highlighter__try_expand_parameter "$arg"; then
       # That's not entirely correct --- if the parameter's value happens to be a reserved
       # word, the parameter expansion will be highlighted as a reserved word --- but that
       # incorrectness is outweighed by the usability improvement of permitting the use of
       # parameters that refer to commands, functions, and builtins.
-      local -a match mbegin mend
-      local MATCH; integer MBEGIN MEND
-      local parameter_name
-      local -a words
-      if [[ $arg[1] == '$' ]] && [[ ${arg[2]} == '{' ]] && [[ ${arg[-1]} == '}' ]]; then
-        parameter_name=${${arg:2}%?}
-      elif [[ $arg[1] == '$' ]]; then
-        parameter_name=${arg:1}
-      fi
-      if [[ $res == none ]] && zmodload -e zsh/parameter &&
-         [[ ${parameter_name} =~ ^${~parameter_name_pattern}$ ]] &&
-         [[ ${parameters[(e)$MATCH]} != *special* ]]
-         then
-        # Set $arg and update $res.
-        case ${(tP)MATCH} in
-          (*array*|*assoc*)
-            words=( ${(P)MATCH} )
-            ;;
-          ("")
-            # not set
-            words=( )
-            ;;
-          (*)
-            # scalar, presumably
-            words=( ${(P)MATCH} )
-            ;;
-        esac
+      () {
+        local -a words; words=( "${reply[@]}" )
         if (( $#words == 0 )); then
           # Parameter elision is happening
           (( ++in_redirection ))
@@ -724,8 +749,8 @@ _zsh_highlight_main_highlighter_highlight_list()
           _zsh_highlight_main__type "$arg" 0
           res=$REPLY
         fi
-      fi
-    }
+      }
+    fi
 
     # Parse the sudo command line
     if (( ! in_redirection )); then
