@@ -1,10 +1,11 @@
 #!/bin/sh
-# Run a smart recursive grep if such a tool is available.
-# Prefers, in this order: rg, pt, ag, ack, grep -r
 
 usage() {
     cat <<END >&2
 ${0##*/} [options..] PATTERN [PATH ...]
+
+Run a smart recursive grep if such a tool is available.
+Prefers, in this order: batgrep, rg, pt, ag, ack, grep -r
 
 Options:
   -c WHEN When to show color. Options: auto|always|never
