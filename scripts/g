@@ -8,6 +8,7 @@ ${0##*/} [options..] PATTERN [PATH ...]
 
 Options:
   -c WHEN When to show color. Options: auto|always|never
+  -t TOOL Specify the underlying tool to run
   -S   Case sensitive, no smart-case
   -i   Case insensitive
   -u   Unrestricted. Do not respect ignore files
@@ -21,6 +22,7 @@ END
 }
 
 parse_args() {
+    tool=
     color=auto
     smart_case=1
     no_smart_case=
@@ -30,7 +32,7 @@ parse_args() {
     word_regexp=
     vimgrep=
     verbose=0
-    while getopts c:SiulwVvh opt; do
+    while getopts c:t:SiulwVvh opt; do
         case "$opt" in
             c)
                 color="$OPTARG"
@@ -40,6 +42,21 @@ parse_args() {
                     *)
                         echo >&2 "Invalid value for -c: $OPTARG. Valid values: auto, always, never."
                         exit 2
+                        ;;
+                esac
+                ;;
+            t)
+                tool="$OPTARG"
+                if ! has "$tool"; then
+                    echo >&2 "Specified tool $tool not found in the PATH."
+                    exit 1
+                fi
+                case "$tool" in
+                    batgrep|rg|pt|ag|ack|grep)
+                        function="$tool"
+                        ;;
+                    *)
+                        function=tool
                         ;;
                 esac
                 ;;
@@ -79,18 +96,45 @@ parse_args() {
         usage
     fi
 
+    if [ "$tool" = batgrep ]; then
+        if [ -n "$files_with_matches" ]; then
+            echo >&2 "Error: -l is incompatible with -t batgrep. Use rg instead."
+            exit 2
+        elif [ -n "$vimgrep" ]; then
+            echo >&2 "Error: -V is incompatible with -t batgrep. Use rg instead."
+            exit 2
+        elif [ "$color" = always ] && ! [ -t 1 ]; then
+            echo >&2 "Error: -c always is incompatible with -t batgrep. Use rg instead."
+            exit 2
+        fi
+    elif [ -z "$tool" ]; then
+        if has rg; then
+            if [ -n "$paged" ] && [ -z "$files_with_matches" ] && [ -z "$vimgrep" ] && has bat && has batgrep; then
+                tool=batgrep
+            else
+                tool=rg
+            fi
+        else
+            for tool in pt ag ack grep; do
+                if has "$tool"; then
+                    break
+                fi
+            done
+        fi
+    fi
+
     force_color=
     force_no_color=
-    if [ -t 1 ]; then
+    paged=
+    if [ "$color" = never ]; then
+        force_no_color=1
+    elif [ -t 1 ]; then
         if [ "$color" = auto ]; then
             force_color=1
         fi
         paged=1
     elif [ "$color" = always ]; then
         force_color=1
-    else
-        force_no_color=1
-        paged=
     fi
 }
 
@@ -120,6 +164,8 @@ pager() {
 }
 
 run() {
+    # Add args common to all supported commands
+    set -- ${word_regexp:+--word-regexp} ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
     # shellcheck disable=SC2046
     set -- $(eval 'echo "$G_'"$1"'_ARGS"') "$@"
     if [ $verbose -eq 1 ]; then
@@ -128,29 +174,43 @@ run() {
     command "$@"
 }
 
-parse_args "$@"
-shift $((OPTIND - 1))
+run_batgrep() {
+    run batgrep ${force_color:+--color} ${force_no_color:+--no-color} ${unrestricted:+--rg:unrestricted} ${smart_case:+--smart-case} "$@"
+}
 
-set -- ${word_regexp:+--word-regexp} ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
+run_rg() {
+    run rg ${force_color:+--color=always} ${force_no_color:+--color=never} ${vimgrep:+--vimgrep} ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} --line-number "$@" | pager
+}
 
-if has rg; then
-    if [ -n "$paged" ] && [ -z "$files_with_matches" ] && [ -z "$vimgrep" ] && has bat && has batgrep; then
-        run batgrep ${force_color:+--color} ${force_no_color:+--no-color} ${unrestricted:+--rg:unrestricted} ${smart_case:+--smart-case} "$@"
-    else
-        run rg ${force_color:+--color=always} ${force_no_color:+--color=never} ${vimgrep:+--vimgrep} ${unrestricted:+--unrestricted} ${smart_case:+--smart-case} ${paged:+--pretty} --line-number "$@" | pager
-    fi
-elif has pt; then
+run_pt() {
     run pt ${force_color:+--color} ${force_no_color:+--nocolor} ${vimgrep:+--column} ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${paged:+--group} "$@" | pager
-elif has ag; then
+}
+
+run_ag() {
     run ag ${force_color:+--color} ${force_no_color:+--nocolor} ${vimgrep:+--vimgrep} ${unrestricted:+--skip-vcs-ignores} ${smart_case:+--smart-case} ${no_smart_case:+--case-sensitive} ${paged:+--group} "$@" | pager
-elif has ack; then
+}
+
+run_ack() {
     if command -v ack-grep; then
         alias ack=ack-grep
     fi
     run ack ${force_color:+--color} ${force_no_color:+--nocolor} ${vimgrep:+--column} ${smart_case:+--smart-case} ${paged:+--group} "$@" | pager
-else
+}
+
+run_grep() {
     if [ $# -eq 1 ]; then
         set -- "$@" .
     fi
     run grep ${force_color:+--color=always} ${force_no_color:+--color=never} --line-number --recursive ${smart_case:+--ignore-case} -I "$@" | pager
-fi
+}
+
+run_tool() {
+    if [ $# -eq 1 ]; then
+        set -- "$@" .
+    fi
+    run "$tool" "$@" | pager
+}
+
+parse_args "$@"
+shift $((OPTIND - 1))
+run_"$function" "$@"
