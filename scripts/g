@@ -22,8 +22,9 @@ END
 }
 
 parse_args() {
-    tool=
     color=auto
+    tool=
+    function=
     smart_case=1
     no_smart_case=
     ignore_case=
@@ -121,6 +122,7 @@ parse_args() {
                 fi
             done
         fi
+        function="$tool"
     fi
 
     force_color=
