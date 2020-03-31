@@ -168,8 +168,11 @@ pager() {
 }
 
 run() {
-    # Add args common to all supported commands
-    set -- ${word_regexp:+--word-regexp} ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
+    if [ "$tool" != tool ]; then
+        # Add args common to all supported commands
+        set -- ${word_regexp:+--word-regexp} ${ignore_case:+--ignore-case} ${files_with_matches:+--files-with-matches} "$@"
+    fi
+
     # shellcheck disable=SC2046
     set -- $(eval 'echo "$G_'"$tool"'_ARGS"') "$@"
     if [ $verbose -eq 1 ]; then
