@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+DOTFILESDIR="$(cd "$(dirname "$0")" && cd .. & pwd -P)"
+DOTFILES_STAMP=$XDG_CACHE_HOME/zsh/dotfiles-updated
+cd "$DOTFILESDIR" || exit 1
+if [ -e .mrconfig ]; then
+    mr update
+elif [ -e .git ]; then
+    git pull
+    if [ -e vim/.git ]; then
+        (cd vim && git pull)
+    fi
+fi
+if [[ -e vim/script/bootstrap ]]; then
+    ./vim/script/bootstrap || :
+fi
+touch "$DOTFILES_STAMP"
