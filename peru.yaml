@@ -112,11 +112,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 8585bc6bde39e7506cae0297717dbf295f2aada8
+    rev: 9513d543b7db784b34daacabda204919822719dc
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 90fec4d65862da6d1ed5dfe2447f680a1387e57c
+    rev: ccb1da4ae8935f5b40ac7dbcdd6eeb694403c97f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -179,7 +179,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0f5c6e8f040833ca632bb5ff345542879769225c
+    rev: 334a4fa15920b08f7be2432398e620587cc6f079
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -405,7 +405,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 2cff4c2adc24a5fa150a471d44f2cfd3ad019c3c
+    rev: f7a0bf113ac5e728116b368476c66281ed86856e
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -556,7 +556,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: a16ef129b67bc8a82d19b35f2dc5e8e091306cf3
+    rev: 622c7980a2c26d46d158cc4d0b9c8648cad899c0
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -582,7 +582,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 6b57f3ff3c6c94f89181c97b64f53b0295f84bb6
+    rev: b08128e550c553692864058ff2a6654b2d40bb67
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
