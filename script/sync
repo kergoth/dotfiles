@@ -3,7 +3,7 @@
 set -e
 
 DOTFILESDIR="$(cd "$(dirname "$0")" && cd .. && pwd -P)"
-DOTFILES_STAMP=$XDG_CACHE_HOME/zsh/dotfiles-updated
+DOTFILES_STAMP=${XDG_CACHE_HOME:-~/.cache}/zsh/dotfiles-updated
 cd "$DOTFILESDIR" || exit 1
 if [ -e .mrconfig ]; then
     mr update
