@@ -8,6 +8,8 @@ for url; do
         | grep -Ev '\.(epub3|kepub)' \
         | while read -r url; do
             fn="$subdir/${url##*/}"
-            wget -cO "$fn" "$url"
+            if ! [ -e "$fn" ]; then
+                wget -cO "$fn.incomplete" "$url" && mv -v "$fn.incomplete" "$fn"
+            fi
         done
 done
