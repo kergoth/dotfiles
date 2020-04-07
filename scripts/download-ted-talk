@@ -5,6 +5,8 @@ for url; do
         while read -r video_url; do
             # name="$(basename "$video_url" | sed 's,\?.*,,')"
             title="$(http -FIb "$url" | pup head title 'text{}' | sed 's, |.*,,; s,: *, - ,')"
-            http --body -FIdo "$title.mp4" "$video_url"
+            if ! [ -e "$title.mp4" ]; then
+                http --body -FIdo "$title.mp4.incomplete" "$video_url" && mv -v "$title.mp4.incomplete" "$title.mp4"
+            fi
         done
 done
