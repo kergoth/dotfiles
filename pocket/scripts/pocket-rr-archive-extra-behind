@@ -1,6 +1,29 @@
 #!/bin/sh
 
-threshold=2
+usage() {
+    cat <<END >&2
+${0##*/} [options..]
+
+Options:
+  -t THRESHOLD Threshold # of books to consider behind.
+  -h   Show usage
+END
+    exit 2
+}
+
+threshold=1
+while getopts t:h opt; do
+    case "$opt" in
+        t)
+            threshold="$OPTARG"
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
 TAB="$(printf '\t')"
 
 urls="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
