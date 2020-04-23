@@ -7,10 +7,15 @@
 # -----------------------------------------------------------------------------
 # shellcheck disable=SC1090
 LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo ".")")/../lib" && pwd)"
-BAT="bat"
+source "${LIB}/constants.sh"
 source "${LIB}/opt.sh"
+source "${LIB}/opt_hook_version.sh"
 source "${LIB}/str.sh"
 source "${LIB}/print.sh"
+# -----------------------------------------------------------------------------
+# Init:
+# -----------------------------------------------------------------------------
+hook_version
 # -----------------------------------------------------------------------------
 # Formatters:
 # -----------------------------------------------------------------------------
@@ -134,10 +139,10 @@ extname() {
 
 print_file() {
 	if [[ "${#BAT_ARGS[@]}" -eq 0 ]]; then
-		"$BAT" "$@"
+		"$EXECUTABLE_BAT" "$@"
 		return $?
 	else
-		"$BAT" "${BAT_ARGS[@]}" "$@"
+		"$EXECUTABLE_BAT" "${BAT_ARGS[@]}" "$@"
 		return $?
 	fi
 }

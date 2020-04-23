@@ -2436,6 +2436,12 @@ ls = list
 [DEFAULT]
 order = 10
 lib =
+	url_error() {
+		info "cannot determine $* url"
+		info 'to register a local-only repository, run this:'
+		echo 'mr config "$(pwd)" checkout="error no url known for repo"' >&2
+		exit 1
+	}
 	error() {
 		echo "mr: $@" >&2
 		exit 1
@@ -2659,18 +2665,18 @@ svn_register =
 	echo "Registering svn url: $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="svn co '$url' '$MR_REPO'"
 git_register =
-	branch="$(LC_ALL=C git rev-parse --abbrev-ref HEAD 2> /dev/null | grep -v '^HEAD$')" || branch=master
+	branch="$(LC_ALL=C git symbolic-ref --quiet --short HEAD)" || branch=master
 	remote="$(LC_ALL=C git config --get branch.$branch.remote 2> /dev/null)" || remote=origin
 	url="`LC_ALL=C git config --get "remote.$remote.url"`" || true
 	if [ -z "$url" ]; then
-		error "cannot determine git url"
+		url_error git
 	fi
 	echo "Registering git url: $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="git clone '$url' '$MR_REPO'"
 bzr_register =
 	url="`LC_ALL=C bzr info . | egrep -i 'checkout of branch|parent branch' | awk '{print $NF}' | head -n 1`"
 	if [ -z "$url" ]; then
-		error "cannot determine bzr url"
+		url_error bzr
 	fi
 	echo "Registering bzr url: $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="bzr branch '$url' '$MR_REPO'"
@@ -2679,33 +2685,37 @@ cvs_register =
 	root=`cat CVS/Root`
 	if [ -z "$root" ]; then
 		error "cannot determine cvs root"
-		fi
+	fi
 	echo "Registering cvs repository $repo at root $root"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="cvs -d '$root' co -d '$MR_REPO' '$repo'"
 hg_register =
-	url=`hg showconfig paths.default`
+	if ! url=`hg showconfig paths.default` ; then
+		url_error hg
+	fi
 	echo "Registering mercurial repo url: $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="hg clone '$url' '$MR_REPO'"
 darcs_register =
-	url=`cat _darcs/prefs/defaultrepo`
+	if ! url=`cat _darcs/prefs/defaultrepo 2> /dev/null` ; then
+		url_error darcs
+	fi
 	echo "Registering darcs repository $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="darcs get '$url' '$MR_REPO'"
 git_bare_register =
-	branch="$(LC_ALL=C GIT_CONFIG=config git rev-parse --abbrev-ref HEAD 2> /dev/null | grep -v '^HEAD$')" || branch=master
+	branch="$(LC_ALL=C GIT_CONFIG=config git symbolic-ref --quiet --short HEAD)" || branch=master
 	remote="$(LC_ALL=C GIT_CONFIG=config git config --get branch.$branch.remote 2> /dev/null)" || remote=origin
 	url="`LC_ALL=C GIT_CONFIG=config git config --get "remote.$remote.url"`" || true
 	if [ -z "$url" ]; then
-		error "cannot determine git url"
+		url_error git bare
 	fi
 	echo "Registering git url: $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="git clone --bare '$url' '$MR_REPO'"
 vcsh_register =
 	mr_repo_basename=`basename "$MR_REPO" .git`
-	branch="$(LC_ALL=C vcsh run "$mr_repo_basename" git rev-parse --abbrev-ref HEAD 2> /dev/null | grep -v '^HEAD$')" || branch=master
+	branch="$(LC_ALL=C vcsh run "$mr_repo_basename" git symbolic-ref --quiet --short HEAD)" || branch=master
 	remote="$(LC_ALL=C vcsh run "$mr_repo_basename" git config --get branch.$branch.remote 2> /dev/null)" || remote=origin
 	url="`LC_ALL=C vcsh run "$mr_repo_basename" git config --get "remote.$remote.url"`" || true
 	if [ -z "$url" ]; then
-		error "cannot determine git url"
+		url_error vcsh git
 	fi
 	echo "Registering git url: $url in $MR_CONFIG"
 	mr -c "$MR_CONFIG" config "`pwd`" checkout="vcsh clone '$url' '$mr_repo_basename'"

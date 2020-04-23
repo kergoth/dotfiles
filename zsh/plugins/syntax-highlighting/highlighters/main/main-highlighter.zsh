@@ -349,6 +349,7 @@ _zsh_highlight_highlighter_main_paint()
     'setsid' :wc
     'env' u:i
     'ionice' cn:t:pPu # util-linux 2.33.1-0.1
+    'strace' IbeaosXPpEuOS:ACdfhikqrtTvVxyDc # strace 4.26-0.2
 
     # As of OpenSSH 8.1p1
     'ssh-agent' aEPt:csDd:k
@@ -634,7 +635,7 @@ _zsh_highlight_main_highlighter_highlight_list()
 
       # The zsh lexer considers ';' and newline to be the same token, so
       # ${(z)} converts all newlines to semicolons. Convert them back here to
-      # make later processing simplier.
+      # make later processing simpler.
       [[ $arg == ';' && ${match[3]} == $'\n' ]] && arg=$'\n'
 
       # Compute the new $proc_buf. We advance it

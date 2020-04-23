@@ -7,8 +7,8 @@
 # -----------------------------------------------------------------------------
 # shellcheck disable=SC1090 disable=SC2155
 LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo ".")")/../lib" && pwd)"
-BAT="bat"
 if [[ -n "${MANPAGER}" ]]; then BAT_PAGER="$MANPAGER"; fi
+source "${LIB}/constants.sh"
 source "${LIB}/pager.sh"
 source "${LIB}/print.sh"
 source "${LIB}/opt.sh"
@@ -16,6 +16,7 @@ source "${LIB}/opt_hooks.sh"
 # -----------------------------------------------------------------------------
 hook_color
 hook_pager
+hook_version
 # -----------------------------------------------------------------------------
 MAN_ARGS=()
 BAT_ARGS=()
@@ -27,7 +28,7 @@ else
 	BAT_ARGS=("--color=never --decorations=never")
 fi
 # -----------------------------------------------------------------------------
-export MANPAGER='sh -c "col -bx | '"$(printf "%q" "$BAT")"' --language=man --style=grid '"${BAT_ARGS[*]}"'"'
+export MANPAGER='sh -c "col -bx | '"$(printf "%q" "$EXECUTABLE_BAT")"' --language=man --style=grid '"${BAT_ARGS[*]}"'"'
 export MANROFFOPT='-c'
 
 if [[ -n "${SCRIPT_PAGER_CMD}" ]]; then

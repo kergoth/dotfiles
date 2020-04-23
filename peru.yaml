@@ -112,11 +112,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9513d543b7db784b34daacabda204919822719dc
+    rev: 6ac6c875535989113d53fda89a9897fc065edb2e
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: ccb1da4ae8935f5b40ac7dbcdd6eeb694403c97f
+    rev: f1b9fbbaf0123fb7b14b4a11bc18c86fd4b2305b
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 72b1b8f8c1bc60e638d983a4e9e0f12413f450a0
+    rev: 6599edabdc14aeaa49af4285e56a21dffbc30d33
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -157,7 +157,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: 1198596830e81653db1d17ccad6f6e2c5d21f7e0
+    sha1: 6cfee761ab25dcd917965b324e3108ae9cb37ed3
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -179,7 +179,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 334a4fa15920b08f7be2432398e620587cc6f079
+    rev: a6d3e3687ba2ee26266400db6c77a07bc4ff8fca
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -244,7 +244,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 7b9adcf39eec17709357f1432a4d21fa2ff587a6
+    rev: a51fc48913796dd7732f6fc6eba4352ca12c0f78
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -265,7 +265,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 274b9cc25322d9ee79aa8e6d4e86f0ffe5ced925
+    rev: af6b65d45ef179ed52087e80cb089f6b2349f4ec
 
 rule git-scripts:
     move:
@@ -405,7 +405,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: f7a0bf113ac5e728116b368476c66281ed86856e
+    rev: e50cc02b1d4085928ef35302c3853f7be6d0923f
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -430,7 +430,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: f2a3e50cab88ac215c99b8033f97a415478562b0
+    rev: db3389a3ccc52c92568654d1a5dc1dddd1958e77
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -444,7 +444,7 @@ curl module cht:
     move:
         :cht.sh: cht.sh
     executable: cht.sh
-    sha1: c99289c55aed178f3ae06720b3e8c2cab501b6f0
+    sha1: 37ea94d54687f4484a73e8c5d2e73e127e26a0dd
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -546,7 +546,7 @@ git module tmux-float:
 
 git module bat-theme-dracula:
     url: https://github.com/dracula/sublime
-    rev: 811a634420a0cb9023bb7afd1c8968a5aaf6a753
+    rev: 26c57ec282abcaa76e57e055f38432bd827ac34e
 
 git module git-get:
     url: https://github.com/pietvanzoen/git-get
@@ -556,7 +556,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 622c7980a2c26d46d158cc4d0b9c8648cad899c0
+    rev: ebc9081c488258127c79934c594d4c7599a9471e
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -582,7 +582,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: b08128e550c553692864058ff2a6654b2d40bb67
+    rev: 7fa1faf7bf22c8d49593172b336e96d2ec2018fe
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -594,13 +594,13 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: 26ee964697d3a4877bf4ed6e51fd04891d498a18
+    rev: d2b9f71f90a752e814579d0b43915833b9135504
 
 git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 55ae994972c6b27fb40b121b07aeed6c2e781e4d
+    rev: 3366e0aa162006aa7343f92c87b38c5c52c9bd11
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git

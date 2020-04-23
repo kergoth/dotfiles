@@ -95,7 +95,7 @@ cheat sheets repositories will be fetched.
 It takes approximately 1G of the disk space.
 
 Default installation location:  ~/.cheat.sh/
-It can be overriden by a command line parameter to this script:
+It can be overridden by a command line parameter to this script:
 
     ${0##*/} --standalone-install DIR
 
@@ -178,12 +178,36 @@ EOF
   # we use tee everywhere so we should set -o pipefail
   set -o pipefail
 
+  # currently the script uses python 2,
+  # but cheat.sh supports python 3 too
+  # if you want to switch it to python 3
+  # set PYTHON2 to NO:
+  # PYTHON2=NO
+  #
+  PYTHON2=YES
+  if [[ $PYTHON2 = YES ]]; then
+    python="python2"
+    pip="pip"
+    virtualenv_python3_option=()
+  else
+    python="python3"
+    pip="pip3"
+    virtualenv_python3_option=(-p python3)
+  fi
+
   _say_what_i_do Creating virtual environment
-  python2 "$(command -v virtualenv)" ve \
+  "$python" "$(command -v virtualenv)" "${virtualenv_python3_option[@]}" ve \
       || fatal Could not create virtual environment with "python2 $(command -v virtualenv) ve"
 
+  # rapidfuzz does not support Python 2,
+  # so if we are using Python 2, install fuzzywuzzy instead
+  if [[ $PYTHON2 = YES ]]; then
+    sed -i s/rapidfuzz/fuzzywuzzy/ requirements.txt
+    echo "python-Levenshtein" >> requirements.txt
+  fi
+
   _say_what_i_do Installing python requirements into the virtual environment
-  ve/bin/pip install -r requirements.txt > "$LOG" \
+  ve/bin/"$pip" install -r requirements.txt > "$LOG" \
       || {
 
     echo "ERROR:"
@@ -191,9 +215,9 @@ EOF
     tail -n 10 "$LOG"
     echo "---"
     echo "See $LOG for more"
-    fatal Could not install python dependecies into the virtual environment
+    fatal Could not install python dependencies into the virtual environment
   }
-  echo "$(ve/bin/pip freeze | wc -l) dependencies were successfully installed"
+  echo "$(ve/bin/"$pip" freeze | wc -l) dependencies were successfully installed"
 
   _say_what_i_do Fetching the upstream cheat sheets repositories
   ve/bin/python lib/fetch.py fetch-all | tee -a "$LOG"
@@ -282,8 +306,8 @@ chtsh_mode()
       echo "Configured mode: $mode"
     fi
   else
-    echo "Uknown mode: $mode"
-    echo Suported modes:
+    echo "Unknown mode: $mode"
+    echo Supported modes:
     echo "  auto    use the standalone installation first"
     echo "  lite    use the cheat sheets server directly"
   fi
