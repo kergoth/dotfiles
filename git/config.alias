@@ -55,20 +55,20 @@
 	recent-tree = show-tree --since=last\\ week
 
 	# Hub
-	browse = !hub browse
 	ci-status = !hub ci-status
-	create = !hub create
 	delete = !hub delete
-	fork = !hub fork
-	pull-request = !hub pull-request
 	release = !hub release
 
 	# Github CLI
 	issue = !gh issue
+	issues = !gh issue list
 	pr = !gh pr
+	pull-request = !gh pr create
+	pull-requests = !gh pr list
 	repo = !gh repo
-	pull-requests = pr list
-	issues = issue list
+	browse = !gh repo view
+	create = !gh repo create
+	fork = !gh repo fork --remote=false --clone=false
 
 	# Upstream
 	tracking-remote = "!f() { git rev-parse --symbolic-full-name '@{u}' | sed -n 's,refs/remotes/\\([^/][^/]*\\)/.*,\\1,p'; }; f"
