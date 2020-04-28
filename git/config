@@ -3,7 +3,7 @@
 	excludesfile = ~/.config/git/ignore
 	attributesfile = ~/.config/git/attributes
 	whitespace = cr-at-eol
-	pager = diff-so-fancy | ${PAGER:-less --tabs=4}
+	pager = git-pager
 
 [user]
 	name = Christopher Larson
@@ -17,7 +17,7 @@
 
 [interactive]
 	singlekey = true
-	diffFilter = diff-highlight
+	diffFilter = git-diff-filter
 
 [pretty]
 	lg = format:%Cred%h%Creset %Cgreen%ad%Creset%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset
