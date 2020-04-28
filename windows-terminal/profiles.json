@@ -1,7 +1,10 @@
 {
     "$schema": "https://aka.ms/terminal-profiles-schema",
     "defaultProfile": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
+
+    // Launch Settings
     "launchMode": "maximized",
+
     "profiles": {
         "defaults": {
             "colorScheme": "Dracula",
@@ -144,14 +147,15 @@
         }
     ],
     "keybindings": [
-        { "keys": [ "alt+1" ], "command": "switchToTab0" },
-        { "keys": [ "alt+2" ], "command": "switchToTab1" },
-        { "keys": [ "alt+3" ], "command": "switchToTab2" },
-        { "keys": [ "alt+4" ], "command": "switchToTab3" },
-        { "keys": [ "alt+5" ], "command": "switchToTab4" },
-        { "keys": [ "alt+6" ], "command": "switchToTab5" },
-        { "keys": [ "alt+7" ], "command": "switchToTab6" },
-        { "keys": [ "alt+8" ], "command": "switchToTab7" },
-        { "keys": [ "alt+9" ], "command": "switchToTab8" }
+        { "command": "closeTab", "keys": "ctrl+shift+w" },
+        { "command": { "action": "switchToTab", "index": 0 }, "keys": "alt+1" },
+        { "command": { "action": "switchToTab", "index": 1 }, "keys": "alt+2" },
+        { "command": { "action": "switchToTab", "index": 2 }, "keys": "alt+3" },
+        { "command": { "action": "switchToTab", "index": 3 }, "keys": "alt+4" },
+        { "command": { "action": "switchToTab", "index": 4 }, "keys": "alt+5" },
+        { "command": { "action": "switchToTab", "index": 5 }, "keys": "alt+6" },
+        { "command": { "action": "switchToTab", "index": 6 }, "keys": "alt+7" },
+        { "command": { "action": "switchToTab", "index": 7 }, "keys": "alt+8" },
+        { "command": { "action": "switchToTab", "index": 8 }, "keys": "alt+9" }
     ]
 }
