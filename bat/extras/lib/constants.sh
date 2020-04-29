@@ -5,8 +5,13 @@
 # Repository: https://github.com/eth-p/bat-extras
 # Issues:     https://github.com/eth-p/bat-extras/issues
 # -----------------------------------------------------------------------------
+if [[ -z "$__LIB_CONSTANTS_INITIALIZED" ]]; then
+__LIB_CONSTANTS_INITIALIZED=true
+
+# Constants
 EXECUTABLE_BAT="bat"
 EXECUTABLE_GIT="git"
+EXECUTABLE_DELTA="delta"
 PROGRAM="$(basename "$0" .sh)"
 PROGRAM_HOMEPAGE="https://github.com/eth-p/bat-extras"
 PROGRAM_COPYRIGHT="Copyright (C) 2019-2020 eth-p | MIT License"
@@ -17,3 +22,5 @@ PROGRAM_VERSION="$({
 		printf "%s-git (%s)" "" "$(git -C "${TOP}" rev-parse --short HEAD)"
 	fi
 })"
+
+fi

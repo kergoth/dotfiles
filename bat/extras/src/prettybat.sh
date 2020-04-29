@@ -12,6 +12,7 @@ source "${LIB}/opt.sh"
 source "${LIB}/opt_hook_version.sh"
 source "${LIB}/str.sh"
 source "${LIB}/print.sh"
+source "${LIB}/version.sh"
 # -----------------------------------------------------------------------------
 # Init:
 # -----------------------------------------------------------------------------
@@ -26,9 +27,10 @@ FORMATTERS=("prettier" "rustfmt" "shfmt" "clangformat")
 
 formatter_prettier_supports() {
 	case "$1" in
-	.js | .jsx | \
+		.js | .jsx | \
 		.ts | .tsx | \
 		.css | .scss | .sass | \
+		.graphql | .gql | \
 		.html | \
 		.json | \
 		.md | \
@@ -93,7 +95,7 @@ formatter_shfmt_process() {
 # -----------------------------------------------------------------------------
 
 # This function will map a bat `--language=...` argument into an appropriate
-# file extension for the language provided. This must be hardcoded for
+# file extension for the language provided. This should be hardcoded for
 # performance reasons.
 map_language_to_extension() {
 	local ext=".txt"
@@ -112,6 +114,7 @@ map_language_to_extension() {
 	md | mdown | markdown)      ext=".md" ;;
 	yaml | yml)                 ext=".yml" ;;
 	rust | rs)                  ext=".rs" ;;
+	graphql | gql)              exit=".graphql" ;;
 	esac
 
 	echo "$ext"
@@ -138,22 +141,24 @@ extname() {
 }
 
 print_file() {
-	if [[ "${#BAT_ARGS[@]}" -eq 0 ]]; then
+	if [[ "${#PRINT_ARGS[@]}" -eq 0 ]]; then
 		"$EXECUTABLE_BAT" "$@"
 		return $?
 	else
-		"$EXECUTABLE_BAT" "${BAT_ARGS[@]}" "$@"
+		"$EXECUTABLE_BAT" "${PRINT_ARGS[@]}" "$@"
 		return $?
 	fi
 }
 
 process_file() {
+	PRINT_ARGS=("${BAT_ARGS[@]}")
 	local file="$1"
 	local ext="$2"
 	local fext="$ext"
 	local lang="${ext:1}"
 	local formatter
 
+	# Determine the formatter.
 	if [[ -n "$OPT_LANGUAGE" ]]; then
 		lang="$OPT_LANGUAGE"
 		fext="$(map_language_to_extension "$lang")"
@@ -166,6 +171,9 @@ process_file() {
 		printc "%{CYAN}%s%{CLEAR}: %s\n" "$file" "$formatter"
 		return 0
 	fi
+
+	# Calculate additional print arguments.
+	forward_file_name "$file"
 
 	# Print the formatted file.
 	if [[ "$formatter" = "none" ]]; then
@@ -204,6 +212,19 @@ process_file() {
 	print_file --language="$lang" - <<<"$data_formatted"
 	return $?
 }
+
+# -----------------------------------------------------------------------------
+# Version-Specific Features:
+# -----------------------------------------------------------------------------
+BAT_VERSION="$(bat_version)"
+
+forward_file_name() { :; }
+
+if version_compare "$BAT_VERSION" -ge "0.14"; then
+	forward_file_name() {
+		PRINT_ARGS+=("--file-name" "$1")
+	}
+fi
 
 # -----------------------------------------------------------------------------
 # Main:

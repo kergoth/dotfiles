@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 6ac6c875535989113d53fda89a9897fc065edb2e
+    rev: 6d4107206a3d40704a95331022ff1f86c1ace562
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 6599edabdc14aeaa49af4285e56a21dffbc30d33
+    rev: 41828e2df4289e325e64f475efbe36e9c9dd7cd6
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -179,7 +179,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: a6d3e3687ba2ee26266400db6c77a07bc4ff8fca
+    rev: e6d33f77da8cc36786c814f499f6cb3405e8c4c1
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -398,7 +398,7 @@ git module gitvoodoo:
 curl module diff-so-fancy:
     url: https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
     executable: diff-so-fancy
-    sha1: d5e35db2f3e990412817a32dcb454321d7750768
+    sha1: 9671b082ee25d0bd48d46b8c1d42f80664914d63
 
 git module hub-completion:
     url: https://github.com/github/hub
@@ -556,7 +556,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: ebc9081c488258127c79934c594d4c7599a9471e
+    rev: 3891c8100dd720070872179c8c40c34ff3bdac43
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -582,7 +582,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 7fa1faf7bf22c8d49593172b336e96d2ec2018fe
+    rev: bad5ab13a28c0b03e1e3b7a5dcbd66d1ee080185
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -600,7 +600,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 3366e0aa162006aa7343f92c87b38c5c52c9bd11
+    rev: bd384622db70eaf6893d32a0c1c4b99d5516fa5b
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
