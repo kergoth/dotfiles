@@ -20,13 +20,13 @@ is_pager_disabled() {
 
 # Prints the detected pager name.
 pager_name() {
-	_detect_pager
+	_detect_pager 1>&2
 	echo "$_SCRIPT_PAGER_NAME"
 }
 
 # Prints the detected pager version.
 pager_version() {
-	_detect_pager
+	_detect_pager 1>&2
 	echo "$_SCRIPT_PAGER_VERSION"
 }
 
@@ -47,24 +47,13 @@ pager_exec() {
 	fi
 }
 
-# Displays the output of a command or function inside the pager (if it exists).
-#
-# Example:
-#     bat | pager_display
-pager_display() {
-	if [[ -n "$SCRIPT_PAGER_CMD" ]]; then
-		"${SCRIPT_PAGER_CMD[@]}" "${SCRIPT_PAGER_ARGS[@]}"
-	else
-		cat
-	fi
-}
 
 # -----------------------------------------------------------------------------
 
 # Detect the pager information.
 # shellcheck disable=SC2120
 _detect_pager() {
-	if [[ "$_SCRIPT_PAGER_DETECTED" = "true" && "$1" != "--force" ]]; then return; fi
+	if [[ "$_SCRIPT_PAGER_DETECTED" = "true" ]]; then return; fi
 	_SCRIPT_PAGER_DETECTED=true
 
 	# If the pager command is empty, the pager is disabled.
@@ -97,7 +86,8 @@ _detect_pager() {
 # 2. Use PAGER with special arguments for less
 # 3. Use PAGER
 _configure_pager() {
-	SCRIPT_PAGER_CMD=("$PAGER")
+	# shellcheck disable=SC2206
+	SCRIPT_PAGER_CMD=($PAGER)
 	SCRIPT_PAGER_ARGS=()
 
 	# Prefer the bat pager.
@@ -111,9 +101,9 @@ _configure_pager() {
 
 	# Add arguments for the less pager.
 	if is_pager_less; then
-		SCRIPT_PAGER_ARGS=(-R --quit-if-one-screen)
+		SCRIPT_PAGER_CMD=("${SCRIPT_PAGER_CMD[0]}" -R --quit-if-one-screen)
 		if [[ "$(pager_version)" -lt 500 ]]; then
-			SCRIPT_PAGER_ARGS+=(--no-init)
+			SCRIPT_PAGER_CMD+=(--no-init)
 		fi
 	fi
 }

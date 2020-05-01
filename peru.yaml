@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 6d4107206a3d40704a95331022ff1f86c1ace562
+    rev: b6e46c0dc1cce8c35c7217650a19e8835b30e75d
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -556,7 +556,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 3891c8100dd720070872179c8c40c34ff3bdac43
+    rev: d12b80580553c131dd873172c77fdf30624b9337
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -582,7 +582,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: bad5ab13a28c0b03e1e3b7a5dcbd66d1ee080185
+    rev: d5fa65132df9f20a3cbfb6422d483f96ccf15f4b
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -600,7 +600,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: bd384622db70eaf6893d32a0c1c4b99d5516fa5b
+    rev: c0780df24d9798462daf3380d47d0c5c5e6bbf83
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
