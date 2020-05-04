@@ -2439,18 +2439,19 @@ lib =
 	url_error() {
 		info "cannot determine $* url"
 		info 'to register a local-only repository, run this:'
+		# shellcheck disable=SC2016 # this prints the exact command needed
 		echo 'mr config "$(pwd)" checkout="error no url known for repo"' >&2
 		exit 1
 	}
 	error() {
-		echo "mr: $@" >&2
+		echo "mr: $*" >&2
 		exit 1
 	}
 	warning() {
-		echo "mr (warning): $@" >&2
+		echo "mr (warning): $*" >&2
 	}
 	info() {
-		echo "mr: $@" >&2
+		echo "mr: $*" >&2
 	}
 	hours_since() {
 		if [ -z "$1" ] || [ -z "$2" ]; then
@@ -2473,7 +2474,7 @@ lib =
 		if [ -z "$flagfile" ]; then
 			error "cannot determine flag filename"
 		fi
-		delta=`perl -wle 'print -f shift() ? int((-M _) * 24) : 9999' "$flagfile"`
+		delta=$(perl -wle 'print -f shift() ? int((-M _) * 24) : 9999' "$flagfile")
 		if [ "$delta" -lt "$2" ]; then
 			return 1
 		else
@@ -2482,7 +2483,7 @@ lib =
 		fi
 	}
 	is_bzr_checkout() {
-		LANG=C bzr info | egrep -q '^Checkout'
+		LANG=C bzr info | grep -qE '^Checkout'
 	}
 	lazy() {
 		if [ -d "$MR_REPO" ]; then
@@ -2658,77 +2659,77 @@ darcs_grep = if command -v ack-grep > /dev/null 2>&1; then ack-grep "$@" || true
 run = "$@"
 
 svn_register =
-	url=`LC_ALL=C svn info . | grep -i '^URL:' | cut -d ' ' -f 2`
+	url=$(LC_ALL=C svn info . | grep -i '^URL:' | cut -d ' ' -f 2)
 	if [ -z "$url" ]; then
 		error "cannot determine svn url"
 	fi
 	echo "Registering svn url: $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="svn co '$url' '$MR_REPO'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="svn co '$url' '$MR_REPO'"
 git_register =
 	branch="$(LC_ALL=C git symbolic-ref --quiet --short HEAD)" || branch=master
 	remote="$(LC_ALL=C git config --get branch.$branch.remote 2> /dev/null)" || remote=origin
-	url="`LC_ALL=C git config --get "remote.$remote.url"`" || true
+	url="$(LC_ALL=C git config --get "remote.$remote.url")" || true
 	if [ -z "$url" ]; then
 		url_error git
 	fi
 	echo "Registering git url: $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="git clone '$url' '$MR_REPO'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="git clone '$url' '$MR_REPO'"
 bzr_register =
-	url="`LC_ALL=C bzr info . | egrep -i 'checkout of branch|parent branch' | awk '{print $NF}' | head -n 1`"
+	url="$(LC_ALL=C bzr info . | grep -iE 'checkout of branch|parent branch' | awk '{print $NF}' | head -n 1)"
 	if [ -z "$url" ]; then
 		url_error bzr
 	fi
 	echo "Registering bzr url: $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="bzr branch '$url' '$MR_REPO'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="bzr branch '$url' '$MR_REPO'"
 cvs_register =
-	repo=`cat CVS/Repository`
-	root=`cat CVS/Root`
+	repo=$(cat CVS/Repository)
+	root=$(cat CVS/Root)
 	if [ -z "$root" ]; then
 		error "cannot determine cvs root"
 	fi
 	echo "Registering cvs repository $repo at root $root"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="cvs -d '$root' co -d '$MR_REPO' '$repo'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="cvs -d '$root' co -d '$MR_REPO' '$repo'"
 hg_register =
-	if ! url=`hg showconfig paths.default` ; then
+	if ! url=$(hg showconfig paths.default) ; then
 		url_error hg
 	fi
 	echo "Registering mercurial repo url: $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="hg clone '$url' '$MR_REPO'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="hg clone '$url' '$MR_REPO'"
 darcs_register =
-	if ! url=`cat _darcs/prefs/defaultrepo 2> /dev/null` ; then
+	if ! url=$(cat _darcs/prefs/defaultrepo 2> /dev/null) ; then
 		url_error darcs
 	fi
 	echo "Registering darcs repository $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="darcs get '$url' '$MR_REPO'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="darcs get '$url' '$MR_REPO'"
 git_bare_register =
 	branch="$(LC_ALL=C GIT_CONFIG=config git symbolic-ref --quiet --short HEAD)" || branch=master
 	remote="$(LC_ALL=C GIT_CONFIG=config git config --get branch.$branch.remote 2> /dev/null)" || remote=origin
-	url="`LC_ALL=C GIT_CONFIG=config git config --get "remote.$remote.url"`" || true
+	url="$(LC_ALL=C GIT_CONFIG=config git config --get "remote.$remote.url")" || true
 	if [ -z "$url" ]; then
 		url_error git bare
 	fi
 	echo "Registering git url: $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="git clone --bare '$url' '$MR_REPO'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="git clone --bare '$url' '$MR_REPO'"
 vcsh_register =
-	mr_repo_basename=`basename "$MR_REPO" .git`
+	mr_repo_basename=$(basename "$MR_REPO" .git)
 	branch="$(LC_ALL=C vcsh run "$mr_repo_basename" git symbolic-ref --quiet --short HEAD)" || branch=master
 	remote="$(LC_ALL=C vcsh run "$mr_repo_basename" git config --get branch.$branch.remote 2> /dev/null)" || remote=origin
-	url="`LC_ALL=C vcsh run "$mr_repo_basename" git config --get "remote.$remote.url"`" || true
+	url="$(LC_ALL=C vcsh run "$mr_repo_basename" git config --get "remote.$remote.url")" || true
 	if [ -z "$url" ]; then
 		url_error vcsh git
 	fi
 	echo "Registering git url: $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="vcsh clone '$url' '$mr_repo_basename'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="vcsh clone '$url' '$mr_repo_basename'"
 fossil_register =
-	url=`fossil remote-url`
-	repo=`fossil info | grep repository | sed -e 's/repository:*.//g' -e 's/ //g'`
+	url=$(fossil remote-url)
+	repo=$(fossil info | grep repository | sed -e 's/repository:*.//g' -e 's/ //g')
 	echo "Registering fossil repository $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="mkdir -p '$MR_REPO' && cd '$MR_REPO' && fossil open '$repo'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="mkdir -p '$MR_REPO' && cd '$MR_REPO' && fossil open '$repo'"
 veracity_register =
-	url=`vv config | grep sync_targets | sed -e 's/sync_targets:*.//g' -e 's/ //g'`
-	repo=`vv repo info | grep repository | sed -e 's/Current repository:*.//g' -e 's/ //g'`
+	url=$(vv config | grep sync_targets | sed -e 's/sync_targets:*.//g' -e 's/ //g')
+	repo=$(vv repo info | grep repository | sed -e 's/Current repository:*.//g' -e 's/ //g')
 	echo "Registering veracity repository $url in $MR_CONFIG"
-	mr -c "$MR_CONFIG" config "`pwd`" checkout="mkdir -p '$MR_REPO' && cd '$MR_REPO' && vv checkout '$repo'"
+	mr -c "$MR_CONFIG" config "$(pwd)" checkout="mkdir -p '$MR_REPO' && cd '$MR_REPO' && vv checkout '$repo'"
 
 svn_trusted_checkout = svn co $url $repo
 svn_alt_trusted_checkout = svn checkout $url $repo
@@ -2764,7 +2765,7 @@ offline =
 	touch ~/.mrlog
 	info "offline mode enabled"
 remember =
-	info "remembering command: 'mr $@'"
+	info "remembering command: 'mr $*'"
 	command="mr -d '$(pwd)' $MR_SWITCHES"
 	for w in "$@"; do
 		command="$command '$w'"
