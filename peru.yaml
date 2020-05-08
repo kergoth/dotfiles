@@ -164,10 +164,10 @@ git module smem:
     pick: smem
     rev: abb695bbf51be5bd35877b438feb281a2aa4fffa
 
-hg module t:
-    url: https://bitbucket.org/sjl/t
+git module t:
+    url: https://github.com/sjl/t
     pick: t.py
-    rev: 6d234cde2bed5d21646c3b483c74b27d47aeb7cd
+    rev: 815ccaf4f0bf2acb2a7f2cb330bf0532d782f408
 
 git module fzf:
     url: https://github.com/junegunn/fzf

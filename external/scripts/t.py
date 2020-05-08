@@ -165,17 +165,22 @@ class TaskDict(object):
             return self.tasks[matched[0]]
         elif len(matched) == 0:
             raise UnknownPrefix(prefix)
+        elif prefix in matched:
+            return self.tasks[prefix]
         else:
-            matched = [tid for tid in self.tasks.keys() if tid == prefix]
-            if len(matched) == 1:
-                return self.tasks[matched[0]]
-            else:
-                raise AmbiguousPrefix(prefix)
+            raise AmbiguousPrefix(prefix)
 
-    def add_task(self, text):
+    def add_task(self, text, verbose, quiet):
         """Add a new, unfinished task with the given summary text."""
         task_id = _hash(text)
         self.tasks[task_id] = {'id': task_id, 'text': text}
+
+        if not quiet:
+            if verbose:
+                print(task_id)
+            else:
+                prefixes = _prefixes(self.tasks)
+                print(prefixes[task_id])
 
     def edit_task(self, prefix, text):
         """Edit the task with the given prefix.
@@ -252,6 +257,10 @@ class TaskDict(object):
                 os.remove(path)
 
 
+def _die(message):
+    sys.stderr.write('error: %s\n' % message)
+    sys.exit(1)
+
 def _build_parser():
     """Return a parser for the command-line interface."""
     usage = "Usage: %prog [-t DIR] [-l LIST] [options] [TEXT]"
@@ -300,6 +309,9 @@ def _main():
     td = TaskDict(taskdir=options.taskdir, name=options.name)
     text = ' '.join(args).strip()
 
+    if '\n' in text:
+        _die('task text cannot contain newlines')
+
     try:
         if options.finish:
             td.finish_task(options.finish)
@@ -311,7 +323,7 @@ def _main():
             td.edit_task(options.edit, text)
             td.write(options.delete)
         elif text:
-            td.add_task(text)
+            td.add_task(text, verbose=options.verbose, quiet=options.quiet)
             td.write(options.delete)
         else:
             kind = 'tasks' if not options.done else 'done'
@@ -319,12 +331,12 @@ def _main():
                           grep=options.grep)
     except AmbiguousPrefix:
         e = sys.exc_info()[1]
-        sys.stderr.write('The ID "%s" matches more than one task.\n' % e.prefix)
+        _die('the ID "%s" matches more than one task' % e.prefix)
     except UnknownPrefix:
         e = sys.exc_info()[1]
-        sys.stderr.write('The ID "%s" does not match any task.\n' % e.prefix)
+        _die('the ID "%s" does not match any task' % e.prefix)
     except BadFile as e:
-        sys.stderr.write('%s - %s\n' % (e.problem, e.path))
+        _die('%s - %s' % (e.problem, e.path))
 
 
 if __name__ == '__main__':
