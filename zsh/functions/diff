@@ -1,6 +1,17 @@
 diff () {
-    if [ -t 1 ]; then
-        command diff "$@" | eval $LESSCOLORIZER -l diff | diff-so-fancy | less -R
+    if [[ -t 1 ]]; then
+        if (( $+commands[delta] )); then
+            command diff "$@" | delta
+        else
+            command diff "$@" \
+                | if (( $+commands[bat] )); then
+                    bat -l diff
+                else
+                    cat
+                fi \
+                | diff-so-fancy \
+                | less -R
+        fi
     else
         command diff "$@"
     fi
