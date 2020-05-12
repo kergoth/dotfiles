@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+
+tmpfile="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$tmpfile"' EXIT INT TERM
+
+cat >"$tmpfile" <<END
+var system = require('system');
+var page = require('webpage').create();
+
+page.open(system.args[1], function()
+{
+    console.log(page.content);
+    phantom.exit();
+});
+END
+
+for arg; do
+    phantomjs "$tmpfile" "$arg"
+done
