@@ -10,9 +10,44 @@
 # -------
 #
 #  * Julien Nicoulaud <julien.nicoulaud@gmail.com>
+#  * Shohei YOSHIDA <syohex@gmail.com>
 #
 # ------------------------------------------------------------------------------
 
+_perf_events() {
+  local -a events=(${(@f)$(perf list | sed -n -e 's/^  \([^ =]*\).*$/\1/p')})
+  _values -s ',' 'events' $events
+}
+
+_perf_top_fields() {
+  local fields=(overhead overhead_sys overhead_us overhead_children sample period)
+  _values -s ',' 'fields' $fields
+}
+
+_perf_pids() {
+  local -a pids=(/proc/[1-9]*(:t))
+  _values -s ',' 'pids' $pids
+}
+
+_perf_stat_command() {
+  _alternative "_command_names -e" "subcommand:command:(record report)"
+}
+
+_perf_c2c_coalesce() {
+  local columns=(tid pid iaddr dso)
+  _values -s ',' 'columns' $columns
+}
+
+_perf_mem_type() {
+  local types=(load store)
+  _values -s ',' 'type' $types
+}
+
+_perf_test_list() {
+  # TODO show test detail
+  local -a test_list=(${(@f)$(perf test list 2>&1 | sed -n -e 's/^ *\([^ ]*\): \(.*\)$/\1/p')})
+  _values -s ',' 'test' $test_list
+}
 
 _perf() {
   local context curcontext="$curcontext" state line
@@ -74,8 +109,16 @@ _perf() {
         (buildid-cache)
           _arguments \
             '(-a --add)'{-a,--add=}'[add specified file to the cache]: :_files' \
+            '(-f --force)'{-f,--force}'[do not complain, do it]' \
+            '(-k --kcore)'{-k,--kcore=}'[add specified kcore file to core]:kcore:_files' \
             '(-r --remove)'{-r,--remove=}'[remove specified file from the cache]: :_files' \
+            '(-p,--purge)'{-p,--purge=}'[purge all cached binaries including older caches which have specified path]: :_files' \
+            '(-P,--purge-all)'{-P,--purge-all}'[puge all cached binaries]' \
+            '(-M,--missing)'{-M,--missing=}'[list missing build ids in the cache for the specified file]: :_files' \
+            '(-u,--update)'{-u,--update=}'[update specified file of the cache]: :_files' \
+            '(-l,--list)'{-l,--list}'[list all valid binaries from cache]' \
             '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '--target-ns=[obtain mount namespace information from the target pid]: :_pids' \
             && ret=0
 		;;
         (buildid-list)
@@ -85,6 +128,24 @@ _perf() {
             '(-f --force)'{-f,--force}'[don'\''t do ownership validation]' \
             '(-k --kernel)'{-k,--kernel}'[show running kernel build id]' \
             '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            && ret=0
+        ;;
+        (c2c)
+          _arguments \
+            '1:subcmd:(record report)' \
+            '*:: :->c2c_args'
+        ;;
+        (config)
+          _arguments \
+            '(-l --list)'{-l,--list}'[show current config variables for all sections]' \
+            '--user[read or write user config]' \
+            '--system[read or write system config]' \
+            && ret=0
+        ;;
+        (data)
+          _arguments \
+            '1:command:((convert))' \
+            '*:: :->data_args' \
             && ret=0
         ;;
         (diff)
@@ -109,10 +170,37 @@ _perf() {
             '(-i --input)'{-i,--input=}'[input file name]: :_files' \
             && ret=0
         ;;
+        (ftrace)
+          _arguments \
+            '(-t --tracer)'{-t,--tracer=}'[tracer to use]:tracer:(function_tracer function)' \
+            '(-v --verbose)'{-v,--verbose=}'[verbosity level]:level:' \
+            '(-p --pid)'{-p,--pid=}'[trace on existing process ID]:pids:_perf_pids' \
+            '(-a --all-cpus)'{-a,--all-cpus}'[force system-wide collection]' \
+            '(-C --cpu)'{-C,--cpu=}'[only trace for the list of CPUs]:cpu_list:' \
+            \*{-T,--trace-funcs=}'[only trace functions given by the argument]:func:' \
+            \*{-N,--notrace-funcs=}'[do not trace functions given by the argument]:func:' \
+            \*{-G,--graph-funcs=}'[set graph filter on the given function]:func:' \
+            \*{-g,--nograph-funcs=}'[set graph notrace filter on the given function]:func:' \
+            '(-D,--graph-depth)'{-D,--graph-depth=}'[set max depth for function graph tracer]' \
+            && ret=0
+        ;;
         (inject)
           _arguments \
             '(-b --build-ids)'{-b,--build-ids=}'[inject build-ids into the output stream]:build-id list' \
             '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '(-i --input)'{-i,--input=}'[input file name]:input:_files' \
+            '(-o --output)'{-o,--output=}'[output file name]:output:_files' \
+            '(-s --sched-stat)'{-s,--sched-stat}'[merge sched_stat and sched_switch for getting events]' \
+            '--kallsyms=[kallsyms file]:kallsyms:_files' \
+            '--itrace=[decode instruction tracing data]' \
+            '--strip[use with --itrace to strip out non-synthesized events]' \
+            '(-j --jit)'{-j,--jit}'[process jitdump files]' \
+            '(-f --force)'{-f,--force}'[do not complain, do it]' \
+            && ret=0
+        ;;
+        (kallsyms)
+          _arguments \
+            '(-v --verbose)'{-v,--verbose=}'[increse verbosity level]' \
             && ret=0
         ;;
         (kmem)
@@ -154,8 +242,45 @@ _perf() {
             '1:command:((record\:record\ lock\ events trace\:show\ raw\ lock\ events report\:report\ statistical\ data))' \
             && ret=0
         ;;
+        (mem)
+          _arguments \
+            '(-i --input)'{-i,--input=}'[input file name]:file:_files' \
+            '(-f --force)'{-f,--force}'[do not ownership validation]' \
+            '(-t --type)'{-t,--type=}'[select the memory operation type]:type:_perf_mem_type' \
+            '(-D --dump-raw-samples)'{-D,--dump-raw-trace}'[dump the raw decoded samples]' \
+            '(-x --field-separator)'{-x,--field-separator=}'[specify the field separator used when raw samples]:separator:' \
+            '(-C --cpu)'{-C,--cpu=}'[monitor only on the list of CPUs provided]:cpus:' \
+            '(-U --hide-unresolved)'{-U,--hide-unresolved}'[only display entries resolved to a symbol]' \
+            '(-p --phys-data)'{-p,--phys-data}'[record/report sample phisical addresses]' \
+            '1:command:(record report)' \
+            '*::arg:->mem_args' \
+            && ret=0
+        ;;
         (probe)
-          # TODO not implemented
+          _arguments \
+            '(-k --vmlinux)'{-k,--vmlinux=}'[specify vmlinux path which has debuginfo]:path:_files' \
+            '(-m --module)'{-m,--module=}'[specify module name]:modname_or_path:_files' \
+            '(-s --source)'{-s,--source=}'[specify path to kernel source]:path:_files -/' \
+            '(-v --verbose -q --quiet)'{-v,--verbose}'[be more verbose]' \
+            '(-q --quiet -v --verbose)'{-q,--quiet}'[be quiet]' \
+            \*{-a,--add=}'[define a probe event]:probe:' \
+            \*{-d,--del=}'[delete probe events]:probe:' \
+            '(-l --list)'{-l,--list=}'[list up current probe events]:event:' \
+            '(-L --line)'{-L,--line=}'[show source code lines which can be probed]' \
+            \*{-V,--vars=}'[show available local variables at given probe point]:probe:' \
+            '--externs[show external defined variables]' \
+            '--no-inlines[search only for non-inlined functions]' \
+            \*{-F,--funcs=}'[show available functions in given module or kernel]:filter:' \
+            \*{-D,--definition=}'[show trace-event definition]:probe:' \
+            '*--filter=[set filter]:filter:' \
+            '(-f --force)'{-f,--force}'[forcibly add events with existing name]' \
+            '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
+            '--cache[cache the probes]' \
+            '--max-probes=[set the maximum number of probe points for an event]:number:' \
+            '--target-ns=[obtain mount namespace information from the target pid]:pid:_pids' \
+            '(-x --exec)'{-x,--exec=}'[specify path to the executable of shared library]:path:_files' \
+            '--demangle-kernel[demangle kernel symbols]' \
+            && ret=0
         ;;
         (record)
           # TODO not implemented
@@ -176,11 +301,50 @@ _perf() {
           # TODO not implemented
         ;;
         (stat)
-          # TODO not implemented
+          _arguments \
+            \*{-e,--events=}'[select the PMU event]:event:_perf_events' \
+            '(-i --no-inherit)'{-i,--no-inherit}'[child tasks do not inherit conters]' \
+            '(-p --pid)'{-p,--pid=}'[stat events on existing process id]:pid:_pids' \
+            '(-t --tid)'{-t,--tid=}'[stat events on existing thread id]:tid:' \
+            '(-a --all-cpus)'{-a,--all-cpus}'[system-wide collection from all CPUs]' \
+            '--no-scale[do not scale/normalize counter values]' \
+            \*{-d,--detailed}'[print more detailed statistics]' \
+            '(-r --repeat)'{-r,--repeat=}'[repeat command and print average + stddev]:count:' \
+            '(-B --big-num)'{-B,--big-num}'[print large numbers with thousands separators according to locale]' \
+            '(-C --cpu)'{-C,--cpu=}'[count only the list of CPUs]:cpus:' \
+            '(-A --no-aggr)'{-A,--no-aggr}'[do not aggregate counts across all monitored CPUs]' \
+            '(-n --null)'{-n,--null}'[null run]' \
+            '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '(-x --field-seperator)'{-x,--field-separator=}'[print separator]' \
+            '--table[display time for each run in a table format]' \
+            '(-G --cgroup)'{-G,--cgroup=}'[monitor only in the container called this name]' \
+            '(-o --output)'{-o,--output=}'[print the output into this file]:file:_files' \
+            '--append[append to the output file desinated with -o option]' \
+            '--log-fd[log output to fd, instead of stderr]' \
+            '--pre[pre measurement hook]: :_command_names -e' \
+            '--post[post measurement hook]: :_command_names -e' \
+            '(-I --interval-print)'{-I,--interval-print=}'[print count deltas every millseconds]:msec:' \
+            '--interval-count[print count delta for fixed number of times]:times:' \
+            '--interval-clear[clear the screen before next interval]' \
+            '--timeout[stop the perf stat session and print count after milliseconds]:msec:' \
+            '--metric-only[only print compted metrics]' \
+            '--per-socket[aggregate counts per processor socket for system-wide mode measurements]' \
+            '--per-die[aggregate counts per processor die for sytem-wide mode measurements]' \
+            '--per-core[aggregate counts per phisical processor for sytem-wide mode measurements]' \
+            '--per-thread[aggregate counts per mmonitored threads]' \
+            '(-D --delay)'{-D,--delay=}'[wait msecs before measuring]:msec:' \
+            '(-T --transaction)'{-T,--transaction}'[print statistics of transactional execution]' \
+            '(-)1:command:_perf_stat_command' \
+            '*::arg:_normal' \
+            && ret=0
+          # TODO report/record sub-subcommand completion
         ;;
         (test)
           _arguments \
             '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '(-s --skip)'{-s,--skip=}'[Tests to skip]:tests:_perf_test_list' \
+            '(-F --dont-fork)'{-F,--dont-fork}'[do not fork child for each test]' \
+            '1:command:((list))' \
             && ret=0
         ;;
         (timechart)
@@ -196,7 +360,71 @@ _perf() {
             && ret=0
         ;;
         (top)
+          _arguments \
+            '(-a --all-cpus)'{-a,--all-cpus}'[system wide collection]' \
+            '(-c --count)'{-c,--count=}'[event period to sample]:count:' \
+            '(-C --cpu)'{-C,--cpu=}'[monitor only the list of CPUs provided]:cpu_list:' \
+            '(-d --delay)'{-d,--delay=}'[number of seconds to delay between refreshes]' \
+            \*{-e,--event=}'[select the PMU event]:event:_perf_events' \
+            '(-E --entries)'{-E,--entries=}'[display thie many functions]' \
+            '(-f --count-filter)'{-f,--count-filter=}'[only display fnctions with more events than this]:count:' \
+            '--group[put the counters into a counter group]' \
+            '(-F --freq)'{-F,--freq=}'[profile at thie frequency]:freq:(max)' \
+            '(-i --inherit)'{-i,--inherit}'[child tasks do not inherit counters]' \
+            '(-k --vmlinux --ignore-vmlinux)'{-k,--vmlinux=}'[path to vmlinux]:vmlinux:_files' \
+            '(-k --vmlinux)--ignore-vmlinux[ignore vmlinux files]' \
+            '--kallsyms=[kallsyms pathname]:sym_path:_files' \
+            '(-m --mmap-pages)'{-m,--mmap-pages=}'[number of mmap data pages or size]:number:' \
+            '(-p --pid)'{-p,--pid=}'[profile events on existing process ID]:pid:_pids' \
+            '(-t --tid)'{-t,--tid=}'[profile events on existing thread ID]:tid:' \
+            '(-u --uid)'{-u,--uid=}'[record events in threads owned by uid]:uid:' \
+            '(-r --realtime)'{-r,--realtime=}'[collect data with this RT SCHED_FIFO priority]:priority:' \
+            '--sym-annotate=[annotate this symbol]' \
+            '(-K --hide_kernel_symbols)'{-K,--hide_kernel_symbols}'[hide kernel symbols]' \
+            '(-U --hide_user_symbols)'{-K,--hide_user_symbols}'[hide user symbols]' \
+            '--demangle-kernel[demangle kernel symbols]' \
+            '(-D --dump-symtab)'{-D,--dump-symtab}'[dump the symbol table used for profiling]' \
+            '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '(-z --zero)'{-z,--zero}'[zero history access display updates]' \
+            '(-s --sort)'{-s,--sort}'[sort by keys]' \
+            '--fields=[specify output field ]:fields:_perf_top_fields' \
+            '(-n --show-nr-samples)'{-n,--show-nr-samples}'[show a column with the number of samples]' \
+            '--show-total-period[show a column with the sum of periods]' \
+            '--dsos[only consider symbols in these dsos]' \
+            '--comms[only consider symbols in these comms]' \
+            '--symbols[only consider these symbols]' \
+            '(-M --disassembler-style)'{-M,--disassembler-style=}'[set disassembler style]:style:' \
+            '(--no-source)--source[interleave source code with assembly code]' \
+            '(--source)--no-source[disable interleaving source code]' \
+            '--asm-raw[show raw instruction encoding of assembly instructions]' \
+            '-g[Enables call-graph recording]' \
+            '--call-graph[setup and enable call-graph recording]' \
+            '--children[accumulate callchain of children to parent entry]' \
+            '--max-stack[set the stack depth limit]' \
+            '--ignore-callees=[ignore callees of functions regex]:regex:' \
+            '--percent-limit[do not show entries which have an overhead under that percent]' \
+            '(-w --column-widths)'{-w,--column-widths=}'[force each column width to this list]' \
+            '--proc-map-timeout[set timeout limit for processing process map]' \
+            '(-b --branch-any)'{-b,--branch-any}'[enable taken branch stack sampling]' \
+            '(-j --branch-filter)'{-j,--branch-filter}'[enable taken branch stack sampling]' \
+            '--raw-trace[do not use print fmt or plugins]' \
+            '--hierarchy[enable hierarchy output]' \
+            '--overwrite[overwrite records]' \
+            '--force[do not do ownership validation]' \
+            '--num-thread-synthesize[threads to run when synthesizing events for existing processes]'\
+            '--namespaces[record events of type PREF_RECORD_NAMESPACES]' \
+            '--switch-on=[only consider events after this event is found]:event:' \
+            '--switch-off=[stop considering events after this event is found]:event:' \
+            '--show-on-off-events[show the --switch-on/off events too]' \
+            && ret=0
+        ;;
+        (trace)
           # TODO not implemented
+        ;;
+        (version)
+          _arguments \
+            '--build-options[the status of compiled-in libraries are printed]' \
+            && ret=0
         ;;
         (help)
           _arguments \
@@ -207,6 +435,67 @@ _perf() {
         *)
           _call_function ret _perf_cmd_$words[1] && ret=0
           (( ret )) && _message 'no more arguments'
+        ;;
+      esac
+    ;;
+  esac
+
+  case $state in
+    (c2c_args)
+      case $words[1] in
+        (record)
+          _arguments \
+            \*{-e,--event=}'[select the PMU event]:events:_perf_events' \
+            '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '(-l --ldlat)'{-l,--ldlat=}'[configure mem-loads latency]:latency:' \
+            '(-k --all-kernel)'{-k,--all-kernel}'[configure all used events to run in the kernel space]' \
+            '(-u --all-user)'{-u,--all-user}'[configure all used events to run in user space]' \
+            '1:command:_command_names -e' \
+            '*::args:_normal' \
+            && ret=0
+        ;;
+        (report)
+          _arguments \
+            '(-k --vmlinux)'{-k,--vmlinux=}'[vmlinux pathname]:vmlinux:_files' \
+            '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '(-i --input)'{-i,--input=}'[specify the input file to process]:proc_file:_files' \
+            '(-N --node-info)'{-N,--node-info}'[show extra node info in report]' \
+            '(-c --coalesce)'{-c,--coalesce=}'[specify sorting fields for single cacheline display]:field:_perf_c2c_coalesce' \
+            '(-g --call-graph)'{-g,--call-graph}'[setup callchains parameters]' \
+            '--stdio[force the stdio output]' \
+            '--stats[display only statistic tables]' \
+            '--full-symbols[display full length of symbols]' \
+            '--no-source[do not display source line column]' \
+            '--show-all[show all captured HITM lines]' \
+            '(-f --force)'{-f,--force}'[do not do ownership validation]' \
+            '(-d --display)'{-d,--display=}'[switch to HITM type]:hitm_type:(rmt lcl)' \
+            && ret=0
+        ;;
+      esac
+    ;;
+    (data_args)
+      if [[ $words[1] == "convert" ]]; then
+        _arguments \
+          '--to-ctf=[specify the path of CTF data directory]:data_dir:_files -/' \
+          '-i[specify input perf data file path]:path:_files' \
+          '(-f --force)'{-f,--force}'[do not complain do it]' \
+          '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+          '--all[convert all events including non-sample events to output]' \
+          && ret=0
+      fi
+    ;;
+    (mem_args)
+      case $words[1] in
+        (record)
+          _arguments \
+            \*{-e,--event=}'[event selector]:events:_perf_events' \
+            '(-K --all-kernel)'{-K,--all-kernel}'[configure all used events to run in kernel space]' \
+            '(-U --all-user)'{-K,--all-user}'[configure all used events to run in user space]' \
+            '(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+            '--ldlat=[specify desired latency for loads event]:latency:' \
+            '1:command:_command_names -e' \
+            '*::args:_normal' \
+            && ret=0
         ;;
       esac
     ;;
@@ -222,13 +511,19 @@ _perf_cmds() {
     'bench:general framework for benchmark suites'
     'buildid-cache:manage build-id cache'
     'buildid-list:list the buildids in a perf.data file'
+    'c2c:shared data C2C/HITM analyzer'
+    'config:get and set variables in a configuration file'
+    'data:data file related processing'
     'diff:read two perf.data files and display the differential profile'
     'evlist:list the event names in a perf.data file'
+    'ftrace:simple wrapper for kernel ftrace functionality'
     'inject:filter to augment the events stream with additional information'
+    'kallsyms:searches running kernel for symbols'
     'kmem:tool to trace/measure kernel memory(slab) properties'
     'kvm:tool to trace/measure kvm guest os'
     'list:list all symbolic event types'
     'lock:analyze lock events'
+    'mem:profile memory access'
     'probe:define new dynamic tracepoints'
     'record:run a command and record its profile into perf.data'
     'report:read perf.data (created by perf record) and display the profile'
@@ -238,6 +533,8 @@ _perf_cmds() {
     'test:runs sanity tests'
     'timechart:tool to visualize total system behavior during a workload'
     'top:system profiling tool'
+    'trace:strace inspired tool'
+    'version:display the version of perf binary'
     'help:show command usage information'
   )
   _describe -t commands 'command' commands "$@"

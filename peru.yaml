@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9a927f3a0f1d96b73616c120d49952ff39b70993
+    rev: e088f73671f6f29f89cfc1950ae251995cd63d06
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 864db6690a65248e4139a8dce6b7bf166f43a675
+    rev: c66b651f1f2ec00058bf56da9bea81da3ce8266a
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -405,7 +405,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: e50cc02b1d4085928ef35302c3853f7be6d0923f
+    rev: 6c63f562ba6024d4f9252aabbcb6253ced83229e
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -582,7 +582,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: e250ad9b296d034b297be2eea2d34d97507838a8
+    rev: f20a3ff9b80741fb4e1c579578ef7727ec3f810f
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
