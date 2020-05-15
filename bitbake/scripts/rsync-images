@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -euo pipefail
+
+host="$1"
+shift
+builddir="$1"
+shift
+image_target="$1"
+shift
+destdir="$1"
+shift
+
+# shellcheck disable=SC2029
+ssh "$host" .dotfiles/bitbake/scripts/wait-for-images -t wic "$builddir" "$image_target" \
+    | sed -e "s#^#$host:#" \
+    | tr '\n' '\0' \
+    | ifne xargs -t0 sh -c "rsync -aLvpP \"\$@\" \"$destdir/\"" -
