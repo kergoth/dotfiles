@@ -1,0 +1,70 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<END >&2
+${0##*/} [options..] BUILD_DIR IMAGE_TARGET
+
+Options:
+  -t FSTYPES Space-separated list of fstypes matching IMAGE_FSTYPES.
+  -h   Show usage
+END
+    exit 2
+}
+
+get_vars() {
+    (
+        set +ue
+        if [ -e ./setup-environment ]; then
+            . ./setup-environment
+        elif [ -e ../poky ]; then
+            . ../poky/oe-init-build-env .
+        elif [ -e ../oe-core ]; then
+            . ../oe-core/oe-init-build-env . ../bitbake
+        fi >/dev/null
+        bitbake -e | grep -E '^(DEPLOY_DIR_IMAGE|IMAGE_FSTYPES)='
+    )
+}
+
+fstypes="wic wic.gz wic.bz2 wic.bmap sdcard"
+while getopts t:h opt; do
+    case "$opt" in
+        t)
+            fstypes="$OPTARG"
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+fstypes_filter="$(echo "$fstypes" | tr ' ' '|')"
+
+shift $((OPTIND - 1))
+if [ $# -ne 2 ]; then
+    usage
+fi
+builddir="$1"
+shift
+image="$1"
+shift
+
+# Wait for bitbake to complete
+lsof +r -f -- "$builddir/bitbake.lock" >/dev/null 2>&1 || :
+
+cd "$builddir"
+
+eval "$(get_vars)"
+if [ -z "$DEPLOY_DIR_IMAGE" ]; then
+    echo >&2 "Error determining DEPLOY_DIR_IMAGE from bitbake -e"
+    exit 1
+fi
+
+find_args="$(echo "$IMAGE_FSTYPES" | tr ' ' '\n' | grep -xE "($fstypes_filter)" | sed -e "s/^/-o -name \"$image*./; s/$/\"/;" | tr '\n' ' ' | sed -e 's/^-o //; s/ *$//')"
+if [ -z "$find_args" ]; then
+    echo >&2 "Error: no valid image types found"
+    exit 1
+fi
+eval set -- "$find_args"
+set -x
+find "$DEPLOY_DIR_IMAGE" -type l -a \( "$@" \) -print
