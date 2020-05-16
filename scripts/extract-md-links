@@ -20,18 +20,14 @@ done
 shift $((OPTIND - 1))
 
 if [ $# -eq 0 ]; then
-    set -- -
-fi
-
-if [ $verbose -eq 0 ]; then
-    for fn; do
-        cmark "$fn" | pup a 'attr{href}'
-    done
+    cmark
 else
     for fn; do
-        if [ $verbose -eq 1 ]; then
-            echo "# $fn"
-        fi
-        cmark "$fn" | pup 'a json{}' | jq -r '.[] | .text + "\t" + .href'
+        cmark "$fn"
     done
-fi
+fi \
+    | if [ $verbose -eq 0 ]; then
+        pup a 'attr{href}'
+    else
+        pup 'a json{}' | jq -r '.[] | .text + "\t" + .href'
+    fi
