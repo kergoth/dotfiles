@@ -112,11 +112,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: e088f73671f6f29f89cfc1950ae251995cd63d06
+    rev: ef45b0c35805489f9e06f121abb110e1e1ca7d59
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 3a4b212c7d8263a12bef176b10737748b752a579
+    rev: ea3ae74164bdc1f38b23f6b4c339ac637bfb923b
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: c66b651f1f2ec00058bf56da9bea81da3ce8266a
+    rev: 013f6ac2583854467955ead5e209e99232e4f20c
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -179,7 +179,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: e6d33f77da8cc36786c814f499f6cb3405e8c4c1
+    rev: 97a725fbd0e54cbc07e4d72661ea2bd2bb7c01c1
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -430,7 +430,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: db3389a3ccc52c92568654d1a5dc1dddd1958e77
+    rev: 4eb4e7ffdbc320fb24ebb548b3ea3da5bde80024
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -582,7 +582,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: f20a3ff9b80741fb4e1c579578ef7727ec3f810f
+    rev: 3029b6749f61f7514e9eef30e035cfab0e31eb1d
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -600,7 +600,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: bb1e5bfd54c5281f372e596712b91c8444c1c785
+    rev: 4bc5b89cfe6f599747ba50160fc4aa3bded421d1
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
