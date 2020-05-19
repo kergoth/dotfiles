@@ -1,0 +1,7 @@
+#!/bin/sh
+# shellcheck disable=SC2016,SC2059
+
+title="$(echo "$1" | sed -e 's/`/``/g; s/"/`"/g;')"
+description="$(echo "$2" | sed -e 's/`/``/g; s/"/`"/g;')"
+arg='New-BurntToastNotification -Text ("%s", "%s")'
+powershell.exe "$(printf "$arg" "$title" "$description")"
