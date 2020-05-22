@@ -10,6 +10,7 @@
             "colorScheme": "Dracula",
             "fontFace": "Fira Code Retina",
             "fontSize": 10,
+            "fontWeight": "Light",
             "historySize": 15000
         },
         "list": [
