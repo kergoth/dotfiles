@@ -7,6 +7,7 @@ done
 
 export PYTHONNOUSERSITE=1
 export CFLAGS="${CFLAGS--O2}"
+export CPPFLAGS="${CPPFLAGS-}"
 export LDFLAGS="${LDFLAGS:-}"
 
 no_lto=0
@@ -16,7 +17,7 @@ case "$OSTYPE" in
     darwin*)
         if command -v brew >/dev/null 2>&1; then
             eval "$(brew environment --shell=auto | grep -vw PATH)"
-            CFLAGS="$CFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl@1.1)/include -I$(xcrun --show-sdk-path)/usr/include"
+            CPPFLAGS="$CPPFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl@1.1)/include -I$(xcrun --show-sdk-path)/usr/include"
             LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl@1.1)/lib"
             # The python 3 build chokes due to a lack of llvm-ar at the moment
             no_lto=1
@@ -28,7 +29,7 @@ case "$OSTYPE" in
         ;;
     *)
         if [ -e /etc/arch-release ]; then
-            CFLAGS="$CFLAGS -I/usr/include/openssl-1.0"
+            CPPFLAGS="$CPPFLAGS -I/usr/include/openssl-1.0"
             LDFLAGS="$LDFLAGS -L/usr/lib/openssl-1.0"
         fi
         ;;
