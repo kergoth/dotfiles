@@ -5,7 +5,8 @@ set -eu
 export ASDF_DATA_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
 export ASDF_DIR="$ASDF_DATA_DIR"
 
-PATH="$(dirname "$0"):$PATH"
+scriptdir="$(dirname "$0")"
+PATH="$scriptdir:$PATH"
 
 usage() {
     cat >&2 <<END
@@ -55,6 +56,11 @@ fi
 
 if [ "$plugin" = "nodejs" ]; then
     bash "$ASDF_DATA_DIR/plugins/nodejs/bin/import-release-team-keyring" >/dev/null 2>&1
+fi
+
+if [ -e "$scriptdir/$plugin-build-env.sh" ]; then
+    # shellcheck disable=SC1090
+    . "$scriptdir/$plugin-build-env.sh"
 fi
 
 if [ $# -gt 1 ]; then
