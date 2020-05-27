@@ -10,9 +10,6 @@ export CFLAGS="${CFLAGS--O2}"
 export CPPFLAGS="${CPPFLAGS-}"
 export LDFLAGS="${LDFLAGS:-}"
 
-no_lto=0
-no_pgo=0
-
 case "$OSTYPE" in
     darwin*)
         if command -v brew >/dev/null 2>&1; then
@@ -20,7 +17,7 @@ case "$OSTYPE" in
             CPPFLAGS="$CPPFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl@1.1)/include -I$(xcrun --show-sdk-path)/usr/include"
             LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl@1.1)/lib"
             # The python 3 build chokes due to a lack of llvm-ar at the moment
-            no_lto=1
+            PYTHON_NO_LTO=1
         fi
         # Silence spammy warnings on clang builds, as mentioned in the python
         # developer documentation.
@@ -46,18 +43,17 @@ if [ -z "${CONFIGURE_OPTS:-}" ] && [ -z "${PYTHON_CONFIGURE_OPTS:-}" ]; then
         case "$(uname -r)" in
             *-Microsoft)
                 # WSL. test_ssl keeps hanging indefinitely
-                no_pgo=1
+                PYTHON_NO_PGO=1
                 ;;
         esac
     elif [ "$(uname -s)" = FreeBSD ]; then
-        no_pgo=1
-        no_lto=1
+        PYTHON_NO_PGO=1
+        PYTHON_NO_LTO=1
     fi
-    if [ $no_pgo -eq 0 ]; then
+    if [ $PYTHON_NO_PGO = 0 ]; then
         PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --enable-optimizations"
     fi
-    if [ $no_lto -eq 0 ]; then
+    if [ $PYTHON_NO_LTO = 0 ]; then
         PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --with-lto"
     fi
 fi
-unset no_pgo no_lto
