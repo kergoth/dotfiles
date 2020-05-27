@@ -15,6 +15,7 @@ usage() {
     Options:
 
     -g    Set to the default global version
+    -f    Force reinstallation if necessary
 END
     exit 2
 }
@@ -24,10 +25,14 @@ version_sort() {
 }
 
 global=0
-while getopts gh opt; do
+force=0
+while getopts gfh opt; do
     case "$opt" in
         g)
             global=1
+            ;;
+        f)
+            force=1
             ;;
         \? | h)
             usage
@@ -79,6 +84,9 @@ fi
 
 echo >&2 "asdf-install: installing version $version of $plugin"
 
+if [ $force -eq 1 ]; then
+    rm -rf "$ASDF_DIR/installs/$plugin/$version"
+fi
 asdf install "$plugin" "$version"
 
 if [ $global -eq 1 ]; then
