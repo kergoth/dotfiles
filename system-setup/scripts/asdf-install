@@ -87,7 +87,20 @@ echo >&2 "asdf-install: installing version $version of $plugin"
 if [ $force -eq 1 ]; then
     rm -rf "$ASDF_DIR/installs/$plugin/$version"
 fi
-asdf install "$plugin" "$version"
+(
+    case "$OSTYPE" in
+        darwin*) ;;
+
+        *)
+            if command -v brew >/dev/null 2>&1; then
+                BREW_PREFIX="$(brew --prefix)"
+                # Remove linuxbrew from the path
+                export PATH="$(echo $PATH | tr : '\n' | grep -vx "$BREW_PREFIX/bin" | paste -s -d:)"
+            fi
+            ;;
+    esac
+    asdf install "$plugin" "$version"
+)
 
 if [ $global -eq 1 ]; then
     asdf global "$plugin" "$version"
