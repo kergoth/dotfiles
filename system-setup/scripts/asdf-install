@@ -65,12 +65,16 @@ fi
 
 if [ $# -gt 1 ]; then
     version=$2
+    case "$version" in
+        latest)
+            version="$(asdf latest "$plugin")"
+            ;;
+        latest:*)
+            version="$(asdf latest "$plugin" "${version#latest:}")"
+            ;;
+    esac
 else
-    version="$(asdf list-all "$plugin" | grep -E '^[0-9]*(\.[0-9]*(.[0-9]*)?)?$' | version_sort | tail -n 1)"
-    if [ -z "$version" ]; then
-        echo >&2 "Error locating latest version for $plugin"
-        exit 1
-    fi
+    version="$(asdf latest "$plugin")"
 fi
 
 echo >&2 "asdf-install: installing version $version of $plugin"
