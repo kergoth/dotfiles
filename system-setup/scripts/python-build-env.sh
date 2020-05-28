@@ -39,14 +39,7 @@ if [ -z "${CONFIGURE_OPTS:-}" ] && [ -z "${PYTHON_CONFIGURE_OPTS:-}" ]; then
         --with-system-zlib \
         --enable-loadable-sqlite-extensions \
     "
-    if [ "$OSTYPE" = linux-gnu ]; then
-        case "$(uname -r)" in
-            *-Microsoft)
-                # WSL. test_ssl keeps hanging indefinitely
-                PYTHON_NO_PGO=1
-                ;;
-        esac
-    elif [ "$(uname -s)" = FreeBSD ]; then
+    if [ "$(uname -s)" = FreeBSD ]; then
         PYTHON_NO_PGO=1
         PYTHON_NO_LTO=1
     fi
