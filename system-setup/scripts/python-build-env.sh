@@ -50,10 +50,10 @@ if [ -z "${CONFIGURE_OPTS:-}" ] && [ -z "${PYTHON_CONFIGURE_OPTS:-}" ]; then
         PYTHON_NO_PGO=1
         PYTHON_NO_LTO=1
     fi
-    if [ -z "$PYTHON_NO_PGO" ]; then
+    if [ -z "${PYTHON_NO_PGO:-}" ]; then
         PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --enable-optimizations"
     fi
-    if [ -z "$PYTHON_NO_LTO" ]; then
+    if [ -z "${PYTHON_NO_LTO:-}" ]; then
         PYTHON_CONFIGURE_OPTS="$PYTHON_CONFIGURE_OPTS --with-lto"
     fi
 fi
