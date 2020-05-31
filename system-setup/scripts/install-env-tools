@@ -121,18 +121,6 @@ pip3_install e better-exceptions-hook
 #gemv ronn
 #npmv doctoc
 
-## Linting / Static Analysis
-cabalv shellcheck ShellCheck
-pipv3 flake8 pep8-naming flake8-docstrings
-#pipv prospector
-#pipv vim-vint
-#luav luacheck
-#gemv mdl # markdown
-# see also markdownlint
-# http://lua-users.org/wiki/LuaInspect ?
-# https://code.google.com/archive/p/lua-checker/ ?
-# go get github.com/BurntSushi/toml/cmd/tomlv # for toml, but it's out of date. it only supports 0.1.0
-
 ## Formatters
 pipv3 yapf
 GO111MODULE=on go get -u mvdan.cc/sh/v3/cmd/shfmt
@@ -141,6 +129,18 @@ go get -u github.com/shurcooL/markdownfmt
 # https://pypi.python.org/pypi/docformatter - format docstrings per pep257
 #npmv pretty-js
 #luav formatter
+
+## Linting / Static Analysis
+pipv3 flake8 pep8-naming flake8-docstrings
+stack install ShellCheck && asdf reshim haskell
+#pipv prospector
+#pipv vim-vint
+#luav luacheck
+#gemv mdl # markdown
+# see also markdownlint
+# http://lua-users.org/wiki/LuaInspect ?
+# https://code.google.com/archive/p/lua-checker/ ?
+# go get github.com/BurntSushi/toml/cmd/tomlv # for toml, but it's out of date. it only supports 0.1.0
 
 ## As Needed
 
