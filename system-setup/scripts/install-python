@@ -34,6 +34,8 @@ while getopts 2:3:fh opt; do
 done
 shift $((OPTIND - 1))
 
+asdf-plugin-add python
+
 py2_version="$(asdf latest python "$py2_version")"
 py3_version="$(asdf latest python "$py3_version")"
 
