@@ -1,7 +1,5 @@
 #!/bin/sh
 # Pipsi wrapper with some small conveniences:
-# - -3 as the first argument will pass --python=python3 to the install
-# - -2 as the first argument will pass --python=python2, if python2 is available
 # - Additional arguments to the install command will also be installed into
 #   the virtualenv with pip
 # - Accept multiple packages/environments for the upgrade command
@@ -26,12 +24,6 @@ save() {
     esac
 }
 
-python3=0
-if [ "$1" = "-3" ]; then
-    shift
-    python3=1
-fi
-
 # Save arguments up to install
 saved=
 cmd=
@@ -41,13 +33,8 @@ while [ $# -ne 0 ]; do
     shift
     if [ "$arg" = install ]; then
         cmd=install
-        if [ "$python3" -eq 1 ]; then
-            save --python
-            save python3
-        else
-            save --python
-            save python2
-        fi
+        save --python
+        save python2
         break
     elif [ "$arg" = upgrade ]; then
         cmd=upgrade
