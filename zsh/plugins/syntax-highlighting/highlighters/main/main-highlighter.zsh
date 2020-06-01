@@ -854,9 +854,17 @@ _zsh_highlight_main_highlighter_highlight_list()
         style=commandseparator
       elif [[ $this_word == *':start:'* ]] && [[ $arg == $'\n' ]]; then
         style=commandseparator
+      elif [[ $this_word == *':start:'* ]] && [[ $arg == ';' ]] && (( in_alias )); then
+        style=commandseparator 
       else
-        # This highlights empty commands (semicolon follows nothing) as an error.
-        # Zsh accepts them, though.
+        # Empty commands (semicolon follows nothing) are valid syntax.
+        # However, in interactive use they are likely to be erroneous;
+        # therefore, we highlight them as errors.
+        #
+        # Alias definitions are exempted from this check to allow multiline aliases
+        # with explicit (redundant) semicolons: «alias foo=$'bar;\nbaz'» (issue #677).
+        #
+        # See also #691 about possibly changing the style used here. 
         style=unknown-token
       fi
 
@@ -1311,8 +1319,12 @@ _zsh_highlight_main_highlighter_highlight_argument()
       fi
   esac
 
-  for (( ; i <= $#arg ; i += 1 )); do
+  # This loop is a hot path.  Keep it fast!
+  (( --i ))
+  while (( ++i <= $#arg )); do
+    i=${arg[(ib.i.)[\\\'\"\`\$\<\>\*\?]]}
     case "$arg[$i]" in
+      "") break;;
       "\\") (( i += 1 )); continue;;
       "'")
         _zsh_highlight_main_highlighter_highlight_single_quote $i
@@ -1338,8 +1350,13 @@ _zsh_highlight_main_highlighter_highlight_argument()
           (( i = REPLY ))
           highlights+=($reply)
           continue
-        elif [[ $arg[i+1] == $'\x28' && ${arg:$i} != $'\x28\x28'*$'\x29\x29'* ]]; then
-          # command substitution that doesn't look like an arithmetic expansion
+        elif [[ $arg[i+1] == $'\x28' ]]; then
+          if [[ $arg[i+2] == $'\x28' ]] && _zsh_highlight_main_highlighter_highlight_arithmetic $i; then
+            # Arithmetic expansion
+            (( i = REPLY ))
+            highlights+=($reply)
+            continue
+          fi
           start=$i
           (( i += 2 ))
           _zsh_highlight_main_highlighter_highlight_list $(( start_pos + i - 1 )) S $has_end $arg[i,-1]
@@ -1354,10 +1371,6 @@ _zsh_highlight_main_highlighter_highlight_argument()
             highlights+=($(( start_pos + i - 1)) $(( start_pos + i )) command-substitution-delimiter-unquoted)
           fi
           continue
-        else
-          # TODO: if it's an arithmetic expansion, skip past it, to prevent
-          # multiplications from being highlighted as globbing (issue #607,
-          # test-data/arith1.zsh)
         fi
         while [[ $arg[i+1] == [=~#+'^'] ]]; do
           (( i += 1 ))
@@ -1485,11 +1498,17 @@ _zsh_highlight_main_highlighter_highlight_double_quote()
               # $#, $*, $@, $?, $- - like $$ above
               (( k += 1 )) # highlight both dollar signs
               (( i += 1 )) # don't consider the second one as introducing another parameter expansion
-            elif [[ $arg[i+1] == $'\x28' && ${arg:$i} != $'\x28\x28'*$'\x29\x29'* ]]; then
-              # command substitution that doesn't look like an arithmetic expansion
+            elif [[ $arg[i+1] == $'\x28' ]]; then
+              saved_reply=($reply)
+              if [[ $arg[i+2] == $'\x28' ]] && _zsh_highlight_main_highlighter_highlight_arithmetic $i; then
+                # Arithmetic expansion
+                (( i = REPLY ))
+                reply=($saved_reply $reply)
+                continue
+              fi
+
               breaks+=( $last_break $(( start_pos + i - 1 )) )
               (( i += 2 ))
-              saved_reply=($reply)
               _zsh_highlight_main_highlighter_highlight_list $(( start_pos + i - 1 )) S $has_end $arg[i,-1]
               ret=$?
               (( i += REPLY ))
@@ -1669,6 +1688,96 @@ _zsh_highlight_main_highlighter_highlight_backtick()
   fi
   REPLY=$i
 }
+
+# Highlight special chars inside arithmetic expansions
+_zsh_highlight_main_highlighter_highlight_arithmetic()
+{
+  local -a saved_reply
+  local style
+  integer i j k paren_depth ret
+  reply=()
+
+  for (( i = $1 + 3 ; i <= end_pos - start_pos ; i += 1 )) ; do
+    (( j = i + start_pos - 1 ))
+    (( k = j + 1 ))
+    case "$arg[$i]" in
+      [\'\"\\@{}])
+        style=unknown-token
+        ;;
+      '(')
+        (( paren_depth++ ))
+        continue
+        ;;
+      ')')
+        if (( paren_depth )); then
+          (( paren_depth-- ))
+          continue
+        fi
+        [[ $arg[i+1] == ')' ]] && { (( i++ )); break; }
+        # Special case ) at the end of the buffer to avoid flashing command substitution for a character
+        (( has_end && (len == k) )) && break
+        # This is a single paren and there are no open parens, so this isn't an arithmetic expansion
+        return 1
+        ;;
+      '`')
+        saved_reply=($reply)
+        _zsh_highlight_main_highlighter_highlight_backtick $i
+        (( i = REPLY ))
+        reply=($saved_reply $reply)
+        continue
+        ;;
+      '$' )
+        if [[ $arg[i+1] == $'\x28' ]]; then
+          saved_reply=($reply)
+          if [[ $arg[i+2] == $'\x28' ]] && _zsh_highlight_main_highlighter_highlight_arithmetic $i; then
+            # Arithmetic expansion
+            (( i = REPLY ))
+            reply=($saved_reply $reply)
+            continue
+          fi
+
+          (( i += 2 ))
+          _zsh_highlight_main_highlighter_highlight_list $(( start_pos + i - 1 )) S $has_end $arg[i,end_pos]
+          ret=$?
+          (( i += REPLY ))
+          reply=(
+            $saved_reply
+            $j $(( start_pos + i )) command-substitution-quoted
+            $j $(( j + 2 )) command-substitution-delimiter-quoted
+            $reply
+          )
+          if (( ret == 0 )); then
+            reply+=($(( start_pos + i - 1 )) $(( start_pos + i )) command-substitution-delimiter)
+          fi
+          continue
+        else
+          continue
+        fi
+        ;;
+      ($histchars[1]) # ! - may be a history expansion
+        if [[ $arg[i+1] != ('='|$'\x28'|$'\x7b'|[[:blank:]]) ]]; then
+          style=history-expansion
+        else
+          continue
+        fi
+        ;;
+      *)
+        continue
+        ;;
+
+    esac
+    reply+=($j $k $style)
+  done
+
+  if [[ $arg[i] != ')' ]]; then
+    # If unclosed, i points past the end
+    (( i-- ))
+  fi
+    style=arithmetic-expansion
+  reply=($(( start_pos + $1 - 1)) $(( start_pos + i )) arithmetic-expansion $reply)
+  REPLY=$i
+}
+
 
 # Called with a single positional argument.
 # Perform filename expansion (tilde expansion) on the argument and set $REPLY to the expanded value.

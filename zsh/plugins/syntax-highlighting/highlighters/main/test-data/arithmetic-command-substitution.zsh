@@ -28,10 +28,15 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER=$': $(( 6 * 9 ))'
+BUFFER=$': $(( $(echo 2) + 2 ))'
 
 expected_region_highlight=(
   '1 1 builtin' # :
-  '3 14 default' # $(( 6 * 9 ))
-  '3 14 arithmetic-expansion' # $(( 6 * 9 ))
+  '3 22 default' # $(( $(echo 2) + 2 ))
+  '3 22 arithmetic-expansion' # $(( $(echo 2) + 2 ))
+  '7 15 command-substitution-quoted' # $(echo 2)
+  '7 8 command-substitution-delimiter-quoted' # $(
+  '9 12 builtin' # echo
+  '14 14 default' # 2
+  '15 15 command-substitution-delimiter' # )
 )

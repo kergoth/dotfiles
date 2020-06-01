@@ -28,10 +28,10 @@
 # vim: ft=zsh sw=2 ts=2 et
 # -------------------------------------------------------------------------------------------------
 
-BUFFER=$': $(( 6 * 9 ))'
+BUFFER=$': $(( ((42)) ))'
 
 expected_region_highlight=(
   '1 1 builtin' # :
-  '3 14 default' # $(( 6 * 9 ))
-  '3 14 arithmetic-expansion' # $(( 6 * 9 ))
+  '3 15 default' # $(( ((42)) ))
+  '3 15 arithmetic-expansion' # $(( ((42)) ))
 )

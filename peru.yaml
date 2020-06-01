@@ -112,11 +112,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: ef45b0c35805489f9e06f121abb110e1e1ca7d59
+    rev: af56088cb6c515752ca09cc2c87fc5f5182bed25
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: ea3ae74164bdc1f38b23f6b4c339ac637bfb923b
+    rev: 00c0c765509538de207173fc787d364eedd48d6b
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 013f6ac2583854467955ead5e209e99232e4f20c
+    rev: cfb2dc47dbfeb68e7bfef2d5a0be9e433fc7bae5
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -179,7 +179,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 97a725fbd0e54cbc07e4d72661ea2bd2bb7c01c1
+    rev: f81feb1e69e5cb75797d50817752ddfe4933cd68
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -208,7 +208,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 2b60d4395ddfd8df0354f714974b9a002cce3df1
+    rev: 6002a6ba2d75a2367c3890f8c344e3274668885c
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -405,7 +405,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 6c63f562ba6024d4f9252aabbcb6253ced83229e
+    rev: 93537d457500c1d9f2e5671b9b9b1ebf90a55668
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -430,7 +430,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 4eb4e7ffdbc320fb24ebb548b3ea3da5bde80024
+    rev: cb66d364349e4e26ca4de8ea41e9070b3db9ce8c
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -556,7 +556,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 03f8d49334c1e0ea8a0478bfe37531ec8e2cee94
+    rev: 4757c86a8951bbb1ffa19021a1ce0187a03a0af7
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -600,7 +600,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 4bc5b89cfe6f599747ba50160fc4aa3bded421d1
+    rev: f6e6de844430fa64440ae230061720839e8282be
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
