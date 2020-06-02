@@ -1,5 +1,6 @@
 #!/bin/sh
 
+_failed=
 _install () {
     lang="$1"
     shift
@@ -8,7 +9,7 @@ _install () {
     if [ $? -ne 0 ]; then
         echo >&2 "Error: $lang installation failed:"
         ${tolog:+tail "$log"}
-        ret=1
+        _failed="${_failed:+ $_failed}$lang"
     fi
 }
 
@@ -18,7 +19,6 @@ quiet () {
 
 log="$(mktemp -t "${0##*/}.XXXXXX")" || exit $?
 trap 'rm -f "$log"' EXIT INT TERM
-ret=0
 
 usage() {
     cat >&2 <<END
@@ -78,4 +78,7 @@ _install node install-node
 _install haskell install-haskell
 
 # TODO: remove the packages we installed, but not the ones the user did
-exit "$ret"
+if [ -n "$(echo "$_failed" | xargs)" ]; then
+    echo "Language installations failed: $_failed"
+    exit 1
+fi
