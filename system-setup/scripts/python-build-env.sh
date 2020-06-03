@@ -10,7 +10,7 @@ export CFLAGS="${CFLAGS--O2}"
 export CPPFLAGS="${CPPFLAGS-}"
 export LDFLAGS="${LDFLAGS:-}"
 
-case "$OSTYPE" in
+case "${OSTYPE:-}" in
     darwin*)
         if command -v brew >/dev/null 2>&1; then
             eval "$(brew environment --shell=auto | grep -vw PATH)"
