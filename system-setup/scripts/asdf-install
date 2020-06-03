@@ -88,7 +88,7 @@ if [ $force -eq 1 ]; then
     rm -rf "$ASDF_DIR/installs/$plugin/$version"
 fi
 (
-    case "$OSTYPE" in
+    case "${OSTYPE:-}" in
         darwin*) ;;
 
         *)
