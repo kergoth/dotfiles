@@ -56,7 +56,7 @@ if [ $# -lt 2 ]; then
     usage
 fi
 
-destination="$(eval printf '%s' "\${$#}")"
+destination="$(eval "printf '%s' \"\${$#}\"")"
 destdir="$destination"
 if [ $# -eq 2 ]; then
     case "$destination" in
