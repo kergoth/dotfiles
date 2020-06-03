@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: af56088cb6c515752ca09cc2c87fc5f5182bed25
+    rev: 413b658805881eab4fc37fdc88ef4dab616a7d82
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: cfb2dc47dbfeb68e7bfef2d5a0be9e433fc7bae5
+    rev: 3b247d3071b8f1b723f288aec10e91758a109045
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -157,7 +157,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: 6cfee761ab25dcd917965b324e3108ae9cb37ed3
+    sha1: cccdb2f7833400c7b544138801f5df2bae7798a1
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -600,7 +600,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: f6e6de844430fa64440ae230061720839e8282be
+    rev: 05580f5e99ccbe02646c9062acd137e51b55a8d2
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
