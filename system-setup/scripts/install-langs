@@ -9,7 +9,7 @@ _install () {
     if [ $? -ne 0 ]; then
         echo >&2 "Error: $lang installation failed:"
         ${tolog:+tail "$log"}
-        _failed="${_failed:+ $_failed}$lang"
+        _failed="${_failed:+$_failed }$lang"
     fi
 }
 
