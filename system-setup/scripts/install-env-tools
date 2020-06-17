@@ -109,6 +109,7 @@ pip_install gitpython # buildhistory-diff
 ## Development Tools
 go get -u github.com/github/hub
 gemv gist
+pipv3 git+https://github.com/kergoth/git-imerge@no-completions-in-setup
 pipv3 git-revise
 # pprintpp + pp-ez?
 # twine?
