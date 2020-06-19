@@ -21,11 +21,12 @@ while getopts h opt; do
 done
 shift $((OPTIND - 1))
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
     usage
 fi
 builddir="$1"
 shift
+builddir="$(cd "$builddir" && pwd -P)"
 
 # Wait for bitbake to complete
 lsof +r -f -- "$builddir/bitbake.lock" >/dev/null 2>&1
