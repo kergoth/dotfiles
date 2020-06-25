@@ -87,6 +87,12 @@
                 "hidden": false,
                 "name": "Alpine",
                 "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{96be24fd-152c-5812-90bb-b4bd046f9785}",
+                "hidden": false,
+                "name": "Arch2",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
