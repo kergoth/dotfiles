@@ -1,5 +1,5 @@
 case "$(uname -r)" in
-    *-Microsoft)
+    *-Microsoft|*-microsoft-*)
         OSTYPE=WSL
         if [[ -z "$WslDisks" ]]; then
             export WslDisks=/mnt
