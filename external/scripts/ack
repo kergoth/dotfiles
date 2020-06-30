@@ -15,7 +15,7 @@ package main;
 use strict;
 use warnings;
 
-our $VERSION = 'v3.3.1'; # Check https://beyondgrep.com/ for updates
+our $VERSION = 'v3.4.0'; # Check https://beyondgrep.com/ for updates
 
 use 5.010001;
 
@@ -322,7 +322,11 @@ sub file_loop_c {
 
         if ( !$opt_l || $matches_for_this_file > 0 ) {
             if ( $opt_show_filename ) {
-                App::Ack::say( $file->name, ':', $matches_for_this_file );
+                my $display_filename = $file->name;
+                if ( $opt_color ) {
+                    $display_filename = Term::ANSIColor::colored($display_filename, $ENV{ACK_COLOR_FILENAME});
+                }
+                App::Ack::say( $display_filename, ':', $matches_for_this_file );
             }
             else {
                 App::Ack::say( $matches_for_this_file );
@@ -2462,7 +2466,7 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = 'v3.3.1'; # Check https://beyondgrep.com/ for updates
+    $VERSION = 'v3.4.0'; # Check https://beyondgrep.com/ for updates
     $COPYRIGHT = 'Copyright 2005-2020 Andy Lester.';
 }
 our $STANDALONE = 0;
@@ -3561,6 +3565,10 @@ sub _options_block {
 # Template Toolkit (Perl)
 # http//template-toolkit.org/
 --type-add=ttml:ext:tt,tt2,ttml
+
+# TOML
+# https://toml.io/
+--type-add=toml:ext:toml
 
 # Typescript
 # https://www.typescriptlang.org/
