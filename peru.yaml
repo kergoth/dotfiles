@@ -111,11 +111,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: b24579d2b04bcbf177c513e4d1885d12511b3aee
+    rev: 396cbbb151ccd6fc9ae0356771ce1a5af5623e48
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 91d2eeaf23c47341e8dc7ad66dbf85e38c2674de
+    rev: fb929edc30192407a9298aad64f55ca1b19a464e
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -576,7 +576,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 6052d6ee1766606bb5647579ea4e02f907919f3d
+    rev: 149f47fa660f0616e0006a46b099102435f5c33e
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -594,7 +594,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 618f7bed3f693f0931689740b2ce540e64b0e651
+    rev: b5b04454e0710920ce3ad427c50eeeb904a22842
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
