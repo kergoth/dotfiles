@@ -128,6 +128,7 @@
 
 [delta]
 	theme = "Dracula"
+	navigate = true
 
 [git-j]
 	alias = m=master
