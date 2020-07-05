@@ -126,6 +126,9 @@
 	smudge = git-lfs smudge %f
 	required = true
 
+[delta]
+	theme = "Dracula"
+
 [git-j]
 	alias = m=master
 
