@@ -13,5 +13,5 @@ priority="${2:-1}"
 layer="${layer#meta-}"
 if [ ! -e "meta-$layer" ]
 then
-    yocto-layer create "$layer" "$priority"
+    bitbake-layers create-layer -p "$priority" "$layer"
 fi && bitbake-layers add-layer "meta-$layer"
