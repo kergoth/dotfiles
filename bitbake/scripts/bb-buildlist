@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+tmpdir="$(mktemp -d "$PWD/${0##*/}.XXXXXX")" || exit 1
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+cd "$tmpdir"
+bitbake -g "$@" >/dev/null
+cat pn-buildlist
