@@ -2,6 +2,12 @@
 
 time=+6 # older than 7 days ago
 
+if [ "$1" = "-n" ]; then
+    dry_run=1
+else
+    dry_run=
+fi
+
 cache_paths () {
     locate -ebr '^cached-binaries\|sstate-cache$'
     echo /cache/sstate
@@ -18,12 +24,12 @@ cache_paths | readlinks | grep -E '/clarson|kergoth/' | sort -u >>$caches
 
 cat $caches | while read path; do
     find "$path" -atime $time -type f -print0
-done | xargs -0 rm -fv
+done | xargs -0 ${dry_run:+-n 1 echo }rm -fv
 
 cat $caches | while read path; do
     find "$path" -type l | while read link; do
         if [ ! -e "$link" ]; then
-            rm -fv "$link"
+            ${dry_run:+echo }rm -fv "$link"
         fi
     done
 done
