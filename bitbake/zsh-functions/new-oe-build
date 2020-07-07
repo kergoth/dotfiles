@@ -1,0 +1,15 @@
+if [[ $# -eq 0 ]]; then
+    BUILDDIR="$PWD/build"
+else
+    BUILDDIR="$1"
+fi
+
+(
+    set -e
+    rm -f "$BUILDDIR/.envrc"
+    . ./oe-core/oe-init-build-env "$BUILDDIR" bitbake
+    cp ~/mel/workflow/envrc-build .envrc
+    direnv allow >/dev/null 2>&1
+)
+
+cd "$BUILDDIR"
