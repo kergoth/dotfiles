@@ -6,8 +6,10 @@ fi
 
 (
     set -e
+    set +u
     rm -f "$BUILDDIR/.envrc"
-    . ./oe-core/oe-init-build-env "$BUILDDIR" bitbake
+    mkdir -p "$BUILDDIR"
+    cd "$BUILDDIR"
     cp ~/mel/workflow/envrc-build .envrc
     direnv allow >/dev/null 2>&1
 )
