@@ -15,6 +15,7 @@ usage() {
     Options:
 
     -g    Set to the default global version
+    -l    Set to the default local version
     -f    Force reinstallation if necessary
 END
     exit 2
@@ -25,11 +26,15 @@ version_sort() {
 }
 
 global=0
+local=0
 force=0
-while getopts gfh opt; do
+while getopts glfh opt; do
     case "$opt" in
         g)
             global=1
+            ;;
+        l)
+            local=1
             ;;
         f)
             force=1
@@ -104,4 +109,7 @@ fi
 
 if [ $global -eq 1 ]; then
     asdf global "$plugin" "$version"
+fi
+if [ $local -eq 1 ]; then
+    asdf local "$plugin" "$version"
 fi
