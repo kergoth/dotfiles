@@ -1,0 +1,3 @@
+#!/bin/sh
+
+git for-each-ref --format="%(refname)" "$@" | grep -v "$(git symbolic-ref HEAD)" | grep -v /HEAD | while read -r ref; do git cherry-tree "$ref" | ifne sh -c "echo \"\$(git rev-parse --abbrev-ref \"$ref\"):\"; cat"; done
