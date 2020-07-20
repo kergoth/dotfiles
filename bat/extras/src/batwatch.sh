@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
-# bat-extras | Copyright (C) 2019 eth-p | MIT License
+# bat-extras | Copyright (C) 2019-2020 eth-p | MIT License
 #
 # Repository: https://github.com/eth-p/bat-extras
 # Issues:     https://github.com/eth-p/bat-extras/issues
@@ -10,6 +10,7 @@ LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd "$(dirname "$(readlink "${BASH_
 source "${LIB}/constants.sh"
 source "${LIB}/opt.sh"
 source "${LIB}/opt_hook_color.sh"
+source "${LIB}/opt_hook_help.sh"
 source "${LIB}/opt_hook_pager.sh"
 source "${LIB}/opt_hook_version.sh"
 source "${LIB}/opt_hook_width.sh"
@@ -22,6 +23,13 @@ hook_color
 hook_pager
 hook_version
 hook_width
+hook_help
+# -----------------------------------------------------------------------------
+# Help:
+# -----------------------------------------------------------------------------
+show_help() {
+	echo 'Usage: batwatch [--watcher entr|poll][--[no-]clear] <file> [<file> ...]'
+}
 # -----------------------------------------------------------------------------
 # Watchers:
 # -----------------------------------------------------------------------------
@@ -33,11 +41,11 @@ WATCHERS=("entr" "poll")
 watcher_entr_watch() {
 	ENTR_ARGS=()
 
-	if [[ "$OPT_CLEAR" = "true" ]]; then
+	if [[ "$OPT_CLEAR" == "true" ]]; then
 		ENTR_ARGS+=('-c')
 	fi
 
-	entr "${ENTR_ARGS[@]}" \
+	pager_exec entr "${ENTR_ARGS[@]}" \
 		"$EXECUTABLE_BAT" "${BAT_ARGS[@]}" \
 		--terminal-width="$OPT_TERMINAL_WIDTH" \
 		--paging=never \
@@ -46,7 +54,7 @@ watcher_entr_watch() {
 }
 
 watcher_entr_supported() {
-	command -v entr &>/dev/null
+	command -v entr &> /dev/null
 	return $?
 }
 
@@ -60,19 +68,22 @@ determine_stat_variant() {
 		return 0
 	fi
 
-	# Try GNU stat.
-	if stat -c '%z' "$0" &>/dev/null; then
-		POLL_STAT_COMMAND=(stat -c '%z')
-		POLL_STAT_VARIANT='gnu'
-		return 0
-	fi
+	local variant name flags ts
+	for variant in "gnu -c %Z" "bsd -f %m"; do
+		read    -r name flags <<< "$variant"
 
-	# Try BSD stat.
-	if stat -f '%m' "$0" &>/dev/null; then
-		POLL_STAT_COMMAND=(stat -f '%m')
-		POLL_STAT_VARIANT='bsd'
-		return 0
-	fi
+		# save the results of the stat command
+		if read -r ts < <(stat ${flags} "$0" 2> /dev/null); then
+
+			# verify that the value is an epoch timestamp
+			# before proceeding
+			if [[ "${ts}" =~ ^[0-9]+$ ]]; then
+				POLL_STAT_COMMAND=(stat ${flags})
+				POLL_STAT_VARIANT="$name"
+				return 0
+			fi
+		fi
+	done
 
 	return 1
 }
@@ -97,16 +108,18 @@ watcher_poll_watch() {
 		if "$modified"; then
 			modified=false
 
-			if [[ "$OPT_CLEAR" = "true" ]]; then
+			if [[ "$OPT_CLEAR" == "true" ]]; then
 				clear
 			fi
 
-			"$EXECUTABLE_BAT" "${BAT_ARGS[@]}" \
+			pager_exec "$EXECUTABLE_BAT" "${BAT_ARGS[@]}" \
 				--terminal-width="$OPT_TERMINAL_WIDTH" \
 				--paging=never \
 				"${files[@]}"
+
 		fi
 
+		# Check if the file has been modified.
 		local i=0
 		for file in "${files[@]}"; do
 			time="$("${POLL_STAT_COMMAND[@]}" "$file")"
@@ -119,7 +132,12 @@ watcher_poll_watch() {
 			((i++))
 		done
 
-		sleep 1
+		# Wait for "q" to exit, or check again after 1 second.
+		local input
+		read -r -t 1 input
+		if [[ "$input" =~ [q|Q] ]]; then
+			exit
+		fi
 	done
 
 	"${POLL_STAT_COMMAND[@]}" "$@"
@@ -139,7 +157,7 @@ determine_watcher() {
 	local watcher
 	for watcher in "${WATCHERS[@]}"; do
 		if "watcher_${watcher}_supported"; then
-			echo "$watcher"
+			OPT_WATCHER="$watcher"
 			return 0
 		fi
 	done
@@ -153,6 +171,7 @@ determine_watcher() {
 BAT_ARGS=()
 FILES=()
 FILES_HAS_DIRECTORY=false
+OPT_HELP=false
 OPT_CLEAR=true
 OPT_WATCHER=""
 
@@ -165,18 +184,21 @@ fi
 while shiftopt; do
 	case "$OPT" in
 
-	# Script options
-	--watcher)        shiftval; OPT_WATCHER="$OPT_VAL" ;;
-	--clear)                    OPT_CLEAR=true ;;
-	--no-clear)                 OPT_CLEAR=false ;;
+		# Script options
+		--watcher)
+			shiftval
+			OPT_WATCHER="$OPT_VAL"
+			;;
+		--clear)                   OPT_CLEAR=true ;;
+		--no-clear)                OPT_CLEAR=false ;;
 
-	# bat/Pager options
-	-*) BAT_ARGS+=("$OPT=$OPT_VAL") ;;
+		# bat/Pager options
+		-*) BAT_ARGS+=("$OPT=$OPT_VAL") ;;
 
-	# Files
-	*) {
-		FILES+=("$OPT")
-	} ;;
+		# Files
+		*) {
+			FILES+=("$OPT")
+		} ;;
 
 	esac
 done
@@ -209,18 +231,18 @@ fi
 # -----------------------------------------------------------------------------
 # Determine the watcher.
 if [[ -z "$OPT_WATCHER" ]]; then
-	if ! OPT_WATCHER="$(determine_watcher)"; then
+	if ! determine_watcher; then
 		print_error "Your system does not have any supported watchers."
 		printc "Please read the documentation at %{BLUE}%s%{CLEAR} for more details.\n" "$PROGRAM_HOMEPAGE" 1>&2
 		exit 2
 	fi
 else
-	if ! type "watcher_${OPT_WATCHER}_supported" &>/dev/null; then
+	if ! type "watcher_${OPT_WATCHER}_supported" &> /dev/null; then
 		print_error "Unknown watcher: '%s'" "$OPT_WATCHER"
 		exit 1
 	fi
 
-	if ! "watcher_${OPT_WATCHER}_supported" &>/dev/null; then
+	if ! "watcher_${OPT_WATCHER}_supported" &> /dev/null; then
 		print_error "Unsupported watcher: '%s'" "$OPT_WATCHER"
 		exit 1
 	fi
@@ -228,9 +250,9 @@ fi
 
 # Run the main function.
 main() {
-	"watcher_${OPT_WATCHER}_watch" "${FILES[@]}"
-	return $?
+	"watcher_${OPT_WATCHER}_watch"  "${FILES[@]}"
+	return  $?
 }
 
-pager_exec main
+main
 exit $?

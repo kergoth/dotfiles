@@ -111,11 +111,11 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 396cbbb151ccd6fc9ae0356771ce1a5af5623e48
+    rev: d0ff5f6b5e7687c438e0a8b120280be307eda778
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: fb929edc30192407a9298aad64f55ca1b19a464e
+    rev: 2d60a47cc407117815a1d7b331ef226aa400a344
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -123,7 +123,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 3b247d3071b8f1b723f288aec10e91758a109045
+    rev: 16b89473a772379f49db455741f827f4cb9c9194
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -173,7 +173,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: d1676776aaf1aa283f556ff44879d3621073e825
+    rev: f79b1f71b86651fe5656eab1c360781e19e97826
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -445,7 +445,7 @@ git module osx-wificleaner:
     pick: osx-wificleaner
     move:
         osx_wificleaner.py: osx-wificleaner
-    rev: a05cde7ea0d9f152eebcaa80dfda95c3657d1c0b
+    rev: cb799eb9daae20b4144305a61ef1280c62d4965a
 
 git module md-inline2ref:
     url: https://gist.github.com/1207378
@@ -576,7 +576,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 149f47fa660f0616e0006a46b099102435f5c33e
+    rev: fa5888829802affd6169f614221e7ad4a9baad0d
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -594,7 +594,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: b5b04454e0710920ce3ad427c50eeeb904a22842
+    rev: 84997386c1d1d8a08c336a52b588d0d416188e37
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
