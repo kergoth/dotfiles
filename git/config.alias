@@ -187,3 +187,6 @@
 	# Update submodules
 	update-subs = submodule foreach --recursive "git fetch && git checkout `git remote-ref`"
 
+	# Third party tooling and scripts
+	as = assembler
+

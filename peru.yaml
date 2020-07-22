@@ -28,6 +28,7 @@ imports:
     flu: os-macos/scripts
     fumiyas-home-commands: external/scripts
     gnu2bsd: ls/scripts
+    git-assembler: git/scripts
     git-blame-colored: git/scripts
     git-cherry-tree: git/scripts
     git-extras: git/scripts
@@ -614,3 +615,8 @@ git module dtrx:
     export: scripts
     executable: scripts/dtrx
     rev: 830399cfb75784edf1bc4b1d708439446079a831
+
+git module git-assembler:
+    url: https://gitlab.com/wavexx/git-assembler
+    pick: git-assembler
+    rev: f1c3407c39054332d404dae4943d0b095c11d616
