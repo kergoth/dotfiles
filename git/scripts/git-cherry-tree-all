@@ -11,7 +11,7 @@ END
     exit 2
 }
 
-merged=
+merged=0
 while getopts mh opt; do
     case "$opt" in
         m)
