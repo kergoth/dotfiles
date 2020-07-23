@@ -12,17 +12,17 @@ export LDFLAGS="${LDFLAGS:-}"
 
 case "${OSTYPE:-}" in
     darwin*)
-        if command -v brew >/dev/null 2>&1; then
-            eval "$(brew environment --shell=auto | grep -vw PATH)"
-            CPPFLAGS="$CPPFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl@1.1)/include -I$(xcrun --show-sdk-path)/usr/include"
-            LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl@1.1)/lib"
-            # The python 3 build chokes due to a lack of llvm-ar at the moment
-            PYTHON_NO_LTO=1
-        fi
         # Silence spammy warnings on clang builds, as mentioned in the python
         # developer documentation.
         export CPPFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments \
                          -Wno-parentheses-equality -Wno-nullability-completeness"
+        if command -v brew >/dev/null 2>&1; then
+            eval "$(brew environment --shell=auto | grep -vw PATH)"
+            export CPPFLAGS="$CPPFLAGS -I$(brew --prefix sqlite)/include -I$(brew --prefix openssl@1.1)/include -I$(xcrun --show-sdk-path)/usr/include"
+            export LDFLAGS="$LDFLAGS -L$(brew --prefix sqlite)/lib -L$(brew --prefix openssl@1.1)/lib"
+            # The python 3 build chokes due to a lack of llvm-ar at the moment
+            PYTHON_NO_LTO=1
+        fi
         ;;
     *)
         if [ -e /etc/arch-release ]; then
