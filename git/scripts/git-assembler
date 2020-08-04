@@ -14,7 +14,7 @@ from logging import error, warning, info, debug
 
 APP_DSC = "update git branches using high-level instructions"
 APP_SIG = "git-assembler"
-APP_VER = "1.0"
+APP_VER = "1.1"
 
 
 def repo_root():
@@ -222,6 +222,8 @@ def assembly_graph(nodes, targets=None):
     return [nodes[name] for name in sorted(roots)]
 
 
+COLOR_MODE = None
+
 class Ansi:
     BOLD  = "\033[;1m"
     GREEN = "\033[0;32m"
@@ -230,7 +232,8 @@ class Ansi:
 
 def color_node(node):
     name = node['name']
-    if not sys.stdout.isatty():
+    if COLOR_MODE == False or \
+       (COLOR_MODE is None and not sys.stdout.isatty()):
         return name
     elif node['state']['missing']:
         return Ansi.RED + name + Ansi.RESET
@@ -289,22 +292,17 @@ def topo_sort(graph, seen=None):
     if seen is None:
         seen = set()
     nodes = []
-    if type(graph) is not list:
-        graph = [graph]
     for node in graph:
         name = node['name']
         if name in seen:
             continue
         seen.add(name)
-        for dep in node['deps']:
-            nodes.extend(topo_sort(dep, seen))
+        nodes.extend(topo_sort(node['deps'], seen))
         nodes.append(node)
     return nodes
 
 
 def mark_tree_dirty(node, graph):
-    if type(graph) is not list:
-        graph = [graph]
     dirty = False
     for root in graph:
         if root is node or mark_tree_dirty(node, root['deps']):
@@ -540,10 +538,8 @@ def update_node(node, state, dry_run):
             if dirty is not False:
                 log(logging.INFO, 'rebasing {} onto {}'.format(color_node(node), color_node(node['base'])))
                 if not dry_run:
-                    proc = sp.run(['git', 'rebase', '-q',
-                                   '--rebase-merges', '--fork-point',
-                                   '--onto', node['base']['name'],
-                                   node['name']])
+                    proc = sp.run(['git', 'rebase', '-q', '--fork-point',
+                                   node['base']['name'], node['name']])
                     if proc.returncode != 0:
                         return False
 
@@ -609,6 +605,8 @@ def main(argv):
     ap.add_argument('-v', '--verbose', default=0, action='count',
                     help='increase verbosity')
     ap.add_argument('--version', action='version', version=APP_VER)
+    ap.add_argument('--color', choices=['auto', 'always', 'never'],
+                    default='auto', help='set terminal coloring mode')
     g = ap.add_mutually_exclusive_group()
     g.add_argument('target', nargs='*', default=[],
                    help='branch to update/display')
@@ -620,6 +618,13 @@ def main(argv):
     levels = (logging.WARNING, logging.INFO, logging.DEBUG)
     logging.basicConfig(level=levels[min(len(levels)-1, args.verbose)],
                         format='{}: %(message)s'.format(APP_SIG))
+
+    # color mode
+    global COLOR_MODE
+    if args.color == 'always':
+        COLOR_MODE = True
+    elif args.color == 'never':
+        COLOR_MODE = False
 
     # repository paths
     root = repo_root()
@@ -716,7 +721,7 @@ def main(argv):
         branch_name = state['start_branch']
         if branch_name in nodes:
             branch_name = color_node(nodes[branch_name])
-        if not args.dry_run and not branch_exists(branch_name):
+        if not args.dry_run and not branch_exists(state['start_branch']):
             logging.log(logging.WARNING, 'cannot restore initial branch {}'.format(branch_name))
         else:
             level = logging.INFO if start_set else logging.WARNING
