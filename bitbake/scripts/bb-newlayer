@@ -2,16 +2,28 @@
 
 set -eu
 
-if ! which bitbake >/dev/null 2>&1; then
-    echo >&2 "Error: unable to find bitbake, please source the environemnt setup script"
-    exit 1
-fi
+usage() {
+    cat <<END >&2
+${0##*/} [options..] [LAYERPATH [PRIORITY]]
 
-layer="${1:-local}"
+Options:
+  -h   Show usage
+END
+    exit 2
+}
+
+while getopts h opt; do
+    case "$opt" in
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+layerpath="${1:-meta-local}"
 priority="${2:-1}"
-
-layer="${layer#meta-}"
-if [ ! -e "meta-$layer" ]
-then
-    bitbake-layers create-layer -p "$priority" "$layer"
-fi && bitbake-layers add-layer "meta-$layer"
+if [ ! -e "$layerpath" ]; then
+    bitbake-layers create-layer -p "$priority" "$layerpath"
+fi
+bitbake-layers add-layer "$layerpath"
