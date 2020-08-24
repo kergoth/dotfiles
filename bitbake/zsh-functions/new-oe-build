@@ -1,7 +1,35 @@
+mel=
+args=
+while getopts mM:a:h opt; do
+    case "$opt" in
+        m)
+            mel=1
+            ;;
+        M)
+            MACHINE="$OPTARG"
+            ;;
+        a)
+            args="$OPTARG"
+            ;;
+        \? | h)
+            echo >&2 "${0##*/} [-m] [-M MACHINE] [-a ARGS] [BUILDDIR]"
+            return 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
 if [[ $# -eq 0 ]]; then
     BUILDDIR="$PWD/build"
 else
     BUILDDIR="$1"
+    case "$BUILDDIR" in
+        /*)
+            ;;
+        *)
+            BUILDDIR="$PWD/$BUILDDIR"
+            ;;
+    esac
 fi
 
 (
@@ -10,6 +38,9 @@ fi
     rm -f "$BUILDDIR/.envrc"
     mkdir -p "$BUILDDIR"
     cd "$BUILDDIR"
+    if [[ -n "$mel" ]]; then
+        . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemux86-64}
+    fi
     cp ~/mel/workflow/envrc-build .envrc
     direnv allow >/dev/null 2>&1
 )
