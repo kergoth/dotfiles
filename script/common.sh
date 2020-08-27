@@ -26,7 +26,7 @@ case "$OSTYPE" in
                 USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
                 prefixes="%include%Wsl $prefixes"
 
-                if [ -z "$WslDisks" ]; then
+                if [ -z "${WslDisks:-}" ]; then
                     export WslDisks=/mnt
                     if [ -e /etc/wsl.conf ]; then
                         WslDisks="$(sed -n -e 's/^root = //p' /etc/wsl.conf)"
