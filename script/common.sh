@@ -10,7 +10,7 @@ DOTFILESDIR="${DOTFILESDIR:-$(cd "$(dirname "$(dirname "$0")")" && pwd -P)}"
 
 PATH="$ASDF_DATA_DIR/shims:$PYENV_ROOT/bin:$PYENV_ROOT/shims:$HOME/.local/bin:$DOTFILESDIR/external/scripts:$PATH"
 
-HOSTNAME=$(hostname -s)
+HOSTNAME=${HOSTNAME:-${HOST:-$(hostname -s)}}
 osname="$(uname -s)"
 prefixes="%include %include%${osname} %include%${HOSTNAME}"
 install_force="${install_force:-0}"
