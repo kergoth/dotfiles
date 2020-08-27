@@ -30,7 +30,7 @@ do_install () {
 }
 
 list_topics () {
-    find . -mindepth 2 -maxdepth 2 -name install \
+    find ./*/ -mindepth 1 -maxdepth 1 -name install \
         | grep -v /script/ \
         | sort -u \
         | sed -e "s#^\./##; s#/install\$##"
