@@ -8,7 +8,7 @@ python3 -m venv "$PIPX_HOME/pipx"
 
 (
     . "$PIPX_HOME/pipx/bin/activate"
-    python3 -m pip install pipx
+    python3 -m pip install --disable-pip-version-check pipx
     pipx install --force pipx
 )
 
