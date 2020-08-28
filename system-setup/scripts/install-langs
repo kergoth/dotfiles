@@ -67,6 +67,9 @@ mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 # shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf" || exit 1
 
+_install golang asdf-install -g golang
+_install rust asdf-install -g rust stable
+
 export PIP_REQUIRE_VIRTUALENV=
 _install python asdf-install -g python
 if command -v python3 >/dev/null; then
@@ -75,11 +78,6 @@ fi
 if command -v python2 >/dev/null; then
     _install python-pipsi install-pipsi
 fi
-for i in golang ruby; do
-    _install "$i" asdf-install -g "$i"
-done
-_install rust asdf-install -g rust stable
-_install node install-node
 
 # TODO: remove the packages we installed, but not the ones the user did
 if [ -n "$(echo "$_failed" | xargs)" ]; then
