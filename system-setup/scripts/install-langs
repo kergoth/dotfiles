@@ -79,7 +79,6 @@ for i in golang ruby rust; do
     _install "$i" asdf-install -g "$i"
 done
 _install node install-node
-_install haskell install-haskell
 
 # TODO: remove the packages we installed, but not the ones the user did
 if [ -n "$(echo "$_failed" | xargs)" ]; then
