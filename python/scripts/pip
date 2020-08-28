@@ -1,3 +1,0 @@
-#!/bin/sh
-# I don't trust the pip symlink to be sane
-exec python2 -m pip "$@"
