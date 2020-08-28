@@ -3,7 +3,7 @@
 set -euo pipefail
 
 pager () {
-    if [ "$interactive" -eq 1 ]; then
+    if [ -n "$interactive" ]; then
         if command -v bat >/dev/null 2>&1; then
             bat --file-name "fd $* | as-tree"
         else
