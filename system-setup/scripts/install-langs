@@ -67,10 +67,14 @@ mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 # shellcheck source=./install-asdf
 . "$(dirname "$0")/install-asdf" || exit 1
 
-_install python install-python
 export PIP_REQUIRE_VIRTUALENV=
-_install python-pipx install-pipx
-_install python-pipsi install-pipsi
+_install python install-python
+if command -v python3 >/dev/null; then
+    _install python-pipx install-pipx
+fi
+if command -v python2 >/dev/null; then
+    _install python-pipsi install-pipsi
+fi
 for i in golang ruby rust; do
     _install "$i" asdf-install -g "$i"
 done
