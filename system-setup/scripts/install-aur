@@ -22,4 +22,4 @@ case "$pkg" in
         cd "$pkg"
         ;;
 esac
-makepkg -sci
+makepkg -sci --nocheck
