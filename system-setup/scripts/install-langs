@@ -75,9 +75,10 @@ fi
 if command -v python2 >/dev/null; then
     _install python-pipsi install-pipsi
 fi
-for i in golang ruby rust; do
+for i in golang ruby; do
     _install "$i" asdf-install -g "$i"
 done
+_install rust asdf-install -g rust stable
 _install node install-node
 
 # TODO: remove the packages we installed, but not the ones the user did
