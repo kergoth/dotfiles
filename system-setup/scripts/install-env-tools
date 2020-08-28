@@ -31,7 +31,7 @@ PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 cd /
 
 
-pipv_installed () {
+pipsi_installed () {
     pipsi list | sed -n -e 's/^  *Package "\([^"]*\)":$/\1/p' | grep -Fqx "$1"
 }
 
@@ -39,25 +39,44 @@ pipx_installed () {
     pipx list | sed -n -e 's/^   *package \([^ ]*\).*/\1/p' | grep -Fqx "$1"
 }
 
-pipv () {
-    if pipv_installed "$1"; then
-        kpipsi upgrade "$@"
-    else
-        kpipsi install "$@"
-    fi || { echo >&2 "Error installing $*"; return 1; }
+pipsi () {
+    if [ $has_python2 -eq 1 ]; then
+        if pipsi_installed "$1"; then
+            kpipsi upgrade "$@"
+        else
+            kpipsi install "$@"
+        fi || { echo >&2 "Error installing $*"; return 1; }
+    fi
 }
 
-pipv3 () {
-    pipx-install "$@"
+pipx () {
+    if [ $has_python3 -eq 1 ]; then
+        pipx-install "$@"
+    fi
 }
 
 pip_install () {
-    command python2 -m pip -q --disable-pip-version-check install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
+    if [ $has_python2 -eq 1 ]; then
+        command python2 -m pip -q --disable-pip-version-check install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
+    fi
 }
 
 pip3_install () {
-    command python3 -m pip -q install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
+    if [ $has_python3 -eq 1 ]; then
+        command python3 -m pip -q install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
+    fi
 }
+
+if command -v python2 >/dev/null 2>&1; then
+    has_python2=1
+else
+    has_python2=0
+fi
+if command -v python3 >/dev/null 2>&1; then
+    has_python3=1
+else
+    has_python3=0
+fi
 
 export PIP_REQUIRE_VIRTUALENV=
 
@@ -85,15 +104,15 @@ pip3_install see
 
 ## General Tools & Utilities
 go get -u github.com/junegunn/fzf/...
-pipv3 mercurial hg-git
-pipv3 httpie
+pipx mercurial hg-git
+pipx httpie
 go get -u github.com/EricChiang/pup
 
 # Very handy for screencasts
-pipv3 asciinema
+pipx asciinema
 
 ## For dotfiles
-pipv3 peru
+pipx peru
 
 ## Handy
 go get -u github.com/direnv/direnv
@@ -106,13 +125,13 @@ pip_install gitpython # buildhistory-diff
 
 ## Pinboard client
 #npmv pin-cushion
-#pipv3 python-json2yaml # pcposts zsh function
+#pipx python-json2yaml # pcposts zsh function
 
 ## Development Tools
 go get -u github.com/github/hub
 gemv gist
-pipv3 git+https://github.com/kergoth/git-imerge@no-completions-in-setup
-pipv3 git-revise
+pipx git+https://github.com/kergoth/git-imerge@no-completions-in-setup
+pipx git-revise
 # pprintpp + pp-ez?
 # twine?
 # wheel?
@@ -125,7 +144,7 @@ pip3_install e better-exceptions-hook
 #npmv doctoc
 
 ## Formatters
-pipv3 yapf
+pipx yapf
 GO111MODULE=on go get -u mvdan.cc/sh/v3/cmd/shfmt
 go get -u github.com/shurcooL/markdownfmt
 # autopep8 - format code per pep8
@@ -134,7 +153,7 @@ go get -u github.com/shurcooL/markdownfmt
 #luav formatter
 
 ## Linting / Static Analysis
-pipv3 flake8 pep8-naming flake8-docstrings
+pipx flake8 pep8-naming flake8-docstrings
 
 # ShellCheck is the only haskell tool I use, so cheat and avoid installing
 # ghc.
@@ -148,11 +167,11 @@ case "$(uname -s)" in
 esac
 if [ -e "$XDG_DATA_HOME/shellcheck-stable/shellcheck" ]; then
     mkdir -p "$XDG_DATA_HOME/../bin"
-    ln -sr "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
+    ln -sfr "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
 fi
 
-#pipv prospector
-#pipv vim-vint
+#pipsi prospector
+#pipsi vim-vint
 #luav luacheck
 #gemv mdl # markdown
 # see also markdownlint
@@ -165,8 +184,8 @@ fi
 #go get -u github.com/ddo/fast # bandwidth speed testing
 #go get -u github.com/jbenet/go-multihash/multihash # If needed to create a hash for use by hashpipe
 #go get -u github.com/jbenet/hashpipe
-#pipv pockyt # cli for Pocket
-#pipv pocket-cli # other cli for Pocket, better interface
+#pipsi pockyt # cli for Pocket
+#pipsi pocket-cli # other cli for Pocket, better interface
 #pip_install datefinder # search text for dates, ala path-extractor
 #pip_install pipdeptree
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
@@ -192,12 +211,12 @@ fi
 #npmv how2
 
 ### Video Downloading
-#pipv3 youtube-dl
+#pipx youtube-dl
 
 # Dropblame, constructs git history for individual files in dropbox, using
 # dropbox's revision history.
 #XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 #WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
-#pipv dropblame &&
+#pipsi dropblame &&
 #    mv "$WORKON_HOME/dropblame/bin/drop" "$WORKON_HOME/dropblame/bin/dropb" && \
 #    mv "$XDG_DATA_HOME/../bin/drop" "$XDG_DATA_HOME/../bin/dropb"
