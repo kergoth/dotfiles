@@ -72,6 +72,7 @@ fi
 # cargo-update
 export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
 cargo-install fd-find ripgrep bat exa git-delta git-series
+cargo install --git https://github.com/jez/as-tree
 
 # Upgrade pip
 pip_install pip==18.1
