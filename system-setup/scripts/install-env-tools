@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
 export CFLAGS="${CFLAGS--O2}"
 export LDFLAGS
 
@@ -60,7 +61,7 @@ pip3_install () {
 
 export PIP_REQUIRE_VIRTUALENV=
 
-mkdir -p "${XDG_DATA_HOME:-~/.local/share}"
+mkdir -p "$XDG_DATA_HOME"
 
 # Clang and llvm are needed to build `bat`
 if command -v pacman >/dev/null 2>&1; then
@@ -70,7 +71,7 @@ elif command -v apt-get >/dev/null 2>&1; then
 fi
 
 # cargo-update
-export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-${XDG_DATA_HOME:-~/.local/share}/..}
+export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-$XDG_DATA_HOME/..}
 cargo-install fd-find ripgrep bat exa git-delta git-series
 cargo install --git https://github.com/jez/as-tree
 
@@ -134,7 +135,22 @@ go get -u github.com/shurcooL/markdownfmt
 
 ## Linting / Static Analysis
 pipv3 flake8 pep8-naming flake8-docstrings
-stack install ShellCheck && asdf reshim haskell
+
+# ShellCheck is the only haskell tool I use, so cheat and avoid installing
+# ghc.
+case "$(uname -s)" in
+    Linux)
+        curl -fsSL https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz | tar -C ~/.local/share -Jxf -
+        ;;
+    *)
+        echo >&2 "ERROR: unhandled $(uname -s) OS for shellcheck installation"
+        ;;
+esac
+if [ -e "$XDG_DATA_HOME/shellcheck-stable/shellcheck" ]; then
+    mkdir -p "$XDG_DATA_HOME/../bin"
+    ln -sr "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
+fi
+
 #pipv prospector
 #pipv vim-vint
 #luav luacheck
