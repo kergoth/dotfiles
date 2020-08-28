@@ -68,7 +68,7 @@ mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 . "$(dirname "$0")/install-asdf" || exit 1
 
 export PIP_REQUIRE_VIRTUALENV=
-_install python install-python
+_install python asdf-install -g python
 if command -v python3 >/dev/null; then
     _install python-pipx install-pipx
 fi
