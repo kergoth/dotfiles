@@ -1,0 +1,23 @@
+#!/bin/sh
+
+pager () {
+    if [ "$interactive" -eq 1 ]; then
+        if command -v bat >/dev/null 2>&1; then
+            bat --file-name "fdf $* | as-tree"
+        else
+            eval "${PAGER:-less}"
+        fi
+    else
+        cat
+    fi
+}
+
+if [ -t 1 ]; then
+    interactive=1
+else
+    interactive=
+fi
+
+fd "$@" \
+    | as-tree ${interactive:+--color always} \
+    | pager "$@"
