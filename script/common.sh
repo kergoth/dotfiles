@@ -165,10 +165,16 @@ link () {
 mklink () {
     (
         cd "$WslDisks/c" || exit 1
+        link="$1"
+        case "$link" in
+            "$WslDisks"/*)
+                link="$(echo "$link" | sed -e "s#^$WslDisks/\([^/]*\)/#\1:/#; s#/#\\\\#g")"
+                ;;
+        esac
         if [ -d "$2" ]; then
-            cmd.exe /c mklink /d "$(wslpath -wa "$1")" "$(wslpath -wa "$2")"
+            cmd.exe /c mklink /d "$link" "$(wslpath -wa "$2")"
         else
-            cmd.exe /c mklink "$(wslpath -wa "$1")" "$(wslpath -wa "$2")"
+            cmd.exe /c mklink "$link" "$(wslpath -wa "$2")"
         fi
     )
 }
