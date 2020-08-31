@@ -119,7 +119,7 @@ link () {
     elif [ -h "$dotfile_dest" ]; then
         existing_target="$(readlink "$dotfile_dest")"
         if [ -z "$existing_target" ] && [ $wsl_winpath -eq 1 ]; then
-            existing_target="$(powershell.exe -c "(Get-Item '$(wslpath -wa "$dotfile_dest")').Target" 2>/dev/null | tr -d '\r')" || :
+            existing_target="$(powershell.exe -c "(Get-Item '$(_winpath "$dotfile_dest")').Target" 2>/dev/null | tr -d '\r')" || :
             if [ -n "$existing_target" ]; then
                 existing_target="$(wslpath -u "$existing_target")"
                 case "$existing_target" in
@@ -162,6 +162,17 @@ link () {
     echo >&2 "Linked $(homepath "$dotfile_dest")"
 }
 
+_winpath () {
+    case "$1" in
+        "$WslDisks"/*)
+            echo "$1" | sed -e "s#^$WslDisks/\([^/]*\)/#\1:/#; s#/#\\\\#g"
+            ;;
+        *)
+            wslpath -wa "$1"
+            ;;
+    esac
+}
+
 mklink () {
     (
         cd "$WslDisks/c" || exit 1
@@ -172,9 +183,9 @@ mklink () {
                 ;;
         esac
         if [ -d "$2" ]; then
-            cmd.exe /c mklink /d "$link" "$(wslpath -wa "$2")"
+            cmd.exe /c mklink /d "$link" "$(_winpath "$2")"
         else
-            cmd.exe /c mklink "$link" "$(wslpath -wa "$2")"
+            cmd.exe /c mklink "$link" "$(_winpath "$2")"
         fi
     )
 }
