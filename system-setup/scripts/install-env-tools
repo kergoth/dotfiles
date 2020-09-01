@@ -161,13 +161,17 @@ case "$(uname -s)" in
     Linux)
         curl -fsSL https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz | tar -C ~/.local/share -Jxf -
         ;;
+    Darwin)
+        curl -fsSL https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.darwin.x86_64.tar.xz | tar -C ~/.local/share -Jxf -
+        ;;
     *)
         echo >&2 "ERROR: unhandled $(uname -s) OS for shellcheck installation"
         ;;
 esac
 if [ -e "$XDG_DATA_HOME/shellcheck-stable/shellcheck" ]; then
     mkdir -p "$XDG_DATA_HOME/../bin"
-    ln -sfr "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
+    rm -f "$XDG_DATA_HOME/../bin/shellcheck"
+    lnr "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
 fi
 
 #pipsi prospector
