@@ -129,9 +129,6 @@
 [delta]
 	theme = "Dracula"
 
-[git-j]
-	alias = m=master
-
 [ghq]
 	root = $GHQ_ROOT
 	root = $GOPATH/src
