@@ -188,7 +188,6 @@ git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
     pick:
         - bin/git-integrate
-        - bin/git-j
         - bin/git-rebase-chain
         - bin/git-stage-branch
     export: bin
