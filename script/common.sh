@@ -266,7 +266,7 @@ install_templated () {
         mkdir -p "$destdir"
     fi
 
-    cat "$1" | while IFS='|' read line; do
+    cat "$1" | while IFS='|' read -r line; do
         files=
         for prefix in $prefixes; do
             case "$line" in
@@ -288,7 +288,9 @@ install_templated () {
         fi
 
         for file in $(echo $files); do
-            cat "$file"
+            if [ -f "$file" ]; then
+                cat "$file"
+            fi
         done
     done >"$dotfile_dest"
     echo >&2 "Wrote $(abspath "$dotfile_dest")"
