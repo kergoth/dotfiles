@@ -1,14 +1,16 @@
-: "${XDG_CONFIG_HOME:=$HOME/.config}"
-: "${XDG_DATA_HOME:=$HOME/.local/share}"
-: "${XDG_CACHE_HOME:=$HOME/.cache}"
+INSTALL_DEST="${INSTALL_DEST:-$HOME}"
 
-export ASDF_DATA_DIR="${ASDF_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/asdf}"
-export ASDF_CONFIG_FILE="${ASDF_CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/asdfrc}"
-export PYENV_ROOT="${PYENV_ROOT:-${XDG_DATA_HOME:-$HOME/.local/share}/pyenv}"
+: "${XDG_CONFIG_HOME:=$INSTALL_DEST/.config}"
+: "${XDG_DATA_HOME:=$INSTALL_DEST/.local/share}"
+: "${XDG_CACHE_HOME:=$INSTALL_DEST/.cache}"
+
+export ASDF_DATA_DIR="${ASDF_DATA_DIR:-${XDG_DATA_HOME:-$INSTALL_DEST/.local/share}/asdf}"
+export ASDF_CONFIG_FILE="${ASDF_CONFIG_FILE:-${XDG_CONFIG_HOME:-$INSTALL_DEST/.config}/asdfrc}"
+export PYENV_ROOT="${PYENV_ROOT:-${XDG_DATA_HOME:-$INSTALL_DEST/.local/share}/pyenv}"
 
 DOTFILESDIR="${DOTFILESDIR:-$(cd "$(dirname "$(dirname "$0")")" && pwd -P)}"
 
-PATH="$ASDF_DATA_DIR/shims:$PYENV_ROOT/bin:$PYENV_ROOT/shims:$HOME/.local/bin:$DOTFILESDIR/external/scripts:$PATH"
+PATH="$ASDF_DATA_DIR/shims:$PYENV_ROOT/bin:$PYENV_ROOT/shims:$INSTALL_DEST/.local/bin:$DOTFILESDIR/external/scripts:$PATH"
 
 HOSTNAME=${HOSTNAME:-${HOST:-$(hostname -s)}}
 osname="$(uname -s)"
@@ -17,7 +19,7 @@ install_force="${install_force:-0}"
 
 case "$OSTYPE" in
     darwin*)
-        : "${XDG_CACHE_HOME:=~/Library/Caches}"
+        : "${XDG_CACHE_HOME:=$INSTALL_DEST/Library/Caches}"
         ;;
     linux-gnu)
         case "$(uname -r)" in
@@ -64,14 +66,14 @@ set_launchd () {
         fi
     }
 
-    mkdir -p ~/.MacOSX
-    plist_set "$var" "$value" ~/.MacOSX/environment.plist
+    mkdir -p $INSTALL_DEST/.MacOSX
+    plist_set "$var" "$value" $INSTALL_DEST/.MacOSX/environment.plist
 
     if which launchctl &>/dev/null; then
         launchctl setenv "$var" "$value"
     fi
 
-    if [ ! -e ~/Library/PreferencePanes/EnvPane.prefPane ]; then
+    if [ ! -e $INSTALL_DEST/Library/PreferencePanes/EnvPane.prefPane ]; then
         printf >&2 "Warning: EnvPane is not installed, set of env var %s to %s will not persist\n" "$var" "$value"
     fi
 }
@@ -80,9 +82,9 @@ link () {
     # Link a file to a destination using a relative path, with particular
     # convenience handling for dotfiles. ex.:
     #
-    # link zsh/.zshenv.redir ~/.zshenv.redir
-    # link zshrc       # links to ~/.zshrc (relatively)
-    # link config/curl # links to ~/.config/curl (relatively)
+    # link zsh/.zshenv.redir $INSTALL_DEST/.zshenv.redir
+    # link zshrc       # links to $INSTALL_DEST/.zshrc (relatively)
+    # link config/curl # links to $INSTALL_DEST/.config/curl (relatively)
     dotfile="$(abspath "$1")"
     if [ $# -gt 1 ]; then
         dotfile_dest="$(abspath "$2")"
@@ -90,10 +92,10 @@ link () {
         dotfile_base="${dotfile##*/}"
         case "$dotfile_base" in
             .*)
-                dotfile_dest="$HOME/$dotfile_base"
+                dotfile_dest="$INSTALL_DEST/$dotfile_base"
                 ;;
             *)
-                dotfile_dest="$HOME/.$dotfile_base"
+                dotfile_dest="$INSTALL_DEST/.$dotfile_base"
                 ;;
         esac
     fi
@@ -146,7 +148,7 @@ link () {
     fi
 
     mkdir -p "$destdir"
-    if [ $wsl_winpath -eq 1 ]; then
+    if false && [ $wsl_winpath -eq 1 ]; then
         if [ -e "$dotfile_dest" ]; then
             # Not using iln, so prompt to handle existing
             if prompt_bool "Replace $dotfile_dest?"; then
@@ -183,7 +185,7 @@ mklink () {
                 ;;
         esac
         if [ -d "$2" ]; then
-            cmd.exe /c mklink /d "$link" "$(_winpath "$2")"
+            cmd.exe /c mklink /j "$link" "$(_winpath "$2")"
         else
             cmd.exe /c mklink "$link" "$(_winpath "$2")"
         fi
@@ -230,7 +232,7 @@ prompt_bool () {
 }
 
 homepath () {
-    echo "$@" | sed -e "s#^$HOME/#~/#" | if [ -n "${USERPROFILE:-}" ]; then sed -e "s#^$USERPROFILE/#\$USERPROFILE/#"; else cat; fi
+    echo "$@" | sed -e "s#^~/#$INSTALL_DEST/#" | if [ -n "${USERPROFILE:-}" ]; then sed -e "s#^$USERPROFILE/#\$USERPROFILE/#"; else cat; fi
 }
 
 abspath () {

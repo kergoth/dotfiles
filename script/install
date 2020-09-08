@@ -2,9 +2,6 @@
 
 set -euo pipefail
 
-# shellcheck source=./common.sh
-. "$(dirname "$0")/common.sh"
-
 usage() {
     cat <<END >&2
 ${0##*/} [options..] [TOPIC..]"
@@ -37,12 +34,19 @@ list_topics () {
 }
 
 force=0
+INSTALL_DEST="$HOME"
 include=
 exclude=
-while getopts fi:x:h opt; do
+while getopts fd:i:x:h opt; do
     case "$opt" in
         f)
             force=1
+            ;;
+        d)
+            INSTALL_DEST="$OPTARG"
+            XDG_CONFIG_HOME=$INSTALL_DEST/.config
+            XDG_DATA_HOME=$INSTALL_DEST/.local/share
+            XDG_CACHE_HOME=$INSTALL_DEST/.cache
             ;;
         i)
             include="${include+$include }$OPTARG"
@@ -58,6 +62,9 @@ while getopts fi:x:h opt; do
     esac
 done
 shift $((OPTIND - 1))
+
+# shellcheck source=./common.sh
+. "$(dirname "$0")/common.sh"
 
 if [ -n "$exclude" ]; then
     echo >&2 "Excluded: $exclude"

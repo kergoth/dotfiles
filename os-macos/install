@@ -1,1 +1,1 @@
-set_launchd XDG_CACHE_HOME "$HOME/Library/Caches"
+set_launchd XDG_CACHE_HOME "$INSTALL_DEST/Library/Caches"

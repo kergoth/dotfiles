@@ -1,4 +1,4 @@
-TEXTUAL_DIR="$HOME/Library/Group Containers/8482Q6EPL6.com.codeux.irc.textual/Library/Application Support/Textual"
+TEXTUAL_DIR="$INSTALL_DEST/Library/Group Containers/8482Q6EPL6.com.codeux.irc.textual/Library/Application Support/Textual"
 if [ -d "$TEXTUAL_DIR/Styles" ]; then
     for style in styles/*/ base16/styles/*/; do
         name="$(basename "${style%/}")"

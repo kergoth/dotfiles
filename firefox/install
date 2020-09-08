@@ -1,12 +1,12 @@
 case "$OSTYPE" in
     darwin*)
-        ff_profileroot="$HOME/Library/Application Support/Firefox/Profiles"
+        ff_profileroot="$INSTALL_DEST/Library/Application Support/Firefox/Profiles"
         ;;
     WSL)
         ff_profileroot="$USERPROFILE/AppData/Roaming/Mozilla/Firefox/Profiles"
         ;;
     *)
-        ff_profileroot="$HOME/.mozilla/firefox"
+        ff_profileroot="$INSTALL_DEST/.mozilla/firefox"
         ;;
 esac
 
