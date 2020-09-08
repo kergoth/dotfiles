@@ -2,5 +2,5 @@
 if [ $# -lt 2 ]; then
     cmd.exe /c mklink "$@"
 else
-    cmd.exe /c mklink "$@" "$(wslpath -wa "$1")" "$(wslpath -w "$2")"
+    cmd.exe /c mklink "$@" "$(wslpath -w "$1")" "$(wslpath -w "$2")"
 fi
