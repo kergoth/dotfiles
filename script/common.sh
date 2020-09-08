@@ -23,7 +23,7 @@ case "$OSTYPE" in
         ;;
     linux-gnu)
         case "$(uname -r)" in
-            *-Microsoft)
+            *-Microsoft|*-microsoft-*)
                 OSTYPE=WSL
                 USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
                 prefixes="%include%Wsl $prefixes"
