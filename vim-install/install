@@ -4,10 +4,10 @@ if [ -d ../vim ]; then
     link . "$XDG_CONFIG_HOME/nvim"
     link vimrc.redir "$INSTALL_DEST/.vimrc"
 
-    if [ "$OSTYPE" = WSL ] && [ -n "$USERPROFILE" ]; then
-        link . "$USERPROFILE/AppData/Local/vim"
-        link . "$USERPROFILE/AppData/Local/nvim"
-        link vimrc.redir "$USERPROFILE/_vimrc"
+    if [ "$OSTYPE" = WSL ] && [ "$INSTALL_DEST" = "$USERPROFILE" ]; then
+        link . "$INSTALL_DEST/AppData/Local/vim"
+        link . "$INSTALL_DEST/AppData/Local/nvim"
+        link vimrc.redir "$INSTALL_DEST/_vimrc"
     fi
 
     HOME="$INSTALL_DEST" ./script/bootstrap
