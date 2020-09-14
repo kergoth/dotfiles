@@ -1,5 +1,5 @@
 if [ "$OSTYPE" = WSL ] && [ "$INSTALL_DEST" = "$USERPROFILE" ]; then
     WIN_TERM_DIR="$INSTALL_DEST/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe"
-    link profiles.json "$WIN_TERM_DIR/LocalState/profiles.json"
+    link settings.json "$WIN_TERM_DIR/LocalState/settings.json"
     link files "$WIN_TERM_DIR/RoamingState"
 fi
