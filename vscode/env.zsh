@@ -1,11 +1,20 @@
 if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
-    code_dir="$(dirname "$(command -v code)")"
-    export VSCODE_SERVER_DIR=
-    case "$code_dir" in
-        "$HOME/.vscode-server/"*)
-            VSCODE_SERVER_DIR="$(dirname "$code_dir")"
-            ;;
-    esac
-    export VISUAL=codewait EDITOR=codewait
+    code_bin="$(command -v code)"
+    if [[ $? -ne 0 ]]; then
+        code_bin="$(ls -1rt ~/.vscode-server/bin/*/bin/code | tail -n 1)"
+        code_dir="$(dirname "$code_bin")"
+        path=($code_dir $path)
+    else
+        code_dir="$(dirname "$code_bin")"
+    fi
+    if [[ -n "$code_bin" ]]; then
+        export VSCODE_SERVER_DIR=
+        case "$code_dir" in
+            "$HOME/.vscode-server/"*)
+                VSCODE_SERVER_DIR="$(dirname "$code_dir")"
+                ;;
+        esac
+        export VISUAL=codewait EDITOR=codewait
+    fi
     export VSCODE_IPC_HOOK_CLI
 fi
