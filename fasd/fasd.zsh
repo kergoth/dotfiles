@@ -10,6 +10,7 @@ if (( $+commands[fasd] )); then
 
     alias ff="fasd -f"
     unalias f
+    unalias sd
 
     if [[ $OSTYPE =~ darwin* ]]; then
         alias o="a -e open"
