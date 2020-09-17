@@ -184,6 +184,7 @@ fi
 
 ## As Needed
 
+# cargo install --git https://github.com/pkolaczk/fclones # find duplicate files
 #go get -u github.com/ddo/fast # bandwidth speed testing
 #go get -u github.com/jbenet/go-multihash/multihash # If needed to create a hash for use by hashpipe
 #go get -u github.com/jbenet/hashpipe
