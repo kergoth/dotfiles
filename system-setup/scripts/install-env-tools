@@ -129,7 +129,6 @@ pip_install gitpython # buildhistory-diff
 
 ## Development Tools
 go get -u github.com/github/hub
-pipx python-gist
 pipx git+https://github.com/kergoth/git-imerge@no-completions-in-setup
 pipx git-revise
 # pprintpp + pp-ez?
