@@ -51,7 +51,7 @@ pipsi () {
 
 pipx () {
     if [ $has_python3 -eq 1 ]; then
-        pipx-install -f "$@"
+        pipx-install "$@"
     fi
 }
 
@@ -89,18 +89,17 @@ elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get -y install --no-upgrade llvm clang cmake pkg-config
 fi
 
-# cargo-update
 export CARGO_INSTALL_ROOT=${CARGO_INSTALL_ROOT:-$XDG_DATA_HOME/..}
-cargo-install fd-find ripgrep bat exa git-delta git-series
+cargo install fd-find ripgrep bat exa git-delta git-series
 cargo install --git https://github.com/jez/as-tree
 
 # Upgrade pip
-pip_install pip==18.1
+pip_install pip
 pip3_install pip
 
 ## Interactive mode python tools
-pip_install see
-pip3_install see
+#pip_install see
+#pip3_install see
 
 ## General Tools & Utilities
 go get -u github.com/junegunn/fzf/...
@@ -135,8 +134,8 @@ pipx git-revise
 # twine?
 # wheel?
 #pip_install ptpython
-pip_install pathlib2 click e better-exceptions-hook
-pip3_install e better-exceptions-hook
+#pip_install e
+#pip3_install e
 
 ## Documentation
 #gemv ronn
@@ -197,15 +196,15 @@ fi
 
 # cha(rs) is a commandline tool to display information about unicode characters
 #   https://github.com/antifuchs/chars
-#cargo-install chars
+#cargo install chars
 
 # A more intuitive version of du in rust
 #   https://github.com/bootandy/dust
-#cargo-install du-dust
+#cargo install du-dust
 
 # a calculator REPL, similar to bc(1)
 #   https://github.com/NerdyPepper/eva
-#cargo-install eva
+#cargo install eva
 
 ### Lua Development
 #luav moonscript
