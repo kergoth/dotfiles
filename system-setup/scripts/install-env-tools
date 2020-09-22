@@ -170,7 +170,7 @@ esac
 if [ -e "$XDG_DATA_HOME/shellcheck-stable/shellcheck" ]; then
     mkdir -p "$XDG_DATA_HOME/../bin"
     rm -f "$XDG_DATA_HOME/../bin/shellcheck"
-    lnr "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
+    ln -sf "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
 fi
 
 #pipsi prospector
