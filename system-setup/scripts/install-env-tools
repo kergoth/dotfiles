@@ -51,7 +51,7 @@ pipsi () {
 
 pipx () {
     if [ $has_python3 -eq 1 ]; then
-        pipx-install "$@"
+        pipx-install -f "$@"
     fi
 }
 
