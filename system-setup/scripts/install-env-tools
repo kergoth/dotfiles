@@ -144,7 +144,7 @@ pip3_install e better-exceptions-hook
 
 ## Formatters
 pipx yapf
-GO111MODULE=on go get -u mvdan.cc/sh/v3/cmd/shfmt
+GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
 go get -u github.com/shurcooL/markdownfmt
 # autopep8 - format code per pep8
 # https://pypi.python.org/pypi/docformatter - format docstrings per pep257
