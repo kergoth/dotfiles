@@ -65,12 +65,13 @@ def parse_assembly(path):
 
     for n, line in enumerate(fd, 1):
         # strip comments
-        line = line[0:line.find('#')].strip()
-        if len(line) == 0:
-            continue
+        line = line.split('#', 1)[0]
 
         # basic tokenization
         tokens = line.split()
+        if len(tokens) == 0:
+            continue
+
         cmd = tokens[0]
         if cmd == 'target':
             if len(tokens) < 2:
@@ -387,14 +388,11 @@ def update_state(ordered_nodes, graph, force):
 
         # merge dependencies
         for dep in node['merge']:
-            if node['base'] is dep:
-                if node['type'] != BranchType.BASE or node['state']['missing']:
-                    # merge is known in advance to be a no-op
-                    ret = False
-                else:
-                    ret = None
-            elif node['state']['missing'] or dep['state']['missing']:
+            if node['state']['missing'] or dep['state']['missing']:
                 ret = None
+            elif node['base'] is dep and node['type'] != BranchType.BASE:
+                # merge is known in advance to be a no-op
+                ret = False
             else:
                 ret = needs_merge(node['name'], dep['name'])
             if ret is not False:
@@ -711,8 +709,10 @@ def main(argv):
                 error('error while ' + state['last_msg'])
             if state['last_err'] is not None:
                 print(state['last_err'], file=sys.stderr)
-            warning('stopping at branch {}, fix/commit then re-run {}'.format(
-                color_node(nodes[state['last_branch']]), APP_SIG))
+            branch_name = state['last_branch']
+            if branch_name in nodes:
+                branch_name = color_node(nodes[branch_name])
+            warning('stopping at branch {}, fix/commit then re-run {}'.format(branch_name, APP_SIG))
             return ExitStatus.ERROR
 
     # restore initial branch

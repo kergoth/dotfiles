@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: ef83aa3c41d074ca24a3086888196fc145c57989
+    rev: 9539ec3679977dbe1a28092f36090bfd733ff754
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -140,7 +140,7 @@ curl module iterm2-zsh:
 
 git module git-cherry-tree:
     url: https://github.com/kergoth/git-cherry-tree
-    rev: 8b99599d88c254a56e98fc0d6cf34ccfdc19dffd
+    rev: c570af4c74c83332707d7f62ef7f0800dc6e5795
     pick: git-cherry-tree
 
 git module iln:
@@ -594,7 +594,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: e1d336a178b784766d05afbd84c8e006001979f4
+    rev: c367beabe38750dfc21cd8c5da27239ed0529845
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
@@ -618,4 +618,4 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: dcfd38ccedb61e30e8ec0fd818f90aedf9c7b0a1
+    rev: d7dcaecd530a9d23a52c888d06acfe6bfed813fc
