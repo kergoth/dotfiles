@@ -85,7 +85,7 @@ git for-each-ref "$@" --format='%(refname)' "$ref_prefix" | (
             refs/heads)
                 remote="$(git config "branch.$ref.pushremote" 2>/dev/null || git config "branch.$ref.remote")"
                 to_delete="$ref $to_delete"
-                if [ $prune_remote_repo -eq 1 ] && git rev-parse --quiet --verify "refs/remotes/$remote/$ref"; then
+                if [ $prune_remote_repo -eq 1 ] && git rev-parse --quiet --verify "refs/remotes/$remote/$ref" >/dev/null; then
                     to_push=":$ref $to_push"
                 fi
                 ;;
@@ -111,7 +111,7 @@ git for-each-ref "$@" --format='%(refname)' "$ref_prefix" | (
     if [ -n "$to_delete" ]; then
         case "$ref_prefix" in
             refs/heads)
-                git branch -d $to_delete
+                git branch -D $to_delete
                 ;;
             refs/remotes/*)
                 git branch -r -d $to_delete
