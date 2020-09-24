@@ -64,10 +64,6 @@ else
     asdf plugin-update "$plugin" >/dev/null 2>&1
 fi
 
-if [ "$plugin" = "nodejs" ]; then
-    bash "$ASDF_DATA_DIR/plugins/nodejs/bin/import-release-team-keyring" >/dev/null 2>&1
-fi
-
 if [ -e "$scriptdir/$plugin-build-env.sh" ]; then
     # shellcheck disable=SC1090
     . "$scriptdir/$plugin-build-env.sh"
