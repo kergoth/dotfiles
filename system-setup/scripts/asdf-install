@@ -59,7 +59,7 @@ plugin=$1
 asdf update >/dev/null 2>&1
 
 if [ ! -e "$ASDF_DATA_DIR/plugins/$plugin" ]; then
-    asdf-plugin-add "$plugin"
+    asdf plugin-add "$plugin"
 else
     asdf plugin-update "$plugin" >/dev/null 2>&1
 fi
