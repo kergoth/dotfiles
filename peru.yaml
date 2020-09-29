@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9539ec3679977dbe1a28092f36090bfd733ff754
+    rev: 3cf31fbde447b4412125990034a99030b39d45f8
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 454d236d3a793668b873a7b522353c68ec182cfa
+    rev: 2e009c7ab8e9c7496ed86473ede0917a3cefee01
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -174,7 +174,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: c60ed1758315f0d993fbcbf04459944c87e19a48
+    rev: 736344e151fd8937353ef8da5379c1082e441468
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -424,7 +424,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: e9668cc04b3a4132993851fc1fe57065771187a7
+    rev: 3cc866dd97578719be82c19d4197883a1500269e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -594,7 +594,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: c367beabe38750dfc21cd8c5da27239ed0529845
+    rev: 421f1e361c772e70d1e59f528b7d0aa1f2290f68
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
@@ -618,4 +618,4 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: d7dcaecd530a9d23a52c888d06acfe6bfed813fc
+    rev: b77d5f49eca523742a57f51aaabce4cc0f54f5e5

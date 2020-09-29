@@ -14,12 +14,20 @@ from logging import error, warning, info, debug
 
 APP_DSC = "update git branches using high-level instructions"
 APP_SIG = "git-assembler"
-APP_VER = "1.1"
+APP_VER = "1.2"
 
 
-def repo_root():
+def repo_toplevel():
     try:
         line = sp.check_output(['git', 'rev-parse', '--show-toplevel'])
+    except sp.CalledProcessError as e:
+        return None
+    return line.decode(sys.getfilesystemencoding()).rstrip()
+
+
+def repo_git_dir():
+    try:
+        line = sp.check_output(['git', 'rev-parse', '--git-dir'])
     except sp.CalledProcessError as e:
         return None
     return line.decode(sys.getfilesystemencoding()).rstrip()
@@ -33,14 +41,11 @@ def repo_common_dir():
     return line.decode(sys.getfilesystemencoding()).rstrip()
 
 
-def assembly_path(root, common_dir):
-    if common_dir is None:
-        path = os.path.join(root, '.git', 'assembly')
-    else:
-        path = os.path.join(common_dir, 'assembly')
+def assembly_path(toplevel_dir, common_dir):
+    path = os.path.join(common_dir, 'assembly')
     if os.path.exists(path):
         return path
-    path = os.path.join(root, '.gitassembly')
+    path = os.path.join(toplevel_dir, '.gitassembly')
     if os.path.exists(path):
         return path
     return None
@@ -443,16 +448,16 @@ def current_branch():
     return name
 
 
-def read_state(root):
-    state_path = os.path.join(root, '.git', 'as-cache', 'state')
+def read_state(git_dir):
+    state_path = os.path.join(git_dir, 'as-cache', 'state')
     if os.path.exists(state_path):
         return json.load(open(state_path))
     else:
         return {}
 
 
-def save_state(root, state):
-    cache_dir = os.path.join(root, '.git', 'as-cache')
+def save_state(git_dir, state):
+    cache_dir = os.path.join(git_dir, 'as-cache')
     dir_exists = os.path.exists(cache_dir)
     if not state:
         if dir_exists:
@@ -464,8 +469,8 @@ def save_state(root, state):
     json.dump(state, open(state_path, "w"))
 
 
-def switch_to_branch(name):
-    proc = sp.run(['git', 'checkout', '-q', '--no-guess', name],
+def switch_to_branch(name, *git_flags):
+    proc = sp.run(['git', 'checkout', '-q', '--no-guess', *git_flags, name],
                   stdout=sp.DEVNULL, stderr=sp.PIPE)
     stderr = proc.stderr.decode(sys.getdefaultencoding()).rstrip()
     return proc.returncode, stderr
@@ -487,7 +492,9 @@ def update_node(node, state, dry_run):
         if node['base']['name'] != state['last_branch']:
             log(logging.DEBUG, 'switching to branch {}'.format(color_node(node['base'])))
             if not dry_run:
-                ret, err = switch_to_branch(node['base']['name'])
+                # checkout in detached state since this is only done in
+                # preparation for the subsequent branch creation
+                ret, err = switch_to_branch(node['base']['name'], '--detach')
                 if ret != 0:
                     state['last_err'] = err
                     return False
@@ -560,7 +567,7 @@ def update_node(node, state, dry_run):
             proc = sp.run(['git', 'merge', '-q', '--rerere-autoupdate', '--no-edit', dep['name']])
             if proc.returncode == 1:
                 # directly attempt to autocommit in case rerere was successful
-                proc = sp.run(['git', 'commit', '-q', '--no-edit'])
+                proc = sp.run(['git', 'commit', '-q', '--no-edit'], stderr=sp.DEVNULL)
                 if proc.returncode == 0:
                     log(logging.WARN, 'automatic merge resolution successful')
             if proc.returncode != 0:
@@ -569,15 +576,14 @@ def update_node(node, state, dry_run):
     return True
 
 
-def check_pending(root):
-    git_root = os.path.join(root, '.git')
-    if os.path.exists(os.path.join(git_root, 'MERGE_HEAD')):
+def check_pending(git_dir):
+    if os.path.exists(os.path.join(git_dir, 'MERGE_HEAD')):
         error('merge in progress, refusing to continue')
         return True
-    elif os.path.exists(os.path.join(git_root, 'rebase-apply')):
+    elif os.path.exists(os.path.join(git_dir, 'rebase-apply')):
         error('rebase in progress, refusing to continue')
         return True
-    elif os.path.exists(os.path.join(git_root, 'BISECT_LOG')):
+    elif os.path.exists(os.path.join(git_dir, 'BISECT_LOG')):
         error('bisect in progress, refusing to continue')
         return True
     return False
@@ -625,14 +631,19 @@ def main(argv):
         COLOR_MODE = False
 
     # repository paths
-    root = repo_root()
-    if root is None:
+    toplevel_dir = repo_toplevel()
+    if toplevel_dir is None:
         return ExitStatus.CONFIG
+    git_dir = repo_git_dir()
+    common_dir = repo_common_dir()
+    if common_dir is None:
+        # support for old versions of git
+        common_dir = git_dir
 
     if args.config:
         path = args.config
     else:
-        path = assembly_path(root, repo_common_dir())
+        path = assembly_path(toplevel_dir, common_dir)
         if path is None:
             error('no assembly instructions')
             return ExitStatus.CONFIG
@@ -671,7 +682,7 @@ def main(argv):
     # update and check current state
     ordered_nodes = topo_sort(graph)
     update_state(ordered_nodes, graph, args.recreate)
-    state = read_state(root)
+    state = read_state(git_dir)
     state['current_branch'] = current_branch()
     state['last_branch'] = state['current_branch']
 
@@ -685,11 +696,11 @@ def main(argv):
         if state.get('start_branch', state['last_branch']) == state['last_branch']:
             info('already up to date')
             if not args.dry_run:
-                save_state(root, None)
+                save_state(git_dir, None)
             return ExitStatus.SUCCESS
 
     # refuse to continue if any stateful git operation is pending
-    if check_pending(root):
+    if check_pending(git_dir):
         return ExitStatus.ERROR
 
     # perform the required operations
@@ -704,7 +715,7 @@ def main(argv):
         state['last_err'] = None
         if not update_node(node, state, args.dry_run):
             if not args.dry_run:
-                save_state(root, state)
+                save_state(git_dir, state)
             if state['last_msg'] is not None:
                 error('error while ' + state['last_msg'])
             if state['last_err'] is not None:
@@ -734,7 +745,7 @@ def main(argv):
                     return ExitStatus.ERROR
 
     if not args.dry_run:
-        save_state(root, None)
+        save_state(git_dir, None)
     return ExitStatus.SUCCESS
 
 
