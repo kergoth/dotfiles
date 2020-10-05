@@ -87,9 +87,15 @@ fzf-cd-widget() {
     zle redisplay
     return 0
   fi
-  cd "$dir"
-  unset dir # ensure this doesn't end up appearing in prompt expansion
+  if [ -z "$BUFFER" ]; then
+    BUFFER="cd ${(q)dir}"
+    zle accept-line
+  else
+    print -sr "cd ${(q)dir}"
+    cd "$dir"
+  fi
   local ret=$?
+  unset dir # ensure this doesn't end up appearing in prompt expansion
   zle fzf-redraw-prompt
   return $ret
 }
