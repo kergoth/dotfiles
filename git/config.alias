@@ -6,7 +6,8 @@
 	ic = commit -s
 	cm = commit -s -m
 	cma = commit -sam
-	co = checkout
+	co = switch --no-guess
+	back = switch --no-guess -
 	cp = cherry-pick -x
 	au = add -u
 	st = status -sb
