@@ -1,8 +1,8 @@
 link_git() {
     mkdir -p "$1"
-    for i in ignore config* git-remote-dropbox.json; do
+    for i in ignore attributes config* git-remote-dropbox.json; do
         if [ -e "$i" ]; then
-            link "$i" "$1/$i"
+            link "$i" "$1/$i" || :
         fi
     done
 }
