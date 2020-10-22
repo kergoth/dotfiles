@@ -15,6 +15,7 @@ if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
                 ;;
         esac
         export VISUAL=codewait EDITOR=codewait
+        export GIT_MERGETOOL=vscode
     fi
     export VSCODE_IPC_HOOK_CLI
 fi
