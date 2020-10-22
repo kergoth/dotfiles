@@ -9,6 +9,7 @@ Creates a new session for the specified group.
 Options:
   -l  List existing groups rather than creating a session
   -k  Kill specified session group rather than creating a session
+  -d  Start the session detached
 END
     # shellcheck disable=SC2046
     if [ $(list_groups | wc -l) -gt 0 ]; then
@@ -51,7 +52,8 @@ kill_group() {
 
 
 kill=0
-while getopts lkh opt; do
+detached=0
+while getopts lkdh opt; do
     case "$opt" in
         l)
             list_groups
@@ -59,6 +61,9 @@ while getopts lkh opt; do
             ;;
         k)
             kill=1
+            ;;
+        d)
+            detached=1
             ;;
         \? | h)
             usage
@@ -100,4 +105,7 @@ if [ $# -gt 0 ] && [ $existing -eq 0 ]; then
 else
     tmux-resize-adaptable -t "$session" -p 50 -l main-vertical
 fi
-exec tmux attach-session -t "$session"
+
+if [ $detached -eq 0 ]; then
+    exec tmux attach-session -t "$session"
+fi
