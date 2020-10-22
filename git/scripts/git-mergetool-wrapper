@@ -6,6 +6,10 @@ GIT_EXEC_PATH="$(git --exec-path)"
 . "$GIT_EXEC_PATH/git-sh-setup"
 . "$GIT_EXEC_PATH/git-mergetool--lib"
 
+# These function overrides are here just to avoid calling check_unchanged a
+# second time in run_merge_cmd, as this script is already a merge tool.
+# Otherwise the user will be prompted to specify whether the merge succeeded
+# twice.
 run_merge_tool_wrapped () {
 	# If GIT_PREFIX is empty then we cannot use it in tools
 	# that expect to be able to chdir() to its value.
