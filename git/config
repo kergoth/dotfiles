@@ -46,12 +46,16 @@
 	algorithm = patience
 
 [merge]
-	tool = fugitive
+	tool = wrapper
 	summary = true
 	conflictstyle = diff3
 
-[mergetool "fugitive"]
-	cmd = vim -f -c \"Gvdiff\" \"$MERGED\"
+[mergetool.wrapper]
+	cmd = . $(which git-mergetool-wrapper)
+	default = vimdiff
+
+[mergetool.vscode]
+    cmd = code --wait $MERGED
 
 [tar "tar.xz"]
 	command = xz -c
