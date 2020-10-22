@@ -568,7 +568,7 @@ curl module zsh-git-completion:
 git module exa:
     url: https://github.com/ogham/exa
     move:
-        contrib/completions.zsh: _exa
+        completions/completions.zsh: _exa
     pick: _exa
     rev: 7f9773b68e10c03415c8c868135a97c5128d01a4
 
