@@ -113,6 +113,7 @@ git module windows-terminal:
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
     rev: 9dc38ad0f51ed72b0d0eb21de618ecbe65f04246
+    reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
