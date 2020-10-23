@@ -85,6 +85,11 @@
 	purr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
 	sync = "!f(){ orig_rev=\"$(git rev-parse HEAD)\"; git purr && git push && git --no-pager log \"${orig_rev:-ORIG_HEAD}...@{u}\" --stat --no-merges \"$@\"; }; f"
 
+	# Submit pull request. Technically just pull-request -f will do on its
+	# own, as it pushes on its own, but it's worth configuring the branch
+	# to ease later manual pushes.
+	submit = !git config-topic-branch && git push && git pull-request -f
+
 	# Rebase the current branch on its upstream
 	rebase-upstream = rebase -i @{u}
 	ru = !git rebase-upstream
