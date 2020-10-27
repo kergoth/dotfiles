@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 293ad2757bb584b6163eb16db1e4708996564263
+    rev: 7e8600147e53d1c5f1f6679663d66618e4076e19
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -175,7 +175,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: d2d4d68585ee6b4f4e92d9ead65937168f5984b8
+    rev: 0d5f862daf45336c12c2f540736b3d7ca396c78d
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -260,7 +260,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 47ae905ffb98cc4d4fd90083da6bc8dab55d9ecc
+    rev: b927c80531cca9b9107754186532e8cb00884008
 
 rule git-scripts:
     move:
@@ -570,7 +570,7 @@ git module exa:
     move:
         completions/completions.zsh: _exa
     pick: _exa
-    rev: f0c63b64ecfdc749b6c4b4d3e0c09866062c4771
+    rev: 39c8c67bf6237076b24915851f908d6da13c04b7
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -595,7 +595,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 26d47684475830af4c9f16daae55cfce020113ca
+    rev: ac52886ea8c54f2bee386456459c1d34c09cf265
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
