@@ -7,7 +7,7 @@ if [[ -z $DOTFILES_NO_UPDATE ]]; then
         "$DOTFILESDIR"/script/sync && touch "$DOTFILES_STAMP"
     fi
 fi
-if [[ -z $VIM_NO_UPDATE ]]; then
+if [[ -e "$DOTFILESDIR/vim" ]] && [[ -z $VIM_NO_UPDATE ]]; then
     VIM_STAMP=$XDG_CACHE_HOME/zsh/vim-updated
     if [[ -e "$DOTFILESDIR/vim/.git" ]] && [[ -n $VIM_STAMP(#qN.mh+160) ]] || [[ ! -f $VIM_STAMP ]]; then
         echo >&2 "Checking for vim updates (once weekly)"
