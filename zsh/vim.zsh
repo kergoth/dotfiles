@@ -12,5 +12,7 @@ fi
 if (( $+commands[nvim] )); then
     alias vim=nvim
 fi
-alias vi=vim
+if (( $+commands[vim] )); then
+    alias vi=vim
+fi
 export VISUAL=$EDITOR
