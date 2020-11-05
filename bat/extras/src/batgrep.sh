@@ -47,45 +47,23 @@ fi
 
 # Parse RIPGREP_CONFIG_PATH.
 if [[ -n "$RIPGREP_CONFIG_PATH" && -e "$RIPGREP_CONFIG_PATH" ]]; then
-	# shellcheck disable=SC2013
-	for arg in $(cat "$RIPGREP_CONFIG_PATH"); do
-		case "$arg" in
-			--context=*)
-				val="${arg:10}"
-				OPT_CONTEXT_BEFORE="$val"
-				OPT_CONTEXT_AFTER="$val"
-				;;
-
-			--before-context=*)
-				val="${arg:17}"
-				OPT_CONTEXT_BEFORE="$val"
-				;;
-
-			--after-context=*)
-				val="${arg:16}"
-				OPT_CONTEXT_AFTER="$val"
-				;;
-
-			-C*)
-				val="${arg:2}"
-				OPT_CONTEXT_BEFORE="$val"
-				OPT_CONTEXT_AFTER="$val"
-				;;
-
-			-B*)
-				val="${arg:2}"
-				OPT_CONTEXT_BEFORE="$val"
-				;;
-
-			-A*)
-				val="${arg:2}"
-				OPT_CONTEXT_AFTER="$val"
+	# shellcheck disable=SC2046
+	setargs $(cat "$RIPGREP_CONFIG_PATH")
+	while shiftopt; do
+		case "$OPT" in
+			-A | --after-context)  shiftval; OPT_CONTEXT_AFTER="$OPT_VAL" ;;
+			-B | --before-context) shiftval; OPT_CONTEXT_BEFORE="$OPT_VAL" ;;
+			-C | --context)
+				shiftval
+				OPT_CONTEXT_BEFORE="$OPT_VAL"
+				OPT_CONTEXT_AFTER="$OPT_VAL"
 				;;
 		esac
 	done
 fi
 
 # Parse arguments.
+resetargs
 while shiftopt; do
 	case "$OPT" in
 
@@ -94,9 +72,9 @@ while shiftopt; do
 	-s | --case-sensitive)           OPT_CASE_SENSITIVITY="--case-sensitive" ;;
 	-S | --smart-case)               OPT_CASE_SENSITIVITY="--smart-case" ;;
 
-	-A* | --after-context)  shiftval; OPT_CONTEXT_AFTER="$OPT_VAL" ;;
-	-B* | --before-context) shiftval; OPT_CONTEXT_BEFORE="$OPT_VAL" ;;
-	-C* | --context)
+	-A | --after-context)  shiftval; OPT_CONTEXT_AFTER="$OPT_VAL" ;;
+	-B | --before-context) shiftval; OPT_CONTEXT_BEFORE="$OPT_VAL" ;;
+	-C | --context)
 		shiftval
 		OPT_CONTEXT_BEFORE="$OPT_VAL"
 		OPT_CONTEXT_AFTER="$OPT_VAL"
@@ -234,6 +212,36 @@ main() {
 	LAST_LR=()
 	LAST_LH=()
 	LAST_FILE=''
+	READ_FROM_STDIN=false
+	
+	# If we found no files being provided and STDIN to not be attached to a tty,
+	# we capture STDIN to a variable. This variable will later be written to
+	# the STDIN file descriptors of both ripgrep and bat.
+	if ! [[ -t 0 ]] && [[ "${#FILES[@]}" -eq 0 ]]; then
+		READ_FROM_STDIN=true
+		IFS='' STDIN_DATA="$(cat)"
+	fi
+	
+	do_ripgrep_search() {
+		local COMMON_RG_ARGS=(
+			--with-filename \
+			--vimgrep \
+			"${RG_ARGS[@]}" \
+			--context 0 \
+			--no-context-separator \
+			--sort path \
+			"$PATTERN" \
+			"${FILES[@]}" \
+		)
+		
+		if "$READ_FROM_STDIN"; then
+			"$EXECUTABLE_RIPGREP" "${COMMON_RG_ARGS[@]}" <<< "$STDIN_DATA"
+			return $?
+		else
+			"$EXECUTABLE_RIPGREP" "${COMMON_RG_ARGS[@]}"
+			return $?
+		fi
+	}
 
 	do_print() {
 		[[ -z "$LAST_FILE" ]] && return 0
@@ -254,13 +262,26 @@ main() {
 		# Print the separator.
 		echo "$SEP"
 	}
+	
+	do_print_from_file_or_stdin() {
+		if [[ "$LAST_FILE" = "<stdin>" ]]; then
+			# If the file is from STDIN, we provide the STDIN
+			# contents to bat and tell it to read from STDIN.
+			LAST_FILE="-"
+			do_print <<< "$STDIN_DATA"
+			return $?
+		else
+			do_print
+			return $?	
+		fi
+	}
 
 	# shellcheck disable=SC2034
 	while IFS=':' read -r file line column text; do
 		((FOUND++))
 
 		if [[ "$LAST_FILE" != "$file" ]]; then
-			do_print
+			do_print_from_file_or_stdin
 			LAST_FILE="$file"
 			LAST_LR=()
 			LAST_LH=()
@@ -273,8 +294,8 @@ main() {
 
 		LAST_LR+=("--line-range=${line_start}:${line_end}")
 		[[ "$OPT_HIGHLIGHT" = "true" ]] && LAST_LH+=("--highlight-line=${line}")
-	done < <(rg --with-filename --vimgrep "${RG_ARGS[@]}" --context=0 --no-context-separator --sort path "$PATTERN" "${FILES[@]}")
-	do_print
+	done < <(do_ripgrep_search)
+	do_print_from_file_or_stdin
 
 	# Exit.
 	if [[ "$FOUND" -eq 0 ]]; then

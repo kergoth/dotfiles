@@ -112,12 +112,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 7e8600147e53d1c5f1f6679663d66618e4076e19
+    rev: 6639df9edcbf6ffb3c1f86bc767f4b1c176791a0
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 2ebfa6a59879b66b02712693731c84831255601d
+    rev: 1715f39a4680a27abd57fc30c98a95fdf191be45
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -175,7 +175,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0d5f862daf45336c12c2f540736b3d7ca396c78d
+    rev: d099941360e061587bf7d42cd029c91650ef5a44
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -260,7 +260,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: b927c80531cca9b9107754186532e8cb00884008
+    rev: 898f80736c75878acc02dc55672317fcc0e0a5a6
 
 rule git-scripts:
     move:
@@ -439,7 +439,7 @@ curl module cht:
     move:
         :cht.sh: cht.sh
     executable: cht.sh
-    sha1: ed3091d4cb55d49dc8dfe6ba8958de98fb218aa0
+    sha1: 94310f4fe3d464e2c9b7707dc192d0ebc2f01406
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
@@ -563,7 +563,7 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 18f12279af8c3ff5c2a456524bc16541ee047c60
+    sha1: 18c7185af130b15592b3c438cfd6634babdf40a1
 
 git module exa:
     url: https://github.com/ogham/exa
@@ -577,7 +577,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 0df5cffb844870984db48a9ded22dca05fd90f76
+    rev: 0d9468e1cfb263026812decf5371750340e557d5
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -595,7 +595,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: ac52886ea8c54f2bee386456459c1d34c09cf265
+    rev: 07cccd538618f27d9a120db292b19999150bb111
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
