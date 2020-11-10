@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 6639df9edcbf6ffb3c1f86bc767f4b1c176791a0
+    rev: 64aa911aeeaffac0e5dcd9368176483153cf5401
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -175,7 +175,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: d099941360e061587bf7d42cd029c91650ef5a44
+    rev: 722d66e85abde02518214edd1ab186d321c0170c
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -203,7 +203,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: a0fc5d9645caeb735701270cb19a17585f0bc1d6
+    rev: 1ce51c0d0ce56a81d38db9fc2cb4427d3a4ec646
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -239,7 +239,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: a51fc48913796dd7732f6fc6eba4352ca12c0f78
+    rev: 340035a7ba7615db3402a6aca8598d9ff355f1b5
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -400,7 +400,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 31b6443687b3a0313000f8044bffbbed0a8a9b97
+    rev: 21c4b49164088e601976c485c96e88ffb492c72b
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -425,7 +425,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 171d06965ec77a36c6eea2761bf95859dd34e5d0
+    rev: ad8c77bfa39c257ba7a7ea31ed5ce6fa3a699611
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
