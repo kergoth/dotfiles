@@ -1,9 +1,13 @@
 mel=
+imx=
 args=
-while getopts mM:a:h opt; do
+while getopts miM:a:h opt; do
     case "$opt" in
         m)
             mel=1
+            ;;
+        i)
+            imx=1
             ;;
         M)
             MACHINE="$OPTARG"
@@ -37,9 +41,20 @@ fi
     set +u
     rm -f "$BUILDDIR/.envrc"
     mkdir -p "$BUILDDIR"
+    topdir="$PWD"
     cd "$BUILDDIR"
     if [[ -n "$mel" ]]; then
         . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemux86-64}
+    elif [[ -n "$imx" ]]; then
+        case "$(cd "$BUILDDIR" && pwd -P)" in
+            "$(cd "$topdir" && pwd -P)/"*)
+                ;;
+            *)
+                echo >&2 "Error: BUILDDIR $BUILDDIR must be relative to topdir for imx builds"
+                return 1
+                ;;
+        esac
+        bash -c 'cd "$1" && . ./imx-setup-release.sh -b "$2"' - "$topdir" "$(basename "$BUILDDIR")"
     fi
     cp ~/mel/workflow/envrc-build .envrc
     direnv allow >/dev/null 2>&1
