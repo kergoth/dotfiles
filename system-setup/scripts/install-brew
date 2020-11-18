@@ -10,17 +10,22 @@ usage () {
     echo >&2 "Options:"
     echo >&2
     echo >&2 "  -r INSTALL_REPO_PATH Destination of the homebrew repo when using -s. Default: INSTALL_PATH/homebrew"
-    echo >&2 "  -s          Separate the prefix and repo."
-    echo >&2 "  -h          Show this help."
+    echo >&2 "  -s    Separate the prefix and repo."
+    echo >&2 "  -S    Use shallow clones."
+    echo >&2 "  -h    Show this help."
     exit 2
 }
 
 HOMEBREW_REPO=
 separate_prefix=0
-while getopts sr:h opt; do
+shallow=
+while getopts sSr:h opt; do
     case "$opt" in
         s)
             separate_prefix=1
+            ;;
+        S)
+            shallow=1
             ;;
         r)
             HOMEBREW_REPO="$OPTARG"
@@ -41,23 +46,23 @@ if [ -z "$HOMEBREW_PREFIX" ]; then
     usage
 fi
 
-mkdir -p "$HOMEBREW_PREFIX"
-HOMEBREW_PREFIX="$(cd "$HOMEBREW_PREFIX" && pwd -P)"
 PATH="$HOMEBREW_PREFIX/bin:$PATH"
 
 if [ $separate_prefix -eq 1 ]; then
+    mkdir -p "$HOMEBREW_PREFIX"
     if [ -z "$HOMEBREW_REPO" ]; then
-        HOMEBREW_REPO="$HOMEBREW_PREFIX/homebrew"
+        HOMEBREW_REPO="$HOMEBREW_PREFIX/brew"
     fi
 else
     HOMEBREW_REPO="$HOMEBREW_PREFIX"
 fi
 
-mkdir -p "$HOMEBREW_REPO" && \
-    curl -sSfL https://github.com/Homebrew/brew/tarball/master | \
-        tar xz --strip 1 -C "$HOMEBREW_REPO"
+git clone ${shallow:+--depth 1} https://github.com/homebrew/brew "$HOMEBREW_REPO"
+git config -f "$HOMEBREW_REPO/.git/config" homebrew.analyticsdisabled true
+git clone ${shallow:+--depth 1} https://github.com/homebrew/homebrew-core "$HOMEBREW_REPO/Library/Taps/homebrew/homebrew-core"
 
-if [ $separate_prefix -eq 1 ]; then
+HOMEBREW_PREFIX="$(cd "$HOMEBREW_PREFIX" && pwd -P)"
+if [ "$separate_prefix" -eq 1 ]; then
     HOMEBREW_REPO="$(cd "$HOMEBREW_REPO" && pwd -P)"
     mkdir -p "$HOMEBREW_PREFIX/bin"
     if command -v lnr >/dev/null 2>&1; then
@@ -83,8 +88,8 @@ fi
 
 for dir in etc include lib opt sbin share var/homebrew/linked Cellar Frameworks; do
     mkdir -p "$HOMEBREW_PREFIX/$dir"
-    chown -R $(whoami) "$HOMEBREW_PREFIX/$dir"
+    chown -R "$(whoami)" "$HOMEBREW_PREFIX/$dir"
 done
+
 brew update || exit 2
-git config -f "$(brew --repo)/.git/config" homebrew.analyticsdisabled true
-brew doctor
+brew doctor || exit 0
