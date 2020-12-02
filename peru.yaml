@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9a070490d4c77a15cfef99d28b78f6e059d3c52b
+    rev: f8edcf57bd1902617525d814453395fff443e45c
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -175,7 +175,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 1ed25d76ba51f9b3ab66f75b73734be43d41b8c3
+    rev: 298342677107f19f2ef7035afcf5302fdf26aa51
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -400,7 +400,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: 4b7f6a4f3afae571b1890b7235790a3bc1177e35
+    rev: df284079043b26fbd6e0e865c233106f0feaff61
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -425,7 +425,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 18bcfcd38ec4c10baaefc9a8a16b6c1856471519
+    rev: e6caa931a5cca04fe2ac13f0d1cebf115b5ae400
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -595,7 +595,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: c6ddda1aa3e3000336e3e421d6af21f62208c7cf
+    rev: fa85c9da5b357726e6f35a138d6b96b977655012
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
