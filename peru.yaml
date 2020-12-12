@@ -9,7 +9,6 @@ imports:
     zsh-manydots-magic: zsh/functions
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
     hub-completion: git/zsh-functions
-    iterm2-zsh: iterm2
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     exa: ls/zsh-functions
@@ -131,13 +130,6 @@ git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
     rev: 62af4f6a66601a517e168039614e5b528741a844
     pick: git-escape-magic
-
-curl module iterm2-zsh:
-    url: https://iterm2.com/misc/zsh_startup.in
-    move:
-        zsh_startup.in: iterm2.zsh
-    pick: iterm2.zsh
-    sha1: a8eaaeb4d9b1000fdef9672e3ca73d6600879fdf
 
 git module git-cherry-tree:
     url: https://github.com/kergoth/git-cherry-tree
