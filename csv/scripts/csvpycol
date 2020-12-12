@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
-import collections
 import csv
-import itertools
 import locale
 import re
 import sys
+import itertools
 import textwrap
 
 IMPORTS = ['re', 'itertools', 'textwrap']
@@ -45,7 +44,8 @@ def filter_rows(args):
     writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
     writer.writeheader()
     for lineno, row in enumerate(reader):
-        env = collections.ChainMap(row, {'_': row, 'lineno': lineno + 1, 'args': args.args})
+        env = dict(row)
+        env.update({'_': row, 'lineno': lineno + 1, 'args': args.args})
         nval = eval(args.pythonstring, imports, env)
         if args.filter:
             if not nval:
