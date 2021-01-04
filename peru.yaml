@@ -111,7 +111,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 683f4e28d3628a6a9a696fbd7cb6f23f036cb61f
+    rev: 0b0161d537006ca397e680ac07a071a0cd70e02d
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 2e009c7ab8e9c7496ed86473ede0917a3cefee01
+    rev: 244cbfc832930ce0a10c2e7930a30ea985a5e26d
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -167,7 +167,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: e9bc7331bde238e84f24b76ebb1f5e18799b15c4
+    rev: eaa0c52b457fc7a98e1ca8d5a33aad9397b18662
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -543,7 +543,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 17f69336b57ed3d0f454b0f9d790353633e1150d
+    rev: d58c5d0d9eca792394a62304266d598a00079a5b
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -587,7 +587,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 0152b38b8bebc9e0ac35998ab9ed19668776f4f5
+    rev: c570e4fdbd68a1cdbb3fef5d946498b5e585345f
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
