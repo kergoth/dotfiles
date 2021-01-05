@@ -1,0 +1,2 @@
+mkdir -p $XDG_CONFIG_HOME/kak
+link kakrc $XDG_CONFIG_HOME/kak/kakrc
