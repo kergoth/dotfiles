@@ -111,7 +111,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 7235996b4d83b340a9cfa7227381922e5ad7baf8
+    rev: e0f585251a3da061afb8928df8c38a79d2b807e0
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -145,7 +145,7 @@ curl module repo:
     url: https://storage.googleapis.com/git-repo-downloads/repo
     filename: repo
     executable: repo
-    sha1: cccdb2f7833400c7b544138801f5df2bae7798a1
+    sha1: 9bf893446f4a2b6e35136be8036c176dcc2dad33
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -167,7 +167,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: cc5640326b6f49bddc8c861453e2fe2240dbb431
+    rev: e922704f72e1ca6d5c400cc0b741155b636c8e1e
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -252,7 +252,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 898f80736c75878acc02dc55672317fcc0e0a5a6
+    rev: 71ca53e8125e36efbda17293c50027d31681a41f
 
 rule git-scripts:
     move:
@@ -562,7 +562,7 @@ git module exa:
     move:
         completions/completions.zsh: _exa
     pick: _exa
-    rev: 73e43c0700ce95042320888e5c3f59b74925c94e
+    rev: 13b91cced4cab012413b25c9d3e30c63548639d0
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
