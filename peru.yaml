@@ -91,6 +91,7 @@ imports:
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
     ghacksuserjs: firefox
+    vscode-zsh-completion: vscode/zsh-functions
 
 curl module archlinux-icons:
     url: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
@@ -612,3 +613,7 @@ git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
     rev: 7ad5e9c9c0b114fd803ca7b2c7b313c1b5f27274
+
+curl module vscode-zsh-completion:
+    url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
+    sha1: 717f731d41d56cea426f9b86abab43908eca7977
