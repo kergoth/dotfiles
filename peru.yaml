@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 3c044f20cfbb52b4cc78943a51790d902f6fd5de
+    rev: e7d32625befb85e5b40380de20c62172e7275c5e
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -125,7 +125,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 00c7e28e4aa025b2f73c13284602878926198f3b
+    rev: b8cc3b9b67c30088e59c4492e0deaf9b1e81ca0c
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -168,7 +168,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 1a76bdf8914195ab26ebac7e49a3ed8752dd69bd
+    rev: 686528d6274f8952619e6b60097218d8cd00305f
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -196,7 +196,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 1ce51c0d0ce56a81d38db9fc2cb4427d3a4ec646
+    rev: a16f36649253d6b53a05db840d73e4d1529a6b7c
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -588,7 +588,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 1f098f2eaf7b68387dfd666942f856c1176e0ca7
+    rev: fa78c53114c7c5e2a9b7b61e3c0a502ae6082105
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
