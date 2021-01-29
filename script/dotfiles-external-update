@@ -25,6 +25,10 @@ PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 "$dotfilesdir/script/peru" reup -f || echo >&2 "peru reup failed"
 "$dotfilesdir/script/peru" sync -f || die "peru sync failed"
 
+if [ -e vscode/zsh-functions/_code ]; then
+    sed -i -e 's/@@APPNAME@@/code/' vscode/zsh-functions/_code
+fi
+
 if [ -e external/scripts/diff-highlight.perl ]; then
     echo '#!/usr/bin/env perl' >external/scripts/diff-highlight
     cat external/scripts/DiffHighlight.pm >>external/scripts/diff-highlight
