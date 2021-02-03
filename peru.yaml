@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: e7d32625befb85e5b40380de20c62172e7275c5e
+    rev: a5931fbeadb271050041a3115bab73a1ad35f66d
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -168,7 +168,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 686528d6274f8952619e6b60097218d8cd00305f
+    rev: 6654239c94667fefb38d76cfc47b6abf5ced8149
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -588,7 +588,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: fa78c53114c7c5e2a9b7b61e3c0a502ae6082105
+    rev: cfaf354fe359eee6bdc219c4b75823b94f77d2c0
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
