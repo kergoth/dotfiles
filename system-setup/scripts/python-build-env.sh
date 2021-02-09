@@ -6,9 +6,9 @@ for llvmdir in /usr/local/llvm*/bin; do
 done
 
 export PYTHONNOUSERSITE=1
-export CFLAGS="${CFLAGS--O2}"
+export CFLAGS="${CFLAGS--O2} -fno-semantic-interposition"
 export CPPFLAGS="${CPPFLAGS-}"
-export LDFLAGS="${LDFLAGS:-}"
+export LDFLAGS="${LDFLAGS:-} -fno-semantic-interposition"
 
 case "${OSTYPE:-}" in
     darwin*)
