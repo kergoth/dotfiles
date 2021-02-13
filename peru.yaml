@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: a5931fbeadb271050041a3115bab73a1ad35f66d
+    rev: 604eaf9bdd0f691bedb6f530f5a5d0379864bce3
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -125,7 +125,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: b8cc3b9b67c30088e59c4492e0deaf9b1e81ca0c
+    rev: c7baec49d3e044121f7a37b65a84461ef8dac2de
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -253,7 +253,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 71ca53e8125e36efbda17293c50027d31681a41f
+    rev: 59ec22464f6c2b170b05f287e00740ea2288fe5c
 
 rule git-scripts:
     move:
@@ -588,7 +588,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: cfaf354fe359eee6bdc219c4b75823b94f77d2c0
+    rev: 82bb3f987de619ccd61b1577d0fbb9e80675b76c
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
@@ -612,7 +612,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: 7ad5e9c9c0b114fd803ca7b2c7b313c1b5f27274
+    rev: b868167c9f243d23518b31c0a68ae72298726383
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
