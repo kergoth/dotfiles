@@ -5,6 +5,9 @@
 	whitespace = cr-at-eol
 	pager = git-pager
 
+[init]
+	defaultBranch = main
+
 [user]
 	name = Christopher Larson
 	email = kergoth@gmail.com
