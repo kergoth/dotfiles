@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 604eaf9bdd0f691bedb6f530f5a5d0379864bce3
+    rev: cb03b97e67dd5fbb6c9a1ef218ef5a3c831dd21d
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -125,7 +125,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: c7baec49d3e044121f7a37b65a84461ef8dac2de
+    rev: 322d5f24f750646102a00aa09941b0206e744a04
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -168,7 +168,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 6654239c94667fefb38d76cfc47b6abf5ced8149
+    rev: 1137404190be7cf51ba647b76f4be2a11cc7d85f
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -588,7 +588,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 82bb3f987de619ccd61b1577d0fbb9e80675b76c
+    rev: 911206eed57d4e389d6ff6df792136c79cc33cc1
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
