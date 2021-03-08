@@ -112,12 +112,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: cb03b97e67dd5fbb6c9a1ef218ef5a3c831dd21d
+    rev: 1202f89399ec5fb15a5f12e21e1c6eb38da9fe48
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 5eb494852ebb99cf5c2c2bffee6b74e6f1bf38d0
+    rev: e8517244f7d2ae4f9d979faf94608d6e4a74a73e
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -125,7 +125,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 322d5f24f750646102a00aa09941b0206e744a04
+    rev: aa98bc593fee3fbdaf1acedc42a142f3c4134079
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -168,7 +168,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 1137404190be7cf51ba647b76f4be2a11cc7d85f
+    rev: b82c1693c097a53e66ed27dd94d1d0bd9d974d2e
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -232,7 +232,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 2f114666cfd550be44e35189f96c26d7efec0ae5
+    rev: aca78179d9f66f581cc4f23e38d6ab568897d6de
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -418,7 +418,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 96b95392ac35d3ff033403e399cb7cfb7e94750b
+    rev: 42e1f9d5c69ebd3437029d996e1e1241f531baf1
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -487,7 +487,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: b6ab6e39d34ebc968b09f4ad96c7c8bd19f59f55
+    rev: 8322eacd19cb71a06a6899abab0fad446958b072
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -588,7 +588,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 911206eed57d4e389d6ff6df792136c79cc33cc1
+    rev: 692ed70ea9f1eddc1a72725df25197a4847110d7
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
