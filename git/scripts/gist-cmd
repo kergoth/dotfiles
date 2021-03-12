@@ -8,4 +8,4 @@ trap 'rm -f $tempfile' EXIT INT TERM
     printf '$ %s\n' "$*"
     eval "$@" 2>&1
 } | tee "$tempfile"
-gist -p <"$tempfile"
+gh gist create <"$tempfile"
