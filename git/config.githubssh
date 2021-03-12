@@ -23,3 +23,6 @@
 
 [url "git@github.com:MentorEmbedded/"]
         insteadOf = https://github.com/MentorEmbedded/
+
+[url "git@github.com:ADIT-JV/"]
+        insteadOf = https://github.com/ADIT-JV/
