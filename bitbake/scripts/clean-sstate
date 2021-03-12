@@ -20,7 +20,10 @@ readlinks () {
 }
 
 caches=`mktemp -t clean-sstate.XXXXXX`
-cache_paths | readlinks | grep -E '/clarson|kergoth/' | sort -u >>$caches
+if [ $# -eq 0 ]; then
+    set -- $(cache_paths | grep -E '/clarson|kergoth/')
+fi
+for arg; do echo "$arg"; done | readlinks | sort -u >>$caches
 
 cat $caches | while read path; do
     find "$path" -atime $time -type f -print0
