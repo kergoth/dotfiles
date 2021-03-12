@@ -1,6 +1,6 @@
 #!/bin/sh
 
-default_exclude_pattern="\-native|rm_work"
+default_exclude_pattern="rm_work|-native"
 
 set -eu
 
@@ -40,6 +40,6 @@ cd "$tmpdir"
 bitbake -g "$@" >/dev/null
 cat task-depends.dot \
     | sed -e 's/\[label.*//; s/"\([^"]*\)\.[^"]*"/"\1"/g;' \
-    | grep -vE "${exclude_pattern}${exclude_pattern:+|}"'"([^"]*)" -> "\1"' \
+    | grep -vE "$(echo "${exclude_pattern}" | sed -e 's/^-/\\-/')${exclude_pattern:+|}"'"([^"]*)" -> "\1"' \
     | awk '!visited[$0]++' \
     | graph-easy -
