@@ -67,6 +67,7 @@ else
         elif command -v hub >/dev/null 2>&1; then
             hub fork
         fi
+        hub fetch kergoth
     else
         create_remote=0
     fi
