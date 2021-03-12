@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 1202f89399ec5fb15a5f12e21e1c6eb38da9fe48
+    rev: efc92de19fa35abc673b00d667e8dc7a1823edb6
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -168,7 +168,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: b82c1693c097a53e66ed27dd94d1d0bd9d974d2e
+    rev: b24a2e2fdcf15b3d0d353795f4bfa3d0b0fc06e6
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -232,7 +232,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: aca78179d9f66f581cc4f23e38d6ab568897d6de
+    rev: 3fc0fe3072720730cdea2c710d8bce03d0b1a47a
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -253,7 +253,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 59ec22464f6c2b170b05f287e00740ea2288fe5c
+    rev: 94f6e3e283f2adfc518b39cfc39291f1c2832ad0
 
 rule git-scripts:
     move:
@@ -418,7 +418,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 42e1f9d5c69ebd3437029d996e1e1241f531baf1
+    rev: 7d9e05062ec91043c4cd418e58dd5a7db899af45
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -487,7 +487,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: 8322eacd19cb71a06a6899abab0fad446958b072
+    rev: d464f6b25f4a40a051a7b4a39b5fe955d2cc48fe
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -588,7 +588,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 692ed70ea9f1eddc1a72725df25197a4847110d7
+    rev: 95645f59a39d6a6f3b2b824b6a1c0b2f4eb22be6
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
