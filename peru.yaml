@@ -142,11 +142,12 @@ git module iln:
     pick: iln
     rev: ec29051b06418773d066d8a9bcb4bc8021555c0b
 
-curl module repo:
-    url: https://storage.googleapis.com/git-repo-downloads/repo
-    filename: repo
-    executable: repo
-    sha1: 9bf893446f4a2b6e35136be8036c176dcc2dad33
+git module repo:
+  url: https://gerrit.googlesource.com/git-repo
+  pick: repo
+  executable: repo
+  reup: stable
+  rev: 0458faa502e9992a4305bfbb282fbee344d505bf
 
 git module smem:
     url: https://github.com/kwkroeger/smem
