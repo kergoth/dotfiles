@@ -1,9 +1,13 @@
 #!/bin/sh
 
+git_drop () {
+    git mstash "$@" dropped && git stash drop "$@"
+}
+
 untracked="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
 trap 'rm -f "$untracked"' EXIT INT TERM
 
-git mstash
+git mstash -q
 ret="$?"
 
 git ls-files -o | sort -u >"$untracked"
@@ -14,13 +18,13 @@ git ls-files -o | sort -u >"$untracked.new"
 comm -13 "$untracked" "$untracked.new" | tr '\n' '\0' | ifne xargs -0 git add -f
 git ls-files -zm | ifne xargs -0 git add
 if [ $dtret -ne 0 ]; then
-    git drop
+    git_drop -q
 else
     git commit -n -s -m "Update externals" && \
         git log --stat -1
 fi
 
 if [ "$ret" -eq 0 ]; then
-    git stash apply
+    git stash apply -q
 fi
 exit "$dtret"
