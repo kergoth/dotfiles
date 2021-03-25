@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: acdcdcaccb63064e5967f573198c5a05f483a55f
+    rev: e02d9a48e31399efd3aeca76ee4b17007a7c67de
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -125,7 +125,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: f1ab6110ced9b5451e2125214497fedd270414c7
+    rev: f0c856912cd5a74041978d6b02e22b6d3db69924
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -147,12 +147,12 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 511a0e54f5801a3f36c00fac478a596d83867d10
+  rev: d34af28ac2b5f8c2bc84342d86d98eca916319b3
 
 git module smem:
     url: https://github.com/kwkroeger/smem
     pick: smem
-    rev: abb695bbf51be5bd35877b438feb281a2aa4fffa
+    rev: 25cfec044a22818fbfa8b761f7f664a3583fae6d
 
 git module t:
     url: https://github.com/sjl/t
@@ -169,7 +169,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 1a191ec6f75acd1a0c89d28745a4b7cdf047875a
+    rev: 6a1f3ec08b3bbe11d527cd9b32ac6275df11dbf9
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -197,7 +197,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: a16f36649253d6b53a05db840d73e4d1529a6b7c
+    rev: aa1670e34b26d2e3bcd57b72379b209234f73e50
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -254,7 +254,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 94f6e3e283f2adfc518b39cfc39291f1c2832ad0
+    rev: a5828ae6b52137b913b978e16cd2334482eb4c1f
 
 rule git-scripts:
     move:
@@ -394,7 +394,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: b0c1cb60f78dcf7405bb018d6c8aeca9c2e03e5e
+    rev: c8e68d548a39ec0fab6f674a669c21b54d4eec61
 
 git module tagbak:
     url: https://github.com/ttscoff/tagbak
@@ -571,7 +571,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 165fc69d3475927d4ed653dceed432be5b62f8c2
+    rev: 2888236df33ec33a0d328f56766e7b562483d468
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
