@@ -27,11 +27,11 @@ case "$OSTYPE" in
         else
             echo >&2 "Note: no git-credential-manager installed, using ssh"
             git config -f ~/.config/git/config.local --unset credential.helper manager
-            git config -f ~/.config/git/config.local --replace-all include.path config.githubssh
+            git config -f ~/.config/git/config.local --replace-all include.path config.githubssh config.githubssh
         fi
         ;;
     *)
-        git config -f ~/.config/git/config.local --replace-all include.path config.githubssh
+        git config -f ~/.config/git/config.local --replace-all include.path config.githubssh config.githubssh
         ;;
 esac
 
