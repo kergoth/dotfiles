@@ -16,7 +16,7 @@
 #      Viewers must define two functions and append the viewer's name to the
 #      `BATPIPE_VIEWERS` array.
 #
-#      - viewer_${viewer}_supports [file_path] [file_basename]
+#      - viewer_${viewer}_supports [file_basename] [file_path] [inner_file_path]
 #        If this returns 0, the viewer's process function will be used.
 #
 #      - viewer_${viewer}_process  [file_path] [inner_file_path]
@@ -32,7 +32,7 @@
 #     batpipe_subheader [pattern] [...] -- Print a viewer subheader line.
 #
 #     bat                   -- Use `bat` for highlighting.
-#     bat_if_not_bat [...]  -- Use `bat` for highlighting (only supported in `less`).
+#     bat_if_not_bat [...]  -- Use `bat` for highlighting (when running from `less`).
 #
 #     strip_trailing_slashes [path]     -- Strips trailing slashes from a path.
 #
@@ -97,24 +97,43 @@ BATPIPE_INSIDE_LESS=false
 BATPIPE_INSIDE_BAT=false
 TERM_WIDTH="$(term_width)"
 
-bat_if_not_bat() { bat "$@"; return $?; }
+bat_if_not_bat() { cat; }
 if [[ "$(basename -- "$(parent_executable "$(parent_executable_pid)"|cut -f1 -d' ')")" == less ]]; then
 	BATPIPE_INSIDE_LESS=true
+	bat_if_not_bat() { bat "$@"; return $?; }
 elif [[ "$(basename -- "$(parent_executable|cut -f1 -d' ')")" == "$(basename -- "$EXECUTABLE_BAT")" ]]; then
 	BATPIPE_INSIDE_BAT=true
-	bat_if_not_bat() { cat; }
 fi
 
 # -----------------------------------------------------------------------------
 # Viewers:
 # -----------------------------------------------------------------------------
 
-BATPIPE_VIEWERS=("ls" "tar")
+BATPIPE_VIEWERS=("exa" "ls" "tar" "unzip" "gunzip" "xz")
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+viewer_exa_supports() {
+	[[ -d "$2" ]] || return 1
+	command -v "exa" &> /dev/null || return 1
+	return 0
+}
+
+viewer_exa_process() {
+	local dir="$(strip_trailing_slashes "$1")"
+	batpipe_header "Viewing contents of directory: %{PATH}%s" "$dir"
+	if "$BATPIPE_ENABLE_COLOR"; then
+		exa -la --color=always "$1" 2>&1
+	else
+		exa -la --color=never "$1" 2>&1
+	fi
+	return $?
+}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 viewer_ls_supports() {
-	[[ -d "$1" ]]
+	[[ -d "$2" ]]
 	return $?
 }
 
@@ -130,7 +149,7 @@ viewer_ls_process() {
 viewer_tar_supports() {
 	command -v "tar" &> /dev/null || return 1
 
-	case "$2" in
+	case "$1" in
 		*.tar | *.tar.*) return 0 ;;
 	esac
 
@@ -139,13 +158,72 @@ viewer_tar_supports() {
 
 viewer_tar_process() {
 	if [[ -n "$2" ]]; then
-		tar -xf "$1" -O "$2" 2>&1 | bat_if_not_bat --file-name="$1/$2" 
+		tar -xf "$1" -O "$2" | bat_if_not_bat --file-name="$1/$2" 
 	else
 		batpipe_header    "Viewing contents of archive: %{PATH}%s" "$1"
 		batpipe_subheader "To view files within the archive, add the file path after the archive."
 		tar -tvf "$1"
 		return $?
 	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+viewer_unzip_supports() {
+	command -v "unzip" &> /dev/null || return 1
+
+	case "$1" in
+		*.zip) return 0 ;;
+	esac
+
+	return 1
+}
+
+viewer_unzip_process() {
+	if [[ -n "$2" ]]; then
+		unzip -p "$1" "$2" | bat_if_not_bat --file-name="$1/$2" 
+	else
+		batpipe_header    "Viewing contents of archive: %{PATH}%s" "$1"
+		batpipe_subheader "To view files within the archive, add the file path after the archive."
+		unzip -l "$1"
+		return $?
+	fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+viewer_gunzip_supports() {
+	command -v "gunzip" &> /dev/null || return 1
+	[[ -z "$3" ]] || return 1
+
+	case "$2" in
+		*.gz) return 0 ;;
+	esac
+
+	return 1
+}
+
+viewer_gunzip_process() {
+	gunzip -k -c "$1"
+	return $?
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+viewer_xz_supports() {
+	command -v "xz" &> /dev/null || return 1
+	[[ -z "$3" ]] || return 1
+
+	case "$2" in
+		*.xz) return 0 ;;
+	esac
+
+	return 1
+}
+
+viewer_xz_process() {
+	xz --decompress -k -c "$1"
+	return $?
 }
 
 # -----------------------------------------------------------------------------
@@ -265,13 +343,18 @@ __TARGET_FILE="$(strip_trailing_slashes "$1")"
 # This allows inner paths of archives to be used.
 while ! [[ -e "$__TARGET_FILE" ]]; do
 	__TARGET_INSIDE="$(basename -- "${__TARGET_FILE}")/${__TARGET_INSIDE}"
-	__TARGET_FILE="$(dirname "${__TARGET_FILE}")"
+	__TARGET_FILE="$(dirname -- "${__TARGET_FILE}")"
 done
 
 # If the target file isn't actually a file, then the inner path should be appended.
 if ! [[ -f "$__TARGET_FILE" ]]; then
 	__TARGET_FILE="${__TARGET_FILE}/${__TARGET_INSIDE}"
 	__TARGET_INSIDE=""
+fi
+
+# If an inner path exists or the target file isn't a directory, the target file should not have trailing slashes.
+if [[ -n "$__TARGET_INSIDE" ]] || ! [[ -d "$__TARGET_FILE" ]]; then
+	__TARGET_FILE="$(strip_trailing_slashes "$__TARGET_FILE")"	
 fi
 
 # Remove trailing slash of the inner target path.
@@ -296,7 +379,7 @@ fi
 
 # Try opening the file with the first viewer that supports it.
 for viewer in "${BATPIPE_VIEWERS[@]}"; do
-	if "viewer_${viewer}_supports" "$__TARGET_FILE" "$__TARGET_BASENAME" 1>&2; then
+	if "viewer_${viewer}_supports" "$__TARGET_BASENAME" "$__TARGET_FILE" "$__TARGET_INSIDE" 1>&2; then
 		"viewer_${viewer}_process" "$__TARGET_FILE" "$__TARGET_INSIDE"
 		exit $?
 	fi

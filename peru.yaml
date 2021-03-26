@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: e02d9a48e31399efd3aeca76ee4b17007a7c67de
+    rev: 822ec6205a75c20cb46b925e9bd6fccadec6b77d
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -169,7 +169,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 6a1f3ec08b3bbe11d527cd9b32ac6275df11dbf9
+    rev: 764316a53d0eb60b315f0bbcd513de58ed57a876
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -419,7 +419,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: d7b527c1ae75d0344ee27d4aa9d7c1615e2d9828
+    rev: b9786c763f888d1bae5fb0608e18ee8d5299bb91
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -571,7 +571,7 @@ git module bat-extras:
     pick:
         - lib
         - src
-    rev: 2888236df33ec33a0d328f56766e7b562483d468
+    rev: 2b2db2b506b877ff7e5ff7d26167ec9bf5d7cf53
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
