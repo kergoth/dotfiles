@@ -112,7 +112,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 822ec6205a75c20cb46b925e9bd6fccadec6b77d
+    rev: fd99b012f55e677d18955be7324eeb25c95bf173
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -147,7 +147,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: d34af28ac2b5f8c2bc84342d86d98eca916319b3
+  rev: ddab0604eee41e26572f0cf9f3fd5ff7a0637594
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -254,7 +254,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: a5828ae6b52137b913b978e16cd2334482eb4c1f
+    rev: 48bf2fa8bad054d66bd79c6ba903c89c704201f7
 
 rule git-scripts:
     move:
@@ -419,7 +419,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: b9786c763f888d1bae5fb0608e18ee8d5299bb91
+    rev: a62a67ef5f49036db662b7630bb6f6036caeaf1e
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -557,21 +557,21 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 18c7185af130b15592b3c438cfd6634babdf40a1
+    sha1: 6c649c88e326770c876f7c63be1afe735aa7902c
 
 git module exa:
     url: https://github.com/ogham/exa
     move:
         completions/completions.zsh: _exa
     pick: _exa
-    rev: 13b91cced4cab012413b25c9d3e30c63548639d0
+    rev: f27fb2ab7ac6306ebcb782110fa8c6defbe3f225
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
         - src
-    rev: 2b2db2b506b877ff7e5ff7d26167ec9bf5d7cf53
+    rev: 87525fca9134a3aa1af2fdab8165b02f87632356
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -589,7 +589,7 @@ git module ghacksuserjs:
     url: https://github.com/ghacksuserjs/ghacks-user.js
     pick: updater.sh
     executable: updater.sh
-    rev: 3a24c01f030ef6b83c75b1a31ad4f030dbc66179
+    rev: b1927f9de1e7a2559f0e83c484d5cb243a4d5722
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
