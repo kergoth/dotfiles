@@ -13,6 +13,9 @@ imports:
     zsh-sort-timings: zsh/scripts
     exa: ls/zsh-functions
 
+    # Kakoune
+    kakoune-dracula: kakoune
+
     # Scripts
     ddimage: external/scripts
     simpler-color-test: external/scripts
@@ -625,3 +628,8 @@ git module rmate:
     pick: rmate
     executable: rmate
     rev: c4f343e46c34ebb6b44d466309c1cbe8f34b1da7
+
+git module kakoune-dracula:
+    url: https://github.com/dracula/kakoune
+    pick: colors
+    rev: 67d899dec1d68620c71b4ec543cfa004660539c1
