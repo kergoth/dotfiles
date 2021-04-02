@@ -92,6 +92,7 @@ imports:
     archlinux-icons: windows-terminal/files
     ghacksuserjs: firefox
     vscode-zsh-completion: vscode/zsh-functions
+    rmate: sublime-text-3/scripts
 
 curl module archlinux-icons:
     url: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
@@ -618,3 +619,9 @@ git module git-assembler:
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
     sha1: 717f731d41d56cea426f9b86abab43908eca7977
+
+git module rmate:
+    url: https://github.com/aurora/rmate
+    pick: rmate
+    executable: rmate
+    rev: c4f343e46c34ebb6b44d466309c1cbe8f34b1da7
