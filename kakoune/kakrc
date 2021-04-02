@@ -10,9 +10,6 @@ set-option global indentwidth 4
 # Always keep one line and three columns displayed around the cursor
 set-option global scrolloff 1,3
 
-# Display the status bar on top
-set-option global ui_options ncurses_status_on_top=true
-
 # Display line numbers
 add-highlighter global/ number-lines -hlcursor
 
