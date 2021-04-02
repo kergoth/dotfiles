@@ -7,3 +7,10 @@ for i in colors/*; do
         link "$i" $XDG_CONFIG_HOME/kak/"$i"
     fi
 done
+
+mkdir -p $XDG_CONFIG_HOME/kak/autoload
+for i in autoload/*; do
+    if [ -e "$i" ]; then
+        link "$i" $XDG_CONFIG_HOME/kak/"$i"
+    fi
+done
