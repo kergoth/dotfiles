@@ -1,2 +1,9 @@
 mkdir -p $XDG_CONFIG_HOME/kak
 link kakrc $XDG_CONFIG_HOME/kak/kakrc
+
+mkdir -p $XDG_CONFIG_HOME/kak/colors
+for i in colors/*; do
+    if [ -e "$i" ]; then
+        link "$i" $XDG_CONFIG_HOME/kak/"$i"
+    fi
+done
