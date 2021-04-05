@@ -11,16 +11,15 @@ source "${LIB}/constants.sh"
 source "${LIB}/opt.sh"
 source "${LIB}/opt_hook_color.sh"
 source "${LIB}/opt_hook_help.sh"
-source "${LIB}/opt_hook_pager.sh"
 source "${LIB}/opt_hook_version.sh"
 source "${LIB}/opt_hook_width.sh"
 source "${LIB}/print.sh"
 source "${LIB}/pager.sh"
+source "${LIB}/version.sh"
 # -----------------------------------------------------------------------------
 # Init:
 # -----------------------------------------------------------------------------
 hook_color
-hook_pager
 hook_version
 hook_width
 hook_help
@@ -28,7 +27,8 @@ hook_help
 # Help:
 # -----------------------------------------------------------------------------
 show_help() {
-	echo 'Usage: batwatch [--watcher entr|poll][--[no-]clear] <file> [<file> ...]'
+	echo 'Usage: batwatch --file [--watcher entr|poll][--[no-]clear] <file> [<file> ...]'
+	echo '       batwatch --command [-n<interval>] <command> [<arg> ...]' 
 }
 # -----------------------------------------------------------------------------
 # Watchers:
@@ -45,7 +45,7 @@ watcher_entr_watch() {
 		ENTR_ARGS+=('-c')
 	fi
 
-	pager_exec entr "${ENTR_ARGS[@]}" \
+	entr "${ENTR_ARGS[@]}" \
 		"$EXECUTABLE_BAT" "${BAT_ARGS[@]}" \
 		--terminal-width="$OPT_TERMINAL_WIDTH" \
 		--paging=never \
@@ -107,12 +107,8 @@ watcher_poll_watch() {
 	while true; do
 		if "$modified"; then
 			modified=false
-
-			if [[ "$OPT_CLEAR" == "true" ]]; then
-				clear
-			fi
-
-			pager_exec "$EXECUTABLE_BAT" "${BAT_ARGS[@]}" \
+			clear
+			"$EXECUTABLE_BAT" "${BAT_ARGS[@]}" \
 				--terminal-width="$OPT_TERMINAL_WIDTH" \
 				--paging=never \
 				"${files[@]}"
@@ -132,9 +128,9 @@ watcher_poll_watch() {
 			((i++))
 		done
 
-		# Wait for "q" to exit, or check again after 1 second.
+		# Wait for "q" to exit, or check again after a few seconds.
 		local input
-		read -r -t 1 input
+		read -r -t "${OPT_INTERVAL}" input
 		if [[ "$input" =~ [q|Q] ]]; then
 			exit
 		fi
@@ -168,10 +164,11 @@ determine_watcher() {
 # -----------------------------------------------------------------------------
 # Options:
 # -----------------------------------------------------------------------------
-BAT_ARGS=()
+BAT_ARGS=(--paging=never)
 FILES=()
 FILES_HAS_DIRECTORY=false
-OPT_HELP=false
+OPT_MODE=file
+OPT_INTERVAL=3
 OPT_CLEAR=true
 OPT_WATCHER=""
 
@@ -185,10 +182,10 @@ while shiftopt; do
 	case "$OPT" in
 
 		# Script options
-		--watcher)
-			shiftval
-			OPT_WATCHER="$OPT_VAL"
-			;;
+		--watcher)     shiftval;   OPT_WATCHER="$OPT_VAL" ;;
+		--interval|-n) shiftval;   OPT_INTERVAL="$OPT_VAL" ;;
+		--file|-f)                 OPT_MODE=file ;;
+		--command|-x)              OPT_MODE=command ;;
 		--clear)                   OPT_CLEAR=true ;;
 		--no-clear)                OPT_CLEAR=false ;;
 
@@ -198,26 +195,38 @@ while shiftopt; do
 		# Files
 		*) {
 			FILES+=("$OPT")
+			if [[ "$OPT_MODE" = "command" ]]; then
+				getargs --append FILES
+				break
+			fi
 		} ;;
 
 	esac
 done
 
+# Validate that a file/command was provided.
 if [[ ${#FILES[@]} -eq 0 ]]; then
-	print_error "no files provided"
+	if [[ "$OPT_MODE" = "file" ]]; then
+		print_error "no files provided"
+	else
+		print_error "no command provided"
+	fi
 	exit 1
 fi
-
-for file in "${FILES[@]}"; do
-	if ! [[ -e "$file" ]]; then
-		print_error "'%s' does not exist" "$file"
-		exit 1
-	fi
-
-	if [[ -d "$file" ]]; then
-		FILES_HAS_DIRECTORY=true
-	fi
-done
+	
+# Validate that the provided files exist.
+if [[ "$OPT_MODE" = "file" ]]; then
+	for file in "${FILES[@]}"; do
+		if ! [[ -e "$file" ]]; then
+			print_error "'%s' does not exist" "$file"
+			exit 1
+		fi
+	
+		if [[ -d "$file" ]]; then
+			FILES_HAS_DIRECTORY=true
+		fi
+	done
+fi
 
 # Append bat arguments.
 if "$OPT_COLOR"; then
@@ -226,33 +235,63 @@ else
 	BAT_ARGS+=("--color=never")
 fi
 
+# Initialize clear command based on whether or not ANSI should be used.
+if [[ "$OPT_CLEAR" == "true" ]]; then
+	if "$OPT_COLOR"; then
+		clear() {
+			term_clear || return $?
+		}
+	fi
+else
+	clear() {
+		:
+	}
+fi
+
 # -----------------------------------------------------------------------------
 # Main:
 # -----------------------------------------------------------------------------
-# Determine the watcher.
-if [[ -z "$OPT_WATCHER" ]]; then
-	if ! determine_watcher; then
-		print_error "Your system does not have any supported watchers."
-		printc "Please read the documentation at %{BLUE}%s%{CLEAR} for more details.\n" "$PROGRAM_HOMEPAGE" 1>&2
-		exit 2
+if [[ "$OPT_MODE" = "file" ]]; then
+	# Determine the watcher.
+	if [[ -z "$OPT_WATCHER" ]]; then
+		if ! determine_watcher; then
+			print_error "Your system does not have any supported watchers."
+			printc "Please read the documentation at %{BLUE}%s%{CLEAR} for more details.\n" "$PROGRAM_HOMEPAGE" 1>&2
+			exit 2
+		fi
+	else
+		if ! type "watcher_${OPT_WATCHER}_supported" &> /dev/null; then
+			print_error "Unknown watcher: '%s'" "$OPT_WATCHER"
+			exit 1
+		fi
+	
+		if ! "watcher_${OPT_WATCHER}_supported" &> /dev/null; then
+			print_error "Unsupported watcher: '%s'" "$OPT_WATCHER"
+			exit 1
+		fi
 	fi
+	
+	main() {
+		"watcher_${OPT_WATCHER}_watch"  "${FILES[@]}"
+		return  $?
+	}
 else
-	if ! type "watcher_${OPT_WATCHER}_supported" &> /dev/null; then
-		print_error "Unknown watcher: '%s'" "$OPT_WATCHER"
-		exit 1
+	
+	# Set bat's header to show the command.
+	BAT_VERSION="$(bat_version)"
+	if version_compare "$BAT_VERSION" -ge "0.14"; then
+		BAT_ARGS+=(--file-name="${FILES[*]}")
 	fi
 
-	if ! "watcher_${OPT_WATCHER}_supported" &> /dev/null; then
-		print_error "Unsupported watcher: '%s'" "$OPT_WATCHER"
-		exit 1
-	fi
+	main() {
+		while true; do
+			clear
+			"${FILES[@]}" 2>&1 | "$EXECUTABLE_BAT" "${BAT_ARGS[@]}"
+			sleep "${OPT_INTERVAL}" || exit 1
+		done
+	}
 fi
 
 # Run the main function.
-main() {
-	"watcher_${OPT_WATCHER}_watch"  "${FILES[@]}"
-	return  $?
-}
-
 main
 exit $?
