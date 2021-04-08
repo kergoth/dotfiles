@@ -35,3 +35,32 @@ nop %sh{
     mkdir -p "$kak_config/autoload"
     ln -sf "$kak_runtime/autoload" "$kak_config/autoload/standard-library"
 }
+
+# Formatting
+hook global BufSetOption filetype=elixir %{
+    set-option buffer formatcmd 'mix format -'
+}
+
+hook global BufSetOption filetype=python %{
+    set-option buffer formatcmd 'autopep8'
+}
+
+hook global BufSetOption filetype=sh %{
+    set-option buffer formatcmd 'shfmt -ci -bn -i 4'
+}
+
+# Linting
+hook global WinSetOption filetype=elixir %{
+    # NOTE: The `Elixir.CredoNaming.Check.Consistency.ModuleFilename` rule is
+    # not supported because Kakoune moves the file to a temporary directory
+    # before linting.
+    set-option window lintcmd "mix credo list --config-file=.credo.exs --format=flycheck --ignore-checks='Elixir.CredoNaming.Check.Consistency.ModuleFilename'"
+}
+
+hook global WinSetOption filetype=python %{
+    set-option window lintcmd "flake8 --filename='*' --format='%%(path)s:%%(row)d:%%(col)d: error: %%(text)s' --ignore=E121,E123,E126,E226,E24,E704,W503,W504,E501,E221,E127,E128,E129,F405"
+}
+
+hook global WinSetOption filetype=sh %{
+    set-option window lintcmd "shellcheck -fgcc -Cnever"
+}
