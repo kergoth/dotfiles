@@ -29,3 +29,9 @@ map -docstring "paste the clipboard" global user p "<a-!> pbpaste<ret>"
 
 # Shortcut to quickly exit the editor
 define-command -docstring "save and quit" x "write-all; quit"
+
+# Ensure the standard library is available
+nop %sh{
+    mkdir -p "$kak_config/autoload"
+    ln -sf "$kak_runtime/autoload" "$kak_config/autoload/standard-library"
+}
