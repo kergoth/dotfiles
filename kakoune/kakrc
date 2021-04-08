@@ -7,6 +7,10 @@ set-option global tabstop 4
 # Indent with 4 spaces
 set-option global indentwidth 4
 
+# Indent with tab, rather than inserting a tab character
+map global insert <tab> '<a-;><gt>'
+map global insert <s-tab> '<a-;><lt>'
+
 # Always keep one line and three columns displayed around the cursor
 set-option global scrolloff 1,3
 
