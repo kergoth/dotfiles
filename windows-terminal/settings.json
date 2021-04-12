@@ -7,10 +7,11 @@
 
     "profiles": {
         "defaults": {
+            // "bellStyle": "visual",
             "colorScheme": "Dracula",
-            "fontFace": "Fira Code Retina",
+            "fontFace": "Rec Mono Duotone",
             "fontSize": 10,
-            "fontWeight": "Light",
+            "fontWeight": "light",
             "historySize": 15000
         },
         "list": [
@@ -23,19 +24,19 @@
             {
                 "name": "svr-pkl-eng-07",
                 "guid": "{893a443f-128f-4598-8a92-ae5715ec72d0}",
-                "commandline": "wsl ssh -AY kergoth@svr-pkl-eng-07.pkl.mentorg.com",
+                "commandline": "ssh -AY kergoth@svr-pkl-eng-07.pkl.mentorg.com",
                 "icon": "ms-appdata:///roaming/ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png"
             },
             {
                 "name": "ubu18",
                 "guid": "{9bd39df5-e188-4387-aafc-4b5e40dfd24b}",
-                "commandline": "wsl ssh -AY kergoth@ubu18-mel-builder.alm.mentorg.com",
+                "commandline": "ssh -AY kergoth@ubu18-mel-builder.alm.mentorg.com",
                 "icon": "ms-appdata:///roaming/ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png"
             },
             {
                 "name": "cosca",
                 "guid": "{feebf7ad-a4b3-48b6-8a94-3f59032486eb}",
-                "commandline": "wsl ssh -AY kergoth@cosca",
+                "commandline": "ssh -AY kergoth@cosca",
                 "icon": "ms-appdata:///roaming/ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png"
             },
             {
@@ -110,6 +111,12 @@
                 "guid": "{ac73a22d-256b-58dd-8d16-749c37c3aeaa}",
                 "hidden": false,
                 "name": "Artix",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+                "hidden": false,
+                "name": "Ubuntu-20.04",
                 "source": "Windows.Terminal.Wsl"
             }
         ]
