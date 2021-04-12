@@ -109,3 +109,13 @@ if (Test-Path "$env:USERPROFILE/.pyenv")
     $env:PYENV = "$env:USERPROFILE/.pyenv/pyenv-win"
     $env:Path += ";$env:PYENV/bin;$env:PYENV/shims"
 }
+if (-Not (Get-Command python))
+{
+    if (Test-Path "C:\Python38")
+    {
+        $env:Path = "C:\Python38;" + $env:Path
+    }
+}
+if (-Not (Test-Path alias:python3)) {
+    Add-Alias python3 python
+}
