@@ -1,4 +1,0 @@
-#!/bin/sh
-
-grab-links https://dl.winehq.org/wine-builds/macosx/download.html | \
-    grep portable-winehq.\*.tar.gz | sort -u | tr '\n' '\0' | xargs -t0 -P4 -n 1 wine2wineskin
