@@ -1,6 +1,10 @@
 #!/bin/sh
 
-tmp="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
-trap 'rm -f "$tmp"' EXIT INT TERM
-cat "$@" >"$tmp"
-cat "$tmp"
+if [ $# -eq 0 ]; then
+    cat
+else
+    tmp="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+    trap 'rm -f "$tmp"' EXIT INT TERM
+    cat >"$tmp"
+    mv "$tmp" "$1"
+fi
