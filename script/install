@@ -43,7 +43,7 @@ while getopts fd:i:x:h opt; do
             force=1
             ;;
         d)
-            INSTALL_DEST="$OPTARG"
+            INSTALL_DEST="$(abspath "$OPTARG")"
             XDG_CONFIG_HOME=$INSTALL_DEST/.config
             XDG_DATA_HOME=$INSTALL_DEST/.local/share
             XDG_CACHE_HOME=$INSTALL_DEST/.cache
