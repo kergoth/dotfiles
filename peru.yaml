@@ -115,12 +115,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: fb597ed304ec6eef245405c9652e9b8a029b821f
+    rev: 05e7ea1423ede8ee67c3462fb04538fae5c9f9b2
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: e8517244f7d2ae4f9d979faf94608d6e4a74a73e
+    rev: ebef4e55691f62e630318d56468e5798367aa81c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -128,7 +128,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: f0c856912cd5a74041978d6b02e22b6d3db69924
+    rev: cb4b721ada6cb2fa01c97cc3a04aeca4d7aae6bc
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -172,7 +172,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 8b36a4cb19771f44e093b5b1341b9080d7255494
+    rev: c7c5e7670a9bccf5c7ba2b8dd3fa73135be2b734
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -200,7 +200,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: aa1670e34b26d2e3bcd57b72379b209234f73e50
+    rev: fd6894a897390ca7c8f47a5c56b77b0e902cb218
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -560,21 +560,21 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 6c649c88e326770c876f7c63be1afe735aa7902c
+    sha1: 36e1e0804598c93c2536abea3dd3d9cbb6a6cd9b
 
 git module exa:
     url: https://github.com/ogham/exa
     move:
         completions/completions.zsh: _exa
     pick: _exa
-    rev: 505808fd9fb749f01c4377607d56fa26f91eb84d
+    rev: 293372a613932a084a4b84218cc7cc374d15955e
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
         - src
-    rev: 6497bc04a044569b22f5c24d646265254446f391
+    rev: 20cdf5a9983da09bdfe640bbd321f606a282e7db
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -586,7 +586,7 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: d2b9f71f90a752e814579d0b43915833b9135504
+    rev: 34aa2be2ef0a673a09551a89e14ea5dded7d4e45
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git

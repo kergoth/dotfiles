@@ -32,7 +32,7 @@ formatter_prettier_supports() {
 		.ts | .tsx | \
 		.css | .scss | .sass | \
 		.graphql | .gql | \
-		.html | \
+		.html | .svg | \
 		.json | \
 		.md | \
 		.yml)
@@ -44,7 +44,14 @@ formatter_prettier_supports() {
 }
 
 formatter_prettier_process() {
-	prettier --stdin --stdin-filepath "$1" 2>/dev/null
+	# Rewrite the file extension to hackily support SVG. 
+	local file="$1"
+	local fext="$(extname "$file")"
+	case "$fext" in
+		.svg) file="$(basename -- "$file" "$fext").html" ;;
+	esac
+	
+	prettier --stdin --stdin-filepath "$file" 2>/dev/null
 	return $?
 }
 
@@ -130,6 +137,7 @@ map_language_to_extension() {
 	css)                        ext=".css" ;;
 	scss)                       ext=".scss" ;;
 	sass)                       ext=".sass" ;;
+	svg )                       ext=".svg" ;;
 	html | htm | shtml | xhtml) ext=".html" ;;
 	json)                       ext=".json" ;;
 	md | mdown | markdown)      ext=".md" ;;
@@ -181,8 +189,10 @@ process_file() {
 	local formatter
 	
 	# Check that the file exists, and is a file.
-	check_exists  "$file" || return 1
-	check_is_file "$file" || return 1
+	if [[ "$file" != "-" ]]; then
+		check_exists  "$file" || return 1
+		check_is_file "$file" || return 1
+	fi
 
 	# Determine the formatter.
 	if [[ -n "$OPT_LANGUAGE" ]]; then
@@ -190,7 +200,9 @@ process_file() {
 		fext="$(map_language_to_extension "$lang")"
 	fi
 
-	formatter="$(map_extension_to_formatter "$fext")"
+	if [[ "$ext" != "-" ]]; then
+		formatter="$(map_extension_to_formatter "$fext")"
+	fi
 
 	# Debug: Print the name and formatter.
 	if "$DEBUG_PRINT_FORMATTER"; then
@@ -218,7 +230,7 @@ process_file() {
 	# shellcheck disable=SC2094 disable=SC2181
 	if [[ "$file" = "-" ]]; then
 		data_raw="$(cat -)"
-		data_formatted="$("formatter_${formatter}_process" "$file" 2>/dev/null <<<"$data_raw")"
+		data_formatted="$("formatter_${formatter}_process" "STDIN${fext}" 2>/dev/null <<<"$data_raw")"
 
 		if [[ $? -ne 0 ]]; then
 			print_warning "'STDIN': Unable to format with '%s'" "$formatter"
@@ -271,6 +283,9 @@ while shiftopt; do
 
 	# Debug options
 	--debug:formatter) DEBUG_PRINT_FORMATTER=true ;;
+
+	# Read from stdin
+	-) FILES+=("-") ;;
 
 	# bat options
 	-*) {
