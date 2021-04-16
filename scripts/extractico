@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec wrestool -x -t14 -o . "$@"
