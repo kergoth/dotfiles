@@ -59,7 +59,6 @@ imports:
     titlecase-perl: external/scripts
     tony-tmux-config: tmux/scripts
     vim-profiler: scripts
-    vitag: os-macos/scripts
     wget-finder: external/scripts
     wsl-open: os-wsl/scripts
 
@@ -369,11 +368,6 @@ git module zsh-manydots-magic:
     url: https://github.com/knu/zsh-manydots-magic
     rev: 4372de0718714046f0c7ef87b43fc0a598896af6
     pick: manydots-magic
-
-git module vitag:
-    url: https://github.com/ttscoff/vitag
-    pick: vitag
-    rev: 56366c0709978da4d12ae8e11ff3bcf032265406
 
 git module gitvoodoo:
     url: https://github.com/johnbartholomew/gitvoodoo

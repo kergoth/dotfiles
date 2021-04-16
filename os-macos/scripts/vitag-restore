@@ -1,4 +1,0 @@
-#!/bin/sh
-
-PATH="$(dirname "$0"):$PATH"
-vitag -e tee <"${1:-.vitag}"
