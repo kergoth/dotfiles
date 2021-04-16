@@ -1,5 +1,0 @@
-DNTW_DIR="${DNTW_DIR:-${XDG_DATA_HOME:-~/.local/share}/dntw}"
-
-if [ ! -e "$DNTW_DIR" ]; then
-    git clone https://github.com/joshdick/dntw "$DNTW_DIR"
-fi
