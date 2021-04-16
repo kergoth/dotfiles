@@ -1,1 +1,0 @@
-export SHELLCHECK_OPTS="-e SC2002 -e SC2039 -e SC2209"
