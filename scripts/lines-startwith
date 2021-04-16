@@ -1,3 +1,0 @@
-#!/bin/sh
-
-grep -E "^$(python3 -c 'import re,sys; print(re.escape(sys.argv[1]))' "$*")"
