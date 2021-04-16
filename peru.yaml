@@ -93,7 +93,6 @@ imports:
     bat-theme-dracula: bat/themes/Dracula
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
-    ghacksuserjs: firefox
     vscode-zsh-completion: vscode/zsh-functions
     rmate: sublime-text-3/scripts
 
@@ -588,12 +587,6 @@ git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
     rev: d2b9f71f90a752e814579d0b43915833b9135504
-
-git module ghacksuserjs:
-    url: https://github.com/ghacksuserjs/ghacks-user.js
-    pick: updater.sh
-    executable: updater.sh
-    rev: ada8158caf3f0c0fac7f1e4d2694fcdf7fc28b59
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
