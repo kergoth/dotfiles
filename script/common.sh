@@ -23,7 +23,7 @@ case "$OSTYPE" in
         ;;
     linux-gnu)
         case "$(uname -r)" in
-            *-Microsoft|*-microsoft-*)
+            *-Microsoft | *-microsoft-*)
                 OSTYPE=WSL
                 USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
                 prefixes="%include%Wsl $prefixes"
@@ -44,19 +44,19 @@ case "$OSTYPE" in
         ;;
 esac
 
-set_launchd () {
+set_launchd() {
     var="$1"
     value="$2"
 
     case "$OSTYPE" in
-        darwin*)
-            ;;
+        darwin*) ;;
+
         *)
             return
             ;;
     esac
 
-    plist_set () {
+    plist_set() {
         plist_key="$(printf "%s" "$1" | sed "s/'/\\\\'/g")"
         plist_val="$(printf "%s" "$2" | sed "s/'/\\\\'/g")"
         if /usr/libexec/PlistBuddy -c "Print '$plist_key'" "$3" >/dev/null 2>&1; then
@@ -78,7 +78,7 @@ set_launchd () {
     fi
 }
 
-link () {
+link() {
     # Link a file to a destination using a relative path, with particular
     # convenience handling for dotfiles. ex.:
     #
@@ -112,8 +112,8 @@ link () {
     wsl_winpath=0
     if [ $OSTYPE = WSL ]; then
         case "$(pwd -P)" in
-            "$WslDisks"/*)
-                ;;
+            "$WslDisks"/*) ;;
+
             *)
                 case "$dotfile_dest" in
                     "$WslDisks"/*)
@@ -141,8 +141,8 @@ link () {
         fi
 
         case "$existing_target" in
-            /*)
-                ;;
+            /*) ;;
+
             *)
                 existing_target="$(normalize_path "$destdir/$existing_target")"
                 ;;
@@ -172,7 +172,7 @@ link () {
     echo >&2 "Linked $(homepath "$dotfile_dest")"
 }
 
-_winpath () {
+_winpath() {
     case "$1" in
         "$WslDisks"/*)
             echo "$1" | sed -e "s#^$WslDisks/\([^/]*\)/#\1:/#; s#/#\\\\#g"
@@ -183,7 +183,7 @@ _winpath () {
     esac
 }
 
-mklink () {
+mklink() {
     (
         cd "$WslDisks/c" || exit 1
         link="$1"
@@ -200,7 +200,7 @@ mklink () {
     )
 }
 
-prompt_bool () {
+prompt_bool() {
     if [[ $# -gt 1 ]]; then
         default="$2"
     else
@@ -239,35 +239,33 @@ prompt_bool () {
     done
 }
 
-homepath () {
+homepath() {
     echo "$@" | sed -e "s#^~/#$INSTALL_DEST/#" | if [ -n "${USERPROFILE:-}" ]; then sed -e "s#^$USERPROFILE/#\$USERPROFILE/#"; else cat; fi
 }
 
-abspath () {
+abspath() {
     # Return an absolute path for the specified argument
     _path="$1"
     if [ -n "${_path##/*}" ]; then
-        _path="$(pwd -P)/$1"
+        _path="${2:-$(pwd -P)}/$1"
     fi
     echo "$_path"
 }
 
-normalize_path()
-{
+normalize_path() {
     # Attempt to normalize the specified path, removing . and ..
 
     # Remove all /./ sequences.
     local path="${1//\/.\//\/}"
 
     # Remove dir/.. sequences.
-    while [[ $path =~ ([^/][^/]*/\.\./) ]]
-    do
+    while [[ $path =~ ([^/][^/]*/\.\./) ]]; do
         path="${path/${BASH_REMATCH[0]}/}"
     done
     echo "$path"
 }
 
-install_templated () {
+install_templated() {
     # Extremely basic template file generation, currently only implements
     # %include, which does what you would expect
     dotfile_dest="$2"
@@ -288,8 +286,8 @@ install_templated () {
 
         if [ -z "$files" ]; then
             case "$line" in
-                %include%*)
-                    ;;
+                %include%*) ;;
+
                 *)
                     printf "%s\n" "$line"
                     ;;
@@ -306,7 +304,7 @@ install_templated () {
     echo >&2 "Wrote $(abspath "$dotfile_dest")"
 }
 
-merge_to () {
+merge_to() {
     # Convenience wrapper for merging multiple files into one dotfile
     dotfile_dest="$1"
     destdir="${dotfile_dest%/*}"
