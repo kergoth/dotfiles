@@ -20,7 +20,6 @@ imports:
     ddimage: external/scripts
     simpler-color-test: external/scripts
     appify: os-macos/scripts
-    cht: cht/scripts
     cpanm: perl/scripts
     cwdiff: external/scripts
     diff-so-fancy: external/scripts
@@ -430,13 +429,6 @@ git module flu:
     move:
         flu.sh: osx-flush-dns-cache
     pick: osx-flush-dns-cache
-
-curl module cht:
-    url: https://cht.sh/:cht.sh
-    move:
-        :cht.sh: cht.sh
-    executable: cht.sh
-    sha1: 94310f4fe3d464e2c9b7707dc192d0ebc2f01406
 
 git module osx-wificleaner:
     url: https://github.com/mubix/osx-wificleaner
