@@ -87,7 +87,15 @@ link () {
     # link config/curl # links to $INSTALL_DEST/.config/curl (relatively)
     dotfile="$(abspath "$1")"
     if [ $# -gt 1 ]; then
-        dotfile_dest="$(abspath "$2")"
+        dotfile_dest="$(abspath "$2" "$INSTALL_DEST")"
+        if [ "$INSTALL_DEST" != "$HOME" ]; then
+            case "$dotfile_dest" in
+                $INSTALL_DEST/*) ;;
+                $HOME/*)
+                    dotfile_dest="$INSTALL_DEST/${dotfile_dest#$HOME/}"
+                    ;;
+            esac
+        fi
     else
         dotfile_base="${dotfile##*/}"
         case "$dotfile_base" in
