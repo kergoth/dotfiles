@@ -1,4 +1,0 @@
-#!/bin/sh
-
-pip3 install --user --upgrade pocket-api
-pocket-cli search -s unread '' | pocket-cli-join-entries | grep github.com | f 1 | nlxargs -n 1 -I"{}" pocket-add-tags "{}" do

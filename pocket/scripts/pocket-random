@@ -1,7 +1,0 @@
-#!/bin/sh
-
-pocket-search -s unread "$@" \
-    | select-random \
-    | tee /dev/tty \
-    | awk '{print $2}' \
-    | nlxargs open

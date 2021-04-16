@@ -1,3 +1,0 @@
-#!/bin/sh
-
-pocket-cli search -s unread '' | pocket-cli-join-entries | f 1,2 | sort -k2 | uniq -f 1 -d
