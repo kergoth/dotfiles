@@ -1,4 +1,0 @@
-#!/bin/sh
-
-find ~/Dropbox -iname \*\'s\ conflicted\ copy\ \* -print0 | xargs -0 -n 1 trash -v
-find ~/Dropbox -iname \*_\*_\*_Conflict.\* -o -iname \*_\*_\*_Conflict -print0 | xargs -0 -n 1 trash -v
