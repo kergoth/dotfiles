@@ -20,7 +20,6 @@ imports:
     ddimage: external/scripts
     simpler-color-test: external/scripts
     appify: os-macos/scripts
-    cpanm: perl/scripts
     cwdiff: external/scripts
     diff-so-fancy: external/scripts
     dtrx: external/scripts
