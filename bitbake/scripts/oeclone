@@ -5,6 +5,10 @@ set -euo pipefail
 
 query="$1"
 case "$query" in
+    bitbake)
+	git clone https://github.com/openembedded/bitbake
+	exit $?
+	;;
     oe-core)
         query=openembedded-core
         ;;
