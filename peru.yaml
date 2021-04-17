@@ -48,7 +48,6 @@ imports:
     myrepos: external/scripts
     osx-wificleaner: os-macos/scripts
     pom: external/scripts
-    pyenv-installer: system-setup/scripts
     dev-goodies: git/scripts
     repo: git/scripts
     rpm2cpio: external/scripts
@@ -460,13 +459,6 @@ git module textual-succinctlight:
 git module textual-succinct:
     url: https://github.com/TempSpas/textual-succinct
     rev: 1bb7701001441f3bcd477c33384a59fa11bb2738
-
-git module pyenv-installer:
-    url: https://github.com/pyenv/pyenv-installer
-    rev: dd3f7d0914c5b4a416ca71ffabdf2954f2021596
-    move:
-        bin/pyenv-installer: pyenv-installer
-    pick: pyenv-installer
 
 git module git-fixup:
     url: https://github.com/keis/git-fixup
