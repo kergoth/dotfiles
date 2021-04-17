@@ -19,7 +19,6 @@ imports:
     # Scripts
     ddimage: external/scripts
     simpler-color-test: external/scripts
-    appify: os-macos/scripts
     cwdiff: external/scripts
     diff-so-fancy: external/scripts
     dtrx: external/scripts
@@ -52,7 +51,6 @@ imports:
     smem: external/scripts
     ssh-copy-rsub: external/scripts
     t: external/scripts
-    tagbak: os-macos/scripts
     titlecase-perl: external/scripts
     tony-tmux-config: tmux/scripts
     vim-profiler: scripts
@@ -185,11 +183,6 @@ git module dev-goodies:
         - bin/git-stage-branch
     export: bin
     rev: 61fec42ad35352f3c1ada707cb4419879f68bd97
-
-git module appify:
-    url: https://gist.github.com/674099
-    executable: appify
-    rev: 9e64331e348b20049975519b866148050db06da5
 
 git module wget-finder:
     url: https://github.com/chilicuil/learn
@@ -388,13 +381,6 @@ git module hub-completion:
         etc/hub.zsh_completion: _hub
     pick: _hub
     rev: c8e68d548a39ec0fab6f674a669c21b54d4eec61
-
-git module tagbak:
-    url: https://github.com/ttscoff/tagbak
-    pick:
-        - tagbak
-        - bookmark
-    rev: 86144aaece6086a39da4c226c6b9b3c8867a4a8f
 
 git module git-tbdiff:
     url: https://github.com/trast/tbdiff
