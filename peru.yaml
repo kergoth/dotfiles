@@ -29,7 +29,6 @@ imports:
     fumiyas-home-commands: external/scripts
     gnu2bsd: ls/scripts
     git-assembler: git/scripts
-    git-blame-colored: git/scripts
     git-cherry-tree: git/scripts
     git-extras: git/scripts
     git-fixup: git
@@ -443,13 +442,6 @@ git module gnu2bsd:
     pick: gnu2bsd-lscolors
     executable: gnu2bsd-lscolors
     rev: 1cd2e3c0a7730bb3b86161b1ab50a408da823edf
-
-git module git-blame-colored:
-    url: https://gist.github.com/11dfac41bad93aeaa2ec
-    move:
-        git-blame-colored.py: git-blame-colored
-    executable: git-blame-colored
-    rev: fd6b15d3bb44965dd06f37ee0790fd29c10a5d11
 
 git module textual-succinctlight:
     url: https://github.com/TempSpas/SuccinctLight
