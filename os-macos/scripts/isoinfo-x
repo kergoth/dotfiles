@@ -1,5 +1,0 @@
-#!/bin/sh
-
-isoinfo "$@" -f -find -type f \
-    | sed -e 's,^/,,' \
-    | nlxargs -n 1 -I"{}" isoinfo-x-one "{}" "$@"
