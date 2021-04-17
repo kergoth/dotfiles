@@ -4,9 +4,10 @@
 set -euo pipefail
 
 query="$1"
+shift
 case "$query" in
     bitbake)
-	git clone https://github.com/openembedded/bitbake
+	git clone https://github.com/openembedded/bitbake "$@"
 	exit $?
 	;;
     oe-core)
@@ -24,5 +25,5 @@ http 'http://layers.openembedded.org/layerindex/branch/master/layers/' \
     | sort -u \
     | fzf-tmux --select-1 --multi --query="$query" --exit-0 \
     | while read -r url; do
-        git clone "$url" || exit $?
+        git clone "$url" "$@" || exit $?
     done
