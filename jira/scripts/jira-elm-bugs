@@ -1,3 +1,0 @@
-#!/bin/sh
-PATH="$(dirname "$0"):$PATH"
-jira-view --search-jql 'status in (Open, "In Progress", Reopened, "PR in review") AND labels = MEL_ELM_BUGS AND labels != "document-ki"'
