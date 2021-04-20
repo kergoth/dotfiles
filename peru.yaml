@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 05e7ea1423ede8ee67c3462fb04538fae5c9f9b2
+    rev: 21b2e01643f92eb5e111356c8b14d263c2620076
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: cb4b721ada6cb2fa01c97cc3a04aeca4d7aae6bc
+    rev: 901a787b2d514e417d019f676fcc3adfa1929eb1
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: c7c5e7670a9bccf5c7ba2b8dd3fa73135be2b734
+    rev: 8b0e1f941a419258b0877d9a5f71373d76472043
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
