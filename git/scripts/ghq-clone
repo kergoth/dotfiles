@@ -1,4 +1,6 @@
 #!/bin/sh
+# Use the ghq cloned repositories as a cache, cloning from there to $PWD,
+# followed by redirecting the remote back to upstream.
 
 set -e
 
