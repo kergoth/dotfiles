@@ -5,6 +5,11 @@ set -e
 url="$1"
 url="${url%.git}"
 shift
-ghq get "$url"
-ghq_repo="$(ghq-repo-path "$url")"
-git clone-via "$ghq_repo" "$@"
+ghq get "$url" || :
+ghq_repo="$(ghq-repo-path "$url")" || exit 1
+if [ -z "$ghq_repo" ]; then
+    exit 1
+else
+    ( cd "$ghq_repo" && git fetch --all || : )
+    git clone-via "$ghq_repo" "$@"
+fi
