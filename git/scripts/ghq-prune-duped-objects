@@ -1,0 +1,6 @@
+#!/bin/sh
+
+ghq root --all \
+    | tr '\n' '\0' \
+    | xargs -0 -I"{}" find "{}" -type d -wholename \*/.git/objects -prune -print0 \
+    | xargs -t0 hardlink -ft

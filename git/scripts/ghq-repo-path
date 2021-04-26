@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+url="$1"
+shift
+url="${url%.git}"
+to_list="$(echo "${url%/}" | sed -e 's#^.*://##')"
+ghq_repo="$(ghq list -e -p "$to_list")"
+[ -n "$ghq_repo" ] && echo "$ghq_repo"
