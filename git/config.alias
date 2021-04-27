@@ -55,22 +55,6 @@
 	tree-since-head = "!git show-tree --since=\"$(git diff-tree --pretty=format:%cd HEAD)\""
 	recent-tree = show-tree --since=last\\ week
 
-	# Hub
-	ci-status = !hub ci-status
-	delete = !hub delete
-	release = !hub release
-
-	# Github CLI
-	issue = !gh issue
-	issues = !gh issue list
-	pr = !gh pr
-	pull-request = !gh pr create
-	pull-requests = !gh pr list
-	repo = !gh repo
-	browse = !gh repo view
-	create = !gh repo create
-	fork = !gh repo fork --remote=false --clone=false
-
 	# Upstream
 	tracking-remote = "!f() { git rev-parse --symbolic-full-name '@{u}' | sed -n 's,refs/remotes/\\([^/][^/]*\\)/.*,\\1,p'; }; f"
 	tracking-ref = rev-parse --symbolic-full-name @{u}
@@ -196,3 +180,18 @@
 	# Third party tooling and scripts
 	as = assembler
 
+	# Hub
+	ci-status = !hub ci-status
+	delete = !hub delete
+	release = !hub release
+
+	# Github CLI
+	issue = !gh issue
+	issues = !gh issue list
+	pr = !gh pr
+	pull-request = !gh pr create
+	pull-requests = !gh pr list
+	repo = !gh repo
+	browse = !gh repo view
+	create = !gh repo create
+	fork = !gh repo fork --remote=false --clone=false
