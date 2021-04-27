@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+git add -u >/dev/null
+git empty --quiet
+git push origin --quiet
