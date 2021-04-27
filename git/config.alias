@@ -6,6 +6,7 @@
 	ic = commit -s
 	cm = commit -s -m
 	cma = commit -sam
+	empty = commit --allow-empty-message -m ''
 	co = switch --no-guess
 	back = switch --no-guess -
 	cp = cherry-pick -x
@@ -100,7 +101,7 @@
 	rfc = revert-file-commit
 
 	# Amend the current commit, but don't prompt to edit the commit message
-	amend = commit --amend -C HEAD
+	amend = commit --amend -C HEAD --allow-empty-message
 
 	# Reword the current commit
 	reword = revise -i -e --no-index HEAD~1
