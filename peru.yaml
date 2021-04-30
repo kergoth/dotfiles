@@ -75,10 +75,6 @@ imports:
     # Tmux
     tmux-float: tmux/plugins/float
 
-    # Textual
-    textual-succinct: textual/styles/Succinct
-    textual-succinctlight: textual/styles/Succinct Light
-
     # Other
     fzf: fzf
     bat-extras: bat/extras
@@ -428,14 +424,6 @@ git module gnu2bsd:
     pick: gnu2bsd-lscolors
     executable: gnu2bsd-lscolors
     rev: 1cd2e3c0a7730bb3b86161b1ab50a408da823edf
-
-git module textual-succinctlight:
-    url: https://github.com/TempSpas/SuccinctLight
-    rev: 8ae36b5f64c2a799d9aad090ed666f76554fdef7
-
-git module textual-succinct:
-    url: https://github.com/TempSpas/textual-succinct
-    rev: 1bb7701001441f3bcd477c33384a59fa11bb2738
 
 git module git-fixup:
     url: https://github.com/keis/git-fixup
