@@ -26,7 +26,7 @@ PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 "$dotfilesdir/script/peru" sync -f || die "peru sync failed"
 
 if [ -e vscode/zsh-functions/_code ]; then
-    sed -i -e.bak 's/@@APPNAME@@/code/' vscode/zsh-functions/_code
+    sed -i.bak -e 's/@@APPNAME@@/code/' vscode/zsh-functions/_code
     rm -f vscode/zsh-functions/_code.bak
 fi
 
