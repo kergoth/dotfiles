@@ -103,7 +103,6 @@ pip3_install pip
 
 ## General Tools & Utilities
 go get -u github.com/junegunn/fzf/...
-pipx mercurial hg-git
 pipx httpie
 go get -u github.com/EricChiang/pup
 
