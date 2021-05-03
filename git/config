@@ -43,6 +43,7 @@
 
 [diff]
 	renames = copy
+	colorMoved = default
 	mnemonicprefix = true
 	ignoreSubmodules = dirty
 	compactionHeuristic = true
