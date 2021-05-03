@@ -146,8 +146,13 @@
 	starred = github-list-starred
 
 [fixup]
-    menu = fzf --height '60%' \
-                --bind 'tab:toggle-preview' \
-                --preview 'git show --color {+1}' \
-                --preview-window=up:80% \
-                --prompt 'Select commit: '
+	menu = fzf --height '60%' \
+	            --bind 'tab:toggle-preview' \
+	            --preview 'git show --color {+1}' \
+	            --preview-window=up:80% \
+	            --prompt 'Select commit: '
+
+[delta]
+	features = navigate
+	side-by-side = true
+	theme = Dracula
