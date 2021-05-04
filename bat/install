@@ -1,34 +1,19 @@
-if which bat >/dev/null 2>&1; then
-    cfgpath=$(bat --config-dir)
-else
-    cfgpath=$XDG_CONFIG_HOME/bat
-fi
-mkdir -p $cfgpath
+mkdir -p "$XDG_CONFIG_HOME/bat"
 
-if [ -e $cfgpath/syntax ] && [ ! -e $cfgpath/syntaxes ]; then
-    mv $cfgpath/syntax $cfgpath/syntaxes
-fi
+link bat.conf "$XDG_CONFIG_HOME/bat/config"
 
-if [ -h $cfgpath ]; then
-    rm -f $cfgpath
+if [ -e syntaxes ]; then
+    mkdir -p "$XDG_CONFIG_HOME/bat/syntaxes"
+    find "$PWD/syntaxes/" -name \*.sublime-syntax -prune -print0 \
+        | xargs -0 -I"{}" ln -sf "{}" "$XDG_CONFIG_HOME/bat/syntaxes/"
 fi
 
-mkdir -p $cfgpath/syntaxes
-find $PWD/syntaxes/ -name \*.sublime-syntax -prune | xargs -I"{}" ln -sf "{}" $cfgpath/syntaxes/
-
-mkdir -p $cfgpath/themes
-find $PWD/themes/ -name \*.tmTheme -prune | xargs -I"{}" ln -sf "{}" $cfgpath/themes/
-
-#if [ ! -e $cfgpath/syntaxes/Packages ]; then
-#    git clone https://github.com/sublimehq/Packages $cfgpath/syntaxes/Packages
-#fi
-
-if [ ! -e $cfgpath/syntaxes/Elixir ]; then
-    git clone https://github.com/princemaple/elixir-sublime-syntax $cfgpath/syntaxes/Elixir
+if [ -e themes ]; then
+    mkdir -p "$XDG_CONFIG_HOME/bat/themes"
+    find "$PWD/themes/" -name \*.tmTheme -prune -print0 \
+        | xargs -0 -I"{}" ln -sf "{}" "$XDG_CONFIG_HOME/bat/themes/"
 fi
 
 if which bat >/dev/null 2>&1; then
     bat cache --build >/dev/null &
 fi
-
-link bat.conf $XDG_CONFIG_HOME/bat/config

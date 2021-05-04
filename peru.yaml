@@ -79,7 +79,6 @@ imports:
     fzf: fzf
     bat-extras: bat/extras
     bat-syntax-bitbake: bat/syntaxes/BitBake
-    bat-theme-dracula: bat/themes/Dracula
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
     vscode-zsh-completion: vscode/zsh-functions
@@ -478,10 +477,6 @@ git module hardlinkpy:
 git module tmux-float:
     url: https://gitlab.com/Jrahme/tmux-float
     rev: fe653746335d259c952e504280fe51f3c6cdff7a
-
-git module bat-theme-dracula:
-    url: https://github.com/dracula/sublime
-    rev: c2de0acf5af67042393cf70de68013153c043656
 
 git module git-get:
     url: https://github.com/pietvanzoen/git-get
