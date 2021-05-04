@@ -79,6 +79,7 @@ imports:
     fzf: fzf
     bat-extras: bat/extras
     bat-syntax-bitbake: bat/syntaxes/BitBake
+    bat-syntax-elixir: bat/syntaxes/Elixir
     bat-theme-dracula: bat/themes/Dracula
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
@@ -445,6 +446,10 @@ git module zsh-zbell:
 git module bat-syntax-bitbake:
     url: https://github.com/Driim/bitbake-syntax
     rev: 722e29dafb1e5f099acbb6f896e22e8679c70fbf
+
+git module bat-syntax-elixir:
+    url: https://github.com/princemaple/elixir-sublime-syntax
+    rev: 08d8b77784ad77c2638b2488395d747ff8fc3402
 
 git module wsl-open:
     url: https://github.com/kergoth/wsl-open

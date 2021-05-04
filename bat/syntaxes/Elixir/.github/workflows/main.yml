@@ -1,0 +1,25 @@
+name: Syntax Tests
+
+on:
+  push:
+    paths:
+      - '**.sublime-syntax'
+      - '**/syntax_test*'
+      - '**.tmPreferences'
+  pull_request:
+    paths:
+      - '**.sublime-syntax'
+      - '**/syntax_test*'
+      - '**.tmPreferences'
+
+jobs:
+  st4_syntax_tests:
+    name: Run ST4 Syntax Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: SublimeText/syntax-test-action@v2
+        with:
+          build: 4102
+          default_packages: master
+          package_name: ElixirSyntax
