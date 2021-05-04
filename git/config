@@ -153,6 +153,5 @@
 	            --prompt 'Select commit: '
 
 [delta]
-	features = navigate
 	side-by-side = true
 	theme = Dracula
