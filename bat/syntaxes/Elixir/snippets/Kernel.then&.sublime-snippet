@@ -1,6 +1,0 @@
-<snippet>
-  <content><![CDATA[|> then(& ${1:&1})]]></content>
-  <tabTrigger>then&amp;</tabTrigger>
-  <scope>source.elixir</scope>
-  <description>Pipes into `&amp;`.</description>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-  <content><![CDATA[|> then(fn ${1:x} -> ${2:x} end)]]></content>
-  <tabTrigger>then</tabTrigger>
-  <scope>source.elixir</scope>
-  <description>Pipes into `fn`</description>
-</snippet>
