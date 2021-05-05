@@ -47,7 +47,7 @@ for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N) \
 done
 
 # load everything but the path, plugin, and completion files
-for file in ${${${${config_files:#*/path.zsh}:#*/completion.zsh}:#*/env.zsh}:#*/*.plugin.zsh}; do
+for file in ${${${${${config_files:#*/path.zsh}:#*/completion.zsh}:#*/env.zsh}:#*/*.plugin.zsh}:#*/final.zsh}; do
     source $file
 done
 
@@ -73,6 +73,10 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # load every completion after autocomplete loads
 for file in ${(M)config_files:#*/completion.zsh}; do
+    source $file
+done
+
+for file in ${(M)config_files:#*/final.zsh}; do
     source $file
 done
 
