@@ -69,6 +69,7 @@ mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/../bin"
 
 _install golang asdf-install -g golang
 _install rust asdf-install -g rust stable
+_install rust rustup update
 
 export PIP_REQUIRE_VIRTUALENV=
 _install python asdf-install -g python
