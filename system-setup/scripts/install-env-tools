@@ -142,7 +142,6 @@ go get -u github.com/x-motemen/ghq
 #npmv doctoc
 
 ## Formatters
-pipx yapf
 GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
 go get -u github.com/shurcooL/markdownfmt
 # autopep8 - format code per pep8
