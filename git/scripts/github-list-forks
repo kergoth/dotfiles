@@ -20,14 +20,16 @@ repo_info() {
     local cache_file
     cache_file="$cache_dir/$(echo "$repo" | tr / _)"
     if ! [ -e "$cache_file" ]; then
-        hub api repos/"$repo" >"$cache_file"
+        gh api repos/"$repo" >"$cache_file" || return 1
     fi
     cat "$cache_file"
 }
 
 repo_forks() {
     local repo="$1"
-    if [ "$(repo_info "$repo" | jq -r .forks)" != "0" ]; then
+    local forks
+    forks="$(repo_info "$repo" | jq -r .forks)" || return
+    if [ "$forks" != "0" ]; then
         _repo_forks "$@"
     fi
 }
@@ -35,12 +37,12 @@ repo_forks() {
 _repo_forks() {
     local repo="$1"
     local cache_file
-    hub api --paginate repos/"$repo"/forks \
+    gh api --paginate repos/"$repo"/forks \
         | jq -r '.[] | [.full_name, .forks] | map(tostring) | join("\t")' \
         | while IFS=$'\t' read -r name forks; do
             echo "${2:-}$name"
             if [ "$forks" -gt 0 ]; then
-                _repo_forks "$name" "${2:-}  "
+                _repo_forks "$name" "${2:-}  " || continue
             fi
         done
 }
@@ -91,11 +93,11 @@ for repo; do
     if [ $all_forks -eq 1 ]; then
         # Walk up fork parents, recursively
         while true; do
-            is_fork="$(repo_info "$repo" | jq -r .fork)"
+            is_fork="$(repo_info "$repo" | jq -r .fork)" || break
             if [ "$is_fork" != "true" ]; then
                 break
             fi
-            repo="$(repo_info "$repo" | jq -r .parent.full_name)"
+            repo="$(repo_info "$repo" | jq -r .parent.full_name)" || break
         done
     fi
     repo_forks "$repo"
