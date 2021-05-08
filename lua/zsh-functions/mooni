@@ -1,1 +1,0 @@
-cd $DOTFILESDIR/lua/scripts && ./mooni "$@"
