@@ -1,7 +1,7 @@
-mkdir -p "$XDG_CONFIG_HOME/gnupg"
-chmod 0700 "$XDG_CONFIG_HOME/gnupg"
+mkdir -p "$XDG_DATA_HOME/gnupg"
+chmod 0700 "$XDG_DATA_HOME/gnupg"
 case "$OSTYPE" in
     darwin*)
-        set_launchd GNUPGHOME "$XDG_CONFIG_HOME/gnupg"
+        set_launchd GNUPGHOME "$XDG_DATA_HOME/gnupg"
         ;;
 esac
