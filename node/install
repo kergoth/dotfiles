@@ -1,2 +1,0 @@
-mkdir -p "$XDG_CONFIG_HOME/npm" "$XDG_DATA_HOME/npm"
-cp -f npmrc "$XDG_CONFIG_HOME/npm/npmrc"
