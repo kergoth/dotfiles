@@ -50,7 +50,10 @@ export HTTPIE_CONFIG_DIR=$XDG_CONFIG_HOME/httpie
 export PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass
 export RLWRAP_HOME=$XDG_DATA_HOME/rlwrap
 export XAUTHORITY=$XDG_RUNTIME_DIR/Xauthority
+export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
+export MACHINE_STORAGE_PATH="$XDG_DATA_HOME"/docker-machine
 export RANDFILE=$XDG_DATA_HOME/rng
+export PARALLEL_HOME="$XDG_CONFIG_HOME"/parallel
 export CFLAGS=-O2
 export XZ_DEFAULTS=--threads=0
 export PAGER=more
