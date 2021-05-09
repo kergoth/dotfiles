@@ -1,0 +1,12 @@
+#!/bin/sh
+
+git attic \
+    | cut -d: -f2- \
+    | grep -E '/(scripts|.*\.zsh|install)' \
+    | cut -d/ -f1 \
+    | sort -u \
+    | while read -r dir; do
+        if ! [ -e "$dir" ]; then
+            echo "$dir"
+        fi
+    done
