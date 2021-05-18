@@ -238,8 +238,7 @@ class Ansi:
 
 def color_node(node):
     name = node['name']
-    if COLOR_MODE == False or \
-       (COLOR_MODE is None and not sys.stdout.isatty()):
+    if COLOR_MODE != True:
         return name
     elif node['state']['missing']:
         return Ansi.RED + name + Ansi.RESET
@@ -629,6 +628,8 @@ def main(argv):
         COLOR_MODE = True
     elif args.color == 'never':
         COLOR_MODE = False
+    else:
+        COLOR_MODE = sys.stdout.isatty()
 
     # repository paths
     toplevel_dir = repo_toplevel()

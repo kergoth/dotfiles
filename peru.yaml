@@ -103,7 +103,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 22fd06e19b3e564d448d60ebf34ffd63764f8080
+    rev: 3866771b1b66030b71cfa845a6ff4c8dc0dd9397
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -138,7 +138,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 148e1ce81addc9d41238e6f67bde8ef930851f58
+  rev: 339f2df1ddd741070e340ec01d6882dd1eee617c
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -160,7 +160,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 4cd621e877cb3a8e44b12ba3a7ce58709862922f
+    rev: 3f75a8369f63f2bd6ac3686fc5d88f2bc128e610
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -505,7 +505,7 @@ git module exa:
     move:
         completions/completions.zsh: _exa
     pick: _exa
-    rev: 95682f567461beca22198b29a7abf9411f41189f
+    rev: 42b546606e39f965e76c07907889f8a6d75d0f3e
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -548,7 +548,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: b868167c9f243d23518b31c0a68ae72298726383
+    rev: c2c252cb5ed49d405dd247cad444782f27936676
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
