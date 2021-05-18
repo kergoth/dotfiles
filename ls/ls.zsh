@@ -1,5 +1,5 @@
 if [[ -e "$DOTFILESDIR/ls/ls_colors" ]]; then
-    export LS_COLORS="$(cat "$DOTFILESDIR/ls/ls_colors")"
+    export LS_COLORS="$(<"$DOTFILESDIR/ls/ls_colors")"
 else
     if [[ -e "$DOTFILESDIR/ls/dir_colors" ]]; then
         DIRCOLORS=$XDG_CONFIG_HOME/dir_colors
