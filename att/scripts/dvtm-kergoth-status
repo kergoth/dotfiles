@@ -1,0 +1,36 @@
+#!/bin/sh
+# Courtesy http://waxandwane.org/dvtm.html, with modification
+
+if [ $# -lt 1 ] || [ -z "$1" ]; then
+    printf 'Usage: %s ID [CMD..]\n' "${0##*/}"
+    exit 1
+fi
+
+
+ID="$(echo "$1" | tr "[:upper:]" "[:lower:]")"
+shift
+LOGNAME="${LOGNAME:-$(logname)}"
+DVTM_TMPDIR="${TMPDIR:-/tmp}/dvtm-$LOGNAME"
+if [ ! -e "$DVTM_TMPDIR" ]; then
+    mkdir -p "$DVTM_TMPDIR"
+    chmod 0700 "$DVTM_TMPDIR"
+fi
+FIFO="$DVTM_TMPDIR/$ID-status"
+
+rm -f "$FIFO"
+mkfifo "$FIFO"
+chmod 600 "$FIFO"
+
+if [ -z "$DVTM_FMT" ]; then
+    DVTM_FMT='{id} | {loadavg} | {user}@{host}'
+fi
+
+while true; do
+    dvtm-print-status "$ID" "$DVTM_FMT"
+    sleep 30
+done >"$FIFO" 2>/dev/null </dev/null &
+
+STATUS_PID=$!
+trap 'kill $STATUS_PID' EXIT INT TERM
+export DVTM_ID="$ID"
+dvtm -M -s "$FIFO" -h 16384 "$@"

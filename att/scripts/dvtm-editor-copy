@@ -1,0 +1,8 @@
+#!/bin/sh
+
+PATH="$(dirname "$0"):$PATH"
+tmpfile="$(mktemp -t "${0##*/}.XXXXXX")"
+trap 'rm -f "$tmpfile"' EXIT INT TERM
+dvtm-editor "$@" >"$tmpfile"
+cat "$tmpfile"
+cat "$tmpfile" | pbcopy

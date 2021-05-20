@@ -1,0 +1,98 @@
+#!/bin/sh
+
+set -eu
+
+usage () {
+    echo >&2 "Usage: ${0##*/} [-p PRECMD] [SESSION_NAME] [DVTM_ARGS..]"
+    exit 2
+}
+
+precmd=
+while getopts p:h opt; do
+    echo >&2 opt: "$opt"
+    case "$opt" in
+        p)
+            precmd="$OPTARG"
+            echo >&2 precmd: "$precmd"
+            ;;
+        --)
+            break
+            ;;
+        \?|h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if which abduco >/dev/null 2>&1; then
+    socket_dir="${TMPDIR:-/tmp}/.abduco"
+
+    # Prefer the $TMPDIR path
+    mkdir -p ~/.abduco
+    chmod 000 ~/.abduco
+
+    list_sessions () {
+        abduco | sed '/^Active/d; /^\*/s/$/*/; s/^..//;' | awk '{print $4}'
+    }
+
+    create_session () {
+        name="$1"
+        shift
+        abduco -A "$name" "$@"
+    }
+else
+    : "${XDG_RUNTIME_DIR:=${TMPDIR:-/tmp}/runtime-$LOGNAME}"
+    : "${XDG_DATA_HOME:=$HOME/.local/share}"
+    socket_dir="${XDG_RUNTIME_DIR:-${XDG_DATA_HOME}}/att-${HOST:-$(hostname -s)}"
+
+    list_sessions () {
+        ls -tu "$socket_dir/" 2>/dev/null | sed -n -e "s,\.socket$,,p" | {
+            if [ -n "${ATT_SESSION:-}" ]; then
+                sed "s#^$ATT_SESSION\$#$ATT_SESSION*#"
+            else
+                cat
+            fi
+        }
+    }
+
+    create_session () {
+        name="$1"
+        shift
+        dtach -A "$socket_dir/$name.socket" -z -r winch "$@"
+    }
+fi
+
+if [ $# -eq 0 ]; then
+    list_sessions
+else
+    if [ -n "${ATT_SESSION:-}" ]; then
+        echo >&2 "att: already inside an att session"
+        exit 1
+    fi
+
+    session_name="$1"
+    shift
+    case "$session_name" in
+        -*)
+            echo >&2 "Usage: ${0##*/} [SESSION_NAME] [DVTM_ARGS..]"
+            exit 2
+            ;;
+    esac
+    ENV_VARS="^(DISPLAY|SSH_AGENT_PID|SSH_ASKPASS|SSH_CONNECTION|SSH_AUTH_SOCK|WINDOWID|XAUTHORITY)="
+
+    mkdir -p "$socket_dir"
+    export ATT_SESSION="$session_name"
+    export ATT_ENV="$socket_dir/$session_name.env"
+    env | grep -E "$ENV_VARS" >"$socket_dir/$session_name.env"
+    if [ -n "${STY:-}" ] || [ -n "${TMUX:-}" ]; then
+        printf "\033k%s\033\\" "$session_name"
+    else
+        printf "\033]0;%s\007" "$session_name"
+    fi
+    if [ -n "$precmd" ]; then
+        create_session "$session_name" sh -c "$(printf '%s && dvtm-kergoth-status "%s" "$@"' "$precmd" "$session_name")" - "$@"
+    else
+        create_session "$session_name" dvtm-kergoth-status "$session_name" "$@"
+    fi
+fi

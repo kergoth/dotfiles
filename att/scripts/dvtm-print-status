@@ -1,0 +1,134 @@
+#!/bin/bash
+
+# Ghetto map courtesy http://stackoverflow.com/a/1495559 + dlist/dclear
+dset () {
+    eval dict"$1"values='"${dict'"$1"'values} $2"'
+    eval dict"$1_$2"='$3'
+}
+
+dget () {
+    eval echo '${dict'"$1_$2"'#has'}
+}
+
+dlist () {
+    eval echo '${dict'"$1"'values'}
+}
+
+dclear () {
+    eval dict"$1"values=''
+    for value in $(dlist "$1"); do
+        eval unset dict"$1_$2"
+    done
+}
+
+dexpand () {
+    expanded="$2"
+    for key in $(dlist "$1"); do
+        value="$(dget "$1" "$key")"
+        eval expanded='"${expanded/\{'"$key"'\}/'"$value"'}"'
+    done
+    printf "$expanded"
+}
+
+update_static_data () {
+    dset static_data user ${LOGNAME:-$(logname)}
+    dset static_data host ${HOSTNAME:-$(hostname -s)}
+    dset static_data id ${ID}
+    if [ -n "$debian_chroot" ]; then
+        dset static_data debian_chroot "$debian_chroot"
+    elif [ -r "/etc/debian_chroot" ]; then
+        dset static_data debian_chroot "$(cat /etc/debian_chroot)"
+    fi
+    if [ -n "$CLEARCASE_ROOT" ]; then
+        dset static_data clearcase_root "$(echo $CLEARCASE_ROOT | cut -d/ -f3)"
+    fi
+}
+
+update_dynamic_data () {
+    dset dynamic_data loadavg "$(uptime | sed 's/.*ages*: //')"
+    dset dynamic_data date "$(date +"%a %d-%b-%g %l:%M %p")"
+}
+
+print_status () {
+    if [ $fully_static -eq 1 ]; then
+        printf "$DVTM_STATUS"
+    else
+        update_dynamic_data
+        printf "$(dexpand dynamic_data "$DVTM_STATUS")"
+    fi
+}
+
+usage () {
+    printf "Usage:  ${0##*/} [-c DELAY] DVTM_ID [DVTM_STATUS_FMT]\n" >&2
+    printf "\n"
+    printf 'DVTM_STATUS_FMT defaults to $DVTM_STATUS or "%s" if $DVTM_STATUS is unset\n' "$DVTM_STATUS_DEFAULT"
+    printf "\n"
+    printf "Available keys for the format string: user, host, id, loadavg, date\n"
+    printf "\n"
+    printf "Options:\n"
+    printf "  -c DELAY   Continuous display mode, with DELAY in seconds\n"
+    printf "  -s         Seperate line mode (only useful with -c)\n"
+    printf "             Rather than printing on the same line, print each"
+    printf "             update on a new line"
+    exit 1
+}
+
+
+continuous=
+separate_lines=0
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -c)
+            shift
+            continuous="$1"
+            ;;
+        -s)
+            separate_lines=1
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            usage >&2
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+
+DVTM_STATUS_DEFAULT="$(printf "{id} | {user}@{host}")"
+
+if [ $# -lt 1 ] || [ -z "$1" ]; then
+    usage >&2
+fi
+
+ID=$(echo "$1" | tr [A-Z] [a-z])
+if [ $# -gt 1 ]; then
+    DVTM_STATUS="$2"
+else
+    DVTM_STATUS="${DVTM_STATUS:-$DVTM_STATUS_DEFAULT}"
+fi
+update_static_data
+DVTM_STATUS="$(dexpand static_data "$DVTM_STATUS")"
+
+# If any unexpanded keys remain, update them on every refresh
+echo "$DVTM_STATUS" | grep -q "{[^}]*}"
+fully_static=$?
+
+if [ -n "$continuous" ]; then
+    while true; do
+        if [ $separate_lines -eq 0 ]; then
+            printf "\r"
+        fi
+        print_status
+        if [ $separate_lines -eq 1 ]; then
+            printf "\n"
+        fi
+        sleep "$continuous"
+    done
+else
+    print_status
+fi
