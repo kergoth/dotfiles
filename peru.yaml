@@ -17,6 +17,7 @@ imports:
     kakoune-dracula: kakoune
 
     # Scripts
+    bash-realpath: external/scripts
     ddimage: external/scripts
     simpler-color-test: external/scripts
     cwdiff: external/scripts
@@ -564,3 +565,9 @@ git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
     rev: 67d899dec1d68620c71b4ec543cfa004660539c1
+
+git module bash-realpath:
+    url: https://github.com/morgant/realpath
+    pick: realpath
+    executable: realpath
+    rev: cc85582c6684a82da2139f159da091b5324e4b99
