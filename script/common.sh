@@ -85,7 +85,11 @@ link() {
     # link zsh/.zshenv.redir $INSTALL_DEST/.zshenv.redir
     # link zshrc       # links to $INSTALL_DEST/.zshrc (relatively)
     # link config/curl # links to $INSTALL_DEST/.config/curl (relatively)
-    dotfile="$(abspath "$1")"
+    dotfile="$1"
+    if [ -e "$1" ]; then
+        dotfile="$(abspath "$dotfile")"
+    fi
+
     if [ $# -gt 1 ]; then
         dotfile_dest="$(abspath "$2" "$INSTALL_DEST")"
         if [ "$INSTALL_DEST" != "$HOME" ]; then
@@ -166,8 +170,10 @@ link() {
             fi
         fi
         mklink "$dotfile_dest" "$dotfile" >/dev/null
-    else
+    elif [ -e "$dotfile" ]; then
         iln -srib "$dotfile" "$dotfile_dest"
+    else
+        iln -sib "$dotfile" "$dotfile_dest"
     fi
     echo >&2 "Linked $(homepath "$dotfile_dest")"
 }
