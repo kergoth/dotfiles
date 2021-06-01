@@ -19,4 +19,4 @@ if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
     fi
     export VSCODE_IPC_HOOK_CLI
 fi
-export VSCODE_PORTABLE="$XDG_DATA_HOME"/vscode
+#export VSCODE_PORTABLE="$XDG_DATA_HOME"/vscode
