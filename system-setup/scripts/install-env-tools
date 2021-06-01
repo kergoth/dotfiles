@@ -26,38 +26,18 @@ case "$OSTYPE" in
         ;;
 esac
 
-pythonuserdir="$(python -c 'import site; print(site.getuserbase())')" || exit 1
+pythonuserdir="$(python3 -c 'import site; print(site.getuserbase())')" || exit 1
 PATH="$pythonuserdir/bin:$(dirname "$0"):$HOME/.local/bin:$PATH"
 cd /
 
-
-pipsi_installed () {
-    pipsi list | sed -n -e 's/^  *Package "\([^"]*\)":$/\1/p' | grep -Fqx "$1"
-}
 
 pipx_installed () {
     pipx list | sed -n -e 's/^   *package \([^ ]*\).*/\1/p' | grep -Fqx "$1"
 }
 
-pipsi () {
-    if [ $has_python2 -eq 1 ]; then
-        if pipsi_installed "$1"; then
-            kpipsi upgrade "$@"
-        else
-            kpipsi install "$@"
-        fi || { echo >&2 "Error installing $*"; return 1; }
-    fi
-}
-
 pipx () {
     if [ $has_python3 -eq 1 ]; then
         pipx-install "$@"
-    fi
-}
-
-pip_install () {
-    if [ $has_python2 -eq 1 ]; then
-        command python2 -m pip -q --disable-pip-version-check install --user -U "$@" || { echo >&2 "Error installing $*"; return 1; }
     fi
 }
 
@@ -67,11 +47,6 @@ pip3_install () {
     fi
 }
 
-if command -v python2 >/dev/null 2>&1; then
-    has_python2=1
-else
-    has_python2=0
-fi
 if command -v python3 >/dev/null 2>&1; then
     has_python3=1
 else
@@ -94,11 +69,9 @@ cargo install fd-find ripgrep bat exa git-delta git-series
 cargo install --git https://github.com/jez/as-tree
 
 # Upgrade pip
-pip_install pip
 pip3_install pip
 
 ## Interactive mode python tools
-#pip_install see
 #pip3_install see
 
 ## General Tools & Utilities
@@ -117,9 +90,6 @@ go get -u github.com/direnv/direnv
 
 ## Script dependencies
 go get -u github.com/tomnomnom/unfurl
-pip_install sh
-pip_install 'numpy<1.17' && pip_install hungarian # git-tbdiff
-pip_install gitpython # buildhistory-diff
 
 ## Pinboard client
 #npmv pin-cushion
@@ -133,8 +103,6 @@ go get -u github.com/x-motemen/ghq
 # pprintpp + pp-ez?
 # twine?
 # wheel?
-#pip_install ptpython
-#pip_install e
 #pip3_install e
 
 ## Documentation
@@ -171,8 +139,6 @@ if [ -e "$XDG_DATA_HOME/shellcheck-stable/shellcheck" ]; then
     ln -sf "$XDG_DATA_HOME/shellcheck-stable/shellcheck" "$XDG_DATA_HOME/../bin/shellcheck"
 fi
 
-#pipsi prospector
-#pipsi vim-vint
 #luav luacheck
 #gemv mdl # markdown
 # see also markdownlint
@@ -188,10 +154,6 @@ fi
 #go get -u github.com/ddo/fast # bandwidth speed testing
 #go get -u github.com/jbenet/go-multihash/multihash # If needed to create a hash for use by hashpipe
 #go get -u github.com/jbenet/hashpipe
-#pipsi pockyt # cli for Pocket
-#pipsi pocket-cli # other cli for Pocket, better interface
-#pip_install datefinder # search text for dates, ala path-extractor
-#pip_install pipdeptree
 #go get -u github.com/pengwynn/flint # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
 
@@ -216,11 +178,3 @@ fi
 
 ### Video Downloading
 #pipx youtube-dl
-
-# Dropblame, constructs git history for individual files in dropbox, using
-# dropbox's revision history.
-#XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-#WORKON_HOME="${WORKON_HOME:-$XDG_DATA_HOME/virtualenvs}"
-#pipsi dropblame &&
-#    mv "$WORKON_HOME/dropblame/bin/drop" "$WORKON_HOME/dropblame/bin/dropb" && \
-#    mv "$XDG_DATA_HOME/../bin/drop" "$XDG_DATA_HOME/../bin/dropb"
