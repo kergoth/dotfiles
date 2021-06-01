@@ -11,7 +11,7 @@ imports:
     hub-completion: git/zsh-functions
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
-    exa: ls/zsh-functions
+    exa-completions: ls/zsh-functions
 
     # Kakoune
     kakoune-dracula: kakoune
@@ -501,12 +501,12 @@ curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
     sha1: 36e1e0804598c93c2536abea3dd3d9cbb6a6cd9b
 
-git module exa:
+git module exa-completions:
     url: https://github.com/ogham/exa
     move:
-        completions/completions.zsh: _exa
+        completions/zsh/_exa: _exa
     pick: _exa
-    rev: 42b546606e39f965e76c07907889f8a6d75d0f3e
+    rev: a6754f3cc3d61bf52bc45d0b5aa7b5e1c86ef8c7
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
