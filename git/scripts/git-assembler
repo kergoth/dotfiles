@@ -46,7 +46,7 @@ def assembly_path(toplevel_dir, common_dir):
     if os.path.exists(path):
         return path
     path = os.path.join(toplevel_dir, '.gitassembly')
-    if os.path.exists(path):
+    if os.path.isfile(path):
         return path
     return None
 
