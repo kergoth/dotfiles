@@ -3,4 +3,16 @@
 # with postprocessing scripts like my own fdupes-select
 
 import sys
-print(sys.stdin.read().replace("\n\n", "\0").replace("\n", "\t").replace(" ", "\\ ").replace("\0", "\n"))
+
+block = []
+for line in sys.stdin:
+    line = line.rstrip('\r\n')
+    if not line:
+        if block:
+            print('\t'.join(block))
+        block.clear()
+    else:
+        block.append(line.replace(' ', '\\ '))
+
+if block:
+    print('\t'.join(block))

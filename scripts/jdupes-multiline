@@ -1,3 +1,13 @@
-#!/bin/sh
+#!/usr/bin/env python3
+# Given fdupes oneline output, output grouped multiline output like jdupes
 
-sed -e 's/\\ / /g' | tr '\n' '\0' | tr '\t' '\n' | python -c 'import sys; print(sys.stdin.read().replace("\0", "\n\n").rstrip())'
+import sys
+
+first = True
+for line in sys.stdin:
+    entries = line.strip('\r\n').split('\t')
+    if first:
+        first = False
+    else:
+        sys.stdout.write('\n')
+    sys.stdout.writelines(entry.replace('\\ ', ' ') + '\n' for entry in entries)
