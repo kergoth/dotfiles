@@ -1,0 +1,28 @@
+#!/bin/bash
+# fclones transformation script to handle zip files with one file inside.
+
+set -euo pipefail
+
+if [ $# -gt 0 ]; then
+    case "$1" in
+        *.zip) ;;
+        *)
+            cat "$1"
+            exit 0
+            ;;
+    esac
+fi
+
+tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")"
+trap 'rm -rf "$tempdir"' EXIT INT TERM
+
+if [ $# -eq 0 ]; then
+    cat >"$tempdir/stdin.zip"
+    set -- "$tempdir/stdin.zip"
+fi
+
+if unzip -l "$1" | grep -q "1 file"; then
+    unzip -p "$1"
+else
+    cat "$1"
+fi
