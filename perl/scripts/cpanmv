@@ -1,0 +1,51 @@
+#!/bin/sh
+# Install perl modules into an isolated environment, then symlinks any scripts
+# into $XDG_DATA_HOME/../bin.
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+CPANM_HOME="${CPANM_HOME:-$XDG_DATA_HOME/perlenvs}"
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} ENV_NAME [CPANM_ARGS..]"
+    echo >&2
+    echo >&2 "Existing environments:"
+    for dir in "$CPANM_HOME"/*/; do
+        if [ -e "$dir" ]; then
+            printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        fi
+    done
+    exit 2
+fi
+
+env="$1"
+shift
+
+if [ $# -eq 0 ]; then
+    set -- "$env"
+fi
+
+env="$(echo "$env" | sed 's/::/-/g')"
+env_dir="$CPANM_HOME/$env"
+
+if [ ! -e "$env_dir/lib/perl5/local/lib.pm" ]; then
+    cpanm -l "$env_dir" local::lib
+fi
+
+eval "$(perl -I "$env_dir/lib/perl5" "-Mlocal::lib=$env_dir")"
+
+cpanm -l "$env_dir" "$@"
+
+mkdir -p "$XDG_DATA_HOME/../bin"
+for script in "$env_dir/bin/"*; do
+    if [ ! -e "$script" ]; then
+        continue
+    fi
+
+    filename="${script##*/}"
+    case "$filename" in
+        instmodsh)
+            continue
+            ;;
+    esac
+    ln -sfv "$script" "$XDG_DATA_HOME/../bin/$filename"
+done

@@ -20,6 +20,7 @@ imports:
     bash-realpath: external/scripts
     ddimage: external/scripts
     simpler-color-test: external/scripts
+    cpanm: perl/scripts
     cwdiff: external/scripts
     diff-so-fancy: external/scripts
     dtrx: external/scripts

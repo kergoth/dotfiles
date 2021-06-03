@@ -1,0 +1,26 @@
+#!/bin/sh
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+CPANM_HOME="${CPANM_HOME:-$XDG_DATA_HOME/perlenvs}"
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} ENV_NAME"
+    echo >&2
+    echo >&2 "Available environments:"
+    for dir in "$CPANM_HOME"/*/; do
+        if [ -e "$dir" ]; then
+            printf >&2 '  %s\n' "$(basename "${dir%/}")"
+        fi
+    done
+    exit 2
+fi
+
+env="$1"
+shift
+env_dir="$CPANM_HOME/$env"
+
+if [ ! -e "$env_dir/lib/perl5/local/lib.pm" ]; then
+    cpanm -l "$env_dir" local::lib >/dev/null 2>&1
+fi
+
+perl -I "$env_dir/lib/perl5" "-Mlocal::lib=$env_dir"
