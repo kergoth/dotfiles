@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+# Given multiline dupe output, remove any with a single entry
+
+import sys
+
+def print_block(block, first):
+    if len(block) > 1:
+        if not first:
+            sys.stdout.write('\n')
+        sys.stdout.writelines(block)
+        return True
+
+
+first, block = True, []
+for line in sys.stdin:
+    if not line.rstrip('\r\n'):
+        if print_block(block, first):
+            first = False
+        block.clear()
+    else:
+        block.append(line)
+
+if block:
+    print_block(block, first)
