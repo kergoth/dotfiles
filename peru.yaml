@@ -85,6 +85,9 @@ imports:
     archlinux-icons: windows-terminal/files
     vscode-zsh-completion: vscode/zsh-functions
     rmate: sublime-text-3/scripts
+    cht: cht/scripts
+    cht-zsh: cht/zsh-functions
+
 
 curl module archlinux-icons:
     url: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
@@ -572,3 +575,14 @@ git module bash-realpath:
     pick: realpath
     executable: realpath
     rev: cc85582c6684a82da2139f159da091b5324e4b99
+
+curl module cht:
+    url: https://cheat.sh/:cht.sh
+    filename: cht
+    executable: cht
+    sha1: e1b9f68dde6b029134995729e4cd9180872f6c43
+
+curl module cht-zsh:
+    url: https://cheat.sh/:zsh
+    filename: _cht
+    sha1: 434fe7b99838f445745e7230db75b21f856a1c69
