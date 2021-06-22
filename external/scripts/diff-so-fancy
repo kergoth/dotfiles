@@ -20,13 +20,13 @@ $fatpacked{"DiffHighlight.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'D
   # Highlight by reversing foreground and background. You could do
   # other things like bold or underline if you prefer.
   our @OLD_HIGHLIGHT = (
-  	color_config('color.diff-highlight.oldnormal',    "\e[1;31m"),
-  	color_config('color.diff-highlight.oldhighlight', "\e[1;31;48;5;52m"),
-  	"\x1b[27m",
+  	undef,
+  	"\e[7m",
+  	"\e[27m",
   );
   our @NEW_HIGHLIGHT = (
-  	color_config('color.diff-highlight.newnormal',    "\e[1;32m"),
-  	color_config('color.diff-highlight.newhighlight', "\e[1;32;48;5;22m"),
+  	$OLD_HIGHLIGHT[0],
+  	$OLD_HIGHLIGHT[1],
   	$OLD_HIGHLIGHT[2],
   );
   
@@ -149,7 +149,11 @@ $fatpacked{"DiffHighlight.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'D
   # fallback, which means we will work even if git can't be run.
   sub color_config {
   	my ($key, $default) = @_;
-  	my $s = `git config --get-color $key 2>$NULL`;
+  
+  	# Removing the redirect speeds up execution by about 12ms
+  	#my $s = `git config --get-color $key 2>$NULL`;
+  	my $s = `git config --get-color $key`;
+  
   	return length($s) ? $s : $default;
   }
   
@@ -332,24 +336,24 @@ unshift @INC, bless \%fatpacked, $class;
   } # END OF FATPACK CODE
 
 
-my $VERSION = "1.3.0";
+my $VERSION = "1.4.2";
 
 #################################################################################
 
-use 5.010;                                                  # Require Perl 5.10 for 'state' variables
+use v5.010;                                                 # Require Perl 5.10 for 'state' variables
+use warnings FATAL => 'all';
+use strict;
+
 use File::Spec;                                             # For catdir
 use File::Basename;                                         # For dirname
-use Encode;                                                 # For handling UTF8 stuff
 use Cwd qw(abs_path);                                       # For realpath()
 use lib dirname(abs_path(File::Spec->catdir($0))) . "/lib"; # Add the local lib/ to @INC
 use DiffHighlight;
 
-use strict;
-use warnings FATAL => 'all';
-
 my $remove_file_add_header     = 1;
 my $remove_file_delete_header  = 1;
 my $clean_permission_changes   = 1;
+my $patch_mode                 = 0;
 my $manually_color_lines       = 0; # Usually git/hg colorizes the lines, but for raw patches we use this
 my $change_hunk_indicators     = git_config_boolean("diff-so-fancy.changeHunkIndicators","true");
 my $strip_leading_indicators   = git_config_boolean("diff-so-fancy.stripLeadingSymbols","true");
@@ -363,6 +367,9 @@ my $ansi_color_regex = qr/(\e\[([0-9]{1,3}(;[0-9]{1,3}){0,10})[mK])?/;
 my $reset_color      = color("reset");
 my $bold             = color("bold");
 my $meta_color       = "";
+
+# Set the diff highlight colors from the config
+init_diff_highlight_colors();
 
 my ($file_1,$file_2);
 my $args              = argv(); # Hashref of all the ARGV stuff
@@ -384,12 +391,25 @@ if ($args->{color_on}) {
 	$color_forced         = 1;
 }
 
+if ($args->{debug}) {
+	show_debug_info();
+	exit();
+}
+
+# `git add --patch` requires our output to match the number of lines from the
+# input. So, when patch mode is active, we print out empty lines to pad our
+# output to match any lines we've consumed.
+if ($args->{patch}) {
+	$patch_mode = 1;
+}
+
 # We only process ARGV if we don't have STDIN
 if (!$has_stdin) {
 	if ($args->{v} || $args->{version}) {
 		die(version());
 	} elsif ($args->{'set-defaults'}) {
 		my $ok = set_defaults();
+		exit;
 	} elsif ($args->{colors}) {
 		# We print this to STDOUT so we can redirect to bash to auto-set the colors
 		print get_default_colors();
@@ -403,42 +423,52 @@ if (!$has_stdin) {
 	} else {
 		die("Missing input on STDIN\n");
 	}
-} else {
-	# Check to see if were using default settings
-	check_first_run();
-
-	my @lines;
-	local $DiffHighlight::line_cb = sub {
-		push(@lines,@_);
-
-		my $last_line = $lines[-1];
-
-		# Buffer X lines before we try and output anything
-		# Also make sure we're sending enough data to d-s-f to do it's magic.
-		# Certain things require a look-ahead line or two to function so
-		# we make sure we don't break on those sections prematurely
-		if (@lines > 24 && ($last_line !~ /^${ansi_color_regex}(---|index|old mode|similarity index|rename (from|to))/)) {
-			do_dsf_stuff(\@lines);
-			@lines = ();
-		}
-	};
-
-	my $line_count = 0;
-	while (my $line = <STDIN>) {
-		# If the very first line of the diff doesn't start with ANSI color we're assuming
-		# it's a raw patch file, and we have to color the added/removed lines ourself
-		if (!$color_forced && $line_count == 0 && starts_with_ansi($line)) {
-			$manually_color_lines = 1;
-		}
-
-		my $ok = DiffHighlight::handle_line($line);
-		$line_count++;
-	}
-
-	DiffHighlight::flush();
-	do_dsf_stuff(\@lines);
 }
 
+#################################################################################
+#################################################################################
+
+# Check to see if were using default settings
+check_first_run();
+
+# The logic here is that we run all the lines through DiffHighlight first. This
+# highlights all the intra-word changes. Then we take those lines and send them
+# to do_dsf_stuff() to convert the diff to human readable d-s-f output and add
+# appropriate fanciness
+
+my @lines;
+local $DiffHighlight::line_cb = sub {
+	push(@lines,@_);
+
+	my $last_line = $lines[-1];
+
+	# Buffer X lines before we try and output anything
+	# Also make sure we're sending enough data to d-s-f to do it's magic.
+	# Certain things require a look-ahead line or two to function so
+	# we make sure we don't break on those sections prematurely
+	if (@lines > 24 && ($last_line !~ /^${ansi_color_regex}(---|index|old mode|similarity index|rename (from|to))/)) {
+		do_dsf_stuff(\@lines);
+		@lines = ();
+	}
+};
+
+my $line_count = 0;
+while (my $line = <STDIN>) {
+	# If the very first line of the diff doesn't start with ANSI color we're assuming
+	# it's a raw patch file, and we have to color the added/removed lines ourself
+	if (!$color_forced && $line_count == 0 && starts_with_ansi($line)) {
+		$manually_color_lines = 1;
+	}
+
+	my $ok = DiffHighlight::handle_line($line);
+	$line_count++;
+}
+
+# If we're mid hunk above process anything still pending
+DiffHighlight::flush();
+do_dsf_stuff(\@lines);
+
+#################################################################################
 #################################################################################
 
 sub do_dsf_stuff {
@@ -503,7 +533,7 @@ sub do_dsf_stuff {
 			# Mercurial looks like: diff -r 82e55d328c8c hello.c
 			if ($4 eq "-r") {
 				$is_mercurial = 1;
-				$meta_color ||= get_config_color("meta");
+				$meta_color = get_config_color("meta");
 			# Git looks like: diff --git a/diff-so-fancy b/diff-so-fancy
 			} else {
 				$last_file_seen = $5;
@@ -511,11 +541,15 @@ sub do_dsf_stuff {
 
 			$last_file_seen =~ s|^\w/||; # Remove a/ (and handle diff.mnemonicPrefix).
 			$in_hunk = 0;
+			if ($patch_mode) {
+				# we are consuming one line, and the debt must be paid
+				print "\n";
+			}
 		########################################
 		# Find the first file: --- a/README.md #
 		########################################
 		} elsif (!$in_hunk && $line =~ /^$ansi_color_regex--- (\w\/)?(.+?)(\e|\t|$)/) {
-			$meta_color ||= get_config_color("meta");
+			$meta_color = get_config_color("meta");
 
 			if ($git_strip_prefix) {
 				my $file_dir = $4 || "";
@@ -608,12 +642,18 @@ sub do_dsf_stuff {
 		} elsif ($remove_file_add_header && $line =~ /^${ansi_color_regex}.*new file mode/) {
 			# Don't print the line (i.e. remove it from the output);
 			$last_file_mode = "add";
+			if ($patch_mode) {
+				print "\n";
+			}
 		######################################
 		# Remove any delete file permissions #
 		######################################
 		} elsif ($remove_file_delete_header && $line =~ /^${ansi_color_regex}deleted file mode/) {
 			# Don't print the line (i.e. remove it from the output);
 			$last_file_mode = "delete";
+			if ($patch_mode) {
+				print "\n";
+			}
 		################################
 		# Look for binary file changes #
 		################################
@@ -634,6 +674,10 @@ sub do_dsf_stuff {
 			}
 
 			my ($new_mode) = $next =~ m/new mode (\d+)/;
+
+			if ($patch_mode) {
+				print "\n";
+			}
 			print "$last_file_seen changed file mode from $old_mode to $new_mode\n";
 
 		###############
@@ -650,14 +694,14 @@ sub do_dsf_stuff {
 			}
 
 			my $next    = shift(@$input);
-			my ($file1) = $next =~ /rename from (.+)/;
+			my ($file1) = $next =~ /rename from (.+?)(\e|\t|$)/;
 
 			$next       = shift(@$input);
-			my ($file2) = $next =~ /rename to (.+)/;
+			my ($file2) = $next =~ /rename to (.+?)(\e|\t|$)/;
 
 			if ($file1 && $file2) {
 				# We may not have extracted this yet, so we pull from the config if not
-				$meta_color ||= get_config_color("meta");
+				$meta_color = get_config_color("meta");
 
 				my $change = file_change_string($file1,$file2);
 
@@ -737,38 +781,30 @@ sub boolean {
 	}
 }
 
-# Memoize getting the git config
-{
-	my $static_config;
+# Get the git config
+sub git_config_raw {
+	my $cmd = "git config --list";
+	my @out = `$cmd`;
 
-	sub git_config_raw {
-		if ($static_config) {
-			# If we already have the config return that
-			return $static_config;
-		}
-
-		my $cmd = "git config --list";
-		my @out = `$cmd`;
-
-		$static_config = \@out;
-
-		return \@out;
-	}
+	return \@out;
 }
 
-# Fetch a textual item from the git config
+# Memoize fetching a textual item from the git config
 sub git_config {
 	my $search_key    = lc($_[0] || "");
 	my $default_value = lc($_[1] || "");
 
-	my $out = git_config_raw();
-
-	# If we're in a unit test, use the default (don't read the users config)
-	if (in_unit_test()) {
-		return $default_value;
+	state $raw = {};
+	if (%$raw && $search_key) {
+		return $raw->{$search_key} || $default_value;
 	}
 
-	my $raw = {};
+	if ($args->{debug}) {
+		print "Parsing git config\n";
+	}
+
+	my $out = git_config_raw();
+
 	foreach my $line (@$out) {
 		if ($line =~ /=/) {
 			my ($key,$value) = split("=",$line,2);
@@ -812,11 +848,15 @@ sub in_unit_test {
 
 sub get_less_charset {
 	my @less_char_vars = ("LESSCHARSET", "LESSCHARDEF", "LC_ALL", "LC_CTYPE", "LANG");
-	foreach (@less_char_vars) {
-		return $ENV{$_} if defined $ENV{$_};
+	foreach my $key (@less_char_vars) {
+		my $val = $ENV{$key};
+
+		if (defined $val) {
+			return ($key, $val);
+		}
 	}
 
-	return "";
+	return ();
 }
 
 sub should_print_unicode {
@@ -826,8 +866,8 @@ sub should_print_unicode {
 	}
 
 	# Otherwise, assume we're piping to less(1)
-	my $less_charset = get_less_charset();
-	if ($less_charset =~ /utf-?8/i) {
+	my ($less_env_var, $less_charset) = get_less_charset();
+	if ($less_charset && $less_charset =~ /utf-?8/i) {
 		return 1;
 	}
 
@@ -876,29 +916,31 @@ sub strip_leading_indicators {
 	if ($manually_color_lines) {
 		if (defined($5) && $5 eq "+") {
 			my $add_line_color = get_config_color("add_line");
-			$line              = $add_line_color . $line . $reset_color;
+			$line              = $add_line_color . insert_reset_at_line_end($line);
 		} elsif (defined($5) && $5 eq "-") {
 			my $remove_line_color = get_config_color("remove_line");
-			$line                 = $remove_line_color . $line . $reset_color;
+			$line                 = $remove_line_color . insert_reset_at_line_end($line);
 		}
 	}
 
 	return $line;
 }
 
+# Insert the color reset code at end of line, but before any newlines
+sub insert_reset_at_line_end {
+	my $line = shift();
+	$line =~ s/^(.*)([\n\r]+)?$/${1}${reset_color}${2}/;
+	return $line;
+}
+
 # Count the number of a given char in a string
+# https://www.perturb.org/display/1010_Perl_Count_occurrences_of_substring.html
 sub char_count {
-	my ($needle,$str) = @_;
-	my $len = length($str);
-	my $ret = 0;
+	my ($needle, $haystack) = @_;
 
-	for (my $i = 0; $i < $len; $i++) {
-		my $found = substr($str,$i,1);
+	my $count = () = ($haystack =~ /$needle/g);
 
-		if ($needle eq $found) { $ret++; }
-	}
-
-	return $ret;
+	return $count;
 }
 
 # Remove all ANSI codes from a string
@@ -913,7 +955,9 @@ sub bleach_text {
 sub trim {
 	my $s = shift();
 	if (!$s) { return ""; }
-	$s =~ s/^\s*|\s*$//g;
+
+	$s =~ s/^\s*//u;
+	$s =~ s/\s*$//u;
 
 	return $s;
 }
@@ -928,7 +972,8 @@ sub horizontal_rule {
 	# BOX DRAWINGS LIGHT HORIZONTAL http://www.fileformat.info/info/unicode/char/2500/index.htm
 	my $dash;
 	if ($use_unicode_dash_for_ruler && should_print_unicode()) {
-		$dash = Encode::encode('UTF-8', "\x{2500}");
+		#$dash = Encode::encode('UTF-8', "\x{2500}");
+		$dash = "\xE2\x94\x80";
 	} else {
 		$dash = "-";
 	}
@@ -957,14 +1002,10 @@ sub file_change_string {
 	# If the files aren't the same it's a rename
 	} elsif ($file_1 ne $file_2) {
 		my ($old, $new) = DiffHighlight::highlight_pair($file_1,$file_2,{only_diff => 1});
+		# highlight_pair already includes reset_color, but adds newline characters that need to be trimmed off
 		$old = trim($old);
 		$new = trim($new);
-
-		# highlight_pair resets the colors, but we want it to be the meta color
-		$old =~ s/(\e0?\[m)/$1$meta_color/g;
-		$new =~ s/(\e0?\[m)/$1$meta_color/g;
-
-		return "renamed: $old to $new";
+		return "renamed: $old$meta_color to $new"
 	# Something we haven't thought of yet
 	} else {
 		return "$file_1 -> $file_2";
@@ -1017,9 +1058,13 @@ diff -u one.txt two.txt | diff-so-fancy  # Use d-s-f on unified diff output
 
 diff-so-fancy --colors                   # View the commands to set the recommended colors
 diff-so-fancy --set-defaults             # Configure git-diff to use diff-so-fancy and suggested colors
+diff-so-fancy --patch                    # Use diff-so-fancy in patch mode (interoperable with `git add --patch`)
 
 # Configure git to use d-s-f for *all* diff operations
-git config --global core.pager \"diff-so-fancy | less --tabs=4 -RFX\"\n";
+git config --global core.pager \"diff-so-fancy | less --tabs=4 -RFX\"
+
+# Configure git to use d-s-f for `git add --patch`
+git config --global interactive.diffFilter \"diff-so-fancy --patch\"\n";
 
 	return $out;
 }
@@ -1164,19 +1209,19 @@ sub color {
 
 		if ($str eq "meta") {
 			# Default ANSI yellow
-			$ret = DiffHighlight::color_config('color.diff.meta', color(11));
+			$ret = git_ansi_color(git_config('color.diff.meta')) || color(11);
 		} elsif ($str eq "reset") {
 			$ret = color("reset");
 		} elsif ($str eq "add_line") {
 			# Default ANSI green
-			$ret = DiffHighlight::color_config('color.diff.new', color('bold') . color(2));
+			$ret = git_ansi_color(git_config('color.diff.new')) || color("2_bold");
 		} elsif ($str eq "remove_line") {
 			# Default ANSI red
-			$ret = DiffHighlight::color_config('color.diff.old', color('bold') . color(1));
+			$ret = git_ansi_color(git_config('color.diff.old')) || color("1_bold");
 		} elsif ($str eq "fragment") {
-			$ret = DiffHighlight::color_config('color.diff.frag', color('13_bold'));
+			$ret = git_ansi_color(git_config('color.diff.frag')) || color("13_bold");
 		} elsif ($str eq "last_function") {
-			$ret = DiffHighlight::color_config('color.diff.func', color('bold') . color(146));
+			$ret = git_ansi_color(git_config('color.diff.func')) || color("146_bold");
 		}
 
 		# Cache (memoize) the entry for later
@@ -1184,6 +1229,100 @@ sub color {
 
 		return $ret;
 	}
+}
+
+# https://www.git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_colors_in_git
+sub git_ansi_color {
+	my $str   = shift();
+	my @parts = split(' ', $str);
+
+	if (!@parts) {
+		return '';
+	}
+	my $colors = {
+		'black'   => 0,
+		'red'     => 1,
+		'green'   => 2,
+		'yellow'  => 3,
+		'blue'    => 4,
+		'magenta' => 5,
+		'cyan'    => 6,
+		'white'   => 7,
+	};
+
+	my @ansi_part = ();
+
+	if (grep { /bold/ } @parts) {
+		push(@ansi_part, "1");
+		@parts = grep { !/bold/ } @parts; # Remove from array
+	}
+
+	if (grep { /reverse/ } @parts) {
+		push(@ansi_part, "7");
+		@parts = grep { !/reverse/ } @parts; # Remove from array
+	}
+
+	my $fg  = $parts[0] // "";
+	my $bg  = $parts[1] // "";
+
+	#############################################
+
+	# It's an numeric value, so it's an 8 bit color
+	if (is_numeric($fg)) {
+		if ($fg < 8) {
+			push(@ansi_part, $fg + 30);
+		} elsif ($fg < 16) {
+			push(@ansi_part, $fg + 82);
+		} else {
+			push(@ansi_part, "38;5;$fg");
+		}
+	# It's a simple 16 color OG ansi
+	} elsif ($fg) {
+		my $bright    = $fg =~ s/bright//;
+		my $color_num = $colors->{$fg} + 30;
+
+		if ($bright) { $color_num += 60; } # Set bold
+
+		push(@ansi_part, $color_num);
+	}
+
+	#############################################
+
+	# It's an numeric value, so it's an 8 bit color
+	if (is_numeric($bg)) {
+		if ($bg < 8) {
+			push(@ansi_part, $bg + 40);
+		} elsif ($bg < 16) {
+			push(@ansi_part, $bg + 92);
+		} else {
+			push(@ansi_part, "48;5;$bg");
+		}
+	# It's a simple 16 color OG ansi
+	} elsif ($bg) {
+		my $bright    = $bg =~ s/bright//;
+		my $color_num = $colors->{$bg} + 40;
+
+		if ($bright) { $color_num += 60; } # Set bold
+
+		push(@ansi_part, $color_num);
+	}
+
+	#############################################
+
+	my $ansi_str = join(";", @ansi_part);
+	my $ret      = "\e[" . $ansi_str . "m";
+
+	return $ret;
+}
+
+sub is_numeric {
+	my $s = shift();
+
+	if ($s =~ /^\d+$/) {
+		return 1;
+	}
+
+	return 0;
 }
 
 sub starts_with_ansi {
@@ -1224,6 +1363,80 @@ sub get_terminal_width {
 	}
 
 	return $width;
+}
+
+sub show_debug_info {
+	my @less    = get_less_charset();
+	my $git_ver = trim(`git --version`);
+	$git_ver    =~ s/[^\d.]//g;
+
+	print "Diff-so-fancy   : v$VERSION\n";
+	print "Git             : v$git_ver\n";
+	print "Perl            : $^V\n";
+	print "\n";
+
+	print "Terminal width  : " . get_terminal_width() . "\n";
+	print "Terminal \$LANG  : " . ($ENV{LANG} || "") . "\n";
+	print "\n";
+	print "Supports Unicode: " . yes_no(should_print_unicode()) . "\n";
+	print "Unicode Ruler   : " . yes_no($use_unicode_dash_for_ruler) . "\n";
+	print "\n";
+	print "Less Charset Var: " . ($less[0] // "") . "\n";
+	print "Less Charset    : " . ($less[1] // "") . "\n";
+	print "\n";
+	print "Is Windows      : " . yes_no(is_windows()) . "\n";
+	print "Operating System: $^O\n";
+}
+
+sub yes_no {
+	my $val = shift();
+
+	if ($val) {
+		return "Yes";
+	} else {
+		return "No";
+	}
+}
+
+# If there are colors set in the gitconfig use those, otherwise leave the defaults
+sub init_diff_highlight_colors {
+	$DiffHighlight::NEW_HIGHLIGHT[0] = git_ansi_color(git_config('color.diff-highlight.newnormal'))    || $DiffHighlight::NEW_HIGHLIGHT[0];
+	$DiffHighlight::NEW_HIGHLIGHT[1] = git_ansi_color(git_config('color.diff-highlight.newhighlight')) || $DiffHighlight::NEW_HIGHLIGHT[1];
+
+	$DiffHighlight::OLD_HIGHLIGHT[0] = git_ansi_color(git_config('color.diff-highlight.oldnormal'))    || $DiffHighlight::OLD_HIGHLIGHT[0];
+	$DiffHighlight::OLD_HIGHLIGHT[1] = git_ansi_color(git_config('color.diff-highlight.oldhighlight')) || $DiffHighlight::OLD_HIGHLIGHT[1];
+}
+
+sub debug_log {
+	my $log_line = shift();
+	my $file     = "/tmp/diff-so-fancy.debug.log";
+
+	state $fh;
+	if (!$fh) {
+		printf("%sDebug log enabled:%s $file\n", color('orange'), color());
+		open ($fh, ">", $file) or die("Cannot write to $file");
+	}
+
+	print $fh trim($log_line) . "\n";
+
+	return 1;
+}
+
+# Enable k() and kd() if there is a DSF_DEBUG environment variable
+BEGIN {
+	if ($ENV{"DSF_DEBUG"}) {
+		require Data::Dump::Color;
+		*k  = sub { Data::Dump::Color::dd(@_) };
+		*kd = sub {
+			k(@_);
+
+			printf("Died at %2\$s line #%3\$s\n",caller());
+			exit(15);
+		}
+	} else {
+		*k  = sub {};
+		*kd = sub {};
+	}
 }
 
 # vim: tabstop=4 shiftwidth=4 noexpandtab autoindent softtabstop=4

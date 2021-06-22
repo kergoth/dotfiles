@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 89ca2ae05f7b47bebaec7f6a8ff8538770851af3
+    rev: c8f00df17023562e173fda0b9bdb13d3575a39ce
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: b16b9d26bd2d05d704da3e38f3eee743f2b110c6
+  rev: e253b43e17de114f1efafa9a3e3929f23115ae99
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: e086f0b3fe1cb56df1335037cfd3d612defce082
+    rev: 7191ebb615f5d6ebbf51d598d8ec853a65e2274d
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -245,7 +245,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 48bf2fa8bad054d66bd79c6ba903c89c704201f7
+    rev: ebf3c04b262aa27fbb97f8a0156c2347fecafafb
 
 rule git-scripts:
     move:
@@ -373,7 +373,7 @@ git module gitvoodoo:
 curl module diff-so-fancy:
     url: https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
     executable: diff-so-fancy
-    sha1: 9671b082ee25d0bd48d46b8c1d42f80664914d63
+    sha1: 73915ad64a95a67d074006f76f5e65288498f30d
 
 git module hub-completion:
     url: https://github.com/github/hub
@@ -391,14 +391,14 @@ git module git-tbdiff:
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
-    rev: ae315ded4dba10685dbbafbfa2ff3c1aefeb490d
+    rev: a411ef3e0992d4839f0732ebeb9823024afaaaa8
 
 git module git-extras:
     url: https://github.com/tj/git-extras
     export: bin
     pick:
         - bin/git-alias
-    rev: cd8fe4f6e2bff02f88fc1baeb7260c83160ee927
+    rev: b225ed493401ac7e8cb179c9c0da76a6ee698be1
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -499,7 +499,7 @@ git module tony-tmux-config:
     move:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
     executable: tmux-resize-adaptable
-    rev: 094df60a6701a6dbd5b099e175e26c71bf4eadea
+    rev: 8aad0947cdf7de6bd910528d8ebc9af01951647b
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
@@ -568,7 +568,7 @@ git module rmate:
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
-    rev: 67d899dec1d68620c71b4ec543cfa004660539c1
+    rev: 575740b7a70149717f2128594c47167e91f4e15c
 
 git module bash-realpath:
     url: https://github.com/morgant/realpath
@@ -585,4 +585,4 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: 434fe7b99838f445745e7230db75b21f856a1c69
+    sha1: 5f18c5a6c4f3b5de05ccceb0aefd1b34c0fd18e8

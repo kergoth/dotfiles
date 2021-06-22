@@ -1161,6 +1161,7 @@ span { display: inline-block; }
 <option value='flashrom'></option>
 <option value='flask'></option>
 <option value='flatpak'></option>
+<option value='flatpak-builder'></option>
 <option value='flex'></option>
 <option value='flow'></option>
 <option value='fls'></option>
@@ -1295,6 +1296,7 @@ span { display: inline-block; }
 <option value='git-commit-tree'></option>
 <option value='git-commits-since'></option>
 <option value='git-config'></option>
+<option value='git-contrib'></option>
 <option value='git-count'></option>
 <option value='git-count-objects'></option>
 <option value='git-cp'></option>
@@ -1320,6 +1322,7 @@ span { display: inline-block; }
 <option value='git-grep'></option>
 <option value='git-help'></option>
 <option value='git-ignore'></option>
+<option value='git-ignore-io'></option>
 <option value='git-imerge'></option>
 <option value='git-info'></option>
 <option value='git-init'></option>
@@ -1343,8 +1346,10 @@ span { display: inline-block; }
 <option value='git-range-diff'></option>
 <option value='git-rebase'></option>
 <option value='git-reflog'></option>
+<option value='git-release'></option>
 <option value='git-remote'></option>
 <option value='git-rename-branch'></option>
+<option value='git-rename-tag'></option>
 <option value='git-repack'></option>
 <option value='git-repl'></option>
 <option value='git-replace'></option>
@@ -1358,6 +1363,7 @@ span { display: inline-block; }
 <option value='git-rm'></option>
 <option value='git-root'></option>
 <option value='git-send-email'></option>
+<option value='git-setup'></option>
 <option value='git-shortlog'></option>
 <option value='git-show'></option>
 <option value='git-show-branch'></option>
@@ -1638,6 +1644,7 @@ span { display: inline-block; }
 <option value='irssi'></option>
 <option value='is-up'></option>
 <option value='iscc'></option>
+<option value='iscsiadm'></option>
 <option value='isoinfo'></option>
 <option value='isosize'></option>
 <option value='istats'></option>
@@ -2173,6 +2180,7 @@ span { display: inline-block; }
 <option value='ogr2ogr'></option>
 <option value='ogrinfo'></option>
 <option value='ohdear-cli'></option>
+<option value='okular'></option>
 <option value='omf'></option>
 <option value='opam'></option>
 <option value='open'></option>
@@ -2523,6 +2531,7 @@ span { display: inline-block; }
 <option value='python3/:list'></option>
 <option value='python3/args_kwargs'></option>
 <option value='python3/classes'></option>
+<option value='python3/generator'></option>
 <option value='python3/rosetta/'></option>
 <option value='python3/super'></option>
 <option value='python3/threads'></option>
@@ -2539,6 +2548,7 @@ span { display: inline-block; }
 <option value='qrencode'></option>
 <option value='qrify'></option>
 <option value='qsub'></option>
+<option value='qtchooser'></option>
 <option value='qtcreator'></option>
 <option value='quilt'></option>
 <option value='quota'></option>
