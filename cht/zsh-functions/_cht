@@ -390,6 +390,7 @@ span { display: inline-block; }
 <option value='apt'></option>
 <option value='apt-add-repository'></option>
 <option value='apt-cache'></option>
+<option value='apt-config'></option>
 <option value='apt-file'></option>
 <option value='apt-get'></option>
 <option value='apt-history'></option>
@@ -452,7 +453,9 @@ span { display: inline-block; }
 <option value='awk/:list'></option>
 <option value='awk/rosetta/'></option>
 <option value='aws'></option>
+<option value='aws-cur'></option>
 <option value='aws-ec2'></option>
+<option value='aws-ecr'></option>
 <option value='aws-glue'></option>
 <option value='aws-google-auth'></option>
 <option value='aws-iam'></option>
@@ -460,6 +463,8 @@ span { display: inline-block; }
 <option value='aws-lambda'></option>
 <option value='aws-quicksight'></option>
 <option value='aws-s3'></option>
+<option value='aws-s3api'></option>
+<option value='aws-secretsmanager'></option>
 <option value='aws-vault'></option>
 <option value='awslogs'></option>
 <option value='axel'></option>
@@ -516,6 +521,7 @@ span { display: inline-block; }
 <option value='blktrace'></option>
 <option value='blockout2'></option>
 <option value='bluetoothctl'></option>
+<option value='bluetoothd'></option>
 <option value='bmaptool'></option>
 <option value='bmon'></option>
 <option value='boltctl'></option>
@@ -543,6 +549,8 @@ span { display: inline-block; }
 <option value='btrfs-filesystem'></option>
 <option value='btrfs-scrub'></option>
 <option value='btrfs-subvolume'></option>
+<option value='bugreport'></option>
+<option value='bugreportz'></option>
 <option value='buku'></option>
 <option value='bundle'></option>
 <option value='bundletool'></option>
@@ -560,6 +568,7 @@ span { display: inline-block; }
 <option value='c/rosetta/'></option>
 <option value='c99'></option>
 <option value='cabal'></option>
+<option value='caddy'></option>
 <option value='caffeinate'></option>
 <option value='cake'></option>
 <option value='cal'></option>
@@ -692,6 +701,7 @@ span { display: inline-block; }
 <option value='collectd'></option>
 <option value='color'></option>
 <option value='colordiff'></option>
+<option value='colorpicker'></option>
 <option value='colrm'></option>
 <option value='column'></option>
 <option value='comm'></option>
@@ -879,6 +889,7 @@ span { display: inline-block; }
 <option value='diffoscope'></option>
 <option value='diffstat'></option>
 <option value='dig'></option>
+<option value='dillo'></option>
 <option value='dir'></option>
 <option value='dircolors'></option>
 <option value='direnv'></option>
@@ -910,6 +921,7 @@ span { display: inline-block; }
 <option value='docker-image'></option>
 <option value='docker-images'></option>
 <option value='docker-inspect'></option>
+<option value='docker-login'></option>
 <option value='docker-logs'></option>
 <option value='docker-machine'></option>
 <option value='docker-network'></option>
@@ -1242,7 +1254,9 @@ span { display: inline-block; }
 <option value='gh-gist'></option>
 <option value='gh-help'></option>
 <option value='gh-issue'></option>
+<option value='gh-issue-create'></option>
 <option value='gh-pr'></option>
+<option value='gh-pr-create'></option>
 <option value='gh-pr-merge'></option>
 <option value='gh-reference'></option>
 <option value='gh-release'></option>
@@ -1302,6 +1316,7 @@ span { display: inline-block; }
 <option value='git-cp'></option>
 <option value='git-create-branch'></option>
 <option value='git-credential'></option>
+<option value='git-daemon'></option>
 <option value='git-delete-branch'></option>
 <option value='git-delete-tag'></option>
 <option value='git-delta'></option>
@@ -1337,8 +1352,10 @@ span { display: inline-block; }
 <option value='git-maintenance'></option>
 <option value='git-merge'></option>
 <option value='git-mergetool'></option>
+<option value='git-missing'></option>
 <option value='git-mv'></option>
 <option value='git-notes'></option>
+<option value='git-obliterate'></option>
 <option value='git-pr'></option>
 <option value='git-prune'></option>
 <option value='git-pull'></option>
@@ -1349,6 +1366,7 @@ span { display: inline-block; }
 <option value='git-release'></option>
 <option value='git-remote'></option>
 <option value='git-rename-branch'></option>
+<option value='git-rename-remote'></option>
 <option value='git-rename-tag'></option>
 <option value='git-repack'></option>
 <option value='git-repl'></option>
@@ -1367,7 +1385,9 @@ span { display: inline-block; }
 <option value='git-shortlog'></option>
 <option value='git-show'></option>
 <option value='git-show-branch'></option>
+<option value='git-show-index'></option>
 <option value='git-show-ref'></option>
+<option value='git-show-tree'></option>
 <option value='git-sizer'></option>
 <option value='git-stage'></option>
 <option value='git-stash'></option>
@@ -1375,6 +1395,7 @@ span { display: inline-block; }
 <option value='git-stripspace'></option>
 <option value='git-submodule'></option>
 <option value='git-subtree'></option>
+<option value='git-summary'></option>
 <option value='git-svn'></option>
 <option value='git-switch'></option>
 <option value='git-tag'></option>
@@ -1384,6 +1405,7 @@ span { display: inline-block; }
 <option value='git-update-ref'></option>
 <option value='git-var'></option>
 <option value='git-verify-commit'></option>
+<option value='git-verify-tag'></option>
 <option value='git-whatchanged'></option>
 <option value='git-worktree'></option>
 <option value='git/:learn'></option>
@@ -1417,6 +1439,7 @@ span { display: inline-block; }
 <option value='go-generate'></option>
 <option value='go-list'></option>
 <option value='go-mod'></option>
+<option value='go-test'></option>
 <option value='go-version'></option>
 <option value='go/'></option>
 <option value='go/:learn'></option>
@@ -1666,6 +1689,7 @@ span { display: inline-block; }
 <option value='jcal'></option>
 <option value='jdupes'></option>
 <option value='jekyll'></option>
+<option value='jello'></option>
 <option value='jenv'></option>
 <option value='jest'></option>
 <option value='jetifier'></option>
@@ -1703,6 +1727,7 @@ span { display: inline-block; }
 <option value='jslint'></option>
 <option value='json5'></option>
 <option value='jstack'></option>
+<option value='jtbl'></option>
 <option value='julia'></option>
 <option value='julia/'></option>
 <option value='julia/:learn'></option>
@@ -1733,6 +1758,7 @@ span { display: inline-block; }
 <option value='kdeconnect-cli'></option>
 <option value='kdocker'></option>
 <option value='keepass2'></option>
+<option value='keepassxc-cli'></option>
 <option value='kexec'></option>
 <option value='keybase'></option>
 <option value='khal'></option>
@@ -1755,6 +1781,8 @@ span { display: inline-block; }
 <option value='kpackagetool5'></option>
 <option value='kpartx'></option>
 <option value='kreadconfig5'></option>
+<option value='kscreen-console'></option>
+<option value='kscreen-doctor'></option>
 <option value='ksh'></option>
 <option value='ksvgtopng5'></option>
 <option value='kube-capacity'></option>
@@ -1763,6 +1791,7 @@ span { display: inline-block; }
 <option value='kubectl'></option>
 <option value='kubectl-describe'></option>
 <option value='kubectl-get'></option>
+<option value='kubectl-run'></option>
 <option value='kubectx'></option>
 <option value='kubens'></option>
 <option value='kubetail'></option>
@@ -1802,6 +1831,7 @@ span { display: inline-block; }
 <option value='license'></option>
 <option value='light'></option>
 <option value='light-arionum-cli'></option>
+<option value='lighthouse'></option>
 <option value='lilypond'></option>
 <option value='line'></option>
 <option value='link'></option>
@@ -1813,6 +1843,7 @@ span { display: inline-block; }
 <option value='lisp/rosetta/'></option>
 <option value='live-server'></option>
 <option value='lldb'></option>
+<option value='llvm-dis'></option>
 <option value='lmms'></option>
 <option value='ln'></option>
 <option value='loc'></option>
@@ -1880,6 +1911,7 @@ span { display: inline-block; }
 <option value='lvs'></option>
 <option value='lwp-request'></option>
 <option value='lxc'></option>
+<option value='lxi'></option>
 <option value='lxterminal'></option>
 <option value='lynis'></option>
 <option value='lynx'></option>
@@ -1967,6 +1999,7 @@ span { display: inline-block; }
 <option value='mkinitcpio'></option>
 <option value='mkisofs'></option>
 <option value='mklink'></option>
+<option value='mklost+found'></option>
 <option value='mknod'></option>
 <option value='mkswap'></option>
 <option value='mktemp'></option>
@@ -1995,6 +2028,7 @@ span { display: inline-block; }
 <option value='mongo/shell'></option>
 <option value='mongod'></option>
 <option value='mongodump'></option>
+<option value='mongoexport'></option>
 <option value='mongoimport'></option>
 <option value='mongorestore'></option>
 <option value='mono'></option>
@@ -2195,9 +2229,11 @@ span { display: inline-block; }
 <option value='openssl-prime'></option>
 <option value='openssl-req'></option>
 <option value='openssl-s_client'></option>
+<option value='openssl-ts'></option>
 <option value='openssl-x509'></option>
 <option value='openttd'></option>
 <option value='openvpn'></option>
+<option value='openvpn3'></option>
 <option value='opkg'></option>
 <option value='opt'></option>
 <option value='optipng'></option>
@@ -2235,6 +2271,7 @@ span { display: inline-block; }
 <option value='parquet-tools'></option>
 <option value='parted'></option>
 <option value='particle'></option>
+<option value='partprobe'></option>
 <option value='partx'></option>
 <option value='paru'></option>
 <option value='pass'></option>
@@ -2264,6 +2301,7 @@ span { display: inline-block; }
 <option value='pdftocairo'></option>
 <option value='pdftotext'></option>
 <option value='pdfunite'></option>
+<option value='peco'></option>
 <option value='peerflix'></option>
 <option value='peludna-prognoza'></option>
 <option value='percol'></option>
@@ -2384,6 +2422,7 @@ span { display: inline-block; }
 <option value='pipenv'></option>
 <option value='pipx'></option>
 <option value='pivpn'></option>
+<option value='pixiecore'></option>
 <option value='pkcon'></option>
 <option value='pkg-config'></option>
 <option value='pkgadd'></option>
@@ -2531,6 +2570,7 @@ span { display: inline-block; }
 <option value='python3/:list'></option>
 <option value='python3/args_kwargs'></option>
 <option value='python3/classes'></option>
+<option value='python3/decorator'></option>
 <option value='python3/generator'></option>
 <option value='python3/rosetta/'></option>
 <option value='python3/super'></option>
@@ -11472,13 +11512,13 @@ span { display: inline-block; }
 <option value='shutdown'></option>
 <option value='sic'></option>
 <option value='siege'></option>
-<option value='sigverif'></option>
 <option value='silentcast'></option>
 <option value='sindresorhus'></option>
 <option value='sinfo'></option>
 <option value='singularity'></option>
 <option value='sips'></option>
 <option value='siteciphers'></option>
+<option value='sk'></option>
 <option value='skaffold'></option>
 <option value='skicka'></option>
 <option value='skipcpio'></option>
@@ -11536,6 +11576,7 @@ span { display: inline-block; }
 <option value='spotify'></option>
 <option value='sql/'></option>
 <option value='sql/rosetta/'></option>
+<option value='sqlcmd'></option>
 <option value='sqlite3'></option>
 <option value='sqlmap'></option>
 <option value='sqsc'></option>
@@ -11806,9 +11847,11 @@ span { display: inline-block; }
 <option value='ver'></option>
 <option value='veracrypt'></option>
 <option value='vercel'></option>
+<option value='vgchange'></option>
 <option value='vgcreate'></option>
 <option value='vgdisplay'></option>
 <option value='vgs'></option>
+<option value='vgscan'></option>
 <option value='view'></option>
 <option value='viewnior'></option>
 <option value='vim'></option>
@@ -11820,6 +11863,15 @@ span { display: inline-block; }
 <option value='virsh-domblklist'></option>
 <option value='virsh-help'></option>
 <option value='virsh-list'></option>
+<option value='virsh-pool-autostart'></option>
+<option value='virsh-pool-build'></option>
+<option value='virsh-pool-define-as'></option>
+<option value='virsh-pool-delete'></option>
+<option value='virsh-pool-destroy'></option>
+<option value='virsh-pool-info'></option>
+<option value='virsh-pool-list'></option>
+<option value='virsh-pool-start'></option>
+<option value='virsh-pool-undefine'></option>
 <option value='virsh-undefine'></option>
 <option value='virt-clone'></option>
 <option value='virt-install'></option>
@@ -11944,6 +11996,7 @@ span { display: inline-block; }
 <option value='xman'></option>
 <option value='xmllint'></option>
 <option value='xmlto'></option>
+<option value='xmount'></option>
 <option value='xo'></option>
 <option value='xonsh'></option>
 <option value='xpdf'></option>

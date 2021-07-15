@@ -108,12 +108,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: c8f00df17023562e173fda0b9bdb13d3575a39ce
+    rev: f68324cd099f2d76321f1889f8de504e67a7c797
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 0e1bb14452e3fc66dcc81531212e1061e02c1a61
+    rev: dffe304567c86f06bf1be0fce200077504e79783
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 9dfd5c667072a9aef13a237fe3c3cc857ca9917f
+    rev: a736cfe8e534fc5a5739c1062b2f80e8381ce8fc
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: e253b43e17de114f1efafa9a3e3929f23115ae99
+  rev: 784e16f3aa941ca3564d823cc686017a161621a1
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -398,7 +398,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: b225ed493401ac7e8cb179c9c0da76a6ee698be1
+    rev: d28ad34bcbc68cd6e1509f58a59d3075e99a82f1
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -503,14 +503,14 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 36e1e0804598c93c2536abea3dd3d9cbb6a6cd9b
+    sha1: 39ba2b58d5dd89bc7f167282d1a756110ca5cde6
 
 git module exa-completions:
     url: https://github.com/ogham/exa
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: a6754f3cc3d61bf52bc45d0b5aa7b5e1c86ef8c7
+    rev: dc5c42a0f240a52f5b102cf965b98ecc2bc328c2
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -585,4 +585,4 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: 5f18c5a6c4f3b5de05ccceb0aefd1b34c0fd18e8
+    sha1: b8c64794d9ba13bc6e1270078e9279aa251da723
