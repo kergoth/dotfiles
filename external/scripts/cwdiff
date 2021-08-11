@@ -49,6 +49,7 @@ usage="Usage: ${0##*/} [OPTIONS] FILE1 FILE2"
 diff="no"
 filter=
 diff_opts='--new-file --unified --show-c-function --recursive'
+wdiff_opts=
 ab=
 
 color_filter() {
@@ -213,7 +214,7 @@ if [[ $diff != no ]]; then
       # cut the last newline do avoid an empty line at the end (echo append newline)
       # echo -n would also work, but wdiff has strange behaviour if the 2nd file is
       # empty, it will not append newline, which make the output look strange
-      [[ $t1 || $t2 ]] && { wdiff ${RED:+-n} <(echo "${t1%$NL}") <(echo "${t2%$NL}") | color_filter; }
+      [[ $t1 || $t2 ]] && { wdiff "$wdiff_opts" ${RED:+-n} <(echo "${t1%$NL}") <(echo "${t2%$NL}") | color_filter; }
       t1=
       t2=
       [[ $diff = only ]] && echo "${i}" || echo "${i## }"
@@ -221,9 +222,9 @@ if [[ $diff != no ]]; then
   done
   # thanks to Arne Babenhauserheide for pointing out this case is missing
   # if there was + or - lines at the end, which has not been printed yet
-  [[ $t1 || $t2 ]] && { wdiff ${RED:+-n} <(echo "${t1%$NL}") <(echo "${t2%$NL}") | color_filter; }
+  [[ $t1 || $t2 ]] && { wdiff "$wdiff_opts" ${RED:+-n} <(echo "${t1%$NL}") <(echo "${t2%$NL}") | color_filter; }
 elif [[ $filter ]]; then
   color_filter $1
 else
-  wdiff ${RED:+-n} "$1" "$2" | color_filter
+  wdiff "$wdiff_opts" ${RED:+-n} "$1" "$2" | color_filter
 fi

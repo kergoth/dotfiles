@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: f68324cd099f2d76321f1889f8de504e67a7c797
+    rev: 9c858cd5b82ccc2e07917b2905aa03679ae2a01e
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -117,11 +117,11 @@ git module zsh-syntax-highlighting:
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 0f80b8eb3368b46e5e573c1d91ae69eb095db3fb
+    rev: 4abed97b6e67eb5590b39bcd59080aa23192f25d
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: a736cfe8e534fc5a5739c1062b2f80e8381ce8fc
+    rev: d4511c23659381b56dec8be8c8553b7ff3dc5fd8
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 784e16f3aa941ca3564d823cc686017a161621a1
+  rev: 9122bfc3a80367ed303e8e2d3b3b3d7a8851c904
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -199,7 +199,7 @@ curl module cpanm:
 git module cwdiff:
     url: https://github.com/junghans/cwdiff
     pick: cwdiff
-    rev: de56a73f37eb72edfb78ea610798a5744b8dcf10
+    rev: f14e2a9af9173a6ba15df7f5b91b1441f3723b5a
 
 git module fasd:
     url: https://github.com/clvv/fasd
@@ -224,7 +224,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 3fc0fe3072720730cdea2c710d8bce03d0b1a47a
+    rev: 89574fa2f2323010e08a88430bfcd870c9e5e512
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -398,7 +398,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: d28ad34bcbc68cd6e1509f58a59d3075e99a82f1
+    rev: a07c5ece5de59f3a0d091a922afc038d0bca02ad
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -510,7 +510,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: dc5c42a0f240a52f5b102cf965b98ecc2bc328c2
+    rev: e7a477eb1564937d99004964b17143644bed3483
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -568,7 +568,7 @@ git module rmate:
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
-    rev: 575740b7a70149717f2128594c47167e91f4e15c
+    rev: 431fae923b5c04853477ac40c673d793abfb6f18
 
 git module bash-realpath:
     url: https://github.com/morgant/realpath

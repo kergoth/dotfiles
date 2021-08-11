@@ -33,7 +33,7 @@ Using [Oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh):
 
 2. Activate the plugin in `~/.zshrc`:
 
-        plugins=( [plugins...] history-substring-search)
+        plugins=( [plugins...] zsh-history-substring-search)
 
 3. Source `~/.zshrc`  to take changes into account:
 
@@ -115,7 +115,7 @@ Configuration
 ------------------------------------------------------------------------------
 
 This script defines the following global variables. You may override their
-default values only after having loaded this script into your ZSH session.
+default values.
 
 * `HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND` is a global variable that defines
   how the query should be highlighted inside a matching command. Its default
@@ -140,6 +140,12 @@ default values only after having loaded this script into your ZSH session.
   how the command history will be searched for your query. If set to a non-empty
   value, causes this script to perform a fuzzy search by words, matching in
   given order e.g. `ab c` will match `*ab*c*`
+
+* `HISTORY_SUBSTRING_SEARCH_PREFIXED` is a global variable that defines how
+  the command history will be searched for your query. If set to a non-empty
+  value, your query will be matched against the start of each history entry.
+  For example, if this variable is empty, `ls` will match `ls -l` and `echo
+  ls`; if it is non-empty, `ls` will only match `ls -l`.
 
 * `HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE` is a global variable that defines
   whether all search results returned are _unique_. If set to a non-empty

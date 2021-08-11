@@ -1,9 +1,12 @@
 # Dracula theme for Kakoune
 # https://draculatheme.com/kakoune
 
+# Internal variables
+declare-option -hidden str dracula_path %sh(dirname "$kak_source")
+
 # Color palette
 # https://github.com/dracula/kakoune/blob/master/colors/dracula.kak
-colorscheme dracula
+source "%opt{dracula_path}/dracula.kak"
 
 # Transparency
 # Use the default terminal color.

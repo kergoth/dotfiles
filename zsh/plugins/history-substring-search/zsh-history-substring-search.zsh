@@ -43,11 +43,12 @@
 # declare global configuration variables
 #-----------------------------------------------------------------------------
 
-typeset -g HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=magenta,fg=white,bold'
-typeset -g HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='bg=red,fg=white,bold'
-typeset -g HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS='i'
-typeset -g HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=''
-typeset -g HISTORY_SUBSTRING_SEARCH_FUZZY=''
+: ${HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=magenta,fg=white,bold'}
+: ${HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='bg=red,fg=white,bold'}
+: ${HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS='i'}
+: ${HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=''}
+: ${HISTORY_SUBSTRING_SEARCH_FUZZY=''}
+: ${HISTORY_SUBSTRING_SEARCH_PREFIXED=''}
 
 #-----------------------------------------------------------------------------
 # declare internal global variables
@@ -246,7 +247,14 @@ _history-substring-search-begin() {
     # Escape and join query parts with wildcard character '*' as seperator
     # `(j:CHAR:)` join array to string with CHAR as seperator
     #
-    local search_pattern="*${(j:*:)_history_substring_search_query_parts[@]//(#m)[\][()|\\*?#<>~^]/\\$MATCH}*"
+    local search_pattern="${(j:*:)_history_substring_search_query_parts[@]//(#m)[\][()|\\*?#<>~^]/\\$MATCH}*"
+
+    #
+    # Support anchoring history search to the beginning of the command
+    #
+    if [[ -z $HISTORY_SUBSTRING_SEARCH_PREFIXED ]]; then
+      search_pattern="*${search_pattern}"
+    fi
 
     #
     # Find all occurrences of the search pattern in the history file.
