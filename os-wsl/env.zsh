@@ -9,7 +9,7 @@ case "$(uname -r)" in
     *-microsoft-*)
         OSTYPE=WSL
         WSLVER=2
-        NPIPERELAY="${NPIPERELAY:-$USERPROFILE/Apps/npiperelay.exe}"
+        NPIPERELAY="${NPIPERELAY:-$USERPROFILE/Apps/npiperelay/npiperelay.exe}"
         if [[ -e "$NPIPERELAY" ]] && (( $+commands[socat] )); then
             export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
             if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
@@ -35,8 +35,4 @@ if [[ "$OSTYPE" = "WSL" ]]; then
     fi
     export USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
     export BROWSER="cmd.exe /C START"
-
-    if [[ -n "$WSL_SSH_AUTH_SOCK" ]]; then
-        export SSH_AUTH_SOCK="$WSL_SSH_AUTH_SOCK"
-    fi
 fi
