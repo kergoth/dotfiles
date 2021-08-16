@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9c858cd5b82ccc2e07917b2905aa03679ae2a01e
+    rev: a544f56e17c404324a7a32119255bb5aba49a2f0
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: d4511c23659381b56dec8be8c8553b7ff3dc5fd8
+    rev: 394239d7467614ce0bcbf9af73ffcc6fbf0cc5c8
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 7191ebb615f5d6ebbf51d598d8ec853a65e2274d
+    rev: 3c804bcfec7c1f3cb69398f6d74f77a25286dbcb
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -510,7 +510,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: e7a477eb1564937d99004964b17143644bed3483
+    rev: 3f24f7cbcfe293d27ece3075a1283444ff50d7c6
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
