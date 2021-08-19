@@ -116,6 +116,13 @@ if (-Not (Get-Command python))
         $env:Path = "C:\Python38;" + $env:Path
     }
 }
+if (-Not (Get-Command python))
+{
+    if (Test-Path "C:\Python39")
+    {
+        $env:Path = "C:\Python39;" + $env:Path
+    }
+}
 if (-Not (Test-Path alias:python3)) {
     Add-Alias python3 python
 }
