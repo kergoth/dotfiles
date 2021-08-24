@@ -51,7 +51,6 @@ imports:
     repo: git/scripts
     rpm2cpio: external/scripts
     smem: external/scripts
-    ssh-copy-rsub: external/scripts
     t: external/scripts
     titlecase-perl: external/scripts
     tony-tmux-config: tmux/scripts
@@ -205,11 +204,6 @@ git module fasd:
     url: https://github.com/clvv/fasd
     pick: fasd
     rev: 90b531a5daaa545c74c7d98974b54cbdb92659fc
-
-git module ssh-copy-rsub:
-    url: https://github.com/henrikpersson/rsub
-    pick: ssh-copy-rsub
-    rev: beb2810827dc7da0695584d3556d7693ec2e74f3
 
 git module pom:
     url: https://github.com/tobym/pom
