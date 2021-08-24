@@ -57,6 +57,7 @@ imports:
     vim-profiler: scripts
     wget-finder: external/scripts
     wsl-open: os-wsl/scripts
+    yt-dlp: external/scripts
 
     chneukirchen-tools: .
     1t: external/scripts
@@ -580,3 +581,9 @@ curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
     sha1: b8c64794d9ba13bc6e1270078e9279aa251da723
+
+curl module yt-dlp:
+  url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+  filename: yt-dlp
+  executable: yt-dlp
+  sha1: 56ecf6f2a7f1924c0d32807335861c84aaeb2191
