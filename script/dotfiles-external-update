@@ -43,7 +43,7 @@ if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && ! [ -e windows-te
 fi
 
 cd "$tmpdir" || exit 1
-git clone https://github.com/petdance/ack3 \
+git clone --depth 1 https://github.com/petdance/ack3 \
     && cd ack3 \
     && "$dotfilesdir/perl/scripts/cpanmv" ack3 File::Next \
     && eval "$("$dotfilesdir/perl/scripts/cpanmv-use" ack3)" \
