@@ -108,12 +108,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: a544f56e17c404324a7a32119255bb5aba49a2f0
+    rev: 1b6e6bd6dd03b72e2918a076eea8f701a71455ab
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: dffe304567c86f06bf1be0fce200077504e79783
+    rev: 6e0e950154a4c6983d9e077ed052298ad9126144
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 394239d7467614ce0bcbf9af73ffcc6fbf0cc5c8
+    rev: f52061cd6886250cdeac02cf5a0ad9da44b6efa6
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 9122bfc3a80367ed303e8e2d3b3b3d7a8851c904
+  rev: b55769a5c9422e0aac532e901a4d7b5af834b34d
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 3c804bcfec7c1f3cb69398f6d74f77a25286dbcb
+    rev: 3f90fb42d8871920138ace9878502f22a4d91e85
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -240,7 +240,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: ebf3c04b262aa27fbb97f8a0156c2347fecafafb
+    rev: 225bc32a989d7a22fa6addafd4ce7dcd04675dbf
 
 rule git-scripts:
     move:
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: a07c5ece5de59f3a0d091a922afc038d0bca02ad
+    rev: c30ac80d72d19289d220ef8805c7264d2f822b81
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -433,7 +433,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: d464f6b25f4a40a051a7b4a39b5fe955d2cc48fe
+    rev: a2d38ce5f8b476b2e641e9779767f737d7b4ffb3
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -505,14 +505,14 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: 3f24f7cbcfe293d27ece3075a1283444ff50d7c6
+    rev: 439b629d90b5275ebaa91aa8fc380610a4907c0f
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
         - src
-    rev: 20cdf5a9983da09bdfe640bbd321f606a282e7db
+    rev: 7803ecaba1e78adacc277e82b2568cca007b1ba0
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
