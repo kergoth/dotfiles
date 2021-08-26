@@ -153,5 +153,4 @@
 	            --prompt 'Select commit: '
 
 [delta]
-	side-by-side = true
 	theme = Dracula
