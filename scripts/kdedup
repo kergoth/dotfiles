@@ -14,14 +14,17 @@ if echo "$*" | grep -q '{}'; then
 fi
 
 remove_nondupes() {
-     jdupes-oneline | sed -e "s/$TAB*$//" | grep "$TAB" | jdupes-multiline
+    jdupes-oneline | sed -e "s/$TAB*$//" | grep "$TAB" | jdupes-multiline
 }
 
-cat \
-  | tr '\n' '\0' \
-  | xargs -0 "$@" \
-  | grep -v "^ *$TAB" \
-  | sort -t"$TAB" -k1 \
-  | group-by-column 1 "$TAB" \
-  | cut -d"$TAB" -f2- \
-  | remove_nondupes
+if [ $# -gt 0 ]; then
+    tr '\n' '\0' \
+        | xargs -0 "$@"
+else
+    cat
+fi \
+    | grep -v "^ *$TAB" \
+    | sort -t"$TAB" -k1 \
+    | group-by-column 1 "$TAB" \
+    | cut -d"$TAB" -f2- \
+    | remove_nondupes
