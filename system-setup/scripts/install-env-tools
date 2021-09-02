@@ -75,9 +75,9 @@ pip3_install pip
 #pip3_install see
 
 ## General Tools & Utilities
-go get -u github.com/junegunn/fzf/...
+go install github.com/junegunn/fzf/...@latest
 pipx httpie
-go get -u github.com/EricChiang/pup
+go install github.com/EricChiang/pup@latest
 
 # Very handy for screencasts
 pipx asciinema
@@ -86,20 +86,20 @@ pipx asciinema
 pipx peru
 
 ## Handy
-go get -u github.com/direnv/direnv
+go install github.com/direnv/direnv@latest
 
 ## Script dependencies
-go get -u github.com/tomnomnom/unfurl
+go install github.com/tomnomnom/unfurl@latest
 
 ## Pinboard client
 #npmv pin-cushion
 #pipx python-json2yaml # pcposts zsh function
 
 ## Development Tools
-go get -u github.com/github/hub
+go install github.com/github/hub@latest
 pipx git+https://github.com/kergoth/git-imerge@no-completions-in-setup
 pipx git-revise
-go get -u github.com/x-motemen/ghq
+go install github.com/x-motemen/ghq@latest
 # pprintpp + pp-ez?
 # twine?
 # wheel?
@@ -111,7 +111,7 @@ go get -u github.com/x-motemen/ghq
 
 ## Formatters
 GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
-go get -u github.com/shurcooL/markdownfmt
+go install github.com/shurcooL/markdownfmt@latest
 # autopep8 - format code per pep8
 # https://pypi.python.org/pypi/docformatter - format docstrings per pep257
 #npmv pretty-js
@@ -151,10 +151,10 @@ fi
 # cargo install --git https://github.com/pkolaczk/fclones # find duplicate files
 # cargo install sd
 # cargo install --locked --all-features --git https://github.com/ms-jpq/sad --branch senpai
-#go get -u github.com/ddo/fast # bandwidth speed testing
-#go get -u github.com/jbenet/go-multihash/multihash # If needed to create a hash for use by hashpipe
-#go get -u github.com/jbenet/hashpipe
-#go get -u github.com/pengwynn/flint # check for missing license/etc for a project
+#go install github.com/ddo/fast@latest # bandwidth speed testing
+#go install github.com/jbenet/go-multihash/multihash@latest # If needed to create a hash for use by hashpipe
+#go install github.com/jbenet/hashpipe@latest
+#go install github.com/pengwynn/flint@latest # check for missing license/etc for a project
 # Seemingly no cli install for: terra (terralang.org)
 
 # cha(rs) is a commandline tool to display information about unicode characters
