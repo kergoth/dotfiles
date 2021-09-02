@@ -9,6 +9,30 @@
 PATH=$(dirname "$0"):$PATH
 TAB=$(printf '\t')
 
+usage() {
+    cat <<END >&2
+${0##*/} [options..] [CMD [ARGS..]]
+
+Options:
+  -a   Also show non-duplicates
+  -h   Show usage
+END
+    exit 2
+}
+
+all=0
+while getopts ah opt; do
+    case "$opt" in
+        a)
+            all=1
+            ;;
+        \? | h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
 if echo "$*" | grep -q '{}'; then
     set -- -I"{}" "$@"
 fi
@@ -27,4 +51,8 @@ fi \
     | sort -t"$TAB" -k1 \
     | group-by-column 1 "$TAB" \
     | cut -d"$TAB" -f2- \
-    | remove_nondupes
+    | if [ $all -eq 1 ]; then
+        cat
+    else
+        remove_nondupes
+    fi
