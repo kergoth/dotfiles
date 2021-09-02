@@ -65,6 +65,7 @@ else
 fi
 
 if [ -e "$scriptdir/$plugin-build-env.sh" ]; then
+    echo >&2 "Using '$scriptdir/$plugin-build-env.sh'"
     # shellcheck disable=SC1090
     . "$scriptdir/$plugin-build-env.sh"
 fi
