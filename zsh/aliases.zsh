@@ -47,6 +47,10 @@ alias rgv=gv
 alias rgva=gva
 alias rg=g
 
+if (( $+commands[podman] )) && ! (( $+commands[docker] )); then
+    alias docker=podman
+fi
+
 if (( $+commands[fd] )); then
     fd () {
         if [[ -t 1 ]]; then
