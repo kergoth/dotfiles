@@ -222,9 +222,11 @@ main() {
                             echo >&2 "Keep files: $keeping"
                             echo >&2 "Remove files:"
                             grep -v "^$keep_path/" "$tmpfile" || :
+                            echo
                         fi
                     elif grep -q "^$keep_path/" "$tmpfile"; then
                         grep -v "^$keep_path/" "$tmpfile" || :
+                        echo
                     fi
                 fi
             fi
