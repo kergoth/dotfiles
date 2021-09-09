@@ -3,5 +3,16 @@
 set -e
 
 for file; do
-    git co "${file%%:*}" -- "${file#*:}"
+    case "$file" in
+        *:*)
+            git checkout "${file%%:*}" -- "${file#*:}"
+            ;;
+        *)
+            git attic -- "$file" \
+                | awk -F: '!visited[$2]++' \
+                | cut -d" " -f2- \
+                | tr '\n' '\0' \
+                | xargs -0 "$0"
+            ;;
+    esac
 done
