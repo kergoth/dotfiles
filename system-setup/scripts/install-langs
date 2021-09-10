@@ -76,9 +76,6 @@ _install python asdf-install -g python
 if command -v python3 >/dev/null; then
     _install python-pipx install-pipx
 fi
-if command -v python2 >/dev/null; then
-    _install python-pipsi install-pipsi
-fi
 
 # TODO: remove the packages we installed, but not the ones the user did
 if [ -n "$(echo "$_failed" | xargs)" ]; then
