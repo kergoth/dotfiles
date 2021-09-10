@@ -110,7 +110,7 @@ go install github.com/x-motemen/ghq@latest
 #npmv doctoc
 
 ## Formatters
-GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
+GO111MODULE=on go install mvdan.cc/sh/v3/cmd/shfmt@latest
 go install github.com/shurcooL/markdownfmt@latest
 # autopep8 - format code per pep8
 # https://pypi.python.org/pypi/docformatter - format docstrings per pep257
@@ -144,7 +144,7 @@ fi
 # see also markdownlint
 # http://lua-users.org/wiki/LuaInspect ?
 # https://code.google.com/archive/p/lua-checker/ ?
-# go get github.com/BurntSushi/toml/cmd/tomlv # for toml, but it's out of date. it only supports 0.1.0
+# go install github.com/BurntSushi/toml/cmd/tomlv@latest # for toml, but it's out of date. it only supports 0.1.0
 
 ## As Needed
 
