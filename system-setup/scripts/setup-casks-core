@@ -1,8 +1,0 @@
-#!/bin/sh
-
-brew cask install \
-     the-unarchiver \
-     xbox360-controller-driver \
-     appcleaner \
-     unpkg \
-     flash-player
