@@ -9,8 +9,8 @@
         "defaults": {
             // "bellStyle": "visual",
             "colorScheme": "Dracula",
-            "fontFace": "Rec Mono Duotone",
-            "fontSize": 10,
+            "fontFace": "Input Mono Narrow",
+            "fontSize": 11,
             "fontWeight": "light",
             "historySize": 15000
         },
