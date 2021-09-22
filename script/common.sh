@@ -116,7 +116,7 @@ link() {
     wsl_winpath=0
     if [ $OSTYPE = WSL ]; then
         case "$(pwd -P)" in
-            "$WslDisks"/*) ;;
+            # "$WslDisks"/*) ;;
 
             *)
                 case "$dotfile_dest" in
@@ -160,7 +160,7 @@ link() {
     fi
 
     mkdir -p "$destdir"
-    if false && [ $wsl_winpath -eq 1 ]; then
+    if [ $wsl_winpath -eq 1 ]; then
         if [ -e "$dotfile_dest" ]; then
             # Not using iln, so prompt to handle existing
             if prompt_bool "Replace $dotfile_dest?"; then
@@ -199,7 +199,7 @@ mklink() {
                 ;;
         esac
         if [ -d "$2" ]; then
-            cmd.exe /c mklink /j "$link" "$(_winpath "$2")"
+            cmd.exe /c mklink /d "$link" "$(_winpath "$2")"
         else
             cmd.exe /c mklink "$link" "$(_winpath "$2")"
         fi
