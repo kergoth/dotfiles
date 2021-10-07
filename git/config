@@ -4,6 +4,13 @@
 	attributesfile = ~/.config/git/attributes
 	whitespace = cr-at-eol
 
+[init]
+	defaultBranch = main
+
+[user]
+	name = Christopher Larson
+	email = kergoth@gmail.com
+
 [pager]
 	diff = delta
 	log = delta
@@ -14,12 +21,9 @@
 	singlekey = true
 	diffFilter = delta --color-only --features=interactive
 
-[init]
-	defaultBranch = main
-
-[user]
-	name = Christopher Larson
-	email = kergoth@gmail.com
+[delta]
+	theme = Dracula
+	navigate = true
 
 [advice]
 	detachedHead = false
@@ -142,9 +146,6 @@
 	smudge = git-lfs smudge %f
 	required = true
 
-[delta]
-	theme = "Dracula"
-
 [ghq]
 	root = $GHQ_ROOT
 	root = $GOPATH/src
@@ -159,6 +160,3 @@
 	            --preview 'git show --color {+1}' \
 	            --preview-window=up:80% \
 	            --prompt 'Select commit: '
-
-[delta]
-	theme = Dracula
