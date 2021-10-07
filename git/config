@@ -3,7 +3,16 @@
 	excludesfile = ~/.config/git/ignore
 	attributesfile = ~/.config/git/attributes
 	whitespace = cr-at-eol
-	pager = git-pager
+
+[pager]
+	diff = delta
+	log = delta
+	reflog = delta
+	show = delta
+
+[interactive]
+	singlekey = true
+	diffFilter = delta --color-only --features=interactive
 
 [init]
 	defaultBranch = main
@@ -19,7 +28,6 @@
 	user = kergoth
 
 [interactive]
-	singlekey = true
 	diffFilter = git-diff-filter
 
 [pretty]
