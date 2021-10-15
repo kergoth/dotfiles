@@ -108,12 +108,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 3b666b95177e9fad0af15adf7a64fba705afa900
+    rev: 02ac246807993e57dd5b6061bee1385f186ae20d
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 6e0e950154a4c6983d9e077ed052298ad9126144
+    rev: 1a9264bc661b3d52756916bf9ec3f41687d64db2
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 1328c35a4d0b47c7e8c00fe351f0e587481e28c2
+  rev: 0f6f16ed1784049a11be5be364879affe35ff921
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0f02fc0c77356a7b72b05131edf6c99d8efa6d33
+    rev: 4138333f5cfb6e21b0f8d63a43add4c70c25cdaf
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -240,7 +240,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 225bc32a989d7a22fa6addafd4ce7dcd04675dbf
+    rev: af6d1d602a8f64164b266364339c4e936d5bbc33
 
 rule git-scripts:
     move:
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: f6fa554077c9ce574ae2ea66fa7462d18f2cc7b6
+    rev: b33ec65e5f4572e9982e242d7b15797dcddaec6a
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -433,7 +433,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: 25d1fce96e4a7ec3e228d1ff6824c9b954b9b155
+    rev: 23df4aacb9a53753610ee004f7e77fda00e97376
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -494,7 +494,7 @@ git module tony-tmux-config:
     move:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
     executable: tmux-resize-adaptable
-    rev: 8aad0947cdf7de6bd910528d8ebc9af01951647b
+    rev: 0e1e2814693d3c14a64be3f10c28a8dbb1474084
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
@@ -505,7 +505,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: ec786201c81bb03f209693a85c995a2e482994ab
+    rev: b32f441851fdad8b5e3a6aa8cf23e276d7cc1278
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -548,7 +548,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: 738d337a9113cef0a3061227428c47703ba52856
+    rev: 290200ad3074e660057bfd3fc066aab42c244756
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
@@ -563,7 +563,7 @@ git module rmate:
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
-    rev: 431fae923b5c04853477ac40c673d793abfb6f18
+    rev: 9b0aafe6614bb59fa92419fb14877dd9b7fd7a41
 
 git module bash-realpath:
     url: https://github.com/morgant/realpath
@@ -586,4 +586,4 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 71f8c77746c753118e23e57b350af50f2c67375d
+  sha1: 16dadad625e790c5614b127a26715c539ae187c7

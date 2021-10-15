@@ -6,6 +6,7 @@ import subprocess as sp
 import argparse
 import os, sys
 import shutil
+import shlex
 import json
 from enum import Enum, IntEnum
 
@@ -588,6 +589,13 @@ def check_pending(git_dir):
     return False
 
 
+def edit(path):
+    editor = os.environ.get('VISUAL')
+    if editor is None:
+        editor = os.environ.get('EDITOR', 'vi')
+    return os.system(editor + ' ' + shlex.quote(path))
+
+
 class ExitStatus(IntEnum):
     SUCCESS = 0
     ERROR   = 1
@@ -603,8 +611,11 @@ def main(argv):
                     help='recreate base branches (implies -c, destructive!)')
     ap.add_argument('-n', '--dry-run', action='store_true',
                     help='show what assemble would do')
-    ap.add_argument('-a', '--assemble', action='store_true',
-                    help='assemble the target branches')
+    g = ap.add_mutually_exclusive_group()
+    g.add_argument('-a', '--assemble', action='store_true',
+                   help='assemble the target branches')
+    g.add_argument('-e', '--edit', action='store_true',
+                   help='spawn an editor on the current assembly file')
     ap.add_argument('-v', '--verbose', default=0, action='count',
                     help='increase verbosity')
     ap.add_argument('--version', action='version', version=APP_VER)
@@ -650,6 +661,10 @@ def main(argv):
             return ExitStatus.CONFIG
         path = os.path.relpath(path)
         debug('reading instructions from {}'.format(path))
+
+    if args.edit:
+        if edit(path):
+            return ExitStatus.ERROR
 
     # build the list of nodes and resulting graph
     res = parse_assembly(path)
