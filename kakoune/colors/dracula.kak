@@ -83,6 +83,14 @@ set-face global documentation comment # Rust ⇒ /// Returns `true`.
 set-face global meta "rgb:%opt{pink}" # C++ ⇒ [#include] <stdio.h>
 set-face global builtin "rgb:%opt{cyan}+i" # https://spec.draculatheme.com#Support
 
+# Diffs
+# https://spec.draculatheme.com#sec-Diffs
+set-face global DiffText "rgb:%opt{comment}"
+set-face global DiffHeader "rgb:%opt{comment}"
+set-face global DiffInserted "rgb:%opt{green},rgba:%opt{green}20" # https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=diffEditor.insertedTextBackground
+set-face global DiffDeleted "rgb:%opt{red},rgba:%opt{red}50" # https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=diffEditor.removedTextBackground
+set-face global DiffChanged "rgb:%opt{orange}"
+
 # For markup
 set-face global title "rgb:%opt{purple}+b" # AsciiDoc ⇒ = Document title — https://spec.draculatheme.com#MarkupHeading
 set-face global header "rgb:%opt{purple}+b" # AsciiDoc ⇒ == Section title — https://spec.draculatheme.com#MarkupHeading

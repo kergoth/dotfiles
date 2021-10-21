@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 02ac246807993e57dd5b6061bee1385f186ae20d
+    rev: 670ae2bd1c78fd2cc5b8e88f426eacab71fe1bfb
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -563,7 +563,7 @@ git module rmate:
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
-    rev: 9b0aafe6614bb59fa92419fb14877dd9b7fd7a41
+    rev: 7383f118658b8cc1fbea66287e2a813cba09e60f
 
 git module bash-realpath:
     url: https://github.com/morgant/realpath
