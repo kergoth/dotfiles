@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 670ae2bd1c78fd2cc5b8e88f426eacab71fe1bfb
+    rev: 9662bc69102e2e152a062a9060cb63d2742582d3
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 4138333f5cfb6e21b0f8d63a43add4c70c25cdaf
+    rev: edac9820b54d8db7ef667c2d79b9e526c625f59d
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -586,4 +586,4 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 16dadad625e790c5614b127a26715c539ae187c7
+  sha1: 42227500b880b582d3b57ad14604bb12d98990ff
