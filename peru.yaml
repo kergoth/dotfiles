@@ -108,12 +108,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9662bc69102e2e152a062a9060cb63d2742582d3
+    rev: c79334ffbbcbb0d0483579035328aebd27f517f4
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 1a9264bc661b3d52756916bf9ec3f41687d64db2
+    rev: c7caf57ca805abd54f11f756fda6395dd4187f8a
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: bebaa6126ede6bda698a6788c6cf3fa02ff1679c
+    rev: a1a11caf4fae822a684c00d3c0687d8bed5ceb77
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 0f6f16ed1784049a11be5be364879affe35ff921
+  rev: 11b30b91df1f0e03b53da970ec2588e85817bacc
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: edac9820b54d8db7ef667c2d79b9e526c625f59d
+    rev: e4c3ecc57e99f4037199f11b384a7f8758d1a0ff
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -240,7 +240,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: af6d1d602a8f64164b266364339c4e936d5bbc33
+    rev: 5fbd2fc5997dfa4d4593a862fe729b1e7a89bcf8
 
 rule git-scripts:
     move:
@@ -486,7 +486,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: e58d3b8adc0ed5b4287260b72902da04a8a2b8ae
+    rev: ba3363de90c6aebd58b926806299823fe757e01b
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -548,7 +548,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: 290200ad3074e660057bfd3fc066aab42c244756
+    rev: 989c88c0f66a6e9d6aeef42e6e701844e4fba19c
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
@@ -586,4 +586,4 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 42227500b880b582d3b57ad14604bb12d98990ff
+  sha1: a46507693e5448e00d5eed36e62464a15fd3ade8

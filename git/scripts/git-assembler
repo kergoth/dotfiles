@@ -564,7 +564,7 @@ def update_node(node, state, dry_run):
 
         log(logging.INFO, 'merging {} into {}'.format(color_node(dep), color_node(node)))
         if not dry_run:
-            proc = sp.run(['git', 'merge', '-q', '--rerere-autoupdate', '--no-edit', dep['name']])
+            proc = sp.run(['git', 'merge', '--ff', '-q', '--rerere-autoupdate', '--no-edit', dep['name']])
             if proc.returncode == 1:
                 # directly attempt to autocommit in case rerere was successful
                 proc = sp.run(['git', 'commit', '-q', '--no-edit'], stderr=sp.DEVNULL)
@@ -637,7 +637,9 @@ def main(argv):
     global COLOR_MODE
     if args.color == 'always':
         COLOR_MODE = True
-    elif args.color == 'never':
+    elif args.color == 'never' or \
+         'NO_COLOR' in os.environ or \
+         os.environ.get('TERM', 'dumb') == 'dumb':
         COLOR_MODE = False
     else:
         COLOR_MODE = sys.stdout.isatty()
