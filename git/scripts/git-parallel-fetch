@@ -4,17 +4,17 @@ if command -v parallel >/dev/null 2>&1; then
     if parallel -V 2>&1 | grep -Eq '(invalid|illegal) option'; then
         # moreutils parallel accepts input as arguments, not stdin
         fetch() {
-            xargs parallel git fetch "$@" --
+            xargs parallel -n 1 git fetch "$@" --
         }
     else
         # GNU parallel
         fetch() {
-            parallel git fetch "$@"
+            parallel -n 1 git fetch "$@"
         }
     fi
 else
     fetch() {
-        xargs git fetch
+        xargs -n 1 git fetch
     }
 fi
 
