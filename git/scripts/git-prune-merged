@@ -11,6 +11,7 @@ usage () {
     echo >&2 "                      changes are merged, defaults to origin/master."
     echo >&2 "  -r REMOTE   Prune branches of the specified remote, not local."
     echo >&2 "  -R          Prune the branches in the repo repo, not just the tracking branches."
+    echo >&2 "  -l          List refs rather than removing them."
     echo >&2 "  -c CORRESPONDING_REMOTE  Delete branches which have been merged to the branch of"
     echo >&2 "                           the same name in CORRESPONDING_REMOTE, not to UPSTREAM_BRANCH."
     echo >&2 "  -n          Dry-run"
@@ -19,15 +20,19 @@ usage () {
 
 ref_prefix=refs/heads
 prune_remote_repo=0
+list_refs=0
 dry_run=0
 corresponding=
-while getopts r:Rc:nh opt; do
+while getopts r:Rlc:nh opt; do
     case "$opt" in
         r)
             ref_prefix="refs/remotes/$OPTARG"
             ;;
         R)
             prune_remote_repo=1
+            ;;
+        l)
+            list_refs=1
             ;;
         n)
             dry_run=1
@@ -108,18 +113,24 @@ git for-each-ref "$@" --format='%(refname)' "$ref_prefix" | (
         }
     fi
 
-    if [ -n "$to_delete" ]; then
-        case "$ref_prefix" in
-            refs/heads)
-                git branch -D $to_delete
-                ;;
-            refs/remotes/*)
-                git branch -r -d $to_delete
-                ;;
-        esac
-    fi
+    if [ $list_refs -eq 1 ]; then
+        for ref in $to_delete; do
+            echo "$ref"
+        done
+    else
+        if [ -n "$to_delete" ]; then
+            case "$ref_prefix" in
+                refs/heads)
+                    git branch -D $to_delete
+                    ;;
+                refs/remotes/*)
+                    git branch -r -d $to_delete
+                    ;;
+            esac
+        fi
 
-    if [ -n "$to_push" ]; then
-        git push "$remote" $to_push
+        if [ -n "$to_push" ]; then
+            git push "$remote" $to_push
+        fi
     fi
 )
