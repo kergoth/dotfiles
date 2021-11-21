@@ -1,6 +1,6 @@
 #!/bin/sh
 
-usage () {
+usage() {
     echo >&2 "${0##*/} [options] [REMOTE..]"
     echo >&2
     echo >&2 "Prune branches of the specified remote(s), relative to the origin."
@@ -18,7 +18,7 @@ usage () {
     exit 2
 }
 
-process_arguments () {
+process_arguments() {
     origin=origin
     dry_run=0
     local_only=1
@@ -40,17 +40,12 @@ process_arguments () {
             n)
                 dry_run=1
                 ;;
-            \?|h)
+            \? | h)
                 usage
                 ;;
         esac
     done
     shift $((OPTIND - 1))
-
-    if ! git config remote."$origin".url >/dev/null; then
-        echo >&2 "Error: invalid origin remote: $origin"
-        exit 1
-    fi
 
     upstreams="$(echo "$upstream_branches" | tr ' ' '\n' | sed -e "s#^#$origin/#g")"
 
@@ -75,20 +70,10 @@ if [ $# -eq 0 ]; then
 fi
 
 ret=0
-for remote; do
-    if ! git config remote."$remote".url >/dev/null; then
-        echo >&2 "Error: invalid remote: $remote"
-        exit 1
-    fi
 
-    echo >&2 "Pruning matching tracking branches for $remote"
-    if ! git prune-merged -r "$remote" -c "$origin" $prune_args; then
-        ret=1
-    fi
-
-    echo >&2 "Pruning topic branches merged to upstream branches for $remote"
-    if ! git prune-merged -r "$remote" $prune_args $upstreams; then
-        ret=1
-    fi
-done
+{
+    echo "$@" | tr ' ' '\n' | parallel -t -I"{}" -n 1 git prune-merged -l -r "{}" $prune_args -c "$origin"
+    echo "$@" | tr ' ' '\n' | parallel -t -I"{}" -n 1 git prune-merged -l -r "{}" $prune_args $upstreams
+} \
+    | xargs git branch -r -d
 exit "$ret"
