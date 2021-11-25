@@ -1,0 +1,1 @@
+link direnvrc "$XDG_CONFIG_HOME/direnv/direnvrc"
