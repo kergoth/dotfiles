@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: c79334ffbbcbb0d0483579035328aebd27f517f4
+    rev: f2386de422971488ee8d7cab6ae9afd0bc82b033
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: e4c3ecc57e99f4037199f11b384a7f8758d1a0ff
+    rev: 7da287e3aae4a9b0e81ebc67701460073afcc0d0
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -240,7 +240,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 5fbd2fc5997dfa4d4593a862fe729b1e7a89bcf8
+    rev: e9d7761bb94f20acc98824275e317fa82436c25d
 
 rule git-scripts:
     move:
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: b33ec65e5f4572e9982e242d7b15797dcddaec6a
+    rev: 2370a4e27bb7e16a7326c4ab0e2657ddf00f70d3
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -498,7 +498,7 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 7fb7ed7697cd88867201b03d1e4b8d3ccc3d3f6a
+    sha1: 4a0469d3ddf5346d644fd0f51b0f1e56c3c51744
 
 git module exa-completions:
     url: https://github.com/ogham/exa

@@ -1465,7 +1465,7 @@ _git-push () {
     '(--no-signed --sign)--signed[GPG sign the push]' \
     "(--sign --signed)--no-signed[don't GPG sign the push]" \
     '--atomic[request atomic transaction on remote side]' \
-    '(-o --push-option)'{-o+,--push-option=}'[transmit string to server to pass to pre/post-receive hooks]:string' \
+    '*'{-o+,--push-option=}'[transmit string to server to pass to pre/post-receive hooks]:string' \
     '(-4 --ipv4 -6 --ipv6)'{-4,--ipv4}'[use IPv4 addresses only]' \
     '(-4 --ipv4 -6 --ipv6)'{-6,--ipv6}'[use IPv6 addresses only]' \
     ': :__git_any_repositories' \
@@ -3720,8 +3720,8 @@ _git-fast-import () {
                                                            now\:"use current time and timezone"' \
     '--done[terminate with error if there is no "done" command at the end of the stream]' \
     '--force[force updating modified existing branches]' \
-    '--max-pack-size=-[maximum size of each packfile]: : __git_guard_bytes' \
-    '--big-file-threshold=-[maximum size of blob to create deltas for]: : __git_guard_bytes' \
+    '--max-pack-size=-[maximum size of each packfile]: : __git_guard_bytes -d unlimited size' \
+    '--big-file-threshold=-[maximum size of blob to create deltas for]: : __git_guard_bytes -d 512m size' \
     '--depth=-[maximum delta depth for blob and tree deltification]: :__git_guard_number "maximum delta depth"' \
     '--active-branches=-[maximum number of branches to maintain active at once]: :__git_guard_number "maximum number of branches"' \
     '--export-marks=-[dump internal marks table when complete]: :_files' \
@@ -5664,7 +5664,7 @@ _git-send-pack () {
     "(--no-signed --signed)--sign=-[GPG sign the push]::signing enabled:(($^^sign))" \
     '(--no-signed --sign)--signed[GPG sign the push]' \
     "(--sign --signed)--no-signed[don't GPG sign the push]" \
-    '--push-option=[specify option to transmit]:option' \
+    '*--push-option=[specify option to transmit]:option' \
     '--progress[force progress reporting]' \
     '--thin[send a thin pack]' \
     '--atomic[request atomic transaction on remote side]' \
@@ -7506,7 +7506,7 @@ __git_guard_number () {
 
 (( $+functions[__git_guard_bytes] )) ||
 __git_guard_bytes () {
-  _guard '[[:digit:]]#([kKmMgG]|)' ${*:-size}
+  _numbers -u bytes ${*:-size} k m g
 }
 
 (( $+functions[__git_datetimes] )) ||
