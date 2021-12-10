@@ -61,6 +61,13 @@ fi
     if [ -e ~/mel/workflow ]; then
         cp -av ~/mel/workflow/envrc-build .envrc
     fi
+
+    for linkdir in downloads sstate-cache cached-binaries; do
+        if [ -e ../"$linkdir" ]; then
+            ln -sfv ../"$linkdir" .
+        fi
+    done
+    
     direnv allow >/dev/null 2>&1
 )
 
