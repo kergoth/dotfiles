@@ -55,6 +55,8 @@ fi
                 ;;
         esac
         bash -c 'cd "$1" && . ./imx-setup-release.sh -b "$2"' - "$topdir" "$(basename "$BUILDDIR")"
+    elif [[ -d ../industrial-core ]]; then
+        bash -c '. ../industrial-core/setup-environment "$@"' - -b . $args ${MACHINE:-industrial-pc}
     fi
     cp ~/mel/workflow/envrc-build .envrc
     direnv allow >/dev/null 2>&1
