@@ -58,7 +58,9 @@ fi
     elif [[ -d ../industrial-core ]]; then
         bash -c '. ../industrial-core/setup-environment "$@"' - -b . $args ${MACHINE:-industrial-pc}
     fi
-    cp ~/mel/workflow/envrc-build .envrc
+    if [ -e ~/mel/workflow ]; then
+        cp -av ~/mel/workflow/envrc-build .envrc
+    fi
     direnv allow >/dev/null 2>&1
 )
 
