@@ -35,6 +35,8 @@ if [[ $OSTYPE =~ darwin ]]; then
 else
     alias relogin='su - $USER'
 fi
+alias nw=new-workspace
+alias atw=attach-workspace
 
 what () {
     tldr "$1" || cheat "$1" || man "$1" || eval '$1 --help' || eval '$1 -h'
