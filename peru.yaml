@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: f2386de422971488ee8d7cab6ae9afd0bc82b033
+    rev: 205c1ec487b80f127ca611d10b973f66d9ed6812
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: a1a11caf4fae822a684c00d3c0687d8bed5ceb77
+    rev: e4090f1baa4cc0b7adf89c618d6224edaee6a31d
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 11b30b91df1f0e03b53da970ec2588e85817bacc
+  rev: 4a478edb443864561089b2699c9e65c85fc5e036
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 7da287e3aae4a9b0e81ebc67701460073afcc0d0
+    rev: 176ee6910ffe40d9007ff9bc1b2720e3d729c48a
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -433,7 +433,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: 23df4aacb9a53753610ee004f7e77fda00e97376
+    rev: 46e043b4e2fb2986b73aeae8efddb7f1a4e08e33
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -498,14 +498,14 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 4a0469d3ddf5346d644fd0f51b0f1e56c3c51744
+    sha1: dc30c75e844d8aa98927ec1425f828c99636934a
 
 git module exa-completions:
     url: https://github.com/ogham/exa
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: b32f441851fdad8b5e3a6aa8cf23e276d7cc1278
+    rev: 3e9de0e7e1969006a8419be66ade488cce1b7cc6
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -580,10 +580,10 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: b8c64794d9ba13bc6e1270078e9279aa251da723
+    sha1: 195414a23058eef15d749f3411ee940d46853902
 
 curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: a46507693e5448e00d5eed36e62464a15fd3ade8
+  sha1: 77623d626b11d4222ac39fed6e778782a04ca0c5
