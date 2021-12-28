@@ -84,6 +84,7 @@
 
 [log]
 	decorate = short
+	excludeDecoration = refs/branchless/*
 
 [commit]
 	verbose = true
