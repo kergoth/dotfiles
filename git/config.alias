@@ -67,7 +67,7 @@
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
 
 	# Update with rebase, re-applying merges
-	purr = !git fetch "$(git tracking-remote)" && git rebase -p "@{u}"
+	purr = !git fetch "$(git tracking-remote)" && git rebase --rebase-merges "@{u}"
 	sync = "!f(){ orig_rev=\"$(git rev-parse HEAD)\"; git purr && git push && git --no-pager log \"${orig_rev:-ORIG_HEAD}...@{u}\" --stat --no-merges \"$@\"; }; f"
 
 	# Submit pull request. Technically just pull-request -f will do on its
