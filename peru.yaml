@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 205c1ec487b80f127ca611d10b973f66d9ed6812
+    rev: b61b24ecd1f59a9332f45edd055767b155f91bb0
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: e4090f1baa4cc0b7adf89c618d6224edaee6a31d
+    rev: bffff37c3e1d40239e2fd55a8e9755d211e8f982
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 176ee6910ffe40d9007ff9bc1b2720e3d729c48a
+    rev: f68cbc577dcfaea463356a886a3fa5280f99f182
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 2370a4e27bb7e16a7326c4ab0e2657ddf00f70d3
+    rev: b7722510742507f1ff59a651c5b65e9ee9f337dc
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -498,14 +498,14 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: dc30c75e844d8aa98927ec1425f828c99636934a
+    sha1: a085acd7b0e600a638d1fe1108c4ed032a285f07
 
 git module exa-completions:
     url: https://github.com/ogham/exa
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: 3e9de0e7e1969006a8419be66ade488cce1b7cc6
+    rev: 4f0275395b8e06d2f6797333f1f5d614b48d49ae
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -558,7 +558,7 @@ git module rmate:
     url: https://github.com/aurora/rmate
     pick: rmate
     executable: rmate
-    rev: c4f343e46c34ebb6b44d466309c1cbe8f34b1da7
+    rev: 5f8a56678eacee80388c9dbd10fe28e6f83196a4
 
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
@@ -586,4 +586,4 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 77623d626b11d4222ac39fed6e778782a04ca0c5
+  sha1: 719bd9cd88449f08253b0c6991fe82d8ced26ac9
