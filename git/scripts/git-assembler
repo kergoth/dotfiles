@@ -135,6 +135,62 @@ def parse_assembly(path):
     return nodes, settings
 
 
+def read_git_config():
+    """Read configuration of interest either from git config or environment variables."""
+    # The variable ``keys`` contains the configuration necessary for reading
+    # the git config. Each entry is a dict with the following keys:
+    #   - key: the key in the git configuration.
+    #   - type: (optional) the type (git-config type) expected for this key's
+    #     value. The type "bool" is converted to a Python bool.
+    #   - default: the default value for this key.
+    #   - env: (optional) name of the environment variable that overrides this
+    #     config.
+    keys = (
+        {
+            'key': 'assembler.mergeff',
+            'type': 'bool',
+            'default': 'true',
+            'env': 'GIT_ASSEMBLER_MERGEFF',
+        },
+    )
+    conf = {}
+    for entry in keys:
+        try:
+            type_flags = ('--type', entry['type'])
+        except AttributeError:
+            type_flags = tuple()
+
+        if 'env' in entry and entry['env'] in os.environ:
+            try:
+                line = sp.check_output(['git', 'config',
+                                        '--file', os.devnull,
+                                        *type_flags,
+                                        '--default', os.environ[entry['env']],
+                                        entry['key'],
+                                       ])
+            except sp.CalledProcessError as e:
+                error('failed to parse value from env variable {}'.format(entry['env']))
+                return None
+            value = line.decode(sys.getfilesystemencoding()).rstrip()
+        else:
+            try:
+                line = sp.check_output(['git', 'config',
+                                        *type_flags,
+                                        '--default', entry['default'],
+                                        entry['key'],
+                                       ])
+            except sp.CalledProcessError as e:
+                error('failed to parse value for config {}'.format(entry['key']))
+                return None
+            value = line.decode(sys.getfilesystemencoding()).rstrip()
+
+        if 'type' in entry:
+            if entry['type'] == 'bool':
+                value = value == 'true'
+
+        conf[entry['key']] = value
+    return conf
+
 class BranchType(Enum):
     BRANCH = 0 # regular branch (no base)
     BASE   = 1 # optional bootstrapping
@@ -476,7 +532,7 @@ def switch_to_branch(name, *git_flags):
     return proc.returncode, stderr
 
 
-def update_node(node, state, dry_run):
+def update_node(node, state, dry_run, merge_ff):
     if not node['state']['dirty']:
         return True
 
@@ -564,7 +620,8 @@ def update_node(node, state, dry_run):
 
         log(logging.INFO, 'merging {} into {}'.format(color_node(dep), color_node(node)))
         if not dry_run:
-            proc = sp.run(['git', 'merge', '--ff', '-q', '--rerere-autoupdate', '--no-edit', dep['name']])
+            ff = '--ff' if merge_ff else '--no-ff'
+            proc = sp.run(['git', 'merge', ff, '-q', '--rerere-autoupdate', '--no-edit', dep['name']])
             if proc.returncode == 1:
                 # directly attempt to autocommit in case rerere was successful
                 proc = sp.run(['git', 'commit', '-q', '--no-edit'], stderr=sp.DEVNULL)
@@ -597,9 +654,10 @@ def edit(path):
 
 
 class ExitStatus(IntEnum):
-    SUCCESS = 0
-    ERROR   = 1
-    CONFIG  = 2
+    SUCCESS   = 0
+    ERROR     = 1
+    CONFIG    = 2
+    GITCONFIG = 3
 
 def main(argv):
     ap = argparse.ArgumentParser(description=APP_DSC)
@@ -668,6 +726,11 @@ def main(argv):
         if edit(path):
             return ExitStatus.ERROR
 
+    # read configuration
+    git_conf = read_git_config()
+    if git_conf is None:
+        return ExitStatus.GITCONFIG
+
     # build the list of nodes and resulting graph
     res = parse_assembly(path)
     if res is None:
@@ -731,7 +794,7 @@ def main(argv):
     for node in ordered_nodes:
         state['last_msg'] = None
         state['last_err'] = None
-        if not update_node(node, state, args.dry_run):
+        if not update_node(node, state, args.dry_run, git_conf['assembler.mergeff']):
             if not args.dry_run:
                 save_state(git_dir, state)
             if state['last_msg'] is not None:

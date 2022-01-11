@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: b61b24ecd1f59a9332f45edd055767b155f91bb0
+    rev: 55aea08d155f6b5abd17b74403f0ef23b09dd541
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: bffff37c3e1d40239e2fd55a8e9755d211e8f982
+    rev: 20f3cd5f5d3e6ef7deb343b11c084e1fb2f5a3f2
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -143,7 +143,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 4a478edb443864561089b2699c9e65c85fc5e036
+  rev: 2a089cfee4a3eb0c28cfb441861fc1fcb05797d3
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: f68cbc577dcfaea463356a886a3fa5280f99f182
+    rev: 9cb7a364a31bdb882d873807774bdcf6fad0c9e4
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: b7722510742507f1ff59a651c5b65e9ee9f337dc
+    rev: 2025ebfb96764e1b5d111b0e69ca88c55a87312a
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -505,7 +505,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: 4f0275395b8e06d2f6797333f1f5d614b48d49ae
+    rev: 42659f93456d9ff7cc1096cbd84d778ede26d76e
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -548,7 +548,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: 989c88c0f66a6e9d6aeef42e6e701844e4fba19c
+    rev: 1227b61d27b98a150dacdcb1bc9082da446cec92
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
