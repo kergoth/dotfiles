@@ -109,7 +109,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 55aea08d155f6b5abd17b74403f0ef23b09dd541
+    rev: 68ab8074337bd9667f2828410d3b1c2c0f0528a2
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 20f3cd5f5d3e6ef7deb343b11c084e1fb2f5a3f2
+    rev: 546fa7e5bbadafedc1a965456ed9c18a309643a0
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -144,7 +144,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 2a089cfee4a3eb0c28cfb441861fc1fcb05797d3
+  rev: 98bb76577d9e7e0ffdeb643f1654ec006f6bbc8c
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -525,7 +525,7 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: 34aa2be2ef0a673a09551a89e14ea5dded7d4e45
+    rev: 12b801a23acf278d81f33e006ee4b77b1c1bd9df
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
@@ -587,7 +587,7 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 719bd9cd88449f08253b0c6991fe82d8ced26ac9
+  sha1: f052b87321561dea47ce7293ad0aab5917a664e5
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
