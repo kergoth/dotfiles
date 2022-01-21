@@ -12,6 +12,7 @@ imports:
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     exa-completions: ls/zsh-functions
+    powerlevel10k: zsh/themes/powerlevel10k
 
     # Kakoune
     kakoune-dracula: kakoune
@@ -587,3 +588,7 @@ curl module yt-dlp:
   filename: yt-dlp
   executable: yt-dlp
   sha1: 719bd9cd88449f08253b0c6991fe82d8ced26ac9
+
+git module powerlevel10k:
+  url: https://gitee.com/romkatv/powerlevel10k
+  rev: a55955c5cfb360c6088fd0141c6157533f3e1481
