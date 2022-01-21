@@ -161,13 +161,15 @@ for brew; do
     for bin in "$brewenv_dir/opt/$brew/bin/"*; do
         filename="${bin##*/}"
         if [ -e "$bin" ] && [ -e "$brewenv_dir/bin/$filename" ]; then
-            rm -f "$dest/$filename"
-            cat >"$dest/$filename" <<END
+            if ! [ -e "$dest/filename" ]; then
+                rm -f "$dest/$filename"
+                cat >"$dest/$filename" <<END
 PATH="$brewenv_dir/bin:\$PATH"
 exec "$brewenv_dir/bin/$filename" "\$@"
 END
-            chmod u+x "$dest/$filename"
-            echo >&2 "Created wrapper script at $dest/$filename"
+                chmod u+x "$dest/$filename"
+                echo >&2 "Created wrapper script at $dest/$filename"
+            fi
         fi
     done
 
@@ -175,7 +177,9 @@ END
         if [ -e "$man" ]; then
             mandest="$XDG_DATA_HOME/man/${man#$brewenv_dir/opt/$brew/share/man/}"
             mkdir -p "${mandest%/*}"
-            ln -sfv "$man" "$mandest"
+            if ! [ -e "$mandest" ]; then
+                ln -sfv "$man" "$mandest"
+            fi
         fi
     done
 done
