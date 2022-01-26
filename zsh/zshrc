@@ -1,26 +1,4 @@
-# Disable C-s (software flow control) on this tty
-stty -ixon
-
-# Freeze tty settings
-ttyctl -f
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 ZSH=$DOTFILESDIR/zsh
-
-# Emacs mode
-bindkey -e
-
-# use .localrc for SUPER SECRET CRAP that you don't
-# want in your public, versioned repo.
-if [[ -a ~/.localrc ]]; then
-    source ~/.localrc
-fi
 
 # all of our zsh files
 typeset -U config_files
@@ -34,6 +12,32 @@ for file in ${(M)config_files:#*/path.zsh}; do
     fi
     source $file
 done
+
+# Disable C-s (software flow control) on this tty
+stty -ixon
+
+# Freeze tty settings
+ttyctl -f
+
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
+
+# Emacs mode
+bindkey -e
+
+# use .localrc for SUPER SECRET CRAP that you don't
+# want in your public, versioned repo.
+if [[ -a ~/.localrc ]]; then
+    source ~/.localrc
+fi
 
 # pre-load plugin configuration
 AUTOENV_AUTH_FILE=$XDG_DATA_HOME/autoenv_authorized
