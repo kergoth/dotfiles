@@ -109,7 +109,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 68ab8074337bd9667f2828410d3b1c2c0f0528a2
+    rev: 01fd7141ed575372143902b3c19f903a6e2a301b
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 546fa7e5bbadafedc1a965456ed9c18a309643a0
+    rev: 1f1962e867eca062a61db65798a21d6e4fdb6364
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -189,7 +189,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: fd6894a897390ca7c8f47a5c56b77b0e902cb218
+    rev: a37dd574a414d10cf080cd7060d1688733fb54ef
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -525,7 +525,7 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: 12b801a23acf278d81f33e006ee4b77b1c1bd9df
+    rev: b0ac298020a1a7bd1f051ee9fcbcd1158b2e9e47
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
