@@ -109,7 +109,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 01fd7141ed575372143902b3c19f903a6e2a301b
+    rev: 35504f4e2aacb75d6ccd8f56dfebe5d05b0ec294
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 1f1962e867eca062a61db65798a21d6e4fdb6364
+    rev: 298020e4e310f0dac5ee1475694a46cff19eccb6
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -195,7 +195,7 @@ curl module cpanm:
     url: https://cpanmin.us/
     filename: cpanm
     executable: cpanm
-    sha1: 09c682a9c6d7c47967bba91909378072921c12d0
+    sha1: f88eab9467b64690368862dc803446781c5d6a52
 
 git module cwdiff:
     url: https://github.com/junghans/cwdiff
