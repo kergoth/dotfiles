@@ -109,7 +109,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 35504f4e2aacb75d6ccd8f56dfebe5d05b0ec294
+    rev: eb7559733d3cc9062c7de610f3b95d9143099ca1
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -241,7 +241,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: e9d7761bb94f20acc98824275e317fa82436c25d
+    rev: 4c53a8c20f8984adb226293a3ffd7b88c3f4ac1a
 
 rule git-scripts:
     move:
@@ -487,7 +487,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: ba3363de90c6aebd58b926806299823fe757e01b
+    rev: 05c542e8356967be4c063a368aa94124626a35e4
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
