@@ -109,12 +109,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: eb7559733d3cc9062c7de610f3b95d9143099ca1
+    rev: 27de97bf9325d02c6e5bf13e005e2c805ac963a3
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: c7caf57ca805abd54f11f756fda6395dd4187f8a
+    rev: c10808ad5f3ace0696f900b9c543172bc1f8e27c
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
