@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 27de97bf9325d02c6e5bf13e005e2c805ac963a3
+    rev: 29e97b61823297b414c41fc70725569a2acf32cf
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -548,7 +548,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: 1227b61d27b98a150dacdcb1bc9082da446cec92
+    rev: ac0e7288474a2969f4210c73c4e967a409a466a8
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
@@ -584,4 +584,4 @@ curl module yt-dlp:
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
-  rev: a55955c5cfb360c6088fd0141c6157533f3e1481
+  rev: 8a676a9157d2b0e00e88d06456ac7317f11c0317

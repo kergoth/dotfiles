@@ -200,7 +200,11 @@ function _p9k_read_word() {
 }
 
 function _p9k_fetch_cwd() {
-  _p9k__cwd=${(%):-%/}
+  if [[ $PWD == /* && $PWD -ef . ]]; then
+    _p9k__cwd=$PWD
+  else
+    _p9k__cwd=${${${:-.}:a}:-.}
+  fi
   _p9k__cwd_a=${${_p9k__cwd:A}:-.}
 
   case $_p9k__cwd in
@@ -317,16 +321,24 @@ function _p9k_prompt_length() {
 
 typeset -gr __p9k_byte_suffix=('B' 'K' 'M' 'G' 'T' 'P' 'E' 'Z' 'Y')
 
-# 42 => 42B
-# 1536 => 1.5K
+# 512 => 512B
+# 1800 => 1.76K
+# 18000 => 17.6K
 function _p9k_human_readable_bytes() {
-  typeset -F 2 n=$1
+  typeset -F n=$1
   local suf
   for suf in $__p9k_byte_suffix; do
-    (( n < 100 )) && break
+    (( n < 1024 )) && break
     (( n /= 1024 ))
   done
-  _p9k__ret=${${n%%0#}%.}$suf
+  if (( n >= 100 )); then
+    printf -v _p9k__ret '%.0f.' $n
+  elif (( n >= 10 )); then
+    printf -v _p9k__ret '%.1f' $n
+  else
+    printf -v _p9k__ret '%.2f' $n
+  fi
+  _p9k__ret=${${_p9k__ret%%0#}%.}$suf
 }
 
 if is-at-least 5.4; then
@@ -759,8 +771,12 @@ _p9k_left_prompt_segment() {
         _p9k_foreground $_p9k__ret
         _p9k__ret=%b$bg$_p9k__ret
         _p9k__ret=${_p9k__ret//\}/\\\}}
-        [[ $_p9k__ret != $style_ || $need_style == 1 ]] && p+=$_p9k__ret
-        p+='${_p9k__v}'
+        if [[ $_p9k__ret != $style_ ]]; then
+          p+=$_p9k__ret'${_p9k__v}'$style_
+        else
+          (( need_style )) && p+=$style_
+          p+='${_p9k__v}'
+        fi
 
         _p9k_get_icon $1 LEFT_MIDDLE_WHITESPACE ' '
         if [[ -n $_p9k__ret ]]; then
@@ -1011,8 +1027,12 @@ _p9k_right_prompt_segment() {
         _p9k_foreground $_p9k__ret
         _p9k__ret=%b$bg$_p9k__ret
         _p9k__ret=${_p9k__ret//\}/\\\}}
-        [[ $_p9k__ret != $style_ || $need_style == 1 ]] && p+=$_p9k__ret
-        p+='${_p9k__v}'
+        if [[ $_p9k__ret != $style_ ]]; then
+          p+=$_p9k__ret'${_p9k__v}'$style_
+        else
+          (( need_style )) && p+=$style_
+          p+='${_p9k__v}'
+        fi
 
         _p9k_get_icon $1 RIGHT_MIDDLE_WHITESPACE ' '
         if [[ -n $_p9k__ret ]]; then
@@ -1728,14 +1748,29 @@ function _p9k_shorten_delim_len() {
   (( _p9k__ret >= 0 )) || _p9k_prompt_length $1
 }
 
+# Percents are duplicated because this function is currently used only
+# where the result is going to be percent-expanded.
+function _p9k_url_escape() {
+  if [[ $1 == [a-zA-Z0-9"/:_.-!'()~ "]# ]]; then
+    _p9k__ret=${1// /%%20}
+  else
+    local c
+    _p9k__ret=
+    for c in ${(s::)1}; do
+      [[ $c == [a-zA-Z0-9"/:_.-!'()~"] ]] || printf -v c '%%%%%02X' $(( #c ))
+      _p9k__ret+=$c
+    done
+  fi
+}
+
 ################################################################
 # Dir: current working directory
 prompt_dir() {
   if (( _POWERLEVEL9K_DIR_PATH_ABSOLUTE )); then
-    local p=$_p9k__cwd
+    local p=${(V)_p9k__cwd}
     local -a parts=("${(s:/:)p}")
   elif [[ -o auto_name_dirs ]]; then
-    local p=${_p9k__cwd/#(#b)$HOME(|\/*)/'~'$match[1]}
+    local p=${(V)${_p9k__cwd/#(#b)$HOME(|\/*)/'~'$match[1]}}
     local -a parts=("${(s:/:)p}")
   else
     local p=${(%):-%~}
@@ -1749,15 +1784,15 @@ prompt_dir() {
       local -a parts=()
       for func in zsh_directory_name $zsh_directory_name_functions; do
         local reply=()
-        if (( $+functions[$func] )) && $func d $_p9k__cwd && [[ $p == '~['$reply[1]']'* ]]; then
-          parts+='~['$reply[1]']'
+        if (( $+functions[$func] )) && $func d $_p9k__cwd && [[ $p == '~['${(V)reply[1]}']'* ]]; then
+          parts+='~['${(V)reply[1]}']'
           break
         fi
       done
       if (( $#parts )); then
         parts+=(${(s:/:)${p#$parts[1]}})
       else
-        p=$_p9k__cwd
+        p=${(V)_p9k__cwd}
         parts=("${(s:/:)p}")
       fi
     else
@@ -1864,6 +1899,9 @@ prompt_dir() {
       delim=${_POWERLEVEL9K_SHORTEN_DELIMITER-'*'}
       shortenlen=${_POWERLEVEL9K_SHORTEN_DIR_LENGTH:-1}
       (( shortenlen >= 0 )) || shortenlen=1
+      local rp=${(g:oce:)p}
+      local rparts=("${(@s:/:)rp}")
+
       local -i i=2 e=$(($#parts - shortenlen))
       if [[ -n $_POWERLEVEL9K_DIR_TRUNCATE_BEFORE_MARKER ]]; then
         (( e += shortenlen ))
@@ -1878,8 +1916,8 @@ prompt_dir() {
         local key=
       fi
       if ! _p9k_cache_ephemeral_get $0 $e $i $_p9k__cwd || [[ $key != $_p9k__cache_val[1] ]]; then
-        local tail=${(j./.)parts[i,-1]}
-        local parent=$_p9k__cwd[1,-2-$#tail]
+        local rtail=${(j./.)rparts[i,-1]}
+        local parent=$_p9k__cwd[1,-2-$#rtail]
         _p9k_prompt_length $delim
         local -i real_delim_len=_p9k__ret
         [[ -n $parts[i-1] ]] && parts[i-1]="\${(Q)\${:-${(qqq)${(q)parts[i-1]}}}}"$'\2'
@@ -1888,7 +1926,8 @@ prompt_dir() {
         local -i m=1
         for (( ; i <= e; ++i, ++m )); do
           local sub=$parts[i]
-          local dir=$parent/$sub mtime=$mtimes[m]
+          local rsub=$rparts[i]
+          local dir=$parent/$rsub mtime=$mtimes[m]
           local pair=$_p9k__dir_stat_cache[$dir]
           if [[ $pair == ${mtime:-x}:* ]]; then
             parts[i]=${pair#*:}
@@ -1896,22 +1935,22 @@ prompt_dir() {
             [[ $sub != *["~!#\`\$^&*()\\\"'<>?{}[]"]* ]]
             local -i q=$?
             if [[ -n $_POWERLEVEL9K_SHORTEN_FOLDER_MARKER &&
-                  -n $parent/$sub/${~_POWERLEVEL9K_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
+                  -n $dir/${~_POWERLEVEL9K_SHORTEN_FOLDER_MARKER}(#qN) ]]; then
               (( q )) && parts[i]="\${(Q)\${:-${(qqq)${(q)sub}}}}"
               parts[i]+=$'\2'
             else
-              local -i j=$sub[(i)[^.]]
-              for (( ; j + d < $#sub; ++j )); do
-                local -a matching=($parent/$sub[1,j]*/(N))
+              local -i j=$rsub[(i)[^.]]
+              for (( ; j + d < $#rsub; ++j )); do
+                local -a matching=($parent/$rsub[1,j]*/(N))
                 (( $#matching == 1 )) && break
               done
-              local -i saved=$(($#sub - j - d))
+              local -i saved=$((${(m)#${(V)${rsub:$j}}} - d))
               if (( saved > 0 )); then
                 if (( q )); then
                   parts[i]='${${${_p9k__d:#-*}:+${(Q)${:-'${(qqq)${(q)sub}}'}}}:-${(Q)${:-'
-                  parts[i]+=$'\3'${(qqq)${(q)sub[1,j]}}$'}}\1\3''${$((_p9k__d+='$saved'))+}}'
+                  parts[i]+=$'\3'${(qqq)${(q)${(V)${rsub[1,j]}}}}$'}}\1\3''${$((_p9k__d+='$saved'))+}}'
                 else
-                  parts[i]='${${${_p9k__d:#-*}:+'$sub$'}:-\3'$sub[1,j]$'\1\3''${$((_p9k__d+='$saved'))+}}'
+                  parts[i]='${${${_p9k__d:#-*}:+'$sub$'}:-\3'${(V)${rsub[1,j]}}$'\1\3''${$((_p9k__d+='$saved'))+}}'
                 fi
               else
                 (( q )) && parts[i]="\${(Q)\${:-${(qqq)${(q)sub}}}}"
@@ -1919,7 +1958,7 @@ prompt_dir() {
             fi
             [[ -n $mtime ]] && _p9k__dir_stat_cache[$dir]="$mtime:$parts[i]"
           fi
-          parent+=/$sub
+          parent+=/$rsub
         done
         if [[ -n $_POWERLEVEL9K_DIR_TRUNCATE_BEFORE_MARKER ]]; then
           local _2=$'\2'
@@ -2101,7 +2140,8 @@ prompt_dir() {
 
     local content="${(pj.$sep.)parts}"
     if (( _POWERLEVEL9K_DIR_HYPERLINK && _p9k_term_has_href )) && [[ $_p9k__cwd == /* ]]; then
-      local header=$'%{\e]8;;file://'${${_p9k__cwd//\%/%%25}//'#'/%%23}$'\a%}'
+      _p9k_url_escape $_p9k__cwd
+      local header=$'%{\e]8;;file://'$_p9k__ret$'\a%}'
       local footer=$'%{\e]8;;\a%}'
       if (( expand )); then
         _p9k_escape $header
@@ -3359,6 +3399,8 @@ _p9k_prompt_swap_async() {
     (( used_bytes *= 1024 ))
   fi
 
+  (( used_bytes >= 0 || (used_bytes = 0) ))
+
   _p9k_human_readable_bytes $used_bytes
   [[ $_p9k__ret != $_p9k__swap_used ]] || return
   _p9k__swap_used=$_p9k__ret
@@ -4184,7 +4226,11 @@ prompt_virtualenv() {
     msg="${_p9k__ret//\%/%%} "
   fi
   local v=${VIRTUAL_ENV:t}
-  [[ $v == $~_POWERLEVEL9K_VIRTUALENV_GENERIC_NAMES ]] && v=${VIRTUAL_ENV:h:t}
+  if [[ $VIRTUAL_ENV_PROMPT == '('?*') ' && $VIRTUAL_ENV_PROMPT != "($v) " ]]; then
+    v=$VIRTUAL_ENV_PROMPT[2,-3]
+  elif [[ $v == $~_POWERLEVEL9K_VIRTUALENV_GENERIC_NAMES ]]; then
+    v=${VIRTUAL_ENV:h:t}
+  fi
   msg+="$_POWERLEVEL9K_VIRTUALENV_LEFT_DELIMITER${v//\%/%%}$_POWERLEVEL9K_VIRTUALENV_RIGHT_DELIMITER"
   case $_POWERLEVEL9K_VIRTUALENV_SHOW_WITH_PYENV in
     false)
@@ -5348,7 +5394,7 @@ function _p9k_asdf_init_meta() {
             files+=$parse
             [[ -x $parse ]] && has_parse=1
             local name
-            for name in $($list_names 2>/dev/null); do
+            for name in ${$($list_names 2>/dev/null)%$'\r'}; do
               [[ $name == (*/*|.tool-versions) ]] && continue
               _p9k_asdf_file_info[$name]+="${plugin:t} $has_parse "
             done
@@ -5402,8 +5448,8 @@ function _p9k_asdf_parse_version_file() {
           local v=($(${ASDF_DATA_DIR:-~/.asdf}/plugins/$plugin/bin/parse-legacy-file $file 2>/dev/null))
         else
           { local v=($(<$file)) } 2>/dev/null
-          v=(${v%$'\r'})
         fi
+        v=(${v%$'\r'})
         v=${v[(r)$_p9k_asdf_plugins[$plugin]]:-$v[1]}
         _p9k_asdf_file2versions[$plugin:$file]=$stat[1]:"$v"
         _p9k__state_dump_scheduled=1
@@ -5591,6 +5637,7 @@ _p9k_preexec2() {
   typeset -g _p9k__preexec_cmd=$2
   _p9k__timer_start=EPOCHREALTIME
   P9K_TTY=old
+  (( ! $+_p9k__iterm_cmd )) || _p9k_iterm2_preexec
 }
 
 function _p9k_prompt_net_iface_init() {
@@ -6234,8 +6281,13 @@ _p9k_dump_instant_prompt() {
       out+="$cr${(pl:$((height-prompt_height))::\n:)}$terminfo[sc]$out"
     fi
   fi
-  typeset -g __p9k_instant_prompt_output=${TMPDIR:-/tmp}/p10k-instant-prompt-output-${(%):-%n}-$$
-  { echo -n > $__p9k_instant_prompt_output } || return
+  if [[ -n "$TMPDIR" && ( ( -d "$TMPDIR" && -w "$TMPDIR" ) || ! ( -d /tmp && -w /tmp ) ) ]]; then
+    local tmpdir=$TMPDIR
+  else
+    local tmpdir=/tmp
+  fi
+  typeset -g __p9k_instant_prompt_output=$tmpdir/p10k-instant-prompt-output-${(%):-%n}-$$
+  { : > $__p9k_instant_prompt_output } || return
   print -rn -- "${out}${esc}?2004h" || return
   if (( $+commands[stty] )); then
     command stty -icanon 2>/dev/null
@@ -6395,7 +6447,7 @@ function _p9k_dump_state() {
       unset __p9k_cached_param_pat __p9k_cached_param_sig
       (( $+_p9k_preinit )) && { print -r -- $_p9k_preinit >&$fd || return }
       print -r -- '_p9k_restore_state_impl() {' >&$fd || return
-      typeset -pm '_POWERLEVEL9K_*|_p9k_[^_]*|icons|OS|DEFAULT_COLOR|DEFAULT_COLOR_INVERTED' >&$fd || return
+      typeset -pm '_POWERLEVEL9K_*|_p9k_[^_]*|icons' >&$fd || return
       print -r -- '}' >&$fd || return
     } always {
       exec {fd}>&-
@@ -6822,6 +6874,10 @@ _p9k_precmd_impl() {
     _p9k__zle_state=insert
 
     (( ++_p9k__prompt_idx ))
+
+    if (( $+_p9k__iterm_cmd )); then
+      _p9k_iterm2_precmd $__p9k_new_status
+    fi
   fi
 
   _p9k_fetch_cwd
@@ -7174,6 +7230,11 @@ _p9k_init_params() {
   _p9k_declare -s POWERLEVEL9K_TRANSIENT_PROMPT off
   [[ $_POWERLEVEL9K_TRANSIENT_PROMPT == (off|always|same-dir) ]] || _POWERLEVEL9K_TRANSIENT_PROMPT=off
 
+  _p9k_declare -b POWERLEVEL9K_TERM_SHELL_INTEGRATION 0
+  if [[ __p9k_force_term_shell_integration -eq 1 || $ITERM_SHELL_INTEGRATION_INSTALLED == Yes ]]; then
+    _POWERLEVEL9K_TERM_SHELL_INTEGRATION=1
+  fi
+
   _p9k_declare -s POWERLEVEL9K_WORKER_LOG_LEVEL
   _p9k_declare -i POWERLEVEL9K_COMMANDS_MAX_TOKEN_COUNT 64
   _p9k_declare -a POWERLEVEL9K_HOOK_WIDGETS --
@@ -7353,7 +7414,7 @@ _p9k_init_params() {
   _p9k_declare -s POWERLEVEL9K_IP_INTERFACE ""
   : ${_POWERLEVEL9K_IP_INTERFACE:='.*'}
   _p9k_segment_in_use ip || _POWERLEVEL9K_IP_INTERFACE=
-  _p9k_declare -s POWERLEVEL9K_VPN_IP_INTERFACE "(gpd|wg|(.*tun)|tailscale)[0-9]*"
+  _p9k_declare -s POWERLEVEL9K_VPN_IP_INTERFACE "(gpd|wg|(.*tun)|tailscale)[0-9]*)|(zt.*)"
   : ${_POWERLEVEL9K_VPN_IP_INTERFACE:='.*'}
   _p9k_segment_in_use vpn_ip || _POWERLEVEL9K_VPN_IP_INTERFACE=
   _p9k_declare -b POWERLEVEL9K_VPN_IP_SHOW_ALL 0
@@ -7751,7 +7812,12 @@ function _p9k_wrap_widgets() {
     # There is no zle-line-pre-redraw in zsh < 5.3, so we have to wrap all widgets
     # with key bindings. This costs extra 3ms: 1.5ms to fetch the list of widgets and
     # another 1.5ms to wrap them.
-    local keymap tmp=${TMPDIR:-/tmp}/p10k.bindings.$sysparams[pid]
+    if [[ -n "$TMPDIR" && ( ( -d "$TMPDIR" && -w "$TMPDIR" ) || ! ( -d /tmp && -w /tmp ) ) ]]; then
+      local tmpdir=$TMPDIR
+    else
+      local tmpdir=/tmp
+    fi
+    local keymap tmp=$tmpdir/p10k.bindings.$sysparams[pid]
     {
       for keymap in $keymaps; do bindkey -M $keymap; done >$tmp
       local -aU widget_list=(
@@ -8080,13 +8146,12 @@ _p9k_init_prompt() {
     _p9k_prompt_prefix_left+='${${_p9k__ind::=${${ZLE_RPROMPT_INDENT:-1}/#-*/0}}+}'
   fi
 
-  if [[ $ITERM_SHELL_INTEGRATION_INSTALLED == Yes ]]; then
+  if (( _POWERLEVEL9K_TERM_SHELL_INTEGRATION )); then
+    _p9k_prompt_prefix_left+=$'%{\e]133;A\a%}'
+    _p9k_prompt_suffix_left+=$'%{\e]133;B\a%}'
     if (( $+_z4h_iterm_cmd && _z4h_can_save_restore_screen == 1 )); then
       _p9k_prompt_prefix_left+=$'%{\ePtmux;\e\e]133;A\a\e\\%}'
       _p9k_prompt_suffix_left+=$'%{\ePtmux;\e\e]133;B\a\e\\%}'
-    else
-      _p9k_prompt_prefix_left+=$'%{\e]133;A\a%}'
-      _p9k_prompt_suffix_left+=$'%{\e]133;B\a%}'
     fi
   fi
 
@@ -8187,14 +8252,17 @@ _p9k_init_ssh() {
 }
 
 _p9k_init_toolbox() {
-  [[ -z $P9K_TOOLBOX_NAME  &&
-     -e /run/.toolboxenv   &&
-     -f /run/.containerenv &&
-     -r /run/.containerenv ]] || return 0
-  local name=(${(Q)${${(@M)${(f)"$(</run/.containerenv)"}:#name=*}#name=}})
-  (( ${#name} == 1 )) || return 0
-  [[ -n ${name[1]} ]] || return 0
-  typeset -g P9K_TOOLBOX_NAME=${name[1]}
+  [[ -z $P9K_TOOLBOX_NAME ]] || return 0
+  if [[ -f /run/.containerenv && -r /run/.containerenv ]]; then
+    local name=(${(Q)${${(@M)${(f)"$(</run/.containerenv)"}:#name=*}#name=}})
+    [[ ${#name} -eq 1 && -n ${name[1]} ]] || return 0
+    typeset -g P9K_TOOLBOX_NAME=${name[1]}
+  elif [[ -n $DISTROBOX_ENTER_PATH && -n $NAME ]]; then
+    local name=${(%):-%m}
+    if [[ $name == $NAME* ]]; then
+      typeset -g P9K_TOOLBOX_NAME=$name
+    fi
+  fi
 }
 
 _p9k_must_init() {
@@ -8206,7 +8274,8 @@ _p9k_must_init() {
     [[ $sig == $_p9k__param_sig ]] && return 1
     _p9k_deinit
   fi
-  _p9k__param_pat=$'v126\1'${(q)ZSH_VERSION}$'\1'${(q)ZSH_PATCHLEVEL}$'\1'
+  _p9k__param_pat=$'v134\1'${(q)ZSH_VERSION}$'\1'${(q)ZSH_PATCHLEVEL}$'\1'
+  _p9k__param_pat+=$__p9k_force_term_shell_integration$'\1'
   _p9k__param_pat+=$'${#parameters[(I)POWERLEVEL9K_*]}\1${(%):-%n%#}\1$GITSTATUS_LOG_LEVEL\1'
   _p9k__param_pat+=$'$GITSTATUS_ENABLE_LOGGING\1$GITSTATUS_DAEMON\1$GITSTATUS_NUM_THREADS\1'
   _p9k__param_pat+=$'$GITSTATUS_CACHE_DIR\1$GITSTATUS_AUTO_INSTALL\1${ZLE_RPROMPT_INDENT:-1}\1'
@@ -8279,11 +8348,10 @@ function _p9k_init_cacheable() {
     _p9k_param prompt_prompt_char_ERROR_VIINS CONTENT_EXPANSION '${P9K_CONTENT}'
     _p9k_transient_prompt+='${:-"'$_p9k__ret'"}'
     _p9k_transient_prompt+=')%b%k%f%s%u '
-    if [[ $ITERM_SHELL_INTEGRATION_INSTALLED == Yes ]]; then
+    if (( _POWERLEVEL9K_TERM_SHELL_INTEGRATION )); then
+      _p9k_transient_prompt=$'%{\e]133;A\a%}'$_p9k_transient_prompt$'%{\e]133;B\a%}'
       if (( $+_z4h_iterm_cmd && _z4h_can_save_restore_screen == 1 )); then
         _p9k_transient_prompt=$'%{\ePtmux;\e\e]133;A\a\e\\%}'$_p9k_transient_prompt$'%{\ePtmux;\e\e]133;B\a\e\\%}'
-      else
-        _p9k_transient_prompt=$'%{\e]133;A\a%}'$_p9k_transient_prompt$'%{\e]133;B\a%}'
       fi
     fi
   fi
@@ -8333,6 +8401,7 @@ function _p9k_init_cacheable() {
           *void*)                  _p9k_set_os Linux LINUX_VOID_ICON;;
           *artix*)                 _p9k_set_os Linux LINUX_ARTIX_ICON;;
           *rhel*)                  _p9k_set_os Linux LINUX_RHEL_ICON;;
+          amzn)                    _p9k_set_os Linux LINUX_AMZN_ICON;;
           *)                       _p9k_set_os Linux LINUX_ICON;;
         esac
         ;;
@@ -8346,11 +8415,6 @@ function _p9k_init_cacheable() {
     _p9k_color1=0
     _p9k_color2=7
   fi
-
-  # Someone might be using these.
-  typeset -g OS=$_p9k_os
-  typeset -g DEFAULT_COLOR=$_p9k_color1
-  typeset -g DEFAULT_COLOR_INVERTED=$_p9k_color2
 
   _p9k_battery_states=(
     'LOW'           'red'
@@ -8541,6 +8605,20 @@ _p9k_init_vcs() {
   (( $+GITSTATUS_DAEMON_PID_POWERLEVEL9K )) || _p9k__instant_prompt_disabled=1
 }
 
+function _p9k_iterm2_precmd() {
+  builtin zle && return
+  if (( _p9k__iterm_cmd )) && [[ -t 1 ]]; then
+    (( _p9k__iterm_cmd == 1 )) && builtin print -n '\e]133;C;\a'
+    builtin printf '\e]133;D;%s\a' $1
+  fi
+  typeset -gi _p9k__iterm_cmd=1
+}
+
+function _p9k_iterm2_preexec() {
+  [[ -t 1 ]] && builtin print -n '\e]133;C;\a'
+  typeset -gi _p9k__iterm_cmd=2
+}
+
 _p9k_init() {
   _p9k_init_vars
   _p9k_restore_state || _p9k_init_cacheable
@@ -8602,6 +8680,13 @@ _p9k_init() {
   if (( $+functions[iterm2_precmd] )); then
     _p9k__iterm2_precmd=$functions[iterm2_precmd]
     functions[iterm2_precmd]='local _p9k_status=$?; zle && return; () { return $_p9k_status; }; '$_p9k__iterm2_precmd
+  fi
+
+  if (( _POWERLEVEL9K_TERM_SHELL_INTEGRATION  &&
+        ! $+_z4h_iterm_cmd                    &&
+        ! $+functions[iterm2_decorate_prompt] &&
+        ! $+functions[iterm2_precmd] )); then
+    typeset -gi _p9k__iterm_cmd=0
   fi
 
   if _p9k_segment_in_use todo; then
@@ -8730,6 +8815,15 @@ fi
 
 _p9k_do_nothing() { true; }
 
+_p9k_precmd_first() {
+  eval "$__p9k_intro"
+  if [[ -n $KITTY_SHELL_INTEGRATION && KITTY_SHELL_INTEGRATION[(wIe)no-prompt-mark] -eq 0 ]]; then
+    KITTY_SHELL_INTEGRATION+=' no-prompt-mark'
+    (( $+__p9k_force_term_shell_integration )) || typeset -gri __p9k_force_term_shell_integration=1
+  fi
+  typeset -ga precmd_functions=(${precmd_functions:#_p9k_precmd_first})
+}
+
 _p9k_setup() {
   (( __p9k_enabled )) && return
 
@@ -8742,7 +8836,7 @@ _p9k_setup() {
   prompt_powerlevel9k_teardown
   __p9k_enabled=1
   typeset -ga preexec_functions=(_p9k_preexec1 $preexec_functions _p9k_preexec2)
-  typeset -ga precmd_functions=(_p9k_do_nothing $precmd_functions _p9k_precmd)
+  typeset -ga precmd_functions=(_p9k_do_nothing _p9k_precmd_first $precmd_functions _p9k_precmd)
 }
 
 prompt_powerlevel9k_setup() {

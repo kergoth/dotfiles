@@ -12,9 +12,22 @@ fi
 export LC_ALL=C
 
 if [ -z "${ZSH_VERSION-}" ] && command -v zsh >/dev/null 2>&1; then
+  # Avoid bash 3.*.
   case "${BASH_VERSION-}" in
     [0-3].*) exec zsh "$0" "$@";;
   esac
+fi
+
+# Avoid ksh: https://github.com/romkatv/gitstatus/issues/282.
+if [ -n "${KSH_VERSION-}" ]; then
+  if [ -z "${ZSH_VERSION-}" ] && command -v zsh >/dev/null 2>&1; then
+    exec zsh "$0" "$@"
+  elif [ -z "${BASH_VERSION-}" ] && command -v bash >/dev/null 2>&1 &&
+       bash_version="$(bash --version 2>&1)"; then
+    case "$bash_version" in
+      *version\ [4-9]*|*version\ [1-9][0-9]*) exec bash "$0" "$@";;
+    esac
+  fi
 fi
 
 usage="$(command cat <<\END
@@ -91,7 +104,7 @@ if [ -n "$gitstatus_install_tools" ]; then
       command pkg install -y cmake gmake binutils git perl5 wget
     ;;
     openbsd)
-      command pkg_add install cmake gmake gcc git wget
+      command pkg_add cmake gmake gcc g++ git wget
     ;;
     netbsd)
       command pkgin -y install cmake gmake binutils git
@@ -132,8 +145,12 @@ cpus="$(command getconf _NPROCESSORS_ONLN 2>/dev/null)" ||
   cpus=8
 
 case "$gitstatus_cpu" in
-  powerpc64le) archflag="-mcpu";;
-  *)           archflag="-march";;
+  powerpc64|powerpc64le)
+    archflag="-mcpu"
+  ;;
+  *)
+    archflag="-march"
+  ;;
 esac
 
 cflags="$archflag=$gitstatus_cpu -fno-plt -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fpie"
@@ -507,8 +524,9 @@ if [ -z "$gitstatus_cpu" ]; then
     armv6l|armhf)   gitstatus_cpu=armv6;;
     armv7l)         gitstatus_cpu=armv7;;
     arm64|aarch64)  gitstatus_cpu=armv8-a;;
-    ppc64le)        gitstatus_cpu=powerpc64le;;
+    ppc64|ppc64le)  gitstatus_cpu=powerpc64le;;
     riscv64)        gitstatus_cpu=rv64imafdc;;
+    loongarch64)    gitstatus_cpu=loongarch64;;
     x86_64|amd64)   gitstatus_cpu=x86-64;;
     x86)            gitstatus_cpu=i586;;
     s390x)          gitstatus_cpu=z900;;
@@ -545,7 +563,7 @@ case "$gitstatus_kernel" in
           armv6l|armhf)       docker_image=arm32v6/alpine:3.11.6;;
           armv7l)             docker_image=arm32v7/alpine:3.11.6;;
           aarch64)            docker_image=arm64v8/alpine:3.11.6;;
-          ppc64le)            docker_image=ppc64le/alpine:3.11.6;;
+          ppc64|ppc64le)      docker_image=ppc64le/alpine:3.11.6;;
           s390x)              docker_image=s390x/alpine:3.11.6;;
           *)
             >&2 echo '[error] unable to infer docker image'

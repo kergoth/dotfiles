@@ -245,27 +245,30 @@ END
       return 1
     fi
 
-    local tmpdir
+    if [ -n "${TMPDIR-}" -a '(' '(' -d "${TMPDIR-}" -a -w "${TMPDIR-}" ')' -o '!' '(' -d /tmp -a -w /tmp ')' ')' ]; then
+      local tmp="$TMPDIR"
+    else
+      local tmp=/tmp
+    fi
     if ! command -v mktemp >/dev/null 2>&1 ||
-       ! tmpdir="$(command mktemp -d "${TMPDIR:-/tmp}"/gitstatus-install.XXXXXXXXXX)"; then
-      tmpdir="${TMPDIR:-/tmp}/gitstatus-install.tmp.$$"
+       ! tmpdir="$(command mktemp -d "$tmp"/gitstatus-install.XXXXXXXXXX)"; then
+      tmpdir="$tmp/gitstatus-install.tmp.$$"
       if ! mkdir -p -- "$tmpdir"; then
-        local dir="${TMPDIR:-/tmp}"
-        if [ -z "${TMPDIR:-}" ]; then
+        if [ "$tmp" = /tmp ]; then
           local label='directory'
         else
           local label='directory (\033[1mTMPDIR\033[m)'
         fi
-        if [ ! -e "$dir" ]; then
-          >&"$e" printf 'Temporary '"$label"' does not exist: \033[4;31m%s\033[0m\n' "$dir"
+        if [ ! -e "$tmp" ]; then
+          >&"$e" printf 'Temporary '"$label"' does not exist: \033[4;31m%s\033[0m\n' "$tmp"
           >&"$e" printf '\n'
           >&"$e" printf 'Create it, then restart your shell.\n'
-        elif [ ! -d "$dir" ]; then
-          >&"$e" printf 'Not a '"$label"': \033[4;31m%s\033[0m\n' "$dir"
+        elif [ ! -d "$tmp" ]; then
+          >&"$e" printf 'Not a '"$label"': \033[4;31m%s\033[0m\n' "$tmp"
           >&"$e" printf '\n'
           >&"$e" printf 'Make it a directory, then restart your shell.\n'
-        elif [ ! -w "$dir" ]; then
-          >&"$e" printf 'Temporary '"$label"' is not writable: \033[4;31m%s\033[0m\n' "$dir"
+        elif [ ! -w "$tmp" ]; then
+          >&"$e" printf 'Temporary '"$label"' is not writable: \033[4;31m%s\033[0m\n' "$tmp"
           >&"$e" printf '\n'
           >&"$e" printf 'Make it writable, then restart your shell.\n'
         fi
@@ -304,27 +307,29 @@ END
         local data_file="$tmpdir"/"$1".tar.gz
         local hash_file="$tmpdir"/"$1".tar.gz.sha256
         local hash=
-        if command -v shasum >/dev/null 2>/dev/null; then
-          if run_cmd shasum -b -a 256 -- "$data_file" >"$hash_file"; then
-            IFS= read -r hash <"$hash_file" || hash=
-            hash="${hash%% *}"
-          fi
-        elif command -v sha256sum >/dev/null 2>/dev/null; then
-          if run_cmd sha256sum -b -- "$data_file" >"$hash_file"; then
-            IFS= read -r hash <"$hash_file" || hash=
-            hash="${hash%% *}"
-          fi
-        elif command -v sha256 >/dev/null 2>/dev/null; then
-          if run_cmd sha256 -- "$data_file" </dev/null >"$hash_file"; then
-            IFS= read -r hash <"$hash_file" || hash=
-            # Ignore sha256 output if it's from hashalot. It's incompatible.
-            if [ ${#hash} -lt 64 ]; then
-              hash=
-            else
-              hash="${hash##* }"
-            fi
-          fi
-        fi
+        {
+          command -v shasum >/dev/null 2>/dev/null                            &&
+            run_cmd shasum -b -a 256 -- "$data_file" >"$hash_file" </dev/null &&
+            IFS= read -r hash <"$hash_file"                                   &&
+            hash="${hash%% *}"                                                &&
+            [ ${#hash} -eq 64 ]
+        } || {
+          command -v sha256sum >/dev/null 2>/dev/null                         &&
+            run_cmd sha256sum -b -- "$data_file" >"$hash_file" </dev/null     &&
+            IFS= read -r hash <"$hash_file"                                   &&
+            hash="${hash%% *}"                                                &&
+            [ ${#hash} -eq 64 ]
+        } || {
+          # Note: sha256 can be from hashalot. It's incompatible.
+          # Thankfully, it produces shorter output.
+          command -v sha256 >/dev/null 2>/dev/null &&
+            run_cmd sha256 -- "$data_file" >"$hash_file" </dev/null &&
+            IFS= read -r hash <"$hash_file" &&
+            hash="${hash##* }" &&
+            [ ${#hash} -eq 64 ]
+        } || {
+          hash=
+        }
         [ "$1" = 1 -a -z "$hash" -o "$hash" = "$sha256" ]
       }
 

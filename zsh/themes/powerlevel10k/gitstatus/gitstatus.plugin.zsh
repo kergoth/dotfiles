@@ -185,9 +185,21 @@ function gitstatus_query"${1:-}"() {
   (( _GITSTATUS_STATE_$name == 2 )) || return
 
   if [[ -z $GIT_DIR ]]; then
-    [[ $dir == /* ]] || dir=${(%):-%/}/$dir
+    if [[ $dir != /* ]]; then
+      if [[ $PWD == /* && $PWD -ef . ]]; then
+        dir=$PWD/$dir
+      else
+        dir=${dir:a}
+      fi
+    fi
   else
-    [[ $GIT_DIR == /* ]] && dir=:$GIT_DIR || dir=:${(%):-%/}/$GIT_DIR
+    if [[ $GIT_DIR == /* ]]; then
+      dir=:$GIT_DIR
+    elif [[ $PWD == /* && $PWD -ef . ]]; then
+      dir=:$PWD/$GIT_DIR
+    else
+      dir=:${GIT_DIR:a}
+    fi
   fi
 
   if [[ $dir != (|:)/* ]]; then
@@ -458,7 +470,7 @@ function _gitstatus_daemon"${1:-}"() {
   (( lock_fd == -1 )) && return
 
   {
-    if zsystem flock -- $file_prefix.lock && [[ -e $file_prefix.lock ]]; then
+    if zsystem flock -- $file_prefix.lock && command sleep 5 && [[ -e $file_prefix.lock ]]; then
       zf_rm -f -- $file_prefix.lock $file_prefix.fifo
       kill -- -$pgid
     fi
@@ -562,7 +574,12 @@ function gitstatus_start"${1:-}"() {
     else
       typeset -gi _GITSTATUS_START_COUNTER
       local log_level=$GITSTATUS_LOG_LEVEL
-      local file_prefix=${${TMPDIR:-/tmp}:A}/gitstatus.$name.$EUID
+      if [[ -n "$TMPDIR" && ( ( -d "$TMPDIR" && -w "$TMPDIR" ) || ! ( -d /tmp && -w /tmp ) ) ]]; then
+        local tmpdir=$TMPDIR
+      else
+        local tmpdir=/tmp
+      fi
+      local file_prefix=${tmpdir:A}/gitstatus.$name.$EUID
       file_prefix+=.$sysparams[pid].$EPOCHSECONDS.$((++_GITSTATUS_START_COUNTER))
       (( GITSTATUS_ENABLE_LOGGING )) && : ${log_level:=INFO}
       if [[ -n $log_level ]]; then
