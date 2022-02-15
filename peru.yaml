@@ -108,12 +108,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: a935bb7f338d6b560a5af4e31181b1ee294d7bcf
+    rev: 9501b23ad10ac7d6357eb38c2d669eadfdc2c1f3
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: c10808ad5f3ace0696f900b9c543172bc1f8e27c
+    rev: 56b44334617aa719e8e01bb5e00d3e176114a036
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 298020e4e310f0dac5ee1475694a46cff19eccb6
+    rev: 3fb84ee9cc290adb38ac02c629f7fc026acfd2ff
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -188,7 +188,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: a37dd574a414d10cf080cd7060d1688733fb54ef
+    rev: a85f95581a3d2cd57adb748962a087f666507792
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -524,7 +524,7 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: b0ac298020a1a7bd1f051ee9fcbcd1158b2e9e47
+    rev: b06ab4ef1dbbe5ff1007e3278edcd2979485edd5
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
