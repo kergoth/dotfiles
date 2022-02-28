@@ -84,7 +84,7 @@
 
 [log]
 	decorate = short
-	excludeDecoration = refs/branchless/*
+	excludeDecoration = refs/branchless/* refs/stash
 
 [commit]
 	verbose = true
