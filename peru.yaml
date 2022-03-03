@@ -108,12 +108,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 722aafadeb5601002464515252d5e8f190f7dee0
+    rev: 9367b22270b28390034ea7001e36af24b54eb844
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 2cd73fcbde1b47f0952027c0674c32b9f1756a59
+    rev: c5ce0014677a0f69a10b676b6038ad127f40c6b1
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 3fb84ee9cc290adb38ac02c629f7fc026acfd2ff
+    rev: 6fbf5fc9a7033bc47d4c61b2d6b97fe0c74d9c45
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 9cb7a364a31bdb882d873807774bdcf6fad0c9e4
+    rev: 5f385d88e0a786f20c4231b82f250945a6583a17
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 760428fa466affb4b95130ca926bd0ff79a39dc7
+    rev: 42458d838b0d803d4a95c1dec601d6ed815c72ce
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
