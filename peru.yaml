@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9367b22270b28390034ea7001e36af24b54eb844
+    rev: f217f6dc331559f57301dfb84ce3898d20c944d6
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 6fbf5fc9a7033bc47d4c61b2d6b97fe0c74d9c45
+    rev: 55d07cc57750eb90f8b02be3ddf42c206ecf17b1
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -219,7 +219,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 5601d7096b54efc2e25eeb5e482b8e59989ad02e
+    rev: 33c231f16c5b03fcce052779184753ad9927b2de
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
