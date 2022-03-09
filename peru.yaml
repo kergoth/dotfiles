@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 5f385d88e0a786f20c4231b82f250945a6583a17
+    rev: a06671b47f0284733c7edf7dae8f22f9758c8393
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -580,7 +580,7 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 91c667e0521951198e0fe348cad30b8f9c6b9b74
+  sha1: 693be2c1f38c31b139da3e1937d300ef8e767db6
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
