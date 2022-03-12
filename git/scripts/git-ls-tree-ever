@@ -1,0 +1,11 @@
+#!/bin/sh
+
+rev_list () {
+    if [ $# -gt 1 ]; then
+        git rev-list "${1:-HEAD}" -- "$2" | sed "s,$,:$2,"
+    else
+        git rev-list "${1:-HEAD}"
+    fi
+}
+
+rev_list "$@" | xargs -n 1 git ls-tree -r 2>/dev/null | awk '{print $1 " " $2 " " $4}' | sort -u
