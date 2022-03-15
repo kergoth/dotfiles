@@ -489,7 +489,7 @@ git module myrepos:
     rev: 05c542e8356967be4c063a368aa94124626a35e4
 
 git module tony-tmux-config:
-    url: https://github.com/tony/tmux-config
+    url: http://github.com/tony/tmux-config
     pick: tmux-resize-adaptable
     move:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
