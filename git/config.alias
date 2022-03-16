@@ -11,6 +11,7 @@
 	back = switch --no-guess -
 	cp = cherry-pick -x
 	au = add -u
+	chmod = "!mode="$1"; shift; git update-index --chmod=\"$mode\" \"$@\""
 	st = status -sb
 	sti = status -sb --ignored
 	br = branch
