@@ -133,6 +133,9 @@
 [url "ssh://git@"]
 	pushInsteadOf = git://
 
+[url "https://github.com"]
+	insteadOf = git://github.com
+
 [include]
 	path = config.alias
 	path = config.local
