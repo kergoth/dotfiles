@@ -230,7 +230,8 @@ main() {
                     fi
                 fi
             fi
-        done
+        done \
+            | sed '/^$/N;/^\n$/D'
 }
 
 main "$@"
