@@ -19,21 +19,7 @@ def read_blocks(f):
     if block:
         yield block
 
-
-@click.command()
-@click.option('--keep-path', '-k', multiple=True, help='Path prefix(es) to keep')
-@click.option('--remove-path', '-r', multiple=True, help='Path prefix(es) to remove')
-@click.option('--compress/--no-compress', '-c', default=False, help='Compress output, do not separate blocks of files')
-@click.option('--verbose/--no-verbose', '-v', default=False, help='Verbose output, show files to keep, not just remove')
-@click.option('--existing', '-e', is_flag=True, default=False)
-def fdupes_select(keep_path, remove_path, compress, existing, verbose):
-    conflicting_prefixes = set(keep_path) & set(remove_path)
-    if conflicting_prefixes:
-        for prefix in conflicting_prefixes:
-            click.echo(f'Cannot both keep and remove paths under a prefix: `{prefix}`', err=True)
-        sys.exit(1)
-
-    first = True
+def filter_paths(paths, keep_path, remove_path, existing):
     for block in read_blocks(sys.stdin):
         if existing:
             block = [p for p in block if os.path.exists(p)]
@@ -46,6 +32,7 @@ def fdupes_select(keep_path, remove_path, compress, existing, verbose):
                 remove = False
                 if keep_path and any(p.startswith(k + os.sep) for k in keep_path):
                     remove = True
+
                 if remove_path and any(p.startswith(k + os.sep) for k in remove_path):
                     if remove:
                         click.echo(f'Cannot both keep and remove a path: `{p}`', err=True)
@@ -65,17 +52,46 @@ def fdupes_select(keep_path, remove_path, compress, existing, verbose):
             continue
 
         if block:
-            if not compress:
-                if not first:
-                    print()
-                else:
-                    first = False
+            yield block, kept if keep_path or remove_path else None
 
-            if verbose and (keep_path or remove_path):
-                for p in kept:
-                    click.echo(f'Keep: {p}', err=True)
-            for p in block:
-                print(p)
+def path_lines(paths, compress, verbose):
+    first = True
+    for block, kept in paths:
+        if not compress:
+            if not first:
+                yield '\n'
+            else:
+                first = False
+
+        if verbose and kept:
+            for p in kept:
+                click.echo(f'Keep: {p}', err=True)
+
+        for p in block:
+            yield p + '\n'
+
+@click.command()
+@click.option('--keep-path', '-k', multiple=True, help='Path prefix(es) to keep')
+@click.option('--remove-path', '-r', multiple=True, help='Path prefix(es) to remove')
+@click.option('--compress/--no-compress', '-c', default=False, help='Compress output, do not separate blocks of files')
+@click.option('--verbose/--no-verbose', '-v', default=False, help='Verbose output, show files to keep, not just remove')
+@click.option('--pager/--no-pager', default=True, help='Page output when on a terminal. Default.')
+@click.option('--existing', '-e', is_flag=True, default=False)
+def fdupes_select(keep_path, remove_path, compress, existing, verbose, pager):
+    conflicting_prefixes = set(keep_path) & set(remove_path)
+    if conflicting_prefixes:
+        for prefix in conflicting_prefixes:
+            click.echo(f'Cannot both keep and remove paths under a prefix: `{prefix}`', err=True)
+        sys.exit(1)
+
+    paths = filter_paths(read_blocks(sys.stdin), keep_path, remove_path, existing)
+    lines = path_lines(paths, compress, verbose)
+
+    if pager and sys.stdout.isatty():
+        click.echo_via_pager(lines)
+    else:
+        for line in lines:
+            click.echo(line, nl=False)
 
 if __name__ == '__main__':
     fdupes_select()
