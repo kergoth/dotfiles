@@ -1,237 +1,56 @@
-#!/bin/bash
-# shellcheck disable=SC2120,SC2002
+#!/usr/bin/env python3
 
-scriptname=${0##*/}
-default_exclude_pattern='/(@eaDir|\.git|\.sync|\.svn)/|/\.DS_Store'
+import os
+import sys
 
-if command -v greadlink >/dev/null 2>&1; then
-    readlink=greadlink
-else
-    readlink=readlink
-fi
+import click
 
-usage() {
-    cat >&2 <<END
-$scriptname [options] [FDUPES_OUTFILE]
 
-Select which items from fdupes output should be deleted.
+def read_blocks(f):
+    block = []
+    for line in f:
+        line = line.rstrip('\r\n')
+        if line:
+            block.append(line)
+        elif block:
+            yield block
+            block = []
 
-With -k, if at least one of the dupes for a given file lives in KEEP_PATH,
-that one is kept, and all the others are removed. If none are in KEEP_PATH,
-none are deleted, and if multiple are in KEEP_PATH, all of those are kept.
+    if block:
+        yield block
 
-Paths matching the EXCLUDE_PATTERNs are excluded from the dupe list regardless
-of selection method.
 
-This script will filter the fdupes one line output, writing the files to be
-deleted to stdout.
+@click.command()
+@click.option('--compress/--no-compress', '-c', default=False, help='Compress output, do not separate blocks of files')
+@click.option('--existing', '-e', is_flag=True, default=False)
+@click.option('--keep-path', '-k', multiple=True, help='Path prefix(es) to keep')
+def fdupes_select(keep_path, compress, existing):
+    first = True
+    for block in read_blocks(sys.stdin):
+        if existing:
+            block = [p for p in block if os.path.exists(p)]
+            if not block:
+                continue
 
-If FDUPES_OUTFILE is unspecified, stdin will be used.
+        if keep_path:
+            kept = [p for p in block if any(p.startswith(k + os.sep) for k in keep_path)]
+            removed = [p for p in block if p not in kept]
+            if kept and removed:
+                block = removed
+            else:
+                continue
+        elif len(block) < 2:
+            continue
 
-Options:
-  -r FDUPES_ROOT        The root path where fdupes was run. This is used to
-                        adjust relative paths in FDUPES_OUTFILE to absolute.
-  -k KEEP_PATH          Paths under KEEP_PATH will be kept
-  -x EXCLUDE_PATTERN    Specify paths to exclude from processing. This is
-                        passed to grep -E. May be specified multiple times.
-                        If specified at all, the default will not be used.
-                        Default: $exclude_pattern
-  -v  Verbose mode.
-  -h  Show this usage 
-END
-    exit 2
-}
+        if block:
+            if not compress:
+                if not first:
+                    print()
+                else:
+                    first = False
 
-process_args() {
-    fdupes_outfile=-
-    fdupes_root=$PWD
-    keep_path=
-    exclude_pattern=
-    verbose=0
-    while getopts r:k:x:vh opt; do
-        case "$opt" in
-            r)
-                if [ ! -d "$OPTARG" ]; then
-                    echo >&2 "Warning: FDUPES_ROOT is not an existing directory: $OPTARG"
-                    fdupes_root="$(abspath "$OPTARG")"
-                else
-                    fdupes_root="$(cd "$OPTARG" && pwd -P)"
-                fi
-                ;;
-            k)
-                if [ ! -d "$OPTARG" ]; then
-                    echo >&2 "Warning: KEEP_PATH is not an existing directory: $OPTARG"
-                    keep_path="$(abspath "$OPTARG")"
-                else
-                    keep_path="$(cd "$OPTARG" && pwd -P)"
-                fi
-                ;;
-            x)
-                if [ -n "$exclude_pattern" ]; then
-                    exclude_pattern="($exclude_pattern)|($OPTARG)"
-                else
-                    exclude_pattern="$OPTARG"
-                fi
-                ;;
-            v)
-                verbose=1
-                ;;
-            \? | h)
-                usage
-                ;;
-        esac
-    done
+            for p in block:
+                print(p)
 
-    if [ -z "$exclude_pattern" ]; then
-        exclude_pattern="$default_exclude_pattern"
-    fi
-
-    shift $((OPTIND - 1))
-
-    if [ $# -gt 1 ]; then
-        usage
-    elif [ $# -eq 1 ]; then
-        fdupes_outfile=$1
-        if ! [ -f "$fdupes_outfile" ]; then
-            echo >&2 "Error: FDUPES_OUTFILE $fdupes_outfile does not exist"
-            usage
-        fi
-    fi
-
-    if [ "$fdupes_outfile" = "-" ]; then
-        fdupes_outfile=/dev/stdin
-    fi
-}
-
-printargs() {
-    for arg; do
-        printf '%s\n' "$arg"
-    done
-}
-
-_printf() {
-    fmt=$1
-    shift
-    # shellcheck disable=SC2059
-    printf "$scriptname: $fmt" "$@"
-}
-
-die() {
-    ret=${1:-1}
-    if [ $# -gt 1 ]; then
-        fmt=$1
-        shift
-        _printf "Error: $fmt\\n" "$@" >&2
-    fi
-    exit "$ret"
-}
-
-on_error() {
-    local ret=$?
-    if [ $ret -eq 130 ]; then
-        # No shell traceback for SIGINT
-        printf >&2 'Interrupted\n'
-        exit $ret
-    fi
-
-    local i=0
-    local argv_offset=0
-    local FRAMES=${#BASH_SOURCE[@]}
-    local extdebug
-    extdebug=$(
-        shopt -q extdebug
-        echo $?
-    )
-
-    echo >&2 "Traceback (most recent call last):"
-    for ((frame = FRAMES - 2; frame >= 0; frame--)); do
-        local lineno=${BASH_LINENO[frame]}
-
-        printf >&2 '  File "%s", line %d, in %s\n' "${BASH_SOURCE[frame + 1]}" "$lineno" "${FUNCNAME[frame + 1]}"
-        if [[ $extdebug -eq 0 && $i -ne 0 ]]; then
-            # Courtesy http://www.runscripts.com/support/guides/scripting/bash/debugging-bash/stack-trace
-            declare argv=()
-            declare argc
-            declare frame_argc
-
-            for ((frame_argc = ${BASH_ARGC[frame]}, frame_argc--, argc = 0; frame_argc >= 0; argc++, frame_argc--)); do
-                argv[argc]=${BASH_ARGV[argv_offset + frame_argc]}
-                case "${argv[argc]}" in
-                    *[[:space:]]*) argv[argc]="'${argv[argc]}'" ;;
-                esac
-            done
-            argv_offset=$((argv_offset + ${BASH_ARGC[frame]}))
-            echo >&2 "    ${FUNCNAME[i]} ${argv[*]}"
-        else
-            sed >&2 -n "${lineno}s/^[ 	]*/    /p" "${BASH_SOURCE[frame + 1]}"
-        fi
-    done
-    printf >&2 'Exiting with %d\n' "$ret"
-    exit $ret
-}
-
-re_escape() {
-    python3 -c 'import re,sys; print("\n".join(re.escape(i) for i in sys.argv[1:]))' "$@"
-}
-
-main() {
-    set -euo pipefail
-    set -o errtrace
-    if [[ ${BASH_VERSINFO[0]} -ge 3 ]]; then
-        shopt -s extdebug
-    fi
-    trap on_error ERR
-
-    # shellcheck disable=SC2119
-    process_args "$@" || die
-    shift $((OPTIND - 1))
-
-    tmpfile=$(mktemp -t "${0##*/}.XXXX")
-    trap 'rm -f "$tmpfile"' EXIT
-    trap 'rm -f "$tmpfile"; trap - INT; kill -INT 0' INT
-    trap 'rm -f "$tmpfile"; trap - TERM; kill -TERM 0' TERM
-
-    echo >&2 "Keeping files in $keep_path"
-    if [ -n "$fdupes_root" ]; then
-        escaped_fdupes_root="$(re_escape "$fdupes_root")"
-        echo >&2 "Adjusting fdupes outfile paths from ./ to $fdupes_root/"
-    fi
-
-    # shellcheck disable=SC2162
-    cat "$fdupes_outfile" | grep -v "^$" | \
-        while read -a files; do
-            printargs "${files[@]}" \
-                | if [ -n "$exclude_pattern" ]; then
-                    grep -Ev "$exclude_pattern" || :
-                else
-                    cat
-                fi | tr '\n' '\0' | xargs -0 "$readlink" -f >"$tmpfile"
-
-            if [ -n "$fdupes_root" ]; then
-                sed -i -e "s#^\\./#$escaped_fdupes_root/#; s#^\\([^/]\\)#${escaped_fdupes_root}/\\1#" "$tmpfile"
-            fi
-
-            if [ -s "$tmpfile" ]; then
-                if [ $verbose -eq 1 ]; then
-                    echo >&2 "Processing: $(head -n 1 "$tmpfile")"
-                fi
-                if [ -n "$keep_path" ]; then
-                    if [ "$verbose" -eq 1 ]; then
-                        keeping="$(grep "^$keep_path/" "$tmpfile" || :)"
-                        if [ -n "$keeping" ]; then
-                            echo >&2 "Keep files: $keeping"
-                            echo >&2 "Remove files:"
-                            grep -v "^$keep_path/" "$tmpfile" || :
-                            echo
-                        fi
-                    elif grep -q "^$keep_path/" "$tmpfile"; then
-                        grep -v "^$keep_path/" "$tmpfile" || :
-                        echo
-                    fi
-                fi
-            fi
-        done \
-            | sed -l -e '/^$/N;/^\n$/D'
-}
-
-main "$@"
+if __name__ == '__main__':
+    fdupes_select()
