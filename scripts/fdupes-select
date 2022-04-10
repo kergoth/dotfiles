@@ -24,8 +24,9 @@ def read_blocks(f):
 @click.option('--keep-path', '-k', multiple=True, help='Path prefix(es) to keep')
 @click.option('--remove-path', '-r', multiple=True, help='Path prefix(es) to remove')
 @click.option('--compress/--no-compress', '-c', default=False, help='Compress output, do not separate blocks of files')
+@click.option('--verbose/--no-verbose', '-v', default=False, help='Verbose output, show files to keep, not just remove')
 @click.option('--existing', '-e', is_flag=True, default=False)
-def fdupes_select(keep_path, remove_path, compress, existing):
+def fdupes_select(keep_path, remove_path, compress, existing, verbose):
     conflicting_prefixes = set(keep_path) & set(remove_path)
     if conflicting_prefixes:
         for prefix in conflicting_prefixes:
@@ -70,6 +71,9 @@ def fdupes_select(keep_path, remove_path, compress, existing):
                 else:
                     first = False
 
+            if verbose and (keep_path or remove_path):
+                for p in kept:
+                    click.echo(f'Keep: {p}', err=True)
             for p in block:
                 print(p)
 
