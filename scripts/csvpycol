@@ -46,7 +46,8 @@ def filter_rows(args):
     for lineno, row in enumerate(reader):
         env = dict(row)
         env.update({'_': row, 'lineno': lineno + 1, 'args': args.args})
-        nval = eval(args.pythonstring, imports, env)
+        env.update(imports)
+        nval = eval(args.pythonstring, env, env)
         if args.filter:
             if not nval:
                 continue
