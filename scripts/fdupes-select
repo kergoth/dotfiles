@@ -21,6 +21,9 @@ def read_blocks(f):
 
 def filter_paths(paths, keep_path, remove_path, first, existing):
     for block in read_blocks(sys.stdin):
+        if len(block) < 2:
+            continue
+
         if existing:
             block = [p for p in block if os.path.exists(p)]
             if not block:
