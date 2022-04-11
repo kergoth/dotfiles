@@ -19,22 +19,34 @@ def read_blocks(f):
     if block:
         yield block
 
-def filter_paths(paths, keep_path, remove_path, existing):
+def filter_paths(paths, keep_path, remove_path, first, existing):
     for block in read_blocks(sys.stdin):
         if existing:
             block = [p for p in block if os.path.exists(p)]
             if not block:
                 continue
 
-        if keep_path or remove_path:
+        if first or keep_path or remove_path:
+            if first:
+                first_path = block[0]
+
             removed = []
             for p in block:
-                remove = False
-                if keep_path and any(p.startswith(k + os.sep) for k in keep_path):
-                    remove = True
+                remove = None
+                if first:
+                    if p == first_path:
+                        remove = False
+                    else:
+                        remove = True
+
+                if keep_path:
+                    if not any(p.startswith(k + os.sep) for k in keep_path):
+                        remove = True
+                    else:
+                        remove = False
 
                 if remove_path and any(p.startswith(k + os.sep) for k in remove_path):
-                    if remove:
+                    if remove is False:
                         click.echo(f'Cannot both keep and remove a path: `{p}`', err=True)
                         sys.exit(1)
                     else:
@@ -50,9 +62,11 @@ def filter_paths(paths, keep_path, remove_path, existing):
                 continue
         elif len(block) < 2:
             continue
+        else:
+            kept = None
 
         if block:
-            yield block, kept if keep_path or remove_path else None
+            yield block, kept
 
 def path_lines(paths, compress, verbose):
     first = True
@@ -73,18 +87,19 @@ def path_lines(paths, compress, verbose):
 @click.command()
 @click.option('--keep-path', '-k', multiple=True, help='Path prefix(es) to keep')
 @click.option('--remove-path', '-r', multiple=True, help='Path prefix(es) to remove')
+@click.option('--first/', '-f', is_flag=True, help='Keep the first path in the list')
 @click.option('--compress/--no-compress', '-c', default=False, help='Compress output, do not separate blocks of files')
 @click.option('--verbose/--no-verbose', '-v', default=False, help='Verbose output, show files to keep, not just remove')
 @click.option('--pager/--no-pager', default=True, help='Page output when on a terminal. Default.')
 @click.option('--existing', '-e', is_flag=True, default=False)
-def fdupes_select(keep_path, remove_path, compress, existing, verbose, pager):
+def fdupes_select(keep_path, remove_path, first, compress, existing, verbose, pager):
     conflicting_prefixes = set(keep_path) & set(remove_path)
     if conflicting_prefixes:
         for prefix in conflicting_prefixes:
             click.echo(f'Cannot both keep and remove paths under a prefix: `{prefix}`', err=True)
         sys.exit(1)
 
-    paths = filter_paths(read_blocks(sys.stdin), keep_path, remove_path, existing)
+    paths = filter_paths(read_blocks(sys.stdin), keep_path, remove_path, first, existing)
     lines = path_lines(paths, compress, verbose)
 
     if pager and sys.stdout.isatty():
