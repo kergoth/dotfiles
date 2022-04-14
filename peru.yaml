@@ -108,7 +108,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: f217f6dc331559f57301dfb84ce3898d20c944d6
+    rev: 7f5caa1ba7888c6b1cde37041cb59af2d3e8984b
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -121,7 +121,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 55d07cc57750eb90f8b02be3ddf42c206ecf17b1
+    rev: 3d394ebaa14f50a8498ab29b3a3d07cb82dee1e5
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -165,7 +165,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: a06671b47f0284733c7edf7dae8f22f9758c8393
+    rev: a0b42e6538092dc6dea9f918a7a74c9408e44d4c
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -219,7 +219,7 @@ git module icdiff:
     pick:
         - external/scripts/icdiff
         - git/scripts/git-icdiff
-    rev: 33c231f16c5b03fcce052779184753ad9927b2de
+    rev: 23b6c0b14fcc31f9da75bd6f330ff1e0cab43cdc
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -240,7 +240,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 4c53a8c20f8984adb226293a3ffd7b88c3f4ac1a
+    rev: d516b2db0af2221bd6b13e7347abdcb5830b2829
 
 rule git-scripts:
     move:
@@ -375,7 +375,7 @@ git module hub-completion:
     move:
         etc/hub.zsh_completion: _hub
     pick: _hub
-    rev: af7150924e85073225020f75134841cd889b5e7e
+    rev: 363513a0f822a8bde5b620e5de183702280d4ace
 
 git module git-tbdiff:
     url: https://github.com/trast/tbdiff
@@ -393,7 +393,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 42458d838b0d803d4a95c1dec601d6ed815c72ce
+    rev: f556430122e3b9e55256b178941046c0aafc9671
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -494,7 +494,7 @@ git module tony-tmux-config:
     move:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
     executable: tmux-resize-adaptable
-    rev: 0e1e2814693d3c14a64be3f10c28a8dbb1474084
+    rev: 9946dde7461483ac53057612225b94c98f0bfc24
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
@@ -505,7 +505,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: 42659f93456d9ff7cc1096cbd84d778ede26d76e
+    rev: 02f44c68d84624d79e7efd174d0017ae7c85b8c4
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -524,7 +524,7 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: b06ab4ef1dbbe5ff1007e3278edcd2979485edd5
+    rev: a99798e91bb00887eeba1a0e38e803a57243f1ef
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
@@ -563,7 +563,7 @@ git module rmate:
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
-    rev: 7383f118658b8cc1fbea66287e2a813cba09e60f
+    rev: bb1bce85bb7cb108ddc6170c700bcc68888f4a8d
 
 curl module cht:
     url: https://cheat.sh/:cht.sh
@@ -580,7 +580,7 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 693be2c1f38c31b139da3e1937d300ef8e767db6
+  sha1: df2a4a0cc2d568cce4303317eb047b440da910a2
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k

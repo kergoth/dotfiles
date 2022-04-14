@@ -52,8 +52,8 @@ declare-option str bright_cyan 'a4ffff'
 declare-option str bright_white 'ffffff'
 
 # Alpha blending
-declare-option str cursor_alpha '80'
-declare-option str selection_alpha '40'
+declare-option str cursor_alpha '99'
+declare-option str selection_alpha '80'
 
 # UI variants
 # <https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=UI Variants>
@@ -106,8 +106,8 @@ set-face global PrimarySelection "default,rgba:%opt{pink}%opt{selection_alpha}" 
 set-face global SecondarySelection "default,rgba:%opt{purple}%opt{selection_alpha}" # Purple (alpha-blended)
 set-face global PrimaryCursor "default,rgba:%opt{pink}%opt{cursor_alpha}" # Pink (alpha-blended)
 set-face global SecondaryCursor "default,rgba:%opt{purple}%opt{cursor_alpha}" # Purple (alpha-blended)
-set-face global PrimaryCursorEol "rgb:%opt{pink},rgb:%opt{pink}+F" # Pink (full block)
-set-face global SecondaryCursorEol "rgb:%opt{purple},rgb:%opt{purple}+F" # Purple (full block)
+set-face global PrimaryCursorEol "rgb:%opt{background},rgb:%opt{foreground}+fg" # White (full block)
+set-face global SecondaryCursorEol "rgb:%opt{background},rgb:%opt{foreground}+fg" # White (full block)
 set-face global MenuForeground "rgb:%opt{foreground},rgb:%opt{selection}" # https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=editorSuggestWidget.selectedBackground
 set-face global MenuBackground "rgb:%opt{foreground},rgb:%opt{background_dark}" # https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=editorSuggestWidget.background
 set-face global MenuInfo "rgb:%opt{comment}" # IntelliSense suggestions
@@ -124,7 +124,7 @@ set-face global Prompt StatusLine # Same as the status line, since they live at 
 set-face global BufferPadding "rgb:%opt{non_text}" # Kakoune ⇒ set-option global ui_options terminal_padding_fill=yes
 
 # Builtin highlighter faces
-set-face global LineNumbers "rgb:%opt{comment}" # Kakoune ⇒ add-highlighter -override global/number-lines number-lines — https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=editorLineNumber
+set-face global LineNumbers "rgb:%opt{non_text}" # Kakoune ⇒ add-highlighter -override global/number-lines number-lines — Prefer non-text here — https://github.com/dracula/visual-studio-code/blob/master/src/dracula.yml#:~:text=editorLineNumber
 set-face global LineNumberCursor "rgb:%opt{foreground}" # Kakoune ⇒ add-highlighter -override global/number-lines number-lines -hlcursor
 set-face global LineNumbersWrapped "rgb:%opt{background}" # Kakoune ⇒ add-highlighter -override global/number-lines number-lines; add-highlighter -override global/wrap wrap
 set-face global MatchingChar "rgb:%opt{green}+uf" # Kakoune ⇒ add-highlighter -override global/show-matching show-matching — https://github.com/dracula/vim/blob/master/colors/dracula.vim#:~:text=MatchParen
