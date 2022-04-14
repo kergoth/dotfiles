@@ -32,6 +32,7 @@ imports:
     git-assembler: git/scripts
     git-cherry-tree: git/scripts
     git-extras: git/scripts
+    git-filter-repo: git/scripts
     git-fixup: git
     git-get: git/scripts
     git-tbdiff: git/scripts
@@ -585,3 +586,9 @@ curl module yt-dlp:
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
   rev: 8a676a9157d2b0e00e88d06456ac7317f11c0317
+
+git module git-filter-repo:
+  url: https://github.com/newren/git-filter-repo
+  pick: git-filter-repo
+  executable: git-filter-repo
+  rev: fff5f43a155ffa16b054d582ba049006469d8b19
