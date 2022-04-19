@@ -60,7 +60,7 @@ imports:
     wsl-open: os-wsl/scripts
     yt-dlp: external/scripts
 
-    chneukirchen-tools: .
+    chneukirchen-tools: external/scripts
     1t: external/scripts
     f: external/scripts
     frep: external/scripts
@@ -271,13 +271,13 @@ git module moreutils:
 git module chneukirchen-tools:
     url: https://github.com/kergoth/chneukirchen-tools
     move:
-        spongegrep: external/scripts/spongegrep
-        swaptop: external/scripts/swaptop
-        pacverify: os-linux-arch/scripts/pacverify
+        spongegrep: spongegrep
+        swaptop: swaptop
+        pacverify: pacverify
     pick:
-        - external/scripts/spongegrep
-        - external/scripts/swaptop
-        - os-linux-arch/scripts/pacverify
+        - spongegrep
+        - swaptop
+        - pacverify
     rev: db08c7e7dc8c6e819fc03daba8ab7ca52a9c1ac5
 
 curl module git-neck:
