@@ -41,7 +41,7 @@ imports:
     git|git-scripts: git/scripts
     gitvoodoo: git/scripts
     hardlinkpy: external/scripts
-    icdiff: .
+    icdiff: external/scripts
     iln: external/scripts
     md-inline2ref: external/scripts
     moreutils: external/scripts
@@ -215,11 +215,11 @@ git module pom:
 git module icdiff:
     url: https://github.com/jeffkaufman/icdiff
     move:
-        icdiff: external/scripts/icdiff
-        git-icdiff: git/scripts/git-icdiff
+        icdiff: icdiff
+        git-icdiff: git-icdiff
     pick:
-        - external/scripts/icdiff
-        - git/scripts/git-icdiff
+        - icdiff
+        - git-icdiff
     rev: 23b6c0b14fcc31f9da75bd6f330ff1e0cab43cdc
 
 git module dustin-bindir:
