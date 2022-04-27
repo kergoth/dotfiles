@@ -299,6 +299,22 @@ span { display: inline-block; }
 <option value='7z'></option>
 <option value='7za'></option>
 <option value='7zr'></option>
+<option value=':bash_completion'></option>
+<option value=':cht.sh'></option>
+<option value=':emacs'></option>
+<option value=':emacs-ivy'></option>
+<option value=':firstpage'></option>
+<option value=':firstpage-v1'></option>
+<option value=':firstpage-v2'></option>
+<option value=':fish'></option>
+<option value=':help'></option>
+<option value=':intro'></option>
+<option value=':list'></option>
+<option value=':post'></option>
+<option value=':styles'></option>
+<option value=':styles-demo'></option>
+<option value=':vim'></option>
+<option value=':zsh'></option>
 <option value='Bash-Snippets'></option>
 <option value='MegaCli'></option>
 <option value='['></option>
@@ -401,6 +417,7 @@ span { display: inline-block; }
 <option value='archlinux-java'></option>
 <option value='arduino'></option>
 <option value='arduino-builder'></option>
+<option value='arduino/'></option>
 <option value='arecord'></option>
 <option value='aria2'></option>
 <option value='aria2c'></option>
@@ -418,6 +435,7 @@ span { display: inline-block; }
 <option value='asdf'></option>
 <option value='aspell'></option>
 <option value='asr'></option>
+<option value='assembly/'></option>
 <option value='assembly/rosetta/'></option>
 <option value='assimp'></option>
 <option value='assoc'></option>
@@ -450,6 +468,7 @@ span { display: inline-block; }
 <option value='avo'></option>
 <option value='avrdude'></option>
 <option value='awk'></option>
+<option value='awk/'></option>
 <option value='awk/:learn'></option>
 <option value='awk/:list'></option>
 <option value='awk/rosetta/'></option>
@@ -472,6 +491,7 @@ span { display: inline-block; }
 <option value='aws-vault'></option>
 <option value='awslogs'></option>
 <option value='axel'></option>
+<option value='axiom/'></option>
 <option value='az'></option>
 <option value='az-account'></option>
 <option value='az-appconfig'></option>
@@ -502,12 +522,14 @@ span { display: inline-block; }
 <option value='base64'></option>
 <option value='basename'></option>
 <option value='bash'></option>
+<option value='bash/'></option>
 <option value='bash/:learn'></option>
 <option value='bash/:list'></option>
 <option value='bash/forkbomb'></option>
 <option value='bash/rosetta/'></option>
 <option value='bash/shortcuts'></option>
 <option value='bashmarks'></option>
+<option value='basic/'></option>
 <option value='bastet'></option>
 <option value='bat'></option>
 <option value='batcat'></option>
@@ -521,6 +543,7 @@ span { display: inline-block; }
 <option value='berks'></option>
 <option value='betterlockscreen'></option>
 <option value='betty'></option>
+<option value='bf/'></option>
 <option value='bf/:learn'></option>
 <option value='bf/:list'></option>
 <option value='bf/rosetta/'></option>
@@ -599,6 +622,7 @@ span { display: inline-block; }
 <option value='bzgrep'></option>
 <option value='bzip2'></option>
 <option value='bzr'></option>
+<option value='c/'></option>
 <option value='c/:learn'></option>
 <option value='c/:list'></option>
 <option value='c/rosetta/'></option>
@@ -606,6 +630,7 @@ span { display: inline-block; }
 <option value='cabal'></option>
 <option value='caddy'></option>
 <option value='caffeinate'></option>
+<option value='caja'></option>
 <option value='cake'></option>
 <option value='cal'></option>
 <option value='calc'></option>
@@ -651,6 +676,7 @@ span { display: inline-block; }
 <option value='ch-run'></option>
 <option value='ch-tar2dir'></option>
 <option value='chage'></option>
+<option value='chapel/'></option>
 <option value='chapel/:learn'></option>
 <option value='chapel/:list'></option>
 <option value='chapel/rosetta/'></option>
@@ -710,6 +736,7 @@ span { display: inline-block; }
 <option value='clang-cpp'></option>
 <option value='clang-format'></option>
 <option value='clang-tidy'></option>
+<option value='clean/'></option>
 <option value='clean/rosetta/'></option>
 <option value='clear'></option>
 <option value='clementine'></option>
@@ -720,6 +747,7 @@ span { display: inline-block; }
 <option value='cloc'></option>
 <option value='clockwork-cli'></option>
 <option value='clojure'></option>
+<option value='clojure/'></option>
 <option value='clojure/:learn'></option>
 <option value='clojure/:list'></option>
 <option value='clojure/Collections__Sequences'></option>
@@ -750,6 +778,7 @@ span { display: inline-block; }
 <option value='codesign'></option>
 <option value='codespell'></option>
 <option value='coffee'></option>
+<option value='coffee/'></option>
 <option value='coffee/:learn'></option>
 <option value='coffee/:list'></option>
 <option value='coffee/rosetta/'></option>
@@ -797,6 +826,7 @@ span { display: inline-block; }
 <option value='cpdf'></option>
 <option value='cpio'></option>
 <option value='cpp'></option>
+<option value='cpp/'></option>
 <option value='cpp/:learn'></option>
 <option value='cpp/:list'></option>
 <option value='cpp/Classes_and_object-oriented_programming'></option>
@@ -857,6 +887,7 @@ span { display: inline-block; }
 <option value='crystal'></option>
 <option value='csc'></option>
 <option value='csh'></option>
+<option value='csharp/'></option>
 <option value='csharp/:learn'></option>
 <option value='csharp/:list'></option>
 <option value='csharp/rosetta/'></option>
@@ -889,6 +920,7 @@ span { display: inline-block; }
 <option value='cuyo'></option>
 <option value='cvs'></option>
 <option value='cwebp'></option>
+<option value='d/'></option>
 <option value='d/:learn'></option>
 <option value='d/:list'></option>
 <option value='d/rosetta/'></option>
@@ -900,12 +932,14 @@ span { display: inline-block; }
 <option value='dark-mode'></option>
 <option value='darkhttpd'></option>
 <option value='dart'></option>
+<option value='dart/'></option>
 <option value='dart/:learn'></option>
 <option value='dart/:list'></option>
 <option value='dart/rosetta/'></option>
 <option value='dash'></option>
 <option value='datamash'></option>
 <option value='date'></option>
+<option value='db2/'></option>
 <option value='db2/cli'></option>
 <option value='db2/dcl'></option>
 <option value='db2/ddl'></option>
@@ -939,6 +973,7 @@ span { display: inline-block; }
 <option value='deemix'></option>
 <option value='defaults'></option>
 <option value='del'></option>
+<option value='delphi/'></option>
 <option value='delphi/rosetta/'></option>
 <option value='delta'></option>
 <option value='deluge'></option>
@@ -1094,6 +1129,7 @@ span { display: inline-block; }
 <option value='dvc-unfreeze'></option>
 <option value='dwebp'></option>
 <option value='dwm'></option>
+<option value='dylan/'></option>
 <option value='dylan/rosetta/'></option>
 <option value='e2freefrag'></option>
 <option value='e2fsck'></option>
@@ -1112,16 +1148,19 @@ span { display: inline-block; }
 <option value='efibootmgr'></option>
 <option value='ego'></option>
 <option value='egrep'></option>
+<option value='eiffel/'></option>
 <option value='eiffel/rosetta/'></option>
 <option value='eix'></option>
 <option value='eject'></option>
 <option value='electron-packager'></option>
 <option value='electrum'></option>
 <option value='elinks'></option>
+<option value='elisp/'></option>
 <option value='elisp/:learn'></option>
 <option value='elisp/:list'></option>
 <option value='elisp/rosetta/'></option>
 <option value='elixir'></option>
+<option value='elixir/'></option>
 <option value='elixir/:learn'></option>
 <option value='elixir/:list'></option>
 <option value='elixir/Agents'></option>
@@ -1134,6 +1173,7 @@ span { display: inline-block; }
 <option value='elixir/Structs_and_Exceptions'></option>
 <option value='elixir/rosetta/'></option>
 <option value='elm'></option>
+<option value='elm/'></option>
 <option value='elm/:learn'></option>
 <option value='elm/:list'></option>
 <option value='elm/Command_Line_Tools'></option>
@@ -1150,6 +1190,7 @@ span { display: inline-block; }
 <option value='elm/rosetta/'></option>
 <option value='elvish'></option>
 <option value='emacs'></option>
+<option value='emacs/'></option>
 <option value='emacs/dired'></option>
 <option value='emacs/macros'></option>
 <option value='emacs/rosetta/'></option>
@@ -1172,6 +1213,7 @@ span { display: inline-block; }
 <option value='equery'></option>
 <option value='erl'></option>
 <option value='erlang'></option>
+<option value='erlang/'></option>
 <option value='erlang/:learn'></option>
 <option value='erlang/:list'></option>
 <option value='erlang/Comments'></option>
@@ -1221,6 +1263,7 @@ span { display: inline-block; }
 <option value='f3write'></option>
 <option value='f5fpc'></option>
 <option value='factor'></option>
+<option value='factor/'></option>
 <option value='factor/:learn'></option>
 <option value='factor/:list'></option>
 <option value='factor/rosetta/'></option>
@@ -1304,9 +1347,11 @@ span { display: inline-block; }
 <option value='foreman'></option>
 <option value='forever'></option>
 <option value='forfiles'></option>
+<option value='forth/'></option>
 <option value='forth/:learn'></option>
 <option value='forth/:list'></option>
 <option value='forth/rosetta/'></option>
+<option value='fortran/'></option>
 <option value='fortran/:learn'></option>
 <option value='fortran/:list'></option>
 <option value='fortran/rosetta/'></option>
@@ -1330,6 +1375,7 @@ span { display: inline-block; }
 <option value='fsck'></option>
 <option value='fscrypt'></option>
 <option value='fselect'></option>
+<option value='fsharp/'></option>
 <option value='fsharp/:learn'></option>
 <option value='fsharp/:list'></option>
 <option value='fsharp/rosetta/'></option>
@@ -1349,6 +1395,7 @@ span { display: inline-block; }
 <option value='g++'></option>
 <option value='gacutil'></option>
 <option value='ganache-cli'></option>
+<option value='gap/'></option>
 <option value='gatsby'></option>
 <option value='gbp'></option>
 <option value='gcal'></option>
@@ -1626,6 +1673,7 @@ span { display: inline-block; }
 <option value='go-tool'></option>
 <option value='go-version'></option>
 <option value='go-vet'></option>
+<option value='go/'></option>
 <option value='go/:learn'></option>
 <option value='go/:list'></option>
 <option value='go/Arrays'></option>
@@ -1685,6 +1733,7 @@ span { display: inline-block; }
 <option value='grimshot'></option>
 <option value='grip'></option>
 <option value='groff'></option>
+<option value='groovy/'></option>
 <option value='groovy/:learn'></option>
 <option value='groovy/:list'></option>
 <option value='groovy/rosetta/'></option>
@@ -1727,6 +1776,7 @@ span { display: inline-block; }
 <option value='hardware-info'></option>
 <option value='hashcat'></option>
 <option value='hashid'></option>
+<option value='haskell/'></option>
 <option value='haskell/:learn'></option>
 <option value='haskell/:list'></option>
 <option value='haskell/Comments'></option>
@@ -1904,6 +1954,7 @@ span { display: inline-block; }
 <option value='jar'></option>
 <option value='jarsigner'></option>
 <option value='java'></option>
+<option value='java/'></option>
 <option value='java/:learn'></option>
 <option value='java/:list'></option>
 <option value='java/rosetta/'></option>
@@ -1938,6 +1989,7 @@ span { display: inline-block; }
 <option value='jq'></option>
 <option value='jrnl'></option>
 <option value='js'></option>
+<option value='js/'></option>
 <option value='js/1line'></option>
 <option value='js/:learn'></option>
 <option value='js/:list'></option>
@@ -1956,6 +2008,7 @@ span { display: inline-block; }
 <option value='jstack'></option>
 <option value='jtbl'></option>
 <option value='julia'></option>
+<option value='julia/'></option>
 <option value='julia/:learn'></option>
 <option value='julia/:list'></option>
 <option value='julia/Comments'></option>
@@ -2004,6 +2057,7 @@ span { display: inline-block; }
 <option value='kops'></option>
 <option value='kosmorro'></option>
 <option value='kotlin'></option>
+<option value='kotlin/'></option>
 <option value='kotlin/:learn'></option>
 <option value='kotlin/:list'></option>
 <option value='kotlin/Comments'></option>
@@ -2047,6 +2101,7 @@ span { display: inline-block; }
 <option value='lastlog'></option>
 <option value='latencies'></option>
 <option value='latex'></option>
+<option value='latex/'></option>
 <option value='latex/:learn'></option>
 <option value='latex/:list'></option>
 <option value='latex/Basics'></option>
@@ -2081,6 +2136,7 @@ span { display: inline-block; }
 <option value='linkchecker'></option>
 <option value='links2'></option>
 <option value='lipo'></option>
+<option value='lisp/'></option>
 <option value='lisp/:learn'></option>
 <option value='lisp/:list'></option>
 <option value='lisp/rosetta/'></option>
@@ -2149,6 +2205,7 @@ span { display: inline-block; }
 <option value='lt'></option>
 <option value='ltrace'></option>
 <option value='lua'></option>
+<option value='lua/'></option>
 <option value='lua/:learn'></option>
 <option value='lua/:list'></option>
 <option value='lua/Class-like_tables'></option>
@@ -2189,6 +2246,7 @@ span { display: inline-block; }
 <option value='maestral'></option>
 <option value='magento'></option>
 <option value='magick'></option>
+<option value='magma/'></option>
 <option value='mail'></option>
 <option value='mailx'></option>
 <option value='maim'></option>
@@ -2200,19 +2258,24 @@ span { display: inline-block; }
 <option value='man'></option>
 <option value='mandb'></option>
 <option value='manpath'></option>
+<option value='maple/'></option>
 <option value='markdown'></option>
 <option value='mas'></option>
 <option value='masscan'></option>
 <option value='mat2'></option>
 <option value='mate-calc-cmd'></option>
+<option value='mate-dictionary'></option>
+<option value='mate-screenshot'></option>
 <option value='mate-search-tool'></option>
 <option value='mathematica'></option>
+<option value='mathematica/'></option>
 <option value='mathematica/:learn'></option>
 <option value='mathematica/:list'></option>
 <option value='mathematica/levelspec'></option>
 <option value='mathematica/rosetta/'></option>
 <option value='mathematica/series'></option>
 <option value='matlab'></option>
+<option value='matlab/'></option>
 <option value='matlab/:learn'></option>
 <option value='matlab/:list'></option>
 <option value='maven'></option>
@@ -2296,6 +2359,7 @@ span { display: inline-block; }
 <option value='mogrify'></option>
 <option value='molecule'></option>
 <option value='mongo'></option>
+<option value='mongo/'></option>
 <option value='mongo/comparison'></option>
 <option value='mongo/crud'></option>
 <option value='mongo/cursor'></option>
@@ -2408,6 +2472,7 @@ span { display: inline-block; }
 <option value='nice'></option>
 <option value='nikto'></option>
 <option value='nim'></option>
+<option value='nim/'></option>
 <option value='nim/:learn'></option>
 <option value='nim/:list'></option>
 <option value='nim/hello'></option>
@@ -2485,12 +2550,14 @@ span { display: inline-block; }
 <option value='nx'></option>
 <option value='oathtool'></option>
 <option value='objdump'></option>
+<option value='objective-c/'></option>
 <option value='objective-c/:learn'></option>
 <option value='objective-c/:list'></option>
 <option value='objective-c/rosetta/'></option>
 <option value='obs'></option>
 <option value='oc'></option>
 <option value='ocaml'></option>
+<option value='ocaml/'></option>
 <option value='ocaml/:learn'></option>
 <option value='ocaml/:list'></option>
 <option value='ocaml/Built-in_data_structures'></option>
@@ -2507,6 +2574,7 @@ span { display: inline-block; }
 <option value='ocamlopt'></option>
 <option value='ocrmypdf'></option>
 <option value='ocspd'></option>
+<option value='octave/'></option>
 <option value='octave/:learn'></option>
 <option value='octave/:list'></option>
 <option value='octave/rosetta/'></option>
@@ -2589,6 +2657,7 @@ span { display: inline-block; }
 <option value='paperkey'></option>
 <option value='parallel'></option>
 <option value='parallel-lint'></option>
+<option value='pari/'></option>
 <option value='parquet-tools'></option>
 <option value='parted'></option>
 <option value='particle'></option>
@@ -2633,6 +2702,7 @@ span { display: inline-block; }
 <option value='perf'></option>
 <option value='perl'></option>
 <option value='perl-rename'></option>
+<option value='perl/'></option>
 <option value='perl/1line'></option>
 <option value='perl/:learn'></option>
 <option value='perl/:list'></option>
@@ -2648,6 +2718,7 @@ span { display: inline-block; }
 <option value='perl/rosetta/'></option>
 <option value='perl/subroutines'></option>
 <option value='perl6'></option>
+<option value='perl6/'></option>
 <option value='perl6/:learn'></option>
 <option value='perl6/:list'></option>
 <option value='perl6/hello'></option>
@@ -2673,6 +2744,7 @@ span { display: inline-block; }
 <option value='php-artisan'></option>
 <option value='php-coveralls'></option>
 <option value='php-yii'></option>
+<option value='php/'></option>
 <option value='php/:learn'></option>
 <option value='php/:list'></option>
 <option value='php/Arrays'></option>
@@ -2715,11 +2787,13 @@ span { display: inline-block; }
 <option value='pidstat'></option>
 <option value='pigz'></option>
 <option value='pihole'></option>
+<option value='pike/'></option>
 <option value='pike/rosetta/'></option>
 <option value='ping'></option>
 <option value='ping6'></option>
 <option value='pinky'></option>
 <option value='pinout'></option>
+<option value='pinta'></option>
 <option value='pio'></option>
 <option value='pio-access'></option>
 <option value='pio-account'></option>
@@ -2830,6 +2904,7 @@ span { display: inline-block; }
 <option value='psgrep'></option>
 <option value='psping'></option>
 <option value='psql'></option>
+<option value='psql/'></option>
 <option value='psql/columns'></option>
 <option value='psql/databases'></option>
 <option value='psql/indexes'></option>
@@ -2903,6 +2978,7 @@ span { display: inline-block; }
 <option value='pylint'></option>
 <option value='pypy'></option>
 <option value='python'></option>
+<option value='python/'></option>
 <option value='python/1_Inheritance'></option>
 <option value='python/1line'></option>
 <option value='python/2_Multiple_Inheritance'></option>
@@ -2925,6 +3001,7 @@ span { display: inline-block; }
 <option value='python/recursion'></option>
 <option value='python/rosetta/'></option>
 <option value='python3'></option>
+<option value='python3/'></option>
 <option value='python3/:learn'></option>
 <option value='python3/:list'></option>
 <option value='python3/args_kwargs'></option>
@@ -2957,6 +3034,7 @@ span { display: inline-block; }
 <option value='quotacheck'></option>
 <option value='qutebrowser'></option>
 <option value='r'></option>
+<option value='r/'></option>
 <option value='r/:learn'></option>
 <option value='r/:list'></option>
 <option value='r/rosetta/'></option>
@@ -2964,6 +3042,7 @@ span { display: inline-block; }
 <option value='r2e'></option>
 <option value='rabin2'></option>
 <option value='racket'></option>
+<option value='racket/'></option>
 <option value='racket/:learn'></option>
 <option value='racket/:list'></option>
 <option value='racket/rosetta/'></option>
@@ -3012,6 +3091,7 @@ span { display: inline-block; }
 <option value='redis'></option>
 <option value='redis-cli'></option>
 <option value='redis-server'></option>
+<option value='redis/'></option>
 <option value='redis/cluster'></option>
 <option value='redis/connection'></option>
 <option value='redis/generic'></option>
@@ -11749,6 +11829,7 @@ span { display: inline-block; }
 <option value='rtv'></option>
 <option value='rubocop'></option>
 <option value='ruby'></option>
+<option value='ruby/'></option>
 <option value='ruby/:learn'></option>
 <option value='ruby/:list'></option>
 <option value='ruby/Comments'></option>
@@ -11767,6 +11848,7 @@ span { display: inline-block; }
 <option value='runuser'></option>
 <option value='rusnapshot'></option>
 <option value='rust'></option>
+<option value='rust/'></option>
 <option value='rust/:learn'></option>
 <option value='rust/:list'></option>
 <option value='rust/Basics'></option>
@@ -11790,6 +11872,7 @@ span { display: inline-block; }
 <option value='sacctmgr'></option>
 <option value='safe'></option>
 <option value='safeejectgpu'></option>
+<option value='sage/'></option>
 <option value='sails'></option>
 <option value='salt'></option>
 <option value='salt-call'></option>
@@ -11807,6 +11890,7 @@ span { display: inline-block; }
 <option value='sbt'></option>
 <option value='sc-im'></option>
 <option value='scala'></option>
+<option value='scala/'></option>
 <option value='scala/ControlStructures'></option>
 <option value='scala/DataStructures'></option>
 <option value='scala/Functions'></option>
@@ -11825,6 +11909,7 @@ span { display: inline-block; }
 <option value='sccmap'></option>
 <option value='scd'></option>
 <option value='scheme'></option>
+<option value='scheme/'></option>
 <option value='scheme/rosetta/'></option>
 <option value='schroot'></option>
 <option value='scontrol'></option>
@@ -11943,6 +12028,7 @@ span { display: inline-block; }
 <option value='softwareupdate'></option>
 <option value='solcjs'></option>
 <option value='solidity'></option>
+<option value='solidity/'></option>
 <option value='solidity/:learn'></option>
 <option value='solidity/:list'></option>
 <option value='solo'></option>
@@ -11969,6 +12055,7 @@ span { display: inline-block; }
 <option value='sponge'></option>
 <option value='sport'></option>
 <option value='spotify'></option>
+<option value='sql/'></option>
 <option value='sql/rosetta/'></option>
 <option value='sqlcmd'></option>
 <option value='sqlite3'></option>
@@ -12049,6 +12136,7 @@ span { display: inline-block; }
 <option value='swapon'></option>
 <option value='swc'></option>
 <option value='swift'></option>
+<option value='swift/'></option>
 <option value='swift/:learn'></option>
 <option value='swift/:list'></option>
 <option value='swift/rosetta/'></option>
@@ -12088,6 +12176,7 @@ span { display: inline-block; }
 <option value='taste'></option>
 <option value='tb'></option>
 <option value='tbl'></option>
+<option value='tcl/'></option>
 <option value='tcl/:learn'></option>
 <option value='tcl/:list'></option>
 <option value='tcl/rosetta/'></option>
@@ -12096,6 +12185,7 @@ span { display: inline-block; }
 <option value='tcpkill'></option>
 <option value='tcptraceroute'></option>
 <option value='tcsh'></option>
+<option value='tcsh/'></option>
 <option value='tcsh/:learn'></option>
 <option value='tcsh/:list'></option>
 <option value='tcsh/rosetta/'></option>
@@ -12118,6 +12208,7 @@ span { display: inline-block; }
 <option value='textql'></option>
 <option value='textutil'></option>
 <option value='theharvester'></option>
+<option value='theory/'></option>
 <option value='theory/recursion'></option>
 <option value='thunar'></option>
 <option value='thunderbird'></option>
@@ -12283,9 +12374,11 @@ span { display: inline-block; }
 <option value='valgrind'></option>
 <option value='var-dump-server'></option>
 <option value='vault'></option>
+<option value='vb/'></option>
 <option value='vb/:learn'></option>
 <option value='vb/:list'></option>
 <option value='vb/rosetta/'></option>
+<option value='vbnet/'></option>
 <option value='vbnet/rosetta/'></option>
 <option value='vboxmanage'></option>
 <option value='vcgencmd'></option>
