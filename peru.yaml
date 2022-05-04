@@ -109,7 +109,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 57c3953aca49f68acc480ca27533fdc7aad78b43
+    rev: eb5c26cc69818bea833de5814b16240ae66aaef9
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -166,7 +166,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: a91a67668e0830a8cf9a792c4949e03b4189f097
+    rev: 6dcf5c3d7d6c321b17e6a5673f1533d6e8350462
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -394,7 +394,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: d2a09c1753cbc27293bbeeada3e2697e359323f5
+    rev: 0d7334a63f95358c38ad9e28d63cadd43ada2278
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -434,7 +434,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: 46e043b4e2fb2986b73aeae8efddb7f1a4e08e33
+    rev: d3025dbb6876b8e32b3a56645dfa70a799d677c5
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -506,7 +506,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: 02f44c68d84624d79e7efd174d0017ae7c85b8c4
+    rev: dceca33779e92f91589027650f9938d5360e16ba
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -575,7 +575,7 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: dcfc549ba4c4ed31e556d0c7b32eed2acbe737e2
+    sha1: c388338c4530956f207564b8f7992b87c067872f
 
 curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp

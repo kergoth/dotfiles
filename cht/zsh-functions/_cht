@@ -513,6 +513,7 @@ span { display: inline-block; }
 <option value='azure'></option>
 <option value='b2sum'></option>
 <option value='babel'></option>
+<option value='backlight_control'></option>
 <option value='badblocks'></option>
 <option value='balena'></option>
 <option value='balooctl'></option>
@@ -1093,6 +1094,7 @@ span { display: inline-block; }
 <option value='dpkg-deb'></option>
 <option value='dpkg-query'></option>
 <option value='dracut'></option>
+<option value='drawing'></option>
 <option value='drill'></option>
 <option value='driverquery'></option>
 <option value='drupal'></option>
@@ -1104,6 +1106,7 @@ span { display: inline-block; }
 <option value='du'></option>
 <option value='dua'></option>
 <option value='duc'></option>
+<option value='dumpcap'></option>
 <option value='dumpe2fs'></option>
 <option value='dumpsys'></option>
 <option value='dune'></option>
@@ -1592,8 +1595,10 @@ span { display: inline-block; }
 <option value='git-show'></option>
 <option value='git-show-branch'></option>
 <option value='git-show-index'></option>
+<option value='git-show-merged-branches'></option>
 <option value='git-show-ref'></option>
 <option value='git-show-tree'></option>
+<option value='git-show-unmerged-branches'></option>
 <option value='git-sizer'></option>
 <option value='git-squash'></option>
 <option value='git-stage'></option>
@@ -2263,6 +2268,8 @@ span { display: inline-block; }
 <option value='mas'></option>
 <option value='masscan'></option>
 <option value='mat2'></option>
+<option value='mate-about'></option>
+<option value='mate-calc'></option>
 <option value='mate-calc-cmd'></option>
 <option value='mate-dictionary'></option>
 <option value='mate-screenshot'></option>
@@ -2844,6 +2851,7 @@ span { display: inline-block; }
 <option value='playerctl'></option>
 <option value='plenv'></option>
 <option value='plesk'></option>
+<option value='pluma'></option>
 <option value='plutil'></option>
 <option value='pm'></option>
 <option value='pm2'></option>
@@ -2960,6 +2968,7 @@ span { display: inline-block; }
 <option value='pveperf'></option>
 <option value='pvs'></option>
 <option value='pw-cat'></option>
+<option value='pw-cli'></option>
 <option value='pw-link'></option>
 <option value='pw-loopback'></option>
 <option value='pw-play'></option>
@@ -11795,8 +11804,10 @@ span { display: inline-block; }
 <option value='rgrep'></option>
 <option value='rhash'></option>
 <option value='ri'></option>
+<option value='rich'></option>
 <option value='rig'></option>
 <option value='rip'></option>
+<option value='rkhunter'></option>
 <option value='rm'></option>
 <option value='rmdir'></option>
 <option value='rmmod'></option>
@@ -12504,6 +12515,7 @@ span { display: inline-block; }
 <option value='wmic'></option>
 <option value='wodim'></option>
 <option value='wol'></option>
+<option value='wondershaper'></option>
 <option value='wordgrinder'></option>
 <option value='wormhole'></option>
 <option value='wp'></option>
