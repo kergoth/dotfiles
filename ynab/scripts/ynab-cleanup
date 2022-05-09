@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $# -eq 0 ]; then
+if [ $# -eq 0 ] || [ "$1" = "-" ]; then
     tmpfile="$(mktemp -t "${0##*/}.XXXX")"
     trap 'rm -f "$tmpfile"' EXIT INT TERM
     cat >"$tmpfile"
