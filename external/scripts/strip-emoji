@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-import re
+import emoji
 import sys
 
-# https://gist.github.com/Alex-Just/e86110836f3f93fe7932290526529cd1#gistcomment-3059482
 try:
-    sys.stdout.write(re.sub(u'(([\U00002600-\U000027BF])|([\U0001f300-\U0001f64F])|([\U0001f680-\U0001f6FF])) *', '', sys.stdin.read()))
+    sys.stdout.write(emoji.replace_emoji(sys.stdin.read(), replace=''))
 except BrokenPipeError:
     sys.exit(1)
