@@ -10,7 +10,6 @@ Options:
 END
     exit 2
 }
-
 reverse=
 while getopts rh opt; do
     case "$opt" in
@@ -27,4 +26,12 @@ shift $((OPTIND - 1))
 csvsql --query 'select payee,category,sum(amount)/count(amount) as Average from stdin group by payee,category' \
     | csvsort -c Average ${reverse:+-r} \
     | csvcurrencyformat Average \
-    | if [ -t 1 ]; then csvlook -I; else cat; fi
+    | if [ -t 1 ]; then
+        if command -v csview >/dev/null 2>&1; then
+            csview
+        else
+            csvlook -I
+        fi
+    else
+        cat
+    fi

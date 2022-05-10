@@ -71,7 +71,11 @@ main() {
         | if [ -t 1 ]; then
             csvpycol -c Total 'currency(float(Total) / 100, grouping=True)' \
                 | csvaddrow -c 1,Total '"Total"' 'currency(sum(float(r["Total"].replace("$", "").replace(",", "")) for r in rows), grouping=True)' \
-                | csvlook -I
+                | if command -v csview >/dev/null 2>&1; then
+                    csview
+                else
+                    csvlook -I
+                fi
         else
             csvpycol -c Total 'Total.replace(".0", "")'
             cat

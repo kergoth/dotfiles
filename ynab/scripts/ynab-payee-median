@@ -29,4 +29,12 @@ shift $((OPTIND - 1))
 csvsql --query "SELECT Payee, Category, AVG(Amount) as Median FROM ( SELECT *, ( SELECT COUNT() FROM stdin AS _ WHERE Payee=stdin.Payee AND Category=stdin.Category AND (Amount>stdin.Amount OR Amount=stdin.Amount AND ROWID>stdin.ROWID))-( SELECT COUNT() FROM stdin AS _ WHERE Payee=stdin.Payee AND Category=stdin.Category AND (Amount<stdin.Amount OR Amount=stdin.Amount AND ROWID<stdin.ROWID)) AS m FROM stdin WHERE m BETWEEN -1 AND 1) GROUP BY Payee, Category" \
     | csvsort -c Median ${reverse:+-r} \
     | csvcurrencyformat Median \
-    | if [ -t 1 ]; then csvlook -I; else cat; fi
+    | if [ -t 1 ]; then
+        if command -v csview >/dev/null 2>&1; then
+            csview
+        else
+            csvlook -I
+        fi
+    else
+        cat
+    fi
