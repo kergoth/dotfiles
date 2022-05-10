@@ -11,4 +11,4 @@ sed '1s/^\xEF\xBB\xBF//; 1s/^[^,]*,/Account,/' "$@" \
     | csvcut -C 'Category Group,Category' \
     | sed '1s#Category Group/Category#Category#' \
     | strip-emoji \
-    | sed -e 's/[▪️]//g; s/, */,/g; s/:  */: /g;'
+    | sed -e 's/[▪️]//g; s/, */,/g; s/  */ /g;'
