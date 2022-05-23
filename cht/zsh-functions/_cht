@@ -326,6 +326,7 @@ span { display: inline-block; }
 <option value='a2enmod'></option>
 <option value='a2ensite'></option>
 <option value='a2query'></option>
+<option value='aa'></option>
 <option value='aapt'></option>
 <option value='ab'></option>
 <option value='abbr'></option>
@@ -594,6 +595,7 @@ span { display: inline-block; }
 <option value='bspwm'></option>
 <option value='bssh'></option>
 <option value='btm'></option>
+<option value='btrbk'></option>
 <option value='btrfs'></option>
 <option value='btrfs-balance'></option>
 <option value='btrfs-check'></option>
@@ -807,6 +809,7 @@ span { display: inline-block; }
 <option value='conda'></option>
 <option value='conda-create'></option>
 <option value='conky'></option>
+<option value='conntrack'></option>
 <option value='consul'></option>
 <option value='consul-kv'></option>
 <option value='convert'></option>
@@ -868,6 +871,7 @@ span { display: inline-block; }
 <option value='cpufreq-set'></option>
 <option value='cpuid'></option>
 <option value='cpulimit'></option>
+<option value='cpupower'></option>
 <option value='cradle'></option>
 <option value='cradle-deploy'></option>
 <option value='cradle-elastic'></option>
@@ -2040,6 +2044,7 @@ span { display: inline-block; }
 <option value='kate'></option>
 <option value='kde-inhibit'></option>
 <option value='kdeconnect-cli'></option>
+<option value='kdialog'></option>
 <option value='kdig'></option>
 <option value='kdocker'></option>
 <option value='keepass2'></option>
@@ -2203,6 +2208,7 @@ span { display: inline-block; }
 <option value='lslocks'></option>
 <option value='lslogins'></option>
 <option value='lsmod'></option>
+<option value='lsns'></option>
 <option value='lsof'></option>
 <option value='lspci'></option>
 <option value='lsscsi'></option>
@@ -12507,6 +12513,7 @@ span { display: inline-block; }
 <option value='wine'></option>
 <option value='winetricks'></option>
 <option value='winget'></option>
+<option value='wipeclean'></option>
 <option value='wipefs'></option>
 <option value='wl-copy'></option>
 <option value='wl-paste'></option>

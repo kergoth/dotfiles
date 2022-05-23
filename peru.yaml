@@ -109,12 +109,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: eb5c26cc69818bea833de5814b16240ae66aaef9
+    rev: bf41a90ad8cb596c4adae7565b0e6bcf917fc34e
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: c5ce0014677a0f69a10b676b6038ad127f40c6b1
+    rev: caa749d030d22168445c4cb97befd406d2828db0
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: ca484eac407a7a2c35437c93e1c3248512ae2061
+    rev: 2e3c3f6cf06bfdf0adf96a5b67f1eff2d67d85de
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -144,7 +144,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 8e91248655acf1c8044ed8c1b265b804a99eb07f
+  rev: cc879a97c3e2614d19b15b4661c3cab4d33139c9
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -241,7 +241,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 6cd33dceed60949e2dbc32e3f0f5e67c4c882e1e
+    rev: e54793a95afeea1e10de1e5ad7eab914e7416250
 
 rule git-scripts:
     move:
@@ -394,7 +394,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 0d7334a63f95358c38ad9e28d63cadd43ada2278
+    rev: fdf89cd93f0d7c4bee5d843dca5aad54748224ee
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -506,7 +506,7 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: dceca33779e92f91589027650f9938d5360e16ba
+    rev: 8ad8b3357314ee743785902d8d9bc795c044ee29
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -575,13 +575,13 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: c388338c4530956f207564b8f7992b87c067872f
+    sha1: a5844a251f1c1672a361e846f95359fa7870888c
 
 curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: df2a4a0cc2d568cce4303317eb047b440da910a2
+  sha1: 0fb0585f0f7e341c1a7e2c4d2612af6f103bdb03
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
