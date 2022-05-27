@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -euo pipefail
+
+rm -f bitbake.lock bitbake.sock hashserve.sock
+exec kkill -u kergoth -f bitbake
