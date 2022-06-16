@@ -1,5 +1,8 @@
-alias bback='ack --type=bitbake'
 alias newlayer=bbnewlayer
+alias bback='ack --type=bitbake'
+alias bb-getvar=bitbake-getvar
+alias bbgetvar=bitbake-getvar
+alias bbenvvar=bitbake-getvar
 
 if (( $+commands[pt] )); then
     alias bbag="pt -G '\.(bb|bbappend|inc|conf)$'"
