@@ -21,9 +21,13 @@ vim_pager () {
 
 bbenv_pager () {
     if [[ -t 1 ]]; then
-        vim_pager -c 'au VimEnter * set ft=bitbake fdl=99' "$@"
+        if (( $+commands[bat] )); then
+            bat -l BitBake "$@"
+        else
+            vim_pager "$@"
+        fi
     else
-        cat
+        cat "$@"
     fi
 }
 
@@ -31,8 +35,3 @@ bbenv () {
     bitbake -e "$@" | bbenv_pager
 }
 
-bbenvvar () {
-    local var="$1"
-    shift
-    bitbake -e "$@" | bbenv_pager -c "/^${var}[=(]"
-}
