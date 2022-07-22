@@ -44,7 +44,11 @@ fi
     topdir="$PWD"
     cd "$BUILDDIR"
     if [[ -n "$mel" ]]; then
-        . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemux86-64}
+        if [ -d ../meta-sokol-flex ]; then
+            . ../meta-sokol-flex/setup-environment -b . $args ${MACHINE:-qemux86-64}
+        else
+            . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemux86-64}
+        fi
     elif [[ -n "$imx" ]]; then
         case "$(cd "$BUILDDIR" && pwd -P)" in
             "$(cd "$topdir" && pwd -P)/"*)
