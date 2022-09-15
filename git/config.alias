@@ -63,6 +63,7 @@
 	remote-ref = rev-parse --symbolic-full-name @{u}
 	in = !git fetch && git lg \"..@{u}\"
 	out = !git fetch && git lg \"@{push}..\"
+	out-diff = "!f(){ merge_base=${1:-$(git merge-base @{push} HEAD)}; git range-diff $merge_base..@{push} $merge_base..;}; f"
 
 	# Update without merge commits
 	up = !git fetch "$(git tracking-remote)" && git merge --no-ff "@{u}"
