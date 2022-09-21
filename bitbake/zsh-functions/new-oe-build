@@ -24,7 +24,11 @@ done
 shift $((OPTIND - 1))
 
 if [[ $# -eq 0 ]]; then
+    if [ -e conf/local.conf ] || [ -e conf/bblayers.conf ] || [ -e conf/templateconf.cfg ]; then
+        BUILDDIR="$PWD"
+    else
     BUILDDIR="$PWD/build"
+    fi
 else
     BUILDDIR="$1"
     case "$BUILDDIR" in
