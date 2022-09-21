@@ -49,9 +49,9 @@ fi
     cd "$BUILDDIR"
     if [[ -n "$mel" ]]; then
         if [ -d ../meta-sokol-flex ]; then
-            . ../meta-sokol-flex/setup-environment -b . $args ${MACHINE:-qemux86-64}
+            . ../meta-sokol-flex/setup-environment -b . $args ${MACHINE:-qemuarm64}
         else
-            . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemux86-64}
+            . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemuarm64}
         fi
     elif [[ -n "$imx" ]]; then
         case "$(cd "$BUILDDIR" && pwd -P)" in
