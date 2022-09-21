@@ -10,9 +10,21 @@ import io
 import os
 import sys
 
-bindir = os.path.dirname(__file__)
-topdir = os.path.dirname(bindir)
-sys.path[0:0] = [os.path.join(topdir, 'lib')]
+def setup_command_import(command, relpath='../lib'):
+    """Set up sys.path based on the location of a binary in the PATH """
+    PATH = os.getenv('PATH').split(':')
+    cmd_paths = [os.path.join(path, relpath)
+                for path in PATH if os.path.exists(os.path.join(path, command))]
+    if not cmd_paths:
+        raise ImportError("Unable to locate bb, please ensure PATH is set correctly.")
+
+    sys.path[0:0] = cmd_paths
+
+setup_command_import('bitbake')
+try:
+    import bb
+except ImportError as exc:
+    sys.exit("Unable to import 'bb' python package: %s" % exc)
 
 import bb.tinfoil
 
