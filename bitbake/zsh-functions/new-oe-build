@@ -1,13 +1,17 @@
 mel=
 imx=
+oe=
 args=
-while getopts miM:a:h opt; do
+while getopts mioM:a:h opt; do
     case "$opt" in
         m)
             mel=1
             ;;
         i)
             imx=1
+            ;;
+        o)
+            oe=1
             ;;
         M)
             MACHINE="$OPTARG"
@@ -27,7 +31,7 @@ if [[ $# -eq 0 ]]; then
     if [ -e conf/local.conf ] || [ -e conf/bblayers.conf ] || [ -e conf/templateconf.cfg ]; then
         BUILDDIR="$PWD"
     else
-    BUILDDIR="$PWD/build"
+        BUILDDIR="$PWD/build"
     fi
 else
     BUILDDIR="$1"
@@ -63,7 +67,16 @@ fi
                 ;;
         esac
         bash -c 'cd "$1" && . ./imx-setup-release.sh -b "$2"' - "$topdir" "$(basename "$BUILDDIR")"
-    elif [[ -d ../industrial-core ]]; then
+    elif [[ -z "$oe" ]] && [[ -d ../meta-polarfire-soc-yocto-bsp ]]; then
+        if ! [[ -d ../openembedded-core ]] && [[ -d ../oe-core ]]; then
+            ln -sf oe-core ../openembedded-core
+        fi
+        bash -c "cd .. && . ./meta-polarfire-soc-yocto-bsp/polarfire-soc_yocto_setup.sh"
+        if ! echo "$BUILDDIR" | grep -q "/build$"; then
+            cp -av ../build/* .
+            rm -rf ../build
+        fi
+    elif [[ -z "$oe" ]] && [[ -d ../industrial-core ]]; then
         bash -c '. ../industrial-core/setup-environment "$@"' - -b . $args ${MACHINE:-industrial-pc}
     fi
     if [ -e ~/mel/workflow ]; then
