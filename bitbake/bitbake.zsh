@@ -2,6 +2,7 @@ alias newlayer=bbnewlayer
 alias bb-getvar=bitbake-getvar
 alias bbgetvar=bitbake-getvar
 alias bbenvvar=bitbake-getvar
+alias bb-getvars=bitbake-getvars
 
 if (( $+commands[rg] )); then
     alias bbrg="command rg -t bitbake"
