@@ -79,6 +79,7 @@ local cmake_build_options;cmake_build_options=(
     '-E[CMake command mode]:command:_cmake_command_help'
 
     '-L-[List cache variables]::_values "options" "[non-advanced cache variables]" "A[advanced cache variables]" "H[non-advanced cached variables with help]" "AH[advanced cache variables with help]"'
+    '--fresh[Configure a fresh build tree, removing any existing cache file]'
 
     '--build[Build a CMake-generated project binary tree]:project directory:_path_files -/'
     '--install[Install a CMake-generated project binary tree]:project directory:_path_files -/'
@@ -109,6 +110,7 @@ local cmake_build_options;cmake_build_options=(
     '--no-warn-unused-cli[Do not warn about command line options]'
     '--warn-unused-vars[Warn about unused variables]'
     '--check-system-vars[Find problems with variable usage in system files]'
+    '--compile-no-warning-as-error[Ignore COMPILE_WARNING_AS_ERROR property and CMAKE_COMPILE_WARNING_AS_ERROR variable]'
 
     '--profiling-format[Output data for profiling CMake scripts]:profiling format:(google-trace)'
     '--profiling-output[Select an output path for the profiling data]:filename:_files'
@@ -141,14 +143,13 @@ _cmake_generator_options() {
 # --------------
 (( $+functions[_cmake_presets] )) ||
 _cmake_presets() {
-  # TODO: Problems with quotes need eval
-  # would need a way to exec the array
-  local -a list_presets;
+  local invoke; invoke=(${(Q)words})
+  invoke[$CURRENT]=()
+  # TODO: remove all arguments -* except -S
 
-  if [[ -e CMakePresets.json ]]; then
-    # some old projects uses BOM in json file. strip UTF-8 BOM and then parse JSON
-    list_presets=("${(@f)$(sed '1s/^\xEF\xBB\xBF//' < CMakePresets.json | perl -0777 -MJSON::PP -nE 'do{$k=$_;($e=$k)=~s/:/\\:/g; printf "$_->{name}:$_->{description}\n"} for @{decode_json($_)->{configurePresets}}' 2>/dev/null)}")
-  fi
+  local list_presets; list_presets=(${(f)"$(${invoke} --list-presets 2>/dev/null |
+    sed -n -e 's,^[[:space:]]*"\([^"]*\)"[[:space:]]*-[[:space:]]*\(.*\),\1:\2,p' \
+           -e 's,^[[:space:]]*"\([^"]*\)"[[:space:]]*$,\1,p')"})
 
   _describe 'presets' list_presets
 }

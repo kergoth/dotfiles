@@ -65,6 +65,7 @@
     luaenv                  # lua version from luaenv (https://github.com/cehoffman/luaenv)
     jenv                    # java version from jenv (https://github.com/jenv/jenv)
     plenv                   # perl version from plenv (https://github.com/tokuhirom/plenv)
+    perlbrew                # perl version from perlbrew (https://github.com/gugod/App-perlbrew)
     phpenv                  # php version from phpenv (https://github.com/phpenv/phpenv)
     scalaenv                # scala version from scalaenv (https://github.com/scalaenv/scalaenv)
     haskell_stack           # haskell version from stack (https://haskellstack.org/)
@@ -140,7 +141,7 @@
   # Filler between left and right prompt on the first prompt line. You can set it to ' ', '·' or
   # '─'. The last two make it easier to see the alignment between left and right prompt and to
   # separate prompt from command output. You might want to set POWERLEVEL9K_PROMPT_ADD_NEWLINE=false
-  # for more compact prompt if using using this option.
+  # for more compact prompt if using this option.
   typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR=' '
   typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_BACKGROUND=
   typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_GAP_BACKGROUND=
@@ -343,14 +344,14 @@
   # typeset -g POWERLEVEL9K_DIR_PREFIX='in '
 
   #####################################[ vcs: git status ]######################################
-  # Version control system colors.
+  # Version control background colors.
   typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=2
   typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=3
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=2
   typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=3
   typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=8
 
-  # Branch icon. Set this parameter to '\uF126 ' for the popular Powerline branch icon.
+  # Branch icon. Set this parameter to '\UE0A0 ' for the popular Powerline branch icon.
   typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=
 
   # Untracked files icon. It's really a question mark, your font isn't broken.
@@ -484,7 +485,7 @@
 
   # Show status of repositories of these types. You can add svn and/or hg if you are
   # using them. If you do, your prompt may become slow even when your current directory
-  # isn't in an svn or hg reposotiry.
+  # isn't in an svn or hg repository.
   typeset -g POWERLEVEL9K_VCS_BACKENDS=(git)
 
   ##########################[ status: exit code of the last command ]###########################
@@ -1194,6 +1195,16 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_PLENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  ###########[ perlbrew: perl version from perlbrew (https://github.com/gugod/App-perlbrew) ]############
+  # Perlbrew color.
+  typeset -g POWERLEVEL9K_PERLBREW_FOREGROUND=67
+  # Show perlbrew version only when in a perl project subdirectory.
+  typeset -g POWERLEVEL9K_PERLBREW_PROJECT_ONLY=true
+  # Don't show "perl-" at the front.
+  typeset -g POWERLEVEL9K_PERLBREW_SHOW_PREFIX=false
+  # Custom icon.
+  # typeset -g POWERLEVEL9K_PERLBREW_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
   ############[ phpenv: php version from phpenv (https://github.com/phpenv/phpenv) ]############
   # PHP color.
   typeset -g POWERLEVEL9K_PHPENV_FOREGROUND=0
@@ -1286,7 +1297,7 @@
   #############[ kubecontext: current kubernetes context (https://kubernetes.io/) ]#############
   # Show kubecontext only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show kubecontext.
-  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern'
+  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
 
   # Kubernetes context classes for the purpose of using different colors, icons and expansions with
   # different contexts.

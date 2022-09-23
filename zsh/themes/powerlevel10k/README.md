@@ -216,8 +216,8 @@ Here's the relevant parameter for kubernetes context:
 
 ```zsh
 # Show prompt segment "kubecontext" only when the command you are typing
-# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl or stern.
-typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern'
+# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl, stern, kubeseal, or skaffold.
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
 ```
 
 To customize when different prompt segments are shown, open `~/.p10k.zsh`, search for
@@ -303,7 +303,7 @@ To ~~ridiculous~~ extravagant:
 
 Powerlevel10k comes with dozens of built-in high quality segments. When you run `p10k configure`
 and choose any style except [Pure](#pure-compatibility), many of these segments get enabled by
-default while others be manually enabled by opening `~/.p10k.zsh` and uncommenting them. You can
+default while others can be manually enabled by opening `~/.p10k.zsh` and uncommenting them. You can
 enable as many segments as you like. It won't slow down your prompt or Zsh startup.
 
 | Segment | Meaning |
@@ -344,6 +344,7 @@ enable as many segments as you like. It won't slow down your prompt or Zsh start
 | `nvm` | node.js environment from [nvm](https://github.com/nvm-sh/nvm) |
 | `os_icon` | your OS logo (apple for macOS, swirl for debian, etc.) |
 | `package` | `name@version` from [package.json](https://docs.npmjs.com/files/package.json) |
+| `perlbrew` | perl version from [perlbrew](https://github.com/gugod/App-perlbrew) |
 | `phpenv` | php environment from [phpenv](https://github.com/phpenv/phpenv) |
 | `php_version` | [php](https://www.php.net/) version |
 | `plenv` | perl environment from [plenv](https://github.com/tokuhirom/plenv) |
@@ -356,6 +357,7 @@ enable as many segments as you like. It won't slow down your prompt or Zsh start
 | `rbenv` | ruby environment from [rbenv](https://github.com/rbenv/rbenv) |
 | `rust_version` | [rustc](https://www.rust-lang.org) version |
 | `rvm` | ruby environment from [rvm](https://rvm.io) |
+| `scalaenv` | scala version from [scalaenv](https://github.com/scalaenv/scalaenv) |
 | `status` | exit code of the last command |
 | `swap` | used swap |
 | `taskwarrior` | [taskwarrior](https://taskwarrior.org/) task count |
@@ -368,6 +370,7 @@ enable as many segments as you like. It won't slow down your prompt or Zsh start
 | `vcs` | Git repository status |
 | `vim_shell` | [vim](https://www.vim.org/) shell (`:sh`) |
 | `virtualenv` | python environment from [venv](https://docs.python.org/3/library/venv.html) |
+| `vi_mode` | vi mode (you don't need this if you've enabled prompt_char) |
 | `vpn_ip` | virtual private network indicator |
 | `wifi` | WiFi speed |
 | `xplr` | [xplr](https://github.com/sayanarijit/xplr) shell |
@@ -408,6 +411,8 @@ Powerlevel10k.
 - [Zinit](#zinit)
 - [Homebrew](#homebrew)
 - [Arch Linux](#arch-linux)
+- [Alpine Linux](#arch-linux)
+- [Fig](#fig)
 
 ### Manual
 
@@ -502,6 +507,19 @@ There is also [zsh-theme-powerlevel10k](
   https://www.archlinux.org/packages/community/x86_64/zsh-theme-powerlevel10k/) community package.
 Historically, [it has been breaking often and for extended periods of time](
   https://github.com/romkatv/powerlevel10k/pull/786). **Do not use it.**
+
+### Alpine Linux
+
+```zsh
+apk add zsh zsh-theme-powerlevel10k
+mkdir -p ~/.local/share/zsh/plugins
+ln -s /usr/share/zsh/plugins/powerlevel10k ~/.local/share/zsh/plugins/
+```
+
+### Fig
+
+Follow the instructions on
+[this page](https://fig.io/plugins/other/powerlevel10k).
 
 ## Configuration
 
@@ -686,6 +704,36 @@ If you are using a different terminal, proceed with manual font installation. ðŸ
      ```
      After changing the config run `xrdb ~/.Xresources` to reload it. The new config is applied to
      all new terminals.
+   - Crostini (Linux on Chrome OS): Open
+     chrome-untrusted://terminal/html/nassh_preferences_editor.html, set *Text font family* to
+      `'MesloLGS NF'` and *Custom CSS (inline text)* to the following:
+     ```css
+     @font-face {
+      font-family: "MesloLGS NF";
+      src: url("https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20Regular.ttf");
+      font-weight: normal;
+      font-style: normal;
+     }
+     @font-face {
+         font-family: "MesloLGS NF";
+         src: url("https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20Bold.ttf");
+         font-weight: bold;
+         font-style: normal;
+     }
+     @font-face {
+         font-family: "MesloLGS NF";
+         src: url("https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20Italic.ttf");
+         font-weight: normal;
+         font-style: italic;
+     }
+     @font-face {
+         font-family: "MesloLGS NF";
+         src: url("https://raw.githubusercontent.com/romkatv/powerlevel10k-media/master/MesloLGS%20NF%20Bold%20Italic.ttf");
+         font-weight: bold;
+         font-style: italic;
+     }
+     ```
+     **_CAVEAT_**: If you open the normal terminal preferences these settings will be overwritten.
 1. Run `p10k configure` to generate a new `~/.p10k.zsh`. The old config may work
    incorrectly with the new font.
 
@@ -752,19 +800,20 @@ Powerlevel10k is released under the
 
 The command to update Powerlevel10k depends on how it was installed.
 
-| Installation              | Update command                                              |
-|---------------------------|-------------------------------------------------------------|
-| [Manual](#manual)         | `git -C ~/powerlevel10k pull`                               |
-| [Oh My Zsh](#oh-my-zsh)   | `git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull` |
-| [Prezto](#prezto)         | `zprezto-update`                                            |
-| [Zim](#zim)               | `zimfw update`                                              |
-| [Antigen](#antigen)       | `antigen update`                                            |
-| [Zplug](#zplug)           | `zplug update`                                              |
-| [Zgen](#zgen)             | `zgen update`                                               |
-| [Zplugin](#zplugin)       | `zplugin update`                                            |
-| [Zinit](#zinit)           | `zinit update`                                              |
-| [Homebrew](#homebrew)     | `brew update && brew upgrade`                               |
-| [Arch Linux](#arch-linux) | `yay -S --noconfirm zsh-theme-powerlevel10k-git`            |
+| Installation                  | Update command                                              |
+|-------------------------------|-------------------------------------------------------------|
+| [Manual](#manual)             | `git -C ~/powerlevel10k pull`                               |
+| [Oh My Zsh](#oh-my-zsh)       | `git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull` |
+| [Prezto](#prezto)             | `zprezto-update`                                            |
+| [Zim](#zim)                   | `zimfw update`                                              |
+| [Antigen](#antigen)           | `antigen update`                                            |
+| [Zplug](#zplug)               | `zplug update`                                              |
+| [Zgen](#zgen)                 | `zgen update`                                               |
+| [Zplugin](#zplugin)           | `zplugin update`                                            |
+| [Zinit](#zinit)               | `zinit update`                                              |
+| [Homebrew](#homebrew)         | `brew update && brew upgrade`                               |
+| [Arch Linux](#arch-linux)     | `yay -S --noconfirm zsh-theme-powerlevel10k-git`            |
+| [Alpine Linux](#alpine-linux) | `apk update && apk upgrade`                                 |
 
 **IMPORTANT**: Restart Zsh after updating Powerlevel10k. [Do not use `source ~/.zshrc`](
   #weird-things-happen-after-typing-source-zshrc).
@@ -802,19 +851,20 @@ The command to update Powerlevel10k depends on how it was installed.
    Powerlevel10k. The command to delete them depends on which installation method you'd chosen.
    Refer to the [installation instructions](#installation) if you need a reminder.
 
-   | Installation              | Uninstall command                                                |
-   |---------------------------|------------------------------------------------------------------|
-   | [Manual](#manual)         | `rm -rf ~/powerlevel10k`                                         |
-   | [Oh My Zsh](#oh-my-zsh)   | `rm -rf -- ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k` |
-   | [Prezto](#prezto)         | n/a                                                              |
-   | [Zim](#zim)               | `zimfw uninstall`                                                |
-   | [Antigen](#antigen)       | `antigen purge romkatv/powerlevel10k`                            |
-   | [Zplug](#zplug)           | `zplug clean`                                                    |
-   | [Zgen](#zgen)             | `zgen reset`                                                     |
-   | [Zplugin](#zplugin)       | `zplugin delete romkatv/powerlevel10k`                           |
-   | [Zinit](#zinit)           | `zinit delete romkatv/powerlevel10k`                             |
-   | [Homebrew](#homebrew)     | `brew uninstall powerlevel10k; brew untap romkatv/powerlevel10k` |
-   | [Arch Linux](#arch-linux) | `yay -R --noconfirm zsh-theme-powerlevel10k-git`                 |
+   | Installation                  | Uninstall command                                                |
+   |-------------------------------|------------------------------------------------------------------|
+   | [Manual](#manual)             | `rm -rf ~/powerlevel10k`                                         |
+   | [Oh My Zsh](#oh-my-zsh)       | `rm -rf -- ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k` |
+   | [Prezto](#prezto)             | n/a                                                              |
+   | [Zim](#zim)                   | `zimfw uninstall`                                                |
+   | [Antigen](#antigen)           | `antigen purge romkatv/powerlevel10k`                            |
+   | [Zplug](#zplug)               | `zplug clean`                                                    |
+   | [Zgen](#zgen)                 | `zgen reset`                                                     |
+   | [Zplugin](#zplugin)           | `zplugin delete romkatv/powerlevel10k`                           |
+   | [Zinit](#zinit)               | `zinit delete romkatv/powerlevel10k`                             |
+   | [Homebrew](#homebrew)         | `brew uninstall powerlevel10k; brew untap romkatv/powerlevel10k` |
+   | [Arch Linux](#arch-linux)     | `yay -R --noconfirm zsh-theme-powerlevel10k-git`                 |
+   | [Alpine Linux](#alpine-linux) | `apk del zsh-theme-powerlevel10k`                                |
 6. Restart Zsh. [Do not use `source ~/.zshrc`](#weird-things-happen-after-typing-source-zshrc).
 7. Delete Powerlevel10k cache files.
    ```zsh
@@ -1157,8 +1207,8 @@ a relevant tool.
 
 ```zsh
 # Show prompt segment "kubecontext" only when the command you are typing
-# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl or stern.
-typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern'
+# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl, stern, kubeseal, or skaffold.
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
 ```
 
 Configs created by `p10k configure` may contain parameters of this kind. To customize when different
@@ -1174,7 +1224,7 @@ function kube-toggle() {
   if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
     unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
   else
-    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern'
+    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
   fi
   p10k reload
   if zle; then

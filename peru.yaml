@@ -109,7 +109,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 9dca6c27eeeb4371c87cdc553d01b8876d028d21
+    rev: e1e6e662f9d00d55770c2c947066d7de18ea286f
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -122,7 +122,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 2e3c3f6cf06bfdf0adf96a5b67f1eff2d67d85de
+    rev: 57330ba11b1d10ba6abba35c2d79973834fb65a6
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
@@ -144,7 +144,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: cc879a97c3e2614d19b15b4661c3cab4d33139c9
+  rev: a8cf575d68e7e211292d967f4a12cf609a028b20
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -166,7 +166,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 3b7a962dc6db227d18faecb25c793431ce7e8640
+    rev: f931e538903a20d7a63162f0f10f58447f1117c8
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -174,7 +174,7 @@ curl module rpm2cpio:
         rpm2cpio.sh: rpm2cpio
     pick: rpm2cpio
     executable: rpm2cpio
-    sha1: c16d6a81e26c4b3ac4219f31454535894d0869ef
+    sha1: 8cd7f7f7b60df26dcd5f11c430318cb8dfb3eca3
 
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
@@ -189,7 +189,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: a85f95581a3d2cd57adb748962a087f666507792
+    rev: f95904eacc916bc47dceb68fb7f63e7f109f8d15
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -241,7 +241,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: e54793a95afeea1e10de1e5ad7eab914e7416250
+    rev: a0feb8611d4c0b2b5d954efe4e98207f62223436
 
 rule git-scripts:
     move:
@@ -394,7 +394,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: fdf89cd93f0d7c4bee5d843dca5aad54748224ee
+    rev: 956781ac1b347e47c9777d1e5bae15145f1d8fe6
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -434,7 +434,7 @@ git module git-fixup:
         - scripts/git-fixup
         - zsh-functions/_git-fixup
     executable: scripts/git-fixup
-    rev: 8311251e91c274be9cbcd48e65c75f2991546aad
+    rev: 76c688c5582c5bd417231696ec4617f7d2de9bf8
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -487,7 +487,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: c2152c3b3e9d3e8a90b62413a32fb93c5acccb49
+    rev: e6eeaf24ce3618ab0b2ae280eb8a6ce865f7c8f4
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -506,14 +506,14 @@ git module exa-completions:
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: 8ad8b3357314ee743785902d8d9bc795c044ee29
+    rev: e385cd58da9d2e86425250b108e87e4a69904f5c
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
         - src
-    rev: 8ad00bd978678b67d61176e8397369e1e6afa4fc
+    rev: 38014ba72d70599c04414a52b8bd9c3c120662a9
 
 git module titlecase-perl:
     url: https://gist.github.com/9f9e8650d68b13ce4d78.git
@@ -525,7 +525,7 @@ git module titlecase-perl:
 git module fumiyas-home-commands:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: d4c3ce0627be96960a570017a3bfe37218e2450c
+    rev: 8902d0579e8859787b9c60590c9bc43ff9149b3d
 
 git module simpler-color-test:
     url: https://gist.github.com/4173926.git
@@ -538,7 +538,7 @@ git module simpler-color-test:
 curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
     executable: ddimage
-    sha1: a8d4d6d710ae053a5dae7a0773fed6b441861bf9
+    sha1: 67455bf6a4574392ec3bf640abe18bf4966acebe
 
 git module dtrx:
     url: https://github.com/verhovsky/dtrx
@@ -581,11 +581,11 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: 0fb0585f0f7e341c1a7e2c4d2612af6f103bdb03
+  sha1: dbc82e9810205779d59d8e4ff3d586aa00eae4ea
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
-  rev: 8a676a9157d2b0e00e88d06456ac7317f11c0317
+  rev: e72264e01cb24431455ed6e398a769bca0da7ffe
 
 git module git-filter-repo:
   url: https://github.com/newren/git-filter-repo

@@ -15,7 +15,7 @@ package main;
 use strict;
 use warnings;
 
-our $VERSION = 'v3.5.0'; # Check https://beyondgrep.com/ for updates
+our $VERSION = 'v3.6.0'; # Check https://beyondgrep.com/ for updates
 
 use 5.010001;
 
@@ -1253,11 +1253,11 @@ C<--range-start> to the end of the file.
 For example, if you wanted to search all HTML files up until the first
 instance of the C<< <body> >>, you could do
 
-    ack foo --range-end='<body>'
+    ack foo --html --range-end='<body>'
 
 Or to search after Perl's `__DATA__` or `__END__` markers, you would do
 
-    ack pattern --range-end='^__(END|DATA)__'
+    ack pattern --perl --range-start='^__(END|DATA)__'
 
 It's possible for a range to start and stop on the same line.  For example
 
@@ -2162,7 +2162,7 @@ Options are then loaded from the command line.
 ack is based at GitHub at L<https://github.com/beyondgrep/ack3>
 
 Please report any bugs or feature requests to the issues list at
-Github: L<https://github.com/beyondgrep/ack3/issues>.
+GitHub: L<https://github.com/beyondgrep/ack3/issues>.
 
 Please include the operating system that you're using; the output of
 the command C<ack --version>; and any customizations in your F<.ackrc>
@@ -2189,7 +2189,7 @@ L<https://beyondgrep.com/>
 
 L<https://github.com/beyondgrep/ack3>
 
-=item * The ack issues list at Github
+=item * The ack issues list at GitHub
 
 L<https://github.com/beyondgrep/ack3/issues>
 
@@ -2323,6 +2323,11 @@ mailing list.
 How appropriate to have I<ack>nowledgements!
 
 Thanks to everyone who has contributed to ack in any way, including
+Axel Beckert,
+Eric Pement,
+Gabor Szabo,
+Frieder Bluemle,
+Grzegorz Kaczmarczyk,
 Dan Book,
 Tomasz Konojacki,
 Salomon Smeke,
@@ -2447,7 +2452,7 @@ Andy Lester, C<< <andy at petdance.com> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2005-2021 Andy Lester.
+Copyright 2005-2022 Andy Lester.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the Artistic License v2.0.
@@ -2467,8 +2472,8 @@ use strict;
 our $VERSION;
 our $COPYRIGHT;
 BEGIN {
-    $VERSION = 'v3.5.0'; # Check https://beyondgrep.com/ for updates
-    $COPYRIGHT = 'Copyright 2005-2021 Andy Lester.';
+    $VERSION = 'v3.6.0'; # Check https://beyondgrep.com/ for updates
+    $COPYRIGHT = 'Copyright 2005-2022 Andy Lester.';
 }
 our $STANDALONE = 0;
 our $ORIGINAL_PROGRAM_NAME;
@@ -3084,7 +3089,7 @@ sub is_lowercase {
     # Get rid of any literal backslashes first to avoid confusion.
     $pat =~ s/\\\\//g;
 
-    my $metacharacter = qr/
+    my $metacharacter = qr{
         |\\A                # Beginning of string
         |\\B                # Not word boundary
         |\\c[a-zA-Z]        # Control characters
@@ -3102,7 +3107,7 @@ sub is_lowercase {
         |\\X                # ???
         |\\x[0-9A-Fa-f]{2}  # Hex sequence
         |\\Z                # End of string
-    /x;
+    }x;
     $pat =~ s/$metacharacter//g;
 
     my $name = qr/[_A-Za-z][_A-Za-z0-9]*?/;
@@ -3267,7 +3272,7 @@ sub _options_block {
 # core dumps
 --ignore-file=match:/core[.]\d+$/
 
-# minified Javascript
+# minified JavaScript
 --ignore-file=match:/[.-]min[.]js$/
 --ignore-file=match:/[.]js[.]min$/
 
@@ -3288,14 +3293,23 @@ sub _options_block {
 # Common archives, as an optimization
 --ignore-file=ext:gz,tar,tgz,zip
 
-# Python compiles modules
+# Python compiled modules
 --ignore-file=ext:pyc,pyd,pyo
+
+# Python's pickle serialization format
+# https://docs.python.org/2/library/pickle.html#example
+# https://docs.python.org/3.7/library/pickle.html#examples
+--ignore-file=ext:pkl,pickle
 
 # C extensions
 --ignore-file=ext:so
 
 # Compiled gettext files
 --ignore-file=ext:mo
+
+# Visual Studio user and workspace settings
+# https://code.visualstudio.com/docs/getstarted/settings
+--ignore-dir=is:.vscode
 
 ### Filetypes defined
 
@@ -3377,6 +3391,10 @@ sub _options_block {
 
 # C#
 --type-add=csharp:ext:cs
+
+# Crystal-lang
+# https://crystal-lang.org/
+--type-add=crystal:ext:cr,ecr
 
 # CSS
 # https://www.w3.org/Style/CSS/
@@ -3539,7 +3557,7 @@ sub _options_block {
 
 # Scala
 # https://www.scala-lang.org/
---type-add=scala:ext:scala
+--type-add=scala:ext:scala,sbt
 
 # Scheme
 # https://groups.csail.mit.edu/mac/projects/scheme/
@@ -3590,7 +3608,7 @@ sub _options_block {
 # https://toml.io/
 --type-add=toml:ext:toml
 
-# Typescript
+# TypeScript
 # https://www.typescriptlang.org/
 --type-add=ts:ext:ts,tsx
 
@@ -3739,7 +3757,10 @@ sub configure_parser {
         no_ignore_case
     );
     Getopt::Long::Configure( @standard, @opts );
+
+    return;
 }
+
 
 sub _generate_ignore_dir {
     my ( $option_name, $opt ) = @_;
@@ -4573,6 +4594,9 @@ sub mutex_options {
             g => 1,
             l => 1,
         },
+        I => {
+            f => 1,
+        },
         L => {
             A => 1,
             B => 1,
@@ -4637,6 +4661,7 @@ sub mutex_options {
             B => 1,
             C => 1,
             H => 1,
+            I => 1,
             L => 1,
             break => 1,
             c => 1,
@@ -4647,6 +4672,7 @@ sub mutex_options {
             group => 1,
             h => 1,
             heading => 1,
+            i => 1,
             l => 1,
             m => 1,
             match => 1,
@@ -4654,6 +4680,7 @@ sub mutex_options {
             output => 1,
             p => 1,
             passthru => 1,
+            'smart-case' => 1,
             u => 1,
             v => 1,
             x => 1,
@@ -4707,6 +4734,9 @@ sub mutex_options {
             f => 1,
             g => 1,
             l => 1,
+        },
+        i => {
+            f => 1,
         },
         l => {
             A => 1,
@@ -4816,6 +4846,9 @@ sub mutex_options {
             l => 1,
             o => 1,
             output => 1,
+        },
+        'smart-case' => {
+            f => 1,
         },
         u => {
             f => 1,

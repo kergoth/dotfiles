@@ -1349,7 +1349,7 @@ _p9k_prompt_battery_init() {
     return
   fi
   if [[ $_p9k_os != (Linux|Android) ||
-        -z /sys/class/power_supply/(CMB*|BAT*|battery)/(energy_full|charge_full|charge_counter)(#qN) ]]; then
+        -z /sys/class/power_supply/(CMB*|BAT*|*battery)/(energy_full|charge_full|charge_counter)(#qN) ]]; then
     typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='${:-}'
   fi
 }
@@ -1407,7 +1407,7 @@ _p9k_prompt_battery_set_args() {
 
     Linux|Android)
       # See https://sourceforge.net/projects/acpiclient.
-      local -a bats=( /sys/class/power_supply/(CMB*|BAT*|battery)/(FN) )
+      local -a bats=( /sys/class/power_supply/(CMB*|BAT*|*battery)/(FN) )
       (( $#bats )) || return
 
       local -i energy_now energy_full power_now
@@ -3116,6 +3116,25 @@ _p9k_prompt_plenv_init() {
 }
 
 ################################################################
+# Segment to display perlbrew information
+# https://github.com/gugod/App-perlbrew
+
+prompt_perlbrew() {
+  if (( _POWERLEVEL9K_PERLBREW_PROJECT_ONLY )); then
+    _p9k_upglob 'cpanfile|.perltidyrc|(|MY)META.(yml|json)|(Makefile|Build).PL|*.(pl|pm|t|pod)' && return
+  fi
+
+  local v=$PERLBREW_PERL
+  (( _POWERLEVEL9K_PERLBREW_SHOW_PREFIX )) || v=${v#*-}
+  [[ -n $v ]] || return
+  _p9k_prompt_segment "$0" "blue" "$_p9k_color1" 'PERL_ICON' 0 '' "${v//\%/%%}"
+}
+
+_p9k_prompt_perlbrew_init() {
+  typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='$PERLBREW_PERL'
+}
+
+################################################################
 # Segment to display chruby information
 # see https://github.com/postmodern/chruby/issues/245 for chruby_auto issue with ZSH
 prompt_chruby() {
@@ -4464,7 +4483,7 @@ prompt_kubecontext() {
       {
         (( pos <= $#cfg )) || return
         shift $pos cfg
-        pos=${cfg[(i)  name: $name]}
+        pos=${cfg[(i)  name: ${(b)name}]}
         (( pos <= $#cfg )) || return
         (( --pos ))
         for ((; pos > 0; --pos)); do
@@ -4988,18 +5007,18 @@ _p9k_prompt_proxy_init() {
 
 function prompt_direnv() {
   local -i len=$#_p9k__prompt _p9k__has_upglob
-  _p9k_prompt_segment $0 $_p9k_color1 yellow DIRENV_ICON 0 '$DIRENV_DIR' ''
+  _p9k_prompt_segment $0 $_p9k_color1 yellow DIRENV_ICON 0 '${DIRENV_DIR-}' ''
   (( _p9k__has_upglob )) || typeset -g "_p9k__segment_val_${_p9k__prompt_side}[_p9k__segment_index]"=$_p9k__prompt[len+1,-1]
 }
 
 _p9k_prompt_direnv_init() {
   # DIRENV_DIR is set in a precmd hook. If our hook isn't the last, DIRENV_DIR might
   # still get set before prompt is expanded.
-  typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='${DIRENV_DIR:-${precmd_functions[-1]:#_p9k_precmd}}'
+  typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='${DIRENV_DIR-${precmd_functions[-1]:#_p9k_precmd}}'
 }
 
 function instant_prompt_direnv() {
-  if [[ -n $DIRENV_DIR && $precmd_functions[-1] == _p9k_precmd ]]; then
+  if [[ -n ${DIRENV_DIR:-} && $precmd_functions[-1] == _p9k_precmd ]]; then
     _p9k_prompt_segment prompt_direnv $_p9k_color1 yellow DIRENV_ICON 0 '' ''
   fi
 }
@@ -5980,7 +5999,7 @@ _p9k_set_instant_prompt() {
   [[ -n $RPROMPT ]] || unset RPROMPT
 }
 
-typeset -gri __p9k_instant_prompt_version=45
+typeset -gri __p9k_instant_prompt_version=47
 
 _p9k_dump_instant_prompt() {
   local user=${(%):-%n}
@@ -6014,7 +6033,7 @@ _p9k_dump_instant_prompt() {
   typeset -gi __p9k_instant_prompt_disabled=1
   [[ \$ZSH_VERSION == ${(q)ZSH_VERSION} && \$ZSH_PATCHLEVEL == ${(q)ZSH_PATCHLEVEL} &&
      $screen \${(M)TERM:#(screen*|tmux*)} &&
-     \${#\${(M)VTE_VERSION:#(<1-4602>|4801)}} == ${#${(M)VTE_VERSION:#(<1-4602>|4801)}} &&
+     \${#\${(M)VTE_VERSION:#(<1-4602>|4801)}} == "${#${(M)VTE_VERSION:#(<1-4602>|4801)}}" &&
      \$POWERLEVEL9K_DISABLE_INSTANT_PROMPT != 'true' &&
      \$POWERLEVEL9K_INSTANT_PROMPT != 'off' ]] || return
   typeset -g __p9k_instant_prompt_param_sig=${(q+)_p9k__param_sig}
@@ -6516,7 +6535,9 @@ function _p9k_clear_instant_prompt() {
         unset _z4h_saved_screen
       fi
       print -rn -- $terminfo[rc]${(%):-%b%k%f%s%u}$terminfo[ed]
-      local unexpected=${${${(S)content//$'\e[?'<->'c'}//$'\e['<->' q'}//$'\e'[^$'\a\e']#($'\a'|$'\e\\')}
+      local unexpected=${(S)${${content//$'\e[?'<->'c'}//$'\e['<->' q'}//$'\e'[^$'\a\e']#($'\a'|$'\e\\')}
+      # Visual Studio Code prints this garbage.
+      unexpected=${unexpected//$'\033[1;32mShell integration activated\033[0m\n'}
       if [[ -n $unexpected ]]; then
         local omz1='[Oh My Zsh] Would you like to update? [Y/n]: '
         local omz2='Updating Oh My Zsh'
@@ -6978,7 +6999,7 @@ function _p9k_reset_prompt() {
       zle .reset-prompt
       (( ${+functions[z4h]} )) || zle -R
     } always {
-      (( _p9k__can_hide_cursor )) && echoti cnorm
+      (( _p9k__can_hide_cursor )) && print -rn -- $_p9k__cnorm
       _p9k__cursor_hidden=0
     }
   fi
@@ -7100,6 +7121,14 @@ _p9k_init_vars() {
   typeset -gi _p9k__restore_prompt_fd
   typeset -gi _p9k__redraw_fd
   typeset -gi _p9k__can_hide_cursor=$(( $+terminfo[civis] && $+terminfo[cnorm] ))
+  if (( _p9k__can_hide_cursor )); then
+    # See https://github.com/romkatv/powerlevel10k/issues/1699
+    if [[ $terminfo[cnorm] == *$'\e[?25h'(|'\e'*) ]]; then
+      typeset -g _p9k__cnorm=$'\e[?25h'
+    else
+      typeset -g _p9k__cnorm=$terminfo[cnorm]
+    fi
+  fi
   typeset -gi _p9k__cursor_hidden
   typeset -gi _p9k__non_hermetic_expansion
   typeset -g  _p9k__time
@@ -7431,6 +7460,8 @@ _p9k_init_params() {
   _p9k_declare -b POWERLEVEL9K_DOTNET_VERSION_PROJECT_ONLY 1
   _p9k_declare -b POWERLEVEL9K_GO_VERSION_PROJECT_ONLY 1
   _p9k_declare -b POWERLEVEL9K_RUST_VERSION_PROJECT_ONLY 1
+  _p9k_declare -b POWERLEVEL9K_PERLBREW_PROJECT_ONLY 1
+  _p9k_declare -b POWERLEVEL9K_PERLBREW_SHOW_PREFIX 0
   _p9k_declare -b POWERLEVEL9K_JAVA_VERSION_PROJECT_ONLY 0
   _p9k_declare -b POWERLEVEL9K_NODENV_PROMPT_ALWAYS_SHOW 0
   _p9k_declare -a POWERLEVEL9K_NODENV_SOURCES -- shell local global
@@ -7633,7 +7664,7 @@ function _p9k_on_widget_deactivate-region() { _p9k_check_visual_mode; }
 function _p9k_on_widget_zle-line-init() {
   (( _p9k__cursor_hidden )) || return 0
   _p9k__cursor_hidden=0
-  echoti cnorm
+  print -rn -- $_p9k__cnorm
 }
 
 function _p9k_on_widget_zle-line-finish() {
@@ -8257,9 +8288,10 @@ _p9k_init_toolbox() {
     local name=(${(Q)${${(@M)${(f)"$(</run/.containerenv)"}:#name=*}#name=}})
     [[ ${#name} -eq 1 && -n ${name[1]} ]] || return 0
     typeset -g P9K_TOOLBOX_NAME=${name[1]}
-  elif [[ -n $DISTROBOX_ENTER_PATH && -n $NAME ]]; then
+  elif [[ -n $DISTROBOX_ENTER_PATH ]]; then
     local name=${(%):-%m}
-    if [[ $name == $NAME* ]]; then
+    # $NAME can be empty, see https://github.com/romkatv/powerlevel10k/pull/1916.
+    if [[ -n $name && $name == $NAME* ]]; then
       typeset -g P9K_TOOLBOX_NAME=$name
     fi
   fi
@@ -8274,7 +8306,7 @@ _p9k_must_init() {
     [[ $sig == $_p9k__param_sig ]] && return 1
     _p9k_deinit
   fi
-  _p9k__param_pat=$'v134\1'${(q)ZSH_VERSION}$'\1'${(q)ZSH_PATCHLEVEL}$'\1'
+  _p9k__param_pat=$'v135\1'${(q)ZSH_VERSION}$'\1'${(q)ZSH_PATCHLEVEL}$'\1'
   _p9k__param_pat+=$__p9k_force_term_shell_integration$'\1'
   _p9k__param_pat+=$'${#parameters[(I)POWERLEVEL9K_*]}\1${(%):-%n%#}\1$GITSTATUS_LOG_LEVEL\1'
   _p9k__param_pat+=$'$GITSTATUS_ENABLE_LOGGING\1$GITSTATUS_DAEMON\1$GITSTATUS_NUM_THREADS\1'
@@ -9218,6 +9250,8 @@ if [[ $__p9k_dump_file != $__p9k_instant_prompt_dump_file && -n $__p9k_instant_p
   zf_rm -f -- $__p9k_dump_file{,.zwc} 2>/dev/null
   zf_rm -f -- $__p9k_instant_prompt_dump_file{,.zwc} 2>/dev/null
 fi
+
+unset VSCODE_SHELL_INTEGRATION
 
 _p9k_init_ssh
 _p9k_init_toolbox

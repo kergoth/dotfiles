@@ -146,7 +146,8 @@ __fzf_generic_path_completion() {
       [ -z "$dir" ] && dir='.'
       [ "$dir" != "/" ] && dir="${dir/%\//}"
       matches=$(eval "$compgen $(printf %q "$dir")" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_COMPLETION_OPTS" __fzf_comprun "$cmd" ${(Q)${(Z+n+)fzf_opts}} -q "$leftover" | while read item; do
-        echo -n "${(q)item}$suffix "
+        item="${item%$suffix}$suffix"
+        echo -n "${(q)item} "
       done)
       matches=${matches% }
       if [ -n "$matches" ]; then
@@ -224,7 +225,7 @@ _fzf_complete_telnet() {
 _fzf_complete_ssh() {
   _fzf_complete +m -- "$@" < <(
     setopt localoptions nonomatch
-    command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?]') \
+    command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?%]') \
         <(command grep -oE '^[[a-z0-9.,:-]+' ~/.ssh/known_hosts | tr ',' '\n' | tr -d '[' | awk '{ print $1 " " $1 }') \
         <(command grep -v '^\s*\(#\|$\)' /etc/hosts | command grep -Fv '0.0.0.0') |
         awk '{if (length($2) > 0) {print $2}}' | sort -u
@@ -285,12 +286,6 @@ fzf-completion() {
 
   lbuf=$LBUFFER
   tail=${LBUFFER:$(( ${#LBUFFER} - ${#trigger} ))}
-  # Kill completion (do not require trigger sequence)
-  if [ "$cmd" = kill -a ${LBUFFER[-1]} = ' ' ]; then
-    tail=$trigger
-    tokens+=$trigger
-    lbuf="$lbuf$trigger"
-  fi
 
   # Trigger sequence given
   if [ ${#tokens} -gt 1 -a "$tail" = "$trigger" ]; then
