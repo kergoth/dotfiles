@@ -47,7 +47,7 @@ process_arguments() {
     done
     shift $((OPTIND - 1))
 
-    upstreams="$(echo "$upstream_branches" | tr ' ' '\n' | sed -e "s#^#$origin/#g")"
+    upstreams="$(echo "$upstream_branches" | tr ',' '\n' | sed -e "s#^#$origin/#g")"
 
     if [ $dry_run -eq 1 ]; then
         prune_args=-n
