@@ -75,5 +75,6 @@ ret=0
     echo "$@" | tr ' ' '\n' | parallel -t -I"{}" -n 1 git prune-merged -l -r "{}" $prune_args -c "$origin"
     echo "$@" | tr ' ' '\n' | parallel -t -I"{}" -n 1 git prune-merged -l -r "{}" $prune_args $upstreams
 } \
+    | sort -u \
     | xargs git branch -r -d
 exit "$ret"
