@@ -1,7 +1,7 @@
 if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
     code_bin="$(command -v code)"
     if [[ $? -ne 0 ]]; then
-        code_bin="$(ls -1rt ~/.vscode-server/bin/*/bin/code | tail -n 1)"
+        code_bin="$(ls -1rt ~/.vscode-server/bin/*/bin/remote-cli/code | tail -n 1)"
         code_dir="$(dirname "$code_bin")"
         path=($code_dir $path)
     else
