@@ -4,16 +4,15 @@ else
     home_nix=
 fi
 
-if [ -e ~/.nix-profile/etc/profile.d/nix-daemon.sh ]; then
-    . ~/.nix-profile/etc/profile.d/nix-daemon.sh
-elif [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
-
-if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
-    . ~/.nix-profile/etc/profile.d/nix.sh
-elif [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix.sh' ]; then
-  . '/nix/var/nix/profiles/default/etc/profile.d/nix.sh'
-fi
+for profile_dir in ~/.nix-profile ~/.nix/var/nix/profiles/per-user/$USER/profile \
+                    /nix/var/nix/profiles/per-user/$USER/profile \
+                    /nix/var/nix/profiles/default; do
+    for f in etc/profile.d/nix-daemon.sh etc/profile.d/nix.sh etc/profile.d/hm-session-vars.sh; do
+        if [ -e "$profile_dir/$f" ]; then
+            . "$profile_dir/$f"
+            break
+        fi
+    done
+done
 
 path=(~/.nix/shims $path)
