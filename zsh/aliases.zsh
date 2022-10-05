@@ -35,8 +35,16 @@ if [[ $OSTYPE =~ darwin ]]; then
 else
     alias relogin='su - $USER'
 fi
-alias nw=new-workspace
+
 alias atw=attach-workspace
+alias wp=workspace-picker
+alias wpa="workspace-picker -d -a"
+
+nw () {
+    update_env
+    new-workspace "$@"
+}
+
 
 what () {
     tldr "$1" || cheat "$1" || man "$1" || eval '$1 --help' || eval '$1 -h'
