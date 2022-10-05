@@ -5,4 +5,3 @@ if [ -e /usr/lib/locale/locale-archive ]; then
 fi
 
 export XDG_DATA_DIRS=$HOME/.nix-profile/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
-manpath=($HOME/.nix-profile/share/man $manpath)
