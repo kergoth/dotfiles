@@ -1,10 +1,5 @@
 fpath=($ZSH/functions $fpath)
 
-# Mac OS X uses path_helper and /etc/paths.d to preload PATH, clear it out first
-if [[ -x /usr/libexec/path_helper ]]; then
-    path=()
-    eval $(/usr/libexec/path_helper -s)
-fi
 path=(
   $HOME/bin
   $XDG_DATA_HOME/../bin(N:A)
@@ -17,7 +12,6 @@ path=(
   $path
   /usr/bin/core_perl
 )
-
 if [[ -n $commands[manpath] ]]; then
   MANPATH=$(MANPATH= manpath)
 else
