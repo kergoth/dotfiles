@@ -1,0 +1,1 @@
+link nix.conf "$XDG_CONFIG_HOME/nix/nix.conf"
