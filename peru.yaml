@@ -14,6 +14,7 @@ imports:
     exa-completions: ls/zsh-functions
     nix-zsh-completions: nix/zsh-functions
     powerlevel10k: zsh/themes/powerlevel10k
+    zsh-nix-shell: zsh/plugins/nix-shell
 
     # Kakoune
     kakoune-dracula: kakoune
@@ -597,3 +598,11 @@ git module git-filter-repo:
   pick: git-filter-repo
   executable: git-filter-repo
   rev: 5651f62f4c404df6fa2d249c72b0aed224c2d311
+
+git module zsh-nix-shell:
+  url: https://github.com/chisui/zsh-nix-shell
+  pick:
+    - LICENSE
+    - scripts
+    - nix-shell.plugin.zsh
+  rev: af6f8a266ea1875b9a3e86e14796cadbe1cfbf08
