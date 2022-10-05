@@ -12,6 +12,7 @@ imports:
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     exa-completions: ls/zsh-functions
+    nix-zsh-completions: nix/zsh-functions
     powerlevel10k: zsh/themes/powerlevel10k
 
     # Kakoune
@@ -123,6 +124,10 @@ git module zsh-history-substring-search:
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
     rev: 57330ba11b1d10ba6abba35c2d79973834fb65a6
+
+git module nix-zsh-completions:
+    url: https://github.com/spwhitt/nix-zsh-completions
+    rev: 468d8cf752a62b877eba1a196fbbebb4ce4ebb6f
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
