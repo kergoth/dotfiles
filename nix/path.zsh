@@ -4,10 +4,10 @@ else
     home_nix=
 fi
 
-for profile_dir in ~/.nix-profile ~/.nix/var/nix/profiles/per-user/$USER/profile \
-                    /nix/var/nix/profiles/per-user/$USER/profile \
-                    /nix/var/nix/profiles/default; do
-    for f in etc/profile.d/nix-daemon.sh etc/profile.d/nix.sh etc/profile.d/hm-session-vars.sh; do
+for f in etc/profile.d/nix-daemon.sh etc/profile.d/nix.sh etc/profile.d/hm-session-vars.sh; do
+    for profile_dir in ~/.nix-profile ~/.nix/var/nix/profiles/per-user/$USER/profile \
+                       /nix/var/nix/profiles/per-user/$USER/profile \
+                       /nix/var/nix/profiles/default; do
         if [ -e "$profile_dir/$f" ]; then
             . "$profile_dir/$f"
             break
