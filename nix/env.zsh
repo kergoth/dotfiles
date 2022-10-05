@@ -4,5 +4,5 @@ if [ -e /usr/lib/locale/locale-archive ]; then
     export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
 
-export XDG_DATA_DIRS=$HOME/.nix-profile/share:${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+export XDG_DATA_DIRS=$HOME/.nix-profile/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
 manpath=($HOME/.nix-profile/share/man $manpath)
