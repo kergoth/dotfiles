@@ -586,7 +586,7 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: dbc82e9810205779d59d8e4ff3d586aa00eae4ea
+  sha1: f463a682121e631a5ef2567efefb3801d080004d
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
