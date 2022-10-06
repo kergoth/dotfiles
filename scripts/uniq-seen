@@ -1,3 +1,7 @@
 #!/bin/sh
 
-awk '!visited[$0]++' "$@"
+if command -v huniq >/dev/null 2>&1; then
+    huniq "$@"
+else
+    awk '!visited[$0]++' "$@"
+fi
