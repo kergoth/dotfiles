@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC3028
 case "$OSTYPE" in
     darwin*)
         alias tac=gtac
         ;;
 esac
 
-tac | awk '!visited[$0]++' "$@" | tac
+tac | "$(dirname "$0")/uniq-seen" | tac
