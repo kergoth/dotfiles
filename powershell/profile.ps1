@@ -99,11 +99,20 @@ if (Get-Command bat)
     Add-Alias cat bat
 }
 
+if (Get-Command zoxide)
+{
+    Invoke-Expression (& {
+            $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
+    (zoxide init --hook $hook powershell | Out-String)
+        })
+}
+
 # Convenience
 New-Alias recycle Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
 
 $env:Path += ";$env:USERPROFILE/.cargo/bin"
+
 if (Test-Path "$env:USERPROFILE/.pyenv")
 {
     $env:PYENV = "$env:USERPROFILE/.pyenv/pyenv-win"
