@@ -1,5 +1,4 @@
 if [[ -e "$DOTFILESDIR/ls/ls_colors" ]]; then
-    echo ls_colors
     export LS_COLORS="$(<"$DOTFILESDIR/ls/ls_colors")"
 else
     if [[ -e "$DOTFILESDIR/ls/dir_colors" ]]; then
