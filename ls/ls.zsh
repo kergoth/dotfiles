@@ -1,4 +1,5 @@
 if [[ -e "$DOTFILESDIR/ls/ls_colors" ]]; then
+    echo ls_colors
     export LS_COLORS="$(<"$DOTFILESDIR/ls/ls_colors")"
 else
     if [[ -e "$DOTFILESDIR/ls/dir_colors" ]]; then
@@ -21,9 +22,6 @@ if (( $+commands[exa] )); then
     alias la='ls -a'
     alias lr='ll -s modified'
     alias lrc='lr -s created'
-    if [[ $OSTYPE =~ darwin ]] && [[ $TERM_PROGRAM = Apple_Terminal ]]; then
-        unset LS_COLORS
-    fi
 elif [[ $OSTYPE =~ darwin ]] || [[ $OSTYPE =~ freebsd ]]; then
     if (( $+commands[gls] )); then
         alias ls='gls --color=auto -h'
