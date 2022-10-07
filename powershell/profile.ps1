@@ -17,9 +17,6 @@ if (Get-Module -Listavailable -Name posh-git)
     $GitPromptSettings.AfterStatus.ForegroundColor = [ConsoleColor]::Blue
 }
 
-# 'z'. Always import it after prompt setup.
-Import-Module ZLocation
-
 # Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
 Set-PSReadlineOption -Color @{
     "Command" = [ConsoleColor]::Green
@@ -105,6 +102,9 @@ if (Get-Command zoxide)
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
         })
+} else {
+    # 'z'. Always import it after prompt setup.
+    Import-Module ZLocation
 }
 
 # Convenience
