@@ -3,12 +3,11 @@ Import-Module Recycle
 Import-Module posh-alias
 
 # Dracula Prompt configuration
-if (Get-Module -Listavailable -Name posh-git)
-{
+if (Get-Module -Listavailable -Name posh-git) {
     Import-Module posh-git
     $GitPromptSettings.DefaultPromptPrefix.Text = "$([char]0x2192) " # arrow unicode symbol
     $GitPromptSettings.DefaultPromptPrefix.ForegroundColor = [ConsoleColor]::Green
-    $GitPromptSettings.DefaultPromptPath.ForegroundColor =[ConsoleColor]::Cyan
+    $GitPromptSettings.DefaultPromptPath.ForegroundColor = [ConsoleColor]::Cyan
     $GitPromptSettings.DefaultPromptSuffix.Text = "$([char]0x203A) " # chevron unicode symbol
     $GitPromptSettings.DefaultPromptSuffix.ForegroundColor = [ConsoleColor]::Magenta
     # Dracula Git Status Configuration
@@ -19,32 +18,28 @@ if (Get-Module -Listavailable -Name posh-git)
 
 # Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
 Set-PSReadlineOption -Color @{
-    "Command" = [ConsoleColor]::Green
+    "Command"   = [ConsoleColor]::Green
     "Parameter" = [ConsoleColor]::Gray
-    "Operator" = [ConsoleColor]::Magenta
-    "Variable" = [ConsoleColor]::White
-    "String" = [ConsoleColor]::Yellow
-    "Number" = [ConsoleColor]::Blue
-    "Type" = [ConsoleColor]::Cyan
-    "Comment" = [ConsoleColor]::DarkCyan
+    "Operator"  = [ConsoleColor]::Magenta
+    "Variable"  = [ConsoleColor]::White
+    "String"    = [ConsoleColor]::Yellow
+    "Number"    = [ConsoleColor]::Blue
+    "Type"      = [ConsoleColor]::Cyan
+    "Comment"   = [ConsoleColor]::DarkCyan
 }
 
-if (-Not $env:DOTFILESDIR)
-{
-    if (Test-Path "$env:USERPROFILE/dotfiles")
-    {
+if (-Not $env:DOTFILESDIR) {
+    if (Test-Path "$env:USERPROFILE/dotfiles") {
         $env:DOTFILESDIR = "$env:USERPROFILE/dotfiles"
     }
 
-    if (Test-Path "$env:HOME/.dotfiles")
-    {
+    if (Test-Path "$env:HOME/.dotfiles") {
         $env:DOTFILESDIR = "$env:HOME/.dotfiles"
     }
 }
 
 # DirColors configuration
-if (Test-Path "$env:DOTFILESDIR/ls/ls_colors")
-{
+if (Test-Path "$env:DOTFILESDIR/ls/ls_colors") {
     $env:LS_COLORS = Get-Content "$env:DOTFILESDIR/ls/ls_colors"
 }
 Import-Module DirColors
@@ -87,22 +82,20 @@ New-Alias grep Select-String -Force
 New-Alias rm Remove-ItemSafely -Force
 New-Alias rmdir Remove-ItemSafely -Force
 
-if (Get-Command bat)
-{
-    if (Test-Path alias:cat)
-    {
+if (Get-Command bat) {
+    if (Test-Path alias:cat) {
         Remove-Alias cat
     }
     Add-Alias cat bat
 }
 
-if (Get-Command zoxide)
-{
+if (Get-Command zoxide) {
     Invoke-Expression (& {
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
         })
-} else {
+}
+else {
     # 'z'. Always import it after prompt setup.
     Import-Module ZLocation
 }
@@ -113,23 +106,23 @@ Add-Alias Reload-Profile '& $profile'
 
 $env:Path += ";$env:USERPROFILE/.cargo/bin"
 
-if (Test-Path "$env:USERPROFILE/.pyenv")
-{
+if (Test-Path "$env:USERPROFILE/.pyenv") {
     $env:PYENV = "$env:USERPROFILE/.pyenv/pyenv-win"
     $env:Path += ";$env:PYENV/bin;$env:PYENV/shims"
 }
-if (-Not (Get-Command python))
-{
-    if (Test-Path "C:\Python38")
-    {
+if (-Not (Get-Command python)) {
+    if (Test-Path "C:\Python38") {
         $env:Path = "C:\Python38;" + $env:Path
     }
 }
-if (-Not (Get-Command python))
-{
-    if (Test-Path "C:\Python39")
-    {
+if (-Not (Get-Command python)) {
+    if (Test-Path "C:\Python39") {
         $env:Path = "C:\Python39;" + $env:Path
+    }
+}
+if (-Not (Get-Command 7z)) {
+    if (Test-Path "C:\Program Files\7-Zip") {
+        $env:Path = "C:\Program Files\7-Zip;" + $env:Path
     }
 }
 if (-Not (Test-Path alias:python3)) {
