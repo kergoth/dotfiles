@@ -111,7 +111,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 54dc2c4432857919a6a87682a09bca06608155ed
+    rev: 43dbbd590fa4b46c37e9970415f8150d3c399598
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -124,7 +124,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 57330ba11b1d10ba6abba35c2d79973834fb65a6
+    rev: 879f4b6515d3e7808e8d97d65c679ed8d044f57a
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -172,7 +172,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 04d0b0223fd69984a07a641d0e228c0e9e534825
+    rev: 07da058eae6f26de4cbe08c48563154e775f6183
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -195,7 +195,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: f95904eacc916bc47dceb68fb7f63e7f109f8d15
+    rev: 257edf14fd9955332598dde987fd070f7201df05
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -247,7 +247,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: a0feb8611d4c0b2b5d954efe4e98207f62223436
+    rev: 3dcec76d9df911ed8321007b1d197c1a206dc164
 
 rule git-scripts:
     move:
@@ -400,7 +400,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 8058b1718f37d3b3d363a8bc5ec8a91e7141b8a6
+    rev: 71af8cec42a80a46e249368254fd8eb521c00495
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -581,7 +581,7 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: a5844a251f1c1672a361e846f95359fa7870888c
+    sha1: 996e17b664d9a7513287c473048c728c96ef2901
 
 curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
@@ -591,7 +591,7 @@ curl module yt-dlp:
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
-  rev: e72264e01cb24431455ed6e398a769bca0da7ffe
+  rev: 8091c8a3a8a845c70046684235a01cd500075def
 
 git module git-filter-repo:
   url: https://github.com/newren/git-filter-repo

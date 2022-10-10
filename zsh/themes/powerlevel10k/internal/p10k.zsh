@@ -20,7 +20,7 @@ if [[ $__p9k_sourced != 13 ]]; then
   return 1
 fi
 
-if ! autoload -Uz is-at-least || ! is-at-least 5.1; then
+if [[ $ZSH_VERSION != (5.<1->*|<6->.*) ]]; then
   () {
     >&2 echo -E "You are using ZSH version $ZSH_VERSION. The minimum required version for Powerlevel10k is 5.1."
     >&2 echo -E "Type 'echo \$ZSH_VERSION' to see your current zsh version."
@@ -31,8 +31,8 @@ if ! autoload -Uz is-at-least || ! is-at-least 5.1; then
       >&2 echo -E "The shell you are currently running is likely $cur."
     fi
     local other=${${:-zsh}:c}
-    if [[ -n $other ]] && $other -c 'autoload -Uz is-at-least && is-at-least 5.1' &>/dev/null; then
-      local other_v="$($other -c 'echo -E $ZSH_VERSION' 2>/dev/null)"
+    if [[ -n $other ]] && $other -fc '[[ $ZSH_VERSION == (5.<1->*|<6->.*) ]]' &>/dev/null; then
+      local other_v="$($other -fc 'echo -E $ZSH_VERSION' 2>/dev/null)"
       if [[ -n $other_v && $other_v != $ZSH_VERSION ]]; then
         >&2 echo -E "You have $other with version $other_v but this is not what you are using."
         if [[ -n $def && $def != ${other:A} ]]; then
@@ -341,7 +341,7 @@ function _p9k_human_readable_bytes() {
   _p9k__ret=${${_p9k__ret%%0#}%.}$suf
 }
 
-if is-at-least 5.4; then
+if [[ $ZSH_VERSION == (5.<4->*|<6->.*) ]]; then
   function _p9k_print_params() { typeset -p -- "$@" }
 else
   # Cannot use `typeset -p` unconditionally because of bugs in zsh.
@@ -4647,9 +4647,9 @@ _p9k_gcloud_prefetch() {
   # P9K_GCLOUD_PROJECT is deprecated; it's always equal to P9K_GCLOUD_PROJECT_ID
   unset P9K_GCLOUD_CONFIGURATION P9K_GCLOUD_ACCOUNT P9K_GCLOUD_PROJECT P9K_GCLOUD_PROJECT_ID P9K_GCLOUD_PROJECT_NAME
   (( $+commands[gcloud] )) || return
-  _p9k_read_word ~/.config/gcloud/active_config || return
+  _p9k_read_word ${CLOUDSDK_CONFIG:-~/.config/gcloud}/active_config || return
   P9K_GCLOUD_CONFIGURATION=$_p9k__ret
-  if ! _p9k_cache_stat_get $0 ~/.config/gcloud/configurations/config_$P9K_GCLOUD_CONFIGURATION; then
+  if ! _p9k_cache_stat_get $0 ${CLOUDSDK_CONFIG:-~/.config/gcloud}/configurations/config_$P9K_GCLOUD_CONFIGURATION; then
     local pair account project_id
     pair="$(gcloud config configurations describe $P9K_GCLOUD_CONFIGURATION \
       --format=$'value[separator="\1"](properties.core.account,properties.core.project)')"
@@ -5642,6 +5642,31 @@ prompt_haskell_stack() {
 
 _p9k_prompt_haskell_stack_init() {
   typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='$commands[stack]'
+}
+
+################################################################
+# CPU Architecture
+prompt_cpu_arch() {
+  local -i len=$#_p9k__prompt _p9k__has_upglob
+
+  local state text
+  if _p9k_cache_ephemeral_get $0; then
+    state=$_p9k__cache_val[1]
+    text=$_p9k__cache_val[2]
+  else
+    text=$(command arch) 2>/dev/null && [[ $text == [a-zA-Z][a-zA-Z0-9_]# ]] || text=
+    state=_${(U)text}
+    _p9k_cache_ephemeral_set "$state" "$text"
+  fi
+  if [[ -n $text ]]; then
+    _p9k_prompt_segment "$0$state" "yellow" "$_p9k_color1" 'ARCH_ICON' 0 '' "$text"
+  fi
+
+  (( _p9k__has_upglob )) || typeset -g "_p9k__segment_val_${_p9k__prompt_side}[_p9k__segment_index]"=$_p9k__prompt[len+1,-1]
+}
+
+_p9k_prompt_arch_init() {
+  typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='$commands[arch]'
 }
 
 # Use two preexec hooks to survive https://github.com/MichaelAquilina/zsh-you-should-use with
@@ -7011,14 +7036,14 @@ function _p9k_reset_prompt() {
 # ZSH_PATCHLEVEL=zsh-5.4.2-159-gd8d9fee13. Released in 5.5.
 #
 # Fix: https://github.com/zsh-users/zsh/commit/64d13738357c9b9c212adbe17f271716abbcf6ea.
-# ZSH_PATCHLEVEL=zsh-5.7.1-50-g64d137383.
+# ZSH_PATCHLEVEL=zsh-5.7.1-50-g64d137383. Released in 5.7.2.
 #
 # Test: PROMPT="${(pl:$((COLUMNS))::-:)}<%1(l.%2(l.FAIL.PASS).FAIL)> " zsh -dfis <<<exit
 # Workaround: PROMPT="${(pl:$((COLUMNS))::-:)}%{%G%}<%1(l.%2(l.FAIL.PASS).FAIL)> " zsh -dfis <<<exit
 function _p9k_prompt_overflow_bug() {
   [[ $ZSH_PATCHLEVEL =~ '^zsh-5\.4\.2-([0-9]+)-' ]] && return $(( match[1] < 159 ))
   [[ $ZSH_PATCHLEVEL =~ '^zsh-5\.7\.1-([0-9]+)-' ]] && return $(( match[1] >= 50 ))
-  is-at-least 5.5 && ! is-at-least 5.7.2
+  [[ $ZSH_VERSION == 5.<5-7>* && $ZSH_VERSION != 5.7.<2->* ]]
 }
 
 typeset -g  _p9k__param_pat
@@ -7645,7 +7670,7 @@ function _p9k_on_widget_zle-keymap-select() { _p9k_check_visual_mode; __p9k_rese
 function _p9k_on_widget_overwrite-mode()    { _p9k_check_visual_mode; __p9k_reset_state=2; }
 function _p9k_on_widget_vi-replace()        { _p9k_check_visual_mode; __p9k_reset_state=2; }
 
-if is-at-least 5.3; then
+if [[ $ZSH_VERSION == (5.<3->*|<6->.*) ]]; then
   function _p9k_check_visual_mode() {
     [[ ${KEYMAP:-} == vicmd ]] || return 0
     local region=${${REGION_ACTIVE:-0}/2/1}
@@ -7822,7 +7847,7 @@ function _p9k_wrap_widgets() {
 
   typeset -gir __p9k_widgets_wrapped=1
   local -a widget_list
-  if is-at-least 5.3; then
+  if [[ $ZSH_VERSION == (5.<3->*|<6->.*) ]]; then
     local -aU widget_list=(
       zle-line-pre-redraw
       zle-line-init
@@ -8168,7 +8193,7 @@ _p9k_init_prompt() {
        _p9k_all_params_eq '_POWERLEVEL9K_*WHITESPACE_BETWEEN_RIGHT_SEGMENTS' ' ' &&
        _p9k_all_params_eq '_POWERLEVEL9K_*RIGHT_RIGHT_WHITESPACE' ' ' &&
        _p9k_all_params_eq '_POWERLEVEL9K_*RIGHT_PROMPT_LAST_SEGMENT_END_SYMBOL' '' &&
-       ! is-at-least 5.7.2; then
+       [[ $ZSH_VERSION != (5.7.<2->*|5.<8->*|<6->.*) ]]; then
     _p9k_emulate_zero_rprompt_indent=1
     _p9k_prompt_prefix_left+='${${:-${_p9k__real_zle_rprompt_indent:=$ZLE_RPROMPT_INDENT}${ZLE_RPROMPT_INDENT::=1}${_p9k__ind::=0}}+}'
     _p9k_line_suffix_right[-1]='${_p9k__sss:+${_p9k__sss% }%E}}'
@@ -8306,7 +8331,7 @@ _p9k_must_init() {
     [[ $sig == $_p9k__param_sig ]] && return 1
     _p9k_deinit
   fi
-  _p9k__param_pat=$'v135\1'${(q)ZSH_VERSION}$'\1'${(q)ZSH_PATCHLEVEL}$'\1'
+  _p9k__param_pat=$'v136\1'${(q)ZSH_VERSION}$'\1'${(q)ZSH_PATCHLEVEL}$'\1'
   _p9k__param_pat+=$__p9k_force_term_shell_integration$'\1'
   _p9k__param_pat+=$'${#parameters[(I)POWERLEVEL9K_*]}\1${(%):-%n%#}\1$GITSTATUS_LOG_LEVEL\1'
   _p9k__param_pat+=$'$GITSTATUS_ENABLE_LOGGING\1$GITSTATUS_DAEMON\1$GITSTATUS_NUM_THREADS\1'
@@ -8839,7 +8864,7 @@ typeset -gi __p9k_configured=0
 typeset -gri __p9k_instant_prompt_disabled=1
 
 # `typeset -g` doesn't roundtrip in zsh prior to 5.4.
-if is-at-least 5.4; then
+if [[ $ZSH_VERSION == (5.<4->*|<6->.*) ]]; then
   typeset -gri __p9k_dumps_enabled=1
 else
   typeset -gri __p9k_dumps_enabled=0

@@ -404,11 +404,13 @@ Powerlevel10k.
 - [Prezto](#prezto)
 - [Zim](#zim)
 - [Antibody](#antibody)
+- [Antidote](#antidote)
 - [Antigen](#antigen)
 - [Zplug](#zplug)
 - [Zgen](#zgen)
 - [Zplugin](#zplugin)
 - [Zinit](#zinit)
+- [Zi](#zi)
 - [Homebrew](#homebrew)
 - [Arch Linux](#arch-linux)
 - [Alpine Linux](#arch-linux)
@@ -421,7 +423,7 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 ```
 
-Users in mainland China can use the official mirror on gitee.com for faster download.<br>
+Users in China can use the official mirror on gitee.com for faster download.<br>
 中国大陆用户可以使用 gitee.com 上的官方镜像加速下载.
 
 ```zsh
@@ -439,7 +441,7 @@ make sure to disable the current theme in your plugin manager. See
     ```zsh
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     ```
-    Users in mainland China can use the official mirror on gitee.com for faster download.<br>
+    Users in China can use the official mirror on gitee.com for faster download.<br>
     中国大陆用户可以使用 gitee.com 上的官方镜像加速下载.
 
     ```zsh
@@ -458,6 +460,10 @@ Add `zmodule romkatv/powerlevel10k --use degit` to `~/.zimrc` and run `zimfw ins
 ### Antibody
 
 Add `antibody bundle romkatv/powerlevel10k` to `~/.zshrc`.
+
+### Antidote
+
+Add `romkatv/powerlevel10k` to `~/.zsh_plugins.txt`.
 
 ### Antigen
 
@@ -482,6 +488,13 @@ supported by Powerlevel10k.
 ### Zinit
 
 Add `zinit ice depth=1; zinit light romkatv/powerlevel10k` to `~/.zshrc`.
+
+The use of `depth=1` ice is optional. Other types of ice are neither recommended nor officially
+supported by Powerlevel10k.
+
+### Zi
+
+Add `zi ice depth=1; zi light romkatv/powerlevel10k` to `~/.zshrc`.
 
 The use of `depth=1` ice is optional. Other types of ice are neither recommended nor officially
 supported by Powerlevel10k.
@@ -639,11 +652,9 @@ If you are using a different terminal, proceed with manual font installation. �
      *Custom font* under *Text Appearance* and select `MesloLGS NF Regular`.
    - **Windows Console Host** (the old thing): Click the icon in the top left corner, then
      *Properties → Font* and set *Font* to `MesloLGS NF`.
-   - **Windows Terminal** by Microsoft (the new thing): Open `settings.json` (<kbd>Ctrl+Shift+,</kbd>),
-     search for `fontFace` and set the value to `MesloLGS NF` for every profile. If you don't find
-     `fontFace`, add it under *profiles → defaults*. See [this settings file](
-       https://raw.githubusercontent.com/romkatv/dotfiles-public/aba0e6c4657d705ed6c344d700d659977385f25c/dotfiles/microsoft-terminal-settings.json)
-     for example.
+   - **Windows Terminal** by Microsoft (the new thing): Open *Settings* (<kbd>Ctrl+,</kbd>), click
+     either on the selected profile under *Profiles* or on *Defaults*, click *Appearance* and set
+     *Font face* to `MesloLGS NF`.
    - **IntelliJ** (and other IDEs by Jet Brains): Open *IDE → Edit → Preferences → Editor →
      Color Scheme → Console Font*. Select *Use console font instead of the default* and set the font
      name to `MesloLGS NF`.
@@ -706,7 +717,7 @@ If you are using a different terminal, proceed with manual font installation. �
      all new terminals.
    - Crostini (Linux on Chrome OS): Open
      chrome-untrusted://terminal/html/nassh_preferences_editor.html, set *Text font family* to
-      `'MesloLGS NF'` and *Custom CSS (inline text)* to the following:
+      `'MesloLGS NF'` (including the quotes) and *Custom CSS (inline text)* to the following:
      ```css
      @font-face {
       font-family: "MesloLGS NF";
@@ -807,10 +818,12 @@ The command to update Powerlevel10k depends on how it was installed.
 | [Prezto](#prezto)             | `zprezto-update`                                            |
 | [Zim](#zim)                   | `zimfw update`                                              |
 | [Antigen](#antigen)           | `antigen update`                                            |
+| [Antidote](#antidote)         | `antidote update`                                           |
 | [Zplug](#zplug)               | `zplug update`                                              |
 | [Zgen](#zgen)                 | `zgen update`                                               |
 | [Zplugin](#zplugin)           | `zplugin update`                                            |
 | [Zinit](#zinit)               | `zinit update`                                              |
+| [Zi](#zi)                     | `zi update`                                                 |
 | [Homebrew](#homebrew)         | `brew update && brew upgrade`                               |
 | [Arch Linux](#arch-linux)     | `yay -S --noconfirm zsh-theme-powerlevel10k-git`            |
 | [Alpine Linux](#alpine-linux) | `apk update && apk upgrade`                                 |
@@ -858,10 +871,12 @@ The command to update Powerlevel10k depends on how it was installed.
    | [Prezto](#prezto)             | n/a                                                              |
    | [Zim](#zim)                   | `zimfw uninstall`                                                |
    | [Antigen](#antigen)           | `antigen purge romkatv/powerlevel10k`                            |
+   | [Antidote](#antidote)         | `antidote purge romkatv/powerlevel10k`                           |
    | [Zplug](#zplug)               | `zplug clean`                                                    |
    | [Zgen](#zgen)                 | `zgen reset`                                                     |
    | [Zplugin](#zplugin)           | `zplugin delete romkatv/powerlevel10k`                           |
    | [Zinit](#zinit)               | `zinit delete romkatv/powerlevel10k`                             |
+   | [Zi](#zi)                     | `zi delete romkatv/powerlevel10k`                                |
    | [Homebrew](#homebrew)         | `brew uninstall powerlevel10k; brew untap romkatv/powerlevel10k` |
    | [Arch Linux](#arch-linux)     | `yay -R --noconfirm zsh-theme-powerlevel10k-git`                 |
    | [Alpine Linux](#alpine-linux) | `apk del zsh-theme-powerlevel10k`                                |
