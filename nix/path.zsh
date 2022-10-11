@@ -15,5 +15,5 @@ for f in etc/profile.d/nix-daemon.sh etc/profile.d/nix.sh etc/profile.d/hm-sessi
     done
 done
 
-path=(~/.nix/shims $path)
+path=(~/.local/bin ~/.nix/shims $path)
 manpath=($HOME/.nix-profile/share/man $manpath)
