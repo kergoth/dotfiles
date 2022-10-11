@@ -1,30 +1,8 @@
-modulesdir="$XDG_DATA_HOME/powershell/Modules"
 profiledir="$XDG_CONFIG_HOME/powershell"
 if [ "$OSTYPE" = WSL ] && [ "$INSTALL_DEST" = "$USERPROFILE" ]; then
-    winmodulesdir="$INSTALL_DEST/Documents/PowerShell/Modules"
     winprofiledir="$INSTALL_DEST/Documents/PowerShell"
     link profile.ps1 "$winprofiledir/Microsoft.PowerShell_profile.ps1"
     link profile.ps1 "$winprofiledir/Microsoft.VSCode_profile.ps1"
 fi
 link profile.ps1 "$profiledir/Microsoft.PowerShell_profile.ps1"
 link profile.ps1 "$profiledir/Microsoft.VSCode_profile.ps1"
-
-dircolors_ver=1.1.2
-(
-    tmpdir=$(mktemp -d -t "${0##*/}.XXXX")
-    trap 'rm -rf "$tmpdir"' EXIT INT TERM
-    if ! [ -e "$modulesdir/DirColors" ]; then
-        if ! [ -e "$tmpdir/git" ]; then
-            git clone -b v"$dircolors_ver" https://github.com/DHowett/DirColors "$tmpdir/git"
-        fi
-        mkdir -p "$modulesdir/DirColors"
-        cp -a "$tmpdir/git/src/." "$modulesdir/DirColors/$dircolors_ver/"
-    fi
-    if [ "$OSTYPE" = WSL ] && [ "$INSTALL_DEST" = "$USERPROFILE" ] && ! [ -e "$winmodulesdir/DirColors" ]; then
-        if ! [ -e "$tmpdir/git" ]; then
-            git clone -b v"$dircolors_ver" https://github.com/DHowett/DirColors "$tmpdir/git"
-        fi
-        mkdir -p "$winmodulesdir/DirColors"
-        cp -a "$tmpdir/git/src/." "$winmodulesdir/DirColors/$dircolors_ver/"
-    fi
-)
