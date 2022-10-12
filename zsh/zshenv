@@ -16,10 +16,13 @@ elif [[ "${PROFILE_STARTUP:-false}" == true ]]; then
     zmodload zsh/zprof
 fi
 
-if [[ $0 = zsh ]]; then
+if ! [[ $0 =~ .*/\.zshenv ]]; then
     if [[ -n $ZDOTDIR ]]; then
         local zshenv=$ZDOTDIR/.zshenv
         DOTFILESDIR="${zshenv:A:h:h}"
+    else
+        echo >&2 "Unknown DOTFILESDIR, defaulting to ~/.dotfiles"
+        DOTFILESDIR=$HOME/.dotfiles
     fi
 else
     DOTFILESDIR="${0:A:h:h}"
