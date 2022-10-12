@@ -4,7 +4,7 @@ if (( $+commands[zoxide] )); then
 
     zoxide_cache="$XDG_CACHE_HOME/zoxide.env.zsh"
     if [[ ! -e $zoxide_cache ]] || [[ $commands[zoxide] -nt "$zoxide_cache" ]]; then
-        zoxide init zsh >$zoxide_cache
+        zoxide init zsh >$zoxide_cache || rm -f $zoxide_cache
     fi
     source $zoxide_cache
     unset zoxide_cache
