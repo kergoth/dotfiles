@@ -16,7 +16,14 @@ elif [[ "${PROFILE_STARTUP:-false}" == true ]]; then
     zmodload zsh/zprof
 fi
 
-DOTFILESDIR="${0:A:h:h}"
+if [[ $0 = zsh ]]; then
+    if [[ -n $ZDOTDIR ]]; then
+        local zshenv=$ZDOTDIR/.zshenv
+        DOTFILESDIR="${zshenv:A:h:h}"
+    fi
+else
+    DOTFILESDIR="${0:A:h:h}"
+fi
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
 fi
