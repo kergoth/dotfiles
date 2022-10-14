@@ -1,4 +1,4 @@
-if [ -d ~/.nix ] && ! [ -d /nix ]; then
+if [ -d ~/.nix ]; then
     home_nix=1
 else
     home_nix=
