@@ -12,7 +12,6 @@ alias which=which-command
 alias which-command='whence -avf'
 alias gdb='gdb -nh -x "$XDG_CONFIG_HOME"/gdb/init'
 alias grep='grep --color=auto'
-alias tmux='tmux -u2 -f ~/.config/tmux/config'
 alias chrome='google-chrome'
 alias t.py='command t.py --task-dir ~/Dropbox/Documents'
 alias t='t.py --list tasks.txt'
