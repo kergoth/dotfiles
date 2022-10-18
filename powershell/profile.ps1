@@ -1,4 +1,3 @@
-Import-Module PSReadLine
 Import-Module Recycle
 Import-Module posh-alias
 
