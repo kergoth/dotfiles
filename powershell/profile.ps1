@@ -127,3 +127,7 @@ if (-Not (Get-Command 7z)) {
 if (-Not (Test-Path alias:python3)) {
     Add-Alias python3 python
 }
+function Copy-SSH-Id {
+    ssh-add -L | ssh @args "mkdir -p ~/.ssh; cat >> .ssh/authorized_keys"
+}
+Add-Alias ssh-copy-id Copy-SSH-Id
