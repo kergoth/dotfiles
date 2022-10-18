@@ -1,0 +1,4 @@
+if [[ -o 'interactive' ]] && (( $+commands[procs] )) && [[ $# -eq 1 ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
+    printf >&2 'Suggested replacement for `ps`: `procs`\n'
+fi
+command "$0" "$@"
