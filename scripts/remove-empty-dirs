@@ -15,15 +15,15 @@ if [ $# -eq 0 ]; then
     set -- .
 fi
 
-rfind() {
-    find "$@" -print
-    if [ -z "$dry_run" ]; then
-        find "$@" -delete
-    fi
-}
-
-find "$@" -type d -name @eaDir -print0 | xargs -0 ${dry_run:+echo }rm -rfv
-rfind "$@" -type f -name .DS_Store
-rfind "$@" -type f -name 'Icon'
-rfind "$@" -type f -empty
-rfind "$@" -type d -empty
+{
+    find "$@" -type d -name @eaDir
+    find "$@" -type f -name .DS_Store
+    find "$@" -type f -name 'Icon
+    '
+    find "$@" -type f -empty
+    find "$@" -type d -empty
+} |
+    awk '!visited[$0]++' |
+    grep -Ev '/\.stfolder|/\.git/|/\.placeholder|\.gitkeep' |
+    tr '\n' '\0' |
+    xargs -0 ${dry_run:+echo }rm -rfv
