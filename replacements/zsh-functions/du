@@ -1,4 +1,4 @@
-if (( $+commands[dust] )) && [[ "$*" = "-sh" ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
+if [[ -o 'interactive' ]] && (( $+commands[dust] )) && [[ "$*" = "-sh" ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
     printf >&2 'Suggested replacement for `du -sh`: `dust`\n'
 fi
 command "$0" "$@"
