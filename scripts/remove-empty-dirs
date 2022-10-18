@@ -24,6 +24,6 @@ fi
     find "$@" -type d -empty
 } |
     awk '!visited[$0]++' |
-    grep -Ev '/\.stfolder|/\.git/|/\.placeholder|\.gitkeep' |
+    grep -Ev '/\.stfolder|/\.git/|/\.placeholder|\.gitkeep|\.[^.]*/' |
     tr '\n' '\0' |
     xargs -0 ${dry_run:+echo }rm -rfv
