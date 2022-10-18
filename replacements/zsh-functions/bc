@@ -1,4 +1,4 @@
-if [[ -o 'interactive' ]] && (( $+commands[eva] )) && [[ $# -eq 1 ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
-    printf >&2 'Suggested replacement for interactive `bc`: `eva`\n'
+if [[ -o 'interactive' ]] && (( $+commands[eva] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
+    printf >&2 'Consider `exa` rather than `bc`.\n'
 fi
 command "$0" "$@"

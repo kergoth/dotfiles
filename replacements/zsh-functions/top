@@ -1,4 +1,4 @@
-if [[ -o 'interactive' ]] && (( $+commands[htop] )) && [[ $# -eq 1 ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
-    printf >&2 'Suggested replacement for `top`: `htop`\n'
+if [[ -o 'interactive' ]] && (( $+commands[htop] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
+    printf >&2 'Consider `htop` rather than `top`.\n'
 fi
 command "$0" "$@"

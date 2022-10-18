@@ -1,4 +1,4 @@
-if [[ -o 'interactive' ]] && (( $+commands[dua] )) && [[ $# -eq 1 ]] && [[ -t 0 ]] && [[ -t 1 ]]; then
-    printf >&2 'Suggested replacement for `ncdu`: `dua interactive`\n'
+if [[ -o 'interactive' ]] && (( $+commands[dua] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
+    printf >&2 'Consider `dua interactive` rather than `ncdu`.\n'
 fi
 command "$0" "$@"

@@ -1,0 +1,4 @@
+if [[ -o 'interactive' ]] && (( $+commands[fd] )); then
+    printf >&2 'Consider `fd` rather than `find`.\n'
+fi
+command "$0" "$@"
