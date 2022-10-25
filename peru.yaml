@@ -34,7 +34,6 @@ imports:
     git-assembler: git/scripts
     git-cherry-tree: git/scripts
     git-extras: git/scripts
-    git-filter-repo: git/scripts
     git-fixup: git
     git-get: git/scripts
     git-tbdiff: git/scripts
@@ -111,7 +110,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 43dbbd590fa4b46c37e9970415f8150d3c399598
+    rev: 3eaa781499f5af0094fbcbdea4fdcc839c7e1b2d
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -124,7 +123,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 879f4b6515d3e7808e8d97d65c679ed8d044f57a
+    rev: 655576f336f4c956b59a5f4424c5ffd361964b35
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -172,7 +171,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 07da058eae6f26de4cbe08c48563154e775f6183
+    rev: 0fbf1c7c71fd65a113b2b83f50c956c15d72e885
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -247,7 +246,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: 3dcec76d9df911ed8321007b1d197c1a206dc164
+    rev: d5b41391a472dcf9486055fd5b8517f893e88daf
 
 rule git-scripts:
     move:
@@ -400,7 +399,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 71af8cec42a80a46e249368254fd8eb521c00495
+    rev: 2d1aa6daea420b74b305567ab0c5ae0094c336cd
 
 git module flu:
     url: https://github.com/eventi/noreallyjustfuckingstopalready
@@ -505,7 +504,7 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: a085acd7b0e600a638d1fe1108c4ed032a285f07
+    sha1: 8e0e070e014bb07e0b7c78f1fc5c7d0561d3aaef
 
 git module exa-completions:
     url: https://github.com/ogham/exa
@@ -581,7 +580,7 @@ curl module cht:
 curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
-    sha1: 996e17b664d9a7513287c473048c728c96ef2901
+    sha1: a79df4716c054e68d29923923b0287f441a256bb
 
 curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
@@ -592,12 +591,6 @@ curl module yt-dlp:
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
   rev: 8091c8a3a8a845c70046684235a01cd500075def
-
-git module git-filter-repo:
-  url: https://github.com/newren/git-filter-repo
-  pick: git-filter-repo
-  executable: git-filter-repo
-  rev: 5651f62f4c404df6fa2d249c72b0aed224c2d311
 
 git module zsh-nix-shell:
   url: https://github.com/chisui/zsh-nix-shell
