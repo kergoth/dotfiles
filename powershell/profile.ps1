@@ -131,3 +131,7 @@ function Copy-SSH-Id {
     ssh-add -L | ssh @args "mkdir -p ~/.ssh; cat >> .ssh/authorized_keys"
 }
 Add-Alias ssh-copy-id Copy-SSH-Id
+
+if (Test-Path "$env:USERPROFILE\.local.ps1") {
+    . "$env:USERPROFILE\.local.ps1"
+}
