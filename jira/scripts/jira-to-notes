@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -euo pipefail
+
+remove_multiple_blank_lines() {
+    sed -e '/\S/,/^\s*$/!d;'
+}
+
+remove_trailing_blank_lines() {
+    sed -e :a -e '/^\n*$/{$d;N;ba' -e '}'
+}
+
+tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
+trap 'rm -f "$tmpfile"' EXIT INT TERM
+
+jira issue view --plain "$@" |
+    strip-color-codes |
+    sed -e 's/^  //; s/  *$//; s/^\([^# ]\)/    \1/;' >"$tmpfile"
+
+if [ -s "$tmpfile" ]; then
+    grep '^#' "$tmpfile"
+    echo
+    grep -v '^#' "$tmpfile" |
+        remove_multiple_blank_lines |
+        remove_trailing_blank_lines
+fi
