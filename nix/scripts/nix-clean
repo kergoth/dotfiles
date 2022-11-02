@@ -1,0 +1,6 @@
+#!/bin/sh
+
+home-manager expire-generations "-30 days"
+nix-env --delete-generations old
+nix-collect-garbage
+nix store optimise
