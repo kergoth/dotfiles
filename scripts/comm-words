@@ -1,0 +1,117 @@
+#!/bin/sh
+
+usage() {
+    cat >&2 <<END
+Usage: comm-words [-0123nh] VALUE1 VALUE2
+
+Compare the space-separated words between the value arguments specified.
+
+Options (default: -3. To specify multiple, use a single argument, e.g. -23):
+
+     -0      Suppress nothing: Show all words.
+     -1      Suppress printing of removed words.
+     -2      Suppress printing of added words.
+     -3      Suppress printing of common words.
+     -n      Normalize case
+     -h      Show this usage
+END
+    exit 1
+}
+
+abspath() {
+    for arg; do
+        testabs=${arg##[!/]*}
+        echo ${testabs:-$PWD/$arg}
+    done
+}
+
+exclude() {
+    if [ -n "$exclusion" ]; then
+        grep -Ev "^$exclusion"
+    else
+        cat
+    fi
+}
+
+comm_arg=-3
+normalize_case=
+case "$1" in
+    -[123]*)
+        comm_arg="$1"
+        shift
+        ;;
+    -0)
+        comm_arg=
+        shift
+        ;;
+    -n)
+        normalize_case=1
+        shift
+        ;;
+    -h)
+        usage
+        ;;
+esac
+
+exclusion=
+if echo "$comm_arg" | grep -q 1; then
+    exclusion="-"
+fi
+if echo "$comm_arg" | grep -q 2; then
+    exclusion="$exclusion|\+"
+fi
+if echo "$comm_arg" | grep -q 3; then
+    exclusion="$exclusion| "
+fi
+exclusion="${exclusion#|}"
+
+if [ $# -lt 2 ]; then
+    usage
+fi
+
+from="$1"
+to="$2"
+shift 2
+
+fromlines="$(mktemp -t "${0##*/}.XXXXXX")"
+tolines="$(mktemp -t "${0##*/}.XXXXXX")"
+trap 'rm -f $fromlines $tolines' EXIT INT TERM
+
+# shellcheck disable=SC3028
+case "$OSTYPE" in
+    darwin*)
+        normalize_case_filter() {
+            cat
+        }
+        comm_i_arg="${normalize_case:+-i}"
+        ;;
+    *)
+        normalize_case_filter() {
+            if [ -n "$normalize_case" ]; then
+                tr '[:upper:]' '[:lower:]'
+            else
+                cat
+            fi
+        }
+        comm_i_arg=
+        ;;
+esac
+
+echo "$from" |
+    tr -s '[:blank:]' '\n' |
+    grep -v '^$' |
+    normalize_case_filter |
+    sort -f >"$fromlines"
+
+echo "$to" |
+    tr -s '[:blank:]' '\n' |
+    grep -v '^$' |
+    normalize_case_filter |
+    sort -f >"$tolines"
+
+# shellcheck disable=SC2086
+comm $comm_i_arg "$fromlines" "$tolines" \
+    | sort -b \
+    | sed -e "s#^\([^	]\)#-\1#; s#^	\([^	]\)#+\1#; s#^		\([^	]\)# \1#" \
+    | exclude \
+    | ${PAGER:-more}
