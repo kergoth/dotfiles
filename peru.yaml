@@ -110,7 +110,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 3eaa781499f5af0094fbcbdea4fdcc839c7e1b2d
+    rev: bb4711de54f4fcf5dd93b718a356e1e88c805a31
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -123,7 +123,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 655576f336f4c956b59a5f4424c5ffd361964b35
+    rev: 57c868face9f17fe541ad52b335ec31e156f3f27
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -149,7 +149,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: a8cf575d68e7e211292d967f4a12cf609a028b20
+  rev: b750b48f50eb4a11087ca6775161d5bf4d5c47d5
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -171,7 +171,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 0fbf1c7c71fd65a113b2b83f50c956c15d72e885
+    rev: 2c6a73546ddefe7c1c1c01e4282e1df06bfe82e8
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -194,7 +194,7 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 257edf14fd9955332598dde987fd070f7201df05
+    rev: 4a40fa318c79a662476299b1e195a8889679f8db
 
 curl module cpanm:
     url: https://cpanmin.us/
@@ -246,7 +246,7 @@ git module git-wtf:
 git module git:
     url: https://github.com/git/git
     reup: maint
-    rev: d5b41391a472dcf9486055fd5b8517f893e88daf
+    rev: e7e5c6f715b2de7bea0d39c7d2ba887335b40aa0
 
 rule git-scripts:
     move:

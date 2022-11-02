@@ -431,6 +431,7 @@ span { display: inline-block; }
 <option value='ark'></option>
 <option value='arp'></option>
 <option value='arp-scan'></option>
+<option value='arpaname'></option>
 <option value='arping'></option>
 <option value='as'></option>
 <option value='asar'></option>
@@ -461,6 +462,7 @@ span { display: inline-block; }
 <option value='auracle'></option>
 <option value='aurman'></option>
 <option value='aurvote'></option>
+<option value='ausyscall'></option>
 <option value='authconfig'></option>
 <option value='autoconf'></option>
 <option value='autoflake'></option>
@@ -483,21 +485,28 @@ span { display: inline-block; }
 <option value='awk/:list'></option>
 <option value='awk/rosetta/'></option>
 <option value='aws'></option>
+<option value='aws-configure'></option>
 <option value='aws-cur'></option>
 <option value='aws-ec2'></option>
 <option value='aws-ecr'></option>
 <option value='aws-glue'></option>
 <option value='aws-google-auth'></option>
 <option value='aws-help'></option>
+<option value='aws-history'></option>
 <option value='aws-iam'></option>
 <option value='aws-kinesis'></option>
 <option value='aws-lambda'></option>
+<option value='aws-lightsail'></option>
+<option value='aws-pricing'></option>
 <option value='aws-quicksight'></option>
 <option value='aws-rds'></option>
+<option value='aws-route53'></option>
 <option value='aws-s3'></option>
+<option value='aws-s3-ls'></option>
 <option value='aws-s3api'></option>
 <option value='aws-secretsmanager'></option>
 <option value='aws-ses'></option>
+<option value='aws-sts'></option>
 <option value='aws-vault'></option>
 <option value='awslogs'></option>
 <option value='axel'></option>
@@ -514,12 +523,16 @@ span { display: inline-block; }
 <option value='az-logout'></option>
 <option value='az-network'></option>
 <option value='az-pipelines'></option>
+<option value='az-provider'></option>
 <option value='az-redis'></option>
 <option value='az-sshkey'></option>
 <option value='az-storage'></option>
 <option value='az-storage-account'></option>
 <option value='az-storage-blob'></option>
+<option value='az-storage-container'></option>
 <option value='az-storage-entity'></option>
+<option value='az-storage-queue'></option>
+<option value='az-storage-table'></option>
 <option value='az-tag'></option>
 <option value='az-term'></option>
 <option value='az-upgrade'></option>
@@ -555,6 +568,7 @@ span { display: inline-block; }
 <option value='batcat'></option>
 <option value='batch'></option>
 <option value='battop'></option>
+<option value='bazel'></option>
 <option value='bc'></option>
 <option value='bcomps'></option>
 <option value='beanstalkd'></option>
@@ -581,8 +595,10 @@ span { display: inline-block; }
 <option value='bitwise'></option>
 <option value='black'></option>
 <option value='blackfire'></option>
+<option value='blastp'></option>
 <option value='blender'></option>
 <option value='bless'></option>
+<option value='blight'></option>
 <option value='blkdiscard'></option>
 <option value='blkid'></option>
 <option value='blktrace'></option>
@@ -605,6 +621,7 @@ span { display: inline-block; }
 <option value='bpftrace'></option>
 <option value='bpytop'></option>
 <option value='bq'></option>
+<option value='br'></option>
 <option value='brctl'></option>
 <option value='brew'></option>
 <option value='brew-bundle'></option>
@@ -835,6 +852,7 @@ span { display: inline-block; }
 <option value='compare'></option>
 <option value='compgen'></option>
 <option value='complete'></option>
+<option value='compopt'></option>
 <option value='compose'></option>
 <option value='composer'></option>
 <option value='composer-require-checker'></option>
@@ -912,6 +930,7 @@ span { display: inline-block; }
 <option value='cpuid'></option>
 <option value='cpulimit'></option>
 <option value='cpupower'></option>
+<option value='cpush'></option>
 <option value='cradle'></option>
 <option value='cradle-deploy'></option>
 <option value='cradle-elastic'></option>
@@ -1125,6 +1144,7 @@ span { display: inline-block; }
 <option value='doctl-auth'></option>
 <option value='doctl-balance'></option>
 <option value='doctl-compute-droplet'></option>
+<option value='doctl-kubernetes-options'></option>
 <option value='doctum'></option>
 <option value='dog'></option>
 <option value='dokku'></option>
@@ -1137,6 +1157,10 @@ span { display: inline-block; }
 <option value='dolt-clone'></option>
 <option value='dolt-commit'></option>
 <option value='dolt-config'></option>
+<option value='dolt-fetch'></option>
+<option value='dolt-sql'></option>
+<option value='dolt-status'></option>
+<option value='dolt-version'></option>
 <option value='dos2unix'></option>
 <option value='dosbox'></option>
 <option value='doskey'></option>
@@ -1215,10 +1239,12 @@ span { display: inline-block; }
 <option value='egrep'></option>
 <option value='eiffel/'></option>
 <option value='eiffel/rosetta/'></option>
+<option value='einfo'></option>
 <option value='eix'></option>
 <option value='eject'></option>
 <option value='electron-packager'></option>
 <option value='electrum'></option>
+<option value='elink'></option>
 <option value='elinks'></option>
 <option value='elisp/'></option>
 <option value='elisp/:learn'></option>
@@ -1293,6 +1319,7 @@ span { display: inline-block; }
 <option value='ern'></option>
 <option value='errno'></option>
 <option value='esbuild'></option>
+<option value='esearch'></option>
 <option value='eslint'></option>
 <option value='espanso'></option>
 <option value='espeak'></option>
@@ -1401,6 +1428,8 @@ span { display: inline-block; }
 <option value='flatpak'></option>
 <option value='flatpak-builder'></option>
 <option value='flex'></option>
+<option value='flips'></option>
+<option value='flite'></option>
 <option value='flock'></option>
 <option value='flow'></option>
 <option value='fls'></option>
@@ -1444,6 +1473,7 @@ span { display: inline-block; }
 <option value='fprintd-list'></option>
 <option value='fprintd-verify'></option>
 <option value='free'></option>
+<option value='freshclam'></option>
 <option value='from'></option>
 <option value='fsck'></option>
 <option value='fscrypt'></option>
@@ -1614,10 +1644,12 @@ span { display: inline-block; }
 <option value='git-filter-repo'></option>
 <option value='git-flow'></option>
 <option value='git-for-each-repo'></option>
+<option value='git-force-clone'></option>
 <option value='git-fork'></option>
 <option value='git-format-patch'></option>
 <option value='git-fsck'></option>
 <option value='git-gc'></option>
+<option value='git-gh-pages'></option>
 <option value='git-graft'></option>
 <option value='git-grep'></option>
 <option value='git-help'></option>
@@ -1684,6 +1716,7 @@ span { display: inline-block; }
 <option value='git-sizer'></option>
 <option value='git-squash'></option>
 <option value='git-stage'></option>
+<option value='git-stamp'></option>
 <option value='git-standup'></option>
 <option value='git-stash'></option>
 <option value='git-status'></option>
@@ -1701,6 +1734,7 @@ span { display: inline-block; }
 <option value='git-unlock'></option>
 <option value='git-update-index'></option>
 <option value='git-update-ref'></option>
+<option value='git-utimes'></option>
 <option value='git-var'></option>
 <option value='git-verify-commit'></option>
 <option value='git-verify-tag'></option>
@@ -1733,6 +1767,8 @@ span { display: inline-block; }
 <option value='glow'></option>
 <option value='gml2gv'></option>
 <option value='gmssl'></option>
+<option value='gnatmake'></option>
+<option value='gnatprep'></option>
 <option value='gnmic'></option>
 <option value='gnmic-get'></option>
 <option value='gnmic-set'></option>
@@ -1816,6 +1852,7 @@ span { display: inline-block; }
 <option value='gpg2'></option>
 <option value='gpgconf'></option>
 <option value='gpgv'></option>
+<option value='gprbuild'></option>
 <option value='gpupdate'></option>
 <option value='gpustat'></option>
 <option value='gradle'></option>
@@ -1924,6 +1961,7 @@ span { display: inline-block; }
 <option value='histexpand'></option>
 <option value='history'></option>
 <option value='hive'></option>
+<option value='hledger'></option>
 <option value='hlint'></option>
 <option value='hn'></option>
 <option value='home-manager'></option>
@@ -2068,6 +2106,7 @@ span { display: inline-block; }
 <option value='jbang'></option>
 <option value='jc'></option>
 <option value='jcal'></option>
+<option value='jdeps'></option>
 <option value='jdupes'></option>
 <option value='jekyll'></option>
 <option value='jello'></option>
@@ -2141,6 +2180,7 @@ span { display: inline-block; }
 <option value='kahlan'></option>
 <option value='kak'></option>
 <option value='kate'></option>
+<option value='kcat'></option>
 <option value='kde-inhibit'></option>
 <option value='kdeconnect-cli'></option>
 <option value='kdialog'></option>
@@ -2220,8 +2260,10 @@ span { display: inline-block; }
 <option value='latex/rosetta/'></option>
 <option value='latexdiff'></option>
 <option value='latexmk'></option>
+<option value='latte-dock'></option>
 <option value='launchctl'></option>
 <option value='launchd'></option>
+<option value='laydown'></option>
 <option value='lb'></option>
 <option value='ld'></option>
 <option value='ldapdomaindump'></option>
@@ -2356,6 +2398,7 @@ span { display: inline-block; }
 <option value='lynis'></option>
 <option value='lynx'></option>
 <option value='lz4'></option>
+<option value='lzip'></option>
 <option value='lzop'></option>
 <option value='m'></option>
 <option value='m4'></option>
@@ -2537,6 +2580,7 @@ span { display: inline-block; }
 <option value='mullvad'></option>
 <option value='multipass'></option>
 <option value='multitail'></option>
+<option value='mumble'></option>
 <option value='mupdf'></option>
 <option value='musescore'></option>
 <option value='mutagen'></option>
@@ -2705,6 +2749,7 @@ span { display: inline-block; }
 <option value='ocamlopt'></option>
 <option value='ocrmypdf'></option>
 <option value='ocspd'></option>
+<option value='octave'></option>
 <option value='octave/'></option>
 <option value='octave/:learn'></option>
 <option value='octave/:list'></option>
@@ -3001,6 +3046,9 @@ span { display: inline-block; }
 <option value='po4a-updatepo'></option>
 <option value='pod'></option>
 <option value='podman'></option>
+<option value='podman-build'></option>
+<option value='podman-compose'></option>
+<option value='podman-machine'></option>
 <option value='poetry'></option>
 <option value='popd'></option>
 <option value='popeye'></option>
@@ -3043,6 +3091,7 @@ span { display: inline-block; }
 <option value='prt-get'></option>
 <option value='ps'></option>
 <option value='psalm'></option>
+<option value='psexec'></option>
 <option value='psgrep'></option>
 <option value='psping'></option>
 <option value='psql'></option>
@@ -3168,9 +3217,17 @@ span { display: inline-block; }
 <option value='qlmanage'></option>
 <option value='qm'></option>
 <option value='qm-create'></option>
+<option value='qm-delsnapshot'></option>
+<option value='qm-listsnapshot'></option>
+<option value='qm-monitor'></option>
 <option value='qm-nbdstop'></option>
+<option value='qm-reboot'></option>
+<option value='qm-reset'></option>
+<option value='qm-shutdown'></option>
+<option value='qm-snapshot'></option>
 <option value='qm-start'></option>
 <option value='qm-stop'></option>
+<option value='qm-wait'></option>
 <option value='qmrestore'></option>
 <option value='qmv'></option>
 <option value='qpdf'></option>
@@ -3278,6 +3335,7 @@ span { display: inline-block; }
 <option value='reg-restore'></option>
 <option value='reg-save'></option>
 <option value='reg-unload'></option>
+<option value='register_new_matrix_user'></option>
 <option value='rekor-cli'></option>
 <option value='rename'></option>
 <option value='renice'></option>
@@ -12085,6 +12143,7 @@ span { display: inline-block; }
 <option value='scrapy'></option>
 <option value='scrcpy'></option>
 <option value='screen'></option>
+<option value='screencap'></option>
 <option value='screencapture'></option>
 <option value='screenfetch'></option>
 <option value='screenkey'></option>
@@ -12167,6 +12226,7 @@ span { display: inline-block; }
 <option value='skaffold'></option>
 <option value='skicka'></option>
 <option value='skipcpio'></option>
+<option value='skopeo'></option>
 <option value='sl'></option>
 <option value='slackcat'></option>
 <option value='slapt-get'></option>
@@ -12222,6 +12282,7 @@ span { display: inline-block; }
 <option value='spfquery'></option>
 <option value='sphinx-build'></option>
 <option value='spi'></option>
+<option value='spicetify'></option>
 <option value='spike'></option>
 <option value='split'></option>
 <option value='sponge'></option>
@@ -12262,6 +12323,7 @@ span { display: inline-block; }
 <option value='standard-version'></option>
 <option value='starship'></option>
 <option value='starship-init'></option>
+<option value='startx'></option>
 <option value='stat'></option>
 <option value='stdbuf'></option>
 <option value='stdout'></option>
@@ -12326,6 +12388,7 @@ span { display: inline-block; }
 <option value='syncthing'></option>
 <option value='synopkg'></option>
 <option value='synoupgrade'></option>
+<option value='sysbench'></option>
 <option value='sysctl'></option>
 <option value='sysrq-trigger'></option>
 <option value='system_profiler'></option>
@@ -12354,6 +12417,7 @@ span { display: inline-block; }
 <option value='taste'></option>
 <option value='tb'></option>
 <option value='tbl'></option>
+<option value='tc'></option>
 <option value='tcl/'></option>
 <option value='tcl/:learn'></option>
 <option value='tcl/:list'></option>
@@ -12404,6 +12468,7 @@ span { display: inline-block; }
 <option value='timidity'></option>
 <option value='title'></option>
 <option value='tldr'></option>
+<option value='tldr-generate'></option>
 <option value='tldr-lint'></option>
 <option value='tldrl'></option>
 <option value='tlmgr'></option>
@@ -12505,6 +12570,7 @@ span { display: inline-block; }
 <option value='tune2fs'></option>
 <option value='turbo'></option>
 <option value='tuxi'></option>
+<option value='twine'></option>
 <option value='twm'></option>
 <option value='twopi'></option>
 <option value='tye'></option>
@@ -12573,6 +12639,7 @@ span { display: inline-block; }
 <option value='vagrant'></option>
 <option value='vala'></option>
 <option value='valac'></option>
+<option value='vale'></option>
 <option value='valet'></option>
 <option value='valgrind'></option>
 <option value='var-dump-server'></option>
@@ -12765,6 +12832,7 @@ span { display: inline-block; }
 <option value='xdg-settings'></option>
 <option value='xdg-user-dirs-update'></option>
 <option value='xdotool'></option>
+<option value='xe'></option>
 <option value='xed'></option>
 <option value='xephyr'></option>
 <option value='xetex'></option>
@@ -12821,7 +12889,9 @@ span { display: inline-block; }
 <option value='xwinwrap'></option>
 <option value='xxd'></option>
 <option value='xxh'></option>
+<option value='xxhsum'></option>
 <option value='xz'></option>
+<option value='xzdiff'></option>
 <option value='yaa'></option>
 <option value='yabai'></option>
 <option value='yacas'></option>
@@ -12865,8 +12935,11 @@ span { display: inline-block; }
 <option value='zile'></option>
 <option value='zip'></option>
 <option value='zipalign'></option>
+<option value='zipcloak'></option>
 <option value='zipgrep'></option>
 <option value='zipinfo'></option>
+<option value='zipnote'></option>
+<option value='zipsplit'></option>
 <option value='zless'></option>
 <option value='zlib-flate'></option>
 <option value='zm'></option>
