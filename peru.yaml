@@ -110,7 +110,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: bb4711de54f4fcf5dd93b718a356e1e88c805a31
+    rev: c12dc2aa4d24ebf70c44eb2cdedc2ecb10dad3c3
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -123,7 +123,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 57c868face9f17fe541ad52b335ec31e156f3f27
+    rev: 1db9015d764e63c4c7c9c6b6c492e6c537f81d59
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -149,7 +149,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: b750b48f50eb4a11087ca6775161d5bf4d5c47d5
+  rev: 5fb9c6a5b35220e27b3acd5861318584588cd0d8
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -171,7 +171,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 2c6a73546ddefe7c1c1c01e4282e1df06bfe82e8
+    rev: 8868d7d1883178b5d196fe0d8eaafb22668343ed
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -225,7 +225,7 @@ git module icdiff:
     pick:
         - icdiff
         - git-icdiff
-    rev: 34aa2d0d5836663869bfc2d255ce769ca49011d0
+    rev: 285a583c95e3e301f43d67a9db78c17279c39d69
 
 git module dustin-bindir:
     url: https://github.com/dustin/bindir
@@ -500,7 +500,7 @@ git module tony-tmux-config:
     move:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
     executable: tmux-resize-adaptable
-    rev: 9946dde7461483ac53057612225b94c98f0bfc24
+    rev: 3bdf17da56759e7e33c8d6a25a67afb4ab3f4faf
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
@@ -586,7 +586,7 @@ curl module yt-dlp:
   url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
   filename: yt-dlp
   executable: yt-dlp
-  sha1: f463a682121e631a5ef2567efefb3801d080004d
+  sha1: 9069d1d67edf0fdcd98d7f243324bcb1c73e746e
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
