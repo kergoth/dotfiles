@@ -70,7 +70,10 @@ fi
             . ../meta-sokol-flex/setup-environment -b . $args ${MACHINE:-qemuarm64}
         else
             . ../meta-mentor/setup-environment -b . $args ${MACHINE:-qemuarm64}
-        fi
+        fi || {
+            echo >&2 "Error: setup-environment failed"
+            return 1
+        }
     elif [[ -n "$imx" ]]; then
         case "$(cd "$BUILDDIR" && pwd -P)" in
             "$(cd "$topdir" && pwd -P)/"*)
