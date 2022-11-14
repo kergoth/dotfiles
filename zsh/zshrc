@@ -80,6 +80,7 @@ if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
     else
         compinit -d $ZSH_COMPDUMP
     fi
+    touch $ZSH_COMPDUMP
 else
   compinit -C -d $ZSH_COMPDUMP
 fi
