@@ -1,8 +1,0 @@
-#!/bin/sh
-
-git range-diff -h >/dev/null 2>&1
-if [ $? -eq 129 ]; then
-    exec git range-diff "$@"
-else
-    exec python2 "$(dirname "$0")/git-tbdiff.real" "$@"
-fi

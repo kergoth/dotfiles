@@ -36,7 +36,6 @@ imports:
     git-extras: git/scripts
     git-fixup: git
     git-get: git/scripts
-    git-tbdiff: git/scripts
     git-wtf: git/scripts
     git|diff-highlight: external/scripts
     git|git-scripts: git/scripts
@@ -382,13 +381,6 @@ git module hub-completion:
         etc/hub.zsh_completion: _hub
     pick: _hub
     rev: 363513a0f822a8bde5b620e5de183702280d4ace
-
-git module git-tbdiff:
-    url: https://github.com/trast/tbdiff
-    move:
-        git-tbdiff.py: git-tbdiff.real
-    pick: git-tbdiff.real
-    rev: 047d1c79dfada57522a42f307cd4b0ddcb098934
 
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
