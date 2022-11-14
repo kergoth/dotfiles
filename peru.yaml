@@ -127,6 +127,9 @@ git module zsh-completions:
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
     rev: 468d8cf752a62b877eba1a196fbbebb4ce4ebb6f
+    pick:
+      - '*.zsh'
+      - '_*'
 
 git module zsh-git-escape-magic:
     url: https://github.com/knu/zsh-git-escape-magic
