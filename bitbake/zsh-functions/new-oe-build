@@ -1,9 +1,13 @@
+force=0
 mel=
 imx=
 oe=
 args=
-while getopts mioM:a:h opt; do
+while getopts fmioM:a:h opt; do
     case "$opt" in
+        f)
+            force=1
+            ;;
         m)
             mel=1
             ;;
@@ -48,6 +52,16 @@ fi
     set -e
     set +u
     rm -f "$BUILDDIR/.envrc"
+
+    if [ $force -eq 1 ]; then
+        echo >&2 "Removing existing build directory at $BUILDDIR"
+        if command -v bgrm >/dev/null 2>&1; then
+            bgrm "$BUILDDIR"
+        else
+            rm -rf "$BUILDDIR"
+        fi
+    fi
+
     mkdir -p "$BUILDDIR"
     topdir="$PWD"
     cd "$BUILDDIR"
