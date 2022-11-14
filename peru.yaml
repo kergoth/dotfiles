@@ -14,6 +14,7 @@ imports:
     exa-completions: ls/zsh-functions
     nix-zsh-completions: nix/zsh-functions
     powerlevel10k: zsh/themes/powerlevel10k
+    zsh-nix-shell: zsh/plugins/nix-shell
 
     # Kakoune
     kakoune-dracula: kakoune
@@ -585,3 +586,11 @@ curl module yt-dlp:
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
   rev: 8091c8a3a8a845c70046684235a01cd500075def
+
+git module zsh-nix-shell:
+  url: https://github.com/chisui/zsh-nix-shell
+  pick:
+    - LICENSE
+    - scripts
+    - nix-shell.plugin.zsh
+  rev: af6f8a266ea1875b9a3e86e14796cadbe1cfbf08
