@@ -96,16 +96,16 @@ fi
     elif [[ -z "$oe" ]] && [[ -d ../industrial-core ]]; then
         bash -c '. ../industrial-core/setup-environment "$@"' - -b . $args ${MACHINE:-industrial-pc}
     fi
-    if [ -e ~/mel/workflow ]; then
-        cp -av ~/mel/workflow/envrc-build .envrc
-    fi
 
     for linkdir in downloads sstate-cache cached-binaries; do
         if [ -e ../"$linkdir" ]; then
             ln -sfv ../"$linkdir" .
         fi
     done
-    
+
+    if [ -e ~/mel/workflow ]; then
+        cp -av ~/mel/workflow/envrc-build .envrc
+    fi
     direnv allow
 )
 
