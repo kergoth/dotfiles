@@ -89,7 +89,7 @@ fi
         fi
     done
     
-    direnv allow >/dev/null 2>&1
+    direnv allow
 )
 
 cd "$BUILDDIR"
