@@ -1,0 +1,50 @@
+#!/bin/sh
+
+
+quote() {
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" <<EOF
+$1
+EOF
+}
+
+save() {
+    case "$1" in
+        # when a string contains a "'" we have to escape it
+        *\'*)
+            saved="$saved $(quote "$1")"
+            ;;
+        # otherwise just quote the variable
+        *)
+            saved="$saved '$1'"
+            ;;
+    esac
+}
+
+set -eu
+
+saved=
+first=
+second=
+for arg; do
+    case "$arg" in
+        -*)
+            save "$arg"
+            ;;
+        *)
+            if [ -n "$second" ]; then
+                exec comm "$@"
+            elif [ -n "$first" ]; then
+                second="$arg"
+            else
+                first="$arg"
+            fi
+            ;;
+    esac
+done
+eval set -- "$saved"
+
+tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+sort "$first" >"$tmpdir/first"
+sort "$second" >"$tmpdir/second"
+comm "$@" "$tmpdir/first" "$tmpdir/second"
