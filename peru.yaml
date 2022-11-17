@@ -29,7 +29,7 @@ imports:
     dustin-bindir: git/scripts
     fasd: fasd/scripts
     flu: os-macos/scripts
-    fumiyas-home-commands: external/scripts
+    ifne: external/scripts
     gnu2bsd: ls/scripts
     git-assembler: git/scripts
     git-cherry-tree: git/scripts
@@ -522,7 +522,7 @@ git module titlecase-perl:
     executable: titlecase
     rev: d7d64ccbc6e1c86b0aae5cb368ea1f6f7f3738c5
 
-git module fumiyas-home-commands:
+git module ifne:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
     rev: 8902d0579e8859787b9c60590c9bc43ff9149b3d
