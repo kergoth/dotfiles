@@ -8,7 +8,6 @@ imports:
     zsh-history-substring-search: zsh/plugins/history-substring-search
     zsh-manydots-magic: zsh/functions
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
-    hub-completion: git/zsh-functions
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     exa-completions: ls/zsh-functions
@@ -21,48 +20,29 @@ imports:
 
     # Scripts
     ddimage: external/scripts
-    simpler-color-test: external/scripts
-    cpanm: perl/scripts
-    cwdiff: external/scripts
-    diff-so-fancy: external/scripts
     dtrx: external/scripts
-    dustin-bindir: git/scripts
     fasd: fasd/scripts
-    flu: os-macos/scripts
     ifne: external/scripts
     gnu2bsd: ls/scripts
     git-assembler: git/scripts
     git-cherry-tree: git/scripts
     git-extras: git/scripts
-    git-fixup: git
     git-get: git/scripts
-    git-wtf: git/scripts
-    git|diff-highlight: external/scripts
-    git|git-scripts: git/scripts
-    gitvoodoo: git/scripts
-    hardlinkpy: external/scripts
-    icdiff: external/scripts
+    git-scripts: git/scripts
     iln: external/scripts
-    md-inline2ref: external/scripts
     moreutils: external/scripts
     myrepos: external/scripts
-    osx-wificleaner: os-macos/scripts
-    pom: external/scripts
     dev-goodies: git/scripts
     repo: git/scripts
     rpm2cpio: external/scripts
     smem: external/scripts
-    t: external/scripts
-    titlecase-perl: external/scripts
     tony-tmux-config: tmux/scripts
     vim-profiler: scripts
     wget-finder: external/scripts
     wsl-open: os-wsl/scripts
-    yt-dlp: external/scripts
 
     chneukirchen-tools: external/scripts
     1t: external/scripts
-    f: external/scripts
     frep: external/scripts
     git-attic: git/scripts
     git-ltr: git/scripts
@@ -72,8 +52,6 @@ imports:
     pacsrc: os-linux-arch/scripts
     stee: external/scripts
     tlog: external/scripts
-    utter: external/scripts
-    zombies: external/scripts
 
     # Tmux
     tmux-float: tmux/plugins/float
@@ -85,7 +63,6 @@ imports:
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
     vscode-zsh-completion: vscode/zsh-functions
-    rmate: sublime-text-3/scripts
     cht: cht/scripts
     cht-zsh: cht/zsh-functions
 
@@ -158,11 +135,6 @@ git module smem:
     pick: smem
     rev: 40eb60b793954b50683f2fea91339cb45bc31bfd
 
-git module t:
-    url: https://github.com/sjl/t
-    pick: t.py
-    rev: 815ccaf4f0bf2acb2a7f2cb330bf0532d782f408
-
 git module fzf:
     url: https://github.com/junegunn/fzf
     move:
@@ -198,73 +170,21 @@ git module wget-finder:
     pick: sh/tools/wget-finder
     rev: 4a40fa318c79a662476299b1e195a8889679f8db
 
-curl module cpanm:
-    url: https://cpanmin.us/
-    filename: cpanm
-    executable: cpanm
-    sha1: 987f5ef5796f135c43ba3be464b7ee3c8a45a157
-
-git module cwdiff:
-    url: https://github.com/junghans/cwdiff
-    pick: cwdiff
-    rev: f14e2a9af9173a6ba15df7f5b91b1441f3723b5a
-
 git module fasd:
     url: https://github.com/clvv/fasd
     pick: fasd
     rev: 90b531a5daaa545c74c7d98974b54cbdb92659fc
 
-git module pom:
-    url: https://github.com/tobym/pom
-    pick: pom
-    rev: dd6de61f77d0cdd5633f99796e4340a68b9ab989
-
-git module icdiff:
-    url: https://github.com/jeffkaufman/icdiff
-    move:
-        icdiff: icdiff
-        git-icdiff: git-icdiff
-    pick:
-        - icdiff
-        - git-icdiff
-    rev: 285a583c95e3e301f43d67a9db78c17279c39d69
-
-git module dustin-bindir:
-    url: https://github.com/dustin/bindir
-    pick:
-        - git-alternate
-        - git-test-sequence
-        - git-test-once
-        - git-test-bisect
-    executable:
-        - git-test-bisect
-    rev: b211b04d61be93cc77149cea52df82d90f3dcfba
-
-git module git-wtf:
-    url: https://github.com/michaelklishin/git-wtf
-    pick: git-wtf
-    rev: e707548e3c144e2b6ecaba8e7851b5f51bdd517f
-
-git module git:
+git module git-scripts:
     url: https://github.com/git/git
     reup: maint
     rev: e7e5c6f715b2de7bea0d39c7d2ba887335b40aa0
-
-rule git-scripts:
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
     pick:
         - git-jump
         - git-subtree
-
-rule diff-highlight:
-    move:
-        contrib/diff-highlight/diff-highlight.perl: diff-highlight.perl
-        contrib/diff-highlight/DiffHighlight.pm: DiffHighlight.pm
-    pick:
-        - diff-highlight.perl
-        - DiffHighlight.pm
 
 # moreutils is also available in homebrew, and some of its utilities are
 # compiled, so those are only available via that method.
@@ -307,11 +227,6 @@ curl module git-attic:
     executable: git-attic
     sha1: 8fc72715ab65be453d8385d563505f7dbf6a63e0
 
-curl module zombies:
-    url: http://chneukirchen.org/dotfiles/bin/zombies
-    executable: zombies
-    sha1: 374aab587f3722eadcdc84a2874faa74ff967cdd
-
 curl module pacsrc:
     url: http://chneukirchen.org/dotfiles/bin/pacsrc
     executable: pacsrc
@@ -337,16 +252,6 @@ curl module stee:
     executable: stee
     sha1: af151e649512d7ac036c262cdae7b720475beacb
 
-curl module utter:
-    url: http://chneukirchen.org/dotfiles/bin/utter
-    executable: utter
-    sha1: e077c96ca16fe40e337f317bd4340218a9c7864c
-
-curl module f:
-    url: http://chneukirchen.org/dotfiles/bin/f
-    executable: f
-    sha1: 022679ab48e6436a5d286cc636e15ad81f3b09b5
-
 curl module 1t:
     url: http://chneukirchen.org/dotfiles/bin/1t
     executable: 1t
@@ -362,29 +267,6 @@ git module zsh-manydots-magic:
     rev: 4372de0718714046f0c7ef87b43fc0a598896af6
     pick: manydots-magic
 
-git module gitvoodoo:
-    url: https://github.com/johnbartholomew/gitvoodoo
-    export: bin
-    pick:
-        - bin/git-create-ref
-        - bin/git-ls-objects
-        - bin/git-merge-into
-        - bin/git-xbranch
-        - bin/git-xclean
-    rev: 518f710546d5f110822f6f84a801c66f6dd0982e
-
-curl module diff-so-fancy:
-    url: https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
-    executable: diff-so-fancy
-    sha1: 73915ad64a95a67d074006f76f5e65288498f30d
-
-git module hub-completion:
-    url: https://github.com/github/hub
-    move:
-        etc/hub.zsh_completion: _hub
-    pick: _hub
-    rev: 363513a0f822a8bde5b620e5de183702280d4ace
-
 git module zsh-autosuggestions:
     url: https://github.com/zsh-users/zsh-autosuggestions
     rev: a411ef3e0992d4839f0732ebeb9823024afaaaa8
@@ -396,27 +278,6 @@ git module git-extras:
         - bin/git-alias
     rev: 14260020376c4d5905dc35b41a8ba32c5e340326
 
-git module flu:
-    url: https://github.com/eventi/noreallyjustfuckingstopalready
-    rev: d43d811a9989eef6ce736e5720328dd351efd246
-    move:
-        flu.sh: osx-flush-dns-cache
-    pick: osx-flush-dns-cache
-
-git module osx-wificleaner:
-    url: https://github.com/mubix/osx-wificleaner
-    pick: osx-wificleaner
-    move:
-        osx_wificleaner.py: osx-wificleaner
-    rev: cb799eb9daae20b4144305a61ef1280c62d4965a
-
-git module md-inline2ref:
-    url: https://gist.github.com/1207378
-    move:
-        inline2ref.rb: markdown-inline-to-ref
-    executable: markdown-inline-to-ref
-    rev: a6ab0dcf2cf5491077ab7f37cc2adbabd67f8b91
-
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
     move:
@@ -424,17 +285,6 @@ git module gnu2bsd:
     pick: gnu2bsd-lscolors
     executable: gnu2bsd-lscolors
     rev: 1cd2e3c0a7730bb3b86161b1ab50a408da823edf
-
-git module git-fixup:
-    url: https://github.com/keis/git-fixup
-    move:
-        git-fixup: scripts/git-fixup
-        completion.zsh: zsh-functions/_git-fixup
-    pick:
-        - scripts/git-fixup
-        - zsh-functions/_git-fixup
-    executable: scripts/git-fixup
-    rev: 76c688c5582c5bd417231696ec4617f7d2de9bf8
 
 git module zsh-zbell:
     url: https://gist.github.com/5278239
@@ -466,14 +316,6 @@ git module zsh-sort-timings:
     move:
         sort_timings.zsh: zsh_sort_timings
     executable: zsh_sort_timings
-
-git module hardlinkpy:
-    url: https://github.com/akaihola/hardlinkpy
-    pick: hardlink
-    move:
-        hardlink.py: hardlink
-    executable: hardlink
-    rev: 4e95daf7969d36f6f09722c9240c00690ea43329
 
 git module tmux-float:
     url: https://gitlab.com/Jrahme/tmux-float
@@ -512,28 +354,13 @@ git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
-        - src
+        - src/batgrep.sh
     rev: 38014ba72d70599c04414a52b8bd9c3c120662a9
-
-git module titlecase-perl:
-    url: https://gist.github.com/9f9e8650d68b13ce4d78.git
-    move:
-        TitleCase.pl: titlecase
-    executable: titlecase
-    rev: d7d64ccbc6e1c86b0aae5cb368ea1f6f7f3738c5
 
 git module ifne:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
     rev: 8902d0579e8859787b9c60590c9bc43ff9149b3d
-
-git module simpler-color-test:
-    url: https://gist.github.com/4173926.git
-    move:
-        simpler: 4bitcolortest
-    pick: 4bitcolortest
-    executable: 4bitcolortest
-    rev: ff6e81c979bdfb3791bfa5428e9e6f3a67d3016c
 
 curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
@@ -555,12 +382,6 @@ curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
     sha1: 717f731d41d56cea426f9b86abab43908eca7977
 
-git module rmate:
-    url: https://github.com/aurora/rmate
-    pick: rmate
-    executable: rmate
-    rev: 5f8a56678eacee80388c9dbd10fe28e6f83196a4
-
 git module kakoune-dracula:
     url: https://github.com/dracula/kakoune
     pick: colors
@@ -576,12 +397,6 @@ curl module cht-zsh:
     url: https://cheat.sh/:zsh
     filename: _cht
     sha1: a79df4716c054e68d29923923b0287f441a256bb
-
-curl module yt-dlp:
-  url: https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
-  filename: yt-dlp
-  executable: yt-dlp
-  sha1: 9069d1d67edf0fdcd98d7f243324bcb1c73e746e
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
