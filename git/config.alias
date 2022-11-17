@@ -164,9 +164,6 @@
 	# Diffstat of uncached changes, ignoring whitespace
 	ds = !git --no-pager diff --stat -M -w
 
-	# Create a new, entirely empty branch with no commits
-	empty-branch = "!sh -e -c 'git symbolic-ref HEAD \"refs/heads/$1\"; rm -f $(git rev-parse --git-dir)/index; git clean -fdx' \"$@\""
-
 	# Edit the unmerged files
 	edit-unmerged = jump merge
 
