@@ -5,6 +5,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
 else
     export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
 fi
+typeset -TUx XDG_DATA_DIRS xdg_data_dirs
 
 if [[ "${PROFILE_STARTUP_LINES:-false}" == true ]]; then
     # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
