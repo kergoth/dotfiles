@@ -15,9 +15,6 @@ imports:
     powerlevel10k: zsh/themes/powerlevel10k
     zsh-nix-shell: zsh/plugins/nix-shell
 
-    # Kakoune
-    kakoune-dracula: kakoune
-
     # Scripts
     ddimage: external/scripts
     dtrx: external/scripts
@@ -375,11 +372,6 @@ git module git-assembler:
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
     sha1: 717f731d41d56cea426f9b86abab43908eca7977
-
-git module kakoune-dracula:
-    url: https://github.com/dracula/kakoune
-    pick: colors
-    rev: bb1bce85bb7cb108ddc6170c700bcc68888f4a8d
 
 curl module cht:
     url: https://cheat.sh/:cht.sh
