@@ -21,7 +21,6 @@ imports:
     # Scripts
     ddimage: external/scripts
     dtrx: external/scripts
-    fasd: fasd/scripts
     ifne: external/scripts
     gnu2bsd: ls/scripts
     git-assembler: git/scripts
@@ -169,11 +168,6 @@ git module wget-finder:
     export: sh/tools
     pick: sh/tools/wget-finder
     rev: 4a40fa318c79a662476299b1e195a8889679f8db
-
-git module fasd:
-    url: https://github.com/clvv/fasd
-    pick: fasd
-    rev: 90b531a5daaa545c74c7d98974b54cbdb92659fc
 
 git module git-scripts:
     url: https://github.com/git/git

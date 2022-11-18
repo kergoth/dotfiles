@@ -1,6 +1,0 @@
-# fv [FUZZY PATTERN] - Open recent files from viminfo (with fasd) in vim
-
-local files
-files=("${(@f)"$(fasd -flt -B viminfo | fzf-tmux --select-1 --no-sort --tac --multi --query="$*" --exit-0)"}") || return $?
-print -s vim $files
-vim $files
