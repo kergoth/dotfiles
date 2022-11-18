@@ -17,3 +17,4 @@ done
 
 path=(~/.local/bin ~/.nix/shims $path)
 manpath=($HOME/.nix-profile/share/man $manpath)
+fpath=($HOME/.nix-profile/share/zsh/site-functions $fpath)
