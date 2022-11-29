@@ -31,9 +31,6 @@
 [github]
 	user = kergoth
 
-[interactive]
-	diffFilter = git-diff-filter
-
 [pretty]
 	lg = format:%Cred%h%Creset %Cgreen%ad%Creset%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset
 
