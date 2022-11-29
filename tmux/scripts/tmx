@@ -37,7 +37,11 @@ tmux() {
     if [ -e ~/.config/tmux/config ]; then
         set -- -f ~/.config/tmux/config "$@"
     fi
-    command tmux -u2 "$@"
+    if command -v direnv >/dev/null 2>&1; then
+        direnv exec / tmux -u2 "$@"
+    else
+        command tmux -u2 "$@"
+    fi
 }
 
 get_group () {
