@@ -15,5 +15,6 @@ if [ -e themes ]; then
 fi
 
 if which bat >/dev/null 2>&1; then
+    bat cache --clear >/dev/null &
     bat cache --build >/dev/null &
 fi
