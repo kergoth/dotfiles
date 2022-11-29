@@ -120,6 +120,7 @@
 [notes]
 	rewriteRef = refs/notes/*
 	rewriteMode = concatenate
+	displayRef = refs/notes/*
 
 [rerere]
 	enabled = 1
