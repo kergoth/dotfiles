@@ -81,11 +81,11 @@
 	rebase-upstream = rebase -i @{u}
 	ru = !git rebase-upstream
 
-	# Run a topic branch interdiff between HEAD and upstream
-	tbdiff-out = tbdiff @{push}...HEAD
-	tbdiff-in = tbdiff @{u}...HEAD
-	tbdiff-upstream = tbdiff @{u}...HEAD
-	tbdiff-old-head = tbdiff HEAD@{1}...HEAD
+	# Run a range diff between HEAD and upstream
+	diff-out = range-diff @{push}...HEAD
+	diff-in = range-diff @{u}...HEAD
+	diff-upstream = range-diff @{u}...HEAD
+	diff-old-head = range-diff HEAD@{1}...HEAD
 
 	# Run git test-sequence against the commits we'll be pushing
 	test-outgoing = !git test-sequence @{u}..
