@@ -22,7 +22,7 @@
 	diffFilter = delta --color-only --features=interactive
 
 [delta]
-	theme = Dracula
+	syntax-theme = Dracula
 	navigate = true
 
 [advice]
