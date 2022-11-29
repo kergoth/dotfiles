@@ -1,0 +1,15 @@
+update_env
+
+local cmd="$1"
+shift
+
+if (( $+commands[oe-docker] )); then
+    docker_image=${docker_image:-$(. "$(find_up config)/config" && echo "${docker_image:-}")}
+    if [[ -n "$docker_image" ]]; then
+        command oe-docker "$cmd" "$@"
+    else
+        command "$cmd" "$@"
+    fi
+else
+    command "$cmd" "$@"
+fi
