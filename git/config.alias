@@ -34,7 +34,7 @@
 	rebase-test = !git -c core.editor=/bin/true rebase -ix
 	rebase-test-i = rebase -ix
 	source = config remote.origin.url
-	addnp = "!f(){ git add -N "$@" && git add -p "$@"; }; f"
+	addnp = "!f(){ git add -N \"$@\" && git add -p \"$@\"; }; f"
 	fetch-noprompt = "!f() { GIT_SSH_COMMAND=\"ssh -oBatchMode=yes\" GIT_TERMINAL_PROMPT=0 git fetch \"$@\"; }; f"
 
 	# Pretty one line logs
