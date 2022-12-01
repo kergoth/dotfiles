@@ -1,0 +1,11 @@
+update_env
+
+local cmd=$1
+shift
+
+docker_image=$(. "$(find_up config)/config" && echo "${docker_image:-}")
+if (( $+commands[oe-docker] )) && [[ -n "$docker_image" ]]; then
+    command oe-docker "$cmd" "$@" | grep -v '^useradd:' | tr -d '\r'
+else
+    command "$cmd" "$@"
+fi

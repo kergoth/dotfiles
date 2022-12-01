@@ -1,0 +1,3 @@
+#!/bin/sh
+
+bitbake-getvar --value "$@" | grep -Ev '^(useradd|NOTE|ERROR|WARNING): '

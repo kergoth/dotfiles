@@ -1,42 +1,24 @@
-get-bbvar () {
-    local var="$1"
-    shift
-    if [ $# -gt 0 ]; then
-        local recipe="$1"
-        shift
-        set -- -r "$recipe" "$@"
-    fi
-    bitbake-getvar --value "$@" "$var" | grep -Ev '^(useradd|NOTE|ERROR|WARNING): '
-}
+# Run in docker when appropriate
+for cmd in devtool recipetool bitbake bitbake-layers \
+            bitbake-diffsigs bitbake-dumpsig bitbake-getvar \
+            bitbake-getvars bitbake-selftest; do
+    alias $cmd="oe-docker-exec $cmd"
+done
 
-cd-workdir () {
-    cd "$(get-bbvar WORKDIR "$1" | tr -d '\r\n')"
-}
+if (( $+commands[rg] )); then
+    alias bbrg="command rg -t bitbake"
+    alias bbg=bbrg
+elif (( $+commands[pt] )); then
+    alias bbag="pt -G '\.(bb|bbappend|inc|conf)$'"
+    alias bbg=bbag
+elif (( $+commands[ag] )); then
+    alias bbag="ag -G '\.(bb|bbappend|inc|conf)$'"
+    alias bbg=bbag
+elif (( $+commands[ack] )); then
+    alias bback='ack --type=bitbake'
+    alias bbag=bback
+    alias bbg=bbag
+fi
+alias bbfd="fd -t f -e bb -e inc -e conf -e bbclass -e bbappend"
+alias bbfdf="bbfd ''"
 
-cd-srcdir () {
-    cd "$(get-bbvar S "$1" | tr -d '\r\n')"
-}
-
-cd-objdir () {
-    cd "$(get-bbvar B "$1" | tr -d '\r\n')"
-}
-
-bbrebuild () {
-    bitbake -c cleansstate "$@" && bitbake -C configure -k "$@"
-}
-
-bbrebake () {
-    bitbake -c clean "$@" && bitbake -k "$@"
-}
-
-alias bblayers=bitbake-layers
-
-alias bb="oe-docker-run bb"
-alias bitbake-diffsigs="oe-docker-run bitbake-diffsigs"
-alias bitbake-dumpsig="oe-docker-run bitbake-dumpsig"
-alias bitbake-getvar="oe-docker-run bitbake-getvar"
-alias bitbake-getvars="oe-docker-run bitbake-getvars"
-alias bitbake-layers="oe-docker-run bitbake-layers"
-alias bitbake="oe-docker-run bitbake"
-alias devtool="oe-docker-run devtool"
-alias recipetool="oe-docker-run recipetool"

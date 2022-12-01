@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -x
+
+bb getvar --value -r "$1" WORKDIR >&2
+bb getvalue -r "$1" WORKDIR >&2
+
+printf >&2 'cd "$(bb getvalue -r "%s" WORKDIR)"\n' "$1"
+# shellcheck disable=SC2016
+printf 'cd "$(bb getvalue -r "%s" WORKDIR)"\n' "$1"

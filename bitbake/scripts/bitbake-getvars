@@ -35,18 +35,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bitbake Query Variable")
     parser.add_argument("variables", help="variable name to query", nargs='+', metavar='VARIABLE')
     parser.add_argument("-r", "--recipe", help="Recipe name to query", default=None, required=False)
-    parser.add_argument('-u', '--unexpand', help='Do not expand the value (with --value)', action="store_true")
-    parser.add_argument('-f', '--flag', help='Specify a variable flag to query (with --value)', default=None)
-    parser.add_argument('--value', help='Only report the value, no history and no variable name', action="store_true")
+    parser.add_argument('-u', '--unexpand', help='Do not expand the value (implies --value)', action="store_true")
+    parser.add_argument('-f', '--flag', help='Specify a variable flag to query (implies --value)', default=None)
+    parser.add_argument('--value', '-b', '--bare', help='Only report the value, no history and no variable name', action="store_true")
     args = parser.parse_args()
 
-    if args.unexpand and not args.value:
-        print("--unexpand only makes sense with --value")
-        sys.exit(1)
-
-    if args.flag and not args.value:
-        print("--flag only makes sense with --value")
-        sys.exit(1)
+    if args.flag or args.unexpand:
+        args.value = True
 
     with bb.tinfoil.Tinfoil(tracking=True) as tinfoil:
         if args.recipe:
@@ -62,4 +57,16 @@ if __name__ == "__main__":
             elif args.value:
                 print(str(d.getVar(variable, expand=(not args.unexpand))))
             else:
-                bb.data.emit_var(variable, d=d, all=True)
+                if d.getVarFlag(variable, 'python', False) and d.getVarFlag(variable, "func", False):
+                    print("# line: {0}, file: {1}".format(
+                        d.getVarFlag(variable, "lineno", False),
+                        d.getVarFlag(variable, "filename", False)))
+
+                    varExpanded = d.expand(variable)
+                    value = d.getVar(variable, expand=(not args.unexpand)).rstrip('\n')
+                    flags = ['python']
+                    if d.getVarFlag(variable, 'fakeroot', False):
+                        flags.append('fakeroot')
+                    print("%s %s() {\n%s\n}" % (' '.join(sorted(flags)), varExpanded, value))
+                else:
+                    bb.data.emit_var(variable, d=d, all=True)

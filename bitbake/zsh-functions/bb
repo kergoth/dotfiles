@@ -1,0 +1,13 @@
+local command="${1#sh-}" 
+if (( $+commands[bb-sh-$command] )); then
+    command=sh-$command
+fi
+if [ "$#" -gt 0 ]; then
+    shift
+fi
+
+case "$command" in
+    (set-layer-path | set-recipe-scope) eval "$(oe-docker-exec bb "sh-$command" "$@")" ;;
+    (sh-*) eval "$(oe-docker-exec bb "$command" "$@")" ;;
+    (*) oe-docker-exec bb "$command" "$@" ;;
+esac
