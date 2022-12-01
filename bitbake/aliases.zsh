@@ -6,7 +6,7 @@ get-bbvar () {
         shift
         set -- -r "$recipe" "$@"
     fi
-    (eval $(bb show -b "$@" "$var" | grep -v Parsing); eval "printf '%s' \"\$$var\"";)
+    bitbake-getvar --value "$@" "$var" | grep -Ev '^(useradd|NOTE|ERROR|WARNING): '
 }
 
 cd-workdir () {
