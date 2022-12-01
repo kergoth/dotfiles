@@ -22,7 +22,7 @@ cd-objdir () {
 }
 
 bbrebuild () {
-    bitbake -c clean "$@" && bitbake -C configure -k "$@"
+    bitbake -c cleansstate "$@" && bitbake -C configure -k "$@"
 }
 
 bbrebake () {
