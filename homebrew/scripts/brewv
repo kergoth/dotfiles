@@ -9,9 +9,10 @@ XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
 
 usage() {
-    echo >&2 "Usage: ${0##*/} [options] BREWENV_NAME [BREW_ARGS..]"
+    echo >&2 "Usage: ${0##*/} [options] BREWENV_NAME [FORMULA..]"
     echo >&2
     echo >&2 "Options":
+    echo >&2 "  -a    Arguments for brew-install. If specified, FORMULA are not implicitly passed."
     echo >&2 "  -e    Use what we can from an existing homebrew install"
     echo >&2 "  -h    Show this help/usage"
     echo >&2
@@ -68,9 +69,13 @@ abs_readlink() {
     done
 }
 
+install_args=
 use_from_master=0
-while getopts he opt; do
+while getopts a:eh opt; do
     case "$opt" in
+        a)
+            install_args="$OPTARG"
+            ;;
         e)
             use_from_master=1
             if ! brew_bin="$(command -v brew 2>/dev/null)"; then
@@ -139,7 +144,12 @@ PATH="$brewenv_dir/bin:$PATH"
 if [ $# -eq 0 ]; then
     set -- "$brewenv"
 fi
-brew install "$@"
+if [ -n "$install_args" ]; then
+    # shellcheck disable=SC2086
+    brew install $install_args
+else
+    brew install "$@"
+fi
 
 cat <<END >"$brewenv_dir/bin/man"
 #!/bin/sh
