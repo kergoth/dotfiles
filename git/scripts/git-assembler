@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # git-assembler: update git branches using high-level instructions
-# Copyright(c) 2019-2020 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
+# Copyright(c) 2019-2022 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
 # Distributed under the GNU GPLv3+ license, WITHOUT ANY WARRANTY.
 import subprocess as sp
 import argparse
 import os, sys
 import shutil
 import shlex
-import json
+import pickle
+import re
 from enum import Enum, IntEnum
 
 import logging
@@ -15,7 +16,7 @@ from logging import error, warning, info, debug
 
 APP_DSC = "update git branches using high-level instructions"
 APP_SIG = "git-assembler"
-APP_VER = "1.2"
+APP_VER = "1.3"
 
 
 def repo_toplevel():
@@ -52,6 +53,9 @@ def assembly_path(toplevel_dir, common_dir):
     return None
 
 
+def parse_info(path, line, msg):
+    info('{}:{}: {}'.format(path, line, msg))
+
 def parse_error(path, line, msg):
     error('{}:{}: {}'.format(path, line, msg))
 
@@ -59,9 +63,9 @@ def os_error(e):
     error(str(e))
 
 
-def parse_assembly(path):
+def parse_assembly(path, branches):
     try:
-        fd = open(path)
+        fd = open(path, 'rb')
     except OSError as e:
         os_error(e)
         return None
@@ -71,14 +75,14 @@ def parse_assembly(path):
 
     for n, line in enumerate(fd, 1):
         # strip comments
-        line = line.split('#', 1)[0]
+        line = line.split(b'#', 1)[0]
 
         # basic tokenization
         tokens = line.split()
         if len(tokens) == 0:
             continue
 
-        cmd = tokens[0]
+        cmd = tokens[0].decode('ascii', 'surrogateescape')
         if cmd == 'target':
             if len(tokens) < 2:
                 parse_error(path, n, 'invalid assembly line')
@@ -86,47 +90,98 @@ def parse_assembly(path):
             if len(settings['target']):
                 parse_error(path, n, 'default target/s redefined')
                 return None
+
+            # wilcard expansion for targets is performed later
             settings['target'] = tokens[1:]
 
         elif cmd in {'base', 'rebase', 'stage', 'merge'}:
             if len(tokens) < 3:
                 parse_error(path, n, 'invalid assembly line')
                 return None
-            branch, args = tokens[1], tokens[2:]
+            target, args = tokens[1], tokens[2:]
 
-            node = nodes.get(branch)
-            if node is None:
-                node = empty_node(branch)
-                nodes[branch] = node
+            # expand the target into multiple rules
+            if not branch_is_pattern(target):
+                targets = [target]
+            else:
+                try:
+                    targets = list(expand_branches(target, branches))
+                except re.error as e:
+                    parse_error(path, n, str(e))
+                    return None
+                if len(targets) == 0:
+                    parse_error(path, n, 'pattern {} in rule does not match any branch'.format(
+                        branch_str(target)))
+                    return None
 
-            if cmd in {'base', 'rebase', 'stage'}:
-                # define the branch base
-                if node['base']:
-                    parse_error(path, n, 'branch base/type cannot be redefined')
-                    return None
-                if len(args) != 1:
-                    parse_error(path, n, 'invalid base for branch {}'.format(branch))
-                    return None
-                node['base'] = args[0]
-                if node['base'] == node['name']:
-                    parse_error(path, n, 'refusing to {} {} onto itself'.format(cmd, node['base']))
-                    return None
-                if cmd == 'stage':
-                    node['type'] = BranchType.STAGE
-                elif cmd == 'rebase':
-                    node['type'] = BranchType.REBASE
-                else:
-                    node['type'] = BranchType.BASE
-            elif cmd == 'merge':
-                # add dependencies
-                for arg in args:
-                    if arg == node['name']:
-                        parse_error(path, n, 'refusing merge of {} into itself'.format(arg, branch))
+            for branch in targets:
+                node = nodes.get(branch)
+                if node is None:
+                    node = empty_node(branch)
+                    nodes[branch] = node
+
+                if cmd in {'base', 'rebase', 'stage'}:
+                    # define the branch base
+                    if node['base']:
+                        parse_error(path, n, 'branch base/type cannot be redefined')
                         return None
-                    elif arg in node['merge']:
-                        parse_error(path, n, 'duplicate merge of {} into {}'.format(arg, branch))
+                    if len(args) != 1:
+                        parse_error(path, n, 'invalid base for branch {}'.format(branch_str(branch)))
                         return None
-                node['merge'].extend(args)
+                    node['base'] = args[0]
+                    if branch_is_pattern(node['base']):
+                        parse_error(path, n, 'base {} cannot be a pattern'.format(branch_str(node['base'])))
+                        return None
+                    if node['base'] == node['name']:
+                        parse_error(path, n, 'refusing to {} {} onto itself'.format(
+                            cmd, branch_str(node['base'])))
+                        return None
+                    if cmd == 'stage':
+                        node['type'] = BranchType.STAGE
+                    elif cmd == 'rebase':
+                        node['type'] = BranchType.REBASE
+                    else:
+                        node['type'] = BranchType.BASE
+
+                elif cmd == 'merge':
+                    args_exp = []
+                    for arg in args:
+                        if not branch_is_pattern(arg):
+                            # check rules for explicit dependencies
+                            for arg in args_exp:
+                                if arg in node['merge']:
+                                    parse_error(path, n, 'duplicate merge of {} into {}'.format(
+                                        branch_str(arg), branch_str(branch)))
+                                    return None
+                            args_exp.append(arg)
+                        else:
+                            # expand the argument list
+                            try:
+                                arg_exp = list(expand_branches(arg, branches))
+                            except re.error as e:
+                                parse_error(path, n, str(e))
+                                return None
+                            if len(arg_exp) == 0:
+                                parse_error(path, n, 'pattern {} in rule does not match any branch'.format(
+                                    branch_str(target)))
+                                return None
+                            for arg in arg_exp:
+                                # check rules that apply to expanded dependencies
+                                if arg in node['merge']:
+                                    parse_info(path, n, 'ignoring duplicate merge of {} into {}'.format(
+                                        branch_str(arg), branch_str(branch)))
+                                    continue
+                                args_exp.append(arg)
+
+                    # check rules that apply to all dependencies
+                    for arg in args_exp:
+                        if arg == node['name']:
+                            parse_error(path, n, 'refusing merge of {} into itself'.format(
+                                branch_str(arg), branch_str(branch)))
+                            return None
+
+                    # add dependencies
+                    node['merge'].extend(args_exp)
 
         else:
             parse_error(path, n, 'unknown command: {}'.format(cmd))
@@ -153,11 +208,12 @@ def read_git_config():
             'env': 'GIT_ASSEMBLER_MERGEFF',
         },
     )
+
     conf = {}
     for entry in keys:
-        try:
+        if 'type' in entry:
             type_flags = ('--type', entry['type'])
-        except AttributeError:
+        else:
             type_flags = tuple()
 
         if 'env' in entry and entry['env'] in os.environ:
@@ -171,7 +227,7 @@ def read_git_config():
             except sp.CalledProcessError as e:
                 error('failed to parse value from env variable {}'.format(entry['env']))
                 return None
-            value = line.decode(sys.getfilesystemencoding()).rstrip()
+            value = line.rstrip()
         else:
             try:
                 line = sp.check_output(['git', 'config',
@@ -182,14 +238,15 @@ def read_git_config():
             except sp.CalledProcessError as e:
                 error('failed to parse value for config {}'.format(entry['key']))
                 return None
-            value = line.decode(sys.getfilesystemencoding()).rstrip()
+            value = line.rstrip()
 
         if 'type' in entry:
             if entry['type'] == 'bool':
-                value = value == 'true'
+                value = value == b'true'
 
         conf[entry['key']] = value
     return conf
+
 
 class BranchType(Enum):
     BRANCH = 0 # regular branch (no base)
@@ -248,15 +305,10 @@ def assembly_graph(nodes, targets=None):
         node['deps'] = deps
 
     # filter targets
-    if targets is None:
+    if targets is None or len(targets) == 0:
         left = set(nodes)
     else:
         left = set(targets)
-        branches = set(nodes)
-        for branch in targets:
-            if branch not in branches:
-                error('unknown branch {}'.format(branch))
-                return None
 
     # find roots
     connected = set()
@@ -274,7 +326,7 @@ def assembly_graph(nodes, targets=None):
     while len(stack):
         branch, seen = stack.pop()
         if branch in seen:
-            error('dependency cycle detected for branch {}'.format(branch))
+            error('dependency cycle detected for branch {}'.format(branch_str(branch)))
             return None
         seen.add(branch)
         for dep in nodes[branch]['deps']:
@@ -293,8 +345,11 @@ class Ansi:
     RED   = "\033[1;31m"
     RESET = "\033[0;0m"
 
+def branch_str(branch):
+    return branch.decode(sys.getdefaultencoding(), 'surrogateescape')
+
 def color_node(node):
-    name = node['name']
+    name = branch_str(node['name'])
     if COLOR_MODE != True:
         return name
     elif node['state']['missing']:
@@ -383,7 +438,7 @@ def needs_merge(dst, branch):
 def fork_point(dst, base):
     proc = sp.run(['git', 'merge-base', '--fork-point', base, dst],
                   stdout=sp.PIPE, stderr=sp.DEVNULL)
-    fork_point = proc.stdout.decode('ascii').rstrip()
+    fork_point = proc.stdout.rstrip()
     if proc.returncode != 0 or len(fork_point) == 0:
         return None
     return fork_point
@@ -392,7 +447,7 @@ def fork_point(dst, base):
 def branch_tip(name):
     proc = sp.run(['git', 'rev-parse', '--verify', name],
                   stdout=sp.PIPE, stderr=sp.DEVNULL)
-    tip = proc.stdout.decode('ascii').rstrip()
+    tip = proc.stdout.rstrip()
     if proc.returncode != 0 or len(tip) == 0:
         return None
     return tip
@@ -412,6 +467,32 @@ def branch_exists(name):
     proc = sp.run(['git', 'rev-parse', '--verify', name],
                   stdout=sp.DEVNULL, stderr=sp.DEVNULL)
     return proc.returncode == 0
+
+
+def branch_list():
+    proc = sp.run(['git', 'branch', '-l', '-a', '--format=%(refname:short)'],
+                  stdout=sp.PIPE)
+    if proc.returncode != 0:
+        return None
+    return proc.stdout.rstrip().split(b'\n')
+
+
+def branch_is_pattern(branch):
+    return (branch[0] == ord('/') or b'*' in branch)
+
+def expand_branches(pattern, branches):
+    if pattern[0] == ord('/'):
+        # user-supplied regex
+        comp = re.compile(pattern[1:], re.LOCALE)
+    else:
+        # convert the glob-like expression into a RE
+        pattern = re.escape(pattern)
+        pattern = pattern.replace(b'\\*\\*', b'.*')
+        pattern = pattern.replace(b'\\*', b'[^/]*')
+        comp = re.compile(b'^' + pattern + b'$')
+    for branch in branches:
+        if re.search(comp, branch):
+            yield branch
 
 
 def node_missing(node):
@@ -498,7 +579,7 @@ def check_dirty(nodes):
 def current_branch():
     proc = sp.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
                   stdout=sp.PIPE, stderr=sp.DEVNULL)
-    name = proc.stdout.decode('ascii').rstrip()
+    name = proc.stdout.rstrip()
     if proc.returncode != 0 or len(name) == 0:
         return None
     return name
@@ -507,7 +588,7 @@ def current_branch():
 def read_state(git_dir):
     state_path = os.path.join(git_dir, 'as-cache', 'state')
     if os.path.exists(state_path):
-        return json.load(open(state_path))
+        return pickle.load(open(state_path, 'rb'))
     else:
         return {}
 
@@ -522,13 +603,13 @@ def save_state(git_dir, state):
     if not dir_exists:
         os.mkdir(cache_dir)
     state_path = os.path.join(cache_dir, 'state')
-    json.dump(state, open(state_path, "w"))
+    pickle.dump(state, open(state_path, 'wb'))
 
 
 def switch_to_branch(name, *git_flags):
     proc = sp.run(['git', 'checkout', '-q', '--no-guess', *git_flags, name],
                   stdout=sp.DEVNULL, stderr=sp.PIPE)
-    stderr = proc.stderr.decode(sys.getdefaultencoding()).rstrip()
+    stderr = proc.stderr.decode(sys.getdefaultencoding(), 'surrogateescape').rstrip()
     return proc.returncode, stderr
 
 
@@ -659,6 +740,41 @@ class ExitStatus(IntEnum):
     CONFIG    = 2
     GITCONFIG = 3
 
+
+def get_targets(cli_targets, set_targets, nodes):
+    # initial target list
+    if len(cli_targets) == 0:
+        patterns = set_targets
+    else:
+        patterns = [branch.encode(sys.getfilesystemencoding(), 'surrogateescape')
+                    for branch in cli_targets]
+
+    # expand patterns
+    targets = []
+    for target in patterns:
+        if not branch_is_pattern(target):
+            targets.append(target)
+        else:
+            try:
+                target_exp = list(expand_branches(target, nodes))
+            except re.error as e:
+                error(str(e))
+                return ExitStatus.ERROR
+            if len(target_exp) == 0:
+                error('pattern {} in argument does not match any node'.format(
+                    branch_str(target)))
+                return None
+            targets.extend(target_exp)
+
+    # check targets against known nodes
+    for branch in targets:
+        if branch not in nodes:
+            error('unknown target branch {}'.format(branch_str(branch)))
+            return None
+
+    return targets
+
+
 def main(argv):
     ap = argparse.ArgumentParser(description=APP_DSC)
     ap.add_argument('-f', '--config', metavar='PATH',
@@ -732,18 +848,21 @@ def main(argv):
         return ExitStatus.GITCONFIG
 
     # build the list of nodes and resulting graph
-    res = parse_assembly(path)
+    branches = branch_list()
+    if branches is None:
+        return ExitStatus.ERROR
+    res = parse_assembly(path, branches)
     if res is None:
         return ExitStatus.CONFIG
     nodes, settings = res
 
-    # construct the list of targets
-    if len(args.target):
-        targets = set(args.target)
-    else:
-        targets = set(settings['target'])
-    if args.all or len(targets) == 0:
+    # construct/check the list of targets
+    if args.all or (len(args.target) == 0 and len(settings['target']) == 0):
         targets = None
+    else:
+        targets = get_targets(args.target, settings['target'], nodes)
+        if targets is None:
+            return ExitStatus.ERROR
 
     # construct the resulting graph
     graph = assembly_graph(nodes, targets)
@@ -801,18 +920,20 @@ def main(argv):
                 error('error while ' + state['last_msg'])
             if state['last_err'] is not None:
                 print(state['last_err'], file=sys.stderr)
-            branch_name = state['last_branch']
-            if branch_name in nodes:
-                branch_name = color_node(nodes[branch_name])
+            if state['last_branch'] in nodes:
+                branch_name = color_node(nodes[state['last_branch']])
+            else:
+                branch_name = branch_str(state['last_branch'])
             warning('stopping at branch {}, fix/commit then re-run {}'.format(branch_name, APP_SIG))
             return ExitStatus.ERROR
 
     # restore initial branch
     if state['start_branch'] != state['last_branch']:
         # the starting branch might no longer exist or be referenced in the nodes
-        branch_name = state['start_branch']
-        if branch_name in nodes:
-            branch_name = color_node(nodes[branch_name])
+        if state['start_branch'] in nodes:
+            branch_name = color_node(nodes[state['start_branch']])
+        else:
+            branch_name = branch_str(state['start_branch'])
         if not args.dry_run and not branch_exists(state['start_branch']):
             logging.log(logging.WARNING, 'cannot restore initial branch {}'.format(branch_name))
         else:

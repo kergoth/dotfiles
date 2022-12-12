@@ -82,12 +82,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 937cadcad0364ee4cceb034fc96d0b6f7d2ae901
+    rev: 2668273616650109d96802592f9204a32a877115
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 122dc464392302114556b53ec01a1390c54f739f
+    rev: b2c910a85ed84cb7e5108e7cb3406a2e825a858f
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -95,7 +95,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 6a5b7245bed56083839c037aa0d37d8bd30df281
+    rev: f9373c96c727e1c8ef7fb48fe49524c1a786fa80
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -141,7 +141,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: b55f5554871e548c9c00a49df7a92f980c0191c2
+    rev: 18e3b38c69da2828efac6adc2ea3a5e85f70e571
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -169,7 +169,7 @@ git module wget-finder:
 git module git-scripts:
     url: https://github.com/git/git
     reup: maint
-    rev: e7e5c6f715b2de7bea0d39c7d2ba887335b40aa0
+    rev: 8706a59933d09354c5e3eb09a543453655a97183
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
@@ -267,7 +267,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 14260020376c4d5905dc35b41a8ba32c5e340326
+    rev: 7c4152ce83442ed0390f6eec0e93a3fb37ee5770
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
@@ -320,7 +320,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: e6eeaf24ce3618ab0b2ae280eb8a6ce865f7c8f4
+    rev: c168e90edaedc73dae348b875bf9a1e1a15cbea4
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -367,7 +367,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: ac0e7288474a2969f4210c73c4e967a409a466a8
+    rev: 9a813c904189e478b521568b4c1a6126b0dcd87f
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
