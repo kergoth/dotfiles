@@ -20,6 +20,8 @@ jira issue view --plain --comments 999 "$@" |
 if [ -s "$tmpfile" ]; then
     grep '^#' "$tmpfile"
     echo
+    echo '## JIRA Issue'
+    echo
     grep -v '^#' "$tmpfile" |
         remove_multiple_blank_lines |
         remove_trailing_blank_lines
