@@ -82,7 +82,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 2668273616650109d96802592f9204a32a877115
+    rev: 547349af77df16d0eed1c73ba3041c84f7b063da
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -95,7 +95,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: f9373c96c727e1c8ef7fb48fe49524c1a786fa80
+    rev: b215131217582b1c634c57ffc61bf3e33190c5f1
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -124,7 +124,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: d686365449ade2480a23f86531a5b6630fcbb7a0
+  rev: a621254b263664efa308a645214d3d140e068676
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -141,7 +141,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 18e3b38c69da2828efac6adc2ea3a5e85f70e571
+    rev: 73162a4bc3403e3532afa8a95008a3b4a00d554a
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -164,12 +164,12 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 4a40fa318c79a662476299b1e195a8889679f8db
+    rev: 01dfaf78c09768fa21400cefa5594a14a5c43b21
 
 git module git-scripts:
     url: https://github.com/git/git
     reup: maint
-    rev: 8706a59933d09354c5e3eb09a543453655a97183
+    rev: c48035d29b4e524aed3a32f0403676f0d9128863
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
@@ -267,7 +267,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 7c4152ce83442ed0390f6eec0e93a3fb37ee5770
+    rev: 4fff03f4297b31df17e122e42a4583a70a292b29
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
@@ -320,7 +320,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: c168e90edaedc73dae348b875bf9a1e1a15cbea4
+    rev: 291b184a521cae8d38bd9b00342f8e81669c1329
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -351,7 +351,7 @@ git module bat-extras:
 git module ifne:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: 8902d0579e8859787b9c60590c9bc43ff9149b3d
+    rev: fb758a189a7a5eee25ed55a17ed27ee34e29625b
 
 curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
