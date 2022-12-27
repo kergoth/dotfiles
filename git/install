@@ -12,7 +12,7 @@ link_git ~/.config/git
 touch ~/.config/git/config.local
 case "$OSTYPE" in
     darwin*)
-        git config -f ~/.config/git/config.local --replace-all credential.helper manager-core
+        git config -f ~/.config/git/config.local --replace-all credential.helper manager
         ;;
     WSL)
         if [ "$INSTALL_DEST" = "$USERPROFILE" ]; then
