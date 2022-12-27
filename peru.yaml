@@ -95,7 +95,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: b215131217582b1c634c57ffc61bf3e33190c5f1
+    rev: 068264933094fb389e4d242e10d63c53b8e739b4
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -141,7 +141,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 73162a4bc3403e3532afa8a95008a3b4a00d554a
+    rev: 12af069dcad672b1563388c61ec33ba8a86c013e
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -351,7 +351,7 @@ git module bat-extras:
 git module ifne:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: fb758a189a7a5eee25ed55a17ed27ee34e29625b
+    rev: 4cb0301a1f39fd0f2a6f0233964a4a21be770c09
 
 curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
