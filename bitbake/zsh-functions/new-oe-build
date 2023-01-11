@@ -95,6 +95,11 @@ fi
         fi
     elif [[ -z "$oe" ]] && [[ -d ../industrial-core ]]; then
         bash -c '. ../industrial-core/setup-environment "$@"' - -b . $args ${MACHINE:-industrial-pc}
+    elif ! [[ -d ../oe-core ]] && ! [[ -d ../openembedded-core ]] && ! [[ -d ../isar ]] && ! [[ -d ../poky ]]; then
+        echo >&2 "Error: no setup script present"
+        cd - >/dev/null
+        rmdir "$BUILDDIR" >/dev/null 2>&1 || :
+        return 1
     fi
 
     for linkdir in downloads sstate-cache cached-binaries; do
@@ -107,6 +112,6 @@ fi
         cp -av ~/mel/workflow/envrc-build .envrc
     fi
     direnv allow
-)
+) || return 1
 
 cd "$BUILDDIR"
