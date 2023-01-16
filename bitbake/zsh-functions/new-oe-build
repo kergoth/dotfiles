@@ -83,6 +83,9 @@ fi
                 return 1
                 ;;
         esac
+        if [ -z "$DISTRO" ]; then
+            export DISTRO=fsl-imx-wayland
+        fi
         bash -c 'cd "$1" && . ./imx-setup-release.sh -b "$2"' - "$topdir" "$(basename "$BUILDDIR")"
     elif [[ -z "$oe" ]] && [[ -d ../meta-polarfire-soc-yocto-bsp ]]; then
         if ! [[ -d ../openembedded-core ]] && [[ -d ../oe-core ]]; then
