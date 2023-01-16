@@ -22,8 +22,8 @@ correct_bare_url() {
     sed -e 's/^\(View this issue on Jira: \)\(.*\)/\1<\2>/'
 }
 
-remove_description_header() {
-    sed -e '/-* Description -*/d'
+adjust_headers() {
+    sed -e 's/--* \(.*\) --*.*/### \1/'
 }
 
 tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
@@ -39,10 +39,10 @@ if [ -s "$tmpfile" ]; then
     echo '## JIRA Issue'
     echo
     grep -v '^# ' "$tmpfile" |
-        remove_description_header |
+        nest_headings |
+        adjust_headers |
         remove_multiple_blank_lines |
         remove_trailing_blank_lines |
         remove_heading_trailing_punctuation |
-        nest_headings |
         correct_bare_url
 fi
