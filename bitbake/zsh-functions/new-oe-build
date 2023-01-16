@@ -24,7 +24,7 @@ while getopts fmioM:a:h opt; do
             args="$OPTARG"
             ;;
         \? | h)
-            echo >&2 "${0##*/} [-m] [-M MACHINE] [-a ARGS] [BUILDDIR]"
+            echo >&2 "${0##*/} [-m|-i|-o] [-f] [-M MACHINE] [-a ARGS] [BUILDDIR]"
             return 1
             ;;
     esac
