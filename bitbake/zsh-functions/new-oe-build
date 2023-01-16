@@ -18,7 +18,7 @@ while getopts fmioM:a:h opt; do
             oe=1
             ;;
         M)
-            MACHINE="$OPTARG"
+            export MACHINE="$OPTARG"
             ;;
         a)
             args="$OPTARG"
