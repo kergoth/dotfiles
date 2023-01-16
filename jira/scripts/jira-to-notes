@@ -10,19 +10,39 @@ remove_trailing_blank_lines() {
     sed -e :a -e '/^\n*$/{$d;N;ba' -e '}'
 }
 
+remove_heading_trailing_punctuation() {
+    sed -e 's/^\(#.*\):/\1/'
+}
+
+nest_headings() {
+    sed -e 's/^\(##*\)/#\1/'
+}
+
+correct_bare_url() {
+    sed -e 's/^\(View this issue on Jira: \)\(.*\)/\1<\2>/'
+}
+
+remove_description_header() {
+    sed -e '/-* Description -*/d'
+}
+
 tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
 trap 'rm -f "$tmpfile"' EXIT INT TERM
 
 jira issue view --plain --comments 999 "$@" |
     strip-color-codes |
-    sed -e 's/^  //; s/  *$//; s/^\([^# ]\)/    \1/;' >"$tmpfile"
+    sed -e 's/^  //; s/  *$//;' >"$tmpfile"
 
 if [ -s "$tmpfile" ]; then
-    grep '^#' "$tmpfile"
+    grep '^# ' "$tmpfile"
     echo
     echo '## JIRA Issue'
     echo
-    grep -v '^#' "$tmpfile" |
+    grep -v '^# ' "$tmpfile" |
+        remove_description_header |
         remove_multiple_blank_lines |
-        remove_trailing_blank_lines
+        remove_trailing_blank_lines |
+        remove_heading_trailing_punctuation |
+        nest_headings |
+        correct_bare_url
 fi
