@@ -4,7 +4,7 @@ set -e
 
 DOTFILESDIR="$(cd "$(dirname "$0")" && cd .. && pwd -P)"
 cd "$DOTFILESDIR" || exit 1
-if [ -e .mrconfig ]; then
+if command -v mr >/dev/null 2>&1 && mr list | grep -qxF "mr list: $DOTFILESDIR"; then
     mr update
 elif [ -e .git ]; then
     git pull
