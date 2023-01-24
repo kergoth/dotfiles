@@ -1,0 +1,1 @@
+PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
