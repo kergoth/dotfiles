@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pkg info -as | sort -k 2 -h | tail -20 | column -t
