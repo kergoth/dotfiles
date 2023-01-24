@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Ghetto map courtesy http://stackoverflow.com/a/1495559 + dlist/dclear
 dset () {

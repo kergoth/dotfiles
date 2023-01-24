@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Clone an oe/yocto layer repo using the layer index.
 
 set -euo pipefail

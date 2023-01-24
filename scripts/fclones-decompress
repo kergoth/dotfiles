@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # fclones transformation script to handle compressed files
 
 set -euo pipefail

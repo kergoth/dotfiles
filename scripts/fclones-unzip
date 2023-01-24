@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # fclones transformation script to handle zip files with one file inside.
 
 set -euo pipefail

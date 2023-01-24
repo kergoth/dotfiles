@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Install packages into a fresh lua sandbox, then link its binaries/scripts
 # into $XDG_DATA_HOME/../bin
 

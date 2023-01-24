@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Interactively select file search results to edit
 #   Uses g to search, fzf to select, vim to edit
 
