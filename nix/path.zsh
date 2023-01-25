@@ -16,8 +16,19 @@ for f in etc/profile.d/nix-daemon.sh etc/profile.d/nix.sh etc/profile.d/hm-sessi
 done
 
 path=(~/.local/bin ~/.nix/shims $path)
+
 if [[ -e ~/.nix-profile ]]; then
-    manpath=($HOME/.nix-profile/share/man $manpath)
-    fpath=($HOME/.nix-profile/share/zsh/site-functions ${buildInputs+$buildInputs/share/zsh/site-functions} $fpath)
-    xdg_data_dirs=($HOME/.nix-profile/share $xdg_data_dirs)
+    manpath=(~/.nix-profile/share/man $manpath)
+    fpath=(~/.nix-profile/share/zsh/site-functions $fpath)
+    path=(~/.nix-profile/bin $path)
+    xdg_data_dirs=(~/.nix-profile/share $xdg_data_dirs)
+fi
+
+if [[ -n $buildInputs ]]; then
+    for p in $=buildInputs; do
+        manpath=($p/share/man $manpath)
+        fpath=($p/share/zsh/site-functions $fpath)
+        path=($p/bin $path)
+        xdg_data_dirs=($p/share $xdg_data_dirs)
+    done
 fi

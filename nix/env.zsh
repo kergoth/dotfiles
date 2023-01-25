@@ -3,5 +3,3 @@ export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/
 if [ -e /usr/lib/locale/locale-archive ]; then
     export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
-
-export XDG_DATA_DIRS=$HOME/.nix-profile/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
