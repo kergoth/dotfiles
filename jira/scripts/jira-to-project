@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+    echo >&2 "${0##*/} PROJECT_PATH [PROJECT_PATH..]"
+    exit 2
+}
+
+process_arguments() {
+    while getopts h opt; do
+        case "$opt" in
+            \? | h)
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        usage
+    fi
+}
+
+strip_colors() {
+    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g"
+}
+
+remove_multiple_blank_lines() {
+    sed -e '/\S/,/^\s*$/!d;'
+}
+
+remove_trailing_blank_lines() {
+    sed -e :a -e '/^\n*$/{$d;N;ba' -e '}'
+}
+
+remove_heading_trailing_punctuation() {
+    sed -e 's/^\(#.*\):/\1/'
+}
+
+nest_headings() {
+    sed -e 's/^\(##*\)/#\1/'
+}
+
+correct_bare_url() {
+    sed -e 's/^\(View this issue on Jira: \)\(.*\)/\1<\2>/'
+}
+
+adjust_headers() {
+    sed -e 's/--* \(.*\) --*.*/### \1/'
+}
+
+emoji_replace () {
+    emoji="\U1f300-\U1f5ff\U1f900-\U1f9ff\U1f600-\U1f64f\U1f680-\U1f6ff\U2600-\U26ff\U2700-\U27bf\U1f1e6-\U1f1ff\U1f191-\U1f251\U1f004\U1f0cf\U1f170-\U1f171\U1f17e-\U1f17f\U1f18e\U3030\U2b50\U2b55\U2934-\U2935\U2b05-\U2b07\U2b1b-\U2b1c\U3297\U3299\U303d\U00a9\U00ae\U2122\U23f3\U24c2\U23e9-\U23ef\U25b6\U23f8-\U23fa"
+    LC_ALL=UTF-8 sed -e "s/[$(printf $emoji)][$(printf $emoji)]*/${1:-}/g"
+    # sed -E s/$'\u2601\uFE0F\?'"/$1/g"
+}
+
+notes_md() {
+    grep '^# ' "$tmpfile"
+    echo
+    echo '## JIRA Issue'
+    echo
+    grep -v '^# ' "$tmpfile" |
+        nest_headings |
+        adjust_headers |
+        remove_multiple_blank_lines |
+        remove_trailing_blank_lines |
+        remove_heading_trailing_punctuation |
+        correct_bare_url
+}
+
+process_arguments "$@"
+shift $((OPTIND - 1))
+
+ret=0
+for project_path; do
+    issue="$(basename "$project_path")"
+
+    (
+        cd "$project_path"
+
+        tmpfile=$(mktemp "${0##*/}.XXXXXX")
+        trap 'rm -f "$tmpfile"' EXIT INT TERM
+
+        jira issue view --plain --comments 999 "$@" "$issue" |
+            strip_colors |
+            sed -e 's/^  //; s/  *$//;' >"$tmpfile"
+
+        if ! [ -s "$tmpfile" ]; then
+            exit 1
+        fi
+
+        head -n 2 "$tmpfile" | tail -n 1 | emoji_replace '|' | cut -d'|' -f3 | sed -e 's/^ *//' >.jira-status
+        sed -n -e '/^# /{ s/^# //p; q; }' "$tmpfile" >.jira-summary
+        sed -n -e '/^--* Description /{ n; /^$/n; :s; /^-/q; p; n; b s; };' "$tmpfile" >.jira-description
+        notes_md >NOTES.md
+    ) || ret=$?
+done
+exit $ret
