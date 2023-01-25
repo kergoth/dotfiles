@@ -39,6 +39,7 @@ alias atw=attach-workspace
 alias wp=workspace-picker
 alias wpa="workspace-picker -d -a"
 
+unalias nw 2>/dev/null
 nw () {
     update_env
     new-workspace "$@"
