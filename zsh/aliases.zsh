@@ -138,9 +138,9 @@ else
     alias ps='ps fux'
     if (( $+commands[dfc] )); then
         alias df=dfc
-        alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs,none'
+        alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs,none,squashfs'
     else
-        alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none'
+        alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none -x squashfs'
     fi
     if ! [[ $OSTYPE =~ freebsd* ]]; then
         alias rm='rm --one-file-system -I'
