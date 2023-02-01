@@ -75,7 +75,8 @@ shift $((OPTIND - 1))
 
 ret=0
 for project_path; do
-    issue="$(basename "$project_path")"
+    name="$(basename "$project_path")"
+    issue="$(echo "$name" | sed -E -e 's/([a-zA-Z][a-zA-Z]*-[0-9][0-9]*).*/\1/')"
 
     (
         cd "$project_path"
