@@ -83,7 +83,7 @@ for project_path; do
         tmpfile=$(mktemp "${0##*/}.XXXXXX")
         trap 'rm -f "$tmpfile"' EXIT INT TERM
 
-        jira issue view --plain --comments 999 "$@" "$issue" |
+        jira issue view --plain --comments 999 "$issue" |
             strip_colors |
             sed -e 's/^  //; s/  *$//;' >"$tmpfile"
 
