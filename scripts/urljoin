@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import sys
-import urlparse
+import urllib.parse
 
 base = sys.argv[1]
-print("\n".join(urlparse.urljoin(base, url) for url in sys.argv[2:]))
+print("\n".join(urllib.parse.urljoin(base, url) for url in sys.argv[2:]))
