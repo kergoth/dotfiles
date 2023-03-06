@@ -62,13 +62,23 @@ if (( $+commands[podman] )) && ! (( $+commands[docker] )); then
 fi
 
 if (( $+commands[fd] )); then
-    fd () {
-        if [[ -t 1 ]]; then
-            command fd -c always "$@" | pager
-        else
-            command fd "$@"
-        fi
-    }
+    if [[ $OSTYPE =~ darwin ]]; then
+        fd () {
+            if [[ -t 1 ]]; then
+                command fd -i -c always "$@" | pager
+            else
+                command fd -i "$@"
+            fi
+        }
+    else
+        fd () {
+            if [[ -t 1 ]]; then
+                command fd -c always "$@" | pager
+            else
+                command fd "$@"
+            fi
+        }
+    fi
 else
     fd () {
         if (( $+commands[ag] )); then
