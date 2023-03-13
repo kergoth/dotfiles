@@ -7,6 +7,14 @@
             "command": 
             {
                 "action": "switchToTab",
+                "index": 5
+            },
+            "keys": "alt+6"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
                 "index": 6
             },
             "keys": "alt+7"
@@ -17,6 +25,14 @@
                 "action": "closeTab"
             },
             "keys": "ctrl+shift+w"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 4
+            },
+            "keys": "alt+5"
         },
         {
             "command": 
@@ -33,22 +49,6 @@
                 "index": 1
             },
             "keys": "alt+2"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 4
-            },
-            "keys": "alt+5"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 5
-            },
-            "keys": "alt+6"
         },
         {
             "command": 
@@ -83,7 +83,7 @@
             "keys": "alt+9"
         }
     ],
-    "defaultProfile": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
+    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
     "launchMode": "maximized",
     "profiles": 
     {
@@ -93,13 +93,19 @@
             "font": 
             {
                 "face": "Input Mono",
-                "size": 11,
+                "size": 11.0,
                 "weight": "light"
             },
             "historySize": 15000
         },
         "list": 
         [
+            {
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "hidden": false,
+                "name": "PowerShell Core",
+                "source": "Windows.Terminal.PowershellCore"
+            },
             {
                 "guid": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
                 "hidden": false,
@@ -124,12 +130,6 @@
                 "guid": "{feebf7ad-a4b3-48b6-8a94-3f59032486eb}",
                 "icon": "ms-appdata:///roaming/ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png",
                 "name": "cosca"
-            },
-            {
-                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-                "hidden": false,
-                "name": "PowerShell Core",
-                "source": "Windows.Terminal.PowershellCore"
             },
             {
                 "commandline": "pwsh.exe -Command \"Start-Process PowerShell -Verb RunAs\"",
@@ -177,6 +177,23 @@
                 "icon": "ms-appx:///ProfileIcons/pwsh.png",
                 "name": "PowerShell Core (Copy)",
                 "startingDirectory": "%USERPROFILE%"
+            },
+            {
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{c397f356-5e7b-55bc-956b-8cb4b9762c26}",
+                "hidden": false,
+                "name": "NixOS",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{7bec344f-38fe-572b-8989-b57b0a52a549}",
+                "hidden": false,
+                "name": "sokol-flex-build",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
@@ -458,5 +475,6 @@
             "white": "#C0C0C0",
             "yellow": "#808000"
         }
-    ]
+    ],
+    "themes": []
 }
