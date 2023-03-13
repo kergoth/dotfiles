@@ -132,6 +132,10 @@ function Copy-SSH-Id {
 }
 Add-Alias ssh-copy-id Copy-SSH-Id
 
+if (Get-Command starship) {
+    Invoke-Expression (&starship init powershell)
+}
+
 if (Test-Path "$env:USERPROFILE\.local.ps1") {
     . "$env:USERPROFILE\.local.ps1"
 }
