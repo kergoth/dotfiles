@@ -61,6 +61,7 @@ imports:
     vscode-zsh-completion: vscode/zsh-functions
     cht: cht/scripts
     cht-zsh: cht/zsh-functions
+    dracula-starship: starship
 
 
 curl module archlinux-icons:
@@ -395,3 +396,8 @@ git module zsh-nix-shell:
     - scripts
     - nix-shell.plugin.zsh
   rev: af6f8a266ea1875b9a3e86e14796cadbe1cfbf08
+
+git module dracula-starship:
+  url: https://github.com/dracula/starship
+  pick: starship.toml
+  rev: af256b7ebb5dfc100f8a673a268c664b99bf7d1d
