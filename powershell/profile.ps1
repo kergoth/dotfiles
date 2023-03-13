@@ -75,7 +75,27 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 Set-PSReadlineOption -BellStyle None
 
 # Linux/Mac command muscle memory
-New-Alias ls Get-ChildItem -Force
+if (Get-Command exa) {
+    # TODO: Make a proper exa function with powershell-style arguments that translate to exa args
+    function Get-ExaChildItem {
+        exa --colour-scale @args
+    }
+    function Get-ExaChildItemHidden {
+        exa --colour-scale -a @args
+    }
+    function Get-ExaChildItemDetailed {
+        exa --colour-scale -l @args
+    }
+    function Get-ExaChildItemSorted {
+        exa --colour-scale -s modified @args
+    }
+    New-Alias ls Get-ExaChildItem -Force
+    New-Alias la Get-ExaChildItemHidden -Force
+    New-Alias ll Get-ExaChildItemDetailed -Force
+    New-Alias lr Get-ExaChildItemSorted -Force
+} else {
+    New-Alias ls Get-ChildItem -Force
+}
 New-Alias which Get-Command -Force
 New-Alias grep Select-String -Force
 New-Alias rm Remove-ItemSafely -Force
