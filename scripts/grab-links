@@ -27,5 +27,5 @@ shift $((OPTIND - 1))
 
 # shellcheck disable=SC2086
 for url; do
-    http --check-status --ignore-stdin "$url" | pup-links "$url" $pup_args
+    http --follow --check-status --ignore-stdin "$url" | pup-links "$url" $pup_args
 done
