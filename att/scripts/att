@@ -2,6 +2,8 @@
 
 set -eu
 
+ATT_ENV_VARS="${ATT_ENV_VARS:-DISPLAY SSH_AGENT_PID SSH_ASKPASS SSH_CONNECTION SSH_AUTH_SOCK WINDOWID XAUTHORITY}"
+
 usage () {
     echo >&2 "Usage: ${0##*/} [-p PRECMD] [SESSION_NAME] [DVTM_ARGS..]"
     exit 2
@@ -79,7 +81,7 @@ else
             exit 2
             ;;
     esac
-    ENV_VARS="^(DISPLAY|SSH_AGENT_PID|SSH_ASKPASS|SSH_CONNECTION|SSH_AUTH_SOCK|WINDOWID|XAUTHORITY)="
+    ENV_VARS="^($(echo "$ATT_ENV_VARS" | tr ' ' '|')="
 
     mkdir -p "$socket_dir"
     export ATT_SESSION="$session_name"
