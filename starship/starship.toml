@@ -1,6 +1,9 @@
+[aws]
+style = "bold #ffb86c"
+
 [character]
 error_symbol = "[λ](bold #ff5555)"
-success_symbol = "[λ](bold #f8f8f2)"
+success_symbol = "[λ](bold #50fa7b)"
 
 [cmd_duration]
 style = "bold #f1fa8c"
@@ -15,8 +18,8 @@ style = "bold #ff79c6"
 style = "bold #ff5555"
 
 [hostname]
-style = "bold #ff5555"
+style = "bold #bd93f9"
 
 [username]
 format = "[$user]($style) on "
-style_user = "bold #bd93f9"
+style_user = "bold #8be9fd"
