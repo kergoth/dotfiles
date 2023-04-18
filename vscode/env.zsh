@@ -1,4 +1,4 @@
-if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
+if [[ -n "$VSCODE_INJECTION" ]]; then
     code_bin="$(command -v code)"
     if [[ $? -ne 0 ]]; then
         code_bin="$(ls -1rt ~/.vscode-server/bin/*/bin/remote-cli/code | tail -n 1)"
@@ -17,6 +17,6 @@ if [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
         export VISUAL=codewait EDITOR=codewait
         export GIT_MERGETOOL=vscode
     fi
-    export VSCODE_IPC_HOOK_CLI
+    export VSCODE_INJECTION
 fi
 #export VSCODE_PORTABLE="$XDG_DATA_HOME"/vscode
