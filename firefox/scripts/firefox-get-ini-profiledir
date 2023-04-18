@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+import configparser
+import sys
+
+c = configparser.RawConfigParser()
+c.read_file(sys.stdin)
+default = list(filter(lambda s: s.get('default') and s.get('path'), c.values()))[0]
+print(default.get('path'))

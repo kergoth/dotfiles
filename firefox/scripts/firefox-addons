@@ -1,0 +1,53 @@
+#!/bin/sh
+
+scriptdir="$(dirname "$0")"
+ff_profileroot=
+case "$OSTYPE" in
+    darwin*)
+        ff_profileroot="$HOME/Library/Application Support/Firefox"
+        ;;
+    *)
+        if [ "$OSTYPE" = linux-gnu ]; then
+            case "$(uname -r)" in
+                *-Microsoft)
+                    OSTYPE=WSL
+                    USERPROFILE="$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")"
+                    ff_profileroot="$USERPROFILE/AppData/Roaming/Mozilla/Firefox"
+                    ;;
+            esac
+        fi
+        ;;
+esac
+default_profile="$(python3 -c "import configparser, sys; c = configparser.RawConfigParser(); c.read_file(sys.stdin); print(list(c[s].get('path') for s in c if dict(c[s]).get('default'))[0])" <"$ff_profileroot/profiles.ini")"
+
+firefox_addons() {
+    cat "$ff_profileroot/$default_profile/extensions.json" \
+        | jq -r \
+            "-L$scriptdir/jq" \
+            '.addons[] | select(.location == "app-profile") | [.defaultLocale.name, .userDisabled, .defaultLocale.homepageURL, .sourceURI] | map(tostring) | join("\t")' \
+        | sed -e '/	true	/s/^/ZZZZZ/' \
+        | sort -f \
+        | sed -e 's/	true	/ [Disabled]	/; s/	false	/	/; s/null//g; s/^ZZZZZ//'
+}
+
+cfgdir="${XDG_CONFIG_HOME:-~/.config}/${0##*/}"
+urlmap="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$urlmap"' EXIT INT TERM
+
+mkdir -p "$cfgdir"
+touch "$cfgdir/config.toml"
+toml-get -f "$cfgdir/config.toml" urls 2>/dev/null \
+    | sed 's, = ,	,; s,^"\([^"]*\)"	,\1	,; s,	"\([^"]*\)",	\1,' \
+        >"$urlmap"
+
+TAB="$(printf '\t')"
+firefox_addons | while read -r line; do
+    addon="$(printf '%s' "$line" | cut -d"$TAB" -f1)"
+    url="$(printf '%s' "$line" | cut -d"$TAB" -f2)"
+    xpi_url="$(printf '%s' "$line" | cut -d"$TAB" -f3)"
+    if [ -z "$url" ] && [ -s "$urlmap" ]; then
+        _addon="${addon% \[Disabled\]}"
+        url="$(grep "^$_addon	" "$urlmap" | sed 's/.*	//')"
+    fi
+    printf '%s\t%s\t%s\n' "$addon" "$url" "$xpi_url"
+done

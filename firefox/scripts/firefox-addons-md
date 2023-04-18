@@ -1,0 +1,30 @@
+#!/bin/sh
+
+disabled="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -f "$disabled"' EXIT INT TERM
+
+aprintf () {
+    if [ -n "$2" ]; then
+        printf '%s [%s](%s)\n' - "$1" "$2"
+    else
+        printf '%s %s\n' - "$1"
+    fi
+}
+
+TAB="$(printf '\t')"
+echo '## Firefox Add-ons'
+firefox-addons | cut -d"$TAB" -f1-2 | while IFS="$TAB" read -r addon url; do
+    case "$addon" in
+        *" [Disabled]")
+            aprintf "${addon% \[Disabled\]}" "$url" >>"$disabled"
+            ;;
+        *)
+            aprintf "$addon" "$url"
+            ;;
+    esac
+done
+if [ -s "$disabled" ]; then
+    echo
+    echo '### Disabled'
+    cat "$disabled"
+fi

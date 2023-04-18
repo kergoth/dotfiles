@@ -58,6 +58,7 @@ imports:
     bat-syntax-bitbake: bat/syntaxes/BitBake
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
+    userjs: firefox
     vscode-zsh-completion: vscode/zsh-functions
     cht: cht/scripts
     cht-zsh: cht/zsh-functions
@@ -401,3 +402,14 @@ git module dracula-starship:
   url: https://github.com/dracula/starship
   pick: starship.toml
   rev: af256b7ebb5dfc100f8a673a268c664b99bf7d1d
+
+git module userjs:
+  url: https://github.com/arkenfox/user.js
+  pick:
+    - updater.sh
+    - updater.bat
+    - prefsCleaner.sh
+    - prefsCleaner.bat
+  executable: updater.sh
+  rev: bdaa2867b923669361a8527065e919c839668599
+
