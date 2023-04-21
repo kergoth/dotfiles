@@ -1,22 +1,17 @@
 #!/bin/sh
 
-if command -v parallel >/dev/null 2>&1; then
-    if parallel -V 2>&1 | grep -Eq '(invalid|illegal) option'; then
-        # moreutils parallel accepts input as arguments, not stdin
-        fetch() {
-            xargs parallel -n 1 git fetch "$@" --
-        }
-    else
-        # GNU parallel
-        fetch() {
-            parallel -n 1 git fetch "$@"
-        }
-    fi
-else
-    fetch() {
-        xargs -n 1 git fetch
-    }
+# shellcheck disable=SC3028
+case "${OSTYPE:-}" in
+    darwin*)
+        ncpus=$(sysctl -n hw.ncpu)
+        ;;
+    *)
+        ncpus=$(grep -c processor /proc/cpuinfo)
+        ;;
+esac
+
+if [ $# -eq 0 ]; then
+    set -- --all
 fi
 
-export GIT_TERMINAL_PROMPT=0
-git remote | fetch "$@"
+git fetch --jobs="$ncpus" --multiple "$@"
