@@ -81,7 +81,7 @@ else
             exit 2
             ;;
     esac
-    ENV_VARS="^($(echo "$ATT_ENV_VARS" | tr ' ' '|')="
+    ENV_VARS="^($(echo "$ATT_ENV_VARS" | tr ' ' '|'))="
 
     mkdir -p "$socket_dir"
     export ATT_SESSION="$session_name"
