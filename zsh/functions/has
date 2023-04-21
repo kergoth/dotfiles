@@ -1,0 +1,6 @@
+has() {
+    for cmd; do
+        command -v "$cmd" &>/dev/null || return 1
+    done
+    return 0
+}
