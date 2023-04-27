@@ -11,8 +11,15 @@ case "$(uname -r)" in
         OSTYPE=WSL
         WSLVER=2
         export USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
-        NPIPERELAY="${NPIPERELAY:-$USERPROFILE/Apps/npiperelay/npiperelay.exe}"
-        if [[ -e "$NPIPERELAY" ]] && (( $+commands[socat] )); then
+        if [[ -z "${NPIPERELAY:-}" ]]; then
+            for i in "$USERPROFILE/Apps/npiperelay/npiperelay.exe" "$USERPROFILE/scoop/apps/npiperelay/current/npiperelay.exe"; do
+                if [[ -e "$i" ]]; then
+                    NPIPERELAY="$i"
+                    break
+                fi
+            done
+        fi
+        if [[ -e "${NPIPERELAY:-}" ]] && (( $+commands[socat] )); then
             export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
             if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
                 rm -f "$SSH_AUTH_SOCK"
