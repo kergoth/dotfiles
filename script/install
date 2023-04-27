@@ -8,6 +8,7 @@ ${0##*/} [options..] [TOPIC..]"
 
 Options:
   -f                 Force install, overwriting any existing files.
+  -d INSTALL_DEST    Install to a specific destination rather than HOME($HOME).
   -x EXCLUDED_TOPIC  Topic to exclude. Cumulative.
   -i INCLUDED_TOPIC  Topic to include. Cumulative.
   -h                 Show usage
