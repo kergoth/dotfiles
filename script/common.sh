@@ -17,7 +17,7 @@ osname="$(uname -s)"
 prefixes="%include %include%${osname} %include%${HOSTNAME}"
 install_force="${install_force:-0}"
 
-case "$OSTYPE" in
+case "${OSTYPE:-}" in
     darwin*)
         : "${XDG_CACHE_HOME:=$INSTALL_DEST/Library/Caches}"
         ;;
