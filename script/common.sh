@@ -32,7 +32,7 @@ case "${OSTYPE:-}" in
                     export WslDisks=/mnt
                     if [ -e /etc/wsl.conf ]; then
                         WslDisks="$(sed -n -e 's/^root = //p' /etc/wsl.conf)"
-                        if [ -n $WslDisks ]; then
+                        if [ -n "$WslDisks" ]; then
                             export WslDisks="${WslDisks%/}"
                         else
                             WslDisks=/mnt
