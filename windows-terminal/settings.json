@@ -153,6 +153,14 @@
                 "name": "Yori"
             },
             {
+                "name": "Git Bash (via scoop)",
+                "commandline": "cmd /c %USERPROFILE%\\scoop\\shims\\bash.exe --cd-to-home",
+                "guid": "{3e6f2964-e43e-47e2-a70d-8e655e2f2fb8}",
+                "hidden": false,
+                "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+                "startingDirectory": "~"
+            }
+            {
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": true,
                 "name": "Windows PowerShell"
