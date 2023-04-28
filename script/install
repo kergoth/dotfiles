@@ -88,10 +88,18 @@ mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME/.
 
 ret=0
 for topic; do
-    case "$exclude" in
-        *\ $topic\ *)
+    if [ -n "$include" ]; then
+        case " $include " in
+        *\ $topic\ *) ;;
+        *)
             continue
             ;;
+        esac
+    fi
+    case " $exclude " in
+    *\ $topic\ *)
+        continue
+        ;;
     esac
     if [ -e "$topic/install" ]; then
         install_force="$force" do_install "$topic/install" || ret=$?
