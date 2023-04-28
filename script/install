@@ -16,7 +16,7 @@ END
     exit 2
 }
 
-do_install () {
+do_install() {
     installscript="$1"
     echo >&2 "Install $(dirname "$installscript")"
     (
@@ -27,11 +27,11 @@ do_install () {
     )
 }
 
-list_topics () {
-    find ./*/ -mindepth 1 -maxdepth 1 -name install \
-        | grep -v /script/ \
-        | sort -u \
-        | sed -e "s#^\./##; s#/install\$##"
+list_topics() {
+    find ./*/ -mindepth 1 -maxdepth 1 -name install |
+        grep -v /script/ |
+        sort -u |
+        sed -e "s#^\./##; s#/install\$##"
 }
 
 force=0
@@ -40,27 +40,27 @@ include=
 exclude=
 while getopts fd:i:x:h opt; do
     case "$opt" in
-        f)
-            force=1
-            ;;
-        d)
-            INSTALL_DEST="$(abspath "$OPTARG")"
-            HOME="$(abspath "$OPTARG")"
-            XDG_CONFIG_HOME=$INSTALL_DEST/.config
-            XDG_DATA_HOME=$INSTALL_DEST/.local/share
-            XDG_CACHE_HOME=$INSTALL_DEST/.cache
-            ;;
-        i)
-            include="${include+$include }$OPTARG"
-            exclude="$(echo "$exclude" | tr ' ' '\n' | grep -vxF "$OPTARG" | xargs)" || :
-            ;;
-        x)
-            exclude="${exclude+$exclude }$OPTARG "
-            include="$(echo "$include" | tr ' ' '\n' | grep -vxF "$OPTARG" | xargs)" || :
-            ;;
-        \? | h)
-            usage
-            ;;
+    f)
+        force=1
+        ;;
+    d)
+        INSTALL_DEST="$(abspath "$OPTARG")"
+        HOME="$(abspath "$OPTARG")"
+        XDG_CONFIG_HOME=$INSTALL_DEST/.config
+        XDG_DATA_HOME=$INSTALL_DEST/.local/share
+        XDG_CACHE_HOME=$INSTALL_DEST/.cache
+        ;;
+    i)
+        include="${include+$include }$OPTARG"
+        exclude="$(echo "$exclude" | tr ' ' '\n' | grep -vxF "$OPTARG" | xargs)" || :
+        ;;
+    x)
+        exclude="${exclude+$exclude }$OPTARG "
+        include="$(echo "$include" | tr ' ' '\n' | grep -vxF "$OPTARG" | xargs)" || :
+        ;;
+    \? | h)
+        usage
+        ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -78,7 +78,10 @@ PATH="$dotfilesdir/scripts:$PATH"
 cd "$dotfilesdir"
 if [ $# -eq 0 ]; then
     # shellcheck disable=SC2046
-    set -- $( ( list_topics; echo "$include" | tr ' ' '\n'; ) | grep -vxF local | sort -u | xargs)
+    set -- $( (
+        list_topics
+        echo "$include" | tr ' ' '\n'
+    ) | grep -vxF local | sort -u | xargs)
     if [ -d local ]; then
         set -- "$@" local
     fi
