@@ -117,7 +117,7 @@ esac
 
 echo >&2 "Comparing the list of files from $from to $to"
 comm $comm_i_arg "$fromfiles" "$tofiles" \
-    | sort -b \
+    | sort -fb \
     | sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" \
     | exclude \
     | ${PAGER:-more}
