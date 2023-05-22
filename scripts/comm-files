@@ -112,11 +112,8 @@ case "$OSTYPE" in
         ;;
 esac
 
-cd "$from" || exit 2
-find . "$@" | normalize_case_filter | sort -f >"$fromfiles"
-cd - >/dev/null
-cd "$to" || exit 2
-find . "$@" | normalize_case_filter | sort -f >"$tofiles"
+( cd "$from" && find . "$@" ) | normalize_case_filter | sort -f >"$fromfiles"
+( cd "$to" && find . "$@" )  | normalize_case_filter | sort -f >"$tofiles"
 
 echo >&2 "Comparing the list of files from $from to $to"
 comm $comm_i_arg "$fromfiles" "$tofiles" \
