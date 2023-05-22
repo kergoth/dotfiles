@@ -215,9 +215,8 @@ Configs created by `p10k configure` enable show on command for several prompt se
 Here's the relevant parameter for kubernetes context:
 
 ```zsh
-# Show prompt segment "kubecontext" only when the command you are typing
-# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl, stern, kubeseal, or skaffold.
-typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
+# Show prompt segment "kubecontext" only when the command you are typing invokes one of these tools.
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens'
 ```
 
 To customize when different prompt segments are shown, open `~/.p10k.zsh`, search for
@@ -317,6 +316,7 @@ enable as many segments as you like. It won't slow down your prompt or Zsh start
 | `battery` | internal battery state and charge level (yep, batteries *literally* included) |
 | `command_execution_time` | duration (wall time) of the last command |
 | `context` | user@hostname |
+| `cpu_arch` | CPU architecture |
 | `dir` | current working directory |
 | `direnv` | [direnv](https://direnv.net/) status |
 | `disk_usage` | disk usage |
@@ -337,6 +337,7 @@ enable as many segments as you like. It won't slow down your prompt or Zsh start
 | `midnight_commander` | [midnight commander](https://midnight-commander.org/) shell |
 | `nix_shell` | [nix shell](https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html) indicator |
 | `nnn` | [nnn](https://github.com/jarun/nnn) shell |
+| `lf` | [lf](https://github.com/gokcehan/lf) shell |
 | `nodeenv` | node.js environment from [nodeenv](https://github.com/ekalinin/nodeenv) |
 | `nodenv` | node.js environment from [nodenv](https://github.com/nodenv/nodenv) |
 | `node_version` | [node.js](https://nodejs.org/) version |
@@ -411,6 +412,7 @@ Powerlevel10k.
 - [Zplugin](#zplugin)
 - [Zinit](#zinit)
 - [Zi](#zi)
+- [Zap](#zap)
 - [Homebrew](#homebrew)
 - [Arch Linux](#arch-linux)
 - [Alpine Linux](#arch-linux)
@@ -424,7 +426,7 @@ echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 ```
 
 Users in China can use the official mirror on gitee.com for faster download.<br>
-中国大陆用户可以使用 gitee.com 上的官方镜像加速下载.
+中国用户可以使用 gitee.com 上的官方镜像加速下载.
 
 ```zsh
 git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ~/powerlevel10k
@@ -442,7 +444,7 @@ make sure to disable the current theme in your plugin manager. See
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     ```
     Users in China can use the official mirror on gitee.com for faster download.<br>
-    中国大陆用户可以使用 gitee.com 上的官方镜像加速下载.
+    中国用户可以使用 gitee.com 上的官方镜像加速下载.
 
     ```zsh
     git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
@@ -498,6 +500,10 @@ Add `zi ice depth=1; zi light romkatv/powerlevel10k` to `~/.zshrc`.
 
 The use of `depth=1` ice is optional. Other types of ice are neither recommended nor officially
 supported by Powerlevel10k.
+
+### Zap
+
+Add `plug "romkatv/powerlevel10k"` to `~/.zshrc`.
 
 ### Homebrew
 
@@ -715,6 +721,15 @@ If you are using a different terminal, proceed with manual font installation. �
      ```
      After changing the config run `xrdb ~/.Xresources` to reload it. The new config is applied to
      all new terminals.
+   - **Zed**: Open `~/.config/zed/settings.json` and set `terminal.font_family` to `"MesloLGS NF"`.
+     ```jsonc
+     {
+       "terminal": {
+         "font_family": "MesloLGS NF"
+       },
+       // Other settings.
+     }
+     ```
    - Crostini (Linux on Chrome OS): Open
      chrome-untrusted://terminal/html/nassh_preferences_editor.html, set *Text font family* to
       `'MesloLGS NF'` (including the quotes) and *Custom CSS (inline text)* to the following:
@@ -754,7 +769,7 @@ PR to expand the list!_
 ## Try it in Docker
 
 Try Powerlevel10k in Docker. You can safely make any changes to the file system while trying out
-the theme. Once you exit Zsh, the image is deleted.
+the theme. Once you exit Zsh, the container is deleted.
 
 ```zsh
 docker run -e TERM -e COLORTERM -e LC_ALL=C.UTF-8 -it --rm alpine sh -uec '
@@ -824,6 +839,7 @@ The command to update Powerlevel10k depends on how it was installed.
 | [Zplugin](#zplugin)           | `zplugin update`                                            |
 | [Zinit](#zinit)               | `zinit update`                                              |
 | [Zi](#zi)                     | `zi update`                                                 |
+| [Zap](#zap)                   | `zap --update`                                              |
 | [Homebrew](#homebrew)         | `brew update && brew upgrade`                               |
 | [Arch Linux](#arch-linux)     | `yay -S --noconfirm zsh-theme-powerlevel10k-git`            |
 | [Alpine Linux](#alpine-linux) | `apk update && apk upgrade`                                 |
@@ -877,6 +893,7 @@ The command to update Powerlevel10k depends on how it was installed.
    | [Zplugin](#zplugin)           | `zplugin delete romkatv/powerlevel10k`                           |
    | [Zinit](#zinit)               | `zinit delete romkatv/powerlevel10k`                             |
    | [Zi](#zi)                     | `zi delete romkatv/powerlevel10k`                                |
+   | [Zap](#zap)                   | `zsh -ic 'zap --clean'`                                          |
    | [Homebrew](#homebrew)         | `brew uninstall powerlevel10k; brew untap romkatv/powerlevel10k` |
    | [Arch Linux](#arch-linux)     | `yay -R --noconfirm zsh-theme-powerlevel10k-git`                 |
    | [Alpine Linux](#alpine-linux) | `apk del zsh-theme-powerlevel10k`                                |
@@ -1221,9 +1238,9 @@ Prompt segments can be configured to be shown only when the current command you 
 a relevant tool.
 
 ```zsh
-# Show prompt segment "kubecontext" only when the command you are typing
-# invokes kubectl, helm, kubens, kubectx, oc, istioctl, kogito, k9s, helmfile, flux, fluxctl, stern, kubeseal, or skaffold.
-typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
+# Show prompt segment "kubecontext" only when the command you are typing invokes
+# invokes kubectl, helm, or kubens.
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens'
 ```
 
 Configs created by `p10k configure` may contain parameters of this kind. To customize when different
@@ -1239,7 +1256,7 @@ function kube-toggle() {
   if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
     unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
   else
-    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|flux|fluxctl|stern|kubeseal|skaffold'
+    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens'
   fi
   p10k reload
   if zle; then

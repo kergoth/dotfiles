@@ -84,24 +84,24 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 547349af77df16d0eed1c73ba3041c84f7b063da
+    rev: 910c61b7e19319f3ddd3023c532542726e4e3b8d
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: b2c910a85ed84cb7e5108e7cb3406a2e825a858f
+    rev: 754cefe0181a7acd42fdcb357a67d0217291ac47
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 4abed97b6e67eb5590b39bcd59080aa23192f25d
+    rev: 400e58a87f72ecec14f783fbd29bc6be4ff1641c
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 068264933094fb389e4d242e10d63c53b8e739b4
+    rev: a7bdfdf56e4e76dc302e270f965f96d8c70929e6
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
-    rev: 468d8cf752a62b877eba1a196fbbebb4ce4ebb6f
+    rev: 6a1bfc024481bdba568f2ced65e02f3a359a7692
     pick:
       - '*.zsh'
       - '_*'
@@ -126,12 +126,12 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: a621254b263664efa308a645214d3d140e068676
+  rev: 041f97725a8b647b82fbeba971cb2caf84da68c7
 
 git module smem:
     url: https://github.com/kwkroeger/smem
     pick: smem
-    rev: 40eb60b793954b50683f2fea91339cb45bc31bfd
+    rev: 427583248d210b3f8f82091fbf53547058f861a7
 
 git module fzf:
     url: https://github.com/junegunn/fzf
@@ -143,7 +143,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 12af069dcad672b1563388c61ec33ba8a86c013e
+    rev: 37f258b1bf863633205548e7b8194776daab463b
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -166,12 +166,12 @@ git module wget-finder:
     url: https://github.com/chilicuil/learn
     export: sh/tools
     pick: sh/tools/wget-finder
-    rev: 01dfaf78c09768fa21400cefa5594a14a5c43b21
+    rev: c3072383aec50fd89ecc5bd5f68f6a3746959b0d
 
 git module git-scripts:
     url: https://github.com/git/git
     reup: maint
-    rev: c48035d29b4e524aed3a32f0403676f0d9128863
+    rev: 0d1bd1dfb37ef25e1911777c94129fc769ffec38
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
@@ -269,7 +269,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 4fff03f4297b31df17e122e42a4583a70a292b29
+    rev: 2d221c1b67a8280213a182cff8449bc1a1968719
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
@@ -322,7 +322,7 @@ git module git-get:
 git module myrepos:
     url: git://myrepos.branchable.com/
     pick: mr
-    rev: 291b184a521cae8d38bd9b00342f8e81669c1329
+    rev: 2613e2c09dfa37e4945f175faff6de220ce67732
 
 git module tony-tmux-config:
     url: https://github.com/tony/tmux-config
@@ -334,26 +334,26 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: 8e0e070e014bb07e0b7c78f1fc5c7d0561d3aaef
+    sha1: b96e75073177cd57cf388c9cfbaee26620855126
 
 git module exa-completions:
     url: https://github.com/ogham/exa
     move:
         completions/zsh/_exa: _exa
     pick: _exa
-    rev: e385cd58da9d2e86425250b108e87e4a69904f5c
+    rev: c697d066702ab81ce0684fedb4c638e0fc0473e8
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
     pick:
         - lib
         - src/batgrep.sh
-    rev: 38014ba72d70599c04414a52b8bd9c3c120662a9
+    rev: 7aa73f8989fad85e7b52095d3dfe9f7b89f952ae
 
 git module ifne:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: 4cb0301a1f39fd0f2a6f0233964a4a21be770c09
+    rev: 10514fdb4a4613e0dc715d92c35be9bafc77fb62
 
 curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
@@ -369,11 +369,11 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: 9a813c904189e478b521568b4c1a6126b0dcd87f
+    rev: b93703e91a39c6a4ab1221974b5058dbea749dc4
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
-    sha1: 717f731d41d56cea426f9b86abab43908eca7977
+    sha1: 2c35fa6a75e5fe4762eff3bebc9ff117888dd7c5
 
 curl module cht:
     url: https://cheat.sh/:cht.sh
@@ -388,7 +388,7 @@ curl module cht-zsh:
 
 git module powerlevel10k:
   url: https://gitee.com/romkatv/powerlevel10k
-  rev: 8091c8a3a8a845c70046684235a01cd500075def
+  rev: 0af598cbed78660066f8a8f4465844501ba5695b
 
 git module zsh-nix-shell:
   url: https://github.com/chisui/zsh-nix-shell
@@ -396,7 +396,7 @@ git module zsh-nix-shell:
     - LICENSE
     - scripts
     - nix-shell.plugin.zsh
-  rev: af6f8a266ea1875b9a3e86e14796cadbe1cfbf08
+  rev: df48366e858feec2f770b48a7d92b56eab613396
 
 git module dracula-starship:
   url: https://github.com/dracula/starship
@@ -411,5 +411,5 @@ git module userjs:
     - prefsCleaner.sh
     - prefsCleaner.bat
   executable: updater.sh
-  rev: bdaa2867b923669361a8527065e919c839668599
+  rev: 04e6e77439bfa6e3f6b7b9c5e0afac7f74f0586a
 

@@ -744,10 +744,39 @@ function ask_python() {
   return 0
 }
 
-function ask_arrow() {
+function ask_quotes() {
   add_widget 0 flowing -c %BDoes this look like%b "%2F><%f" %Bbut taller and "fatter?%b"
   add_widget 0 print -P ""
   add_widget 0 flowing -c -- "--->  \u276F\u276E  <---"
+  add_widget 0 print -P ""
+  add_widget 3
+  add_widget 0 print -P "%B(y)  Yes.%b"
+  add_widget 0 print -P ""
+  add_widget 1
+  add_widget 0 print -P "%B(n)  No.%b"
+  add_widget 0 print -P ""
+  add_widget 2
+  add_widget 0 print -P "(r)  Restart from the beginning."
+  ask ynr
+  case $choice in
+    r) return 1;;
+    y) cap_quotes=1;;
+    n) cap_quotes=0;;
+  esac
+  return 0
+}
+
+function ask_arrow() {
+  # This condition holds as long as zsh is compiled with unicode 9 support.
+  if (( ${(m)#${(g::)1}} != 1 )); then
+    cap_arrow=0
+    return
+  fi
+  [[ -n $2 ]] && add_widget 0 flowing -c "$2"
+  add_widget 0 flowing -c %BDoes this look like an%b "%2Fupwards arrow%f%B?%b"
+  add_widget 0 flowing -c reference: "$(href https://graphemica.com/%F0%9F%A0%89)"
+  add_widget 0 print -P ""
+  add_widget 0 flowing -c -- "--->  $1  <---"
   add_widget 0 print -P ""
   add_widget 3
   add_widget 0 print -P "%B(y)  Yes.%b"
@@ -766,25 +795,35 @@ function ask_arrow() {
   return 0
 }
 
-function ask_debian() {
-  add_widget 0 flowing -c %BDoes this look like a%b "%2FDebian logo%f" "%B(swirl/spiral)?%b"
-  add_widget 0 flowing -c reference: "$(href https://debian.org/logos/openlogo-nd.svg)"
+function print_indented() {
+  local -i max_width=$1
+  local text=$2
+  local -i indent='(wizard_columns - max_width) / 2'
+  print -P "${(l:$indent:: :)}$text"
+}
+
+function ask_width() {
+  add_widget 0 flowing -c %BWhat digit is the%b "%2Fdownwards arrow%f" %Bpointing "at?%b"
   add_widget 0 print -P ""
-  add_widget 0 flowing -c -- "--->  \uF306  <---"
+  add_widget 0 print_indented 11 '%3F\UF0734%f %3F\UF0734%f %3F\UF0734%f %2F\UF072E%f'
+  add_widget 0 print_indented 11 '     111222'
   add_widget 0 print -P ""
   add_widget 3
-  add_widget 0 print -P "%B(y)  Yes.%b"
+  add_widget 0 print -P "%B(1)  It is pointing at '1'.%b"
   add_widget 0 print -P ""
   add_widget 1
-  add_widget 0 print -P "%B(n)  No.%b"
+  add_widget 0 print -P "%B(2)  It is pointing at '2'.%b"
+  add_widget 0 print -P ""
+  add_widget 1
+  add_widget 0 print -P "%B(3)  Something else.%b"
   add_widget 0 print -P ""
   add_widget 2
   add_widget 0 print -P "(r)  Restart from the beginning."
-  ask ynr
+  ask 123r
   case $choice in
     r) return 1;;
-    y) cap_debian=1;;
-    n) cap_debian=0;;
+    1) cap_arrow=1;;
+    2|3) cap_arrow=0;;
   esac
   return 0
 }
@@ -910,9 +949,9 @@ function ask_charset() {
       POWERLEVEL9K_ICON_PADDING=none
       cap_diamond=0
       cap_python=0
-      cap_debian=0
-      cap_lock=0
       cap_arrow=0
+      cap_lock=0
+      cap_quotes=0
     ;;
   esac
   return 0
@@ -988,6 +1027,15 @@ function ask_color() {
   return 0
 }
 
+function print_frame_marker() {
+  local label="(1)  $color_name[1]."
+  local -i n='wizard_columns - 7'
+  local -i m=$((n - $#label))
+  print -P "${(l:$n:: :)}frame"
+  print -P "%B$label%b${(l:$m:: :)}    |"
+  print -P "${(l:$n:: :)}    v"
+}
+
 function ask_ornaments_color() {
   [[ $style != (rainbow|lean*) || $num_lines == 1 ]] && return
   [[ $gap_char == ' ' && $left_frame == 0 && $right_frame == 0 ]] && return
@@ -995,10 +1043,17 @@ function ask_ornaments_color() {
   [[ $gap_char != ' ' ]]          && ornaments+=Connection
   (( left_frame || right_frame )) && ornaments+=Frame
   add_widget 0 flowing -c "%B${(j: & :)ornaments} Color%b"
-  add_widget 0 print
-  add_widget 1
-  add_widget 0 print -P "%B(1)  $color_name[1].%b"
-  add_prompt color=1
+  if (( left_frame || right_frame )); then
+    add_widget 0 print_frame_marker
+    add_widget 3 print -P "%B(1)  $color_name[1].%b"
+    add_prompt_n color=1
+    add_widget 0 print
+    add_widget 2
+  else
+    add_widget 1
+    add_widget 0 print -P "%B(1)  $color_name[1].%b"
+    add_prompt color=1
+  fi
   add_widget 0 print -P "%B(2)  $color_name[2].%b"
   add_prompt color=2
   add_widget 0 print -P "%B(3)  $color_name[3].%b"
@@ -1020,19 +1075,19 @@ function ask_time() {
   add_widget 0 flowing -c "%BShow current time?%b"
   add_widget 0 print
   add_widget 1
-  add_widget 0 print -P "%B(1)  No.%b"
+  add_widget 0 print -P "%B(n)  No.%b"
   add_prompt time=
+  add_widget 0 print -P "%B(1)  12-hour format.%b"
+  add_prompt time=$time_12h
   add_widget 0 print -P "%B(2)  24-hour format.%b"
   add_prompt time=$time_24h
-  add_widget 0 print -P "%B(3)  12-hour format.%b"
-  add_prompt time=$time_12h
   add_widget 0 print -P "(r)  Restart from the beginning."
-  ask 123r
+  ask n12r
   case $choice in
     r) return 1;;
-    1) time=;;
+    n) time=;;
+    1) time=$time_12h; options+='12h time';;
     2) time=$time_24h; options+='24h time';;
-    3) time=$time_12h; options+='12h time';;
   esac
   return 0
 }
@@ -1083,6 +1138,7 @@ function os_icon_name() {
           *elementary*)            echo LINUX_ELEMENTARY_ICON;;
           *fedora*)                echo LINUX_FEDORA_ICON;;
           *coreos*)                echo LINUX_COREOS_ICON;;
+          *kali*)                  echo LINUX_KALI_ICON;;
           *gentoo*)                echo LINUX_GENTOO_ICON;;
           *mageia*)                echo LINUX_MAGEIA_ICON;;
           *centos*)                echo LINUX_CENTOS_ICON;;
@@ -1099,6 +1155,7 @@ function os_icon_name() {
           *artix*)                 echo LINUX_ARTIX_ICON;;
           *rhel*)                  echo LINUX_RHEL_ICON;;
           amzn)                    echo LINUX_AMZN_ICON;;
+          endeavouros)             echo LINUX_ENDEAVOUROS_ICON;;
           *)                       echo LINUX_ICON;;
         esac
         ;;
@@ -1172,7 +1229,7 @@ function ask_separators() {
   add_widget 2
   add_widget 0 print -P "%B(2)  Vertical.%b"
   add_prompt left_sep='' right_sep='' left_subsep=$vertical_bar right_subsep=$vertical_bar
-  if [[ $POWERLEVEL9K_MODE == nerdfont-complete ]]; then
+  if [[ $POWERLEVEL9K_MODE == nerdfont-* ]]; then
     extra+=3
     add_widget 0 print -P "%B(3)  Slanted.%b"
     add_prompt left_sep=$down_triangle right_sep=$up_triangle left_subsep=$slanted_bar right_subsep=$slanted_bar
@@ -1236,7 +1293,7 @@ function ask_heads() {
   fi
   add_widget 0 print -P "%B(2)  Blurred.%b"
   add_prompt left_head=$fade_out right_head=$fade_in
-  if [[ $POWERLEVEL9K_MODE == nerdfont-complete ]]; then
+  if [[ $POWERLEVEL9K_MODE == nerdfont-* ]]; then
     extra+=3
     add_widget 0 print -P "%B(3)  Slanted.%b"
     add_prompt left_head=$down_triangle right_head=$up_triangle
@@ -1304,7 +1361,7 @@ function ask_tails() {
     extra+=3
     add_widget 0 print -P "%B(3)  Sharp.%b"
     add_prompt left_tail=$left_triangle right_tail=$right_triangle
-    if [[ $POWERLEVEL9K_MODE == nerdfont-complete ]]; then
+    if [[ $POWERLEVEL9K_MODE == nerdfont-* ]]; then
       extra+=4
       add_widget 0 print -P "%B(4)  Slanted.%b"
       add_prompt left_tail=$up_triangle right_tail=$down_triangle
@@ -1549,8 +1606,11 @@ function ask_config_overwrite() {
         local tmpdir=/tmp
         local tmpdir_u=/tmp
       fi
-      config_backup="$(mktemp $tmpdir/$__p9k_cfg_basename.XXXXXXXXXX)" || quit -c
-      cp $__p9k_cfg_path $config_backup                                        || quit -c
+      if (( ! $+commands[mktemp] )) ||
+         ! config_backup=$(mktemp $tmpdir/$__p9k_cfg_basename.XXXXXXXXXX 2>/dev/null); then
+        config_backup=$tmpdir/$__p9k_cfg_basename.$EPOCHREALTIME
+      fi
+      cp $__p9k_cfg_path $config_backup || quit -c
       config_backup_u=$tmpdir_u/${(q-)config_backup:t}
     ;;
   esac
@@ -1619,7 +1679,10 @@ function ask_zshrc_edit() {
           local tmpdir=/tmp
           local tmpdir_u=/tmp
         fi
-        zshrc_backup="$(mktemp $tmpdir/.zshrc.XXXXXXXXXX)" || quit -c
+        if (( ! $+commands[mktemp] )) ||
+           ! zshrc_backup="$(mktemp $tmpdir/.zshrc.XXXXXXXXXX 2>/dev/null)"; then
+          zshrc_backup=$tmpdir/.zshrc.$EPOCHREALTIME
+        fi
         cp -p $__p9k_zshrc $zshrc_backup                   || quit -c
         local -i writable=1
         if [[ ! -w $zshrc_backup ]]; then
@@ -1698,9 +1761,14 @@ function generate_config() {
       sub PYTHON_ICON "'🐍'"
     fi
 
-    if [[ $POWERLEVEL9K_MODE == nerdfont-complete ]]; then
-      sub BATTERY_STAGES "'\uf58d\uf579\uf57a\uf57b\uf57c\uf57d\uf57e\uf57f\uf580\uf581\uf578'"
-    fi
+    case $POWERLEVEL9K_MODE in
+      nerdfont-complete)
+        sub BATTERY_STAGES "'\uf58d\uf579\uf57a\uf57b\uf57c\uf57d\uf57e\uf57f\uf580\uf581\uf578'"
+      ;;
+      nerdfont-v3)
+        sub BATTERY_STAGES "'\UF008E\UF007A\UF007B\UF007C\UF007D\UF007E\UF007F\UF0080\UF0081\UF0082\UF0079'"
+      ;;
+    esac
 
     if [[ $style == (classic|rainbow) ]]; then
       if [[ $style == classic ]]; then
@@ -2007,7 +2075,7 @@ else
   _p9k_can_configure -q || return
 fi
 
-zmodload zsh/terminfo                     || return
+zmodload zsh/terminfo zsh/datetime || return
 
 if [[ $ZSH_VERSION == (5.7.<1->*|5.<8->*|<6->.*) && $COLORTERM == (24bit|truecolor) ]]; then
   local -ir has_truecolor=1
@@ -2024,7 +2092,7 @@ while true; do
   local gap_char=' ' prompt_char='❯' down_triangle='\uE0BC' up_triangle='\uE0BA' slanted_bar='\u2571'
   local left_subsep= right_subsep= left_tail= right_tail= left_head= right_head= time=
   local -i num_lines=2 empty_line=0 color=2 left_frame=1 right_frame=1 transient_prompt=0
-  local -i cap_diamond=0 cap_python=0 cap_debian=0 cap_lock=0 cap_arrow=0
+  local -i cap_diamond=0 cap_python=0 cap_arrow=0 cap_lock=0 cap_quotes=0
   local -a extra_icons=('' '' '')
   local -a frame_color=(244 242 240 238)
   local -a color_name=(Lightest Light Dark Darkest)
@@ -2058,19 +2126,27 @@ while true; do
           if (( cap_diamond )); then
             POWERLEVEL9K_MODE=powerline
           else
-            ask_arrow || continue
-            (( cap_arrow )) && POWERLEVEL9K_MODE=compatible || POWERLEVEL9K_MODE=ascii
+            ask_quotes || continue
+            (( cap_quotes )) && POWERLEVEL9K_MODE=compatible || POWERLEVEL9K_MODE=ascii
           fi
         fi
       elif (( ! cap_diamond )); then
         POWERLEVEL9K_MODE=awesome-fontconfig
       else
-        ask_debian || continue
-        if (( cap_debian )); then
+        ask_arrow '\uFC35' || continue
+        if (( cap_arrow )); then
           POWERLEVEL9K_MODE=nerdfont-complete
         else
-          POWERLEVEL9K_MODE=awesome-fontconfig
-          ask_python || continue
+          ask_arrow '\UF0737' "Let's try another one." || continue
+          if (( cap_arrow )); then
+            ask_width || continue
+          fi
+          if (( cap_arrow )); then
+            POWERLEVEL9K_MODE=nerdfont-v3
+          else
+            POWERLEVEL9K_MODE=awesome-fontconfig
+            ask_python || continue
+          fi
         fi
       fi
     fi

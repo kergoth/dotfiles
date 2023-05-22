@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 help () {
     echo >&2 "interactive ln: ln with enhanced interactive mode and support for creation of backups"

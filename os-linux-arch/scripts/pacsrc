@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # pacsrc - get sources for an Arch package
 
 set -e

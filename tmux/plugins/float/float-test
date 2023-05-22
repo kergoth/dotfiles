@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ## A script to run and clean up after tests
 
 git clone https://github.com/tmux-plugins/tmux-test.git

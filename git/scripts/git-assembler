@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # git-assembler: update git branches using high-level instructions
-# Copyright(c) 2019-2022 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
+# Copyright(c) 2019-2023 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
 # Distributed under the GNU GPLv3+ license, WITHOUT ANY WARRANTY.
 import subprocess as sp
 import argparse
@@ -16,7 +16,7 @@ from logging import error, warning, info, debug
 
 APP_DSC = "update git branches using high-level instructions"
 APP_SIG = "git-assembler"
-APP_VER = "1.3"
+APP_VER = "1.4"
 
 
 def repo_toplevel():
@@ -44,13 +44,13 @@ def repo_common_dir():
 
 
 def assembly_path(toplevel_dir, common_dir):
-    path = os.path.join(common_dir, 'assembly')
-    if os.path.exists(path):
-        return path
-    path = os.path.join(toplevel_dir, '.gitassembly')
-    if os.path.isfile(path):
-        return path
-    return None
+    primary = os.path.join(os.path.realpath(common_dir), 'assembly')
+    secondary = os.path.join(toplevel_dir, '.gitassembly')
+    for path in [primary, secondary]:
+        if os.path.isfile(path):
+            return path
+    # no path was found, prefer primary
+    return primary
 
 
 def parse_info(path, line, msg):
@@ -105,7 +105,7 @@ def parse_assembly(path, branches):
                 targets = [target]
             else:
                 try:
-                    targets = list(expand_branches(target, branches))
+                    targets = list(expand_branches(target, branches.keys()))
                 except re.error as e:
                     parse_error(path, n, str(e))
                     return None
@@ -144,20 +144,20 @@ def parse_assembly(path, branches):
                         node['type'] = BranchType.BASE
 
                 elif cmd == 'merge':
-                    args_exp = []
+                    merge_deps = []
                     for arg in args:
                         if not branch_is_pattern(arg):
                             # check rules for explicit dependencies
-                            for arg in args_exp:
-                                if arg in node['merge']:
-                                    parse_error(path, n, 'duplicate merge of {} into {}'.format(
-                                        branch_str(arg), branch_str(branch)))
-                                    return None
-                            args_exp.append(arg)
+                            if arg in merge_deps or arg in node['merge']:
+                                parse_error(path, n, 'duplicate merge of {} into {}'.format(
+                                    branch_str(arg), branch_str(branch)))
+                                return None
+
+                            merge_deps.append(arg)
                         else:
                             # expand the argument list
                             try:
-                                arg_exp = list(expand_branches(arg, branches))
+                                arg_exp = list(expand_branches(arg, branches.keys()))
                             except re.error as e:
                                 parse_error(path, n, str(e))
                                 return None
@@ -167,21 +167,21 @@ def parse_assembly(path, branches):
                                 return None
                             for arg in arg_exp:
                                 # check rules that apply to expanded dependencies
-                                if arg in node['merge']:
+                                if arg in merge_deps or arg in node['merge']:
                                     parse_info(path, n, 'ignoring duplicate merge of {} into {}'.format(
                                         branch_str(arg), branch_str(branch)))
                                     continue
-                                args_exp.append(arg)
+                                merge_deps.append(arg)
 
                     # check rules that apply to all dependencies
-                    for arg in args_exp:
+                    for arg in merge_deps:
                         if arg == node['name']:
                             parse_error(path, n, 'refusing merge of {} into itself'.format(
                                 branch_str(arg), branch_str(branch)))
                             return None
 
                     # add dependencies
-                    node['merge'].extend(args_exp)
+                    node['merge'].extend(merge_deps)
 
         else:
             parse_error(path, n, 'unknown command: {}'.format(cmd))
@@ -261,6 +261,7 @@ def empty_node(name):
     return {'name': name,
             'base': None,
             'type': BranchType.BRANCH,
+            'path': None,
             'merge': [],
             'deps': [],
             'state': {'dirty': False,
@@ -341,27 +342,57 @@ COLOR_MODE = None
 
 class Ansi:
     BOLD  = "\033[;1m"
-    GREEN = "\033[0;32m"
     RED   = "\033[1;31m"
+    GREEN = "\033[0;32m"
+    CYAN  = "\033[0;36m"
     RESET = "\033[0;0m"
 
 def branch_str(branch):
     return branch.decode(sys.getdefaultencoding(), 'surrogateescape')
 
-def color_node(node):
+def color_node(node, sigils=False):
     name = branch_str(node['name'])
-    if COLOR_MODE != True:
-        return name
-    elif node['state']['missing']:
-        return Ansi.RED + name + Ansi.RESET
+    if node['state']['missing']:
+        sigil = '?'
+        color = Ansi.RED
     elif node['state']['dirty']:
-        return Ansi.BOLD + name + Ansi.RESET
+        sigil = '~'
+        color = Ansi.BOLD
     elif node['state']['used']:
-        return Ansi.GREEN + name + Ansi.RESET
+        sigil = '*'
+        color = Ansi.GREEN
     else:
-        return name
+        sigil = ''
+        color = ''
+    if COLOR_MODE:
+        name = color + name + Ansi.RESET
+    elif sigils:
+        name += sigil
+    return name
 
-def dump_graph(graph, state, root=None, depth=0):
+def color_path(path):
+    return Ansi.CYAN + path + Ansi.RESET if COLOR_MODE else path
+
+
+def compact_relpath(path):
+    # pick the shortest representation (TODO: not necessarily more readable)
+    relpath = os.path.relpath(path)
+    return relpath if len(relpath) < len(path) else path
+
+def worktree_is_current(worktree_path, toplevel_dir):
+    return (toplevel_dir == worktree_path and
+            os.path.commonpath([worktree_path, toplevel_dir]) == toplevel_dir)
+
+def branch_path_suffix(node, toplevel_dir):
+    if node['path'] is None:
+        return ''
+    if worktree_is_current(node['path'], toplevel_dir):
+        return ''
+    path = compact_relpath(node['path'])
+    return '(' + color_path(path) + ')'
+
+
+def dump_graph(graph, state, toplevel_dir, root=None, depth=0):
     roots = list(reversed(graph))
     if root is None:
         root = roots
@@ -372,10 +403,11 @@ def dump_graph(graph, state, root=None, depth=0):
         if node['name'] in seen:
             continue
         seen.add(node['name'])
-        prefix = '  ' * depth
 
-        # calculate an extended suffix
-        suffix = ''
+        prefix = '  ' * depth
+        suffix = branch_path_suffix(node, toplevel_dir)
+
+        # base suffix
         base_node = node['base']
         while base_node is not None:
             if node['type'] == BranchType.STAGE:
@@ -384,25 +416,26 @@ def dump_graph(graph, state, root=None, depth=0):
                 suffix += ' <- '
             else:
                 suffix += ' .. '
-            base_name = color_node(base_node)
-            if base_node['base'] is not None and len(base_node['merge']) != 0:
+            base_name = color_node(base_node, True)
+            if len(base_node['merge']) != 0:
                 # split the branch into a fake root
                 suffix += '[' + base_name + ']'
                 root.append(base_node)
                 break
-            suffix += base_name
+            suffix += base_name + branch_path_suffix(base_node, toplevel_dir)
             base_node = base_node['base']
 
+        # prefixes
         if node['name'] == state['current_branch']:
             prefix += '>'
-        if node['name'] == state.get('start_branch'):
-            suffix = '*' + suffix
-        node_name = color_node(node)
+        elif node['name'] == state.get('start_branch'):
+            prefix += '<'
+        node_name = color_node(node, True)
         print(prefix + node_name + suffix)
 
         merge = node['merge']
         if len(merge):
-            dump_graph(merge, state, root, depth + 1)
+            dump_graph(merge, state, toplevel_dir, root, depth + 1)
 
 
 def topo_sort(graph, seen=None):
@@ -470,11 +503,21 @@ def branch_exists(name):
 
 
 def branch_list():
-    proc = sp.run(['git', 'branch', '-l', '-a', '--format=%(refname:short)'],
+    proc = sp.run(['git', 'branch', '-l', '-a', '--format=%(refname:short) %(worktreepath)'],
                   stdout=sp.PIPE)
     if proc.returncode != 0:
         return None
-    return proc.stdout.rstrip().split(b'\n')
+
+    lst = {}
+    if len(proc.stdout) != 0:
+        for line in proc.stdout.rstrip(b'\n').split(b'\n'):
+            branch, path = line.split(b' ', 1)
+            if len(path) == 0:
+                path = None
+            else:
+                path = path.decode(sys.getfilesystemencoding())
+            lst[branch] = path
+    return lst
 
 
 def branch_is_pattern(branch):
@@ -504,8 +547,11 @@ def nodes_missing(nodes):
         node_missing(node)
 
 
-def update_state(ordered_nodes, graph, force):
+def update_state(ordered_nodes, graph, branches, force):
     for node in ordered_nodes:
+        # worktree path
+        node['path'] = branches.get(node['name'])
+
         if leaf_node(node):
             continue
 
@@ -576,9 +622,9 @@ def check_dirty(nodes):
     return False
 
 
-def current_branch():
+def current_branch(path):
     proc = sp.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-                  stdout=sp.PIPE, stderr=sp.DEVNULL)
+                  cwd=path, stdout=sp.PIPE, stderr=sp.DEVNULL)
     name = proc.stdout.rstrip()
     if proc.returncode != 0 or len(name) == 0:
         return None
@@ -597,23 +643,37 @@ def save_state(git_dir, state):
     cache_dir = os.path.join(git_dir, 'as-cache')
     dir_exists = os.path.exists(cache_dir)
     if not state:
+        # no state to save, cleanup cache dir
         if dir_exists:
             shutil.rmtree(cache_dir)
         return
     if not dir_exists:
         os.mkdir(cache_dir)
+
+    # cache assembly instructions
+    assembly_path = os.path.realpath(os.path.join(cache_dir, 'assembly'))
+    if not os.path.exists(assembly_path) or \
+       not os.path.samefile(state['assembly_path'], assembly_path):
+        shutil.copy(state['assembly_path'], assembly_path)
+        state['assembly_path'] = assembly_path
+
+    # save state
     state_path = os.path.join(cache_dir, 'state')
     pickle.dump(state, open(state_path, 'wb'))
 
 
-def switch_to_branch(name, *git_flags):
+def clear_state(git_dir):
+    save_state(git_dir, None)
+
+
+def switch_to_branch(name, path, *git_flags):
     proc = sp.run(['git', 'checkout', '-q', '--no-guess', *git_flags, name],
-                  stdout=sp.DEVNULL, stderr=sp.PIPE)
+                  cwd=path, stdout=sp.DEVNULL, stderr=sp.PIPE)
     stderr = proc.stderr.decode(sys.getdefaultencoding(), 'surrogateescape').rstrip()
     return proc.returncode, stderr
 
 
-def update_node(node, state, dry_run, merge_ff):
+def update_node(node, state, toplevel_dir, dry_run, merge_ff):
     if not node['state']['dirty']:
         return True
 
@@ -624,19 +684,20 @@ def update_node(node, state, dry_run, merge_ff):
             prio = logging.WARNING
         logging.log(prio, msg)
 
+    node_worktree = node['path'] if node['path'] is not None else state['start_worktree']
+    node_current = worktree_is_current(node_worktree, toplevel_dir)
+
     if node['type'] == BranchType.STAGE:
-        # switch to base branch, erase target (if exists)
-        if node['base']['name'] != state['last_branch']:
-            log(logging.DEBUG, 'switching to branch {}'.format(color_node(node['base'])))
-            if not dry_run:
-                # checkout in detached state since this is only done in
-                # preparation for the subsequent branch creation
-                ret, err = switch_to_branch(node['base']['name'], '--detach')
-                if ret != 0:
-                    state['last_err'] = err
-                    return False
-            state['last_branch'] = node['name']
+        # erase target (if it exists)
         if not node['state']['missing']:
+            if node['path'] is not None:
+                log(logging.INFO, 'detaching branch {}{}'.format(
+                    color_node(node), branch_path_suffix(node, toplevel_dir)))
+                if not dry_run:
+                    proc = sp.run(['git', 'checkout', '-q', '--detach', '--no-guess'],
+                                  cwd=node_worktree)
+                    if proc.returncode != 0:
+                        return False
             log(logging.INFO, 'erasing existing branch {}'.format(color_node(node)))
             if not dry_run:
                 proc = sp.run(['git', 'branch', '-q', '-D', node['name']])
@@ -644,33 +705,45 @@ def update_node(node, state, dry_run, merge_ff):
                     return False
         exists = False
     elif node['name'] == state['last_branch']:
+        # starting worktree already at the right branch
+        exists = True
+    elif node['path'] is not None:
+        # node already checked-out in some other worktree
         exists = True
     else:
-        # switch to target
-        log(logging.DEBUG, 'switching to branch {}'.format(color_node(node)))
+        # switch starting worktree to target
+        if node_current:
+            log(logging.DEBUG, 'switching to branch {}'.format(color_node(node)))
+        else:
+            log(logging.DEBUG, 'switching {} to branch {}'.format(
+                color_path(compact_relpath(node_worktree)), color_node(node)))
         if dry_run:
             exists = branch_exists(node['name'])
         else:
             # check existence optimistically to avoid extra queries
-            ret, err = switch_to_branch(node['name'])
+            ret, err = switch_to_branch(node['name'], node_worktree)
             exists = (ret == 0)
             if ret != 0:
                 # slow path to exclude checkout errors
                 if branch_exists(node['name']):
                     state['last_err'] = err
                     return False
+        state['last_branch'] = node['name']
 
     if not exists:
         # branch is missing, bootstrap
-        log(logging.INFO, 'creating branch {} from {}'.format(color_node(node), color_node(node['base'])))
+        log(logging.INFO, 'creating branch {}{} from {}'.format(
+            color_node(node), branch_path_suffix(node, toplevel_dir),
+            color_node(node['base'])))
         if not dry_run:
-            proc = sp.run(['git', 'checkout', '-q', '--no-guess', '-b', node['name'], node['base']['name']])
+            proc = sp.run(['git', 'checkout', '-q', '--no-guess', '-b',
+                           node['name'], node['base']['name']],
+                          cwd=node_worktree)
             if proc.returncode != 0:
                 return False
-        state['last_branch'] = node['name']
+        if node['path'] is None:
+            state['last_branch'] = node['name']
     else:
-        state['last_branch'] = node['name']
-
         # rebase when required
         if node['type'] == BranchType.REBASE and node['base'] is not None:
             if node['base']['state']['dirty']:
@@ -678,13 +751,15 @@ def update_node(node, state, dry_run, merge_ff):
             else:
                 dirty = needs_rebase(node['name'], node['base']['name'])
             if dirty is not False:
-                log(logging.INFO, 'rebasing {} onto {}'.format(color_node(node), color_node(node['base'])))
+                log(logging.INFO, 'rebasing {}{} onto {}'.format(
+                    color_node(node), branch_path_suffix(node, toplevel_dir),
+                    color_node(node['base'])))
                 if not dry_run:
                     proc = sp.run(['git', 'rebase', '-q', '--fork-point',
-                                   node['base']['name'], node['name']])
+                                   node['base']['name'], node['name']],
+                                  cwd=node_worktree)
                     if proc.returncode != 0:
                         return False
-
 
     # merge dependencies
     for dep in node['merge']:
@@ -699,13 +774,16 @@ def update_node(node, state, dry_run, merge_ff):
         elif not needs_merge(node['name'], dep['name']):
             continue
 
-        log(logging.INFO, 'merging {} into {}'.format(color_node(dep), color_node(node)))
+        log(logging.INFO, 'merging {} into {}{}'.format(
+            color_node(dep), color_node(node), branch_path_suffix(node, toplevel_dir)))
         if not dry_run:
             ff = '--ff' if merge_ff else '--no-ff'
-            proc = sp.run(['git', 'merge', ff, '-q', '--rerere-autoupdate', '--no-edit', dep['name']])
+            proc = sp.run(['git', 'merge', ff, '-q', '--rerere-autoupdate', '--no-edit', dep['name']],
+                          cwd=node_worktree)
             if proc.returncode == 1:
                 # directly attempt to autocommit in case rerere was successful
-                proc = sp.run(['git', 'commit', '-q', '--no-edit'], stderr=sp.DEVNULL)
+                proc = sp.run(['git', 'commit', '-q', '--no-edit'],
+                              cwd=node_worktree, stderr=sp.DEVNULL)
                 if proc.returncode == 0:
                     log(logging.WARN, 'automatic merge resolution successful')
             if proc.returncode != 0:
@@ -728,10 +806,25 @@ def check_pending(git_dir):
 
 
 def edit(path):
+    if os.path.isfile(path):
+        print('opening assembly file {}'.format(compact_relpath(path)))
+    else:
+        print('opening new assembly file {}'.format(compact_relpath(path)))
+
+    # fetch the default editor
     editor = os.environ.get('VISUAL')
     if editor is None:
         editor = os.environ.get('EDITOR', 'vi')
-    return os.system(editor + ' ' + shlex.quote(path))
+
+    # handle commands with flags
+    editor = shlex.split(editor)
+    try:
+        returncode = sp.run([*editor, path], check=False).returncode
+    except OSError as e:
+        error("can't execute editor: " + str(e))
+        return ExitStatus.ERROR
+
+    return returncode
 
 
 class ExitStatus(IntEnum):
@@ -800,6 +893,8 @@ def main(argv):
                    help='branch to update/display')
     g.add_argument('--all', action='store_true',
                    help='override assembly: act on all branches')
+    g.add_argument('--clear', action='store_true',
+                   help='reset any pending git-assembler state')
     args = ap.parse_args(argv[1:])
 
     # logging
@@ -821,37 +916,42 @@ def main(argv):
     # repository paths
     toplevel_dir = repo_toplevel()
     if toplevel_dir is None:
-        return ExitStatus.CONFIG
+        return ExitStatus.GITCONFIG
     git_dir = repo_git_dir()
     common_dir = repo_common_dir()
     if common_dir is None:
-        # support for old versions of git
-        common_dir = git_dir
+        return ExitStatus.GITCONFIG
 
-    if args.config:
-        path = args.config
-    else:
-        path = assembly_path(toplevel_dir, common_dir)
-        if path is None:
-            error('no assembly instructions')
-            return ExitStatus.CONFIG
-        path = os.path.relpath(path)
-        debug('reading instructions from {}'.format(path))
-
-    if args.edit:
-        if edit(path):
-            return ExitStatus.ERROR
-
-    # read configuration
+    # read git configuration
     git_conf = read_git_config()
     if git_conf is None:
         return ExitStatus.GITCONFIG
+
+    # past invocation state (if any)
+    if args.clear:
+        clear_state(common_dir)
+    state = read_state(common_dir)
+
+    # locate (and edit) current assembly path
+    if args.config:
+        state['assembly_path'] = os.path.realpath(args.config)
+    elif 'assembly_path' not in state:
+        state['assembly_path'] = assembly_path(toplevel_dir, common_dir)
+
+    if args.edit:
+        return edit(state['assembly_path'])
+
+    if not os.path.isfile(state['assembly_path']):
+        error('no assembly instructions')
+        return ExitStatus.CONFIG
+    assembly_relpath = compact_relpath(state['assembly_path'])
+    debug('reading instructions from {}'.format(assembly_relpath))
 
     # build the list of nodes and resulting graph
     branches = branch_list()
     if branches is None:
         return ExitStatus.ERROR
-    res = parse_assembly(path, branches)
+    res = parse_assembly(assembly_relpath, branches)
     if res is None:
         return ExitStatus.CONFIG
     nodes, settings = res
@@ -881,73 +981,96 @@ def main(argv):
 
     # update and check current state
     ordered_nodes = topo_sort(graph)
-    update_state(ordered_nodes, graph, args.recreate)
-    state = read_state(git_dir)
-    state['current_branch'] = current_branch()
+    update_state(ordered_nodes, graph, branches, args.recreate)
+
+    if 'start_branch' in state:
+        resuming = True
+        if state['start_worktree'] == toplevel_dir:
+            info('resuming interrupted assembly process')
+        else:
+            info('resuming interrupted assembly process from {}'.format(
+                color_path(compact_relpath(state['start_worktree']))))
+        state['current_branch'] = current_branch(state['start_worktree'])
+    else:
+        resuming = False
+        state['current_branch'] = current_branch(toplevel_dir)
+        state['start_worktree'] = toplevel_dir
+        state['start_branch'] = state['current_branch']
     state['last_branch'] = state['current_branch']
 
     # exit early when possible
     if not args.assemble and not args.dry_run:
-        dump_graph(graph, state)
+        dump_graph(graph, state, toplevel_dir)
         return ExitStatus.SUCCESS
     if not check_missing(ordered_nodes, args.create):
         return ExitStatus.ERROR
     if not check_dirty(ordered_nodes):
-        if state.get('start_branch', state['last_branch']) == state['last_branch']:
+        if state['start_branch'] == state['last_branch']:
             info('already up to date')
             if not args.dry_run:
-                save_state(git_dir, None)
+                clear_state(common_dir)
             return ExitStatus.SUCCESS
 
     # refuse to continue if any stateful git operation is pending
     if check_pending(git_dir):
         return ExitStatus.ERROR
+    if not os.path.exists(state['start_worktree']):
+        error('initial worktree {} disappeared'.format(
+            color_path(compact_relpath(state['start_worktree']))))
+        return ExitStatus.ERROR
+
+    # save the initial state and assembly before it gets modified
+    if not args.dry_run:
+        save_state(common_dir, state)
 
     # perform the required operations
-    if 'start_branch' in state:
-        start_set = False
-    else:
-        state['start_branch'] = state['last_branch']
-        start_set = True
-
     for node in ordered_nodes:
         state['last_msg'] = None
         state['last_err'] = None
-        if not update_node(node, state, args.dry_run, git_conf['assembler.mergeff']):
+        if not update_node(node, state, toplevel_dir, args.dry_run, git_conf['assembler.mergeff']):
             if not args.dry_run:
-                save_state(git_dir, state)
+                save_state(common_dir, state)
             if state['last_msg'] is not None:
                 error('error while ' + state['last_msg'])
             if state['last_err'] is not None:
                 print(state['last_err'], file=sys.stderr)
-            if state['last_branch'] in nodes:
-                branch_name = color_node(nodes[state['last_branch']])
+            if node['path'] is not None:
+                warning('stopping at branch {} in {}'.format(
+                    color_node(node), color_path(compact_relpath(node['path']))))
             else:
-                branch_name = branch_str(state['last_branch'])
-            warning('stopping at branch {}, fix/commit then re-run {}'.format(branch_name, APP_SIG))
+                if state['last_branch'] in nodes:
+                    branch_name = color_node(nodes[state['last_branch']])
+                else:
+                    branch_name = branch_str(state['last_branch'])
+                warning('stopping at branch {}'.format(branch_name))
+            warning('fix/commit then re-run {}'.format(APP_SIG))
             return ExitStatus.ERROR
 
     # restore initial branch
     if state['start_branch'] != state['last_branch']:
         # the starting branch might no longer exist or be referenced in the nodes
         if state['start_branch'] in nodes:
-            branch_name = color_node(nodes[state['start_branch']])
+            start_name = color_node(nodes[state['start_branch']])
         else:
-            branch_name = branch_str(state['start_branch'])
+            start_name = branch_str(state['start_branch'])
         if not args.dry_run and not branch_exists(state['start_branch']):
-            logging.log(logging.WARNING, 'cannot restore initial branch {}'.format(branch_name))
+            logging.log(logging.WARNING, 'cannot restore initial branch {}'.format(start_name))
         else:
-            level = logging.INFO if start_set else logging.WARNING
-            logging.log(level, 'restoring initial branch {}'.format(branch_name))
+            level = logging.WARNING if resuming else logging.INFO
+            if state['start_worktree'] == toplevel_dir:
+                logging.log(level, 'restoring initial branch {}'.format(start_name))
+            else:
+                logging.log(level, 'restoring initial branch {} in {}'.format(
+                    start_name, color_path(compact_relpath(state['start_worktree']))))
             if not args.dry_run:
-                ret, err = switch_to_branch(state['start_branch'])
+                ret, err = switch_to_branch(state['start_branch'], state['start_worktree'])
                 if ret != 0:
-                    error('error restoring initial branch {}'.format(branch_name))
+                    error('error restoring initial branch {}'.format(start_name))
                     print(err, file=sys.stderr)
                     return ExitStatus.ERROR
 
     if not args.dry_run:
-        save_state(git_dir, None)
+        clear_state(common_dir)
     return ExitStatus.SUCCESS
 
 

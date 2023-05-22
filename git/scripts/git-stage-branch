@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # Squashes a branch and stages it on a new branch off of master.
 #
