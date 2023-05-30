@@ -632,11 +632,28 @@ def current_branch(path):
 
 
 def read_state(git_dir):
-    state_path = os.path.join(git_dir, 'as-cache', 'state')
-    if os.path.exists(state_path):
-        return pickle.load(open(state_path, 'rb'))
-    else:
+    cache_dir = os.path.join(git_dir, 'as-cache')
+    if not os.path.exists(cache_dir):
+        # no state
         return {}
+
+    # version state check
+    version_path = os.path.join(git_dir, 'as-cache', 'version')
+    if not os.path.exists(version_path):
+        version_str = None
+    else:
+        with open(version_path, "r") as version_fd:
+            version_str = version_fd.readline().rstrip()
+    if version_str != APP_VER:
+        error('incompatible state: continue with previous version or use --clear to remove')
+        return None
+
+    state_path = os.path.join(git_dir, 'as-cache', 'state')
+    if not os.path.exists(state_path):
+        error('inconsistent state: please file a bug report or use --clear to remove')
+        return None
+
+    return pickle.load(open(state_path, 'rb'))
 
 
 def save_state(git_dir, state):
@@ -656,6 +673,11 @@ def save_state(git_dir, state):
        not os.path.samefile(state['assembly_path'], assembly_path):
         shutil.copy(state['assembly_path'], assembly_path)
         state['assembly_path'] = assembly_path
+
+    # save version state
+    version_path = os.path.realpath(os.path.join(cache_dir, 'version'))
+    with open(version_path, "w") as version_fd:
+        version_fd.write(APP_VER + '\n')
 
     # save state
     state_path = os.path.join(cache_dir, 'state')
@@ -931,6 +953,8 @@ def main(argv):
     if args.clear:
         clear_state(common_dir)
     state = read_state(common_dir)
+    if state is None:
+        return ExitStatus.ERROR
 
     # locate (and edit) current assembly path
     if args.config:

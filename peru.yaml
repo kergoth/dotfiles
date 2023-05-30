@@ -84,7 +84,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 910c61b7e19319f3ddd3023c532542726e4e3b8d
+    rev: c9e993a38ec04833e15edac230300948a0fab83b
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -97,7 +97,7 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: a7bdfdf56e4e76dc302e270f965f96d8c70929e6
+    rev: 744af1910b1baf1521df4a72e7b06f21eb35fe45
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -143,7 +143,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 37f258b1bf863633205548e7b8194776daab463b
+    rev: 448d7e0c5a717128d499f6a09a978b7addd1d925
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -269,7 +269,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 2d221c1b67a8280213a182cff8449bc1a1968719
+    rev: 5d7ed18c50ae89807bf9b9b786495c773dfcfd90
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
@@ -353,7 +353,7 @@ git module bat-extras:
 git module ifne:
     url: https://github.com/fumiyas/home-commands
     pick: ifne
-    rev: 10514fdb4a4613e0dc715d92c35be9bafc77fb62
+    rev: a9eb7b81a53385027c64d766f2bb8f63a56fcaf1
 
 curl module ddimage:
     url: https://raw.githubusercontent.com/openembedded/openembedded-core/master/scripts/contrib/ddimage
@@ -369,7 +369,7 @@ git module dtrx:
 git module git-assembler:
     url: https://gitlab.com/wavexx/git-assembler
     pick: git-assembler
-    rev: b93703e91a39c6a4ab1221974b5058dbea749dc4
+    rev: 2c5de970a21401636291691e74517f38b24afcf0
 
 curl module vscode-zsh-completion:
     url: https://raw.githubusercontent.com/microsoft/vscode/master/resources/completions/zsh/_code
@@ -390,6 +390,7 @@ curl module powerlevel10k:
   url: https://codeload.github.com/romkatv/powerlevel10k/tar.gz/v1.18.0
   unpack: tar
   export: powerlevel10k-1.18.0
+  sha1: c7b685244b427824322d2359d1f2eda4acab96d4
 
 git module zsh-nix-shell:
   url: https://github.com/chisui/zsh-nix-shell
@@ -397,7 +398,7 @@ git module zsh-nix-shell:
     - LICENSE
     - scripts
     - nix-shell.plugin.zsh
-  rev: df48366e858feec2f770b48a7d92b56eab613396
+  rev: 227d284ab2dc2f5153826974e0094a1990b1b5b9
 
 git module dracula-starship:
   url: https://github.com/dracula/starship
