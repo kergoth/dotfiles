@@ -79,10 +79,6 @@ elif autoload -U url-quote-magic; then
     zstyle ':url-quote-magic:*' url-metas '*?[]^()~#{}=&'
 fi
 
-if autoload -Uz manydots-magic; then
-    manydots-magic
-fi
-
 # Keybinds
 autoload edit-command-line
 zle -N edit-command-line
