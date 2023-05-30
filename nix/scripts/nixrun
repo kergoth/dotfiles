@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Light wrapper around nix-shell --run to avoid having to quote and escape arguments.
+
+set -euo pipefail
+
+quote() {
+    sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" <<EOF
+$1
+EOF
+}
+
+save() {
+    case "$1" in
+    # when a string contains a "'" we have to escape it
+    *\'*)
+        saved="$saved $(quote "$1")"
+        ;;
+    # otherwise just quote the variable
+    *)
+        saved="$saved '$1'"
+        ;;
+    esac
+}
+
+printcmd() {
+    python3 -c 'import subprocess,sys; print(subprocess.list2cmdline(sys.argv[1:]))' "$@"
+}
+
+saved=
+while [ $# -gt 0 ]; do
+    arg="$1"
+    if [ "$arg" = "--" ]; then
+        shift
+        break
+    else
+        save "$arg"
+        shift
+    fi
+done
+
+runcmd=$(printcmd "$@")
+eval set -- "$saved"
+nix-shell "$@" --run "$runcmd"
