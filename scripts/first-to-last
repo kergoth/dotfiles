@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Move the first arg to the last, for convenience with xargs
+arg1=$1
+shift
+exec "$@" "$arg1"
