@@ -56,7 +56,7 @@ for file in $ZSH/plugins/*/*.plugin.zsh(N) $ZSH/plugins/*/activate.sh(N) \
             $DOTFILESDIR/*/zsh-plugins/*/activate.sh(N) \
             ${(M)config_files:#*/*.plugin.zsh}; do
     case "$file" in
-        */base16/*)
+        */base16/*|*/syntax-highlighting/*|*/history-substring-search/*)
             continue
             ;;
     esac
@@ -102,6 +102,12 @@ unset config_files
 
 # Load manually loaded "plugins"
 . $ZSH/plugins/bd/bd.zsh
+
+# Load syntax highlighting after other plugins
+. $ZSH/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# history-substring-search must be loaded after syntax-highlighting
+. $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
 
 if [[ "$PROFILE_STARTUP_LINES" == true ]]; then
     unsetopt xtrace

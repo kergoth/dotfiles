@@ -55,9 +55,6 @@ autoload -U select-word-style
 select-word-style normal
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-# history-substring-search must be loaded after syntax-highlighting
-source $ZSH/plugins/history-substring-search/zsh-history-substring-search.zsh
-
 # Use the recommended max buffer size value for autosuggestions, which keeps
 # it from processing large pastes
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
