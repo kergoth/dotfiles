@@ -386,9 +386,10 @@ curl module cht-zsh:
     filename: _cht
     sha1: a79df4716c054e68d29923923b0287f441a256bb
 
-git module powerlevel10k:
-  url: https://gitee.com/romkatv/powerlevel10k
-  rev: 0af598cbed78660066f8a8f4465844501ba5695b
+curl module powerlevel10k:
+  url: https://codeload.github.com/romkatv/powerlevel10k/tar.gz/v1.18.0
+  unpack: tar
+  export: powerlevel10k-1.18.0
 
 git module zsh-nix-shell:
   url: https://github.com/chisui/zsh-nix-shell
