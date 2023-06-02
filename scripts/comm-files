@@ -93,7 +93,7 @@ fromfiles="$(mktemp -t "${0##*/}.XXXXXX")"
 tofiles="$(mktemp -t "${0##*/}.XXXXXX")"
 trap 'rm -f $fromfiles $tofiles' EXIT INT TERM
 
-case "$OSTYPE" in
+case "${OSTYPE:-}" in
     darwin*)
         normalize_case_filter() {
             cat
@@ -112,12 +112,13 @@ case "$OSTYPE" in
         ;;
 esac
 
+scriptdir=$(cd "$(dirname "$0")" && pwd)
+PATH="$scriptdir:$PATH"
+
 ( cd "$from" && find . "$@" ) | normalize_case_filter | sort -f >"$fromfiles"
 ( cd "$to" && find . "$@" )  | normalize_case_filter | sort -f >"$tofiles"
-
 echo >&2 "Comparing the list of files from $from to $to"
-comm $comm_i_arg "$fromfiles" "$tofiles" \
-    | sort -fb \
-    | sed "s#^	\./#+#; s#^\./#-#; s#^		\./# #" \
+comm ${comm_i_arg:+$comm_i_arg} "$fromfiles" "$tofiles" \
+    | comm-to-difflike \
     | exclude \
     | ${PAGER:-more}
