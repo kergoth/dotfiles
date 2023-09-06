@@ -11,6 +11,7 @@ imports:
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
     exa-completions: ls/zsh-functions
+    eza-completions: ls/zsh-functions
     nix-zsh-completions: nix/zsh-functions
     powerlevel10k: zsh/themes/powerlevel10k
     zsh-nix-shell: zsh/plugins/nix-shell
@@ -342,6 +343,13 @@ git module exa-completions:
         completions/zsh/_exa: _exa
     pick: _exa
     rev: c697d066702ab81ce0684fedb4c638e0fc0473e8
+
+git module eza-completions:
+    url: https://github.com/eza-community/eza
+    move:
+        completions/zsh/_eza: _eza
+    pick: _eza
+    rev: 724b6ddbf572425ac35ebe8969839566a9a1de98
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
