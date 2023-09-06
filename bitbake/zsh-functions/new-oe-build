@@ -105,6 +105,12 @@ fi
         return 1
     fi
 
+    for site_conf in "$topdir"/site.conf "$topdir"/../site.conf ~/.oe/conf/site.conf; do
+        if [ -e "$site_conf" ]; then
+            ln -sf "$site_conf" conf/site.conf
+        fi
+    done
+
     for linkdir in downloads sstate-cache cached-binaries; do
         if [ -e ../"$linkdir" ]; then
             ln -sfv ../"$linkdir" .
@@ -114,6 +120,7 @@ fi
     if [ -e ~/mel/workflow ]; then
         cp -av ~/mel/workflow/envrc-build .envrc
     fi
+
     direnv allow
 ) || return 1
 
