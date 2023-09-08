@@ -7,8 +7,8 @@
 	cm = commit -s -m
 	cma = commit -sam
 	empty = commit --allow-empty-message -m ''
-	co = switch --no-guess
-	back = switch --no-guess -
+	co = switch
+	back = switch -
 	cp = cherry-pick -x
 	au = add -u
 	chmod = "!mode="$1"; shift; git update-index --chmod=\"$mode\" \"$@\""
