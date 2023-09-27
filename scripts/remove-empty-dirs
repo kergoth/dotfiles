@@ -1,4 +1,15 @@
-#!/bin/sh
+#!/bin/bash
+
+set -u
+
+walk_up () {
+    local walk_path
+    walk_path="$(abspath "${1:-$PWD}")"
+    while [ -n "$walk_path" ]; do
+        echo "$walk_path"
+        walk_path="${walk_path%/*}"
+    done
+}
 
 if which gfind >/dev/null 2>&1; then
     alias find=gfind
@@ -15,15 +26,16 @@ if [ $# -eq 0 ]; then
     set -- .
 fi
 
-{
-    find "$@" -type d -name @eaDir
-    find "$@" -type f -name .DS_Store
-    find "$@" -type f -name 'Icon
-    '
-    find "$@" -type f -empty
-    find "$@" -type d -empty
-} |
-    awk '!visited[$0]++' |
-    grep -Ev '/\.stfolder|/\.git/|/\.placeholder|\.gitkeep|\.[^.]*/' |
-    tr '\n' '\0' |
-    xargs -0 ${dry_run:+echo }rm -rfv
+find "$@" \( \( -name .git -o -name .repo \) -a -prune \) -o \( \( \( -type f -name .DS_Store \) -o \( -type f -a -empty -a -not -name .placeholder -a -not -name .gitkeep \) \) -a -print0 \) \
+    | xargs -n 1 -0 ${dry_run:+echo }rm -fv
+find "$@" \( -type d -name @eaDir \) -print0 \
+    | xargs -n 1 -0 ${dry_run:+echo }rm -rfv
+
+find "$@" \( \( -name .git -o -name .repo \) -a -prune \) -o \( \( -type d -empty \) -a -print \) \
+    | while read -r dir; do
+        walk_up "$dir"
+    done \
+    | awk '!visited[$0]++' \
+    | sort -fr \
+    | tr '\n' '\0' \
+    | xargs -n 1 -0 ${dry_run:+echo }rmdir -v 2>/dev/null
