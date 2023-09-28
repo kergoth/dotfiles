@@ -4,7 +4,7 @@ local cmd="$1"
 shift
 
 if (( $+commands[docker] )) && (( $+commands[oe-docker] )); then
-    docker_image=${docker_image:-$(. "$(find_up config)/config" && echo "${docker_image:-}")}
+    docker_image=${docker_image-$(. "$(find_up config)/config" && echo "${docker_image:-}")}
     if [[ -n "$docker_image" ]]; then
         command oe-docker "$cmd" "$@"
     else
