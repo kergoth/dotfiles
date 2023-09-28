@@ -1,4 +1,4 @@
-interval=2
+WATCH_INTERVAL=${WATCH_INTERVAL:-2}
 
 if [[ $# -eq 0 ]]; then
     echo >&2 "Usage: watch command [args]"
@@ -6,7 +6,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 COLUMNS=$(stty size | cut -d" " -f2)
-prefix="$(printf "Every %0.1fs: %s" $interval "$*")"
+prefix="$(printf "Every %0.1fs: %s" $WATCH_INTERVAL "$*")"
 width=$(echo $prefix | wc -c | awk '{print $1}')
 
 while true; do
@@ -16,5 +16,5 @@ while true; do
     pad=$(expr $COLUMNS - $width + 1)
     printf "%s%${pad}s\n" "$prefix" "$date"
     eval "$@"
-    sleep $interval
+    sleep $WATCH_INTERVAL
 done
