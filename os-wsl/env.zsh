@@ -19,11 +19,15 @@ case "$(uname -r)" in
                 fi
             done
         fi
-        if [[ -e "${NPIPERELAY:-}" ]] && (( $+commands[socat] )); then
-            export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
-            if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
-                rm -f "$SSH_AUTH_SOCK"
-                ( setsid socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" EXEC:"$NPIPERELAY -ei -s //./pipe/openssh-ssh-agent",nofork & )
+        if [[ -e "${NPIPERELAY:-}" ]]; then
+            if (( $+commands[socat] )); then
+                export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
+                if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
+                    rm -f "$SSH_AUTH_SOCK"
+                    ( setsid socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" EXEC:"$NPIPERELAY -ei -s //./pipe/openssh-ssh-agent",nofork & )
+                fi
+            else
+                echo >&2 "Warning: socat is not installed, unable to use npiperelay for ssh auth sock"
             fi
         fi
         ;;
