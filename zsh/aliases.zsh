@@ -28,7 +28,13 @@ alias bc='bc -ql'
 alias wget='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
 alias wfp=wait-for-process
 alias ncdu='ncdu -e -x --color dark --exclude .git --exclude .repo'
-alias rezsh='exec zsh --login'
+
+if (( $+commands[direnv] )); then
+    alias rezsh='exec direnv exec / zsh --login'
+else
+    alias rezsh='exec zsh --login'
+fi
+
 if [[ $OSTYPE =~ darwin ]]; then
     alias relogin='login -f $USER'
 else
