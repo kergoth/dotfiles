@@ -12,14 +12,14 @@
 	email = kergoth@gmail.com
 
 [pager]
-	diff = delta
-	log = delta
-	reflog = delta
-	show = delta
+	diff = git-pager
+	log = git-pager
+	reflog = git-pager
+	show = git-pager
 
 [interactive]
 	singlekey = true
-	diffFilter = delta --color-only --features=interactive
+	diffFilter = git-diff-filter
 
 [delta]
 	syntax-theme = Dracula
