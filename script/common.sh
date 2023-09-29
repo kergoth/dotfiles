@@ -2,6 +2,7 @@ INSTALL_DEST="${INSTALL_DEST:-$HOME}"
 
 : "${XDG_CONFIG_HOME:=$INSTALL_DEST/.config}"
 : "${XDG_DATA_HOME:=$INSTALL_DEST/.local/share}"
+: "${XDG_STATE_HOME:=$INSTALL_DEST/.local/state}"
 : "${XDG_CACHE_HOME:=$INSTALL_DEST/.cache}"
 
 export ASDF_DATA_DIR="${ASDF_DATA_DIR:-${XDG_DATA_HOME:-$INSTALL_DEST/.local/share}/asdf}"
