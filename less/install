@@ -1,7 +1,8 @@
-LESS_DATA_DIR=$XDG_DATA_HOME/less
-mkdir -p $LESS_DATA_DIR
+LESSHISTFILE=$XDG_STATE_HOME/lesshst
 
-if [ -e ~/.lesshst ] && [ ! -e $LESS_DATA_DIR/lesshist ]; then
-    # Copy existing data to new location
-    cp ~/.lesshst $LESS_DATA_DIR/lesshist
-fi
+for existing in ~/.lesshst $XDG_DATA_HOME/less/lesshist; do
+    if [ -e "$existing" ] && [ ! -e "$LESSHISTFILE" ]; then
+        # Move existing data to new location
+        mv "$existing" "$LESSHISTFILE"
+    fi
+done

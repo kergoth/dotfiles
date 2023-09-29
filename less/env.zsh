@@ -1,1 +1,1 @@
-export LESSHISTFILE=$XDG_DATA_HOME/less/lesshist
+export LESSHISTFILE=$XDG_STATE_HOME/lesshst
