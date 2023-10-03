@@ -23,25 +23,27 @@ case "${OSTYPE:-}" in
         : "${XDG_CACHE_HOME:=$INSTALL_DEST/Library/Caches}"
         ;;
     linux-gnu)
-        case "$(uname -r)" in
-            *-Microsoft | *-microsoft-*)
-                OSTYPE=WSL
-                USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
-                prefixes="%include%Wsl $prefixes"
+        if [[ -n $(cat /proc/1/sched | head -n 1 | grep init) ]]; then
+            case "$(uname -r)" in
+                *-Microsoft | *-microsoft-*)
+                    OSTYPE=WSL
+                    USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
+                    prefixes="%include%Wsl $prefixes"
 
-                if [ -z "${WslDisks:-}" ]; then
-                    export WslDisks=/mnt
-                    if [ -e /etc/wsl.conf ]; then
-                        WslDisks="$(sed -n -e 's/^root = //p' /etc/wsl.conf)"
-                        if [ -n "$WslDisks" ]; then
-                            export WslDisks="${WslDisks%/}"
-                        else
-                            WslDisks=/mnt
+                    if [ -z "${WslDisks:-}" ]; then
+                        export WslDisks=/mnt
+                        if [ -e /etc/wsl.conf ]; then
+                            WslDisks="$(sed -n -e 's/^root = //p' /etc/wsl.conf)"
+                            if [ -n "$WslDisks" ]; then
+                                export WslDisks="${WslDisks%/}"
+                            else
+                                WslDisks=/mnt
+                            fi
                         fi
                     fi
-                fi
-                ;;
-        esac
+                    ;;
+            esac
+        fi
         ;;
 esac
 
