@@ -1,4 +1,4 @@
-if [[ -n $(cat /proc/1/sched | head -n 1 | grep init) ]]; then
+if [[ ! -e /.dockerenv ]]; then
     case "$(uname -r)" in
         *-Microsoft)
             OSTYPE=WSL
