@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+find "$@" -type f -printf "%TY%Tm%Td %h/%f\n" \
+    | awk 'BEGIN {cont=0; oldd=strftime("%Y%m%d"); } { if ($1 < oldd) { oldd=$1; oldf=$2; for(i=3; i<=NF; i++) oldf=oldf " " $i; print oldd " " oldf; }; count++; } END { print "oldest date: ", oldd, "\nFile:", oldf, "\nTotal compared: ", count}'

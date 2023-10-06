@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+find "$@" -type f -printf "%TY%Tm%Td %h/%f\n" \
+    | awk 'BEGIN {cont=0; newd=0; } { if ($1 > newd) { newd=$1; newf=$2; for(i=3; i<=NF; i++) newf=newf " " $i; print newd " " newf; }; count++; } END { print "newest date: ", newd, "\nFile:", newf, "\nTotal compared: ", count}'
