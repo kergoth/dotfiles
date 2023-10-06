@@ -59,6 +59,7 @@ imports:
     bat-syntax-bitbake: bat/syntaxes/BitBake
     windows-terminal: windows-terminal/files
     archlinux-icons: windows-terminal/files
+    tldr: tldr/scripts
     userjs: firefox
     vscode-zsh-completion: vscode/zsh-functions
     cht: cht/scripts
@@ -422,3 +423,9 @@ git module userjs:
   executable: updater.sh
   rev: 6e79d1bba6a932480a938bec5c2cee0388e586b9
 
+git module tldr:
+  url: https://github.com/raylee/tldr-sh-client
+  reup: main
+  pick: tldr
+  executable: tldr
+  rev: d98b93c3b356e67b598b721fdbe4ef1e3aad286a
