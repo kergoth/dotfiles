@@ -19,16 +19,18 @@ __eza() {
         {-R,--recurse}"[Recurse into directories]" \
         {-T,--tree}"[Recurse into directories as a tree]" \
         {-F,--classify}"[Display type indicator by file names]" \
-        --colo{,u}r="[When to use terminal colours]:(when):(always auto never)" \
+        --colo{,u}r="[When to use terminal colours]:(when):(always auto automatic never)" \
         --colo{,u}r-scale"[Highlight levels of file sizes distinctly]" \
         --icons"[Display icons]" \
         --no-icons"[Hide icons]" \
+        --no-quotes"[Don't quote filenames with spaces]" \
         --hyperlink"[Display entries as hyperlinks]" \
         --group-directories-first"[Sort directories before other files]" \
         --git-ignore"[Ignore files mentioned in '.gitignore']" \
-        {-a,--all}"[Show hidden and 'dot' files]" \
+        {-a,--all}"[Show hidden and 'dot' files. Use this twice to also show the '.' and '..' directories]" \
         {-d,--list-dirs}"[List directories like regular files]" \
         {-D,--only-dirs}"[List only directories]" \
+        {-f,--only-files}"[List only files]" \
         {-L,--level}"+[Limit the depth of recursion]" \
         {-w,--width}"+[Limits column output of grid, 0 implies auto-width]" \
         {-r,--reverse}"[Reverse the sort order]" \
@@ -60,6 +62,7 @@ __eza() {
         --git-repos-no-status"[List each git-repos branch name (much faster)]" \
         {-@,--extended}"[List each file's extended attributes and sizes]" \
         {-Z,--context}"[List each file's security context]" \
+        {-M,--mounts}"[Show mount details (long mode only)]" \
         '*:filename:_files'
 }
 

@@ -335,21 +335,20 @@ git module tony-tmux-config:
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: b96e75073177cd57cf388c9cfbaee26620855126
+    sha1: d69b1add3eb82b1ec97cf969fd08fcc2280ee4c6
 
 git module exa-completions:
     url: https://github.com/ogham/exa
-    move:
-        completions/zsh/_exa: _exa
-    pick: _exa
+    export: completions/zsh
+    pick: completions/zsh/_exa
     rev: c697d066702ab81ce0684fedb4c638e0fc0473e8
 
 git module eza-completions:
     url: https://github.com/eza-community/eza
-    move:
-        completions/zsh/_eza: _eza
-    pick: _eza
-    rev: 724b6ddbf572425ac35ebe8969839566a9a1de98
+    export: completions/zsh
+    pick: completions/zsh/_eza
+    reup: main
+    rev: 55c3d084035f22db4b99ea6e4a5e9d4ccb8b1aea
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
