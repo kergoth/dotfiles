@@ -10,13 +10,16 @@ import shlex
 import pickle
 import re
 from enum import Enum, IntEnum
+from collections import defaultdict
+from copy import deepcopy
 
 import logging
 from logging import error, warning, info, debug
+logging.TRACE = 5
 
 APP_DSC = "update git branches using high-level instructions"
 APP_SIG = "git-assembler"
-APP_VER = "1.4"
+APP_VER = "1.5"
 
 
 def repo_toplevel():
@@ -72,6 +75,8 @@ def parse_assembly(path, branches):
 
     nodes = {}
     settings = {'target': []}
+    global_flags = {'merge': [],
+                    'rebase': []}
 
     for n, line in enumerate(fd, 1):
         # strip comments
@@ -94,11 +99,30 @@ def parse_assembly(path, branches):
             # wilcard expansion for targets is performed later
             settings['target'] = tokens[1:]
 
+        elif cmd == 'flags':
+            if len(tokens) < 2:
+                parse_error(path, n, 'invalid assembly line')
+                return None
+            target, args = tokens[1].decode('ascii'), tokens[2:]
+            if target not in global_flags:
+                parse_error(path, n, 'invalid flags target')
+                return None
+            global_flags[target] = args
+
         elif cmd in {'base', 'rebase', 'stage', 'merge'}:
             if len(tokens) < 3:
                 parse_error(path, n, 'invalid assembly line')
                 return None
             target, args = tokens[1], tokens[2:]
+
+            # separate arguments and flags
+            rule_flags = deepcopy(global_flags)
+            if cmd in global_flags:
+                for rule_arg in enumerate(args):
+                    if rule_arg[1][0] == ord('-'):
+                        rule_flags[cmd].extend(args[rule_arg[0]:])
+                        args = args[:rule_arg[0]]
+                        break
 
             # expand the target into multiple rules
             if not branch_is_pattern(target):
@@ -140,6 +164,7 @@ def parse_assembly(path, branches):
                         node['type'] = BranchType.STAGE
                     elif cmd == 'rebase':
                         node['type'] = BranchType.REBASE
+                        node['flags']['rebase'] = rule_flags['rebase']
                     else:
                         node['type'] = BranchType.BASE
 
@@ -181,7 +206,9 @@ def parse_assembly(path, branches):
                             return None
 
                     # add dependencies
-                    node['merge'].extend(merge_deps)
+                    for dep in merge_deps:
+                        node['merge'].append(dep)
+                        node['flags']['merge'][dep] = rule_flags['merge']
 
         else:
             parse_error(path, n, 'unknown command: {}'.format(cmd))
@@ -204,7 +231,7 @@ def read_git_config():
         {
             'key': 'assembler.mergeff',
             'type': 'bool',
-            'default': 'true',
+            'default': None,
             'env': 'GIT_ASSEMBLER_MERGEFF',
         },
     )
@@ -214,35 +241,34 @@ def read_git_config():
         if 'type' in entry:
             type_flags = ('--type', entry['type'])
         else:
-            type_flags = tuple()
+            type_flags = ()
 
-        if 'env' in entry and entry['env'] in os.environ:
-            try:
-                line = sp.check_output(['git', 'config',
-                                        '--file', os.devnull,
-                                        *type_flags,
-                                        '--default', os.environ[entry['env']],
-                                        entry['key'],
-                                       ])
-            except sp.CalledProcessError as e:
-                error('failed to parse value from env variable {}'.format(entry['env']))
-                return None
-            value = line.rstrip()
+        if entry['env'] in os.environ:
+            default = os.environ[entry['env']]
+            if len(default) == 0:
+                default_flags = ('--file', os.devnull)
+            else:
+                default_flags = ('--file', os.devnull, '--default', default)
+        elif entry.get('default') is not None:
+            default_flags = ('--default', entry['default'])
         else:
-            try:
-                line = sp.check_output(['git', 'config',
-                                        *type_flags,
-                                        '--default', entry['default'],
-                                        entry['key'],
-                                       ])
-            except sp.CalledProcessError as e:
-                error('failed to parse value for config {}'.format(entry['key']))
-                return None
-            value = line.rstrip()
+            default_flags = ()
+
+        proc = sp.run(['git', 'config', *type_flags, *default_flags, entry['key']],
+                      stdout=sp.PIPE)
+        if proc.returncode not in [0, 1]:
+            error('failed to parse value for config {}'.format(entry['key']))
+            return None
+        value = proc.stdout.rstrip()
 
         if 'type' in entry:
             if entry['type'] == 'bool':
-                value = value == b'true'
+                if value == b'true':
+                    value = True
+                elif value == b'':
+                    value = None
+                else:
+                    value = False
 
         conf[entry['key']] = value
     return conf
@@ -264,6 +290,8 @@ def empty_node(name):
             'path': None,
             'merge': [],
             'deps': [],
+            'flags': {'merge': defaultdict(lambda: defaultdict(list)),
+                      'rebase': []},
             'state': {'dirty': False,
                       'used': False,
                       'missing': None}}
@@ -376,8 +404,11 @@ def color_path(path):
 
 def compact_relpath(path):
     # pick the shortest representation (TODO: not necessarily more readable)
-    relpath = os.path.relpath(path)
-    return relpath if len(relpath) < len(path) else path
+    try:
+        relpath = os.path.relpath(path)
+        return relpath if len(relpath) < len(path) else path
+    except ValueError: # This might happen between drives on Windows.
+        return path
 
 def worktree_is_current(worktree_path, toplevel_dir):
     return (toplevel_dir == worktree_path and
@@ -688,11 +719,31 @@ def clear_state(git_dir):
     save_state(git_dir, None)
 
 
-def switch_to_branch(name, path, *git_flags):
-    proc = sp.run(['git', 'checkout', '-q', '--no-guess', *git_flags, name],
-                  cwd=path, stdout=sp.DEVNULL, stderr=sp.PIPE)
+def switch_to_branch(name, path):
+    proc = run(['git', 'checkout', '-q', '--no-guess', name],
+               cwd=path, stdout=sp.DEVNULL, stderr=sp.PIPE)
     stderr = proc.stderr.decode(sys.getdefaultencoding(), 'surrogateescape').rstrip()
     return proc.returncode, stderr
+
+
+def str_flags(flags):
+    ret = []
+    for flag in flags:
+        if type(flag) is bytes:
+            flag = flag.decode(sys.getdefaultencoding(), 'surrogateescape')
+        ret.append(flag)
+    return ' '.join(ret)
+
+def using_flags(flags):
+    if len(flags) == 0:
+        return ''
+    return ' using ' + str_flags(flags)
+
+def run(args, **kwargs):
+    if logging.TRACE >= logging.root.level:
+        logging.log(logging.TRACE, 'running cwd={} {}'.format(
+            kwargs.get('cwd', os.getcwd()), str_flags(args)))
+    return sp.run(args, **kwargs)
 
 
 def update_node(node, state, toplevel_dir, dry_run, merge_ff):
@@ -716,13 +767,13 @@ def update_node(node, state, toplevel_dir, dry_run, merge_ff):
                 log(logging.INFO, 'detaching branch {}{}'.format(
                     color_node(node), branch_path_suffix(node, toplevel_dir)))
                 if not dry_run:
-                    proc = sp.run(['git', 'checkout', '-q', '--detach', '--no-guess'],
-                                  cwd=node_worktree)
+                    proc = run(['git', 'checkout', '-q', '--detach', '--no-guess'],
+                               cwd=node_worktree)
                     if proc.returncode != 0:
                         return False
             log(logging.INFO, 'erasing existing branch {}'.format(color_node(node)))
             if not dry_run:
-                proc = sp.run(['git', 'branch', '-q', '-D', node['name']])
+                proc = run(['git', 'branch', '-q', '-D', node['name']])
                 if proc.returncode != 0:
                     return False
         exists = False
@@ -758,9 +809,9 @@ def update_node(node, state, toplevel_dir, dry_run, merge_ff):
             color_node(node), branch_path_suffix(node, toplevel_dir),
             color_node(node['base'])))
         if not dry_run:
-            proc = sp.run(['git', 'checkout', '-q', '--no-guess', '-b',
-                           node['name'], node['base']['name']],
-                          cwd=node_worktree)
+            proc = run(['git', 'checkout', '-q', '--no-guess', '-b',
+                        node['name'], node['base']['name']],
+                       cwd=node_worktree)
             if proc.returncode != 0:
                 return False
         if node['path'] is None:
@@ -773,13 +824,14 @@ def update_node(node, state, toplevel_dir, dry_run, merge_ff):
             else:
                 dirty = needs_rebase(node['name'], node['base']['name'])
             if dirty is not False:
+                flags = node['flags']['rebase']
                 log(logging.INFO, 'rebasing {}{} onto {}'.format(
                     color_node(node), branch_path_suffix(node, toplevel_dir),
-                    color_node(node['base'])))
+                    color_node(node['base'])) + using_flags(flags))
                 if not dry_run:
-                    proc = sp.run(['git', 'rebase', '-q', '--fork-point',
-                                   node['base']['name'], node['name']],
-                                  cwd=node_worktree)
+                    proc = run(['git', 'rebase', '-q', '--fork-point',
+                                *flags, node['base']['name'], node['name']],
+                               cwd=node_worktree)
                     if proc.returncode != 0:
                         return False
 
@@ -796,16 +848,21 @@ def update_node(node, state, toplevel_dir, dry_run, merge_ff):
         elif not needs_merge(node['name'], dep['name']):
             continue
 
+        flags = node['flags']['merge'][dep['name']]
+        if merge_ff is not None:
+            flags = ['--ff' if merge_ff else '--no-ff'] + flags
+
         log(logging.INFO, 'merging {} into {}{}'.format(
-            color_node(dep), color_node(node), branch_path_suffix(node, toplevel_dir)))
+            color_node(dep), color_node(node),
+            branch_path_suffix(node, toplevel_dir)) + using_flags(flags))
         if not dry_run:
-            ff = '--ff' if merge_ff else '--no-ff'
-            proc = sp.run(['git', 'merge', ff, '-q', '--rerere-autoupdate', '--no-edit', dep['name']],
-                          cwd=node_worktree)
+            proc = run(['git', 'merge', '-q', '--rerere-autoupdate',
+                        *flags, '--no-edit', dep['name']],
+                       cwd=node_worktree)
             if proc.returncode == 1:
                 # directly attempt to autocommit in case rerere was successful
-                proc = sp.run(['git', 'commit', '-q', '--no-edit'],
-                              cwd=node_worktree, stderr=sp.DEVNULL)
+                proc = run(['git', 'commit', '-q', '--no-edit'],
+                           cwd=node_worktree, stderr=sp.DEVNULL)
                 if proc.returncode == 0:
                     log(logging.WARN, 'automatic merge resolution successful')
             if proc.returncode != 0:
@@ -861,7 +918,7 @@ def get_targets(cli_targets, set_targets, nodes):
     if len(cli_targets) == 0:
         patterns = set_targets
     else:
-        patterns = [branch.encode(sys.getfilesystemencoding(), 'surrogateescape')
+        patterns = [branch.encode(sys.getdefaultencoding(), 'surrogateescape')
                     for branch in cli_targets]
 
     # expand patterns
@@ -920,7 +977,7 @@ def main(argv):
     args = ap.parse_args(argv[1:])
 
     # logging
-    levels = (logging.WARNING, logging.INFO, logging.DEBUG)
+    levels = (logging.WARNING, logging.INFO, logging.DEBUG, logging.TRACE)
     logging.basicConfig(level=levels[min(len(levels)-1, args.verbose)],
                         format='{}: %(message)s'.format(APP_SIG))
 
