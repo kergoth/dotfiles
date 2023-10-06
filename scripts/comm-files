@@ -115,8 +115,8 @@ esac
 scriptdir=$(cd "$(dirname "$0")" && pwd)
 PATH="$scriptdir:$PATH"
 
-( cd "$from" && find . "$@" ) | normalize_case_filter | sort -f >"$fromfiles"
-( cd "$to" && find . "$@" )  | normalize_case_filter | sort -f >"$tofiles"
+( cd "$from" && find . "$@" ) | normalize_case_filter | sort >"$fromfiles"
+( cd "$to" && find . "$@" )  | normalize_case_filter | sort >"$tofiles"
 echo >&2 "Comparing the list of files from $from to $to"
 comm ${comm_i_arg:+$comm_i_arg} "$fromfiles" "$tofiles" \
     | comm-to-difflike \
