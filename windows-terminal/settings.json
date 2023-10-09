@@ -30,17 +30,25 @@
             "command": 
             {
                 "action": "switchToTab",
-                "index": 4
+                "index": 0
             },
-            "keys": "alt+5"
+            "keys": "alt+1"
         },
         {
             "command": 
             {
                 "action": "switchToTab",
-                "index": 0
+                "index": 7
             },
-            "keys": "alt+1"
+            "keys": "alt+8"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 4
+            },
+            "keys": "alt+5"
         },
         {
             "command": 
@@ -70,14 +78,6 @@
             "command": 
             {
                 "action": "switchToTab",
-                "index": 7
-            },
-            "keys": "alt+8"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
                 "index": 8
             },
             "keys": "alt+9"
@@ -85,6 +85,12 @@
     ],
     "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
     "launchMode": "maximized",
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
     "profiles": 
     {
         "defaults": 
@@ -153,11 +159,11 @@
                 "name": "Yori"
             },
             {
-                "name": "Git Bash (via scoop)",
                 "commandline": "cmd /c %USERPROFILE%\\scoop\\shims\\bash.exe --cd-to-home",
                 "guid": "{3e6f2964-e43e-47e2-a70d-8e655e2f2fb8}",
                 "hidden": false,
                 "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+                "name": "Git Bash (via scoop)",
                 "startingDirectory": "~"
             },
             {
@@ -484,5 +490,49 @@
             "yellow": "#808000"
         }
     ],
-    "themes": []
+    "themes": 
+    [
+        {
+            "name": "legacyDark",
+            "tab": 
+            {
+                "background": null,
+                "showCloseButton": "always",
+                "unfocusedBackground": null
+            },
+            "window": 
+            {
+                "applicationTheme": "dark",
+                "useMica": false
+            }
+        },
+        {
+            "name": "legacyLight",
+            "tab": 
+            {
+                "background": null,
+                "showCloseButton": "always",
+                "unfocusedBackground": null
+            },
+            "window": 
+            {
+                "applicationTheme": "light",
+                "useMica": false
+            }
+        },
+        {
+            "name": "legacySystem",
+            "tab": 
+            {
+                "background": null,
+                "showCloseButton": "always",
+                "unfocusedBackground": null
+            },
+            "window": 
+            {
+                "applicationTheme": "system",
+                "useMica": false
+            }
+        }
+    ]
 }
