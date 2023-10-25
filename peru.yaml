@@ -20,6 +20,7 @@ imports:
     ddimage: external/scripts
     dtrx: external/scripts
     ifne: external/scripts
+    jason0x43-dotfiles: external/scripts
     gnu2bsd: ls/scripts
     git-assembler: git/scripts
     git-cherry-tree: git/scripts
@@ -429,3 +430,11 @@ git module tldr:
   pick: tldr
   executable: tldr
   rev: d98b93c3b356e67b598b721fdbe4ef1e3aad286a
+
+git module jason0x43-dotfiles:
+  url: https://github.com/jason0x43/dotfiles
+  export: bin
+  pick: bin/term_copy
+  executable: bin/term_copy
+  rev: 3afad1e758d668f4d6fd39d4ba40068b64ff00be
+
