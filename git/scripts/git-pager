@@ -4,7 +4,7 @@ if command -v delta >/dev/null 2>&1; then
     delta
 elif command -v diff-so-fancy >/dev/null 2>&1; then
     diff-so-fancy | ${PAGER:-less --tabs=4}
-elif command -v diff-highlight >/dev/null 2>&1; then
+elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
     diff-highlight | ${PAGER:-less --tabs=4}
 elif command -v bat >/dev/null 2>&1; then
     bat -l diff
