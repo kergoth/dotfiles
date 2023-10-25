@@ -1,0 +1,11 @@
+#!/bin/bash
+# fv [FUZZY PATTERN] - Open recent files from viminfo (with fasd) in vim
+
+set -euo pipefail
+
+files="$(mktemp -t "${0##*/}.XXXXX")"
+fasd -Rflt -B viminfo \
+    | fzf-tmux --select-1 --no-sort --multi --query="$*" --exit-0 >"$files"
+if [ -s "$files" ]; then
+    tr <"$files" '\n' '\0' | xargs -0 sh -c 'vim </dev/tty "$@"' -
+fi
