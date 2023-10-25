@@ -1,4 +1,4 @@
-if (( $+commands[fasd] )); then
+if (( $+commands[fasd] )) && ! (( $+commands[zoxide] )); then
     fasd_cache="$XDG_CACHE_HOME/fasd/env.zsh"
     if [[ ! -e $fasd_cache ]]; then
         mkdir -p $XDG_CACHE_HOME/fasd
