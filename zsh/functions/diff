@@ -6,10 +6,13 @@ diff () {
             command diff "$@" \
                 | if (( $+commands[bat] )); then
                     bat -l diff
+                elif command -v diff-so-fancy >/dev/null 2>&1; then
+                    diff-so-fancy
+                elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
+                    diff-highlight
                 else
                     cat
                 fi \
-                | diff-so-fancy \
                 | less -R
         fi
     else
