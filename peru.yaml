@@ -275,10 +275,11 @@ git module zsh-autosuggestions:
 
 git module git-extras:
     url: https://github.com/tj/git-extras
+    reup: main
     export: bin
     pick:
         - bin/git-alias
-    rev: bddb9873830419b28b3c8438eea3003a6f459966
+    rev: 78c5ca28a0355bfd02cfbb9b7c3db7b756fd50b0
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
