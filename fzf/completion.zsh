@@ -9,6 +9,9 @@
 # - $FZF_COMPLETION_TRIGGER (default: '**')
 # - $FZF_COMPLETION_OPTS    (default: empty)
 
+[[ -o interactive ]] || return 0
+
+
 # Both branches of the following `if` do the same thing -- define
 # __fzf_completion_options such that `eval $__fzf_completion_options` sets
 # all options to the same values they currently have. We'll do just that at
@@ -67,14 +70,11 @@ fi
 # control. There are several others that could wreck havoc if they are set
 # to values we don't expect. With the following `emulate` command we
 # sidestep this issue entirely.
-'emulate' 'zsh' '-o' 'no_aliases'
+'builtin' 'emulate' 'zsh' && 'builtin' 'setopt' 'no_aliases'
 
 # This brace is the start of try-always block. The `always` part is like
 # `finally` in lesser languages. We use it to *always* restore user options.
 {
-
-# Bail out if not interactive shell.
-[[ -o interactive ]] || return 0
 
 # To use custom commands instead of find, override _fzf_compgen_{path,dir}
 if ! declare -f _fzf_compgen_path > /dev/null; then
@@ -218,16 +218,21 @@ _fzf_complete() {
   command rm -f "$fifo"
 }
 
-__fzf_list_hosts() {
-  setopt localoptions nonomatch
-  command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?%]') \
-    <(command grep -oE '^[[a-z0-9.,:-]+' ~/.ssh/known_hosts | tr ',' '\n' | tr -d '[' | awk '{ print $1 " " $1 }') \
-    <(command grep -v '^\s*\(#\|$\)' /etc/hosts | command grep -Fv '0.0.0.0') |
-    awk -v "user=$1" '{if (length($2) > 0) {print user $2}}' | sort -u
-}
+# To use custom hostname lists, override __fzf_list_hosts.
+# The function is expected to print hostnames, one per line as well as in the
+# desired sorting and with any duplicates removed, to standard output.
+if ! declare -f __fzf_list_hosts > /dev/null; then
+  __fzf_list_hosts() {
+    setopt localoptions nonomatch
+    command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?%]') \
+      <(command grep -oE '^[[a-z0-9.,:-]+' ~/.ssh/known_hosts 2> /dev/null | tr ',' '\n' | tr -d '[' | awk '{ print $1 " " $1 }') \
+      <(command grep -v '^\s*\(#\|$\)' /etc/hosts 2> /dev/null | command grep -Fv '0.0.0.0') |
+      awk '{if (length($2) > 0) {print $2}}' | sort -u
+  }
+fi
 
 _fzf_complete_telnet() {
-  _fzf_complete +m -- "$@" < <(__fzf_list_hosts "")
+  _fzf_complete +m -- "$@" < <(__fzf_list_hosts)
 }
 
 # The first and the only argument is the LBUFFER without the current word that contains the trigger.
@@ -241,7 +246,7 @@ _fzf_complete_ssh() {
     *)
       local user=
       [[ $prefix =~ @ ]] && user="${prefix%%@*}@"
-      _fzf_complete +m -- "$@" < <(__fzf_list_hosts "$user")
+      _fzf_complete +m -- "$@" < <(__fzf_list_hosts | awk -v user="$user" '{print user $0}')
       ;;
   esac
 }

@@ -88,12 +88,12 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 775e7ebe1f9a32ee219a4a29dbc55d65dcad65b8
+    rev: 19efcfee9d66ae1a1638db4539dbee7e11740541
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 143b25eb98aa3227af63bd7f04413e1b3e7888ec
+    rev: 0b5b3dcc0c603c9e1b3ad9d59b3d923a4b2d2437
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
@@ -101,11 +101,11 @@ git module zsh-history-substring-search:
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 2c1e9af19562bfb74a9167122c460bd22e39c06d
+    rev: a0f027a1de9272d22ce20465d660d7b611f30cf0
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
-    rev: ae0c9ff7f709b929ba4beb8c50e4abfc74c1352a
+    rev: a7c8781b5a18026fbc3edb36397931526f243590
     pick:
       - '*.zsh'
       - '_*'
@@ -147,7 +147,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 488a236b7a4d01e910e0ac80b4794a7a054fb3a8
+    rev: 96e31e4b7862be73c7b0b4c87ea86b8b5f7fadb5
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -357,7 +357,7 @@ git module eza-completions:
     export: completions/zsh
     pick: completions/zsh/_eza
     reup: main
-    rev: 55c3d084035f22db4b99ea6e4a5e9d4ccb8b1aea
+    rev: 73298f0b0afc9cd11aa45aa4be20c244b9e61ca8
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -429,7 +429,7 @@ git module userjs:
     - prefsCleaner.sh
     - prefsCleaner.bat
   executable: updater.sh
-  rev: 6e79d1bba6a932480a938bec5c2cee0388e586b9
+  rev: 35e8def0b1e5ecf1198e7efe41cfe6aa0415b320
 
 git module tldr:
   url: https://github.com/raylee/tldr-sh-client
