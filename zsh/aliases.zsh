@@ -145,6 +145,9 @@ if [[ $OSTYPE =~ darwin ]]; then
     if (( $+commands[grm] )); then
         alias rm='grm --one-file-system -I'
         alias srm='sudo =grm --one-file-system -I'
+    else
+        alias rm='rm -xI'
+        alias srm='sudo rm -xI'
     fi
 
     alias locate='mdfind -name'
