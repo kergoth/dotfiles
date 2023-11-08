@@ -1,4 +1,4 @@
-if [[ -o 'interactive' ]] && (( $+commands[choose] )); then
+if [[ -o 'interactive' ]] && (( $+commands[choose] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
     printf >&2 'Consider `choose` rather than `cut`.\n'
 fi
 command "$0" "$@"

@@ -1,4 +1,4 @@
-if [[ -o 'interactive' ]] && (( $+commands[procs] )); then
+if [[ -o 'interactive' ]] && (( $+commands[procs] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
     printf >&2 'Consider `procs` rather than `ps`.\n'
 fi
 command "$0" "$@"
