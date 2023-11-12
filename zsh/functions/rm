@@ -1,0 +1,11 @@
+if [[ $OSTYPE =~ darwin ]]; then
+    if (( $+commands[grm] )) || [[ $commands[rm] =~ /nix/.*-coreutils ]]; then
+        command rm --one-file-system -I "$@"
+    else
+        command rm -xI "$@"
+    fi
+elif [[ $OSTYPE =~ freebsd* ]]; then
+    command rm "$@"
+else
+    command rm --one-file-system -I "$@"
+fi

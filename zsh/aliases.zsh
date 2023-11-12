@@ -142,13 +142,6 @@ if [[ $OSTYPE =~ darwin ]]; then
         alias df='df -P -h -T nodevfs,autofs,mtmfs'
     fi
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
-    if (( $+commands[grm] )); then
-        alias rm='grm --one-file-system -I'
-        alias srm='sudo =grm --one-file-system -I'
-    else
-        alias rm='rm -xI'
-        alias srm='sudo rm -xI'
-    fi
 
     alias locate='mdfind -name'
     alias ddisk=daisydisk
@@ -160,10 +153,6 @@ else
         alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs,none,squashfs'
     else
         alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none -x squashfs'
-    fi
-    if ! [[ $OSTYPE =~ freebsd* ]]; then
-        alias rm='rm --one-file-system -I'
-        alias srm='sudo rm --one-file-system -I'
     fi
     if ! (( $+aliases[open] )); then
         alias open=xdg-open
