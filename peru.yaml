@@ -10,7 +10,6 @@ imports:
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
-    exa-completions: ls/zsh-functions
     eza-completions: ls/zsh-functions
     nix-zsh-completions: nix/zsh-functions
     powerlevel10k: zsh/themes/powerlevel10k
@@ -345,12 +344,6 @@ git module tony-tmux-config:
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
     sha1: d69b1add3eb82b1ec97cf969fd08fcc2280ee4c6
-
-git module exa-completions:
-    url: https://github.com/ogham/exa
-    export: completions/zsh
-    pick: completions/zsh/_exa
-    rev: fb05c421ae98e076989eb6e8b1bcf42c07c1d0fe
 
 git module eza-completions:
     url: https://github.com/eza-community/eza
