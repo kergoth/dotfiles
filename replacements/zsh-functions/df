@@ -1,4 +1,0 @@
-if [[ -o 'interactive' ]] && (( $+commands[duf] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
-    printf >&2 'Consider `duf` rather than `df`.\n'
-fi
-command "$0" "$@"

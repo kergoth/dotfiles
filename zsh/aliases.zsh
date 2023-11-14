@@ -135,12 +135,6 @@ alias hardlink='hardlink -t -x "\\.git/" -x "\\.repo/" -x @ -x .DS_Store -x "\\.
 
 if [[ $OSTYPE =~ darwin ]]; then
     alias ps='ps ux'
-    if (( $+commands[dfc] )); then
-        alias df=dfc
-        alias dfc='dfc -T'
-    else
-        alias df='df -P -h -T nodevfs,autofs,mtmfs'
-    fi
     alias plaincopy='pbpaste -Prefer txt | pbcopy; pbpaste; echo'
 
     alias locate='mdfind -name'
@@ -148,12 +142,6 @@ if [[ $OSTYPE =~ darwin ]]; then
     alias marked="open -b com.brettterpstra.marked2"
 else
     alias ps='ps fux'
-    if (( $+commands[dfc] )); then
-        alias df=dfc
-        alias dfc='dfc -T -t -rootfs,tmpfs,devtmpfs,none,squashfs'
-    else
-        alias df='df -h -x rootfs -x tmpfs -x devtmpfs -x none -x squashfs'
-    fi
     if ! (( $+aliases[open] )); then
         alias open=xdg-open
     fi

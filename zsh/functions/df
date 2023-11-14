@@ -1,0 +1,15 @@
+if [[ -o 'interactive' ]] && (( $+commands[duf] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
+    printf 'Consider `duf` rather than `df`.\n' >&2
+fi
+
+if [[ $OSTYPE =~ darwin ]]; then
+    if (( $+commands[gdf] )); then
+        command gdf -h -x rootfs -x tmpfs -x devtmpfs -x none -x squashfs "$@"
+    elif [[ $commands[df] =~ /nix/.*-coreutils ]]; then
+        command df -h -x rootfs -x tmpfs -x devtmpfs -x none -x squashfs "$@"
+    else
+        command df -P -h -T nodevfs,autofs,mtmfs "$@"
+    fi
+else
+    command df -h -x rootfs -x tmpfs -x devtmpfs -x none -x squashfs "$@"
+fi
