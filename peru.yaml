@@ -10,7 +10,7 @@ imports:
     zsh-syntax-highlighting: zsh/plugins/syntax-highlighting
     zsh-zbell: zsh/plugins/zbell
     zsh-sort-timings: zsh/scripts
-    eza-completions: ls/zsh-functions
+    # eza-completions: ls/zsh-functions
     nix-zsh-completions: nix/zsh-functions
     powerlevel10k: zsh/themes/powerlevel10k
     zsh-nix-shell: zsh/plugins/nix-shell
@@ -87,20 +87,20 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: 19efcfee9d66ae1a1638db4539dbee7e11740541
+    rev: d14524cd4cc4970bb1b6456f9667e2dd661b9854
     reup: main
 
 git module zsh-syntax-highlighting:
     url: https://github.com/zsh-users/zsh-syntax-highlighting
-    rev: 0b5b3dcc0c603c9e1b3ad9d59b3d923a4b2d2437
+    rev: bb27265aeeb0a22fb77f1275118a5edba260ec47
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 400e58a87f72ecec14f783fbd29bc6be4ff1641c
+    rev: 19b887667a155befeb5850f0af46a45cc5311ae2
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: a0f027a1de9272d22ce20465d660d7b611f30cf0
+    rev: 9e341f6a202e83e2dc0a587f4970fa375de84d4e
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -129,7 +129,7 @@ git module repo:
   pick: repo
   executable: repo
   reup: stable
-  rev: 83c66ec661e39e47795086a5d26d0f3782ac1d49
+  rev: b99272c601bc5f466c3cfc782bb852c2c967ad27
 
 git module smem:
     url: https://github.com/kwkroeger/smem
@@ -146,7 +146,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 96e31e4b7862be73c7b0b4c87ea86b8b5f7fadb5
+    rev: 7320b7df62039c879c4f609bca946ea09b438a98
 
 curl module rpm2cpio:
     url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
@@ -179,7 +179,7 @@ git module fasd:
 git module git-scripts:
     url: https://github.com/git/git
     reup: maint
-    rev: 43c8a30d150ecede9709c1f2527c8fba92c65f40
+    rev: 61a22ddaf0626111193a17ac12f366bd6d167dff
     move:
         contrib/git-jump/git-jump: git-jump
         contrib/subtree/git-subtree.sh: git-subtree
@@ -278,7 +278,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 78c5ca28a0355bfd02cfbb9b7c3db7b756fd50b0
+    rev: 58c5b50514fbadc308f57d623c10cd22ca88cf3d
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
@@ -339,18 +339,18 @@ git module tony-tmux-config:
     move:
         scripts/resize-adaptable.sh: tmux-resize-adaptable
     executable: tmux-resize-adaptable
-    rev: 03385ad335f0452eacac57aae7a1b94d3fc11aa9
+    rev: b4fde97f5d250ee81d98b00d51d8ae9d61210a8a
 
 curl module zsh-git-completion:
     url: https://raw.githubusercontent.com/zsh-users/zsh/master/Completion/Unix/Command/_git
-    sha1: d69b1add3eb82b1ec97cf969fd08fcc2280ee4c6
+    sha1: 6ce9ffb6de61842445deaa1570fdfd6a795324ed
 
-git module eza-completions:
-    url: https://github.com/eza-community/eza
-    export: completions/zsh
-    pick: completions/zsh/_eza
-    reup: main
-    rev: 73298f0b0afc9cd11aa45aa4be20c244b9e61ca8
+# git module eza-completions:
+#     url: https://github.com/eza-community/eza
+#     export: completions/zsh
+#     pick: completions/zsh/_eza
+#     reup: main
+#     rev: 73298f0b0afc9cd11aa45aa4be20c244b9e61ca8
 
 git module bat-extras:
     url: https://github.com/eth-p/bat-extras
@@ -422,7 +422,7 @@ git module userjs:
     - prefsCleaner.sh
     - prefsCleaner.bat
   executable: updater.sh
-  rev: 35e8def0b1e5ecf1198e7efe41cfe6aa0415b320
+  rev: fc251637635cce451067aa448a66f803f8c4d577
 
 git module tldr:
   url: https://github.com/raylee/tldr-sh-client
@@ -436,5 +436,5 @@ git module jason0x43-dotfiles:
   export: bin
   pick: bin/term_copy
   executable: bin/term_copy
-  rev: 3afad1e758d668f4d6fd39d4ba40068b64ff00be
+  rev: 01f9a3365ee9def9aedbf9370c740afb714f4cef
 
