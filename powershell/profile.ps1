@@ -78,16 +78,16 @@ Set-PSReadlineOption -BellStyle None
 if (Get-Command exa) {
     # TODO: Make a proper exa function with powershell-style arguments that translate to exa args
     function Get-ExaChildItem {
-        exa --colour-scale @args
+        exa --colour-scale all @args
     }
     function Get-ExaChildItemHidden {
-        exa --colour-scale -a @args
+        exa --colour-scale all -a @args
     }
     function Get-ExaChildItemDetailed {
-        exa --colour-scale -l @args
+        exa --colour-scale all -l @args
     }
     function Get-ExaChildItemSorted {
-        exa --colour-scale -s modified @args
+        exa --colour-scale all -s modified @args
     }
     New-Alias ls Get-ExaChildItem -Force
     New-Alias la Get-ExaChildItemHidden -Force

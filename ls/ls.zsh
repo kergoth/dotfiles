@@ -16,13 +16,13 @@ else
 fi
 
 if (( $+commands[eza] )); then
-    alias eza='eza --colour-scale'
+    alias eza='eza --colour-scale all'
     alias ls=eza
     alias la='ls -a'
     alias lr='ll -s modified'
     alias lrc='lr -s created'
 elif (( $+commands[exa] )); then
-    alias exa='exa --colour-scale'
+    alias exa='exa --colour-scale all'
     alias ls=exa
     alias la='ls -a'
     alias lr='ll -s modified'
