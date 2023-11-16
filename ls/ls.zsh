@@ -22,7 +22,7 @@ if (( $+commands[eza] )); then
     alias lr='ll -s modified'
     alias lrc='lr -s created'
 elif (( $+commands[exa] )); then
-    alias exa='exa --colour-scale all'
+    alias exa='exa --colour-scale'
     alias ls=exa
     alias la='ls -a'
     alias lr='ll -s modified'
