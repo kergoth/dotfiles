@@ -86,7 +86,7 @@ git module windows-terminal:
         - ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png
         - ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.scale-100.png
         - ProfileIcons/{b453ae62-4e3d-5e58-b989-0a998ec441b8}.scale-100.png
-    rev: d14524cd4cc4970bb1b6456f9667e2dd661b9854
+    rev: 3b5e5cf5f121395b3cacdcb60c3208488c4bd259
     reup: main
 
 git module zsh-syntax-highlighting:
@@ -95,11 +95,11 @@ git module zsh-syntax-highlighting:
 
 git module zsh-history-substring-search:
     url: https://github.com/zsh-users/zsh-history-substring-search
-    rev: 19b887667a155befeb5850f0af46a45cc5311ae2
+    rev: 8dd05bfcc12b0cd1ee9ea64be725b3d9f713cf64
 
 git module zsh-completions:
     url: https://github.com/zsh-users/zsh-completions
-    rev: 9e341f6a202e83e2dc0a587f4970fa375de84d4e
+    rev: 9da7488c1152d786d237b45cbe5546eb90fc5f85
 
 git module nix-zsh-completions:
     url: https://github.com/spwhitt/nix-zsh-completions
@@ -145,7 +145,7 @@ git module fzf:
         - key-bindings.zsh
         - completion.zsh
         - scripts
-    rev: 7320b7df62039c879c4f609bca946ea09b438a98
+    rev: 6b99399c41d9818ee4b4fa8968a1249100008e4c
 
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
@@ -269,7 +269,7 @@ git module git-extras:
     export: bin
     pick:
         - bin/git-alias
-    rev: 58c5b50514fbadc308f57d623c10cd22ca88cf3d
+    rev: 2c2bd076938ea7a8427fec288b74300c09d1535d
 
 git module gnu2bsd:
     url: https://github.com/lucas-flowers/gnu2bsd
@@ -413,7 +413,7 @@ git module userjs:
     - prefsCleaner.sh
     - prefsCleaner.bat
   executable: updater.sh
-  rev: fc251637635cce451067aa448a66f803f8c4d577
+  rev: 4a510a4b4ceda8a177831a77309f2faccf7e18d5
 
 git module tldr:
   url: https://github.com/raylee/tldr-sh-client
@@ -427,5 +427,5 @@ git module jason0x43-dotfiles:
   export: bin
   pick: bin/term_copy
   executable: bin/term_copy
-  rev: 01f9a3365ee9def9aedbf9370c740afb714f4cef
+  rev: bdba0929d543e824c5f43f5962e6e396bd86e139
 
