@@ -32,7 +32,6 @@ imports:
     myrepos: external/scripts
     dev-goodies: git/scripts
     repo: git/scripts
-    rpm2cpio: external/scripts
     smem: external/scripts
     tony-tmux-config: tmux/scripts
     vim-profiler: scripts
@@ -147,14 +146,6 @@ git module fzf:
         - completion.zsh
         - scripts
     rev: 7320b7df62039c879c4f609bca946ea09b438a98
-
-curl module rpm2cpio:
-    url: https://raw.githubusercontent.com/rpm-software-management/rpm/master/scripts/rpm2cpio.sh
-    move:
-        rpm2cpio.sh: rpm2cpio
-    pick: rpm2cpio
-    executable: rpm2cpio
-    sha1: 8cd7f7f7b60df26dcd5f11c430318cb8dfb3eca3
 
 git module dev-goodies:
     url:  https://github.com/beanbaginc/dev-goodies
