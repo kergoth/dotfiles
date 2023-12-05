@@ -42,15 +42,6 @@ if [ -e windows-terminal/files/archlinux-icon-crystal.svg ] && ! [ -e windows-te
     convert windows-terminal/files/archlinux-icon-crystal.svg -resize 32x32 windows-terminal/files/archlinux-icon-crystal.png
 fi
 
-cd "$tmpdir" || exit 1
-git clone --depth 1 https://github.com/petdance/ack3 \
-    && cd ack3 \
-    && "$dotfilesdir/perl/scripts/cpanmv" ack3 File::Next \
-    && eval "$("$dotfilesdir/perl/scripts/cpanmv-use" ack3)" \
-    && perl Makefile.PL \
-    && make ack-standalone \
-    && cp -f ack-standalone "$dotfilesdir/external/scripts/ack"
-
 if [ -e zsh/promptline.zsh ]; then
     vim -c "PromptlineSnapshot! $PWD/zsh/promptline.zsh airline" -c quit >/dev/null 2>&1
 fi
