@@ -33,8 +33,10 @@ trap on_exit EXIT INT TERM
 echo >&2 "Updating chezmoi"
 chezmoi upgrade || :
 
-echo >&2 "Updating dotfiles repository"
-chezmoi update -R
+if [ -z "${CHEZMOI_HOOK:-}" ]; then
+    echo >&2 "Updating dotfiles repository"
+    chezmoi update -R
+fi
 
 if ! command -v nix >/dev/null 2>&1; then
     echo >&2 "Error: nix must be installed to update Home Manager packages"

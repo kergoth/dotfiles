@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ -n "${CHEZMOI_NOHOOK:-}" ]; then
+    exit 0
+fi
+
+CHEZMOI_HOOK=1 "$CHEZMOI_SOURCE_DIR"/../script/update

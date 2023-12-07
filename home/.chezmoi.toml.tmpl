@@ -66,3 +66,9 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{- else }}
     command = ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.sh"
 {{- end }}
+
+{{- if ne .chezmoi.os "windows" }}
+[hooks.update.post]
+command = "bash"
+args = ["-c", "$CHEZMOI_SOURCE_DIR/hook_post_update"]
+{{- end }}
