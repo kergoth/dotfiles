@@ -22,5 +22,5 @@ if [ "$sourcedir" != "$HOME/.local/share/chezmoi" ]; then
 fi
 
 echo >&2 "Applying dotfiles"
-chezmoi init --apply ${sourcedir:+--source "$sourcedir"} kergoth/dotfiles-chezmoi
+chezmoi init --apply ${sourcedir:+--source "$sourcedir"} kergoth/dotfiles
 chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
