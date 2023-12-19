@@ -53,6 +53,7 @@ scoop install delta
 scoop install shfmt
 scoop install shellcheck
 scoop install jq
+scoop install pipx
 scoop install sad
 scoop install sd
 cargo install choose
@@ -101,9 +102,3 @@ if (Test-Path "C:\Program Files\SyncTrayzor") {
 # Apply my dotfiles
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 Join-Path $env:DOTFILES_DIR "script\setup.ps1" | Invoke-Expression
-
-if (-Not (Get-Command pipx -ErrorAction SilentlyContinue)) {
-    python3 -m pip install --user --disable-pip-version-check pipx
-    python3 -m pipx ensurepath
-    RefreshEnvPath
-}
