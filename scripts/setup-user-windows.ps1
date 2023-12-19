@@ -42,23 +42,11 @@ scoop install bat
 scoop install cht
 scoop install direnv
 scoop install duf
+scoop install eza
 scoop install fd
 scoop install ripgrep
 scoop install zoxide
 scoop install fzf
-
-try {
-    $VSInstall = (Get-VSSetupInstance | Where-Object DisplayName -Match 'Build Tools' | Sort-Object -Property InstallationVersion | Select-Object -Last 1 -ExpandProperty InstallationPath)
-    $VSTools = $VSInstall + "/Common7/Tools"
-    if (Test-Path $VSTools) {
-        . ($VSTools + "/Launch-VsDevShell.ps1")
-    }
-
-    cargo install eza
-}
-catch {
-    Write-Error "Failed to install eza. Please make sure the Visual Studio Build Tools with the C++ Desktop workload is installed."
-}
 
 scoop install gh
 scoop install delta
