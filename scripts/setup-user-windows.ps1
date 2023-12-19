@@ -66,7 +66,6 @@ scoop install dust
 
 pip install --user --disable-pip-version-check git-revise
 pip install --user --disable-pip-version-check git-imerge
-pip install --user --disable-pip-version-check peru
 
 # git-absorb is available only via release archives on Windows. It fails to build with cargo.
 if (-Not (Test-Path "$env:USERPROFILE\.cargo\bin\git-absorb.exe")) {

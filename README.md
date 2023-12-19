@@ -186,7 +186,6 @@ chezmoi update -R
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli): Feature-rich interactive Jira command line.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
-- [peru](https://github.com/buildinspace/peru): A generic package manager, for including other people's code in your projects.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [sad](https://github.com/ms-jpq/sad): CLI search and replace | Space Age seD.
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
