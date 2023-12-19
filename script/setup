@@ -4,7 +4,9 @@ set -euo pipefail
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 sourcedir=$(dirname "$scriptdir")
-PATH="$HOME/.local/bin:$PATH"
+
+HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$HOME/.brew}"
+PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 
 if ! [ -e "$sourcedir/.chezmoiroot" ]; then
     sourcedir=
