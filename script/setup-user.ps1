@@ -13,7 +13,7 @@ if ($myWindowsPrincipal.IsInRole($adminRole)) {
     exit
 }
 
-. $PSScriptRoot\common.ps1
+. $PSScriptRoot\..\scripts\common.ps1
 
 # Install PowerShell modules
 . $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
