@@ -1,7 +1,0 @@
-n () {
-    if [ $# -eq 0 ]; then
-        nls
-    else
-        "${VISUAL:-${EDITOR:-vim}}" "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}/$*"
-    fi
-}

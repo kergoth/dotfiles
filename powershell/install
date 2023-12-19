@@ -1,8 +1,0 @@
-profiledir="$XDG_CONFIG_HOME/powershell"
-if [ "$OSTYPE" = WSL ] && [ "$INSTALL_DEST" = "$USERPROFILE" ]; then
-    winprofiledir="$INSTALL_DEST/Documents/PowerShell"
-    link profile.ps1 "$winprofiledir/Microsoft.PowerShell_profile.ps1"
-    link profile.ps1 "$winprofiledir/Microsoft.VSCode_profile.ps1"
-fi
-link profile.ps1 "$profiledir/Microsoft.PowerShell_profile.ps1"
-link profile.ps1 "$profiledir/Microsoft.VSCode_profile.ps1"

@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-curl "https://www.commandlinefu.com/commands/matching/$1/$(echo -n $1 | openssl base64)/plaintext"

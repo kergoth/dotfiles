@@ -1,1 +1,0 @@
-path=(~/.fzf/bin $path)

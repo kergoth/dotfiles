@@ -1,4 +1,0 @@
-#!/bin/sh
-# stee - silent tee
-
-exec tee "$@" >/dev/null

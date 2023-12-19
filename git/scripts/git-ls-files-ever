@@ -1,3 +1,0 @@
-#!/bin/sh
-
-git rev-list --reverse "$@" | git diff-tree --stdin --no-commit-id --name-only -r | sort -u

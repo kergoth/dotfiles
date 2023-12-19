@@ -1,8 +1,0 @@
-#compdef n
-
-_n() {
-    _files -W "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}"
-    return 0
-}
-
-_n

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-find "$(brew --cellar | sed -e 's#/Cellar$#/Caskroom#')"/*/*/ -maxdepth 1 -type f -iname \*.pkg | nlxargs trash

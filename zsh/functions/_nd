@@ -1,7 +1,0 @@
-#compdef nd
-
-_nd() {
-    _n "$@"
-}
-
-_nd

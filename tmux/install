@@ -1,4 +1,0 @@
-link tmux.conf ${XDG_CONFIG_HOME:-$HOME/.config}/tmux/config
-link tmuxline.conf ${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmuxline.conf
-link plugins ${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins
-link scripts ${XDG_CONFIG_HOME:-$HOME/.config}/tmux/scripts

@@ -1,6 +1,0 @@
-#!/bin/sh
-if [ $# -lt 1 ]; then
-    echo >&2 "Usage: `basename $0` IPKFILE"
-    exit 2
-fi
-exec ar p $1 control.tar.gz | tar -zxvO

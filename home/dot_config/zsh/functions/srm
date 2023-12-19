@@ -1,0 +1,13 @@
+if [[ $OSTYPE =~ darwin ]]; then
+    if (( $+commands[grm] )); then
+        sudo $commands[grm] --one-file-system -I "$@"
+    elif [[ $commands[rm] =~ /nix/.*-coreutils ]]; then
+        sudo rm --one-file-system -I "$@"
+    else
+        sudo rm -xI "$@"
+    fi
+elif [[ $OSTYPE =~ freebsd* ]]; then
+    sudo rm "$@"
+else
+    sudo rm --one-file-system -I "$@"
+fi

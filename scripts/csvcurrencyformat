@@ -1,3 +1,0 @@
-#!/bin/sh
-
-csvpyrow "import locale,sys; locale.setlocale(locale.LC_ALL, ''); _.update(dict((field, locale.currency(float(_[field]), grouping=True)) for field in sys.argv[2:]))" "$@"

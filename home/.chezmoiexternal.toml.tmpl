@@ -1,0 +1,253 @@
+[".config/zsh/plugins/autosuggestions"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/completions"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/history-substring-search"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-history-substring-search/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/syntax-highlighting"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/themes/powerlevel10k"]
+type = "archive"
+url = "https://github.com/romkatv/powerlevel10k/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/bd"]
+type = "archive"
+url = "https://github.com/Tarrasch/zsh-bd/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/functions/manydots-magic"]
+type = "file"
+url = "https://raw.githubusercontent.com/knu/zsh-manydots-magic/master/manydots-magic"
+refreshPeriod = "168h"
+
+[".config/zsh/functions/git-escape-magic"]
+type = "file"
+url = "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/master/git-escape-magic"
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/nix-zsh-completions"]
+type = "archive"
+url = "https://github.com/nix-community/nix-zsh-completions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/zbell/zbell.plugin.sh"]
+type = "file"
+url = "https://gist.githubusercontent.com/jpouellet/5278239/raw/e0b06247f3ecd6ca3de341c54ba8d85de7ef6566/zbell.sh"
+refreshPeriod = "168h"
+
+[".config/zsh/plugins/nix-shell"]
+type = "archive"
+url = "https://github.com/chisui/zsh-nix-shell/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/bat/syntaxes/BitBake.sublime-syntax"]
+type = "archive-file"
+url = "https://github.com/Driim/bitbake-syntax/archive/master.tar.gz"
+path = "BitBake.sublime-syntax"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/bat/themes/BitBake.tmTheme"]
+type = "archive-file"
+url = "https://github.com/dracula/sublime/archive/master.tar.gz"
+path = "Dracula.tmTheme"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/vim"]
+type = "git-repo"
+url = "https://github.com/kergoth/dotvim"
+refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "windows" }}
+["_vimrc"]
+{{ else }}
+[".vimrc"]
+{{ end }}
+type = "archive-file"
+url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
+path = "vimrc.redir"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "windows" }}
+["AppData/Local/nvim/init.vim"]
+{{ else }}
+[".config/nvim/init.vim"]
+{{ end }}
+type = "archive-file"
+url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
+path = "vimrc.redir"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/share/zsh/completions/_cht"]
+type = "file"
+url = "https://cheat.sh/:zsh"
+refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "windows" }}
+["AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/archlinux-icon-crystal.svg"]
+type = "archive-file"
+url = "https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz"
+path = "icons/archlinux-icon-crystal-32.svg"
+refreshPeriod = "168h"
+stripComponents = 1
+{{ else }}
+
+["bin"]
+type = "git-repo"
+url = "https://github.com/kergoth/scripts"
+refreshPeriod = "168h"
+
+[".local/bin"]
+type = "archive"
+url = "https://github.com/eth-p/bat-extras/releases/download/v2023.09.19/bat-extras-202309.19.zip"
+refreshPeriod = "168h"
+stripComponents = 1
+
+[".local/bin/repo"]
+type = "file"
+url = "https://storage.googleapis.com/git-repo-downloads/repo"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/git-j"]
+type = "archive-file"
+url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
+path = "bin/git-j"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-rebase-chain"]
+type = "archive-file"
+url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
+path = "bin/git-rebase-chain"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-alias"]
+type = "archive-file"
+url = "https://github.com/tj/git-extras/archive/master.tar.gz"
+path = "bin/git-alias"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/vipe"]
+type = "archive-file"
+url = "https://github.com/madx/moreutils/archive/master.tar.gz"
+path = "vipe"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/wsl-open"]
+type = "file"
+url = "https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/fasd"]
+type = "archive-file"
+url = "https://github.com/clvv/fasd/archive/master.tar.gz"
+path = "fasd"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/zsh_sort_timings"]
+type = "file"
+url = "https://gist.githubusercontent.com/bdesham/2d7ef99f93b226be29e01cadcad37405/raw/353e5178686df9e3aea6e0802d4a217420938c28/sort_timings.zsh"
+executable = true
+
+[".local/bin/vim-profiler"]
+type = "archive-file"
+url = "https://github.com/bchretien/vim-profiler/archive/master.tar.gz"
+path = "vim-profiler.py"
+executable = true
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/tmux-resize-adaptable"]
+type = "archive-file"
+url = "https://github.com/tony/tmux-config/archive/master.tar.gz"
+path = "scripts/resize-adaptable.sh"
+executable = true
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/ifne"]
+type = "archive-file"
+url = "https://github.com/fumiyas/home-commands/archive/master.tar.gz"
+path = "ifne"
+executable = true
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/tldr"]
+type = "archive-file"
+url = "https://github.com/raylee/tldr-sh-client/archive/main.tar.gz"
+path = "tldr"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-assembler"]
+type = "archive-file"
+url = "https://gitlab.com/wavexx/git-assembler/-/archive/master/git-assembler-master.tar.gz"
+path = "git-assembler"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-attic"]
+type = "file"
+url = "http://chneukirchen.org/dotfiles/bin/git-attic"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/cht"]
+type = "file"
+url = "https://cheat.sh/:cht.sh"
+executable = true
+refreshPeriod = "168h"
+{{- end }}

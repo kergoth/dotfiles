@@ -1,0 +1,110 @@
+# all of our zsh files
+typeset -U config_files
+config_files=($ZDOTDIR/.zshrc.d/*.zsh(N) $XDG_CONFIG_HOME/*/*.zsh(N))
+
+# load the path files
+source $ZDOTDIR/.zshrc.d/path.zsh
+for file in ${(M)config_files:#*/path.zsh}; do
+    if [[ $file = $ZDOTDIR/.zshrc.d/path.zsh ]]; then
+        continue
+    fi
+    source $file
+done
+
+# Disable C-s (software flow control) on this tty
+stty -ixon
+
+# Freeze tty settings
+ttyctl -f
+
+for file in ${(M)config_files:#*/early.zsh}; do
+    source $file
+done
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Emacs mode
+bindkey -e
+
+# pre-load plugin configuration
+AUTOENV_AUTH_FILE=$XDG_DATA_HOME/autoenv_authorized
+if [[ -n $ITERM_PROFILE ]]; then
+    if [[ $OSTYPE =~ darwin ]]; then
+        iterm2_hostname=$HOST
+    fi
+else
+    # Skip iterm2.zsh setup on non-iterm terminals
+    ITERM_SHELL_INTEGRATION_INSTALLED=No
+fi
+
+# Load "plugins"
+for file in $ZDOTDIR/plugins/*/*.plugin.zsh(N) $ZDOTDIR/plugins/*/activate.sh(N) \
+            ${(M)config_files:#*/*.plugin.zsh}; do
+    case "$file" in
+        */base16/*|*/syntax-highlighting/*|*/history-substring-search/*)
+            continue
+            ;;
+    esac
+    source $file
+done
+
+# load everything but the path, plugin, and completion files
+for file in ${${${${${${config_files:#*/path.zsh}:#*/completion.zsh}:#*/env.zsh}:#*/*.plugin.zsh}:#*/final.zsh}:#*/early.zsh}; do
+    source $file
+done
+
+# initialize autocomplete here, otherwise functions won't be loaded
+autoload -U compinit
+ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
+if [[ $PSEUDO_DISABLED = 0 ]]; then
+    # When running under pseudo, we're actually still ourselves, so silently
+    # ignore the compaudit.
+    compinit -u -d $ZSH_COMPDUMP
+else
+    compinit -d $ZSH_COMPDUMP
+fi
+
+# This is set here rather than config.zsh due to LS_COLORS being defined in
+# ls/ls.zsh
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+# load every completion after autocomplete loads
+for file in ${(M)config_files:#*/completion.zsh}; do
+    source $file
+done
+
+# Load manually loaded "plugins"
+. $ZDOTDIR/plugins/bd/bd.zsh
+
+# Load syntax highlighting after other plugins
+. $ZDOTDIR/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# history-substring-search must be loaded after syntax-highlighting
+. $ZDOTDIR/plugins/history-substring-search/zsh-history-substring-search.zsh
+
+for file in ${(M)config_files:#*/final.zsh}; do
+    source $file
+done
+
+unset config_files
+
+if [[ -e $ZDOTDIR/.zshrc.local ]]; then
+    . "$ZDOTDIR/.zshrc.local"
+fi
+
+if [[ "$ZSH_PROFILE_STARTUP_LINES" == true ]]; then
+    unsetopt xtrace
+    exec 2>&3 3>&-
+    ln -sf $XDG_DATA_HOME/zsh/start-$$.log $XDG_DATA_HOME/zsh/start.log
+    if [[ "${ZSH_PROFILE_STARTUP_PARSE:-true}" == true ]]; then
+        zsh_sort_timings $XDG_DATA_HOME/zsh/start.log | head -n 20
+        exit
+    fi
+elif [[ "$ZSH_PROFILE_STARTUP" == true ]]; then
+    zprof
+fi

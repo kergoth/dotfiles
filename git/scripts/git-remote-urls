@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# List urls for the remotes. git remote -v shows with insteadOf
-# applied, this shows them as-is.
-git config --get-regexp 'remote.*.url' \
-    | sed -e 's/remote\.\([^.]*\)\.url/\1/' \
-    | sort -i

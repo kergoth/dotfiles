@@ -1,3 +1,0 @@
-#!/bin/sh
-
-csvsql --query "select Payee,Category,PRINTF('%d',SUM(Amount)) as Total from stdin group by Payee,Category"

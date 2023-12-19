@@ -1,5 +1,0 @@
-if [ "$osname" = Linux ]; then
-    link sapling.conf "$XDG_CONFIG_HOME/sapling/sapling.conf"
-elif [ "$osname" = Darwin ]; then
-    link sapling.conf "$HOME/Library/Preferences/sapling/sapling.conf"
-fi

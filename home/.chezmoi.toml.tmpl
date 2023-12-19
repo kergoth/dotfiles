@@ -1,0 +1,68 @@
+{{- $codespaces:= env "CODESPACES" | not | not }}
+{{- $devcontainer:= env "REMOTE_CONTAINERS" | not | not }}
+{{- $container := or $devcontainer $codespaces }}
+
+{{- $chezmoiForce := or (has "--force" .chezmoi.args) (has "--force=true" .chezmoi.args) -}}
+{{- $interactive := and stdinIsATTY (not $chezmoiForce) -}}
+
+sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+[data]
+{{- if and (not $interactive) (not $codespaces) }}
+    email = "kergoth@gmail.com"
+    name = "Christopher Larson"
+    github_username = "kergoth"
+    is_home = false
+    is_siemens = false
+{{- else }}
+    email = {{ promptStringOnce . "email" "Email address" "kergoth@gmail.com" | quote }}
+    name = {{ promptStringOnce . "name" "Full name" "Christopher Larson" | quote }}
+    github_username = {{ promptStringOnce . "github_username" "GitHub username" "kergoth" | quote }}
+    {{- if ne .chezmoi.os "freebsd" }}
+    is_home = {{ promptBoolOnce . "is_home" "Will this device be used on your home network" false }}
+    is_siemens = {{ promptBoolOnce . "is_siemens" "Will this device be used on a Siemens network" false }}
+    {{- else }}
+    is_home = false
+    is_siemens = false
+    {{- end}}
+{{- end }}
+
+{{- if eq .chezmoi.arch "amd64" }}
+    nixarch = "x86_64"
+{{- else }}
+    nixarch = "invalid"
+{{- end }}
+    in_codespace = {{ $codespaces }}
+    in_devcontainer = {{ $devcontainer }}
+    in_container = {{ $container }}
+{{- if eq .chezmoi.os "darwin" }}
+    {{- $computerName := output "scutil" "--get" "ComputerName" | trim }}
+    {{- $osVersion := output "sw_vers" "-productVersion" | trim }}
+    {{- $splitVersion := splitList "." $osVersion }}
+    {{- $majorVersion := index $splitVersion 0 }}
+    {{- $minorVersion := index $splitVersion 1 }}
+    computer_name = {{ $computerName | quote }}
+    os_version = {{ $majorVersion }}.{{ $minorVersion }}
+    major_version = {{ $majorVersion }}
+    minor_version = {{ $minorVersion }}
+{{- else }}
+    computer_name = {{ .chezmoi.hostname | quote }}
+{{- end }}
+
+[interpreters.ps1]
+    command = "pwsh"
+    args = ["-NoLogo"]
+
+[merge]
+    #command = "nvim"
+    #args = ["-d", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}", "{{ "{{" }} .Target {{ "}}" }}"]
+    command = "code"
+    args = ["--wait", "--merge", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}", "{{ "{{" }} .Target {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}"]
+
+[hooks.read-source-state.pre]
+{{- if eq .chezmoi.os "windows" }}
+    command = "pwsh.exe"
+    args = ["-NoLogo", ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.ps1"]
+{{- else }}
+    command = ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.sh"
+{{- end }}

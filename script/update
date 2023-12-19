@@ -1,30 +1,79 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-git_drop () {
-    git mstash "$@" dropped && git stash drop "$@"
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+sourcedir=$(dirname "$scriptdir")
+PATH="$PATH:$scriptdir:$sourcedir/scripts"
+
+on_exit() {
+    if [ -n "$tmpfile" ]; then
+        rm -f "$tmpfile"
+    fi
+    (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/flake.lock &>/dev/null)
 }
 
-untracked="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
-trap 'rm -f "$untracked"' EXIT INT TERM
+nix() {
+    command nix --experimental-features 'nix-command flakes' "$@"
+}
 
-git mstash -q
-ret="$?"
-
-git ls-files -o | sort -u >"$untracked"
-"$(dirname "$0")"/dotfiles-external-update "$@"
-dtret="$?"
-git ls-files -o | sort -u >"$untracked.new"
-
-comm -13 "$untracked" "$untracked.new" | tr '\n' '\0' | ifne xargs -0 git add -f
-git ls-files -zm | ifne xargs -0 git add
-if [ $dtret -ne 0 ]; then
-    git_drop -q
+if ! command -v home-manager &>/dev/null; then
+    hm() {
+        nix run --no-write-lock-file github:nix-community/home-manager/ -- "$@"
+    }
 else
-    git commit -n -s -m "Update externals" && \
-        git log --stat -1
+    hm() {
+        home-manager "$@"
+    }
 fi
 
-if [ "$ret" -eq 0 ]; then
-    git stash apply -q
+tmpfile=$(mktemp -t "${0##*/}.XXXXXX")
+trap on_exit EXIT INT TERM
+
+echo >&2 "Updating chezmoi"
+chezmoi upgrade || :
+
+echo >&2 "Updating dotfiles repository"
+chezmoi update -R
+
+if ! command -v nix >/dev/null 2>&1; then
+    echo >&2 "Error: nix must be installed to update Home Manager packages"
+    exit 1
 fi
-exit "$dtret"
+
+echo >&2 "Updating Home Manager packages"
+cd ~/.config/home-manager
+nix flake update 2>&1 | (grep -Ev '(^warning:|searching up)' || :) | tee "$tmpfile"
+if ! [ -s "$tmpfile" ]; then
+    echo >&2 "No update to the home-manager inputs available"
+    exit 0
+fi
+
+chezmoi re-add flake.lock
+
+{
+    echo 'Home Manager Update'
+    echo
+    echo 'Home Manager input changes:'
+    echo
+    cat "$tmpfile"
+} >"$sourcedir/.git/COMMIT_EDITMSG"
+
+home-manager-build | tee "$tmpfile"
+if [ -s "$tmpfile" ]; then
+    if grep -q "No version or selection state changes." "$tmpfile"; then
+        echo >&2 "No update to the home-manager packages available"
+        exit 0
+    fi
+    {
+        echo
+        echo "Home Manager packages changes:"
+        echo
+        cat "$tmpfile"
+    } >>"$sourcedir/.git/COMMIT_EDITMSG"
+fi
+
+echo >&2 "Committing Home Manager updates"
+(cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/flake.lock)
+
+hm switch

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-csvpycol -c ${1:-Total} "currency(float(${1:-Total}) / 100,grouping=True)" | if [ -t 1 ]; then csvlook -I; else cat; fi

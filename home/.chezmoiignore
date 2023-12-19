@@ -1,0 +1,51 @@
+{{- if ne .chezmoi.os "windows" }}
+AppData/
+Documents/PowerShell/
+.chezmoiscripts/gitconfig.ps1
+.chezmoiscripts/vim.ps1
+{{- else }}
+.chezmoiscripts/gitconfig
+.chezmoiscripts/home-manager
+.chezmoiscripts/vim
+{{- end }}
+{{- if ne .chezmoi.os "darwin" }}
+Library/
+{{- end }}
+
+.chezmoihooks
+.chezmoihooks/**
+.bash_history
+.cache/*
+!.cache/zsh
+.cache/zsh/*
+.config/chezmoi
+.config/environment.d/10-home-manager.conf
+.config/gh/hosts.yml
+.config/git/config
+.config/vscode-dev-containers
+.devcontainer
+.local/bin
+.local/lib
+.local/pipx
+.local/share/*
+!.local/share/gnupg
+!.local/share/zsh
+.local/share/zsh/*
+!.local/share/zsh/completions
+.local/state
+.nix-defexpr
+.nix-profile
+.oh-my-zsh
+.ssh/known_hosts
+.vscode-server
+**/.zcompdump
+**/*.iln*
+**/*.zwc
+
+# I don't maintain a bash configuration
+.profile
+.bashrc
+.bash_profile
+.bash_logout
+.dotfiles
+.setup

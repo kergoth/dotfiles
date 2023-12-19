@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-scriptdir=$(cd "$(dirname "$0")" && pwd -P)
-"$scriptdir/install" -f

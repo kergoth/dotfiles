@@ -1,3 +1,0 @@
-#!/bin/sh
-
-git rev-list --max-parents=0 --all | git log --stdin "$@"

@@ -1,3 +1,0 @@
-CURL_HOME="$XDG_CONFIG_HOME/curl"
-mkdir -p "$CURL_HOME"
-link curlrc "$CURL_HOME/.curlrc"

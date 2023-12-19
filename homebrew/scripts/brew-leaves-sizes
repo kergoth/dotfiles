@@ -1,6 +1,0 @@
-#!/bin/sh
-
-cd $(brew --cellar)
-brew leaves 2>/dev/null | sed 's,.*/,,' | while read name; do
-    du -s "$name/"*
-done | sort -n -r

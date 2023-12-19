@@ -1,8 +1,0 @@
-install_templated config.in ~/.ssh/config 2>/dev/null
-
-chmod 0600 ~/.ssh/config
-if [ -e config.$(uname -s) ]; then
-    cat config.$(uname -s) >>~/.ssh/config
-fi
-
-install rc ~/.ssh/rc

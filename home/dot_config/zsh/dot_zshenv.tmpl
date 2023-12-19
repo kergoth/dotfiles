@@ -1,0 +1,146 @@
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
+export XDG_STATE_HOME=${XDG_STATE_HOME:-~/.local/state}
+if [[ "$OSTYPE" == darwin* ]]; then
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/Library/Caches}
+else
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
+fi
+typeset -TUx XDG_DATA_DIRS xdg_data_dirs
+
+if [[ "${ZSH_PROFILE_STARTUP_LINES:-false}" == true ]]; then
+    # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
+    PS4='+$EPOCHREALTIME %N:%i> '
+    mkdir -p $XDG_DATA_HOME/zsh
+    exec 3>&2 2>$XDG_DATA_HOME/zsh/start-$$.log
+    setopt xtrace prompt_subst
+elif [[ "${ZSH_PROFILE_STARTUP:-false}" == true ]]; then
+    zmodload zsh/zprof
+fi
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  export BROWSER='open'
+fi
+
+# Reduce the ncurses escape wait time (ms)
+export ESCDELAY=25
+export NCURSES_NO_UTF8_ACS=1
+
+if [[ -z "$LANG" ]] || [[ -z "$LC_ALL" ]]; then
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  if [[ -n $commands[locale] ]]; then
+    eval "$(locale)"
+  fi
+fi
+
+export ACKRC=.ackrc
+export GREP_COLORS='ms=30;43:mc=30;43:sl=:cx=:fn=1;34:ln=1;33:bn=32:se=36'
+
+export EMAIL='{{ .email }}'
+export FULLNAME='{{ .name }}'
+export DEBEMAIL=$EMAIL
+export DEBFULLNAME=$FULLNAME
+
+export PERU_CACHE_DIR=$XDG_CACHE_HOME/peru
+export HTTPIE_CONFIG_DIR=$XDG_CONFIG_HOME/httpie
+export PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass
+export RLWRAP_HOME=$XDG_DATA_HOME/rlwrap
+export XAUTHORITY=$XDG_RUNTIME_DIR/Xauthority
+export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
+export MACHINE_STORAGE_PATH="$XDG_DATA_HOME"/docker-machine
+export RANDFILE=$XDG_DATA_HOME/rng
+export PARALLEL_HOME="$XDG_CONFIG_HOME"/parallel
+export LESSHISTFILE=$XDG_STATE_HOME/lesshst
+export _FASD_VIMINFO=$XDG_DATA_HOME/vim/viminfo
+export _FASD_DATA=$XDG_DATA_HOME/fasd/data
+export _ZO_DATA_DIR=$XDG_DATA_HOME/zoxide
+export REPO_CONFIG_DIR=$XDG_CONFIG_HOME/repo
+export CFLAGS=-O2
+export XZ_DEFAULTS=--threads=0
+export PAGER=more
+export YSU_IGNORED_ALIASES=("vi")
+export SHELLCHECK_OPTS="-e SC2002 -e SC2039 -e SC2209"
+
+# Rust
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CARGO_INSTALL_ROOT="${XDG_DATA_HOME%/*}"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+
+# Python
+export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
+export PIP_DOWNLOAD_CACHE=$XDG_CACHE_HOME/pip
+export POETRY_HOME=~/.poetry
+
+# Skip compinit in system zshrc on some hosts
+skip_global_compinit=1
+
+for dir in $HOME/.terminfo $XDG_CONFIG_HOME/ncurses/terminfo $HOMEBREW_PREFIX/share/terminfo /Users/Shared/homebrew/share/terminfo /opt/homebrew/share/terminfo /usr/local/share/terminfo /usr/share/terminfo; do
+    if [[ -d $dir ]]; then
+        TERMINFO_DIRS="$TERMINFO_DIRS:$dir"
+    fi
+done
+if [[ -n "$TERMINFO_DIRS" ]]; then
+    TERMINFO_DIRS="${TERMINFO_DIRS#:}"
+fi
+export TERMINFO_DIRS
+
+if (( $+commands[zoxide] )); then
+    export _ZO_DATA_DIR=$XDG_DATA_HOME/zoxide
+    export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS
+fi
+
+# Git
+export GHQ_ROOT=~/Repos
+# git-get repository path
+export GIT_PATH=~/Repos
+
+# Fix SSH auth socket location so agent forwarding works with tmux and VS Code
+if [ -n "$SSH_AUTH_SOCK" ] && [ -e "$HOME/.ssh/auth_sock" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/auth_sock" ]; then
+    export SSH_AUTH_SOCK="$HOME/.ssh/auth_sock"
+fi
+
+if [[ ! -e /.dockerenv ]]; then
+    case "$(uname -r)" in
+        *-Microsoft)
+            OSTYPE=WSL
+            WSLVER=1
+            export USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
+            if [[ -z "$SSH_AUTH_SOCK" ]] && [[ -n "$WSL_AUTH_SOCK" ]]; then
+                export SSH_AUTH_SOCK=$WSL_AUTH_SOCK
+            fi
+            ;;
+        *-microsoft-*)
+            OSTYPE=WSL
+            WSLVER=2
+            export USERPROFILE="${USERPROFILE:-$(wslpath "$(cmd.exe /D /C 'SET /P <NUL=%USERPROFILE%' 2>/dev/null)")}"
+            if [[ -z "${NPIPERELAY:-}" ]]; then
+                for i in "$USERPROFILE/Apps/npiperelay/npiperelay.exe" "$USERPROFILE/scoop/apps/npiperelay/current/npiperelay.exe"; do
+                    if [[ -e "$i" ]]; then
+                        NPIPERELAY="$i"
+                        break
+                    fi
+                done
+            fi
+            if [[ -e "${NPIPERELAY:-}" ]]; then
+                if (( $+commands[socat] )); then
+                    export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
+                    if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
+                        rm -f "$SSH_AUTH_SOCK"
+                        ( setsid socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" EXEC:"$NPIPERELAY -ei -s //./pipe/openssh-ssh-agent",nofork & )
+                    fi
+                else
+                    echo >&2 "Warning: socat is not installed, unable to use npiperelay for ssh auth sock"
+                fi
+            fi
+            ;;
+    esac
+fi
+
+for i in $ZDOTDIR/.zshenv.d/*.zsh(N) $XDG_CONFIG_HOME/*/env.zsh(N); do
+    . "$i"
+done
+
+if [[ -e $ZDOTDIR/.zshenv.local ]]; then
+    . "$ZDOTDIR/.zshenv.local"
+fi

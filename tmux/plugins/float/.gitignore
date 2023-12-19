@@ -1,6 +1,0 @@
-run_tests
-tests/*
-lib/*
-.travis.yml
-tests/run_tests_in_isolation
-tests/helpers/helpers.sh

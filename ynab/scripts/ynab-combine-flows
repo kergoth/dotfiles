@@ -1,5 +1,0 @@
-#!/bin/sh
-
-sed -e '1s/Outflow/Amount/g' \
-    | csvpycol -c Amount 'tocents(Inflow if Amount == "$0.00" else "-" + Amount)' \
-    | csvdelcol Inflow

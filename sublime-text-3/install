@@ -1,9 +1,0 @@
-if [ "$(uname -s)" = "Darwin" ]; then
-    SUBLIME_TEXT_3="$HOME/Library/Application Support/Sublime Text 3"
-else
-    SUBLIME_TEXT_3="$HOME/.config/sublime-text-3"
-fi
-
-for f in *.sublime-settings; do
-    link "$f" "$SUBLIME_TEXT_3/Packages/User/$f"
-done

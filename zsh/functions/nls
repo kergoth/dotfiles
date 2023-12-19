@@ -1,3 +1,0 @@
-nls () {
-    ls -crt "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}/" | grep -i "$*"
-}

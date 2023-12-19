@@ -1,3 +1,0 @@
-#!/bin/sh
-
-sed -e 's/^\[Present in first dir. only\]	/-/; s/^\[Present in second dir. only\]	/+/; s/^\[Files differ\]	/~/;'

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$PATH:$scriptdir"
+
+nix() {
+    command nix --experimental-features 'nix-command flakes' "$@"
+}
+
+if ! command -v home-manager &>/dev/null; then
+    hm() {
+        nix run --no-write-lock-file home-manager/master -- "$@"
+    }
+else
+    hm() {
+        home-manager "$@"
+    }
+fi
+
+home-manager-build
+hm switch

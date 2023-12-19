@@ -1,5 +1,0 @@
-#!/bin/sh
-
-for arg; do
-    /usr/libexec/PlistBuddy -c 'Print URL' "$arg"
-done

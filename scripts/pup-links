@@ -1,8 +1,0 @@
-#!/bin/sh
-
-url="$1"
-shift
-if [ $# -eq 0 ]; then
-    set -- a
-fi
-pup "$@" 'attr{href}' | tr '\n' '\0' | xargs -0 urljoin "$url"

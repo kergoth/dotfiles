@@ -1,3 +1,0 @@
-#!/bin/sh
-lsregister="$(mdfind -name lsregister)"
-$lsregister -kill -r -domain local -domain system -domain user

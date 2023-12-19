@@ -1,8 +1,0 @@
-#!/bin/sh
-# Recursively resolve symlinks in a directory tree
-
-if which gxargs >/dev/null 2>&1; then
-    alias xargs=gxargs
-fi
-
-find "$@" -type l -print0 | xargs -0 --no-run-if-empty resolvelink

@@ -1,8 +1,0 @@
-#!/bin/sh
-# git ltr [-r] - ls -tr for git (using commit time stamps)
-
-git log --no-renames --name-status --date=iso --format=format:'%n@	%ct' |
-  gawk '$1=="@" {date=strftime("%Y-%m-%d %H:%M",$2); next}
-        /^./ {print date " " $0}' |
-  sort -s -k4 | uniq -s18 | awk '$3 != "D" {$3=""; print}' |
-  sort -n "$@"

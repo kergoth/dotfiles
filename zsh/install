@@ -1,6 +1,0 @@
-link zshenv.redir ~/.zshenv
-
-mkdir -p $XDG_CONFIG_HOME/zsh $XDG_DATA_HOME/zsh $XDG_CACHE_HOME/zsh/completions
-chmod 0700 $XDG_CACHE_HOME/zsh/completions
-link zshenv $XDG_CONFIG_HOME/zsh/.zshenv
-link zshrc $XDG_CONFIG_HOME/zsh/.zshrc

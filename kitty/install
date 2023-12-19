@@ -1,3 +1,0 @@
-link kitty.conf .config/kitty/kitty.conf
-link dracula.conf .config/kitty/dracula.conf
-link diff.conf .config/kitty/diff.conf

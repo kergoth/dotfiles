@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if command -v delta >/dev/null 2>&1; then
-    delta --color-only --features=interactive
-elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
-    diff-highlight
-else
-    cat
-fi

@@ -1,3 +1,0 @@
-#!/bin/sh
-# I always forget these arguments to search any column
-csvgrep -ac - "$@"

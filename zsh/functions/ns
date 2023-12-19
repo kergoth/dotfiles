@@ -1,8 +1,0 @@
-ns () {
-    (
-        cd "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}/" || return 1
-        find . | grep -i "$*" | sed 's,^\./,,'
-        ag -l --nocolor "$*" 2>/dev/null || grep -ril "$*" *
-    ) | sort -u
-}
-# vim: set ft=zsh:

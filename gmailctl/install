@@ -1,3 +1,0 @@
-export GMAILCTL_HOME="${GMAILCTL_HOME:-$XDG_CONFIG_HOME/gmailctl}"
-mkdir -p "$GMAILCTL_HOME"
-link config.jsonnet "$GMAILCTL_HOME/config.jsonnet"

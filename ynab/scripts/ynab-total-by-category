@@ -1,2 +1,0 @@
-#!/bin/sh
-csvsql --query "select Category,PRINTF('%d',SUM(Amount)) as Total from stdin group by Category"

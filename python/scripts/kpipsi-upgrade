@@ -1,4 +1,0 @@
-#!/bin/sh
-
-PATH="$(dirname "$0"):$PATH"
-kpipsi list -s | xargs kpipsi upgrade

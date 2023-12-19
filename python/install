@@ -1,4 +1,0 @@
-install -d $XDG_DATA_HOME/ptpython
-if [ -e config.py ]; then
-    link config.py $XDG_DATA_HOME/ptpython/config.py
-fi

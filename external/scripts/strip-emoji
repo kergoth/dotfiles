@@ -1,9 +1,0 @@
-#!/usr/bin/env python3
-
-import emoji
-import sys
-
-try:
-    sys.stdout.write(emoji.replace_emoji(sys.stdin.read(), replace=''))
-except BrokenPipeError:
-    sys.exit(1)

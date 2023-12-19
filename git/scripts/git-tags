@@ -1,8 +1,0 @@
-#!/bin/sh
-# Show tags and annotated tag descriptions, sorted by taggerdate
-
-git for-each-ref --sort='*committerdate' --sort=taggerdate --format='ref=%(refname); ref=${ref#refs/tags/}; subject="%(subject)"' refs/tags | \
-    while read line; do
-        eval "$line"
-        printf "$ref\t$subject\n"
-    done

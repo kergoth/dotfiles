@@ -1,3 +1,0 @@
-#!/bin/sh
-
-find "$(brew --cache)" -mindepth 1 -maxdepth 1 -not -name .DS_Store -not -name Cask -print0 | xargs -0 trash

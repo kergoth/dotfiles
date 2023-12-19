@@ -1,1 +1,0 @@
-export LESSHISTFILE=$XDG_STATE_HOME/lesshst

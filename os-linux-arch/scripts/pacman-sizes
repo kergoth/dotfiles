@@ -1,3 +1,0 @@
-#!/bin/sh
-
-pacman -Qi | awk '/^Name/ {pkg=$3} /Size/ {print $4$5,pkg}' | sort -h

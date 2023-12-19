@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+PATH="$HOME/.local/bin:$PATH"
+
+if ! command -v chezmoi &>/dev/null; then
+    echo >&2 "Installing chezmoi"
+    (cd && sh -c "$(curl -fsLS get.chezmoi.io/lb)")
+fi

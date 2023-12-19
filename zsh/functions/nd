@@ -1,7 +1,0 @@
-nd () {
-    if [ $# -eq 0 ]; then
-        n
-    else
-        drop "${NVDIR:-$HOME/Dropbox/Documents/Notational Velocity}/${*%.txt}.txt"
-    fi
-}

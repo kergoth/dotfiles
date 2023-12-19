@@ -1,3 +1,0 @@
-#!/bin/sh
-
-repo forall -pvc sh -c 'if git rev-parse --verify "@{u}" 2>/dev/null >&2 && [ -n "$(git rev-list -1 "@{u}.." 2>/dev/null)" ]; then branch="$(git rev-parse --symbolic-full-name HEAD 2>/dev/null | sed "s,^refs/heads/,,")"; if [ -n "$branch" ]; then remote="$(git config "branch.$branch.remote" || echo origin)"; else remote=origin; fi; git fetch "$remote" && git log --pretty=format:"%Cred%h%Creset %Cgreen%ad%Creset -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset" --date=short "@{u}.."; fi'

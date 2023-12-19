@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# shellcheck disable=SC2016
-printf 'cd "$(bb getvalue -r "%s" B)"\n' "$1"

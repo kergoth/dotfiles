@@ -1,8 +1,0 @@
-LESSHISTFILE=$XDG_STATE_HOME/lesshst
-
-for existing in ~/.lesshst $XDG_DATA_HOME/less/lesshist; do
-    if [ -e "$existing" ] && [ ! -e "$LESSHISTFILE" ]; then
-        # Move existing data to new location
-        mv "$existing" "$LESSHISTFILE"
-    fi
-done
