@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
+export XDG_STATE_HOME=${XDG_STATE_HOME:-~/.local/state}
+if [[ "$OSTYPE" == darwin* ]]; then
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/Library/Caches}
+else
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
+fi
+
+case "${OSTYPE:-}" in
+    darwin*)
+        is_macos=1
+        ;;
+    *)
+        is_macos=0
+        ;;
+esac
+
+if ! [ -e "$XDG_STATE_HOME/fasd/data" ]; then
+    if [ -e "$XDG_DATA_HOME/fasd/data" ]; then
+        mkdir -p "$XDG_STATE_HOME/fasd"
+        mv "$XDG_DATA_HOME/fasd/data" "$XDG_STATE_HOME/fasd/data"
+    elif [ -e ~/.fasd ]; then
+        mkdir -p "$XDG_STATE_HOME/fasd"
+        mv ~/.fasd "$XDG_STATE_HOME/fasd/data"
+    fi
+fi
+rm -f ~/.fasd "$XDG_DATA_HOME/fasd/data"
+
+if ! [ -e "$XDG_STATE_HOME/lesshst" ]; then
+    if [ -e "$XDG_DATA_HOME/lesshst" ]; then
+        mkdir -p "$XDG_STATE_HOME"
+        mv "$XDG_DATA_HOME/lesshst" "$XDG_STATE_HOME/lesshst"
+    elif [ -e ~/.lesshst ]; then
+        mkdir -p "$XDG_STATE_HOME"
+        mv ~/.lesshst "$XDG_STATE_HOME/lesshst"
+    fi
+fi
+rm -f ~/.lesshst "$XDG_DATA_HOME/lesshst"
+
+for i in undo backup swap viminfo; do
+    mkdir -p "$XDG_STATE_HOME/vim"
+    if ! [ -e "$XDG_STATE_HOME/vim/$i" ]; then
+        if [ -e "$XDG_DATA_HOME/vim/$i" ]; then
+            mv "$XDG_DATA_HOME/vim/$i" "$XDG_STATE_HOME/vim/$i"
+        fi
+    fi
+    rm -rf "${XDG_DATA_HOME:?}/$i"
+done
+
+if [ $is_macos -ne 1 ] && ! [ -e "$XDG_STATE_HOME/zoxide" ]; then
+    if [ -e "$XDG_DATA_HOME/zoxide" ]; then
+        mkdir -p "$XDG_STATE_HOME"
+        mv "$XDG_DATA_HOME/zoxide" "$XDG_STATE_HOME/zoxide"
+    fi
+fi
+rm -f "$XDG_DATA_HOME/zoxide" 
+
+if ! [ -e "$XDG_STATE_HOME/zsh/history" ]; then
+    if [ -e "$XDG_DATA_HOME/zsh/history" ]; then
+        mkdir -p "$XDG_STATE_HOME/zsh"
+        mv "$XDG_DATA_HOME/zsh/history" "$XDG_STATE_HOME/zsh/history"
+    fi
+fi
+rm -f "$XDG_DATA_HOME/zsh/history"

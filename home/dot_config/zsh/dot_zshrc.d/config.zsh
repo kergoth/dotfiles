@@ -3,7 +3,7 @@ export CLICOLOR=true
 autoload -Uz is-at-least
 autoload -U $ZDOTDIR/functions/*(N:t)
 
-HISTFILE=$XDG_DATA_HOME/zsh/history
+HISTFILE=$XDG_STATE_HOME/zsh/history
 HISTSIZE=10000
 SAVEHIST=10000
 

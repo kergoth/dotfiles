@@ -6,3 +6,12 @@
 .zlogout
 .zprofile
 .zshrc
+.local/data/share/wget-hsts
+.wget-hsts
+.parallel
+.config/parallel
+
+# Software I don't use
+.pijulconfig
+.tool-versions
+.npm
