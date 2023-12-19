@@ -67,10 +67,12 @@ if [ -n "$(echo "$pipxs" | sed -e 's/^ *//; s/ *$//')" ]; then
 fi
 
 if [ -n "$(echo "$cargos" | sed -e 's/^ *//; s/ *$//')" ]; then
+    msg "Installing via cargo: $cargos"
     echo "$cargos" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o cargo install --locked
 fi
 
 if [ -n "$(echo "$gos" | sed -e 's/^ *//; s/ *$//')" ]; then
+    msg "Installing via go: $gos"
     echo "$gos" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o go install
 fi
 
