@@ -10,6 +10,15 @@
 
 [credential]
 	helper = manager	
+{{- else }}
+[pager]
+	diff = git-pager
+	log = git-pager
+	reflog = git-pager
+	show = git-pager
+
+[interactive]
+	diffFilter = git-diff-filter
 {{- end }}
 
 [init]
@@ -22,15 +31,8 @@
 [sendemail]
 	from = {{ .email }}
 
-[pager]
-	diff = git-pager
-	log = git-pager
-	reflog = git-pager
-	show = git-pager
-
 [interactive]
 	singlekey = true
-	diffFilter = git-diff-filter
 
 [delta]
 	syntax-theme = Dracula
