@@ -76,10 +76,7 @@ if [ -n "$(echo "$gos" | sed -e 's/^ *//; s/ *$//')" ]; then
 fi
 
 # Dotfiles
-msg "Initializing and applying dotfiles"
-chezmoi init "--source=$repodir" kergoth/dotfiles-chezmoi
-chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
-chezmoi apply
+"$repodir/script/setup"
 
 # User shell
 if [ -e /usr/local/bin/zsh ]; then

@@ -34,10 +34,7 @@ case "$(sw_vers -productVersion)" in
 esac
 
 # Dotfiles
-msg "Initializing and applying dotfiles"
-chezmoi init "--source=$repodir" kergoth/dotfiles-chezmoi
-chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
-chezmoi apply
+"$repodir/script/setup"
 
 msg "Configuring"
 "$scriptdir/macos/configure"

@@ -13,9 +13,6 @@ RefreshEnvPath
 # Install git
 scoop install git
 
-# Install chezmoi
-scoop install chezmoi
-
 # Install languages
 scoop install rust go python
 $reg = Get-ChildItem $env:USERPROFILE\scoop\apps\python\*\install-pep-514.reg -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -114,13 +111,9 @@ if (Test-Path "C:\Program Files\SyncTrayzor") {
     Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
 }
 
-if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
-    # Set path to this dotfiles repo
-    $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
-
-    # Apply my dotfiles
-    chezmoi init --apply --source="$env:DOTFILES_DIR" kergoth/dotfiles-chezmoi
-}
+# Apply my dotfiles
+$env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
+Join-Path $env:DOTFILES_DIR "script\setup.ps1" | Invoke-Expression
 
 if (-Not (Get-Command pipx -ErrorAction SilentlyContinue)) {
     python3 -m pip install --user --disable-pip-version-check pipx
