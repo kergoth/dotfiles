@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+tmpdir="$PWD/$(mktemp -d "${0##*/}.XXXXXX")"
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+cd "$tmpdir"
+
+export GEM_HOME="$PWD/gem"
+PATH="$PATH:$GEM_HOME/bin"
+
+curl -sfLO https://github.com/neonichu/ruby-domain_name/releases/download/v0.5.99999999/domain_name-0.5.99999999.gem
+gem install --no-user-install domain_name-0.5.99999999.gem
+gem install --no-user-install --conservative xcode-install
+
+osx_version="$(sw_vers -productVersion)"
+case "$osx_version" in
+    # These reflect the minimum OS X version requirements from the Xcode wiki
+    # page. See https://en.wikipedia.org/wiki/Xcode#Version_comparison_table.
+    10.14.[456])
+        xcode_version=11.2
+        ;;
+    10.14.3)
+        xcode_version=10.3
+        ;;
+    10.13.6|10.14|10.14.[12])
+        xcode_version=10.1
+        ;;
+    10.13.[345])
+        xcode_version=9.4.1
+        ;;
+    10.13.2)
+        xcode_version=9.4.1
+        ;;
+    10.12.6|10.13|10.13.1)
+        xcode_version=9.2
+        ;;
+    10.12|10.12.[12345])
+        xcode_version=8.3.3
+        ;;
+    10.11|10.11.[1234])
+        xcode_version=7.3.1
+        ;;
+    10.11*)
+        xcode_version=8.2.1
+        ;;
+    10.10|10.10.[123])
+        xcode_version=6.4
+        ;;
+    10.10.4)
+        xcode_version=7.0
+        ;;
+    10.10*)
+        xcode_version=7.2.1
+        ;;
+    10.9|10.9.[123])
+        xcode_version=5.1.1
+        ;;
+    10.9.4)
+        xcode_version=6.2
+        ;;
+    *)
+        echo >&2 "Unsupported osx version $osx_version, aborting"
+        exit 1
+        ;;
+esac
+
+echo >&2 "Installing Xcode version $xcode_version"
+export FASTLANE_DONT_STORE_PASSWORD=1
+xcversion install "$xcode_version"
+xcversion cleanup
+
+if [ -h /Applications/Xcode.app ]; then
+    dest="$(readlink /Applications/Xcode.app)"
+    sudo rm -f /Applications/Xcode.app
+    sudo mv "/Applications/$dest" /Applications/Xcode.app
+fi
+sudo xcode-select --switch /Applications/Xcode.app

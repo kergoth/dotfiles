@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+trap 'rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress' EXIT INT TERM
+softwareupdate -l
+PROD=$(softwareupdate -l --no-scan |
+       grep "\*.*Command Line" |
+       awk -F"*" '{print $2}' | tail -n 1 |
+       sed -e 's/^ *//; s/Label: //' |
+       tr -d '\n')
+softwareupdate -i "$PROD" --verbose

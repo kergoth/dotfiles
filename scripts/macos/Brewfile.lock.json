@@ -1,0 +1,552 @@
+{
+  "entries": {
+    "tap": {
+      "homebrew/cask-fonts": {
+        "revision": "a5baee188b8f72d8d14ce723965554c8b38f515a"
+      },
+      "homebrew/cask-versions": {
+        "revision": "b9530667e3da0a4f729de6da0f92ac0f192b3e0e"
+      }
+    },
+    "brew": {
+      "trash": {
+        "version": "0.9.2",
+        "bottle": {
+          "rebuild": 1,
+          "root_url": "https://ghcr.io/v2/homebrew/core",
+          "files": {
+            "arm64_ventura": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:60186a8823abc9dd734475e3f787edd7c2d6a2254fff25b7289de2db15447099",
+              "sha256": "60186a8823abc9dd734475e3f787edd7c2d6a2254fff25b7289de2db15447099"
+            },
+            "arm64_monterey": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:541af91d1cb128aa743460a529a3dcab5bac63b61ccde0a60d73aee23ab7d5c0",
+              "sha256": "541af91d1cb128aa743460a529a3dcab5bac63b61ccde0a60d73aee23ab7d5c0"
+            },
+            "arm64_big_sur": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:11c0c85ec692ea6d4a125070f0a6ca576aff991608a6c9632b984cbf983e2481",
+              "sha256": "11c0c85ec692ea6d4a125070f0a6ca576aff991608a6c9632b984cbf983e2481"
+            },
+            "ventura": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:539093ca74c72ed8be974fd9042b14f55cde0ef2c1fadbedc7343099a394593e",
+              "sha256": "539093ca74c72ed8be974fd9042b14f55cde0ef2c1fadbedc7343099a394593e"
+            },
+            "monterey": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:09b8ac7ade28ca59bd578b90680ece838a507b90b35e44d06a16f4d8ab9ae6e6",
+              "sha256": "09b8ac7ade28ca59bd578b90680ece838a507b90b35e44d06a16f4d8ab9ae6e6"
+            },
+            "big_sur": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:403ba52ce97d38535e1d127ca227afd4ea2d0e0c8b414118dbc5376c9ed8f094",
+              "sha256": "403ba52ce97d38535e1d127ca227afd4ea2d0e0c8b414118dbc5376c9ed8f094"
+            },
+            "catalina": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:b452d67cdeeb52db0aaadd258bc3e214a5ea5ed37da698b45017b01457115ea6",
+              "sha256": "b452d67cdeeb52db0aaadd258bc3e214a5ea5ed37da698b45017b01457115ea6"
+            },
+            "mojave": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:d8ad5460b24a51a4a12b31ebf1a2887e9e86e029d061f6994c3c1caea7bf0551",
+              "sha256": "d8ad5460b24a51a4a12b31ebf1a2887e9e86e029d061f6994c3c1caea7bf0551"
+            },
+            "high_sierra": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/trash/blobs/sha256:0ef5ea924ba8d01398686657a839ad270796f3f10eee86d6522980d32038df9a",
+              "sha256": "0ef5ea924ba8d01398686657a839ad270796f3f10eee86d6522980d32038df9a"
+            }
+          }
+        }
+      }
+    },
+    "cask": {
+      "alfred": {
+        "version": "5.1.4,2195",
+        "options": {
+          "full_name": "alfred",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "apparency": {
+        "version": "1.7,316",
+        "options": {
+          "full_name": "apparency",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "appcleaner": {
+        "version": "3.6.8",
+        "options": {
+          "full_name": "appcleaner",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "betterzip": {
+        "version": "5.3.4",
+        "options": {
+          "full_name": "betterzip",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "brooklyn": {
+        "version": "2.1.0",
+        "options": {
+          "full_name": "brooklyn",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "calibre": {
+        "version": "7.1.0",
+        "options": {
+          "full_name": "calibre",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "carbon-copy-cloner": {
+        "version": "6.1.8.7612",
+        "options": {
+          "full_name": "carbon-copy-cloner",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "daisydisk": {
+        "version": "4.25",
+        "options": {
+          "full_name": "daisydisk",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "discord": {
+        "version": "0.0.287",
+        "options": {
+          "full_name": "discord",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "docker": {
+        "version": "4.26.0,130397",
+        "options": {
+          "full_name": "docker",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "dteoh-devdocs": {
+        "version": "0.7.0",
+        "options": {
+          "full_name": "dteoh-devdocs",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "font-fira-code-nerd-font": {
+        "version": "3.1.1",
+        "options": {
+          "full_name": "font-fira-code-nerd-font",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "font-fira-mono-nerd-font": {
+        "version": "3.1.1",
+        "options": {
+          "full_name": "font-fira-mono-nerd-font",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "font-input": {
+        "version": "latest",
+        "options": {
+          "full_name": "font-input",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "font-jetbrains-mono": {
+        "version": "2.304",
+        "options": {
+          "full_name": "font-jetbrains-mono",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "irccloud": {
+        "version": "0.16.0",
+        "options": {
+          "full_name": "irccloud",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "itsycal": {
+        "version": "0.15.1",
+        "options": {
+          "full_name": "itsycal",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "keepingyouawake": {
+        "version": "1.6.5",
+        "options": {
+          "full_name": "keepingyouawake",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "kitty": {
+        "version": "0.31.0",
+        "options": {
+          "full_name": "kitty",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "omnioutliner": {
+        "version": "5.12",
+        "options": {
+          "full_name": "omnioutliner",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "qlcolorcode": {
+        "version": "4.1.0",
+        "options": {
+          "full_name": "qlcolorcode",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "qlimagesize": {
+        "version": "2.6.1",
+        "options": {
+          "full_name": "qlimagesize",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "qlmarkdown": {
+        "version": "1.0.17",
+        "options": {
+          "full_name": "qlmarkdown",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "qlprettypatch": {
+        "version": "1.0",
+        "options": {
+          "full_name": "qlprettypatch",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "qlstephen": {
+        "version": "1.5.1",
+        "options": {
+          "full_name": "qlstephen",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "quicklook-csv": {
+        "version": "1.3",
+        "options": {
+          "full_name": "quicklook-csv",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "quicklook-json": {
+        "version": "2,1.0",
+        "options": {
+          "full_name": "quicklook-json",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "quicklookase": {
+        "version": "1.0",
+        "options": {
+          "full_name": "quicklookase",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "rectangle": {
+        "version": "0.75",
+        "options": {
+          "full_name": "rectangle",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "soulver2": {
+        "version": "2.10,6109",
+        "options": {
+          "full_name": "soulver2",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "suspicious-package": {
+        "version": "4.3.3,1065.5",
+        "options": {
+          "full_name": "suspicious-package",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "swiftdefaultappsprefpane": {
+        "version": "2.0.1",
+        "options": {
+          "full_name": "swiftdefaultappsprefpane",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "syncthing": {
+        "version": "1.27.1-1",
+        "options": {
+          "full_name": "syncthing",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "the-unarchiver": {
+        "version": "4.3.6,143,1697809946",
+        "options": {
+          "full_name": "the-unarchiver",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "transmission-remote-gui": {
+        "version": "5.18.0",
+        "options": {
+          "full_name": "transmission-remote-gui",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "visual-studio-code": {
+        "version": "1.85.0",
+        "options": {
+          "full_name": "visual-studio-code",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "vivaldi": {
+        "version": "6.4.3160.47",
+        "options": {
+          "full_name": "vivaldi",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "vlc": {
+        "version": "3.0.20",
+        "options": {
+          "full_name": "vlc",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      },
+      "webpquicklook": {
+        "version": "1.0",
+        "options": {
+          "full_name": "webpquicklook",
+          "args": {
+            "appdir": "~/Applications"
+          }
+        }
+      }
+    },
+    "mas": {
+      "1Password for Safari": {
+        "id": "1569813296",
+        "version": "2.18.0"
+      },
+      "AdGuard for Safari": {
+        "id": "1440147259",
+        "version": "1.11.16"
+      },
+      "Bear": {
+        "id": "1091189122",
+        "version": "2.0.17"
+      },
+      "CleanMyDrive 2": {
+        "id": "523620159",
+        "version": "2.2.3"
+      },
+      "com.bandan.Declutter": {
+        "id": "1574021257",
+        "version": "1.2.0"
+      },
+      "Deliveries": {
+        "id": "290986013",
+        "version": "9.5.1"
+      },
+      "GoodLinks": {
+        "id": "1474335294",
+        "version": "1.8.1"
+      },
+      "Hidden Bar": {
+        "id": "1452453066",
+        "version": "1.8"
+      },
+      "Hush": {
+        "id": "1544743900",
+        "version": "1.0.12"
+      },
+      "LilyView": {
+        "id": "529490330",
+        "version": "1.6"
+      },
+      "MusicHarbor": {
+        "id": "1440405750",
+        "version": "4.7.1"
+      },
+      "PiPer": {
+        "id": "1421915518",
+        "version": "1.0.4"
+      },
+      "PopClip": {
+        "id": "445189367",
+        "version": "2023.9"
+      },
+      "Privacy Redirect": {
+        "id": "1578144015",
+        "version": "1.10.2"
+      },
+      "Reeder": {
+        "id": "1529448980",
+        "version": "5.4"
+      },
+      "Refined GitHub": {
+        "id": "1519867270",
+        "version": "23.12.1"
+      },
+      "Save to Matter": {
+        "id": "1548677272",
+        "version": "4.5.1"
+      },
+      "SessionRestore": {
+        "id": "1463334954",
+        "version": "2.7.7"
+      },
+      "Shut Up": {
+        "id": "1015043880",
+        "version": "3.3"
+      },
+      "Social Fixer for Facebook": {
+        "id": "1562017526",
+        "version": "27.2"
+      },
+      "Spark": {
+        "id": "1176895641",
+        "version": "2.11.36"
+      },
+      "StopTheMadness": {
+        "id": "1376402589",
+        "version": "40.6"
+      },
+      "Tampermonkey": {
+        "id": "1482490089",
+        "version": "4.20.6188"
+      },
+      "Toolkit for YNAB": {
+        "id": "1592912837",
+        "version": "3.3.4"
+      },
+      "uBlacklist for Safari": {
+        "id": "1547912640",
+        "version": "8.4.0"
+      },
+      "UnPlugged": {
+        "id": "423123087",
+        "version": "3.0"
+      },
+      "Userscripts": null,
+      "Vinegar": {
+        "id": "1591303229",
+        "version": "2.8.8"
+      },
+      "WiFi Explorer": {
+        "id": "494803304",
+        "version": "3.5"
+      },
+      "WiFi Signal": {
+        "id": "525912054",
+        "version": "4.4.10"
+      }
+    }
+  },
+  "system": {
+    "macos": {
+      "sonoma": {
+        "HOMEBREW_VERSION": "4.1.25-34-g7755004",
+        "HOMEBREW_PREFIX": "/Users/kergoth/.brew",
+        "Homebrew/homebrew-core": "api",
+        "CLT": "15.1.0.0.1.1700200546",
+        "Xcode": "15.0",
+        "macOS": "14.2"
+      }
+    }
+  }
+}

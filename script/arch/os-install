@@ -1,0 +1,205 @@
+#!/bin/sh
+
+set -eu
+
+timezone="America/Phoenix"
+initcpio_modules="crc32c"
+initcpio_extra_hooks=
+font="terminus-font ter-220n"
+
+usage() {
+    echo >&2 "${0##*/} [options] HOSTNAME"
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2
+    echo >&2 "  -d DEVICE        Device on which to install Arch Linux."
+    echo >&2 "  -b BOOTLOADER   Bootloader to install (grub or syslinux). Default: grub."
+    exit 2
+}
+
+# shellcheck disable=SC2032
+pacman() {
+    command pacman --noconfirm --needed "$@"
+}
+
+# shellcheck disable=SC2033
+pacman_install() {
+    # shellcheck disable=SC2086
+    for arg; do
+        if ! pacman -Q "$arg" >/dev/null 2>&1; then
+            echo "$arg"
+        fi
+    done | xargs pacman --noconfirm --needed -S
+}
+
+# shellcheck disable=SC2120
+partition_and_mount() {
+    device="${1:-/dev/sda}"
+    rootpartition="${device}3"
+
+    umount -R /mnt 2>/dev/null || :
+    umount -R /mnt2 2>/dev/null || :
+
+    {
+        echo "label: gpt"
+        echo 'type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B size=1G name="EFI system rootpartition"'
+        echo "type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F size=2G name=swap"
+        echo "type=E6D6D379-F507-44C2-A23C-238F2A3DF928 name=root"
+    } | sfdisk "$device"
+
+    mkfs.btrfs -f -L root "$rootpartition"
+    mkdir -p /mnt2
+    mount "$rootpartition" /mnt2
+    (
+        cd /mnt2
+
+        btrfs subvolume create @
+        btrfs subvolume create @snapshots
+
+        mount -o subvol=@ "$rootpartition" /mnt
+
+        mkdir -p @var/cache/pacman
+        for subvolume in @home @srv @var/log @var/tmp @var/cache/pacman/pkg @var/abs; do
+            btrfs subvolume create "$subvolume"
+            mkdir -p "/mnt/${subvolume#@}"
+            mount -o subvol="$subvolume" "$rootpartition" "/mnt/${subvolume#@}"
+        done
+    )
+
+    mkswap "${device}2"
+
+    mkfs.fat -F 32 "${device}1"
+    mkdir -p /mnt/boot
+    mount "${device}1" /mnt/boot
+}
+
+install_os() {
+    pacstrap -K /mnt base linux linux-firmware base-devel "$1"
+    genfstab -p -L /mnt >>/mnt/etc/fstab
+    cp -a ~/* /mnt/root/ || :
+}
+
+setup_os() {
+    pacman -Sy
+
+    # Hostname
+    if [ -n "$hostname" ] && [ "$OSTYPE" != WSL ]; then
+        echo "$hostname" >/etc/hostname
+        sed -i -e "s,\tlocalhost,\t$hostname localhost," /etc/hosts
+    fi
+
+    # Timezone
+    ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+    hwclock --systohc
+
+    if [ "$OSTYPE" != WSL ]; then
+        root_fs="$(sed -n -e '/[         ]\/[    ]/p' /proc/mounts | awk '{print $3}')"
+        root_dev="$(sed -n -e '/[         ]\/[    ]/p' /proc/mounts | awk '{print $1}')"
+
+        # Initramfs
+        if [ "$root_fs" = "btrfs" ]; then
+            pacman_install btrfs-progs
+            initcpio_extra_hooks="$initcpio_extra_hooks btrfs"
+        fi
+        sed -i -e"s,^MODULES=\"\",MODULES=\"$initcpio_modules\"," /etc/mkinitcpio.conf
+        if [ -n "$initcpio_extra_hooks" ]; then
+            sed -i -e"s,^HOOKS=\"\(.*\)\",HOOKS=\"\1 $initcpio_extra_hooks\"," /etc/mkinitcpio.conf
+        fi
+        mkinitcpio -P
+
+        # Console font
+        if [ -n "$font" ]; then
+            package=$(echo $font | cut -d" " -f1)
+            fontname=$(echo $font | cut -d" " -f2)
+            pacman_install $package
+            echo "FONT=$fontname" >/etc/vconsole.conf
+        fi
+    fi
+
+    pacman_install vi net-tools dhcpcd
+
+    systemctl enable dhcpcd
+
+    groupadd -r -g 51 staff
+    chgrp -R staff /usr/local
+    chmod -R g+rwX /usr/local
+    find /usr/local -type d -exec chmod g+s "{}" \;
+
+    pacman_install zsh
+    if [ "$OSTYPE" != WSL ]; then
+        echo >&2 "Input password for root"
+        passwd root
+
+        case "$bootloader" in
+        syslinux)
+            syslinux-install_update -i -a -m
+            ;;
+        grub)
+            # grub-install --target=i386-pc "$(echo "$root_dev" | sed 's,[0-9]*$,,')"
+            grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+            grub-mkconfig -o /boot/grub/grub.cfg
+            ;;
+        esac
+    fi
+}
+
+in_chroot=0
+device=/dev/sda
+bootloader=grub
+while getopts cd:b:h opt; do
+    case "$opt" in
+    c)
+        in_chroot=1
+        ;;
+    d)
+        device="$OPTARG"
+        ;;
+    b)
+        case "$OPTARG" in
+        syslinux | grub)
+            bootloader="$OPTARG"
+            ;;
+        *)
+            echo >&2 "Error: -b $OPTARG is unsupported. Only grub or syslinux are supported by this script."
+            exit 1
+            ;;
+        esac
+        ;;
+    \? | h)
+        usage
+        ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+hostname=$1
+shift
+
+if [ "$OSTYPE" = "linux-gnu" ]; then
+    case "$(uname -r)" in
+    *Microsoft | *microsoft*)
+        # For convenience
+        OSTYPE=WSL
+        ;;
+    esac
+fi
+
+if [ $in_chroot -eq 0 ]; then
+    echo >&2 "Installing Arch Linux to /mnt"
+
+    # shellcheck disable=SC2119
+    partition_and_mount "$device"
+
+    install_os "$bootloader"
+
+    scriptdest=/root/"${0##*/}"
+    cp -af "$0" "/mnt/$scriptdest"
+    arch-chroot /mnt sh "$scriptdest" -c -b "$bootloader efibootmgr" "$hostname"
+else
+    echo >&2 "Setting up new Arch Linux installation"
+    setup_os
+fi

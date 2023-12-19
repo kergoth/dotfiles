@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+
+pkg="$1"
+shift
+
+if [ $# -gt 0 ]; then
+    pacman -Sya "$@"
+fi
+
+tempdir="$(mktemp -d -t "${0##*/}.XXXXXX")"
+trap 'rm -rf "$tempdir"' EXIT INT TERM
+
+cd "$tempdir"
+case "$pkg" in
+    *://*)
+        git clone "$pkg" && cd "$(basename "${pkg%.git}")"
+        ;;
+    *)
+        git clone "https://aur.archlinux.org/$pkg.git"
+        cd "$pkg"
+        ;;
+esac
+makepkg -sci

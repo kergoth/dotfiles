@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# Nixpkgs channel url to subscribe
+NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
+
+get_github_latest_release() {
+    curl -fL "https://api.github.com/repos/$1/releases" |
+        jq -r --arg pattern "${2:-.}" '[.[] | select(.prerelease == false) | .assets[] | select(.name | test($pattern))] | .[0].browser_download_url'
+}
+
+bindir=${XDG_DATA_HOME:-$HOME/.local/share}/../bin
+scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
+PATH=$bindir:$PATH
+
+set -euo pipefail
+
+if ! command -v nix-user-chroot >/dev/null 2>&1; then
+    if command -v jq >/dev/null 2>&1; then
+        url="$(get_github_latest_release nix-community/nix-user-chroot 'x86_64-.*linux')" || :
+    else
+        url=https://github.com/nix-community/nix-user-chroot/releases/download/1.2.2/nix-user-chroot-bin-1.2.2-x86_64-unknown-linux-musl
+    fi
+
+    if [ -n "$url" ]; then
+        mkdir -p "$bindir"
+        curl -fL "$url" -o "$bindir/nix-user-chroot"
+        chmod +x "$bindir/nix-user-chroot"
+    fi
+fi
+
+if ! [ -e ~/.config/nix/nix.conf ]; then
+    mkdir -p ~/.config/nix
+    cat >~/.config/nix/nix.conf <<END
+experimental-features = nix-command flakes
+sandbox = false
+END
+fi
+
+unset NIX_PATH
+
+# shellcheck disable=SC2174
+mkdir -m 0755 -p ~/.nix
+curl -L https://nixos.org/nix/install | nix-user-chroot ~/.nix sh
+
+cp -av "$scriptdir/nixrun" "$bindir/nixrun"
+cp -av "$scriptdir/nixwrap" "$bindir/nixwrap"
+"$bindir/nixwrap"
+
+PATH="$HOME/.nix/shims:$PATH"
+
+nix-channel --add "$NIXPKGS" nixpkgs
+nix-channel --update

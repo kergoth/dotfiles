@@ -1,0 +1,122 @@
+#!/bin/sh
+
+set -eu
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/freebsd:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+pkg_install_freebsd() {
+    msg "Installing '$1'"
+    sudorun env ASSUME_ALWAYS_YES=YES pkg install "$@"
+}
+
+port_install() {
+    if [ -z "$1" ]; then
+        die "port_install requires a package argument"
+    fi
+
+    if [ -d /usr/ports/"$1" ]; then
+        msg "Installing port '$1'"
+        (
+            cd "/usr/ports/$1" || exit 1
+            for variable in LIB_DEPENDS BUILD_DEPENDS; do
+                make -V "$variable"
+            done | xargs -n 1 echo | cut -d: -f2 | sort -u | doas xargs --no-run-if-empty -o pkg install --automatic
+            doas make MAKE_JOBS_UNSAFE=yes install
+        )
+    else
+        die "No port found for $1"
+    fi
+}
+
+freebsd_check() {
+    pkg="$1"
+    cmd="${2:-}"
+
+    if [ -n "$cmd" ] && command -v "$cmd" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    if pkg search --exact "$pkg" >/dev/null 2>&1; then
+        pkgs="$pkgs $pkg"
+    else
+        ports="$ports $pkg"
+    fi
+}
+
+ports=
+pkgs=
+
+freebsd_check shells/zsh zsh
+#freebsd_check sysutils/nix nix
+
+freebsd_check ftp/wget wget
+
+freebsd_check editors/neovim nvim
+freebsd_check sysutils/tmux tmux
+
+freebsd_check lang/rust cargo
+freebsd_check lang/go go
+freebsd_check lang/python310 python3.10
+freebsd_check lang/python3 python3
+
+freebsd_check sysutils/chezmoi chezmoi
+freebsd_check sysutils/duf duf
+freebsd_check sysutils/fd fd
+freebsd_check textproc/ripgrep rg
+freebsd_check sysutils/zoxide zoxide
+freebsd_check textproc/sd sd
+freebsd_check textproc/sad sad
+freebsd_check archivers/unarchiver unar
+freebsd_check archivers/zstd zstd
+
+# SCM & Related
+freebsd_check devel/git-delta delta
+freebsd_check devel/gh gh
+freebsd_check devel/git-absorb git-absorb
+freebsd_check misc/patchutils filterdiff
+# Missing: sapling
+
+# Disk tools
+freebsd_check sysutils/dua-cli dua
+freebsd_check sysutils/dust dust
+
+# Linting and formatting
+freebsd_check devel/hs-ShellCheck shellcheck
+freebsd_check devel/shfmt shfmt
+
+# Directly supported by nix home-manager
+freebsd_check sysutils/direnv direnv
+freebsd_check textproc/fzf fzf
+freebsd_check textproc/jq jq
+freebsd_check textproc/bat bat
+freebsd_check sysutils/exa exa
+
+# FreeBSD-only
+freebsd_check sysutils/lsblk lsblk
+
+# Add user to operator and video groups
+doas pw groupmod operator -m "$USER"
+doas pw groupmod video -m "$USER"
+
+# Installation
+if [ -n "$(echo "$pkgs" | sed -e 's/^ *//; s/ *$//')" ]; then
+    echo "$pkgs" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o env ASSUME_ALWAYS_YES=YES $SUDO pkg install
+fi
+
+if [ -n "$(echo "$ports" | sed -e 's/^ *//; s/ *$//')" ]; then
+    for port in $ports; do
+        port_install "$port" || die "Failed to install $port"
+    done
+fi
+
+if [ -e /usr/local/bin/zsh ]; then
+    current_shell="$(getent passwd "$USER" | sed -e 's#.*:##')"
+    if [ "$current_shell" != /usr/local/bin/zsh ]; then
+        msg "Changing current user shell to zsh"
+        sudorun chsh -s /usr/local/bin/zsh "$USER"
+    fi
+fi

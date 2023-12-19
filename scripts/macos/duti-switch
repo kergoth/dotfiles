@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+
+PATH="$(cd "$(dirname "$0")" && pwd -P):$PATH"
+
+app_dir="$1"
+new_app_id="$2"
+
+app_id="$(mdls -raw -name kMDItemCFBundleIdentifier "$app_dir")"
+duti-all -n "$app_dir" \
+    | while read -r _ _ app_id uti role; do
+        echo "duti -vs $new_app_id $uti $role"
+    done \
+    | sed -e 's/ *$//' \
+    | tr '\n' '\0' | xargs -0 -n 1 -I"{}" sh -c "{}"

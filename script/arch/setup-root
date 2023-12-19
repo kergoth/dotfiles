@@ -1,0 +1,44 @@
+#!/bin/sh
+# Ensure that our user exists and can use sudo
+
+set -eu
+
+# shellcheck disable=SC2032
+pacman() {
+    command pacman --noconfirm --needed "$@"
+}
+
+pacman_install() {
+    # shellcheck disable=SC2086,SC2033
+    for arg; do
+        if ! pacman -Q "$arg" >/dev/null 2>&1; then
+            echo "$arg"
+        fi
+    done | xargs pacman --noconfirm --needed -S
+}
+
+user=$1
+
+if ! getent passwd "$user" >/dev/null 2>&1; then
+    echo >&2 "Adding user '$user'"
+    useradd -m -g users -G staff,wheel,uucp,storage "$user"
+    if [ -e /bin/zsh ]; then
+        chsh -s /bin/zsh "$user"
+    fi
+
+    if [ -t 1 ]; then
+        echo >&2 "Input password for $user"
+        passwd "$user"
+    else
+        echo >&2 "WARNING: Unable to set password for $user"
+    fi
+else
+    echo >&2 "Adding user '$user' to the wheel group"
+    usermod -a -G wheel "$user"
+fi
+
+pacman -Sy
+pacman_install sudo
+
+# Enable sudo for the wheel group
+sed -i -e '/# %wheel.*) ALL$/s/^# *//' /etc/sudoers

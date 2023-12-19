@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/arch:$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+locale="en_US.UTF-8"
+
+# Sync the files database
+sudorun pacman -Fy
+
+# Locales
+sed -i -e "/^#$locale /s/^#//" /etc/locale.gen
+locale-gen
+echo "LANG=$locale" >/etc/locale.conf
+
+pacman_install openssh
+if [ "$OSTYPE" != WSL ]; then
+    sudorun systemctl enable sshd && sudo systemctl start sshd
+fi
+
+if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
+    CPUS=$(grep -c processor /proc/cpuinfo)
+    JOBS=$((CPUS * 3 / 2))
+    sudorun sed -i -e "s,#*MAKEFLAGS=.*,MAKEFLAGS=\"-j$JOBS\"," /etc/makepkg.conf
+    if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
+        echo >&2 "Warning: failed to set MAKEFLAGS=-j$JOBS in /etc/makepkg.conf"
+    fi
+fi
+
+if [ "$OSTYPE" != WSL ]; then
+    pacman_install nss-mdns avahi
+    sudorun sed -i -e '/hosts:/{ s/mdns_minimal //g; s/dns/mdns_minimal dns/; }' /etc/nsswitch.conf
+    if ! grep -q 'hosts:.*mdns_minimal' /etc/nsswitch.conf; then
+        echo >&2 "Warning: failed to add mdns_minimal to hosts resolution in /etc/nsswitch.conf"
+    fi
+    sudorun systemctl enable avahi-daemon.service
+    sudorun systemctl start avahi-daemon.service || true
+fi
+
+pacman_install vi
+
+pacman_install zsh
+
+# Clean up
+if command pacman -Q nano >/dev/null 2>&1; then
+    sudorun pacman --noconfirm -R nano
+fi

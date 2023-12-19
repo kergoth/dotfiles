@@ -1,0 +1,66 @@
+#!/bin/sh
+
+locate_app_by_id () {
+    mdfind "kMDItemContentType == 'com.apple.application-bundle' && kMDItemCFBundleIdentifier == '$*'"
+}
+
+if [ $# -eq 0 ]; then
+    echo >&2 "Usage: ${0##*/} [-n] APP_ID"
+    exit 1
+fi
+
+dry_run=0
+if [ "$1" = "-n" ]; then
+    dry_run=1
+    shift
+fi
+
+id="$1"
+if [ -d "$id" ]; then
+    app="$id"
+    id="$(mdls -name kMDItemCFBundleIdentifier -raw "$app")"
+else
+    app="$(locate_app_by_id "$id")" || exit $?
+fi
+
+alias jq='jq 2>/dev/null'
+
+plutil -convert json "$app"/Contents/Info.plist -o - | \
+    jq -r '.CFBundleDocumentTypes[] | select(.CFBundleTypeExtensions) | .CFBundleTypeRole + "|" + (.CFBundleTypeExtensions | join(","))' | \
+        tr '[:upper:]' '[:lower:]' | \
+        while IFS="|" read -r role extensions; do
+            echo "$extensions" | tr ',' '\n' | while read -r extension; do
+                if [ -z "$extension" ]; then
+                    continue
+                elif [ $dry_run -eq 1 ]; then
+                    echo duti -vs "$id" ".$extension" "$role"
+                else
+                    duti -vs "$id" ".$extension" "$role"
+                fi
+            done
+        done
+
+plutil -convert json "$app"/Contents/Info.plist -o - | \
+    jq -r '.CFBundleDocumentTypes[] | select(.LSItemContentTypes) | .CFBundleTypeRole + "|" + (.LSItemContentTypes | join(","))' | \
+        tr '[:upper:]' '[:lower:]' | \
+        while IFS="|" read -r role types; do
+            echo "$types" | tr ',' '\n' | while read -r type; do
+                if [ -z "$type" ]; then
+                    continue
+                elif [ $dry_run -eq 1 ]; then
+                    echo duti -vs "$id" "$type" "$role"
+                else
+                    duti -vs "$id" "$type" "$role"
+                fi
+            done
+        done
+
+plutil -convert json "$app"/Contents/Info.plist -o - | \
+    jq -r '.CFBundleURLTypes[] | .CFBundleURLSchemes | join(",")' | tr ',' '\n' | \
+    while read -r scheme; do
+        if [ $dry_run -eq 1 ]; then
+            echo duti -vs "$id" "$scheme"
+        else
+            duti -vs "$id" "$scheme"
+        fi
+    done

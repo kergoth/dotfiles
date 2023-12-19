@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+repodir="$(dirname "$(cd "$(dirname "$0")" && pwd -P)")"
+PATH="$repodir/scripts:$repodir/scripts:$HOME/.local/bin:$PATH"
+
+# shellcheck source=../scripts/common.sh
+. "$repodir/scripts/common.sh" || exit 1
+
+set -euo pipefail
+
+if [ "$(id -u)" = "0" ]; then
+    die "Error: Do not run as root, this script expects to use sudo if needed"
+else
+    need_sudo
+fi
+
+if [ -z "$HOMEBREW_PREFIX" ]; then
+    die "HOMEBREW_PREFIX must be set or unset, not the empty string"
+fi
+
+if command -v "setup-system-$OS" &>/dev/null; then
+    msg "Running setup-system-$OS"
+    "setup-system-$OS"
+else
+    msg "No setup-system-$OS script found"
+fi
+
+if command -v "setup-system-$SYSTEM" &>/dev/null; then
+    msg "Running setup-system-$SYSTEM"
+    "setup-system-$SYSTEM"
+else
+    msg "No setup-system-$SYSTEM script found"
+fi
+
+msg "System setup complete"

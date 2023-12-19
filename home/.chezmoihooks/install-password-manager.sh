@@ -41,19 +41,8 @@ Linux)
         exit 1
         ;;
     esac
-    if wget "https://cache.agilebits.com/dist/1P/op2/pkg/v2.24.0/op_linux_${ARCH}_v2.24.0.zip" -O "$tmpdir/op.zip"; then
-        mkdir -p ~/.local/bin
-        if command -v unzip >/dev/null 2>&1; then
-            unzip -d ~/.local/bin "$tmpdir/op.zip" op
-        elif command -v unar >/dev/null 2>&1; then
-            unar -f -D -o ~/.local/bin "$tmpdir/op.zip" op
-        else
-            echo >&2 "Error: no supported unzip tool installed"
-            exit 1
-        fi
-    else
-        exit 1
-    fi
+    wget "https://cache.agilebits.com/dist/1P/op2/pkg/v2.24.0/op_linux_${ARCH}_v2.24.0.zip" -O "$tmpdir/op.zip" &&
+        unzip -d ~/.local/bin "$tmpdir/op.zip" op
     chmod +x ~/.local/bin/op
     ;;
 *)

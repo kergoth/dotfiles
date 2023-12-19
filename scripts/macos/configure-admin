@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# shellcheck source=./../common.sh
+. "$(dirname "$0")/../common.sh" || exit 1
+
+need_sudo
+
+# Enable Firewall
+sudorun defaults write /Library/Preferences/com.apple.alf globalstate -bool true
+sudorun defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
+
+# Enable Stealth Mode
+sudorun defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
+
+# Disable Bonjour multicast advertisements:
+sudorun defaults write /Library/Preferences/com.apple.mDNSResponder NoMulticastAdvertisements -bool true
+
+# Don't show hostname at the login screen
+sudorun defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo ""
+
+# Disable Guest account
+sudorun sysadminctl -guestAccount off
+
+# Enable auto-update via https://github.com/rtrouton/rtrouton_scripts
+
+# Enable automatic background check for macOS software updates
+sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
+# Enable automatic download of macOS software updates
+sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true
+# Enable automatic download and installation of XProtect, MRT and Gatekeeper updates
+sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true
+# Enable automatic download and installation of automatic security updates
+sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true
+
+# Enable automatic download and installation of macOS updates
+/usr/bin/sw_vers -productVersion | (
+    IFS=. read -r osvers_major osvers_minor _
+
+    if { [ "$osvers_major" -eq 10 ] && [ "$osvers_minor" -ge 14 ]; } || [ "$osvers_major" -ge 11 ]; then
+        sudorun defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true
+    fi
+
+    if [ "$osvers_major" -eq 10 ] && { [ "$osvers_minor" -ge 10 ] && [ "$osvers_minor" -lt 14 ]; }; then
+        sudorun defaults write /Library/Preferences/com.apple.commerce AutoUpdateRestartRequired -bool true
+    fi
+)
+
+# Crank up the max open files, etc
+sudorun sh -c "echo kern.sysv.shmall=65536 >>/etc/sysctl.conf"
+sudorun sh -c "echo kern.sysv.shmmax=16777216 >>/etc/sysctl.conf"
+sudorun sh -c "echo kern.maxfiles=10485760 >>/etc/sysctl.conf"
+sudorun sh -c "echo kern.maxfilesperproc=1048576 >>/etc/sysctl.conf"
+sudorun sh -c "sort -u /etc/sysctl.conf >/tmp/foo && mv /tmp/foo /etc/sysctl.conf"
+# shellcheck disable=SC2046
+sudorun sysctl -w $(cat /etc/sysctl.conf)
+
+# Silence Boot chime
+sudorun nvram SystemAudioVolume=" "
+
+# Turn display off on battery when inactive for 2 minutes
+sudorun pmset -b displaysleep 2
+
+# Turn display off on power adapter when inactive for 10 minutes
+sudorun pmset displaysleep 10

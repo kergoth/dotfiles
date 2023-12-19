@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if [ $# -ne 1 ]; then
+    echo >&2 "Usage: ${0##*/} ADMINUSER"
+    exit 1
+fi
+
+if ! [ -e /Users/"$1" ]; then
+    echo >&2 "Error: /Users/$1 does not exist"
+    exit 1
+fi
+
+# Hide admin user from the login window
+sudo dscl . create /Users/"$1" IsHidden 1
+
+# Hide admin user home directory
+sudo chflags hidden /Users/"$1"
+
+# Remove admin user from FileVault
+if sudo fdesetup list | grep -q "^$USER,"; then
+    sudo fdesetup remove -user "$1"
+fi

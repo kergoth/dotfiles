@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+repodir=$(dirname "$scriptdir")
+PATH="$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+msg "Initializing and applying dotfiles"
+if ! command -v chezmoi &>/dev/null; then
+    (cd ~ && sh -c "$(curl -fsLS get.chezmoi.io/lb)")
+fi
+chezmoi init "--source=$repodir" kergoth/dotfiles-chezmoi
+chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
+chezmoi apply
+
+# Install PowerShell modules, if needed
+if has pwsh; then
+    msg "Installing PowerShell modules"
+    # Ignore failure, as these are not critical to my workflow, and can fail due
+    # to transient network issues.
+    pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
+fi
+
+# Install dtrx, if unar is missing
+if ! command -v unar &>/dev/null; then
+    msg "Installing dtrx"
+    if ! command -v pipx &>/dev/null; then
+        python3 -m pip install --user --disable-pip-version-check pipx
+        python3 -m pipx ensurepath
+    fi
+    pipx install dtrx
+fi
+
+# User shell should be zsh
+if [ -e /bin/zsh ] && [ "$(getent passwd "$(id -un)" | awk -F : '{print $NF}')" != /bin/zsh ]; then
+    msg "Changing user shell to zsh"
+    # Failure is ignored here, as in some cases the user password might not be
+    # known or set, as is the case with some container usage.
+    chsh -s /bin/zsh || :
+fi

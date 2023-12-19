@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
+PATH="$scriptdir:$PATH"
+
+bins="$(mktemp -t "${0##*/}.XXXXXX")"
+trap 'rm -f "$bins"' EXIT INT TERM
+shims="$(mktemp -t "${0##*/}.XXXXXX")"
+trap 'rm -f "$bins" "$shims"' EXIT INT TERM
+
+profile_dir="$HOME/.nix-profile"
+shims_dir="$HOME/.nix/shims"
+if [ $# -gt 0 ]; then
+    profile_dir="$1"
+    shift
+    if [ $# -gt 0 ]; then
+        shims_dir="$1"
+        shift
+    fi
+fi
+
+if [ -L "$profile_dir" ]; then
+    nixrun find "$profile_dir/bin/" \( -type l -o -type f \) -printf '%f\n' 2>/dev/null | sort >>"$bins" || :
+fi
+if [ -e "$shims_dir" ]; then
+    find "$shims_dir" -type l -printf '%f\n' | sort >>"$shims" || :
+fi
+
+mkdir -p "$shims_dir"
+if ! [ -f "$shims_dir/nixrun-wrap" ]; then
+    rm -f "$shims_dir/nixrun-wrap"
+    cat >"$shims_dir/nixrun-wrap" <<END
+#!/bin/sh
+
+script="$(readlink -f "\$0")"
+scriptdir="$(cd "$(dirname "\$script")" && pwd)"
+PATH="\$(echo "\$PATH" | tr ':' '\n' | grep -vxF "\$scriptdir" | tr '\n' ':' | sed -e 's/:\$//')"
+exec nixrun "\$(basename "\$0")" "\$@"
+END
+    chmod +x "$shims_dir/nixrun-wrap"
+fi
+comm -13 "$bins" "$shims" | sed -e "s#^#$HOME/.nix/shims/#" | tr '\n' '\0' | xargs -0 rm -fv
+comm -23 "$bins" "$shims" | tr '\n' '\0' | xargs -0 -I "{}" ln -sfv ./nixrun-wrap "$shims_dir/{}"

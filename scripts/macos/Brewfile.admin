@@ -1,0 +1,13 @@
+tap "kergoth/misc"
+tap "microsoft/git"
+
+cask "1password"
+cask "blockblock"
+cask "karabiner-elements"
+cask "lulu"
+cask "microsoft-teams"
+cask "qlvideo"
+cask "reikey"
+cask "whatsyoursign"
+cask "parallels"
+cask "microsoft/git/git-credential-manager-core"

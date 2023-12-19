@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -ne 1 ]; then
+    echo >&2 "Usage: ${0##*/} HOSTNAME"
+    exit 1
+fi
+
+sudo sysctl kern.hostname="$1"
+sudo hostname -s "$1"
+sudo scutil --set HostName "$1"
+sudo scutil --set "$1"Name "$1"
+sudo scutil --set ComputerName "$1"

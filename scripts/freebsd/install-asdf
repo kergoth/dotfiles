@@ -1,0 +1,12 @@
+#!/bin/sh
+
+export ASDF_DATA_DIR="${1:-${ASDF_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/asdf}}"
+export ASDF_DIR="$ASDF_DATA_DIR"
+
+if [ ! -e "$ASDF_DATA_DIR" ]; then
+    ASDF_VERSION=0.5.1
+    git clone https://github.com/asdf-vm/asdf.git "$ASDF_DATA_DIR" --branch "v$ASDF_VERSION"
+fi
+
+PATH="$(dirname "$0"):$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$HOME/.local/bin:$PATH"
+asdf update

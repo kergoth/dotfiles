@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+install_nix
+
+# User shell should be zsh
+if [ -e /bin/zsh ] && [ "$(getent passwd "$(id -un)" | awk -F : '{print $NF}')" != /bin/zsh ]; then
+    msg "Changing user shell to zsh"
+    sudorun chsh -s /bin/zsh "$LOGNAME"
+fi

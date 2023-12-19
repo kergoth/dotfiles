@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/ubuntu:$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+# Install xz for nix
+if ! has xz; then
+    sudorun apt-get -y install xz-utils
+fi
+
+if ! has zsh; then
+    sudorun apt-get -y install zsh
+fi

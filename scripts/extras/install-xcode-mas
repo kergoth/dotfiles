@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# This works, but can only install the latest version, which isn't
+# compatible with older versions of OS X
+
+set -euo pipefail
+
+tmpdir="$PWD/$(mktemp -d "${0##*/}.XXXXXX")"
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+cd "$tmpdir"
+
+curl -sfLO https://github.com/argon/mas/releases/download/v1.3.1/mas-cli.zip
+open -W mas-cli.zip
+xcode_id="$(./mas search Xcode | sed -n -e 's/^\([0-9]*\) Xcode$/\1/p')"
+if [ -z "$xcode_id" ]; then
+    echo >&2 "Error: unable to locate Xcode in the App Store"
+    exit 1
+fi
+./mas install "$xcode_id"

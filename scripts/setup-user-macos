@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+repodir=$(dirname "$scriptdir")
+PATH="$scriptdir/macos:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
+    msg "Installing homebrew"
+    install-brew -s "$HOMEBREW_PREFIX" || {
+        rm -rf "$HOMEBREW_PREFIX"
+        die "Failed to install homebrew"
+    }
+fi
+
+msg "Installing applications with homebrew"
+unset HOMEBREW_AUTO_UPDATE
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+# shellcheck disable=SC2154
+"$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$scriptdir/macos/Brewfile"
+
+case "$(sw_vers -productVersion)" in
+14.0)
+    :
+    ;;
+*)
+    "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$scriptdir/macos/Brewfile-pre-Sonoma"
+    ;;
+esac
+
+# Dotfiles
+msg "Initializing and applying dotfiles"
+chezmoi init "--source=$repodir" kergoth/dotfiles-chezmoi
+chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
+chezmoi apply
+
+msg "Configuring"
+"$scriptdir/macos/configure"
+"$scriptdir/macos/setup-apps"
+
+msg "Configuring complete"

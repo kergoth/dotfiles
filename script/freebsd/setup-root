@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+
+pkg() {
+    env ASSUME_ALWAYS_YES=YES pkg "$@"
+}
+
+user=$1
+
+pw groupmod wheel -m "$user"
+
+if ! pkg -N; then
+    pkg bootstrap
+fi
+if ! command -v doas >/dev/null 2>&1; then
+    pkg install doas
+fi
+if ! [ -e /usr/local/etc/doas.conf ] || ! grep -q "^permit :wheel" /usr/local/etc/doas.conf; then
+    echo "permit :wheel" >>/usr/local/etc/doas.conf
+fi

@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir="$(cd "$(dirname "$0")" && pwd -P)"
+PATH="$scriptdir:$scriptdir/../scripts:$PATH"
+
+app_path() {
+    for dir in /Applications ~/Applications /Applications/Utility ~/Applications/Utility; do
+        if [ -d "$dir/$1.sapp" ]; then
+            echo "$dir/$1.app"
+            return 0
+        fi
+    done
+    return 1
+}
+
+app_installed_directly() {
+    app_path "$1" >/dev/null
+}
+
+add_login() {
+    osascript -e "tell application \"System Events\" to make login item at end with properties {path:\"$1\", hidden:false}"
+}
+
+if app_installed_directly "Path Finder"; then
+    duti -vs com.cocoatech.PathFinder public.folder viewer
+fi
+
+if app_installed_directly "Send to Kindle"; then
+    duti -vs com.amazon.SendToKindle .mobi viewer
+    duti -vs com.amazon.SendToKindle .azw viewer
+fi
+
+if app_installed_directly "Transmission Remote GUI"; then
+    duti -vs com.transgui .torrent viewer
+fi
+
+if app_installed_directly "BetterZip"; then
+    # Don't let BetterZip take over epub from Apple Books
+    duti-all -n com.apple.iBooksX |
+        grep epub |
+        tr '\n' '\0' |
+        xargs -0 -I"{}" sh -c "{}"
+fi
+
+# Open these apps so they set up auto-start for themselves
+while read -r app; do
+    if app_installed_directly "$app"; then
+        open -ga "$app"
+    fi
+done <<END
+1Password
+Alfred 5
+Hidden Bar
+Karabiner-Elements
+Rectangle
+OverSight
+ReiKey
+END
+
+while read -r app; do
+    if app_file_path="$(app_path "$app")"; then
+        add_login "$app_file_path"
+        open -ga "$app"
+    fi
+done <<END
+BlockBlock Helper
+coconutBattery
+PopClip
+Syncthing
+UnPlugged
+WiFi Signal
+END
+
+if appcleaner="$(app_path "AppCleaner")"; then
+    open -g "$appcleaner/Contents/Library/LoginItems/AppCleaner SmartDelete.app"
+fi
+
+if ccc="$(app_path "Carbon Copy Cloner")"; then
+    open -g "$ccc/Contents/Library/LoginItems/CCC Dashboard.app"
+fi
+
+if oversight="$(app_path "OverSight")"; then
+    add_login "$oversight/Contents/Library/LoginItems/OverSight Helper.app"
+    mkdir -p ~/Library/Application\ Support/Objective-See/OverSight
+    touch ~/Library/Application\ Support/Objective-See/OverSight/OverSight.log
+fi
+
+# Deal with Quarantine
+xattr -d -r com.apple.quarantine ~/Library/QuickLook
+
+# Reload and refresh Quick Look
+reload-quicklook

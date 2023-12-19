@@ -1,0 +1,103 @@
+#!/bin/sh
+
+set -eu
+
+usage () {
+    echo >&2 "${0##*/} [options] INSTALL_PATH"
+    echo >&2
+    echo >&2 "Install homebrew to the specified INSTALL_PATH"
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2
+    echo >&2 "  -r INSTALL_REPO_PATH Destination of the homebrew repo when using -s. Default: INSTALL_PATH/homebrew"
+    echo >&2 "  -u GITHUB_USER  Specify a github user for the git repositories. Default: homebrew"
+    echo >&2 "  -s    Separate the prefix and repo."
+    echo >&2 "  -d    Do not run brew-doctor."
+    echo >&2 "  -h    Show this help."
+    exit 2
+}
+
+HOMEBREW_REPO=
+github_user=homebrew
+separate_prefix=0
+doctor=1
+while getopts r:u:sdh opt; do
+    case "$opt" in
+        r)
+            HOMEBREW_REPO="$OPTARG"
+            ;;
+	u)
+	    github_user="$OPTARG"
+	    ;;
+        s)
+            separate_prefix=1
+            ;;
+        d)
+            doctor=0
+            ;;
+        \?|h)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -gt 1 ]; then
+    usage
+fi
+
+HOMEBREW_PREFIX="${1:-$HOMEBREW_PREFIX}"
+if [ -z "$HOMEBREW_PREFIX" ]; then
+    usage
+fi
+mkdir -p "$HOMEBREW_PREFIX"
+
+HOMEBREW_PREFIX="$(cd "$HOMEBREW_PREFIX" && pwd -P)"
+PATH="$HOMEBREW_PREFIX/bin:$PATH"
+
+if [ "$separate_prefix" -eq 1 ]; then
+    mkdir -p "$HOMEBREW_PREFIX"
+    if [ -z "$HOMEBREW_REPO" ]; then
+        HOMEBREW_REPO="$HOMEBREW_PREFIX/brew"
+    fi
+else
+    HOMEBREW_REPO="$HOMEBREW_PREFIX"
+fi
+
+git clone https://github.com/"$github_user"/brew "$HOMEBREW_REPO"
+git config -f "$HOMEBREW_REPO/.git/config" homebrew.analyticsdisabled true
+
+HOMEBREW_PREFIX="$(cd "$HOMEBREW_PREFIX" && pwd -P)"
+if [ "$separate_prefix" -eq 1 ]; then
+    HOMEBREW_REPO="$(cd "$HOMEBREW_REPO" && pwd -P)"
+    mkdir -p "$HOMEBREW_PREFIX/bin"
+    if command -v lnr >/dev/null 2>&1; then
+        lnr "$HOMEBREW_REPO/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
+    else
+        ln -sf "$HOMEBREW_REPO/bin/brew" "$HOMEBREW_PREFIX/bin/brew"
+    fi
+fi
+
+if [ "$(brew --prefix)" != "$HOMEBREW_PREFIX" ]; then
+    printf >&2 "Error: brew prefix %s does not match the specified %s" "$(brew --prefix)" "$HOMEBREW_PREFIX"
+    exit 1
+fi
+
+if [ "$(brew --repo)" != "$HOMEBREW_REPO" ]; then
+    printf >&2 "Error: brew repo %s does not match the specified %s" "$(brew --repo)" "$HOMEBREW_REPO"
+    exit 1
+fi
+
+if [ -d "$HOMEBREW_PREFIX/share/doc/homebrew" ]; then
+    rm -rf "$HOMEBREW_PREFIX/share/doc/homebrew"
+fi
+
+for dir in etc include lib opt sbin share var/homebrew/linked Cellar Frameworks; do
+    mkdir -p "$HOMEBREW_PREFIX/$dir"
+    chown -R "$(whoami)" "$HOMEBREW_PREFIX/$dir"
+done
+
+brew update || exit 2
+if [ $doctor -eq 1 ]; then
+    brew doctor || exit 0
+fi
