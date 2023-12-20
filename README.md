@@ -17,8 +17,8 @@ This setup will apply the dotfiles, and will also install packages with home-man
 
 If the repository has not yet been cloned:
 
-```console
-chezmoi init --apply kergoth/dotfiles-chezmoi
+```**console**
+chezmoi init --apply kergoth/dotfiles
 ```
 
 If the repository is already cloned and you've changed directory to it:

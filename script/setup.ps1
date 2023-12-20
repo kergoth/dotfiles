@@ -15,4 +15,4 @@ if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
 
 # Apply my dotfiles
 Write-Output "Applying dotfiles"
-chezmoi init --apply --source="$env:DOTFILES_DIR" kergoth/dotfiles-chezmoi
+chezmoi init --apply --source="$env:DOTFILES_DIR" kergoth/dotfiles
