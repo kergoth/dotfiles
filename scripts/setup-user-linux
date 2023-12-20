@@ -27,7 +27,7 @@ if ! command -v unar &>/dev/null; then
         python3 -m pipx ensurepath
     fi
     pipx install dtrx
-fi
+fi || :
 
 # User shell should be zsh
 if [ -e /bin/zsh ] && [ "$(getent passwd "$(id -un)" | awk -F : '{print $NF}')" != /bin/zsh ]; then
