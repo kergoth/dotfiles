@@ -24,6 +24,7 @@ style = "bold #ff79c6"
 symbol = ""
 
 [git_status]
+format = '([$all_status$ahead_behind]($style) )'
 untracked = ""
 stashed = ""
 style = "bold #ff5555"
