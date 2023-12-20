@@ -34,8 +34,8 @@ if (-Not $env:DOTFILESDIR) {
 }
 
 # DirColors configuration
-if (Test-Path "$env:DOTFILESDIR/ls/ls_colors") {
-    $env:LS_COLORS = Get-Content "$env:DOTFILESDIR/ls/ls_colors"
+if (Test-Path "$env:USERPROFILE/.config/powershell/ls_colors") {
+    $env:LS_COLORS = Get-Content "$env:USERPROFILE/.config/powershell/ls_colors"
 }
 Import-Module DirColors
 
