@@ -7,8 +7,6 @@ if (Get-Command starship) {
     }
 
     Invoke-Expression (&starship init powershell)
-
-    Enable-TransientPrompt
 }
 
 # Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
@@ -113,6 +111,11 @@ if (Get-Command zoxide) {
 else {
     # 'z'. Always import it after prompt setup.
     Import-Module ZLocation
+}
+
+# Enable transient prompt. This must be enabled after zoxide init.
+if (Get-Command starship) {
+    Enable-TransientPrompt
 }
 
 # Convenience
