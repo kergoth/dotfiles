@@ -2,7 +2,13 @@ Import-Module Recycle
 Import-Module posh-alias
 
 if (Get-Command starship) {
+    function Invoke-Starship-TransientFunction {
+        &starship module character
+    }
+
     Invoke-Expression (&starship init powershell)
+
+    Enable-TransientPrompt
 }
 
 # Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
