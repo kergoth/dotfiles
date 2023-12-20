@@ -95,6 +95,7 @@
     midnight_commander      # midnight commander shell (https://midnight-commander.org/)
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
     chezmoi_shell           # chezmoi shell (https://www.chezmoi.io/)
+    my_wsl_is_admin         # WSL shell running as local administrator
     # vpn_ip                # virtual private network indicator
     # load                  # CPU load
     # disk_usage            # disk usage
@@ -1715,6 +1716,14 @@
   # Use semantic markup with OSC 133. This enables features in terminals that
   # recognize these marks (iTerm2 and kitty, and perhaps more).
   typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
+
+  function prompt_my_wsl_is_admin () {
+    if [[ $OSTYPE = WSL ]] && [[ $WSL_IS_ADMIN = 1 ]]; then
+        p10k segment -f blue -t "${POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT:-WSL ADMIN}"
+    fi
+  }
+  typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_FOREGROUND=1
+  typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT=ADMIN
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
