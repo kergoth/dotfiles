@@ -167,4 +167,4 @@ setup_nix_shell() {
     done
 }
 
-#setup_nix_shell
+setup_nix_shell
