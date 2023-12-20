@@ -79,6 +79,9 @@
     reattach-to-user-namespace
   ] ++ lib.optionals stdenv.isLinux [
     glibcLocales
+  {{- if eq .is_wsl2 true }}
+    socat
+  {{- end }}
   ];
 
   programs = {
