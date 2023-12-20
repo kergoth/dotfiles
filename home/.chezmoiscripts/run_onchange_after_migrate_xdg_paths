@@ -58,7 +58,7 @@ if [ $is_macos -ne 1 ] && ! [ -e "$XDG_STATE_HOME/zoxide" ]; then
         mv "$XDG_DATA_HOME/zoxide" "$XDG_STATE_HOME/zoxide"
     fi
 fi
-rm -f "$XDG_DATA_HOME/zoxide" 
+rm -rf "$XDG_DATA_HOME/zoxide" 
 
 if ! [ -e "$XDG_STATE_HOME/zsh/history" ]; then
     if [ -e "$XDG_DATA_HOME/zsh/history" ]; then
