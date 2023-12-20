@@ -30,14 +30,6 @@
             "command": 
             {
                 "action": "switchToTab",
-                "index": 0
-            },
-            "keys": "alt+1"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
                 "index": 7
             },
             "keys": "alt+8"
@@ -49,6 +41,14 @@
                 "index": 4
             },
             "keys": "alt+5"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 0
+            },
+            "keys": "alt+1"
         },
         {
             "command": 
@@ -208,6 +208,14 @@
                 "hidden": false,
                 "name": "sokol-flex-build",
                 "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "commandline": "C:\\WINDOWS\\system32\\wsl.exe -d Debian",
+                "guid": "{289cb0dd-0f2a-478c-8203-0ffab5fbd1f4}",
+                "hidden": false,
+                "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+                "name": "Debian",
+                "startingDirectory": "~"
             }
         ]
     },
@@ -490,49 +498,5 @@
             "yellow": "#808000"
         }
     ],
-    "themes": 
-    [
-        {
-            "name": "legacyDark",
-            "tab": 
-            {
-                "background": null,
-                "showCloseButton": "always",
-                "unfocusedBackground": null
-            },
-            "window": 
-            {
-                "applicationTheme": "dark",
-                "useMica": false
-            }
-        },
-        {
-            "name": "legacyLight",
-            "tab": 
-            {
-                "background": null,
-                "showCloseButton": "always",
-                "unfocusedBackground": null
-            },
-            "window": 
-            {
-                "applicationTheme": "light",
-                "useMica": false
-            }
-        },
-        {
-            "name": "legacySystem",
-            "tab": 
-            {
-                "background": null,
-                "showCloseButton": "always",
-                "unfocusedBackground": null
-            },
-            "window": 
-            {
-                "applicationTheme": "system",
-                "useMica": false
-            }
-        }
-    ]
+    "themes": []
 }
