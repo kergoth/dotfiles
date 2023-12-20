@@ -6,12 +6,14 @@ error_symbol = "[λ](bold #ff5555)"
 success_symbol = "[λ](bold #50fa7b)"
 
 [cmd_duration]
+format = '[$duration]($style) '
 style = "bold #f1fa8c"
 
 [directory]
 style = "bold #50fa7b"
 
 [git_branch]
+format = '[$symbol$branch(:$remote_branch)]($style) '
 style = "bold #ff79c6"
 
 [git_status]
