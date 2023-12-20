@@ -36,7 +36,8 @@ Library/
 !.local/share/zsh
 .local/share/zsh/*
 !.local/share/zsh/completions
-.local/state
+.local/state/*
+!.local/state/zsh
 .nix-channels
 .nix-defexpr
 .nix-profile
