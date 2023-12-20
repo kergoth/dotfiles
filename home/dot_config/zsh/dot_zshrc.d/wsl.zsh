@@ -23,7 +23,7 @@ if [[ ! -e /.dockerenv ]]; then
             if [[ -e "${NPIPERELAY:-}" ]]; then
                 if (( $+commands[socat] )); then
                     export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
-                    if ! ss -a | grep -q "$SSH_AUTH_SOCK"; then
+                    if ! ss -a | grep -q "$SSH_AUTH_SOCK" || ! pgrep -f socat &>/dev/null; then
                         rm -f "$SSH_AUTH_SOCK"
                         ( setsid socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" EXEC:"$NPIPERELAY -ei -s //./pipe/openssh-ssh-agent",nofork & )
                     fi
