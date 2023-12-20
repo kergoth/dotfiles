@@ -8,6 +8,7 @@ Documents/PowerShell/
 .chezmoiscripts/home-manager
 .chezmoiscripts/migrate_xdg_paths
 .chezmoiscripts/vim
+.chezmoiscripts/prepare
 {{- end }}
 {{- if ne .chezmoi.os "darwin" }}
 Library/
