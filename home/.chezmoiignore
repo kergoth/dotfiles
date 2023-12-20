@@ -47,10 +47,16 @@ Library/
 **/*.iln*
 **/*.zwc
 
+# I don't track files for this with chezmoi
+.code-terminal
+.vscode
+
 # I don't maintain a bash configuration
 .profile
 .bashrc
 .bash_profile
 .bash_logout
+
+# Dotfiles/setup repository clones
 .dotfiles
 .setup
