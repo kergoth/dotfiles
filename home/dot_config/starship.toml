@@ -16,22 +16,22 @@ format = '[$duration]($style) '
 style = "bold #f1fa8c"
 
 [directory]
-style = "bold #50fa7b"
+style = "blue"
 
 [git_branch]
 format = '[$symbol$branch(:$remote_branch)]($style) '
-style = "bold #ff79c6"
+style = "bold green"
 symbol = ""
 
 [git_status]
 format = '([$all_status$ahead_behind]($style) )'
 untracked = ""
 stashed = ""
-style = "bold #ff5555"
+style = "bold yellow"
 
 [hostname]
 style = "bold #bd93f9"
 
 [username]
-format = "[$user]($style) on "
+format = "[$user]($style)@"
 style_user = "bold #8be9fd"
