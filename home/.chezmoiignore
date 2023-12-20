@@ -12,9 +12,11 @@ Documents/PowerShell/
 Library/
 {{- end }}
 
+**/.DS_Store
 .chezmoihooks
 .chezmoihooks/**
 .bash_history
+.brew
 .cache/*
 !.cache/zsh
 .cache/zsh/*
@@ -24,6 +26,7 @@ Library/
 .config/git/config
 .config/vscode-dev-containers
 .devcontainer
+.envrc
 .local/bin
 .local/lib
 .local/pipx
@@ -33,10 +36,12 @@ Library/
 .local/share/zsh/*
 !.local/share/zsh/completions
 .local/state
+.nix-channels
 .nix-defexpr
 .nix-profile
 .oh-my-zsh
 .ssh/known_hosts
+.Trash
 .vscode-server
 **/.zcompdump
 **/*.iln*
