@@ -20,6 +20,30 @@ case "${OSTYPE:-}" in
         ;;
 esac
 
+if ! [ -e "$XDG_DATA_HOME/cargo" ]; then
+    if [ -e ~/.cargo ]; then
+        mkdir -p "$XDG_DATA_HOME"
+        mv ~/.cargo "$XDG_DATA_HOME/cargo"
+    fi
+fi
+rm -rf ~/.cargo
+
+if ! [ -e "$XDG_DATA_HOME"/docker-machine ]; then
+    if [ -e ~/.docker/machine ]; then
+        mkdir -p "$XDG_DATA_HOME"
+        mv ~/.docker/machine "$XDG_DATA_HOME/docker-machine"
+    fi
+fi
+rm -rf ~/.docker/machine
+
+if ! [ -e "$XDG_CONFIG_HOME/docker" ]; then
+    if [ -e ~/.docker ]; then
+        mkdir -p "$XDG_DATA_HOME"
+        mv ~/.docker "$XDG_CONFIG_HOME/docker"
+    fi
+fi
+rm -rf ~/.docker
+
 if ! [ -e "$XDG_STATE_HOME/fasd/data" ]; then
     if [ -e "$XDG_DATA_HOME/fasd/data" ]; then
         mkdir -p "$XDG_STATE_HOME/fasd"
@@ -42,23 +66,55 @@ if ! [ -e "$XDG_STATE_HOME/lesshst" ]; then
 fi
 rm -f ~/.lesshst "$XDG_DATA_HOME/lesshst"
 
-for i in undo backup swap viminfo; do
+if ! [ -e "$XDG_DATA_HOME/rng" ]; then
+    if [ -e ~/.rnd ]; then
+        mkdir -p "$XDG_DATA_HOME"
+        mv ~/.rnd "$XDG_DATA_HOME/rng"
+    fi
+fi
+rm -f ~/.rnd
+
+if ! [ -e "$XDG_DATA_HOME/rustup" ]; then
+    if [ -e ~/.rustup ]; then
+        mkdir -p "$XDG_DATA_HOME"
+        mv ~/.rustup "$XDG_DATA_HOME/rustup"
+    fi
+fi
+rm -rf ~/.rustup
+
+for i in undo backup swap; do
     mkdir -p "$XDG_STATE_HOME/vim"
     if ! [ -e "$XDG_STATE_HOME/vim/$i" ]; then
         if [ -e "$XDG_DATA_HOME/vim/$i" ]; then
             mv "$XDG_DATA_HOME/vim/$i" "$XDG_STATE_HOME/vim/$i"
+        elif [ -e ~/.vim/"$i" ]; then
+            mv ~/.vim/"$i" "$XDG_STATE_HOME/vim/$i"
         fi
     fi
-    rm -rf "${XDG_DATA_HOME:?}/$i"
+    rm -rf "${XDG_DATA_HOME:?}/$i" ~/.vim/"$i"
 done
+
+if ! [ -e "$XDG_STATE_HOME/vim/viminfo" ]; then
+    if [ -e "$XDG_DATA_HOME/vim/viminfo" ]; then
+        mkdir -p "$XDG_STATE_HOME"
+        mv "$XDG_DATA_HOME/vim/viminfo" "$XDG_STATE_HOME/vim/viminfo"
+    elif [ -e ~/.viminfo ]; then
+        mkdir -p "$XDG_STATE_HOME"
+        mv ~/.viminfo "$XDG_STATE_HOME/vim/viminfo"
+    fi
+fi
+rm -f ~/.viminfo "$XDG_DATA_HOME/vim/viminfo"
 
 if [ $is_macos -ne 1 ] && ! [ -e "$XDG_STATE_HOME/zoxide" ]; then
     if [ -e "$XDG_DATA_HOME/zoxide" ]; then
         mkdir -p "$XDG_STATE_HOME"
         mv "$XDG_DATA_HOME/zoxide" "$XDG_STATE_HOME/zoxide"
+    elif [ -e ~/.zo ]; then
+        mkdir -p "$XDG_STATE_HOME"
+        mv ~/.zo "$XDG_STATE_HOME/zoxide"
     fi
 fi
-rm -rf "$XDG_DATA_HOME/zoxide" 
+rm -rf "$XDG_DATA_HOME/zoxide" ~/.zo
 
 if ! [ -e "$XDG_STATE_HOME/zsh/history" ]; then
     if [ -e "$XDG_DATA_HOME/zsh/history" ]; then

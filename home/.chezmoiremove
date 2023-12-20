@@ -1,3 +1,4 @@
+# Old paths
 .fasd
 .gitconfig
 .viminfo
@@ -12,6 +13,10 @@
 .config/parallel
 .config/ripgrep/rc
 .config/firefox-addons
+.pip
+.poetry
+.virtualenvs
+.Xauthority
 
 # Software I don't use
 .pijulconfig
