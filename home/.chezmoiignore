@@ -6,6 +6,7 @@ Documents/PowerShell/
 {{- else }}
 .chezmoiscripts/gitconfig
 .chezmoiscripts/home-manager
+.chezmoiscripts/migrate_xdg_paths
 .chezmoiscripts/vim
 {{- end }}
 {{- if ne .chezmoi.os "darwin" }}
