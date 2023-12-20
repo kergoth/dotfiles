@@ -35,6 +35,7 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
     in_codespace = {{ $codespaces }}
     in_devcontainer = {{ $devcontainer }}
     in_container = {{ $container }}
+    is_wsl2 = {{ and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) }}
 {{- if eq .chezmoi.os "darwin" }}
     {{- $computerName := output "scutil" "--get" "ComputerName" | trim }}
     {{- $osVersion := output "sw_vers" "-productVersion" | trim }}
