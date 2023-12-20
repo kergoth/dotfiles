@@ -10,6 +10,8 @@
 .wget-hsts
 .parallel
 .config/parallel
+.config/ripgrep/rc
+.config/firefox-addons
 
 # Software I don't use
 .pijulconfig

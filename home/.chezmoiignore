@@ -34,11 +34,13 @@ Library/
 .local/pipx
 .local/share/*
 !.local/share/gnupg
+.local/share/gnupg/*
 !.local/share/zsh
 .local/share/zsh/*
 !.local/share/zsh/completions
 .local/state/*
 !.local/state/zsh
+.local/state/zsh/*
 .nix-channels
 .nix-defexpr
 .nix-profile
@@ -49,6 +51,9 @@ Library/
 **/.zcompdump
 **/*.iln*
 **/*.zwc
+.ssh/agent.sock
+.ssh/socket.*
+.ssh/known_hosts.old
 
 # I don't track files for this with chezmoi
 .code-terminal
