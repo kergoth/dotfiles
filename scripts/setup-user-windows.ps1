@@ -37,6 +37,9 @@ Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
 # Add cargo bindir to the PATH
 Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
 
+# Add USERPROFILE to the WSL environment
+Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
+
 # Install tools
 scoop install bat
 scoop install cht
