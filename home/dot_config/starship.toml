@@ -21,6 +21,7 @@ style = "bold #50fa7b"
 [git_branch]
 format = '[$symbol$branch(:$remote_branch)]($style) '
 style = "bold #ff79c6"
+symbol = ""
 
 [git_status]
 untracked = ""
