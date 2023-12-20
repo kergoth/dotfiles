@@ -3,26 +3,29 @@
 set -euo pipefail
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
-sourcedir=$(dirname "$scriptdir")
+repodir=$(dirname "$scriptdir")
 
 HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$HOME/.brew}"
 PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 
-if ! [ -e "$sourcedir/.chezmoiroot" ]; then
-    sourcedir=
+# shellcheck source=../scripts/common.sh
+. "$repodir/scripts/common.sh" || exit 1
+
+if ! [ -e "$repodir/.chezmoiroot" ]; then
+    repodir=
 fi
 
 "$scriptdir/bootstrap"
 
-if [ "$sourcedir" != "$HOME/.local/share/chezmoi" ]; then
+if [ "$repodir" != "$HOME/.local/share/chezmoi" ]; then
     # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
     mkdir -p ~/.local/share
     if [ -h ~/.local/share/chezmoi ]; then
         rm -f ~/.local/share/chezmoi
     fi
-    ln -sf "$sourcedir" ~/.local/share/chezmoi
+    ln -sf "$repodir" ~/.local/share/chezmoi
 fi
 
 echo >&2 "Applying dotfiles"
-chezmoi init --apply ${sourcedir:+--source "$sourcedir"} kergoth/dotfiles
+chezmoi init --apply ${repodir:+--source "$repodir"} kergoth/dotfiles
 chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
