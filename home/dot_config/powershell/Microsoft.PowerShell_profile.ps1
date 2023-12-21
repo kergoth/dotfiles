@@ -134,6 +134,13 @@ if (Get-Command bat) {
     Add-Alias cat bat
 }
 
+if (Get-Command batgrep) {
+    if (Test-Path alias:rg) {
+        Remove-Alias rg
+    }
+    Add-Alias rg batgrep
+}
+
 if (Get-Command zoxide) {
     Invoke-Expression (& {
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
