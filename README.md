@@ -156,6 +156,7 @@ chezmoi update -R
 
 ### External Scripts included in the dotfiles for non-Windows platforms
 
+- [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
 
 ### Installed CLI Packages
@@ -235,9 +236,10 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 #### CLI Packages on Windows
 
+- [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/): These Build Tools allow you to build Visual Studio projects from a command-line interface.
-- [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [cht.exe](https://github.com/tpanj/cht.exe): cht.sh libcurl client for Windows.
+- [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [npiperelay](https://github.com/jstarks/npiperelay): Access Windows named pipes from WSL.
 - [scoop](https://scoop.sh): A command-line installer for Windows.
 - [starship](https://starship.rs): A cross-shell prompt.
