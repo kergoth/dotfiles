@@ -42,6 +42,7 @@ Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
 
 # Install tools
 scoop install bat
+scoop install bat-extras
 scoop install cht
 scoop install direnv
 scoop install duf
