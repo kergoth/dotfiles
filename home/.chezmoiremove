@@ -17,6 +17,7 @@
 .poetry
 .virtualenvs
 .Xauthority
+.tldrc
 
 # Software I don't use
 .pijulconfig
