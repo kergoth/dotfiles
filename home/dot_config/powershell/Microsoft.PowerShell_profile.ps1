@@ -4,6 +4,26 @@ Import-Module posh-alias
 
 Import-Module PSFzf
 
+# Dracula colors via https://gist.github.com/umayr/8875b44740702b340430b610b52cd182
+$env:FZF_DEFAULT_OPTS='
+  --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9
+  --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9
+  --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
+  --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4
+  --height 40% --multi --reverse
+'
+$env:_ZO_FZF_OPTS=$env:FZF_DEFAULT_OPTS
+
+if (Get-Command fd) {
+    $env:FZF_DEFAULT_COMMAND='fd -c always -t f ""'
+    $env:FZF_CTRL_T_COMMAND="$env:FZF_DEFAULT_COMMAND"
+    $env:FZF_ALT_C_COMMAND='fd -c always -t d ""'
+    $env:FZF_DEFAULT_OPTS="$env:FZF_DEFAULT_OPTS --ansi"
+}
+
+$env:LESS='-F -g -i -M -R -w -X -z-4'
+$env:PYTHONWARNINGS='ignore:DEPRECATION'
+
 if (Get-Command starship) {
     function Invoke-Starship-TransientFunction {
         &starship module character
@@ -113,6 +133,7 @@ if (Get-Command zoxide) {
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
         })
+    New-Alias zz zi -Force
 }
 else {
     # 'z'. Always import it after prompt setup.
