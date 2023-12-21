@@ -52,6 +52,9 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export PIP_DOWNLOAD_CACHE=$XDG_CACHE_HOME/pip
 
+# Homebrew
+export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-~/.brew}
+
 # Nix
 export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
 

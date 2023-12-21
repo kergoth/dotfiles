@@ -1,6 +1,5 @@
 export HOMEBREW_AUTO_UPDATE=1
 export HOMEBREW_NO_ENV_HINTS=1
-export HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-~/.brew}
 export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
 HOMEBREWS_HOME="${HOMEBREWS_HOME:-$XDG_DATA_HOME/homebrews}"
 
