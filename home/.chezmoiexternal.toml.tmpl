@@ -69,7 +69,11 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
+{{ if eq .chezmoi.os "windows" }}
+["AppData/Roaming/bat/syntaxes/BitBake.sublime-syntax"]
+{{ else }}
 [".config/bat/syntaxes/BitBake.sublime-syntax"]
+{{ end }}
 type = "archive-file"
 url = "https://github.com/casparfriedrich/bitbake-syntax/archive/master.tar.gz"
 path = "BitBake.sublime-syntax"
