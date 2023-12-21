@@ -47,6 +47,7 @@ scoop install direnv
 scoop install duf
 scoop install eza
 scoop install fd
+scoop install less
 scoop install ripgrep
 scoop install zoxide
 scoop install fzf
