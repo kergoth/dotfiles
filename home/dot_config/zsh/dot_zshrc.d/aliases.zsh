@@ -28,6 +28,22 @@ alias bc='bc -ql'
 alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
 alias wfp=wait-for-process
 alias ncdu='ncdu -e -x --color dark --exclude .git --exclude .repo'
+if (( $+commands[direnv] )); then
+    alias tmux='direnv exec / tmux -u2 -f ~/.config/tmux/config'
+else
+    alias tmux='tmux -u2 -f ~/.config/tmux/config'
+fi
+alias nixgc="nix-collect-garbage -d"
+alias nixq="nix-env --description -qaP"
+alias gitcolor='git -c color.ui=always'
+alias gitnofancy='git -c "core.pager=diff-highlight | less --tabs=4 -RFX"'
+alias gitnopager='git -c "core.pager=cat"'
+
+alias gcl='git clone --recursive'
+alias gncl='git clone'
+
+alias ghcl='gh repo clone'
+alias gist='gh gist create'
 
 if (( $+commands[direnv] )); then
     alias rezsh='exec direnv exec / zsh --login'
