@@ -12,6 +12,7 @@ RefreshEnvPath
 
 # Install git
 scoop install git
+scoop install git-lfs
 
 # Install languages
 scoop install rust go python
@@ -65,10 +66,14 @@ cargo install choose
 scoop install git-branchless
 scoop install unar
 scoop install zstd
+scoop install sapling
 
 # Disk tools
 scoop install dua
 scoop install dust
+
+# Bug tracking and workflow
+scoop install jira-cli
 
 pipx install git-revise
 pipx install git-imerge
