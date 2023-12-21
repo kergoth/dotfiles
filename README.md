@@ -17,7 +17,7 @@ This setup will apply the dotfiles, and will also install packages with home-man
 
 If the repository has not yet been cloned:
 
-```**console**
+```console
 chezmoi init --apply kergoth/dotfiles
 ```
 
