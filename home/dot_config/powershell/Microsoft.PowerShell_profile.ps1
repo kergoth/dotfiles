@@ -1,5 +1,8 @@
+Import-Module PSReadline
 Import-Module Recycle
 Import-Module posh-alias
+
+Import-Module PSFzf
 
 if (Get-Command starship) {
     function Invoke-Starship-TransientFunction {
@@ -67,6 +70,9 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 
 # Disable the annoying beep
 Set-PSReadlineOption -BellStyle None
+
+# Use Ctrl+r from FZF rather than Readline
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 # Linux/Mac command muscle memory
 if (Get-Command eza) {
