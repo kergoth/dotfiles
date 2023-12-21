@@ -20,10 +20,11 @@ Virtual Machines
 Workspace
 
 {{- if ne .chezmoi.os "windows" }}
-AppData/
+AppData
 .chezmoiscripts/gitconfig.ps1
 .chezmoiscripts/vim.ps1
 {{- else }}
+.config/bat
 !Documents
 Documents/*
 !Documents/PowerShell
