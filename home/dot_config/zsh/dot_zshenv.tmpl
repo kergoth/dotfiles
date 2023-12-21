@@ -28,9 +28,6 @@ export NCURSES_NO_UTF8_ACS=1
 if [[ -z "$LANG" ]] || [[ -z "$LC_ALL" ]]; then
   export LANG=en_US.UTF-8
   export LC_ALL=en_US.UTF-8
-  if [[ -n $commands[locale] ]]; then
-    eval "$(locale)"
-  fi
 fi
 
 export GREP_COLORS='ms=30;43:mc=30;43:sl=:cx=:fn=1;34:ln=1;33:bn=32:se=36'
