@@ -22,7 +22,7 @@ if [[ "$OSTYPE" = "WSL" ]]; then
             export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
             if ! ss -a | grep -q "$SSH_AUTH_SOCK" || ! pgrep -f socat &>/dev/null; then
                 rm -f "$SSH_AUTH_SOCK"
-                ( setsid socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" EXEC:"$NPIPERELAY -ei -s //./pipe/openssh-ssh-agent",nofork & )
+                ( setsid socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" EXEC:"${commands[npiperelay.exe]} -ei -s //./pipe/openssh-ssh-agent",nofork & )
             fi
         else
             echo >&2 "Warning: socat is not installed, unable to use npiperelay to connect to Windows SSH agent."
