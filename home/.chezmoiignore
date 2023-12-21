@@ -77,6 +77,8 @@ Library/
 .ssh/agent.sock
 .ssh/socket.*
 .ssh/known_hosts.old
+.config/nix/registry.json
+.terminfo
 
 # I don't track files for this with chezmoi
 .code-terminal
