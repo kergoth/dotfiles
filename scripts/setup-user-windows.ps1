@@ -30,6 +30,7 @@ scoop install sudo gow starship npiperelay
 # Unavailable on Windows: tmux, zsh
 scoop install neovim
 scoop install wget
+scoop install curl
 
 # Add scoop's Git for Windows bin directory to the PATH for its bash
 $gitdir = scoop prefix git
