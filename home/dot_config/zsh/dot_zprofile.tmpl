@@ -1,22 +1,3 @@
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
-export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
-export XDG_STATE_HOME=${XDG_STATE_HOME:-~/.local/state}
-if [[ "$OSTYPE" == darwin* ]]; then
-    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/Library/Caches}
-else
-    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
-fi
-
-if [[ "${ZSH_PROFILE_STARTUP_LINES:-false}" == true ]]; then
-    # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
-    PS4='+$EPOCHREALTIME %N:%i> '
-    mkdir -p $XDG_DATA_HOME/zsh
-    exec 3>&2 2>$XDG_DATA_HOME/zsh/start-$$.log
-    setopt xtrace prompt_subst
-elif [[ "${ZSH_PROFILE_STARTUP:-false}" == true ]]; then
-    zmodload zsh/zprof
-fi
-
 if [[ "$OSTYPE" == darwin* ]]; then
     export BROWSER='open'
 fi
@@ -80,9 +61,6 @@ elif [ -e /usr/lib/locale/locale-archive ]; then
     export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
 
-# Skip compinit in system zshrc on some hosts
-skip_global_compinit=1
-
 for dir in $HOME/.terminfo $XDG_CONFIG_HOME/ncurses/terminfo $HOMEBREW_PREFIX/share/terminfo /Users/Shared/homebrew/share/terminfo /opt/homebrew/share/terminfo /usr/local/share/terminfo /usr/share/terminfo; do
     if [[ -d $dir ]]; then
         TERMINFO_DIRS="$TERMINFO_DIRS:$dir"
@@ -107,10 +85,6 @@ if [ -n "$SSH_AUTH_SOCK" ] && [ -e "$HOME/.ssh/auth_sock" ] && [ "$SSH_AUTH_SOCK
     export SSH_AUTH_SOCK="$HOME/.ssh/auth_sock"
 fi
 
-for i in $ZDOTDIR/.zshenv.d/*.zsh(N) $XDG_CONFIG_HOME/*/env.zsh(N); do
-    . "$i"
-done
-
-if [[ -e $ZDOTDIR/.zshenv.local ]]; then
-    . "$ZDOTDIR/.zshenv.local"
+if [[ -e $ZDOTDIR/.zprofile.local ]]; then
+    . "$ZDOTDIR/.zprofile.local"
 fi

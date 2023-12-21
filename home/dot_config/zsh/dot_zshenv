@@ -1,0 +1,25 @@
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-~/.local/share}
+export XDG_STATE_HOME=${XDG_STATE_HOME:-~/.local/state}
+if [[ "$OSTYPE" == darwin* ]]; then
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/Library/Caches}
+else
+    export XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
+fi
+
+# Skip compinit in system zshrc on some hosts
+skip_global_compinit=1
+
+if [[ "${ZSH_PROFILE_STARTUP_LINES:-false}" == true ]]; then
+    # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
+    PS4='+$EPOCHREALTIME %N:%i> '
+    mkdir -p $XDG_DATA_HOME/zsh
+    exec 3>&2 2>$XDG_DATA_HOME/zsh/start-$$.log
+    setopt xtrace prompt_subst
+elif [[ "${ZSH_PROFILE_STARTUP:-false}" == true ]]; then
+    zmodload zsh/zprof
+fi
+
+if [[ -e $ZDOTDIR/.zshenv.local ]]; then
+    . "$ZDOTDIR/.zshenv.local"
+fi
