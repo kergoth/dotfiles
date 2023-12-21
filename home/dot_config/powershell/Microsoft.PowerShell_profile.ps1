@@ -140,6 +140,7 @@ if (Get-Command batgrep) {
     }
     Add-Alias rg batgrep
 }
+New-Alias g rg -Force
 
 if (Get-Command zoxide) {
     Invoke-Expression (& {
