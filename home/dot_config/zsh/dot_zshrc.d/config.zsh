@@ -14,6 +14,7 @@ REPORTTIME=5
 KEYTIMEOUT=1
 
 setopt NO_BG_NICE # don't nice background tasks
+setopt NO_FLOW_CONTROL # disable ctrl+s and ctrl+q
 setopt NO_HUP
 setopt NO_LIST_BEEP
 setopt LOCAL_OPTIONS # allow functions to have local options

@@ -11,12 +11,6 @@ for file in ${(M)config_files:#*/path.zsh}; do
     source $file
 done
 
-# Disable C-s (software flow control) on this tty
-stty -ixon
-
-# Freeze tty settings
-ttyctl -f
-
 for file in ${(M)config_files:#*/early.zsh}; do
     source $file
 done
