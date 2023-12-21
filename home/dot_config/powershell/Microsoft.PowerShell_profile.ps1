@@ -1,3 +1,9 @@
+# Use UTF-8 encoding for both input and output
+[console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
+# Pass through the original encoding to existing executables. Do not convert to ASCII.
+$OutputEncoding = [Console]::OutputEncoding
+
 Import-Module PSReadline
 Import-Module Recycle
 Import-Module posh-alias
