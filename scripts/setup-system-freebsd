@@ -53,6 +53,8 @@ pkgs=
 freebsd_check shells/zsh zsh
 #freebsd_check sysutils/nix nix
 
+freebsd_check devel/git git
+freebsd_check devel/git-lfs git-lfs
 freebsd_check ftp/wget wget
 
 freebsd_check editors/neovim nvim
