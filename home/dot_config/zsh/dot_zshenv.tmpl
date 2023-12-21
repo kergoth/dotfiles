@@ -18,7 +18,7 @@ elif [[ "${ZSH_PROFILE_STARTUP:-false}" == true ]]; then
 fi
 
 if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER='open'
+    export BROWSER='open'
 fi
 
 # Reduce the ncurses escape wait time (ms)
@@ -26,8 +26,8 @@ export ESCDELAY=25
 export NCURSES_NO_UTF8_ACS=1
 
 if [[ -z "$LANG" ]] || [[ -z "$LC_ALL" ]]; then
-  export LANG=en_US.UTF-8
-  export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
 fi
 
 export GREP_COLORS='ms=30;43:mc=30;43:sl=:cx=:fn=1;34:ln=1;33:bn=32:se=36'
@@ -48,6 +48,11 @@ export _FASD_DATA=$XDG_STATE_HOME/fasd/data
 if [[ "$OSTYPE" != darwin* ]]; then
     export _ZO_DATA_DIR=$XDG_STATE_HOME/zoxide
 fi
+if [[ -n $XDG_RUNTIME_DIR ]]; then
+    export TMUX_TMPDIR=$XDG_RUNTIME_DIR
+fi
+export CURL_HOME="$XDG_CONFIG_HOME/curl"
+export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
 export REPO_CONFIG_DIR=$XDG_CONFIG_HOME/repo
 export RIPGREP_CONFIG_PATH=$XDG_CONFIG_HOME/ripgrep/config
 export CFLAGS=-O2
@@ -66,6 +71,15 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export PIP_DOWNLOAD_CACHE=$XDG_CACHE_HOME/pip
 
+# Nix
+export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
+
+if [ -e ~/.nix-profile/lib/locale/locale-archive ]; then
+    export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
+elif [ -e /usr/lib/locale/locale-archive ]; then
+    export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
+fi
+
 # Skip compinit in system zshrc on some hosts
 skip_global_compinit=1
 
@@ -78,6 +92,10 @@ if [[ -n "$TERMINFO_DIRS" ]]; then
     TERMINFO_DIRS="${TERMINFO_DIRS#:}"
 fi
 export TERMINFO_DIRS
+
+if [[ -n $TERM_PROGRAM ]]; then
+    export TERM_PROGRAM
+fi
 
 # Git
 export GHQ_ROOT=~/Repos
