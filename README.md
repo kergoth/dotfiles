@@ -246,8 +246,9 @@ The intention is to incorporate the installation of Nix on all systems in time.
 #### Powershell Modules
 
 - [DirColors](https://www.powershellgallery.com/packages/DirColors): Provides dircolors-like functionality to all System.IO.FilesystemInfo formatters.
-- [Recycle](https://www.powershellgallery.com/packages/Recycle): Deletes the file or folder as if it had been done via File Explorer, or restores a deleted file from the recycle bin.
 - [posh-alias](https://www.powershellgallery.com/packages/posh-alias): A better alias for Powershell.
+- [PSFzf](https://github.com/kelleyma49/PSFzf): A PowerShell wrapper around the fuzzy finder fzf.
+- [Recycle](https://www.powershellgallery.com/packages/Recycle): Deletes the file or folder as if it had been done via File Explorer, or restores a deleted file from the recycle bin.
 
 ### Installed GUI Software (MacOS & Windows Only)
 
