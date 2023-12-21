@@ -234,6 +234,10 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [avahi](https://avahi.org): A system which facilitates service discovery on a local network via mDNS.
 - [nss-mdns](http://0pointer.de/lennart/projects/nss-mdns/): A GNU Libc NSS module that provides mDNS host name resolution.
 
+##### CLI Packages on WSL2
+
+- [socat](http://www.dest-unreach.org/socat/): Multipurpose relay for bidirectional data transfer. This is required for [npiperelay](https://github.com/jstarks/npiperelay).
+
 #### CLI Packages on Windows
 
 - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
