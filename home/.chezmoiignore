@@ -1,9 +1,32 @@
+Applications
+Applications (Parallels)
+Desktop
+Documents
+Downloads
+Library
+MacBox
+Movies
+Music
+My Kindle Content
+Pictures
+Projects
+Public
+Repos
+Sandbox
+Site Mirrors
+Sync
+Templates
+Virtual Machines
+Workspace
+
 {{- if ne .chezmoi.os "windows" }}
 AppData/
-Documents/PowerShell/
 .chezmoiscripts/gitconfig.ps1
 .chezmoiscripts/vim.ps1
 {{- else }}
+!Documents
+Documents/*
+!Documents/PowerShell
 .chezmoiscripts/gitconfig
 .chezmoiscripts/home-manager
 .chezmoiscripts/migrate_xdg_paths
