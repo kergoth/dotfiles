@@ -6,7 +6,7 @@ PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 if command -v op >/dev/null 2>&1; then
     exit
 fi
-if ! grep -E '^ *is_(home|siemens) *= *true' ~/.config/chezmoi/chezmoi.toml; then
+if ! grep -qE '^ *is_(home|siemens) *= *true' ~/.config/chezmoi/chezmoi.toml; then
     exit
 fi
 
