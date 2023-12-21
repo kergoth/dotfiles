@@ -2,8 +2,8 @@ local lib = import 'gmailctl.libsonnet';
 {
   version: "v1alpha3",
   author: {
-    name: "Christopher Larson",
-    email: "kergoth@gmail.com"
+    name: "{{ .name }}",
+    email: "{{ .email }}"
   },
   // Note: labels management is optional. If you prefer to use the
   // GMail interface to add and remove labels, you can safely remove
