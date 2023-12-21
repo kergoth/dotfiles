@@ -190,7 +190,6 @@ chezmoi update -R
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [sad](https://github.com/ms-jpq/sad): CLI search and replace | Space Age seD.
-- [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
 - [sd](https://github.com/chmln/sd): Intuitive find & replace CLI (sed alternative).
 - [shellcheck](https://github.com/koalaman/shellcheck): A static analysis tool for shell scripts.
 - [shfmt](https://github.com/mvdan/sh#shfmt): Format shell programs.
@@ -213,6 +212,10 @@ chezmoi update -R
 - [tmux](https://github.com/tmux/tmux): An open-source terminal multiplexer.
 
   - There are no good options for tmux or tmux-equivalent on Windows. The closest you can get is just splits in Windows Terminal, which doesn't give you the ability to disconnect.
+
+#### CLI Packages on Linux, macOS, and Windows
+
+- [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
 
 #### CLI Packages on macOS
 
