@@ -62,6 +62,7 @@ scoop install pipx
 scoop install sad
 scoop install sd
 cargo install choose
+scoop install tealdeer
 scoop install unar
 scoop install zstd
 

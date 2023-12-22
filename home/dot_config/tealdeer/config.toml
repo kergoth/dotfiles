@@ -1,0 +1,12 @@
+[style.command_name]
+foreground = "yellow"
+bold = true
+
+[style.example_code]
+foreground = "red"
+
+[style.example_text]
+foreground = "cyan"
+
+[updates]
+auto_update = true

@@ -73,6 +73,7 @@ freebsd_check textproc/ripgrep rg
 freebsd_check sysutils/zoxide zoxide
 freebsd_check textproc/sd sd
 freebsd_check textproc/sad sad
+freebsd_check sysutils/tealdeer tldr
 freebsd_check archivers/unarchiver unar
 freebsd_check archivers/zstd zstd
 
