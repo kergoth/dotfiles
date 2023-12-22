@@ -18,6 +18,7 @@
 .virtualenvs
 .Xauthority
 .tldrc
+.local/bin/tldr
 
 # Software I don't use
 .pijulconfig
