@@ -171,6 +171,12 @@ if (Get-Command batgrep -ErrorAction SilentlyContinue) {
 }
 New-Alias g rg -Force
 
+function Set-Location-Create {
+    New-Item -ItemType Directory -ErrorAction SilentlyContinue -force @args | Out-Null
+    Set-Location @args
+}
+New-Alias mcd Set-Location-Create -Force
+
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& {
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
