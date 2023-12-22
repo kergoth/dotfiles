@@ -234,6 +234,12 @@ if (Get-Command nvim -ErrorAction SilentlyContinue) {
 }
 Add-Alias vi vim
 
+if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction SilentlyContinue)) {
+    New-Alias e code -Force
+} else {
+    New-Alias e vi -Force
+}
+
 if (Test-Path "$env:USERPROFILE\.local.ps1") {
     . "$env:USERPROFILE\.local.ps1"
 }
