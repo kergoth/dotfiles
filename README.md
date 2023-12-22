@@ -154,7 +154,23 @@ chezmoi update -R
 
 ## What's Included
 
-### External Scripts included in the dotfiles for non-Windows platforms
+### Dotfiles
+
+#### Zsh Plugins
+
+- [nix-zsh-completions](https://github.com/nix-community/nix-zsh-completions): ZSH Completions for Nix.
+- [powerlevel10k](https://github.com/romkatv/powerlevel10k/): A Zsh theme.
+- [zbell](https://gist.githubusercontent.com/jpouellet/5278239): Make Zsh print a bell when long-running commands finish.
+- [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions): Fish-like autosuggestions for zsh.
+- [zsh-bd](https://github.com/Tarrasch/zsh-bd): Jump back to a specific directory, without doing `cd ../../..`.
+- [zsh-completions](https://github.com/zsh-users/zsh-completions): Additional completion definitions for Zsh.
+- [zsh-git-escape-magic](https://github.com/knu/zsh-git-escape-magic): zle tweak for git command line arguments.
+- [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search): ZSH port of Fish history search (up arrow).
+- [zsh-manydots-magic](https://github.com/knu/zsh-manydots-magic): zle tweak for emulating ...==../.. etc.
+- [zsh-nix-shell](https://github.com/chisui/zsh-nix-shell): Zsh plugin that lets you use zsh in nix-shell shells.
+- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting): Fish shell like syntax highlighting for Zsh.
+
+#### External Scripts included for non-Windows platforms
 
 - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
