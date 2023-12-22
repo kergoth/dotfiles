@@ -31,6 +31,19 @@ fi
 # Dotfiles
 "$repodir/script/setup"
 
+# Install PowerShell modules and prompt, if needed
+if has pwsh; then
+    msg "Installing PowerShell modules"
+    # Ignore failure, as these are not critical to my workflow, and can fail due
+    # to transient network issues.
+    pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
+
+    if ! brew list --formula | grep -qFx starship; then
+        msg "Installing PowerShell prompt"
+        "$HOMEBREW_PREFIX/bin/brew" install starship
+    fi
+fi
+
 msg "Configuring"
 "$scriptdir/macos/configure"
 "$scriptdir/macos/setup-apps"
