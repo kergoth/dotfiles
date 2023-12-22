@@ -1,25 +1,27 @@
-# Get the ID and security principal of the current user account
-$myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$myWindowsPrincipal = new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+if ($IsWindows) {
+    # Get the ID and security principal of the current user account
+    $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+    $myWindowsPrincipal = new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
 
-# Get the security principal for the Administrator role
-$adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
+    # Get the security principal for the Administrator role
+    $adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
 
-if ($myWindowsPrincipal.IsInRole($adminRole)) {
-    # We are running "as Administrator" - so relaunch as user
+    if ($myWindowsPrincipal.IsInRole($adminRole)) {
+        # We are running "as Administrator" - so relaunch as user
 
-    $cmd = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoExit -WindowStyle Maximized -NoProfile -InputFormat None -ExecutionPolicy RemoteSigned -File " + $MyInvocation.MyCommand.Definition
-    runas /trustlevel:0x20000 $cmd
-    exit
+        $cmd = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoExit -WindowStyle Maximized -NoProfile -InputFormat None -ExecutionPolicy RemoteSigned -File " + $MyInvocation.MyCommand.Definition
+        runas /trustlevel:0x20000 $cmd
+        exit
+    }
+
+    # Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 }
 
 . $PSScriptRoot\..\scripts\common.ps1
 
 # Install PowerShell modules
 . $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
-
-# Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 $os = $null
 if ($IsLinux) {
