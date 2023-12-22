@@ -20,7 +20,7 @@ $env:FZF_DEFAULT_OPTS='
 '
 $env:_ZO_FZF_OPTS=$env:FZF_DEFAULT_OPTS
 
-if (Get-Command fd) {
+if (Get-Command fd -ErrorAction SilentlyContinue) {
     $env:FZF_DEFAULT_COMMAND='fd -c always -t f ""'
     $env:FZF_CTRL_T_COMMAND="$env:FZF_DEFAULT_COMMAND"
     $env:FZF_ALT_C_COMMAND='fd -c always -t d ""'
@@ -30,7 +30,7 @@ if (Get-Command fd) {
 $env:LESS='-F -g -i -M -R -w -X -z-4'
 $env:PYTHONWARNINGS='ignore:DEPRECATION'
 
-if (Get-Command starship) {
+if (Get-Command starship -ErrorAction SilentlyContinue) {
     function Invoke-Starship-TransientFunction {
         &starship module character
     }
@@ -101,7 +101,7 @@ Set-PSReadlineOption -BellStyle None
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
 # Linux/Mac command muscle memory
-if (Get-Command eza) {
+if (Get-Command eza -ErrorAction SilentlyContinue) {
     # TODO: Make a proper eza function with powershell-style arguments that translate to eza args
     function Get-ezaChildItem {
         eza --colour-scale all @args
@@ -127,14 +127,14 @@ New-Alias grep Select-String -Force
 New-Alias rm Remove-ItemSafely -Force
 New-Alias rmdir Remove-ItemSafely -Force
 
-if (Get-Command bat) {
+if (Get-Command bat -ErrorAction SilentlyContinue) {
     if (Test-Path alias:cat) {
         Remove-Alias cat
     }
     Add-Alias cat bat
 }
 
-if (Get-Command batgrep) {
+if (Get-Command batgrep -ErrorAction SilentlyContinue) {
     if (Test-Path alias:rg) {
         Remove-Alias rg
     }
@@ -142,7 +142,7 @@ if (Get-Command batgrep) {
 }
 New-Alias g rg -Force
 
-if (Get-Command zoxide) {
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& {
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
@@ -155,7 +155,7 @@ else {
 }
 
 # Enable transient prompt. This must be enabled after zoxide init.
-if (Get-Command starship) {
+if (Get-Command starship -ErrorAction SilentlyContinue) {
     Enable-TransientPrompt
 }
 
@@ -169,17 +169,17 @@ if (Test-Path "$env:USERPROFILE/.pyenv") {
     $env:PYENV = "$env:USERPROFILE/.pyenv/pyenv-win"
     $env:Path += ";$env:PYENV/bin;$env:PYENV/shims"
 }
-if (-Not (Get-Command python)) {
+if (-Not (Get-Command python -ErrorAction SilentlyContinue)) {
     if (Test-Path "C:\Python38") {
         $env:Path = "C:\Python38;" + $env:Path
     }
 }
-if (-Not (Get-Command python)) {
+if (-Not (Get-Command python -ErrorAction SilentlyContinue)) {
     if (Test-Path "C:\Python39") {
         $env:Path = "C:\Python39;" + $env:Path
     }
 }
-if (-Not (Get-Command 7z)) {
+if (-Not (Get-Command 7z -ErrorAction SilentlyContinue)) {
     if (Test-Path "C:\Program Files\7-Zip") {
         $env:Path = "C:\Program Files\7-Zip;" + $env:Path
     }
