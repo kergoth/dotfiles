@@ -1,8 +1,8 @@
 if [[ $# -ne 0 ]]; then
     set -- --select-1 -q "'$*"
 fi
-local repo="$((z -ldR | sed -n -e "s#^$GIT_PATH/\([^/]*/[^/]*/[^/]*\$\)#\1#p" | sed -e "s#^github.com/##"; find "$GIT_PATH" -mindepth 3 -maxdepth 3 -not -name .git -type d | sort | sed -e "s#^$GIT_PATH/##; s#github.com/##") | uniq-seen | fzf-tmux --exit-0 "$@")" || return $?
-if [[ -z "$repo" ]]; then
-    return 1
+
+local dir=$(git list | fzf-tmux --exit-0 "$@") || return $?
+if [[ -n "$dir" ]]; then
+    cd "${GHQ_ROOT:-$HOME/ghq}/$dir"
 fi
-gg "$repo"

@@ -55,8 +55,6 @@ scoop install ripgrep
 scoop install zoxide
 scoop install fzf
 
-scoop install gh
-scoop install delta
 scoop install shfmt
 scoop install shellcheck
 scoop install jq
@@ -64,9 +62,14 @@ scoop install pipx
 scoop install sad
 scoop install sd
 cargo install choose
-scoop install git-branchless
 scoop install unar
 scoop install zstd
+
+# SCM & Related
+scoop install delta
+scoop install gh
+scoop install ghq
+scoop install git-branchless
 scoop install sapling
 
 # Disk tools

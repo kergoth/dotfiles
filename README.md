@@ -198,6 +198,7 @@ chezmoi update -R
 - [eza](https://github.com/eza-community/eza) or [exa](https://github.com/ogham/exa): A modern replacement for ls.
 - [fd](https://github.com/sharkdp/fd): A simple, fast and user-friendly alternative to 'find'.
 - [fzf](https://github.com/junegunn/fzf): A command-line fuzzy finder.
+- [ghq](https://github.com/x-motemen/ghq): Remote repository management made easy.
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
 - [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git.
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.

@@ -182,6 +182,10 @@
 	# Third party tooling and scripts
 	as = assembler
 
+	# ghq
+	get = !ghq get
+	list = !ghq list
+
 	# Hub
 	ci-status = !hub ci-status
 	delete = !hub delete

@@ -1,29 +1,17 @@
-if [[ $# -eq 0 ]]; then
-    find "$GIT_PATH" -mindepth 3 -maxdepth 3 -not -name .git -type d \
-        | sort \
-        | sed -e "s#^$GIT_PATH/##; s#github.com/##"
-    return 0
-fi
-
-local url=$1
-local GIT_GET_DEFAULT_PREFIX
-
-if ! [[ $url =~ '://' ]]; then
-    if [[ $url =~ '/' ]]; then
-        case "$url" in
-            */*/*)
-                GIT_GET_DEFAULT_PREFIX=${GIT_GET_DEFAULT_PREFIX:-https://}
-                ;;
-            *)
-                GIT_GET_DEFAULT_PREFIX=https://github.com/
-                ;;
-        esac
+local dir
+if [ $# -eq 0 ]; then
+    if [ -t 1 ]; then
+        dir=$(git list | fzf-tmux --exit-0)
     else
-        GIT_GET_DEFAULT_PREFIX=https://github.com/${USER:-${LOGNAME:-$(id -un)}}/
+        git list
+        return 0
     fi
+else
+    local url=$1
+    git get "$url" || return $?
+    dir=$(git list -e "$url") || return $?
 fi
 
-local dir=$(GIT_GET_DEFAULT_PREFIX="$GIT_GET_DEFAULT_PREFIX" git get "$url")
 if [[ -n "$dir" ]]; then
-    cd "$dir"
+    cd "${GHQ_ROOT:-$HOME/ghq}/$dir"
 fi
