@@ -18,6 +18,10 @@ style = "bold #f1fa8c"
 [directory]
 style = "blue"
 
+[docker_context]
+disabled = true
+format = "[$symbol$context]($style) "
+
 [git_branch]
 format = '[$symbol$branch(:$remote_branch)]($style) '
 style = "bold green"
@@ -31,6 +35,9 @@ style = "bold yellow"
 
 [hostname]
 style = "bold #bd93f9"
+
+[nix_shell]
+format = '[$symbol$state( \(nix $name\))]($style) '
 
 [username]
 format = "[$user]($style)@"
