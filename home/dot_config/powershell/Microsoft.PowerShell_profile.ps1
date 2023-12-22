@@ -4,6 +4,10 @@
 # Pass through the original encoding to existing executables. Do not convert to ASCII.
 $OutputEncoding = [Console]::OutputEncoding
 
+if (-Not $env:USERPROFILE) {
+    $env:USERPROFILE = "$env:HOME"
+}
+
 Import-Module PSReadline
 Import-Module Recycle
 Import-Module posh-alias
