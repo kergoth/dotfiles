@@ -35,6 +35,7 @@ $env:LESS = '-F -g -i -M -R -w -X -z-4'
 $env:PYTHONWARNINGS = 'ignore:DEPRECATION'
 if ($IsWindows) {
     $env:TEALDEER_CONFIG_DIR = "$env:APPDATA\tealdeer"
+    $env:RIPGREP_CONFIG_PATH = "$env:USERPROFILE\.config\ripgrep\config"
 }
 
 if (Get-Command starship -ErrorAction SilentlyContinue) {
