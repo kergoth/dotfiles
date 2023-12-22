@@ -35,6 +35,9 @@ Documents/*
 {{- end }}
 {{- if ne .chezmoi.os "darwin" }}
 Library/
+{{- else }}
+Library/Caches/*
+!Library/Caches/zsh
 {{- end }}
 
 **/.DS_Store
