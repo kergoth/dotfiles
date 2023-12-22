@@ -107,29 +107,47 @@
 [color]
 	ui = auto
 
-[color "diff"]
-	commit = 227 bold
-	meta = 227
-	frag = magenta bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
-
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
-
 [color "branch"]
-	current = yellow reverse
-	local = yellow
-	remote = green
+	current = cyan bold reverse
+	local = white
+	plain =
+	remote = cyan
+
+[color "diff"]
+	commit =
+	func = cyan
+	plain =
+	whitespace = magenta reverse
+	meta = white
+	frag = cyan bold reverse
+	old = red
+	new = green
+
+[color "grep"]
+	context =
+	filename =
+	function =
+	linenumber = white
+	match =
+	selected =
+	separator =
+
+[color "interactive"]
+	error =
+	header =
+	help =
+	prompt =
 
 [color "status"]
-	added = green bold
-	changed = yellow bold
+	added = green
+	changed = yellow
+	header =
+	localBranch =
+	nobranch =
+	remoteBranch = cyan bold
+	unmerged = magenta bold reverse
 	untracked = red
+	updated = green bold
 
 [notes]
 	rewriteRef = refs/notes/*
