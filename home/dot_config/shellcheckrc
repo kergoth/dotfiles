@@ -1,0 +1,8 @@
+# Useless cat. Consider 'cmd < file | ..' or 'cmd file | ..' instead.
+exclude=SC2002
+
+# Suggest explicitly using -n in [ $var ]
+enable=avoid-nullary-conditions
+
+# Suggest 'command -v' instead of 'which'
+enable=deprecate-which
