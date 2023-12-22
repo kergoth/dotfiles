@@ -131,6 +131,31 @@ New-Alias grep Select-String -Force
 New-Alias rm Remove-ItemSafely -Force
 New-Alias rmdir Remove-ItemSafely -Force
 
+if (Get-Command ghq -ErrorAction SilentlyContinue) {
+    if (-Not $env:GHQ_ROOT) {
+        $env:GHQ_ROOT = "$env:USERPROFILE/Repos"
+    }
+
+    function Invoke-SetLocationGHQ {
+        ghq get @args
+        $repo = ghq list --exact @args
+        if ($repo) {
+            Set-Location "$env:GHQ_ROOT/$repo"
+        }
+    }
+    function Invoke-FuzzyGetRepositoryGHQ {
+        ghq list | fzf (-split $env:FZF_DEFAULT_OPTS) --query="$args" --select-1
+    }
+    function Invoke-FuzzySetLocationGHQ {
+        $repo = Invoke-FuzzyGetRepositoryGHQ @args
+        if ($repo) {
+            Set-Location "$env:GHQ_ROOT/$repo"
+        }
+    }
+    New-Alias gg Invoke-SetLocationGHQ
+    New-Alias gz Invoke-FuzzySetLocationGHQ
+}
+
 if (Get-Command bat -ErrorAction SilentlyContinue) {
     if (Test-Path alias:cat) {
         Remove-Alias cat
