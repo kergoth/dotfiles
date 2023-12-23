@@ -40,6 +40,10 @@ Library/Caches/*
 !Library/Caches/zsh
 {{- end }}
 
+{{- if not .is_siemens }}
+.ssh/work*
+{{- end }}
+
 **/.DS_Store
 .chezmoihooks
 .chezmoihooks/**
