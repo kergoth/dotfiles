@@ -25,10 +25,10 @@ $env:FZF_DEFAULT_OPTS='
 $env:_ZO_FZF_OPTS=$env:FZF_DEFAULT_OPTS
 
 if (Get-Command fd -ErrorAction SilentlyContinue) {
-    $env:FZF_DEFAULT_COMMAND='fd -c always -t f ""'
-    $env:FZF_CTRL_T_COMMAND="$env:FZF_DEFAULT_COMMAND"
-    $env:FZF_ALT_C_COMMAND='fd -c always -t d ""'
-    $env:FZF_DEFAULT_OPTS="$env:FZF_DEFAULT_OPTS --ansi"
+    $env:FZF_DEFAULT_COMMAND = 'fd -c always -t f ""'
+    $env:FZF_CTRL_T_COMMAND = "$env:FZF_DEFAULT_COMMAND"
+    $env:FZF_ALT_C_COMMAND = 'fd -c always -t d ""'
+    $env:FZF_DEFAULT_OPTS = "$env:FZF_DEFAULT_OPTS --ansi"
 }
 
 $env:LESS = '-F -g -i -M -R -w -X -z-4'
@@ -36,6 +36,7 @@ $env:PYTHONWARNINGS = 'ignore:DEPRECATION'
 if ($IsWindows) {
     $env:TEALDEER_CONFIG_DIR = "$env:APPDATA\tealdeer"
     $env:RIPGREP_CONFIG_PATH = "$env:USERPROFILE\.config\ripgrep\config"
+    $env:CURL_HOME = "$env:USERPROFILE\.config\curl"
 }
 
 if (Get-Command starship -ErrorAction SilentlyContinue) {
