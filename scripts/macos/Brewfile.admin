@@ -3,6 +3,7 @@ tap "microsoft/git"
 
 cask "1password"
 cask "blockblock"
+cask "gpg-suite"
 cask "karabiner-elements"
 cask "lulu"
 cask "microsoft-teams"

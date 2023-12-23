@@ -183,6 +183,7 @@ chezmoi update -R
 - [git](https://git-scm.com): A free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 - [git-lfs](https://git-lfs.github.com): An open source Git extension for versioning large files.
 - [neovim](https://neovim.io): Hyperextensible Vim-based text editor.
+- [gnupg](https://www.gnupg.org): A complete and free implementation of the OpenPGP standard.
 
 - [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
 - [go](https://go.dev): An open source programming language supported by Google
@@ -309,6 +310,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
 - [Declutter](https://apps.apple.com/us/app/declutter-pro/id1187706662?mt=12&uo=4&at=10l4tL)
 - [DevDocs for macOS](https://github.com/dteoh/devdocs-macos): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
+- [GPG Suite](https://gpgtools.org): Tools to protect your emails and files.
 - [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL)
 - [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL)
 - [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL)
@@ -369,6 +371,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [7-Zip](https://www.7-zip.org/)
 - [AutoHotkey](https://www.autohotkey.com/)
 - [Ditto](https://ditto-cp.sourceforge.io)
+- [Gpg4win](https://www.gpg4win.org): Secure email and file encryption with GnuPG for Windows.
 - [HexChat](https://hexchat.github.io)
 - [Notepad++](https://notepad-plus-plus.org/)
 - [PowerShell](https://learn.microsoft.com/en-us/powershell/)

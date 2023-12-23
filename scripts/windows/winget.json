@@ -10,6 +10,7 @@
 				{ "PackageIdentifier" : "AgileBits.1Password" },
 				{ "PackageIdentifier" : "Discord.Discord" },
 				{ "PackageIdentifier" : "Ditto.Ditto" },
+				{ "PackageIdentifier" : "GnuPG.Gpg4win" },
 				{ "PackageIdentifier" : "HexChat.HexChat" },
 				{ "PackageIdentifier" : "IRCCloud.IRCCloud" },
 				{ "PackageIdentifier" : "Lexikos.AutoHotkey" },
