@@ -68,7 +68,7 @@ Library/Caches/*
 .local/pipx
 .local/share/*
 !.local/share/gnupg
-.local/share/gnupg/*
+.local/share/gnupg/openpgp-revocs.d
 !.local/share/zsh
 .local/share/zsh/*
 !.local/share/zsh/completions
