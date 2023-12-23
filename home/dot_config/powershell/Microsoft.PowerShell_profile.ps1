@@ -11,7 +11,6 @@ if (-Not $env:USERPROFILE) {
 Import-Module PSReadline
 Import-Module Recycle
 Import-Module posh-alias
-
 Import-Module PSFzf
 
 # Dracula colors via https://gist.github.com/umayr/8875b44740702b340430b610b52cd182
@@ -77,6 +76,9 @@ Import-Module DirColors
 
 # I prefer emacs readline behavior
 Set-PSReadLineOption -EditMode Emacs
+
+# Use FZF for tab completion
+Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
 
 # Search history with arrows
 Set-PSReadLineOption -HistorySearchCursorMovesToEnd

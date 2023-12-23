@@ -158,6 +158,7 @@ chezmoi update -R
 
 #### Zsh Plugins
 
+- [fzf-tab](https://github.com/Aloxaf/fzf-tab): Replace zsh's default completion selection menu with fzf.
 - [nix-zsh-completions](https://github.com/nix-community/nix-zsh-completions): ZSH Completions for Nix.
 - [powerlevel10k](https://github.com/romkatv/powerlevel10k/): A Zsh theme.
 - [zbell](https://gist.githubusercontent.com/jpouellet/5278239): Make Zsh print a bell when long-running commands finish.
