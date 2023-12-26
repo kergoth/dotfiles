@@ -47,8 +47,15 @@ fi
 # shellcheck disable=SC2046
 if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -type f -not -name '*.pub' | wc -l) -gt 0 ]; then
     msg "Adding SSH keys to keychain"
-    find ~/.ssh/keys \( -type f -not -name '*.pub' \) -print0 \
-        | xargs -t0 ssh-add --apple-use-keychain 2>/dev/null || :
+    find ~/.ssh/keys \( -type f -not -name '*.pub' \) \
+    | while read -r key; do
+        if ! [ -e "$key.pub" ]; then
+            ssh-keygen -y -f "$key" > "$key.pub"
+        fi
+        if ! ssh-add -T "$key.pub"; then
+            ssh-add --apple-use-keychain "$key"
+        fi
+    done
 fi
 
 msg "Configuring"

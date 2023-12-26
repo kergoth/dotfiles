@@ -103,13 +103,18 @@ if (-Not (Test-Path "$env:USERPROFILE\.cargo\bin\git-absorb.exe")) {
 RefreshEnvPath
 
 if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
-    # Add ssh keys from $env:USERPROFILE/.ssh/keys to the ssh agent
     if ((Test-Path "$env:USERPROFILE\.ssh\keys") -And (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
-        Write-Output "Adding SSH keys to keychain"
+        Write-Output "Adding SSH keys to SSH agent"
         Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File -Recurse |
         Where-Object { ($_.Name -NotLike "*.pub") -and ($_.Name -NotLike "*.ppk") } |
         ForEach-Object {
-            ssh-add $_.FullName
+            $pub = $_.FullName + ".pub"
+            if (-Not (Test-Path ($pub))) {
+                ssh-keygen -y -f $_.FullName | Out-File ($pub)
+            }
+            if (-Not (ssh-add -l | Select-String -SimpleMatch -Pattern (ssh-keygen -lf $pub))) {
+                ssh-add $_.FullName
+            }
         }
     }
 }
