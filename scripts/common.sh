@@ -38,6 +38,7 @@ darwin*)
 
     if [ -e /etc/os-release ]; then
         DISTRO="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
+        DISTRO_LIKE="$(sed -n -e 's/^ID_LIKE=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
     fi
     OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     ;;

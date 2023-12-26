@@ -27,6 +27,12 @@ if [ "$OS" = "linux" ]; then
             "setup-system-$DISTRO"
         else
             msg "No setup-system-$DISTRO script found"
+            if [ -n "$DISTRO_LIKE" ] && command -v "setup-system-$DISTRO_LIKE" &>/dev/null; then
+                msg "Running setup-system-$DISTRO_LIKE"
+                "setup-system-$DISTRO_LIKE"
+            else
+                msg "No setup-system-$DISTRO${DISTRO_LIKE:+ or setup-system-$DISTRO_LIKE} script found"
+            fi
         fi
     fi
 fi
