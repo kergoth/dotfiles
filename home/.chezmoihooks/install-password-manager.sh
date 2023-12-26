@@ -6,9 +6,6 @@ PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 if command -v op >/dev/null 2>&1; then
     exit
 fi
-if ! grep -qE '^ *is_(home|siemens) *= *true' ~/.config/chezmoi/chezmoi.toml; then
-    exit
-fi
 
 tmpdir=$(mktemp -d -t install-package-manager.XXXXXX)
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
@@ -24,9 +21,7 @@ Darwin)
         }
     fi
 
-    if command -v brew >/dev/null 2>&1; then
-        brew install 1password-cli
-    fi
+    brew install 1password-cli
     ;;
 Linux)
     case "$(uname -m)" in
