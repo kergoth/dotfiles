@@ -17,6 +17,7 @@ style = "bold #f1fa8c"
 
 [directory]
 style = "blue"
+truncate_to_repo = false
 
 [docker_context]
 disabled = true
