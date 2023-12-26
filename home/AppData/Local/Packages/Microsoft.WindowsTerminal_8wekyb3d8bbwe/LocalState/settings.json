@@ -98,9 +98,8 @@
             "colorScheme": "Dracula",
             "font": 
             {
-                "face": "Input Mono",
-                "size": 11.0,
-                "weight": "light"
+                "face": "MesloLGS NF",
+                "size": 11.0
             },
             "historySize": 15000
         },
