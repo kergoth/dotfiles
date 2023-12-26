@@ -197,7 +197,7 @@ else {
 }
 
 # Enable transient prompt. This must be enabled after zoxide init.
-if (Get-Command starship -ErrorAction SilentlyContinue) {
+if ((Test-Path function:Enable-TransientPrompt) -And (-Not (Test-Path env:VSCODE_INJECTION))) {
     Enable-TransientPrompt
 }
 
