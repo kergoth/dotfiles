@@ -1,11 +1,9 @@
 
 # Install scoop
-if (-Not $env:SCOOP)
-{
+if (-Not $env:SCOOP) {
     $env:SCOOP = "$env:USERPROFILE/scoop"
 }
-if (-Not (Test-Path "$env:SCOOP"))
-{
+if (-Not (Test-Path "$env:SCOOP")) {
     Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
 }
 RefreshEnvPath
@@ -109,10 +107,10 @@ if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
     if ((Test-Path "$env:USERPROFILE\.ssh\keys") -And (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
         Write-Output "Adding SSH keys to keychain"
         Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File -Recurse |
-            Where-Object { $_.Name -NotLike "*.pub" } |
-            ForEach-Object {
-                ssh-add $_.FullName
-            }
+        Where-Object { ($_.Name -NotLike "*.pub") -and ($_.Name -NotLike "*.ppk") } |
+        ForEach-Object {
+            ssh-add $_.FullName
+        }
     }
 }
 
