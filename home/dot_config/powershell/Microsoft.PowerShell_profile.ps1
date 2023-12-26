@@ -159,8 +159,8 @@ if (Get-Command ghq -ErrorAction SilentlyContinue) {
             Set-Location "$env:GHQ_ROOT/$repo"
         }
     }
-    New-Alias gg Invoke-SetLocationGHQ
-    New-Alias gz Invoke-FuzzySetLocationGHQ
+    New-Alias gg Invoke-SetLocationGHQ -Force
+    New-Alias gz Invoke-FuzzySetLocationGHQ -Force
 }
 
 if (Get-Command bat -ErrorAction SilentlyContinue) {
