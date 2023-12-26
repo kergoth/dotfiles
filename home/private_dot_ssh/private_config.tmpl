@@ -13,9 +13,9 @@ ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
 {{- end }}
 {{ if .is_home }}
-{{ onepasswordDocument "q42ifclab34ejjwjpna3b7bewe" -}}
+{{ onepasswordRead "op://Personal/rdff7d7s57f52i4ih43v4zzvyy/cosca" -}}
 {{ end -}}
 {{ if .is_siemens }}
-{{ onepasswordDocument "g2cs62d5w7z6v7kfqhngdrkksa" -}}
+{{ onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/x2gzwerkcdkzcfl5va3wceol3a/build" -}}}
 {{ end -}}
 
