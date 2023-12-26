@@ -39,6 +39,12 @@ style = "bold #bd93f9"
 [nix_shell]
 format = '[$symbol$state( \(nix $name\))]($style) '
 
+[os]
+disabled = false
+
+[os.symbols]
+Windows = " "
+
 [username]
 format = "[$user]($style)@"
 style_user = "bold #8be9fd"
