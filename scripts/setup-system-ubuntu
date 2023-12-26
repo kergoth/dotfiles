@@ -8,6 +8,10 @@ PATH="$scriptdir/ubuntu:$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
+if ! has xz || ! has zsh; then
+    sudorun apt-get update
+fi
+
 # Install xz for nix
 if ! has xz; then
     sudorun apt-get -y install xz-utils
