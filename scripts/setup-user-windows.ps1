@@ -104,6 +104,18 @@ if (-Not (Test-Path "$env:USERPROFILE\.cargo\bin\git-absorb.exe")) {
 
 RefreshEnvPath
 
+if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
+    # Add ssh keys from $env:USERPROFILE/.ssh/keys to the ssh agent
+    if ((Test-Path "$env:USERPROFILE\.ssh\keys") -And (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
+        Write-Output "Adding SSH keys to keychain"
+        Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File -Recurse |
+            Where-Object { $_.Name -NotLike "*.pub" } |
+            ForEach-Object {
+                ssh-add $_.FullName
+            }
+    }
+}
+
 # Add installed software to the user's PATH and/or startup
 if (Test-Path "C:\Program Files\7-Zip") {
     Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User

@@ -44,6 +44,13 @@ if has pwsh; then
     fi
 fi
 
+# shellcheck disable=SC2046
+if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -type f -not -name '*.pub' | wc -l) -gt 0 ]; then
+    msg "Adding SSH keys to keychain"
+    find ~/.ssh/keys \( -type f -not -name '*.pub' \) -print0 \
+        | xargs -t0 ssh-add --apple-use-keychain 2>/dev/null || :
+fi
+
 msg "Configuring"
 "$scriptdir/macos/configure"
 "$scriptdir/macos/setup-apps"
