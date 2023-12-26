@@ -24,7 +24,7 @@ run () {
 # shellcheck disable=SC3028,SC2034
 case "${OSTYPE:-}" in
 darwin*)
-    OS=macos
+    DISTRO=macos
     ;;
 *)
     case "$(uname -r)" in
@@ -34,13 +34,13 @@ darwin*)
     esac
 
     if [ -e /etc/os-release ]; then
-        OS="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
+        DISTRO="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
     fi
     ;;
 esac
 
 if ! has git || ! has bash; then
-    if [ "$OS" = freebsd ]; then
+    if [ "$DISTRO" = freebsd ]; then
         if ! doas pkg -N; then
             run doas pkg bootstrap
         fi

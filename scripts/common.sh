@@ -28,7 +28,6 @@ run() {
 case "${OSTYPE:-}" in
 darwin*)
     OS=macos
-    SYSTEM=macos
     ;;
 *)
     case "$(uname -r)" in
@@ -38,9 +37,9 @@ darwin*)
     esac
 
     if [ -e /etc/os-release ]; then
-        OS="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
+        DISTRO="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
     fi
-    SYSTEM=$(uname -s | tr '[:upper:]' '[:lower:]')
+    OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     ;;
 esac
 

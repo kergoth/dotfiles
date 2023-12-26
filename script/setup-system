@@ -18,18 +18,24 @@ if [ -z "$HOMEBREW_PREFIX" ]; then
     die "HOMEBREW_PREFIX must be set or unset, not the empty string"
 fi
 
+if [ "$OS" = "linux" ]; then
+    if [ -z "$DISTRO" ]; then
+        msg "Warning: Unknown DISTRO, please ensure /etc/os-release exists, or set DISTRO manually."
+    else
+        if command -v "setup-system-$DISTRO" &>/dev/null; then
+            msg "Running setup-system-$DISTRO"
+            "setup-system-$DISTRO"
+        else
+            msg "No setup-system-$DISTRO script found"
+        fi
+    fi
+fi
+
 if command -v "setup-system-$OS" &>/dev/null; then
     msg "Running setup-system-$OS"
     "setup-system-$OS"
 else
     msg "No setup-system-$OS script found"
-fi
-
-if command -v "setup-system-$SYSTEM" &>/dev/null; then
-    msg "Running setup-system-$SYSTEM"
-    "setup-system-$SYSTEM"
-else
-    msg "No setup-system-$SYSTEM script found"
 fi
 
 msg "System setup complete"

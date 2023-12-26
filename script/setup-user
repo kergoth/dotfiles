@@ -12,18 +12,18 @@ if [ "$(id -u)" = "0" ]; then
     die "Error: Do not run as root, this script is for user setup"
 fi
 
+if command -v "setup-user-$DISTRO" &>/dev/null; then
+    msg "Running setup-user-$DISTRO"
+    "setup-user-$DISTRO"
+else
+    msg "No setup-user-$DISTRO script found"
+fi
+
 if command -v "setup-user-$OS" &>/dev/null; then
     msg "Running setup-user-$OS"
     "setup-user-$OS"
 else
     msg "No setup-user-$OS script found"
-fi
-
-if command -v "setup-user-$SYSTEM" &>/dev/null; then
-    msg "Running setup-user-$SYSTEM"
-    "setup-user-$SYSTEM"
-else
-    msg "No setup-user-$SYSTEM script found"
 fi
 
 msg "User setup complete"
