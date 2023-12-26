@@ -41,11 +41,11 @@ Library/Caches/*
 {{- end }}
 
 {{- if not .is_home }}
-.ssh/frey*
+.ssh/keys/frey*
 {{- end }}
 
 {{- if not .is_siemens }}
-.ssh/work*
+.ssh/keys/work*
 {{- end }}
 
 **/.DS_Store
