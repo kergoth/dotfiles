@@ -40,12 +40,12 @@ Library/Caches/*
 !Library/Caches/zsh
 {{- end }}
 
-{{- if not .is_home }}
-.ssh/keys/frey*
+.ssh/keys/*
+{{- if .is_home }}
+!.ssh/keys/frey*
 {{- end }}
-
-{{- if not .is_siemens }}
-.ssh/keys/work*
+{{- if .is_siemens }}
+!.ssh/keys/work*
 {{- end }}
 
 **/.DS_Store
