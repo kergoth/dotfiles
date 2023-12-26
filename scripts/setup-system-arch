@@ -14,9 +14,9 @@ locale="en_US.UTF-8"
 sudorun pacman -Fy
 
 # Locales
-sed -i -e "/^#$locale /s/^#//" /etc/locale.gen
-locale-gen
-echo "LANG=$locale" >/etc/locale.conf
+sudorun sed -i -e "/^#$locale /s/^#//" /etc/locale.gen
+sudorun locale-gen
+echo "LANG=$locale" | sudorun tee /etc/locale.conf
 
 pacman_install openssh
 if [ "$OSTYPE" != WSL ]; then
