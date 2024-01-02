@@ -63,7 +63,6 @@ Library/Caches/*
 .config/chezmoi
 .config/environment.d/10-home-manager.conf
 .config/gh/hosts.yml
-.config/git/config
 .config/vscode-dev-containers
 .devcontainer
 .envrc

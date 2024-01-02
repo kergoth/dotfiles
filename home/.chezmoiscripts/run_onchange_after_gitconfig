@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-if command -v git >/dev/null 2>&1 && [ "$(git config -f "${CHEZMOI_HOME_DIR:-$HOME}"/.config/git/config include.path)" != "config.main" ]; then
-    rm -f "${CHEZMOI_HOME_DIR:-$HOME}"/.config/git/config
-    touch "${CHEZMOI_HOME_DIR:-$HOME}"/.config/git/config
-    git config -f "${CHEZMOI_HOME_DIR:-$HOME}"/.config/git/config include.path config.main
-fi
