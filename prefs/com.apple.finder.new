@@ -1,0 +1,29 @@
+# Expose hidden files and Library folder in Finder:
+Set :AppleShowAllFiles true
+
+# Always open everything in Finder's list view
+Set :FXPreferredViewStyle Nlsv
+
+# Enable quit menu item for Finder
+Set :QuitMenuItem true
+
+# Do not display a warning when changing a file extension in the Finder
+Set :FXEnableExtensionChangeWarning false
+
+# Enable text selection in quick look windows
+Set :QLEnableTextSelection true
+
+# Show path bar
+Set :ShowPathbar true
+
+# Show status bar
+Set :ShowStatusBar true
+
+# When performing a search, search the current folder by default
+Set :FXDefaultSearchScope "SCcf"
+
+# Disable the warning before emptying the Trash
+Set :WarnOnEmptyTrash false
+
+# Hide desktop icons completely
+Set :CreateDesktop false

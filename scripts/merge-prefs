@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# Read Library/Preferences/<plistname>.plist applies prefs/<plistname> to it
+# using PlistBuddy, outputting the new contents to stdout.
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+plist=$1
+shift
+tmpfile=$(mktemp)
+trap 'rm -f "$tmpfile"' EXIT INT TERM
+
+case "$plist" in
+    /*) ;;
+    *)
+        plist="$HOME/Library/Preferences/$plist"
+        ;;
+esac
+plistname=$(basename "$plist")
+prefs="$scriptdir/../prefs/${plistname%.plist}"
+
+merge() {
+    cat "$prefs" \
+        | grep -v '^ *#' \
+        | grep -v '^ *$' \
+        | tr '\n' '\0' \
+        | xargs -0 -I"{}" /usr/libexec/PlistBuddy -c "{}" "$tmpfile" >/dev/null \
+        && plutil -convert binary1 "$tmpfile" >/dev/null
+}
+
+if [ -s "$prefs" ] && cp "$plist" "$tmpfile" && merge &>/dev/null; then
+    cat "$tmpfile"
+else
+    cat "$plist"
+fi
