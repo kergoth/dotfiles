@@ -64,6 +64,14 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{- if eq .chezmoi.os "windows" }}
     command = "pwsh.exe"
     args = ["-NoLogo", ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.ps1"]
-{{- else }}
+{{- else  if eq .chezmoi.os "darwin" }}
+  {{- if or (lookPath "op") (joinPath .chezmoi.homeDir ".brew/bin/op" | glob) (glob "/usr/local/bin/op")}}
+  {{- else }}
     command = ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.sh"
+  {{- end }}
+{{- else }}
+  {{- if or (lookPath "op") (joinPath .chezmoi.homeDir ".local/bin/op" | glob)}}
+  {{- else }}
+    command = ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.sh"
+  {{- end }}
 {{- end }}
