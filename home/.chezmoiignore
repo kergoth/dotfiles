@@ -18,6 +18,10 @@ Templates
 Virtual Machines
 Workspace
 
+{{ if ne (joinPath .chezmoi.homeDir ".config/vim" | lstat).type "symlink" }}
+.chezmoiscripts/prepare_vim
+{{ end }}
+
 {{- if ne .chezmoi.os "windows" }}
 AppData
 .chezmoiscripts/gitconfig.ps1
