@@ -12,11 +12,23 @@ if [ "$(id -u)" = "0" ]; then
     die "Error: Do not run as root, this script is for user setup"
 fi
 
-if command -v "setup-user-$DISTRO" &>/dev/null; then
-    msg "Running setup-user-$DISTRO"
-    "setup-user-$DISTRO"
-else
-    msg "No setup-user-$DISTRO script found"
+if [ "$OS" = "linux" ]; then
+    if [ -z "$DISTRO" ]; then
+        msg "Warning: Unknown DISTRO, please ensure /etc/os-release exists, or set DISTRO manually."
+    else
+        if command -v "setup-user-$DISTRO" &>/dev/null; then
+            msg "Running setup-user-$DISTRO"
+            "setup-user-$DISTRO"
+        else
+            msg "No setup-user-$DISTRO script found"
+            if [ -n "$DISTRO_LIKE" ] && command -v "setup-user-$DISTRO_LIKE" &>/dev/null; then
+                msg "Running setup-user-$DISTRO_LIKE"
+                "setup-user-$DISTRO_LIKE"
+            else
+                msg "No setup-user-$DISTRO${DISTRO_LIKE:+ or setup-user-$DISTRO_LIKE} script found"
+            fi
+        fi
+    fi
 fi
 
 if command -v "setup-user-$OS" &>/dev/null; then
