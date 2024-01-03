@@ -21,7 +21,7 @@ if [ "$OS" = "linux" ]; then
             "setup-user-$DISTRO"
         else
             msg "No setup-user-$DISTRO script found"
-            if [ -n "$DISTRO_LIKE" ] && command -v "setup-user-$DISTRO_LIKE" &>/dev/null; then
+            if [ -n "${DISTRO_LIKE:-}" ] && command -v "setup-user-$DISTRO_LIKE" &>/dev/null; then
                 msg "Running setup-user-$DISTRO_LIKE"
                 "setup-user-$DISTRO_LIKE"
             else
