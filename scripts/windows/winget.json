@@ -13,7 +13,7 @@
 				{ "PackageIdentifier" : "GnuPG.Gpg4win" },
 				{ "PackageIdentifier" : "HexChat.HexChat" },
 				{ "PackageIdentifier" : "IRCCloud.IRCCloud" },
-				{ "PackageIdentifier" : "Lexikos.AutoHotkey" },
+				{ "PackageIdentifier" : "AutoHotkey.AutoHotkey" },
 				{ "PackageIdentifier" : "Microsoft.PowerShell" },
 				{ "PackageIdentifier" : "Microsoft.PowerToys" },
 				{ "PackageIdentifier" : "Microsoft.Teams" },
