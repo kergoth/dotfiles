@@ -47,6 +47,9 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
     }
 
     Add-AppxPackage $appinstaller -DependencyPath $vclibs, $xaml
+
+    # Refresh $env:Path
+    RefreshEnvPath
 }
 
 # Enable WSL, WSL 2, Sandbox
@@ -69,14 +72,17 @@ if (-Not (Test-InWindowsSandbox)) {
         Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
     }
 
-# Refresh $env:Path
-RefreshEnvPath
+    # Refresh $env:Path
+    RefreshEnvPath
+}
 
 # Install GUI apps
 winget import --import-file $PSScriptRoot\windows\winget.json --ignore-versions --no-upgrade --disable-interactivity
 
-# Install Visual Studio C++ Desktop Workload
-winget install Microsoft.VisualStudio.2022.Community --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
+if (winget list --disable-interactivity --count 1 --exact --id Microsoft.VisualStudio.2022.Community | Select-String "No installed package found matching input criteria") {
+    # Install Visual Studio C++ Desktop Workload
+    winget install Microsoft.VisualStudio.2022.Community --disable-interactivity --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
+}
 
 # Configuration
 . $PSScriptRoot\windows\configure-admin.ps1
