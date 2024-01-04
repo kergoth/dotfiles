@@ -15,38 +15,42 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
 
     Write-Output "Installing winget"
 
+    if (-Not (Get-AppxPackage -Name Microsoft.VCLibs.140.00)) {
+        $vclibs_url = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
+        $vclibs = "$DownloadsFolder\" + (Split-Path $vclibs_url -Leaf)
+        if (-Not (Test-Path $vclibs)) {
+            Invoke-WebRequest -Uri $vclibs_url -OutFile $vclibs
+        }
+        Add-AppxPackage -Path $vclibs
+    }
+
+    if (-Not (Get-AppxPackage -Name Microsoft.UI.Xaml.2.7)) {
+        $xaml = "$DownloadsFolder\Microsoft.UI.Xaml.2.7.appx"
+        if (-Not (Test-Path "$xaml")) {
+            $xaml_url = "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.7.3.nupkg"
+            $xamldl = "$DownloadsFolder\" + (Split-Path $xaml_url -Leaf)
+            if (-Not (Test-Path "$xamldl.zip")) {
+                Invoke-WebRequest -Uri $xaml_url -OutFile $xamldl.zip
+            }
+
+            $wingettemp = "$env:TEMP\winget"
+            try {
+                Expand-Archive "$xamldl.zip" -DestinationPath $wingettemp -Force
+                Move-Item "$wingettemp\tools\AppX\x64\Release\Microsoft.UI.Xaml.2.7.appx"  "$xaml"
+            }
+            finally {
+                Remove-PossiblyMissingItem $wingettemp -Recurse -Force
+            }
+        }
+        Add-AppxPackage -Path $xaml
+    }
+
     $appinstaller_url = Get-GithubLatestRelease "microsoft/winget-cli" "Microsoft.DesktopAppInstaller"
     $appinstaller = "$DownloadsFolder\" + (Split-Path $appinstaller_url -Leaf)
     if (-Not (Test-Path $appinstaller)) {
-        Start-BitsTransfer $appinstaller_url -Destination $DownloadsFolder
+        Invoke-WebRequest -Uri $appinstaller_url -OutFile $appinstaller
     }
-
-    $vclibs_url = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
-    $vclibs = "$DownloadsFolder\" + (Split-Path $vclibs_url -Leaf)
-    if (-Not (Test-Path $vclibs)) {
-        Start-BitsTransfer $vclibs_url -Destination $DownloadsFolder
-    }
-
-    $xaml = "$DownloadsFolder\Microsoft.UI.Xaml.2.7.appx"
-    if (-Not (Test-Path "$xaml")) {
-        $xaml_url = "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.7.3.nupkg"
-        $xamldl = "$DownloadsFolder\" + (Split-Path $xaml_url -Leaf)
-        if (-Not (Test-Path "$xamldl.zip")) {
-            Start-BitsTransfer $xaml_url -Destination $DownloadsFolder
-            Move-Item "$xamldl" "$xamldl.zip"
-        }
-
-        $wingettemp = "$env:TEMP\winget"
-        try {
-            Expand-Archive "$xamldl.zip" -DestinationPath $wingettemp -Force
-            Move-Item "$wingettemp\tools\AppX\x64\Release\Microsoft.UI.Xaml.2.7.appx"  "$xaml"
-        }
-        finally {
-            Remove-PossiblyMissingItem $wingettemp -Recurse -Force
-        }
-    }
-
-    Add-AppxPackage $appinstaller -DependencyPath $vclibs, $xaml
+    Add-AppxPackage -Path $appinstaller
 
     # Refresh $env:Path
     RefreshEnvPath
