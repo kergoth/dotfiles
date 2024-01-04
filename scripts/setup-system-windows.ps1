@@ -2,7 +2,7 @@
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
     if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) {
         $CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
-    Start-Process -Wait -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+        Start-Process -Wait -FilePath (Get-Process -pid $pid).Path -Verb Runas -ArgumentList $CommandLine
         Exit
     }
 }
@@ -35,7 +35,7 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
             Start-BitsTransfer $xaml_url -Destination $DownloadsFolder
             Move-Item "$xamldl" "$xamldl.zip"
         }
-    
+
         $wingettemp = "$env:TEMP\winget"
         try {
             Expand-Archive "$xamldl.zip" -DestinationPath $wingettemp -Force
