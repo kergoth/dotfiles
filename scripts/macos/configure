@@ -253,9 +253,6 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 0
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 0
 
-# Disable press-and-hold for keys in favor of key repeat
-defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-
 # Set a blazingly fast keyboard repeat rate
 defaults write NSGlobalDomain KeyRepeat -int 4
 defaults write NSGlobalDomain InitialKeyRepeat -int 12
@@ -270,6 +267,7 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
 # Select 2x display scaling for better font rendering
 /usr/bin/python3 -m venv "$tmpdir/venv"
 (
+	# shellcheck disable=SC1091
 	. "$tmpdir/venv/bin/activate"
 
 	pip install wheel
