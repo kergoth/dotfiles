@@ -89,3 +89,10 @@ function Get-GithubLatestRelease {
 
     return $downloadUrl
 }
+
+# Detects if running inside a Windows sandbox or container.
+# Based on https://stackoverflow.com/questions/43002803/detect-if-process-executes-inside-a-windows-container
+function Test-InWindowsSandbox {
+    $foundService = Get-Service -Name cexecsvc -ErrorAction SilentlyContinue
+    return $foundService -ne $null
+}

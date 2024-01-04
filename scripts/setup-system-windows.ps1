@@ -50,33 +50,24 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
 }
 
 # Enable WSL, WSL 2, Sandbox
-try {
-    # Features don't work inside a Sandbox
-    Get-WindowsOptionalFeature -Online -ErrorAction SilentlyContinue | Out-Null
-    if (-Not $error) {
-        Write-Output "Enabling WSL"
-
-        # Enable WSL
-        $feature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-        if (-Not $feature) {
-            Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -All -NoRestart
-        }
-
-        # Enable Virtual Machine Platform for WSL 2
-        $feature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
-        if (-Not $feature) {
-            Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
-        }
-
-        # Enable Windows Sandbox
-        $feature = Get-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
-        if (-Not $feature) {
-            Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
-        }
+if (-Not (Test-InWindowsSandbox)) {
+    # Enable WSL
+    $feature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    if (-Not $feature) {
+        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -All -NoRestart
     }
-}
-catch {
-}
+
+    # Enable Virtual Machine Platform for WSL 2
+    $feature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+    if (-Not $feature) {
+        Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
+    }
+
+    # Enable Windows Sandbox
+    $feature = Get-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
+    if (-Not $feature) {
+        Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
+    }
 
 # Refresh $env:Path
 RefreshEnvPath
