@@ -18,7 +18,8 @@ Templates
 Virtual Machines
 Workspace
 
-{{ if ne (joinPath .chezmoi.homeDir ".config/vim" | lstat).type "symlink" }}
+{{- $vimPath := joinPath .chezmoi.homeDir ".config/vim" -}}
+{{ if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
 .chezmoiscripts/prepare_vim
 {{ end }}
 
