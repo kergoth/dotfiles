@@ -80,6 +80,9 @@ if (-Not (Test-InWindowsSandbox)) {
     RefreshEnvPath
 }
 
+# Install fonts
+. $PSScriptRoot\windows\install-fonts.ps1
+
 # Install GUI apps
 winget import --import-file $PSScriptRoot\windows\winget.json --ignore-versions --no-upgrade --disable-interactivity
 
@@ -90,6 +93,3 @@ if (winget list --disable-interactivity --count 1 --exact --id Microsoft.VisualS
 
 # Configuration
 . $PSScriptRoot\windows\configure-admin.ps1
-
-# Install fonts
-. $PSScriptRoot\windows\install-fonts.ps1
