@@ -255,3 +255,27 @@ url = "https://cheat.sh/:cht.sh"
 executable = true
 refreshPeriod = "168h"
 {{- end }}
+
+# Fonts
+{{- $fontDir := "" }}
+{{- if eq .chezmoi.os "darwin" }}
+{{-   $fontDir = "Library/Fonts" }}
+{{- else if eq .chezmoi.os "linux" }}
+{{-   $fontDir = ".local/share/fonts" }}
+{{- else if eq .chezmoi.os "freebsd" }}
+{{-   $fontDir = ".fonts" }}
+{{- else if eq .chezmoi.os "windows" }}
+{{-   $fontDir = "AppData/Local/Microsoft/Windows/Fonts" }}
+{{- end }}
+{{- if $fontDir }}
+{{-   range (list
+        "MesloLGS NF Regular.ttf"
+        "MesloLGS NF Bold.ttf"
+        "MesloLGS NF Italic.ttf"
+        "MesloLGS NF Bold Italic.ttf") }}
+["{{ $fontDir }}/{{ . }}"]
+    type = "file"
+    url = "https://github.com/romkatv/powerlevel10k-media/raw/master/{{ . }}"
+    refreshPeriod = "168h"
+{{-   end }}
+{{- end }}
