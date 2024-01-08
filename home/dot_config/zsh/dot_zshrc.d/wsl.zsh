@@ -1,11 +1,3 @@
-if [[ ! -e /.dockerenv ]]; then
-    case "$(uname -r)" in
-        *-microsoft-*)
-            OSTYPE=WSL
-            ;;
-    esac
-fi
-
 if [[ "$OSTYPE" = "WSL" ]]; then
     export BROWSER="cmd.exe /C START"
     if [[ -z "$USERPROFILE" ]]; then
