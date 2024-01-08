@@ -1,4 +1,5 @@
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
+{{ $pull_args := dig "external" "pull" "args" (list) . -}}
 
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
@@ -105,6 +106,8 @@ refreshPeriod = "168h"
     refreshPeriod = "168h"
     [".config/vim".clone]
     args = {{ $clone_args | toToml }}
+    [".config/vim".pull]
+    args = {{ $pull_args | toToml }}
 
 {{ if eq .chezmoi.os "windows" }}
 ["_vimrc"]
@@ -150,6 +153,8 @@ stripComponents = 1
     refreshPeriod = "168h"
     [bin.clone]
     args = {{ $clone_args | toToml }}
+    [bin.pull]
+    args = {{ $pull_args | toToml }}
 
 [".local/bin"]
 type = "archive"
