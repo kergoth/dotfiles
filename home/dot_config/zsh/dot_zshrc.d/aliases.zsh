@@ -238,6 +238,7 @@ if [[ $OSTYPE = WSL ]]; then
     alias adb=adb.exe
 
     alias trash=recycle
+    alias scoop="noglob scoop"
 
     if [[ -z "$WSL_IS_ADMIN" ]]; then
         if net.exe session >/dev/null 2>&1; then
