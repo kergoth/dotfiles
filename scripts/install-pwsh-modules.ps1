@@ -4,10 +4,10 @@ Function Install-ModuleIfNotInstalled(
     [string] $minimalVersion = $null
 ) {
     $module = Get-Module -Name $moduleName -ListAvailable |`
-        Where-Object { $null -eq $minimalVersion -or $minimalVersion -lt $_.Version } |`
-        Select-Object -Last 1
+            Where-Object { $null -eq $minimalVersion -or $minimalVersion -lt $_.Version } |`
+            Select-Object -Last 1
     if ($null -ne $module) {
-         Write-Verbose ('Module {0} (v{1}) is available.' -f $moduleName, $module.Version)
+        Write-Verbose ('Module {0} (v{1}) is available.' -f $moduleName, $module.Version)
     }
     else {
         Import-Module -Name 'PowershellGet'
@@ -36,3 +36,4 @@ Install-ModuleIfNotInstalled DirColors
 Install-ModuleIfNotInstalled Recycle
 Install-ModuleIfNotInstalled posh-alias
 Install-ModuleIfNotInstalled PSFzf
+

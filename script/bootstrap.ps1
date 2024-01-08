@@ -18,3 +18,4 @@ if (-Not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
     Write-Output "Installing chezmoi"
     scoop install chezmoi
 }
+

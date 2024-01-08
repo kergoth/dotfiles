@@ -92,16 +92,16 @@ if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
     if ((Test-Path "$env:USERPROFILE\.ssh\keys") -And (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
         Write-Output "Adding SSH keys to SSH agent"
         Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File -Recurse |
-        Where-Object { ($_.Name -NotLike "*.pub") -and ($_.Name -NotLike "*.ppk") } |
-        ForEach-Object {
-            $pub = $_.FullName + ".pub"
-            if (-Not (Test-Path ($pub))) {
-                ssh-keygen -y -f $_.FullName | Out-File ($pub)
+            Where-Object { ($_.Name -NotLike "*.pub") -and ($_.Name -NotLike "*.ppk") } |
+            ForEach-Object {
+                $pub = $_.FullName + ".pub"
+                if (-Not (Test-Path ($pub))) {
+                    ssh-keygen -y -f $_.FullName | Out-File ($pub)
+                }
+                if (-Not (ssh-add -l | Select-String -SimpleMatch -Pattern (ssh-keygen -lf $pub))) {
+                    ssh-add $_.FullName
+                }
             }
-            if (-Not (ssh-add -l | Select-String -SimpleMatch -Pattern (ssh-keygen -lf $pub))) {
-                ssh-add $_.FullName
-            }
-        }
     }
 }
 
@@ -118,3 +118,4 @@ if (Test-Path "C:\Program Files\SyncTrayzor") {
 # Apply my dotfiles
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 Join-Path $env:DOTFILES_DIR "script\setup.ps1" | Invoke-Expression
+

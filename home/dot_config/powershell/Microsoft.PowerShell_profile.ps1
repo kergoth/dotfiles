@@ -14,14 +14,14 @@ Import-Module posh-alias
 Import-Module PSFzf
 
 # Dracula colors via https://gist.github.com/umayr/8875b44740702b340430b610b52cd182
-$env:FZF_DEFAULT_OPTS='
+$env:FZF_DEFAULT_OPTS = '
   --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9
   --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9
   --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
   --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4
   --height 40% --multi --reverse
 '
-$env:_ZO_FZF_OPTS=$env:FZF_DEFAULT_OPTS
+$env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
 
 if (Get-Command fd -ErrorAction SilentlyContinue) {
     $env:FZF_DEFAULT_COMMAND = 'fd -c always -t f ""'
@@ -47,7 +47,7 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 }
 
 # Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
-Set-PSReadlineOption -Color @{
+Set-PSReadLineOption -Color @{
     "Command"   = [ConsoleColor]::Green
     "Parameter" = [ConsoleColor]::Gray
     "Operator"  = [ConsoleColor]::Magenta
@@ -106,7 +106,7 @@ Set-PSReadLineKeyHandler -Key Alt+B -Function SelectShellBackwardWord
 Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 
 # Disable the annoying beep
-Set-PSReadlineOption -BellStyle None
+Set-PSReadLineOption -BellStyle None
 
 # Use Ctrl+r from FZF rather than Readline
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
@@ -130,7 +130,8 @@ if (Get-Command eza -ErrorAction SilentlyContinue) {
     New-Alias la Get-ezaChildItemHidden -Force
     New-Alias ll Get-ezaChildItemDetailed -Force
     New-Alias lr Get-ezaChildItemSorted -Force
-} else {
+}
+else {
     New-Alias ls Get-ChildItem -Force
 }
 New-Alias which Get-Command -Force
@@ -179,7 +180,7 @@ if (Get-Command batgrep -ErrorAction SilentlyContinue) {
 New-Alias g rg -Force
 
 function Set-Location-Create {
-    New-Item -ItemType Directory -ErrorAction SilentlyContinue -force @args | Out-Null
+    New-Item -ItemType Directory -ErrorAction SilentlyContinue -Force @args | Out-Null
     Set-Location @args
 }
 New-Alias mcd Set-Location-Create -Force
@@ -248,10 +249,12 @@ if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction Silentl
     $env:VISUAL = "code --wait"
 
     New-Alias e code -Force
-} else {
+}
+else {
     New-Alias e vi -Force
 }
 
 if (Test-Path "$env:USERPROFILE\.local.ps1") {
     . "$env:USERPROFILE\.local.ps1"
 }
+

@@ -2,11 +2,9 @@
 try {
     # Features don't work inside a Sandbox
     Get-WindowsOptionalFeature -Online -ErrorAction SilentlyContinue
-    if (-Not $error)
-    {
+    if (-Not $error) {
         $wsl = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-        if ($wsl)
-        {
+        if ($wsl) {
             # Update WSL kernel
             $kernel = $env:TEMP + '/kernel.msi'
             try {
@@ -24,8 +22,7 @@ try {
         }
 
         $wsl2 = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
-        if ($wsl2)
-        {
+        if ($wsl2) {
             # Use WSL 2 by default
             wsl --set-default-version 2
 
@@ -43,7 +40,7 @@ try {
                 $hypervdir = $env:TEMP + '/hyperv-fix-for-devs'
                 try {
                     Expand-Archive $hypervfix -DestinationPath $hypervdir -Force
-                    Get-ChildItem $hypervdir -Include *.ps1,*.psm1 -Recurse | Unblock-File -Confirm:$false
+                    Get-ChildItem $hypervdir -Include *.ps1, *.psm1 -Recurse | Unblock-File -Confirm:$false
                     C:\Program Files\PowerShell\7\pwsh.exe -File $hypervdir\hyperv-fix-for-devs-master\Install-DeveloperFix.ps1
                 }
                 finally {
@@ -58,3 +55,4 @@ try {
 }
 catch {
 }
+

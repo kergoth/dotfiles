@@ -3,3 +3,4 @@ chezmoi upgrade
 
 Write-Output "Updating dotfiles repository"
 chezmoi update -R
+

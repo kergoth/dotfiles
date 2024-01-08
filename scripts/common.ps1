@@ -19,36 +19,32 @@ function Remove-PossiblyMissingItem {
 # Add-EnvironmentVariableItem from Get-EnvironmentVariable.ps1
 # Copyright (C) Frank Skare (stax76)
 # MIT License
-function Add-EnvironmentVariableItem
-{
+function Add-EnvironmentVariableItem {
     [CmdletBinding()]
     [Alias('aevi')]
     Param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Name,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Value,
         [Switch] $Machine,
         [Switch] $User,
         [Switch] $End
     )
 
-    process
-    {
+    process {
         $scope = 'Process'
 
         if ($Machine) { $scope = 'Machine' }
-        if ($User)    { $scope = 'User' }
+        if ($User) { $scope = 'User' }
 
         $var = [Environment]::GetEnvironmentVariable($Name, $scope)
         $tempItems = New-Object Collections.Generic.List[String]
 
-        foreach ($i in ($var -split ';'))
-        {
+        foreach ($i in ($var -split ';')) {
             $i = $i.Trim()
 
-            if ($i -eq '' -or $i -eq $Value)
-            {
+            if ($i -eq '' -or $i -eq $Value) {
                 continue
             }
 
@@ -57,12 +53,10 @@ function Add-EnvironmentVariableItem
 
         $var = $tempItems -join ';'
 
-        if ($End)
-        {
+        if ($End) {
             $var = $var + ';' + $Value
         }
-        else
-        {
+        else {
             $var = $Value + ';' + $var
         }
 
@@ -82,10 +76,10 @@ function Get-GithubLatestRelease {
     # looking for. Also, Github's 'latest' release doesn't include prereleases.
     $releases = Invoke-RestMethod -Method Get -Uri "https://api.github.com/repos/$project/releases"
     $downloadUrl = $releases |
-                   Where-Object { $_.prerelease -eq $prerelease } |
-                   ForEach-Object { $_.assets } |
-                   Where-Object { $_.name -match $pattern } |
-                   Select-Object -First 1 -ExpandProperty "browser_download_url"
+        Where-Object { $_.prerelease -eq $prerelease } |
+        ForEach-Object { $_.assets } |
+        Where-Object { $_.name -match $pattern } |
+        Select-Object -First 1 -ExpandProperty "browser_download_url"
 
     return $downloadUrl
 }
@@ -96,3 +90,4 @@ function Test-InWindowsSandbox {
     $foundService = Get-Service -Name cexecsvc -ErrorAction SilentlyContinue
     return $foundService -ne $null
 }
+
