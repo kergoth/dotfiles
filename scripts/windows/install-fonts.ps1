@@ -31,10 +31,6 @@ function Install-Font {
             New-ItemProperty -Name $fontName -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $fontFile.Name -Force -ErrorAction SilentlyContinue | Out-Null
         }
         else { Write-Host "Font already registered: $fontFile" }
-
-        [System.Runtime.Interopservices.Marshal]::ReleaseComObject($oShell) | Out-Null
-        Remove-Variable oShell
-
     }
     catch {
         Write-Host "Error installing font: $fontFile. " $_.exception.message
@@ -76,14 +72,13 @@ function Uninstall-Font {
         }
         else { Write-Host "Font not registered: $fontFile" }
 
-        [System.Runtime.Interopservices.Marshal]::ReleaseComObject($oShell) | Out-Null
-        Remove-Variable oShell
-
     }
     catch {
         Write-Host "Error uninstalling font: $fontFile. " $_.exception.message
     }
 }
+
+Add-Type -AssemblyName PresentationCore
 
 $FontsPath = Join-Path -Path ([Environment]::GetFolderPath('LocalApplicationData')) -ChildPath 'Microsoft\Windows\Fonts'
 foreach ($FontItem in (Get-ChildItem -Path $FontsPath |
