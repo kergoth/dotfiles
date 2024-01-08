@@ -50,6 +50,9 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
     computer_name = {{ .chezmoi.hostname | quote }}
 {{- end }}
 
+[data.external]
+    clone.args = ["--depth", "1"]
+
 [interpreters.ps1]
     command = "pwsh"
     args = ["-NoLogo"]
