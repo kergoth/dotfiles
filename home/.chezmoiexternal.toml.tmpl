@@ -1,3 +1,5 @@
+{{ $clone_args := dig "external" "clone" "args" (list) . -}}
+
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
@@ -98,9 +100,11 @@ stripComponents = 1
 refreshPeriod = "168h"
 
 [".config/vim"]
-type = "git-repo"
-url = "https://github.com/kergoth/dotvim"
-refreshPeriod = "168h"
+    type = "git-repo"
+    url = "https://github.com/kergoth/dotvim"
+    refreshPeriod = "168h"
+    [".config/vim".clone]
+    args = {{ $clone_args | toToml }}
 
 {{ if eq .chezmoi.os "windows" }}
 ["_vimrc"]
@@ -141,9 +145,11 @@ stripComponents = 1
 {{ else }}
 
 ["bin"]
-type = "git-repo"
-url = "https://github.com/kergoth/scripts"
-refreshPeriod = "168h"
+    type = "git-repo"
+    url = "https://github.com/kergoth/scripts"
+    refreshPeriod = "168h"
+    [bin.clone]
+    args = {{ $clone_args | toToml }}
 
 [".local/bin"]
 type = "archive"
