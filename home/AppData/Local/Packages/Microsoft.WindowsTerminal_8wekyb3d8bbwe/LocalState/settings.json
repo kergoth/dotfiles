@@ -95,13 +95,23 @@
     {
         "defaults": 
         {
+            "adjustIndistinguishableColors": "indexed",
+            "bellStyle": 
+            [
+                "window",
+                "taskbar"
+            ],
+            "closeOnExit": "automatic",
             "colorScheme": "Dracula",
+            "experimental.retroTerminalEffect": false,
             "font": 
             {
                 "face": "MesloLGS NF",
-                "size": 11.0
+                "size": 10.0,
+                "weight": "normal"
             },
-            "historySize": 15000
+            "historySize": 15000,
+            "useAtlasEngine": true
         },
         "list": 
         [
