@@ -8,7 +8,7 @@ if (-Not (Test-Path "$env:SCOOP")) {
 }
 RefreshEnvPath
 
-if (-Not (scoop bucket list | Select-String -SimpleMatch -Pattern "kergoth")) {
+if (-Not (Test-Path "$env:SCOOP/buckets/kergoth")) {
     scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
 }
 
