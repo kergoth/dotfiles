@@ -1,6 +1,9 @@
-Join-Path $PSScriptRoot "bootstrap.ps1" | Invoke-Expression
+& "$PSScriptRoot/bootstrap.ps1"
 
-Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+if ($IsWindows) {
+    # Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
+    Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+}
 
 # Set path to this dotfiles repo
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent

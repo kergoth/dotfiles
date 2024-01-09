@@ -3,8 +3,10 @@ function RefreshEnvPath {
         + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 }
 
-# Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
-Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+if ($IsWindows) {
+    # Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
+    Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+}
 
 # Install chezmoi if necessary
 if (-Not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
