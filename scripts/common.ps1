@@ -88,6 +88,18 @@ function Get-GithubLatestRelease {
 # Based on https://stackoverflow.com/questions/43002803/detect-if-process-executes-inside-a-windows-container
 function Test-InWindowsSandbox {
     $foundService = Get-Service -Name cexecsvc -ErrorAction SilentlyContinue
-    return $foundService -ne $null
+    return $null -ne $foundService
 }
 
+function Set-UserOnlyFileAccess {
+    param (
+        [parameter(Mandatory)][string]$Pathname
+    )
+    # This does not use Get-Acl/Set-Acl, as Set-Acl requires the user to have
+    # SeSecurityPrivilege, which should not be necessary for this operation.
+    icacls $Pathname /grant ${env:USERNAME}:rw | Out-Null
+    # Disable inheritance from folders
+    icacls $Pathname /inheritance:d | Out-Null
+    # Remove default groups (Authenticated Users, System, Administrators, Users)
+    icacls $Pathname /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
+}

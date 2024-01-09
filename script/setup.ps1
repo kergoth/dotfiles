@@ -1,9 +1,11 @@
-& "$PSScriptRoot/bootstrap.ps1"
+. $PSScriptRoot\..\scripts\common.ps1
 
 if ($IsWindows) {
     # Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
     Set-ExecutionPolicy RemoteSigned -Scope Process -Force
 }
+
+& "$PSScriptRoot/bootstrap.ps1"
 
 # Set path to this dotfiles repo
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
@@ -19,4 +21,4 @@ if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
 # Apply my dotfiles
 Write-Output "Applying dotfiles"
 chezmoi init --apply --source="$env:DOTFILES_DIR" kergoth/dotfiles
-
+Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
