@@ -52,6 +52,15 @@ disabled = false
 Macos = ""
 Windows = " "
 
+[shell]
+powershell_indicator = ""
+nu_indicator = "nu "
+elvish_indicator = "esh "
+fish_indicator = "fish "
+format = '$indicator$style'
+style = 'cyan bold'
+disabled = false
+
 [username]
 format = "[$user]($style)@"
 style_user = "bold #8be9fd"
