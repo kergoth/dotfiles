@@ -1602,6 +1602,8 @@
   # typeset -g POWERLEVEL9K_PROXY_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ################################[ battery: internal battery ]#################################
+  # Don't show battery if it's at or above this charge level.
+  typeset -g POWERLEVEL9K_BATTERY_HIDE_ABOVE_THRESHOLD=10
   # Show battery in red when it's below this level and not connected to power supply.
   typeset -g POWERLEVEL9K_BATTERY_LOW_THRESHOLD=10
   typeset -g POWERLEVEL9K_BATTERY_LOW_FOREGROUND=1
