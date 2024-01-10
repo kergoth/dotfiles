@@ -1,0 +1,57 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+format = """$all"""
+{{- if .right_prompt }}
+right_format = """$battery"""
+{{- end }}
+
+[aws]
+style = "bold #ffb86c"
+
+[character]
+error_symbol = "[✘](bold #ff5555)"
+success_symbol = "[❯](bold #50fa7b)"
+
+[cmd_duration]
+format = '[$duration]($style) '
+style = "bold #f1fa8c"
+
+[directory]
+style = "blue"
+truncate_to_repo = false
+
+[docker_context]
+disabled = true
+format = "[$symbol$context]($style) "
+
+[git_branch]
+format = '[$symbol$branch(:$remote_branch)]($style) '
+style = "bold green"
+symbol = ""
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+untracked = ""
+stashed = ""
+style = "bold yellow"
+
+[hostname]
+style = "bold #bd93f9"
+
+[nix_shell]
+format = '[$symbol$state( \(nix $name\))]($style) '
+
+[os]
+disabled = false
+
+[os.symbols]
+Macos = ""
+Windows = " "
+
+[username]
+format = "[$user]($style)@"
+style_user = "bold #8be9fd"
