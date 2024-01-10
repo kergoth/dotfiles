@@ -407,6 +407,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [httpie](https://github.com/httpie/httpie): A command-line HTTP client. Available via brew, nix, and python.
 - [huniq](https://github.com/koraa/huniq): Command line utility to remove duplicates from the given input. Available via nix and cargo. Uses less memory than awk/uniq-seen. Rarely needed.
 - [hyperfine](https://github.com/sharkdp/hyperfine): A command-line benchmarking tool. Available via brew, nix, and cargo.
+- [jc](https://github.com/kellyjonbrazil/jc): CLI tool and python library that converts the output of popular command-line tools, file-types, and common strings to JSON, YAML, or Dictionaries. Available via brew, nix, scoop, and pypi.
 - [petname](https://github.com/dustinkirkland/petname): Generate human readable random names. Available via pypi and cargo.
 - [procs](https://github.com/dalance/procs): A modern replacement for ps written in Rust. Available via brew, nix, scoop, and cargo.
 - [pup](https://github.com/ericchiang/pup): A command line tool for processing HTML. Available via brew, nix, and go.
