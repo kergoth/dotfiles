@@ -75,15 +75,15 @@ done
 # Load manually loaded "plugins"
 . $ZDOTDIR/plugins/bd/bd.zsh
 
+if autoload -Uz git-escape-magic; then
+    git-escape-magic
+fi
+
 # Load syntax highlighting after other plugins
 . $ZDOTDIR/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # history-substring-search must be loaded after syntax-highlighting
 . $ZDOTDIR/plugins/history-substring-search/zsh-history-substring-search.zsh
-
-if autoload -Uz git-escape-magic; then
-    git-escape-magic
-fi
 
 for file in ${(M)config_files:#*/final.zsh}; do
     source $file
