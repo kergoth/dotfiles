@@ -49,6 +49,7 @@ format = '[$symbol$state( \(nix $name\))]($style) '
 disabled = false
 
 [os.symbols]
+Linux = ""
 Macos = ""
 Windows = " "
 
