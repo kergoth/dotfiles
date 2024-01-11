@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 repodir="$(dirname "$(cd "$(dirname "$0")" && pwd -P)")"
-PATH="$repodir/scripts:$repodir/scripts:$HOME/.local/bin:$PATH"
+PATH="$repodir/scripts:$repodir/script:$HOME/.local/bin:$PATH"
 
 # shellcheck source=../scripts/common.sh
 . "$repodir/scripts/common.sh" || exit 1
@@ -11,6 +11,8 @@ set -euo pipefail
 if [ "$(id -u)" = "0" ]; then
     die "Error: Do not run as root, this script is for user setup"
 fi
+
+bootstrap
 
 if [ "$OS" = "linux" ]; then
     if [ -z "$DISTRO" ]; then

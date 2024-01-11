@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 repodir="$(dirname "$(cd "$(dirname "$0")" && pwd -P)")"
-PATH="$repodir/scripts:$repodir/scripts:$HOME/.local/bin:$PATH"
+PATH="$repodir/scripts:$repodir/script:$HOME/.local/bin:$PATH"
 
 # shellcheck source=../scripts/common.sh
 . "$repodir/scripts/common.sh" || exit 1
@@ -17,6 +17,8 @@ fi
 if [ -z "$HOMEBREW_PREFIX" ]; then
     die "HOMEBREW_PREFIX must be set or unset, not the empty string"
 fi
+
+bootstrap
 
 if [ "$OS" = "linux" ]; then
     if [ -z "$DISTRO" ]; then

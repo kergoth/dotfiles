@@ -20,6 +20,8 @@ if ($IsWindows) {
 
 . $PSScriptRoot\..\scripts\common.ps1
 
+& "$PSScriptRoot/bootstrap.ps1"
+
 # Install PowerShell modules
 . $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
 
