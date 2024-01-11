@@ -20,5 +20,5 @@ if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
 
 # Apply my dotfiles
 Write-Output "Applying dotfiles"
-chezmoi init --apply --source="$env:DOTFILES_DIR" kergoth/dotfiles
+chezmoi init --apply --keep-going --source="$env:DOTFILES_DIR" kergoth/dotfiles
 Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
