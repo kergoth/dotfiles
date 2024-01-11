@@ -50,6 +50,10 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
     computer_name = {{ .chezmoi.hostname | quote }}
 {{- end }}
 
+[data.cache]
+    # 1 Week for 1password cache
+    op_age_threshold = 604800
+
 [data.external]
     clone.args = ["--depth", "1"]
 

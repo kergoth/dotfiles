@@ -1,1 +1,15 @@
-{{- onepasswordDocument "oyru6urmiqt7tn5yawteg5jv3m" -}}
+{{/* If the file doesn't exist yet, is older than the age threshold, or the chezmoi config was updated, fetch the value from 1password. */}}
+{{- $targetfile := .chezmoi.targetFile -}}
+{{- $configfile := .chezmoi.configFile }}
+{{- if and (glob $targetfile) (gt (stat $targetfile).modTime (stat $configfile).modTime) -}}
+{{/*  Default of 1 week, or 604800 seconds. */}}
+{{-   $age_threshold := dig "cache" "op_age_threshold" 604800 . -}}
+{{-   $age_in_seconds := sub (now | unixEpoch) (stat $targetfile).modTime -}}
+{{-   if gt $age_in_seconds $age_threshold -}}
+{{-     onepasswordDocument "oyru6urmiqt7tn5yawteg5jv3m" -}}
+{{-   else -}}
+{{-     include $targetfile -}}
+{{-   end -}}
+{{- else -}}
+{{-   onepasswordDocument "oyru6urmiqt7tn5yawteg5jv3m" -}}
+{{- end -}}
