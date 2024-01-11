@@ -206,6 +206,13 @@ if ((Test-Path function:Enable-TransientPrompt) -And (-Not (Test-Path env:VSCODE
 New-Alias recycle Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
 
+if (-Not $env:SCOOP) {
+    $env:SCOOP = "$env:USERPROFILE/scoop"
+}
+if (Test-Path $env:SCOOP) {
+    $env:Path = "$env:SCOOP\shims;" + $env:Path
+}
+
 $env:Path += ";$env:USERPROFILE/.cargo/bin"
 
 if (Test-Path "$env:USERPROFILE/.pyenv") {
