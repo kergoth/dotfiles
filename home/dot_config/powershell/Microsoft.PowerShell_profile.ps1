@@ -230,8 +230,13 @@ if (-Not (Get-Command python -ErrorAction SilentlyContinue)) {
     }
 }
 if (-Not (Get-Command 7z -ErrorAction SilentlyContinue)) {
-    if (Test-Path "C:\Program Files\7-Zip") {
-        $env:Path = "C:\Program Files\7-Zip;" + $env:Path
+    if (Test-Path "$env:ProgramFiles\7-Zip") {
+        $env:Path = "$env:ProgramFiles\7-Zip;" + $env:Path
+    }
+}
+if (-Not (Get-Command qemu-system-x86_64 -ErrorAction SilentlyContinue)) {
+    if (Test-Path "$env:ProgramFiles\qemu") {
+        $env:Path = "$env:ProgramFiles\qemu;" + $env:Path
     }
 }
 if (-Not (Test-Path alias:python3)) {
