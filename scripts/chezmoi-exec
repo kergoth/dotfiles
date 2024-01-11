@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Interpreter which executes after applying chezmoi templating.
+#
+# In order to use this, the path to this script must be either fully qualified
+# or in the PATH.  The script must be executable.
+#
+# Example usage:
+#
+#     $ cat >hello-chemzoi <<EOF
+#     #!/usr/bin/env chezmoi-exec
+#     #!/usr/bin/env bash
+#     echo "Hello, {{ .chezmoi.username }}"
+#     EOF
+#     $ chmod +x hello-chemzoi
+#     $ ./hello-chemzoi
+#     Hello, kergoth
+
+script=$1
+tmpfile=$(mktemp -t "${script##*/}.XXXXXX")
+trap 'rm -f "$tmpfile"' EXIT INT TERM
+tail -n +2 "$script" |
+    chezmoi execute-template >"$tmpfile"
+chmod +x "$tmpfile"
+exec -a "$script" "$tmpfile"
