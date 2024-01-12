@@ -1,85 +1,89 @@
-{{- $codespaces:= env "CODESPACES" | not | not }}
-{{- $devcontainer:= env "REMOTE_CONTAINERS" | not | not }}
-{{- $container := or $devcontainer $codespaces }}
+{{/* boolean feature tags */}}
+{{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
+{{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
+{{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
+{{- $work := false -}}{{/* true if this machine is used for work */}}
 
-{{- $chezmoiForce := or (has "--force" .chezmoi.args) (has "--force=true" .chezmoi.args) -}}
-{{- $interactive := and stdinIsATTY (not $chezmoiForce) -}}
+{{/* detect OS */}}
+{{- $osid := .chezmoi.os -}}
+{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+{{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
+{{- $macos_version := "" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+    {{- $macos_version = slice (output "sw_vers" "-productVersion" | trim | splitList "." ) 0 2 | join "." -}}
+{{- end -}}
+
+{{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
+{{- if or (env "CODESPACES") (env "REMOTE_CONTAINERS_IPC") (eq .chezmoi.username "root" "ubuntu" "vagrant" "vscode") -}}
+{{-   $ephemeral = true -}}
+{{-   $headless = true -}}
+{{- end -}}
+
+{{/* work around unreliable hostname on darwin */}}
+{{- $hostname := .chezmoi.hostname -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $hostname := output "scutil" "--get" "ComputerName" | trim -}}
+{{- end -}}
+
+{{/* detect interactive mode */}}
+{{- $force := or (has "--force" .chezmoi.args) (has "--force=true" .chezmoi.args) -}}
+{{- $interactive := and stdinIsATTY (not $force) -}}
+
+{{/* determine whether to prompt interactively */}}
+{{- $prompt := or (has "--prompt" .chezmoi.args) (has "--prompt=true" .chezmoi.args) -}}
+
+{{/* set defaults based on hostname */}}
+{{- if not $ephemeral -}}
+{{-   if eq $hostname "cas-clarson-m55" -}}
+{{-     if $wsl2 -}}
+{{-       $docker = true -}}
+{{-     end -}}
+{{-     $work = true -}}
+{{-   else if eq $hostname "vaelin" -}}
+{{-     $personal = true -}}
+{{-   else if $interactive -}}
+{{/*    prompt for unknown hostnames by default */}}
+{{-     $prompt = true -}}
+{{-   else -}}
+{{-     $ephemeral = true -}}
+{{-     $headless = true -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* prompt for overrides */}}
+{{- if and $interactive $prompt -}}
+{{-   $headless = promptBoolOnce . "headless" "headless" $headless -}}
+{{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
+{{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
+{{- end -}}
+
+{{- $email := "kergoth@gmail.com" -}}
+{{- if $work -}}
+{{-   $email = "chris.larson@siemens.com" -}}
+{{- end -}}
 
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 
 [data]
-{{- if or (not $interactive) $codespaces }}
-    email = "kergoth@gmail.com"
     name = "Christopher Larson"
     github_username = "kergoth"
-    is_home = false
-    is_siemens = false
-{{- else }}
-    email = {{ promptStringOnce . "email" "Email address" "kergoth@gmail.com" | quote }}
-    name = {{ promptStringOnce . "name" "Full name" "Christopher Larson" | quote }}
-    github_username = {{ promptStringOnce . "github_username" "GitHub username" "kergoth" | quote }}
-    {{- if ne .chezmoi.os "freebsd" }}
-    is_home = {{ promptBoolOnce . "is_home" "Will this device be used on your home network" false }}
-    is_siemens = {{ promptBoolOnce . "is_siemens" "Will this device be used on a Siemens network" false }}
-    {{- else }}
-    is_home = false
-    is_siemens = false
-    {{- end}}
-{{- end }}
+    email = {{ $email | quote }}
 
-{{- if eq .chezmoi.arch "amd64" }}
-    nixarch = "x86_64"
-{{- else }}
-    nixarch = "invalid"
-{{- end }}
-    in_codespace = {{ $codespaces }}
-    in_devcontainer = {{ $devcontainer }}
-    in_container = {{ $container }}
-    is_wsl2 = {{ and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) }}
+    ephemeral = {{ $ephemeral }}
+    headless = {{ $headless }}
+    docker = {{ $docker }}
+    personal = {{ $personal }}
+    work = {{ $work }}
+
+    hostname = {{ $hostname | quote }}
+    osid = {{ $osid | quote }}
+    wsl2 = {{ $wsl2 }}
 {{- if eq .chezmoi.os "darwin" }}
-    {{- $computerName := output "scutil" "--get" "ComputerName" | trim }}
-    {{- $osVersion := output "sw_vers" "-productVersion" | trim }}
-    {{- $splitVersion := splitList "." $osVersion }}
-    {{- $majorVersion := index $splitVersion 0 }}
-    {{- $minorVersion := index $splitVersion 1 }}
-    computer_name = {{ $computerName | quote }}
-    os_version = {{ $majorVersion }}.{{ $minorVersion }}
-    major_version = {{ $majorVersion }}
-    minor_version = {{ $minorVersion }}
-{{- else }}
-    computer_name = {{ .chezmoi.hostname | quote }}
+    macos_version = {{ $macos_version }}
 {{- end }}
-
-[data.external]
-    clone.args = ["--depth", "1"]
-
-[interpreters.ps1]
-    command = "pwsh"
-    args = ["-NoLogo"]
-
-[merge]
-    #command = "nvim"
-    #args = ["-d", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}", "{{ "{{" }} .Target {{ "}}" }}"]
-    command = "code"
-    args = ["--wait", "--merge", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}", "{{ "{{" }} .Target {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}"]
-
-[[textconv]]
-    pattern = "**/*.plist"
-    command = "plutil"
-    args = ["-convert", "xml1", "-o", "-", "-"]
-
-[hooks.read-source-state.pre]
-{{- if eq .chezmoi.os "windows" }}
-    command = "pwsh.exe"
-    args = ["-NoLogo", ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.ps1"]
-{{- else  if eq .chezmoi.os "darwin" }}
-  {{- if or (lookPath "op") (joinPath .chezmoi.homeDir ".brew/bin/op" | glob) (glob "/usr/local/bin/op")}}
-  {{- else }}
-    command = ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.sh"
-  {{- end }}
-{{- else }}
-  {{- if or (lookPath "op") (joinPath .chezmoi.homeDir ".local/bin/op" | glob)}}
-  {{- else }}
-    command = ".local/share/chezmoi/home/.chezmoihooks/install-password-manager.sh"
-  {{- end }}
-{{- end }}
+ 
+[github]
+    refreshPeriod = "12h"

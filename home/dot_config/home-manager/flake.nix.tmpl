@@ -1,3 +1,7 @@
+{{- $nixarch := .chezmoi.arch -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $nixarch = "x86_64" -}}
+{{- end -}}
 {
   description = "Home Manager configuration of {{ .chezmoi.username }}";
 
@@ -12,7 +16,7 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      system = "{{ .nixarch }}-{{ .chezmoi.os }}";
+      system = "{{ $nixarch }}-{{ .chezmoi.os }}";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       homeConfigurations."{{ .chezmoi.username }}" = home-manager.lib.homeManagerConfiguration {
