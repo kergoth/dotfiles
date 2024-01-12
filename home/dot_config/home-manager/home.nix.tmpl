@@ -27,7 +27,9 @@
     gnupg
 
     # Development
+{{- if .docker }}
     docker
+{{- end }}
     nixpkgs-fmt
 
     # Languages
@@ -82,7 +84,7 @@
     reattach-to-user-namespace
   ] ++ lib.optionals stdenv.isLinux [
     glibcLocales
-  {{- if eq .is_wsl2 true }}
+  {{- if .wsl2 }}
     socat
   {{- end }}
   ];

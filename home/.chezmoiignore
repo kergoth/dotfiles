@@ -46,10 +46,10 @@ Library/Caches/*
 {{- end }}
 
 .ssh/keys/*
-{{- if .is_home }}
+{{- if .personal }}
 !.ssh/keys/frey*
 {{- end }}
-{{- if .is_siemens }}
+{{- if .work }}
 !.ssh/keys/work*
 {{- end }}
 
