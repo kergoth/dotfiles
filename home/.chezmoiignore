@@ -95,6 +95,11 @@ Library/Caches/*
 .config/nix/registry.json
 .terminfo
 
+{{- if (or .personal .work) }}
+{{/* common secrets */}}
+.local/share/gnupg/*
+{{- end }}
+
 # I don't track files for this with chezmoi
 .code-terminal
 .vscode
