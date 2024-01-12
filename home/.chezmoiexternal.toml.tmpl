@@ -105,9 +105,9 @@ refreshPeriod = "168h"
     url = "https://github.com/kergoth/dotvim"
     refreshPeriod = "168h"
     [".config/vim".clone]
-    args = {{ $clone_args | toToml }}
+        args = {{ $clone_args | toToml }}
     [".config/vim".pull]
-    args = {{ $pull_args | toToml }}
+        args = {{ $pull_args | toToml }}
 
 {{ if eq .chezmoi.os "windows" }}
 ["_vimrc"]
@@ -156,9 +156,11 @@ stripComponents = 1
     [bin.pull]
     args = {{ $pull_args | toToml }}
 
+{{- $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
+{{- $splitver := $bat_extras_version | splitList "." }}
 [".local/bin"]
 type = "archive"
-url = "https://github.com/eth-p/bat-extras/releases/download/v2023.09.19/bat-extras-202309.19.zip"
+url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
 refreshPeriod = "168h"
 stripComponents = 1
 
