@@ -4,6 +4,7 @@
 {{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
+{{- $setup_user := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
 
 {{/* detect OS */}}
 {{- $osid := .chezmoi.os -}}
@@ -58,6 +59,7 @@
 {{-   $headless = promptBoolOnce . "headless" "headless" $headless -}}
 {{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
 {{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
+{{-   $setup_user = promptBoolOnce . "setup_user" "setup_user" $setup_user -}}
 {{- end -}}
 
 {{- $email := "kergoth@gmail.com" -}}
@@ -77,6 +79,7 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
     docker = {{ $docker }}
     personal = {{ $personal }}
     work = {{ $work }}
+    setup_user = {{ $setup_user }}
 
     hostname = {{ $hostname | quote }}
     osid = {{ $osid | quote }}

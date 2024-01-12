@@ -1,3 +1,4 @@
+{{- if .setup_user -}}
 #!/usr/bin/env bash
 # Apply home manager configuration
 
@@ -16,3 +17,4 @@ if command -v nix >/dev/null 2>&1; then
     echo >&2 "Applying home manager configuration"
     HOME="${CHEZMOI_HOME_DIR:-$HOME}" nix run 'home-manager/master' -- switch
 fi
+{{- end -}}
