@@ -46,7 +46,7 @@ Library/Caches/*
 {{- end }}
 
 .ssh/keys/*
-{{- if not .emphemeral }}
+{{- if not .ephemeral }}
 {{-   if .personal }}
 !.ssh/keys/frey*
 {{-   end }}
