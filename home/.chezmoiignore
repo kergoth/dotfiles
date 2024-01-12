@@ -46,11 +46,13 @@ Library/Caches/*
 {{- end }}
 
 .ssh/keys/*
-{{- if .personal }}
+{{- if not .emphemeral }}
+{{-   if .personal }}
 !.ssh/keys/frey*
-{{- end }}
-{{- if .work }}
+{{-   end }}
+{{-   if .work }}
 !.ssh/keys/work*
+{{-   end }}
 {{- end }}
 
 **/.DS_Store
