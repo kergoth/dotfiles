@@ -396,6 +396,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [dasel](https://github.com/TomWright/dasel): Select, put and delete data from JSON, TOML, YAML, XML and CSV files with a single tool. Available via brew, nix, scoop, and go.
 - [dirdiff](https://github.com/OCamlPro/dirdiff): Efficiently compute the differences between two directories. Available via cargo as `dirdiff-ocamlpro`.
 - [dog](https://github.com/ogham/dog): A command-line DNS client. Available via brew as `dog`, nix as `dogdns`, and cargo from the source.
+- [entr](https://github.com/eradman/entr): Run arbitrary commands when files change. Available via brew and nix.
 - [eva](https://github.com/nerdypepper/eva): A simple calculator REPL, similar to bc. Available via brew, nix, and cargo.
 - [fast](https://github.com/ddo/fast): Minimal zero-dependency utility for testing your internet download speed from terminal. Available via nix as `fast-cli` and go.
 - [fclones](https://github.com/pkolaczk/fclones): Finds and removes duplicate files. Available via brew, nix, and cargo.
