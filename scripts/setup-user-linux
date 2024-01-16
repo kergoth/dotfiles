@@ -9,7 +9,15 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
+# Dotfiles
 "$repodir/script/setup"
+
+# Install pipx, if needed
+if ! command -v pipx &>/dev/null; then
+    msg "Installing pipx"
+    python3 -m pip install --user --disable-pip-version-check pipx
+    python3 -m pipx ensurepath
+fi
 
 # Install PowerShell modules, if needed
 if has pwsh; then
