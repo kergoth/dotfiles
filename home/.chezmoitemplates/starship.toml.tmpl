@@ -6,7 +6,16 @@ add_newline = true
 
 format = """$all"""
 {{- if .right_prompt }}
-right_format = """$battery"""
+right_format = """\
+$status\
+$cmd_duration\
+$jobs\
+$direnv\
+$python\
+$username$hostname\
+$nix_shell\
+$battery\
+"""
 {{- end }}
 
 [aws]
