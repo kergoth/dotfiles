@@ -43,6 +43,20 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
         &starship module character
     }
 
+    function Invoke-Starship-PreCommand {
+        # Support new tab / window at current path in Windows Terminal
+        $loc = $executionContext.SessionState.Path.CurrentLocation
+        $prompt = "$([char]27)]9;12$([char]7)"
+        if ($loc.Provider.Name -eq "FileSystem") {
+            $prompt += "$([char]27)]9;9;`"$($loc.ProviderPath)`"$([char]27)\"
+        }
+        $host.ui.Write($prompt)
+
+        # Set the window title to the currrent path
+        $titleloc = $loc.ToString().Replace($env:USERPROFILE, '~')
+        $host.UI.RawUI.WindowTitle = "$titleloc `a"
+    }
+
     Invoke-Expression (&starship init powershell)
 }
 
@@ -108,8 +122,67 @@ Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
 # Disable the annoying beep
 Set-PSReadLineOption -BellStyle None
 
+function Invoke-AcceptCommand {
+    param($key, $arg)
+
+    if (-Not (Test-Path env:VSCODE_INJECTION)) {
+        # Pulled directly from StarShip, as there's no way to call the function directly
+        $previousOutputEncoding = [Console]::OutputEncoding
+        try {
+            $parseErrors = $null
+            [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$parseErrors, [ref]$null)
+            if ($parseErrors.Count -eq 0) {
+                $script:TransientPrompt = $true
+                [Console]::OutputEncoding = [Text.Encoding]::UTF8
+                [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+            }
+        }
+        finally {
+            if ($script:DoesUseLists) {
+                # If PSReadline is set to display suggestion list, this workaround is needed to clear the buffer below
+                # before accepting the current commandline. The max amount of items in the list is 10, so 12 lines
+                # are cleared (10 + 1 more for the prompt + 1 more for current commandline).
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert("`n" * [math]::Min($Host.UI.RawUI.WindowSize.Height - $Host.UI.RawUI.CursorPosition.Y - 1, 12))
+                [Microsoft.PowerShell.PSConsoleReadLine]::Undo()
+            }
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+            [Console]::OutputEncoding = $previousOutputEncoding
+        }
+    }
+    else {
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    }
+
+    # Set the console title to the currently running command
+    $line = $null
+    $cursor = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+    $Host.UI.RawUI.WindowTitle = $line
+}
+
+Set-PSReadLineKeyHandler -Key Enter `
+    -BriefDescription RunWithTitleAndTransientPrompt `
+    -LongDescription "Set the console title to the command, then run the command, with transient prompt" `
+    -ScriptBlock {
+    param($key, $arg)
+
+    Invoke-AcceptCommand -key $key -arg $arg
+}
+
 # Use Ctrl+r from FZF rather than Readline
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& {
+            $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
+    (zoxide init --hook $hook powershell | Out-String)
+        })
+    New-Alias zz zi -Force
+}
+else {
+    # 'z'. Always import it after prompt setup.
+    Import-Module ZLocation
+}
 
 # Linux/Mac command muscle memory
 if (Get-Command eza -ErrorAction SilentlyContinue) {
@@ -184,23 +257,6 @@ function Set-Location-Create {
     Set-Location @args
 }
 New-Alias mcd Set-Location-Create -Force
-
-if (Get-Command zoxide -ErrorAction SilentlyContinue) {
-    Invoke-Expression (& {
-            $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
-    (zoxide init --hook $hook powershell | Out-String)
-        })
-    New-Alias zz zi -Force
-}
-else {
-    # 'z'. Always import it after prompt setup.
-    Import-Module ZLocation
-}
-
-# Enable transient prompt. This must be enabled after zoxide init.
-if ((Test-Path function:Enable-TransientPrompt) -And (-Not (Test-Path env:VSCODE_INJECTION))) {
-    Enable-TransientPrompt
-}
 
 # Convenience
 New-Alias recycle Remove-ItemSafely -Force
