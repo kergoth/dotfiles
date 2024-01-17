@@ -1,3 +1,5 @@
+## PowerShell Profile
+
 # Use UTF-8 encoding for both input and output
 [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
@@ -334,4 +336,3 @@ else {
 if (Test-Path "$env:USERPROFILE\.local.ps1") {
     . "$env:USERPROFILE\.local.ps1"
 }
-
