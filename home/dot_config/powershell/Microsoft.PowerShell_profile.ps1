@@ -65,18 +65,6 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
     Invoke-Expression (&starship init powershell)
 }
 
-# Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
-Set-PSReadLineOption -Color @{
-    "Command"   = [ConsoleColor]::Green
-    "Parameter" = [ConsoleColor]::Gray
-    "Operator"  = [ConsoleColor]::Magenta
-    "Variable"  = [ConsoleColor]::White
-    "String"    = [ConsoleColor]::Yellow
-    "Number"    = [ConsoleColor]::Blue
-    "Type"      = [ConsoleColor]::Cyan
-    "Comment"   = [ConsoleColor]::DarkCyan
-}
-
 if (-Not $env:DOTFILESDIR) {
     if (Test-Path "$env:USERPROFILE/dotfiles") {
         $env:DOTFILESDIR = "$env:USERPROFILE/dotfiles"
@@ -95,6 +83,25 @@ Import-Module DirColors
 
 # I prefer emacs readline behavior
 Set-PSReadLineOption -EditMode Emacs
+
+# Visual bell, not audible
+Set-PSReadLineOption -BellStyle Visual
+
+# Dracula readline configuration. Requires version 2.0, if you have 1.2 convert to `Set-PSReadlineOption -TokenType`
+Set-PSReadLineOption -Color @{
+    "Command"   = [ConsoleColor]::Green
+    "Parameter" = [ConsoleColor]::Gray
+    "Operator"  = [ConsoleColor]::Magenta
+    "Variable"  = [ConsoleColor]::White
+    "String"    = [ConsoleColor]::Yellow
+    "Number"    = [ConsoleColor]::Blue
+    "Type"      = [ConsoleColor]::Cyan
+    "Comment"   = [ConsoleColor]::DarkCyan
+}
+
+# History configuration
+Set-PSReadLineOption -MaximumHistoryCount 10000
+Set-PSReadLineOption -HistorySaveStyle SaveIncrementally
 
 # Use FZF for tab completion
 Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
@@ -123,9 +130,6 @@ Set-PSReadLineKeyHandler -Key Alt+b -Function ShellBackwardWord
 Set-PSReadLineKeyHandler -Key Alt+f -Function ShellForwardWord
 Set-PSReadLineKeyHandler -Key Alt+B -Function SelectShellBackwardWord
 Set-PSReadLineKeyHandler -Key Alt+F -Function SelectShellForwardWord
-
-# Disable the annoying beep
-Set-PSReadLineOption -BellStyle None
 
 function Invoke-AcceptCommand {
     param($key, $arg)
