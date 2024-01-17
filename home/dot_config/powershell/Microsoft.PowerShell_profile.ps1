@@ -38,6 +38,11 @@ if ($IsWindows) {
     $env:CURL_HOME = "$env:USERPROFILE\.config\curl"
 }
 
+function Set-WindowTitle {
+    param($title)
+    $host.UI.RawUI.WindowTitle = $title
+}
+
 if (Get-Command starship -ErrorAction SilentlyContinue) {
     function Invoke-Starship-TransientFunction {
         &starship module character
