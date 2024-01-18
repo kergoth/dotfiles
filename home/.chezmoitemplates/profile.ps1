@@ -277,8 +277,13 @@ function Set-Location-Create {
 }
 New-Alias mcd Set-Location-Create -Force
 
-# Remove the `sl` Set-Location alias in favor of the sapling command
-Remove-Alias -Name sl -Force
+# Replace the `sl` Set-Location alias in favor of the sapling command
+if (Test-Path alias:sl) {
+    $slcmd = Get-Command -CommandType Application -Name sl
+    if ($slcmd) {
+        Set-Alias -Name sl -Value ($slcmd | Select-Object -First 1).Path -Force -Option Constant, ReadOnly, AllScope
+    }
+}
 
 # Convenience
 New-Alias recycle Remove-ItemSafely -Force
