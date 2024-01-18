@@ -238,7 +238,7 @@ if (Get-Command ghq -ErrorAction SilentlyContinue) {
         }
     }
     function Invoke-FuzzyGetRepositoryGHQ {
-        ghq list | fzf (-split $env:FZF_DEFAULT_OPTS) --query="$args" --select-1
+        ghq list | Invoke-Fzf -Select1 @args
     }
     function Invoke-FuzzySetLocationGHQ {
         $repo = Invoke-FuzzyGetRepositoryGHQ @args
