@@ -275,6 +275,8 @@ New-Alias mcd Set-Location-Create -Force
 New-Alias recycle Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
 
+$env:Path = "$env:USERPROFILE\bin;" + $env:Path
+
 if (-Not $env:SCOOP) {
     $env:SCOOP = "$env:USERPROFILE/scoop"
 }
@@ -331,8 +333,8 @@ if (Get-Command nvim -ErrorAction SilentlyContinue) {
 Add-Alias vi vim
 
 if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction SilentlyContinue)) {
-    $env:EDITOR = "code --wait"
-    $env:VISUAL = "code --wait"
+    $env:EDITOR = "codewait"
+    $env:VISUAL = "codewait"
 
     New-Alias e code -Force
 }
