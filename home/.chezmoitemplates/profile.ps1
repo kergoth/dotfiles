@@ -331,19 +331,17 @@ if (Get-Command nvim -ErrorAction SilentlyContinue) {
     if (-Not (Get-Command vim -ErrorAction SilentlyContinue)) {
         Add-Alias vim nvim
     }
-    $env:EDITOR = "nvim"
-    $env:VISUAL = "nvim"
+    $env:EDITOR = $env:VISUAL = "nvim"
 }
 Add-Alias vi vim
 
 if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction SilentlyContinue)) {
-    $env:EDITOR = "codewait"
-    $env:VISUAL = "codewait"
+    $env:EDITOR = $env:VISUAL = "codewait"
 
     New-Alias e code -Force
 }
 else {
-    New-Alias e vi -Force
+    New-Alias e vim -Force
 }
 
 if (Test-Path "$env:USERPROFILE\.local.ps1") {
