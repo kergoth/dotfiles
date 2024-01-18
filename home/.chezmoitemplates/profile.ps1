@@ -185,6 +185,12 @@ Set-PSReadLineKeyHandler -Key Enter `
 # Use Ctrl+r from FZF rather than Readline
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
+# Enable ** tab expansion from FZF
+Set-PsFzfOption -TabExpansion
+
+# Use fd for paths for FZF
+Set-PsFzfOption -EnableFd
+
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& {
             $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
