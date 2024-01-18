@@ -51,15 +51,17 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
     }
 
     function Invoke-Starship-PreCommand {
-        # Support new tab / window at current path in Windows Terminal
-        $loc = $executionContext.SessionState.Path.CurrentLocation
-        $prompt = "$([char]27)]9;12$([char]7)"
-        if ($loc.Provider.Name -eq "FileSystem") {
-            $prompt += "$([char]27)]9;9;`"$($loc.ProviderPath)`"$([char]27)\"
+        if ($IsWindows) {
+            # Support new tab / window at current path in Windows Terminal
+            $loc = $executionContext.SessionState.Path.CurrentLocation
+            $prompt = "$([char]27)]9;12$([char]7)"
+            if ($loc.Provider.Name -eq "FileSystem") {
+                $prompt += "$([char]27)]9;9;`"$($loc.ProviderPath)`"$([char]27)\"
+            }
+            $host.ui.Write($prompt)
         }
-        $host.ui.Write($prompt)
 
-        # Set the window title to the currrent path
+        # Set the window title to the current path
         $titleloc = $loc.ToString().Replace($env:USERPROFILE, '~')
         $host.UI.RawUI.WindowTitle = "$titleloc `a"
     }
