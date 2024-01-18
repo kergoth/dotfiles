@@ -282,6 +282,11 @@ if (Test-Path $env:SCOOP) {
     $env:Path = "$env:SCOOP\shims;" + $env:Path
 }
 
+# Replace the `sl` Set-Location alias with sapling's `sl` command
+if (Test-Path "$env:SCOOP\apps\sapling\current\sl.exe") {
+    Set-Alias -Name sl -Value "$env:SCOOP\apps\sapling\current\sl.exe" -Force -Option Constant, ReadOnly, AllScope
+}
+
 $env:Path += ";$env:USERPROFILE/.cargo/bin"
 
 if (Test-Path "$env:USERPROFILE/.pyenv") {
