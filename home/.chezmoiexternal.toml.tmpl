@@ -138,15 +138,6 @@ type = "file"
 url = "https://cheat.sh/:zsh"
 refreshPeriod = "168h"
 
-{{ if eq .chezmoi.os "windows" }}
-["AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/archlinux-icon-crystal.svg"]
-type = "archive-file"
-url = "https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz"
-path = "icons/archlinux-icon-crystal-32.svg"
-refreshPeriod = "168h"
-stripComponents = 1
-{{ else }}
-
 ["bin"]
     type = "git-repo"
     url = "https://github.com/kergoth/scripts"
@@ -156,6 +147,14 @@ stripComponents = 1
     [bin.pull]
     args = {{ $pull_args | toToml }}
 
+{{ if eq .chezmoi.os "windows" }}
+["AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/archlinux-icon-crystal.svg"]
+type = "archive-file"
+url = "https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz"
+path = "icons/archlinux-icon-crystal-32.svg"
+refreshPeriod = "168h"
+stripComponents = 1
+{{ else }}
 {{- $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
 {{- $splitver := $bat_extras_version | splitList "." }}
 [".local/bin"]
