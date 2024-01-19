@@ -22,7 +22,7 @@
 		// "source=profile,target=/home/vscode,type=volume",
 		"target=/home/vscode/.vscode-server,type=volume"
 	],
-	"postCreateCommand": "./script/setup",
+	"postCreateCommand": "./script/setup-full",
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
