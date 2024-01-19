@@ -279,7 +279,7 @@ New-Alias mcd Set-Location-Create -Force
 
 # Replace the `sl` Set-Location alias in favor of the sapling command
 if (Test-Path alias:sl) {
-    $slcmd = Get-Command -CommandType Application -Name sl
+    $slcmd = Get-Command -CommandType Application -Name sl -ErrorAction SilentlyContinue
     if ($slcmd) {
         Set-Alias -Name sl -Value ($slcmd | Select-Object -First 1).Path -Force -Option Constant, ReadOnly, AllScope
     }
