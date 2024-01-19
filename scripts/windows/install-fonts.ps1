@@ -22,7 +22,6 @@ function Install-Font {
             Write-Output "Registering font: $fontFile"
             New-ItemProperty -Name $fontName -Path "HKCU:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $fontFile.Name -Force -ErrorAction SilentlyContinue | Out-Null
         }
-        else { Write-Output "Font already registered: $fontFile" }
     }
     catch {
         Write-Output "Error installing font: $fontFile. " $_.exception.message
@@ -32,9 +31,9 @@ function Install-Font {
 
 Add-Type -AssemblyName PresentationCore
 
+Write-Output "Adding user fonts to the registry"
 $FontsPath = Join-Path -Path ([Environment]::GetFolderPath('LocalApplicationData')) -ChildPath 'Microsoft\Windows\Fonts'
 foreach ($FontItem in (Get-ChildItem -Path $FontsPath |
             Where-Object { ($_.Name -like '*.ttf') -or ($_.Name -like '*.otf') })) {
     Install-Font -fontFile $FontItem.FullName
 }
-
