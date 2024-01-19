@@ -9,13 +9,3 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 . "$scriptdir/common.sh" || exit 1
 
 install_nix
-
-if chezmoi dump-config 2>/dev/null | grep -q ephemeral.\*true; then
-    exit 0
-fi
-
-# User shell should be zsh
-if [ -e /bin/zsh ] && [ "$(getent passwd "$(id -un)" | awk -F : '{print $NF}')" != /bin/zsh ]; then
-    msg "Changing user shell to zsh"
-    sudorun chsh -s /bin/zsh "$USER"
-fi
