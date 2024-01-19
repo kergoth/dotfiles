@@ -68,7 +68,13 @@ if [ -z "${DOTFILES_DIR:-}" ]; then
     if [ -h ~/.local/share/chezmoi ]; then
         DOTFILES_DIR="$(readlink ~/.local/share/chezmoi)"
     else
-        DOTFILES_DIR="$HOME/.dotfiles"
+        scriptdir=$(dirname "$0")
+        if [ -n "$scriptdir" ]; then
+            scriptdir=$(cd "$scriptdir" && pwd -P)
+            DOTFILES_DIR="$(dirname "$scriptdir")"
+        else
+            DOTFILES_DIR="$HOME/.dotfiles"
+        fi
     fi
 fi
 
