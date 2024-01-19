@@ -31,8 +31,8 @@ fi
 if ! command -v unar &>/dev/null; then
     msg "Installing dtrx"
     if ! command -v pipx &>/dev/null; then
-        python3 -m pip install --user --disable-pip-version-check pipx
-        python3 -m pipx ensurepath
+        /usr/bin/python3 -m pip install --user --disable-pip-version-check pipx
+        /usr/bin/python3 -m pipx ensurepath
     fi
     pipx install dtrx
 fi || :
