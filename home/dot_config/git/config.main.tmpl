@@ -31,6 +31,15 @@
 
 [sendemail]
 	from = {{ .email }}
+{{- if eq .email "kergoth@gmail.com" }}
+	identity = gmail
+{{- end }}
+
+[sendemail.gmail]
+	smtpserver = smtp.googlemail.com
+	smtpencryption = tls
+	smtpserverport = 587
+	smtpuser = kergoth@gmail.com
 
 [interactive]
 	singlekey = true
