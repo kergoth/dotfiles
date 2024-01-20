@@ -1,5 +1,5 @@
 # https://www.alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell/
-function Install-Font {
+function Register-Font {
     param
     (
         [System.IO.FileInfo]$fontFile
@@ -32,8 +32,20 @@ function Install-Font {
 Add-Type -AssemblyName PresentationCore
 
 Write-Output "Adding user fonts to the registry"
+
 $FontsPath = Join-Path -Path ([Environment]::GetFolderPath('LocalApplicationData')) -ChildPath 'Microsoft\Windows\Fonts'
-foreach ($FontItem in (Get-ChildItem -Path $FontsPath |
-            Where-Object { ($_.Name -like '*.ttf') -or ($_.Name -like '*.otf') })) {
-    Install-Font -fontFile $FontItem.FullName
+if (Get-Command -Name chezmoi -ErrorAction SilentlyContinue) {
+    $fonts = chezmoi data |
+        ConvertFrom-Json |
+        Select-Object -ExpandProperty fonts |
+        ForEach-Object { Join-Path $FontsPath $_ }
+}
+else {
+    $fonts = Get-ChildItem -Path $FontsPath |
+        Where-Object { ($_.Name -like '*.ttf') -or ($_.Name -like '*.otf') } |
+        ForEach-Object { $_.FullName }
+}
+
+foreach ($font in $fonts) {
+    Register-Font -fontFile $font
 }

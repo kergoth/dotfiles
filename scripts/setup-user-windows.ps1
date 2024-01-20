@@ -116,7 +116,7 @@ if (Test-Path "C:\Program Files\SyncTrayzor") {
 }
 
 # Install fonts
-. $PSScriptRoot\windows\install-fonts.ps1
+. $PSScriptRoot\windows\register-fonts.ps1
 
 # Apply my dotfiles
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
