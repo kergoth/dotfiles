@@ -161,7 +161,7 @@ else
         alias open=xdg-open
     fi
 fi
-alias duf='duf -hide-fs autofs,devfs,devtmpfs,tmpfs,mtmfs,none,squashfs,rootfs'
+alias duf='duf -hide-fs autofs,devfs,devtmpfs,tmpfs,mtmfs,none,squashfs,rootfs,overlay,fuse.snapfuse -hide-mp /snap'
 alias sbgrm='sudo =bgrm'
 
 alias wildcard_to_re='python -c "import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))"'
