@@ -287,6 +287,7 @@ if (Test-Path alias:sl) {
 
 # Convenience
 New-Alias recycle Remove-ItemSafely -Force
+New-Alias drop Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
 
 $env:Path = "$env:USERPROFILE\bin;" + $env:Path
