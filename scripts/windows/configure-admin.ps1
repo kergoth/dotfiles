@@ -39,7 +39,6 @@ function Invoke-Sophia {
     CortanaButton -Hide
     OneDriveFileExplorerAd -Hide
     FileTransferDialog -Detailed
-    3DObjects -Hide
     QuickAccessRecentFiles -Hide
     QuickAccessFrequentFolders -Hide
     TaskViewButton -Hide
