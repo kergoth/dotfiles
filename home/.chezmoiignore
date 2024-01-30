@@ -25,6 +25,7 @@ Workspace
 
 {{- if ne .chezmoi.os "windows" }}
 AppData
+.config/scoop
 .chezmoiscripts/gitconfig.ps1
 .chezmoiscripts/vim.ps1
 {{- else }}

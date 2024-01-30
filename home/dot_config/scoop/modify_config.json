@@ -1,0 +1,11 @@
+{{- /* chezmoi:modify-template */ -}}
+
+{{- $data := fromJson .chezmoi.stdin -}}
+
+{{- /* Disable the warning when aria2 is used. */ -}}
+{{- $_ := set $data "aria2-warning-enabled" false -}}
+
+{{- /* Use bat for `scoop cat` */ -}}
+{{- $_ := set $data "cat_style" "grid" -}}
+
+{{- toPrettyJson $data -}}
