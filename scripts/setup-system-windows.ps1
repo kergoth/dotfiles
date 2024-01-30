@@ -83,13 +83,67 @@ if (-Not (Test-InWindowsSandbox)) {
     RefreshEnvPath
 }
 
-# Install GUI apps
-winget import --import-file $PSScriptRoot\windows\winget.json --ignore-versions --no-upgrade --disable-interactivity --accept-source-agreements --accept-package-agreements
+function Install-WinGetPackage {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$package,
+        [Parameter(Mandatory = $false)]
+        [string]$source = "winget",
+        [Parameter(Mandatory = $false)]
+        [string]$override,
+        [Parameter(Mandatory = $false)]
+        [switch]$exact,
+        [Parameter(Mandatory = $false)]
+        [switch]$Force
+    )
 
-if (winget list --disable-interactivity --count 1 --exact --id Microsoft.VisualStudio.2022.Community | Select-String "No installed package found matching input criteria") {
-    # Install Visual Studio C++ Desktop Workload
-    winget install Microsoft.VisualStudio.2022.Community --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
+    if ($exact) {
+        $package = "$package --exact"
+    }
+
+    if (-Not $Force) {
+        if (-Not (winget list --disable-interactivity --accept-source-agreements --count 1 --id $package | Select-String "No installed package found matching input criteria")) {
+            Write-Verbose "Package $package already installed"
+            return
+        }
+    }
+
+    Write-Output "Installing package $package"
+    if ($override) {
+        winget install --source $source $package --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --override $override
+    } else {
+        winget install --source $source $package --disable-interactivity --accept-source-agreements --accept-package-agreements --silent
+    }
 }
+
+# Install GUI apps
+Install-WinGetPackage -package 1Password.1Password
+Install-WinGetPackage -package 7zip.7zip
+Install-WinGetPackage -package Discord.Discord
+Install-WinGetPackage -package Ditto.Ditto
+Install-WinGetPackage -package GnuPG.Gpg4win
+Install-WinGetPackage -package IRCCloud.IRCCloud
+Install-WinGetPackage -package AutoHotkey.AutoHotkey
+Install-WinGetPackage -package Microsoft.PowerShell
+Install-WinGetPackage -package Microsoft.PowerToys
+Install-WinGetPackage -package Microsoft.VisualStudio.2022.BuildTools
+Install-WinGetPackage -package Microsoft.VisualStudioCode
+Install-WinGetPackage -package Microsoft.WindowsTerminal
+Install-WinGetPackage -package Notepad++.Notepad++
+Install-WinGetPackage -package QL-Win.QuickLook
+Install-WinGetPackage -package SyncTrayzor.SyncTrayzor
+Install-WinGetPackage -package Vivaldi.Vivaldi
+
+# SnipDo
+Install-WinGetPackage -package 9NPZ2TVKJVT7 -source msstore
+
+# Visual Studio C++ Desktop Workload
+Install-WinGetPackage -package Microsoft.VisualStudio.2022.Community -override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -Force
+
+# GUI Apps for work
+Install-WinGetPackage -package Microsoft.Teams
+Install-WinGetPackage -package PuTTY.PuTTY
+Install-WinGetPackage -package Rufus.Rufus
 
 # Configuration
 pwsh $PSScriptRoot\windows\configure-admin.ps1
