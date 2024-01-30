@@ -50,12 +50,7 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
     if (-Not (Test-Path $appinstaller)) {
         Invoke-WebRequest -Uri $appinstaller_url -OutFile $appinstaller
     }
-    $license_url = Get-GithubLatestRelease "microsoft/winget-cli" "License"
-    $license = "$DownloadsFolder\" + (Split-Path $license_url -Leaf)
-    if (-Not (Test-Path $license)) {
-        Invoke-WebRequest -Uri $license_url -OutFile $license
-    }
-    Add-AppxProvisionedPackage -Online -PackagePath $appinstaller -LicensePath $license
+    Add-AppxPackage -Path $appinstaller
 
     # Refresh $env:Path
     RefreshEnvPath
