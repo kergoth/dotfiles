@@ -49,6 +49,9 @@ Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
 # Add USERPROFILE to the WSL environment
 Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
 
+# Add ~/.local/bin to the PATH
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
+
 # Install tools
 scoop install bat
 scoop install bat-extras
