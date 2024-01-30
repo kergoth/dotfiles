@@ -15,7 +15,7 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
 
     Write-Output "Installing winget"
 
-    if (-Not (Get-AppxPackage -Name Microsoft.VCLibs.140.00)) {
+    if (-Not (Get-AppxPackage -Name Microsoft.VCLibs.140.00.UWPDesktop)) {
         $vclibs_url = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
         $vclibs = "$DownloadsFolder\" + (Split-Path $vclibs_url -Leaf)
         if (-Not (Test-Path $vclibs)) {
