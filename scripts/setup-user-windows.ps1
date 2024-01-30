@@ -120,9 +120,9 @@ if (Test-Path "C:\Program Files\SyncTrayzor") {
     Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
 }
 
-# Install fonts
-. $PSScriptRoot\windows\register-fonts.ps1
-
 # Apply my dotfiles
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 Join-Path $env:DOTFILES_DIR "script\setup.ps1" | Invoke-Expression
+
+# Register fonts
+. $PSScriptRoot\windows\register-fonts.ps1
