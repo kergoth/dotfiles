@@ -103,3 +103,16 @@ function Set-UserOnlyFileAccess {
     # Remove default groups (Authenticated Users, System, Administrators, Users)
     icacls $Pathname /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
 }
+
+# Set platform variables for use in PowerShell prior to 6.0.
+function Get-PSPlatform {
+    return [System.Environment]::OSVersion.Platform
+}
+
+switch (Get-PSPlatform) {
+    'Win32NT' {
+        New-Variable -Option Constant -Name IsWindows -Value $True -ErrorAction SilentlyContinue
+        New-Variable -Option Constant -Name IsLinux  -Value $false -ErrorAction SilentlyContinue
+        New-Variable -Option Constant -Name IsMacOs  -Value $false -ErrorAction SilentlyContinue
+    }
+}

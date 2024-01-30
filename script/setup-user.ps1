@@ -33,10 +33,10 @@ elseif ($IsWindows) {
     $os = "windows"
 }
 if ($os) {
-    $script = Join-Path $PSScriptRoot ".." "scripts" "setup-user-$os.ps1"
+    $script = "$PSScriptRoot\..\scripts\setup-user-$os.ps1"
     if (Test-Path $script) {
         Write-Output "Running setup-user-$os.ps1"
-        $script | Invoke-Expression
+        & $script
     }
     else {
         Write-Error "No setup-user-$os.ps1 script found"
@@ -46,10 +46,10 @@ if ($IsLinux) {
     if (Test-Path "/etc/os-release") {
         $release = Get-Content /etc/os-release | ConvertFrom-StringData
         $distro = $release.ID
-        $script = Join-Path $PSScriptRoot ".." "scripts" "setup-user-$distro.ps1"
+        $script = "$PSScriptRoot\..\scripts\setup-user-$distro.ps1"
         if (Test-Path $script) {
             Write-Output "Running setup-user-$distro.ps1"
-            $script | Invoke-Expression
+            & $script
         }
         else {
             Write-Error "No setup-user-$distro.ps1 script found"
