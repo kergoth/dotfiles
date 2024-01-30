@@ -22,9 +22,6 @@ if ($IsWindows) {
 
 & "$PSScriptRoot/bootstrap.ps1"
 
-# Install PowerShell modules
-. $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
-
 $os = $null
 if ($IsLinux) {
     $os = "linux"
@@ -59,6 +56,9 @@ if ($IsLinux) {
         }
     }
 }
+
+# Install PowerShell modules
+pwsh.exe $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
 
 Write-Output "User setup complete"
 
