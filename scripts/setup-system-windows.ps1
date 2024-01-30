@@ -89,4 +89,4 @@ if (winget list --disable-interactivity --count 1 --exact --id Microsoft.VisualS
 }
 
 # Configuration
-. $PSScriptRoot\windows\configure-admin.ps1
+pwsh $PSScriptRoot\windows\configure-admin.ps1
