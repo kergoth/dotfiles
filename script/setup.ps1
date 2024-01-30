@@ -14,6 +14,15 @@ if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
     if (-Not (Test-Path "$env:USERPROFILE\.local\share")) {
         New-Item -ItemType Directory -Path "$env:USERPROFILE\.local\share" | Out-Null
     }
+    # Remove any existing symbolic link to ~/.local/share/chezmoi
+    if (Test-Path "$env:USERPROFILE\.local\share\chezmoi") {
+        if ((Get-Item "$env:USERPROFILE\.local\share\chezmoi").LinkType -eq 'SymbsolicLink') {
+            Remove-Item "$env:USERPROFILE\.local\share\chezmoi" -Force
+        }
+        else {
+            throw "$env:USERPROFILE\.local\share\chezmoi exists and is not a symlink. Please remove it manually."
+        }
+    }
     # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
     New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.local\share\chezmoi" -Target $env:DOTFILES_DIR -Force | Out-Null
 }
