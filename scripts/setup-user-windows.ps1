@@ -23,7 +23,7 @@ scoop install git-lfs
 
 # Install languages
 scoop install rust go python
-$reg = Get-ChildItem $env:USERPROFILE\scoop\apps\python\*\install-pep-514.reg -ErrorAction SilentlyContinue | Select-Object -First 1
+$reg = Get-ChildItem $env:USERPROFILE\scoop\apps\python\current\install-pep-514.reg -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($reg) {
     Write-Host "Importing python registry entries"
     reg import $reg
