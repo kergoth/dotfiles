@@ -9,6 +9,9 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 
 . $PSScriptRoot\..\scripts\common.ps1
 
+$ProgressPreference = 'SilentlyContinue' # Suppress progress bar (speed up downloading, especially on PowerShell 5)
+$ConfirmPreference = 'None' # Suppress confirmation prompts
+
 # Install winget
 if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
     $DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
