@@ -122,7 +122,7 @@ if (Test-Path "C:\Program Files\SyncTrayzor") {
 
 # Apply my dotfiles
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
-Join-Path $env:DOTFILES_DIR "script\setup.ps1" | Invoke-Expression
+& "$env:DOTFILES_DIR\script\setup.ps1"
 
 # Register fonts
 . $PSScriptRoot\windows\register-fonts.ps1
