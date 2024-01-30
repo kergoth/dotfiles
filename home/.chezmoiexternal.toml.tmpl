@@ -269,7 +269,7 @@ refreshPeriod = "168h"
 {{- end }}
 
 # Fonts
-{{- if and (not .ephemeral) (not .headless) }}
+{{- if not .headless }}
 {{-   $fontDir := "" }}
 {{-   if eq .chezmoi.os "darwin" }}
 {{-     $fontDir = "Library/Fonts" }}
