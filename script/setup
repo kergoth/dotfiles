@@ -22,6 +22,9 @@ if [ "$repodir" != "$HOME/.local/share/chezmoi" ]; then
     mkdir -p ~/.local/share
     if [ -h ~/.local/share/chezmoi ]; then
         rm -f ~/.local/share/chezmoi
+    elif [ -e ~/.local/share/chezmoi ]; then
+        echo >&2 "Error: ~/.local/share/chezmoi exists and is not a symlink"
+        exit 1
     fi
     ln -sf "$repodir" ~/.local/share/chezmoi
 fi
