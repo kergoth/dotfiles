@@ -342,7 +342,7 @@ if (Get-Command nvim -ErrorAction SilentlyContinue) {
 Add-Alias vi vim
 
 if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction SilentlyContinue)) {
-    $env:EDITOR = $env:VISUAL = "codewait"
+    $env:EDITOR = $env:VISUAL = "codewait.cmd"
 
     New-Alias e code -Force
 }
