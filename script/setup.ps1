@@ -16,7 +16,7 @@ if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
     }
     # Remove any existing symbolic link to ~/.local/share/chezmoi
     if (Test-Path "$env:USERPROFILE\.local\share\chezmoi") {
-        if ((Get-Item "$env:USERPROFILE\.local\share\chezmoi").LinkType -eq 'SymbsolicLink') {
+        if ((Get-Item "$env:USERPROFILE\.local\share\chezmoi").LinkType -eq 'SymbolicLink') {
             Remove-Item "$env:USERPROFILE\.local\share\chezmoi" -Force
         }
         else {
