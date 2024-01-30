@@ -142,7 +142,6 @@ chezmoi update -R
 
   - `$USERPROFILE/Apps`
   - Vivaldi: `AppData/Local/Vivaldi/User Data/Default/`
-  - HexChat: `AppData/Roaming/HexChat`
   - archwsl disk image
 
 - Run QuickLook, right click its icon, click start at login
@@ -372,7 +371,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [AutoHotkey](https://www.autohotkey.com/)
 - [Ditto](https://ditto-cp.sourceforge.io)
 - [Gpg4win](https://www.gpg4win.org): Secure email and file encryption with GnuPG for Windows.
-- [HexChat](https://hexchat.github.io)
 - [Notepad++](https://notepad-plus-plus.org/)
 - [PowerShell](https://learn.microsoft.com/en-us/powershell/)
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/)
