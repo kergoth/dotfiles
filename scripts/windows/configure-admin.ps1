@@ -3,10 +3,12 @@
 function Invoke-Sophia {
     . .\Functions.ps1
 
-    try {
-        CreateRestorePoint
-    }
-    catch {
+    if (-Not (Test-InWindowsSandbox)) {
+        try {
+            CreateRestorePoint
+        }
+        catch {
+        }
     }
 
     # Uninstall OneDrive
