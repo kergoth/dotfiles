@@ -108,16 +108,22 @@ if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
                 }
             }
     }
+} else {
+    Write-Warning "SSH agent not running"
 }
 
 # Add installed software to the user's PATH and/or startup
 if (Test-Path "C:\Program Files\7-Zip") {
     Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
+} else {
+    Write-Warning "7-Zip not installed"
 }
 
 # Run SyncTrayzor, which will add itself to startup
 if (Test-Path "C:\Program Files\SyncTrayzor") {
     Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
+} else {
+    Write-Warning "SyncTrayzor not installed"
 }
 
 # Apply my dotfiles
