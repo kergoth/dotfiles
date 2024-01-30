@@ -58,7 +58,11 @@ if ($IsLinux) {
 }
 
 # Install PowerShell modules
-pwsh.exe $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
+if (Get-Command pwsh -ErrorAction SilentlyContinue) {
+    pwsh $PSScriptRoot\..\scripts\install-pwsh-modules.ps1
+} else {
+    Write-Warning "PowerShell Core not installed"
+}
 
 Write-Output "User setup complete"
 
