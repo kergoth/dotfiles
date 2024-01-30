@@ -8,6 +8,9 @@ if (-Not (Test-Path "$env:SCOOP")) {
 }
 RefreshEnvPath
 
+# Install git
+scoop install git
+
 if (-Not (Test-Path "$env:SCOOP/buckets/extras")) {
     scoop bucket add extras
 }
@@ -15,8 +18,7 @@ if (-Not (Test-Path "$env:SCOOP/buckets/kergoth")) {
     scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
 }
 
-# Install git
-scoop install git
+# Install git-lfs
 scoop install git-lfs
 
 # Install languages
