@@ -84,11 +84,11 @@ if (-Not (Test-InWindowsSandbox)) {
 }
 
 # Install GUI apps
-winget import --import-file $PSScriptRoot\windows\winget.json --ignore-versions --no-upgrade --disable-interactivity --accept-source-agreements
+winget import --import-file $PSScriptRoot\windows\winget.json --ignore-versions --no-upgrade --disable-interactivity --accept-source-agreements --accept-package-agreements
 
 if (winget list --disable-interactivity --count 1 --exact --id Microsoft.VisualStudio.2022.Community | Select-String "No installed package found matching input criteria") {
     # Install Visual Studio C++ Desktop Workload
-    winget install Microsoft.VisualStudio.2022.Community --disable-interactivity --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
+    winget install Microsoft.VisualStudio.2022.Community --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
 }
 
 # Configuration
