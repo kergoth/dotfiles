@@ -3,12 +3,12 @@
     <vGPU>Enable</vGPU>
     <MappedFolders>
         <MappedFolder>
-            <HostFolder>C:\Users\clarson\Sync\Workspace\system-setup</HostFolder>
-            <SandboxFolder>C:\system-setup</SandboxFolder>
+            <HostFolder>C:\Users\m3n6zi\dotfiles</HostFolder>
+            <SandboxFolder>C:\dotfiles</SandboxFolder>
             <ReadOnly>true</ReadOnly>
         </MappedFolder>
     </MappedFolders>
     <LogonCommand>
-        <Command>cmd.exe /c start C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy RemoteSigned -NoExit -WindowStyle Maximized -File c:\system-setup\extras\windows-sandbox\windows-setup.ps1</Command>
+        <Command>cmd.exe /c start C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy RemoteSigned -NoExit -WindowStyle Maximized -File c:\dotfiles\scripts\extras\windows-sandbox\windows-setup.ps1</Command>
     </LogonCommand>
 </Configuration>
