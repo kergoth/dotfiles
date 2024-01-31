@@ -304,7 +304,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [Alfred](https://www.alfredapp.com)
 - [AppCleaner](https://macpaw.com/how-to/best-mac-cleaner-software)
-- [Bear](https://www.pcmag.com/reviews/bear-for-mac)
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
 - [Brooklyn](https://brooklyn99.fandom.com/wiki/Mac)
 - [Calibre](<https://en.wikipedia.org/wiki/Calibre_(software)>)
