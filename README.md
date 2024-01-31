@@ -317,7 +317,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [kitty](https://sw.kovidgoyal.net/kitty/): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
-- [Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12&uo=4&at=10l4tL)
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL)
 - [Rectangle](https://rectangleapp.com): Move and resize windows in macOS using keyboard shortcuts or snap areas.
