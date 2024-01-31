@@ -9,6 +9,11 @@ function Invoke-Sophia {
         }
         catch {
         }
+
+        HEIF -Install
+        NetworkAdaptersSavePower -Disable
+        NetworkDiscovery -Enable
+        TaskManagerWindow -Expanded
     }
 
     # Uninstall OneDrive
@@ -51,7 +56,6 @@ function Invoke-Sophia {
     UnpinTaskbarShortcuts -Shortcuts Edge, Store, Mail
     ControlPanelView -LargeIcons
     JPEGWallpapersQuality -Max
-    TaskManagerWindow -Expanded
     RestartNotification -Show
     ShortcutsSuffix -Disable
     PrtScnSnippingTool -Enable
@@ -68,15 +72,12 @@ function Invoke-Sophia {
     catch [System.Runtime.InteropServices.COMException] {
         $null
     }
-    NetworkAdaptersSavePower -Disable
     ReservedStorage -Disable
     StickyShift -Disable
     Autoplay -Disable
     SaveRestartableApps -Enable
-    NetworkDiscovery -Enable
     RecentlyAddedApps -Hide
     AppSuggestions -Hide
-    HEIF -Install
     CortanaAutostart -Disable
     XboxGameBar -Disable
     XboxGameTips -Disable
