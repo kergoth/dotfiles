@@ -10,18 +10,14 @@ if ($IsWindows) {
 # Set path to this dotfiles repo
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 
-if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
+$chezmoidir = "$env:USERPROFILE\.local\share\chezmoi"
+if ($env:DOTFILES_DIR -ne $chezmoidir) {
     if (-Not (Test-Path "$env:USERPROFILE\.local\share")) {
         New-Item -ItemType Directory -Path "$env:USERPROFILE\.local\share" | Out-Null
     }
-    # Remove any existing symbolic link to ~/.local/share/chezmoi
-    if (Test-Path "$env:USERPROFILE\.local\share\chezmoi") {
-        if ((Get-Item "$env:USERPROFILE\.local\share\chezmoi").LinkType -eq 'SymbolicLink') {
-            Remove-Item "$env:USERPROFILE\.local\share\chezmoi" -Force
-        }
-        else {
-            throw "$env:USERPROFILE\.local\share\chezmoi exists and is not a symlink. Please remove it manually."
-        }
+    # Check for non-symbolic-link ~/.local/share/chezmoi
+    if ((Test-Path $chezmoidir) -And ((Get-Item $chezmoidir).LinkType -ne 'SymbolicLink')) {
+        throw "$chezmoidir exists and is not a symlink. Please remove it manually."
     }
     # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
     New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.local\share\chezmoi" -Target $env:DOTFILES_DIR -Force | Out-Null
@@ -29,5 +25,6 @@ if ($env:DOTFILES_DIR -ne "$env:USERPROFILE\.local\share\chezmoi") {
 
 # Apply my dotfiles
 Write-Output "Applying dotfiles"
-chezmoi init --apply --keep-going
+chezmoi init
+chezmoi apply --keep-going
 Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
