@@ -133,4 +133,4 @@ $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 & "$env:DOTFILES_DIR\script\setup.ps1"
 
 # Register fonts
-. $PSScriptRoot\windows\register-fonts.ps1
+& $PSScriptRoot\windows\register-fonts.ps1

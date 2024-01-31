@@ -90,7 +90,7 @@ if (-Not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
     RefreshEnvPath
 }
 
-pwsh $PSScriptRoot\windows\install-wingetpackages.ps1
+pwsh -NoProfile $PSScriptRoot\windows\install-wingetpackages.ps1
 
 # Configuration
-pwsh $PSScriptRoot\windows\configure-admin.ps1
+pwsh -NoProfile $PSScriptRoot\windows\configure-admin.ps1
