@@ -4,7 +4,7 @@
 
 Write-Verbose "Installing PowerShell modules"
 Install-ModuleIfNotInstalled DirColors
-Install-ModuleIfNotInstalled Recycle
+Install-ModuleIfNotInstalled Microsoft.WinGet.Client
 Install-ModuleIfNotInstalled posh-alias
 Install-ModuleIfNotInstalled PSFzf
-
+Install-ModuleIfNotInstalled Recycle

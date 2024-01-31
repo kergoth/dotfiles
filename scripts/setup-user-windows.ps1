@@ -1,4 +1,3 @@
-
 # Install scoop
 if (-Not $env:SCOOP) {
     $env:SCOOP = "$env:USERPROFILE/scoop"

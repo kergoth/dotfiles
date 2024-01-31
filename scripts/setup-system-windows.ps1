@@ -12,6 +12,30 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 $ProgressPreference = 'SilentlyContinue' # Suppress progress bar (speed up downloading, especially on PowerShell 5)
 $ConfirmPreference = 'None' # Suppress confirmation prompts
 
+# Enable WSL, WSL 2, Sandbox
+if (-Not (Test-InWindowsSandbox)) {
+    # Enable WSL
+    $feature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    if (-Not $feature) {
+        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -All -NoRestart
+    }
+
+    # Enable Virtual Machine Platform for WSL 2
+    $feature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+    if (-Not $feature) {
+        Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
+    }
+
+    # Enable Windows Sandbox
+    $feature = Get-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
+    if (-Not $feature) {
+        Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
+    }
+
+    # Refresh $env:Path
+    RefreshEnvPath
+}
+
 # Install winget
 if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
     $DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
@@ -59,91 +83,14 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
     RefreshEnvPath
 }
 
-# Enable WSL, WSL 2, Sandbox
-if (-Not (Test-InWindowsSandbox)) {
-    # Enable WSL
-    $feature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-    if (-Not $feature) {
-        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -All -NoRestart
-    }
-
-    # Enable Virtual Machine Platform for WSL 2
-    $feature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
-    if (-Not $feature) {
-        Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
-    }
-
-    # Enable Windows Sandbox
-    $feature = Get-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
-    if (-Not $feature) {
-        Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
-    }
+if (-Not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
+    winget install --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --no-upgrade --id Microsoft.PowerShell
 
     # Refresh $env:Path
     RefreshEnvPath
 }
 
-function Install-WinGetPackage {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$package,
-        [Parameter(Mandatory = $false)]
-        [string]$source = "winget",
-        [Parameter(Mandatory = $false)]
-        [string]$override,
-        [Parameter(Mandatory = $false)]
-        [switch]$exact,
-        [Parameter(Mandatory = $false)]
-        [switch]$Force
-    )
-
-    if ($exact) {
-        $package = "$package --exact"
-    }
-
-    if (-Not $Force) {
-        if (-Not (winget list --disable-interactivity --accept-source-agreements --count 1 --id $package | Select-String "No installed package found matching input criteria")) {
-            Write-Verbose "Package $package already installed"
-            return
-        }
-    }
-
-    Write-Output "Installing package $package"
-    if ($override) {
-        winget install --source $source $package --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --override $override
-    } else {
-        winget install --source $source $package --disable-interactivity --accept-source-agreements --accept-package-agreements --silent
-    }
-}
-
-# Install GUI apps
-Install-WinGetPackage -package AgileBits.1Password
-Install-WinGetPackage -package 7zip.7zip
-Install-WinGetPackage -package Discord.Discord
-Install-WinGetPackage -package Ditto.Ditto
-Install-WinGetPackage -package GnuPG.Gpg4win
-Install-WinGetPackage -package IRCCloud.IRCCloud
-Install-WinGetPackage -package AutoHotkey.AutoHotkey
-Install-WinGetPackage -package Microsoft.PowerShell
-Install-WinGetPackage -package Microsoft.PowerToys
-Install-WinGetPackage -package Microsoft.VisualStudio.2022.BuildTools
-Install-WinGetPackage -package Microsoft.VisualStudioCode
-Install-WinGetPackage -package Microsoft.WindowsTerminal
-Install-WinGetPackage -package Notepad++.Notepad++
-Install-WinGetPackage -package QL-Win.QuickLook
-Install-WinGetPackage -package SyncTrayzor.SyncTrayzor
-Install-WinGetPackage -package Vivaldi.Vivaldi
-
-# SnipDo
-Install-WinGetPackage -package 9NPZ2TVKJVT7 -source msstore
-
-# Visual Studio C++ Desktop Workload
-Install-WinGetPackage -package Microsoft.VisualStudio.2022.Community -override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
-
-# GUI Apps for work
-Install-WinGetPackage -package Microsoft.Teams
-Install-WinGetPackage -package PuTTY.PuTTY
-Install-WinGetPackage -package Rufus.Rufus
+pwsh $PSScriptRoot\windows\install-wingetpackages.ps1
 
 # Configuration
 pwsh $PSScriptRoot\windows\configure-admin.ps1
