@@ -1,8 +1,5 @@
 . $PSScriptRoot\..\common.ps1
 
-$ProgressPreference = 'SilentlyContinue' # Suppress progress bar (speed up downloading, especially on PowerShell 5)
-$ConfirmPreference = 'None' # Suppress confirmation prompts
-
 Install-ModuleIfNotInstalled Microsoft.WinGet.Client
 
 Import-Module Microsoft.WinGet.Client
