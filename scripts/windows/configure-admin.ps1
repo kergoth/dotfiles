@@ -89,7 +89,6 @@ function Invoke-Sophia {
     MSIExtractContext -Show
     CABInstallContext -Show
     MultipleInvokeContext -Enable
-    RefreshEnvironment
     Errors
 }
 
