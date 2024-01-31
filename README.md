@@ -281,6 +281,10 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [PSFzf](https://github.com/kelleyma49/PSFzf): A PowerShell wrapper around the fuzzy finder fzf.
 - [Recycle](https://www.powershellgallery.com/packages/Recycle): Deletes the file or folder as if it had been done via File Explorer, or restores a deleted file from the recycle bin.
 
+#### Powershell Modules on Windows only
+
+- [Microsoft.WinGet.Client](https://www.powershellgallery.com/packages/Microsoft.WinGet.Client): PowerShell Module for the Windows Package Manager Client.
+
 ### Installed GUI Software (MacOS & Windows Only)
 
 #### GUI Software on Windows and macOS
