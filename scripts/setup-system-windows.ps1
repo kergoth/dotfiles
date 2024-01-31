@@ -117,7 +117,7 @@ function Install-WinGetPackage {
 }
 
 # Install GUI apps
-Install-WinGetPackage -package 1Password.1Password
+Install-WinGetPackage -package AgileBits.1Password
 Install-WinGetPackage -package 7zip.7zip
 Install-WinGetPackage -package Discord.Discord
 Install-WinGetPackage -package Ditto.Ditto
