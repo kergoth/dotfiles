@@ -138,7 +138,7 @@ Install-WinGetPackage -package Vivaldi.Vivaldi
 Install-WinGetPackage -package 9NPZ2TVKJVT7 -source msstore
 
 # Visual Studio C++ Desktop Workload
-Install-WinGetPackage -package Microsoft.VisualStudio.2022.Community -override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended" -Force
+Install-WinGetPackage -package Microsoft.VisualStudio.2022.Community -override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
 
 # GUI Apps for work
 Install-WinGetPackage -package Microsoft.Teams
