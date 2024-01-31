@@ -220,15 +220,15 @@ chezmoi update -R
 
 - [nix](https://nixos.org): Nix is a tool that takes a unique approach to package management and system configuration.
 
-- [ssh-copy-id](https://www.openssh.com): Install your identity.pub in a remote machine’s authorized_keys.
-
-  - On Windows, I have a powershell function which does this, and is aliased to `ssh-copy-id`.
-
 #### CLI Packages on Linux, macOS, and FreeBSD
 
 - [patchutils](http://cyberelk.net/tim/software/patchutils/): A small collection of programs that operate on patch files.
 
   - On Windows, patchutils can be used via either WSL or MSYS2 (which can be installed via scoop and run as `msys2`, ex. `msys2 -c 'exec filterdiff "$@"' -`).
+
+- [ssh-copy-id](https://www.openssh.com): Install your identity.pub in a remote machine’s authorized_keys.
+
+  - On Windows, I have a powershell function which does this, and is aliased to `ssh-copy-id`.
 
 - [tmux](https://github.com/tmux/tmux): An open-source terminal multiplexer.
 
