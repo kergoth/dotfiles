@@ -291,5 +291,17 @@ refreshPeriod = "168h"
     url = "https://github.com/romkatv/powerlevel10k-media/raw/master/{{ . }}"
     refreshPeriod = "168h"
 {{-     end }}
+{{-     range (list
+        "iA Writer Duo/Variable/iAWriterDuoV-Italic.ttf"
+        "iA Writer Duo/Variable/iAWriterDuoV.ttf"
+        "iA Writer Mono/Variable/iAWriterMonoV-Italic.ttf"
+        "iA Writer Mono/Variable/iAWriterMonoV.ttf"
+        "iA Writer Quattro/Variable/iAWriterQuattroV-Italic.ttf"
+        "iA Writer Quattro/Variable/iAWriterQuattroV.ttf") }}
+["{{ $fontDir }}/{{ base . }}"]
+    type = "file"
+    url = "https://github.com/iaolo/iA-Fonts/raw/master/{{ . | replace " " "%20" }}"
+    refreshPeriod = "168h"
+{{-     end }}
 {{-   end }}
 {{- end }}

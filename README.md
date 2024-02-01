@@ -177,6 +177,7 @@ chezmoi update -R
 
 ### Fonts
 
+- [iA-Fonts](https://github.com/iaolo/iA-Fonts): iA Writer Mono, Duo, and Quattro.
 - [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md): Meslo Nerd Font patched for Powerlevel10k.
 
 ### Installed CLI Packages

@@ -1,5 +1,11 @@
 fonts:
 
+  - "iAWriterDuoV-Italic.ttf"
+  - "iAWriterDuoV.ttf"
+  - "iAWriterMonoV-Italic.ttf"
+  - "iAWriterMonoV.ttf"
+  - "iAWriterQuattroV-Italic.ttf"
+  - "iAWriterQuattroV.ttf"
   - "MesloLGS NF Regular.ttf"
   - "MesloLGS NF Bold.ttf"
   - "MesloLGS NF Italic.ttf"
