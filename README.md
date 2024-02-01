@@ -347,13 +347,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL)
 - [Vinegar](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229?uo=4&at=10l4tL)
 
-##### Fonts
-
-- [Fira Code](https://github.com/tonsky/FiraCode) ([Nerd Font](https://github.com/ryanoasis/nerd-fonts))
-- [Fira Mono](https://github.com/mozilla/Fira) ([Nerd Font](https://github.com/ryanoasis/nerd-fonts))
-- [Input](https://input.djr.com)
-- [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
-
 ##### QuickLook Plugins
 
 - [Apparency](https://www.mothersruin.com/software/Apparency/): Preview the contents of a macOS app
