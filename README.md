@@ -175,6 +175,10 @@ chezmoi update -R
 - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
 
+### Fonts
+
+- [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md): Meslo Nerd Font patched for Powerlevel10k.
+
 ### Installed CLI Packages
 
 - [curl](https://curl.se): Command line tool and library for transferring data with URLs.
