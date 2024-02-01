@@ -380,7 +380,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [PowerShell](https://learn.microsoft.com/en-us/powershell/)
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/)
 - [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/)
-- [QuickLook](https://www.apple.com/mac/)
+- [QuickLook](https://github.com/QL-Win/QuickLook)
 - [Rufus](https://rufus.ie/)
 - [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you
 - [SyncTrayzor](https://github.com/canton7/SyncTrayzor)
