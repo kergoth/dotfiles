@@ -443,17 +443,18 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
 - [MusicBrainz Picard](https://picard.musicbrainz.org): A cross-platform music tagger. Available via brew as `musicbrainz-picard`, nix as `picard`, Microsoft Store, winget as `MusicBrainz.Picard`, and scoop as `picard`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
-- [Tor Browser](https://www.torproject.org/): Browser with a focus on anonymity using the Tor Network. Available via brew as `tor-browser`, nix as `tor-browser-bundle-bin`, and winget as `TorProject.TorBrowser`.
 
 #### As Needed GUI Software for macOS
 
 - [Adapter](https://macroplant.com/adapter): Convert Video, Audio and Images. Available via brew as `adapter`.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
+- [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
 - [Numbers](https://www.apple.com/numbers/): Create impressive spreadsheets. Available via Mac App Store.
 - [Pages](https://www.apple.com/pages/): Documents that stand apart. Available via Mac App Store.
 - [PhotoSweeper](https://overmacs.com): A fast & powerful duplicate photos cleaner for Mac. Available via brew as `photosweeper-x`.
-- [Pixelmator](https://www.pixelmator.com/mac/): Powerful, full-featured image editor for Mac. Available via Mac App Store.
+- [Pixelmator Classic](https://www.pixelmator.com/mac/): Powerful, full-featured image editor for Mac. Available via Mac App Store.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool.
+- [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
 
 #### As Needed GUI Software for Windows (All but BCU are available via winget)
