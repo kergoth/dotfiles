@@ -148,7 +148,6 @@ chezmoi update -R
 - Create link to CapsLockCtrlEscape.exe in Startup (win-r -> shell:startup)
 - Install Fonts from Sync/Fonts
 - Run vscode, enable settings sync
-- Run `ssh-add` in powershell to add my key to the agent, if it exists
 - Remove Edge, Store, Mail from the task bar pins.
 
 ## What's Included
