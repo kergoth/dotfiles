@@ -444,6 +444,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### As Needed GUI Software
 
+- [Balena Etcher](https://www.balena.io/etcher/): Flash OS images to SD cards & USB drives, safely and easily. Available via brew as `balenaetcher`, winget as `Balena.Etcher`, and scoop as `extras/etcher`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
 - [MusicBrainz Picard](https://picard.musicbrainz.org): A cross-platform music tagger. Available via brew as `musicbrainz-picard`, nix as `picard`, Microsoft Store, winget as `MusicBrainz.Picard`, and scoop as `picard`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
@@ -464,7 +465,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 #### As Needed GUI Software for Windows (All are available via winget)
 
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
-- [Balena Etcher](https://www.balena.io/etcher/)
 - [Paint.NET](https://getpaint.net)
 - [Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
 - [WinSCP](https://winscp.net/)
