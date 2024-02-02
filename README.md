@@ -310,7 +310,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Alfred](https://www.alfredapp.com)
 - [AppCleaner](https://macpaw.com/how-to/best-mac-cleaner-software)
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
-- [Brooklyn](https://brooklyn99.fandom.com/wiki/Mac)
+- [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn)
 - [Calibre](<https://en.wikipedia.org/wiki/Calibre_(software)>)
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
