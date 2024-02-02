@@ -295,10 +295,10 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
-- [IRCCloud](https://www.irccloud.com/)
-- [Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software?ms.url=teamscom&rtc=1)
-- [Visual Studio Code](https://code.visualstudio.com)
-- [Vivaldi](https://vivaldi.com/)
+- [IRCCloud](https://www.irccloud.com/): IRC client.
+- [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
+- [Visual Studio Code](https://code.visualstudio.com): Open-source code editor.
+- [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
 - [VLC](https://www.videolan.org/vlc/download-macosx.html): A free and open source cross-platform multimedia player.
 
 #### GUI Software on macOS (Pre-Sonoma Only)
@@ -307,33 +307,33 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 #### GUI Software on macOS
 
-- [Alfred](https://www.alfredapp.com)
-- [AppCleaner](https://macpaw.com/how-to/best-mac-cleaner-software)
+- [Alfred](https://www.alfredapp.com): Application uninstaller.
+- [AppCleaner](https://freemacsoft.net/appcleaner/): A small application which allows you to thoroughly uninstall unwanted apps.
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
-- [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn)
-- [Calibre](<https://en.wikipedia.org/wiki/Calibre_(software)>)
+- [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn): Screen saver based on animations presented during Apple Special Event Brooklyn.
+- [Calibre](https://calibre-ebook.com): E-books management software.
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [DevDocs for macOS](https://github.com/dteoh/devdocs-macos): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
 - [GPG Suite](https://gpgtools.org): Tools to protect your emails and files.
-- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL)
-- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL)
+- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later.
+- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL): Hide menubar items.
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar.
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org): A powerful and stable keyboard customizer for macOS.
 - [kitty](https://sw.kovidgoyal.net/kitty/): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
-- [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL)
+- [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
 - [Rectangle](https://rectangleapp.com): Move and resize windows in macOS using keyboard shortcuts or snap areas.
 - [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps): A preference pane will let you view and change default application associations.
-- [SyncThing](https://syncthing.net/)
-- [The Unarchiver](https://macpaw.com/download/the-unarchiver)
+- [SyncThing](https://syncthing.net/): A continuous file synchronization program.
+- [The Unarchiver](https://macpaw.com/download/the-unarchiver): Unpack archive files.
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
 - [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
-- [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL)
-- [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL)
+- [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
+- [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL): WiFi Connection Status Monitor.
 
 ##### Safari Extensions
 
@@ -366,7 +366,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [QuickLookJSON](http://www.sagtau.com/quicklookjson.html): A useful quick look plugin to preview JSON files
 - [QuickLookASE](https://github.com/rsodre/QuickLookASE): Preview Adobe ASE Color Swatches generated with Adobe Photoshop, Adobe Illustrator, Adobe Color CC, Spectrum, COLOURlovers, Prisma, among many others
 - [Suspicious Package](https://www.mothersruin.com/software/SuspiciousPackage/): Preview the contents of a standard Apple installer package
-- [WebPQuickLook](https://github.com/emin/WebPQuickLook)
+- [WebPQuickLook](https://github.com/emin/WebPQuickLook): QuickLook plugin for WebP image files
 
 #### GUI Software on Windows
 
@@ -446,12 +446,14 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [Balena Etcher](https://www.balena.io/etcher/): Flash OS images to SD cards & USB drives, safely and easily. Available via brew as `balenaetcher`, winget as `Balena.Etcher`, and scoop as `extras/etcher`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
+- [HandBrake](https://handbrake.fr/): The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
 - [MusicBrainz Picard](https://picard.musicbrainz.org): A cross-platform music tagger. Available via brew as `musicbrainz-picard`, nix as `picard`, Microsoft Store, winget as `MusicBrainz.Picard`, and scoop as `picard`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
 
 #### As Needed GUI Software for macOS
 
 - [Adapter](https://macroplant.com/adapter): Convert Video, Audio and Images. Available via brew as `adapter`.
+- [Burn](https://burn-osx.sourceforge.io/Pages/English/home.html): Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
 - [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
 - [Numbers](https://www.apple.com/numbers/): Create impressive spreadsheets. Available via Mac App Store.
@@ -461,12 +463,17 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [SwiftBar](https://swiftbar.app/)]: Powerful macOS menu bar customization tool.
 - [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
+- [XLD](https://tmkk.undo.jp/xld/index_e.html): Lossless audio decoder.
 
 #### As Needed GUI Software for Windows (All are available via winget)
 
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
+- [Exact Audio Copy](https://www.exactaudiocopy.de): Audio grabber for audio CDs using standard CD and DVD-ROM drives
+- [ImDisk](https://sourceforge.net/projects/imdisk-toolkit/): Mount image files of hard drive, cd-rom or floppy.
+- [ImgBurn](https://www.imgburn.com): A lightweight CD / DVD / HD DVD / Blu-ray burning application. Available via winget as `LIGHTNINGUK.ImgBurn`.
 - [Paint.NET](https://getpaint.net)
 - [Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
+- [WinImage](https://www.winimage.com/winimage.htm): A fully-fledged disk-imaging suite for easy creation, reading and editing of many image formats and fileystems.
 - [WinSCP](https://winscp.net/)
 
 ## Implementation Notes
