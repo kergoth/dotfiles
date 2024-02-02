@@ -313,12 +313,14 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Brooklyn](https://brooklyn99.fandom.com/wiki/Mac)
 - [Calibre](<https://en.wikipedia.org/wiki/Calibre_(software)>)
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
+- [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
 - [Declutter](https://apps.apple.com/us/app/declutter-pro/id1187706662?mt=12&uo=4&at=10l4tL)
 - [DevDocs for macOS](https://github.com/dteoh/devdocs-macos): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
 - [GPG Suite](https://gpgtools.org): Tools to protect your emails and files.
 - [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL)
 - [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL)
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar.
+- [Karabiner-Elements](https://karabiner-elements.pqrs.org): A powerful and stable keyboard customizer for macOS.
 - [kitty](https://sw.kovidgoyal.net/kitty/): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
