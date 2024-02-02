@@ -446,9 +446,13 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [Balena Etcher](https://www.balena.io/etcher/): Flash OS images to SD cards & USB drives, safely and easily. Available via brew as `balenaetcher`, winget as `Balena.Etcher`, and scoop as `extras/etcher`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
+- [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
+- [dupeGuru](https://dupeguru.voltaicideas.net): A cross-platform GUI tool to find duplicate files in a system.
 - [HandBrake](https://handbrake.fr/): The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
+- [Malwarebytes](https://www.malwarebytes.com): Warns about malware, adware and spyware.
 - [MusicBrainz Picard](https://picard.musicbrainz.org): A cross-platform music tagger. Available via brew as `musicbrainz-picard`, nix as `picard`, Microsoft Store, winget as `MusicBrainz.Picard`, and scoop as `picard`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
+- [Video Duplicate Finder](https://github.com/0x90d/videoduplicatefinder): Cross-platform software to find duplicated video (and image) files on hard disk based on similiarity.
 
 #### As Needed GUI Software for macOS
 
@@ -457,6 +461,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
 - [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
 - [Numbers](https://www.apple.com/numbers/): Create impressive spreadsheets. Available via Mac App Store.
+- [Onyx](https://www.titanium-software.fr/en/onyx.html): Verify system files structure, run miscellaneous maintenance and more. Available via brew as `onyx`.
 - [Pages](https://www.apple.com/pages/): Documents that stand apart. Available via Mac App Store.
 - [PhotoSweeper](https://overmacs.com): A fast & powerful duplicate photos cleaner for Mac. Available via brew as `photosweeper-x`.
 - [Pixelmator Classic](https://www.pixelmator.com/mac/): Powerful, full-featured image editor for Mac. Available via Mac App Store.
@@ -468,6 +473,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 #### As Needed GUI Software for Windows (All are available via winget)
 
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
+- [BleachBit](https://www.bleachbit.org): Clean Your System and Free Disk Space. Available via winget as `BleachBit.BleachBit`.
 - [Exact Audio Copy](https://www.exactaudiocopy.de): Audio grabber for audio CDs using standard CD and DVD-ROM drives
 - [ImDisk](https://sourceforge.net/projects/imdisk-toolkit/): Mount image files of hard drive, cd-rom or floppy.
 - [ImgBurn](https://www.imgburn.com): A lightweight CD / DVD / HD DVD / Blu-ray burning application. Available via winget as `LIGHTNINGUK.ImgBurn`.
