@@ -299,6 +299,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software?ms.url=teamscom&rtc=1)
 - [Visual Studio Code](https://code.visualstudio.com)
 - [Vivaldi](https://vivaldi.com/)
+- [VLC](https://www.videolan.org/vlc/download-macosx.html): A free and open source cross-platform multimedia player.
 
 #### GUI Software on macOS (Pre-Sonoma Only)
 
@@ -330,7 +331,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [The Unarchiver](https://macpaw.com/download/the-unarchiver)
 - [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
-- [VLC](https://www.videolan.org/vlc/download-macosx.html)
 - [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL)
 - [WiFi Signal](https://apps.apple.com/us/app/wifi-signal-status-monitor/id525912054?mt=12&uo=4&at=10l4tL)
@@ -372,6 +372,8 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [7-Zip](https://www.7-zip.org/)
 - [AutoHotkey](https://www.autohotkey.com/)
+- [Bulk Crap Uninstaller](https://www.bcuninstaller.com): Remove large amounts of unwanted applications quickly.
+- [DevDocs Desktop](https://github.com/egoist/devdocs-desktop): A full-featured desktop app for DevDocs.io.
 - [Ditto](https://ditto-cp.sourceforge.io)
 - [Gpg4win](https://www.gpg4win.org): Secure email and file encryption with GnuPG for Windows.
 - [Notepad++](https://notepad-plus-plus.org/)
@@ -380,9 +382,12 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/)
 - [QuickLook](https://github.com/QL-Win/QuickLook)
 - [Rufus](https://rufus.ie/)
-- [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you
+- [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you.
 - [SyncTrayzor](https://github.com/canton7/SyncTrayzor)
+- [WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US): Identify Wi-Fi problems or find the best channel.
+- [Windows Firewall Control](https://www.binisoft.org/wfc): Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US)
+- [WizTree](https://diskanalyzer.com): View the size of all files and folders visually.
 
 ## Apps I install on an as-needed basis
 
@@ -456,14 +461,12 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [TaskExplorer](https://objective-see.org/products/taskexplorer.html): Explore all the tasks (processes) running on your Mac with TaskExplorer.
 - [Wineskin](https://github.com/Gcenx/WineskinServer): A user-friendly tool used to make ports of Microsoft Windows software to macOS. Available via brew as `gcenx/wine/unofficial-wineskin`.
 
-#### As Needed GUI Software for Windows (All but BCU are available via winget)
+#### As Needed GUI Software for Windows (All are available via winget)
 
 - [Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
 - [Balena Etcher](https://www.balena.io/etcher/)
-- [Bulk Crap Uninstaller](https://www.bcuninstaller.com): Remove large amounts of unwanted applications quickly. This is an [open source](https://github.com/Klocman/Bulk-Crap-Uninstaller) alternative to [Revo Uninstaller](https://www.revouninstaller.com). Available via scoop as `bulk-crap-uninstaller`. The project is currently looking for maintainers, so I may look for an alternative in the future.
 - [Paint.NET](https://getpaint.net)
 - [Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer) (from [Sysinternals](https://learn.microsoft.com/en-us/sysinternals/))
-- [WinDirStat](https://windirstat.net/)
 - [WinSCP](https://winscp.net/)
 
 ## Implementation Notes
