@@ -476,11 +476,28 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [WinImage](https://www.winimage.com/winimage.htm): A fully-fledged disk-imaging suite for easy creation, reading and editing of many image formats and fileystems.
 - [WinSCP](https://winscp.net/)
 
-## Formerly-Used Applications
+## Formerly-Used
+
+### Formerly-Used Applications
 
 - [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
 - [foobar2000](https://www.foobar2000.org): This is a great music player, but I use Apple Music and iTunes for streaming, and beets for my music library for portable devices, so this is no longer needed.
 - [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
+
+### Formerly-Used Fonts
+
+- [Recursive](https://www.recursive.design) Code
+- [Fira Code](https://github.com/tonsky/FiraCode)
+- [Input](https://input.djr.com) Mono Narrow
+- [Inconsolata](https://levien.com/type/myfonts/inconsolata.html): See also [Google Fonts](https://fonts.google.com/specimen/Inconsolata)
+- [Terminus](https://terminus-font.sourceforge.net)
+- [DejaVu](https://dejavu-fonts.github.io) Sans Mono
+- [Leonine Sans Mono](https://www.leonerd.org.uk/hacks/hints/leoninesansmono.html)
+- [Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/) Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
+
+### Formerly-Used Fonts - Occasional Use
+
+- [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released)
 
 ## Implementation Notes
 
