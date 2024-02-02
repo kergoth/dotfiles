@@ -476,6 +476,12 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [WinImage](https://www.winimage.com/winimage.htm): A fully-fledged disk-imaging suite for easy creation, reading and editing of many image formats and fileystems.
 - [WinSCP](https://winscp.net/)
 
+## Formerly-Used Applications
+
+- [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
+- [foobar2000](https://www.foobar2000.org): This is a great music player, but I use Apple Music and iTunes for streaming, and beets for my music library for portable devices, so this is no longer needed.
+- [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
+
 ## Implementation Notes
 
 - Chezmoi is used to apply my dotfiles changes.
