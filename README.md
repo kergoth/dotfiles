@@ -273,6 +273,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/): These Build Tools allow you to build Visual Studio projects from a command-line interface.
 - [cht.exe](https://github.com/tpanj/cht.exe): cht.sh libcurl client for Windows.
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
+- [gsudo](https://github.com/gerardog/gsudo): Sudo for Windows.
 - [npiperelay](https://github.com/jstarks/npiperelay): Access Windows named pipes from WSL.
 - [scoop](https://scoop.sh): A command-line installer for Windows.
 - [starship](https://starship.rs): A cross-shell prompt.

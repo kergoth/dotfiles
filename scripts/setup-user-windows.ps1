@@ -30,7 +30,7 @@ if ($reg) {
 RefreshEnvPath
 
 # Windows-specific
-scoop install sudo gow starship npiperelay
+scoop install gow starship npiperelay
 
 # Install core
 # Unavailable on Windows: tmux, zsh

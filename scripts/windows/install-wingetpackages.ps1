@@ -14,6 +14,7 @@ Install-WinGetPackage -Mode Silent -Id IRCCloud.IRCCloud | Out-Null
 Install-WinGetPackage -Mode Silent -Id AutoHotkey.AutoHotkey | Out-Null
 Install-WinGetPackage -Mode Silent -Id BiniSoft.WindowsFirewallControl | Out-Null
 Install-winGetPackage -Mode Silent -Id egoist.devdocs-desktop | Out-Null
+Install-winGetPackage -Mode Silent -Id gerardog.gsudo | Out-Null
 Install-WinGetPackage -Mode Silent -Id Klocman.BulkCrapUninstaller | Out-Null
 Install-WinGetPackage -Mode Silent -Id Microsoft.PowerShell | Out-Null
 Install-WinGetPackage -Mode Silent -Id Microsoft.PowerToys | Out-Null
