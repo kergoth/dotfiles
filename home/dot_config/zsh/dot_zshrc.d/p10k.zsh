@@ -1721,11 +1721,11 @@
 
   function prompt_my_wsl_is_admin () {
     if [[ $OSTYPE = WSL ]] && [[ $WSL_IS_ADMIN = 1 ]]; then
-        p10k segment -f blue -t "${POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT:-WSL ADMIN}"
+        p10k segment -f red -t "${POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT:-WSL ADMIN}"
     fi
   }
   typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_FOREGROUND=1
-  typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT=ADMIN
+  typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT="󰒘"
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
