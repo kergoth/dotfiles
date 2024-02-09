@@ -2,7 +2,8 @@
 
 [![BlueOak 1.0.0 License](https://img.shields.io/badge/License-BlueOak%201.0.0-2D6B79.svg)](https://spdx.org/licenses/BlueOak-1.0.0.html)
 
-This repository includes scripts for setting up systems per my personal
+This repository includes my personal application configuration and settings
+(dotfiles), as well as scripts for setting up systems per my personal
 preferences.
 
 ## Prerequisites
