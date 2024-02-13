@@ -1,3 +1,9 @@
+{{- $signingKey := ""}}
+{{- if .personal -}}
+{{-   $signingKey = "934796281287D8BD66EF26F4BCC304A4E9BFE3CF" }}
+{{- else if .work }}
+{{-   $signingKey = "4FF90C5834F7D0290B9C254AA3F86002F03EE587" }}
+{{- end }}
 # vim: set noet sts=0 ft=gitconfig:
 [core]
 	excludesfile = ~/.config/git/ignore
@@ -5,13 +11,13 @@
 	whitespace = cr-at-eol
 	autocrlf = input
 
-{{- if eq .chezmoi.os "windows" }}
+{{ if eq .chezmoi.os "windows" -}}
 [core]
 	pager = less
 
 [credential]
 	helper = manager	
-{{- else }}
+{{ else -}}
 [pager]
 	diff = git-pager
 	log = git-pager
@@ -40,6 +46,11 @@
 	smtpencryption = tls
 	smtpserverport = 587
 	smtpuser = kergoth@gmail.com
+
+{{ if $signingKey -}}
+[gpg]
+	signingKey = {{ $signingKey }}
+{{- end }}
 
 [interactive]
 	singlekey = true
