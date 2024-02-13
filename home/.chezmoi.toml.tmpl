@@ -62,18 +62,16 @@
 {{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
 {{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
 {{-   $work = promptBoolOnce . "work" "work" $work -}}
-{{-   if not $work -}}
-{{-     $work_email = promptBool "work_email" $work_email -}}
-{{-   end -}}
-{{- end -}}
-
-{{- if $work -}}
-{{-   $work_email = true -}}
 {{- end -}}
 
 {{- $email := "kergoth@gmail.com" -}}
-{{- if $work_email -}}
+{{- if $work -}}
 {{-   $email = "chris.larson@siemens.com" -}}
+{{- end -}}
+
+{{- $secrets := false -}}
+{{- if and (or $personal $work) (not $ephemeral) -}}
+{{-   $secrets = true -}}
 {{- end -}}
 
 sourceDir = {{ .chezmoi.sourceDir | quote }}
@@ -88,6 +86,7 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
     docker = {{ $docker }}
     personal = {{ $personal }}
     work = {{ $work }}
+    secrets = {{ $secrets }}
     setup_user = {{ $setup_user }}
 
     hostname = {{ $hostname | quote }}

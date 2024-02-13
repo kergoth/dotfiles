@@ -1,1 +1,3 @@
-{{- onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/zqwfweg7abydoz2j5ney63pgye/public key" | replace "\r" "" -}}
+{{- if and .secrets .work }}
+{{-   onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/zqwfweg7abydoz2j5ney63pgye/public key" | replace "\r" "" -}}
+{{- end }}

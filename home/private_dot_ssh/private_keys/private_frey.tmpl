@@ -1,1 +1,3 @@
-{{- onepasswordRead "op://Personal/frey/private key?ssh-format=openssh" | replace "\r" "" -}}
+{{- if and .secrets .personal }}
+{{-   onepasswordRead "op://Personal/frey/private key?ssh-format=openssh" | replace "\r" "" -}}
+{{- end }}

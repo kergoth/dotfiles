@@ -12,10 +12,11 @@ ControlMaster auto
 ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
 {{- end }}
-{{ if .personal }}
-{{ onepasswordRead "op://Personal/rdff7d7s57f52i4ih43v4zzvyy/cosca" -}}
+{{ if .secrets }}
+{{   if .personal }}
+{{     onepasswordRead "op://Personal/rdff7d7s57f52i4ih43v4zzvyy/cosca" -}}
+{{   end -}}
+{{   if .work }}
+{{     onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/x2gzwerkcdkzcfl5va3wceol3a/build" -}}
+{{   end }}
 {{ end -}}
-{{ if .work }}
-{{ onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/x2gzwerkcdkzcfl5va3wceol3a/build" -}}
-{{ end -}}
-
