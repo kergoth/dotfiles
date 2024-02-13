@@ -97,7 +97,7 @@ Library/Caches/*
 .config/nix/registry.json
 .terminfo
 
-{{- if (or .personal .work) }}
+{{- if not (or .personal .work) }}
 {{/* common secrets */}}
 .local/share/gnupg/*
 {{- end }}
