@@ -198,6 +198,6 @@
 	pull-request = !gh pr create
 	pull-requests = !gh pr list
 	repo = !gh repo
-	browse = !gh repo view
+	browse = !gh repo view --web
 	create = !gh repo create
 	fork = !gh repo fork --remote=false --clone=false
