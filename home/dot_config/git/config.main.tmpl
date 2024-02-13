@@ -50,6 +50,9 @@
 {{ if $signingKey -}}
 [gpg]
 	signingKey = {{ $signingKey }}
+
+[commit]
+	gpgSign = true
 {{- end }}
 
 [interactive]
