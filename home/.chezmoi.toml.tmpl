@@ -4,6 +4,7 @@
 {{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
+{{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
 {{- $setup_user := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
 
 {{/* detect OS */}}
@@ -61,10 +62,17 @@
 {{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
 {{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
 {{-   $work = promptBoolOnce . "work" "work" $work -}}
+{{-   if not $work -}}
+{{-     $work_email = promptBool "work_email" $work_email -}}
+{{-   end -}}
+{{- end -}}
+
+{{- if $work -}}
+{{-   $work_email = true -}}
 {{- end -}}
 
 {{- $email := "kergoth@gmail.com" -}}
-{{- if $work -}}
+{{- if $work_email -}}
 {{-   $email = "chris.larson@siemens.com" -}}
 {{- end -}}
 
