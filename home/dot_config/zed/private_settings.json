@@ -7,7 +7,7 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
-  "theme": "One Dark",
+  "theme": "Dracula",
   "ui_font_family": "MesloLGS NF",
   "ui_font_features": {
     "calt": true
