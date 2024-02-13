@@ -5,7 +5,7 @@
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
-{{- $setup_user := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
+{{- $user_setup := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
 
 {{/* detect OS */}}
 {{- $osid := .chezmoi.os -}}
@@ -87,7 +87,7 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
     personal = {{ $personal }}
     work = {{ $work }}
     secrets = {{ $secrets }}
-    setup_user = {{ $setup_user }}
+    user_setup = {{ $user_setup }}
 
     hostname = {{ $hostname | quote }}
     osid = {{ $osid | quote }}
