@@ -347,7 +347,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526)
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
 - [Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL)
-- [StopTheMadness](https://apps.apple.com/us/app/stopthemadness/id1376402589?mt=12&uo=4&at=10l4tL)
+- [StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298): A Safari extension that stops web site annoyances and privacy violations.
 - [Tampermonkey](https://www.onlinedown.net/soft/1229995.htm)
 - [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab))
 - [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
