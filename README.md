@@ -299,39 +299,39 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
 - [IRCCloud](https://www.irccloud.com/): IRC client.
 - [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
-- [Visual Studio Code](https://code.visualstudio.com): Open-source code editor.
+- [Visual Studio Code](https://code.visualstudio.com) ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor.
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
-- [VLC](https://www.videolan.org/vlc/download-macosx.html): A free and open source cross-platform multimedia player.
+- [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
 
 #### GUI Software on macOS (Pre-Sonoma Only)
 
-- [Aerial](https://aerialscreensaver.github.io): A macOS screensaver that lets you play videos from Apple's tvOS screensaver.
+- [Aerial](https://aerialscreensaver.github.io) ([Open-Source](https://github.com/JohnCoates/Aerial)): A macOS screensaver that lets you play videos from Apple's tvOS screensaver.
 
 #### GUI Software on macOS
 
 - [Alfred](https://www.alfredapp.com): Application uninstaller.
 - [AppCleaner](https://freemacsoft.net/appcleaner/): A small application which allows you to thoroughly uninstall unwanted apps.
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
-- [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn): Screen saver based on animations presented during Apple Special Event Brooklyn.
-- [Calibre](https://calibre-ebook.com): E-books management software.
+- [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
+- [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
 - [CleanMyDrive 2](https://apps.apple.com/us/app/cleanmydrive-2/id523620159?mt=12&uo=4&at=10l4tL)
 - [DaisyDisk](https://daisydiskapp.com): Disk space visualizer. Get a visual breakdown of your disk space in form of an interactive map, reveal the biggest space wasters, and remove them with a simple drag and drop.
-- [DevDocs for macOS](https://github.com/dteoh/devdocs-macos): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
-- [GPG Suite](https://gpgtools.org): Tools to protect your emails and files.
+- [DevDocs for macOS](https://github.com/dteoh/devdocs-macos) (Open-Source): An unofficial [DevDocs API Documentation](https://devdocs.io/) viewer for macOS.
+- [GPG Suite](https://gpgtools.org) ([Open-Source](https://github.com/orgs/GPGTools/repositories)): Tools to protect your emails and files.
 - [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later.
-- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL): Hide menubar items.
+- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items.
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar.
-- [Karabiner-Elements](https://karabiner-elements.pqrs.org): A powerful and stable keyboard customizer for macOS.
-- [kitty](https://sw.kovidgoyal.net/kitty/): The fast, feature-rich, GPU based terminal emulator.
+- [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
+- [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
-- [Rectangle](https://rectangleapp.com): Move and resize windows in macOS using keyboard shortcuts or snap areas.
-- [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps): A preference pane will let you view and change default application associations.
-- [SyncThing](https://syncthing.net/): A continuous file synchronization program.
+- [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
+- [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane will let you view and change default application associations.
+- [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
 - [The Unarchiver](https://macpaw.com/download/the-unarchiver): Unpack archive files.
-- [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
+- [Transmission Remote GUI](https://github.com/transmission-remote-gui/transgui) (Open-Source): A feature rich cross platform Transmission BitTorrent client. Faster and has more functionality than the built-in web GUI.
 - [UnPlugged](https://apps.apple.com/us/app/unplugged/id423123087?mt=12&uo=4&at=10l4tL)
 - [WhatsYourSign](https://objective-see.org/products/whatsyoursign.html): Add a menu item to Finder to display a file's cryptographic information.
 - [WiFi Explorer](https://apps.apple.com/us/app/wifi-explorer/id494803304?mt=12&uo=4&at=10l4tL): Best Wi-Fi Analyzer & Monitor.
@@ -340,55 +340,55 @@ The intention is to incorporate the installation of Nix on all systems in time.
 ##### Safari Extensions
 
 - [1Password for Safari](https://apps.apple.com/us/app/1password-for-safari/id1569813296?mt=12&uo=4&at=10l4tL)
-- [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL)
-- [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL)
-- [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL)
-- [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL)
+- [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari))
+- [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL) ([Open-Source](https://github.com/oblador/hush))
+- [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer))
+- [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari))
 - [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526)
 - [SessionRestore](https://apps.apple.com/us/app/sessionrestore-for-safari/id1463334954?mt=12&uo=4&at=10l4tL)
 - [Shut Up](https://apps.apple.com/us/app/shut-up-comment-blocker/id1015043880?uo=4&at=10l4tL)
 - [StopTheMadness](https://apps.apple.com/us/app/stopthemadness/id1376402589?mt=12&uo=4&at=10l4tL)
 - [Tampermonkey](https://www.onlinedown.net/soft/1229995.htm)
-- [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL)
-- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL)
-- [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL)
+- [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab))
+- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
+- [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL) ([Open-Source](https://github.com/quoid/userscripts))
 - [Vinegar](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229?uo=4&at=10l4tL)
 
 ##### QuickLook Plugins
 
 - [Apparency](https://www.mothersruin.com/software/Apparency/): Preview the contents of a macOS app
 - [BetterZip](https://betterzip.com): A trialware file archiver. I only install this for the QuickLook plugin.
-- [QLColorCode](https://github.com/anthonygelibert/QLColorCode): A Quick Look plug-in that renders source code with syntax highlighting
-- [qlImageSize](https://github.com/Nyx0uf/qlImageSize): Display image size and resolution
-- [QLMarkDown](https://github.com/toland/qlmarkdown): Preview Markdown files
-- [QLPrettyPatch](https://github.com/atnan/QLPrettyPatch): QuickLook generator for patch files
-- [QLStephen](https://github.com/whomwah/qlstephen): Preview plain text files without or with unknown file extension. Example: README, CHANGELOG, index.styl, etc
-- [QLVideo](https://github.com/Marginal/QLVideo): Preview most types of video files, as well as their thumbnails, cover art and metadata
-- [quicklook-csv](https://github.com/p2/quicklook-csv): A QuickLook plugin for CSV files
+- [QLColorCode](https://github.com/anthonygelibert/QLColorCode) (Open-Source): A Quick Look plug-in that renders source code with syntax highlighting
+- [qlImageSize](https://github.com/Nyx0uf/qlImageSize) (Open-Source): Display image size and resolution
+- [QLMarkDown](https://github.com/toland/qlmarkdown) (Open-Source): Preview Markdown files
+- [QLPrettyPatch](https://github.com/atnan/QLPrettyPatch) (Open-Source): QuickLook generator for patch files
+- [QLStephen](https://github.com/whomwah/qlstephen) (Open-Source): Preview plain text files without or with unknown file extension. Example: README, CHANGELOG, index.styl, etc
+- [QLVideo](https://github.com/Marginal/QLVideo) (Open-Source): Preview most types of video files, as well as their thumbnails, cover art and metadata
+- [quicklook-csv](https://github.com/p2/quicklook-csv) (Open-Source): A QuickLook plugin for CSV files
 - [QuickLookJSON](http://www.sagtau.com/quicklookjson.html): A useful quick look plugin to preview JSON files
-- [QuickLookASE](https://github.com/rsodre/QuickLookASE): Preview Adobe ASE Color Swatches generated with Adobe Photoshop, Adobe Illustrator, Adobe Color CC, Spectrum, COLOURlovers, Prisma, among many others
+- [QuickLookASE](https://github.com/rsodre/QuickLookASE) (Open-Source): Preview Adobe ASE Color Swatches generated with Adobe Photoshop, Adobe Illustrator, Adobe Color CC, Spectrum, COLOURlovers, Prisma, among many others
 - [Suspicious Package](https://www.mothersruin.com/software/SuspiciousPackage/): Preview the contents of a standard Apple installer package
-- [WebPQuickLook](https://github.com/emin/WebPQuickLook): QuickLook plugin for WebP image files
+- [WebPQuickLook](https://github.com/emin/WebPQuickLook) (Open-Source): QuickLook plugin for WebP image files
 
 #### GUI Software on Windows
 
-- [7-Zip](https://www.7-zip.org/)
+- [7-Zip](https://www.7-zip.org/) ([Open-Source](https://github.com/ip7z/7zip))
 - [AutoHotkey](https://www.autohotkey.com/)
-- [Bulk Crap Uninstaller](https://www.bcuninstaller.com): Remove large amounts of unwanted applications quickly.
-- [DevDocs Desktop](https://github.com/egoist/devdocs-desktop): A full-featured desktop app for DevDocs.io.
-- [Ditto](https://ditto-cp.sourceforge.io)
-- [Gpg4win](https://www.gpg4win.org): Secure email and file encryption with GnuPG for Windows.
-- [Notepad++](https://notepad-plus-plus.org/)
-- [PowerShell](https://learn.microsoft.com/en-us/powershell/)
-- [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/)
-- [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/)
-- [QuickLook](https://github.com/QL-Win/QuickLook)
-- [Rufus](https://rufus.ie/)
+- [Bulk Crap Uninstaller](https://www.bcuninstaller.com) ([Open-Source](https://github.com/Klocman/Bulk-Crap-Uninstaller)): Remove large amounts of unwanted applications quickly.
+- [DevDocs Desktop](https://github.com/egoist/devdocs-desktop) (Open-Source): A full-featured desktop app for DevDocs.io.
+- [Ditto](https://ditto-cp.sourceforge.io) ([Open-Source](https://github.com/sabrogden/Ditto))
+- [Gpg4win](https://www.gpg4win.org) ([Open-Source](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gpg4win.git;a=summary)): Secure email and file encryption with GnuPG for Windows.
+- [Notepad++](https://notepad-plus-plus.org/) ([Open-Source](https://github.com/notepad-plus-plus/notepad-plus-plus))
+- [PowerShell](https://learn.microsoft.com/en-us/powershell/) ([Open-Source](https://github.com/PowerShell/PowerShell))
+- [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) ([Open-Source](https://github.com/microsoft/PowerToys))
+- [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git))
+- [QuickLook](https://github.com/QL-Win/QuickLook) (Open-Source)
+- [Rufus](https://rufus.ie/) ([Open-Source](https://github.com/pbatard/rufus))
 - [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you.
-- [SyncTrayzor](https://github.com/canton7/SyncTrayzor)
+- [SyncTrayzor](https://github.com/canton7/SyncTrayzor) (Open-Source)
 - [WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US): Identify Wi-Fi problems or find the best channel.
 - [Windows Firewall Control](https://www.binisoft.org/wfc): Managing Windows Firewall is now easier than ever.
-- [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US)
+- [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))
 - [WizTree](https://diskanalyzer.com): View the size of all files and folders visually.
 
 ## Apps I install on an as-needed basis
