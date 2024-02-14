@@ -29,6 +29,9 @@ AppData
 .chezmoiscripts/gitconfig.ps1
 .chezmoiscripts/vim.ps1
 {{- else }}
+AppData/Roaming/gnupg/*~
+AppData/Roaming/gnupg/S.*
+AppData/Roaming/gnupg/openpgp-revocs.d
 !Documents
 Documents/*
 !Documents/PowerShell
@@ -99,6 +102,10 @@ Library/Caches/*
 
 {{- if not .secrets }}
 {{/* common secrets */}}
+.local/share/gnupg/*
+AppData/Roaming/gnupg/*
+{{- end }}
+{{- if eq .chezmoi.os "windows" }}
 .local/share/gnupg/*
 {{- end }}
 
