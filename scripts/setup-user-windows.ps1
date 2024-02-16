@@ -114,6 +114,11 @@ if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
     Write-Warning "SSH agent not running"
 }
 
+# Use the Windows native GnuPG for git if it's installed
+if (Test-Path "C:\Program Files (x86)\GnuPG\bin\gpg.exe") {
+    git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"
+}
+
 # Add installed software to the user's PATH and/or startup
 if (Test-Path "C:\Program Files\7-Zip") {
     Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
