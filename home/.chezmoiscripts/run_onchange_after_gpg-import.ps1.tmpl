@@ -1,0 +1,11 @@
+{{ if .secrets -}}
+git config --global gpg.program (Get-Command -Name gpg.exe).Path
+
+if ($null -eq (gpg --quiet --armor --export "A3F86002F03EE587")) {
+    op document get --force "GnuPG Secret Key: A3F86002F03EE587" | gpg --import -
+}
+if ($null -eq (gpg --quiet --armor --export "BCC304A4E9BFE3CF")) {
+    op document get --force "GnuPG Secret Key: BCC304A4E9BFE3CF" | gpg --import -
+}
+op document get "GnuPG Owner Trust" | gpg --quiet --import-ownertrust -
+{{ end -}}
