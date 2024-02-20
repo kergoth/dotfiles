@@ -102,12 +102,12 @@
 	mnemonicprefix = true
 	ignoreSubmodules = dirty
 	compactionHeuristic = true
-	algorithm = patience
+	algorithm = histogram
 
 [merge]
 	tool = wrapper
 	summary = true
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 
 [mergetool.wrapper]
 	cmd = . $(which git-mergetool-wrapper)
