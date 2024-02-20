@@ -122,6 +122,12 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
+                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+                "hidden": false,
+                "name": "Ubuntu",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
                 "guid": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
                 "hidden": false,
                 "icon": "ms-appdata:///roaming/archlinux-icon-crystal.png",
@@ -147,75 +153,9 @@
                 "name": "cosca"
             },
             {
-                "commandline": "pwsh.exe -Command \"Start-Process PowerShell -Verb RunAs\"",
-                "guid": "{181ba0bb-fafe-44c5-b282-dc7169a090cc}",
-                "icon": "ms-appdata:///roaming/ProfileIcons/{61c54bbd-c2c6-5271-96e7-009a87ff44bf}.scale-100.png",
-                "name": "Powershell Core Elevated"
-            },
-            {
-                "commandline": "pwsh.exe -c start \"shell:appsFolder\\Microsoft.WindowsTerminal_8wekyb3d8bbwe!App\" -Verb RunAs",
-                "guid": "{087b48cb-5833-4a0e-a0ba-94537cd74762}",
-                "icon": "ms-appdata:///roaming/ProfileIcons/{0caa0dad-35be-5f56-a8ff-afceeeaa6101}.scale-100.png",
-                "name": "Windows Terminal Elevated"
-            },
-            {
-                "commandline": "c://Program Files//Yori//yori.exe",
-                "cursorColor": "#00FF00",
-                "cursorHeight": 25,
-                "cursorShape": "vintage",
-                "guid": "{7d04ce37-c00f-43ac-ba47-992cb1393215}",
-                "icon": "ms-appdata:///roaming/yori.ico",
-                "name": "Yori"
-            },
-            {
-                "commandline": "cmd /c %USERPROFILE%\\scoop\\shims\\bash.exe --cd-to-home",
-                "guid": "{3e6f2964-e43e-47e2-a70d-8e655e2f2fb8}",
-                "hidden": false,
-                "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
-                "name": "Git Bash (via scoop)",
-                "startingDirectory": "~"
-            },
-            {
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "hidden": true,
-                "name": "Windows PowerShell"
-            },
-            {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": true,
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
-                "hidden": false,
-                "name": "Ubuntu",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
-                "commandline": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\"",
-                "experimental.retroTerminalEffect": false,
-                "guid": "{44cd8805-f660-4b8b-bac0-816a5da3ebad}",
-                "hidden": false,
-                "icon": "ms-appx:///ProfileIcons/pwsh.png",
-                "name": "PowerShell Core (Copy)",
-                "startingDirectory": "%USERPROFILE%"
-            },
-            {
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
-                "name": "Command Prompt"
-            },
-            {
                 "guid": "{c397f356-5e7b-55bc-956b-8cb4b9762c26}",
                 "hidden": false,
                 "name": "NixOS",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
-                "guid": "{7bec344f-38fe-572b-8989-b57b0a52a549}",
-                "hidden": false,
-                "name": "sokol-flex-build",
                 "source": "Windows.Terminal.Wsl"
             },
             {
@@ -225,6 +165,33 @@
                 "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
                 "name": "Debian",
                 "startingDirectory": "~"
+            },
+            {
+                "commandline": "cmd /c %USERPROFILE%\\scoop\\shims\\bash.exe --cd-to-home",
+                "guid": "{3e6f2964-e43e-47e2-a70d-8e655e2f2fb8}",
+                "hidden": false,
+                "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+                "name": "Git Bash",
+                "startingDirectory": "~"
+            },
+            {
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": true,
+                "name": "Windows PowerShell"
+            },
+            {
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "commandline": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\"",
+                "elevate": true,
+                "guid": "{815ee1d4-7152-4779-a3a3-20bbfe73b088}",
+                "hidden": false,
+                "icon": "ms-appx:///ProfileIcons/pwsh.png",
+                "name": "PowerShell Core (Admin)",
+                "startingDirectory": "%USERPROFILE%"
             }
         ]
     },
@@ -507,5 +474,6 @@
             "yellow": "#808000"
         }
     ],
-    "themes": []
+    "themes": [],
+    "useAcrylicInTabRow": false
 }
