@@ -15,7 +15,10 @@
 
 {{ if eq .chezmoi.os "windows" -}}
 [core]
-	pager = less
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
 
 [credential]
 	helper = manager	
