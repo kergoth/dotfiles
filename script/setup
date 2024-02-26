@@ -29,6 +29,17 @@ if [ "$repodir" != "$HOME/.local/share/chezmoi" ]; then
     ln -sf "$repodir" ~/.local/share/chezmoi
 fi
 
+if [ "$repodir" != "$HOME/.dotfiles" ]; then
+    # Symlink to ~/.dotfiles for convenience
+    if [ -h ~/.dotfiles ]; then
+        rm -f ~/.dotfiles
+    elif [ -e ~/.dotfiles ]; then
+        echo >&2 "Error: ~/.dotfiles exists and is not a symlink"
+        exit 1
+    fi
+    ln -sf "$repodir" ~/.dotfiles
+fi
+
 echo >&2 "Applying dotfiles"
 chezmoi init --apply --keep-going ${repodir:+--source "$repodir"} kergoth/dotfiles
 chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
