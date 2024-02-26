@@ -21,7 +21,7 @@ user=$1
 
 if ! getent passwd "$user" >/dev/null 2>&1; then
     echo >&2 "Adding user '$user'"
-    useradd -m -g users -G staff,wheel,uucp,storage "$user"
+    useradd -m -g users -G wheel,uucp,storage "$user"
     if [ -e /bin/zsh ]; then
         chsh -s /bin/zsh "$user"
     fi
