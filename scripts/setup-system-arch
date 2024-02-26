@@ -42,9 +42,10 @@ if [ "$OSTYPE" != WSL ]; then
     sudorun systemctl start avahi-daemon.service || true
 fi
 
-pacman_install vi
+pacman_install vi zsh which
 
-pacman_install zsh
+# Wget, unzip for installation of password manager cli
+pacman_install wget unzip
 
 # Clean up
 if command pacman -Q nano >/dev/null 2>&1; then
