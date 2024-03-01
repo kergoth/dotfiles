@@ -17,7 +17,8 @@ fi
 
 "$scriptdir/bootstrap"
 
-if [ "$repodir" != "$HOME/.local/share/chezmoi" ]; then
+RESOLVED_HOME="$(cd "$HOME" && pwd -P)"
+if [ "$repodir" != "$RESOLVED_HOME/.local/share/chezmoi" ]; then
     # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
     mkdir -p ~/.local/share
     if [ -h ~/.local/share/chezmoi ]; then
@@ -29,7 +30,7 @@ if [ "$repodir" != "$HOME/.local/share/chezmoi" ]; then
     ln -sf "$repodir" ~/.local/share/chezmoi
 fi
 
-if [ "$repodir" != "$HOME/.dotfiles" ]; then
+if [ "$repodir" != "$RESOLVED_HOME/.dotfiles" ]; then
     # Symlink to ~/.dotfiles for convenience
     if [ -h ~/.dotfiles ]; then
         rm -f ~/.dotfiles
