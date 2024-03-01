@@ -207,16 +207,16 @@ else {
 if (Get-Command eza -ErrorAction SilentlyContinue) {
     # TODO: Make a proper eza function with powershell-style arguments that translate to eza args
     function Get-ezaChildItem {
-        eza --colour-scale all @args
+        eza --colour-scale @args
     }
     function Get-ezaChildItemHidden {
-        eza --colour-scale all -a @args
+        eza --colour-scale -a @args
     }
     function Get-ezaChildItemDetailed {
-        eza --colour-scale all -l @args
+        eza --colour-scale -l @args
     }
     function Get-ezaChildItemSorted {
-        eza --colour-scale all -s modified @args
+        eza --colour-scale -s modified @args
     }
     New-Alias ls Get-ezaChildItem -Force
     New-Alias la Get-ezaChildItemHidden -Force
