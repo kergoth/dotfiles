@@ -65,14 +65,16 @@ elif [ -e /usr/lib/locale/locale-archive ]; then
     export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
 
-for dir in $HOME/.terminfo $XDG_CONFIG_HOME/ncurses/terminfo $HOMEBREW_PREFIX/share/terminfo /Users/Shared/homebrew/share/terminfo /opt/homebrew/share/terminfo /usr/local/share/terminfo /usr/share/terminfo; do
-    if [[ -d $dir ]]; then
-        TERMINFO_DIRS="$TERMINFO_DIRS:$dir"
-    fi
-done
-if [[ -n "$TERMINFO_DIRS" ]]; then
-    TERMINFO_DIRS="${TERMINFO_DIRS#:}"
-fi
+typeset -gxT TERMINFO_DIRS terminfo_dirs
+terminfo_dirs=(
+    $HOME/.terminfo
+    $XDG_CONFIG_HOME/ncurses/terminfo
+    $HOMEBREW_PREFIX/share/terminfo
+    /Users/Shared/homebrew/share/terminfo
+    /opt/homebrew/share/terminfo
+    /usr/local/share/terminfo
+    /usr/share/terminfo
+)
 export TERMINFO_DIRS
 
 if [[ -n $TERM_PROGRAM ]]; then
