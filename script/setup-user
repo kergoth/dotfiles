@@ -15,7 +15,7 @@ fi
 bootstrap
 
 if [ "$OS" = "linux" ]; then
-    if [ -z "$DISTRO" ]; then
+    if [ -z "${DISTRO:-}" ]; then
         msg "Warning: Unknown DISTRO, please ensure /etc/os-release exists, or set DISTRO manually."
     else
         if command -v "setup-user-$DISTRO" &>/dev/null; then
