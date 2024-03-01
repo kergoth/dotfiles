@@ -75,6 +75,10 @@
 {{- end -}}
 
 sourceDir = {{ .chezmoi.sourceDir | quote }}
+{{/* unknown distro */}}
+{{- if eq .osid "linux" }}
+scriptTempDir = "~/tmp"
+{{- end }}
 
 [data]
     name = "Christopher Larson"
