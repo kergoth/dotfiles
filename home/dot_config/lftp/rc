@@ -1,0 +1,3 @@
+set net:timeout 5
+set net:max-retries 2
+set net:reconnect-interval-base 5
