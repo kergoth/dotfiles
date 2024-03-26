@@ -6,7 +6,7 @@ if [[ ! -e /.dockerenv ]]; then
     esac
 fi
 
-if [[ "$OSTYPE" = WSL ]]; then
+if [[ "$OSTYPE" = WSL ]] && [[ -o interactive ]]; then
     UID=${UID:-$(id -u)}
     if ! [[ -d /run/user/"$UID" ]]; then
         echo >&2 "Warning: /run/user/$UID does not exist. Creating using sudo."

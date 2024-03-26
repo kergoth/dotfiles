@@ -28,7 +28,7 @@ function Install-WinGetPackageIfNotInstalled {
     if ($Override) { $arguments += "-Override $Override" }
 
     Write-Output "Installing package $Name"
-    Install-WinGetPackage -Mode $Mode @arguments -Verbose Continue -ErrorAction Stop
+    # Install-WinGetPackage -Mode $Mode @arguments -Verbose Continue -ErrorAction Stop
 }
 
 Install-ModuleIfNotInstalled Microsoft.WinGet.Client
