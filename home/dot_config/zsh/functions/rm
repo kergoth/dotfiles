@@ -1,5 +1,5 @@
 if [[ $OSTYPE =~ darwin ]]; then
-    if (( $+commands[grm] )) || [[ $commands[rm] =~ /nix/.*-coreutils ]]; then
+    if [[ $commands[rm] =~ /nix/.*-coreutils ]]; then
         command rm --one-file-system -I "$@"
     else
         command rm -xI "$@"
