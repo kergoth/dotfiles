@@ -1,6 +1,6 @@
 # all of our zsh files
 typeset -U config_files
-config_files=($ZDOTDIR/.zshrc.d/*.zsh(N) $XDG_CONFIG_HOME/*/*.zsh(N))
+config_files=($ZDOTDIR/.zshrc.d/*.zsh(N) $XDG_CONFIG_HOME/*/*.zsh(N) $XDG_CACHE_HOME/zsh/zshrc.d/*.zsh(N))
 
 # load the path files
 source $ZDOTDIR/.zshrc.d/path.zsh

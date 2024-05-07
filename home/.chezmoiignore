@@ -49,6 +49,7 @@ Library/Caches/*
 Library/Caches/zsh/*
 !Library/Caches/zsh/functions
 Library/Caches/zsh/functions/*
+!Library/Caches/zsh/zshrc.d
 {{- end }}
 
 .ssh/keys/*
@@ -71,6 +72,7 @@ Library/Caches/zsh/functions/*
 .cache/zsh/*
 !.cache/zsh/functions
 .cache/zsh/functions/*
+!.cache/zsh/zshrc.d
 .config/chezmoi
 .config/environment.d/10-home-manager.conf
 .config/gh/hosts.yml
