@@ -1,19 +1,7 @@
-{{/* FIXME: Look explicitly in ~/.nix-profile/bin, not only the PATH */}}
-{{/* If the file doesn't exist yet, or is older than the age threshold, run the command to get the integration. */}}
-{{- $targetfile := .chezmoi.targetFile -}}
-{{- if glob $targetfile -}}
-{{/*  Default of 1 week, or 604800 seconds. */}}
-{{-   $age_threshold := dig "cache" "zsh_age_threshold" 604800 . -}}
-{{-   $age_in_seconds := sub (now | unixEpoch) (stat $targetfile).modTime -}}
-{{-   if gt $age_in_seconds $age_threshold -}}
-{{-     if lookPath "zoxide" -}}
-{{-       output "zoxide" "init" "zsh" | trim -}}
-{{-     end -}}
-{{-   else -}}
-{{-     include $targetfile -}}
-{{-   end -}}
-{{- else -}}
-{{-   if lookPath "zoxide" -}}
-{{-     output "zoxide" "init" "zsh" | trim -}}
-{{-   end -}}
+{{- $path := (splitList .chezmoi.pathListSeparator (env "PATH")) -}}
+{{- $path = prepend $path (joinPath .chezmoi.homeDir ".nix-profile/bin" ) -}}
+{{- $path = prepend $path (joinPath .chezmoi.homeDir ".local/bin" ) -}}
+{{- $zoxide := findExecutable "zoxide" $path -}}
+{{- if $zoxide -}}
+{{-   output $zoxide "init" "zsh" | trim -}}
 {{- end -}}

@@ -1,0 +1,5 @@
+{{/*  Default of 1 week, or 604800 seconds. */}}
+{{- $age_threshold := dig "cache" "zsh_age_threshold" 604800 . -}}
+{{- $template := joinPath ".chezmoitemplates" "zoxide.zsh.tmpl" -}}
+{{- $tmpl_args := (dict "age_threshold" $age_threshold "template" $template "chezmoi" .chezmoi ) }}
+{{- includeTemplate (joinPath ".chezmoitemplates" "functions" "cached.tmpl") $tmpl_args -}}

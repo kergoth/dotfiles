@@ -1,0 +1,12 @@
+{{/* If the file doesn't exist yet, or is older than the age threshold, include the specified template. */}}
+{{- $targetfile := .chezmoi.targetFile -}}
+{{- if glob $targetfile -}}
+{{-   $age_in_seconds := sub (now | unixEpoch) (stat $targetfile).modTime -}}
+{{-   if gt $age_in_seconds .age_threshold -}}
+{{-     includeTemplate .template . }}
+{{-   else -}}
+{{-     include $targetfile -}}
+{{-   end -}}
+{{- else -}}
+{{-   includeTemplate .template . }}
+{{- end -}}
