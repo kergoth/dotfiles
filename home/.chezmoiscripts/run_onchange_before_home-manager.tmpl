@@ -1,0 +1,30 @@
+{{- if and .user_setup (lookPath "nix") -}}
+#!/usr/bin/env bash
+# Apply home manager configuration
+
+set -euo pipefail
+
+# Re-run when home-manager configuration changes:
+#   home.nix hash: {{ includeTemplate "dot_config/home-manager/home.nix.tmpl" . | sha256sum }}
+#   flake.nix hash: {{ includeTemplate "dot_config/home-manager/flake.nix.tmpl" . | sha256sum }}
+#   flake.lock hash: {{ include "dot_config/home-manager/flake.lock" | sha256sum }}
+# Re-run after installing nix:
+#   nix binary path: {{ lookPath "nix" }}
+if ! [ -d "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager" ]; then
+    trap 'rm -rf "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager"' EXIT
+
+    mkdir -p "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager"
+    if ! [ -e "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager/home.nix" ]; then
+        chezmoi execute-template <"{{ .chezmoi.sourceDir }}/dot_config/home-manager/home.nix.tmpl" >"${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager/home.nix"
+    fi
+    if ! [ -e "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager/flake.nix" ]; then
+        chezmoi execute-template <"{{ .chezmoi.sourceDir }}/dot_config/home-manager/flake.nix.tmpl" >"${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager/flake.nix"
+    fi
+    if ! [ -e "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager/flake.lock" ]; then
+        cp -f "{{ .chezmoi.sourceDir }}/dot_config/home-manager/flake.lock" "${CHEZMOI_HOME_DIR:-$HOME}/.config/home-manager/flake.lock"
+    fi
+fi
+
+echo >&2 "Applying home manager configuration"
+HOME="${CHEZMOI_HOME_DIR:-$HOME}" nix run 'home-manager/master' -- switch
+{{ end -}}
