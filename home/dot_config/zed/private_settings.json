@@ -25,6 +25,10 @@
     "metrics": false
   },
   "terminal": {
-    "font_size": 12
+    "font_size": 12,
+    "env": {
+      "EDITOR": "zed --wait",
+      "VISUAL": "zed --wait"
+    }
   }
 }
