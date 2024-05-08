@@ -20,14 +20,13 @@ Workspace
 
 {{- $vimPath := joinPath .chezmoi.homeDir ".config/vim" -}}
 {{ if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
-.chezmoiscripts/prepare_vim
+.chezmoiscripts/posix/prepare_vim
 {{ end }}
 
 {{- if ne .chezmoi.os "windows" }}
+.chezmoiscripts/windows/**
 AppData
 .config/scoop
-.chezmoiscripts/gitconfig.ps1
-.chezmoiscripts/vim.ps1
 {{- else }}
 AppData/Roaming/gnupg/*~
 AppData/Roaming/gnupg/S.*
@@ -35,13 +34,10 @@ AppData/Roaming/gnupg/openpgp-revocs.d
 !Documents
 Documents/*
 !Documents/PowerShell
-.chezmoiscripts/gitconfig
-.chezmoiscripts/home-manager
-.chezmoiscripts/migrate_xdg_paths
-.chezmoiscripts/vim
-.chezmoiscripts/prepare
 {{- end }}
+
 {{- if ne .chezmoi.os "darwin" }}
+.chezmoiscripts/darwin/**
 Library/
 {{- else }}
 Library/Caches/*
@@ -49,6 +45,14 @@ Library/Caches/*
 Library/Caches/zsh/*
 !Library/Caches/zsh/functions
 Library/Caches/zsh/functions/*
+{{- end }}
+
+{{- if ne .chezmoi.os "linux" }}
+.chezmoiscripts/linux/**
+{{- end }}
+
+{{- if eq .chezmoi.os "windows" }}
+.chezmoiscripts/posix/**
 {{- end }}
 
 .ssh/keys/*
