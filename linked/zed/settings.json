@@ -25,6 +25,10 @@
       "enabled": false
     }
   },
+  "inlay_hints": {
+    // Enable inlay hints.
+    "enabled": true
+  },
   "telemetry": {
     // Do not send debug info like crash reports.
     "diagnostics": false,
