@@ -18,6 +18,12 @@
     "calt": true
   },
   "buffer_font_size": 12,
+  "git": {
+    // Disable the inline git blame information.
+    "inline_blame": {
+      "enabled": false
+    }
+  },
   "telemetry": {
     // Do not send debug info like crash reports.
     "diagnostics": false,
