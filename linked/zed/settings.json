@@ -18,6 +18,7 @@
     "calt": true
   },
   "buffer_font_size": 12,
+  "autosave": { "after_delay": { "milliseconds": 500 } },
   "git": {
     // Disable the inline git blame information.
     "inline_blame": {
