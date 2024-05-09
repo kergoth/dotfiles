@@ -8,11 +8,8 @@
 // from the command palette or from `Zed` application menu.
 {
   "theme": "Dracula",
-  "ui_font_family": "MesloLGS NF",
-  "ui_font_features": {
-    "calt": true
-  },
-  "ui_font_size": 14,
+  // Use a slightly smaller UI font size.
+  "ui_font_size": 15,
   "buffer_font_family": "MesloLGS NF",
   "buffer_font_features": {
     "calt": true
