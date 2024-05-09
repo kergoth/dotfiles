@@ -19,6 +19,21 @@
   },
   "buffer_font_size": 12,
   "autosave": { "after_delay": { "milliseconds": 500 } },
+  "auto_install_extensions": {
+    "bash": true,
+    "csv": true,
+    "dracula": true,
+    "elixir": true,
+    "erlang": true,
+    "git-firefly": true,
+    "html": true,
+    "lua": true,
+    "macos-classic": true,
+    "nix": true,
+    "nu": true,
+    "tokyo-night": true,
+    "toml": true
+  },
   "git": {
     // Disable the inline git blame information.
     "inline_blame": {
