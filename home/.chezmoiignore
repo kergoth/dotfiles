@@ -28,6 +28,8 @@ Workspace
 AppData
 .config/scoop
 {{- else }}
+.chezmoiscripts/posix/**
+.local/share/gnupg/*
 AppData/Roaming/gnupg/*~
 AppData/Roaming/gnupg/S.*
 AppData/Roaming/gnupg/openpgp-revocs.d
@@ -49,10 +51,6 @@ Library/Caches/zsh/functions/*
 
 {{- if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
-{{- end }}
-
-{{- if eq .chezmoi.os "windows" }}
-.chezmoiscripts/posix/**
 {{- end }}
 
 .ssh/keys/*
@@ -113,9 +111,6 @@ Library/Caches/zsh/functions/*
 {{/* common secrets */}}
 .local/share/gnupg/*
 AppData/Roaming/gnupg/*
-{{- end }}
-{{- if eq .chezmoi.os "windows" }}
-.local/share/gnupg/*
 {{- end }}
 
 # I don't track files for this with chezmoi
