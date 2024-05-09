@@ -14,8 +14,14 @@
   "buffer_font_features": {
     "calt": true
   },
+  // Use a substantially smaller buffer/terminal font size.
   "buffer_font_size": 12,
-  "autosave": { "after_delay": { "milliseconds": 500 } },
+  // Auto save after a 1 second delay.
+  "autosave": {
+    "after_delay": {
+      "milliseconds": 1000
+    }
+  },
   "auto_install_extensions": {
     "bash": true,
     "csv": true,
@@ -23,11 +29,11 @@
     "git-firefly": true,
     "html": true,
     "lua": true,
-    "macos-classic": true,
     "nix": true,
+    "toml": true,
+    // Extensions I'm testing out, but may not keep in the long term.
     "nu": true,
-    "tokyo-night": true,
-    "toml": true
+    "tokyo-night": true
   },
   "file_scan_exclusions": [
     "**/.git",
@@ -57,10 +63,7 @@
       "formatter": {
         "external": {
           "command": "ruff",
-          "arguments": [
-            "format",
-            "-"
-          ]
+          "arguments": ["format", "-"]
         }
       }
     },
