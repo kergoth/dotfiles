@@ -97,6 +97,10 @@
   "terminal": {
     "font_size": 12,
     "env": {
+      // Use bat as the default pager for Git commands.
+      // Normally I use delta, but this is having trouble with Zed's terminal.
+      "GIT_PAGER": "bat",
+      // Use Zed as the default editor for terminal commands.
       "EDITOR": "zed --wait",
       "VISUAL": "zed --wait"
     }
