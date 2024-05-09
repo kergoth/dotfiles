@@ -42,6 +42,33 @@
     // Enable inlay hints.
     "enabled": true
   },
+  "language_overrides": {
+    "Python": {
+      "formatter": {
+        "external": {
+          "command": "ruff",
+          "arguments": [
+            "format",
+            "-"
+          ]
+        }
+      }
+    },
+    "Shell Script": {
+      "formatter": {
+        "external": {
+          "command": "shfmt",
+          "arguments": [
+            "-i", "4",
+            "-ci",
+            "-bn",
+            "-s",
+            "{buffer_path}"
+          ]
+        }
+      }
+    }
+  },
   "telemetry": {
     // Do not send debug info like crash reports.
     "diagnostics": false,
