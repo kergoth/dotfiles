@@ -71,16 +71,14 @@
       "formatter": {
         "external": {
           "command": "shfmt",
-          "arguments": [
-            "-i", "4",
-            "-ci",
-            "-bn",
-            "-s",
-            "{buffer_path}"
-          ]
+          "arguments": ["-i", "4", "-ci", "-bn", "-s", "{buffer_path}"]
         }
       }
     }
+  },
+  "project_panel": {
+    /// Fold directories automatically when a directory has only one directory inside.
+    "auto_fold_dirs": true
   },
   "telemetry": {
     // Do not send debug info like crash reports.
