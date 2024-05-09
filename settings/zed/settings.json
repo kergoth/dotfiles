@@ -23,8 +23,6 @@
     "bash": true,
     "csv": true,
     "dracula": true,
-    "elixir": true,
-    "erlang": true,
     "git-firefly": true,
     "html": true,
     "lua": true,
