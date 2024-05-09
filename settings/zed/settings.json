@@ -32,6 +32,17 @@
     "tokyo-night": true,
     "toml": true
   },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/__pycache__"
+  ],
   // Disable auto-formatting globally, as I enable it per-project
   "format_on_save": "off",
   "git": {
