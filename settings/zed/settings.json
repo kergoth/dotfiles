@@ -46,6 +46,10 @@
     "**/.settings",
     "**/__pycache__"
   ],
+  "file_types": {
+    "Plain Text": ["txt"],
+    "Shell Script": [".envrc"]
+  },
   // Disable auto-formatting globally, as I enable it per-project
   "format_on_save": "off",
   "git": {
