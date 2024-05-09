@@ -86,6 +86,8 @@
   },
   // Show all whitespace.
   "show_whitespaces": "all",
+  // Enable Soft Wrap by default.
+  "soft_wrap": "editor_width",
   "telemetry": {
     // Do not send debug info like crash reports.
     "diagnostics": false,
