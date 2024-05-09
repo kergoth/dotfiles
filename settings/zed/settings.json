@@ -32,6 +32,8 @@
     "tokyo-night": true,
     "toml": true
   },
+  // Disable auto-formatting globally, as I enable it per-project
+  "format_on_save": "off",
   "git": {
     // Disable the inline git blame information.
     "inline_blame": {
