@@ -1,1 +1,1 @@
-{{ template "sapling.conf.tmpl" . }}
+{{ includeTemplate (joinPath .chezmoi.workingTree "settings/sapling/sapling.conf.tmpl") . -}}
