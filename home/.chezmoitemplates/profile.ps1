@@ -333,6 +333,10 @@ function Copy-SSH-Id {
 }
 Add-Alias ssh-copy-id Copy-SSH-Id
 
+if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction SilentlyContinue)) {
+    $env:VISUAL = $env:EDITOR = "codewait.cmd"
+}
+
 if (Get-Command nvim -ErrorAction SilentlyContinue) {
     if (-Not (Get-Command vim -ErrorAction SilentlyContinue)) {
         Add-Alias vim nvim
@@ -346,18 +350,28 @@ if (Get-Command nvim -ErrorAction SilentlyContinue) {
 }
 Add-Alias vi vim
 
-if (($env:TERM_PROGRAM -eq 'vscode') -And (Get-Command code -ErrorAction SilentlyContinue)) {
-    if (-Not (Test-Path env:VISUAL)) {
-        $env:VISUAL = "codewait.cmd"
+function Invoke-Editor {
+    if (Test-Path env:VISUAL) {
+        $editor = $env:VISUAL
     }
-    if (-Not (Test-Path env:EDITOR)) {
-        $env:EDITOR = "codewait.cmd"
+    elseif (Test-Path env:EDITOR) {
+        $editor = $env:EDITOR
     }
-    New-Alias e code -Force
+    else {
+        $editor = "nvim"
+    }
+
+    if (($editor -eq 'codewait.cmd') -Or ($editor -eq 'codewait') -Or ($editor -eq 'code --wait')) {
+        code @args
+    }
+    elseif ($editor -eq 'zed --wait') {
+        zed @args
+    }
+    else {
+        & $editor @args
+    }
 }
-else {
-    New-Alias e vim -Force
-}
+New-Alias e Invoke-Editor -Force
 
 if (Test-Path "$env:USERPROFILE\.local.ps1") {
     . "$env:USERPROFILE\.local.ps1"
