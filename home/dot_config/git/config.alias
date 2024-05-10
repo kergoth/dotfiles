@@ -48,6 +48,9 @@
 	dangling = !git fsck | sed -n 's/^dangling commit //p' | git log --stdin --no-walk -g --first-parent -m -p
 	lgd = !git dangling
 
+	# Log with signatures
+	logsigs = log --show-signature
+
 	# Trimmed log with stat
 	logstat = log --compact-summary --stat=,,20
 	logst = !git logstat
