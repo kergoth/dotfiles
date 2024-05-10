@@ -95,6 +95,20 @@
     "metrics": false
   },
   "terminal": {
+{{  if eq .chezmoi.os "windows" }}
+    "shell": {
+        "program": "pwsh.exe"
+    },
+{{  else if eq .chezmoi.os "linux" }}
+    "shell": {
+        "with_arguments": {
+        "program": "zsh",
+        "args": [
+            "--login"
+        ]
+        }
+    },
+{{  end }}
     "font_size": 12,
     "env": {
       // Use bat as the default pager for Git commands.
