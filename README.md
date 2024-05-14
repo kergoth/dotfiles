@@ -496,6 +496,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### Formerly-Used Fonts
 
+- [Monaspace](https://github.com/githubnext/monaspace)
 - [Recursive](https://www.recursive.design) Code
 - [Fira Code](https://github.com/tonsky/FiraCode)
 - [Input](https://input.djr.com) Mono Narrow
