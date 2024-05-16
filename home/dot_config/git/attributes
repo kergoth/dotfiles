@@ -1,4 +1,9 @@
-*.bat     eol=crlf
+# Line endings
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Diff drivers
+*.bib     diff=bibtex
 *.c       diff=cpp
 *.c++     diff=cpp
 *.cc      diff=cpp
@@ -6,8 +11,10 @@
 *.cs      diff=csharp
 *.css     diff=css
 *.el      diff=lisp
+*.erb     diff=html
 *.ex      diff=elixir
 *.exs     diff=elixir
+*.f       diff=fortran
 *.gemspec diff=ruby
 *.go      diff=golang
 *.h       diff=cpp
@@ -15,19 +22,36 @@
 *.hh      diff=cpp
 *.hpp     diff=cpp
 *.html    diff=html
+*.ini     diff=ini
 *.lisp    diff=lisp
 *.m       diff=objc
+#*.m      diff=matlab
 *.md      diff=markdown
 *.md      diff=markdown
 *.mm      diff=objc
+#*.org     diff=orgmode
 *.perl    diff=perl
 *.php     diff=php
 *.pl      diff=perl
 *.pm      diff=perl
 *.py      diff=python
+#*.r       diff=rstats
 *.rake    diff=ruby
 *.rb      diff=ruby
+*_spec.rb diff=rspec
 *.rs      diff=rust
+*.tex     diff=tex
+#*.texi*   diff=texinfo
 *.xhtml   diff=html
+
+# Custom hunk headers
+*.swift   diff=swift
+
+# Binary files
+#*.pdf     diff=pdf
+#*.png     diff=exif
+#*.jpg     diff=exif
+#*.jpeg    diff=exif
+#*.gif     diff=exif
 
 # vim: set ft=gitattributes:

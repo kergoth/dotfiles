@@ -119,6 +119,15 @@
 	compactionHeuristic = true
 	algorithm = histogram
 
+[diff "ini"]
+	xfuncname = "^\\[\\(.*\\)\\]$"
+
+[diff "rspec"]
+	xfuncname = "^[ \t]*((RSpec|describe|context|it|before|after|around|feature|scenario|background)[ \t].*)$"
+
+[diff "swift"]
+	xfuncname = ^[ \t]*((class|func)[ \t].*)$
+
 [merge]
 	tool = wrapper
 	summary = true
