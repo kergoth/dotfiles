@@ -36,6 +36,8 @@
 	source = config remote.origin.url
 	addnp = "!f(){ git add -N \"$@\" && git add -p \"$@\"; }; f"
 	fetch-noprompt = "!f() { GIT_SSH_COMMAND=\"ssh -oBatchMode=yes\" GIT_TERMINAL_PROMPT=0 git fetch \"$@\"; }; f"
+	attr = check-attr --all
+	attributes = check-attr --all
 
 	# Pretty one line logs
 	lg = log --graph --pretty=lg --date=short
