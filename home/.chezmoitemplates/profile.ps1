@@ -231,6 +231,12 @@ New-Alias grep Select-String -Force
 New-Alias rm Remove-ItemSafely -Force
 New-Alias rmdir Remove-ItemSafely -Force
 
+# Default to staying on filesystem
+function Invoke-Dua {
+    dua.exe --stay-on-filesystem @args
+}
+New-Alias dua Invoke-Dua -Force
+
 if (Get-Command ghq -ErrorAction SilentlyContinue) {
     if (-Not $env:GHQ_ROOT) {
         $env:GHQ_ROOT = "$env:USERPROFILE/Repos"

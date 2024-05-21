@@ -162,6 +162,7 @@ else
     fi
 fi
 alias duf='duf -hide-fs autofs,devfs,devtmpfs,tmpfs,mtmfs,none,squashfs,rootfs,overlay,fuse.snapfuse -hide-mp /snap'
+alias dua='dua --stay-on-filesystem'
 alias sbgrm='sudo =bgrm'
 
 alias wildcard_to_re='python -c "import fnmatch,sys; print(fnmatch.translate(sys.argv[1]))"'
