@@ -30,6 +30,11 @@ if (Get-Command fd -ErrorAction SilentlyContinue) {
     $env:FZF_CTRL_T_COMMAND = "$env:FZF_DEFAULT_COMMAND"
     $env:FZF_ALT_C_COMMAND = 'fd -c always -t d ""'
     $env:FZF_DEFAULT_OPTS = "$env:FZF_DEFAULT_OPTS --ansi"
+
+    function Invoke-FD-FilesNoPattern {
+        fd -t f '' @args
+    }
+    New-Alias fdf Invoke-FD-FilesNoPattern -Force
 }
 
 $env:LESS = '-F -g -i -M -R -w -X -z-4'
