@@ -277,9 +277,9 @@ refreshPeriod = "168h"
 {{- end }}
 
 {{- if eq .chezmoi.os "windows" }}
-["AppData/Local/Programs/bin/rusage"]
+["AppData/Local/Programs/bin/rusage.com"]
 {{- else }}
-[".local/bin/rusage"]
+[".local/bin/rusage.com"]
 {{- end }}
 type = "file"
 url = "https://justine.lol/rusage/rusage.com"
