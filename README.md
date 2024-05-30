@@ -182,7 +182,7 @@ chezmoi update -R
 - [iA-Fonts](https://github.com/iaolo/iA-Fonts): iA Writer Mono, Duo, and Quattro.
 - [MesloLGS NF](https://github.com/romkatv/powerlevel10k/blob/master/font.md): Meslo Nerd Font patched for Powerlevel10k.
 
-### Installed CLI Packages
+### Installed CLI Software
 
 - [curl](https://curl.se): Command line tool and library for transferring data with URLs.
 - [wget](https://www.gnu.org/software/wget/): A free software package for retrieving files using HTTP, HTTPS, FTP and FTPS.
@@ -214,6 +214,7 @@ chezmoi update -R
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli): Feature-rich interactive Jira command line.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
+- [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
 - [sad](https://github.com/ms-jpq/sad): CLI search and replace | Space Age seD.
 - [sd](https://github.com/chmln/sd): Intuitive find & replace CLI (sed alternative).
 - [shellcheck](https://github.com/koalaman/shellcheck): A static analysis tool for shell scripts.
@@ -223,11 +224,11 @@ chezmoi update -R
 - [zoxide](https://github.com/ajeetdsouza/zoxide): A smarter cd command, inspired by z and autojump.
 - [zstd](http://www.zstd.net/): Zstandard - Fast real-time compression algorithm.
 
-#### CLI Packages on Linux and macOS
+#### CLI Software on Linux and macOS
 
 - [nix](https://nixos.org): Nix is a tool that takes a unique approach to package management and system configuration.
 
-#### CLI Packages on Linux, macOS, and FreeBSD
+#### CLI Software on Linux, macOS, and FreeBSD
 
 - [patchutils](http://cyberelk.net/tim/software/patchutils/): A small collection of programs that operate on patch files.
 
@@ -241,11 +242,11 @@ chezmoi update -R
 
   - There are no good options for tmux or tmux-equivalent on Windows. The closest you can get is just splits in Windows Terminal, which doesn't give you the ability to disconnect.
 
-#### CLI Packages on Linux, macOS, and Windows
+#### CLI Software on Linux, macOS, and Windows
 
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
 
-#### CLI Packages on macOS
+#### CLI Software on macOS
 
 - [lima](https://github.com/lima-vm/lima): Linux virtual machines, typically on macOS, for running containerd.
 - [colima](https://github.com/abiosoft/colima): Container runtimes on macOS (and Linux) with minimal setup.
@@ -254,23 +255,23 @@ chezmoi update -R
 - [reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard): Reattach to the per-user bootstrap namespace. This is needed for tools like tmux, though tmux 2.6+ apparently incorporates this functionality already.
 - [trash](https://hasseg.org/trash/): A small command-line program for OS X that moves files or folders to the trash.
 
-#### CLI Packages on Linux and FreeBSD
+#### CLI Software on Linux and FreeBSD
 
 The intention is to incorporate the installation of Nix on all systems in time.
 
 - [zsh](https://zsh.sourceforge.io): A shell designed for interactive use, although it is also a powerful scripting language. This is installed by default on macOS.
 
-##### CLI Packages on Arch Linux
+##### CLI Software on Arch Linux
 
 - [openssh](https://www.openssh.com): The premier connectivity tool for remote login with the SSH protocol.
 - [avahi](https://avahi.org): A system which facilitates service discovery on a local network via mDNS.
 - [nss-mdns](http://0pointer.de/lennart/projects/nss-mdns/): A GNU Libc NSS module that provides mDNS host name resolution.
 
-##### CLI Packages on WSL2
+##### CLI Software on WSL2
 
 - [socat](http://www.dest-unreach.org/socat/): Multipurpose relay for bidirectional data transfer. This is required for [npiperelay](https://github.com/jstarks/npiperelay).
 
-#### CLI Packages on Windows
+#### CLI Software on Windows
 
 - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/): These Build Tools allow you to build Visual Studio projects from a command-line interface.
@@ -395,7 +396,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ## Apps I install on an as-needed basis
 
-### As needed CLI Packages
+### As needed CLI Software
 
 - [asciinema](https://asciinema.org/)]: Recording terminal sessions and sharing them on the web. Available via brew, nix, and python.
 - [aria2](https://github.com/aria2/aria2): A lightweight multi-protocol & multi-source, cross platform download utility operated in command-line. It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink. Available via brew, nix, and scoop.
@@ -441,7 +442,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [mp3val](https://mp3val.sourceforge.net): A small, high-speed, free software tool for checking MPEG audio files' integrity. Available via brew and nix. Also available as direct binary download for Windows.
 - [par2cmdline](https://github.com/Parchive/par2cmdline): Available via brew as `par2`, nix, and scoop.
 
-#### As Needed CLI Packages for macOS
+#### As Needed CLI Software for macOS
 
 - [makeicns](http://www.amnoid.de/icns/makeicns.html): Create icns files from the command line. Available via brew.
 - [terminal-notifier](https://github.com/julienXX/terminal-notifier): A command-line tool to send macOS User Notifications. Available via brew and nix.
