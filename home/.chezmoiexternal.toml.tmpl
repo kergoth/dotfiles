@@ -276,6 +276,16 @@ executable = true
 refreshPeriod = "168h"
 {{- end }}
 
+{{- if eq .chezmoi.os "windows" }}
+["AppData/Local/Programs/bin/rusage"]
+{{- else }}
+[".local/bin/rusage"]
+{{- end }}
+type = "file"
+url = "https://justine.lol/rusage/rusage.com"
+executable = true
+refreshPeriod = "168h"
+
 # Fonts
 {{- if not .headless }}
 {{-   $fontDir := "" }}
