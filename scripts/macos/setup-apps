@@ -52,7 +52,7 @@ while read -r app; do
 done <<END
 1Password
 Alfred 5
-Hidden Bar
+Ice
 Karabiner-Elements
 Rectangle
 OverSight
