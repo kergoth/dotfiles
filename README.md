@@ -323,7 +323,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [GPG Suite](https://gpgtools.org) ([Open-Source](https://github.com/orgs/GPGTools/repositories)): Tools to protect your emails and files.
 - [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later.
 - [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items.
-- [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar.
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
 - [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
