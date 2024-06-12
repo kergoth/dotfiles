@@ -40,7 +40,7 @@ fi
 for file in $ZDOTDIR/plugins/*/*.plugin.zsh(N) $ZDOTDIR/plugins/*/activate.sh(N) \
             ${(M)config_files:#*/*.plugin.zsh}; do
     case "$file" in
-        */base16/*|*/syntax-highlighting/*|*/history-substring-search/*)
+        */bd/*|*/syntax-highlighting/*|*/history-substring-search/*)
             continue
             ;;
     esac
