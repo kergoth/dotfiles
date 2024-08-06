@@ -24,6 +24,9 @@ set match-hidden-files Off
 # Enable bracketed paste handling
 set enable-bracketed-paste on
 
+# Don't add history line edits that weren't accepted to the history
+set revert-all-at-newline on
+
 # Vi-like movement/editing
 # set editing-mode vi
 
