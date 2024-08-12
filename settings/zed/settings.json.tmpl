@@ -70,11 +70,11 @@
     "Python": {
       "formatter": {
         "external": {
-          "command": "ruff",
-          "arguments": ["format", "-"]
+          "command": "zsh",
+          "arguments": ["-c", "ruff check --select I --fix - | ruff format -"]
         }
       }
-    },
+    }
     "Shell Script": {
       "formatter": {
         "external": {
