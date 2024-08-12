@@ -64,17 +64,25 @@
     "enabled": true
   },
   "languages": {
-    "JSON": { "prettier": { "allowed": true, "parser": "json" } }
+    "JSON": { "prettier": { "allowed": true, "parser": "json" } },
+    "Python": {
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "code_actions": {
+            "source.organizeImports.ruff": true,
+            "source.fixAll.ruff": true
+          }
+        },
+        {
+          "language_server": {
+            "name": "ruff"
+          }
+        }
+      ]
+    }
   },
   "language_overrides": {
-    "Python": {
-      "formatter": {
-        "external": {
-          "command": "zsh",
-          "arguments": ["-c", "ruff check --select I --fix - | ruff format -"]
-        }
-      }
-    }
     "Shell Script": {
       "formatter": {
         "external": {
