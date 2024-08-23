@@ -1,0 +1,10 @@
+[
+  {
+      "label": "(Python) : Select Virtual Env",
+      "env": {
+        "cwd": "$ZED_DIRNAME"
+      },
+      "command": "~/bin/zed-selectenv",
+      "use_new_terminal": true
+  }
+]
