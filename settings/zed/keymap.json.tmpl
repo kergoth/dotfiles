@@ -5,5 +5,19 @@
     "bindings": {
       "j k": "vim::NormalBefore"
     }
+  },
+  // Fold all with zM
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "z M": ["workspace::SendKeystrokes", "cmd-a z c escape g g"]
+    }
+  },
+  // Unfold all with zR
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "z R": ["workspace::SendKeystrokes", "cmd-a z o escape g g"]
+    }
   }
 ]
