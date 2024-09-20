@@ -327,6 +327,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
+- [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
 - [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
 - [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane will let you view and change default application associations.
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.

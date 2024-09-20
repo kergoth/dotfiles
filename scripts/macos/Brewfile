@@ -29,6 +29,7 @@ cask "qlstephen"
 cask "quicklook-csv"
 cask "quicklook-json"
 cask "quicklookase"
+cask "reader"
 cask "rectangle"
 cask "soulver2"
 cask "suspicious-package"
@@ -55,6 +56,7 @@ mas "Privacy Redirect", id: 1578144015
 mas "Reeder", id: 1529448980
 mas "Refined GitHub", id: 1519867270
 mas "Save to Matter", id: 1548677272
+mas "Save to Reader", id: 1640236961
 mas "SessionRestore", id: 1463334954
 mas "Shut Up", id: 1015043880
 mas "Social Fixer for Facebook", id: 1562017526
