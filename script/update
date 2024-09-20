@@ -46,7 +46,7 @@ home-manager-switch
 
 echo >&2 "Updating Home Manager packages"
 cd ~/.config/home-manager
-nix flake update --override-input nixpkgs github:NixOS/nixpkgs/nixos-unstable 2>&1 | (grep -Ev '(^warning:|searching up)' || :) | tee "$tmpfile"
+nix flake update --override-input nixpkgs github:NixOS/nixpkgs/nixos-unstable 2>&1 | (grep -Ev '(^warning:|searching up|into the Git cache)' || :) | tee "$tmpfile"
 if ! [ -s "$tmpfile" ]; then
     echo >&2 "No update to the home-manager inputs available"
     exit 0
