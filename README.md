@@ -208,7 +208,6 @@ chezmoi update -R
 - [fzf](https://github.com/junegunn/fzf): A command-line fuzzy finder.
 - [ghq](https://github.com/x-motemen/ghq): Remote repository management made easy.
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
-- [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git.
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
 - [jira-cli](https://github.com/ankitpokhrel/jira-cli): Feature-rich interactive Jira command line.

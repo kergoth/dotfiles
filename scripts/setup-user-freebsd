@@ -50,7 +50,6 @@ fi
 pipx_check git-revise git-revise
 pipx_check git-imerge git-imerge
 cargo_check choose choose
-cargo_check git-branchless git-branchless
 
 # Bug tracking and workflow
 go_check github.com/ankitpokhrel/jira-cli/...@latest jira

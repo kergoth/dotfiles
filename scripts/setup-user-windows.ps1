@@ -83,7 +83,6 @@ scoop install delta
 scoop install gh
 scoop install ghq
 scoop install git-absorb
-scoop install git-branchless
 scoop install sapling
 
 # Disk tools
