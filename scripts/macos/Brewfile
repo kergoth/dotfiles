@@ -1,8 +1,9 @@
+cask_args appdir: "~/Applications"
+
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 
-cask_args appdir: "~/Applications"
-
+brew "mas"
 brew "trash"
 
 cask "alfred"
