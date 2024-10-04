@@ -6,6 +6,7 @@ tap "homebrew/cask-versions"
 brew "mas"
 brew "trash"
 
+cask "1password-cli"
 cask "alfred"
 cask "apparency"
 cask "appcleaner"
