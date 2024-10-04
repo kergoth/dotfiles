@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Given a Brewfile, diff it against the current configuration.
+
+# Usage: ./brewfile-diff-dump Brewfile
+
+# Exit on error
+set -e
+
+# Check for Brewfile
+if [ -z "$1" ]; then
+    echo "Usage: ./brewfile-diff-dump Brewfile"
+    exit 1
+fi
+brewfile="$1"
+shift
+
+# Check for Brew
+if ! command -v brew &>/dev/null; then
+    echo "Homebrew is not installed."
+    exit 1
+fi
+
+# Check for Brewfile
+if [ ! -f "$brewfile" ]; then
+    echo "Brewfile not found."
+    exit 1
+fi
+
+bundle_dump() {
+    echo 'cask_args appdir: "~/Applications"'
+    echo
+    brew bundle dump --file=- |
+        grep -v '^vscode'
+}
+
+diff_highlight() {
+    if [ -t 1 ]; then
+        if command -v delta &>/dev/null; then
+            delta --file-style=omit --hunk-header-style=omit
+        elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
+            diff-highlight
+        else
+            cat
+        fi
+    else
+        cat
+    fi
+}
+
+# Compare Brewfile to current configuration
+diff -ud <(cat "$brewfile") <(bundle_dump) | diff_highlight

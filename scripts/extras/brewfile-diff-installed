@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Given a Brewfile, compare the listed packages with the installed packages.
+
+# Usage: ./brewfile-diff-installed Brewfile
+
+# Exit on error
+set -e
+
+# Check for Brewfile
+if [ -z "$1" ]; then
+  echo "Usage: ./brewfile-diff-installed Brewfile"
+  exit 1
+fi
+
+# Check for Brew
+if ! command -v brew &> /dev/null; then
+  echo "Homebrew is not installed."
+  exit 1
+fi
+
+# Check for Brewfile
+if [ ! -f "$1" ]; then
+  echo "Brewfile not found."
+  exit 1
+fi
+
+# Get installed packages
+installed=$(brew list)
+
+# Get listed packages
+listed=$(brew bundle list --formula --cask --file="$1")
+
+
+diff_highlight() {
+    if [ -t 1 ]; then
+        if command -v delta &>/dev/null; then
+            delta --file-style=omit --hunk-header-style=omit
+        elif command -v diff-highlight >/dev/null 2>&1 && command -v perl >/dev/null 2>&1; then
+            diff-highlight
+        else
+            tail -n +3
+        fi
+    else
+        tail -n +3
+    fi
+}
+
+# Compare listed and installed packages
+diff -ud <(echo "$listed" | sort) <(echo "$installed" | sort) | diff_highlight
