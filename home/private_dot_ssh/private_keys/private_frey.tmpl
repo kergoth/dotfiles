@@ -1,3 +1,2 @@
-{{- if and .secrets .personal }}
-{{-   onepasswordRead "op://Personal/frey/private key?ssh-format=openssh" | replace "\r" "" -}}
-{{- end }}
+{{-  $data := dict "settingsFile" "settings/ssh/keys/frey.tmpl"  -}}
+{{-  template "1password-inc.tmpl" (merge $data .)  -}}

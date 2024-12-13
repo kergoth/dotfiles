@@ -1,3 +1,2 @@
-{{- if and .secrets .work }}
-{{-   onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/zqwfweg7abydoz2j5ney63pgye/public key" | replace "\r" "" -}}
-{{- end }}
+{{-  $data := dict "settingsFile" "settings/ssh/keys/work.pub.tmpl"  -}}
+{{-  template "1password-inc.tmpl" (merge $data .)  -}}

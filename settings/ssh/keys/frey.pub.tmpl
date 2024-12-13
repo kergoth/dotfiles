@@ -1,0 +1,3 @@
+{{- if and .secrets .personal }}
+{{-   onepasswordRead "op://Personal/frey/public key" | replace "\r" "" -}}
+{{- end }}

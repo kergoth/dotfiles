@@ -1,3 +1,2 @@
-{{- if .secrets -}}
-{{- onepasswordDocument "4ux4umwtoh6hg3pf2yliblhifi" -}}
-{{- end -}}
+{{- $data := dict "doc" "4ux4umwtoh6hg3pf2yliblhifi" -}}
+{{- template "1password-doc.tmpl" (merge $data .) -}}
