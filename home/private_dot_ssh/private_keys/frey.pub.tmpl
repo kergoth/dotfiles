@@ -1,2 +1,1 @@
-{{-  $data := dict "settingsFile" "settings/ssh/keys/frey.pub.tmpl"  -}}
-{{-  template "1password-inc.tmpl" (merge $data .)  -}}
+{{-  template "onepasswordInclude.tmpl" (merge (dict "settingsFile" "settings/ssh/keys/frey.pub.tmpl") .)  -}}
