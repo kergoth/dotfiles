@@ -2,10 +2,10 @@
 
 [alias]
 	git = !exec git
-	ci = commit -s
-	ic = commit -s
-	cm = commit -s -m
-	cma = commit -sam
+	ci = commit
+	ic = commit
+	cm = commit -m
+	cma = commit -am
 	empty = commit --allow-empty-message -m ''
 	co = switch
 	back = switch -
