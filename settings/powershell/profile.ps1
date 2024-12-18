@@ -282,6 +282,13 @@ if (Get-Command batgrep -ErrorAction SilentlyContinue) {
 }
 New-Alias g rg -Force
 
+if (Get-Command duf -ErrorAction SilentlyContinue) {
+    if (Test-Path alias:df) {
+        Remove-Alias df
+    }
+    Add-Alias df duf
+}
+
 function Set-Location-Create {
     New-Item -ItemType Directory -ErrorAction SilentlyContinue -Force @args | Out-Null
     Set-Location @args
