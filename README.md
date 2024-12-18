@@ -172,11 +172,6 @@ chezmoi update -R
 - [zsh-nix-shell](https://github.com/chisui/zsh-nix-shell): Zsh plugin that lets you use zsh in nix-shell shells.
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting): Fish shell like syntax highlighting for Zsh.
 
-#### External Scripts included for non-Windows platforms
-
-- [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
-- [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
-
 ### Fonts
 
 - [iA-Fonts](https://github.com/iaolo/iA-Fonts): iA Writer Mono, Duo, and Quattro.
@@ -197,6 +192,7 @@ chezmoi update -R
 - [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments.
 
 - [bat](https://github.com/sharkdp/bat): A cat(1) clone with syntax highlighting and Git integration.
+  - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [choose](https://github.com/theryangeary/choose): A human-friendly and fast alternative to cut and (sometimes) awk.
 - [delta](https://github.com/dandavison/delta): A syntax-highlighting pager for git, diff, and grep output.
 - [direnv](https://direnv.net): An extension for your shell which can load and unload environment variables depending on the current directory.
@@ -228,6 +224,9 @@ chezmoi update -R
 - [nix](https://nixos.org): Nix is a tool that takes a unique approach to package management and system configuration.
 
 #### CLI Software on Linux, macOS, and FreeBSD
+
+- [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
+  - On Windows, cht.exe is installed via scoop instead.
 
 - [patchutils](http://cyberelk.net/tim/software/patchutils/): A small collection of programs that operate on patch files.
 
