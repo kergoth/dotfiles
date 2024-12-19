@@ -41,7 +41,6 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id 7zip.7zip | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Discord.Discord | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Ditto.Ditto | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id GnuPG.Gpg4win | Out-Null
-Install-WinGetPackageIfNotInstalled -Mode Silent -Id IRCCloud.IRCCloud | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id AutoHotkey.AutoHotkey | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id BiniSoft.WindowsFirewallControl | Out-Null
 Install-winGetPackageIfNotInstalled -Mode Silent -Id egoist.devdocs-desktop | Out-Null

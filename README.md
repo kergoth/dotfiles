@@ -297,7 +297,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
-- [IRCCloud](https://www.irccloud.com/): IRC client.
 - [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
 - [Visual Studio Code](https://code.visualstudio.com) ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor.
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
