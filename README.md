@@ -271,7 +271,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 #### CLI Software on Windows
 
-- [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
 - [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/): These Build Tools allow you to build Visual Studio projects from a command-line interface.
 - [cht.exe](https://github.com/tpanj/cht.exe): cht.sh libcurl client for Windows.
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
