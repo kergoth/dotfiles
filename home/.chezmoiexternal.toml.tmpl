@@ -163,6 +163,24 @@ refreshPeriod = "168h"
     [bin.pull]
     args = {{ $pull_args | toToml }}
 
+{{/* Install uv/uvx */}}
+{{- $uv_suffix := "" }}
+{{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" }}
+{{ if eq .chezmoi.os "linux" }}
+{{   $uv_suffix = "unknown-linux-musl" }}
+{{ end }}
+{{ if ne $uv_suffix "" }}
+{{   range list "uv" "uvx" -}}
+["{{ $binpath }}/{{ . }}"]
+  type = "file"
+  url = "https://github.com/astral-sh/uv/releases/download/{{- $uv_version -}}/uv-{{- $binarch -}}-{{- $uv_suffix -}}.tar.gz"
+  refreshPeriod = "168h"
+  filter.command = "tar"
+  filter.args = ["-zxO", "uv-{{- $binarch -}}-{{- $uv_suffix -}}/{{ . }}"]
+  executable = true
+{{   end -}}
+{{ end }}
+
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/archlinux-icon-crystal.svg"]
 type = "archive-file"
@@ -290,11 +308,7 @@ executable = true
 refreshPeriod = "168h"
 {{- end }}
 
-{{- if eq .chezmoi.os "windows" }}
-["AppData/Local/Programs/bin/rusage.com"]
-{{- else }}
-[".local/bin/rusage.com"]
-{{- end }}
+["{{ $binpath }}/rusage.com"]
 type = "file"
 url = "https://justine.lol/rusage/rusage.com"
 executable = true
