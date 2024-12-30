@@ -1,5 +1,13 @@
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
 {{ $pull_args := dig "external" "pull" "args" (list) . -}}
+{{- $binarch := .chezmoi.arch -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- end -}}
+{{- $binpath := ".local/bin" -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{- end -}}
 
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
