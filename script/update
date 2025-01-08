@@ -82,3 +82,6 @@ echo >&2 "Committing Home Manager updates"
 (cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/flake.lock)
 
 hm switch
+hm expire-generations "-30 days"
+nix-env --delete-generations old
+nix-collect-garbage
