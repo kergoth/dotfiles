@@ -193,7 +193,7 @@ stripComponents = 1
 {{- $splitver := $bat_extras_version | splitList "." }}
 [".local/bin"]
 type = "archive"
-url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
+url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
 refreshPeriod = "168h"
 stripComponents = 1
 
