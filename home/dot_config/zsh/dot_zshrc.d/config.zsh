@@ -99,4 +99,4 @@ if [[ -n $SSH_CLIENT ]]; then
 fi
 
 # Additional zbell exclusions
-zbell_ignore=($EDITOR $PAGER vim less more most ssh)
+zbell_ignore=($EDITOR $PAGER vim vi less more most ssh bat tail)
