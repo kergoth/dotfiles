@@ -1,0 +1,45 @@
+environment {
+    terminal "Kitty"
+    textEditor "BBEdit"
+}
+
+behavior {
+    theme "Kon"
+
+    actions {
+        core.trash.confirm false
+    }
+
+    files {
+        defaultLocation "~/Downloads"
+    }
+
+    table {
+        verticalPadding 4
+    }
+}
+
+etty {
+    environ {
+        "TERM_PROGRAM" "Marta"
+    }
+
+    fonts {
+        normal [ "MesloLGS NF" 12 ]
+    }
+}
+
+fonts {
+    preferences [ "MesloLGS NF" 12 ]
+}
+
+keyBindings {
+    "Cmd+Delete" "core.trash"
+    "Cmd+Down" "core.open"
+    "Cmd+Up" "core.go.up"
+    "Cmd+Shift+N" "core.new.folder"
+    "Cmd+Shift+C" "core.copy.inactive"
+    "Cmd+Shift+M" "core.move.inactive"
+    "Cmd+Shift+G" "core.select.group"
+    "Return" "core.rename"
+}
