@@ -1,0 +1,8 @@
+if [[ $(limactl list --all-fields "${LIMA_INSTANCE:-default}" | tail -n +2 | awk '{print $2}') != Running ]]; then
+    limactl start "${LIMA_INSTANCE:-default}"
+fi
+
+if [ $# -gt 0 ]; then
+    set -- ${LIMA_SHELL:-bash} -i -c "$(quote-args "$@")"
+fi
+command lima "$@"
