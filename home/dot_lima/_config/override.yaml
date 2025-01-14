@@ -1,0 +1,57 @@
+vmType: "vz"
+mountType: "virtiofs"
+
+mounts:
+  - location: "~"
+    writable: true
+  - location: "/tmp/lima"
+    writable: true
+  - location: "/Volumes/ROMs"
+    writable: true
+
+provision:
+  - mode: user
+    script: |
+      #!/bin/sh
+      sudo chown $USER:$USER $HOME || doas chown $USER:$USER $HOME # Fix "read-only file system" due to root-owned files
+      echo 'container_user_custom_home="/Users/$USER"' >> $HOME/.distroboxrc
+      echo 'non_interactive="1"' >> $HOME/.distroboxrc
+      echo 'container_generate_entry="1"' >> $HOME/.distroboxrc
+      # echo 'init="1"' >> $HOME/.distroboxrc
+  - mode: user
+    script: |
+      #!/bin/bash
+      set -ux -o pipefail
+
+      if ! [ -d ~/.dotfiles ]; then
+        if [ -d /Users/{{.User}}/.dotfiles ]; then
+          ln -sfT /Users/{{.User}}/.dotfiles ~/.dotfiles
+        else
+          git clone --depth 1 https://github.com/kergoth/dotfiles ~/.dotfiles
+        fi
+      fi
+
+      if ! [ -e ~/.setup-complete ]; then
+        ~/.dotfiles/script/setup-full || : && touch ~/.setup-complete
+      fi
+
+      # User shell should be zsh
+      if [ -e /bin/zsh ] && [ "$(getent passwd "$(id -un)" | awk -F : '{print $NF}')" != /bin/zsh ]; then
+          echo >&2 "Changing user shell to zsh"
+          sudo chsh -s /bin/zsh {{.User}}
+      fi
+
+probes:
+  - mode: readiness
+    description: user setup to be completed
+    script: |
+       #!/bin/bash
+       set -eux -o pipefail
+       if ! timeout 180s bash -c "until test -e ~/.setup-complete; do sleep 3; done"; then
+         echo >&2 "user setup is not complete"
+         exit 1
+       fi
+       rm -f ~/.setup-complete
+    hint: |
+      user setup is not complete in the guest.
+      Also see "/var/log/cloud-init-output.log" in the guest.
