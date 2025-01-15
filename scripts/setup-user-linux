@@ -46,7 +46,7 @@ if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
         msg "Changing user shell to zsh"
         # Failure is ignored here, as in some cases the user password might not be
         # known or set, as is the case with some container usage.
-        chsh -s /bin/zsh || ret=$?
+        chsh -s "$zsh_binary" || ret=$?
     fi
 fi
 
