@@ -9,15 +9,17 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
+ret=0
+
 # Dotfiles
-"$repodir/script/setup"
+"$repodir/script/setup" || ret=$?
 
 # Install pipx, if needed
 if ! command -v pipx &>/dev/null; then
     msg "Installing pipx"
     /usr/bin/python3 -m pip install --user --disable-pip-version-check pipx
     /usr/bin/python3 -m pipx ensurepath
-fi
+fi || ret=$?
 
 # Install PowerShell modules, if needed
 if has pwsh; then
@@ -25,16 +27,16 @@ if has pwsh; then
     # Ignore failure, as these are not critical to my workflow, and can fail due
     # to transient network issues.
     pwsh -NoProfile "$scriptdir/install-pwsh-modules.ps1" || :
-fi
+fi || ret=$?
 
 # Install dtrx, if unar is missing
 if ! command -v unar &>/dev/null; then
     msg "Installing dtrx"
     pipx install dtrx
-fi || :
+fi || ret=$?
 
 if chezmoi dump-config 2>/dev/null | grep -q ephemeral.\*true; then
-    exit 0
+    exit $ret
 fi
 
 # User shell should be zsh
@@ -44,6 +46,8 @@ if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
         msg "Changing user shell to zsh"
         # Failure is ignored here, as in some cases the user password might not be
         # known or set, as is the case with some container usage.
-        chsh -s /bin/zsh || :
+        chsh -s /bin/zsh || ret=$?
     fi
 fi
+
+exit $ret
