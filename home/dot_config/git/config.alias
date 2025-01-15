@@ -26,7 +26,7 @@
 	dc = diff --cached
 	staged = diff --cached
 	r = remote -v
-	fetchall = fetch --all
+	fetchall = fetch --multiple --all
 	b = branch -v
 	ri = revise -i
 	rc = rebase --continue
