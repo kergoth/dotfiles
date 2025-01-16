@@ -13,6 +13,9 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 {{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
+{{- $steamdeck := eq $osid "linux-steamos" -}}
+
+{{/* detect macOS version */}}
 {{- $macos_version := "" -}}
 {{- if eq .chezmoi.os "darwin" -}}
     {{- $macos_version = slice (output "sw_vers" "-productVersion" | trim | splitList "." ) 0 2 | join "." -}}
@@ -95,8 +98,8 @@ scriptTempDir = "~/tmp"
 
     hostname = {{ $hostname | quote }}
     osid = {{ $osid | quote }}
-    steamdeck = {{ eq $osid "linux-steamos" }}
     wsl2 = {{ $wsl2 }}
+    steamdeck = {{ $steamdeck }}
 {{- if eq .chezmoi.os "darwin" }}
     macos_version = {{ $macos_version }}
 {{- end }}
