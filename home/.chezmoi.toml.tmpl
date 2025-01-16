@@ -95,6 +95,7 @@ scriptTempDir = "~/tmp"
 
     hostname = {{ $hostname | quote }}
     osid = {{ $osid | quote }}
+    steamdeck = {{ eq $osid "linux-steamos" }}
     wsl2 = {{ $wsl2 }}
 {{- if eq .chezmoi.os "darwin" }}
     macos_version = {{ $macos_version }}
