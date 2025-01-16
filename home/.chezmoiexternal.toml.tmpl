@@ -163,6 +163,20 @@ refreshPeriod = "168h"
     [bin.pull]
     args = {{ $pull_args | toToml }}
 
+{{/* Install distrobox on Linux systems */}}
+{{ if eq .chezmoi.os "linux" }}
+{{-  $distrobox_version := (gitHubLatestRelease "89luca89/distrobox").TagName | trimPrefix "v" }}
+{{   range list "distrobox" "distrobox-assemble" "distrobox-create" "distrobox-enter" "distrobox-ephemeral" "distrobox-export" "distrobox-generate-entry" "distrobox-host-exec" "distrobox-init" "distrobox-list" "distrobox-rm" "distrobox-stop" "distrobox-upgrade" -}}
+["{{ $binpath }}/{{ . }}"]
+  type = "file"
+  url = "https://github.com/89luca89/distrobox/archive/refs/tags/{{- $distrobox_version -}}.tar.gz"
+  refreshPeriod = "168h"
+  filter.command = "tar"
+  filter.args = ["-zxO", "distrobox-{{- $distrobox_version -}}/{{ . }}"]
+  executable = true
+{{   end -}}
+{{ end }}
+
 {{/* Install uv/uvx */}}
 {{- $uv_suffix := "" }}
 {{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" }}
