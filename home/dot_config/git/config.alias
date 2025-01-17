@@ -31,6 +31,7 @@
 	ri = revise -i
 	rc = rebase --continue
 	redate = rebase -f --ignore-date
+	rebase-n = !git -c core.editor=$(command -v true) rebase -i
 	rebase-test = !git -c core.editor=$(command -v true) rebase -ix
 	rebase-test-i = rebase -ix
 	source = config remote.origin.url
