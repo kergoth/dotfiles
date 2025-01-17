@@ -15,7 +15,7 @@
 #     $ ./hello-chemzoi
 #     Hello, kergoth
 
-script=$1
+script=$(abspath "$1")
 tmpfile=$(mktemp -t "${script##*/}.XXXXXX")
 trap 'rm -f "$tmpfile"' EXIT INT TERM
 tail -n +2 "$script" |
