@@ -48,7 +48,7 @@ cask "webpquicklook"
 mas "1Password for Safari", id: 1569813296
 mas "AdGuard for Safari", id: 1440147259
 mas "CleanMyDrive 2", id: 523620159
-mas "com.bandan.Declutter", id: 1574021257
+mas "Declutter", id: 1574021257
 mas "Deliveries", id: 290986013
 mas "Hush", id: 1544743900
 mas "LilyView", id: 529490330
@@ -64,7 +64,7 @@ mas "Shut Up", id: 1015043880
 mas "Social Fixer for Facebook", id: 1562017526
 mas "Spark", id: 1176895641
 mas "StopTheMadness Pro", id: 6471380298
-mas "Tampermonkey", id: 1482490089
+mas "Tampermonkey Classic", id: 1482490089
 mas "Toolkit for YNAB", id: 1592912837
 mas "uBlacklist for Safari", id: 1547912640
 mas "UnPlugged", id: 423123087
