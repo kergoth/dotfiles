@@ -90,8 +90,10 @@ scoop install sapling
 scoop install dua
 scoop install dust
 
+{{ if .work -}}
 # Bug tracking and workflow
 scoop install jira-cli
+{{- end }}
 
 uv tool install git-revise
 uv tool install git-imerge
