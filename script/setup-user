@@ -18,14 +18,12 @@ if [ "$OS" = "linux" ]; then
     if [ -z "${DISTRO:-}" ]; then
         msg "Warning: Unknown DISTRO, please ensure /etc/os-release exists, or set DISTRO manually."
     else
-        if command -v "setup-user-$DISTRO" &>/dev/null; then
-            msg "Running setup-user-$DISTRO"
-            "setup-user-$DISTRO"
+        if check_child_script "setup-user-$DISTRO"; then
+            run_child_script "setup-user-$DISTRO"
         else
             msg "No setup-user-$DISTRO script found"
-            if [ -n "${DISTRO_LIKE:-}" ] && command -v "setup-user-$DISTRO_LIKE" &>/dev/null; then
-                msg "Running setup-user-$DISTRO_LIKE"
-                "setup-user-$DISTRO_LIKE"
+            if [ -n "${DISTRO_LIKE:-}" ] && check_child_script "setup-user-$DISTRO_LIKE"; then
+                run_child_script "setup-user-$DISTRO_LIKE"
             else
                 msg "No setup-user-$DISTRO${DISTRO_LIKE:+ or setup-user-$DISTRO_LIKE} script found"
             fi
@@ -33,11 +31,6 @@ if [ "$OS" = "linux" ]; then
     fi
 fi
 
-if command -v "setup-user-$OS" &>/dev/null; then
-    msg "Running setup-user-$OS"
-    "setup-user-$OS"
-else
-    msg "No setup-user-$OS script found"
-fi
+run_child_script "setup-user-$OS"
 
 msg "User setup complete"

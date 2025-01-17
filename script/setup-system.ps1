@@ -16,6 +16,11 @@ if ($os) {
         Write-Output "Running setup-system-$os.ps1"
         & $script
     }
+    elseif (Test-Path "$script.tmpl") {
+        Write-Output "Running setup-system-$os.ps1.tmpl"
+        $scriptContents = Get-Content -Path "$script.tmpl" | chezmoi execute-template | Out-String
+        Invoke-Expression $scriptContents
+    }
     else {
         Write-Error "No setup-system-$os.ps1 script found"
     }
@@ -28,6 +33,11 @@ if ($IsLinux) {
         if (Test-Path $script) {
             Write-Output "Running setup-system-$distro.ps1"
             & $script
+        }
+        elseif (Test-Path "$script.tmpl") {
+            Write-Output "Running setup-system-$distro.ps1.tmpl"
+            $scriptContents = Get-Content -Path "$script.tmpl" | chezmoi execute-template | Out-String
+            Invoke-Expression $scriptContents
         }
         else {
             Write-Warning "No setup-system-$distro.ps1 script found"
