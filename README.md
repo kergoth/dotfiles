@@ -457,9 +457,11 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
 - [dupeGuru](https://dupeguru.voltaicideas.net): A cross-platform GUI tool to find duplicate files in a system.
 - [HandBrake](https://handbrake.fr/): The open source video transcoder. Available via brew as `handbrake` and winget as `HandBrake.HandBrake`.
+- [Kegworks](https://github.com/Kegworks-App/Kegworks): A user-friendly tool used to make wine wrapped ports of Windows software for macOS. Formerly Wineskin Winery.
 - [Malwarebytes](https://www.malwarebytes.com): Warns about malware, adware and spyware.
 - [MusicBrainz Picard](https://picard.musicbrainz.org): A cross-platform music tagger. Available via brew as `musicbrainz-picard`, nix as `picard`, Microsoft Store, winget as `MusicBrainz.Picard`, and scoop as `picard`.
 - [Steam](https://store.steampowered.com): A digital distribution platform. Available via brew, nix, and winget as `Valve.Steam`.
+- [Transmission](https://transmissionbt.com): A Fast, Easy and Free Bittorrent Client for macOS, Windows and Linux.
 - [Video Duplicate Finder](https://github.com/0x90d/videoduplicatefinder): Cross-platform software to find duplicated video (and image) files on hard disk based on similiarity.
 
 #### As Needed GUI Software for macOS
