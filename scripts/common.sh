@@ -24,6 +24,27 @@ run() {
     "$@"
 }
 
+check_child_script() {
+    local script="$1"
+    if command -v "$script" &>/dev/null; then
+        command -v "$script"
+    elif command -v "$script.tmpl" &>/dev/null; then
+        command -v "$script.tmpl"
+    else
+        return 1
+    fi
+}
+
+run_child_script() {
+    local script
+    if script=$(check_child_script "$1"); then
+        msg "Running $script"
+        "$script"
+    else
+        msg "No $script script found"
+    fi
+}
+
 # shellcheck disable=SC3028,SC2034
 case "${OSTYPE:-}" in
 darwin*)
