@@ -308,7 +308,8 @@ New-Alias recycle Remove-ItemSafely -Force
 New-Alias drop Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
 
-$env:Path += ";$env:LOCALAPPDATA/Programs/bin"
+$env:XDG_BIN_HOME = "$env:LOCALAPPDATA/Programs/bin"
+$env:Path += ";$env:XDG_BIN_HOME"
 
 $env:Path = "$env:USERPROFILE\bin;" + $env:Path
 

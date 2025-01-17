@@ -49,6 +49,7 @@ Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
 Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
 
 # Add extra binaries directory to the PATH
+[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME", "$env:USERPROFILE\AppData\Local\Programs\bin", "User")
 Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\AppData\Local\Programs\bin" -User
 
 # Add ~/.local/bin to the PATH
