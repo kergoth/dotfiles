@@ -21,11 +21,10 @@ msg "Installing applications with homebrew"
 unset HOMEBREW_AUTO_UPDATE
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-# shellcheck disable=SC2154
-"$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$scriptdir/macos/Brewfile"
+brewfile_install "$scriptdir/macos/Brewfile"
 
 if [ "$(sw_vers -productVersion | cut -d. -f1)" -lt 14 ]; then
-    "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$scriptdir/macos/Brewfile-pre-Sonoma"
+    brewfile_install "$scriptdir/macos/Brewfile-pre-Sonoma"
 fi
 
 # Dotfiles
