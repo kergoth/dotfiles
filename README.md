@@ -206,7 +206,7 @@ chezmoi update -R
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
-- *Only on Work machines for Linux, all machines otherwise* [jira-cli](https://github.com/ankitpokhrel/jira-cli): Feature-rich interactive Jira command line.
+- [jira-cli](https://github.com/ankitpokhrel/jira-cli) (*Only on Work machines*): Feature-rich interactive Jira command line.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
@@ -218,6 +218,10 @@ chezmoi update -R
 - [unar](https://theunarchiver.com/command-line): Universal archives extractor. Available via brew, nix, and scoop.
 - [zoxide](https://github.com/ajeetdsouza/zoxide): A smarter cd command, inspired by z and autojump.
 - [zstd](http://www.zstd.net/): Zstandard - Fast real-time compression algorithm.
+
+#### CLI Software on Linux Only
+
+- [glab](https://gitlab.com/gitlab-org/cli) (*Only on Work machines*): A GitLab CLI tool bringing GitLab to your command line.
 
 #### CLI Software on Linux and macOS
 
