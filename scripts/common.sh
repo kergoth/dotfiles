@@ -24,6 +24,18 @@ run() {
     "$@"
 }
 
+brewfile_install() {
+    local brewfile="$1"
+    if [ -f "$brewfile" ]; then
+        run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$brewfile"
+    elif [ -f "$brewfile.tmpl" ]; then
+        cat "$brewfile.tmpl" | chezmoi execute-template | run "$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file=-
+    else
+        msg "No $brewfile found"
+        return 1
+    fi
+}
+
 check_child_script() {
     local script="$1"
     if command -v "$script" &>/dev/null; then
