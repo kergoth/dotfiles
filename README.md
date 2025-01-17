@@ -485,8 +485,15 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ## Formerly-Used
 
+- [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments. Superceded by **uv tool** in my workflows.
+- [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow, such as **sapling**.
+
 ### Formerly-Used Applications
 
+- [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
+- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
+- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.
+- [IRCCloud](https://www.irccloud.com/): IRC client. When I do use IRC, I just use a local client on an as-needed basis.
 - [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
 - [foobar2000](https://www.foobar2000.org): This is a great music player, but I use Apple Music and iTunes for streaming, and beets for my music library for portable devices, so this is no longer needed.
 - [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
