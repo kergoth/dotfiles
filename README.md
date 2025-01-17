@@ -206,7 +206,7 @@ chezmoi update -R
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
-- [jira-cli](https://github.com/ankitpokhrel/jira-cli): Feature-rich interactive Jira command line.
+- *Only on Work machines for Linux, all machines otherwise* [jira-cli](https://github.com/ankitpokhrel/jira-cli): Feature-rich interactive Jira command line.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
