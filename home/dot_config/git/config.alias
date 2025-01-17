@@ -31,7 +31,7 @@
 	ri = revise -i
 	rc = rebase --continue
 	redate = rebase -f --ignore-date
-	rebase-test = !git -c core.editor=/bin/true rebase -ix
+	rebase-test = !git -c core.editor=$(command -v true) rebase -ix
 	rebase-test-i = rebase -ix
 	source = config remote.origin.url
 	addnp = "!f(){ git add -N \"$@\" && git add -p \"$@\"; }; f"
