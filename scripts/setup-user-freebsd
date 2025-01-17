@@ -47,8 +47,10 @@ uv_check git-revise git-revise
 uv_check git-imerge git-imerge
 cargo_check choose choose
 
+{{ if .work -}}
 # Bug tracking and workflow
 go_check github.com/ankitpokhrel/jira-cli/...@latest jira
+{{- end }}
 
 # As we don't support nix, install asdf for local environments
 if ! command -v asdf >/dev/null 2>&1; then
