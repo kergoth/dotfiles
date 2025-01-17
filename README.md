@@ -346,6 +346,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [1Password for Safari](https://apps.apple.com/us/app/1password-for-safari/id1569813296?mt=12&uo=4&at=10l4tL)
 - [AdGuard for Safari](https://apps.apple.com/us/app/adguard-for-safari/id1440147259?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/AdguardTeam/AdguardForSafari))
 - [Hush](https://apps.apple.com/us/app/hush-nag-blocker/id1544743900?uo=4&at=10l4tL) ([Open-Source](https://github.com/oblador/hush))
+- [Kagi for Safari](https://apps.apple.com/us/app/kagi-for-safari/id1622835804): Kagi search for Safari.
 - [PiPer](https://apps.apple.com/us/app/piper/id1421915518?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/amarcu5/PiPer))
 - [Privacy Redirect](https://apps.apple.com/us/app/privacy-redirect/id1578144015?uo=4&at=10l4tL) ([Open-Source](https://github.com/smmr-software/privacy-redirect-safari))
 - [Social Fixer for Facebook](https://apps.apple.com/app/social-fixer-for-facebook/id1562017526)
