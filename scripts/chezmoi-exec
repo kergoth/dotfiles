@@ -18,7 +18,23 @@
 script=$(abspath "$1")
 tmpfile=$(mktemp -t "${script##*/}.XXXXXX")
 trap 'rm -f "$tmpfile"' EXIT INT TERM
+
 tail -n +2 "$script" |
     chezmoi execute-template >"$tmpfile"
 chmod +x "$tmpfile"
-exec -a "$script" "$tmpfile"
+
+interpreter=$(sed -n -e '1s/^#!//p' "$tmpfile")
+case "$interpreter" in
+    /usr/bin/env\ *)
+        interpreter=$(command -v "${interpreter#/usr/bin/env }")
+    ;;
+esac
+
+case "$interpreter" in
+    */bash|*/zsh)
+        exec -a "$script" "$interpreter" -c ". \"$tmpfile\"" "$@"
+        ;;
+    *)
+        exec -a "$script" "$tmpfile" "$@"
+        ;;
+esac
