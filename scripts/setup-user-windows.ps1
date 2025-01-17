@@ -71,6 +71,7 @@ scoop install shfmt
 scoop install shellcheck
 scoop install jq
 scoop install pipx
+scoop install uv
 scoop install sad
 scoop install sd
 cargo install choose

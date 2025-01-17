@@ -190,6 +190,7 @@ chezmoi update -R
 - [go](https://go.dev): An open source programming language supported by Google
 - [python](https://www.python.org): A programming language that lets you work quickly and integrate systems more effectively.
 - [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments.
+- [uv](https://github.com/astral-sh/uv): An extremely fast Python package installer and resolver, written in Rust.
 
 - [bat](https://github.com/sharkdp/bat): A cat(1) clone with syntax highlighting and Git integration.
   - [bat-extras](https://github.com/eth-p/bat-extras): Scripts that integrate bat with various command line tools.
