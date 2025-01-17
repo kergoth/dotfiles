@@ -323,6 +323,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [GPG Suite](https://gpgtools.org) ([Open-Source](https://github.com/orgs/GPGTools/repositories)): Tools to protect your emails and files.
 - [Ice](https://icemenubar.app) ([Open-Source](https://github.com/jordanbaird/Ice)): Powerful menu bar manager for macOS.
 - [Karabiner-Elements](https://karabiner-elements.pqrs.org) ([Open-Source](https://github.com/pqrs-org/Karabiner-Elements)): A powerful and stable keyboard customizer for macOS.
+- [Keka](https://www.keka.io/en/) ([Open-Source](https://github.com/aonez/Keka)): The macOS file archiver.
 - [kitty](https://sw.kovidgoyal.net/kitty/) ([Open-Source](https://github.com/kovidgoyal/kitty)): The fast, feature-rich, GPU based terminal emulator.
 - [LilyView](https://apps.apple.com/us/app/lilyview/id529490330?mt=12&uo=4&at=10l4tL)
 - [LuLu](https://objective-see.org/products/lulu.html): The free, open-source firewall that aims to block unknown outgoing connections.
