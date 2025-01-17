@@ -74,8 +74,6 @@ _install rust rustup update
 
 export PIP_REQUIRE_VIRTUALENV=
 _install python asdf-install -g python
-python3 -m pip install --user --disable-pip-version-check pipx
-python3 -m pipx ensurepath
 
 # TODO: remove the packages we installed, but not the ones the user did
 if [ -n "$(echo "$_failed" | xargs)" ]; then

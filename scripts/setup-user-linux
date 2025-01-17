@@ -14,13 +14,6 @@ ret=0
 # Dotfiles
 "$repodir/script/setup" || ret=$?
 
-# Install pipx, if needed
-if ! command -v pipx &>/dev/null; then
-    msg "Installing pipx"
-    /usr/bin/python3 -m pip install --user --disable-pip-version-check pipx
-    /usr/bin/python3 -m pipx ensurepath
-fi || ret=$?
-
 # Install PowerShell modules, if needed
 if has pwsh; then
     msg "Installing PowerShell modules"
@@ -32,7 +25,7 @@ fi || ret=$?
 # Install dtrx, if unar is missing
 if ! command -v unar &>/dev/null; then
     msg "Installing dtrx"
-    pipx install dtrx
+    uv tool install dtrx
 fi || ret=$?
 
 if chezmoi dump-config 2>/dev/null | grep -q ephemeral.\*true; then

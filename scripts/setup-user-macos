@@ -31,13 +31,6 @@ fi
 # Dotfiles
 "$repodir/script/setup"
 
-# Install pipx, if needed
-if ! command -v pipx &>/dev/null; then
-    msg "Installing pipx"
-    /usr/bin/python3 -m pip install --user --disable-pip-version-check pipx
-    /usr/bin/python3 -m pipx ensurepath
-fi
-
 # Install PowerShell modules and prompt, if needed
 if has pwsh; then
     msg "Installing PowerShell modules"

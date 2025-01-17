@@ -70,7 +70,6 @@ scoop install fzf
 scoop install shfmt
 scoop install shellcheck
 scoop install jq
-scoop install pipx
 scoop install uv
 scoop install sad
 scoop install sd
@@ -93,8 +92,8 @@ scoop install dust
 # Bug tracking and workflow
 scoop install jira-cli
 
-pipx install git-revise
-pipx install git-imerge
+uv tool install git-revise
+uv tool install git-imerge
 
 RefreshEnvPath
 
