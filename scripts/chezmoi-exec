@@ -26,7 +26,7 @@ chmod +x "$tmpfile"
 interpreter=$(sed -n -e '1s/^#!//p' "$tmpfile")
 case "$interpreter" in
     /usr/bin/env\ *)
-        interpreter=$(command -v "${interpreter#/usr/bin/env }")
+        interpreter=$(command -v "${interpreter#/usr/bin/env }") || exit 1
     ;;
 esac
 
