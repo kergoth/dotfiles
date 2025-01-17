@@ -30,7 +30,8 @@ bundle_dump() {
     echo 'cask_args appdir: "~/Applications"'
     echo
     brew bundle dump --file=- |
-        grep -v '^vscode'
+        grep -v '^vscode' |
+        sed -e 's#, args: { appdir: "~/Applications" }##'
 }
 
 diff_highlight() {
