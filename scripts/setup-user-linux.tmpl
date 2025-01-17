@@ -1,3 +1,4 @@
+#!/usr/bin/env chezmoi-exec
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -28,10 +29,7 @@ if ! command -v unar &>/dev/null; then
     uv tool install dtrx
 fi || ret=$?
 
-if chezmoi dump-config 2>/dev/null | grep -q ephemeral.\*true; then
-    exit $ret
-fi
-
+{{- if not .ephemeral -}}
 # User shell should be zsh
 zsh_binary=$(command -v zsh 2>/dev/null) || :
 if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
@@ -42,5 +40,6 @@ if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
         chsh -s "$zsh_binary" || ret=$?
     fi
 fi
+{{- end -}}
 
 exit $ret
