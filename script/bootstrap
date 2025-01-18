@@ -8,3 +8,39 @@ if ! command -v chezmoi &>/dev/null; then
     echo >&2 "Installing chezmoi"
     (cd && sh -c "$(curl -fsLS get.chezmoi.io/lb)")
 fi
+
+if [ -z "${DOTFILES_DIR:-}" ]; then
+    if [ -h ~/.local/share/chezmoi ]; then
+        DOTFILES_DIR="$(readlink ~/.local/share/chezmoi)"
+    else
+        scriptdir=$(dirname "$0")
+        if [ -n "$scriptdir" ]; then
+            scriptdir=$(cd "$scriptdir" && pwd -P)
+            DOTFILES_DIR="$(dirname "$scriptdir")"
+        else
+            DOTFILES_DIR="$HOME/.dotfiles"
+        fi
+    fi
+fi
+
+if ! [ -e "$DOTFILES_DIR" ]; then
+    run git clone --recursive https://github.com/kergoth/dotfiles "$DOTFILES_DIR"
+fi
+
+if ! [ -h ~/.local/share/chezmoi ]; then
+    # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
+    mkdir -p ~/.local/share
+    if [ -h ~/.local/share/chezmoi ]; then
+        rm -f ~/.local/share/chezmoi
+    elif [ -e ~/.local/share/chezmoi ]; then
+        echo >&2 "Error: ~/.local/share/chezmoi exists and is not a symlink"
+        exit 1
+    fi
+    ln -sfT "$DOTFILES_DIR" ~/.local/share/chezmoi
+fi
+
+if ! [ -e ~/.config/chezmoi/chezmoi.toml ]; then
+    echo >&2 "Initializing dotfiles"
+fi
+chezmoi init --source "$DOTFILES_DIR" "$@" kergoth/dotfiles
+chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
