@@ -15,6 +15,14 @@
 #     $ ./hello-chemzoi
 #     Hello, kergoth
 
+abspath () {
+    _path="$1"
+    if [ -n "${_path##/*}" ]; then
+        _path="${2:-$PWD}/$1"
+    fi
+    echo "$_path"
+}
+
 script=$(abspath "$1")
 tmpfile=$(mktemp -t "${script##*/}.XXXXXX")
 trap 'rm -f "$tmpfile"' EXIT INT TERM
