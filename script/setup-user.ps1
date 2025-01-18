@@ -62,7 +62,7 @@ if ($IsLinux) {
             Invoke-Expression $scriptContents
         }
         else {
-            Write-Error "No setup-user-$distro.ps1 script found"
+            Write-Verbose "No setup-user-$distro.ps1 script found"
         }
     }
 }
@@ -75,4 +75,3 @@ if (Get-Command pwsh -ErrorAction SilentlyContinue) {
 }
 
 Write-Output "User setup complete"
-

@@ -25,11 +25,8 @@ if [ "$OS" = "linux" ]; then
         if check_child_script "setup-system-$DISTRO"; then
             run_child_script "setup-system-$DISTRO"
         else
-            msg "No setup-system-$DISTRO script found"
             if [ -n "${DISTRO_LIKE:-}" ] && check_child_script "setup-system-$DISTRO_LIKE"; then
                 run_child_script "setup-system-$DISTRO_LIKE"
-            else
-                msg "No setup-system-$DISTRO${DISTRO_LIKE:+ or setup-system-$DISTRO_LIKE} script found"
             fi
         fi
     fi
