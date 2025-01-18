@@ -8,4 +8,5 @@ PATH="$scriptdir:$PATH"
 ret=0
 bootstrap-setup-system || ret=$?
 setup-user || ret=$?
+setup || ret=$?
 exit $ret
