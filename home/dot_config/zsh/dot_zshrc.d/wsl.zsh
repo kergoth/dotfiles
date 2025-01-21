@@ -24,4 +24,8 @@ if [[ "$OSTYPE" = "WSL" ]]; then
     if [[ -o interactive ]] && [[ $PWD = $USERPROFILE ]]; then
         cd
     fi
+
+    if [[ -e /mnt/wslg/runtime-dir/wayland-0 ]] && ! [[ -e ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-0 ]]; then
+        ln -sf /mnt/wslg/runtime-dir/wayland-0 ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-0
+    fi
 fi
