@@ -229,6 +229,9 @@ chezmoi update -R
 
 #### CLI Software on Linux, macOS, and FreeBSD
 
+- [atuin](https://github.com/ellie/atuin): ✨ Magical shell history.
+  - On Windows, atuin can be used via WSL. [PowerShell support](https://github.com/atuinsh/atuin/issues/84) is available in a [pending pull request](https://github.com/atuinsh/atuin/pull/2543).
+
 - [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
   - On Windows, cht.exe is installed via scoop instead.
 

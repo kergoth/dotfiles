@@ -46,6 +46,7 @@ gos=
 uv_check git-revise git-revise
 uv_check git-imerge git-imerge
 cargo_check choose choose
+cargo_check atuin atuin
 
 {{ if .work -}}
 # Bug tracking and workflow
