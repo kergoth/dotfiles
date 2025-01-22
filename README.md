@@ -117,6 +117,11 @@ chezmoi update -R
 
   - Set “Allow applications downloaded from App Store and identified developers” at most.
 
+- System Settings > Privacy & Security > Full Disk Access
+
+  - Add Terminal, iTerm, and any other terminal emulators you use.
+  - Add VSCode, and any other editors you use.
+
 - Run vscode, enable settings sync
 - Run vivaldi, enable sync
 - Run deliveries, click yes to import from iCloud
