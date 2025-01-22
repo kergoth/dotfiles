@@ -21,8 +21,7 @@ if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
 fi
 
 msg "Installing applications with homebrew"
-# shellcheck disable=SC2154
-"$HOMEBREW_PREFIX/bin/brew" bundle --no-upgrade install --file="$scriptdir/macos/Brewfile.admin"
+brewfile_install "$scriptdir/macos/Brewfile.admin"
 
 CASKROOM="$("$HOMEBREW_PREFIX/bin/brew" --caskroom)"
 if [ -d "$CASKROOM"/whatsyoursign ]; then
