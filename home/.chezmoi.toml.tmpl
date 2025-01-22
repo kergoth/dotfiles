@@ -1,4 +1,4 @@
-{{/* boolean feature tags */}}
+{{/* boolean feature flags */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
@@ -6,6 +6,13 @@
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
 {{- $user_setup := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
+{{/* device usage flags */}}
+{{- $gaming := false -}}{{/* true if this device will be used for gaming */}}
+{{- $video := false -}}{{/* true if this device will be used to stream video, controls VLC/etc installation */}}
+{{- $music := false -}}{{/* true if this device will be used to listen to music */}}
+{{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
+{{- $music_library := false -}}{{/* true if this device will be used to manage my music library */}}
+{{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
 
 {{/* detect OS */}}
 {{- $osid := .chezmoi.os -}}
@@ -45,12 +52,22 @@
 {{-   if eq $hostname "caf-clarson-p1" -}}
 {{-     if $wsl2 -}}
 {{-       $docker = true -}}
+{{-     else -}}
+{{-       $music = true -}}
 {{-     end -}}
 {{-     $work = true -}}
+{{-     $coding = true -}}
 {{-   else if eq $hostname "vaelin" -}}
 {{-     $personal = true -}}
 {{-     $docker = true -}}
+{{-     $gaming = true -}}
+{{-     $video = true -}}
+{{-     $music = true -}}
+{{-     $coding = true -}}
+{{-     $music_library = true -}}
+{{-     $ebook_library = true -}}
 {{-   else if $steamdeck -}}
+{{-     $gaming = true -}}
 {{-   else if $interactive -}}
 {{/*    prompt for unknown hostnames by default */}}
 {{-     $prompt = true -}}
@@ -66,6 +83,13 @@
 {{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
 {{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
 {{-   $work = promptBoolOnce . "work" "work" $work -}}
+{{-   $gaming = promptBoolOnce . "gaming" "gaming" $gaming -}}
+{{-   $gaming = promptBoolOnce . "gaming" "gaming" $gaming -}}
+{{-   $video = promptBoolOnce . "video" "video" $video -}}
+{{-   $music = promptBoolOnce . "music" "music" $music -}}
+{{-   $coding = promptBoolOnce . "coding" "coding" $coding -}}
+{{-   $music_library = promptBoolOnce . "music_library" "music_library" $music_library -}}
+{{-   $ebook_library = promptBoolOnce . "ebook_library" "ebook_library" $ebook_library -}}
 {{- end -}}
 
 {{- $email := "kergoth@gmail.com" -}}
@@ -94,6 +118,14 @@ scriptTempDir = "~/tmp"
     docker = {{ $docker }}
     personal = {{ $personal }}
     work = {{ $work }}
+
+    gaming = {{ $gaming }}
+    video = {{ $video }}
+    music = {{ $music }}
+    coding = {{ $coding }}
+    music_library = {{ $music_library }}
+    ebook_library = {{ $ebook_library }}
+
     secrets = {{ $secrets }}
     user_setup = {{ $user_setup }}
 
@@ -104,7 +136,7 @@ scriptTempDir = "~/tmp"
 {{- if eq .chezmoi.os "darwin" }}
     macos_version = {{ $macos_version }}
 {{- end }}
- 
+
 [github]
     refreshPeriod = "12h"
 
