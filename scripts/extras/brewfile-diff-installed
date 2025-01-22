@@ -10,6 +10,14 @@ usage() {
     exit 2
 }
 
+brewfile_dump() {
+    if echo "$brewfile" | grep -q '\.tmpl$' && command -v chezmoi &>/dev/null; then
+        chezmoi execute-template <"$brewfile"
+    else
+        cat "$brewfile"
+    fi
+}
+
 formula=
 cask=
 while getopts fch opt; do
@@ -36,7 +44,8 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-if [ ! -f "$1" ]; then
+brewfile="$1"
+if [ ! -f "$brewfile" ]; then
     echo "Brewfile not found."
     exit 1
 fi
@@ -54,7 +63,7 @@ else
 fi
 
 # Get listed packages
-listed=$(brew bundle list ${formula:+--formula} ${cask:+--cask} --file="$1")
+listed=$(brewfile_dump | brew bundle list ${formula:+--formula} ${cask:+--cask} --file=-)
 
 diff_highlight() {
     if [ -t 1 ]; then
