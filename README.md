@@ -211,7 +211,7 @@ chezmoi update -R
 - [git-absorb](https://github.com/tummychow/git-absorb): git commit --fixup, but automatic.
 - [git-imerge](https://github.com/mhagger/git-imerge): Incremental merge for git.
 - [git-revise](https://github.com/mystor/git-revise): A handy tool for doing efficient in-memory commit rebases & fixups.
-- [jira-cli](https://github.com/ankitpokhrel/jira-cli) (*Only on Work machines*): Feature-rich interactive Jira command line.
+- [jira-cli](https://github.com/ankitpokhrel/jira-cli) (_Only on Work machines_): Feature-rich interactive Jira command line.
 - [jq](https://github.com/stedolan/jq): A lightweight and flexible command-line JSON processor.
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A line-oriented search tool that recursively searches the current directory for a regex pattern.
 - [rusage.com](https://justine.lol/rusage/): Provides the best possible way to report resource usage statistics when launching command line programs.
@@ -226,7 +226,7 @@ chezmoi update -R
 
 #### CLI Software on Linux Only
 
-- [glab](https://gitlab.com/gitlab-org/cli) (*Only on Work machines*): A GitLab CLI tool bringing GitLab to your command line.
+- [glab](https://gitlab.com/gitlab-org/cli) (_Only on Work machines_): A GitLab CLI tool bringing GitLab to your command line.
 
 #### CLI Software on Linux and macOS
 
@@ -311,10 +311,14 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.
 - [Discord](https://discord.com): A VoIP and instant messaging social platform.
-- [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
 - [Visual Studio Code](https://code.visualstudio.com) ([Open-Source](https://github.com/Microsoft/vscode)): Open-source code editor.
 - [Vivaldi](https://vivaldi.com/): Web browser with built-in email client focusing on customization and control.
 - [VLC](https://www.videolan.org/vlc/download-macosx.html) ([Open-Source](https://code.videolan.org/videolan/vlc)): A free and open source cross-platform multimedia player.
+- If the work flag is enabled:
+  - [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
+- If the gaming flag is enabled:
+  - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
+  - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 
 #### GUI Software on macOS (Pre-Sonoma Only)
 

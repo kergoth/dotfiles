@@ -135,5 +135,11 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id PuTTY.PuTTY
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Rufus.Rufus
 {{- end }}
 
+# Gaming
+{{ if .gaming -}}
+Install-WinGetPackageIfNotInstalled -Mode Silent -Id Valve.Steam
+Install-WinGetPackageIfNotInstalled -Mode Silent -Id Valve.SteamLink
+{{- end }}
+
 # Configuration
 pwsh -NoProfile $PSScriptRoot\windows\configure-admin.ps1

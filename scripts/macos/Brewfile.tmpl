@@ -76,3 +76,8 @@ mas "Userscripts-Mac-App", id: 1463298887
 mas "Vinegar", id: 1591303229
 mas "WiFi Explorer", id: 494803304
 mas "WiFi Signal", id: 525912054
+
+{{ if .gaming -}}
+cask "steam"
+mas "Steam Link", id: 1246969117
+{{- end }}
