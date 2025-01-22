@@ -141,6 +141,37 @@ Function Install-ModuleIfNotInstalled(
     }
 }
 
+function Install-WinGetPackageIfNotInstalled {
+    param(
+        [string]$Id = $null,
+        [string]$Mode = "Interactive",
+        [string]$Source = "winget",
+        [string]$Name = $null,
+        [string]$Override = $null
+    )
+
+    # Check if the package is already installed
+    # Get-WinGetPackage with -Id or -Name is unreliable, so we use Where-Object instead.    
+    if ($Id) {
+        $packages = Get-WinGetPackage | Where-Object Id -eq $Id
+    } elseif ($Name) {
+        $packages = Get-WinGetPackage | Where-Object Name -eq $Name
+    } else {
+        throw "Id or Name must be specified"
+    }
+    if ($packages) {
+        return
+    }
+
+    $arguments = @("-Source", "$Source")
+    if ($Id) { $arguments += "-Id"; $arguments += "$Id"; $Name = $Id; }
+    elseif ($Name) { $arguments += "-Name $Name" }
+    if ($Override) { $arguments += "-Override $Override" }
+
+    Write-Output "Installing package $Name"
+    # Install-WinGetPackage -Mode $Mode @arguments -Verbose Continue -ErrorAction Stop
+}
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 switch (Get-PSPlatform) {
