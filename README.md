@@ -484,6 +484,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Burn](https://burn-osx.sourceforge.io/Pages/English/home.html): Simple but advanced burning for Mac OS X. Optional, as disk images can be burned with Finder or hdiutil. Available via brew as `burn`.
 - [Gemini 2](https://macpaw.com/gemini): The intelligent duplicate file finder. Available via brew as `gemini`.
 - [KnockKnock](https://objective-see.org/products/knockknock.html): See what's persistently installed on your Mac.
+- [MuffinTerm](https://apps.apple.com/us/app/muffinterm/id1583236494): A terminal emulator for macOS crafted for the classic BBS experience.
 - [Numbers](https://www.apple.com/numbers/): Create impressive spreadsheets. Available via Mac App Store.
 - [Onyx](https://www.titanium-software.fr/en/onyx.html): Verify system files structure, run miscellaneous maintenance and more. Available via brew as `onyx`.
 - [Pages](https://www.apple.com/pages/): Documents that stand apart. Available via Mac App Store.
