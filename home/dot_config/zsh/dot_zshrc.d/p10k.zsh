@@ -96,6 +96,7 @@
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
     chezmoi_shell           # chezmoi shell (https://www.chezmoi.io/)
     my_wsl_is_admin         # WSL shell running as local administrator
+    container_id            # Docker container ID
     # vpn_ip                # virtual private network indicator
     # load                  # CPU load
     # disk_usage            # disk usage
@@ -1726,6 +1727,13 @@
   }
   typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_FOREGROUND=1
   typeset -g POWERLEVEL9K_MY_WSL_IS_ADMIN_CONTENT="󰒘"
+
+  function prompt_container_id () {
+    if [[ -n $CONTAINER_ID ]]; then
+        p10k segment -f blue -t "${POWERLEVEL9K_CONTAINER_ID_CONTENT:-$CONTAINER_ID}"
+    fi
+  }
+  typeset -g POWERLEVEL9K_CONTAINER_ID_FOREGROUND=1
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
