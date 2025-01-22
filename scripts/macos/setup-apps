@@ -88,6 +88,16 @@ if oversight="$(app_path "OverSight")"; then
     touch ~/Library/Application\ Support/Objective-See/OverSight/OverSight.log
 fi
 
+# Launch the apps with extensions that need to be registered
+if app="$(app_path "QLMarkdown")"; then
+    xattr -r -d com.apple.quarantine "$app"
+    open -g "$app"
+fi
+if app="$(app_path "QuickLook Video")"; then
+    xattr -r -d com.apple.quarantine "$app"
+    open -g "$app"
+fi
+
 # Deal with Quarantine
 xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
