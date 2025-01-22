@@ -153,8 +153,13 @@
       // Normally I use delta, but this is having trouble with Zed's terminal.
       "GIT_PAGER": "bat",
       // Use Zed as the default editor for terminal commands.
+{{  if eq .chezmoi.os "windows" }}
+      "EDITOR": "zed.exe --wait",
+      "VISUAL": "zed.exe --wait"
+{{  else }}
       "EDITOR": "zed --wait",
       "VISUAL": "zed --wait"
+{{  end }}
     }
   }
 }
