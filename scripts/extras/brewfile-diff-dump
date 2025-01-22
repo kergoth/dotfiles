@@ -26,6 +26,14 @@ if [ ! -f "$brewfile" ]; then
     exit 1
 fi
 
+brewfile_dump() {
+    if echo "$brewfile" | grep -q '\.tmpl$' && command -v chezmoi &>/dev/null; then
+        chezmoi execute-template <"$brewfile"
+    else
+        cat "$brewfile"
+    fi
+}
+
 bundle_dump() {
     echo 'cask_args appdir: "~/Applications"'
     echo
@@ -49,4 +57,4 @@ diff_highlight() {
 }
 
 # Compare Brewfile to current configuration
-diff -ud <(cat "$brewfile") <(bundle_dump) | diff_highlight
+diff -ud <(brewfile_dump) <(bundle_dump) | diff_highlight
