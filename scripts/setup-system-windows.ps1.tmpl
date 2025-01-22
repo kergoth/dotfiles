@@ -115,7 +115,9 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id Notepad++.Notepad++ | Out-N
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id QL-Win.QuickLook | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id SyncTrayzor.SyncTrayzor | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Vivaldi.Vivaldi | Out-Null
+{{ if .video -}}
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id VideoLAN.VLC | Out-Null
+{{- end }}
 
 # SnipDo
 Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Name SnipDo

@@ -43,7 +43,9 @@ cask "the-unarchiver"
 cask "transmission-remote-gui"
 cask "visual-studio-code"
 cask "vivaldi"
+{{ if .video -}}
 cask "vlc"
+{{- end }}
 cask "webpquicklook"
 
 mas "1Password for Safari", id: 1569813296
