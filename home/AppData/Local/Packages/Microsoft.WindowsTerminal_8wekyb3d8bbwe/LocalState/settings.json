@@ -7,32 +7,27 @@
             "command": 
             {
                 "action": "switchToTab",
-                "index": 5
+                "index": 6
             },
-            "keys": "alt+6"
+            "id": "User.switchToTab.787314EB",
+            "keys": "alt+7"
         },
         {
             "command": 
             {
                 "action": "switchToTab",
-                "index": 6
+                "index": 5
             },
-            "keys": "alt+7"
+            "id": "User.switchToTab.75247157",
+            "keys": "alt+6"
         },
         {
             "command": 
             {
                 "action": "closeTab"
             },
+            "id": "User.closeTab.0",
             "keys": "ctrl+shift+w"
-        },
-        {
-            "command": 
-            {
-                "action": "switchToTab",
-                "index": 7
-            },
-            "keys": "alt+8"
         },
         {
             "command": 
@@ -40,7 +35,17 @@
                 "action": "switchToTab",
                 "index": 4
             },
+            "id": "User.switchToTab.F747588A",
             "keys": "alt+5"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 7
+            },
+            "id": "User.switchToTab.D7681B66",
+            "keys": "alt+8"
         },
         {
             "command": 
@@ -48,6 +53,7 @@
                 "action": "switchToTab",
                 "index": 0
             },
+            "id": "User.switchToTab.D3F0B923",
             "keys": "alt+1"
         },
         {
@@ -56,6 +62,7 @@
                 "action": "switchToTab",
                 "index": 1
             },
+            "id": "User.switchToTab.2A0DA8E0",
             "keys": "alt+2"
         },
         {
@@ -64,6 +71,7 @@
                 "action": "switchToTab",
                 "index": 2
             },
+            "id": "User.switchToTab.87C324ED",
             "keys": "alt+3"
         },
         {
@@ -72,6 +80,7 @@
                 "action": "switchToTab",
                 "index": 3
             },
+            "id": "User.switchToTab.6CD791B",
             "keys": "alt+4"
         },
         {
@@ -80,6 +89,7 @@
                 "action": "switchToTab",
                 "index": 8
             },
+            "id": "User.switchToTab.ED268D78",
             "keys": "alt+9"
         }
     ],
@@ -107,11 +117,10 @@
             "font": 
             {
                 "face": "MesloLGS NF",
-                "size": 10.0,
+                "size": 10,
                 "weight": "normal"
             },
-            "historySize": 15000,
-            "useAtlasEngine": true
+            "historySize": 15000
         },
         "list": 
         [
@@ -120,6 +129,14 @@
                 "hidden": false,
                 "name": "PowerShell Core",
                 "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "commandline": "C:\\WINDOWS\\system32\\wsl.exe",
+                "guid": "{195242e1-60b9-4272-90ac-8d4d048aad0b}",
+                "hidden": false,
+                "icon": "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+                "name": "WSL",
+                "startingDirectory": "~"
             },
             {
                 "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
