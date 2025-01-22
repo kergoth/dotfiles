@@ -25,7 +25,8 @@ if [[ "$OSTYPE" = "WSL" ]]; then
         cd
     fi
 
-    if [[ -e /mnt/wslg/runtime-dir/wayland-0 ]] && ! [[ -e ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-0 ]]; then
-        ln -sf /mnt/wslg/runtime-dir/wayland-0 ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayland-0
+    runtime_socket=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/runtime-0
+    if [[ -e /mnt/wslg/runtime-dir/runtime-0 ]] && ! [[ -e "$runtime_socket" ]]; then
+        ln -sf /mnt/wslg/runtime-dir/runtime-0 "$runtime_socket"
     fi
 fi
