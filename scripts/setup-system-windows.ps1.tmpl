@@ -127,9 +127,11 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.VisualStudio.2022.Community -Override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
 
 # GUI Apps for work
+{{ if .work -}}
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.Teams
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id PuTTY.PuTTY
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Rufus.Rufus
+{{- end }}
 
 # Configuration
 pwsh -NoProfile $PSScriptRoot\windows\configure-admin.ps1
