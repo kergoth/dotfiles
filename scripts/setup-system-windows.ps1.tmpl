@@ -108,7 +108,6 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id gerardog.gsudo | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Klocman.BulkCrapUninstaller | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.PowerShell | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.PowerToys | Out-Null
-Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.VisualStudio.2022.BuildTools | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.VisualStudioCode | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.WindowsTerminal | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id Notepad++.Notepad++ | Out-Null
@@ -124,9 +123,6 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Name SnipDo
 
 # WiFi Analyzer
 Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0N
-
-# Visual Studio C++ Desktop Workload
-Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.VisualStudio.2022.Community -Override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended"
 
 # GUI Apps for work
 {{ if .work -}}

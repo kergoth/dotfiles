@@ -285,7 +285,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 #### CLI Software on Windows
 
-- [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/): These Build Tools allow you to build Visual Studio projects from a command-line interface.
 - [cht.exe](https://github.com/tpanj/cht.exe): cht.sh libcurl client for Windows.
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [gsudo](https://github.com/gerardog/gsudo): Sudo for Windows.
@@ -463,6 +462,10 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [makeicns](http://www.amnoid.de/icns/makeicns.html): Create icns files from the command line. Available via brew.
 - [terminal-notifier](https://github.com/julienXX/terminal-notifier): A command-line tool to send macOS User Notifications. Available via brew and nix.
+
+#### As Needed CLI Software for Windows
+
+- [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/downloads/): These Build Tools allow you to build Visual Studio projects from a command-line interface.
 
 ### As Needed GUI Software
 
