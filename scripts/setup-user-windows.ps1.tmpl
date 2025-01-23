@@ -3,7 +3,7 @@ if (-Not $env:SCOOP) {
     $env:SCOOP = "$env:USERPROFILE/scoop"
 }
 if (-Not (Test-Path "$env:SCOOP")) {
-    Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+    Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 }
 RefreshEnvPath
 
