@@ -30,7 +30,11 @@ if ($reg) {
 RefreshEnvPath
 
 # Windows-specific
-scoop install gow starship npiperelay
+scoop install gow npiperelay
+
+# Starship is used for the PowerShell prompt. While this isn't truly Windows-specific,
+# I only install and use PowerShell by default on Windows.
+scoop install starship
 
 # Install core
 # Unavailable on Windows: tmux, zsh
