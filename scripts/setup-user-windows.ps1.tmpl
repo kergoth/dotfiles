@@ -1,20 +1,20 @@
 # Install scoop
-if (-Not $env:SCOOP) {
-    $env:SCOOP = "$env:USERPROFILE/scoop"
+if (-not $env:SCOOP) {
+  $env:SCOOP = "$env:USERPROFILE/scoop"
 }
-if (-Not (Test-Path "$env:SCOOP")) {
-    Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+if (-not (Test-Path "$env:SCOOP")) {
+  Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 }
 RefreshEnvPath
 
 # Install git
 scoop install git
 
-if (-Not (Test-Path "$env:SCOOP/buckets/extras")) {
-    scoop bucket add extras
+if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
+  scoop bucket add extras
 }
-if (-Not (Test-Path "$env:SCOOP/buckets/kergoth")) {
-    scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
+if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
+  scoop bucket add kergoth https://github.com/kergoth/scoop-bucket
 }
 
 # Install git-lfs
@@ -24,8 +24,8 @@ scoop install git-lfs
 scoop install rust go python
 $reg = Get-ChildItem $env:USERPROFILE\scoop\apps\python\current\install-pep-514.reg -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($reg) {
-    Write-Host "Importing python registry entries"
-    reg import $reg
+  Write-Host "Importing python registry entries"
+  reg import $reg
 }
 RefreshEnvPath
 
@@ -53,7 +53,7 @@ Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
 Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
 
 # Add extra binaries directory to the PATH
-[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME", "$env:USERPROFILE\AppData\Local\Programs\bin", "User")
+[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME","$env:USERPROFILE\AppData\Local\Programs\bin","User")
 Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\AppData\Local\Programs\bin" -User
 
 # Add ~/.local/bin to the PATH
@@ -105,41 +105,41 @@ uv tool install git-imerge
 RefreshEnvPath
 
 if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
-    if ((Test-Path "$env:USERPROFILE\.ssh\keys") -And (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
-        Write-Output "Adding SSH keys to SSH agent"
-        Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File |
-            Where-Object { ($_.Name -NotLike "*.pub") -and ($_.Name -NotLike "*.ppk") } |
-            ForEach-Object {
-                $pub = $_.FullName + ".pub"
-                if (-Not (Test-Path ($pub))) {
-                    ssh-keygen -y -f $_.FullName | Out-File ($pub)
-                }
-                if (-Not (ssh-add -l | Select-String -SimpleMatch -Pattern (ssh-keygen -lf $pub))) {
-                    ssh-add $_.FullName
-                }
-            }
+  if ((Test-Path "$env:USERPROFILE\.ssh\keys") -and (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
+    Write-Output "Adding SSH keys to SSH agent"
+    Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File |
+    Where-Object { ($_.Name -notlike "*.pub") -and ($_.Name -notlike "*.ppk") } |
+    ForEach-Object {
+      $pub = $_.FullName + ".pub"
+      if (-not (Test-Path ($pub))) {
+        ssh-keygen -y -f $_.FullName | Out-File ($pub)
+      }
+      if (-not (ssh-add -l | Select-String -SimpleMatch -Pattern (ssh-keygen -lf $pub))) {
+        ssh-add $_.FullName
+      }
     }
+  }
 } else {
-    Write-Warning "SSH agent not running"
+  Write-Warning "SSH agent not running"
 }
 
 # Use the Windows native GnuPG for git if it's installed
 if (Test-Path "C:\Program Files (x86)\GnuPG\bin\gpg.exe") {
-    git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"
+  git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"
 }
 
 # Add installed software to the user's PATH and/or startup
 if (Test-Path "C:\Program Files\7-Zip") {
-    Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
+  Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
 } else {
-    Write-Warning "7-Zip not installed"
+  Write-Warning "7-Zip not installed"
 }
 
 # Run SyncTrayzor, which will add itself to startup
 if (Test-Path "C:\Program Files\SyncTrayzor") {
-    Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
+  Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
 } else {
-    Write-Warning "SyncTrayzor not installed"
+  Write-Warning "SyncTrayzor not installed"
 }
 
 # Apply my dotfiles

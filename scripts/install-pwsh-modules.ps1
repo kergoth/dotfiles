@@ -11,5 +11,5 @@ Install-ModuleIfNotInstalled PSFzf
 Install-ModuleIfNotInstalled Recycle
 
 if ($IsWindows) {
-    Install-ModuleIfNotInstalled Microsoft.WinGet.Client
+  Install-ModuleIfNotInstalled Microsoft.WinGet.Client
 }
