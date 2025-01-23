@@ -154,6 +154,16 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
+{{ if eq .chezmoi.os "darwin" }}
+["Library/Application Support/BBEdit/Color Schemes/Dracula.bbColorScheme"]
+type = "archive-file"
+url = "https://github.com/dracula/bbedit/archive/master.tar.gz"
+path = "Dracula.bbColorScheme"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+{{ end }}
+
 ["bin"]
     type = "git-repo"
     url = "https://github.com/kergoth/scripts"

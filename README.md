@@ -327,6 +327,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [Alfred](https://www.alfredapp.com): Application uninstaller.
 - [AppCleaner](https://freemacsoft.net/appcleaner/): A small application which allows you to thoroughly uninstall unwanted apps.
+- [BBEdit](https://www.barebones.com/products/bbedit/): A professional HTML and text editor for macOS.
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
 - [Brooklyn](https://github.com/pedrommcarrasco/Brooklyn) (Open-Source): Screen saver based on animations presented during Apple Special Event Brooklyn.
 - [Calibre](https://calibre-ebook.com) ([Open-Source](https://github.com/kovidgoyal/calibre)): E-books management software.
