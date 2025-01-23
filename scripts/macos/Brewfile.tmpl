@@ -74,7 +74,7 @@ mas "WiFi Signal", id: 525912054
 {{ if .ebook_library -}}
 cask "calibre"
 {{- end }}
-{{ if .gaming -}}
+{{ if and .gaming (not .work) -}}
 cask "steam"
 mas "Steam Link", id: 1246969117
 {{- end }}
