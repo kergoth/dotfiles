@@ -12,7 +12,6 @@ cask "apparency"
 cask "appcleaner"
 cask "betterzip"
 cask "brooklyn"
-cask "calibre"
 cask "carbon-copy-cloner@6"
 cask "daisydisk"
 cask "discord"
@@ -42,9 +41,6 @@ cask "the-unarchiver"
 cask "transmission-remote-gui"
 cask "visual-studio-code"
 cask "vivaldi"
-{{ if .video -}}
-cask "vlc"
-{{- end }}
 cask "webpquicklook"
 
 mas "1Password for Safari", id: 1569813296
@@ -76,7 +72,13 @@ mas "Vinegar", id: 1591303229
 mas "WiFi Explorer", id: 494803304
 mas "WiFi Signal", id: 525912054
 
+{{ if .ebook_library -}}
+cask "calibre"
+{{- end }}
 {{ if .gaming -}}
 cask "steam"
 mas "Steam Link", id: 1246969117
+{{- end }}
+{{ if .video -}}
+cask "vlc"
 {{- end }}
