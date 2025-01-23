@@ -103,7 +103,7 @@ RefreshEnvPath
 if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
     if ((Test-Path "$env:USERPROFILE\.ssh\keys") -And (Get-Command ssh-add -ErrorAction SilentlyContinue)) {
         Write-Output "Adding SSH keys to SSH agent"
-        Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File -Recurse |
+        Get-ChildItem -Path "$env:USERPROFILE\.ssh\keys" -File |
             Where-Object { ($_.Name -NotLike "*.pub") -and ($_.Name -NotLike "*.ppk") } |
             ForEach-Object {
                 $pub = $_.FullName + ".pub"
