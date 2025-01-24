@@ -31,63 +31,24 @@ if (-not (Test-InWindowsSandbox)) {
   if (-not $feature) {
     Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
   }
-
-  # Refresh $env:Path
-  RefreshEnvPath
 }
 
 # Install winget
+$progressPreference = 'silentlyContinue'
+Write-Host "Installing WinGet PowerShell module from PSGallery..."
+Install-PackageProvider -Name NuGet -Force | Out-Null
+Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery | Out-Null
+Write-Host "Using Repair-WinGetPackageManager cmdlet to bootstrap WinGet..."
+Repair-WinGetPackageManager
 if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-  $DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
-
-  Write-Output "Installing winget"
-
-  if (-not (Get-AppxPackage -Name Microsoft.VCLibs.140.00.UWPDesktop)) {
-    $vclibs_url = "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx"
-    $vclibs = "$DownloadsFolder\" + (Split-Path $vclibs_url -Leaf)
-    if (-not (Test-Path $vclibs)) {
-      Invoke-WebRequest -Uri $vclibs_url -OutFile $vclibs
-    }
-    Add-AppxPackage -Path $vclibs
-  }
-
-  if (-not (Get-AppxPackage -Name Microsoft.UI.Xaml.2.7)) {
-    $xaml = "$DownloadsFolder\Microsoft.UI.Xaml.2.7.appx"
-    if (-not (Test-Path "$xaml")) {
-      $xaml_url = "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.7.3.nupkg"
-      $xamldl = "$DownloadsFolder\" + (Split-Path $xaml_url -Leaf)
-      if (-not (Test-Path "$xamldl.zip")) {
-        Invoke-WebRequest -Uri $xaml_url -OutFile $xamldl.zip
-      }
-
-      $wingettemp = "$env:TEMP\winget"
-      try {
-        Expand-Archive "$xamldl.zip" -DestinationPath $wingettemp -Force
-        Move-Item "$wingettemp\tools\AppX\x64\Release\Microsoft.UI.Xaml.2.7.appx" "$xaml"
-      }
-      finally {
-        Remove-PossiblyMissingItem $wingettemp -Recurse -Force
-      }
-    }
-    Add-AppxPackage -Path $xaml
-  }
-
-  $appinstaller_url = Get-GithubLatestRelease "microsoft/winget-cli" "Microsoft.DesktopAppInstaller"
-  $appinstaller = "$DownloadsFolder\" + (Split-Path $appinstaller_url -Leaf)
-  if (-not (Test-Path $appinstaller)) {
-    Invoke-WebRequest -Uri $appinstaller_url -OutFile $appinstaller
-  }
-  Add-AppxPackage -Path $appinstaller
-
-  # Refresh $env:Path
-  RefreshEnvPath
+    Write-Host "Error installing winget"
 }
+
+# Refresh $env:Path
+RefreshEnvPath
 
 if (-not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
   winget install --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --no-upgrade --id Microsoft.PowerShell
-
-  # Refresh $env:Path
-  RefreshEnvPath
 }
 
 # Install WinGet packages
