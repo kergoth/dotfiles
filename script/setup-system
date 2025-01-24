@@ -18,6 +18,8 @@ if [ -z "$HOMEBREW_PREFIX" ]; then
     die "HOMEBREW_PREFIX must be set or unset, not the empty string"
 fi
 
+bootstrap
+
 if [ "$OS" = "linux" ]; then
     if [ -z "$DISTRO" ]; then
         msg "Warning: Unknown DISTRO, please ensure /etc/os-release exists, or set DISTRO manually."
