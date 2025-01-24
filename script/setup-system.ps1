@@ -2,6 +2,8 @@
 
 & "$PSScriptRoot/bootstrap.ps1"
 
+$env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
+
 $os = $null
 if ($IsLinux) {
   $os = "linux"

@@ -7,7 +7,7 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
   }
 }
 
-. $PSScriptRoot\..\scripts\common.ps1
+. $env:DOTFILES_DIR\scripts\common.ps1
 
 $ProgressPreference = 'SilentlyContinue' # Suppress progress bar (speed up downloading, especially on PowerShell 5)
 $ConfirmPreference = 'None' # Suppress confirmation prompts
@@ -142,4 +142,4 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id Valve.SteamLink
 {{- end }}
 
 # Configuration
-pwsh -NoProfile $PSScriptRoot\windows\configure-admin.ps1
+& "$env:DOTFILES_DIR\scripts\windows\configure-admin.ps1"
