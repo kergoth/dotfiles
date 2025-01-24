@@ -1,5 +1,7 @@
 . $PSScriptRoot\..\scripts\common.ps1
 
+& "$PSScriptRoot/bootstrap.ps1"
+
 $os = $null
 if ($IsLinux) {
   $os = "linux"
