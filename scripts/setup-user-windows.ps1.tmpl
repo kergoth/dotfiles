@@ -136,7 +136,9 @@ Install-Scoop-IfNotPresent vivaldi Vivaldi.Vivaldi | Out-Null
 {{    if .work -}}
 Install-Scoop-IfNotPresent microsoft-teams Microsoft.Teams | Out-Null
 Install-Scoop-IfNotPresent putty PuTTY.PuTTY | Out-Null
+{{      if not .ephemeral -}}
 Install-Scoop-IfNotPresent rufus Rufus.Rufus | Out-Null
+{{      end -}}
 {{    else if .gaming -}}
 Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
 {{-   end }}
