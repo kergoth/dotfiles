@@ -46,7 +46,7 @@ fi
 # shellcheck disable=SC2046
 if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -maxdepth 1 -type f -not -name '*.pub' | wc -l) -gt 0 ]; then
     msg "Adding SSH keys to keychain"
-    find ~/.ssh/keys \( -type f -not -name '*.pub' \) \
+    find ~/.ssh/keys \( -type f -not -name '*.pub' -not -name .DS_Store \) \
     | while read -r key; do
         if ! [ -e "$key.pub" ]; then
             ssh-keygen -y -f "$key" > "$key.pub"
