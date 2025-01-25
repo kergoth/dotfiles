@@ -296,7 +296,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 #### Powershell Modules
 
 - [DirColors](https://www.powershellgallery.com/packages/DirColors): Provides dircolors-like functionality to all System.IO.FilesystemInfo formatters.
-- [posh-alias](https://www.powershellgallery.com/packages/posh-alias): A better alias for Powershell.
 - [PSFzf](https://github.com/kelleyma49/PSFzf): A PowerShell wrapper around the fuzzy finder fzf.
 
 #### Powershell Modules on Windows only

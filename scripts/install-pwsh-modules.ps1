@@ -6,7 +6,6 @@ $ConfirmPreference = 'None' # Suppress confirmation prompts
 
 Write-Verbose "Installing PowerShell modules"
 Install-ModuleIfNotInstalled DirColors
-Install-ModuleIfNotInstalled posh-alias
 Install-ModuleIfNotInstalled PSFzf
 
 if ($IsWindows) {
