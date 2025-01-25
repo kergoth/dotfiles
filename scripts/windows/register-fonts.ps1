@@ -1,3 +1,5 @@
+. "$env:DOTFILES_DIR\scripts\common.ps1"
+
 # https://www.alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell/
 function Register-Font {
   param
@@ -38,7 +40,7 @@ if (Get-Command -Name chezmoi -ErrorAction SilentlyContinue) {
   $fonts = chezmoi data |
   ConvertFrom-Json |
   Select-Object -ExpandProperty fonts |
-  ForEach-Object { Join-Path $FontsPath $_ }
+  ForEach-Object { Join-Path $FontsPath ( Get-UrlBaseName $_ ) }
 }
 else {
   $fonts = Get-ChildItem -Path $FontsPath |
