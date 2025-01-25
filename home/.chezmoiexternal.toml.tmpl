@@ -236,11 +236,15 @@ stripComponents = 1
 {{ else }}
 {{- $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
 {{- $splitver := $bat_extras_version | splitList "." }}
-[".local/bin"]
-type = "archive"
+{{ range list "batdiff" "batgrep" "batman" "bat-modules" "batpipe" "batwatch" -}}
+[".local/bin/{{ . }}"]
+type = "archive-file"
 url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
+path = "{{ . }}"
 refreshPeriod = "168h"
 stripComponents = 1
+executable = true
+{{ end }}
 
 [".local/bin/repo"]
 type = "file"
