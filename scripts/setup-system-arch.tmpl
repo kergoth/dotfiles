@@ -1,3 +1,4 @@
+{{- if ne .chezmoi.osRelease.id "steamos" -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -51,3 +52,4 @@ pacman_install wget unzip
 if command pacman -Q nano >/dev/null 2>&1; then
     sudorun pacman --noconfirm -R nano
 fi
+{{- end }}
