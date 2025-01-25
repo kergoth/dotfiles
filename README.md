@@ -191,7 +191,6 @@ chezmoi update -R
 - [neovim](https://neovim.io): Hyperextensible Vim-based text editor.
 - [gnupg](https://www.gnupg.org): A complete and free implementation of the OpenPGP standard.
 
-- [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
 - [go](https://go.dev): An open source programming language supported by Google
 - [python](https://www.python.org): A programming language that lets you work quickly and integrate systems more effectively.
 - [uv](https://github.com/astral-sh/uv): An extremely fast Python package installer and resolver, written in Rust.
@@ -256,6 +255,12 @@ chezmoi update -R
 #### CLI Software on Linux, macOS, and Windows
 
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
+
+#### CLI Software on FreeBSD
+
+- [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
+
+  - Installed so we can `cargo install` various tools.
 
 #### CLI Software on macOS
 
@@ -439,6 +444,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [procs](https://github.com/dalance/procs): A modern replacement for ps written in Rust. Available via brew, nix, scoop, and cargo.
 - [pup](https://github.com/ericchiang/pup): A command line tool for processing HTML. Available via brew, nix, and go.
 - [rclone](https://github.com/rclone/rclone): Rsync for cloud storage. Available via brew, nix, and scoop.
+- [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
 - [titlecase](https://github.com/wezm/titlecase): A small tool that capitalizes English text. Available via cargo.
 - [vivid](https://github.com/sharkdp/vivid): A generator for the LS_COLORS environment variable. Available via brew, nix, and cargo.
 - [youtube-dl](https://youtube-dl.org): Video downloading. Available via brew, nix, and python.
