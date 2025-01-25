@@ -546,6 +546,11 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
 - [XChat](https://xchat.org): IRC chat client.
 - [Pidgin](https://pidgin.im): A chat client.
+- [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/): A web browser.
+- [Google Chrome](https://www.google.com/chrome/): A web browser.
+- [Tor Browser](https://www.torproject.org): Anonymity Online.
+- [Mozilla Thunderbird](https://www.thunderbird.net): Email client.
+- [Gnome Evolution](https://gitlab.gnome.org/GNOME/evolution/-/wikis/home): Email client.
 
 ### Formerly-Used CLI Software
 
