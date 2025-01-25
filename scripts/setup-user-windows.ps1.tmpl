@@ -1,5 +1,18 @@
 . $env:DOTFILES_DIR\scripts\common.ps1
 
+# Add USERPROFILE to the WSL environment
+Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
+
+# Add cargo bindir to the PATH
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
+
+# Add extra binaries directory to the PATH
+[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME", "$env:USERPROFILE\AppData\Local\Programs\bin", "User")
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\AppData\Local\Programs\bin" -User
+
+# Add ~/.local/bin to the PATH
+Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
+
 # Install scoop
 if (-not $env:SCOOP) {
   $env:SCOOP = "$env:USERPROFILE/scoop"
@@ -12,6 +25,11 @@ RefreshEnvPath
 # Install git
 scoop install git
 
+# Add scoop's Git for Windows bin directory to the PATH for its bash
+$gitdir = scoop prefix git
+Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
+
+# Enable buckets
 if (-not (Test-Path "$env:SCOOP/buckets/extras")) {
   scoop bucket add extras
 }
@@ -45,23 +63,6 @@ scoop install starship
 scoop install neovim
 scoop install wget
 scoop install curl
-
-# Add scoop's Git for Windows bin directory to the PATH for its bash
-$gitdir = scoop prefix git
-Add-EnvironmentVariableItem "PATH" "$gitdir\bin" -User
-
-# Add cargo bindir to the PATH
-Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
-
-# Add USERPROFILE to the WSL environment
-Add-EnvironmentVariableItem "WSLENV" "USERPROFILE/up" -User
-
-# Add extra binaries directory to the PATH
-[System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME","$env:USERPROFILE\AppData\Local\Programs\bin","User")
-Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\AppData\Local\Programs\bin" -User
-
-# Add ~/.local/bin to the PATH
-Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
 
 # Install tools
 scoop install bat
