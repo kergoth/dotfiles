@@ -88,15 +88,6 @@ scoop install tealdeer
 scoop install unar
 scoop install zstd
 
-# Install choose
-if (-Not (Test-Path "$env:USERPROFILE\.cargo\bin\choose.exe")) {
-    $binary_url = Get-GithubLatestRelease "theryangeary/choose" "choose-x86_64-pc-windows-gnu"
-    if (-not (Test-Path -Path "$env:USERPROFILE\.cargo\bin")) {
-        New-Item -ItemType Directory -Path "$env:USERPROFILE\.cargo\bin"
-    }
-    Invoke-WebRequest -Uri $choose_url -Outfile "$env:USERPROFILE\.cargo\bin\choose.exe"
-}
-
 # SCM & Related
 scoop install delta
 scoop install gh

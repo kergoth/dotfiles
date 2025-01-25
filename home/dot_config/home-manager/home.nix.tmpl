@@ -39,7 +39,9 @@
 
     # Core tools
     eza
+{{- if eq .chezmoi.os "darwin" }}
     choose
+{{- end }}
     fd
     ripgrep
     zoxide

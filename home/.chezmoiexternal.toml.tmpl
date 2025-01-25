@@ -211,6 +211,22 @@ refreshPeriod = "168h"
 {{   end -}}
 {{ end }}
 
+{{ $choose_version := (gitHubLatestRelease "theryangeary/choose").TagName | trimPrefix "v" }}
+{{ $choose_suffix := "" }}
+{{ if eq .chezmoi.os "windows" }}
+{{   $choose_suffix = "pc-windows-gnu" }}
+{{ else if eq .chezmoi.os "linux" }}
+{{   $choose_suffix = "unknown-linux-musl" }}
+{{ end }}
+choose_suffix: {{ $choose_suffix }}
+{{ if ne $choose_suffix "" }}
+["{{ $binpath }}/choose{{ $binsuffix }}"]
+type = "file"
+url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
+executable = true
+refreshPeriod = "168h"
+{{ end }}
+
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/archlinux-icon-crystal.svg"]
 type = "archive-file"
