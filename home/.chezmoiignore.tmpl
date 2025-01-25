@@ -113,7 +113,7 @@ Library/Caches/zsh/functions/*
 AppData/Roaming/gnupg/*
 {{- end }}
 
-{{- if ne .chezmoi.osRelease.id "steamos" }}
+{{- if not .steamdeck }}
 # Steamdeck-only
 .local/bin/check-backup
 .local/bin/deck-backup
