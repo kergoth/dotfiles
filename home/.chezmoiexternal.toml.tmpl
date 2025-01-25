@@ -218,7 +218,6 @@ refreshPeriod = "168h"
 {{ else if eq .chezmoi.os "linux" }}
 {{   $choose_suffix = "unknown-linux-musl" }}
 {{ end }}
-choose_suffix: {{ $choose_suffix }}
 {{ if ne $choose_suffix "" }}
 ["{{ $binpath }}/choose{{ $binsuffix }}"]
 type = "file"
