@@ -5,8 +5,10 @@
 {{-   $binarch = "x86_64" -}}
 {{- end -}}
 {{- $binpath := ".local/bin" -}}
+{{- $binsuffix := "" -}}
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{-   $binsuffix = ".exe" -}}
 {{- end -}}
 
 [".config/zsh/plugins/autosuggestions"]
