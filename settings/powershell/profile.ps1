@@ -11,7 +11,6 @@ if (-not $env:USERPROFILE) {
 }
 
 Import-Module PSReadline
-Import-Module Recycle
 Import-Module posh-alias
 Import-Module PSFzf
 
@@ -233,8 +232,6 @@ else {
 }
 New-Alias which Get-Command -Force
 New-Alias grep Select-String -Force
-New-Alias rm Remove-ItemSafely -Force
-New-Alias rmdir Remove-ItemSafely -Force
 
 # Default to staying on filesystem
 function Invoke-Dua {
@@ -304,9 +301,14 @@ if (Test-Path alias:sl) {
 }
 
 # Convenience
-New-Alias recycle Remove-ItemSafely -Force
-New-Alias drop Remove-ItemSafely -Force
 Add-Alias Reload-Profile '& $profile'
+
+if (Get-Command recycle-bin -ErrorAction SilentlyContinue) {
+    New-Alias recycle recycle-bin -Force
+    New-Alias drop recycle-bin -Force
+    New-Alias rm recycle-bin -Force
+    New-Alias rmdir recycle-bin -Force
+}
 
 $env:XDG_BIN_HOME = "$env:LOCALAPPDATA/Programs/bin"
 $env:Path += ";$env:XDG_BIN_HOME"

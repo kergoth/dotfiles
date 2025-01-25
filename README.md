@@ -289,6 +289,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [gsudo](https://github.com/gerardog/gsudo): Sudo for Windows.
 - [npiperelay](https://github.com/jstarks/npiperelay): Access Windows named pipes from WSL.
+- [recycle-bin](https://github.com/sindresorhus/recycle-bin): Move files and folders to the Windows recycle bin within command line.
 - [scoop](https://scoop.sh): A command-line installer for Windows.
 - [starship](https://starship.rs): A cross-shell prompt.
 - [winget](https://github.com/microsoft/winget-cli): Windows Package Manager CLI.
@@ -298,7 +299,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [DirColors](https://www.powershellgallery.com/packages/DirColors): Provides dircolors-like functionality to all System.IO.FilesystemInfo formatters.
 - [posh-alias](https://www.powershellgallery.com/packages/posh-alias): A better alias for Powershell.
 - [PSFzf](https://github.com/kelleyma49/PSFzf): A PowerShell wrapper around the fuzzy finder fzf.
-- [Recycle](https://www.powershellgallery.com/packages/Recycle): Deletes the file or folder as if it had been done via File Explorer, or restores a deleted file from the recycle bin.
 
 #### Powershell Modules on Windows only
 
