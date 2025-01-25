@@ -29,7 +29,7 @@ if ! command -v unar &>/dev/null; then
     uv tool install dtrx
 fi || ret=$?
 
-{{- if not .ephemeral -}}
+{{ if not .ephemeral -}}
 # User shell should be zsh
 zsh_binary=$(command -v zsh 2>/dev/null) || :
 if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
@@ -40,6 +40,6 @@ if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
         chsh -s "$zsh_binary" || ret=$?
     fi
 fi
-{{- end -}}
+{{- end }}
 
 exit $ret
