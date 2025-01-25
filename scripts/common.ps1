@@ -168,13 +168,15 @@ function Install-WinGetPackageIfNotInstalled {
     return
   }
 
-  $arguments = @("-Source","$Source")
-  if ($Id) { $arguments += "-Id"; $arguments += "$Id"; $Name = $Id; }
-  elseif ($Name) { $arguments += "-Name $Name" }
-  if ($Override) { $arguments += "-Override $Override" }
+  $params = @{
+    Source = $Source
+  }
+  if ($Id) { $params['Id'] = $Id; $Name = $Id }
+  elseif ($Name) { $params['Name'] = $Name }
+  if ($Override) { $params['Override'] = $Override }
 
-  Write-Output "Installing package $Name"
-  # Install-WinGetPackage -Mode $Mode @arguments -Verbose Continue -ErrorAction Stop
+  Write-Host "Installing $Name"
+  Install-WinGetPackage -Mode $Mode @params -ErrorAction Stop
 }
 
 function Get-UrlBaseName {
