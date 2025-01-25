@@ -46,6 +46,34 @@ if (-not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
   winget install --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --no-upgrade --id Microsoft.PowerShell
 }
 
+# Install SnipDo
+If (-Not (Get-AppxPackage -name JohannesTscholl.Pantherbar)) {
+    if (-Not (Get-AppxPackage -Name "Microsoft.VCLibs.140.00.UWPDesktop" | Where-Object {$_.Architecture -eq "X86"})) {
+        Write-Host "Installing x86 framework Microsoft.VCLibs.140.00.UWPDesktop for SnipDo..."
+        $uri = "https://aka.ms/Microsoft.VCLibs.x86.14.00.Desktop.appx"
+        $tempFile = [System.IO.Path]::GetTempFileName() + ".appx"
+        try {
+            Invoke-WebRequest -Uri $uri -OutFile $tempFile
+            Add-AppxPackage -Path $tempFile
+        } finally {
+            Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    Write-Host "Installing SnipDo..."
+    $installerUrl = "https://snipdo-app.com/wp-content/uploads/bins/SnipDo.appinstaller"
+    $installerXml = (Invoke-WebRequest -Uri $installerUrl).Content
+    $xml = [xml]$installerXml
+    $bundleUri = $xml.AppInstaller.MainBundle.Uri
+    $tempFile = [System.IO.Path]::GetTempFileName() + ".msixbundle"
+    try {
+        Invoke-WebRequest -Uri $bundleUri -OutFile $tempFile
+        Add-AppxPackage -Path $tempFile
+    } finally {
+        Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
+    }
+}
+
 # Install WinGet packages
 Install-ModuleIfNotInstalled Microsoft.WinGet.Client
 
@@ -72,9 +100,6 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id Vivaldi.Vivaldi | Out-Null
 {{ if .video -}}
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id VideoLAN.VLC | Out-Null
 {{- end }}
-
-# SnipDo
-Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Name SnipDo
 
 # WiFi Analyzer
 Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0N
