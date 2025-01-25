@@ -532,6 +532,8 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### Formerly-Used Software
 
+- [Bear](https://bear.app): A beautiful, flexible writing app for crafting notes and prose.
+- [EverNote](https://evernote.com): A note-taking app.
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
 - [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
 - [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.
