@@ -1,0 +1,12 @@
+[Unit]
+Description=Check if backup is overdue
+After=network.target
+
+[Service]
+ExecStart=/home/deck/.local/bin/check-backup
+ExecStartPre=/bin/sleep 1
+Type=oneshot
+RemainAfterExit=true
+
+[Install]
+WantedBy=default.target

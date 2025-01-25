@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt
+export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic
+
+PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+
+save_backup() {
+    echo >&2 "Backing up saved games to the SD card and NAS"
+    "$HOME"/.local/bin/ludusavi backup --force || ret=$?
+}
+
+restic_backup() {
+    # Remote backup focused on connfiguration files, settings, and data, with multiple historical copies
+    echo >&2 "Backing up to the NAS"
+    restic backup --one-file-system --exclude-file="$HOME/.config/restic/exclude.txt" "$HOME"/ &&
+        restic forget --keep-daily=7 --keep-weekly=4 --keep-monthly=12 --prune || ret=$?
+}
+
+rsync_backup() {
+    set -- \
+        --archive \
+        --human-readable \
+        --hard-links \
+        --compress \
+        --exclude=.DS_Store \
+        --exclude="._*" \
+        --exclude=.Trash-1000 \
+        --exclude=lost+found \
+        --exclude="bgrm.*" \
+        --delete \
+        --delete-excluded
+
+    if [ -t 1 ]; then
+        set -- --info=progress2 "$@"
+    fi
+
+    # Full local backup of the home directory, with a single copy, for device restoration
+    echo >&2 "Backing up to the SD card"
+    rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt --exclude=/.local/share/Steam/steamapps/ "$HOME"/ /run/media/deck/SD/Backup/home/ || ret=$?
+    echo >&2 "Backing up installed Steam Games to the SD card"
+    rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt "$HOME"/.local/share/Steam/steamapps/ /run/media/deck/SD/Backup/home/.local/share/Steam/steamapps/ || ret=$?
+}
+
+run_backups() {
+    save_backup
+    restic_backup
+    rsync_backup
+    return $ret
+}
+
+LOCKFILE="/tmp/backup.lock"
+
+# Use flock to ensure only one instance of the backup script runs at a time
+(
+    flock -n 200 || exit 1  # Try to acquire the lock, exit if it can't be acquired
+
+    echo >&2 "Starting backups..."
+    
+    ret=0
+    run_backups || exit $ret
+
+    touch ~/.local/share/last-backup.timestamp
+
+    echo >&2 "Backups completed."
+    exit 0
+) 200>"$LOCKFILE"  # File descriptor 200 is associated with the lock file

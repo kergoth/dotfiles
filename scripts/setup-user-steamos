@@ -1,0 +1,253 @@
+#!/usr/bin/env bash
+
+install_decky_plugin() {
+    local plugin_file="$1"
+    local plugin_dir="$2"
+    local plugin_base
+    plugin_base=$(basename "$plugin_file")
+    plugin_name=$(basename "$plugin_dir")
+
+    if test -d "$plugin_dir"; then
+        return 0
+    fi
+
+    msg_verbose "Installing $plugin_name plugin"
+    local plugins_dir
+    plugins_dir=$(dirname "$plugin_dir")
+    if test -d "$plugins_dir"; then
+        chmod +w "$plugins_dir"
+    fi
+    trap 'chmod -w "$plugins_dir"; rm -rf "$plugin_dir"; rm -rf "$tmpdir"' EXIT INT TERM
+
+    mkdir -p "$plugin_dir"
+    case "$plugin_file" in
+    *.7z)
+        7z x -o"$plugin_dir" "$plugin_dir/$plugin_base"
+        ;;
+    *.zip)
+        unzip -d "$plugin_dir" "$plugin_dir/$plugin_base"
+        ;;
+    *)
+        echo >&2 "Error: Unknown archive format for $plugin_name plugin"
+        return 1
+        ;;
+    esac
+
+    if [ "$(find "$plugin_dir" -mindepth 1 -maxdepth 1 -not -name .DS_Store | wc -l | xargs)" = 1 ]; then
+        single_dir=$(find "$plugin_dir" -mindepth 1 -maxdepth 1 -type d)
+        if test -d "$single_dir"; then
+            find "$single_dir" -mindepth 1 -maxdepth 1 -print0 | xargs -0 -I"{}" mv "{}" "$plugin_dir/"
+            rmdir "$single_dir"
+        fi
+    fi
+    chmod -R -w "$plugin_dir"
+    chmod -w "$plugins_dir"
+    trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+    if ! test -d "$plugins_dir"; then
+        echo >&2 "Error: Failed to install $plugin_name plugin"
+        return 1
+    fi
+
+    echo >&2 "Installed $plugin_name plugin"
+}
+
+tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+
+sdmount=$(find /run/media/deck -mindepth 1 -maxdepth 1 -type d)
+if [ -z "$sdmount" ]; then
+    echo >&2 "No SD card mounted"
+else
+    if [ -d "$sdmount/Emulation/roms/portable" ]; then
+        chmod +x "$sdmount/Emulation/roms/portable/"*.sh
+    fi
+    if ! [ -e ~/SD ]; then
+        ln -sf "$sdmount" ~/SD
+    fi
+fi
+
+mkdir -p ~/.local/bin
+chmod +x ~/.local/bin/* 2>/dev/null
+
+# Enable the ssh server if it's not already enabled
+if ! systemctl is-enabled --quiet sshd; then
+    /usr/bin/steamos-polkit-helpers/steamos-enable-sshd
+fi
+
+# shellcheck disable=SC2016
+if ! grep -xqF 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' ~/.bashrc; then
+    echo 'export PATH="$HOME/.local/bin:$HOME/bin:$PATH"' >>~/.bashrc
+fi
+# shellcheck disable=SC2016
+if ! grep -xqF 'export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt' ~/.bashrc; then
+    echo 'export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt' >>~/.bashrc
+fi
+if ! grep -xqF 'export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic' ~/.bashrc; then
+    echo 'export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic' >>~/.bashrc
+fi
+
+if ! [ -e ~/Desktop/decky_installer.desktop ]; then
+    echo >&2 "Downloading decky installer to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/decky_installer.desktop
+fi
+
+if ! [ -e ~/Desktop/InstallCryoUtilities.desktop ]; then
+    echo >&2 "Downloading CryoUtilities installer to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://raw.githubusercontent.com/CryoByte33/steam-deck-utilities/main/InstallCryoUtilities.desktop
+fi
+
+if ! [ -e ~/Desktop/EmuDeck.desktop ]; then
+    echo >&2 "Downloading EmuDeck installer to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://www.emudeck.com/EmuDeck.desktop
+fi
+
+if ! [ -e ~/Desktop/update-sdgyrodsu.desktop ]; then
+    echo >&2 "Downloading SteamDeckGyroDSU updater to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/kmicki/SteamDeckGyroDSU/releases/latest/download/update-sdgyrodsu.desktop
+fi
+
+if ! [ -e ~/Desktop/shortix_installer.desktop ] && ! [ -e ~/Desktop/shortix_updater.desktop ]; then
+    echo >&2 "Downloading Shortix installer to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/Jannomag/shortix/releases/latest/download/shortix_installer.desktop
+fi
+
+if ! [ -e ~/Desktop/NSLPlugin.desktop ]; then
+    echo >&2 "Downloading NSLPlugin installer to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/releases/latest/download/NSLPlugin.desktop
+fi
+
+flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+if ! flatpak info org.mozilla.firefox &>/dev/null; then
+    echo >&2 "Installing Firefox"
+    flatpak install --user --noninteractive flathub org.mozilla.firefox
+fi
+
+if ! flatpak info com.github.tchx84.Flatseal &>/dev/null; then
+    echo >&2 "Installing Flatseal"
+    flatpak install --user --noninteractive flathub com.github.tchx84.Flatseal
+fi
+
+if ! flatpak info com.github.Matoking.protontricks &>/dev/null; then
+    echo >&2 "Installing Protontricks"
+    flatpak install --user --noninteractive flathub com.github.Matoking.protontricks
+fi
+if [ -n "$sdmount" ]; then
+    flatpak override --user --filesystem="$sdmount" com.github.Matoking.protontricks
+fi
+
+if ! flatpak info com.github.mtkennerly.ludusavi &>/dev/null; then
+    echo >&2 "Installing Ludusavi"
+    flatpak install --user --noninteractive flathub com.github.mtkennerly.ludusavi
+fi
+
+if ! flatpak info com.google.Chrome &>/dev/null; then
+    echo >&2 "Installing Chrome"
+    flatpak install --user --noninteractive flathub com.google.Chrome
+fi
+# Allow Chrome to access udev for USB devices, which allows gamepad usage
+flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
+
+if [ -e ~/.config/systemd/user/deck-backup.service ]; then
+    systemctl --user enable ~/.config/systemd/user/deck-backup.timer
+fi
+if [ -e ~/.config/systemd/user/check-backup.service ]; then
+    systemctl --user enable ~/.config/systemd/user/check-backup.service
+fi
+if [ -e ~/.config/systemd/user/ludusavi-backup.service ]; then
+    systemctl --user disable ~/.config/systemd/user/ludusavi-backup.timer
+    rm -f ~/.config/systemd/user/ludusavi-backup.*
+fi
+if [ -e ~/.config/systemd/user/restic-backup.service ]; then
+    systemctl --user disable ~/.config/systemd/user/restic-backup.timer
+    rm -f ~/.config/systemd/user/restic-backup.*
+fi
+systemctl --user daemon-reload
+
+if ! [ -x ~/.local/bin/rclone ]; then
+    echo >&2 "Installing rclone"
+    curl --fail --proto '=https' -o "$tmpdir/rclone.zip" https://downloads.rclone.org/rclone-current-linux-amd64.zip
+    (cd "$tmpdir" && unzip rclone.zip)
+    mv "$tmpdir"/rclone-*-linux-amd64/rclone ~/.local/bin/
+    chmod +x ~/.local/bin/rclone
+fi
+
+if ! [ -x ~/.local/bin/pkgx ]; then
+    echo >&2 "Installing pkgx"
+    curl --fail --proto '=https' "https://pkgx.sh/$(uname)/$(uname -m)".tgz | tar -zxvf - -C ~/.local/bin
+fi
+
+if ! [ -x ~/.local/bin/uv ]; then
+    echo >&2 "Installing uv"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
+if ! [ -x ~/.local/bin/restic ]; then
+    echo >&2 "Installing restic"
+    RESTIC_TAG=$(curl -sS https://api.github.com/repos/restic/restic/releases/latest | jq -r '.tag_name')
+    curl -fsSL "https://github.com/restic/restic/releases/download/${RESTIC_TAG}/restic_${RESTIC_TAG:1}_linux_amd64.bz2" |
+        bzcat >~/.local/bin/restic
+    chmod +x ~/.local/bin/restic
+fi
+
+if ! [ -e ~/.local/share/applications/CryoUtilities.desktop ] && ! [ -e ~/Desktop/CryoUtilities.desktop ]; then
+    echo >&2 "Installing CryoUtilities"
+    curl -fsSL https://raw.githubusercontent.com/CryoByte33/steam-deck-utilities/refs/heads/main/install.sh | bash -s --
+fi
+
+if ! [ -e ~/Shortix/shortix.sh ]; then
+    echo >&2 "Installing Shortix"
+    mkdir -p ~/Shortix
+    curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
+        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/remove_prefix.sh \
+        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix.sh \
+        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix_uninstall.sh
+    chmod +x ~/Shortix/*.sh
+    touch ~/Shortix/.id
+fi
+if ! grep -q "^ *sed -i -E.*／" ~/Shortix/shortix.sh; then
+    # Work around Shortix bug with game names including a slash
+    # shellcheck disable=SC2016
+    sed -i -E '/^ *eval /a\
+    sed -i -E "s#/#／#g" $TEMPFILE' ~/Shortix/shortix.sh
+fi
+~/Shortix/shortix.sh >/dev/null
+
+if ! [ -e ~/sdgyrodsu/sdgyrodsu ]; then
+    echo >&2 "Installing SteamDeckGyroDSU"
+    curl -fsSL -O --output-dir "$tmpdir" https://github.com/kmicki/SteamDeckGyroDSU/releases/latest/download/SteamDeckGyroDSUSetup.zip
+    unzip -d "$tmpdir" "$tmpdir/SteamDeckGyroDSUSetup.zip"
+    (cd "$tmpdir/SteamDeckGyroDSUSetup" && ./install.sh)
+fi
+
+if ! [ -d ~/homebrew ]; then
+    echo >&2 "Installing Decky Loader"
+    echo >&2 "Warning: This will prompt for your password. Please ensure your deck user has a password set."
+    curl -fsSL https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh -
+fi
+
+if ! test -d "/home/deck/homebrew/plugins/NonSteamLaunchers"; then
+    curl -fsSL -O --output-dir "$tmpdir" https://github.com/moraroy/NonSteamLaunchersDecky/archive/refs/heads/main.zip
+    install_decky_plugin_zip "$tmpdir/main.zip" "/home/deck/homebrew/plugins/NonSteamLaunchers"
+fi
+
+if test -d "/home/deck/homebrew/plugins/NonSteamLaunchers"; then
+    set --
+    if ! [ -e "/home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALauncher.exe" ]; then
+        set -- "$@" "EA App"
+    fi
+    if ! [ -e "/home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Legacy Games/Legacy Games Launcher/Legacy Games Launcher.exe" ]; then
+        set -- "$@" "Legacy Games"
+    fi
+    if ! [ -e "/home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/UbisoftGameLauncher.exe" ]; then
+        set -- "$@" "Ubisoft Connect"
+    fi
+    if ! [ -e "/home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/Battle.net/Battle.net.exe" ]; then
+        set -- "$@" "Battle.net"
+    fi
+    if [ $# -gt 0 ]; then
+        echo >&2 "Installing Non-Steam Launchers: $*"
+        logged_in_home=$(eval echo "~$(whoami)") /home/deck/homebrew/plugins/NonSteamLaunchers/NonSteamLaunchers.sh "$@"
+    fi
+fi

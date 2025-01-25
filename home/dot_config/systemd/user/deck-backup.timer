@@ -1,0 +1,10 @@
+[Unit]
+Description="Deck backup timer"
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+Unit=restic-backup.service
+WakeSystem=true
+
+[Install]
+WantedBy=timers.target

@@ -113,6 +113,20 @@ Library/Caches/zsh/functions/*
 AppData/Roaming/gnupg/*
 {{- end }}
 
+{{- if ne .chezmoi.osRelease.id "steamos" }}
+# Steamdeck-only
+.local/bin/check-backup
+.local/bin/deck-backup
+.local/bin/ludusavi
+.config/systemd/user/deck-backup.service
+.config/systemd/user/deck-backup.timer
+.config/systemd/user/check-backup.service
+.config/rclone/rclone.conf
+.config/restic/exclude.txt
+.config/restic/password.txt
+.config/rsync/exclude.txt
+{{- end }}
+
 # I don't track files for this with chezmoi
 .code-terminal
 .vscode

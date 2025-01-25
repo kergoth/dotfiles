@@ -1,0 +1,5 @@
+[Unit]
+Description="Deck backup"
+
+[Service]
+ExecStart=/home/deck/.local/bin/deck-backup
