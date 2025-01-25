@@ -532,6 +532,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### Formerly-Used Software
 
+- [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
 - [Bear](https://bear.app): A beautiful, flexible writing app for crafting notes and prose.
 - [EverNote](https://evernote.com): A note-taking app.
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
