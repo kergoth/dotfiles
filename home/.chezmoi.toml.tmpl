@@ -20,6 +20,7 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 {{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
+{{- $windows_sandbox := and (eq .chezmoi.os "windows") ( .chezmoi.username | contains "WDAGUtilityAccount" ) -}}
 {{- $steamdeck := eq $osid "linux-steamos" -}}
 
 {{/* detect macOS version */}}
@@ -47,7 +48,7 @@
 {{/* determine whether to prompt interactively */}}
 {{- $prompt := or (has "--prompt" .chezmoi.args) (has "--prompt=true" .chezmoi.args) -}}
 
-{{/* set defaults based on hostname */}}
+{{/* set defaults based on context */}}
 {{- if not $ephemeral -}}
 {{-   if eq $hostname "caf-clarson-p1" -}}
 {{-     if $wsl2 -}}
@@ -68,6 +69,8 @@
 {{-     $ebook_library = true -}}
 {{-   else if $steamdeck -}}
 {{-     $gaming = true -}}
+{{-   else if $windows_sandbox -}}
+{{-     $ephemeral = true -}}
 {{-   else if $interactive -}}
 {{/*    prompt for unknown hostnames by default */}}
 {{-     $prompt = true -}}
@@ -83,7 +86,6 @@
 {{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
 {{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
 {{-   $work = promptBoolOnce . "work" "work" $work -}}
-{{-   $gaming = promptBoolOnce . "gaming" "gaming" $gaming -}}
 {{-   $gaming = promptBoolOnce . "gaming" "gaming" $gaming -}}
 {{-   $video = promptBoolOnce . "video" "video" $video -}}
 {{-   $music = promptBoolOnce . "music" "music" $music -}}
