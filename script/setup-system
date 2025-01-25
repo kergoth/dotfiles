@@ -24,10 +24,10 @@ if [ "$OS" = "linux" ]; then
     if [ -z "$DISTRO" ]; then
         msg "Warning: Unknown DISTRO, please ensure /etc/os-release exists, or set DISTRO manually."
     else
-        if check_child_script "setup-system-$DISTRO"; then
+        if check_child_script "setup-system-$DISTRO" &>/dev/null; then
             run_child_script "setup-system-$DISTRO"
         else
-            if [ -n "${DISTRO_LIKE:-}" ] && check_child_script "setup-system-$DISTRO_LIKE"; then
+            if [ -n "${DISTRO_LIKE:-}" ] && check_child_script "setup-system-$DISTRO_LIKE" &>/dev/null; then
                 run_child_script "setup-system-$DISTRO_LIKE"
             fi
         fi
