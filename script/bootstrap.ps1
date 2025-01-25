@@ -17,7 +17,6 @@ if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
 
   RefreshEnvPath
 
-  Write-Output "Installing chezmoi"
   scoop install chezmoi
 }
 
