@@ -42,12 +42,7 @@ scoop install git-lfs
 
 # Install languages
 scoop install rust go python
-$reg = Get-ChildItem $env:USERPROFILE\scoop\apps\python\current\install-pep-514.reg -ErrorAction SilentlyContinue | Select-Object -First 1
-if ($reg) {
-  Write-Host "Importing python registry entries"
-  reg import $reg
-}
-RefreshEnvPath
+reg import $env:SCOOP\apps\python\current\install-pep-514.reg
 
 # Windows-specific
 scoop install gow
@@ -95,6 +90,9 @@ scoop install ghq
 scoop install git-absorb
 scoop install sapling
 
+uv tool install git-revise
+uv tool install git-imerge
+
 # Disk tools
 scoop install dua
 
@@ -103,8 +101,49 @@ scoop install dua
 scoop install jira-cli
 {{- end }}
 
-uv tool install git-revise
-uv tool install git-imerge
+# GUI Applications
+{{ if not .headless -}}
+if (Install-Scoop-IfNotPresent 7zip 7zip.7zip) {
+    reg import "$env:SCOOP\apps\7zip\current\install-context.reg" | Out-Null
+}
+Install-Scoop-IfNotPresent wiztree AntibodySoftware.WizTree | Out-Null
+Install-Scoop-IfNotPresent autohotkey AutoHotkey.AutoHotkey | Out-Null
+Install-Scoop-IfNotPresent discord Discord.Discord | Out-Null
+Install-Scoop-IfNotPresent ditto Ditto.Ditto | Out-Null
+Install-Scoop-IfNotPresent devdocs egoist.devdocs-desktop | Out-Null
+Install-Scoop-IfNotPresent gsudo gerardog.gsudo | Out-Null
+Install-Scoop-IfNotPresent gpg4win GnuPG.Gpg4win | Out-Null
+Install-Scoop-IfNotPresent bulk-crap-uninstaller Klocman.BulkCrapUninstaller | Out-Null
+Install-Scoop-IfNotPresent pwsh Microsoft.PowerShell | Out-Null
+if (Install-Scoop-IfNotPresent powertoys Microsoft.PowerToys) {
+    Invoke-Expression -Command "C:\Users\WDAGUtilityAccount\scoop\apps\powertoys\current\install-context.ps1"
+}
+if (Install-Scoop-IfNotPresent vscode Microsoft.VisualStudioCode) {
+    reg import "$env:SCOOP\apps\vscode\current\install-context.reg" | Out-Null
+    reg import "$env:SCOOP\apps\vscode\current\install-associations.reg" | Out-Null
+    reg import "$env:SCOOP\apps\vscode\current\install-github-integration.reg" | Out-Null
+}
+if (Install-Scoop-IfNotPresent windows-terminal Microsoft.WindowsTerminal) {
+    reg import "$env:SCOOP\apps\windows-terminal\current\install-context.reg" | Out-Null
+}
+if (Install-Scoop-IfNotPresent notepadplusplus Notepad++.Notepad++) {
+    reg import "$env:SCOOP\apps\notepadplusplus\current\install-context.reg" | Out-Null
+}
+Install-Scoop-IfNotPresent quicklook QL-Win.QuickLook | Out-Null
+Install-Scoop-IfNotPresent synctrayzor SyncTrayzor.SyncTrayzor | Out-Null
+Install-Scoop-IfNotPresent vivaldi Vivaldi.Vivaldi | Out-Null
+
+{{    if .work -}}
+Install-Scoop-IfNotPresent microsoft-teams Microsoft.Teams | Out-Null
+Install-Scoop-IfNotPresent putty PuTTY.PuTTY | Out-Null
+Install-Scoop-IfNotPresent rufus Rufus.Rufus | Out-Null
+{{    else if .gaming -}}
+Install-Scoop-IfNotPresent steam Valve.Steam | Out-Null
+{{-   end }}
+{{    if .video -}}
+Install-Scoop-IfNotPresent vlc VideoLAN.VLC | Out-Null
+{{-   end }}
+{{- end }}
 
 RefreshEnvPath
 
@@ -130,18 +169,20 @@ if (Get-Process ssh-agent -ErrorAction SilentlyContinue) {
 # Use the Windows native GnuPG for git if it's installed
 if (Test-Path "C:\Program Files (x86)\GnuPG\bin\gpg.exe") {
   git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"
+} elseif (Test-Path "$env:SCOOP\apps\gpg4win\current\bin\gpg.exe") {
+  git config --global gpg.program "$env:SCOOP\apps\gpg4win\current\bin\gpg.exe"
 }
 
 # Add installed software to the user's PATH and/or startup
 if (Test-Path "C:\Program Files\7-Zip") {
   Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
-} else {
-  Write-Warning "7-Zip not installed"
 }
 
 # Run SyncTrayzor, which will add itself to startup
 if (Test-Path "C:\Program Files\SyncTrayzor") {
   Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
+} elseif (Test-Path "$env:SCOOP\apps\synctrayzor\current\SyncTrayzor.exe") {
+  Start-Process "$env:SCOOP\apps\synctrayzor\current\SyncTrayzor.exe" -ArgumentList --minimized
 } else {
   Write-Warning "SyncTrayzor not installed"
 }
