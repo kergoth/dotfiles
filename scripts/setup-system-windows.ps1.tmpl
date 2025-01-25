@@ -42,9 +42,6 @@ if (-Not (Get-Command winget -ErrorAction SilentlyContinue)) {
   }
 }
 
-# Refresh $env:Path
-RefreshEnvPath
-
 if (-not (Get-Command pwsh -ErrorAction SilentlyContinue)) {
   winget install --disable-interactivity --accept-source-agreements --accept-package-agreements --silent --no-upgrade --id Microsoft.PowerShell
 }
