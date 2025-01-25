@@ -549,6 +549,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### Formerly-Used CLI Software
 
+- [Centericq](https://en.wikipedia.org/wiki/Centericq): A text mode menu- and window-driven instant messaging interface.
 - [weechat](https://weechat.org): A fast, light and extensible chat client.
 - [irssi](https://irssi.org): A modular chat client that is most commonly known for its text mode user interface.
 - [EPIC](https://www.epicsol.org): The Enhanced Programmable IRC-II Client.
