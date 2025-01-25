@@ -534,6 +534,8 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 - [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
 - [Bear](https://bear.app): A beautiful, flexible writing app for crafting notes and prose.
+- [Simplenote](https://simplenote.com): An easy way to keep notes, lists, ideas, and more.
+- [Workflowy](https://workflowy.com): Organize your brain.
 - [EverNote](https://evernote.com): A note-taking app.
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
 - [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
