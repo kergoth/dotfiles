@@ -125,7 +125,7 @@ Set-PSReadLineKeyHandler -key Ctrl+q -Function TabCompleteNext
 Set-PSReadLineKeyHandler -key Ctrl+Q -Function TabCompletePrevious
 
 # Clipboard interaction is bound by default in Windows mode, but not Emacs mode.
-Set-PSReadLineKeyHandler -key Ctrl+C -Function Copy-Item
+Set-PSReadLineKeyHandler -key Ctrl+C -Function Copy
 Set-PSReadLineKeyHandler -key Ctrl+v -Function Paste
 
 # The built-in word movement uses character delimiters, but token based word
