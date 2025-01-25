@@ -267,14 +267,14 @@ if (Get-Command bat -ErrorAction SilentlyContinue) {
   if (Test-Path alias:cat) {
     Remove-Alias cat
   }
-  Add-Alias cat bat
+  New-Alias cat bat -Force
 }
 
 if (Get-Command batgrep -ErrorAction SilentlyContinue) {
   if (Test-Path alias:rg) {
     Remove-Alias rg
   }
-  Add-Alias rg batgrep
+  New-Alias rg batgrep -Force
 }
 New-Alias g rg -Force
 
@@ -282,7 +282,7 @@ if (Get-Command duf -ErrorAction SilentlyContinue) {
   if (Test-Path alias:df) {
     Remove-Alias df
   }
-  Add-Alias df duf
+  New-Alias df duf -Force
 }
 
 function Set-Location-Create {
@@ -300,7 +300,7 @@ if (Test-Path alias:sl) {
 }
 
 # Convenience
-Add-Alias Reload-Profile '& $profile'
+New-Alias Reload-Profile '& $profile' -Force
 
 if (Get-Command recycle-bin -ErrorAction SilentlyContinue) {
     New-Alias recycle recycle-bin -Force
@@ -348,12 +348,12 @@ if (-not (Get-Command qemu-system-x86_64 -ErrorAction SilentlyContinue)) {
   }
 }
 if (-not (Test-Path alias:python3)) {
-  Add-Alias python3 python
+  New-Alias python3 python -Force
 }
 function Copy-SSH-Id {
   ssh-add -l | ssh @args "mkdir -p ~/.ssh; cat >> .ssh/authorized_keys"
 }
-Add-Alias ssh-copy-id Copy-SSH-Id
+New-Alias ssh-copy-id Copy-SSH-Id -Force
 
 if (($env:TERM_PROGRAM -eq 'vscode') -and (Get-Command code -ErrorAction SilentlyContinue)) {
   $env:VISUAL = $env:EDITOR = "codewait.cmd"
@@ -361,7 +361,7 @@ if (($env:TERM_PROGRAM -eq 'vscode') -and (Get-Command code -ErrorAction Silentl
 
 if (Get-Command nvim -ErrorAction SilentlyContinue) {
   if (-not (Get-Command vim -ErrorAction SilentlyContinue)) {
-    Add-Alias vim nvim
+    New-Alias vim nvim -Force
   }
   if (-not (Test-Path env:VISUAL)) {
     $env:VISUAL = "nvim"
@@ -370,7 +370,7 @@ if (Get-Command nvim -ErrorAction SilentlyContinue) {
     $env:EDITOR = "nvim"
   }
 }
-Add-Alias vi vim
+New-Alias vi vim -Force
 
 function Split-CommandLine {
 <#
