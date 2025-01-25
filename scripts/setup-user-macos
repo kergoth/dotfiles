@@ -52,7 +52,7 @@ if [ -d ~/.ssh/keys ] && [ $(find ~/.ssh/keys -maxdepth 1 -type f -not -name '*.
                 ssh-keygen -y -f "$key" >"$key.pub"
             fi
             if ! ssh-add -T "$key.pub"; then
-                ssh-add --apple-use-keychain "$key"
+                ssh-add --apple-use-keychain "$key" || :
             fi
         done
 fi
