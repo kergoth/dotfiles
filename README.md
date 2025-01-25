@@ -549,6 +549,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### Formerly-Used CLI Software
 
+- [GNU Screen](https://www.gnu.org/software/screen): A terminal multiplexer. Replaced by tmux.
 - [Bitlbee](https://www.bitlbee.org): An IRC to other chat networks gateway.
 - [Centericq](https://en.wikipedia.org/wiki/Centericq): A text mode menu- and window-driven instant messaging interface.
 - [weechat](https://weechat.org): A fast, light and extensible chat client.
