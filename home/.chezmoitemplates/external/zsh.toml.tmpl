@@ -3,37 +3,19 @@
 {{-   $binpath = "AppData/Local/Programs/bin" -}}
 {{- end -}}
 
+[".config/zsh/functions/manydots-magic"]
+type = "file"
+url = "https://raw.githubusercontent.com/knu/zsh-manydots-magic/master/manydots-magic"
+refreshPeriod = "168h"
+
+[".config/zsh/functions/git-escape-magic"]
+type = "file"
+url = "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/master/git-escape-magic"
+refreshPeriod = "168h"
+
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/completions"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/history-substring-search"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-history-substring-search/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/syntax-highlighting"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/themes/powerlevel10k"]
-type = "archive"
-url = "https://github.com/romkatv/powerlevel10k/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"
@@ -45,6 +27,13 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
+[".config/zsh/plugins/completions"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
 [".config/zsh/plugins/fzf-tab"]
 type = "archive"
 url = "https://github.com/Aloxaf/fzf-tab/archive/master.tar.gz"
@@ -52,26 +41,11 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".config/zsh/functions/manydots-magic"]
-type = "file"
-url = "https://raw.githubusercontent.com/knu/zsh-manydots-magic/master/manydots-magic"
-refreshPeriod = "168h"
-
-[".config/zsh/functions/git-escape-magic"]
-type = "file"
-url = "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/master/git-escape-magic"
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/nix-zsh-completions"]
+[".config/zsh/plugins/history-substring-search"]
 type = "archive"
-url = "https://github.com/nix-community/nix-zsh-completions/archive/master.tar.gz"
+url = "https://github.com/zsh-users/zsh-history-substring-search/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/zbell/zbell.plugin.sh"]
-type = "file"
-url = "https://gist.githubusercontent.com/jpouellet/5278239/raw/e0b06247f3ecd6ca3de341c54ba8d85de7ef6566/zbell.sh"
 refreshPeriod = "168h"
 
 [".config/zsh/plugins/nix-shell"]
@@ -81,12 +55,21 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".local/share/zsh/completions/_cht"]
-type = "file"
-url = "https://raw.githubusercontent.com/chubin/cheat.sh/refs/heads/master/share/zsh.txt"
+[".config/zsh/plugins/nix-zsh-completions"]
+type = "archive"
+url = "https://github.com/nix-community/nix-zsh-completions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
 refreshPeriod = "168h"
 
-{{ if .wsl2 }}
+[".config/zsh/plugins/syntax-highlighting"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+{{ if .wsl2 -}}
 [".config/zsh/plugins/windows-terminal-zsh-integration"]
 type = "archive"
 url = "https://github.com/romkatv/windows-terminal-zsh-integration/archive/master.tar.gz"
@@ -95,9 +78,24 @@ stripComponents = 1
 refreshPeriod = "168h"
 {{- end }}
 
-{{ if ne .chezmoi.os "windows" -}}
-["{{ $binpath }}/zsh_sort_timings"]
+[".config/zsh/plugins/zbell/zbell.plugin.sh"]
+type = "file"
+url = "https://gist.githubusercontent.com/jpouellet/5278239/raw/e0b06247f3ecd6ca3de341c54ba8d85de7ef6566/zbell.sh"
+refreshPeriod = "168h"
+
+[".config/zsh/themes/powerlevel10k"]
+type = "archive"
+url = "https://github.com/romkatv/powerlevel10k/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/zsh_sort_timings"]
 type = "file"
 url = "https://gist.githubusercontent.com/bdesham/2d7ef99f93b226be29e01cadcad37405/raw/353e5178686df9e3aea6e0802d4a217420938c28/sort_timings.zsh"
 executable = true
-{{- end }}
+
+[".local/share/zsh/completions/_cht"]
+type = "file"
+url = "https://raw.githubusercontent.com/chubin/cheat.sh/refs/heads/master/share/zsh.txt"
+refreshPeriod = "168h"
