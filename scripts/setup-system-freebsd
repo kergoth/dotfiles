@@ -87,7 +87,6 @@ freebsd_check misc/patchutils filterdiff
 
 # Disk tools
 freebsd_check sysutils/dua-cli dua
-freebsd_check sysutils/dust dust
 
 # Linting and formatting
 freebsd_check devel/hs-ShellCheck shellcheck

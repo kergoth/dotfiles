@@ -1,4 +1,4 @@
-if [[ -o 'interactive' ]] && (( $+commands[dust] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
-    printf >&2 'Consider `dust` rather than `du`.\n'
+if [[ -o 'interactive' ]] && (( $+commands[dua] )) && [[ -t 0 ]] && [[ -t 1 ]]; then
+    printf >&2 'Consider `dua` rather than `du`.\n'
 fi
 command "$0" "$@"

@@ -203,7 +203,6 @@ chezmoi update -R
 - [direnv](https://direnv.net): An extension for your shell which can load and unload environment variables depending on the current directory.
 - [duf](https://github.com/muesli/duf): Disk Usage/Free Utility - a better 'df' alternative.
 - [dua](https://github.com/Byron/dua-cli): View disk space usage and delete unwanted data, fast. This is a faster version of ncdu.
-- [dust](https://github.com/bootandy/dust): A more intuitive version of du in rust.
 - [eza](https://github.com/eza-community/eza) or [exa](https://github.com/ogham/exa): A modern replacement for ls.
 - [fd](https://github.com/sharkdp/fd): A simple, fast and user-friendly alternative to 'find'.
 - [fzf](https://github.com/junegunn/fzf): A command-line fuzzy finder.
