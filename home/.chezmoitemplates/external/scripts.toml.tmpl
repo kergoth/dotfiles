@@ -1,11 +1,14 @@
+{{ $clone_args := dig "external" "clone" "args" (list) . -}}
+{{ $pull_args := dig "external" "pull" "args" (list) . -}}
+
 ["bin"]
     type = "git-repo"
     url = "https://github.com/kergoth/scripts"
     refreshPeriod = "168h"
     [bin.clone]
-    args = {{ .clone_args | toToml }}
+    args = {{ $clone_args | toToml }}
     [bin.pull]
-    args = {{ .pull_args | toToml }}
+    args = {{ $pull_args | toToml }}
 
 {{ $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
 {{ $splitver := $bat_extras_version | splitList "." }}

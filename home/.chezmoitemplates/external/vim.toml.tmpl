@@ -1,11 +1,18 @@
+{{ $clone_args := dig "external" "clone" "args" (list) . -}}
+{{ $pull_args := dig "external" "pull" "args" (list) . -}}
+{{- $binpath := ".local/bin" -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{- end -}}
+
 [".config/vim"]
     type = "git-repo"
     url = "https://github.com/kergoth/dotvim"
     refreshPeriod = "168h"
     [".config/vim".clone]
-        args = {{ .clone_args | toToml }}
+        args = {{ $clone_args | toToml }}
     [".config/vim".pull]
-        args = {{ .pull_args | toToml }}
+        args = {{ $pull_args | toToml }}
 
 {{ if eq .chezmoi.os "windows" }}
 ["_vimrc"]
@@ -32,7 +39,7 @@ stripComponents = 1
 refreshPeriod = "168h"
 
 {{ if ne .chezmoi.os "windows" -}}
-["{{ .binpath }}/vim-profiler"]
+["{{ $binpath }}/vim-profiler"]
 type = "archive-file"
 url = "https://github.com/bchretien/vim-profiler/archive/master.tar.gz"
 path = "vim-profiler.py"

@@ -1,20 +1,8 @@
-{{ $clone_args := dig "external" "clone" "args" (list) . -}}
-{{ $pull_args := dig "external" "pull" "args" (list) . -}}
-{{- $binpath := ".local/bin" -}}
-{{- if eq .chezmoi.os "windows" -}}
-{{-   $binpath = "AppData/Local/Programs/bin" -}}
-{{- end -}}
-{{- $externaldata := dict
-    "clone_args" $clone_args
-    "pull_args" $pull_args
-    "binpath" $binpath -}}
-{{- $data := merge $externaldata . -}}
-
-{{- includeTemplate "external/zsh.toml.tmpl" $data -}}
-{{- includeTemplate "external/vim.toml.tmpl" $data -}}
-{{- includeTemplate "external/cli-apps.toml.tmpl" $data -}}
-{{- includeTemplate "external/scripts.toml.tmpl" $data -}}
-{{- includeTemplate "external/fonts.toml.tmpl" $data -}}
+{{- includeTemplate "external/cli-apps.toml.tmpl" . -}}
+{{- includeTemplate "external/fonts.toml.tmpl" . -}}
+{{- includeTemplate "external/scripts.toml.tmpl" . -}}
+{{- includeTemplate "external/vim.toml.tmpl" . -}}
+{{- includeTemplate "external/zsh.toml.tmpl" . -}}
 
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Roaming/bat/syntaxes/BitBake.sublime-syntax"]

@@ -1,3 +1,8 @@
+{{- $binpath := ".local/bin" -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $binpath = "AppData/Local/Programs/bin" -}}
+{{- end -}}
+
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
@@ -91,7 +96,7 @@ refreshPeriod = "168h"
 {{- end }}
 
 {{ if ne .chezmoi.os "windows" -}}
-["{{ .binpath }}/zsh_sort_timings"]
+["{{ $binpath }}/zsh_sort_timings"]
 type = "file"
 url = "https://gist.githubusercontent.com/bdesham/2d7ef99f93b226be29e01cadcad37405/raw/353e5178686df9e3aea6e0802d4a217420938c28/sort_timings.zsh"
 executable = true
