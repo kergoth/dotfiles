@@ -530,9 +530,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ## Formerly-Used
 
-- [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments. Superceded by **uv tool** in my workflows.
-- [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow, such as **sapling**.
-
 ### Formerly-Used Software
 
 - [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
@@ -554,6 +551,8 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 ### Formerly-Used CLI Software
 
+- [pipx](https://pypi.org/project/pipx/): Install and run python applications in isolated environments. Superceded by **uv tool** in my workflows.
+- [git-branchless](https://github.com/arxanas/git-branchless): High-velocity, monorepo-scale workflow for Git. I rarely used this, and there are other options for this workflow, such as **sapling**.
 - [GNU Screen](https://www.gnu.org/software/screen): A terminal multiplexer. Replaced by tmux.
 - [Bitlbee](https://www.bitlbee.org): An IRC to other chat networks gateway.
 - [Centericq](https://en.wikipedia.org/wiki/Centericq): A text mode menu- and window-driven instant messaging interface.
