@@ -179,6 +179,44 @@ function Install-WinGetPackageIfNotInstalled {
   Install-WinGetPackage -Mode $Mode @params -ErrorAction Stop
 }
 
+function Install-Scoop-IfNotPresent {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$ScoopName,
+
+        [Parameter(Mandatory=$true)]
+        [string]$WingetId
+        )
+
+    # Check if package is installed via winget
+    $wingetPackage = Get-WinGetPackage -Id $WingetId -ErrorAction SilentlyContinue
+
+    if ($wingetPackage) {
+        Write-Verbose "Package '$WingetId' is already installed via winget."
+        return $false
+    }
+
+    # Check if scoop is installed
+    if (!(Get-Command scoop -ErrorAction SilentlyContinue)) {
+        throw [System.Management.Automation.CommandNotFoundException]::new(
+            "Scoop is not installed. Please install scoop first."
+        )
+    }
+
+    # Attempt to install via scoop
+    $result = scoop install $ScoopName
+
+    if ($LASTEXITCODE -eq 0) {
+        Write-Verbose "Successfully installed '$ScoopName' via scoop."
+        return $true
+    } else {
+        throw [System.Management.Automation.RuntimeException]::new(
+            "Failed to install '$ScoopName' via scoop. Error: $result"
+        )
+    }
+}
+
 function Get-UrlBaseName {
     param(
         [Parameter(Mandatory=$true)]
