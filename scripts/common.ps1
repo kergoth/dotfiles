@@ -1,3 +1,5 @@
+Add-Type -AssemblyName System.Web
+
 if ($IsWindows) {
   Import-Module -Name BitsTransfer
 }
@@ -151,7 +153,7 @@ function Install-WinGetPackageIfNotInstalled {
   )
 
   # Check if the package is already installed
-  # Get-WinGetPackage with -Id or -Name is unreliable, so we use Where-Object instead.    
+  # Get-WinGetPackage with -Id or -Name is unreliable, so we use Where-Object instead.
   if ($Id) {
     $packages = Get-WinGetPackage | Where-Object Id -EQ $Id
   } elseif ($Name) {
@@ -170,6 +172,50 @@ function Install-WinGetPackageIfNotInstalled {
 
   Write-Output "Installing package $Name"
   # Install-WinGetPackage -Mode $Mode @arguments -Verbose Continue -ErrorAction Stop
+}
+
+function Get-UrlBaseName {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Url,
+        [switch]$KeepExtension = $true,
+        [switch]$DecodeUrl = $true
+    )
+
+    try {
+        # Check if URL is valid
+        if (-not [System.Uri]::IsWellFormedUriString($Url, [System.UriKind]::Absolute)) {
+            throw "Invalid URL format"
+        }
+
+        # Create URI object
+        $uri = [System.Uri]::new($Url)
+
+        # Get the path and decode if requested
+        $path = $uri.AbsolutePath
+        if ($DecodeUrl) {
+            $path = [System.Web.HttpUtility]::UrlDecode($path)
+        }
+
+        # Get filename with or without extension
+        if ($KeepExtension) {
+            $fileName = [System.IO.Path]::GetFileName($path)
+        }
+        else {
+            $fileName = [System.IO.Path]::GetFileNameWithoutExtension($path)
+        }
+
+        # Return empty string if no filename found
+        if ([string]::IsNullOrEmpty($fileName)) {
+            return ""
+        }
+
+        return $fileName
+    }
+    catch {
+        Write-Error "Error processing URL: $_"
+        return $null
+    }
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
