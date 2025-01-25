@@ -325,6 +325,10 @@ The intention is to incorporate the installation of Nix on all systems in time.
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
   - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 
+#### GUI Software on Windows
+
+- [SumatraPDF](https://www.sumatrapdfreader.org): A free PDF, eBook, XPS, DjVu, CHM, Comic Book reader for Windows.
+
 #### GUI Software on macOS (Pre-Sonoma Only)
 
 - [Aerial](https://aerialscreensaver.github.io) ([Open-Source](https://github.com/JohnCoates/Aerial)): A macOS screensaver that lets you play videos from Apple's tvOS screensaver.
