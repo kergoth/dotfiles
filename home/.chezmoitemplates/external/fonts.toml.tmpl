@@ -1,0 +1,21 @@
+# Fonts
+{{ if not .headless }}
+{{-   $fontDir := "" }}
+{{-   if eq .chezmoi.os "darwin" }}
+{{-     $fontDir = "Library/Fonts" }}
+{{-   else if eq .chezmoi.os "linux" }}
+{{-     $fontDir = ".local/share/fonts" }}
+{{-   else if eq .chezmoi.os "freebsd" }}
+{{-     $fontDir = ".fonts" }}
+{{-   else if eq .chezmoi.os "windows" }}
+{{-     $fontDir = "AppData/Local/Microsoft/Windows/Fonts" }}
+{{-   end }}
+{{-   if $fontDir }}
+{{-     range .fonts }}
+["{{ $fontDir }}/{{ base . | replace "%20" " " }}"]
+    type = "file"
+    url = "{{ . }}"
+    refreshPeriod = "168h"
+{{-     end }}
+{{-   end }}
+{{- end }}

@@ -1,102 +1,20 @@
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
 {{ $pull_args := dig "external" "pull" "args" (list) . -}}
-{{- $binarch := .chezmoi.arch -}}
-{{- if eq .chezmoi.arch "amd64" -}}
-{{-   $binarch = "x86_64" -}}
-{{- end -}}
 {{- $binpath := ".local/bin" -}}
-{{- $binsuffix := "" -}}
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $binpath = "AppData/Local/Programs/bin" -}}
-{{-   $binsuffix = ".exe" -}}
 {{- end -}}
+{{- $externaldata := dict
+    "clone_args" $clone_args
+    "pull_args" $pull_args
+    "binpath" $binpath -}}
+{{- $data := merge $externaldata . -}}
 
-[".config/zsh/plugins/autosuggestions"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/completions"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/history-substring-search"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-history-substring-search/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/syntax-highlighting"]
-type = "archive"
-url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/themes/powerlevel10k"]
-type = "archive"
-url = "https://github.com/romkatv/powerlevel10k/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/bd"]
-type = "archive"
-url = "https://github.com/Tarrasch/zsh-bd/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/fzf-tab"]
-type = "archive"
-url = "https://github.com/Aloxaf/fzf-tab/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-{{- if .wsl2 }}
-[".config/zsh/plugins/windows-terminal-zsh-integration"]
-type = "archive"
-url = "https://github.com/romkatv/windows-terminal-zsh-integration/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-{{- end }}
-
-[".config/zsh/functions/manydots-magic"]
-type = "file"
-url = "https://raw.githubusercontent.com/knu/zsh-manydots-magic/master/manydots-magic"
-refreshPeriod = "168h"
-
-[".config/zsh/functions/git-escape-magic"]
-type = "file"
-url = "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/master/git-escape-magic"
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/nix-zsh-completions"]
-type = "archive"
-url = "https://github.com/nix-community/nix-zsh-completions/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/zbell/zbell.plugin.sh"]
-type = "file"
-url = "https://gist.githubusercontent.com/jpouellet/5278239/raw/e0b06247f3ecd6ca3de341c54ba8d85de7ef6566/zbell.sh"
-refreshPeriod = "168h"
-
-[".config/zsh/plugins/nix-shell"]
-type = "archive"
-url = "https://github.com/chisui/zsh-nix-shell/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
+{{- includeTemplate "external/zsh.toml.tmpl" $data -}}
+{{- includeTemplate "external/vim.toml.tmpl" $data -}}
+{{- includeTemplate "external/cli-apps.toml.tmpl" $data -}}
+{{- includeTemplate "external/scripts.toml.tmpl" $data -}}
+{{- includeTemplate "external/fonts.toml.tmpl" $data -}}
 
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Roaming/bat/syntaxes/BitBake.sublime-syntax"]
@@ -110,44 +28,6 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".config/vim"]
-    type = "git-repo"
-    url = "https://github.com/kergoth/dotvim"
-    refreshPeriod = "168h"
-    [".config/vim".clone]
-        args = {{ $clone_args | toToml }}
-    [".config/vim".pull]
-        args = {{ $pull_args | toToml }}
-
-{{ if eq .chezmoi.os "windows" }}
-["_vimrc"]
-{{ else }}
-[".vimrc"]
-{{ end }}
-type = "archive-file"
-url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
-path = "vimrc.redir"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-{{ if eq .chezmoi.os "windows" }}
-["AppData/Local/nvim/init.vim"]
-{{ else }}
-[".config/nvim/init.vim"]
-{{ end }}
-type = "archive-file"
-url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
-path = "vimrc.redir"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/share/zsh/completions/_cht"]
-type = "file"
-url = "https://raw.githubusercontent.com/chubin/cheat.sh/refs/heads/master/share/zsh.txt"
-refreshPeriod = "168h"
-
 [".config/zed/themes/dracula.json"]
 type = "archive-file"
 url = "https://github.com/dracula/zed/archive/master.tar.gz"
@@ -156,7 +36,7 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .chezmoi.os "darwin" -}}
 ["Library/Application Support/BBEdit/Color Schemes/Dracula.bbColorScheme"]
 type = "archive-file"
 url = "https://github.com/dracula/bbedit/archive/master.tar.gz"
@@ -164,223 +44,4 @@ path = "Dracula.bbColorScheme"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"
-{{ end }}
-
-["bin"]
-    type = "git-repo"
-    url = "https://github.com/kergoth/scripts"
-    refreshPeriod = "168h"
-    [bin.clone]
-    args = {{ $clone_args | toToml }}
-    [bin.pull]
-    args = {{ $pull_args | toToml }}
-
-{{/* Install distrobox on Linux systems */}}
-{{ if eq .chezmoi.os "linux" }}
-{{-  $distrobox_version := (gitHubLatestRelease "89luca89/distrobox").TagName | trimPrefix "v" }}
-{{   range list "distrobox" "distrobox-assemble" "distrobox-create" "distrobox-enter" "distrobox-ephemeral" "distrobox-export" "distrobox-generate-entry" "distrobox-host-exec" "distrobox-init" "distrobox-list" "distrobox-rm" "distrobox-stop" "distrobox-upgrade" -}}
-["{{ $binpath }}/{{ . }}"]
-  type = "file"
-  url = "https://github.com/89luca89/distrobox/archive/refs/tags/{{- $distrobox_version -}}.tar.gz"
-  refreshPeriod = "168h"
-  filter.command = "tar"
-  filter.args = ["-zxO", "distrobox-{{- $distrobox_version -}}/{{ . }}"]
-  executable = true
-{{   end -}}
-{{ end }}
-
-{{/* Install uv/uvx */}}
-{{- $uv_suffix := "" }}
-{{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" }}
-{{ if eq .chezmoi.os "linux" }}
-{{   $uv_suffix = "unknown-linux-musl.tar.gz" }}
-{{ else if eq .chezmoi.os "darwin" }}
-{{   $uv_suffix = "apple-darwin.tar.gz" }}
-{{ else if eq .chezmoi.os "windows" }}
-{{   $uv_suffix = "pc-windows-msvc.zip" }}
-{{ end }}
-{{ if ne $uv_suffix "" }}
-{{   range list "uv" "uvx" -}}
-["{{ $binpath }}/{{ . }}{{ $binsuffix }}"]
-  type = "archive-file"
-  url = "https://github.com/astral-sh/uv/releases/download/{{- $uv_version -}}/uv-{{- $binarch -}}-{{- $uv_suffix -}}"
-  path = "{{ . }}{{ $binsuffix }}"
-  stripComponents = 1
-  executable = true
-  refreshPeriod = "168h"
-{{   end -}}
-{{ end }}
-
-{{ $choose_version := (gitHubLatestRelease "theryangeary/choose").TagName | trimPrefix "v" }}
-{{ $choose_suffix := "" }}
-{{ if eq .chezmoi.os "windows" }}
-{{   $choose_suffix = "pc-windows-gnu" }}
-{{ else if eq .chezmoi.os "linux" }}
-{{   $choose_suffix = "unknown-linux-musl" }}
-{{ end }}
-{{ if ne $choose_suffix "" }}
-["{{ $binpath }}/choose{{ $binsuffix }}"]
-type = "file"
-url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
-executable = true
-refreshPeriod = "168h"
-{{ end }}
-
-{{ if eq .chezmoi.os "windows" }}
-["AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/archlinux-icon-crystal.svg"]
-type = "archive-file"
-url = "https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz"
-path = "icons/archlinux-icon-crystal-32.svg"
-refreshPeriod = "168h"
-stripComponents = 1
-{{ else }}
-{{- $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
-{{- $splitver := $bat_extras_version | splitList "." }}
-{{ range list "batdiff" "batgrep" "batman" "bat-modules" "batpipe" "batwatch" -}}
-[".local/bin/{{ . }}"]
-type = "archive-file"
-url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
-path = "{{ . }}"
-refreshPeriod = "168h"
-stripComponents = 1
-executable = true
-{{ end }}
-
-[".local/bin/repo"]
-type = "file"
-url = "https://storage.googleapis.com/git-repo-downloads/repo"
-executable = true
-refreshPeriod = "168h"
-
-[".local/bin/git-j"]
-type = "archive-file"
-url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
-path = "bin/git-j"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/git-rebase-chain"]
-type = "archive-file"
-url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
-path = "bin/git-rebase-chain"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/git-alias"]
-type = "archive-file"
-url = "https://github.com/tj/git-extras/archive/master.tar.gz"
-path = "bin/git-alias"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/linux-bundle-clone"]
-type = "file"
-url = "https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/plain/linux-bundle-clone"
-executable = true
-refreshPeriod = "168h"
-
-[".local/bin/vipe"]
-type = "archive-file"
-url = "https://github.com/madx/moreutils/archive/master.tar.gz"
-path = "vipe"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/wsl-open"]
-type = "file"
-url = "https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh"
-executable = true
-refreshPeriod = "168h"
-
-[".local/bin/fasd"]
-type = "archive-file"
-url = "https://github.com/clvv/fasd/archive/master.tar.gz"
-path = "fasd"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/zsh_sort_timings"]
-type = "file"
-url = "https://gist.githubusercontent.com/bdesham/2d7ef99f93b226be29e01cadcad37405/raw/353e5178686df9e3aea6e0802d4a217420938c28/sort_timings.zsh"
-executable = true
-
-[".local/bin/vim-profiler"]
-type = "archive-file"
-url = "https://github.com/bchretien/vim-profiler/archive/master.tar.gz"
-path = "vim-profiler.py"
-executable = true
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/tmux-resize-adaptable"]
-type = "archive-file"
-url = "https://github.com/tony/tmux-config/archive/master.tar.gz"
-path = "scripts/resize-adaptable.sh"
-executable = true
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/ifne"]
-type = "archive-file"
-url = "https://github.com/fumiyas/home-commands/archive/master.tar.gz"
-path = "ifne"
-executable = true
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/git-assembler"]
-type = "archive-file"
-url = "https://gitlab.com/wavexx/git-assembler/-/archive/master/git-assembler-master.tar.gz"
-path = "git-assembler"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".local/bin/git-attic"]
-type = "file"
-url = "http://chneukirchen.org/dotfiles/bin/git-attic"
-executable = true
-refreshPeriod = "168h"
-
-[".local/bin/cht"]
-type = "file"
-url = "https://raw.githubusercontent.com/chubin/cheat.sh/refs/heads/master/share/cht.sh.txt"
-executable = true
-refreshPeriod = "168h"
-{{- end }}
-
-["{{ $binpath }}/rusage.com"]
-type = "file"
-url = "https://justine.lol/rusage/rusage.com"
-executable = true
-refreshPeriod = "168h"
-
-# Fonts
-{{- if not .headless }}
-{{-   $fontDir := "" }}
-{{-   if eq .chezmoi.os "darwin" }}
-{{-     $fontDir = "Library/Fonts" }}
-{{-   else if eq .chezmoi.os "linux" }}
-{{-     $fontDir = ".local/share/fonts" }}
-{{-   else if eq .chezmoi.os "freebsd" }}
-{{-     $fontDir = ".fonts" }}
-{{-   else if eq .chezmoi.os "windows" }}
-{{-     $fontDir = "AppData/Local/Microsoft/Windows/Fonts" }}
-{{-   end }}
-{{-   if $fontDir }}
-{{-     range .fonts }}
-["{{ $fontDir }}/{{ base . | replace "%20" " " }}"]
-    type = "file"
-    url = "{{ . }}"
-    refreshPeriod = "168h"
-{{-     end }}
-{{-   end }}
 {{- end }}

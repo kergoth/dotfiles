@@ -1,0 +1,43 @@
+[".config/vim"]
+    type = "git-repo"
+    url = "https://github.com/kergoth/dotvim"
+    refreshPeriod = "168h"
+    [".config/vim".clone]
+        args = {{ .clone_args | toToml }}
+    [".config/vim".pull]
+        args = {{ .pull_args | toToml }}
+
+{{ if eq .chezmoi.os "windows" }}
+["_vimrc"]
+{{ else }}
+[".vimrc"]
+{{ end }}
+type = "archive-file"
+url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
+path = "vimrc.redir"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "windows" }}
+["AppData/Local/nvim/init.vim"]
+{{ else }}
+[".config/nvim/init.vim"]
+{{ end }}
+type = "archive-file"
+url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
+path = "vimrc.redir"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+{{ if ne .chezmoi.os "windows" -}}
+["{{ .binpath }}/vim-profiler"]
+type = "archive-file"
+url = "https://github.com/bchretien/vim-profiler/archive/master.tar.gz"
+path = "vim-profiler.py"
+executable = true
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+{{- end }}

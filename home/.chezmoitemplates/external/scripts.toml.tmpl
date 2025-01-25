@@ -1,0 +1,116 @@
+["bin"]
+    type = "git-repo"
+    url = "https://github.com/kergoth/scripts"
+    refreshPeriod = "168h"
+    [bin.clone]
+    args = {{ .clone_args | toToml }}
+    [bin.pull]
+    args = {{ .pull_args | toToml }}
+
+{{ $bat_extras_version := (gitHubLatestRelease "eth-p/bat-extras").TagName | trimPrefix "v" }}
+{{ $splitver := $bat_extras_version | splitList "." }}
+{{ range list "batdiff" "batgrep" "batman" "bat-modules" "batpipe" "batwatch" -}}
+[".local/bin/{{ . }}"]
+type = "archive-file"
+url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
+path = "{{ . }}"
+refreshPeriod = "168h"
+stripComponents = 1
+executable = true
+{{ end }}
+
+[".local/bin/repo"]
+type = "file"
+url = "https://storage.googleapis.com/git-repo-downloads/repo"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/git-j"]
+type = "archive-file"
+url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
+path = "bin/git-j"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-rebase-chain"]
+type = "archive-file"
+url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
+path = "bin/git-rebase-chain"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-alias"]
+type = "archive-file"
+url = "https://github.com/tj/git-extras/archive/master.tar.gz"
+path = "bin/git-alias"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/linux-bundle-clone"]
+type = "file"
+url = "https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/plain/linux-bundle-clone"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/vipe"]
+type = "archive-file"
+url = "https://github.com/madx/moreutils/archive/master.tar.gz"
+path = "vipe"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/wsl-open"]
+type = "file"
+url = "https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/fasd"]
+type = "archive-file"
+url = "https://github.com/clvv/fasd/archive/master.tar.gz"
+path = "fasd"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/tmux-resize-adaptable"]
+type = "archive-file"
+url = "https://github.com/tony/tmux-config/archive/master.tar.gz"
+path = "scripts/resize-adaptable.sh"
+executable = true
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/ifne"]
+type = "archive-file"
+url = "https://github.com/fumiyas/home-commands/archive/master.tar.gz"
+path = "ifne"
+executable = true
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-assembler"]
+type = "archive-file"
+url = "https://gitlab.com/wavexx/git-assembler/-/archive/master/git-assembler-master.tar.gz"
+path = "git-assembler"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".local/bin/git-attic"]
+type = "file"
+url = "http://chneukirchen.org/dotfiles/bin/git-attic"
+executable = true
+refreshPeriod = "168h"
+
+[".local/bin/cht"]
+type = "file"
+url = "https://raw.githubusercontent.com/chubin/cheat.sh/refs/heads/master/share/cht.sh.txt"
+executable = true
+refreshPeriod = "168h"

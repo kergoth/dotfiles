@@ -1,0 +1,68 @@
+{{ $binpath := .binpath -}}
+{{- $binarch := .chezmoi.arch -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $binarch = "x86_64" -}}
+{{- end -}}
+{{- $binsuffix := "" -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $binsuffix = ".exe" -}}
+{{- end -}}
+
+{{/* Install distrobox on Linux systems */}}
+{{ if eq .chezmoi.os "linux" }}
+{{-  $distrobox_version := (gitHubLatestRelease "89luca89/distrobox").TagName | trimPrefix "v" }}
+{{   range list "distrobox" "distrobox-assemble" "distrobox-create" "distrobox-enter" "distrobox-ephemeral" "distrobox-export" "distrobox-generate-entry" "distrobox-host-exec" "distrobox-init" "distrobox-list" "distrobox-rm" "distrobox-stop" "distrobox-upgrade" -}}
+["{{ $binpath }}/{{ . }}"]
+  type = "archive-file"
+  url = "https://github.com/89luca89/distrobox/archive/refs/tags/{{- $distrobox_version -}}.tar.gz"
+  stripComponents = 1
+  path = "{{ . }}"
+  executable = true
+  refreshPeriod = "168h"
+{{   end -}}
+{{ end }}
+
+{{/* Install uv/uvx */}}
+{{- $uv_suffix := "" }}
+{{- $uv_version := (gitHubLatestRelease "astral-sh/uv").TagName | trimPrefix "v" }}
+{{ if eq .chezmoi.os "linux" }}
+{{   $uv_suffix = "unknown-linux-musl.tar.gz" }}
+{{ else if eq .chezmoi.os "darwin" }}
+{{   $uv_suffix = "apple-darwin.tar.gz" }}
+{{ else if eq .chezmoi.os "windows" }}
+{{   $uv_suffix = "pc-windows-msvc.zip" }}
+{{ end }}
+{{ if ne $uv_suffix "" }}
+{{   range list "uv" "uvx" -}}
+["{{ $binpath }}/{{ . }}{{ $binsuffix }}"]
+  type = "archive-file"
+  url = "https://github.com/astral-sh/uv/releases/download/{{- $uv_version -}}/uv-{{- $binarch -}}-{{- $uv_suffix -}}"
+  path = "{{ . }}{{ $binsuffix }}"
+  stripComponents = 1
+  executable = true
+  refreshPeriod = "168h"
+{{   end -}}
+{{ end }}
+
+{{/* Install choose */}}
+{{ $choose_version := (gitHubLatestRelease "theryangeary/choose").TagName | trimPrefix "v" }}
+{{ $choose_suffix := "" }}
+{{ if eq .chezmoi.os "windows" }}
+{{   $choose_suffix = "pc-windows-gnu" }}
+{{ else if eq .chezmoi.os "linux" }}
+{{   $choose_suffix = "unknown-linux-musl" }}
+{{ end }}
+{{ if ne $choose_suffix "" }}
+["{{ $binpath }}/choose{{ $binsuffix }}"]
+type = "file"
+url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
+executable = true
+refreshPeriod = "168h"
+{{ end }}
+
+{{/* Install rusage */}}
+["{{ $binpath }}/rusage.com"]
+type = "file"
+url = "https://justine.lol/rusage/rusage.com"
+executable = true
+refreshPeriod = "168h"
