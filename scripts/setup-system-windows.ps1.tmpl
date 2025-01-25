@@ -9,9 +9,6 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 . $env:DOTFILES_DIR\scripts\common.ps1
 
-$ProgressPreference = 'SilentlyContinue' # Suppress progress bar (speed up downloading, especially on PowerShell 5)
-$ConfirmPreference = 'None' # Suppress confirmation prompts
-
 # Enable WSL, WSL 2, Sandbox
 if (-not (Test-InWindowsSandbox)) {
   # Enable WSL

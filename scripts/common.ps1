@@ -1,3 +1,6 @@
+$ProgressPreference = 'SilentlyContinue' # Suppress progress bar (speed up downloading, especially on PowerShell 5)
+$ConfirmPreference = 'None' # Suppress confirmation prompts
+
 Add-Type -AssemblyName System.Web
 
 if ($IsWindows) {
