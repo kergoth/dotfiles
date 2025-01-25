@@ -101,8 +101,11 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id Vivaldi.Vivaldi | Out-Null
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id VideoLAN.VLC | Out-Null
 {{- end }}
 
-# WiFi Analyzer
-Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0N
+# Microsoft Store applications are not available in Windows Sandbox
+if (-not (Test-InWindowsSandbox)) {
+    # WiFi Analyzer
+    Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0N
+}
 
 # GUI Apps for work
 {{ if .work -}}
