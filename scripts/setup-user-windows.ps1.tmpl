@@ -40,8 +40,8 @@ if (-not (Test-Path "$env:SCOOP/buckets/kergoth")) {
 # Install git-lfs
 scoop install git-lfs
 
-# Install languages
-scoop install go python
+# Install python
+scoop install python
 reg import $env:SCOOP\apps\python\current\install-pep-514.reg
 
 # Windows-specific

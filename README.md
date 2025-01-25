@@ -191,7 +191,6 @@ chezmoi update -R
 - [neovim](https://neovim.io): Hyperextensible Vim-based text editor.
 - [gnupg](https://www.gnupg.org): A complete and free implementation of the OpenPGP standard.
 
-- [go](https://go.dev): An open source programming language supported by Google
 - [python](https://www.python.org): A programming language that lets you work quickly and integrate systems more effectively.
 - [uv](https://github.com/astral-sh/uv): An extremely fast Python package installer and resolver, written in Rust.
 
@@ -257,6 +256,10 @@ chezmoi update -R
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
 
 #### CLI Software on FreeBSD
+
+- [go](https://go.dev): An open source programming language supported by Google
+
+  - Installed so we can `go install` various tools.
 
 - [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
 
@@ -434,6 +437,7 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [ffmpeg](https://ffmpeg.org): A complete, cross-platform solution to record, convert and stream audio and video. Available via brew, nix, and scoop.
 - [flint](https://github.com/pengwynn/flint): Check your project for common sources of contributor friction. Available via brew as `flint-checker` and go.
 - [git-filter-repo](https://github.com/newren/git-filter-repo): Quickly rewrite git repository history (filter-branch replacement).
+- [go](https://go.dev): An open source programming language supported by Google
 - [hexyl](https://github.com/sharkdp/hexyl): A simple hex viewer for the terminal. Available via brew, nix, and cargo.
 - [htop](https://htop.dev): An interactive process viewer. Available via brew and nix.
 - [httpie](https://github.com/httpie/httpie): A command-line HTTP client. Available via brew, nix, and python.
