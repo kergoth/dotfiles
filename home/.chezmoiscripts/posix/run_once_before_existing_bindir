@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! [ -e ~/bin/.git ]; then
+    if ! [ -d ~/bin ]; then
+        git clone --depth 1 https://github.com/kergoth/scripts ~/bin
+    else
+        (
+            cd ~/bin || exit 1
+            git init
+            git remote add origin https://github.com/kergoth/scripts
+            git fetch --depth=1 origin main
+            git checkout --force -b main origin/main
+        ) || { rm -rf ~/bin/.git; exit 1; }
+    fi
+fi
