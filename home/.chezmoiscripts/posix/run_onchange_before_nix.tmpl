@@ -1,0 +1,32 @@
+{{- if and .user_setup ( lookPath "nix" ) -}}
+#!/usr/bin/env bash
+# Apply home manager configuration
+#
+# Re-run when home-manager configuration changes:
+#   home.nix hash: {{ includeTemplate "dot_config/home-manager/home.nix.tmpl" . | sha256sum }}
+#   flake.nix hash: {{ includeTemplate "dot_config/home-manager/flake.nix.tmpl" . | sha256sum }}
+#   flake.lock hash: {{ include "dot_config/home-manager/flake.lock" | sha256sum }}
+# Re-run after installing nix:
+#   nix binary path: {{ lookPath "nix" }}
+
+set -euo pipefail
+
+for file in home.nix.tmpl flake.nix.tmpl flake.lock; do
+    src="$CHEZMOI_SOURCE_DIR/dot_config/home-manager/$file"
+    dest="$CHEZMOI_HOME_DIR/.config/home-manager/$file"
+    if ! [ -e "$dest" ] || [ "$src" -nt "$dest" ]; then
+        echo >&2 "Updating $dest"
+        case "$file" in
+        *.tmpl)
+            chezmoi execute-template <"$src" >"$dest"
+            ;;
+        *)
+            cp -af "$src" "$dest"
+            ;;
+        esac
+    fi
+done
+
+echo >&2 "Applying home manager configuration"
+HOME="${CHEZMOI_HOME_DIR:-$HOME}" nix run 'home-manager/master' -- switch
+{{- end -}}
