@@ -7,6 +7,23 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+{{- if eq .hostname "vaelin" }}
+  "ssh_connections": [
+    {
+      "host": "kergothsdeck",
+      "args": [
+        "-A"
+      ],
+      "projects": [
+        {
+          "paths": [
+            "~/.dotfiles"
+          ]
+        }
+      ]
+    }
+  ],
+{{- end }}
   "assistant": {
     "default_model": {
       "provider": "copilot_chat",
@@ -22,7 +39,7 @@
     "calt": true
   },
   // Use a substantially smaller buffer/terminal font size.
-  "buffer_font_size": 12,
+  "buffer_font_size": 12.0,
   // Auto save after a 1 second delay.
   "autosave": {
     "after_delay": {
@@ -147,7 +164,7 @@
         }
     },
 {{  end }}
-    "font_size": 12,
+    "font_size": 12.0,
     "env": {
       // Use Zed as the default editor for terminal commands.
 {{  if eq .chezmoi.os "windows" }}
