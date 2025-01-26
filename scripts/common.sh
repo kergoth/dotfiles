@@ -5,7 +5,7 @@ XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$HOME/.brew}
 export HOMEBREW_PREFIX
-PATH="$HOMEBREW_PREFIX/bin:$XDG_DATA_HOME/../bin:$PATH"
+PATH="$HOMEBREW_PREFIX/bin:$XDG_DATA_HOME/../bin:$HOME/.nix-profile/bin:$PATH"
 
 has() {
     command -v "$@" >/dev/null 2>&1
