@@ -1,4 +1,5 @@
 #!/usr/bin/env chezmoi-exec
+{{ if not .steamdeck -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
@@ -9,6 +10,5 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-{{ if not .steamdeck -}}
 install_nix
 {{- end }}
