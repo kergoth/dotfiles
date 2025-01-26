@@ -235,10 +235,6 @@ chezmoi update -R
 
   - On Windows, atuin can be used via WSL. [PowerShell support](https://github.com/atuinsh/atuin/issues/84) is available in a [pending pull request](https://github.com/atuinsh/atuin/pull/2543).
 
-- [cht.sh](https://github.com/chubin/cheat.sh#command-line-client-chtsh): Command-line client for [cheat.sh](https://cheat.sh), the only cheat sheet you need.
-
-  - On Windows, cht.exe is installed via scoop instead.
-
 - [patchutils](http://cyberelk.net/tim/software/patchutils/): A small collection of programs that operate on patch files.
 
   - On Windows, patchutils can be used via either WSL or MSYS2 (which can be installed via scoop and run as `msys2`, ex. `msys2 -c 'exec filterdiff "$@"' -`).
@@ -292,7 +288,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
 
 #### CLI Software on Windows
 
-- [cht.exe](https://github.com/tpanj/cht.exe): cht.sh libcurl client for Windows.
 - [gow](https://github.com/bmatzelle/gow): Unix command line utilities installer for Windows.
 - [gsudo](https://github.com/gerardog/gsudo): Sudo for Windows.
 - [npiperelay](https://github.com/jstarks/npiperelay): Access Windows named pipes from WSL.
