@@ -1,5 +1,5 @@
 #!/usr/bin/env chezmoi-exec
-{{- if ne .chezmoi.osRelease.id "steamos" -}}
+{{- if not .steamdeck -}}
 #!/usr/bin/env bash
 
 set -euo pipefail
