@@ -24,7 +24,7 @@ if has pwsh; then
 fi || ret=$?
 
 # Install dtrx, if unar is missing
-if ! command -v unar &>/dev/null; then
+if ! has unar && ! has dtrx; then
     msg "Installing dtrx"
     uv tool install dtrx
 fi || ret=$?
