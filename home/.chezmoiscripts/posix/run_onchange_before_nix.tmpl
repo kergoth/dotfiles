@@ -15,6 +15,7 @@ for file in home.nix.tmpl flake.nix.tmpl flake.lock; do
     src="$CHEZMOI_SOURCE_DIR/dot_config/home-manager/$file"
     dest="$CHEZMOI_HOME_DIR/.config/home-manager/$file"
     if ! [ -e "$dest" ] || [ "$src" -nt "$dest" ]; then
+        mkdir -p "$(dirname "$dest")"
         case "$file" in
         *.tmpl)
             chezmoi execute-template <"$src" >"$dest" || {
