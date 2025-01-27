@@ -75,7 +75,9 @@ if [ -n "$(echo "$gos" | sed -e 's/^ *//; s/ *$//')" ]; then
 fi
 
 # Dotfiles
-"$repodir/script/setup"
+if [ -z "${CHEZMOI:-}" ]; then
+    "$repodir/script/setup"
+fi
 
 # User shell
 if [ -e /usr/local/bin/zsh ]; then

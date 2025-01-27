@@ -13,7 +13,9 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 ret=0
 
 # Dotfiles
-"$repodir/script/setup" || ret=$?
+if [ -z "${CHEZMOI:-}" ]; then
+    "$repodir/script/setup" || ret=$?
+fi
 
 # Install PowerShell modules, if needed
 if has pwsh; then

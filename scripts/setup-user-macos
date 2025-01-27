@@ -28,7 +28,9 @@ if [ "$(sw_vers -productVersion | cut -d. -f1)" -lt 14 ]; then
 fi
 
 # Dotfiles
-"$repodir/script/setup"
+if [ -z "${CHEZMOI:-}" ]; then
+    "$repodir/script/setup"
+fi
 
 # Install PowerShell modules and prompt, if needed
 if has pwsh; then

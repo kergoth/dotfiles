@@ -198,7 +198,9 @@ if ($SnipDo) {
 }
 
 # Apply my dotfiles
-& "$env:DOTFILES_DIR\script\setup.ps1"
+if (-not $env:CHEZMOI) {
+  & "$env:DOTFILES_DIR\script\setup.ps1"
+}
 
 # Register fonts
 & "$env:DOTFILES_DIR\scripts\windows\register-fonts.ps1"
