@@ -1,5 +1,3 @@
-# local oldtime=$REPORTTIME
-# unset REPORTTIME
 # if [[ -z $DOTFILES_NO_UPDATE ]]; then
 #     DOTFILES_STAMP=$XDG_CACHE_HOME/zsh/dotfiles-updated
 #     if [[ -e "$DOTFILESDIR/.git" ]] && [[ -n $DOTFILES_STAMP(#qN.mh+14) ]] || [[ ! -f $DOTFILES_STAMP ]]; then
@@ -15,9 +13,4 @@
 #             "$DOTFILESDIR"/vim/script/bootstrap && touch "$VIM_STAMP"
 #         fi
 #     fi
-# fi
-# if [[ -n "$oldtime" ]]; then
-#     REPORTTIME="$oldtime"
-# else
-#     unset REPORTTIME
 # fi

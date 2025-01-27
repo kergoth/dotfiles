@@ -7,9 +7,6 @@ HISTFILE=$XDG_STATE_HOME/zsh/history
 HISTSIZE=10000
 SAVEHIST=10000
 
-# Show running time for commands which take longer than 10 seconds
-REPORTTIME=5
-
 # Reduce mode change delay
 KEYTIMEOUT=1
 
