@@ -3,6 +3,19 @@ function RefreshEnvPath {
      + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
+function Set-UserOnlyFileAccess {
+  param(
+    [Parameter(Mandatory)] [string]$Pathname
+  )
+  # This does not use Get-Acl/Set-Acl, as Set-Acl requires the user to have
+  # SeSecurityPrivilege, which should not be necessary for this operation.
+  icacls $Pathname /grant ${env:USERNAME}:rw | Out-Null
+  # Disable inheritance from folders
+  icacls $Pathname /inheritance:d | Out-Null
+  # Remove default groups (Authenticated Users, System, Administrators, Users)
+  icacls $Pathname /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545 | Out-Null
+}
+
 if ($IsWindows) {
   # Use RemoteSigned execution policy for PowerShell. Needed for scoop, etc.
   Set-ExecutionPolicy RemoteSigned -Scope Process -Force
