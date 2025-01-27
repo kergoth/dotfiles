@@ -11,12 +11,21 @@ NoHostAuthenticationForLocalhost yes
 ControlMaster auto
 ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
+{{ end }}
+{{- if eq .chezmoi.os "darwin" }}
+{{-   if glob ".config/colima/ssh_config" }}
+Include ~/.config/colima/ssh_config
+{{-   end }}
+{{-   $lima_configs := glob ".lima/*/ssh.config" }}
+{{-   range $lima_config := $lima_configs }}
+Include ~/{{ $lima_config }}
+{{-   end }}
 {{- end }}
 {{ if .secrets }}
-{{   if .personal }}
+{{-   if .personal }}
 {{     onepasswordRead "op://Personal/rdff7d7s57f52i4ih43v4zzvyy/cosca" -}}
-{{   end -}}
-{{   if .work }}
+{{-   end -}}
+{{-   if .work }}
 {{     onepasswordRead "op://zflix32uiuoqexrm5t3l3rauaq/x2gzwerkcdkzcfl5va3wceol3a/build" -}}
-{{   end }}
-{{ end -}}
+{{-   end }}
+{{- end -}}
