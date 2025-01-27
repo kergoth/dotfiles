@@ -1,5 +1,5 @@
 # Check if the directory exists and is not a git repository
-if (Test-Path -Path "$HOME\bin" -PathType Container -and -not (Test-Path -Path "$HOME\bin\.git")) {
+if ((Test-Path -Path "$HOME\bin" -PathType Container) -and -not (Test-Path -Path "$HOME\bin\.git")) {
     try {
         # Change to the directory
         Set-Location -Path "$HOME\bin"
