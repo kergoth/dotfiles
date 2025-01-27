@@ -59,7 +59,7 @@ chezmoi re-add flake.lock
     echo
     echo '  Home Manager input changes:'
     echo
-    cat "$tmpfile" | sed -e 's#^#    #'
+    cat "$tmpfile" | sed -e 's#^#    #; s/#\([0-9][0-9]*\)/\1/'
 } >"$sourcedir/.git/COMMIT_EDITMSG"
 
 home-manager-build | tee "$tmpfile"
@@ -73,8 +73,7 @@ if [ -s "$tmpfile" ]; then
         echo "  Home Manager packages changes:"
         echo
         cat "$tmpfile" \
-            | sed -e 's#^#    #' \
-                  -e 's/#\([0-9]*\)/#⁠\1/'
+            | sed -e 's#^#    #' -e 's/#\([0-9][0-9]*\)/- \1/'
     } >>"$sourcedir/.git/COMMIT_EDITMSG"
 fi
 
