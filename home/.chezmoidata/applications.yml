@@ -1,1 +1,196 @@
 applications:
+  atuin:
+    command: atuin
+    dotfiles:
+      - ~/.config/atuin
+    state:
+      - ~/.local/share/atuin
+  bat:
+    command: bat
+    dotfiles:
+      - ~/.config/bat
+      - ~/.config/zsh/.zshrc.d/bat.zsh
+      - ~/.local/bin/bat-*
+  bbedit:
+    command: bbedit
+    installed_paths:
+      - ~/Applications/BBEdit.app
+      - /Applications/BBEdit.app
+    dotfiles:
+      - "~/Library/Application Support/BBEdit"
+  chrome:
+    command: google-chrome
+    installed_paths:
+      - ~/Applications/Google Chrome.app
+      - /Applications/Google Chrome.app
+    dotfiles:
+      - ~/Library/Application Support/Google/Chrome
+      - ~/.var/app/com.google.Chrome
+  colima:
+    command: colima
+    dotfiles:
+      - ~/.config/colima
+  curl:
+    command: curl
+    dotfiles:
+      - ~/.config/curl
+      - ~/.curlrc
+  direnv:
+    command: direnv
+    dotfiles:
+      - ~/.config/direnv
+  fasd:
+    command: fasd
+    dotfiles:
+      - ~/.config/zsh/.zshrc.d/fasd.zsh
+  git:
+    command: git
+    dotfiles:
+      - ~/.gitconfig
+      - ~/.config/git
+      - "~/.local/bin/git-*"
+  gmailctl:
+    command: gmailctl
+    dotfiles:
+      - ~/.config/gmailctl
+  gnupg:
+    command: gpg
+    dotfiles:
+      - ~/.gnupg
+      - ~/.local/share/gnupg
+  go:
+    command: go
+    dotfiles:
+      - ~/.config/zsh/.zshrc.d/go.zsh
+  karabiner:
+    installed_paths:
+      - ~/Applications/Karabiner-Elements.app
+      - /Applications/Karabiner-Elements.app
+    dotfiles:
+      - ~/.config/karabiner
+  kitty:
+    command: kitty
+    installed_paths:
+      - ~/Applications/Kitty.app
+      - /Applications/Kitty.app
+    dotfiles:
+      - ~/.config/kitty
+  lftp:
+    command: lftp
+    dotfiles:
+      - ~/.config/lftp
+  librewolf:
+    command: librewolf
+    installed_paths:
+      - ~/Applications/Librewolf.app
+      - /Applications/Librewolf.app
+    dotfiles:
+      - ~/.librewolf
+  lima:
+    command: lima
+    dotfiles:
+      - ~/.lima
+  marta:
+    command: marta
+    installed_paths:
+      - ~/Applications/Marta.app
+      - /Applications/Marta.app
+    dotfiles:
+      - ~/Library/Application Support/org.yanex.marta
+  neovim:
+    command: nvim
+    dotfiles:
+      - ~/.config/nvim
+  nix:
+    command: nix
+    dotfiles:
+      - ~/.config/nix
+      - ~/.config/home-manager
+  openssh:
+    command: ssh
+    dotfiles:
+      - ~/.ssh
+  powershell:
+    commands:
+      - powershell
+      - pwsh
+    dotfiles:
+      - ~/.config/powershell
+      - ~/Documents/PowerShell
+  python:
+    command: python
+    dotfiles:
+      - ~/.pythonrc
+  rclone:
+    command: rclone
+    dotfiles:
+      - ~/.config/rclone
+  readline:
+    command: readline
+    dotfiles:
+      - ~/.config/readline
+  restic:
+    command: restic
+    dotfiles:
+      - ~/.config/restic
+  ripgrep:
+    command: rg
+    dotfiles:
+      - ~/.config/ripgrep
+  rsync:
+    command: rsync
+    dotfiles:
+      - ~/.config/rsync
+  sapling:
+    command: sapling
+    dotfiles:
+      - ~/.config/sapling
+      - ~/Library/Preferences/sapling
+  shellcheck:
+    command: shellcheck
+    dotfiles:
+      - ~/.config/shellcheckrc
+  starship:
+    command: starship
+    dotfiles:
+      - ~/.config/starship.toml
+  tealdeer:
+    command: tldr
+    dotfiles:
+      - ~/.config/tealdeer
+      - "~/Library/Application Support/tealdeer"
+  tmux:
+    command: tmux
+    dotfiles:
+      - ~/.config/tmux/config
+      - ~/.local/bin/tmux-resize-adaptable
+  vim:
+    command: vim
+    dotfiles:
+      - ~/.vimrc
+      - ~/.config/vim
+      - ~/.local/bin/vim-profiler
+      - ~/.local/bin/vipe
+  youtube-dl:
+    command: youtube-dl
+    dotfiles:
+      - ~/.config/youtube-dl
+  zed:
+    command: zed
+    installed_paths:
+      - ~/Applications/Zed.app
+      - /Applications/Zed.app
+      - "~/Applications/Zed Preview.app"
+      - "/Applications/Zed Preview.app"
+    dotfiles:
+      - ~/.config/zed
+  zsh:
+    command: zsh
+    dotfiles:
+      - ~/.zshenv
+      - ~/.config/zsh
+      - "~/.local/bin/zsh*"
+      - ~/.local/share/zsh
+      - ~/Library/Caches/zsh
+      - ~/.cache/zsh
+      - ~/.local/state/zsh
