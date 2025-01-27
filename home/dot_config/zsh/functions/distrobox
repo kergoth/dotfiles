@@ -1,0 +1,10 @@
+local termoverride=
+if [[ $TERM == xterm-kitty ]]; then
+    termoverride=TERM=xterm-256color
+fi
+
+if [[ $OSTYPE == darwin* ]] && (( $+commands[colima] )); then
+    env $termoverride colima ssh -- distrobox "$@"
+else
+    env $termoverride distrobox "$@"
+fi

@@ -172,9 +172,6 @@ alias htmldecode='python -c "import HTMLParser,sys; print(HTMLParser.HTMLParser(
 alias common_prefix='python -c "import os,sys; print(os.path.commonprefix(sys.argv[1:]))"'
 alias ddi=ddimage-sd
 alias pg=pager
-if (( $+commands[colima] )); then
-    alias distrobox="colima ssh -- distrobox"
-fi
 
 # bitbake
 if (( $+commands[rg] )); then
