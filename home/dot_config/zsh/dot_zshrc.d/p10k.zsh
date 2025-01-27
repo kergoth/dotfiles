@@ -1733,6 +1733,7 @@
         p10k segment -f blue -t "${POWERLEVEL9K_CONTAINER_ID_CONTENT:-$CONTAINER_ID}"
     fi
   }
+  typeset -g POWERLEVEL9K_CONTAINER_ID_FOREGROUND=3
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
