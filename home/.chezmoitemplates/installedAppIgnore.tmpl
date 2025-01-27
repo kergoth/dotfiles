@@ -1,0 +1,38 @@
+{{/* Ignore dotfiles for uninstalled apps, and all app state files. */}}
+{{/* Application data is stored in .chezmoidata/applications.yml */}}
+{{- range (dig "applications" (list) .) }}
+{{-   $appFound := false }}
+{{-   $command := dig "command" nil . }}
+{{/* Check if the command in .command exists in PATH */}}
+{{-   if and $command (lookPath $command) }}
+{{-     $appFound = true }}
+{{-   end }}
+{{/* Check if any of the commands in .commands exist in PATH */}}
+{{-   if not $appFound }}
+{{-     range $cmd := (dig "commands" (list) .) }}
+{{-       if lookPath $cmd }}
+{{-         $appFound = true }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{/* Check if any of the paths in .installed_paths exist on disk */}}
+{{-   if not $appFound }}
+{{-     range $path := (dig "installed_paths" (list) .) }}
+{{-       if glob $path }}
+{{-         $appFound = true }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{/* If the app wasn't found, ignore its dotfiles, otherwise do not */}}
+{{-   range $dotfile := (dig "dotfiles" (list) .) }}
+{{-     if not $appFound }}
+{{       $dotfile | trimPrefix "~/" }}
+{{-     else }}
+!{{      $dotfile | trimPrefix "~/" }}
+{{-     end }}
+{{-   end }}
+{{/* Ignore the application state files, as we don't manage those */}}
+{{-   range $statefile := (dig "state" (list) .) }}
+{{     $statefile | trimPrefix "~/" }}
+{{-   end }}
+{{- end }}

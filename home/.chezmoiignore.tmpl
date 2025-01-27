@@ -128,6 +128,9 @@ AppData/Roaming/gnupg/*
 .config/rsync/exclude.txt
 {{- end }}
 
+{{/* Ignore dotfiles for uninstalled apps, and all app state files. */}}
+{{- template "installedAppIgnore.tmpl" . -}}
+
 # I don't track files for this with chezmoi
 .code-terminal
 .vscode
