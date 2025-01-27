@@ -1730,7 +1730,7 @@
 
   function prompt_container_id () {
     if [[ -n $CONTAINER_ID ]]; then
-        p10k segment -f blue -t "${POWERLEVEL9K_CONTAINER_ID_CONTENT:-$CONTAINER_ID}"
+        p10k segment -f yellow -t "${POWERLEVEL9K_CONTAINER_ID_CONTENT:-$CONTAINER_ID}"
     fi
   }
   typeset -g POWERLEVEL9K_CONTAINER_ID_FOREGROUND=3
