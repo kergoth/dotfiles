@@ -4,6 +4,7 @@ if ! limactl list --all-fields "${LIMA_INSTANCE:-default}" &>/dev/null; then
 fi
 
 if [[ $(limactl list --all-fields "${LIMA_INSTANCE:-default}" | tail -n +2 | awk '{print $2}') != Running ]]; then
+    limactl stop -f "${LIMA_INSTANCE:-default}"
     limactl start "${LIMA_INSTANCE:-default}"
 fi
 
