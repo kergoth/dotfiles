@@ -89,7 +89,7 @@ is_freebsd() {
 }
 
 if [ "$(id -u)" != "0" ]; then
-    if is_freebsd; then
+    if has doas; then
         SUDO="doas "
     else
         SUDO="sudo "
@@ -120,18 +120,22 @@ need_sudo() {
             else
                 die "Error: please run as root, or as a user that can run doas."
             fi
-        fi
-
-        msg "Running sudo, you may be prompted for your password."
-        if ! sudo -v; then
-            die "Error: please run as root, or as a user that can run sudo."
+        elif has doas; then
+            if ! doas true; then
+                die "Error: please run as root, or as a user that can run doas."
+            fi
         else
-            # Keep-alive: update existing `sudo` time stamp until finished
-            while true; do
-                sudo -n true
-                sleep 60
-                kill -0 "$$" || exit
-            done 2>/dev/null &
+            msg "Running sudo, you may be prompted for your password."
+            if ! sudo -v; then
+                die "Error: please run as root, or as a user that can run sudo."
+            else
+                # Keep-alive: update existing `sudo` time stamp until finished
+                while true; do
+                    sudo -n true
+                    sleep 60
+                    kill -0 "$$" || exit
+                done 2>/dev/null &
+            fi
         fi
     fi
 }
