@@ -46,23 +46,7 @@ On windows (in powershell, not WSL), run this instead:
 
 ### System Setup
 
-On Arch and FreeBSD, early setup scripts exist in ./script/arch and ./script/freebsd, respectively. These are
-self-contained and may be used without cloning the repository:
-
-- os-install: Currently I only have a single script for this, which is Arch.
-  This is run as root, prior to rebooting into the newly installed system, and
-  is intended to install and perform initial early system setup such as
-  bootloader installation. This script is intended to be able to run without
-  cloning this repository, so must be self-contained, and by definition is
-  os/distro-specific, so exists in a subdirectory of script/ for each.
-- setup-root: This is run as root, after OS installation, before our user has
-  sudo/doas access, possibly before our user exists, and its purpose is to do
-  just this, add our user and ensure it can use sudo or doas, and nothing more.
-  This script is intended to be able to run without cloning this repository, so
-  must be self-contained, and by definition is os/distro-specific, so exists in
-  a subdirectory of script/ for each.
-
-The setup-system script is run by a non-root user with sudo/doas access, to perform post-install system-level setup and configuration.
+The setup-system script is run by a non-root user with sudo/doas access, to perform system-level setup and configuration.
 This script will apply changes to the system as a whole. This may include installing packages through the package manager, installing nix, et cetera. Ideally this should be run prior to setting up the user, and should be run as a user with sudo access.
 
 After cloning the repository, and changing directory to it, run:
