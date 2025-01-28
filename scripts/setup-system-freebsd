@@ -108,7 +108,7 @@ doas pw groupmod video -m "$USER"
 
 # Installation
 if [ -n "$(echo "$pkgs" | sed -e 's/^ *//; s/ *$//')" ]; then
-    echo "$pkgs" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o env ASSUME_ALWAYS_YES=YES $SUDO pkg install
+    echo "$pkgs" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o env ASSUME_ALWAYS_YES=YES doas pkg install
 fi
 
 if [ -n "$(echo "$ports" | sed -e 's/^ *//; s/ *$//')" ]; then
