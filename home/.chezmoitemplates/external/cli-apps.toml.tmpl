@@ -1,7 +1,10 @@
 {{- $os := .chezmoi.os -}}
-{{- $binarch := .chezmoi.arch -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $binarch := $arch -}}
 {{- if eq .chezmoi.arch "amd64" -}}
 {{-   $binarch = "x86_64" -}}
+{{- else if eq .chezmoi.arch "arm64" -}}
+{{-   $binarch = "aarch64" -}}
 {{- end -}}
 {{- $binpath := ".local/bin" -}}
 {{- $binsuffix := "" -}}
@@ -70,3 +73,43 @@ type = "file"
 url = "https://justine.lol/rusage/rusage.com"
 executable = true
 refreshPeriod = "168h"
+
+{{/* Install ghq */}}
+{{ $ghq_version := (gitHubLatestRelease "x-motemen/ghq").TagName | trimPrefix "v" }}
+{{ $ghq_suffix := "" }}
+{{ if eq $os "windows" }}
+{{   $ghq_suffix = printf "windows_%s.zip" $arch }}
+{{ else if eq $os "linux" }}
+{{   $ghq_suffix = printf "linux_%s.zip" $arch }}
+{{ else if eq $os "darwin" }}
+{{   $ghq_suffix = printf "darwin_%s.zip" $arch }}
+{{ end }}
+{{ if ne $ghq_suffix "" }}
+["{{ $binpath }}/ghq{{ $binsuffix }}"]
+type = "archive-file"
+url = "https://github.com/x-motemen/ghq/releases/download/v{{ $ghq_version }}/ghq_{{ $ghq_suffix }}"
+path = "ghq{{ $binsuffix }}"
+stripComponents = 1
+executable = true
+refreshPeriod = "168h"
+{{ end }}
+
+{{/* Install shellcheck */}}
+{{ $shellcheck_version := (gitHubLatestRelease "koalaman/shellcheck").TagName | trimPrefix "v" }}
+{{ $shellcheck_suffix := "" }}
+{{ if eq $os "windows" }}
+{{   $shellcheck_suffix = "" }}
+{{ else if eq $os "linux" }}
+{{   $shellcheck_suffix = printf ".linux.%s.tar.xz" $binarch }}
+{{ else if eq $os "darwin" }}
+{{   $shellcheck_suffix = printf ".darwin.%s.tar.xz" $binarch }}
+{{ end }}
+{{ if ne $shellcheck_suffix "" }}
+["{{ $binpath }}/shellcheck{{ $binsuffix }}"]
+type = "archive-file"
+url = "https://github.com/koalaman/shellcheck/releases/download/v{{ $shellcheck_version }}/shellcheck-v{{ $shellcheck_version }}{{ $shellcheck_suffix }}"
+path = "shellcheck{{ $binsuffix }}"
+stripComponents = 1
+executable = true
+refreshPeriod = "168h"
+{{ end }}
