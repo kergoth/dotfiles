@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+set -x
+
+id
+
+if [ "$(id -u)" != "0" ]; then
+    doas "$0" "$USER"
+    exit $?
+fi
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+username="$1"
+shift
+
+# Verify user shell
+apk add --no-interactive zsh
+if [ -e /usr/bin/zsh ]; then
+    current_shell="$(getent passwd "$username" | sed -e 's#.*:##')"
+    if [ "$current_shell" != /usr/bin/zsh ]; then
+        msg "Changing current user shell to zsh"
+        chsh -s /usr/bin/zsh "$username"
+    fi
+fi
+
+# Enable System logging
+if ! dinitctl status syslog-ng | grep -q STARTED; then
+    dinitctl enable syslog-ng
+fi
+
+{{ if not .ephemeral -}}
+# Enable DHCP Client
+if ! dinitctl status dhcpcd | grep -q STARTED; then
+    dinitctl enable dhcpcd
+fi
+{{- end }}
+
+# Install neovim
+apk add --no-interactive neovim
+
+{{ if not .headless -}}
+# Install Gnome
+apk add --no-interactive gnome
+
+# Enable gdm
+if ! dinitctl status gdm | grep -q STARTED; then
+    dinitctl enable gdm
+fi
+{{- end }}
+
+{{ if .coding -}}
+# Development tools
+apk add --no-interactive clang gmake cmake ninja
+{{- end }}
+
+# Other languages
+apk add --no-interactive cargo go
+
+# Other tools
+apk add --no-interactive wget tmux uv zstd patchutils jq fzf
+
+# Enable the user repository
+apk add --no-interactive chimera-repo-user
+apk update
+
+# Available in the user repository
+apk add --no-interactive fd eza bat ripgrep sad zoxide tealdeer delta git-absorb shfmt direnv git-lfs github-cli

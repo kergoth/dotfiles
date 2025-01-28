@@ -1,0 +1,37 @@
+#!/bin/sh
+# Post-installation setup script for Chimera Linux, prior to setup-system.
+# This must be run after a reboot, to allow dinitctl to work properly.
+
+set -eu
+
+user=$1
+
+if ! getent passwd "$user" >/dev/null 2>&1; then
+    echo >&2 "Adding user '$user'"
+    useradd -m -g users -G wheel,kvm,plugdev "$user"
+    if ! [ -e /usr/bin/zsh ]; then
+        apk add --no-interactive zsh
+    fi
+    chsh -s /usr/bin/zsh "$user"
+
+    if [ -t 1 ]; then
+        echo >&2 "Input password for $user"
+        passwd "$user"
+    else
+        echo >&2 "WARNING: Unable to set password for $user"
+    fi
+fi
+
+# Enable the DHCP client service
+if dinitctl list | grep -q dhcpcd && ! dinitctl status dhcpcd | grep -q STARTED; then
+    dinitctl enable dhcpcd
+fi
+
+# Install bash for my dotfiles and other scripts
+apk add --no-interactive bash
+
+# Install git for my dotfiles
+apk add --no-interactive git
+
+# Install curl for chezmoi installation
+apk add --no-interactive curl

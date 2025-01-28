@@ -1,0 +1,186 @@
+#!/bin/sh
+
+set -eu
+
+timezone=America/Phoenix
+device=/dev/vda
+bootloader=grub
+username=kergoth
+hostname=chimera
+
+usage() {
+    echo >&2 "${0##*/} [options] [HOSTNAME]"
+    echo >&2
+    echo >&2 "Hostname defaults to '$hostname'."
+    echo >&2
+    echo >&2 "Options:"
+    echo >&2
+    echo >&2 "  -d DEVICE       Device on which to install Chimera Linux. Default: $device."
+    echo >&2 "  -b BOOTLOADER   Bootloader to install (grub or syslinux). Default: $bootloader."
+    echo >&2 "  -u USERNAME     Username to create. Default: $username."
+    exit 2
+}
+
+# shellcheck disable=SC2120
+partition_and_mount() {
+    device="${1:-/dev/sda}"
+    rootpartition="${device}3"
+
+    umount -R /media/root 2>/dev/null || :
+    umount -R /media/root2 2>/dev/null || :
+
+    {
+        echo "label: gpt"
+        echo 'type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B size=1G name="EFI system rootpartition"'
+        echo "type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F size=2G name=swap"
+        echo "type=E6D6D379-F507-44C2-A23C-238F2A3DF928 name=root"
+    } | sfdisk "$device"
+
+    mkfs.btrfs -f -L root "$rootpartition"
+    mkdir -p /media/root2
+    mount "$rootpartition" /media/root2
+    (
+        cd /media/root2
+
+        btrfs subvolume create @
+        btrfs subvolume create @snapshots
+
+        mkdir -p /media/root
+        mount -o subvol=@ "$rootpartition" /media/root
+        for subvolume in @home @srv @var/log @var/tmp; do
+            volname=$(echo "$subvolume" | tr / .)
+            volpath="/media/root/${subvolume#@}"
+            btrfs subvolume create "$volname"
+            mkdir -p "$volpath"
+            mount -o subvol="$volname" "$rootpartition" "$volpath"
+        done
+    )
+
+    mkswap "${device}2"
+
+    mkfs.fat -F 32 "${device}1"
+    mkdir -p /media/root/boot
+    mount "${device}1" /media/root/boot
+}
+
+install_os() {
+    chimera-bootstrap /media/root base-full linux-stable "$1"
+    genfstab -p -L /media/root >>/media/root/etc/fstab
+}
+
+setup_os() {
+    # Prepare the system
+    apk update || :
+    apk upgrade --available || :
+
+    # Root password
+    echo >&2 "Input password for root"
+    passwd root
+
+    # GRUB
+    echo >&2 "Installing GRUB"
+    grub-install --target=x86_64-efi --efi-directory=/boot
+    update-grub
+
+    # Post-installation
+
+    # Install zsh for my user
+    apk add --no-interactive zsh
+
+    # Create a User
+    create_user
+
+    # Set a Hostname
+    if [ -n "$hostname" ]; then
+        echo "$hostname" >/etc/hostname
+    fi
+
+    # Set your time zone
+    ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+
+    # Install git for my dotfiles
+    apk add --no-interactive git
+
+    # Install bash for my dotfiles and other scripts
+    apk add --no-interactive bash
+
+    # Install curl for chezmoi installation
+    apk add --no-interactive curl
+}
+
+create_user() {
+    if ! getent passwd "$username" >/dev/null 2>&1; then
+        echo >&2 "Creating user '$username'"
+        useradd -m -g users -G wheel,kvm,plugdev "$username"
+
+        chsh -s /usr/bin/zsh "$username"
+
+        if [ -t 1 ]; then
+            echo >&2 "Input password for $username"
+            passwd "$username"
+        else
+            echo >&2 "WARNING: Unable to set password for $username"
+        fi
+    fi
+}
+
+in_chroot=0
+while getopts cd:b:u:h opt; do
+    case "$opt" in
+    c)
+        in_chroot=1
+        ;;
+    d)
+        device="$OPTARG"
+        ;;
+    b)
+        bootloader="$OPTARG"
+        ;;
+    u)
+        username="$OPTARG"
+        ;;
+    \? | h)
+        usage
+        ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+case "$bootloader" in
+grub)
+    bootloader_package=grub-x86_64-efi
+    ;;
+*)
+    echo >&2 "Error: -b $bootloader is unsupported. Only grub is supported by this script at this time."
+    exit 1
+    ;;
+esac
+
+if [ $# -gt 1 ]; then
+    usage
+fi
+
+if [ $# -eq 1 ]; then
+    hostname=$1
+fi
+
+if [ $in_chroot -eq 0 ]; then
+    echo >&2 "Installing Chimera Linux to /media/root"
+
+    # shellcheck disable=SC2119
+    partition_and_mount "$device"
+
+    install_os "$bootloader_package"
+
+    scriptdest=/root/"${0##*/}"
+    cp -af "$0" "/media/root/$scriptdest"
+    chimera-chroot /media/root sh "$scriptdest" -c -b "$bootloader" "$hostname"
+
+    if [ -d /home/anon/.dotfiles ]; then
+        cp -af /home/anon/.dotfiles/. "/media/root/home/$username/.dotfiles/"
+        chimera-chroot /media/root chown -R "$username:users" "/home/$username/.dotfiles"
+    fi
+else
+    echo >&2 "Setting up new Chimera Linux installation"
+    setup_os
+fi

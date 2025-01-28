@@ -77,6 +77,34 @@ On windows (in powershell, not WSL), run this instead:
 ./script/setup-system.ps1
 ```
 
+### Linux Installation
+
+#### Linux Installation on Chimera Linux
+
+- Attach the Chimera Linux Live CD ISO to a VM or USB drive and boot from it.
+- If not using a `base` ISO, wait for the graphical environment to load. It will take a few seconds.
+- If using a `base` ISO, log in as `anon`.
+- Run the `Console` app.
+- Note that the default password, when prompted, is `chimera`.
+- Clone the dotfiles repository and run the os-install script:
+
+```console
+doas apk update
+doas apk add git
+git clone https://github.com/kergoth/dotfiles .dotfiles
+doas ./.dotfiles/script/chimera/os-install
+```
+
+- After rebooting:
+  - Note: By default, there will be no graphical environment available, but this will be installed by my dotfiles setup.
+  - Log in as the new user and:
+
+```console
+doas dinitctl enable dhcpcd
+# Wait a second for the DHCP client to get an IP address
+~/.dotfiles/script/setup-full
+```
+
 ### Edit dotfiles
 
 ```console

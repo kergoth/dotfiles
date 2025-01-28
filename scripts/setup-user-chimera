@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+cargo_to_install=
+cargo_check() {
+    local package="$1"
+    shift
+    if [ $# -eq 0 ]; then
+        cmd="$package"
+    else
+        cmd="$1"
+    fi
+    if ! has "$cmd"; then
+        cargo_to_install="$cargo_to_install $package"
+    fi
+}
+
+if ! has shellcheck; then
+    echo >&2 "Installing shellcheck"
+    scversion="stable" # or "v0.4.7", or "latest"
+    wget -qO- "https://github.com/koalaman/shellcheck/releases/download/${scversion?}/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv --strip-components 1 -C ~/.local/bin shellcheck-${scversion?}/shellcheck
+fi
+
+if ! has ghq; then
+    echo >&2 "Installing ghq"
+    go install github.com/x-motemen/ghq@latest
+fi
+
+cargo_check unar
+cargo_check sd
+cargo_check dua
+cargo_check sapling sl
+
+if [ -n "$cargo_to_install" ]; then
+    # shellcheck disable=SC2086
+    cargo install $cargo_to_install
+fi
