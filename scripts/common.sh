@@ -157,6 +157,60 @@ pacman_install() {
     done | xargs $SUDO pacman --noconfirm --needed -S
 }
 
+uvs=
+uv_check() {
+    pkg="$1"
+    cmd="${2:-}"
+
+    if [ -n "$cmd" ] && command -v "$cmd" >/dev/null 2>&1; then
+        return 0
+    fi
+    uvs="$uvs $pkg"
+}
+
+uvs_install() {
+    if [ -n "$(echo "$uvs" | sed -e 's/^ *//; s/ *$//')" ]; then
+        msg "Installing via uv: $uvs"
+        echo "$uvs" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o -n 1 uv tool install
+    fi
+}
+
+cargos=
+cargo_check() {
+    pkg="$1"
+    cmd="${2:-}"
+
+    if [ -n "$cmd" ] && command -v "$cmd" >/dev/null 2>&1; then
+        return 0
+    fi
+    cargos="$cargos $pkg"
+}
+
+cargos_install() {
+    if [ -n "$(echo "$cargos" | sed -e 's/^ *//; s/ *$//')" ]; then
+        msg "Installing via cargo: $cargos"
+        echo "$cargos" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o cargo install --locked
+    fi
+}
+
+gos=
+go_check() {
+    pkg="$1"
+    cmd="${2:-}"
+
+    if [ -n "$cmd" ] && command -v "$cmd" >/dev/null 2>&1; then
+        return 0
+    fi
+    gos="$gos $pkg"
+}
+
+gos_install() {
+    if [ -n "$(echo "$gos" | sed -e 's/^ *//; s/ *$//')" ]; then
+        msg "Installing via go: $gos"
+        echo "$gos" | tr ' ' '\n' | sort -u | tr '\n' '\0' | xargs -0 --no-run-if-empty -o go install
+    fi
+}
+
 NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
 
 install_nix() {

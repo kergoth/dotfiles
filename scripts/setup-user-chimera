@@ -8,26 +8,8 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
 
-cargo_to_install=
-cargo_check() {
-    local package="$1"
-    shift
-    if [ $# -eq 0 ]; then
-        cmd="$package"
-    else
-        cmd="$1"
-    fi
-    if ! has "$cmd"; then
-        cargo_to_install="$cargo_to_install $package"
-    fi
-}
-
-cargo_check unar
-cargo_check sd
-cargo_check dua
+cargo_check unar unar
+cargo_check sd sd
+cargo_check dua dua
 cargo_check sapling sl
-
-if [ -n "$cargo_to_install" ]; then
-    # shellcheck disable=SC2086
-    cargo install $cargo_to_install
-fi
+cargos_install
