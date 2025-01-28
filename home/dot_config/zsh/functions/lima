@@ -1,3 +1,8 @@
+if ! limactl list --all-fields "${LIMA_INSTANCE:-default}"; then
+    echo >&2 "Lima instance '${LIMA_INSTANCE:-default}' does not exist, creating it now."
+    limactl create --name="${LIMA_INSTANCE:-default}" "template://${LIMA_INSTANCE:-default}" </dev/null
+fi
+
 if [[ $(limactl list --all-fields "${LIMA_INSTANCE:-default}" | tail -n +2 | awk '{print $2}') != Running ]]; then
     limactl start "${LIMA_INSTANCE:-default}"
 fi
