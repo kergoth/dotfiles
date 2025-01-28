@@ -164,7 +164,7 @@ install_nix() {
         if ! has nix-env; then
             curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
         fi
-    elif [ "$OS" = arch ]; then
+    elif [ "$DISTRO" = arch ]; then
         if ! has nix-env; then
             pacman -S nix
         fi
