@@ -69,9 +69,12 @@ darwin*)
         ;;
     esac
 
-    if [ -e /etc/os-release ]; then
-        DISTRO="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
-        DISTRO_LIKE="$(sed -n -e 's/^ID_LIKE=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
+    if [ -f /etc/os-release ]; then
+        DISTRO="$(. /etc/os-release && echo "$ID" | tr '[:upper:]' '[:lower:]')"
+        DISTRO_LIKE="$(. /etc/os-release && echo "${ID_LIKE:-}" | tr '[:upper:]' '[:lower:]')"
+    else
+        DISTRO=
+        DISTRO_LIKE=
     fi
     OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     ;;
