@@ -1,16 +1,16 @@
 {{/* boolean feature flags */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
-{{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
 {{- $user_setup := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
 {{/* device usage flags */}}
+{{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
+{{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
 {{- $gaming := false -}}{{/* true if this device will be used for gaming */}}
 {{- $video := false -}}{{/* true if this device will be used to stream video, controls VLC/etc installation */}}
 {{- $music := false -}}{{/* true if this device will be used to listen to music */}}
-{{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
 {{- $music_library := false -}}{{/* true if this device will be used to manage my music library */}}
 {{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
 
@@ -60,11 +60,11 @@
 {{-     $coding = true -}}
 {{-   else if eq $hostname "vaelin" -}}
 {{-     $personal = true -}}
+{{-     $coding = true -}}
 {{-     $containers = true -}}
 {{-     $gaming = true -}}
 {{-     $video = true -}}
 {{-     $music = true -}}
-{{-     $coding = true -}}
 {{-     $music_library = true -}}
 {{-     $ebook_library = true -}}
 {{-   else if $steamdeck -}}
@@ -82,16 +82,16 @@
 
 {{/* prompt for overrides */}}
 {{- if and $interactive $prompt -}}
-{{-   $headless = promptBoolOnce . "headless" "headless" $headless -}}
-{{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
-{{-   $containers = promptBoolOnce . "containers" "containers" $containers -}}
-{{-   $work = promptBoolOnce . "work" "work" $work -}}
-{{-   $gaming = promptBoolOnce . "gaming" "gaming" $gaming -}}
-{{-   $video = promptBoolOnce . "video" "video" $video -}}
-{{-   $music = promptBoolOnce . "music" "music" $music -}}
-{{-   $coding = promptBoolOnce . "coding" "coding" $coding -}}
-{{-   $music_library = promptBoolOnce . "music_library" "music_library" $music_library -}}
-{{-   $ebook_library = promptBoolOnce . "ebook_library" "ebook_library" $ebook_library -}}
+{{-   $headless = promptBoolOnce . "headless" "Is this machine headless (no screen or keyboard)?" $headless -}}
+{{-   $ephemeral = promptBoolOnce . "ephemeral" "Is this machine ephemeral (container, cloud, or VM instance)?" $ephemeral -}}
+{{-   $work = promptBoolOnce . "work" "Will this be a work machine (use a work email address)?" $work -}}
+{{-   $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
+{{-   $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
+{{-   $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
+{{-   $video = promptBoolOnce . "video" "Will this machine be used for local video playback (install VLC)?" $video -}}
+{{-   $music = promptBoolOnce . "music" "Will this machine be used to listen to music?" $music -}}
+{{-   $music_library = promptBoolOnce . "music_library" "Will this machine be used to manage my music library?" $music_library -}}
+{{-   $ebook_library = promptBoolOnce . "ebook_library" "Will this machine be used to manage my ebook library?" $ebook_library -}}
 {{- end -}}
 
 {{- $email := "kergoth@gmail.com" -}}
