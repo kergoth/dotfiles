@@ -1,0 +1,58 @@
+#!/usr/bin/env chezmoi-exec
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/macos:$scriptdir:$PATH"
+DOTFILES_DIR="$(dirname "$scriptdir")"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+{{ if .macos_split_user -}}
+export OSX_ADMIN_LOGNAME="{{ .macos_admin_user }}"
+if [ "$USER" != "$OSX_ADMIN_LOGNAME" ]; then
+    # Re-execute ourselves as the admin user. We need to re-execute the generated temporary file created by chezmoi-exec,
+    # but need to make sure we keep overriding $0 to its original path. Since this is a chezmoi-exec generated script,
+    # created by the non-admin user, we need to get its contents with sudo and re-execute it with the admin user.
+    admindo \
+        env PATH="$PATH" \
+        CHEZMOI_EXEC_SCRIPT="$CHEZMOI_EXEC_SCRIPT" \
+        DOTFILES_DIR="$DOTFILES_DIR" \
+        HOMEBREW_PREFIX="$HOMEBREW_ADMIN_PREFIX" \
+        bash -c ". \"$scriptdir/common.sh\"; need_sudo; sudorun cat \"$CHEZMOI_EXEC_SCRIPT\" | exec -a \"$0\" bash -s -- \"$USER\""
+    exit $?
+fi
+
+# Bootstrap dotfiles for the admin user to allow for templating
+"$DOTFILES_DIR/script/bootstrap"
+{{- end }}
+
+need_sudo
+
+if ! [ -e /nix ]; then
+    install_nix
+fi
+
+if ! [ -x "$HOMEBREW_PREFIX/bin/brew" ]; then
+    msg "Installing homebrew"
+    install-brew -s "$HOMEBREW_PREFIX" || {
+        rm -rf "$HOMEBREW_PREFIX"
+        die "Failed to install homebrew"
+    }
+fi
+
+msg "Installing applications with homebrew"
+brewfile_install "$scriptdir/macos/Brewfile.admin"
+
+CASKROOM="$("$HOMEBREW_PREFIX/bin/brew" --caskroom)"
+if [ -d "$CASKROOM"/whatsyoursign ]; then
+    find "$CASKROOM"/whatsyoursign -name WhatsYourSign\ Installer.app -print0 |
+        xargs -0 open || :
+fi
+
+install-oversight
+
+# Configuration
+. "$scriptdir/macos/configure-admin"

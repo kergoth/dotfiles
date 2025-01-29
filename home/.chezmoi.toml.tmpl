@@ -5,6 +5,8 @@
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
 {{- $user_setup := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
+{{- $macos_split_user := true -}}{{/* true if this is a macOS machine that should have a separate user for admin tasks */}}
+{{- $macos_admin_user := "archet" -}}{{/* the username of the admin user on macOS */}}
 {{/* device usage flags */}}
 {{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
 {{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
@@ -135,6 +137,8 @@ scriptTempDir = "~/tmp"
     steamdeck = {{ $steamdeck }}
 {{- if eq .chezmoi.os "darwin" }}
     macos_version = {{ $macos_version }}
+    macos_split_user = {{ $macos_split_user }}
+    macos_admin_user = {{ $macos_admin_user | quote }}
 {{- end }}
 
 [data.external]

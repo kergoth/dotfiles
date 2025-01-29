@@ -6,6 +6,8 @@ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 HOMEBREW_PREFIX=${HOMEBREW_PREFIX:-$HOME/.brew}
 export HOMEBREW_PREFIX
 PATH="$HOMEBREW_PREFIX/bin:$XDG_DATA_HOME/../bin:$HOME/.nix-profile/bin:$PATH"
+OSX_ADMIN_LOGNAME="${OSX_ADMIN_LOGNAME-admin}"
+HOMEBREW_ADMIN_PREFIX="${HOMEBREW_ADMIN_PREFIX:-/Users/Shared/homebrew}"
 
 has() {
     command -v "$@" >/dev/null 2>&1
@@ -158,6 +160,25 @@ pacman_install() {
             echo "$arg"
         fi
     done | xargs $SUDO pacman --noconfirm --needed -S
+}
+
+admindo() {
+    if [ -n "$OSX_ADMIN_LOGNAME" ]; then
+        if [ "$LOGNAME" = "$OSX_ADMIN_LOGNAME" ]; then
+            command "$@"
+        else
+            surun "$OSX_ADMIN_LOGNAME" "$@"
+        fi
+    fi
+}
+
+surun() {
+    local username="$1"
+    shift
+
+    args="$(printcmd "$@")"
+    echo >&2 "Running '$args' as $username, input $username's password"
+    su - "$username" -c "cd $(printcmd "$PWD") && $args"
 }
 
 uvs=
