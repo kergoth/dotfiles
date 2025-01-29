@@ -36,7 +36,7 @@ if ! [ -h ~/.local/share/chezmoi ]; then
         echo >&2 "Error: ~/.local/share/chezmoi exists and is not a symlink"
         exit 1
     fi
-    ln -sfT "$DOTFILES_DIR" ~/.local/share/chezmoi
+    ln -sf "$DOTFILES_DIR" ~/.local/share/chezmoi
 fi
 
 if ! [ -e ~/.config/chezmoi/chezmoi.toml ]; then
