@@ -11,5 +11,5 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 cargo_check unar unar
 cargo_check sd sd
 cargo_check dua dua
-cargo_check sapling sl
+cargo_check sapling sapling
 cargos_install
