@@ -15,7 +15,7 @@
 #     $ ./hello-chemzoi
 #     Hello, kergoth
 
-abspath () {
+abspath() {
     _path="$1"
     if [ -n "${_path##/*}" ]; then
         _path="${2:-$PWD}/$1"
@@ -33,16 +33,17 @@ chmod +x "$tmpfile"
 
 interpreter=$(sed -n -e '1s/^#!//p' "$tmpfile")
 case "$interpreter" in
-    /usr/bin/env\ *)
-        interpreter=$(command -v "${interpreter#/usr/bin/env }") || exit 1
+/usr/bin/env\ *)
+    interpreter=$(command -v "${interpreter#/usr/bin/env }") || exit 1
     ;;
 esac
 
+export CHEZMOI_EXEC_SCRIPT="$tmpfile"
 case "$interpreter" in
-    */bash|*/zsh)
-        exec -a "$script" "$interpreter" -c ". \"$tmpfile\"" "$@"
-        ;;
-    *)
-        exec -a "$script" "$tmpfile" "$@"
-        ;;
+*/bash | */zsh)
+    exec -a "$script" "$interpreter" -c ". \"$tmpfile\"" "$@"
+    ;;
+*)
+    exec -a "$script" "$tmpfile" "$@"
+    ;;
 esac
