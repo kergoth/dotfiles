@@ -73,6 +73,11 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 apk add --no-interactive clang gmake cmake ninja
 {{- end }}
 
+{{ if .containers -}}
+# Container support
+apk add --no-interactive podman
+{{- end }}
+
 # Other languages
 apk add --no-interactive cargo go
 
