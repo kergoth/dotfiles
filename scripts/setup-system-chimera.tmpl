@@ -75,7 +75,7 @@ apk add --no-interactive clang gmake cmake ninja
 
 {{ if .containers -}}
 # Container support
-apk add --no-interactive podman
+apk add --no-interactive podman podman-compose
 {{- end }}
 
 # Other languages
