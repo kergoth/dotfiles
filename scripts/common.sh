@@ -218,11 +218,11 @@ NIXPKGS=${NIXPKGS:-https://nixos.org/channels/nixpkgs-unstable}
 
 install_nix() {
     if [ "$OSTYPE" = WSL ]; then
-        if ! has nix-env; then
+        if ! has nix; then
             curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
         fi
     elif [ "$DISTRO" = arch ]; then
-        if ! has nix-env; then
+        if ! has nix; then
             pacman -S nix
         fi
 
@@ -238,11 +238,11 @@ install_nix() {
         sudorun systemctl enable nix-daemon
         sudorun systemctl start nix-daemon
     elif uname -n | grep -qF lima; then
-        if ! has nix-env; then
+        if ! has nix; then
             curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
         fi
     else
-        if ! has nix-env; then
+        if ! has nix; then
             curl -L https://nixos.org/nix/install | sh -s -- --daemon
         fi
     fi
