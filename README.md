@@ -61,7 +61,7 @@ On windows (in powershell, not WSL), run this instead:
 ./script/setup-system.ps1
 ```
 
-### Linux Installation
+### Operating System Installation
 
 #### Linux Installation on Chimera Linux
 
