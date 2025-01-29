@@ -1,10 +1,11 @@
+{{ $refreshPeriod := .external.refreshPeriod }}
 {{ $clone_args := dig "external" "clone" "args" (list) . -}}
 {{ $pull_args := dig "external" "pull" "args" (list) . -}}
 
 ["bin"]
     type = "git-repo"
     url = "https://github.com/kergoth/scripts"
-    refreshPeriod = "168h"
+    refreshPeriod = "{{ $refreshPeriod }}"
     [bin.clone]
     args = {{ $clone_args | toToml }}
     [bin.pull]
@@ -17,7 +18,7 @@
 type = "archive-file"
 url = "https://github.com/eth-p/bat-extras/releases/download/v{{- $bat_extras_version -}}/bat-extras-{{- index $splitver 0 -}}.{{- index $splitver 1 -}}.{{- index $splitver 2 -}}.zip"
 path = "{{ . }}"
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 stripComponents = 1
 executable = true
 {{ end }}
@@ -26,7 +27,7 @@ executable = true
 type = "file"
 url = "https://storage.googleapis.com/git-repo-downloads/repo"
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-j"]
 type = "archive-file"
@@ -34,7 +35,7 @@ url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
 path = "bin/git-j"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-rebase-chain"]
 type = "archive-file"
@@ -42,7 +43,7 @@ url = "https://github.com/beanbaginc/dev-goodies/archive/master.tar.gz"
 path = "bin/git-rebase-chain"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-alias"]
 type = "archive-file"
@@ -50,13 +51,13 @@ url = "https://github.com/tj/git-extras/archive/master.tar.gz"
 path = "bin/git-alias"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/linux-bundle-clone"]
 type = "file"
 url = "https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/plain/linux-bundle-clone"
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/vipe"]
 type = "archive-file"
@@ -64,13 +65,13 @@ url = "https://github.com/madx/moreutils/archive/master.tar.gz"
 path = "vipe"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/wsl-open"]
 type = "file"
 url = "https://raw.githubusercontent.com/4U6U57/wsl-open/master/wsl-open.sh"
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/fasd"]
 type = "archive-file"
@@ -78,7 +79,7 @@ url = "https://github.com/clvv/fasd/archive/master.tar.gz"
 path = "fasd"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/tmux-resize-adaptable"]
 type = "archive-file"
@@ -87,7 +88,7 @@ path = "scripts/resize-adaptable.sh"
 executable = true
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/ifne"]
 type = "archive-file"
@@ -96,7 +97,7 @@ path = "ifne"
 executable = true
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-assembler"]
 type = "archive-file"
@@ -104,10 +105,10 @@ url = "https://gitlab.com/wavexx/git-assembler/-/archive/master/git-assembler-ma
 path = "git-assembler"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 [".local/bin/git-attic"]
 type = "file"
 url = "http://chneukirchen.org/dotfiles/bin/git-attic"
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"

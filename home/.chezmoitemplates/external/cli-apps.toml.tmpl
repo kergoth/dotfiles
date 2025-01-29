@@ -1,6 +1,7 @@
 {{- $os := .chezmoi.os -}}
 {{- $arch := .chezmoi.arch -}}
 {{- $binarch := $arch -}}
+{{- $refreshPeriod := .external.refreshPeriod -}}
 {{- if eq .chezmoi.arch "amd64" -}}
 {{-   $binarch = "x86_64" -}}
 {{- else if eq .chezmoi.arch "arm64" -}}
@@ -23,7 +24,7 @@
   stripComponents = 1
   path = "{{ . }}"
   executable = true
-  refreshPeriod = "168h"
+  refreshPeriod = "{{ $refreshPeriod }}"
 {{   end -}}
 {{ end }}
 
@@ -47,7 +48,7 @@
   stripComponents = 1
 {{- end }}
   executable = true
-  refreshPeriod = "168h"
+  refreshPeriod = "{{ $refreshPeriod }}"
 {{   end -}}
 {{ end }}
 
@@ -64,7 +65,7 @@
 type = "file"
 url = "https://github.com/theryangeary/choose/releases/download/v{{ $choose_version }}/choose-{{ $binarch }}-{{ $choose_suffix }}"
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 {{ end }}
 
 {{/* Install rusage */}}
@@ -72,7 +73,7 @@ refreshPeriod = "168h"
 type = "file"
 url = "https://justine.lol/rusage/rusage.com"
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 
 {{/* Install ghq */}}
 {{ $ghq_version := (gitHubLatestRelease "x-motemen/ghq").TagName | trimPrefix "v" }}
@@ -91,7 +92,7 @@ url = "https://github.com/x-motemen/ghq/releases/download/v{{ $ghq_version }}/gh
 path = "ghq{{ $binsuffix }}"
 stripComponents = 1
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 {{ end }}
 
 {{/* Install shellcheck */}}
@@ -111,5 +112,5 @@ url = "https://github.com/koalaman/shellcheck/releases/download/v{{ $shellcheck_
 path = "shellcheck{{ $binsuffix }}"
 stripComponents = 1
 executable = true
-refreshPeriod = "168h"
+refreshPeriod = "{{ $refreshPeriod }}"
 {{ end }}

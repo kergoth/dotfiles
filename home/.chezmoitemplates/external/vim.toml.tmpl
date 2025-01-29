@@ -8,7 +8,7 @@
 [".config/vim"]
     type = "git-repo"
     url = "https://github.com/kergoth/dotvim"
-    refreshPeriod = "168h"
+    refreshPeriod = "{{ .external.refreshPeriod }}"
     [".config/vim".clone]
         args = {{ $clone_args | toToml }}
     [".config/vim".pull]
@@ -24,7 +24,7 @@ url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
 path = "vimrc.redir"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 {{ if eq .chezmoi.os "windows" }}
 ["AppData/Local/nvim/init.vim"]
@@ -36,7 +36,7 @@ url = "https://github.com/kergoth/dotvim/archive/master.tar.gz"
 path = "vimrc.redir"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 {{ if ne .chezmoi.os "windows" -}}
 ["{{ $binpath }}/vim-profiler"]
@@ -46,5 +46,5 @@ path = "vim-profiler.py"
 executable = true
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 {{- end }}

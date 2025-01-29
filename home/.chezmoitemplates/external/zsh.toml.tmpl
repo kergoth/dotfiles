@@ -6,68 +6,68 @@
 [".config/zsh/functions/manydots-magic"]
 type = "file"
 url = "https://raw.githubusercontent.com/knu/zsh-manydots-magic/master/manydots-magic"
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/functions/git-escape-magic"]
 type = "file"
 url = "https://raw.githubusercontent.com/knu/zsh-git-escape-magic/master/git-escape-magic"
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/autosuggestions"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/bd"]
 type = "archive"
 url = "https://github.com/Tarrasch/zsh-bd/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/completions"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/fzf-tab"]
 type = "archive"
 url = "https://github.com/Aloxaf/fzf-tab/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/history-substring-search"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-history-substring-search/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/nix-shell"]
 type = "archive"
 url = "https://github.com/chisui/zsh-nix-shell/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/nix-zsh-completions"]
 type = "archive"
 url = "https://github.com/nix-community/nix-zsh-completions/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/plugins/syntax-highlighting"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 {{ if .wsl2 -}}
 [".config/zsh/plugins/windows-terminal-zsh-integration"]
@@ -75,20 +75,20 @@ type = "archive"
 url = "https://github.com/romkatv/windows-terminal-zsh-integration/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 {{- end }}
 
 [".config/zsh/plugins/zbell/zbell.plugin.sh"]
 type = "file"
 url = "https://gist.githubusercontent.com/jpouellet/5278239/raw/e0b06247f3ecd6ca3de341c54ba8d85de7ef6566/zbell.sh"
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".config/zsh/themes/powerlevel10k"]
 type = "archive"
 url = "https://github.com/romkatv/powerlevel10k/archive/master.tar.gz"
 exact = true
 stripComponents = 1
-refreshPeriod = "168h"
+refreshPeriod = "{{ .external.refreshPeriod }}"
 
 [".local/bin/zsh_sort_timings"]
 type = "file"

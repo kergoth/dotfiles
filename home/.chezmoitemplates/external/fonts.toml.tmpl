@@ -1,4 +1,5 @@
 # Fonts
+{{ $refreshPeriod := .external.refreshPeriod }}
 {{ if not .headless }}
 {{-   $fontDir := "" }}
 {{-   if eq .chezmoi.os "darwin" }}
@@ -15,7 +16,7 @@
 ["{{ $fontDir }}/{{ base . | replace "%20" " " }}"]
     type = "file"
     url = "{{ . }}"
-    refreshPeriod = "168h"
+    refreshPeriod = "{{ $refreshPeriod }}"
 {{-     end }}
 {{-   end }}
 {{- end }}
