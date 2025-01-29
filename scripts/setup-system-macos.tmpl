@@ -27,9 +27,22 @@ fi
 
 # Bootstrap dotfiles for the admin user to allow for templating
 "$DOTFILES_DIR/script/bootstrap"
-{{- end }}
 
 need_sudo
+
+# Hide admin user from the login window
+sudorun dscl . create "/Users/$USER" IsHidden 1
+
+# Hide admin user home directory
+sudorun chflags hidden "/Users/$USER"
+
+# Remove admin user from FileVault
+if sudorun fdesetup list | grep -q "^$USER,"; then
+    sudorun fdesetup remove -user "$USER"
+fi
+{{ else }}
+need_sudo
+{{- end }}
 
 if ! [ -e /nix ]; then
     install_nix
