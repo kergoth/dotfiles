@@ -246,22 +246,4 @@ install_nix() {
             curl -L https://nixos.org/nix/install | sh -s -- --daemon
         fi
     fi
-
-    setup_nix_shell
-
-    if [ -n "$NIXPKGS" ]; then
-        nix-channel --add "$NIXPKGS" nixpkgs
-        nix-channel --update
-    fi
 }
-
-setup_nix_shell() {
-    # shellcheck disable=SC1090
-    for i in /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ~/.nix-profile/etc/profile.d/nix-daemon.sh ~/.nix-profile/etc/profile.d/nix.sh; do
-        if [ -e "$i" ]; then
-            . "$i"
-        fi
-    done
-}
-
-setup_nix_shell
