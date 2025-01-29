@@ -12,4 +12,17 @@ cargo_check unar unar
 cargo_check sd sd
 cargo_check dua dua
 cargo_check sapling sapling
+
+uv_check git-revise git-revise
+uv_check git-imerge git-imerge
+cargo_check choose choose
+cargo_check atuin atuin
+
+{{ if .work -}}
+# Bug tracking and workflow
+go_check github.com/ankitpokhrel/jira-cli/...@latest jira
+{{- end }}
+
+uvs_install
 cargos_install
+gos_install
