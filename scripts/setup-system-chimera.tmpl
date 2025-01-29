@@ -1,13 +1,5 @@
+#!/usr/bin/env chezmoi-exec
 #!/usr/bin/env bash
-
-set -x
-
-id
-
-if [ "$(id -u)" != "0" ]; then
-    doas "$0" "$USER"
-    exit $?
-fi
 
 set -euo pipefail
 
@@ -16,6 +8,14 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
+
+if [ "$(id -u)" != "0" ]; then
+    # Re-execute ourselves as root. We need to re-execute the generated temporary file created by chezmoi-exec,
+    # but need to make sure we keep overriding $0 to its original path, and overriding $0 in a shell script
+    # requires that it be sourced.
+    doas env PATH="$PATH" bash -c "exec -a \"$0\" bash -c \". \\\"$CHEZMOI_EXEC_SCRIPT\\\" \\\"$USER\\\"\""
+    exit $?
+fi
 
 username="$1"
 shift
@@ -35,11 +35,18 @@ if ! dinitctl status syslog-ng | grep -q STARTED; then
     dinitctl enable syslog-ng
 fi
 
+# Enable sound
+apk add pipewire
+
 {{ if not .ephemeral -}}
 # Enable DHCP Client
 if ! dinitctl status dhcpcd | grep -q STARTED; then
     dinitctl enable dhcpcd
 fi
+
+# Enable bluetooth
+apk add bluez
+doas -u "$username" dinitctl enable bluetoothd
 {{- end }}
 
 # Install neovim
