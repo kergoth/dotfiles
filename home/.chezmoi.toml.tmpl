@@ -1,7 +1,7 @@
 {{/* boolean feature flags */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
-{{- $docker := false -}}{{/* true if this machine should have Docker installed */}}
+{{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
 {{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
 {{- $work := false -}}{{/* true if this machine is used for work */}}
 {{- $work_email := false -}}{{/* true if this machine should use a work email (implicitly set by $work) */}}
@@ -52,7 +52,7 @@
 {{- if not $ephemeral -}}
 {{-   if eq $hostname "caf-clarson-p1" -}}
 {{-     if $wsl2 -}}
-{{-       $docker = true -}}
+{{-       $containers = true -}}
 {{-     else -}}
 {{-       $music = true -}}
 {{-     end -}}
@@ -60,7 +60,7 @@
 {{-     $coding = true -}}
 {{-   else if eq $hostname "vaelin" -}}
 {{-     $personal = true -}}
-{{-     $docker = true -}}
+{{-     $containers = true -}}
 {{-     $gaming = true -}}
 {{-     $video = true -}}
 {{-     $music = true -}}
@@ -84,7 +84,7 @@
 {{- if and $interactive $prompt -}}
 {{-   $headless = promptBoolOnce . "headless" "headless" $headless -}}
 {{-   $ephemeral = promptBoolOnce . "ephemeral" "ephemeral" $ephemeral -}}
-{{-   $docker = promptBoolOnce . "docker" "docker" $docker -}}
+{{-   $containers = promptBoolOnce . "containers" "containers" $containers -}}
 {{-   $work = promptBoolOnce . "work" "work" $work -}}
 {{-   $gaming = promptBoolOnce . "gaming" "gaming" $gaming -}}
 {{-   $video = promptBoolOnce . "video" "video" $video -}}
@@ -117,7 +117,7 @@ scriptTempDir = "~/tmp"
 
     ephemeral = {{ $ephemeral }}
     headless = {{ $headless }}
-    docker = {{ $docker }}
+    containers = {{ $containers }}
     personal = {{ $personal }}
     work = {{ $work }}
 
