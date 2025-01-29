@@ -62,6 +62,10 @@ apk add --no-interactive gnome
 if ! dinitctl status gdm | grep -q STARTED; then
     dinitctl enable gdm
 fi
+
+# Install and configure flatpak
+apk add --no-interactive flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 {{- end }}
 
 {{ if .coding -}}
