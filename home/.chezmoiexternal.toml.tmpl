@@ -1,35 +1,6 @@
 {{- includeTemplate "external/cli-apps.toml.tmpl" . -}}
+{{- includeTemplate "external/colors-syntax.toml.tmpl" . -}}
 {{- includeTemplate "external/fonts.toml.tmpl" . -}}
 {{- includeTemplate "external/scripts.toml.tmpl" . -}}
 {{- includeTemplate "external/vim.toml.tmpl" . -}}
 {{- includeTemplate "external/zsh.toml.tmpl" . -}}
-
-{{ if eq .chezmoi.os "windows" }}
-["AppData/Roaming/bat/syntaxes/BitBake.sublime-syntax"]
-{{ else }}
-[".config/bat/syntaxes/BitBake.sublime-syntax"]
-{{ end }}
-type = "archive-file"
-url = "https://github.com/casparfriedrich/bitbake-syntax/archive/master.tar.gz"
-path = "BitBake.sublime-syntax"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-[".config/zed/themes/dracula.json"]
-type = "archive-file"
-url = "https://github.com/dracula/zed/archive/master.tar.gz"
-path = "themes/dracula.json"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
-{{ if eq .chezmoi.os "darwin" -}}
-["Library/Application Support/BBEdit/Color Schemes/Dracula.bbColorScheme"]
-type = "archive-file"
-url = "https://github.com/dracula/bbedit/archive/master.tar.gz"
-path = "Dracula.bbColorScheme"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-{{- end }}
