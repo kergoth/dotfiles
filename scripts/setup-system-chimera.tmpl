@@ -46,7 +46,9 @@ fi
 
 # Enable bluetooth
 apk add bluez
-doas -u "$username" dinitctl enable bluetoothd
+if ! dinitctl status bluetoothd | grep -q STARTED; then
+    dinitctl enable bluetoothd
+fi
 {{- end }}
 
 # Install neovim
