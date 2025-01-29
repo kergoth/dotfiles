@@ -16,6 +16,6 @@ if (( $+commands[brew] )); then
     compdef adminbrew=brew 2>/dev/null
 fi
 
-if [[ -d "$fzfdir/../share/fzf" ]]; then
+if [[ -f "$fzfdir/../share/fzf/completion.zsh" ]]; then
     . "$fzfdir/../share/fzf/completion.zsh"
 fi

@@ -10,7 +10,7 @@ export FZF_DEFAULT_OPTS='
 export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS
 
 fzfdir=$(dirname "${commands[fzf]}")
-if [[ -d "$fzfdir/../share/fzf" ]] && ! (( $+commands[atuin] )); then
+if [[ -f "$fzfdir/../share/fzf/key-bindings.zsh" ]] && ! (( $+commands[atuin] )); then
     . "$fzfdir/../share/fzf/key-bindings.zsh"
 fi
 
