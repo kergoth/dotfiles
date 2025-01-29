@@ -112,8 +112,11 @@ die() {
     exit 1
 }
 
+SUDO_CHECKED=
+
 need_sudo() {
-    if [ "$(id -u)" != "0" ]; then
+    if [ "$(id -u)" != "0" ] && [ -z "$SUDO_CHECKED" ]; then
+        SUDO_CHECKED=1
         if is_freebsd; then
             if has doas && [ -e /usr/local/etc/doas.conf ] && [ "$(doas -C /usr/local/etc/doas.conf pkg)" = permit ]; then
                 return 0
