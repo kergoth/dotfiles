@@ -31,6 +31,11 @@
 
 [interactive]
 	diffFilter = git-diff-filter
+
+{{ if and .wsl2 (glob "/mnt/c/Program Files/Git/mingw64/bin/git-credential-manager.exe") }}
+[credential]
+    helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+{{ end }}
 {{- end }}
 
 [init]
