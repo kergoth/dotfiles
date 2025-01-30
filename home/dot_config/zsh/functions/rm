@@ -1,11 +1,15 @@
 if [[ $OSTYPE =~ darwin ]]; then
-    if [[ $commands[rm] =~ /nix/.*-coreutils ]]; then
+    if (( $+commands[grm] )); then
+        command $commands[grm] --one-file-system -I "$@"
+    elif [[ $commands[rm] =~ /nix/.*-coreutils ]]; then
         command rm --one-file-system -I "$@"
     else
         command rm -xI "$@"
     fi
 elif [[ $OSTYPE =~ freebsd* ]]; then
-    command rm "$@"
+    command rm -xI "$@"
+elif [[ -f /etc/os-release ]] && grep -q "ID.*chimera" /etc/os-release; then
+    command rm -xI "$@"
 else
     command rm --one-file-system -I "$@"
 fi

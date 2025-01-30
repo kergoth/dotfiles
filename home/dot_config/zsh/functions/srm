@@ -7,7 +7,9 @@ if [[ $OSTYPE =~ darwin ]]; then
         sudo rm -xI "$@"
     fi
 elif [[ $OSTYPE =~ freebsd* ]]; then
-    sudo rm "$@"
+    sudo rm -xI "$@"
+elif [[ -f /etc/os-release ]] && grep -q "ID.*chimera" /etc/os-release; then
+    sudo rm -xI "$@"
 else
     sudo rm --one-file-system -I "$@"
 fi
