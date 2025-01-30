@@ -63,6 +63,42 @@ On windows (in powershell, not WSL), run this instead:
 
 ### Operating System Installation
 
+#### WSL2 Chimera Linux Installation
+
+- Download the latest release zip file from [ChimeraWSL](https://github.com/tranzystorekk/ChimeraWSL) (Install Chimera Linux as a WSL instance).
+- Unpack `Chimera.zip` into ~/Apps/Chimera
+- Run ~/Apps/Chimera/chimera.exe, which registers the new distro with WSL and unpacks the rootfs tarball, then enters the wsl as root
+- Initial setup, run the setup-root script, and exit wsl:
+
+```console
+apk update
+apk upgrade
+apk add git
+cd
+git clone https://github.com/kergoth/dotfiles .dotfiles
+./.dotfiles/script/chimera/setup-root
+exit
+```
+
+- Set our new user as default: `~/Apps/Chimera/chimera.exe config --default-user kergoth`
+- Re-enter wsl, as the new user: `wsl -d chimera`
+- Clone the dotfiles repository and run the system and user setup:
+
+```console
+cd
+git clone https://github.com/kergoth/dotfiles .dotfiles
+./.dotfiles/script/setup-full
+```
+
+- Optionally, enable init and service management with dinit: `doas nvim /etc/wsl.conf` and add:
+
+```ini
+[boot]
+systemd=true
+```
+
+**Note**: If you set `systemd=true`, it will run all the default Chimera Linux services, including **PipeWire**, but there's no need for this given the WSL2 system distro is already running **PulseAudio**. I need to determine which default services to disable in this situation.
+
 #### Linux Installation on Chimera Linux
 
 - Attach the Chimera Linux Live CD ISO to a VM or USB drive and boot from it.
