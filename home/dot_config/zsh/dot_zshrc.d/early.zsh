@@ -18,6 +18,9 @@ if [[ "$OSTYPE" = WSL ]] && [[ -o interactive ]]; then
                 sudo chown -R "$UID" /run/user/"$UID"
         fi
     fi
+    if [[ -d /mnt/wslg/runtime-dir ]] && ! [[ -e /run/user/"$UID"/wayland-0 ]]; then
+        ln -sf /mnt/wslg/runtime-dir/* /run/user/"$UID"/
+    fi
 fi
 
 if (( ${+commands[direnv]} )); then
