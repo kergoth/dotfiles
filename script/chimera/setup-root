@@ -20,6 +20,9 @@ if ! getent passwd "$user" >/dev/null 2>&1; then
     else
         echo >&2 "WARNING: Unable to set password for $user"
     fi
+else
+    echo >&2 "Adding user '$user' to the wheel group"
+    usermod -a -G wheel "$user"
 fi
 
 # Enable the DHCP client service
