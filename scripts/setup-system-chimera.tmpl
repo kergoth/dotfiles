@@ -30,6 +30,12 @@ if [ -e /usr/bin/zsh ]; then
     fi
 fi
 
+{{ if .wsl2 -}}
+# Install socat for the npiperelay setup
+apk add socat
+{{- end }}
+
+{{ if and (not .ephemeral) (not .wsl2) -}}
 # Enable System logging
 if ! dinitctl status syslog-ng | grep -q STARTED; then
     dinitctl enable syslog-ng
@@ -38,7 +44,6 @@ fi
 # Enable sound
 apk add pipewire
 
-{{ if not .ephemeral -}}
 # Enable DHCP Client
 if ! dinitctl status dhcpcd | grep -q STARTED; then
     dinitctl enable dhcpcd
@@ -58,10 +63,12 @@ apk add --no-interactive neovim
 # Install Gnome
 apk add --no-interactive gnome
 
+{{ if and (not .ephemeral) (not .wsl2) -}}
 # Enable gdm
 if ! dinitctl status gdm | grep -q STARTED; then
     dinitctl enable gdm
 fi
+{{- end }}
 
 # Install and configure flatpak
 apk add --no-interactive flatpak
