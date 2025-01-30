@@ -104,6 +104,9 @@ setup_os() {
     # Install bash for my dotfiles and other scripts
     apk add --no-interactive bash
 
+    # Install unzip for chezmoi 1password-cli usage
+    apk add --no-interactive unzip
+
     # Install curl for chezmoi installation
     apk add --no-interactive curl
 }

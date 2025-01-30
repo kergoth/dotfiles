@@ -39,7 +39,7 @@ darwin*)
     ;;
 esac
 
-if ! has git || ! has bash; then
+if ! has git || ! has bash || ! has unzip; then
     if [ "$DISTRO" = freebsd ]; then
         if ! doas pkg -N; then
             run doas pkg bootstrap
@@ -50,14 +50,25 @@ if ! has git || ! has bash; then
         if ! command -v bash >/dev/null 2>&1; then
             run doas env ASSUME_ALWAYS_YES=YES pkg install bash
         fi
+        if ! command -v bash >/dev/null 2>&1; then
+            run doas env ASSUME_ALWAYS_YES=YES pkg install unzip
+        fi
+    elif has apk; then
+        if has doas; then
+            doas apk update
+            doas apk add --no-interactive git bash unzip
+        else
+        doas apk update
+    doas apk add --no-interactive git bash unzip
+        fi
     elif has nix-shell; then
-        exec nix-shell -p git bash --run "$0"
+        exec nix-shell -p git bash unzip --run "$0"
     elif has apt-get; then
         run sudo apt-get update
-        run sudo apt-get -y install git bash
+        run sudo apt-get -y install git bash unzip
     elif has pacman; then
         run sudo pacman -Sy
-        run sudo pacman -S --noconfirm --needed git bash
+        run sudo pacman -S --noconfirm --needed git bash unzip
     else
         echo >&2 "Error: unsupported host and git and/or bash are not available, exiting"
         exit 1

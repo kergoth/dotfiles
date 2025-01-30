@@ -33,5 +33,8 @@ apk add --no-interactive bash
 # Install git for my dotfiles
 apk add --no-interactive git
 
+# Install unzip for chezmoi 1password-cli usage
+apk add --no-interactive unzip
+
 # Install curl for chezmoi installation
 apk add --no-interactive curl
