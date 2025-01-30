@@ -97,6 +97,8 @@ git clone https://github.com/kergoth/dotfiles .dotfiles
 systemd=true
 ```
 
+  - If you set systemd=true, remember to shut down WSL so it will start init when you run it next: `wsl.exe --shutdown`.
+
 **Note**: If you set `systemd=true`, it will run all the default Chimera Linux services, including **PipeWire**, but there's no need for this given the WSL2 system distro is already running **PulseAudio**. I need to determine which default services to disable in this situation.
 
 #### Chimera Linux Installation
