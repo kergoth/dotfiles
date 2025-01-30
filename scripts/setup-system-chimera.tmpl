@@ -33,6 +33,9 @@ fi
 {{ if .wsl2 -}}
 # Install socat for the npiperelay setup
 apk add socat
+{{- else }}
+# Install gnupg
+apk add --no-interactive gnupg
 {{- end }}
 
 {{ if and (not .ephemeral) (not .wsl2) -}}
