@@ -9,9 +9,14 @@ fi
 if [[ "$OSTYPE" = WSL ]] && [[ -o interactive ]]; then
     UID=${UID:-$(id -u)}
     if ! [[ -d /run/user/"$UID" ]]; then
-        echo >&2 "Warning: /run/user/$UID does not exist. Creating using sudo."
-        sudo mkdir -p /run/user/"$UID" && \
-            sudo chown -R "$UID" /run/user/"$UID"
+        if (( ${+commands[doas]} )); then
+            echo >&2 "Warning: /run/user/$UID does not exist. Creating using doas."
+            doas bash -c "mkdir -p /run/user/\"$UID\" && chown -R \"$UID\" /run/user/\"$UID\""
+        else
+            echo >&2 "Warning: /run/user/$UID does not exist. Creating using sudo."
+            sudo mkdir -p /run/user/"$UID" && \
+                sudo chown -R "$UID" /run/user/"$UID"
+        fi
     fi
 fi
 
