@@ -99,7 +99,7 @@ systemd=true
 
 **Note**: If you set `systemd=true`, it will run all the default Chimera Linux services, including **PipeWire**, but there's no need for this given the WSL2 system distro is already running **PulseAudio**. I need to determine which default services to disable in this situation.
 
-#### Linux Installation on Chimera Linux
+#### Chimera Linux Installation
 
 - Attach the Chimera Linux Live CD ISO to a VM or USB drive and boot from it.
 - If not using a `base` ISO, wait for the graphical environment to load. It will take a few seconds.
