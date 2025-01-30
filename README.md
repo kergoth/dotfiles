@@ -259,7 +259,7 @@ chezmoi update -R
 
   - There are no good options for tmux or tmux-equivalent on Windows. The closest you can get is just splits in Windows Terminal, which doesn't give you the ability to disconnect.
 
-#### CLI Software on Linux, macOS, and Windows
+#### CLI Software on Linux (non-Chimera), macOS, and Windows
 
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
 
