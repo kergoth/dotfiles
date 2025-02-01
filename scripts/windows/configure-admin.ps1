@@ -180,7 +180,23 @@ Get-Service -Name WerSvc | Set-Service -StartupType Disabled
 # System configuration via Sophia
 $DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
 
-$sophia_url = Get-GithubLatestRelease "farag2/Sophia-Script-for-Windows" "Sophia.Script.for.Windows.10.v"
+$windowsVersion = (Get-ComputerInfo).WindowsVersion
+if ($windowsVersion -like "10.*") {
+    $baseVersionString = "Sophia.Script.for.Windows.10"
+} elseif ($windowsVersion -like "11.*") {
+    $baseVersionString = "Sophia.Script.for.Windows.11"
+} else {
+    throw "Unsupported Windows version: $windowsVersion"
+}
+$powershellVersion = $PSVersionTable.PSVersion.Major
+if ($powershellVersion -eq 5) {
+    $powershellString = ""
+} elseif ($powershellVersion -eq 7) {
+    $powershellString = ".PowerShell.7"
+} else {
+    throw "Unsupported PowerShell version: $powershellVersion"
+}
+$sophia_url = Get-GithubLatestRelease "farag2/Sophia-Script-for-Windows" "$baseVersionString$powershellString"
 $sophia = "$DownloadsFolder\" + (Split-Path $sophia_url -Leaf)
 if (-not (Test-Path $sophia)) {
   Start-BitsTransfer $sophia_url -Destination $DownloadsFolder
