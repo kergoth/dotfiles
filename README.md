@@ -368,7 +368,6 @@ The intention is to incorporate the installation of Nix on all systems in time.
   - [Microsoft Teams](https://www.microsoft.com/en/microsoft-teams/group-chat-software/): Meet, chat, call, and collaborate in just one place.
 - If the gaming flag is enabled:
   - [Steam](https://store.steampowered.com): A digital distribution platform for purchasing and playing video games.
-  - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 
 #### GUI Software on Windows
 
@@ -402,6 +401,8 @@ The intention is to incorporate the installation of Nix on all systems in time.
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
 - [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
+- If the gaming flag is enabled:
+  - [Steam Link](https://store.steampowered.com/steamlink/about): Stream your Steam games.
 - [SwiftDefaultApps](https://github.com/Lord-Kamina/SwiftDefaultApps) (Open-Source): A preference pane will let you view and change default application associations.
 - [SyncThing](https://syncthing.net/) ([Open-Source](https://github.com/syncthing/)): A continuous file synchronization program.
 - [The Unarchiver](https://macpaw.com/download/the-unarchiver): Unpack archive files.

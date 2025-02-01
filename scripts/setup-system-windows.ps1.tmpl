@@ -87,11 +87,5 @@ if (-not (Test-InWindowsSandbox)) {
 {{  if not .work -}}
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id BiniSoft.WindowsFirewallControl | Out-Null
 
-#   Gaming
-{{    if .gaming -}}
-Install-WinGetPackageIfNotInstalled -Mode Silent -Id Valve.SteamLink | Out-Null
-{{-   end }}
-{{- end }}
-
 # Configuration
 & "$env:DOTFILES_DIR\scripts\windows\configure-admin.ps1"
