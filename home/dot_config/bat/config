@@ -1,2 +1,4 @@
---theme=Dracula
+--theme=auto
+--theme-light=OneHalfLight
+--theme-dark=Dracula
 --style=grid,header
