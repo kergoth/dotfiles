@@ -24,7 +24,7 @@ if ($IsWindows) {
 # Install chezmoi if necessary
 if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
   if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-    Write-Output "Installing scoop"
+    Write-Host "Installing scoop"
     Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
   }
 
@@ -50,6 +50,8 @@ if ($env:DOTFILES_DIR -ne $chezmoidir) {
 }
 
 # Init my dotfiles
-Write-Output "Initializing dotfiles"
+if (-Not (Test-Path "$env:USERPROFILE\.config\chezmoi\chezmoi.toml")) {
+    Write-Host "Initializing dotfiles"
+}
 chezmoi init
 Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
