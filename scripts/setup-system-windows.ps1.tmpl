@@ -86,6 +86,7 @@ if (-not (Test-InWindowsSandbox)) {
 # Personal systems only
 {{  if not .work -}}
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id BiniSoft.WindowsFirewallControl | Out-Null
+{{- end }}
 
 # Configuration
 & "$env:DOTFILES_DIR\scripts\windows\configure-admin.ps1"
