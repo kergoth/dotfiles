@@ -1,13 +1,126 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# Bootstrap script for initializing the dotfiles on a new system.
+#
+# - Install git, bash, curl, and unzip if not already present
+# - Clone the dotfiles repo if not already present
+# - Run script/setup from the dotfiles repo
 
-set -euo pipefail
+set -eu
 
-PATH="$HOME/.local/bin:$PATH"
+PATH="$HOME/.local/bin:$HOME/.nix-profile/bin:$PATH"
 
-if ! command -v chezmoi &>/dev/null; then
-    echo >&2 "Installing chezmoi"
-    (cd && sh -c "$(curl -fsLS get.chezmoi.io/lb)")
+has() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+run() {
+    if has printcmd; then
+        printf '❯ %s\n' "$(printcmd "$@")" >&2
+    else
+        printf '❯ %s\n' "$*" >&2
+    fi
+    "$@"
+}
+
+need_sudo() {
+    if [ "$(id -u)" != "0" ]; then
+        if is_freebsd; then
+            if has doas && [ -e /usr/local/etc/doas.conf ] && [ "$(doas -C /usr/local/etc/doas.conf pkg)" = permit ]; then
+                return 0
+            else
+                die "Error: please run as root, or as a user that can run doas."
+            fi
+        elif has doas; then
+            if ! doas true; then
+                die "Error: please run as root, or as a user that can run doas."
+            fi
+        else
+            msg "Running sudo, you may be prompted for your password."
+            if ! sudo -v; then
+                die "Error: please run as root, or as a user that can run sudo."
+            else
+                # Keep-alive: update existing `sudo` time stamp until finished
+                while true; do
+                    sudo -n true
+                    sleep 60
+                    kill -0 "$$" || exit
+                done 2>/dev/null &
+            fi
+        fi
+    fi
+}
+
+sudorun() {
+    command $SUDO "$@"
+}
+
+required_dependencies() {
+    set --
+    if ! has git; then
+        set -- "$@" git
+    fi
+    if ! has bash; then
+        set -- "$@" bash
+    fi
+    if ! has curl; then
+        set -- "$@" curl
+    fi
+    if ! has unzip; then
+        set -- "$@" unzip
+    fi
+    if [ $# -gt 0 ]; then
+        if [ "$DISTRO" = freebsd ]; then
+            need_sudo
+            if ! doas pkg -N; then
+                sudorun pkg bootstrap
+            fi
+            sudorun env ASSUME_ALWAYS_YES=YES pkg install "$@"
+        elif has nix-shell; then
+            exec nix-shell -p "$@" --run "$0"
+        elif has apk; then
+            need_sudo
+            sudorun apk update
+            sudorun apk -y install "$@"
+        elif has apt-get; then
+            need_sudo
+            sudorun apt-get update
+            sudorun apt-get -y install "$@"
+        elif has pacman; then
+            need_sudo
+            sudorun pacman -Sy
+            sudorun pacman -S --noconfirm --needed "$@"
+        else
+            echo >&2 "Error: unsupported host, and git and/or bash and/or curl are not available, exiting"
+            exit 1
+        fi
+    fi
+}
+
+# shellcheck disable=SC3028,SC2034
+case "${OSTYPE:-}" in
+darwin*)
+    DISTRO=macos
+    ;;
+*)
+    if [ -e /etc/os-release ]; then
+        DISTRO="$(sed -n -e 's/^ID=//p' /etc/os-release | tr '[:upper:]' '[:lower:]')"
+    else
+        DISTRO=
+    fi
+    ;;
+esac
+
+if [ "$(id -u)" != "0" ]; then
+    if [ "$DISTRO" = freebsd ]; then
+        SUDO="doas "
+    else
+        SUDO="sudo "
+    fi
+else
+    SUDO=
 fi
+
+required_dependencies
 
 if [ -z "${DOTFILES_DIR:-}" ]; then
     if [ -h ~/.local/share/chezmoi ]; then
@@ -22,6 +135,10 @@ if [ -z "${DOTFILES_DIR:-}" ]; then
         fi
     fi
 fi
+if ! [ -e "$DOTFILES_DIR/.chezmoiroot" ]; then
+    echo >&2 "Error: DOTFILES_DIR $DOTFILES_DIR is not a chezmoi repository, exiting"
+    exit 1
+fi
 
 if ! [ -e "$DOTFILES_DIR" ]; then
     run git clone --recursive https://github.com/kergoth/dotfiles "$DOTFILES_DIR"
@@ -29,18 +146,24 @@ fi
 
 if ! [ -h ~/.local/share/chezmoi ]; then
     # Symlink to ~/.local/share/chezmoi to let chezmoi find the hook scripts
-    mkdir -p ~/.local/share
     if [ -h ~/.local/share/chezmoi ]; then
         rm -f ~/.local/share/chezmoi
     elif [ -e ~/.local/share/chezmoi ]; then
         echo >&2 "Error: ~/.local/share/chezmoi exists and is not a symlink"
         exit 1
     fi
+    mkdir -p ~/.local/share
     ln -sf "$DOTFILES_DIR" ~/.local/share/chezmoi
+fi
+
+if ! command -v chezmoi >/dev/null 2>&1; then
+    echo >&2 "Installing chezmoi"
+    (cd && sh -c "$(curl -fsLS get.chezmoi.io/lb)")
 fi
 
 if ! [ -e ~/.config/chezmoi/chezmoi.toml ]; then
     echo >&2 "Initializing dotfiles"
 fi
+
 chezmoi init --source "$DOTFILES_DIR" "$@" kergoth/dotfiles
 chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
