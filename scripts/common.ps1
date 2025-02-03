@@ -261,6 +261,54 @@ function Get-UrlBaseName {
     }
 }
 
+function Test-ChildScript {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$scriptPath
+    )
+
+    try {
+        # First try to find the script directly
+        $script = Get-Command $scriptPath -ErrorAction Stop
+        return $script.Source
+    }
+    catch {
+        # If direct script not found, try with .tmpl extension
+        try {
+            $scriptTemplate = Get-Command "$scriptPath.tmpl" -ErrorAction Stop
+            return $scriptTemplate.Source
+        }
+        catch {
+            return $null
+        }
+    }
+}
+
+function Invoke-ChildScript {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [string]$scriptPath
+    )
+
+    if (Test-Path $scriptPath) {
+        Write-Host "Running $scriptPath"
+        try {
+            & $scriptPath
+        }
+        catch {
+            Write-Error "Failed to execute script $scriptPath"
+        }
+    } elseif (Test-Path "$scriptPath.tmpl") {
+        Write-Host "Processing and running template script $scriptPath"
+        $scriptContents = Get-Content -Path "$script.tmpl" | chezmoi execute-template | Out-String
+        Invoke-Expression $scriptContents
+    } else {
+        Write-Error "No $scriptPath script found"
+    }
+}
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 switch (Get-PSPlatform) {
