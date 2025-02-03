@@ -302,7 +302,7 @@ function Invoke-ChildScript {
         }
     } elseif (Test-Path "$scriptPath.tmpl") {
         Write-Host "Processing and running template script $scriptPath"
-        $scriptContents = Get-Content -Path "$script.tmpl" | chezmoi execute-template | Out-String
+        $scriptContents = Get-Content -Path "$scriptPath.tmpl" | chezmoi execute-template | Out-String
         Invoke-Expression $scriptContents
     } else {
         Write-Error "No $scriptPath script found"
