@@ -9,11 +9,6 @@ function Invoke-Sophia {
     }
     catch {
     }
-
-    HEIF -Install
-    NetworkAdaptersSavePower -Disable
-    NetworkDiscovery -Enable
-    TaskManagerWindow -Expanded
   }
 
   # Uninstall OneDrive
@@ -205,7 +200,7 @@ if (-not (Test-Path $sophia)) {
 $sophiadir = "$env:TEMP\sophia"
 try {
   $cwd = Get-Location
-  Write-Output "Installing Sophia Script"
+  Write-Output "Configuring with Sophia Script"
   Expand-Archive $sophia -DestinationPath $sophiadir -Force
   Set-Location (Get-ChildItem -Path $sophiadir | Select-Object -First 1).FullName
   Invoke-Sophia
