@@ -180,11 +180,11 @@ Get-Service -Name WerSvc | Set-Service -StartupType Disabled
 # System configuration via Sophia
 $DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
 
-$windowsVersion = (Get-ComputerInfo).WindowsVersion
-if ($windowsVersion -like "10.*") {
-    $baseVersionString = "Sophia.Script.for.Windows.10"
-} elseif ($windowsVersion -like "11.*") {
+$windowsVersion = [System.Environment]::OSVersion.Version
+if ($windowsVersion.Major -eq 10 -and $windowsVersion.Build -ge 22000) {
     $baseVersionString = "Sophia.Script.for.Windows.11"
+} elseif ($windowsVersion.Major -eq 10) {
+    $baseVersionString = "Sophia.Script.for.Windows.10"
 } else {
     throw "Unsupported Windows version: $windowsVersion"
 }
@@ -216,4 +216,3 @@ finally {
 }
 
 Write-Output "Admin configuration complete"
-
