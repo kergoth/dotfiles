@@ -89,4 +89,4 @@ Install-WinGetPackageIfNotInstalled -Mode Silent -Id BiniSoft.WindowsFirewallCon
 {{- end }}
 
 # Configuration
-& "$env:DOTFILES_DIR\scripts\windows\configure-admin.ps1"
+Invoke-ChildScript "$env:DOTFILES_DIR\scripts\windows\configure-admin.ps1"
