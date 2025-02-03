@@ -6,6 +6,6 @@ scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 PATH="$scriptdir:$PATH"
 
 ret=0
-bootstrap-setup-system || ret=$?
+setup-system || ret=$?
 setup-user || ret=$?
 exit $ret
