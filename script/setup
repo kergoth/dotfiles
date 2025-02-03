@@ -13,4 +13,4 @@ PATH="$HOMEBREW_PREFIX/bin:$HOME/.local/bin:$PATH"
 "$scriptdir/bootstrap"
 
 echo >&2 "Applying dotfiles"
-chezmoi apply "$@"
+chezmoi apply --keep-going "$@"
