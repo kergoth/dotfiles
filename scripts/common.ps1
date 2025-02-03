@@ -301,9 +301,23 @@ function Invoke-ChildScript {
             Write-Error "Failed to execute script $scriptPath"
         }
     } elseif (Test-Path "$scriptPath.tmpl") {
-        Write-Host "Processing and running template script $scriptPath"
-        $scriptContents = Get-Content -Path "$scriptPath.tmpl" | chezmoi execute-template | Out-String
-        Invoke-Expression $scriptContents
+        Write-Host "Running template script $scriptPath.tmpl"
+        $templateDir = Split-Path -Parent "$scriptPath.tmpl"
+        $tempScriptPath = Join-Path $templateDir ([System.IO.Path]::GetFileName($scriptPath))
+        try {
+            Get-Content -Path "$scriptPath.tmpl" |
+                chezmoi execute-template |
+                Set-Content -Path $tempScriptPath
+            & $tempScriptPath
+        }
+        catch {
+            Write-Error "Failed to process or execute template script $scriptPath"
+        }
+        finally {
+            if (Test-Path $tempScriptPath) {
+                Remove-Item -Path $tempScriptPath -ErrorAction SilentlyContinue
+            }
+        }
     } else {
         Write-Error "No $scriptPath script found"
     }
