@@ -37,7 +37,7 @@ if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 
 $chezmoidir = "$env:USERPROFILE\.local\share\chezmoi"
-if ($env:DOTFILES_DIR -ne $chezmoidir) {
+if ($env:DOTFILES_DIR -ne $chezmoidir) -and (-not $IsWindows) {
   if (-not (Test-Path "$env:USERPROFILE\.local\share")) {
     New-Item -ItemType Directory -Path "$env:USERPROFILE\.local\share" | Out-Null
   }
@@ -53,5 +53,5 @@ if ($env:DOTFILES_DIR -ne $chezmoidir) {
 if (-Not (Test-Path "$env:USERPROFILE\.config\chezmoi\chezmoi.toml")) {
     Write-Host "Initializing dotfiles"
 }
-chezmoi init
+chezmoi init --source $env:DOTFILES_DIR
 Set-UserOnlyFileAccess $env:USERPROFILE\.config\chezmoi\chezmoi.toml
