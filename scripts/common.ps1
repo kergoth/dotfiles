@@ -276,7 +276,7 @@ function Invoke-ChildScript {
             & $scriptPath
         }
         catch {
-            Write-Error "Failed to execute script $scriptPath"
+            Write-Error "Failed to execute script ${scriptPath}: $_"
         }
     } elseif (Test-Path "$scriptPath.tmpl") {
         Write-Host "Running template script $scriptPath.tmpl"
