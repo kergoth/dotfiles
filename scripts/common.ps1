@@ -4,6 +4,8 @@ $ConfirmPreference = 'None' # Suppress confirmation prompts
 Add-Type -AssemblyName System.Web
 
 if ($IsWindows) {
+  Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+
   Import-Module -Name BitsTransfer
 }
 
