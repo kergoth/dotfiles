@@ -37,7 +37,7 @@ if (-not (Get-Command chezmoi -ErrorAction SilentlyContinue)) {
 $env:DOTFILES_DIR = $PSScriptRoot | Split-Path -Parent
 
 $chezmoidir = "$env:USERPROFILE\.local\share\chezmoi"
-if ($env:DOTFILES_DIR -ne $chezmoidir) -and (-not $IsWindows) {
+if (($env:DOTFILES_DIR -ne $chezmoidir) -and (-not $IsWindows)) {
   if (-not (Test-Path "$env:USERPROFILE\.local\share")) {
     New-Item -ItemType Directory -Path "$env:USERPROFILE\.local\share" | Out-Null
   }
