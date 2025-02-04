@@ -263,30 +263,6 @@ function Get-UrlBaseName {
     }
 }
 
-function Test-ChildScript {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory, Position = 0)]
-        [string]$scriptPath
-    )
-
-    try {
-        # First try to find the script directly
-        $script = Get-Command $scriptPath -ErrorAction Stop
-        return $script.Source
-    }
-    catch {
-        # If direct script not found, try with .tmpl extension
-        try {
-            $scriptTemplate = Get-Command "$scriptPath.tmpl" -ErrorAction Stop
-            return $scriptTemplate.Source
-        }
-        catch {
-            return $null
-        }
-    }
-}
-
 function Invoke-ChildScript {
     [CmdletBinding()]
     param(
