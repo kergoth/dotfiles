@@ -41,6 +41,7 @@ if ! command -v nix >/dev/null 2>&1; then
     exit 1
 fi
 
+echo >&2 "Applying existing Home Manager configuration prior to update"
 chezmoi apply ~/.config/home-manager
 home-manager-switch
 
