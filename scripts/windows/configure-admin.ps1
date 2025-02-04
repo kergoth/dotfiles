@@ -1,5 +1,7 @@
 #Requires -RunAsAdministrator
 
+$ErrorActionPreference = "Continue"
+
 function Invoke-Sophia {
   . .\Functions.ps1
 
