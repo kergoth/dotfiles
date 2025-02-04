@@ -24,10 +24,7 @@ if (-not (Test-InWindowsSandbox)) {
   }
 
   # Enable Windows Sandbox
-  $feature = Get-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM
-  if (-not $feature) {
-    Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -All -NoRestart
-  }
+  Enable-WindowsSandbox
 }
 
 # Install winget

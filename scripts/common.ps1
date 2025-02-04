@@ -301,6 +301,74 @@ function Invoke-ChildScript {
     }
 }
 
+<#
+.SYNOPSIS
+Enables Windows Sandbox if supported on the system.
+
+.DESCRIPTION
+This function checks whether Windows Sandbox (the “Containers-DisposableClientVM” feature) is available on the machine,
+verifies that hardware virtualization is enabled, warns if the system is a VM (which may require nested virtualization),
+and attempts to enable the feature. It is designed to be called from system setup scripts with clean error handling.
+
+.EXAMPLE
+Enable-WindowsSandbox
+
+This command will enable Windows Sandbox if all prerequisites are met.
+If the feature isn’t available (e.g. on Windows Home), or if virtualization is disabled, it will output appropriate error messages.
+#>
+function Enable-WindowsSandbox {
+    [CmdletBinding()]
+    param()
+
+    try {
+        # Check if the Windows Sandbox feature is available.
+        $sandboxFeature = Get-WindowsOptionalFeature -Online -FeatureName "Containers-DisposableClientVM" -ErrorAction Stop
+    }
+    catch {
+        Write-Error "Windows Sandbox is not available on this machine. (It may not be supported on Windows Home editions.)"
+        return
+    }
+
+    if ($sandboxFeature.State -eq "Enabled") {
+        Write-Verbose "Windows Sandbox is already enabled."
+        Write-Output "Windows Sandbox is already enabled."
+        return
+    }
+
+    # Verify that hardware virtualization is enabled.
+    try {
+        $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+    }
+    catch {
+        Write-Error "Failed to retrieve CPU information. Details: $_"
+        return
+    }
+    if (-not $cpu.VirtualizationFirmwareEnabled) {
+        Write-Error "Virtualization is not enabled in the firmware. Windows Sandbox requires virtualization support."
+        return
+    }
+
+    # Warn if running in a VM, as nested virtualization may be needed.
+    try {
+        $computerSystem = Get-CimInstance -ClassName Win32_ComputerSystem
+    }
+    catch {
+        Write-Warning "Unable to retrieve computer system information for nested virtualization check."
+    }
+    if ($computerSystem -and $computerSystem.Model -match "Virtual") {
+        Write-Warning "This system appears to be a virtual machine. Windows Sandbox runs as a nested Hyper-V container, so ensure nested virtualization is enabled."
+    }
+
+    # Attempt to enable the Windows Sandbox feature.
+    try {
+        Enable-WindowsOptionalFeature -Online -FeatureName "Containers-DisposableClientVM" -NoRestart -ErrorAction Stop
+        Write-Output "Windows Sandbox has been enabled. Please restart your computer for the changes to take effect."
+    }
+    catch {
+        Write-Error "Failed to enable Windows Sandbox. Details: $_"
+    }
+}
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 switch (Get-PSPlatform) {
