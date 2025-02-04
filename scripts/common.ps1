@@ -132,7 +132,7 @@ function Install-ModuleIfNotInstalled (
     if ($null -ne $installedModule) {
       Write-Verbose ('Module [{0}] (v {1}) is installed.' -f $moduleName,$installedModule.Version)
     }
-    if ($null -eq $installedModule -or ($null -ne $minimalVersion -and $installedModule.Version -lt $minimalVersion)) {
+    if ($null -eq $installedModule -or "" -eq $installedModule -or ($null -ne $minimalVersion -and "" -ne $minimalVersion -and $installedModule.Version -lt $minimalVersion)) {
       Write-Verbose ('Module {0} min.vers {1}: not installed; check if nuget v2.8.5.201 or later is installed.' -f $moduleName,$minimalVersion)
       #First check if package provider NuGet is installed. Incase an older version is installed the required version is installed explicitly
       if ((Get-PackageProvider -Name NuGet -Force).Version -lt '2.8.5.201') {
