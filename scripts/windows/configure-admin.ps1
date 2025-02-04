@@ -90,14 +90,12 @@ function Invoke-Sophia {
 . $PSScriptRoot\..\common.ps1
 
 # Start SSH agent and set the service to be started automatically
-$service = Get-Service -Name ssh-agent -ErrorAction SilentlyContinue
-if ($service) {
-  if ($service.StartupType -ne [Microsoft.PowerShell.Commands.ServiceStartupType]::Automatic) {
-    $service | Set-Service -StartupType Automatic
-  }
-  if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-    $service | Start-Service
-  }
+$agent = Get-Service -Name ssh-agent
+if ($agent.Status -ne "Running") {
+  $agent | Start-Service
+}
+if ($agent.StartType -ne "Automatic") {
+  $agent | Set-Service -StartupType Automatic
 }
 
 # Enable Network Protection
