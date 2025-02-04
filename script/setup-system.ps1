@@ -13,6 +13,9 @@ elseif ($IsMacOS) {
 }
 elseif ($IsWindows) {
   $os = "windows"
+
+  # Use RemoteSigned execution policy for PowerShell.
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 }
 if ($os) {
   Invoke-ChildScript "$PSScriptRoot\..\scripts\setup-system-$os.ps1"
