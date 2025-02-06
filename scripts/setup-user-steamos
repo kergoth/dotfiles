@@ -71,7 +71,7 @@ else
     fi
 fi
 
-mkdir -p ~/.local/bin
+mkdir -p ~/.local/bin ~/.local/share/applications
 chmod +x ~/.local/bin/* 2>/dev/null
 
 # Enable the ssh server if it's not already enabled
