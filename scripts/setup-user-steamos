@@ -62,8 +62,11 @@ sdmount=$(find /run/media/deck -mindepth 1 -maxdepth 1 -type d)
 if [ -z "$sdmount" ]; then
     echo >&2 "No SD card mounted"
 else
-    if [ -d "$sdmount/Emulation/roms/portable" ]; then
-        chmod +x "$sdmount/Emulation/roms/portable/"*.sh
+    if [ -d "$sdmount/Emulation/roms" ]; then
+        chmod +x "$sdmount/Emulation/roms/"*/*.sh 2>/dev/null || :
+    fi
+    if [ -d "$sdmount/retrodeck/roms" ]; then
+        chmod +x "$sdmount/retrodeck/roms/"*/*.sh 2>/dev/null || :
     fi
     if ! [ -e ~/SD ]; then
         ln -sf "$sdmount" ~/SD
