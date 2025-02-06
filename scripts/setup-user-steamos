@@ -195,8 +195,10 @@ if ! [ -e ~/Shortix/shortix.sh ]; then
     echo >&2 "Installing Shortix"
     mkdir -p ~/Shortix
     curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
-        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/remove_prefix.sh \
-        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix.sh \
+        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/remove_prefix.sh
+    curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
+        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix.sh
+    curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
         https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix_uninstall.sh
     chmod +x ~/Shortix/*.sh
     touch ~/Shortix/.id
