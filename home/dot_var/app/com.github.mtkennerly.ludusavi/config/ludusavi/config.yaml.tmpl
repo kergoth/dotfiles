@@ -1,0 +1,190 @@
+{{ if .steamdeck -}}
+---
+runtime:
+  threads: ~
+release:
+  check: true
+manifest:
+  enable: true
+  secondary:
+    - url: "https://raw.githubusercontent.com/BloodShed-Oni/ludusavi-extra-manifests/main/BS_ex-manifest.yaml"
+      enable: true
+    - url: "https://raw.githubusercontent.com/hblamo/ludusavi-emudeck-manifest/main/manifest.yml"
+      enable: true
+    - url: "https://raw.githubusercontent.com/BloodShed-Oni/ludusavi-extra-manifests/main/BS_software-manifest.yaml"
+      enable: true
+    - url: "https://github.com/hvmzx/ludusavi-manifests/raw/refs/heads/main/non-steam-manifest.yml"
+      enable: true
+language: en-US
+theme: dark
+roots:
+  - store: steam
+    path: /home/deck/.local/share/Steam
+  - store: heroic
+    path: /home/deck/.var/app/com.heroicgameslauncher.hgl/config/heroic
+  - store: steam
+    path: /run/media/deck/SD
+  - store: heroic
+    path: /home/deck/Games/Heroic
+  - store: other
+    path: /home/deck/Games
+  - store: other
+    path: /run/media/deck/SD/Games
+  - store: otherHome
+    path: /run/media/deck/SD
+  - store: other
+    path: /home/deck/Games/sdos
+  - store: other
+    path: /home/deck/Games/swin
+  - store: other
+    path: /run/media/deck/SD/Games/Linux
+  - store: other
+    path: /run/media/deck/SD/Games/Windows
+redirects: []
+backup:
+  path: /run/media/deck/SD/Saves Backup
+  ignoredGames: []
+  filter:
+    excludeStoreScreenshots: true
+    cloud:
+      exclude: true
+      epic: false
+      gog: false
+      origin: false
+      steam: true
+      uplay: false
+    ignoredPaths:
+      - /home/deck/Applications/ShipofHarkinian/logs
+      - /home/deck/Applications/2Ship2Harkinian/logs
+      - /home/deck/.var/app/io.github.shiiion.primehack/data/dolphin-emu/Load
+      - /home/deck/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load
+    ignoredRegistry: []
+  toggledPaths:
+    2 Ship 2 Harkinian:
+      /home/deck/Applications/2Ship2Harkinian: false
+    Dolphin:
+      /home/deck/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load: false
+    Ship of Harkinian:
+      /home/deck/Applications/ShipofHarkinian: false
+  toggledRegistry: {}
+  sort:
+    key: name
+    reversed: false
+  retention:
+    full: 3
+    differential: 6
+  format:
+    chosen: simple
+    zip:
+      compression: deflate
+    compression:
+      deflate:
+        level: 6
+      bzip2:
+        level: 6
+      zstd:
+        level: 10
+  onlyConstructive: false
+restore:
+  path: /run/media/deck/SD/Saves Backup
+  toggledPaths: {}
+  toggledRegistry: {}
+  sort:
+    key: status
+    reversed: true
+  reverseRedirects: false
+scan:
+  showDeselectedGames: true
+  showUnchangedGames: true
+  showUnscannedGames: true
+cloud:
+  remote:
+    Smb:
+      id: ludusavi-1728618970
+      host: 192.168.68.67
+      port: 445
+      username: steamdeck
+  path: Archives/Backups/Game Saves/Deck
+  synchronize: true
+apps:
+  rclone:
+    path: /home/deck/.local/bin/rclone
+    arguments: "--fast-list --ignore-checksum"
+customGames:
+  - name: Portal 2
+    integration: extend
+    files:
+      - "<game>/portal2/puzzles"
+    registry: []
+    installDir: []
+  - name: Brütal Legend
+    integration: extend
+    files:
+      - /home/deck/.local/share/doublefine/brutallegend/
+    registry: []
+    installDir: []
+  - name: Ship of Harkinian
+    integration: override
+    files:
+      - "<root>/ShipofHarkinian/imgui.ini"
+      - "<root>/ShipofHarkinian/shipofharkinian.json"
+      - "<root>/ShipofHarkinian/Save/"
+      - "<root>/The Legend of Zelda - Ocarina of Time/Save/"
+      - "<root>/The Legend of Zelda - Ocarina of Time/shipofharkinian.json"
+      - "<root>/The Legend of Zelda - Ocarina of Time/imgui.ini"
+    registry: []
+    installDir: []
+  - name: 2 Ship 2 Harkinian
+    integration: override
+    files:
+      - "<root>/2Ship2Harkinian/imgui.ini"
+      - "<root>/2Ship2Harkinian/2ship2harkinian.json"
+      - "<root>/2Ship2Harkinian/saves/"
+      - "<root>/The Legend of Zelda - Majora's Mask/imgui.ini"
+      - "<root>/The Legend of Zelda - Majora's Mask/2ship2harkinian.json"
+      - "<root>/The Legend of Zelda - Majora's Mask/saves/"
+    registry: []
+    installDir: []
+  - name: Super Mario 64 EX
+    integration: override
+    files:
+      - /home/deck/.local/share/sm64ex
+    registry: []
+    installDir: []
+  - name: Sonic 3 A.I.R.
+    integration: extend
+    files:
+      - /home/deck/.local/share/Sonic3AIR/
+    registry: []
+    installDir: []
+  - name: The Booze of Monkey Island
+    integration: extend
+    files:
+      - /home/deck/.local/share/BEAN - Adventure Agency/The Booze Of Monkey Island/
+    registry: []
+    installDir: []
+  - name: Vampire Survivors
+    integration: extend
+    files:
+      - "<winAppData>/Vampire_Survivors_<storeUserId>"
+    registry: []
+    installDir: []
+  - name: FEZ
+    integration: extend
+    files:
+      - "<winAppData>/FEZ"
+    registry: []
+    installDir: []
+  - name: Path of Exile II
+    integration: extend
+    files:
+      - "<winDocuments>/My Games/Path of Exile 2"
+    registry: []
+    installDir: []
+  - name: The Black Cauldron Remake
+    integration: extend
+    files:
+      - "<root>/The Black Cauldron Remake/agssave*"
+    registry: []
+    installDir: []
+{{- end }}
