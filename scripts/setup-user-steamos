@@ -152,6 +152,12 @@ fi
 # Allow Chrome to access udev for USB devices, which allows gamepad usage
 flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
 
+if ! flatpak info net.retrodeck.retrodeck &>/dev/null; then
+    echo >&2 "Installing RetroDeck"
+    flatpak install --user --noninteractive flathub net.retrodeck.retrodeck
+    steamos-add-to-steam ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop
+fi
+
 if [ -e ~/.config/systemd/user/deck-backup.service ]; then
     systemctl --user enable ~/.config/systemd/user/deck-backup.timer
 fi
