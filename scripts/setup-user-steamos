@@ -191,11 +191,6 @@ if ! [ -x ~/.local/bin/restic ]; then
     chmod +x ~/.local/bin/restic
 fi
 
-if ! [ -e ~/.local/share/applications/CryoUtilities.desktop ] && ! [ -e ~/Desktop/CryoUtilities.desktop ]; then
-    echo >&2 "Installing CryoUtilities"
-    curl -fsSL https://raw.githubusercontent.com/CryoByte33/steam-deck-utilities/refs/heads/main/install.sh | bash -s --
-fi
-
 if ! [ -e ~/Shortix/shortix.sh ]; then
     echo >&2 "Installing Shortix"
     mkdir -p ~/Shortix
