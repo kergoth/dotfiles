@@ -236,7 +236,14 @@ if ! [ -d ~/homebrew ]; then
     curl -fsSL https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh -
 fi
 
+if ! test -d "/home/deck/homebrew/plugins/Decky Framegen"; then
+    echo >&2 "Installing Decky Framegen plugin"
+    curl -fsSL -O --output-dir "$tmpdir" https://github.com/xXJSONDeruloXx/Decky-Framegen/releases/download/latest/Decky.Framegen.zip
+    install_decky_plugin "$tmpdir/Decky.Framegen.zip" "/home/deck/homebrew/plugins/Decky Framegen"
+fi
+
 if ! test -d "/home/deck/homebrew/plugins/NonSteamLaunchers"; then
+    echo >&2 "Installing Non-Steam Launchers plugin"
     curl -fsSL -O --output-dir "$tmpdir" https://github.com/moraroy/NonSteamLaunchersDecky/archive/refs/heads/main.zip
     install_decky_plugin "$tmpdir/main.zip" "/home/deck/homebrew/plugins/NonSteamLaunchers"
 fi
