@@ -183,16 +183,6 @@ if ! [ -x ~/.local/bin/rclone ]; then
     chmod +x ~/.local/bin/rclone
 fi
 
-if ! [ -x ~/.local/bin/pkgx ]; then
-    echo >&2 "Installing pkgx"
-    curl --fail --proto '=https' "https://pkgx.sh/$(uname)/$(uname -m)".tgz | tar -zxvf - -C ~/.local/bin
-fi
-
-if ! [ -x ~/.local/bin/uv ]; then
-    echo >&2 "Installing uv"
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
-
 if ! [ -x ~/.local/bin/restic ]; then
     echo >&2 "Installing restic"
     RESTIC_TAG=$(curl -sS https://api.github.com/repos/restic/restic/releases/latest | jq -r '.tag_name')
