@@ -3,8 +3,6 @@
 install_decky_plugin() {
     local plugin_file="$1"
     local plugin_dir="$2"
-    local plugin_base
-    plugin_base=$(basename "$plugin_file")
     plugin_name=$(basename "$plugin_dir")
 
     if test -d "$plugin_dir"; then
@@ -15,7 +13,7 @@ install_decky_plugin() {
     local plugins_dir
     plugins_dir=$(dirname "$plugin_dir")
 
-    trap 'chmod -w "$plugins_dir"; rm -rf "$plugin_dir"; rm -rf "$tmpdir"' EXIT INT TERM
+    trap 'rm -rf "$plugin_dir"; chmod -w "$plugins_dir"; rm -rf "$tmpdir"' EXIT INT TERM
     if test -d "$plugins_dir"; then
         chmod +w "$plugins_dir"
     fi
@@ -23,10 +21,10 @@ install_decky_plugin() {
     mkdir -p "$plugin_dir"
     case "$plugin_file" in
     *.7z)
-        7z x -o"$plugin_dir" "$plugin_dir/$plugin_base"
+        7z x -o"$plugin_dir" "$plugin_file"
         ;;
     *.zip)
-        unzip -d "$plugin_dir" "$plugin_dir/$plugin_base"
+        unzip -d "$plugin_dir" "$plugin_file"
         ;;
     *)
         echo >&2 "Error: Unknown archive format for $plugin_name plugin"
