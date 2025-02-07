@@ -1,3 +1,11 @@
+{{- $flatpaks := (list
+    "org.mozilla.firefox"
+    "com.github.tchx84.Flatseal"
+    "com.github.Matoking.protontricks"
+    "com.github.mtkennerly.ludusavi"
+    "com.google.Chrome"
+    "net.retrodeck.retrodeck"
+    ) }}
 #!/usr/bin/env bash
 
 download_file() {
@@ -134,41 +142,28 @@ fi
 
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-if ! flatpak info org.mozilla.firefox &>/dev/null; then
-    echo >&2 "Installing Firefox"
-    flatpak install --user --noninteractive flathub org.mozilla.firefox
+{{ range $flatpaks }}
+if ! flatpak info {{ . }} &>/dev/null; then
+    echo >&2 "Installing {{ . }}"
+    flatpak install --user --noninteractive flathub {{ . }}
 fi
-
-if ! flatpak info com.github.tchx84.Flatseal &>/dev/null; then
-    echo >&2 "Installing Flatseal"
-    flatpak install --user --noninteractive flathub com.github.tchx84.Flatseal
-fi
-
-if ! flatpak info com.github.Matoking.protontricks &>/dev/null; then
-    echo >&2 "Installing Protontricks"
-    flatpak install --user --noninteractive flathub com.github.Matoking.protontricks
-fi
+{{- end }}
+{{ if has "com.github.Matoking.protontricks" $flatpaks }}
+# Allow Protontricks to access the SD card
 if [ -n "$sdmount" ]; then
     flatpak override --user --filesystem="$sdmount" com.github.Matoking.protontricks
 fi
+{{- end }}
 
-if ! flatpak info com.github.mtkennerly.ludusavi &>/dev/null; then
-    echo >&2 "Installing Ludusavi"
-    flatpak install --user --noninteractive flathub com.github.mtkennerly.ludusavi
-fi
-
-if ! flatpak info com.google.Chrome &>/dev/null; then
-    echo >&2 "Installing Chrome"
-    flatpak install --user --noninteractive flathub com.google.Chrome
-fi
+{{- if has "com.google.Chrome" $flatpaks }}
 # Allow Chrome to access udev for USB devices, which allows gamepad usage
 flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
+{{- end }}
 
-if ! flatpak info net.retrodeck.retrodeck &>/dev/null; then
-    echo >&2 "Installing RetroDeck"
-    flatpak install --user --noninteractive flathub net.retrodeck.retrodeck
-    steamos-add-to-steam ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop
-fi
+{{- if has "net.retrodeck.retrodeck" $flatpaks }}
+# Add RetroDeck to Steam
+steamos-add-to-steam ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop
+{{- end }}
 
 if [ -e ~/.config/systemd/user/deck-backup.service ]; then
     systemctl --user enable ~/.config/systemd/user/deck-backup.timer
