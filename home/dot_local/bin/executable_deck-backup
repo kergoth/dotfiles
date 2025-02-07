@@ -120,6 +120,11 @@ if [[ -d "$CONFIG_DIR/config.d" ]]; then
     done
 fi
 
+if [[ -n "${DISABLED_BACKUPS:-}" ]]; then
+    echo "Warning: DISABLED_BACKUPS is set, no backups will run" >&2
+    exit 0
+fi
+
 # Ensure the state directory exists
 STATE_DIR=~/.local/state/deck-backup
 mkdir -p "$STATE_DIR"

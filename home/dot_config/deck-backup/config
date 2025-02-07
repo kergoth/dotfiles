@@ -1,3 +1,3 @@
 export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt
 export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic
-export ENABLED_BACKUPS=${ENABLED_BACKUPS-}
+export DISABLED_BACKUPS=${DISABLED_BACKUPS-1}
