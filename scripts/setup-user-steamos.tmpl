@@ -6,6 +6,13 @@
     "com.google.Chrome"
     "net.retrodeck.retrodeck"
     ) }}
+{{- $desktop_downloads := (list
+    "https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/decky_installer.desktop"
+    "https://raw.githubusercontent.com/CryoByte33/steam-deck-utilities/main/InstallCryoUtilities.desktop"
+    "https://www.emudeck.com/EmuDeck.desktop"
+    "https://github.com/kmicki/SteamDeckGyroDSU/releases/latest/download/update-sdgyrodsu.desktop"
+    "https://github.com/Jannomag/shortix/releases/latest/download/shortix_installer.desktop"
+    "https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/releases/latest/download/NSLPlugin.desktop") }}
 #!/usr/bin/env bash
 
 download_file() {
@@ -110,35 +117,12 @@ if ! grep -xqF 'export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Bac
     echo 'export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic' >>~/.bashrc
 fi
 
-if ! [ -e ~/Desktop/decky_installer.desktop ]; then
-    echo >&2 "Downloading decky installer to the desktop"
-    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/decky_installer.desktop
+{{- range $desktop_downloads }}
+if ! [ -e ~/Desktop/$(basename "{{ . }}") ]; then
+    echo >&2 "Downloading $(basename "{{ . }}") to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 "{{ . }}"
 fi
-
-if ! [ -e ~/Desktop/InstallCryoUtilities.desktop ]; then
-    echo >&2 "Downloading CryoUtilities installer to the desktop"
-    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://raw.githubusercontent.com/CryoByte33/steam-deck-utilities/main/InstallCryoUtilities.desktop
-fi
-
-if ! [ -e ~/Desktop/EmuDeck.desktop ]; then
-    echo >&2 "Downloading EmuDeck installer to the desktop"
-    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://www.emudeck.com/EmuDeck.desktop
-fi
-
-if ! [ -e ~/Desktop/update-sdgyrodsu.desktop ]; then
-    echo >&2 "Downloading SteamDeckGyroDSU updater to the desktop"
-    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/kmicki/SteamDeckGyroDSU/releases/latest/download/update-sdgyrodsu.desktop
-fi
-
-if ! [ -e ~/Desktop/shortix_installer.desktop ] && ! [ -e ~/Desktop/shortix_updater.desktop ]; then
-    echo >&2 "Downloading Shortix installer to the desktop"
-    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/Jannomag/shortix/releases/latest/download/shortix_installer.desktop
-fi
-
-if ! [ -e ~/Desktop/NSLPlugin.desktop ]; then
-    echo >&2 "Downloading NSLPlugin installer to the desktop"
-    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/releases/latest/download/NSLPlugin.desktop
-fi
+{{- end }}
 
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
