@@ -23,9 +23,6 @@ sudorun locale-gen
 echo "LANG=$locale" | sudorun tee /etc/locale.conf
 
 pacman_install openssh
-if [ "$OSTYPE" != WSL ]; then
-    sudorun systemctl enable sshd && sudo systemctl start sshd
-fi
 
 if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
     CPUS=$(grep -c processor /proc/cpuinfo)
@@ -36,15 +33,19 @@ if ! grep -q '^MAKEFLAGS=.*-j' /etc/makepkg.conf; then
     fi
 fi
 
-if [ "$OSTYPE" != WSL ]; then
-    pacman_install nss-mdns avahi
-    sudorun sed -i -e '/hosts:/{ s/mdns_minimal //g; s/dns/mdns_minimal dns/; }' /etc/nsswitch.conf
-    if ! grep -q 'hosts:.*mdns_minimal' /etc/nsswitch.conf; then
-        echo >&2 "Warning: failed to add mdns_minimal to hosts resolution in /etc/nsswitch.conf"
-    fi
-    sudorun systemctl enable avahi-daemon.service
-    sudorun systemctl start avahi-daemon.service || true
+{{ if not .wsl2 -}}
+sudorun systemctl enable sshd
+sudorun systemctl start sshd
+
+pacman_install nss-mdns avahi
+sudorun sed -i -e '/hosts:/{ s/mdns_minimal //g; s/dns/mdns_minimal dns/; }' /etc/nsswitch.conf
+if ! grep -q 'hosts:.*mdns_minimal' /etc/nsswitch.conf; then
+    echo >&2 "Warning: failed to add mdns_minimal to hosts resolution in /etc/nsswitch.conf"
 fi
+
+sudorun systemctl enable avahi-daemon.service
+sudorun systemctl start avahi-daemon.service || true
+{{- end }}
 
 pacman_install vi zsh which xz
 
