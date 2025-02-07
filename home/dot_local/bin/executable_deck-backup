@@ -78,7 +78,10 @@ process_backup_scripts() {
         # ENABLED_BACKUPS is set, but specified_backups is the empty string, do nothing
         return 0
     elif [[ -d "$BACKUP_DIR" ]]; then
-        read -r -a backup_array < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm /001 -exec basename {} .sh \; | sed 's#^.*/##; s/.sh$//;')
+        backup_array=()
+        while IFS= read -r file; do
+            backup_array+=("$file")
+        done < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm /001 | sed 's#^.*/##')
     else
         echo "Warning: No backup scripts configured or found in $BACKUP_DIR" >&2
         return 0
