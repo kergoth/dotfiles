@@ -3,7 +3,7 @@ Description="Deck backup timer"
 
 [Timer]
 OnCalendar=*-*-* 00:00:00
-Unit=restic-backup.service
+Unit=deck-backup.service
 WakeSystem=true
 
 [Install]

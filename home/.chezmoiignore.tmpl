@@ -116,8 +116,7 @@ AppData/Roaming/gnupg/*
 
 {{- if not .steamdeck }}
 # Steamdeck-only
-.local/bin/check-backup
-.local/bin/deck-backup
+.local/bin/deck*
 .local/bin/ludusavi
 .config/systemd/user/deck-backup.service
 .config/systemd/user/deck-backup.timer
@@ -126,6 +125,7 @@ AppData/Roaming/gnupg/*
 .config/restic/exclude.txt
 .config/restic/password.txt
 .config/rsync/exclude.txt
+.config/deck-backup
 {{- end }}
 
 # I don't track files for this with chezmoi

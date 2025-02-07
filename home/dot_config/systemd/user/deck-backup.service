@@ -2,4 +2,4 @@
 Description="Deck backup"
 
 [Service]
-ExecStart=/home/deck/.local/bin/deck-backup
+ExecStart=/home/deck/.local/bin/deck-backup -f

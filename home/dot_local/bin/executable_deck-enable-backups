@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+if ! [[ -f ~/.config/deck-backup/config.d/enable ]]; then
+    mkdir -p ~/.config/deck-backup/config.d
+    echo 'export ENABLED_BACKUPS=restic,ludusavi,rsync' >~/.config/deck-backup/config.d/enable
+fi

@@ -1,67 +1,150 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-export RESTIC_PASSWORD_FILE=$HOME/.config/restic/password.txt
-export RESTIC_REPOSITORY=rclone:ludusavi-1728618970:Archives/Backups/System/Deck\ Restic
+# deck-backup: A script to manage backups from ~/.config/deck-backup/backup.d
 
-PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+# Set script to exit on error and undefined variables
+set -euo pipefail
 
-save_backup() {
-    echo >&2 "Backing up saved games to the SD card and NAS"
-    "$HOME"/.local/bin/ludusavi backup --force || ret=$?
+# Function to display usage information
+usage() {
+    echo "Usage: deck-backup [-h] [-c] [-f] [-s backup1,backup2,...]"
+    echo "Options:"
+    echo "  -h    Display this help message."
+    echo "  -c    Check the last backup times."
+    echo "  -f    Force an immediate backup."
+    echo "  -s    Specify individual backup scripts to run (comma-separated list)."
 }
 
-restic_backup() {
-    # Remote backup focused on connfiguration files, settings, and data, with multiple historical copies
-    echo >&2 "Backing up to the NAS"
-    restic backup --one-file-system --exclude-file="$HOME/.config/restic/exclude.txt" "$HOME"/ &&
-        restic forget --keep-daily=7 --keep-weekly=4 --keep-monthly=12 --prune || ret=$?
+# Function to check last backup times
+check_backup_times() {
+    echo "Checking last backup times..."
+    for script in "$BACKUP_DIR"/*; do
+        if [ -x "$script" ]; then
+            backup_name=$(basename "$script" .sh)
+            last_backup_file="$STATE_DIR/$backup_name.last_backup"
+            if [ -f "$last_backup_file" ]; then
+                last_backup_time=$(stat -c %Y "$last_backup_file")
+                echo "Last backup time for $backup_name: $(date -d @$last_backup_time)"
+            else
+                echo "No backup record found for $backup_name"
+            fi
+        fi
+    done
 }
 
-rsync_backup() {
-    set -- \
-        --archive \
-        --human-readable \
-        --hard-links \
-        --compress \
-        --exclude=.DS_Store \
-        --exclude="._*" \
-        --exclude=.Trash-1000 \
-        --exclude=lost+found \
-        --exclude="bgrm.*" \
-        --delete \
-        --delete-excluded
+# Function to run a backup script
+run_backup_script() {
+    local script=$1
+    local backup_name=$(basename "$script" .sh)
+    echo "Running backup script: $backup_name"
+    if "$script"; then
+        touch "$STATE_DIR/$backup_name.last_backup"
+    else
+        echo "Error: Backup script $backup_name failed" >&2
+        exit 1
+    fi
+}
 
-    if [ -t 1 ]; then
-        set -- --info=progress2 "$@"
+# Function to determine if a backup is needed based on frequency
+backup_needed() {
+    local backup_name=$1
+    local frequency=$2
+    local last_backup_file="$STATE_DIR/$backup_name.last_backup"
+
+    if [ ! -f "$last_backup_file" ]; then
+        return 0
     fi
 
-    # Full local backup of the home directory, with a single copy, for device restoration
-    echo >&2 "Backing up to the SD card"
-    rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt --exclude=/.local/share/Steam/steamapps/ "$HOME"/ /run/media/deck/SD/Backup/home/ || ret=$?
-    echo >&2 "Backing up installed Steam Games to the SD card"
-    rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt "$HOME"/.local/share/Steam/steamapps/ /run/media/deck/SD/Backup/home/.local/share/Steam/steamapps/ || ret=$?
+    local last_backup_time=$(stat -c %Y "$last_backup_file")
+    local current_time=$(date +%s)
+    local frequency_seconds=$((frequency * 86400))
+
+    if ((current_time - last_backup_time >= frequency_seconds)); then
+        return 0
+    else
+        return 1
+    fi
 }
 
-run_backups() {
-    save_backup
-    restic_backup
-    rsync_backup
-    return $ret
+# Function to process backup scripts
+process_backup_scripts() {
+    local force=$1
+    local specified_backups=$2
+    local backup_array=()
+
+    if [ -n "$specified_backups" ]; then
+        IFS=',' read -r -a backup_array <<<"$specified_backups"
+    elif [[ -d "$BACKUP_DIR" ]]; then
+        read -r -a backup_array < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm +001 -exec basename {} .sh \; | sed 's#^.*/##; s/.sh$//;')
+    else
+        echo "Warning: No backup scripts found in $BACKUP_DIR" >&2
+        return 0
+    fi
+
+    for backup_name in "${backup_array[@]}"; do
+        script="$BACKUP_DIR/$backup_name"
+        if [ ! -f "$script" ]; then
+            script="$BACKUP_DIR/$backup_name.sh"
+        fi
+        backup_name="${backup_name%.sh}"
+        if [ -x "$script" ]; then
+            frequency_var="BACKUP_FREQUENCY_$backup_name"
+            frequency=${!frequency_var:-${BACKUP_FREQUENCY:-7}} # Default to 7 days if not specified
+            if [ "$force" = true ] || backup_needed "$backup_name" "$frequency"; then
+                run_backup_script "$script"
+            else
+                echo "Backup not needed for $backup_name (frequency: $frequency days)"
+            fi
+        else
+            echo "Error: Invalid backup name specified or script not executable: $backup_name" >&2
+            exit 1
+        fi
+    done
 }
 
-LOCKFILE="/tmp/backup.lock"
+CONFIG_DIR=~/.config/deck-backup
+# Source the config file
+CONFIG_FILE="$CONFIG_DIR/config"
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+fi
+if [[ -d "$CONFIG_DIR/config.d" ]]; then
+    for file in "$CONFIG_DIR/config.d"/*; do
+        source "$file"
+    done
+fi
 
-# Use flock to ensure only one instance of the backup script runs at a time
-(
-    flock -n 200 || exit 1  # Try to acquire the lock, exit if it can't be acquired
+# Ensure the state directory exists
+STATE_DIR=~/.local/state/deck-backup
+mkdir -p "$STATE_DIR"
 
-    echo >&2 "Starting backups..."
-    
-    ret=0
-    run_backups || exit $ret
+# Backup directory
+BACKUP_DIR=~/.config/deck-backup/backup.d
 
-    touch ~/.local/share/last-backup.timestamp
+# Initialize variables
+force_backup=false
+specified_backups="${ENABLED_BACKUPS-}"
 
-    echo >&2 "Backups completed."
-    exit 0
-) 200>"$LOCKFILE"  # File descriptor 200 is associated with the lock file
+# Parse options using getopts
+while getopts "cfs:h" opt; do
+    case "$opt" in
+    c)
+        check_backup_times
+        exit 0
+        ;;
+    f)
+        force_backup=true
+        ;;
+    s)
+        specified_backups=$OPTARG
+        ;;
+    \? | h)
+        usage
+        exit 0
+        ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+# Process backup scripts
+process_backup_scripts "$force_backup" "$specified_backups"
