@@ -72,12 +72,15 @@ process_backup_scripts() {
     local specified_backups=$2
     local backup_array=()
 
-    if [ -n "$specified_backups" ]; then
+    if [[ -n "$specified_backups" ]]; then
         IFS=',' read -r -a backup_array <<<"$specified_backups"
+    elif [[ -n "${ENABLED_BACKUPS+set}" ]]; then
+        # ENABLED_BACKUPS is set, but specified_backups is the empty string, do nothing
+        return 0
     elif [[ -d "$BACKUP_DIR" ]]; then
-        read -r -a backup_array < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm +001 -exec basename {} .sh \; | sed 's#^.*/##; s/.sh$//;')
+        read -r -a backup_array < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm /001 -exec basename {} .sh \; | sed 's#^.*/##; s/.sh$//;')
     else
-        echo "Warning: No backup scripts found in $BACKUP_DIR" >&2
+        echo "Warning: No backup scripts configured or found in $BACKUP_DIR" >&2
         return 0
     fi
 
@@ -110,7 +113,7 @@ if [ -f "$CONFIG_FILE" ]; then
 fi
 if [[ -d "$CONFIG_DIR/config.d" ]]; then
     for file in "$CONFIG_DIR/config.d"/*; do
-        source "$file"
+        source "$file" 2>/dev/null || :
     done
 fi
 
@@ -123,7 +126,10 @@ BACKUP_DIR=~/.config/deck-backup/backup.d
 
 # Initialize variables
 force_backup=false
-specified_backups="${ENABLED_BACKUPS-}"
+specified_backups=
+if [[ -n "${ENABLED_BACKUPS+set}" ]]; then
+    specified_backups="$ENABLED_BACKUPS"
+fi
 
 # Parse options using getopts
 while getopts "cfs:h" opt; do
