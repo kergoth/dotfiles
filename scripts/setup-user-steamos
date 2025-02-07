@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+download_file() {
+    local url="$1"
+    shift
+    if ! curl -fsSL --connect-timeout 60 "$@" "$url"; then
+        echo >&2 "Failed to download $url"
+        return 1
+    fi
+    return 0
+}
+
 install_decky_plugin() {
     local plugin_file="$1"
     local plugin_dir="$2"
@@ -170,14 +180,20 @@ systemctl --user daemon-reload
 if ! [ -e ~/Shortix/shortix.sh ]; then
     echo >&2 "Installing Shortix"
     mkdir -p ~/Shortix
-    curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
-        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/remove_prefix.sh
-    curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
-        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix.sh
-    curl -fsSL -O --output-dir ~/Shortix --connect-timeout 60 \
-        https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/shortix_uninstall.sh
-    chmod +x ~/Shortix/*.sh
-    touch ~/Shortix/.id
+
+    shortix_success=true
+    for file in remove_prefix.sh shortix.sh shortix_uninstall.sh; do
+        if ! download_file "https://raw.githubusercontent.com/Jannomag/shortix/refs/heads/main/$file" -O --output-dir ~/Shortix; then
+            shortix_success=false
+            break
+        fi
+    done
+    if $shortix_success; then
+        chmod +x ~/Shortix/*.sh
+        touch ~/Shortix/.id
+    else
+        rm -rf ~/Shortix
+    fi
 fi
 if ! grep -q "^ *sed -i -E.*／" ~/Shortix/shortix.sh; then
     # Work around Shortix bug with game names including a slash
