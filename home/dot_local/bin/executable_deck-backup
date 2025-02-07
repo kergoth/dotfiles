@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+LOCKFILE="/tmp/deck-backup.lock"
+
 usage() {
     echo "Usage: deck-backup [-h] [-c] [-f] [-s backup1,backup2,...]"
     echo "Options:"
@@ -12,7 +14,7 @@ usage() {
 }
 
 check_backup_times() {
-    echo "Checking last backup times..." >&2
+    echo "Checking last backup times..."
     for script in "$BACKUP_DIR"/*; do
         if [ -x "$script" ]; then
             backup_name=$(basename "$script" .sh)
@@ -102,6 +104,13 @@ process_backup_scripts() {
     done
 }
 
+cleanup() {
+    flock -u 200
+    rm -f "$LOCKFILE"
+}
+
+trap cleanup EXIT INT TERM
+
 CONFIG_DIR=~/.config/deck-backup
 CONFIG_FILE="$CONFIG_DIR/config"
 if [ -f "$CONFIG_FILE" ]; then
@@ -148,5 +157,12 @@ while getopts "cfs:h" opt; do
     esac
 done
 shift $((OPTIND - 1))
+
+exec 200>"$LOCKFILE"
+if ! flock -n 200; then
+    echo "Another instance of the script is running. Exiting." >&2
+    trap - EXIT INT TERM
+    exit 1
+fi
 
 process_backup_scripts "$force_backup" "$specified_backups"
