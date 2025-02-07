@@ -35,7 +35,8 @@ check_backup_times() {
 # Function to run a backup script
 run_backup_script() {
     local script=$1
-    local backup_name=$(basename "$script" .sh)
+    local backup_name
+    backup_name=$(basename "$script" .sh)
     echo "Running backup script: $backup_name"
     if "$script"; then
         touch "$STATE_DIR/$backup_name.last_backup"
@@ -50,15 +51,17 @@ backup_needed() {
     local backup_name=$1
     local frequency=$2
     local last_backup_file="$STATE_DIR/$backup_name.last_backup"
+    local last_backup_time
+    local current_time
+    local frequency_seconds
 
     if [ ! -f "$last_backup_file" ]; then
         return 0
     fi
 
-    local last_backup_time=$(stat -c %Y "$last_backup_file")
-    local current_time=$(date +%s)
-    local frequency_seconds=$((frequency * 86400))
-
+    last_backup_time=$(stat -c %Y "$last_backup_file")
+    current_time=$(date +%s)
+    frequency_seconds=$((frequency * 86400))
     if ((current_time - last_backup_time >= frequency_seconds)); then
         return 0
     else
@@ -111,9 +114,11 @@ process_backup_scripts() {
 CONFIG_DIR=~/.config/deck-backup
 # Source the config file
 CONFIG_FILE="$CONFIG_DIR/config"
+# shellcheck disable=SC1090
 if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
+# shellcheck disable=SC1090
 if [[ -d "$CONFIG_DIR/config.d" ]]; then
     for file in "$CONFIG_DIR/config.d"/*; do
         source "$file" 2>/dev/null || :
