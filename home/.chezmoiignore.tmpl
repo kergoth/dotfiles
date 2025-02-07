@@ -23,12 +23,17 @@ Workspace
 .chezmoiscripts/posix/prepare_vim
 {{ end }}
 
+.chezmoiscripts/**
+!.chezmoiscripts/{{.chezmoi.os}}/**
+!.chezmoiscripts/{{.osid}}/**
 {{- if ne .chezmoi.os "windows" }}
-.chezmoiscripts/windows/**
+!.chezmoiscripts/posix/**
+{{- end }}
+
+{{- if ne .chezmoi.os "windows" }}
 AppData
 .config/scoop
 {{- else }}
-.chezmoiscripts/posix/**
 .local/share/gnupg/*
 AppData/Roaming/gnupg/*~
 AppData/Roaming/gnupg/S.*
@@ -39,7 +44,6 @@ Documents/*
 {{- end }}
 
 {{- if ne .chezmoi.os "darwin" }}
-.chezmoiscripts/darwin/**
 Library/
 {{- else }}
 Library/Caches/*
@@ -47,10 +51,6 @@ Library/Caches/*
 Library/Caches/zsh/*
 !Library/Caches/zsh/functions
 Library/Caches/zsh/functions/*
-{{- end }}
-
-{{- if ne .chezmoi.os "linux" }}
-.chezmoiscripts/linux/**
 {{- end }}
 
 .ssh/keys/*
