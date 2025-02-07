@@ -165,14 +165,6 @@ fi
 if [ -e ~/.config/systemd/user/check-backup.service ]; then
     systemctl --user enable ~/.config/systemd/user/check-backup.service
 fi
-if [ -e ~/.config/systemd/user/ludusavi-backup.service ]; then
-    systemctl --user disable ~/.config/systemd/user/ludusavi-backup.timer
-    rm -f ~/.config/systemd/user/ludusavi-backup.*
-fi
-if [ -e ~/.config/systemd/user/restic-backup.service ]; then
-    systemctl --user disable ~/.config/systemd/user/restic-backup.timer
-    rm -f ~/.config/systemd/user/restic-backup.*
-fi
 systemctl --user daemon-reload
 
 if ! [ -e ~/Shortix/shortix.sh ]; then
