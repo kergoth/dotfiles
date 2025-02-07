@@ -12,7 +12,6 @@
     "https://raw.githubusercontent.com/CryoByte33/steam-deck-utilities/main/InstallCryoUtilities.desktop"
     "https://www.emudeck.com/EmuDeck.desktop"
     "https://github.com/kmicki/SteamDeckGyroDSU/releases/latest/download/update-sdgyrodsu.desktop"
-    "https://github.com/Jannomag/shortix/releases/latest/download/shortix_installer.desktop"
     "https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/releases/latest/download/NSLPlugin.desktop") }}
 #!/usr/bin/env bash
 
@@ -124,6 +123,10 @@ if ! [ -e ~/Desktop/$(basename "{{ . }}") ]; then
     curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 "{{ . }}"
 fi
 {{- end }}
+if ! [ -e ~/Desktop/shortix_installer.desktop ] && ! [ -e ~/Desktop/shortix_updater.desktop ]; then
+    echo >&2 "Downloading Shortix installer to the desktop"
+    curl -S -s -L -O --output-dir ~/Desktop --connect-timeout 60 https://github.com/Jannomag/shortix/releases/latest/download/shortix_installer.desktop
+fi
 
 flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
