@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# deck-backup: A script to manage backups from ~/.config/deck-backup/backup.d
-
-# Set script to exit on error and undefined variables
 set -euo pipefail
 
-# Function to display usage information
 usage() {
     echo "Usage: deck-backup [-h] [-c] [-f] [-s backup1,backup2,...]"
     echo "Options:"
@@ -15,7 +11,6 @@ usage() {
     echo "  -s    Specify individual backup scripts to run (comma-separated list)."
 }
 
-# Function to check last backup times
 check_backup_times() {
     echo "Checking last backup times..."
     for script in "$BACKUP_DIR"/*; do
@@ -32,7 +27,6 @@ check_backup_times() {
     done
 }
 
-# Function to run a backup script
 run_backup_script() {
     local script=$1
     local backup_name
@@ -46,7 +40,6 @@ run_backup_script() {
     fi
 }
 
-# Function to determine if a backup is needed based on frequency
 backup_needed() {
     local backup_name=$1
     local frequency=$2
@@ -69,7 +62,6 @@ backup_needed() {
     fi
 }
 
-# Function to process backup scripts
 process_backup_scripts() {
     local force=$1
     local specified_backups=$2
@@ -78,7 +70,6 @@ process_backup_scripts() {
     if [[ -n "$specified_backups" ]]; then
         IFS=',' read -r -a backup_array <<<"$specified_backups"
     elif [[ -n "${ENABLED_BACKUPS+set}" ]]; then
-        # ENABLED_BACKUPS is set, but specified_backups is the empty string, do nothing
         return 0
     elif [[ -d "$BACKUP_DIR" ]]; then
         backup_array=()
@@ -98,7 +89,7 @@ process_backup_scripts() {
         backup_name="${backup_name%.sh}"
         if [ -x "$script" ]; then
             frequency_var="BACKUP_FREQUENCY_$backup_name"
-            frequency=${!frequency_var:-${BACKUP_FREQUENCY:-7}} # Default to 7 days if not specified
+            frequency=${!frequency_var:-${BACKUP_FREQUENCY:-7}}
             if [ "$force" = true ] || backup_needed "$backup_name" "$frequency"; then
                 run_backup_script "$script"
             else
@@ -112,13 +103,10 @@ process_backup_scripts() {
 }
 
 CONFIG_DIR=~/.config/deck-backup
-# Source the config file
 CONFIG_FILE="$CONFIG_DIR/config"
-# shellcheck disable=SC1090
 if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
-# shellcheck disable=SC1090
 if [[ -d "$CONFIG_DIR/config.d" ]]; then
     for file in "$CONFIG_DIR/config.d"/*; do
         source "$file" 2>/dev/null || :
@@ -130,21 +118,17 @@ if [[ -n "${DISABLED_BACKUPS:-}" ]]; then
     exit 0
 fi
 
-# Ensure the state directory exists
 STATE_DIR=~/.local/state/deck-backup
 mkdir -p "$STATE_DIR"
 
-# Backup directory
 BACKUP_DIR=~/.config/deck-backup/backup.d
 
-# Initialize variables
 force_backup=false
 specified_backups=
 if [[ -n "${ENABLED_BACKUPS+set}" ]]; then
     specified_backups="$ENABLED_BACKUPS"
 fi
 
-# Parse options using getopts
 while getopts "cfs:h" opt; do
     case "$opt" in
     c)
@@ -165,5 +149,4 @@ while getopts "cfs:h" opt; do
 done
 shift $((OPTIND - 1))
 
-# Process backup scripts
 process_backup_scripts "$force_backup" "$specified_backups"
