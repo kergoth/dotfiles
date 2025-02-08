@@ -114,3 +114,25 @@ stripComponents = 1
 executable = true
 refreshPeriod = "{{ $refreshPeriod }}"
 {{ end }}
+
+{{ if .steamdeck }}
+
+{{/* Install restic on the Steam Deck */}}
+{{- $restic_version := (gitHubLatestRelease "restic/restic").TagName | trimPrefix "v" }}
+["{{ $binpath }}/restic{{ $binsuffix }}"]
+type = "archive-file"
+url = "https://github.com/restic/restic/releases/download/${RESTIC_TAG}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.bz2"
+path = "restic{{ $binsuffix }}"
+executable = true
+refreshPeriod = "{{ $refreshPeriod }}"
+
+{{/* Install rclone on the Steam Deck */}}
+["{{ $binpath }}/rclone{{ $binsuffix }}"]
+type = "archive-file"
+url = "https://downloads.rclone.org/rclone-current-{{ $os }}-{{ $arch }}.zip"
+path = "rclone{{ $binsuffix }}"
+stripComponents = 1
+executable = true
+refreshPeriod = "{{ $refreshPeriod }}"
+
+{{ end }}

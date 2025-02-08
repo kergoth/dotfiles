@@ -175,22 +175,6 @@ if [ -e ~/.config/systemd/user/restic-backup.service ]; then
 fi
 systemctl --user daemon-reload
 
-if ! [ -x ~/.local/bin/rclone ]; then
-    echo >&2 "Installing rclone"
-    curl --fail --proto '=https' -o "$tmpdir/rclone.zip" https://downloads.rclone.org/rclone-current-linux-amd64.zip
-    (cd "$tmpdir" && unzip rclone.zip)
-    mv "$tmpdir"/rclone-*-linux-amd64/rclone ~/.local/bin/
-    chmod +x ~/.local/bin/rclone
-fi
-
-if ! [ -x ~/.local/bin/restic ]; then
-    echo >&2 "Installing restic"
-    RESTIC_TAG=$(curl -sS https://api.github.com/repos/restic/restic/releases/latest | jq -r '.tag_name')
-    curl -fsSL "https://github.com/restic/restic/releases/download/${RESTIC_TAG}/restic_${RESTIC_TAG:1}_linux_amd64.bz2" |
-        bzcat >~/.local/bin/restic
-    chmod +x ~/.local/bin/restic
-fi
-
 if ! [ -e ~/Shortix/shortix.sh ]; then
     echo >&2 "Installing Shortix"
     mkdir -p ~/Shortix
