@@ -1,3 +1,6 @@
+[display]
+use_pager = true
+
 [style.command_name]
 foreground = "yellow"
 bold = true
