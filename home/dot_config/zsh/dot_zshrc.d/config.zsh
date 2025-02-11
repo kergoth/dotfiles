@@ -10,7 +10,7 @@ SAVEHIST=10000
 # Reduce mode change delay
 KEYTIMEOUT=1
 
-setopt NO_BG_NICE # don't nice background tasks
+setopt NO_BG_NICE      # don't nice background tasks
 setopt NO_FLOW_CONTROL # disable ctrl+s and ctrl+q
 setopt NO_HUP
 setopt NO_BEEP
@@ -58,6 +58,17 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 # Enable async mode using zsh/zpty
 ZSH_AUTOSUGGEST_USE_ASYNC=1
+
+if (($+commands[atuin])); then
+    : ${ATUIN_AUTOCOMPLETE_FILTER_MODE='global'}
+
+    _zsh_autosuggest_strategy_atuin() {
+        suggestion=($(
+            atuin search --filter-mode $ATUIN_AUTOCOMPLETE_FILTER_MODE --search-mode prefix --limit 1 --format "{command}" "$1"
+        ))
+    }
+    ZSH_AUTOSUGGEST_STRATEGY=(atuin)
+fi
 
 # Move prioritize-cwd-history into xdg path
 ZSH_PRIORITIZE_CWD_HISTORY_DIR=$XDG_DATA_HOME/zsh/prioritize-cwd-history

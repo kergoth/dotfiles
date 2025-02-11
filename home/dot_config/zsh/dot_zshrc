@@ -40,7 +40,7 @@ fi
 for file in $ZDOTDIR/plugins/*/*.plugin.zsh(N) $ZDOTDIR/plugins/*/activate.sh(N) \
             ${(M)config_files:#*/*.plugin.zsh}; do
     case "$file" in
-        */bd/*|*/syntax-highlighting/*|*/history-substring-search/*)
+        */bd/*|*/syntax-highlighting/*|*/history-substring-search/*|*/autosuggestions/*)
             continue
             ;;
     esac
@@ -74,10 +74,15 @@ done
 
 # Load manually loaded "plugins"
 . $ZDOTDIR/plugins/bd/bd.zsh
+ATUIN_HISTORY_SEARCH_FILTER_MODE='global'
+. $ZDOTDIR/plugins/atuin-arrow/02_atuin-history-arrow.zsh
 
 if autoload -Uz git-escape-magic; then
     git-escape-magic
 fi
+
+# Load autosuggestions after other plugins
+. $ZDOTDIR/plugins/autosuggestions/zsh-autosuggestions.zsh
 
 # Load syntax highlighting after other plugins
 . $ZDOTDIR/plugins/syntax-highlighting/zsh-syntax-highlighting.zsh

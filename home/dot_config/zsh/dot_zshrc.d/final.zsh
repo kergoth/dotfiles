@@ -2,10 +2,15 @@ if (( $+commands[atuin] )); then
     atuin_cache="$XDG_CACHE_HOME/zsh/atuin.zsh"
     if [[ ! -e $atuin_cache ]]; then
         mkdir -p $XDG_CACHE_HOME/zsh
-        atuin init zsh >$atuin_cache || rm -f $atuin_cache
+        atuin init zsh --disable-up-arrow >$atuin_cache || rm -f $atuin_cache
     fi
     source $atuin_cache
     unset atuin_cache
+
+    bindkey '^[[A' atuin-history-up
+    bindkey '^[[B' atuin-history-down
+    bindkey '\eOA' atuin-history-up
+    bindkey '\eOB' atuin-history-down
 elif (( $+commands[mcfly] )); then
     MCFLY_PATH="$(command -v mcfly)"
 
@@ -57,11 +62,11 @@ if ! (( $+commands[atuin] )); then
     # for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
     bindkey '^[[A' history-substring-search-up
     bindkey '^[[B' history-substring-search-down
-    
+
     # bind P and N for EMACS mode
     bindkey -M emacs '^P' history-substring-search-up
     bindkey -M emacs '^N' history-substring-search-down
-    
+
     # bind k and j for VI mode
     bindkey -M vicmd 'k' history-substring-search-up
     bindkey -M vicmd 'j' history-substring-search-down
