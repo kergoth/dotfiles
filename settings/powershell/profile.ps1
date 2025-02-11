@@ -268,6 +268,8 @@ if (Get-Command bat -ErrorAction SilentlyContinue) {
     Remove-Alias cat
   }
   New-Alias cat bat -Force
+
+  New-Alias bathelp bat --plain --language=help
 }
 
 if (Get-Command batgrep -ErrorAction SilentlyContinue) {
