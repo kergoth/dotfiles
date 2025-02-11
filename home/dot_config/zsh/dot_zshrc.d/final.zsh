@@ -2,7 +2,7 @@ if (( $+commands[atuin] )); then
     atuin_cache="$XDG_CACHE_HOME/zsh/atuin.zsh"
     if [[ ! -e $atuin_cache ]]; then
         mkdir -p $XDG_CACHE_HOME/zsh
-        atuin init zsh >$atuin_cache || rm -f $atuin_cache
+        atuin init zsh --disable-up-arrow >$atuin_cache || rm -f $atuin_cache
     fi
     source $atuin_cache
     unset atuin_cache
@@ -47,25 +47,23 @@ key[PageDown]=${terminfo[knp]}
 bindkey "^[^[[D" backward-word
 bindkey "^[^[[C" forward-word
 
-if ! (( $+commands[atuin] )); then
-    #[[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       up-line-or-history
-    [[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       history-substring-search-up
-    #[[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     down-line-or-history
-    [[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     history-substring-search-down
+#[[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       up-line-or-history
+[[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       history-substring-search-up
+#[[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     down-line-or-history
+[[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     history-substring-search-down
 
-    # bind UP and DOWN arrow keys (compatibility fallback
-    # for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
-    bindkey '^[[A' history-substring-search-up
-    bindkey '^[[B' history-substring-search-down
-    
-    # bind P and N for EMACS mode
-    bindkey -M emacs '^P' history-substring-search-up
-    bindkey -M emacs '^N' history-substring-search-down
-    
-    # bind k and j for VI mode
-    bindkey -M vicmd 'k' history-substring-search-up
-    bindkey -M vicmd 'j' history-substring-search-down
-fi
+# bind UP and DOWN arrow keys (compatibility fallback
+# for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# bind P and N for EMACS mode
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
+
+# bind k and j for VI mode
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
