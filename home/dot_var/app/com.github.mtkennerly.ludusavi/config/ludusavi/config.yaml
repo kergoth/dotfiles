@@ -1,4 +1,3 @@
-{{ if .steamdeck -}}
 ---
 runtime:
   threads: ~
@@ -187,4 +186,3 @@ customGames:
       - "<root>/The Black Cauldron Remake/agssave*"
     registry: []
     installDir: []
-{{- end }}
