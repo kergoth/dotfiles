@@ -124,6 +124,383 @@
             "icon": null
         },
         "parserId": "1725539138664815",
-        "version": 25
+        "version": 25,
+        "disabled": false
+    },
+    {
+        "parserType": "Glob",
+        "configTitle": "Launchers",
+        "steamDirectory": "${steamdirglobal}",
+        "romDirectory": "/run/media/deck/SD/retrodeck/roms/launchers",
+        "steamCategories": [
+            "Launchers"
+        ],
+        "executableArgs": "",
+        "executableModifier": "\"${exePath}\"",
+        "startInDirectory": "",
+        "titleModifier": "${fuzzyTitle}",
+        "fetchControllerTemplatesButton": null,
+        "removeControllersButton": null,
+        "steamInputEnabled": "1",
+        "imageProviders": [
+            "sgdb"
+        ],
+        "onlineImageQueries": [
+            "${fuzzyTitle}"
+        ],
+        "imagePool": "${fuzzyTitle}",
+        "drmProtect": false,
+        "userAccounts": {
+            "specifiedAccounts": [
+                "kergoth"
+            ]
+        },
+        "parserInputs": {
+            "glob": "${title}@(.lnk|.LNK|.url|.URL|.desktop|.DESKTOP|.sh|.SH)"
+        },
+        "executable": {
+            "path": "",
+            "shortcutPassthrough": true,
+            "appendArgsToExecutable": true
+        },
+        "titleFromVariable": {
+            "limitToGroups": [],
+            "caseInsensitiveVariables": false,
+            "skipFileIfVariableWasNotFound": false
+        },
+        "fuzzyMatch": {
+            "replaceDiacritics": true,
+            "removeCharacters": true,
+            "removeBrackets": true
+        },
+        "controllers": {
+            "ps4": null,
+            "ps5": null,
+            "ps5_edge": null,
+            "xbox360": null,
+            "xboxone": null,
+            "xboxelite": null,
+            "switch_joycon_left": null,
+            "switch_joycon_right": null,
+            "switch_pro": null,
+            "neptune": null,
+            "steamcontroller_gordon": null
+        },
+        "imageProviderAPIs": {
+            "sgdb": {
+                "nsfw": false,
+                "humor": false,
+                "styles": [],
+                "stylesHero": [],
+                "stylesLogo": [],
+                "stylesIcon": [],
+                "imageMotionTypes": [
+                    "static"
+                ],
+                "sizes": [],
+                "sizesHero": [],
+                "sizesTall": null,
+                "sizesIcon": []
+            }
+        },
+        "defaultImage": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "localImages": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "parserId": "173939814407569140",
+        "version": 25,
+        "disabled": true
+    },
+    {
+        "parserType": "Glob",
+        "configTitle": "Portable",
+        "steamDirectory": "${steamdirglobal}",
+        "romDirectory": "/run/media/deck/SD/retrodeck/roms/portable",
+        "steamCategories": [
+            "Portable"
+        ],
+        "executableArgs": "",
+        "executableModifier": "\"${exePath}\"",
+        "startInDirectory": "",
+        "titleModifier": "${fuzzyTitle}",
+        "fetchControllerTemplatesButton": null,
+        "removeControllersButton": null,
+        "steamInputEnabled": "1",
+        "imageProviders": [
+            "sgdb"
+        ],
+        "onlineImageQueries": [
+            "${fuzzyTitle}"
+        ],
+        "imagePool": "${fuzzyTitle}",
+        "drmProtect": false,
+        "userAccounts": {
+            "specifiedAccounts": [
+                "kergoth"
+            ]
+        },
+        "parserInputs": {
+            "glob": "${title}@(.lnk|.LNK|.url|.URL|.desktop|.DESKTOP|.sh|.SH)"
+        },
+        "executable": {
+            "path": "",
+            "shortcutPassthrough": true,
+            "appendArgsToExecutable": true
+        },
+        "titleFromVariable": {
+            "limitToGroups": [],
+            "caseInsensitiveVariables": false,
+            "skipFileIfVariableWasNotFound": false
+        },
+        "fuzzyMatch": {
+            "replaceDiacritics": true,
+            "removeCharacters": true,
+            "removeBrackets": true
+        },
+        "controllers": {
+            "ps4": null,
+            "ps5": null,
+            "ps5_edge": null,
+            "xbox360": null,
+            "xboxone": null,
+            "xboxelite": null,
+            "switch_joycon_left": null,
+            "switch_joycon_right": null,
+            "switch_pro": null,
+            "neptune": null,
+            "steamcontroller_gordon": null
+        },
+        "imageProviderAPIs": {
+            "sgdb": {
+                "nsfw": false,
+                "humor": false,
+                "styles": [],
+                "stylesHero": [],
+                "stylesLogo": [],
+                "stylesIcon": [],
+                "imageMotionTypes": [
+                    "static"
+                ],
+                "sizes": [],
+                "sizesHero": [],
+                "sizesTall": null,
+                "sizesIcon": []
+            }
+        },
+        "defaultImage": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "localImages": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "parserId": "17393979198057047",
+        "version": 25,
+        "disabled": true
+    },
+    {
+        "parserType": "Glob",
+        "configTitle": "Cloud",
+        "steamDirectory": "${steamdirglobal}",
+        "romDirectory": "/run/media/deck/SD/retrodeck/roms/desktop/cloud",
+        "steamCategories": [
+            "Cloud"
+        ],
+        "executableArgs": "",
+        "executableModifier": "\"${exePath}\"",
+        "startInDirectory": "",
+        "titleModifier": "${fuzzyTitle}",
+        "fetchControllerTemplatesButton": null,
+        "removeControllersButton": null,
+        "steamInputEnabled": "1",
+        "imageProviders": [
+            "sgdb"
+        ],
+        "onlineImageQueries": [
+            "${fuzzyTitle}"
+        ],
+        "imagePool": "${fuzzyTitle}",
+        "drmProtect": false,
+        "userAccounts": {
+            "specifiedAccounts": [
+                "kergoth"
+            ]
+        },
+        "parserInputs": {
+            "glob": "${title}@(.lnk|.LNK|.url|.URL|.desktop|.DESKTOP|.sh|.SH)"
+        },
+        "executable": {
+            "path": "",
+            "shortcutPassthrough": true,
+            "appendArgsToExecutable": true
+        },
+        "titleFromVariable": {
+            "limitToGroups": [],
+            "caseInsensitiveVariables": false,
+            "skipFileIfVariableWasNotFound": false
+        },
+        "fuzzyMatch": {
+            "replaceDiacritics": true,
+            "removeCharacters": true,
+            "removeBrackets": true
+        },
+        "controllers": {
+            "ps4": null,
+            "ps5": null,
+            "ps5_edge": null,
+            "xbox360": null,
+            "xboxone": null,
+            "xboxelite": null,
+            "switch_joycon_left": null,
+            "switch_joycon_right": null,
+            "switch_pro": null,
+            "neptune": null,
+            "steamcontroller_gordon": null
+        },
+        "imageProviderAPIs": {
+            "sgdb": {
+                "nsfw": false,
+                "humor": false,
+                "styles": [],
+                "stylesHero": [],
+                "stylesLogo": [],
+                "stylesIcon": [],
+                "imageMotionTypes": [
+                    "static"
+                ],
+                "sizes": [],
+                "sizesHero": [],
+                "sizesTall": null,
+                "sizesIcon": []
+            }
+        },
+        "defaultImage": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "localImages": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "parserId": "173939836456530677",
+        "version": 25,
+        "disabled": true
+    },
+    {
+        "parserType": "Glob",
+        "configTitle": "Applications",
+        "steamDirectory": "${steamdirglobal}",
+        "romDirectory": "/run/media/deck/SD/retrodeck/roms/desktop/generic-applications",
+        "steamCategories": [
+            "Apps"
+        ],
+        "executableArgs": "",
+        "executableModifier": "\"${exePath}\"",
+        "startInDirectory": "",
+        "titleModifier": "${fuzzyTitle}",
+        "fetchControllerTemplatesButton": null,
+        "removeControllersButton": null,
+        "steamInputEnabled": "1",
+        "imageProviders": [
+            "sgdb"
+        ],
+        "onlineImageQueries": [
+            "${fuzzyTitle}"
+        ],
+        "imagePool": "${fuzzyTitle}",
+        "drmProtect": false,
+        "userAccounts": {
+            "specifiedAccounts": [
+                "kergoth"
+            ]
+        },
+        "parserInputs": {
+            "glob": "${title}@(.lnk|.LNK|.url|.URL|.desktop|.DESKTOP|.sh|.SH)"
+        },
+        "executable": {
+            "path": "",
+            "shortcutPassthrough": true,
+            "appendArgsToExecutable": true
+        },
+        "titleFromVariable": {
+            "limitToGroups": [],
+            "caseInsensitiveVariables": false,
+            "skipFileIfVariableWasNotFound": false
+        },
+        "fuzzyMatch": {
+            "replaceDiacritics": true,
+            "removeCharacters": true,
+            "removeBrackets": true
+        },
+        "controllers": {
+            "ps4": null,
+            "ps5": null,
+            "ps5_edge": null,
+            "xbox360": null,
+            "xboxone": null,
+            "xboxelite": null,
+            "switch_joycon_left": null,
+            "switch_joycon_right": null,
+            "switch_pro": null,
+            "neptune": null,
+            "steamcontroller_gordon": null
+        },
+        "imageProviderAPIs": {
+            "sgdb": {
+                "nsfw": false,
+                "humor": false,
+                "styles": [],
+                "stylesHero": [],
+                "stylesLogo": [],
+                "stylesIcon": [],
+                "imageMotionTypes": [
+                    "static"
+                ],
+                "sizes": [],
+                "sizesHero": [],
+                "sizesTall": null,
+                "sizesIcon": []
+            }
+        },
+        "defaultImage": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "localImages": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "parserId": "173939840612430497",
+        "version": 25,
+        "disabled": true
     }
 ]
