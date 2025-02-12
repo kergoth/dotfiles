@@ -1,0 +1,26 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+identifier=dev.zed.Zed-Preview
+if [ -n "${__CFBundleIdentifier}" ]; then
+    case "${__CFBundleIdentifier}" in
+        dev.zed*)
+            identifier="${__CFBundleIdentifier}"
+            ;;
+    esac
+fi
+
+app=$(mdfind "kMDItemCFBundleIdentifier == '$identifier'" | head -n 1)
+if [ -z "$app" ]; then
+    app=$(mdfind "kMDItemCFBundleIdentifier == 'dev.zed.Zed'" | head -n 1)
+fi
+
+if [ -n "$app" ]; then
+    exec "$app/Contents/MacOS/cli" "$@"
+else
+    echo "Error: Zed application not found" >&2
+    exit 1
+fi
+{{- end }}
