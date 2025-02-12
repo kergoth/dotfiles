@@ -131,7 +131,7 @@
         "parserType": "Glob",
         "configTitle": "Launchers",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "/run/media/deck/SD/retrodeck/roms/launchers",
+        "romDirectory": "${romsdirglobal}/launchers",
         "steamCategories": [
             "Launchers"
         ],
@@ -225,7 +225,7 @@
         "parserType": "Glob",
         "configTitle": "Portable",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "/run/media/deck/SD/retrodeck/roms/portable",
+        "romDirectory": "${romsdirglobal}/portable",
         "steamCategories": [
             "Portable"
         ],
@@ -319,7 +319,7 @@
         "parserType": "Glob",
         "configTitle": "Cloud",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "/run/media/deck/SD/retrodeck/roms/desktop/cloud",
+        "romDirectory": "${romsdirglobal}/desktop/cloud",
         "steamCategories": [
             "Cloud"
         ],
@@ -413,7 +413,7 @@
         "parserType": "Glob",
         "configTitle": "Applications",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "/run/media/deck/SD/retrodeck/roms/desktop/generic-applications",
+        "romDirectory": "${romsdirglobal}/desktop/generic-applications",
         "steamCategories": [
             "Apps"
         ],
