@@ -120,9 +120,9 @@ refreshPeriod = "{{ $refreshPeriod }}"
 {{/* Install restic on the Steam Deck */}}
 {{- $restic_version := (gitHubLatestRelease "restic/restic").TagName | trimPrefix "v" }}
 ["{{ $binpath }}/restic{{ $binsuffix }}"]
-type = "archive-file"
-url = "https://github.com/restic/restic/releases/download/${RESTIC_TAG}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.bz2"
-path = "restic{{ $binsuffix }}"
+type = "file"
+url = "https://github.com/restic/restic/releases/download/v{{ $restic_version }}/restic_{{ $restic_version }}_{{ $os }}_{{ $arch }}.bz2"
+filter.command = "bzcat"
 executable = true
 refreshPeriod = "{{ $refreshPeriod }}"
 
