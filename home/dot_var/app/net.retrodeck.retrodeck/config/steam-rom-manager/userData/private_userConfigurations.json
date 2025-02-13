@@ -131,7 +131,7 @@
         "parserType": "Glob",
         "configTitle": "Launchers",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/launchers",
+        "romDirectory": "${romsdirglobal}/../launchers",
         "steamCategories": [
             "Launchers"
         ],
@@ -139,8 +139,6 @@
         "executableModifier": "\"${exePath}\"",
         "startInDirectory": "",
         "titleModifier": "${fuzzyTitle}",
-        "fetchControllerTemplatesButton": null,
-        "removeControllersButton": null,
         "steamInputEnabled": "1",
         "imageProviders": [
             "sgdb"
@@ -199,7 +197,6 @@
                 ],
                 "sizes": [],
                 "sizesHero": [],
-                "sizesTall": null,
                 "sizesIcon": []
             }
         },
@@ -223,18 +220,16 @@
     },
     {
         "parserType": "Glob",
-        "configTitle": "Portable",
+        "configTitle": "Portable Linux Games",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/portable",
+        "romDirectory": "${romsdirglobal}/../portable",
         "steamCategories": [
-            "Portable"
+            "Non-Steam Linux Games"
         ],
         "executableArgs": "",
         "executableModifier": "\"${exePath}\"",
         "startInDirectory": "",
         "titleModifier": "${fuzzyTitle}",
-        "fetchControllerTemplatesButton": null,
-        "removeControllersButton": null,
         "steamInputEnabled": "1",
         "imageProviders": [
             "sgdb"
@@ -250,7 +245,7 @@
             ]
         },
         "parserInputs": {
-            "glob": "${title}@(.lnk|.LNK|.url|.URL|.desktop|.DESKTOP|.sh|.SH)"
+            "glob": "${title}@(.desktop|.DESKTOP|.sh|.SH)"
         },
         "executable": {
             "path": "",
@@ -293,7 +288,6 @@
                 ],
                 "sizes": [],
                 "sizesHero": [],
-                "sizesTall": null,
                 "sizesIcon": []
             }
         },
@@ -319,7 +313,7 @@
         "parserType": "Glob",
         "configTitle": "Cloud",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/desktop/cloud",
+        "romDirectory": "${romsdirglobal}/../desktop/cloud",
         "steamCategories": [
             "Cloud"
         ],
@@ -327,8 +321,6 @@
         "executableModifier": "\"${exePath}\"",
         "startInDirectory": "",
         "titleModifier": "${fuzzyTitle}",
-        "fetchControllerTemplatesButton": null,
-        "removeControllersButton": null,
         "steamInputEnabled": "1",
         "imageProviders": [
             "sgdb"
@@ -387,7 +379,6 @@
                 ],
                 "sizes": [],
                 "sizesHero": [],
-                "sizesTall": null,
                 "sizesIcon": []
             }
         },
@@ -413,7 +404,7 @@
         "parserType": "Glob",
         "configTitle": "Applications",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/desktop/generic-applications",
+        "romDirectory": "${romsdirglobal}/../desktop/generic-applications",
         "steamCategories": [
             "Apps"
         ],
@@ -421,8 +412,6 @@
         "executableModifier": "\"${exePath}\"",
         "startInDirectory": "",
         "titleModifier": "${fuzzyTitle}",
-        "fetchControllerTemplatesButton": null,
-        "removeControllersButton": null,
         "steamInputEnabled": "1",
         "imageProviders": [
             "sgdb"
@@ -481,7 +470,6 @@
                 ],
                 "sizes": [],
                 "sizesHero": [],
-                "sizesTall": null,
                 "sizesIcon": []
             }
         },
@@ -500,6 +488,97 @@
             "icon": ""
         },
         "parserId": "173939840612430497",
+        "version": 25,
+        "disabled": true
+    },
+    {
+        "parserType": "Glob",
+        "configTitle": "Portable Games",
+        "steamDirectory": "${steamdirglobal}",
+        "romDirectory": "/run/media/deck/SD/retrodeck/roms/portable",
+        "steamCategories": [
+            "Non-Steam PC Games"
+        ],
+        "executableArgs": "",
+        "executableModifier": "\"${exePath}\"",
+        "startInDirectory": "",
+        "titleModifier": "${fuzzyTitle}",
+        "steamInputEnabled": "1",
+        "imageProviders": [
+            "sgdb"
+        ],
+        "onlineImageQueries": [
+            "${fuzzyTitle}"
+        ],
+        "imagePool": "${fuzzyTitle}",
+        "drmProtect": false,
+        "userAccounts": {
+            "specifiedAccounts": [
+                "kergoth"
+            ]
+        },
+        "parserInputs": {
+            "glob": "${title}@(.lnk|.LNK)"
+        },
+        "executable": {
+            "path": "",
+            "shortcutPassthrough": true,
+            "appendArgsToExecutable": true
+        },
+        "titleFromVariable": {
+            "limitToGroups": [],
+            "caseInsensitiveVariables": false,
+            "skipFileIfVariableWasNotFound": false
+        },
+        "fuzzyMatch": {
+            "replaceDiacritics": true,
+            "removeCharacters": true,
+            "removeBrackets": true
+        },
+        "controllers": {
+            "ps4": null,
+            "ps5": null,
+            "ps5_edge": null,
+            "xbox360": null,
+            "xboxone": null,
+            "xboxelite": null,
+            "switch_joycon_left": null,
+            "switch_joycon_right": null,
+            "switch_pro": null,
+            "neptune": null,
+            "steamcontroller_gordon": null
+        },
+        "imageProviderAPIs": {
+            "sgdb": {
+                "nsfw": false,
+                "humor": false,
+                "styles": [],
+                "stylesHero": [],
+                "stylesLogo": [],
+                "stylesIcon": [],
+                "imageMotionTypes": [
+                    "static"
+                ],
+                "sizes": [],
+                "sizesHero": [],
+                "sizesIcon": []
+            }
+        },
+        "defaultImage": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "localImages": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "parserId": "173941268184588766",
         "version": 25,
         "disabled": true
     }
