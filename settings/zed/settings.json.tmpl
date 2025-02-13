@@ -154,14 +154,14 @@
     "shell": {
         "program": "pwsh.exe"
     },
-{{  else if eq .chezmoi.os "linux" }}
+{{  else if or (eq .chezmoi.os "linux") (eq .chezmoi.os "darwin") }}
     "shell": {
-        "with_arguments": {
+      "with_arguments": {
         "program": "zsh",
         "args": [
             "--login"
         ]
-        }
+      }
     },
 {{ end }}
     "font_size": 12.0,
