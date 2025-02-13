@@ -167,17 +167,22 @@
         ]
         }
     },
-{{  end }}
+{{ end }}
     "font_size": 12.0,
     "env": {
       // Use Zed as the default editor for terminal commands.
-{{  if eq .chezmoi.os "windows" }}
+{{- if not .steamdeck }}
+{{-   if eq .chezmoi.os "windows" }}
       "EDITOR": "zed.exe --wait",
       "VISUAL": "zed.exe --wait"
-{{  else }}
+{{-   else }}
       "EDITOR": "zed --wait",
       "VISUAL": "zed --wait"
-{{  end }}
+{{-   end }}
+{{- else }}
+      "EDITOR": "vim",
+      "VISUAL": "vim"
+{{- end }}
     }
   }
 }
