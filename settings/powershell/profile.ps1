@@ -269,7 +269,10 @@ if (Get-Command bat -ErrorAction SilentlyContinue) {
   }
   New-Alias cat bat -Force
 
-  New-Alias bathelp bat --plain --language=help
+  function Invoke-BatHelp {
+    & @args --help | bat --plain --language=help
+  }
+  New-Alias bathelp Invoke-BatHelp -Force
 }
 
 if (Get-Command batgrep -ErrorAction SilentlyContinue) {
