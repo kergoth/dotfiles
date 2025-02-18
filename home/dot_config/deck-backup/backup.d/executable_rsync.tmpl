@@ -22,7 +22,7 @@ fi
 # Full local backup of the home directory, with a single copy, for device restoration
 ret=0
 echo >&2 "Backing up home directory to the SD card"
-rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt --exclude=/.local/share/Steam/steamapps/ "$HOME"/ /run/media/deck/SD/Backup/home/ || ret=$?
+rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt --exclude=/.local/share/Steam/steamapps/ "$HOME"/ {{ .sdcard_mount }}/Backup/home/ || ret=$?
 echo >&2 "Backing up installed Steam Games to the SD card"
-rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt "$HOME"/.local/share/Steam/steamapps/ /run/media/deck/SD/Backup/home/.local/share/Steam/steamapps/ || ret=$?
+rsync "$@" --exclude-from="$HOME"/.config/rsync/exclude.txt "$HOME"/.local/share/Steam/steamapps/ {{ .sdcard_mount }}/Backup/home/.local/share/Steam/steamapps/ || ret=$?
 exit $ret

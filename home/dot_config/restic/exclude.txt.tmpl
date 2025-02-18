@@ -54,9 +54,9 @@ $HOME/.local/share/Steam/steamapps/common/*
 !$HOME/.local/share/Steam/steamapps/common/Steam Controller Configs
 $HOME/.local/share/Steam/config/*cache
 
-/run/media/deck/SD/*
+{{ .sdcard_mount }}/*
 # Ludusavi saved games backup
-!/run/media/deck/SD/Saves Backup/
+!{{ .sdcard_mount }}/Saves Backup/
 
 # [...]
 node_modules

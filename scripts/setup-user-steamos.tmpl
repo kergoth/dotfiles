@@ -102,7 +102,7 @@ link() {
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
-sdmount=$(find /run/media/deck -mindepth 1 -maxdepth 1 -type d)
+sdmount={{ .sdcard_mount | quote }}
 if [ -z "$sdmount" ]; then
     echo >&2 "No SD card mounted"
 else

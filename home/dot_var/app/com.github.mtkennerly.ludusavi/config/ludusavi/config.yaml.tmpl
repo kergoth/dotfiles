@@ -18,30 +18,30 @@ language: en-US
 theme: dark
 roots:
   - store: steam
-    path: /home/deck/.local/share/Steam
+    path: {{ .chezmoi.homeDir }}/.local/share/Steam
   - store: heroic
-    path: /home/deck/.var/app/com.heroicgameslauncher.hgl/config/heroic
+    path: {{ .chezmoi.homeDir }}/.var/app/com.heroicgameslauncher.hgl/config/heroic
   - store: steam
-    path: /run/media/deck/SD
+    path: {{ .sdcard_mount }}
   - store: heroic
-    path: /home/deck/Games/Heroic
+    path: {{ .chezmoi.homeDir }}/Games/Heroic
   - store: other
-    path: /home/deck/Games
+    path: {{ .chezmoi.homeDir }}/Games
   - store: other
-    path: /run/media/deck/SD/Games
+    path: {{ .sdcard_mount }}/Games
   - store: otherHome
-    path: /run/media/deck/SD
+    path: {{ .sdcard_mount }}
   - store: other
-    path: /home/deck/Games/sdos
+    path: {{ .chezmoi.homeDir }}/Games/sdos
   - store: other
-    path: /home/deck/Games/swin
+    path: {{ .chezmoi.homeDir }}/Games/swin
   - store: other
-    path: /run/media/deck/SD/Games/Linux
+    path: {{ .sdcard_mount }}/Games/Linux
   - store: other
-    path: /run/media/deck/SD/Games/Windows
+    path: {{ .sdcard_mount }}/Games/Windows
 redirects: []
 backup:
-  path: /run/media/deck/SD/Saves Backup
+  path: {{ .sdcard_mount }}/Saves Backup
   ignoredGames: []
   filter:
     excludeStoreScreenshots: true
@@ -53,18 +53,18 @@ backup:
       steam: true
       uplay: false
     ignoredPaths:
-      - /home/deck/Applications/ShipofHarkinian/logs
-      - /home/deck/Applications/2Ship2Harkinian/logs
-      - /home/deck/.var/app/io.github.shiiion.primehack/data/dolphin-emu/Load
-      - /home/deck/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load
+      - {{ .chezmoi.homeDir }}/Applications/ShipofHarkinian/logs
+      - {{ .chezmoi.homeDir }}/Applications/2Ship2Harkinian/logs
+      - {{ .chezmoi.homeDir }}/.var/app/io.github.shiiion.primehack/data/dolphin-emu/Load
+      - {{ .chezmoi.homeDir }}/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load
     ignoredRegistry: []
   toggledPaths:
     2 Ship 2 Harkinian:
-      /home/deck/Applications/2Ship2Harkinian: false
+      {{ .chezmoi.homeDir }}/Applications/2Ship2Harkinian: false
     Dolphin:
-      /home/deck/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load: false
+      {{ .chezmoi.homeDir }}/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/Load: false
     Ship of Harkinian:
-      /home/deck/Applications/ShipofHarkinian: false
+      {{ .chezmoi.homeDir }}/Applications/ShipofHarkinian: false
   toggledRegistry: {}
   sort:
     key: name
@@ -85,7 +85,7 @@ backup:
         level: 10
   onlyConstructive: false
 restore:
-  path: /run/media/deck/SD/Saves Backup
+  path: {{ .sdcard_mount }}/Saves Backup
   toggledPaths: {}
   toggledRegistry: {}
   sort:
@@ -107,7 +107,7 @@ cloud:
   synchronize: true
 apps:
   rclone:
-    path: /home/deck/.local/bin/rclone
+    path: {{ .chezmoi.homeDir }}/.local/bin/rclone
     arguments: "--fast-list --ignore-checksum"
 customGames:
   - name: Portal 2
@@ -119,7 +119,7 @@ customGames:
   - name: Brütal Legend
     integration: extend
     files:
-      - /home/deck/.local/share/doublefine/brutallegend/
+      - "<home>/.local/share/doublefine/brutallegend/"
     registry: []
     installDir: []
   - name: Ship of Harkinian
@@ -147,19 +147,19 @@ customGames:
   - name: Super Mario 64 EX
     integration: override
     files:
-      - /home/deck/.local/share/sm64ex
+      - "<home>/.local/share/sm64ex"
     registry: []
     installDir: []
   - name: Sonic 3 A.I.R.
     integration: extend
     files:
-      - /home/deck/.local/share/Sonic3AIR/
+      - "<home>/.local/share/Sonic3AIR/"
     registry: []
     installDir: []
   - name: The Booze of Monkey Island
     integration: extend
     files:
-      - /home/deck/.local/share/BEAN - Adventure Agency/The Booze Of Monkey Island/
+      - "<home>/.local/share/BEAN - Adventure Agency/The Booze Of Monkey Island/"
     registry: []
     installDir: []
   - name: Vampire Survivors
