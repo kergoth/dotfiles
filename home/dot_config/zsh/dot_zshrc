@@ -40,7 +40,7 @@ fi
 for file in $ZDOTDIR/plugins/*/*.plugin.zsh(N) $ZDOTDIR/plugins/*/activate.sh(N) \
             ${(M)config_files:#*/*.plugin.zsh}; do
     case "$file" in
-        */bd/*|*/syntax-highlighting/*|*/history-substring-search/*)
+        */bd/*|*/syntax-highlighting/*|*/history-substring-search/*|*/fzf-tab/*)
             continue
             ;;
     esac
@@ -74,6 +74,10 @@ done
 
 # Load manually loaded "plugins"
 . $ZDOTDIR/plugins/bd/bd.zsh
+
+if (( $+commands[fzf] )); then
+    . $ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh
+fi
 
 if autoload -Uz git-escape-magic; then
     git-escape-magic
