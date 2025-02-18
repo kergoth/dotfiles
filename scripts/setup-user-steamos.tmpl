@@ -168,10 +168,11 @@ fi
 flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
 {{- end }}
 
-{{- if has "net.retrodeck.retrodeck" $flatpaks }}
-# Add RetroDeck to Steam
-steamos-add-to-steam ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop
-{{- end }}
+if ! flatpak info net.retrodeck.retrodeck &>/dev/null; then
+    echo >&2 "Installing net.retrodeck.retrodeck"
+    flatpak install --user --noninteractive flathub {{ . }}
+    steamos-add-to-steam ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop
+fi
 
 if [ -e ~/.config/systemd/user/deck-backup.service ]; then
     systemctl --user enable ~/.config/systemd/user/deck-backup.timer
