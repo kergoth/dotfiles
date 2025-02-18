@@ -1,7 +1,7 @@
 [UI]
 SettingsVersion = 1
 InhibitScreensaver = true
-MainWindowGeometry = AdnQywADAAAAAAaHAAADIQAACqAAAAXWAAAGhwAAAz0AAAqgAAAF1gAAAAAAAAAADwAAAAaHAAADPQAACqAAAAXW
+MainWindowGeometry = AdnQywADAAAAAAAAAAAAAAAABBkAAAKZAAAAAAAAAAAAAAQZAAACmQAAAAAAAAAABQAAAAAAAAAAAAAABBkAAAKZ
 MainWindowState = AAAA/wAAAAD9AAAAAAAABBoAAAJxAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAHQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAA==
 PauseOnFocusLoss = true
 StartFullscreen = true
@@ -13,15 +13,16 @@ HideMainWindowWhenRunning = false
 DisableWindowResize = false
 DisplayWindowGeometry = AdnQywADAAAAAAAAAAAAAAAABBkAAAKZAAAAAAAAAAAAAAQZAAACmQAAAAAAAAAABQAAAAAAAAAAAAAABBkAAAKZ
 
+
 [EmuCore]
 CdvdVerboseReads = false
 CdvdDumpBlocks = false
 CdvdShareWrite = false
 EnablePatches = true
-EnableCheats = false
+EnableCheats = true
 EnablePINE = false
-EnableWideScreenPatches = false
-EnableNoInterlacingPatches = false
+EnableWideScreenPatches = true
+EnableNoInterlacingPatches = true
 EnableRecordingTools = true
 EnableGameFixes = true
 SaveStateOnShutdown = false
@@ -35,7 +36,7 @@ McdEnableEjection = true
 McdFolderAutoManage = true
 WarnAboutUnsafeSettings = true
 GzipIsoIndexTemplate = $(f).pindex.tmp
-BlockDumpSaveDirectory =
+BlockDumpSaveDirectory = 
 EnableFastBoot = true
 
 
@@ -140,8 +141,8 @@ UserHacks_WildHack = false
 UserHacks_TextureInsideRt = 0
 UserHacks_TargetPartialInvalidation = false
 UserHacks_EstimateTextureRegion = false
-fxaa = false
-ShadeBoost = false
+fxaa = true
+ShadeBoost = true
 dump = false
 save = false
 savef = false
@@ -152,7 +153,7 @@ DumpReplaceableMipmaps = false
 DumpTexturesWithFMVActive = false
 DumpDirectTextures = true
 DumpPaletteTextures = true
-LoadTextureReplacements = false
+LoadTextureReplacements = true
 LoadTextureReplacementsAsync = true
 PrecacheTextureReplacements = false
 EnableVideoCapture = true
@@ -164,9 +165,9 @@ linear_present_mode = 1
 deinterlace_mode = 0
 OsdScale = 100
 Renderer = 14
-upscale_multiplier = 1
+upscale_multiplier = 2.5
 mipmap_hw = -1
-accurate_blending_unit = 1
+accurate_blending_unit = 3
 crc_hack_level = -1
 filter = 2
 texture_preloading = 2
@@ -175,7 +176,7 @@ HWDownloadMode = 0
 CASMode = 0
 CASSharpness = 50
 dithering_ps2 = 2
-MaxAnisotropy = 0
+MaxAnisotropy = 8
 extrathreads = 3
 extrathreads_height = 4
 TVShader = 0
@@ -194,15 +195,15 @@ OverrideTextureBarriers = -1
 OverrideGeometryShaders = -1
 ShadeBoost_Brightness = 50
 ShadeBoost_Contrast = 50
-ShadeBoost_Saturation = 50
+ShadeBoost_Saturation = 75
 png_compression_level = 1
 saven = 0
 savel = 5000
 CaptureContainer = mp4
-VideoCaptureCodec =
-VideoCaptureParameters =
-AudioCaptureCodec =
-AudioCaptureParameters =
+VideoCaptureCodec = 
+VideoCaptureParameters = 
+AudioCaptureCodec = 
+AudioCaptureParameters = 
 VideoCaptureBitrate = 6000
 VideoCaptureWidth = 640
 VideoCaptureHeight = 480
@@ -243,8 +244,8 @@ VolumeAdjustLFE = 0.000000
 
 [SPU2/Output]
 OutputModule = cubeb
-BackendName =
-DeviceName =
+BackendName = 
+DeviceName = 
 Latency = 60
 OutputLatency = 20
 OutputLatencyMinimal = false
@@ -325,6 +326,7 @@ Enabled = false
 EE.bitset = 0
 IOP.bitset = 0
 
+
 [USB1]
 Type = None
 
@@ -335,9 +337,11 @@ Type = None
 
 [Achievements]
 Enabled = true
+Enabled = true
 TestMode = false
 UnofficialTestMode = false
 RichPresence = true
+ChallengeMode = false
 ChallengeMode = false
 Leaderboards = true
 Notifications = true
@@ -356,7 +360,7 @@ BIOS =
 
 [Framerate]
 NominalScalar = 1
-TurboScalar = 2
+TurboScalar = 0
 SlomoScalar = 0.5
 
 
