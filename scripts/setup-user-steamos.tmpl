@@ -79,6 +79,26 @@ install_decky_plugin() {
     fi
 }
 
+link() {
+    local linkpath="$1"
+    local target="$2"
+
+
+    if [ -d "$linkpath" ] && ! [ -L "$linkpath" ]; then
+        if [ -d "$target" ]; then
+            echo >&2 "Error: both $target and $linkpath exist"
+        else
+            echo >&2 "Moving existing $linkpath to $target"
+            mv "$linkpath" "$target"
+        fi
+    fi
+    if ! [ -e "$linkpath" ]; then
+        mkdir -p "$target"
+    fi
+    rm -f "$linkpath"
+    ln -sf "$target" "$linkpath"
+}
+
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
@@ -215,22 +235,6 @@ if [ -d ~/homebrew ]; then
 fi
 
 if [ -d "$sdmount/retrodeck" ]; then
-    # Set up retrodeck/texture_packs/Flycast
-    #   FIXME: Submit this as an issue to RetroDeck
-    #   Note: This will only work if I run this after RetroDeck has been run once to set it up.
-    bios_dir="$sdmount/retrodeck/bios/dc/textures"
-    texture_dir="$sdmount/retrodeck/texture_packs/Flycast"
-    if [ -d "$bios_dir" ] && ! [ -L "$bios_dir" ]; then
-        if [ -d "$texture_dir" ]; then
-            echo >&2 "Error: both retrodeck/texture_packs/Flycast and retrodeck/bios/dc/textures exist"
-        else
-            echo >&2 "Moving existing retrodeck/bios/dc/textures to retrodeck/texture_packs/Flycast"
-            mv "$bios_dir" "$texture_dir"
-        fi
-    fi
-    if ! [ -e "$bios_dir" ]; then
-        mkdir -p "$texture_dir"
-        rm -f "$bios_dir"
-        ln -srf "$texture_dir" "$bios_dir"
-    fi
+    link "$sdmount/retrodeck/bios/dc/textures" "$sdmount/retrodeck/texture_packs/RetroArch-Flycast"
+    link "$sdmount/retrodeck/saves/n3ds/Citra/load/textures" "$sdmount/retrodeck/texture_packs/RetroArch-Citra"
 fi
