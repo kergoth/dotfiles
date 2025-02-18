@@ -4,3 +4,6 @@
 {{- includeTemplate "external/scripts.toml.tmpl" . -}}
 {{- includeTemplate "external/vim.toml.tmpl" . -}}
 {{- includeTemplate "external/zsh.toml.tmpl" . -}}
+{{ if .steamdeck }}
+{{   includeTemplate "external/steamdeck.toml.tmpl" . }}
+{{ end }}
