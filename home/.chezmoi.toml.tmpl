@@ -137,10 +137,16 @@ scriptTempDir = "~/tmp"
     osid = {{ $osid | quote }}
     wsl2 = {{ $wsl2 }}
     steamdeck = {{ $steamdeck }}
+
 {{- if eq .chezmoi.os "darwin" }}
     macos_version = {{ $macos_version }}
     macos_split_user = {{ $macos_split_user }}
     macos_admin_user = {{ $macos_admin_user | quote }}
+{{- end }}
+{{- if .chezmoi.username }}
+{{-   $sdmount := glob (printf "/run/media/%s/*" .chezmoi.username) | first }}
+    # Steam Deck paths
+    sdcard_mount = {{ ( or $sdmount "" ) | quote }}
 {{- end }}
 
 [data.external]
