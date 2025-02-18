@@ -29,6 +29,9 @@ fi
 # FreeBSD
 path=($path /usr/local/llvm*/bin(N))
 
+# SteamDeck
+path=($path $HOME/stl/prefix(N))
+
 if [[ $OSTYPE =~ darwin ]]; then
     path=(
         $HOME/Library/Perl/*/bin(N)
