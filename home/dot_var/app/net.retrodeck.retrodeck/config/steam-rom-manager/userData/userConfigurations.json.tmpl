@@ -23,7 +23,7 @@
         "drmProtect": false,
         "userAccounts": {
             "specifiedAccounts": [
-                "kergoth"
+                "{{ .steam_account }}"
             ]
         },
         "parserInputs": {
@@ -150,7 +150,7 @@
         "drmProtect": false,
         "userAccounts": {
             "specifiedAccounts": [
-                "kergoth"
+                "{{ .steam_account }}"
             ]
         },
         "parserInputs": {
@@ -241,7 +241,7 @@
         "drmProtect": false,
         "userAccounts": {
             "specifiedAccounts": [
-                "kergoth"
+                "{{ .steam_account }}"
             ]
         },
         "parserInputs": {
@@ -332,7 +332,7 @@
         "drmProtect": false,
         "userAccounts": {
             "specifiedAccounts": [
-                "kergoth"
+                "{{ .steam_account }}"
             ]
         },
         "parserInputs": {
@@ -423,7 +423,7 @@
         "drmProtect": false,
         "userAccounts": {
             "specifiedAccounts": [
-                "kergoth"
+                "{{ .steam_account }}"
             ]
         },
         "parserInputs": {
@@ -495,7 +495,7 @@
         "parserType": "Glob",
         "configTitle": "Portable Games",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "/run/media/deck/SD/retrodeck/roms/portable",
+        "romDirectory": "{{ .sdcard_mount }}/retrodeck/roms/portable",
         "steamCategories": [
             "Non-Steam PC Games"
         ],
@@ -514,7 +514,7 @@
         "drmProtect": false,
         "userAccounts": {
             "specifiedAccounts": [
-                "kergoth"
+                "{{ .steam_account }}"
             ]
         },
         "parserInputs": {
