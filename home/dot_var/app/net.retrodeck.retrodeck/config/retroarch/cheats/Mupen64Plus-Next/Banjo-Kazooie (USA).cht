@@ -1,0 +1,9 @@
+cheats = 2
+
+cheat0_desc = "Widescreen + Performance Boost"
+cheat0_code = "81277A0C 4334+81277A10 4334+81277A18 4308+81277A20 4308+81275D24 3FE6"
+cheat0_enable = true
+
+cheat1_desc = "Disable Anti-Aliasing"
+cheat1_code = "812773AC 0000+812773AE 3202+812773DC 0000+812773DE 3202"
+cheat1_code = false

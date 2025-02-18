@@ -1,0 +1,2 @@
+#reference "../../shaders/shaders_slang/misc/image-adjustment.slangp"
+ia_ZOOM = "1.100000"
