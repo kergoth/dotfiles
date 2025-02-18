@@ -31,19 +31,19 @@ Fullscreen = True
 DisableScreenSaver = True
 KeepWindowOnTop = False
 [GBA]
-BIOS = /run/media/deck/SD/retrodeck/bios
+BIOS = {{ .sdcard_mount }}/retrodeck/bios
 Rom1 =
 Rom2 =
 Rom3 =
 Rom4 =
 SavesInRomPath = False
-SavesPath = /run/media/deck/SD/retrodeck/saves/gba
+SavesPath = {{ .sdcard_mount }}/retrodeck/saves/gba
 Threads = True
 [General]
-ISOPath0 = /run/media/deck/SD/retrodeck/roms/wii
-ISOPath1 = /run/media/deck/SD/retrodeck/roms/gc
+ISOPath0 = {{ .sdcard_mount }}/retrodeck/roms/wii
+ISOPath1 = {{ .sdcard_mount }}/retrodeck/roms/gc
 ISOPaths = 2
-WiiSDCardPath = /run/media/deck/SD/retrodeck/saves/wii/dolphin/sd.raw
+WiiSDCardPath = {{ .sdcard_mount }}/retrodeck/saves/wii/dolphin/sd.raw
 WirelessMac = 00:17:ab:83:9b:d4
 HotkeysRequireFocus = True
 RecursiveISOPaths = True

@@ -2,7 +2,7 @@
 <content>
   <logflag>0</logflag>
   <advanced_ppc_logging>false</advanced_ppc_logging>
-  <mlc_path>/run/media/deck/SD/retrodeck/bios/cemu</mlc_path>
+  <mlc_path>{{ .sdcard_mount }}/retrodeck/bios/cemu</mlc_path>
   <permanent_storage>true</permanent_storage>
   <language>0</language>
   <use_discord_presence>true</use_discord_presence>
@@ -49,7 +49,7 @@
   <RecentLaunchFiles/>
   <RecentNFCFiles/>
   <GamePaths>
-    <Entry>/run/media/deck/SD/retrodeck/roms/wiiu</Entry>
+    <Entry>{{ .sdcard_mount }}/retrodeck/roms/wiiu</Entry>
   </GamePaths>
   <GameCache/>
   <GraphicPack/>
