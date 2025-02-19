@@ -14,7 +14,7 @@ usage() {
 }
 
 check_backup_times() {
-    echo "Checking last backup times..."
+    echo >&2 "Checking last backup times..."
     for script in "$BACKUP_DIR"/*; do
         if [ -x "$script" ]; then
             backup_name=$(basename "$script" .sh)
