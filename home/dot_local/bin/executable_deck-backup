@@ -34,7 +34,7 @@ run_backup_script() {
     local force=$2
     local backup_name
     backup_name=$(basename "$script" .sh)
-    local frequency_var="BACKUP_FREQUENCY_$backup_name"
+    local frequency_var="BACKUP_FREQUENCY_${backup_name//-/_}"
     local frequency=${!frequency_var:-${BACKUP_FREQUENCY:-7}}
 
     if [ "$force" = true ] || backup_needed "$backup_name" "$frequency"; then
