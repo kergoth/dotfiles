@@ -21,7 +21,7 @@ check_backup_times() {
             last_backup_file="$STATE_DIR/$backup_name.last_backup"
             if [ -f "$last_backup_file" ]; then
                 last_backup_time=$(stat -c %Y "$last_backup_file")
-                echo "Last backup time for $backup_name: $(date -d @$last_backup_time)"
+                echo "Last backup time for $backup_name: $(date -d "@$last_backup_time")"
             else
                 echo "No backup record found for $backup_name"
             fi
