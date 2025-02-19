@@ -13,9 +13,36 @@ usage() {
     echo "  -s    Specify individual backup scripts to run (comma-separated list)."
 }
 
+gather_backups() {
+    backup_list=()
+    if [[ -n "$specified_backups" ]]; then
+        IFS=',' read -r -a backup_list <<<"$specified_backups"
+    elif [[ -n "${ENABLED_BACKUPS+set}" ]]; then
+        return 0
+    elif [[ -d "$BACKUP_DIR" ]]; then
+        backup_list=()
+        while IFS= read -r file; do
+            backup_list+=("$file")
+        done < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm /001 | sed 's#^.*/##')
+    else
+        echo "Warning: No backup scripts configured or found in $BACKUP_DIR" >&2
+        return 0
+    fi
+
+    for backup_name in "${backup_list[@]}"; do
+        script="$BACKUP_DIR/$backup_name"
+        if [ ! -f "$script" ]; then
+            script="$BACKUP_DIR/$backup_name.sh"
+        fi
+        backup_name="${backup_name%.sh}"
+        backups[$backup_name]="$script"
+    done
+}
+
 check_backup_times() {
     echo >&2 "Checking last backup times..."
-    for script in "$BACKUP_DIR"/*; do
+    for backup_name in "${!backups[@]}"; do
+        script=${backups[$backup_name]}
         if [ -x "$script" ]; then
             backup_name=$(basename "$script" .sh)
             last_backup_file="$STATE_DIR/$backup_name.last_backup"
@@ -74,29 +101,8 @@ backup_needed() {
 
 process_backup_scripts() {
     local force=$1
-    local specified_backups=$2
-    local backup_array=()
-
-    if [[ -n "$specified_backups" ]]; then
-        IFS=',' read -r -a backup_array <<<"$specified_backups"
-    elif [[ -n "${ENABLED_BACKUPS+set}" ]]; then
-        return 0
-    elif [[ -d "$BACKUP_DIR" ]]; then
-        backup_array=()
-        while IFS= read -r file; do
-            backup_array+=("$file")
-        done < <(find "$BACKUP_DIR" -maxdepth 1 -type f -perm /001 | sed 's#^.*/##')
-    else
-        echo "Warning: No backup scripts configured or found in $BACKUP_DIR" >&2
-        return 0
-    fi
-
-    for backup_name in "${backup_array[@]}"; do
-        script="$BACKUP_DIR/$backup_name"
-        if [ ! -f "$script" ]; then
-            script="$BACKUP_DIR/$backup_name.sh"
-        fi
-        backup_name="${backup_name%.sh}"
+    for backup_name in "${!backups[@]}"; do
+        script=${backups[$backup_name]}
         if [ -x "$script" ]; then
             run_backup_script "$script" "$force"
         else
@@ -127,17 +133,16 @@ mkdir -p "$STATE_DIR"
 
 BACKUP_DIR=~/.config/deck-backup/backup.d
 
+check_times=0
 force_backup=false
 specified_backups=
 if [[ -n "${ENABLED_BACKUPS+set}" ]]; then
     specified_backups="$ENABLED_BACKUPS"
 fi
-
 while getopts "cfs:h" opt; do
     case "$opt" in
     c)
-        check_backup_times
-        exit 0
+        check_times=1
         ;;
     f)
         force_backup=true
@@ -165,4 +170,10 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-process_backup_scripts "$force_backup" "$specified_backups"
+declare -A backups
+gather_backups
+if [[ $check_times -eq 1 ]]; then
+    check_backup_times
+else
+    process_backup_scripts "$force_backup"
+fi
