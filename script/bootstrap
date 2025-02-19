@@ -22,9 +22,23 @@ run() {
     "$@"
 }
 
+msg() {
+    fmt="$1"
+    if [ $# -gt 1 ]; then
+        shift
+    fi
+    # shellcheck disable=SC2059
+    printf "$fmt\n" "$@" >&2
+}
+
+die() {
+    msg "$@"
+    exit 1
+}
+
 need_sudo() {
     if [ "$(id -u)" != "0" ]; then
-        if is_freebsd; then
+        if [ "$OS" = freebsd ]; then
             if has doas && [ -e /usr/local/etc/doas.conf ] && [ "$(doas -C /usr/local/etc/doas.conf pkg)" = permit ]; then
                 return 0
             else
@@ -100,6 +114,7 @@ required_dependencies() {
 case "${OSTYPE:-}" in
 darwin*)
     DISTRO=macos
+    OS=macos
     ;;
 *)
     if [ -e /etc/os-release ]; then
@@ -107,6 +122,7 @@ darwin*)
     else
         DISTRO=
     fi
+    OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     ;;
 esac
 
