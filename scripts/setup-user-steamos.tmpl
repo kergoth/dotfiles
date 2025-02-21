@@ -301,6 +301,10 @@ if ! [ -e ~/stl/deps/usr/bin/yad ]; then
     ~/stl/prefix/steamtinkerlaunch >/dev/null
 fi
 
+# This is currently redundant due to the scripts being installed into ES-DE, and
+# Steam ROM Manager adding those items to the Steam library, but I'm leaving
+# this here as an example of an alternative way of doing things. I don't think
+# I'll switch to this as of yet, since --tags= isn't currently working properly.
 if [ -e "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
     add_windows_nonsteam_game "Kirby Air Ride Online" "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" --tags="Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
 fi
