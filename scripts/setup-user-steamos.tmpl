@@ -239,3 +239,14 @@ if [ -d "$sdmount/retrodeck" ]; then
     link "$sdmount/retrodeck/bios/dc/textures" "$sdmount/retrodeck/texture_packs/RetroArch-Flycast"
     link "$sdmount/retrodeck/saves/n3ds/Citra/load/textures" "$sdmount/retrodeck/texture_packs/RetroArch-Citra"
 fi
+
+if ! [ -e ~/stl/prefix/steamtinkerlaunch ]; then
+    echo >&2 "Installing SteamTinkerLaunch"
+    mkdir -p ~/stl
+    chezmoi apply --force ~/stl/prefix
+fi
+
+if ! [ -e ~/stl/deps/usr/bin/yad ]; then
+    echo >&2 "Installing SteamTinkerLaunch Dependencies"
+    ~/stl/prefix/steamtinkerlaunch >/dev/null
+fi

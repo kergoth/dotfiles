@@ -5,3 +5,14 @@ exact = true
 stripComponents = 3
 include = ["*/gfx/video_filters/**/*.filt"]
 refreshPeriod = "{{ .external.refreshPeriod }}"
+
+{{/* SteamTinkerLaunch */}}
+{{ $stl := printf "%s/stl/prefix/steamtinkerlaunch" .chezmoi.homeDir }}
+{{ if not (glob $stl) }}
+["stl/prefix"]
+type = "archive"
+url = "https://github.com/sonic2kk/steamtinkerlaunch/archive/refs/heads/master.zip"
+exact = true
+stripComponents = 1
+refreshPeriod = "{{ .external.refreshPeriod }}"
+{{ end }}
