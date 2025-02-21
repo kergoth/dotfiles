@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+chezmoi diff ~/.config/zed/settings.json | patch -R settings/zed/settings.json.tmpl || :
+chezmoi diff ~/.config/zed/keymap.json | patch -R settings/zed/keymap.json.tmpl || :
