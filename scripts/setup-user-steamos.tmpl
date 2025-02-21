@@ -15,6 +15,10 @@
     "https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/releases/latest/download/NSLPlugin.desktop") }}
 #!/usr/bin/env bash
 
+XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+state_dir="$XDG_STATE_HOME/${0##*/}"
+mkdir -p "$state_dir"
+
 download_file() {
     local url="$1"
     shift
@@ -98,6 +102,52 @@ link() {
     rm -f "$linkpath"
     ln -sf "$target" "$linkpath"
 }
+
+stl() {
+    ~/stl/prefix/steamtinkerlaunch "$@" \
+        | grep -v '^$' \
+        | grep -Ev '^(Dependency|Downloading|Preparing|Finished)'
+}
+
+add_nonsteam_game() {
+    local name="$1"
+    shift
+    local ep="$1"
+    shift
+
+    if ! [ -e "$state_dir/games.txt" ]; then
+        echo >&2 "Initializing Non-Steam Game List (One-Time)"
+        stl list non-steam name > "$state_dir/games.txt"
+    fi
+
+    if grep -Fqx "$name" "$state_dir/games.txt"; then
+        return 0
+    fi
+
+    if ! echo "$@" | grep -F '\-sd='; then
+        set -- --startdir="$(dirname "$ep")" "$@"
+    fi
+
+    echo >&2 "Adding Non-Steam Game $name"
+    stl addnonsteamgame --appname="$name" --exepath="$ep" --auto-artwork --use-steamgriddb "$@" || return 1
+
+    echo "$name" >> "$state_dir/games.txt"
+}
+
+proton=
+add_windows_nonsteam_game() {
+    local name="$1"
+    shift
+
+    proton=${proton:-$(stl listproton name | grep -F proton-9.0)} || :
+    if [ -z "$proton" ]; then
+        echo >&2 "Proton 9.0 not found, skipping adding Windows Non-Steam Game $name"
+        return 1
+    fi
+
+    add_nonsteam_game "$name" "$@" --compatibilitytool="$proton"
+}
+
 
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
@@ -249,4 +299,8 @@ fi
 if ! [ -e ~/stl/deps/usr/bin/yad ]; then
     echo >&2 "Installing SteamTinkerLaunch Dependencies"
     ~/stl/prefix/steamtinkerlaunch >/dev/null
+fi
+
+if [ -e "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
+    add_windows_nonsteam_game "Kirby Air Ride Online" "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" --tags="Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
 fi
