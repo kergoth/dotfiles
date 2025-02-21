@@ -1,0 +1,5 @@
+{{- if .steamdeck -}}
+~/stl/prefix/steamtinkerlaunch "$@" \
+    | grep -v '^$' \
+    | grep -Ev '^(Dependency|Downloading|Preparing|Finished)'
+{{- end -}}
