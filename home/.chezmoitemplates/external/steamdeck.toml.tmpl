@@ -7,8 +7,7 @@ include = ["*/gfx/video_filters/**/*.filt"]
 refreshPeriod = "{{ .external.refreshPeriod }}"
 
 {{/* SteamTinkerLaunch */}}
-{{ $stl := printf "%s/stl/prefix/steamtinkerlaunch" .chezmoi.homeDir }}
-{{ if not (glob $stl) }}
+{{ if not (glob "stl/prefix/steamtinkerlaunch") }}
 ["stl/prefix"]
 type = "archive"
 url = "https://github.com/sonic2kk/steamtinkerlaunch/archive/refs/heads/master.zip"
