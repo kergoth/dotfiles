@@ -114,7 +114,7 @@ Library/Caches/zsh/functions/*
 AppData/Roaming/gnupg/*
 {{- end }}
 
-{{- if not .steamdeck }}
+{{ if not .steamdeck }}
 # Steamdeck-only
 .local/bin/deck*
 .local/bin/ludusavi
@@ -128,7 +128,12 @@ AppData/Roaming/gnupg/*
 .config/deck-backup
 .var/app
 SD
-{{- end }}
+{{ else }}
+# These are inputs into onepassword template files, don't apply them directly
+.var/app/net.retrodeck.retrodeck/config/ES-DE/settings/es_settings.src.xml
+.var/app/net.retrodeck.retrodeck/config/PCSX2/inis/PCSX2.src.ini
+.var/app/net.retrodeck.retrodeck/config/retroarch/retroarch.src.cfg
+{{ end }}
 
 # I don't track files for this with chezmoi
 .code-terminal
