@@ -6,6 +6,7 @@
     "com.github.mtkennerly.ludusavi"
     "com.google.Chrome"
     "net.retrodeck.retrodeck"
+    "org.scummvm.ScummVM"
     ) }}
 {{- $desktop_downloads := (list
     "https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/decky_installer.desktop"
@@ -210,6 +211,12 @@ fi
 # Allow Protontricks to access the SD card
 if [ -n "$sdmount" ]; then
     flatpak override --user --filesystem="$sdmount" com.github.Matoking.protontricks
+fi
+{{- end }}
+{{ if has "org.scummvm.ScummVM" $flatpaks }}
+# Allow ScummVM to access the SD card
+if [ -n "$sdmount" ]; then
+    flatpak override --user --filesystem="$sdmount" org.scummvm.ScummVM
 fi
 {{- end }}
 
