@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+chezmoi unmanaged -p absolute "$@" \
+    | while read -r p; do
+        if [ -f "$p" ]; then
+            echo "$p"
+        fi
+    done
