@@ -131,7 +131,7 @@
         "parserType": "Glob",
         "configTitle": "Launchers",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/../launchers",
+        "romDirectory": "{{ .sdcard_mount }}/retrodeck/roms/launchers",
         "steamCategories": [
             "Launchers"
         ],
@@ -222,7 +222,7 @@
         "parserType": "Glob",
         "configTitle": "Portable Linux Games",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/../portable",
+        "romDirectory": "{{ .sdcard_mount }}/retrodeck/roms/portable",
         "steamCategories": [
             "Non-Steam Linux Games"
         ],
@@ -313,7 +313,7 @@
         "parserType": "Glob",
         "configTitle": "Cloud",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/../desktop/cloud",
+        "romDirectory": "{{ .sdcard_mount }}/retrodeck/roms/desktop/cloud",
         "steamCategories": [
             "Cloud"
         ],
@@ -404,7 +404,7 @@
         "parserType": "Glob",
         "configTitle": "Applications",
         "steamDirectory": "${steamdirglobal}",
-        "romDirectory": "${romsdirglobal}/../desktop/generic-applications",
+        "romDirectory": "{{ .sdcard_mount }}/retrodeck/roms/desktop/generic-applications",
         "steamCategories": [
             "Apps"
         ],
