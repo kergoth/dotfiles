@@ -129,10 +129,23 @@ AppData/Roaming/gnupg/*
 .var/app
 SD
 {{ else }}
+.var/app/net.retrodeck.retrodeck/config/retroarch/content_history.lpl
+.var/app/net.retrodeck.retrodeck/config/retroarch/content_image_history.lpl
+.var/app/net.retrodeck.retrodeck/config/retroarch/content_music_history.lpl
+.var/app/net.retrodeck.retrodeck/config/PCSX2/inis/playtime.dat
+
+.var/app/net.retrodeck.retrodeck/config/steam-rom-manager/*
+!.var/app/net.retrodeck.retrodeck/config/steam-rom-manager/userData
+.var/app/net.retrodeck.retrodeck/config/steam-rom-manager/userData/*
+!.var/app/net.retrodeck.retrodeck/config/steam-rom-manager/userData/user*
+
 # These are inputs into onepassword template files, don't apply them directly
 .var/app/net.retrodeck.retrodeck/config/ES-DE/settings/es_settings.src.xml
 .var/app/net.retrodeck.retrodeck/config/PCSX2/inis/PCSX2.src.ini
 .var/app/net.retrodeck.retrodeck/config/retroarch/retroarch.src.cfg
+
+# Enabling backups is a manual step
+.config/deck-backup/config.d/enable
 {{ end }}
 
 # I don't track files for this with chezmoi
