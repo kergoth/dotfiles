@@ -581,5 +581,96 @@
         "parserId": "173941268184588766",
         "version": 25,
         "disabled": true
+    },
+    {
+        "parserType": "Glob",
+        "configTitle": "ScummVM (Script)",
+        "steamDirectory": "${steamdirglobal}",
+        "romDirectory": "{{ .sdcard_mount }}/retrodeck/roms/scummvm",
+        "steamCategories": [
+            "ScummVM"
+        ],
+        "executableArgs": "",
+        "executableModifier": "\"${exePath}\"",
+        "startInDirectory": "",
+        "titleModifier": "${fuzzyTitle}",
+        "steamInputEnabled": "1",
+        "imageProviders": [
+            "sgdb"
+        ],
+        "onlineImageQueries": [
+            "${fuzzyTitle}"
+        ],
+        "imagePool": "${fuzzyTitle}",
+        "drmProtect": false,
+        "userAccounts": {
+            "specifiedAccounts": [
+                "{{ .steam_account }}"
+            ]
+        },
+        "parserInputs": {
+            "glob": "${title}@(.sh|.desktop|.SH|.DESKTOP)"
+        },
+        "executable": {
+            "path": "",
+            "shortcutPassthrough": true,
+            "appendArgsToExecutable": true
+        },
+        "titleFromVariable": {
+            "limitToGroups": [],
+            "caseInsensitiveVariables": false,
+            "skipFileIfVariableWasNotFound": false
+        },
+        "fuzzyMatch": {
+            "replaceDiacritics": true,
+            "removeCharacters": true,
+            "removeBrackets": true
+        },
+        "controllers": {
+            "ps4": null,
+            "ps5": null,
+            "ps5_edge": null,
+            "xbox360": null,
+            "xboxone": null,
+            "xboxelite": null,
+            "switch_joycon_left": null,
+            "switch_joycon_right": null,
+            "switch_pro": null,
+            "neptune": null,
+            "steamcontroller_gordon": null
+        },
+        "imageProviderAPIs": {
+            "sgdb": {
+                "nsfw": false,
+                "humor": false,
+                "styles": [],
+                "stylesHero": [],
+                "stylesLogo": [],
+                "stylesIcon": [],
+                "imageMotionTypes": [
+                    "static"
+                ],
+                "sizes": [],
+                "sizesHero": [],
+                "sizesIcon": []
+            }
+        },
+        "defaultImage": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "localImages": {
+            "tall": "",
+            "long": "",
+            "hero": "",
+            "logo": "",
+            "icon": ""
+        },
+        "parserId": "173941268184588767",
+        "version": 25,
+        "disabled": true
     }
 ]
