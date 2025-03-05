@@ -557,7 +557,7 @@ chezmoi update -R
 
 ### As Needed GUI Software
 
-- [Balena Etcher](https://www.balena.io/etcher/): Flash OS images to SD cards & USB drives, safely and easily. Available via brew as `balenaetcher`, winget as `Balena.Etcher`, and scoop as `extras/etcher`.
+- [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/): Imaging utility to install operating systems to a microSD card. Available via brew as `raspberry-pi-imager`, winget as `RaspberryPiFoundation.RaspberryPiImager`, and scoop as `extras/raspberry-pi-imager`.
 - [Battle.net](https://us.shop.battle.net/en-us?from=root): Blizzard games client. Available via brew as `battle-net`.
 - [czkawka](https://github.com/qarmin/czkawka): Multi functional app to find duplicates, empty folders, similar images etc.
 - [dupeGuru](https://dupeguru.voltaicideas.net): A cross-platform GUI tool to find duplicate files in a system.
