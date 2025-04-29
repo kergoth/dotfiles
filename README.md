@@ -267,7 +267,6 @@ chezmoi update -R
 - [shellcheck](https://github.com/koalaman/shellcheck): A static analysis tool for shell scripts.
 - [shfmt](https://github.com/mvdan/sh#shfmt): Format shell programs.
 - [tealdeer](https://github.com/dbrgn/tealdeer): Simplified, example based and community-driven man pages.
-- [unar](https://theunarchiver.com/command-line): Universal archives extractor. Available via brew, nix, and scoop.
 - [zoxide](https://github.com/ajeetdsouza/zoxide): A smarter cd command, inspired by z and autojump.
 - [zstd](http://www.zstd.net/): Zstandard - Fast real-time compression algorithm.
 
@@ -300,6 +299,10 @@ chezmoi update -R
 #### CLI Software on Linux (non-Chimera), macOS, and Windows
 
 - [sapling](https://sapling-scm.com): A Scalable, User-Friendly Source Control System.
+
+#### CLI Software on Linux (non-Chimera), macOS, FreeBSD, and Windows
+
+- [unar](https://theunarchiver.com/command-line): Universal archives extractor. Available via brew, nix, and scoop.
 
 #### CLI Software on FreeBSD
 
