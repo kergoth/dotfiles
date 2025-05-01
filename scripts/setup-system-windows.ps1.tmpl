@@ -80,6 +80,9 @@ if (-not (Test-InWindowsSandbox)) {
     Install-WinGetPackageIfNotInstalled -Mode Silent -Source msstore -Id 9NBLGGH33N0N
 }
 
+# Dependency of SquirrelDisk
+Install-WinGetPackageIfNotInstalled -Mode Silent -Id Microsoft.EdgeWebView2Runtime | Out-Null
+
 # Personal systems only
 {{  if not .work -}}
 Install-WinGetPackageIfNotInstalled -Mode Silent -Id BiniSoft.WindowsFirewallControl | Out-Null

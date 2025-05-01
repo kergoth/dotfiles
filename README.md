@@ -372,6 +372,7 @@ chezmoi update -R
 
 #### GUI Software on Windows
 
+- [SquirrelDisk](https://www.squirreldisk.com/) ([Open-Source](https://github.com/adileo/squirreldisk)): Beautiful, Cross-Platform and Super Fast Disk Usage Analysis Tool. Available via scoop, winget.
 - [SumatraPDF](https://www.sumatrapdfreader.org): A free PDF, eBook, XPS, DjVu, CHM, Comic Book reader for Windows.
 
 #### GUI Software on macOS (Pre-Sonoma Only)
@@ -466,7 +467,6 @@ chezmoi update -R
 - [WiFi Analyzer](https://apps.microsoft.com/detail/9NBLGGH33N0N?hl=en-US&gl=US): Identify Wi-Fi problems or find the best channel.
 - [Windows Firewall Control](https://www.binisoft.org/wfc): Managing Windows Firewall is now easier than ever.
 - [Windows Terminal](https://apps.microsoft.com/store/detail/9N0DX20HK701?hl=en-us&gl=US) ([Open-Source](https://github.com/microsoft/terminal))
-- [WizTree](https://diskanalyzer.com): View the size of all files and folders visually.
 
 ### Installed Software on the Steam Deck
 

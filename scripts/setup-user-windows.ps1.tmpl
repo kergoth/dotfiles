@@ -101,7 +101,6 @@ scoop install jira-cli
 if (Install-Scoop-IfNotPresent 7zip 7zip.7zip) {
     reg import "$env:SCOOP\apps\7zip\current\install-context.reg" | Out-Null
 }
-Install-Scoop-IfNotPresent wiztree AntibodySoftware.WizTree | Out-Null
 Install-Scoop-IfNotPresent autohotkey AutoHotkey.AutoHotkey | Out-Null
 Install-Scoop-IfNotPresent discord Discord.Discord | Out-Null
 Install-Scoop-IfNotPresent ditto Ditto.Ditto | Out-Null
@@ -125,6 +124,7 @@ if (Install-Scoop-IfNotPresent notepadplusplus Notepad++.Notepad++) {
     reg import "$env:SCOOP\apps\notepadplusplus\current\install-context.reg" | Out-Null
 }
 Install-Scoop-IfNotPresent quicklook QL-Win.QuickLook | Out-Null
+Install-Scoop-IfNotPresent squirreldisk squirreldisk.SquirrelDisk | Out-Null
 Install-Scoop-IfNotPresent synctrayzor SyncTrayzor.SyncTrayzor | Out-Null
 Install-Scoop-IfNotPresent vivaldi Vivaldi.Vivaldi | Out-Null
 
