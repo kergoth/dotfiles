@@ -7,11 +7,19 @@ ServerAliveInterval 60
 Compression yes
 ForwardX11 no
 NoHostAuthenticationForLocalhost yes
-{{ if ne .chezmoi.os "windows" }}
+AddKeysToAgent yes
+IdentityFile ~/.ssh/keys/frey
+{{- if .work }}
+IdentityFile ~/.ssh/keys/work
+{{- end }}
+{{- if eq .chezmoi.os "darwin" }}
+UseKeychain yes
+{{- end }}
+{{- if ne .chezmoi.os "windows" }}
 ControlMaster auto
 ControlPersist yes
 ControlPath ~/.ssh/socket.%r@%h:%p
-{{ end }}
+{{- end }}
 {{- if eq .chezmoi.os "darwin" }}
 {{-   if glob ".config/colima/ssh_config" }}
 Include ~/.config/colima/ssh_config
