@@ -14,10 +14,24 @@
   "ssh_connections": [
     {
       "host": "kergothsdeck",
-      "args": ["-A"],
+      "args": [
+        "-A"
+      ],
       "projects": [
         {
-          "paths": ["~/.dotfiles"]
+          "paths": [
+            "~/.dotfiles"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "cosca",
+      "projects": [
+        {
+          "paths": [
+            "/volumeUSB1/usbshare/Downloads/ROMs"
+          ]
         }
       ]
     }
@@ -72,12 +86,15 @@
     "**/.git",
     "**/.svn",
     "**/.hg",
+    "**/.jj",
     "**/CVS",
     "**/.DS_Store",
     "**/Thumbs.db",
     "**/.classpath",
     "**/.settings",
-    "**/__pycache__"
+    "**/__pycache__",
+    "**/@eaDir",
+    "**/.afpDeleted*"
   ],
   "file_types": {
     "JSONC": ["*.json.tmpl", "devcontainer.json"],
