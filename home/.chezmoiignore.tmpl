@@ -45,6 +45,8 @@ Documents/*
 
 {{- if ne .chezmoi.os "darwin" }}
 Library/
+# This wrapper is for macOS to use the zed-preview binary
+.local/bin/zed
 {{- else }}
 Library/Caches/*
 !Library/Caches/zsh
