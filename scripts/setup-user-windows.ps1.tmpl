@@ -178,6 +178,15 @@ if (Test-Path "C:\Program Files\7-Zip") {
   Add-EnvironmentVariableItem "PATH" "C:\Program Files\7-Zip" -User
 }
 
+# Run QuickLook
+if (Test-Path "$env:LOCALAPPDATA\Programs\QuickLook") {
+  Start-Process "$env:LOCALAPPDATA\Programs\QuickLook\QuickLook.exe"
+} elseif (Test-Path "$env:SCOOP\apps\quicklook\current\QuickLook.exe") {
+  Start-Process "$env:SCOOP\apps\quicklook\current\QuickLook.exe"
+} else {
+  Write-Warning "QuickLook not installed"
+}
+
 # Run SyncTrayzor, which will add itself to startup
 if (Test-Path "C:\Program Files\SyncTrayzor") {
   Start-Process "C:\Program Files\SyncTrayzor\SyncTrayzor.exe" -ArgumentList --minimized
