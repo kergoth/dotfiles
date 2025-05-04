@@ -115,7 +115,7 @@ Library/Caches/zsh/functions/*
 .local/share/gnupg/*
 AppData/Roaming/gnupg/*
 {{- end }}
-
+ 
 {{ if not .steamdeck }}
 # Steamdeck-only
 .local/bin/deck*
@@ -129,6 +129,10 @@ AppData/Roaming/gnupg/*
 .config/rsync/exclude.txt
 .config/deck-backup
 .var/app
+.config/Cemu
+.config/PCSX2
+.config/steam-rom-manager
+ES-DE
 SD
 {{ else }}
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_history.lpl
@@ -143,7 +147,6 @@ SD
 
 # These are inputs into onepassword template files, don't apply them directly
 .var/app/net.retrodeck.retrodeck/config/ES-DE/settings/es_settings.src.xml
-.var/app/net.retrodeck.retrodeck/config/PCSX2/inis/PCSX2.src.ini
 .var/app/net.retrodeck.retrodeck/config/retroarch/retroarch.src.cfg
 
 # Enabling backups is a manual step
