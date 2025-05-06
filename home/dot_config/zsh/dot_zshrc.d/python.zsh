@@ -17,3 +17,4 @@ if (( $+commands[poetry] )) && [ ! -e "$XDG_CACHE_HOME/zsh/completions/_poetry" 
 fi
 
 export PIPX_HOME=$XDG_DATA_HOME/../pipx
+export RUFF_CACHE_DIR="$XDG_CACHE_HOME/ruff"
