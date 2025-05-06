@@ -1,6 +1,10 @@
 if [[ ! $OSTYPE =~ darwin* ]]; then
     export PYTHONUSERBASE="$XDG_DATA_HOME/.."
 fi
+if [[ -e "$XDG_CONFIG_HOME/python/pythonrc" ]]; then
+    export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+fi
+export PYTHON_HISTORY="$XDG_STATE_HOME/python_history"
 
 export PYTHONWARNINGS=ignore:DEPRECATION
 
