@@ -384,10 +384,10 @@ Multitap2_Slot4_Filename = Mcd-Multitap2-Slot04.ps2
 
 
 [Folders]
-Bios = {{ .sdcard_mount }}/retrodeck/bios
-Snapshots = {{ .sdcard_mount }}/retrodeck/screenshots
-SaveStates = {{ .sdcard_mount }}/retrodeck/states/ps2/pcsx2
-MemoryCards = {{ .sdcard_mount }}/retrodeck/saves/ps2/pcsx2/memcards
+Bios = {{ .emupath }}/bios
+Snapshots = {{ .emupath }}/screenshots
+SaveStates = {{ .emupath }}/states/ps2/pcsx2
+MemoryCards = {{ .emupath }}/saves/ps2/pcsx2/memcards
 Logs = logs
 Cheats = cheats
 Covers = covers
@@ -565,4 +565,4 @@ PressureModifier = 0.500000
 
 
 [GameList]
-RecursivePaths = {{ .sdcard_mount }}/retrodeck/roms/ps2
+RecursivePaths = {{ .emupath }}/roms/ps2

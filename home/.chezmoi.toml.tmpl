@@ -24,6 +24,8 @@
 {{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
 {{- $windows_sandbox := and (eq .chezmoi.os "windows") ( .chezmoi.username | contains "WDAGUtilityAccount" ) -}}
 {{- $steamdeck := eq $osid "linux-steamos" -}}
+{{- $emudeck := true -}}
+{{- $retrodeck := false -}}
 
 {{/* detect macOS version */}}
 {{- $macos_version := "" -}}
@@ -107,6 +109,29 @@
 {{-   $secrets = true -}}
 {{- end -}}
 
+{{- $emupath := "" }}
+{{- $sdmount := "" }}
+{{- if $steamdeck }}
+{{-   if .chezmoi.username }}
+{{-     $sdmount = glob (printf "/run/media/%s/*" .chezmoi.username) | first }}
+{{-   end }}
+{{-   if $sdmount }}
+{{-     if $emudeck }}
+{{-       $emupath = printf "%s/Emulation" $sdmount }}
+{{-     end }}
+{{-     if $retrodeck }}
+{{-       $emupath = printf "%s/retrodeck" $sdmount }}
+{{-     end }}
+{{-   else }}
+{{-     if $emudeck }}
+{{-       $emupath = "/home/deck/Emulation" }}
+{{-     end }}
+{{-     if $retrodeck }}
+{{-       $emupath = "/home/deck/retrodeck" }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{/* unknown distro */}}
 {{- if eq $osid "linux" }}
@@ -148,10 +173,14 @@ scriptTempDir = "~/tmp"
     macos_split_user = {{ $macos_split_user }}
     macos_admin_user = {{ $macos_admin_user | quote }}
 {{- end }}
-{{- if and .chezmoi.username $steamdeck }}
-{{-   $sdmount := glob (printf "/run/media/%s/*" .chezmoi.username) | first }}
+{{- if $steamdeck }}
+{{-   if $sdmount }}
     # Steam Deck paths
     sdcard_mount = {{ ( or $sdmount "" ) | quote }}
+{{-   end }}
+    emudeck = {{ $emudeck }}
+    retrodeck = {{ $retrodeck }}
+    emupath = {{ ( or $emupath "" ) | quote }}
 {{- end }}
 
 [data.external]
