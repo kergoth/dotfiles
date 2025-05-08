@@ -148,7 +148,7 @@ scriptTempDir = "~/tmp"
     macos_split_user = {{ $macos_split_user }}
     macos_admin_user = {{ $macos_admin_user | quote }}
 {{- end }}
-{{- if .chezmoi.username }}
+{{- if and .chezmoi.username $steamdeck }}
 {{-   $sdmount := glob (printf "/run/media/%s/*" .chezmoi.username) | first }}
     # Steam Deck paths
     sdcard_mount = {{ ( or $sdmount "" ) | quote }}
