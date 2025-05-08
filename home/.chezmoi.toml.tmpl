@@ -181,6 +181,13 @@ scriptTempDir = "~/tmp"
     emudeck = {{ $emudeck }}
     retrodeck = {{ $retrodeck }}
     emupath = {{ ( or $emupath "" ) | quote }}
+{{-   if .emudeck }}
+    retroarch_config_path = "{{ .chezmoi.destDir }}/.var/app/org.libretro.RetroArch/config/retroarch"
+{{-   else if .retrodeck }}
+    retroarch_config_path = "{{ .chezmoi.destDir }}/.var/app/net.retrodeck.retrodeck/config/retroarch"
+{{-   else }}
+    retroarch_config_path = ""
+{{-   end }}
 {{- end }}
 
 [data.external]
