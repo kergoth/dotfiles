@@ -1,0 +1,108 @@
+#!/bin/bash
+#
+# Usage: download-github-release [-h] [-r release_tag] [-p pattern] [-o output_dir] [-m] user/repo
+#
+# This script downloads release assets from GitHub projects.
+#
+# Options:
+#   -m                  Match the latest release with an asset matching the pattern.
+#   -r release_tag      Specify a release tag. If not provided, the latest release is used.
+#   -p pattern          Specify a wildcard pattern to filter assets.
+#   -o output_dir       Specify the output directory. Defaults to the current working directory.
+#   -h                  Show this help message and exit.
+
+set -euo pipefail
+
+show_help() {
+    sed -n '/^# Usage:/,/^# *-h /p' "$0" | sed 's/^# *//'
+}
+
+release_tag=
+match_pattern=0
+pattern="*"
+output_dir="."
+
+while getopts ":hr:p:o:m" opt; do
+    case ${opt} in
+        h )
+            show_help
+            exit 0
+            ;;
+        r )
+            release_tag="$OPTARG"
+            ;;
+        p )
+            pattern="$OPTARG"
+            ;;
+        o )
+            output_dir="$OPTARG"
+            ;;
+        m )
+            match_pattern=1
+            ;;
+        \? )
+            echo "Invalid option: -$OPTARG" >&2
+            show_help
+            exit 1
+            ;;
+        : )
+            echo "Option -$OPTARG requires an argument." >&2
+            show_help
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
+if [ $# -lt 1 ]; then
+    echo "Error: Missing required user/repo argument." >&2
+    show_help
+    exit 1
+fi
+
+repo="$1"
+
+if [ -z "$release_tag" ]; then
+    if [ $match_pattern -eq 1 ]; then
+        release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$repo/releases")
+        message="$(echo "$release_data" | jq -r '.message' 2>/dev/null)" || :
+        if [ -n "$message" ]; then
+            echo "Error: failed to determine a release tag to use: $message"
+            exit 1
+        fi
+        release_data=$(echo "$release_data" | jq -c '[.[] | select(.assets[].name | test("'"$pattern"'"))] | sort_by(.published_at) | .[-1]')
+        release_url=$(echo "$release_data" | jq -r '.url')
+        if [ -z "$release_url" ] || [ "$release_url" == "null" ]; then
+            echo "Error: No release found with an asset matching the pattern '$pattern'." >&2
+            exit 1
+        else
+            release_tag=$(echo "$release_data" | jq -r '.tag_name')
+        fi
+    else
+        release_url="https://api.github.com/repos/$repo/releases/latest"
+    fi
+else
+    release_url="https://api.github.com/repos/$repo/releases/tags/$release_tag"
+fi
+
+release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" "$release_url")
+if [ "$(echo "$release_data" | jq -r '.message')" == "Not Found" ]; then
+    echo "Error: Release not found." >&2
+    exit 1
+fi
+
+assets=$(echo "$release_data" | jq -r '.assets[] | select(.name | test("'"$pattern"'")) | .browser_download_url')
+
+if [ -z "$assets" ]; then
+    echo "No assets found matching pattern '$pattern'." >&2
+    exit 1
+fi
+
+mkdir -p "$output_dir"
+
+for asset_url in $assets; do
+    curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 -o "$output_dir/$(basename "$asset_url")" "$asset_url"
+    echo "Asset '$asset_url' downloaded to '$output_dir'."
+done
+
+echo "All assets downloaded."

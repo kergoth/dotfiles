@@ -22,6 +22,9 @@ XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 state_dir="$XDG_STATE_HOME/${0##*/}"
 mkdir -p "$state_dir"
 
+scriptdir=$(cd "$(dirname "$0")" && pwd)
+PATH="$scriptdir:$PATH"
+
 download_file() {
     local url="$1"
     shift
@@ -30,60 +33,6 @@ download_file() {
         return 1
     fi
     return 0
-}
-
-install_decky_plugin() {
-    local plugin_file="$1"
-    local plugin_dir="$2"
-    plugin_name=$(basename "$plugin_dir")
-
-    if test -d "$plugin_dir"; then
-        return 0
-    fi
-
-    echo >&2 "Installing $plugin_name plugin"
-    local plugins_dir
-    plugins_dir=$(dirname "$plugin_dir")
-
-    trap 'rm -rf "$plugin_dir"; chmod -w "$plugins_dir"; rm -rf "$tmpdir"' EXIT INT TERM
-    if test -d "$plugins_dir"; then
-        chmod +w "$plugins_dir"
-    fi
-
-    mkdir -p "$plugin_dir"
-    case "$plugin_file" in
-    *.7z)
-        7z x -o"$plugin_dir" "$plugin_file"
-        ;;
-    *.zip)
-        unzip -d "$plugin_dir" "$plugin_file"
-        ;;
-    *)
-        echo >&2 "Error: Unknown archive format for $plugin_name plugin"
-        return 1
-        ;;
-    esac || rm -rf "$plugin_dir"
-
-    if [ -d "$plugin_dir" ]; then
-        if [ "$(find "$plugin_dir" -mindepth 1 -maxdepth 1 -not -name .DS_Store | wc -l | xargs)" = 1 ]; then
-            # If there's only one directory in the plugin, hoist its contents into the plugin directory
-            single_dir=$(find "$plugin_dir" -mindepth 1 -maxdepth 1 -type d)
-            if test -d "$single_dir"; then
-                find "$single_dir" -mindepth 1 -maxdepth 1 -print0 | xargs -0 -I"{}" mv "{}" "$plugin_dir/"
-                rmdir "$single_dir"
-            fi
-        fi
-        chmod -R -w "$plugin_dir"
-        chmod -w "$plugins_dir"
-        trap 'rm -rf "$tmpdir"' EXIT INT TERM
-
-        echo >&2 "Installed $plugin_name plugin"
-    else
-        chmod -w "$plugins_dir"
-        trap 'rm -rf "$tmpdir"' EXIT INT TERM
-        echo >&2 "Error: Failed to install $plugin_name plugin"
-        return 1
-    fi
 }
 
 link() {
@@ -282,14 +231,14 @@ fi
 
 if [ -d ~/homebrew ]; then
     if ! test -d "$HOME/homebrew/plugins/Decky Framegen"; then
-        if curl -fsSL -o "$tmpdir/Decky.Framegen.zip" https://github.com/xXJSONDeruloXx/Decky-Framegen/releases/latest/download/Decky.Framegen.zip; then
-            install_decky_plugin "$tmpdir/Decky.Framegen.zip" "$HOME/homebrew/plugins/Decky Framegen"
+        if download-github-release -m -o "$tmpdir" -p Decky-Framegen.zip xXJSONDeruloXx/Decky-Framegen; then
+            install-decky-plugin -d "Decky Framegen" "$tmpdir/Decky-Framegen.zip"
         fi
     fi
 
     if ! test -d "$HOME/homebrew/plugins/NonSteamLaunchers"; then
         if curl -fsSL -o "$tmpdir/main.zip" https://github.com/moraroy/NonSteamLaunchersDecky/archive/refs/heads/main.zip; then
-            install_decky_plugin "$tmpdir/main.zip" "$HOME/homebrew/plugins/NonSteamLaunchers"
+            install-decky-plugin -d NonSteamLaunchers "$tmpdir/main.zip"
         fi
     fi
 fi
