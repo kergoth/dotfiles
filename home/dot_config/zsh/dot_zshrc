@@ -95,9 +95,11 @@ done
 
 unset config_files
 
-if [[ -e $ZDOTDIR/.zshrc.local ]]; then
-    . "$ZDOTDIR/.zshrc.local"
-fi
+for localrc in "$ZDOTDIR/.zshrc.local" "$HOME/.zshrc.local" "$HOME/.localrc"; do
+    if [[ -e "$localrc" ]]; then
+        . "$localrc"
+    fi
+done
 
 if [[ "$ZSH_PROFILE_STARTUP_LINES" == true ]]; then
     unsetopt xtrace
