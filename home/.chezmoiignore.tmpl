@@ -135,6 +135,19 @@ AppData/Roaming/gnupg/*
 ES-DE
 SD
 {{ else }}
+{{   if not .emudeck }}
+.config/Cemu
+.config/PCSX2
+.config/steam-rom-manager
+.var/app/io.github.shiiion.primehack
+.var/app/org.citra_emu.citra
+.var/app/org.DolphinEmu.dolphin-emu
+.var/app/org.libretro.RetroArch
+.var/app/org.ppsspp.PPSSPP
+{{   end }}
+{{   if not .retrodeck }}
+.var/app/net.retrodeck.retrodeck
+{{   end }}
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_history.lpl
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_image_history.lpl
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_music_history.lpl
