@@ -24,7 +24,7 @@
 {{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
 {{- $windows_sandbox := and (eq .chezmoi.os "windows") ( .chezmoi.username | contains "WDAGUtilityAccount" ) -}}
 {{- $steamdeck := eq $osid "linux-steamos" -}}
-{{- $emudeck := true -}}
+{{- $emudeck := false -}}
 {{- $retrodeck := false -}}
 
 {{/* detect macOS version */}}
@@ -76,6 +76,7 @@
 {{-   else if $steamdeck -}}
 {{-     $gaming = true -}}
 {{-     $personal = true -}}
+{{-     $emudeck = true -}}
 {{-   else if $windows_sandbox -}}
 {{-     $ephemeral = true -}}
 {{-   else if $interactive -}}
@@ -89,14 +90,19 @@
 
 {{/* prompt for overrides */}}
 {{- if and $interactive $prompt -}}
-{{-   $headless = promptBoolOnce . "headless" "Is this machine headless (no screen or keyboard)?" $headless -}}
-{{-   $ephemeral = promptBoolOnce . "ephemeral" "Is this machine ephemeral (container, cloud, or VM instance)?" $ephemeral -}}
-{{-   $work = promptBoolOnce . "work" "Will this be a work machine (use a work email address)?" $work -}}
-{{-   $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
-{{-   $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
-{{-   $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
-{{-   $video = promptBoolOnce . "video" "Will this machine be used for local video playback (install VLC)?" $video -}}
-{{-   $music = promptBoolOnce . "music" "Will this machine be used to listen to music?" $music -}}
+{{-   if $steamdeck -}}
+{{-     $emudeck = promptBoolOnce . "emudeck" "Will EmuDeck be used?" $emudeck -}}
+{{-     $retrodeck = promptBoolOnce . "retrodeck" "Will RetroDeck be used?" (and $retrodeck (not $emudeck)) -}}
+{{-   else -}}
+{{-     $headless = promptBoolOnce . "headless" "Is this machine headless (no screen or keyboard)?" $headless -}}
+{{-     $ephemeral = promptBoolOnce . "ephemeral" "Is this machine ephemeral (container, cloud, or VM instance)?" $ephemeral -}}
+{{-     $work = promptBoolOnce . "work" "Will this be a work machine (use a work email address)?" $work -}}
+{{-     $coding = promptBoolOnce . "coding" "Will this machine be used for coding (beyond just scripting)?" $coding -}}
+{{-     $containers = promptBoolOnce . "containers" "Should a container runtime be installed?" $containers -}}
+{{-     $gaming = promptBoolOnce . "gaming" "Will this machine be used for gaming?" $gaming -}}
+{{-     $video = promptBoolOnce . "video" "Will this machine be used for local video playback (install VLC)?" $video -}}
+{{-     $music = promptBoolOnce . "music" "Will this machine be used to listen to music?" $music -}}
+{{-   end -}}
 {{- end -}}
 
 {{- $email := "kergoth@gmail.com" -}}
