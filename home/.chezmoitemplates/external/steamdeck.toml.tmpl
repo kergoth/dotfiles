@@ -1,3 +1,4 @@
+{{ if .retrodeck }}
 [".var/app/net.retrodeck.retrodeck/config/retroarch/filters/video"]
 type = "archive"
 url = "https://github.com/libretro/RetroArch/archive/refs/heads/master.zip"
@@ -5,6 +6,7 @@ exact = true
 stripComponents = 3
 include = ["*/gfx/video_filters/**/*.filt"]
 refreshPeriod = "{{ .external.refreshPeriod }}"
+{{ end }}
 
 {{/* SteamTinkerLaunch */}}
 {{ if not (glob "stl/prefix/steamtinkerlaunch") }}
