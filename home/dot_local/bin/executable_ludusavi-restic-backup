@@ -41,5 +41,5 @@ ludusavi backup --api --preview ${game:+"$game"} | jq -r '.games |
   "\(.key)\t\(.value.files | keys_unsorted | join("\t"))"
 ' |
     while IFS=$'\t' read -r game files; do
-        printf '%s\t' "$files" | tr '\t' '\0' | restic backup --tag="saves,$game" --files-from-raw=- --group-by host,tags "$@"
+        printf '%s\t' "$files" | tr '\t' '\0' | restic backup --tag="$game" --files-from-raw=- --group-by host,tags "$@"
     done
