@@ -44,6 +44,9 @@ Documents/*
 {{- end }}
 
 {{- if ne .chezmoi.os "darwin" }}
+.config/zsh/.zshrc.d/lima.zsh
+.config/zsh/functions/lima
+.lima
 Library/
 # This wrapper is for macOS to use the zed-preview binary
 .local/bin/zed
@@ -58,11 +61,25 @@ Library/Caches/zsh/functions/*
 .ssh/keys/*
 {{- if not .ephemeral }}
 {{-   if .personal }}
+{{-     if not .steamdeck }}
 !.ssh/keys/frey*
+{{-     else }}
+!.ssh/keys/frey.pub
+{{-     end }}
 {{-   end }}
 {{-   if .work }}
 !.ssh/keys/work*
 {{-   end }}
+{{- end }}
+
+{{- if not .work }}
+.s3cfg
+.config/bat/syntaxes/BitBake.sublime-syntax
+{{- end }}
+
+{{- if not .wsl2 }}
+.local/bin/wsl-open
+.config/zsh/.zshrc.d/wsl.zsh
 {{- end }}
 
 **/.DS_Store
@@ -144,10 +161,24 @@ SD
 .var/app/org.DolphinEmu.dolphin-emu
 .var/app/org.libretro.RetroArch
 .var/app/org.ppsspp.PPSSPP
+ES-DE
 {{   end }}
 {{   if not .retrodeck }}
 .var/app/net.retrodeck.retrodeck
+.local/bin/retrodeck
 {{   end }}
+.librewolf
+.local/share/fonts/*
+.config/powershell
+.config/tmux
+.config/starship-right.toml
+.config/starship.toml
+.config/gmailctl
+
+.local/bin/linux-bundle-clone
+.local/bin/repo
+.local/bin/tmux-resize-adaptable
+
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_history.lpl
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_image_history.lpl
 .var/app/net.retrodeck.retrodeck/config/retroarch/content_music_history.lpl
