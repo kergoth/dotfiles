@@ -130,8 +130,8 @@ mkdir -p "$final_destination"
 
 mv "$source_dir"/* "$final_destination"
 chmod -R -w "$final_destination" || {
-    echo >&2 "Error: Plugin installed successfully to $final_destination, but removing write permission failed."
+    echo >&2 "Error: Successfully installed $plugin_archive to $final_destination, but removing write permission failed."
     exit 1
 }
 
-echo >&2 "Plugin installed successfully to $final_destination"
+echo >&2 "Successfully installed $plugin_archive to $final_destination"
