@@ -232,9 +232,9 @@ if ! [ -d ~/homebrew ]; then
 fi
 
 if [ -d ~/homebrew ]; then
-    if ! test -d "$HOME/homebrew/plugins/Decky Framegen"; then
-        if download-github-release -m -o "$tmpdir" -p Decky-Framegen.zip xXJSONDeruloXx/Decky-Framegen; then
-            install-decky-plugin -d "Decky Framegen" "$tmpdir/Decky-Framegen.zip"
+    if ! test -d "$HOME/homebrew/plugins/LetMeReShade"; then
+        if download-github-release -m -o "$tmpdir" -p "LetMeReShade_.*.zip" itsOwen/LetMeReShade; then
+            install-decky-plugin -d LetMeReShade "$tmpdir/"LetMeReShade_*.zip
         fi
     fi
 
