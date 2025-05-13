@@ -96,10 +96,22 @@ add_windows_nonsteam() {
     local name="$1"
     shift
 
-    proton=${proton:-$(stl listproton name | grep -F proton-9.0)} || :
+    if ! [ -e "$state_dir/games.txt" ]; then
+        echo >&2 "Initializing Non-Steam Game List (One-Time)"
+        stl list non-steam name > "$state_dir/games.txt"
+    fi
+
+    if grep -Fqx "$name" "$state_dir/games.txt"; then
+        return 0
+    fi
+
     if [ -z "$proton" ]; then
-        echo >&2 "Proton 9.0 not found, skipping adding Windows Non-Steam Game $name"
-        return 1
+        echo >&2 "Determining proton version"
+        proton=$(stl listproton name | grep -F proton-9.0) || :
+        if [ -z "$proton" ]; then
+            echo >&2 "Proton 9.0 not found, skipping adding Windows Non-Steam Game $name"
+            return 1
+        fi
     fi
 
     add_nonsteam "$name" "$@" --compatibilitytool="$proton"
@@ -297,31 +309,41 @@ steamtinkerlaunch set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamG
   {{- end }}
 {{- end }}
 
-# These are added manually
-excluded_games="Kirby Air Ride Online"
-
-# Note that --tags= is currently broken, so none of these games will be added to collections automatically
-for basedir in "$sdmount/retrodeck/roms" "$sdmount/Emulation/roms"; do
-    if ! [ -d "$basedir" ]; then
-        continue
-    fi
-
-    for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
-        if ! [ -d "$basedir/$subdir" ]; then
+launch_dirs() {
+    for basedir in "$sdmount/retrodeck/roms" "$sdmount/Emulation/roms" "$HOME/retrodeck/roms" "$HOME/Emulations/roms"; do
+        if ! [ -d "$basedir" ]; then
             continue
         fi
 
+        for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
+            if [ -d "$basedir/$subdir" ]; then
+                echo "$basedir/$subdir"
+            fi
+        done
+    done
+
+    for subdir in "$sdmount/Apps" "$HOME/Apps"; do
+        if ! [ -d "$subdir" ]; then
+            continue
+        fi
+        find "$subdir" -mindepth 1 -maxdepth 1 -type d
+    done
+}
+
+# Note that --tags= is currently broken, so none of these games will be added to collections automatically
+launch_dirs |
+    while read -r subdir; do
         case "$subdir" in
-            portable)
+            */portable)
                 tags="Portable Games"
                 ;;
-            launchers)
+            */launchers)
                 tags=Launchers
                 ;;
-            desktop/cloud)
+            */desktop/cloud)
                 tags=Cloud
                 ;;
-            desktop/generic-applications)
+            */desktop/generic-applications)
                 tags=Apps
                 ;;
             *)
@@ -329,13 +351,16 @@ for basedir in "$sdmount/retrodeck/roms" "$sdmount/Emulation/roms"; do
                 ;;
         esac
 
-        echo >&2 "Adding Non-Steam Games from $basedir/$subdir"
-        find "$basedir/$subdir" -type f -name "*.lnk" -o -name "*.sh" |
-            { grep -Ev "$excluded_games" || :; } |
+        echo >&2 "Adding Non-Steam Games from $subdir"
+        find "$subdir" -mindepth 1 -maxdepth 1 -type f -name "*.lnk" -o -name "*.sh" |
             while read -r fn; do
                 game=$(game_name "${fn%.*}")
                 set --
                 case "$game" in
+                    "Kirby Air Ride Online")
+                        tags="${tags:+$tags,}Portable Games,Emulated Games"
+                        set -- "$@" --use-steamgriddb --steamgriddb-game-name="Kirby Air Ride"
+                        ;;
                     "CoinOPS Legends 4")
                         tags="${tags:+$tags,}Emulated Games"
                         set -- "$@" \
@@ -371,8 +396,3 @@ for basedir in "$sdmount/retrodeck/roms" "$sdmount/Emulation/roms"; do
                 esac
             done
     done
-
-    if [ -e "$basedir/portable/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
-        add_windows_nonsteam "Kirby Air Ride Online" "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" --tags="Portable Games,Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
-    fi
-done
