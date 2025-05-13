@@ -63,7 +63,7 @@ stl() {
         | { grep -Ev '^(Dependency|Downloading|Preparing|Finished)' || :; }
 }
 
-add_nonsteam_game() {
+add_nonsteam() {
     local name="$1"
     shift
     local ep="$1"
@@ -83,7 +83,7 @@ add_nonsteam_game() {
     fi
 
     echo >&2 "Adding Non-Steam Game $name"
-    stl addnonsteamgame --appname="$name" --exepath="$ep" --use-steamgriddb "$@" || {
+    stl addnonsteamgame --appname="$name" --exepath="$ep" "$@" || {
         echo >&2 "Error adding Non-Steam Game $name"
         return 1
     }
@@ -92,7 +92,7 @@ add_nonsteam_game() {
 }
 
 proton=
-add_windows_nonsteam_game() {
+add_windows_nonsteam() {
     local name="$1"
     shift
 
@@ -102,7 +102,31 @@ add_windows_nonsteam_game() {
         return 1
     fi
 
-    add_nonsteam_game "$name" "$@" --compatibilitytool="$proton"
+    add_nonsteam "$name" "$@" --compatibilitytool="$proton"
+}
+
+game_name() {
+    local fn="$1"
+
+    basename "$fn" |
+        sed -E \
+            -e '/, The/{ s/, The//; s/^/The /; };' \
+            -e 's/ - /: /' \
+            -e 's/\[[^]]*\]//g' \
+            -e 's/\([^)]*\)//g' \
+            -e 's/  */ /g; s/  *$//;'
+}
+
+streamgrid_name() {
+    local game="$1"
+    case "$game" in
+        "Kirby Air Ride Online")
+            echo "Kirby Air Ride"
+            ;;
+        *)
+            echo "$game"
+            ;;
+    esac
 }
 
 
@@ -182,8 +206,8 @@ flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
 {{- if .retrodeck }}
 if ! flatpak info net.retrodeck.retrodeck &>/dev/null; then
     echo >&2 "Installing net.retrodeck.retrodeck"
-    flatpak install --user --noninteractive flathub {{ . }}
-    steamos-add-to-steam ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop
+    flatpak install --user --noninteractive flathub net.retrodeck.retrodeck
+    add_nonsteam RetroDeck ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop --steamgriddb-game-name=RetroDeck
 fi
 {{- end }}
 
@@ -273,12 +297,82 @@ steamtinkerlaunch set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamG
   {{- end }}
 {{- end }}
 
-# This is currently redundant due to the scripts being installed into ES-DE, and
-# Steam ROM Manager adding those items to the Steam library, but I'm leaving
-# this here as an example of an alternative way of doing things. I don't think
-# I'll switch to this as of yet, since --tags= isn't currently working properly.
-for lnkdir in "$sdmount/retrodeck/roms/portable" "$sdmount/Emulation/roms/portable"; do
-    if [ -e "$lnkdir/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
-        add_windows_nonsteam_game "Kirby Air Ride Online" "$lnkdir/Kirby Air Ride Online.lnk" --tags="Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
+# These are added manually
+excluded_games="Kirby Air Ride Online"
+
+# Note that --tags= is currently broken, so none of these games will be added to collections automatically
+for basedir in "$sdmount/retrodeck/roms" "$sdmount/Emulation/roms"; do
+    if ! [ -d "$basedir" ]; then
+        continue
+    fi
+
+    for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
+        if ! [ -d "$basedir/$subdir" ]; then
+            continue
+        fi
+
+        case "$subdir" in
+            portable)
+                tags="Portable Games"
+                ;;
+            launchers)
+                tags=Launchers
+                ;;
+            desktop/cloud)
+                tags=Cloud
+                ;;
+            desktop/generic-applications)
+                tags=Apps
+                ;;
+            *)
+                tags=
+                ;;
+        esac
+
+        echo >&2 "Adding Non-Steam Games from $basedir/$subdir"
+        find "$basedir/$subdir" -type f -name "*.lnk" -o -name "*.sh" |
+            { grep -Ev "$excluded_games" || :; } |
+            while read -r fn; do
+                game=$(game_name "${fn%.*}")
+                set --
+                case "$game" in
+                    "CoinOPS Legends 4")
+                        tags="${tags:+$tags,}Emulated Games"
+                        set -- "$@" \
+                            --iconpath="$sdmount/Game Art/CoinOPS Legends 4/icon.png" \
+                            --hero="$sdmount/Game Art/CoinOPS Legends 4/hero.png" \
+                            --logo="$sdmount/Game Art/CoinOPS Legends 4/logo.png" \
+                            --boxart="$sdmount/Game Art/CoinOPS Legends 4/portrait.png" \
+                            --tenfoot="$sdmount/Game Art/CoinOPS Legends 4/lastplayed.png"
+                        ;;
+                    "NeoLemmix")
+                        set -- "$@" \
+                            --hero="$sdmount/Game Art/NeoLemmix/neolemmix-background.gif" \
+                            --logo="$sdmount/Game Art/NeoLemmix/neolemmix-logo.png" \
+                            --boxart="$sdmount/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
+                            --tenfoot="$sdmount/Game Art/NeoLemmix/neolemmix-menu.jpg"
+                        ;;
+                    "Steam Metadata Editor"|"Steam Store"|"AI Before I Play"|"Before I Play")
+                        set -- "$@" \
+                            --steamgriddb-game-name="##--Invalid--##"
+                        ;;
+                    *)
+                        set -- "$@" --use-steamgriddb --steamgriddb-game-name="$(streamgrid_name "$game")"
+                        ;;
+                esac
+
+                case "$fn" in
+                    *.lnk)
+                        add_windows_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
+                        ;;
+                    *.sh)
+                        add_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
+                        ;;
+                esac
+            done
+    done
+
+    if [ -e "$basedir/portable/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
+        add_windows_nonsteam "Kirby Air Ride Online" "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" --tags="Portable Games,Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
     fi
 done
