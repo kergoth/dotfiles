@@ -38,6 +38,7 @@ rg -l '\{.*include.*"settings/' "$source" |
     nlxargs chezmoi managed --include=files |
     sed -e "s#^#$target/#" |
     nlxargs chezmoi status |
+    grep '^M' |
     cut -d" " -f2- |
     while read -r target_path; do
         target_path="$target/$target_path"
