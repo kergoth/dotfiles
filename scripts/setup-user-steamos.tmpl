@@ -1,4 +1,5 @@
 #!/usr/bin/env chezmoi-exec
+#!/usr/bin/env bash
 {{- $flatpaks := (list
     "org.mozilla.firefox"
     "com.github.tchx84.Flatseal"
@@ -18,7 +19,6 @@
 {{- if .emudeck }}
 {{-   $desktop_downloads = append $desktop_downloads "https://www.emudeck.com/EmuDeck.desktop" }}
 {{- end }}
-#!/usr/bin/env bash
 
 XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 state_dir="$XDG_STATE_HOME/${0##*/}"
@@ -59,8 +59,8 @@ link() {
 
 stl() {
     ~/stl/prefix/steamtinkerlaunch "$@" \
-        | grep -v '^$' \
-        | grep -Ev '^(Dependency|Downloading|Preparing|Finished)'
+        | { grep -v '^$' || :; } \
+        | { grep -Ev '^(Dependency|Downloading|Preparing|Finished)' || :; }
 }
 
 add_nonsteam_game() {
