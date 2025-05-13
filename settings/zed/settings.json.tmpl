@@ -37,10 +37,44 @@
     }
   ],
 {{- end }}
-  "assistant": {
+  "agent": {
+    "profiles": {
+      "write": {
+        "name": "Write",
+        "tools": {
+          "open": true,
+          "create_directory": true,
+          "batch_tool": true,
+          "code_actions": true,
+          "code_symbols": true,
+          "contents": true,
+          "copy_path": true,
+          "create_file": true,
+          "delete_path": false,
+          "diagnostics": true,
+          "edit_file": true,
+          "fetch": true,
+          "list_directory": true,
+          "move_path": true,
+          "now": true,
+          "find_path": true,
+          "read_file": true,
+          "grep": true,
+          "rename": true,
+          "symbol_info": true,
+          "terminal": true,
+          "thinking": true,
+          "web_search": true
+        },
+        "enable_all_context_servers": true,
+        "context_servers": {}
+      }
+    },
+    "default_profile": "write",
+    "always_allow_tool_actions": false,
     "default_model": {
       "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "model": "claude-3.7-sonnet-thought"
     },
     "version": "2"
   },
@@ -86,15 +120,12 @@
     "**/.git",
     "**/.svn",
     "**/.hg",
-    "**/.jj",
     "**/CVS",
     "**/.DS_Store",
     "**/Thumbs.db",
     "**/.classpath",
     "**/.settings",
-    "**/__pycache__",
-    "**/@eaDir",
-    "**/.afpDeleted*"
+    "**/__pycache__"
   ],
   "file_types": {
     "JSONC": ["*.json.tmpl", "devcontainer.json"],
