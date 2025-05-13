@@ -83,7 +83,10 @@ add_nonsteam_game() {
     fi
 
     echo >&2 "Adding Non-Steam Game $name"
-    stl addnonsteamgame --appname="$name" --exepath="$ep" --auto-artwork --use-steamgriddb "$@" || return 1
+    stl addnonsteamgame --appname="$name" --exepath="$ep" --use-steamgriddb "$@" || {
+        echo >&2 "Error adding Non-Steam Game $name"
+        return 1
+    }
 
     echo "$name" >> "$state_dir/games.txt"
 }
@@ -261,10 +264,21 @@ if ! [ -e ~/stl/deps/usr/bin/yad ]; then
     ~/stl/prefix/steamtinkerlaunch >/dev/null
 fi
 
+{{- $stlConfigPath := (joinPath .chezmoi.homeDir ".config/steamtinkerlaunch/global.conf") }}
+{{- with stat $stlConfigPath }}
+  {{- $content := include $stlConfigPath -}}
+  {{- if regexMatch `(?m)^SGDBAPIKEY=.*none$` $content }}
+# Set the SteamGridDB API Key for SteamTinkerLaunch
+steamtinkerlaunch set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamGridDB/API Keys/password" }}'
+  {{- end }}
+{{- end }}
+
 # This is currently redundant due to the scripts being installed into ES-DE, and
 # Steam ROM Manager adding those items to the Steam library, but I'm leaving
 # this here as an example of an alternative way of doing things. I don't think
 # I'll switch to this as of yet, since --tags= isn't currently working properly.
-if [ -e "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
-    add_windows_nonsteam_game "Kirby Air Ride Online" "$sdmount/retrodeck/roms/portable/Kirby Air Ride Online.lnk" --tags="Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
-fi
+for lnkdir in "$sdmount/retrodeck/roms/portable" "$sdmount/Emulation/roms/portable"; do
+    if [ -e "$lnkdir/Kirby Air Ride Online.lnk" ] && [ -e "$sdmount/Games/Windows/Kirby Air Ride Online" ]; then
+        add_windows_nonsteam_game "Kirby Air Ride Online" "$lnkdir/Kirby Air Ride Online.lnk" --tags="Emulated Games" --steamgriddb-game-name="Kirby Air Ride"
+    fi
+done
