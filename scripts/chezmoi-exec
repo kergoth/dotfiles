@@ -24,26 +24,26 @@ abspath() {
 }
 
 script=$(abspath "$1")
-tmpfile=$(mktemp -t "${script##*/}.XXXXXX")
-trap 'rm -f "$tmpfile"' EXIT INT TERM
+tmpdir=$(mktemp -d -t "${script##*/}.XXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
-tail -n +2 "$script" |
-    chezmoi execute-template >"$tmpfile"
-chmod +x "$tmpfile"
+tail -n +2 "$script" >"$tmpdir/script.pre"
+chezmoi execute-template --output "$tmpdir/script" --file "$tmpdir/script.pre"
+chmod +x "$tmpdir/script"
 
-interpreter=$(sed -n -e '1s/^#!//p' "$tmpfile")
+interpreter=$(sed -n -e '1s/^#!//p' "$tmpdir/script")
 case "$interpreter" in
 /usr/bin/env\ *)
     interpreter=$(command -v "${interpreter#/usr/bin/env }") || exit 1
     ;;
 esac
 
-export CHEZMOI_EXEC_SCRIPT="$tmpfile"
+export CHEZMOI_EXEC_SCRIPT="$tmpdir/script"
 case "$interpreter" in
 */bash | */zsh)
-    exec -a "$script" "$interpreter" -c ". \"$tmpfile\"" "$@"
+    exec -a "$script" "$interpreter" -c ". \"$tmpdir/script\"" "$@"
     ;;
 *)
-    exec -a "$script" "$tmpfile" "$@"
+    exec -a "$script" "$tmpdir/script" "$@"
     ;;
 esac
