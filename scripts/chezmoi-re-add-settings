@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+exclude="/\.ssh/"
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+
+nlxargs () {
+    tr '\n' '\0' |
+        xargs -0 "$@"
+}
+
+if [[ "${1:-}" = "-n" ]]; then
+    dry_run=1
+else
+    dry_run=0
+fi
+
+data=$(chezmoi data 2>/dev/null | jq -r '[.chezmoi.sourceDir, .chezmoi.destDir] | join("\t")' 2>/dev/null) || :
+if [ -n "$data" ]; then
+    source=$(echo "$data" | cut -d$'\t' -f1)
+    target=$(echo "$data" | cut -d$'\t' -f2)
+else
+    source="$scriptdir/.."
+    if [ -e "$source/.chezmoiroot" ]; then
+        source=$source/$(cat "$source/.chezmoiroot")
+    fi
+    target="$HOME"
+fi
+
+rg -l '\{.*include.*"settings/' "$source" |
+    nlxargs chezmoi target-path |
+    if [ -n "$exclude" ]; then
+        grep -Ev "$exclude"
+    else
+        cat
+    fi |
+    nlxargs chezmoi managed --include=files |
+    sed -e "s#^#$target/#" |
+    nlxargs chezmoi status |
+    cut -d" " -f2- |
+    while read -r target_path; do
+        target_path="$target/$target_path"
+        source_path=$(chezmoi source-path "$target_path")
+        settings_path="$(sed -n -e 's#.*"\(settings/[^"]*\)".*#\1#p' "$source_path")"
+        echo >&2 "Applying differences in $target_path to $settings_path"
+        chezmoi diff --include=files --reverse "$target_path"
+        if [ "$dry_run" -eq 0 ]; then
+            if chezmoi diff --include=files --reverse "$target_path" | patch "$settings_path"; then
+                echo >&2 "Changes applied to $settings_path"
+            else
+                echo >&2 "Error applying changes to $settings_path"
+            fi
+        fi
+    done
