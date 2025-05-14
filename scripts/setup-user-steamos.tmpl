@@ -156,9 +156,6 @@ else
     if ! [ -L ~/SD ]; then
         ln -sf "$sdmount" ~/SD
     fi
-    if ! [ -L /run/media/deck/82ae51b4-6e05-46ef-a0df-604905557e43 ]; then
-        ln -sf "$sdmount" /run/media/deck/82ae51b4-6e05-46ef-a0df-604905557e43
-    fi
 fi
 
 mkdir -p ~/.local/bin ~/.local/share/applications
