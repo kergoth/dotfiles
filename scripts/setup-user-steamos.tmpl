@@ -315,8 +315,8 @@ steamtinkerlaunch set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamG
 launch_dirs() {
     if [ -d "$emupath/roms" ]; then
         for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
-            if [ -d "$emudir/roms/$subdir" ]; then
-                echo "$emudir/roms/$subdir"
+            if [ -d "$emupath/roms/$subdir" ]; then
+                echo "$emupath/roms/$subdir"
             fi
         done
     fi
