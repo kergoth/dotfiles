@@ -7,6 +7,7 @@
 {{- $user_setup := true -}}{{/* true if this user should be set up beyond just dotfiles */}}
 {{- $macos_split_user := true -}}{{/* true if this is a macOS machine that should have a separate user for admin tasks */}}
 {{- $macos_admin_user := "archet" -}}{{/* the username of the admin user on macOS */}}
+{{- $use_nix := false -}}{{/* true if this machine should use Nix. default to true on Linux hosts */}}
 {{/* device usage flags */}}
 {{- $coding := true -}}{{/* true if this device will be used for coding, beyond just shell scripting */}}
 {{- $containers := false -}}{{/* true if this machine should have a container runtime installed */}}
@@ -15,6 +16,11 @@
 {{- $music := false -}}{{/* true if this device will be used to listen to music */}}
 {{- $music_library := false -}}{{/* true if this device will be used to manage my music library */}}
 {{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
+{{- if eq .chezmoi.os "linux" }}
+{{-   if and (not .steamdeck) (not (eq .osid "linux-chimera")) -}}
+{{-     $use_nix = true }}
+{{-   end }}
+{{- end }}
 
 {{/* detect OS */}}
 {{- $osid := .chezmoi.os -}}
@@ -77,6 +83,7 @@
 {{-     $gaming = true -}}
 {{-     $personal = true -}}
 {{-     $emudeck = true -}}
+{{-     $use_nix = false }}
 {{-   else if $windows_sandbox -}}
 {{-     $ephemeral = true -}}
 {{-   else if $interactive -}}
@@ -168,6 +175,7 @@ scriptTempDir = "~/tmp"
 
     secrets = {{ $secrets }}
     user_setup = {{ $user_setup }}
+    use_nix = {{ $use_nix }}
 
     hostname = {{ $hostname | quote }}
     osid = {{ $osid | quote }}

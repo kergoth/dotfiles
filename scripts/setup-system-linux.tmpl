@@ -1,7 +1,7 @@
 #!/usr/bin/env chezmoi-exec
 #!/usr/bin/env bash
 
-{{ if and (not .steamdeck) (not (eq .osid "linux-chimera")) -}}
+{{ if .use_nix -}}
 set -euo pipefail
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
