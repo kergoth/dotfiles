@@ -42,6 +42,7 @@ if ! [ -e ~/.local/bin/uv ] || ! [ -e ~/.local/bin/uvx ]; then
 fi
 
 {{- if not .use_nix }}
+# Install tools
 (
     cd "$tmpdir"
 
@@ -49,19 +50,19 @@ fi
 
     if ! [ -e ~/.local/bin/eget ]; then
         # Install eget
-        curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh \
-            && shasum -a 256 "$tmpdir/eget.sh" \
-            && bash "$tmpdir/eget.sh" \
-            && mkdir -p ~/.local/bin/ \
-            && mv eget ~/.local/bin/
+        curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh &&
+            shasum -a 256 "$tmpdir/eget.sh" &&
+            bash "$tmpdir/eget.sh" &&
+            mkdir -p ~/.local/bin/ &&
+            mv eget ~/.local/bin/
     fi
 
     if ! [ -e ~/.local/bin/gget ]; then
         # Install gget
-        curl -Lo gget https://github.com/dpb587/gget/releases/download/v0.6.1/gget-0.6.1-linux-amd64 \
-            && echo "d1c92e0e28576876bd46d3689b50c0f31df45299  gget" \
-            | shasum -c \
-            && chmod +x gget
+        curl -Lo gget https://github.com/dpb587/gget/releases/download/v0.6.1/gget-0.6.1-linux-amd64 &&
+            echo "d1c92e0e28576876bd46d3689b50c0f31df45299  gget" |
+            shasum -c &&
+            chmod +x gget
         mv gget ~/.local/bin/
     fi
 
@@ -99,7 +100,7 @@ fi
     {{- if .work }}
     if ! [ -e ~/.local/bin/glab ]; then
         gget --stdout gitlab.com/gitlab-org/cli "glab_*_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64*tar*gz" |
-            tar --strip-components=1 -zxvf - bin/glab && \
+            tar --strip-components=1 -zxvf - bin/glab &&
             mv glab ~/.local/bin/glab
     fi
 
