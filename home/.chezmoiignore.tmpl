@@ -1,3 +1,11 @@
+# General ignores
+**/*~
+**/.tmp*
+**/.DS_Store
+**/._*
+**/*.lock
+
+# Common home directory data and documents
 Applications
 Applications (Parallels)
 Desktop
@@ -18,6 +26,7 @@ Templates
 Virtual Machines
 Workspace
 
+# Specific ignores
 {{- $vimPath := joinPath .chezmoi.homeDir ".config/vim" -}}
 {{ if or (not (glob $vimPath)) (ne ($vimPath | lstat).type "symlink") }}
 .chezmoiscripts/posix/prepare_vim
@@ -29,6 +38,9 @@ Workspace
 {{- if ne .chezmoi.os "windows" }}
 !.chezmoiscripts/posix/**
 {{- end }}
+
+.lesshst
+_lesshst
 
 {{- if ne .chezmoi.os "windows" }}
 AppData
