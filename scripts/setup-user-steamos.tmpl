@@ -321,11 +321,11 @@ launch_dirs() {
         done
     fi
 
-    for subdir in "$sdmount/Apps" "$HOME/Apps"; do
-        if ! [ -d "$subdir" ]; then
+    for basedir in "$sdmount/Apps" "$HOME/Apps"; do
+        if ! [ -d "$basedir" ]; then
             continue
         fi
-        find "$subdir" -mindepth 1 -maxdepth 1 -type d
+        find "$basedir" -mindepth 1 -maxdepth 1 -type d
     done
 }
 
