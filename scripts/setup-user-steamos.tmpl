@@ -316,7 +316,7 @@ launch_dirs() {
         done
     fi
 
-    for basedir in "$sdmount/Apps" "$HOME/Apps"; do
+    for basedir in "$sdmount/Apps" "$HOME/Apps" "$sdmount/Games"; do
         if ! [ -d "$basedir" ]; then
             continue
         fi
@@ -328,16 +328,16 @@ launch_dirs() {
 launch_dirs \
     | while read -r subdir; do
         case "$subdir" in
-            */portable)
+            */portable|*/Games/Linux|*/Games/Windows)
                 tags="Portable Games"
                 ;;
-            */launchers)
+            */launchers|*/Launchers)
                 tags=Launchers
                 ;;
-            */cloud)
+            */cloud|*/Cloud)
                 tags=Cloud
                 ;;
-            */generic-applications)
+            */generic-applications|*/Generic)
                 tags=Apps
                 ;;
             *)
