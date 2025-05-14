@@ -390,6 +390,7 @@ launch_dirs |
                         add_windows_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
                         ;;
                     *.sh)
+                        chmod +x "$fn"
                         add_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
                         ;;
                 esac
