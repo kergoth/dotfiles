@@ -45,19 +45,19 @@ fi
 
     if ! [ -e ~/.local/bin/eget ]; then
         # Install eget
-        curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh && \
-        shasum -a 256 "$tmpdir/eget.sh" && \
-        bash "$tmpdir/eget.sh" && \
-        mkdir -p ~/.local/bin/ && \
-        mv eget ~/.local/bin/
+        curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh \
+            && shasum -a 256 "$tmpdir/eget.sh" \
+            && bash "$tmpdir/eget.sh" \
+            && mkdir -p ~/.local/bin/ \
+            && mv eget ~/.local/bin/
     fi
 
     if ! [ -e ~/.local/bin/gget ]; then
         # Install gget
-        curl -Lo gget https://github.com/dpb587/gget/releases/download/v0.6.1/gget-0.6.1-linux-amd64 &&
-            echo "d1c92e0e28576876bd46d3689b50c0f31df45299  gget" |
-            shasum -c && \
-            chmod +x gget
+        curl -Lo gget https://github.com/dpb587/gget/releases/download/v0.6.1/gget-0.6.1-linux-amd64 \
+            && echo "d1c92e0e28576876bd46d3689b50c0f31df45299  gget" \
+            | shasum -c \
+            && chmod +x gget
         mv gget ~/.local/bin/
     fi
 

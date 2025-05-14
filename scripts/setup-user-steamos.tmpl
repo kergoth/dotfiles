@@ -41,7 +41,6 @@ link() {
     local linkpath="$1"
     local target="$2"
 
-
     if [ -d "$linkpath" ] && ! [ -L "$linkpath" ]; then
         if [ -d "$target" ]; then
             echo >&2 "Error: both $target and $linkpath exist"
@@ -71,7 +70,7 @@ add_nonsteam() {
 
     if ! [ -e "$state_dir/games.txt" ]; then
         echo >&2 "Initializing Non-Steam Game List (One-Time)"
-        stl list non-steam name > "$state_dir/games.txt"
+        stl list non-steam name >"$state_dir/games.txt"
     fi
 
     if grep -Fqx "$name" "$state_dir/games.txt"; then
@@ -88,7 +87,7 @@ add_nonsteam() {
         return 1
     }
 
-    echo "$name" >> "$state_dir/games.txt"
+    echo "$name" >>"$state_dir/games.txt"
 }
 
 proton=
@@ -98,7 +97,7 @@ add_windows_nonsteam() {
 
     if ! [ -e "$state_dir/games.txt" ]; then
         echo >&2 "Initializing Non-Steam Game List (One-Time)"
-        stl list non-steam name > "$state_dir/games.txt"
+        stl list non-steam name >"$state_dir/games.txt"
     fi
 
     if grep -Fqx "$name" "$state_dir/games.txt"; then
@@ -120,8 +119,8 @@ add_windows_nonsteam() {
 game_name() {
     local fn="$1"
 
-    basename "$fn" |
-        sed -E \
+    basename "$fn" \
+        | sed -E \
             -e '/, The/{ s/, The//; s/^/The /; };' \
             -e 's/ - /: /' \
             -e 's/\[[^]]*\]//g' \
@@ -140,7 +139,6 @@ streamgrid_name() {
             ;;
     esac
 }
-
 
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
@@ -327,8 +325,8 @@ launch_dirs() {
 }
 
 # Note that --tags= is currently broken, so none of these games will be added to collections automatically
-launch_dirs |
-    while read -r subdir; do
+launch_dirs \
+    | while read -r subdir; do
         case "$subdir" in
             */portable)
                 tags="Portable Games"
@@ -348,8 +346,8 @@ launch_dirs |
         esac
 
         echo >&2 "Adding Non-Steam Games from $subdir"
-        find "$subdir" -mindepth 1 -maxdepth 1 -type f -name "*.lnk" -o -name "*.sh" |
-            while read -r fn; do
+        find "$subdir" -mindepth 1 -maxdepth 1 -type f -name "*.lnk" -o -name "*.sh" \
+            | while read -r fn; do
                 game=$(game_name "${fn%.*}")
                 set --
                 case "$game" in
@@ -373,7 +371,7 @@ launch_dirs |
                             --boxart="$sdmount/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
                             --tenfoot="$sdmount/Game Art/NeoLemmix/neolemmix-menu.jpg"
                         ;;
-                    "Steam Metadata Editor"|"Steam Store"|"AI Before I Play"|"Before I Play")
+                    "Steam Metadata Editor" | "Steam Store" | "AI Before I Play" | "Before I Play")
                         set -- "$@" \
                             --steamgriddb-game-name="##--Invalid--##"
                         ;;
