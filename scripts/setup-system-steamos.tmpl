@@ -1,0 +1,7 @@
+#!/usr/bin/env chezmoi-exec
+#!/usr/bin/env bash
+
+sdmount={{ .sdcard_mount | quote }}
+if [ -n "$sdmount" ] && ! [ -e /run/media/deck/82ae51b4-6e05-46ef-a0df-604905557e43 ]; then
+    sudo ln -sf "$sdmount" /run/media/deck/82ae51b4-6e05-46ef-a0df-604905557e43
+fi
