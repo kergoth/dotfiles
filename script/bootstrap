@@ -183,9 +183,9 @@ if ! command -v chezmoi >/dev/null 2>&1; then
     (cd && sh -c "$(curl -fsLS get.chezmoi.io/lb)")
 fi
 
-if ! [ -e ~/.config/chezmoi/chezmoi.toml ]; then
+if ! [ -e ~/.config/chezmoi/chezmoi.toml ] || echo "$@" | grep -Eq '\--prompt|--force'; then
     echo >&2 "Initializing dotfiles"
-fi
 
-chezmoi init --source "$DOTFILES_DIR" "$@" kergoth/dotfiles
-chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
+    chezmoi init --source "$DOTFILES_DIR" "$@" kergoth/dotfiles
+    chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
+fi
