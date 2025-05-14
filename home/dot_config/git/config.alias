@@ -40,6 +40,9 @@
 	attr = check-attr --all
 	attributes = check-attr --all
 
+	# Typo of 'git d'
+	dd = diff
+
 	# Pretty one line logs
 	lg = log --graph --pretty=lg --date=short
 	lgo = !git lga ^HEAD
