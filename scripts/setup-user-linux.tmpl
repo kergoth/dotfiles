@@ -5,7 +5,9 @@ set -euo pipefail
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
 repodir=$(dirname "$scriptdir")
-PATH="$scriptdir/linux:$scriptdir:$PATH"
+PATH="$scriptdir/linux:$scriptdir:$HOME/.local/bin:$PATH"
+tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
@@ -16,6 +18,104 @@ ret=0
 if [ -z "${CHEZMOI:-}" ]; then
     "$repodir/script/setup" || ret=$?
 fi
+
+# Install tools
+{{- if not .use_nix }}
+(
+    cd "$tmpdir"
+
+    set +e
+
+    if ! [ -e ~/.local/bin/eget ]; then
+        # Install eget
+        curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh && \
+        shasum -a 256 "$tmpdir/eget.sh" && \
+        bash "$tmpdir/eget.sh" && \
+        mkdir -p ~/.local/bin/ && \
+        mv eget ~/.local/bin/
+    fi
+
+    # Install gget
+    if ! [ -e ~/.local/bin/gget ]; then
+        curl -Lo gget https://github.com/dpb587/gget/releases/download/v0.6.1/gget-0.6.1-linux-amd64 &&
+            echo "d1c92e0e28576876bd46d3689b50c0f31df45299  gget" |
+            shasum -c && \
+            chmod +x gget
+        mv gget ~/.local/bin/
+    fi
+
+
+    # Can't install via release binary
+    # unar
+    # zstd
+    # patchutils
+    # sapling
+
+    eget_install() {
+        local repo="$1"
+        shift
+        local cmd="${1:-$(basename "$repo")}"
+        shift
+
+        if [ ! -e "$HOME/.local/bin/$cmd" ]; then
+            echo >&2 "Installing $cmd via $repo"
+            if eget -a '^gnu' --to="$tmpdir/$cmd" "$@" "$repo"; then
+                mv "$tmpdir/$cmd" "$HOME/.local/bin/$cmd"
+            else
+                echo >&2 "Error downloading and installing $cmd via $repo"
+                return 1
+            fi
+        fi
+    }
+
+    # Core tools
+    eget_install direnv/direnv
+    eget_install junegunn/fzf
+    eget_install jqlang/jq jq -a '^linux64'
+    eget_install sharkdp/bat bat -a tar
+    eget_install eza-community/eza eza -a .tar.gz
+    eget_install theryangeary/choose choose
+    eget_install sharkdp/fd
+    eget_install BurntSushi/ripgrep rg
+    eget_install ajeetdsouza/zoxide
+    eget_install chmln/sd
+    eget_install ms-jpq/sad sad -a '^deb'
+    eget_install dbrgn/tealdeer
+
+    # Shell
+    eget_install atuinsh/atuin atuin -a tar
+
+    # SCM & Related
+    eget_install dandavison/delta
+    eget_install Wilfred/difftastic difft
+    eget_install cli/cli gh -a tar
+    eget_install tummychow/git-absorb
+    if ! [ -e ~/.local/bin/git-imerge ]; then
+        uv tool install git-imerge
+    fi
+    if ! [ -e ~/.local/bin/git-revise ]; then
+        uv tool install git-revise
+    fi
+
+    {{- if .work }}
+    if ! [ -e ~/.local/bin/glab ]; then
+        gget --stdout gitlab.com/gitlab-org/cli "glab_*_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64*tar*gz" |
+            tar --strip-components=1 -zxvf - bin/glab && \
+            mv glab ~/.local/bin/glab
+    fi
+
+    # Bug tracking and workflow
+    eget_install ankitpokhrel/jira-cli
+    {{- end }}
+
+    # Disk tools
+    eget_install Byron/dua-cli dua
+    eget_install muesli/duf duf -a tar
+
+    # Linting and formatting
+    eget_install mvdan/sh shfmt
+)
+{{- end }}
 
 # Install PowerShell modules, if needed
 if has pwsh; then
