@@ -8,7 +8,8 @@ Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.cargo\bin" -User
 
 # Add extra binaries directory to the PATH
 [System.Environment]::SetEnvironmentVariable("XDG_BIN_HOME", "$env:USERPROFILE\AppData\Local\Programs\bin", "User")
-Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\AppData\Local\Programs\bin" -User
+$env:XDG_BIN_HOME = "$env:USERPROFILE\AppData\Local\Programs\bin"
+Add-EnvironmentVariableItem "PATH" "$env:XDG_BIN_HOME" -User
 
 # Add ~/.local/bin to the PATH
 Add-EnvironmentVariableItem "PATH" "$env:USERPROFILE\.local\bin" -User
@@ -43,6 +44,11 @@ scoop install git-lfs
 # Install python
 scoop install python
 reg import $env:SCOOP\apps\python\current\install-pep-514.reg
+
+# Install UV for python tooling
+if (-not (Test-Path "$env:XDG_BIN_HOME/uv")) {
+    Invoke-RestMethod -Uri https://astral.sh/uv/install.ps1 | Invoke-Expression
+}
 
 # Windows-specific
 scoop install gow

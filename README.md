@@ -267,6 +267,7 @@ chezmoi update -R
 - [shellcheck](https://github.com/koalaman/shellcheck): A static analysis tool for shell scripts.
 - [shfmt](https://github.com/mvdan/sh#shfmt): Format shell programs.
 - [tealdeer](https://github.com/dbrgn/tealdeer): Simplified, example based and community-driven man pages.
+- [uv](https://docs.astral.sh/uv/) ([Open-Source](https://github.com/astral-sh/uv)): An extremely fast Python package and project manager, written in Rust.
 - [zoxide](https://github.com/ajeetdsouza/zoxide): A smarter cd command, inspired by z and autojump.
 - [zstd](http://www.zstd.net/): Zstandard - Fast real-time compression algorithm.
 
