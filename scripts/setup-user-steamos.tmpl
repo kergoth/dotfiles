@@ -313,17 +313,13 @@ steamtinkerlaunch set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamG
 {{- end }}
 
 launch_dirs() {
-    for basedir in "$sdmount/retrodeck/roms" "$sdmount/Emulation/roms" "$HOME/retrodeck/roms" "$HOME/Emulations/roms"; do
-        if ! [ -d "$basedir" ]; then
-            continue
-        fi
-
+    if [ -d "$emupath/roms" ]; then
         for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
-            if [ -d "$basedir/$subdir" ]; then
-                echo "$basedir/$subdir"
+            if [ -d "$emudir/roms/$subdir" ]; then
+                echo "$emudir/roms/$subdir"
             fi
         done
-    done
+    fi
 
     for subdir in "$sdmount/Apps" "$HOME/Apps"; do
         if ! [ -d "$subdir" ]; then
