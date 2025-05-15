@@ -27,6 +27,28 @@ mkdir -p "$state_dir"
 scriptdir=$(cd "$(dirname "$0")" && pwd)
 PATH="$scriptdir:$PATH"
 
+exec_zsh_by_default() {
+    local bash_profile="$HOME/.bash_profile"
+    local zsh_marker="# Launch zsh from bash if interactive"
+
+    # Check if the marker already exists in .bash_profile
+    if ! grep -qF "$zsh_marker" "$bash_profile" 2>/dev/null; then
+        cat << 'EOF' >> "$bash_profile"
+
+# Launch zsh from bash if interactive, and zsh is available
+if [[ $- == *i* ]] && command -v zsh >/dev/null 2>&1; then
+    if [ -z "$ZSH_STARTED" ]; then
+        export ZSH_STARTED=1
+        exec zsh || echo "Failed to start zsh; continuing in bash."
+    fi
+fi
+EOF
+        echo "✅ Zsh launcher block added to $bash_profile."
+    # else
+    #     echo "ℹ️ Zsh launcher block already present in $bash_profile. No changes made."
+    fi
+}
+
 download_file() {
     local url="$1"
     shift
@@ -155,6 +177,8 @@ else
         ln -sf "$sdmount" ~/SD
     fi
 fi
+
+exec_zsh_by_default
 
 mkdir -p ~/.local/bin ~/.local/share/applications
 chmod +x ~/.local/bin/* 2>/dev/null
