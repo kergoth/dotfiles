@@ -1,3 +1,14 @@
+{{/* detect OS */}}
+{{- $osid := .chezmoi.os -}}
+{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+{{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
+{{- $windows_sandbox := and (eq .chezmoi.os "windows") ( .chezmoi.username | contains "WDAGUtilityAccount" ) -}}
+{{- $steamdeck := eq $osid "linux-steamos" -}}
+{{- $emudeck := false -}}
+{{- $retrodeck := false -}}
+
 {{/* boolean feature flags */}}
 {{- $ephemeral := false -}}{{/* true if this machine is ephemeral, e.g. a cloud or VM instance */}}
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
@@ -16,22 +27,12 @@
 {{- $music := false -}}{{/* true if this device will be used to listen to music */}}
 {{- $music_library := false -}}{{/* true if this device will be used to manage my music library */}}
 {{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
+
 {{- if eq .chezmoi.os "linux" }}
-{{-   if and (not .steamdeck) (not (eq .osid "linux-chimera")) -}}
+{{-   if and (not $steamdeck) (not (eq .osid "linux-chimera")) -}}
 {{-     $use_nix = true }}
 {{-   end }}
 {{- end }}
-
-{{/* detect OS */}}
-{{- $osid := .chezmoi.os -}}
-{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
-{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
-{{- end -}}
-{{- $wsl2 := and (eq .chezmoi.os "linux") ( .chezmoi.kernel.osrelease | lower | contains "microsoft" ) -}}
-{{- $windows_sandbox := and (eq .chezmoi.os "windows") ( .chezmoi.username | contains "WDAGUtilityAccount" ) -}}
-{{- $steamdeck := eq $osid "linux-steamos" -}}
-{{- $emudeck := false -}}
-{{- $retrodeck := false -}}
 
 {{/* detect macOS version */}}
 {{- $macos_version := "" -}}
