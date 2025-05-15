@@ -189,3 +189,16 @@ if ! [ -e ~/.config/chezmoi/chezmoi.toml ] || echo "$@" | grep -Eq '\--prompt|--
     chezmoi init --source "$DOTFILES_DIR" "$@" kergoth/dotfiles
     chmod 0600 "$HOME/.config/chezmoi/chezmoi.toml"
 fi
+
+# Run any chezmoi scripts which install tooling, for use by the setup scripts
+#   Note that 'chezmoi apply' expects paths relative to the source, ignoring any
+#   .chezmoiroot, so we apply that directly here.
+chezmoi managed --include=scripts --path-style=source-relative ~/.chezmoiscripts |
+    grep 'install-' |
+    if [ -e "$DOTFILES_DIR/.chezmoiroot" ]; then
+        sed -e "s#^#$(cat "$DOTFILES_DIR/.chezmoiroot")/#"
+    else
+        cat
+    fi |
+    tr '\n' '\0' |
+    xargs -0 chezmoi apply --include=scripts --source-path
