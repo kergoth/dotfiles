@@ -388,7 +388,6 @@ else
                     ;;
             esac
 
-            echo >&2 "Adding Non-Steam Games from $subdir"
             find "$subdir" -mindepth 1 -maxdepth 1 -type f -name "*.lnk" -o -name "*.sh" \
                 | while read -r fn; do
                     game=$(game_name "${fn%.*}")
