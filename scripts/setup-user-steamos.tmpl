@@ -299,13 +299,14 @@ if ! [ -e ~/sdgyrodsu/sdgyrodsu ]; then
     (cd "$tmpdir/SteamDeckGyroDSUSetup" && ./install.sh)
 fi
 
-if ! [ -d ~/homebrew ]; then
+if ! [ -d ~/homebrew/plugins ] || ! [ -e ~/homebrew/services/PluginLoader ]; then
     echo >&2 "Installing Decky Loader"
     echo >&2 "Warning: This will prompt for your password. Please ensure your deck user has a password set."
-    curl -fsSL https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh -
+    curl -fsSL https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh - ||
+        rm -rf ~/homebrew
 fi
 
-if [ -d ~/homebrew ]; then
+if [ -d ~/homebrew/plugins ] && [ -e ~/homebrew/services/PluginLoader ]; then
     if ! test -d "$HOME/homebrew/plugins/LetMeReShade"; then
         if download-github-release -m -o "$tmpdir" -p "LetMeReShade_.*.zip" itsOwen/LetMeReShade; then
             install-decky-plugin -d LetMeReShade "$tmpdir/"LetMeReShade_*.zip
