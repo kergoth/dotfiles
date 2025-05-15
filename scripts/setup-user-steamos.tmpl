@@ -113,9 +113,14 @@ add_nonsteam() {
 }
 
 proton=
+skip_windows=0
 add_windows_nonsteam() {
     local name="$1"
     shift
+
+    if [ $skip_windows -eq 1 ]; then
+        return 0
+    fi
 
     if ! [ -e "$state_dir/games.txt" ]; then
         echo >&2 "Initializing Non-Steam Game List (One-Time)"
@@ -123,7 +128,6 @@ add_windows_nonsteam() {
     fi
 
     touch "$state_dir/games.txt"
-
     if grep -Fqx "$name" "$state_dir/games.txt"; then
         return 0
     fi
@@ -132,8 +136,15 @@ add_windows_nonsteam() {
         echo >&2 "Determining proton version"
         proton=$(stl listproton name | grep -F proton-9.0) || :
         if [ -z "$proton" ]; then
-            echo >&2 "Proton 9.0 not found, skipping adding Windows Non-Steam Game $name"
-            return 1
+            steam steam://install/2805730
+            echo >&2 "Proton 9.0 not found. Beginning installation with Steam, this will require user input. Press return when installation is complete."
+            read
+            proton=$(stl listproton name | grep -F proton-9.0) || :
+            if [ -z "$proton" ]; then
+                echo >&2 "Proton 9.0 still not found, skipping adding Windows Non-Steam Game $name"
+                skip_windows=1
+                return 1
+            fi
         fi
     fi
 
