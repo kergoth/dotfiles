@@ -175,6 +175,23 @@ streamgrid_name() {
     esac
 }
 
+launch_dirs() {
+    if [ -d "$emupath/roms" ]; then
+        for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
+            if [ -d "$emupath/roms/$subdir" ]; then
+                echo "$emupath/roms/$subdir"
+            fi
+        done
+    fi
+
+    for basedir in "$sdmount/Apps" "$HOME/Apps" "$sdmount/Games"; do
+        if ! [ -d "$basedir" ]; then
+            continue
+        fi
+        find "$basedir" -mindepth 1 -maxdepth 1 -type d
+    done
+}
+
 tmpdir=$(mktemp -d -t "${0##*/}.XXXXXX")
 trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
@@ -336,96 +353,85 @@ if ! [ -e ~/stl/deps/usr/bin/yad ]; then
     ~/stl/prefix/steamtinkerlaunch >/dev/null
 fi
 
-{{- $stlConfigPath := (joinPath .chezmoi.homeDir ".config/steamtinkerlaunch/global.conf") }}
-{{- with stat $stlConfigPath }}
-  {{- $content := include $stlConfigPath -}}
-  {{- if regexMatch `(?m)^SGDBAPIKEY=.*none$` $content }}
-# Set the SteamGridDB API Key for SteamTinkerLaunch
-steamtinkerlaunch set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamGridDB/API Keys/password" }}'
-  {{- end }}
+if ! [ -e ~/stl/deps/usr/bin/yad ]; then
+    echo >&2 "Error: installation of SteamTinkerLaunch dependencies failed."
+else
+{{- if .secrets }}
+{{-   $stlConfigPath := (joinPath .chezmoi.homeDir ".config/steamtinkerlaunch/global.conf") }}
+{{-   with stat $stlConfigPath }}
+{{-     $content := include $stlConfigPath -}}
+{{-     if regexMatch `SGDBAPIKEY="none"` $content }}
+    # Set the SteamGridDB API Key for SteamTinkerLaunch
+    stl set SGDBAPIKEY global '{{ onepasswordRead "op://Private/SteamGridDB/API Keys/password" }}'
+{{-     end }}
+{{-   end }}
 {{- end }}
 
-launch_dirs() {
-    if [ -d "$emupath/roms" ]; then
-        for subdir in portable launchers desktop/cloud "desktop/generic-applications"; do
-            if [ -d "$emupath/roms/$subdir" ]; then
-                echo "$emupath/roms/$subdir"
-            fi
+    # Note that --tags= is currently broken, so none of these games will be added to collections automatically
+    launch_dirs \
+        | while read -r subdir; do
+            case "$subdir" in
+                */portable|*/Games/Linux|*/Games/Windows)
+                    tags="Portable Games"
+                    ;;
+                */launchers|*/Launchers)
+                    tags=Launchers
+                    ;;
+                */cloud|*/Cloud)
+                    tags=Cloud
+                    ;;
+                */generic-applications|*/Generic)
+                    tags=Apps
+                    ;;
+                *)
+                    tags=
+                    ;;
+            esac
+
+            echo >&2 "Adding Non-Steam Games from $subdir"
+            find "$subdir" -mindepth 1 -maxdepth 1 -type f -name "*.lnk" -o -name "*.sh" \
+                | while read -r fn; do
+                    game=$(game_name "${fn%.*}")
+                    set --
+                    case "$game" in
+                        "Kirby Air Ride Online")
+                            tags="${tags:+$tags,}Portable Games,Emulated Games"
+                            set -- "$@" --use-steamgriddb --steamgriddb-game-name="Kirby Air Ride"
+                            ;;
+                        "CoinOPS Legends 4")
+                            tags="${tags:+$tags,}Emulated Games"
+                            set -- "$@" \
+                                --iconpath="$sdmount/Game Art/CoinOPS Legends 4/icon.png" \
+                                --hero="$sdmount/Game Art/CoinOPS Legends 4/hero.png" \
+                                --logo="$sdmount/Game Art/CoinOPS Legends 4/logo.png" \
+                                --boxart="$sdmount/Game Art/CoinOPS Legends 4/portrait.png" \
+                                --tenfoot="$sdmount/Game Art/CoinOPS Legends 4/lastplayed.png"
+                            ;;
+                        "NeoLemmix")
+                            set -- "$@" \
+                                --hero="$sdmount/Game Art/NeoLemmix/neolemmix-background.gif" \
+                                --logo="$sdmount/Game Art/NeoLemmix/neolemmix-logo.png" \
+                                --boxart="$sdmount/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
+                                --tenfoot="$sdmount/Game Art/NeoLemmix/neolemmix-menu.jpg"
+                            ;;
+                        "Steam Metadata Editor" | "Steam Store" | "AI Before I Play" | "Before I Play")
+                            set -- "$@" \
+                                --steamgriddb-game-name="##--Invalid--##"
+                            ;;
+                        *)
+                            set -- "$@" --use-steamgriddb --steamgriddb-game-name="$(streamgrid_name "$game")"
+                            ;;
+                    esac
+
+                    case "$fn" in
+                        *.lnk)
+                            add_windows_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
+                            ;;
+                        *.sh)
+                            chmod +x "$fn"
+                            add_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
+                            ;;
+                    esac
+                done
         done
-    fi
-
-    for basedir in "$sdmount/Apps" "$HOME/Apps" "$sdmount/Games"; do
-        if ! [ -d "$basedir" ]; then
-            continue
-        fi
-        find "$basedir" -mindepth 1 -maxdepth 1 -type d
-    done
-}
-
-# Note that --tags= is currently broken, so none of these games will be added to collections automatically
-launch_dirs \
-    | while read -r subdir; do
-        case "$subdir" in
-            */portable|*/Games/Linux|*/Games/Windows)
-                tags="Portable Games"
-                ;;
-            */launchers|*/Launchers)
-                tags=Launchers
-                ;;
-            */cloud|*/Cloud)
-                tags=Cloud
-                ;;
-            */generic-applications|*/Generic)
-                tags=Apps
-                ;;
-            *)
-                tags=
-                ;;
-        esac
-
-        echo >&2 "Adding Non-Steam Games from $subdir"
-        find "$subdir" -mindepth 1 -maxdepth 1 -type f -name "*.lnk" -o -name "*.sh" \
-            | while read -r fn; do
-                game=$(game_name "${fn%.*}")
-                set --
-                case "$game" in
-                    "Kirby Air Ride Online")
-                        tags="${tags:+$tags,}Portable Games,Emulated Games"
-                        set -- "$@" --use-steamgriddb --steamgriddb-game-name="Kirby Air Ride"
-                        ;;
-                    "CoinOPS Legends 4")
-                        tags="${tags:+$tags,}Emulated Games"
-                        set -- "$@" \
-                            --iconpath="$sdmount/Game Art/CoinOPS Legends 4/icon.png" \
-                            --hero="$sdmount/Game Art/CoinOPS Legends 4/hero.png" \
-                            --logo="$sdmount/Game Art/CoinOPS Legends 4/logo.png" \
-                            --boxart="$sdmount/Game Art/CoinOPS Legends 4/portrait.png" \
-                            --tenfoot="$sdmount/Game Art/CoinOPS Legends 4/lastplayed.png"
-                        ;;
-                    "NeoLemmix")
-                        set -- "$@" \
-                            --hero="$sdmount/Game Art/NeoLemmix/neolemmix-background.gif" \
-                            --logo="$sdmount/Game Art/NeoLemmix/neolemmix-logo.png" \
-                            --boxart="$sdmount/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
-                            --tenfoot="$sdmount/Game Art/NeoLemmix/neolemmix-menu.jpg"
-                        ;;
-                    "Steam Metadata Editor" | "Steam Store" | "AI Before I Play" | "Before I Play")
-                        set -- "$@" \
-                            --steamgriddb-game-name="##--Invalid--##"
-                        ;;
-                    *)
-                        set -- "$@" --use-steamgriddb --steamgriddb-game-name="$(streamgrid_name "$game")"
-                        ;;
-                esac
-
-                case "$fn" in
-                    *.lnk)
-                        add_windows_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
-                        ;;
-                    *.sh)
-                        chmod +x "$fn"
-                        add_nonsteam "$game" "$fn" ${tags:+--tags="$tags"} "$@"
-                        ;;
-                esac
-            done
-    done
+fi
