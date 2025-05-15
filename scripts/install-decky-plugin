@@ -62,6 +62,11 @@ if [ ! -f "$plugin_archive" ]; then
     exit 1
 fi
 
+if ! [ -e ~/homebrew/plugins ] || ! [ -e /home/deck/homebrew/services/PluginLoader ]; then
+    echo >&2 "Error: Decky Loader must be installed."
+    exit 1
+fi
+
 if [[ "$plugin_archive" == *.zip ]]; then
     extract_cmd="unzip -q"
 elif [[ "$plugin_archive" == *.7z ]]; then
