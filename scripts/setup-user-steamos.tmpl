@@ -119,8 +119,10 @@ add_windows_nonsteam() {
 
     if ! [ -e "$state_dir/games.txt" ]; then
         echo >&2 "Initializing Non-Steam Game List (One-Time)"
-        stl list non-steam name >"$state_dir/games.txt"
+        stl list non-steam name >"$state_dir/games.txt" 2>/dev/null || rm -f "$state_dir/games.txt"
     fi
+
+    touch "$state_dir/games.txt"
 
     if grep -Fqx "$name" "$state_dir/games.txt"; then
         return 0
