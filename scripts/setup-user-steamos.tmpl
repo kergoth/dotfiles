@@ -393,10 +393,6 @@ else
                     game=$(game_name "${fn%.*}")
                     set --
                     case "$game" in
-                        "Kirby Air Ride Online")
-                            tags="${tags:+$tags,}Portable Games,Emulated Games"
-                            set -- "$@" --use-steamgriddb --steamgriddb-game-name="Kirby Air Ride"
-                            ;;
                         "CoinOPS Legends 4")
                             tags="${tags:+$tags,}Emulated Games"
                             set -- "$@" \
@@ -413,12 +409,30 @@ else
                                 --boxart="$sdmount/Game Art/NeoLemmix/neolemmix-boxart.jpg" \
                                 --tenfoot="$sdmount/Game Art/NeoLemmix/neolemmix-menu.jpg"
                             ;;
-                        "Steam Metadata Editor" | "Steam Store" | "AI Before I Play" | "Before I Play")
+                        "OpenGOAL")
                             set -- "$@" \
-                                --steamgriddb-game-name="##--Invalid--##"
+                                --iconpath="$sdmount/Game Art/OpenGOAL/opengoal_icon.png" \
+                                --hero="$sdmount/Game Art/OpenGOAL/opengoal_hero.png" \
+                                --logo="$sdmount/Game Art/OpenGOAL/opengoal_logo.png" \
+                                --boxart="$sdmount/Game Art/OpenGOAL/opengoal_boxart.png" \
+                                --tenfoot="$sdmount/Game Art/OpenGOAL/opengoal_lastplayed.png"
+                            ;;
+                        "Steam Metadata Editor" | "Steam Store" | "AI Before I Play" | "Before I Play")
+                            set -- "$@" --steamgriddb-game-name="##--Invalid--##"
+                            ;;
+                        "Kirby Air Ride Online")
+                            tags="${tags:+$tags,}Portable Games,Emulated Games"
+                            set -- "$@" --steamgriddb-game-name="Kirby Air Ride"
+                            ;;
+                        "Minecraft Prism Launcher")
+                            set -- "$@" --steamgriddb-game-id="5359069"
+                            ;;
+                        "YouTube")
+                            # YouTube (Website)
+                            set -- "$@" --steamgriddb-game-id="36663"
                             ;;
                         *)
-                            set -- "$@" --use-steamgriddb --steamgriddb-game-name="$(streamgrid_name "$game")"
+                            set -- "$@" --steamgriddb-game-name="$(streamgrid_name "$game")"
                             ;;
                     esac
 
