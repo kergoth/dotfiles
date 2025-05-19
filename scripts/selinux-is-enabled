@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if command -v selinuxenabled >/dev/null 2>&1 && selinuxenabled; then
+    echo true
+else
+    echo false
+fi
+
