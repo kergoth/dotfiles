@@ -32,10 +32,6 @@
 {{-   if and (not $steamdeck) (not (eq $osid "linux-chimera")) -}}
 {{-     $use_nix = true }}
 {{-   end }}
-{{-   $selinuxscript := joinPath .chezmoi.sourceDir ".." "scripts" "selinux-is-enabled" }}
-{{-   if eq (output $selinuxscript | trim) "true" }}
-{{-     $use_nix = false }}
-{{-   end }}
 {{- end }}
 
 {{/* detect macOS version */}}
