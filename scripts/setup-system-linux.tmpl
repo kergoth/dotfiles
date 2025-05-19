@@ -13,6 +13,6 @@ PATH="$scriptdir/linux:$scriptdir:$PATH"
 need_sudo
 
 if ! has nix; then
-    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm
+    install_nix
 fi
 {{- end }}
