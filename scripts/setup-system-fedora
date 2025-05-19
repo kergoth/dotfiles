@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scriptdir=$(cd "$(dirname "$0")" && pwd -P)
+PATH="$scriptdir/debian:$scriptdir/linux:$scriptdir:$PATH"
+
+# shellcheck source=./common.sh
+. "$scriptdir/common.sh" || exit 1
+
+need_sudo
+
+# Install xz for nix
+if ! has xz; then
+    sudorun yum -y install xz
+fi
+
+if ! has zsh; then
+    sudorun yum -y install zsh
+fi
