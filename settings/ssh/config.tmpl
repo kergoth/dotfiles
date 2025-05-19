@@ -8,9 +8,13 @@ Compression yes
 ForwardX11 no
 NoHostAuthenticationForLocalhost yes
 AddKeysToAgent yes
+{{- if .secrets }}
+{{-   if .personal }}
 IdentityFile ~/.ssh/keys/frey
-{{- if .work }}
+{{-   end }}
+{{-   if .work }}
 IdentityFile ~/.ssh/keys/work
+{{-   end }}
 {{- end }}
 {{- if eq .chezmoi.os "darwin" }}
 UseKeychain yes
