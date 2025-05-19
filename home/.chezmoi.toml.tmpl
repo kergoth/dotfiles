@@ -29,7 +29,7 @@
 {{- $ebook_library := false -}}{{/* true if this device will be used to manage my ebook library */}}
 
 {{- if eq .chezmoi.os "linux" }}
-{{-   if and (not $steamdeck) (not (eq .osid "linux-chimera")) -}}
+{{-   if and (not $steamdeck) (not (eq $osid "linux-chimera")) -}}
 {{-     $use_nix = true }}
 {{-   end }}
 {{-   $selinuxscript := joinPath .chezmoi.sourceDir ".." "scripts" "selinux-is-enabled" }}
