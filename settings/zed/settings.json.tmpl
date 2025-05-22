@@ -83,14 +83,19 @@
     "light": "macOS Classic Light",
     "dark": "Dracula"
   },
-  // Use a slightly smaller UI font size.
-  "ui_font_size": 15,
   "buffer_font_family": "MesloLGS NF",
   "buffer_font_features": {
     "calt": true
   },
+{{- if eq .chezmoi.os "linux" }}
+  "ui_font_size": 18,
+  "buffer_font_size": 14.0,
+{{- else }}
+  // Use a slightly smaller UI font size.
+  "ui_font_size": 15,
   // Use a substantially smaller buffer/terminal font size.
-  "buffer_font_size": 12.0,
+  "buffer_font_size": 14.0,
+{{- end }}
   // Auto save after a 1 second delay.
   "autosave": {
     "after_delay": {
