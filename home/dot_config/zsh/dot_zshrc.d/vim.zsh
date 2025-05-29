@@ -1,4 +1,4 @@
-if [[ -z "$EDITOR" ]]; then
+if [[ -z "$EDITOR" ]] || [[ $EDITOR =~ .*nano ]]; then
     if (( $+commands[nvim] )); then
         alias vim=nvim
         export EDITOR=nvim
