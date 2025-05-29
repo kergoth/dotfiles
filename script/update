@@ -10,7 +10,7 @@ on_exit() {
     if [ -n "$tmpfile" ]; then
         rm -f "$tmpfile"
     fi
-    (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/flake.lock &>/dev/null)
+    (cd "$sourcedir" && git checkout HEAD -- home/dot_config/home-manager/private_flake.lock &>/dev/null)
 }
 
 nix() {
@@ -79,7 +79,7 @@ if [ -s "$tmpfile" ]; then
 fi
 
 echo >&2 "Committing Home Manager updates"
-(cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/flake.lock)
+(cd "$sourcedir" && git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock)
 
 hm switch
 hm expire-generations "-30 days"

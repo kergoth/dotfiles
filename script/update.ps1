@@ -118,7 +118,7 @@ try {
 
     Write-Host "Committing Home Manager updates"
     Set-Location $repodir
-    git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/flake.lock
+    git commit -F .git/COMMIT_EDITMSG home/dot_config/home-manager/private_flake.lock
 
     Invoke-HM @("switch")
     Invoke-HM @("expire-generations", "-30 days")
@@ -126,8 +126,8 @@ try {
 } catch {
     Write-Error "An error occurred: $_"
     Set-Location $sourcedir
-    git checkout HEAD -- home/dot_config/home-manager/flake.lock
-    chezmoi apply "$sourcedir/flake.lock"
+    git checkout HEAD -- home/dot_config/home-manager/private_flake.lock
+    chezmoi apply "$sourcedir/private_flake.lock"
 } finally {
     # Clean up the temporary file
     if (Test-Path $tmpfile) {

@@ -5,7 +5,7 @@
 # Re-run when home-manager configuration changes:
 #   home.nix hash: {{ includeTemplate "dot_config/home-manager/home.nix.tmpl" . | sha256sum }}
 #   flake.nix hash: {{ includeTemplate "dot_config/home-manager/flake.nix.tmpl" . | sha256sum }}
-#   flake.lock hash: {{ include "dot_config/home-manager/flake.lock" | sha256sum }}
+#   flake.lock hash: {{ include "dot_config/home-manager/private_flake.lock" | sha256sum }}
 # Re-run after installing nix:
 #   nix binary path: {{ lookPath "nix" }}
 
