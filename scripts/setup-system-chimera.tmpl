@@ -38,7 +38,7 @@ apk add socat
 apk add --no-interactive gnupg
 {{- end }}
 
-{{ if and (not .ephemeral) (not .wsl2) -}}
+{{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 # Enable System logging
 if ! dinitctl status syslog-ng | grep -q STARTED; then
     dinitctl enable syslog-ng
@@ -66,7 +66,7 @@ apk add --no-interactive neovim
 # Install Gnome
 apk add --no-interactive gnome
 
-{{ if and (not .ephemeral) (not .wsl2) -}}
+{{ if and (not .ephemeral) (not .wsl2) (not (env "CONTAINER_ID")) -}}
 # Enable gdm
 if ! dinitctl status gdm | grep -q STARTED; then
     dinitctl enable gdm

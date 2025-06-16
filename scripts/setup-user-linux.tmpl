@@ -131,7 +131,7 @@ if ! has unar && ! has dtrx; then
     uv tool install dtrx
 fi || ret=$?
 
-{{ if and (not .ephemeral) (not .steamdeck) -}}
+{{ if and (not .ephemeral) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 # User shell should be zsh
 zsh_binary=$(command -v zsh 2>/dev/null) || :
 if [ -n "$zsh_binary" ] && grep -qFx "$zsh_binary" /etc/shells; then
