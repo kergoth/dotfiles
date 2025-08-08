@@ -417,6 +417,7 @@ chezmoi update -R
 - [StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298): A Safari extension that stops web site annoyances and privacy violations.
 - [Tampermonkey](https://www.onlinedown.net/soft/1229995.htm)
 - [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab))
+- [uBlock Origin Lite](https://apps.apple.com/us/app/ublock-origin-lite/id6745342698): An efficient content blocker for Safari.
 - [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL) ([Open-Source](https://github.com/quoid/userscripts))
 - [Vinegar](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229?uo=4&at=10l4tL)
 
