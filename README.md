@@ -160,15 +160,12 @@ chezmoi update -R
 - Enable `secure keyboard entry` in Terminal
 - `./scripts/extras/enable-filevault`
 - System Settings > Lock Screen
-
   - Set “Require password after screen saver begins or display is turned off” to after 5 seconds or less.
 
 - System Settings > Privacy & Security > Security
-
   - Set “Allow applications downloaded from App Store and identified developers” at most.
 
 - System Settings > Privacy & Security > Full Disk Access
-
   - Add Terminal, iTerm, and any other terminal emulators you use.
   - Add VSCode, and any other editors you use.
 
@@ -179,14 +176,12 @@ chezmoi update -R
 - Run appcleaner, preferences, enable smartdelete
 - Run alfred, preferences, advanced, enable sync to `~/Sync/App Settings/Alfred`
 - Safari
-
   - Change the default scale to 85%
   - Add site settings icon
   - Add cloud tabs icon
   - Rearrange icons
 
 - Syncthing Shares
-
   - Sync/dotfiles-local
   - Sync/App Settings
   - Library/Fonts
@@ -197,7 +192,6 @@ chezmoi update -R
 - Set up all my Syncthing shares
   - `AppData/Local/Zed/extensions`
 - Restore from backup:
-
   - `$USERPROFILE/Apps`
   - Vivaldi: `AppData/Local/Vivaldi/User Data/Default/`
   - archwsl disk image
@@ -282,19 +276,15 @@ chezmoi update -R
 #### CLI Software on Linux, macOS, and FreeBSD
 
 - [atuin](https://github.com/ellie/atuin): ✨ Magical shell history.
-
   - On Windows, atuin can be used via WSL. [PowerShell support](https://github.com/atuinsh/atuin/issues/84) is available in a [pending pull request](https://github.com/atuinsh/atuin/pull/2543).
 
 - [patchutils](http://cyberelk.net/tim/software/patchutils/): A small collection of programs that operate on patch files.
-
   - On Windows, patchutils can be used via either WSL or MSYS2 (which can be installed via scoop and run as `msys2`, ex. `msys2 -c 'exec filterdiff "$@"' -`).
 
 - [ssh-copy-id](https://www.openssh.com): Install your identity.pub in a remote machine’s authorized_keys.
-
   - On Windows, I have a powershell function which does this, and is aliased to `ssh-copy-id`.
 
 - [tmux](https://github.com/tmux/tmux): An open-source terminal multiplexer.
-
   - There are no good options for tmux or tmux-equivalent on Windows. The closest you can get is just splits in Windows Terminal, which doesn't give you the ability to disconnect.
 
 #### CLI Software on Linux (non-Chimera), macOS, and Windows
@@ -308,11 +298,9 @@ chezmoi update -R
 #### CLI Software on FreeBSD
 
 - [go](https://go.dev): An open source programming language supported by Google
-
   - Installed so we can `go install` various tools.
 
 - [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
-
   - Installed so we can `cargo install` various tools.
 
 #### CLI Software on macOS
@@ -429,7 +417,6 @@ chezmoi update -R
 - [StopTheMadness Pro](https://apps.apple.com/us/app/stopthemadness-pro/id6471380298): A Safari extension that stops web site annoyances and privacy violations.
 - [Tampermonkey](https://www.onlinedown.net/soft/1229995.htm)
 - [Toolkit for YNAB](https://apps.apple.com/us/app/toolkit-for-ynab/id1592912837?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/toolkit-for-ynab/toolkit-for-ynab))
-- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
 - [Userscripts](https://apps.apple.com/us/app/userscripts/id1463298887?uo=4&at=10l4tL) ([Open-Source](https://github.com/quoid/userscripts))
 - [Vinegar](https://apps.apple.com/us/app/vinegar-tube-cleaner/id1591303229?uo=4&at=10l4tL)
 
@@ -481,7 +468,6 @@ chezmoi update -R
 - [Protontricks](https://github.com/Matoking/protontricks): A wrapper that does winetricks things for Proton enabled games.
 - [Ludusavi](https://github.com/mtkennerly/ludusavi): Backup tool for PC game saves.
 - [Google Chrome](https://www.google.com/chrome/): A fast, secure, and free web browser.
-
   - Only installed to use Kiosk mode for site-specific browsers from Game Mode, which I automatically set up via Steam ROM Manager from my ROM Library setup.
 
 #### Installed CLI Software on the Steam Deck
@@ -608,6 +594,14 @@ chezmoi update -R
 - [HexChat](https://hexchat.github.io): An IRC client based on XChat. Available via brew, nix, scoop, and winget as `HexChat.HexChat`.
 
 ## Formerly-Used
+
+### Formerly-Used Services
+
+- [Instapaper](https://www.instapaper.com): A service for saving web pages for later reading.
+
+### Formerly-Used Browser Extensions
+
+- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
 
 ### Formerly-Used Software
 
