@@ -117,6 +117,14 @@ fi
 )
 {{- end }}
 
+{{ if not .headless -}}
+# Install any non-Nix GUI Applications
+if ! has zed; then
+    msg "Installing Zed"
+    curl -f https://zed.dev/install.sh | sh
+fi
+{{- end }}
+
 # Install PowerShell modules, if needed
 if has pwsh; then
     msg "Installing PowerShell modules"

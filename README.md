@@ -347,6 +347,8 @@ chezmoi update -R
 
 ### Installed GUI Software
 
+- [Zed](https://zed.dev): A cross-platform text editor. Available via brew, installer script, scoop, or [download](https://zed.dev/download).
+
 #### GUI Software on Windows and macOS
 
 - [1Password](https://1password.com): A password manager developed by AgileBits.

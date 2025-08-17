@@ -3,7 +3,9 @@
 set -eu
 
 scriptdir=$(cd "$(dirname "$0")" && pwd -P)
-PATH="$scriptdir/freebsd:$scriptdir:$PATH"
+PATH="$scriptdir/freebsd:$HOME/.local/bin:$scriptdir:$PATH"
+tmpdir=$(mktemp -d -t "${0##*/}.XXXXXXX")
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 # shellcheck source=./common.sh
 . "$scriptdir/common.sh" || exit 1
@@ -101,6 +103,39 @@ freebsd_check sysutils/exa exa
 
 # FreeBSD-only
 freebsd_check sysutils/lsblk lsblk
+
+# GUI Applications
+{{ if not .headless -}}
+eget_install() {
+    local repo="$1"
+    shift
+    local cmd="${1:-$(basename "$repo")}"
+    shift
+
+    if [ ! -e "$HOME/.local/bin/$cmd" ]; then
+        echo >&2 "Installing $cmd via $repo"
+        if eget -s freebsd/amd64 --to="$tmpdir/$cmd" "$@" "$repo"; then
+            mv "$tmpdir/$cmd" "$HOME/.local/bin/$cmd"
+        else
+            echo >&2 "Error downloading and installing $cmd via $repo"
+            return 1
+        fi
+    fi
+}
+
+if ! [ -e ~/.local/bin/eget ]; then
+    # Install eget
+    echo >&2 "Installing eget"
+    curl -o "$tmpdir/eget.sh" https://zyedidia.github.io/eget.sh &&
+        shasum -a 256 "$tmpdir/eget.sh" &&
+        bash "$tmpdir/eget.sh" &&
+        mkdir -p ~/.local/bin/ &&
+        mv eget ~/.local/bin/
+fi
+if ! has zed; then
+    eget_install tagattie/FreeBSD-Zed zed -a freebsd14
+fi
+{{- end }}
 
 # Add user to operator and video groups
 doas pw groupmod operator -m "$USER"
