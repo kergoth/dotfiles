@@ -51,7 +51,7 @@ while read -r app; do
     fi
 done <<END
 1Password
-Alfred 5
+Raycast
 Ice
 Karabiner-Elements
 Rectangle

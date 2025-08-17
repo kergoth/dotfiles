@@ -372,7 +372,6 @@ chezmoi update -R
 
 #### GUI Software on macOS
 
-- [Alfred](https://www.alfredapp.com): Application uninstaller.
 - [AppCleaner](https://freemacsoft.net/appcleaner/): A small application which allows you to thoroughly uninstall unwanted apps.
 - [BBEdit](https://www.barebones.com/products/bbedit/): A professional HTML and text editor for macOS.
 - [BlockBlock](https://objective-see.org/products/blockblock.html): Monitors common persistence locations and alerts whenever a persistent component is added.
@@ -391,6 +390,7 @@ chezmoi update -R
 - [MusicHarbor](https://apps.apple.com/us/app/musicharbor-track-new-music/id1440405750?uo=4&at=10l4tL)
 - [Play](https://apps.apple.com/us/app/play-save-videos-watch-later/id1596506190): Bookmark and organize videos to watch later.
 - [PopClip](https://apps.apple.com/us/app/popclip/id445189367?mt=12&uo=4&at=10l4tL): Instant text actions.
+- [Raycast](https://www.raycast.com): Productivity tool, application launcher, snippets, clipboard history, and automation.
 - [Readwise Reader](https://readwise.io/read): Save everything to one place, highlight like a pro, and replace several apps with Reader.
 - [Rectangle](https://rectangleapp.com) ([Open-Source](https://github.com/rxhanson/Rectangle)): Move and resize windows in macOS using keyboard shortcuts or snap areas.
 - [Shifty](https://shifty.natethompson.io/): Menu bar app that provides more control over Night Shift.
