@@ -230,6 +230,7 @@ chezmoi update -R
 
 - [curl](https://curl.se): Command line tool and library for transferring data with URLs.
 - [wget](https://www.gnu.org/software/wget/): A free software package for retrieving files using HTTP, HTTPS, FTP and FTPS.
+- [gh](https://cli.github.com): GitHub’s official command line tool.
 - [git](https://git-scm.com): A free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 - [git-lfs](https://git-lfs.github.com): An open source Git extension for versioning large files.
 - [neovim](https://neovim.io): Hyperextensible Vim-based text editor.
