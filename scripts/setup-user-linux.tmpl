@@ -117,7 +117,7 @@ fi
 )
 {{- end }}
 
-{{ if not .headless -}}
+{{ if and (not .headless) (not .steamdeck) (not (env "CONTAINER_ID")) -}}
 # Install any non-Nix GUI Applications
 if ! has zed; then
     msg "Installing Zed"
