@@ -1,1 +1,1 @@
-{{ include (joinPath .chezmoi.workingTree "settings/RetroArch/config/Gambatte/gbc.cfg") -}}
+{{ includeTemplate (joinPath .chezmoi.workingTree "settings/RetroArch/config/Gambatte/gbc.cfg.tmpl") . -}}
