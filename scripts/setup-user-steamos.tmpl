@@ -321,6 +321,7 @@ if ! [ -d ~/homebrew/plugins ] || ! [ -e ~/homebrew/services/PluginLoader ]; the
     echo >&2 "Warning: This will prompt for your password. Please ensure your deck user has a password set."
     curl -fsSL https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh - ||
         rm -rf ~/homebrew
+    sudo chown $USER ~/homebrew/plugins
 fi
 
 if [ -d ~/homebrew/plugins ] && [ -e ~/homebrew/services/PluginLoader ]; then
