@@ -83,8 +83,9 @@
 {{-   else if $steamdeck -}}
 {{-     $gaming = true -}}
 {{-     $personal = true -}}
-{{-     $emudeck = true -}}
 {{-     $use_nix = false }}
+{{/*    prompt for emulation by default */}}
+{{-     $prompt = true -}}
 {{-   else if $windows_sandbox -}}
 {{-     $ephemeral = true -}}
 {{-   else if $interactive -}}
