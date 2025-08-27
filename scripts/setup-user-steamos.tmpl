@@ -369,6 +369,8 @@ else
     # Note that --tags= is currently broken, so none of these games will be added to collections automatically
     launch_dirs \
         | while read -r subdir; do
+            echo >&2 "Looking for Non-Steam Games/Apps in $subdir"
+
             case "$subdir" in
                 */portable|*/Games/Linux|*/Games/Windows)
                     tags="Portable Games"
