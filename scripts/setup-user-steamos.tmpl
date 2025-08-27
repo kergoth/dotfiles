@@ -79,9 +79,7 @@ link() {
 }
 
 stl() {
-    ~/stl/prefix/steamtinkerlaunch "$@" \
-        | { grep -v '^$' || :; } \
-        | { grep -Ev '^(Dependency|Downloading|Preparing|Finished)' || :; }
+    ~/stl/prefix/steamtinkerlaunch "$@"
 }
 
 add_nonsteam() {
