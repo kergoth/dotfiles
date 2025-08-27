@@ -9,11 +9,9 @@ refreshPeriod = "{{ .external.refreshPeriod }}"
 {{ end }}
 
 {{/* SteamTinkerLaunch */}}
-{{ if not (glob "stl/prefix/steamtinkerlaunch") }}
 ["stl/prefix"]
 type = "archive"
 url = "https://github.com/sonic2kk/steamtinkerlaunch/archive/refs/heads/master.zip"
 exact = true
 stripComponents = 1
 refreshPeriod = "{{ .external.refreshPeriod }}"
-{{ end }}
