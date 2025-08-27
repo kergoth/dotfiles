@@ -182,7 +182,7 @@ launch_dirs() {
         done
     fi
 
-    for basedir in "$sdmount/Apps" "$HOME/Apps" "$sdmount/Games"; do
+    for basedir in "$sdmount/Apps" "$HOME/Apps" "$sdmount/Games" "$sdmount/Games/Linux" "$sdmount/Games/Windows" "$HOME/Games" "$HOME/Games/Linux" "$HOME/Games/Windows"; do
         if ! [ -d "$basedir" ]; then
             continue
         fi
