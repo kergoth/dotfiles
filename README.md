@@ -525,7 +525,8 @@ chezmoi update -R
 - [rust](https://www.rust-lang.org): A multi-paradigm, general-purpose programming language.
 - [titlecase](https://github.com/wezm/titlecase): A small tool that capitalizes English text. Available via cargo.
 - [vivid](https://github.com/sharkdp/vivid): A generator for the LS_COLORS environment variable. Available via brew, nix, and cargo.
-- [youtube-dl](https://youtube-dl.org): Video downloading. Available via brew, nix, and python.
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp): A feature-rich command-line audio/video downloader. Available via brew, nix, scoop, winget, pacman, FreeBSD ports, pip/uv, and release binaries. Often requires `ffmpeg` and `deno` binaries.
+  - The release binary can quickly be installed with eget: `eget --upgrade-only --asset='^zip' --to=~/.local/bin/yt-dlp yt-dlp/yt-dlp`
 
 #### On my NAS, to download what I own
 
