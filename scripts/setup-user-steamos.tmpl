@@ -266,9 +266,18 @@ flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
 {{- end }}
 
 {{- if .retrodeck }}
-if ! flatpak info net.retrodeck.retrodeck &>/dev/null; then
-    echo >&2 "Installing net.retrodeck.retrodeck"
-    flatpak install --user --noninteractive flathub net.retrodeck.retrodeck
+retrodeck_installed_before=0
+if flatpak info net.retrodeck.retrodeck &>/dev/null; then
+    retrodeck_installed_before=1
+fi
+
+if [ $retrodeck_installed_before -eq 0 ] || \
+   [ "$(flatpak info --user net.retrodeck.retrodeck 2>/dev/null | awk -F': *' '/^Branch:/ {print $2}')" != "master" ]; then
+    echo >&2 "Installing RetroDECK Cooker"
+    "$scriptdir/steamos/install-retrodeck-cooker"
+fi
+
+if [ $retrodeck_installed_before -eq 0 ]; then
     add_nonsteam RetroDeck ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop --steamgriddb-game-name=RetroDeck
 fi
 {{- end }}

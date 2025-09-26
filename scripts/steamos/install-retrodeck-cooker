@@ -1,0 +1,248 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install or upgrade RetroDECK Cooker on SteamOS (user scope).
+# - Uses GitHub API to find latest release tag, resolves tag -> commit, and persists that commit
+# - Skips reinstall if the saved commit matches the latest tag’s commit (unless -f)
+# - Prefers split archives (RetroDECK-cooker.flatpak.7z.###), falls back to a single .flatpak
+# - Caches under ~/.cache/retrodeck-cooker; resumes only within the current snapshot subdir
+# - Removes old snapshot caches (keeps only the current snapshot’s dirs)
+# - Uses GITHUB_TOKEN if set
+#
+# Requires: jq, curl, 7z, flatpak
+
+APP_ID=net.retrodeck.retrodeck
+OWNER=RetroDECK
+REPO=Cooker
+API_LATEST="https://api.github.com/repos/$OWNER/$REPO/releases/latest"
+API_COMMITS_BASE="https://api.github.com/repos/$OWNER/$REPO/commits"
+
+GITHUB_AUTH=${GITHUB_TOKEN:+-H "Authorization: Bearer $GITHUB_TOKEN"}
+
+RD_BASE="${XDG_CACHE_HOME:-$HOME/.cache}/retrodeck-cooker"
+DOWNLOAD_ROOT="$RD_BASE/downloads"
+EXTRACT_ROOT="$RD_BASE/extract"
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/retrodeck-cooker"
+STATE_COMMIT_FILE="$STATE_DIR/installed_src_commit"
+
+usage() {
+    echo "Usage: ${0##*/} [-f]" >&2
+    exit 2
+}
+
+http_json() {
+    local url
+    url=$1
+    curl -fsSL -H "Accept: application/vnd.github+json" $GITHUB_AUTH "$url"
+}
+
+# Resume only to "<dest>.part" within the current snapshot dir, then rename to "<dest>" on success.
+download_with_resume() {
+    local url dest part
+    url=$1
+    dest=$2
+    part="${dest}.part"
+
+    if [[ -f "$dest" ]]; then
+        echo "Using existing file: $dest"
+        return
+    fi
+
+    echo "Downloading $(basename "$dest")…"
+    curl -fL --retry 3 --retry-delay 2 $GITHUB_AUTH -C - -o "$part" "$url"
+    mv -f "$part" "$dest"
+}
+
+latest_tag() {
+    http_json "$API_LATEST" | jq -r '.tag_name // empty'
+}
+
+commit_for_ref() {
+    local ref
+    ref=$1
+    http_json "$API_COMMITS_BASE/$ref" | jq -r '.sha // empty'
+}
+
+# Outputs: "<url>\t<name>"
+all_assets() {
+    http_json "$API_LATEST" | jq -r '.assets[] | "\(.browser_download_url)\t\(.name)"'
+}
+
+select_assets() {
+    local lines parts one
+    lines=$(all_assets)
+
+    parts=$(printf '%s\n' "$lines" \
+        | grep -E $'\tRetroDECK-cooker\.flatpak\.7z\.[0-9]{3}$' \
+        | sort -t$'\t' -k2,2V)
+
+    if [[ -n $parts ]]; then
+        printf '%s\n' "$parts"
+        return
+    fi
+
+    one=$(printf '%s\n' "$lines" | grep -Em1 $'\tcooker.*\.flatpak$' || true)
+    if [[ -z $one ]]; then
+        one=$(printf '%s\n' "$lines" | grep -Em1 $'\t\.flatpak$' || true)
+    fi
+    if [[ -n $one ]]; then
+        printf '%s\n' "$one"
+    fi
+}
+
+load_installed_src_commit() {
+    if [[ -f $STATE_COMMIT_FILE ]]; then
+        cat "$STATE_COMMIT_FILE"
+    else
+        echo ""
+    fi
+}
+
+save_installed_src_commit() {
+    local sha
+    sha=$1
+    printf '%s\n' "$sha" > "$STATE_COMMIT_FILE"
+}
+
+force_install_bundle() {
+    local bundle
+    bundle=$1
+    echo "Removing any existing install…"
+    flatpak uninstall --user -y --delete-data "$APP_ID" || true
+    echo "Installing from bundle…"
+    flatpak install --user -y --bundle "$bundle"
+}
+
+print_installed_info() {
+    # Steam Deck's flatpak may lack --json; parse text output
+    flatpak info --user "$APP_ID" 2>/dev/null | awk '
+        /^(Ref|Version|Branch|Commit|Origin):/ {print}
+    ' || true
+}
+
+prune_old_snapshots() {
+    local keep_id
+    keep_id=$1
+
+    if [[ -d $DOWNLOAD_ROOT ]]; then
+        for d in "$DOWNLOAD_ROOT"/*; do
+            if [[ -d $d && ${d##*/} != "$keep_id" ]]; then
+                rm -rf "$d"
+            fi
+        done
+    fi
+
+    if [[ -d $EXTRACT_ROOT ]]; then
+        for d in "$EXTRACT_ROOT"/*; do
+            if [[ -d $d && ${d##*/} != "$keep_id" ]]; then
+                rm -rf "$d"
+            fi
+        done
+    fi
+}
+
+main() {
+    local FORCE=0
+    while getopts ":f" opt; do
+        case "$opt" in
+            f) FORCE=1 ;;
+            *) usage ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+    if [[ $# -gt 0 ]]; then
+        usage
+    fi
+
+    # Bootstrap cache/state dirs inside main
+    mkdir -p "$DOWNLOAD_ROOT" "$EXTRACT_ROOT" "$STATE_DIR"
+
+    if ! command -v flatpak >/dev/null 2>&1; then
+        echo "Error: flatpak required." >&2
+        exit 2
+    fi
+    if ! flatpak remotes --columns=name | grep -qx flathub; then
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    fi
+
+    local tag latest_src installed_src snap_id SNAP_DOWNLOAD SNAP_EXTRACT assets parts first flatpak_file url name
+    tag=$(latest_tag || true)
+    latest_src=""
+    if [[ -n $tag ]]; then
+        latest_src=$(commit_for_ref "$tag" || true)
+    fi
+    installed_src=$(load_installed_src_commit || true)
+
+    if [[ -n $latest_src ]]; then
+        snap_id=$latest_src
+    elif [[ -n $tag ]]; then
+        snap_id=$tag
+    else
+        snap_id="unknown-$(date +%Y%m%d-%H%M%S)"
+    fi
+
+    SNAP_DOWNLOAD="$DOWNLOAD_ROOT/$snap_id"
+    SNAP_EXTRACT="$EXTRACT_ROOT/$snap_id"
+    mkdir -p "$SNAP_DOWNLOAD" "$SNAP_EXTRACT"
+
+    prune_old_snapshots "$snap_id"
+
+    if [[ $FORCE -eq 0 && -n $latest_src && -n $installed_src && $installed_src == $latest_src ]]; then
+        echo "RetroDECK Cooker already up-to-date (src commit $installed_src)."
+        exit 0
+    fi
+
+    assets=$(select_assets || true)
+    if [[ -z $assets ]]; then
+        echo "Error: no suitable assets found on latest Cooker release." >&2
+        exit 3
+    fi
+
+    parts=$(printf '%s\n' "$assets" | grep -E $'\t.*\.7z\.[0-9]{3}$' || true)
+    if [[ -n $parts ]]; then
+        echo "Downloading split archive parts…"
+        while IFS=$'\t' read -r url name; do
+            if [[ -z ${url:-} || -z ${name:-} ]]; then
+                continue
+            fi
+            download_with_resume "$url" "$SNAP_DOWNLOAD/$name"
+        done <<<"$parts"
+
+        first=$(printf '%s\n' "$parts" | cut -f2 | sort -V | head -n1)
+
+        echo "Extracting…"
+        rm -rf "$SNAP_EXTRACT"/*
+        7z x -bso0 -bsp0 -y -o"$SNAP_EXTRACT" "$SNAP_DOWNLOAD/$first" >/dev/null
+
+        flatpak_file=$(find "$SNAP_EXTRACT" -maxdepth 2 -type f -name '*.flatpak' | head -n1 || true)
+        if [[ -z $flatpak_file ]]; then
+            echo "Error: extraction did not produce .flatpak." >&2
+            exit 5
+        fi
+
+        echo "Installing…"
+        force_install_bundle "$flatpak_file"
+    else
+        IFS=$'\t' read -r url name <<<"$(printf '%s\n' "$assets")"
+        download_with_resume "$url" "$SNAP_DOWNLOAD/$name"
+        echo "Installing…"
+        force_install_bundle "$SNAP_DOWNLOAD/$name"
+    fi
+
+    echo
+    print_installed_info
+
+    if [[ -n $latest_src ]]; then
+        save_installed_src_commit "$latest_src"
+    fi
+
+    local cur_ver
+    cur_ver=$(flatpak info --user "$APP_ID" 2>/dev/null | awk -F': *' '/^Version:/ {print $2}' || true)
+    if [[ -n $tag && -n $cur_ver ]]; then
+        echo "Tag: $tag   Version: $cur_ver   Src-Commit: ${latest_src:-unknown}"
+    fi
+    echo "Done."
+}
+
+main "$@"
+
