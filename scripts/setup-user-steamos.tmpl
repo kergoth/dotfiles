@@ -274,7 +274,7 @@ fi
 if [ $retrodeck_installed_before -eq 0 ] || \
    [ "$(flatpak info --user net.retrodeck.retrodeck 2>/dev/null | awk -F': *' '/^Branch:/ {print $2}')" != "master" ]; then
     echo >&2 "Installing RetroDECK Cooker"
-    "$scriptdir/steamos/install-retrodeck-cooker"
+    ~/.local/bin/install-retrodeck-cooker
 fi
 
 if [ $retrodeck_installed_before -eq 0 ]; then

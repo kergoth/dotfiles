@@ -5,5 +5,5 @@ Description=Upgrade RetroDECK if not running
 [Service]
 Type=oneshot
 ExecStartPre=/bin/bash -c '! flatpak ps | grep -q net.retrodeck.retrodeck'
-ExecStart=%h/.dotfiles/scripts/steamos/install-retrodeck-cooker
+ExecStart=%h/.local/bin/install-retrodeck-cooker
 {{ end }}
