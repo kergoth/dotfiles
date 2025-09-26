@@ -1,0 +1,12 @@
+{{ if .retrodeck }}
+[Unit]
+Description=Weekly RetroDECK upgrade
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+Unit=retrodeck-upgrade.service
+
+[Install]
+WantedBy=timers.target
+{{ end }}

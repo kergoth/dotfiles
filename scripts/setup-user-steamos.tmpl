@@ -280,15 +280,17 @@ fi
 if [ $retrodeck_installed_before -eq 0 ]; then
     add_nonsteam RetroDeck ~/.local/share/flatpak/exports/share/applications/net.retrodeck.retrodeck.desktop --steamgriddb-game-name=RetroDeck
 fi
+if [ -e ~/.config/systemd/user/retrodeck-upgrade.service ]; then
+    systemctl --user enable --now ~/.config/systemd/user/retrodeck-upgrade.timer
+fi
 {{- end }}
 
 if [ -e ~/.config/systemd/user/deck-backup.service ]; then
-    systemctl --user enable ~/.config/systemd/user/deck-backup.timer
+    systemctl --user enable --now ~/.config/systemd/user/deck-backup.timer
 fi
 if [ -e ~/.config/systemd/user/check-backup.service ]; then
-    systemctl --user enable ~/.config/systemd/user/check-backup.service
+    systemctl --user enable --now ~/.config/systemd/user/check-backup.service
 fi
-systemctl --user daemon-reload
 
 if ! [ -e ~/Shortix/shortix.sh ]; then
     echo >&2 "Installing Shortix"
