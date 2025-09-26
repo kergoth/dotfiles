@@ -24,35 +24,35 @@ output_dir="."
 
 while getopts ":hr:p:o:m" opt; do
     case ${opt} in
-        h )
-            show_help
-            exit 0
-            ;;
-        r )
-            release_tag="$OPTARG"
-            ;;
-        p )
-            pattern="$OPTARG"
-            ;;
-        o )
-            output_dir="$OPTARG"
-            ;;
-        m )
-            match_pattern=1
-            ;;
-        \? )
-            echo "Invalid option: -$OPTARG" >&2
-            show_help
-            exit 1
-            ;;
-        : )
-            echo "Option -$OPTARG requires an argument." >&2
-            show_help
-            exit 1
-            ;;
+    h)
+        show_help
+        exit 0
+        ;;
+    r)
+        release_tag="$OPTARG"
+        ;;
+    p)
+        pattern="$OPTARG"
+        ;;
+    o)
+        output_dir="$OPTARG"
+        ;;
+    m)
+        match_pattern=1
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG" >&2
+        show_help
+        exit 1
+        ;;
+    :)
+        echo "Option -$OPTARG requires an argument." >&2
+        show_help
+        exit 1
+        ;;
     esac
 done
-shift $((OPTIND -1))
+shift $((OPTIND - 1))
 
 if [ $# -lt 1 ]; then
     echo "Error: Missing required user/repo argument." >&2
@@ -62,9 +62,11 @@ fi
 
 repo="$1"
 
+GITHUB_AUTH_HEADER="${GITHUB_TOKEN:+Authorization: token $GITHUB_TOKEN}"
+
 if [ -z "$release_tag" ]; then
     if [ $match_pattern -eq 1 ]; then
-        release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$repo/releases")
+        release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} "https://api.github.com/repos/$repo/releases")
         message="$(echo "$release_data" | jq -r '.message' 2>/dev/null)" || :
         if [ -n "$message" ]; then
             echo "Error: failed to determine a release tag to use: $message"
@@ -85,7 +87,7 @@ else
     release_url="https://api.github.com/repos/$repo/releases/tags/$release_tag"
 fi
 
-release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" "$release_url")
+release_data=$(curl -s --connect-timeout 60 -H "Accept: application/vnd.github.v3+json" ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} "$release_url")
 if [ "$(echo "$release_data" | jq -r '.message')" == "Not Found" ]; then
     echo "Error: Release not found." >&2
     exit 1
@@ -101,7 +103,7 @@ fi
 mkdir -p "$output_dir"
 
 for asset_url in $assets; do
-    curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 -o "$output_dir/$(basename "$asset_url")" "$asset_url"
+    curl -fsSL --connect-timeout 60 --retry 3 --retry-delay 5 ${GITHUB_AUTH_HEADER:+-H "$GITHUB_AUTH_HEADER"} -o "$output_dir/$(basename "$asset_url")" "$asset_url"
     echo "Asset '$asset_url' downloaded to '$output_dir'."
 done
 
