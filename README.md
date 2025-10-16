@@ -452,7 +452,6 @@ chezmoi update -R
 - [PowerShell](https://learn.microsoft.com/en-us/powershell/) ([Open-Source](https://github.com/PowerShell/PowerShell))
 - [PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) ([Open-Source](https://github.com/microsoft/PowerToys))
 - [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) ([Open-Source](https://git.tartarus.org/?p=simon/putty.git))
-- [QuickLook](https://github.com/QL-Win/QuickLook) (Open-Source)
 - [Rufus](https://rufus.ie/) ([Open-Source](https://github.com/pbatard/rufus))
 - [SnipDo](https://snipdo-app.com): Select a text in any application and SnipDo pops up to help you.
 - [SyncTrayzor](https://github.com/canton7/SyncTrayzor) (Open-Source)
