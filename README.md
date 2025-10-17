@@ -603,34 +603,20 @@ chezmoi update -R
 ### Formerly-Used Services
 
 - [Instapaper](https://www.instapaper.com): A service for saving web pages for later reading.
-
-### Formerly-Used Browser Extensions
-
-- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
-
-### Formerly-Used Software
-
-- [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
-- [Bear](https://bear.app): A beautiful, flexible writing app for crafting notes and prose.
-- [Simplenote](https://simplenote.com): An easy way to keep notes, lists, ideas, and more.
-- [Workflowy](https://workflowy.com): Organize your brain.
-- [EverNote](https://evernote.com): A note-taking app.
-- [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
-- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
-- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.
 - [IRCCloud](https://www.irccloud.com/): IRC client. When I do use IRC, I just use a local client on an as-needed basis.
-- [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
-- [foobar2000](https://www.foobar2000.org): This is a great music player, but I use Apple Music and iTunes for streaming, and beets for my music library for portable devices, so this is no longer needed.
-- [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
-- [LimeChat](http://limechat.net/mac/) ([Open-Source](http://github.com/psychs/limechat)): An IRC client for Mac OS X.
-- [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
-- [XChat](https://xchat.org): IRC chat client.
-- [Pidgin](https://pidgin.im): A chat client.
-- [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/): A web browser.
-- [Google Chrome](https://www.google.com/chrome/): A web browser.
-- [Tor Browser](https://www.torproject.org): Anonymity Online.
-- [Mozilla Thunderbird](https://www.thunderbird.net): Email client.
-- [Gnome Evolution](https://gitlab.gnome.org/GNOME/evolution/-/wikis/home): Email client.
+
+### Formerly-Used Fonts
+
+- [Monaspace](https://github.com/githubnext/monaspace)
+- [Recursive](https://www.recursive.design) Code
+- [Fira Code](https://github.com/tonsky/FiraCode)
+- [Input](https://input.djr.com) Mono Narrow
+- [Inconsolata](https://levien.com/type/myfonts/inconsolata.html): See also [Google Fonts](https://fonts.google.com/specimen/Inconsolata)
+- [Terminus](https://terminus-font.sourceforge.net)
+- [DejaVu](https://dejavu-fonts.github.io) Sans Mono
+- [Leonine Sans Mono](https://www.leonerd.org.uk/hacks/hints/leoninesansmono.html)
+- [Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/) Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
+- [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) (Occasional Use)
 
 ### Formerly-Used CLI Software
 
@@ -644,22 +630,122 @@ chezmoi update -R
 - [EPIC](https://www.epicsol.org): The Enhanced Programmable IRC-II Client.
 - [BitchX](https://bitchx.sourceforge.net): An IRC client.
 - [ircii](http://www.eterna23.net/ircii/): A terminal-based IRC and ICB client.
+- [abduco](https://www.brain-dump.org/projects/abduco): Session manager.
+- [dvtm](https://www.brain-dump.org/projects/dvtm): Dynamic virtual terminal manager.
+- [dtach](https://dtach.sourceforge.io): Emulates the detach feature of screen.
+- [asdf](https://asdf-vm.com): Version manager.
+- [pyenv](https://github.com/pyenv/pyenv): Python version manager.
 
-### Formerly-Used Fonts
+### Formerly-Used GUI Software
 
-- [Monaspace](https://github.com/githubnext/monaspace)
-- [Recursive](https://www.recursive.design) Code
-- [Fira Code](https://github.com/tonsky/FiraCode)
-- [Input](https://input.djr.com) Mono Narrow
-- [Inconsolata](https://levien.com/type/myfonts/inconsolata.html): See also [Google Fonts](https://fonts.google.com/specimen/Inconsolata)
-- [Terminus](https://terminus-font.sourceforge.net)
-- [DejaVu](https://dejavu-fonts.github.io) Sans Mono
-- [Leonine Sans Mono](https://www.leonerd.org.uk/hacks/hints/leoninesansmono.html)
-- [Bitstream Vera](https://web.archive.org/web/20210314185159/https://www.gnome.org/fonts/) Sans Mono: See [download](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/)
+- [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/): A web browser.
+- [Google Chrome](https://www.google.com/chrome/): A web browser.
+- [Tor Browser](https://www.torproject.org): Anonymity Online.
+- [Mozilla Thunderbird](https://www.thunderbird.net): Email client.
+- [Opera Browser](https://www.opera.com): Web browser.
+- [Chromium](https://www.chromium.org): Web browser.
+- [Resilio Sync](https://www.resilio.com): File synchronization. Formerly **BitTorrent Sync**.
+- [SpiderOak](https://spideroak.com): File synchronization.
+- [Dropbox](https://www.dropbox.com): File synchronization.
+- [Pidgin](https://pidgin.im): A chat client.
+- [XChat](https://xchat.org): IRC chat client.
+- [Clementine](https://www.clementine-player.org): Music player.
+- VMWare Player
+- VMWare Workstation
+- [VirtualBox](https://www.virtualbox.org): Powerful x86 and AMD64/Intel64 virtualization software for creating and managing virtual machines.
+- [Vagrant](https://www.vagrantup.com): Tool for building and managing virtual machines.
+- [Sublime Text](https://www.sublimetext.com): Text editor.
+- [Alacritty](https://alacritty.org): Terminal emulator.
+- [Bear](https://bear.app): A beautiful, flexible writing app for crafting notes and prose.
+- [Simplenote](https://simplenote.com): An easy way to keep notes, lists, ideas, and more.
+- [Workflowy](https://workflowy.com): Organize your brain.
+- [EverNote](https://evernote.com): A note-taking app.
 
-### Formerly-Used Fonts - Occasional Use
+### Formerly-Used macOS Software
 
-- [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released)
+- [f.lux](https://justgetflux.com): Software to make your life better. Replaced by macOS Night Shift.
+- [Itsycal for Mac](https://www.mowglii.com/itsycal/): A tiny menu bar calendar. I mostly just click on the date/time and see the calendar widget in the notification panel now.
+- [Hidden Bar](https://apps.apple.com/us/app/hidden-bar/id1452453066?mt=12&uo=4&at=10l4tL) ([Open-Source](https://github.com/dwarvesf/hidden)): Hide menubar items. Replaced by **Ice**.
+- [GoodLinks](https://apps.apple.com/us/app/goodlinks/id1474335294?uo=4&at=10l4tL): Save links, read later. Replaced by **Readwise Reader**.
+- [Jumpcut](https://jumpcut.sourceforge.io): Clipboard manager.
+- [TotalFinder](https://totalfinder.binaryage.com): Finder enhancement.
+- [FlyCut](https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12&uo=4&at=10l4tL): Clipboard manager.
+- [QuickSilver](https://qsapp.com): Launcher.
+- [MacDown](https://macdown.uranusjr.com): Markdown editor.
+- [Bartender](https://www.macbartender.com): Organize your menu bar icons. Replaced by Hidden bar, then Ice.
+- [MacVim](https://macvim-dev.github.io/macvim): Vim - the text editor - for macOS
+- [Magnet](https://magnet.crowdcafe.com): Organize your workspace. Replaced by Rectangle.
+- [LimeChat](http://limechat.net/mac/) ([Open-Source](http://github.com/psychs/limechat)): An IRC client for Mac OS X.
+- [Colloquy](https://colloquy.app) ([Source](https://github.com/colloquy/colloquy)): An advanced IRC, SILC & ICB client.
+
+### Formerly-Used Linux Software
+
+- [Gnome Evolution](https://gitlab.gnome.org/GNOME/evolution/-/wikis/home): Email client.
+- [i3 window manager](https://i3wm.org): Tiling window manager.
+- [awesome window manager](https://awesomewm.org): Tiling window manager.
+- [suckless terminal](https://st.suckless.org): Terminal emulator.
+- [rxvt-unicode](https://software.schmorp.de/pkg/rxvt-unicode.html): Terminal emulator. I still use this on Linux desktops, but don't often use Linux desktops anymore, and I may end up switching to alacritty, kitty, etc.
+
+### Formerly-Used Windows Software
+
+- [ACDSee](https://en.wikipedia.org/wiki/ACDSee). Loved this as an ultralight image viewer in the past, but it grew bloated over time, so was replaced by Irfan View or XnView, as needed.
+- [foobar2000](https://www.foobar2000.org): This is a great music player, but I use Apple Music and iTunes for streaming, and beets for my music library for portable devices, so this is no longer needed.
+- [Winamp](https://en.wikipedia.org/wiki/Winamp): This was the way before I switched to foobar2000 long ago.
+- [ConEMU](https://conemu.github.io): Terminal emulator.
+- [Console2](https://sourceforge.net/projects/console/): Terminal emulator.
+- [Central Point PC Tools](<https://en.wikipedia.org/wiki/PC_Tools_(software)>) for DOS and Windows
+- [K-Meleon](http://kmeleonbrowser.org): Lightweight web browser.
+- [Powerdesk](https://www.vcom.com/power-desk-pro)
+- [WinRAR](https://www.rarlab.com)
+- [WinZip](https://winzip.com/)
+- [K-Lite Codec Pack](https://codecguide.com)
+- [Windows Media Player Classic](https://en.wikipedia.org/wiki/Media_Player_Classic)
+- [Foxit Reader](https://www.foxit.com/pdf-reader/)
+- [HWiNFO](https://www.hwinfo.com/)
+- [Daemon Tools](https://www.daemon-tools.cc/home)
+- [Alcohol 52%](http://www.alcohol-soft.com/install.php?pid=Alcohol52_FE__2.0.3.6850&SFA=1)
+- [Alcohol 120%](http://www.alcohol-soft.com/): CD/DVD burning software.
+- [CloneCD](https://en.wikipedia.org/wiki/CloneCD)
+- [Nero Burning ROM](https://en.wikipedia.org/wiki/Nero_Burning_ROM)
+- [CDBurnerXP](https://cdburnerxp.se/)
+- [Clover](http://en.ejie.me)
+- [QTTabBar](https://qttabbar.wikidot.com) ([Open-Source](https://github.com/indiff/qttabbar)): Windows Explorer tabbed browsing.
+- [TweakUI](https://en.wikipedia.org/wiki/TweakUI): Windows system settings. From the Windows 95 and Windows XP PowerToys from Microsoft.
+- [Eudora](<https://en.wikipedia.org/wiki/Eudora_(email_client)>): Email client.
+- [pine](<https://en.wikipedia.org/wiki/Pine_(email_client)>): Email client.
+- [mutt](<https://en.wikipedia.org/wiki/Mutt_(email_client)>): Email client.
+- nlite
+- vlite
+- ninite
+
+#### Formerly-Used in Windows 3.x
+
+- Bitstream MakeUp for Windows: Typographic special effects for desktop publishing.
+- [Timeworks Publish-It!](https://en.wikipedia.org/wiki/Timeworks_Publisher#Publish-It!): Desktop publishing.
+
+#### Formerly-Used in Windows 95/98
+
+- [McAfee Nuts & Bolts](https://archive.org/details/mc-afee-nuts-and-bolts-98-1999-02-english-cd): Utility suite.
+
+### Formerly-Used DOS Software
+
+- [Mace Utilities](https://winworldpc.com/product/mace-utilities) from Paul Mace Software, for DOS. I used this much less than the others.
+- PFS Professional Write
+- [PFS Professional File](https://winworldpc.com/product/pfs-professional-file/20)
+- Quicken for DOS
+- [Norton Utilities](http://symantec.com/norton/norton-utilities) for DOS
+  - Norton Disk Doctor
+  - Norton Speed Disk
+- PC Tools
+  - PC Shell
+- Norton Ghost
+- PKUnzip/Zip (pkz204g), Arc, Arj, etc
+- Paragon Partition Manager for DOS
+- Partition Magic
+
+### Formerly-Used Browser Extensions
+
+- [uBlacklist for Safari](https://apps.apple.com/us/app/ublacklist-for-safari/id1547912640?uo=4&at=10l4tL) ([Open-Source](https://github.com/HoneyLuka/uBlacklist/tree/safari-port/safari-project))
 
 ## Implementation Notes
 
