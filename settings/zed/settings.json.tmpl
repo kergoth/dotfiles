@@ -7,6 +7,9 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "outline_panel": {
+    "dock": "right"
+  },
   "features": {
     "edit_prediction_provider": "zed"
   },
@@ -38,6 +41,10 @@
   ],
 {{- end }}
   "agent": {
+    "inline_assistant_model": {
+      "provider": "google",
+      "model": "gemini-2.5-flash"
+    },
     "profiles": {
       "write": {
         "name": "Write",
@@ -71,18 +78,13 @@
       }
     },
     "default_profile": "write",
-    "always_allow_tool_actions": false,
+    "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "claude-3.7-sonnet-thought"
+      "provider": "google",
+      "model": "gemini-2.5-flash"
     },
-    "version": "2"
   },
-  "theme": {
-    "mode": "dark",
-    "light": "macOS Classic Light",
-    "dark": "Dracula"
-  },
+  "theme": "Aura Dark",
   "buffer_font_family": "MesloLGS NF",
   "buffer_font_features": {
     "calt": true
@@ -118,6 +120,7 @@
     "powershell": true,
     "toml": true,
     // Extensions I'm testing out, but may not keep in the long term.
+    "elixir": true,
     "nu": true
   },
   "current_line_highlight": "gutter", // Highlight the gutter only
@@ -156,12 +159,8 @@
     "Python": {
       "format_on_save": "off",
       "formatter": [
-        {
-          "code_actions": {
-            "source.organizeImports.ruff": true,
-            "source.fixAll.ruff": true
-          }
-        },
+        { "code_action": "source.organizeImports.ruff" },
+        { "code_action": "source.fixAll.ruff" },
         {
           "language_server": {
             "name": "ruff"
